@@ -1,3 +1,7 @@
+2004-11-18  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/IDEDriver.cpp (initialize): リファクタリングしていたら動作しなくなった。原因究明中。
+
 2004-11-17  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/IDEDriver.h: CString.hの記述ミス修正

@@ -48,9 +48,10 @@ IDEDriver::IDEDriver()
     // identify‚ð2‰ñs‚Á‚Ä‘Ê–Ú‰Ÿ‚µ
 
 
-    resetAndIdentify(&this->controllers[PRIMARY]);
-    resetAndIdentify(&this->controllers[SECONDARY]);
-
+    initialize(&controllers[PRIMARY]);
+    initialize(&controllers[SECONDARY]);
+///    resetAndIdentify(&controllers[PRIMARY]);
+//    resetAndIdentify(&controllers[SECONDARY]);
     this->whichController = NULL;
     this->atapiBuffer     = NULL;
     this->atapiReadDone   = true;
@@ -326,6 +327,7 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
     /* drdy check */
     if (command->drdyCheck && !waitDrdySet(controller))
     {
+printf("%s:%d\n", __FILE__, __LINE__);
         this->lastError = DATA_READY_CHECK_ERROR;
         return false;
     }
@@ -357,6 +359,7 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
         /* data not ready */
         if ((status & BIT_DRQ) == 0)
         {
+printf("%s:%d\n", __FILE__, __LINE__);
             this->lastError = DATA_READY_CHECK_ERROR;
             return false;
         }
@@ -467,6 +470,133 @@ bool IDEDriver::commandIdentify(IDEController* controller, int deviceNo, word* b
     return true;
 }
 
+/*
+    call only after software reset
+*/
+void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
+{
+    dword l;
+    byte c;
+    byte c1 = 0xff; /* unknown signature */
+    byte c2 = 0xff; /* unknown signature */
+    bool timeout;
+
+    IDEDevice* device = &controller->devices[deviceNo];
+    device->deviceNo = deviceNo;
+
+    for (l = 0; l < RETRY_MAX; l++)
+    {
+        /* select device */
+        outp8(controller, ATA_DHR, deviceNo << 4);
+        sleep(10);
+
+        c = inp8(controller, ATA_STR);
+        if (c == 0xff) break;
+
+        timeout = !waitBusyClear(controller);
+        if (timeout) break;
+
+        c = inp8(controller, ATA_DHR);
+        if ((c & (deviceNo << 4)) == (deviceNo << 4))
+        {
+            c1 = inp8(controller, ATA_CLR);
+            c2 = inp8(controller, ATA_CHR);
+            break;
+        }
+    }
+
+    switch(c1 | (c2 << 8))
+    {
+    case 0xEB14:
+	printf("%s:%d\n", __FILE__, __LINE__);
+        device->type = DEVICE_ATAPI;
+        break;
+    case 0:
+	printf("%s:%d\n", __FILE__, __LINE__);
+        device->type = DEVICE_ATA;
+        break;
+    default:
+	printf("%s:%d\n", __FILE__, __LINE__);
+        device->type = DEVICE_NONE;
+        break;
+    }
+}
+
+void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
+{
+    word buffer[256]; /* identify buffer */
+    IDEDevice* device = &controller->devices[deviceNo];
+
+    if (!waitBusyClear(controller))
+    {
+printf("%s:%d\n", __FILE__, __LINE__);
+        device->type = DEVICE_NONE;
+        return;
+    }
+
+//    outp8(controller, ATA_DHR, deviceNo << 4);
+
+    byte l;
+    for (l = 0; l < RETRY_MAX; l++)
+    {
+        bool firstResult = commandIdentify(controller, deviceNo, buffer);
+        int firstError   = getLastError();
+        sleep(5);
+        bool secondResult = commandIdentify(controller, deviceNo, buffer);
+        int secondError   = getLastError();
+
+        if (firstResult && secondResult)
+        {
+printf("%s:%d\n", __FILE__, __LINE__);
+            break;
+        }
+        else if (!firstResult && !secondResult)
+        {
+printf("%s:%d\n", __FILE__, __LINE__);
+            if (firstError != secondError) continue;
+            if (firstError == SELECTION_ERROR || firstError == BUSY_TIMEOUT_ERROR || firstError == DATA_READY_CHECK_ERROR)
+            {
+printf("%s:%d : %d\n", __FILE__, __LINE__, firstError);
+                device->type = DEVICE_NONE;
+                break;
+            }
+        }
+    }
+
+    if (l == RETRY_MAX)
+    {
+printf("%s:%d\n", __FILE__, __LINE__);
+        device->type = DEVICE_UNKNOWN;
+    }
+
+    /* information */
+    switch(device->type)
+    {
+    case DEVICE_ATA:
+        device->name = CString((const char*)((byte*)buffer + 54), 40);
+        device->typeDetail = -1;
+        device->sectorSize = ATA_SECTOR_SIZE;
+        break;
+
+    case DEVICE_ATAPI:
+        device->name       = CString((const char*)((byte*)buffer + 54), 40);
+        device->typeDetail = buffer[0] & 0x1f;
+        device->sectorSize = ATAPI_SECTOR_SIZE;
+        break;
+
+    case DEVICE_NONE:
+        device->name       = "none";
+        device->typeDetail = -1;
+        break;
+
+    case DEVICE_UNKNOWN:
+        device->name       = "unknown";
+        device->typeDetail = -1;
+        break;
+    }
+
+    printf("device->type=%d\n", device->type);
+}
 
 void IDEDriver::initialize(IDEController* controller)
 {
@@ -478,7 +608,10 @@ void IDEDriver::initialize(IDEController* controller)
     outp8(controller, ATA_DCR, 0x02);
     sleep(5);
 
-
+    setDeviceTypeFirst(controller, MASTER);
+    setDeviceTypeFirst(controller, SLAVE);
+    setDeviceTypeSecond(controller, MASTER);
+    setDeviceTypeSecond(controller, SLAVE);
 }
 
 

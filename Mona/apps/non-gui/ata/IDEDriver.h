@@ -48,7 +48,7 @@ public:
 
     enum
     {
-        SELECTION_ERROR,
+        SELECTION_ERROR = 1,
         DATA_READY_CHECK_ERROR,
         BUSY_TIMEOUT_ERROR,
         STATUS_ERROR
@@ -122,6 +122,8 @@ private:
 
     /* private : functions */
     void initialize(IDEController* controller);
+    void setDeviceTypeFirst(IDEController* controller, int deviceNo);
+    void setDeviceTypeSecond(IDEController* controller, int deviceNo);
 
     void resetAndIdentify(IDEController* controller);
     void identify(IDEController* controller, int deviceNo);
@@ -169,6 +171,7 @@ private:
         DEV_HEAD_OBS   = 0xa0,
         LBA_FLG        = 0x40,
         REQUEST_SENSE_BUFFER_SIZE = 18,
+
         ATAPI_SECTOR_SIZE = 2048,
         ATA_SECTOR_SIZE   = 512
     };
