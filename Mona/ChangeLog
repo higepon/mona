@@ -1,5 +1,7 @@
 2004-04-22  higepon  <higepon@users.sourceforge.jp>
 
+        * src/lib/monapi/syscall.cpp (syscall_seek): 修正
+
         * src/kernel/syscalls.cpp : SEEK, POSITIONのシステムコール追加
 
 2004-04-21  higepon  <higepon@users.sourceforge.jp>

@@ -570,6 +570,6 @@ dword syscall_position()
 dword syscall_seek(dword pt, int flag)
 {
     dword result;
-    SYSCALL_2(SYSTEM_CALL_DIR_READ, result, pt, flag);
+    SYSCALL_2(SYSTEM_CALL_FILE_SEEK, result, pt, flag);
     return result;
 }
