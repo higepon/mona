@@ -24,7 +24,7 @@ class MFDCDriver {
     ~MFDCDriver();
 
   public:
-    void printStatus() const;
+    void printStatus(const char*) const;
     void interrupt();
   private:
     void initilize();

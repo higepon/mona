@@ -74,38 +74,38 @@ MFDCDriver::~MFDCDriver() {
 */
 void MFDCDriver::initilize() {
 
-    printStatus();
+    printStatus("before");
 
     /* reset drive */
     _sys_printf("FDC_DOR_RESET=%x\n", FDC_DOR_RESET);
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
 
-    printStatus();
+    printStatus("reset");
 
     /* start driveA */
     interrupt_ = false;
     outportb(FDC_DOR_PRIMARY, FDC_START_DRIVE);
-    while (!waitInterrupt()) {
-        _sys_printf("wait");
-    }
-    printStatus();
+    while (!waitInterrupt());
+
+    printStatus("after");
     return;
 }
 
-void MFDCDriver::printStatus() const {
+void MFDCDriver::printStatus(const char* str) const {
 
     byte mrq = inportb(FDC_MSR_PRIMARY);
     _sys_printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
-    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
+    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
               , mrq & FDC_MRQ_READY    ? "  ready  ":"not ready"
               , mrq & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
-              , mrq & FDC_NDMA_NOT_DMA ? " Y ":" N "
-              , mrq & FDC_BUSY_ACTIVE  ? "  Y ":"  N "
-              , mrq & FDC_ACTD_ACTIVE  ? " Y ":" N "
-              , mrq & FDC_ACTC_ACTIVE  ? " Y ":" N "
-              , mrq & FDC_ACTB_ACTIVE  ? " Y ":" N "
-              , mrq & FDC_ACTA_ACTIVE  ? " Y ":" N "
+              , mrq & FDC_NDMA_NOT_DMA ? " Y "      :" N "
+              , mrq & FDC_BUSY_ACTIVE  ? "  Y "     :"  N "
+              , mrq & FDC_ACTD_ACTIVE  ? " Y "      :" N "
+              , mrq & FDC_ACTC_ACTIVE  ? " Y "      :" N "
+              , mrq & FDC_ACTB_ACTIVE  ? " Y "      :" N "
+              , mrq & FDC_ACTA_ACTIVE  ? " Y "      :" N "
               , interrupt_ ? " T " : " F "
+              , str
     );
 }
 
@@ -116,9 +116,7 @@ void MFDCDriver::setFDCVersion() {
 
 void MFDCDriver::interrupt() {
 
-    _sys_printf("interrupt\n");
     interrupt_ = true;
-    _sys_printf("interrupt_ = %s\n", interrupt_ ? " True " : " False ");
 }
 
 bool MFDCDriver::waitInterrupt() {
