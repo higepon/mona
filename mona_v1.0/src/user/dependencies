@@ -29,3 +29,5 @@ jpegdemo.o: jpegdemo.cpp include/userlib.h include/types.h \
 MapServer.o: MapServer.cpp include/userlib.h include/types.h \
   include/string.h include/MemoryManager.h include/collection.h \
   include/Map.h
+MouseServer.o: MouseServer.cpp include/userlib.h include/types.h \
+  include/string.h include/MemoryManager.h include/collection.h

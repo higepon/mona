@@ -7,6 +7,7 @@ KEYBOARD_SERVER = $(BIN)/KEYBDMNG.SVR
 SHELL_SERVER    = $(BIN)/SHELL.SVR
 JPEG_DEMO       = $(BIN)/JPEGDEMO.ELF
 MAP_SERVER      = $(BIN)/MAP.SVR
+MOUSE_SERVER    = $(BIN)/MOUSE.SVR
 LIB             = -L./lib
 LIB_USER        = lib/libuser.a
 LFLAGS          = -n -Ttext 0xA0000000 -e _user_start -static -luser
@@ -25,10 +26,11 @@ SOURCES         = hello.cpp                   \
                   ShellServer.cpp             \
                   jpegdemo.cpp                \
                   MapServer.cpp               \
+                  MouseServer.cpp             \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER)
+all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)
 
 $(LIB_USER) : userlib.o string.o MemoryManager.o
 	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o
@@ -40,6 +42,10 @@ $(HELLO) : hello.o $(LIB_USER)
 $(KEYBOARD_SERVER) : KeyBoardManager.o KeyBoardServer.o $(LIB_USER)
 	$(LD) $(LFLAGS) KeyBoardServer.o KeyBoardManager.o $(LIB) -o $(KEYBOARD_SERVER)
 	objcopy $(OFLAGS) $(KEYBOARD_SERVER)
+
+$(MOUSE_SERVER) : $(LIB_USER) MouseServer.o
+	$(LD) $(LFLAGS) MouseServer.o $(LIB) -o $(MOUSE_SERVER)
+	objcopy $(OFLAGS) $(MOUSE_SERVER)
 
 $(SHELL_SERVER) : ShellServer.o KeyBoardManager.o $(LIB_USER)
 	$(LD) $(LFLAGS) ShellServer.o KeyBoardManager.o $(LIB) -o $(SHELL_SERVER)
@@ -61,6 +67,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER)
+	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER)
 
 include dependencies

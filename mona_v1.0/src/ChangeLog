@@ -1,5 +1,9 @@
 2004-02-08  higepon  <higepon@users.sourceforge.jp>
 
+        * user/MouseServer.cpp: マウスサーバ追加
+
+        * user/string.cpp: strcmpのバグ修正 thx Gakuさん
+
         * user/hello.cpp: MemoryMap::unmap実装
 
 2004-02-07  higepon  <higepon@users.sourceforge.jp>

@@ -29,24 +29,7 @@ int main() {
 
     /* initilize destination list */
     List<dword>* destList = new HList<dword>();
-
-    int i  = 0;
-
-    int prevX = 0;
-    int prevY = 0;
-    int posX = 0;
-    int posY = 0;
-    int x, y;
-    bool yPlus;
-    bool xPlus;
-    bool leftClickd;
-    bool rightClickd;
-    Screen screen;
-
     MessageInfo info;
-
-    VirtualScreen vscreen(1024 * 40);
-    vscreen.fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
 
     /* Message loop */
     for (;;) {
@@ -64,50 +47,6 @@ int main() {
             case MSG_KEY_REGIST_TO_SERVER:
 
                 regist(destList, &info);
-                break;
-
-            case MSG_MOUSE_1:
-
-                {
-                    byte result = (byte)(info.arg1);
-                    xPlus = !(result & 0x10);
-                    yPlus = !(result & 0x20);
-                    leftClickd = (result & 0x01);
-                    rightClickd = (result & 0x02);
-                }
-
-            case MSG_MOUSE_2:
-
-                {
-                    byte result = (byte)(info.arg1);
-                    //                    x = xPlus ? (int)result : (int)(-1 * ~(result - 1));
-                    x = (char)result;
-                }
-
-                break;
-
-            case MSG_MOUSE_3:
-
-                {
-                    byte result = (byte)(info.arg1);
-                    //                    y = yPlus ? (int)result : (int)(-1 * ~(result - 1));
-                    y = -1 * (char)result;
-                }
-
-                posX += x;
-                if (posX > screen.getXResolution()) posX = screen.getXResolution();
-                if (posX < 0) posX = 0;
-                posY += y;
-                if (posY > screen.getYResolution()) posY = screen.getYResolution();
-                if (posY < 0) posY = 0;
-
-                 Screen::bitblt(&screen, prevX, prevY, 3, 3, &vscreen, 0, 0, Raster::XOR);
-                 Screen::bitblt(&screen, posX , posY, 3, 3, &vscreen, 0, 0, Raster::XOR);
-                //screen.fillRect16(posX, posX, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
-
-                prevX = posX;
-                prevY = posY;
-
                 break;
 
             default:

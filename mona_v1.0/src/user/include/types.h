@@ -67,15 +67,17 @@ typedef struct MappingInfo {
 };
 
 
-#define MSG_KEY_SCANCODE         0x00
-#define MSG_KEY_REGIST_TO_SERVER 0x01
-#define MSG_MAP                  0x02
-#define MSG_RESULT_OK            0x03
-#define MSG_RESULT_ERROR         0x04
-#define MSG_KEY_VIRTUAL_CODE     0x05
-#define MSG_MOUSE_1              0x06
-#define MSG_MOUSE_2              0x07
-#define MSG_MOUSE_3              0x08
+#define MSG_KEY_SCANCODE           0x00
+#define MSG_KEY_REGIST_TO_SERVER   0x01
+#define MSG_MAP                    0x02
+#define MSG_RESULT_OK              0x03
+#define MSG_RESULT_ERROR           0x04
+#define MSG_KEY_VIRTUAL_CODE       0x05
+#define MSG_MOUSE_1                0x06
+#define MSG_MOUSE_2                0x07
+#define MSG_MOUSE_3                0x08
+#define MSG_MOUSE_REGIST_TO_SERVER 0x09
+#define MSG_MOUSE_INFO             0x0A
 
 #define SHARED_FDC_BUFFER 0x4000
 
