@@ -27,6 +27,11 @@ typedef struct
     dword who;
 } WaitFor;
 
+#define W_CRITICAL 0
+#define W_HUMAN    1
+#define W_NORMAL   2
+#define WAITQ_IDX(waitReason) ((int)(waitReason && 0x03))
+
 class Scheduler
 {
 public:
@@ -37,19 +42,20 @@ public:
     void schedule();
     void join(Thread* thread, int priority = 5);
     int kill(Thread* thread);
-    int wait(Thread* thread);
+    int wait(Thread* thread, int waitReason);
 
 private:
     int calcPriority(Thread* thread);
 
 protected:
-    Array<Thread> mona;
+    Array<Thread> runq;
+    Array<Thread> waitq;
     int monaMin;
 };
 
-Scheduler::Scheduler() : mona(10)
+Scheduler::Scheduler() : runq(10), waitq(3)
 {
-    this->monaMin = this->mona.getLength() - 1;
+    this->monaMin = this->runq.getLength() - 1;
 }
 
 Scheduler::~Scheduler()
@@ -72,7 +78,7 @@ int Scheduler::calcPriority(Thread* thread)
 void Scheduler::schedule()
 {
     /* do something about */
-    FOREACH(Thread, queue, mona)
+    FOREACH(Thread, queue, runq)
     {
         FOREACH_Q(queue, Thread*, thread)
         {
@@ -80,7 +86,7 @@ void Scheduler::schedule()
         }
     }
 
-    FOREACH(Thread, queue, mona)
+    FOREACH(Thread, queue, runq)
     {
         if (Queue::isEmpty(&queue))
         {
@@ -98,7 +104,7 @@ void Scheduler::join(Thread* thread, int priority)
 {
     if (priority > monaMin || priority < 0) return;
 
-    Thread targetQueue = mona[0];
+    Thread targetQueue = runq[0];
     Queue::addToPrev(&targetQueue, thread);
 
     this->schedule();
@@ -111,10 +117,10 @@ int Scheduler::kill(Thread* thread)
     return NORMAL;
 }
 
-int Scheduler::wait(Thread* thread)
+int Scheduler::wait(Thread* thread, int waitReason)
 {
     Queue::remove(thread);
-    Thread targetQueue = mona[monaMin];
+    Thread targetQueue = waitq[WAITQ_IDX(waitReason)];
     Queue::addToPrev(&targetQueue, thread);
     return NORMAL;
 }

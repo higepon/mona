@@ -23,9 +23,11 @@ int myApplication::main(List<char*>* pekoe) {
     }
 
     Date dt;
-
     printf("%d/%d/%d %d:%d:%d", dt.year(), dt.month(), dt.day(), dt.hour(), dt.min(), dt.sec());
 
+//    char str[128];
+//    sprintf(str, "test sprintf = %x", 0x12345678);
+//    print(str);
 
     /* draw rectangle */
     Screen screen;
