@@ -18,6 +18,7 @@ myApplication::myApplication(char* name) : MonaApplication(name) {
 
 int myApplication::main() {
 
+    char buff[512];
 
     Screen screen;
     screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));
@@ -74,7 +75,11 @@ void myApplication::onKeyDown(int keycode, int modifiers) {
     printf("down\n");
 }
 
-int main() {
+int MonaMain(List<char*>* pekoe) {
+
+    for (int i = 0; i < pekoe->size(); i++) {
+        printf("[%s]\n", pekoe->get(i));
+    }
 
     monaApp = new myApplication("HELLO.ELF");
     monaApp->main();

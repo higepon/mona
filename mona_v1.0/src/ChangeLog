@@ -1,5 +1,7 @@
 2004-02-10  higepon  <higepon@users.sourceforge.jp>
 
+        * MonaMain関数が引数をもてるようになった
+
         * syscalls.cpp : FDアクセス箇所にセマフォでロックを追加。
 
         * FDCDriver.cpp: モーターの制御を追加。

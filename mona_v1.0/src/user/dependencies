@@ -1,33 +1,35 @@
 hello.o: hello.cpp include/userlib.h include/types.h include/string.h \
-  include/MemoryManager.h include/collection.h
+  include/collection.h include/MemoryManager.h
 test.o: test.cpp include/userlib.h include/types.h include/string.h \
-  include/MemoryManager.h
+  include/collection.h include/MemoryManager.h
 userlib.o: userlib.cpp include/userlib.h include/types.h include/string.h \
-  include/MemoryManager.h
+  include/collection.h include/MemoryManager.h
 KeyBoardManager.o: KeyBoardManager.cpp include/userlib.h include/types.h \
-  include/string.h include/MemoryManager.h include/KeyBoardManager.h \
-  include/collection.h
+  include/string.h include/collection.h include/MemoryManager.h \
+  include/KeyBoardManager.h
 string.o: string.cpp include/string.h include/types.h
 KeyBoardServer.o: KeyBoardServer.cpp include/userlib.h include/types.h \
-  include/string.h include/MemoryManager.h include/collection.h \
+  include/string.h include/collection.h include/MemoryManager.h \
   include/KeyBoardManager.h
 MemoryManager.o: MemoryManager.cpp include/MemoryManager.h \
   include/types.h include/string.h
 UFAT12.o: UFAT12.cpp include/UFAT12.h include/types.h \
   include/DiskDriver.h include/BitMap.h include/string.h \
-  include/userlib.h include/MemoryManager.h
+  include/userlib.h include/collection.h include/MemoryManager.h
 BitMap.o: BitMap.cpp include/BitMap.h include/types.h include/string.h
 VirtualFileSystemServer.o: VirtualFileSystemServer.cpp include/userlib.h \
-  include/types.h include/string.h include/MemoryManager.h \
-  include/UFAT12.h include/DiskDriver.h include/BitMap.h
+  include/types.h include/string.h include/collection.h \
+  include/MemoryManager.h include/UFAT12.h include/DiskDriver.h \
+  include/BitMap.h
 jpegls.o: jpegls.cpp include/jpegls.h dct_tab
 ShellServer.o: ShellServer.cpp include/userlib.h include/types.h \
-  include/string.h include/MemoryManager.h include/KeyBoardManager.h \
-  include/collection.h include/Shell.h
+  include/string.h include/collection.h include/MemoryManager.h \
+  include/KeyBoardManager.h include/Shell.h
 jpegdemo.o: jpegdemo.cpp include/userlib.h include/types.h \
-  include/string.h include/MemoryManager.h include/jpegls.h text.hex
+  include/string.h include/collection.h include/MemoryManager.h \
+  include/jpegls.h text.hex
 MapServer.o: MapServer.cpp include/userlib.h include/types.h \
-  include/string.h include/MemoryManager.h include/collection.h \
+  include/string.h include/collection.h include/MemoryManager.h \
   include/Map.h
 MouseServer.o: MouseServer.cpp include/userlib.h include/types.h \
-  include/string.h include/MemoryManager.h include/collection.h
+  include/string.h include/collection.h include/MemoryManager.h

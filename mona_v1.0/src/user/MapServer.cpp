@@ -2,7 +2,7 @@
 #include <collection.h>
 #include <Map.h>
 
-int main() {
+int MonaMain(List<char*>* pekoe) {
 
     Server* server = new MapServer();
     server->service();

@@ -593,6 +593,9 @@ Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer
     /* mutex tree */
     kmutexTree_ = new BinaryTree<KMutex*>();
 
+    /* argument list */
+    arguments_ = new HList<char*>();
+
     /* pid */
     pid++;
     pid_ = pid;
@@ -617,6 +620,8 @@ Process::~Process() {
 
     /* we need for each ! don't forge */
     delete kmutexTree_;
+
+    delete arguments_;
 }
 
 int Process::join(Thread* thread) {

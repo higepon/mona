@@ -2,7 +2,7 @@
 #include <jpegls.h>
 
 #include "text.hex"
-int main() {
+int MonaMain(List<char*>* pekoe) {
 
     Screen screen;
     printf("user mode screen (x, y) = (%x, %x) %dbpp\n", screen.getXResolution(), screen.getYResolution(), screen.getBpp());

@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------
     ShellServer
 ----------------------------------------------------------------------*/
-int main() {
+int MonaMain(List<char*>* pekoe) {
 
     Server* server = new ShellServer();
     server->service();

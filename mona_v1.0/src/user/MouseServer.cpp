@@ -24,7 +24,7 @@ typedef struct {
 int regist(List<dword>* destList, MessageInfo* info);
 int sendMouseInformation(List<dword>* destList, MessageInfo* info);
 
-int main() {
+int MonaMain(List<char*>* pekoe) {
 
     /* initilize destination list */
     List<dword>* destList = new HList<dword>();

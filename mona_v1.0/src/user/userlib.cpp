@@ -17,9 +17,26 @@ int user_start() {
 
     int result;
     um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
-    result = monaMain();
+
+    List<char*>* arg = new HList<char*>();
+    setupArguments(arg);
+    result = MonaMain(arg);
+    delete arg;
     exit(result);
     for (;;);
+}
+
+void setupArguments(List<char*>* arg) {
+
+    char* str;
+    int num = syscall_get_arg_count();
+
+    for (int i = 0; i < num; i++) {
+
+        str = (char*)malloc(32);
+        if (syscall_get_arg(str, i) == 1) break;
+        arg->add(str);
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -1087,4 +1104,36 @@ int syscall_get_pid() {
                  );
 
     return result;
+}
+
+int syscall_get_arg_count() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_ARGUMENTS_NUM)
+                 : "ebx"
+                 );
+
+    return result;
+}
+
+int syscall_get_arg(char* buf, int n) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_GET_ARGUMENTS), "m"(buf), "m"(n)
+                 : "ebx", "esi", "ecx"
+                 );
+
+    return (int)result;
 }

@@ -13,6 +13,7 @@
 #define _MONA_ELF_
 
 #include <types.h>
+#include <collection.h>
 
 typedef struct {
     byte  magic[4];      // 0x7F, 'E', 'L', 'F'
@@ -71,8 +72,7 @@ typedef struct {
 #define PT_SHLIB   5
 #define PT_PHDR    6
 
-
-int loadProcess(const char* path, const char* file, bool isUser);
+int loadProcess(const char* path, const char* file, bool isUser, List<char*>* arg);
 
 class ELFLoader {
 

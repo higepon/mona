@@ -329,12 +329,17 @@ class Process {
         return kmutexTree_->get(id);
     }
 
+    inline virtual List<char*>* getArguments() {
+        return arguments_;
+    }
+
     virtual int join(Thread* thread);
     virtual Thread* schedule();
     virtual Thread* createThread(dword programCounter);
 
   protected:
     static dword pid;
+    List<char*>* arguments_;
     class HeapSegment* heap_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;

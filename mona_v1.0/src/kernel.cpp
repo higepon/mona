@@ -68,20 +68,20 @@ char* version = "Mona version.0.1.4 $Date$";
 void mainProcess() {
 
     /* Keyboard Server */
-    g_console->printf("loading KEYBOARD SERVER....");
-    g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
+    g_console->printf("loading Keyboard Server....");
+    g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
 
     /* Mouse Server */
-    g_console->printf("loading Mouse SERVER....");
-    g_console->printf("%s\n", loadProcess(".", "MOUSE.SVR", true) ? "NG" : "OK");
+    g_console->printf("loading Mouse    Server....");
+    g_console->printf("%s\n", loadProcess(".", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
 
     /* Map Server */
 //     g_console->printf("loading Map SERVER....");
 //     g_console->printf("%s\n", loadProcess(".", "MAP.SVR", true) ? "NG" : "OK");
 
     /* Shell Server */
-    g_console->printf("loading Shell SERVER....");
-    g_console->printf("%s\n", loadProcess(".", "SHELL.SVR", true) ? "NG" : "OK");
+    g_console->printf("loading Shell    Server....");
+    g_console->printf("%s\n", loadProcess(".", "SHELL.SVR", true, NULL) ? "NG" : "OK");
     enableKeyboard();
     enableMouse();
 
@@ -184,8 +184,6 @@ void startKernel(void) {
     }
     g_fdcdriver->motorAutoOff();
     g_info_level = MSG;
-
-    g_console->printf("[%d]", -5);
 
     enableTimer();
 

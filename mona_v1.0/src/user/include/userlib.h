@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <string.h>
+#include <collection.h>
 #include <MemoryManager.h>
 
 #define SYSTEM_CALL_PROCESS_SLEEP  5
@@ -35,13 +36,14 @@
 #define SYSTEM_CALL_FDC_WRITE      32
 #define SYSTEM_CALL_UNMAP_TWO      33
 #define SYSTEM_CALL_GET_PID        34
+#define SYSTEM_CALL_ARGUMENTS_NUM  35
+#define SYSTEM_CALL_GET_ARGUMENTS  36
 #define SYSTEM_CALL_TEST           99
 
-#define main() monaMain()
 #define interface class
 #define MESSAGE_LOOP messageLoop
 
-extern "C" int monaMain();
+extern "C" int MonaMain(List<char*>* pekoe);
 extern "C" int user_start();
 extern "C" int sleep(dword tick);
 extern "C" int heavy();
@@ -81,6 +83,8 @@ extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_map2(MappingInfo* info);
 extern "C" int syscall_unmap2(dword sharedId);
 extern "C" int syscall_get_pid();
+extern "C" int syscall_get_arg_count();
+extern "C" int syscall_get_arg(char* buf, int n);
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
 extern "C" void __cxa_pure_virtual();
@@ -88,6 +92,7 @@ extern "C" void _pure_virtual(void);
 extern "C" void __pure_virtual(void);
 extern "C" int atexit( void (*func)(void));
 extern "C" dword syscall_lookup(const char* name);
+extern "C" void setupArguments(List<char*>* arg);
 
 byte inportb(dword);
 void outportb(dword, byte);

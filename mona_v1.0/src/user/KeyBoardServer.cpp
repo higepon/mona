@@ -21,7 +21,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
 void dummy() {
 }
 
-int main() {
+int MonaMain(List<char*>* pekoe) {
 
     /* initilize KeyBoardManager */
     KeyBoardManager* manager = new KeyBoardManager();

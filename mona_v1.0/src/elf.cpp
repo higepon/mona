@@ -24,7 +24,7 @@
 /*----------------------------------------------------------------------
     loadProcess
 ----------------------------------------------------------------------*/
-int loadProcess(const char* path, const char* file, bool isUser) {
+int loadProcess(const char* path, const char* file, bool isUser, List<char*>* arg) {
 
     /* shared ID */
     static dword sharedId = 0x1000;
@@ -120,6 +120,20 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     while (Semaphore::down(&g_semaphore_shared));
     SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
     Semaphore::up(&g_semaphore_shared);
+
+    /* set arguments */
+    if (arg != NULL) {
+
+        char* p;
+        List<char*>* target = process->getArguments();
+
+        for (int i = 0; i < arg->size(); i++) {
+
+            p = new char[32];
+            strcpy(p, arg->get(i));
+            target->add(p);
+        }
+    }
 
     /* now process is loaded */
     g_processManager->add(process);

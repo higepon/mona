@@ -17,6 +17,7 @@
 #include<tester.h>
 #include<io.h>
 #include<elf.h>
+#include<collection.h>
 
 extern "C" void arch_set_stack_view();
 extern "C" void put_pixel(int x, int y, char color);
@@ -144,7 +145,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_LOAD_PROCESS:
 
         enableInterrupt();
-        info->eax = loadProcess(".", (char*)info->esi, false);
+        info->eax = loadProcess(".", (char*)info->esi, false, (List<char*>*)(info->ecx));
         break;
 
     case SYSTEM_CALL_MAP:
@@ -373,6 +374,29 @@ void syscall_entrance() {
     case SYSTEM_CALL_GET_PID:
 
         info->eax = g_processManager->getCurrentProcess()->getPid();
+        break;
+
+    case SYSTEM_CALL_ARGUMENTS_NUM:
+
+        info->eax = g_processManager->getCurrentProcess()->getArguments()->size();
+        break;
+
+    case SYSTEM_CALL_GET_ARGUMENTS:
+
+        {
+            List<char*>* list = g_processManager->getCurrentProcess()->getArguments();
+            char* buf = (char*)(info->esi);
+            int index = (int)(info->ecx);
+
+            if (index - 1 > list->size()) {
+                info->eax = 1;
+                break;
+            }
+
+            strcpy(buf, list->get(index));
+            info->eax = 0;
+         }
+
         break;
 
     default:
