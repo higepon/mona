@@ -1,5 +1,7 @@
 2004-03-31  higepon  <higepon@users.sourceforge.jp>
 
+        * user/ShellServer/ShellServer.cpp: シェル入力時に .ELFを補う
+
         * user/jpegls/jpegdemo.cpp (MonaMain): FileOutputStreamを使用して外部jpg読み込み対応
 
 2004-03-30  higepon  <higepon@users.sourceforge.jp>

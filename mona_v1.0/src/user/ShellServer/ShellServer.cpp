@@ -139,7 +139,15 @@ void Shell::commandExecute() {
     }
 
     char path[128];
-    sprintf(path, "/APP/%s", command);
+
+    if (strstr(command, ".ELF"))
+    {
+        sprintf(path, "/APP/%s", command);
+    }
+    else
+    {
+        sprintf(path, "/APP/%s.ELF", command);
+    }
 
     int result = syscall_load_process(path, command, &list);
 
