@@ -382,6 +382,7 @@ void FDCDriverTester() {
     }
 
     g_fdcdriver->motor(false);
+    delete(g_fdcdriver);
     delete(fat);
 }
 
