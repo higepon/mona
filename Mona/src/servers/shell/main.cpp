@@ -172,7 +172,7 @@ void Shell::commandExecute()
     else if (command.endsWith(".APP"))
     {
         CString name = command.substring(0, command.getLength() - 4);
-        cmdLine = "/APPS/" + name + ".APP/" + name + ".ELF";
+        cmdLine = "/APPS/" + name + ".APP/" + name + ".EL2";
     }
     else
     {

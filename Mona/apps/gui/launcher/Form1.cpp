@@ -67,7 +67,7 @@ private:
 			file += '/';
 			int len = button->get_Text().get_Length();
 			file += button->get_Text().Substring(0, len - 4);
-			file += ".ELF";
+			file += ".EL2";
 		}
 		::ProcessStart(file);
 	}
