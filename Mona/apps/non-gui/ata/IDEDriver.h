@@ -13,6 +13,31 @@
 #define _MONA_IDEDRIVER_
 
 #include <fat_write/IStorageDevice.h>
+
+/*----------------------------------------------------------------------
+    ATAPIDriver
+----------------------------------------------------------------------*/
+typedef struct ATAPICommand
+{
+    byte feature;
+    byte device;
+    byte packet[12];
+};
+
+class ATAPIDriver
+{
+public:
+    ATAPIDriver();
+    virtual ~ATAPIDriver();
+
+public:
+    int read(dword lba, void* buf, int size);
+
+private:
+    int read(int device, dword lba, void* buf, int size);
+
+};
+
 /*----------------------------------------------------------------------
     IDEDriver
 ----------------------------------------------------------------------*/

@@ -4,6 +4,10 @@
 
 2004-11-12  higepon  <higepon@users.sourceforge.jp>
 
+        * apps/non-gui/ata/IDEDriver.h (ATAPICommand): パケットコマンド用の構造体追加
+
+        * apps/non-gui/Makefile : ATAPIのテストのためataのビルド再開
+
         * include/baygui/ImeManager.h: CString.hをinclude(ビルドエラー解消のため)
 
 2004-11-08  bayside  <bayside@users.sourceforge.jp>
