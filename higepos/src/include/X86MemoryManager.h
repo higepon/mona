@@ -22,7 +22,7 @@
  */
 typedef struct memoryEntry {
     struct memoryEntry* next;
-    int size;
+    H_SIZE_T size;
     H_BYTE startAddress[0];
 };
 
@@ -37,16 +37,20 @@ class X86MemoryManager {
     ~X86MemoryManager();
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
-    H_SIZE_T getRealSize(H_SIZE_T size);
+    H_SIZE_T getRealSize(H_SIZE_T);
+    void addToEntry(struct MemoryEntry*, struct MemoryEntry*, H_SIZE_T);
+    void concatBlock(struct MemoryEntry*);
     const H_SIZE_T MEMORY_START;
     const H_SIZE_T MEMORY_END;
     H_SIZE_T current_;
-    struct memoryEntry* entry_;
+    struct memoryEntry* freeEntry_;
+    struct memoryEntry* usedEntry_;
   public:
 
     char* getName();
     H_SIZE_T allocateMemory(H_SIZE_T);
     H_SIZE_T freeMemory(H_SIZE_T);
+    void printInfo();
     static X86MemoryManager& instance() {
         static X86MemoryManager theInstance;
         return theInstance;

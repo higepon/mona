@@ -44,6 +44,38 @@ H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
     /* size 0 */
     if (size == 0) return NULL;
 
+    /* there is no free list */
+    if (freeEntry_ == NULL) return NULL;
+
+    /* getRealSize */
+    H_SIZE_T realSize = this->getRealSize(size);
+    _sysPrint("real size is");
+    _sysPrintlnInt((int)realSize);
+
+    /* search block in free list that has enough size for needed */
+    struct memoryEntry* previous = (struct memoryEntry*)NULL;
+    struct memoryEntry* current  = freeEntry_;
+    for (; ; previous = current, current = previous->next) {
+
+        /* first fit found */
+        if (current->size > realSize) break;
+
+        /* block not found */
+        if (current == freeEntry_) return NULL;
+    }
+
+    if (current->size == realSize) {
+
+    }
+
+    /* split the found free block into used and free */
+
+
+    /* regist to used list */
+
+    /* regist to free list */
+
+
     H_SIZE_T oldAddress = current_;
     current_ += size;
 
@@ -99,10 +131,12 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) 
     current_ = MEMORY_START;
 
     /* first time, the number of free memory list is one. */
-    entry_ = (struct memoryEntry*)MEMORY_START;
-    entry_->size = MEMORY_END - MEMORY_START;
-    entry_->next = entry_;
-    _sysPrintlnInt((int)entry_->startAddress);
+    freeEntry_ = (struct memoryEntry*)MEMORY_START;
+    freeEntry_->size = MEMORY_END - MEMORY_START;
+    freeEntry_->next = freeEntry_;
+
+    /* there is no usedEntry */
+    usedEntry_ = (struct memoryEntry*)NULL;
 }
 
 /*!
@@ -120,4 +154,47 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) 
 H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
 
     return (size + sizeof(struct memoryEntry));
+}
+
+/*!
+    \brief print info
+
+    print memory information for debug
+
+    \author HigePon
+    \date   create:2002/09/07 update:
+*/
+void  X86MemoryManager::printInfo() {
+
+    _sysPrintln("X86MemoryManager Information");
+
+}
+
+/*!
+    \brief add block to entry
+
+    add block to entries
+
+    \param entry freeEntry of usedEntry
+    \param block block to entry
+    \param size  size of block
+
+    \author HigePon
+    \date   create:2002/09/07 update:
+*/
+void addToEntry(struct MemoryEntry* entry, struct MemoryEntry* block, H_SIZE_T size) {
+
+    return;
+}
+
+/*!
+    \brief try to concat block
+
+    try to concat block
+
+    \author HigePon
+    \date   create:2002/09/07 update:
+*/
+void concatBlock(struct MemoryEntry* block) {
+    return;
 }

@@ -44,7 +44,7 @@ void startKernel(void) {
     _sysPrintln("idt set done");
 
     /* testing operator new */
-    //    Point* point1 = new Point();
+    //    Point* point1 = new Point();?????????
     //    _sysPrintlnInt(point1->getX());
     Point* point2 = new Point(5, 5);
     _sysPrintlnInt(point2->getX());

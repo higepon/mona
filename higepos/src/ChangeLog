@@ -1,5 +1,6 @@
 2002-09-07  higepon  <>
 
+
         * X86MemoryManager.cpp: modify constructor
 
 2002-09-07  higepon  <>
@@ -19,3 +20,5 @@
 * ファイルシステムFAT12の勉強
 * プロセス管理実装
 * キーボード入力
+* Pointのコンストラクタ(引数なし)の挙動が怪しい
+* allocateMemoryがNULLを返した時に割り込み処理を起動
