@@ -15,6 +15,7 @@
 #include <Queue.h>
 
 typdef dword PageEntry;
+typdef dword LenearAddress;
 
 class PageDirectory : public Queue {
 
@@ -26,6 +27,7 @@ class PageManager {
 
   private:
     PageDirectory* allocatePageDirectory();
+    void makePageEntry(PageEntry* entry, LenearAddress address, bype present, byte rw, byte user);
 
 
 };
