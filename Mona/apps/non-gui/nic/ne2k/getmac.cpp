@@ -193,7 +193,7 @@ int MonaMain(List<char*>* pekoe) {
     }
 
     char_to_MAC_string(nicmem,macstr);
-    printf("MAC ADDRESS = %s",macstr);
+    printf("MAC ADDRESS = %s\n",macstr);
 
     return 0;
 }
