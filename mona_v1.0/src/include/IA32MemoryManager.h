@@ -133,7 +133,6 @@ class IA32MemoryManager {
     const size_t MEMORY_END;
     struct memoryEntry* freeEntry_;
     struct memoryEntry* usedEntry_;
-
     GDT* gdt_; /*!< Global Descriptor table */
 
   public:

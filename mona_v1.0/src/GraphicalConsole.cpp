@@ -234,6 +234,7 @@ void GraphicalConsole::scrollUp() {
     int cury = pos_y;
 
     for (int x = 0; x < GP_MAX_WIDTH; x++) {
+
         for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
             pos_x = x;
             pos_y = y;
