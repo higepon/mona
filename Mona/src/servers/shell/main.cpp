@@ -71,6 +71,8 @@ int MonaMain(List<char*>* pekoe)
 ----------------------------------------------------------------------*/
 Shell::Shell() : position_(0)
 {
+    applicationList();
+
     if (!callAutoExec) printf("\n");
     printf(PROMPT);
     if (!callAutoExec) return;
@@ -194,7 +196,21 @@ void Shell::commandExecute()
     }
     else
     {
-        cmdLine = "/APPS/" + command + ".EL2";
+        for (int i = 0; i < this->apps.size(); i++)
+        {
+            CString file = apps.get(i);
+            if (file == command + ".EL2")
+            {
+                cmdLine = "/APPS/" + file;
+                break;
+            }
+            else if (file == command + ".APP")
+            {
+                cmdLine = "/APPS/" + file + "/" + command + ".EL2";
+                break;
+            }
+        }
+        if (cmdLine == NULL) cmdLine = "/APPS/" + command + ".ELF";
     }
 
     for (int i = 1; i < args.get_Length(); i++)
@@ -464,4 +480,36 @@ _A<CString> Shell::parseCommandLine()
     }
 
     return ret;
+}
+
+int Shell::applicationList()
+{
+    char name[15];
+    int  size;
+
+    if (syscall_cd("/APPS"))
+    {
+        printf("Shell Server: application list error\n");
+        return 1;
+    }
+
+    if (syscall_dir_open())
+    {
+        printf("Shell Server: application dir open error\n");
+        return 2;
+    }
+
+    while (syscall_dir_read(name, &size) == 0)
+    {
+        CString file = name;
+        if (file.endsWith(".EL2") || file.endsWith(".APP"))
+        {
+            apps.add(name);
+        }
+    }
+
+    syscall_dir_close();
+    syscall_cd("/");
+
+    return 0;
 }

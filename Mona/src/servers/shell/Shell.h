@@ -28,11 +28,13 @@ class Shell {
     int isInternalCommand(const MonAPI::CString& command);
     void internalCommandExecute(int command, _A<MonAPI::CString> args);
     _A<MonAPI::CString> parseCommandLine();
+    int applicationList();
 
   protected:
     char commandLine_[1024];
     int position_;
     HList<MonAPI::CString> history;
+    HList<MonAPI::CString> apps;
 };
 
 #endif
