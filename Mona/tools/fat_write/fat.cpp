@@ -795,7 +795,7 @@ bool FatDirectory::deleteEntry (int entry)
 				break;
 
 		if (2 > i) {
-			while (0 <= i--)
+			for ( ; 0 <= i; i--)
 				if ('.' != tmp[i])
 					break;
 			if (0 > i)
