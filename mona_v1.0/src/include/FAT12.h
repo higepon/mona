@@ -49,8 +49,15 @@ class FAT12 {
 
  public:
 
+    bool initilize();
+
  private:
 
+    bool setBPB();
+
+ private:
+
+    byte buf_[512];
 };
 
 #endif

@@ -34,3 +34,13 @@ FAT12::~FAT12() {
 
     return;
 }
+
+bool FAT12::initilize() {
+
+    return false;
+}
+
+bool FAT12::setBPB() {
+
+    return false;
+}
