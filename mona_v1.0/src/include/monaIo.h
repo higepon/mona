@@ -16,7 +16,7 @@
 
 #include <monaTypes.h>
 
-unsigned char inportb(dword);
+byte inportb(dword);
 void outportb(dword, byte);
 void _sysInitIo();
 

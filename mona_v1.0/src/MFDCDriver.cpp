@@ -49,13 +49,15 @@
 #define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_RESET | FDC_DR_SELECT_A)
 
 /* FDC Commands */
-#define FDC_COMMAND_SEEK 0x0f
+#define FDC_COMMAND_SEEK            0x0f
+#define FDC_COMMAND_SENSE_INTERRUPT 0x08
 
 /* time out */
-#define FDC_RETRY_MAX 100000
+#define FDC_RETRY_MAX 600000
 
 MFDCDriver* gMFDCDriver = 0;
 bool MFDCDriver::interrupt_ = false;
+VirtualConsole* MFDCDriver::console_;
 
 /*!
     \brief Constructer
@@ -104,7 +106,6 @@ void MFDCDriver::initilize() {
     interrupt_ = false;
     motor(ON);
     while (!waitInterrupt());
-
     recalibrate();
     printStatus("calibrate ok");
 
@@ -114,16 +115,12 @@ void MFDCDriver::initilize() {
     printStatus("motor off");
 
     interrupt_ = false;
-    byte command[] = {0x02
-                    , 0x00
-                    , 0x00/* cylinder */
-    };
 
     motor(ON);
-    seek(3);
+    //    seek(3);
+    //    while (true);
     printStatus("after seek");
     motor(OFF);
-
     return;
 }
 
@@ -150,6 +147,7 @@ void MFDCDriver::printStatus(const char* str) const {
               , interrupt_ ? " T " : " F "
               , str
     );
+    return;
 }
 
 void MFDCDriver::setFDCVersion() {
@@ -194,15 +192,19 @@ void MFDCDriver::motor(bool on) {
     return;
 }
 
-bool MFDCDriver::sendCommand(const byte command[], const byte length) {
+bool MFDCDriver::sendCommand(const byte* command, const byte length) {
+
+    console_->printf("length=[%d]\n", length);
+
+    for (int j = 0; j < length; j++) console_->printf("command[%d]=%x\n", j, command[j]);
 
     /* send command */
     for (int i = 0; i < length; i++) {
 
-        /* check fdc status ready */
+        /* expected condition is ready & date I/O to Controller */
         if (!checkMSR(FDC_MRQ_READY)) {
 
-            console_->printf("MFDCDriver#sendCommand: timeout\n");
+            console_->printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
         }
         outportb(FDC_DR_PRIMARY, command[i]);
@@ -225,7 +227,7 @@ bool MFDCDriver::recalibrate() {
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#calibrate:command fail\n");
+        console_->printf("MFDCDriver#recalibrate:command fail\n");
         return false;
     }
     printStatus("before wait");
@@ -243,14 +245,20 @@ bool MFDCDriver::recalibrate() {
 */
 bool MFDCDriver::checkMSR(byte expectedCondition) {
 
-    /* check whether FDC is ready or not */
+    bool isOK   = false;
+    byte status = 0;
+
+    /* check whether FDC is expected condition */
     for (dword i = 0; i < FDC_RETRY_MAX; i++) {
 
-        bool isMSRReady = (inportb(FDC_MSR_PRIMARY) & expectedCondition) == expectedCondition;
-        if (isMSRReady) return true;
+       status = inportb(FDC_MSR_PRIMARY);
+       isOK = status == expectedCondition;
+       if (isOK) return true;
     }
 
     /* time out */
+    console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x]\n"
+                   , expectedCondition, inportb(FDC_MSR_PRIMARY));
     return false;
 }
 
@@ -276,3 +284,24 @@ bool MFDCDriver::seek(byte track) {
     return true;
 }
 
+
+bool MFDCDriver::senseInterrupt() {
+
+    byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
+
+    if(!sendCommand(command, sizeof(command))){
+
+        console_->printf("MFDCDriver#senseInterrrupt:command fail\n");
+        return false;
+    }
+
+    readResults();
+
+    return false;
+}
+
+void MFDCDriver::readResults() {
+
+    return;
+
+}

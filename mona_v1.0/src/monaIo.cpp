@@ -40,7 +40,7 @@ void _sysInitIo() {
     \author HigePon
     \date   create:2002/07/29 update:2002/12/26
 */
-unsigned char inportb(dword port) {
+byte inportb(dword port) {
 
     unsigned char ret;
     asm volatile ("inb %%dx,%%al":"=a" (ret):"d" (port));

@@ -36,11 +36,13 @@ class MFDCDriver {
     bool recalibrate();
     bool checkMSR(byte expectedCondition);
     bool seek(byte track);
+    bool senseInterrupt();
+    void readResults();
 
   private:
     byte version_;
     static bool interrupt_;
-    VirtualConsole* console_;
+    static VirtualConsole* console_;
 };
 
 extern MFDCDriver* gMFDCDriver;
