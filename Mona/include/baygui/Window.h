@@ -49,6 +49,7 @@ public:
 	virtual void setTitle(char *title);
 	virtual void setRect(int x, int y, int width, int height);
 	virtual void setTimer(int duration);
+	virtual void restoreBackGround();
 	virtual void add(Control *control);
 	virtual void remove(Control *control);
 	virtual void postEvent(Event *event);
