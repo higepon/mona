@@ -54,7 +54,7 @@ void _sysClearScreen() {
     \param format use %d %s like printf
 
     \author HigePon
-    \date   create:2002/09/08 update:2002/09/08
+    \date   create:2002/09/08 update:2002/10/19
 */
 void _sys_printf (char* format, ...) {
 
@@ -74,6 +74,10 @@ void _sys_printf (char* format, ...) {
               case 'd':
                   _sysPrintInt((int)*list);
                   ((int*)list) += 1;
+                  break;
+              case 'c':
+                  _sysPutCharacter((char)*list);
+                  ((char*)list) += 1;
                   break;
               case '%':
                   _sysPutCharacter('%');

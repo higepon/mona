@@ -1,5 +1,9 @@
 2002-10-19  higepon  <higepon@users.sourceforge.jp>
 
+        * vga.cpp: _sys_printfに%c 機能追加
+
+        * KeyBoardManager.cpp:通常のキー取得を実験中
+
         * firstboot.asm : Guripon rawwrite
 
 2002-10-12  higepon  <higepon@users.sourceforge.jp>
