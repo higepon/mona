@@ -18,6 +18,7 @@
 #include "ihandlers.h"
 #include "tester.h"
 #include "Process.h"
+#include "Scheduler.h"
 
 #define IRQHANDLERMaster(x) void irqHandler_##x()   \
 {                                                   \
@@ -67,7 +68,7 @@ void doIrqHandler(int irq)
     g_page_manager->setPageDirectory((dword)thread->process->getPageDirectory());
     handler();
     g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
-    KEvent::set(thread->thread, KEvent::MESSAGE_COME);
+    KEvent::set(thread->thread, MEvent::MESSAGE);
 }
 
 
@@ -79,13 +80,25 @@ void doIrqHandler(int irq)
 */
 void irqHandler_0()
 {
+    static dword i = 0;
+    bool isProcessChange;
+
     /* EOI */
     outp8(0x20, 0x20);
 
-    g_scheduler->tick();
-    g_currentThread->thread->tick();
+    g_scheduler->Tick();
+    g_currentThread->thread->Tick();
 
-    bool isProcessChange = g_scheduler->schedule();
+    if (i % 5)
+    {
+        isProcessChange = g_scheduler->Schedule1();
+    }
+    else
+    {
+        isProcessChange = g_scheduler->Schedule2();
+    }
+
+    i++;
 
     ThreadOperation::switchThread(isProcessChange, 1);
 
@@ -113,7 +126,7 @@ void irqHandler_1()
 
     doIrqHandler(1);
 
-    if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.EX2"), &message))
+    if (g_messenger->send(g_scheduler->LookupMainThread("KEYBDMNG.EX2"), &message))
     {
         g_console->printf("send failed");
     }
@@ -136,7 +149,7 @@ void irqHandler_6()
 
     doIrqHandler(6);
 
-    KEvent::set(g_fdcdriver->getWaitThread(), KEvent::FDC_INTERRUPT);
+    KEvent::set(g_fdcdriver->getWaitThread(), MEvent::INTERRUPT_HIGH);
 
     /* not reached */
 }
@@ -171,7 +184,7 @@ void fault0dHandler(dword error)
     logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
     logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
-    g_scheduler->dump();
+//    g_scheduler->dump();
     panic("fault0d");
 }
 
@@ -233,7 +246,7 @@ void cpufaultHandler_6(void)
     logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
     logprintf("unhandled:fault06 - invalid op code");
 #endif
-    g_scheduler->dump();
+//    g_scheduler->dump();
     panic("unhandled:fault06 - invalid op code");
 
 }

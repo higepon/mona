@@ -18,650 +18,8 @@
 #include "PageManager.h"
 #include "string.h"
 
-#define FOREACH_N(top, type, element) \
-for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
-
-#define FOREACH(type, iterator, array) \
-        if ((array).getLength() > 0) \
-                for ({int __##iterator = 0; type iterator;} \
-                        __##iterator < (array).getLength() && (&(iterator = (array)[__##iterator]) || true); __##iterator++)
-
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
-#define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
-
-/*----------------------------------------------------------------------
-    Scheduler2
-----------------------------------------------------------------------*/
-class Scheduler2
-{
-public:
-    Scheduler2();
-    virtual ~Scheduler2();
-
-public:
-    bool Schedule1();
-    bool Schedule2();
-
-
-protected:
-    void SetPriority(Thread* thread);
-    void SetPriority(Thread* thread, double rate);
-    void WakeupTimer();
-    void WakeupTimer(Thread* thread);
-    bool SetNextThread();
-    void Tick();
-    dword GetTick() const;
-
-    void dump();
-
-    int kill(Thread* thread);
-    int sleep(Thread* thread, dword tick);
-    int wait(Thread* thread, int waitReason);
-    int wakeup(Thread* thread, int waitReason);
-    int wakeup(Process* process, int waitReason);
-
-/* ↑とりあえずこのへんで実装が中断中 */
-    dword lookup(const char* name);
-    dword lookupMainThread(const char* name);
-    Thread* find(dword id);
-    Process* findProcess(dword pid);
-    Process* findProcess(const char* name);
-    void setDump();
-    PsInfo* readDump();
-    dword* getAllThreadID(dword* threadNum);
-
-
-    inline void RemoveAdd(Array<Thread*>& queue, Thread* thread)
-    {
-#if 1
-        if (thread->priority >= maxPriority)
-        {
-            panic("Scheduler:RemoveAdd index out");
-        }
-#endif
-        thread->remove();
-        queue[thread->priority]->addToPrev(thread);
-    }
-
-    inline void Join(Thread* thread)
-    {
-#if 1
-        if (thread->priority >= maxPriority)
-        {
-            panic("Scheduler:Join index out");
-        }
-#endif
-        runq[thread->priority]->addToPrev(thread);
-    }
-
-
-
-protected:
-    Array<Thread*> runq;
-    Array<Thread*> waitq;
-    dword tickTotal;
-    int maxPriority;
-};
-
-Scheduler2::Scheduler2() : runq(64), waitq(3), tickTotal(0)
-{
-    FOREACH(Thread*, queue, runq)
-    {
-        queue = new Thread();
-        checkMemoryAllocate(queue, "Scheduler::runq");
-        queue->initialize();
-    }
-
-    FOREACH(Thread*, queue, waitq)
-    {
-        queue = new Thread();
-        checkMemoryAllocate(queue, "Scheduler::waitq");
-        queue->initialize();
-    }
-
-    maxPriority = runq.getLength();
-}
-
-Scheduler2::~Scheduler2()
-{
-
-
-}
-
-// kernel calls this 10ms cycle
-bool Scheduler2::Schedule1()
-{
-    /* このスケジューラは10ms毎に呼ばれる */
-    /* 今動いていたスレッドだけがcpu使用時間によって優先順位が変わり違うキューに入れられる。 */
-    /* wakeup もするのでこれでいいかね？ */
-    Thread* current =  g_currentThread->thread;
-
-    current->tick();
-
-    /* set priority and set to the queue */
-    SetPriority(current);
-
-    WakeupTimer();
-
-    return SetNextThread();
-}
-
-// kernel calls this 10ms * n cycle
-bool Scheduler2::Schedule2()
-{
-//あるサイクルでcpu使用時間を半分にしないと駄目よね
-
-    g_currentThread->thread->tick();
-
-    FOREACH(Thread*, queue, runq)
-    {
-        FOREACH_N(queue, Thread*, thread)
-        {
-            /* already scheduled ? */
-            if (this->tickTotal == thread->scheduled)
-            {
-                continue;
-            }
-
-            SetPriority(thread);
-
-            /* insert into runq[priority] */
-            Thread* prev = (Thread*)(thread->prev);
-            RemoveAdd(runq, thread);
-            thread = prev;
-        }
-    }
-
-    WakeupTimer();
-
-    return SetNextThread();
-}
-
-void Scheduler2::SetPriority(Thread* thread)
-{
-    int priority = thread->nobiPriority + thread->doraTick;
-
-    if (priority >= maxPriority)
-    {
-        priority = maxPriority - 1;
-    }
-
-    thread->priority = priority;
-    thread->scheduled = this->tickTotal;
-}
-
-void Scheduler2::SetPriority(Thread* thread, double rate)
-{
-    thread->priority = (int)(thread->priority * rate);
-    thread->scheduled = this->tickTotal;
-}
-
-void Scheduler2::WakeupTimer(Thread* thread)
-{
-    if (thread->waitReason != KEvent::TIMER) return;
-
-    thread->waitReason = KEvent::NONE;
-    thread->priority = 0;
-
-    RemoveAdd(runq, thread);
-}
-
-void Scheduler2::WakeupTimer()
-{
-    FOREACH(Thread*, queue, waitq)
-    {
-        FOREACH_N(queue, Thread*, thread)
-        {
-            WakeupTimer(thread);
-        }
-    }
-}
-
-bool Scheduler2::SetNextThread()
-{
-    Thread* root = NULL;
-
-    FOREACH(Thread*, queue, runq)
-    {
-        if (queue->isEmpty())
-        {
-            continue;
-        }
-        else
-        {
-            root = queue;
-            break;
-        }
-    }
-
-    if (root == NULL)
-    {
-        /* next is idle ******************************************/
-        panic("idle");
-    }
-
-    g_prevThread    = g_currentThread;
-    g_currentThread = PTR_THREAD(root->top());
-    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
-}
-
-
-inline void Scheduler2::Tick()
-{
-    tickTotal++;
-}
-
-inline dword Scheduler2::GetTick() const
-{
-    return tickTotal;
-}
-
-
-
-
-
-
-
-
-
-
-
-Scheduler::Scheduler() : tickTotal(0)
-{
-    runq  = new Thread();
-    waitq = new Thread();
-
-    runq->initialize();
-    waitq->initialize();
-}
-
-Scheduler::~Scheduler()
-{
-}
-
-void Scheduler::tick()
-{
-    (this->tickTotal)++;
-}
-
-dword Scheduler::getTick() const
-{
-    return tickTotal;
-}
-
-int Scheduler::sleep(Thread* thread, dword tick)
-{
-    dword now = this->getTick();
-    thread->wakeupTimer = now + tick;
-    return wait(thread, WAIT_TIMER);
-}
-
-Process* Scheduler::findProcess(dword pid)
-{
-    FOREACH_N(runq, Thread*, thread)
-    {
-        Process* process = thread->tinfo->process;
-
-        if (process->getPid() == pid)
-        {
-            return process;
-        }
-    }
-
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        Process* process = thread->tinfo->process;
-        if (process->getPid() == pid)
-        {
-            return process;
-        }
-    }
-    return (Process*)NULL;
-}
-
-Process* Scheduler::findProcess(const char* name)
-{
-    FOREACH_N(runq, Thread*, thread)
-    {
-        Process* process = thread->tinfo->process;
-        if (!strcmp(name, process->getName()))
-        {
-            return process;
-        }
-    }
-
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        Process* process = thread->tinfo->process;
-        if (!strcmp(name, process->getName()))
-        {
-            return process;
-        }
-    }
-
-    return (Process*)NULL;
-}
-
-dword Scheduler::lookupMainThread(const char* name)
-{
-    Process* process = findProcess(name);
-
-    if (process == NULL)
-    {
-        return 0xFFFFFFFF;
-    }
-
-    List<Thread*>* list = process->getThreadList();
-    dword found = 0xFFFFFFFF;
-
-    for (int i = 0; i < list->size(); i++)
-    {
-        dword id = list->get(i)->id;
-
-        if (id < found)
-        {
-            found = id;
-        }
-    }
-    return found;
-}
-
-Thread* Scheduler::find(dword id)
-{
-    FOREACH_N(runq, Thread*, thread)
-    {
-        if (id == thread->id)
-        {
-            return thread;
-        }
-    }
-
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        if (id == thread->id)
-        {
-            return thread;
-        }
-    }
-
-    return (Thread*)NULL;
-}
-
-dword Scheduler::lookup(const char* name)
-{
-    Process* process = findProcess(name);
-
-    if (process == (Process*)NULL)
-    {
-        return 0xFFFFFFFF;
-    }
-    else
-    {
-        return process->getPid();
-    }
-}
-
-bool Scheduler::schedule()
-{
-    Thread* current = (Thread*)(runq->top());
-    current->remove();
-    runq->addToPrev(current);
-
-    wakeupEvents();
-
-    g_prevThread    = g_currentThread;
-    g_currentThread = PTR_THREAD(runq->top());
-
-    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
-}
-
-int Scheduler::wakeupEvents()
-{
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        if ((thread->waitReason == WAIT_TIMER && thread->wakeupTimer <= getTick()))
-        {
-            Thread* target = thread;
-            thread = (Thread*)(thread->prev);
-
-            target->remove();
-            target->waitReason = WAIT_NONE;
-            runq->addToNext(target);
-        }
-    }
-    return 0;
-}
-
-bool Scheduler::setCurrentThread()
-{
-    g_prevThread    = g_currentThread;
-    g_currentThread = PTR_THREAD(runq->top());
-#if 0
-    g_console->printf("[%s]\n", g_currentThread->process->getName());
-    ArchThreadInfo* i = g_currentThread->archinfo;
-    g_console->printf("\n");
-    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
-    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-    g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
-    g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
-#endif
-    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
-}
-
-void Scheduler::join(Thread* thread)
-{
-    List<Thread*>* list = thread->tinfo->process->getThreadList();
-    list->add(thread);
-    runq->addToPrev(thread);
-}
-
-int Scheduler::kill(Thread* thread)
-{
-    List<Thread*>* list = thread->tinfo->process->getThreadList();
-    list->remove(thread);
-    thread->remove();
-    return NORMAL;
-}
-
-int Scheduler::wait(Thread* thread, int waitReason)
-{
-    thread->waitReason = waitReason;
-
-    thread->remove();
-    waitq->addToPrev(thread);
-    return NORMAL;
-}
-
-int Scheduler::wakeup(Thread* thread, int waitReason)
-{
-    if (thread->waitReason != waitReason)
-    {
-        return 0;
-    }
-
-    thread->remove();
-    runq->addToNext(thread);
-    thread->waitReason = WAIT_NONE;
-
-    return this->setCurrentThread() ? 1 : -1;
-}
-
-int Scheduler::wakeup(Process* process, int waitReason)
-{
-    int count  = 0;
-    int wakeupResult;
-    bool processChanged = false;
-
-    List<Thread*>* list = process->getThreadList();
-
-    for (int i = 0; i < list->size(); i++)
-    {
-        wakeupResult = wakeup(list->get(i), waitReason);
-
-        if (wakeupResult != 0)
-        {
-            processChanged = processChanged || (wakeupResult == 1);
-            count++;
-        }
-    }
-
-    if (count == 0)
-    {
-        return 0;
-    }
-    else
-    {
-        return (processChanged ? 1 : -1);
-    }
-}
-
-void Scheduler::dump()
-{
-    logprintf("current=%x, prev=%x\n", g_currentThread, g_prevThread);
-    FOREACH_N(runq, Thread*, thread)
-    {
-        ThreadInfo* i = PTR_THREAD(thread);
-//        g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
-        logprintf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
-    }
-
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        ThreadInfo* i = PTR_THREAD(thread);
-        logprintf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x wreason=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0, thread->waitReason);
-    }
-}
-
-void Scheduler::setDump()
-{
-    g_ps.next = NULL;
-
-    PsInfo* current = &g_ps;
-
-    FOREACH_N(runq, Thread*, thread)
-    {
-        ThreadInfo* i = PTR_THREAD(thread);
-
-        current->next = new PsInfo;
-        current  = current->next;
-
-        strncpy(current->name, i->process->getName(), sizeof(current->name));
-        current->cr3   = i->archinfo->cr3;
-        current->eip   = i->archinfo->eip;
-        current->esp   = i->archinfo->esp;
-        current->tid   = thread->id;
-        current->state = 1;
-    }
-
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        ThreadInfo* i = PTR_THREAD(thread);
-
-        current->next = new PsInfo;
-        current  = current->next;
-
-        strncpy(current->name, i->process->getName(), sizeof(current->name));
-        current->cr3   = i->archinfo->cr3;
-        current->eip   = i->archinfo->eip;
-        current->esp   = i->archinfo->esp;
-        current->tid   = thread->id;
-        current->state = 0;
-    }
-
-    dumpCurrent = g_ps.next;
-    current->next = NULL;
-}
-
-PsInfo* Scheduler::readDump()
-{
-    if (dumpCurrent == NULL)
-    {
-        return NULL;
-    }
-
-    PsInfo* info = dumpCurrent;
-    dumpCurrent = dumpCurrent->next;
-    return info;
-}
-
-dword* Scheduler::getAllThreadID(dword* threadNum)
-{
-    dword* result;
-    dword i     = 0;
-    dword count = 0;
-
-    FOREACH_N(runq, Thread*, thread)  count++;
-    FOREACH_N(waitq, Thread*, thread) count++;
-
-    result = new dword[count];
-    if (result == NULL) return NULL;
-
-    FOREACH_N(runq, Thread*, thread)
-    {
-        result[i] = thread->id;
-        i++;
-    }
-
-    FOREACH_N(waitq, Thread*, thread)
-    {
-        result[i] = thread->id;
-        i++;
-    }
-
-    *threadNum = count;
-    return result;
-}
-
-
-/*----------------------------------------------------------------------
-    Node
-----------------------------------------------------------------------*/
-void Node::initialize()
-{
-    this->prev = this;
-    this->next = this;
-}
-
-void Node::addToNext(Node* q)
-{
-    q->next = this->next;
-    q->prev = this;
-    this->next->prev = q;
-    this->next = q;
-}
-
-void Node::addToPrev(Node* q)
-{
-    q->prev = this->prev;
-    q->next = this;
-    this->prev->next = q;
-    this->prev = q;
-}
-
-void Node::remove()
-{
-    this->prev->next = this->next;
-    this->next->prev = this->prev;
-}
-
-bool Node::isEmpty()
-{
-    return (this->next == this);
-}
-
-Node* Node::removeNext()
-{
-    Node* result = this->next;
-    this->next = result->next;
-    result->next->prev = this;
-    return result;
-}
-
-Node* Node::top()
-{
-    return this->next;
-}
 
 /*----------------------------------------------------------------------
     ProcessOperation
@@ -803,9 +161,13 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 {
     bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
 
-#if 0
+#if 1
     ArchThreadInfo* i = g_currentThread->archinfo;
     logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x eax=%x gss0=%d gesp0=%x %s %s p(%s) u(%s)\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, i->eax, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "", isProcessChanged ? "t" : "f", isUser ? "t": "f");
+#endif
+
+#if 0
+    logprintf("prev=%d curr=%d\n", g_prevThread->thread->id, g_currentThread->thread->id);
 #endif
 
 
@@ -857,7 +219,7 @@ int ThreadOperation::kill()
 
     sendKilledMessage();
 
-    g_scheduler->kill(thread);
+    g_scheduler->Kill(thread);
     (process->threadNum)--;
 
     if (process->threadNum < 1)
@@ -867,7 +229,7 @@ int ThreadOperation::kill()
         g_page_manager->returnPhysicalPages(directory);
     }
 
-    bool isProcessChange = g_scheduler->schedule();
+    bool isProcessChange = g_scheduler->Schedule1();
     delete thread;
     ThreadOperation::switchThread(isProcessChange, 5);
     return NORMAL;
@@ -875,12 +237,12 @@ int ThreadOperation::kill()
 
 int ThreadOperation::kill(dword tid)
 {
-    Thread* thread   = g_scheduler->find(tid);
+    Thread* thread   = g_scheduler->Find(tid);
     if (thread == NULL) return -1;
 
     Process* process = thread->tinfo->process;
 
-    g_scheduler->kill(thread);
+    g_scheduler->Kill(thread);
     (process->threadNum)--;
 
     if (process->threadNum < 1)
@@ -890,7 +252,7 @@ int ThreadOperation::kill(dword tid)
         g_page_manager->returnPhysicalPages(directory);
     }
 
-    bool isProcessChange = g_scheduler->schedule();
+    bool isProcessChange = g_scheduler->Schedule1();
     delete thread;
     ThreadOperation::switchThread(isProcessChange, 5);
     return NORMAL;
@@ -931,19 +293,38 @@ void ThreadOperation::sendKilledMessage()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : waitReason(WAIT_NONE), totalTick(0), doraTick(0)
+Thread::Thread() : waitEvent(MEvent::NONE), basePriority(0), lastCpuUsedTick(0), age(0)
 {
     /* thread information */
     tinfo = new ThreadInfo;
-    checkMemoryAllocate(tinfo, "class Thread info allocate");
+    ASSERT(tinfo);
     tinfo->thread = this;
 
     /* thread information arch dependent */
     tinfo->archinfo = new ArchThreadInfo;
-    checkMemoryAllocate(tinfo->archinfo, "class Thread arch info allocate");
+    ASSERT(tinfo->archinfo);
 
     messageList = new HList<MessageInfo*>();
-    checkMemoryAllocate(tinfo->archinfo, "class Thread messageList allocate");
+    ASSERT(messageList);
+
+    priority = basePriority;
+}
+
+Thread::Thread(dword basePriority) : waitEvent(MEvent::NONE), basePriority(basePriority), lastCpuUsedTick(0), age(0)
+{
+    /* thread information */
+    tinfo = new ThreadInfo;
+    ASSERT(tinfo);
+    tinfo->thread = this;
+
+    /* thread information arch dependent */
+    tinfo->archinfo = new ArchThreadInfo;
+    ASSERT(tinfo->archinfo);
+
+    messageList = new HList<MessageInfo*>();
+    ASSERT(messageList);
+
+    priority = basePriority;
 }
 
 Thread::~Thread()

@@ -43,6 +43,7 @@ SOURCES      = cstart.cpp            \
                IDManager.cpp         \
                KObject.cpp           \
                Loader.cpp            \
+               Scheduler.cpp         \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

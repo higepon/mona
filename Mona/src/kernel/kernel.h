@@ -110,4 +110,14 @@ inline void printOK(const char*);
 inline void printBanner();
 void rdtscsub(dword* timeL, dword* timeH);
 void rdtsc(dword* timeL, dword* timeH);
+
+#define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+#define onAssertError() panic("assert");
+#define ASSERT(condition) {if (!(condition)) {g_console->printf("ASSERT failure %s:%d: %s\n", __FILE__, __LINE__, #condition);onAssertError();}}
+#else
+#define ASSERT(condition) {}
+#endif
+
 #endif

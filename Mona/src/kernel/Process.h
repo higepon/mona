@@ -22,6 +22,7 @@
 #include "kernel.h"
 #include "Mutex.h"
 #include "KObject.h"
+#include "Thread.h"
 
 #define DPL_KERNEL  0
 #define DPL_USER    3
@@ -34,47 +35,6 @@ extern VirtualConsole* g_console;
     Idle function
 ----------------------------------------------------------------------*/
 void monaIdle();
-
-/*----------------------------------------------------------------------
-    Array
-----------------------------------------------------------------------*/
-template <class T> class Array {
-
-  public:
-    Array(dword length) : length_(length), alloc_(true) {
-        array_ = new T[length];
-    }
-
-    Array(T* array, dword length) : array_(array), length_(length), alloc_(false) {
-    }
-
-    virtual ~Array() {
-        if (alloc_) {
-            delete[] array_;
-        }
-    }
-
-  public:
-    inline T& operator [](dword index) {
-
-#if 1
-        if (index < 0 || index > length_ - 1) {
-            g_console->printf("array index outof range %d\n", index);
-            for(;;);
-        }
-#endif
-        return array_[index];
-    }
-
-    inline int getLength() const {
-        return length_;
-    }
-
-  private:
-    T* array_;
-    dword length_;
-    bool alloc_;
-};
 
 /*----------------------------------------------------------------------
     Arch dependent functions
@@ -161,107 +121,6 @@ class ThreadOperation
     static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
     static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
     static dword id;
-};
-
-/*----------------------------------------------------------------------
-    Scheduler
-----------------------------------------------------------------------*/
-class Scheduler
-{
-public:
-    Scheduler();
-    virtual ~Scheduler();
-
-public:
-    bool schedule();
-    bool setCurrentThread();
-    void tick();
-    void dump();
-    void join(Thread* thread);
-    int kill(Thread* thread);
-    int sleep(Thread* thread, dword tick);
-    int wait(Thread* thread, int waitReason);
-    int wakeup(Thread* thread, int waitReason);
-    int wakeup(Process* process, int waitReason);
-    dword getTick() const;
-    dword lookup(const char* name);
-    dword lookupMainThread(const char* name);
-    Thread* find(dword id);
-    Process* findProcess(dword pid);
-    Process* findProcess(const char* name);
-    void setDump();
-    PsInfo* readDump();
-    dword* getAllThreadID(dword* threadNum);
-
-private:
-    int wakeupEvents();
-
-protected:
-    Thread* runq;
-    Thread* waitq;
-    PsInfo* dumpCurrent;
-    dword tickTotal;
-    int monaMin;
-};
-
-/*----------------------------------------------------------------------
-    Node
-----------------------------------------------------------------------*/
-class Node
-{
-public:
-    void initialize();
-    void addToNext(Node* q);
-    void addToPrev(Node* q);
-    void remove();
-    bool isEmpty();
-    Node* removeNext();
-    Node* top();
-
-public:
-    Node* next;
-    Node* prev;
-};
-
-/*----------------------------------------------------------------------
-    Thread
-----------------------------------------------------------------------*/
-class Thread : public Node, public KObject
-{
-  public:
-    Thread();
-    virtual ~Thread();
-
-  public:
-    inline void tick()
-    {
-        totalTick++;
-        doraTick++;
-    }
-
-    inline dword getTick() const
-    {
-        return totalTick;
-    }
-
-    inline int getType() const
-    {
-        return THREAD;
-    }
-
-  public:
-
-    int waitReason;
-    dword scheduled;
-    dword totalTick;
-    dword wakeupTimer;
-    ThreadInfo* tinfo;
-    List<MessageInfo*>* messageList;
-    dword id;
-    dword flags;
-    dword doraTick; // this thread used cpu time at last cycle
-    int nobiPriority;
-    int priority;
 };
 
 /*----------------------------------------------------------------------

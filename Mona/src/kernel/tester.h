@@ -40,15 +40,6 @@ class KEvent
 public:
     static void wait(Thread* thread, kevent e);
     static void set(Thread* thread, kevent e);
-public:
-    enum
-    {
-        TIMER         = 0x0000,
-        NONE          = 0x0001,
-        MESSAGE_COME  = 0x0002,
-        FDC_INTERRUPT = 0x0003,
-        MUTEX_LOCKED  = 0x0004
-    };
 };
 
 class RTC {

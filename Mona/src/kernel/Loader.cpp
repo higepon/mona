@@ -85,6 +85,8 @@ byte* Loader::ReadFile(const char* path, dword* size)
 
 int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bool isUser, CommandOption* list)
 {
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
+
     /* shared ID */
     static dword sharedId = 0x2000;
     sharedId++;
@@ -99,6 +101,8 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) return 4;
 
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
+
     /* create process */
     enter_kernel_lock_mode();
     Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
@@ -110,6 +114,7 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) return 5;
 
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
     memcpy((byte*)0x80000000, image, size);
 
     /* detach from this process */
@@ -117,6 +122,8 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
     SharedMemoryObject::detach(sharedId, g_currentThread->process);
     Semaphore::up(&g_semaphore_shared);
 
+
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
     /* set arguments */
     if (list != NULL)
     {
@@ -132,10 +139,14 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
         }
     }
 
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
+
     /* now process is loaded */
     Thread*  thread = ThreadOperation::create(process, entrypoint);
-    g_scheduler->join(thread);
+    g_scheduler->Join(thread);
     exit_kernel_lock_mode();
+
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
     return 0;
 }
 

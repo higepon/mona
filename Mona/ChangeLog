@@ -1,3 +1,7 @@
+2004-08-24  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Scheduler.h : Win32上でテスト済みの優先順位つきスケジューラを組み込んだ。マトモに動かないがcommit
+
 2004-08-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp: 新スケジューラ実装中

@@ -40,8 +40,8 @@ void syscall_entrance() {
     case SYSTEM_CALL_MTHREAD_SLEEP:
 
         {
-            g_scheduler->sleep(g_currentThread->thread, info->esi);
-            bool isProcessChange = g_scheduler->schedule();
+            g_scheduler->Sleep(g_currentThread->thread, info->esi);
+            bool isProcessChange = g_scheduler->Schedule1();
             ThreadOperation::switchThread(isProcessChange, 3);
         }
         break;
@@ -99,7 +99,7 @@ void syscall_entrance() {
             }
             else
             {
-                g_scheduler->join((Thread*)object);
+                g_scheduler->Join((Thread*)object);
             }
 
         }
@@ -196,7 +196,7 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_LOOKUP:
-        info->eax = g_scheduler->lookup((char*)(info->esi));
+        info->eax = g_scheduler->Lookup((char*)(info->esi));
         break;
 
     case SYSTEM_CALL_GET_VRAM_INFO:
@@ -210,6 +210,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_LOAD_PROCESS:
 
         {
+    g_console->printf("%s : %d\n", __FILE__, __LINE__);
             char* path = (char*)info->esi;
             char* name = (char*)info->ecx;
             CommandOption* option = (CommandOption*)(info->edi);
@@ -445,12 +446,12 @@ void syscall_entrance() {
     case SYSTEM_CALL_MTHREAD_YIELD_MESSAGE:
 
         /* message has come. after your last peek or receive */
-        if (g_currentThread->thread->flags & KEvent::MESSAGE_COME)
+        if (g_currentThread->thread->flags & MEvent::MESSAGE)
         {
             break;
         }
 
-        KEvent::wait(g_currentThread->thread, KEvent::MESSAGE_COME);
+        KEvent::wait(g_currentThread->thread, MEvent::MESSAGE);
 
         /* not reached */
         break;
@@ -469,7 +470,7 @@ void syscall_entrance() {
         info->eflags = info->eflags |  0x3000;
         info->eax = 0;
         {
-            bool isProcessChange = g_scheduler->setCurrentThread();
+            bool isProcessChange = g_scheduler->SetNextThread();
             ThreadOperation::switchThread(isProcessChange, 17);
         }
         break;
@@ -479,7 +480,7 @@ void syscall_entrance() {
         {
             if (!g_fdcdriver->interrupted())
             {
-                KEvent::wait(g_currentThread->thread, KEvent::FDC_INTERRUPT);
+                KEvent::wait(g_currentThread->thread, MEvent::INTERRUPT_HIGH);
 
                 /* not reached */
             }
@@ -494,7 +495,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 
-        info->eax = g_scheduler->lookupMainThread((char*)(info->esi));
+        info->eax = g_scheduler->LookupMainThread((char*)(info->esi));
 
         break;
 
@@ -645,14 +646,14 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PS_DUMP_SET:
 
-        g_scheduler->setDump();
+        g_scheduler->SetDump();
         break;
 
     case SYSTEM_CALL_PS_DUMP_READ:
 
         {
             PsInfo* p = (PsInfo*)(info->esi);
-            PsInfo* q = g_scheduler->readDump();
+            PsInfo* q = g_scheduler->ReadDump();
 
             if (q == NULL)
             {
@@ -669,7 +670,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_GET_TICK:
 
-        info->eax = g_scheduler->getTick();
+        info->eax = g_scheduler->GetTick();
         break;
 
     case SYSTEM_CALL_FILE_POSITION:

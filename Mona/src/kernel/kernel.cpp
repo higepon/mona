@@ -70,6 +70,7 @@
 #include "VesaConsole.h"
 #include "LogConsole.h"
 #include "Loader.h"
+#include "Scheduler.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -164,14 +165,12 @@ void startKernel(void)
 
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
-
-    Thread* idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
-    g_scheduler->join(idleThread);
+    g_idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
 
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (dword)mainProcess);
-    g_scheduler->join(initThread);
+    g_scheduler->Join(initThread);
 
     disableTimer();
 

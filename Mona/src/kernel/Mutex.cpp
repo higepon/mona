@@ -48,7 +48,7 @@ int KMutex::lock(Thread* thread)
     else
     {
         waitList_->add(thread);
-        KEvent::wait(thread, KEvent::MUTEX_LOCKED);
+        KEvent::wait(thread, MEvent::MUTEX_UNLOCKED);
     }
     exit_kernel_lock_mode();
     return NORMAL;
@@ -98,7 +98,7 @@ int KMutex::unlock()
     else
     {
         owner_ = waitList_->removeAt(0);
-        KEvent::set(owner_, KEvent::MUTEX_LOCKED);
+        KEvent::set(owner_, MEvent::MUTEX_UNLOCKED);
     }
 
     exit_kernel_lock_mode();

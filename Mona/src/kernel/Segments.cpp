@@ -360,7 +360,7 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword li
 {
     initilize(id, size);
 
-    Process* process = g_scheduler->findProcess(pid);
+    Process* process = g_scheduler->FindProcess(pid);
     if (process == NULL)
     {
         return;

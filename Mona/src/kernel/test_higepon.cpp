@@ -29,8 +29,8 @@
 /* this function should be used on system call or interrupt handler */
 void KEvent::wait(Thread* thread, kevent e)
 {
-    g_scheduler->wait(thread, e);
-    bool isProcessChange = g_scheduler->schedule();
+    g_scheduler->WaitEvent(thread, e);
+    bool isProcessChange = g_scheduler->Schedule1();
     ThreadOperation::switchThread(isProcessChange, 79);
 
     /* not reached */
@@ -38,9 +38,9 @@ void KEvent::wait(Thread* thread, kevent e)
 
 void KEvent::set(Thread* thread, kevent e)
 {
-    int wakeupResult = g_scheduler->wakeup(thread, e);
+    int wakeupResult = g_scheduler->EventComes(thread, e);
 
-    if (e == MUTEX_LOCKED) g_console->printf("result=%x", wakeupResult);
+    if (e == MEvent::MUTEX_UNLOCKED) g_console->printf("result=%x", wakeupResult);
 
     if (wakeupResult != 0)
     {
@@ -170,7 +170,7 @@ int Messenger::send(dword id, MessageInfo* message)
         return -1;
     }
 
-    if ((thread = g_scheduler->find(id)) == (Thread*)NULL)
+    if ((thread = g_scheduler->Find(id)) == (Thread*)NULL)
     {
         return -1;
     }
@@ -191,10 +191,10 @@ int Messenger::send(dword id, MessageInfo* message)
     *info = *message;
     info->from = g_currentThread->thread->id;
 
-    thread->flags |=KEvent::MESSAGE_COME;
+    thread->flags |= MEvent::MESSAGE;
     thread->messageList->add(info);
 
-    KEvent::set(thread, KEvent::MESSAGE_COME);
+    KEvent::set(thread, MEvent::MESSAGE);
 
     return 0;
 }
@@ -219,7 +219,7 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
         );
 #endif
 
-    thread->flags &= ~KEvent::MESSAGE_COME;
+    thread->flags &= ~MEvent::MESSAGE;
     *message = *from;
 
     return 0;
@@ -241,7 +241,7 @@ int Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
         return -1;
     }
 
-    thread->flags &= ~KEvent::MESSAGE_COME;
+    thread->flags &= ~MEvent::MESSAGE;
     *message = *from;
     return 0;
 }
