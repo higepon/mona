@@ -3,15 +3,25 @@
 #include<FDCDriver.h>
 #include<global.h>
 #include<io.h>
+#include<GraphicalConsole.h>
+
+typedef struct {
+    dword a;
+    dword b;
+    dword width;
+    dword height;
+} ARGBHeader;
+
+extern "C" void put_pixel(int x, int y, char color);
 
 void FDCDriverTester() {
 
-    g_info_level = DEV_NOTICE;
+    g_info_level = DEBUG;
 
     byte readbuf[512];
 
+    g_console->printf("test1:read once\n");
     g_fdcdriver = new FDCDriver();
-
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->seek(5);
@@ -20,8 +30,89 @@ void FDCDriverTester() {
     g_fdcdriver->motor(OFF);
 
     for (int i = 500; i < 512; i++) g_console->printf("[%d]", readbuf[i]);
+    g_console->printf("\ntest1:done\n");
 
-    info(MSG, "FDCDriverTester(); done\n");
+    g_console->printf("test2:read once\n");
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->seek(5);
+    g_fdcdriver->seek(7);
+    g_fdcdriver->read(1, readbuf);
+    for (int i = 100; i < 105; i++) g_console->printf("[%d]", readbuf[i]);
+    g_fdcdriver->read(2, readbuf);
+    for (int i = 200; i < 205; i++) g_console->printf("[%d]", readbuf[i]);
+    g_fdcdriver->motor(OFF);
+    g_console->printf("\ntest2:done\n");
+
+
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) {
+
+        int errorNo = fat->getErrorNo();
+
+        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else info(ERROR, "unknown error \n");
+
+        info(ERROR, "fat initilize faild\n");
+        while (true);
+    }
+
+    if (!fat->open(".", "MONA.LGO", FAT12::READ_MODE)) {
+
+        info(ERROR, "open failed");
+    }
+
+    ARGBHeader* head;
+    byte buf[512];
+    byte color;
+    dword width;
+    dword height;
+    dword x = 0;
+    dword y = 0;
+
+    for (int i = 0; i < 100; i++) {
+
+        if (!fat->read(buf)) {
+
+            info(ERROR, "read failed %d", i);
+        }
+
+        if (i == 0) {
+
+            head = (ARGBHeader*)buf;
+            g_console->printf("width = %d height= %d\n", head->width, head->height);
+            width = head->width;
+            height = head->height;
+        }
+
+        for (int j = 0; j < 128; j++) {
+
+            if (x > width) y++;
+            color = (buf[j * 4 + 0] || buf[j * 4 + 1] || buf[j * 4 + 2]) ? GP_WHITE : GP_BLACK;
+
+            put_pixel(x, y, color);
+            x++;
+        }
+    }
+
+    if (!fat->close()) {
+       info(ERROR, "close failed");
+    }
+
+    g_console->printf("load done...USER.ELF\n");
+    g_fdcdriver->motor(false);
+
+    for (int i = 0; i < 12; i++) {
+        g_console->printf("[%x]", buf[i]);
+    }
+
 }
 
 /*!
