@@ -6,14 +6,15 @@ int main() {
     char buf[32];
     for (;;) {
 
-        if (!_receive(&message)) {
+	//P        if (!_receive(&message)) {
 
-            buf[0] = '<';
-            buf[1] = (char)message.arg1;
-            buf[2] = '>';
-            buf[3] = '\0';
-            print(buf);
-        }
+//             buf[0] = '<';
+//             buf[1] = (char)message.arg1;
+//             buf[2] = '>';
+//             buf[3] = '\0';
+//             print(buf);
+	print("here");
+//        }
     }
 
     return 0;

@@ -159,7 +159,7 @@ arch_cpufaulthandler_%1:
 arch_cpufaulthandler_c:
         pushAll
         changeData
-        push dword[esp + 48]
+        push dword[esp + 40]
         call cpufaultHandler_c
         add  esp, 0x04          ; remove error_cd
         popAll
@@ -168,7 +168,7 @@ arch_cpufaulthandler_c:
 arch_cpufaulthandler_e:
         pushAll
         changeData
-        push dword[esp + 48]
+        push dword[esp + 40]
         mov  eax, cr2
         push eax
         call cpufaultHandler_e

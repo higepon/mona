@@ -120,15 +120,15 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     dword tableIndex     = getTableIndex(laddress);
 
     if (isPresent(&(directory[directoryIndex]))) {
-
+        g_console->printf("[8.3]");
         table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
     } else {
-
+        g_console->printf("[8.4]");
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
-
+        g_console->printf("[8.5]");
     return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
 }
 
@@ -308,6 +308,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
         SharedMemorySegment* segment = list->get(i);
 
         if (segment->inRange(address)) {
+            g_console->printf("error=%x", error);
             return segment->faultHandler(address, FAULT_NOT_EXIST);
         }
     }
@@ -399,7 +400,7 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
 
-    //    if (!isPresent(&(directory[directoryIndex]))) return false;
+    //if (!isPresent(&(directory[directoryIndex]))) return false;
 
      table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
      return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);

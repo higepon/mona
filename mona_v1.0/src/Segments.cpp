@@ -322,7 +322,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     } else {
 
-    g_console->printf("[8]");
+    g_console->printf("[8]%x", mappedAddress);
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, true, true);
     }
     g_console->printf("[9]");
