@@ -20,6 +20,8 @@
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);
 extern "C" int atexit( void (*func)(void));
+extern "C" int __cxa_atexit();
+extern "C" void* __dso_handle;
 /*!
     \brief dummy
 
@@ -55,3 +57,15 @@ void _pure_virtual() {
     \date   create:2002/08/08 update:2002/02/25
 */
 int atexit( void (*func)(void)) {return -1;}
+
+/*!
+    \brief dummy for gcc3.3
+
+    dummy
+
+    \author HigePon
+    \date   create:2003/10/13 update:
+*/
+int __cxa_atexit() {return -1;}
+void*   __dso_handle = (void*) &__dso_handle;
+

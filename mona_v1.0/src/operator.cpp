@@ -45,20 +45,7 @@ void operator delete[](void* address) {
     return;
 }
 
-#endif
-
-void* malloc(unsigned long size) {
-
-    MemoryManager& mm = MemoryManager::instance();
-    return mm.allocate(size);
-}
-
-void free(void * address) {
-
-    MemoryManager& mm = MemoryManager::instance();
-    mm.free(address);
-    return;
-}
+#else
 
 void __builtin_delete(void* address) {
 
@@ -83,3 +70,19 @@ void __builtin_vec_delete(void* address) {
     __builtin_delete(address);
     return;
 }
+
+#endif
+
+void* malloc(unsigned long size) {
+
+    MemoryManager& mm = MemoryManager::instance();
+    return mm.allocate(size);
+}
+
+void free(void * address) {
+
+    MemoryManager& mm = MemoryManager::instance();
+    mm.free(address);
+    return;
+}
+
