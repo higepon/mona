@@ -36,6 +36,7 @@
 #include<rtc.h>
 #include<BitMap.h>
 #include<FAT12.h>
+#include<string.h>
 
 char* version = "Mona develop beta 0.07a $Date$";
 
@@ -102,19 +103,22 @@ void startKernel(void) {
     while (g_demo_step < 2);
     g_fdcdriver = new FDCDriver(g_console);
 
+    //    g_fdcdriver->test();
+
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
-    //    g_fdcdriver->test();
-
     g_fdcdriver->motor(true);
     //    g_fdcdriver->write(1, tbuf);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->write(2, tbuf);
-    g_fdcdriver->motor(false);
-    while (true);
+//      g_fdcdriver->recalibrate();
+//      g_fdcdriver->recalibrate();
+//      g_fdcdriver->write(3, tbuf);
+//      memset(tbuf, 0, 512);
+//      g_fdcdriver->read(3, tbuf);
+//      //
+//      for (int k = 0; k < 512; k++) g_console->printf("%c", (char)tbuf[k]);
+    //   while (true);
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
@@ -123,15 +127,18 @@ void startKernel(void) {
         while (true);
     }
 
+    g_console->printf("init ok");
+    while (true);
 
-    g_console->printf("¢£changeDirectory to SOMEDIR\n");
+    g_console->printf("changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         g_console->printf("some dir not found");
         while (true);
     }
 
-
-    g_console->printf("¢£create file hige.cpp\n");
+    g_console->printf("cdr ok");
+    while (true);
+    g_console->printf("create file hige.cpp\n");
     if (!fat->createFlie("HIGE", "CPP")) {
 
         g_console->printf("can not create file=%d", fat->getErrorNo());
@@ -139,6 +146,7 @@ void startKernel(void) {
     }
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
+    g_fdcdriver->motor(false);
     while (g_demo_step < 5);
     disableInterrupt();
     kthread_init();

@@ -94,20 +94,23 @@ bool FAT12::initilize() {
     }
 
     for (int k = 0; k < 8; k++) printf("%c", bpb_.fileSysType[k]);
-
     printf("is FAT12");
+
     /* specify file system */
     if (!isFAT12()) {
         errNum_ = NOT_FAT12_ERROR;
         return false;
     }
 
-    printf("read fat");
     /* read fat */
     if (!readFAT(true)) {
         errNum_ = FAT_READ_ERROR;
         return false;
     }
+
+    printf("read fat");
+    while (true);
+
 
     printf("bitmap");
     /* cluster map */
@@ -348,10 +351,10 @@ bool FAT12::changeDirectoryRelative(const char* path) {
         /* no other entries_ */
         if (entries_[j].filename[0] == 0x00) break;
 
-	printf("currentDirecotry_ = %d cdr entry %s:", currentDirecotry_, path);
-	printf("&&[");
-	for (int k = 0; k < 8; k++) printf("%c", entries_[j].filename[k]);
-	printf("]&&");
+        printf("currentDirecotry_ = %d cdr entry %s:", currentDirecotry_, path);
+        printf("&&[");
+        for (int k = 0; k < 8; k++) printf("%c", entries_[j].filename[k]);
+        printf("]&&");
 
 
         /* not directory */

@@ -265,10 +265,10 @@ void FDCDriver::interrupt() {
 */
 bool FDCDriver::waitInterrupt() {
 
-    static int counter = 0;
-    counter++;
+//      static int counter = 0;
+//      counter++;
 
-    if (counter > 5000) interrupt_ = true;
+//      if (counter > 5000) interrupt_ = true;
     return interrupt_;
 }
 
@@ -683,7 +683,6 @@ bool FDCDriver::read(int lba, byte* buf) {
     //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!read(track, head, sector)) return false;
-
     memcpy(buf, dmabuff_, 512);
 
     return true;
