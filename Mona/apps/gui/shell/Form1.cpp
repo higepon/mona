@@ -4,6 +4,12 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Mona/Forms/Form.h>
+#include <gui/System/Mona/Forms/ControlPaint.h>
+
+#define FONT_WIDTH    6
+#define FONT_HEIGHT  12
+#define SHELL_WIDTH  80
+#define SHELL_HEIGHT 25
 
 using namespace System;
 using namespace System::Drawing;
@@ -15,54 +21,59 @@ public:
 	Terminal() : x(0), y(0)
 	{
 		this->set_BackColor(Color::get_White());
+		this->offset = Point(2, 2);
 	}
 	
 	virtual ~Terminal() {}
-
+	
+	virtual void OnPaint()
+	{
+		_P<Graphics> g = Graphics::FromImage(this->buffer);
+		ControlPaint::DrawSunken(g, 0, 0, this->get_Width(), this->get_Height());
+		g->Dispose();
+	}
+	
 	void Output(String s)
 	{
 		_P<Graphics> g = this->CreateGraphics();
-		String ss;
-		int w = this->get_Width(), h = this->get_Height();
+		Size r = this->get_ClientSize();
 		wchar prev = 0;
 		FOREACH (wchar, ch, s)
 		{
 			if (ch == '\r' || ch == '\n')
 			{
 				if (prev == '\r' && ch == '\n') continue;
-				if (ss.get_Length() > 0)
-				{
-					g->DrawString(ss, Control::get_DefaultFont(), Color::get_Black(), x, y);
-					ss.Unset();
-				}
 				x = 0;
-				if (y < h - 24)
+				if (y <= r.Height - FONT_HEIGHT * 2)
 				{
-					y += 12;
+					y += FONT_HEIGHT;
 				}
 				else
 				{
 					Color* img = this->buffer->get();
-					int len = (h - 12) * w, d = w * 12;
-					for (int i = 0; i < len; i++)
+					for (int yy = 0; yy < r.Height - FONT_HEIGHT; yy++)
 					{
-						img[i] = img[i + d];
+						int p = (yy + this->offset.Y) * this->get_Width() + this->offset.X;
+						int d = this->get_Width() * FONT_HEIGHT;
+						for (int xx = 0; xx < r.Width; xx++, p++)
+						{
+							img[p] = img[p + d];
+						}
 					}
 					x = 0;
-					g->FillRectangle(this->get_BackColor(), 0, y, w, h - y);
+					g->FillRectangle(this->get_BackColor(), 0, y, r.Width, r.Height - y);
 				}
 			}
 			else
 			{
-				ss += ch;
+				_A<wchar> buf(1);
+				buf[0] = ch;
+				int sw = g->MeasureString(buf, Control::get_DefaultFont()).Width;
+				int sw2 = ch < 256 ? FONT_WIDTH : FONT_WIDTH * 2;
+				g->DrawString(buf, Control::get_DefaultFont(), Color::get_Black(), x + (sw2 - sw) / 2, y);
+				x += sw2;
 			}
 			prev = ch;
-		}
-		if (ss.get_Length() > 0)
-		{
-			Size sz = g->MeasureString(ss, Control::get_DefaultFont());
-			g->DrawString(ss, Control::get_DefaultFont(), Color::get_Black(), x, y);
-			x += sz.Width;
 		}
 		g->Dispose();
 	}
@@ -103,7 +114,6 @@ static void InitThread()
 	MessageInfo msg;
 	monapi_cmessage_receive_header_only(&msg, MSG_SERVER_START_OK);
 	stdout_tid = msg.from;
-	MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 }
 
 class Form1 : public Form
@@ -114,15 +124,15 @@ public:
 		this->InitializeComponent();
 		
 		terminal = new Terminal();
-		terminal->set_Bounds(Rectangle(0, 0, 400, 256));
+		terminal->set_Bounds(Rectangle(Point::get_Empty(), this->get_ClientSize()));
 		this->get_Controls()->Add(terminal.get());
 	}
 	
 private:
 	void InitializeComponent()
 	{
-		this->set_Location(Point(128, 128));
-		this->set_ClientSize(Size(400, 256));
+		this->set_Location(Point(64, 64));
+		this->set_ClientSize(Size(SHELL_WIDTH * FONT_WIDTH + 4, SHELL_HEIGHT * FONT_HEIGHT + 4));
 		this->set_Text("GUI Shell");
 	}
 	
@@ -131,6 +141,7 @@ public:
 	{
 		_P<Form> f = new Form1();
 		InitThread();
+		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 		Application::Run(f);
 		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
 		syscall_kill_thread(stdout_tid);
