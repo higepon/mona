@@ -80,6 +80,8 @@ void startKernel(void) {
         g_console->printf("CPUID NG  \n");
     }
 
+    //    g_fdcdriver = new MFDCDriver(g_console);
+
     kthread_init();
     while (true);
 
@@ -127,7 +129,7 @@ inline void printOK(const char* msg) {
     g_console->printf("[");
     g_console->setCHColor(GP_RED);
     g_console->printf("OK");
-    g_console->setCHColor(GP_GRAY);
+    g_console->setCHColor(GP_WHITE);
     g_console->printf("]\n");
 }
 
@@ -144,23 +146,23 @@ inline void printBanner() {
     g_console->printf("------------------------------------------------------\n");
     g_console->setCHColor(GP_SKYBLUE);
     g_console->printf("      Mona Kernel starting                            \n");
-    g_console->setCHColor(GP_GRAY);
+    g_console->setCHColor(GP_WHITE);
     g_console->printf("        ________ A A                                  \n");
     g_console->printf("      ~/ ______( ");
     g_console->setCHColor(GP_RED);
     g_console->printf("`");
-    g_console->setCHColor(GP_GRAY);
+    g_console->setCHColor(GP_WHITE);
     g_console->printf("D");
     g_console->setCHColor(GP_RED);
     g_console->printf("`");
-    g_console->setCHColor(GP_GRAY);
+    g_console->setCHColor(GP_WHITE);
     g_console->printf(") < ");
     g_console->setCHColor(GP_SKYBLUE);
     g_console->printf("ŽÓŽÅ\n");
-    g_console->setCHColor(GP_GRAY);
+    g_console->setCHColor(GP_WHITE);
     g_console->printf("        UU       U U                                  \n");
     g_console->printf("------------------------------------------------------\n");
     g_console->setCHColor(GP_LIGHTGREEN);
     g_console->printf("%s\n\n", version);
-    g_console->setCHColor(GP_GRAY);
+    g_console->setCHColor(GP_WHITE);
 }
