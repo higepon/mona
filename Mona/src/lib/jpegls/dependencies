@@ -1,1 +1,0 @@
-jpegls.o: jpegls.cpp ../../../include/jpegls.h

@@ -18,7 +18,7 @@ distclean:
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 
-depend:
+depend: touchdepend
 	@cd kernel; $(MAKE) $@
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
