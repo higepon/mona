@@ -88,7 +88,12 @@ int ExecuteFile(const CString& commandLine, bool prompt)
     {
         if (arg == NULL) continue;
 
-        if (path == NULL) path = arg.toUpper();
+        if (path == NULL)
+        {
+            path = arg.toUpper();
+            continue;
+        }
+
         option = new CommandOption;
         strncpy(option->str, arg, sizeof(option->str));
         option->next = list.next;
