@@ -199,6 +199,27 @@ namespace MonAPI
         return CString(&this->buffer[start], length);
     }
 
+    CString CString::toLower() const
+    {
+        CString ret = *this;
+        for (int i = 0; i < ret.length; i++)
+        {
+            char ch = ret.buffer[i];
+            if ('A' <= ch && ch <= 'Z') ret.buffer[i] = ch + ('a' - 'A');
+        }
+        return ret;
+    }
+
+    CString CString::toUpper() const
+    {
+        CString ret = *this;
+        for (int i = 0; i < ret.length; i++)
+        {
+            char ch = ret.buffer[i];
+            if ('a' <= ch && ch <= 'z') ret.buffer[i] = ch - ('a' - 'A');
+        }
+        return ret;
+    }
 }
 
 MonAPI::CString operator +(const char* text1, const MonAPI::CString& text2)

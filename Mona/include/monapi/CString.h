@@ -35,6 +35,9 @@ namespace MonAPI
         bool endsWith(const CString& value) const;
 
         CString substring(int start, int length) const;
+
+        CString toLower() const;
+        CString toUpper() const;
     };
 }
 

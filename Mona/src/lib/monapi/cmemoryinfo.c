@@ -35,7 +35,8 @@ int monapi_cmemoryinfo_create(monapi_cmemoryinfo* this, dword size, int prompt)
 
     if (!monapi_cmemoryinfo_map(this))
     {
-        printf("ERROR\n");
+        if (prompt) printf("ERROR\n");
+        printf("%s:%d: MemoryMap map error\n", __FILE__, __LINE__);
         return 0;
     }
 

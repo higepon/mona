@@ -2,38 +2,17 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
 
-#include "ShellServer.h"
 #include "Shell.h"
 #include "elf.h"
+
+#define PROMPT "Mona>"
+
+using namespace MonAPI;
 
 static bool hasExited = false;
 static bool callAutoExec = true;
 
-using namespace MonAPI;
-
-/*----------------------------------------------------------------------
-    ShellServer
-----------------------------------------------------------------------*/
 int MonaMain(List<char*>* pekoe)
-{
-    Server* server = new ShellServer();
-    server->service();
-    return 0;
-}
-
-/*----------------------------------------------------------------------
-    ShellServer
-----------------------------------------------------------------------*/
-char* const Shell::PROMPT = "Mona>";
-ShellServer::ShellServer()
-{
-}
-
-ShellServer::~ShellServer()
-{
-}
-
-void ShellServer::service()
 {
     if (!monapi_register_to_server(ID_KEYBOARD_SERVER, 1)) exit(1);
 
@@ -68,6 +47,7 @@ void ShellServer::service()
     }
 
     monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
+    return 0;
 }
 
 /*----------------------------------------------------------------------
@@ -177,7 +157,7 @@ void Shell::commandExecute()
     if (position_ < 2)
     {
         /* command is empty */
-        printf("%s", PROMPT);
+        printf(PROMPT);
         position_ = 0;
         return;
     }
@@ -489,53 +469,37 @@ int Shell::onKeyDown(int keycode, int modifiers) {
 
 int Shell::executeProcess(const char* path, const char* name, CommandOption* option)
 {
-    FileInputStream istream(path);
-
-    if (istream.open() != 0)
-    {
-        printf("File not found\n");
-        return 1;
-    }
-
-    dword fileSize = istream.getFileSize();
-
-    byte* filebuf  = (byte*)malloc(fileSize);
-    if (NULL == fileSize)
-    {
-        printf("File Buffer allcate error\n");
-        return -1;
-    }
-
-    if (istream.read(filebuf, fileSize))
-    {
-        printf("File read error\n");
-        return -1;
-    }
-    istream.close();
+    monapi_cmemoryinfo* mi1 = monapi_call_file_read_data(path, 1);
+    if (mi1 == NULL) return -1;
 
     ELFLoader loader;
 
-    int imageSize = loader.prepare((dword)filebuf);
+    int imageSize = loader.prepare((dword)mi1->Data);
     if (imageSize < 0)
     {
-        printf("unknown executable format %d", imageSize);
-        free(filebuf);
+        printf("unknown executable format: %d\n", imageSize);
+        monapi_cmemoryinfo_dispose(mi1);
+        monapi_cmemoryinfo_delete(mi1);
         return imageSize;
     }
 
-    byte* imagebuf = (byte*)malloc(imageSize);
-    if (NULL == imagebuf)
+    monapi_cmemoryinfo* mi2 = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(mi2, imageSize, 0))
     {
-        printf("image buffer allcate error\n");
+        printf("image buffer allocate error\n");
+        monapi_cmemoryinfo_delete(mi2);
+        monapi_cmemoryinfo_dispose(mi1);
+        monapi_cmemoryinfo_delete(mi1);
         return -1;
     }
 
-    dword entrypoint = loader.load(imagebuf);
+    dword entrypoint = loader.load(mi2->Data);
 
-    free(filebuf);
+    monapi_cmemoryinfo_dispose(mi1);
+    monapi_cmemoryinfo_delete(mi1);
 
-    LoadProcessInfo info;;
-    info.image = imagebuf;
+    LoadProcessInfo info;
+    info.image = mi2->Data;
     info.size = imageSize;
     info.entrypoint = entrypoint;
     info.path = path;
@@ -544,11 +508,11 @@ int Shell::executeProcess(const char* path, const char* name, CommandOption* opt
 
     int result = syscall_load_process_image(&info);
 
-    free(imagebuf);
+    monapi_cmemoryinfo_dispose(mi2);
+    monapi_cmemoryinfo_delete(mi2);
 
     switch(result)
     {
-
       case(0):
           break;
       case(4):
