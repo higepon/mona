@@ -131,9 +131,9 @@ IA32MemoryManager::~IA32MemoryManager() {
     set up list of free memory,determin size and range of memory
 
     \author HigePon
-    \date   create:2002/08/10 update:2002/11/11
+    \date   create:2002/08/10 update:2003/01/03
 */
-IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) {
+IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x90000) {
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
@@ -520,6 +520,7 @@ inline void IA32MemoryManager::lgdt() const {
 void IA32MemoryManager::resetGDT() {
 
     gdt_ = (GDT*)malloc(GD_NUM * sizeof(GDT));
+    if (gdt_ == NULL) panic("memory allocate error:GDT");
 
     setGDT(0, 0, 0, 0, 0, 0);
     setGDT(1, 0, 0xFFFFFFFF, TypeCode , 0, 0);
