@@ -26,9 +26,6 @@
     /* no switch */                                 \
     if (currentProcess == nextProcess) iret();      \
                                                     \
-    _sys_printf("switchProcess");\
-    _sysDumpProcess("next"   , pm.next);\
-    _sysDumpProcess("current", pm.current);\
     /* switch to next */                            \
     asm volatile(                                   \
                  "movl  %%esp, %0    \n"            \
@@ -57,8 +54,9 @@
                  , "m"(nextProcess->cs)             \
                  , "m"(nextProcess->eip)            \
                  );                                 \
-_sysdumpStack(); \
-_sysdumpReg("reg", true, false);\
+
+//_sysdumpStack(); \
+//_sysdumpReg("reg", true, false);\
 
 
 /*! \def save registers */
@@ -140,10 +138,6 @@ class ProcessManager {
         static ProcessManager theInstance;
         return theInstance;
     }
-    byte stack[5120];
-    TSS tss[2];
-    Process* current;
-    Process* next;
   private:
     void sgdt();
     inline void ltr(word) const;
@@ -151,6 +145,13 @@ class ProcessManager {
     inline void setNTflag1() const;
     inline void initProcess(void (*f)());
     inline void switchProcess(dword) const;
+
+  public:
+    static Process* current;
+    static Process* next;
+    byte stack[5120];
+    TSS tss[2];
+  private:
     GDT* gdt_;
     Process process_[2];
 };

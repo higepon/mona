@@ -20,6 +20,9 @@
 #include <monaIdt.h>
 #include <algorithm>
 
+Process* ProcessManager::current;
+Process* ProcessManager::next;
+
 /*!
     \brief constructor
 
