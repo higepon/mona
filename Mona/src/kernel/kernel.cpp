@@ -105,6 +105,8 @@ void startKernel(void)
 
     g_log = new LogConsole();
 
+    g_console->printf("%d", Keys::A);
+
     g_console->printf("%s\nCopyright (c) 2002-2004 higepon\n\n", version);
 
     pic_init();

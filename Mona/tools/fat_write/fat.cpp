@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 #include <malloc.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "fat.h"
 
@@ -113,7 +114,7 @@ dword FAT::allocateCluster (dword cluster, dword count)
 
         // クラスタの新規確保
         if (0 == cluster) {
-                cluster = searchFreeCluster(START_OF_CLUSTER);
+	    cluster = searchFreeCluster(START_OF_CLUSTER);
                 if (0 == cluster)
                         return 0;
                 // 要求数がゼロでも新規作成の場合は最低一つは割り当てる
@@ -124,7 +125,8 @@ dword FAT::allocateCluster (dword cluster, dword count)
         // クラスタを要求数だけ続けて確保
         next = cluster;
         while (0 < count--) {
-                temp = searchFreeCluster(next+1);
+
+	    temp = searchFreeCluster(next+1);
                 if (0 == temp) {
                         freeCluster(cluster);
                         return 0;
@@ -641,7 +643,6 @@ bool FatDirectory::deleteEntry (int entry)
         dword bytesPerSector = fat->getBytesPerSector();
         dword n = ( tmp - entrys ) / bytesPerSector;
 
-        fat->freeCluster(*((word*)( tmp + LOW_CLUSTER )));
         tmp[0] = MARK_DELETE;
 
         // VFAT を開放して回る
@@ -913,26 +914,34 @@ int FatDirectory::searchFreeEntry ()
 //-----------------------------------------------------------------------------
 int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 {
+
         // 名前があるか確認する
         if ('\0' == bf[0])
                 return -1;
+
 
         // 空きエントリを探す
         int entry = searchFreeEntry();
         if (-1 == entry)
                 return -1;
 
+
         dword bsize = fat->getBytesPerSector() * fat->getSectorsPerCluster();
+
         dword count = ( sz + bsize-1 ) / bsize;
+
 
         // クラスタの確保
         dword cluster = fat->allocateCluster(0, count);
         if (0 == cluster)
                 return -1;
 
+
+
         // 与えられた名前を 8.3 形式にする
         byte name[SIZE_FILENAME + SIZE_EXTENTION];
         expandFileName(name, bf);
+
 
         // エントリの作成
         byte *tmp = entrys + 0x20 * entry;

@@ -684,7 +684,7 @@ bool FatDirectory::deleteEntry (int entry)
         dword bytesPerSector = fat->getBytesPerSector();
         dword n = ( tmp - entrys ) / bytesPerSector;
 
-        fat->freeCluster(*((word*)( tmp + LOW_CLUSTER )));
+
         tmp[0] = MARK_DELETE;
 
         // VFAT ‚ðŠJ•ú‚µ‚Ä‰ñ‚é
