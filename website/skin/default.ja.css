@@ -1,116 +1,203 @@
-@charset "shift-jis";
+@charset "Shift_JIS";
 /* this @charset is for mozilla's bug */
+/*
+/////////////////////////////////////////////////
+// PukiWiki - Yet another WikiWikiWeb clone.
+//
+// $Id$
+//
+*/
+/** Basic Elements **/
 
-pre, dl, ol, p, blockquote
-{
-	line-height:130%;
+body {
+	color:#000000;
+	font-family: Tahoma,Verdana,'MS UI Gothic',Osaka;
+	font-size:80%;
+	line-height:1.5em;
+	background-color:#FFFFFF;
+	padding:0em;
+	margin:0em;
 }
 
-blockquote
+input, textarea
 {
-	margin-left:32px;
+	color:#000000;
+	font-family: Tahoma,Verdana,'MS UI Gothic',Osaka;
+	line-height:1.5em;
 }
 
-body,td
+form
 {
-	color:black;
-	background-color:white;
-	margin-left:2%;
-	margin-right:2%;
-	font-size:90%;
-	font-family:verdana, arial, helvetica, Sans-Serif;
+	margin:0em;
 }
 
-a:link
-{
-	color:#215dc6;
-	background-color:inherit;
+a:link, a:visited {
+	color:#336699;
 	text-decoration:none;
 }
-
-a:active
-{
-	color:#ff9933;
-	background-color:#CCDDEE;
-	text-decoration:none;
-}
-
-a:visited
-{
-	color:#6B8E23;
-	background-color:inherit;
-	text-decoration:none;
-}
-
-a:hover
-{
-	color:#ff9933;
-	background-color:#CCDDEE;
+a:active, a:hover {
+	color:#FF0000;
 	text-decoration:underline;
 }
-
-h1, h2, h3, h4, h5, h6
+img
 {
-	font-family:verdana, arial, helvetica, Sans-Serif;
-	color:white;
-	background-color:#000066;
-	padding:.3em;
-	border:0px;
-	margin:0px 0px .5em 0px;
+	border-style:none;
+	vertical-align: middle;
 }
 
-h1.title
+
+h1
 {
-	font-size: 30px;
+	font-size:200%;
+	color:#336699;
 	font-weight:bold;
-	background-color:transparent;
-	padding: 12px 0px 0px 0px;
-	border: 0px;
-	margin: 12px 0px 0px 0px;
+	padding:0.3em;
+	margin-top:1.6em;
+	margin-bottom:1.6em;
+	text-align:center;
+}
+
+h2
+{
+	font-size:150%;
+	background-image:url(../img/headingbg.gif);
+	background-repeat:repeat-x;
+	background-color:#FFFFFF;
+	padding:0.2em;
+	margin-top:1.6em;
+	margin-bottom:1.6em;
+	font-weight:bold;
+	border-width:1px;
+	border-style:solid;
+	border-color:#CCCCCC;
+}
+
+h3
+{
+	font-size:120%;
+	background-image:url(../img/headingbg.gif);
+	background-repeat:repeat-x;
+	background-color:#FFFFFF;
+	padding:0.2em;
+	padding-left:0.8em;
+	margin-top:1.3em;
+	margin-bottom:1.3em;
+	font-weight:bold;
+	border-width:1px;
+	border-style:solid;
+	border-color:#CCCCCC;
+}
+
+h4
+{
+	font-size:120%;
+	padding:0.1em;
+	padding-left:0.8em;
+	margin-top:1em;
+	margin-bottom:1em;
+	font-weight:bold;
+	border-bottom-style:solid;
+	border-width:1px;
+	border-color:#CCCCCC;
+}
+
+h5
+{
+	font-size:100%;
+	padding:0.1em;
+	padding-left:1.2em;
+	margin-top:1em;
+	font-weight:bold;
+	border-bottom-style:dotted;
+	border-width:1px;
+	border-color:#CCCCCC;
+}
+
+h6
+{
+	font-size:100%;
+	padding:0.1em;
+	padding-left:1.8em;
+	margin-top:1em;
+	font-weight:bold;
+}
+
+p, dl, ol, ul, pre, blockquote, table
+{
+	margin-top:1em;
+	margin-bottom:1em;
+	margin-left:2em;
+}
+
+ol, ul
+{
+	list-style-position: outside;
+	padding-left:3em;
+	margin-left:0em;
 }
 
 dt
 {
-	font-weight:bold;
-	margin-top:1em;
-	margin-left:1em;
+	margin-left:0em;
+}
+
+dd
+{
+	margin-left:2.2em;
 }
 
 pre
 {
-	border-top:#DDDDEE 1px solid;
-	border-bottom:#888899 1px solid;
-	border-left:#DDDDEE 1px solid;
-	border-right:#888899 1px solid;
-	padding:.5em;
-	margin-left:1em;
-	margin-right:2em;
-	white-space:pre;
-	color:black;
-	background-color:#F0F8FF;
+	font-family: Tahoma,Verdana,'MS UI Gothic',Osaka;
+	padding:1em;
+	border-style:solid;
+	border-width:1px;
+	border-color:#336699;
+	background-color: #F7F9FB;
 }
 
-img
+blockquote
 {
-	border:none;
-	vertical-align:middle;
+	padding:1em;
+	border-style:dotted;
+	border-width:1px;
+	border-color:#336699;
 }
 
-ul
+table
 {
-	margin-top:.5em;
-	margin-bottom:.5em;
-	line-height:130%;
+	padding:0em;
+	border-style:solid;
+	border-width:1px;
+	border-color:#336699;
+	border-collapse: collapse;
+	background-color: #F7F9FB;
+}
+
+td
+{
+	padding:1em;
+	border-style:solid;
+	border-width:1px;
+	border-color:#336699;
+	background-color: #F7F9FB;
+}
+
+hr
+{
+	border-style:solid;
+	border-width:1px;
+	border-color:#DDDDDD;
 }
 
 em
 {
-	font-style:italic;
+	font-weight: italic;
 }
 
 strong
 {
-	font-weight:bold;
+	font-weight: bold;
 }
 
 thead td.style_td,
@@ -188,7 +275,7 @@ span.noexists
 
 .small
 {
-	font-size:80%;
+	font-size:90%;
 }
 
 .super_index
@@ -211,10 +298,11 @@ a.note_super
 
 div.jumpmenu
 {
-	font-size:60%; 
+	font-size:60%;
 	text-align:right;
 }
 
+/**
 hr.full_hr
 {
 	border-style:ridge;
@@ -230,6 +318,7 @@ hr.note_hr
 	text-align:center;
 	margin:1em auto 0em auto;
 }
+/**/
 
 span.size1
 {
@@ -340,6 +429,133 @@ strong.word9
 }
 
 /* pukiwiki.skin.*.php */
+
+/*************************************************************/
+
+div#Header
+{
+	width:100%;
+	background-color:#99B3CC;
+	line-height:0em;
+}
+
+div#Menu
+{
+	width:100% - 1em;
+	padding:0.5em;
+	text-align:center;
+	background-color:#DDDDDD;
+}
+div#Menu a:link, div#Menu a:visited
+{
+	padding:0.2em;
+	padding-bottom:0.8em;
+	font-weight:bold;
+	margin-bottom:0em;
+	text-decoration:none;
+}
+div#Menu a:active, div#Menu a:hover
+{
+	background-color:#FFFFFF;
+
+	color:#336699;
+}
+div#LinkSF {
+	width:96px;
+	margin:1em;
+	margin-left:auto;
+}
+
+h1#title
+{
+	margin-top:0.3em;
+	margin-bottom:0.3em;
+}
+
+p.PageLink
+{
+	text-align:center;
+	margin-bottom:0em;
+}
+
+div#Contents, div#related, div#modify, div#versioninfo, div#converttime
+{
+	width:80%;
+	margin-left:auto;
+	margin-right:auto;
+}
+div#ContentsF
+{
+	width:75%;
+	float:right;
+}
+div#Panels
+{
+	width:20%;
+	float:left;
+}
+
+div#Copyright
+{
+	width:82%;
+	margin-left:auto;
+	margin-right:auto;
+	border-top-style:solid;
+	border-width:1px;
+	border-color:#DDDDDD;
+	text-align:center;
+	color:#999999;
+}
+
+hr.Start, hr.note
+{
+	width:0em;
+	height:0em;
+	margin:0em;
+	padding:0em;
+	border-color:#FFFFFF;
+	clear:both;
+}
+
+/********************************************************/
+
+div#note, div#attach, div#toolbar
+{
+	width:80%;
+	margin-top:1em;
+	margin-bottom:1em;
+	margin-left:auto;
+	margin-right:auto;
+	padding-left:1em;
+	border-top-style:dotted;
+	border-width:1px;
+	border-color:#DDDDDD;
+}
+
+div#toolbar
+{
+	text-align:center;
+	border-bottom-style:dotted;
+}
+
+div#related, div#modify, div#versioninfo, div#converttime
+{
+	font-size:80%;
+	padding:0.5em;
+}
+
+div#preview
+{
+	padding:0.5em;
+	background-color: #F7F9FB;
+	border-color:#336699;
+	border-style:dotted;
+	border-width:1px;
+	margin-bottom:1em;
+}
+
+/********************************************************/
+/**
 div#header
 {
 	padding:0px;
@@ -436,8 +652,10 @@ div#footer
 
 div#preview
 {
+	color:inherit;
 	background-color:#F5F8FF;
 }
+/**/
 
 img#logo
 {
@@ -537,6 +755,12 @@ br.spacer
 	text-align:center;
 }
 
+/* clear.inc.php */
+.clear{
+	margin:0px;
+	clear:both;
+}
+
 /* counter.inc.php */
 div.counter
 {
@@ -561,7 +785,7 @@ hr.short_line
 {
 	text-align:center;
 	width:80%;
-	border-style:soild;
+	border-style:solid;
 	border-color:#333333;
 	border-width:1px 0px;
 }
