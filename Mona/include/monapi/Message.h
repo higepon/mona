@@ -21,34 +21,27 @@ public:
     static dword lookup(const char* name);
     static dword lookupMainThread(const char* name);
 
-    // add
     static int sendReceive(MessageInfo* dst, dword tid, MessageInfo* info);
 
-    // add
     static int sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
 
-    // add
     static int receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2));
 
-    // add
     static bool equalsHeader(MessageInfo* msg1, MessageInfo* msg2)
     {
         return (msg1->header == msg2->header);
     }
 
-    // add
     static bool equalsFrom(MessageInfo* msg1, MessageInfo* msg2)
     {
         return (msg1->from == msg2->from);
     }
 
-    // add
     static bool equalsFromHeader(MessageInfo* msg1, MessageInfo* msg2)
     {
         return (msg1->from == msg2->from) && (msg1->header == msg2->header);
     }
 
-    // add
     static bool equalsFromHeaderArg1(MessageInfo* msg1, MessageInfo* msg2)
     {
         return (msg1->from == msg2->from) && (msg1->header == msg2->header) && (msg1->arg1 == msg2->arg1);

@@ -8,23 +8,19 @@
 
 namespace MonAPI {
 
-// modify
 int Message::send(dword tid, MessageInfo* info)
 {
     if (tid == THREAD_UNKNOWN) return 1;
     return syscall_send(tid, info);
 }
 
-// modify
 int Message::send(dword tid, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
 {
     MessageInfo info;
     Message::create(&info, header, arg1, arg2, arg3, str);
     return Message::send(tid, &info);
-//    return monapi_cmessage_send_args(tid, header, arg1, arg2, arg3, str);
 }
 
-// modify
 int Message::receive(MessageInfo* info)
 {
     int result = syscall_receive(info);
@@ -34,11 +30,8 @@ int Message::receive(MessageInfo* info)
          result = syscall_receive(info);
     }
     return result;
-
-//    return monapi_cmessage_receive(NULL, info);
 }
 
-// add
 int Message::sendReceive(MessageInfo* dst, dword tid, MessageInfo* info)
 {
     MessageInfo src;
@@ -53,7 +46,6 @@ int Message::sendReceive(MessageInfo* dst, dword tid, MessageInfo* info)
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 
-// add
 int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /* = 0 */, dword arg2 /* = 0 */, dword arg3 /* = 0 */, const char* str /* = NULL */)
 {
     MessageInfo src;
@@ -67,13 +59,11 @@ int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 
-// add
 int Message::reply(MessageInfo* info, dword arg2 /* = 0 */, dword arg3 /* = 0 */, const char* str /* = NULL */)
 {
     return Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
 }
 
-// add
 int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2))
 {
     MessageInfo msg;
@@ -116,7 +106,6 @@ void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword 
     return;
 }
 
-// modify
 bool Message::exist()
 {
     return syscall_exist_message();
