@@ -101,6 +101,8 @@ public:
 
 private:
     void SetType();
+    bool Relocate(Elf32_Addr base);
+    bool Relocate(Elf32_Addr base, Elf32_Shdr* relHeader, Elf32_Rel* relEntry);
     bool ParseExecutable();
     bool ParseRelocatable(Elf32_Addr base);
 
@@ -108,6 +110,8 @@ private:
     int type;
     dword elfSize;
     Elf32_Addr  imageSize;
+    Elf32_Addr  startAddr;
+    Elf32_Addr  endAddr;
     Elf32_Ehdr* header;
     Elf32_Shdr* sheader;
     Elf32_Phdr* pheader;

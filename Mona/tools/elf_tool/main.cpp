@@ -92,11 +92,15 @@ int main(int argc, char* argv[])
     */
     ELFParser parser;
 
-    /* Set Elf */
+    /*
+    || Set ELF
+    */
     parser.Set(elf.get(), elf.get_Length());
     printf("elf type=%d\n", parser.GetType());
 
-    /* Parse */
+    /*
+    || Parse
+    */
     switch(parser.GetType())
     {
     case ELFParser::ET_REL:
@@ -115,10 +119,27 @@ int main(int argc, char* argv[])
         break;
     }
 
-    /* Get Image size */
+    /*
+    || Get Image size
+    */
+    dword imageSize = parser.GetImageSize();
+    printf("image size = %d\n", imageSize);
 
+    /*
+    || Allocate buffer
+    */
+    byte* imageBuf = new byte[imageSize];
+    if (imageBuf == NULL)
+    {
+        printf("buffer allocate error\n");
+        return -1;
+    }
 
-    /* create Image */
+    /*
+    || create Image
+    */
+    bool result = parser.CreateImage(imageBuf);
+    printf("Create Image result = %s\n", result ? "OK" : "NG");
 
     /* call */
     return 0;

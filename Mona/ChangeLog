@@ -1,3 +1,7 @@
+2004-06-09  higepon  <higepon@users.sourceforge.jp>
+
+        * tools/elf_tool/elfparser.cpp (Relocate): 再配置のパースを追加
+
 2004-06-09  tino  <tino@users.sourceforge.jp>
 
         * include/gui/System/Mona/Forms/Cursor.h: 追加
