@@ -92,6 +92,8 @@ PageEntry* PageManager::createNewPageDirectory() {
     dword directoryIndex = 0x400000 >> 22;
     dword tableIndex     = (0x400000 >> 12) & 0x3FF;
 
+    g_console->printf("directoryIndex=%x", directoryIndex);
+
     /* test code. stack is always 0x400000-0x4003FF */
     //    table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
     table = allocatePageTable();
