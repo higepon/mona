@@ -1,10 +1,10 @@
 2004-10-25  higepon  <higepon@users.sourceforge.jp>
 
-        * bin/roo/APPS/TINOGUI.MSH : ’Ç‰Á
+        * src/servers/baygui/BAYGUI.MSH : ’Ç‰Á
 
-        * bin/roo/APPS/BAYGUI.MSH : ’Ç‰Á
+        * src/servers/gui/TINOGUI.MSH : ’Ç‰Á
 
-        * bin/roo/APPS/STARTGUI.MSH : íœ
+        * src/servers/gui/STARTGUI.MSH : íœ
 
 2004-10-24  bayside  <bayside@users.sourceforge.jp>
 

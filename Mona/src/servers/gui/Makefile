@@ -11,9 +11,9 @@ else
 include $(MONADIR)/env/monapi-bn2.inc
 endif
 
-install-startgui:
-	$(INSTALL) STARTGUI.MSH $(MONADIR)/bin/root/APPS
+install-tinogui:
+	$(INSTALL) TINOGUI.MSH $(MONADIR)/bin/root/APPS
 
-install: install-startgui
+install: install-tinogui
 
 include dependencies

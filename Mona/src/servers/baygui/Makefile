@@ -22,4 +22,9 @@ CXXFLAGS += -DDEBUG
 MONAWALL.BM5: MONAWALL.BMP
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
+install-baygui:
+	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/root/APPS
+
+install: install-baygui
+
 include dependencies
