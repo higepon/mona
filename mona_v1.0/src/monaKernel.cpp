@@ -59,7 +59,7 @@ void startKernel(void) {
     printBanner();
 
     pic_init();
-    enableKeyboard();
+
     printOK("Setting PIC        ");
 
     /* set interrupt */
@@ -81,14 +81,16 @@ void startKernel(void) {
     }
 
 
-    g_console->printf("hit any key to start fd read/write test\n");
+    g_console->printf("Hit any key to start [floppy read/write test]\n");
     disableTimer();
+    enableKeyboard();
     enableInterrupt();
     while (g_demo_step < 2);
     g_fdcdriver = new MFDCDriver(g_console);
 
-    g_console->printf("hit any key to start kernel thread demo\n");
+    g_console->printf("\nHit any key to start [kernel thread demo]\n");
     while (g_demo_step < 5);
+    disableInterrupt();
     kthread_init();
     while (true);
 

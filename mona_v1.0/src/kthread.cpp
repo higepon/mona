@@ -79,15 +79,15 @@ void kthread_init() {
     kthread_add_to_prev_list(&runningList, disp4);
 
     /* thread5 */
-//      dword stack5 = kthread_allocate_stack();
-//      if (stack5 == NULL) {
-//          panic("idle thread:stack allocate error");
-//      }
-//      Kthread* disp5 = kthread_create_thread(stack5, disp_kthread_info);
-//      if (disp5 == NULL) {
-//          panic("idle thread:create thread error");
-//      }
-//      kthread_add_to_prev_list(&runningList, disp5);
+    dword stack5 = kthread_allocate_stack();
+    if (stack5 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+    Kthread* disp5 = kthread_create_thread(stack5, disp_kthread_info);
+    if (disp5 == NULL) {
+        panic("idle thread:create thread error");
+    }
+    kthread_add_to_prev_list(&runningList, disp5);
 
     /* thread6(idle) */
     dword stack6 = kthread_allocate_stack();

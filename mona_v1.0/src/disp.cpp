@@ -132,25 +132,15 @@ void disp_kthread_info() {
         int x = pos_x;
         int y = pos_y;
 
-         pos_x = 0, pos_y = 16;
+         pos_x = 0, pos_y = 22;
 
-         g_console->printf("kernel thread Information \n");
-         g_console->printf("thread total number %d \n" , g_kthreadInfo.threadNum);
-         g_console->printf("kernel total %d[tick] \n", g_kthreadInfo.tick);
-         g_console->printf("thread yield %d[times] \n", g_kthreadInfo.yield);
-         g_console->printf("[idle] %d%% [kernel] %d%% \n"
+         g_console->printf("  ___/Í/Í____ -----kernel thread Information -----\n");
+         g_console->printf(" /__(*ßoß)_ /|thread total number : %d[thraeds]\n", g_kthreadInfo.threadNum);
+         g_console->printf("|    U~~U  | |System total tick   : %d[ticks]\n", g_kthreadInfo.tick);
+         g_console->printf("|    Mona  | |thraed yield        : %d[times]\n", g_kthreadInfo.yield);
+         g_console->printf("|__________|/ [idle] %d%%         : [kernel] %d%% \n"
                            , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
                            , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
-
-
-
-	 g_console->printf("  ___/Í/Í____\n");
-	 g_console->printf(" /__(*ßoß)_ /|\n");
-	 g_console->printf("|    U~~U  | |\n");
-	 g_console->printf("|__________|/\n");
-
-
-
 
 //      Date date;
 //      rtc_get_date(&date);
@@ -160,7 +150,7 @@ void disp_kthread_info() {
          pos_y = y;
          semaphore_up(&sem);
 
-        syscall_kthread_yield();
+         syscall_kthread_yield();
     }
 }
 
