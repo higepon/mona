@@ -100,6 +100,7 @@ GChat::GChat()
 
 GChat::~GChat()
 {
+	history->removeAll();
 	delete(messageList);
 	delete(memberList);
 	delete(channelList);
@@ -113,7 +114,7 @@ void GChat::onEvent(Event *event)
 	// 実行
 	if (event->getType() == Event::TEXT_CHANGED) {
 		// 履歴追加
-		history->add(new LinkedItem(new String(text->getText())));
+		history->add(new String(text->getText()));
 		historyPtr = history->getLength();
 		messageList->add(text->getText());
 		messageList->repaint();

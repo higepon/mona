@@ -36,7 +36,12 @@ LinkedList::LinkedList()
 
 LinkedList::~LinkedList()
 {
-	removeAll();
+	while (this->firstItem != NULL) {
+		// データそのものをdeleteすると他に持っている人が
+		// いるときに困るためdeleteはしない
+		remove(0);
+	}
+	this->dataListLength = 0;
 }
 
 LinkedItem *LinkedList::getLinkedItem(int index)
@@ -95,12 +100,15 @@ Object *LinkedList::getLast()
 	}
 }
 
-void LinkedList::add(Object *o)
+void LinkedList::add(Object *obj)
 {
-	LinkedItem *item = new LinkedItem(o);
-	if (item == NULL) {
-		return;
-	} else if (this->firstItem == NULL) {
+	// NULLチェック
+	if (obj == NULL) return;
+	
+	LinkedItem *item = new LinkedItem();
+	item->data = obj;
+	
+	if (this->firstItem == NULL) {
 		this->firstItem = item;
 		this->endItem = item;
 	} else {
@@ -115,16 +123,16 @@ void LinkedList::add(Object *o)
 	this->dataListLength++;
 }
 
-void LinkedList::remove(int index)
+Object *LinkedList::remove(int index)
 {
-	remove(get(index));
+	return remove(get(index));
 }
 
-void LinkedList::remove(Object *o)
+Object *LinkedList::remove(Object *o)
 {
 	LinkedItem *item = getLinkedItem(o);
 	if (item == NULL) {
-		return;
+		return NULL;
 	} else if (item->next == NULL) {
 		if (item->prev != NULL) {
 			this->endItem = item->prev;
@@ -135,7 +143,8 @@ void LinkedList::remove(Object *o)
 		}
 		item->prev = NULL;
 		item->next = NULL;
-		delete(item);
+		//delete(item);
+		return item->data;
 	} else {
 		if (item->prev != NULL) {
 			item->prev->next = item->next;
@@ -146,7 +155,8 @@ void LinkedList::remove(Object *o)
 		}
 		item->prev = NULL;
 		item->next = NULL;
-		delete(item);
+		//delete(item);
+		return item->data;
 	}
 	dataListLength--;
 }
@@ -154,32 +164,8 @@ void LinkedList::remove(Object *o)
 void LinkedList::removeAll()
 {
 	while (this->firstItem != NULL) {
-		remove(0);
+		Object *obj = remove(0);
+		delete(obj);
 	}
 	this->dataListLength = 0;
 }
-
-#if 0
-/** 指定した項目を一番最後に持っていく */
-void LinkedList::sort(Object *o)
-{
-	LinkedItem *item = getLinkedItem(o);
-	if (item == NULL) {
-		return;
-	} else if (item->next == NULL) {
-		return;
-	} else {
-		if (item->prev != NULL) {
-			item->prev->next = item->next;
-			item->next->prev = item->prev;
-		} else {
-			this->firstItem = item->next;
-			this->firstItem->prev = NULL;
-		}
-		item->prev = endItem;
-		this->endItem->next = item;
-		item->next = NULL;
-		this->endItem = item;
-	}
-}
-#endif

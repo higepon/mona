@@ -88,6 +88,9 @@ public:
 	
 	/** デストラクタ */
 	~GShell() {
+		this->argv->removeAll();
+		this->history->removeAll();
+		this->lines->removeAll();
 		delete(this->argv);
 		delete(this->history);
 		delete(this->lines);

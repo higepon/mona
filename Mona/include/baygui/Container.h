@@ -32,11 +32,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  コンテナークラス
 */
 class Container : public Control {
-protected:
+private:
 	/** 部品一覧 */
-	LinkedList *_controlList;
+	LinkedList *controlList;
 
-protected:
+public:
+	/** コンストラクタ */
+	Container();
+	
+	/** デストラクタ */
+	virtual ~Container();
+	
 	/**
 	 活性部品を得る
 	 @return 活性部品（なければNULL）
@@ -49,13 +55,6 @@ protected:
 	 @param y 指定するY座標
 	 */
 	virtual Control *findChild(int x, int y);
-
-public:
-	/** コンストラクタ */
-	Container();
-	
-	/** デストラクタ */
-	virtual ~Container();
 	
 	/**
 	 指定した部品を追加する

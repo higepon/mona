@@ -114,7 +114,7 @@ public:
 
 		g->setColor(0,0,0);
 		g->drawText(BAYGUI_VERSION, 50, 10);
-		g->drawText("copyright (C) 2004, bayside", 50, 26);
+		g->drawText(BAYGUI_COPYING, 50, 26);
 		g->setColor(96,96,96);
 		g->drawRect(10,50,250,90);
 		g->drawText("シェル 32bit / カーネル 32bit", 15, 55);

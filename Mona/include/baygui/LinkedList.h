@@ -29,6 +29,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _LINKEDLIST_H_INCLUDED_
 
 /**
+ 双方向アイテム構造体（双方向リストで使用）
+*/
+struct LinkedItem {
+	/** 内部データ */
+	Object *data;
+	/** 次のアイテムへのポインター */
+	LinkedItem *next;
+	/** 前のアイテムへのポインター */
+	LinkedItem *prev;
+};
+
+/**
  双方向リスト
 */
 class LinkedList : public Object {
@@ -67,15 +79,19 @@ public:
 	Object *getLast();
 	
 	/** 指定した項目を追加する */
-	void add(Object *o);
+	void add(Object *obj);
 	
 	/** 指定した順番の項目を削除する */
-	void remove(int index);
+	Object *remove(int index);
 	
 	/** 指定した項目を削除する */
-	void remove(Object *o);
+	Object *remove(Object *o);
 	
-	/** 全て削除する */
+	/**
+	 全て削除する.
+	 データそのものもdeleteしてほしいときはデストラクタを呼ぶ前にこのメソッドを呼ぶ。
+	 デストラクタはデータそのものはdeleteしない。
+	*/
 	void removeAll();
 };
 

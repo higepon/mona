@@ -29,21 +29,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Container::Container()
 {
-	_controlList = new LinkedList();
+	this->controlList = new LinkedList();
 }
 
 Container::~Container() {
-	delete(_controlList);
+	this->controlList->removeAll();
+	delete(this->controlList);
 }
 
 Control *Container::findChild()
 {
 	// NULLチェック
-	if (_controlList->getLength() == 0) return NULL;
+	if (this->controlList->getLength() == 0) return NULL;
 
 	// 後ろからチェックしていく
-	for (int i = _controlList->getLength() - 1; i >= 0; i--) {
-		Control *c = (Control *)_controlList->get(i);
+	for (int i = this->controlList->getLength() - 1; i >= 0; i--) {
+		Control *c = (Control *)this->controlList->get(i);
 		if (c->getFocused() == true) return c;
 	}
 	return NULL;
@@ -52,11 +53,11 @@ Control *Container::findChild()
 Control *Container::findChild(int x, int y)
 {
 	// NULLチェック
-	if (_controlList->getLength() == 0) return NULL;
+	if (this->controlList->getLength() == 0) return NULL;
 	
 	// 後ろからチェックしていく
-	for (int i = _controlList->getLength() - 1; i >= 0; i--) {
-		Control *c = (Control *)_controlList->get(i);
+	for (int i = this->controlList->getLength() - 1; i >= 0; i--) {
+		Control *c = (Control *)this->controlList->get(i);
 		Rect *rect = c->getRect();
 		// マウスカーソルがある範囲に部品があるかどうかチェック
 		if (rect->getX() <= x && x <= rect->getX() + rect->getWidth() && 
@@ -72,12 +73,12 @@ void Container::add(Control *control)
 {
 	control->setParent(this);
 	control->onStart();
-	_controlList->add(control);
+	this->controlList->add(control);
 }
 
 void Container::remove(Control *control)
 {
-	_controlList->remove(control);
+	this->controlList->remove(control);
 }
 
 void Container::postEvent(Event *event)
@@ -103,8 +104,8 @@ void Container::postEvent(Event *event)
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			// イベントが起こった部品以外をフォーカスアウト状態にする
-			for (int i = 0; i < _controlList->getLength(); i++) {
-				Control *c = (Control *)_controlList->get(i);
+			for (int i = 0; i < this->controlList->getLength(); i++) {
+				Control *c = (Control *)this->controlList->get(i);
 				if (c != control) {
 					c->setFocused(false);
 				}
@@ -119,8 +120,8 @@ void Container::postEvent(Event *event)
 		// 部品以外でイベントが起こった
 		} else {
 			// 部品をフォーカスアウト状態にする
-			for (int i = 0; i < _controlList->getLength(); i++) {
-				Control *c = (Control *)_controlList->get(i);
+			for (int i = 0; i < this->controlList->getLength(); i++) {
+				Control *c = (Control *)this->controlList->get(i);
 				c->setFocused(false);
 			}
 			//syscall_print("MOUSE_PRESSED,");
@@ -159,8 +160,8 @@ void Container::repaint()
 	update();
 
 	// 子部品を再描画する
-	for(int i = 0; i < _controlList->getLength(); i++) {
-		Control *control = (Control *)_controlList->get(i);
+	for(int i = 0; i < this->controlList->getLength(); i++) {
+		Control *control = (Control *)this->controlList->get(i);
 		control->repaint();
 	}
 }
