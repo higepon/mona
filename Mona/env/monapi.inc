@@ -1,4 +1,4 @@
-LFLAGS  = -n -Ttext 0xA0000000 -e _user_start -Bstatic
+LFLAGS  = -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstatic
 OFLAGS  = --output-target=elf32-i386
 OBJECTS = $(SOURCES:.cpp=.o)
 
