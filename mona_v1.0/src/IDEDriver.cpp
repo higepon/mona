@@ -120,7 +120,6 @@ bool IDEDriver::waitready(unsigned long timeout){
 }
 
 
-
 bool IDEDriver::sendcmd(int cmd,byte *bfr,int bfrsize/* must be 2n size */){
   dword t;
   char c;
@@ -150,6 +149,40 @@ bool IDEDriver::sendcmd(int cmd,byte *bfr,int bfrsize/* must be 2n size */){
   }
   return true;
 }
+
+bool IDEDriver::cmdRead(byte *bfr,unsigned int count){
+  dword t;
+  long bfrsize;
+  char c;
+  waitready(TIMEOUT);
+  setCount(count);
+  bfrsize = count * 512;
+  outportb(status_,IDE_CMD_READ); /* use PIO read */
+  t = g_kthreadInfo.tick;
+  for(;;){
+    if(g_kthreadInfo.tick > (t + TIMEOUT_CMD)){
+      return false;
+    }
+    c = inportb(status_);
+    if(c & 0x80){
+      continue;
+    }
+    if(c & 0x21){
+      return false;
+    }
+    if(c & 0x40){
+      break;
+    }
+  }
+  for(t=0;t!=bfrsize;t+=2){
+    int a;
+    asm volatile ("in %%dx, %%ax": "=a"(a): "d"(data_));
+    bfr[t+1] = a >> 8;
+    bfr[t] = a & 0xff;
+  }
+  return true;
+}
+
 bool IDEDriver::senddevice(int drive){
   char c;
   c = inportb(head_);
@@ -305,11 +338,37 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
         Bus->console_->printf("\nC/H/S = %d/%d/%d sectorsize = %d size = %d MB (non-LBA Device)\n",Tracks,Heads,SectorsPerTrack,BytesPerSector,Heads*Tracks*SectorsPerTrack/1024*BytesPerSector/1024);
       }
       if(read(0,buf)){ /* test routine */
+        /* dump */
+        /*
+        int j;
+        char c;
+        for(i=0;i!=512;i+=16){
+          Bus->console_->printf("\n");
+          Bus->console_->printf("%x : ",i);
+          for(j=0;j!=16;j++){
+            c = buf[i + j] >> 4;
+            if(c > 9){
+              c += ('A' - 10);
+            }else{
+              c += '0';
+            }
+            Bus->console_->printf("%c",c);
+            c = buf[i + j] & 0x0f;
+            if(c > 9){
+              c += ('A' - 10);
+            }else{
+              c += '0';
+            }
+            Bus->console_->printf("%c ",c);
+            
+          }
+        }
+        */
         for(i=0;i!=4;i++){
           dword d;
           byte *mbr;
-          mbr = buf + 0x1be + i*16 + 1;
-          d = *(dword *)&mbr[8];
+          mbr = buf + 0x1be + i*16;
+          d = *(dword *)(mbr +8);
           if(!d){
             continue;
           }
@@ -320,7 +379,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
           }else{
             Bus->console_->printf("     ");
           }
-          d = *(dword *)&mbr[8];
+          d = *(dword *)(mbr +8);
           Bus->console_->printf("from:%x ",d);
           d = *(dword *)&mbr[12];
           Bus->console_->printf("size:%x (%d MB)",d,d/2/1024);
@@ -355,6 +414,9 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
             case 0x82:
               Bus->console_->printf("Linux SWAP/Solaris");
               break;
+            case 0x83:
+              Bus->console_->printf("extend-Linux");
+              break;
             case 0x2c:
               Bus->console_->printf("CLTN Filesystem(clfs1)");
               break;
@@ -385,8 +447,7 @@ IDEDevice::~IDEDevice(){
 
 bool IDEDevice::read(dword lba, byte* buf) {
     Bus->setLBA(lba,device_);
-    Bus->setCount(1);
-    return Bus->sendcmd(IDE_CMD_READ,buf,512);
+    return Bus->cmdRead(buf,1);
 }
 
 

@@ -42,7 +42,8 @@ class IDEDriver {
     static bool HasSlave;  
     static VirtualConsole* console_;
   public:
-    bool sendcmd(int cmd,byte *bfr,int bfrsize /* ignored */);
+    bool sendcmd(int cmd,byte *bfr,int bfrsize /* must be 2n */);
+    bool cmdRead(byte *bfr,unsigned int count);
     bool senddevice(int drive);
     bool waithdc(unsigned long timeout);
     bool waitdata(unsigned long timeout);
