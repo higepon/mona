@@ -199,8 +199,8 @@ class Process_ {
     //    OutputStream* stdout;
     //    OutputStream* stderr;
     //    InputStream*  stdin;
-    long  timeLeft_;
     dword tick_;
+    long  timeLeft_;
     dword pid_;
     byte priority_;
     byte state_;

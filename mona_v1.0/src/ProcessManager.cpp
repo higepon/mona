@@ -172,7 +172,7 @@ bool ProcessManager::kill(ProcessInfo* process) {
 
     g_console->printf("kill called");
 
-    for (int i = 0; i < pnum_; i++) {
+    for (dword i = 0; i < pnum_; i++) {
 
         if (g_process[i] == process->process) {
 

@@ -6,7 +6,7 @@ STRIP      = /usr/bin/strip
 CONTRIB_LIB= ./contrib/lib_cygwin
 LFLAGS     = -n -Ttext 0x1200 -static
 # for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -ffreestanding -Wall -g
+CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -g
 ENV         = env
 VERSION     = 0.1.1
 DOXYGEN     = doxygen

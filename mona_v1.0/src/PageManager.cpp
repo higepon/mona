@@ -211,8 +211,8 @@ PageEntry* PageManager::createNewPageDirectory() {
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     setAttribute(directory, true, true, false, (PhysicalAddress)table);
 
-    dword directoryIndex = getDirectoryIndex(0xFFFFFC00);
-    dword tableIndex     = getTableIndex(0xFFFFFC00);
+    //    dword directoryIndex = getDirectoryIndex(0xFFFFFC00);
+    //dword tableIndex     = getTableIndex(0xFFFFFC00);
 
     /* test code. stack is always 0xFFFFFFFF */
     //    table = allocatePageTable();
@@ -310,7 +310,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
     dword tableIndex     = getTableIndex(address);
-    byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
+    //    byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
     SharedMemorySegment* shared;
 

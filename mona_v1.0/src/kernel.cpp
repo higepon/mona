@@ -167,14 +167,14 @@ void mainProcess() {
     //    loader->prepare((dword)user_func_from);
     //    loader->load(user_func);
 
-    UserProcess* process1 = new UserProcess("user_process ");
-    Process*     process2 = new Process("krnl_o       ");
-    Process*     process3 = new Process("krnl_n       ");
-    Process*     process4 = new Process("krnl_m       ");
-    Process*     process5 = new Process("krnl_o2      ");
-    UserProcess* process6 = new UserProcess("user_process2");
+    //    UserProcess* process1 = new UserProcess("user_process ");
+    //Process*     process2 = new Process("krnl_o       ");
+    //Process*     process3 = new Process("krnl_n       ");
+    //Process*     process4 = new Process("krnl_m       ");
+    //Process*     process5 = new Process("krnl_o2      ");
+    //UserProcess* process6 = new UserProcess("user_process2");
     Process*     process7 = new Process("show_process ");
-    V86Process*  process9 = new V86Process("V86_process");
+    //V86Process*  process9 = new V86Process("V86_process");
 
     //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));S
     //    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
