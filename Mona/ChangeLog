@@ -1,12 +1,40 @@
+2004-03-02  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/guitest1/guitest1.cpp: Scrollbar 追加
+
+        * include/baygui.h: Scrollbar 追加
+
+        * include/baygui/Scrollbar.h: Scrollbar 追加
+
+        * src/lib/baygui/Scrollbar.cpp: Scrollbar 追加
+
+        * src/lib/baygui/Makefile: Scrollbar 追加
+
 2005-03-02  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/PageManager.cpp: vram alignバグの修正 thanks Takaさん
+
+2004-03-01  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/guitest1/guitest1.cpp: CheckboxGroup 追加
+
+        * include/baygui.h: CheckboxGroup 追加
+
+        * include/baygui/Checkbox.h: CheckboxGroup 追加
+
+        * include/baygui/CheckboxGroup.h: CheckboxGroup 追加
+
+        * src/lib/baygui/Checkbox.cpp: CheckboxGroup 追加
+
+        * src/lib/baygui/CheckboxGroup.cpp: CheckboxGroup 追加
+
+        * src/lib/baygui/Makefile: CheckboxGroup 追加
 
 2004-02-28  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/guitest1/guitest1.cpp: Checkbox 追加
 
-        * src/lib/baygui/Control.cpp: ALING_?? を"enum"から"static const int"へ変更
+        * src/lib/baygui/Control.cpp: ALIGN_?? を"enum"から"static const int"へ変更
 
         * src/lib/baygui/Makefile: Checkbox 追加
 
