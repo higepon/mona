@@ -1,3 +1,7 @@
+2004-06-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Loader.cpp : ELFロジック追い出し準備としてLoaderクラス追加
+
 2004-06-15  tino  <tino@users.sourceforge.jp>
 
         * apps/gui/monafile: ファイルブラウザ追加

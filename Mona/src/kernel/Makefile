@@ -42,7 +42,8 @@ SOURCES      = cstart.cpp            \
                fat.cpp               \
                fs.cpp                \
                IDManager.cpp         \
-               KObject.cpp
+               KObject.cpp           \
+               Loader.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

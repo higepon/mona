@@ -16,6 +16,7 @@
 #include "tester.h"
 #include "io.h"
 #include "elf.h"
+#include "Loader.h"
 
 extern const char* version;
 extern dword version_number;
@@ -690,7 +691,9 @@ void syscall_entrance() {
 
     {
         LoadProcessInfo* p = (LoadProcessInfo*)(info->esi);
+//        info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
         info->eax = loadProcess(p->image, p->size, p->entrypoint, p->path, p->name, true, p->list);
+
         break;
     }
 
