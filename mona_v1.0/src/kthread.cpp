@@ -22,9 +22,6 @@
 #include<rtc.h>
 static Kthread runningList;
 
-
-extern "C" void write_font(int a, char b, char c);
-
 /*!
     \brief init kernel thread
 
@@ -49,61 +46,39 @@ void kthread_init() {
     kthread_add_to_prev_list(&runningList, disp1);
 
     /* thread2 */
-//      dword stack2 = kthread_allocate_stack();
-//      if (stack2 == NULL) {
-//          panic("idle thread:stack allocate error");
-//      }
-//      Kthread* disp2 = kthread_create_thread(stack2, disp_name2);
-//      if (disp2 == NULL) {
-//          panic("idle thread:create thread error");
-//      }
-//      kthread_add_to_prev_list(&runningList, disp2);
+    dword stack2 = kthread_allocate_stack();
+    if (stack2 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+    Kthread* disp2 = kthread_create_thread(stack2, disp_name2);
+    if (disp2 == NULL) {
+        panic("idle thread:create thread error");
+    }
+    kthread_add_to_prev_list(&runningList, disp2);
 
     /* thread3 */
-//      dword stack3 = kthread_allocate_stack();
-//      if (stack3 == NULL) {
-//          panic("idle thread:stack allocate error");
-//      }
-//      Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
-//      if (disp3 == NULL) {
-//          panic("idle thread:create thread error");
-//      }
-//      kthread_add_to_prev_list(&runningList, disp3);
+    dword stack3 = kthread_allocate_stack();
+    if (stack3 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+    Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
+    if (disp3 == NULL) {
+        panic("idle thread:create thread error");
+    }
+    kthread_add_to_prev_list(&runningList, disp3);
 
-//      /* thread4 */
-//      dword stack4 = kthread_allocate_stack();
-//      if (stack4 == NULL) {
-//          panic("idle thread:stack allocate error");
-//      }
-//      Kthread* disp4 = kthread_create_thread(stack4, disp_name4);
-//      if (disp4 == NULL) {
-//          panic("idle thread:create thread error");
-//      }
-    //    kthread_add_to_prev_list(&runningList, disp4);
+    /* thread4 */
+    dword stack4 = kthread_allocate_stack();
+    if (stack4 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+    Kthread* disp4 = kthread_create_thread(stack4, disp_name4);
+    if (disp4 == NULL) {
+        panic("idle thread:create thread error");
+    }
+    kthread_add_to_prev_list(&runningList, disp4);
 
     g_kthread_current = disp1;
-
-    g_console->printf("kthread init:disp_name1[%x]\n", disp_name1);
-    g_console->printf("kthread init:kthread_schedule[%x]\n", kthread_schedule);
-    g_console->printf("kthread init:kthread_switch[%x]\n", kthread_switch);
-    g_console->printf("kthread init:arch_kthread_switch[%x]\n", arch_kthread_switch);
-    g_console->printf("kthread init:arch_timerhandler[%x]\n", arch_timerhandler);
-    g_console->printf("kthread init:timerHandler[%x]\n", timerHandler);
-    g_console->printf("kthread init:arch_kthread_switch[%x]\n", arch_kthread_switch);
-    g_console->printf("kthread init:kthread_add_to_prev_list[%x]\n", kthread_add_to_prev_list);
-    g_console->printf("kthread init:disp_name2[%x]\n", disp_name2);
-    g_console->printf("kthread init:disp_name3[%x]\n", disp_name3);
-    g_console->printf("kthread init:disp_name4[%x]\n", disp_name4);
-    g_console->printf("kthread init:kthread_init[%x]\n", kthread_init);
-    g_console->printf("kthread init:kthread_get_next_from_list[%x]\n", kthread_get_next_from_list);
-    g_console->printf("kthread init:enableTimer[%x]\n", enableTimer);
-    g_console->printf("kthread init:disableTimer[%x]\n", disableTimer);
-    g_console->printf("kthread init:enableKeyboard[%x]\n", enableKeyboard);
-    g_console->printf("kthread init:enableKeyboard[%x]\n", disableKeyboard);
-    g_console->printf("kthread init:inportb[%x]\n", inportb);
-    g_console->printf("kthread init:rtc_read[%x]\n", rtc_read);
-    g_console->printf("kthread init:rtc_get_date[%x]\n", rtc_get_date);
-    g_console->printf("kthread init:write_font[%x]\n", write_font);
 
     enableTimer();
     kthread_schedule();
@@ -123,8 +98,6 @@ void kthread_tick() {
     (g_kthread_current->tick)++;
     return;
 }
-
-
 
 #define KTHREAD_STACK_START 0x800000
 #define KTHREAD_STACK_END   0x700000
@@ -226,41 +199,6 @@ void kthread_schedule() {
     \date   create:2003/03/02 update:
 */
 void kthread_switch() {
-
-    //      g_console->printf("kthread_switch [%x][%x][%x]", (dword)(&runningList), (dword)((&runningList)->next), (dword)((&runningList)->next->next));
-
-
-
-//     g_console->printf("eip=%x cs=%x eflags=%x  esp=%x, ebp=%x\n"
-//                  , g_kthread_current->eip
-//                  , g_kthread_current->cs
-//                  , g_kthread_current->eflags
-//                  , g_kthread_current->esp
-//  		     , g_kthread_current->ebp);
-
-//       g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]"
-//                         , g_stack_view.stack0
-//                         , g_stack_view.stack1
-//                         , g_stack_view.stack2
-//                         , g_stack_view.stack3
-//                         , g_stack_view.stack4
-//                         , g_stack_view.stack5
-//                         , g_stack_view.stack6
-//                         , g_stack_view.stack7
-//                         );
-
-    g_console->printf("eip=%x eax=%x ebx=%x ecx=%x edx=%x\nebp=%x esp=%x edi=%x esi=%x\n"
-                      , g_kthread_current->eip
-                      , g_kthread_current->eax
-                      , g_kthread_current->ebx
-                      , g_kthread_current->ecx
-                      , g_kthread_current->edx
-                      , g_kthread_current->ebp
-                      , g_kthread_current->esp
-                      , g_kthread_current->edi
-                      , g_kthread_current->esi
-
-                      );
 
     arch_kthread_switch();
 }
