@@ -53,16 +53,16 @@ typedef struct _FILETIME
 typedef ULONG PROPID;
 typedef LONG SCODE;
 
-#define S_OK    0x00000000L
-#define S_FALSE 0x00000001L
-#define E_NOINTERFACE 0x80004002L
-#define E_ABORT 0x80004004L
-#define E_FAIL 0x80004005L
-#define STG_E_INVALIDFUNCTION 0x80030001L
-#define E_OUTOFMEMORY 0x8007000EL
-#define E_INVALIDARG 0x80070057L
+#define S_OK    ((HRESULT)0x00000000L)
+#define S_FALSE ((HRESULT)0x00000001L)
+#define E_NOINTERFACE ((HRESULT)0x80004002L)
+#define E_ABORT ((HRESULT)0x80004004L)
+#define E_FAIL ((HRESULT)0x80004005L)
+#define STG_E_INVALIDFUNCTION ((HRESULT)0x80030001L)
+#define E_OUTOFMEMORY ((HRESULT)0x8007000EL)
+#define E_INVALIDARG ((HRESULT)0x80070057L)
 
-#ifndef __GNUC__
+#ifdef _MSC_VER
 #define STDMETHODCALLTYPE __stdcall 
 #else
 #define STDMETHODCALLTYPE 
@@ -73,7 +73,7 @@ typedef LONG SCODE;
 #define STDMETHODIMP_(type) type STDMETHODCALLTYPE
 #define STDMETHODIMP STDMETHODIMP_(HRESULT)
 
-#define PURE = 0;
+#define PURE = 0
 
 typedef struct {
   unsigned long  Data1;
@@ -106,14 +106,14 @@ typedef struct {
 #define REFIID REFGUID
 
 #define MIDL_INTERFACE(x) struct 
-inline int operator==(REFGUID g1, REFGUID g2)
+inline bool operator==(REFGUID g1, REFGUID g2)
 { 
-  for (int i = 0; i < sizeof(g1); i++)
+  for (size_t i = 0; i < sizeof(g1); i++)
     if (((unsigned char *)&g1)[i] != ((unsigned char *)&g2)[i])
       return false;
   return true;
 }
-inline int operator!=(REFGUID g1, REFGUID g2)
+inline bool operator!=(REFGUID g1, REFGUID g2)
   { return !(g1 == g2); }
 
 struct IUnknown
@@ -155,7 +155,7 @@ enum VARENUM
 	VT_UINT	= 23,
 	VT_VOID	= 24,
 	VT_HRESULT	= 25,
-	VT_FILETIME	= 64,
+	VT_FILETIME	= 64
 };
 
 typedef unsigned short VARTYPE;

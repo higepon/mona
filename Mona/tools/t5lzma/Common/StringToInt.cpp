@@ -43,7 +43,6 @@ UInt64 ConvertStringToUINT64(const wchar_t *s, const wchar_t **end)
 
 Int64 ConvertStringToINT64(const char *s, const char **end)
 {
-  Int64 result = 0;
   if (*s == '-')
     return -(Int64)ConvertStringToUINT64(s + 1, end);
   return ConvertStringToUINT64(s, end);

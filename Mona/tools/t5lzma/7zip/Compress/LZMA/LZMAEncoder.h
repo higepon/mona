@@ -4,6 +4,7 @@
 #define __LZMA_ENCODER_H
 
 #include "../../../Common/MyCom.h"
+#include "../../../Common/Alloc.h"
 #include "../../ICoder.h"
 #include "../LZ/IMatchFinder.h"
 #include "../RangeCoder/RangeCoderBitTree.h"
@@ -14,13 +15,6 @@ namespace NCompress {
 namespace NLZMA {
 
 typedef NRangeCoder::CBitEncoder<kNumMoveBits> CMyBitEncoder;
-
-class CMatchFinderException
-{
-public:
-  HRESULT ErrorCode;
-  CMatchFinderException(HRESULT errorCode): ErrorCode(errorCode) {}
-};
 
 class CBaseState
 {
@@ -34,7 +28,7 @@ protected:
     _state.Init();
     _previousByte = 0;
     _peviousIsMatch = false;
-    for(int i = 0 ; i < kNumRepDistances; i++)
+    for(UInt32 i = 0 ; i < kNumRepDistances; i++)
       _repDistances[i] = 0;
   }
 };
@@ -92,7 +86,8 @@ public:
     for (int i = 0; i < 0x300; i++)
       _encoders[i].Init();
   }
-  void Encode(NRangeCoder::CEncoder *rangeEncoder, bool matchMode, Byte matchByte, Byte symbol);
+  void Encode(NRangeCoder::CEncoder *rangeEncoder, Byte symbol);
+  void EncodeMatched(NRangeCoder::CEncoder *rangeEncoder, Byte matchByte, Byte symbol);
   UInt32 GetPrice(bool matchMode, Byte matchByte, Byte symbol) const;
 };
 
@@ -107,21 +102,22 @@ public:
   ~CLiteralEncoder()  { Free(); }
   void Free()
   { 
-    delete []_coders;
+    MyFree(_coders);
     _coders = 0;
   }
-  void Create(int numPosBits, int numPrevBits)
+  bool Create(int numPosBits, int numPrevBits)
   {
     if (_coders == 0 || (numPosBits + numPrevBits) != 
         (_numPrevBits + _numPosBits) )
     {
       Free();
       UInt32 numStates = 1 << (numPosBits + numPrevBits);
-      _coders = new CLiteralEncoder2[numStates];
+      _coders = (CLiteralEncoder2 *)MyAlloc(numStates * sizeof(CLiteralEncoder2));
     }
     _numPosBits = numPosBits;
     _posMask = (1 << numPosBits) - 1;
     _numPrevBits = numPrevBits;
+    return (_coders != 0);
   }
   void Init()
   {
@@ -131,10 +127,17 @@ public:
   }
   UInt32 GetState(UInt32 pos, Byte prevByte) const
     { return ((pos & _posMask) << _numPrevBits) + (prevByte >> (8 - _numPrevBits)); }
+  CLiteralEncoder2 *GetSubCoder(UInt32 pos, Byte prevByte)
+    { return &_coders[GetState(pos, prevByte)]; }
+  /*
   void Encode(NRangeCoder::CEncoder *rangeEncoder, UInt32 pos, Byte prevByte, 
-      bool matchMode, Byte matchByte, Byte symbol)
-    { _coders[GetState(pos, prevByte)].Encode(rangeEncoder, matchMode, 
-          matchByte, symbol); }
+      Byte symbol)
+    { _coders[GetState(pos, prevByte)].Encode(rangeEncoder, symbol); }
+  void EncodeMatched(NRangeCoder::CEncoder *rangeEncoder, UInt32 pos, Byte prevByte, 
+      Byte matchByte, Byte symbol)
+    { _coders[GetState(pos, prevByte)].Encode(rangeEncoder,
+      matchByte, symbol); }
+  */
   UInt32 GetPrice(UInt32 pos, Byte prevByte, bool matchMode, Byte matchByte, Byte symbol) const
     { return _coders[GetState(pos, prevByte)].GetPrice(matchMode, matchByte, symbol); }
 };
@@ -196,9 +199,9 @@ class CEncoder :
   public CMyUnknownImp
 {
   COptimal _optimum[kNumOpts];
-public:
   CMyComPtr<IMatchFinder> _matchFinder; // test it
   NRangeCoder::CEncoder _rangeEncoder;
+public:
 private:
 
   CMyBitEncoder _isMatch[kNumStates][NLength::kNumPosStatesEncodingMax];
@@ -208,14 +211,14 @@ private:
   CMyBitEncoder _isRepG2[kNumStates];
   CMyBitEncoder _isRep0Long[kNumStates][NLength::kNumPosStatesEncodingMax];
 
-	/* !!! */
-	CMyBitEncoder _K_isRepExt[kNumStates];
-	NRangeCoder::CBitTreeEncoder<kNumMoveBits, kNumRepExtBits> _K_RepExt;
+  /* !!! */
+  CMyBitEncoder _K_isRepExt[kNumStates];
+  NRangeCoder::CBitTreeEncoder<kNumMoveBits, kNumRepExtBits> _K_RepExt;
 
   NRangeCoder::CBitTreeEncoder<kNumMoveBits, kNumPosSlotBits> _posSlotEncoder[kNumLenToPosStates];
 
-  NRangeCoder::CReverseBitTreeEncoder2<kNumMoveBits> _posEncoders[kNumPosModels];
-  NRangeCoder::CReverseBitTreeEncoder2<kNumMoveBits> _posAlignEncoder;
+  CMyBitEncoder _posEncoders[kNumFullDistances - kEndPosModelIndex];
+  NRangeCoder::CBitTreeEncoder<kNumMoveBits, kNumAlignBits> _posAlignEncoder;
   
   NLength::CPriceTableEncoder _lenEncoder;
   NLength::CPriceTableEncoder _repMatchLenEncoder;
@@ -269,20 +272,9 @@ private:
 
   bool _needReleaseMFStream;
   
-  UInt32 ReadMatchDistances()
-  {
-    UInt32 len = _matchFinder->GetLongestMatch(_matchDistances);
-    if (len == _numFastBytes)
-      len += _matchFinder->GetMatchLen(len, _matchDistances[len], 
-          kMatchMaxLen - len);
-    _additionalOffset++;
-    HRESULT result = _matchFinder->MovePos();
-    if (result != S_OK)
-      throw CMatchFinderException(result);
-    return len;
-  }
+  HRESULT ReadMatchDistances(UInt32 &len);
 
-  void MovePos(UInt32 num);
+  HRESULT MovePos(UInt32 num);
   UInt32 GetRepLen1Price(CState state, UInt32 posState) const
   {
     return _isRepG0[state.Index].GetPrice(0) +
@@ -343,8 +335,8 @@ private:
   }
 
   UInt32 Backward(UInt32 &backRes, UInt32 cur);
-  UInt32 GetOptimum(UInt32 &backRes, UInt32 position);
-  UInt32 GetOptimumFast(UInt32 &backRes, UInt32 position);
+  HRESULT GetOptimum(UInt32 position, UInt32 &backRes, UInt32 &lenRes);
+  HRESULT GetOptimumFast(UInt32 position, UInt32 &backRes, UInt32 &lenRes);
 
   void FillPosSlotPrices();
   void FillDistancesPrices();
@@ -416,6 +408,8 @@ public:
   
   // ICompressWriteCoderProperties
   STDMETHOD(WriteCoderProperties)(ISequentialOutStream *outStream);
+
+  virtual ~CEncoder() {}
 };
 
 }}

@@ -45,15 +45,17 @@ STDMETHODIMP CMatchFinderHC::Create(UInt32 historySize,
 { 
   UInt32 windowReservSize = (historySize + keepAddBufferBefore + 
       matchMaxLen + keepAddBufferAfter) / 2 + 256;
-  try 
+  // try 
   {
     return m_MatchFinder.Create(historySize, keepAddBufferBefore, matchMaxLen, 
       keepAddBufferAfter, windowReservSize); 
   }
+  /*
   catch(...)
   {
     return E_OUTOFMEMORY;
   }
+  */
 }
 
 STDMETHODIMP_(UInt32) CMatchFinderHC::GetLongestMatch(UInt32 *distances)

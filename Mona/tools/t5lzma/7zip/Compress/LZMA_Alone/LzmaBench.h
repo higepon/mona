@@ -3,6 +3,9 @@
 #ifndef __LzmaBench_h
 #define __LzmaBench_h
 
-int LzmaBenchmark(UInt32 numIterations, UInt32 dictionarySize);
+#include <stdio.h>
+#include "../../../Common/Types.h"
+
+int LzmaBenchmark(FILE *f, UInt32 numIterations, UInt32 dictionarySize, bool isBT4);
 
 #endif

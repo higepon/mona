@@ -28,9 +28,9 @@ protected:
   void Free();
 public:
   CLZInWindow(): _bufferBase(0) {}
-  ~CLZInWindow() { Free(); }
+  virtual ~CLZInWindow() { Free(); }
 
-  void Create(UInt32 keepSizeBefore, UInt32 keepSizeAfter, 
+  bool Create(UInt32 keepSizeBefore, UInt32 keepSizeAfter, 
       UInt32 keepSizeReserv = (1<<17));
 
   HRESULT Init(ISequentialInStream *stream);

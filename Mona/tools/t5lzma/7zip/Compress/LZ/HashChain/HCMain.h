@@ -2,6 +2,7 @@
 
 #include "../../../../Common/Defs.h"
 #include "../../../../Common/CRC.h"
+#include "../../../../Common/Alloc.h"
 
 namespace HC_NAMESPACE {
 
@@ -37,13 +38,13 @@ namespace HC_NAMESPACE {
 
 
 CInTree::CInTree():
+  _hash(0),
   #ifdef HASH_ARRAY_2
   _hash2(0),
   #ifdef HASH_ARRAY_3
   _hash3(0),
   #endif
   #endif
-  _hash(0),
   _chain(0),
   _cutValue(16)
 {
@@ -51,16 +52,9 @@ CInTree::CInTree():
 
 void CInTree::FreeMemory()
 {
-  #ifdef WIN32
-  if (_chain != 0)
-    VirtualFree(_chain, 0, MEM_RELEASE);
-  if (_hash != 0)
-    VirtualFree(_hash, 0, MEM_RELEASE);
-  #else
-  delete []_chain;
-  delete []_hash;
-  #endif
+  BigFree(_chain);
   _chain = 0;
+  BigFree(_hash);
   _hash = 0;
   CLZInWindow::Free();
 }
@@ -74,55 +68,50 @@ HRESULT CInTree::Create(UInt32 historySize, UInt32 keepAddBufferBefore,
     UInt32 matchMaxLen, UInt32 keepAddBufferAfter, UInt32 sizeReserv)
 {
   FreeMemory();
-  try
-  {
-    CLZInWindow::Create(historySize + keepAddBufferBefore, 
-      matchMaxLen + keepAddBufferAfter, sizeReserv);
-    
-    if (_blockSize + 256 > kMaxValForNormalize)
-      return E_INVALIDARG;
-    
-    _historySize = historySize;
-    _matchMaxLen = matchMaxLen;
-    _cyclicBufferSize = historySize + 1;
-    
-    
-    UInt32 size = kHashSize;
-    #ifdef HASH_ARRAY_2
-    size += kHash2Size;
-    #ifdef HASH_ARRAY_3
-    size += kHash3Size;
-    #endif
-    #endif
-    
-    #ifdef WIN32
-    _chain = (CIndex *)::VirtualAlloc(0, (_cyclicBufferSize + 1) * sizeof(CIndex), MEM_COMMIT, PAGE_READWRITE);
-    if (_chain == 0)
-      throw 1; // CNewException();
-    _hash = (CIndex *)::VirtualAlloc(0, (size + 1) * sizeof(CIndex), MEM_COMMIT, PAGE_READWRITE);
-    if (_hash == 0)
-      throw 1; // CNewException();
-    #else
-    _chain = new CIndex[_cyclicBufferSize + 1];
-    _hash = new CIndex[size + 1];
-    #endif
-    
-    // m_RightBase = &m_LeftBase[_blockSize];
-    
-    // _hash = &m_RightBase[_blockSize];
-    #ifdef HASH_ARRAY_2
-    _hash2 = &_hash[kHashSize]; 
-    #ifdef HASH_ARRAY_3
-    _hash3 = &_hash2[kHash2Size]; 
-    #endif
-    #endif
-    return S_OK;
-  }
-  catch(...)
+  if (!CLZInWindow::Create(historySize + keepAddBufferBefore, 
+      matchMaxLen + keepAddBufferAfter, sizeReserv))
+    return E_OUTOFMEMORY;
+
+  
+  if (_blockSize + 256 > kMaxValForNormalize)
+    return E_INVALIDARG;
+  
+  _historySize = historySize;
+  _matchMaxLen = matchMaxLen;
+  _cyclicBufferSize = historySize + 1;
+  
+  
+  UInt32 size = kHashSize;
+  #ifdef HASH_ARRAY_2
+  size += kHash2Size;
+  #ifdef HASH_ARRAY_3
+  size += kHash3Size;
+  #endif
+  #endif
+  
+  _chain = (CIndex *)::BigAlloc((_cyclicBufferSize + 1) * sizeof(CIndex));
+  if (_chain == 0)
   {
     FreeMemory();
     return E_OUTOFMEMORY;
   }
+  _hash = (CIndex *)::BigAlloc((size + 1) * sizeof(CIndex));
+  if (_hash == 0)
+  {
+    FreeMemory();
+    return E_OUTOFMEMORY;
+  }
+  
+  // m_RightBase = &m_LeftBase[_blockSize];
+  
+  // _hash = &m_RightBase[_blockSize];
+  #ifdef HASH_ARRAY_2
+  _hash2 = &_hash[kHashSize]; 
+  #ifdef HASH_ARRAY_3
+  _hash3 = &_hash2[kHash2Size]; 
+  #endif
+  #endif
+  return S_OK;
 }
 
 static const UInt32 kEmptyHashValue = 0;
@@ -130,7 +119,7 @@ static const UInt32 kEmptyHashValue = 0;
 HRESULT CInTree::Init(ISequentialInStream *aStream)
 {
   RINOK(CLZInWindow::Init(aStream));
-  int i;
+  UInt32 i;
   for(i = 0; i < kHashSize; i++)
     _hash[i] = kEmptyHashValue;
 

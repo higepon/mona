@@ -73,12 +73,6 @@ wchar_t * MyStringLower(wchar_t *s)
 
 inline int ConvertCompareResult(int r) { return r - 2; }
 
-int MyStringCollate(const char *s1, const char *s2)
-{ 
-  return ConvertCompareResult(CompareStringA(
-    LOCALE_USER_DEFAULT, SORT_STRINGSORT, s1, -1, s2, -1)); 
-}
-
 int MyStringCollate(const wchar_t *s1, const wchar_t *s2)
 { 
   int res = CompareStringW(
@@ -93,11 +87,19 @@ int MyStringCollate(const wchar_t *s1, const wchar_t *s2)
   #endif
 }
 
+#ifndef _WIN32_WCE
+int MyStringCollate(const char *s1, const char *s2)
+{ 
+  return ConvertCompareResult(CompareStringA(
+    LOCALE_USER_DEFAULT, SORT_STRINGSORT, s1, -1, s2, -1)); 
+}
+
 int MyStringCollateNoCase(const char *s1, const char *s2)
 { 
   return ConvertCompareResult(CompareStringA(
     LOCALE_USER_DEFAULT, NORM_IGNORECASE | SORT_STRINGSORT, s1, -1, s2, -1)); 
 }
+#endif
 
 int MyStringCollateNoCase(const wchar_t *s1, const wchar_t *s2)
 { 

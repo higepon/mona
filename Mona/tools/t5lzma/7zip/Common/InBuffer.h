@@ -5,12 +5,14 @@
 
 #include "../IStream.h"
 
+#ifndef _NO_EXCEPTIONS
 class CInBufferException
 {
 public:
   HRESULT ErrorCode;
   CInBufferException(HRESULT errorCode): ErrorCode(errorCode) {}
 };
+#endif
 
 class CInBuffer
 {
@@ -25,8 +27,15 @@ class CInBuffer
   bool ReadBlock();
 
 public:
-  CInBuffer(UInt32 bufferSize = (1 << 20));
-  ~CInBuffer();
+  #ifdef _NO_EXCEPTIONS
+  HRESULT ErrorCode;
+  #endif
+
+  CInBuffer();
+  ~CInBuffer() { Free(); }
+
+  bool Create(UInt32 bufferSize);
+  void Free();
   
   void Init(ISequentialInStream *stream);
   // void ReleaseStream() { _stream.Release(); }

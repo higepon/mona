@@ -90,6 +90,7 @@ public:
   void SetWindowReservSize(UInt32 aReservWindowSize)
     { m_WindowReservSize = aReservWindowSize; }
   */
+  virtual ~CMatchFinderHC() {}
 };
  
 }

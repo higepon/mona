@@ -4,6 +4,7 @@
 #define __LZMA_DECODER_H
 
 #include "../../../Common/MyCom.h"
+#include "../../../Common/Alloc.h"
 #include "../../ICoder.h"
 #include "../LZ/LZOutWindow.h"
 #include "../RangeCoder/RangeCoderBitTree.h"
@@ -77,21 +78,22 @@ public:
   ~CLiteralDecoder()  { Free(); }
   void Free()
   { 
-    delete []_coders;
+    MyFree(_coders);
     _coders = 0;
   }
-  void Create(int numPosBits, int numPrevBits)
+  bool Create(int numPosBits, int numPrevBits)
   {
     if (_coders == 0 || (numPosBits + numPrevBits) != 
         (_numPrevBits + _numPosBits) )
     {
       Free();
       UInt32 numStates = 1 << (numPosBits + numPrevBits);
-      _coders = new CLiteralDecoder2[numStates];
+      _coders = (CLiteralDecoder2 *)MyAlloc(numStates * sizeof(CLiteralDecoder2));
     }
     _numPosBits = numPosBits;
     _posMask = (1 << numPosBits) - 1;
     _numPrevBits = numPrevBits;
+    return (_coders != 0);
   }
   void Init()
   {
@@ -128,21 +130,21 @@ public:
     _choice2.Init();
     _highCoder.Init();
   }
-	/* !!! */
-	UInt32 Decode(NRangeCoder::CDecoder *rangeDecoder, UInt32 posState)
-	{
-		int i;
-		if (_choice.Decode(rangeDecoder) == 0)
-			return _lowCoder[posState].Decode(rangeDecoder);
-		if (_choice2.Decode(rangeDecoder) == 0)
-			return kNumLowSymbols + _midCoder[posState].Decode(rangeDecoder);
-		i = _highCoder.Decode(rangeDecoder) - (256 - 8);
-		if (i > 0) {
-			i = (1 << i | rangeDecoder->DecodeDirectBits(i)) - 1;
-			i = (1 << i | rangeDecoder->DecodeDirectBits(i)) - 1;
-		}
-		return (kNumLowSymbols + kNumMidSymbols + (256 - 8)) + i;
-	}
+  /* !!! */
+  UInt32 Decode(NRangeCoder::CDecoder *rangeDecoder, UInt32 posState)
+  {
+    int i;
+    if (_choice.Decode(rangeDecoder) == 0)
+      return _lowCoder[posState].Decode(rangeDecoder);
+    if (_choice2.Decode(rangeDecoder) == 0)
+      return kNumLowSymbols + _midCoder[posState].Decode(rangeDecoder);
+    i = _highCoder.Decode(rangeDecoder) - (256 - 8);
+    if (i > 0) {
+      i = (1 << i | rangeDecoder->DecodeDirectBits(i)) - 1;
+      i = (1 << i | rangeDecoder->DecodeDirectBits(i)) - 1;
+    }
+    return (kNumLowSymbols + kNumMidSymbols + (256 - 8)) + i;
+  }
 };
 
 }
@@ -165,7 +167,7 @@ class CDecoder:
   NRangeCoder::CBitTreeDecoder<kNumMoveBits, kNumPosSlotBits> _posSlotDecoder[kNumLenToPosStates];
 
   CMyBitDecoder _posDecoders[kNumFullDistances - kEndPosModelIndex];
-  NRangeCoder::CReverseBitTreeDecoder<kNumMoveBits, kNumAlignBits> _posAlignDecoder;
+  NRangeCoder::CBitTreeDecoder<kNumMoveBits, kNumAlignBits> _posAlignDecoder;
   
   NLength::CDecoder _lenDecoder;
   NLength::CDecoder _repMatchLenDecoder;
@@ -216,6 +218,10 @@ public:
 
   // ICompressSetDecoderProperties
   STDMETHOD(SetDecoderProperties)(ISequentialInStream *inStream);
+
+  STDMETHOD(GetInStreamProcessedSize)(UInt64 *value);
+
+  virtual ~CDecoder() {}
 };
 
 }}

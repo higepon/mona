@@ -20,7 +20,7 @@ protected:
     { if (index + num > _size) num = _size - index; } 
 public:
   CBaseRecordVector(size_t itemSize):
-      _size(0), _capacity(0), _items(0), _itemSize(itemSize) {}
+      _capacity(0), _size(0), _items(0), _itemSize(itemSize) {}
 	virtual ~CBaseRecordVector();
   int Size() const { return _size; }
 	bool IsEmpty() const { return (_size == 0); }
@@ -127,7 +127,6 @@ public:
   int Find(const T& item) const
   {
     for(int i = 0; i < Size(); i++)
-      //if (item == (*this)[mid])
       if (item == (*this)[i])
         return i;
       return -1;

@@ -48,15 +48,17 @@ STDMETHODIMP CMatchFinderBinTree::Create(UInt32 sizeHistory,
 { 
   UInt32 windowReservSize = (sizeHistory + keepAddBufferBefore + 
       matchMaxLen + keepAddBufferAfter) / 2 + 256;
-  try 
+  // try 
   {
     return _matchFinder.Create(sizeHistory, keepAddBufferBefore, 
         matchMaxLen, keepAddBufferAfter, windowReservSize); 
   }
+  /*
   catch(...)
   {
     return E_OUTOFMEMORY;
   }
+  */
 }
 
 STDMETHODIMP_(UInt32) CMatchFinderBinTree::GetLongestMatch(UInt32 *distances)

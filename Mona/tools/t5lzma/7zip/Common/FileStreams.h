@@ -24,6 +24,8 @@ public:
   NC::NFile::NIO::CInFile File;
   #endif
   CInFileStream() {}
+  virtual ~CInFileStream() {}
+
   bool Open(LPCTSTR fileName);
   #ifdef WIN32
   #ifndef _UNICODE
@@ -40,6 +42,7 @@ public:
   STDMETHOD(GetSize)(UInt64 *size);
 };
 
+#ifndef _WIN32_WCE
 class CStdInFileStream: 
   public ISequentialInStream,
   public CMyUnknownImp
@@ -50,10 +53,11 @@ public:
   // void Open() { File = GetStdHandle(STD_INPUT_HANDLE); };
   MY_UNKNOWN_IMP
 
+  virtual ~CStdInFileStream() {}
   STDMETHOD(Read)(void *data, UInt32 size, UInt32 *processedSize);
   STDMETHOD(ReadPart)(void *data, UInt32 size, UInt32 *processedSize);
 };
-
+#endif
 
 class COutFileStream: 
   public IOutStream,
@@ -65,11 +69,11 @@ public:
   #else
   NC::NFile::NIO::COutFile File;
   #endif
-  COutFileStream() {}
-  bool Open(LPCTSTR fileName);
+  virtual ~COutFileStream() {}
+  bool Create(LPCTSTR fileName, bool createAlways);
   #ifdef WIN32
   #ifndef _UNICODE
-  bool Open(LPCWSTR fileName);
+  bool Create(LPCWSTR fileName, bool createAlways);
   #endif
   #endif
   
@@ -81,6 +85,7 @@ public:
   STDMETHOD(SetSize)(Int64 newSize);
 };
 
+#ifndef _WIN32_WCE
 class CStdOutFileStream: 
   public ISequentialOutStream,
   public CMyUnknownImp
@@ -88,8 +93,10 @@ class CStdOutFileStream:
 public:
   MY_UNKNOWN_IMP
 
+  virtual ~CStdOutFileStream() {}
   STDMETHOD(Write)(const void *data, UInt32 size, UInt32 *processedSize);
   STDMETHOD(WritePart)(const void *data, UInt32 size, UInt32 *processedSize);
 };
+#endif
 
 #endif

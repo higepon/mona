@@ -14,13 +14,14 @@ const UInt32 kTopValue = (1 << kNumTopBits);
 
 class CEncoder
 {
-  COutBuffer Stream;
   UInt64 Low;
   UInt32 Range;
   UInt32 _ffNum;
   Byte _cache;
-
 public:
+  COutBuffer Stream;
+  bool Create(UInt32 bufferSize) { return Stream.Create(bufferSize); }
+
   void Init(ISequentialOutStream *stream)
   {
     Stream.Init(stream);
@@ -92,7 +93,8 @@ public:
     for (int i = numTotalBits - 1; i >= 0; i--)
     {
       Range >>= 1;
-      if (((value >> i) & 1) == 0)	/* !!! */
+      //if (((value >> i) & 1) == 1)
+      if (((value >> i) & 1) == 0) /* !!! */
         Low += Range;
       if (Range < kTopValue)
       {
@@ -105,7 +107,8 @@ public:
   void EncodeBit(UInt32 size0, UInt32 numTotalBits, UInt32 symbol)
   {
     UInt32 newBound = (Range >> numTotalBits) * size0;
-    if (symbol != 0)		/* !!! */
+    //if (symbol == 0)
+    if (symbol != 0) /* !!! */
       Range = newBound;
     else
     {
@@ -128,6 +131,8 @@ public:
   CInBuffer Stream;
   UInt32 Range;
   UInt32 Code;
+  bool Create(UInt32 bufferSize) { return Stream.Create(bufferSize); }
+
   void Normalize()
   {
     while (Range < kTopValue)
@@ -194,13 +199,13 @@ public:
       {
         code -= range;
         result |= 1;
+      }
       */
-
       UInt32 t = (code - range) >> 31;
       code -= range & (t - 1);
       // range = rangeTmp + ((range & 1) & (1 - t));
 //    result = (result << 1) | (1 - t);
-      result += result + t;
+      result += result + t; /* !!! */
 
       if (range < kTopValue)
       {
@@ -219,12 +224,14 @@ public:
     UInt32 symbol;
     if (Code < newBound)
     {
-      symbol = 0^1;
+      //symbol = 0;
+      symbol = 0^1; /* !!! */
       Range = newBound;
     }
     else
     {
-      symbol = 1^1;
+      //symbol = 1;
+      symbol = 1^1; /* !!! */
       Code -= newBound;
       Range -= newBound;
     }

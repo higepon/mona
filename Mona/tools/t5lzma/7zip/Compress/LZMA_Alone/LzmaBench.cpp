@@ -2,7 +2,7 @@
 
 #include "StdAfx.h"
 
-#include <stdio.h>
+#include "LzmaBench.h"
 
 #ifndef WIN32
 #include <time.h>
@@ -12,7 +12,13 @@
 #include "../LZMA/LZMADecoder.h"
 #include "../LZMA/LZMAEncoder.h"
 
-static const UInt32 kAdditionalSize = (6 << 20);
+static const UInt32 kAdditionalSize = 
+#ifdef _WIN32_WCE
+(1 << 20);
+#else
+(6 << 20);
+#endif
+
 static const UInt32 kCompressedAdditionalSize = (1 << 10);
 static const UInt32 kMaxLzmaPropSize = 10;
 
@@ -170,18 +176,20 @@ class CBenchmarkOutStream:
   public CMyUnknownImp
 {
   UInt32 BufferSize;
+  FILE *_f;
 public:
   UInt32 Pos;
   Byte *Buffer;
-  CBenchmarkOutStream(): Buffer(0) {} 
-  ~CBenchmarkOutStream() { delete []Buffer; }
-  void Init(UInt32 bufferSize) 
+  CBenchmarkOutStream(): _f(0), Buffer(0) {} 
+  virtual ~CBenchmarkOutStream() { delete []Buffer; }
+  void Init(FILE *f, UInt32 bufferSize) 
   {
     delete []Buffer;
     Buffer = 0;
     Buffer = new Byte[bufferSize];
     Pos = 0;
     BufferSize = bufferSize;
+    _f = f;
   }
   MY_UNKNOWN_IMP
   STDMETHOD(Write)(const void *data, UInt32 size, UInt32 *processedSize);
@@ -197,7 +205,7 @@ STDMETHODIMP CBenchmarkOutStream::Write(const void *data, UInt32 size, UInt32 *p
     *processedSize = i;
   if (i != size)
   {
-    fprintf(stderr, "\nERROR: Buffer is full\n");
+    fprintf(_f, "\nERROR: Buffer is full\n");
     return E_FAIL;
   }
   return S_OK;
@@ -294,13 +302,22 @@ static UInt32 GetLogSize(UInt32 size)
   return (32 << kSubBits);
 }
 
-static UInt64 GetCompressRating(UInt32 dictionarySize, 
+static UInt64 GetCompressRating(UInt32 dictionarySize, bool isBT4,
     UInt64 elapsedTime, UInt64 size)
 {
   if (elapsedTime == 0)
     elapsedTime = 1;
-  UInt64 t = GetLogSize(dictionarySize) - (19 << kSubBits);
-  UInt64 numCommandsForOne = 2000 + ((t * t * 68) >> (2 * kSubBits));
+  UInt64 numCommandsForOne;
+  if (isBT4)
+  {
+    UInt64 t = GetLogSize(dictionarySize) - (19 << kSubBits);
+    numCommandsForOne = 2000 + ((t * t * 68) >> (2 * kSubBits));
+  }
+  else
+  {
+    UInt64 t = GetLogSize(dictionarySize) - (15 << kSubBits);
+    numCommandsForOne = 1500 + ((t * t * 41) >> (2 * kSubBits));
+  }
   UInt64 numCommands = (UInt64)(size) * numCommandsForOne;
   return numCommands * GetFreq() / elapsedTime;
 }
@@ -316,21 +333,24 @@ static UInt64 GetDecompressRating(UInt64 elapsedTime,
 
 static UInt64 GetTotalRating(
     UInt32 dictionarySize, 
+    bool isBT4,
     UInt64 elapsedTimeEn, UInt64 sizeEn,
     UInt64 elapsedTimeDe, 
     UInt64 inSizeDe, UInt64 outSizeDe)
 {
-  return (GetCompressRating(dictionarySize, elapsedTimeEn, sizeEn) + 
+  return (GetCompressRating(dictionarySize, isBT4, elapsedTimeEn, sizeEn) + 
     GetDecompressRating(elapsedTimeDe, inSizeDe, outSizeDe)) / 2;
 }
 
-static void PrintRating(UInt64 rating)
+static void PrintRating(FILE *f, UInt64 rating)
 {
-  fprintf(stderr, "%5d MIPS", (unsigned int)(rating / 1000000));
+  fprintf(f, "%5d MIPS", (unsigned int)(rating / 1000000));
 }
 
 static void PrintResults(
+    FILE *f, 
     UInt32 dictionarySize,
+    bool isBT4,
     UInt64 elapsedTime, 
     UInt64 size, 
     bool decompressMode, UInt64 secondSize)
@@ -338,30 +358,40 @@ static void PrintResults(
   if (elapsedTime == 0)
     elapsedTime = 1;
   UInt64 speed = size * GetFreq() / elapsedTime;
-  fprintf(stderr, "%6d KB/s  ", (unsigned int)(speed / 1024));
+  fprintf(f, "%6d KB/s  ", (unsigned int)(speed / 1024));
   UInt64 rating;
   if (decompressMode)
     rating = GetDecompressRating(elapsedTime, size, secondSize);
   else
-    rating = GetCompressRating(dictionarySize, elapsedTime, size);
-  PrintRating(rating);
+    rating = GetCompressRating(dictionarySize, isBT4, elapsedTime, size);
+  PrintRating(f, rating);
 }
 
-static void ThrowError(HRESULT result)
+static void ThrowError(FILE *f, HRESULT result, const char *s)
 {
+  fprintf(f, "\nError: ");
   if (result == E_ABORT)
-    throw "User break";
+    fprintf(f, "User break");
   if (result == E_OUTOFMEMORY)
-    throw "Can not allocate memory";
+    fprintf(f, "Can not allocate memory");
+  else
+    fprintf(f, s);
+  fprintf(f, "\n");
 }
 
-int LzmaBenchmark(UInt32 numIterations, UInt32 dictionarySize)
+const wchar_t *bt2 = L"BT2";
+const wchar_t *bt4 = L"BT4";
+
+int LzmaBenchmark(FILE *f, UInt32 numIterations, UInt32 dictionarySize, bool isBT4)
 {
   if (numIterations == 0)
     return 0;
-  if (dictionarySize < (1 << 19))
-    throw "dictionary size for benchmark must be >= 19 (512 KB)";
-  fprintf(stderr, "\n       Compressing                Decompressing\n\n");
+  if (dictionarySize < (1 << 19) && isBT4 || dictionarySize < (1 << 15))
+  {
+    fprintf(f, "\nError: dictionary size for benchmark must be >= 19 (512 KB)\n");
+    return 1;
+  }
+  fprintf(f, "\n       Compressing                Decompressing\n\n");
   NCompress::NLZMA::CEncoder *encoderSpec = new NCompress::NLZMA::CEncoder;
   CMyComPtr<ICompressCoder> encoder = encoderSpec;
 
@@ -370,22 +400,32 @@ int LzmaBenchmark(UInt32 numIterations, UInt32 dictionarySize)
 
   CBenchmarkOutStream *propStreamSpec = new CBenchmarkOutStream;
   CMyComPtr<ISequentialOutStream> propStream = propStreamSpec;
-  propStreamSpec->Init(kMaxLzmaPropSize);
+  propStreamSpec->Init(f, kMaxLzmaPropSize);
   
   CBenchmarkInStream *propDecoderStreamSpec = new CBenchmarkInStream;
   CMyComPtr<ISequentialInStream> propDecoderStream = propDecoderStreamSpec;
 
-  PROPID propIDs[] = { NCoderPropID::kDictionarySize };
+  PROPID propIDs[] = 
+  { 
+    NCoderPropID::kDictionarySize,  
+    NCoderPropID::kMatchFinder  
+  };
   const int kNumProps = sizeof(propIDs) / sizeof(propIDs[0]);
   PROPVARIANT properties[kNumProps];
   properties[0].vt = VT_UI4;
   properties[0].ulVal = UInt32(dictionarySize);
 
+  properties[1].vt = VT_BSTR;
+  properties[1].bstrVal = isBT4 ? (BSTR)bt4: (BSTR)bt2;
+
   const UInt32 kBufferSize = dictionarySize + kAdditionalSize;
   const UInt32 kCompressedBufferSize = (kBufferSize / 2) + kCompressedAdditionalSize;
 
   if (encoderSpec->SetCoderProperties(propIDs, properties, kNumProps) != S_OK)
-    throw "Incorrect command";
+  {
+    fprintf(f, "\nError: Incorrect command\n");
+    return 1;
+  }
   encoderSpec->WriteCoderProperties(propStream);
 
   CBenchRandomGenerator rg;
@@ -412,18 +452,21 @@ int LzmaBenchmark(UInt32 numIterations, UInt32 dictionarySize)
     inStreamSpec->Init(rg.Buffer, rg.BufferSize);
     CMyComPtr<ISequentialInStream> inStream = inStreamSpec;
     CBenchmarkOutStream *outStreamSpec = new CBenchmarkOutStream;
-    outStreamSpec->Init(kCompressedBufferSize);
+    outStreamSpec->Init(f, kCompressedBufferSize);
     CMyComPtr<ISequentialOutStream> outStream = outStreamSpec;
     HRESULT result = encoder->Code(inStream, outStream, 0, 0, progressInfo);
     UInt64 encodeTime = ::GetTimeCount() - progressInfoSpec->Time;
     UInt32 compressedSize = outStreamSpec->Pos;
     if(result != S_OK)
     {
-      ThrowError(result);
-      throw "Encode Error";
+      ThrowError(f, result, "Encoder Error");
+      return 1;
     }
     if (progressInfoSpec->InSize == 0)
-      throw "Internal ERROR 1282";
+    {
+      fprintf(f, "\nError: Internal ERROR 1282\n");
+      return 1;
+    }
   
     ///////////////////////
     // Decompressing
@@ -439,35 +482,41 @@ int LzmaBenchmark(UInt32 numIterations, UInt32 dictionarySize)
       
       propDecoderStreamSpec->Init(propStreamSpec->Buffer, propStreamSpec->Pos);
       if (decoderSpec->SetDecoderProperties(propDecoderStream) != S_OK)
-        throw "Set Decoder Properties Error";
+      {
+        fprintf(f, "\nError: Set Decoder Properties Error\n");
+        return 1;
+      }
       UInt64 outSize = kBufferSize;
       UInt64 startTime = ::GetTimeCount();
       result = decoder->Code(inStream, crcOutStream, 0, &outSize, 0);
       decodeTime = ::GetTimeCount() - startTime;
       if(result != S_OK)
       {
-        ThrowError(result);
-        throw "Decode Error";
+        ThrowError(f, result, "Decode Error");
+        return 1;
       }
       if (crcOutStreamSpec->CRC.GetDigest() != crc.GetDigest())
-        throw "CRC Error";
+      {
+        fprintf(f, "\nError: CRC Error\n");
+        return 1;
+      }
     }
     UInt64 benchSize = kBufferSize - progressInfoSpec->InSize;
-    PrintResults(dictionarySize, encodeTime, benchSize, false, 0);
-    fprintf(stderr, "     ");
-    PrintResults(dictionarySize, decodeTime, kBufferSize, true, compressedSize);
-    fprintf(stderr, "\n");
+    PrintResults(f, dictionarySize, isBT4, encodeTime, benchSize, false, 0);
+    fprintf(f, "     ");
+    PrintResults(f, dictionarySize, isBT4, decodeTime, kBufferSize, true, compressedSize);
+    fprintf(f, "\n");
 
     totalBenchSize += benchSize;
     totalEncodeTime += encodeTime;
     totalDecodeTime += decodeTime;
     totalCompressedSize += compressedSize;
   }
-  fprintf(stderr, "---------------------------------------------------\n");
-  PrintResults(dictionarySize, totalEncodeTime, totalBenchSize, false, 0);
-  fprintf(stderr, "     ");
-  PrintResults(dictionarySize, totalDecodeTime, 
+  fprintf(f, "---------------------------------------------------\n");
+  PrintResults(f, dictionarySize, isBT4, totalEncodeTime, totalBenchSize, false, 0);
+  fprintf(f, "     ");
+  PrintResults(f, dictionarySize, isBT4, totalDecodeTime, 
       kBufferSize * numIterations, true, totalCompressedSize);
-  fprintf(stderr, "    Average\n");
+  fprintf(f, "    Average\n");
   return 0;
 }

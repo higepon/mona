@@ -5,12 +5,13 @@
 
 #include "../IStream.h"
 
-class COutBufferException
+#ifndef _NO_EXCEPTIONS
+struct COutBufferException
 {
-public:
   HRESULT ErrorCode;
   COutBufferException(HRESULT errorCode): ErrorCode(errorCode) {}
 };
+#endif
 
 class COutBuffer
 {
@@ -22,13 +23,21 @@ class COutBuffer
 
   void WriteBlock();
 public:
-  COutBuffer(UInt32 bufferSize = (1 << 20));
-  ~COutBuffer();
+  #ifdef _NO_EXCEPTIONS
+  HRESULT ErrorCode;
+  #endif
+
+  COutBuffer(): _buffer(0), _pos(0), _stream(0) {}
+  ~COutBuffer() { Free(); }
+  
+  bool Create(UInt32 bufferSize);
+  void Free();
 
   void Init(ISequentialOutStream *stream);
   HRESULT Flush();
   // void ReleaseStream(); {  _stream.Release(); }
 
+  /*
   void *GetBuffer(UInt32 &sizeAvail)
   {
     sizeAvail = _bufferSize - _pos;
@@ -40,6 +49,7 @@ public:
     if(_pos >= _bufferSize)
       WriteBlock();
   }
+  */
 
   void WriteByte(Byte b)
   {

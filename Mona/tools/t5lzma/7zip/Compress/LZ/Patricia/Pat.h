@@ -3,7 +3,6 @@
 // #ifndef __PATRICIA__H
 // #define __PATRICIA__H
 
-#include "../../../../Common/AlignedBuffer.h"
 #include "../../../../Common/MyCom.h"
 #include "../../../../Common/Types.h"
 #include "../LZInWindow.h"
@@ -222,10 +221,6 @@ public:
   bool  m_SpecialMode;
   UInt32 m_NumNotChangedCycles;
   UInt32 *m_TmpBacks;
-
-  #ifndef WIN32
-  CAlignedBuffer m_AlignBuffer;
-  #endif
 
   CMyComPtr<IMatchFinderCallback> m_Callback;
 

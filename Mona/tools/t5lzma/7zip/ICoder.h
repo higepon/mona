@@ -77,7 +77,7 @@ DEFINE_GUID(IID_ICompressSetDecoderProperties,
 MIDL_INTERFACE("23170F69-40C1-278A-0000-000200210000")
 ICompressSetDecoderProperties: public IUnknown
 {
-  STDMETHOD(SetDecoderProperties)(ISequentialInStream *anInStream) PURE;
+  STDMETHOD(SetDecoderProperties)(ISequentialInStream *inStream) PURE;
 };
 
 // {23170F69-40C1-278A-0000-000200230000}
@@ -107,6 +107,24 @@ ICompressGetSubStreamSize: public IUnknown
   STDMETHOD(GetSubStreamSize)(UInt64 subStream, UInt64 *value) PURE;
 };
 
+// {23170F69-40C1-278A-0000-000200260000}
+DEFINE_GUID(IID_ICompressSetInStream, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x26, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000200260000")
+ICompressSetInStream: public IUnknown
+{
+  STDMETHOD(SetInStream)(ISequentialInStream *inStream, const UInt64 *inSize) PURE;
+};
+
+// {23170F69-40C1-278A-0000-000200270000}
+DEFINE_GUID(IID_ICompressSetOutStream, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x27, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000200270000")
+ICompressSetOutStream: public IUnknown
+{
+  STDMETHOD(SetOutStream)(ISequentialOutStream *outStream, const UInt64 *outSize) PURE;
+};
+
 //////////////////////
 // It's for DLL file
 namespace NMethodPropID
@@ -119,7 +137,7 @@ namespace NMethodPropID
     kEncoder,
     kInStreams,
     kOutStreams,
-    kDescription,
+    kDescription
   };
 }
 

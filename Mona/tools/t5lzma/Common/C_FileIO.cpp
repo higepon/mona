@@ -2,57 +2,45 @@
 
 #include "C_FileIO.h"
 
+#include <fcntl.h>
+#include <unistd.h>
+
 namespace NC {
 namespace NFile {
 namespace NIO {
 
-CFileBase::~CFileBase() { Close(); }
-
-bool CFileBase::Open(const char *name, const char *access)
+bool CFileBase::OpenBinary(const char *name, int flags)
 {
+  #ifdef O_BINARY
+  flags |= O_BINARY;
+  #endif
   Close();
-  _handle = ::fopen(name, access);
-  return _handle != 0;
+  _handle = ::open(name, flags, 0666);
+  return _handle != -1;
 }
 
 bool CFileBase::Close()
 {
-  if(_handle == 0)
+  if(_handle == -1)
     return true;
-  if (fclose(_handle) != 0)
+  if (close(_handle) != 0)
     return false;
-  _handle = 0;
-  return true;
-}
-
-bool CFileBase::GetPosition(UInt64 &position) const
-{
-  long posTemp = ftell(_handle);
-  if (posTemp == -1)
-    return false;
-  position = posTemp;
+  _handle = -1;
   return true;
 }
 
 bool CFileBase::GetLength(UInt64 &length) const
 {
-  UInt64 curPos;
-  if (!GetPosition(curPos))
-    return false;;
-  bool result = false;
-  if (Seek(0, SEEK_END))
-  {
-    result = GetPosition(length);
-  }
+  off_t curPos = Seek(0, SEEK_CUR);
+  off_t lengthTemp = Seek(0, SEEK_END);
   Seek(curPos, SEEK_SET);
-  return result;
+  length = (UInt64)lengthTemp;
+  return true;
 }
 
-bool CFileBase::Seek(Int64 distanceToMove, int moveMethod) const
+off_t CFileBase::Seek(off_t distanceToMove, int moveMethod) const
 {
-  if (fseek(_handle, (long)distanceToMove, moveMethod) != 0)
-    return false;
-  return true;
+  return ::lseek(_handle, distanceToMove, moveMethod);
 }
 
 /////////////////////////
@@ -60,27 +48,31 @@ bool CFileBase::Seek(Int64 distanceToMove, int moveMethod) const
 
 bool CInFile::Open(const char *name)
 {
-  return CFileBase::Open(name, "rb");
+  return CFileBase::OpenBinary(name, O_RDONLY);
 }
 
-bool CInFile::Read(void *data, UInt32 size, UInt32 &processedSize)
+ssize_t CInFile::Read(void *data, size_t size)
 {
-  processedSize = fread(data, 1, size, _handle);
-  return ferror(_handle) == 0;
+  return read(_handle, data, size);
 }
 
 /////////////////////////
 // COutFile
 
-bool COutFile::Open(const char *name)
+bool COutFile::Create(const char *name, bool createAlways)
 {
-  return CFileBase::Open(name, "wb");
+  if (createAlways)
+  {
+    Close();
+    _handle = ::creat(name, 0666);
+    return _handle != -1;
+  }
+  return OpenBinary(name, O_CREAT | O_EXCL | O_WRONLY);
 }
 
-bool COutFile::Write(const void *data, UInt32 size, UInt32 &processedSize)
+ssize_t COutFile::Write(const void *data, size_t size)
 {
-  processedSize = fwrite(data, 1, size, _handle);
-  return ferror(_handle) == 0;
+  return write(_handle, data, size);
 }
 
 }}}

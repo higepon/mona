@@ -4,19 +4,15 @@
 
 #include "LZInWindow.h"
 #include "../../../Common/MyCom.h"
+#include "../../../Common/Alloc.h"
 
 void CLZInWindow::Free()
 {
-  #ifdef WIN32
-  if (_bufferBase != 0)
-    VirtualFree(_bufferBase, 0, MEM_RELEASE);
-  #else
-  delete []_bufferBase;
-  #endif
+  ::BigFree(_bufferBase);
   _bufferBase = 0;
 }
 
-void CLZInWindow::Create(UInt32 keepSizeBefore, UInt32 keepSizeAfter, UInt32 keepSizeReserv)
+bool CLZInWindow::Create(UInt32 keepSizeBefore, UInt32 keepSizeAfter, UInt32 keepSizeReserv)
 {
   _keepSizeBefore = keepSizeBefore;
   _keepSizeAfter = keepSizeAfter;
@@ -26,15 +22,10 @@ void CLZInWindow::Create(UInt32 keepSizeBefore, UInt32 keepSizeAfter, UInt32 kee
   {
     Free();
     _blockSize = blockSize;
-    #ifdef WIN32
-    _bufferBase = (Byte *)::VirtualAlloc(0, _blockSize, MEM_COMMIT, PAGE_READWRITE);
-    if (_bufferBase == 0)
-      throw 1; // CNewException();
-    #else
-    _bufferBase = new Byte[_blockSize];
-    #endif
+    _bufferBase = (Byte *)::BigAlloc(_blockSize);
   }
   _pointerToLastSafePosition = _bufferBase + _blockSize - keepSizeAfter;
+  return (_bufferBase != 0);
 }
 
 

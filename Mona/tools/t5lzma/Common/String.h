@@ -86,9 +86,11 @@ wchar_t MyCharUpper(wchar_t c);
 //////////////////////////////////////
 // Compare
 
+#ifndef _WIN32_WCE
 int MyStringCollate(const char *s1, const char *s2);
-int MyStringCollate(const wchar_t *s1, const wchar_t *s2);
 int MyStringCollateNoCase(const char *s1, const char *s2);
+#endif
+int MyStringCollate(const wchar_t *s1, const wchar_t *s2);
 int MyStringCollateNoCase(const wchar_t *s1, const wchar_t *s2);
 
 int MyStringCompare(const char *s1, const char  *s2);
@@ -415,21 +417,24 @@ public:
       p = GetNextCharPointer(p);
     Delete(0, p - _chars);
   }
-  void TrimLeft()
+  private:
+  CStringBase GetTrimDefaultCharSet()
   {
     CStringBase<T> charSet;
-    for(int i = 0; i < sizeof(kTrimDefaultCharSet) /
-      sizeof(kTrimDefaultCharSet[0]); i++)
-      charSet += kTrimDefaultCharSet[i];
-    TrimLeftWithCharSet(charSet);
+    for(int i = 0; i < (int)(sizeof(kTrimDefaultCharSet) /
+      sizeof(kTrimDefaultCharSet[0])); i++)
+      charSet += (T)kTrimDefaultCharSet[i];
+    return charSet;
+  }
+  public:
+
+  void TrimLeft()
+  {
+    TrimLeftWithCharSet(GetTrimDefaultCharSet());
   }
   void TrimRight()
   {
-    CStringBase<T> charSet;
-    for(int i = 0; i < sizeof(kTrimDefaultCharSet) / 
-      sizeof(kTrimDefaultCharSet[0]); i++)
-      charSet += kTrimDefaultCharSet[i];
-    TrimRightWithCharSet(charSet);
+    TrimRightWithCharSet(GetTrimDefaultCharSet());
   }
   void TrimRight(T c)
   {

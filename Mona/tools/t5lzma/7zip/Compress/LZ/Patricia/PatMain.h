@@ -1,6 +1,7 @@
 // PatMain.h
 
 #include "../../../../Common/Defs.h"
+#include "../../../../Common/Alloc.h"
 
 namespace PAT_NAMESPACE {
 
@@ -51,8 +52,8 @@ CPatricia::CPatricia():
   #ifdef __HASH_3
   m_Hash2Descendants(0),
   #endif
-  m_TmpBacks(0),
-  m_Nodes(0)
+  m_Nodes(0),
+  m_TmpBacks(0)
 {
 }
 
@@ -63,24 +64,21 @@ CPatricia::~CPatricia()
 
 void CPatricia::FreeMemory()
 {
-  delete []m_TmpBacks;
+  MyFree(m_TmpBacks);
   m_TmpBacks = 0;
 
-  #ifdef WIN32
-  if (m_Nodes != 0)
-    VirtualFree(m_Nodes, 0, MEM_RELEASE);
+  ::BigFree(m_Nodes);
   m_Nodes = 0;
-  #else
-  m_AlignBuffer.Free();
-  #endif
 
-  delete []m_HashDescendants;
+  ::BigFree(m_HashDescendants);
   m_HashDescendants = 0;
 
   #ifdef __HASH_3
 
-  delete []m_Hash2Descendants;
+  ::BigFree(m_Hash2Descendants);
   m_Hash2Descendants = 0;
+
+  CLZInWindow::Free();
 
   #endif
 }
@@ -103,51 +101,61 @@ STDMETHODIMP CPatricia::Create(UInt32 historySize, UInt32 keepAddBufferBefore,
     windowReservSize = kMinReservSize;
   windowReservSize += 256;
 
-  try 
-  {
-    CLZInWindow::Create(historySize + keepAddBufferBefore, 
-      matchMaxLen + keepAddBufferAfter, windowReservSize);
-    _sizeHistory = historySize;
-    _matchMaxLen = matchMaxLen;
-    m_HashDescendants = new CDescendant[kHashSize + 1];
-    #ifdef __HASH_3
-    m_Hash2Descendants = new CDescendant[kHash2Size + 1];
-    #endif
+  if (!CLZInWindow::Create(historySize + keepAddBufferBefore, 
+      matchMaxLen + keepAddBufferAfter, windowReservSize))
+    return E_OUTOFMEMORY;
 
-    #ifdef __AUTO_REMOVE
-   
-    #ifdef __HASH_3
-    m_NumNodes = historySize + _sizeHistory * 4 / 8 + (1 << 19);
-    #else
-    m_NumNodes = historySize + _sizeHistory * 4 / 8 + (1 << 10);
-    #endif
-
-    #else
-
-    UInt32 m_NumNodes = historySize;
-    
-    #endif
-    
-    const UInt32 kMaxNumNodes = UInt32(1) << (sizeof(CIndex) * 8 - 1);
-    if (m_NumNodes + 32 > kMaxNumNodes)
-      return E_INVALIDARG;
-
-    #ifdef WIN32
-    m_Nodes = (CNode *)::VirtualAlloc(0, (m_NumNodes + 2) * sizeof(CNode), MEM_COMMIT, PAGE_READWRITE);
-    if (m_Nodes == 0)
-      throw 1; // CNewException();
-    #else
-    m_Nodes = (CNode *)m_AlignBuffer.Allocate((m_NumNodes + 2) * sizeof(CNode), 0x3F);
-    #endif
-
-    m_TmpBacks = new UInt32[_matchMaxLen + 1];
-    return S_OK;
-  }
-  catch(...)
+  _sizeHistory = historySize;
+  _matchMaxLen = matchMaxLen;
+  m_HashDescendants = (CDescendant *)BigAlloc(kHashSize * sizeof(CDescendant));
+  if (m_HashDescendants == 0)
   {
     FreeMemory();
     return E_OUTOFMEMORY;
   }
+
+  #ifdef __HASH_3
+  m_Hash2Descendants = (CDescendant *)BigAlloc(kHash2Size  * sizeof(CDescendant));
+  if (m_Hash2Descendants == 0)
+  {
+    FreeMemory();
+    return E_OUTOFMEMORY;
+  }
+  #endif
+  
+  #ifdef __AUTO_REMOVE
+  
+  #ifdef __HASH_3
+  m_NumNodes = historySize + _sizeHistory * 4 / 8 + (1 << 19);
+  #else
+  m_NumNodes = historySize + _sizeHistory * 4 / 8 + (1 << 10);
+  #endif
+  
+  #else
+  
+  UInt32 m_NumNodes = historySize;
+  
+  #endif
+  
+  const UInt32 kMaxNumNodes = UInt32(1) << (sizeof(CIndex) * 8 - 1);
+  if (m_NumNodes + 32 > kMaxNumNodes)
+    return E_INVALIDARG;
+  
+  // m_Nodes = (CNode *)::BigAlloc((m_NumNodes + 2) * sizeof(CNode));
+  m_Nodes = (CNode *)::BigAlloc((m_NumNodes + 12) * sizeof(CNode));
+  if (m_Nodes == 0)
+  {
+    FreeMemory();
+    return E_OUTOFMEMORY;
+  }
+  
+  m_TmpBacks = (UInt32 *)MyAlloc((_matchMaxLen + 1) * sizeof(UInt32));
+  if (m_TmpBacks == 0)
+  {
+    FreeMemory();
+    return E_OUTOFMEMORY;
+  }
+  return S_OK;
 }
 
 STDMETHODIMP CPatricia::Init(ISequentialInStream *aStream)
@@ -191,7 +199,7 @@ void CPatricia::ChangeLastMatch(UInt32 hashValue)
   UInt32 descendantIndex;
   const Byte *currentBytePointer = _buffer + pos;
   UInt32 numLoadedBits = 0;
-  Byte curByte;
+  Byte curByte = 0;  // = 0 to disable warning of GCC
   CNodePointer node = &m_Nodes[m_HashDescendants[hashValue].NodePointer];
 
   while(true)
@@ -583,7 +591,7 @@ void CPatricia::RemoveMatch()
   UInt32 descendantIndex;
   const CRemoveDataWord *currentPointer = (const CRemoveDataWord *)(_buffer + pos);
   UInt32 numLoadedBits = 0;
-  CRemoveDataWord curWord;
+  CRemoveDataWord curWord = 0; // = 0 to disable GCC warning
 
   CIndex *nodePointerPointer = &hashDescendant.NodePointer;
 
@@ -665,7 +673,7 @@ void CPatricia::RemoveMatch()
     m_FreeNode = nextNodeIndex;
     return;
   }
-  UInt32 matchPointer;
+  UInt32 matchPointer = 0; // = 0 to disable GCC warning
   for (i = 0; i < kNumSubNodes; i++)
     if (node->Descendants[i].IsMatch() && i != descendantIndex)
     {
@@ -765,7 +773,7 @@ void CPatricia::TestRemoveDescendant(CDescendant &descendant, UInt32 limitPos)
 {
   CNode &node = m_Nodes[descendant.NodePointer];
   UInt32 numChilds = 0;
-  UInt32 childIndex;
+  UInt32 childIndex = 0; // = 0 to disable GCC warning
   for (UInt32 i = 0; i < kNumSubNodes; i++)
   {
     CDescendant &descendant2 = node.Descendants[i];
@@ -890,7 +898,7 @@ void CPatricia::TestRemoveAndNormalizeDescendant(CDescendant &descendant,
   }
   CNode &node = m_Nodes[descendant.NodePointer];
   UInt32 numChilds = 0;
-  UInt32 childIndex;
+  UInt32 childIndex = 0; // = 0 to disable GCC warning
   for (UInt32 i = 0; i < kNumSubNodes; i++)
   {
     CDescendant &descendant2 = node.Descendants[i];

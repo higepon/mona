@@ -66,4 +66,14 @@ public:
   STDMETHOD(GetSize)(UInt64 *size) = 0;
 };
 
+// {23170F69-40C1-278A-0000-000000070000}
+DEFINE_GUID(IID_IOutStreamFlush, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000000070000")
+IOutStreamFlush : public IUnknown
+{
+public:
+  STDMETHOD(Flush)() = 0;
+};
+
 #endif

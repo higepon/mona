@@ -35,7 +35,8 @@ public:
     Prob -= (Prob + ((symbol - 1) & ((1 << numMoveBits) - 1))) >> numMoveBits;
     Prob += (1 - symbol) << (kNumBitModelTotalBits - numMoveBits);
     */
-    if (symbol != 0)
+    //if (symbol == 0)
+    if (symbol != 0) /* !!! */
       Prob += (kBitModelTotal - Prob) >> numMoveBits;
     else
       Prob -= (Prob) >> numMoveBits;
@@ -53,17 +54,17 @@ public:
     encoder->EncodeBit(this->Prob, kNumBitModelTotalBits, symbol);
     this->UpdateModel(symbol);
     /*
-    UInt32 newBound = (encoder->Range >> kNumBitModelTotalBits) * Prob;
-    if (symbol != 0)
+    UInt32 newBound = (encoder->Range >> kNumBitModelTotalBits) * this->Prob;
+    if (symbol == 0)
     {
       encoder->Range = newBound;
-      Prob += (kBitModelTotal - Prob) >> numMoveBits;
+      this->Prob += (kBitModelTotal - this->Prob) >> numMoveBits;
     }
     else
     {
       encoder->Low += newBound;
       encoder->Range -= newBound;
-      Prob -= (Prob) >> numMoveBits;
+      this->Prob -= (this->Prob) >> numMoveBits;
     }
     while (encoder->Range < kTopValue)
     {
@@ -74,7 +75,8 @@ public:
   }
   UInt32 GetPrice(UInt32 symbol) const
   {
-    symbol ^= 1; return CPriceTables::ProbPrices[
+    symbol ^= 1; /* !!! */
+    return CPriceTables::ProbPrices[
       (((this->Prob - symbol) ^ ((-(int)symbol))) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
   }
 };
@@ -96,7 +98,8 @@ public:
         decoder->Code = (decoder->Code << 8) | decoder->Stream.ReadByte();
         decoder->Range <<= 8;
       }
-      return 0^1;
+      //return 0;
+      return 0^1; /* !!! */
     }
     else
     {
@@ -108,7 +111,8 @@ public:
         decoder->Code = (decoder->Code << 8) | decoder->Stream.ReadByte();
         decoder->Range <<= 8;
       }
-      return 1^1;
+      //return 1;
+      return 1^1; /* !!! */
     }
   }
 };

@@ -4,6 +4,8 @@
 #define __COMMON_C_FILEIO_H
 
 #include <stdio.h>
+#include <sys/types.h>
+
 #include "Types.h"
 #include "MyWindows.h"
 
@@ -14,30 +16,28 @@ namespace NIO {
 class CFileBase
 {
 protected:
-  FILE *_handle;
-  bool Open(const char *name, const char *access);
+  int _handle;
+  bool OpenBinary(const char *name, int flags);
 public:
-  CFileBase(): _handle(0){};
-  virtual ~CFileBase();
-  virtual bool Close();
-
-  bool GetPosition(UInt64 &position) const;
+  CFileBase(): _handle(-1) {};
+  ~CFileBase() { Close(); }
+  bool Close();
   bool GetLength(UInt64 &length) const;
-  bool Seek(Int64 distanceToMove, int moveMethod) const;  
+  off_t Seek(off_t distanceToMove, int moveMethod) const;
 };
 
 class CInFile: public CFileBase
 {
 public:
   bool Open(const char *name);
-  bool Read(void *data, UInt32 size, UInt32 &processedSize);
+  ssize_t Read(void *data, size_t size);
 };
 
 class COutFile: public CFileBase
 {
 public:
-  bool Open(const char *name);
-  bool Write(const void *data, UInt32 size, UInt32 &processedSize);
+  bool Create(const char *name, bool createAlways);
+  ssize_t Write(const void *data, size_t size);
 };
 
 }}}

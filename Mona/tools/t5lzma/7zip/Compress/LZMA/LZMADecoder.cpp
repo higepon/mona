@@ -13,8 +13,8 @@ HRESULT CDecoder::Init(ISequentialInStream *inStream,
 {
   _rangeDecoder.Init(inStream);
   _outWindowStream.Init(outStream);
-  int i;
-  for(i = 0; i < kNumStates; i++)
+  { 
+  for(int i = 0; i < kNumStates; i++)
   {
     for (UInt32 j = 0; j <= _posStateMask; j++)
     {
@@ -26,10 +26,15 @@ HRESULT CDecoder::Init(ISequentialInStream *inStream,
     _isRepG1[i].Init();
     _isRepG2[i].Init();
   }
-  for (i = 0; i < kNumLenToPosStates; i++)
+  }
+  { 
+    for (UInt32 i = 0; i < kNumLenToPosStates; i++)
     _posSlotDecoder[i].Init();
-  for(i = 0; i < kNumFullDistances - kEndPosModelIndex; i++)
-    _posDecoders[i].Init();
+  }
+  { 
+    for(UInt32 i = 0; i < kNumFullDistances - kEndPosModelIndex; i++)
+      _posDecoders[i].Init();
+  }
   _posAlignDecoder.Init();
   _lenDecoder.Init(_posStateMask + 1);
   _repMatchLenDecoder.Init(_posStateMask + 1);
@@ -58,8 +63,12 @@ STDMETHODIMP CDecoder::CodeReal(ISequentialInStream *inStream,
     UInt64 nextPos = MyMin(nowPos64 + (1 << 18), size);
     while(nowPos64 < nextPos)
     {
+      #ifdef _NO_EXCEPTIONS
+      if (_rangeDecoder.Stream.ErrorCode != S_OK)
+        return _rangeDecoder.Stream.ErrorCode;
+      #endif
       if (_rangeDecoder.Stream.WasFinished())
-        throw 1;
+        return S_FALSE;
       UInt32 posState = UInt32(nowPos64) & _posStateMask;
       if (_isMatch[state.Index][posState].Decode(&_rangeDecoder) == 0)
       {
@@ -88,7 +97,7 @@ STDMETHODIMP CDecoder::CodeReal(ISequentialInStream *inStream,
             if(_isRep0Long[state.Index][posState].Decode(&_rangeDecoder) == 0)
             {
               if (nowPos64 == 0)
-                throw 1;
+                return S_FALSE;
               state.UpdateShortRep();
               previousByte = _outWindowStream.GetByte(rep0);
               _outWindowStream.PutByte(previousByte);
@@ -138,7 +147,7 @@ STDMETHODIMP CDecoder::CodeReal(ISequentialInStream *inStream,
             {
               rep0 += (_rangeDecoder.DecodeDirectBits(
                   numDirectBits - kNumAlignBits) << kNumAlignBits);
-              rep0 += _posAlignDecoder.Decode(&_rangeDecoder);
+              rep0 += _posAlignDecoder.ReverseDecode(&_rangeDecoder);
             }
           }
           else
@@ -151,11 +160,15 @@ STDMETHODIMP CDecoder::CodeReal(ISequentialInStream *inStream,
             flusher.NeedFlush = false;
             return Flush();
           }
-          throw 1;
+          return S_FALSE;
         }
         _outWindowStream.CopyBlock(rep0, len);
         nowPos64 += len;
         previousByte = _outWindowStream.GetByte(0);
+        #ifdef _NO_EXCEPTIONS
+        if (_outWindowStream.ErrorCode != S_OK)
+          return _outWindowStream.ErrorCode;
+        #endif
       }
     }
     if (progress != NULL)
@@ -172,10 +185,17 @@ STDMETHODIMP CDecoder::Code(ISequentialInStream *inStream,
       ISequentialOutStream *outStream, const UInt64 *inSize, const UInt64 *outSize,
       ICompressProgressInfo *progress)
 {
-  try { return CodeReal(inStream, outStream, inSize, outSize, progress); }
+  #ifndef _NO_EXCEPTIONS
+  try 
+  { 
+  #endif
+    return CodeReal(inStream, outStream, inSize, outSize, progress); 
+  #ifndef _NO_EXCEPTIONS
+  }
   catch(const CInBufferException &e)  { return e.ErrorCode; }
   catch(const CLZOutWindowException &e)  { return e.ErrorCode; }
   catch(...) { return S_FALSE; }
+  #endif
 }
 
 STDMETHODIMP CDecoder::SetDecoderProperties(ISequentialInStream *inStream)
@@ -197,15 +217,18 @@ STDMETHODIMP CDecoder::SetDecoderProperties(ISequentialInStream *inStream)
     dictionarySize += ((UInt32)(properties[1 + i])) << (i * 8);
   _dictionarySizeCheck = MyMax(dictionarySize, UInt32(1));
   UInt32 blockSize = MyMax(_dictionarySizeCheck, UInt32(1 << 12));
-  try
-  {
-    _literalDecoder.Create(lp, lc);
-    _outWindowStream.Create(blockSize);
-  }
-  catch(...)
-  {
+  if (!_outWindowStream.Create(blockSize))
     return E_OUTOFMEMORY;
-  }
+  if (!_literalDecoder.Create(lp, lc))
+    return E_OUTOFMEMORY;
+  if (!_rangeDecoder.Create(1 << 20))
+    return E_OUTOFMEMORY;
+  return S_OK;
+}
+
+STDMETHODIMP CDecoder::GetInStreamProcessedSize(UInt64 *value)
+{
+  *value = _rangeDecoder.GetProcessedSize();
   return S_OK;
 }
 

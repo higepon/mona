@@ -2,9 +2,10 @@
 
 #include "StdAfx.h"
 
+#include "../../../Common/Alloc.h"
 #include "LZOutWindow.h"
 
-void CLZOutWindow::Create(UInt32 windowSize)
+bool CLZOutWindow::Create(UInt32 windowSize)
 {
   _pos = 0;
   _streamPos = 0;
@@ -12,35 +13,18 @@ void CLZOutWindow::Create(UInt32 windowSize)
   if (windowSize < kMinBlockSize)
     windowSize = kMinBlockSize;
   if (_buffer != 0 && _windowSize == windowSize)
-    return;
+    return true;
   Free();
   _windowSize = windowSize;
-  #ifdef WIN32
-  _buffer = (Byte *)::VirtualAlloc(0, windowSize, MEM_COMMIT, PAGE_READWRITE);
-  if (_buffer == 0)
-    throw 1; // CNewException();
-  #else
-  _buffer = new Byte[windowSize];
-  #endif
+  _buffer = (Byte *)::BigAlloc(windowSize);
+  return (_buffer != 0);
 }
 
 void CLZOutWindow::Free()
 {
-  #ifdef WIN32
-  if (_buffer != 0)
-    VirtualFree(_buffer, 0, MEM_RELEASE);
-  #else
-  delete []_buffer;
-  #endif
+  ::BigFree(_buffer);
   _buffer = 0;
 }
-
-/*
-void CLZOutWindow::SetWindowSize(UInt32 windowSize)
-{
-  _windowSize = windowSize;
-}
-*/
 
 void CLZOutWindow::Init(ISequentialOutStream *stream, bool solid)
 {
@@ -53,6 +37,9 @@ void CLZOutWindow::Init(ISequentialOutStream *stream, bool solid)
     _streamPos = 0;
     _pos = 0;
   }
+  #ifdef _NO_EXCEPTIONS
+  ErrorCode = S_OK;
+  #endif
 }
 
 /*
@@ -70,8 +57,12 @@ void CLZOutWindow::ReleaseStream()
 void CLZOutWindow::FlushWithCheck()
 {
   HRESULT result = Flush();
+  #ifdef _NO_EXCEPTIONS
+  ErrorCode = result;
+  #else
   if (result != S_OK)
     throw CLZOutWindowException(result);
+  #endif
 }
 
 HRESULT CLZOutWindow::Flush()
@@ -79,6 +70,11 @@ HRESULT CLZOutWindow::Flush()
   UInt32 size = _pos - _streamPos;
   if(size == 0)
     return S_OK;
+  #ifdef _NO_EXCEPTIONS
+  if (ErrorCode != S_OK)
+    return ErrorCode;
+  #endif
+
   UInt32 processedSize;
   HRESULT result = _stream->Write(_buffer + _streamPos, size, &processedSize);
   if (result != S_OK)

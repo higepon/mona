@@ -93,7 +93,7 @@ bool CParser::ParseString(const UString &s, const CSwitchForm *switchForms)
     if (IsItSwitchChar(s[pos]))
       pos++;
     const int kNoLen = -1;
-    int matchedSwitchIndex;
+    int matchedSwitchIndex = 0; // GCC Warning
     int maxLen = kNoLen;
     for(int switchIndex = 0; switchIndex < _numSwitches; switchIndex++)
     {
@@ -122,7 +122,7 @@ bool CParser::ParseString(const UString &s, const CSwitchForm *switchForms)
     NSwitchType::EEnum type = switchForm.Type;
     switch(type)
     {
-      case (NSwitchType::kPostMinus):
+      case NSwitchType::kPostMinus:
         {
           if (tailSize == 0)
             matchedSwitch.WithMinus = false;
@@ -134,7 +134,7 @@ bool CParser::ParseString(const UString &s, const CSwitchForm *switchForms)
           }
           break;
         }
-      case (NSwitchType::kPostChar):
+      case NSwitchType::kPostChar:
         {
           if (tailSize < switchForm.MinLen)
             throw "switch is not full";
@@ -155,7 +155,8 @@ bool CParser::ParseString(const UString &s, const CSwitchForm *switchForms)
           }
           break;
         }
-      case NSwitchType::kLimitedPostString: case NSwitchType::kUnLimitedPostString: 
+      case NSwitchType::kLimitedPostString: 
+      case NSwitchType::kUnLimitedPostString: 
         {
           int minLen = switchForm.MinLen;
           if (tailSize < minLen)
@@ -176,7 +177,10 @@ bool CParser::ParseString(const UString &s, const CSwitchForm *switchForms)
             stringSwitch += c;
           }
           matchedSwitch.PostStrings.Add(stringSwitch);
+          break;
         }
+      case NSwitchType::kSimple:
+          break;
     }
   }
   return true;

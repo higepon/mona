@@ -62,7 +62,8 @@ const UInt32 kNumSymbolsTotal = kNumLowSymbols + kNumMidSymbols + (1 << kNumHigh
 }
 
 const UInt32 kMatchMinLen = 2;
-const UInt32 kMatchMaxLen = kMatchMinLen + NLength::kNumSymbolsTotal - 1 - 8;
+//const UInt32 kMatchMaxLen = kMatchMinLen + NLength::kNumSymbolsTotal - 1;
+const UInt32 kMatchMaxLen = kMatchMinLen + NLength::kNumSymbolsTotal - 1 - 8; /* !!! */
 
 const int kNumAlignBits = 4;
 const UInt32 kAlignTableSize = 1 << kNumAlignBits;
