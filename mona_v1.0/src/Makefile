@@ -54,7 +54,8 @@ SOURCES    = cstart.cpp            \
              info.cpp              \
              GDTUtil.cpp           \
              IDTUtil.cpp           \
-             PagingUtil.cpp
+             PagingUtil.cpp        \
+             Process.cpp
 
 DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
 DRVROBJ = ps2kbc.o
