@@ -1,5 +1,7 @@
 2004-05-02  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/mouse/main.cpp (MessageLoop): マウスを画面最下部にもって言った場合のマウスサーバ突然死を修正
+
         * src/kernel/Process.h (class Process): スレッドスタック周りの修正(thanks Yui_Nekoさん)
 
 2004-05-02  tino  <tino@users.sourceforge.jp>

@@ -155,10 +155,12 @@ void MouseServer::MessageLoop()
                     this->posX += x;
                     this->posY += y;
 
-                    if (this->posX > this->w) this->posX = this->w;
-                    if (this->posY > this->h) this->posY = this->h;
-                    if (this->posX < 0) this->posX = 0;
-                    if (this->posY < 0) this->posY = 0;
+                    if (this->posX >= this->w) this->posX = this->w;
+
+                    /* mouse cursor size */
+                    if (this->posY >= this->h - 4) this->posY = this->h - 4;
+                    if (this->posX <= 0) this->posX = 0;
+                    if (this->posY <= 0) this->posY = 0;
 
                     Paint();
 
