@@ -44,6 +44,7 @@ class Command{
     Command operator+(const Charing& s);
     Command& operator=(const Charing& s);
     Command& operator+=(const Charing& s);
+    operator char *();
     operator Charing *();
 };
 
