@@ -316,6 +316,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
     g_console->printf("[6]");
 
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
+
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     g_console->printf("[7]");

@@ -129,7 +129,10 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
         g_console->printf("[8.5]");
-    return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
+	g_console->printf("presnt?=%s\n", isPresent(&table[tableIndex]) ? "true" : "false");
+bool result = allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
+	g_console->printf("presnt2?=%s\n", isPresent(&table[tableIndex]) ? "true" : "false");
+	return result;
 }
 
 /*!
