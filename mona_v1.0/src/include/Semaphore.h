@@ -1,8 +1,6 @@
 /*!
-    \file  Semaphore.h
-    \brief class Semaphore
-
-    class Semaphore
+    \file  semaphore.h
+    \brief semaphore
 
     Copyright (c) 2003 HigePon
     WITHOUT ANY WARRANTY
@@ -16,18 +14,7 @@
 
 typedef int semaphore;
 
-/*!
-    Semaphore class
-*/
-class Semaphore {
-
-  private:
-    Semaphore();
-    ~Semaphore();
-  public:
-    static int up(semaphore*);
-    static int down(semaphore*);
-};
-
+int semaphore_up(semaphore*);
+int semaphore_down(semaphore*);
 
 #endif

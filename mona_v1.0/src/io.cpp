@@ -29,3 +29,14 @@ byte inportb(dword port) {
 void outportb(dword port, byte value) {
    asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
 }
+
+dword get_eflags() {
+
+    dword result;
+
+    asm volatile("pushfl           \n"
+                 "pop    %%eax     \n"
+                 "movl   %%eax, %0 \n"
+                 : "=m"(result) : /* no input */ : "eax");
+    return result;
+}

@@ -22,7 +22,7 @@
     \author HigePon
     \date   create:2003/01/31 update:2003/02/01
 */
-int Semaphore::up(semaphore* sem) {
+int semaphore_up(semaphore* sem) {
 
     (*sem)++;
     return 0;
@@ -35,16 +35,17 @@ int Semaphore::up(semaphore* sem) {
     \author HigePon
     \date   create:2003/01/31 update:
 */
-int Semaphore::down(semaphore* sem) {
+int semaphore_down(semaphore* sem) {
 
+    pushf();
     disableInterrupt();
 
     if (*sem) {
         (*sem)--;
-        enableInterrupt();
+        popf();
         return 0;
     } else {
-        enableInterrupt();
+        popf();
         return -1;
     }
 }

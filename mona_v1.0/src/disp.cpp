@@ -3,11 +3,13 @@
 #include<disp.h>
 #include<io.h>
 #include<pic.h>
+#include<semaphore.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" char pos_x;
 extern "C" char pos_y;
 
+static semaphore sem = 1;
 
 /*!
     \brief idle thread
@@ -23,9 +25,9 @@ void disp_name1() {
         dword color;
 
         if (current->tick % 500) continue;
-        pushf();
-        disableInterrupt();
 
+	while (semaphore_down(&sem));
+	console->printf("name1");
         int x = pos_x;
         int y = pos_y;
 
@@ -36,7 +38,7 @@ void disp_name1() {
         color++;
         pos_x = x;
         pos_y = y;
-        popf();
+	semaphore_up(&sem);
     }
 }
 
@@ -54,9 +56,8 @@ void disp_name2() {
         dword color;
 
         if (current->tick % 500) continue;
-        pushf();
-        disableInterrupt();
-
+	while (semaphore_down(&sem));
+	console->printf("name2");
         int x = pos_x;
         int y = pos_y;
 
@@ -67,7 +68,7 @@ void disp_name2() {
         color++;
         pos_x = x;
         pos_y = y;
-        popf();
+	semaphore_up(&sem);
     }
 }
 
@@ -79,28 +80,24 @@ void disp_name3() {
         dword color;
 
         if (current->tick % 500) continue;
-        pushf();
-        disableInterrupt();
-
+	console->printf("eflags = %x", get_eflags());
+	while (semaphore_down(&sem));
+	console->printf("down eflags = %x", get_eflags());
+	console->printf("name3");
         int x = pos_x;
         int y = pos_y;
 
         pos_x = 44, pos_y = 0;
 
-	dword confirm = 0;
-	asm volatile("pushl $0x12345678 \n");
 	asm volatile("subl   $0x20, %esp \n");
         write_font('n', color%2 + 6, 0);
 	asm volatile("add   $0x20, %esp \n");
-	asm volatile("popl %eax \n");
-	asm volatile("movl %%eax, %0 \n" : "=m"(confirm) : /* no input */);
 
-	//	console->printf("[confirm=%x]\n", confirm);
 
         color++;
         pos_x = x;
         pos_y = y;
-        popf();
+	semaphore_up(&sem);
     }
 }
 
@@ -112,9 +109,8 @@ void disp_name4() {
         dword color;
 
         if (current->tick % 500) continue;
-        pushf();
-        disableInterrupt();
-
+	while (semaphore_down(&sem));
+	console->printf("name4");
         int x = pos_x;
         int y = pos_y;
 
@@ -125,7 +121,7 @@ void disp_name4() {
         color++;
         pos_x = x;
         pos_y = y;
-        popf();
+	semaphore_up(&sem);
     }
 }
 

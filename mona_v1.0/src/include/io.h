@@ -17,5 +17,6 @@
 
 byte inportb(dword);
 void outportb(dword, byte);
+dword get_eflags();
 
 #endif
