@@ -33,21 +33,7 @@ ShellServer::~ShellServer()
 
 void ShellServer::service()
 {
-    /* look up */
-    dword myID = System::getThreadID();
-
-    dword keysvrID = Message::lookupMainThread("KEYBDMNG.SVR");
-    if (keysvrID == 0xFFFFFFFF)
-    {
-        printf("Shell:KeyBoardServer not found\n");
-        exit(1);
-    }
-
-    /* send */
-    if (Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, myID))
-    {
-        printf("Shell: key regist error\n");
-    }
+    if (!monapi_register_to_server(ID_KEYBOARD_SERVER, 1)) exit(1);
 
     /* Server start ok */
     dword targetID = Message::lookupMainThread("INIT");
@@ -79,11 +65,7 @@ void ShellServer::service()
         }
     }
 
-    /* send */
-    if (Message::send(keysvrID, MSG_KEY_UNREGIST_FROM_SERVER, myID))
-    {
-        printf("Shell: key unregist error\n");
-    }
+    monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
 }
 
 /*----------------------------------------------------------------------

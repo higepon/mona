@@ -7,34 +7,15 @@
 using namespace MonAPI;
 
 static Screen screen;
-static dword msvr = 0;
 
 Screen* GetDefaultScreen()
 {
 	return &screen;
 }
 
-void SetMouseCursor(bool enabled)
-{
-	static bool first = true;
-	if (first)
-	{
-		msvr = Message::lookupMainThread("MOUSE.SVR");
-		if (msvr == 0xffffffff)
-		{
-			printf("%s: Can't connect to mouse server!\n", SVR);
-		}
-		first = false;
-	}
-	if (msvr == 0xffffffff) return;
-	
-	dword hdr = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
-	Message::sendReceive(NULL, msvr, hdr);
-}
-
 void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
 {
-	SetMouseCursor(false);
+	monapi_call_mouse_set_cursor(0);
 	unsigned char* vram = screen.getVRAM();
 	int bpp = screen.getBpp(), sw = screen.getWidth(), sh = screen.getHeight();
 	int bypp = bpp >> 3;
@@ -85,5 +66,5 @@ void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih,
 			}
 		}
 	}
-	SetMouseCursor(true);
+	monapi_call_mouse_set_cursor(1);
 }
