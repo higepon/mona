@@ -67,7 +67,7 @@ class Process {
   public:
     ProcessInfo pinfo_;
 
-    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
+    void setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PTE* pagedir, dword pid);
 
     static void setup();
 
@@ -80,7 +80,7 @@ class Process {
 /*!
     class UserProcess
 */
-class UserProcess : Process {
+class UserProcess : public Process {
 
   public:
     UserProcess(const char*);
@@ -89,7 +89,7 @@ class UserProcess : Process {
     }
 
 
-    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
+    //    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
 
 };
 

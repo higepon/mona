@@ -63,6 +63,20 @@ virtual_addr ProcessManager::allocateStack() {
     return 0x70000 + i * 4096;
 }
 
+virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
+
+    if (dpl == DPL_KERNEL) return 0;
+
+    static int i = 0;
+
+    i++;
+
+    return 0x100000 + i * 4096;
+}
+
+
+
+
 PTE* ProcessManager::allocatePageDir() {
 
 
@@ -77,11 +91,7 @@ dword ProcessManager::allocatePID() {
 
 bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
-    process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
-
-    /* temp */
-    process->pinfo_.esp0 = 0x90000;
-    process->pinfo_.ss0 = KERNEL_SS;
+    process->setup(entry, allocateStack(), allocateKernelStack(process->pinfo_.dpl), allocatePageDir(), allocatePID());
 
     scheduler_->addProcess(&(process->pinfo_));
 

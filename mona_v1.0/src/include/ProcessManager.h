@@ -33,6 +33,7 @@ class ProcessManager {
   protected:
     PTE*  allocatePageDir();
     virtual_addr allocateStack();
+    virtual_addr allocateKernelStack(dword dpl);
     dword allocatePID();
     void printOneProcess(ProcessInfo* info) const;
     void switchProcess();
