@@ -90,6 +90,21 @@ class ProcessScheduler {
 
 };
 
+class ProcessManager_ {
+
+  public:
+    ProcessManager_();
+    ~ProcessManager_();
+
+  public:
+    int createProcess();
+    int kill(ProcessInfo_* process);
+    int switchProcess(ProcessInfo_* process);
+    int schedule();
+
+  private:
+    ProcessScheduler* scheduler_;
+};
 
 /*!
     class Process

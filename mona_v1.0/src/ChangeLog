@@ -1,5 +1,7 @@
 2003-12-07  higepon  <higepon@users.sourceforge.jp>
 
+        * Process.cpp: ProcessSchedulerを追加
+
         * include/collection.h: コレクションクラスHListを追加
                                 HVectorを廃止
 
