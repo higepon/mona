@@ -141,6 +141,7 @@ public:
     int wakeup(Process* process, int waitReason);
     dword getTick() const;
     dword lookup(const char* name);
+    dword lookupMainThread(const char* name);
     Thread* find(dword id);
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);

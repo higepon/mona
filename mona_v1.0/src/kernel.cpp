@@ -62,7 +62,7 @@
 #include <VesaConsole.h>
 #include <LogConsole.h>
 
-char* version = "Mona version.0.2.0alpha5 $Date$";
+char* version = "Mona version.0.2.0alpha6 $Date$";
 void  mainProcess();
 
 /*!
@@ -228,6 +228,22 @@ inline void printOK(const char* msg)
     i++;
 }
 
+void loadServer(const char* server, const char* name)
+{
+    g_console->printf("loading %s....", server);
+    g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
+
+    MessageInfo msg;
+
+    for (;;)
+    {
+        if (g_messenger->receive(g_currentThread->thread, &msg)) continue;
+
+        if (msg.header == MSG_SERVER_START_OK) break;
+    }
+    return;
+}
+
 int execSysConf()
 {
     /* only one process can use fd */
@@ -292,8 +308,7 @@ int execSysConf()
                         }
                         if (name == server) break;
                     }
-                    g_console->printf("loading %s....", server);
-                    g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
+                    loadServer(server, name);
                 }
                 linepos = 0;
             }

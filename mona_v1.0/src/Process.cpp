@@ -99,6 +99,30 @@ Process* Scheduler::findProcess(const char* name)
     return (Process*)NULL;
 }
 
+dword Scheduler::lookupMainThread(const char* name)
+{
+    Process* process = findProcess(name);
+
+    if (process == NULL)
+    {
+        return 0xFFFFFFFF;
+    }
+
+    List<Thread*>* list = process->getThreadList();
+    dword found = 0xFFFFFFFF;
+
+    for (int i = 0; i < list->size(); i++)
+    {
+        dword id = list->get(i)->id;
+
+        if (id < found)
+        {
+            found = id;
+        }
+    }
+    return found;
+}
+
 Thread* Scheduler::find(dword id)
 {
     FOREACH_N(runq, Thread*, thread)
@@ -190,11 +214,15 @@ bool Scheduler::setCurrentThread()
 
 void Scheduler::join(Thread* thread)
 {
+    List<Thread*>* list = thread->tinfo->process->getThreadList();
+    list->add(thread);
     runq->addToPrev(thread);
 }
 
 int Scheduler::kill(Thread* thread)
 {
+    List<Thread*>* list = thread->tinfo->process->getThreadList();
+    list->remove(thread);
     thread->remove();
     return NORMAL;
 }
@@ -367,24 +395,7 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     LinearAddress stack  = process->allocateStack();
 
     thread->tinfo->process = process;
-
-    /* caution !!! it is temp code. wait object manager */
-    if (!strcmp(process->getName(), "MOUSE.SVR"))
-    {
-        thread->id = MOUSE_SERVER;
-    }
-    else if (!strcmp(process->getName(), "SHELL.SVR"))
-    {
-        thread->id = SHELL_SERVER;
-    }
-    else if (!strcmp(process->getName(), "KEYBDMNG.SVR"))
-    {
-        thread->id = KEYBOARD_SERVER;
-    }
-    else
-    {
-        thread->id = ThreadOperation::id++;
-    }
+    thread->id = ThreadOperation::id++;
 
     if (process->isUserMode())
     {

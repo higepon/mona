@@ -28,6 +28,22 @@ int MonaMain(List<char*>* pekoe)
     List<dword>* destList = new HList<dword>();
     MessageInfo info;
 
+    /* Server start ok */
+    dword targetID = Message::lookupMainThread("INIT");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("KeyBoardServer:INIT not found\n");
+        exit(1);
+    }
+
+    /* create message */
+    Message::create(&info, MSG_SERVER_START_OK, 0, 0, 0, NULL);
+
+    /* send */
+    if (Message::send(targetID, &info)) {
+        printf("KeyBoardServer:INIT error\n");
+    }
+
     /* Message loop */
     for (;;)
     {

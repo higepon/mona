@@ -62,7 +62,7 @@ void mouseHandler()
     /* EOI */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
-    if (g_messenger->send(MOUSE_SERVER, &message))
+    if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.SVR"), &message))
     {
         g_console->printf("mouse send failed");
     }
@@ -86,7 +86,7 @@ void keyStrokeHandler(dword scancode)
     /* EOI */
     outportb(0x20, 0x20);
 
-    if (g_messenger->send(KEYBOARD_SERVER, &message))
+    if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.SVR"), &message))
     {
         g_console->printf("send failed");
     }

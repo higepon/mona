@@ -282,10 +282,10 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 {
     dword vram = vram_;
     for (; vram % 4096; vram--);
-    dword vramIndex = getDirectoryIndex(vram);
+    int vramIndex = getDirectoryIndex(vram);
 
     /* 0-8MB don't return */
-    for (dword i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
+    for (int i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
     {
 
         /* not allocated */
@@ -296,7 +296,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 
         PageEntry* table = (PageEntry*)(directory[i] & 0xfffff000);
 
-        for (dword j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
+        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
         {
             if (!isPresent(&(table[j])))
             {

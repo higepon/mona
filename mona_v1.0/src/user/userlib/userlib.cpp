@@ -82,13 +82,20 @@ MonaApplication::MonaApplication() {
 
     mypid_ = System::getThreadID();
 
+    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("MonaApplication:KeyBoardServer not found\n");
+        exit(1);
+    }
+
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
     info.header = MSG_KEY_REGIST_TO_SERVER;
     info.arg1   = mypid_;
 
     /* send */
-    if (Message::send(KEYBOARD_SERVER, &info)) {
+    if (Message::send(targetID, &info)) {
         printf("MonaApp: key regist error\n");
     }
 }
@@ -100,8 +107,15 @@ MonaApplication::~MonaApplication() {
     info.header = MSG_KEY_UNREGIST_FROM_SERVER;
     info.arg1   = mypid_;
 
+    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("MonaApplication:KeyBoardServer not found\n");
+        exit(1);
+    }
+
     /* send */
-    if (Message::send(KEYBOARD_SERVER, &info)) {
+    if (Message::send(targetID, &info)) {
         printf("MonaApp: key unregist error\n");
     }
 }
@@ -580,6 +594,10 @@ dword Message::lookup(const char* name) {
     return syscall_lookup(name);
 }
 
+dword Message::lookupMainThread(const char* name) {
+    return syscall_lookup_main_thread(name);
+}
+
 void Message::create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, char* str) {
 
     info->header = header;
@@ -884,6 +902,13 @@ dword syscall_lookup(const char* name)
     dword pid;
     SYSCALL_1(SYSTEM_CALL_LOOKUP, pid, name);
     return pid;
+}
+
+int syscall_lookup_main_thread(const char* name)
+{
+    int tid;
+    SYSCALL_1(SYSTEM_CALL_LOOKUP_MAIN_THREAD, tid, name);
+    return tid;
 }
 
 int syscall_get_vram_info(volatile ScreenInfo* info)

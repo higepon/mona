@@ -28,14 +28,39 @@ void ShellServer::service() {
     /* look up */
     dword myID = System::getThreadID();
 
+    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("Shell:KeyBoardServer not found\n");
+        exit(1);
+    }
+
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
     Message::create(&info, MSG_KEY_REGIST_TO_SERVER, myID, 0, 0, NULL);
 
     /* send */
-    if (Message::send(KEYBOARD_SERVER, &info)) {
+    if (Message::send(targetID, &info)) {
         printf("Shell: key regist error\n");
     }
+
+    /* Server start ok */
+    targetID = Message::lookupMainThread("INIT");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("ShellServer:INIT not found\n");
+        exit(1);
+    }
+
+    /* create message */
+    Message::create(&info, MSG_SERVER_START_OK, 0, 0, 0, NULL);
+
+    /* send */
+    if (Message::send(targetID, &info)) {
+        printf("ShellServer:INIT error\n");
+    }
+
+
 
     /* service loop */
     Shell shell;

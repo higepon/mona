@@ -455,6 +455,12 @@ void syscall_entrance() {
         info->eax = g_fdcdriver->checkDiskChange();
         break;
 
+    case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
+
+        info->eax = g_scheduler->lookupMainThread((char*)(info->esi));
+
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

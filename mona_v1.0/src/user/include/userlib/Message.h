@@ -18,5 +18,6 @@ class Message {
     static void create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, char* str);
     static bool exist();
     static dword lookup(const char* name);
+    static dword lookupMainThread(const char* name);
 };
 #endif

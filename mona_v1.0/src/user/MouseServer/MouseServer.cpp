@@ -44,6 +44,22 @@ int MonaMain(List<char*>* pekoe) {
     VirtualScreen vscreen(1024 * 40);
     vscreen.fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0xCC, 0x56));
 
+    /* Server start ok */
+    dword targetID = Message::lookupMainThread("INIT");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("MouseServer:INIT not found\n");
+        exit(1);
+    }
+
+    /* create message */
+    Message::create(&send, MSG_SERVER_START_OK, 0, 0, 0, NULL);
+
+    /* send */
+    if (Message::send(targetID, &send)) {
+        printf("MouseServer:INIT error\n");
+    }
+
     /* Message loop */
     for (;;) {
 

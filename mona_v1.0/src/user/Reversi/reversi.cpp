@@ -50,10 +50,18 @@ myApplication::myApplication() : MonaApplication() {
     // 自分自身のスレッドIDを得る
     dword myPid   = System::getThreadID();
 
+    // マウスサーバーを探す
+    dword targetID = Message::lookupMainThread("MOUSE.SVR");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("Reversi:MouseServer not found\n");
+        exit(1);
+    }
+
     // マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信
     MessageInfo info;
     Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
-    if (Message::send(MOUSE_SERVER, &info)) {
+    if (Message::send(targetID, &info)) {
         printf("Reversi:Mouse regist error\n");
     }
 }

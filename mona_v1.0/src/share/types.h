@@ -14,12 +14,6 @@
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
 
-/* temp!! remove later */
-#define MOUSE_SERVER    10
-#define SHELL_SERVER    20
-#define KEYBOARD_SERVER 30
-
-
 #define NULL     0
 #define NORMAL   0
 #define DEBUG_MODE
@@ -114,6 +108,7 @@ typedef struct MappingInfo {
 #define MSG_MOUSE_INFO                 0x0A
 #define MSG_MOUSE_UNREGIST_FROM_SERVER 0x0B
 #define MSG_KEY_UNREGIST_FROM_SERVER   0x0C
+#define MSG_SERVER_START_OK            0x0D
 
 #define SHARED_FDC_BUFFER 0x4000
 
@@ -156,6 +151,7 @@ typedef struct MappingInfo {
 #define SYSTEM_CALL_EXIST_MESSAGE         41
 #define SYSTEM_CALL_FDC_DISK_CHANGED      42
 #define SYSTEM_CALL_GET_TID               43
+#define SYSTEM_CALL_LOOKUP_MAIN_THREAD    44
 #define SYSTEM_CALL_TEST                  99
 
 #define SYSCALL_0(syscall_number, result)                                         \
