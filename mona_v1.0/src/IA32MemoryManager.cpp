@@ -1,8 +1,8 @@
 /*!
-    \file  X86MemoryManager.cpp
-    \brief class X86MemoryManager
+    \file  IA32MemoryManager.cpp
+    \brief class IA32MemoryManager
 
-    class X86MemoryManager
+    class IA32MemoryManager
 
     Copyright (c) 2002 HigePon
     WITHOUT ANY WARRANTY
@@ -11,7 +11,7 @@
     \version $Revision$
     \date   create:2002/08/04 update:$Date$
 */
-#include<X86MemoryManager.h>
+#include<IA32MemoryManager.h>
 #include<monaIdt.h>
 #include<monaVga.h>
 /*!
@@ -22,9 +22,9 @@
     \author HigePon
     \date   create:2002/08/04 update:
 */
-inline char* X86MemoryManager::getName() const {
+inline char* IA32MemoryManager::getName() const {
 
-    static char buf[] = "X86MemoryManager";
+    static char buf[] = "IA32MemoryManager";
     return buf;
 }
 
@@ -39,7 +39,7 @@ inline char* X86MemoryManager::getName() const {
     \author HigePon
     \date   create:2002/08/07 update:2002/09/08
 */
-void* X86MemoryManager::allocateMemory(size_t size) {
+void* IA32MemoryManager::allocateMemory(size_t size) {
 
     /* size 0 */
     if (size == 0) return NULL;
@@ -91,7 +91,7 @@ void* X86MemoryManager::allocateMemory(size_t size) {
     \author HigePon
     \date   create:2002/08/07 update:
 */
-void X86MemoryManager::freeMemory(void* address) {
+void IA32MemoryManager::freeMemory(void* address) {
 
     struct memoryEntry* targetAddress = (struct memoryEntry*)((size_t)address
                                       - sizeof(size_t)
@@ -115,7 +115,7 @@ void X86MemoryManager::freeMemory(void* address) {
     \author HigePon
     \date   create:2002/08/08 update:
 */
-X86MemoryManager::~X86MemoryManager() {
+IA32MemoryManager::~IA32MemoryManager() {
     _sys_printf("KeyBoardManager:destructor\n");
 
 }
@@ -130,7 +130,7 @@ X86MemoryManager::~X86MemoryManager() {
     \author HigePon
     \date   create:2002/08/10 update:2002/11/11
 */
-X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) {
+IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) {
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
@@ -154,7 +154,7 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) 
     \author HigePon
     \date   create:2002/09/07 update:
 */
-inline size_t X86MemoryManager::getRealSize(size_t size) const {
+inline size_t IA32MemoryManager::getRealSize(size_t size) const {
 
     return (size + sizeof(struct memoryEntry));
 }
@@ -167,7 +167,7 @@ inline size_t X86MemoryManager::getRealSize(size_t size) const {
     \author HigePon
     \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::printInfo(char* str) const {
+void IA32MemoryManager::printInfo(char* str) const {
 
 //      struct memoryEntry* entry;
 //      int i;
@@ -216,7 +216,7 @@ void X86MemoryManager::printInfo(char* str) const {
     \author HigePon
     \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry* block, size_t size) {
+void IA32MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry* block, size_t size) {
 
     if (*entry == (struct memoryEntry*)NULL) {
 
@@ -277,7 +277,7 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memoryEntry* block, size_t size) {
+void IA32MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memoryEntry* block, size_t size) {
 
     /* delete block is top of the list */
     if (*entry == block && (*entry)->next == (struct memoryEntry*)NULL) {
@@ -314,7 +314,7 @@ void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memory
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry* block) {
+void IA32MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry* block) {
 
     /* do nothing */
     if (block == (struct memoryEntry*)NULL) return;

@@ -1,6 +1,6 @@
 /*!
-    \file  X86MemoryManager.h
-    \brief class x86MemoryManager
+    \file  IA32MemoryManager.h
+    \brief class IA32MemoryManager
 
     class MemoryManager
 
@@ -11,8 +11,8 @@
     \version $Revision$
     \date   create:2002/08/04 update:$Date$
 */
-#ifndef _MONA_X86MEMORYMANAGER_
-#define _MONA_X86MEMORYMANAGER_
+#ifndef _MONA_IA32MEMORYMANAGER_
+#define _MONA_IA32MEMORYMANAGER_
 
 #include<monaTypes.h>
 #include<monaIo.h>
@@ -33,13 +33,13 @@ typedef struct memoryEntry {
     memory management class
     single pattern  applyes the instance of this class
 */
-class X86MemoryManager {
+class IA32MemoryManager {
 
   private:
-    X86MemoryManager();
-    ~X86MemoryManager();
-    X86MemoryManager(const X86MemoryManager&);
-    X86MemoryManager& operator = (const X86MemoryManager&);
+    IA32MemoryManager();
+    ~IA32MemoryManager();
+    IA32MemoryManager(const IA32MemoryManager&);
+    IA32MemoryManager& operator = (const IA32MemoryManager&);
     size_t getRealSize(size_t) const;
     void addToEntry(struct memoryEntry**, struct memoryEntry*, size_t);
     void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, size_t);
@@ -89,8 +89,8 @@ class X86MemoryManager {
         _sys_printf("enable A20 done!\n");
         return;
     }
-    static X86MemoryManager& instance() {
-        static X86MemoryManager theInstance;
+    static IA32MemoryManager& instance() {
+        static IA32MemoryManager theInstance;
         return theInstance;
     }
 };
