@@ -82,7 +82,7 @@ Image::Image(char *path)
 Image::~Image()
 {
 	// ビットマップ破棄要求
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle()) == 0) {
+	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 }
