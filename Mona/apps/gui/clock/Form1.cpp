@@ -42,10 +42,9 @@ public:
     void refresh(_P<Object> sender, _P<EventArgs> e)
     {
         char* day[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
         this->date.refresh();
-
-        sprintf(time, "%d/%02d/%02d (%s)%02d:%02d:%02d", date.year(), date.month(), date.day(), day[date.dayofweek()], date.hour(), date.min(), date.sec());
-
+        sprintf(time, "%d/%02d/%02d (%s)%02d:%02d:%02d", date.year(), date.month(), date.day(), day[date.dayofweek() % 7], date.hour(), date.min(), date.sec());
         this->label1->set_Text(time);
     }
 
