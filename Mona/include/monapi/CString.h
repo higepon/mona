@@ -17,24 +17,24 @@ namespace MonAPI
 
         int getLength() const { return this->length; }
         char operator [](int index) const;
-        operator char*() { return this->buffer; }
+        operator const char*() const { return this->buffer; }
 
-        bool operator ==(const char* text);
-        bool operator ==(const CString& text);
-        inline bool operator !=(const char* text) { return *this != text; }
-        inline bool operator !=(const CString& text) { return *this != text; }
+        bool operator ==(const char* text) const;
+        bool operator ==(const CString& text) const;
+        inline bool operator !=(const char* text) const { return *this != text; }
+        inline bool operator !=(const CString& text) const { return *this != text; }
         CString& operator =(const char* text);
         CString& operator =(const CString& text);
         void operator +=(const char* text);
         void operator +=(const CString& text);
         void operator +=(char ch);
-        CString operator +(const char* text);
-        CString operator +(const CString& text);
+        CString operator +(const char* text) const;
+        CString operator +(const CString& text) const;
 
-        bool startsWith(const CString& value);
-        bool endsWith(const CString& value);
+        bool startsWith(const CString& value) const;
+        bool endsWith(const CString& value) const;
 
-        CString substring(int start, int length);
+        CString substring(int start, int length) const;
     };
 }
 
