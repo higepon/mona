@@ -49,8 +49,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     if (!g_fat12->open(path, file, FAT12::READ_MODE)) {
 
         Semaphore::up(&g_semaphore_fd);
-        g_console->printf("can not open error\n %x", g_fat12->getErrorNo());
-        return -1;
+        return 1;
     }
 
     /* get file size and allocate buffer */
@@ -62,8 +61,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     memset(buf, 0, 512 * readTimes);
     if (buf == NULL) {
         Semaphore::up(&g_semaphore_fd);
-        g_console->printf("allocate error\n");
-        return -1;
+        return 2;
     }
 
     /* read */
@@ -72,8 +70,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
 
             free(buf);
             Semaphore::up(&g_semaphore_fd);
-            g_console->printf("allocate error\n");
-            return -1;
+            return 3;
         }
     }
 
@@ -92,8 +89,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) {
         free(buf);
-        g_console->printf("atatch error1\n");
-        return -1;
+        return 4;
     }
 
     /* load */
@@ -112,8 +108,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) {
-        g_console->printf("atatch error2\n");
-        return -1;
+        return 5;
     }
 
     /* detach from this process */

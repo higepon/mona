@@ -28,7 +28,8 @@ dword VesaConsole::palette[] = {
                         0x00c0c0c0, // gray
                         0x00808080, // darkgray
                         0x00000080, // lightblue
-                        0x00008080, // lightbue
+                        //                        0x00008080, // lightbue
+                        0x00D9C4D1, // lightbue
                         //                        0x00008000, // lightgreen
                         0x0096A48E, // lightgreen
                         0x00800000, // lightred

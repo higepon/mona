@@ -92,7 +92,30 @@ void Shell::commandExecute() {
         list.next = option;
     }
 
-    syscall_load_process(command, &list);
+    int result = syscall_load_process(command, &list);
+
+    switch(result) {
+
+      case(0):
+          break;
+      case(1):
+          printf("File not found");
+          break;
+      case(2):
+          printf("load Process memory allocate error");
+          break;
+      case(3):
+          printf("File read error");
+          break;
+      case(4):
+          printf("Shared Memory error1");
+          break;
+      case(5):
+          printf("Shared Memory error2");
+          break;
+      default:
+          break;
+    }
 
     for (option = list.next; option; option = option->next) {
         delete option;
