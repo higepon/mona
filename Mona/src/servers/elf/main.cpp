@@ -104,16 +104,19 @@ int ExecuteFile(const CString& commandLine, bool prompt)
     {
         mi = monapi_call_file_read_data(path, prompt ? 1 : 0);
     }
+
+    int result = -1;
     if (mi == NULL)
     {
         if (prompt) printf("%s: can not find command\n", SVR);
-        return -1;
     }
+    else
+    {
+        result = ExecuteProcess(mi, path, GetFileName(path), &list, prompt);
 
-    int result = ExecuteProcess(mi, path, GetFileName(path), option, prompt);
-
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+        monapi_cmemoryinfo_dispose(mi);
+        monapi_cmemoryinfo_delete(mi);
+    }
 
     for (option = list.next; option; option = option->next)
     {

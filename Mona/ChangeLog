@@ -10,6 +10,10 @@
 
         * src/servers/gui: FILE.SVRにbzip2展開機能を移動
 
+        * src/servers/elf: ELFファイルを解析して実行, 圧縮ELF(.EL2)対応
+
+        * src/servers/shell: ELF.SVRを呼び出してコマンドを実行
+
 2004-05-02  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: カーネルで使わないメッセージを削除
