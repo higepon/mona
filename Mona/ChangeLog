@@ -22,7 +22,7 @@
 
         * bin/root/AUTOEXEC.MSH: psとstartguiを削除
 
-        * src/servers/gui: 壁紙のリサイズに対応
+        * src/servers/gui: 壁紙のリサイズをサポート
 
 2004-05-21  higepon  <higepon@users.sourceforge.jp>
 
