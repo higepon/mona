@@ -235,6 +235,8 @@ void write(const char* buf, int size)
 
 int MonaMain(List<char*>* pekoe)
 {
+    dword filesize;
+    printf("open=%d\n", syscall_file_open("hoge", 0, &filesize));
 
     CString msg = "this is test";
 

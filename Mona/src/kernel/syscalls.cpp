@@ -244,7 +244,11 @@ void syscall_entrance() {
 
             enableInterrupt();
             //            info->eax = loadProcess(path, name, true, option);
-            info->eax = Loader::Load(path, name, true, option);
+
+            dword result = Loader::Load(path, name, true, option);
+
+            disableInterrupt();
+            info->eax = result;
             break;
         }
 
@@ -273,6 +277,8 @@ void syscall_entrance() {
         g_fdcdriver->recalibrate();
 
         systemcall_mutex_unlock(g_mutexFloppy);
+
+        disableInterrupt();
         info->eax = 0;
         break;
 
@@ -284,6 +290,8 @@ void syscall_entrance() {
         g_fdcdriver->motorAutoOff();
 
         systemcall_mutex_unlock(g_mutexFloppy);
+
+        disableInterrupt();
         info->eax = 0;
         break;
 
@@ -300,9 +308,14 @@ void syscall_entrance() {
             systemcall_mutex_lock(g_mutexFloppy);
             for (dword i = 0; i < blocknum; i++) {
                 readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
-                if (!readResult) break;
+                if (!readResult)
+                {
+                    disableInterrupt();
+                    break;
+                }
             }
             systemcall_mutex_unlock(g_mutexFloppy);
+            disableInterrupt();
             info->eax = readResult ? 0 : 1;
         }
         break;
@@ -320,13 +333,16 @@ void syscall_entrance() {
             for (dword i = 0; i < blocknum; i++) {
                 writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
                 if (!writeResult) {
+                    disableInterrupt();
                     break;
                 }
             }
             systemcall_mutex_unlock(g_mutexFloppy);
 
+            disableInterrupt();
             info->eax = writeResult ? 0 : 1;
         }
+        disableInterrupt();
         break;
 
     case SYSTEM_CALL_FILE_OPEN:
@@ -345,15 +361,19 @@ void syscall_entrance() {
 
             if (!g_fs->open(path, mode))
                 {
-                    info->eax = g_fs->getErrorNo();
                     g_fdcdriver->motorAutoOff();
                     systemcall_mutex_unlock(g_mutexFloppy);
+
+                    disableInterrupt();
+                    info->eax = g_fs->getErrorNo();
                     break;
                 }
 
             systemcall_mutex_unlock(g_mutexFloppy);
 
             *size = g_fs->size();
+
+            disableInterrupt();
             info->eax = 0;
             break;
         }
@@ -369,8 +389,9 @@ void syscall_entrance() {
 
             if (!g_fs->read(buf, size))
                 {
-                    info->eax = g_fs->getErrorNo();
                     systemcall_mutex_unlock(g_mutexFloppy);
+                    disableInterrupt();
+                    info->eax = g_fs->getErrorNo();
                     break;
                 }
 
@@ -391,8 +412,9 @@ void syscall_entrance() {
 
             if (!g_fs->write(buf, size))
                 {
-                    info->eax = g_fs->getErrorNo();
                     systemcall_mutex_unlock(g_mutexFloppy);
+                    disableInterrupt();
+                    info->eax = g_fs->getErrorNo();
                     break;
                 }
 
@@ -435,6 +457,9 @@ void syscall_entrance() {
         g_fs->close();
         g_fdcdriver->motorAutoOff();
         systemcall_mutex_unlock(g_mutexFloppy);
+
+        disableInterrupt();
+        info->eax = 0;
         break;
 
     case SYSTEM_CALL_GET_PID:
@@ -518,9 +543,15 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_FDC_DISK_CHANGED:
 
+    {
         enableInterrupt();
-        info->eax = g_fdcdriver->checkDiskChange();
+
+        dword result = g_fdcdriver->checkDiskChange();
+
+        disableInterrupt();
+        info->eax = result;
         break;
+    }
 
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 

@@ -1,6 +1,8 @@
 2004-10-05  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/gui/shell/Form1.cpp (StdoutMessageLoop): MSG_STDOUTを受信できるように変更        
+        * src/kernel/syscalls.cpp: システムコール中の割込み許可時のバグ修正
+
+        * apps/gui/shell/Form1.cpp (StdoutMessageLoop): MSG_STDOUTを受信できるように変更
         * 標準出力テスト: バグ修正
 
 2004-10-04  higepon  <higepon@users.sourceforge.jp>
