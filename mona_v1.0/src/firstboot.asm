@@ -5,7 +5,7 @@
 ; Copyright (c) 2002 HigePon, Guripon, syn
 ; WITHOUT ANY WARRANTY
 ;-------------------------------------------------------------------------------
-;; %define DEBUG   1
+%define DEBUG   1
 
 %define TEMPSEG 0x9fe0
 %define KERNEL  0x0100
@@ -116,7 +116,7 @@ readsector:
         call    debug
 %endif
         int     0x13
-        jc      error
+        jc      .error
         mov     dx,ax
         mov     cl,0x09
         shl     ax,cl
@@ -135,13 +135,20 @@ readsector:
         jnz     .r1             ; jump over dma boundary
         popa
         ret
-
-error:
+        
+.error:
         mov     si,err
         call    print
-        mov     cl,0x0c
-        call    tohex
-        jmp     short $
+        xchg	ah,al
+        mov     cl,0x04
+        call    tohex		; print error code
+        mov	si,crlf
+        call	print
+        xor	ax,ax
+        xor	dl,dl
+        int	0x13		; re-initialize
+        pop	ax
+        jmp     short .r2	; retry
 
 debug:
         pusha
@@ -211,7 +218,7 @@ tohex:
 ; various data
 
 boot    db      "mona loading",0x0d,0x0a,0
-err     db      "read error",0x0d,0x0a,0
+err     db      "read error - ",0
 good    db      "disk read success!",0x0d,0x0a,0
 crlf    db      0x0d,0x0a,0
 
