@@ -16,7 +16,7 @@
 
 #include <monaKernel.h>
 
-#define GDTNUM 7 /*! number of entry gdt */
+#define GDTNUM 7 /*!< \def number of entry gdt */
 
 /*!
     process management
@@ -35,6 +35,10 @@ class ProcessManager {
         static ProcessManager theInstance;
         return theInstance;
     }
+    byte stack[5120];
+    TSS tss[2];
+    GDT ldt[2];
+    GDT sss[1];
   private:
     void sgdt();
     inline void ltr(word) const;

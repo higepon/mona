@@ -18,11 +18,6 @@
 #include <string.h>
 #include <monaTester.h>
 
-byte stack[5120];
-TSS tss[2];
-GDT ldt[2];
-GDT sss[1];
-
 /*!
     \brief constructor
 

@@ -16,10 +16,12 @@
 
 #include <monaTypes.h>
 
-#define _sysLock()   asm volatile("cli") /*! disable interupts */
-#define _sysUnlock() asm volatile("sti") /*! enable  interupts */
+#define _sysLock()   asm volatile("cli") /*!< \def disable interupts */
+#define _sysUnlock() asm volatile("sti") /*!< \def  enable  interupts */
 
-/*! TSS */
+/*!
+    \struct TSS(Task State Segment)
+*/
 typedef struct {
     word  backlink;
     word  pad0;
@@ -64,7 +66,9 @@ typedef struct {
 
 #pragma pack(2)
 
-/*! gdtr */
+/*!
+    \struct gdtr
+*/
 typedef struct {
     word  limit;
     dword base;
@@ -72,7 +76,9 @@ typedef struct {
 
 #pragma pack()
 
-/*! gdt */
+/*!
+    \struct  gdt
+*/
 typedef struct {
     word limitL;
     word baseL;
@@ -82,7 +88,9 @@ typedef struct {
     byte baseH;
 } GDT;
 
-/*! struct for far jmp */
+/*!
+   \struct far jmp
+*/
 typedef struct {
     dword offset;
     word selector;
