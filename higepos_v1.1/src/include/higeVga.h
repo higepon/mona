@@ -37,4 +37,5 @@ void backwardCursor(int);
 void setCursor(int, int);
 void scrollUp();
 void _sysPutInt(H_SIZE_T, int);
+void _sysSetColor(char);
 #endif

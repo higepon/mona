@@ -12,8 +12,22 @@
 */
 #include <higeVga.h>
 
-static int curX; /*! cursor position x */
-static int curY; /*! cursor position y */
+static int  curX;  /*! cursor position x        */
+static int  curY;  /*! cursor position y        */
+static char color; /*! color of char&background */
+
+/*!
+    \brief set color
+
+    set color of back ground and character
+
+    \author HigePon
+    \date   create:2002/11/15 update:
+*/
+void _sysSetColor(char c) {
+    color = c;
+    return;
+}
 
 /*!
     \brief initialize vga
@@ -25,6 +39,7 @@ static int curY; /*! cursor position y */
 */
 void _sysInitVga() {
     setCursor(0, 0);
+    _sysSetColor(0x07);
     return;
 }
 
@@ -138,7 +153,8 @@ void _sysPutInt(H_SIZE_T n, int base) {
 */
 void _sysWriteVram(int x, int y , char ch) {
 
-    VRAM[MAX_WIDTH * y * 2 + x * 2] = ch;
+    VRAM[MAX_WIDTH * y * 2 + x * 2]     = ch;
+    VRAM[MAX_WIDTH * y * 2 + x * 2 + 1] = color;
     return;
 }
 

@@ -37,7 +37,9 @@ void startKernel(void) {
 
     /* show message */
     _sysPrintln("------------------------------------------------------");
+    _sysSetColor(0x03);
     _sysPrintln("      Higepos Kernel starting                         ");
+    _sysSetColor(0x07);
     _sysPrintln("        ________ A A                                  ");
     _sysPrintln("      ~/ ______( `D`) < thanks ProgrammingBoard@2ch   ");
     _sysPrintln("        UU       U U                                  ");
@@ -56,7 +58,7 @@ void startKernel(void) {
 #if 0
     operatorTester();
     hvectorTester();
-	floppyTester();
+    floppyTester();
 #endif
 
 
