@@ -6,13 +6,22 @@
 
         * その他Makefile: stripの後にmonaelfを適用するようにした
 
+        * include/sys/types.h: PsInfoにpathを追加
+
+        * src/kernel/Process.h: path対応
+
+        * src/kernel/Process.cpp: path対応
+
+        * src/kernel/kernel.cpp: path対応
+
+        * src/kernel/elf.cpp: path対応
+
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 
         * Gakuさんの修正分: fat.cpp, fat.h
 
           File::resize の中身を実装
           FatDirectroy::deleteEntry のバグ修正、ディレクトリエントリのリサイズに対応
-
 
 2004-04-27  Yui  <yuinejp@users.sourceforge.jp>
 

@@ -286,14 +286,14 @@ void Scheduler::dump()
     FOREACH_N(runq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
-        logprintf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+        g_console->printf("[r][%s,%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getPath(), i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+        logprintf("[r][%s,%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getPath(), i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 
     FOREACH_N(waitq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        logprintf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+        logprintf("[w][%s,%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getPath(), i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 }
 
@@ -310,7 +310,8 @@ void Scheduler::setDump()
         current->next = new PsInfo;
         current  = current->next;
 
-        strcpy(current->name, i->process->getName());
+        strncpy(current->path, i->process->getPath(), sizeof(current->path));
+        strncpy(current->name, i->process->getName(), sizeof(current->name));
         current->cr3   = i->archinfo->cr3;
         current->eip   = i->archinfo->eip;
         current->esp   = i->archinfo->esp;
@@ -325,7 +326,8 @@ void Scheduler::setDump()
         current->next = new PsInfo;
         current  = current->next;
 
-        strcpy(current->name, i->process->getName());
+        strncpy(current->path, i->process->getPath(), sizeof(current->path));
+        strncpy(current->name, i->process->getName(), sizeof(current->name));
         current->cr3   = i->archinfo->cr3;
         current->eip   = i->archinfo->eip;
         current->esp   = i->archinfo->esp;
@@ -418,17 +420,17 @@ LinearAddress ProcessOperation::allocateKernelStack()
     return KERNEL_STACK_START + i * KERNEL_STACK_UNIT_SIZE;
 }
 
-Process* ProcessOperation::create(int type, const char* name)
+Process* ProcessOperation::create(int type, const char* path, const char* name)
 {
     Process* result;
 
     switch (type)
     {
       case USER_PROCESS:
-          result = new UserProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          result = new UserProcess(path, name, ProcessOperation::pageManager->createNewPageDirectory());
           break;
       case KERNEL_PROCESS:
-          result = new KernelProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          result = new KernelProcess(path, name, ProcessOperation::pageManager->createNewPageDirectory());
           break;
       default:
           result = (Process*)NULL;
@@ -633,8 +635,11 @@ Thread::~Thread()
     Process
 ----------------------------------------------------------------------*/
 dword Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : threadNum(0)
+Process::Process(const char* path, const char* name, PageEntry* directory) : threadNum(0)
 {
+    /* name */
+    strncpy(path_, path, sizeof(path_));
+
     /* name */
     strncpy(name_, name, sizeof(name_));
 
@@ -687,7 +692,7 @@ Process::~Process()
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/
-UserProcess::UserProcess(const char* name, PageEntry* directory) : Process(name, directory)
+UserProcess::UserProcess(const char* path, const char* name, PageEntry* directory) : Process(path, name, directory)
 {
     /* not kernel mode */
     isUserMode_ = true;
@@ -700,7 +705,7 @@ UserProcess::~UserProcess()
 /*----------------------------------------------------------------------
     KernelProcess
 ----------------------------------------------------------------------*/
-KernelProcess::KernelProcess(const char* name, PageEntry* directory) : Process(name, directory)
+KernelProcess::KernelProcess(const char* path, const char* name, PageEntry* directory) : Process(path, name, directory)
 {
     /* kernel mode */
     isUserMode_ = false;
@@ -713,7 +718,7 @@ KernelProcess::~KernelProcess()
 /*----------------------------------------------------------------------
     V86Process
 ----------------------------------------------------------------------*/
-V86Process::V86Process(const char* name, PageEntry* directory) : Process(name, directory)
+V86Process::V86Process(const char* path, const char* name, PageEntry* directory) : Process(path, name, directory)
 {
     /* kernel mode */
     isUserMode_ = true;

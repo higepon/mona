@@ -151,12 +151,12 @@ void startKernel(void)
     g_scheduler = new Scheduler();
 
     /* at first create idle process */
-    Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
+    Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "", "IDLE");
     Thread* idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
     g_scheduler->join(idleThread);
 
     /* start up Process */
-    Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
+    Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "", "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (dword)mainProcess);
     g_scheduler->join(initThread);
 

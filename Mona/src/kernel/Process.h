@@ -91,7 +91,7 @@ class ProcessOperation
 {
   public:
     static void initialize(PageManager* manager);
-    static Process* create(int type, const char* name);
+    static Process* create(int type, const char* path, const char* name);
     static LinearAddress allocateKernelStack();
 
   private:
@@ -221,11 +221,16 @@ class Process
 {
   public:
     Process() {}
-    Process(const char* name, PageEntry* directory);
+    Process(const char* path, const char* name, PageEntry* directory);
     virtual ~Process();
 
   public:
-    inline virtual const char* getName() const
+    inline virtual const char* getPath() const
+    {
+        return path_;
+    }
+
+	inline virtual const char* getName() const
     {
         return name_;
     }
@@ -290,6 +295,7 @@ class Process
     List<MessageInfo*>* messageList_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
+	char path_[32];
     char name_[16];
     dword pid_;
 };
@@ -301,7 +307,7 @@ class UserProcess : public Process
 {
   public:
     UserProcess();
-    UserProcess(const char* name, PageEntry* directory);
+    UserProcess(const char* path, const char* name, PageEntry* directory);
     virtual ~UserProcess();
 };
 
@@ -312,7 +318,7 @@ class KernelProcess : public Process
 {
   public:
     KernelProcess();
-    KernelProcess(const char* name, PageEntry* directory);
+    KernelProcess(const char* path, const char* name, PageEntry* directory);
     virtual ~KernelProcess();
 };
 
@@ -323,7 +329,7 @@ class V86Process : public Process
 {
   public:
     V86Process();
-    V86Process(const char* name, PageEntry* directory);
+    V86Process(const char* path, const char* name, PageEntry* directory);
     virtual ~V86Process();
 };
 

@@ -40,7 +40,8 @@ typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
-struct PsInfo {
+typedef struct PsInfo {
+    char path[128];
     char name[16];
     dword state;
     dword cr3;
@@ -48,8 +49,7 @@ struct PsInfo {
     dword esp;
     dword tid;
     struct PsInfo* next;
-};
-typedef struct PsInfo PsInfo;
+} PsInfo;
 
 typedef struct {
     int year;

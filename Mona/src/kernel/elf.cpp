@@ -29,7 +29,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
 {
     char filepath[128];
 
-    strcpy(filepath, path);
+    strncpy(filepath, path, sizeof(filepath));
 
     /* shared ID */
     static dword sharedId = 0x1000;
@@ -111,7 +111,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
 
     /* create process */
     enter_kernel_lock_mode();
-    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
+    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, path, name);
 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));
