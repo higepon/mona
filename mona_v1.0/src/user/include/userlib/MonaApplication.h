@@ -18,7 +18,7 @@ interface Receiver {
 class MonaApplication : public Receiver {
 
   public:
-    MonaApplication(char* name);
+    MonaApplication();
     virtual ~MonaApplication();
 
   public:

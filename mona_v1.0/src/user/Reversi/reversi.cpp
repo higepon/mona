@@ -7,7 +7,7 @@
 class myApplication : public MonaApplication, public Observer {
 
   public:
-    myApplication(char* name);
+    myApplication();
     virtual ~myApplication() {}
 
   public:
@@ -36,7 +36,7 @@ class myApplication : public MonaApplication, public Observer {
 ----------------------------------------------------------------------*/
 int MonaMain(List<char*>* pekoe) {
 
-    monaApp = new myApplication("REVERSI");
+    monaApp = new myApplication();
     return monaApp->main(pekoe);
 }
 
@@ -45,7 +45,7 @@ int MonaMain(List<char*>* pekoe) {
 ----------------------------------------------------------------------*/
 
 // コンストラクタ
-myApplication::myApplication(char* name) : MonaApplication(name) {
+myApplication::myApplication() : MonaApplication() {
 }
 
 // main

@@ -3,7 +3,7 @@
 class myApplication : public MonaApplication {
 
   public:
-    myApplication(char* name);
+    myApplication();
     virtual ~myApplication() {}
 
   public:
@@ -11,7 +11,7 @@ class myApplication : public MonaApplication {
     virtual void onKeyDown(int keycode, int modifiers);
 };
 
-myApplication::myApplication(char* name) : MonaApplication(name) {
+myApplication::myApplication() : MonaApplication() {
 }
 
 int myApplication::main(List<char*>* pekoe) {
@@ -49,6 +49,6 @@ void myApplication::onKeyDown(int keycode, int modifiers)
 
 int MonaMain(List<char*>* pekoe)
 {
-    monaApp = new myApplication("HELLO.ELF");
+    monaApp = new myApplication();
     return monaApp->main(pekoe);
 }

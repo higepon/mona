@@ -73,7 +73,7 @@ void messageLoop() {
 /*----------------------------------------------------------------------
     MonaApplication
 ----------------------------------------------------------------------*/
-MonaApplication::MonaApplication(char* name) {
+MonaApplication::MonaApplication() {
 
     int id = syscall_mthread_create((dword)MESSAGE_LOOP);
     syscall_mthread_join(id);
