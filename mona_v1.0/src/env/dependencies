@@ -6,47 +6,45 @@ kernel.o: kernel.cpp user/types.h include/global.h include/info.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h include/tester.h \
-  include/test_mjt.h include/checker.h include/KeyBoardManager.h \
-  include/SystemInfo.h include/ihandlers.h include/pic.h include/io.h \
-  include/rtc.h include/disp.h include/syscalls.h user/userlib.h \
-  include/elf.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h include/tester.h include/test_mjt.h \
+  include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
+  include/ihandlers.h include/pic.h include/io.h include/rtc.h \
+  include/disp.h include/syscalls.h user/userlib.h include/elf.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h include/io.h \
-  include/ihandlers.h include/KeyBoardManager.h include/SystemInfo.h \
-  include/tester.h include/test_mjt.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h include/io.h include/ihandlers.h \
+  include/KeyBoardManager.h include/SystemInfo.h include/tester.h \
+  include/test_mjt.h
 operator.o: operator.cpp include/MemoryManager.h user/types.h \
   include/operator.h include/string.h include/global.h include/info.h \
   include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
   include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
   include/IDTUtil.h include/Process.h include/PageManager.h \
   include/Queue.h include/GraphicalConsole.h include/BitMap.h \
-  include/Segments.h include/collection.h include/Scheduler.h \
-  include/sysresource.h include/FAT12.h
+  include/Segments.h include/collection.h include/sysresource.h \
+  include/FAT12.h
 purevirtual.o: purevirtual.cpp include/kernel.h user/types.h \
   include/VirtualConsole.h include/string.h include/global.h \
   include/info.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
-  include/operator.h include/collection.h include/Scheduler.h \
-  include/sysresource.h include/FAT12.h include/MemoryManager.h \
-  user/userlib.h
+  include/operator.h include/collection.h include/sysresource.h \
+  include/FAT12.h include/MemoryManager.h user/userlib.h
 KeyBoardManager.o: KeyBoardManager.cpp include/global.h include/info.h \
   include/kernel.h user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h include/KeyBoardManager.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h include/KeyBoardManager.h
 checker.o: checker.cpp include/checker.h user/types.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/GDTUtil.h \
   include/IDTUtil.h
@@ -57,17 +55,17 @@ Semaphore.o: Semaphore.cpp include/Semaphore.h include/kernel.h \
   include/DiskDriver.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
-  include/operator.h include/collection.h include/Scheduler.h \
-  include/sysresource.h include/FAT12.h include/MemoryManager.h
+  include/operator.h include/collection.h include/sysresource.h \
+  include/FAT12.h include/MemoryManager.h
 FDCDriver.o: FDCDriver.cpp include/FDCDriver.h user/types.h \
   include/VirtualConsole.h include/string.h include/DiskDriver.h \
   include/kernel.h include/operator.h include/io.h include/global.h \
   include/info.h include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h include/syscalls.h \
-  user/userlib.h include/SystemInfo.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h include/syscalls.h user/userlib.h \
+  include/SystemInfo.h
 GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h user/types.h include/string.h
 pic.o: pic.cpp include/pic.h include/io.h user/types.h
@@ -80,19 +78,18 @@ disp.o: disp.cpp include/kernel.h user/types.h include/VirtualConsole.h \
   include/DiskDriver.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
-  include/operator.h include/collection.h include/Scheduler.h \
-  include/sysresource.h include/FAT12.h include/MemoryManager.h \
-  include/syscalls.h user/userlib.h include/rtc.h include/tester.h \
-  include/test_mjt.h
+  include/operator.h include/collection.h include/sysresource.h \
+  include/FAT12.h include/MemoryManager.h include/syscalls.h \
+  user/userlib.h include/rtc.h include/tester.h include/test_mjt.h
 syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/info.h include/kernel.h user/types.h include/VirtualConsole.h \
   include/string.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
-  include/operator.h include/collection.h include/Scheduler.h \
-  include/sysresource.h include/FAT12.h include/MemoryManager.h \
-  user/userlib.h include/tester.h include/test_mjt.h include/io.h
+  include/operator.h include/collection.h include/sysresource.h \
+  include/FAT12.h include/MemoryManager.h user/userlib.h include/tester.h \
+  include/test_mjt.h include/io.h
 BitMap.o: BitMap.cpp include/BitMap.h user/types.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h user/types.h \
   include/VirtualConsole.h include/string.h
@@ -103,7 +100,7 @@ FAT12.o: FAT12.cpp include/FAT12.h user/types.h include/DiskDriver.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/Segments.h include/operator.h include/collection.h \
-  include/Scheduler.h include/sysresource.h include/MemoryManager.h
+  include/sysresource.h include/MemoryManager.h
 test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/test_mjt.h include/FAT12.h include/DiskDriver.h \
   include/BitMap.h include/FDCDriver.h include/VirtualConsole.h \
@@ -111,75 +108,67 @@ test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/MemoryManager.h include/io.h include/z.h contrib/include/zlib.h \
-  contrib/include/zconf.h include/KeyBoardManager.h include/elf.h \
-  user/userlib.h include/SystemInfo.h
+  include/collection.h include/sysresource.h include/MemoryManager.h \
+  include/io.h include/z.h contrib/include/zlib.h contrib/include/zconf.h \
+  include/KeyBoardManager.h include/elf.h user/userlib.h \
+  include/SystemInfo.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \
   include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
   include/IDTUtil.h include/Process.h include/PageManager.h \
   include/Queue.h include/GraphicalConsole.h include/Segments.h \
-  include/operator.h include/collection.h include/Scheduler.h \
-  include/FAT12.h include/MemoryManager.h include/pic.h include/io.h
+  include/operator.h include/collection.h include/FAT12.h \
+  include/MemoryManager.h include/pic.h include/io.h
 info.o: info.cpp include/global.h include/info.h include/kernel.h \
   user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h
 GDTUtil.o: GDTUtil.cpp include/global.h include/info.h include/kernel.h \
   user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h
 IDTUtil.o: IDTUtil.cpp include/global.h include/info.h include/kernel.h \
   user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h
 Process.o: Process.cpp include/global.h include/info.h include/kernel.h \
   user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
-Scheduler.o: Scheduler.cpp include/Scheduler.h include/Process.h \
-  user/types.h include/PageManager.h include/Queue.h \
-  include/GraphicalConsole.h include/VirtualConsole.h include/string.h \
-  include/BitMap.h include/Segments.h include/operator.h include/kernel.h \
-  include/collection.h include/global.h include/info.h \
-  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/GDTUtil.h include/IDTUtil.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
+  include/collection.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h
 PageManager.o: PageManager.cpp include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/VirtualConsole.h user/types.h \
   include/string.h include/BitMap.h include/operator.h include/Segments.h \
   include/kernel.h include/Process.h include/collection.h \
   include/global.h include/info.h include/FDCDriver.h \
   include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/IDTUtil.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
+  include/IDTUtil.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h
 elf.o: elf.cpp include/elf.h user/types.h include/string.h \
   include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
-  include/operator.h include/collection.h include/Scheduler.h \
-  include/sysresource.h include/FAT12.h include/MemoryManager.h \
-  include/io.h include/syscalls.h user/userlib.h
+  include/operator.h include/collection.h include/sysresource.h \
+  include/FAT12.h include/MemoryManager.h include/io.h include/syscalls.h \
+  user/userlib.h
 test_mjt.o: test_mjt.cpp
 z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h \
   include/string.h user/types.h include/operator.h include/global.h \
@@ -188,8 +177,7 @@ z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h \
   include/GDTUtil.h include/IDTUtil.h include/Process.h \
   include/PageManager.h include/Queue.h include/GraphicalConsole.h \
   include/BitMap.h include/Segments.h include/collection.h \
-  include/Scheduler.h include/sysresource.h include/FAT12.h \
-  include/MemoryManager.h
+  include/sysresource.h include/FAT12.h include/MemoryManager.h
 MemoryManager.o: MemoryManager.cpp include/MemoryManager.h user/types.h \
   include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \
@@ -197,12 +185,4 @@ MemoryManager.o: MemoryManager.cpp include/MemoryManager.h user/types.h \
   include/IDTUtil.h include/Process.h include/PageManager.h \
   include/Queue.h include/GraphicalConsole.h include/BitMap.h \
   include/Segments.h include/operator.h include/collection.h \
-  include/Scheduler.h include/sysresource.h include/FAT12.h
-Segments.o: Segments.cpp include/global.h include/info.h include/kernel.h \
-  user/types.h include/VirtualConsole.h include/string.h \
-  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/GDTUtil.h include/IDTUtil.h include/Process.h \
-  include/PageManager.h include/Queue.h include/GraphicalConsole.h \
-  include/BitMap.h include/Segments.h include/operator.h \
-  include/collection.h include/Scheduler.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h
+  include/sysresource.h include/FAT12.h

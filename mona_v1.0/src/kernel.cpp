@@ -90,9 +90,6 @@ void startKernel(void) {
     /* initialze console */
     g_console = new GraphicalConsole();
 
-    /* for Shared Memory */
-    SharedMemoryObject::setup();
-
     /* show start message */
     //    printBanner();
 
@@ -180,7 +177,7 @@ void mainProcess() {
     //  g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     //  g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
 
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
+    //    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
 
     while (true);
 }

@@ -41,13 +41,11 @@ SOURCES     = cstart.cpp            \
               GDTUtil.cpp           \
               IDTUtil.cpp           \
               Process.cpp           \
-              Scheduler.cpp         \
               PageManager.cpp       \
               elf.cpp               \
               test_mjt.cpp          \
               z.cpp                 \
               MemoryManager.cpp     \
-              Segments.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

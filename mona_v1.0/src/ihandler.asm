@@ -30,8 +30,7 @@ cextern keyStrokeHandler
 cextern fault0dHandler
 cextern syscall_entrance
 cextern dummyHandler
-cextern arch_save_process_registers
-cextern g_current_process
+cextern arch_save_thread_registers
 
 %define KERNEL_DS 0x10
 
@@ -68,7 +67,7 @@ arch_fdchandler:
 arch_timerhandler:
         pushAll
         changeData
-        call arch_save_process_registers
+        call arch_save_thread_registers
         call timerHandler
         popAll
         iretd
@@ -170,9 +169,9 @@ arch_cpufaulthandler_e:
 arch_syscall_handler:
         pushAll
         changeData
-        call arch_save_process_registers
+        call arch_save_thread_registers
         call syscall_entrance
-        mov ebx, dword[g_current_process] ; system call return code is
+;        mov ebx, dword[g_current_process] ; system call return code is
         mov eax, dword [ebx + 12]          ; at g_current_process->eax
         mov dword[esp + 36], eax           ; so set this to stack
         popAll

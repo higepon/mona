@@ -307,60 +307,61 @@ PageEntry* PageManager::allocatePageTable() const {
 */
 bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
-    PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(address);
-    dword tableIndex     = getTableIndex(address);
+//     PageEntry* table;
+//     dword directoryIndex = getDirectoryIndex(address);
+//     dword tableIndex     = getTableIndex(address);
     //    byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
-    SharedMemorySegment* shared;
+//     SharedMemorySegment* shared;
 
-    /* for each shared segment */
-    for (shared = g_current_process->shared; ; shared = (SharedMemorySegment*)shared->getNext()) {
+//     /* for each shared segment */
+//     for (shared = g_current_process->shared; ; shared = (SharedMemorySegment*)shared->getNext()) {
 
-        /* found */
-        if (shared->inRange(address)) {
+//         /* found */
+//         if (shared->inRange(address)) {
 
-            return shared->faultHandler(address, FAULT_NOT_EXIST);
-        }
+//             return shared->faultHandler(address, FAULT_NOT_EXIST);
+//         }
 
-        if ((SharedMemorySegment*)shared->getNext() == g_current_process->shared) break;
-    }
+//         if ((SharedMemorySegment*)shared->getNext() == g_current_process->shared) break;
+//     }
 
-    if (g_current_process->heap->inRange(address)) {
+//     if (g_current_process->heap->inRange(address)) {
 
-        return g_current_process->heap->faultHandler(address, FAULT_NOT_EXIST);
-    }
+//         return g_current_process->heap->faultHandler(address, FAULT_NOT_EXIST);
+//     }
 
-    if (g_current_process->stack->inRange(address)) {
+//     if (g_current_process->stack->inRange(address)) {
 
-        return g_current_process->stack->faultHandler(address, (error & ARCH_FAULT_NOT_EXIST)  ? FAULT_NOT_EXIST : FAULT_NOT_WRITABLE);
-    }
+//         return g_current_process->stack->faultHandler(address, (error & ARCH_FAULT_NOT_EXIST)  ? FAULT_NOT_EXIST : FAULT_NOT_WRITABLE);
+//     }
 
-    /* physical page not exist */
-    if (error & ARCH_FAULT_NOT_EXIST) {
+//     /* physical page not exist */
+//     if (error & ARCH_FAULT_NOT_EXIST) {
 
-        if (isPresent(&(g_page_directory[directoryIndex]))) {
+//         if (isPresent(&(g_page_directory[directoryIndex]))) {
 
-            table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-        } else {
+//             table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+//         } else {
 
-            table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-        }
+//             table = allocatePageTable();
+//             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+//             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+//         }
 
-        bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
-        if (allocateResult) flushPageCache();
+//         bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
+//         if (allocateResult) flushPageCache();
 
-        return allocateResult;
+//         return allocateResult;
 
-    /* access falut */
-    } else {
+//     /* access falut */
+//     } else {
 
-        g_console->printf("access denied.Process %s killed", g_current_process->name);
-        g_process_manager->kill(g_current_process);
-        return true;
-    }
+//         g_console->printf("access denied.Process %s killed", g_current_process->name);
+//         g_process_manager->kill(g_current_process);
+//         return true;
+//     }
+    return true;
 }
 
 /*! set page attribute

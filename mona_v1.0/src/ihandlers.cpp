@@ -41,11 +41,11 @@ void keyStrokeHandler(dword scancode) {
     km.setKeyScanCode((byte)scancode);
     km.getKeyInfo(&info);
 
-    memset(&message, 0, sizeof(Message));
-    message.arg1 = info.keycode;
-    message.arg2 = info.modifiers;
+//     memset(&message, 0, sizeof(Message));
+//     message.arg1 = info.keycode;
+//     message.arg2 = info.modifiers;
 
-    send("USER.ELF", &message);
+//     send("USER.ELF", &message);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
