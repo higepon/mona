@@ -77,8 +77,9 @@ MFDCDriver* gMFDCDriver;
 
 bool            MFDCDriver::interrupt_ ;
 byte*           MFDCDriver::dmabuff_;
-VirtualConsole* MFDCDriver::console_;
 byte            MFDCDriver::results_[10];
+VirtualConsole* MFDCDriver::console_;
+
 int             MFDCDriver::resultsLength_;
 
 /*!
@@ -134,17 +135,13 @@ void MFDCDriver::initilize() {
     }
 
     /* setup DMAC */
-    outportb(0xda, 0);
-    outportb(0x08, 0);
+    outportb(0xd0, 0x00);
+    outportb(0x08, 0x00);
     outportb(0xd6, 0xc0);
-    outportb(0xd4, 0);
-
-    printDMACStatus(inportb(0x0008), "dmac");
+    outportb(0xd4, 0x00);
 
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
-
-    printStatus("after specify");
 
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
@@ -162,15 +159,14 @@ void MFDCDriver::initilize() {
 
     /* test */
     interrupt_ = false;
-    printStatus("before motor on");
     motor(ON);
     while (!waitInterrupt());
 
     /* seek test */
     //    seek(3);
 
+    //    recalibrate();
     printStatus("before read");
-
     read(0, 0, 1);
 
     motor(OFF);
@@ -307,7 +303,7 @@ bool MFDCDriver::recalibrate() {
     //    while(!waitInterrupt());
 
     senseInterrupt();
-    printStatus("after sense");
+
     return true;
 }
 
@@ -329,12 +325,15 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
        status = inportb(FDC_MSR_PRIMARY);
        isOK = (status & mask) == expectedCondition;
+
+
        if (isOK) return true;
+       if (i == FDC_RETRY_MAX - 2)  _sys_printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
     }
 
     /* time out */
     console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
-                   , (int)expectedCondition, (int)inportb(FDC_MSR_PRIMARY), (int)status);
+                   , (int)expectedCondition, (int)inportb(FDC_MSR_PRIMARY), (int)(status & mask));
     return false;
 }
 
@@ -368,6 +367,9 @@ bool MFDCDriver::seek(byte track) {
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
+
+    //    printStatus("before sense interrupt in seek");
+    // here status 0x81??????????????????????????????????????????????
 
     if (!senseInterrupt()) {
 
@@ -525,7 +527,7 @@ void MFDCDriver::setupDMAWrite(dword size) {
 
 bool MFDCDriver::read(byte track, byte head, byte sector) {
 
-    byte command[] = {FDC_COMMAND_READ
+    byte command[] = {0xe6//FDC_COMMAND_READ
                    , (head & 1) << 2
                    , track
                    , head
@@ -536,12 +538,14 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-    for (int k = 0; k < 5000000; k++) {
+    for (int k = 0; k < 5000; k++) {
          k++;
          k--;
     }
 
+    printStatus("before seek in read");
     seek(track);
+    printStatus("after seek in read");
 
     setupDMARead(512);
     memset(dmabuff_, 0xfffe, 512);
@@ -549,15 +553,13 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
     interrupt_ = false;
 
 
-printDMACStatus(inportb(0x0008), " before read send\n");
     sendCommand(command, sizeof(command));
     //while(!waitInterrupt());
 
-printDMACStatus(inportb(0x0008), " after read send\n");
 
 
     stopDMA();
-printDMACStatus(inportb(0x0008), " after stop DMA\n");
+
     for (int i = 0; i < 10; i++) console_->printf("[%x]", (int)dmabuff_[i]);
 
     readResults();
