@@ -116,6 +116,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ICONIFIED       307
 /** 非アイコン化 */
 #define DEICONIFIED     308
+/** キー入力によってIMEが確定後の状態を変更した */
+#define IME_COMPOSITION      400
+/** 確定後の文字を表示するウインドウにスペースがない */
+#define IME_COMPOSITIONFULL  401
+/** 文字を確定した */
+#define IME_ENDCOMPOSITION   402
+/** キーを押した */
+#define IME_KEYDOWN          403
+/** キーを離した */
+#define IME_KEYUP            404
+/** IMEウインドウの変化をアプリケーションに知らせる */
+#define IME_NOTIFY           405
+/** IMEの入力ウインドウがアクティブになった時アプリケーションに通知する */
+#define IME_SETCONTEXT       406
+/** 確定する前に通知する*/
+#define IME_STARTCOMPOSITION 407
 
 //
 // ↓特殊キーコード一覧
