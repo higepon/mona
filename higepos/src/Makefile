@@ -46,7 +46,7 @@ OBJ        = ${BIN}/cstart.o           \
 # src to html & document
 WEB : ${BIN}/higeboot.bin
 	${DOXYGEN}
-#	cd ${SCRIPTS}; ${SCRIPTS}/web.rb
+	cd ${SCRIPTS}; ${SCRIPTS}/web.rb
 
 ${BIN}/higeboot.bin : ${FIRST} ${SECOND} ${THIRD}
 	cat  ${FIRST} ${SECOND} ${THIRD} >$@

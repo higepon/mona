@@ -20,11 +20,13 @@
 class X86MemoryManager:virtual MemoryManager {
 
   private:
-    X86MemoryManager() {}
+    X86MemoryManager();
     ~X86MemoryManager();
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
+    unsigned long start_;
   public:
+
     char* getMessage();
     char* getName();
     unsigned long allocateMemory(unsigned long);
