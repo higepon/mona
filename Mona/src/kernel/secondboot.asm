@@ -2526,7 +2526,7 @@ RealToProtect:
         mov     eax, cr0        ; real
         or      eax, 1          ; to
         mov     cr0, eax        ; protect
-        jmp     flush_q1
+	jmp 0x0008:set_cs_desc1 - RealToProtect + KERNEL_SEG * 16
 
 ;-------------------------------------------------------------------------------
 ; GDT definition: It is temporary.
@@ -2570,11 +2570,6 @@ gdt18:                          ; segment 18(stack segment)
 gdt_end:                        ; end of gdt
 
 [bits 32]
-flush_q1:
-        db 0eah
-        dw set_cs_desc1 - RealToProtect + 0x100 * 16
-        dw 08h
-
 set_cs_desc1:
         mov     ax, 0x10        ; ds & es
         mov     ds, ax          ; selector is
