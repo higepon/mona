@@ -9,7 +9,7 @@
     ************************************************
 
     Copyright (c) 2002,2003, 2004 Higepon and the individuals listed on the ChangeLog entries.
-    All rights reserved.
+    Al rights reserved.
     License=MIT/X Licnese
 
     \author  HigePon

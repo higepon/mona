@@ -21,11 +21,12 @@
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
-/*----------------------------------------------------------------------
-    loadProcess
-----------------------------------------------------------------------*/
-int loadProcess(const char* path, const char* file, bool isUser, CommandOption* list)
+int loadProcess(const char* path, const char* name, bool isUser, CommandOption* list)
 {
+    char filepath[128];
+
+    strcpy(filepath, path);
+
     /* shared ID */
     static dword sharedId = 0x1000;
     sharedId++;
@@ -46,14 +47,14 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     g_fdcdriver->recalibrate();
 
     /* file open */
-    if (!g_fat12->open(path, file, FAT12::READ_MODE))
+    if (!(g_fs->open(filepath, 1)))
     {
         Semaphore::up(&g_semaphore_fd);
         return 1;
     }
 
     /* get file size and allocate buffer */
-    fileSize  = g_fat12->getFileSize();
+    fileSize  = g_fs->size();
 
     readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
     buf       = (byte*)malloc(512 * readTimes);
@@ -66,24 +67,19 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     }
 
     /* read */
-    for (int i = 0; i < readTimes; i++)
+    if (!g_fs->read(buf, fileSize))
     {
-        if (!g_fat12->read(buf + 512 * i))
-        {
             free(buf);
             Semaphore::up(&g_semaphore_fd);
-            return 3;
-        }
+            return g_fs->getErrorNo();
     }
-
-    g_fat12->changeDirectory("..");
 
     /* close */
-    if (!g_fat12->close())
+    if (!g_fs->close())
     {
-
         Semaphore::up(&g_semaphore_fd);
     }
+
     g_fdcdriver->motorAutoOff();
     Semaphore::up(&g_semaphore_fd);
 
@@ -107,7 +103,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
 
     /* create process */
     enter_kernel_lock_mode();
-    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, file);
+    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));

@@ -833,18 +833,19 @@ int syscall_print(const char* msg) {
     return (int)result;
 }
 
-int syscall_load_process(const char* name, CommandOption* list) {
+int syscall_load_process(const char* path, const char* name, CommandOption* list) {
 
     int result;
 
     asm volatile("movl $%c1, %%ebx \n"
                  "movl %2  , %%esi \n"
                  "movl %3  , %%ecx \n"
+                 "movl %4  , %%edi \n"
                  "int  $0x80       \n"
                  "movl %%eax, %0   \n"
                  :"=m"(result)
-                 :"g"(SYSTEM_CALL_LOAD_PROCESS), "m"(name), "m"(list)
-                 :"ebx", "esi"
+                 :"g"(SYSTEM_CALL_LOAD_PROCESS), "m"(path), "m"(name), "m"(list)
+                 :"ebx", "esi", "ecx", "edi"
                  );
 
     return (int)result;

@@ -53,6 +53,7 @@ SOURCES      = cstart.cpp            \
                Mutex.cpp             \
                VesaConsole.cpp       \
                LogConsole.cpp        \
+               fat.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

@@ -234,6 +234,14 @@ void mainProcess()
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
+    g_fs = new FSOperation();
+
+    if (g_fs == NULL || !(g_fs->initialize((IStorageDevice*)g_fdcdriver)))
+    {
+        g_console->printf("FSOperation::initialize error\n");
+        for (;;);
+    }
+
     if (!g_fat12->initilize())
     {
         g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
@@ -283,15 +291,16 @@ void mainProcess()
 
     /* KEY Server */
     g_console->printf("loading KeyBoard Server....");
-    g_console->printf("%s\n", loadProcess("SERVER", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
+    g_console->printf("%s\n", loadProcess("/SERVER/KEYBDMNG.SVR", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
 
     /* Mouse Server */
     g_console->printf("loading Mouse    Server....");
-    g_console->printf("%s\n", loadProcess("SERVER", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
+    g_console->printf("%s\n", loadProcess("/SERVER/MOUSE.SVR", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
 
     /* Shell Server */
     g_console->printf("loading Shell    Server....");
-    g_console->printf("%s\n", loadProcess("SERVER", "SHELL.SVR", true, NULL) ? "NG" : "OK");
+    g_console->printf("%s\n", loadProcess("/SERVER/SHELL.SVR", "SHELL.SVR", true, NULL) ? "NG" : "OK");
+
     enableKeyboard();
     enableMouse();
 

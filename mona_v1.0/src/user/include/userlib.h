@@ -45,7 +45,7 @@ extern "C" int syscall_mutex_trylock(int id);
 extern "C" int syscall_mutex_lock (int id );
 extern "C" int syscall_mutex_unlock(int id);
 extern "C" int syscall_get_vram_info(volatile ScreenInfo* info);
-extern "C" int syscall_load_process(const char* name, CommandOption* list);
+extern "C" int syscall_load_process(const char* path, const char* name, CommandOption* list);
 extern "C" int syscall_get_cursor(int* x, int* y);
 extern "C" int syscall_set_cursor(int x, int y);
 extern "C" int syscall_mutex_destroy(int id);

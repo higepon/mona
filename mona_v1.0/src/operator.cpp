@@ -14,40 +14,61 @@
 */
 #include<MemoryManager.h>
 #include<operator.h>
+#include<io.h>
+#include<syscalls.h>
 #include<types.h>
 #include<global.h>
 
 #ifndef BUILD_ON_LINUX
-void* operator new(size_t size) {
-    return km.allocate(size);
+void* operator new(size_t size)
+{
+    enter_kernel_lock_mode();
+    void* p = km.allocate(size);
+    exit_kernel_lock_mode();
+    return p;
 }
 
-void operator delete(void* address) {
+void operator delete(void* address)
+{
+    enter_kernel_lock_mode();
     km.free(address);
+    exit_kernel_lock_mode();
     return;
 }
 
-void* operator new[](size_t size) {
-    return km.allocate(size);
+void* operator new[](size_t size)
+{
+    enter_kernel_lock_mode();
+    void* p = km.allocate(size);
+    exit_kernel_lock_mode();
+    return p;
 }
 
-void operator delete[](void* address) {
-
+void operator delete[](void* address)
+{
+    enter_kernel_lock_mode();
     km.free(address);
+    exit_kernel_lock_mode();
     return;
 }
 
 #else
 
-void __builtin_delete(void* address) {
-
+void __builtin_delete(void* address)
+{
+    enter_kernel_lock_mode();
     km.free(address);
+    exit_kernel_lock_mode();
+    return;
     return;
 }
 
-void* __builtin_new(unsigned long size) {
-
-    return km.allocate(size);
+void* __builtin_new(unsigned long size)
+{
+    enter_kernel_lock_mode();
+    void* p = km.allocate(size);
+    exit_kernel_lock_mode();
+    return p;
 }
 
 void* __builtin_vec_new(unsigned long size) {
@@ -63,14 +84,19 @@ void __builtin_vec_delete(void* address) {
 
 #endif
 
-void* malloc(unsigned long size) {
-
-    return km.allocate(size);
+void* malloc(unsigned long size)
+{
+    enter_kernel_lock_mode();
+    void* p = km.allocate(size);
+    exit_kernel_lock_mode();
+    return p;
 }
 
-void free(void * address) {
-
+void free(void * address)
+{
+    enter_kernel_lock_mode();
     km.free(address);
+    exit_kernel_lock_mode();
     return;
 }
 

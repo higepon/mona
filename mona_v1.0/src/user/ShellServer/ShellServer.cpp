@@ -92,7 +92,10 @@ void Shell::commandExecute() {
         list.next = option;
     }
 
-    int result = syscall_load_process(command, &list);
+    char path[128];
+    sprintf(path, "/APP/%s", command);
+
+    int result = syscall_load_process(path, command, &list);
 
     switch(result) {
 

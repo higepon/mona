@@ -1,5 +1,9 @@
 2004-03-10  higepon  <higepon@users.sourceforge.jp>
 
+        * user/ShellServer/ShellServer.cpp: プロセスロード処理を見直し
+
+        * operator.cpp (free): メモリ割当てを割り込み禁止領域で行なう事にした
+
         * FDCDriver.cpp: IStorageDeviceを継承するようにした。
 
 2004-03-09  higepon  <higepon@users.sourceforge.jp>

@@ -17,6 +17,9 @@
 #include <types.h>
 #include <test_mjt.h>
 #include <Process.h>
+#include <fat.h>
+#include <IStorageDevice.h>
+#include <error.h>
 
 void hvectorTester();
 void operatorTester();
@@ -32,6 +35,37 @@ void FDCDriverTester();
 void mmChangeTester();
 void testFDWrite();
 void keyStrokeTest();
+
+class FSOperation
+{
+  public:
+    FSOperation();
+    virtual ~FSOperation();
+
+  public:
+    bool initialize(IStorageDevice* device);
+    bool open(char* path, int mode);
+    bool close();
+    bool read(byte* buf, int size);
+    bool write(byte* buf, int size);
+    bool isOpen() const;
+    int getErrorNo() const;
+    int size();
+
+  private:
+    void freeDirectory(Directory *p);
+    Directory* trackingDirectory(char *path, int *cursor);
+    Directory* searchFile(char *path, int *entry, int *cursor);
+
+  private:
+    File* file;
+    Directory* dir;
+    Directory* current;
+    FatStorage* fat;
+    IStorageDevice* device;
+    int errorNo;
+    bool isOpenFlag;
+};
 
 class RTC {
 

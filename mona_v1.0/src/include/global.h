@@ -71,6 +71,8 @@ GLOBAL VesaInfo* g_vesaInfo;
 GLOBAL VesaInfoDetail* g_vesaDetail;
 GLOBAL Messenger* g_messenger;
 
+GLOBAL FSOperation* g_fs;
+
 GLOBAL dword gt[128];
 #define DEBUG_MODE
 

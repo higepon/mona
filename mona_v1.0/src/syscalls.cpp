@@ -143,7 +143,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_LOAD_PROCESS:
 
         enableInterrupt();
-        info->eax = loadProcess("APP", (char*)info->esi, true, (CommandOption*)(info->ecx));
+        info->eax = loadProcess((char*)info->esi, (char*)info->ecx, true, (CommandOption*)(info->edi));
         break;
 
     case SYSTEM_CALL_MAP:
