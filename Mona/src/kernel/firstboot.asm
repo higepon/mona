@@ -54,7 +54,7 @@ realnext:
         mov     ds,ax
         sub     ah,0x10
         mov     ss,ax
-        xor     sp,sp
+        mov     sp,0xffff
         ;
         xor     ax,ax
         int     0x13
@@ -141,9 +141,9 @@ kernel_load:
         jmp     kernel_load
 end_of_kernel:
         mov     ax,cs
-	mov     ds,ax
-	mov     si,crlf
-	call    putstring
+        mov     ds,ax
+        mov     si,crlf
+        call    putstring
         xor     ax,ax
         mov     ds,ax
         mov     es,ax
