@@ -48,29 +48,24 @@ int ELFLoader::prepare(dword elf) {
     return size;
 }
 
-bool ELFLoader::load(byte* toAddress) {
+dword ELFLoader::load(byte* toAddress) {
 
-    g_console->printf("header_ = %x", header_);
+
 
     for (int i = 0; i < header_->phdrcnt; i++) {
 
         if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize) {
 
-            enter_kernel_lock_mode();
-            g_console->printf("\n\n\n\n\n@%x@ $%x$", (void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_[i].offset));
-            exit_kernel_lock_mode();
-
-            memcpy((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
+            memcpy((void*)(toAddress + pheader_[i].virtualaddr - pheader_->virtualaddr), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
 
         } else if (pheader_[i].type = PT_LOAD && pheader_[i].filesize != pheader_[i].memorysize) {
 
-            g_console->printf("+++++++++++\n");
             memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), 0, pheader_[i].memorysize);
         }
 
     }
 
-    return true;
+    return header_->entrypoint;
 }
 
 int ELFLoader::getErrorCode() const {

@@ -7,6 +7,8 @@
 
 #define main() monamain()
 
+extern "C" void main();
+
 int syscall_sleep(dword tick);
 int syscall_heavy();
 int syscall_print(const char*);

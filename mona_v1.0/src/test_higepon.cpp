@@ -115,15 +115,15 @@ int loadProcess(const char* path, const char* file) {
 
     ELFLoader* loader = new ELFLoader();
     g_console->printf("elf size = %d", loader->prepare((dword)buf));
-    loader->load((byte*)0x80000000);
 
-    while (true);
+    dword entrypoint = loader->load((byte*)0x80000000);
+
+    //    g_console->printf("entry=%x", entrypoint);
+
     delete(loader);
     free(buf);
 
-    //    memcpy((void*)0x80000000, (void*)mame, 1024);
 
-    PageEntry* entry    = g_process_manager->allocatePageDir();
     Process*   process1 = new Process(file);
 
     while (Semaphore::down(&g_semaphore_shared));
@@ -132,7 +132,7 @@ int loadProcess(const char* path, const char* file) {
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
-    g_process_manager->addProcess(process1, 0xA0000000);
+    g_process_manager->addProcess(process1, entrypoint);
 
     return 0;
 }

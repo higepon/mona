@@ -81,7 +81,7 @@ class ELFLoader {
   public:
     int prepare(dword elf);
     int getErrorCode() const;
-    bool load(byte* toAddress);
+    dword load(byte* toAddress);
 
   private:
     bool isValidELF();

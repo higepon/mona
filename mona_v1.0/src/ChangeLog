@@ -1,3 +1,10 @@
+2003-11-02  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: LoadProcessが動いた。
+                制限事項: カーネルモードののみ
+                    メモ: USER.ELFをリンク時に_monamainをシンボル指定するところが肝心
+                          extern "C"等
+
 2003-10-29  higepon  <higepon@users.sourceforge.jp>
 
 
