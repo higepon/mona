@@ -407,6 +407,14 @@ void syscall_entrance() {
             schedule(false);
         }
 
+    case SYSTEM_CALL_DATE:
+
+        {
+            KDate* date = (KDate*)(info->esi);
+            RTC::getDate(date);
+            info->eax = 0;
+        }
+        break;
     default:
         g_console->printf("syscall:default");
         break;

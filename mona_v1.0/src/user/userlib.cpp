@@ -1164,3 +1164,20 @@ int syscall_mthread_yeild_message() {
 
     return (int)result;
 }
+
+int syscall_get_date(KDate* date) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_DATE), "m"(date)
+                 : "ebx", "esi"
+                 );
+
+    return (int)result;
+
+}

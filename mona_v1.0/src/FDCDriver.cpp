@@ -161,11 +161,7 @@ void FDCDriver::initilize() {
     \date   create:2003/02/10 update:
 */
 void FDCDriver::interrupt() {
-
-    //    info(DEV_WARNING, "\ninterrupt:"); // here is point
-    //    g_console->printf("s_interrupt");
     interrupt_ = true;
-    //    g_console->printf("e_interrupt");
 }
 
 /*!
@@ -175,7 +171,6 @@ void FDCDriver::interrupt() {
     \date   create:2003/02/10 update:2003/09/19
 */
 void FDCDriver::waitInterrupt() {
-
     while (!interrupt_);
 }
 
@@ -336,17 +331,12 @@ bool FDCDriver::seek(byte track) {
 
     while (true) {
 
-        //   info(DEV_WARNING, "seek start3 \n");// here is point
-
         waitInterrupt();
-
         waitStatus(0x10, 0x00);
 
         if (senseInterrupt()) break;
         interrupt_ = false;
     }
-
-    //    info(DEV_WARNING, "seek start4 \n"); // here is point
     return true;
 }
 

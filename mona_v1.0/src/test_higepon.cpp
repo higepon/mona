@@ -28,6 +28,58 @@
     \date   create:2003/05/18 update:$Date$
 */
 
+void RTC::init() {
+
+    /* 24h */
+    write(0x0B, 0x02);
+}
+
+void RTC::write(byte reg, byte value) {
+
+    dword eflags = get_eflags();
+    disableInterrupt();
+
+    outportb(RTC_ADRS, reg);
+    outportb(RTC_DATA, value);
+    set_eflags(eflags);
+}
+
+byte RTC::read(byte reg) {
+
+    byte result;
+    dword eflags = get_eflags();
+    disableInterrupt();
+
+    outportb(RTC_ADRS, (byte)(reg & 0xff));
+    result = inportb(RTC_DATA);
+
+    set_eflags(eflags);
+    return result;
+}
+
+int RTC::readDateOnce(KDate* date) {
+
+    date->year      = convert(read(RTC_YEAR)) + 2000;
+    date->month     = convert(read(RTC_MONTH));
+    date->day       = convert(read(RTC_DAY));
+    date->dayofweek = convert(read(RTC_DOW));
+    date->hour      = convert(read(RTC_HOUR));
+    date->min       = convert(read(RTC_MIN));
+    date->sec       = convert(read(RTC_SEC));
+    return date->min;
+}
+
+void RTC::getDate(KDate* date) {
+
+    for (;;) {
+        int once  = readDateOnce(date);
+        int twice = readDateOnce(date);
+        if (once == twice) break;
+    }
+    return;
+}
+
+
 /*----------------------------------------------------------------------
     Mouse
 ----------------------------------------------------------------------*/

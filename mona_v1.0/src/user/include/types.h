@@ -26,6 +26,16 @@ typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
+typedef struct {
+    int year;
+    int month;
+    int day;
+    int dayofweek;
+    int hour;
+    int min;
+    int sec;
+} KDate;
+
 struct CommandOption {
     char str[32];
     struct CommandOption* next;

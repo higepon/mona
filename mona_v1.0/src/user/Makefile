@@ -18,6 +18,7 @@ JPEG_DEMO       = $(BIN)/JPEGDEMO.ELF
 MAP_SERVER      = $(BIN)/MAP.SVR
 MOUSE_SERVER    = $(BIN)/MOUSE.SVR
 NOIZ2BG         = $(BIN)/NOIZ2BG.ELF
+CLOCK           = $(BIN)/CLOCK.ELF
 LIB             = -L./lib
 LIB_USER        = lib/libuser.a
 LFLAGS          = -n -Ttext 0xA0000000 -e _user_start -static -luser
@@ -38,10 +39,11 @@ SOURCES         = hello.cpp                   \
                   MapServer.cpp               \
                   MouseServer.cpp             \
                   noiz2bg.cpp                 \
+                  clock.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)  $(NOIZ2BG)
+all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)  $(NOIZ2BG) $(CLOCK)
 
 $(LIB_USER) : userlib.o string.o MemoryManager.o
 	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o
@@ -49,6 +51,10 @@ $(LIB_USER) : userlib.o string.o MemoryManager.o
 $(HELLO) : hello.o $(LIB_USER)
 	$(LD) $(LFLAGS) hello.o $(LIB) -o $(HELLO)
 	objcopy $(OFLAGS) $(HELLO)
+
+$(CLOCK) : clock.o $(LIB_USER)
+	$(LD) $(LFLAGS) clock.o $(LIB) -o $(CLOCK)
+	objcopy $(OFLAGS) $(CLOCK)
 
 $(KEYBOARD_SERVER) : KeyBoardManager.o KeyBoardServer.o $(LIB_USER)
 	$(LD) $(LFLAGS) KeyBoardServer.o KeyBoardManager.o $(LIB) -o $(KEYBOARD_SERVER)
@@ -82,6 +88,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER) $(NOIZ2BG)
+	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER) $(NOIZ2BG) $(CLOCK)
 
 include dependencies

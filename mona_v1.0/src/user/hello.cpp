@@ -24,6 +24,11 @@ int myApplication::main(List<char*>* pekoe) {
         printf("[%s]\n", pekoe->get(i));
     }
 
+    Date dt;
+
+    printf("%d/%d/%d %d:%d:%d", dt.year(), dt.month(), dt.day(), dt.hour(), dt.min(), dt.sec());
+
+
     /* draw rectangle */
     Screen screen;
     screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));

@@ -1,5 +1,7 @@
 2004-02-12  higepon  <higepon@users.sourceforge.jp>
 
+        * user/clock.cpp: 時刻取得追加
+
         * Message::receiveを変更。メッセージキューがからの場合はCPUを明け渡す
 
         * Process.cpp: メッセージ待ちyiledを追加。

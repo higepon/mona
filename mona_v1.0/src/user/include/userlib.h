@@ -39,6 +39,7 @@
 #define SYSTEM_CALL_ARGUMENTS_NUM   35
 #define SYSTEM_CALL_GET_ARGUMENTS   36
 #define SYSTEM_CALL_MTHREAD_YIELD_M 37
+#define SYSTEM_CALL_DATE            38
 #define SYSTEM_CALL_TEST            99
 
 #define interface class
@@ -87,6 +88,7 @@ extern "C" int syscall_get_pid();
 extern "C" int syscall_get_arg_count();
 extern "C" int syscall_get_arg(char* buf, int n);
 extern "C" int syscall_mthread_yeild_message();
+extern "C" int syscall_get_date(KDate* date);
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
 extern "C" void __cxa_pure_virtual();
@@ -103,6 +105,56 @@ void  operator delete(void* address);
 
 class MonaApplication;
 extern MonaApplication* monaApp;
+
+/*----------------------------------------------------------------------
+    Date
+----------------------------------------------------------------------*/
+class Date {
+
+  public:
+    Date() {
+        syscall_get_date(&date);
+    }
+
+    ~Date() {}
+
+  public:
+    inline int year() const {
+        return date.year;
+    }
+
+    inline int month() const {
+        return date.month;
+    }
+
+    inline int day() const {
+        return date.day;
+    }
+
+    inline int hour() const {
+        return date.hour;
+    }
+
+    inline int min() const {
+        return date.min;
+    }
+
+    inline int sec() const {
+        return date.sec;
+    }
+
+    inline int dayofweek() const {
+        return date.dayofweek;
+    }
+
+    inline void refresh() {
+        syscall_get_date(&date);
+    }
+
+  private:
+    KDate date;
+
+};
 
 /*----------------------------------------------------------------------
     System
