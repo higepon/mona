@@ -1,0 +1,9 @@
+TARGET  = OLDSHELL.SVR
+SOURCES = main.cpp Shell.cpp InternalCommands.cpp
+
+MONADIR = ../../..
+include $(MONADIR)/env/monapi-elf.inc
+
+INSTDIR = $(BINDIR)/root/SERVERS
+
+include dependencies
