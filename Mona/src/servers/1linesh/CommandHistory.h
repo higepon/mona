@@ -21,6 +21,8 @@
 #define GETCURRENT 0
 #define GETPREV   -1
 #define GETNEXT   -2
+#define GETLAST   -3
+#define GETFIRST  -4
 
 typedef struct tCommandHistory{
   struct tCommandHistory *prev;
