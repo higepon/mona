@@ -14,6 +14,10 @@
 
         * src/servers/file: 追加
 
+        * include/monapi/CString.h: 追加
+
+        * src/lib/monapi/CString.cpp: 追加
+
 2004-05-02  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp (MessageLoop): マウスを画面最下部にもって言った場合のマウスサーバ突然死を修正
