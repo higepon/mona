@@ -200,7 +200,6 @@ class ThreadManager {
   private:
     inline dword allocateStack() const {
         return STACK_START - STACK_SIZE * (threadCount - 1);
-        //        return 0xFFFFFFFF;
     }
     void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
     void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
@@ -215,7 +214,8 @@ class ThreadManager {
     bool isV86_;
 
   private:
-    static const LinearAddress STACK_START = 0xFFFFFFFF;
+    static const LinearAddress STACK_START = 0xEFFFFFFF;
+        //    static const LinearAddress STACK_START = 0xFFFFFFFF; vmware hate this.
     static const dword STACK_SIZE          = 4 * 1024;
     int threadCount;
 

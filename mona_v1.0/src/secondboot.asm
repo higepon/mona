@@ -40,31 +40,31 @@ a20enable_3:
 ;-------------------------------------------------------------------------------
 ; try VESA mode
 ;-------------------------------------------------------------------------------
-        pusha
-get_vesa_info:
-        xor bx, bx
-        mov es, bx
-        mov ax, 0x4F00            ; function 00h
-        mov di, vesa_info         ; 0x0000:vesa_info
-        int 0x10
-        cmp ah, 0x4F
-        je vesa_not_supported
-get_vesa_info_detail
-        mov ax, 0x4F01            ; function 01h
-        mov cx, vesa_mode
-        mov di, vesa_info_detail  ; 0x0000:vesa_info_detail
-        int 0x10
-        cmp ah, 0x4F
-        je vesa_not_supported
-vesa_supported:
-        mov ax, 0x4F02
-        mov bx, vesa_mode
-        int 0x10
-        popa
-        jmp RealToProtect
-vesa_not_supported:
-          mov byte[di], 'N'
-          popa
+;         pusha
+; get_vesa_info:
+;         xor bx, bx
+;         mov es, bx
+;         mov ax, 0x4F00            ; function 00h
+;         mov di, vesa_info         ; 0x0000:vesa_info
+;         int 0x10
+;         cmp ah, 0x4F
+;         je vesa_not_supported
+; get_vesa_info_detail
+;         mov ax, 0x4F01            ; function 01h
+;         mov cx, vesa_mode
+;         mov di, vesa_info_detail  ; 0x0000:vesa_info_detail
+;         int 0x10
+;         cmp ah, 0x4F
+;         je vesa_not_supported
+; vesa_supported:
+;         mov ax, 0x4F02
+;         mov bx, vesa_mode
+;         int 0x10
+;         popa
+;         jmp RealToProtect
+; vesa_not_supported:
+;           mov byte[di], 'N'
+;           popa
 graphicalmode:
         mov ax, 0x0012
         int 0x10
@@ -134,7 +134,7 @@ set_cs_desc1:
         mov  es, ax             ; 0x10
         mov  ax, 0x18           ; ss selector
         mov  ss, ax             ; is 0x18
-        mov  esp, 1024*1024*2   ; sp is 3MB
+        mov  esp, 0x80000       ; sp is 3MB
         push eax
         jmp  0x200
 ;  hang:

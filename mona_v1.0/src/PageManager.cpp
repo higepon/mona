@@ -175,6 +175,7 @@ void PageManager::setup() {
     PageEntry* table2 = allocatePageTable();
     g_page_directory  = allocatePageTable();
 
+
     /* allocate page to physical address 0-4MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
@@ -182,11 +183,11 @@ void PageManager::setup() {
         setAttribute(&(table1[i]), true, true, true, 4096 * i);
     }
 
-    /* allocate page to physical address 0-4MB */
+    /* allocate page to physical address 4-8MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
         memoryMap_->mark(i + 4096);
-        setAttribute(&(table2[i]), true, true, true, 4096 * 4096 + 4096 * i);
+        setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
     }
 
     memset(g_page_directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
@@ -217,7 +218,7 @@ PageEntry* PageManager::createNewPageDirectory() {
 
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
-        setAttribute(&(table2[i]), true, true, false, 4096 * 4096 + 4096 * i);
+        setAttribute(&(table2[i]), true, true, false, 4096 * 1024 + 4096 * i);
     }
 
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
@@ -245,7 +246,7 @@ PageEntry* PageManager::createNewPageDirectoryForV86() {
 
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
-        setAttribute(&(table2[i]), true, true, false, 4096 * 4096 + 4096 * i);
+        setAttribute(&(table2[i]), true, true, false, 4096 * 1024 + 4096 * i);
     }
 
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
@@ -279,7 +280,7 @@ void PageManager::startPaging() {
                  "or  $0x80000000, %%eax \n"
                  "mov %%eax      , %%cr0 \n"
                  : /* no output */
-                 : /* no input  */ : "ax");
+                 : /* no input  */ : "eax");
 }
 
 /*!

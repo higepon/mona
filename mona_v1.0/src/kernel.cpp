@@ -97,27 +97,27 @@ void startKernel(void) {
     GDTUtil::setup();
 
     /* initialze console */
-    //    g_console = new GraphicalConsole();
+    g_console = new GraphicalConsole();
 
     pic_init();
-    //    printOK("Setting PIC        ");
+    printOK("Setting PIC        ");
 
     IDTUtil::setup();
-    //    printOK("Setting IDT        ");
-    //    printOK("Setting GDT        ");
+    printOK("Setting IDT        ");
+    printOK("Setting GDT        ");
 
     checkTypeSize();
-    //    printOK("Checking type size ");
+    printOK("Checking type size ");
 
     /* test for vesa */
-     VesaInfo* vesaInfo = new VesaInfo;
-     memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
-     if (vesaInfo->sign[0] == 'N') {
-         //         g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
-     } else {
+//      VesaInfo* vesaInfo = new VesaInfo;
+//      memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
+//      if (vesaInfo->sign[0] == 'N') {
+//          //         g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
+//      } else {
 
-        VesaInfoDetail* vesaDetail = new VesaInfoDetail;
-        memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
+//         VesaInfoDetail* vesaDetail = new VesaInfoDetail;
+//         memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
 //         g_console->printf("VESA supported version=%d.%d [%x] \n", vesaInfo->versionH, vesaInfo->versionL, vesaInfo->oemStringPtr);
 //         g_console->printf("(modeAttributes     =%x)", vesaDetail->modeAttributes     );
 //         g_console->printf("(winAAttributes     =%x)", vesaDetail->winAAttributes     );
@@ -148,38 +148,38 @@ void startKernel(void) {
 //         g_console->printf("(rsvdMaskSize       =%x)", vesaDetail->rsvdMaskSize       );
 //         g_console->printf("(directColorModeInfo=%x)", vesaDetail->directColorModeInfo);
 
-        int r, g, b, i;
-        Color palette[256];
+//         int r, g, b, i;
+//         Color palette[256];
 
-        i = 0;
-        for (r = 0; r <= 64; r += 9) {
-            for (g = 0; g <= 64; g += 9) {
-                for (b = 0; b < 64; b += 21) {
-                    palette[i].r = r;
-                    palette[i].g = g;
-                    palette[i].b = b;
-                    i++;
-                }
-            }
-        }
+//         i = 0;
+//         for (r = 0; r <= 64; r += 9) {
+//             for (g = 0; g <= 64; g += 9) {
+//                 for (b = 0; b < 64; b += 21) {
+//                     palette[i].r = r;
+//                     palette[i].g = g;
+//                     palette[i].b = b;
+//                     i++;
+//                 }
+//             }
+//         }
 
-      outportb(0x03C8, 0);
-      for (i = 0; i < 256; i++){
-          outportb(0x03C9, palette[i].r);
-          outportb(0x03C9, palette[i].g);
-          outportb(0x03C9, palette[i].b);
-      }
+//       outportb(0x03C8, 0);
+//       for (i = 0; i < 256; i++){
+//           outportb(0x03C9, palette[i].r);
+//           outportb(0x03C9, palette[i].g);
+//           outportb(0x03C9, palette[i].b);
+//       }
 
-        byte* p = (byte*)(vesaDetail->physBasePtr);
-        memset(p, 0x44, 800 * 600 * vesaDetail->bitsPerPixel / 8);
-     }
+//         byte* p = (byte*)(vesaDetail->physBasePtr);
+//         memset(p, 0x44, 800 * 600 * vesaDetail->bitsPerPixel / 8);
+//      }
 
-     for (;;);
+//      for (;;);
 
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024); //
+    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024);
 
     /* shared memory object */
     SharedMemoryObject::setup();
@@ -187,7 +187,6 @@ void startKernel(void) {
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup();
-
 
     /* this should be called, before timer enabled */
     ThreadManager::setup();

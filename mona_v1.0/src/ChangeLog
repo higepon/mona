@@ -1,6 +1,12 @@
+2004-01-21  higepon  <higepon@users.sourceforge.jp>
+
+        * pagemanager.cpp: マッピングのバグ修正
+
+        * vmware対応。スタックを0xFFFFFFFFから0xEFFFFFFFに変更
+
 2004-01-19  higepon  <higepon@users.sourceforge.jp>
 
-        * secondboot.asm: mode105 bochs OK vmware OK 
+        * secondboot.asm: mode105 bochs OK vmware OK
                                   twoOstwo VPCは画面の色が変わらない
 
         * kernel.cpp: VMWAREでVESA

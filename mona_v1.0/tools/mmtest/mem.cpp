@@ -4,6 +4,7 @@
 #include <time.h>
 #include "MemoryManager.h"
 #include "types.h"
+#include "string.h"
 
 
 #define MANAGE_SIZE (10 * 1024 * 1024)
@@ -17,6 +18,7 @@ typedef unsigned char byte;
 void test1(int id, dword start, dword end, int size);
 void test2(int id, dword start, dword end, int size);
 void test3(int id, dword start, dword end);
+void test4(int id, dword start, dword end);
 void exitMessage(int id, const char* message);
 
 using namespace std;
@@ -37,18 +39,21 @@ int main(int argc, char** argv) {
 
     /* test1 */
     for (int i = 1; i < 1025; i++) {
-        test1(id++, (dword)memory, MANAGE_SIZE + (dword)memory, i);
+        test1(2, (dword)memory, MANAGE_SIZE + (dword)memory, i);
     }
 
     /* test2 */
     for (int i = 1; i < 1025; i++) {
-        test2(id++, (dword)memory, MANAGE_SIZE + (dword)memory, i);
+        test2(2, (dword)memory, MANAGE_SIZE + (dword)memory, i);
     }
 
     /* test3 */
-    for (int i = 1; i < 1000000; i++) {
-        test3(id++, (dword)memory, MANAGE_SIZE + (dword)memory);
+    for (int i = 1; i < 10000; i++) {
+        test3(3, (dword)memory, MANAGE_SIZE + (dword)memory);
     }
+
+    /* test4 */
+    test4(4, (dword)memory, MANAGE_SIZE + (dword)memory);
 
     delete memory;
     return 0;
@@ -173,4 +178,34 @@ void test3(int id, dword start, dword end) {
     }
 
     printf("test3 OK\n");
+}
+
+
+void test4(int id, dword start, dword end) {
+
+    MemoryManager mm;
+    mm.initialize(start, end);
+
+    /* free memory(original) */
+    dword freeSize = mm.getFreeMemorySize();
+    dword freeSz = freeSize;
+
+    void* p = mm.allocate(0x200000);
+
+    if ((dword)p >= end || (dword)p < start) {
+        exitMessage(id, "range error");
+    }
+
+    freeSz -= sizeof(MemoryEntry) + 0x200000;
+    if (mm.getFreeMemorySize() != freeSz) {
+        exitMessage(id, "size unmatch");
+    }
+
+    mm.free(p);
+
+    if (freeSize != mm.getFreeMemorySize()) {
+        exitMessage(id, "size error");
+    }
+
+    printf("test4 OK\n");
 }

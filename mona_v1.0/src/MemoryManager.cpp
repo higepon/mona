@@ -22,6 +22,7 @@
 #ifdef MM_TEST
 
 #include <stdio.h>
+#include "string.h"
 
 #elif defined USER_LIB
 
