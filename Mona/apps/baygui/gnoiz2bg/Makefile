@@ -1,5 +1,5 @@
 TARGET  = GNOIZ2BG
-SOURCES = $(TARGET).cpp
+SOURCES = gnoiz2bg.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..

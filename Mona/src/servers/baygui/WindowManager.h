@@ -44,8 +44,10 @@ private:
 	virtual void onMousePress(int x, int y);
 	virtual void onMouseDrag(int x, int y);
 	virtual void onMouseRelease(int x, int y);
-	virtual void postActivatedToWindow(bool activated, Control *control);
-	virtual void postActivatedToWindows(bool activated, int length);
+	virtual void postEnabledToWindow(bool enabled, Control *control);
+	virtual void postFocusedToWindow(bool focused, Control *control);
+	virtual void postFocusedToWindows(bool focused, int length);
+	virtual void postIconifiedToWindow(bool iconified, Control *control);
 	virtual void postRepaintToWindow(Control *control);
 	virtual void postRepaintToWindows(int length);
 	virtual void restoreBackGround(Control *control);

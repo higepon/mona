@@ -302,40 +302,43 @@ public:
 		free(vesaVram);
 	}
 	
+	void onPaint(Graphics *g) {
+		moveBackground();
+		drawBackground(pbuf);
+		
+		if (vesaBpp == 2) {
+			for (j = 0; j < SCREEN_H; j++) {
+				for (i = 0; i < SCREEN_W; i++) {
+					k = (i + j * SCREEN_W) * 4;
+					k2= ((x + INSETS_LEFT + i) + (y + INSETS_TOP + j) * vesaWidth) * vesaBpp;
+					*(word*)&vesaVram[k2] = MonAPI::Color::bpp24to565(&pbuf[k]);
+				}
+			}
+		} else {
+			for (j = 0; j < SCREEN_H; j++) {
+				for (i = 0; i < SCREEN_W; i++) {
+					k = (i + j * SCREEN_W) * 4;
+					k2= ((x + INSETS_LEFT + i) + (y + INSETS_TOP + j) * vesaWidth) * vesaBpp;
+					vesaVram[k2  ] = pbuf[k  ];
+					vesaVram[k2+1] = pbuf[k+1];
+					vesaVram[k2+2] = pbuf[k+2];
+				}
+			}
+		}
+		
+		scene_count--;
+		
+		if(scene_count <= 0){
+			scene       = (scene + 1) % 6;
+			scene_count = FPS * 10;
+			setStageBackground(scene);
+		}
+	}
+	
 	void onEvent(Event *event) {
 		if (event->type == TIMER) {
-			moveBackground();
-			drawBackground(pbuf);
-			
-			if (vesaBpp == 2) {
-				for (j = 0; j < SCREEN_H; j++) {
-					for (i = 0; i < SCREEN_W; i++) {
-						k = (i + j * SCREEN_W) * 4;
-						k2= ((x + INSETS_LEFT + i) + (y + INSETS_TOP + j) * vesaWidth) * vesaBpp;
-						*(word*)&vesaVram[k2] = MonAPI::Color::bpp24to565(&pbuf[k]);
-					}
-				}
-			} else {
-				for (j = 0; j < SCREEN_H; j++) {
-					for (i = 0; i < SCREEN_W; i++) {
-						k = (i + j * SCREEN_W) * 4;
-						k2= ((x + INSETS_LEFT + i) + (y + INSETS_TOP + j) * vesaWidth) * vesaBpp;
-						vesaVram[k2  ] = pbuf[k  ];
-						vesaVram[k2+1] = pbuf[k+1];
-						vesaVram[k2+2] = pbuf[k+2];
-					}
-				}
-			}
-			
-			scene_count--;
-			
-			if(scene_count <= 0){
-				scene       = (scene + 1) % 6;
-				scene_count = FPS * 20;
-				setStageBackground(scene);
-			}
-			
-			setTimer(20);
+			onPaint(__g);
+			setTimer(30);
 		} else if (event->type == FOCUS_IN) {
 			setTimer(10);
 		}

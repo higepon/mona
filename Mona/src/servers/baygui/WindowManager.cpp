@@ -76,8 +76,6 @@ WindowManager *WindowManager::instance = NULL;
 /** コンストラクタ */
 WindowManager::WindowManager()
 {
-	MessageInfo info;
-
 	isRunning = false;
 	x = y = 0;
 	width = _g->getWidth();
@@ -100,8 +98,7 @@ WindowManager::WindowManager()
 	}
 	
 	// キーサーバーにキー情報をくれるように自分自身を登録するメッセージを送信
-	MonAPI::Message::create(&info, MSG_KEY_REGIST_TO_SERVER, threadID, 0, 0, NULL);
-	if (MonAPI::Message::send(keysvrID, &info)) {
+	if (MonAPI::Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, threadID, 0, 0, NULL)) {
 		//printf("Window: KeyServer regist error %d\n", threadID);
 	} else {
 		//printf("Window: KeyServer registered %d\n", threadID);
@@ -116,8 +113,7 @@ WindowManager::WindowManager()
 	}
 
 	// マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信
-	MonAPI::Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, threadID, 0, 0, NULL);
-	if (MonAPI::Message::send(mousesvrID, &info)) {
+	if (MonAPI::Message::send(mousesvrID, MSG_MOUSE_REGIST_TO_SERVER, threadID, 0, 0, NULL)) {
 		//printf("Window: MouseServer regist error %d\n", threadID);
 	} else {
 		//printf("Window: MouseServer registered %d\n", threadID);
@@ -295,28 +291,31 @@ void WindowManager::onMousePress(int mx, int my)
 			mx <= rect->x + rect->width - 16 + 13 && 
 			rect->y + 5 <= my && my <= rect->y + 5 + 13)
 		{
+			// 非活性化メッセージを投げる
+			postEnabledToWindow(false, control);
+			
+			// フォーカスアウトメッセージを投げる
+			postFocusedToWindow(false, control);
+			
 			// 背景を塗りつぶす
 			restoreBackGround(control);
-			// ウィンドウをアイコン化
+			
+			// ウィンドウを非アイコン化
 			if (control->getIconified() == true) {
-				control->setIconified(false);
-				// 非アイコン化メッセージを投げる
-				if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getThreadID());
-				}
+				postIconifiedToWindow(false, control);
+			// ウィンドウをアイコン化
 			} else {
-				control->setIconified(true);
-				// アイコン化メッセージを投げる
-				if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getThreadID());
-				}
+				postIconifiedToWindow(true, control);
 			}
+			
 			// ウィンドウ再描画
-			postRepaintToWindows(_controlList->getLength());
+			postRepaintToWindows(_controlList->getLength() - 1);
+			
+			// 活性化メッセージを投げる
+			postEnabledToWindow(true, control);
+			
+			// フォーカスインメッセージを投げる
+			postFocusedToWindow(true, control);
 		// クリックイベント発生
 		} else if (rect->y + INSETS_TOP < my && control->getIconified() == false) {
 			//MouseEvent *event = new MouseEvent(MOUSE_PRESSED, control, mx, my);
@@ -335,15 +334,15 @@ void WindowManager::onMousePress(int mx, int my)
 		// ウィンドウ並び替え
 		_controlList->sort(getLinkedItem(control));
 		
-		// 非活性メッセージを投げる
-		postActivatedToWindows(false, _controlList->getLength() - 1);
-		
-		// 活性メッセージを投げる
-		Control *c = (Control *)_controlList->endItem->data;
-		postActivatedToWindow(true, c);
+		// フォーカスアウトメッセージを投げる
+		postFocusedToWindows(false, _controlList->getLength() - 1);
 		
 		// 再描画メッセージを投げる
-		postRepaintToWindows(_controlList->getLength());
+		postRepaintToWindows(_controlList->getLength() - 1);
+		
+		// フォーカスインメッセージを投げる
+		Control *c = (Control *)_controlList->endItem->data;
+		postFocusedToWindow(true, c);
 	}
 }
 
@@ -355,7 +354,7 @@ void WindowManager::onMouseDrag(int mx, int my)
 	Control *control = (Control *)_controlList->endItem->data;
 
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control == NULL || control->getFocused() == false) return;
+	if (control == NULL) return;
 	
 	Rect *rect = control->getRect();
 	if (state == STATE_NORMAL) {
@@ -369,11 +368,19 @@ void WindowManager::onMouseDrag(int mx, int my)
 		if (rect->x <= mx && mx <= rect->x + rect->width && 
 			rect->y <= my && my <= rect->y + INSETS_TOP)
 		{
+			// 非活性化メッセージを投げる
+			postEnabledToWindow(false, control);
+			
+			// フォーカスアウトメッセージを投げる
+			postFocusedToWindow(false, control);
+			
 			// モード設定
 			state = STATE_MOVING;
+			
 			// ドラッグ開始位置を記憶する
 			dX = mx - rect->x;
 			dY = my - rect->y;
+			
 			_g->setXORMode(true);
 			_g->setColor(255,255,255);
 			if (control->getIconified() == false) {
@@ -382,8 +389,10 @@ void WindowManager::onMouseDrag(int mx, int my)
 				_g->drawRect(rect->x, rect->y, rect->width, INSETS_TOP - 1);
 			}
 			_g->setXORMode(false);
+			
 			preX = rect->x;
 			preY = rect->y;
+			
 			//printf("move window start: %d,%d\n", preX, preY);
 		// ドラッグイベント発生
 		} else if (control->getIconified() == false) {
@@ -416,7 +425,7 @@ void WindowManager::onMouseDrag(int mx, int my)
 			_g->drawRect(mx - dX, my - dY, rect->width, INSETS_TOP - 1);
 		}
 		_g->setXORMode(false);
-		// ドラッグ開始位置を記憶する
+		
 		preX = mx - dX;
 		preY = my - dY;
 	} else {
@@ -432,20 +441,17 @@ void WindowManager::onMouseRelease(int mx, int my)
 	Control *control = (Control *)_controlList->endItem->data;
 	
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control == NULL || control->getFocused() == false) return;
+	if (control == NULL) return;
 	
 	// ウィンドウ移動
 	if (state == STATE_MOVING) {
 		Rect *rect = control->getRect();
 		// debug
 		//printf("moved: %d, %d\n", (rect->x + mx + preX), (rect->y + my + preY));
+		
 		// 背景を塗りつぶす
 		restoreBackGround(control);
-		// 画面からはみだしていないかチェック
-		//if (preX <= 0) preX = 0;
-		//if (preY <= 22) preY = 22;
-		//if (preX + rect->width + 1 >= width) preX = width - rect->width - 1;
-		//if (preY + rect->height + 1 >= height) preY = height - rect->height - 1;
+		
 		// ウィンドウ移動
 		control->setRect(
 			preX,
@@ -453,6 +459,7 @@ void WindowManager::onMouseRelease(int mx, int my)
 			rect->width,
 			rect->height
 		);
+		
 		// 領域変更メッセージを投げる
 		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_SETRECT, 
 			(preX << 16 | preY), (rect->width << 16 | rect->height), 0, NULL)) {
@@ -460,8 +467,15 @@ void WindowManager::onMouseRelease(int mx, int my)
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getThreadID());
 		}
+		
 		// ウィンドウ再描画
-		postRepaintToWindows(_controlList->getLength());
+		postRepaintToWindows(_controlList->getLength() - 1);
+		
+		// 活性化メッセージを投げる
+		postEnabledToWindow(true, control);
+		
+		// フォーカスインメッセージを投げる
+		postFocusedToWindow(true, control);
 		//printf("move window end: %d,%d\n", preX, preY);
 	} else  if (control->getIconified() == false) {
 		//MouseEvent *event = new MouseEvent(MOUSE_RELEASED, control, mx, my);
@@ -492,21 +506,17 @@ void WindowManager::add(Control *control)
 	// ウィンドウ追加
 	_controlList->add(new LinkedItem(control));
 	
-	// 非活性メッセージを投げる
-	postActivatedToWindows(false, _controlList->getLength());
-
-	// 活性メッセージを投げる
-	Control *c = (Control *)_controlList->endItem->data;
-	postActivatedToWindow(true, c);
-
+	// フォーカスアウトメッセージを投げる
+	postFocusedToWindows(false, _controlList->getLength());
+	
 	// 再描画メッセージを投げる
 	if (_controlList->endItem->prev != NULL) {
-		c = (Control *)_controlList->endItem->prev->data;
+		Control *c = (Control *)_controlList->endItem->prev->data;
 		postRepaintToWindow(c);
 	}
 	
-	// 再描画メッセージを投げる
-	postRepaintToWindow(control);
+	// フォーカスインメッセージを投げる
+	postFocusedToWindow(true, control);
 }
 
 /**
@@ -534,34 +544,61 @@ void WindowManager::remove(Control *control)
 	// NULLチェック
 	if (_controlList->endItem == NULL) return;
 	
-	// 非活性メッセージを投げる
-	postActivatedToWindows(false, _controlList->getLength());
-	
-	// 活性メッセージを投げる
-	Control *c = (Control *)_controlList->endItem->data;
-	postActivatedToWindow(true, c);
+	// フォーカスアウトメッセージを投げる
+	postFocusedToWindows(false, _controlList->getLength());
 	
 	// 再描画メッセージを投げる
-	postRepaintToWindows(_controlList->getLength());
+	postRepaintToWindows(_controlList->getLength() - 1);
+	
+	// フォーカスインメッセージを投げる
+	Control *c = (Control *)_controlList->endItem->data;
+	postFocusedToWindow(true, c);
 }
 
 /**
  指定したウィンドウを非活性/活性化する.
  <ul>
  <li>enabledがかわる
- <li>focusedがかわる
  <li>非活性/活性化メッセージをウィンドウに投げる
  </ul>
  @param activated true/false
  */
-void WindowManager::postActivatedToWindow(bool activated, Control *control)
+void WindowManager::postEnabledToWindow(bool enabled, Control *control)
 {
 	// NULLチェック
 	if (control == NULL) return;
 
-	control->setEnabled(activated);
-	control->setFocused(activated);
-	if (activated == true) {
+	control->setEnabled(enabled);
+	if (enabled == true) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", control->getThreadID());
+		}
+	} else {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", control->getThreadID());
+		}
+	}
+}
+
+/**
+ 指定したウィンドウをフォーカスアウト/フォーカスインする.
+ <ul>
+ <li>focusedがかわる
+ <li>フォーカスアウト/フォーカスインメッセージをウィンドウに投げる
+ </ul>
+ @param activated true/false
+ */
+void WindowManager::postFocusedToWindow(bool focused, Control *control)
+{
+	// NULLチェック
+	if (control == NULL) return;
+
+	control->setFocused(focused);
+	if (focused == true) {
 		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_FOCUSED, 0, 0, 0, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED failed %d\n", control->getThreadID());
 		} else {
@@ -577,20 +614,48 @@ void WindowManager::postActivatedToWindow(bool activated, Control *control)
 }
 
 /**
- 指定したウィンドウを非活性/活性化する.
+ 指定したウィンドウをフォーカスアウト/フォーカスインする.
  <ul>
- <li>enabledがかわる
  <li>focusedがかわる
- <li>非活性/活性化メッセージをウィンドウに投げる
+ <li>フォーカスアウト/フォーカスインメッセージをウィンドウに投げる
  </ul>
  @param activated true/false
  @param length 0番目からlength番目までのウィンドウを対象にする
  */
-void WindowManager::postActivatedToWindows(bool activated, int length)
+void WindowManager::postFocusedToWindows(bool focused, int length)
 {
 	for (int i = 0; i < length; i++) {
 		Control *control = (Control *)_controlList->getItem(i)->data;
-		postActivatedToWindow(activated, control);
+		postFocusedToWindow(focused, control);
+	}
+}
+
+/**
+ 指定したウィンドウを非アイコン/アイコン化する.
+ <ul>
+ <li>iconifiedがかわる
+ <li>非アイコン/アイコン化メッセージをウィンドウに投げる
+ </ul>
+ @param activated true/false
+ */
+void WindowManager::postIconifiedToWindow(bool iconified, Control *control)
+{
+	// NULLチェック
+	if (control == NULL) return;
+
+	control->setIconified(iconified);
+	if (iconified == true) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getThreadID());
+		}
+	} else {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getThreadID());
+		}
 	}
 }
 

@@ -191,7 +191,7 @@ void Window::setRect(int x, int y, int width, int height)
 void Window::setTimer(int duration)
 {
 	// 非活性のときはタイマーを発生させない
-	if (focused == false || iconified == true) return;
+	if (focused == false || enabled == false || iconified == true) return;
 	
 	// タイマー設定メッセージを投げる
 	if (MonAPI::Message::send(timerID, MSG_GUISERVER_SETTIMER, threadID, duration, 0, NULL)) {
@@ -526,9 +526,20 @@ void Window::run()
 				repaint();
 				MonAPI::Message::reply(&info);
 				break;
+			case MSG_GUISERVER_ENABLED:
+				//printf("WindowManager->Window MSG_GUISERVER_ENABLED received %d\n", threadID);
+				setEnabled(true);
+				//MonAPI::Message::reply(&info);
+				break;
+			case MSG_GUISERVER_DISABLED:
+				//printf("WindowManager->Window MSG_GUISERVER_DISABLED received %d\n", threadID);
+				setEnabled(false);
+				//MonAPI::Message::reply(&info);
+				break;
 			case MSG_GUISERVER_FOCUSED:
 				//printf("WindowManager->Window MSG_GUISERVER_FOCUSED received %d\n", threadID);
 				setFocused(true);
+				repaint();
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEFOCUSED:
