@@ -10,17 +10,17 @@
   \version $Revision$
   \date   create:  update:$Date$
 */
-#include <types.h>
-
 #ifndef _MONA_LIB_C_
 #define _MONA_LIB_C_
 
+#include <types.h>
+
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
+typedef __SIZE_TYPE__ size_t;
 #endif
 #define __FBSDID(s)
 
-typedef __SIZE_TYPE__ size_t;
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +43,6 @@ typedef char *va_list;
 int vsprintf(char *s, const char *format, va_list arg);
 int sprintf(char *s, const char *format, ...);
 int itos(char *s, int n, int width, int base, char flag);
-int atoi(const char *s);
 int ftos(char *s, double n, int width, int precision, char flag);
 int strcpy2(char *s1, const char *s2);
 

@@ -1,14 +1,15 @@
 /*!
   \file   monalibc.cpp
-  \brief  standard library
+  \brief  mona c library
 
   Copyright (c) 2002,2003,2004 shadow
-  All rights reserved.
-  License=NYSL
-
+  All rights reserved.<BR>
+  \b License NYSL<BR>
+  \b Create 2004/02/17
   \author  shadow
-  \version $Revision$
-  \date   create:  update:$Date$
+
+  $Revision$
+  $Date$
 */
 #include <monalibc.h>
 #include <string.h>
@@ -20,6 +21,14 @@
 int uitos(char* s, unsigned int n, int real_width, int base, char flag);
 size_t __power(size_t x, size_t y);
 
+/*!
+  \brief equivalent to the function sprintf
+
+  \param s      buf printed characters
+  \param format specifies how subsequent arguments
+  \param arg    a variable number of arguments
+  \return  the number of characters printed (including '\\0' end of string)
+*/
 int vsprintf(char *s, const char *format, va_list arg){
   int result = 0;
   int loop;
@@ -304,32 +313,6 @@ size_t __power(size_t x, size_t y){
     result *= x;
   }
   return result;
-}
-
-int atoi(const char *s){
-  int result;
-  int flag;
-
-  if(s == NULL) return 0;
-  flag = 1;
-  result = 0;
-
-  while(*s ==' ') s++;
-
-  if(*s == '+'){
-    flag = 1;
-    s++;
-  } else if(*s == '-'){
-    flag = -1;
-    s++;
-  }
-  
-  while((*s >= '0') && (*s <= '9')){
-    result = result*10 + (int)(*s - '0');
-    s++;
-  }
-
-  return result*flag;
 }
 
 int strcpy2(char *s1, const char *s2){
