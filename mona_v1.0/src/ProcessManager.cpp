@@ -72,3 +72,19 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
     scheduler_->addToPrev(&(process->pinfo_));
 
 }
+
+void ProcessManager::printOneProcess(ProcessInfo* info) const {
+
+    g_console->printf("[%s]\n", info->name);
+
+}
+
+void ProcessManager::printAllProcesses() const {
+
+    ProcessInfo* start = g_current_process;
+
+    for (start = g_current_process; start != start->next; start = start->next) {
+
+        printOneProcess(start);
+    }
+}

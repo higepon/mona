@@ -134,6 +134,7 @@ void startKernel(void) {
     Process*     process4 = new Process("krnl_m");
     Process*     process5 = new Process("krnl_o2");
     UserProcess* process6 = new UserProcess("user_process2");
+    Process*     process7 = new Process("show_process");
 
     g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
     g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
@@ -141,6 +142,7 @@ void startKernel(void) {
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest);
+    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
 
     enableTimer();
 

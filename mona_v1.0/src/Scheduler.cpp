@@ -56,8 +56,6 @@ void Scheduler::schedule() {
 
     toUserMode_ = (next->dpl > g_current_process->dpl);
 
-    info(DEV_NOTICE, "dpl %d to %d", g_current_process->dpl, next->dpl);
-
     addToPrev(next);
 
     g_current_process = next;

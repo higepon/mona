@@ -34,10 +34,12 @@ class ProcessManager {
     PTE*  allocatePageDir();
     virtual_addr allocateStack();
     dword allocatePID();
+    void printOneProcess(ProcessInfo* info) const;
     void switchProcess();
 
   public:
     void schedule();
+    void printAllProcesses() const;
     bool addProcess(Process* process, virtual_addr entry);
 
   private:

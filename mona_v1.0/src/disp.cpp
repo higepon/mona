@@ -38,14 +38,13 @@ void disp_name1() {
 
     while (true) {
 
-	//        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+        //        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(75, 0, 'M', color%13);
 
-	//        Semaphore::up(&g_semaphore_console);
+        //        Semaphore::up(&g_semaphore_console);
 
         color++;
-	//        syscall_kthread_yield();
     }
 }
 
@@ -60,13 +59,13 @@ void disp_name2() {
     dword color = 0;
 
     while (true) {
-        //        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+
+        //        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(76, 0, 'o', color%14);
 
         //        Semaphore::up(&g_semaphore_console);
         color++;
-        //        syscall_kthread_yield();
     }
 }
 
@@ -76,14 +75,13 @@ void disp_name3() {
 
     while (true) {
 
-        //while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+        //      while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(77, 0, 'n', color%15);
 
 
-        //Semaphore::up(&g_semaphore_console);
+        //        Semaphore::up(&g_semaphore_console);
         color++;
-        //syscall_kthread_yield();
     }
 }
 
@@ -93,14 +91,28 @@ void disp_name4() {
 
     while (true) {
 
-	//    while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+        //        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(78, 0, 'a', color%16);
 
-	//        Semaphore::up(&g_semaphore_console);
+        //        Semaphore::up(&g_semaphore_console);
         color++;
+    }
+}
 
-	//        syscall_kthread_yield();
+void disp_process() {
+
+    while (true) {
+
+        int x = pos_x;
+        int y = pos_y;
+
+         pos_x = 0, pos_y = 22;
+
+         g_process_manager->printAllProcesses();
+
+         pos_x = x;
+         pos_y = y;
     }
 }
 
