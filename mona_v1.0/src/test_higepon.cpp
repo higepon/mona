@@ -92,6 +92,8 @@ int Mouse::init() {
     /* enable mouse interrupt slave unmask */
     outportb(0x21, (inportb(0x21) & 0xFB)); /* IR2 cascade */
     outportb(0xA1, (inportb(0xA1) & 0xEF)); /* IR4         */
+
+    return 0;
 }
 
 int Mouse::waitWritable() {

@@ -30,9 +30,33 @@
 */
 void mouseHandler() {
 
-    byte data;
-    g_console->printf("mouse wait2 = %s\n", Mouse::waitReadable() ? "NG" : "OK");
-    g_console->printf("%x\n", (data = inportb(0x60)));
+    static int counter = 0;
+    if (Mouse::waitReadable()) {
+        g_console->printf("mouse time out");
+    }
+
+    byte data = inportb(0x60);
+
+    MessageInfo message;
+
+    memset(&message, 0, sizeof(MessageInfo));
+
+    int type = counter % 3;
+
+    if (type == 0) {
+        message.header = MSG_MOUSE_1;
+    } else if (type == 1) {
+        message.header = MSG_MOUSE_2;
+    } else {
+        message.header = MSG_MOUSE_3;
+    }
+    message.arg1   = data;
+
+    if (g_messenger->send("KEYBDMNG.SVR", &message)) {
+        g_console->printf("send failed");
+    }
+
+    counter++;
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

@@ -72,8 +72,8 @@ void mainProcess() {
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
 
     /* Map Server */
-    g_console->printf("loading Map SERVER....");
-    g_console->printf("%s\n", loadProcess(".", "MAP.SVR", true) ? "NG" : "OK");
+//     g_console->printf("loading Map SERVER....");
+//     g_console->printf("%s\n", loadProcess(".", "MAP.SVR", true) ? "NG" : "OK");
 
     /* Shell Server */
     g_console->printf("loading Shell SERVER....");

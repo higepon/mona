@@ -18,6 +18,9 @@
 int regist(List<dword>* destList, MessageInfo* info);
 int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info);
 
+void dummy() {
+}
+
 int main() {
 
     /* initilize KeyBoardManager */
@@ -26,6 +29,8 @@ int main() {
 
     /* initilize destination list */
     List<dword>* destList = new HList<dword>();
+
+    int i  = 0;
 
     /* Message loop */
     for (;;) {
@@ -45,6 +50,11 @@ int main() {
             case MSG_KEY_REGIST_TO_SERVER:
 
                 regist(destList, &info);
+                break;
+
+            case MSG_MOUSE_2:
+		//		printf("x = (%d, %d)", info.arg1, i++);
+
                 break;
 
             default:

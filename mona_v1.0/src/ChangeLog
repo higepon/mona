@@ -1,5 +1,7 @@
 2004-02-05  higepon  <higepon@users.sourceforge.jp>
 
+        * kernel.cpp: 8MBヒープ
+
         * test_higepon.cpp: マウス割り込みが来た(VitualPCのみ)
 
         * user/userlib.cpp: プロセスの最大ヒープサイズ(自動拡張)を2MBとしました。
