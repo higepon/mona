@@ -40,15 +40,15 @@ purevirtual.o: purevirtual.cpp include/kernel.h user/types.h \
   include/operator.h include/collection.h include/Scheduler.h \
   include/ProcessManager.h include/ihandlers.h include/sysresource.h \
   include/FAT12.h include/MemoryManager.h user/userlib.h
-KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
-  user/types.h include/global.h include/info.h include/kernel.h \
-  include/VirtualConsole.h include/string.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/IDTUtil.h include/Process.h include/PageManager.h \
-  include/Queue.h include/GraphicalConsole.h include/BitMap.h \
-  include/Segments.h include/operator.h include/collection.h \
-  include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
-  include/sysresource.h include/FAT12.h include/MemoryManager.h
+KeyBoardManager.o: KeyBoardManager.cpp include/global.h include/info.h \
+  include/kernel.h user/types.h include/VirtualConsole.h include/string.h \
+  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
+  include/GDTUtil.h include/IDTUtil.h include/Process.h \
+  include/PageManager.h include/Queue.h include/GraphicalConsole.h \
+  include/BitMap.h include/Segments.h include/operator.h \
+  include/collection.h include/Scheduler.h include/ProcessManager.h \
+  include/ihandlers.h include/sysresource.h include/FAT12.h \
+  include/MemoryManager.h include/KeyBoardManager.h
 checker.o: checker.cpp include/checker.h user/types.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/GDTUtil.h \
   include/IDTUtil.h

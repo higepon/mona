@@ -1,5 +1,7 @@
 2003-12-24  higepon  <higepon@users.sourceforge.jp>
 
+        * include/collection.h: removeAt()のバグ修正 Gakuさん感謝
+
         * KeyBoardManager.cpp: KeyバッファをListにした。
                                Listの初期化タイミングに問題あり要修正
 

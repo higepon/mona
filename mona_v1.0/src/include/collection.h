@@ -236,7 +236,7 @@ template <class T> T HList<T>::removeAt(size_t index) {
     T toRemove = data_[index];
 
     /* fix hole */
-    for (size_t i = index; i < numElements_; i++) {
+    for (size_t i = index; i < numElements_ - 1; i++) {
         data_[i] = data_[i + 1];
     }
     numElements_--;
