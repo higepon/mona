@@ -44,19 +44,19 @@ ImeManager::~ImeManager()
 	delete(_imeEvent);
 }
 
-/** バッファーをクリアする */
+/** 指定したバッファーをクリアする */
 void ImeManager::clearBuffer(char *buffer)
 {
 	memset(buffer, 0, MAX_TEXT_LEN);
 }
 
-/** バッファーに文字を追加する */
+/** 指定したバッファーに文字を追加する */
 void ImeManager::insertCharacter(char *buffer, char c)
 {
 	buffer[strlen(buffer)] = c;
 }
 
-/** バッファーに文字列を追加する */
+/** 指定したバッファーに文字列を追加する */
 void ImeManager::insertString(char *buffer, char *str)
 {
 	int len = strlen(buffer);
@@ -66,7 +66,7 @@ void ImeManager::insertString(char *buffer, char *str)
 }
 
 /**
- バッファーの文字を1文字削除する
+ 指定したバッファーの文字を1文字削除する
  @return 削除した文字のバイト数(1-3)
  */
 int ImeManager::deleteCharacter(char *buffer)
@@ -97,7 +97,7 @@ int ImeManager::deleteCharacter(char *buffer)
  */
 char *ImeManager::getKana()
 {
-	// デフォルトは
+	// デフォルトはローマ字入力
 	for (int i = 0; i < HENKAN0LENGTH; i++) {
 		if (strcmp(henkan00[i], inputBuffer) == 0) {
 			clearBuffer(inputBuffer);
@@ -124,7 +124,7 @@ void ImeManager::setText(char *text)
 	copyString(decideBuffer, text);
 }
 
-/** 確定済みバッファーを得る */
+/** すべての内部バッファーをクリアする */
 void ImeManager::clearBuffer()
 {
 	clearBuffer(inputBuffer);
