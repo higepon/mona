@@ -1,35 +1,35 @@
 include Makefile.inc
 
-all : LIB_USER HELLO CLOCK JPEGDEMO KEY MAP MOUSE NOIZ2BG REVERSI SHELLSVR
+all : lib_user hello clockdemo jpegdemo key map mouse noizbg reversidemo shellsvr
 
-LIB_USER :
+lib_user :
 	cd userlib; make
 
-HELLO :
+hello :
 	cd HelloWorld; make
 
-CLOCK :
+clockdemo :
 	cd clock; make
 
-JPEGDEMO :
+jpegdemo :
 	cd jpegls; make
 
-KEY :
+key :
 	cd KeyBoardServer; make
 
-MAP :
+map :
 	cd MapServer; make
 
-MOUSE :
+mouse :
 	cd MouseServer; make
 
-NOIZ2BG :
+noizbg :
 	cd noiz2bg; make
 
-REVERSI :
+reversidemo :
 	cd Reversi; make
 
-SHELLSVR :
+shellsvr :
 	cd ShellServer; make
 
 clean :
