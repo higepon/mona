@@ -3,13 +3,14 @@
 
 #include <sys/types.h>
 
-#define KEY_MODIFIER_DOWN  0x1
-#define KEY_MODIFIER_UP    0x2
-#define KEY_MODIFIER_SHIFT 0x4
-#define KEY_MODIFIER_ALT   0x8
+#define KEY_MODIFIER_DOWN  0x01
+#define KEY_MODIFIER_UP    0x02
+#define KEY_MODIFIER_SHIFT 0x04
+#define KEY_MODIFIER_ALT   0x08
 #define KEY_MODIFIER_CTRL  0x10
 #define KEY_MODIFIER_WIN   0x20
 #define KEY_MODIFIER_MENU  0x40
+#define KEY_MODIFIER_CHAR  0x80
 
 namespace MonAPI {
 
@@ -145,12 +146,15 @@ class Keys{
     static const int mapUS102E0[128];
     static const int mapJP109[128];
     static const int mapJP109E0[128];
-
+    static const char keyTopMapUS102[256];
+    static const char keyTopMapUS102S[256];
     static const char keyTopMapJP109[256];
     static const char keyTopMapJP109S[256];
 
     static char ToChar(KeyInfo keyInfo);
     static bool IsToChar(KeyInfo keyInfo);
+    static char ToChar(KeyInfo keyInfo, char *map, char *maps);
+    static bool IsToChar(KeyInfo keyInfo, char *map, char *maps);
 };
 
 }
