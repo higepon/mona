@@ -100,8 +100,7 @@ void _sysLoadIdtr(idtr_st* idtr) {
 */
 void disableTimer() {
 
-    byte in = inportb(0x21);
-    outportb(0x21, in | 0x01);
+    outportb(0x21, inportb(0x21) | 0x01);
 }
 
 /*!
@@ -114,6 +113,5 @@ void disableTimer() {
 */
 void enableTimer() {
 
-    byte in = inportb(0x21);
-    outportb(0x21, in & 0xFE);
+    outportb(0x21, inportb(0x21) & 0xFE);
 }

@@ -51,7 +51,6 @@ void startKernel(void) {
     _sysPrintln("      ~/ ______( `D`) < thanks ProgrammingBoard@2ch   ");
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
-
     _sysSetColor(BG_MAROON | CH_BLUE);
     _sys_printf("\nMona develop beta 0.02\n\n");
     _sysSetColor(BG_BLACK | CH_SILVER);
@@ -59,15 +58,14 @@ void startKernel(void) {
     /* set interrept */
     _sysSetIdt();
     _sysInitIo();
+    disableTimer();
 
     /* re-set up GDT */
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
 
-    /* disable timer */
-    disableTimer();
+    /* enable interrupt */
     _sysUnlock();
-
     _sys_printf("IDT,GDT set done\n");
 
     /* get System Information */

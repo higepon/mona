@@ -63,7 +63,7 @@ void hvectorTester() {
     test code for operator new
 
     \author HigePon
-    \date   create:2002/11/11 update:$Date$
+    \date   create:2002/11/11 update:$2003/01/11$
 */
 void operatorTester() {
 
@@ -99,7 +99,7 @@ void floppyTester(){
     test code for monaTypes
 
     \author HigePon
-    \date   create:2002/11/20 update:$Date$
+    \date   create:2002/11/20 update:$2003/01/11$
 */
 void typeTester() {
 
@@ -119,13 +119,13 @@ void typeTester() {
 void processTester() {
 
     ProcessManager& pm = ProcessManager::instance();
-    //    pm.printInfo();
     pm.multiTaskTester();
     return;
 }
 
 
 void process1Tester() {
+
     enableTimer();
 
     while (true) {
@@ -160,7 +160,7 @@ void process2Tester() {
     test code for STLport
 
     \author HigePon
-    \date   create:2003/01/09 update:$Date$
+    \date   create:2003/01/09 update:2003/01/11
 */
 void STLTester() {
 

@@ -203,10 +203,9 @@ void ProcessManager::printInfo() {
 */
 inline void ProcessManager::switchProcess() {
 
-    bool next = taskidx_ %2 == 0;
+    bool next = taskidx_ %2 == 1;
 
-    /* wait for */
-    if (taskidx_ <2) {
+    if (taskidx_ == 0) {
         taskidx_++;
         return;
     }
