@@ -13,7 +13,8 @@ SOURCES = string.cpp \
           Random.cpp \
           Screen.cpp \
           VirtualScreen.cpp \
-          mt19937ar.cpp
+          mt19937ar.cpp \
+          Keys.cpp
 
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc
