@@ -252,8 +252,6 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     int mapResult;
 
-    g_console->printf("shared fault");
-
     if (error != PageManager::FAULT_NOT_EXIST) {
 
         errorNumber_ = FAULT_UNKNOWN;

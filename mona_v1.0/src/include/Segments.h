@@ -70,6 +70,11 @@ class Segment {
     virtual int getErrorNumber() {return errorNumber_;}
     virtual LinearAddress getStart() {return start_;}
     virtual dword getSize() {return size_;}
+    virtual bool inRange(LinearAddress address) {
+
+        return (address >= start_ && address < start_ + size_);
+    }
+
 
   protected:
     LinearAddress start_;
@@ -91,6 +96,10 @@ class StackSegment : public Segment {
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
+    virtual bool inRange(LinearAddress address) {
+
+        return (address >= start_ + PageManager::ARCH_PAGE_SIZE && address <= start_ + size_);
+    }
 
   private:
     bool tryExtend(LinearAddress address);

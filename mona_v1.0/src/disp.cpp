@@ -88,9 +88,11 @@ void disp_name3() {
     while (Semaphore::down(&g_semaphore_shared));
 
     bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
-    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
 
     Semaphore::up(&g_semaphore_console);
+
+    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
+
 
     if (!isOpen || !isAttaced) panic("disp_name3");
 
@@ -109,9 +111,10 @@ void disp_name4() {
     while (Semaphore::down(&g_semaphore_shared));
 
     bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
-    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
 
     Semaphore::up(&g_semaphore_console);
+
+    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x90000000);
 
     if (!isOpen || !isAttaced) panic("disp_name4");
 
