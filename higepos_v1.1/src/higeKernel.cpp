@@ -56,16 +56,7 @@ void startKernel(void) {
 #if 0
     operatorTester();
     hvectorTester();
-#endif
-
-#if 0
-    /* FDCDriver test code */
-    unsigned char buff[512];
-    gFDCDriver1 = new FDCDriver(0);
-    gFDCDriver1->readSector(1, 1, buff);
-    for(int i = 0; i < 512; i++){
-         _sys_printf("[%d]", buff[i]);
-    }
+	floppyTester();
 #endif
 
 

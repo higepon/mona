@@ -18,6 +18,7 @@
 #include<higeTypes.h>
 #include<HVector.h>
 #include<higeTester.h>
+#include<FDCDriver.h>
 
 /*!
     \brief test code for HVector
@@ -65,5 +66,22 @@ void operatorTester() {
     _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);
+}
+
+/*!
+    \brief test code for floppy disk (class FDCDriver)
+
+    test code for floppy disk (class FDCDriver)
+    
+    \author syn
+    \date create:2002/11/14 update:2002/11/14
+*/
+void floppyTester(){
+    unsigned char buff[512];
+    gFDCDriver1 = new FDCDriver(0);
+    gFDCDriver1->readSector(1, 1, buff);
+    for(int i = 0; i < 512; i++){
+         _sys_printf("[%d]", buff[i]);
+    }
 }
 
