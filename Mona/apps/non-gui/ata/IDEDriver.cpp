@@ -101,6 +101,7 @@ int IDEDriver::read(dword lba, void* buffer, int size)
         for (int i = 0; i < count; i++)
         {
             int readSize;
+            bool readResult;
             if (i == count - 1)
             {
                 readSize = size - 0xf800 * i;
@@ -110,7 +111,12 @@ int IDEDriver::read(dword lba, void* buffer, int size)
                 readSize = 0xf800;
             }
 
-            bool readResult = commandRead10(this->whichController, lba, buffer, readSize);
+            for (int j = 0; j < 20; j++)
+            {
+                readResult = commandRead10(this->whichController, lba, buffer, readSize);
+                if (readResult) break;
+            }
+
             buffer = (void*)((byte*)buffer + readSize);
 
             if (!readResult) return getLastError();
@@ -236,15 +242,12 @@ bool IDEDriver::waitDrdySet(IDEController* controller)
 ----------------------------------------------------------------------*/
 bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
-
     outp8(controller, ATA_DCR, 0x8);  /* use interrupt */
 
     atapiBuffer        = command->buffer;
     atapiReadDone      = false;
     atapiTotalReadSize = command->limit;
 
-    printf("command->limit=%d\n", command->limit);
 
     if (!selectDevice(controller, command->deviceNo))
     {

@@ -96,7 +96,7 @@ int MonaMain(List<char*>* pekoe)
     char* buf = (char*)malloc(6 * 1024 * 1024);
     memset(buf, 0, sizeof(buf));
 
-    int readResult = ide->read(16, buf, 5 * 1024 * 1024);
+    int readResult = ide->read(18, buf, 4096);
 
     if (readResult != 0)
     {
@@ -108,11 +108,23 @@ int MonaMain(List<char*>* pekoe)
         return 1;
     }
 
+    for (int i = 0; i < 5; i++)
+    {
+	printf("[%x]", buf[i]);
+    }
+    printf("\n");
+
+    for (int i = 2048; i < 2048 +5; i++)
+    {
+	printf("[%x]", buf[i]);
+    }
+    printf("\n");
+
     FileOutputStream fos("HDDUMP.TXT");
 
     printf("fileout:open=%d\n", fos.open());
 
-    printf("fileout:write=%d\n", fos.write((byte*)buf        , 512));
+    printf("fileout:write=%d\n", fos.write((byte*)buf        , 800 * 1024));
 
     fos.close();
 

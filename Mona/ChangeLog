@@ -1,5 +1,9 @@
 2004-11-20  higepon  <higepon@users.sourceforge.jp>
 
+        * apps/non-gui/ata/main.cpp (MonaMain): 4096byteはきちんと読めていることを検証。
+
+        * apps/non-gui/ata/IDEDriver.cpp (read): commandRead10を5回リトライするようにした。
+
         * apps/non-gui/ata/main.cpp (MonaMain): この時点でのatapiコードはVmware, VPC, QEMUで動いた。とりあえずこの状態を取っておきたいので
                                                 0_3_0alpha1のタグをつけた。
 
