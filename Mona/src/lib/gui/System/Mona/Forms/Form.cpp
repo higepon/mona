@@ -12,6 +12,10 @@
 using namespace System;
 using namespace System::Drawing;
 
+#ifdef MONA
+extern void __SetMouseCursor(bool enabled);
+#endif
+
 namespace System { namespace Mona { namespace Forms
 {
 	Form::Form() : isCloseButtonPushed(false), ncState(NCState_None)
@@ -57,7 +61,9 @@ namespace System { namespace Mona { namespace Forms
 		{
 			(*bmp.get())[i] = (*this->buffer.get())[i].get_A() != 0 ? white : empty;
 		}
+		__SetMouseCursor(false);
 		this->DrawImage(bmp);
+		__SetMouseCursor(true);
 	}
 	
 	bool Form::CheckPoint(int x, int y)

@@ -41,7 +41,7 @@ static MessageInfo WaitMessage(dword from, dword header, dword arg1)
 	return msg;
 }
 
-static void SetMouseCursor(bool enabled)
+void __SetMouseCursor(bool enabled)
 {
 	if (__mouse_server == 0xFFFFFFFF) return;
 	
@@ -156,9 +156,13 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::Refresh()
 	{
-		::SetMouseCursor(false);
+#ifdef MONA
+		::__SetMouseCursor(false);
+#endif
 		this->RefreshInternal();
-		::SetMouseCursor(true);
+#ifdef MONA
+		::__SetMouseCursor(true);
+#endif
 	}
 	
 	void Control::RefreshInternal()
