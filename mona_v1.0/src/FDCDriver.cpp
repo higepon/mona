@@ -389,7 +389,7 @@ bool FDCDriver::seek(byte track) {
 
     interrupt_ = false;
 
-    if(!sendCommand(command, sizeof(command))){
+    if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#seek:command fail\n");
         return false;

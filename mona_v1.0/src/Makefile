@@ -8,7 +8,7 @@ else
         include $(ENV)/linux.env
     endif
 endif
-VERSION    = 0.0.5
+VERSION    = 0.0.7
 DOXYGEN    = doxygen
 BIN        = ../bin
 LIST       = ../list
@@ -42,7 +42,7 @@ SOURCES    = cstart.cpp            \
              disp.cpp              \
              syscalls.cpp          \
              BitMap.cpp            \
-             FAT12.cpp              \
+             FAT12.cpp             \
              IDEDriver.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
