@@ -18,6 +18,67 @@
 */
 
 /*----------------------------------------------------------------------
+    Bynary Tree
+----------------------------------------------------------------------*/
+template <class T> class BinaryTree {
+
+  public:
+    BinaryTree();
+    virtual ~BinaryTree();
+
+  public:
+    dword size() const;
+    T get(const dword key) const;
+    bool conatains(const dword key) const;
+    void add(const dword key, const T element);
+
+  private:
+    struct Node {
+        dword key;
+        T element;
+        Node* left;
+        Node* right;
+    };
+
+    Node* root_;
+    dword numberOfElements;
+    static const int NO_DATA = 0;
+
+  private:
+    void add(Node* tree, const dword key, const T element);
+
+};
+
+template <class T> BinaryTree<T>::BinaryTree() : root_(NO_DATA), numberOfElements(0) {
+}
+
+template <class T> BinaryTree<T>::~BinaryTree() {
+
+    /* not implemeted */
+}
+
+template <class T> void BinaryTree<T>::add(Node* tree, const dword key, const T element) {
+
+    /* add */
+    if (tree == NO_DATA) {
+        tree = new Node;
+        if (tree == NULL) for (;;);
+        tree->left    = NO_DATA;
+        tree->right   = NO_DATA;
+        tree->key     = key;
+        tree->element = element;
+
+    /* add to left */
+    } else if (key < tree->key) {
+        add(tree->left, key, element);
+
+    /* add to right */
+    } else {
+        add(tree->right, key, element);
+    }
+}
+
+/*----------------------------------------------------------------------
     Map Interface
 ----------------------------------------------------------------------*/
 template <class T> class Map {
