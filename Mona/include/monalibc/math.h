@@ -19,6 +19,7 @@ double sin(double angle);
 double cos(double angle);
 double tan(double angle);
 double sqrt(double num);
+double atan(double x, double y);
 
 #ifdef __cplusplus
 }

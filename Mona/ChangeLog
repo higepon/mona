@@ -1,5 +1,7 @@
 2004-05-27  higepon  <higepon@users.sourceforge.jp>
 
+        * src/lib/monalibc/math.cpp (atan): atan()追加
+
         * src/kernel/Process.cpp (wakeupEvents): メッセージ到着をタイマ割り込み時のスケジューリングでチェックしないように変更
 
         * src/kernel/syscalls.cpp : SYSTEM_CALL_MTHREAD_YIELD_MESSAGEの処理でメッセージ到着フラグを参照し、フラグがセットされていたら
