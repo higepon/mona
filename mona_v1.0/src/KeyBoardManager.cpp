@@ -68,9 +68,6 @@ KeyBoardManager::~KeyBoardManager() {
 */
 KeyBoardManager::KeyBoardManager() {
 
-    /* set Handler */
-    f_ = NULL;
-
     isInit_ = false;
     return;
 }
@@ -186,9 +183,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
     /* allocate keyinfo */
-    static int i = 1;
-    g_console->printf("key = %d", i);
-    i++;
     KeyInfo* kinfo = (KeyInfo*)malloc(sizeof(KeyInfo));
     checkMemoryAllocate(kinfo, "KeyInfo allocate");
 
@@ -197,9 +191,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     kinfo->modifiers = modifiers;
     keyInfoList_->add(kinfo);
 
-    if (f_) f_();
-
-    //    printInfo(keycode, modifiers);
     return;
 }
 
@@ -221,9 +212,4 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
                                    , (modifiers & KEY_MODIFIER_MENU )? "menu" : ""
                                    , keycode);
     return;
-}
-
-void KeyBoardManager::setHandler(void (*f)()) {
-
-    f_ = f;
 }

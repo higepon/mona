@@ -79,18 +79,18 @@ void printInfo() {
 
     for (;;) {
 
-        while (Semaphore::down(&g_semaphore_console));
+	//        while (Semaphore::down(&g_semaphore_console));
         int tempx = pos_x;
         int tempy = pos_y;
 
         pos_x = 0;
         pos_y = 3;
 
-        //g_processManager->printProcess();
+        //        g_processManager->printProcess();
 
         pos_x = tempx;
         pos_y = tempy;
-        Semaphore::up(&g_semaphore_console);
+	//        Semaphore::up(&g_semaphore_console);
 
     }
 }

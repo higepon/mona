@@ -381,14 +381,14 @@ Process* ProcessManager::find(const char* name) {
     for (dword i = 0; dispatchList_->size(); i++) {
 
         Process* process = dispatchList_->get(i);
-        if (strcmp(name, process->getName())) {
+        if (!strcmp(name, process->getName())) {
             return process;
         }
     }
     for (dword i = 0; waitList_->size(); i++) {
 
         Process* process = waitList_->get(i);
-        if (strcmp(name, process->getName())) {
+        if (!strcmp(name, process->getName())) {
             return process;
         }
     }

@@ -43,7 +43,9 @@ void keyStrokeHandler(dword scancode) {
     message.arg1 = info.keycode;
     message.arg2 = info.modifiers;
 
-    send("USER.ELF", &message);
+    if (send("USER.ELF", &message)) {
+        g_console->printf("send failed");
+    }
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
