@@ -58,6 +58,7 @@ public:
     virtual bool RemoveFile(const MonAPI::CString& path);
     virtual bool CreateDirectory(const MonAPI::CString& path);
     virtual bool RemoveDirectory(const MonAPI::CString& path);
+    virtual bool IsExistDirectory(const MonAPI::CString& path);
     virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path);
     virtual int GetLastError() {return this->lastError;}
 

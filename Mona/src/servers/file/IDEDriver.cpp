@@ -47,7 +47,6 @@ IDEDriver::IDEDriver()
     /* initialize controllers */
     initialize(&controllers[PRIMARY]);
     initialize(&controllers[SECONDARY]);
-
     this->whichController = NULL;
     this->atapiBuffer     = NULL;
     this->atapiReadDone   = true;
@@ -612,8 +611,10 @@ void IDEDriver::initialize(IDEController* controller)
 
     setDeviceTypeFirst(controller, MASTER);
     setDeviceTypeFirst(controller, SLAVE);
+
     setDeviceTypeSecond(controller, MASTER);
     setDeviceTypeSecond(controller, SLAVE);
+
 }
 
 /*

@@ -47,6 +47,7 @@ bool initializeCD()
     cd = new IDEDriver();
 
     /* find CD-ROM */
+
     int controller, deviceNo;
     if (!cd->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
     {
@@ -131,9 +132,7 @@ int ChangeDirectory(const CString& dir)
     }
     else if (currentDrive == DRIVE_CD0)
     {
-        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(fullPath);
-
-        if (files.get_Length() == 0)
+        if (!fs->IsExistDirectory(fullPath))
         {
             return MONA_FAILURE;
         }

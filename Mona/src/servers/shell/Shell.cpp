@@ -12,7 +12,6 @@ Shell::Shell(bool callAutoExec)
     : position(0), hasExited(false), callAutoExec(callAutoExec), doExec(false),
      waiting(THREAD_UNKNOWN), prevX(0), prevY(0), firstTimeOfCD0(true)
 {
-
     this->driveLetter[DRIVE_FD0]    = "fd0:";
     this->driveLetter[DRIVE_CD0]    = "cd0:";
     this->startDirectory[DRIVE_FD0] = "/APPS";
@@ -27,13 +26,7 @@ Shell::Shell(bool callAutoExec)
     /* current drive */
     this->currentDirectory.Alloc(2);
 
-    this->currentDirectory[DRIVE_FD0] = "";
-    this->currentDirectory[DRIVE_CD0] = "";
-    setCurrentDirectory();
-
     changeDirecotory(startDirectory[currentDrive]);
-
-//    this->current = this->startDirectory[this->currentDrive];
 
     if (this->callAutoExec)
     {
@@ -147,8 +140,6 @@ void Shell::commandExecute(bool prompt)
         return;
     }
 
-    putHistory(this->commandLine);
-
     /* internal command */
     int isInternal = isInternalCommand(args[0]);
     if (isInternal != 0)
@@ -246,17 +237,6 @@ void Shell::commandTerminate()
     commandChar('\0');
 }
 
-void Shell::putHistory(const CString& command)
-{
-    history.add(command);
-}
-
-CString Shell::getHistory()
-{
-    if (history.isEmpty()) return "";
-    return history.get(0);
-}
-
 void Shell::onKeyDown(int keycode, int modifiers)
 {
     if (this->waiting != THREAD_UNKNOWN)
@@ -337,16 +317,16 @@ void Shell::onKeyDown(int keycode, int modifiers)
         break;
 
     case(Keys::Up):
-        printf("up");
+
         break;
     case(Keys::Down):
-        printf("down");
+
         break;
     case(Keys::Left):
-        printf("left");
+
         break;
     case(Keys::Right):
-        printf("right");
+
         break;
     case(Keys::Back):
         backspace();
@@ -562,3 +542,15 @@ void Shell::setCurrentDirectory()
 
     this->currentDirectory[this->currentDrive] = buff;
 }
+
+bool Shell::changeDirecotory(const MonAPI::CString& path)
+{
+    if (monapi_call_change_directory(path) == MONA_FAILURE)
+    {
+        return false;
+    }
+    setCurrentDirectory();
+    makeApplicationList();
+    return true;
+}
+

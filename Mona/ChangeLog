@@ -1,3 +1,11 @@
+2005-02-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/shell/Shell.cpp (commandExecute): 未実装だったヒストリー機能を正式に廃止。
+
+        * src/servers/file/IDEDriver.h (class IDEDriver): パフォーマンスのために ATA_TIMEOUT を 100000->10000に変更。実機でやばかったら元に戻す。
+
+        * src/servers/file/file.cpp (ChangeDirectory): FileSystem#IsExistDirectory()を使用するように変更。
+
 2004-02-08  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gshell/gshell.cpp: リファクタリング＆品質向上

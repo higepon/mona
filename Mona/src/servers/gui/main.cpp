@@ -372,7 +372,7 @@ int MonaMain(List<char*>* pekoe)
 	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
 
 	// フォントのロード
-	ReadFont("/MONA-12.MF5");
+	ReadFont("/MONA12.MF5");
 	if (default_font == NULL) exit(1);
 	
 	// 設定ファイルのロード

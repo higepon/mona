@@ -30,7 +30,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MAX_TEXT_LEN     128
 #define BASICDIC_NAME    "/BASICDIC.TX5"
-#define FONTFILE_NAME    "/MONA-12.MF2"
+#define FONTFILE_NAME    "/MONA12.MF2"
 
 /** IMEサーバークラス */
 class ImeServer : public MonAPI::Server {

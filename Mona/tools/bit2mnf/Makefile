@@ -1,4 +1,4 @@
-TARGET  = MONA-12.h MONA-12.MNF
+TARGET  = MONA-12.h MONA12.MNF
 BIT2MNF = bit2mnf$(EXEEXT)
 FONTDIR = ../monafont
 
@@ -9,7 +9,7 @@ CXXFLAGS = -Wall
 all: $(TARGET)
 
 $(TARGET): $(BIT2MNF)
-	./$(BIT2MNF) -o MONA-12 \
+	./$(BIT2MNF) -o MONA12 \
 		--ascii $(FONTDIR)/mona6x12.bit0 \
 		--ascii $(FONTDIR)/mona6x12a.bit1 \
 		--jisx0201 $(FONTDIR)/mona6x12r.bit1 \
@@ -23,6 +23,6 @@ clean:
 	rm -f $(TARGET) $(BIT2MNF)
 
 install: $(TARGET)
-	$(MONADIR)/bin/bim2bin in:MONA-12.MNF out:$(MONADIR)/bin/root/MONA-12.MF5 \
+	$(MONADIR)/bin/bim2bin in:MONA12.MNF out:$(MONADIR)/bin/root/MONA12.MF5 \
 	-osacmp -tek5 BS:0 eprm:z0
-#	bzip2 -c MONA-12.MNF > $(MONADIR)/bin/root/MONA-12.MF2
+#	bzip2 -c MONA12.MNF > $(MONADIR)/bin/root/MONA12.MF2

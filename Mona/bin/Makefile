@@ -41,7 +41,7 @@ write:
 clean:
 	rm -f $(TARGET) mona.iso
 	rm -f root/*.BIN
-	rm -f root/MONA-12.M*
+	rm -f root/MONA12.M*
 	rm -rf root/APPS/*.*
 	rm -rf root/APPS/MONAFRMS
 	rm -rf root/APPS/BAYGUI

@@ -3,7 +3,6 @@
 
 using namespace MonAPI;
 
-
 enum
 {
     COMMAND_NONE,
@@ -21,17 +20,6 @@ enum
     COMMAND_CHANGE_DRIVE_CD0,
     COMMAND_CHANGE_DRIVE_FD0,
 };
-
-bool Shell::changeDirecotory(const MonAPI::CString& path)
-{
-    if (monapi_call_change_directory(path) == MONA_FAILURE)
-    {
-        return false;
-    }
-    setCurrentDirectory();
-    makeApplicationList();
-    return true;
-}
 
 int Shell::isInternalCommand(const CString& command)
 {

@@ -185,7 +185,6 @@ void MessageLoop()
     }
 }
 
-
 static bool fdInitialize()
 {
     syscall_get_io();

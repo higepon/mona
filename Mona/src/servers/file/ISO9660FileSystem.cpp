@@ -40,7 +40,6 @@ bool ISO9660FileSystem::Initialize()
     {
         return false;
     }
-
     return true;
 }
 
@@ -100,6 +99,12 @@ bool ISO9660FileSystem::CreateDirectory(const CString& path)
 bool ISO9660FileSystem::RemoveDirectory(const CString& path)
 {
     return false;
+}
+
+bool ISO9660FileSystem::IsExistDirectory(const MonAPI::CString& path)
+{
+    ISO9660Directory* entry = FindDirectoryEntry(this->rootDirectory, path);
+    return entry != NULL;
 }
 
 _A<FileSystemEntry*> ISO9660FileSystem::GetFileSystemEntries(const CString& path)

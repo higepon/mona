@@ -35,8 +35,6 @@ class Shell {
     void commandExecute(bool prompt);
     bool commandExecute(_A<MonAPI::CString> args);
     void commandTerminate();
-    void putHistory(const MonAPI::CString& command);
-    MonAPI::CString getHistory();
     int isInternalCommand(const MonAPI::CString& command);
     bool internalCommandExecute(int command, _A<MonAPI::CString> args);
     _A<MonAPI::CString> parseCommandLine();
@@ -53,9 +51,7 @@ class Shell {
   protected:
     char commandLine[1024];
     int position;
-    HList<MonAPI::CString> history;
     HList<MonAPI::CString> apps[2];
-//    MonAPI::CString current;
     bool hasExited, callAutoExec, doExec;
     dword waiting;
     dword self;
