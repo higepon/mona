@@ -15,6 +15,9 @@
 
 void info(int level, const char *format, ...) {
 
+    static bool msg_complete;
+    int i;
+
     /* do nothing */
     if (level > g_info_level) return;
 
@@ -22,12 +25,12 @@ void info(int level, const char *format, ...) {
     else if (level == WARNING) g_console->setCHColor(GP_YELLOW);
 
     /* out */
-    g_console->printf("[%s]:", g_process_name);
+    if (msg_complete) g_console->printf("[%s]:", g_process_name);
 
     void** list = (void **)&format;
 
     ((char**)list) += 1;
-    for (int i = 0; format[i] != '\0'; i++) {
+    for (i = 0; format[i] != '\0'; i++) {
 
         if (format[i] == '%') {
             i++;
@@ -62,16 +65,7 @@ void info(int level, const char *format, ...) {
         }
     }
 
+    msg_complete = format[i -1] == '\n';
+
     if (level == ERROR || level == WARNING) g_console->setCHColor(GP_WHITE);
 }
-
-
-
-
-
-
-
-
-
-
-
