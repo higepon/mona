@@ -80,11 +80,12 @@ bool FDCDriver::interrupt_ ;
     \brief Constructer
 
     \author HigePon
-    \date   create:2003/02/03 update:
+    \date   create:2003/02/03 update:2003/09/20
 */
 FDCDriver::FDCDriver() {
 
     initilize();
+    return;
 }
 
 /*!
@@ -193,7 +194,7 @@ void FDCDriver::motor(bool on) {
     if (on) {
         interrupt_ = false;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
-        waitInterrupt();
+
         delay();
         delay();
         delay();
@@ -257,6 +258,13 @@ bool FDCDriver::recalibrate() {
     return true;
 }
 
+/*!
+    \brief wait for FDC status
+
+    \param  expected wait until msr == expected
+    \author HigePon
+    \date   create:2003/09/19 update:
+*/
 void FDCDriver::waitStatus(byte expected) {
 
     byte status;
@@ -268,6 +276,14 @@ void FDCDriver::waitStatus(byte expected) {
     } while (status != expected);
 }
 
+/*!
+    \brief wait for FDC status
+
+    \param  expected wait until (msr & mask) == expected
+    \param  mask     wait until (msr & mask) == expected
+    \author HigePon
+    \date   create:2003/09/19 update:
+*/
 void FDCDriver::waitStatus(byte mask, byte expected) {
 
     byte status;
@@ -279,6 +295,13 @@ void FDCDriver::waitStatus(byte mask, byte expected) {
     } while ((status & mask) != expected);
 }
 
+/*!
+    \brief get result of result phase
+
+    \return result
+    \author HigePon
+    \date   create:2003/09/19 update:
+*/
 byte FDCDriver::getResult() {
 
     waitStatus(0xd0, 0xd0);
@@ -299,6 +322,8 @@ bool FDCDriver::seek(byte track) {
     info(DEV_WARNING, "seek start \n");
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
+
+    waitStatus(0x11, 0x00);
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
@@ -345,43 +370,6 @@ bool FDCDriver::senseInterrupt() {
     if ((results_[0] & 0xC0) != 0x00) return false;
 
     return true;
-}
-
-/*!
-    \brief result phase
-
-    \author HigePon
-    \date   create:2003/02/13 update:2003/09/19
-*/
-bool FDCDriver::readResults() {
-
-    int i;
-    byte msr = 0;
-    resultsLength_ = 0;
-
-    /* result phase */
-    for (i = 0; i < 10; i++) {
-
-        /* wait for fdc status */
-        while (true) {
-
-            msr = inportb(FDC_MSR_PRIMARY);
-            if ((msr & 0xd0) == 0xd0) break;
-        }
-
-        /* get result */
-        results_[i] = inportb(FDC_DR_PRIMARY);
-
-        /* no result left */
-        if (!(msr = inportb(FDC_MSR_PRIMARY) & FDC_DIO_TO_CPU)) break;
-    }
-
-    resultsLength_ = i;
-
-    /* abnormal end */
-    if (resultsLength_ > 0 && (results_[0] & 0xC0)) return false;
-
-    return true;;
 }
 
 /*!
@@ -575,6 +563,15 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     return true;
 }
 
+/*!
+    \brief disk read
+
+    \param lba    logical block address
+    \param buf    read result buffer 512byte
+
+    \author HigePon
+    \date   create:2003/02/15 update:2003/09/20
+*/
 bool FDCDriver::read(dword lba, byte* buf) {
 
     info(DEV_WARNING, "read start \n");
@@ -600,7 +597,15 @@ bool FDCDriver::read(dword lba, byte* buf) {
     return false;
 }
 
+/*!
+    \brief disk write
 
+    \param lba    logical block address
+    \param buf    write result buffer 512byte
+
+    \author HigePon
+    \date   create:2003/02/15 update:2003/09/20
+*/
 bool FDCDriver::write(dword lba, byte* buf) {
 
     byte track, head, sector;
@@ -620,6 +625,17 @@ bool FDCDriver::write(dword lba, byte* buf) {
     return false;
 }
 
+/*!
+    \brief disk read
+
+    \param lba    logical block address
+    \param track  track
+    \param head   head
+    \param sector sector 
+
+    \author HigePon
+    \date   create:2003/02/15 update:2003/09/20
+*/
 void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {
 
     track = lba / (2 * 18);
