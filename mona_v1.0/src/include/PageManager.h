@@ -15,15 +15,6 @@
 #include <Queue.h>
 #include <BitMap.h>
 
-#define PAGE_PRESENT   0x01
-#define PAGE_RW        0x02
-#define PAGE_READ_ONLY 0x00
-#define PAGE_USER      0x04
-#define PAGE_KERNEL    0x00
-
-#define PAGE_SIZE      4096
-#define PAGE_TABLE_NUM 1024
-
 typedef dword PageEntry;
 typedef dword LinearAddress;
 typedef dword PhysicalAddress;
@@ -63,7 +54,7 @@ class PageManager {
 
     inline bool isPresent(PageEntry* entry) const {
 
-        return (*entry) & PAGE_PRESENT;
+        return (*entry) & ARCH_PAGE_PRESENT;
     }
 
 
@@ -71,6 +62,23 @@ class PageManager {
     BitMap*       memoryMap_;
     PageDirectory pageDirectory_;
 
+  public:
+    static const byte FAULT_NOT_EXIST          = 0x01;
+    static const byte FAULT_NOT_WRITABLE       = 0x02;
+
+    static const byte ARCH_FAULT_NOT_EXIST     = 0x00;
+    static const byte ARCH_FAULT_ACCESS_DENIED = 0x01;
+    static const byte ARCH_FAULT_READ          = 0x00;
+    static const byte ARCH_FAULT_WRITE         = 0x02;
+    static const byte ARCH_FAULT_WHEN_KERNEL   = 0x00;
+    static const byte ARCH_FAULT_WHEN_USER     = 0x04;
+    static const byte ARCH_PAGE_PRESENT        = 0x01;
+    static const byte ARCH_PAGE_RW             = 0x02;
+    static const byte ARCH_PAGE_READ_ONLY      = 0x00;
+    static const byte ARCH_PAGE_USER           = 0x04;
+    static const byte ARCH_PAGE_KERNEL         = 0x00;
+    static const int  ARCH_PAGE_SIZE           = 4096;
+    static const int  ARCH_PAGE_TABLE_NUM      = 1024;
 };
 
 class Segment {
@@ -85,6 +93,11 @@ class Segment {
     LinearAddress start_;
     dword         size_;
     byte errorNumber_;
+
+  public:
+    static const byte FAULT_STACK_OVERFLOW = 0x01;
+    static const byte FAULT_OUT_OF_RANGE   = 0x02;
+    static const byte FAULT_UNKNOWN        = 0x03;
 };
 
 class StackSegment : public Segment {

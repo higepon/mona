@@ -18,13 +18,36 @@
 #include <operator.h>
 #include <global.h>
 
+/* Segment Faults */
+const byte Segment::FAULT_STACK_OVERFLOW;
+const byte Segment::FAULT_OUT_OF_RANGE;
+const byte Segment::FAULT_UNKNOWN;
+
+/* independent from architecture */
+const byte PageManager::FAULT_NOT_EXIST;
+const byte PageManager::FAULT_NOT_WRITABLE;
+
+/* depend on architecture */
+const byte PageManager::ARCH_FAULT_NOT_EXIST;
+const byte PageManager::ARCH_FAULT_ACCESS_DENIED;
+const byte PageManager::ARCH_FAULT_READ;
+const byte PageManager::ARCH_FAULT_WRITE;
+const byte PageManager::ARCH_FAULT_WHEN_KERNEL;
+const byte PageManager::ARCH_FAULT_WHEN_USER;
+const byte PageManager::ARCH_PAGE_PRESENT;
+const byte PageManager::ARCH_PAGE_RW;
+const byte PageManager::ARCH_PAGE_READ_ONLY;
+const byte PageManager::ARCH_PAGE_USER;
+const byte PageManager::ARCH_PAGE_KERNEL;
+const int  PageManager::ARCH_PAGE_SIZE;
+const int  PageManager::ARCH_PAGE_TABLE_NUM;
+
 PageManager::PageManager(dword totalMemorySize) {
 
-    dword pageNumber = totalMemorySize / 4096 + ((totalMemorySize % 4096) ? 1 : 0);
+    dword pageNumber = totalMemorySize / ARCH_PAGE_SIZE + ((totalMemorySize % ARCH_PAGE_SIZE) ? 1 : 0);
 
     memoryMap_ = new BitMap(pageNumber);
     if (memoryMap_ == NULL) panic("PageManager initilize error\n");
-
 }
 
 bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
@@ -37,11 +60,7 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
     /* set physical page */
     (*pageEntry) &= 0xFFF;
     (*pageEntry) |= (foundMemory * 4096);
-    (*pageEntry) |= PAGE_PRESENT;
-
-    //    makePageEntry(pageEntry, foundMemory*4096, PAGE_PRESENT, PAGE_RW, PAGE_USER);
-
-    info(DEBUG, "entry=%x", (dword)(*pageEntry));
+    (*pageEntry) |= ARCH_PAGE_PRESENT;
 
     return true;
 }
@@ -52,19 +71,17 @@ void PageManager::setup() {
     g_page_directory = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
-    for (dword i = 0; i < PAGE_TABLE_NUM; i++) {
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
         memoryMap_->mark(i);
-        makePageEntry(&(table[i]), 4096 * i, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+        makePageEntry(&(table[i]), 4096 * i, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_USER);
     }
 
-    memset(g_page_directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-    makePageEntry(g_page_directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+    memset(g_page_directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+    makePageEntry(g_page_directory, (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_USER);
 
     setPageDirectory((PhysicalAddress)g_page_directory);
     startPaging();
-
-
 }
 
 PageEntry* PageManager::createNewPageDirectory() {
@@ -73,21 +90,21 @@ PageEntry* PageManager::createNewPageDirectory() {
     PageEntry* directory = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
-    for (dword i = 0; i < PAGE_TABLE_NUM; i++) {
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
-        makePageEntry(&(table[i]), 4096 * i, PAGE_PRESENT, PAGE_RW, PAGE_KERNEL);
+        makePageEntry(&(table[i]), 4096 * i, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_KERNEL);
     }
 
-    memset(directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-    makePageEntry(directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_KERNEL);
+    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+    makePageEntry(directory, (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_KERNEL);
 
     dword directoryIndex = 0xFFFFFC00 >> 22;
     dword tableIndex     = (0xFFFFFC00 >> 12) & 0x3FF;
 
     /* test code. stack is always 0xFFFFFFFF */
     table = allocatePageTable();
-    memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-    makePageEntry(&(directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+    memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+    makePageEntry(&(directory[directoryIndex]), (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_USER);
     allocatePhysicalPage(&(table[tableIndex]));
 
     return directory;
@@ -134,7 +151,7 @@ PageEntry* PageManager::allocatePageTable() const {
 
     PageEntry* table;
 
-    table = (PageEntry*)malloc(sizeof(PageEntry) * PAGE_TABLE_NUM * 2);
+    table = (PageEntry*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
 
     if (table == NULL) panic("Page Table memory allocate error\n");
     for (; (dword)table % 4096; table++);
@@ -149,22 +166,15 @@ bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress addre
     return true;
 }
 
-#define PAGE_NOT_EXIST         0x00
-#define PAGE_ACCESS_DENIED     0x01
-#define PAGE_FAULT_READ        0x00
-#define PAGE_FAULT_WRITE       0x02
-#define PAGE_FAULT_WHEN_KERNEL 0x00
-#define PAGE_FAULT_WHEN_USER   0x04
-
 bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     PageEntry* table;
     dword directoryIndex = address >> 22;
     dword tableIndex     = (address >> 12) & 0x3FF;
-    byte  user           = address >= 0x4000000 ? PAGE_USER : PAGE_KERNEL;
+    byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
     /* physical page not exist */
-    if (error & 0x01 == PAGE_NOT_EXIST) {
+    if (error & 0x01 == ARCH_FAULT_NOT_EXIST) {
 
         if (isPresent(&(g_page_directory[directoryIndex]))) {
 
@@ -172,8 +182,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
         } else {
 
             table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-            makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, user);
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, user);
         }
 
         bool allocateResult = allocatePhysicalPage(&(table[tableIndex]));
@@ -191,32 +201,23 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
 }
 
-#define SEGMENT_FAULT_STACK_OVERFLOW 0x01
-#define SEGMENT_FAULT_OUT_OF_RANGE   0x02
-#define SEGMENT_FAULT_OUT_UKNOWN     0x03
-
-#define PAGE_FAULT_NOT_EXIST     0x01
-#define PAGE_FAULT_NOT_WRITABLE  0x02
-
-
-
 StackSegment::StackSegment(LinearAddress start, dword size) {
 
     start_        = start;
-    size_         = size + PAGE_SIZE;
+    size_         = size + PageManager::ARCH_PAGE_SIZE;
     isAutoExtend_ = false;
 
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PAGE_RW, g_current_process->dpl);
+    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
 }
 
 StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize) {
 
     start_        = start;
-    size_         = initileSize + PAGE_SIZE;
+    size_         = initileSize + PageManager::ARCH_PAGE_SIZE;
     maxSize_      = maxSize;
     isAutoExtend_ = true;
 
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PAGE_RW, g_current_process->dpl);
+    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
 }
 
 StackSegment::~StackSegment() {
@@ -225,11 +226,11 @@ StackSegment::~StackSegment() {
 
 bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
-    if (error == PAGE_FAULT_NOT_WRITABLE && !tryExtend(address)) {
+    if (error == PageManager::FAULT_NOT_WRITABLE && !tryExtend(address)) {
 
         return false;
 
-    } else if (error == PAGE_FAULT_NOT_EXIST && !allocatePage(address)) {
+    } else if (error == PageManager::FAULT_NOT_EXIST && !allocatePage(address)) {
 
         return false;
     } else {
@@ -245,28 +246,30 @@ bool StackSegment::tryExtend(LinearAddress address) {
     if (!isAutoExtend_) {
 
         /* not auto extension mode */
-        errorNumber_ = SEGMENT_FAULT_STACK_OVERFLOW;
+        errorNumber_ = FAULT_STACK_OVERFLOW;
         return false;
     }
 
-    if (address > start_ + PAGE_SIZE || address < start_) {
+    if (address > start_ + PageManager::ARCH_PAGE_SIZE || address < start_) {
 
-        errorNumber_ = SEGMENT_FAULT_OUT_OF_RANGE;
+        errorNumber_ = FAULT_OUT_OF_RANGE;
         return false;
     }
 
-    if (size_ + PAGE_SIZE > maxSize_) {
+    if (size_ + PageManager::ARCH_PAGE_SIZE > maxSize_) {
 
-        errorNumber_ = SEGMENT_FAULT_STACK_OVERFLOW;
+        errorNumber_ = FAULT_STACK_OVERFLOW;
         return false;
     }
 
     /* page allocation */
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address - PAGE_SIZE, PAGE_READ_ONLY, g_current_process->dpl);
+    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3
+                                 , address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3
+                                         , address - PageManager::ARCH_PAGE_SIZE, PageManager::ARCH_PAGE_READ_ONLY, g_current_process->dpl);
 
     /* extention done */
-    size_ += PAGE_SIZE;
+    size_ += PageManager::ARCH_PAGE_SIZE;
 
     return true;
 }
@@ -275,12 +278,12 @@ bool StackSegment::allocatePage(LinearAddress address) {
 
     if (address < start_ || address > start_ + size_) {
 
-        errorNumber_ = SEGMENT_FAULT_OUT_OF_RANGE;
+        errorNumber_ = FAULT_OUT_OF_RANGE;
         return false;
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
 
     return true;
 }
@@ -288,7 +291,7 @@ bool StackSegment::allocatePage(LinearAddress address) {
 HeapSegment::HeapSegment(LinearAddress start, dword size) {
 
     start_ = start;
-    size_ = size;
+    size_  = size;
 }
 
 HeapSegment::~HeapSegment() {
@@ -297,20 +300,20 @@ HeapSegment::~HeapSegment() {
 
 bool HeapSegment::faultHandler(LinearAddress address, dword error) {
 
-    if (error != PAGE_FAULT_NOT_EXIST) {
+    if (error != PageManager::FAULT_NOT_EXIST) {
 
-        errorNumber_ = SEGMENT_FAULT_OUT_UKNOWN;
+        errorNumber_ = FAULT_UNKNOWN;
         return false;
     }
 
     if (address < start_ || address > start_ + size_) {
 
-        errorNumber_ = SEGMENT_FAULT_OUT_OF_RANGE;
+        errorNumber_ = FAULT_OUT_OF_RANGE;
         return false;
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
 
 
     return true;
