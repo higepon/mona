@@ -21,6 +21,26 @@ static int g_x;
 static int g_y;
 static int g_loop_tid;
 
+class State
+{
+public:
+    virtual void doSetPostion(int x, int y) = 0;
+};
+
+class Context
+{
+public:
+    virtual void setPostion(int x, int y) = 0;
+    virtual void changeState(State* state) = 0;
+};
+
+class WalkingState : public State
+{
+
+
+
+};
+
 static void MouseInfoLoop()
 {
     g_loop_tid = MonAPI::System::getThreadID();
