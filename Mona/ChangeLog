@@ -1,3 +1,9 @@
+2005-02-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/pe/main.cpp: map -> HashMap
+
+        * sys/HashMap.h Map.h: char* -> const char*
+
 2004-02-13  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/glaunch/glaunch.cpp: メニューやアイコンを描画するように書き直し
