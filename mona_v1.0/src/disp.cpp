@@ -37,11 +37,15 @@ void disp_name1() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
+
+	asm volatile("int $0x80");
+
         while (semaphore_down(&sem));
 
         disp_write_font(76, 0, 'M', color%16);
 
         semaphore_up(&sem);
+
         color++;
     }
 }

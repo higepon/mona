@@ -207,8 +207,6 @@ void kthread_schedule() {
 
     g_kthread_current = temp;
 
-//      kthread_tick();
-
     /* switch */
     kthread_switch();
 }

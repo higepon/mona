@@ -21,14 +21,13 @@ extern "C" void arch_keystrokehandler(void);
 extern "C" void arch_dummyhandler(void);
 extern "C" void arch_kthread_switch(void);
 extern "C" void arch_fault0dhandler(void);
+extern "C" void arch_syscall_handler(void);
 
 extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
 extern "C" void keyStrokeHandler(void);
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(void);
+extern "C" void syscall_handler(void);
 
-extern "C" dword eip;
-extern "C" dword cs;
-extern "C" dword eflags;
 #endif

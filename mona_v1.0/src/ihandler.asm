@@ -18,11 +18,13 @@ BITS 32
 [global _arch_keystrokehandler]
 [global _arch_dummyhandler]
 [global _arch_kthread_switch]
+[global _arch_syscall_handler]
 
 [extern _MFDCHandler]
 [extern _timerHandler]
 [extern _keyStrokeHandler]
 [extern _fault0dHandler]
+[extern _syscall_handler]
 [extern _dummyHandler]
 [extern _g_kthread_current];; pointer to current thread
 [extern _g_stack_view];; pointer to current thread
@@ -138,3 +140,10 @@ _arch_set_stack_view:
         pop ebx
         pop eax
         ret
+
+;;; entrance of syscall
+_arch_syscall_handler:
+        pushad
+        call _syscall_handler
+        popad
+        iretd
