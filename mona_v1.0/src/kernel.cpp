@@ -143,7 +143,7 @@ void startKernel(void) {
 
     ELFTester(user_func_from);
 
-    byte* user_func = (byte*)0x250000;
+    byte* user_func = (byte*)0x400000;
     ELFLoader* loader = new ELFLoader();
 
     g_console->printf("loader result = %d\n", loader->prepare((dword)user_func_from));
@@ -178,7 +178,8 @@ void startKernel(void) {
     //    process9->pinfo_.esp = 0x1000;
 
     g_console->printf("Hit any key to start all process\n");
-    while (g_demo_step < 5);
+    while (g_demo_step < 4);
+
 
     enableTimer();
 
