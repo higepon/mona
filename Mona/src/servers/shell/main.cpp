@@ -198,10 +198,10 @@ void Shell::commandExecute()
         for (; *p != '/' && command < p; p--);
         p++;
         for (int i = 0;; i++, p++)
-    	{
-    		command[i] = *p;
-    		if (*p == '\0') break;
-    	}
+        {
+            command[i] = *p;
+            if (*p == '\0') break;
+        }
     }
     else if (strstr(command, ".ELF") != NULL)
     {
@@ -211,7 +211,7 @@ void Shell::commandExecute()
     {
         *bundle = '\0';
         sprintf(path, "/APPS/%s.APP/%s.ELF", command, command);
-    	strcpy(bundle, ".ELF");
+        strcpy(bundle, ".ELF");
     }
     else
     {
