@@ -55,7 +55,7 @@ class PageManager {
 
     inline bool isPresent(PageEntry* entry) const {
 
-        return (*entry) & 0x1;
+        return (*entry) & PAGE_PRESENT;
     }
 
 

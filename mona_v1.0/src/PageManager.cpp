@@ -114,4 +114,6 @@ bool PageManager::pageFaultHandler(LinearAddress address) {
 
     dword directoryIndex = address / (4096 * 1024);
 
+    //    if (isPresent(
+
 }
