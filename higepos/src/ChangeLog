@@ -1,3 +1,12 @@
+2002-10-06  syn <syn@users.sourceforge.jp>
+
+        * higeOperator.cpp: operator new とoperator deleteをコメントアウト
+          (gccが __builtin_new(delete)とぶつかるとエラーを出すため)
+        * higeOperator.cpp: operetor new の引数を unsigned intへ変更
+          (gccが 型が違うとエラーを出すため)
+        * higeOperator.h: operetor new の引数を unsigned intへ変更
+          (gccが 型が違うとエラーを出すため)
+
 2002-10-06  higepon  <higepon@users.sourceforge.jp>
 
         * vga.cpp: add scrollUp()function, but it seems bad.
