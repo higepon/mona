@@ -32,47 +32,6 @@ extern "C" void arch_set_cr3(dword hoge);
 
 void mouseHandler()
 {
-    PageEntry* directory;
-    PageEntry* table;
-    dword directoryIndex;
-    dword tableIndex;
-    dword laddress;
-    dword paddress;
-
-    directory = (PageEntry*)g_currentThread->archinfo->cr3;
-
-    laddress       = g_currentThread->archinfo->esp;
-    directoryIndex = g_page_manager->getDirectoryIndex(laddress);
-    tableIndex     = g_page_manager->getTableIndex(laddress);
-
-    g_console->printf("%s dir=%x dindex=%d tindex=%d\n", g_currentThread->process->getName(), directory, directoryIndex, tableIndex);
-
-    table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    paddress = ((dword)(table[tableIndex]) & 0xfffff800) + (laddress % 4096);
-    g_console->printf("laddress=%x paddress=%x\n", laddress, paddress);
-
-    g_console->printf("%x \n", (dword)table[256] & 0xfffff800);
-
-    directory = g_page_manager->getKernelDirectory();
-
-    laddress       = g_currentThread->archinfo->esp;
-    directoryIndex = g_page_manager->getDirectoryIndex(laddress);
-    tableIndex     = g_page_manager->getTableIndex(laddress);
-
-    table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    paddress = ((dword)(table[tableIndex]) & 0xfffff800) + (laddress % 4096);
-    g_console->printf("laddress=%x paddress=%x\n", laddress, paddress);
-
-
-
-
-    g_console->printf("dir=%x" , (dword)g_page_manager->getKernelDirectory());
-//        g_page_manager->setPageDirectory((dword)g_page_manager->getKernelDirectory());
-
-    arch_set_cr3((dword)(g_page_manager->getKernelDirectory()));
-
-//	for (;;);
-
     static int counter = 0;
     static MessageInfo message;
     static MessageInfo prev;
@@ -90,29 +49,13 @@ void mouseHandler()
 
     if (g_irqInfo[12].hasUserHandler)
     {
-        g_console->printf("mouse[2]\n");
-
         ThreadInfo* thread = g_irqInfo[12].thread;
-        dword eip = thread->archinfo->eip;
-        thread->archinfo->eip = (dword)g_irqInfo[12].handler;
-        thread->archinfo->esp -= 4;
+        void (*handler)() = (void (*)())g_irqInfo[12].handler;
 
+        g_page_manager->setPageDirectory((dword)thread->process->getPageDirectory());
 
-        dword paddress;
-        g_console->printf("conver=%s\n", g_page_manager->getPhysicalAddress(thread->process->getPageDirectory(), (thread->archinfo->esp), &paddress) ? "true" : "false");
-
-        g_page_manager->setPageDirectory((dword)g_page_manager->getKernelDirectory());
-
-
-        dword* p = (dword*)paddress;
-	g_console->printf("address=%x", p);
-        *p = eip;
-
+        handler();
         g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
-        g_scheduler->wakeup(thread->thread, KEvent::MESSAGE_COME);
-        bool isProcessChange = g_scheduler->schedule();
-
-        ThreadOperation::switchThread(isProcessChange, 1);
     }
 
 
@@ -402,7 +345,7 @@ void cpufaultHandler_e(dword address, dword error)
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
 
-	logprintf("fault:cr3=%x address=%x error=%x\n", g_currentThread->archinfo->cr3, address, error);
+        logprintf("fault:cr3=%x address=%x error=%x\n", g_currentThread->archinfo->cr3, address, error);
 
 
 #if 0

@@ -1,3 +1,9 @@
+2004-08-08  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/ihandlers.cpp (mouseHandler): マウスハンドラでフックが成功した予感。
+
+        * src/kernel/Process.cpp (archCreateThread): カーネルスレッドに対して2重にスタック用の物理アドレスをマップしていたバグを修正
+
 2004-07-27  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/PageManager.cpp (createKernelPageDirectory): リニアドレス=物理アドレスなメモリ空間

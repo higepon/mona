@@ -254,9 +254,12 @@ void MouseServer::PaintCursor(int x, int y)
 
 static MouseServer* server;
 
+volatile bool flag;
+
 void mouseHandler()
 {
-    printf("comes");
+//    syscall_print(msg);
+    flag = true;
 }
 
 int MonaMain(List<char*>* pekoe)

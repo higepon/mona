@@ -34,29 +34,6 @@ arch_idle:
         hlt
         ret
 
-
-arch_set_cr3:
-	push eax
-	mov eax, 0x22D000
-	mov cr3, eax
-	pop eax
-	ret
-
-	
-        push ebp
-        mov ebp, esp
-        push eax
-        push dword[ebp + 8]
-        pop eax
-        mov cr3, eax
-        pop eax
-        pop ebp
-	pop eax
-forever:
-	jmp forever
-
-        ret
-
 ;;----------------------------------------------------------------------
 ;; save register to current thread
 ;;----------------------------------------------------------------------

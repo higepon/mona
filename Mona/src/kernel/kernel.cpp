@@ -167,17 +167,11 @@ void startKernel(void)
     ProcessOperation::initialize(g_page_manager);
     g_scheduler = new Scheduler();
 
-    logprintf("before idle\n");
-
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
 
-    logprintf("before idle2\n");
     Thread* idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
-    logprintf("before idle3\n");
     g_scheduler->join(idleThread);
-
-    logprintf("before init\n");
 
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
