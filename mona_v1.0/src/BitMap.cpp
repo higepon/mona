@@ -16,14 +16,17 @@
 BitMap::BitMap(int number) {
 
     bitsNumber_ = number;
-    dwordNumber_ = (bitsNumber_ / (sizeof(dword) * 8)) + ((bitsNumber_ % (sizeof(dword) * 8)) ? 1 : 0);
+    dwordNumber_ = (bitsNumber_ / (sizeof(dword) * 8))
+                 + ((bitsNumber_ % (sizeof(dword) * 8)) ? 1 : 0);
+
+    map_ = new dword[dwordNumber_];
 
     return;
 }
 
 BitMap::~BitMap() {
 
-
+    delete(map_);
     return;
 }
 
