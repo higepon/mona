@@ -6,6 +6,7 @@
 #include <driver/ISADriver.h>
 
 #include "driver/ISADevice/PS2KBC/ps2kbc.h"
+#include "driver/ISADevice/PCIC/PCIC.h"
 #include<pic.h>
 //#include <expr_driver/module.h>
 void test_mjt_init(){
@@ -15,9 +16,10 @@ void test_sysresource(){
 
   ISADriver *isa;
   PS2KBC *m;
+  PCIC *p;
   isa = new ISADriver(g_console);
   m = new PS2KBC(isa);
-
+  p = new PCIC(isa);
 }
 void test_cmos(){
   dword b; /* byte */

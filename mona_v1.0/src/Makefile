@@ -50,8 +50,8 @@ SOURCES    = cstart.cpp            \
              sysresource.cpp       \
              ISADriver.cpp         
 
-DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
-DRVROBJ = ps2kbc.o
+DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp driver/ISADevice/PCIC/pcic.cpp
+DRVROBJ = ps2kbc.o pcic.o
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -70,6 +70,9 @@ $(KERNEL) : $(OBJECTS) $(DRVROBJ) memcmp.o memmove.o mode12h.o ihandler.o core.o
 ps2kbc.o : driver/ISADevice/PS2KBC/ps2kbc.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PS2KBC/ps2kbc.cpp -o ps2kbc.o
 
+
+pcic.o : driver/ISADevice/PCIC/pcic.cpp
+	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PCIC/pcic.cpp -o pcic.o
 
 memcmp.o : ./FreeBSD/memcmp.c
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./FreeBSD/memcmp.c -o memcmp.o

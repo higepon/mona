@@ -64,8 +64,6 @@ bool irq_acquire(sys_irq irq,IRQHandler ih){
   g_console->printf("irq:installing IRQ Handler(%x).\n",(dword)ih);
   
   g_irqMap->mark(irq);
-  g_console->printf("irq:dummy process().\n");
-  ih();
   g_irqHandlers[irq] = ih;
   return true;
 }
