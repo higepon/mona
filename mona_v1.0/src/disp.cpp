@@ -38,15 +38,23 @@ void disp_name1() {
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
 
-	asm volatile("int $0x80");
 
-        while (semaphore_down(&sem));
+
+        while (semaphore_down(&sem)) {
+
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
+        }
 
         disp_write_font(76, 0, 'M', color%16);
 
         semaphore_up(&sem);
 
         color++;
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
     }
 }
 
@@ -62,12 +70,20 @@ void disp_name2() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
-        while (semaphore_down(&sem));
+        while (semaphore_down(&sem)) {
+
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
+        }
 
         disp_write_font(77, 0, 'o', color%16);
 
         semaphore_up(&sem);
         color++;
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
     }
 }
 
@@ -77,13 +93,21 @@ void disp_name3() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
-        while (semaphore_down(&sem));
+        while (semaphore_down(&sem)) {
+
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
+        }
 
         disp_write_font(78, 0, 'n', color%16);
 
 
         semaphore_up(&sem);
         color++;
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
     }
 }
 
@@ -95,12 +119,20 @@ void disp_name4() {
         //        if (g_kthread_current->tick % 50) continue;
         //        disableTimer();
 
-        while (semaphore_down(&sem));
+        while (semaphore_down(&sem)) {
+
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
+        }
         disp_write_font(79, 0, 'a', color%16);
 
         //        enableTimer();
         semaphore_up(&sem);
         color++;
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
     }
 }
 
@@ -126,7 +158,12 @@ void disp_kthread_info() {
 
     while (true) {
 
-        while (semaphore_down(&sem));
+        while (semaphore_down(&sem)) {
+
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
+        }
 
         int x = pos_x;
         int y = pos_y;
@@ -136,6 +173,7 @@ void disp_kthread_info() {
          g_console->printf("kernel thread Information \n");
          g_console->printf("thread total number %d \n" , g_kthreadInfo.threadNum);
          g_console->printf("kernel total %d[tick] \n", g_kthreadInfo.tick);
+         g_console->printf("kernel yield %d[times] \n", g_kthreadInfo.yield);
          g_console->printf("[idle] %d%% [kernel] %d%%"
                            , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
                            , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
@@ -143,6 +181,9 @@ void disp_kthread_info() {
          pos_x = x;
          pos_y = y;
         semaphore_up(&sem);
+            asm volatile("movw $0, %ebx \n"
+                         "int $0x80       "
+                         );
     }
 }
 

@@ -155,6 +155,8 @@ dword kthread_allocate_stack() {
 */
 void kthread_yield() {
 
+    (g_kthreadInfo.yield)++;
+
     /* software interrupt yeild */
     kthread_schedule();
 }

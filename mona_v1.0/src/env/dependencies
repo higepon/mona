@@ -158,4 +158,4 @@ disp.o: disp.cpp include/monaKernel.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h include/kthread.h \
   include/disp.h include/io.h include/pic.h include/semaphore.h \
   include/global.h
-syscalls.o: syscalls.cpp
+syscalls.o: syscalls.cpp include/syscalls.h

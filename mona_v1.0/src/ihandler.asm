@@ -20,13 +20,13 @@ BITS 32
 [global _arch_kthread_switch]
 [global _arch_syscall_handler]
 
-[extern _save_registers]
+[extern _arch_save_registers]
 [extern _arch_set_stack_view]
 [extern _MFDCHandler]
 [extern _timerHandler]
 [extern _keyStrokeHandler]
 [extern _fault0dHandler]
-[extern _syscall_handler]
+[extern _syscall_entrance]
 [extern _dummyHandler]
 
 ;;; fdc handler
@@ -41,7 +41,7 @@ _arch_fdchandler:
 _arch_timerhandler:
 ;          call _arch_set_stack_view
         pushad
-        call _save_registers
+        call _arch_save_registers
         call _timerHandler
         popad
         iretd
@@ -72,6 +72,7 @@ _arch_fault0dhandler:
 ;;; entrance of syscall
 _arch_syscall_handler:
         pushad
-        call _syscall_handler
+        call _arch_save_registers
+        call _syscall_entrance
         popad
         iretd

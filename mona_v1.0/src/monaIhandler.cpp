@@ -137,14 +137,6 @@ void MFDCHandler(void) {
     outportb(0x20, 0x20);
 }
 
-void syscall_handler(void) {
-
-    g_console->printf("sys call");
-
-    outportb(0x20, 0x20);
-}
-
-
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
      {0x00, &arch_timerhandler}

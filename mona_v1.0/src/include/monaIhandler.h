@@ -28,6 +28,5 @@ extern "C" void timerHandler(void);
 extern "C" void keyStrokeHandler(void);
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(void);
-extern "C" void syscall_handler(void);
 
 #endif

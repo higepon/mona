@@ -37,9 +37,7 @@ typedef struct Kthread {
 typedef struct KthreadInfo {
     dword threadNum;
     dword tick;
-    dword demo1;
-    dword demo2;
-    dword demo3;
+    dword  yield;
 };
 
 void kthread_init();

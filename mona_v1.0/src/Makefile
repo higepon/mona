@@ -8,7 +8,7 @@ else
         include $(ENV)/linux.env
     endif
 endif
-VERSION    = 0.0.2
+VERSION    = 0.0.5
 DOXYGEN    = doxygen
 BIN        = ../bin
 LIST       = ../list

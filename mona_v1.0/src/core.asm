@@ -11,7 +11,7 @@
 ;;;
 BITS 32
 
-[global _save_registers]
+[global _arch_save_registers]
 [global _arch_kthread_switch]
 [global _arch_set_stack_view]
 
@@ -20,7 +20,7 @@ BITS 32
 
 ;;; this fuction saves all registers to current thread struct
 ;;; should be called by interrupt handlers
-_save_registers:
+_arch_save_registers:
         mov ebx, dword[_g_kthread_current]
         mov eax, dword [esp + 36]; save eip
         mov dword[ebx], eax
