@@ -12,8 +12,11 @@
     \version $Revision$
     \date   create:2002/10/12 update:$Date$
 */
-#include<monapi.h>
-#include<KeyBoardManager.h>
+#include <monapi.h>
+#include <KeyboardManager.h>
+#include <monapi/Keys.h>
+
+using namespace MonAPI;
 
 const int KeyBoardManager::keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
@@ -196,163 +199,163 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
     switch(keycode) {
 
     case('a'):
-        info->keycode = VK_A;
+        info->keycode = Keys::A;
         break;
     case('b'):
-        info->keycode = VK_B;
+        info->keycode = Keys::B;
         break;
     case('c'):
-        info->keycode = VK_C;
+        info->keycode = Keys::C;
         break;
     case('d'):
-        info->keycode = VK_D;
+        info->keycode = Keys::D;
         break;
     case('e'):
-        info->keycode = VK_E;
+        info->keycode = Keys::E;
         break;
     case('f'):
-        info->keycode = VK_F;
+        info->keycode = Keys::F;
         break;
     case('g'):
-        info->keycode = VK_G;
+        info->keycode = Keys::G;
         break;
     case('h'):
-        info->keycode = VK_H;
+        info->keycode = Keys::H;
         break;
     case('i'):
-        info->keycode = VK_I;
+        info->keycode = Keys::I;
         break;
     case('j'):
-        info->keycode = VK_J;
+        info->keycode = Keys::J;
         break;
     case('k'):
-        info->keycode = VK_K;
+        info->keycode = Keys::K;
         break;
     case('l'):
-        info->keycode = VK_L;
+        info->keycode = Keys::L;
         break;
     case('m'):
-        info->keycode = VK_M;
+        info->keycode = Keys::M;
         break;
     case('n'):
-        info->keycode = VK_N;
+        info->keycode = Keys::N;
         break;
     case('o'):
-        info->keycode = VK_O;
+        info->keycode = Keys::O;
         break;
     case('p'):
-        info->keycode = VK_P;
+        info->keycode = Keys::P;
         break;
     case('q'):
-        info->keycode = VK_Q;
+        info->keycode = Keys::Q;
         break;
     case('r'):
-        info->keycode = VK_R;
+        info->keycode = Keys::R;
         break;
     case('s'):
-        info->keycode = VK_S;
+        info->keycode = Keys::S;
         break;
     case('t'):
-        info->keycode = VK_T;
+        info->keycode = Keys::T;
         break;
     case('u'):
-        info->keycode = VK_U;
+        info->keycode = Keys::U;
         break;
     case('v'):
-        info->keycode = VK_V;
+        info->keycode = Keys::V;
         break;
     case('w'):
-        info->keycode = VK_W;
+        info->keycode = Keys::W;
         break;
     case('x'):
-        info->keycode = VK_X;
+        info->keycode = Keys::X;
         break;
     case('y'):
-        info->keycode = VK_Y;
+        info->keycode = Keys::Y;
         break;
     case('z'):
-        info->keycode = VK_Z;
+        info->keycode = Keys::Z;
         break;
     case('1'):
-        info->keycode = VK_1;
+        info->keycode = Keys::D1;
         break;
     case('2'):
-        info->keycode = VK_2;
+        info->keycode = Keys::D2;
         break;
     case('3'):
-        info->keycode = VK_3;
+        info->keycode = Keys::D3;
         break;
     case('4'):
-        info->keycode = VK_4;
+        info->keycode = Keys::D4;
         break;
     case('5'):
-        info->keycode = VK_5;
+        info->keycode = Keys::D5;
         break;
     case('6'):
-        info->keycode = VK_6;
+        info->keycode = Keys::D6;
         break;
     case('7'):
-        info->keycode = VK_7;
+        info->keycode = Keys::D7;
         break;
     case('8'):
-        info->keycode = VK_8;
+        info->keycode = Keys::D8;
         break;
     case('9'):
-        info->keycode = VK_9;
+        info->keycode = Keys::D9;
         break;
     case('0'):
-        info->keycode = VK_0;
+        info->keycode = Keys::D0;
         break;
     case(0x15):
-        info->keycode = VK_TEN_7;
+        info->keycode = Keys::NumPad7;
         break;
     case(0x16):
-        info->keycode = VK_TEN_8;
+        info->keycode = Keys::NumPad8;
         break;
     case(0x17):
-        info->keycode = VK_TEN_9;
+        info->keycode = Keys::NumPad9;
         break;
     case(0x18):
-        info->keycode = VK_TEN_MINUS;
+        info->keycode = Keys::Subtract;
         break;
     case(0x19):
-        info->keycode = VK_TEN_4;
+        info->keycode = Keys::NumPad4;
         break;
     case(0x1A):
-        info->keycode = VK_TEN_5;
+        info->keycode = Keys::NumPad5;
         break;
     case(0x1B):
-        info->keycode = VK_TEN_6;
+        info->keycode = Keys::NumPad6;
         break;
     case(0x1C):
-        info->keycode = VK_TEN_PLUS;
+        info->keycode = Keys::Add;
         break;
     case(0x1D):
-        info->keycode = VK_TEN_1;
+        info->keycode = Keys::NumPad1;
         break;
     case(0x1E):
-        info->keycode = VK_TEN_2;
+        info->keycode = Keys::NumPad2;
         break;
     case(0x1F):
-        info->keycode = VK_TEN_3;
+        info->keycode = Keys::NumPad3;
         break;
     case(0x20):
-        info->keycode = VK_SPACE;
+        info->keycode = Keys::Space;
         break;
     case(0x21):
-        info->keycode = VK_TEN_PERIOD;
+        info->keycode = Keys::Decimal;
         break;
     case(0x2E):
-        info->keycode = VK_PERIOD;
+        info->keycode = Keys::Decimal;
         break;
     case(0x2F):
-        info->keycode = VK_SLASH;
+        info->keycode = Keys::Divide;
         break;
     case(0x03):
-        info->keycode = VK_ENTER;
+        info->keycode = Keys::Enter;
         break;
     case(0x01):
-        info->keycode = VK_BACKSPACE;
+        info->keycode = Keys::Back;
         break;
     default:
         info->keycode = keycode;
@@ -368,160 +371,160 @@ char KeyBoardManager::toChar(int keycode) {
 
     switch(keycode) {
 
-    case(VK_A):
+    case(Keys::A):
         result = 'A';
         break;
-    case(VK_B):
+    case(Keys::B):
         result = 'B';
         break;
-    case(VK_C):
+    case(Keys::C):
         result = 'C';
         break;
-    case(VK_D):
+    case(Keys::D):
         result = 'D';
         break;
-    case(VK_E):
+    case(Keys::E):
         result = 'E';
         break;
-    case(VK_F):
+    case(Keys::F):
         result = 'F';
         break;
-    case(VK_G):
+    case(Keys::G):
         result = 'G';
         break;
-    case(VK_H):
+    case(Keys::H):
         result = 'H';
         break;
-    case(VK_I):
+    case(Keys::I):
         result = 'I';
         break;
-    case(VK_J):
+    case(Keys::J):
         result = 'J';
         break;
-    case(VK_K):
+    case(Keys::K):
         result = 'K';
         break;
-    case(VK_L):
+    case(Keys::L):
         result = 'L';
         break;
-    case(VK_M):
+    case(Keys::M):
         result = 'M';
         break;
-    case(VK_N):
+    case(Keys::N):
         result = 'N';
         break;
-    case(VK_O):
+    case(Keys::O):
         result = 'O';
         break;
-    case(VK_P):
+    case(Keys::P):
         result = 'P';
         break;
-    case(VK_Q):
+    case(Keys::Q):
         result = 'Q';
         break;
-    case(VK_R):
+    case(Keys::R):
         result = 'R';
         break;
-    case(VK_S):
+    case(Keys::S):
         result = 'S';
         break;
-    case(VK_T):
+    case(Keys::T):
         result = 'T';
         break;
-    case(VK_U):
+    case(Keys::U):
         result = 'U';
         break;
-    case(VK_V):
+    case(Keys::V):
         result = 'V';
         break;
-    case(VK_W):
+    case(Keys::W):
         result = 'W';
         break;
-    case(VK_X):
+    case(Keys::X):
         result = 'X';
         break;
-    case(VK_Y):
+    case(Keys::Y):
         result = 'Y';
         break;
-    case(VK_Z):
+    case(Keys::Z):
         result = 'Z';
         break;
-    case(VK_0):
+    case(Keys::D0):
         result = '0';
         break;
-    case(VK_1):
+    case(Keys::D1):
         result = '1';
         break;
-    case(VK_2):
+    case(Keys::D2):
         result = '2';
         break;
-    case(VK_3):
+    case(Keys::D3):
         result = '3';
         break;
-    case(VK_4):
+    case(Keys::D4):
         result = '4';
         break;
-    case(VK_5):
+    case(Keys::D5):
         result = '5';
         break;
-    case(VK_6):
+    case(Keys::D6):
         result = '6';
         break;
-    case(VK_7):
+    case(Keys::D7):
         result = '7';
         break;
-    case(VK_8):
+    case(Keys::D8):
         result = '8';
         break;
-    case(VK_9):
+    case(Keys::D9):
         result = '9';
         break;
-    case(VK_PERIOD):
-        result = '.';
-        break;
-    case(VK_SLASH):
-        result = '/';
-        break;
-    case(VK_TEN_0):
+    case(Keys::NumPad0):
         result = '0';
         break;
-    case(VK_TEN_1):
+    case(Keys::NumPad1):
         result = '1';
         break;
-    case(VK_TEN_2):
+    case(Keys::NumPad2):
         result = '2';
         break;
-    case(VK_TEN_3):
+    case(Keys::NumPad3):
         result = '3';
         break;
-    case(VK_TEN_4):
+    case(Keys::NumPad4):
         result = '4';
         break;
-    case(VK_TEN_5):
+    case(Keys::NumPad5):
         result = '5';
         break;
-    case(VK_TEN_6):
+    case(Keys::NumPad6):
         result = '6';
         break;
-    case(VK_TEN_7):
+    case(Keys::NumPad7):
         result = '7';
         break;
-    case(VK_TEN_8):
+    case(Keys::NumPad8):
         result = '8';
         break;
-    case(VK_TEN_9):
+    case(Keys::NumPad9):
         result = '9';
         break;
-    case(VK_TEN_PERIOD):
+    case(Keys::Decimal):
         result = '.';
         break;
-    case(VK_TEN_PLUS):
+    case(Keys::Add):
         result = '+';
         break;
-    case(VK_TEN_MINUS):
+    case(Keys::Subtract):
         result = '-';
         break;
-    case(VK_SPACE):
+    case(Keys::Multiply):
+        result = '*';
+        break;
+    case(Keys::Divide):
+        result = '/';
+        break;
+    case(Keys::Space):
         result = ' ';
         break;
     default:
