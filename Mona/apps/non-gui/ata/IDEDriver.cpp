@@ -444,22 +444,13 @@ void IDEDriver::protocolInterrupt()
         word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
         atapiTransferSize += transferSize;
 
-/* š‚±‚±‚ª–Ú‚Á’ƒ‰ö‚µ‚¢*/
-        if (atapiTransferSize <= atapiTotalReadSize)
+        if (atapiTransferSize > atapiTotalReadSize)
         {
             inp16(whichController, NULL, transferSize);
         }
         else
         {
-            printf("atapiTransferSize=%d\n", atapiTransferSize);
-            printf("atapiTotalReadSize=%d\n", atapiTotalReadSize);
-            printf("protocolInterrupt:data over?\n");
             inp16(whichController, (word*)atapiBuffer, transferSize);
-            for (int i = 0; i < 5; i++)
-            {
-                printf("[%c]", ((byte*)atapiBuffer)[i]);
-            }
-            printf("\n");
             atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
         }
     }

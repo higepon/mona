@@ -96,7 +96,7 @@ int MonaMain(List<char*>* pekoe)
     char* buf = (char*)malloc(6 * 1024 * 1024);
     memset(buf, 0, sizeof(buf));
 
-    int readResult = ide->read(16, buf, 4096);
+    int readResult = ide->read(16, buf, 5 * 1024 * 1024);
 
     if (readResult != 0)
     {
