@@ -37,7 +37,7 @@ const char* errorNames[] =
 #define FAT_OPEN_ERROR  -3
 
 #define MAX_IMAGE_SIZE (4096 * 150)
-    
+
 #define MONAGED_COPY(dst, dp, array, ap, size) { \
     for (dword i = 0; i < size; i++) dst[dp + i] = array[ap + i]; }
 #define MONAGED_COPY2(dst, dp, dsz, array, ap, size) { \
