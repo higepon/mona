@@ -55,13 +55,15 @@ void keyStrokeHandler() {
     fault0d handler
 
     \author HigePon
-    \date   create:2002/09/06 update:2002/09/06
+    \date   create:2002/09/06 update:2002/12/28
 */
 void fault0dHandler() {
 
-    pusha();
     _sysPrintln("fault0d");
-    popa();
+
+    while (true) {
+
+    }
     return;
 
 }
@@ -124,8 +126,8 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    ProcessManager& pm = ProcessManager::instance();
-    pm.switchProcess();
+    //    ProcessManager& pm = ProcessManager::instance();
+    //    pm.switchProcess();
 
     popa();
 

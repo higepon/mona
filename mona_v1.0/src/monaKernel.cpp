@@ -77,8 +77,9 @@ void startKernel(void) {
     hvectorTester();
     floppyTester();
     typeTester();
-#endif
     processTester();
+#endif
+
 
     while (true) {
     }
