@@ -39,11 +39,6 @@ protected:
 public:
 	Object::Object();
 	virtual Object::~Object();
-#if defined(PEKOE)
-	virtual intptr hashCode();
-#else
-	virtual int hashCode();
-#endif
 	void setThreadID(dword threadID);
 	dword getThreadID();
 	unsigned char *getByteArray(char *path);

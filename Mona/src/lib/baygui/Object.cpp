@@ -36,17 +36,6 @@ Object::Object() {
 Object::~Object() {
 }
 
-/** オブジェクトのハッシュコードを得る */
-#if defined(PEKOE)
-intptr Object::hashCode() {
-	return (intptr)this;
-}
-#else
-int Object::hashCode() {
-	return (int)this;
-}
-#endif
-
 /** スレッドIDを設定する */
 void Object::setThreadID(dword threadID)
 {
