@@ -4,9 +4,13 @@
 
         * apps/baygui/gshecll/gshell.cpp: タイトル変更
 
+        * apps/baygui/Makefile: grunnerを非ビルド対象に
+
         * include/baygui/Window.h: GLAUNCH.EX5用にクラス変数の制限を変更
 
         * src/lib/baygui/Window.cpp: GLAUNCH.EX5も閉じられるように変更
+
+        * bin/root/BAYGUI.INI: GSHELL.EX5を起動時に実行しないように変更
 
 2005-02-13  higepon  <higepon@users.sourceforge.jp>
 
