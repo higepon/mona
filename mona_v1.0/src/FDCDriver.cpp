@@ -669,6 +669,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
     stopDMA();
     g_console->printf("before read results");
+
     readResults();
     return true;
 }
@@ -699,7 +700,7 @@ bool FDCDriver::write(int lba, byte* buf) {
 
     memcpy(dmabuff_, buf,  512);
 
-    //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!write(track, head, sector)) return false;
 

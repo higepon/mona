@@ -32,12 +32,12 @@ class FDCDriver : public DiskDriver {
     bool write(int lba, byte* buf);
     void motor(const bool on);
     void test();
+    bool recalibrate();
   private:
     void initilize();
     void setFDCVersion();
     bool sendCommand(const byte command[], const byte length);
     bool waitInterrupt();
-    bool recalibrate();
     bool checkMSR(byte expectedCondition, byte mask);
     bool checkMSR(byte expectedCondition);
     bool seek(byte track);
