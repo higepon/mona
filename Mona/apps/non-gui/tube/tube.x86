@@ -57,7 +57,7 @@ _user_start:
 				int		0x80
 				mov		ebp, [esp + tube_t.bpp]
 				mov		esi, errvrammsg
-				cmp		ebp, byte 24
+				cmp		ebp, byte 16
 				jb		short .lemmings
 
 				; FPUチェック
@@ -225,6 +225,8 @@ vramdraw:		mov		edx, [ebx + tube_t.vram]
 				mov		edi, SCREEN_H
 				cmp		[ebx + tube_t.bpp], byte 24
 				je		short vramdraw24
+				cmp		[ebx + tube_t.bpp], byte 16
+				je		short vramdraw16
 
 vramdraw32:
 .lp2:			mov		ebp, SCREEN_W
@@ -256,8 +258,26 @@ vramdraw24:
 				jne		short .lp2
 				jmp		short _updatescreen
 
-errvrammsg		db	'Require 24/32bpp.', 13, 0
-errfpumsg		db	'Require FPU.', 13, 0
+vramdraw16:
+.lp2:			mov		ebp, SCREEN_W
+.lp1:			movzx	eax, byte [esi]
+				inc		esi
+				mov		eax, [ecx + eax * 4]
+				ror		eax, 8
+				shr		ah, 3
+				shr		ax, 2
+				rol		eax, 5
+				mov		[edx], ax
+				add		edx, byte 2
+				dec		ebp
+				jne		short .lp1
+				add		edx, [ebx + tube_t.yalign]
+				dec		edi
+				jne		short .lp2
+				jmp		short _updatescreen
+
+errvrammsg		db	'Require 16/24/32bpp.', 10, 0
+errfpumsg		db	'Require FPU.', 10, 0
 
 				align	8
 const_tbl		dq		240.							; Zのデフォルト

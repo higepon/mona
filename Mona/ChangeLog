@@ -4,6 +4,8 @@
 
         * src/servers/1linesh/OneLineShell.cpp: 内部コマンドCHSHでSHELL.SVRに切り替え
 
+        * apps/non-gui/tube/tube.x86: 16bpp対応
+
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
         * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)

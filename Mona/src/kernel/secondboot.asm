@@ -125,8 +125,8 @@ read_vesa_bpp:
 search_next_line:
         mov     al, [es:di]
         inc     di
-        cmp     bx, di
-        jc      change_vesa_mode
+        cmp     di, bx
+        jnc     change_vesa_mode
         cmp     al, 13
         je      line_loop
         cmp     al, 10
@@ -355,8 +355,8 @@ read_number_loop:
         mul     dx
         add     ax, cx
         inc     di
-        cmp     bx, di
-        jnc     read_number_loop
+        cmp     di, bx
+        jc      read_number_loop
 read_number_return:
         ret
 
