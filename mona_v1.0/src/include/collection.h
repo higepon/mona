@@ -18,8 +18,33 @@
 */
 
 /*----------------------------------------------------------------------
+    For Hash
+----------------------------------------------------------------------*/
+inline char rol(char c) {
+
+    asm volatile("rolb $1, %0  \n"
+                 : /* no output */
+                 : "m"(c)
+                 );
+    return c;
+}
+
+inline int xor2(int x, int y) {
+
+    asm volatile ("mov %0   , %%eax  \n"
+                 "xor %%eax, %1     \n"
+                 : /* no output */
+                 : "m"(y), "m"(x)
+                 : "ax"
+                 );
+
+    return x;
+}
+
+/*----------------------------------------------------------------------
     Bynary Tree
 ----------------------------------------------------------------------*/
+#define NO_DATA (Node*)0
 template <class T> class BinaryTree {
 
   public:
@@ -30,7 +55,8 @@ template <class T> class BinaryTree {
     dword size() const;
     T get(const dword key) const;
     bool contains(const dword key) const;
-    void add(const dword key, const T element);
+    T add(const dword key, const T element);
+    T remove(const dword key);
 
   private:
     struct Node {
@@ -42,10 +68,9 @@ template <class T> class BinaryTree {
 
     Node* root_;
     dword numberOfElements_;
-    static const int NO_DATA = 0;
 
   private:
-    void add(Node*& tree, const dword key, const T element);
+    T add(Node*& tree, const dword key, const T element);
     bool contains(const Node* tree, const dword key) const;
     void clear();
     void clear(Node*& tree);
@@ -71,10 +96,9 @@ template <class T> void BinaryTree<T>::clear() {
     clear(root_);
 }
 
-template <class T> void BinaryTree<T>::add(const dword key, const T element) {
+template <class T> T BinaryTree<T>::add(const dword key, const T element) {
 
-    add(root_, key, element);
-    numberOfElements_++;
+    return add(root_, key, element);
 }
 
 template <class T> bool BinaryTree<T>::contains(const dword key) const {
@@ -82,6 +106,10 @@ template <class T> bool BinaryTree<T>::contains(const dword key) const {
 }
 
 template <class T> T BinaryTree<T>::get(const Node* tree, const dword key) const {
+
+    if (tree == NO_DATA) {
+        return (T)0;
+    }
 
     if (key == tree->key) {
         return tree->element;
@@ -102,7 +130,7 @@ template <class T> void BinaryTree<T>::clear(Node*& tree) {
     }
 }
 
-template <class T> void BinaryTree<T>::add(Node*& tree, const dword key, const T element) {
+template <class T> T BinaryTree<T>::add(Node*& tree, const dword key, const T element) {
 
     /* add */
     if (tree == NO_DATA) {
@@ -118,6 +146,14 @@ template <class T> void BinaryTree<T>::add(Node*& tree, const dword key, const T
         tree->right   = NO_DATA;
         tree->key     = key;
         tree->element = element;
+        numberOfElements_++;
+        return element;
+
+    /* data overwrite */
+    } else if (key == tree->key) {
+        T previousElement = tree->element;
+        tree->element = element;
+        return previousElement;
 
     /* add to left */
     } else if (key < tree->key) {
@@ -142,28 +178,55 @@ template <class T> bool BinaryTree<T>::contains(const Node* tree, const dword ke
     }
 }
 
-/*----------------------------------------------------------------------
-    HashMap
-----------------------------------------------------------------------*/
-template <class T> class HashMap : public Map {
+template <class T> T BinaryTree<T>::remove(const dword key) {
 
-  pulblic:
-    HashMap();
-    virtual ~HashMap();
+    T result;
+    Node** tree = &root_;
+    Node* next;
+    Node* temp;
+    Node** leftMax;
 
-  public:
-    bool containsKey(const char* key) const;;
-    bool containsValue(T value) const;
-    T get(const char* key);
-    T put(const char* key, T value);
-    T remove(const char* key);
-    dword size() const;
+    for (;;) {
 
+        /* not found */
+        if (*tree == NO_DATA) {
+            return (T)NULL;
+        }
+
+        /* found */
+        if (key == (*tree)->key) {
+            result = (*tree)->element;
+            break;
+        }
+
+        /* search next */
+        if (key < (*tree)->key) {
+            tree = &((*tree)->left);
+        } else {
+            tree = &((*tree)->right);
+        }
+    }
+
+    if ((*tree)->left == NO_DATA) {
+        next = (*tree)->right;
+    } else {
+        leftMax = &((*tree)->left);
+
+        while ((*leftMax)->right != NO_DATA) {
+            leftMax = &((*leftMax)->right);
+        }
+        next = *leftMax;
+        *leftMax    = (*leftMax)->left;
+        next->left  = (*tree)->left;
+        next->right = (*tree)->right;
+    }
+
+    temp = *tree;
+    *tree = next;
+    delete temp;
+    numberOfElements_--;
+    return result;
 };
-
-template <class T> HashMap<T>::HashMap() {
-
-}
 
 /*----------------------------------------------------------------------
     Map Interface
@@ -171,12 +234,11 @@ template <class T> HashMap<T>::HashMap() {
 template <class T> class Map {
 
   public:
-    bool containsKey(const char* key) const = 0;
-    bool containsValue(T value)       const = 0;
-    T get(const char* key)                  = 0;
-    T put(const char* key, T value)         = 0;
-    T remove(const char* key)               = 0;
-    dword size()                      const = 0;
+    virtual bool containsKey(char* key) = 0;
+    virtual T get(char* key)            = 0;
+    virtual T put(char* key, T value)   = 0;
+    virtual T remove(char* key)         = 0;
+    virtual dword size()          const = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -193,6 +255,72 @@ template <class T> class List {
     virtual size_t size() const              = 0;
     virtual bool hasElement(T element) const = 0;
 };
+
+/*----------------------------------------------------------------------
+    HashMap
+----------------------------------------------------------------------*/
+template <class T> class HashMap : public Map<T> {
+
+  public:
+    HashMap(dword hashsize);
+    virtual ~HashMap();
+
+  public:
+    bool containsKey(char* key);
+    T get(char* key);
+    T put(char* key, T value);
+    T remove(char* key);
+    dword size() const;
+
+  private:
+    HashMap() {}
+    dword hash(char* str);
+
+  private:
+    dword hashsize_;
+    BinaryTree<T>* tree_;
+};
+
+template <class T> HashMap<T>::HashMap(dword hashsize) {
+    hashsize_ = hashsize;
+    tree_     = new BinaryTree<T>;
+}
+
+template <class T> HashMap<T>::~HashMap() {
+    delete tree_;
+}
+
+template <class T> dword HashMap<T>::hash(char* str) {
+
+    dword value = 0;
+
+    /* get hash */
+    for (; *str; str++) {
+        value = rol(value);
+        value = xor2(value, *str);
+    }
+    return value % hashsize_;
+}
+
+template <class T> dword HashMap<T>::size() const {
+    return tree_->size();
+}
+
+template <class T> bool HashMap<T>::containsKey(char* key) {
+    return tree_->contains(hash(key));
+}
+
+template <class T> T HashMap<T>::get(char* key) {
+    return tree_->get(hash(key));
+}
+
+template <class T> T HashMap<T>::put(char* key, T value) {
+    return tree_->add(hash(key), value);
+}
+
+template <class T> T HashMap<T>::remove(char* key) {
+    return tree_->remove(hash(key));
+}
 
 /*----------------------------------------------------------------------
     HList Class
