@@ -34,7 +34,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class WindowManager : public MonAPI::Server, public Container {
 private:
 	bool isRunning;
-	dword threadID, keysvrID, mousesvrID, stdoutID, procsvrID, launcherID;
+	dword threadID, keysvrID, mousesvrID, shellsvrID, launcherID;
 	int dX, dY, preX, preY, state;
 	Bitmap *wallpaper;
 	static WindowManager *instance;

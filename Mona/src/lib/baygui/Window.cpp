@@ -27,6 +27,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
+/** タイマースレッドID */
+static dword timerID = THREAD_UNKNOWN;
+
+/** タイマースレッド */
+static void TimerThread()
+{
+	MonAPI::Message::send(timerID, MSG_SERVER_START_OK);
+	//printf("TimerThread created\n");
+	
+	MessageInfo info;
+	while (1) {
+		if (!MonAPI::Message::receive(&info)) {
+			if (info.header == MSG_GUISERVER_SETTIMER) {
+				//printf("WindowManager->TimerThread MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);
+				syscall_sleep(info.arg2 / 10);
+				MonAPI::Message::send(info.arg1, MSG_GUISERVER_ONTIMER, 0, 0, 0, NULL);
+			}
+		}
+	}
+}
+
 /** 閉じるボタン */
 static unsigned int closeIcon[13][13] = {
 	{0x94928c,0x949294,0x848284,0x848684,0x949294,0x848684,0x848684,0x848284,0x8c8a8c,0x848284,0x949294,0x7c7e7c,0xe4e2e4},
@@ -91,6 +112,15 @@ Window::Window()
 
 	// フォントロード
 	FontManager::getInstance();
+
+	// タイマー起動
+	if (timerID == THREAD_UNKNOWN) timerID = syscall_get_tid();
+	MessageInfo msg, src;
+	dword id = syscall_mthread_create((dword)TimerThread);
+	syscall_mthread_join(id);
+	src.header = MSG_SERVER_START_OK;
+	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+	timerID = msg.from;
 }
 
 /** デストラクタ */
@@ -99,6 +129,8 @@ Window::~Window() {
 	delete(_keyEvent);
 	delete(_mouseEvent);
 	delete(_timerEvent);
+	// タイマースレッド停止
+	syscall_kill_thread(timerID);
 }
 
 /** タイトルを得る */
@@ -164,10 +196,10 @@ void Window::setTimer(int duration)
 	if (focused == false || iconified == true) return;
 	
 	// タイマー設定メッセージを投げる
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_SETTIMER, threadID, duration, 0, NULL)) {
-		//printf("Control->WindowManager: MSG_GUISERVER_SETTIMER failed %d\n", threadID);
+	if (MonAPI::Message::send(timerID, MSG_GUISERVER_SETTIMER, threadID, duration, 0, NULL)) {
+		//printf("Window->Window: MSG_GUISERVER_SETTIMER failed %d\n", threadID);
 	} else {
-		//printf("Control->WindowManager: MSG_GUISERVER_SETTIMER sended %d\n", threadID);
+		//printf("Window->Window: MSG_GUISERVER_SETTIMER sended %d\n", threadID);
 	}
 }
 
@@ -375,7 +407,7 @@ void Window::repaint()
 			_g->setColor(255,255,255);
 			_g->drawLine(21, i + 1, width - 22, i + 1);
 		}
-		// 閉じるアイコン
+		// 閉じるアイコン、最小化アイコン
 		for (i = 0; i < 13; i++) {
 			for (j = 0; j < 13; j++) {
 				_g->drawPixel(4 + j, 5 + i, closeIcon[i][j]);

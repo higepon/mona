@@ -70,44 +70,6 @@ static int monaIcon [15][16] = {
 };
 #endif
 
-/** タイマースレッドID */
-static dword timerID = THREAD_UNKNOWN;
-
-/** タイマースレッド */
-static void TimerThread()
-{
-	MonAPI::Message::send(timerID, MSG_SERVER_START_OK);
-	//printf("TimerThread created\n");
-	
-	MessageInfo info;
-	while (1) {
-		if (!MonAPI::Message::receive(&info)) {
-			if (info.header == MSG_GUISERVER_SETTIMER) {
-				//printf("WindowManager->TimerThread MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);
-				syscall_sleep(info.arg2 / 10);
-				MonAPI::Message::send(info.arg1, MSG_GUISERVER_ONTIMER, 0, 0, 0, NULL);
-			}
-		}
-	}
-}
-
-#if 0
-/** STDOUTを横取りするスレッド */
-static void StdoutMessageLoop() {
-	MonAPI::Message::send(WindowManager::getInstance()->getThreadID(), MSG_SERVER_START_OK);
-	for (MessageInfo info;;) {
-		if (MonAPI::Message::receive(&info) != 0) continue;
-		switch (info.header) {
-			case MSG_PROCESS_STDOUT_DATA: {
-				//info.str[127] = '\0';
-				MonAPI::Message::reply(&info);
-				break;
-			}
-		}
-	}
-}
-#endif
-
 /** インスタンス */
 WindowManager *WindowManager::instance = NULL;
 
@@ -160,6 +122,14 @@ WindowManager::WindowManager()
 	} else {
 		//printf("Window: MouseServer registered %d\n", threadID);
 	}
+
+	// シェルサーバーを探す
+	shellsvrID = MonAPI::Message::lookupMainThread("OLDSHELL.EX2");
+	if (shellsvrID == 0xFFFFFFFF) {
+		//printf("Window: ShellServer not found %d\n", threadID);
+	} else {
+		//printf("Window: ShellServer found %d\n", threadID);
+	}
 }
 
 /** デストラクタ */
@@ -190,19 +160,12 @@ WindowManager::~WindowManager()
 		//printf("baygui: MouseServer unregistered %d\n", threadID);
 	}
 
-	// タイマースレッド停止
-	syscall_kill_thread(timerID);
-	
-	// シェル出力を元に戻す
-	#if 0
-	if (procsvrID == THREAD_UNKNOWN) {
-		//printf("baygui: MSG_PROCESS_UNGRAB_STDOUT failed\n");
+	// シェルサーバーに終了メッセージを投げる
+	if (MonAPI::Message::send(shellsvrID, MSG_PROCESS_TERMINATED, threadID, 0, 0, NULL)) {
+		//printf("baygui: ShellServer unregist error %d\n", threadID);
 	} else {
-		//printf("baygui: MSG_PROCESS_UNGRAB_STDOUT succeed\n");
-		MonAPI::Message::sendReceive(NULL, procsvrID + 1, MSG_PROCESS_UNGRAB_STDOUT, stdoutID);
-		syscall_kill_thread(stdoutID);
+		//printf("baygui: ShellServer unregistered %d\n", threadID);
 	}
-	#endif
 }
 
 /** インスタンスを得る */
@@ -771,32 +734,6 @@ void WindowManager::service()
 	syscall_set_cursor(0, 0);
 	printf("starting baygui ...\n");
 
-	// タイマー起動
-	if (timerID == THREAD_UNKNOWN) timerID = syscall_get_tid();
-	MessageInfo msg, src;
-	dword id = syscall_mthread_create((dword)TimerThread);
-	syscall_mthread_join(id);
-	src.header = MSG_SERVER_START_OK;
-	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-	dword timerID = msg.from;
-
-#if 0
-	// シェル出力を黙らせる
-	MessageInfo msg, src;
-	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
-	syscall_mthread_join(id);
-	src.header = MSG_SERVER_START_OK;
-	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-	stdoutID = msg.from;
-	procsvrID = monapi_get_server_thread_id(ID_PROCESS_SERVER);
-	if (procsvrID == THREAD_UNKNOWN) {
-		//printf("baygui: MSG_PROCESS_GRAB_STDOUT failed\n");
-	} else {
-		MonAPI::Message::send(NULL, procsvrID + 1, MSG_PROCESS_GRAB_STDOUT, stdoutID);
-		//printf("baygui: MSG_PROCESS_GRAB_STDOUT succeed\n");
-	}
-#endif
-
 	// テストアプリ
 	monapi_call_process_execute_file("/APPS/GLAUNCH.EX5", MONAPI_FALSE);
 
@@ -884,10 +821,6 @@ void WindowManager::service()
 				// KUKURIを移植するのに必要
 				//printf("Window->WindowManager MSG_GUISERVER_RESTORE received %d\n", info.arg1);
 				restoreBackGround((Control *)_controlList->endItem->data);
-				break;
-			case MSG_GUISERVER_SETTIMER:
-				//printf("Window->WindowManager MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);
-				MonAPI::Message::send(timerID, MSG_GUISERVER_SETTIMER, info.arg1, info.arg2, 0, NULL);
 				break;
 			}
 		}

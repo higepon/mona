@@ -2,6 +2,10 @@
 
         * servers/baygui: ウィンドウ移動時に枠線を出すように修正
 
+        * servers/baygui: ウィンドウごとにタイマー処理をするよう修正
+
+        * lib/baygui/Window.cpp: ウィンドウごとにタイマー処理をするよう修正
+
 2004-10-25  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/baygui/BAYGUI.MSH : 追加
