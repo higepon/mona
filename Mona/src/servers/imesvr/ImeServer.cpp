@@ -52,7 +52,7 @@ bool ImeServer::loadDictionary()
 	monapi_cmemoryinfo* mi = NULL;
 	
 	// 辞書を開く
-	mi = monapi_call_file_decompress_st5_file("/BASICDIC.TX5", false);
+	mi = monapi_call_file_decompress_st5_file(BASICDIC_NAME, false);
 	basicDicSize = mi->Size;
 	if (mi != NULL && basicDicSize > 0) {
 		basicDic = (char *)malloc(basicDicSize);
@@ -72,30 +72,34 @@ bool ImeServer::loadDictionary()
 */
 int ImeServer::getKanji(char *yomi, HList<MonAPI::CString>* result)
 {
-	int i, srcPtr, dstPtr;
-	char src[64], dst[64];
+	int i, j, srcPtr, dstPtr;
+	char src[MAX_TEXT_LEN], dst[MAX_TEXT_LEN];
 	bool srcRead = false;
 
 	// 読みと漢字を得る
 	srcPtr = dstPtr = 0;
-	memset(src, 0, 64);
-	memset(dst, 0, 64);
+	memset(src, 0, MAX_TEXT_LEN);
+	memset(dst, 0, MAX_TEXT_LEN);
 	for (i = 0; i < basicDicSize; i++) {
 		if (basicDic[i] != '\t' && srcRead == false) {
 			src[srcPtr++] = basicDic[i];
 		} else if (basicDic[i] == '\t') {
 			dstPtr = 0;
-			memset(dst, 0, 64);
+			memset(dst, 0, MAX_TEXT_LEN);
 			srcRead = true;
 		} else if (basicDic[i] != '\n' && srcRead == true) {
 			dst[dstPtr++] = basicDic[i];
 		} else if (basicDic[i] == '\n') {
-			if (strcmp(src, yomi) == 0) {
+			if (strncmp(src, yomi, strlen(src)) == 0) {
 				// 漢字を追加
+				int j0 = strlen(dst);
+				for (j = 0; j < strlen(yomi) - strlen(src); j++) {
+					dst[j + j0] = yomi[j + strlen(src)];
+				}
 				result->add(dst);
 			}
 			srcPtr = 0;
-			memset(src, 0, 64);
+			memset(src, 0, MAX_TEXT_LEN);
 			srcRead = false;
 		}
 	}
@@ -110,29 +114,29 @@ int ImeServer::getKanji(char *yomi, HList<MonAPI::CString>* result)
 bool ImeServer::getYomi(char *kanji, char *result)
 {
 	int i, srcPtr, dstPtr;
-	char src[64], dst[64];
+	char src[MAX_TEXT_LEN], dst[MAX_TEXT_LEN];
 	bool srcRead = false;
 
 	// 読みと漢字を得る
 	srcPtr = dstPtr = 0;
-	memset(src, 0, 64);
-	memset(dst, 0, 64);
+	memset(src, 0, MAX_TEXT_LEN);
+	memset(dst, 0, MAX_TEXT_LEN);
 	for (i = 0; i < basicDicSize; i++) {
 		if (basicDic[i] != '\t' && srcRead == false) {
 			src[srcPtr++] = basicDic[i];
 		} else if (basicDic[i] == '\t') {
 			dstPtr = 0;
-			memset(dst, 0, 64);
+			memset(dst, 0, MAX_TEXT_LEN);
 			srcRead = true;
 		} else if (basicDic[i] != '\n' && srcRead == true) {
 			dst[dstPtr++] = basicDic[i];
 		} else if (basicDic[i] == '\n') {
 			if (strcmp(dst, kanji) == 0) {
-				strcpy(result, kanji);
+				strcpy(result, src);
 				return true;
 			}
 			srcPtr = 0;
-			memset(src, 0, 64);
+			memset(src, 0, MAX_TEXT_LEN);
 			srcRead = false;
 		}
 	}
@@ -231,7 +235,7 @@ void ImeServer::service()
 					// MSG_IMESERVER_GETYOMI
 					// arg2: 0-失敗 1-成功
 					// str : よみ
-					char result[64];
+					char result[MAX_TEXT_LEN];
 					if (dicLoaded == true && getYomi(info.str, result) == true) {
 						strcpy(info.str, result);
 						MonAPI::Message::reply(&info, 1, 0, result);
@@ -246,7 +250,7 @@ void ImeServer::service()
 					// MSG_IMESERVER_GETKANA
 					// arg2: 0-失敗 1-成功
 					// str : かな
-					char result[64];
+					char result[MAX_TEXT_LEN];
 					if (getKana(info.str, result) == true) {
 						strcpy(info.str, result);
 						MonAPI::Message::reply(&info, 1, 0, result);
@@ -261,7 +265,7 @@ void ImeServer::service()
 					// MSG_IMESERVER_GETROMAN
 					// arg2: 0-失敗 1-成功
 					// str : かな
-					char result[64];
+					char result[MAX_TEXT_LEN];
 					if (getRoman(info.str, result) == true) {
 						strcpy(info.str, result);
 						MonAPI::Message::reply(&info, 1, 0, result);

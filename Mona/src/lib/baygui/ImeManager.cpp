@@ -35,6 +35,7 @@ ImeManager::ImeManager()
 	imemode = false;
 	_imeEvent = new Event(IME_SETCONTEXT, this);
 	imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
+	kanjiListPtr = -1;
 }
 
 /** デストラクタ */
@@ -56,7 +57,7 @@ void ImeManager::insertCharacter(char *buffer, char c)
 }
 
 /** 指定したバッファーに文字列を追加する */
-void ImeManager::insertString(char *buffer, char *str)
+void ImeManager::insertString(char *buffer, const char *str)
 {
 	int len = strlen(buffer);
 	for(int i = len; i < len + (int)strlen(str); i++) {
@@ -93,6 +94,43 @@ int ImeManager::deleteCharacter(char *buffer)
 	}
 }
 
+/** かな→漢字変換 */
+bool ImeManager::getKanji(char *str, HList<MonAPI::CString> *result)
+{
+	// NULLチェック
+	if (imesvrID == THREAD_UNKNOWN) return false;
+
+	MessageInfo info;
+	//printf("ImeManager: connected %s\n", IMESERVER_NAME);
+	MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANJI, 0, 0, 0, str);
+	if (info.arg2 > 0) {
+		bool flag = true;
+		while (flag) {
+			if (!MonAPI::Message::receive(&info)) {
+				switch(info.header) {
+				case MSG_IMESERVER_STARTKANJI:
+					//printf("MSG_IMESERVER_STARTKANJI\n");
+					MonAPI::Message::reply(&info);
+					break;
+				case MSG_IMESERVER_KANJI:
+					//printf("%d: %s\n", info.arg2, info.str);
+					MonAPI::Message::reply(&info);
+					result->add(info.str);
+					break;
+				case MSG_IMESERVER_ENDKANJI:
+					//printf("MSG_IMESERVER_ENDKANJI\n");
+					MonAPI::Message::reply(&info);
+					flag = false;
+					break;
+				}
+			}
+		}
+		return true;
+	} else {
+		return false;
+	}
+}
+
 /**
  入力文字→かな変換
  @param [in] str 入力文字
@@ -101,27 +139,19 @@ int ImeManager::deleteCharacter(char *buffer)
  */
 bool ImeManager::getKana(char *str, char *result)
 {
-	// デフォルトはローマ字入力
-	#if 0
-	for (int i = 0; i < HENKAN0LENGTH; i++) {
-		if (strcmp(henkan00[i], inputBuffer) == 0) {
-			clearBuffer(inputBuffer);
-			return henkan01[i];
-		}
+	// NULLチェック
+	if (imesvrID == THREAD_UNKNOWN) return false;
+	
+	MessageInfo info;
+	//printf("ImeManager: connected %s\n", IMESERVER_NAME);
+	MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANA, 0, 0, 0, str);
+	if (info.arg2 > 0) {
+		//printf("MSG_IMESERVER_GETKANA: %s -> %s\n", str, info.str);
+		copyString(result, info.str);
+		return true;
+	} else {
+		return false;
 	}
-	return NULL;
-	#endif
-	if (imesvrID != THREAD_UNKNOWN) {
-		MessageInfo info;
-		//printf("IMETEST: connected %s\n", IMESERVER_NAME);
-		MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANA, 0, 0, 0, str);
-		if (info.arg2 > 0) {
-			//printf("MSG_IMESERVER_GETKANA: %s -> %s\n", str, info.str);
-			copyString(result, info.str);
-			return true;
-		}
-	}
-	return false;
 }
 
 /** 親部品登録 */
@@ -188,6 +218,7 @@ void ImeManager::postEvent(Event *event)
 			} else {
 				imemode = true;
 			}
+			repaint();
 		// バックスペース
 		} else if (keycode == VKEY_BACKSPACE) {
 			int len = 0;
@@ -208,8 +239,27 @@ void ImeManager::postEvent(Event *event)
 			}
 		// 変換
 		} else if (keycode == ' ' && strlen(translateBuffer) > 0) {
-			clearBuffer(translateBuffer);
-			insertString(translateBuffer, "該当なし");
+			if (kanjiListPtr == -1) {
+				// 変換成功
+				if (getKanji(translateBuffer, &kanjiList) == true) {
+					clearBuffer(inputBuffer);
+					clearBuffer(translateBuffer);
+					insertString(translateBuffer, (const char *)kanjiList.get(++kanjiListPtr));
+				// 変換失敗
+				} else {
+					clearBuffer(inputBuffer);
+					clearBuffer(translateBuffer);
+					insertString(translateBuffer, "変換失敗");
+				}
+			} else {
+				// 次候補
+				if (kanjiListPtr == kanjiList.size() - 1) {
+					kanjiListPtr = -1;
+				}
+				clearBuffer(inputBuffer);
+				clearBuffer(translateBuffer);
+				insertString(translateBuffer, (const char *)kanjiList.get(++kanjiListPtr));
+			}
 			repaint();
 		// 確定
 		} else if (keycode == VKEY_ENTER) {
@@ -218,12 +268,17 @@ void ImeManager::postEvent(Event *event)
 				_imeEvent->type = IME_CHAR | (VKEY_ENTER << 16);
 				parent->postEvent(_imeEvent);
 			} else {
-				clearBuffer(inputBuffer);
-				
 				// １文字送信
 				for (int i = 0; i < (int)strlen(translateBuffer); i++) {
 					_imeEvent->type = IME_CHAR | (translateBuffer[i] << 16);
 					parent->postEvent(_imeEvent);
+				}
+				
+				// 漢字リスト初期化
+				kanjiListPtr = -1;
+				int I = kanjiList.size();
+				for (int i = 0; i < I; i++) {
+					kanjiList.removeAt(0);
 				}
 				clearBuffer(translateBuffer);
 				
@@ -242,8 +297,8 @@ void ImeManager::postEvent(Event *event)
 				} else {
 					char kana[MAX_TEXT_LEN];
 					if (getKana(inputBuffer, kana) == true) {
-						insertString(translateBuffer, kana);
 						clearBuffer(inputBuffer);
+						insertString(translateBuffer, kana);
 					}
 				}
 				// 再描画

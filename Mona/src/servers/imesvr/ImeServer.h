@@ -28,6 +28,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_IMESERVER_H_INCLUDED_)
 #define _IMESERVER_H_INCLUDED_
 
+#define MAX_TEXT_LEN     64
+#define BASICDIC_NAME    "/BASICDIC.TX5"
+#define BASICDIC_ENTRIES 24253
+
 /** IMEサーバークラス */
 class ImeServer : public MonAPI::Server {
 private:

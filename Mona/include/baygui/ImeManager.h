@@ -35,6 +35,10 @@ class ImeManager : public Control {
 private:
 	/** IMEサーバーID */
 	dword imesvrID;
+	/** 漢字リスト */
+	HList<MonAPI::CString> kanjiList;
+	/** 漢字リストポインター */
+	int kanjiListPtr;
 	/** 入力文字列バッファー */
 	char inputBuffer[MAX_TEXT_LEN];
 	/** 変換対象文字列バッファー */
@@ -51,8 +55,9 @@ public:
 	virtual ImeManager::~ImeManager();
 	virtual void clearBuffer(char *buffer);
 	virtual void insertCharacter(char *buffer, char c);
-	virtual void insertString(char *buffer, char *str);
+	virtual void insertString(char *buffer, const char *str);
 	virtual int  deleteCharacter(char *buffer);
+	virtual bool getKanji(char *str, HList<MonAPI::CString> *result);
 	virtual bool getKana(char *inputBuffer, char *str);
 	virtual void setParent(Control *parent);
 	virtual void clearBuffer();
