@@ -80,222 +80,66 @@ const int Keys::mapJP109E0[128] = {
     0    , 0       , 0     , LWin  , RWin     , Apps       , 0, 0
 };
 
+const char Keys::keyTopMapJP109[256] = {
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+    ' ',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 , 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',  0 ,  0 ,  0 ,  0 ,  0 ,
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '+',  0 , '-', '.', '/',
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 , ':', ';', ',', '-', '.', '/',
+    '@',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 , '[','\\', ']', '^',  0 ,
+     0 ,  0 ,'\\',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+};
+
+const char Keys::keyTopMapJP109S[256] = {
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+    ' ',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 , '!', '"', '#', '$', '%', '&','\'', '(', ')',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 , 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',  0 ,  0 ,  0 ,  0 ,  0 ,
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '+',  0 , '-', '.', '/',
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 , '*', '+', '<', '=', '>', '?',
+    '`',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 , '{', '|', '}', '_',  0 ,
+     0 ,  0 , '|',  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+};
+
 char Keys::ToChar(KeyInfo keyInfo){
 
-    char result;
+    char result = '\0';
 
-    switch(keyInfo.keycode) {
-
-    case(Keys::A):
-        result = 'A';
-        break;
-    case(Keys::B):
-        result = 'B';
-        break;
-    case(Keys::C):
-        result = 'C';
-        break;
-    case(Keys::D):
-        result = 'D';
-        break;
-    case(Keys::E):
-        result = 'E';
-        break;
-    case(Keys::F):
-        result = 'F';
-        break;
-    case(Keys::G):
-        result = 'G';
-        break;
-    case(Keys::H):
-        result = 'H';
-        break;
-    case(Keys::I):
-        result = 'I';
-        break;
-    case(Keys::J):
-        result = 'J';
-        break;
-    case(Keys::K):
-        result = 'K';
-        break;
-    case(Keys::L):
-        result = 'L';
-        break;
-    case(Keys::M):
-        result = 'M';
-        break;
-    case(Keys::N):
-        result = 'N';
-        break;
-    case(Keys::O):
-        result = 'O';
-        break;
-    case(Keys::P):
-        result = 'P';
-        break;
-    case(Keys::Q):
-        result = 'Q';
-        break;
-    case(Keys::R):
-        result = 'R';
-        break;
-    case(Keys::S):
-        result = 'S';
-        break;
-    case(Keys::T):
-        result = 'T';
-        break;
-    case(Keys::U):
-        result = 'U';
-        break;
-    case(Keys::V):
-        result = 'V';
-        break;
-    case(Keys::W):
-        result = 'W';
-        break;
-    case(Keys::X):
-        result = 'X';
-        break;
-    case(Keys::Y):
-        result = 'Y';
-        break;
-    case(Keys::Z):
-        result = 'Z';
-        break;
-    case(Keys::D0):
-        result = '0';
-        break;
-    case(Keys::D1):
-        result = '1';
-        break;
-    case(Keys::D2):
-        result = '2';
-        break;
-    case(Keys::D3):
-        result = '3';
-        break;
-    case(Keys::D4):
-        result = '4';
-        break;
-    case(Keys::D5):
-        result = '5';
-        break;
-    case(Keys::D6):
-        result = '6';
-        break;
-    case(Keys::D7):
-        result = '7';
-        break;
-    case(Keys::D8):
-        result = '8';
-        break;
-    case(Keys::D9):
-        result = '9';
-        break;
-    case(Keys::NumPad0):
-        result = '0';
-        break;
-    case(Keys::NumPad1):
-        result = '1';
-        break;
-    case(Keys::NumPad2):
-        result = '2';
-        break;
-    case(Keys::NumPad3):
-        result = '3';
-        break;
-    case(Keys::NumPad4):
-        result = '4';
-        break;
-    case(Keys::NumPad5):
-        result = '5';
-        break;
-    case(Keys::NumPad6):
-        result = '6';
-        break;
-    case(Keys::NumPad7):
-        result = '7';
-        break;
-    case(Keys::NumPad8):
-        result = '8';
-        break;
-    case(Keys::NumPad9):
-        result = '9';
-        break;
-    case(Keys::Decimal):
-        result = '.';
-        break;
-    case(Keys::Add):
-        result = '+';
-        break;
-    case(Keys::Subtract):
-        result = '-';
-        break;
-    case(Keys::Multiply):
-        result = '*';
-        break;
-    case(Keys::Divide):
-        result = '/';
-        break;
-    case(Keys::Space):
-        result = ' ';
-        break;
-    case(Keys::OemPeriod):
-        result = '.';
-        break;
-    case(Keys::Oemcomma):
-        result = ',';
-        break;
-    case(Keys::Oemplus):
-        result = ';';
-        break;
-    case(Keys::OemMinus):
-        result = '-';
-        break;
-    case(Keys::OemSemicolon):
-        result = ':';
-        break;
-    case(Keys::Oemtilde):
-        result = '@';
-        break;
-    case(Keys::OemOpenBrackets):
-        result = '[';
-        break;
-    case(Keys::OemCloseBrackets):
-        result = ']';
-        break;
-    case(Keys::OemBackslash):
-        result = '\\';
-        break;
-    case(Keys::OemPipe):
-        result = '\\';
-        break;
-    case(Keys::OemQuestion):
-        result = '/';
-        break;
-    case(Keys::OemQuotes):
-        result = '^';
-        break;
-    default:
-        result = ' ';
-        break;
+    if(keyInfo.modifiers & KEY_MODIFIER_SHIFT){
+        result = keyTopMapJP109S[keyInfo.keycode];
+    } else {
+        result = keyTopMapJP109[keyInfo.keycode];
     }
+
     return result;
 }
 
 bool Keys::IsToChar(KeyInfo keyInfo){
 
-  int keycode = keyInfo.keycode;
-  
-  if( (keycode == Space)
-    || ((keycode >= D0) && (keycode <= D9)) 
-    || ((keycode >= A) && (keycode <= Z))
-    || ((keycode >= NumPad0) && (keycode <= Divide))
-    || ((keycode >= OemSemicolon) && (keycode <= Oemtilde))
-    || ((keycode >= OemOpenBrackets) && (keycode <= OemQuotes))
-    || (keycode == OemBackslash) ) return true;
+    char code = '\0';
 
-  return false;
+    if(keyInfo.modifiers & KEY_MODIFIER_SHIFT){
+        code = keyTopMapJP109S[keyInfo.keycode];
+    } else {
+        code = keyTopMapJP109[keyInfo.keycode];
+    }
+
+    if(code != '\0') return true;
+
+    return false;
 }
