@@ -1,3 +1,7 @@
+2004-03-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core.asm (from_kernel): レジスタセーブロジックを書換
+
 2004-03-07  higepon  <higepon@users.sourceforge.jp>
 
         * FAT12.cpp: ファイルオープン時のエラーコードを取得

@@ -41,12 +41,8 @@ arch_save_thread_registers:
         mov eax, dword[esp + 48]  ; get cs
         and eax, 0x03             ; check cpl is 3
         cmp eax, 0x03
-        jnz dpl00
-        mov eax, dword[esp + 60] ; save ss3
-        mov dword[ebx + 60], eax
-        mov eax, dword[esp + 56] ; save esp3
-        mov dword[ebx + 28], eax
-dpl00:
+        jz from_user
+from_kernel:
         mov eax, dword [esp + 44]; save eip
         mov dword[ebx], eax
         mov eax, dword [esp + 48]; save cs
@@ -61,11 +57,39 @@ dpl00:
         mov dword[ebx + 20], eax
         mov eax, dword [esp + 28]; save ebx
         mov dword[ebx + 24], eax
-        jz  dpl03
         mov eax, dword [esp + 24]; save esp
         add eax, 0xc
         mov dword[ebx + 28], eax
-dpl03:
+        mov eax, dword [esp + 20]; save ebp
+        mov dword[ebx + 32], eax
+        mov eax, dword [esp + 16]; save esi
+        mov dword[ebx + 36], eax
+        mov eax, dword [esp + 12]; save edi
+        mov dword[ebx + 40], eax
+        mov eax, [esp + 8]      ; save ds
+        mov dword[ebx + 44], eax
+        mov eax, [esp + 4]      ; save es
+        mov dword[ebx + 48], eax
+        ret
+from_user:
+        mov eax, dword[esp + 60] ; save ss3
+        mov dword[ebx + 60], eax
+        mov eax, dword[esp + 56] ; save esp3
+        mov dword[ebx + 28], eax
+        mov eax, dword [esp + 44]; save eip
+        mov dword[ebx], eax
+        mov eax, dword [esp + 48]; save cs
+        mov dword[ebx + 4], eax
+        mov eax, dword [esp + 52]; save eflags
+        mov dword[ebx + 8], eax
+        mov eax, dword [esp + 40]; save eax
+        mov dword[ebx + 12], eax
+        mov eax, dword [esp + 36]; save ecx
+        mov dword[ebx + 16], eax
+        mov eax, dword [esp + 32]; save edx
+        mov dword[ebx + 20], eax
+        mov eax, dword [esp + 28]; save ebx
+        mov dword[ebx + 24], eax
         mov eax, dword [esp + 20]; save ebp
         mov dword[ebx + 32], eax
         mov eax, dword [esp + 16]; save esi
