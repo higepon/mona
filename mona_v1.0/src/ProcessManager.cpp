@@ -37,10 +37,6 @@ void ProcessManager::switchProcess() {
          , g_current_process->ss0
          );
 
-    /* switch page directory */
-    g_page_manager->setPageDirectory(g_current_process->cr3);
-    g_page_manager->flushPageCache();
-
     /* switch to user process */
     if ((g_current_process->cs & DPL_USER) == DPL_USER) {
 
@@ -83,13 +79,7 @@ void ProcessManager::schedule(){
 
 virtual_addr ProcessManager::allocateStack() {
 
-    static int i = 0;
-
-    i++;
-
-        return 0x70000 + i * 4096;
-    //    g_console->printf("stack=%d", i);
-    //    return 0x400300;
+    return 0xFFFFFFFF;
 }
 
 virtual_addr ProcessManager::allocateKernelStack(dword dpl) {

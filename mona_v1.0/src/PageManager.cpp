@@ -27,14 +27,6 @@ PageManager::PageManager(dword totalMemorySize) {
 
 }
 
-void PageManager::flushPageCache() const {
-
-    asm volatile("mov %%cr3, %%eax\n"
-                 "mov %%eax, %%cr3\n"
-                 : /* no output */
-                 : /* no input  */ : "ax");
-}
-
 bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
 
     int foundMemory = memoryMap_->find();
@@ -89,13 +81,10 @@ PageEntry* PageManager::createNewPageDirectory() {
     memset(directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
     makePageEntry(directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_KERNEL);
 
-    dword directoryIndex = 0x400000 >> 22;
-    dword tableIndex     = (0x400000 >> 12) & 0x3FF;
+    dword directoryIndex = 0xFFFFFC00 >> 22;
+    dword tableIndex     = (0xFFFFFC00 >> 12) & 0x3FF;
 
-    g_console->printf("directoryIndex=%x", directoryIndex);
-
-    /* test code. stack is always 0x400000-0x4003FF */
-    //    table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    /* test code. stack is always 0xFFFFFFFF */
     table = allocatePageTable();
     memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
     makePageEntry(&(directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);

@@ -76,6 +76,8 @@ save_end:
 
 arch_switch_process:
         mov ebx, dword[g_current_process]
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
@@ -96,6 +98,8 @@ arch_switch_process:
 
 arch_switch_process_to_user_mode:
         mov ebx, dword[g_current_process]
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
@@ -118,6 +122,8 @@ arch_switch_process_to_user_mode:
 
 arch_switch_process_to_v86_mode:
         mov ebx, dword[g_current_process]
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx

@@ -178,13 +178,11 @@ void mainProcess() {
     //    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
     //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
 
-    g_console->printf("add 2");
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
-    g_console->printf("add 3");
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
-    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
     g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
+    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
     //    process9->pinfo_.esp = 0x1000;
 
