@@ -70,6 +70,8 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
         this->concatBlock(freeEntry_, freeBlock);
     }
     this->deleteFromEntry(freeEntry_, current, current->size);
+    _sysPrintln("**************");
+    _sysPrintlnInt((int)usedBlock);
     this->addToEntry(1, usedBlock, usedBlockSize);
 
     /* address of allocated memory */
