@@ -40,7 +40,6 @@ namespace System { namespace Mona { namespace Forms
 		
 #ifdef MONA
 		if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) ::exit(1);
-		if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) ::exit(1);
 		__gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		if (__gui_server == THREAD_UNKNOWN) ::exit(1);
 		MessageInfo msg;
@@ -70,7 +69,6 @@ namespace System { namespace Mona { namespace Forms
 	{
 #ifdef MONA
 		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
-		monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 #endif
 	}
 	

@@ -19,6 +19,7 @@ extern int mouse_x, mouse_y;
 
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
+static HList<guiserver_window*> captures;
 
 guiserver_window* CreateWindow()
 {
@@ -28,19 +29,19 @@ guiserver_window* CreateWindow()
 	guiserver_window* ret = (guiserver_window*)MemoryMap::map(handle);
 	if (ret == NULL) return NULL;
 	
-	ret->Handle  = handle;
-	ret->Parent  = 0;
-	ret->Owner   = 0;
-	ret->TID     = 0;
-	ret->X       = start_pos;
-	ret->Y       = start_pos;
-	ret->Width   = DEFAULT_WIDTH;
-	ret->Height  = DEFAULT_HEIGHT;
-	ret->OffsetX = 0;
-	ret->OffsetY = 0;
-	ret->Opacity = 255;
-	ret->Visible = false;
-	ret->Flags   = 0;
+	ret->Handle   = handle;
+	ret->Parent   = 0;
+	ret->Owner    = 0;
+	ret->ThreadID = 0;
+	ret->X        = start_pos;
+	ret->Y        = start_pos;
+	ret->Width    = DEFAULT_WIDTH;
+	ret->Height   = DEFAULT_HEIGHT;
+	ret->OffsetX  = 0;
+	ret->OffsetY  = 0;
+	ret->Opacity  = 255;
+	ret->Visible  = false;
+	ret->Flags    = 0;
 	ret->TransparencyKey = 0;
 	ret->BufferHandle = ret->FormBufferHandle = 0;
 	ret->__reserved1 = NULL;
@@ -69,8 +70,17 @@ guiserver_window* GetWindowPointer(dword handle)
 
 bool DisposeWindow(dword handle)
 {
-	int size = windows.size();
-	for (int i = 0; i < size; i++)
+	int size_c = captures.size();
+	for (int i = 0; i < size_c; i++)
+	{
+		if (captures[i]->Handle == handle)
+		{
+			captures.removeAt(i);
+			break;
+		}
+	}
+	int size_w = windows.size();
+	for (int i = 0; i < size_w; i++)
 	{
 		if (windows[i]->Handle == handle)
 		{
@@ -136,6 +146,7 @@ bool WindowHandler(MessageInfo* msg)
 		case MSG_GUISERVER_CREATEWINDOW:
 		{
 			guiserver_window* w = CreateWindow();
+			w->ThreadID = msg->from;
 			Message::reply(msg, w->Handle);
 			break;
 		}
@@ -151,6 +162,56 @@ bool WindowHandler(MessageInfo* msg)
 			MoveWindow(GetWindowPointer(msg->arg1), (int)msg->arg2, (int)msg->arg3);
 			Message::reply(msg);
 			break;
+		case MSG_MOUSE_INFO:
+		{
+			mouse_x = msg->arg1;
+			mouse_y = msg->arg2;
+			int size = captures.size();
+			guiserver_window* target = NULL;
+			if (size > 0)
+			{
+				target = captures[size - 1];
+			}
+			else
+			{
+				for (int i = windows.size() - 1; i >= 0; i--)
+				{
+					guiserver_window* w = windows[i];
+					if (w->FormBufferHandle == 0) continue;
+					
+					_R r(w->X, w->Y, w->Width, w->Height);
+					if (!r.Contains(mouse_x, mouse_y)) continue;
+					
+					target = w;
+					break;
+				}
+			}
+			if (target != NULL)
+			{
+				if (Message::send(target->ThreadID, msg) != 0)
+				{
+					DisposeWindow(target->Handle);
+				}
+			}
+			break;
+		}
+		case MSG_GUISERVER_MOUSECAPTURE:
+		{
+			guiserver_window* w = GetWindowPointer(msg->arg1);
+			if (w != NULL)
+			{
+				if (msg->arg2 == 0)
+				{
+					captures.remove(w);
+				}
+				else
+				{
+					captures.add(w);
+				}
+			}
+			Message::reply(msg);
+			break;
+		}
 		default:
 			return false;
 	}

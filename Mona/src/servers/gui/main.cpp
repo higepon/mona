@@ -1,8 +1,12 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
+#include <gui/System/Drawing/Rectangle.h>
+#define _R ::System::Drawing::Rectangle
+
 #include <monapi/messages.h>
 #include <monapi/CString.h>
+
 #include "GUIServer.h"
 #include "image.h"
 #include "screen.h"
@@ -214,20 +218,6 @@ static void MessageLoop()
 			case MSG_UNREGISTER_FROM_SERVER:
 				clients.remove(msg.arg1);
 				Message::reply(&msg);
-				break;
-			case MSG_MOUSE_INFO:
-				mouse_x = msg.arg1;
-				mouse_y = msg.arg2;
-#if 0
-				for (int i = 0; i < clients.size(); i++)
-				{
-					if (monapi_cmessage_send_args(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3, msg.str) != 0)
-					{
-						clients.removeAt(i);
-						i--;
-					}
-				}
-#endif
 				break;
 			default:
 				if (ImageHandler(&msg)) break;

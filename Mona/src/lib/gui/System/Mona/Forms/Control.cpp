@@ -97,6 +97,7 @@ namespace System { namespace Mona { namespace Forms
 		this->foreColorChanged = false;
 		this->backColorChanged = false;
 		this->visible = false;
+		this->capture = false;
 		this->_object = NULL;
 		this->controls = new ControlCollection();
 		this->controls->target = this;
@@ -303,6 +304,14 @@ namespace System { namespace Mona { namespace Forms
 	void Control::set_Visible(bool v)
 	{
 		if (v) this->Show(); else this->Hide();
+	}
+	
+	void Control::set_Capture(bool v)
+	{
+		if (v == this->capture) return;
+		
+		this->capture = v;
+		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOUSECAPTURE, this->get_Handle(), v ? 1 : 0);
 	}
 	
 	void Control::set_Text(String text)

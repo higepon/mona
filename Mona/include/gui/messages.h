@@ -24,6 +24,7 @@ enum
 	MSG_GUISERVER_MOUSEMOVE = 0x4200,
 	MSG_GUISERVER_MOUSEDOWN,
 	MSG_GUISERVER_MOUSEUP,
+	MSG_GUISERVER_MOUSECAPTURE = 0x4220,
 	
 	MSG_GUISERVER_KEYDOWN = 0x4300,
 	MSG_GUISERVER_KEYUP,
@@ -39,7 +40,7 @@ typedef struct
 
 typedef struct
 {
-	unsigned int Handle, Parent, Owner, TID;
+	unsigned int Handle, Parent, Owner, ThreadID;
 	int X, Y, Width, Height, OffsetX, OffsetY, Opacity;
 	bool Visible;
 	unsigned int Flags, TransparencyKey;

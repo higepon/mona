@@ -201,6 +201,7 @@ namespace System { namespace Mona { namespace Forms
 				break;
 			case NCState_TitleBar:
 				this->ptRevRect = Point(e->X, e->Y);
+				this->set_Capture(true);
 				this->DrawReversibleRectangle();
 				break;
 			default:
@@ -225,6 +226,7 @@ namespace System { namespace Mona { namespace Forms
 			case NCState_TitleBar:
 			{
 				this->DrawReversibleRectangle();
+				this->set_Capture(false);
 				Point p = this->get_Location();
 				p.X += e->X - this->clickPoint.X;
 				p.Y += e->Y - this->clickPoint.Y;

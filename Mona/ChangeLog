@@ -11,6 +11,12 @@
 
         * apps/gui/anaclock/Form1.cpp: 描画をOnPaint()で行い、縁をなくした
 
+        * src/servers/gui/window.cpp: GUI.SVRからMOUSE.SVRに接続して受け取ったMSG_MOUSE_INFOをアプリに転送
+
+        * src/lib/gui/System/Mona/Forms/Application.cpp: MOUSE.SVRへの接続を解除
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp (get_Capture, set_Capture): マウスイベントを独占
+
 2004-05-31  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/anaclock/Form1.cpp (class Form1): 駄目人間さん提供のAnaClock追加

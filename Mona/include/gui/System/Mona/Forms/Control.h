@@ -33,7 +33,7 @@ namespace System { namespace Mona { namespace Forms
 		
 	private:
 		System::Drawing::Rectangle bounds;
-		bool visible;
+		bool visible, capture;
 		System::Drawing::Color foreColor;
 		System::Drawing::Color backColor;
 		_P<Control> parent;
@@ -86,6 +86,9 @@ namespace System { namespace Mona { namespace Forms
 		
 		inline bool get_Visible() { return this->visible; }
 		void set_Visible(bool v);
+		
+		inline bool get_Capture() { return this->capture; }
+		void set_Capture(bool v);
 		
 		System::Drawing::Size get_ClientSize();
 		void set_ClientSize(System::Drawing::Size sz);
