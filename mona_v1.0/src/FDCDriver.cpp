@@ -158,6 +158,26 @@ void FDCDriver::initilize() {
     return;
 }
 
+int FDCDriver::open()
+{
+    return 0;
+}
+
+int FDCDriver::close()
+{
+    return 0;
+}
+
+int FDCDriver::read(int lba, void* buf, int size)
+{
+    return this->read(lba, (byte*)buf) ? 0 : -1;
+}
+
+int FDCDriver::write(int lba, void* buf, int size)
+{
+    return this->write(lba, (byte*)buf) ? 0 : -1;
+}
+
 /*!
     \brief interrupt handler
 

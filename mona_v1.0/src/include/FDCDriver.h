@@ -13,6 +13,7 @@
 #include<types.h>
 #include<Process.h>
 #include<VirtualConsole.h>
+#include<IStorageDevice.h>
 #include<DiskDriver.h>
 
 #ifndef _MONA_MFDCDRIVER_
@@ -21,12 +22,16 @@
 /*!
     Floppy Disk Controller class
 */
-class FDCDriver : public DiskDriver {
+class FDCDriver : public DiskDriver, public IStorageDevice {
   public:
     FDCDriver();
     virtual ~FDCDriver();
 
   public:
+    int open();
+    int close();
+    int read(int lba, void* buf, int size);
+    int write(int lba, void* buf, int size);
     void interrupt();
     bool read(dword lba, byte* buf);
     bool write(dword lba, byte* buf);

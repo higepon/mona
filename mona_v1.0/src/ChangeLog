@@ -1,3 +1,7 @@
+2004-03-10  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: IStorageDeviceを継承するようにした。
+
 2004-03-09  higepon  <higepon@users.sourceforge.jp>
 
         * fat_write.exeがファイルを上書きできるようになった。
