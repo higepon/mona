@@ -26,8 +26,11 @@
 #include<monaChecker.h>
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
+#include<SystemConsole.h>
 
 char* version = "Mona develop beta 0.03b $Date$";
+
+//VirtualConsole* console = new SystemConsole();
 
 /*!
     \brief  mona kernel start at this point
@@ -78,6 +81,8 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
+    //    console->printf("this is test %x", 0x12345678);
+
     /* test code is here */
 #if 0
     operatorTester();
@@ -90,6 +95,12 @@ void startKernel(void) {
     processTester();
     while (true) {
     }
+}
+
+void testtest(int i) {
+
+    i++;
+    return;
 }
 
 /*!

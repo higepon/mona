@@ -19,7 +19,7 @@
 /*!
     abstract class VirtualConsole
 */
-class SystemConsole {
+class SystemConsole : public VirtualConsole{
 
   public:
     void printf(const char *, ...);

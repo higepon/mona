@@ -18,7 +18,8 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
   stlport/stl/_relops_cont.h stlport/stl/_vector.c stlport/stl/_bvector.h \
   stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
-  stlport/stl/_config_compat_post.h include/SystemInfo.h
+  stlport/stl/_config_compat_post.h include/SystemInfo.h \
+  include/SystemConsole.h include/VirtualConsole.h
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaKernel.h
 monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
@@ -138,5 +139,6 @@ SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
   include/string.h include/monaVga.h
 Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
   include/monaTypes.h include/string.h
-SystemConsole.o: SystemConsole.cpp include/semaphore.h \
-  include/monaKernel.h include/monaTypes.h include/string.h
+SystemConsole.o: SystemConsole.cpp include/SystemConsole.h \
+  include/VirtualConsole.h include/monaVga.h include/monaTypes.h \
+  include/string.h
