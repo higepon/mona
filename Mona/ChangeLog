@@ -1,3 +1,7 @@
+2004-11-05  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * apps/baygui/mblupin/mblupin.cpp: ランダムにシード値を与えるように変更
+
 2004-11-02  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gnullpo: nullpo.bmp と gat.bmp に名称変更

@@ -70,6 +70,11 @@ public:
         
         rnd = new MonAPI::Random();
         
+        //ランダムのシード値を与える。
+        MonAPI::Date date;
+        date.refresh();
+        rnd->setSeed(date.hour() * 3600 + date.min() * 60 + date.sec());
+        
         nowTitle = 0;
         nowViewChar = 0;
         geted = 0;
