@@ -7,6 +7,7 @@
 #include "ISO9660.h"
 
 using namespace MonAPI;
+using namespace ISO;
 
 extern bool hasCD;
 extern ISO9660* iso;

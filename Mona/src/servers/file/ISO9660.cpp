@@ -15,6 +15,7 @@
 #include <monapi.h>
 
 using namespace MonAPI;
+using namespace ISO;
 
 /*----------------------------------------------------------------------
     ISO9660File

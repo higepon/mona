@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include <monapi/Assert.h>
 #include <sys/HList.h>
-#include "../../../tools/fat_write/IStorageDevice.h"
+#include <fat_write/IStorageDevice.h>
 #include <monapi/CString.h>
 #include "CFile.h"
 
@@ -157,7 +157,7 @@ public:
     bool Initialize();
     int GetLastError() const {return this->lastError;}
     bool Read(dword lba, byte* buffer, dword size);
-    File* GetFile(const MonAPI::CString& path);
+    ISO::File* GetFile(const MonAPI::CString& path);
     _A<MonAPI::CString> GetFileSystemEntries(const MonAPI::CString& path);
 
     // for debug
@@ -206,7 +206,7 @@ private:
 /*----------------------------------------------------------------------
     ISO9660File
 ----------------------------------------------------------------------*/
-class ISO9660File : public File
+class ISO9660File : public ISO::File
 {
 public:
     ISO9660File(ISO9660* iso, DirectoryEntry* fileEntry);
