@@ -1,8 +1,8 @@
-TARGET  = GUI.BIN
+TARGET  = GUI
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-bin.inc
+include $(MONADIR)/env/monapi-bn2.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 LINK    = -lmonapi -lmonalibc -ljpegls

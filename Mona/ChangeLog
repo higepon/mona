@@ -1,3 +1,7 @@
+2004-06-29  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/pe: PEバイナリ(.EXE)のローダーを追加
+
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
 
         * env/monapi-bn2.inc: BN2形式でサーバーバイナリを作成する。

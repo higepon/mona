@@ -9,8 +9,7 @@ using namespace MonAPI;
 static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, monapi_cmemoryinfo* mi, bool prompt)
 {
     ELFParser parser;
-    bool ok = parser.set(mi->Data, mi->Size);
-    if (!ok)
+    if (!parser.set(mi->Data, mi->Size))
     {
         if (prompt) printf("%s: file type is not ELF!\n", SVR);
         return 3;

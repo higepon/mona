@@ -12,12 +12,13 @@ static dword server_ids[] =
     THREAD_UNKNOWN,  // ID_GUI_SERVER
     THREAD_UNKNOWN,  // ID_ELF_SERVER
     THREAD_UNKNOWN,  // ID_PROCESS_SERVER
-    THREAD_UNKNOWN   // ID_PE_SERVER
+    THREAD_UNKNOWN,  // ID_PE_SERVER
+    THREAD_UNKNOWN   // ID_MONITOR_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.BN2", "KEYBDMNG.BN2", "FILE.BIN", "GUI.BIN", "ELF.BN2", "PROCESS.BIN", "PE.BIN"
+    "MOUSE.BN2", "KEYBDMNG.BN2", "FILE.BIN", "GUI.BN2", "ELF.BN2", "PROCESS.BIN", "PE.BN2", "MONITOR.BIN"
 };
 
 dword monapi_get_server_thread_id(int id)

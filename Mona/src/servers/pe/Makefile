@@ -1,8 +1,8 @@
-TARGET  = PE.BIN
-SOURCES = main.cpp
+TARGET  = PE
+SOURCES = main.cpp PEParser.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-bin.inc
+include $(MONADIR)/env/monapi-bn2.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 
