@@ -68,7 +68,7 @@
 
 
 /* time out */
-#define FDC_RETRY_MAX 6000000
+#define FDC_RETRY_MAX 600000
 
 /* delay */
 #define delay() inportb(0x80);
@@ -164,7 +164,6 @@ void FDCDriver::initilize() {
     }
 
     motor(OFF);
-
     return;
 }
 
@@ -176,11 +175,10 @@ void FDCDriver::test() {
 
     recalibrate();
     recalibrate();
-    waitPrint("after recalibrate");
 
-    for (int i = 1; i < 2; i++) {
+    for (int i = 1; i < 10; i++) {
 
-        memset(dmabuff_, 0x98, 512);
+        memset(dmabuff_, i, 512);
         if (!write(i, dmabuff_)) {
 
             g_console->printf("read failed\n");
@@ -188,9 +186,6 @@ void FDCDriver::test() {
             return;
         }
     }
-
-    //    for (int i = 0; i < 512; i++) g_console->printf("%x", dmabuff_[i]);
-
 
     motor(OFF);
     return;
@@ -207,12 +202,6 @@ void FDCDriver::waitPrint(const char* msg) {
     }
     g_console->printf("%s:%d\n", msg, counter);
 }
-
-
-
-
-
-
 
 /*!
     \brief print status of FDC(MSR)
@@ -279,8 +268,7 @@ bool FDCDriver::waitInterrupt() {
     static int counter = 0;
     counter++;
 
-    //    if (counter > 5000) interrupt_ = true;
-
+    if (counter > 5000) interrupt_ = true;
     return interrupt_;
 }
 
@@ -667,7 +655,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
                    , head
                    , sector
                    , 0x02
-                   , sector
+                   , 0x12
                    , 0x1b
                    , 0x00
                    };
@@ -679,11 +667,9 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     sendCommand(command, sizeof(command));
     while(!waitInterrupt());
 
-    waitPrint("after sendCommand");
-
     stopDMA();
+    g_console->printf("before read results");
     readResults();
-    waitPrint("after read results");
     return true;
 }
 
