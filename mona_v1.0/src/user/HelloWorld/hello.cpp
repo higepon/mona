@@ -45,22 +45,19 @@
 // 共有メモリなやつ
 int MonaMain(List<char*>* pekoe)
 {
-    /* インスタンス取得 */
-    MemoryMap& mm = MemoryMap::getInstance();
-
     /* 5000byteの共有メモリ(グローバル)を作成 実際のサイズは8192byteになる */
-    dword id1 = mm.create(5000);
+    dword id1 = MemoryMap::create(5000);
 
     if (id1 == 0)
     {
-        printf("map create error = %x", mm.getLastError());
+        printf("map create error = %x", MemoryMap::getLastError());
         exit(1);
     }
 
-    printf("shared size = %d", mm.getSize(id1));
+    printf("shared size = %d", MemoryMap::getSize(id1));
 
     /* 作成した共有メモリを自分の空間に貼り付ける */
-    byte* p = mm.map(id1);
+    byte* p = MemoryMap::map(id1);
     if (p == NULL)
     {
         printf("map error\n");
@@ -89,7 +86,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* 共有メモリを自分の空間からはずす */
-    //mm.unmap(id1);
+    //MemoryMap::unmap(id1);
 
     /* ついでにファイルでも作るか */
     FileOutputStream fos("HELLO.LOG", true);

@@ -18,22 +18,18 @@ private:
     virtual ~MemoryMap();
 
 public:
-    static MemoryMap& getInstance()
-    {
-        static MemoryMap instance;
-        return instance;
-    }
-    dword create(dword size);
-    byte* map(dword id);
-    bool unmap(dword id);
-    dword getLastError() const;
-    dword getSize(dword id) const;
+    static void initialize();
+    static dword create(dword size);
+    static byte* map(dword id);
+    static bool unmap(dword id);
+    static dword getLastError();
+    static dword getSize(dword id);
 
 private:
     static const dword START_ADDRESS;
     static const dword MAX_SIZE;
-    dword lastError;
-    dword nextAddress;
+    static dword lastError;
+    static dword nextAddress;
 };
 
 #endif

@@ -19,6 +19,7 @@ int user_start() {
     um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
+    MemoryMap::initialize();
     result = MonaMain(arg);
     delete arg;
     exit(result);
@@ -189,14 +190,21 @@ int mthread_join(dword id) {
 ----------------------------------------------------------------------*/
 const dword MemoryMap::START_ADDRESS = 0x90000000;
 const dword MemoryMap::MAX_SIZE      = 0x10000000;
+dword MemoryMap::nextAddress;
+dword MemoryMap::lastError;
 
-MemoryMap::MemoryMap() : lastError(0), nextAddress(START_ADDRESS)
+MemoryMap::MemoryMap()
 {
-    printf("constructer");
 }
 
 MemoryMap::~MemoryMap()
 {
+}
+
+void MemoryMap::initialize()
+{
+    nextAddress = START_ADDRESS;
+    lastError = 0;
 }
 
 dword MemoryMap::create(dword size)
@@ -204,7 +212,7 @@ dword MemoryMap::create(dword size)
     /* error */
     if (size <= 0)
     {
-        this->lastError = 1;
+        lastError = 1;
         return 0;
     }
 
@@ -215,7 +223,7 @@ dword MemoryMap::create(dword size)
     /* error */
     if (result == 0)
     {
-        this->lastError = 2;
+        lastError = 2;
         return 0;
     }
 
@@ -230,24 +238,24 @@ byte* MemoryMap::map(dword id)
 
     if (size == 0)
     {
-        this->lastError = 3;
+        lastError = 3;
         return NULL;
     }
 
-    if (this->nextAddress + size > START_ADDRESS + MAX_SIZE)
+    if (nextAddress + size > START_ADDRESS + MAX_SIZE)
     {
-        this->lastError = 4;
+        lastError = 4;
         return NULL;
     }
 
     if (syscall_memory_map_map(id, nextAddress))
     {
-        this->lastError = 5;
+        lastError = 5;
         return NULL;
     }
 
-    byte* result = (byte*)(this->nextAddress);
-    this->nextAddress += size;
+    byte* result = (byte*)(nextAddress);
+    nextAddress += size;
     return result;
 }
 
@@ -255,19 +263,19 @@ bool MemoryMap::unmap(dword id)
 {
     if (syscall_memory_map_unmap(id))
     {
-        this->lastError = 6;
+        lastError = 6;
         return false;
     }
 
     return true;
 }
 
-dword MemoryMap::getLastError() const
+dword MemoryMap::getLastError()
 {
-    return this->lastError;
+    return lastError;
 }
 
-dword MemoryMap::getSize(dword id) const
+dword MemoryMap::getSize(dword id)
 {
     return syscall_memory_map_get_size(id);
 }
