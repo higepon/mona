@@ -288,7 +288,8 @@ private:
 		// 最下行まで表示されているときは最上行を削除する
 		// ここでremoveしなければ後々スクロールバーをつけたときには役に立つかも
 		if (lines->getLength() >= (GSHELL_HEIGHT / 12 - 1)) {
-			lines->remove(0);
+			Object *obj = lines->remove(0);
+			delete(obj);
 		}
 		lines->add(new String(str));
 	}
