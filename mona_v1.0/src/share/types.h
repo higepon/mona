@@ -141,6 +141,7 @@ typedef struct MappingInfo {
 #define SYSTEM_CALL_DATE            38
 #define SYSTEM_CALL_GET_IO          39
 #define SYSTEM_CALL_WAIT_FDC        40
+#define SYSTEM_CALL_EXIST_MESSAGE   41
 #define SYSTEM_CALL_TEST            99
 
 #endif

@@ -296,6 +296,27 @@ byte* loadFromFile(char* path, dword* size)
     return buf;
 }
 
+/*!
+    \brief
+
+    \author Gaku
+    \date   create: update:
+*/
+void rm (char *path)
+{
+    int entry, cursor;
+
+    Directory *p = searchFile(path, &entry, &cursor);
+    if (NULL == p)
+        return;
+
+    if (false == p->deleteEntry(entry)) {
+        freeDirectory(p);
+        return;
+    }
+    freeDirectory(p);
+}
+
 bool cp (char *src, char *dst)
 {
     dword size = 0;
@@ -332,6 +353,8 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
+
+//    rm(argv[3]);
 
     if (!cp(argv[2], argv[3]))
     {

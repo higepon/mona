@@ -30,6 +30,8 @@ void syscall_entrance() {
     ArchThreadInfo* info = g_currentThread->archinfo;
     dword readSize = 0;
 
+    info->eax = 0;
+
     switch(info->ebx) {
 
     case SYSTEM_CALL_PRINT:
@@ -63,6 +65,14 @@ void syscall_entrance() {
     case SYSTEM_CALL_RECEIVE:
 
         info->eax = g_messenger->receive(g_currentThread->process, (MessageInfo*)(info->esi));
+        break;
+
+    case SYSTEM_CALL_EXIST_MESSAGE:
+
+        {
+            bool existMessage = !(g_currentThread->process->getMessageList()->isEmpty());
+            info->eax = existMessage ? 1 : 0;
+        }
         break;
 
     case SYSTEM_CALL_MTHREAD_CREATE:

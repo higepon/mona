@@ -3,7 +3,6 @@
 // Licence : see http://gaku.s12.xrea.com/wiki/main.cgi?c=g&p=Gaku%2FLicence
 // 2004/02/02 by Gaku :
 //*****************************************************************************
-
 //-----------------------------------------------------------------------------
 #include <malloc.h>
 #include <string.h>
@@ -212,8 +211,8 @@ void FAT::setNextCluster (dword cluster, dword next)
     }
 
     // 変更したセクタにはフラグを立てておく
-    flag[cluster * 3 / bytesPerSector] = 1;
-    flag[ ( cluster * 3 + 2 ) / bytesPerSector ] = 1;
+    flag[cluster * 3 / ( 2 * bytesPerSector ) ] = 1;
+    flag[ ( cluster * 3 + 2 ) / ( 2 * bytesPerSector ) ] = 1;
 }
 
 //-----------------------------------------------------------------------------

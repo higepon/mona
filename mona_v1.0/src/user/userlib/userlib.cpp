@@ -566,6 +566,11 @@ void Message::create(MessageInfo* info, dword header, dword arg1, dword arg2, dw
     return;
 }
 
+bool Message::exist()
+{
+    return (syscall_exist_message() == 1);
+}
+
 /*----------------------------------------------------------------------
     printf
 ----------------------------------------------------------------------*/
@@ -1328,6 +1333,21 @@ int syscall_get_io() {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_GET_IO)
+                 : "ebx"
+                 );
+
+    return (int)result;
+}
+
+int syscall_exist_message() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_EXIST_MESSAGE)
                  : "ebx"
                  );
 

@@ -37,6 +37,7 @@ extern "C" int syscall_kill();
 extern "C" int syscall_put_pixel(int x, int y, char color);
 extern "C" int syscall_send(dword pid, MessageInfo* message);
 extern "C" int syscall_receive(MessageInfo* message);
+extern "C" int syscall_exist_message();
 extern "C" int syscall_mthread_create(dword f);
 extern "C" int syscall_mthread_join(dword id);
 extern "C" int syscall_mutex_create();
