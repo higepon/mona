@@ -319,7 +319,7 @@ bool FDCDriver::seek(byte track) {
 
     while (true) {
 
-	//   info(DEV_WARNING, "seek start3 \n");// here is point
+        //   info(DEV_WARNING, "seek start3 \n");// here is point
 
         waitInterrupt();
 
@@ -465,9 +465,9 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , head
                    , sector
                    , 0x02
-                   , 0x12
-                   , 0x1b
-                   , 0x00
+                   , 0x7E//0x12 for Vmware
+                   , 0x01//0x1b
+                   , 0xFF//0x00
                    };
 
     if (!seek(track)) {

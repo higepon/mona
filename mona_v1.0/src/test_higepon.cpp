@@ -38,7 +38,11 @@ bool drawARGB(byte* rgba, int x, int y, int size) {
 
         if (y >= starty + header->height) break;
 
-        color = (rgba[i * 4 + 0] || rgba[i * 4 + 1] || rgba[i * 4 + 2]) ? GP_WHITE : GP_BLACK;
+        //color = (rgba[i * 4 + 0] || rgba[i * 4 + 1] || rgba[i * 4 + 2]) ? GP_WHITE : GP_BLACK;
+        if (rgba[i * 4 + 0] == 0xFF) color = GP_WHITE;
+        else if (rgba[i * 4 + 0] == 0xC0) color = GP_GRAY;
+        else color = GP_BLACK;
+
 
         put_pixel(x, y, color);
         x++;
@@ -99,7 +103,7 @@ void FDCDriverTester() {
         while (true);
     }
 
-    if (!fat->open(".", "MONA.LGO", FAT12::READ_MODE)) {
+    if (!fat->open(".", "NIKQ.LGO", FAT12::READ_MODE)) {
 
         info(ERROR, "open failed");
     }
@@ -123,6 +127,10 @@ void FDCDriverTester() {
     drawARGB(buf, 100, 350, fileSize);
     drawARGB(buf, 155, 350, fileSize);
     drawARGB(buf, 210, 350, fat->getFileSize());
+
+    for (int i = 0; i < 6; i++) {
+        drawARGB(buf, i * 105, 0, fileSize);
+    }
 
     if (!fat->close()) {
        info(ERROR, "close failed");
