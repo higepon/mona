@@ -5,7 +5,7 @@
 int main() {
 
     Screen screen;
-    printf("user mode screen (x, y) = (%d, %d) %dbpp\n", screen.getXResolution(), screen.getYResolution(), screen.getBpp());
+    printf("user mode screen (x, y) = (%x, %x) %dbpp\n", screen.getXResolution(), screen.getYResolution(), screen.getBpp());
 
     /* check bpp */
     if (screen.getBpp() < 24) {

@@ -457,7 +457,7 @@ void printf(const char *format, ...) {
                   ((char**)list) += 1;
                   break;
               case 'd':
-                  printInt((int)*list);
+                  putInt((int)*list, 10);
                   ((int*)list) += 1;
                   break;
               case 'x':
@@ -484,35 +484,20 @@ void printf(const char *format, ...) {
 
 void putInt(size_t n, int base) {
 
-    int    power;
-    size_t num = n;
-    size_t ch;
+    static char buf[256];
 
-    for (power = 0; num != 0; power++) {
-        num /= base;
+    int geta = 8;
+    int num  = n;
+    if (base == 10 && num != 0) {
+        for (geta = 0; num; num /= 10, geta++);
+    } else if (base == 10 && num == 0) {
+        geta = 1;
     }
 
-    for (int j = 0; j < 8 - power; j++) {
-        putCharacter('0');
-    }
+    char* p = ltona(n, buf, geta, base);
 
-    for (int i = power -1; i >= 0; i--) {
-        ch = n / _power(base, i);
-        n %= _power(base, i);
-
-        if (i == 0 && n > 9) {
-
-            putCharacter('A' + n -10);
-        } else if (i == 0) {
-
-            putCharacter('0' + n);
-        } else if (ch > 9) {
-
-            putCharacter('A' + ch -10);
-        } else {
-
-            putCharacter('0' + ch);
-        }
+    for (; *p != '\0'; p++) {
+        putCharacter(*p);
     }
 }
 

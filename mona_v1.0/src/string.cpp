@@ -205,7 +205,7 @@ size_t strcspn(const char* str1, const char* str2) {
 
 char* ltona(long value, char* str, int n, int base) {
 
-    static const char xdigit[] = {"012345678ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+    static const char xdigit[] = {"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
     unsigned long ulvalue;
     unsigned int ubase;
     int sign = 0;
@@ -232,6 +232,6 @@ char* ltona(long value, char* str, int n, int base) {
     if (sign < 0)
         *--ps = '-';
     while (--n >= 0)
-        *--ps = ' ';
+        *--ps = '0';
     return str;
 }
