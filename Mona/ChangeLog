@@ -1,3 +1,13 @@
+2004-01-21  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/*: 新しいBayGUIに差し替え
+
+        * include/baygui/*: 新しいBayGUIに差し替え
+
+        * include/baygui.h: 新しいBayGUIに差し替え
+
+        * src/lib/baygui/*: 新しいBayGUIに差し替え
+
 2004-01-10  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/Makefile: grunner 追加
