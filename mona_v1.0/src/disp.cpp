@@ -35,19 +35,13 @@ void disp_name1() {
     dword color = 0;
 
     while (true) {
-
-        //        if (g_kthread_current->tick % 500) continue;
+        //        if (g_kthread_current->tick % 50) continue;
         disableTimer();
 
-        int x = pos_x;
-        int y = pos_y;
+        disp_write_font(76, 0, 'M', color%16);
 
-        pos_x = 42, pos_y = 0;
-        write_font('M', color%16, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
         enableTimer();
+        color++;
     }
 }
 
@@ -62,20 +56,14 @@ void disp_name2() {
     dword color = 0;
 
     while (true) {
-
         //        if (g_kthread_current->tick % 50) continue;
         disableTimer();
 
-        int x = pos_x;
-        int y = pos_y;
+        disp_write_font(77, 0, 'o', color%16);
 
-        pos_x = 43, pos_y = 0;
-        write_font('o', color%16, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
         enableTimer();
-   }
+        color++;
+    }
 }
 
 void disp_name3() {
@@ -86,15 +74,10 @@ void disp_name3() {
         //        if (g_kthread_current->tick % 50) continue;
         disableTimer();
 
-        int x = pos_x;
-        int y = pos_y;
+        disp_write_font(78, 0, 'n', color%16);
 
-        pos_x = 44, pos_y = 0;
-        write_font('n', color%16, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
         enableTimer();
+        color++;
     }
 }
 
@@ -106,17 +89,28 @@ void disp_name4() {
         //        if (g_kthread_current->tick % 50) continue;
         disableTimer();
 
-        int x = pos_x;
-        int y = pos_y;
+        disp_write_font(79, 0, 'a', color%16);
 
-        pos_x = 45, pos_y = 0;
-        write_font('a', color%16, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
         enableTimer();
+        color++;
     }
 }
+
+void disp_write_font(int x, int y, char ch, byte color) {
+
+    int tempx = pos_x;
+    int tempy = pos_y;
+
+    pos_x = x;
+    pos_y = y;
+
+    write_font(ch, color, 0);
+
+    pos_x = tempx;
+    pos_y = tempy;
+}
+
+
 
 void disp_kthread_info() {
 
