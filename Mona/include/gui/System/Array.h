@@ -166,6 +166,23 @@ namespace System
 	#endif
 			return this->pointer[index];
 		}
+	
+		inline T GetValue(int index) const
+		{
+	#ifdef DEBUG
+			if (this->pointer == 0 /*NULL*/)
+			{
+				::printf("ERROR: [Array] null reference exception\n");
+				::exit(1);
+			}
+			else if (index < 0 || this->length - 1 < index)
+			{
+				::printf("ERROR: [Array] out of range (%d/%d)\n", index, this->length);
+				::exit(1);
+			}
+	#endif
+			return this->pointer[index];
+		}
 	};
 }
 

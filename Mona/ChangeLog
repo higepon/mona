@@ -10,6 +10,18 @@
 
         * src/lib/jpegls: jpegdemoのデコードエンジンをライブラリ化
 
+        * src/lib/jpegls/jpegls.cpp: 高速逆DCT版に差し替え(thanks Yui_Nekoさん, nikqさん)
+
+        * src/servers/gui/main.cpp: 24bpp無圧縮BMPとJPEGのデコードに対応
+
+        * include/gui/System/Object.h (ToString): 追加
+
+        * include/gui/System/String.h (StartsWith, EndsWith): 追加
+
+        * src/lib/gui/System/Drawing/Bitmap.cpp: サーバーで画像をデコード
+
+        * samples/gui/bitmap/Form1.cpp: usageでJPEG対応を表示
+
 2004-04-23  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: マウスカーソルの初期位置を画面中央.

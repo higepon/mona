@@ -57,7 +57,30 @@ namespace System
 		_A<wchar> s(len1 + len2);
 		int p = 0;
 		for (int i = 0; i < len1; i++) s[p++] = (*this)[i];
-		for (int i = 0; i < len2; i++) s[p++] = ((String&)text)[i];
+		for (int i = 0; i < len2; i++) s[p++] = text[i];
 		this->Set(s);
+	}
+	
+	bool String::StartsWith(const String& value)
+	{
+		int len = value.get_Length();
+		if (len > this->get_Length()) return false;
+		for (int i = 0; i < len; i++)
+		{
+			if ((*this)[i] != value[i]) return false;
+		}
+		return true;
+	}
+	
+	bool String::EndsWith(const String& value)
+	{
+		int len = value.get_Length();
+		int pos = this->get_Length() - len;
+		if (pos < 0) return false;
+		for (int i = 0; i < len; i++)
+		{
+			if ((*this)[pos + i] != value[i]) return false;
+		}
+		return true;
 	}
 }

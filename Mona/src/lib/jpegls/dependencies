@@ -1,1 +1,1 @@
-jpegls.o: jpegls.cpp ../../../include/jpegls.h dct_tab
+jpegls.o: jpegls.cpp ../../../include/jpegls.h

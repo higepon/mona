@@ -37,7 +37,7 @@ public:
     {
     	if (args.get_Length() == 0)
     	{
-    		Console::WriteLine("usage: BITMAP FILENAME.BMP");
+    		Console::WriteLine("usage: BITMAP FILENAME.BMP/JPG");
     		return;
     	}
     	

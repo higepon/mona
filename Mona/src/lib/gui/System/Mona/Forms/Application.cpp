@@ -18,17 +18,20 @@ using namespace System::Drawing;
 enum
 {
 	MSG_GUISERVER_GETFONT = 0x4000,
-	MSG_GUISERVER_RETURNFONT
+	MSG_GUISERVER_RETURNFONT,
+	MSG_GUISERVER_DECODEIMAGE,
+	MSG_GUISERVER_RETURNIMAGE,
+	MSG_GUISERVER_DISPOSEIMAGE
 };
 
-static int SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3)
+int __SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL)
 {
 	MessageInfo msg;
-	MonAPI::Message::create(&msg, header, arg1, arg2, arg3, NULL);
+	MonAPI::Message::create(&msg, header, arg1, arg2, arg3, (char*)str);
 	return MonAPI::Message::send(to, &msg);
 }
 
-static MessageInfo WaitMessage(dword header)
+MessageInfo __WaitMessage(dword header)
 {
 	MessageInfo msg;
 	for (;;)
@@ -38,6 +41,8 @@ static MessageInfo WaitMessage(dword header)
 	}
 	return msg;
 }
+
+dword __mouse_server, __gui_server;
 #else
 #include "MONA-12.h"
 #endif
@@ -56,21 +61,21 @@ namespace System { namespace Mona { namespace Forms
 		Application::forms = new ArrayList<_P<Form> >;
 		
 #ifdef MONA
-		dword msvr = MonAPI::Message::lookupMainThread("MOUSE.SVR");
-		if (msvr == 0xFFFFFFFF ||
-			::SendMessage(msvr, MSG_MOUSE_REGIST_TO_SERVER, MonAPI::System::getThreadID(), 0, 0) != 0)
+		__mouse_server = MonAPI::Message::lookupMainThread("MOUSE.SVR");
+		if (__mouse_server == 0xFFFFFFFF ||
+			::__SendMessage(__mouse_server, MSG_MOUSE_REGIST_TO_SERVER, MonAPI::System::getThreadID(), 0, 0) != 0)
 		{
 			::printf("ERROR: Can't connect to mouse server!\n");
 			::exit(1);
 		}
 		
-		dword gsvr = MonAPI::Message::lookupMainThread("GUI.SVR");
-		if (gsvr == 0xFFFFFFFF || ::SendMessage(gsvr, MSG_GUISERVER_GETFONT, 0, 0, 0) != 0)
+		__gui_server = MonAPI::Message::lookupMainThread("GUI.SVR");
+		if (__gui_server == 0xFFFFFFFF || ::__SendMessage(__gui_server, MSG_GUISERVER_GETFONT, 0, 0, 0) != 0)
 		{
 			::printf("ERROR: Can't connect to GUI server!\n");
 			::exit(1);
 		}
-		MessageInfo msg = WaitMessage(MSG_GUISERVER_RETURNFONT);
+		MessageInfo msg = __WaitMessage(MSG_GUISERVER_RETURNFONT);
 		byte* font_data = MonAPI::MemoryMap::map(msg.arg1);
 		if (font_data == NULL)
 		{
@@ -91,9 +96,7 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Dispose()
 	{
 #ifdef MONA
-		dword msvr = MonAPI::Message::lookupMainThread("MOUSE.SVR");
-		if (msvr == 0xFFFFFFFF ||
-			::SendMessage(msvr, MSG_MOUSE_UNREGIST_FROM_SERVER, MonAPI::System::getThreadID(), 0, 0) != 0)
+		if (::__SendMessage(__mouse_server, MSG_MOUSE_UNREGIST_FROM_SERVER, MonAPI::System::getThreadID(), 0, 0) != 0)
 		{
 			::printf("ERROR: Can't connect to mouse server!\n");
 			::exit(1);

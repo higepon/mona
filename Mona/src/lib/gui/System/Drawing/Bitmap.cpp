@@ -3,12 +3,24 @@
 
 #ifdef MONA
 #include <monapi.h>
+
+enum
+{
+	MSG_GUISERVER_GETFONT = 0x4000,
+	MSG_GUISERVER_RETURNFONT,
+	MSG_GUISERVER_DECODEIMAGE,
+	MSG_GUISERVER_RETURNIMAGE,
+	MSG_GUISERVER_DISPOSEIMAGE
+};
+
+extern int __SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL);
+extern MessageInfo __WaitMessage(dword header);
+
+extern dword __gui_server;
 #endif
 
 #include <gui/System/Pointer.h>
 #include <gui/System/Drawing/Bitmap.h>
-
-#define BYTE2INT(array, index) (array[index] + (array[index + 1] << 8) + (array[index + 2] << 16) + (array[index + 3] << 24))
 
 namespace System { namespace Drawing
 {
@@ -26,6 +38,7 @@ namespace System { namespace Drawing
 	{
 #ifdef MONA
 		int fnlen = fileName.get_Length();
+		if (fnlen > 127) fnlen = 127;
 		_A<char> fn(fnlen + 1);
 		for (int i = 0; i < fnlen; i++)
 		{
@@ -33,36 +46,33 @@ namespace System { namespace Drawing
 			fn[i] = ch < 0x80 ? (char)ch : '?';
 		}
 		fn[fnlen] = '\0';
-		_P<MonAPI::FileInputStream> fis(new MonAPI::FileInputStream(fn.get()), true);
-		if (fis->open() != 0) return;
 		
-		int sz = fis->getFileSize();
-		_A<byte> buf(sz);
-		fis->read(buf.get(), sz);
-		fis->close();
-		if (sz < 6) return;
-		
-		if (buf[0] != 'B' || buf[1] != 'M') return;
-		if (sz != BYTE2INT(buf, 2)) return;
-		if (BYTE2INT(buf, 6) != 0) return;
-		if (BYTE2INT(buf, 14) != 40) return;
-		if (buf[28] + (buf[29] << 8) != 24) return;
-		if (BYTE2INT(buf, 30) != 0) return;
-		
-		int bfOffBits = BYTE2INT(buf, 10);
-		this->width  = BYTE2INT(buf, 18);
-		this->height = BYTE2INT(buf, 22);
-		this->buffer.Alloc(this->width * this->height);
-		
-		int p1 = 0;
-		int lineSize = (this->width * 3 + 3) >> 2 << 2;
-		for (int y = 0; y < this->height; y++)
+		if (::__SendMessage(__gui_server, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, fn.get()) != 0)
 		{
-			int p2 = bfOffBits + (this->height - y - 1) * lineSize;
-			for (int x = 0; x < this->width; x++, p1++, p2 += 3)
-			{
-				this->buffer[p1] = Color::FromArgb(buf[p2 + 2], buf[p2 + 1], buf[p2]);
-			}
+			::printf("ERROR: Can't connect to GUI server!\n");
+			::exit(1);
+		}
+		MessageInfo msg = __WaitMessage(MSG_GUISERVER_RETURNIMAGE);
+		if (msg.arg1 == 0) return;
+		
+		byte* image = MonAPI::MemoryMap::map(msg.arg1);
+		if (image == NULL)
+		{
+			::printf("ERROR: Can not get image data!\n");
+			::exit(1);
+		}
+		
+		this->width  = msg.arg2;
+		this->height = msg.arg3;
+		int len = this->width * this->height;
+		this->buffer.Alloc(len);
+		::memcpy(this->buffer.get(), image, len * 4);
+		MonAPI::MemoryMap::unmap(msg.arg1);
+		
+		if (::__SendMessage(__gui_server, MSG_GUISERVER_DISPOSEIMAGE, msg.arg1, 0, 0) != 0)
+		{
+			::printf("ERROR: Can't connect to GUI server!\n");
+			::exit(1);
 		}
 #endif
 	}

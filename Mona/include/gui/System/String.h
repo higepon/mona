@@ -15,11 +15,16 @@ namespace System
 		String(_A<wchar> text);
 		virtual ~String();
 		
+		wchar operator [](int index) const { return this->GetValue(index); }
+		
 		bool operator ==(String text);
 		inline bool operator !=(String text) { return *this != text; }
 		String& operator =(const String& text);
 		String& operator =(const char* text);
 		void operator +=(const String& text);
+		
+		bool StartsWith(const String& value);
+		bool EndsWith(const String& value);
 	};
 }
 

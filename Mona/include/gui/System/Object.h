@@ -15,6 +15,7 @@ namespace System
 	
 	public:
 		virtual String get_TypeName() { return "System.Object"; }
+		virtual String ToString() { return this->get_TypeName(); }
 		Object() : refCount(0) {}
 		virtual ~Object() {}
 		inline int get_RefCount() { return this->refCount; }
