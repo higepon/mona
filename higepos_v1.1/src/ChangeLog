@@ -1,5 +1,8 @@
 2002-11-11  higepon  <higepon@users.sourceforge.jp>
 
+        * higeTester.cpp: add
+        * higeTester.h: add
+        * テストコードを徐々にhigeTester.cppに移行します。
         * firstboot.asm:マルチセクタ読み込み対応 powered by Guripon,syn
         * higeIdt.h:上記対応に伴いidtrアドレスを0x6800→0x0500へ変更
 
