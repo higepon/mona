@@ -4,7 +4,7 @@
 
     test code at kernel should be placed here.
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002, 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -125,7 +125,7 @@ void processTester() {
 
 
 void process1Tester() {
-
+    _sysdump("process1", false);
     enableTimer();
 
     while (true) {
@@ -141,7 +141,7 @@ void process1Tester() {
 }
 
 void process2Tester() {
-
+    _sysdump("process2", false);
     while (true) {
         for (dword i = 0; i < 900000; i++) {
             i += 1;

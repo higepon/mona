@@ -120,25 +120,51 @@ void _sys_printf (char* format, ...) {
     \param base ex)16
 
     \author  HigePon
-    \date    create:2002/10/26 update:
+    \date    create:2002/10/26 update:2003/01/14
 */
 void _sysPutInt(size_t n, int base) {
 
-    int ch;
+    int    power;
+    size_t num = n;
+    size_t ch;
 
-    if (n > 0) {
-        _sysPutInt(n / base, base);
-        ch = n % base;
-        if ((ch >= 0) && (ch <= 9)) {
-            ch += '0';
-        } else {
-            ch = (ch - 10) + 'A';
-        }
-        _sysPutCharacter(ch);
+    for (power = 0; num != 0; power++) {
+        num /= base;
     }
-    return;
+
+    for (int j = 0; j < 8 - power; j++) {
+        _sysPutCharacter('0');
+    }
+
+    for (int i = power -1; i >= 0; i--) {
+        ch = n / _power(base, i);
+        n %= _power(base, i);
+
+        if (ch == 0 && n >= 16) {
+            _sysPutCharacter('0');
+        }else if (ch == 0 && n <16 && n > 9) {
+            _sysPutCharacter('A' + n - 10);
+        } else if (ch == 0 && n > 0 && n < 10) {
+            _sysPutCharacter('0' + n);
+        } else if (ch == 0 && n == 0) {
+            _sysPutCharacter('0');
+        } else if (ch > 9) {
+            _sysPutCharacter('A' + ch -10);
+        } else {
+            _sysPutCharacter('0' + ch);
+        }
+    }
 }
 
+inline size_t _power(size_t x, size_t y) {
+
+    size_t result = x;
+
+    for (size_t i = 1; i < y; i++) {
+        result *= x;
+    }
+    return result;
+}
 
 /*!
     \brief direct write charcter on vram

@@ -3,7 +3,7 @@
     \brief definition for kernel
 
     definition for kernel & macros
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002, 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -21,6 +21,55 @@
 #define pusha()      asm volatile("pusha"); /*!< \def  pusha            */
 #define popa()       asm volatile("popa");  /*!< \def  popa             */
 
+
+/*!< \def _sys_dump() */
+#define _sysdump(str, stopflag) {               \
+    _sysLock();                                 \
+    dword __eax, __ebx, __ecx, __edx;           \
+    dword __esp, __ebp, __esi, __edi;           \
+    dword __cs , __ds , __fs , __es;            \
+    dword __gs, __ss;                           \
+    asm volatile("mov %%eax, %0  \n"            \
+                 "mov %%ebx, %1  \n"            \
+                 "mov %%ecx, %2  \n"            \
+                 "mov %%edx, %3  \n"            \
+                 "mov %%esp, %4  \n"            \
+                 "mov %%ebp, %5  \n"            \
+                 "mov %%esi, %6  \n"            \
+                 "mov %%edi, %7  \n"            \
+                 "mov %%cs , %8  \n"            \
+                 "mov %%ds , %9  \n"            \
+                 "mov %%es , %10 \n"            \
+                 "mov %%fs , %11 \n"            \
+                 "mov %%gs , %12 \n"            \
+                 "mov %%ss , %13 \n"            \
+                 : "=m" (__eax)                 \
+                 , "=m" (__ebx)                 \
+                 , "=m" (__ecx)                 \
+                 , "=m" (__edx)                 \
+                 , "=m" (__esp)                 \
+                 , "=m" (__ebp)                 \
+                 , "=m" (__esi)                 \
+                 , "=m" (__edi)                 \
+                 , "=m" (__cs)                  \
+                 , "=m" (__ds)                  \
+                 , "=m" (__es)                  \
+                 , "=m" (__fs)                  \
+                 , "=m" (__gs)                  \
+                 , "=m" (__ss)                  \
+                );                              \
+    _sys_printf("%s _sysdump()\n", str);        \
+    _sys_printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
+                , __eax, __ebx, __ecx, __edx);  \
+    _sys_printf("esp=%x ebp=%x esi=%x edi=%x\n" \
+                , __esp, __ebp, __esi, __edi);  \
+    _sys_printf("cs =%x ds =%x es =%x fs =%x\n" \
+                , __cs , __ds , __es , __fs);   \
+    _sys_printf("gs =%x ss =%x \n"              \
+                , __gs , __ss);                 \
+     _sysUnlock();                              \
+     if (stopflag) while (true);                \
+}
 
 /*!
    \struct FARJMP

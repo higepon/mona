@@ -199,29 +199,26 @@ void ProcessManager::printInfo() {
     switch process to next process
 
     \author HigePon
-    \date   create:2002/12/02 update:2003/01/10
+    \date   create:2002/12/02 update:2003/01/14
 */
 inline void ProcessManager::switchProcess() {
 
-    bool next = taskidx_ %2 == 1;
+    static dword current = 0x20;
 
     if (taskidx_ == 0) {
         taskidx_++;
         return;
     }
 
-    /* set back link and tss busy */
-    if (next) {
+    if (current == 0x20) {
         tss[0].backlink = 0x28;
         setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), SYS_TSS_BUSY);
+        current = 0x28;
     } else {
         tss[1].backlink = 0x20;
         setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS_BUSY);
+        current = 0x20;
     }
-
-    taskidx_ ++;
-
-    if (taskidx_ >= 50000) taskidx_ = 0;
 
     /* set NT flag 1 */
     setNTflag1();

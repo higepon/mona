@@ -71,4 +71,5 @@ void setCursor(int, int);
 void scrollUp();
 void _sysPutInt(size_t, int);
 void _sysSetColor(char);
+inline size_t _power(size_t, size_t);
 #endif
