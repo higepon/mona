@@ -5,7 +5,7 @@
     using pure virtual function, we need this function
     thank you OS chyou teacher@os board
 
-    Copyright (c) 2002,2003 Higepon
+    Copyright (c) 2002,2003 Higepon and the individuals listed on the ChangeLog entries.
     All rights reserved.
     License=MIT/X Licnese
 

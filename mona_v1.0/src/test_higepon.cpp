@@ -18,7 +18,7 @@
 
     \brief  test code for higepon
 
-    Copyright (c) 2002,2003 Higepon
+    Copyright (c) 2002,2003 Higepon and the individuals listed on the ChangeLog entries.
     All rights reserved.
     License=MIT/X Licnese
 

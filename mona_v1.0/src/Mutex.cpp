@@ -2,7 +2,7 @@
     \file  Mutex.cpp
     \brief class kMutex
 
-    Copyright (c) 2004 Higepon
+    Copyright (c) 2002, 2003, 2004 Higepon and the individuals listed on the ChangeLog entries.
     All rights reserved.
     License=MIT/X Licnese
 
