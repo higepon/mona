@@ -9,7 +9,7 @@ all:
 install:
 	@cd fat_write && $(MAKE)
 	@cd bim2bin && $(MAKE)
-	@cd t5lzma/7zip/Compress/LZMA_Alone && $(MAKE) all
+	@cd t5lzma/7zip/Compress/LZMA_Alone && $(MAKE) $@
 	@cd bit2mnf && $(MAKE) $@
 	@cd monaelf && $(MAKE)
 	@cd elf_tool && $(MAKE)
@@ -17,6 +17,7 @@ install:
 clean: touchdepend
 	@cd fat_write && $(MAKE) $@
 	@cd bim2bin && $(MAKE) $@
+	@cd t5lzma/7zip/Compress/LZMA_Alone && $(MAKE) $@
 	@cd bit2mnf && $(MAKE) $@
 	@cd monaelf && $(MAKE) $@
 	@cd elf_tool && $(MAKE) $@
