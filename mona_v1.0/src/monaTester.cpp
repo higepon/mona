@@ -112,7 +112,8 @@ void typeTester() {
 void processTester() {
 
     ProcessManager& pm = ProcessManager::instance();
-    pm.printInfo();
+    //    pm.printInfo();
+    pm.multiTaskTester();
     return;
 }
 

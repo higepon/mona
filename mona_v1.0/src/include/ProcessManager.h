@@ -30,6 +30,7 @@ class ProcessManager {
     void switchProcess();
     inline void switchProcess(dword) const;
     void printInfo();
+    void multiTaskTester();
     static ProcessManager& instance() {
         static ProcessManager theInstance;
         return theInstance;

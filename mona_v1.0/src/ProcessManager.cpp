@@ -144,43 +144,48 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 }
 
 /*!
-    \brief print information
+    \brief multi task test
 
-    print infomation for debug
+    multi task test. preemptive
 
     \author HigePon
-    \date   create:2002/11/24 update:
+    \date   create:2002/12/22 update:
 */
-void ProcessManager::printInfo() {
+void ProcessManager::multiTaskTester() {
 
 
     _sys_printf("address of GDT=%d\n", gdt_);
 
-    for (int i = 0; i < GDTNUM; i++) {
-
-        _sys_printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
-                                                , gdt_[i].baseL
-                                                , gdt_[i].baseM
-                                                , gdt_[i].type
-                                                , gdt_[i].limitH
-                                                , gdt_[i].baseH
-                    );
-    }
-
+    printInfo();
 
     setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x10, 0, 0);
     setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSS);
     setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
-    setDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
-    setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
-    // setDT(ldt  +1   , (dword)(sss + 1), sizeof(GDT), TypeLDT);
-    setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
-    lldt(0x30);
-    //    _sys_printf("tss=%x", (dword)tss);
+    setDT(gdt_ + 6, (dword)(ldt)    , sizeof(GDT), TypeLDT);
+    setDT(ldt     , (dword)(sss)    , sizeof(GDT), TypeLDT);
+    setDT(sss     , (dword)(0)      , sizeof(GDT), TypeLDT);
 
+    lldt(0x30);
     ltr(0x20);
+
+    /* process start */
     process1Tester();
-    //    _sys_printf("cs=%d\n", (tss+1)->cs);
+
+    printInfo();
+
+    return;
+}
+
+/*!
+    \brief print information
+
+    print information about processes
+
+    \author HigePon
+    \date   create:2002/12/02 update:2002/12/22
+*/
+void ProcessManager::printInfo() {
+
     for (int i = 0; i < GDTNUM; i++) {
 
         _sys_printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
@@ -191,8 +196,6 @@ void ProcessManager::printInfo() {
                                                 , gdt_[i].baseH
                     );
     }
-
-    return;
 }
 
 /*!
