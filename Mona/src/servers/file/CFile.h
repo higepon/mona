@@ -21,6 +21,10 @@ namespace FileServer {
 class FSEntry
 {
 public:
+    FSEntry() {}
+    virtual ~FSEntry() {}
+
+public:
     virtual bool IsDirectory() = 0;
 
     virtual dword GetSize() const
@@ -38,7 +42,56 @@ private:
     MonAPI::CString name;
 };
 
+class Directory : public FSEntry
+{
+public:
+    Directory();
+    virtual ~Directory();
 
+};
+
+class File : public FSEntry
+{
+public:
+    File();
+    virtual ~File();
+};
+
+class ISO9660File : public File
+{
+public:
+    ISO9660File();
+    virtual ~ISO9660File();
+
+};
+
+enum
+{
+    FS_READ_ONLY_ERROR = 1
+};
+
+class FileSystem
+{
+public:
+    virtual File* Open(const char* path, int mode)      = 0;
+    virtual bool CreateDirectory(const char* directory) = 0;
+    virtual bool RemoveDirectory(const char* directory) = 0;
+    virtual bool CreateFile(const char* path)           = 0;
+    virtual bool RemoveFile(const char* file)           = 0;
+    virtual int GetLastError() const {return lastError;}
+
+protected:
+    int lastError;
+};
+
+class ReadOnlyFileSystem : public FileSystem
+{
+public:
+    virtual bool CreateDirectory(const char* directory) {this->lastError = FS_READ_ONLY_ERROR; return false;}
+    virtual bool RemoveDirectory(const char* directory) {this->lastError = FS_READ_ONLY_ERROR; return false;}
+    virtual bool CreateFile(const char* path)           {this->lastError = FS_READ_ONLY_ERROR; return false;}
+    virtual bool RemoveFile(const char* file)           {this->lastError = FS_READ_ONLY_ERROR; return false;}
+};
 
 }
 

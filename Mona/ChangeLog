@@ -1,3 +1,7 @@
+2004-12-31  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/CFile.h (class ReadOnlyFileSystem): 追加
+
 2004-12-30  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/main.cpp (fdInitialize): テスト用に追加
