@@ -96,25 +96,7 @@ void startKernel(void) {
     g_console->printf("\n");
 
 #ifdef MJT
-    /* IDE TEST routine */
-    dword idet;
-    //kthread_init();
-    enableInterrupt();
-    enableTimer();
-    idet = g_kthreadInfo.tick;
-    g_console->printf("Enable timer...(DISABLED THREAD SCHEDULER!)\n");/* ihandlers.cpp timer, kthread.cpp tick */
-    g_console->printf("IDE init...\n");
-    IDEDriver *d0;
-    IDEDriver *d1;
-    g_console->printf("Primary...\n");
-    d0 = new IDEDriver(g_console,0x1f0);
-    g_console->printf("Secondry...\n");
-    d1 = new IDEDriver(g_console,0x170);
-    g_console->printf("Disable timer...\n");
-    disableTimer();
-    idet = g_kthreadInfo.tick - idet;
-    g_console->printf("IDE init done(%d ticks)\n",idet);
-    /* ~IDE */
+    test_mjt();
 #endif
 
     g_console->printf("Hit any key to start [floppy read/write test]\n");

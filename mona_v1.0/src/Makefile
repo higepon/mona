@@ -99,4 +99,7 @@ dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img
 	cd ../../; tar cf - mona_v1.0 | gzip -9 > "mona-$(VERSION).tar.gz"
 
+write : $(TARGET)
+	cp $(TARGET) /dev/fd0
+
 include $(ENV)/dependencies

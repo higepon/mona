@@ -446,8 +446,11 @@ IDEDevice::~IDEDevice(){
 }
 
 bool IDEDevice::read(dword lba, byte* buf) {
-    Bus->setLBA(lba,device_);
-    return Bus->cmdRead(buf,1);
+    if(Bus->setLBA(lba,device_)){
+      return Bus->cmdRead(buf,1);
+    }else{
+      return false;
+    }
 }
 
 
