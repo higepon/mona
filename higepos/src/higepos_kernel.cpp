@@ -24,7 +24,7 @@
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2002/08/07
+    \date   create:2002/07/21 update:2002/08/08
 */
 void startKernel(void) {
     _sysInitVga();

@@ -15,6 +15,7 @@
 
 /*!
     memory mangement class
+    the instance of this class is single pattern
 */
 class X86MemoryManager:virtual MemoryManager {
 

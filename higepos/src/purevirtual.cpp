@@ -23,4 +23,13 @@ extern "C" int atexit( void (*func)(void));
     \date   create:2002/08/04 update:
 */
 void __cxa_pure_virtual() {}
+
+/*!
+    \brief dummy
+
+    dummy
+
+    \author HigePon
+    \date   create:2002/08/08 update:
+*/
 int atexit( void (*func)(void)) {}

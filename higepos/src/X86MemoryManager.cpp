@@ -68,12 +68,18 @@ unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
     \author HigePon
     \date   create:2002/08/07 update:
 */
-unsigned long X86MemoryManager::freeMemory(unsigned long size) {
+unsigned long X86MemoryManager::freeMemory(unsigned long address) {
 
     return 0;
 }
 
+/*!
+    \brief destructor
 
+    destructor
+
+    \author HigePon
+    \date   create:2002/08/08 update:
+*/
 X86MemoryManager::~X86MemoryManager() {
-
 }
