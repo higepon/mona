@@ -14,19 +14,38 @@ BITS 32
 
 [global _arch_fdchandler]
 [global _arch_timerhandler]
+[global _arch_keystrokehandler]
+[global _arch_dummyhandler]
+
 [extern _MFDCHandler]
 [extern _timerHandler]
+[extern _keyStrokeHandler]
+[extern _dummyHandler]
 
-;;; fdchandler
+;;; fdc handler
 _arch_fdchandler:
-        pusha
+        pushad
         call _MFDCHandler
-        popa
+        popad
         iretd
 
-;;; timerhandler
+;;; timer handler
 _arch_timerhandler:
-        pusha
+        pushad
         call _timerHandler
-        popa
+        popad
+        iretd
+
+;;; keystroke handler
+_arch_keystrokehandler:
+        pushad
+        call _keyStrokeHandler
+        popad
+        iretd
+
+;;; dummy handler
+_arch_dummyhandler:
+        pushad
+        call _dummyHandler
+        popad
         iretd

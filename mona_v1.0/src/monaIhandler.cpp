@@ -31,11 +31,9 @@
     key storoke handler IRQ 1
 
     \author HigePon
-    \date   create:2002/07/25 update:2002/01/26
+    \date   create:2002/07/25 update:2002/02/24
 */
 void keyStrokeHandler() {
-
-    pusha();
 
     /* get scancode */
     byte scancode = inportb(0x60);
@@ -46,9 +44,6 @@ void keyStrokeHandler() {
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
-
-    popa();
-    iret();
 }
 
 /*!
@@ -72,18 +67,15 @@ void fault0dHandler() {
     dummy handler
 
     \author HigePon
-    \date   create:2002/07/25 update:2002/07/27
+    \date   create:2002/07/25 update:2003/03/24
 */
-void dummy() {
-    pusha();
-    _sysPrint("dummy");
+void dummyHandler() {
+
+    console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
-
-    popa();
-    iret();
 }
 
 /*!
@@ -149,270 +141,267 @@ void timerHandler() {
 */
 void MFDCHandler(void) {
 
-    //    pusha();
     gMFDCDriver->interrupt();
     console->printf("\nfdc interrupt\n");
     outportb(0x20, 0x20);
-    //    popa();
-    //    iret();
 }
 
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
-     {0x00, &dummy}
-   , {0x01, &dummy}
-   , {0x02, &dummy}
-   , {0x03, &dummy}
-   , {0x04, &dummy}
-   , {0x05, &dummy}
-   , {0x06, &dummy}
-   , {0x07, &dummy}
+     {0x00, &arch_dummyhandler}
+   , {0x01, &arch_dummyhandler}
+   , {0x02, &arch_dummyhandler}
+   , {0x03, &arch_dummyhandler}
+   , {0x04, &arch_dummyhandler}
+   , {0x05, &arch_dummyhandler}
+   , {0x06, &arch_dummyhandler}
+   , {0x07, &arch_dummyhandler}
    , {0x08, &arch_timerhandler}
-   , {0x09, &keyStrokeHandler}
-   , {0x0A, &dummy}
-   , {0x0B, &dummy}
-   , {0x0C, &dummy}
+   , {0x09, &arch_keystrokehandler}
+   , {0x0A, &arch_dummyhandler}
+   , {0x0B, &arch_dummyhandler}
+   , {0x0C, &arch_dummyhandler}
    , {0x0D, &fault0dHandler}
    , {0x0E, &arch_fdchandler}
-   , {0x0F, &dummy}
-   , {0x10, &dummy}
-   , {0x11, &dummy}
-   , {0x12, &dummy}
-   , {0x13, &dummy}
-   , {0x14, &dummy}
-   , {0x15, &dummy}
-   , {0x16, &dummy}
-   , {0x17, &dummy}
-   , {0x18, &dummy}
-   , {0x19, &dummy}
-   , {0x1A, &dummy}
-   , {0x1B, &dummy}
-   , {0x1C, &dummy}
-   , {0x1D, &dummy}
-   , {0x1E, &dummy}
-   , {0x1F, &dummy}
-   , {0x20, &dummy}
-   , {0x21, &dummy}
-   , {0x22, &dummy}
-   , {0x23, &dummy}
-   , {0x24, &dummy}
-   , {0x25, &dummy}
-   , {0x26, &dummy}
-   , {0x27, &dummy}
-   , {0x28, &dummy}
-   , {0x29, &dummy}
-   , {0x2A, &dummy}
-   , {0x2B, &dummy}
-   , {0x2C, &dummy}
-   , {0x2D, &dummy}
-   , {0x2E, &dummy}
-   , {0x2F, &dummy}
-   , {0x30, &dummy}
-   , {0x31, &dummy}
-   , {0x32, &dummy}
-   , {0x33, &dummy}
-   , {0x34, &dummy}
-   , {0x35, &dummy}
-   , {0x36, &dummy}
-   , {0x37, &dummy}
-   , {0x38, &dummy}
-   , {0x39, &dummy}
-   , {0x3A, &dummy}
-   , {0x3B, &dummy}
-   , {0x3C, &dummy}
-   , {0x3D, &dummy}
-   , {0x3E, &dummy}
-   , {0x3F, &dummy}
-   , {0x40, &dummy}
-   , {0x41, &dummy}
-   , {0x42, &dummy}
-   , {0x43, &dummy}
-   , {0x44, &dummy}
-   , {0x45, &dummy}
-   , {0x46, &dummy}
-   , {0x47, &dummy}
-   , {0x48, &dummy}
-   , {0x49, &dummy}
-   , {0x4A, &dummy}
-   , {0x4B, &dummy}
-   , {0x4C, &dummy}
-   , {0x4D, &dummy}
-   , {0x4E, &dummy}
-   , {0x4F, &dummy}
-   , {0x50, &dummy}
-   , {0x51, &dummy}
-   , {0x52, &dummy}
-   , {0x53, &dummy}
-   , {0x54, &dummy}
-   , {0x55, &dummy}
-   , {0x56, &dummy}
-   , {0x57, &dummy}
-   , {0x58, &dummy}
-   , {0x59, &dummy}
-   , {0x5A, &dummy}
-   , {0x5B, &dummy}
-   , {0x5C, &dummy}
-   , {0x5D, &dummy}
-   , {0x5E, &dummy}
-   , {0x5F, &dummy}
-   , {0x60, &dummy}
-   , {0x61, &dummy}
-   , {0x62, &dummy}
-   , {0x63, &dummy}
-   , {0x64, &dummy}
-   , {0x65, &dummy}
-   , {0x66, &dummy}
-   , {0x67, &dummy}
-   , {0x68, &dummy}
-   , {0x69, &dummy}
-   , {0x6A, &dummy}
-   , {0x6B, &dummy}
-   , {0x6C, &dummy}
-   , {0x6D, &dummy}
-   , {0x6E, &dummy}
-   , {0x6F, &dummy}
-   , {0x70, &dummy}
-   , {0x71, &dummy}
-   , {0x72, &dummy}
-   , {0x73, &dummy}
-   , {0x74, &dummy}
-   , {0x75, &dummy}
-   , {0x76, &dummy}
-   , {0x77, &dummy}
-   , {0x78, &dummy}
-   , {0x79, &dummy}
-   , {0x7A, &dummy}
-   , {0x7B, &dummy}
-   , {0x7C, &dummy}
-   , {0x7D, &dummy}
-   , {0x7E, &dummy}
-   , {0x7F, &dummy}
-   , {0x80, &dummy}
-   , {0x81, &dummy}
-   , {0x82, &dummy}
-   , {0x83, &dummy}
-   , {0x84, &dummy}
-   , {0x85, &dummy}
-   , {0x86, &dummy}
-   , {0x87, &dummy}
-   , {0x88, &dummy}
-   , {0x89, &dummy}
-   , {0x8A, &dummy}
-   , {0x8B, &dummy}
-   , {0x8C, &dummy}
-   , {0x8D, &dummy}
-   , {0x8E, &dummy}
-   , {0x8F, &dummy}
-   , {0x90, &dummy}
-   , {0x91, &dummy}
-   , {0x92, &dummy}
-   , {0x93, &dummy}
-   , {0x94, &dummy}
-   , {0x95, &dummy}
-   , {0x96, &dummy}
-   , {0x97, &dummy}
-   , {0x98, &dummy}
-   , {0x99, &dummy}
-   , {0x9A, &dummy}
-   , {0x9B, &dummy}
-   , {0x9C, &dummy}
-   , {0x9D, &dummy}
-   , {0x9E, &dummy}
-   , {0x9F, &dummy}
-   , {0xA0, &dummy}
-   , {0xA1, &dummy}
-   , {0xA2, &dummy}
-   , {0xA3, &dummy}
-   , {0xA4, &dummy}
-   , {0xA5, &dummy}
-   , {0xA6, &dummy}
-   , {0xA7, &dummy}
-   , {0xA8, &dummy}
-   , {0xA9, &dummy}
-   , {0xAA, &dummy}
-   , {0xAB, &dummy}
-   , {0xAC, &dummy}
-   , {0xAD, &dummy}
-   , {0xAE, &dummy}
-   , {0xAF, &dummy}
-   , {0xB0, &dummy}
-   , {0xB1, &dummy}
-   , {0xB2, &dummy}
-   , {0xB3, &dummy}
-   , {0xB4, &dummy}
-   , {0xB5, &dummy}
-   , {0xB6, &dummy}
-   , {0xB7, &dummy}
-   , {0xB8, &dummy}
-   , {0xB9, &dummy}
-   , {0xBA, &dummy}
-   , {0xBB, &dummy}
-   , {0xBC, &dummy}
-   , {0xBD, &dummy}
-   , {0xBE, &dummy}
-   , {0xBF, &dummy}
-   , {0xC0, &dummy}
-   , {0xC1, &dummy}
-   , {0xC2, &dummy}
-   , {0xC3, &dummy}
-   , {0xC4, &dummy}
-   , {0xC5, &dummy}
-   , {0xC6, &dummy}
-   , {0xC7, &dummy}
-   , {0xC8, &dummy}
-   , {0xC9, &dummy}
-   , {0xCA, &dummy}
-   , {0xCB, &dummy}
-   , {0xCC, &dummy}
-   , {0xCD, &dummy}
-   , {0xCE, &dummy}
-   , {0xCF, &dummy}
-   , {0xD0, &dummy}
-   , {0xD1, &dummy}
-   , {0xD2, &dummy}
-   , {0xD3, &dummy}
-   , {0xD4, &dummy}
-   , {0xD5, &dummy}
-   , {0xD6, &dummy}
-   , {0xD7, &dummy}
-   , {0xD8, &dummy}
-   , {0xD9, &dummy}
-   , {0xDA, &dummy}
-   , {0xDB, &dummy}
-   , {0xDC, &dummy}
-   , {0xDD, &dummy}
-   , {0xDE, &dummy}
-   , {0xDF, &dummy}
-   , {0xE0, &dummy}
-   , {0xE1, &dummy}
-   , {0xE2, &dummy}
-   , {0xE3, &dummy}
-   , {0xE4, &dummy}
-   , {0xE5, &dummy}
-   , {0xE6, &dummy}
-   , {0xE7, &dummy}
-   , {0xE8, &dummy}
-   , {0xE9, &dummy}
-   , {0xEA, &dummy}
-   , {0xEB, &dummy}
-   , {0xEC, &dummy}
-   , {0xED, &dummy}
-   , {0xEE, &dummy}
-   , {0xEF, &dummy}
-   , {0xF0, &dummy}
-   , {0xF1, &dummy}
-   , {0xF2, &dummy}
-   , {0xF3, &dummy}
-   , {0xF4, &dummy}
-   , {0xF5, &dummy}
-   , {0xF6, &dummy}
-   , {0xF7, &dummy}
-   , {0xF8, &dummy}
-   , {0xF9, &dummy}
-   , {0xFA, &dummy}
-   , {0xFB, &dummy}
-   , {0xFC, &dummy}
-   , {0xFD, &dummy}
-   , {0xFE, &dummy}
-   , {0xFF, &dummy}
+   , {0x0F, &arch_dummyhandler}
+   , {0x10, &arch_dummyhandler}
+   , {0x11, &arch_dummyhandler}
+   , {0x12, &arch_dummyhandler}
+   , {0x13, &arch_dummyhandler}
+   , {0x14, &arch_dummyhandler}
+   , {0x15, &arch_dummyhandler}
+   , {0x16, &arch_dummyhandler}
+   , {0x17, &arch_dummyhandler}
+   , {0x18, &arch_dummyhandler}
+   , {0x19, &arch_dummyhandler}
+   , {0x1A, &arch_dummyhandler}
+   , {0x1B, &arch_dummyhandler}
+   , {0x1C, &arch_dummyhandler}
+   , {0x1D, &arch_dummyhandler}
+   , {0x1E, &arch_dummyhandler}
+   , {0x1F, &arch_dummyhandler}
+   , {0x20, &arch_dummyhandler}
+   , {0x21, &arch_dummyhandler}
+   , {0x22, &arch_dummyhandler}
+   , {0x23, &arch_dummyhandler}
+   , {0x24, &arch_dummyhandler}
+   , {0x25, &arch_dummyhandler}
+   , {0x26, &arch_dummyhandler}
+   , {0x27, &arch_dummyhandler}
+   , {0x28, &arch_dummyhandler}
+   , {0x29, &arch_dummyhandler}
+   , {0x2A, &arch_dummyhandler}
+   , {0x2B, &arch_dummyhandler}
+   , {0x2C, &arch_dummyhandler}
+   , {0x2D, &arch_dummyhandler}
+   , {0x2E, &arch_dummyhandler}
+   , {0x2F, &arch_dummyhandler}
+   , {0x30, &arch_dummyhandler}
+   , {0x31, &arch_dummyhandler}
+   , {0x32, &arch_dummyhandler}
+   , {0x33, &arch_dummyhandler}
+   , {0x34, &arch_dummyhandler}
+   , {0x35, &arch_dummyhandler}
+   , {0x36, &arch_dummyhandler}
+   , {0x37, &arch_dummyhandler}
+   , {0x38, &arch_dummyhandler}
+   , {0x39, &arch_dummyhandler}
+   , {0x3A, &arch_dummyhandler}
+   , {0x3B, &arch_dummyhandler}
+   , {0x3C, &arch_dummyhandler}
+   , {0x3D, &arch_dummyhandler}
+   , {0x3E, &arch_dummyhandler}
+   , {0x3F, &arch_dummyhandler}
+   , {0x40, &arch_dummyhandler}
+   , {0x41, &arch_dummyhandler}
+   , {0x42, &arch_dummyhandler}
+   , {0x43, &arch_dummyhandler}
+   , {0x44, &arch_dummyhandler}
+   , {0x45, &arch_dummyhandler}
+   , {0x46, &arch_dummyhandler}
+   , {0x47, &arch_dummyhandler}
+   , {0x48, &arch_dummyhandler}
+   , {0x49, &arch_dummyhandler}
+   , {0x4A, &arch_dummyhandler}
+   , {0x4B, &arch_dummyhandler}
+   , {0x4C, &arch_dummyhandler}
+   , {0x4D, &arch_dummyhandler}
+   , {0x4E, &arch_dummyhandler}
+   , {0x4F, &arch_dummyhandler}
+   , {0x50, &arch_dummyhandler}
+   , {0x51, &arch_dummyhandler}
+   , {0x52, &arch_dummyhandler}
+   , {0x53, &arch_dummyhandler}
+   , {0x54, &arch_dummyhandler}
+   , {0x55, &arch_dummyhandler}
+   , {0x56, &arch_dummyhandler}
+   , {0x57, &arch_dummyhandler}
+   , {0x58, &arch_dummyhandler}
+   , {0x59, &arch_dummyhandler}
+   , {0x5A, &arch_dummyhandler}
+   , {0x5B, &arch_dummyhandler}
+   , {0x5C, &arch_dummyhandler}
+   , {0x5D, &arch_dummyhandler}
+   , {0x5E, &arch_dummyhandler}
+   , {0x5F, &arch_dummyhandler}
+   , {0x60, &arch_dummyhandler}
+   , {0x61, &arch_dummyhandler}
+   , {0x62, &arch_dummyhandler}
+   , {0x63, &arch_dummyhandler}
+   , {0x64, &arch_dummyhandler}
+   , {0x65, &arch_dummyhandler}
+   , {0x66, &arch_dummyhandler}
+   , {0x67, &arch_dummyhandler}
+   , {0x68, &arch_dummyhandler}
+   , {0x69, &arch_dummyhandler}
+   , {0x6A, &arch_dummyhandler}
+   , {0x6B, &arch_dummyhandler}
+   , {0x6C, &arch_dummyhandler}
+   , {0x6D, &arch_dummyhandler}
+   , {0x6E, &arch_dummyhandler}
+   , {0x6F, &arch_dummyhandler}
+   , {0x70, &arch_dummyhandler}
+   , {0x71, &arch_dummyhandler}
+   , {0x72, &arch_dummyhandler}
+   , {0x73, &arch_dummyhandler}
+   , {0x74, &arch_dummyhandler}
+   , {0x75, &arch_dummyhandler}
+   , {0x76, &arch_dummyhandler}
+   , {0x77, &arch_dummyhandler}
+   , {0x78, &arch_dummyhandler}
+   , {0x79, &arch_dummyhandler}
+   , {0x7A, &arch_dummyhandler}
+   , {0x7B, &arch_dummyhandler}
+   , {0x7C, &arch_dummyhandler}
+   , {0x7D, &arch_dummyhandler}
+   , {0x7E, &arch_dummyhandler}
+   , {0x7F, &arch_dummyhandler}
+   , {0x80, &arch_dummyhandler}
+   , {0x81, &arch_dummyhandler}
+   , {0x82, &arch_dummyhandler}
+   , {0x83, &arch_dummyhandler}
+   , {0x84, &arch_dummyhandler}
+   , {0x85, &arch_dummyhandler}
+   , {0x86, &arch_dummyhandler}
+   , {0x87, &arch_dummyhandler}
+   , {0x88, &arch_dummyhandler}
+   , {0x89, &arch_dummyhandler}
+   , {0x8A, &arch_dummyhandler}
+   , {0x8B, &arch_dummyhandler}
+   , {0x8C, &arch_dummyhandler}
+   , {0x8D, &arch_dummyhandler}
+   , {0x8E, &arch_dummyhandler}
+   , {0x8F, &arch_dummyhandler}
+   , {0x90, &arch_dummyhandler}
+   , {0x91, &arch_dummyhandler}
+   , {0x92, &arch_dummyhandler}
+   , {0x93, &arch_dummyhandler}
+   , {0x94, &arch_dummyhandler}
+   , {0x95, &arch_dummyhandler}
+   , {0x96, &arch_dummyhandler}
+   , {0x97, &arch_dummyhandler}
+   , {0x98, &arch_dummyhandler}
+   , {0x99, &arch_dummyhandler}
+   , {0x9A, &arch_dummyhandler}
+   , {0x9B, &arch_dummyhandler}
+   , {0x9C, &arch_dummyhandler}
+   , {0x9D, &arch_dummyhandler}
+   , {0x9E, &arch_dummyhandler}
+   , {0x9F, &arch_dummyhandler}
+   , {0xA0, &arch_dummyhandler}
+   , {0xA1, &arch_dummyhandler}
+   , {0xA2, &arch_dummyhandler}
+   , {0xA3, &arch_dummyhandler}
+   , {0xA4, &arch_dummyhandler}
+   , {0xA5, &arch_dummyhandler}
+   , {0xA6, &arch_dummyhandler}
+   , {0xA7, &arch_dummyhandler}
+   , {0xA8, &arch_dummyhandler}
+   , {0xA9, &arch_dummyhandler}
+   , {0xAA, &arch_dummyhandler}
+   , {0xAB, &arch_dummyhandler}
+   , {0xAC, &arch_dummyhandler}
+   , {0xAD, &arch_dummyhandler}
+   , {0xAE, &arch_dummyhandler}
+   , {0xAF, &arch_dummyhandler}
+   , {0xB0, &arch_dummyhandler}
+   , {0xB1, &arch_dummyhandler}
+   , {0xB2, &arch_dummyhandler}
+   , {0xB3, &arch_dummyhandler}
+   , {0xB4, &arch_dummyhandler}
+   , {0xB5, &arch_dummyhandler}
+   , {0xB6, &arch_dummyhandler}
+   , {0xB7, &arch_dummyhandler}
+   , {0xB8, &arch_dummyhandler}
+   , {0xB9, &arch_dummyhandler}
+   , {0xBA, &arch_dummyhandler}
+   , {0xBB, &arch_dummyhandler}
+   , {0xBC, &arch_dummyhandler}
+   , {0xBD, &arch_dummyhandler}
+   , {0xBE, &arch_dummyhandler}
+   , {0xBF, &arch_dummyhandler}
+   , {0xC0, &arch_dummyhandler}
+   , {0xC1, &arch_dummyhandler}
+   , {0xC2, &arch_dummyhandler}
+   , {0xC3, &arch_dummyhandler}
+   , {0xC4, &arch_dummyhandler}
+   , {0xC5, &arch_dummyhandler}
+   , {0xC6, &arch_dummyhandler}
+   , {0xC7, &arch_dummyhandler}
+   , {0xC8, &arch_dummyhandler}
+   , {0xC9, &arch_dummyhandler}
+   , {0xCA, &arch_dummyhandler}
+   , {0xCB, &arch_dummyhandler}
+   , {0xCC, &arch_dummyhandler}
+   , {0xCD, &arch_dummyhandler}
+   , {0xCE, &arch_dummyhandler}
+   , {0xCF, &arch_dummyhandler}
+   , {0xD0, &arch_dummyhandler}
+   , {0xD1, &arch_dummyhandler}
+   , {0xD2, &arch_dummyhandler}
+   , {0xD3, &arch_dummyhandler}
+   , {0xD4, &arch_dummyhandler}
+   , {0xD5, &arch_dummyhandler}
+   , {0xD6, &arch_dummyhandler}
+   , {0xD7, &arch_dummyhandler}
+   , {0xD8, &arch_dummyhandler}
+   , {0xD9, &arch_dummyhandler}
+   , {0xDA, &arch_dummyhandler}
+   , {0xDB, &arch_dummyhandler}
+   , {0xDC, &arch_dummyhandler}
+   , {0xDD, &arch_dummyhandler}
+   , {0xDE, &arch_dummyhandler}
+   , {0xDF, &arch_dummyhandler}
+   , {0xE0, &arch_dummyhandler}
+   , {0xE1, &arch_dummyhandler}
+   , {0xE2, &arch_dummyhandler}
+   , {0xE3, &arch_dummyhandler}
+   , {0xE4, &arch_dummyhandler}
+   , {0xE5, &arch_dummyhandler}
+   , {0xE6, &arch_dummyhandler}
+   , {0xE7, &arch_dummyhandler}
+   , {0xE8, &arch_dummyhandler}
+   , {0xE9, &arch_dummyhandler}
+   , {0xEA, &arch_dummyhandler}
+   , {0xEB, &arch_dummyhandler}
+   , {0xEC, &arch_dummyhandler}
+   , {0xED, &arch_dummyhandler}
+   , {0xEE, &arch_dummyhandler}
+   , {0xEF, &arch_dummyhandler}
+   , {0xF0, &arch_dummyhandler}
+   , {0xF1, &arch_dummyhandler}
+   , {0xF2, &arch_dummyhandler}
+   , {0xF3, &arch_dummyhandler}
+   , {0xF4, &arch_dummyhandler}
+   , {0xF5, &arch_dummyhandler}
+   , {0xF6, &arch_dummyhandler}
+   , {0xF7, &arch_dummyhandler}
+   , {0xF8, &arch_dummyhandler}
+   , {0xF9, &arch_dummyhandler}
+   , {0xFA, &arch_dummyhandler}
+   , {0xFB, &arch_dummyhandler}
+   , {0xFC, &arch_dummyhandler}
+   , {0xFD, &arch_dummyhandler}
+   , {0xFE, &arch_dummyhandler}
+   , {0xFF, &arch_dummyhandler}
 };

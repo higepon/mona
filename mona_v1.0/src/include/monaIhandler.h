@@ -15,8 +15,12 @@
 
 extern "C" void arch_fdchandler(void);
 extern "C" void arch_timerhandler(void);
+extern "C" void arch_keystrokehandler(void);
+extern "C" void arch_dummyhandler(void);
 
 extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
+extern "C" void keyStrokeHandler(void);
+extern "C" void dummyHandler(void);
 
 #endif
