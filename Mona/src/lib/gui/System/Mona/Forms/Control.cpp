@@ -180,6 +180,18 @@ namespace System { namespace Mona { namespace Forms
 	void Control::Dispose()
 	{
 		this->Hide();
+
+		FOREACH_AL(_P<Control>, ctrl, this->controls)
+		{
+			ctrl->Dispose();
+		}
+		this->controls->Clear();
+		//this->controls->target = NULL;
+
+		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEWINDOW, this->get_Handle());
+		this->_object = NULL;
+
+		this->parent = NULL;
 		this->buffer = NULL;
 		
 		this->TextChanged = NULL;
@@ -189,16 +201,6 @@ namespace System { namespace Mona { namespace Forms
 		this->MouseDown = NULL;
 		this->MouseUp = NULL;
 		this->Click = NULL;
-		
-		FOREACH_AL(_P<Control>, ctrl, this->controls)
-		{
-			ctrl->Dispose();
-		}
-		this->controls->Clear();
-		//this->controls->target = NULL;
-		this->parent = NULL;
-		MonAPI::Message::sendReceive(NULL, MSG_GUISERVER_DISPOSEWINDOW, this->get_Handle());
-		this->_object = NULL;
 	}
 	
 	void Control::Refresh()

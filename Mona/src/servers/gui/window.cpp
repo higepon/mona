@@ -153,7 +153,7 @@ guiserver_window* GetTargetWindow(int x, int y)
 		if (w->FormBufferHandle == 0) continue;
 		
 		_R r(w->X, w->Y, w->Width, w->Height);
-		if (!r.Contains(mouse_x, mouse_y)) continue;
+		if (!r.Contains(x, y)) continue;
 		
 		if (w->__reserved1 == NULL)
 		{
