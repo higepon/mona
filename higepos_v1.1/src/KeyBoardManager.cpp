@@ -93,27 +93,27 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
-    _sys_printf("scancode=%d ", scancode);
+    _sys_printf("scancode=%x ", scancode);
 
     if (isKeyboardId_) {
-	idHigh_ = scancode;
-	isKeyboardId_ = false;
+        idHigh_ = scancode;
+        isKeyboardId_ = false;
 
-	return;
+        return;
     }
 
 
     switch(scancode) {
 
       case KEYBOARD_ACK:
-	  return;
+          return;
       case SPECIAL_KEY:
-	  isSpecialKey_ = true;
-	  return;
+          isSpecialKey_ = true;
+          return;
       case 0xAB:
-	  isKeyboardId_ = true;
-	  idLow_        = scancode;
-	  return;
+          isKeyboardId_ = true;
+          idLow_        = scancode;
+          return;
     }
 
         /* if spceial key flg = true */
