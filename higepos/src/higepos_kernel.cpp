@@ -60,7 +60,11 @@ void startKernel(void) {
     _sysPrintlnInt((int)malloc(sizeof(int)));
     _sysPrintlnInt((int)malloc(sizeof(int)));
 
-
+    /* testing _sys_printf */
+    _sysPrintln("printf start");
+    _sys_printf("1+4 = %d %s is the%d\n", 5, "hige",10);
+    _sys_printf("1+4 = %d this is the%d\n", 5, -1);
+    _sys_printf("%d %s %s %d", (int)5,"can you see me?", "yes", (int)-1);
     /* testing vector */
 //      Vector<int> list;
 //      list.add(10);

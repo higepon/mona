@@ -211,10 +211,19 @@ void X86MemoryManager::addToEntry(struct memoryEntry* entry, struct memoryEntry*
 */
 void X86MemoryManager::deleteFromEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
 
+    struct memoryEntry* previous = (struct memoryEntry*)NULL;
+    struct memoryEntry* current  = entry;
+    for (; ; previous = current, current = previous->next) {
 
+        /* the add position */
+        if (block == current) break;
 
+        /* block not found */
+        if (current == entry) return;
+    }
 
-
+    struct memoryEntry* next  = current->next;
+    previous->next = next;
 }
 
 /*!

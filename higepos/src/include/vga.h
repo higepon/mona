@@ -25,6 +25,7 @@ void _sysPrint(char*);
 void _sysPrintInt(int);
 void _sysPrintln(char*);
 void _sysPrintlnInt(int);
+void _sys_printf (char *, ...);
 void newLine(void);
 void forwardCursor(void);
 void forwardCursor(int);

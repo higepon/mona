@@ -47,6 +47,40 @@ void _sysClearScreen() {
 }
 
 /*!
+    \brief print string like printf
+
+    print string like printf
+
+    \author HigePon
+    \date   create:2002/09/08 update:
+*/
+void _sys_printf (char* format, ...) {
+
+    void** list = (void **)&format;
+
+    ((char**)list) += 1;
+    for (int i = 0; format[i] != '\0'; i++) {
+
+        if (format[i] == '%') {
+            i++;
+
+            switch (format[i]) {
+              case 's':
+                  _sysPrint((char *)*list);
+                  ((char**)list) += 1;
+                  break;
+              case 'd':
+                  _sysPrintInt((int)*list);
+                  ((int*)list) += 1;
+                  break;
+            }
+        } else {
+            _sysPutCharcter(format[i]);
+        }
+    }
+}
+
+/*!
     \brief direct write charcter on vram
 
     write charcter at (x, y) directry on vram
