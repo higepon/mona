@@ -7,84 +7,112 @@
 #include "types.h"
 #include "aq.h"
 
-#define FOREACH_Q(top, type, element) \
-for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
-
-#define FOREACH(type, iterator, array) \
-    if ((array).getLength() > 0) \
-        for ({int __i = 0; type iterator;} \
-            __i < (array).getLength() && (&(iterator = (array)[__i]) || true); __##i++)
-
 /*
     main()
 */
+
+Array<Thread*> runq(64);
+Array<Thread*> waitq(3);
+
 int main(int argc, char** argv)
 {
-    /* only Queue test */
-    Queue* top = new Queue();
-    top->initialize();
-
-    printf("Queue Test\n");
-
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < runq.getLength(); i++)
     {
-        Queue* q = new Queue();
-        printf("[%x]", q);
-        top->addToPrev(q);
+        runq[i] = new Thread("r:root");
+        runq[i]->initialize();
     }
 
-    FOREACH_Q(top, Queue*, hoge)
+    for (int i = 0; i < waitq.getLength(); i++)
     {
-        printf("<%x>", hoge);
+        waitq[i] = new Thread("w:root");
+        waitq[i]->initialize();
     }
 
-    /* only Array test */
-    Array<int> array(10);
+    Thread* idle = new Thread("IDLE");
+    Thread* init = new Thread("INIT");
 
-    printf("\nArray Test\n");
+    runq[0]->addToPrev(idle);
+    runq[0]->addToPrev(init);
 
-    for (int i = 0; i < array.getLength(); i++)
+    FOREACH_N(runq[0], Thread*, element)
     {
-        array[i] = i;
+        printf("%s\n", element->name);
+
     }
 
-    FOREACH(int, value, array)
+    init->remove();
+
+    FOREACH_N(runq[0], Thread*, element)
     {
-        printf("[%d]", value);
+        printf("%s\n", element->name);
+
     }
 
-    /* Array  & Queue test */
-    Array<Queue*> runq(10);
-    for (int i = 0; i < 10; i++) runq[i] = new Queue();
+    printf("top=%s\n", ((Thread*)(runq[0]->top()))->name);
 
-    printf("\nArray and Queue Test\n");
+    idle->remove();
 
-    FOREACH(Queue*, value, runq)
+    printf("%s\n", runq[0]->isEmpty() ? "empty" : "nnn");
+
+    runq[0]->addToPrev(idle);
+    runq[0]->addToPrev(init);
+
+    FOREACH(Thread*, queue, runq)
     {
-        value->initialize();
-        Queue* q = new Queue();
-        printf("[%x]", q);
-        top->addToPrev(q);
+        if (queue->isEmpty())
+        {
+            continue;
+        }
+        else
+        {
+            printf("toptop=%s\n", ((Thread*)(queue->top()))->name);
+            break;
+        }
     }
 
-    FOREACH(Queue*, value, runq)
+    Thread* target = init;
+
+    target->remove();
+    waitq[0]->addToPrev(target);
+
+    FOREACH_N(runq[0], Thread*, element)
     {
-        FOREACH_Q(value, Queue*, hoge)
-       {
-           printf("<%x>", hoge);
-       }
+        printf("r:%s\n", element->name);
+
     }
+
+    FOREACH_N(waitq[0], Thread*, element)
+    {
+        printf("w:%s\n", element->name);
+
+    }
+
+
+
+
 
     return 0;
 }
 
-void Queue::initialize()
+Thread::Thread(const char* s)
+{
+    strcpy(name, s);
+}
+
+Thread::~Thread()
+{
+}
+
+/*----------------------------------------------------------------------
+    Node
+----------------------------------------------------------------------*/
+void Node::initialize()
 {
     this->prev = this;
     this->next = this;
 }
 
-void Queue::addToNext(Queue* q)
+void Node::addToNext(Node* q)
 {
     q->next = this->next;
     q->prev = this;
@@ -92,7 +120,7 @@ void Queue::addToNext(Queue* q)
     this->next = q;
 }
 
-void Queue::addToPrev(Queue* q)
+void Node::addToPrev(Node* q)
 {
     q->prev = this->prev;
     q->next = this;
@@ -100,26 +128,26 @@ void Queue::addToPrev(Queue* q)
     this->prev = q;
 }
 
-void Queue::remove()
+void Node::remove()
 {
     this->prev->next = this->next;
     this->next->prev = this->prev;
 }
 
-bool Queue::isEmpty()
+bool Node::isEmpty()
 {
     return (this->next == this);
 }
 
-Queue* Queue::removeNext()
+Node* Node::removeNext()
 {
-    Queue* result = this->next;
+    Node* result = this->next;
     this->next = result->next;
     result->next->prev = this;
     return result;
 }
 
-Queue* Queue::top()
+Node* Node::top()
 {
     return this->next;
 }

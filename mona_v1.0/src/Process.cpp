@@ -33,6 +33,7 @@ Scheduler::Scheduler() : working(false), runq(64), waitq(3), tickTotal(0)
     for (int i = 0; i < runq.getLength(); i++)
     {
         runq[i] = new Thread();
+	g_console->printf("run[%d]=%x", i, runq[i]);
         runq[i]->initialize();
     }
 
@@ -40,6 +41,7 @@ Scheduler::Scheduler() : working(false), runq(64), waitq(3), tickTotal(0)
     for (int i = 0; i < waitq.getLength(); i++)
     {
         waitq[i] = new Thread();
+	g_console->printf("wait[%d]=%x", i, waitq[i]);
         waitq[i]->initialize();
     }
 
@@ -301,7 +303,7 @@ void Scheduler::dump()
         FOREACH_N(queue, Thread*, thread)
         {
             ThreadInfo* i = PTR_THREAD(thread);
-            g_console->printf("[r][%s:t=%x,eip=%x,cr3=%x,pos=%d]\n", i->process->getName(), i, i->archinfo->eip, i->archinfo->cr3, thread->currPriority);
+            g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3);
         }
     }
 
@@ -310,7 +312,7 @@ void Scheduler::dump()
         FOREACH_N(queue, Thread*, thread)
         {
             ThreadInfo* i = PTR_THREAD(thread);
-            g_console->printf("[w][%s:t=%x,eip=%x,cr3=%x,pos=%d]\n", i->process->getName(), i, i->archinfo->eip, i->archinfo->cr3, thread->currPriority);
+            g_console->printf("[w][%s,th=%x,eip=%x,cr3=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3);
         }
     }
 }

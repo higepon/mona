@@ -1,19 +1,39 @@
+#define FOREACH(type, iterator, array) \
+    if ((array).getLength() > 0) \
+        for ({int __i = 0; type iterator;} \
+            __i < (array).getLength() && (&(iterator = (array)[__i]) || true); __##i++)
+
+#define FOREACH_N(top, type, element) \
+for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
+
 /*----------------------------------------------------------------------
-    Queue
+    Node
 ----------------------------------------------------------------------*/
-class Queue
+class Node
 {
 public:
     void initialize();
-    void addToNext(Queue* q);
-    void addToPrev(Queue* q);
+    void addToNext(Node* q);
+    void addToPrev(Node* q);
     void remove();
     bool isEmpty();
-    Queue* removeNext();
-    Queue* top();
+    Node* removeNext();
+    Node* top();
+
 public:
-    Queue* next;
-    Queue* prev;
+    Node* next;
+    Node* prev;
+};
+
+/*----------------------------------------------------------------------
+    Thread
+----------------------------------------------------------------------*/
+class Thread : public Node
+{
+public:
+    Thread(const char* s);
+    ~Thread();
+    char name[256];
 };
 
 /*----------------------------------------------------------------------
