@@ -69,12 +69,6 @@ protected:
 	Graphics *_g;
 	/** 描画バッファー */
 	Image *_buffer;
-#ifdef MONA
-	/** GUIサーバーID */
-	dword guisvrID;
-	/** GUIサーバー上のウィンドウオブジェクト */
-	guiserver_window *_window;
-#endif
 
 public:
 	Control::Control();
@@ -86,7 +80,6 @@ public:
 	virtual void postEvent(Event *event);
 	virtual void repaint();
 	virtual void update();
-	virtual unsigned int getHandle();
 	/** 活性・非活性を得る */
 	inline  bool getEnabled() { return this->enabled; }
 	/** フォーカス状態を得る */

@@ -37,6 +37,10 @@ private:
 	Graphics *__g;
 	/** 内部描画バッファー */
 	Image *__buffer;
+	/** GUIサーバーID */
+	dword guisvrID;
+	/** GUIサーバー上のウィンドウオブジェクト */
+	guiserver_window *_window;
 	
 protected:
 	/** タイトル */
@@ -67,9 +71,12 @@ public:
 	virtual Window::~Window();
 	virtual void create();
 	virtual void dispose();
+	unsigned int getHandle();
 	/** タイトルを得る */
 	inline char  *getTitle() { return this->title.getBytes(); }
 	virtual void setTitle(char *title);
+	virtual void setVisible(bool visible);
+	virtual void setLocation(int x, int y);
 	virtual void setTimer(int duration);
 	virtual void postEvent(Event *event);
 	virtual void repaint();

@@ -71,6 +71,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FONT_BOLD         1
 /** 斜字体 */
 #define FONT_ITALIC       2
+/** 固定幅 */
+#define FONT_FIXED        4
 
 //
 // 配置

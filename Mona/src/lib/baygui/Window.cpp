@@ -95,6 +95,13 @@ Window::Window()
 		__commonParams = (CommonParameters*)MonAPI::MemoryMap::map(commonParamsHandle);
 	}
 
+	// GUIサーバーを探す
+	this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+	if (this->guisvrID == THREAD_UNKNOWN) {
+		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+		exit(1);
+	}
+
 	// GUIサーバーに自分を登録する
 	if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
 		printf("%s:%d:ERROR: can not register to GUI server!\n", __FILE__, __LINE__);
@@ -194,10 +201,10 @@ void Window::create()
 	this->_window->TransparencyKey = 0x00000000;
 	this->_window->Visible = true;
 	this->_window->Opacity = 0xff; // 不透明
-	if (this->parent != NULL) {
-		this->foreColor = this->parent->getForeground();
-		this->backColor = this->parent->getBackground();
-	}
+	//if (this->parent != NULL) {
+	//	this->foreColor = this->parent->getForeground();
+	//	this->backColor = this->parent->getBackground();
+	//}
 	this->_window->__internal2 = true;
 }
 
@@ -219,6 +226,16 @@ void Window::dispose()
 	}
 }
 
+/** ハンドルを得る */
+unsigned int Window::getHandle()
+{
+	if (this->_window != NULL) {
+		return this->_window->Handle;
+	} else {
+		return 0;
+	}
+}
+
 /**
  タイトル設定
  @param title タイトル
@@ -226,6 +243,38 @@ void Window::dispose()
 void Window::setTitle(char *title)
 {
 	this->title = title;
+}
+
+/**
+ 表示状態を設定する
+ @param visible 表示状態 (true / false)
+ */
+void Window::setVisible(bool visible)
+{
+	Control::setVisible(visible);
+	this->_window->Visible = visible;
+	update();
+}
+
+/**
+ 位置を変更する
+ @param x X座標
+ @param y Y座標
+*/
+void Window::setLocation(int x, int y)
+{
+	Control::setLocation(x, y);
+	
+	if (this->_window == NULL) return;
+	if (this->parent == NULL) {
+		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOVEWINDOW, 
+			getHandle(), (unsigned int)x, (unsigned int)y);
+	} else {
+		this->_window->X = x;
+		this->_window->Y = y;
+	}
+	
+	update();
 }
 
 /**

@@ -28,29 +28,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui.h"
 
 /** コンストラクタ */
-Control::Control() {
-	// GUIサーバーを探す
-	guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-	if (guisvrID == THREAD_UNKNOWN) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-		exit(1);
-	} else {
-		this->enabled = true;
-		this->focused = false;
-		this->x = this->y = this->height = this->width = this->offsetX = this->offsetY = 0;
-		this->_buffer = NULL;
-		this->_window = NULL;
-		this->_g = NULL;
-		this->focusEvent.type = FOCUS_IN;
-		this->focusEvent.source = this;
-		this->backColor = DEFAULT_BACKCOLOR;
-		this->foreColor = DEFAULT_FORECOLOR;
-		this->fontStyle = FONT_PLAIN;
-	}
+Control::Control()
+{
+	this->enabled = true;
+	this->focused = false;
+	this->x = this->y = this->height = this->width = this->offsetX = this->offsetY = 0;
+	this->_buffer = NULL;
+	this->_g = NULL;
+	this->focusEvent.type = FOCUS_IN;
+	this->focusEvent.source = this;
+	this->backColor = DEFAULT_BACKCOLOR;
+	this->foreColor = DEFAULT_FORECOLOR;
+	this->fontStyle = FONT_PLAIN;
 }
 
 /** デストラクタ */
-Control::~Control() {
+Control::~Control()
+{
 	dispose();
 }
 
@@ -65,38 +59,6 @@ void Control::create()
 	// 内部バッファー、描画オブジェクトの生成
 	this->_buffer = new Image(width, height);
 	this->_g = new Graphics(this->_buffer);
-
-	// ウィンドウを生成する
-	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, guisvrID, MSG_GUISERVER_CREATEWINDOW)) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-		return;
-	}
-
-	// GUIサーバー上のウィンドウオブジェクトを生成する
-	this->_window = (guiserver_window*)MonAPI::MemoryMap::map(msg.arg2);
-	if (this->_window == NULL) {
-		printf("%s:%d:ERROR: can not create window!\n", __FILE__, __LINE__);
-		return;
-	}
-
-	// 初期設定
-	if (this->parent != NULL) this->_window->Parent = this->parent->getHandle();
-	this->_window->X = this->x;
-	this->_window->Y = this->y;
-	this->_window->Width  = this->width;
-	this->_window->Height = this->height;
-	this->_window->OffsetX = this->offsetX;
-	this->_window->OffsetY = this->offsetY;
-	this->_window->BufferHandle = this->_buffer->getHandle();
-	this->_window->TransparencyKey = 0x00000000;
-	this->_window->Visible = true;
-	this->_window->Opacity = 0xff;
-	if (this->parent != NULL) {
-		this->foreColor = this->parent->getForeground();
-		this->backColor = this->parent->getBackground();
-	}
-	this->_window->__internal2 = false;
 }
 
 /**
@@ -105,13 +67,8 @@ void Control::create()
 */
 void Control::dispose()
 {
-	// ウィンドウ破棄要求
-	dword handle = getHandle();
 	delete(_buffer);
 	delete(_g);
-	if (MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DISPOSEWINDOW, handle)) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-	}
 }
 
 /**
@@ -147,10 +104,7 @@ void Control::postEvent(Event *event)
 void Control::repaint()
 {
 	if (this->_buffer == NULL) return;
-	
 	onPaint(this->_g);
-	
-	// 領域更新要求
 	update();
 }
 
@@ -160,16 +114,6 @@ void Control::update()
 	Control *c = getMainWindow();
 	c->getGraphics()->drawImage(this->_buffer, this->x, this->y);
 	c->update();
-}
-
-/** ハンドルを得る */
-unsigned int Control::getHandle()
-{
-	if (this->_window != NULL) {
-		return this->_window->Handle;
-	} else {
-		return 0;
-	}
 }
 
 /** メインウィンドウを得る */
@@ -217,8 +161,6 @@ void Control::setFocused(bool focused)
 void Control::setVisible(bool visible)
 {
 	this->visible = visible;
-	this->_window->Visible = visible;
-	update();
 }
 
 /**
@@ -253,16 +195,6 @@ void Control::setLocation(int x, int y)
 	this->y = y;
 	this->rect.x = x;
 	this->rect.y = y;
-	
-	if (this->_window == NULL) return;
-	if (this->parent == NULL) {
-		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOVEWINDOW, 
-			getHandle(), (unsigned int)x, (unsigned int)y);
-	} else {
-		this->_window->X = x;
-		this->_window->Y = y;
-	}
-	update();
 }
 
 /**
