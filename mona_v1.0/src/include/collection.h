@@ -26,7 +26,7 @@
 ----------------------------------------------------------------------*/
 #define STACK_ARRAY(type, name, size) type __##name[size]; Array<type> name(__##name, size)
 
-#if 0
+#if 1
 template <class T> class Array {
 
   public:
@@ -44,7 +44,7 @@ template <class T> class Array {
     }
 
   public:
-    inline T operator [](dword index) {
+    inline T& operator [](dword index) {
 
 #ifdef DEBUG_MODE
         if (index < 0 || index > length_ - 1) {
@@ -66,7 +66,7 @@ template <class T> class Array {
 };
 #endif
 
-#if 1 // tino's for test
+#if 0 // tino's for test
 template <class T> struct Array
 {
 protected:

@@ -72,9 +72,11 @@ bool Scheduler::schedule()
     /* schedule for each run queue */
     FOREACH(Thread, queue, runq)
     {
+
 //        FOREACH_Q(queue, Thread*, thread)
 	for (Thread* thread = (Thread*)(queue.next); thread != &queue; thread = (Thread*)(thread->next))
         {
+            g_console->printf("[%x][%x][0]", &queue, thread);
             g_console->printf("[%x][1]", thread);
             /* already scheduled ? */
             if (this->tickTotal == thread->scheduled)
@@ -88,14 +90,14 @@ bool Scheduler::schedule()
 
             g_console->printf("[%x][4]", thread);
             /* insert into runq[priority] */
-            Thread* prev = (Thread*)(thread->prev);
-            g_console->printf("[%x][5]", thread);
-            Queue::remove(thread);
-            g_console->printf("[%x][6]", thread);
-            Thread targetQueue = runq[thread->currPriority];
-            g_console->printf("[%x][7]", thread);
-            Queue::addToPrev(&targetQueue, thread);
-            thread = prev;
+//             Thread* prev = (Thread*)(thread->prev);
+//             g_console->printf("[%x][5]", thread);
+//             Queue::remove(thread);
+//             g_console->printf("[%x][6]", thread);
+//             Thread targetQueue = runq[thread->currPriority];
+//             g_console->printf("[%x][7]", thread);
+//             Queue::addToPrev(&targetQueue, thread);
+//             thread = prev;
         }
     }
 
