@@ -349,7 +349,7 @@ private:
 		String s = ((String *)this->argv->get(0))->getBytes();
 		if (s.equals("help") || s.equals("?")) {
 			this->addLine("GUIシェル 内部コマンド一覧\n");
-			this->addLine(" help/?, ls/dir, cd, cat/type, date, uname/ver, \n");
+			this->addLine(" help/?, ls/dir, cd, cat/type, date/time, uname/ver, \n");
 			this->addLine(" clear/cls, ps, kill, touch, exec\n");
 		//
 		// ls/dir
@@ -406,7 +406,7 @@ private:
 		//
 		// date
 		//
-		} else if (s.equals("date")) {
+		} else if (s.equals("date") || s.equals("time")) {
 			const char* day [] = { "日", "月", "火", "水", "木", "金", "土" };
 			const char* ampm[] = { "午前", "午後" };
 			
