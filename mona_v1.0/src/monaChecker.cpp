@@ -22,16 +22,17 @@
     check size of byte,word,dword
 
     \author HigePon
-    \date   create:2002/12/02 update:
+    \date   create:2002/12/02 update:2002/12/03
 */
 void checkTypeSize() {
 
     bool isByte  = sizeof(byte)  == 1;
     bool isWord  = sizeof(word)  == 2;
     bool isDword = sizeof(dword) == 4;
+    bool isTSS   = sizeof(TSS)   == 104;
 
     /* check size of some types */
-    if (isByte && isWord && isDword) {
+    if (isByte && isWord && isDword && isTSS) {
         return;
     } else {
         panic("checkTypeSize()");
