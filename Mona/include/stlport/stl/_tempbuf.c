@@ -36,8 +36,8 @@ template <class _Tp>
 pair<_Tp*, ptrdiff_t> _STLP_CALL 
 __get_temporary_buffer(ptrdiff_t __len, _Tp*)
 {
-  if (__len > ptrdiff_t(INT_MAX / sizeof(_Tp)))
-    __len = INT_MAX / sizeof(_Tp);
+  if (__len > ptrdiff_t(M_INT_MAX / sizeof(_Tp)))
+    __len = M_INT_MAX / sizeof(_Tp);
 
   while (__len > 0) {
     _Tp* __tmp = (_Tp*) malloc((size_t)__len * sizeof(_Tp));

@@ -1,6 +1,8 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monapi/messages.h>
+#include <string>
+#include <map>
 #include "PEServer.h"
 #include "PEParser.h"
 
@@ -13,6 +15,8 @@ typedef struct
 	PEParser Parser;
 } PEData;
 
+static std::map<std::string, monapi_cmemoryinfo*> cache;
+
 static PEData* OpenPE(const CString& path, bool prompt)
 {
 	PEData* ret = new PEData();
@@ -22,18 +26,21 @@ static PEData* OpenPE(const CString& path, bool prompt)
 	if (p2 < p1) p2 = len;
 	ret->Name = p1 < 0 ? path : path.substring(p1 + 1, p2 - (p1 + 1));
 	
-	ret->Data = NULL;
-	if (path.endsWith(".EX2") || path.endsWith(".DL2"))
+	if (ret->Data == NULL)
 	{
-		ret->Data = monapi_call_file_decompress_bz2_file(path, prompt);
-	}
-	else if (path.endsWith(".EX5") || path.endsWith(".DL5"))
-	{
-		ret->Data = monapi_call_file_decompress_st5_file(path, prompt);
-	}
-	else
-	{
-		ret->Data = monapi_call_file_read_data(path, prompt);
+		if (path.endsWith(".EX2") || path.endsWith(".DL2"))
+		{
+			ret->Data = monapi_call_file_decompress_bz2_file(path, prompt);
+		}
+		else if (path.endsWith(".EX5") || path.endsWith(".DL5"))
+		{
+			ret->Data = monapi_call_file_decompress_st5_file(path, prompt);
+		}
+		else
+		{
+			ret->Data = monapi_call_file_read_data(path, prompt);
+		}
+		cache[(const char*)path] = ret->Data;
 	}
 	if (ret->Data == NULL)
 	{
@@ -44,8 +51,10 @@ static PEData* OpenPE(const CString& path, bool prompt)
 	if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
 	{
 		if (prompt) printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
+#ifdef NO_CACHE
 		monapi_cmemoryinfo_dispose(ret->Data);
 		monapi_cmemoryinfo_delete(ret->Data);
+#endif
 		ret->Data = NULL;
 	}
 	
@@ -205,15 +214,19 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
 		if (!data->Parser.Load(ptr))
 		{
 			if (prompt) printf("%s: can not load: %s\n", SVR, (const char*)data->Name);
+#ifdef NO_CACHE
 			monapi_cmemoryinfo_dispose(dst);
 			monapi_cmemoryinfo_delete(dst);
+#endif
 			return 3;
 		}
 		if (i > 0 && !data->Parser.Relocate(ptr, ORG + addr))
 		{
 			if (prompt) printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
+#ifdef NO_CACHE
 			monapi_cmemoryinfo_dispose(dst);
 			monapi_cmemoryinfo_delete(dst);
+#endif
 			return 3;
 		}
 		addr += data->Parser.get_ImageSize();
@@ -248,8 +261,10 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
 					printf("NG\n");
 					printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
 				}
+#ifdef NO_CACHE
 				monapi_cmemoryinfo_dispose(dst);
 				monapi_cmemoryinfo_delete(dst);
+#endif
 				return 3;
 			}
 		}
@@ -282,8 +297,10 @@ static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CStri
 	for (int i = 0; i < len; i++)
 	{
 		PEData* data = list.get(i);
+#ifdef NO_CACHE
 		monapi_cmemoryinfo_dispose(data->Data);
 		monapi_cmemoryinfo_delete(data->Data);
+#endif
 		delete data;
 	}
 	if (result == 0) *dest = img;

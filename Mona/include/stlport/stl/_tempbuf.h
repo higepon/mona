@@ -84,8 +84,8 @@ private:
     _M_original_len = _M_len;
     _M_buffer = 0;
 
-    if (_M_len > (ptrdiff_t)(INT_MAX / sizeof(_Tp)))
-      _M_len = INT_MAX / sizeof(_Tp);
+    if (_M_len > (ptrdiff_t)(M_INT_MAX / sizeof(_Tp)))
+      _M_len = M_INT_MAX / sizeof(_Tp);
 
     while (_M_len > 0) {
       _M_buffer = (_Tp*) malloc(_M_len * sizeof(_Tp));

@@ -7,4 +7,5 @@ ADDLINK    = -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 include $(MONADIR)/env/monapi-bn2.inc
 
+INCLUDE   += -I$(MONADIR)/include/stlport
 include dependencies

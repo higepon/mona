@@ -1,3 +1,7 @@
+2004-10-17  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/pe/main.cpp: ななしさんのPE Serverキャッシュパッチを取り込み
+
 2004-10-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (archCreateUserThread): Shellが落ちたので調べたらスタックオーバーしていた。スタック4K->8Kに拡大
