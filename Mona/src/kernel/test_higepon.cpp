@@ -267,6 +267,7 @@ int Messenger::send(dword id, MessageInfo* message)
     *info = *message;
     info->from = g_currentThread->thread->id;
 
+    thread->flags |=KEvent::MESSAGE_COME;
     thread->messageList->add(info);
 
     KEvent::set(thread, KEvent::MESSAGE_COME);
@@ -294,6 +295,7 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
         );
 #endif
 
+    thread->flags &= ~KEvent::MESSAGE_COME;
     *message = *from;
 
     return 0;
@@ -315,6 +317,7 @@ int Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
         return -1;
     }
 
+    thread->flags &= ~KEvent::MESSAGE_COME;
     *message = *from;
     return 0;
 }

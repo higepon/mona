@@ -1,5 +1,12 @@
 2004-05-27  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/Process.cpp (wakeupEvents): メッセージ到着をタイマ割り込み時のスケジューリングでチェックしないように変更
+
+        * src/kernel/syscalls.cpp : SYSTEM_CALL_MTHREAD_YIELD_MESSAGEの処理でメッセージ到着フラグを参照し、フラグがセットされていたら
+                                    即座にreturnする。
+
+        * src/kernel/test_higepon.cpp : peek()/receive()にメッセージ到着フラグクリア、send()にフラグのセットの処理を追加。
+
         * apps/gui/cube/cube.cpp: nikqさんよりcubeをご提供いただきました。
 
 2004-05-26  tino  <tino@users.sourceforge.jp>

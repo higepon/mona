@@ -177,8 +177,7 @@ int Scheduler::wakeupEvents()
 {
     FOREACH_N(waitq, Thread*, thread)
     {
-        if ((thread->waitReason == WAIT_TIMER && thread->wakeupTimer <= getTick())
-            || (thread->waitReason == (int)KEvent::MESSAGE_COME && thread->messageList->size() > 0))
+        if ((thread->waitReason == WAIT_TIMER && thread->wakeupTimer <= getTick()))
         {
             Thread* target = thread;
             thread = (Thread*)(thread->prev);

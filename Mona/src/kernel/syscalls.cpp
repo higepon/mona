@@ -442,6 +442,12 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_MTHREAD_YIELD_MESSAGE:
 
+        /* message has come. after your last peek or receive */
+        if (g_currentThread->thread->flags & KEvent::MESSAGE_COME)
+        {
+            break;
+        }
+
         KEvent::wait(g_currentThread->thread, KEvent::MESSAGE_COME);
 
         /* not reached */

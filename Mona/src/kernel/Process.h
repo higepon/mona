@@ -206,6 +206,7 @@ class Thread : public Node, public KObject
     }
 
   public:
+
     int waitReason;
     dword scheduled;
     dword totalTick;
@@ -213,6 +214,7 @@ class Thread : public Node, public KObject
     ThreadInfo* tinfo;
     List<MessageInfo*>* messageList;
     dword id;
+    dword flags;
 };
 
 /*----------------------------------------------------------------------
