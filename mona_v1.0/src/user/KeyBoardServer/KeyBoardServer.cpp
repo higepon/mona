@@ -36,6 +36,7 @@ int MonaMain(List<char*>* pekoe) {
         /* receive */
         if (!Message::receive(&info)) {
 
+            printf("message come");
             switch(info.header) {
 
             case MSG_KEY_SCANCODE:
@@ -62,16 +63,22 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
     MessageInfo message;
     KeyInfo keyinfo;
 
+            printf("message come4");
+
     /* scan code to virtual key information */
     byte scancode = info->arg1;
     manager->setKeyScanCode(scancode);
     manager->getKeyInfo(&keyinfo);
+
+            printf("message come5");
 
     /* create message */
     memset(&message, 0, sizeof(MessageInfo));
     Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, 0, NULL);
 
     //    printf("%d", keyinfo.keycode);
+
+            printf("message come6");
 
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--) {
@@ -81,13 +88,15 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
             destList->removeAt(i);
         }
     }
-
+            printf("message com7");
     return 0;
 }
 
 int regist(List<dword>* destList, MessageInfo* info) {
-
+            printf("message come2");
     dword pid = info->arg1;
-    destList->add(pid);
+            printf("message come[%x]3", pid);
+//    destList->add(pid);
+            printf("message come3.5");
     return 0;
 }

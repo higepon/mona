@@ -62,99 +62,8 @@
 #include <vbe.h>
 #include <VesaConsole.h>
 
-char* version = "Mona version.0.1.5 $Date$";
-
-void rdtsc(dword* timeL, dword* timeH) {
-
-    dword l,h;
-    asm volatile("rdtsc           \n"
-                 "mov   %%eax, %0 \n"
-                 "mov   %%edx, %1 \n"
-                 : "=m"(l), "=m"(h)
-                 : /* no */
-                 : "eax", "edx");
-    *timeL = l;
-    *timeH = h;
-}
-
-void rdtscsub(dword* timeL, dword* timeH) {
-
-    dword l = *timeL;
-    dword h = *timeH;
-
-    asm volatile("rdtsc           \n"
-                 "sub   %2, %%eax \n"
-                 "sub   %3, %%edx \n"
-                 "mov   %%eax, %0 \n"
-                 "mov   %%edx, %1 \n"
-                 : "=m"(l), "=m"(h)
-                 : "m"(l), "m"(h)
-                 : "eax", "edx");
-
-    *timeL = l;
-    *timeH = h;
-}
-
-void mainProcess() {
-
-    for (;;) {
-        asm volatile("nop");
-    }
-
-#if 0
-    byte buf[512];
-
-    KDate dt1;
-    KDate dt2;
-
-    outportb(0x21, 0xff);
-    outportb(0xA1, 0xff);
-    outportb(0x21, inportb(0x21) & 0xBF);
-
-    RTC::getDate(&dt1);
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-
-    for (int i = 0; i < 20; i++) {
-
-    g_fdcdriver->read(1,buf);
-    g_fdcdriver->read(2,buf);
-    g_fdcdriver->read(3,buf);
-    g_fdcdriver->read(4,buf);
-    g_fdcdriver->read(5,buf);
-    g_fdcdriver->read(6,buf);
-    g_fdcdriver->read(7,buf);
-    g_fdcdriver->read(8,buf);
-    g_fdcdriver->read(9,buf);
-    g_fdcdriver->read(10, buf);
-    }
-    RTC::getDate(&dt2);
-
-    g_console->printf("\n%d/%d/%d %d:%d:%d\n", dt1.year, dt1.month, dt1.day, dt1.hour, dt1.min, dt1.sec);
-    g_console->printf("%d/%d/%d %d:%d:%d\n", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
-
-#endif
-    /* KEY Server */
-    g_console->printf("loading KeyBoard Server....");
-    g_console->printf("%s\n", loadProcess("SERVER", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
-
-    /* Mouse Server */
-    g_console->printf("loading Mouse    Server....");
-    g_console->printf("%s\n", loadProcess("SERVER", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
-
-    /* Shell Server */
-    g_console->printf("loading Shell    Server....");
-    g_console->printf("%s\n", loadProcess("SERVER", "SHELL.SVR", true, NULL) ? "NG" : "OK");
-    enableKeyboard();
-    enableMouse();
-
-    /* end */
-    //g_processManager->killSelf();
-    for (;;);
-}
+char* version = "Mona version.0.1.7 $Date$";
+void  mainProcess();
 
 /*!
     \brief  mona kernel start at this point
@@ -165,8 +74,8 @@ void mainProcess() {
     \author HigePon
     \date   create:2002/07/21 update:2003/06/08
 */
-void startKernel(void) {
-
+void startKernel(void)
+{
     /* kernel memory range */
     km.initialize(0x200000, 0x7fffff);
 
@@ -178,12 +87,14 @@ void startKernel(void) {
     memcpy(g_vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
 
     /* console */
-    if (g_vesaInfo->sign[0] == 'N') {
-
+    if (g_vesaInfo->sign[0] == 'N')
+    {
         g_console = new GraphicalConsole();
         g_console->printf("VESA not supported. sorry kernel stop.\n");
         for (;;);
-    } else {
+    }
+    else
+    {
         g_vesaDetail = new VesaInfoDetail;
         memcpy(g_vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
         g_console = new VesaConsole(g_vesaDetail);
@@ -254,7 +165,8 @@ void startKernel(void) {
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
-    if (!g_fat12->initilize()) {
+    if (!g_fat12->initilize())
+    {
         g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
         for (;;);
     }
@@ -271,7 +183,6 @@ void startKernel(void) {
 
 #ifdef HIGE
 
-
 #endif
 
     for (;;);
@@ -285,17 +196,16 @@ void startKernel(void) {
     \author HigePon
     \date   create:2002/12/02 update:2003/03/01
 */
-void panic(const char* msg) {
-
+void panic(const char* msg)
+{
     g_console->setCHColor(GP_RED);
     g_console->printf("kernel panic\nMessage:%s\n", msg);
     for (;;);
 }
 
-void checkMemoryAllocate(void* p, const char* msg) {
-
+void checkMemoryAllocate(void* p, const char* msg)
+{
     if (p != NULL) return;
-
     panic(msg);
 }
 
@@ -308,8 +218,8 @@ void checkMemoryAllocate(void* p, const char* msg) {
     \author HigePon
     \date   create:2003/01/26 update:2003/01/25
 */
-inline void printOK(const char* msg) {
-
+inline void printOK(const char* msg)
+{
     static int i = 0;
 
     if (i % 2) g_console->printf("   ");
@@ -323,4 +233,60 @@ inline void printOK(const char* msg) {
 
     if (i % 2) g_console->printf("\n");
     i++;
+}
+
+void mainProcess()
+{
+#if 0
+    byte buf[512];
+
+    KDate dt1;
+    KDate dt2;
+
+    outportb(0x21, 0xff);
+    outportb(0xA1, 0xff);
+    outportb(0x21, inportb(0x21) & 0xBF);
+
+    RTC::getDate(&dt1);
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    for (int i = 0; i < 20; i++)
+    {
+        g_fdcdriver->read(1,buf);
+        g_fdcdriver->read(2,buf);
+        g_fdcdriver->read(3,buf);
+        g_fdcdriver->read(4,buf);
+        g_fdcdriver->read(5,buf);
+        g_fdcdriver->read(6,buf);
+        g_fdcdriver->read(7,buf);
+        g_fdcdriver->read(8,buf);
+        g_fdcdriver->read(9,buf);
+        g_fdcdriver->read(10, buf);
+    }
+    RTC::getDate(&dt2);
+
+    g_console->printf("\n%d/%d/%d %d:%d:%d\n", dt1.year, dt1.month, dt1.day, dt1.hour, dt1.min, dt1.sec);
+    g_console->printf("%d/%d/%d %d:%d:%d\n", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
+
+#endif
+    /* KEY Server */
+    g_console->printf("loading KeyBoard Server....");
+    g_console->printf("%s\n", loadProcess("SERVER", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
+
+    /* Mouse Server */
+    g_console->printf("loading Mouse    Server....");
+    g_console->printf("%s\n", loadProcess("SERVER", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
+
+    /* Shell Server */
+    g_console->printf("loading Shell    Server....");
+    g_console->printf("%s\n", loadProcess("SERVER", "SHELL.SVR", true, NULL) ? "NG" : "OK");
+    enableKeyboard();
+    enableMouse();
+
+    /* end */
+    //g_processManager->killSelf();
+    for (;;);
 }

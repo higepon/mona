@@ -84,7 +84,6 @@ typedef struct MappingInfo {
     dword errorCd;
 };
 
-
 #define MSG_KEY_SCANCODE           0x00
 #define MSG_KEY_REGIST_TO_SERVER   0x01
 #define MSG_MAP                    0x02

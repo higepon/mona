@@ -78,6 +78,37 @@ void RTC::getDate(KDate* date) {
     return;
 }
 
+void rdtsc(dword* timeL, dword* timeH) {
+
+    dword l,h;
+    asm volatile("rdtsc           \n"
+                 "mov   %%eax, %0 \n"
+                 "mov   %%edx, %1 \n"
+                 : "=m"(l), "=m"(h)
+                 : /* no */
+                 : "eax", "edx");
+    *timeL = l;
+    *timeH = h;
+}
+
+void rdtscsub(dword* timeL, dword* timeH) {
+
+    dword l = *timeL;
+    dword h = *timeH;
+
+    asm volatile("rdtsc           \n"
+                 "sub   %2, %%eax \n"
+                 "sub   %3, %%edx \n"
+                 "mov   %%eax, %0 \n"
+                 "mov   %%edx, %1 \n"
+                 : "=m"(l), "=m"(h)
+                 : "m"(l), "m"(h)
+                 : "eax", "edx");
+
+    *timeL = l;
+    *timeH = h;
+}
+
 /*----------------------------------------------------------------------
     Mouse
 ----------------------------------------------------------------------*/

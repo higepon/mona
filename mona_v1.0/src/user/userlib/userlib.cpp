@@ -17,7 +17,6 @@ int user_start() {
 
     int result;
     um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
-
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
     result = MonaMain(arg);
@@ -527,12 +526,10 @@ int Message::send(dword pid, MessageInfo* info) {
 int Message::receive(MessageInfo* info) {
 
     int result = syscall_receive(info);
-
     if (result != 0) {
         syscall_mthread_yeild_message();
         result = syscall_receive(info);
     }
-
     return result;
 }
 
