@@ -33,12 +33,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class TextField : public Control {
 private:
-	int textPtr, textLen, offx, offy;
+	int textPtr, textLen, offx, offy, prevKeycode;
+	bool imemode;
 	char text[MAX_TEXT_LEN];
 	Event *_textEvent;
+	ImeManager *imeManager;
 	
 	virtual void insertCharacter(char c);
 	virtual void deleteCharacter();
+	virtual int getCaretWidth();
 
 public:
 	TextField::TextField();
