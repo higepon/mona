@@ -65,6 +65,62 @@ dword Scheduler::getTick() const
     return tickTotal;
 }
 
+Process* Scheduler::findProcess(dword pid)
+{
+    FOREACH(Thread*, queue, runq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            Process* process = thread->getThreadInfo()->process;
+            if (process->getPid() == pid)
+            {
+                return process;
+            }
+        }
+    }
+
+    FOREACH(Thread*, queue, waitq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            Process* process = thread->getThreadInfo()->process;
+            if (process->getPid() == pid)
+            {
+                return process;
+            }
+        }
+    }
+    return (Process*)NULL;
+}
+
+Process* Scheduler::findProcess(const char* name)
+{
+    FOREACH(Thread*, queue, runq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            Process* process = thread->getThreadInfo()->process;
+            if (!strstr(name, process->getName())
+            {
+                return process;
+            }
+        }
+    }
+
+    FOREACH(Thread*, queue, waitq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            Process* process = thread->getThreadInfo()->process;
+            if (!strstr(name, process->getName())
+            {
+                return process;
+            }
+        }
+    }
+    return (Process*)NULL;
+}
+
 int Scheduler::calcPriority(Thread* thread)
 {
     thread->partTick /= 2;
@@ -99,7 +155,6 @@ bool Scheduler::schedule()
     /* schedule for each run queue */
     FOREACH(Thread*, queue, runq)
     {
-
         FOREACH_N(queue, Thread*, thread)
         {
             /* already scheduled ? */

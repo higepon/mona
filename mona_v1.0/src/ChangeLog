@@ -1,4 +1,8 @@
-﻿2004-02-23  shadow  <shadowin@users.sourceforge.jp>
+2004-02-24  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h (class Scheduler): findProcess()
+
+2004-02-23  shadow  <shadowin@users.sourceforge.jp>
 
         * user/userlib/userlib.cpp: printf(if 0)書換え。
 
