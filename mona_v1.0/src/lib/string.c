@@ -20,7 +20,15 @@ size_t strlen(const char* str) {
 }
 
 char* strcpy(char* to, const char* from) {
-    while (*to++ = *from++);
+
+    char* p = to;
+    while (*from) {
+        *p = *from;
+        p++;
+        from++;
+    }
+    *p = '\0';
+    return to;
 }
 
 int strcmp(const char* str1, const char* str2) {

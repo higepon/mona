@@ -122,7 +122,7 @@ template <class T> void HVector<T>::add(T element) {
         T* temp = new T[size_];
 
         /* copy original to new array */
-        for (int i = 0; i < numElements_; i++) {
+        for (size_t i = 0; i < numElements_; i++) {
             temp[i] = data_[i];
         }
         delete[] data_;
@@ -207,7 +207,7 @@ template <class T> T HVector<T>::remove(size_t index) {
     T toRemove = data_[index];
 
     /* fix hole */
-    for (int i = index; i < numElements_; i++) {
+    for (size_t i = index; i < numElements_; i++) {
         data_[i] = data_[i + 1];
     }
     numElements_--;

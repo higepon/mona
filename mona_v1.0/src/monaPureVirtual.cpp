@@ -50,6 +50,10 @@ void _pure_virtual() {
     dummy
 
     \author HigePon
-    \date   create:2002/08/08 update:
+    \date   create:2002/08/08 update:2002/12/15
 */
-int atexit( void (*func)(void)) {}
+int atexit( void (*func)(void)) {
+
+    _sysPrintln("atexit()");
+    return -1;
+}

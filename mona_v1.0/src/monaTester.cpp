@@ -43,7 +43,7 @@ void hvectorTester() {
     v->add("seven");
     _sys_printf("element %s removed\n", v->remove(0));
     _sys_printf("element %s removed\n", v->remove(4));
-    for (int j = 0; j < v->size(); j++) {
+    for (size_t j = 0; j < v->size(); j++) {
         _sys_printf("(%d, %s) ", j, v->get(j));
     }
     _sys_printf("\n");
@@ -67,7 +67,6 @@ void operatorTester() {
     _sys_printf("[Point() getY() = %d]\n", point1->getY());
     _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
-    Point* point4 = new Point(7, -100);
 }
 
 /*!
@@ -123,7 +122,8 @@ void process1Tester() {
     while (true) {
 
         for (dword i = 0; i < 50000; i++) {
-            i;
+            i += 1;
+            i -= 1;
         }
         _sysSetColor(BG_BLACK | CH_TEAL);
         _sys_printf("process1");

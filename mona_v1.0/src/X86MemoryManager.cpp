@@ -241,7 +241,6 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
 
     struct memoryEntry* current;
     struct memoryEntry* next;
-    size_t nextSize;
 
     for (current = (*entry); current != (struct memoryEntry*)NULL; current = current->next) {
 
