@@ -15,8 +15,18 @@
 #define _HIGEPOS_X86MEMORYMANAGER_
 
 /*!
+    struct for memory management
+    startAdress is the adress of allocated memory
+ */
+struct memoryEntry {
+    struct memoryEntry* next;
+    int size;
+    unsigned char startAddress[0];
+};
+
+/*!
     memory management class
-    the instance of this class is single pattern
+    single pattern  applyes the instance of this class
 */
 class X86MemoryManager {
 
@@ -28,6 +38,7 @@ class X86MemoryManager {
     const unsigned long MEMORY_START;
     const unsigned long MEMORY_END;
     unsigned long current_;
+    struct memoryEntry* entry_;
   public:
 
     char* getName();
@@ -38,5 +49,6 @@ class X86MemoryManager {
         return theInstance;
     }
 };
+
 
 #endif
