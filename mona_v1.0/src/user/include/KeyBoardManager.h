@@ -107,6 +107,12 @@ class KeyBoardManager {
     ~KeyBoardManager();
     KeyBoardManager(const KeyBoardManager&);
     KeyBoardManager& operator = (const KeyBoardManager&);
+    KeyInfo* getKeyInfo(KeyInfo* keyinfo);
+    void setKeyScanCode(unsigned char);
+    void init();
+    inline bool isInit() const {
+        return isInit_;
+    }
 
   private:
     bool isSpecialKey_;
@@ -117,20 +123,12 @@ class KeyBoardManager {
     bool isWin_;
     bool isMenu_;
     bool isInit_;
-    static const int keyMap_[128];
-    static const int keyMapE0_[128];
+    //    static const int keyMap_[128];
+    //    static const int keyMapE0_[128];
     byte idHigh_;
     byte idLow_;
     List<KeyInfo*>* keyInfoList_;
-    void init();
 
-    inline bool isInit() const {
-        return isInit_;
-    }
-
-    KeyInfo* getKeyInfo(KeyInfo* keyinfo);
-    void setKeyScanCode(unsigned char);
-    void printInfo(byte, byte) const;
 };
 
 

@@ -6,3 +6,7 @@ userlib.o: userlib.cpp include/userlib.h include/types.h include/string.h \
 KeyBoardManager.o: KeyBoardManager.cpp include/userlib.h include/types.h \
   include/string.h include/KeyBoardManager.h include/collection.h
 string.o: string.cpp include/string.h include/types.h
+KeyBoardServer.o: KeyBoardServer.cpp include/userlib.h include/types.h \
+  include/string.h include/KeyBoardManager.h include/collection.h
+MemoryManager.o: MemoryManager.cpp include/MemoryManager.h \
+  include/types.h include/string.h

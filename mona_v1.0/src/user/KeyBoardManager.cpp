@@ -15,7 +15,7 @@
 #include<userlib.h>
 #include<KeyBoardManager.h>
 
-const int KeyBoardManager::keyMap_[128] = {
+int keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
         '7'      , '8'      , '9'          , '0'           , '-'       , '^'            , KEY_BACKSPACE, KEY_TAB  ,
         'q'      , 'w'      , 'e'          , 'r'           , 't'       , 'y'            , 'u'          , 'i'      ,
@@ -30,7 +30,7 @@ const int KeyBoardManager::keyMap_[128] = {
         KEY_F12  , 0        , 0            , 0             , 0         , 0              , 0            , 0
 };
 
-const int KeyBoardManager::keyMapE0_[128] = {
+int keyMapE0_[128] = {
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
@@ -89,15 +89,22 @@ void KeyBoardManager::init() {
 */
 KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
 
+    printf("[3.1%x, %s]", keyInfoList_, keyInfoList_->size());
+
     KeyInfo* temp = keyInfoList_->removeAt(keyInfoList_->size() - 1);
 
+    printf("[3.2]");
     if (temp == NULL) {
         return (KeyInfo*)NULL;
     }
 
+    printf("[3.3]");
     /* copy to keyinfo */
     memcpy(keyinfo, temp, sizeof(KeyInfo));
+
+    printf("[3.4]");
     free(temp);
+    printf("[3.5]");
     return keyinfo;
 }
 

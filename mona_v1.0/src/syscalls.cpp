@@ -25,7 +25,6 @@ extern "C" void put_pixel(int x, int y, char color);
 
 void syscall_entrance() {
 
-    int x, y;
     Thread* thread;
     KMutex* mutex;
     ArchThreadInfo* info = g_currentThread->archinfo;
@@ -34,18 +33,8 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PRINT:
 
-        while (Semaphore::down(&g_semaphore_console));
+        g_console->printf("%s", (char*)(info->esi));
 
-        x = pos_x;
-        y = pos_y;
-        pos_x = 1, pos_y = 27;
-
-        g_console->printf("user:stdout[%s]", (char*)(info->esi));
-
-        pos_x = x;
-        pos_y = y;
-
-        Semaphore::up(&g_semaphore_console);
         info->eax = 0;
         break;
 

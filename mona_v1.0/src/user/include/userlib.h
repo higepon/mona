@@ -78,5 +78,9 @@ class Mutex {
     int mutexId_;
 };
 
-
+void putCharacter(char ch);
+void putInt(size_t n, int base);
+void printf(const char *format, ...);
+void printInt(int num);
+size_t _power(size_t x, size_t y);
 #endif

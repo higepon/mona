@@ -317,3 +317,127 @@ int Mutex::tryLock() {
 int Mutex::destory() {
     return syscall_mutex_destroy(mutexId_);
 }
+
+void printf(const char *format, ...) {
+
+    void** list = (void **)&format;
+
+    ((char**)list) += 1;
+    for (int i = 0; format[i] != '\0'; i++) {
+
+        if (format[i] == '%') {
+            i++;
+
+            switch (format[i]) {
+              case 's':
+                  print((char *)*list);
+                  ((char**)list) += 1;
+                  break;
+              case 'd':
+                  printInt((int)*list);
+                  ((int*)list) += 1;
+                  break;
+              case 'x':
+                  print("0x");
+                  putInt((int)*list, 16);
+                  ((int*)list) += 1;
+                  break;
+              case 'c':
+                  putCharacter((char)(int)(*list));
+                  ((char*)list) += 1;
+                  break;
+              case '%':
+                  putCharacter('%');
+                  break;
+              case '\0':
+                  i--;
+                  break;
+            }
+        } else {
+            putCharacter(format[i]);
+        }
+    }
+}
+
+void putInt(size_t n, int base) {
+
+    int    power;
+    size_t num = n;
+    size_t ch;
+
+    for (power = 0; num != 0; power++) {
+        num /= base;
+    }
+
+    for (int j = 0; j < 8 - power; j++) {
+        putCharacter('0');
+    }
+
+    for (int i = power -1; i >= 0; i--) {
+        ch = n / _power(base, i);
+        n %= _power(base, i);
+
+        if (i == 0 && n > 9) {
+
+            putCharacter('A' + n -10);
+        } else if (i == 0) {
+
+            putCharacter('0' + n);
+        } else if (ch > 9) {
+
+            putCharacter('A' + ch -10);
+        } else {
+
+            putCharacter('0' + ch);
+        }
+    }
+}
+
+void putCharacter(char ch) {
+    char* str = " ";
+    str[0] = ch;
+    print(str);
+}
+
+void printInt(int num) {
+
+    char revstr[20];
+    char str[20];
+    int  i = 0;
+    int  j = 0;
+
+    /* negative number */
+    if (num < 0) {
+        str[0] = '-';
+        j++;
+        num = num * -1;
+    }
+
+    /* number to buffer */
+    do {
+        revstr[i] = '0' + (int)(num % 10);
+        num = num / 10;
+        i++;
+    } while (num != 0);
+    revstr[i] = '\0';
+
+    /* revert */
+    for (; i >= 0; j++) {
+        str[j] = revstr[i - 1];
+        i--;
+    }
+
+    /* print */
+    print(str);
+    return;
+}
+
+size_t _power(size_t x, size_t y) {
+
+    size_t result = x;
+
+    for (size_t i = 1; i < y; i++) {
+        result *= x;
+    }
+    return result;
+}

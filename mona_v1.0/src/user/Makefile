@@ -20,7 +20,7 @@ SOURCES         = hello.cpp           \
                   KeyBoardManager.cpp \
                   string.cpp          \
                   KeyBoardServer.cpp  \
-                  MemoryManager.o     \
+                  MemoryManager.cpp   \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

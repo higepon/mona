@@ -30,21 +30,13 @@
 */
 void keyStrokeHandler(dword scancode) {
 
-    KeyInfo info;
     Message message;
-
-    /* set key scan code */
-    KeyBoardManager& km = KeyBoardManager::instance();
-
-    km.setKeyScanCode((byte)scancode);
-    km.getKeyInfo(&info);
 
     memset(&message, 0, sizeof(Message));
 
-    message.arg1 = info.keycode;
-    message.arg2 = info.modifiers;
+    message.arg1 = scancode;
 
-    if (send("USER.ELF", &message)) {
+    if (send("KEYBDMNG.SVR", &message)) {
         g_console->printf("send failed");
     }
 

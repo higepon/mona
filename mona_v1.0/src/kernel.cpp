@@ -69,9 +69,10 @@ extern int pos_x;
 extern int pos_y;
 void printInfo() {
 
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+
     for (;;);
 }
 
@@ -188,8 +189,8 @@ void startKernel(void) {
     g_processManager->join(testProcess1, testThread1);
 
     /* initilize keyboard */
-    KeyBoardManager& km = KeyBoardManager::instance();
-    km.init();
+//     KeyBoardManager& km = KeyBoardManager::instance();
+//     km.init();
 
 #ifdef HIGE
 

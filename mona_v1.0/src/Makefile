@@ -29,7 +29,6 @@ SOURCES      = cstart.cpp            \
                ihandlers.cpp         \
                operator.cpp          \
                purevirtual.cpp       \
-               KeyBoardManager.cpp   \
                checker.cpp           \
                string.cpp            \
                Semaphore.cpp         \

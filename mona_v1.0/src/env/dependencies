@@ -7,9 +7,9 @@ kernel.o: kernel.cpp user/include/types.h include/global.h include/info.h \
   include/PageManager.h include/BitMap.h include/Segments.h \
   include/operator.h include/collection.h include/Mutex.h include/FAT12.h \
   include/MemoryManager.h include/sysresource.h include/tester.h \
-  include/test_mjt.h include/checker.h include/KeyBoardManager.h \
-  include/GraphicalConsole.h include/ihandlers.h include/pic.h \
-  include/io.h include/syscalls.h user/include/userlib.h include/elf.h \
+  include/test_mjt.h include/checker.h user/include/KeyBoardManager.h \
+  user/include/userlib.h include/GraphicalConsole.h include/ihandlers.h \
+  include/pic.h include/io.h include/syscalls.h include/elf.h \
   include/vbe.h include/VesaConsole.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h user/include/types.h include/VirtualConsole.h \
@@ -19,7 +19,8 @@ ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/Segments.h include/operator.h include/collection.h \
   include/Mutex.h include/FAT12.h include/MemoryManager.h \
   include/sysresource.h include/tester.h include/test_mjt.h include/io.h \
-  include/ihandlers.h include/KeyBoardManager.h
+  include/ihandlers.h user/include/KeyBoardManager.h \
+  user/include/userlib.h
 operator.o: operator.cpp include/MemoryManager.h user/include/types.h \
   include/operator.h include/string.h include/global.h include/info.h \
   include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
@@ -37,15 +38,6 @@ purevirtual.o: purevirtual.cpp include/kernel.h user/include/types.h \
   include/Mutex.h include/FAT12.h include/MemoryManager.h \
   include/sysresource.h include/tester.h include/test_mjt.h \
   user/include/userlib.h
-KeyBoardManager.o: KeyBoardManager.cpp include/global.h include/info.h \
-  include/kernel.h user/include/types.h include/VirtualConsole.h \
-  include/string.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
-  include/Process.h include/PageManager.h include/BitMap.h \
-  include/Segments.h include/operator.h include/collection.h \
-  include/Mutex.h include/FAT12.h include/MemoryManager.h \
-  include/sysresource.h include/tester.h include/test_mjt.h \
-  include/KeyBoardManager.h
 checker.o: checker.cpp include/checker.h user/include/types.h \
   include/kernel.h include/VirtualConsole.h include/string.h \
   include/GDTUtil.h include/IDTUtil.h
@@ -187,7 +179,7 @@ test_higepon.o: test_higepon.cpp include/tester.h user/include/types.h \
   include/GDTUtil.h include/IDTUtil.h include/MemoryManager.h \
   include/sysresource.h include/io.h include/GraphicalConsole.h \
   include/z.h contrib/include/zlib.h contrib/include/zconf.h \
-  include/KeyBoardManager.h include/elf.h user/include/userlib.h \
+  user/include/KeyBoardManager.h user/include/userlib.h include/elf.h \
   include/syscalls.h include/vbe.h
 Mutex.o: Mutex.cpp include/Mutex.h include/Process.h user/include/types.h \
   include/PageManager.h include/BitMap.h include/Segments.h \

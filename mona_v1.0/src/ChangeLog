@@ -1,3 +1,7 @@
+2004-01-24  higepon  <higepon@users.sourceforge.jp>
+
+        * userlib.cpp: 暫定版ダメダメprintfを追加。
+
 2004-01-23  higepon  <higepon@users.sourceforge.jp>
 
         * PageManager: VRAMにアクセスできるように各プロセスにマッピングを行った。
