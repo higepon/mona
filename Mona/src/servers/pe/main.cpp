@@ -25,6 +25,7 @@ static PEData* OpenPE(const CString& path, bool prompt)
 	int p2 = path.lastIndexOf('.');
 	if (p2 < p1) p2 = len;
 	ret->Name = p1 < 0 ? path : path.substring(p1 + 1, p2 - (p1 + 1));
+	ret->Data = cache[(const char*)path];
 	
 	if (ret->Data == NULL)
 	{
