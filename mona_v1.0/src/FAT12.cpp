@@ -51,6 +51,9 @@ bool FAT12::initilize() {
 
     if (!setBPB()) return false;
 
+    if (isFAT12()) printf("file system is FAT12");
+    else printf("file system unknown");
+
     int rootEntryStart = bpb_.reservedSectorCount
                        + bpb_.fatSize16 * bpb_.numberFats;
 
@@ -97,13 +100,39 @@ bool FAT12::initilize() {
     return true;
 }
 
+/*!
+  \brief specify file system.
+
+  \author HigePon
+  \Date   create:2003/04/17 update:
+*/
 bool FAT12::isFAT12() {
 
+    int rootDirSectors;
+    int totalSector;
+    int dataSector;
+    int countOfClusters;
 
+    rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1))
+                   / bpb_.bytesPerSector;
 
+    totalSector = (bpb_.totalSector16 != 0) ? bpb_.totalSector16 : bpb_.totalSector32;
+    dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFats * bpb_.fatSize16) + rootDirSectors);
+    countOfClusters = dataSector / bpb_.sectorPerCluster;
+
+    /* FAT12 */
+    if (countOfClusters < 4085) return true;
+
+    /* FAT16, FAT32 or ??? */
     return false;
 }
 
+/*!
+  \brief reade BPB and parse
+
+  \author HigePon
+  \Date   create:2003/04/17 update:
+*/
 bool FAT12::setBPB() {
 
     byte* p = buf_;

@@ -11,7 +11,6 @@ int main(int argc, char *argv[]) {
 
     if (!fat->initilize()) printf("\nfat initilze error\n");
 
-
     delete fat;
     delete driver;
 
