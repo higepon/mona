@@ -34,7 +34,7 @@
 
         * apps/non-gui/bzcat: 追加
 
-        * src/servers/gui: ソース整理, bzip2展開に対応 (.MNF -> .MF2, .BMP -> .BM2)
+        * src/servers/gui: ソース整理, bzip2展開に対応 (.MNF <- .MF2, .BMP <- .BM2)
 
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
