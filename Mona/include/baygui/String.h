@@ -99,7 +99,7 @@ public:
 	 @param s 文字列
 	 @return 始まっていればtrue、そうでなければfalse
 	*/
-	inline bool startWith(const char* s)
+	inline bool startsWith(const char* s)
 	{
 		if (s == 0 || wlen == 0 || (int)strlen(s) > (int)strlen(charArray)) return false;
 		for (int i = 0; i < (int)strlen(s); i++) {
@@ -116,8 +116,9 @@ public:
 	inline bool endsWith(const char*s)
 	{
 		if (s == 0 || wlen == 0 || (int)strlen(s) > (int)strlen(charArray)) return false;
-		for (int i = (int)strlen(s) - 1; i >= 0; i--) {
-			if (s[i] != charArray[i]) return false;
+		for (int i = 0; i < (int)strlen(s); i++) {
+			if (s[(int)strlen(s) - i - 1] != 
+				charArray[(int)strlen(charArray) - i - 1]) return false;
 		}
 		return true;
 	}
