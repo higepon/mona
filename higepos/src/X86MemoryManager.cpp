@@ -64,6 +64,11 @@ H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
         if (current == freeEntry_) return NULL;
     }
 
+    struct memoryEntry* used = current;
+    struct memoryEntry* free = current + realSize;
+    H_SIZE_T usedSize = realSize;
+    H_SIZE_T freeSize = current->size + realSize;
+
     if (current->size == realSize) {
 
     }
