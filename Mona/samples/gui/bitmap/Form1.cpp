@@ -33,7 +33,7 @@ public:
     	g->Dispose();
     }
 
-    static void Main(Array<String> args)
+    static void Main(_A<String> args)
     {
     	if (args.get_Length() == 0)
     	{
