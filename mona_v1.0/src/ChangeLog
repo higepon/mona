@@ -1,5 +1,7 @@
 2004-02-01  higepon  <higepon@users.sourceforge.jp>
 
+        * include/tester.h: send/receive時のmalloc/freeをやめた。
+
         * user/hello.cpp (main): Mapサーバーを介してのマッピングに成功
 
 2004-01-31  higepon  <higepon@users.sourceforge.jp>

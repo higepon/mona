@@ -139,6 +139,9 @@ void startKernel(void) {
     /* shared memory object */
     SharedMemoryObject::setup();
 
+    /* messenger */
+    g_messenger = new Messenger(256);
+
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));

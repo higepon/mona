@@ -79,5 +79,24 @@ class Logger {
     int prevpos_;
 };
 
+class Messenger {
+
+  public:
+    Messenger::Messenger(int size);
+    virtual ~Messenger();
+
+  public:
+    int send(const char* name, MessageInfo* message);
+    int send(dword pid, MessageInfo* message);
+    int receive(Process* process, MessageInfo* message);
+
+  private:
+    MessageInfo* allocateMessageInfo();
+
+  private:
+    int size_;
+    int allocated_;
+    MessageInfo* info_;
+};
 
 #endif

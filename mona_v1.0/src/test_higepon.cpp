@@ -28,6 +28,80 @@ License=MIT/X Licnese
 */
 
 /*----------------------------------------------------------------------
+    Messenger
+----------------------------------------------------------------------*/
+Messenger::Messenger(int size) : size_(size), allocated_(0) {
+
+    info_ = new MessageInfo[size];
+}
+
+Messenger::~Messenger() {
+}
+
+MessageInfo* Messenger::allocateMessageInfo() {
+
+    MessageInfo* result = &(info_[allocated_]);
+    allocated_++;
+    if (allocated_ > size_ - 1) {
+        allocated_ = 0;
+    }
+    return result;
+}
+
+int Messenger::send(const char* name, MessageInfo* message) {
+
+    Process* process;
+    MessageInfo* info;
+
+    if (message == (MessageInfo*)NULL) {
+        return -1;
+    }
+
+    if ((process = g_processManager->find(name)) == (Process*)NULL) {
+        return -1;
+    }
+
+    info = allocateMessageInfo();
+
+    *info = *message;
+    process->getMessageList()->add(info);
+    return 0;
+}
+
+int Messenger::send(dword pid, MessageInfo* message) {
+
+    Process* process;
+    MessageInfo* info;
+
+    if (message == (MessageInfo*)NULL) {
+        return -1;
+    }
+
+    if ((process = g_processManager->find(pid)) == (Process*)NULL) {
+        return -1;
+    }
+
+    info = allocateMessageInfo();
+
+    *info = *message;
+    process->getMessageList()->add(info);
+    return 0;
+}
+
+int Messenger::receive(Process* process, MessageInfo* message) {
+
+    MessageInfo* from = process->getMessageList()->get(0);
+    if (from == (MessageInfo*)NULL) {
+        return -1;
+    }
+
+    *message = *from;
+    process->getMessageList()->removeAt(0);
+    return 0;
+}
+
+
+/*----------------------------------------------------------------------
     Screen
 ----------------------------------------------------------------------*/
 kScreen::kScreen(int x, int y, byte bpp, byte* vram) : xResolution_(x), yResolution_(y), bitsPerPixel_(bpp), vramSize_(x * y * bpp), vram_(vram) {

@@ -67,4 +67,5 @@ GLOBAL ProcessManager* g_processManager;
 GLOBAL ThreadInfo* g_currentThread;
 GLOBAL VesaInfo* g_vesaInfo;
 GLOBAL VesaInfoDetail* g_vesaDetail;
+GLOBAL Messenger* g_messenger;
 #endif

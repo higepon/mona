@@ -56,12 +56,12 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_SEND:
 
-        info->eax = send((dword)(info->esi), (MessageInfo*)(info->ecx));
+        info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
         break;
 
     case SYSTEM_CALL_RECEIVE:
 
-        info->eax = receive(g_processManager->getCurrentProcess(), (MessageInfo*)(info->esi));
+        info->eax = g_messenger->receive(g_processManager->getCurrentProcess(), (MessageInfo*)(info->esi));
         break;
 
     case SYSTEM_CALL_MTHREAD_CREATE:
