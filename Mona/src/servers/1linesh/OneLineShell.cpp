@@ -102,7 +102,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     cTmp = (CString *)this->cmd;
     if(cTmp->getLength() == 0) break;
     if(strcmp(*cTmp, "CHSH") == 0 || strcmp(*cTmp, "chsh") == 0){
-      int result = monapi_call_process_execute_file("/SERVERS/OLDSHELL.BIN", MONAPI_TRUE);
+      int result = monapi_call_process_execute_file("/SERVERS/OLDSHELL.BN2", MONAPI_TRUE);
       if(result != 0){
         this->SetMessage(result);
       } else {
@@ -111,7 +111,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
           if(msg.header == MSG_SERVER_START_OK) break;
         }
         hasExited = true;
-        this->SetMessage("Change shell to OLDSHELL.BIN");
+        this->SetMessage("Change shell to OLDSHELL.BN2");
       }
     } else {
       this->SetMessage(this->cmd.ExecuteCommand());

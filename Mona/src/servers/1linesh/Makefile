@@ -1,4 +1,4 @@
-TARGET  = 1LINESH.BIN
+TARGET = 1LINESH
 SOURCES         = main.cpp          \
                   OneLineShell.cpp  \
                   Command.cpp       \
@@ -6,7 +6,7 @@ SOURCES         = main.cpp          \
                   CommandHistory.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-bin.inc
+include $(MONADIR)/env/monapi-bn2.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 
