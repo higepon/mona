@@ -5,7 +5,10 @@
 #include "Shell.h"
 
 #define SVR "Shell Server"
-#define FONT_WIDTH 8
+#define FONT_WIDTH   8
+#define FONT_HEIGHT 16
+#define FOREGROUND 0x000000
+#define BACKGROUND 0xffffff
 
 using namespace MonAPI;
 
@@ -59,6 +62,7 @@ int MonaMain(List<char*>* pekoe)
                 if (waiting == msg.arg1)
                 {
                     shell.printPrompt("\n");
+                    shell.drawCaret();
                     waiting = THREAD_UNKNOWN;
                 }
                 break;
@@ -73,20 +77,19 @@ int MonaMain(List<char*>* pekoe)
 /*----------------------------------------------------------------------
     Shell
 ----------------------------------------------------------------------*/
-Shell::Shell() : position_(0)
+Shell::Shell() : position(0)
 {
     this->current = StartDir;
     this->makeApplicationList();
 
-    if (!callAutoExec)
+    if (callAutoExec)
     {
-        this->printPrompt("\n");
-        return;
+        this->executeMSH("/AUTOEXEC.MSH");
+        callAutoExec = false;
     }
 
-    this->executeMSH("/AUTOEXEC.MSH");
-    callAutoExec = false;
     this->printPrompt("\n");
+    this->drawCaret();
 }
 
 Shell::~Shell()
@@ -95,9 +98,18 @@ Shell::~Shell()
 
 void Shell::commandChar(char c)
 {
-    printf("%c", c);
-    commandLine_[position_] = c;
-    position_++;
+    if (c != '\0')
+    {
+        int x, y;
+        syscall_get_cursor(&x, &y);
+        x++;
+        if ((x + 1) * FONT_WIDTH >= screen.getWidth()) return;
+
+        printf("%c", c);
+        this->drawCaret();
+    }
+    this->commandLine[this->position] = c;
+    this->position++;
 }
 
 enum
@@ -109,6 +121,7 @@ enum
     COMMAND_CHSH,
     COMMAND_UNAME,
     COMMAND_ECHO,
+    COMMAND_CLEAR,
     COMMAND_HELP
 };
 
@@ -139,6 +152,10 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_ECHO;
     }
+    else if (cmd == "clear" || cmd == "cls")
+    {
+        return COMMAND_CLEAR;
+    }
     else if (cmd == "help" || cmd == "?")
     {
         return COMMAND_HELP;
@@ -155,22 +172,22 @@ void Shell::commandExecute(bool prompt)
     {
         /* command is empty */
         this->printPrompt();
-        position_ = 0;
+        this->position = 0;
         return;
     }
 
-    putHistory(commandLine_);
+    putHistory(this->commandLine);
 
     /* internal command */
     int isInternal;
-    if ((isInternal = isInternalCommand(args[0])))
+    if ((isInternal = isInternalCommand(args[0])) != COMMAND_NONE)
     {
         internalCommandExecute(isInternal, args);
         if (!hasExited && prompt)
         {
-            this->printPrompt("\n");
+            this->printPrompt(isInternal == COMMAND_CLEAR ? NULL : "\n");
         }
-        position_ = 0;
+        this->position = 0;
         return;
     }
 
@@ -224,7 +241,7 @@ void Shell::commandExecute(bool prompt)
     dword tid;
     int result = monapi_call_elf_execute_file_get_tid(cmdLine, 1, &tid);
 
-    position_ = 0;
+    this->position = 0;
     if (!callAutoExec && result == 0)
     {
         waiting = tid;
@@ -339,9 +356,13 @@ void Shell::internalCommandExecute(int command, _A<CString> args)
         }
         printf("\n");
         break;
+    case COMMAND_CLEAR:
+        screen.fillRect16(0, 0, screen.getWidth(), screen.getHeight(), BACKGROUND);
+        syscall_set_cursor(0, 0);
+        break;
     case COMMAND_HELP:
         printf("* Mona Shell Internal Commands\n");
-        printf("LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, HELP/?\n");
+        printf("LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, HELP/?\n");
         break;
     default:
         break;
@@ -364,9 +385,10 @@ CString Shell::getHistory()
     return history.get(0);
 }
 
-void Shell::backspace() {
-
-    if (position_ == 0) {
+void Shell::backspace()
+{
+    if (this->position == 0)
+    {
         /* donothing */
         return;
     }
@@ -374,11 +396,12 @@ void Shell::backspace() {
     int x, y;
     syscall_get_cursor(&x, &y);
     syscall_set_cursor(x - 1, y);
-    printf(" ");
+    printf("  ");
     syscall_set_cursor(x - 1, y);
+    this->drawCaret();
 
     /* backspace */
-    position_--;
+    this->position--;
 }
 
 void Shell::onKeyDown(int keycode, int modifiers)
@@ -447,11 +470,13 @@ void Shell::onKeyDown(int keycode, int modifiers)
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
-        commandChar(Keys::ToChar(key));
+        this->commandChar(Keys::ToChar(key));
         break;
     case(Keys::Enter):
-        commandTerminate();
-        commandExecute(true);
+        this->drawCaret(true);
+        this->commandTerminate();
+        this->commandExecute(true);
+        if (waiting == THREAD_UNKNOWN) this->drawCaret();
         break;
 
     case(Keys::Up):
@@ -476,7 +501,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
 
 _A<CString> Shell::parseCommandLine()
 {
-    _A<CString> args = CString(this->commandLine_).split(' ');
+    _A<CString> args = CString(this->commandLine).split(' ');
     int size = 0;
     FOREACH (CString, arg, args)
     {
@@ -636,13 +661,13 @@ void Shell::executeMSH(const CString& msh)
             if (len > 0)
             {
                 if (len > 127) len = 127;
-                strncpy(this->commandLine_, (const char*)&mi->Data[start], len);
-                this->position_ = len;
-                this->commandLine_[len] = '\0';
+                strncpy(this->commandLine, (const char*)&mi->Data[start], len);
+                this->position = len;
+                this->commandLine[len] = '\0';
                 if (prompt)
                 {
                     this->printPrompt("\n");
-                    printf("%s", this->commandLine_);
+                    printf("%s", this->commandLine);
                 }
                 this->commandExecute(prompt);
             }
@@ -652,4 +677,11 @@ void Shell::executeMSH(const CString& msh)
 
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
+}
+
+void Shell::drawCaret(bool erase /*= false*/)
+{
+    int x, y;
+    syscall_get_cursor(&x, &y);
+    screen.fillRect16(x * FONT_WIDTH, y * FONT_HEIGHT + FONT_HEIGHT - 2, 8, 2, erase ? BACKGROUND : FOREGROUND);
 }

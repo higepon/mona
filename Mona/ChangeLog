@@ -1,3 +1,9 @@
+2004-05-09  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: マウスカーソルの形状を変更
+
+        * src/servers/shell: 内部コマンドCLEAR/CLSを追加, キャレットを表示
+
 2004-05-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/Screen.cpp (MonAPI): bppの違いによるよる色の違い修正

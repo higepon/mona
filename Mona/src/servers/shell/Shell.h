@@ -18,6 +18,7 @@ class Shell {
   public:
     void onKeyDown(int keycode, int modifiers);
     void printPrompt(const MonAPI::CString& prefix = NULL);
+    void drawCaret(bool erase = false);
 
   protected:
     void commandChar(char c);
@@ -36,8 +37,8 @@ class Shell {
     void executeMSH(const MonAPI::CString& msh);
 
   protected:
-    char commandLine_[1024];
-    int position_;
+    char commandLine[1024];
+    int position;
     HList<MonAPI::CString> history;
     HList<MonAPI::CString> apps;
     MonAPI::CString current;

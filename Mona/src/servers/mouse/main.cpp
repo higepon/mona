@@ -81,7 +81,15 @@ bool MouseServer::Initialize()
     this->h = screen->getHeight();
 
     /* draw mouse cursor to virtual screen */
-    this->vscreen->fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0xCC, 0x56));
+    //this->vscreen->fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0xCC, 0x56));
+    for (int i = 0; i < 5; i++)
+    {
+        this->vscreen->fillRect16(0, i, i + 1, 1, Color::rgb(0x00, 0xCC, 0x56));
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        this->vscreen->fillRect16(0, i + 5, 2 - i, 1, Color::rgb(0x00, 0xCC, 0x56));
+    }
 
     /* cursor to center */
     this->posX = this->prevX = this->w / 2;
@@ -153,12 +161,11 @@ void MouseServer::MessageLoop()
                 this->posX += x;
                 this->posY += y;
 
-                if (this->posX >= this->w) this->posX = this->w;
-
                 /* mouse cursor size */
-                if (this->posY >= this->h - 4) this->posY = this->h - 4;
-                if (this->posX <= 0) this->posX = 0;
-                if (this->posY <= 0) this->posY = 0;
+                if (this->posX >= this->w) this->posX = this->w - 1;
+                if (this->posY >= this->h) this->posY = this->h - 1;
+                if (this->posX < 0) this->posX = 0;
+                if (this->posY < 0) this->posY = 0;
             }
 
             break;
@@ -223,7 +230,7 @@ bool MouseServer::SendServerOK()
 void MouseServer::PaintCursor(int x, int y)
 {
     if (this->disableCount > 0) return;
-    Screen::bitblt(screen, x, y, 3, 3, vscreen, 0, 0, Raster::XOR);
+    Screen::bitblt(screen, x, y, 5, 7, vscreen, 0, 0, Raster::XOR);
 }
 
 
