@@ -162,10 +162,8 @@ class ThreadManager {
 
         if (isProcessChanged && isV86_) {
 
-            g_console->printf("v862");
             arch_switch_thread_to_v862();
         } else if (!isProcessChanged && isV86_) {
-
 
             arch_switch_thread_to_v861();
         } else if (isProcessChanged && isUser) {

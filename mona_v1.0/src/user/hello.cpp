@@ -8,23 +8,33 @@ static Mutex* mutex;
 
 int main() {
 
+    for (;;);
+
     dword id;
     mutex = new Mutex();
+
+    print("hello1");
 
     if (mutex->init()) {
         print("mutex init errror\n");
         exit(-1);
     }
 
+    print("hello2");
+
     if (!(id = mthread_create((dword)listener))) {
         print("mthread create error\n");
         exit(-1);
     }
 
+    print("hello3");
+
     if (mthread_join(id)) {
         print("mthread join error\n");
         exit(-1);
     }
+
+    print("hello4");
 
     disp();
     return 0;

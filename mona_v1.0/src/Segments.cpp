@@ -274,12 +274,14 @@ SharedMemorySegment::~SharedMemorySegment() {
 bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     int mapResult;
-
+    g_console->printf("g[1]");
     if (error != PageManager::FAULT_NOT_EXIST) {
 
         errorNumber_ = FAULT_UNKNOWN;
         return false;
     }
+
+    g_console->printf("g[2]");
 
     if (address < start_ || address > start_ + size_) {
 
@@ -287,29 +289,44 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
         return false;
     }
 
+    g_console->printf("g[3]");
+
     /* page fault point */
     dword tableIndex1     = PageManager::getTableIndex(address);
     dword directoryIndex1 = PageManager::getDirectoryIndex(address);
+
+    g_console->printf("g[4]");
 
     /* segment start point */
     dword tableIndex2     = PageManager::getTableIndex(start_);
     dword directoryIndex2 = PageManager::getDirectoryIndex(start_);
 
+    g_console->printf("g[5]");
+
     /* check already allocated physical page? */
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
+
+    g_console->printf("g[6]");
 
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
     Process* current = g_processManager->getCurrentProcess();
 
+    g_console->printf("g[7]");
+
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
 
+    g_console->printf("g[8]");
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
+    g_console->printf("g[9]");
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
 
     } else {
 
+    g_console->printf("g[10]");
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, true, true);
+    g_console->printf("g[11]");
     }
+    g_console->printf("g[12]");
     return (mapResult != -1);
 }
 

@@ -119,13 +119,8 @@ int testFD(char* file) {
 
 void printInfo() {
 
-    //    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
-    //    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER2.ELF", true) ? "NG" : "OK");
-
-    for (int i = 0; i < 15; i++) {
-        testFD("USER.ELF");
-        testFD("KERNEL.IMG");
-    }
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER2.ELF", true) ? "NG" : "OK");
+    //]    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
 
     for (;;) {
 

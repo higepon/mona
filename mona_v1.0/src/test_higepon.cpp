@@ -84,6 +84,8 @@ int receive(Process* process, Message* message) {
 
 int loadProcess(const char* path, const char* file, bool isUser) {
 
+    g_console->printf("hello load\n");
+
     static dword sharedId = 0x1000;
     sharedId++;
 
@@ -156,6 +158,8 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_processManager->add(process);
     Thread*  thread = g_processManager->createThread(process, entrypoint);
     g_processManager->join(process, thread);
+
+    g_console->printf("end load\n");
     return 0;
 }
 
