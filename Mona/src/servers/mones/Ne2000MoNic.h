@@ -173,6 +173,7 @@ class Ne2000MoNic : public AbstractMonic
     //Yamami?? ドライバ情報もMonesConfigの方がいいかな？ いや、あくまでドライバ情報なのでここ？
     //このNICのIRQ番号 Booch対応
     static const int nicIRQ = 3;
+
     //NIC IRQ ゲッター
     int getNicIRQ();
 

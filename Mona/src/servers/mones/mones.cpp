@@ -56,6 +56,11 @@ int MonaMain(List<char*>* pekoe)
     g_MoArp = new MoArp();
     g_MoArp->initArp(insAbstractNic);
 
+    //IPクラスのインスタンス化
+    g_MoIp = new MoIp();
+    g_MoIp->initIp(insAbstractNic);
+
+
     // initilize destination list
     //List<dword>* destList = new HList<dword>();
     MessageInfo info;

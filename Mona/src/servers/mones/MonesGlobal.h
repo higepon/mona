@@ -14,6 +14,8 @@
 #ifndef _MONES_GLOBAL_
 #define _MONES_GLOBAL_
 
+//MONES_GLOBAL_VALUE_DEFINEDマクロが宣言されている箇所のみ、インスタンス化
+//他は、extern "C" で宣言
 #ifdef MONES_GLOBAL_VALUE_DEFINED
 #define GLOBAL /* */
 #define GLOBAL_VAL(v) = (v)
@@ -28,7 +30,8 @@
 #include "MonesConfig.h"
 #include "MoEther.h"
 #include "MoArp.h"
-
+#include "MoIp.h"
+#include "MoIcmp.h"
 
 //GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 //GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
@@ -37,5 +40,7 @@
 GLOBAL MonesConfig G_MonesCon;
 GLOBAL MoEther* g_MoEther;
 GLOBAL MoArp* g_MoArp;
+GLOBAL MoIp* g_MoIp;
+GLOBAL MoIcmp* g_MoIcmp;
 
 #endif

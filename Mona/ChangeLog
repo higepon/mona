@@ -1,3 +1,7 @@
+2004-09-20  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/servers/mones Code:Mones Ver0.12 MoIp,MoIcmpクラス追加 ICMP応答
+        
 2004-09-19  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/kernel.cpp (mainProcess): rdtscでCR3の切替コストの計測

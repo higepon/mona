@@ -35,6 +35,7 @@ class MoPacUtl
     static word packet_get_2byte(byte *buf, dword offset);
     static void packet_put_4byte(byte* buf, int offset, dword val);
     static void packet_put_2byte(byte* buf, int offset, word val);
+    static word calcCheckSum(dword* ,int );
 
     inline static word swapShort(word value)
     {

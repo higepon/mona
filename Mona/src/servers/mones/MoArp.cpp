@@ -29,7 +29,9 @@
 */
 MoArp::MoArp()
 {
-    //printf("MoArp Constructor\n");
+    //ARPキャッシュ初期化
+    
+    ArpCache = new HashMap<char*>(ARP_CACHE_NUM);
 }
 
 /*!
@@ -79,66 +81,6 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
         return 0;
     }
 
-//
-//    Yamamiデバッグ
-//    char logStr[1024];    //ログ出力文字列
-//
-//    sprintf(logStr , "swapLong(G_MonesCon.getGl_myIpAdr):%04x dstIp:%04x \n",
-//                MoPacUtl::swapLong(G_MonesCon.getGl_myIpAdr),arpHead->dstIp);
-//    sprintf(logStr , "swapLong(G_MonesCon.getGl_myIpAdr):%04x dstIp:%04x \n",
-//                MoPacUtl::swapLong(G_MonesCon.getGl_myIpAdr),arpHead->dstIp);
-//    sprintf(logStr , "G_MonesCon.getGl_myIpAdr:%04x \n",
-//                G_MonesCon.getGl_myIpAdr);
-//    sprintf(logStr , "G_MonesCon.getGl_myIpAdr:%04x \n",
-//                G_MonesCon.getGl_myIpAdr);
-//    sprintf(logStr , "hardType:%02x \n",
-//                arpHead->hardType);
-//    printf(logStr);
-//    
-//    sprintf(logStr , "protType:%02x \n",
-//                arpHead->protType);
-//    printf(logStr);
-//
-//    sprintf(logStr , "hardAddrLen:%01x \n",
-//                arpHead->hardAddrLen);
-//    printf(logStr);
-//    
-//    sprintf(logStr , "protAddrLen:%01x \n",
-//                arpHead->protAddrLen);
-//    printf(logStr);
-//
-//    sprintf(logStr , "opeCode:%02x \n",
-//                arpHead->opeCode);
-//    printf(logStr);
-//
-//    sprintf(logStr , "srcMac:%02x:%02x:%02x:%02x:%02x:%02x \n",
-//                arpHead->srcMac[0],
-//                arpHead->srcMac[1],
-//                arpHead->srcMac[2],
-//                arpHead->srcMac[3],
-//                arpHead->srcMac[4],
-//                arpHead->srcMac[5]);
-//    printf(logStr);
-//
-//    sprintf(logStr , "srcIp:%04x \n",
-//                arpHead->srcIp);
-//    printf(logStr);
-//
-//    sprintf(logStr , "dstMac:%02x:%02x:%02x:%02x:%02x:%02x \n",
-//                arpHead->dstMac[0],
-//                arpHead->dstMac[1],
-//                arpHead->dstMac[2],
-//                arpHead->dstMac[3],
-//                arpHead->dstMac[4],
-//                arpHead->dstMac[5]);
-//    printf(logStr);
-//
-//    sprintf(logStr , "dstIp:%04x \n",
-//                arpHead->dstIp);
-//    printf(logStr);
-
-
-
     // オペレーションコードの確認
     switch(MoPacUtl::swapShort(arpHead->opeCode))
     {
@@ -146,8 +88,8 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
         case OPE_CODE_ARP_REQ:
             transArp(arpHead->srcIp,arpHead->srcMac, OPE_CODE_ARP_REP);
             
-            //キャッシュに登録 2004/08/28未実装
-            //addCache(arpHead->srcIp,arpHead->srcMac); 
+            //キャッシュに登録
+            addArpCache(arpHead->srcIp,(char*)arpHead->srcMac); 
             break;
         //ARP応答
         case OPE_CODE_ARP_REP:
@@ -170,7 +112,7 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
 
 static char broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
 
- /*!
+/*!
     \brief transArp
          ARP応答処理 処理
     \param  dword dstip [in] 送信先IPアドレス
@@ -204,3 +146,129 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
     insAbstractNic->frame_output((byte *)&head , dstmac , sizeof(head) , DIX_TYPE_ARP);
 
 }
+
+
+/*!
+    \brief addArpCache
+         ARPキャッシュ登録処理
+    \param  dword ip [in] 登録IPアドレス
+    \param  char *mac [in] 登録MACアドレス
+    \return void 無し 
+        
+    \author Yamami
+    \date   create:2004/09/19 update:
+*/
+void MoArp::addArpCache(dword ip, char *mac)
+{
+
+    char IpKey[10];    //IPアドレスキー
+
+    //IPアドレスを、MAPのキー化(String化)
+    sprintf(IpKey , "%08x",ip);
+    ArpCache->put(IpKey , mac);
+
+}
+
+
+/*!
+    \brief searchCache
+         ARPキャッシュ検索処理
+    \param  dword ip [in] 登録IPアドレス
+    \return char *mac [in] 検索結果MACアドレス 見つからない場合はNULL
+        
+    \author Yamami
+    \date   create:2004/09/19 update:
+*/
+char* MoArp::searchCache(dword ip)
+{
+    char IpKey[10];    //IPアドレスキー
+    char *RetMacValue;
+    
+    //HashMapから検索
+    //IPアドレスを、MAPのキー化(String化)
+    sprintf(IpKey , "%08x",ip);
+    RetMacValue = ArpCache->get(IpKey);
+
+    return RetMacValue;
+}
+
+
+
+
+/*!
+    \brief getMac
+         ARP IPアドレス解決処理
+    \param  dword ip [in] IPアドレス
+    \param  byte *mac [OUT] 解決MACアドレスへのポインタ
+    \return void 無し 
+        
+    \author Yamami
+    \date   create:2004/09/20 update:
+*/
+int MoArp::getMac(dword ip,char *mac)
+{
+    enum{
+        RETRY_COUNT=3,          // リトライ送信回数
+        REQUEST_TIMEOUT=2000,   // リクエストタイムアウトミリ秒
+    };
+
+    char *retmac;
+
+    //int rest;
+    //REPLY_WAIT *wait;
+    //int i;
+    //REPLY_WAIT *p;
+
+
+    // キャッシュを検索
+    if((retmac=searchCache(ip))!=NULL)
+    {
+        //キャッシュから見つかれば、返す。
+        memcpy(mac,retmac,6);
+        return 0;
+    }
+
+/*
+
+    // 送信準備
+    if((wait=kmalloc(sizeof(REPLY_WAIT)))==NULL)return -ENOMEM;
+    wait->ip=ip;
+    wait->repFlg=0;
+    wait->next=replyWait;
+    replyWait=wait;
+
+    // リクエストARPを送信
+    for(i=0;;)
+    {
+        transArp(num,ip,broadcastMac,OPE_CODE_ARP_REQ);
+        wait->wait.flag=0;
+        wait_intr(&wait->wait,REQUEST_TIMEOUT,TASK_SIGNAL_WAIT);
+        if(wait->repFlg)
+        {
+            addCache(ip,wait->mac);
+            memcpy(mac,wait->mac,6);
+            rest=0;
+            break;
+        }
+        if(++i>=RETRY_COUNT)
+        {
+            rest=-ENETUNREACH;
+            break;
+        }
+    }
+
+    // 送信後処理
+    if(replyWait==wait)replyWait=wait->next;
+    else
+    {
+        for(p=replyWait;p->next!=wait;p=p->next);
+        p->next=wait->next;
+    }
+    kfree(wait);
+
+    return rest;
+
+*/
+
+}
+

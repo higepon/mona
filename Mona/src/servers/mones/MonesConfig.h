@@ -33,6 +33,17 @@ class MonesConfig {
     //*****************************************
     static const dword   gl_myIpAdr = 0xC0A80101;       //IPアドレス;
     
+    //サブネットマスク 
+    static const dword   gl_mySubnet = 0xFFFFFF00;
+
+    //GW
+    static const dword   gl_myGw = 0xC0A801FE;
+
+    //DNS
+    static const dword   gl_myDns = 0xC0A801FE;
+    
+    //MTU  Yamami これは、NICごとに持つべき？？
+    static const int   gl_myMTU = 1500;
     
   public:
     MonesConfig();
@@ -41,7 +52,16 @@ class MonesConfig {
     //IPアドレスゲッター
     dword getGl_myIpAdr();
     
-    //Yamami!! DNS,デフォルトゲート等、設定情報をこのクラスへ
+    //サブネットマスクゲッター
+    dword getGl_mySubnet();
+    //GWゲッター
+    dword getGl_myGw();
+    //DNSアドレスゲッター
+    dword getGl_myDns();
+
+    //MTU値 ゲッター
+    dword getGl_myMTU();
+
 };
 
 #endif

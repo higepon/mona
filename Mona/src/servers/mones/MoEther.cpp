@@ -161,14 +161,12 @@ int MoEther::receiveEther()
     switch(frame->type)
     {
         case DIX_TYPE_IP:
-            //return receiveIp((IP_HEADER*)frame->data);
-            reti = 999; //dumy
+            return g_MoIp->receiveIp((IP_HEADER*)frame->data);
             break;
         case DIX_TYPE_ARP:
-            g_MoArp->receiveArp((ARP_HEADER*)frame->data);
+            return g_MoArp->receiveArp((ARP_HEADER*)frame->data);
             break;
             
-            //return receiveArp(num,(ARP_HEADER*)frame->data);
     }
     
     return 0;

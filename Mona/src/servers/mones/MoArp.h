@@ -14,12 +14,14 @@
 #define _MONA_MOARP_
 
 #include <sys/types.h>
+#include <sys/HashMap.h>
 #include <monapi.h>
 
 #include "MoPacUtl.h"
 #include "MonesDefine.h"
 #include "AbstractMonic.h"
 
+using namespace MonAPI;
 
 /*! 
  *  \struct ARP_HEADER
@@ -37,16 +39,6 @@ typedef struct{
     dword   dstIp  __attribute__((packed));       //ﾀｰｹﾞｯﾄﾌﾟﾛﾄｺﾙｱﾄﾞﾚｽ
 }ARP_HEADER;
 
-
-/*! 
- *  \struct ARP_CACHE
- *  \brief ARPキャッシュ構造体
- */
-typedef struct{
-    dword ip;
-    byte mac[6];
-    char next;
-}ARP_CACHE;
 
 
 enum{
@@ -66,7 +58,6 @@ enum{
 
 enum{
     ARP_CACHE_NUM=64,               /* ARPキャッシュ数。 */
-    ARP_CACHE_HASH=ARP_CACHE_NUM/2, /* ARPキャッシュハッシュ数。 */
 };
 
 
@@ -85,14 +76,17 @@ class MoArp
 
     //int getMac(int,uint,char*);
     int receiveArp(ARP_HEADER*);
-    
+    char* searchCache(dword );
+    int getMac(dword ,char*);
 
   private:
     //ARP応答処理 処理
     void transArp(dword , byte*, word );
+    void addArpCache(dword , char*);
     
     
-    //ARPキャッシュ未実装  !! キャッシュはMonaのHashを使う予定
+    //ARPキャッシュ用 HashMap
+    HashMap<char*>* ArpCache;
 
     //NICドライバ
     AbstractMonic* insAbstractNic;

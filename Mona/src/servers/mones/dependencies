@@ -19,7 +19,9 @@ mones.o: mones.cpp MonesGlobal.h ../../../include/sys/types.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  MoPacUtl.h MonesDefine.h AbstractMonic.h MoArp.h Ne2000MoNic.h
+  MoPacUtl.h MonesDefine.h AbstractMonic.h MoArp.h \
+  ../../../include/sys/HashMap.h ../../../include/sys/BinaryTree.h \
+  ../../../include/sys/Map.h Ne2000MoNic.h
 AbstractMonic.o: AbstractMonic.cpp AbstractMonic.h \
   ../../../include/sys/types.h
 Ne2000MoNic.o: Ne2000MoNic.cpp Ne2000MoNic.h ../../../include/sys/types.h \
@@ -64,13 +66,17 @@ MoEther.o: MoEther.cpp MonesGlobal.h ../../../include/sys/types.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  MoPacUtl.h MonesDefine.h AbstractMonic.h MoArp.h
+  MoPacUtl.h MonesDefine.h AbstractMonic.h MoArp.h \
+  ../../../include/sys/HashMap.h ../../../include/sys/BinaryTree.h \
+  ../../../include/sys/Map.h
 MoArp.o: MoArp.cpp MoArp.h ../../../include/sys/types.h \
-  ../../../include/monapi.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
+  ../../../include/sys/HashMap.h ../../../include/sys/BinaryTree.h \
+  ../../../include/sys/Map.h ../../../include/monapi.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
   ../../../include/monapi/MonaApplication.h \
   ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
   ../../../include/monapi/string.h \
