@@ -145,7 +145,7 @@ void FDCDriver::initilize() {
     /* specify */
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
 
-        info(ERROR, "Specify command failed\n");
+        logprintf("Specify command failed\n");
         motorAutoOff();
         return;
     }
@@ -272,7 +272,7 @@ bool FDCDriver::recalibrate() {
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
 
-        info(ERROR, "FDCDriver#recalibrate:command fail\n");
+        logprintf("FDCDriver#recalibrate:command fail\n");
         return false;
     }
 
@@ -357,7 +357,7 @@ bool FDCDriver::seek(byte track) {
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
 
-        info(ERROR, "FDCDriver#:seek command fail\n");
+        logprintf("FDCDriver#:seek command fail\n");
         return false;
     }
 
@@ -386,7 +386,7 @@ bool FDCDriver::senseInterrupt() {
 
     if (!sendCommand(command, sizeof(command))){
 
-        info(ERROR, "FDCDriver#senseInterrrupt:command fail\n");
+        logprintf("FDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
 
@@ -512,7 +512,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    };
 
     if (!seek(track)) {
-        info(ERROR, "read#seek:error");
+        logprintf("read#seek:error");
         return false;
     }
 
@@ -521,7 +521,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))) {
 
-        info(ERROR, "read#send command:error\n");
+        logprintf("read#send command:error\n");
         return false;
     }
 
@@ -572,8 +572,6 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     waitInterrupt(true);
-
-    info(DEV_NOTICE, "write:after waitInterrupt\n");
 
     stopDMA();
 
@@ -634,8 +632,8 @@ bool FDCDriver::write(dword lba, byte* buf) {
 
     lbaToTHS(lba, track, head, sector);
 
-    info(DEBUG, "write lba=%d", lba);
-    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
+//    info(DEBUG, "write lba=%d", lba);
+//    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     memcpy(dmabuff_, buf,  512);
 

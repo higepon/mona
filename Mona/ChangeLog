@@ -1,3 +1,9 @@
+2004-10-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/info.cpp, info.h: 削除
+
+        * include/monalibc/stdarg.h (va_arg): バグ修正
+
 2004-10-16  bayside  <bayside@users.sourceforge.jp>
 
         * stk5 (OSASK圧縮形式) 対応開始

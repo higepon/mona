@@ -27,7 +27,6 @@ SOURCES      = cstart.cpp            \
                syscalls.cpp          \
                BitMap.cpp            \
                Process.cpp           \
-               info.cpp              \
                GDTUtil.cpp           \
                IDTUtil.cpp           \
                PageManager.cpp       \

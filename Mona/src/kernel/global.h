@@ -10,7 +10,6 @@
 #endif
 
 #include <sys/types.h>
-#include "info.h"
 #include "kernel.h"
 #include "VirtualConsole.h"
 #include "FDCDriver.h"
@@ -39,8 +38,6 @@ GLOBAL FDCDriver* g_fdcdriver;
 /* semaphore */
 GLOBAL semaphore g_semaphore_console  GLOBAL_VAL(1);
 GLOBAL semaphore g_semaphore_shared   GLOBAL_VAL(1);
-
-GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
 
 /* expr:sysresource */
 GLOBAL BitMap *g_irqMap;

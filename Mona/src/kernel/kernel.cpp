@@ -194,7 +194,6 @@ void startKernel(void)
 
     enableInterrupt();
 
-    g_info_level = MSG;
 
     /* dummy thread struct */
     g_prevThread    = dummy1->tinfo;
