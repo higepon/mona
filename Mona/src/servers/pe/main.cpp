@@ -346,7 +346,6 @@ static void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
-    syscall_print("A");
 	if (Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK) != 0)
 	{
 		printf("%s: MONITOR error\n", SVR);

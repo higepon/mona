@@ -262,10 +262,9 @@ int MonaMain(List<char*>* pekoe)
 #ifdef MAIN_6
 
 
-
-
 int MonaMain(List<char*>* pekoe)
 {
+
     MemoryInfo info;
 
     syscall_get_memory_info(&info);
