@@ -1,8 +1,9 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
-#include <monapi.h>
+
 #include "Shell.h"
 
+using namespace MonAPI;
 
 /*----------------------------------------------------------------------
     Shell
@@ -35,7 +36,7 @@ void Shell::run()
     MessageInfo msg;
     while (!this->hasExited)
     {
-        if (MonAPI::Message::receive(&msg) != 0) continue;
+        if (Message::receive(&msg) != 0) continue;
 
 #if 0  /// DEBUG for message
         if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
@@ -67,7 +68,7 @@ void Shell::run()
 
                 msg.str[127] = '\0';
                 syscall_print(msg.str);
-                MonAPI::Message::reply(&msg);
+                Message::reply(&msg);
                 break;
         }
     }
@@ -115,7 +116,7 @@ void Shell::commandExecute(bool prompt)
 {
     if (prompt) printf("\n");
 
-    System::Array<MonAPI::CString> args = this->parseCommandLine();
+    _A<CString> args = this->parseCommandLine();
     this->position = 0;
     if (args.get_Length() == 0)
     {
@@ -138,8 +139,8 @@ void Shell::commandExecute(bool prompt)
         return;
     }
 
-    MonAPI::CString cmdLine;
-    MonAPI::CString command = args[0].toUpper();
+    CString cmdLine;
+    CString command = args[0].toUpper();
     if (command[0] == '/')
     {
         cmdLine = command;
@@ -152,15 +153,15 @@ void Shell::commandExecute(bool prompt)
     }
     else if (command.endsWith(".APP"))
     {
-        MonAPI::CString name = command.substring(0, command.getLength() - 4);
+        CString name = command.substring(0, command.getLength() - 4);
         cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EL2";
     }
     else
     {
-        MonAPI::CString cmd2 = command + ".";
+        CString cmd2 = command + ".";
         for (int i = 0; i < this->apps.size(); i++)
         {
-            MonAPI::CString file = apps.get(i);
+            CString file = apps.get(i);
             if (file == command + ".APP")
             {
                 cmdLine = APPSDIR"/" + file + "/" + command + ".EL2";
@@ -211,12 +212,12 @@ void Shell::commandTerminate()
     commandChar('\0');
 }
 
-void Shell::putHistory(const MonAPI::CString& command)
+void Shell::putHistory(const CString& command)
 {
     history.add(command);
 }
 
-MonAPI::CString Shell::getHistory()
+CString Shell::getHistory()
 {
     if (history.isEmpty()) return "";
     return history.get(0);
@@ -228,88 +229,88 @@ void Shell::onKeyDown(int keycode, int modifiers)
     {
         this->printPrompt("\n");
         this->waiting = THREAD_UNKNOWN;
-        if (keycode == MonAPI::Keys::Enter) return;
+        if (keycode == Keys::Enter) return;
     }
 
     switch(keycode) {
-    case(MonAPI::Keys::A):
-    case(MonAPI::Keys::B):
-    case(MonAPI::Keys::C):
-    case(MonAPI::Keys::D):
-    case(MonAPI::Keys::E):
-    case(MonAPI::Keys::F):
-    case(MonAPI::Keys::G):
-    case(MonAPI::Keys::H):
-    case(MonAPI::Keys::I):
-    case(MonAPI::Keys::J):
-    case(MonAPI::Keys::K):
-    case(MonAPI::Keys::L):
-    case(MonAPI::Keys::M):
-    case(MonAPI::Keys::N):
-    case(MonAPI::Keys::O):
-    case(MonAPI::Keys::P):
-    case(MonAPI::Keys::Q):
-    case(MonAPI::Keys::R):
-    case(MonAPI::Keys::S):
-    case(MonAPI::Keys::T):
-    case(MonAPI::Keys::U):
-    case(MonAPI::Keys::V):
-    case(MonAPI::Keys::W):
-    case(MonAPI::Keys::X):
-    case(MonAPI::Keys::Y):
-    case(MonAPI::Keys::Z):
-    case(MonAPI::Keys::Decimal):
-    case(MonAPI::Keys::D0):
-    case(MonAPI::Keys::D1):
-    case(MonAPI::Keys::D2):
-    case(MonAPI::Keys::D3):
-    case(MonAPI::Keys::D4):
-    case(MonAPI::Keys::D5):
-    case(MonAPI::Keys::D6):
-    case(MonAPI::Keys::D7):
-    case(MonAPI::Keys::D8):
-    case(MonAPI::Keys::D9):
-    case(MonAPI::Keys::NumPad1):
-    case(MonAPI::Keys::NumPad2):
-    case(MonAPI::Keys::NumPad3):
-    case(MonAPI::Keys::NumPad4):
-    case(MonAPI::Keys::NumPad5):
-    case(MonAPI::Keys::NumPad6):
-    case(MonAPI::Keys::NumPad7):
-    case(MonAPI::Keys::NumPad8):
-    case(MonAPI::Keys::NumPad9):
-    case(MonAPI::Keys::NumPad0):
-    case(MonAPI::Keys::Subtract):
-    case(MonAPI::Keys::Add):
-    case(MonAPI::Keys::Space):
-    case(MonAPI::Keys::Divide):
-    case(MonAPI::Keys::OemPeriod):
-    case(MonAPI::Keys::OemQuestion):
+    case(Keys::A):
+    case(Keys::B):
+    case(Keys::C):
+    case(Keys::D):
+    case(Keys::E):
+    case(Keys::F):
+    case(Keys::G):
+    case(Keys::H):
+    case(Keys::I):
+    case(Keys::J):
+    case(Keys::K):
+    case(Keys::L):
+    case(Keys::M):
+    case(Keys::N):
+    case(Keys::O):
+    case(Keys::P):
+    case(Keys::Q):
+    case(Keys::R):
+    case(Keys::S):
+    case(Keys::T):
+    case(Keys::U):
+    case(Keys::V):
+    case(Keys::W):
+    case(Keys::X):
+    case(Keys::Y):
+    case(Keys::Z):
+    case(Keys::Decimal):
+    case(Keys::D0):
+    case(Keys::D1):
+    case(Keys::D2):
+    case(Keys::D3):
+    case(Keys::D4):
+    case(Keys::D5):
+    case(Keys::D6):
+    case(Keys::D7):
+    case(Keys::D8):
+    case(Keys::D9):
+    case(Keys::NumPad1):
+    case(Keys::NumPad2):
+    case(Keys::NumPad3):
+    case(Keys::NumPad4):
+    case(Keys::NumPad5):
+    case(Keys::NumPad6):
+    case(Keys::NumPad7):
+    case(Keys::NumPad8):
+    case(Keys::NumPad9):
+    case(Keys::NumPad0):
+    case(Keys::Subtract):
+    case(Keys::Add):
+    case(Keys::Space):
+    case(Keys::Divide):
+    case(Keys::OemPeriod):
+    case(Keys::OemQuestion):
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
-        this->commandChar(MonAPI::Keys::ToChar(key));
+        this->commandChar(Keys::ToChar(key));
         break;
-    case(MonAPI::Keys::Enter):
+    case(Keys::Enter):
         this->drawCaret(true);
         this->commandTerminate();
         this->commandExecute(true);
         if (this->waiting == THREAD_UNKNOWN && !this->hasExited) this->drawCaret();
         break;
 
-    case(MonAPI::Keys::Up):
+    case(Keys::Up):
         printf("up");
         break;
-    case(MonAPI::Keys::Down):
+    case(Keys::Down):
         printf("down");
         break;
-    case(MonAPI::Keys::Left):
+    case(Keys::Left):
         printf("left");
         break;
-    case(MonAPI::Keys::Right):
+    case(Keys::Right):
         printf("right");
         break;
-    case(MonAPI::Keys::Back):
+    case(Keys::Back):
         backspace();
         break;
     default:
@@ -317,19 +318,19 @@ void Shell::onKeyDown(int keycode, int modifiers)
     }
 }
 
-System::Array<MonAPI::CString> Shell::parseCommandLine()
+_A<CString> Shell::parseCommandLine()
 {
-    System::Array<MonAPI::CString> args = MonAPI::CString(this->commandLine).split(' ');
+    _A<CString> args = CString(this->commandLine).split(' ');
     int size = 0;
-    FOREACH(MonAPI::CString, arg, args)
+    FOREACH (CString, arg, args)
     {
         if (arg != NULL) size++;
     }
     END_FOREACH
 
-    System::Array<MonAPI::CString> ret(size);
+    _A<CString> ret(size);
     int i = 0;
-    FOREACH(MonAPI::CString, arg, args)
+    FOREACH (CString, arg, args)
     {
         if (arg == NULL) continue;
 
@@ -360,7 +361,7 @@ int Shell::makeApplicationList()
 
     while (syscall_dir_read(name, &size, &attr) == 0)
     {
-        MonAPI::CString file = name;
+        CString file = name;
         if (file.endsWith(".BIN") || file.endsWith(".BN2")
             || file.endsWith(".ELF") || file.endsWith(".EL2")
             || file.endsWith(".EXE") || file.endsWith(".EX2")
@@ -384,13 +385,13 @@ int Shell::makeApplicationList()
     return 0;
 }
 
-void Shell::printPrompt(const MonAPI::CString& prefix /*= NULL*/)
+void Shell::printPrompt(const CString& prefix /*= NULL*/)
 {
     if (prefix != NULL) printf("%s", (const char*)prefix);
     printf("[Mona]%s> ", (const char*)this->current);
 }
 
-MonAPI::CString Shell::getParentDirectory(const MonAPI::CString& dir)
+CString Shell::getParentDirectory(const CString& dir)
 {
     if (dir == NULL || dir == "/") return "/";
 
@@ -400,13 +401,13 @@ MonAPI::CString Shell::getParentDirectory(const MonAPI::CString& dir)
     return dir.substring(0, p);
 }
 
-MonAPI::CString Shell::mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CString& dir2)
+CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
 {
     if (dir2.startsWith("/")) return dir2.toUpper();
 
-    MonAPI::CString ret = dir1;
-    System::Array<MonAPI::CString> dirs = dir2.split('/');
-    FOREACH(MonAPI::CString, d, dirs)
+    CString ret = dir1;
+    _A<CString> dirs = dir2.split('/');
+    FOREACH (CString, d, dirs)
     {
         if (d == NULL || d == ".") continue;
 
@@ -424,7 +425,7 @@ MonAPI::CString Shell::mergeDirectory(const MonAPI::CString& dir1, const MonAPI:
     return ret;
 }
 
-void Shell::printFiles(const MonAPI::CString& dir)
+void Shell::printFiles(const CString& dir)
 {
     char name[15];
     int size, attr;
@@ -440,11 +441,11 @@ void Shell::printFiles(const MonAPI::CString& dir)
         return;
     }
 
-    MonAPI::CString spc = "               ";
+    CString spc = "               ";
     int w = 0, sw = this->screen.getWidth();
     while (syscall_dir_read(name, &size, &attr) == 0)
     {
-        MonAPI::CString file = name;
+        CString file = name;
         if ((attr & ATTRIBUTE_DIRECTORY) != 0)
         {
             file = "[" + file + "]";
@@ -466,7 +467,7 @@ void Shell::printFiles(const MonAPI::CString& dir)
     syscall_cd(this->current);
 }
 
-void Shell::executeMSH(const MonAPI::CString& msh)
+void Shell::executeMSH(const CString& msh)
 {
     monapi_cmemoryinfo* mi = monapi_call_file_read_data(msh, 1);
     if (mi == NULL) return;

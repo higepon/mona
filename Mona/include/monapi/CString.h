@@ -41,8 +41,8 @@ namespace MonAPI
         int lastIndexOf(const CString& value, int from = -1) const;
 
         CString substring(int start, int length) const;
-        _A<CString> split(char ch) const;
-        _A<CString> split(const CString& value) const;
+        ::System::Array<CString> split(char ch) const;
+        ::System::Array<CString> split(const CString& value) const;
 
         CString toLower() const;
         CString toUpper() const;

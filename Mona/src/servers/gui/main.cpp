@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "window.h"
 
+using namespace MonAPI;
 
 extern guiserver_bitmap* screen_buffer;
 
@@ -23,7 +24,7 @@ int we_creation = 0, we_destruction = 0, we_step = 6, we_wait = 30;
 static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
 static bool wallpaper_prompt = false;
-static HList<MonAPI::CString>* startup = NULL;
+static HList<CString>* startup = NULL;
 
 static void ReadFont(const char* file)
 {
@@ -92,7 +93,7 @@ static void DrawWallPaper(const char* src, int pos, unsigned int transparent, in
 	bool prompt = wallpaper_prompt;
 	wallpaper_prompt = false;
 	
-	MonAPI::Screen* scr = GetDefaultScreen();
+	Screen* scr = GetDefaultScreen();
 	if (wallpaper == NULL)
 	{
 		wallpaper = CreateBitmap(scr->getWidth(), scr->getHeight(), background);
@@ -122,7 +123,7 @@ static void ReadConfig()
 	char line[256];
 	int linepos = 0, wppos = 5;
 	unsigned int wptp = 0, bgcol = 0;
-	MonAPI::CString section, src;
+	CString section, src;
 	for (dword pos = 0; pos <= cfg->Size; pos++)
 	{
 		char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
@@ -130,7 +131,7 @@ static void ReadConfig()
 		{
 			if (linepos > 0)
 			{
-				MonAPI::CString ln(line, linepos);
+				CString ln(line, linepos);
 				if (ln.toUpper().startsWith("REM "))
 				{
 					// ignore remark
@@ -141,17 +142,17 @@ static void ReadConfig()
 				}
 				else if (ln.indexOf('=') > 0)
 				{
-					System::Array<MonAPI::CString> data = MonAPI::CString(line, linepos).split('=');
+					_A<CString> data = CString(line, linepos).split('=');
 					if (data.get_Length() == 2 && data[0] != NULL && data[1] != NULL)
 					{
-						MonAPI::CString name = data[0].toUpper();
+						CString name = data[0].toUpper();
 						if (section == "GENERAL")
 						{
 							if (name == "RUN")
 							{
-								if (startup == NULL) startup = new HList<MonAPI::CString>();
-								System::Array<MonAPI::CString> runs = data[1].split(',');
-								FOREACH (MonAPI::CString, r, runs) startup->add(r); END_FOREACH
+								if (startup == NULL) startup = new HList<CString>();
+								_A<CString> runs = data[1].split(',');
+								FOREACH (CString, r, runs) startup->add(r); END_FOREACH
 							}
 						}
 						else if (section == "WALLPAPER")
@@ -216,7 +217,7 @@ static void CheckGUIServer()
 	PsInfo info;
 
 	bool ok = true;
-	MonAPI::CString self = "GUI.EX2";
+	CString self = "GUI.EX2";
 	dword tid = MonAPI::System::getThreadID();
 
 	while (syscall_read_ps_dump(&info) == 0)
@@ -233,28 +234,28 @@ static void MessageLoop()
 {
 	for (MessageInfo msg;;)
 	{
-		if (MonAPI::Message::receive(&msg)) continue;
+		if (Message::receive(&msg)) continue;
 		
 		switch (msg.header)
 		{
 			case MSG_GUISERVER_GETFONT:
-				MonAPI::Message::reply(&msg, default_font->Handle, default_font->Size);
+				Message::reply(&msg, default_font->Handle, default_font->Size);
 				break;
 			case MSG_GUISERVER_SETWALLPAPER:
 				DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
-				MonAPI::Message::reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_GUISERVER_DRAWSCREEN:
 				DrawScreen(msg.arg1, msg.arg2, GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
-				MonAPI::Message::reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_REGISTER_TO_SERVER:
 				clients.add(msg.arg1);
-				MonAPI::Message::reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_UNREGISTER_FROM_SERVER:
 				clients.remove(msg.arg1);
-				MonAPI::Message::reply(&msg);
+				Message::reply(&msg);
 				break;
 			default:
 				if (ImageHandler(&msg)) break;
@@ -270,12 +271,12 @@ int MonaMain(List<char*>* pekoe)
 	if (!InitScreen()) exit(1);
 
 	MessageInfo msg_cp;
-	if (MonAPI::Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+	if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
 	{
 		printf("%s: can not get common parameters!\n", SVR);
 		exit(1);
 	}
-	commonParams = (CommonParameters*)MonAPI::MemoryMap::map(msg_cp.arg2);
+	commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
 	
 	if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE);
@@ -292,7 +293,7 @@ int MonaMain(List<char*>* pekoe)
 		}
 	}
 
-	MonAPI::Message::send(MonAPI::Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
+	Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
 
 	MessageLoop();
 
@@ -303,7 +304,7 @@ int MonaMain(List<char*>* pekoe)
 	
 	monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
-	MonAPI::MemoryMap::unmap(msg_cp.arg2);
+	MemoryMap::unmap(msg_cp.arg2);
 	
 	return 0;
 }

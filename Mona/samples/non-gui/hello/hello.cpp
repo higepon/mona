@@ -6,7 +6,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_6
+#define MAIN_5
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -246,33 +246,4 @@ int MonaMain(List<char*>* pekoe)
 }
 
 
-#endif
-
-#ifdef MAIN_6
-
-
-int MonaMain(List<char*>* pekoe)
-{
-    MemoryInfo info;
-
-    syscall_get_memory_info(&info);
-    printf("System Total Memory = %d (MB)\n", info.totalMemoryL / 1024 / 1024);
-
-    printf("before malloc\n");
-    printf("free pages %d / %d (KB) \n", info.freePageNum * info.pageSize / 1024, info.totalPageNum * info.pageSize / 1024);
-
-    char* p = (char*)malloc(4096 * 10);
-
-    syscall_get_memory_info(&info);
-    printf("before free\n");
-    printf("free pages %d / %d (KB) \n", info.freePageNum * info.pageSize / 1024, info.totalPageNum * info.pageSize / 1024);
-
-    free(p);
-
-    syscall_get_memory_info(&info);
-    printf("after free\n");
-    printf("free pages %d / %d (KB) \n", info.freePageNum * info.pageSize / 1024, info.totalPageNum * info.pageSize / 1024);
-
-    return 0;
-}
 #endif

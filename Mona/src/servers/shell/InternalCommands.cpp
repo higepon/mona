@@ -1,6 +1,7 @@
 #include "Shell.h"
 #include <monapi/messages.h>
 
+using namespace MonAPI;
 
 enum
 {
@@ -17,9 +18,9 @@ enum
     COMMAND_KILL
 };
 
-int Shell::isInternalCommand(const MonAPI::CString& command)
+int Shell::isInternalCommand(const CString& command)
 {
-    MonAPI::CString cmd = command.toLower();
+    CString cmd = command.toLower();
     if (cmd == "help" || cmd == "?")
     {
         return COMMAND_HELP;
@@ -64,7 +65,7 @@ int Shell::isInternalCommand(const MonAPI::CString& command)
     return COMMAND_NONE;
 }
 
-bool Shell::internalCommandExecute(int command, System::Array<MonAPI::CString> args)
+bool Shell::internalCommandExecute(int command, _A<CString> args)
 {
     switch (command)
     {
@@ -80,7 +81,7 @@ bool Shell::internalCommandExecute(int command, System::Array<MonAPI::CString> a
                 this->current = STARTDIR;
                 break;
             }
-            MonAPI::CString dir = this->mergeDirectory(this->current, args[1]);
+            CString dir = this->mergeDirectory(this->current, args[1]);
             if (syscall_cd(dir) != 0)
             {
                 printf("%s: directory not found: %s\n", SVR, (const char*)dir);
@@ -101,7 +102,7 @@ bool Shell::internalCommandExecute(int command, System::Array<MonAPI::CString> a
                 for (int i = 1; i < args.get_Length(); i++)
                 {
                     if (i > 1) printf("\n");
-                    MonAPI::CString dir = this->mergeDirectory(this->current, args[i]);
+                    CString dir = this->mergeDirectory(this->current, args[i]);
                     printf("%s:\n", (const char*)dir);
                     printFiles(dir);
                 }
@@ -157,7 +158,7 @@ bool Shell::internalCommandExecute(int command, System::Array<MonAPI::CString> a
 #if 1
         for (MessageInfo msg;;)
         {
-            if (MonAPI::Message::receive(&msg) != 0) continue;
+            if (Message::receive(&msg) != 0) continue;
             if (msg.header == MSG_SERVER_START_OK) break;
         }
 #endif

@@ -15,6 +15,7 @@
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 
+using namespace MonAPI;
 
 #define CHECK_INTERVAL 5000
 
@@ -29,13 +30,13 @@ public:
     void Service();
 
 private:
-    byte* ReadConfig(MonAPI::CString file);
-    void ParseConfig(MonAPI::CString content);
+    byte* ReadConfig(CString file);
+    void ParseConfig(CString content);
     void CheckServers();
 
 private:
-    HList<MonAPI::CString> paths;
-    HList<MonAPI::CString> servers;
+    HList<CString> paths;
+    HList<CString> servers;
     bool* alive;
 
 };
@@ -84,22 +85,22 @@ bool Monitor::Initialize()
     return true;
 }
 
-void Monitor::ParseConfig(MonAPI::CString content)
+void Monitor::ParseConfig(CString content)
 {
-    System::Array<MonAPI::CString> lines = content.split("\r\n");
+    _A<CString> lines = content.split("\r\n");
 
-    FOREACH(MonAPI::CString, line, lines)
+    FOREACH(CString, line, lines)
     {
         if (!line.startsWith("SERVER=")) continue;
 
-        System::Array<MonAPI::CString> p = line.split("=");
+        _A<CString> p = line.split("=");
         if (p.get_Length() < 2) continue;
 
-        MonAPI::CString path = p[p.get_Length() - 1];
+        CString path = p[p.get_Length() - 1];
 
-        System::Array<MonAPI::CString> q = path.split("/");
+        _A<CString> q = path.split("/");
 
-        MonAPI::CString name = q[q.get_Length() - 1];
+        CString name = q[q.get_Length() - 1];
 
         this->paths.add(path);
         this->servers.add(name);
@@ -111,13 +112,13 @@ void Monitor::ParseConfig(MonAPI::CString content)
     return;
 }
 
-byte* Monitor::ReadConfig(MonAPI::CString file)
+byte* Monitor::ReadConfig(CString file)
 {
     int result;
     int fileSize;
     byte* buf;
 
-    MonAPI::FileInputStream fis(file);
+    FileInputStream fis(file);
 
     result = fis.open();
 
@@ -156,7 +157,7 @@ void Monitor::CheckServers()
 
     while (syscall_read_ps_dump(&info) == 0)
     {
-        MonAPI::CString name = info.name;
+        CString name = info.name;
 
         for (int i = 0; i < servers.size(); i++)
         {
@@ -178,7 +179,7 @@ void Monitor::CheckServers()
         MessageInfo msg;
         for (;;)
         {
-            if (MonAPI::Message::receive(&msg)) continue;
+            if (Message::receive(&msg)) continue;
             if (msg.header == MSG_SERVER_START_OK) break;
         }
 
@@ -192,7 +193,7 @@ int MonaMain(List<char*>* pekoe)
     monitor.Initialize();
 
     /* Server start ok */
-    dword targetID = MonAPI::Message::lookupMainThread("INIT");
+    dword targetID = Message::lookupMainThread("INIT");
 
     if(targetID == 0xFFFFFFFF)
     {
@@ -201,7 +202,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* send */
-    if(MonAPI::Message::send(targetID, MSG_SERVER_START_OK))
+    if(Message::send(targetID, MSG_SERVER_START_OK))
     {
         printf("ShellServer:INIT error\n");
     }

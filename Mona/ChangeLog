@@ -1,3 +1,7 @@
+2004-10-14  higepon  <higepon@users.sourceforge.jp>
+
+        * gcc3.4.1‘Î‰Š®—¹?
+
 2004-10-11  Yamami  <yamamimail@users.sourceforge.jp>
 
         * apps/non-gui/pciinfo:  monapi_cmemoryinfo_dispose ¨ monapi_cmemoryinfo_delete ‚ÉC³
@@ -8,7 +12,6 @@
         * src/servers/shell/: moniter/process/shell‚ğ•ÏX
 
 2004-10-08  higepon  <higepon@users.sourceforge.jp>
-
         * include/gui/System/Collections/ArrayList.h (FOREACH_AL): gcc3.4.1‘Î‰
 
         * include/monalibc/stdarg.h (va_arg): gcc3.4.1‘Î‰

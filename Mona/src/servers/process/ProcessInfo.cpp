@@ -1,5 +1,6 @@
 #include "ProcessInfo.h"
 
+using namespace MonAPI;
 
 ProcessInfo::ProcessInfo(int dummy /*= NULL */) : tid(THREAD_UNKNOWN), parent(THREAD_UNKNOWN)
 {
@@ -10,7 +11,7 @@ ProcessInfo::ProcessInfo(const ProcessInfo& pi)
 {
 }
 
-ProcessInfo::ProcessInfo(dword tid, dword parent, const MonAPI::CString& name, const MonAPI::CString& path)
+ProcessInfo::ProcessInfo(dword tid, dword parent, const CString& name, const CString& path)
     : tid(tid), parent(parent), name(name), path(path)
 {
 }

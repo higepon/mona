@@ -5,14 +5,12 @@ all:
 	@cd samples; $(MAKE) $@
 
 install:
-	date
 	@cd tools; $(MAKE) $@
 	@cd src; $(MAKE) $@
 	@cd apps; $(MAKE) $@
 	@cd samples; $(MAKE) $@
 	bzip2 -c COPYRIGHT > bin/root/LICENSE.BZ2
 	@cd bin; $(MAKE)
-	date
 
 clean:
 	@cd tools; $(MAKE) $@

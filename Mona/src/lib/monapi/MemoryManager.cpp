@@ -13,8 +13,6 @@
 
 #include <monapi/MemoryManager.h>
 #include <monapi/string.h>
-#include <monapi/syscall.h>
-
 
 #define SIZE_OF_HEADER sizeof(MemoryEntry)
 
@@ -169,14 +167,9 @@ void MemoryManager::free(void* address) {
 
     MemoryEntry* entry = (MemoryEntry*)(target - SIZE_OF_HEADER);
 
-    dword size = entry->size;
-
     deleteFromList(&usedList_, entry);
     addToList(&freeList_, entry);
-
     concatFreeList();
-
-    syscall_free_pages((dword)address, size);
 }
 
 void MemoryManager::deleteFromList(MemoryEntry** list, MemoryEntry* entry) {

@@ -5,8 +5,9 @@
 #include "ProcessServer.h"
 #include "ProcessManager.h"
 
+using namespace MonAPI;
 
-static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint, const MonAPI::CString& path, const MonAPI::CString& name, CommandOption* option, bool prompt, dword stdout_id, dword* tid)
+static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, dword stdout_id, dword* tid)
 {
     LoadProcessInfo info;
     info.image = mi->Data;
@@ -38,7 +39,7 @@ static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint
     return ret;
 }
 
-static MonAPI::CString GetFileName(const MonAPI::CString& path)
+static CString GetFileName(const CString& path)
 {
     int p = path.lastIndexOf('/');
     if (p < 0) return path;
@@ -47,17 +48,17 @@ static MonAPI::CString GetFileName(const MonAPI::CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-static int ExecuteFile(dword parent, const MonAPI::CString& commandLine, bool prompt, dword stdout_id, dword* tid)
+static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword stdout_id, dword* tid)
 {
     /* list initilize */
     CommandOption list;
     list.next = NULL;
 
     CommandOption* option = NULL;
-    MonAPI::CString path;
-    System::Array<MonAPI::CString> args = commandLine.split(' ');
+    CString path;
+    _A<CString> args = commandLine.split(' ');
 
-    FOREACH (MonAPI::CString, arg, args)
+    FOREACH (CString, arg, args)
     {
         if (arg == NULL) continue;
 
@@ -92,7 +93,7 @@ static int ExecuteFile(dword parent, const MonAPI::CString& commandLine, bool pr
 
         if (tid != THREAD_UNKNOWN)
         {
-            MonAPI::Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path);
+            Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path);
             if (msg.arg2 != 0)
             {
                 result = 0;
@@ -171,7 +172,7 @@ static void StdoutMessageLoop()
 {
     for (MessageInfo msg;;)
     {
-        if (MonAPI::Message::receive(&msg) != 0) continue;
+        if (Message::receive(&msg) != 0) continue;
 
         switch (msg.header)
         {
@@ -186,7 +187,7 @@ static void StdoutMessageLoop()
                 bool ok = false;
                 while ((size = grabs.size()) > 0)
                 {
-                    if (MonAPI::Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) == 0)
+                    if (Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) == 0)
                     {
                         ok = true;
                         break;
@@ -197,16 +198,16 @@ static void StdoutMessageLoop()
 #if 0  /// DEBUG for message
                 syscall_print("?E?");
 #endif
-                MonAPI::Message::reply(&msg);
+                Message::reply(&msg);
                 break;
             }
             case MSG_PROCESS_GRAB_STDOUT:
                 StdoutGrab(msg.arg1);
-                MonAPI::Message::reply(&msg);
+                Message::reply(&msg);
                 break;
             case MSG_PROCESS_UNGRAB_STDOUT:
                 StdoutUngrab(msg.arg1);
-                MonAPI::Message::reply(&msg);
+                Message::reply(&msg);
                 break;
         }
     }
@@ -217,7 +218,7 @@ static void MessageLoop()
 {
     for (MessageInfo msg;;)
     {
-        if (MonAPI::Message::receive(&msg) != 0) continue;
+        if (Message::receive(&msg) != 0) continue;
 
 #if 0  /// DEBUG for message
         if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
@@ -235,16 +236,16 @@ static void MessageLoop()
                 dword tid;
 
 #if 1 // exp
-                // override stdout_id here by higepon
-                // because Tino GUI's GUI SHELL does not call execute process by himself but shell svr
-                if (grabs.size() != 0)
-                {
-                    msg.arg2 = grabs[grabs.size() - 1];
-                }
+		// override stdout_id here by higepon
+		// because Tino GUI's GUI SHELL does not call execute process by himself but shell svr
+		if (grabs.size() != 0)
+		{
+		    msg.arg2 = grabs[grabs.size() - 1];
+		}
 #endif
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, &tid);
 
-                MonAPI::Message::reply(&msg, result, tid);
+                Message::reply(&msg, result, tid);
                 break;
             }
             default:
@@ -262,7 +263,7 @@ int MonaMain(List<char*>* pekoe)
     syscall_mthread_join(id);
 #endif
 
-    if (MonAPI::Message::send(MonAPI::Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
+    if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
     {
         printf("%s: INIT error\n", SVR);
         exit(1);

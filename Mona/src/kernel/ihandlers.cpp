@@ -267,7 +267,7 @@ void cpufaultHandler_e(dword address, dword error)
     dword realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
                  "mov %%eax, %0     \n"
-                 : "=m"(realcr3):: "eax");
+                 : "=m"(realcr3): : "eax");
 
     g_console->printf("[%s]\n", g_currentThread->process->getName());
     ArchThreadInfo* i = g_currentThread->archinfo;

@@ -91,7 +91,7 @@ void  mainProcess();
     \date   create:2002/07/21 update:2003/06/08
 */
 
-//#define CR3_TEST
+#define CR3_TEST
 #ifdef CR3_TEST
 static dword cr31, cr32;
 #endif

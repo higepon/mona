@@ -4,7 +4,11 @@
 #ifndef __SYSTEM_ARRAY_H__
 #define __SYSTEM_ARRAY_H__
 
+#if __GNUC_MINOR__ < 4
 #define _A ::System::Array
+#else
+#define _A System::Array
+#endif
 
 #ifdef DEBUG
 #ifdef MONA

@@ -4,7 +4,8 @@
 #include "sys/types.h"
 #include "kernel.h"
 
-#define FOREACH_N(top, type, element) for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
+#define FOREACH_N(top, type, element) \
+for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
 
 extern VirtualConsole*g_console;
 

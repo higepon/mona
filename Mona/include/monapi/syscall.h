@@ -79,7 +79,6 @@ extern dword syscall_memory_map_create(dword size);
 extern dword syscall_memory_map_get_size(dword id);
 extern int syscall_memory_map_map(dword id, dword address);
 extern int syscall_memory_map_unmap(dword id);
-extern int syscall_get_memory_info(MemoryInfo* info);
 
 extern dword syscall_lookup(const char* name);
 extern dword syscall_get_tick();
@@ -89,7 +88,6 @@ extern int syscall_peek(MessageInfo* message, int index, int flags);
 
 extern int syscall_set_irq_receiver(int irq);
 extern int syscall_remove_irq_receiver(int irq);
-extern int syscall_free_pages(dword address, dword size);
 
 extern void* malloc(unsigned long size);
 extern void free(void * address);
