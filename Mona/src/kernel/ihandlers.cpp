@@ -41,23 +41,24 @@ void mouseHandler()
     MessageInfo message;
     memset(&message, 0, sizeof(MessageInfo));
 
-    int type = counter % 3;
+    /* modified 2004/04/09 by nikq
+     *
+     * - counter -> state machine
+     * - head detection and state reset.
+     *   -> works in qemu correctly.
+     */
 
-    if (type == 0)
+    if((data & 0xC8) == 0x08)
+        counter = 0;
+
+    switch(counter&3)
     {
-        message.header = MSG_MOUSE_1;
-    }
-    else if (type == 1)
-    {
-        message.header = MSG_MOUSE_2;
-    }
-    else
-    {
-        message.header = MSG_MOUSE_3;
+    case 0: message.header = MSG_MOUSE_1; counter = 1; break;
+    case 1: message.header = MSG_MOUSE_2; counter = 2; break;
+    case 2: message.header = MSG_MOUSE_3; counter = 0; break;
     }
 
     message.arg1   = data;
-    counter++;
 
     /* EOI */
     outp8(0xA0, 0x20);

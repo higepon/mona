@@ -1,5 +1,7 @@
 2004-04-09  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/ihandlers.cpp (mouseHandler): nikqさんのqemuマウス正常動作パッチ取り込み(thx! nikqさん)
+
         * src/lib/monapi/syscall.cpp (syscall_read_ps_dump): スレッドダンプシステムコール作成
 
         * apps/gui/ps/Form1.cpp (class Form1): PS作成
