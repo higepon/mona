@@ -12,6 +12,11 @@
 #ifndef _MONA_PAGINGUTIL_
 #define _MONA_PAGINGUTIL_
 
+typedef dword linear_addr;  /* 32bit */
+typedef dword vurtual_addr; /* 32bit */
+typedef dword phys_addr;    /* 32bit */
+
+
 /*!
     \struct PTE
  */
@@ -28,6 +33,7 @@ typedef struct  {
     unsigned pageBaseAddress:20; /*!< base address of page   */
 } PTE;
 
+extern "C" PTE* g_page_dir;
 
 class PagingUtil {
 
@@ -38,6 +44,25 @@ class PagingUtil {
     static void setCR3(dword physaddr);
     static void startPaging();
     static void stopPaging();
+    inline static word getDirEntry(linear_addr p);
+    inline static word getPageEntry(linear_addr p);
+    inline static PTE* linearToPTE(linear_addr p);
 };
+
+inline word PagingUtil::getDirEntry(linear_addr p) {
+
+    return ((p >> 22) & 0x3ff);
+}
+
+inline word PagingUtil::getPageEntry(linear_addr p) {
+
+    return ((p >> 12) & 0x3ff);
+}
+
+/*  inline PTE* PagingUtil::linearToPTE(linear_addr p) { */
+
+/*      return (PTE*)(g_page_dir[getDirEntry(p)]); */
+/*  } */
+
 
 #endif

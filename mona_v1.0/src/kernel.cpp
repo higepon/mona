@@ -97,8 +97,8 @@ void startKernel(void) {
 
     PagingUtil::setup();
 
-    //dword* p = (dword*)0x3FFFFC;
-dword* p = (dword*)0x3FFFFD;
+    dword* p = (dword*)0x3FFFFC;
+    //dword* p = (dword*)0x3FFFFD;
     *p = 5;
 
     /* set process name for info() */

@@ -10,9 +10,9 @@
     \date   create:2003/06/10 update:$Date$
 */
 
-#include<global.h>
-#include<operator.h>
-#include<PagingUtil.h>
+#include <global.h>
+#include <operator.h>
+#include <PagingUtil.h>
 
 #define PAGE_DIR_NUM 1024
 #define PAGE_TBL_NUM 1024
