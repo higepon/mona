@@ -16,6 +16,8 @@ cglobal arch_set_stack_view
 cglobal arch_save_thread_registers
 cglobal arch_switch_thread_to_user1
 cglobal arch_switch_thread_to_user2
+cglobal arch_switch_thread_to_v861
+cglobal arch_switch_thread_to_v862
 cglobal arch_switch_thread1
 cglobal arch_switch_thread2
 cextern g_stack_view      ;; for debug stack viewer
@@ -155,6 +157,66 @@ arch_switch_thread2:
         mov edi, dword[ebx + 40]     ; restore edi
         mov es , word[ebx + 48]      ; restore es
         mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
+
+;;----------------------------------------------------------------------
+;; swtich thread to v86 without page change
+;;----------------------------------------------------------------------
+arch_switch_thread_to_v861:
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 56]         ; gs
+        push dword[ebx + 52]         ; fs
+        push dword[ebx + 44]         ; ds
+        push dword[ebx + 48]         ; es
+        push dword[ebx + 60]         ; push ss  here dpl lowwer
+        push dword[ebx + 28]         ; push esp here dpl lowwer
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
+
+;;----------------------------------------------------------------------
+;; swtich thread to v86 and change page
+;;----------------------------------------------------------------------
+arch_switch_thread_to_v862:
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 56]         ; gs
+        push dword[ebx + 52]         ; fs
+        push dword[ebx + 44]         ; ds
+        push dword[ebx + 48]         ; es
+        push dword[ebx + 60]         ; push ss  here dpl lowwer
+        push dword[ebx + 28]         ; push esp here dpl lowwer
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip

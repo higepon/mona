@@ -89,12 +89,41 @@ Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
     threadCount++;
 
     /* arch dependent */
-    if (isUser_) {
+    if (isV86_) {
+        archCreateV86Thread(thread, programCounter, pageDirectory);
+    } else  if (isUser_) {
         archCreateUserThread(thread, programCounter, pageDirectory);
     } else {
         archCreateThread(thread, programCounter, pageDirectory);
     }
     return thread;
+}
+
+void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
+
+    dword stackAddress = allocateStack();
+    g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
+
+    ThreadInfo* info      = thread->getThreadInfo();
+    ArchThreadInfo* ainfo = info->archinfo;
+    ainfo->cs      = USER_CS;
+    ainfo->ds      = USER_DS;
+    ainfo->es      = USER_DS;
+    ainfo->ss      = USER_SS;
+    ainfo->ss0     = KERNEL_SS;
+    ainfo->eflags  = 0x200;
+    ainfo->eax     = 0;
+    ainfo->ecx     = 0;
+    ainfo->edx     = 0;
+    ainfo->ebx     = 0;
+    ainfo->esi     = 0;
+    ainfo->edi     = 0;
+    ainfo->dpl     = DPL_USER;
+    ainfo->esp     = stackAddress;
+    ainfo->ebp     = stackAddress;
+    ainfo->esp0    = g_processManager->allocateKernelStack();
+    ainfo->eip     = programCounter;
+    ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
 void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
@@ -123,7 +152,7 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageE
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
-void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
+void ThreadManager::archCreateV86Thread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     dword stackAddress = allocateStack();
     g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
@@ -135,7 +164,7 @@ void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, P
     ainfo->es      = USER_DS;
     ainfo->ss      = USER_SS;
     ainfo->ss0     = KERNEL_SS;
-    ainfo->eflags  = 0x200;
+    ainfo->eflags  = 0x20200;
     ainfo->eax     = 0;
     ainfo->ecx     = 0;
     ainfo->edx     = 0;

@@ -190,6 +190,7 @@ class ThreadManager {
     }
     void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
     void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
+    void archCreateV86Thread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const;
     int kill(List<Thread*>* list);
 
   private:
