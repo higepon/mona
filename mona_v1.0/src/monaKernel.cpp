@@ -61,7 +61,7 @@ void startKernel(void) {
     checkTypeSize();
 
     /* enable A20 */
-    IA32MemoryManager::enableA20();
+    //    IA32MemoryManager::enableA20();
 
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();

@@ -445,4 +445,18 @@ void IA32MemoryManager::stopPaging() {
                  : /* no input  */ : "ax");
 }
 
+/*!
+    \brief flush TLB
 
+    flush Translation Lookaside Buffer.
+
+    \author HigePon
+    \date   create:2002/12/26 update:
+*/
+inline void IA32MemoryManager::flushTLB() const {
+
+    asm volatile("mov %%cr3, %%eax\n"
+                 "mov %%eax, %%cr3\n"
+                 : /* no output */
+                 : /* no input  */ : "ax");
+}

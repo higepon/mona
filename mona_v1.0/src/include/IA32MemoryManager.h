@@ -61,6 +61,7 @@ class IA32MemoryManager {
     void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, size_t);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
     inline void setCR3(dword) const;
+    inline void flushTLB() const;
     const size_t MEMORY_START;
     const size_t MEMORY_END;
     struct memoryEntry* freeEntry_;
