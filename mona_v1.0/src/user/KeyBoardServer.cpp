@@ -32,6 +32,8 @@ int main() {
 
     int i  = 0;
 
+    int prevX = 0;
+    int prevY = 0;
     int posX = 0;
     int posY = 0;
     int x, y;
@@ -97,10 +99,14 @@ int main() {
                 if (posY < 0) posY = 0;
 
                 if (leftClickd) {
+                    screen.fillRect16(prevX , prevY, 10, 10, Color::rgb(0x00, 0x00, 0x00));
                     screen.fillRect16(posX , posY, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
                 } else {
                     screen.fillRect16(posX , posY, 1, 1, Color::rgb(0xFF, 0xFF, 0xFF));
                 }
+
+                prevX = posX;
+                prevY = posY;
 
                 break;
 

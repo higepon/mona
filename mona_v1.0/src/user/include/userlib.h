@@ -1,7 +1,9 @@
 #ifndef _MONA_USERLIB_
 #define _MONA_USERLIB_
+
 #include <types.h>
 #include <string.h>
+#include <MemoryManager.h>
 
 #define SYSTEM_CALL_PROCESS_SLEEP  5
 #define SYSTEM_CALL_HEAVEY         6
@@ -31,11 +33,13 @@
 #define SYSTEM_CALL_FDC_CLOSE      30
 #define SYSTEM_CALL_FDC_READ       31
 #define SYSTEM_CALL_FDC_WRITE      32
-
-#define SYSTEM_CALL_TEST 99
+#define SYSTEM_CALL_TEST           99
 
 #define main() monaMain()
+#define interface class
+#define MESSAGE_LOOP messageLoop
 
+extern "C" int monaMain();
 extern "C" int user_start();
 extern "C" int sleep(dword tick);
 extern "C" int heavy();
@@ -45,9 +49,7 @@ extern "C" int exit(int error);
 extern "C" int _put_pixel(int x, int y, char color);
 extern "C" int mthread_create(dword f);
 extern "C" int mthread_join(dword id);
-
 extern "C" int syscall_test();
-
 extern "C" int syscall_sleep(dword tick);
 extern "C" int syscall_heavy();
 extern "C" int syscall_print(const char*);
@@ -58,14 +60,13 @@ extern "C" int syscall_receive(MessageInfo* message);
 extern "C" int syscall_mthread_create(dword f);
 extern "C" int syscall_mthread_join(dword id);
 extern "C" int syscall_mutex_create();
-extern "C" int syscall_mutex_trylock();
-extern "C" int syscall_mutex_lock();
-extern "C" int syscall_mutex_unlock();
+extern "C" int syscall_mutex_trylock(int id);
+extern "C" int syscall_mutex_lock (int id );
+extern "C" int syscall_mutex_unlock(int id);
 extern "C" int syscall_get_vram_info(ScreenInfo* info);
 extern "C" int syscall_load_process(const char* name);
 extern "C" int syscall_get_cursor(int* x, int* y);
 extern "C" int syscall_set_cursor(int x, int y);
-extern "C" dword syscall_lookup(const char* name);
 extern "C" int syscall_mutex_destroy(int id);
 extern "C" int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
 extern "C" int syscall_file_open(char* path, char* file, dword* size);
@@ -78,15 +79,16 @@ extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword size);
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
+extern "C" void __cxa_pure_virtual();
+extern "C" void _pure_virtual(void);
+extern "C" void __pure_virtual(void);
+extern "C" int atexit( void (*func)(void));
+extern "C" dword syscall_lookup(const char* name);
+
 byte inportb(dword);
 void outportb(dword, byte);
-
 void* operator new(size_t size);
 void  operator delete(void* address);
-
-#define interface class
-
-#define MESSAGE_LOOP messageLoop
 
 class MonaApplication;
 extern MonaApplication* monaApp;

@@ -31,6 +31,7 @@
 void mouseHandler() {
 
     static int counter = 0;
+    static bool sendFlag = false;
     if (Mouse::waitReadable()) {
         g_console->printf("mouse time out");
     }
@@ -50,6 +51,7 @@ void mouseHandler() {
     } else {
         message.header = MSG_MOUSE_3;
     }
+
     message.arg1   = data;
 
     if (g_messenger->send("KEYBDMNG.SVR", &message)) {

@@ -2,6 +2,8 @@
 
         * kernel.cpp: ユーザーモードでのマウス描画完了。
 
+        * userlib.cpp, userlib.h : きれいに整形読まれることを前提としてみた。
+
 2004-02-06  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp: Floppy, Device, StorageDevice追加

@@ -1,20 +1,18 @@
 #include <userlib.h>
-#include <MemoryManager.h>
 
-int sleep(dword tick) {return syscall_sleep(tick);}
-int print(const char* msg) {return syscall_print(msg);}
-int _put_pixel(int x, int y, char color) {return syscall_put_pixel(x, y, color);}
-int kill() {return syscall_kill();}
-int exit(int error) {return syscall_kill();}
-int mthread_create(dword f) {return syscall_mthread_create(f);}
-int mthread_join(dword id) {return syscall_mthread_join(id);}
-
-
-int monaMain();
-
+/*----------------------------------------------------------------------
+    Static
+----------------------------------------------------------------------*/
 static MemoryManager um;
+
+/*----------------------------------------------------------------------
+    Global
+----------------------------------------------------------------------*/
 MonaApplication* monaApp;
 
+/*----------------------------------------------------------------------
+    entry point for application
+----------------------------------------------------------------------*/
 int user_start() {
 
     int result;
@@ -24,6 +22,9 @@ int user_start() {
     for (;;);
 }
 
+/*----------------------------------------------------------------------
+    messageLoop for MonaApplication
+----------------------------------------------------------------------*/
 void messageLoop() {
 
     MessageInfo message;
@@ -46,7 +47,69 @@ void messageLoop() {
     }
 }
 
+/*----------------------------------------------------------------------
+    MonaApplication
+----------------------------------------------------------------------*/
+MonaApplication::MonaApplication(char* name) {
 
+    int id = syscall_mthread_create((dword)MESSAGE_LOOP);
+    syscall_mthread_join(id);
+
+    dword myPid   = Message::lookup(name);
+    dword destPid = Message::lookup("KEYBDMNG.SVR");
+    if (destPid == 0) {
+        printf("process KEYBDMNG.SVR not found\n");
+        for (;;);
+    }
+
+    /* create message for KEYBDMNG.SVR */
+    MessageInfo info;
+    info.header = MSG_KEY_REGIST_TO_SERVER;
+    info.arg1   = myPid;
+
+    /* send */
+    if (Message::send(destPid, &info)) {
+        printf("regist error\n");
+    }
+}
+
+MonaApplication::~MonaApplication() {
+}
+
+/*----------------------------------------------------------------------
+    system call wrappers
+----------------------------------------------------------------------*/
+int sleep(dword tick) {
+    return syscall_sleep(tick);
+}
+
+int print(const char* msg) {
+    return syscall_print(msg);
+}
+
+int _put_pixel(int x, int y, char color) {
+    return syscall_put_pixel(x, y, color);
+}
+
+int kill() {
+    return syscall_kill();
+}
+
+int exit(int error) {
+    return syscall_kill();
+}
+
+int mthread_create(dword f) {
+    return syscall_mthread_create(f);
+}
+
+int mthread_join(dword id) {
+    return syscall_mthread_join(id);
+}
+
+/*----------------------------------------------------------------------
+    Floppy
+----------------------------------------------------------------------*/
 Floppy::Floppy(int device) {
 }
 
@@ -75,34 +138,346 @@ int Floppy::ioctl(void* p) {
     return 0;
 }
 
-MonaApplication::MonaApplication(char* name) {
+/*----------------------------------------------------------------------
+    malloc / free
+----------------------------------------------------------------------*/
+void* malloc(unsigned long size) {
+    return um.allocate(size);
+}
 
-    int id = syscall_mthread_create((dword)MESSAGE_LOOP);
-    syscall_mthread_join(id);
+void free(void * address) {
+    um.free(address);
+    return;
+}
 
-    dword myPid   = Message::lookup(name);
-    dword destPid = Message::lookup("KEYBDMNG.SVR");
-    if (destPid == 0) {
-        printf("process KEYBDMNG.SVR not found\n");
-        for (;;);
+/*----------------------------------------------------------------------
+    for C++
+----------------------------------------------------------------------*/
+int atexit( void (*func)(void)) {
+    return -1;
+}
+
+void __cxa_pure_virtual() {
+    print("__cxa_pure_virtual called\n");
+}
+
+void _pure_virtual() {
+    print("_pure_virtual called\n");
+}
+
+void __pure_virtual() {
+    print("_pure_virtual called\n");
+}
+
+/*----------------------------------------------------------------------
+    I/O
+----------------------------------------------------------------------*/
+byte inportb(dword port) {
+
+    byte ret;
+    asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
+    return ret;
+}
+
+void outportb(dword port, byte value) {
+   asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
+}
+
+/*----------------------------------------------------------------------
+    operator new/delete
+----------------------------------------------------------------------*/
+void* operator new(size_t size) {
+    return um.allocate(size);
+}
+
+void operator delete(void* address) {
+    um.free(address);
+    return;
+}
+
+void* operator new[](size_t size) {
+    return um.allocate(size);
+}
+
+void operator delete[](void* address) {
+    um.free(address);
+    return;
+}
+
+/*----------------------------------------------------------------------
+    Mutex
+----------------------------------------------------------------------*/
+Mutex::Mutex() {
+}
+
+Mutex::~Mutex() {
+}
+
+int Mutex::init() {
+
+    mutexId_ = syscall_mutex_create();
+    return mutexId_;
+}
+
+int Mutex::lock() {
+    return syscall_mutex_lock(mutexId_);
+}
+
+int Mutex::unlock() {
+    return syscall_mutex_unlock(mutexId_);
+}
+
+int Mutex::tryLock() {
+    return syscall_mutex_trylock(mutexId_);
+}
+
+int Mutex::destory() {
+    return syscall_mutex_destroy(mutexId_);
+}
+
+/*----------------------------------------------------------------------
+    Screen
+----------------------------------------------------------------------*/
+Screen::Screen() {
+
+    /* get and set vram information */
+    syscall_get_vram_info(&sinfo);
+    vram_        = (byte*)sinfo.vram;
+    bpp_         = sinfo.bpp;
+    xResolution_ = sinfo.x;
+    yResolution_ = sinfo.y;
+}
+
+Screen::~Screen() {
+}
+
+void Screen::putPixel16(int x, int y, dword color) {
+
+    int bytesPerPixel = bpp_ / 8;
+    byte* vram       = vram_;
+
+    vram += (x + y * xResolution_) * bytesPerPixel;
+    *((word*)vram) = (word)color;
+}
+
+void Screen::fillRect16(int x, int y, int w, int h, dword color) {
+
+        dword bytesPerPixel = bpp_ / 8;
+
+        byte* position = vram_ + (x + y * xResolution_) * bytesPerPixel;
+        byte* temp     = position;
+
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                *((word*)temp) = color;
+                temp += bytesPerPixel;
+            }
+            position += xResolution_ * bytesPerPixel;
+            temp = position;
+        }
+}
+
+/*----------------------------------------------------------------------
+    Message
+----------------------------------------------------------------------*/
+int Message::send(dword pid, MessageInfo* info) {
+    return syscall_send(pid, info);
+}
+
+int Message::receive(MessageInfo* info) {
+    return syscall_receive(info);
+}
+
+dword Message::lookup(const char* name) {
+    return syscall_lookup(name);
+}
+
+void Message::create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, char* str) {
+
+    info->header = header;
+    info->arg1 = arg1;
+    info->arg2 = arg2;
+    info->arg3 = arg3;
+
+    if (str) {
+        strncpy(info->str, str, sizeof(info->str));
     }
+    return;
+}
 
-    /* create message for KEYBDMNG.SVR */
-    MessageInfo info;
-    info.header = MSG_KEY_REGIST_TO_SERVER;
-    info.arg1   = myPid;
+/*----------------------------------------------------------------------
+    printf
+----------------------------------------------------------------------*/
+void printf(const char *format, ...) {
 
-    /* send */
-    if (Message::send(destPid, &info)) {
-        printf("regist error\n");
+    void** list = (void **)&format;
+
+    ((char**)list) += 1;
+    for (int i = 0; format[i] != '\0'; i++) {
+
+        if (format[i] == '%') {
+            i++;
+
+            switch (format[i]) {
+              case 's':
+                  print((char *)*list);
+                  ((char**)list) += 1;
+                  break;
+              case 'd':
+                  putInt((int)*list, 10);
+                  ((int*)list) += 1;
+                  break;
+              case 'x':
+                  print("0x");
+                  putInt((int)*list, 16);
+                  ((int*)list) += 1;
+                  break;
+              case 'c':
+                  putCharacter((char)(int)(*list));
+                  ((char*)list) += 1;
+                  break;
+              case '%':
+                  putCharacter('%');
+                  break;
+              case '\0':
+                  i--;
+                  break;
+            }
+        } else {
+            putCharacter(format[i]);
+        }
     }
 }
 
-MonaApplication::~MonaApplication() {
+void putInt(size_t n, int base) {
+
+    static char buf[256];
+
+    int geta = 8;
+    int num  = n;
+    if (base == 10 && num != 0) {
+        for (geta = 0; num; num /= 10, geta++);
+    } else if (base == 10 && num == 0) {
+        geta = 1;
+    }
+
+    char* p = ltona(n, buf, geta, base);
+
+    for (; *p != '\0'; p++) {
+        putCharacter(*p);
+    }
 }
 
+void putCharacter(char ch) {
+    char* str = " ";
+    str[0] = ch;
+    print(str);
+}
 
+void printInt(int num) {
 
+    char revstr[20];
+    char str[20];
+    int  i = 0;
+    int  j = 0;
+
+    /* negative number */
+    if (num < 0) {
+        str[0] = '-';
+        j++;
+        num = num * -1;
+    }
+
+    /* number to buffer */
+    do {
+        revstr[i] = '0' + (int)(num % 10);
+        num = num / 10;
+        i++;
+    } while (num != 0);
+    revstr[i] = '\0';
+
+    /* revert */
+    for (; i >= 0; j++) {
+        str[j] = revstr[i - 1];
+        i--;
+    }
+
+    /* print */
+    print(str);
+    return;
+}
+
+size_t _power(size_t x, size_t y) {
+
+    size_t result = x;
+
+    for (size_t i = 1; i < y; i++) {
+        result *= x;
+    }
+    return (int)result;
+}
+
+/*----------------------------------------------------------------------
+    FileInputStream
+----------------------------------------------------------------------*/
+FileInputStream::FileInputStream(char* file) : file_(file), fileSize_(0), isOpen_(false) {
+}
+
+FileInputStream::~FileInputStream() {
+}
+
+int FileInputStream::open() {
+
+    static char file[128];
+    int result;
+
+    if (isOpen_) {
+        return 0;
+    }
+
+    strcpy(file, file_);
+    char* p1 = strtok(file, "/");
+    char* p2 = strtok(NULL, "/");
+
+    if (p2 == NULL) {
+        result = syscall_file_open(".", p1, &fileSize_);
+    } else {
+        result = syscall_file_open(p1, p2, &fileSize_);
+    }
+
+    if (result == 0) {
+        isOpen_ = true;
+    }
+
+    return result;
+}
+
+dword FileInputStream::getFileSize() const {
+    return fileSize_;
+}
+
+dword FileInputStream::getReadSize() const {
+    return readSize_;
+}
+
+int FileInputStream::read(byte* buf, int size) {
+    return syscall_file_read((char*)buf, size, &readSize_);
+}
+
+void FileInputStream::close() {
+
+    if (!isOpen_) {
+        return;
+    }
+
+    syscall_file_close();
+    isOpen_ = false;
+    return;
+}
+
+/*----------------------------------------------------------------------
+    System call
+----------------------------------------------------------------------*/
 int syscall_mthread_create(dword f) {
 
     int result;
@@ -134,7 +509,6 @@ int syscall_mthread_join(dword id) {
 
     return (int)result;
 }
-
 
 int syscall_sleep(dword tick) {
 
@@ -563,338 +937,4 @@ int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword siz
                  );
 
     return (int)result;
-}
-
-void* malloc(unsigned long size) {
-    return um.allocate(size);
-}
-
-void free(void * address) {
-    um.free(address);
-    return;
-}
-
-extern "C" void __cxa_pure_virtual();
-extern "C" void _pure_virtual(void);
-extern "C" void __pure_virtual(void);
-extern "C" int atexit( void (*func)(void));
-
-int atexit( void (*func)(void)) {return -1;}
-void __cxa_pure_virtual() {
-
-    print("__cxa_pure_virtual called\n");
-}
-
-
-void _pure_virtual() {
-
-    print("_pure_virtual called\n");
-}
-
-void __pure_virtual() {
-
-    print("_pure_virtual called\n");
-}
-
-/*----------------------------------------------------------------------
-    I/O
-----------------------------------------------------------------------*/
-byte inportb(dword port) {
-
-    byte ret;
-    asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
-    return ret;
-}
-
-void outportb(dword port, byte value) {
-   asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
-}
-
-/*----------------------------------------------------------------------
-    operator new/delete
-----------------------------------------------------------------------*/
-void* operator new(size_t size) {
-    return um.allocate(size);
-}
-
-void operator delete(void* address) {
-    um.free(address);
-    return;
-}
-
-void* operator new[](size_t size) {
-    return um.allocate(size);
-}
-
-void operator delete[](void* address) {
-    um.free(address);
-    return;
-}
-
-/*----------------------------------------------------------------------
-    Mutex
-----------------------------------------------------------------------*/
-Mutex::Mutex() {
-}
-
-Mutex::~Mutex() {
-}
-
-int Mutex::init() {
-
-    mutexId_ = syscall_mutex_create();
-    return mutexId_;
-}
-
-int Mutex::lock() {
-    return syscall_mutex_lock(mutexId_);
-}
-
-int Mutex::unlock() {
-    return syscall_mutex_unlock(mutexId_);
-}
-
-int Mutex::tryLock() {
-    return syscall_mutex_trylock(mutexId_);
-}
-
-int Mutex::destory() {
-    return syscall_mutex_destroy(mutexId_);
-}
-
-/*----------------------------------------------------------------------
-    Screen
-----------------------------------------------------------------------*/
-Screen::Screen() {
-
-    /* get and set vram information */
-    syscall_get_vram_info(&sinfo);
-    vram_        = (byte*)sinfo.vram;
-    bpp_         = sinfo.bpp;
-    xResolution_ = sinfo.x;
-    yResolution_ = sinfo.y;
-}
-
-Screen::~Screen() {
-}
-
-void Screen::putPixel16(int x, int y, dword color) {
-
-    int bytesPerPixel = bpp_ / 8;
-    byte* vram       = vram_;
-
-    vram += (x + y * xResolution_) * bytesPerPixel;
-    *((word*)vram) = (word)color;
-}
-
-void Screen::fillRect16(int x, int y, int w, int h, dword color) {
-
-        dword bytesPerPixel = bpp_ / 8;
-
-        byte* position = vram_ + (x + y * xResolution_) * bytesPerPixel;
-        byte* temp     = position;
-
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                *((word*)temp) = color;
-                temp += bytesPerPixel;
-            }
-            position += xResolution_ * bytesPerPixel;
-            temp = position;
-        }
-}
-
-/*----------------------------------------------------------------------
-    Message
-----------------------------------------------------------------------*/
-int Message::send(dword pid, MessageInfo* info) {
-    return syscall_send(pid, info);
-}
-
-int Message::receive(MessageInfo* info) {
-    return syscall_receive(info);
-}
-
-dword Message::lookup(const char* name) {
-    return syscall_lookup(name);
-}
-
-void Message::create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, char* str) {
-
-    info->header = header;
-    info->arg1 = arg1;
-    info->arg2 = arg2;
-    info->arg3 = arg3;
-
-    if (str) {
-        strncpy(info->str, str, sizeof(info->str));
-    }
-    return;
-}
-
-void printf(const char *format, ...) {
-
-    void** list = (void **)&format;
-
-    ((char**)list) += 1;
-    for (int i = 0; format[i] != '\0'; i++) {
-
-        if (format[i] == '%') {
-            i++;
-
-            switch (format[i]) {
-              case 's':
-                  print((char *)*list);
-                  ((char**)list) += 1;
-                  break;
-              case 'd':
-                  putInt((int)*list, 10);
-                  ((int*)list) += 1;
-                  break;
-              case 'x':
-                  print("0x");
-                  putInt((int)*list, 16);
-                  ((int*)list) += 1;
-                  break;
-              case 'c':
-                  putCharacter((char)(int)(*list));
-                  ((char*)list) += 1;
-                  break;
-              case '%':
-                  putCharacter('%');
-                  break;
-              case '\0':
-                  i--;
-                  break;
-            }
-        } else {
-            putCharacter(format[i]);
-        }
-    }
-}
-
-void putInt(size_t n, int base) {
-
-    static char buf[256];
-
-    int geta = 8;
-    int num  = n;
-    if (base == 10 && num != 0) {
-        for (geta = 0; num; num /= 10, geta++);
-    } else if (base == 10 && num == 0) {
-        geta = 1;
-    }
-
-    char* p = ltona(n, buf, geta, base);
-
-    for (; *p != '\0'; p++) {
-        putCharacter(*p);
-    }
-}
-
-void putCharacter(char ch) {
-    char* str = " ";
-    str[0] = ch;
-    print(str);
-}
-
-void printInt(int num) {
-
-    char revstr[20];
-    char str[20];
-    int  i = 0;
-    int  j = 0;
-
-    /* negative number */
-    if (num < 0) {
-        str[0] = '-';
-        j++;
-        num = num * -1;
-    }
-
-    /* number to buffer */
-    do {
-        revstr[i] = '0' + (int)(num % 10);
-        num = num / 10;
-        i++;
-    } while (num != 0);
-    revstr[i] = '\0';
-
-    /* revert */
-    for (; i >= 0; j++) {
-        str[j] = revstr[i - 1];
-        i--;
-    }
-
-    /* print */
-    print(str);
-    return;
-}
-
-size_t _power(size_t x, size_t y) {
-
-    size_t result = x;
-
-    for (size_t i = 1; i < y; i++) {
-        result *= x;
-    }
-    return (int)result;
-}
-
-/*----------------------------------------------------------------------
-    FileInputStream
-----------------------------------------------------------------------*/
-FileInputStream::FileInputStream(char* file) : file_(file), fileSize_(0), isOpen_(false) {
-}
-
-FileInputStream::~FileInputStream() {
-}
-
-int FileInputStream::open() {
-
-    static char file[128];
-    int result;
-
-    if (isOpen_) {
-        return 0;
-    }
-
-    strcpy(file, file_);
-    char* p1 = strtok(file, "/");
-    char* p2 = strtok(NULL, "/");
-
-    if (p2 == NULL) {
-        result = syscall_file_open(".", p1, &fileSize_);
-    } else {
-        result = syscall_file_open(p1, p2, &fileSize_);
-    }
-
-    if (result == 0) {
-        isOpen_ = true;
-    }
-
-    return result;
-}
-
-dword FileInputStream::getFileSize() const {
-    return fileSize_;
-}
-
-dword FileInputStream::getReadSize() const {
-    return readSize_;
-}
-
-int FileInputStream::read(byte* buf, int size) {
-    return syscall_file_read((char*)buf, size, &readSize_);
-}
-
-void FileInputStream::close() {
-
-    if (!isOpen_) {
-        return;
-    }
-
-    syscall_file_close();
-    isOpen_ = false;
-    return;
 }
