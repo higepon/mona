@@ -23,12 +23,12 @@ int unregist(List<dword>* destList, MessageInfo* info);
 int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte scancode);
 
 
-bool WaitInterrruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
+bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
 
 
-#define WAIT_INTERRUPT(ms, irq) WaitInterrruptWithTimeout(ms, irq, __FILE__, __LINE__)
+#define WAIT_INTERRUPT(ms, irq) WaitInterruptWithTimeout(ms, irq, __FILE__, __LINE__)
 
-bool WaitInterrruptWithTimeout(dword ms, byte irq, const char* file, int line)
+bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file, int line)
 {
     MessageInfo msg;
 
