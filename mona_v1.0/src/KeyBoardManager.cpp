@@ -4,7 +4,7 @@
 
     class KeyBoardManager
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002, 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -206,6 +206,13 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
     return;
 }
 
+/*!
+    \brief get Character in key buffer
+
+
+    \author HigePon
+    \date   create:2003/01/23 update:2002/10/25
+*/
 char KeyBoardManager::getCharacter() {
 
     if (keyQueue_.empty()) return -1;
@@ -213,7 +220,6 @@ char KeyBoardManager::getCharacter() {
     KeyInfo info = keyQueue_.back();
     keyQueue_.pop();
 
-    //   if (info == 0) return -1;
     if (info.modifiers & KEY_MODIFIER_UP) return -1;
     if (info.keycode < 'a' && info.keycode > 'z') return -1;
 
