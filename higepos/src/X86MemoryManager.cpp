@@ -169,6 +169,25 @@ void X86MemoryManager::printInfo(char* str) {
         _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
     }
+
+    struct memoryEntry* fentry = freeEntry_;
+    struct memoryEntry* uentry = usedEntry_;
+    _sys_printf("memory codition ");
+    while (fentry || uentry) {
+
+        if ((uentry && fentry > uentry) || (!fentry && uentry)) {
+            _sys_printf("U");
+            uentry = uentry->next;
+            continue;
+        }
+
+        if ((fentry && uentry > fentry) || (!uentry && fentry)) {
+            _sys_printf("F");
+            fentry = fentry->next;
+            continue;
+        }
+    }
+    _sys_printf("\n");
 }
 
 /*!
