@@ -32,8 +32,12 @@ License=MIT/X Licnese
 ----------------------------------------------------------------------*/
 void tryMouse() {
 
-    /* enable mouse */
+    /* enable mouse (AUX enable) */
     outportb(0x64, 0xa8);
+
+    /* mouse reset */
+    outportb(0x64, 0xd4);
+    outportb(0x60, 0xff);
 
     /* enable mouse */
     outportb(0x64, 0xd4);
@@ -43,7 +47,8 @@ void tryMouse() {
     outportb(0x64, 0x20);
     byte result = inportb(0x60);
 
-    outportb(0xa1, (inportb(0xa1) & (~ (byte) (1 << (4) ) ) ) );
+    /* enable mouse interrupt */
+    outportb(0x21, inportb(0x21) & 0xF7);
 
 }
 

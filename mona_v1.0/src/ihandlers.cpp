@@ -22,6 +22,10 @@
 
 void mouseHandler() {
     g_console->printf("mouse");
+
+    /* EOI is below for IRQ 8-15 */
+    outportb(0xA0, 0x20);
+    outportb(0x20, 0x20);
 }
 
 /*!
