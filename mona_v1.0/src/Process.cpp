@@ -137,7 +137,7 @@ V86Process::V86Process(const char* name) {
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread(dword programCounter) : tick_(0), timeLeft_(4) {
+Thread::Thread() : tick_(0), timeLeft_(4) {
 
     /* thread information */
     threadInfo_ = (ThreadInfo*)malloc(sizeof(ThreadInfo));
@@ -146,9 +146,6 @@ Thread::Thread(dword programCounter) : tick_(0), timeLeft_(4) {
     /* thread information arch dependent */
     threadInfo_->archinfo = (ArchThreadInfo*)malloc(sizeof(ArchThreadInfo));
     checkMemoryAllocate(threadInfo_->archinfo, "class Thread arch info allocate");
-
-    /* programCounter */
-    setProgramCounter(programCounter);
 }
 
 Thread::~Thread() {
@@ -161,12 +158,7 @@ Thread::~Thread() {
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-ThreadManager::ThreadManager(bool isUser, PageManager* pageManager) {
-
-    /* how? idle       */
-    /*                 */
-    /* not implemented */
-    /*                 */
+ThreadManager::ThreadManager(bool isUser, PageManager* pageManager, ProcessManager_* processManager) : threadCount(0) {
 
     /* user or kernel */
     isUser_ = isUser;
@@ -175,8 +167,9 @@ ThreadManager::ThreadManager(bool isUser, PageManager* pageManager) {
     scheduler_ = new ThreadScheduler();
     checkMemoryAllocate(scheduler_, "ThreadManager scheduler memory allocate");
 
-    /* page manager */
-    pageManager_ = pageManager;
+    /*  manager */
+    pageManager_    = pageManager;
+    processManager_ = processManager;
 }
 
 ThreadManager::~ThreadManager() {
@@ -184,22 +177,19 @@ ThreadManager::~ThreadManager() {
 
 Thread* ThreadManager::create(dword programCounter) {
 
-    Thread* thread = new Thread(programCounter);
+    Thread* thread = new Thread();
+    threadCount++;
 
     /* arch dependent */
     if (isUser_) {
-        archCreateUserThread(thread);
+        archCreateUserThread(thread, programCounter);
     } else {
-        archCreateThread(thread);
+        archCreateThread(thread, programCounter);
     }
-
-    /*                 */
-    /* not implemented */
-    /*                 */
-    return (Thread*)NULL;
+    return thread;
 }
 
-void ThreadManager::archCreateThread(Thread* thread) const {
+void ThreadManager::archCreateThread(Thread* thread, dword programCounter) const {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -216,9 +206,12 @@ void ThreadManager::archCreateThread(Thread* thread) const {
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_KERNEL;
+    ainfo->esp     = STACK_START - STACK_SIZE * threadCount;
+    ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
+    ainfo->eip     = programCounter;
 }
 
-void ThreadManager::archCreateUserThread(Thread* thread) const {
+void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter) const {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -226,6 +219,7 @@ void ThreadManager::archCreateUserThread(Thread* thread) const {
     ainfo->ds      = USER_DS;
     ainfo->es      = USER_DS;
     ainfo->ss      = USER_SS;
+    ainfo->ss0     = KERNEL_SS;
     ainfo->eflags  = 0x200;
     ainfo->eax     = 0;
     ainfo->ecx     = 0;
@@ -234,6 +228,10 @@ void ThreadManager::archCreateUserThread(Thread* thread) const {
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_USER;
+    ainfo->esp     = STACK_START - STACK_SIZE * threadCount;
+    ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
+    ainfo->esp0    = processManager_->allocateKernelStack();
+    ainfo->eip     = programCounter;
 }
 
 int ThreadManager::join(Thread* thread) {
@@ -414,6 +412,12 @@ int ProcessManager_::switchProcess() {
     /* do nothing ??? */
 
     return NORMAL;
+}
+
+LinearAddress ProcessManager_::allocateKernelStack() const {
+
+    static int i = 0;
+    return 0x100000 + i * 4096;
 }
 
 bool ProcessManager_::schedule() {

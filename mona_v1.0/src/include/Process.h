@@ -96,7 +96,7 @@ typedef struct ThreadInfo {
 class Thread {
 
   public:
-    Thread(dword programCounter);
+    Thread();
     virtual ~Thread();
 
   public:
@@ -120,10 +120,6 @@ class Thread {
 
     inline ThreadInfo* getThreadInfo() const {
         return threadInfo_;
-    }
-
-    inline void setProgramCounter(dword programCounter) {
-        threadInfo_->archinfo->eip = programCounter;
     }
 
   private:
@@ -157,10 +153,11 @@ class ThreadScheduler {
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
+class ProcessManager_;
 class ThreadManager {
 
   public:
-    ThreadManager(bool isUser, PageManager* pageManager);
+    ThreadManager(bool isUser, PageManager* pageManager, ProcessManager_* processmanager);
     virtual ~ThreadManager();
 
   public:
@@ -174,15 +171,21 @@ class ThreadManager {
     }
 
   private:
-    void archCreateUserThread(Thread* thread) const;
-    void archCreateThread(Thread* thread) const;
+    void archCreateUserThread(Thread* thread, dword programCounter) const;
+    void archCreateThread(Thread* thread, dword programCounter) const;
 
   private:
     ThreadScheduler* scheduler_;
     PageManager* pageManager_;
+    ProcessManager_* processManager_;
     Thread* current_;
     Thread* idle_;
     bool isUser_;
+    int threadCount;
+
+  private:
+    static const LinearAddress STACK_START = 0xFFFFFF00;
+    static const dword STACK_SIZE          = 4 * 1024;
 };
 
 /*----------------------------------------------------------------------
@@ -288,6 +291,10 @@ class ProcessManager_ {
     bool schedule();
     Process_* getCurrentProcess() const;
     bool hasProcess(Process_* process) const;
+    LinearAddress allocateKernelStack() const;
+
+  private:
+    void setupThreadStack(Process_* process, Thread* thread) const;
 
   public:
     static const int USER_PROCESS   = 0;

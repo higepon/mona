@@ -1,3 +1,7 @@
+2004-01-02  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: thread周りの本格実装開始
+
 2003-12-30  higepon  <higepon@users.sourceforge.jp>
 
         * core.asm: スレッドスイッチ(アーキテクチャ依存を作成)
