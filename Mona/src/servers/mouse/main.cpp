@@ -165,7 +165,7 @@ void Mouse::disableKeyboard()
 
 void Mouse::enableKeyboard()
 {
-    monapi_set_irq(1, MONAPI_FALSE, MONAPI_TRUE);
+    monapi_set_irq(1, MONAPI_TRUE, MONAPI_TRUE);
 }
 
 /*----------------------------------------------------------------------
