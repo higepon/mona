@@ -40,8 +40,9 @@ public:
 	void set_Icon(Icons icon);
 	inline System::String get_Target() { return this->target; }
 	void set_Target(System::String target);
-	static void DrawIcon(_P<System::Drawing::Graphics> g, System::String name, Icons icon, int x, int y, bool emboss);
+	static System::Drawing::Size DrawIcon(_P<System::Drawing::Graphics> g, System::String name, Icons icon, int x, int y, bool emboss, bool selection);
 	static Icons GetIcon(monapi_directoryinfo* di);
+	static void ExpansionEffect(int x, int y);
 	
 protected:
 	virtual void OnPaint();

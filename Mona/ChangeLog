@@ -1,3 +1,9 @@
+2004-06-15  tino  <tino@users.sourceforge.jp>
+
+        * apps/gui/monafile: ファイルブラウザ追加
+
+        * bin/root/MONAGUI.INI: RunからLAUNCHER.EL2を外してMONAFILE.APPを追加
+
 2004-06-14  tino  <tino@users.sourceforge.jp>
 
         * include/monapi/messages.h: MSG_FILE_READ_DIRECTORY, monapi_directoryinfo,

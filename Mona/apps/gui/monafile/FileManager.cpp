@@ -39,7 +39,7 @@ int ProcessStart(const String& file)
 		elf[i] = ch < 128 ? ch : '?';
 	}
 	elf[len] = '\0';
-	return monapi_call_elf_execute_file(elf.get(), 0);
+	return monapi_call_elf_execute_file(elf.get(), MONAPI_FALSE);
 }
 
 class FileManager

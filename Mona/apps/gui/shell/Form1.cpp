@@ -14,6 +14,8 @@ using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
+extern _P<MonAPI::Screen> GetDefaultScreen();
+
 class Terminal : public Control
 {
 public:
@@ -124,6 +126,9 @@ public:
 	{
 		this->InitializeComponent();
 		
+		_P<MonAPI::Screen> scr = GetDefaultScreen();
+		this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
+		
 		terminal = new Terminal();
 		terminal->set_Bounds(Rectangle(Point::get_Empty(), this->get_ClientSize()));
 		this->get_Controls()->Add(terminal.get());
@@ -132,7 +137,6 @@ public:
 private:
 	void InitializeComponent()
 	{
-		this->set_Location(Point(64, 64));
 		this->set_ClientSize(Size(SHELL_WIDTH * FONT_WIDTH + 4, SHELL_HEIGHT * FONT_HEIGHT + 4));
 		this->set_Text("GUI Shell");
 		this->set_Opacity(0.8);

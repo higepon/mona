@@ -9,7 +9,7 @@ using namespace System::Mona::Forms;
 
 FileWindow::FileWindow()
 {
-	this->set_Bounds(Rectangle(100, 100, 430, 340));
+	this->set_Bounds(Rectangle(80, 80, 510, 340));
 	this->set_Text("ふぁいるまね～じゃ");
 	this->set_Opacity(0.8);
 	

@@ -352,6 +352,13 @@ bool WindowHandler(MessageInfo* msg)
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
 			Message::reply(msg);
 			break;
+		case MSG_GUISERVER_REDUCTIONEFFECT:
+			ReductionEffect(
+				GET_X_DWORD(msg->arg1), GET_Y_DWORD(msg->arg1),
+				GET_X_DWORD(msg->arg2), GET_Y_DWORD(msg->arg2),
+				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
+			Message::reply(msg);
+			break;
 		default:
 			return false;
 	}
