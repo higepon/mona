@@ -500,6 +500,8 @@ bool FAT12::close() {
 
     if (openMode_ == WRITE_MODE) {
 
+        releaseCluster();
+
         writeEntry();
 
         if (!writeFAT()) {
@@ -772,6 +774,42 @@ bool FAT12::readEntry() {
     memcpy(entries_, buf, sizeof(DirectoryEntry) * 16);
     return true;
 }
+
+/*!
+  \brief release cluster
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/26 update:
+*/
+bool FAT12::releaseCluster() {
+
+    int clusterNumOrg = fileSize_ / 512 + 1;
+    int clusterNum    = (currentEntry_->filesize) / 512 + 1;
+
+    dword  cluster = currentEntry_->cluster;
+    dword  current;
+
+    /* do nothing */
+    if (clusterNumOrg <= clusterNum) return true;
+
+    for (int i = 0; i < clusterNum; i++) {
+
+        if ((cluster = getFATAt(cluster)) == getFATAt(1)) return false;
+    }
+
+    for (int i = 0; i < clusterNumOrg - clusterNum; i++) {
+
+        current = cluster;
+        cluster = getFATAt(cluster);
+        map_->clear(cluster);
+        setFATAt(current, getFATAt(1));
+    }
+
+    return true;
+}
+
 
 bool FAT12::rename(const char* from, const char* to) {return true;}
 bool FAT12::remove(const char* file) {return true;}

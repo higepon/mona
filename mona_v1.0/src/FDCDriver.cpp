@@ -327,12 +327,15 @@ bool FDCDriver::recalibrate() {
 
     byte command[] = {0x07, 0x00}; /* recalibrate */
 
+    g_console->printf("recalibrate1");
+
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#recalibrate:command fail\n");
         return false;
     }
+
 
     while (!waitInterrupt());
 #ifdef FDC_DEBUG
@@ -428,12 +431,14 @@ bool FDCDriver::senseInterrupt() {
 
     byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
 
-
+    g_console->printf("recalibrate-sen3");
     if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
+
+    g_console->printf("recalibrate-sen4");
 
     readResults();
     return true;
