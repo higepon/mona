@@ -10,7 +10,7 @@ public:
     enum
     {
         NONE             = 64,
-        TIMER            = 20,
+        SLEEP            = 20,
         TIMER_MESSAGE    = 19,
         MESSAGE          = 22,
         MUTEX_UNLOCKED   = 27,

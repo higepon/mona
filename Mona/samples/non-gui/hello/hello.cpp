@@ -6,15 +6,17 @@
 
 using namespace MonAPI;
 
-#define MAIN_1
+#define MAIN_10
 
 
 #ifdef MAIN_10
 int MonaMain(List<char*>* pekoe)
 {
-    timer(1000);
+    dword id1 = set_timer(1000);
+    dword id2 = set_timer(5000);
+    printf("timer start\n");
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 10; i++)
     {
         MessageInfo msg;
 
@@ -24,12 +26,15 @@ int MonaMain(List<char*>* pekoe)
         {
             case MSG_TIMER:
             {
-                printf("timer\n");
-                timer(1000);
+                printf("timer id = %x\n", msg.arg1);
                 break;
             }
         }
     }
+
+    printf("kill result=%d\n", kill_timer(id1));
+    printf("kill result=%d\n", kill_timer(id2));
+    printf("timer killed\n");
 
     return 0;
 }

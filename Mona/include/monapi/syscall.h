@@ -19,7 +19,8 @@ extern "C" {
 #endif
 extern int user_start();
 extern int sleep(dword ms);
-extern int timer(dword ms);
+extern int set_timer(dword ms);
+extern int  kill_timer(dword id);
 extern int heavy();
 extern int print(const char*);
 extern int kill();
@@ -28,7 +29,8 @@ extern int mthread_create(dword f);
 extern int mthread_join(dword id);
 extern int syscall_test(dword laddress);
 extern int syscall_sleep(dword tick);
-extern int syscall_timer(dword tick);
+extern int syscall_set_timer(dword tick);
+extern int syscall_kill_timer(dword id);
 extern int syscall_print(const char*);
 extern int syscall_kill();
 extern int syscall_send(dword id, MessageInfo* message);

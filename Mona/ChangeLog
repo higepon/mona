@@ -1,3 +1,11 @@
+2005-03-07  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/syscalls.cpp: kill_timer(), set_timer()追加。timer()廃止。
+
+2005-03-06  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Scheduler.h (class Scheduler): SetTimer, KillTimer追加。
+
 2005-03-03  higepon  <higepon@users.sourceforge.jp>
 
         * samples/non-gui/hello/hello.cpp (MAIN_10): タイマーサンプルを追加。MAIN_10を defineしてください。
