@@ -117,7 +117,7 @@ void disp_process() {
         int x = pos_x;
         int y = pos_y;
 
-        pos_x = 0, pos_y = 16;
+        pos_x = 0, pos_y = 15;
 
         g_process_manager->printAllProcesses();
 

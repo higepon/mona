@@ -138,6 +138,8 @@ _arch_switch_process_to_v86_mode:
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
         pop  ebx                     ; restore ebp
+;  	call _arch_set_stack_view
+;  	call _fault0dHandler
         iretd                        ; switch to next
 
 _arch_set_stack_view:

@@ -37,8 +37,6 @@ void ProcessManager::switchProcess() {
           , g_current_process->ss0
           );
 
-     if (g_current_process->name[0] == 'V') g_console->printf("ds = %x", g_current_process->ds);
-
     /* switch to user process */
     if ((g_current_process->cs & DPL_USER) == DPL_USER) {
 
@@ -126,7 +124,7 @@ void ProcessManager::printOneProcess(ProcessInfo* info) const {
     else if (info->state == Process::SLEEPING) state = "Sleeping";
     else if (info->state == Process::READY)    state = "Ready   ";
 
-    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %s |%d\n", info->name, info->pid, info->dpl, info->cs, info->ds, info->esp, state, info->tick);
+    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %s |%d\n", info->name, info->pid, info->dpl, info->cs, info->ss, info->esp, state, info->tick);
 
 }
 
