@@ -53,25 +53,19 @@ class GraphicalConsole : public VirtualConsole {
     void printf(const char *, ...);
     void setBGColor(const char color);
     void setCHColor(const char color);
-    void putCharacter(char ch);
-    void print(char* str);
-    void printInt(int num);
-    void putInt(size_t n, int base);
+    void getCursor(int* x, int* y);
+    void setCursor(int x, int y);
     void clearScreen();
 
   private:
+    void putCharacter(char ch);
     void forwardCursor();
     void backwardCursor();
     void backwardCursor(int n);
     void newLine();
-    //    void putCharacter(char ch);
-    //    void print(char* str);
-    //    void printInt(int num);
-    //    void putInt(size_t n, int base);
-    void setCursor(int x, int y);
     void scrollUp();
-    size_t _power(size_t x, size_t y);
-
+    void print(char* str);
+    void putInt(size_t n, int base);
   private:
     char bgcolor_;
     char chcolor_;

@@ -38,7 +38,7 @@ GraphicalConsole::GraphicalConsole() {
 
 /*!
     \brief printf
-
+]
     \param  color background color
     \author HigePon
     \date   create:2003/03/01 update:
@@ -85,7 +85,7 @@ void GraphicalConsole::printf(const char *format, ...) {
                   ((char**)list) += 1;
                   break;
               case 'd':
-                  printInt((int)*list);
+                  putInt((int)*list, 10);
                   ((int*)list) += 1;
                   break;
               case 'x':
@@ -108,6 +108,22 @@ void GraphicalConsole::printf(const char *format, ...) {
             putCharacter(format[i]);
         }
     }
+}
+
+void GraphicalConsole::putInt(size_t n, int base) {
+
+    static char buf[256];
+
+    int geta = 8;
+    int num  = n;
+    if (base == 10 && num != 0) {
+        for (geta = 0; num; num /= 10, geta++);
+    } else if (base == 10 && num == 0) {
+        geta = 1;
+    }
+
+    char* p = ltona(n, buf, geta, base);
+    print(p);
 }
 
 /*!
@@ -153,6 +169,12 @@ void GraphicalConsole::setCursor(int x, int y) {
     pos_x = x;
     pos_y = y;
     return;
+}
+
+void GraphicalConsole::getCursor(int* x, int* y) {
+
+    *x = pos_x;
+    *y = pos_y;
 }
 
 /*!
@@ -318,110 +340,3 @@ void GraphicalConsole::print(char* str) {
      return;
 }
 
-/*!
-    \brief print integer
-
-    print integer
-
-    \param num integer number
-
-    \author  HigePon
-    \date    create:2003/02/22 update:
-*/
-void GraphicalConsole::printInt(int num) {
-
-    char revstr[20];
-    char str[20];
-    int  i = 0;
-    int  j = 0;
-
-    /* negative number */
-    if (num < 0) {
-        str[0] = '-';
-        j++;
-        num = num * -1;
-    }
-
-    /* number to buffer */
-    do {
-        revstr[i] = '0' + (int)(num % 10);
-        num = num / 10;
-        i++;
-    } while (num != 0);
-    revstr[i] = '\0';
-
-    /* revert */
-    for (; i >= 0; j++) {
-        str[j] = revstr[i - 1];
-        i--;
-    }
-
-    /* print */
-    print(str);
-    return;
-}
-
-/*!
-    \brief print int
-
-    \param n integer to print
-    \param base ex)16
-
-    \author  HigePon
-    \date    create:2003/02/22 update:
-*/
-void GraphicalConsole::putInt(size_t n, int base) {
-
-    int    power;
-    size_t num = n;
-    size_t ch;
-
-    for (power = 0; num != 0; power++) {
-        num /= base;
-    }
-
-    for (int j = 0; j < 8 - power; j++) {
-        putCharacter('0');
-    }
-
-    for (int i = power -1; i >= 0; i--) {
-        ch = n / _power(base, i);
-        n %= _power(base, i);
-
-        if (i == 0 && n > 9) {
-
-            putCharacter('A' + n -10);
-        } else if (i == 0) {
-
-            putCharacter('0' + n);
-        } else if (ch > 9) {
-
-            putCharacter('A' + ch -10);
-        } else {
-
-            putCharacter('0' + ch);
-        }
-    }
-}
-
-/*!
-    \brief x^y
-
-    x^y
-
-    \param x  x^y
-    \param y  x^y
-    \return x^y
-
-    \author  HigePon
-    \date    create:2003/02/22 update:
-*/
-size_t GraphicalConsole::_power(size_t x, size_t y) {
-
-    size_t result = x;
-
-    for (size_t i = 1; i < y; i++) {
-        result *= x;
-    }
-    return result;
-}

@@ -18,9 +18,6 @@
 #include<io.h>
 #include<elf.h>
 
-extern "C" char pos_x;
-extern "C" char pos_y;
-
 extern "C" void arch_set_stack_view();
 extern "C" void put_pixel(int x, int y, char color);
 

@@ -65,9 +65,6 @@
 
 char* version = "Mona version.0.1.4 $Date$";
 
-extern int pos_x;
-extern int pos_y;
-
 void mainProcess() {
 
     /* Keyboard Server */

@@ -22,14 +22,12 @@
 class VirtualConsole {
 
   public:
-    virtual void printf(const char *, ...) = 0;
+    virtual void printf(const char *, ...)    = 0;
     virtual void setBGColor(const char color) = 0;
     virtual void setCHColor(const char color) = 0;
-    virtual void putCharacter(char ch) = 0;
-    virtual void print(char* str)  = 0;
-    virtual void printInt(int num) = 0;
-    virtual void putInt(size_t n, int base) = 0;
-    virtual void clearScreen() = 0;
+    virtual void getCursor(int* x, int* y)    = 0;
+    virtual void setCursor(int x, int y)      = 0;
+    virtual void clearScreen()                = 0;
 };
 
 

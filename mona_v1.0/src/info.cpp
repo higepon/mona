@@ -38,31 +38,30 @@ void info(int level, const char *format, ...) {
 
             switch (format[i]) {
               case 's':
-                  g_console->print((char *)*list);
+                  g_console->printf("%s", (char *)*list);
                   ((char**)list) += 1;
                   break;
               case 'd':
-                  g_console->printInt((int)*list);
+                  g_console->printf("%d", (int)*list);
                   ((int*)list) += 1;
                   break;
               case 'x':
-                  g_console->print("0x");
-                  g_console->putInt((int)*list, 16);
+                  g_console->printf("%x", (int)*list, 16);
                   ((int*)list) += 1;
                   break;
               case 'c':
-                  g_console->putCharacter((char)(int)(*list));
+                  g_console->printf("%c", ((char)(int)(*list)));
                   ((char*)list) += 1;
                   break;
               case '%':
-                  g_console->putCharacter('%');
+                  g_console->printf("%%");
                   break;
               case '\0':
                   i--;
                   break;
             }
         } else {
-            g_console->putCharacter(format[i]);
+            g_console->printf("%c", (format[i]));
         }
     }
 

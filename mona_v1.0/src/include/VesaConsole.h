@@ -18,10 +18,8 @@ public:
     void printf(const char *, ...);
     void setBGColor(const char color);
     void setCHColor(const char color);
-    void putCharacter(char ch);
-    void print(char* str);
-    void printInt(int num);
-    void putInt(size_t n, int base);
+    void getCursor(int* x, int* y);
+    void setCursor(int x, int y);
     void locate(int x, int y);
     void clearScreen();
 
@@ -44,7 +42,9 @@ private:
     dword getColor (char color);
     void nextCursor ();
     void newLine ();
-    size_t _power(size_t x, size_t y);
+    void print(char* str);
+    void putInt(size_t n, int base);
+    void putCharacter(char ch);
 
     class VesaScreen
     {
