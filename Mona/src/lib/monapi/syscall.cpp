@@ -26,7 +26,7 @@ int print(const char* msg) {
         strncpy(buf, msg, 127);
 #if 1
         char buf2[128];
-        sprintf(buf2, "[%d", syscall_get_tid());
+        sprintf(buf2, "{%d", syscall_get_tid());
         syscall_print(buf2);
 #endif
         if (monapi_cmessage_send_receive_args(NULL, NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
@@ -34,7 +34,7 @@ int print(const char* msg) {
             syscall_print(buf);
         }
 #if 1
-        syscall_print("]");
+        syscall_print("}");
 #endif
     }
     return 0;
