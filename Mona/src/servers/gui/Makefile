@@ -12,7 +12,7 @@ include $(MONADIR)/env/monapi-bn2.inc
 endif
 
 install-tinogui:
-	$(INSTALL) TINOGUI.MSH $(MONADIR)/bin/root/APPS
+	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/root/APPS
 
 install: install-tinogui
 
