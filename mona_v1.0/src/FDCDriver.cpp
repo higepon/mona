@@ -307,6 +307,7 @@ bool FDCDriver::seek(byte track) {
         return false;
     }
 
+    info(DEV_WARNING, "seek start2 \n");
     while (true) {
 
     info(DEV_WARNING, "seek start3 \n");
