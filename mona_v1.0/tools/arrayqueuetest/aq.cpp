@@ -7,22 +7,54 @@
 #include "types.h"
 #include "aq.h"
 
+#define FOREACH_Q(top, type, element) \
+for (type element = (type )((top).next); element != &(top); element = (type )((element)->next))
+
+#define FOREACH(type, iterator, array) \
+    if ((array).getLength() > 0) \
+        for ({int __i = 0; type iterator;} \
+            __i < (array).getLength() && (&(iterator = (array)[__i]) || true); __##i++)
+
 /*
     main()
 */
 int main(int argc, char** argv)
 {
+    /* only Queue test */
+    Queue top;
+    Queue::initialize(&top);
+
+    printf("Queue Test\n");
+
+    for (int i = 0; i < 10; i++)
+    {
+        Queue* q = new Queue();
+        printf("[%x]", q);
+        Queue::addToPrev(&top, q);
+    }
+
+    FOREACH_Q(top, Queue*, hoge)
+    {
+        printf("<%x>", hoge);
+    }
+
+    /* only Array test */
     Array<int> array(10);
+
+    printf("\nArray Test\n");
 
     for (int i = 0; i < array.getLength(); i++)
     {
         array[i] = i;
     }
 
-    for (int i = 0; i < array.getLength(); i++)
+    FOREACH(int, value, array)
     {
-        printf("[%d]", array[i]);
+        printf("[%d]", value);
     }
+
+    /* Array  & Queue test */
+
     return 0;
 }
 

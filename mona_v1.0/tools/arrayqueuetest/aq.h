@@ -138,10 +138,6 @@ public:
 
 //template <class T> class Array;
 #if 1
-#define FOREACH(type, iterator, array) \
-    if ((array).getLength() > 0) \
-        for ({int __i = 0; type iterator;} \
-            __i < (array).getLength() && (&(iterator = (array)[__i]) || true); __##i++)
 #define STACK_ARRAY(type, name, size) type __##name[size]; Array<type> name(__##name, size)
 
 template <class T> class Array {
