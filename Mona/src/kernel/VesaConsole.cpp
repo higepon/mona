@@ -224,7 +224,7 @@ void VesaConsole::VesaScreen::scrollUp (int y, int h)
 
         for (int i = 0; i < h; i++) {
                 for (int j = 0; j < bytesPerScanLine; j++) {
-                        dst[j] = src[j];
+                        if (dst[j] != src[j]) dst[j] = src[j];
                 }
                 dst += bytesPerScanLine;
                 src += bytesPerScanLine;
