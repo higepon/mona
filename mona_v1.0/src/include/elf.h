@@ -16,9 +16,9 @@
 
 typedef struct {
     byte  magic[4];      // 0x7F, 'E', 'L', 'F'
-    byte  class;         // address size 1:32bit / 2:64bit
+    byte  clazz;         // address size 1:32bit / 2:64bit
     byte  byteorder;     // 1:little / 2:big
-    byte  headervirsion; // 1
+    byte  headerversion; // 1
     byte  pad[9];        // padding
     word  type;          // 1:relocatable / 2:executable / 3:common / 4:core image
     word  archtype;      // 2:SPARK / 3:x86 / 4:68K
@@ -31,7 +31,7 @@ typedef struct {
     word  phdrent;       // program header entry size
     word  phdrcnt;       // program header entry count
     word  shdrent;       // section header entry size
-    word  phdrcnt;       // section header entry count
+    word  shdrcnt;       // section header entry count
     word  strsec;        // section number to string
 } ELFHeader;
 
