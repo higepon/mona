@@ -1,4 +1,4 @@
-TARGET  = RelocELF.exe
+TARGET  = RelocELF$(EXEEXT)
 SOURCES = main.cpp elfparser.cpp
 
 MONADIR = ../..
