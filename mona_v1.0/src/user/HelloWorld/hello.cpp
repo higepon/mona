@@ -29,6 +29,13 @@
 // 共有メモリなやつ
 int MonaMain(List<char*>* pekoe)
 {
+//     Floppy fd(Floppy::FLOPPY_1);
+//     fd.open();
+//     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
+//     sleep(10000);
+//     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
+//     fd.close();
+
     /* 共有したい相手 */
     dword pid = Message::lookup("SHELL.SVR");
 

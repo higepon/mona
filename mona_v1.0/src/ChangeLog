@@ -1,5 +1,7 @@
 2004-03-24  higepon  <higepon@users.sourceforge.jp>
 
+        * FDCDriver.cpp: ディスク交換検出APIの改良
+
         * Process.cpp (kill): プロセス終了時に物理ページの返却を行う
 
         * PageManager.cpp: VRAMのマッピングのロジックミスを修正

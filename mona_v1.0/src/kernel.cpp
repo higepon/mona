@@ -62,7 +62,7 @@
 #include <VesaConsole.h>
 #include <LogConsole.h>
 
-char* version = "Mona version.0.1.7 $Date$";
+char* version = "Mona version.0.2.0alpha5 $Date$";
 void  mainProcess();
 
 /*!
@@ -104,6 +104,8 @@ void startKernel(void)
     }
 
     g_log = new LogConsole();
+
+    g_console->printf("%s\nCopyright (c) 2002-2004 higepon\n\n", version);
 
     pic_init();
     RTC::init();

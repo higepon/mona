@@ -451,6 +451,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_FDC_DISK_CHANGED:
 
+        enableInterrupt();
         info->eax = g_fdcdriver->checkDiskChange();
         break;
 

@@ -677,5 +677,10 @@ int FDCDriver::ioctl(void* p) {
 
 bool FDCDriver::checkDiskChange() {
 
-    return (inportb(0x3f7) & 0x80);
+    currentTrack_ = -1;
+    motor(true);
+    recalibrate();
+    bool changed = (inportb(0x3f7) & 0x80);
+    motorAutoOff();
+    return changed;
 }
