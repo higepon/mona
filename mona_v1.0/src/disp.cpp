@@ -19,6 +19,7 @@
 #include<global.h>
 #include<syscalls.h>
 #include<rtc.h>
+#include<GraphicalConsole.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
@@ -135,9 +136,13 @@ void disp_kthread_info() {
          pos_x = 0, pos_y = 22;
 
          g_console->printf("  ___/Í/Í____ -----kernel thread Information -----\n");
-         g_console->printf(" /__(*ßoß)_ /|thread total number : %d[threads]\n", g_kthreadInfo.threadNum);
+         g_console->printf(" /__(");
+         g_console->setCHColor(GP_PINK);
+         g_console->printf("*");
+         g_console->setCHColor(GP_WHITE);
+         g_console->printf("ß°ß)_ /|thread total number : %d[threads]\n", g_kthreadInfo.threadNum);
          g_console->printf("|    U~~U  | |System total tick   : %d[ticks]\n", g_kthreadInfo.tick);
-         g_console->printf("|    Mona  | |thraed yield        : %d[times]\n", g_kthreadInfo.yield);
+         g_console->printf("|    Mona  | |thread yield        : %d[times]\n", g_kthreadInfo.yield);
          g_console->printf("|__________|/ [idle] %d%%         : [kernel] %d%% \n"
                            , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
                            , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
