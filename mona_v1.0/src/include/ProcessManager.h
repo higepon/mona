@@ -38,7 +38,9 @@ class ProcessManager {
     void sgdt();
     inline void ltr(word) const;
     inline void lldt(word) const;
+    inline void setNTflag1() const;
     GDT* gdt_;
+    word taskidx_;
 };
 
 #endif

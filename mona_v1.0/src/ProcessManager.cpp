@@ -35,6 +35,8 @@ ProcessManager::ProcessManager() {
 
     /* get address of gdtr */
     sgdt();
+
+    taskidx_ = 0;
 }
 
 /*!
@@ -193,19 +195,39 @@ void ProcessManager::printInfo() {
     return;
 }
 
+/*!
+    \brief switch process
+
+    switch process to next process
+
+    \author HigePon
+    \date   create:2002/12/02 update:2002/12/22
+*/
 void ProcessManager::switchProcess() {
 
-    tss[0].backlink = 0x28;
-    setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSSBusy);
+    bool next = taskidx_ %2 == 0;
 
-    /* eflags NTビットを立てる */
-    asm volatile("pushf              \n"
-                 "pop %%eax          \n"
-                 "xor $0x4000, %%eax \n"
-                 "push %%eax         \n"
-                 "popf               \n"
-                 : /* no output */ : /* no input */ : "ax"
-                );
+    /* wait for */
+    if (taskidx_ <12) {
+        taskidx_++;
+        return;
+    }
+
+    /* set back link and tss busy */
+    if (next) {
+        tss[0].backlink = 0x28;
+        setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSSBusy);
+    } else {
+        tss[1].backlink = 0x20;
+        setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSSBusy);
+    }
+
+    taskidx_ ++;
+
+    /* set NT flag 1 */
+    setNTflag1();
+
+    asm volatile("iret");
 }
 
 /*!
@@ -225,4 +247,23 @@ void ProcessManager::switchProcess(dword selector) {
     far.selector = selector;
     asm volatile("ljmp %0\n":/* no output */ :"m"(far));
     return;
+}
+
+/*!
+    \brief set NT flag 1
+
+    set NT flag 1 to switch task by iret
+
+    \author HigePon
+    \date   create:2002/12/22 update:
+*/
+inline void ProcessManager::setNTflag1() const {
+
+    asm volatile("pushf              \n"
+                 "pop %%eax          \n"
+                 "xor $0x4000, %%eax \n"
+                 "push %%eax         \n"
+                 "popf               \n"
+                 : /* no output */ : /* no input */ : "ax"
+                );
 }

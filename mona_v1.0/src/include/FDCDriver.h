@@ -16,7 +16,7 @@
 class FDCDriver{
   public:
     FDCDriver(const int n);
-	~FDCDriver();
+    ~FDCDriver();
 
   public:
     int seek(const unsigned int head, const unsigned int track);
@@ -25,8 +25,8 @@ class FDCDriver{
     int readSector(const int h, const int c, const int r, unsigned char buff[]);
     int writeSector(const unsigned long start_sector, const unsigned long num_sector, unsigned char buff[]);
     int writeSector(const int h, const int c, const int r, unsigned char buff[]);
-	void interruptHandler();
-  
+    void interruptHandler();
+
   protected:
     int initialize();
     int motor(int on);
@@ -39,7 +39,7 @@ class FDCDriver{
     int dma_write(const unsigned long len);
     void sector_to_hcr(const unsigned long sec, int& h, int& c, int& r);
     static int get_result(unsigned char r[], int n);
-  
+
   protected:
     bool interrupt;
     unsigned char* dma_buff;

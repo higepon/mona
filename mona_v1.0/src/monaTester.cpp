@@ -120,20 +120,13 @@ void processTester() {
 void process1Tester() {
 
     while (true) {
-
-        for (dword i = 0; i < 50000; i++) {
+        for (dword i = 0; i < 5000; i++) {
             i += 1;
             i -= 1;
         }
-        _sysSetColor(BG_BLACK | CH_TEAL);
-        _sys_printf("process1");
+        _sysSetColor(BG_BLACK | CH_FUCHSIA);
+        _sys_printf("  (.o'v'o)  ");
         _sysSetColor(BG_BLACK | CH_SILVER);
-	//        ProcessManager& pm = ProcessManager::instance();
-	//        pm.switchProcess(0x28);
-        ProcessManager& pm = ProcessManager::instance();
-        pm.switchProcess();
-        asm volatile("iret");
-
     }
     return;
 }
@@ -141,11 +134,13 @@ void process1Tester() {
 void process2Tester() {
 
     while (true) {
-        _sysSetColor(BG_BLACK | CH_RED);
-        _sys_printf("process2");
+        for (dword i = 0; i < 5000; i++) {
+            i += 1;
+            i -= 1;
+        }
+        _sysSetColor(BG_BLACK | CH_YELLOW);
+        _sys_printf("  ( '  v ')  ");
         _sysSetColor(BG_BLACK | CH_SILVER);
-	//        ProcessManager& pm = ProcessManager::instance();
-	//        pm.switchProcess(0x20);
     }
     return;
 }

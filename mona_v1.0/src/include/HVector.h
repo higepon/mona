@@ -32,10 +32,10 @@ template <class T> class HVector {
     T remove(size_t index);
     size_t size() const;
   private:
-    T* data_;              /* internal array     */
-    size_t size_;        /* size of vector     */
-    size_t numElements_; /* number of elements */
-    size_t increase_;    /* increase           */
+    T* data_;            /*! internal array     */
+    size_t size_;        /*! size of vector     */
+    size_t numElements_; /*! number of elements */
+    size_t increase_;    /*! increase           */
 
     /* initilize */
     void init(size_t size, size_t increase);
