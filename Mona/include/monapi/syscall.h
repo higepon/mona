@@ -68,6 +68,7 @@ extern int syscall_set_ps_dump();
 extern int syscall_read_ps_dump(PsInfo* info);
 extern int syscall_load_process_image(LoadProcessInfo* info);
 extern dword syscall_file_position();
+extern int syscall_kill_thread(dword tid);
 extern dword syscall_file_seek(dword pt, int flag);
 
 extern dword syscall_memory_map_create(dword size);

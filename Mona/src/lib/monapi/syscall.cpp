@@ -590,3 +590,10 @@ int syscall_load_process_image(LoadProcessInfo* info)
     SYSCALL_1(SYSTEM_CALL_LOAD_PROCESS_IMAGE, result, info);
     return result;
 }
+
+int syscall_kill_thread(dword tid)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_KILL_THREAD, result, tid);
+    return result;
+}

@@ -122,7 +122,8 @@ enum
     COMMAND_UNAME,
     COMMAND_ECHO,
     COMMAND_CLEAR,
-    COMMAND_HELP
+    COMMAND_HELP,
+    COMMAND_KILL
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -160,6 +161,11 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_HELP;
     }
+    else if (cmd == "kill")
+    {
+        return COMMAND_KILL;
+    }
+
     return COMMAND_NONE;
 }
 
@@ -291,6 +297,27 @@ void Shell::internalCommandExecute(int command, _A<CString> args)
             }
             break;
         }
+
+    case COMMAND_KILL:
+        {
+            if (args.get_Length() < 2)
+            {
+                printf("usage: KILL tid\n");
+                break;
+            }
+
+            if (syscall_kill_thread(atoi(args[1])))
+            {
+                printf("kill failed. Thread not found\n");
+            }
+            else
+            {
+                printf("thread %d killed", atoi(args[1]));
+            }
+
+            break;
+        }
+
     case COMMAND_CAT:
         {
             if (args.get_Length() < 2)

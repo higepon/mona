@@ -113,6 +113,7 @@ class ThreadOperation
     static Thread* create(Process* process, dword programCounter);
     static int switchThread(bool isProcessChanged, int i);
     static int kill();
+    static int kill(dword tid);
 
   private:
     static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);

@@ -603,6 +603,29 @@ int ThreadOperation::kill()
     return NORMAL;
 }
 
+int ThreadOperation::kill(dword tid)
+{
+    Thread* thread   = g_scheduler->find(tid);
+    if (thread == NULL) return -1;
+
+    Process* process = thread->tinfo->process;
+
+    g_scheduler->kill(thread);
+    (process->threadNum)--;
+
+    if (process->threadNum < 1)
+    {
+        PageEntry* directory = process->getPageDirectory();
+        delete process;
+        g_page_manager->returnPhysicalPages(directory);
+    }
+
+    bool isProcessChange = g_scheduler->schedule();
+    delete thread;
+    ThreadOperation::switchThread(isProcessChange, 5);
+    return NORMAL;
+}
+
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/

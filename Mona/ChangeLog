@@ -1,3 +1,13 @@
+2004-05-09  higepon  <higepon@users.sourceforge.jp>
+
+        * Mona/Doxyfile: doxygen用のファイル追加
+
+        * src/servers/shell/main.cpp (internalCommandExecute): シェル内部コマンドKILL追加
+
+        * src/kernel/Process.cpp (kill): 他殺用の関数追加
+
+        * include/sys/types.h (SYSTEM_CALL_KILL_THREAD): 他殺用のシステムコール追加
+
 2004-05-09  tino  <tino@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: マウスカーソルの形状を変更

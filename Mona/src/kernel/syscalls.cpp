@@ -48,6 +48,14 @@ void syscall_entrance() {
         ThreadOperation::kill();
         break;
 
+    case SYSTEM_CALL_KILL_THREAD:
+
+        {
+            dword tid = info->esi;
+            info->eax = ThreadOperation::kill(tid);
+            break;
+        }
+
     case SYSTEM_CALL_SEND:
 
         info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));

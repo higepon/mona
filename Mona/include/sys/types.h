@@ -210,6 +210,7 @@ enum
 #define SYSTEM_CALL_FILE_POSITION            0x0032
 #define SYSTEM_CALL_GET_KERNEL_VERSION       0x0033
 #define SYSTEM_CALL_LOAD_PROCESS_IMAGE       0x0034
+#define SYSTEM_CALL_KILL_THREAD              0x0035
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \
