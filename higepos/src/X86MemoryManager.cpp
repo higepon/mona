@@ -12,7 +12,7 @@
     \date   create:2002/08/04 update:$Date$
 */
 #include<X86MemoryManager.h>
-
+#include<idt.h>
 /*!
     \brief get class Name
 
@@ -50,6 +50,7 @@ unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
     if (current_ > MEMORY_END) {
         oldAddress = MEMORY_START;
         current_   = MEMORY_START;
+        fault0dHandler();
     }
 
     /* adress of allocated memory */
