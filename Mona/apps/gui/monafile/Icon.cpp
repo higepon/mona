@@ -43,8 +43,7 @@ void Icon::set_Target(String target)
 void Icon::OnPaint()
 {
 	_P<Graphics> g = this->CreateGraphics();
-	g->DrawImage(icons, 16, 0 - 32 * (int)this->icon);
-	g->FillRectangle(TRANSPARENT_COLOR, 0, 32, this->get_Width(), 16);
+	g->DrawImage(icons, 16, 0, Rectangle(0, 32 * (int)this->icon, 32, 32));
 	
 	_P<Font> f = Control::get_DefaultFont();
 	Size sz = g->MeasureString(this->get_Text(), f);

@@ -152,13 +152,34 @@ namespace System { namespace Drawing
 	
 	void Graphics::DrawImage(_P<Bitmap> image, int x, int y)
 	{
-		int w = image->get_Width(), h = image->get_Height(), p = 0;
-		Bitmap& bmp = *image.get();
-		for (int yy = 0; yy < h; yy++)
+		this->DrawImage(image, x, y, Rectangle(0, 0, image->get_Width(), image->get_Height()));
+	}
+	
+	void Graphics::DrawImage(_P<Bitmap> image, int x, int y, Rectangle r)
+	{
+		int dw = this->clientRectangle.Width, dh = this->clientRectangle.Height;
+		int x1 = x, y1 = y, x2 = x + r.Width, y2 = y + r.Height;
+		if (x1 < 0) x1 = 0;
+		if (y1 < 0) y1 = 0;
+		if (x2 > dw) x2 = dw;
+		if (y2 > dh) y2 = dh;
+		x1 += r.X - x;
+		y1 += r.Y - y;
+		x2 += r.X - x;
+		y2 += r.Y - y;
+		if (x1 < 0) x1 = 0;
+		if (y1 < 0) y1 = 0;
+		if (x2 > image->get_Width ()) x2 = image->get_Width ();
+		if (y2 > image->get_Height()) y2 = image->get_Height();
+		x1 -= r.X;
+		y1 -= r.Y;
+		x2 -= r.X;
+		y2 -= r.Y;
+		for (int yy = y1, y3 = y + y1, y4 = r.Y + y1; yy < y2; yy++, y3++, y4++)
 		{
-			for (int xx = 0; xx < w; xx++, p++)
+			for (int xx = x1, x3 = x + x1, x4 = r.X + x1; xx < x2; xx++, x3++, x4++)
 			{
-				this->SetPixel(x + xx, y + yy, bmp[p]);
+				this->SetPixel(x3, y3, image->GetPixel(x4, y4));
 			}
 		}
 	}

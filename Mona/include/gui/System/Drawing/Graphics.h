@@ -36,6 +36,7 @@ namespace System { namespace Drawing
 		void DrawString(String text, _P<Font> font, Color c, int x, int y);
 		Size MeasureString(String text, _P<Font> font);
 		void DrawImage(_P<Bitmap> image, int x, int y);
+		void DrawImage(_P<Bitmap> image, int x, int y, Rectangle r);
 		
 		inline Point get_Offset() { return this->clientRectangle.get_Location(); }
 		inline void set_ClientRectangle(Rectangle r) { this->clientRectangle = r; }

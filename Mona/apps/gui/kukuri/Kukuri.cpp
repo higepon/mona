@@ -225,7 +225,7 @@ void Kukuri::OnPaint()
 {
   _P<Graphics> g = this->CreateGraphics();
   g->DrawImage(this->nowPix < MIRROR ? kukuri : kukuriMirror,
-    0, 0 - KUKURI_HEIGHT * (this->nowPix % MIRROR));
+    0, 0, Rectangle(0, KUKURI_HEIGHT * (this->nowPix % MIRROR), KUKURI_WIDTH, KUKURI_HEIGHT));
   g->Dispose();
   
   // 最前面に移動
