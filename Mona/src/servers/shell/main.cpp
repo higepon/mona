@@ -59,12 +59,12 @@ Shell::Shell() : position_(0)
     printf(PROMPT);
     if (!callAutoExec) return;
 
-    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH");
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH", 1);
     if (mi == NULL) return;
 
     for (dword pos = 0; pos <= mi->Size; pos++)
     {
-        char ch = pos < len ? (char)mi->Data[pos] : '\n';
+        char ch = pos < mi->Size ? (char)mi->Data[pos] : '\n';
         if (ch == '\r' || ch == '\n')
         {
             if (position_ > 0)
