@@ -8,7 +8,7 @@ all:
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
-	@cd grunner && $(MAKE) $@
+#	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
@@ -25,7 +25,7 @@ install:
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
-	@cd grunner && $(MAKE) $@
+#	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
@@ -42,7 +42,7 @@ clean: touchdepend
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
-	@cd grunner && $(MAKE) $@
+#	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
@@ -59,7 +59,7 @@ depend: touchdepend
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
-	@cd grunner && $(MAKE) $@
+#	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
@@ -76,7 +76,7 @@ distclean:
 	rm -f ghebtn/dependencies
 	rm -f gnoiz2bg/dependencies
 	rm -f gnullpo/dependencies
-	rm -f grunner/dependencies
+#	rm -f grunner/dependencies
 	rm -f gshell/dependencies
 	rm -f guitest1/dependencies
 	rm -f gversion/dependencies
@@ -93,7 +93,7 @@ touchdepend:
 	touch ghebtn/dependencies
 	touch gnoiz2bg/dependencies
 	touch gnullpo/dependencies
-	touch grunner/dependencies
+#	touch grunner/dependencies
 	touch gshell/dependencies
 	touch guitest1/dependencies
 	touch gversion/dependencies
