@@ -34,6 +34,7 @@ class BitMap {
     dword* map_;
     int bitsNumber_;
     int dwordNumber_;
+    static const int DWORD_BITS;
 
 };
 

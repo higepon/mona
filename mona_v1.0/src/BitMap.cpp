@@ -10,14 +10,17 @@
     \date   create:2003/03/30 update:$Date$
 */
 
+#include<syscalls.h>
 #include<BitMap.h>
 
+
+const int BitMap::DWORD_BITS = sizeof(dword) * 8;
 
 BitMap::BitMap(int number) {
 
     bitsNumber_ = number;
-    dwordNumber_ = (bitsNumber_ / (sizeof(dword) * 8))
-                 + ((bitsNumber_ % (sizeof(dword) * 8)) ? 1 : 0);
+    dwordNumber_ = (bitsNumber_ / DWORD_BITS)
+                 + ((bitsNumber_ % DWORD_BITS) ? 1 : 0);
 
     map_ = new dword[dwordNumber_];
 
@@ -32,16 +35,26 @@ BitMap::~BitMap() {
 
 void BitMap::mark(int index) {
 
+    map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
+    return;
 }
 
 void BitMap::clear(int index) {
 
-
+    map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
+    return;
 }
 
 int BitMap::find() {
 
-    return 0;
+    for (int i = 0; i < bitsNumber_; i++) {
+
+        if (!marked(i)) {
+            mark(i);
+            return i;
+        }
+    }
+    return -1;
 }
 
 int BitMap::countClear() {
@@ -51,5 +64,5 @@ int BitMap::countClear() {
 
 bool BitMap::marked(int index) {
 
-    return true;
+    return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
 }
