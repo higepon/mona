@@ -443,6 +443,7 @@ ISO9660File* ISO9660FileSystem::FindFileEntry(ISO9660Directory* directory, const
     if (!readResult)
     {
         this->lastError = READ_ERROR;
+        printf("device read error\n");
         delete buffer;
         return NULL;
     }
