@@ -13,6 +13,11 @@
 #include <global.h>
 
 extern "C" Process** g_process;
+
+const int Process::RUNNING  = 0;
+const int Process::READY    = 1;
+const int Process::SLEEPING = 2;
+
 /*!
     \brief setup
 

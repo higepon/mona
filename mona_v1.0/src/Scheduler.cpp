@@ -60,6 +60,10 @@ void Scheduler::schedule() {
 
     wakeup();
 
+    if (g_current_process->state != Process::SLEEPING) {
+        g_current_process->state = Process::READY;
+    }
+
     ProcessInfo* next = getNext(&dispatchList_);
 
     toUserMode_ = (next->dpl > g_current_process->dpl);
@@ -89,6 +93,8 @@ void Scheduler::wakeup() {
     for (start = sleepList_.next; start != &sleepList_; start = start->next) {
 
         if (start->wakeupTimer <= tick) {
+
+            start->state = Process::READY;
 
             ProcessInfo* prev = start->prev;
 

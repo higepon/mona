@@ -40,7 +40,7 @@
 #include<PagingUtil.h>
 #include<ProcessManager.h>
 
-char* version = "Mona develop beta 0.08a $Date$";
+char* version = "Mona develop beta 0.08b $Date$";
 void userTest();
 /*!
     \brief  mona kernel start at this point

@@ -44,6 +44,7 @@ void ProcessManager::schedule(){
     g_current_process->tick++;
     g_process_manager->tick();
     scheduler_->schedule();
+    g_current_process->state = Process::RUNNING;
     this->switchProcess();
 
 }
@@ -74,20 +75,28 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
     process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
     scheduler_->addProcess(&(process->pinfo_));
 
+    process->pinfo_.state = Process::READY;
+
     g_process[pnum_] = process;
     pnum_++;
 }
 
 void ProcessManager::printOneProcess(ProcessInfo* info) const {
 
-    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %d\n", info->name, info->pid, info->dpl, info->cs, info->ss, info->esp, info->tick);
+    char* state;
+
+    if (info->state == Process::RUNNING)       state = "Running ";
+    else if (info->state == Process::SLEEPING) state = "Sleeping";
+    else if (info->state == Process::READY)    state = "Ready   ";
+
+    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %s |%d\n", info->name, info->pid, info->dpl, info->cs, info->ss, info->esp, state, info->tick);
 
 }
 
 void ProcessManager::printAllProcesses() const {
 
-    g_console->printf("|    name     | pid | dpl |    cs    |    ss    |    esp   | tick\n");
-    g_console->printf("-----------------------------------------------------------------\n");
+    g_console->printf("|    name     | pid | dpl |    cs    |    ss    |    esp   |   state  |tick\n");
+    g_console->printf("---------------------------------------------------------------------------\n");
 
     for (dword i = 0; i < pnum_; i++) {
         printOneProcess(&(g_process[i]->pinfo_));
@@ -106,5 +115,6 @@ dword ProcessManager::getTick() const {
 
 void ProcessManager::sleep(ProcessInfo* process, dword tick) {
 
+    process->state = Process::SLEEPING;
     scheduler_->sleep(process, tick);
 }

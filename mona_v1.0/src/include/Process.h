@@ -40,6 +40,7 @@ typedef struct ProcessInfo {
     dword  pid;
     dword  dpl;
     dword  wakeupTimer;
+    int    state;
     class  Process* process;
     ProcessInfo* prev;
     ProcessInfo* next;
@@ -67,6 +68,11 @@ class Process {
     void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
 
     static void setup();
+
+  public:
+    static const int RUNNING;
+    static const int READY;
+    static const int SLEEPING;
 };
 
 /*!
