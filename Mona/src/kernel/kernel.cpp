@@ -122,6 +122,11 @@ void startKernel(void)
         g_console->clearScreen();
     }
 
+    g_console->printf("\n");
+    g_console->printf("              %s\n", version);
+    g_console->printf("              ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
+    g_console->printf("              Copyright (c) 2002-2004 higepon\n\n\n\n");
+
 #if 1
     int w = g_vesaDetail->xResolution;
     int bpp = g_vesaDetail->bitsPerPixel / 8;
@@ -172,10 +177,6 @@ void startKernel(void)
 #endif
 
     g_log = new LogConsole();
-
-    g_console->printf("\n\n\n\n\n\n\n"); // added by bayside
-    g_console->printf("%s ["CC_NAME" @ %s]\n", version, CC_VER, OSTYPE);
-    g_console->printf("Copyright (c) 2002-2004 higepon\n\n");
 
     g_bootManager = new BootManager(REL_KERNEL_ADDR + KERNEL_BASE_ADDR, MONA_CFG_ADDR, MONA_CFG_SIZE);
 

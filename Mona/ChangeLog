@@ -1,3 +1,7 @@
+2005-01-05  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/kernel.cpp (startKernel): ‹N“®‚ÌƒƒS‚ÌˆÊ’u‚ğ•ÏX
+
 2004-12-31  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/CFile.h (class ReadOnlyFileSystem): ’Ç‰Á
