@@ -34,6 +34,7 @@
 #include<ihandlers.h>
 #include<pic.h>
 #include<rtc.h>
+#include<BitMap.h>
 
 char* version = "Mona develop beta 0.06a $Date$";
 
@@ -78,6 +79,18 @@ void startKernel(void) {
         si.printCpuid(g_console);
     } else {
         g_console->printf("CPUID NG  \n");
+    }
+
+
+    BitMap* map = new BitMap(10);
+
+    map->find();
+    map->mark(5);
+    map->mark(7);
+    map->mark(8);
+    for (int i = 0; i < 10; i++) {
+
+        g_console->printf("%c", map->marked(i) ? 'x' : 'o');
     }
 
 
