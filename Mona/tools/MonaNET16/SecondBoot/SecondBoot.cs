@@ -29,7 +29,7 @@ namespace Mona
 			ushort pos = FDC.SearchFile(ConfigFile);
 			if (pos == 0) return;
 			
-			FDC.ReadSectors(1, FDC.SPF, FDC.SPF);
+			//FDC.ReadSectors(1, FDC.SPF, FDC.FAT);
 
 			Registers.DS = FileBufSeg;
 			ushort ptr1 = 0;
