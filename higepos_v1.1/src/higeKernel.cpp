@@ -72,11 +72,27 @@ void startKernel(void) {
 
 #if 0
     /* FDCDriver test code */
-    unsigned char buff[512];
+    unsigned char buff[2048];
+    unsigned short sum;
     gFDCDriver1 = new FDCDriver(0);
-    gFDCDriver1->readSector(1, 1, buff);
-    for(int i = 0; i < 512; i++){
-         _sys_printf("[%d]", buff[i]);
+
+    gFDCDriver1->readSector(1, sizeof(buff)/512, buff);
+    for(int j = 0; j < sizeof(buff)/512; j++){ 
+        sum = 0;
+        for(int i = 0; i < 512 ; i++){
+             sum += buff[j*512 +i];
+        }
+        _sys_printf("sector %d: sum = %d\n", 1 +j, sum);
+    }
+
+    gFDCDriver1->writeSector(256, sizeof(buff)/512, buff);
+    gFDCDriver1->readSector(256, sizeof(buff)/512, buff);
+    for(int j = 0; j < sizeof(buff)/512; j++){ 
+        sum = 0;
+        for(int i = 0; i < 512 ; i++){
+             sum += buff[j*512 +i];
+        }
+        _sys_printf("sector %d: sum = %d\n", 1 +j, sum);
     }
 #endif
 
