@@ -15,7 +15,8 @@ enum
     COMMAND_ECHO,
     COMMAND_CLEAR,
     COMMAND_PS,
-    COMMAND_KILL
+    COMMAND_KILL,
+    COMMAND_EXEC
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -61,6 +62,10 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_KILL;
     }
+    else if (cmd == "exec")
+    {
+        return COMMAND_EXEC;
+    }
 
     return COMMAND_NONE;
 }
@@ -71,7 +76,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
     {
     case COMMAND_HELP:
         printf("* Mona Shell Internal Commands\n");
-        printf("HELP/?, LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, PS, KILL\n");
+        printf("HELP/?, LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, PS, KILL, EXEC\n");
         break;
 
     case COMMAND_CD:
@@ -240,6 +245,20 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
             break;
         }
+
+    case COMMAND_EXEC:
+        if (args.get_Length() < 2)
+        {
+            printf("usage: EXEC command [arguments ...]\n");
+        }
+        else
+        {
+            _A<CString> args2(args.get_Length() - 1);
+            for (int i = 1; i < args.get_Length(); i++) args2[i - 1] = args[i];
+            if (this->commandExecute(args2)) this->doExec = true;
+        }
+        break;
+
 
     default:
         break;
