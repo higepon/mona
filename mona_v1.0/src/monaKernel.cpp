@@ -19,7 +19,7 @@
 #include<monaVga.h>
 #include<monaIdt.h>
 #include<monaIo.h>
-#include<X86MemoryManager.h>
+#include<IA32MemoryManager.h>
 #include<monaOperator.h>
 #include<FDCDriver.h>
 #include<monaTester.h>
@@ -43,7 +43,7 @@ void startKernel(void) {
 
     /* show message */
     _sysPrintln("------------------------------------------------------");
-    _sysSetColor(BG_BLACK | CH_TEAL);
+    _sysSetColor(BG_BLACK | CH_AQUA);
     _sysPrintln("      Mona Kernel starting                         ");
     _sysSetColor(BG_BLACK | CH_SILVER);
     _sysPrintln("        ________ A A                                  ");
@@ -61,7 +61,7 @@ void startKernel(void) {
     checkTypeSize();
 
     /* enable A20 */
-    X86MemoryManager::enableA20();
+    IA32MemoryManager::enableA20();
 
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();

@@ -11,33 +11,33 @@
     \version $Revision$
     \date   create:2002/08/08 update:$Date$
 */
-#include<X86MemoryManager.h>
+#include<IA32MemoryManager.h>
 #include<monaOperator.h>
 #include<monaTypes.h>
 
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     return mm.allocateMemory(size);
 }
 
 void operator delete(void* address) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.freeMemory(address);
     return;
 }
 
 void* operator new[](size_t size) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     return mm.allocateMemory(size);
 }
 
 void operator delete[](void* address) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.freeMemory(address);
     return;
 }
@@ -46,20 +46,20 @@ void operator delete[](void* address) {
 
 void* malloc(unsigned long size) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     return mm.allocateMemory(size);
 }
 
 void __builtin_delete(void* address) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.freeMemory(address);
     return;
 }
 
 void* __builtin_new(unsigned long size) {
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
     return mm.allocateMemory(size);
 }
 

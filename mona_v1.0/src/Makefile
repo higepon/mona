@@ -22,7 +22,7 @@ SRC        = monaKernel.cpp       \
              monaIdt.cpp          \
              monaIhandler.cpp     \
              monaIo.cpp           \
-             X86MemoryManager.cpp \
+             IA32MemoryManager.cpp \
              monaPureVirtual.cpp  \
              monaOperator.cpp     \
              monaUtil.cpp         \
@@ -36,7 +36,7 @@ HEADER     = ${INCLUDE}/monaKernel.h       \
              ${INCLUDE}/monaVga.h          \
              ${INCLUDE}/monaIdt.h          \
              ${INCLUDE}/monaIo.h           \
-             ${INCLUDE}/X86MemoryManager.h \
+             ${INCLUDE}/IA32MemoryManager.h \
              ${INCLUDE}/monaOperator.h     \
              ${INCLUDE}/monaUtil.h         \
              ${INCLUDE}/monaTypes.h        \
@@ -52,7 +52,7 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/monaIdt.o          \
              ${BIN}/monaIhandler.o     \
              ${BIN}/monaIo.o           \
-             ${BIN}/X86MemoryManager.o \
+             ${BIN}/IA32MemoryManager.o \
              ${BIN}/monaOperator.o     \
              ${BIN}/monaPureVirtual.o  \
              ${BIN}/monaUtil.o         \
@@ -83,7 +83,7 @@ ${THIRD} : ${SRC} ${HEADER} ${LIBSRC} ${LIBHEADER}
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaIdt.cpp          -o ${BIN}/monaIdt.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaIhandler.cpp     -o ${BIN}/monaIhandler.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaIo.cpp           -o ${BIN}/monaIo.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} X86MemoryManager.cpp -o ${BIN}/X86MemoryManager.o
+	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} IA32MemoryManager.cpp -o ${BIN}/IA32MemoryManager.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaPureVirtual.cpp  -o ${BIN}/monaPureVirtual.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaOperator.cpp     -o ${BIN}/monaOperator.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaUtil.cpp         -o ${BIN}/monaUtil.o
