@@ -14,12 +14,11 @@ int MonaMain(List<char*>* pekoe)
         return -1;
     }
 
-    Screen screen;
-    //printf("screen information (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
-
     /* check bpp */
+    Screen screen;
     if (screen.getBpp() < 16)
     {
+        printf("screen information (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
         printf("sorry, this demo needs 16bpp or higher Video mode\n");
         return -1;
     }

@@ -286,9 +286,9 @@ int MonaMain(List<char*> *pekoe)
     byte* vesaVram = screen.getVRAM();
     int scene_count,scene;
 
-    printf("user mode screen (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
     /* check bpp */
     if (screen.getBpp() < 16) {
+        printf("user mode screen (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
         printf("sorry, this demo needs 16bpp or higher Video mode\n");
         return -1;
     }
