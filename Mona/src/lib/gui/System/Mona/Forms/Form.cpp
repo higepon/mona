@@ -220,7 +220,6 @@ namespace System { namespace Mona { namespace Forms
 			case NCState_CloseButton:
 			{
 				this->isCloseButtonPushed = false;
-				if (destroy) this->Hide();
 				break;
 			}
 			case NCState_TitleBar:
@@ -234,14 +233,14 @@ namespace System { namespace Mona { namespace Forms
 				break;
 			}
 			default:
+				this->Refresh();
 				break;
 		}
-		this->Refresh();
 		
 		BASE::OnNCMouseUp(e);
 		
-		if (destroy) this->Dispose();
 		this->ncState = NCState_None;
+		if (destroy) this->Dispose();
 	}
 	
 	void Form::set_Opacity(double op)
