@@ -17,7 +17,7 @@ bool cdInitialized;
 
 static int irq;
 static IDEDriver* cd;
-
+static ISO9660FileSystem* fs;
 static void interrupt()
 {
     syscall_set_irq_receiver(irq);
@@ -46,6 +46,8 @@ void initialize()
 
 bool initializeCD()
 {
+    if (cdInitialized) return true;
+
     syscall_get_io();
 
     cd = new IDEDriver();
@@ -79,20 +81,21 @@ bool initializeCD()
     {
         printf("select device NG error code = %d\n", cd->getLastError());
         delete cd;
-        return 1;
+        return false;
     }
 
-    ISO9660FileSystem* fs = new ISO9660FileSystem(cd);
+    fs = new ISO9660FileSystem(cd);
 
     if (!fs->Initialize())
     {
         printf("Initialize Error = %d\n", fs->GetLastError());
         delete fs;
         delete cd;
-        return 1;
+        return false;
     }
 
-
+    cdInitialized = true;
+    return true;
 }
 
 monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
