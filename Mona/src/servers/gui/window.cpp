@@ -90,7 +90,7 @@ bool DisposeWindow(dword handle)
 		guiserver_window* w = windows[i];
 		if (w->Handle == handle)
 		{
-			DestructionEffect(w);
+			if (w->__reserved2) DestructionEffect(w);
 			windows.removeAt(i);
 			MemoryMap::unmap(handle);
 			return true;
