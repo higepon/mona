@@ -54,9 +54,9 @@ int Command::SetCurrentPos(int pos){
 
   if(this->posCurrent < 0){
     this->posCurrent = 0;
-  } else if(pos > this->commandLine.GetLength()){
+  } else if(this->posCurrent > this->commandLine.GetLength()){
     this->posCurrent = this->commandLine.GetLength();
-  } 
+  }
 
   this->isTerminateFlag = false;
   return this->posCurrent;
@@ -141,5 +141,8 @@ Command::operator Charing *(){
   return &this->commandLine;
 }
 
+Command::operator char *(){
 
+  return (char *)this->commandLine;
+}
 
