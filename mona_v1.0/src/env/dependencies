@@ -10,7 +10,7 @@ kernel.o: kernel.cpp share/types.h include/global.h include/info.h \
   include/test_mjt.h include/vbe.h include/checker.h \
   include/KeyBoardManager.h include/GraphicalConsole.h \
   include/ihandlers.h include/pic.h include/io.h include/syscalls.h \
-  include/elf.h include/VesaConsole.h
+  include/elf.h include/VesaConsole.h include/LogConsole.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h share/types.h include/VirtualConsole.h \
   include/string.h include/FDCDriver.h include/Process.h \
@@ -205,7 +205,7 @@ VesaConsole.o: VesaConsole.cpp include/VesaConsole.h \
   include/VirtualConsole.h share/types.h include/string.h \
   include/GraphicalConsole.h include/vbe.h
 LogConsole.o: LogConsole.cpp include/LogConsole.h \
-  include/VirtualConsole.h share/types.h include/string.h \
+  include/VirtualConsole.h share/types.h include/string.h include/io.h \
   include/global.h include/info.h include/kernel.h include/FDCDriver.h \
   include/Process.h include/PageManager.h include/BitMap.h \
   include/Segments.h include/operator.h include/collection.h \

@@ -1,5 +1,10 @@
 2004-03-06  higepon  <higepon@users.sourceforge.jp>
 
+        * kernel.cpp: スレッドスイッチのバグを１つつぶす。
+                      一時カーネルモードへの昇格中に別一時カーネルモードスレッドにスイッチしてtssのesp0を更新していなかった。
+
+        * FAT12.cpp: 長いファイル名が渡されたときにメモリを壊すバグを修正
+
         * kernel.cpp: まずはkillがおかしい。未修正
 
 2004-03-04  higepon  <higepon@users.sourceforge.jp>

@@ -296,7 +296,7 @@ void mainProcess()
     enableMouse();
 
     /* end */
-    for (;;);
+    disableInterrupt();
     ThreadOperation::kill();
     for (;;);
 }

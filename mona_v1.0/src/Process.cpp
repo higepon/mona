@@ -27,6 +27,7 @@ for (type element = (type )((top)->next); element != (top); element = (type )((e
 #define W_NORMAL   2
 #define WAITQ_IDX(waitReason) ((int)(waitReason & 0x03))
 
+
 Scheduler::Scheduler() : tickTotal(0)
 {
     runq  = new Thread();
@@ -208,14 +209,12 @@ void Scheduler::dump()
     {
         ThreadInfo* i = PTR_THREAD(thread);
         g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
-        logprintf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 
     FOREACH_N(waitq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
         g_console->printf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
-        logprintf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 }
 
@@ -384,10 +383,10 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 {
     bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
 
-    ArchThreadInfo* i = g_currentThread->archinfo;
-    logprintf("[%d]eax=%x ebx=%x ecx=%x edx=%x esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x %s %s\n", num, i->eax, i->ebx, i->ecx, i->edx, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "");
-
 #if 0
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x gss0=%d gesp0=%x %s %s\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "");
+
     ArchThreadInfo* i = g_currentThread->archinfo;
     int x, y;
     g_console->getCursor(&x, &y);

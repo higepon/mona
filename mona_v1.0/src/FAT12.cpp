@@ -22,13 +22,18 @@
 #include<stdlib.h>
 #include<info.h>
 
+#define g_console->
+#define logprintf //
+
 // for Mona
 #else
 
 #include<global.h>
 #include<operator.h>
 
-#define printf g_console->printf
+//#define printf g_console->printf
+
+
 
 #endif
 
@@ -457,6 +462,9 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
     if (isOpen_) return false;
 
+    int length = strlen(filename);
+    if (length > 16 || length < 1) return false;
+
     /* save current directory */
     int currentDirectory = currentDirectory_;
 
@@ -586,13 +594,9 @@ bool FAT12::readHasNext() const {
 */
 bool FAT12::createFlie(const char* name, const char* ext) {
 
-
-    printf("[1]");
     /* read current directory */
     if (!readEntry()) return false;
 
-
-    printf("[2]");
     /* find free entry */
     int freeIndex = -1;
     for (int j = 0; j < 16; j++) {
@@ -617,11 +621,9 @@ bool FAT12::createFlie(const char* name, const char* ext) {
         }
     }
 
-    printf("[3]");
     /* no empty entry */
     if (freeIndex == -1)  return false;
 
-    printf("[4]");
     /* find cluster */
     int cluster = map_->find();
     if (cluster == -1) return false;
@@ -635,14 +637,12 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     entries_[freeIndex].cluster   = cluster;
     entries_[freeIndex].attribute = ATTR_ARCHIVE;
 
-    printf("[5]");
     if (!writeEntry()) return false;
 
     /* regist FAT */
     setFATAt(cluster, getFATAt(1));
     if (!writeFAT()) {
         readFAT(false);
-    printf("[6]");
         return false;
     }
     return true;

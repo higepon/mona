@@ -259,19 +259,16 @@ MessageInfo* Messenger::allocateMessageInfo() {
 
 int Messenger::send(const char* name, MessageInfo* message)
 {
-    logprintf("sendin:%s\n", g_currentThread->process->getName());
     Process* process;
     MessageInfo* info;
 
     if (message == (MessageInfo*)NULL)
     {
-	logprintf("sendout:%s\n", g_currentThread->process->getName());
         return -1;
     }
 
     if ((process = g_scheduler->findProcess(name)) == (Process*)NULL)
     {
-	logprintf("sendout:%s\n", g_currentThread->process->getName());
         return -1;
     }
 
@@ -284,27 +281,23 @@ int Messenger::send(const char* name, MessageInfo* message)
     int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
     if (wakeupResult)
     {
-	logprintf("sendout switch:%s\n", g_currentThread->process->getName());
         ThreadOperation::switchThread((wakeupResult == 1), 6);
     }
-	logprintf("sendout:%s\n", g_currentThread->process->getName());
     return 0;
 }
 
-int Messenger::send(dword pid, MessageInfo* message) {
-    logprintf("sendin:%s\n", g_currentThread->process->getName());
+int Messenger::send(dword pid, MessageInfo* message)
+{
     Process* process;
     MessageInfo* info;
 
     if (message == (MessageInfo*)NULL)
     {
-	logprintf("sendout:%s\n", g_currentThread->process->getName());
         return -1;
     }
 
     if ((process = g_scheduler->findProcess(pid)) == (Process*)NULL)
     {
-	logprintf("sendout:%s\n", g_currentThread->process->getName());
         return -1;
     }
 
@@ -317,10 +310,8 @@ int Messenger::send(dword pid, MessageInfo* message) {
     int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
     if (wakeupResult)
     {
-	logprintf("sendout switch:%s\n", g_currentThread->process->getName());
         ThreadOperation::switchThread((wakeupResult == 1), 7);
     }
-	logprintf("sendout:%s\n", g_currentThread->process->getName());
     return 0;
 }
 

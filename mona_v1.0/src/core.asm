@@ -140,6 +140,9 @@ arch_switch_thread_to_user2:
 arch_switch_thread1:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov ecx, dword[g_tss]        ; tss
+        mov eax, dword[ebx + 68]     ; get esp0
+        mov dword[ecx + 4], eax      ; restore esp0
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
@@ -162,6 +165,9 @@ arch_switch_thread1:
 arch_switch_thread2:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov ecx, dword[g_tss]        ; tss
+        mov eax, dword[ebx + 68]     ; get esp0
+        mov dword[ecx + 4], eax      ; restore esp0
         mov eax, dword[ebx + 76]     ; page directory
         mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax
