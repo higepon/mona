@@ -83,11 +83,17 @@ typedef struct ArchThreadInfo {
     dword  cr3;       // 76
 };
 
+/*----------------------------------------------------------------------
+    ThreadInfo
+----------------------------------------------------------------------*/
 typedef struct ThreadInfo {
     ArchThreadInfo* archinfo;
     dword dummy;
 };
 
+/*----------------------------------------------------------------------
+    ProcessInfo
+----------------------------------------------------------------------*/
 typedef struct ProcessInfo_ {
     List<ThreadInfo*>* threadList;
     char name[16];
@@ -100,15 +106,22 @@ typedef struct ProcessInfo_ {
     byte mode;
     byte priority;
     byte state;
+    class Process_* process;
 };
 
+/*----------------------------------------------------------------------
+    Thread
+----------------------------------------------------------------------*/
 class Thread {
 
 };
 
+/*----------------------------------------------------------------------
+    Process
+----------------------------------------------------------------------*/
 class Process_ {
 
-  protected:
+  public:
     Process_() {}
     Process_(const char* name);
     virtual ~Process_();
@@ -120,6 +133,9 @@ class Process_ {
     bool isKernelMode_;
 };
 
+/*----------------------------------------------------------------------
+    UserProcess
+----------------------------------------------------------------------*/
 class UserProcess_ : public Process_ {
 
   public:
@@ -128,7 +144,20 @@ class UserProcess_ : public Process_ {
     virtual ~UserProcess_();
 };
 
+/*----------------------------------------------------------------------
+    KernelInfo
+----------------------------------------------------------------------*/
+class KernelProcess_ : public Process_ {
 
+  public:
+    KernelProcess_();
+    KernelProcess_(const char* name);
+    virtual ~KernelProcess_();
+};
+
+/*----------------------------------------------------------------------
+    ProcessScheduler
+----------------------------------------------------------------------*/
 class ProcessScheduler {
 
   public:
@@ -145,11 +174,14 @@ class ProcessScheduler {
 
 };
 
+/*----------------------------------------------------------------------
+    ProcessManager
+----------------------------------------------------------------------*/
 class ProcessManager_ {
 
   public:
     ProcessManager_(PageManager* pageManager);
-    ~ProcessManager_();
+    virtual ~ProcessManager_();
 
   public:
     Process_* createProcess(int type, const char* name);
@@ -167,7 +199,6 @@ class ProcessManager_ {
     PageManager* pageManager_;
 
 };
-
 
 /*!
     class Process

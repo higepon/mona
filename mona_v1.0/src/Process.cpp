@@ -167,6 +167,15 @@ int ProcessScheduler::kill(ProcessInfo_* process) {
     return NORMAL;
 }
 
+
+/*********************************************************
+
+    not yet
+
+********************************************************/
+/*----------------------------------------------------------------------
+    ProcessManager
+----------------------------------------------------------------------*/
 ProcessManager_::ProcessManager_(PageManager* pageManager) {
 
     /* scheduler */
@@ -174,32 +183,28 @@ ProcessManager_::ProcessManager_(PageManager* pageManager) {
     checkMemoryAllocate(scheduler_, "ProcessManager memory allocate scheduler");
 
     /* page manager */
-    this->pageManager_ = pageManager;
+    pageManager_ = pageManager;
 }
 
 ProcessManager_::~ProcessManager_() {
 
+    /* destroy scheduler */
     delete scheduler_;
 }
 
-/*********************************************************
-
-    not yet
-
-********************************************************/
 int ProcessManager_::kill(ProcessInfo_* process) {
 
     int result;
 
     /* remove from scheduler */
-    if (NORMAL == (result = scheduler_->kill(process))) {
+    if (NORMAL != (result = scheduler_->kill(process))) {
         return result;
     }
 
     /* destroy address space of proces */
 
     /* delete process */
-
+    delete process->process;
 
     return NORMAL;
 }
@@ -223,21 +228,18 @@ Process_* ProcessManager_::createProcess(int type, const char* name) {
 
     Process_* result;
 
+    /* process type */
     switch (type) {
 
-    case USER_PROCESS:
-
-        result = new UserProcess_(name);
-        /* like this? */
-        //tesult = new UserProcess();
-        break;
-
-    case KERNEL_PROCESS:
-        break;
-
-    default:
-        result = (Process_*)NULL;
-
+      case USER_PROCESS:
+          result = new UserProcess_(name);
+          break;
+      case KERNEL_PROCESS:
+          result = new KernelProcess_(name);
+          break;
+      default:
+          result = (Process_*)NULL;
+          break;
     }
 
     return result;
@@ -254,13 +256,19 @@ Process_::Process_(const char* name) {
 
     /* create process information */
     info = new ProcessInfo_;
-    checkMemoryAllocate(info, "Process:ProcessInfo allocate error");
+    checkMemoryAllocate(info, "Process ProcessInfo allocate error");
 
     /* name */
     strncpy(info->name, name, sizeof(info->name));
+
+    /* regist instance */
+    info->process = this;
 }
 
 Process_::~Process_() {
+
+    /* destroy process info */
+    delete info;
 }
 
 /*----------------------------------------------------------------------
@@ -273,4 +281,16 @@ UserProcess_::UserProcess_(const char* name) : Process_(name) {
 }
 
 UserProcess_::~UserProcess_() {
+}
+
+/*----------------------------------------------------------------------
+    KernelProcess
+----------------------------------------------------------------------*/
+KernelProcess_::KernelProcess_(const char* name) : Process_(name) {
+
+    /* kernel mode */
+    isKernelMode_ = true;
+}
+
+KernelProcess_::~KernelProcess_() {
 }
