@@ -13,8 +13,9 @@
 */
 #include <monapi.h>
 #include <monalibc.h>
+#include <monapi/keys.h>
 #include "OneLineShell.h"
-#include "KeyBoardManager.h"
+//#include "KeyBoardManager.h"
 #include "DisplayWindow.h"
 #include "Charing.h"
 #include "Command.h"
@@ -70,42 +71,48 @@ void OneLineShell::service() {
   ds.DrawCommandWindow();
   /* service loop */
   while(1){
-    if(!Message::receive(&info) && (info.arg2 & KEY_MODIFIER_DOWN)) {
-      this->OnKeyDown(info.arg1, info.arg2);
-      ds.DrawCommandLine((char *)(Charing *)this->cmd);
+    if(!Message::receive(&info)){
+      //printf("[%2x:%2x] ", info.arg1, info.arg2);
+      if((info.arg2 & KEY_MODIFIER_DOWN)){
+        //printf("[%2x:%2x] ", info.arg1, info.arg2);
+        this->OnKeyDown(info.arg1, info.arg2);
+        ds.DrawCommandLine((char *)(Charing *)this->cmd);
+      }
     }
   }
   return;
 }
 
 int OneLineShell::OnKeyDown(int keycode, int modifiers){
+  
+  KeyInfo keys;
 
+  keys.keycode = keycode;
+  keys.modifiers = modifiers;
   //printf("[%d,%d] ",keycode,modifiers);
   switch(keycode){
-  case VK_ENTER:
+  case Keys::Enter:
     this->cmd.ExecuteCommand();
     break;
-  case VK_BACKSPACE:
+  case Keys::Back:
     this->cmd.RemoveCommandLine();
     break;
-/*
-  case KEY_ARROW_RIGHT:
-    printf("RIGHT");
+  case Keys::Right:
+    //printf("RIGHT");
     this->cmd.SetCurrentPos(POSITION_RIGHT);
     break;
-  case KEY_ARROW_LEFT:
-    printf("LEFT");//OK
+  case Keys::Left:
+    //printf("LEFT");
     this->cmd.SetCurrentPos(POSITION_LEFT);
     break;
-  case KEY_ARROW_UP:
+  case Keys::Up:
     //this->cmdHst.
     break;
-  case KEY_ARROW_DOWN:
-    printf("DOWN");//this->cmd.;??
+  case Keys::Down:
+    //printf("DOWN");//this->cmd.;??
     break;
-*/
   default:
-    char c = KeyBoardManager::toChar(keycode);
+    char c = Keys::ToChar(keys);
     if(isprint(c)){
       this->cmd.InsertCommandLine(c);
     }
