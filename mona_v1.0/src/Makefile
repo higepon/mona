@@ -33,7 +33,6 @@ SOURCES    = cstart.cpp            \
              purevirtual.cpp       \
              KeyBoardManager.cpp   \
              tester.cpp            \
-             ProcessManager.cpp    \
              checker.cpp           \
              string.cpp            \
              SystemInfo.cpp        \

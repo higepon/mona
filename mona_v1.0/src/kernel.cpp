@@ -21,7 +21,6 @@
 
 #include<kernel.h>
 #include<idt.h>
-#include<IA32MemoryManager.h>
 #include<operator.h>
 #include<tester.h>
 #include<checker.h>
@@ -29,7 +28,6 @@
 #include<SystemInfo.h>
 #include<FDCDriver.h>
 #include<GraphicalConsole.h>
-#include<ProcessManager.h>
 #include<kthread.h>
 #include<ihandlers.h>
 #include<pic.h>
@@ -48,13 +46,11 @@ char* version = "Mona develop beta 0.08a $Date$";
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2003/02/22
+    \date   create:2002/07/21 update:2003/06/07
 */
 void startKernel(void) {
 
-    /* re-set up GDT */
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.resetGDT();
+    GDTUtil::setUpGDT();
 
     /* initialze console */
     g_console = new GraphicalConsole();

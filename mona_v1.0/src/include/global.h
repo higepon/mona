@@ -12,6 +12,7 @@
 #include<VirtualConsole.h>
 #include<FDCDriver.h>
 #include<Semaphore.h>
+#include<GDTUtil.h>
 #include <sysresource.h> /* (expr) */
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
@@ -38,3 +39,6 @@ GLOBAL IRQHandler g_irqHandlers[16];
 /* Process name refered by info.cpp */
 GLOBAL char g_process_name[16];
 GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
+
+/* GLOBAL DESCRIPTOR TABLE */
+GLOBAL SegDesc* g_gdt;

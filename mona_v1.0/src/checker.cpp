@@ -15,6 +15,7 @@
 #include <types.h>
 #include <kernel.h>
 #include <IA32MemoryManager.h>
+#include <GDTUtil.h>
 #include <kthread.h>
 
 /*!
@@ -33,11 +34,11 @@ void checkTypeSize() {
     bool isTSS     = sizeof(TSS)     == 104;
     bool isPTE     = sizeof(PTE)     == 4;
     bool isGDTR    = sizeof(GDTR)    == 6;
-    bool isGDT     = sizeof(GDT)     == 8;
+    bool isSegDesc = sizeof(SegDesc) == 8;
     bool isKthread = sizeof(Kthread) == 56;
 
     /* check size of some types */
-    if (isByte && isWord && isDword && isTSS && isPTE && isGDTR && isGDT && isKthread) {
+    if (isByte && isWord && isDword && isTSS && isPTE && isGDTR && isSegDesc && isKthread) {
         return;
     } else {
         panic("checkTypeSize()");

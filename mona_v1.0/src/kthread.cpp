@@ -18,7 +18,6 @@
 #include<operator.h>
 #include<disp.h>
 #include<global.h>
-#include<ProcessManager.h>
 #include<rtc.h>
 static Kthread runningList;
 
