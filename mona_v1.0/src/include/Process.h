@@ -79,7 +79,7 @@ class KernelProcess : Process {
     }
 
     int main();
-
+    //    static void Main();
   protected:
     virtual void init();
     virtual int execute();
