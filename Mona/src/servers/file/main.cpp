@@ -46,6 +46,44 @@ void MessageLoop()
                 }
                 break;
             }
+            case MSG_FILE_OPEN:
+            {
+                dword result = Open(msg.str);
+                Message::reply(&msg, result);
+                break;
+            }
+            case MSG_FILE_GET_SIZE:
+            {
+                dword result = GetFileSize(msg.arg1);
+                Message::reply(&msg, result);
+                break;
+            }
+            case MSG_FILE_CLOSE:
+            {
+                bool result = Close(msg.arg1);
+                Message::reply(&msg, result ? MONAPI_TRUE : MONAPI_FALSE);
+                break;
+            }
+            case MSG_FILE_SEEK:
+            {
+                bool result = Seek(msg.arg1, msg.arg2, msg.arg3);
+                Message::reply(&msg, result ? MONAPI_TRUE : MONAPI_FALSE);
+                break;
+            }
+            case MSG_FILE_READ:
+            {
+                monapi_cmemoryinfo* mi = Read(msg.arg1, msg.arg2);
+                if (mi != NULL)
+                {
+                    Message::reply(&msg, mi->Handle, mi->Size);
+                    monapi_cmemoryinfo_delete(mi);
+                }
+                else
+                {
+                    Message::reply(&msg);
+                }
+                break;
+            }
             case MSG_FILE_CHANGE_DRIVE:
             {
                 int result = ChangeDrive(msg.arg1);

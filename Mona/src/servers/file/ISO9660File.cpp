@@ -112,5 +112,5 @@ bool ISO9660File::Seek(dword position, dword flag)
 
     if (this->pointer > this->attribute.size) this->pointer = this->attribute.size;
 
-    return false;
+    return true;
 }

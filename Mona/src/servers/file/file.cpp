@@ -1,5 +1,6 @@
 #include "ISO9660FileSystemManager.h"
 #include "FatFileSystemManager.h"
+#include <sys/BinaryTree.h>
 
 using namespace MonAPI;
 
@@ -7,6 +8,8 @@ static FileSystemManager* isofs;
 static FileSystemManager* fatfs;
 static FileSystemManager* fs;
 int currentDrive;
+
+BinaryTree<File*> fileTree;
 
 int GetCurrentDrive()
 {
@@ -124,6 +127,84 @@ CString ChangeDriveAuto(const CString& path)
     }
 
     return pathWithoutDriveLetter;
+}
+
+dword Open(const CString& path)
+{
+    static dword id = 0;
+
+    /* save current drive */
+    int saveDrive = currentDrive;
+
+    /* change drive */
+    CString pathWithoutDriveLetter = ChangeDriveAuto(path);
+
+    /* read */
+    File* file = fs->Open(pathWithoutDriveLetter.toUpper());
+
+    /* file not found */
+    if (file == NULL) return 0;
+
+    id++;
+    fileTree.add(id, file);
+
+
+    /* restore current drive */
+    currentDrive = saveDrive;
+    return id;
+}
+
+bool Seek(dword id, dword position, dword flag)
+{
+    File* file = fileTree.get(id);
+
+    if (file == NULL) return false;
+
+    return file->Seek(position, flag);
+}
+
+monapi_cmemoryinfo* Read(dword id, dword size)
+{
+    File* file = fileTree.get(id);
+
+    if (file == NULL) return 0;
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(ret, size + 1, false))
+    {
+        monapi_cmemoryinfo_delete(ret);
+        return 0;
+    }
+
+    ret->Size--;
+    dword readSize = file->Read(ret->Data, ret->Size);
+    if (readSize == 0)
+    {
+        monapi_cmemoryinfo_delete(ret);
+        return 0;
+    }
+
+    ret->Data[ret->Size] = 0;
+
+    return ret;
+}
+
+dword GetFileSize(dword id)
+{
+    File* file = fileTree.get(id);
+
+    if (file == NULL) return false;
+
+    return file->GetSize();
+}
+
+bool Close(dword id)
+{
+    File* file = fileTree.get(id);
+
+    if (file == NULL) return false;
+
+    return fs->Close(file);
 }
 
 monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)

@@ -35,6 +35,11 @@ enum
     MSG_FILE_DECOMPRESS_ST5,
     MSG_FILE_DECOMPRESS_ST5_FILE,
     MSG_FILE_READ_DIRECTORY = 0x0410,
+    MSG_FILE_OPEN,
+    MSG_FILE_CLOSE,
+    MSG_FILE_READ,
+    MSG_FILE_SEEK,
+    MSG_FILE_GET_SIZE,
 
     MSG_PROCESS_EXECUTE_FILE = 0x0500,
     MSG_PROCESS_CREATE_IMAGE,
@@ -82,6 +87,11 @@ extern dword monapi_get_server_thread_id(int id);
 extern MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle);
 extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
+extern dword monapi_call_file_open(const char* file);
+extern dword monapi_call_file_get_file_size(dword id);
+extern MONAPI_BOOL monapi_call_file_seek(dword id, dword position, dword flag);
+extern MONAPI_BOOL monapi_call_file_close(dword id);
+extern monapi_cmemoryinfo* monapi_call_file_read(dword id, dword size);
 extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);

@@ -1,5 +1,17 @@
 2005-03-21  higepon  <higepon@users.sourceforge.jp>
 
+        * src/lib/monapi/messages.cpp (monapi_call_file_open): 追加。
+        (monapi_call_file_read): 追加。
+        (monapi_call_file_close): 追加。
+        (monapi_call_file_seek): 追加。
+        (monapi_call_file_get_file_size): 追加。
+
+        * src/servers/file/file.cpp (Open): 追加。
+                                    (Seek): 追加。
+                                    (Close): 追加。
+                                    (GetFileSize): 追加。
+                                    (Read): 追加。
+
         * src/servers/file/FatFileSystemManager.cpp (Open): 追加。ただし未実装状態。
                                                     (Close): 追加。ただし未実装状態。
 
