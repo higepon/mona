@@ -98,6 +98,42 @@ void rdtscsub(dword* timeL, dword* timeH) {
 
 void mainProcess() {
 
+#if 0
+    byte buf[512];
+
+    KDate dt1;
+    KDate dt2;
+
+    outportb(0x21, 0xff);
+    outportb(0xA1, 0xff);
+    outportb(0x21, inportb(0x21) & 0xBF);
+
+    RTC::getDate(&dt1);
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+
+    for (int i = 0; i < 20; i++) {
+
+    g_fdcdriver->read(1,buf);
+    g_fdcdriver->read(2,buf);
+    g_fdcdriver->read(3,buf);
+    g_fdcdriver->read(4,buf);
+    g_fdcdriver->read(5,buf);
+    g_fdcdriver->read(6,buf);
+    g_fdcdriver->read(7,buf);
+    g_fdcdriver->read(8,buf);
+    g_fdcdriver->read(9,buf);
+    g_fdcdriver->read(10, buf);
+    }
+    RTC::getDate(&dt2);
+
+    g_console->printf("\n%d/%d/%d %d:%d:%d\n", dt1.year, dt1.month, dt1.day, dt1.hour, dt1.min, dt1.sec);
+    g_console->printf("%d/%d/%d %d:%d:%d\n", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
+
+#endif
     /* KEY Server */
     g_console->printf("loading KeyBoard Server....");
     g_console->printf("%s\n", loadProcess("SERVER", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");

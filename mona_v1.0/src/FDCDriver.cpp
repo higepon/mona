@@ -404,6 +404,8 @@ void FDCDriver::stopDMA() {
 */
 void FDCDriver::setupDMARead(dword size) {
 
+    enter_kernel_lock_mode();
+
     size--; /* size should be */
     dword p = (dword)dmabuff_;
 
@@ -411,8 +413,6 @@ void FDCDriver::setupDMARead(dword size) {
 
     /* direction write */
     outportb(FDC_DMA_S_MR, 0x46);
-
-    enter_kernel_lock_mode();
 
     /* clear byte pointer */
     outportb(FDC_DMA_S_CBP, 0);
@@ -422,9 +422,9 @@ void FDCDriver::setupDMARead(dword size) {
     outportb(FDC_DMA_S_COUNT, byte(size >>8));
     outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
 
+    startDMA();
     exit_kernel_lock_mode();
 
-    startDMA();
     return;
 }
 
