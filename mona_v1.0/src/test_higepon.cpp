@@ -44,17 +44,21 @@ int Mouse::init() {
 
     */
 
+// bochs hate this interface test */
+
     /* aux interface test */
-    outportb(0x64, 0xa9);
-    if (waitReadable()) {
-        return 1;
-    }
+//     outportb(0x64, 0xa9);
+//     if (waitReadable()) {
+//         return 1;
+//     }
 
-    if (inportb(0x60)) {
+//     if (inportb(0x60)) {
 
-        /* aux interface test error */
-        return 2;
-    }
+//         /* aux interface test error */
+//         return 2;
+//     }
+
+// bochs comment out
 
     /* enable aux */
     outportb(0x64, 0xa8);
