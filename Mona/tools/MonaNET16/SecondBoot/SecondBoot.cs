@@ -39,8 +39,7 @@ namespace Mona
 			{
 				Console.WriteLine("Boot failure!!");
 				Console.WriteLine("System has halted.");
-				new Inline("cli");
-				new Inline("hlt");
+				for (;;) new Inline("hlt");
 			}
 			
 			WriteSize(size);

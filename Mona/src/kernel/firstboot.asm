@@ -58,8 +58,11 @@ realnext:
         ;
         xor     ax,ax
         int     0x13
-        jc      $
-        ;
+        jnc     init_ok
+        mov     si,bioserr
+        call    putstring
+        jmp     halt
+init_ok:
         mov     si,boot
         call    putstring
         ;
@@ -166,9 +169,11 @@ file_not_found:
 %ifdef DEBUG
        call    register_dump
 %endif
-;          mov     si,not_found
-;          call    putstring
-        jmp     $               ; loop forever
+       mov     si,not_found
+       call    putstring
+halt:
+       hlt
+       jmp     halt             ; loop forever
 
 ; readsector
 ;   ax = start sector, di = number of sectors to read
@@ -311,10 +316,11 @@ register_dump:
         ret
 %endif
 
+bioserr db      "BIOS error!", 13, 10, 0
 bname   db      "LOADER  BIN"
 boot    db      "Reading LOADER.BIN ", 0
-;  not_found db "KERNEL.IMG not found"
-crlf    db      0x0d,0x0a,0
+not_found db    "not found", 13, 10, 0
+crlf    db      13, 10, 0
 
         times   0x01fe-($-$$) db 0
         dw      0xaa55
