@@ -1,3 +1,11 @@
+2004-10-23  bayside  <bayside@users.sourceforge.jp>
+
+        * tools/t5lzma/Common/Vector.h: shadowさんのパッチ適用
+
+        * tools/t5lzma/Compress/RangeCoder/RangeCoderBit.h: shadowさんのパッチ適用
+
+        * tools/t5lzma/Compress/LZMA_Alone/Makefile: 注意書き追加
+
 2004-10-23  higepon  <higepon@users.sourceforge.jp>
 
         * .cvsignore全般 : EX5の記述追加
