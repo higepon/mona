@@ -84,10 +84,12 @@ int receive(Process* process, Message* message) {
 
 int loadProcess(const char* path, const char* file, bool isUser) {
 
-    g_console->printf("hello load\n");
+    while (Semaphore::down(&g_semaphore_loadProcess));
 
     static dword sharedId = 0x1000;
     sharedId++;
+
+    g_console->printf("hello load sharedId=%x \n\n\n", sharedId);
 
     int    fileSize;
     int    readTimes;
@@ -103,9 +105,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
 
-    g_fdcdriver = new FDCDriver();
     g_fdcdriver->motor(ON);
-
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -144,7 +144,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     //    g_console->printf("entrypoint=%x", entrypoint);
     delete(loader);
-    delete(g_fdcdriver);
     free(buf);
 
     Process* process = g_processManager->create(isUser ? ProcessManager::USER_PROCESS : ProcessManager::KERNEL_PROCESS, file);
@@ -160,6 +159,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_processManager->join(process, thread);
 
     g_console->printf("end load\n");
+    Semaphore::up(&g_semaphore_loadProcess);
     return 0;
 }
 
@@ -247,11 +247,7 @@ void mmChangeTester() {
 
     g_info_level = MSG;
 
-    /* test1 FD read */
-    g_fdcdriver = new FDCDriver();
-
     g_fdcdriver->motor(ON);
-
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -306,9 +302,7 @@ void FDCDriverTester() {
 
     g_info_level = MSG;
 
-    g_fdcdriver = new FDCDriver();
     g_fdcdriver->motor(ON);
-
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -365,13 +359,10 @@ void FDCDriverTester() {
     }
 
     g_fdcdriver->motor(false);
-    delete(g_fdcdriver);
     delete(fat);
 }
 
 void ELFTester(byte* out) {
-
-    g_fdcdriver = new FDCDriver();
 
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
@@ -438,10 +429,6 @@ void ELFTester(byte* out) {
 void FDCTester() {
 
     info(DEV_NOTICE, "start1");
-
-    g_fdcdriver = new FDCDriver();
-
-    info(DEV_NOTICE, "start2");
 
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}

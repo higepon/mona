@@ -20,10 +20,12 @@ cglobal arch_switch_thread_to_v861
 cglobal arch_switch_thread_to_v862
 cglobal arch_switch_thread1
 cglobal arch_switch_thread2
+cglobal arch_set_dokodemo_view
 cextern g_stack_view      ;; for debug stack viewer
 cextern fault0dHandler
 cextern g_currentThread
 cextern g_tss
+cextern g_dokodemo_view
 
 ;;----------------------------------------------------------------------
 ;; save register to current thread
@@ -258,4 +260,34 @@ arch_set_stack_view:
         mov [ebx + 28], eax
         pop ebx
         pop eax
+        ret
+
+arch_set_dokodemo_view:
+        push  eax
+        push  ebx
+        push  eax
+        mov   eax, g_dokodemo_view
+        mov   ebx, cs
+        mov   dword[eax + 8 ], ebx ; CS
+        mov   ebx, ds
+        mov   dword[eax + 9 ], ebx ; DS
+        mov   ebx, ss
+        mov   dword[eax + 10], ebx ; SS
+        mov   ebx, cr3
+        mov   dword[eax + 11], ebx ; CR3
+        pushf
+        mov   ebx, dword[esp + 0]
+        mov   dword[eax + 12], ebx ; EFLAGS
+        popf
+        pop   ebx
+        mov   dword[eax + 0], ebx   ; EAX
+        pop   ebx
+        mov   dword[eax + 1], ebx   ; EBX
+        mov   dword[eax + 2], ecx   ; ECX
+        mov   dword[eax + 3], edx   ; EDX
+        mov   dword[eax + 4], esp   ; ESP
+        mov   dword[eax + 5], ebp   ; EBP
+        mov   dword[eax + 6], esi   ; ESI
+        mov   dword[eax + 7], edi   ; EDI
+        pop   eax
         ret

@@ -1,59 +1,61 @@
-ENV         = env
-VERSION     = 0.1.1
-DOXYGEN     = doxygen
-BIN         = ../bin
-LIST        = ../list
-TOOLS       = ../tools
-INCLUDE     = include
-USERINCLUDE = user
-CNTRINCLUDE = contrib/include
-CFINCLUDE   = -I$(INCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
-TARGET      = $(BIN)/mona.img
-KERNEL_IMG  = $(BIN)/KERNEL.IMG
-BOOT1       = $(BIN)/firstboot.bin
-BOOT2       = $(BIN)/secondboot.bin
-KERNEL      = $(BIN)/third.bin
-USER_PROCESS= $(BIN)/USER.ELF
-FAT_TOOL    = $(BIN)/fat_write.exe
-TEMPLATE    = $(TOOLS)/fat_template.img
-SOURCES     = cstart.cpp            \
-              kernel.cpp            \
-              ihandlers.cpp         \
-              operator.cpp          \
-              purevirtual.cpp       \
-              KeyBoardManager.cpp   \
-              checker.cpp           \
-              string.cpp            \
-              Semaphore.cpp         \
-              FDCDriver.cpp         \
-              GraphicalConsole.cpp  \
-              pic.cpp               \
-              io.cpp                \
-              syscalls.cpp          \
-              BitMap.cpp            \
-              FAT12.cpp             \
-              Process.cpp           \
-              info.cpp              \
-              GDTUtil.cpp           \
-              IDTUtil.cpp           \
-              PageManager.cpp       \
-              elf.cpp               \
-              z.cpp                 \
-              MemoryManager.cpp     \
-              sysresource.cpp       \
-              Segments.cpp          \
-              test_higepon.cpp      \
-              Mutex.cpp             \
+ENV          = env
+VERSION      = 0.1.1
+DOXYGEN      = doxygen
+BIN          = ../bin
+LIST         = ../list
+TOOLS        = ../tools
+INCLUDE      = include
+USERINCLUDE  = user
+CNTRINCLUDE  = contrib/include
+CFINCLUDE    = -I$(INCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
+TARGET       = $(BIN)/mona.img
+KERNEL_IMG   = $(BIN)/KERNEL.IMG
+BOOT1        = $(BIN)/firstboot.bin
+BOOT2        = $(BIN)/secondboot.bin
+KERNEL       = $(BIN)/third.bin
+USER_PROCESS = $(BIN)/USER.ELF
+USER_PROCESS2 = $(BIN)/TEST.ELF
+FAT_TOOL     = $(BIN)/fat_write.exe
+TEMPLATE     = $(TOOLS)/fat_template.img
+SOURCES      = cstart.cpp            \
+               kernel.cpp            \
+               ihandlers.cpp         \
+               operator.cpp          \
+               purevirtual.cpp       \
+               KeyBoardManager.cpp   \
+               checker.cpp           \
+               string.cpp            \
+               Semaphore.cpp         \
+               FDCDriver.cpp         \
+               GraphicalConsole.cpp  \
+               pic.cpp               \
+               io.cpp                \
+               syscalls.cpp          \
+               BitMap.cpp            \
+               FAT12.cpp             \
+               Process.cpp           \
+               info.cpp              \
+               GDTUtil.cpp           \
+               IDTUtil.cpp           \
+               PageManager.cpp       \
+               elf.cpp               \
+               z.cpp                 \
+               MemoryManager.cpp     \
+               sysresource.cpp       \
+               Segments.cpp          \
+               test_higepon.cpp      \
+               Mutex.cpp             \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(TARGET)
 
-$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) $(USER_PROCESS)
+$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) $(USER_PROCESS) $(USER_PROCESS2)
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
 	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
 	(cd $(BIN); $(FAT_TOOL) mona.img USER.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img TEST.ELF)
 
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
@@ -71,6 +73,11 @@ $(USER_PROCESS) : userlib.o ./user/hello.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/hello.cpp -o hello.o
 	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o -o $(USER_PROCESS)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS)
+
+$(USER_PROCESS2) : userlib.o ./user/test.cpp
+	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/test.cpp -o test.o
+	ld -n -Ttext 0xA0000000 -e _user_start -static test.o userlib.o MemoryManager.o -o $(USER_PROCESS2)
+	objcopy --output-target=elf32-i386 $(USER_PROCESS2)
 
 .SUFFIXES: .cpp .o
 .cpp.o:

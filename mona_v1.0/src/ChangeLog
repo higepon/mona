@@ -1,3 +1,7 @@
+2004-01-16  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp:フォルト時のダンプ関数を作成
+
 2004-01-15  higepon  <higepon@users.sourceforge.jp>
 
         * oemstringポインタの取得

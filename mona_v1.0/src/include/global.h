@@ -27,13 +27,15 @@
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
+GLOBAL DokodemoView g_dokodemo_view;
 
 GLOBAL FDCDriver* g_fdcdriver;
 GLOBAL FAT12*     g_fat12;
 
 /* semaphore */
-GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
-GLOBAL semaphore g_semaphore_shared  GLOBAL_VAL(1);
+GLOBAL semaphore g_semaphore_console      GLOBAL_VAL(1);
+GLOBAL semaphore g_semaphore_shared       GLOBAL_VAL(1);
+GLOBAL semaphore g_semaphore_loadProcess  GLOBAL_VAL(1);
 
 GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
 

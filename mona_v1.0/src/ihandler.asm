@@ -34,6 +34,7 @@ cextern fault0dHandler
 cextern syscall_entrance
 cextern dummyHandler
 cextern arch_save_thread_registers
+cextern arch_set_dokodemo_view
 
 %define KERNEL_DS 0x10
 
@@ -129,6 +130,7 @@ arch_fault0dhandler:
         pushAll
         changeData
         push dword[esp + 40]
+        call arch_set_dokodemo_view
         call arch_set_stack_view
         call fault0dHandler
         add  esp, 0x04          ; remove error_cd
@@ -172,13 +174,17 @@ arch_cpufaulthandler_c:
 arch_cpufaulthandler_e:
         pushAll
         changeData
-        push dword[esp + 40]
-        mov  eax, cr2
-        push eax
+        push ebp
+        mov  ebp, esp
+        sub  esp, 8
+        mov  eax, dword[esp + 52] ; error cd
+        mov  dword[esp + 4], eax
+        mov  eax, cr2             ; page fault address
+        mov  dword[esp + 0], eax
         call cpufaultHandler_e
-        add  esp, 0x08          ; remove parameter
+        leave
         popAll
-        add  esp, 0x04          ; remove error_cd
+        add esp, 0x04             ; remove error_cd
         iretd
 
 ;;; entrance of syscall

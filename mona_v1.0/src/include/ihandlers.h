@@ -69,4 +69,6 @@ extern "C" void cpufaultHandler_c(dword error);
 extern "C" void arch_cpufaulthandler_c();
 extern "C" void arch_cpufaulthandler_e();
 
+void dokodemoView();
+
 #endif

@@ -34,13 +34,21 @@ typedef struct {
     dword stack7;
 } StackView;
 
-/*!
-   \struct FARJMP
-*/
 typedef struct {
-    dword offset;
-    word selector;
-} FARJMP;
+    dword eax;   //0
+    dword ebx;
+    dword ecx;   //2
+    dword edx;
+    dword esp;   //4
+    dword ebp;
+    dword esi;   //6
+    dword edi;
+    dword cs;    //8
+    dword ds;
+    dword ss;    //10
+    dword cr3;
+    dword eflags;//12
+} DokodemoView;
 
 /*!
     \struct TSS

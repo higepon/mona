@@ -62,17 +62,7 @@ void keyStrokeHandler(dword scancode) {
 */
 void fault0dHandler(dword error) {
 
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-         , g_stack_view.stack0
-         , g_stack_view.stack1
-         , g_stack_view.stack2
-         , g_stack_view.stack3
-         , g_stack_view.stack4
-         , g_stack_view.stack5
-         , g_stack_view.stack6
-         , g_stack_view.stack7
-         );
-
+    dokodemoView();
     g_console->printf("error=%x\n", error);
     panic("fault0d");
 }
@@ -151,204 +141,86 @@ IRQHANDLERMaster(0)
     IRQHANDLERSlave(14)
     IRQHANDLERSlave(15)
 
-    void cpufaultHandler_0(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+void cpufaultHandler_0(void) {
+    dokodemoView();
     panic("unhandled:fault00 - devied by 0");
-
 }
 
 void cpufaultHandler_1(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault01 - debug");
-
 }
 
-
 void cpufaultHandler_5(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault05 - BOUND");
 
 }
 
-
 void cpufaultHandler_6(void){
-
-    info(ERROR, "stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-         , g_stack_view.stack0
-         , g_stack_view.stack1
-         , g_stack_view.stack2
-         , g_stack_view.stack3
-         , g_stack_view.stack4
-         , g_stack_view.stack5
-         , g_stack_view.stack6
-         , g_stack_view.stack7
-         );
+    dokodemoView();
     panic("unhandled:fault06 - invalid op code");
 
 }
 
-
 void cpufaultHandler_7(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault07 no co-processor presents");
-
 }
-
 
 void cpufaultHandler_8(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:abort08 - double fault");
-
 }
 
-
 void cpufaultHandler_a(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault0A - invalid TSS");
-
 }
 
 
 void cpufaultHandler_b(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault0B - segment not presents");
-
 }
-
 
 void cpufaultHandler_c(dword error){
-
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault0C - stack fault");
-
 }
-
 
 void cpufaultHandler_e(dword address, dword error){
 
-    //g_console->printf("page fault(%x, %x, %d, %s)\n", address, error
-    //                      , g_current_process->pid, g_current_process->name);
-
     if (!g_page_manager->pageFaultHandler(address, error)) {
 
+        dokodemoView();
         panic("unhandled:fault0E - page fault");
     }
 }
 
-
 void cpufaultHandler_10(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault10 - co-processor error");
-
 }
-
 
 void cpufaultHandler_11(void){
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    dokodemoView();
     panic("unhandled:fault11 - arign check");
-
 }
 
+void dokodemoView() {
+
+    DokodemoView* i = &g_dokodemo_view;
+    StackView*    j = &g_stack_view;
+
+    g_console->printf("\n");
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    g_console->printf("cs =%x ds =%x ss =%x cre=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    g_console->printf("eflags=%x\n", i->eflags);
+    g_console->printf("stack 0(%x) 1(%x) 2(%x) 3(%x)\n", j->stack0, j->stack1, j->stack2, j->stack3);
+    g_console->printf("stack 4(%x) 6(%x) 5(%x) 7(%x)\n", j->stack4, j->stack5, j->stack6, j->stack7);
+}
 
 /*! \def global handler list */
 InterruptHandlers handlers[IHANDLER_NUM] = {

@@ -72,7 +72,6 @@ void test85() {for(;;);}
 extern int pos_x;
 extern int pos_y;
 
-
 int testFD(char* file) {
 
     int    fileSize;
@@ -111,16 +110,22 @@ int testFD(char* file) {
         info(ERROR, "close failed");
     }
 
-    g_console->printf("[%d][%d][%d]", buf[1], buf[2], buf[3]);
+    g_console->printf("[%d][%d][%d]", buf[1], buf[512 * readTimes - 10], buf[3]);
 
+    delete fat;
     free(buf);
     return 0;
 }
 
 void printInfo() {
 
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER2.ELF", true) ? "NG" : "OK");
-    //]    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
+
+    //   for (int i = 0; i < 10; i++) {
+    //       testFD("USER.ELF");
+    //       testFD("KERNEL.IMG");
+    //   }
 
     for (;;) {
 
@@ -130,7 +135,7 @@ void printInfo() {
 
         pos_x = 0;
         pos_y = 0;
-        //        g_processManager->printProcess();
+        g_processManager->printProcess();
 
         pos_x = tempx;
         pos_y = tempy;
