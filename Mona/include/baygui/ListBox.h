@@ -29,43 +29,43 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _LISTBOX_H_INCLUDED_
 
 /**
- ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã‚¯ãƒ©ã‚¹
+ ƒŠƒXƒgƒ{ƒbƒNƒXƒNƒ‰ƒX
 */
 class ListBox : public Control {
 private:
-	/** é¸æŠä½ç½® */
+	/** ‘I‘ğˆÊ’u */
 	int selectedIndex;
-	/** ãƒ‡ãƒ¼ã‚¿ãƒªã‚¹ãƒˆ */
+	/** ƒf[ƒ^ƒŠƒXƒg */
 	LinkedList *dataList;
-	/** é¸æŠã‚¤ãƒ™ãƒ³ãƒˆ */
+	/** ‘I‘ğƒCƒxƒ“ƒg */
 	Event itemEvent;
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	ListBox::ListBox();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	ListBox();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual ListBox::~ListBox();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~ListBox();
 	
-	/** é¸æŠä½ç½®ã‚’å¾—ã‚‹ */
+	/** ‘I‘ğˆÊ’u‚ğ“¾‚é */
 	inline  int getSelectedIndex() { return this->selectedIndex; }
 	
-	/** é¸æŠé …ç›®ã‚’å¾—ã‚‹ */
+	/** ‘I‘ğ€–Ú‚ğ“¾‚é */
 	virtual char *getSelectedItem();
 	
-	/** index ç•ªç›®ã‚’é¸æŠã™ã‚‹ */
+	/** index ”Ô–Ú‚ğ‘I‘ğ‚·‚é */
 	virtual void select(int index);
 	
-	/** é …ç›®ã‚’è¿½åŠ ã™ã‚‹ */
+	/** €–Ú‚ğ’Ç‰Á‚·‚é */
 	virtual void add(char *item);
 	
-	/** index ç•ªç›®ã®é …ç›®ã‚’å‰Šé™¤ã™ã‚‹ */
+	/** index ”Ô–Ú‚Ì€–Ú‚ğíœ‚·‚é */
 	virtual void remove(int index);
 	
-	/** æç”»ãƒãƒ³ãƒ‰ãƒ© */
+	/** •`‰æƒnƒ“ƒhƒ‰ */
 	virtual void onPaint(Graphics *g);
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ© */
+	/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
 	virtual void onEvent(Event *event);
 };
 

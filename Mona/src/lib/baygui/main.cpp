@@ -28,7 +28,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <baygui.h>
 
 /** É_É~Å[ */
+#ifdef MONA
 int MonaMain(List<char*>* pekoe)
+#else
+int main()
+#endif
 {
 	return 0;
 }

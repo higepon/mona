@@ -29,69 +29,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _KEYEVENT_H_INCLUDED_
 
 /**
- ã‚­ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚¯ãƒ©ã‚¹
+ ƒL[ƒCƒxƒ“ƒgƒNƒ‰ƒX
 */
 class KeyEvent : public Event {
-public:
-	//
-	// ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ—ä¸€è¦§
-	//
-	enum {
-		/** ã‚­ãƒ¼æŠ¼ä¸‹ */
-		KEY_PRESSED     = 100,
-		/** ã‚­ãƒ¼ãƒªãƒªãƒ¼ã‚¹ */
-		KEY_RELEASED    = 101,
-	};
-
-	//
-	// ç‰¹æ®Šã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ä¸€è¦§
-	//
-	enum {
-		VKEY_ESC       =  0,
-		VKEY_BACKSPACE = 14,
-		VKEY_TAB       = 15,
-		VKEY_ENTER     = 28,
-
-		VKEY_PGUP      = 354,
-		VKEY_PGDOWN    = 355,
-		VKEY_INSERT    = 356,
-		VKEY_DELETE    = 357,
-		VKEY_UP        = 358,
-		VKEY_LEFT      = 359,
-		VKEY_RIGHT     = 360,
-		VKEY_DOWN      = 361,
-		VKEY_HOME      = 362,
-		VKEY_END       = 363,
-
-		VKEY_F11       = 382,
-		VKEY_F12       = 383,
-		VKEY_F1        = 398,
-		VKEY_F2        = 399,
-		VKEY_F3        = 400,
-		VKEY_F4        = 401,
-		VKEY_F5        = 402,
-		VKEY_F6        = 403,
-		VKEY_F7        = 404,
-		VKEY_F8        = 405,
-		VKEY_F9        = 406,
-		VKEY_F10       = 407,
-		VKEY_LSHIFT    = 412,
-		VKEY_ALT       = 415,
-		VKEY_CTRL      = 416,
-		VKEY_RMENU     = 424,
-		VKEY_LMENU     = 425,
-		VKEY_RSHIFT    = 427,
-	};
-
 private:
-	/** ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ */
+	/** ƒL[ƒR[ƒh */
 	int keycode;
-	/** ä¿®é£¾ã‚­ãƒ¼ */
+	/** CüƒL[ */
 	int modifiers;
 	
 public:
-	/** ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	KeyEvent::KeyEvent() {
+	/** ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	KeyEvent() {
 		setType(KEY_PRESSED);
 		setSource(NULL);
 		this->keycode = 0;
@@ -99,32 +48,32 @@ public:
 	}
 	
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param type type ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ—
-	 @param source ã‚¤ãƒ™ãƒ³ãƒˆç™ºç”Ÿå…ƒ
-	 @param keycode ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰
-	 @param modifiers ä¿®é£¾ã‚­ãƒ¼
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param type type ƒCƒxƒ“ƒgƒ^ƒCƒv
+	 @param source ƒCƒxƒ“ƒg”­¶Œ³
+	 @param keycode ƒL[ƒR[ƒh
+	 @param modifiers CüƒL[
 	 */
-	KeyEvent::KeyEvent(int type, Control *source, int keycode, int modifiers) {
+	KeyEvent(int type, Control *source, int keycode, int modifiers) {
 		setType(type);
 		setSource(source);
 		this->keycode = keycode;
 		this->modifiers = modifiers;
 	}
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual KeyEvent::~KeyEvent() {}
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~KeyEvent() {}
 	
-	/** ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã‚’å¾—ã‚‹ */
+	/** ƒL[ƒR[ƒh‚ð“¾‚é */
 	inline int getKeycode() { return this->keycode; }
 	
-	/** ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã‚’è¨­å®šã™ã‚‹ */
+	/** ƒL[ƒR[ƒh‚ðÝ’è‚·‚é */
 	inline void setKeycode(int keycode) { this->keycode = keycode; }
 	
-	/** ä¿®é£¾ã‚­ãƒ¼ã‚’å¾—ã‚‹ */
+	/** CüƒL[‚ð“¾‚é */
 	inline int getModifiers() { return this->modifiers; }
 	
-	/** ä¿®é£¾ã‚­ãƒ¼ã‚’è¨­å®šã™ã‚‹ */
+	/** CüƒL[‚ðÝ’è‚·‚é */
 	inline void setModifiers(int modifiers) { this->modifiers = modifiers; }
 };
 

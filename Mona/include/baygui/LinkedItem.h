@@ -29,26 +29,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _LINKEDITEM_H_INCLUDED_
 
 /**
- åŒæ–¹å‘ã‚¢ã‚¤ãƒ†ãƒ ã‚¯ãƒ©ã‚¹ï¼ˆåŒæ–¹å‘ãƒªã‚¹ãƒˆã§ä½¿ç”¨ï¼‰
+ ‘o•ûŒüƒAƒCƒeƒ€ƒNƒ‰ƒXi‘o•ûŒüƒŠƒXƒg‚Åg—pj
 */
 class LinkedItem : public Object {
 public:
-	/** å†…éƒ¨ãƒ‡ãƒ¼ã‚¿ */
+	/** “à•”ƒf[ƒ^ */
 	Object *data;
-	/** æ¬¡ã®ã‚¢ã‚¤ãƒ†ãƒ ã¸ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ */
+	/** Ÿ‚ÌƒAƒCƒeƒ€‚Ö‚Ìƒ|ƒCƒ“ƒ^[ */
 	LinkedItem *next;
-	/** å‰ã®ã‚¢ã‚¤ãƒ†ãƒ ã¸ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ */
+	/** ‘O‚ÌƒAƒCƒeƒ€‚Ö‚Ìƒ|ƒCƒ“ƒ^[ */
 	LinkedItem *prev;
 	
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	LinkedItem::LinkedItem(Object *o);
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	LinkedItem(Object *o);
 	
 	/**
-	 ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿.
-	 å†…éƒ¨ãƒ‡ãƒ¼ã‚¿ã‚‚deleteã™ã‚‹ã€‚
+	 ƒfƒXƒgƒ‰ƒNƒ^.
+	 “à•”ƒf[ƒ^‚àdelete‚·‚éB
 	 */
-	virtual LinkedItem::~LinkedItem();
+	virtual ~LinkedItem();
 };
 
 #endif // _LINKEDITEM_H_INCLUDED_

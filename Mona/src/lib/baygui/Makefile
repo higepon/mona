@@ -11,6 +11,7 @@ endif
 SOURCES = \
 	main.cpp \
 	Button.cpp \
+	Checkbox.cpp \
 	Control.cpp \
 	Container.cpp \
 	FontMetrics.cpp \

@@ -25,13 +25,52 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "baygui.h"
+#if !defined(_CHECKBOX_H_INCLUDED_)
+#define _CHECKBOX_H_INCLUDED_
 
-/** 繝�繝輔か繝ｫ繝医さ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ */
-Rect::Rect() {
-	this->x = this->y = this->width = this->height = 0;
-}
+/**
+ チェックボックスクラス
+*/
+class Checkbox : public Control {
+private:
+	/** チェックされたかどうか */
+	bool checked;
+	/** ボタンのラベル */
+	String label;
+	
+public:
+	/**
+	 コンストラクタ
+	 @param label ラベル
+	 */
+	Checkbox(char *label);
+	
+	/** デストラクタ */
+	virtual ~Checkbox();
+	
+	/**
+	 チェックされたかどうかを設定する
+	 @param checked フラグ (true / false)
+	 */
+	virtual void setChecked(bool checked);
+	
+	/**
+	 ラベルを設定する
+	 @param label ラベル
+	 */
+	virtual void setLabel(char *label);
+	
+	/** チェックされたかどうかを得る */
+	inline bool getChecked() { return this->checked; }
+	
+	/** ラベルを得る */
+	inline char *getLabel() { return this->label.getBytes(); }
+	
+	/** 描画ハンドラ */
+	virtual void onPaint(Graphics *g);
+	
+	/** イベントハンドラ */
+	virtual void onEvent(Event *event);
+};
 
-/** 繝�繧ｹ繝医Λ繧ｯ繧ｿ */
-Rect::~Rect() {
-}
+#endif // _CHECKBOX_H_INCLUDED_

@@ -29,23 +29,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _OBJECT_H_INCLUDED_
 
 /**
- åŸºåº•ã‚¯ãƒ©ã‚¹
+ Šî’êƒNƒ‰ƒX
 */
 class Object {
 #ifdef MONA
 protected:
-	/** ã‚¹ãƒ¬ãƒƒãƒ‰ID */
+	/** ƒXƒŒƒbƒhID */
 	dword threadID;
-	/** GUIã‚µãƒ¼ãƒãƒ¼ID */
+	/** GUIƒT[ƒo[ID */
 	dword guisvrID;
 #endif
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Object::Object();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Object();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Object::~Object();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Object();
 };
 
 #endif // _OBJECT_H_INCLUDED_

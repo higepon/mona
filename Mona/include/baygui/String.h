@@ -31,65 +31,65 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef unsigned int wchar;
 
 /**
- æ–‡å­—åˆ—ãƒ©ãƒƒãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹.
- å†…éƒ¨å½¢å¼ã¯UCS-4 (4ãƒã‚¤ãƒˆ) ã§ä¿æŒã™ã‚‹ã€‚
+ •¶š—ñƒ‰ƒbƒp[ƒNƒ‰ƒX.
+ “à•”Œ`®‚ÍUCS-4 (4ƒoƒCƒg) ‚Å•Û‚·‚éB
  */
 class String : public Object
 {
 private:
-	/** å†…éƒ¨æ–‡å­—åˆ— */
+	/** “à•”•¶š—ñ */
 	char* charArray;
-	/** ãƒ¯ã‚¤ãƒ‰æ–‡å­—åˆ— (UCS-4) */
+	/** ƒƒCƒh•¶š—ñ (UCS-4) */
 	wchar* wcharArray;
-	/** ãƒ¯ã‚¤ãƒ‰æ–‡å­—åˆ—ã®é•·ã• */
+	/** ƒƒCƒh•¶š—ñ‚Ì’·‚³ */
 	int wlen;
 	
 private:
-	/** æ–‡å­—åˆ—ã‚’è¨­å®šã™ã‚‹ */
+	/** •¶š—ñ‚ğİ’è‚·‚é */
 	String& set(const char* s);
 
-	/** æ•°å€¤ã‚’è¨­å®šã™ã‚‹ */
+	/** ”’l‚ğİ’è‚·‚é */
 	String& set(const int n);
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
 	inline String() : charArray(0), wlen(0) {}
 	
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param s æ–‡å­—åˆ— (UTF-8)
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param s •¶š—ñ (UTF-8)
 	*/
 	inline String(const char* s) : charArray(0), wlen(0) { set(s); }
 	
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param n æ•°å€¤
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param n ”’l
 	*/
 	inline String(int n) : charArray(0), wlen(0) { set(n); }
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
 	inline ~String(){ delete[] charArray; delete[] wcharArray; }
 	
-	/** ãƒ¯ã‚¤ãƒ‰æ–‡å­—æ•°ã‚’è¿”ã™ (wstrlenç›¸å½“) */
+	/** ƒƒCƒh•¶š”‚ğ•Ô‚· (wstrlen‘Š“–) */
 	inline int length() const { return wlen; }
 	
-	/** å†…éƒ¨æ–‡å­—åˆ— (charé…åˆ—) ã‚’è¿”ã™ */
+	/** “à•”•¶š—ñ (char”z—ñ) ‚ğ•Ô‚· */
 	inline char* getBytes() const { return charArray; }
 	
-	/** ãƒ¯ã‚¤ãƒ‰æ–‡å­—åˆ—ã‚’è¿”ã™ */
+	/** ƒƒCƒh•¶š—ñ‚ğ•Ô‚· */
 	inline wchar* toCharArray() const { return wcharArray; }
 	
-	/** iç•ªç›®ã®ãƒ¯ã‚¤ãƒ‰æ–‡å­—ã‚’å¾—ã‚‹ */
+	/** i”Ô–Ú‚ÌƒƒCƒh•¶š‚ğ“¾‚é */
 	inline wchar operator[](int i) const { return wcharArray[i]; }
 	
 	/**
-	 "="æ¼”ç®—å­ã®å¤šé‡å®šç¾©.
-	 String s = "hoge"; ã®ã‚ˆã†ã«ä½¿ã†ã“ã¨ãŒã§ãã‚‹ã€‚
+	 "="‰‰Zq‚Ì‘½d’è‹`.
+	 String s = "hoge"; ‚Ì‚æ‚¤‚Ég‚¤‚±‚Æ‚ª‚Å‚«‚éB
 	*/
 	inline const String& operator=(const char* s){ set(s); return *this; }
 	
 	/**
-	 æŒ‡å®šã•ã‚ŒãŸæ–‡å­—åˆ—ã¨ç­‰ã—ã„ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
+	 w’è‚³‚ê‚½•¶š—ñ‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é
 	 */
 	inline bool equals(const char *s)
 	{
@@ -102,9 +102,9 @@ public:
 	}
 	
 	/**
-	 æŒ‡å®šã•ã‚ŒãŸæ–‡å­—åˆ—ã§å§‹ã¾ã‚‹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
-	 @param s æ–‡å­—åˆ—
-	 @return å§‹ã¾ã£ã¦ã„ã‚Œã°trueã€ãã†ã§ãªã‘ã‚Œã°false
+	 w’è‚³‚ê‚½•¶š—ñ‚Ån‚Ü‚é‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é
+	 @param s •¶š—ñ
+	 @return n‚Ü‚Á‚Ä‚¢‚ê‚ÎtrueA‚»‚¤‚Å‚È‚¯‚ê‚Îfalse
 	*/
 	inline bool startsWith(const char* s)
 	{
@@ -116,9 +116,9 @@ public:
 	}
 	
 	/**
-	 æŒ‡å®šã•ã‚ŒãŸæ–‡å­—åˆ—ã§çµ‚ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
-	 @param s æ–‡å­—åˆ—
-	 @return çµ‚ã£ã¦ã„ã‚Œã°trueã€ãã†ã§ãªã‘ã‚Œã°false
+	 w’è‚³‚ê‚½•¶š—ñ‚ÅI‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é
+	 @param s •¶š—ñ
+	 @return I‚Á‚Ä‚¢‚ê‚ÎtrueA‚»‚¤‚Å‚È‚¯‚ê‚Îfalse
 	*/
 	inline bool endsWith(const char*s)
 	{

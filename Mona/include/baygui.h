@@ -29,14 +29,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _BAYGUI_H_INCLUDED_
 
 // ==================================================
-// OS å®šç¾©éƒ¨åˆ†
+// OS ’è‹`•”•ª
 // ==================================================
-//#define PEKOE 1
 #define MONA  1
+//#define PEKOE 1
 //#define OSASK 1
 
 // ==================================================
-// OS ä¾å­˜ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ«
+// OS ˆË‘¶ƒwƒbƒ_ƒtƒ@ƒCƒ‹
 // ==================================================
 #if defined(PEKOE)
 	#include "baygui.h"
@@ -52,27 +52,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include <monapi/messages.h>
 	#include <monalibc.h>
 	#include <gui/messages.h>
+#else
+	// ‚Æ‚è‚ ‚¦‚¸ƒRƒ“ƒpƒCƒ‹‚ª’Ê‚é‚¾‚¯
+	#define NULL 0
+	int strcmp(const char*, const char*) { return 0; }
+	unsigned long strlen(const char*) { return 0; }
+	char* strcpy(char*, const char*) { return ""; }
+	void* memcpy(void* s1, const void* s2, unsigned long size) { return NULL; }
+	void* memset(void*, int, unsigned long) { return NULL; }
 #endif
 
 // ==================================================
-// BayGUI ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒã‚¯ãƒ­
+// BayGUI ƒOƒ[ƒoƒ‹ƒ}ƒNƒ
 // ==================================================
 #define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
 #define inGetUInt32(b) (unsigned int)( (unsigned int)((b)[3])<<24 | (unsigned int)((b)[2])<<16 | (unsigned int)((b)[1])<<8 | (unsigned int)((b)[0]) )
 #define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
 
-/** BayGUIãƒãƒ¼ã‚¸ãƒ§ãƒ³ */
-#define BAYGUI_VERSION   "BayGUI build "__DATE__
-//#define WINDOWMANAGER_MENU_TITLE_JP "ãƒ•ã‚¡ã‚¤ãƒ«ã€€ç·¨é›†ã€€è¡¨ç¤ºã€€ç‰¹åˆ¥ã€€ãƒ˜ãƒ«ãƒ—"
+/** BayGUIƒo[ƒWƒ‡ƒ“ */
+#define BAYGUI_VERSION "BayGUI build $Date$"
+//#define WINDOWMANAGER_MENU_TITLE_JP "ƒtƒ@ƒCƒ‹@•ÒW@•\¦@“Á•Ê@ƒwƒ‹ƒv"
 //#define WINDOWMANAGER_MENU_TITLE_EN "File Edit View Special Help"
 //#define WINDOWMANAGER_STARUP_MESSAGE "starting baygui ...\n"
 //#define WINDOWMANAGER_SHUTDOWN_MESSAGE "shutdown baygui ...\n"
 
-/** ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æ–‡å­—åˆ—æœ€å¤§é•· */
+/** ƒeƒLƒXƒgƒtƒB[ƒ‹ƒh•¶š—ñÅ‘å’· */
 #define MAX_TEXT_LEN      128
 
 // ==================================================
-// BayGUI ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ«
+// BayGUI ƒwƒbƒ_ƒtƒ@ƒCƒ‹
 // ==================================================
 #include "baygui/Font.h"
 #include "baygui/Color.h"
@@ -88,6 +96,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/Image.h"
 #include "baygui/Graphics.h"
 #include "baygui/Control.h"
+#include "baygui/Checkbox.h"
 #include "baygui/Button.h"
 #include "baygui/Label.h"
 #include "baygui/ListBox.h"

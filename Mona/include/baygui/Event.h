@@ -31,86 +31,164 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Control;
 
 /**
- ã‚¤ãƒ™ãƒ³ãƒˆåŸºåº•ã‚¯ãƒ©ã‚¹
+ ƒCƒxƒ“ƒgŠî’êƒNƒ‰ƒX
 */
 class Event : public Object {
 public:
 	//
-	// ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ—ä¸€è¦§
+	// ƒCƒxƒ“ƒgƒ^ƒCƒvˆê——
 	//
-	enum {
-		/** ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚¤ãƒ³ */
-		FOCUS_IN        = 300,
-		/** ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚¢ã‚¦ãƒˆ */
-		FOCUS_OUT       = 301,
-		/** ã‚¿ã‚¤ãƒžãƒ¼ */
-		TIMER           = 302,
-		/** ãƒ†ã‚­ã‚¹ãƒˆç¢ºå®š */
-		TEXT_CHANGED    = 303,
-		/** é …ç›®é¸æŠž */
-		ITEM_SELECTED   = 304,
-		/** ãƒ–ãƒ­ãƒƒã‚¯å¢—åŠ  */
-		BLOCK_INCLEMENT = 305,
-		/** ãƒ–ãƒ­ãƒƒã‚¯æ¸›å°‘ */
-		BLOCK_DECLEMENT = 306,
-		/** ã‚«ã‚¹ã‚¿ãƒ ã‚¤ãƒ™ãƒ³ãƒˆ */
-		CUSTOM_EVENT    = 400,
-	};
-
+	/** ƒL[‰Ÿ‰º */
+	static const int KEY_PRESSED     = 100;
+	/** ƒL[ƒŠƒŠ[ƒX */
+	static const int KEY_RELEASED    = 101;
+	/** ƒ}ƒEƒXƒNƒŠƒbƒN */
+	static const int MOUSE_PRESSED   = 200;
+	/** ƒ}ƒEƒXƒŠƒŠ[ƒX */
+	static const int MOUSE_RELEASED  = 201;
+	/** ƒ}ƒEƒXƒhƒ‰ƒbƒO */
+	static const int MOUSE_DRAGGED   = 202;
+	/** ƒ}ƒEƒXˆÚ“® */
+	static const int MOUSE_MOVED     = 203;
+	/** ƒtƒH[ƒJƒXƒCƒ“ */
+	static const int FOCUS_IN        = 300;
+	/** ƒtƒH[ƒJƒXƒAƒEƒg */
+	static const int FOCUS_OUT       = 301;
+	/** ƒ^ƒCƒ}[ */
+	static const int TIMER           = 302;
+	/** ƒeƒLƒXƒgŠm’è */
+	static const int TEXT_CHANGED    = 303;
+	/** €–Ú‘I‘ð */
+	static const int ITEM_SELECTED   = 304;
+	/** ƒuƒƒbƒN‘‰Á */
+	static const int BLOCK_INCLEMENT = 305;
+	/** ƒuƒƒbƒNŒ¸­ */
+	static const int BLOCK_DECLEMENT = 306;
+	/** ƒJƒXƒ^ƒ€ƒCƒxƒ“ƒg */
+	static const int CUSTOM_EVENT    = 400;
+	
+	//
+	// ƒL[ƒR[ƒh
+	//
+	/** Escape */
+	static const int VKEY_ESC       =  0;
+	/** BackSpace */
+	static const int VKEY_BACKSPACE = 14;
+	/** Tab */
+	static const int VKEY_TAB       = 15;
+	/** Enter */
+	static const int VKEY_ENTER     = 28;
+	/** PageUp */
+	static const int VKEY_PGUP      = 354;
+	/** PageDown */
+	static const int VKEY_PGDOWN    = 355;
+	/** Insert */
+	static const int VKEY_INSERT    = 356;
+	/** Delete */
+	static const int VKEY_DELETE    = 357;
+	/** ª */
+	static const int VKEY_UP        = 358;
+	/** © */
+	static const int VKEY_LEFT      = 359;
+	/** ¨  */
+	static const int VKEY_RIGHT     = 360;
+	/** « */
+	static const int VKEY_DOWN      = 361;
+	/** Home */
+	static const int VKEY_HOME      = 362;
+	/** End */
+	static const int VKEY_END       = 363;
+	/** F11 */
+	static const int VKEY_F11       = 382;
+	/** F12 */
+	static const int VKEY_F12       = 383;
+	/** F1 */
+	static const int VKEY_F1        = 398;
+	/** F2 */
+	static const int VKEY_F2        = 399;
+	/** F3 */
+	static const int VKEY_F3        = 400;
+	/** F4 */
+	static const int VKEY_F4        = 401;
+	/** F5 */
+	static const int VKEY_F5        = 402;
+	/** F6 */
+	static const int VKEY_F6        = 403;
+	/** F7 */
+	static const int VKEY_F7        = 404;
+	/** F8 */
+	static const int VKEY_F8        = 405;
+	/** F9 */
+	static const int VKEY_F9        = 406;
+	/** F10 */
+	static const int VKEY_F10       = 407;
+	/** ¶ƒVƒtƒg */
+	static const int VKEY_LSHIFT    = 412;
+	/** Alt */
+	static const int VKEY_ALT       = 415;
+	/** Ctrl */
+	static const int VKEY_CTRL      = 416;
+	/** ‰Eƒƒjƒ…[ */
+	static const int VKEY_RMENU     = 424;
+	/** ¶ƒƒjƒ…[ */
+	static const int VKEY_LMENU     = 425;
+	/** ‰EƒVƒtƒg */
+	static const int VKEY_RSHIFT    = 427;
+	
 private:
-	/** ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ— */
+	/** ƒCƒxƒ“ƒgƒ^ƒCƒv */
 	int type;
-	/** ã‚¤ãƒ™ãƒ³ãƒˆç™ºç”Ÿå…ƒ */
+	/** ƒCƒxƒ“ƒg”­¶Œ³ */
 	Control *source;
 
 #ifdef MONA
 public:
-	/** ãƒ˜ãƒƒãƒ€ãƒ¼ */
+	/** ƒwƒbƒ_[ */
 	unsigned int header;
-	/** å¼•æ•°(1) */
+	/** ˆø”(1) */
 	unsigned int arg1;
-	/** å¼•æ•°(2) */
+	/** ˆø”(2) */
 	unsigned int arg2;
-	/** å¼•æ•°(3) */
+	/** ˆø”(3) */
 	unsigned int arg3;
-	/** ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç™ºç”Ÿå…ƒ */
+	/** ƒƒbƒZ[ƒW”­¶Œ³ */
 	unsigned int from;
-	/** æ–‡å­—åˆ— */
+	/** •¶Žš—ñ */
 	char str[128];
-	/** æ–‡å­—åˆ—ã®é•·ã• */
+	/** •¶Žš—ñ‚Ì’·‚³ */
 	int length;
 #endif
 
 public:
-	/** ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Event::Event() {
+	/** ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Event() {
 		this->type = CUSTOM_EVENT;
 		this->source = NULL;
 	}
 	
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param type ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ—
-	 @param source ã‚¤ãƒ™ãƒ³ãƒˆç™ºç”Ÿå…ƒéƒ¨å“
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param type ƒCƒxƒ“ƒgƒ^ƒCƒv
+	 @param source ƒCƒxƒ“ƒg”­¶Œ³•”•i
 	 */
-	Event::Event(int type, Control *source) {
+	Event(int type, Control *source) {
 		this->type = type;
 		this->source = source;
 	}
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Event::~Event() {}
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Event() {}
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ—ã‚’å¾—ã‚‹ */
+	/** ƒCƒxƒ“ƒgƒ^ƒCƒv‚ð“¾‚é */
 	inline int getType() { return this->type; }
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆã‚¿ã‚¤ãƒ—ã‚’è¨­å®šã™ã‚‹ */
+	/** ƒCƒxƒ“ƒgƒ^ƒCƒv‚ðÝ’è‚·‚é */
 	inline void setType(int type) { this->type = type; }
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆã®ç™ºç”Ÿéƒ¨å“ã‚’å¾—ã‚‹ */
+	/** ƒCƒxƒ“ƒg‚Ì”­¶•”•i‚ð“¾‚é */
 	inline Control* getSource() { return this->source; }
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆã®ç™ºç”Ÿéƒ¨å“ã‚’è¨­å®šã™ã‚‹ */
+	/** ƒCƒxƒ“ƒg‚Ì”­¶•”•i‚ðÝ’è‚·‚é */
 	inline void setSource(Control *c) { this->source = c; }
 };
 

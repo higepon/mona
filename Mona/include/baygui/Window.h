@@ -29,147 +29,143 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _WINDOW_H_INCLUDED_
 
 /**
- ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹
+ ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
 */
 class Window : public Container {
 public:
 	//
-	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚ªãƒ•ã‚»ãƒƒãƒˆ
+	// ƒEƒBƒ“ƒhƒEƒIƒtƒZƒbƒg
 	//
-	enum {
-		/** ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä¸Šç«¯ */
-		INSETS_TOP       = 22,
-		/** ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä¸‹ç«¯ */
-		INSETS_BOTTOM    = 6,
-		/** ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å·¦ç«¯ */
-		INSETS_LEFT      = 6,
-		/** ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å³ç«¯ */
-		INSETS_RIGHT     = 6,
-	};
-		
+	/** ƒEƒBƒ“ƒhƒEã’[ */
+	static const int INSETS_TOP       = 22;
+	/** ƒEƒBƒ“ƒhƒE‰º’[ */
+	static const int INSETS_BOTTOM    = 6;
+	/** ƒEƒBƒ“ƒhƒE¶’[ */
+	static const int INSETS_LEFT      = 6;
+	/** ƒEƒBƒ“ƒhƒE‰E’[ */
+	static const int INSETS_RIGHT     = 6;
+	
 	//
-	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®çŠ¶æ…‹
+	// ƒEƒBƒ“ƒhƒE‚Ìó‘Ô
 	//
-	enum {
-		/** é€šå¸¸æ™‚ */
-		STATE_NORMAL     = 0,
-		/** ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ç§»å‹•ä¸­ */
-		STATE_MOVING     = 1,
-	};
+	/** ’Êí */
+	static const int STATE_NORMAL     = 0;
+	/** ƒEƒBƒ“ƒhƒEˆÚ“®’† */
+	static const int STATE_MOVING     = 1;
 
 private:
-	/** ã‚¿ã‚¤ãƒˆãƒ« */
+	/** ƒ^ƒCƒgƒ‹ */
 	String title;
-	/** ä¿®é£¾ã‚­ãƒ¼ */
+	/** CüƒL[ */
 	int modifiers;
-	/** ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®çŠ¶æ…‹ */
+	/** ƒEƒBƒ“ƒhƒE‚Ìó‘Ô */
 	int state;
-	/** ä»¥å‰ã®ãƒã‚¦ã‚¹ã®Xåº§æ¨™ */
+	/** ˆÈ‘O‚Ìƒ}ƒEƒX‚ÌXÀ•W */
 	int preX;
-	/** ä»¥å‰ã®ãƒã‚¦ã‚¹ã®Yåº§æ¨™ */
+	/** ˆÈ‘O‚Ìƒ}ƒEƒX‚ÌYÀ•W */
 	int preY;
-	/** ã‚ªãƒ•ã‚»ãƒƒãƒˆX */
+	/** ƒIƒtƒZƒbƒgX */
 	int offsetX;
-	/** ã‚ªãƒ•ã‚»ãƒƒãƒˆY */
+	/** ƒIƒtƒZƒbƒgY */
 	int offsetY;
-	/** ã‚ªãƒ¼ãƒãƒ¼ãƒ©ãƒƒãƒ—ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®çŠ¶æ…‹ */
+	/** ƒI[ƒo[ƒ‰ƒbƒvƒEƒBƒ“ƒhƒE‚Ìó‘Ô */
 	unsigned int overlap;
-	/** ã‚­ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆ */
+	/** ƒL[ƒCƒxƒ“ƒg */
 	KeyEvent keyEvent;
-	/** ãƒã‚¦ã‚¹ã‚¤ãƒ™ãƒ³ãƒˆ */
+	/** ƒ}ƒEƒXƒCƒxƒ“ƒg */
 	MouseEvent mouseEvent;
-	/** ã‚¿ã‚¤ãƒãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆ */
+	/** ƒ^ƒCƒ}[ƒCƒxƒ“ƒg */
 	Event timerEvent;
-	/** ã‚«ã‚¹ã‚¿ãƒ ã‚¤ãƒ™ãƒ³ãƒˆ */
+	/** ƒJƒXƒ^ƒ€ƒCƒxƒ“ƒg */
 	Event customEvent;
-	/** æç”»é ˜åŸŸ */
+	/** •`‰æ—Ìˆæ */
 	Graphics *_g;
-	/** æç”»ãƒãƒƒãƒ•ã‚¡ãƒ¼ */
+	/** •`‰æƒoƒbƒtƒ@[ */
 	Image *_buffer;
-	/** å†…éƒ¨æç”»é ˜åŸŸ */
+	/** “à•”•`‰æ—Ìˆæ */
 	Graphics *__g;
-	/** å†…éƒ¨æç”»ãƒãƒƒãƒ•ã‚¡ãƒ¼ */
+	/** “à•”•`‰æƒoƒbƒtƒ@[ */
 	Image *__buffer;
-	/** å®Ÿè¡Œä¸­ãƒ•ãƒ©ã‚° */
+	/** Às’†ƒtƒ‰ƒO */
 	bool isRunning;
 	
 #ifdef MONA
 protected:
-	/** GUIã‚µãƒ¼ãƒãƒ¼ä¸Šã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ */
+	/** GUIƒT[ƒo[ã‚ÌƒEƒBƒ“ƒhƒEƒIƒuƒWƒFƒNƒg */
 	guiserver_window *_window;
 #endif
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Window::Window();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Window();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Window::~Window();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Window();
 
 	/**
-	 éƒ¨å“ç”Ÿæˆæ™‚ãƒãƒ³ãƒ‰ãƒ©.
-	 Window::run()ã§å‘¼ã°ã‚Œã‚‹ã€‚
-	 ç‹¬è‡ªã®å‡¦ç†ã‚’ä»˜ä¸ã—ãŸã„ã¨ãã¯Window::onStart()ã‚’å…ˆã«å‘¼ã¶ã“ã¨ã€‚
+	 •”•i¶¬ƒnƒ“ƒhƒ‰.
+	 Window::run()‚ÅŒÄ‚Î‚ê‚éB
+	 “Æ©‚Ìˆ—‚ğ•t—^‚µ‚½‚¢‚Æ‚«‚ÍWindow::onStart()‚ğæ‚ÉŒÄ‚Ô‚±‚ÆB
 	*/
 	virtual void onStart();
 	
 	/**
-	 éƒ¨å“ç ´æ£„ãƒãƒ³ãƒ‰ãƒ©.
-	 ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å†…ã§å‘¼ã°ã‚Œã‚‹ã€‚
-	 ç‹¬è‡ªã®å‡¦ç†ã‚’ä»˜ä¸ã—ãŸã„ã¨ãã¯Window::onExit()ã‚’å¾Œã§å‘¼ã¶ã“ã¨ã€‚
+	 •”•i”jŠüƒnƒ“ƒhƒ‰.
+	 ƒfƒXƒgƒ‰ƒNƒ^“à‚ÅŒÄ‚Î‚ê‚éB
+	 “Æ©‚Ìˆ—‚ğ•t—^‚µ‚½‚¢‚Æ‚«‚ÍWindow::onExit()‚ğŒã‚ÅŒÄ‚Ô‚±‚ÆB
 	 */
 	virtual void onExit();
 
-	/** ãƒãƒ³ãƒ‰ãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒnƒ“ƒhƒ‹‚ğ“¾‚é */
 	unsigned int getHandle();
 	
-	/** æç”»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¾—ã‚‹ */
+	/** •`‰æƒIƒuƒWƒFƒNƒg‚ğ“¾‚é */
 	virtual Graphics *getGraphics();
 	
-	/** å†…éƒ¨ãƒãƒƒãƒ•ã‚¡ãƒ¼ã‚’å¾—ã‚‹ */
+	/** “à•”ƒoƒbƒtƒ@[‚ğ“¾‚é */
 	virtual Image *getBuffer();
 	
-	/** ã‚¿ã‚¤ãƒˆãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒ^ƒCƒgƒ‹‚ğ“¾‚é */
 	inline char *getTitle() { return this->title.getBytes(); }
 	
 	/**
-	 ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
-	 @param title ã‚¿ã‚¤ãƒˆãƒ«
+	 ƒ^ƒCƒgƒ‹İ’è
+	 @param title ƒ^ƒCƒgƒ‹
 	 */
 	virtual void setTitle(char *title);
 	
 	/**
-	 è¡¨ç¤ºçŠ¶æ…‹ã‚’è¨­å®šã™ã‚‹
-	 @param visible è¡¨ç¤ºçŠ¶æ…‹ (true / false)
+	 •\¦ó‘Ô‚ğİ’è‚·‚é
+	 @param visible •\¦ó‘Ô (true / false)
 	 */
 	virtual void setVisible(bool visible);
 	
 	/**
-	 ä½ç½®ã‚’å¤‰æ›´ã™ã‚‹
-	 @param x Xåº§æ¨™
-	 @param y Yåº§æ¨™
+	 ˆÊ’u‚ğ•ÏX‚·‚é
+	 @param x XÀ•W
+	 @param y YÀ•W
 	*/
 	virtual void setLocation(int x, int y);
 	
 	/**
-	 ã‚¿ã‚¤ãƒãƒ¼ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
-	 @param duration ã‚¿ã‚¤ãƒãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆãŒç™ºå‹•ã™ã‚‹ã¾ã§ã®æ™‚é–“[ms]
+	 ƒ^ƒCƒ}[‚ğƒZƒbƒg‚·‚é
+	 @param duration ƒ^ƒCƒ}[ƒCƒxƒ“ƒg‚ª”­“®‚·‚é‚Ü‚Å‚ÌŠÔ[ms]
 	 */
 	virtual void setTimer(int duration);
 	
-	/** å†æç”» */
+	/** Ä•`‰æ */
 	virtual void repaint();
 	
-	/** éƒ¨å“æ›´æ–° */
+	/** •”•iXV */
 	virtual void update();
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç† */
+	/** ƒCƒxƒ“ƒgˆ— */
 	virtual void postEvent(Event *event);
 	
-	/** ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
+	/** ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒ‹[ƒv‚ğ”²‚¯‚é */
 	virtual void stop();
 	
-	/** ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ— */
+	/** ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒ‹[ƒv */
 	virtual void run();
 };
 

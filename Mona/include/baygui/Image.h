@@ -29,58 +29,58 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _IMAGE_H_INCLUDED_
 
 /**
- ã‚¤ãƒ¡ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹
+ ƒCƒ[ƒWƒNƒ‰ƒX
 */
 class Image : public Object {
 private:
-	/** å¹… */
+	/** • */
 	int width;
-	/** é«˜ã• */
+	/** ‚‚³ */
 	int height;
 
 #ifdef MONA
 protected:
-	/** GUIã‚µãƒ¼ãƒãƒ¼ä¸Šã®ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ */
+	/** GUIƒT[ƒo[ã‚Ìƒrƒbƒgƒ}ƒbƒvƒIƒuƒWƒFƒNƒg */
 	guiserver_bitmap* bitmap;
 #endif
 
 public:
-	Image::Image();
+	Image();
 	
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param width å¹…
-	 @param height é«˜ã•
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param width •
+	 @param height ‚‚³
 	 */
-	Image::Image(int width, int height);
+	Image(int width, int height);
 
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿.
-	 ãƒ‡ã‚³ãƒ¼ãƒ‰ã¯ã‚µãƒ¼ãƒãƒ¼å´ã§è¡Œã£ã¦ã„ã‚‹ã€‚
-	 @param path ãƒ•ã‚¡ã‚¤ãƒ«å
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^.
+	 ƒfƒR[ƒh‚ÍƒT[ƒo[‘¤‚Ås‚Á‚Ä‚¢‚éB
+	 @param path ƒtƒ@ƒCƒ‹–¼
 	 */
-	Image::Image(char *path);
+	Image(char *path);
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Image::~Image();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Image();
 	
-	/** ãƒãƒ³ãƒ‰ãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒnƒ“ƒhƒ‹‚ğ“¾‚é */
 	unsigned int getHandle();
 	
-	/** å¹…ã‚’å¾—ã‚‹ */
+	/** •‚ğ“¾‚é */
 	inline int getWidth() { return this->width; }
 	
-	/** é«˜ã•ã‚’å¾—ã‚‹ */
+	/** ‚‚³‚ğ“¾‚é */
 	inline int getHeight() { return this->height; }
 	
-	/** æŒ‡å®šã•ã‚ŒãŸç‚¹ã®è‰²ã‚’å¾—ã‚‹ */
+	/** w’è‚³‚ê‚½“_‚ÌF‚ğ“¾‚é */
 	unsigned int getPixel(int x, int y);
 	
 	/**
-	 ç‚¹ã‚’æ‰“ã¤
-	 @param x Xåº§æ¨™
-	 @param y Yåº§æ¨™
-	 @param color è‰²
+	 “_‚ğ‘Å‚Â
+	 @param x XÀ•W
+	 @param y YÀ•W
+	 @param color F
 	*/
 	void setPixel(int x, int y, unsigned int color);
 };

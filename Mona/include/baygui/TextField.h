@@ -29,7 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _TEXTFIELD_H_INCLUDED_
 
 /**
- ãƒ†ã‚­ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã‚¯ãƒ©ã‚¹
+ ƒeƒLƒXƒgƒ{ƒbƒNƒXƒNƒ‰ƒX
 */
 class TextField : public Control {
 private:
@@ -41,32 +41,32 @@ private:
 	Event textEvent;
 	
 private:
-	/** 1æ–‡å­—æŒ¿å…¥ã™ã‚‹ */
+	/** 1•¶š‘}“ü‚·‚é */
 	virtual void insertCharacter(char c);
 	
-	/** ä¸€æ–‡å­—å‰Šé™¤ã™ã‚‹ */
+	/** ˆê•¶šíœ‚·‚é */
 	virtual void deleteCharacter();
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	TextField::TextField();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	TextField();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual TextField::~TextField();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~TextField();
 	
 	/**
-	 ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®šã™ã‚‹
+	 ƒeƒLƒXƒg‚ğİ’è‚·‚é
 	 @param text
 	 */
 	virtual void setText(char *text);
 	
-	/** ãƒ†ã‚­ã‚¹ãƒˆã‚’å¾—ã‚‹ */
+	/** ƒeƒLƒXƒg‚ğ“¾‚é */
 	inline  char *getText() { return this->text; }
 	
-	/** æç”»ãƒãƒ³ãƒ‰ãƒ© */
+	/** •`‰æƒnƒ“ƒhƒ‰ */
 	virtual void onPaint(Graphics *g);
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ© */
+	/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
 	virtual void onEvent(Event *event);
 };
 

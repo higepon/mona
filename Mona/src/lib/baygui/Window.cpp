@@ -69,7 +69,7 @@ static void TimerThread()
 	MessageInfo info;
 	while (1) {
 		if (!MonAPI::Message::receive(&info)) {
-			if (info.header == Event::TIMER && info.arg2 > 0) {
+			if (info.header == (unsigned int)Event::TIMER) {
 				int duration = (info.arg2 < 10) ? 1 : (info.arg2 / 10);
 				syscall_sleep(duration);
 				MonAPI::Message::send(info.arg1, Event::TIMER, 0, 0, 0, NULL);

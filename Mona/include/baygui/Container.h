@@ -29,51 +29,51 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _CONTAINER_H_INCLUDED_
 
 /**
- ã‚³ãƒ³ãƒ†ãƒŠãƒ¼ã‚¯ãƒ©ã‚¹
+ ƒRƒ“ƒeƒi[ƒNƒ‰ƒX
 */
 class Container : public Control {
 protected:
-	/** éƒ¨å“ä¸€è¦§ */
+	/** •”•iˆê—— */
 	LinkedList *_controlList;
 
 protected:
 	/**
-	 æ´»æ€§éƒ¨å“ã‚’å¾—ã‚‹
-	 @return æ´»æ€§éƒ¨å“ï¼ˆãªã‘ã‚Œã°NULLï¼‰
+	 Šˆ«•”•i‚ğ“¾‚é
+	 @return Šˆ«•”•ii‚È‚¯‚ê‚ÎNULLj
 	*/
 	virtual Control *findChild();
 	
 	/**
-	 éƒ¨å“ã‚’å¾—ã‚‹
-	 @param x æŒ‡å®šã™ã‚‹Xåº§æ¨™
-	 @param y æŒ‡å®šã™ã‚‹Yåº§æ¨™
+	 •”•i‚ğ“¾‚é
+	 @param x w’è‚·‚éXÀ•W
+	 @param y w’è‚·‚éYÀ•W
 	 */
 	virtual Control *findChild(int x, int y);
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Container::Container();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Container();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Container::~Container();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Container();
 	
 	/**
-	 æŒ‡å®šã—ãŸéƒ¨å“ã‚’è¿½åŠ ã™ã‚‹
-	 @param control æŒ‡å®šã™ã‚‹éƒ¨å“
+	 w’è‚µ‚½•”•i‚ğ’Ç‰Á‚·‚é
+	 @param control w’è‚·‚é•”•i
 	 */
 	virtual void add(Control *control);
 	
 	/**
-	 æŒ‡å®šã—ãŸéƒ¨å“ã‚’å‰Šé™¤ã™ã‚‹
-	 @param control æŒ‡å®šã™ã‚‹éƒ¨å“
-	 @return å‰Šé™¤ã•ã‚ŒãŸéƒ¨å“ï¼ˆãªã‘ã‚Œã°NULLï¼‰
+	 w’è‚µ‚½•”•i‚ğíœ‚·‚é
+	 @param control w’è‚·‚é•”•i
+	 @return íœ‚³‚ê‚½•”•ii‚È‚¯‚ê‚ÎNULLj
 	 */
 	virtual void remove(Control *control);
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç† */
+	/** ƒCƒxƒ“ƒgˆ— */
 	virtual void postEvent(Event *event);
 	
-	/** å†æç”» */
+	/** Ä•`‰æ */
 	virtual void repaint();
 };
 

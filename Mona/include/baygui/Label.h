@@ -29,43 +29,43 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _LABEL_H_INCLUDED_
 
 /**
- ãƒ©ãƒ™ãƒ«ã‚¯ãƒ©ã‚¹
+ ƒ‰ƒxƒ‹ƒNƒ‰ƒX
 */
 class Label : public Control {
 private:
-	/** è¡¨ç¤ºä½ç½®ï¼ˆå·¦å¯„ã›ã€ä¸­å¤®å¯„ã›ã€å³å¯„ã›ï¼‰*/
+	/** •\¦ˆÊ’ui¶Šñ‚¹A’†‰›Šñ‚¹A‰EŠñ‚¹j*/
 	int align;
-	/** è¡¨ç¤ºæ–‡å­—åˆ— */
+	/** •\¦•¶š—ñ */
 	String text;
 	
 public:
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿.
-	 æç”»ä½ç½®ã¯ ALIGN_LEFTã€‚
-	 @param text ãƒ©ãƒ™ãƒ«
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^.
+	 •`‰æˆÊ’u‚Í ALIGN_LEFTB
+	 @param text ƒ‰ƒxƒ‹
 	 */
-	Label::Label(char *text);
+	Label(char *text);
 	
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param text ãƒ©ãƒ™ãƒ«
-	 @param align æç”»ä½ç½® (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param text ƒ‰ƒxƒ‹
+	 @param align •`‰æˆÊ’u (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
 	 */
-	Label::Label(char *text, int align);
+	Label(char *text, int align);
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Label::~Label();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Label();
 	
 	/**
-	 ãƒ†ã‚­ã‚¹ãƒˆè¨­å®š
+	 ƒeƒLƒXƒgİ’è
 	 @param text
 	 */
 	virtual void setText(char *text);
 	
-	/** ãƒ†ã‚­ã‚¹ãƒˆã‚’å¾—ã‚‹ */
+	/** ƒeƒLƒXƒg‚ğ“¾‚é */
 	inline  char *getText() { return this->text.getBytes(); }
 	
-	/** æç”»ãƒãƒ³ãƒ‰ãƒ© */
+	/** •`‰æƒnƒ“ƒhƒ‰ */
 	virtual void onPaint(Graphics *g);
 };
 

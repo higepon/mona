@@ -18,53 +18,53 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __FONTMETRICS_H__
 
 /**
- ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ±ã‚¯ãƒ©ã‚¹
+ ƒtƒHƒ“ƒgî•ñƒNƒ‰ƒX
  */
 class FontMetrics : public Object
 {
 private:
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚ªãƒ•ã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆé•·ã• */
+	/** ƒtƒHƒ“ƒgƒIƒtƒZƒbƒgƒŠƒXƒg’·‚³ */
 	static int offsetListLength;
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚ªãƒ•ã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆ */
+	/** ƒtƒHƒ“ƒgƒIƒtƒZƒbƒgƒŠƒXƒg */
 	static int *offsetList;
-	/** ãƒ•ã‚©ãƒ³ãƒˆãƒ‡ãƒ¼ã‚¿ */
+	/** ƒtƒHƒ“ƒgƒf[ƒ^ */
 	static unsigned char *defaultFontData;
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ« */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹ */
 	int fontStyle;
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	FontMetrics::FontMetrics();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	FontMetrics();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual FontMetrics::~FontMetrics();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~FontMetrics();
 	
 	/**
-	 UCS-4ã‚³ãƒ¼ãƒ‰ã‚’å—ã‘å–ã£ã¦å±•é–‹æ¸ˆã¿æ–‡å­—ãƒ‡ãƒ¼ã‚¿ã‚’è¿”ã™
-	 @param ucs4 UCS-4ã‚³ãƒ¼ãƒ‰ï¼ˆ4ãƒã‚¤ãƒˆï¼‰
-	 @param offset [out] å¯å¤‰ãƒ•ã‚©ãƒ³ãƒˆã§ã¯ offset = widthã€å›ºå®šãƒ•ã‚©ãƒ³ãƒˆã§ã¯ offset > width
-	 @param width [out] æ–‡å­—ã®å¹…
-	 @param height [out] æ–‡å­—ã®é«˜ã•
-	 @param data [out] å±•é–‹æ¸ˆã¿æ–‡å­—ãƒ‡ãƒ¼ã‚¿
+	 UCS-4ƒR[ƒh‚ðŽó‚¯Žæ‚Á‚Ä“WŠJÏ‚Ý•¶Žšƒf[ƒ^‚ð•Ô‚·
+	 @param ucs4 UCS-4ƒR[ƒhi4ƒoƒCƒgj
+	 @param offset [out] ‰Â•ÏƒtƒHƒ“ƒg‚Å‚Í offset = widthAŒÅ’èƒtƒHƒ“ƒg‚Å‚Í offset > width
+	 @param width [out] •¶Žš‚Ì•
+	 @param height [out] •¶Žš‚Ì‚‚³
+	 @param data [out] “WŠJÏ‚Ý•¶Žšƒf[ƒ^
 	*/
 	bool decodeCharacter(wchar ucs4, int *offset, int *width, int *height, char *data);
 	
 	/**
-	 æ–‡å­—åˆ—ã®å¹…ã‚’å¾—ã‚‹
-	 @param str æ–‡å­—åˆ—ï¼ˆè¤‡æ•°è¡Œå¯¾å¿œï¼‰
+	 •¶Žš—ñ‚Ì•‚ð“¾‚é
+	 @param str •¶Žš—ñi•¡”s‘Î‰žj
 	 */
 	int getWidth(String str);
 	
 	/**
-	 æ–‡å­—åˆ—ã®é«˜ã•ã‚’å¾—ã‚‹
-	 @param str æ–‡å­—åˆ—ï¼ˆè¤‡æ•°è¡Œå¯¾å¿œï¼‰
+	 •¶Žš—ñ‚Ì‚‚³‚ð“¾‚é
+	 @param str •¶Žš—ñi•¡”s‘Î‰žj
 	 */
 	int getHeight(String str);
 	
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹‚ð“¾‚é */
 	inline int getFontStyle() { return this->fontStyle; }
 	
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ«ã‚’è¨­å®šã™ã‚‹ */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹‚ðÝ’è‚·‚é */
 	inline void setFontStyle(int style) { this->fontStyle = style; }
 };
 

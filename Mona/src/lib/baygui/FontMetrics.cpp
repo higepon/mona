@@ -14,7 +14,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <baygui.h>
+#include "baygui.h"
 
 // フォントデータとオフセットリストは毎回生成・開放していると遅くなるのでstaticで保持する
 int FontMetrics::offsetListLength = 0;

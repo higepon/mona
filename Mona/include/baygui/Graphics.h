@@ -29,143 +29,143 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _GRAPHICS_H_INCLUDED_
 
 /**
- æç”»ã‚¯ãƒ©ã‚¹
+ •`‰æƒNƒ‰ƒX
 */
 class Graphics : public Object {
 private:
 	int tx, ty;
 	int cx, cy, cw, ch;
 	int width, height;
-	/** è‰²ï¼ˆ4ãƒã‚¤ãƒˆï¼‰ */
+	/** Fi4ƒoƒCƒgj */
 	unsigned int rgb24;
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ« */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹ */
 	int fontStyle;
-	/** å†…éƒ¨ãƒãƒƒãƒ•ã‚¡ãƒ¼ */
+	/** “à•”ƒoƒbƒtƒ@[ */
 	Image *image;
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Graphics::Graphics();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Graphics();
 
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param image å†…éƒ¨ãƒãƒƒãƒ•ã‚¡ãƒ¼
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param image “à•”ƒoƒbƒtƒ@[
 	*/
-	Graphics::Graphics(Image *image);
+	Graphics(Image *image);
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Graphics::~Graphics();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Graphics();
 	
 	/**
-	 ç‚¹æç”»
-	 @param x Xåº§æ¨™
-	 @param y Yåº§æ¨™
-	 @param color æç”»ã™ã‚‹è‰²
+	 “_•`‰æ
+	 @param x XÀ•W
+	 @param y YÀ•W
+	 @param color •`‰æ‚·‚éF
 	 */
 	void drawPixel(int x, int y, unsigned int color);
 	
 	/**
-	 ã‚¤ãƒ¡ãƒ¼ã‚¸æç”»
-	 @param image ã‚¤ãƒ¡ãƒ¼ã‚¸
-	 @param x æç”»é–‹å§‹Xåº§æ¨™
-	 @param y æç”»é–‹å§‹Yåº§æ¨™
+	 ƒCƒ[ƒW•`‰æ
+	 @param image ƒCƒ[ƒW
+	 @param x •`‰æŠJnXÀ•W
+	 @param y •`‰æŠJnYÀ•W
 	 */
 	void drawImage(Image *image, int x, int y);
 	
 	/**
-	 ç›´ç·šæç”»
-	 @param x0 å§‹ç‚¹X
-	 @param y0 å§‹ç‚¹Y
-	 @param x1 çµ‚ç‚¹X
-	 @param y1 çµ‚ç‚¹Y
+	 ’¼ü•`‰æ
+	 @param x0 n“_X
+	 @param y0 n“_Y
+	 @param x1 I“_X
+	 @param y1 I“_Y
 	 */
 	void drawLine(int x0, int y0, int x1, int y1);
 	
 	/**
-	 çŸ©å½¢æç”»
-	 @param x å§‹ç‚¹X
-	 @param y å§‹ç‚¹Y
-	 @param width å¹…
-	 @param height é«˜ã•
+	 ‹éŒ`•`‰æ
+	 @param x n“_X
+	 @param y n“_Y
+	 @param width •
+	 @param height ‚‚³
 	 */
 	void drawRect(int x, int y, int width, int height);
 	
 	/**
-	 å††æç”»
-	 @param x0 ä¸­å¿ƒX
-	 @param y0 ä¸­å¿ƒY
-	 @param r  åŠå¾„
+	 ‰~•`‰æ
+	 @param x0 ’†SX
+	 @param y0 ’†SY
+	 @param r  ”¼Œa
 	 */
 	void drawCircle(int x0, int y0, int r);
 	
 	/**
-	 æ–‡å­—åˆ—æç”»
-	 @param str æ–‡å­—åˆ—ï¼ˆè¤‡æ•°è¡Œå¯¾å¿œï¼‰
-	 @param x å§‹ç‚¹X
-	 @param y å§‹ç‚¹Y
+	 •¶š—ñ•`‰æ
+	 @param str •¶š—ñi•¡”s‘Î‰j
+	 @param x n“_X
+	 @param y n“_Y
 	 */
 	void drawText(char *str, int x, int y);
 	
 	/**
-	 å††å¡—ã‚Šã¤ã¶ã—æç”»
-	 @param x0 ä¸­å¿ƒX
-	 @param y0 ä¸­å¿ƒY
-	 @param r  åŠå¾„
+	 ‰~“h‚è‚Â‚Ô‚µ•`‰æ
+	 @param x0 ’†SX
+	 @param y0 ’†SY
+	 @param r  ”¼Œa
 	 */
 	void fillCircle(int x0, int y0, int r);
 	
 	/**
-	 çŸ©å½¢ã¬ã‚Šã¤ã¶ã—æç”»
-	 @param x å§‹ç‚¹X
-	 @param y å§‹ç‚¹Y
-	 @param width å¹…
-	 @param height é«˜ã•
+	 ‹éŒ`‚Ê‚è‚Â‚Ô‚µ•`‰æ
+	 @param x n“_X
+	 @param y n“_Y
+	 @param width •
+	 @param height ‚‚³
 	 */
 	void fillRect(int x, int y, int width, int height);
 	
 	/**
-	 åº§æ¨™è¨­å®š
-	 @param x å§‹ç‚¹X
-	 @param y å§‹ç‚¹Y
+	 À•Wİ’è
+	 @param x n“_X
+	 @param y n“_Y
 	 */
 	void translate(int x, int y);
 	
-	/** å¹…ã‚’å¾—ã‚‹ */
+	/** •‚ğ“¾‚é */
 	inline int getWidth() { return this->width; }
 	
-	/** é«˜ã•ã‚’å¾—ã‚‹ */
+	/** ‚‚³‚ğ“¾‚é */
 	inline int getHeight() { return this->height; }
 	
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹‚ğ“¾‚é */
 	inline int getFontStyle() { return this->fontStyle; }
 	
 	/**
-	 ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°é ˜åŸŸè¨­å®š
-	 @param cx å§‹ç‚¹X
-	 @param cy å§‹ç‚¹Y
-	 @param cw çµ‚ç‚¹X
-	 @param ch çµ‚ç‚¹Y
+	 ƒNƒŠƒbƒsƒ“ƒO—Ìˆæİ’è
+	 @param cx n“_X
+	 @param cy n“_Y
+	 @param cw I“_X
+	 @param ch I“_Y
 	 */
 	void setClip(int cx, int cy, int cw, int ch);
 	
 	/**
-	 è‰²è¨­å®š
-	 @param r èµ¤(0-255)
-	 @param g ç·‘(0-255)
-	 @param b é’(0-255)
+	 Fİ’è
+	 @param r Ô(0-255)
+	 @param g —Î(0-255)
+	 @param b Â(0-255)
 	 */
 	void setColor(unsigned char r, unsigned char g, unsigned char b);
 	
 	/**
-	 è‰²è¨­å®š
+	 Fİ’è
 	 @param color (0x0-0xFFFFFF)
 	 */
 	void setColor(unsigned int color);
 	
 	/**
-	 ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ«ï¼ˆé€šå¸¸ã€å¤ªå­—ã€æ–œå­—ã€å›ºå®šå¹…ï¼‰ã‚’è¨­å®šã™ã‚‹.
-	 å„ã‚¹ã‚¿ã‚¤ãƒ«ã‚’"|"ã§çµ„ã¿åˆã‚ã›ã‚‹ã“ã¨ã‚‚å¯èƒ½ã€‚
-	 @param style ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ« (Font::PLAIN / Font::BOLD / Font::ITALIC / Font::FIXED )
+	 ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹i’ÊíA‘¾šAÎšAŒÅ’è•j‚ğİ’è‚·‚é.
+	 ŠeƒXƒ^ƒCƒ‹‚ğ"|"‚Å‘g‚İ‡‚í‚¹‚é‚±‚Æ‚à‰Â”\B
+	 @param style ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹ (Font::PLAIN / Font::BOLD / Font::ITALIC / Font::FIXED )
 	*/
 	void setFontStyle(int style);
 };

@@ -31,203 +31,201 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Container;
 
 /**
- éƒ¨å“ã‚¯ãƒ©ã‚¹
+ •”•iƒNƒ‰ƒX
  */
 class Control : public Object {
 public:
 	//
-	// é…ç½®
+	// ”z’u
 	//
-	enum {
-		/** å·¦å¯„ã› */
-		ALIGN_LEFT       = 1,
-		/** ä¸­å¤®å¯„ã› */
-		ALIGN_CENTER     = 2,
-		/** å³å¯„ã› */
-		ALIGN_RIGHT      = 3,
-	};
+	/** ¶Šñ‚¹ */
+	static const int ALIGN_LEFT   = 1;
+	/** ’†‰›Šñ‚¹ */
+	static const int ALIGN_CENTER = 2;
+	/** ‰EŠñ‚¹ */
+	static const int ALIGN_RIGHT  = 3;
 
 private:
-	/** è¦ªéƒ¨å“ */
+	/** e•”•i */
 	Container *parent;
-	/** æ´»æ€§ãƒ»éæ´»æ€§ */
+	/** Šˆ«E”ñŠˆ« */
 	bool enabled;
-	/** ãƒ•ã‚©ãƒ¼ã‚«ã‚¹æœ‰ç„¡ */
+	/** ƒtƒH[ƒJƒX—L–³ */
 	bool focused;
-	/** è¡¨ç¤ºãƒ»éè¡¨ç¤º */
+	/** •\¦E”ñ•\¦ */
 	bool visible;
-	/** xï¼ˆçµ¶å¯¾åº§æ¨™ï¼‰ */
+	/** xiâ‘ÎÀ•Wj */
 	int x;
-	/** yï¼ˆçµ¶å¯¾åº§æ¨™ï¼‰ */
+	/** yiâ‘ÎÀ•Wj */
 	int y;
-	/** é«˜ã• */
+	/** ‚‚³ */
 	int height;
-	/** å¹… */
+	/** • */
 	int width;
-	/** èƒŒæ™¯è‰² */
+	/** ”wŒiF */
 	unsigned int backColor;
-	/** å‰æ™¯è‰² */
+	/** ‘OŒiF */
 	unsigned int foreColor;
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ« */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹ */
 	int fontStyle;
-	/** éƒ¨å“ã®å¤§ãã• */
+	/** •”•i‚Ì‘å‚«‚³ */
 	Rect rect;
-	/** æç”»é ˜åŸŸ */
+	/** •`‰æ—Ìˆæ */
 	Graphics *_g;
-	/** æç”»ãƒãƒƒãƒ•ã‚¡ãƒ¼ */
+	/** •`‰æƒoƒbƒtƒ@[ */
 	Image *_buffer;
-	/** ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ± */
+	/** ƒtƒHƒ“ƒgî•ñ */
 	FontMetrics *_metrics;
 
 protected:
-	/** ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚¤ãƒ™ãƒ³ãƒˆ */
+	/** ƒtƒH[ƒJƒXƒCƒxƒ“ƒg */
 	Event focusEvent;
 
 public:
-	/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Control::Control();
+	/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Control();
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Control::~Control();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Control();
 	
 	/**
-	 éƒ¨å“ç”Ÿæˆãƒãƒ³ãƒ‰ãƒ©.
-	 å¾Œã§onExit()å‘¼ã¶ã¨å†åˆæœŸåŒ–ã§ãã‚‹ã€‚
+	 •”•i¶¬ƒnƒ“ƒhƒ‰.
+	 Œã‚ÅonExit()ŒÄ‚Ô‚ÆÄ‰Šú‰»‚Å‚«‚éB
 	 */
 	virtual void onStart();
 	
 	/**
-	 éƒ¨å“ç ´æ£„ãƒãƒ³ãƒ‰ãƒ©.
-	 å¾Œã§onStart()ã‚’å‘¼ã¶ã¨å†åˆæœŸåŒ–ã§ãã‚‹ã€‚
+	 •”•i”jŠüƒnƒ“ƒhƒ‰.
+	 Œã‚ÅonStart()‚ğŒÄ‚Ô‚ÆÄ‰Šú‰»‚Å‚«‚éB
 	*/
 	virtual void onExit();
 
-	/** ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ© */
+	/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
 	virtual void onEvent(Event *event);
 	
-	/** æç”»ãƒãƒ³ãƒ‰ãƒ© */
+	/** •`‰æƒnƒ“ƒhƒ‰ */
 	virtual void onPaint(Graphics *g);
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç† */
+	/** ƒCƒxƒ“ƒgˆ— */
 	virtual void postEvent(Event *event);
 	
 	/**
-	 å†æç”».
-	 ã“ã®ä¸­ã§onPaint()ã¨update()ã‚’å‘¼ã¶ã€‚
+	 Ä•`‰æ.
+	 ‚±‚Ì’†‚ÅonPaint()‚Æupdate()‚ğŒÄ‚ÔB
 	 */
 	virtual void repaint();
 	
-	/** éƒ¨å“æ›´æ–° */
+	/** •”•iXV */
 	virtual void update();
 	
-	/** è¦ªéƒ¨å“ã‚’å¾—ã‚‹ */
+	/** e•”•i‚ğ“¾‚é */
 	inline Container *getParent() { return this->parent; }
 	
-	/** æ´»æ€§ãƒ»éæ´»æ€§ã‚’å¾—ã‚‹ */
+	/** Šˆ«E”ñŠˆ«‚ğ“¾‚é */
 	inline bool getEnabled() { return this->enabled; }
 	
-	/** ãƒ•ã‚©ãƒ¼ã‚«ã‚¹çŠ¶æ…‹ã‚’å¾—ã‚‹ */
+	/** ƒtƒH[ƒJƒXó‘Ô‚ğ“¾‚é */
 	inline bool getFocused() { return this->focused; }
 	
-	/** è¡¨ç¤ºãƒ»éè¡¨ç¤ºã‚’å¾—ã‚‹ */
+	/** •\¦E”ñ•\¦‚ğ“¾‚é */
 	inline bool getVisible() { return this->visible; }
 	
-	/** Xåº§æ¨™ã‚’å¾—ã‚‹ */
+	/** XÀ•W‚ğ“¾‚é */
 	inline int getX() { return this->x; }
 	
-	/** Yåº§æ¨™ã‚’å¾—ã‚‹ */
+	/** YÀ•W‚ğ“¾‚é */
 	inline int getY() { return this->y; }
 	
-	/** å¹…ã‚’å¾—ã‚‹ */
+	/** •‚ğ“¾‚é */
 	inline int getWidth() { return this->width; }
 	
-	/** é«˜ã•ã‚’å¾—ã‚‹ */
+	/** ‚‚³‚ğ“¾‚é */
 	inline int getHeight() { return this->height; }
 	
-	/** éƒ¨å“ã®å¤§ãã• */
+	/** •”•i‚Ì‘å‚«‚³ */
 	inline Rect *getRect() { return &this->rect; }
 	
-	/** èƒŒæ™¯è‰²ã‚’å¾—ã‚‹ */
+	/** ”wŒiF‚ğ“¾‚é */
 	inline unsigned int getBackground() { return this->backColor; }
 	
-	/** å‰æ™¯è‰²ã‚’å¾—ã‚‹ */
+	/** ‘OŒiF‚ğ“¾‚é */
 	inline unsigned int getForeground() { return this->foreColor; }
 	
-	/** ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹‚ğ“¾‚é */
 	inline int getFontStyle() { return this->fontStyle; }
 	
-	/** æç”»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¾—ã‚‹ */
+	/** •`‰æƒIƒuƒWƒFƒNƒg‚ğ“¾‚é */
 	virtual Graphics *getGraphics() { return this->_g; }
 	
 	/**
-	 å†…éƒ¨ãƒãƒƒãƒ•ã‚¡ãƒ¼ã‚’å¾—ã‚‹.
-	 VRAMã®ã‚ˆã†ã«ç›´æ¥æç”»ã—ãŸã„ã¨ãã«ç”¨ã„ã‚‹ã€‚
-	 Graphicsã‚¯ãƒ©ã‚¹ãŒæŒã£ã¦ã„ã‚‹ã‚ˆã†ãªä¾¿åˆ©ãªãƒ¡ã‚½ãƒƒãƒ‰ã¯ãªã„ã€‚
-	 æç”»å¾Œupdate()ã‚’å‘¼ã¶ã“ã¨ã§å®Ÿéš›ã®æç”»ãŒã•ã‚Œã‚‹ã€‚
+	 “à•”ƒoƒbƒtƒ@[‚ğ“¾‚é.
+	 VRAM‚Ì‚æ‚¤‚É’¼Ú•`‰æ‚µ‚½‚¢‚Æ‚«‚É—p‚¢‚éB
+	 GraphicsƒNƒ‰ƒX‚ª‚Á‚Ä‚¢‚é‚æ‚¤‚È•Ö—˜‚Èƒƒ\ƒbƒh‚Í‚È‚¢B
+	 •`‰æŒãupdate()‚ğŒÄ‚Ô‚±‚Æ‚ÅÀÛ‚Ì•`‰æ‚ª‚³‚ê‚éB
 	 */
 	virtual Image *getBuffer() { return this->_buffer; }
 	
-	/** ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ±ã‚’å¾—ã‚‹ */
+	/** ƒtƒHƒ“ƒgî•ñ‚ğ“¾‚é */
 	inline FontMetrics *getFontMetrics() { return this->_metrics; }
 	
 	/**
-	 ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å¾—ã‚‹.
-	 ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¨ã¯å…¨ã¦ã®éƒ¨å“ãŒä¹—ã£ã¦ã„ã‚‹ä¸€ç•ªä¸‹ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã€‚
-	 ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¯å„ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã”ã¨ã«å¿…ãšï¼‘ã¤å­˜åœ¨ã—ã¦ã„ã‚‹ã€‚
+	 ƒƒCƒ“ƒEƒBƒ“ƒhƒE‚ğ“¾‚é.
+	 ƒƒCƒ“ƒEƒBƒ“ƒhƒE‚Æ‚Í‘S‚Ä‚Ì•”•i‚ªæ‚Á‚Ä‚¢‚éˆê”Ô‰º‚ÌƒEƒBƒ“ƒhƒEB
+	 ƒƒCƒ“ƒEƒBƒ“ƒhƒE‚ÍŠeƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚²‚Æ‚É•K‚¸‚P‚Â‘¶İ‚µ‚Ä‚¢‚éB
 	 */
 	virtual Control *getMainWindow();
 	
 	/**
-	 æ´»æ€§çŠ¶æ…‹ã‚’è¨­å®šã™ã‚‹
-	 @param enabled æ´»æ€§çŠ¶æ…‹ (true / false)
+	 Šˆ«ó‘Ô‚ğİ’è‚·‚é
+	 @param enabled Šˆ«ó‘Ô (true / false)
 	 */
 	virtual void setEnabled(bool enabled);
 	
 	/**
-	 ãƒ•ã‚©ãƒ¼ã‚«ã‚¹çŠ¶æ…‹ã‚’è¨­å®šã™ã‚‹.
-	 ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã¶ã¨è©²å½“éƒ¨å“ã«FOCUS_INã¾ãŸã¯FOCUS_OUTã‚¤ãƒ™ãƒ³ãƒˆãŒæŠ•ã’ã‚‰ã‚Œã‚‹ã€‚
-	 @param focused ãƒ•ã‚©ãƒ¼ã‚«ã‚¹çŠ¶æ…‹ (true / false)
+	 ƒtƒH[ƒJƒXó‘Ô‚ğİ’è‚·‚é.
+	 ‚±‚Ìƒƒ\ƒbƒh‚ğŒÄ‚Ô‚ÆŠY“–•”•i‚ÉFOCUS_IN‚Ü‚½‚ÍFOCUS_OUTƒCƒxƒ“ƒg‚ª“Š‚°‚ç‚ê‚éB
+	 @param focused ƒtƒH[ƒJƒXó‘Ô (true / false)
 	 */
 	virtual void setFocused(bool focused);
 	
 	/**
-	 è¡¨ç¤ºçŠ¶æ…‹ã‚’è¨­å®šã™ã‚‹
-	 @param visible è¡¨ç¤ºçŠ¶æ…‹ (true / false)
+	 •\¦ó‘Ô‚ğİ’è‚·‚é
+	 @param visible •\¦ó‘Ô (true / false)
 	 */
 	virtual void setVisible(bool visible);
 	
 	/**
-	 å¤§ãã•ã‚’è¨­å®šã™ã‚‹
-	 @param x xåº§æ¨™
-	 @param y yåº§æ¨™
-	 @param width å¹…
-	 @param height é«˜ã•
+	 ‘å‚«‚³‚ğİ’è‚·‚é
+	 @param x xÀ•W
+	 @param y yÀ•W
+	 @param width •
+	 @param height ‚‚³
 	*/
 	virtual void setRect(int x, int y, int width, int height);
 	
 	/**
-	 ä½ç½®ã‚’å¤‰æ›´ã™ã‚‹
-	 @param x Xåº§æ¨™
-	 @param y Yåº§æ¨™
+	 ˆÊ’u‚ğ•ÏX‚·‚é
+	 @param x XÀ•W
+	 @param y YÀ•W
 	*/
 	virtual void setLocation(int x, int y);
 	
 	/**
-	 è¦ªéƒ¨å“ã‚’è¨­å®šã™ã‚‹
-	 @param parent è¦ªéƒ¨å“
+	 e•”•i‚ğİ’è‚·‚é
+	 @param parent e•”•i
 	*/
 	virtual void setParent(Container *parent);
 	
-	/** èƒŒæ™¯è‰²ã‚’è¨­å®šã™ã‚‹ */
+	/** ”wŒiF‚ğİ’è‚·‚é */
 	virtual void setBackground(unsigned int backColor);
 	
-	/** å‰æ™¯è‰²ã‚’è¨­å®šã™ã‚‹ */
+	/** ‘OŒiF‚ğİ’è‚·‚é */
 	virtual void setForeground(unsigned int foreColor);
 	
 	/**
-	 ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ«ï¼ˆé€šå¸¸ã€å¤ªå­—ã€æ–œå­—ã€å›ºå®šå¹…ï¼‰ã‚’è¨­å®šã™ã‚‹.
-	 å„ã‚¹ã‚¿ã‚¤ãƒ«ã‚’"|"ã§çµ„ã¿åˆã‚ã›ã‚‹ã“ã¨ã‚‚å¯èƒ½ã€‚
-	 @param style ãƒ•ã‚©ãƒ³ãƒˆã‚¹ã‚¿ã‚¤ãƒ« (Font::PLAIN / Font::BOLD / Font::ITALIC / Font::FIXED )
+	 ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹i’ÊíA‘¾šAÎšAŒÅ’è•j‚ğİ’è‚·‚é.
+	 ŠeƒXƒ^ƒCƒ‹‚ğ"|"‚Å‘g‚İ‡‚í‚¹‚é‚±‚Æ‚à‰Â”\B
+	 @param style ƒtƒHƒ“ƒgƒXƒ^ƒCƒ‹ (Font::PLAIN / Font::BOLD / Font::ITALIC / Font::FIXED )
 	*/
 	virtual void setFontStyle(int style);
 };

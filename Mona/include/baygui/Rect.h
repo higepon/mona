@@ -29,42 +29,42 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _RECT_H_INCLUDED_
 
 /**
- çŸ©å½¢ã‚¯ãƒ©ã‚¹
+ ‹éŒ`ƒNƒ‰ƒX
 */
 class Rect : public Object {
 private:
-	/** xï¼ˆçµ¶å¯¾åº§æ¨™ï¼‰*/
+	/** xiâ‘ÎÀ•Wj*/
 	int x;
-	/** yï¼ˆçµ¶å¯¾åº§æ¨™ï¼‰*/
+	/** yiâ‘ÎÀ•Wj*/
 	int y;
-	/** é«˜ã• */
+	/** ‚‚³ */
 	int height;
-	/** å¹… */
+	/** • */
 	int width;
 	
 public:
-	/** ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	Rect::Rect() { this->x = this->y = this->width = this->height = 0; }
+	/** ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+	Rect() { this->x = this->y = this->width = this->height = 0; }
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Rect::~Rect() {}
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Rect() {}
 	
-	/** Xåº§æ¨™ã‚’å¾—ã‚‹ */
+	/** XÀ•W‚ð“¾‚é */
 	inline int getX() { return this->x; }
 	
-	/** Yåº§æ¨™ã‚’å¾—ã‚‹ */
+	/** YÀ•W‚ð“¾‚é */
 	inline int getY() { return this->y; }
 	
-	/** å¹…ã‚’å¾—ã‚‹ */
+	/** •‚ð“¾‚é */
 	inline int getWidth() { return this->width; }
 	
-	/** é«˜ã•ã‚’å¾—ã‚‹ */
+	/** ‚‚³‚ð“¾‚é */
 	inline int getHeight() { return this->height; }
 	
-	/** ä½ç½®ã‚’è¨­å®šã™ã‚‹ */
+	/** ˆÊ’u‚ðÝ’è‚·‚é */
 	inline void setLocation(int x, int y) { this->x = x; this->y = y; }
 	
-	/** å¤§ãã•ã‚’è¨­å®šã™ã‚‹ */
+	/** ‘å‚«‚³‚ðÝ’è‚·‚é */
 	inline void setSize(int w, int h) { this->width = w; this->height = h; }
 };
 

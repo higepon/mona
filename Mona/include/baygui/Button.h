@@ -29,41 +29,41 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _BUTTON_H_INCLUDED_
 
 /**
- ãƒœã‚¿ãƒ³ã‚¯ãƒ©ã‚¹
+ ƒ{ƒ^ƒ“ƒNƒ‰ƒX
 */
 class Button : public Control {
 private:
-	/** ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‹ã©ã†ã‹ */
+	/** ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚© */
 	bool pushed;
-	/** ãƒœã‚¿ãƒ³ã®ãƒ©ãƒ™ãƒ« */
+	/** ƒ{ƒ^ƒ“‚Ìƒ‰ƒxƒ‹ */
 	String label;
 	
 public:
 	/**
-	 ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	 @param label ãƒ©ãƒ™ãƒ«
+	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 @param label ƒ‰ƒxƒ‹
 	 */
-	Button::Button(char *label);
+	Button(char *label);
 	
-	/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
-	virtual Button::~Button();
+	/** ƒfƒXƒgƒ‰ƒNƒ^ */
+	virtual ~Button();
 	
 	/**
-	 ãƒ©ãƒ™ãƒ«ã‚’è¨­å®šã™ã‚‹
-	 @param label ãƒ©ãƒ™ãƒ«
+	 ƒ‰ƒxƒ‹‚ğİ’è‚·‚é
+	 @param label ƒ‰ƒxƒ‹
 	 */
 	virtual void setLabel(char *label);
 	
-	/** ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‹ã©ã†ã‹ã‚’å¾—ã‚‹ */
+	/** ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚©‚ğ“¾‚é */
 	inline bool getPushed() { return this->pushed; }
 	
-	/** ãƒ©ãƒ™ãƒ«ã‚’å¾—ã‚‹ */
+	/** ƒ‰ƒxƒ‹‚ğ“¾‚é */
 	inline char *getLabel() { return this->label.getBytes(); }
 	
-	/** æç”»ãƒãƒ³ãƒ‰ãƒ© */
+	/** •`‰æƒnƒ“ƒhƒ‰ */
 	virtual void onPaint(Graphics *g);
 	
-	/** ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ© */
+	/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
 	virtual void onEvent(Event *event);
 };
 

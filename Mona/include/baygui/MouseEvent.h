@@ -29,35 +29,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _MOUSEEVENT_H_INCLUDED_
 
 /**
- マウスイベントクラス
+ �}�E�X�C�x���g�N���X
 */
 class MouseEvent : public Event {
-public:
-	//
-	// イベントタイプ一覧
-	//
-	enum {
-		/** マウスクリック */
-		MOUSE_PRESSED   = 200,
-		/** マウスリリース */
-		MOUSE_RELEASED  = 201,
-		/** マウスドラッグ */
-		MOUSE_DRAGGED   = 202,
-		/** マウス移動 */
-		MOUSE_MOVED     = 203,
-	};
-
 private:
-	/** X座標 */
+	/** X���W */
 	int x;
-	/** Y座標 */
+	/** Y���W */
 	int y;
-	/** ボタン種別 */
+	/** �{�^����� */
 	unsigned int button;
 	
 public:
-	/** デフォルトコンストラクタ */
-	MouseEvent::MouseEvent() {
+	/** �f�t�H���g�R���X�g���N�^ */
+	MouseEvent() {
 		setType(MOUSE_PRESSED);
 		setSource(NULL);
 		this->x = this->y = 0;
@@ -65,19 +50,19 @@ public:
 	}
 	
 	/**
-	 コンストラクタ.
-	 x, y はメインウィンドウの内部領域の左上に対する相対座標である。
-	 絶対座標(ax,ay)は以下のように取得する。
+	 �R���X�g���N�^.
+	 x, y �̓��C���E�B���h�E�̓����̈�̍���ɑ΂��鑊�΍��W�ł���B
+	 ��΍��W(ax,ay)�͈ȉ��̂悤�Ɏ擾����B
 	 <ul>
 	 <li> ax = x + getMainWindow()->getRect()->getX() + Window::INSETS_LEFT;
 	 <li> ay = y + getMainWindow()->getRect()->getY() + Window::INSETS_TOP;
 	 </ul>
-	 @param type type イベントタイプ
-	 @param source イベント発生元
-	 @param x X座標（絶対座標）
-	 @param y Y座標（絶対座標）
+	 @param type type �C�x���g�^�C�v
+	 @param source �C�x���g������
+	 @param x X���W�i��΍��W�j
+	 @param y Y���W�i��΍��W�j
 	*/
-	MouseEvent::MouseEvent(int type, Control *source, int x, int y)
+	MouseEvent(int type, Control *source, int x, int y)
 	{
 		setType(type);
 		setSource(source);
@@ -85,25 +70,25 @@ public:
 		this->y = y;
 	}
 	
-	/** デストラクタ */
-	virtual MouseEvent::~MouseEvent() {}
+	/** �f�X�g���N�^ */
+	virtual ~MouseEvent() {}
 	
-	/** X座標を得る */
+	/** X���W�𓾂� */
 	inline int getX() { return this->x; }
 	
-	/** X座標を設定する */
+	/** X���W��ݒ肷�� */
 	inline void setX(int x) { this->x = x; }
 	
-	/** Y座標を得る */
+	/** Y���W�𓾂� */
 	inline int getY() { return this->y; }
 	
-	/** Y座標を設定する */
+	/** Y���W��ݒ肷�� */
 	inline void setY(int y) { this->y = y; }
 	
-	/** ボタン種別を得る */
+	/** �{�^����ʂ𓾂� */
 	inline unsigned int getButton() { return this->button; }
 	
-	/** ボタン種別を設定する */
+	/** �{�^����ʂ�ݒ肷�� */
 	inline void setButton(unsigned int button) { this->button = button; }
 };
 

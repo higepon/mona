@@ -29,23 +29,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _FONT_H_INCLUDED_
 
 /**
- ãƒ•ã‚©ãƒ³ãƒˆæ§‹é€ ä½“
+ ƒtƒHƒ“ƒg\‘¢‘Ì
  */
 struct Font {
 public:
-	//
-	// æ›¸ä½“
-	//
-	enum {
-		/** é€šå¸¸æ›¸ä½“ */
-		PLAIN       = 0x000,
-		/** å¤ªå­—ä½“ */
-		BOLD        = 0x001,
-		/** æ–œå­—ä½“ */
-		ITALIC      = 0x010,
-		/** å›ºå®šå¹… */
-		FIXED       = 0x100,
-	};
+	/** ’Êí‘‘Ì */
+	static const int PLAIN  = 0x000;
+	/** ‘¾š‘Ì */
+	static const int BOLD   = 0x001;
+	/** Îš‘Ì */
+	static const int ITALIC = 0x010;
+	/** ŒÅ’è• */
+	static const int FIXED  = 0x100;
 };
 
 #endif /* _FONT_H_INCLUDED_ */

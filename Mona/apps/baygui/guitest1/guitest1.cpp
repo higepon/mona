@@ -33,6 +33,7 @@ private:
 	Button *button1;
 	Label *label1, *label2, *label3;
 	TextField *text1, *text2, *text3;
+	Checkbox *check1, *check2;
 	ListBox *list1;
 	Window *dialog;
 
@@ -64,8 +65,12 @@ public:
 		text2->setRect(5,107,100,20);
 		text3 = new TextField();
 		text3->setRect(5,128,100,20);
+		check1 = new Checkbox("本気ですか？");
+		check1->setRect(110,5,100,20);
+		check2 = new Checkbox("買っちゃう？");
+		check2->setRect(110,25,100,20);
 		list1 = new ListBox();
-		list1->setRect(110,35,100,100);
+		list1->setRect(110,50,100,100);
 		list1->add("ひげぽん");
 		list1->add("ｷﾀｰｰ!!");
 		list1->add("Mona is here");
@@ -78,6 +83,8 @@ public:
 		add(text1);
 		add(text2);
 		add(text3);
+		add(check1);
+		add(check2);
 		add(list1);
 	}
 	

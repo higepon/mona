@@ -29,53 +29,53 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _LINKEDLIST_H_INCLUDED_
 
 /**
- 双方向リスト
+ �o�������X�g
 */
 class LinkedList : public Object {
 private:
-	/** リストの長さ */
+	/** ���X�g�̒��� */
 	int dataListLength;
-	/** 最初 */
+	/** �ŏ� */
 	LinkedItem *firstItem;
-	/** 終わり */
+	/** �I��� */
 	LinkedItem *endItem;
 	
 private:
-	/** ObjectをLinkedItemに変換する */
+	/** Object��LinkedItem�ɕϊ����� */
 	LinkedItem *getLinkedItem(Object *o);
 	
-	/** 指定した順番の項目を得る */
+	/** �w�肵�����Ԃ̍��ڂ𓾂� */
 	LinkedItem *getLinkedItem(int index);
 	
 public:
-	/** コンストラクタ */
-	LinkedList::LinkedList();
+	/** �R���X�g���N�^ */
+	LinkedList();
 	
-	/** デストラクタ */
-	virtual LinkedList::~LinkedList();
+	/** �f�X�g���N�^ */
+	virtual ~LinkedList();
 	
-	/** リストの長さを得る */
+	/** ���X�g�̒����𓾂� */
 	inline int getLength() { return this->dataListLength; }
 	
-	/** 指定した順番の項目を得る */
+	/** �w�肵�����Ԃ̍��ڂ𓾂� */
 	Object *get(int index);
 	
-	/** 一番最初の項目を得る */
+	/** ��ԍŏ��̍��ڂ𓾂� */
 	Object *getFirst();
 	
-	/** 一番最後の項目を得る */
+	/** ��ԍŌ�̍��ڂ𓾂� */
 	Object *getLast();
 	
-	/** 指定した項目を追加する */
+	/** �w�肵�����ڂ�ǉ����� */
 	void add(Object *o);
 	
-	/** 指定した順番の項目を削除する */
+	/** �w�肵�����Ԃ̍��ڂ��폜���� */
 	void remove(int index);
 	
-	/** 指定した項目を削除する */
+	/** �w�肵�����ڂ��폜���� */
 	void remove(Object *o);
 	
-	/** 全て削除する */
+	/** �S�č폜���� */
 	void removeAll();
 };
 
