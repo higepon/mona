@@ -78,7 +78,7 @@ volatile bool FDCDriver::interrupt_ ;
     \author HigePon
     \date   create:2003/02/03 update:2003/09/20
 */
-FDCDriver::FDCDriver() : motorCount_(0) {
+FDCDriver::FDCDriver() : motorCount_(0), currentTrack_(-1) {
 
     initilize();
     return;
@@ -322,6 +322,10 @@ bool FDCDriver::seek(byte track) {
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
+    if (currentTrack_ == track) {
+        return true;
+    }
+
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
 
@@ -337,6 +341,8 @@ bool FDCDriver::seek(byte track) {
         if (senseInterrupt()) break;
         interrupt_ = false;
     }
+
+    currentTrack_ = track;
     return true;
 }
 
