@@ -122,19 +122,10 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
  &nbsp;
  <a href="<?php echo $script ?>?plugin=newpage"><img src="./image/new.png" width="20" height="20" alt="新規" title="新規" /></a>
  <a href="<?php echo $link_edit ?>"><img src="./image/edit.png" width="20" height="20" alt="編集" title="編集" /></a>
-<?php   if ($is_read and $function_freeze) { ?>
-<?php     if ($is_freeze) { ?>
- <a href="<?php echo $link_unfreeze ?>"><img src="./image/unfreeze.png" width="20" height="20" alt="凍結解除" title="凍結解除" /></a>
-<?php     } else { ?>
- <a href="<?php echo $link_freeze ?>"><img src="./image/freeze.png" width="20" height="20" alt="凍結" title="凍結" /></a>
-<?php     } ?>
-<?php   } ?>
  <a href="<?php echo $link_diff ?>"><img src="./image/diff.png" width="20" height="20" alt="差分" title="差分" /></a>
 <?php   if ((bool)ini_get('file_uploads')) { ?>
  <a href="<?php echo $link_upload ?>"><img src="./image/file.png" width="20" height="20" alt="添付" title="添付" /></a>
 <?php   } ?>
- <a href="<?php echo $link_template ?>"><img src="./image/copy.png" width="20" height="20" alt="複製" title="複製" /></a>
- <a href="<?php echo $link_rename ?>"><img src="./image/rename.png" width="20" height="20" alt="改名" title="改名" /></a>
  &nbsp;
 <?php } ?>
  <a href="<?php echo $link_top ?>"><img src="./image/top.png" width="20" height="20" alt="トップ" title="トップ" /></a>
