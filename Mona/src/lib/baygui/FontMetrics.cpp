@@ -36,11 +36,6 @@ FontMetrics::FontMetrics()
 	width = height = offsetListLength = 0;
 	offsetList = NULL;
 	fp = NULL;
-	//fpMemory = NULL;
-
-	// スレッドIDを得る
-	_handle = MonAPI::System::getThreadID();
-
 }
 
 /** デストラクタ */
@@ -48,8 +43,6 @@ FontMetrics::~FontMetrics()
 {
 	free(offsetList);
 	free(fp);
-	//monapi_cmemoryinfo_dispose(fpMemory);
-	//monapi_cmemoryinfo_delete(fpMemory);
 }
 
 /** インスタンスを得る */
@@ -69,40 +62,27 @@ void FontMetrics::loadFont(char *path)
 	int i, fw, fh, pos = 0;
 	MessageInfo info;
 
-	// GUIサーバーを探す
-	dword guisvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
-	if (guisvrID == 0xFFFFFFFF) {
-		//printf("FontMetrics: GuiServer not found %d\n", guisvrID);
+	// IMEサーバーを探す
+	dword imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
+	if (imesvrID == THREAD_UNKNOWN) {
+		return;
+	}
+	
+	// フォント取得メッセージを投げる
+	MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETFONT, 0, 0, 0, NULL);
+	//printf("WindowManager->FontMetrics: MSG_IMESERVER_GETFONT received %d, %d\n", info.arg2, info.arg3);
+	byte* font_data = MonAPI::MemoryMap::map(info.arg2);
+	if (font_data == NULL) {
+		//printf("FontMetrics: cannot get font data\n");
 		fp = NULL;
 		return;
 	} else {
-		//printf("FontMetrics: GuiServer found %d\n", guisvrID);
+		fp = (unsigned char *)malloc(info.arg3);
+		memcpy(fp, font_data, info.arg3);
+		MonAPI::MemoryMap::unmap(info.arg2);
 	}
 	
-	// 共有メモリーからフォントをロード
-	//if (guisvrID == _handle) {
-	//	// フォント初期化
-	//	fpMemory = monapi_call_file_decompress_bz2_file(path, false);
-	//	// サーバーは直接ロード
-	//	fp = fpMemory->Data;
-	//} else {
-		// フォント取得メッセージを投げる
-		MonAPI::Message::sendReceive(&info, guisvrID, MSG_IMESERVER_GETFONT, 0, 0, 0, NULL);
-		//printf("WindowManager->FontMetrics: MSG_GUISERVER_GETFONT received %d, %d\n", info.arg2, info.arg3);
-		byte* font_data = MonAPI::MemoryMap::map(info.arg2);
-		if (font_data == NULL) {
-			//printf("FontMetrics: cannot get font data\n");
-			fp = NULL;
-			return;
-		} else {
-			fp = (unsigned char *)malloc(info.arg3);
-			memcpy(fp, font_data, info.arg3);
-			MonAPI::MemoryMap::unmap(info.arg2);
-		}
-	//}
-	
 	if (fp != NULL) {
-		xstrncpy(this->name, FONT_NAME, 8 + 1);
 		// 幅と高さ
 		width  = 6;
 		height = 12;
@@ -112,7 +92,7 @@ void FontMetrics::loadFont(char *path)
 		memset(offsetList, 0, 65536);
 		pos += 4;
 		// debug
-		//printf("open file %s [name = %s, w = %d, h = %d]\n", path, name, width, height);
+		//printf("open file %s [w = %d, h = %d]\n", path, width, height);
 		// オフセットリストを作る
 		for (i = 0; i < offsetListLength; i++) {
 			offsetList[inGetUInt16(&fp[pos])] = pos;
@@ -151,10 +131,13 @@ bool FontMetrics::decodeCharacter(unsigned int utf16, int *width, int *height, c
 }
 
 /**
- 文字列の幅を得る
- @param str 文字列 (UTF-8)
+ 文字列を文字コード列に変換する
+ @param [in] str 文字列
+ @param [in] encoding 出力したいエンコーディング（デフォルトはUTF16）
+ @param [out] 文字コード列
+ @param [out] 文字コード列のサイズ
 */
-int FontMetrics::getWidth(char *str)
+void FontMetrics::getCharacterCode(char *str, int encoding, int *list, int *length)
 {
 	int i , n = 0, w = 0;
 	unsigned char c1 = 0, c2 = 0, c3 = 0;
@@ -167,12 +150,14 @@ int FontMetrics::getWidth(char *str)
 		// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
 		if (0x20 <= c1 && c1 <= 0x7F) {
 			n = c1;
+			list[w++] = n;
 		// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
 		} else if (0xC2 <= c1 && c1 <= 0xDF) {
 			// 2 バイト目
 			if (str[i] == (int)strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
 			n = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
+			list[w++] = n;
 		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
 		} else if (0xE0 <= c1 && c1 <= 0xEF) {
 			// 2 バイト目
@@ -182,15 +167,36 @@ int FontMetrics::getWidth(char *str)
 			if (str[i] == (int)strlen(str) - 1) break;
 			c3 = (unsigned char)str[++i];
 			n = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+			list[w++] = n;
 		} else {
 			n = 0;
 		}
-		// デコード開始
-		if (fp != NULL && 0 < n && n <= 0xFFFF && offsetList[n] != 0) {
-			int fw = fp[offsetList[n] + 4];
-			w += fw;
+	}
+	*length = w;
+}
+
+/**
+ 文字列の幅を得る
+ @param str 文字列 (UTF-8)
+*/
+int FontMetrics::getWidth(char *str)
+{
+	int list[128];
+	int i, w, length;
+	
+	// NULLチェック
+	if (str == NULL || strlen(str) == 0) return 0;
+	
+	// 文字列を文字コード列に変換する
+	w = length = 0;
+	getCharacterCode(str, 0, list, &length);
+
+	for (i = 0; i < length; i++) {
+		if (fp != NULL && 0 < list[i] && list[i] <= 0xFFFF) {
+			w += fp[offsetList[list[i]] + 4];
 		}
 	}
+	
 	return w;
 }
 

@@ -402,56 +402,52 @@ void Window::repaint()
 	
 	if (iconified == true) {
 		// 外枠
-		_g->setColor(0,0,0);
-		_g->drawRect(0, 0, _width, INSETS_TOP - 1);
 		_g->setColor(200,200,200);
-		_g->fillRect(1, 1, _width - 2, INSETS_TOP - 2);
+		_g->fillRect(0, 0, _width, INSETS_TOP);
+		_g->setColor(0,0,0);
+		_g->drawRect(0, 0, _width - 1, INSETS_TOP - 1);
 		// 輪郭線
 		_g->setColor(255,255,255);
-		_g->drawLine(1, 1, _width - 1, 1);
+		_g->drawLine(1, 1, _width - 2, 1);
 		_g->drawLine(1, 1, 1, INSETS_TOP - 2);
 		_g->setColor(128,128,128);
-		_g->drawLine(_width - 1, 2, _width - 1, INSETS_TOP - 2);
-		_g->drawLine(2, INSETS_TOP - 2, _width - 1, INSETS_TOP - 2);
+		_g->drawLine(_width - 2, 2, _width - 2, INSETS_TOP - 2);
+		_g->drawLine(2, INSETS_TOP - 2, _width - 2, INSETS_TOP - 2);
 	} else {
 		// 外枠
-		_g->setColor(0,0,0);
-		_g->drawRect(0, 0, _width, _height);
 		_g->setColor(200,200,200);
-		//if (focused == true) {
-			_g->fillRect(1, 1, _width - 2, _height - 2);
-		//} else {
-		//	_g->fillRect(3, 3, width - 4, INSETS_TOP - 4);
-		//}
+		_g->fillRect(0, 0, _width, _height);
+		_g->setColor(0,0,0);
+		_g->drawRect(0, 0, _width - 1, _height - 1);
 		// 内枠
 		_g->setColor(0,0,0);
-		_g->drawRect(5, 21, _width - 10, _height - 26);
+		_g->drawRect(5, 21, _width - 11, _height - 27);
 		// 輪郭線
 		_g->setColor(255,255,255);
-		_g->drawLine(1, 1, _width - 1, 1);
-		_g->drawLine(1, 1, 1, _height - 1);
-		_g->drawLine(_width - 4, 21, _width - 4, _height - 4);
-		_g->drawLine(5, _height - 4, _width - 4, _height - 4);
+		_g->drawLine(1, 1, _width - 2, 1);
+		_g->drawLine(1, 1, 1, _height - 2);
+		_g->drawLine(_width - 5, 21, _width - 5, _height - 5);
+		_g->drawLine(5, _height - 5, _width - 5, _height - 5);
 		_g->setColor(128,128,128);
-		_g->drawLine(_width - 1, 2, _width - 1, _height - 1);
-		_g->drawLine(2, _height - 1, _width - 1, _height - 1);
-		_g->drawLine(4, 20, _width - 5, 20);
-		_g->drawLine(4, 20, 4, _height - 5);
+		_g->drawLine(_width - 2, 2, _width - 2, _height - 2);
+		_g->drawLine(2, _height - 2, _width - 2, _height - 2);
+		_g->drawLine(4, 20, _width - 6, 20);
+		_g->drawLine(4, 20, 4, _height - 6);
 	}
 
 	if (focused == true) {
 		// タイトルライン
 		for (i = 5; i <= 15; i = i + 2) {
 			_g->setColor(128,128,128);
-			_g->drawLine(20, i, _width - 21, i);
+			_g->drawLine(20, i, _width - 22, i);
 			_g->setColor(255,255,255);
-			_g->drawLine(21, i + 1, _width - 22, i + 1);
+			_g->drawLine(21, i + 1, _width - 23, i + 1);
 		}
 		// 閉じるアイコン、最小化アイコン
 		for (i = 0; i < 13; i++) {
 			for (j = 0; j < 13; j++) {
 				_g->drawPixel(4 + j, 5 + i, closeIcon[i][j]);
-				_g->drawPixel(_width - 16 + j, 5 + i, minimizeIcon[i][j]);
+				_g->drawPixel(_width - 17 + j, 5 + i, minimizeIcon[i][j]);
 			}
 		}
 	} else {

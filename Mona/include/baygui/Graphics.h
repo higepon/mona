@@ -33,18 +33,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class Graphics : public Object {
 protected:
-	int tx, ty, cx, cy, cw, ch, width, height;
+	int tx, ty, cx, cy, cw, ch, width, height, bpp;
 	unsigned char r, g, b;
-	unsigned int rgb24;
+	unsigned int   rgb24;
+	unsigned short rgb16;
 	bool xormode, locked;
 	Font *font;
+	unsigned char *buffer;
 #ifdef MONA
-	int bytesPerPixel;
 	byte *vram;
-	MonAPI::Screen *screen;
 #endif
-
-	void drawPixelXOR(int x, int y, unsigned int color);
 
 public:
 	Graphics::Graphics();
@@ -52,6 +50,7 @@ public:
 	virtual const char *className() {return "baygui.Graphics";}
 	virtual void drawImage(Image *image, int x, int y);
 	virtual void drawImage(Image *image, int x, int y, int w, int h);
+	virtual void drawPixel(int x, int y);
 	virtual void drawPixel(int x, int y, unsigned int color);
 	virtual void drawLine(int x0, int y0, int x1, int y1);
 	virtual void drawRect(int x, int y, int width, int height);

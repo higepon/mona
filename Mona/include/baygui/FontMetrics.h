@@ -29,29 +29,32 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _FONTMETRICS_H_INCLUDED_
 
 /**
- フォントマネージャクラス
+ フォントメトリクスクラス
 */
 class FontMetrics : public Object {
 protected:
 	/** シングルトンインスタンス */
 	static FontMetrics *instance;
-	/** フォント名 */
-	char name[9];
+	/** フォント幅 */
 	int width;
+	/** フォント高さ */
 	int height;
+	/** オフセットリスト長さ */
 	int offsetListLength;
+	/** オフセットリスト */
 	int *offsetList;
+	/** フォントファイルポインター */
 	unsigned char *fp;
+
 	FontMetrics::FontMetrics();
 	virtual void loadFont(char *path);
-	dword fontsvrID;
 
 public:
-	//monapi_cmemoryinfo *fpMemory;
 	static FontMetrics *getInstance();
 	virtual FontMetrics::~FontMetrics();
 	virtual const char *className() {return "baygui.FontMetrics";}
 	virtual bool decodeCharacter(unsigned int utf16, int *width, int *height, char *data);
+	virtual void getCharacterCode(char *str, int encoding, int *list, int *length);
 	virtual int getWidth(char *str);
 	virtual int getHeight();
 };

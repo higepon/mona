@@ -32,26 +32,25 @@ Graphics::Graphics()
 {
 	tx = ty = cx = cy = cw = ch = 0;
 	r = g = b = rgb24 = 0;
-#ifdef MONA
-	screen = new MonAPI::Screen();
-	width = screen->getWidth();
-	height = screen->getHeight();
-	bytesPerPixel = screen->getBpp() / 8;
-	vram = screen->getVRAM();
 	font = new Font();
 	font->setName(FONT_NAME);
-	//font->setWidth(6);
-	//font->setHeight(12);
 	font->setStyle(FONT_PLAIN);
+#ifdef MONA
+	MonAPI::Screen screen;
+	width  = screen.getWidth();
+	height = screen.getHeight();
+	bpp  = screen.getBpp();
+	vram = screen.getVRAM();
 #endif
+	//buffer = (byte *)malloc(width * height * (bpp >> 3));
 	xormode = locked = false;
 }
 
 /** デストラクタ */
 Graphics::~Graphics()
 {
-	delete(screen);
 	delete(font);
+	//delete(buffer);
 }
 
 /**
@@ -62,36 +61,31 @@ Graphics::~Graphics()
  */
 void Graphics::drawImage(Image *image, int x, int y)
 {
-	int width  = image->getWidth();
-	int height = image->getHeight();
-	int I = width;
-	int J = height;
+	int I, J, iw, ih;
 	
 	if (locked == true) return;
+	if (image == NULL || image->getData() == NULL) return;
 	
-	// 透過イメージのためにα値が必要なのでbitbltは使えない
-	unsigned int *data = ((Bitmap *)image)->getData();
-	// NULL チェック
-	if (data == NULL) return;
+	iw = image->getWidth();
+	ih = image->getHeight();
+
 	// 範囲チェック
-	if (tx + x + width > cx + cw) I = cw;
-	if (ty + y + height > cy + ch) J = ch;
+	I = (tx + x + iw > cx + cw) ? cw : iw;
+	J = (ty + y + ih > cy + ch) ? ch : ih;
+
 	// 1ドットずつ描画
+	unsigned int *data = image->getData();//((Bitmap *)image)->getData();
 	for (int j = 0; j < J; j++) {
 		for (int i = 0; i < I; i++) {
-			if (data[width * j + i] < 0xff000000) {
-#if defined(MONA)
-				screen->putPixel16(tx + x + i, ty + y + j, data[width * j + i]);
-#else
-				drawPixel(x + i ,y + j, data[width * j + i]);
-#endif
+			if (data[iw * j + i] < 0xff000000) {
+				drawPixel(x + i, y + j, data[iw * j + i]);
 			}
 		}
 	}
 }
 
 /**
- イメージ描画
+ イメージ描画（主に壁紙復元用）
  @param image イメージ
  @param x イメージ内描画開始X座標
  @param y イメージ内描画開始Y座標
@@ -100,27 +94,63 @@ void Graphics::drawImage(Image *image, int x, int y)
  */
 void Graphics::drawImage(Image *image, int x, int y, int w, int h)
 {
-	int width  = image->getWidth();
-	//int height = image->getHeight();
+	int iw;
 	
 	if (locked == true) return;
+	if (image == NULL || image->getData() == NULL) return;
+	
+	iw = image->getWidth();
 
-	// 透過イメージのためにα値が必要なのでbitbltは使えない
-	unsigned int *data = ((Bitmap *)image)->getData();
-	// NULL チェック
-	if (data == NULL) return;
 	// 1ドットずつ描画
-	for (int j = y; j < y + h; j++) {
-		for (int i = x; i < x + w; i++) {
-			if (data[width * j + i] < 0xff000000) {
-#if defined(MONA)
-				screen->putPixel16(tx + i, ty + j, data[width * j + i]);
-#else
-				drawPixel(i ,j, data[width * j + i]);
-#endif
-			}
+	unsigned int *data = image->getData();//((Bitmap *)image)->getData();
+	for (int j = 0; j < h; j++) {
+		for (int i = 0; i < w; i++) {
+			//if (data[iw * (y + j) + (x + i)] < 0xff000000) {
+				drawPixel(x + i, y + j, data[iw * (y + j) + (x + i)]);
+			//}
 		}
 	}
+}
+
+/**
+ 点描画
+ @param x X座標
+ @param y Y座標
+ @param color 描画する色
+ */
+void Graphics::drawPixel(int x, int y)
+{
+	//if (locked == true) return;
+#if defined(PEKOE)
+	sys_gs_set_pixel_RGB(tx + x, ty + y, color);
+#elif defined(MONA)
+	//screen->putPixel16(tx + x, ty + y, color);
+	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * (bpp >> 3)];
+
+	if (xormode == true) {
+		switch (bpp) {
+		case 16: // 16bpp
+			*((word*)vramPtr) = *((word*)vramPtr) ^ rgb16; // XOR演算
+			break;
+		default: // 24bpp
+			vramPtr[0] = vramPtr[0] ^ r; // XOR演算
+			vramPtr[1] = vramPtr[0] ^ g; // XOR演算
+			vramPtr[2] = vramPtr[0] ^ b; // XOR演算
+			break;
+		}
+	} else {
+		switch (bpp) {
+		case 16: // 16bpp
+			*((word*)vramPtr) = rgb16;
+			break;
+		default: // 24bpp, 32bpp
+			vramPtr[0] = r;
+			vramPtr[1] = g;
+			vramPtr[2] = b;
+			break;
+		}
+	}
+#endif
 }
 
 /**
@@ -132,40 +162,8 @@ void Graphics::drawImage(Image *image, int x, int y, int w, int h)
 void Graphics::drawPixel(int x, int y, unsigned int color)
 {
 	if (locked == true) return;
-#if defined(PEKOE)
-	sys_gs_set_pixel_RGB(tx + x, ty + y, color);
-#elif defined(MONA)
-	screen->putPixel16(tx + x, ty + y, color);
-#endif
-}
-
-/**
- 点描画（XOR描画）
- @param x X座標
- @param y Y座標
- @param color 描画する色
- */
-void Graphics::drawPixelXOR(int x, int y, unsigned int color)
-{
-#if defined(MONA)
-	// 
-	// MonAPI::Screen::putPixel16 をそのまま持ってきている
-	//
-
-	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
-	byte* colorPtr = (byte*)&color;
-
-	switch (bytesPerPixel) {
-	case 2: // 16bpp
-		*((word*)vramPtr) = *((word*)vramPtr) ^ MonAPI::Color::bpp24to565(color); // XOR演算
-		break;
-	default: // 24bpp
-		vramPtr[0] = vramPtr[0] ^ colorPtr[0]; // XOR演算
-		vramPtr[1] = vramPtr[0] ^ colorPtr[1]; // XOR演算
-		vramPtr[2] = vramPtr[0] ^ colorPtr[2]; // XOR演算
-		break;
-	}
-#endif
+	setColor(color);
+	drawPixel(x, y);
 }
 
 /**
@@ -197,13 +195,8 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
 	if ( dx >= dy ) {
 		E = -dx;
 		for ( i = 0; i < ( ( dx + 1 ) >> 1 ); i++ ) {
-			if (xormode == true) {
-				drawPixelXOR(xx0, yy0, rgb24);
-				drawPixelXOR(xx1, yy1, rgb24);
-			} else {
-				drawPixel(xx0, yy0, rgb24);
-				drawPixel(xx1, yy1, rgb24);
-			}
+			drawPixel(xx0, yy0);
+			drawPixel(xx1, yy1);
 			xx0 += sx;
 			xx1 -= sx;
 			E += 2 * dy;
@@ -214,22 +207,13 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
 			}
 		}
 		if ( ( ( dx + 1 ) % 2 ) != 0 ) {
-			if (xormode == true) {
-				drawPixelXOR(xx0, yy0, rgb24);
-			} else {
-				drawPixel(xx0, yy0, rgb24);
-			}
+			drawPixel(xx0, yy0);
 		}
 	} else {
 		E = -dy;
 		for ( i = 0; i < ( (dy + 1) >> 1 ); i++ ) {
-			if (xormode == true) {
-				drawPixelXOR(xx0, yy0, rgb24);
-				drawPixelXOR(xx1, yy1, rgb24);
-			} else {
-				drawPixel(xx0, yy0, rgb24);
-				drawPixel(xx1, yy1, rgb24);
-			}
+			drawPixel(xx0, yy0);
+			drawPixel(xx1, yy1);
 			yy0 += sy;
 			yy1 -= sy;
 			E += 2 * dx;
@@ -240,11 +224,7 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
 			}
 		}
 		if ( ( ( dy + 1 ) % 2 ) != 0 ) {
-			if (xormode == true) {
-				drawPixelXOR(xx0, yy0, rgb24);
-			} else {
-				drawPixel(xx0, yy0, rgb24);
-			}
+			drawPixel(xx0, yy0);
 		}
 	}
 }
@@ -274,42 +254,24 @@ void Graphics::drawRect(int x, int y, int width, int height)
  */
 void Graphics::drawText(char *str, int x, int y)
 {
-	int i , j, k, n = 0, pos, bit, width, height, w = 0;
-	unsigned char c1 = 0, c2 = 0, c3 = 0;
+	int list[128];
+	int i, j, k, pos, bit, width, height, w, length;
 	FontMetrics *manager = FontMetrics::getInstance();
 
 	if (locked == true) return;
 	
-	for (i = 0; i < (int)strlen(str); i++) {
-		// 文字列の終端
-		if (str[i] == 0) break;
-		// 1 バイト目
-		c1 = (unsigned char)str[i];
-		// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
-		if (0x20 <= c1 && c1 <= 0x7F) {
-			n = c1;
-		// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
-		} else if (0xC2 <= c1 && c1 <= 0xDF) {
-			// 2 バイト目
-			if (str[i] == (int)strlen(str) - 1) break;
-			c2 = (unsigned char)str[++i];
-			n = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
-		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
-		} else if (0xE0 <= c1 && c1 <= 0xEF) {
-			// 2 バイト目
-			if (str[i] == (int)strlen(str) - 1) break;
-			c2 = (unsigned char)str[++i];
-			// 3 バイト目
-			if (str[i] == (int)strlen(str) - 1) break;
-			c3 = (unsigned char)str[++i];
-			n = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
-		} else {
-			n = 0;
-		}
+	// NULLチェック
+	if (str == NULL || strlen(str) == 0) return;
+	
+	// 文字列を文字コード列に変換する
+	w = length = 0;
+	manager->getCharacterCode(str, 0, list, &length);
+	
+	for (i = 0; i < length; i++) {
 		pos = 0;
 		bit = 1;
 		char fp[256];
-		if (manager->decodeCharacter(n, &width, &height, fp) == true) {
+		if (manager->decodeCharacter(list[i], &width, &height, fp) == true) {
 			//unsigned char *fp = list[i]->getData();
 			for (j = 0; j < height; j++) {
 				// 領域チェック
@@ -319,18 +281,18 @@ void Graphics::drawText(char *str, int x, int y)
 					if ((fp[pos] & bit) != 0) {
 						// 通常書体
 						if (font->getStyle() == FONT_PLAIN) {
-							drawPixel(x + w + k, y + j, rgb24);
+							drawPixel(x + w + k, y + j);
 						// 太字体
 						} else if (font->getStyle() == FONT_BOLD) {
-							drawPixel(x + w + k, y + j, rgb24);
-							drawPixel(x + w + k + 1, y + j, rgb24);
+							drawPixel(x + w + k, y + j);
+							drawPixel(x + w + k + 1, y + j);
 						// 斜字体
 						} else if (font->getStyle() == FONT_ITALIC) {
-							drawPixel(x + w + k + (height - j) / 4, y + j, rgb24);
+							drawPixel(x + w + k + (height - j) / 4, y + j);
 						// 太字体＋斜字体
 						} else if (font->getStyle() == FONT_BOLD | FONT_ITALIC) {
-							drawPixel(x + w + k + (height - j) / 4, y + j, rgb24);
-							drawPixel(x + w + k + (height - j) / 4 + 1, y + j, rgb24);
+							drawPixel(x + w + k + (height - j) / 4, y + j);
+							drawPixel(x + w + k + (height - j) / 4 + 1, y + j);
 						}
 					}
 					bit <<= 1;
@@ -352,11 +314,38 @@ void Graphics::drawText(char *str, int x, int y)
  @param width 幅
  @param height 高さ
  */
-void Graphics::fillRect(int x, int y, int width, int height)
+void Graphics::fillRect(int x, int y, int w, int h)
 {
 	if (locked == true) return;
+#if defined(MONA)
+	//screen->fillRect16(tx + x, ty + y, width, height, rgb24);
+	int bytesPerPixel = bpp >> 3;
 
-	screen->fillRect16(tx + x, ty + y, width, height, rgb24);
+	byte* position = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
+	byte* temp     = position;
+
+	if (bytesPerPixel == 2) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				*((word*)temp) = rgb16;
+				temp += bytesPerPixel;
+			}
+			position += width * bytesPerPixel;
+			temp = position;
+		}
+	} else {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				temp[0] = r;
+				temp[1] = g;
+				temp[2] = b;
+				temp += bytesPerPixel;
+			}
+			position += width * bytesPerPixel;
+			temp = position;
+		}
+	}
+#endif
 }
 
 /**
@@ -415,6 +404,7 @@ void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
 	this->g = g;
 	this->b = b;
 	rgb24 = r << 16 | g << 8 | b;
+	rgb16 = (unsigned short)(((r << 8) & 0xF800) | ((g << 3) & 0x07E0) | (b >> 3));
 }
 
 /**
@@ -427,6 +417,7 @@ void Graphics::setColor(unsigned int color)
 	this->g = (color >> 8) & 0xFF;
 	this->b = color & 0xFF;
 	rgb24 = color;
+	rgb16 = (unsigned short)(((color >> 8) & 0xF800) | ((color >> 5) & 0x07E0) | ((color >> 3) & 0x001F));
 }
 
 /**
