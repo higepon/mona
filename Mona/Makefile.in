@@ -1,11 +1,3 @@
-MONADIR = .
-include $(MONADIR)/env/dirnames.inc
-
-TARGET = $(BINDIR)/mona.img
-
-ELF_FILES = `ls $(BINDIR)/root/APPS/*.ELF`
-SVR_FILES = `ls $(BINDIR)/root/SERVERS/*.SVR`
-
 all:
 	@cd tools; $(MAKE) $@
 	@cd src; $(MAKE) $@
