@@ -33,12 +33,10 @@ static void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent, const
 	{
 		case 0: // Stretch
 		{
-			Screen* scr = GetDefaultScreen();
-			int sw = scr->getWidth(), sh = scr->getHeight();
-			if (sw != ww || sh != wh)
+			if (ww != bmp->Width || wh != bmp->Height)
 			{
 				if (prompt) printf("%s: Resizing %s....", SVR, (const char*)src);
-				guiserver_bitmap* bmp2 = ResizeBitmap(bmp, sw, sh);
+				guiserver_bitmap* bmp2 = ResizeBitmap(bmp, ww, wh);
 				MemoryMap::unmap(bmp->Handle);
 				bmp = bmp2;
 				if (prompt) printf("Done\n");
