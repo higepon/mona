@@ -38,6 +38,7 @@ int main() {
             switch(info.header) {
 
             case MSG_KEY_SCANCODE:
+
                 sendKeyInformation(manager, destList, &info);
                 break;
 

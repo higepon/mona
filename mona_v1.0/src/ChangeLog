@@ -1,5 +1,7 @@
 2004-01-29  higepon  <higepon@users.sourceforge.jp>
 
+        * ユーザーモードからのシステムコール時に割り込みを許可をしたときに発生していたバグを修正
+
         * user/hello.cpp: Shell実装中
 
 2004-01-28  higepon  <higepon@users.sourceforge.jp>

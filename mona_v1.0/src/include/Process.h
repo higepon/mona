@@ -160,6 +160,8 @@ class ThreadManager {
 
     inline int switchThread(bool isProcessChanged, bool isUser) const {
 
+        isUser = isUser && (current_->getThreadInfo()->archinfo->cs & 0x03);
+
         if (isProcessChanged && isV86_) {
 
             arch_switch_thread_to_v862();
