@@ -21,11 +21,16 @@ cglobal arch_switch_thread_to_v862
 cglobal arch_switch_thread1
 cglobal arch_switch_thread2
 cglobal arch_set_dokodemo_view
+cglobal arch_idle
 cextern g_stack_view      ;; for debug stack viewer
 cextern fault0dHandler
 cextern g_currentThread
 cextern g_tss
 cextern g_dokodemo_view
+
+arch_idle:
+        hlt
+        ret
 
 ;;----------------------------------------------------------------------
 ;; save register to current thread

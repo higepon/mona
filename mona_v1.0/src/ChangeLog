@@ -1,5 +1,9 @@
 2004-02-18  higepon  <higepon@users.sourceforge.jp>
 
+        * user/userlib/string.cpp: strcat
+
+        * Process.cpp: idleスレッドの中でhltするようにした
+
         * user/userlib/monalibc.c: 追加。
 
 2004-02-15  higepon  <higepon@users.sourceforge.jp>

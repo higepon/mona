@@ -42,6 +42,7 @@ extern "C" void arch_switch_thread_to_v861();
 extern "C" void arch_switch_thread_to_v862();
 extern "C" void arch_switch_thread1();
 extern "C" void arch_switch_thread2();
+extern "C" void arch_idle();
 
 /*----------------------------------------------------------------------
     ArchThreadInfo
