@@ -1,4 +1,14 @@
+2004-06-17  higepon  <higepon@users.sourceforge.jp>
+
+        * KEYBDMNG.SVR->KEYBDMNG.BINに改名。バイナリ形式でロードするようにした。
+
+        * bin/Makefile : *.BINのインストール追加
+
+        * env/monapi-bin.inc : バイナリファイル生成用のincファイル追加
+
 2004-06-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/syscalls.cpp (syscall_entrance): SYSTEM_CALL_LOAD_PROCESS_IMAGEの中身をLoaderに変更
 
         * src/kernel/Loader.cpp : ELFロジック追い出し準備としてLoaderクラス追加
 

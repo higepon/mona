@@ -24,7 +24,7 @@
     \author HigePon
     \date   create:2004/06/15 update:
 */
-byte* Loader::ReadFile(const char* path, word* size)
+byte* Loader::ReadFile(const char* path, dword* size)
 {
     dword readTimes;
     byte* buf;
@@ -83,7 +83,7 @@ byte* Loader::ReadFile(const char* path, word* size)
     return buf;
 }
 
-int Loader::Load(byte* image, word size, dword entrypoint, const char* name, bool isUser, CommandOption* list)
+int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bool isUser, CommandOption* list)
 {
     /* shared ID */
     static dword sharedId = 0x2000;
@@ -143,7 +143,7 @@ int Loader::Load(const char* path, const char* name, bool isUser, CommandOption*
 {
     int result;
     byte* image;
-    word size;
+    dword size;
 
     image = Loader::ReadFile(path, &size);
     if (image == NULL || size == 0)

@@ -691,9 +691,7 @@ void syscall_entrance() {
 
     {
         LoadProcessInfo* p = (LoadProcessInfo*)(info->esi);
-//        info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
-        info->eax = loadProcess(p->image, p->size, p->entrypoint, p->path, p->name, true, p->list);
-
+        info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
         break;
     }
 

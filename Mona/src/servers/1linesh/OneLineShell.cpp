@@ -39,13 +39,13 @@ void OneLineShell::service() {
   /* look up */
   dword myID = MonAPI::System::getThreadID();
 
-  dword keysvrID = Message::lookupMainThread("KEYBDMNG.SVR");
+  dword keysvrID = Message::lookupMainThread("KEYBDMNG.BIN");
   if(keysvrID == 0xFFFFFFFF){
     printf("Shell:KeyBoardServer not found\n");
     exit(1);
   }
 
-  /* send message for KEYBDMNG.SVR */
+  /* send message for KEYBDMNG.BIN */
   if(Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, myID)){
       printf("Shell: key regist error\n");
   }

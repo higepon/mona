@@ -141,7 +141,7 @@ int MonaMain(List<char*>* pekoe)
 //     strcpy((char*)p, "data share top hello!!\n");
 
 //     /* ためしにServerにid1を送ってみよう */
-//     dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+//     dword targetID = Message::lookupMainThread("KEYBDMNG.BIN");
 //     if (targetID == 0xFFFFFFFF)
 //     {
 //         printf("hello:Server not found\n");

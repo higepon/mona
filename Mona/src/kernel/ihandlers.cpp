@@ -101,7 +101,7 @@ void keyStrokeHandler(dword scancode)
     /* EOI */
     outp8(0x20, 0x20);
 
-    if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.SVR"), &message))
+    if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.BIN"), &message))
     {
         g_console->printf("send failed");
     }

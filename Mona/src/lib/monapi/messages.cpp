@@ -16,7 +16,7 @@ static dword server_ids[] =
 
 static const char* server_names[] =
 {
-    "MOUSE.SVR", "KEYBDMNG.SVR", "FILE.SVR", "GUI.SVR", "ELF.SVR", "ELF.SVR"/*"PROCESS.SVR"*/
+    "MOUSE.SVR", "KEYBDMNG.BIN", "FILE.SVR", "GUI.SVR", "ELF.SVR", "ELF.SVR"/*"PROCESS.SVR"*/
 };
 
 dword monapi_get_server_thread_id(int id)

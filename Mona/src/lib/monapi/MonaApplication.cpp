@@ -52,14 +52,14 @@ MonaApplication::MonaApplication() {
 
     mypid_ = System::getThreadID();
 
-    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    dword targetID = Message::lookupMainThread("KEYBDMNG.BIN");
     if (targetID == 0xFFFFFFFF)
     {
         printf("MonaApplication:KeyBoardServer not found\n");
         exit(1);
     }
 
-    /* create message for KEYBDMNG.SVR */
+    /* create message for KEYBDMNG.BIN */
     MessageInfo info;
     info.header = MSG_KEY_REGIST_TO_SERVER;
     info.arg1   = mypid_;
@@ -72,12 +72,12 @@ MonaApplication::MonaApplication() {
 
 MonaApplication::~MonaApplication() {
 
-    /* create message for KEYBDMNG.SVR */
+    /* create message for KEYBDMNG.BIM */
     MessageInfo info;
     info.header = MSG_KEY_UNREGIST_FROM_SERVER;
     info.arg1   = mypid_;
 
-    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    dword targetID = Message::lookupMainThread("KEYBDMNG.BIN");
     if (targetID == 0xFFFFFFFF)
     {
         printf("MonaApplication:KeyBoardServer not found\n");

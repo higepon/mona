@@ -70,6 +70,7 @@
 #include "vbe.h"
 #include "VesaConsole.h"
 #include "LogConsole.h"
+#include "Loader.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -248,7 +249,14 @@ inline void printOK(const char* msg)
 void loadServer(const char* server, const char* name)
 {
     g_console->printf("loading %s....", server);
-    g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
+    if (strstr(server, ".BIN"))
+    {
+        g_console->printf("%s\n", Loader::Load(server, name, true, NULL) ? "NG" : "OK");
+    }
+    else
+    {
+        g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
+    }
 
     MessageInfo msg;
     for (;;)

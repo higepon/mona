@@ -2,6 +2,7 @@ TARGET = mona.img
 
 ROOT_FILES = `cd root; ls *.*`
 SVR_FILES  = `cd root; ls SERVERS/*.SVR`
+BIN_FILES  = `cd root; ls SERVERS/*.BIN`
 APP_FILES  = `cd root; ls APPS/*.EL* APPS/*.LIB APPS/*.WRP APPS/*.MSH`
 
 all:
@@ -11,6 +12,7 @@ all:
 	./fat_write $(TARGET) --mkdir APPS
 	@for file in $(ROOT_FILES); do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@for file in $(SVR_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
+	@for file in $(BIN_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@for file in $(APP_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@cd root; for dir in APPS/*.APP; \
 	do \
