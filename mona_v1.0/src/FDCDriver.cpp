@@ -149,16 +149,13 @@ void FDCDriver::initilize() {
 
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
+
     delay();
     outportb(FDC_CCR_PRIMARY, 0);
 
     interrupt_ = false;
     motor(ON);
     while(!waitInterrupt());
-
-#ifdef FDC_DEBUG
-    g_console->printf("motor on catch\n");
-#endif
 
     /* specify */
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
@@ -169,7 +166,7 @@ void FDCDriver::initilize() {
     }
 
     recalibrate();
-    recalibrate();
+    recalibrate(); /* 2nd recalibrate occurs 3interrupts on VPC and 2 on Bochs */
 
     g_console->printf("recalibrate done\n");
 
@@ -249,9 +246,8 @@ void FDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void FDCDriver::interrupt() {
 
-#ifdef DEBUG_FDC
-    console_->printf("interrpt:");
-#endif
+    console_->printf("\ninterrpt:");
+
     interrupt_ = true;
 }
 
@@ -327,7 +323,6 @@ bool FDCDriver::recalibrate() {
         console_->printf("FDCDriver#recalibrate:command fail\n");
         return false;
     }
-
 
     // comment out for bochs x86 emulator
     //    while(!waitInterrupt());
@@ -673,7 +668,6 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     while(!waitInterrupt());
-
     stopDMA();
 
     readResults();
