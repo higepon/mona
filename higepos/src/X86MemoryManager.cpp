@@ -64,10 +64,13 @@ H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
         if (current == freeEntry_) return NULL;
     }
 
-    struct memoryEntry* used = current;
-    struct memoryEntry* free = current + realSize;
-    H_SIZE_T usedSize = realSize;
-    H_SIZE_T freeSize = current->size + realSize;
+    struct memoryEntry* usedBlock = current;
+    struct memoryEntry* freeBlock = current + realSize;
+    H_SIZE_T usedBlockSize = realSize;
+    H_SIZE_T freeBlockSize = current->size + realSize;
+
+    this->addToEntry(usedEntry_, usedBlock, usedBlockSize);
+    this->addToEntry(freeEntry_, freeBlock, freeBlockSize);
 
     if (current->size == realSize) {
 
@@ -169,7 +172,7 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void  X86MemoryManager::printInfo() {
+void X86MemoryManager::printInfo() {
 
     _sysPrintln("X86MemoryManager Information");
 
@@ -187,7 +190,7 @@ void  X86MemoryManager::printInfo() {
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void addToEntry(struct MemoryEntry* entry, struct MemoryEntry* block, H_SIZE_T size) {
+void X86MemoryManager::addToEntry(struct MemoryEntry* entry, struct MemoryEntry* block, H_SIZE_T size) {
 
     return;
 }
@@ -200,6 +203,6 @@ void addToEntry(struct MemoryEntry* entry, struct MemoryEntry* block, H_SIZE_T s
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void concatBlock(struct MemoryEntry* block) {
+void X86MemoryManager::concatBlock(struct MemoryEntry* block) {
     return;
 }
