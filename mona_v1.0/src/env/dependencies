@@ -9,14 +9,16 @@ kernel.o: kernel.cpp include/types.h include/global.h include/info.h \
   include/operator.h include/tester.h include/test_mjt.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/pic.h include/io.h include/rtc.h \
-  include/disp.h include/FAT12.h include/IA32MemoryManager.h
+  include/disp.h include/FAT12.h include/IA32MemoryManager.h \
+  include/syscalls.h include/Queue.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h include/types.h include/VirtualConsole.h \
   include/string.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/PagingUtil.h include/Process.h include/Scheduler.h \
   include/ProcessManager.h include/ihandlers.h include/sysresource.h \
-  include/BitMap.h include/io.h include/KeyBoardManager.h
+  include/BitMap.h include/io.h include/KeyBoardManager.h \
+  include/SystemInfo.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/types.h include/kernel.h include/VirtualConsole.h \
   include/string.h include/operator.h include/io.h include/global.h \
@@ -167,7 +169,7 @@ ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/kernel.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/sysresource.h \
-  include/BitMap.h
+  include/BitMap.h include/io.h include/SystemInfo.h
 ps2kbc.o: driver/ISADevice/PS2KBC/ps2kbc.cpp \
   driver/ISADevice/PS2KBC/ps2kbc.h include/Module.h \
   include/GraphicalConsole.h include/VirtualConsole.h include/types.h \

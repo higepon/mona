@@ -40,6 +40,7 @@
 #include <PagingUtil.h>
 #include <syscalls.h>
 #include <ProcessManager.h>
+#include <Queue.h>
 
 char* version = "Mona develop beta 0.08b $Date$";
 void userTest();

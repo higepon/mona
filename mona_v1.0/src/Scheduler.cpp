@@ -114,7 +114,7 @@ void Scheduler::sleep(ProcessInfo* process, dword tick) {
 
 void Scheduler::tick() {
 
-    tick_++;
+    tick_ += 10;
 }
 
 dword Scheduler::getTick() {

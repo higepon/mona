@@ -19,6 +19,8 @@
     \author HigePon
     \date   create:2003/03/08 update:
 */
+#define PIT_MODE   0x43
+#define PIT_COUNT0 0x40
 void pic_init() {
 
     /* master */
@@ -32,6 +34,13 @@ void pic_init() {
     outportb(0xa1, 0x28); /* ICW2 */ /* IRQ  8h = int 28h */
     outportb(0xa1, 0x02); /* ICW3 */
     outportb(0xa1, 0x01); /* ICW4 */
+
+    /* timer settings 10ms */
+    dword timer_count = 10 * 1193181 / 1000;
+    outportb(PIT_MODE, 0x36);
+    outportb(PIT_COUNT0, timer_count & 0xff);
+    outportb(PIT_COUNT0, timer_count >> 8);
+
 
     /* mask all interrupt */
     outportb(0x21, 0xff);

@@ -42,7 +42,7 @@ void ProcessManager::switchProcess() {
 
 void ProcessManager::schedule(){
 
-    g_current_process->tick++;
+    g_current_process->tick += 10;
     g_process_manager->tick();
     scheduler_->schedule();
     g_current_process->state = Process::RUNNING;
