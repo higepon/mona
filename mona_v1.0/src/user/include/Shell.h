@@ -23,6 +23,9 @@ class Shell {
   protected:
     char commandLine_[1024];
     int position_;
+
+  protected:
+    static char* const PROMPT = "Mona>";
 };
 
 /*----------------------------------------------------------------------

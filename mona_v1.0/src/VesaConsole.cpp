@@ -163,8 +163,8 @@ void VesaConsole::setCursor(int x, int y)
 
 void VesaConsole::getCursor(int* x, int* y)
 {
-    *x = pos_x_;
-    *y = pos_y_;
+    *x = pos_x_ / font_x_;
+    *y = pos_y_ / font_y_;
 }
 
 void VesaConsole::clearScreen()

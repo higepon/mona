@@ -21,6 +21,8 @@
 #define SYSTEM_CALL_GET_VRAM_INFO  20
 #define SYSTEM_CALL_LOAD_PROCESS   21
 #define SYSTEM_CALL_MAP            22
+#define SYSTEM_CALL_SET_CURSOR     23
+#define SYSTEM_CALL_GET_CURSOR     24
 
 #define main() monamain()
 
@@ -50,6 +52,8 @@ int syscall_mutex_lock();
 int syscall_mutex_unlock();
 int syscall_get_vram_info(ScreenInfo* info);
 int syscall_load_process(const char* name);
+int syscall_get_cursor(int* x, int* y);
+int syscall_set_cursor(int x, int y);
 dword syscall_lookup(const char* name);
 int syscall_mutex_destroy(int id);
 int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);

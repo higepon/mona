@@ -155,6 +155,20 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
+    case SYSTEM_CALL_SET_CURSOR:
+
+        enableInterrupt();
+        g_console->setCursor((int)(info->esi), (int)(info->ecx));
+        info->eax = 0;
+        break;
+
+    case SYSTEM_CALL_GET_CURSOR:
+
+        enableInterrupt();
+        g_console->getCursor((int*)(info->esi), (int*)(info->ecx));
+        info->eax = 0;
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

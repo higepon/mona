@@ -56,7 +56,7 @@ void ShellServer::service() {
 ----------------------------------------------------------------------*/
 Shell::Shell() : position_(0) {
 
-    printf("Mona>");
+    printf("%s", PROMPT);
 }
 
 Shell::~Shell() {
@@ -73,7 +73,7 @@ void Shell::commandExecute() {
 
     printf("\n");
     syscall_load_process(commandLine_);
-    printf("\nMona>");
+    printf("\n%s", PROMPT);
     position_ = 0;
 }
 
@@ -87,6 +87,12 @@ void Shell::backspace() {
         /* donothing */
         return;
     }
+
+    int x, y;
+    syscall_get_cursor(&x, &y);
+    syscall_set_cursor(x - 1, y);
+    printf(" ");
+    syscall_set_cursor(x - 1, y);
 
     /* backspace */
     position_--;
