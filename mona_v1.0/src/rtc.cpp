@@ -1,3 +1,9 @@
+/*
+    Copyright (c) 2002,2003 Higepon
+    All rights reserved.
+    License=MIT/X Licnese
+*/
+
 #include<rtc.h>
 #include<kernel.h>
 

@@ -1,3 +1,6 @@
+; Copyright (c) 2002,2003 Guripon
+; All rights reserved.
+; License=MIT/X Licnese
 BITS 32
 
 global _wait_vsync

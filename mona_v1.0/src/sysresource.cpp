@@ -1,4 +1,10 @@
-/* sysresource.cpp (expr) */
+/* sysresource.cpp (expr)
+
+    Copyright (c) 2003 .mjt
+    All rights reserved.
+    License=MIT/X Licnese
+
+*/
 #include <sysresource.h>
 #include <global.h>
 #include <pic.h>
@@ -12,7 +18,7 @@ void irq_init(void){
   for(i=0;i!=16;i++){
     g_irqHandlers[i] = nullirqhandler; /*  */
   }
-  
+
   /* enable slave int. */
   outportb(0x21, inportb(0x21) & 0xfb); /* -> pic.cpp */
 
@@ -40,7 +46,7 @@ bool irq_acquire(sys_irq irq,IRQHandler ih){
     return false;
   }
   g_console->printf("irq:installing IRQ Handler(%x).\n",(dword)ih);
-  
+
   g_irqMap->mark(irq);
   g_irqHandlers[irq] = ih;
   return true;

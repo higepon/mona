@@ -2,8 +2,9 @@
     \file  io.cpp
     \brief io functions
 
-    Copyright (c) 2003 HigePon
-    WITHOUT ANY WARRANTY
+    Copyright (c) 2003 Higepon
+    All rights reserved.
+    License=MIT/X Licnese
 
     \author  HigePon
     \version $Revision$

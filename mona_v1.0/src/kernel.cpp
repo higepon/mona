@@ -28,8 +28,10 @@
 
     mona kernel start at this point.
     before startKernel, os entered protected mode.
+
     Copyright (c) 2002,2003 Higepon
     All rights reserved.
+    License=MIT/X Licnese
 
     \author  HigePon
     \version $Revision$

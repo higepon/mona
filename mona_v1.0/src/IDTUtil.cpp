@@ -2,8 +2,9 @@
     \file  IDTUtil.cpp
     \brief class functions for set up IDT
 
-    Copyright (c) 2003 HigePon
-    WITHOUT ANY WARRANTY
+    Copyright (c) 2003 Higepon
+    All rights reserved.
+    License=MIT/X Licnese
 
     \author  HigePon
     \version $Revision$

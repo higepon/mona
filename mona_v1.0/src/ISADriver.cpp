@@ -1,4 +1,10 @@
-/* ISADriver.cpp (expr) */
+/* ISADriver.cpp (expr)
+
+    Copyright (c) 2003 .mjt
+    All rights reserved.
+    License=MIT/X Licnese
+
+*/
 #include <BitMap.h>
 #include <global.h>
 #include <sysresource.h>

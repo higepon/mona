@@ -2,8 +2,9 @@
 ; Name        : secondboot.asm
 ; Description : firstboot read this from disk and execute.
 ; Revision    : $Revision$ $Date$
-; Copyright (c) 2002 HigePon
-; WITHOUT ANY WARRANTY
+; Copyright (c) 2002,2003 Higepon
+; All rights reserved.
+; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
 [bits 16]
         cli

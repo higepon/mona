@@ -5,8 +5,9 @@
     using pure virtual function, we need this function
     thank you OS chyou teacher@os board
 
-    Copyright (c) 2002 HigePon
-    WITHOUT ANY WARRANTY
+    Copyright (c) 2002,2003 Higepon
+    All rights reserved.
+    License=MIT/X Licnese
 
     \author  HigePon
     \version $Revision$

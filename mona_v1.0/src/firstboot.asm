@@ -3,8 +3,9 @@
 ; Description : boot from floppy disk, echo String and read secondboot
 ;               We use FAT12 File System.
 ; Revision    : $Revision$ $Date$
-; Copyright (c) 2002,2003 Guripon, HigePon
-; WITHOUT ANY WARRANTY
+; Copyright (c) 2002,2003 Higepon
+; All rights reserved.
+; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
 %define kernel  0x1000
 %define tempseg 0x9f00

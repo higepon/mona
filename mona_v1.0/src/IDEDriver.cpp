@@ -1,4 +1,10 @@
-/* IDE */
+/* IDE
+
+    Copyright (c) 2003 .mjt
+    All rights reserved.
+    License=MIT/X Licnese
+
+*/
 
 #include<IDEDriver.h>
 #include<kernel.h>
@@ -49,13 +55,13 @@ IDEDriver::IDEDriver(unsigned int port) {
     status_ = port+7;
     driveaddr_ = port+0x207;
     status2_ = port+0x206;
-    
+
     if(inportb(status_) == 0xff){
       info(NOTICE,"constructor:can't find IDE I/F in Port:%x\n",port);
       HasMaster = false;
       return;
     }
-    
+
     if(!initilize()){
       HasMaster = false;
     }
@@ -112,7 +118,7 @@ bool IDEDriver::waitready(unsigned long timeout){
     if(c & 0x80){
       continue;
     }
-    
+
     if(c & 0x40){
       return true;
     }
@@ -197,7 +203,7 @@ bool IDEDriver::senddevice(int drive){
   return true;
 }
 IDEDriver::~IDEDriver() {
-    
+
     return;
 }
 
@@ -206,11 +212,11 @@ bool IDEDriver::initilize() {
     info(NOTICE,"init...");
 
     waithdc(TIMEOUT);
-    
+
     HasMaster = true;
     HasSlave = true;
     info(WARNING,"diag skipped.\n");
-    
+
     /*
     info(DUMP,"diag...");
     if(sendcmd(IDE_CMD_DIAG,0,0)){
@@ -224,7 +230,7 @@ bool IDEDriver::initilize() {
         info(DUMP,"ok.");
         HasMaster = true;
       }
-      
+
       if(c & 0x80){
         info(DUMP,"(slave device)\n");
         HasSlave = false;
@@ -238,15 +244,15 @@ bool IDEDriver::initilize() {
       HasSlave = true;
     }
     */
-    
+
     if(HasMaster){
       Master = new IDEDevice(this,0);
     }
-    
+
     if(HasSlave){
       Slave = new IDEDevice(this,1);
     }
-    
+
     info(NOTICE,"\n");
     return true;
 }
@@ -271,13 +277,13 @@ bool IDEDriver::setLBA(dword lba,unsigned int device){
       c |= 0x10;
     }
     outportb(head_,c);
-    
+
     c = ( lba >> 16 ) & 0xff;
     outportb(cylinderH_,c);
-    
+
     c = ( lba >> 8 ) & 0xff;
     outportb(cylinderL_,c);
-    
+
     c = lba & 0xff;
     outportb(sector_,c);
   }else{
@@ -309,17 +315,17 @@ bool IDEDriver::setCHS(dword lba,unsigned int device){
   T = lba / (d->Heads * d->SectorsPerTrack );
   H = ( lba / d->SectorsPerTrack ) % d->Heads;
   S = 1 + ( lba % d->SectorsPerTrack );
-  
+
   c = H;
   c |= 0xa0;
   outportb(head_,c);
-  
+
   c = ( T >> 8 ) & 0xff;
   outportb(cylinderH_,c);
-  
+
   c = ( T & 0xff);
   outportb(cylinderL_,c);
-  
+
   c = S;
   outportb(sector_,c);
   return true;
@@ -354,7 +360,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
         Bus->HasSlave = false;
         return;
       }
-    }   
+    }
     if(device == 0){
       info(NOTICE,"Master:");
     }else if(device == 1){
@@ -412,7 +418,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
               c += '0';
             }
             info(DUMP,"%c ",c);
-            
+
           }
         }
         */
@@ -476,7 +482,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
             default:
               info(NOTICE,"(#%x)",mbr[4]);
           }
-          
+
         }
         info(NOTICE,"\n");
       }else{
@@ -489,7 +495,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       }else if(device == 1){
         Bus->HasSlave = false;
       }
-      
+
     }
     /* READ TEST */ /*
     if(IsSurpportLBA){
@@ -499,7 +505,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       byte buf1[512];
       byte buf2[512];
       for(tests = 0; ( tests != TotalSize ) && (g_demo_step < 3) ; tests++){
-        
+
         read(tests,buf1);
         IsSurpportLBA = false;
         read(tests,buf2);
