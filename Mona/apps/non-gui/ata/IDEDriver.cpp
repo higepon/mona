@@ -13,6 +13,7 @@
 #include "IDEDriver.h"
 #include <monapi.h>
 #include <Assert.h>
+#include <monapi/io.h>
 
 using namespace MonAPI;
 

@@ -1,5 +1,5 @@
-TARGET  = CDDANGER
-SOURCES = main.cpp IDEDriver.cpp ISO9660.cpp
+TARGET  = CDREAD
+SOURCES = main.cpp IDEDriver.cpp# ISO9660.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR = ../../..

@@ -1,6 +1,6 @@
 #include <monapi.h>
 #include "IDEDriver.h"
-#include "ISO9660.h"
+#include <monapi/io.h>
 
 using namespace MonAPI;
 
@@ -33,7 +33,7 @@ static void interrupt()
         switch (msg.header)
         {
         case MSG_INTERRUPTED:
-#if 0
+#if 1
             printf("interrupt irq=%d\n", msg.arg1);
 #endif
             ide->protocolInterrupt();
@@ -57,13 +57,14 @@ static void printError(const byte* error)
 
 int MonaMain(List<char*>* pekoe)
 {
-    if (pekoe->size() != 1) return 0;
+    if (pekoe->size() != 1)
+    {
+        return 0;
+    }
 
     syscall_get_io();
 
     ide = new IDEDriver();
-    IStorageDevice* cd = ide;
-
 
     /* find CD-ROM */
     int controller, deviceNo;
@@ -97,49 +98,24 @@ int MonaMain(List<char*>* pekoe)
         return 1;
     }
 
-    ISO9660* iso = new ISO9660(cd, "");
+    dword lba = atoi(pekoe->get(0));
+    byte buffer[2048];
+    int readResult = ide->read(lba, buffer, 2048);
 
-    if (!iso->Initialize())
+    if (readResult != 0)
     {
-        printf("Initialize Error = %d\n", iso->GetLastError());
-        delete iso;
-        delete cd;
-        return -1;
+        printf("Read Error = %d\n", readResult);
+        delete ide;
+        return 1;
     }
 
-
-//    File* file = iso->GetFile("SRC/SERVERS/ELF/MAIN.CPP");
-    File* file = iso->GetFile(pekoe->get(0));
-
-    if (file == NULL)
-    {
-        printf("file not found\n");
-        delete iso;
-        delete cd;
-        return -1;
-    }
-
-    char* buffer = new char[file->GetSize()];
-    file->Seek(0, SEEK_SET);
-    file->Read(buffer, file->GetSize());
-
-    for (dword i = 0; i < file->GetSize(); i++)
+    printf("[read start]\n");
+    for (int i = 0; i < 2048; i++)
     {
         printf("%c", buffer[i]);
     }
+    printf("\n[read end]\n");
 
-    _A<CString> files = iso->GetFileSystemEntries("SRC/SERVERS");
-
-    FOREACH (CString, file, files)
-    {
-        printf("%s\n", (const char*)file);
-    }
-    END_FOREACH
-
-    delete file;
-    delete buffer;
-    delete iso;
-    delete cd;
     delete ide;
     return 0;
 }

@@ -1,3 +1,7 @@
+2005-01-28  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/main.cpp : CDセクタリードツールをリリース 
+
 2004-01-21  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/*: 新しいBayGUIに差し替え
