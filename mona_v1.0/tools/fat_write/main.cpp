@@ -308,7 +308,14 @@ void rm (char *path)
 
     Directory *p = searchFile(path, &entry, &cursor);
     if (NULL == p)
+    {
         return;
+    }
+
+    if (entry == -1)
+    {
+        return;
+    }
 
     if (false == p->deleteEntry(entry)) {
         freeDirectory(p);
@@ -344,19 +351,25 @@ bool cp (char *src, char *dst)
 */
 int main(int argc, char *argv[])
 {
+    char destFile1[128];
+    char destFile2[128];
+
     if (argc != 4) {
         printf("usage: fat_write.exe fdimage \n");
         exit(-1);
     }
+
+    strcpy(destFile1, argv[3]);
+    strcpy(destFile2, argv[3]);
 
     if (!initialize(argv[1]))
     {
         return -1;
     }
 
-//    rm(argv[3]);
+    rm(destFile1);
 
-    if (!cp(argv[2], argv[3]))
+    if (!cp(argv[2], destFile2))
     {
         return -1;
         finalize();

@@ -1,5 +1,7 @@
 2004-03-09  higepon  <higepon@users.sourceforge.jp>
 
+        * fat_write.exeがファイルを上書きできるようになった。
+
         * user/userlib/userlib.cpp (exist): Message::exist()追加
 
         * fat_write.exeが動作するようになった｡
