@@ -214,3 +214,11 @@ z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h \
   include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
   include/FAT12.h
+MemoryManager.o: MemoryManager.cpp include/MemoryManager.h user/types.h \
+  include/global.h include/info.h include/kernel.h \
+  include/VirtualConsole.h include/string.h include/FDCDriver.h \
+  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
+  include/IDTUtil.h include/Process.h include/PageManager.h \
+  include/Queue.h include/BitMap.h include/Scheduler.h \
+  include/ProcessManager.h include/ihandlers.h include/sysresource.h \
+  include/MessageServer.h include/Message.h include/FAT12.h

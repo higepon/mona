@@ -59,7 +59,8 @@ SOURCES    = cstart.cpp            \
              PageManager.cpp       \
              elf.cpp               \
              test_mjt.cpp          \
-             z.cpp
+             z.cpp                 \
+             MemoryManager.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
