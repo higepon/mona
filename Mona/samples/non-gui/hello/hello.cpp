@@ -68,7 +68,8 @@ enum
    PCI_API            = 0x09,
    PCI_SUBCLASS       = 0x0a,
    PCI_BASECLASS      = 0x0b,
-   PCI_HEADER         = 0x0e
+   PCI_HEADER         = 0x0e,
+   PCI_IRQ_LINE       = 0x3c
 };
 
 dword ReadConfig(byte bus, byte device, byte function, byte reg, byte readSize)
@@ -80,7 +81,7 @@ dword ReadConfig(byte bus, byte device, byte function, byte reg, byte readSize)
    packet.p.bus       = bus;
    packet.p.device    = device;
    packet.p.function  = function;
-   packet.p.reg       = reg;
+   packet.p.reg       = reg & ~3;
    packet.p.reserved1 = 0;
    packet.p.reserved2 = 0;
 
@@ -127,7 +128,6 @@ int MonaMain(List<char*>* pekoe)
 
        printf("**** device(%d)*****************************************************************************\n",i);
        printf("vendor    = %x  ", vendor);
-       printf("device    = %x  ", ReadConfig(0, i, 0, PCI_VENDOR_ID, 4));
        printf("device    = %x  ", ReadConfig(0, i, 0, PCI_DEVICE_ID, 2));
        printf("revision  = %x  ", ReadConfig(0, i, 0, PCI_REVISION , 1));
        printf("status    = %x\n", ReadConfig(0, i, 0, PCI_STATUS   , 2));
@@ -135,6 +135,7 @@ int MonaMain(List<char*>* pekoe)
        printf("api       = %x  ", ReadConfig(0, i, 0, PCI_API      , 1));
        printf("subclass  = %x  ", ReadConfig(0, i, 0, PCI_SUBCLASS , 1));
        printf("baseclass = %x\n", ReadConfig(0, i, 0, PCI_BASECLASS, 1));
+       printf("irq line  = %x  ", ReadConfig(0, i, 0, PCI_IRQ_LINE , 4));
    }
    return 0;
 }
