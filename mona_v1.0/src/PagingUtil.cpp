@@ -49,6 +49,13 @@ void PagingUtil::setup() {
 
     }
 
+    for (int i = 0; i < 4 * 1024 * 1024 + 5; i++) {
+
+	if (i != linearToPhys(i)) {
+	g_console->printf("linear:%d, phys:%d\n", i, linearToPhys(i));
+    }
+
+    }
 
     setCR3((dword)g_page_dir);
     startPaging();
