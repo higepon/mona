@@ -1,8 +1,7 @@
-*.o
 *.bin
-*.list
 mona.img
-*.exe
-*.ELF
-*.SVR
+fat_write
+fat_write.exe
+monaelf
+monaelf.exe
 TAGS
