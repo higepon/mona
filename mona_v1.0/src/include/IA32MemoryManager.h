@@ -61,6 +61,7 @@ class IA32MemoryManager {
     void addToEntry(struct memoryEntry**, struct memoryEntry*, size_t);
     void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, size_t);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
+    inline void setCR3(dword) const;
     const size_t MEMORY_START;
     const size_t MEMORY_END;
     struct memoryEntry* freeEntry_;
@@ -70,7 +71,7 @@ class IA32MemoryManager {
     char* getName() const;
     void* allocateMemory(size_t);
     void freeMemory(void*);
-    void printInfo(char*) const;
+    inline void printInfo(char*) const;
 
     /*!
         \brief enable A20

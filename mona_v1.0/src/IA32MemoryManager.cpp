@@ -333,3 +333,19 @@ void IA32MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntr
     }
     return;
 }
+
+/*!
+    \brief setCR3
+
+    set pageDirAddress to CR3 register
+
+    \param pageDirAddress physical address of page dir table.
+
+    \author HigePon
+    \date   create:2002/12/25 update:
+*/
+inline void IA32MemoryManager::setCR3(dword pageDirAddress) const {
+
+    asm volatile("movd %0, %%cr3" : /* no output */
+                                  : "m" (pageDirAddress) : "ax");
+}
