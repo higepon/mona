@@ -17,6 +17,7 @@ namespace MonAPI
 
         int getLength() const { return this->length; }
         char operator [](int index) const;
+        operator char*() { return this->buffer; }
 
         bool operator ==(const char* text);
         bool operator ==(const CString& text);

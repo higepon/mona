@@ -34,7 +34,7 @@ namespace System
 	{
 	}
 	
-	bool String::operator ==(String text)
+	bool String::operator ==(const String& text)
 	{
 		int len = this->get_Length();
 		if (len != text.get_Length()) return false;

@@ -23,7 +23,7 @@ namespace MonAPI
         {
             if (length == -1) length = strlen(text);
             this->buffer = new char[length + 1];
-            ASSERT(this->buffer);
+            ASSERT(this->buffer)
             strncpy(this->buffer, text, length);
             this->buffer[length] = '\0';
         }
@@ -39,6 +39,12 @@ namespace MonAPI
     CString::~CString()
     {
         if (this->buffer != NULL) delete [] this->buffer;
+    }
+
+    char CString::operator [](int index) const
+    {
+        ASSERT(!(index < 0 || this->length <= index))
+        return this->buffer[index];
     }
 
     bool CString::operator ==(const char* text)
@@ -68,7 +74,7 @@ namespace MonAPI
         {
             int len = strlen(text);
             this->buffer = new char[len + 1];
-            ASSERT(this->buffer);
+            ASSERT(this->buffer)
             strncpy(this->buffer, text, len);
             this->buffer[len] = '\0';
         }
@@ -87,7 +93,7 @@ namespace MonAPI
         {
             this->length = text.length;
             this->buffer = new char[this->length + 1];
-            ASSERT(this->buffer);
+            ASSERT(this->buffer)
             strncpy(this->buffer, text.buffer, this->length);
             this->buffer[this->length] = '\0';
         }
@@ -106,7 +112,7 @@ namespace MonAPI
         else
         {
             buf = new char[this->length + 1];
-            ASSERT(buf);
+            ASSERT(buf)
             if (this->buffer != NULL) strncpy(buf, this->buffer, len1);
             if (text != NULL) strncpy(&buf[len1], text, len2);
             buf[this->length] = '\0';
@@ -127,7 +133,7 @@ namespace MonAPI
         else
         {
             buf = new char[this->length + 1];
-            ASSERT(buf);
+            ASSERT(buf)
             if (this->buffer != NULL) strncpy(buf, this->buffer, len1);
             if (text .buffer != NULL) strncpy(&buf[len1], text.buffer, len2);
             buf[this->length] = '\0';
@@ -139,7 +145,7 @@ namespace MonAPI
     void CString::operator +=(char ch)
     {
         char* buf = new char[this->length + 2];
-        ASSERT(buf);
+        ASSERT(buf)
         strncpy(buf, this->buffer, this->length);
         buf[this->length++] = ch;
         buf[this->length] = '\0';
