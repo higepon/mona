@@ -1,5 +1,11 @@
 2004-11-06  Yamami  <yamamimail@users.sourceforge.jp>
 
+        * include/gui/System/Text/Encoding.h: コメント記述
+        
+        * src/lib/gui/System/Text/Encoding.cpp: コメント記述
+
+2004-11-06  Yamami  <yamamimail@users.sourceforge.jp>
+
         * include/gui/System/Event.h: コメント記述
         
         * include/gui/System/Array.h: コメント記述
