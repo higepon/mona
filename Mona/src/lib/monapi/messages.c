@@ -7,12 +7,13 @@ static dword server_ids[] =
     THREAD_UNKNOWN,  // ID_MOUSE_SERVER
     THREAD_UNKNOWN,  // ID_KEYBOARD_SERVER
     THREAD_UNKNOWN,  // ID_FILE_SERVER
-    THREAD_UNKNOWN   // ID_GUI_SERVER
+    THREAD_UNKNOWN,  // ID_GUI_SERVER
+    THREAD_UNKNOWN   // ID_ELF_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.SVR", "KEYBDMNG.SVR", "FILE.SVR", "GUI.SVR"
+    "MOUSE.SVR", "KEYBDMNG.SVR", "FILE.SVR", "GUI.SVR", "ELF.SVR"
 };
 
 dword monapi_get_server_thread_id(int id)
@@ -131,4 +132,15 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int p
     ret->Size   = msg.arg3;
     monapi_cmemoryinfo_map(ret);
     return ret;
+}
+
+int monapi_call_elf_execute_file(const char* command_line, int prompt)
+{
+    dword tid = monapi_get_server_thread_id(ID_ELF_SERVER);
+    MessageInfo msg;
+    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_ELF_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
+    {
+        return -1;
+    }
+    return msg.arg2;
 }
