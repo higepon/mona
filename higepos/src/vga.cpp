@@ -78,9 +78,9 @@ void _sys_printf (char* format, ...) {
               case '%':
                   _sysPutCharacter('%');
                   break;
-             case '\0':
-                 i--;
-                 break;
+              case '\0':
+                  i--;
+                  break;
             }
         } else {
             _sysPutCharacter(format[i]);
