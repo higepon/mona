@@ -38,6 +38,7 @@
 #include<IA32MemoryManager.h>
 #include<string.h>
 #include<PagingUtil.h>
+#include<ProcessManager.h>
 
 char* version = "Mona develop beta 0.08a $Date$";
 
@@ -124,6 +125,10 @@ void startKernel(void) {
 
 #ifdef HIGE
     g_info_level = ERROR;
+
+    ProcessManager* mp = new ProcessManager();
+
+
     FDCTester();
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());

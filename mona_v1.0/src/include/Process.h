@@ -54,10 +54,12 @@ class Process {
     }
 
   protected:
-    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
 
   public:
     ProcessInfo pinfo_;
+
+    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
+
     static void setup();
 };
 

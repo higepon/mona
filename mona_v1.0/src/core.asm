@@ -15,7 +15,7 @@ BITS 32
 [global _arch_kthread_switch]
 [global _arch_set_stack_view]
 [global _arch_save_process_register]
-[global _arch_kthread_switch_process]
+[global _arch_switch_process]
 
 [extern _g_kthread_current] ;; pointer to current thread
 [extern _g_current_process] ;; pointer to current process

@@ -20,6 +20,7 @@ extern "C" void arch_timerhandler(void);
 extern "C" void arch_keystrokehandler(void);
 extern "C" void arch_dummyhandler(void);
 extern "C" void arch_kthread_switch(void);
+extern "C" void arch_switch_process(void);
 extern "C" void arch_fault0dhandler(void);
 extern "C" void arch_syscall_handler(void);
 

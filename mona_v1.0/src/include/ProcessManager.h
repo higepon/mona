@@ -15,6 +15,9 @@
 #define _MONA_PROCESS_MANAGER_
 
 #include<types.h>
+#include<Process.h>
+#include<ihandlers.h>
+#include<Scheduler.h>
 
 /*!
     class ProcessManager
@@ -31,7 +34,7 @@ class ProcessManager {
     PTE*  allocatePageDir();
     virtual_addr allocateStack();
     dword allocatePID();
-    void switch();
+    void switchProcess();
 
   public:
     void schedule();
@@ -39,6 +42,7 @@ class ProcessManager {
 
   private:
     dword pid_;
+    Scheduler scheduler_;
 };
 
 #endif

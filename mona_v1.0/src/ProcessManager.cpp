@@ -17,7 +17,7 @@ ProcessManager::ProcessManager() {
     pid_ = 0;
 }
 
-void ProcessManager::switch() {
+void ProcessManager::switchProcess() {
 
     arch_switch_process();
 }
@@ -25,7 +25,7 @@ void ProcessManager::switch() {
 void ProcessManager::schedule(){
 
     scheduler_.schedule();
-    switch();
+    this->switchProcess();
 
 }
 
