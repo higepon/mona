@@ -12,7 +12,7 @@ namespace MonAPI {
 class FileInputStream : public InputStream {
 
   public:
-    FileInputStream(char* file);
+    FileInputStream(const char* file);
     virtual ~FileInputStream();
 
   public:
@@ -23,7 +23,7 @@ class FileInputStream : public InputStream {
     virtual dword getFileSize() const;
 
   protected:
-    char* file_;
+    const char* file_;
     dword readSize_;
     volatile dword fileSize_;
     bool isOpen_;

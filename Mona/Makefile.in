@@ -17,17 +17,7 @@ install:
 	@cd src; $(MAKE) $@
 	@cd apps; $(MAKE) $@
 	@cd samples; $(MAKE) $@
-	for file in $(ELF_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file APPS/`basename $$file`; done
-	for file in $(SVR_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file SERVERS/`basename $$file`; done
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/AUTOEXEC.MSH AUTOEXEC.MSH
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA.CFG MONA.CFG
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/NEKO.JPG NEKO.JPG
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/STARTING.JPG STARTING.JPG
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/BLACK.BMP BLACK.BMP
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/WHITE.BMP WHITE.BMP
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA-12.MNF MONA-12.MNF
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/WABA.LIB  APPS/WABA.LIB
-	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/HELLO.WRP APPS/HELLO.WRP
+	@$(MAKE) image
 
 clean:
 	@cd tools; $(MAKE) $@
@@ -52,6 +42,19 @@ distclean: clean
 	@cd samples; $(MAKE) $@
 	rm -f Makefile
 	rm -f env/Makefile.inc
+
+image:
+	for file in $(ELF_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file APPS/`basename $$file`; done
+	for file in $(SVR_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file SERVERS/`basename $$file`; done
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/AUTOEXEC.MSH AUTOEXEC.MSH
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA.CFG MONA.CFG
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/NEKO.JPG NEKO.JPG
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/STARTING.JPG STARTING.JPG
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/BLACK.BMP BLACK.BMP
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/WHITE.BMP WHITE.BMP
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA-12.MNF MONA-12.MNF
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/WABA.LIB  APPS/WABA.LIB
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/HELLO.WRP APPS/HELLO.WRP
 
 write:
 	cp $(TARGET) /dev/fd0

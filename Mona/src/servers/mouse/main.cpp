@@ -114,7 +114,7 @@ int MonaMain(List<char*>* pekoe) {
                 prevY = posY;
 
                 Message::create(&send, MSG_MOUSE_INFO, posX, posY
-                                , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
+                                , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00));
                 sendMouseInformation(destList, &send);
 
                 break;
@@ -127,7 +127,7 @@ int MonaMain(List<char*>* pekoe) {
                     paintCursor(&screen, posX, posY, &vscreen);
                 }
 
-                Message::create(&send, MSG_RESULT_OK, receive.header, 0, 0, NULL);
+                Message::create(&send, MSG_RESULT_OK, receive.header);
                 Message::send(receive.from, &send);
 
                 break;
@@ -137,7 +137,7 @@ int MonaMain(List<char*>* pekoe) {
                 paintCursor(&screen, posX, posY, &vscreen);
                 disable_count++;
 
-                Message::create(&send, MSG_RESULT_OK, receive.header, 0, 0, NULL);
+                Message::create(&send, MSG_RESULT_OK, receive.header);
                 Message::send(receive.from, &send);
 
                 break;

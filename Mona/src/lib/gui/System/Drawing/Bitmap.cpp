@@ -4,21 +4,10 @@
 #ifdef MONA
 #include <monapi.h>
 
-enum
-{
-	MSG_GUISERVER_GETFONT = 0x4000,
-	MSG_GUISERVER_RETURNFONT,
-	MSG_GUISERVER_DECODEIMAGE,
-	MSG_GUISERVER_RETURNIMAGE,
-	MSG_GUISERVER_DISPOSEIMAGE
-};
-
-extern int __SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL);
-extern MessageInfo __WaitMessage(dword header);
-
 extern dword __gui_server;
 #endif
 
+#include <gui/messages.h>
 #include <gui/System/Pointer.h>
 #include <gui/System/Drawing/Bitmap.h>
 
@@ -47,32 +36,32 @@ namespace System { namespace Drawing
 		}
 		fn[fnlen] = '\0';
 		
-		if (::__SendMessage(__gui_server, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, fn.get()) != 0)
+		MessageInfo msg;
+		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, fn.get()) != 0)
 		{
 			::printf("ERROR: Can't connect to GUI server!\n");
-			::exit(1);
+			return;
 		}
-		MessageInfo msg = __WaitMessage(MSG_GUISERVER_RETURNIMAGE);
-		if (msg.arg1 == 0) return;
+		if (msg.arg2 == 0) return;
 		
-		byte* image = MonAPI::MemoryMap::map(msg.arg1);
+		byte* image = MonAPI::MemoryMap::map(msg.arg2);
 		if (image == NULL)
 		{
 			::printf("ERROR: Can not get image data!\n");
-			::exit(1);
+			return;
 		}
 		
-		this->width  = msg.arg2;
-		this->height = msg.arg3;
+		this->width  = GET_X_DWORD(msg.arg3);
+		this->height = GET_Y_DWORD(msg.arg3);
 		int len = this->width * this->height;
 		this->buffer.Alloc(len);
 		::memcpy(this->buffer.get(), image, len * 4);
-		MonAPI::MemoryMap::unmap(msg.arg1);
+		MonAPI::MemoryMap::unmap(msg.arg2);
 		
-		if (::__SendMessage(__gui_server, MSG_GUISERVER_DISPOSEIMAGE, msg.arg1, 0, 0) != 0)
+		if (MonAPI::Message::send(__gui_server, MSG_GUISERVER_DISPOSEIMAGE, msg.arg2) != 0)
 		{
 			::printf("ERROR: Can't connect to GUI server!\n");
-			::exit(1);
+			return;
 		}
 #endif
 	}

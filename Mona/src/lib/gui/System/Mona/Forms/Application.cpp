@@ -1,6 +1,7 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
+#include <gui/messages.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 
@@ -15,33 +16,6 @@ using namespace System::Collections;
 using namespace System::Drawing;
 
 #ifdef MONA
-enum
-{
-	MSG_GUISERVER_GETFONT = 0x4000,
-	MSG_GUISERVER_RETURNFONT,
-	MSG_GUISERVER_DECODEIMAGE,
-	MSG_GUISERVER_RETURNIMAGE,
-	MSG_GUISERVER_DISPOSEIMAGE
-};
-
-int __SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL)
-{
-	MessageInfo msg;
-	MonAPI::Message::create(&msg, header, arg1, arg2, arg3, (char*)str);
-	return MonAPI::Message::send(to, &msg);
-}
-
-MessageInfo __WaitMessage(dword header)
-{
-	MessageInfo msg;
-	for (;;)
-	{
-		if (MonAPI::Message::receive(&msg)) continue;
-		if (msg.header == header) break;
-	}
-	return msg;
-}
-
 dword __mouse_server, __gui_server;
 #else
 #include "MONA-12.h"
@@ -62,29 +36,28 @@ namespace System { namespace Mona { namespace Forms
 		
 #ifdef MONA
 		__mouse_server = MonAPI::Message::lookupMainThread("MOUSE.SVR");
-		if (__mouse_server == 0xFFFFFFFF ||
-			::__SendMessage(__mouse_server, MSG_MOUSE_REGIST_TO_SERVER, MonAPI::System::getThreadID(), 0, 0) != 0)
+		if (MonAPI::Message::send(__mouse_server, MSG_MOUSE_REGIST_TO_SERVER, MonAPI::System::getThreadID()) != 0)
 		{
 			::printf("ERROR: Can't connect to mouse server!\n");
 			::exit(1);
 		}
 		
 		__gui_server = MonAPI::Message::lookupMainThread("GUI.SVR");
-		if (__gui_server == 0xFFFFFFFF || ::__SendMessage(__gui_server, MSG_GUISERVER_GETFONT, 0, 0, 0) != 0)
+		MessageInfo msg;
+		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_GETFONT) != 0)
 		{
 			::printf("ERROR: Can't connect to GUI server!\n");
 			::exit(1);
 		}
-		MessageInfo msg = __WaitMessage(MSG_GUISERVER_RETURNFONT);
-		byte* font_data = MonAPI::MemoryMap::map(msg.arg1);
+		byte* font_data = MonAPI::MemoryMap::map(msg.arg2);
 		if (font_data == NULL)
 		{
 			::printf("ERROR: Can not get font data!\n");
 			::exit(1);
 		}
-		Application::defaultFontData = new unsigned char[msg.arg2];
-		::memcpy(Application::defaultFontData, font_data, msg.arg2);
-		MonAPI::MemoryMap::unmap(msg.arg1);
+		Application::defaultFontData = new unsigned char[msg.arg3];
+		::memcpy(Application::defaultFontData, font_data, msg.arg3);
+		MonAPI::MemoryMap::unmap(msg.arg2);
 #else
 		Application::defaultFontData = MONA_12_MNF;
 #ifdef WIN32
@@ -96,10 +69,10 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Dispose()
 	{
 #ifdef MONA
-		if (::__SendMessage(__mouse_server, MSG_MOUSE_UNREGIST_FROM_SERVER, MonAPI::System::getThreadID(), 0, 0) != 0)
+		if (MonAPI::Message::send(__mouse_server, MSG_MOUSE_UNREGIST_FROM_SERVER, MonAPI::System::getThreadID()) != 0)
 		{
 			::printf("ERROR: Can't connect to mouse server!\n");
-			::exit(1);
+			//::exit(1);
 		}
 #endif
 	}
@@ -110,10 +83,9 @@ namespace System { namespace Mona { namespace Forms
 		MessageInfo msg;
 		while (!Application::isExited)
 		{
-			if (!MonAPI::Message::receive(&msg))
-			{
-				Application::ProcessEvent(msg.header, msg.arg1, msg.arg2, msg.arg3);
-			}
+			if (MonAPI::Message::receive(&msg) != 0) continue;
+			
+			Application::ProcessEvent(msg.header, msg.arg1, msg.arg2, msg.arg3);
 		}
 #elif defined(WIN32)
 		::MonaGUI_Run();

@@ -27,27 +27,12 @@ _P<MonAPI::Screen> GetDefaultScreen()
 	return ret;
 }
 
-extern int __SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL);
 extern dword __mouse_server;
-
-static MessageInfo WaitMessage(dword from, dword header, dword arg1)
-{
-	MessageInfo msg;
-	for (;;)
-	{
-		if (MonAPI::Message::receive(&msg)) continue;
-		if (msg.from == from && msg.header == header && msg.arg1 == arg1) break;
-	}
-	return msg;
-}
 
 void __SetMouseCursor(bool enabled)
 {
-	if (__mouse_server == 0xFFFFFFFF) return;
-	
 	dword hdr = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
-	__SendMessage(__mouse_server, hdr, 0, 0, 0);
-	WaitMessage(__mouse_server, MSG_RESULT_OK, hdr);
+	MonAPI::Message::sendReceive(NULL, __mouse_server, hdr);
 }
 #else
 extern unsigned char* screen_buffer;

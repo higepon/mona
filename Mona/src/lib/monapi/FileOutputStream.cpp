@@ -6,11 +6,11 @@
 
 namespace MonAPI {
 
-FileOutputStream::FileOutputStream(char* file) : file_(file), isOpen_(false), fileSize_(0), writeSize_(0), append_(false)
+FileOutputStream::FileOutputStream(const char* file) : file_(file), isOpen_(false), fileSize_(0), writeSize_(0), append_(false)
 {
 }
 
-FileOutputStream::FileOutputStream(char* file, bool append) : file_(file), isOpen_(false), fileSize_(0), writeSize_(0), append_(append)
+FileOutputStream::FileOutputStream(const char* file, bool append) : file_(file), isOpen_(false), fileSize_(0), writeSize_(0), append_(append)
 {
 }
 

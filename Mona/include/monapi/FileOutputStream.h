@@ -12,8 +12,8 @@ namespace MonAPI {
 class FileOutputStream : public OutputStream {
 
   public:
-    FileOutputStream(char* file);
-    FileOutputStream(char* file, bool append);
+    FileOutputStream(const char* file);
+    FileOutputStream(const char* file, bool append);
     virtual ~FileOutputStream();
 
   public:
@@ -23,7 +23,7 @@ class FileOutputStream : public OutputStream {
     virtual dword getWriteSize() const;
 
   protected:
-    char* file_;
+    const char* file_;
     bool isOpen_;
     dword fileSize_;
     dword writeSize_;

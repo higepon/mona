@@ -6,7 +6,7 @@
 
 namespace MonAPI {
 
-FileInputStream::FileInputStream(char* file) : file_(file), fileSize_(0), isOpen_(false) {
+FileInputStream::FileInputStream(const char* file) : file_(file), fileSize_(0), isOpen_(false) {
 }
 
 FileInputStream::~FileInputStream() {

@@ -6,39 +6,11 @@
 #include <monapi.h>
 #include <monalibc.h>
 #include <jpegls.h>
+#include <gui/messages.h>
 using namespace MonAPI;
 
 #define SVR "GUI Server"
 #define BYTE2INT(array, index) (*(int*)&array[index])
-
-enum
-{
-	MSG_GUISERVER_GETFONT = 0x4000,
-	MSG_GUISERVER_RETURNFONT,
-	MSG_GUISERVER_DECODEIMAGE,
-	MSG_GUISERVER_RETURNIMAGE,
-	MSG_GUISERVER_DISPOSEIMAGE,
-	MSG_GUISERVER_SETWALLPAPER,
-	MSG_GUISERVER_REFRESHWALLPAPER
-};
-
-static int SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL)
-{
-	MessageInfo msg;
-	Message::create(&msg, header, arg1, arg2, arg3, (char*)str);
-	return Message::send(to, &msg);
-}
-
-MessageInfo WaitMessage(dword from, dword header, dword arg1)
-{
-	MessageInfo msg;
-	for (;;)
-	{
-		if (MonAPI::Message::receive(&msg)) continue;
-		if (msg.from == from && msg.header == header && msg.arg1 == arg1) break;
-	}
-	return msg;
-}
 
 class MemoryInfo
 {
@@ -89,7 +61,7 @@ dword msvr = 0;
 static MemoryInfo* ReadFile(const char* file, bool prompt = false)
 {
 	if (prompt) printf("%s: Reading %s....", SVR, file);
-	FileInputStream fis((char*)file);
+	FileInputStream fis(file);
 	if (fis.open() != 0)
 	{
 		if (prompt) printf("ERROR\n");
@@ -222,17 +194,16 @@ void SetMouseCursor(bool enabled)
 	if (first)
 	{
 		msvr = Message::lookupMainThread("MOUSE.SVR");
-		if (msvr == 0xFFFFFFFF)
+		if (msvr == 0xffffffff)
 		{
 			printf("%s: Can't connect to mouse server!\n", SVR);
 		}
 		first = false;
 	}
-	if (msvr == 0xFFFFFFFF) return;
+	if (msvr == 0xffffffff) return;
 	
 	dword hdr = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
-	SendMessage(msvr, hdr, 0, 0, 0);
-	WaitMessage(msvr, MSG_RESULT_OK, hdr);
+	Message::sendReceive(NULL, msvr, hdr);
 }
 
 void DrawImage(MemoryInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
@@ -422,8 +393,7 @@ int MonaMain(List<char*>* pekoe)
 	ReadFont("/MONA-12.MNF");
 	if (default_font == NULL) exit(1);
 	
-	dword init = Message::lookupMainThread("INIT");
-    if (init == 0xFFFFFFFF || SendMessage(init, MSG_SERVER_START_OK, 0, 0, 0) != 0)
+    if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
 	{
 		printf("%s: INIT error\n", SVR);
 		exit(1);
@@ -437,19 +407,19 @@ int MonaMain(List<char*>* pekoe)
 		switch (msg.header)
 		{
 			case MSG_GUISERVER_GETFONT:
-				SendMessage(msg.from, MSG_GUISERVER_RETURNFONT, default_font->Handle, default_font->Size, 0);
+				Message::send(msg.from, MSG_RESULT_OK, msg.header, default_font->Handle, default_font->Size);
 				break;
 			case MSG_GUISERVER_DECODEIMAGE:
 			{
 				MemoryInfo* mi = ReadImage(msg.str);
 				if (mi != NULL)
 				{
-					SendMessage(msg.from, MSG_GUISERVER_RETURNIMAGE, mi->Handle, mi->Width, mi->Height);
+					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle, MAKE_DWORD(mi->Width, mi->Height));
 					delete mi;
 				}
 				else
 				{
-					SendMessage(msg.from, MSG_GUISERVER_RETURNIMAGE, 0, 0, 0);
+					Message::send(msg.from, MSG_RESULT_OK, msg.header);
 				}
 				break;
 			}
@@ -458,11 +428,11 @@ int MonaMain(List<char*>* pekoe)
 				break;
 			case MSG_GUISERVER_SETWALLPAPER:
 				DrawWallPaper(msg.str, msg.arg1, msg.arg2);
-				SendMessage(msg.from, MSG_RESULT_OK, msg.header, 0, 0);
+				Message::send(msg.from, MSG_RESULT_OK, msg.header);
 				break;
 			case MSG_GUISERVER_REFRESHWALLPAPER:
 				DrawWallPaper();
-				SendMessage(msg.from, MSG_RESULT_OK, msg.header, 0, 0);
+				Message::send(msg.from, MSG_RESULT_OK, msg.header);
 				break;
 		}
 	}

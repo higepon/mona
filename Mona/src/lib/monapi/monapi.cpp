@@ -15,6 +15,7 @@ int user_start() {
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
     MonAPI::MemoryMap::initialize();
+    MonAPI::Message::initialize();
     result = MonaMain(arg);
     delete arg;
     exit(result);
