@@ -70,9 +70,10 @@ void startKernel(void) {
     HVector<int>* v = new HVector<int>;
     v->add(10);
     v->add(11);
-    _sys_printf("vector = %d\n", v->get(0));
-
+    _sys_printf("vector element=%d size=%d\n", v->get(0), v->size());
+    delete(v);
 
     while (true) {
     }
 }
+

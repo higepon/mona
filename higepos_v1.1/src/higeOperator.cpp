@@ -53,3 +53,9 @@ void* __builtin_vec_new(unsigned long size) {
 
     return __builtin_new(size);
 }
+
+void __builtin_vec_delete(void* address) {
+
+    __builtin_delete(address);
+    return;
+}
