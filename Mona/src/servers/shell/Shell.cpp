@@ -108,11 +108,11 @@ void Shell::commandExecute(bool prompt)
     if (prompt) printf("\n");
 
     _A<CString> args = this->parseCommandLine();
+    this->position = 0;
     if (args.get_Length() == 0)
     {
         /* command is empty */
         this->printPrompt();
-        this->position = 0;
         return;
     }
 
@@ -127,7 +127,6 @@ void Shell::commandExecute(bool prompt)
         {
             this->printPrompt(newline ? "\n" : NULL);
         }
-        this->position = 0;
         return;
     }
 
@@ -189,7 +188,6 @@ void Shell::commandExecute(bool prompt)
     dword tid;
     int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid);
 
-    this->position = 0;
     if (!this->callAutoExec && result == 0)
     {
         this->waiting = tid;
