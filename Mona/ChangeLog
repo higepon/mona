@@ -1,3 +1,11 @@
+2004-10-20  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/glaunch: アプリケーションランチャー追加
+
+        * lib/baygui/, include/: 大幅なリファクタリング
+
+        * servers/baygui/:  大幅なリファクタリング
+
 2004-10-18  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/syscall.h (log): logprintf + __FILE_ + __LINE__
