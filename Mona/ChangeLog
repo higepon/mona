@@ -1,5 +1,7 @@
 2004-10-23  higepon  <higepon@users.sourceforge.jp>
 
+        * .cvsignore全般 : EX5の記述追加
+
         * Makefile全般: cd hoge; $(MAKE) -> cd hoge && $(MAKE)
 
         * wabaの削除

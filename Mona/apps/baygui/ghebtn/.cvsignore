@@ -10,5 +10,6 @@
 *.EL2
 *.EXE
 *.EX2
+*.EX5
 TAGS
 dependencies

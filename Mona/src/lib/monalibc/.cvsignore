@@ -3,5 +3,16 @@
 *.list
 *.map
 *.local
+*.BIN
+*.BN2
+*.BM2
+*.ELF
+*.EL2
+*.EXE
+*.EX2
+*.EX5
+*.DL2
+*.DLL
+*.DL5
 TAGS
 dependencies
