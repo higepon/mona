@@ -1,6 +1,8 @@
 2004-12-25  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/non-gui/jpegdemo/jpegdemo.cpp :非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 
+        * src/servers/moniter/main.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 
+
+        * apps/non-gui/jpegdemo/jpegdemo.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 
 
 2004-12-20  bayside  <bayside@users.sourceforge.jp>
 
