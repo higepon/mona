@@ -17,6 +17,37 @@
 #include <kernel.h>
 #include <string.h>
 #include <Queue.h>
+#include <Process.h>
+
+class SharedMemoryObject : public Queue {
+
+  public:
+    SharedMemoryObject();
+    SharedMemoryObject(dword id, dword size);
+    virtual ~SharedMemoryObject();
+
+    inline virtual dword getId() const {return id_;}
+    inline virtual dword getSize() const {return size_;}
+    bool isAllocated(dword physicalIndex);
+
+  public:
+    static void setup();
+    static bool open(dword id, dword size);
+    static bool attach(dword id, struct ProcessInfo* process, LinearAddress address);
+    static bool detach(dword id, PageEntry* directory);
+
+    static const int UN_MAPPED = -1;
+
+  private:
+    static SharedMemoryObject* find(dword id);
+
+  private:
+    dword id_;
+    dword size_;
+    int attachedCount_;
+    int physicalPageCount_;
+    int* physicalPages_;
+};
 
 class Segment {
 
@@ -67,34 +98,17 @@ class HeapSegment : public Segment {
     virtual bool faultHandler(LinearAddress address, dword error);
 };
 
-class SharedMemoryObject : public Queue {
+class SharedMemorySegment : public Segment {
 
   public:
-    SharedMemoryObject();
-    SharedMemoryObject(dword id, dword size);
-    virtual ~SharedMemoryObject();
+    SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject);
+    virtual ~SharedMemorySegment();
 
-    inline virtual dword getId() const {return id_;}
-    inline virtual dword getSize() const {return size_;}
   public:
-    static void setup();
-    static bool open(dword id, dword size);
-    static bool attach(dword id, PageEntry* directory, LinearAddress address);
-    static bool detach(dword id, PageEntry* directory);
+    virtual bool faultHandler(LinearAddress address, dword error);
 
-    static const int UN_MAPPED = -1;
-
-  private:
-    static SharedMemoryObject* find(dword id);
-
-  private:
-    dword id_;
-    dword size_;
-    int attachedCount_;
-    int physicalPageCount_;
-    int* physicalPages_;
-
+  protected:
+    SharedMemoryObject* sharedMemoryObject_;
 };
-
 
 #endif

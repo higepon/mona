@@ -211,6 +211,79 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
 }
 
 /*----------------------------------------------------------------------
+    SharedMemorySegment
+----------------------------------------------------------------------*/
+
+/*!
+    \brief initilize SharedMemorySegment
+
+    \param  start              LinearAddress of start
+    \param  size               segment size
+    \param  sharedMemoryObject pointer to sharedMemoryObject
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
+SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject) {
+
+    start_ = start;
+    size_  = size;
+    sharedMemoryObject_ = sharedMemoryObject;
+}
+
+/*!
+    \brief destruct segment
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
+SharedMemorySegment::~SharedMemorySegment() {
+
+}
+
+/*!
+    \brief fault handler
+
+    \param  address LinearAddress of fault point
+    \param  error   fault type
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
+bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
+
+    if (error != PageManager::FAULT_NOT_EXIST) {
+
+        errorNumber_ = FAULT_UNKNOWN;
+        return false;
+    }
+
+    if (address < start_ || address > start_ + size_) {
+
+        errorNumber_ = FAULT_OUT_OF_RANGE;
+        return false;
+    }
+
+    /* page fault point */
+    dword tableIndex1     = PageManager::getTableIndex(address);
+    dword directoryIndex1 = PageManager::getDirectoryIndex(address);
+
+    /* segment start point */
+    dword tableIndex2     = PageManager::getTableIndex(start_);
+    dword directoryIndex2 = PageManager::getDirectoryIndex(start_);
+
+    /* check already allocated physical page? */
+    dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
+    if (sharedMemoryObject_->isAllocated(physicalIndex)) {
+
+
+    } else {
+
+
+    }
+
+    return true;
+}
+
+/*----------------------------------------------------------------------
     SharedMemoryObject
 ----------------------------------------------------------------------*/
 SharedMemoryObject::SharedMemoryObject() {
@@ -282,4 +355,24 @@ bool SharedMemoryObject::open(dword id, dword size) {
     }
 
     return true;
+}
+
+bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAddress address) {
+
+    SharedMemoryObject* target = find(id);
+    if (target == NULL) return false;
+
+    if (process->shared != NULL) return false;
+
+    process->shared = new SharedMemorySegment(address, target->getSize(), target);
+    (target->attachedCount_)++;
+
+    return true;
+}
+
+bool SharedMemoryObject::isAllocated(dword physicalIndex) {
+
+    if (physicalPageCount_ <= physicalIndex) return false;
+
+    return (physicalPages_[physicalIndex] != UN_MAPPED);
 }
