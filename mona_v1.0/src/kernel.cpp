@@ -97,11 +97,11 @@ void startKernel(void) {
     *p = 5;
     p = (dword*)0x4FFFFF;
     *p = 5;
-    for (dword k = 0x3FFFFE; k < 0xffffffff; k++) {
-
-        p = (dword*)k;
-        *p = 5;
-    }
+    //    for (dword k = 0x3FFFFE; k < 0xffffffff; k++) {
+    //
+    //        p = (dword*)k;
+    //        *p = 5;
+    //    }
 
 
     //     SystemInfo::rdtscsub();
@@ -181,6 +181,7 @@ void userTest2() {
     while (true) {
 
         syscall_sleep(500);
+        syscall_print("Hello");
         syscall_heavy();
         while (true);
     }

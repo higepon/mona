@@ -28,3 +28,18 @@ int syscall_heavy() {
 
     return result;
 }
+
+int syscall_print(const char* msg) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_PRINT), "m"(msg)
+                 );
+
+    return result;
+}
