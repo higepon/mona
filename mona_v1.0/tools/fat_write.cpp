@@ -18,11 +18,19 @@
 
 int main(int argc, char *argv[]) {
 
-//     if (1) {
+//     /* arg check */
+//     if (argc != 3) {
 //         printf("usage: fat_write.exe image_file file_to_write\n");
 //         exit(-1);
 //     }
 
+//     /* tokenize */
+//     char* strFile = strtok(argv[2], ".");
+//     char* strExt  = strtok(NULL   , ".");
+//     if (!strExt || !strFile) {
+//         printf("File token error\n");
+//         exit(-1);
+//     }
 
 //     exit(0);
 
