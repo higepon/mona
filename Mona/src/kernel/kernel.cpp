@@ -79,7 +79,7 @@
 #define CC_VER  __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__
 #endif
 
-const char* version = "Mona version.0.3.0Alpha $Date$";
+const char* version = "Mona version.0.3.0Alpha1 $Date$";
 dword version_number  = 0x00000300;
 void  mainProcess();
 
