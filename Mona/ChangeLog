@@ -1,3 +1,11 @@
+2004-10-18  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/lib/pci PCIライブラリ追加
+
+        * include/pci PCIライブラリ用 includeファイル追加
+
+        * samples/non-gui/yamami  Yamami Mones/PCIライブラリ検証用サンプルアプリ 追加
+
 2004-10-17  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/PageManager.cpp (returnPages): ページ返却実験中

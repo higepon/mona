@@ -5,6 +5,7 @@ all:
 	@cd jpegls; $(MAKE) $@
 	@cd bzip2; $(MAKE) $@
 	@cd baygui; $(MAKE) $@
+	@cd pci; $(MAKE) $@
 
 install:
 	@cd monapi; $(MAKE) $@
@@ -13,6 +14,7 @@ install:
 	@cd jpegls; $(MAKE) $@
 	@cd bzip2; $(MAKE) $@
 	@cd baygui; $(MAKE) $@
+	@cd pci; $(MAKE) $@
 
 clean: touchdepend
 	@cd monapi; $(MAKE) $@
@@ -21,6 +23,7 @@ clean: touchdepend
 	@cd jpegls; $(MAKE) $@
 	@cd bzip2; $(MAKE) $@
 	@cd baygui; $(MAKE) $@
+	@cd pci; $(MAKE) $@
 	rm -f ../../lib/*.a
 
 depend: touchdepend
@@ -30,6 +33,7 @@ depend: touchdepend
 	@cd jpegls; $(MAKE) $@
 	@cd bzip2; $(MAKE) $@
 	@cd baygui; $(MAKE) $@
+	@cd pci; $(MAKE) $@
 
 distclean:
 	rm -f monapi/dependencies
@@ -38,6 +42,7 @@ distclean:
 	rm -f jpegls/dependencies
 	rm -f bzip2/dependencies
 	rm -f baygui/dependencies
+	rm -f pci/dependencies
 
 touchdepend:
 	touch monapi/dependencies
@@ -46,3 +51,4 @@ touchdepend:
 	touch jpegls/dependencies
 	touch bzip2/dependencies
 	touch baygui/dependencies
+	touch pci/dependencies
