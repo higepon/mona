@@ -1,9 +1,4 @@
 <?php
-/////////////////////////////////////////////////
-// PukiWiki - Yet another WikiWikiWeb clone.
-//
-// $Id$
-//
 if (!defined('DATA_DIR')) { exit; }
 header('Cache-control: no-cache');
 header('Pragma: no-cache');
@@ -31,8 +26,8 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
 <?php } ?>
 
  <title><?php echo "$title - $page_title" ?></title>
- <link rel="stylesheet" href="skin/default.ja.css" type="text/css" media="screen" charset="Shift_JIS" />
- <link rel="stylesheet" href="skin/print.ja.css" type="text/css" media="print" charset="Shift_JIS" />
+ <link rel="stylesheet" href="../../website/skin/default.ja.css" type="text/css" media="screen" charset="Shift_JIS" />
+ <link rel="stylesheet" href="../../website/skin/print.ja.css" type="text/css" media="print" charset="Shift_JIS" />
 <?php
   global $trackback, $referer;
   if ($trackback) {
