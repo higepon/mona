@@ -90,8 +90,11 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 */
 void X86MemoryManager::freeMemory(void* address) {
 
-    struct memoryEntry* targetAddress = (struct memoryEntry*)((H_SIZE_T)address - 8);
-    _sys_printf("free %d", (H_SIZE_T)address);
+    _sys_printf("%d, %d", sizeof(struct memoryEntry*), sizeof(H_SIZE_T));
+
+    struct memoryEntry* targetAddress = (struct memoryEntry*)((H_SIZE_T)address 
+                                      - sizeof(H_SIZE_T) 
+                                      - sizeof(struct memoryEntry*));
     this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
     this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
