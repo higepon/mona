@@ -113,7 +113,22 @@ void fdcHandler(){
 */
 void timerHandler() {
 
+    ProcessManager& pm = ProcessManager::instance();
     static dword idx = 0;
+
+    _saveRegisters(pm.current);
+
+    _sys_printf("%x %x $ %x $ %x \n", pm.current->eax, pm.current->eip, pm.current->cs, pm.current->eflags);
+
+    _sys_printf("eax(%x)", pm.current->eax);
+    _sys_printf("ebx(%x)", pm.current->ebx);
+    _sys_printf("ecx(%x)", pm.current->ecx);
+    _sys_printf("edx(%x)", pm.current->edx);
+    _sys_printf("edi(%x)", pm.current->edi);
+    _sys_printf("esi(%x)", pm.current->esi);
+
+    if (idx == 2)    while (true);
+
     idx++;
 
     /* EOI is below for IRQ 8-15 */
@@ -131,7 +146,6 @@ void timerHandler() {
     } else if (idx % 50 != 0) iret();
 
     /* determine next process or thread and run it */
-    ProcessManager& pm = ProcessManager::instance();
     pm.schedule();
 
     /* switch to next */

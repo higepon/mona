@@ -8,6 +8,7 @@ else
         include $(ENV)/linux.env
     endif
 endif
+VERSION    = 0.0.2
 DOXYGEN    = doxygen
 BIN        = ../bin
 LIST       = ../list
@@ -75,5 +76,9 @@ depend:
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o
+
+dist :
+	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img
+	cd ../../; tar cf - mona_v1.0 | gzip -9 > "mona-$(VERSION).tar.gz"
 
 include $(ENV)/dependencies

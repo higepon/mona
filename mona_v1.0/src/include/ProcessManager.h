@@ -39,12 +39,45 @@
                  : "m" (nextProcess->esp)           \
                  );                                 \
 
+/*! \def save all registers */
+#define _saveRegisters(process) {            \
+                                             \
+    asm volatile("movl %%ebx,     %0     \n" \
+                 "movl 4(%%ebp) , %%ebx  \n" \
+                 "movl %%ebx    , %1     \n" \
+                 "movl 8(%%ebp) , %%ebx  \n" \
+                 "movl %%ebx    ,  %2    \n" \
+                 "movl 12(%%ebp), %%ebx  \n" \
+                 "movl %%ebx    ,  %3    \n" \
+                 "movl %%eax    ,  %4    \n" \
+                 "movl %%ecx    ,  %5    \n" \
+                 "movl %%edx    ,  %6    \n" \
+                 "movl %%esi    ,  %7    \n" \
+                 "movl %%edi    ,  %8    \n" \
+                 : "=m"(process->ebx)        \
+                 , "=m"(process->eip)        \
+                 , "=m"(process->cs)         \
+                 , "=m"(process->eflags)     \
+                 , "=m"(process->eax)        \
+                 , "=m"(process->ecx)        \
+                 , "=m"(process->edx)        \
+                 , "=m"(process->esi)        \
+                 , "=m"(process->edi)        \
+                 );                          \
+}                                            \
+
 /*! \def struct for process */
 typedef struct Process {
     dword* esp;
     dword  eip;
     dword  cs;
     dword  eflags;
+    dword  eax;
+    dword  ecx;
+    dword  edx;
+    dword  ebx;
+    dword  esi;
+    dword  edi;
 };
 
 /*!
