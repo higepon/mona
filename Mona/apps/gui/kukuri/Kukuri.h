@@ -1,8 +1,7 @@
 /* Kukuri for Mona
  * 
  * Copyright (c) 2000 h-muro
- * Copyright (c) 2000, 2004 Tino
- * Copyright (c) 2004 Higepon
+ * Copyright (c) 2004 Tino, Higepon
  * 
  * All rights reserved.
  * 
