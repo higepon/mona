@@ -478,20 +478,24 @@ int ThreadOperation::switchThread(bool isProcessChanged)
     if (isProcessChanged && isUser)
     {
         /* address space & therad switch */
+	debug_faultpoint = -2;
         arch_switch_thread_to_user2();
     }
     else if (!isProcessChanged && isUser)
     {
         /* only thread switch */
+	debug_faultpoint = -3;
         arch_switch_thread_to_user1();
     }
     else if (isProcessChanged && !isUser)
     {
         /* address space & therad switch */
+	debug_faultpoint = -4;
         arch_switch_thread2();
     }
     else
     {
+	debug_faultpoint = -5;
         arch_switch_thread1();
     }
 

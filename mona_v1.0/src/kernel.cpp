@@ -127,7 +127,7 @@ void startKernel(void)
     SharedMemoryObject::setup();
 
     /* messenger */
-    g_messenger = new Messenger(256);
+    g_messenger = new Messenger(512);
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);

@@ -46,7 +46,7 @@ template <class T> class Array {
   public:
     inline T& operator [](dword index) {
 
-#ifdef DEBUG_MODE
+#if 1
         if (index < 0 || index > length_ - 1) {
             g_console->printf("array index outof range %d\n", index);
             for(;;);

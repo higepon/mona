@@ -103,7 +103,8 @@ void keyStrokeHandler(dword scancode)
 void fault0dHandler(dword error)
 {
     dokodemoView();
-    g_console->printf("error=%x\n", error);
+    g_console->printf("%s, error=%x\n fault=%d", g_currentThread->process->getName(), error, debug_faultpoint);
+    g_scheduler->dump();
     panic("fault0d");
 }
 
@@ -141,7 +142,7 @@ void timerHandler()
     g_scheduler->tick();
     g_currentThread->thread->tick();
     dword tick = g_scheduler->getTick();
-    bool isProcessChange = (tick % 10) ? g_scheduler->schedule2() : g_scheduler->schedule();
+    bool isProcessChange = (tick % 5) ? g_scheduler->schedule2() : g_scheduler->schedule();
 
     ThreadOperation::switchThread(isProcessChange);
 
@@ -161,13 +162,13 @@ void MFDCHandler(void)
     /* thx! K-tan */
     outportb(0x20, 0x66);
 
-    int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
+//     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
 
-//    g_console->printf("wake up result =%d\n", wakeupResult);
-    if (wakeupResult != 0)
-    {
-         ThreadOperation::switchThread((wakeupResult == 1));
-    }
+// //    g_console->printf("wake up result =%d\n", wakeupResult);
+//     if (wakeupResult != 0)
+//     {
+//          ThreadOperation::switchThread((wakeupResult == 1));
+//     }
 }
 
 /* IRQ Handler (expr) */
@@ -294,7 +295,7 @@ void dokodemoView() {
     g_console->printf("\n");
     g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-    g_console->printf("cs =%x ds =%x ss =%x cre=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
     g_console->printf("eflags=%x\n", i->eflags);
     g_console->printf("stack 0(%x) 1(%x) 2(%x) 3(%x)\n", j->stack0, j->stack1, j->stack2, j->stack3);
     g_console->printf("stack 4(%x) 6(%x) 5(%x) 7(%x)\n", j->stack4, j->stack5, j->stack6, j->stack7);
