@@ -1,3 +1,7 @@
+2005-03-02  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/PageManager.cpp: vram alignƒoƒO‚ÌC³ thanks Taka‚³‚ñ
+
 2004-02-28  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/guitest1/guitest1.cpp: Checkbox ’Ç‰Á

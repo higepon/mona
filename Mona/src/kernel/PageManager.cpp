@@ -276,7 +276,7 @@ void PageManager::setup(PhysicalAddress vram)
     vram_ = vram;
 
     /* find 4KB align */
-    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
+    vram = ((int)vram) & 0xFFFFF000;
 
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
     int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
@@ -336,7 +336,7 @@ PageEntry* PageManager::createKernelPageDirectory()
 
     /* find 4KB align for VRAM */
     dword vram = vram_;
-    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
+    vram = ((int)vram) & 0xFFFFF000;
 
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
     int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
@@ -392,7 +392,7 @@ PageEntry* PageManager::createNewPageDirectory() {
 
     /* find 4KB align for VRAM */
     dword vram = vram_;
-    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
+    vram = ((int)vram) & 0xFFFFF000;
 
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
     int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
