@@ -198,7 +198,7 @@ test_higepon.o: test_higepon.cpp include/tester.h user/include/types.h \
   include/sysresource.h include/vbe.h include/io.h \
   include/GraphicalConsole.h include/z.h contrib/include/zlib.h \
   contrib/include/zconf.h user/include/KeyBoardManager.h \
-  user/include/userlib.h include/elf.h include/syscalls.h
+  user/include/userlib.h include/elf.h include/syscalls.h include/pic.h
 Mutex.o: Mutex.cpp include/Mutex.h include/Process.h user/include/types.h \
   include/PageManager.h include/BitMap.h include/Segments.h \
   include/operator.h include/string.h include/kernel.h \

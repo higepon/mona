@@ -133,6 +133,11 @@ void startKernel(void) {
     checkTypeSize();
     printOK("Checking type size ");
 
+    /* mouse init */
+    int mouse = Mouse::init();
+    if (!mouse) printOK("Setting Mouse      ");
+    else g_console->printf("Mouse init error=%d\n", mouse);
+
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
@@ -158,10 +163,6 @@ void startKernel(void) {
     g_processManager->join(testProcess1, testThread1);
 
     disableTimer();
-
-    /* mouse init */
-    int mouse = Mouse::init();
-    g_console->printf("Setting Mouse %s[%d]", !mouse ? "OK" : "NG", mouse);
 
     enableInterrupt();
 
@@ -236,24 +237,4 @@ inline void printOK(const char* msg) {
 
     if (i % 2) g_console->printf("\n");
     i++;
-}
-
-/*!
-    \brief print Banner
-
-    print Banner
-
-    \author HigePon
-    \date   create:2003/01/26 update:2003/01/25
-*/
-inline void printBanner() {
-
-    g_console->printf("------------------------------------------------------\n");
-    g_console->printf("   Thanks for choosing MONA!                          \n");
-    g_console->printf("            /\x18__/\x18                                    \n");
-    g_console->printf("           ( ;'[]`)  < Ž³ŽÜŽÜŽÜŽ§ŽÝ!!                       \n");
-    g_console->printf("           (      )                                   \n");
-    g_console->printf("------------------------------------------------------\n");
-    g_console->printf("%s\n\n", version);
-    g_console->setCHColor(GP_WHITE);
 }
