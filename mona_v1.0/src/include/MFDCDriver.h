@@ -34,6 +34,7 @@ class MFDCDriver {
     bool sendCommand(const byte command[], const byte length);
     bool waitInterrupt();
     bool recalibrate();
+    bool checkMSR(byte expectedCondition, byte mask);
     bool checkMSR(byte expectedCondition);
     bool seek(byte track);
     bool senseInterrupt();
@@ -41,6 +42,8 @@ class MFDCDriver {
 
   private:
     byte version_;
+    byte results_[10];
+    int resultsLength_;
     static bool interrupt_;
     static VirtualConsole* console_;
 };

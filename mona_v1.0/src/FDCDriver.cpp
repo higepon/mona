@@ -118,7 +118,7 @@ int FDCDriver::initialize()
         return 0;
     }
 
-        motor(1);
+    motor(1);
     recalibrate(); 
     motor(0);
 
