@@ -24,8 +24,8 @@ class DiskDriver {
     ~DiskDriver();
 
   public:
-    bool read(char* buf, int sector);
-    bool write(char* buf, int sector);
+    bool read(int sector, char* buf);
+    bool write(int sector, char* buf);
 
   private:
 

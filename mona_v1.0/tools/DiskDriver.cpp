@@ -1,3 +1,4 @@
+#include "types.h"
 #include "DiskDriver.h"
 
 DiskDriver::DiskDriver(const char* file, long size) {
