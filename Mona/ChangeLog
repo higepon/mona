@@ -1,5 +1,7 @@
 2004-12-09  higepon  <higepon@users.sourceforge.jp>
 
+        * src/Makefile (install): kernelよりもserversを先にビルドするように変更。
+
         * src/servers/mouse/main.cpp (disableKeyboard): mouseのバグ修正
 
 2004-12-09  Yamami  <yamamimail@users.sourceforge.jp>

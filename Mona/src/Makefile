@@ -1,12 +1,12 @@
 all:
-	@cd kernel && $(MAKE) $@
 	@cd lib && $(MAKE) $@
 	@cd servers && $(MAKE) $@
+	@cd kernel && $(MAKE) $@
 
 install:
-	@cd kernel && $(MAKE) $@
 	@cd lib && $(MAKE) $@
 	@cd servers && $(MAKE) $@
+	@cd kernel && $(MAKE) $@
 
 clean: touchdepend
 	@cd kernel && $(MAKE) $@
