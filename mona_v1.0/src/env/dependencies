@@ -138,9 +138,6 @@ SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h
 Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h
-SystemConsole.o: SystemConsole.cpp include/SystemConsole.h \
-  include/VirtualConsole.h include/monaVga.h include/monaTypes.h \
-  include/string.h
 MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h include/monaIo.h \
   include/monaVga.h include/monaKernel.h include/monaOperator.h

@@ -35,7 +35,6 @@ SOURCES    = cstart.cpp            \
              string.cpp            \
              SystemInfo.cpp        \
              Semaphore.cpp         \
-             SystemConsole.cpp     \
              MFDCDriver.cpp        \
              GraphicalConsole.cpp
 
