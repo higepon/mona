@@ -137,7 +137,7 @@ V86Process::V86Process(const char* name) {
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : tick_(0), timeLeft_(4) {
+Thread::Thread(dword programCounter) : tick_(0), timeLeft_(4) {
 
     /* thread information */
     threadInfo_ = (ThreadInfo*)malloc(sizeof(ThreadInfo));
@@ -146,9 +146,16 @@ Thread::Thread() : tick_(0), timeLeft_(4) {
     /* thread information arch dependent */
     threadInfo_->archinfo = (ArchThreadInfo*)malloc(sizeof(ArchThreadInfo));
     checkMemoryAllocate(threadInfo_->archinfo, "class Thread arch info allocate");
+
+    /* programCounter */
+    setProgramCounter(programCounter);
 }
 
 Thread::~Thread() {
+
+    /* free memory */
+    free(threadInfo_->archinfo);
+    free(threadInfo_);
 }
 
 /*----------------------------------------------------------------------

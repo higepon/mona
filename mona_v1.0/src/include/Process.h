@@ -96,7 +96,7 @@ typedef struct ThreadInfo {
 class Thread {
 
   public:
-    Thread();
+    Thread(dword programCounter);
     virtual ~Thread();
 
   public:
@@ -120,6 +120,10 @@ class Thread {
 
     inline ThreadInfo* getThreadInfo() const {
         return threadInfo_;
+    }
+
+    inline void setProgramCounter(dword programCounter) {
+        threadInfo_->archinfo->eip = programCounter;
     }
 
   private:
