@@ -478,9 +478,9 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , head
                    , sector
                    , 0x02
-                   , 0x7E//0x12 for Vmware
-                   , 0x01//0x1b
-                   , 0xFF//0x00
+                   , 0x12 // EOT osask(0x7e, 0x01, 0xff)
+                   , 0x1B // GSL
+                   , 0xFF // DTL vmware hate 0x00
                    };
 
     if (!seek(track)) {
