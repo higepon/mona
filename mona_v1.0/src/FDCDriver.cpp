@@ -1,4 +1,4 @@
-//#define FDC_DEBUG
+#define FDC_DEBUG
 /*!
     \file  FDCDriver.cpp
     \brief class Floppy Disk Controller for MultiTask

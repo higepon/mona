@@ -29,7 +29,12 @@ void FDCTester() {
     for (int i = 0; i < 73; i++) {
 
         memset(tbuf, i, 512);
-        g_fdcdriver->write(i, tbuf);
+        if (!g_fdcdriver->write(i, tbuf)) {
+
+            g_console->printf("write failed %d", i);
+            g_fdcdriver->motor(false);
+            while (true);
+        }
     }
     g_fdcdriver->motor(false);
     g_console->printf("ok");
