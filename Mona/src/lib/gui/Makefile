@@ -21,7 +21,7 @@ CXXFLAGS += -DDEBUG
 
 INCLUDE = -I$(INCDIR)
 
-all : $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	rm -f $@

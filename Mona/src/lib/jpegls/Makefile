@@ -6,7 +6,7 @@ include $(MONADIR)/env/monapi.inc
 
 INCLUDE = -I$(INCDIR)
 
-all : $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	rm -f $@

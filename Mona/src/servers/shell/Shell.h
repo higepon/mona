@@ -17,11 +17,11 @@ class Shell {
 
   public:
     void onKeyDown(int keycode, int modifiers);
-    void printPrompt();
+    void printPrompt(const MonAPI::CString& prefix = NULL);
 
   protected:
     void commandChar(char c);
-    void commandExecute();
+    void commandExecute(bool prompt);
     void commandTerminate();
     void backspace();
     void putHistory(const MonAPI::CString& command);
@@ -33,6 +33,7 @@ class Shell {
     MonAPI::CString getParentDirectory(const MonAPI::CString& dir);
     MonAPI::CString mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CString& dir2);
     void printFiles(const MonAPI::CString& dir);
+    void executeMSH(const MonAPI::CString& msh);
 
   protected:
     char commandLine_[1024];

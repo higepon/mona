@@ -10,6 +10,6 @@ include $(MONADIR)/env/monapi-el2.inc
 LINK      = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
 CXXFLAGS += -DDEBUG
 
-$(TARGET): $(LIBDIR)/libgui.a
+$(TARGET).ELF: $(LIBDIR)/libgui.a
 
 include dependencies

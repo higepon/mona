@@ -40,7 +40,7 @@ namespace System { namespace Drawing
 		MessageInfo msg;
 		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, fn.get()) != 0)
 		{
-			::printf("ERROR: Can't connect to GUI server!\n");
+			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
 		}
 		if (msg.arg2 == 0) return;
@@ -48,7 +48,7 @@ namespace System { namespace Drawing
 		byte* image = MonAPI::MemoryMap::map(msg.arg2);
 		if (image == NULL)
 		{
-			::printf("ERROR: Can not get image data!\n");
+			::printf("ERROR: can not get image data!\n");
 			return;
 		}
 		
@@ -61,7 +61,7 @@ namespace System { namespace Drawing
 		
 		if (MonAPI::Message::send(__gui_server, MSG_DISPOSE_HANDLE, msg.arg2) != 0)
 		{
-			::printf("ERROR: Can't connect to GUI server!\n");
+			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
 		}
 #endif

@@ -15,7 +15,7 @@ CFLAGS  += -Winline -ffreestanding -fomit-frame-pointer -fno-strength-reduce
 OBJECTS  = $(SOURCES:.c=.o)
 INCLUDE  = -I$(INCDIR)
 
-all : $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	rm -f $@

@@ -7,6 +7,6 @@ include $(MONADIR)/env/monapi-el2.inc
 INSTDIR = $(BINDIR)/root/APPS
 LINK    = $(LIBDIR)/monapi.o -lmonapi -lmonalibc -ljpegls
 
-$(TARGET): $(LIBDIR)/libjpegls.a
+$(TARGET).ELF: $(LIBDIR)/libjpegls.a
 
 include dependencies

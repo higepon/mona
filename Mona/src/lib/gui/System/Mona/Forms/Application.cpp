@@ -37,24 +37,24 @@ namespace System { namespace Mona { namespace Forms
 		Application::forms = new ArrayList<_P<Form> >;
 		
 #ifdef MONA
-		if (monapi_register_to_server(ID_MOUSE_SERVER, 1) == 0) ::exit(1);
-		
 		__gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
+		if (__gui_server == THREAD_UNKNOWN) ::exit(1);
 		MessageInfo msg;
 		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_GETFONT) != 0)
 		{
-			::printf("ERROR: Can't connect to GUI server!\n");
+			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			::exit(1);
 		}
 		byte* font_data = MonAPI::MemoryMap::map(msg.arg2);
 		if (font_data == NULL)
 		{
-			::printf("ERROR: Can not get font data!\n");
+			::printf("%s:%d:ERROR: Can not get font data!\n", __FILE__, __LINE__);
 			::exit(1);
 		}
 		Application::defaultFontData = new unsigned char[msg.arg3];
 		::memcpy(Application::defaultFontData, font_data, msg.arg3);
 		MonAPI::MemoryMap::unmap(msg.arg2);
+		if (monapi_register_to_server(ID_MOUSE_SERVER, 1) == 0) ::exit(1);
 #else
 		Application::defaultFontData = MONA_12_MNF;
 #ifdef WIN32
@@ -66,11 +66,7 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Dispose()
 	{
 #ifdef MONA
-		if (monapi_register_to_server(ID_MOUSE_SERVER, 0) == 0)
-		{
-			::printf("ERROR: Can't connect to mouse server!\n");
-			//::exit(1);
-		}
+		monapi_register_to_server(ID_MOUSE_SERVER, 1);
 #endif
 	}
 	

@@ -1,1 +1,3 @@
-LAUNCHER.EL2
+@ECHO
+@ECHO Welcome to Mona!
+@ECHO If you want to know how to use shell, please type "HELP".

@@ -58,8 +58,7 @@ int MonaMain(List<char*>* pekoe)
             case MSG_PROCESS_TERMINATED:
                 if (waiting == msg.arg1)
                 {
-                    printf("\n");
-                    shell.printPrompt();
+                    shell.printPrompt("\n");
                     waiting = THREAD_UNKNOWN;
                 }
                 break;
@@ -79,33 +78,15 @@ Shell::Shell() : position_(0)
     this->current = StartDir;
     this->makeApplicationList();
 
-    if (!callAutoExec) printf("\n");
-    this->printPrompt();
-    if (!callAutoExec) return;
-
-    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH", 0);
-    if (mi == NULL) return;
-
-    for (dword pos = 0; pos <= mi->Size; pos++)
+    if (!callAutoExec)
     {
-        char ch = pos < mi->Size ? (char)mi->Data[pos] : '\n';
-        if (ch == '\r' || ch == '\n')
-        {
-            if (position_ > 0)
-            {
-                commandTerminate();
-                commandExecute();
-            }
-        }
-        else
-        {
-            commandChar(ch);
-        }
+        this->printPrompt("\n");
+        return;
     }
 
-    monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+    this->executeMSH("/AUTOEXEC.MSH");
     callAutoExec = false;
+    this->printPrompt("\n");
 }
 
 Shell::~Shell()
@@ -127,6 +108,7 @@ enum
     COMMAND_CAT,
     COMMAND_CHSH,
     COMMAND_UNAME,
+    COMMAND_ECHO,
     COMMAND_HELP
 };
 
@@ -153,6 +135,10 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_UNAME;
     }
+    else if (cmd == "echo")
+    {
+        return COMMAND_ECHO;
+    }
     else if (cmd == "help" || cmd == "?")
     {
         return COMMAND_HELP;
@@ -160,9 +146,9 @@ int Shell::isInternalCommand(const CString& command)
     return COMMAND_NONE;
 }
 
-void Shell::commandExecute()
+void Shell::commandExecute(bool prompt)
 {
-    printf("\n");
+    if (prompt) printf("\n");
     _A<CString> args = this->parseCommandLine();
 
     if (args.get_Length() == 0)
@@ -180,10 +166,9 @@ void Shell::commandExecute()
     if ((isInternal = isInternalCommand(args[0])))
     {
         internalCommandExecute(isInternal, args);
-        if (!hasExited)
+        if (!hasExited && prompt)
         {
-            printf("\n");
-            this->printPrompt();
+            this->printPrompt("\n");
         }
         position_ = 0;
         return;
@@ -209,7 +194,7 @@ void Shell::commandExecute()
         for (int i = 0; i < this->apps.size(); i++)
         {
             CString file = apps.get(i);
-            if (file == command + ".EL2")
+            if (file == command + ".EL2" || file == command + ".MSH")
             {
                 cmdLine = AppsDir + "/" + file;
                 break;
@@ -221,6 +206,13 @@ void Shell::commandExecute()
             }
         }
         if (cmdLine == NULL) cmdLine = AppsDir + "/" + command + ".ELF";
+    }
+
+    if (cmdLine.endsWith(".MSH"))
+    {
+        this->executeMSH(cmdLine);
+        if (waiting != THREAD_UNKNOWN) this->printPrompt("\n");
+        return;
     }
 
     for (int i = 1; i < args.get_Length(); i++)
@@ -239,8 +231,7 @@ void Shell::commandExecute()
     }
     else
     {
-        print("\n");
-        this->printPrompt();
+        this->printPrompt("\n");
     }
 }
 
@@ -340,9 +331,17 @@ void Shell::internalCommandExecute(int command, _A<CString> args)
             printf("%s\n", ver);
             break;
         }
+    case COMMAND_ECHO:
+        for (int i = 1; i < args.get_Length(); i++)
+        {
+            if (i > 1) printf(" ");
+            printf("%s", (const char*)args[i]);
+        }
+        printf("\n");
+        break;
     case COMMAND_HELP:
         printf("* Mona Shell Internal Commands\n");
-        printf("LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, HELP/?\n");
+        printf("LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, HELP/?\n");
         break;
     default:
         break;
@@ -386,8 +385,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
 {
     if (waiting != THREAD_UNKNOWN)
     {
-        printf("\n");
-        this->printPrompt();
+        this->printPrompt("\n");
         waiting = THREAD_UNKNOWN;
         if (keycode == Keys::Enter) return;
     }
@@ -453,7 +451,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
         break;
     case(Keys::Enter):
         commandTerminate();
-        commandExecute();
+        commandExecute(true);
         break;
 
     case(Keys::Up):
@@ -517,7 +515,7 @@ int Shell::makeApplicationList()
     while (syscall_dir_read(name, &size) == 0)
     {
         CString file = name;
-        if (file.endsWith(".EL2") || file.endsWith(".APP"))
+        if (file.endsWith(".EL2") || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
             apps.add(name);
         }
@@ -537,8 +535,9 @@ int Shell::makeApplicationList()
     return 0;
 }
 
-void Shell::printPrompt()
+void Shell::printPrompt(const CString& prefix /*= NULL*/)
 {
+    if (prefix != NULL) printf("%s", (const char*)prefix);
     printf("[Mona]%s> ", (const char*)this->current);
 }
 
@@ -611,4 +610,46 @@ void Shell::printFiles(const CString& dir)
     printf("\n");
 
     syscall_dir_close();
+}
+
+void Shell::executeMSH(const CString& msh)
+{
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data(msh, 1);
+    if (mi == NULL) return;
+
+    for (dword pos = 0, start = 0; pos <= mi->Size; pos++)
+    {
+        char ch = pos < mi->Size ? (char)mi->Data[pos] : '\n';
+        if (ch == '\r' || ch == '\n')
+        {
+            int len = pos - start;
+            bool prompt = true;
+            if (len > 0)
+            {
+                if (mi->Data[start] == '@')
+                {
+                    start++;
+                    len--;
+                    prompt = false;
+                }
+            }
+            if (len > 0)
+            {
+                if (len > 127) len = 127;
+                strncpy(this->commandLine_, (const char*)&mi->Data[start], len);
+                this->position_ = len;
+                this->commandLine_[len] = '\0';
+                if (prompt)
+                {
+                    this->printPrompt("\n");
+                    printf("%s", this->commandLine_);
+                }
+                this->commandExecute(prompt);
+            }
+            start = pos + 1;
+        }
+    }
+
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 }

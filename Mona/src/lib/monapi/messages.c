@@ -26,7 +26,7 @@ dword monapi_get_server_thread_id(int id)
         server_ids[id] = monapi_cmessage_lookup_main_thread(server_names[id]);
         if (server_ids[id] == THREAD_UNKNOWN)
         {
-            printf("ERROR: can not connect to %s\n", server_names[id]);
+            printf("%s:%d:ERROR: can not connect to %s\n", __FILE__, __LINE__, server_names[id]);
         }
     }
     return server_ids[id];
@@ -61,7 +61,7 @@ int monapi_register_to_server(int id, int enabled)
 
     if (monapi_cmessage_send_receive_args(NULL, tid, header, syscall_get_tid(), 0, 0, NULL) != 0)
     {
-        printf("ERROR: can not register to %s\n", server_names[id]);
+        printf("%s:%d:ERROR: can not register to %s\n", __FILE__, __LINE__, server_names[id]);
         return 0;
     }
     return 1;
