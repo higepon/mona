@@ -215,7 +215,12 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
 
     case COMMAND_CLEAR:
-        if (!this->doExec)
+        if (this->doExec)
+        {
+            printf("can not clear while exec\n");
+            break;
+        }
+        else
         {
             monapi_call_mouse_set_cursor(0);
             syscall_clear_screen();
@@ -267,6 +272,10 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         if (args.get_Length() < 2)
         {
             printf("usage: EXEC command [arguments ...]\n");
+        }
+        else if (this->doExec)
+        {
+            printf("can not exec while exec\n");
         }
         else
         {

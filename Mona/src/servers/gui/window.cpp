@@ -339,6 +339,9 @@ static void ProcessKeyInfo(MessageInfo* msg)
 	{
 		case 1:
 			m.header = (msg->arg2 & KEY_MODIFIER_DOWN) != 0 ? MSG_GUISERVER_KEYDOWN : MSG_GUISERVER_KEYUP;
+			m.arg1 = activeWindow->Handle;
+			m.arg2 = msg->arg1;
+			m.arg3 = msg->arg2;
 			break;
 	}
 	if (Message::send(activeWindow->ThreadID, &m) != 0)

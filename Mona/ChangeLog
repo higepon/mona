@@ -1,8 +1,18 @@
 2005-02-11  csharp  <csharp@users.sourceforge.jp>
 
-        * src/servers/gui/window.cpp: フォーカス管理に対応（プロトコル1）
+        * src/servers/gui/window.cpp: フォーカス管理サポート（プロトコル1）
 
-        * src/lib/gui/System/Mona/Forms/Form.cpp: プロトコル1に対応
+        * include/gui/System/Mona/Forms/Events.h: KeyEventArgs追加
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp, Form.cpp: プロトコル1対応, キーボードサポート
+
+        * src/servers/gui/STARTMF.MSH: execを使用
+
+        * src/servers/shell/Shell.cpp: exec時にキャレット描画を無視, キーイベント転送にMSG_GUISERVER_KEYDOWN
+
+        * apps/gui/shell/Form1.cpp: キーイベントをOldShellに転送
+
+        * bin/root/MONAGUI.INI: RunからMONAFRMS/SHELL.EX2を除去
 
 2005-02-10  higepon  <higepon@users.sourceforge.jp>
 

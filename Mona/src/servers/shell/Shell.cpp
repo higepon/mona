@@ -1,5 +1,6 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
+#include <gui/messages.h>
 
 #include "Shell.h"
 
@@ -69,6 +70,10 @@ void Shell::run()
                     this->onKeyDown(msg.arg1, msg.arg2);
                 }
                 break;
+            case MSG_GUISERVER_KEYDOWN:
+                this->onKeyDown(msg.arg2, msg.arg3);
+                break;
+
             case MSG_PROCESS_TERMINATED:
                 if (this->waiting == msg.arg1)
                 {
@@ -114,12 +119,14 @@ void Shell::commandChar(char c)
 {
     if (c != '\0')
     {
-        this->checkCaretPosition();
-        int x, y;
-        syscall_get_cursor(&x, &y);
-        x++;
-        if ((x + 1) * FONT_WIDTH >= this->screen.getWidth()) return;
-
+        if (!this->doExec)
+        {
+            this->checkCaretPosition();
+            int x, y;
+            syscall_get_cursor(&x, &y);
+            x++;
+            if ((x + 1) * FONT_WIDTH >= this->screen.getWidth()) return;
+        }
         printf("%c", c);
         this->drawCaret();
     }
@@ -220,7 +227,7 @@ bool Shell::commandExecute(_A<CString> args)
     dword tid;
     int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, this->self);
 
-    if (!this->callAutoExec && result == 0)
+    if (!this->callAutoExec && result == 0 && !this->doExec)
     {
         this->waiting = tid;
     }
@@ -239,7 +246,7 @@ void Shell::commandTerminate()
 
 void Shell::onKeyDown(int keycode, int modifiers)
 {
-    if (this->waiting != THREAD_UNKNOWN)
+    if (!this->doExec && this->waiting != THREAD_UNKNOWN)
     {
         this->printPrompt("\n");
         this->waiting = THREAD_UNKNOWN;

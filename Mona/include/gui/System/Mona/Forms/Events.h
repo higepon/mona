@@ -18,6 +18,17 @@ namespace System { namespace Mona { namespace Forms
 		virtual ~MouseEventArgs() {}
 	};
 	DECLARE_DELEGATE(MouseEventHandler, _P<MouseEventArgs>)
+	
+	class KeyEventArgs : public EventArgs
+	{
+	public:
+		dword KeyCode, Modifiers;
+		
+		virtual String get_TypeName() { return "System.Mona.Forms.KeyEventArgs"; }
+		KeyEventArgs(dword keyCode, dword modifiers): KeyCode(keyCode), Modifiers(modifiers) {}
+		virtual ~KeyEventArgs() {}
+	};
+	DECLARE_DELEGATE(KeyEventHandler, _P<KeyEventArgs>)
 }}}
 
 #endif  // __SYSTEM_MONA_FORMS_EVENTS_H__

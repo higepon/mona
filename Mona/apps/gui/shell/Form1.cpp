@@ -1,4 +1,4 @@
-#include <monapi/syscall.h>
+#include <monapi.h>
 #include <monapi/messages.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>
@@ -98,7 +98,7 @@ static void StdoutMessageLoop()
 		switch (msg.header)
 		{
 			case MSG_PROCESS_STDOUT_DATA:
-		        case MSG_STDOUT: /* higepon exp */
+			case MSG_STDOUT: /* higepon exp */
 			{
 				msg.str[127] = '\0';
 				terminal->Output(msg.str);
@@ -123,10 +123,15 @@ static void InitThread()
 
 class Form1 : public Form
 {
+private:
+	dword shell;
+	
 public:
 	Form1()
 	{
 		this->InitializeComponent();
+		
+		this->shell = MonAPI::Message::lookupMainThread("OLDSHELL.EX2");
 		
 		_P<MonAPI::Screen> scr = GetDefaultScreen();
 		this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
@@ -134,6 +139,15 @@ public:
 		terminal = new Terminal();
 		terminal->set_Bounds(Rectangle(Point::get_Empty(), this->get_ClientSize()));
 		this->get_Controls()->Add(terminal.get());
+	}
+	
+protected:
+	virtual void OnKeyDown(_P<KeyEventArgs> e)
+	{
+		Form::OnKeyDown(e);
+		if (this->shell == THREAD_UNKNOWN) return;
+		
+		MonAPI::Message::send(this->shell, MSG_GUISERVER_KEYDOWN, 0, e->KeyCode, e->Modifiers);
 	}
 	
 private:
@@ -147,14 +161,16 @@ private:
 public:
 	static void Main(_A<String> args)
 	{
-		_P<Form> f = new Form1();
+		_P<Form1> f = new Form1();
 		InitThread();
 		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
 		if (tid != THREAD_UNKNOWN)
 		{
 			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 		}
-		Application::Run(f);
+		f->Show();
+		if (f->shell != THREAD_UNKNOWN) MonAPI::Message::send(f->shell, MSG_GUISERVER_KEYDOWN, 0, '\r');
+		Application::Run(f.get());
 		if (tid != THREAD_UNKNOWN)
 		{
 			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);

@@ -454,6 +454,12 @@ namespace System { namespace Mona { namespace Forms
 			case MSG_GUISERVER_MOUSELEAVE:
 				this->OnMouseLeave(EventArgs::get_Empty());
 				break;
+			case MSG_GUISERVER_KEYDOWN:
+				this->OnKeyDown((KeyEventArgs*)e.get());
+				break;
+			case MSG_GUISERVER_KEYUP:
+				this->OnKeyUp((KeyEventArgs*)e.get());
+				break;
 			default:
 				break;
 		}
@@ -487,6 +493,16 @@ namespace System { namespace Mona { namespace Forms
 	void Control::OnClick(_P<EventArgs> e)
 	{
 		this->raise_Click(this, e);
+	}
+	
+	void Control::OnKeyDown(_P<KeyEventArgs> e)
+	{
+		this->raise_KeyDown(this, e);
+	}
+	
+	void Control::OnKeyUp(_P<KeyEventArgs> e)
+	{
+		this->raise_KeyUp(this, e);
 	}
 	
 	

@@ -141,6 +141,17 @@ namespace System { namespace Mona { namespace Forms
 				if (c != NULL) c->WndProc(m->header, EventArgs::get_Empty());
 				break;
 			}
+			case MSG_GUISERVER_KEYDOWN:
+			case MSG_GUISERVER_KEYUP:
+			{
+				_P<Control> c = mapControls[m->arg1];
+				if (c != NULL)
+				{
+					_P<KeyEventArgs> e = new KeyEventArgs(m->arg2, m->arg3);
+					c->WndProc(m->header, e.get());
+				}
+				break;
+			}
 			case MSG_GUI_TIMER:
 				((Timer*)m->arg1)->OnTick(EventArgs::get_Empty());
 				break;
