@@ -159,7 +159,9 @@ template <class T> class HashMap : public Map {
     T remove(const char* key);
     dword size() const;
 
+};
 
+template <class T> HashMap<T>::HashMap() {
 
 }
 
