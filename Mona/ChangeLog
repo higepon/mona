@@ -1,5 +1,7 @@
 2005-03-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/file.cpp : 関数分割のリファクタリング。動作確認OK. 一時タグ ref2をつけた。
+
         * apps/baygui/gshell/gshell.cpp: STDOUT実験用コードの削除。
 
         * apps/gui/shell/Form1.cpp (StdoutMessageLoop): STDOUT実験用コードの削除。

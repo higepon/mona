@@ -22,6 +22,35 @@ static FDCDriver* fd;
 static ISO9660FileSystem* fs;
 static FSOperation* fso;
 
+void DeviceOn(int drive)
+{
+    if (drive == DRIVE_FD0)
+    {
+        fd->motor(ON);
+        fd->recalibrate();
+        fd->recalibrate();
+        fd->recalibrate();
+    }
+    else if (drive == DRIVE_CD0)
+    {
+        /* do nothing */
+    }
+    return;
+}
+
+void DeviceOff(int drive)
+{
+    if (drive == DRIVE_FD0)
+    {
+        fd->motorAutoOff();
+    }
+    else if (drive == DRIVE_CD0)
+    {
+        /* do nothing */
+    }
+    return;
+}
+
 bool fdInitialize()
 {
     syscall_get_io();
@@ -31,10 +60,7 @@ bool fdInitialize()
 
     fd = new FDCDriver();
 
-    fd->motor(true);
-    fd->recalibrate();
-    fd->recalibrate();
-
+    DeviceOn(DRIVE_FD0);
     fso = new FSOperation();
 
     if (fso == NULL || !(fso->initialize((IStorageDevice*)fd)))
@@ -43,7 +69,7 @@ bool fdInitialize()
         for (;;);
     }
 
-    fd->motorAutoOff();
+    DeviceOff(DRIVE_FD0);
 
     return true;
 }
@@ -67,14 +93,7 @@ bool initializeCD()
     }
 
     /* set irq number */
-    if (controller == IDEDriver::PRIMARY)
-    {
-        irq = IRQ_PRIMARY;
-    }
-    else
-    {
-        irq = IRQ_SECONDARY;
-    }
+    irq = controller == IDEDriver::PRIMARY ? IRQ_PRIMARY : IRQ_SECONDARY;
 
     monapi_set_irq(irq, MONAPI_TRUE, MONAPI_TRUE);
     syscall_set_irq_receiver(irq);
@@ -128,14 +147,10 @@ const char* GetCurrentDirectory()
 
 bool fatChangeDirectory(char* dir)
 {
-    fd->motor(ON);
-    fd->recalibrate();
-    fd->recalibrate();
-    fd->recalibrate();
-
+    DeviceOn(DRIVE_FD0);
     bool result = fso->cd(dir);
 
-    fd->motorAutoOff();
+    DeviceOff(DRIVE_FD0);
     return result;
 }
 
@@ -214,6 +229,8 @@ void initialize()
 
 monapi_cmemoryinfo* ReadFileFromISO9660(const char* path, bool prompt)
 {
+        if (!initializeCD()) return NULL;
+
         File* file = fs->Open(path, 0);
 
         if (file == NULL)
@@ -264,18 +281,16 @@ monapi_cmemoryinfo* ReadFileFromISO9660(const char* path, bool prompt)
         return ret;
 }
 
+
 monapi_cmemoryinfo* ReadFileFromFat(const char* path, bool prompt)
 {
-    fd->motor(ON);
-    fd->recalibrate();
-    fd->recalibrate();
-    fd->recalibrate();
-
     CString copyPath = path;
+
+    DeviceOn(DRIVE_FD0);
 
     if (!fso->open((char*)(const char*)copyPath, FILE_OPEN_READ))
     {
-        fd->motorAutoOff();
+        DeviceOff(DRIVE_FD0);
 
         if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
         return NULL;
@@ -287,7 +302,7 @@ monapi_cmemoryinfo* ReadFileFromFat(const char* path, bool prompt)
     if (!monapi_cmemoryinfo_create(ret, size + 1, prompt))
     {
         monapi_cmemoryinfo_delete(ret);
-        fd->motorAutoOff();
+        DeviceOff(DRIVE_FD0);
         return NULL;
     }
 
@@ -295,143 +310,168 @@ monapi_cmemoryinfo* ReadFileFromFat(const char* path, bool prompt)
 
     if (!fso->read(ret->Data, ret->Size))
     {
-        fd->motorAutoOff();
+        DeviceOff(DRIVE_FD0);
         monapi_cmemoryinfo_delete(ret);
         if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
         return NULL;
     }
 
     fso->close();
-    fd->motorAutoOff();
+    DeviceOff(DRIVE_FD0);
     ret->Data[ret->Size] = 0;
     if (prompt) printf("OK\n");
     return ret;
 }
 
+CString ChangeDriveAuto(const CString& path)
+{
+    CString pathWithoutDriveLetter = path;
+
+    if (path.startsWith("CD0:"))
+    {
+        pathWithoutDriveLetter = path.substring(4, path.getLength());
+        ChangeDrive(DRIVE_CD0);
+    }
+    else if (path.startsWith("FD0:"))
+    {
+        pathWithoutDriveLetter= path.substring(4, path.getLength());
+        ChangeDrive(DRIVE_FD0);
+    }
+
+    return pathWithoutDriveLetter;
+}
 
 monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
 {
+    monapi_cmemoryinfo* result = NULL;
+
     if (prompt) printf("%s: Reading %s....", SVR, path);
 
-    int drive        = currentDrive;
-    CString filePath = path;
-    if (filePath.startsWith("CD0:"))
+    /* save current drive */
+    int saveDrive = currentDrive;
+
+    /* change drive */
+    CString pathWithoutDriveLetter = ChangeDriveAuto(path);
+
+    /* read */
+    if (GetCurrentDrive() == DRIVE_FD0)
     {
-        if (!initializeCD()) return NULL;
-        filePath = filePath.substring(4, filePath.getLength());
-        drive = DRIVE_CD0;
+        result = ReadFileFromFat(pathWithoutDriveLetter, prompt);
     }
-    else if (filePath.startsWith("FD0:"))
+    else if (GetCurrentDrive() == DRIVE_CD0)
     {
-        filePath = filePath.substring(4, filePath.getLength());
-        drive = DRIVE_FD0;
+        result =  ReadFileFromISO9660(pathWithoutDriveLetter, prompt);
     }
 
-    if (drive == DRIVE_FD0)
+    /* restore current drive */
+    currentDrive = saveDrive;
+    return result;
+}
+
+
+monapi_cmemoryinfo* ReadDirectoryFromFat(const char* path, bool prompt)
+{
+    CString tmp = path;
+    if (!fatChangeDirectory((char*)(const char*)tmp))
     {
-        return ReadFileFromFat(filePath, prompt);
+        if (prompt) printf("%s: ERROR: directory not found: %s\n", SVR, path);
+        return NULL;
     }
-    else if (drive == DRIVE_CD0)
+
+    DeviceOn(DRIVE_FD0);
+
+    if (!fso->openDir())
     {
-        return ReadFileFromISO9660(filePath, prompt);
+        if (prompt) printf("%s: ERROR: can not open directory: %s\n", SVR, path);
+        DeviceOff(DRIVE_FD0);
+        return NULL;
     }
-    return NULL;
+
+    /* read directory */
+    HList<monapi_directoryinfo*> files;
+    monapi_directoryinfo di;
+    while (fso->readDir(di.name, &di.size, &di.attr))
+    {
+        files.add(new monapi_directoryinfo(di));
+    }
+    fso->closeDir();
+
+    DeviceOff(DRIVE_FD0);
+
+    tmp = currentDirectory[currentDrive];
+    fatChangeDirectory((char*)(const char*)tmp);
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    int size = files.size();
+    if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), prompt))
+    {
+        monapi_cmemoryinfo_delete(ret);
+        while (files.size() > 0) delete files.removeAt(0);
+        return NULL;
+    }
+
+    memcpy(ret->Data, &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+    while (files.size() > 0)
+    {
+        monapi_directoryinfo* di2 = files.removeAt(0);
+        memcpy(p, di2, sizeof(monapi_directoryinfo));
+        delete di2;
+        p++;
+    }
+    return ret;
+}
+
+monapi_cmemoryinfo* ReadDirectoryFromISO9660(const char* path, bool prompt)
+{
+    _A<FileSystemEntry*> files = fs->GetFileSystemEntries(path);
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    int size = files.get_Length();
+    if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), prompt))
+    {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    }
+
+    memcpy(ret->Data, &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+
+    FOREACH (FileSystemEntry*, file, files)
+    {
+        monapi_directoryinfo di;
+
+        di.size = file->GetSize();
+        strcpy(di.name, (const char*)file->GetName());
+        di.attr = file->IsDirectory() ? ATTRIBUTE_DIRECTORY : 0;
+        *p = di;
+        p++;
+    }
+    END_FOREACH
+    return ret;
 }
 
 monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
 {
-    int drive        = currentDrive;
-    CString filePath = path;
-    if (filePath.startsWith("CD0:"))
+    monapi_cmemoryinfo* result = NULL;
+
+    /* save current drive */
+    int saveDrive = currentDrive;
+
+    /* change drive */
+    CString pathWithoutDriveLetter = ChangeDriveAuto(path);
+
+    /* read directory */
+    if (GetCurrentDrive() == DRIVE_FD0)
     {
-        filePath = filePath.substring(4, filePath.getLength());
-        drive = DRIVE_CD0;
+        result = ReadDirectoryFromFat(pathWithoutDriveLetter, prompt);
     }
-    else if (filePath.startsWith("FD0:"))
+    else if (GetCurrentDrive() == DRIVE_CD0)
     {
-        filePath = filePath.substring(4, filePath.getLength());
-        drive = DRIVE_FD0;
+        result = ReadDirectoryFromISO9660(pathWithoutDriveLetter, prompt);
     }
 
-    if (drive == DRIVE_FD0)
-    {
-        CString tmp = filePath;
-        if (!fatChangeDirectory((char*)(const char*)tmp))
-        {
-            if (prompt) printf("%s: ERROR: directory not found: %s\n", SVR, path);
-            return NULL;
-        }
-
-        fd->motor(ON);
-        fd->recalibrate();
-        fd->recalibrate();
-        fd->recalibrate();
-
-        if (!fso->openDir())
-        {
-            if (prompt) printf("%s: ERROR: can not open directory: %s\n", SVR, path);
-            fd->motorAutoOff();
-            return NULL;
-        }
-
-        HList<monapi_directoryinfo*> files;
-        monapi_directoryinfo di;
-        while (fso->readDir(di.name, &di.size, &di.attr))
-        {
-            files.add(new monapi_directoryinfo(di));
-        }
-        fso->closeDir();
-        fd->motorAutoOff();
-        tmp = currentDirectory[currentDrive];
-        fatChangeDirectory((char*)(const char*)tmp);
-
-        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-        int size = files.size();
-        if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), prompt))
-        {
-            monapi_cmemoryinfo_delete(ret);
-            while (files.size() > 0) delete files.removeAt(0);
-            return NULL;
-        }
-
-        memcpy(ret->Data, &size, sizeof(int));
-        monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
-        while (files.size() > 0)
-        {
-            monapi_directoryinfo* di2 = files.removeAt(0);
-            memcpy(p, di2, sizeof(monapi_directoryinfo));
-            delete di2;
-            p++;
-        }
-        return ret;
-    }
-    else if (drive == DRIVE_CD0)
-    {
-        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(filePath);
-
-        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-        int size = files.get_Length();
-        if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), prompt))
-        {
-            monapi_cmemoryinfo_delete(ret);
-            return NULL;
-        }
-
-        memcpy(ret->Data, &size, sizeof(int));
-        monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
-
-        FOREACH (FileSystemEntry*, file, files)
-        {
-            monapi_directoryinfo di;
-
-            di.size = file->GetSize();
-            strcpy(di.name, (const char*)file->GetName());
-            di.attr = file->IsDirectory() ? ATTRIBUTE_DIRECTORY : 0;
-            *p = di;
-            p++;
-        }
-        END_FOREACH
-        return ret;
-    }
-    return NULL;
+    /* restore current drive */
+    currentDrive = saveDrive;
+    return result;
 }
