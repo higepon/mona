@@ -37,6 +37,7 @@ class MemoryManager {
     dword getUsedMemorySize() const;
     void debugPrint() const;
     static MemoryManager& instance();
+    static dword getPhysicalMemorySize();
 
   private:
     bool hasNoEntry(MemoryEntry* list) const;

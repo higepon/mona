@@ -118,8 +118,8 @@ void startKernel(void) {
     checkTypeSize();
     printOK("Checking type size ");
 
-    g_total_system_memory = IA32MemoryManager::getTotalMemory();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory);
+    g_total_system_memory = MemoryManager::getPhysicalMemorySize();
+    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024);
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
@@ -134,6 +134,10 @@ void startKernel(void) {
     disableTimer();
     enableKeyboard();
     enableInterrupt();
+
+    keyStrokeTest();
+
+    while (true);
 
     /* show Logo */
     FDCDriverTester();

@@ -36,9 +36,9 @@ void keyStrokeHandler() {
     /* get scancode */
     byte scancode = inportb(0x60);
 
-//     /* set key scan code */
-//     KeyBoardManager& km = KeyBoardManager::instance();
-//     km.setKeyScanCode(scancode);
+    /* set key scan code */
+    KeyBoardManager& km = KeyBoardManager::instance();
+    km.setKeyScanCode(scancode);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);

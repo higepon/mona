@@ -253,3 +253,25 @@ MemoryManager& MemoryManager::instance() {
     static MemoryManager theInstance;
     return theInstance;
 }
+
+
+dword MemoryManager::getPhysicalMemorySize() {
+
+    /* assume there is at least 1MB memory */
+    dword totalMemorySize  = 1024 * 1024;
+
+    /* 1MB unit loop */
+    for (dword i = 1024 * 1024; i < 0xFFFFFFFF; i += 1024 * 1024) {
+
+        dword* p = (dword*)i;
+        dword value = *p;
+
+        *p = 0x12345678;
+        if (*p != 0x12345678) break;
+
+        *p = value;
+        totalMemorySize += 1024 * 1024;
+    }
+
+    return totalMemorySize;
+}
