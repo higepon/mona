@@ -26,6 +26,7 @@ protected:
 	virtual void OnMouseMove(_P<System::Mona::Forms::MouseEventArgs> e);
 	virtual void OnMouseDown(_P<System::Mona::Forms::MouseEventArgs> e);
 	virtual void OnMouseUp(_P<System::Mona::Forms::MouseEventArgs> e);
+	virtual void OnMouseLeave(_P<System::EventArgs> e);
 };
 
 #endif  // __MONAFILE_FILEBROWSER_H__

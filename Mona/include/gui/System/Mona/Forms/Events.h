@@ -8,8 +8,6 @@
 
 namespace System { namespace Mona { namespace Forms
 {
-	enum MessageType { WM_MOUSEMOVE, WM_MOUSEDOWN, WM_MOUSEUP };
-	
 	class MouseEventArgs : public EventArgs
 	{
 	public:

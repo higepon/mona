@@ -21,6 +21,9 @@ using namespace System::Drawing;
 #define DEFAULT_BACKCOLOR ControlPaint::get_Light()
 
 #ifdef MONA
+#include <map>
+std::map<dword, System::Mona::Forms::Control*> mapControls;
+
 static _P<MonAPI::Screen> s_screen;
 
 _P<MonAPI::Screen> GetDefaultScreen()
@@ -83,6 +86,7 @@ void DrawImage(_P<Bitmap> dst, _P<Bitmap> src, int x, int y, int sx, int sy, int
 
 namespace System { namespace Mona { namespace Forms
 {
+	extern _P<Form> activeForm;
 	static _P<Font> s_font;
 	
 	_P<Font> Control::get_DefaultFont()
@@ -116,6 +120,8 @@ namespace System { namespace Mona { namespace Forms
 		if (this->visible) return;
 		
 		if (this->buffer == NULL) this->Create();
+		if (this->parent == NULL) MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_ACTIVATEWINDOW, this->get_Handle());
+		activeForm = this;
 		this->visible = true;
 		this->_object->Visible = this->visible;
 		this->Refresh();
@@ -150,6 +156,7 @@ namespace System { namespace Mona { namespace Forms
 			return;
 		}
 		if (this->parent != NULL) this->_object->Parent = this->parent->get_Handle();
+		mapControls[this->get_Handle()] = this;
 		this->_object->X = this->get_X();
 		this->_object->Y = this->get_Y();
 		this->_object->Width  = this->get_Width();
@@ -158,6 +165,7 @@ namespace System { namespace Mona { namespace Forms
 		this->_object->OffsetY = this->offset.Y;
 		this->_object->BufferHandle = this->buffer->get_Handle();
 		this->_object->TransparencyKey = this->transparencyKey.ToArgb();
+		this->_object->Protocol = 1;
 #endif
 		int len = this->get_Width() * this->get_Height();
 		for (int i = 0; i < len; i++)
@@ -186,6 +194,7 @@ namespace System { namespace Mona { namespace Forms
 	{
 		this->Hide();
 
+		mapControls[this->get_Handle()] = NULL;
 		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEWINDOW, this->get_Handle());
 		this->_object = NULL;
 
@@ -211,7 +220,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::Refresh()
 	{
-		if (this->buffer == NULL) return;
+		if (this->buffer == NULL || !this->visible) return;
 		
 		this->RefreshInternal();
 #ifdef MONA
@@ -412,11 +421,11 @@ namespace System { namespace Mona { namespace Forms
 			? NCState_Client : NCState_None;
 	}
 	
-	void Control::WndProc(MessageType type, _P<EventArgs> e)
+	void Control::WndProc(dword type, _P<EventArgs> e)
 	{
 		switch (type)
 		{
-			case WM_MOUSEMOVE:
+			case MSG_GUISERVER_MOUSEMOVE:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
 				Point pt = arg->Button == 0 ? Point(arg->X, arg->Y) : this->clickPoint;
@@ -424,7 +433,7 @@ namespace System { namespace Mona { namespace Forms
 					? this->OnMouseMove(arg) : this->OnNCMouseMove(arg);
 				break;
 			}
-			case WM_MOUSEDOWN:
+			case MSG_GUISERVER_MOUSEDOWN:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
 				this->clickPoint = Point(arg->X, arg->Y);
@@ -432,13 +441,19 @@ namespace System { namespace Mona { namespace Forms
 					? this->OnMouseDown(arg) : this->OnNCMouseDown(arg);
 				break;
 			}
-			case WM_MOUSEUP:
+			case MSG_GUISERVER_MOUSEUP:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
 				this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client
 					? this->OnMouseUp(arg) : this->OnNCMouseUp(arg);
 				break;
 			}
+			case MSG_GUISERVER_MOUSEENTER:
+				this->OnMouseEnter(EventArgs::get_Empty());
+				break;
+			case MSG_GUISERVER_MOUSELEAVE:
+				this->OnMouseLeave(EventArgs::get_Empty());
+				break;
 			default:
 				break;
 		}

@@ -25,6 +25,7 @@ namespace System { namespace Mona { namespace Forms
 		_P<System::Drawing::Bitmap> formBuffer;
 	
 	public:
+		static _P<Form> get_ActiveForm();
 		virtual String get_TypeName() { return "System.Mona.Forms.Form"; }
 		Form();
 		virtual ~Form();
@@ -43,6 +44,7 @@ namespace System { namespace Mona { namespace Forms
 #ifndef MONA
 		void DrawReversibleRectangle();
 #endif
+		virtual void WndProc(dword type, _P<EventArgs> e);
 		virtual void OnPaint();
 		virtual void OnNCMouseMove(_P<MouseEventArgs> e);
 		virtual void OnNCMouseDown(_P<MouseEventArgs> e);

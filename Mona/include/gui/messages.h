@@ -23,12 +23,15 @@ enum
 	MSG_GUISERVER_WINDOWTOFRONTMOST,
 	MSG_GUISERVER_ACTIVATED,
 	MSG_GUISERVER_DEACTIVATE,
+	MSG_GUISERVER_ACTIVATEWINDOW,
 	
 	MSG_GUISERVER_CREATEOVERLAP = 0x41e0,
 	MSG_GUISERVER_DISPOSEOVERLAP,
 	MSG_GUISERVER_MOVEOVERLAP,
 	MSG_GUISERVER_EXPANSIONEFFECT = 0x41f0,
 	MSG_GUISERVER_REDUCTIONEFFECT,
+	
+	MSG_GUISERVER_USENEWPROTOCOL = 0x41ff,
 	
 	MSG_GUISERVER_MOUSEMOVE = 0x4200,
 	MSG_GUISERVER_MOUSEDOWN,
@@ -67,7 +70,8 @@ typedef struct
 	unsigned int BufferHandle, FormBufferHandle;
 	guiserver_bitmap* __internal1;
 	bool __internal2;
-	char __reserved[64];
+	int Protocol;
+	char __reserved[60];
 } guiserver_window;
 
 #define MAKE_DWORD(a, b) (((unsigned int)(unsigned short)(a)) + (((unsigned int)(unsigned short)(b)) << 16))

@@ -64,7 +64,7 @@ namespace System { namespace Mona { namespace Forms
 		virtual void Dispose();
 		void Refresh();
 		virtual _P<System::Drawing::Graphics> CreateGraphics();
-		virtual void WndProc(MessageType type, _P<EventArgs> e);
+		virtual void WndProc(dword type, _P<EventArgs> e);
 		inline unsigned int get_Handle() { return this->_object != NULL ? this->_object->Handle : 0; }
 		
 		System::Drawing::Point PointToClient(System::Drawing::Point p);

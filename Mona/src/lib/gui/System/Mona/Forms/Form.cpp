@@ -40,6 +40,13 @@ static void EraseRectangle(_P<Bitmap> bmp, int x, int y, int w, int h)
 
 namespace System { namespace Mona { namespace Forms
 {
+	_P<Form> activeForm;
+	
+	_P<Form> Form::get_ActiveForm()
+	{
+		return activeForm;
+	}
+	
 	Form::Form() : isCloseButtonPushed(false), ncState(NCState_None), opacity(1.0)
 	{
 		this->offset = Point(2, Control::get_DefaultFont()->get_Height() + 8);
@@ -123,6 +130,29 @@ namespace System { namespace Mona { namespace Forms
 		this->Refresh();
 	}
 	
+	void Form::WndProc(dword type, _P<EventArgs> e)
+	{
+		switch (type)
+		{
+			case MSG_GUISERVER_ACTIVATED:
+				if (activeForm != this)
+				{
+					activeForm = this;
+					this->Refresh();
+				}
+				this->OnActivated(EventArgs::get_Empty());
+				break;
+			case MSG_GUISERVER_DEACTIVATE:
+				activeForm = NULL;
+				this->Refresh();
+				this->OnDeactivate(EventArgs::get_Empty());
+				break;
+			default:
+				BASE::WndProc(type, e);
+				break;
+		}
+	}
+	
 	void Form::OnPaint()
 	{
 		if (this->buffer == NULL || (this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0) return;
@@ -132,7 +162,7 @@ namespace System { namespace Mona { namespace Forms
 		_P<Font> f = Control::get_DefaultFont();
 		Size sz = g->MeasureString(this->get_Text(), f);
 		int tx = 2 + 2 + (oy - 8) + 2, tw = Math::Min(tx + sz.Width + 1 + 2 + 2, w);
-		Color tf = Color::get_Black(), tb = Color::FromArgb(0xff, 0xe0, 0);
+		Color tf = Color::get_Black(), tb = activeForm == this ? Color::FromArgb(0xff, 0xe0, 0) : ControlPaint::get_Light();
 		
 		// Title Bar
 		ControlPaint::DrawEngraved(g, 0, 0, tw, oy - 2);

@@ -24,11 +24,12 @@ extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;
 
 static guiserver_window* activeWindow = NULL;
+static guiserver_window* prevWindow = NULL;
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
 static HList<guiserver_window*> captures;
 static HList<Overlap*> overlaps;
-static int prevButton = 0;
+static dword prevButton = 0;
 
 guiserver_window* CreateWindow()
 {
@@ -38,6 +39,7 @@ guiserver_window* CreateWindow()
 	guiserver_window* ret = (guiserver_window*)MemoryMap::map(handle);
 	if (ret == NULL) return NULL;
 	
+	memset(ret, 0, sizeof(guiserver_window));
 	ret->Handle   = handle;
 	ret->Parent   = 0;
 	ret->Owner    = 0;
@@ -56,6 +58,7 @@ guiserver_window* CreateWindow()
 	ret->BufferHandle = ret->FormBufferHandle = 0;
 	ret->__internal1 = NULL;
 	ret->__internal2 = false;
+	ret->Protocol = 0;
 	windows.add(ret);
 	
 	start_pos += 32;
@@ -81,6 +84,9 @@ guiserver_window* GetWindowPointer(dword handle)
 
 bool DisposeWindow(dword handle)
 {
+	if (prevWindow != NULL && prevWindow->Handle == handle) prevWindow = NULL;
+	if (activeWindow != NULL && activeWindow->Handle == handle) activeWindow = NULL;
+	
 	int size_c = captures.size();
 	for (int i = 0; i < size_c; i++)
 	{
@@ -120,6 +126,8 @@ void DisposeWindowFromThreadID(dword tid)
 		guiserver_window* w = windows[i];
 		if (w->ThreadID == tid)
 		{
+			if (prevWindow == w) prevWindow = NULL;
+			if (activeWindow == w) activeWindow = NULL;
 			if (w->FormBufferHandle != 0)
 			{
 				w->Visible = false;
@@ -130,6 +138,18 @@ void DisposeWindowFromThreadID(dword tid)
 			i--;
 		}
 	}
+}
+
+static void ActivateWindow(guiserver_window* w)
+{
+	if (activeWindow != NULL) Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle);
+	if (w != NULL) Message::send(w->ThreadID, MSG_GUISERVER_ACTIVATED, w->Handle);
+	activeWindow = w;
+	if (w == NULL) return;
+	
+	windows.remove(w);
+	windows.add(w);
+	if (w->Protocol == 0) DrawWindow(w);
 }
 
 static void DrawWindowInternal(guiserver_window* w, const _R& r)
@@ -202,22 +222,22 @@ void MoveWindow(guiserver_window* w, int x, int y)
 	DrawScreen(xx, yy, w->Width, w->Height);
 }
 
-static guiserver_window* GetTargetWindowInternal(guiserver_window* w, int x, int y)
+static bool IsInWindow(guiserver_window* w, int x, int y)
 {
-	if (w->FormBufferHandle == 0) return NULL;
+	if (w->Parent == 0 && w->FormBufferHandle == 0) return false;
 	
 	_R r(w->X, w->Y, w->Width, w->Height);
-	if (!r.Contains(x, y)) return NULL;
+	if (!r.Contains(x, y)) return false;
 	
 	if (w->__internal1 == NULL)
 	{
-		w->__internal1 = GetBitmapPointer(w->FormBufferHandle);
-		if (w->__internal1 == NULL) return NULL;
+		w->__internal1 = GetBitmapPointer(w->Parent == 0 ? w->FormBufferHandle : w->BufferHandle);
+		if (w->__internal1 == NULL) return false;
 	}
 	unsigned int c = w->__internal1->Data[(x - w->X) + (y - w->Y) * w->Width];
-	if (c == 0 || c == w->TransparencyKey) return NULL;
+	if (c == 0 || c == w->TransparencyKey) return false;
 	
-	return w;
+	return true;
 }
 
 guiserver_window* GetTargetWindow(int x, int y)
@@ -232,43 +252,79 @@ guiserver_window* GetTargetWindow(int x, int y)
 	{
 		guiserver_window* w = windows[i];
 		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) == 0) continue;
-		
-		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
-		if (ww != NULL) return ww;
+		if (IsInWindow(w, x, y)) return w;
 	}
 	for (int i = windows.size() - 1; i >= 0; i--)
 	{
 		guiserver_window* w = windows[i];
 		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) != 0) continue;
-		
-		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
-		if (ww != NULL) return ww;
+		if (IsInWindow(w, x, y)) return w;
 	}
 	for (int i = windows.size() - 1; i >= 0; i--)
 	{
 		guiserver_window* w = windows[i];
 		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) == 0) continue;
-		
-		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
-		if (ww != NULL) return ww;
+		if (IsInWindow(w, x, y)) return w;
 	}
 	
 	return NULL;
 }
 
+static guiserver_window* GetChild(guiserver_window* parent, int x, int y)
+{
+	x -= parent->X + parent->OffsetX;
+	y -= parent->Y + parent->OffsetY;
+	for (int i = windows.size() - 1; i >= 0; i--)
+	{
+		guiserver_window* w = windows[i];
+		if (w->Parent == parent->Handle && IsInWindow(w, x, y)) return GetChild(w, x, y);
+	}
+	return parent;
+}
+
 static void ProcessMouseInfo(MessageInfo* msg)
 {
-	guiserver_window* target = GetTargetWindow(msg->arg1, msg->arg2);
-	if (target == NULL) return;
-	
-	if (prevButton != (int)msg->arg3 && windows[windows.size() - 1] != target)
+	guiserver_window* top = GetTargetWindow(msg->arg1, msg->arg2);
+	guiserver_window* target = top;
+	if (target != NULL && target->Protocol == 1 && captures.size() == 0)
 	{
-		windows.remove(target);
-		windows.add(target);
-		DrawWindow(target);
+		target = GetChild(target, msg->arg1, msg->arg2);
 	}
-	prevButton = (int)msg->arg3;
-	if (Message::send(target->ThreadID, msg) != 0)
+	if (prevWindow != target)
+	{
+		if (prevWindow != NULL) Message::send(prevWindow->ThreadID, MSG_GUISERVER_MOUSELEAVE, prevWindow->Handle);
+		if (target != NULL) Message::send(target->ThreadID, MSG_GUISERVER_MOUSEENTER, target->Handle);
+		prevWindow = target;
+	}
+	
+	MessageInfo m = *msg;
+	if (target != NULL) switch (target->Protocol)
+	{
+		case 0:
+			if (prevButton < msg->arg3 && activeWindow != target) ActivateWindow(target);
+			break;
+		case 1:
+			m.arg1 = target->Handle;
+			m.arg2 = MAKE_DWORD(msg->arg1, msg->arg2);
+			if (prevButton == msg->arg3)
+			{
+				m.header = MSG_GUISERVER_MOUSEMOVE;
+			}
+			else if (prevButton < msg->arg3)
+			{
+				if (activeWindow != top) ActivateWindow(top);
+				m.header = MSG_GUISERVER_MOUSEDOWN;
+				m.arg3 = msg->arg3 - prevButton;
+			}
+			else
+			{
+				m.header = MSG_GUISERVER_MOUSEUP;
+				m.arg3 = prevButton - msg->arg3;
+			}
+			break;
+	}
+	prevButton = msg->arg3;
+	if (target != NULL && Message::send(target->ThreadID, &m) != 0)
 	{
 		DisposeWindowFromThreadID(target->ThreadID);
 	}
@@ -276,12 +332,16 @@ static void ProcessMouseInfo(MessageInfo* msg)
 
 static void ProcessKeyInfo(MessageInfo* msg)
 {
-	if (windows.size() > 0)
-		activeWindow = windows[windows.size() - 1];
-	
 	if (activeWindow == NULL) return;
 	
-	if (Message::send(activeWindow->ThreadID, msg) != 0)
+	MessageInfo m = *msg;
+	switch (activeWindow->Protocol)
+	{
+		case 1:
+			m.header = (msg->arg2 & KEY_MODIFIER_DOWN) != 0 ? MSG_GUISERVER_KEYDOWN : MSG_GUISERVER_KEYUP;
+			break;
+	}
+	if (Message::send(activeWindow->ThreadID, &m) != 0)
 	{
 		DisposeWindowFromThreadID(activeWindow->ThreadID);
 	}
@@ -324,6 +384,11 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg);
 			break;
 		}
+		// アクティブ化要求
+		case MSG_GUISERVER_ACTIVATEWINDOW:
+			ActivateWindow(GetWindowPointer(msg->arg1));
+			Message::reply(msg);
+			break;
 		// マウス情報
 		case MSG_MOUSE_INFO:
 			ProcessMouseInfo(msg);

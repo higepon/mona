@@ -150,6 +150,15 @@ void FileBrowser::OnMouseUp(_P<MouseEventArgs> e)
     this->clickTarget = -1;
 }
 
+void FileBrowser::OnMouseLeave(_P<EventArgs> e)
+{
+	BASE::OnMouseLeave(e);
+	if (this->target == -1) return;
+	
+	this->target = -1;
+	this->Refresh();
+}
+
 void FileBrowser::Open(int target)
 {
     if (this->files == NULL) return;

@@ -29,7 +29,6 @@ namespace System { namespace Mona { namespace Forms
 	{
 	private:
 		static _P<System::Collections::ArrayList<_P<Form> > > forms;
-		static _P<Control> prevControl;
 		static _P<Form> mainForm;
 		static _P<System::Collections::ArrayList<IMessageFilter*> > messageFilters;
 		static bool isExited;
@@ -51,7 +50,6 @@ namespace System { namespace Mona { namespace Forms
 		
 		static void AddForm(_P<Form> f);
 		static void RemoveForm(_P<Form> f);
-		static _P<Form> FindForm(int x, int y);
 		
 		template <class T> static void __main(MAIN_ARGS)
 		{

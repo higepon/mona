@@ -9,6 +9,8 @@
 
 #ifdef MONA
 #include <monapi/messages.h>
+#include <map>
+extern std::map<dword, System::Mona::Forms::Control*> mapControls;
 #elif defined(WIN32)
 extern void MonaGUI_Initialize();
 extern void MonaGUI_Run();
@@ -33,7 +35,6 @@ static dword commonParamsHandle;
 namespace System { namespace Mona { namespace Forms
 {
 	_P<ArrayList<_P<Form> > > Application::forms;
-	_P<Control> Application::prevControl;
 	_P<Form> Application::mainForm;
 	_P<ArrayList<IMessageFilter*> > Application::messageFilters;
 	bool Application::isExited = false;
@@ -106,7 +107,6 @@ namespace System { namespace Mona { namespace Forms
 #elif defined(WIN32)
 		::MonaGUI_Run();
 #endif
-		Application::prevControl = NULL;
 	}
 	
 	void Application::ProcessEvent(Message* m)
@@ -119,48 +119,26 @@ namespace System { namespace Mona { namespace Forms
 		
 		switch (m->header)
 		{
-			case MSG_MOUSE_INFO:
+			case MSG_GUISERVER_MOUSEMOVE:
+			case MSG_GUISERVER_MOUSEDOWN:
+			case MSG_GUISERVER_MOUSEUP:
 			{
-				_P<Control> c;
-				if (Application::mouseButtons != 0)
-				{
-					c = Application::prevControl;
-				}
-				else
-				{
-					_P<Form> f = Application::FindForm(m->arg1, m->arg2);
-					if (f != NULL) c = f->FindControl(m->arg1, m->arg2);
-				}
-				
-				Point p;
-				_P<MouseEventArgs> e;
+				_P<Control> c = mapControls[m->arg1];
 				if (c != NULL)
 				{
-					p = c->PointToClient(Point(m->arg1, m->arg2));
-					e = new MouseEventArgs(m->arg3, p.X, p.Y);
+					Point p = c->PointToClient(Point(GET_X_DWORD(m->arg2), GET_Y_DWORD(m->arg2)));
+					_P<MouseEventArgs> e = new MouseEventArgs(m->arg3, p.X, p.Y);
+					c->WndProc(m->header, e.get());
 				}
-				if (Application::mouseButtons != (int)m->arg3)
-				{
-					if (m->arg3 == 0)
-					{
-						if (c != NULL)
-						{
-							e->Button = Application::mouseButtons;
-							c->WndProc(WM_MOUSEUP, e.get());
-						}
-					}
-					else
-					{
-						if (c != NULL) c->WndProc(WM_MOUSEDOWN, e.get());
-						Application::prevControl = c;
-					}
-					Application::mouseButtons = m->arg3;
-				}
-				else if (c != NULL)
-				{
-					c->WndProc(WM_MOUSEMOVE, e.get());
-				}
-				
+				break;
+			}
+			case MSG_GUISERVER_ACTIVATED:
+			case MSG_GUISERVER_DEACTIVATE:
+			case MSG_GUISERVER_MOUSEENTER:
+			case MSG_GUISERVER_MOUSELEAVE:
+			{
+				_P<Control> c = mapControls[m->arg1];
+				if (c != NULL) c->WndProc(m->header, EventArgs::get_Empty());
 				break;
 			}
 			case MSG_GUI_TIMER:
@@ -224,15 +202,5 @@ namespace System { namespace Mona { namespace Forms
 			Application::mainForm = NULL;
 			Application::Exit();
 		}
-	}
-	
-	_P<Form> Application::FindForm(int x, int y)
-	{
-		FOREACH_AL(_P<Form>, f, Application::forms)
-		{
-			if (f->get_Visible() && f->CheckPoint(x, y)) return f;
-		}
-		END_FOREACH_AL
-		return NULL;
 	}
 }}}

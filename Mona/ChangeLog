@@ -1,3 +1,9 @@
+2005-02-11  csharp  <csharp@users.sourceforge.jp>
+
+        * src/servers/gui/window.cpp: フォーカス管理に対応（プロトコル1）
+
+        * src/lib/gui/System/Mona/Forms/Form.cpp: プロトコル1に対応
+
 2005-02-10  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/IDEDriver.h (class IDEDriver): ATA_TIMEOUTを100000->10000
@@ -22,7 +28,7 @@
 
         * src/servers/file/IDEDriver.h (class IDEDriver): パフォーマンスのために ATA_TIMEOUT を 100000->10000に変更。実機でやばかったら元に戻す。
 
-        * src/servers/file/file.cpp (ChangeDirectory): FileSystem#IsExistDirectory()を使用するように変更。
+        * src/servers/file/file.cpp (ChangeDirectory): FileSystem::IsExistDirectory()を使用するように変更。
 
 2004-02-08  bayside  <bayside@users.sourceforge.jp>
 

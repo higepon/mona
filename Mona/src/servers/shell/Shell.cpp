@@ -514,6 +514,8 @@ void Shell::executeMSH(const CString& msh)
 
 void Shell::drawCaret(bool erase /*= false*/)
 {
+    if (this->doExec) return;
+
     int x, y;
     syscall_get_cursor(&x, &y);
     this->screen.fillRect16(x * FONT_WIDTH, y * FONT_HEIGHT + FONT_HEIGHT - 2, 8, 2,

@@ -31,7 +31,7 @@ include $(MONADIR)/env/monapi.inc
 
 CXXFLAGS += -DDEBUG
 
-INCLUDE = -I$(INCDIR)
+INCLUDE = -I$(INCDIR) -I$(INCDIR)/stlport
 
 all: $(TARGET)
 
