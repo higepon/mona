@@ -5,7 +5,6 @@
 #include <monapi/syscall.h>
 #include "FileServer.h"
 #include "dtk5s.h"
-#include "file.h"
 
 typedef unsigned int UINT32;
 typedef unsigned char UCHAR;

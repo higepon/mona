@@ -4,7 +4,6 @@
 #include <monapi/Assert.h>
 #include <monapi/io.h>
 #include "FileServer.h"
-#include "file.h"
 #include "bzip2.h"
 #include "dtk5s.h"
 #include "IDEDriver.h"
@@ -49,6 +48,12 @@ void MessageLoop()
                 {
                     Message::reply(&msg);
                 }
+                break;
+            }
+            case MSG_FILE_CHANGE_DRIVE:
+            {
+                //ChangeDrive(msg.str);
+                Message::reply(&msg);
                 break;
             }
             case MSG_DISPOSE_HANDLE:
@@ -199,6 +204,8 @@ int MonaMain(List<char*>* pekoe)
     }
 
 //    fdInitialize();
+
+    initialize();
 
     MessageLoop();
 

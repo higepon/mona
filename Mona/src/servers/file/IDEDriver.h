@@ -12,10 +12,9 @@
 #ifndef _MONA_IDEDRVIER_
 #define _MONA_IDEDRIVER_
 
-#include "../../../tools/fat_write/IStorageDevice.h"
+#include <fat_write/IStorageDevice.h>
 #include <sys/types.h>
 #include <monapi/CString.h>
-#include <monapi/io.h>
 
 /*----------------------------------------------------------------------
     IDEDriver

@@ -3,7 +3,6 @@
 #include <bzlib.h>
 #include "FileServer.h"
 #include "bzip2.h"
-#include "file.h"
 
 int64_t GetBZ2DecompressedSize(monapi_cmemoryinfo* mi)
 {
