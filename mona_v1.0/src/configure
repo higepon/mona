@@ -12,10 +12,12 @@
 #      \date   create:2003/10/07 update:$Date$
 ###
 # gcc is 3.x or 2.x
-isOldVersion=`gcc --version|egrep '2\.9.*'|wc -l`
+#isOldVersion=`gcc --version|egrep '2\.9.*'|wc -l`
+
+export OSTYPE="$(uname | cut -d _ -f 1 | tr [:upper:] [:lower:])"
 
 # cygwin
-if test "$OSTYPE" != cygwin; then
+if test "$OSTYPE" = "cygwin" ; then
 
     cat ./env/cygwin.env Makefile.in >Makefile
     echo "cygwin"
@@ -30,3 +32,4 @@ else
     cat ./env/linux3.x.env Makefile.in >Makefile
     echo "linux gcc3.x"
 fi
+

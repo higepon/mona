@@ -63,7 +63,7 @@ void Scheduler::schedule() {
 
     this->wakeup();
 
-    if (g_current_process->state != Process::SLEEPING) {
+    if (g_current_process != NULL && g_current_process->state != Process::SLEEPING) {
         g_current_process->state = Process::READY;
     }
 
@@ -128,4 +128,15 @@ void Scheduler::tick() {
 dword Scheduler::getTick() {
 
     return tick_;
+}
+
+bool Scheduler::kill(ProcessInfo* process) {
+
+    /* check lock and existence */
+    /* not implemented          */
+
+    removeFrom(process);
+    delete(process->process);
+
+    return true;
 }

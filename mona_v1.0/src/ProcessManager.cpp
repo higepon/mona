@@ -158,3 +158,13 @@ void ProcessManager::sleep(ProcessInfo* process, dword tick) {
     process->state = Process::SLEEPING;
     scheduler_->sleep(process, tick);
 }
+
+bool ProcessManager::kill(ProcessInfo* process) {
+
+    g_console->printf("kill called");
+
+    scheduler_->kill(process);
+    scheduler_->schedule();
+
+    return true;
+}

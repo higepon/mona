@@ -99,6 +99,10 @@ void syscall_entrance() {
         exit_kernel_lock_mode();
 
         break;
+    case SYSTEM_CALL_KILL:
+
+        g_process_manager->kill(g_current_process);
+        break;
 
     default:
         g_console->printf("syscall:default");

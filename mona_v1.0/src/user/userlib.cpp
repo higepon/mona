@@ -43,3 +43,18 @@ int syscall_print(const char* msg) {
 
     return result;
 }
+
+int syscall_kill() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_KILL)
+                 );
+
+    /* don't come here */
+    return result;
+}

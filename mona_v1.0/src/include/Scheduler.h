@@ -24,11 +24,12 @@ class Scheduler {
     bool toUserMode() const;
     void addProcess(ProcessInfo* process);
     void tick();
+    bool kill(ProcessInfo* process);
     dword getTick();
 
   private:
-    void wakeup();
     void removeFrom(ProcessInfo* process);
+    void wakeup();
     bool isEmpty(ProcessInfo* list);
     ProcessInfo* getNext(ProcessInfo* list);
     void addToPrev(ProcessInfo* list, ProcessInfo* process);

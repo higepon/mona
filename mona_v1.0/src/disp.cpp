@@ -105,6 +105,7 @@ void disp_name4() {
         Semaphore::up(&g_semaphore_console);
         syscall_sleep(20);
         color++;
+        syscall_kill();
     }
 }
 

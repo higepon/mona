@@ -43,6 +43,7 @@ class ProcessManager {
     void schedule();
     void tick();
     void sleep(ProcessInfo* process, dword tick);
+    bool kill(ProcessInfo* process);
     dword getTick() const;
     void printAllProcesses() const;
     bool addProcess(Process* process, virtual_addr entry);
