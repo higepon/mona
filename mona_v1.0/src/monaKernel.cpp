@@ -46,16 +46,16 @@ void startKernel(void) {
 
     /* show message */
     _sysPrintln("------------------------------------------------------");
-    _sysSetColor(BG_BLACK | CH_AQUA);
+    _sysSetColor(SYS_BG_COLOR | CH_AQUA);
     _sysPrintln("      Mona Kernel starting                            ");
-    _sysSetColor(BG_BLACK | CH_SILVER);
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
     _sysPrintln("        ________ A A                                  ");
     _sysPrintln("      ~/ ______( `D`) < thanks ProgrammingBoard@2ch   ");
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
-    _sysSetColor(BG_MAROON | CH_BLUE);
+    _sysSetColor(SYS_BG_COLOR | CH_BLUE);
     _sys_printf("%s\n", version);
-    _sysSetColor(BG_BLACK | CH_SILVER);
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
 
     /* set interrept */
     _sysSetIdt();
@@ -65,10 +65,6 @@ void startKernel(void) {
     /* re-set up GDT */
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
-
-    void (*f)();
-    f = process1Tester;
-    _sys_printf("address of process1Tester() = %x\n", f);
 
     /* enable interrupt */
     _sysUnlock();
@@ -114,7 +110,7 @@ void startKernel(void) {
 */
 void panic(const char* msg) {
 
-    _sysSetColor(BG_BLACK | CH_RED);
+    _sysSetColor(SYS_BG_COLOR | CH_RED);
     _sys_printf("kernel panic!!!!!\n%s", msg);
     while (true) {
     }

@@ -132,9 +132,9 @@ void process1Tester() {
             i += 1;
             i -= 1;
         }
-        _sysSetColor(BG_BLACK | CH_FUCHSIA);
+        _sysSetColor(SYS_BG_COLOR | CH_RED);
         _sys_printf("  (.o'v'o)  ");
-        _sysSetColor(BG_BLACK | CH_SILVER);
+        _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
     }
     return;
 }
@@ -144,9 +144,9 @@ void process2Tester() {
 
     //    _sysdumpReg("process2", true, false);
     while (true) {
-        _sysSetColor(BG_BLACK | CH_YELLOW);
+        _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
         _sys_printf("  ( '  v ')  ");
-        _sysSetColor(BG_BLACK | CH_SILVER);
+        _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
         for (dword i = 0; i < 9000000; i++) {
             i += 1;
             i -= 1;

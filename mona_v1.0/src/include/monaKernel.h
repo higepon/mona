@@ -20,7 +20,8 @@
 #define _sysUnlock() asm volatile("sti")    /*!< \def enable  interupts */
 #define pusha()      asm volatile("pusha"); /*!< \def  pusha            */
 #define popa()       asm volatile("popa");  /*!< \def  popa             */
-
+#define SYS_BG_COLOR BG_TEAL
+#define SYS_CH_COLOR CH_WHITE
 
 /*!< \def _sysdumpReg() */
 #define _sysdumpReg(str, stopflag, unlockint) { \

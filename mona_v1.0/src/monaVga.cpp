@@ -11,6 +11,7 @@
     \date   create:2002/07/20 update:$Date$
 */
 #include <monaVga.h>
+#include <monaKernel.h>
 
 static int  curX;  /*! cursor position x        */
 static int  curY;  /*! cursor position y        */
@@ -40,7 +41,7 @@ void _sysSetColor(char c) {
 */
 void _sysInitVga() {
     setCursor(0, 0);
-    _sysSetColor(BG_BLACK | CH_SILVER);
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
     return;
 }
 
