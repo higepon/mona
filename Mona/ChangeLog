@@ -58,7 +58,7 @@
 
         * src/lib/gui/System/Drawing/Bitmap.cpp: Messageの新機能で単純化
 
-        * src/lib/monapi/monapi.cpp: __CTOR_LIST__, __DTOR_LIST__を処理
+        * src/lib/monapi/monapi.cpp: __CTOR_LIST__, __DTOR_LIST__を処理 (thanks Yui_Nekoさん、覆面さん)
 
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
