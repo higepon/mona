@@ -90,10 +90,10 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 */
 void X86MemoryManager::freeMemory(void* address) {
 
-    struct memoryEntry* targetAddress = (struct memoryEntry*)address;
-
+    struct memoryEntry* targetAddress = (struct memoryEntry*)((H_SIZE_T)address - 8);
+    _sys_printf("free %d", (H_SIZE_T)address);
     this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
-    //    this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
+    this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
     this->printInfo("free memory");
 }
@@ -177,13 +177,13 @@ void X86MemoryManager::printInfo(char* str) {
     while (fentry || uentry) {
 
         if ((uentry && fentry > uentry) || (!fentry && uentry)) {
-            _sys_printf("U%d", uentry->size);
+            _sys_printf("[U%d-%d]", uentry->size, uentry);
             uentry = uentry->next;
             continue;
         }
 
         if ((fentry && uentry > fentry) || (!uentry && fentry)) {
-            _sys_printf("F%d", fentry->size);
+            _sys_printf("[F%d-%d]", fentry->size, fentry);
             fentry = fentry->next;
             continue;
         }
