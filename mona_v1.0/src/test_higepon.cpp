@@ -154,6 +154,10 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
+    while (Semaphore::down(&g_semaphore_shared));
+    SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
+    Semaphore::up(&g_semaphore_shared);
+
     g_processManager->add(process);
     Thread*  thread = g_processManager->createThread(process, entrypoint);
     g_processManager->join(process, thread);
