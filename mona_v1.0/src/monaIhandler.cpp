@@ -127,9 +127,10 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    if (idx == 1) {
-        if (idx > 0xff00000) idx = 0;
+    if (idx < 200) {
         iret();
+    } else if (idx > 0xf000000) {
+        idx = 1;
     } else if (idx % 20 != 0) iret();
 
     /* determine next process or thread and run it */

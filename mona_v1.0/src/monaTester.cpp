@@ -128,7 +128,7 @@ void process1Tester() {
     enableTimer();
 
     while (true) {
-         for (dword i = 0; i < 9000000; i++) {
+         for (dword i = 0; i < 9900000; i++) {
             i += 1;
             i -= 1;
         }
@@ -147,7 +147,7 @@ void process2Tester() {
         _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
         _sys_printf("  ( '  v ')  ");
         _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-        for (dword i = 0; i < 9000000; i++) {
+        for (dword i = 0; i < 99000000; i++) {
             i += 1;
             i -= 1;
         }
