@@ -27,16 +27,16 @@ class FDCDriver : public DiskDriver {
     virtual ~FDCDriver();
 
   public:
-    static void interrupt();
+    void interrupt();
     bool read(dword lba, byte* buf);
     bool write(dword lba, byte* buf);
     bool recalibrate();
     bool seek(byte track);//private
     void motor(const bool on);
     void motorAutoOff();
-    inline Thread* getWaitThread() const
+    inline Thread* getWaitThread()
     {
-        return waitThread;
+        return (Thread*)waitThread;
     }
 
     inline void setWaitThread(Thread* thread)
@@ -60,13 +60,13 @@ class FDCDriver : public DiskDriver {
     void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
     bool read(byte track, byte head, byte sector);
     bool write(byte track, byte head, byte sector);
-    Thread* waitThread;
+    static Thread* waitThread;
   private:
     byte results_[10];
     int motorCount_;
     int resultsLength_;
     int currentTrack_;
-    volatile static bool interrupt_;
+    volatile bool interrupt_;
     byte* dmabuff_;
 };
 

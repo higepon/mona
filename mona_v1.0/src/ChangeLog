@@ -1,5 +1,10 @@
 2004-02-27  higepon  <higepon@users.sourceforge.jp>
 
+        * FDCDriver.cpp: まだ安定しない。
+
+        * syscalls.cpp : FD読み込みもwait/wakeup機能を使用しての実装に変更
+                         bochs/vmwareではまだ動かない
+
         * test_higepon.cpp (send): スケジューラのwait/wakeupの実装がほぼ終了してリバーシなどがまた動くようになった。
           マウスカーソル・キーボードの反応が良くなった。
 
@@ -1523,3 +1528,4 @@
         * メモリ管理 メモリ割り当て失敗時にfault0Handlerが呼ばれるようにした。
 
         * add fault0Handler
+

@@ -70,7 +70,7 @@
 
 #define FDC_DMA_BUFF_SIZE 512
 
-volatile bool FDCDriver::interrupt_ ;
+Thread* FDCDriver::waitThread;
 
 /*!
     \brief Constructer
@@ -117,6 +117,9 @@ void FDCDriver::initilize() {
     if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
         panic("dma buff allocate error");
     }
+
+    /* default wait thread */
+    waitThread = g_currentThread->thread;
 
     /* setup DMAC */
     outportb(0xda, 0x00);
@@ -172,16 +175,18 @@ void FDCDriver::interrupt() {
 */
 void FDCDriver::waitInterrupt() {
 
-            g_console->printf("here2");
-    setWaitThread(g_currentThread->thread);
+//      setWaitThread(g_currentThread->thread);
 
-    asm volatile("movl $%c0, %%ebx \n"
-                 "int  $0x80       \n"
-                 :
-                 :"g"(SYSTEM_CALL_WAIT_FDC)
-                 :"ebx"
-                 );
+//      g_console->printf("wait");
+//     asm volatile("movl $%c0, %%ebx \n"
+//                  "int  $0x80       \n"
+//                  :
+//                  :"g"(SYSTEM_CALL_WAIT_FDC)
+//                  :"ebx"
+//                  );
 
+//     g_scheduler->dump();
+//     g_console->printf("true=%s", interrupt_? "TRUE" : "FALSE");
     while (!interrupt_);
 }
 

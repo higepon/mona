@@ -45,20 +45,7 @@ void syscall_entrance() {
         break;
     case SYSTEM_CALL_KILL:
 
-//         g_processManager->kill(g_processManager->getCurrentProcess());
-
-//         /* Process schedule */
-//         g_processManager->schedule(false);
-
-//         /* Thread schedule */
-//         {
-//             Process* current = g_processManager->getCurrentProcess();
-//             bool isUser = current->isUserMode();
-//             g_currentThread = current->schedule(true)->getThreadInfo();
-
-//             /* Thread switch */
-//             current->switchThread(true, isUser);
-//         }
+        ThreadOperation::kill();
         break;
 
     case SYSTEM_CALL_PUT_PIXEL:
@@ -422,9 +409,9 @@ void syscall_entrance() {
     case SYSTEM_CALL_WAIT_FDC:
 
         {
-            g_console->printf("here");
             g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
             bool isProcessChange = g_scheduler->schedule();
+            g_scheduler->dump();
             ThreadOperation::switchThread(isProcessChange);
         }
         break;

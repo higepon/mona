@@ -156,15 +156,18 @@ void timerHandler()
 */
 void MFDCHandler(void)
 {
-    /* even if FDCDriver has no instance, it works */
-    FDCDriver::interrupt();
+//    g_console->printf("fdc int");
+    g_fdcdriver->interrupt();
 
     /* thx! K-tan */
     outportb(0x20, 0x66);
 
-    int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
-    g_console->printf("[%x]", wakeupResult);
-    ThreadOperation::switchThread((wakeupResult == 1));
+//     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
+
+//     if (wakeupResult != 0)
+//     {
+//         ThreadOperation::switchThread((wakeupResult == 1));
+//     }
 }
 
 /* IRQ Handler (expr) */

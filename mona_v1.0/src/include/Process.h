@@ -26,7 +26,7 @@
 
 class Thread;
 class Process;
-extern VirtualConsole*g_console;
+extern VirtualConsole* g_console;
 
 /*----------------------------------------------------------------------
     Idle function
@@ -47,7 +47,8 @@ extern "C" void arch_idle();
 /*----------------------------------------------------------------------
     ArchThreadInfo
 ----------------------------------------------------------------------*/
-typedef struct ArchThreadInfo {
+typedef struct ArchThreadInfo
+{
     dword  eip;       // 0
     dword  cs;        // 4
     dword  eflags;    // 8
@@ -73,7 +74,8 @@ typedef struct ArchThreadInfo {
 /*----------------------------------------------------------------------
     ThreadInfo
 ----------------------------------------------------------------------*/
-typedef struct ThreadInfo {
+typedef struct ThreadInfo
+{
     ArchThreadInfo* archinfo;
     Thread* thread;
     Process* process;
@@ -107,6 +109,7 @@ class ThreadOperation
   public:
     static Thread* create(Process* process, dword programCounter);
     static int switchThread(bool isProcessChanged);
+    static int kill();
 
   private:
     static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
@@ -137,9 +140,9 @@ public:
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);
 
-
 private:
     int calcPriority(Thread* thread);
+    volatile bool working;
 
 protected:
     Array<Thread*> runq;
@@ -183,147 +186,89 @@ class Thread : public Node
         partTick++;
     }
 
-    inline void tick(dword tick)
-    {
-        tick_     += tick;
-        timeLeft_ -= tick;
-    }
-
     inline dword getTick() const
     {
-        return tick_;
+        return totalTick;
     }
-
-    inline bool hasTimeLeft() const
-    {
-        return (timeLeft_ > 0);
-    }
-
-    inline void setTimeLeft(long timeLeft)
-    {
-        timeLeft_ = timeLeft;
-    }
-
-    inline ThreadInfo* getThreadInfo() const
-    {
-        return threadInfo_;
-    }
-
-    inline void setWaitReason(int reason)
-    {
-        waitReason_ = reason;
-    }
-
-    inline int getWaitReason() const
-    {
-        return waitReason_;
-    }
-
-  private:
-
-    /* this is public , because of getXXX */
-    ThreadInfo* threadInfo_;
 
   public:
     int currPriority;
     int basePriotity;
     int totalTick;
     int partTick;
+    int waitReason;
     dword scheduled;
-
-  protected:
-    dword tick_;
-    dword timeLeft_;
-    int waitReason_;
+    ThreadInfo* tinfo;
 };
-
 
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-class Process {
-
+class Process
+{
   public:
     Process() {}
     Process(const char* name, PageEntry* directory);
     virtual ~Process();
 
   public:
-    inline virtual const char* getName() const {
+    inline virtual const char* getName() const
+    {
         return name_;
     }
 
-    inline virtual void setTimeLeft(long timeLeft) {
-        timeLeft_ = timeLeft;
-    }
-
-    inline virtual void tick() {
-        tick_++;
-        timeLeft_ --;
-    }
-
-    inline virtual void tick(dword tick) {
-        tick_     += tick;
-        timeLeft_ -= tick;
-    }
-
-    inline virtual dword getTick() {
-        return tick_;
-    }
-
-    inline virtual dword getPid() {
+    inline virtual dword getPid()
+    {
         return pid_;
     }
 
-    inline virtual bool hasTimeLeft() const {
-        return timeLeft_ > 0;
-    }
-
-    inline virtual bool isUserMode() const {
+    inline virtual bool isUserMode() const
+    {
         return isUserMode_;
     }
 
-    inline virtual PageEntry* getPageDirectory() const {
+    inline virtual PageEntry* getPageDirectory() const
+    {
         return pageDirectory_;
     }
 
-    inline virtual List<class SharedMemorySegment*>* getSharedList() const {
+    inline virtual List<class SharedMemorySegment*>* getSharedList() const
+    {
         return shared_;
     }
 
-    inline virtual class HeapSegment* getHeapSegment() const {
+    inline virtual class HeapSegment* getHeapSegment() const
+    {
         return heap_;
     }
 
-    inline virtual List<MessageInfo*>* getMessageList() const {
+    inline virtual List<MessageInfo*>* getMessageList() const
+    {
         return messageList_;
     }
 
-    inline virtual BinaryTree<class KMutex*>* getKMutexTree() const {
+    inline virtual BinaryTree<class KMutex*>* getKMutexTree() const
+    {
         return kmutexTree_;
     }
 
-    inline virtual void setWakeupTimer(dword timer) {
-        wakeupTimer_ = timer;
-    }
-
-    inline virtual dword getWakeupTimer() const {
-        return wakeupTimer_;
-    }
-
-    inline virtual KMutex* getKMutex(int id) {
+    inline virtual KMutex* getKMutex(int id)
+    {
         return kmutexTree_->get(id);
     }
 
-    inline virtual List<char*>* getArguments() {
+    inline virtual List<char*>* getArguments()
+    {
         return arguments_;
     }
 
-    inline dword allocateStack() const {
+    inline dword allocateStack() const
+    {
         return STACK_START - STACK_SIZE * (threadNum - 1);
     }
 
-    inline List<Thread*>* getThreadList() const {
+    inline List<Thread*>* getThreadList() const
+    {
         return threadList_;
     }
 
@@ -344,22 +289,14 @@ class Process {
     bool isUserMode_;
     PageEntry* pageDirectory_;
     char name_[16];
-    //    OutputStream* stdout;
-    //    OutputStream* stderr;
-    //    InputStream*  stdin;
-    dword tick_;
-    dword wakeupTimer_;
-    long  timeLeft_;
     dword pid_;
-    byte priority_;
-    byte state_;
 };
 
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/
-class UserProcess : public Process {
-
+class UserProcess : public Process
+{
   public:
     UserProcess();
     UserProcess(const char* name, PageEntry* directory);
@@ -369,8 +306,8 @@ class UserProcess : public Process {
 /*----------------------------------------------------------------------
     KernelProcess
 ----------------------------------------------------------------------*/
-class KernelProcess : public Process {
-
+class KernelProcess : public Process
+{
   public:
     KernelProcess();
     KernelProcess(const char* name, PageEntry* directory);
@@ -380,8 +317,8 @@ class KernelProcess : public Process {
 /*----------------------------------------------------------------------
     V86Process
 ----------------------------------------------------------------------*/
-class V86Process : public Process {
-
+class V86Process : public Process
+{
   public:
     V86Process();
     V86Process(const char* name, PageEntry* directory);

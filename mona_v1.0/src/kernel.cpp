@@ -136,8 +136,8 @@ void startKernel(void)
     /* dummy thread struct */
     Thread* dummy1 = new Thread();
     Thread* dummy2 = new Thread();
-    g_prevThread    = dummy1->getThreadInfo();
-    g_currentThread = dummy2->getThreadInfo();
+    g_prevThread    = dummy1->tinfo;
+    g_currentThread = dummy2->tinfo;
 
     /* this should be called, before timer enabled */
     ProcessOperation::initialize(g_page_manager);
@@ -146,7 +146,7 @@ void startKernel(void)
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
     Thread* idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
-    g_scheduler->join(idleThread);
+    g_scheduler->join(idleThread, 60);
 
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
@@ -157,25 +157,11 @@ void startKernel(void)
 
     enableInterrupt();
 
-    /* FDC do not delete */
-    enableFDC();
-    g_fdcdriver = new FDCDriver();
-    g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    if (!g_fat12->initilize())
-    {
-        g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
-        for (;;);
-    }
-    g_fdcdriver->motorAutoOff();
     g_info_level = MSG;
 
     /* dummy thread struct */
-    g_prevThread    = dummy1->getThreadInfo();
-    g_currentThread = dummy2->getThreadInfo();
+    g_prevThread    = dummy1->tinfo;
+    g_currentThread = dummy2->tinfo;
     g_prevThread->archinfo->cr3    = 1;
     g_currentThread->archinfo->cr3 = 2;
 
@@ -272,6 +258,24 @@ void mainProcess()
     g_console->printf("%d/%d/%d %d:%d:%d\n", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
 
 #endif
+
+    /* FDC do not delete */
+    enableFDC();
+    g_fdcdriver = new FDCDriver();
+    g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    if (!g_fat12->initilize())
+    {
+        g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
+        for (;;);
+    }
+
+    g_fdcdriver->motorAutoOff();
+
     /* KEY Server */
     g_console->printf("loading KeyBoard Server....");
     g_console->printf("%s\n", loadProcess("SERVER", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
@@ -287,6 +291,6 @@ void mainProcess()
     enableMouse();
 
     /* end */
-    //g_processManager->killSelf();
+    ThreadOperation::kill();
     for (;;);
 }

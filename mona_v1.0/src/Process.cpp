@@ -19,21 +19,15 @@
 #define FOREACH_N(top, type, element) \
 for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
 
-#define PTR_THREAD(queue) (((Thread*)(queue))->getThreadInfo())
+#define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
-
-typedef struct
-{
-    dword reason;
-    dword who;
-} WaitFor;
 
 #define W_CRITICAL 0
 #define W_HUMAN    1
 #define W_NORMAL   2
 #define WAITQ_IDX(waitReason) ((int)(waitReason & 0x03))
 
-Scheduler::Scheduler() : runq(64), waitq(3), tickTotal(0)
+Scheduler::Scheduler() : working(false), runq(64), waitq(3), tickTotal(0)
 {
     /* initialize run queue */
     for (int i = 0; i < runq.getLength(); i++)
@@ -72,7 +66,7 @@ Process* Scheduler::findProcess(dword pid)
     {
         FOREACH_N(queue, Thread*, thread)
         {
-            Process* process = thread->getThreadInfo()->process;
+            Process* process = thread->tinfo->process;
             if (process->getPid() == pid)
             {
                 return process;
@@ -84,7 +78,7 @@ Process* Scheduler::findProcess(dword pid)
     {
         FOREACH_N(queue, Thread*, thread)
         {
-            Process* process = thread->getThreadInfo()->process;
+            Process* process = thread->tinfo->process;
             if (process->getPid() == pid)
             {
                 return process;
@@ -100,7 +94,7 @@ Process* Scheduler::findProcess(const char* name)
     {
         FOREACH_N(queue, Thread*, thread)
         {
-            Process* process = thread->getThreadInfo()->process;
+            Process* process = thread->tinfo->process;
             if (!strcmp(name, process->getName()))
             {
                 return process;
@@ -112,7 +106,7 @@ Process* Scheduler::findProcess(const char* name)
     {
         FOREACH_N(queue, Thread*, thread)
         {
-            Process* process = thread->getThreadInfo()->process;
+            Process* process = thread->tinfo->process;
             if (!strcmp(name, process->getName()))
             {
                 return process;
@@ -156,6 +150,10 @@ bool Scheduler::schedule2()
 {
     Thread* root = NULL;
 
+    if (this->working) return true;
+
+    this->working = true;
+
     FOREACH(Thread*, queue, runq)
     {
         if (queue->isEmpty())
@@ -175,11 +173,18 @@ bool Scheduler::schedule2()
 
     g_prevThread    = g_currentThread;
     g_currentThread = PTR_THREAD(root->top());
+
+    this->working = false;
+
     return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 bool Scheduler::schedule()
 {
+    if (this->working) return true;
+
+    this->working = true;
+
     /* schedule for each run queue */
     FOREACH(Thread*, queue, runq)
     {
@@ -224,6 +229,9 @@ bool Scheduler::schedule()
     g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
+
+    this->working = false;
+
     return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
@@ -237,13 +245,12 @@ void Scheduler::join(Thread* thread, int priority)
 int Scheduler::kill(Thread* thread)
 {
     thread->remove();
-    this->schedule();
     return NORMAL;
 }
 
 int Scheduler::wait(Thread* thread, int waitReason)
 {
-    thread->setWaitReason(waitReason);
+    thread->waitReason = waitReason;
 
     thread->remove();
     waitq[WAITQ_IDX(waitReason)]->addToPrev(thread);
@@ -252,14 +259,14 @@ int Scheduler::wait(Thread* thread, int waitReason)
 
 int Scheduler::wakeup(Thread* thread, int waitReason)
 {
-    if (thread->getWaitReason() != waitReason)
+    if (thread->waitReason != waitReason)
     {
         return 0;
     }
 
     thread->remove();
     runq[0]->addToPrev(thread);
-    thread->setWaitReason(WAIT_NONE);
+    thread->waitReason = WAIT_NONE;
 
     return this->schedule() ? 1 : -1;
 }
@@ -301,7 +308,16 @@ void Scheduler::dump()
         FOREACH_N(queue, Thread*, thread)
         {
             ThreadInfo* i = PTR_THREAD(thread);
-            g_console->printf("[%s:t=%x,eip=%x,cr3=%x,pos=%d]\n", i->process->getName(), i, i->archinfo->eip, i->archinfo->cr3, thread->currPriority);
+            g_console->printf("[r][%s:t=%x,eip=%x,cr3=%x,pos=%d]\n", i->process->getName(), i, i->archinfo->eip, i->archinfo->cr3, thread->currPriority);
+        }
+    }
+
+    FOREACH(Thread*, queue, waitq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            ThreadInfo* i = PTR_THREAD(thread);
+            g_console->printf("[w][%s:t=%x,eip=%x,cr3=%x,pos=%d]\n", i->process->getName(), i, i->archinfo->eip, i->archinfo->cr3, thread->currPriority);
         }
     }
 }
@@ -400,7 +416,7 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     PageEntry* directory = process->getPageDirectory();
     LinearAddress stack  = process->allocateStack();
 
-    thread->getThreadInfo()->process = process;
+    thread->tinfo->process = process;
 
     if (process->isUserMode())
     {
@@ -420,7 +436,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
 {
     ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
 
-    ThreadInfo* info      = thread->getThreadInfo();
+    ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
     ainfo->cs      = USER_CS;
     ainfo->ds      = USER_DS;
@@ -447,7 +463,7 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
 {
     ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
 
-    ThreadInfo* info      = thread->getThreadInfo();
+    ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
     ainfo->cs      = KERNEL_CS;
     ainfo->ds      = KERNEL_DS;
@@ -495,34 +511,53 @@ int ThreadOperation::switchThread(bool isProcessChanged)
     return NORMAL;
 }
 
+int ThreadOperation::kill()
+{
+    Thread* thread   = g_currentThread->thread;
+    Process* process = thread->tinfo->process;
+
+    g_scheduler->kill(thread);
+    (process->threadNum)--;
+
+    if (process->threadNum < 1)
+    {
+        delete process;
+    }
+
+    bool isProcessChange = g_scheduler->schedule();
+    delete thread;
+    ThreadOperation::switchThread(isProcessChange);
+    return NORMAL;
+}
+
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : totalTick(0), partTick(0), tick_(0), timeLeft_(1)
+Thread::Thread() : totalTick(0), partTick(0), waitReason(WAIT_NONE)
 {
     /* thread information */
-    threadInfo_ = new ThreadInfo;
-    checkMemoryAllocate(threadInfo_, "class Thread info allocate");
-    threadInfo_->thread = this;
+    tinfo = new ThreadInfo;
+    checkMemoryAllocate(tinfo, "class Thread info allocate");
+    tinfo->thread = this;
 
     /* thread information arch dependent */
-    threadInfo_->archinfo = new ArchThreadInfo;
-    checkMemoryAllocate(threadInfo_->archinfo, "class Thread arch info allocate");
+    tinfo->archinfo = new ArchThreadInfo;
+    checkMemoryAllocate(tinfo->archinfo, "class Thread arch info allocate");
 }
 
 Thread::~Thread()
 {
     /* free memory */
-    delete threadInfo_->archinfo;
-    delete threadInfo_;
+    delete tinfo->archinfo;
+    delete tinfo;
 }
 
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
 dword Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : threadNum(0), tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4) {
-
+Process::Process(const char* name, PageEntry* directory) : threadNum(0)
+{
     /* name */
     strncpy(name_, name, sizeof(name_));
 
@@ -551,28 +586,31 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0), tick_(0
     pid_ = pid;
 }
 
-Process::~Process() {
-
+Process::~Process()
+{
     /* heap */
     delete heap_;
 
     /* shared MemorySegment */
-    for (int i = 0; i < shared_->size(); i++) {
+    for (int i = 0; i < shared_->size(); i++)
+    {
         SharedMemoryObject::detach(shared_->get(i)->getId(), this);
     }
 
     delete(shared_);
 
     /* message list */
-    for (int i = 0; i < messageList_->size(); i++) {
+    for (int i = 0; i < messageList_->size(); i++)
+    {
         delete messageList_->get(i);
     }
 
-    /* we need for each ! don't forge */
+    /* we need for each ! don't forget */
     delete kmutexTree_;
 
     /* arguments */
-    for (int i = 0; i < arguments_->size(); i++) {
+    for (int i = 0; i < arguments_->size(); i++)
+    {
         delete[](arguments_->get(i));
     }
 
