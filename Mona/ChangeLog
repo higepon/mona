@@ -16,6 +16,10 @@
 
         * src/kernel/elf.cpp: path‘Î‰
 
+        * include/monapi/System.h (getProcessInfo, getProcessPath, getBundlePath): ’Ç‰Á
+
+        * src/lib/monapi/System.cpp: ’Ç‰Á
+
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 
         * Gaku‚³‚ñ‚ÌC³•ª: fat.cpp, fat.h

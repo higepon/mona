@@ -13,6 +13,7 @@ SOURCES = string.cpp \
           Observable.cpp \
           Random.cpp \
           Screen.cpp \
+          System.cpp \
           VirtualScreen.cpp \
           mt19937ar.cpp \
           Keys.cpp

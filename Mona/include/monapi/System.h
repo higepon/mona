@@ -15,20 +15,24 @@ namespace MonAPI {
 class System
 {
   public:
-    static inline dword getProcessID()
+    inline static dword getProcessID()
     {
         return syscall_get_pid();
     }
 
-    static inline dword getThreadID()
+    inline static dword getThreadID()
     {
         return syscall_get_tid();
     }
 
-    static inline dword getTick()
+    inline static dword getTick()
     {
         return syscall_get_tick();
     }
+
+    static PsInfo* getProcessInfo();
+    static const char* getProcessPath();
+    static const char* getBundlePath();
 };
 
 }
