@@ -121,8 +121,8 @@ void* MemoryManager::allocate(dword size) {
 
     if (size == 0) return (dword)NULL;
 
-    /* align8 */
-    size = (size + 8 - 1) & 0xFFFFFFF8;
+    /* align16 */
+    size = (size + 16 - 1) & 0xFFFFFFF0;
 
     MemoryEntry* current;
     dword realSize = getRealSize(size);

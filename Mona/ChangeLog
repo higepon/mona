@@ -1,3 +1,9 @@
+2004-04-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: マウスの情報送信・受信を3回から1回に削減
+
+        * src/kernel/MemoryManager.cpp: メモリの割り当てalign16対応
+
 2004-04-15  shadow  <shadowin@users.sourceforge.jp>
 
         * src/lib/monapi/Keys.cpp ToChar追加

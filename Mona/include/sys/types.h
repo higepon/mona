@@ -134,9 +134,7 @@ typedef struct {
 #define MSG_RESULT_OK                  0x03
 #define MSG_RESULT_ERROR               0x04
 #define MSG_KEY_VIRTUAL_CODE           0x05
-#define MSG_MOUSE_1                    0x06
-#define MSG_MOUSE_2                    0x07
-#define MSG_MOUSE_3                    0x08
+#define MSG_MOUSE                      0x06
 #define MSG_MOUSE_REGIST_TO_SERVER     0x09
 #define MSG_MOUSE_INFO                 0x0A
 #define MSG_MOUSE_UNREGIST_FROM_SERVER 0x0B

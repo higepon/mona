@@ -31,6 +31,7 @@
 void mouseHandler()
 {
     static int counter = 0;
+    static MessageInfo message;
 
     if (Mouse::waitReadable())
     {
@@ -38,8 +39,10 @@ void mouseHandler()
     }
 
     byte data = inp8(0x60);
-    MessageInfo message;
-    memset(&message, 0, sizeof(MessageInfo));
+
+    /* EOI */
+    outp8(0xA0, 0x20);
+    outp8(0x20, 0x20);
 
     /* modified 2004/04/09 by nikq
      *
@@ -53,19 +56,23 @@ void mouseHandler()
 
     switch(counter&3)
     {
-    case 0: message.header = MSG_MOUSE_1; counter = 1; break;
-    case 1: message.header = MSG_MOUSE_2; counter = 2; break;
-    case 2: message.header = MSG_MOUSE_3; counter = 0; break;
-    }
-
-    message.arg1   = data;
-
-    /* EOI */
-    outp8(0xA0, 0x20);
-    outp8(0x20, 0x20);
-    if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.SVR"), &message))
-    {
-        g_console->printf("mouse send failed");
+    case 0:
+        message.arg1 = data;
+        counter = 1;
+        break;
+    case 1:
+        message.arg2 = data;
+        counter = 2;
+        break;
+    case 2:
+        message.header = MSG_MOUSE;
+        message.arg3 = data;
+        counter = 0;
+        if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.SVR"), &message))
+        {
+            g_console->printf("mouse send failed");
+        }
+        break;
     }
 }
 

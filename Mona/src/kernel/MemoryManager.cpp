@@ -119,8 +119,8 @@ void* MemoryManager::allocate(dword size) {
 
     if (size == 0) return (dword)NULL;
 
-    /* align8 */
-    size = (size + 8 - 1) & 0xFFFFFFF8;
+    /* align16 */
+    size = (size + 16 - 1) & 0xFFFFFFF0;
 
     MemoryEntry* current;
     dword realSize = getRealSize(size);
@@ -142,6 +142,7 @@ void* MemoryManager::allocate(dword size) {
 #ifdef DEBUG_BUILD
         current->pad1 = 0xFBFBFBFB;
         current->pad2 = 0xFBFBFBFB;
+//      if (((int)(current->startAddress)) % 16) panic("16");
 #endif
         return (current->startAddress);
 
@@ -159,6 +160,7 @@ void* MemoryManager::allocate(dword size) {
 #ifdef DEBUG_BUILD
         current->pad1 = 0xFBFBFBFB;
         current->pad2 = 0xFBFBFBFB;
+//      if (((int)(current->startAddress)) % 16) panic("16");
 #endif
 
         return (current->startAddress);

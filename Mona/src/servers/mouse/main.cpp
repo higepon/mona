@@ -80,22 +80,16 @@ int MonaMain(List<char*>* pekoe) {
                 unregist(destList, &receive);
                 break;
 
-            case MSG_MOUSE_1:
+            case MSG_MOUSE:
 
                 result = (byte)(receive.arg1);
                 info.leftClickd  = (bool)(result & 0x01);
                 info.rightClickd = (bool)(result & 0x02);
-                break;
 
-            case MSG_MOUSE_2:
-
-                result = (byte)(receive.arg1);
+                result = (byte)(receive.arg2);
                 info.x = (char)result;
-                break;
 
-            case MSG_MOUSE_3:
-
-                result = (byte)(receive.arg1);
+                result = (byte)(receive.arg3);
                 info.y = -1 * (char)result;
 
                 posX += info.x;
@@ -113,14 +107,12 @@ int MonaMain(List<char*>* pekoe) {
 
                 Message::create(&send, MSG_MOUSE_INFO, posX, posY
                                 , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
-//                 Message::create(&send, MSG_MOUSE_INFO, info.x, info.y
-//                                 , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
                 sendMouseInformation(destList, &send);
-
 
                 break;
 
             default:
+
                 /* igonore this message */
                 break;
             }
