@@ -56,21 +56,22 @@ static void StdoutMessageLoop() {
 /** GUIコンソールクラス */
 class GShell : public Window {
 private:
+	/** コマンド履歴ポインター */
+	int historyPtr;
+	/** コマンド履歴 */
+	LinkedList *history;
+	/** 行リスト */
 	LinkedList *lines;
+	/** １行バッファ */
 	char lineBuffer[256];
+	/** コマンドバッファ */
 	char commandBuffer[256];
+	/** カレントパス */
+	char currentPath[256];
 
-public:
-	GShell() {
-		setRect((800-GSHELL_WIDTH-12)/2,(600-GSHELL_HEIGHT-28)/2,GSHELL_WIDTH+12,GSHELL_HEIGHT+28);
-		setTitle("GUIシェル");
-		lines = new LinkedList();
-		memset(lineBuffer, 0, 256);
-		memset(commandBuffer, 0, 256);
-	}
-	
+private:
 	/** 1行追加 */
-	void add(char *str) {
+	inline void addLine(char *str) {
 		// 最下行まで表示されているときは最上行を削除する
 		// ここでremoveしなければ後々スクロールバーをつけたときには役に立つかも
 		if (strlen(lineBuffer) > 0 && lines->getLength() >= (GSHELL_HEIGHT / 12 - 2)) {
@@ -87,19 +88,19 @@ public:
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(str, MONAPI_TRUE);
 		int size = *(int*)mi->Data;
 		if (mi == NULL || size == 0) {
-			add("ディレクトリが見つかりません。\n");
+			this->addLine("ディレクトリが見つかりません。\n");
 			return;
 		}
 		// ディレクトリを検索
 		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
 		char temp[128];
-		memset(temp, 0, 128);
+		memset(temp, 0, sizeof(temp));
 		for (int i = 0; i < size; i++, p++) {
 			// 1行4項目まで表示する
 			if ((i > 0) && (i % 4 == 0)) {
 				temp[strlen(temp)] = '\n';
-				add(temp);
-				memset(temp, 0, 128);
+				this->addLine(temp);
+				memset(temp, 0, sizeof(temp));
 			}
 			// ディレクトリ
 			if ((p->attr & ATTRIBUTE_DIRECTORY) != 0) {
@@ -129,6 +130,29 @@ public:
 
 	/** ディレクトリ移動 */
 	inline void cd(char *str) {
+		String s = str;
+		// 一つ上のディレクトリへ
+		if (s.equals("..") && strlen(currentPath) > 0 && strcmp(currentPath, "/") != 0) {
+			int I = strlen(currentPath) - 1;
+			for (int i = I; i > 0; i--) {
+				if (currentPath[i] == '/') {
+					currentPath[i] = '\0';
+					return;
+				} else {
+					currentPath[i] = '\0';
+				}
+			}
+		// 絶対パス
+		} else if (s.startsWith("/")) {
+			memset(currentPath, 0, sizeof(currentPath));
+			strcpy(currentPath, str);
+		// 相対パス
+		} else {
+			if (strcmp(currentPath, "/") != 0) {
+				strcat(currentPath, "/");
+			}
+			strcat(currentPath, str);
+		}
 	}
 	
 	/** ファイルの内容を表示 */
@@ -150,8 +174,8 @@ public:
 			if (mi->Data[i] == '\r') {
 				// NOP
 			} else if (mi->Data[i] == '\n') {
-				add(lineBuffer);
-				memset(lineBuffer, 0, 256);
+				this->addLine(lineBuffer);
+				memset(lineBuffer, 0, sizeof(lineBuffer));
 			} else {
 				lineBuffer[strlen(lineBuffer)] = mi->Data[i];
 			}
@@ -171,74 +195,197 @@ public:
 		sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d\n",
 			date.year(), date.month(), date.day(), day[date.dayofweek() % 7],
 			ampm[date.hour() / 12], date.hour() % 12, date.min(), date.sec());
-		add(time);
+		this->addLine(time);
 	}
 	
 	/** プロセス情報を表示 */
 	inline void ps() {
 		syscall_set_ps_dump();
 		PsInfo info;
-		add("[tid] [状態]  [eip]    [esp]    [cr3]    [名前]\n");
+		this->addLine("[tid] [状態]  [eip]    [esp]    [cr3]    [名前]\n");
 		char buf[128];
 		while (syscall_read_ps_dump(&info) == 0) {
 			sprintf(buf, "%5d %s %08x %08x %08x %s\n",
 			info.tid, info.state ? "実行中" : "待機中",
 			info.eip, info.esp, info.cr3, info.name);
-			add(buf);
+			this->addLine(buf);
 		}
 	}
 	
+	/** ファイルを実行する */
+	inline void exec(char *filename) {
+		String s = filename;
+		// 絶対パス
+		if (s.startsWith("/")) {
+			monapi_call_process_execute_file(filename, MONAPI_FALSE);
+		// APP形式
+		} else if (s.endsWith(".app") || s.endsWith(".APP")) {
+			char temp[256];
+			memset(temp, 0, sizeof(temp));
+			strcpy(temp, currentPath);
+			strcat(temp, "/");
+			strcat(temp, filename);
+			// ディレクトリを開く
+			monapi_cmemoryinfo* mi = monapi_call_file_read_directory(temp, MONAPI_TRUE);
+			int size = *(int*)mi->Data;
+			if (mi == NULL || size == 0) return;
+			// ディレクトリを検索
+			monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+			for (int i = 0; i < size; i++, p++) {
+				// 一般ファイル
+				if ((p->attr & ATTRIBUTE_DIRECTORY) == 0 &&
+					p->name[strlen(p->name) - 4] == '.' && 
+					p->name[strlen(p->name) - 3] == 'E')
+				{
+					// *.E?? は実行形式だと認識する
+					// *.ELF/*.EL2/*.EL5/*.EXE/*.EX2/*.EX5
+					strcat(temp, "/");
+					strcat(temp, p->name);
+					break;
+				}
+			}
+			monapi_call_process_execute_file(temp, MONAPI_FALSE);
+		// 相対パス
+		} else {
+			char temp[256];
+			memset(temp, 0, sizeof(temp));
+			strcpy(temp, currentPath);
+			strcat(temp, "/");
+			strcat(temp, filename);
+			monapi_call_process_execute_file(temp, MONAPI_FALSE);
+		}
+	}
+
 	/** コマンド解析 */
-	void parseCommand(char *cmd) {
+	void parse(char *cmd) {
+		// NULLチェック
+		if (cmd == NULL || strlen(cmd) == 0) return;
+		
+		//
+		// help
+		//
 		String s = cmd;
 		if (s.equals("help")) {
-			add("GUIシェル 内部コマンド一覧\n");
-			add(" help, ls, cd, cat, date, uname, clear, ps, kill, exec\n");
+			this->addLine("GUIシェル 内部コマンド一覧\n");
+			this->addLine(" help, ls/dir, cd, cat/type, date, uname/ver, \n");
+			this->addLine(" clear/cls, ps, kill, touch, exec\n");
+		//
+		// ls/dir
+		//
 		} else if (s.equals("ls") || s.equals("dir")) {
-			ls("/");
-		} else if (s.startWith("cd ")) {
+			this->ls(currentPath);
+		//
+		// cd [pathname]
+		//
+		} else if (s.startsWith("cd ")) {
 			char pathname[128];
 			sscanf(cmd, "cd %s", pathname);
-			cd(pathname);
-		} else if (s.startWith("cat ")) {
+			// NULLチェック
+			if (pathname != NULL && strlen(pathname) > 0) {
+				this->cd(pathname);
+			}
+		//
+		// cat [filename]
+		//
+		} else if (s.startsWith("cat ")) {
 			char filename[128];
 			sscanf(cmd, "cat %s", filename);
-			cat(filename);
-		} else if (s.startWith("type ")) {
+			// NULLチェック
+			if (filename != NULL && strlen(filename) > 0) {
+				this->cat(filename);
+			}
+		//
+		// type [filename]
+		//
+		} else if (s.startsWith("type ")) {
 			char filename[128];
 			sscanf(cmd, "type %s", filename);
-			cat(filename);
+			// NULLチェック
+			if (filename != NULL && strlen(filename) > 0) {
+				this->cat(filename);
+			}
+		//
+		// date
+		//
 		} else if (s.equals("date")) {
-			date();
+			this->date();
+		//
+		// uname/ver
+		//
 		} else if (s.equals("uname") || s.equals("ver")) {
 			char uname[128];
 			syscall_get_kernel_version(uname, 128);
 			uname[strlen(uname)] = '\n';
-			add(uname);
+			this->addLine(uname);
+		//
+		// clear/cls
+		//
 		} else if (s.equals("clear") || s.equals("cls")) {
 			int I = lines->getLength();
 			for (int i = 0; i < I; i++) {
 				lines->remove(0);
 			}
+		//
+		// ps
+		//
 		} else if (s.equals("ps")) {
-			ps();
-		} else if (s.startWith("kill ")) {
+			this->ps();
+		//
+		// kill [pid]
+		//
+		} else if (s.startsWith("kill ")) {
 			int pid;
 			sscanf(cmd, "kill %d", &pid);
 			syscall_kill_thread((dword)pid);
-		} else if (s.startWith("exec ")) {
+		//
+		// exec [filename]
+		//
+		} else if (s.startsWith("exec ")) {
 			char filename[128];
-			memset(filename, 0, 128);
-			// 先頭の"exec "を削る
-			for (int i = 5; i < (int)strlen(cmd); i++) {
-				filename[i - 5] = cmd[i];
+			memset(filename, 0, sizeof(filename));
+			// NULLチェック
+			if (strlen(cmd) > 5) {
+				// 先頭の"exec "を削る
+				for (int i = 5; i < (int)strlen(cmd); i++) {
+					filename[i - 5] = cmd[i];
+				}
+				this->exec(filename);
 			}
-			monapi_call_process_execute_file(filename, MONAPI_FALSE);
+		//
+		// touch [filename]
+		//
+		} else if (s.startsWith("touch ")) {
+			char filename[128];
+			sscanf(cmd, "touch %s", filename);
+			// NULLチェック
+			if (filename != NULL && strlen(filename) > 0) {
+				syscall_file_create(filename);
+			}
 		} else {
 			char temp[256];
 			sprintf(temp, "'%s'ｺﾏﾝﾄﾞｴﾗｰｷﾀｰｰｰ(ﾟ∀ﾟ)ｰｰｰ!!!\n", cmd);
-			add(temp);
+			this->addLine(temp);
 		}
+	}
+
+public:
+	/** コンストラクタ */
+	GShell() {
+		setRect((800-GSHELL_WIDTH-12)/2,(600-GSHELL_HEIGHT-28)/2,GSHELL_WIDTH+12,GSHELL_HEIGHT+28);
+		setTitle("GUIシェル");
+		historyPtr = 0;
+		this->history = new LinkedList();
+		this->lines = new LinkedList();
+		memset(lineBuffer, 0, sizeof(lineBuffer));
+		memset(commandBuffer, 0, sizeof(commandBuffer));
+		memset(currentPath, 0, sizeof(currentPath));
+		strcpy(currentPath, "/");
+	}
+	
+	/** デストラクタ */
+	~GShell() {
+		delete(this->history);
+		delete(this->lines);
 	}
 	
 	/** イベントハンドラ */
@@ -253,41 +400,61 @@ public:
 			}
 			if (temp[strlen(temp) - 1] == '\n') {
 				// リストに追加
-				add(temp);
+				this->addLine(temp);
 				memset(lineBuffer, 0, 256);
+				// 再描画
 				onPaint(getGraphics());
 				update();
 			}
 		// キーイベント
 		} else if (e->type == KEY_PRESSED) {
 			KeyEvent *ke = (KeyEvent *)e;
+			// コマンド実行
 			if (ke->keycode == VKEY_ENTER) {
-				if (strlen(commandBuffer) > 0) {
-					// MONA>....
-					char temp[5 + 1+ 256];
-					sprintf(temp, "MONA>%s", commandBuffer);
-					// リストに追加
-					add(temp);
-					// 入力したコマンドを解析
-					parseCommand(commandBuffer);
-					memset(lineBuffer, 0, 256);
-					memset(commandBuffer, 0, 256);
-					// 再描画
-					onPaint(getGraphics());
-					update();
-				}
-			} else if (ke->keycode == VKEY_BACKSPACE) {
-				if (strlen(commandBuffer) > 0) {
-					// 1文字削除
-					memset(lineBuffer, 0, 256);
-					commandBuffer[strlen(commandBuffer) - 1] = 0;
-					// 再描画
-					onPaint(getGraphics());
-					update();
-				}
-			} else {
-				// 1文字追加
+				if (strlen(commandBuffer) == 0) return;
+				// /% ....
+				char temp[256];
+				sprintf(temp, "%s%% %s", currentPath, commandBuffer);
+				// リストに追加
+				this->addLine(temp);
+				this->history->add(new String(temp));
+				// 入力したコマンドを解析
+				parse(commandBuffer);
 				memset(lineBuffer, 0, 256);
+				memset(commandBuffer, 0, 256);
+				// 再描画
+				onPaint(getGraphics());
+				update();
+			// １文字削除
+			} else if (ke->keycode == VKEY_BACKSPACE) {
+				if (strlen(commandBuffer) == 0) return;
+				memset(lineBuffer, 0, 256);
+				commandBuffer[strlen(commandBuffer) - 1] = 0;
+				// 再描画
+				onPaint(getGraphics());
+				update();
+			// １つ前の履歴
+			} else if (ke->keycode == VKEY_UP) {
+				if (historyPtr == 0) return;
+				historyPtr--;
+				strcpy(commandBuffer, ((String *)history->get(historyPtr))->getBytes());
+				// 再描画
+				onPaint(getGraphics());
+				update();
+			// １つ次の履歴
+			} else if (ke->keycode == VKEY_DOWN) {
+				if (historyPtr < history->getLength() - 1) {
+					historyPtr++;
+					strcpy(commandBuffer, ((String *)history->get(historyPtr))->getBytes());
+				} else {
+					memset(commandBuffer, 0, sizeof(commandBuffer));
+				}
+				// 再描画
+				onPaint(getGraphics());
+				update();
+			// 1文字追加
+			} else if (0 < ke->keycode && ke->keycode < 128) {
+				memset(lineBuffer, 0, sizeof(lineBuffer));
 				commandBuffer[strlen(commandBuffer)] = ke->keycode;
 				// 再描画
 				onPaint(getGraphics());
@@ -315,10 +482,11 @@ public:
 			i++;
 		}
 		// コマンドライン
-		g->drawText("MONA>", 0, i * 12);
-		g->drawText(commandBuffer, 8 * 5, i * 12);
+		char temp[256];
+		sprintf(temp, "%s%% %s", currentPath, commandBuffer);
+		g->drawText(temp, 0, i * 12);
 		// キャレット
-		int x0 = 8 * 5 + 8 * strlen(commandBuffer);
+		int x0 = strlen(temp) * 8;
 		int y0 = i * 12 + 10;
 		g->drawLine(x0, y0, x0 + 8, y0);
 		g->drawLine(x0, y0 + 1, x0 + 8, y0 + 1);
