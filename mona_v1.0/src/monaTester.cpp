@@ -112,8 +112,8 @@ void typeTester() {
 */
 void processTester() {
 
-    ProcessManager* pm = new ProcessManager();
-    pm->printInfo();
+    ProcessManager& pm = ProcessManager::instance();
+    pm.printInfo();
     return;
 }
 

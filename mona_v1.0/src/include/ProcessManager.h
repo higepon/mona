@@ -30,6 +30,10 @@ class ProcessManager {
     void switchProcess();
     void switchProcess(word);
     void printInfo();
+    static ProcessManager& instance() {
+        static ProcessManager theInstance;
+        return theInstance;
+    }
   private:
     void sgdt();
     inline void ltr(word) const;
