@@ -24,10 +24,18 @@ int print(const char* msg) {
     for (int len = strlen(msg); len > 0; msg += 127, len -= 127)
     {
         strncpy(buf, msg, 127);
+#if 1
+        char buf2[128];
+        sprintf(buf2, "[%d", syscall_get_tid());
+        syscall_print(buf2);
+#endif
         if (monapi_cmessage_send_receive_args(NULL, NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
         {
             syscall_print(buf);
         }
+#if 1
+        syscall_print("]");
+#endif
     }
     return 0;
 #else
