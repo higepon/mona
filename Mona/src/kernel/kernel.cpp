@@ -78,6 +78,7 @@
 #endif
 
 const char* version = "Mona version.0.2.0 $Date$";
+dword version_number  = 0x00000200;
 void  mainProcess();
 
 /*!

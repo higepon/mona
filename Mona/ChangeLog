@@ -1,3 +1,7 @@
+2004-05-15  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/kernel.cpp: カーネルバージョン問い合わせのシステムコールの戻り値を整数で。
+
 2004-05-14  higepon  <higepon@users.sourceforge.jp>
 
         * tools/elf_tool/elfparser.cpp (Relocate): SとAの計算

@@ -118,6 +118,7 @@ bool ELFParser::Relocate(Elf32_Shdr* relHeader, Elf32_Rel* relEntry)
 
     Elf32_Addr A = *target;
     Elf32_Addr S = symTable[symIndex].st_value;
+    Elf32_Addr P = (Elf32_Addr)target;
 
     switch(ELF32_R_TYPE(relEntry->r_info))
     {
@@ -128,7 +129,7 @@ bool ELFParser::Relocate(Elf32_Shdr* relHeader, Elf32_Rel* relEntry)
     case(R_386_32):
 
         /* S + A */
-        *target = S + A
+        *target = S + A;
         break;
     case(R_386_PC32):
 

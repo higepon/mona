@@ -18,6 +18,7 @@
 #include "elf.h"
 
 extern const char* version;
+extern dword version_number;
 
 void syscall_entrance() {
 
@@ -676,7 +677,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_GET_KERNEL_VERSION:
 
         strncpy((char*)info->esi, version, info->ecx);
-        info->eax = 0;
+        info->eax = version_number;
         break;
 
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
