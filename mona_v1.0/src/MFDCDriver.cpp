@@ -99,6 +99,8 @@ void MFDCDriver::initilize() {
     motor(ON);
     while (!waitInterrupt());
 
+    calibrate();
+
     printStatus("after");
     return;
 }
@@ -193,11 +195,25 @@ bool MFDCDriver::sendCommand(const byte command[], const byte length) {
     return true;
 }
 
-void MFDCDriver::calibrate() {
+/*!
+    \brief calibrate
 
-    /* before command, it is necesary check MRQ bit */
+    \return true OK/false command fail
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
+bool MFDCDriver::calibrate() {
 
+    byte command[] = {0x07, 0x00}; /* calibrate */
 
+    interrupt_ = false;
+    if(!sendCommand(command, sizeof(command))){
+
+        _sys_printf("MFDCDriver#calibrate:command fail\n");
+        return false;
+    }
+
+    while(!waitInterrupt());
 }
 
 /*!
