@@ -15,10 +15,10 @@
 
 #include<GraphicalConsole.h>
 
-extern "C" void _write_font(char ch, char fc, char bc);
-extern "C" void _scroll_up();
-extern "C" char _pos_x;
-extern "C" char _pos_y;
+extern "C" void write_font(char ch, char fc, char bc);
+extern "C" void scroll_up();
+extern "C" char pos_x;
+extern "C" char pos_y;
 
 /*!
     \brief initilize
@@ -28,8 +28,8 @@ extern "C" char _pos_y;
 */
 GraphicalConsole::GraphicalConsole() {
 
-    _pos_x    = 0;
-    _pos_y    = 0;
+    pos_x    = 0;
+    pos_y    = 0;
     bgcolor_ = GP_BLACK;
     chcolor_ = GP_WHITE;
     clearScreen();
@@ -117,20 +117,20 @@ void GraphicalConsole::printf(const char *format, ...) {
 */
 void GraphicalConsole::clearScreen() {
 
-    int curx = _pos_x;
-    int cury = _pos_y;
+    int curx = pos_x;
+    int cury = pos_y;
 
     for (int x = 0; x < GP_MAX_WIDTH; x++) {
 
         for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
 
-            _pos_x = x;
-            _pos_y = y;
-            _write_font(' ', chcolor_, bgcolor_);
+            pos_x = x;
+            pos_y = y;
+            write_font(' ', chcolor_, bgcolor_);
         }
     }
-    _pos_x = curx;
-    _pos_y = cury;
+    pos_x = curx;
+    pos_y = cury;
 }
 
 /*!
@@ -149,8 +149,8 @@ void GraphicalConsole::setCursor(int x, int y) {
     if (x < 0 || y < 0 || x >= GP_MAX_WIDTH || y >= GP_MAX_HEIGHT) {
         return;
     }
-    _pos_x = x;
-    _pos_y = y;
+    pos_x = x;
+    pos_y = y;
     return;
 }
 
@@ -165,18 +165,18 @@ void GraphicalConsole::setCursor(int x, int y) {
 void GraphicalConsole::forwardCursor() {
 
     /* forward cursor */
-    _pos_x++;
+    pos_x++;
 
     /* to the next line */
-    if (_pos_x >= GP_MAX_WIDTH) {
-        _pos_x = 0;
-        _pos_y++;
+    if (pos_x >= GP_MAX_WIDTH) {
+        pos_x = 0;
+        pos_y++;
     }
 
     /* scroll up */
-    if (_pos_y >= GP_MAX_HEIGHT) {
+    if (pos_y >= GP_MAX_HEIGHT) {
         scrollUp();
-        _pos_y--;
+        pos_y--;
     }
     return;
 }
@@ -209,17 +209,17 @@ void GraphicalConsole::backwardCursor(int n) {
 void GraphicalConsole::backwardCursor() {
 
     /* backward cursor */
-    _pos_x--;
+    pos_x--;
 
     /* back line */
-    if (_pos_x < 0) {
-        _pos_x = GP_MAX_WIDTH - 1;
-        _pos_y--;
+    if (pos_x < 0) {
+        pos_x = GP_MAX_WIDTH - 1;
+        pos_y--;
     }
 
     /* scroll down? */
-    if (_pos_y < 0) {
-        _pos_y = 0;
+    if (pos_y < 0) {
+        pos_y = 0;
     }
     return;
 }
@@ -236,13 +236,13 @@ void GraphicalConsole::backwardCursor() {
 void GraphicalConsole::newLine() {
 
     /* new line */
-    _pos_x = 0;
-    _pos_y++;
+    pos_x = 0;
+    pos_y++;
 
     /* scroll up */
-    if (_pos_y >= GP_MAX_HEIGHT) {
+    if (pos_y >= GP_MAX_HEIGHT) {
         scrollUp();
-        _pos_y--;
+        pos_y--;
     }
 }
 
@@ -256,7 +256,7 @@ void GraphicalConsole::newLine() {
 */
 void GraphicalConsole::scrollUp() {
 
-    _scroll_up();
+    scroll_up();
     return;
 }
 
@@ -291,7 +291,7 @@ void GraphicalConsole::putCharacter(char ch) {
 
         /* write charcter at (x, y) */
         asm volatile("subl   $0x20, %esp \n");
-        _write_font(ch, chcolor_, bgcolor_);
+        write_font(ch, chcolor_, bgcolor_);
         asm volatile("addl   $0x20, %esp \n");
         forwardCursor();
     }

@@ -5,7 +5,7 @@ LD         = ld
 STRIP      = strip
 LFLAGS     = -n -Ttext 0x1200 -static --oformat binary
 CFLAGS     = -nostdlib -fno-exceptions -fno-rtti -ffreestanding -fno-builtin -Wall -c
-NFLAGS     = -D BUILD_ON_LINUX
+NFLAGS     = -DBUILD_ON_LINUX
 ENV        = env
 VERSION    = 0.1.1
 DOXYGEN    = doxygen
@@ -92,13 +92,13 @@ $(BOOT2) : secondboot.asm
 	$(NASM) secondboot.asm -o $@ -l $(LIST)/second.list
 
 mode12h.o : mode12h.asm
-	$(NASM) mode12h.asm -felf -o $@ -l $(LIST)/mode12h.list
+	$(NASM) $(NFLAGS) mode12h.asm -felf -o $@ -l $(LIST)/mode12h.list
 
 ihandler.o : ihandler.asm
-	$(NASM) ihandler.asm -felf -o $@ -l $(LIST)/ihandler.list
+	$(NASM) $(NFLAGS) ihandler.asm -felf -o $@ -l $(LIST)/ihandler.list
 
 core.o : core.asm
-	$(NASM) core.asm -felf -o $@ -l $(LIST)/core.list
+	$(NASM) $(NFLAGS) core.asm -felf -o $@ -l $(LIST)/core.list
 
 doxygen :
 	$(DOXYGEN)

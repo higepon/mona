@@ -59,7 +59,7 @@ cextern g_current_process
 arch_fdchandler:
         pushAll
         changeData
-        call _MFDCHandler
+        call MFDCHandler
         popAll
         iretd
 
