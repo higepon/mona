@@ -69,7 +69,7 @@ word inp16(IDEController* ide, int reg)
 }
 
 
-bool waitBusyClear(IDEController* ide)
+bool WaitBusyClear(IDEController* ide)
 {
     dword i;
     for (i = 0; i < ATA_TIMEOUT; i++)
@@ -144,7 +144,7 @@ word getSignature(IDEController* ide, int device)
         c = inp8(ide, ATA_STR);
         if (c == 0xff) break;
 
-        timeout = !waitBusyClear(ide);
+        timeout = !WaitBusyClear(ide);
         if (timeout) break;
 
 #if 0
@@ -221,7 +221,7 @@ int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void
     /* read */
     for (int i = 0; i < count; i++, p+=256)
     {
-        if (!waitBusyClear(ide)) return -1;
+        if (!WaitBusyClear(ide)) return -1;
 
         byte status = inp8(ide, ATA_STR);
 
@@ -251,6 +251,7 @@ int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void
 enum DeviceType
 {
     DEVICE_UNKNOWN,
+    DEVICE_NON,
     DEVICE_ATA,
     DEVICE_ATAPI
 };
@@ -283,12 +284,96 @@ int IDE_Identify(IDEController* ide, int device, DeviceType type, void* buf)
     /* command execute */
     result = SendPioDataCommand(ide, &com, 1, buf);
 
-    if (result > -3) return 1; /* device not exist */
+    if (result == -3) return 1; /* device not exist */
     else if (result > 0 && (result & BIT_ABRT) != 0) return 2; /* abort */
     else if (result > 0) return 3; /* error */
     else if (result < 0) return 4; /* timeout or device select error */
 
     return 0;
+}
+
+DeviceType JudgeDevice(IDEController* ide, int device)
+{
+    dword i;
+    char buf[1024];
+    DeviceType type;
+    word sigature = getSignature(ide, device);
+
+    switch(sigature)
+    {
+    case 0xEB14:
+        type = DEVICE_ATAPI;
+        break;
+    case 0:
+        type = DEVICE_ATA;
+        break;
+    default:
+        return DEVICE_NON;
+    }
+
+    /* unknown device */
+    if (!WaitBusyClear(ide)) return DEVICE_UNKNOWN;
+
+    for (i = 0; i < RETRY_MAX; i++)
+    {
+        /* try idetify 2 times */
+        sleep(5);
+        int id1 = IDE_Identify(ide, device, type, buf);
+        sleep(5);
+        int id2 = IDE_Identify(ide, device, type, buf);
+
+        /* retry */
+        if (id1 != id2) continue;
+        if (id1 == 3 || id1 == 4) continue;
+
+
+        if (id1 == 0) return type;
+    }
+
+    return DEVICE_UNKNOWN;
+}
+
+void PrintDevice(DeviceType type, IDEController* ide, int device)
+{
+    char buf[1024];
+    word* p = (word*)buf;
+
+    memset(&buf, 0, sizeof(buf));
+
+    switch(type)
+    {
+    case DEVICE_UNKNOWN:
+        printf("unknown device\n");
+        break;
+
+    case DEVICE_NON:
+        printf("non device\n");
+        break;
+
+    case DEVICE_ATA:
+        printf("ATA device:");
+        IDE_Identify(ide, device, DEVICE_ATA, buf);
+        printf("[");
+        for (int i = 27; i < 47; i++)
+        {
+            printf("%c", (p[i] & 0xff00)>>8);
+            printf("%c", p[i] & 0x00ff);
+        }
+        printf("]\n");
+        break;
+
+    case DEVICE_ATAPI:
+        printf("ATAPI device");
+        IDE_Identify(ide, device, DEVICE_ATAPI, buf);
+        printf("[");
+        for (int i = 27; i < 47; i++)
+        {
+            printf("%c", (p[i] & 0xff00)>>8);
+            printf("%c", p[i] & 0x00ff);
+        }
+        printf("]\n");
+        break;
+    }
 }
 
 int MonaMain(List<char*>* pekoe)
@@ -326,26 +411,16 @@ int MonaMain(List<char*>* pekoe)
     outp8(&ide[0], ATA_DCR, 0x02);
     sleep(5);
 
-    char buf[1024];
+    DeviceType type;
 
-    printf("signature=%x\n", getSignature(&ide[0], 0));
-    printf("signature=%x\n", getSignature(&ide[0], 1));
-    printf("signature=%x\n", getSignature(&ide[1], 0));
-    printf("signature=%x\n", getSignature(&ide[1], 1));
-
-    printf("identify=%x\n", IDE_Identify(&ide[0], 0, DEVICE_ATA, buf));
-
-    word* p = (word*)buf;
-
-    printf("[");
-
-    for (int i = 27; i < 47; i++)
-    {
-        printf("%c", (p[i] & 0xff00)>>8);
-        printf("%c", p[i] & 0x00ff);
-    }
-
-    printf("]");
+    type = JudgeDevice(&ide[0], 0);
+    PrintDevice(type, &ide[0], 0);
+    type = JudgeDevice(&ide[0], 1);
+    PrintDevice(type, &ide[0], 1);
+    type = JudgeDevice(&ide[1], 0);
+    PrintDevice(type, &ide[1], 0);
+    type = JudgeDevice(&ide[1], 1);
+    PrintDevice(type, &ide[1], 1);
 
     return 0;
 }

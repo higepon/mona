@@ -1,3 +1,7 @@
+2004-06-30  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/main.cpp (PrintDevice): プライマリ/セカンダリ マスタ/スレーブのデバイス判定と型番表示
+
 2004-06-29  tino  <tino@users.sourceforge.jp>
 
         * src/servers/pe: PEバイナリ(.EXE)のローダーを追加

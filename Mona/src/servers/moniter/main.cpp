@@ -65,7 +65,7 @@ bool Monitor::Initialize()
 {
     char* config;
 
-    config = (char*)ReadConfig("/MONITOR.INI");
+    config = (char*)ReadConfig("/MONITOR.CFG");
     if (config == NULL)
     {
         printf("Config file read error\n");
