@@ -16,5 +16,6 @@
 
 void hvectorTester();
 void operatorTester();
+void floppyTester();
 
 #endif
