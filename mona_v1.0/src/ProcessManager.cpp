@@ -24,12 +24,11 @@ ProcessManager::ProcessManager(Process* idle) {
 
 void ProcessManager::switchProcess() {
 
-
-    info(WARNING, "esp=%x pid=%x eip=%x eflags=%x cs=%x ss=%x\n", g_current_process->esp, g_current_process->pid
-             , g_current_process->eip, g_current_process->eflags, g_current_process->cs, g_current_process->ss);
+    dword debugesp = 0;
 
 
-    //    if (scheduler_->toUserMode()) {
+
+//        if (scheduler_->toUserMode()) {
 
 
     if ((g_current_process->cs & 0x03) == 0x03) {
@@ -37,13 +36,13 @@ void ProcessManager::switchProcess() {
         g_tss->esp0 = g_current_process->esp0;
         g_tss->ss0  = g_current_process->ss0;
 
-        info(ERROR, "TO USER");
+        info(WARNING, "TO USER");
 
         arch_switch_process_to_user_mode();
 
     } else {
 
-        info(ERROR, "TO KERNEL");
+        info(WARNING, "TO KERNEL");
         arch_switch_process();
     }
 }

@@ -30,6 +30,7 @@ BITS 32
 [extern _syscall_entrance]
 [extern _dummyHandler]
 [extern _arch_save_process_registers]
+[extern _timerHandler]
 
 ;;; fdc handler
 _arch_fdchandler:
@@ -133,6 +134,7 @@ _arch_cpufaulthandler_e:
 ;;; entrance of syscall
 _arch_syscall_handler:
         pushad
+        call _arch_save_process_registers
         call _syscall_entrance
         popad
         iretd
