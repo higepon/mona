@@ -1,5 +1,7 @@
 2004-01-18  higepon  <higepon@users.sourceforge.jp>
 
+        * FAT12.cpp: ƒoƒOC³
+
         * kernel.cpp: writeFileAppend
 
 2004-01-17  higepon  <higepon@users.sourceforge.jp>

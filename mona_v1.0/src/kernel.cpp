@@ -67,6 +67,9 @@ extern int pos_x;
 extern int pos_y;
 void printInfo() {
 
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+
     for (;;) {
     }
 }

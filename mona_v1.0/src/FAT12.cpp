@@ -139,6 +139,10 @@ bool FAT12::initilize() {
     }
 
     /* set parameters depend on bpb */
+    if (bpb_.bytesPerSector == 0) {
+        printf("FAT12 0 devied");
+        for (;;);
+    }
     rootDirSectors_  = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
     firstDataSector_ = bpb_.reservedSectorCount + bpb_.numberFATs * bpb_.fatSize16 + rootDirSectors_;
     rootEntryStart_  = bpb_.reservedSectorCount + bpb_.fatSize16 * bpb_.numberFATs;
