@@ -92,6 +92,33 @@ bool DisposeWindow(dword handle)
 	return false;
 }
 
+void DisposeWindowFromThreadID(dword tid)
+{
+	for (int i = 0; i < captures.size(); i++)
+	{
+		if (captures[i]->ThreadID == tid)
+		{
+			captures.removeAt(i);
+			i--;
+		}
+	}
+	for (int i = 0; i < windows.size(); i++)
+	{
+		guiserver_window* w = windows[i];
+		if (w->ThreadID == tid)
+		{
+			if (w->FormBufferHandle != 0)
+			{
+				w->Visible = false;
+				DrawWindow(w);
+			}
+			windows.removeAt(i);
+			MemoryMap::unmap(w->Handle);
+			i--;
+		}
+	}
+}
+
 void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 {
 	if (w == NULL || w->FormBufferHandle == 0) return;
@@ -199,7 +226,7 @@ bool WindowHandler(MessageInfo* msg)
 			{
 				if (Message::send(target->ThreadID, msg) != 0)
 				{
-					DisposeWindow(target->Handle);
+					DisposeWindowFromThreadID(target->ThreadID);
 				}
 			}
 			break;
