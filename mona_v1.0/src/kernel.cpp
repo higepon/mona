@@ -187,7 +187,7 @@ void mainProcess() {
     //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
     //    process9->pinfo_.esp = 0x1000;
 
-    g_console->printf("load prcess 0");
+    //    g_console->printf("load prcess 0");
     g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", false));
 
     while (true);
