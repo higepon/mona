@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-#define MAX_APP_LEN 8
+#define MAX_APP_LEN 10
 
 /**
  アプリケーションランチャー
@@ -46,9 +46,11 @@ public:
 static char *buttonLabelList[MAX_APP_LEN] = {
 	"GBBALL",
 	"GBROWSER",
+	"GCHAT",
 	"GCLOCK",
 	"GHEBTN",
 	"GNOIZ2BG",
+	"GNULLPO",
 	"GRUNNER",
 	"GUITEST1",
 	"GVERSION"
@@ -58,9 +60,11 @@ static char *buttonLabelList[MAX_APP_LEN] = {
 static char *buttonCommandList[MAX_APP_LEN] = {
 	"/APPS/GBBALL.EX5",
 	"/APPS/GBROWSER.EX5",
+	"/APPS/GCHAT.EX5",
 	"/APPS/GCLOCK.EX5",
 	"/APPS/GHEBTN.APP/GHEBTN.EX5",
 	"/APPS/GNOIZ2BG.EX5",
+	"/APPS/GNULLPO.APP/GNULLPO.EX5",
 	"/APPS/GRUNNER.EX5",
 	"/APPS/GUITEST1.EX5",
 	"/APPS/GVERSION.EX5"
@@ -68,7 +72,7 @@ static char *buttonCommandList[MAX_APP_LEN] = {
 
 GLaunch::GLaunch()
 {
-	setRect(0, 22, 100, 200);
+	setRect(0, 22, 100, 250);
 	setTitle("mokon");
 	for (int i = 0; i < MAX_APP_LEN; i++) {
 		buttonList[i] = new Button(buttonLabelList[i]);
