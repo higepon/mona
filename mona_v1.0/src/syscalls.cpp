@@ -28,7 +28,6 @@ void syscall_entrance() {
 //    KMutex* mutex;
     ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
-    dword readSize = 0;
 
     info->eax = 0;
 
@@ -50,15 +49,8 @@ void syscall_entrance() {
         ThreadOperation::kill();
         break;
 
-    case SYSTEM_CALL_PUT_PIXEL:
-
-        put_pixel((int)(info->esi), (int)(info->ecx), (char)(info->edi));
-        info->eax = 0;
-        break;
-
     case SYSTEM_CALL_SEND:
 
-        info->eax = 0;
         info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
         break;
 
@@ -142,9 +134,15 @@ void syscall_entrance() {
         break;
     case SYSTEM_CALL_LOAD_PROCESS:
 
-        enableInterrupt();
-        info->eax = loadProcess((char*)info->esi, (char*)info->ecx, true, (CommandOption*)(info->edi));
-        break;
+        {
+            char* path = (char*)info->esi;
+            char* name = (char*)info->ecx;
+            CommandOption* option = (CommandOption*)(info->edi);
+
+            enableInterrupt();
+            info->eax = loadProcess(path, name, true, option);
+            break;
+        }
 
     case SYSTEM_CALL_MAP:
 
@@ -250,65 +248,61 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_FILE_OPEN:
 
-        enableInterrupt();
-        g_fdcdriver->motor(ON);
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
+        {
+            char* path  = (char*)info->esi;
+            int mode    = (int)info->ecx;
+            dword* size = (dword*)info->edi;
+            enableInterrupt();
+            g_fdcdriver->motor(ON);
+            g_fdcdriver->recalibrate();
+            g_fdcdriver->recalibrate();
+            g_fdcdriver->recalibrate();
 
-        while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd));
 
-        if (!g_fat12->open((char*)(info->esi), (char*)(info->ecx), FAT12::READ_MODE)) {
+            if (!g_fs->open(path, mode))
+            {
+                info->eax = g_fs->getErrorNo();
+                Semaphore::up(&g_semaphore_fd);
+                break;
+            }
 
-            info->eax = g_fat12->getErrorNo();
             Semaphore::up(&g_semaphore_fd);
+
+            *size = g_fs->size();
+            info->eax = 0;
             break;
         }
 
-        Semaphore::up(&g_semaphore_fd);
-
-        *((dword*)(info->edi)) = g_fat12->getFileSize();
-        info->eax = 0;
-
-        break;
-
     case SYSTEM_CALL_FILE_READ:
 
-        enableInterrupt();
-        info->eax = 0;
         {
             byte* buf      = (byte*)(info->esi);
             dword size     = (dword)(info->ecx);
-            int readTimes  = size / 512 + (size % 512 ? 1 : 0);
 
+            enableInterrupt();
             while (Semaphore::down(&g_semaphore_fd));
-            for (int i = 0; i < readTimes; i++) {
 
-                bool readOk = g_fat12->read(buf + 512 * i);
-
-                if (!readOk && g_fat12->getErrorNo() != FAT12::END_OF_FILE) {
-                    info->eax = 1;
-                    break;
-                } else if (!readOk) {
-                    readSize += 512;
-                    info->eax = 2;
-                    break;
-                }
-                readSize += 512;
+            if (!g_fs->read(buf, size))
+            {
+                info->eax = g_fs->getErrorNo();
+                Semaphore::up(&g_semaphore_fd);
+                break;
             }
+
+            Semaphore::up(&g_semaphore_fd);
+            disableInterrupt();
+            info->eax = 0;
+            break;
         }
-        Semaphore::up(&g_semaphore_fd);
-        *((dword*)(info->edi)) = readSize;
-        break;
 
     case SYSTEM_CALL_FILE_CLOSE:
 
         enableInterrupt();
         while (Semaphore::down(&g_semaphore_fd));
-        g_fat12->close();
-        g_fdcdriver->motorAutoOff();
+        g_fs->close();
         Semaphore::up(&g_semaphore_fd);
-        info->eax = 0;
+
         break;
 
     case SYSTEM_CALL_MAP_TWO:
@@ -400,7 +394,6 @@ void syscall_entrance() {
         {
             g_scheduler->wait(g_currentThread->thread, WAIT_MESSAGE);
             bool isProcessChange = g_scheduler->schedule();
-//    bool isProcessChange = true;
             ThreadOperation::switchThread(isProcessChange, 3);
         }
 

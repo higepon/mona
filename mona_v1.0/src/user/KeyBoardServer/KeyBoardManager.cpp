@@ -345,6 +345,9 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
     case(0x2E):
         info->keycode = VK_PERIOD;
         break;
+    case(0x2F):
+        info->keycode = VK_SLASH;
+        break;
     case(0x03):
         info->keycode = VK_ENTER;
         break;
@@ -475,6 +478,9 @@ char KeyBoardManager::toChar(int keycode) {
         break;
     case(VK_PERIOD):
         result = '.';
+        break;
+    case(VK_SLASH):
+        result = '/';
         break;
     case(VK_TEN_0):
         result = '0';

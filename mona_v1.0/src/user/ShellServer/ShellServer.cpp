@@ -217,6 +217,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_TEN_PLUS):
     case(VK_TEN_PERIOD):
     case(VK_SPACE):
+    case(VK_SLASH):
 
         commandChar(KeyBoardManager::toChar(keycode));
         break;

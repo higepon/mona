@@ -1,5 +1,7 @@
 2004-03-10  higepon  <higepon@users.sourceforge.jp>
 
+        * syscalls.cpp : システムコールの引数のバグ(レジスタ破壊)を修正
+
         * user/ShellServer/ShellServer.cpp: プロセスロード処理を見直し
 
         * operator.cpp (free): メモリ割当てを割り込み禁止領域で行なう事にした

@@ -1,24 +1,41 @@
 #include <userlib.h>
 
-int MonaMain(List<char*>* PEKOE) {
+int MonaMain(List<char*>* pekoe)
+{
+    int result;
+    byte buf[32];
 
-  FileInputStream fis("KERNEL.IMG");
-
-  int openresult = fis.open();
-
-  if (openresult != 0) {
-    printf("ERROR: can not open KERNEL.IMG [%d] \n", openresult);
-    return 1;
-  } else {
-    int fsz = fis.getFileSize();
-    fis.close();
-    if (fsz == 0) {
-      printf("ERROR: file size is 0\n");
-      return 1;
+    if (pekoe->isEmpty())
+    {
+        printf("usage: HELLO.ELF pathToFile\n");
+        return -1;
     }
-  }
 
+    FileInputStream fis(pekoe->get(0));
 
+    if (0 != (result = fis.open()))
+    {
+        printf("can not open %s\n", pekoe->get(0));
+        return -1;
+    }
 
-  return 0;
+    printf("file size = %d\n", fis.getFileSize());
+
+    if (fis.read(buf, 32))
+    {
+        printf("can not read %s\n", pekoe->get(0));
+        fis.close();
+        return -1;
+    }
+
+    printf("contents\n");
+
+    for (int i = 0; i < 32; i++)
+    {
+        printf("[%x]", buf[i]);
+    }
+
+    fis.close();
+
+    return 0;
 }

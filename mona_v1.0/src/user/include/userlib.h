@@ -50,7 +50,7 @@ extern "C" int syscall_get_cursor(int* x, int* y);
 extern "C" int syscall_set_cursor(int x, int y);
 extern "C" int syscall_mutex_destroy(int id);
 extern "C" int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
-extern "C" int syscall_file_open(char* path, char* file, volatile dword* size);
+extern "C" int syscall_file_open(char* path, int mode, volatile dword* size);
 extern "C" int syscall_file_read(char* buf, dword size, dword* readSize);
 extern "C" int syscall_file_close();
 extern "C" int syscall_fdc_open();
@@ -93,6 +93,7 @@ extern MonaApplication* monaApp;
 #define VK_BACKSPACE  0x21
 #define VK_ENTER      0x22
 #define VK_PERIOD     0x30
+#define VK_SLASH      0x2F
 #define VK_A          0x61
 #define VK_B          0x62
 #define VK_C          0x63

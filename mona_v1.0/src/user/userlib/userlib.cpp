@@ -718,23 +718,13 @@ FileInputStream::~FileInputStream() {
 
 int FileInputStream::open() {
 
-    static char file[128];
     int result;
 
     if (isOpen_) {
         return 0;
     }
 
-    strcpy(file, file_);
-    char* p1 = strtok(file, "/");
-    char* p2 = strtok(NULL, "/");
-
-    if (p2 == NULL) {
-        result = syscall_file_open(".", p1, &fileSize_);
-    } else {
-        result = syscall_file_open(p1, p2, &fileSize_);
-    }
-
+    result = syscall_file_open(file_, 1, &fileSize_);
 
     if (result == 0) {
         isOpen_ = true;
@@ -1082,7 +1072,7 @@ int syscall_set_cursor(int x, int y) {
     return (int)result;
 }
 
-int syscall_file_open(char* path, char* file, volatile dword* size) {
+int syscall_file_open(char* path, int mode, volatile dword* size) {
 
     int result;
 
@@ -1093,7 +1083,7 @@ int syscall_file_open(char* path, char* file, volatile dword* size) {
                  "int  $0x80       \n"
                  "movl %%eax, %0   \n"
                  :"=m"(result)
-                 :"g"(SYSTEM_CALL_FILE_OPEN), "m"(path), "m"(file), "m"(size)
+                 :"g"(SYSTEM_CALL_FILE_OPEN), "m"(path), "m"(mode), "m"(size)
                  : "ebx", "esi", "ecx", "edi"
                  );
 
