@@ -5,7 +5,6 @@ all:
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 #	@cd launcher; $(MAKE) $@
-	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
@@ -21,7 +20,6 @@ install:
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 #	@cd launcher; $(MAKE) $@
-	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
@@ -37,7 +35,6 @@ clean: touchdepend
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 #	@cd launcher; $(MAKE) $@
-	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
@@ -53,7 +50,6 @@ depend: touchdepend
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 #	@cd launcher; $(MAKE) $@
-	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
@@ -69,7 +65,6 @@ distclean:
 	rm -f noiz2bg/dependencies
 	rm -f fire/dependencies
 #	rm -f launcher/dependencies
-	rm -f waba/dependencies
 	rm -f shell/dependencies
 	rm -f clock/dependencies
 	rm -f cube/dependencies
@@ -85,7 +80,6 @@ touchdepend:
 	touch noiz2bg/dependencies
 	touch fire/dependencies
 #	touch launcher/dependencies
-	touch waba/dependencies
 	touch shell/dependencies
 	touch clock/dependencies
 	touch cube/dependencies
