@@ -125,7 +125,7 @@ void startKernel(void)
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
+    g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
 
     /* shared memory object */
     SharedMemoryObject::setup();

@@ -208,7 +208,7 @@ dword MemoryMap::create(dword size)
         return 0;
     }
 
-    for (; size % 4096; size++);
+    size = (size + 4095) & 0xFFFFF000; /* nikq */
 
     dword result = syscall_memory_map_create(size);
 

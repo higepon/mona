@@ -409,7 +409,7 @@ PageEntry* PageManager::allocatePageTable() const
     byte* table;
     table = (byte*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
     checkMemoryAllocate(table, "PageManager table memory allocate");
-    for (; (int)table % 4096; table++);
+    table = (byte*)(((int)table + 4096) & 0xFFFFF000);
     return (PageEntry*)table;
 }
 
