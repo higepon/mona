@@ -196,6 +196,20 @@ void Window::setFocused(bool focused)
 		this->focused = focused;
 		_focusEvent->type = FOCUS_OUT;
 		postEvent(_focusEvent);
+		
+		// 部品をフォーカスアウト状態にする
+		// NULLチェック
+		if (_controlList->firstItem == NULL) return;
+		
+		// 前からチェックしていく
+		LinkedItem *item = _controlList->firstItem;
+		Control *c = (Control *)item->data;
+		c->setFocused(false);
+		while (item->next != NULL) {
+			item = item->next;
+			c = (Control *)item->data;
+			c->setFocused(false);
+		}
 	} else {
 		//printf("FOCUS_IN %d\n", threadID);
 		this->focused = focused;
@@ -326,24 +340,29 @@ void Window::postEvent(Event *event)
 			if (item != NULL) {
 				Control *c = (Control *)item->data;
 				if (c == control) {
-					c->setFocused(true);
-				} else {
+					if (c->getFocused() == false) {
+						c->setFocused(true);
+					}
+				} else if (c->getFocused() == true) {
 					c->setFocused(false);
 				}
 				while (item->next != NULL) {
 					item = item->next;
 					c = (Control *)item->data;
 					if (c == control) {
-						c->setFocused(true);
-					} else {
+						if (c->getFocused() == false) {
+							c->setFocused(true);
+						}
+					} else if (c->getFocused() == true) {
 						c->setFocused(false);
 					}
 				}
 			}
 			event->source = control;
 			// 座標変換
-			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
-			((MouseEvent *)event)->y -= (y + INSETS_TOP);
+			Rect *rect = control->getRect();
+			((MouseEvent *)event)->x -= rect->x;//(x + INSETS_LEFT);
+			((MouseEvent *)event)->y -= rect->y;//(y + INSETS_TOP);
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
@@ -371,8 +390,9 @@ void Window::postEvent(Event *event)
 		if (control != NULL) {
 			event->source = control;
 			// 座標変換
-			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
-			((MouseEvent *)event)->y -= (y + INSETS_TOP);
+			Rect *rect = control->getRect();
+			((MouseEvent *)event)->x -= rect->x;//(x + INSETS_LEFT);
+			((MouseEvent *)event)->y -= rect->y;//(y + INSETS_TOP);
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
@@ -385,8 +405,9 @@ void Window::postEvent(Event *event)
 		if (control != NULL) {
 			event->source = control;
 			// 座標変換
-			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
-			((MouseEvent *)event)->y -= (y + INSETS_TOP);
+			Rect *rect = control->getRect();
+			((MouseEvent *)event)->x -= rect->x;//(x + INSETS_LEFT);
+			((MouseEvent *)event)->y -= rect->y;//(y + INSETS_TOP);
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
@@ -592,34 +613,16 @@ void Window::run()
 			case MSG_GUISERVER_DEFOCUSED:
 				//printf("WindowManager->Window MSG_GUISERVER_DEFOCUSED received %d\n", threadID);
 				setFocused(false);
-				//repaint();
 				MonAPI::Message::reply(&info);
-				{
-					// 部品をフォーカスアウト状態にする
-					// NULLチェック
-					if (_controlList->firstItem == NULL) break;
-
-					// 前からチェックしていく
-					LinkedItem *item = _controlList->firstItem;
-					Control *c = (Control *)item->data;
-					c->setFocused(false);
-					while (item->next != NULL) {
-						item = item->next;
-						c = (Control *)item->data;
-						c->setFocused(false);
-					}
-				}
 				break;
 			case MSG_GUISERVER_ICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_ICONIFIED received %d\n", threadID);
 				setIconified(true);
-				//repaint();
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_DEICONIFIED received %d\n", threadID);
 				setIconified(false);
-				//repaint();
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_REMOVE:
