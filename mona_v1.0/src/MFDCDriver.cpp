@@ -62,6 +62,7 @@
 #define FDC_COMMAND_SEEK            0x0f
 #define FDC_COMMAND_SENSE_INTERRUPT 0x08
 #define FDC_COMMAND_SPECIFY         0x03
+#define FDC_COMMAND_READ            0x46
 
 /* time out */
 #define FDC_RETRY_MAX 600000
@@ -139,13 +140,13 @@ void MFDCDriver::initilize() {
     while (!waitInterrupt());
 
     /* seek test */
-    seek(3);
+    //    seek(3);
     printStatus("after seek");
+
+
+    read(0, 0, 1);
+
     motor(OFF);
-
-    setupDMARead(512);
-
-    while (true);
 
     return;
 }
@@ -456,4 +457,37 @@ void MFDCDriver::setupDMAWrite(dword size) {
 
     startDMA();
     return;
+}
+
+bool MFDCDriver::read(byte track, byte head, byte sector) {
+
+    byte command[] = {FDC_COMMAND_READ
+                   , (head & 1) << 2
+                   , track
+                   , head
+                   , sector
+                   , 0x02
+                   , sector
+                   , 0x1b
+                   , 0x00
+                   };
+
+    seek(track);
+    setupDMARead(512);
+    memset(dmabuff_, 0xffff, 512);
+    sendCommand(command, sizeof(command));
+
+    stopDMA();
+
+    for (int i = 0; i < 512; i++) _sys_printf("%x", dmabuff_[i]);
+    while (true);
+
+    for (dword j = 0; j < 0xffffff; j++) {
+	j++;
+	j--;
+    }
+
+    readResults();
+
+    return true;
 }
