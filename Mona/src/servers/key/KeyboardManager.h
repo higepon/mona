@@ -21,7 +21,7 @@
 #define KEYBOARD_ACK 0xFA
 
 typedef enum {
-  KEY_ESC = 1,
+    KEY_ESC
   , KEY_BACKSPACE
   , KEY_TAB
   , KEY_RETURN
