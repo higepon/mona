@@ -166,6 +166,7 @@ class ThreadManager {
   private:
     Thread* current_;
     List<Thread*>* dispatchList_;
+    List<Thread*>* waitList_;
     bool isUser_;
 
   private:

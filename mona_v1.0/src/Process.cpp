@@ -158,19 +158,21 @@ Thread::~Thread() {
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-ThreadManager::ThreadManager(bool isUser) : threadCount(0) {
+ThreadManager::ThreadManager(bool isUser) : current_(NULL), threadCount(0) {
 
     /* user or kernel */
     isUser_ = isUser;
 
     /* list of thread */
     dispatchList_ = new HList<Thread*>();
+    waitList_     = new HList<Thread*>();
     checkMemoryAllocate(dispatchList_, "ThreadManager memory allocate list");
 }
 
 ThreadManager::~ThreadManager() {
 
     delete dispatchList_;
+    delete waitList_;
 }
 
 Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
@@ -236,6 +238,9 @@ void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, P
 
 int ThreadManager::join(Thread* thread) {
     dispatchList_->add(thread);
+    if (current_ == NULL) {
+        current_ = thread;
+    }
     return NORMAL;
 }
 
@@ -256,8 +261,21 @@ int ThreadManager::switchThread() {
 }
 
 Thread* ThreadManager::schedule() {
-    //    return scheduler_->schedule(current_);
-    return (Thread*)NULL;
+
+    current_->tick();
+    g_console->printf("curret=%x, 0=%x\n", current_, dispatchList_->get(0));
+
+    /* process has time yet */
+    if (current_->hasTimeLeft()) {
+
+        /* next is current */
+        return current_;
+    }
+
+    g_console->printf("curret=%x, 0=%x\n", current_, dispatchList_->get(0));
+
+    dispatchList_->add(current_);
+    return dispatchList_->removeAt(0);
 }
 
 /*----------------------------------------------------------------------
@@ -274,17 +292,21 @@ ProcessManager_::ProcessManager_(PageManager* pageManager) : current_(NULL) {
     /* page manager */
     pageManager_ = pageManager;
 
+    /* dispach and wait list */
+    dispatchList_ = new HList<Process_*>();
+    waitList_     = new HList<Process_*>();
+    checkMemoryAllocate(dispatchList_, "ProcessManager dispatch list");
+    checkMemoryAllocate(waitList_    , "ProcessManager wait     list");
+
     /* create idle process */
     idle_ = new KernelProcess_("Idle", pageManager_->createNewPageDirectory());
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
     add(idle_);
 
     /* create thread for idle process */
-    join(idle_, createThread(idle_, (dword)idleThread));
-
-    /* dispach list */
-    dispatchList_ = new HList<Process_*>();
-    checkMemoryAllocate(dispatchList_, "ProcessManager dispatch list");
+    Thread* thread = createThread(idle_, (dword)idleThread);
+    g_console->printf("thread=%x", (Thread*)thread);
+    join(idle_, thread);
 }
 
 ProcessManager_::~ProcessManager_() {
@@ -364,9 +386,10 @@ bool ProcessManager_::schedule() {
     }
 
     /* round robin */
-    if (current_ != idle_) {
+    if (current_ != idle_ && current_ != NULL) {
         dispatchList_->add(current_);
     }
+
     next = dispatchList_->removeAt(0);
     isProcessChanged = next != current_;
     current_ = next;
@@ -418,7 +441,7 @@ int ProcessManager_::add(Process_* process) {
 Thread* ProcessManager_::createThread(Process_* process, dword programCounter) {
 
     /* check process */
-    if (!dispatchList_->hasElement(process)) {
+    if (!(dispatchList_->hasElement(process)) && !(waitList_->hasElement(process))) {
         return (Thread*)NULL;
     }
 

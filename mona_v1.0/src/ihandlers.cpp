@@ -126,11 +126,11 @@ void timerHandler() {
     outportb(0x20, 0x20);
 
     /* Process schedule */
-//     bool isProcessChanged = g_processManager->schedule();
+    bool isProcessChanged = g_processManager->schedule();
 
-//     /* Thread schedule */
-//     Process_* current = g_processManager->getCurrentProcess();
-//     g_currentThread = current->schedule()->getThreadInfo();
+    /* Thread schedule */
+    Process_* current = g_processManager->getCurrentProcess();
+    g_currentThread = current->schedule()->getThreadInfo();
 
 //     /* Process is changed, so address space switch */
 //     if (isProcessChanged) {
@@ -141,7 +141,7 @@ void timerHandler() {
 //     /* only thread switch */
 //     }
 
-//     g_console->printf("********%s[%x]\n", g_processManager->getCurrentProcess()->getName(), g_currentThread);
+    g_console->printf("********%s[%x]\n", g_processManager->getCurrentProcess()->getName(), g_currentThread);
 
     g_process_manager->schedule();
 }
