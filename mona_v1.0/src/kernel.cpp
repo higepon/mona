@@ -122,6 +122,9 @@ void startKernel(void) {
 
     while (g_demo_step < 2);
 
+#define HIGE
+#ifdef HIGE
+
     g_fdcdriver = new FDCDriver(g_console);
 
     byte tbuf[512];
@@ -138,6 +141,7 @@ void startKernel(void) {
         g_fdcdriver->write(i, tbuf);
     }
     g_fdcdriver->motor(false);
+    g_console->printf("ok");
     while (true);
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
@@ -204,6 +208,8 @@ void startKernel(void) {
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     g_fdcdriver->motor(false);
+
+#endif
 
     while (g_demo_step < 5);
     disableInterrupt();
