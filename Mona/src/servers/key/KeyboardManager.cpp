@@ -17,37 +17,6 @@
 #include <monapi/Keys.h>
 
 using namespace MonAPI;
-/*
-const int KeyBoardManager::keyMapUS109[128] = {
-        0        , Keys::Escape, Keys::D1, Keys::D2, Keys::D3, Keys::D4, Keys::D5, Keys::D6,
-        Keys::D7, Keys::D8, Keys::D9, Keys::D0, Keys::OemMinus, Keys::Oemplus, Keys::Back, Keys::Tab,
-        Keys::Q, Keys::W, Keys::E, Keys::R, Keys::T, Keys::Y, Keys::U, Keys::I,
-        Keys::O, Keys::P, Keys::OemOpenBrackets, Keys::OemCloseBrackets, Keys::Enter, Keys::LControlKey, Keys::A, Keys::S,
-        Keys::D, Keys::F, Keys::G, Keys::H, Keys::J, Keys::K, Keys::L, Keys::OemSemicolon,
-        Keys::OemQuotes, Keys::Oemtilde, Keys::LShiftKey, Keys::OemPipe, Keys::Z, Keys::X, Keys::C, Keys::V,
-        Keys::B, Keys::N, Keys::M, Keys::Oemcomma, Keys::OemPeriod, Keys::OemQuestion, Keys::RShiftKey, Keys::Multiply,
-        Keys::LMenu, Keys::Space, Keys::CapsLock, Keys::F1, Keys::F2, Keys::F3, Keys::F4, Keys::F5   ,
-        Keys::F6, Keys::F7, Keys::F8, Keys::F9, Keys::F10, Keys::NumLock, Keys::Scroll, Keys::NumPad7,
-        Keys::NumPad8, Keys::NumPad9, Keys::Subtract, Keys::NumPad4, Keys::NumPad5, Keys::NumPad6 , Keys::Add, Keys::NumPad1,
-        Keys::NumPad2, Keys::NumPad3, Keys::NumPad0    , Keys::Decimal, 0         , 0              , 0            , Keys::F11  ,
-        Keys::F12  , 0        , 0            , 0             , 0         , 0              , 0            , 0
-};
-
-const int KeyBoardManager::keyMapUS109E0[128] = {
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , Keys::Enter, Keys::RControlKey, 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , Keys::Divide   , 0, Keys::PrintScreen,
-       Keys::RMenu   , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, Keys::Home ,
-       Keys::Up  , Keys::PageUp, 0      , Keys::Left, 0            , Keys::Right, 0, Keys::End    ,
-       Keys::Down, Keys::PageDown, Keys::Insert, 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , Keys::LWin      , Keys::RWin     , KEY_MENU       , 0, 0
-};*/
-
 
 /*!
     \brief destructor
@@ -81,6 +50,9 @@ void KeyBoardManager::init() {
     keyInfoList_ = new HList<KeyInfo*>();
     isInit_ = true;
     SetKeyMap(Keys::JP109);
+    SetKeyTopMap(Keys::JP109);
+
+    return;
 }
 
 /*!
@@ -145,11 +117,10 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
 
     /* scancode to keycode */
     if (isSpecialKey_) {
-        //keycode       = keyMapE0_[scancode];
         keycode       = keyMapE0[scancode];
         isSpecialKey_ = false;
     } else {
-        //keycode = keyMap_[scancode];
+
         keycode = keyMap[scancode];
     }
 
@@ -194,6 +165,12 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
     //toVirtual(keycode, modifiers, kinfo);
     kinfo->keycode = keycode;
     kinfo->modifiers = modifiers;
+
+    if(Keys::IsToChar(*kinfo, keyTopMap, keyTopMapS) == true){
+      kinfo->charcode = Keys::ToChar(*kinfo, keyTopMap, keyTopMapS);
+      kinfo->modifiers |= KEY_MODIFIER_CHAR;
+    }
+
     //printf("{%2x:%2x} ", kinfo->keycode, kinfo->modifiers);
     keyInfoList_->add(kinfo);
 
@@ -416,3 +393,33 @@ bool KeyBoardManager::SetKeyMap(const int *customKeyMap, const int *customKeyMap
   return result;
 }
 
+bool KeyBoardManager::SetKeyTopMap(int basicKeyMap){
+
+    bool result = false;
+
+    switch(basicKeyMap){
+    case Keys::US102:
+        result = SetKeyTopMap(Keys::keyTopMapUS102, Keys::keyTopMapUS102S);
+        break;
+    case Keys::JP109:
+        result = SetKeyTopMap(Keys::keyTopMapJP109, Keys::keyTopMapJP109S);
+        break;
+    }
+
+    return result;
+}
+
+bool KeyBoardManager::SetKeyTopMap(const char *customKeyTopMap, const char *customKeyTopMapS){
+
+    bool result = false;
+
+    if((customKeyTopMap != NULL) && (customKeyTopMapS != NULL)){
+        for(int i = 0; i < 256; i++){
+            keyTopMap[i] = customKeyTopMap[i];
+            keyTopMapS[i] = customKeyTopMapS[i];
+        }
+        result = true;
+    }
+
+  return result;
+}

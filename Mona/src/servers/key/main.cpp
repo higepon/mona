@@ -102,7 +102,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
 
     /* create message */
     memset(&message, 0, sizeof(MessageInfo));
-    Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, 0, NULL);
+    Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, keyinfo.charcode, NULL);
 
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--)

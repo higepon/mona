@@ -21,64 +21,6 @@
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
 #define KEYBOARD_ACK 0xFA
-/*
-typedef enum {
-    KEY_ESC
-  , KEY_BACKSPACE
-  , KEY_TAB
-  , KEY_RETURN
-  , KEY_LCTRL
-  , KEY_LSHIFT
-  , KEY_RSHIFT
-  , KEY_LALT
-  , KEY_CAPSLOCK
-  , KEY_F1
-  , KEY_F2
-  , KEY_F3
-  , KEY_F4
-  , KEY_F5
-  , KEY_F6
-  , KEY_F7
-  , KEY_F8
-  , KEY_F9
-  , KEY_F10
-  , KEY_PAD_NUMLOCK
-  , KEY_SCRLOCK
-  , KEY_PAD_7
-  , KEY_PAD_8
-  , KEY_PAD_9
-  , KEY_PAD_MINUS
-  , KEY_PAD_4
-  , KEY_PAD_5
-  , KEY_PAD_6
-  , KEY_PAD_PLUS
-  , KEY_PAD_1
-  , KEY_PAD_2
-  , KEY_PAD_3
-  , KEY_PAD_0
-  , KEY_PAD_PERIOD
-  , KEY_F11
-  , KEY_F12
-  , KEY_PAD_ENTER
-  , KEY_PAD_DIVIDE
-  , KEY_PRTSCRN
-  , KEY_RALT
-  , KEY_HOME
-  , KEY_ARROW_UP
-  , KEY_PGUP
-  , KEY_ARROW_LEFT
-  , KEY_ARROW_RIGHT
-  , KEY_END
-  , KEY_PGDNKEY_INS
-  , KEY_LWIN
-  , KEY_RWIN
-  , KEY_MENU
-  , KEY_RCTRL
-  , KEY_ARROW_DOWN
-  , KEY_PGDN
-  , KEY_INS
-} keyType;
-*/
 
 /*!
     keyboard input management  class
@@ -99,6 +41,8 @@ class KeyBoardManager{
     }
     bool SetKeyMap(int basicKeyMap);
     bool SetKeyMap(const int *customKeyMap, const int *customKeyMapE0);
+    bool SetKeyTopMap(int basicKeyTopMap);
+    bool SetKeyTopMap(const char *customKeyTopMap, const char *customKeyTopMapS);
 
   private:
     bool isSpecialKey_;
@@ -111,6 +55,8 @@ class KeyBoardManager{
     bool isInit_;
     int keyMap[128];
     int keyMapE0[128];
+    char keyTopMap[256];
+    char keyTopMapS[256];
     byte idHigh_;
     byte idLow_;
     List<KeyInfo*>* keyInfoList_;
