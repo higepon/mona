@@ -114,7 +114,6 @@ dword ReadConfig(byte bus, byte device, byte function, byte reg, byte readSize)
 
    packet.p.enabled = 0;
    outp32(REG_CONFIG_ADDRESS, packet.command);
-
    return result;
 }
 

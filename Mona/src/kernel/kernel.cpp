@@ -366,42 +366,121 @@ void mainProcess()
 {
 
 #ifdef CR3_TEST
-#define TEST_NUM 500
+
     disableInterrupt();
 
-    g_page_manager->setPageDirectory(cr31);
-    g_page_manager->setPageDirectory(cr32);
-
-    dword l1, l2, h1, h2;
-    dword total = 0;
-    int count   = 0;
-
-    g_console->printf("CR3 TEST ********************************************\n");
-
-    for (int i = 0; i < TEST_NUM; i++)
-    {
-
-        rdtsc(&l1, &h1);
-
-        g_page_manager->setPageDirectory(cr31);
-
-        rdtsc(&l2, &h2);
-
-        g_page_manager->setPageDirectory(cr32);
-
-        if (h1 != h2) continue;
-
-        total += (l2 - l1);
-        count++;
-    }
-
-    g_console->printf("cr3 average=%d\n", total / count);
+    dword total;
+    int count;
 
     total = 0;
     count = 0;
 
-    for (int i = 0; i < TEST_NUM; i++)
+    for (int i = 0; i < 500; i++)
     {
+        /* at first flush all */
+        g_page_manager->setPageDirectory(cr31);
+        g_page_manager->setPageDirectory(cr32);
+
+        dword l1, l2, h1, h2;
+
+        dword* p = (dword*)0x600000;
+
+        /* read and create cache */
+        volatile dword test1 = *p;
+
+        rdtsc(&l1, &h1);
+
+        /* read once using cache */
+        volatile dword test2 = *p;
+
+        rdtsc(&l2, &h2);
+
+        if (h1 != h2) continue;
+
+        count++;
+        total += (l2 - l1);
+    }
+
+    g_console->printf("read using cache: %d\n", total / count);
+
+    total = 0;
+    count = 0;
+
+    for (int i = 0; i < 500; i++)
+    {
+        /* at first flush all */
+        g_page_manager->setPageDirectory(cr31);
+        g_page_manager->setPageDirectory(cr32);
+
+        dword l1, l2, h1, h2;
+
+        dword* p = (dword*)0x600000;
+
+        /* read and create cache */
+        volatile dword test1 = *p;
+
+        rdtsc(&l1, &h1);
+
+        asm volatile ("invlpg %0\n": "=m"(p));
+
+        rdtsc(&l2, &h2);
+
+        if (h1 != h2) continue;
+
+        count++;
+        total += (l2 - l1);
+    }
+
+    g_console->printf("invlpg: %d\n", total / count);
+
+    total = 0;
+    count = 0;
+
+    for (int i = 0; i < 500; i++)
+    {
+        /* at first flush all */
+        g_page_manager->setPageDirectory(cr31);
+        g_page_manager->setPageDirectory(cr32);
+
+        dword l1, l2, h1, h2;
+
+        dword* p = (dword*)0x600000;
+
+        /* read and create cache */
+        volatile dword test1 = *p;
+
+        asm volatile ("invlpg %0\n": "=m"(p));
+
+        rdtsc(&l1, &h1);
+
+        /* read once */
+        volatile dword test2 = *p;
+
+        rdtsc(&l2, &h2);
+
+        if (h1 != h2) continue;
+
+        count++;
+        total += (l2 - l1);
+    }
+
+    g_console->printf("create cache and read: %d\n", total / count);
+
+    total = 0;
+    count = 0;
+
+    for (int i = 0; i < 500; i++)
+    {
+        /* at first flush all */
+        g_page_manager->setPageDirectory(cr31);
+        g_page_manager->setPageDirectory(cr32);
+
+        dword l1, l2, h1, h2;
+
+        dword* p = (dword*)0x600000;
+
+        /* read and create cache */
+        volatile dword test1 = *p;
 
         rdtsc(&l1, &h1);
 
@@ -415,11 +494,11 @@ void mainProcess()
 
         if (h1 != h2) continue;
 
-        total += (l2 - l1);
         count++;
+        total += (l2 - l1);
     }
 
-    g_console->printf("loop average=%d\n", total / count);
+    g_console->printf("loop: %d\n", total / count);
 
     g_page_manager->setPageDirectory(cr32);
     enableInterrupt();
