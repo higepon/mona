@@ -113,6 +113,9 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     process->pinfo_.state = Process::READY;
 
+    process->pinfo_.stack = new StackSegment(0xFFFFF400, 0xBFF);
+    g_page_manager->allocatePhysicalPage((PageEntry*)(process->pinfo_.cr3), 0xFFFFFFFF, true, true, true);
+
     g_process[pnum_] = process;
     pnum_++;
     return true;

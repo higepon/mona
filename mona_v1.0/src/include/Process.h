@@ -16,6 +16,7 @@
 
 #include <types.h>
 #include <PageManager.h>
+#include <Segments.h>
 
 #define MAX_PROCESS 512
 #define DPL_KERNEL  0
@@ -49,6 +50,7 @@ typedef struct ProcessInfo {
     class  Process* process;
     ProcessInfo* prev;
     ProcessInfo* next;
+    class StackSegment* stack;
     char  name[16];
 };
 

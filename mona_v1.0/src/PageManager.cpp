@@ -123,10 +123,10 @@ PageEntry* PageManager::createNewPageDirectory() {
     dword tableIndex     = getTableIndex(0xFFFFFC00);
 
     /* test code. stack is always 0xFFFFFFFF */
-    table = allocatePageTable();
-    memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-    allocatePhysicalPage(&(table[tableIndex]), true, true, true);
+    //    table = allocatePageTable();
+    //    memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+    //    setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+    //    allocatePhysicalPage(&(table[tableIndex]), true, true, true);
 
     return directory;
 }
@@ -247,6 +247,12 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword directoryIndex = getDirectoryIndex(address);
     dword tableIndex     = getTableIndex(address);
     byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
+
+    if (address >= g_current_process->stack->getStart()
+        && address <= g_current_process->stack->getStart() + g_current_process->stack->getSize()) {
+
+        return g_current_process->stack->faultHandler(address, FAULT_NOT_EXIST);
+    }
 
     /* physical page not exist */
     if (error & ARCH_FAULT_NOT_EXIST) {
