@@ -1,4 +1,4 @@
-PROG=t5lzma$(EXEEXT)
+PROG=../../../../../bin/t5lzma$(EXEEXT)
 
 include ../../../../../env/Makefile.inc
 
@@ -6,7 +6,7 @@ LIB = -lm
 RM = rm -f
 STRIP = strip
 CFLAGS = -c
-
+CC = gcc
 CXX = g++ -O3 -Wall
 
 OBJS = \
@@ -32,7 +32,6 @@ OBJS = \
 all: $(PROG)
 
 install: $(PROG)
-	cp $(PROG) ../../../../../bin/$(PROG)
 
 $(PROG): $(OBJS)
 	$(CXX) -o $(PROG) $(LDFLAGS) $(OBJS) $(LIB)
@@ -99,5 +98,5 @@ Vector.o: ../../../Common/Vector.cpp
 	$(CXX) $(CFLAGS) ../../../Common/Vector.cpp
 
 clean:
-	-$(RM) $(PROG) ../../../../../bin/$(PROG) $(OBJS)
+	-$(RM) $(PROG) $(OBJS)
 
