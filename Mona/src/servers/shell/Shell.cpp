@@ -154,14 +154,14 @@ void Shell::commandExecute(bool prompt)
         for (int i = 0; i < this->apps.size(); i++)
         {
             CString file = apps.get(i);
-            if (file.startsWith(cmd2))
-            {
-                cmdLine = APPSDIR"/" + file;
-                break;
-            }
-            else if (file == command + ".APP")
+            if (file == command + ".APP")
             {
                 cmdLine = APPSDIR"/" + file + "/" + command + ".EL2";
+                break;
+            }
+            else if (file.startsWith(cmd2))
+            {
+                cmdLine = APPSDIR"/" + file;
                 break;
             }
         }
