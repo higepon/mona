@@ -1,6 +1,6 @@
 all:
 	@cd hello; $(MAKE) $@
-	@cd kanji; $(MAKE) $@
+	#@cd kanji; $(MAKE) $@
 
 install:
 	@cd hello; $(MAKE) $@
@@ -8,8 +8,8 @@ install:
 
 clean:
 	@cd hello; $(MAKE) $@
-	@cd kanji; $(MAKE) $@
+	#@cd kanji; $(MAKE) $@
 
 depend:
 	@cd hello; $(MAKE) $@
-	@cd kanji; $(MAKE) $@
+	#@cd kanji; $(MAKE) $@
