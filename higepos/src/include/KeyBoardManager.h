@@ -46,7 +46,7 @@ class KeyBoardManager {
     }
 
     KeyInfo* getKeyInfo();
-    void setKeyInfo();
+    void setKeyScanCode(char);
 };
 
 

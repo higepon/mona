@@ -55,14 +55,16 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
 }
 
 /*!
-    \brief setkeyInfo
+    \brief setKeyScanCode
 
-    set key information
+    set key scancode
+
+    \param scancode original key scan code
 
     \author HigePon
-    \date   create:2002/10/12 update:
+    \date   create:2002/10/12 update:2002/10/14
 */
-void KeyBoardManager::setKeyInfo() {
+void KeyBoardManager::setKeyScanCode(char scancode) {
 
     return;
 }

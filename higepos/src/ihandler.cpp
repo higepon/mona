@@ -25,14 +25,16 @@
 */
 void keyStrokeHandler() {
 
-    _sysPrint("key stroke\n");
+    /* get scancode */
+    char scancode = inportb(0x60);
 
+    /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
-
-    char key = inportb(0x60);
+    km.setKeyScanCode(scancode);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
+    _sysPrint("key stroke\n");
 
     /* iret */
     asm("mov %ebp,%esp");
