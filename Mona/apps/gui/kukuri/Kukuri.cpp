@@ -29,12 +29,17 @@
 // This file's encoding is UTF-8.
 
 #include "Kukuri.h"
+#include <gui/System/Collections/ArrayList.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Cursor.h>
 #include <gui/messages.h>
 #include <monapi.h>
+#include <monapi/CString.h>
+
+#define KUKURI_NEW 0xeff0
 
 using namespace System;
+using namespace System::Collections;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
@@ -42,10 +47,34 @@ extern dword __gui_server;
 extern _P<MonAPI::Screen> GetDefaultScreen();
 
 static MonAPI::Random rand;
+static _P<Bitmap> kukuri, kukuriMirror;
+static HList<_P<Kukuri> > kukuris;
+static _P<Timer> kukuriTimer;
+
+static dword CheckProcess(const MonAPI::CString& self)
+{
+	syscall_set_ps_dump();
+	PsInfo info;
+
+	dword ret = THREAD_UNKNOWN;
+	dword tid = syscall_get_tid();
+
+	while (syscall_read_ps_dump(&info) == 0)
+	{
+		if (self == info.name && tid != info.tid && (ret == THREAD_UNKNOWN || ret > info.tid))
+		{
+			ret = info.tid;
+		}
+	}
+
+	return ret;
+}
 
 
 Kukuri::Kukuri()
 {
+  kukuris.add(this);
+  
   nowCount = 0;
   count = 2;
   auto_x = 0;
@@ -90,10 +119,6 @@ Kukuri::Kukuri()
   this->set_TransparencyKey(KUKURI_NONE);
   this->set_Text("ククリ様");
   
-  this->timer = new Timer();
-  this->timer->set_Interval(100);
-  this->timer->add_Tick(new EventHandler<Kukuri>(this, &Kukuri::timer_Tick));
-  
   setBitmaps();
 }
 
@@ -104,19 +129,6 @@ Kukuri::Kukuri()
 
 void Kukuri::setBitmaps()
 {
-  String bundlePath = MonAPI::System::getBundlePath();
-  this->kukuri = new Bitmap(bundlePath + "/KUKURI.BM2");
-  
-  int w = this->kukuri->get_Width(), h = this->kukuri->get_Height();
-  this->kukuriMirror = new Bitmap(w, h);
-  for (int y = 0; y < h; y++)
-  {
-    for (int x = 0; x < w; x++)
-    {
-      this->kukuriMirror->SetPixel(x, y, this->kukuri->GetPixel(w - x - 1, y));
-    }
-  }
-  
   // 歩いているときの画像
   kuPix[ 0] = kukuri_r  ;  // 右   1
   kuPix[ 1] = kukuri_fr ;  // 右下 1
@@ -185,15 +197,16 @@ Kukuri::~Kukuri()
 void Kukuri::Create()
 {
   Form::Create();
-  this->timer->Start();
+  this->normal();
+  this->timerHandler = new EventHandler<Kukuri>(this, &Kukuri::timer_Tick);
+  kukuriTimer->add_Tick(this->timerHandler.get());
 }
 
 
 void Kukuri::Dispose()
 {
-  this->timer->Dispose();
-  this->kukuri->Dispose();
-  this->kukuriMirror->Dispose();
+  kukuriTimer->remove_Tick(this->timerHandler.get());
+  this->timerHandler = NULL;
   Form::Dispose();
 }
 
@@ -206,7 +219,7 @@ void Kukuri::Dispose()
 void Kukuri::OnPaint()
 {
   _P<Graphics> g = this->CreateGraphics();
-  g->DrawImage(this->nowPix < MIRROR ? this->kukuri : this->kukuriMirror,
+  g->DrawImage(this->nowPix < MIRROR ? kukuri : kukuriMirror,
     0, 0 - KUKURI_HEIGHT * (this->nowPix % MIRROR));
   g->Dispose();
   
@@ -247,6 +260,8 @@ void Kukuri::OnNCMouseUp(_P<MouseEventArgs> e)
 
 void Kukuri::timer_Tick(_P<Object> sender, _P<EventArgs> e)
 {
+  if (!this->get_Visible()) return;
+  
   this->nowCount++;
   if (this->nowCount < this->count) return;
   
@@ -281,7 +296,6 @@ void Kukuri::timer_Tick(_P<Object> sender, _P<EventArgs> e)
     break;
   default: // 回避。落とす。
     this->Hide();
-    Application::Exit();
     return;
   }
 }
@@ -388,7 +402,6 @@ void Kukuri::turn()
       break;
     default:
       this->Hide();
-      Application::Exit();
       return;
     }
     nowPix = kuTurn[t];
@@ -414,7 +427,6 @@ void Kukuri::turn()
       break;
     default:
       this->Hide();
-      Application::Exit();
       return;
     }
     nowPix = kuPix[t + a_t_dir2 * 4];
@@ -457,7 +469,6 @@ void Kukuri::byebye()
 {
   if(t_num >= 8){
     this->Hide();
-    Application::Exit();
     return;
   }
   
@@ -510,11 +521,73 @@ void Kukuri::wow()
   this->Refresh();
 }
 
+class KukuriMessageFilter : public IMessageFilter
+{
+public:
+	virtual bool PreFilterMessage(Message* m)
+	{
+		if (m->header != KUKURI_NEW) return false;
+		
+		if (kukuris.size() < 5)
+		{
+			(new Kukuri())->Show();
+		}
+		else
+		{
+			printf("Kukuri: limit is 5!\n");
+		}
+		return true;
+	}
+} kukuriMessageFilter;
+
 void Kukuri::Main(_A<String> args)
 {
-    _P<Kukuri> kukuri = new Kukuri();
-    Application::Run(kukuri.get());
-    kukuri->Dispose();
+	dword tid = CheckProcess("KUKURI.EL2");
+	if (tid != THREAD_UNKNOWN)
+	{
+		MonAPI::Message::send(tid, KUKURI_NEW);
+	}
+	else
+	{
+		String bundlePath = MonAPI::System::getBundlePath();
+		kukuri = new Bitmap(bundlePath + "/KUKURI.BM2");
+		
+		int w = kukuri->get_Width(), h = kukuri->get_Height();
+		kukuriMirror = new Bitmap(w, h);
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
+			{
+				kukuriMirror->SetPixel(x, y, kukuri->GetPixel(w - x - 1, y));
+			}
+		}
+		
+		kukuriTimer = new Timer();
+		kukuriTimer->set_Interval(100);
+		
+		(new Kukuri())->Show();
+		
+		Application::AddMessageFilter(&kukuriMessageFilter);
+		kukuriTimer->Start();
+		
+		while (kukuris.size() > 0)
+		{
+			Application::DoEvents();
+			for (int i = 0; i < kukuris.size(); i++)
+			{
+				_P<Kukuri> k = kukuris[i];
+				if (!k->get_Visible())
+				{
+					k->Dispose();
+					kukuris.remove(k);
+					i--;
+				}
+			}
+		}
+		kukuriTimer->Dispose();
+		kukuri->Dispose();
+		kukuriMirror->Dispose();
+	}
 }
 
 SET_MAIN_CLASS(Kukuri)

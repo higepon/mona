@@ -18,6 +18,7 @@
 #include <gui/System/Pointer.h>
 #include <gui/System/String.h>
 #include <gui/System/Collections/ArrayList.h>
+#include <gui/System/Mona/Forms/IMessageFilter.h>
 
 namespace System { namespace Mona { namespace Forms
 {
@@ -30,6 +31,7 @@ namespace System { namespace Mona { namespace Forms
 		static _P<System::Collections::ArrayList<_P<Form> > > forms;
 		static _P<Control> prevControl;
 		static _P<Form> mainForm;
+		static _P<System::Collections::ArrayList<IMessageFilter*> > messageFilters;
 		static bool isExited;
 		static int mouseButtons;
 		
@@ -42,8 +44,10 @@ namespace System { namespace Mona { namespace Forms
 		static void Run();
 		static void Run(_P<Form> form);
 		static void DoEvents();
-		static void ProcessEvent(unsigned int message, unsigned int arg1, unsigned int arg2, unsigned int arg3);
+		static void ProcessEvent(Message* m);
 		static void Exit();
+		static void AddMessageFilter(IMessageFilter* value);
+		static void RemoveMessageFilter(IMessageFilter* value);
 		
 		static void AddForm(_P<Form> f);
 		static void RemoveForm(_P<Form> f);

@@ -32,6 +32,7 @@ namespace System { namespace Mona { namespace Forms
 	_P<ArrayList<_P<Form> > > Application::forms;
 	_P<Control> Application::prevControl;
 	_P<Form> Application::mainForm;
+	_P<ArrayList<IMessageFilter*> > Application::messageFilters;
 	bool Application::isExited = false;
 	int Application::mouseButtons = 0;
 	unsigned char* Application::defaultFontData = NULL;
@@ -39,6 +40,7 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Initialize()
 	{
 		Application::forms = new ArrayList<_P<Form> >;
+		Application::messageFilters = new ArrayList<IMessageFilter*>;
 		
 #ifdef MONA
 		MessageInfo msg;
@@ -91,7 +93,8 @@ namespace System { namespace Mona { namespace Forms
 		{
 			if (MonAPI::Message::receive(&msg) != 0) continue;
 			
-			Application::ProcessEvent(msg.header, msg.arg1, msg.arg2, msg.arg3);
+			Message m = { msg.from, msg.header, msg.arg1, msg.arg2, msg.arg3 };
+			Application::ProcessEvent(&m);
 		}
 #elif defined(WIN32)
 		::MonaGUI_Run();
@@ -99,9 +102,14 @@ namespace System { namespace Mona { namespace Forms
 		Application::prevControl = NULL;
 	}
 	
-	void Application::ProcessEvent(unsigned int message, unsigned int arg1, unsigned int arg2, unsigned int arg3)
+	void Application::ProcessEvent(Message* m)
 	{
-		switch (message)
+		FOREACH_AL (IMessageFilter*, mf, Application::messageFilters)
+		{
+			if (mf->PreFilterMessage(m)) return;
+		}
+		
+		switch (m->header)
 		{
 			case MSG_MOUSE_INFO:
 			{
@@ -112,20 +120,20 @@ namespace System { namespace Mona { namespace Forms
 				}
 				else
 				{
-					_P<Form> f = Application::FindForm(arg1, arg2);
-					if (f != NULL) c = f->FindControl(arg1, arg2);
+					_P<Form> f = Application::FindForm(m->arg1, m->arg2);
+					if (f != NULL) c = f->FindControl(m->arg1, m->arg2);
 				}
 				
 				Point p;
 				_P<MouseEventArgs> e;
 				if (c != NULL)
 				{
-					p = c->PointToClient(Point(arg1, arg2));
-					e = new MouseEventArgs(arg3, p.X, p.Y);
+					p = c->PointToClient(Point(m->arg1, m->arg2));
+					e = new MouseEventArgs(m->arg3, p.X, p.Y);
 				}
-				if (Application::mouseButtons != (int)arg3)
+				if (Application::mouseButtons != (int)m->arg3)
 				{
-					if (arg3 == 0)
+					if (m->arg3 == 0)
 					{
 						if (c != NULL)
 						{
@@ -138,7 +146,7 @@ namespace System { namespace Mona { namespace Forms
 						if (c != NULL) c->WndProc(WM_MOUSEDOWN, e.get());
 						Application::prevControl = c;
 					}
-					Application::mouseButtons = arg3;
+					Application::mouseButtons = m->arg3;
 				}
 				else if (c != NULL)
 				{
@@ -148,7 +156,7 @@ namespace System { namespace Mona { namespace Forms
 				break;
 			}
 			case MSG_GUI_TIMER:
-				((Timer*)arg1)->OnTick(EventArgs::get_Empty());
+				((Timer*)m->arg1)->OnTick(EventArgs::get_Empty());
 				break;
 		}
 	}
@@ -170,7 +178,8 @@ namespace System { namespace Mona { namespace Forms
 		{
 			if (!MonAPI::Message::receive(&msg))
 			{
-				Application::ProcessEvent(msg.header, msg.arg1, msg.arg2, msg.arg3);
+				Message m = { msg.from, msg.header, msg.arg1, msg.arg2, msg.arg3 };
+				Application::ProcessEvent(&m);
 			}
 		}
 #endif
@@ -182,6 +191,16 @@ namespace System { namespace Mona { namespace Forms
 #if !defined(MONA) && defined(WIN32)
 		::MonaGUI_Exit();
 #endif
+	}
+	
+	void Application::AddMessageFilter(IMessageFilter* value)
+	{
+		Application::messageFilters->Add(value);
+	}
+	
+	void Application::RemoveMessageFilter(IMessageFilter* value)
+	{
+		Application::messageFilters->Remove(value);
 	}
 	
 	void Application::AddForm(_P<Form> f)
@@ -203,7 +222,7 @@ namespace System { namespace Mona { namespace Forms
 	{
 		FOREACH_AL(_P<Form>, f, Application::forms)
 		{
-			if (f->CheckPoint(x, y)) return f;
+			if (f->get_Visible() && f->CheckPoint(x, y)) return f;
 		}
 		return NULL;
 	}

@@ -65,7 +65,7 @@ typedef struct
 	unsigned int BufferHandle, FormBufferHandle;
 	guiserver_bitmap* __internal1;
 	bool __internal2;
-	//void* __reserved1, __reserved2, __reserved3, __reserved4, __reserved5;
+	char __reserved[64];
 } guiserver_window;
 
 #define MAKE_DWORD(a, b) (((unsigned int)(unsigned short)(a)) + (((unsigned int)(unsigned short)(b)) << 16))

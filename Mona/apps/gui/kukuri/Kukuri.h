@@ -112,8 +112,7 @@ private:
   void wow();
   
 private:
-  _P<System::Mona::Forms::Timer> timer;
-  _P<System::Drawing::Bitmap> kukuri, kukuriMirror;
+  _P<System::EventHandler<Kukuri> > timerHandler;
   int nowCount, count;
   /** 角度 */
   int r;

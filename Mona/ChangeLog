@@ -12,6 +12,10 @@
 
         * env/monapi-el2.inc: エントリポイントがバイナリの最初に来るように修正
 
+        * include/gui/System/Mona/Forms/Message.h, IMessageFilter.h: 独自メッセージ処理用に追加
+
+        * apps/gui/kukuri: 同時起動数を5人に制限
+
 2004-06-12  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/mtorz/: 追加 (thanks あっきいさん)
