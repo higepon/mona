@@ -1,3 +1,7 @@
+2004-04-29  Yui  <yuinejp@users.sourceforge.jp>
+
+        * src/kernel/elf.cpp: ロードアドレス演算の修正
+
 2004-04-29  shadow  <shadowin@users.sourceforge.jp>
 
         * include/monapi/syscall.h: KEY_MODIFIER_xxx削除
@@ -68,7 +72,7 @@
 
         * tools/fat_write/fat.cpp: エントリ拡張で落ちる問題を修正
 
-        * bin/fat_template.img: フォーマット直後のものに差し替え (fat_writeの--mkdirを使用するため)
+        * bin/fat_template.img: フォーマット直後のものに差し替え (fat_writeの--mkdirを使用するため
 
         * include/gui/System/String.h (operator +, Substring): 追加
 
@@ -80,7 +84,7 @@
 
         * apps/gui/reversi: バンドル化
 
-2004-04-27  higepon  <higepon@users.sourceforge.jp>
+2004-04-27  higepon  <higepon@users.sourceforge.jp
 
         * Gakuさんの修正分: fat.cpp, fat.h
 
