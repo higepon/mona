@@ -2,8 +2,8 @@
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 #include <string>
-//#include <map>
-#include <sys/HashMap.h>
+#include <map>
+//#include <sys/HashMap.h>
 #include "PEServer.h"
 #include "PEParser.h"
 
@@ -16,8 +16,8 @@ typedef struct
         PEParser Parser;
 } PEData;
 
-//static std::map<std::string, monapi_cmemoryinfo*> cache;
-static HashMap<monapi_cmemoryinfo*> cache(50);
+static std::map<std::string, monapi_cmemoryinfo*> cache;
+//static HashMap<monapi_cmemoryinfo*> cache(50);
 
 static PEData* OpenPE(const CString& path, bool prompt)
 {
@@ -33,8 +33,8 @@ static PEData* OpenPE(const CString& path, bool prompt)
         int drive = monapi_call_get_current_drive();
         CString realPath = letters[drive] + path;
 
-//        ret->Data = cache[(const char*)(realPath)];
-        ret->Data = cache.get(realPath);
+        ret->Data = cache[(const char*)(realPath)];
+//        ret->Data = cache.get(realPath);
 
 
         if (ret->Data == NULL)
@@ -51,8 +51,8 @@ static PEData* OpenPE(const CString& path, bool prompt)
                 {
                         ret->Data = monapi_call_file_read_data(path, prompt);
                 }
-//                cache[(const char*)realPath] = ret->Data;
-                cache.put(realPath, ret->Data);
+                cache[(const char*)realPath] = ret->Data;
+//                cache.put(realPath, ret->Data);
         }
         if (ret->Data == NULL)
         {
