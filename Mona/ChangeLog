@@ -12,6 +12,8 @@
 
         * BayGUIをソースツリーに追加（アプリ、ライブラリ、サーバー）
 
+        * apps/gui/waba: 削除（誰も使っていないため）
+
 2004-10-14  higepon  <higepon@users.sourceforge.jp>
 
         * gcc3.4.1対応完了?
