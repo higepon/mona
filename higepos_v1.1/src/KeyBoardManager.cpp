@@ -15,14 +15,13 @@
 #include<higeVga.h>
 #include<higeIo.h>
 
-
 const int KeyBoardManager::keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
-        '7'      , '8'      , '9'          , '0'           , '-'       , '='            , KEY_BACKSPACE, KEY_TAB  ,
+        '7'      , '8'      , '9'          , '0'           , '-'       , '^'            , KEY_BACKSPACE, KEY_TAB  ,
         'q'      , 'w'      , 'e'          , 'r'           , 't'       , 'y'            , 'u'          , 'i'      ,
         'o'      , 'p'      , '@'          , '['           , KEY_RETURN, KEY_LCTRL      , 'a'          , 's'      ,
         'd'      , 'f'      , 'g'          , 'h'           , 'j'       , 'k'            , 'l'          , ';'      ,
-        ':'      , ']'      , KEY_LSHIFT   , '\\'          , 'z'       , 'x'            , 'c'          , 'v'      ,
+        ':'      , ']'      , KEY_LSHIFT   , ']'           , 'z'       , 'x'            , 'c'          , 'v'      ,
         'b'      , 'n'      , 'm'          , ','           , '.'       , '/'            , KEY_RSHIFT   , '*'      ,
         KEY_LALT , ' '      , KEY_CAPSLOCK , KEY_F1        , KEY_F2    , KEY_F3         , KEY_F4       , KEY_F5   ,
         KEY_F6   , KEY_F7   , KEY_F8       , KEY_F9        , KEY_F10   , KEY_PAD_NUMLOCK, KEY_SCRLOCK  , KEY_PAD_7,
@@ -45,7 +44,6 @@ const int KeyBoardManager::keyMapE0_[128] = {
        KEY_ARROW_DOWN, KEY_PGDN, KEY_INS, 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , KEY_LWIN      , KEY_RWIN     , KEY_MENU       , 0, 0
 };
-
 
 /*!
     \brief destructor
@@ -72,7 +70,6 @@ KeyBoardManager::KeyBoardManager() {
     keyBufGottenIndex_ = 0; /* index is 0 */
     return;
 }
-
 
 /*!
     \brief getKeyInfo
