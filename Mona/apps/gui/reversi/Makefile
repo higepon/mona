@@ -1,35 +1,15 @@
-TARGET  = GREVERSI.ELF
-BUNDLE  = $(BINDIR)/root/APPS/GREVERSI.APP
-SOURCES = ReversiForm.cpp ReversiBoard.cpp Piece.cpp
+TARGET    = GREVERSI
+SOURCES   = ReversiForm.cpp ReversiBoard.cpp Piece.cpp
+
+INSTDIR   = $(BINDIR)/root/APPS/GREVERSI.APP
+INSTFILES = RED.BMP WHITE.BMP
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi.inc
+include $(MONADIR)/env/monapi-el2.inc
 
-INCLUDE = -I$(INCDIR)
-LINK    = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
-
+LINK      = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
 CXXFLAGS += -DDEBUG
 
-all: $(TARGET)
-
-$(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
-	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
-	objcopy $(OFLAGS) $@
-	$(STRIP) $@
-	$(BINDIR)/monaelf $@
-
-install: all
-	mkdir -p $(BUNDLE)
-	$(INSTALL) $(TARGET) RED.BMP WHITE.BMP $(BUNDLE)
-
-clean:
-	rm -f $(OBJECTS) $(TARGET)
-
-.SUFFIXES: .cpp .o
-.cpp.o:
-	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
-
-depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+$(TARGET): $(LIBDIR)/libgui.a
 
 include dependencies
