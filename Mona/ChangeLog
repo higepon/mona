@@ -1,3 +1,19 @@
+2004-01-29  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/Makefile: FIRE 復活
+
+        * apps/baygui/gfire/gfire.cpp: 環境によって起動しない不具合修正
+
+        * apps/baygui/gnoiz2bg/gnoiz2bg.cpp: 環境によって起動しない不具合修正
+
+        * include/baygui/Control.h: 固定幅フォント表示に対応
+
+        * include/baygui/FontMetrics.h: 固定幅フォント表示に対応
+
+        * include/baygui/resources.h: 固定幅フォント表示に対応
+
+        * src/lib/baygui/*.cpp: 固定幅フォント表示に対応
+
 2005-01-28  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp : CDセクタリードツールをリリース 

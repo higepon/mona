@@ -55,6 +55,8 @@ protected:
 	int offsetX;
 	/** オフセットY */
 	int offsetY;
+	/** フォントスタイル */
+	int fontStyle;
 	/** 部品の大きさ */
 	Rect rect;
 	/** フォーカスイベント */
@@ -63,10 +65,10 @@ protected:
 	unsigned int backColor;
 	/** 前景色 */
 	unsigned int foreColor;
-	/** フォントスタイル */
-	int fontStyle;
 	/** 描画領域 */
 	Graphics *_g;
+	/** フォント情報 */
+	FontMetrics *_metrics;
 	/** 描画バッファー */
 	Image *_buffer;
 

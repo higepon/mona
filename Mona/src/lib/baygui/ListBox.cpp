@@ -88,8 +88,6 @@ void ListBox::onPaint(Graphics *g)
 	g->drawRect(1, 1, w - 2, h - 2);
 
 	// 文字
-	FontMetrics metrics;
-	g->setFontStyle(this->fontStyle);
 	for (i = 0; i < dataList->getLength(); i++) {
 		if (selectedIndex == i && enabled == true) {
 			g->setColor(0, 128, 255);

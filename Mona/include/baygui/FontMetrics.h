@@ -27,13 +27,19 @@ private:
 	static int *offsetList;
 	/** フォントデータ */
 	static unsigned char *defaultFontData;
+	/** フォントスタイル */
+	int fontStyle;
 
 public:
 	FontMetrics::FontMetrics();
 	virtual FontMetrics::~FontMetrics();
-	bool decodeCharacter(wchar ucs4, int *width, int *height, char *data);
+	bool decodeCharacter(wchar ucs4, int *offset, int *width, int *height, char *data);
 	int getWidth(String str);
 	int getHeight(String str);
+	/** フォントスタイルを得る */
+	inline int getFontStyle() { return this->fontStyle; }
+	/** フォントスタイルを設定する */
+	inline void setFontStyle(int style) { this->fontStyle = style; }
 };
 
 #endif // __FONTMETRICS_H__

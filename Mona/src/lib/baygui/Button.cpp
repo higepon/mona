@@ -91,9 +91,8 @@ void Button::onPaint(Graphics *g)
 	}
 	
 	// 文字
-	FontMetrics metrics;
-	int fw = metrics.getWidth(getLabel());
-	int fh = metrics.getHeight(getLabel());
+	int fw = this->_metrics->getWidth(getLabel());
+	int fh = this->_metrics->getHeight(getLabel());
 	int x = (w - fw) / 2;
 	int y = (h - fh) / 2;
 	if (this->pushed) {

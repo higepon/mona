@@ -177,7 +177,7 @@ void Graphics::drawCircle(int x0, int y0, int r){
  */
 void Graphics::drawText(char *str, int x, int y)
 {
-	int i, j, k, pos, bit, width, height, w = 0, h = 0;
+	int i, j, k, pos, bit, offset, width, height, w = 0, h = 0;
 	FontMetrics metrics;
 	
 	// NULLチェック
@@ -185,6 +185,7 @@ void Graphics::drawText(char *str, int x, int y)
 	
 	String s = str;
 	
+	metrics.setFontStyle(getFontStyle());
 	for (i = 0; i < s.length(); i++) {
 		pos = 0;
 		bit = 1;
@@ -194,25 +195,26 @@ void Graphics::drawText(char *str, int x, int y)
 			w = 0;
 			h += 12;
 		}
-		if (metrics.decodeCharacter(s[i], &width, &height, fp) == true) {
+		if (metrics.decodeCharacter(s[i], &offset, &width, &height, fp) == true) {
 			for (j = 0; j < height; j++) {
 				for (k = 0; k < width; k++) {
+					int x0 = x + w + k + (offset - width) / 2;
 					// 行パディングなし
 					if ((fp[pos] & bit) != 0) {
 						// 通常書体
-						if (getFontStyle() == FONT_PLAIN) {
-							drawPixel(x + w + k, y + h + j, this->rgb24);
+						if ((getFontStyle() & 0x011) == FONT_PLAIN) {
+							drawPixel(x0, y + h + j, this->rgb24);
 						// 太字体
-						} else if (getFontStyle() == FONT_BOLD) {
-							drawPixel(x + w + k, y + j, this->rgb24);
-							drawPixel(x + w + k + 1, y + j, this->rgb24);
+						} else if ((getFontStyle() & 0x011) == FONT_BOLD) {
+							drawPixel(x0, y + j, this->rgb24);
+							drawPixel(x0 + 1, y + j, this->rgb24);
 						// 斜字体
-						} else if (getFontStyle() == FONT_ITALIC) {
-							drawPixel(x + w + k + (height - j) / 4, y + j, this->rgb24);
+						} else if ((getFontStyle() & 0x011) == FONT_ITALIC) {
+							drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
 						// 太字体＋斜字体
-						} else if (getFontStyle() == FONT_BOLD | FONT_ITALIC) {
-							drawPixel(x + w + k + (height - j) / 4, y + j, this->rgb24);
-							drawPixel(x + w + k + (height - j) / 4 + 1, y + j, this->rgb24);
+						} else if ((getFontStyle() & 0x011) == FONT_BOLD | FONT_ITALIC) {
+							drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
+							drawPixel(x0 + (height - j) / 4 + 1, y + j, this->rgb24);
 						}
 					}
 					bit <<= 1;
@@ -222,7 +224,7 @@ void Graphics::drawText(char *str, int x, int y)
 					}
 				}
 			}
-			w += width;
+			w += offset;
 		}
 	}
 }

@@ -77,9 +77,7 @@ void TextField::onPaint(Graphics *g)
 	g->drawRect(1, 1, w - 2, h - 2);
 
 	// 文字
-	FontMetrics metrics;
-	int fh = metrics.getHeight(getText());
-	g->setFontStyle(this->fontStyle);
+	int fh = this->_metrics->getHeight(getText());
 	if (enabled == true) {
 		g->setColor(this->foreColor);
 	} else {
@@ -95,9 +93,10 @@ void TextField::onPaint(Graphics *g)
 			temp[i] = text[i];
 		}
 		temp[i] = '\0';
-		int fw = metrics.getWidth(temp);
+		int fw = this->_metrics->getWidth(temp);
 		g->drawLine(offx + fw, offy, offx + fw, offy + 12);
 	}
+	//g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
 }
 
 /** 1文字挿入 */

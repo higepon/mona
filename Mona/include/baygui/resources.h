@@ -66,13 +66,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 /** 通常書体 */
-#define FONT_PLAIN        0
+#define FONT_PLAIN        0x000
 /** 太字体 */
-#define FONT_BOLD         1
+#define FONT_BOLD         0x001
 /** 斜字体 */
-#define FONT_ITALIC       2
+#define FONT_ITALIC       0x010
 /** 固定幅 */
-#define FONT_FIXED        4
+#define FONT_FIXED        0x100
 
 //
 // 配置
@@ -145,7 +145,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** ブロック減少 */
 #define BLOCK_DECLEMENT 306
 /** カスタムイベント */
-#define CUSTOME_EVENT   400
+#define CUSTOM_EVENT    400
 
 //
 // 特殊キーコード一覧

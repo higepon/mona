@@ -73,10 +73,8 @@ void Label::onPaint(Graphics *g)
 	g->fillRect(0, 0, w, h);
 
 	// 文字
-	FontMetrics metrics;
-	int fw = metrics.getWidth(getText());
-	int fh = metrics.getHeight(getText());
-	g->setFontStyle(this->fontStyle);
+	int fw = this->_metrics->getWidth(getText());
+	int fh = this->_metrics->getHeight(getText());
 	if (enabled == true) {
 		g->setColor(this->foreColor);
 	} else {

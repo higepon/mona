@@ -24,6 +24,7 @@ unsigned char *FontMetrics::defaultFontData = NULL;
 /** コンストラクタ */
 FontMetrics::FontMetrics()
 {
+	this->fontStyle = FONT_PLAIN;
 	if (defaultFontData != NULL) return;
 	
 	// GUIサーバーを探す
@@ -81,15 +82,26 @@ FontMetrics::~FontMetrics()
 /**
  UCS-4コードを受け取って展開済み文字データを返す
  @param ucs4 UCS-4コード
+ @param offset [out] 可変フォントでは offset = width、固定フォントでは offset > width
  @param width [out] 文字の幅
  @param height [out] 文字の高さ
  @param data [out] 展開済み文字データ
 */
-bool FontMetrics::decodeCharacter(wchar ucs4, int *width, int *height, char *data)
+bool FontMetrics::decodeCharacter(wchar ucs4, int *offset, int *width, int *height, char *data)
 {
 	if (ucs4 <= 0xFFFF && defaultFontData != NULL && offsetList[ucs4] != 0) {
 		int fw = defaultFontData[offsetList[ucs4] + 4];
 		int fh = defaultFontData[offsetList[ucs4] + 5];
+		//printf("fontStyle = %d,", this->fontStyle);
+		if ((this->fontStyle & 0x100) == FONT_FIXED) {
+			if (ucs4 < 128 || 0xff60 < ucs4) {
+				*offset = 8;
+			} else {
+				*offset = 16;
+			}
+		} else {
+			*offset = fw;
+		}
 		*width  = fw;
 		*height = fh;
 		memcpy(data, &defaultFontData[offsetList[ucs4] + 6], (int)((fw * fh + 7) / 8));
@@ -115,7 +127,15 @@ int FontMetrics::getWidth(String str)
 			break;
 		}
 		if (c <= 0xFFFF) {
-			w += defaultFontData[offsetList[c] + 4];
+			if ((this->fontStyle & 0x100) == FONT_FIXED) {
+				if (c < 128 || 0xff60 < c) {
+					w += 8;
+				} else {
+					w += 16;
+				}
+			} else {
+				w += defaultFontData[offsetList[c] + 4];
+			}
 		}
 	}
 	

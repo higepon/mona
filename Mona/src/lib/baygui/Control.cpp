@@ -33,13 +33,13 @@ Control::Control()
 	this->enabled = true;
 	this->focused = false;
 	this->x = this->y = this->height = this->width = this->offsetX = this->offsetY = 0;
+	this->fontStyle = FONT_PLAIN;
 	this->_buffer = NULL;
 	this->_g = NULL;
 	this->focusEvent.type = FOCUS_IN;
 	this->focusEvent.source = this;
 	this->backColor = DEFAULT_BACKCOLOR;
 	this->foreColor = DEFAULT_FORECOLOR;
-	this->fontStyle = FONT_PLAIN;
 }
 
 /** デストラクタ */
@@ -58,7 +58,10 @@ void Control::create()
 
 	// 内部バッファー、描画オブジェクトの生成
 	this->_buffer = new Image(width, height);
+	this->_metrics = new FontMetrics();
+	//this->_metrics->setFontStyle(this->fontStyle);
 	this->_g = new Graphics(this->_buffer);
+	//this->_g->setFontStyle(this->fontStyle);
 }
 
 /**
@@ -69,6 +72,7 @@ void Control::dispose()
 {
 	delete(_buffer);
 	delete(_g);
+	delete(_metrics);
 }
 
 /**
@@ -104,6 +108,8 @@ void Control::postEvent(Event *event)
 void Control::repaint()
 {
 	if (this->_buffer == NULL) return;
+	this->_metrics->setFontStyle(this->fontStyle);
+	this->_g->setFontStyle(this->fontStyle);
 	onPaint(this->_g);
 	update();
 }
