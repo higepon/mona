@@ -369,6 +369,8 @@ int execSysConf()
     return 0;
 }
 
+extern void hddTest();
+
 void mainProcess()
 {
     /* FDC do not delete */
@@ -396,6 +398,13 @@ void mainProcess()
 
     enableKeyboard();
     enableMouse();
+
+#ifdef HIGE
+
+    g_console->printf("hige");
+    hddTest();
+
+#endif
 
     /* end */
     int result;

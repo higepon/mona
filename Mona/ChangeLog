@@ -1,3 +1,7 @@
+2004-06-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/IDEDriver.cpp (hddTest): IDEDriverの実験コード追加。環境変数MONA_DEVELOPER=-DHIGEのときだけ有効になる。
+
 2004-06-23  higepon  <higepon@users.sourceforge.jp>
 
         * sys/HashMap.h: 修正

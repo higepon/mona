@@ -19,18 +19,25 @@ int sleep(dword ms) {
 }
 
 int print(const char* msg) {
+
 #if 1  // temporary
+
     static dword tid = PROCESS_STDOUT_THREAD;
+
     char buf[128];
+
     buf[127] = '\0';
+
     for (int len = strlen(msg); len > 0; msg += 127, len -= 127)
     {
         strncpy(buf, msg, 127);
 #if 0  /// DEBUG for message
         char buf2[128];
+
         sprintf(buf2, "{%d", syscall_get_tid());
         syscall_print(buf2);
 #endif
+
         if (Message::sendReceive(NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
         {
             syscall_print(buf);
@@ -39,6 +46,7 @@ int print(const char* msg) {
         syscall_print("}");
 #endif
     }
+
     return 0;
 #else
     return syscall_print(msg);

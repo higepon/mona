@@ -60,11 +60,13 @@ MouseServer::~MouseServer()
 bool MouseServer::Initialize()
 {
     MessageInfo msg;
+
     if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
     {
         printf("MouseServer: can not get common parameters\n");
         return false;
     }
+
     commonParams = (CommonParameters*)MemoryMap::map(msg.arg2);
 
     /* mouse information destination list */

@@ -31,6 +31,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PRINT:
         //enableInterrupt();
+
         g_console->printf("%s", (char*)(info->esi));
 
         info->eax = 0;

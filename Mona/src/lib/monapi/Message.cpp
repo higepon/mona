@@ -51,11 +51,13 @@ int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /
     MessageInfo src;
 
     int result = Message::send(tid, header, arg1, arg2, arg3, str);
+
     if (result != 0) return result;
 
     src.from = tid;
     src.header = MSG_RESULT_OK;
     src.arg1 = header;
+
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 

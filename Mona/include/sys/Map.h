@@ -19,6 +19,3 @@ public:
 };
 
 #endif
-
-
-#endif

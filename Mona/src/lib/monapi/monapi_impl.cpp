@@ -37,10 +37,13 @@ int user_start_impl() {
 
     int result;
     um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
+
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
+
     MonAPI::MemoryMap::initialize();
     invokeFuncList(__CTOR_LIST__);
+
     result = MonaMain(arg);
     invokeFuncList(__DTOR_LIST__);
     delete arg;

@@ -180,7 +180,6 @@ void Moniter::CheckServers()
 
 int MonaMain(List<char*>* pekoe)
 {
-    printf("heheheheheh");
     Moniter moniter;
 
     moniter.Initialize();
