@@ -137,6 +137,7 @@ void notifyProcessChanged(dword header, dword tid, dword parent /*= 0*/, const C
         else
         {
             printf("%s: can not connect to %d\n", SVR, receivers[i]);
+            removeProcessInfo(receivers[i]);
             receivers.removeAt(i);
         }
     }
