@@ -71,7 +71,7 @@ void TextField::repaint()
 		firstpaint = true;
 
 	// 枠線
-	if (focused == true) {
+	if (focused == true && enabled == true) {
 		_g->setColor(0,128,255);
 		_g->drawRect(0, 0, width, height);
 	} else {
@@ -133,8 +133,11 @@ void TextField::deleteCharacter()
 /** イベント処理 */
 void TextField::postEvent(Event *event)
 {
+	// 非活性の時はイベントを受け付けない
+	if (enabled == false) return;
+	
 	// キー押下
-	if (event->type == KEY_PRESSED && enabled == true) {
+	if (event->type == KEY_PRESSED) {
 		int keycode = ((KeyEvent *)event)->keycode;
 		if (keycode == VKEY_BACKSPACE) {
 			if (textPtr >= 0) {

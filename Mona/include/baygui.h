@@ -47,7 +47,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include <monalibc.h>
 #endif
 
-#define GUILIB_VERSION "BayGUI build 04.10.24"
+#define GUILIB_VERSION "BayGUI build 04.10.27"
 #define GUISERVER_NAME "BAYGUI.EX5"
 
 #define MAX_TITLE_LEN     64

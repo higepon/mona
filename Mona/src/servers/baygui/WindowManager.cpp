@@ -278,74 +278,72 @@ void WindowManager::onMousePress(int mx, int my)
 	Control *control = findChild(mx, my);
 	
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control != NULL) {
-		if (control->getFocused() == true) {
-			Rect *rect = control->getRect();
-			// ウィンドウを閉じる
-			if (rect->x + 4 <= mx && mx <= rect->x + 4 + 13 && 
-				rect->y + 5 <= my && my <= rect->y + 5 + 13)
-			{
-				// ランチャーは殺さない
-				if (control->getThreadID() != launcherID) {
-					remove(control);
-				}
-			// アイコン化
-			} else if (rect->x + rect->width - 16 <= mx && 
-				mx <= rect->x + rect->width - 16 + 13 && 
-				rect->y + 5 <= my && my <= rect->y + 5 + 13)
-			{
-				// 背景を塗りつぶす
-				restoreBackGround(control);
-				// ウィンドウをアイコン化
-				if (control->getIconified() == true) {
-					control->setIconified(false);
-					// 非アイコン化メッセージを投げる
-					if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, NULL)) {
-						//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getThreadID());
-					} else {
-						//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getThreadID());
-					}
-				} else {
-					control->setIconified(true);
-					// アイコン化メッセージを投げる
-					if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
-						//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getThreadID());
-					} else {
-						//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getThreadID());
-					}
-				}
-				// ウィンドウ再描画
-				postRepaintToWindows(_controlList->getLength());
-			// クリックイベント発生
-			} else if (control->getIconified() == false) {
-				//MouseEvent *event = new MouseEvent(MOUSE_PRESSED, control, mx, my);
-				//control->postEvent(event);
-				//delete(event);
-				// マウスイベントを投げる
-				if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSEPRESS, mx, my, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS failed %d\n", control->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS sended %d\n", control->getThreadID());
-				}
-				//printf("throw mouse_press event\n");
+	if (control == NULL) return;
+	
+	if (control->getFocused() == true) {
+		Rect *rect = control->getRect();
+		// ウィンドウを閉じる
+		if (rect->x + 4 <= mx && mx <= rect->x + 4 + 13 && 
+			rect->y + 5 <= my && my <= rect->y + 5 + 13)
+		{
+			// ランチャーは殺さない
+			if (control->getThreadID() != launcherID) {
+				remove(control);
 			}
-		// アクティブウィンドウを切り替える
-		} else {
-			// ウィンドウ並び替え
-			_controlList->sort(getLinkedItem(control));
-			
-			// 非活性メッセージを投げる
-			postActivatedToWindows(false, _controlList->getLength() - 1);
-			
-			// 活性メッセージを投げる
-			Control *c = (Control *)_controlList->endItem->data;
-			postActivatedToWindow(true, c);
-			
-			// 再描画メッセージを投げる
+		// アイコン化
+		} else if (rect->x + rect->width - 16 <= mx && 
+			mx <= rect->x + rect->width - 16 + 13 && 
+			rect->y + 5 <= my && my <= rect->y + 5 + 13)
+		{
+			// 背景を塗りつぶす
+			restoreBackGround(control);
+			// ウィンドウをアイコン化
+			if (control->getIconified() == true) {
+				control->setIconified(false);
+				// 非アイコン化メッセージを投げる
+				if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, NULL)) {
+					//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getThreadID());
+				} else {
+					//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getThreadID());
+				}
+			} else {
+				control->setIconified(true);
+				// アイコン化メッセージを投げる
+				if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
+					//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getThreadID());
+				} else {
+					//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getThreadID());
+				}
+			}
+			// ウィンドウ再描画
 			postRepaintToWindows(_controlList->getLength());
+		// クリックイベント発生
+		} else if (rect->y + INSETS_TOP < my && control->getIconified() == false) {
+			//MouseEvent *event = new MouseEvent(MOUSE_PRESSED, control, mx, my);
+			//control->postEvent(event);
+			//delete(event);
+			// マウスイベントを投げる
+			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSEPRESS, mx, my, 0, NULL)) {
+				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS failed %d\n", control->getThreadID());
+			} else {
+				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS sended %d\n", control->getThreadID());
+			}
+			//printf("throw mouse_press event\n");
 		}
+	// アクティブウィンドウを切り替える
 	} else {
-		// NOP
+		// ウィンドウ並び替え
+		_controlList->sort(getLinkedItem(control));
+		
+		// 非活性メッセージを投げる
+		postActivatedToWindows(false, _controlList->getLength() - 1);
+		
+		// 活性メッセージを投げる
+		Control *c = (Control *)_controlList->endItem->data;
+		postActivatedToWindow(true, c);
+		
+		// 再描画メッセージを投げる
+		postRepaintToWindows(_controlList->getLength());
 	}
 }
 
@@ -354,19 +352,22 @@ void WindowManager::onMousePress(int mx, int my)
  */
 void WindowManager::onMouseDrag(int mx, int my)
 {
-	if (mx <= 0) mx = 0;
-	if (mx >= width) mx = width;
-	if (my <= 0) my = 0;
-	if (my >= height) my = height;
-	
 	Control *control = (Control *)_controlList->endItem->data;
 
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control != NULL && control->getFocused() == true) {
-		Rect *rect = control->getRect();
+	if (control == NULL || control->getFocused() == false) return;
+	
+	Rect *rect = control->getRect();
+	if (state == STATE_NORMAL) {
+		// 境界チェック
+		if (mx <= 0) mx = 0;
+		if (mx >= width) mx = width;
+		if (my <= 0) my = 0;
+		if (my >= height) my = height;
+		
+		// ウィンドウ移動開始
 		if (rect->x <= mx && mx <= rect->x + rect->width && 
-			rect->y <= my && my <= rect->y + INSETS_TOP && 
-			state == STATE_NORMAL)
+			rect->y <= my && my <= rect->y + INSETS_TOP)
 		{
 			// モード設定
 			state = STATE_MOVING;
@@ -384,21 +385,6 @@ void WindowManager::onMouseDrag(int mx, int my)
 			preX = rect->x;
 			preY = rect->y;
 			//printf("move window start: %d,%d\n", preX, preY);
-		// ウィンドウを移動する
-		} else if (state == STATE_MOVING) {
-			_g->setXORMode(true);
-			_g->setColor(255,255,255);
-			if (control->getIconified() == false) {
-				_g->drawRect(preX, preY, rect->width, rect->height);
-				_g->drawRect(mx - dX, my - dY, rect->width, rect->height);
-			} else {
-				_g->drawRect(preX, preY, rect->width, INSETS_TOP - 1);
-				_g->drawRect(mx - dX, my - dY, rect->width, INSETS_TOP - 1);
-			}
-			_g->setXORMode(false);
-			// ドラッグ開始位置を記憶する
-			preX = mx - dX;
-			preY = my - dY;
 		// ドラッグイベント発生
 		} else if (control->getIconified() == false) {
 			//MouseEvent *event = new MouseEvent(MOUSE_DRAGGED, control, mx, my);
@@ -412,6 +398,29 @@ void WindowManager::onMouseDrag(int mx, int my)
 			//}
 			//printf("throw mouse_drag event\n");
 		}
+	// ウィンドウを移動する
+	} else if (state == STATE_MOVING) {
+		// 境界チェック
+		if (mx - dX < 0) mx = dX;
+		if (mx - dX + rect->width + 1 >= width) mx = width + dX - rect->width - 1;
+		if (my - dY < 22) my = 22 + dY;
+		if (my - dY + rect->height + 1 >= height) my = height + dY - rect->height - 1;
+		
+		_g->setXORMode(true);
+		_g->setColor(255,255,255);
+		if (control->getIconified() == false) {
+			_g->drawRect(preX, preY, rect->width, rect->height);
+			_g->drawRect(mx - dX, my - dY, rect->width, rect->height);
+		} else {
+			_g->drawRect(preX, preY, rect->width, INSETS_TOP - 1);
+			_g->drawRect(mx - dX, my - dY, rect->width, INSETS_TOP - 1);
+		}
+		_g->setXORMode(false);
+		// ドラッグ開始位置を記憶する
+		preX = mx - dX;
+		preY = my - dY;
+	} else {
+		// NOP
 	}
 }
 
@@ -423,49 +432,52 @@ void WindowManager::onMouseRelease(int mx, int my)
 	Control *control = (Control *)_controlList->endItem->data;
 	
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control != NULL && control->getFocused() == true) {
+	if (control == NULL || control->getFocused() == false) return;
+	
+	// ウィンドウ移動
+	if (state == STATE_MOVING) {
 		Rect *rect = control->getRect();
+		// debug
+		//printf("moved: %d, %d\n", (rect->x + mx + preX), (rect->y + my + preY));
+		// 背景を塗りつぶす
+		restoreBackGround(control);
+		// 画面からはみだしていないかチェック
+		//if (preX <= 0) preX = 0;
+		//if (preY <= 22) preY = 22;
+		//if (preX + rect->width + 1 >= width) preX = width - rect->width - 1;
+		//if (preY + rect->height + 1 >= height) preY = height - rect->height - 1;
 		// ウィンドウ移動
-		if (state == STATE_MOVING) {
-			// debug
-			//printf("moved: %d, %d\n", (rect->x + mx + preX), (rect->y + my + preY));
-			// 背景を塗りつぶす
-			restoreBackGround(control);
-			// 画面からはみだしていないかチェック
-			//if (preX <= 0) preX = 0;
-			//if (preY <= 22) preY = 22;
-			//if (preX + rect->width + 1 >= width) preX = width - rect->width - 1;
-			//if (preY + rect->height + 1 >= height) preY = height - rect->height - 1;
-			// ウィンドウ移動
-			control->setRect(
-				preX,
-				preY,
-				rect->width,
-				rect->height
-			);
-			// 領域変更メッセージを投げる
-			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_SETRECT, 
-				(preX << 16 | preY), (rect->width << 16 | rect->height), 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", control->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getThreadID());
-			}
-			// ウィンドウ再描画
-			postRepaintToWindows(_controlList->getLength());
-			//printf("move window end: %d,%d\n", preX, preY);
-		} else  if (control->getIconified() == false) {
-			//MouseEvent *event = new MouseEvent(MOUSE_RELEASED, control, mx, my);
-			//control->postEvent(event);
-			//delete(event);
-			// マウスイベントを投げる
-			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSERELEASE, mx, my, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE failed %d\n", control->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE sended %d\n", control->getThreadID());
-			}
-			//printf("throw mouse_up event\n");
+		control->setRect(
+			preX,
+			preY,
+			rect->width,
+			rect->height
+		);
+		// 領域変更メッセージを投げる
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_SETRECT, 
+			(preX << 16 | preY), (rect->width << 16 | rect->height), 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getThreadID());
 		}
+		// ウィンドウ再描画
+		postRepaintToWindows(_controlList->getLength());
+		//printf("move window end: %d,%d\n", preX, preY);
+	} else  if (control->getIconified() == false) {
+		//MouseEvent *event = new MouseEvent(MOUSE_RELEASED, control, mx, my);
+		//control->postEvent(event);
+		//delete(event);
+		// マウスイベントを投げる
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSERELEASE, mx, my, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE sended %d\n", control->getThreadID());
+		}
+		//printf("throw mouse_up event\n");
 	}
+
+	// 状態を元に戻す
+	state = STATE_NORMAL;
 }
 
 /**

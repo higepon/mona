@@ -84,7 +84,7 @@ void ListBox::repaint()
 		firstpaint = true;
 
 	// 枠線
-	if (focused == true) {
+	if (focused == true && enabled == true) {
 		_g->setColor(0,128,255);
 		_g->drawRect(0, 0, width, height);
 	} else {
@@ -120,8 +120,11 @@ void ListBox::repaint()
 /** イベント処理 */
 void ListBox::postEvent(Event *event)
 {
+	// 非活性の時はイベントを受け付けない
+	if (enabled == false) return;
+
 	// キー押下
-	if (event->type == KEY_PRESSED && enabled == true) {
+	if (event->type == KEY_PRESSED) {
 		int keycode = ((KeyEvent *)event)->keycode;
 		if (keycode == VKEY_UP) {
 			if (selectedIndex > 0) {
@@ -143,7 +146,7 @@ void ListBox::postEvent(Event *event)
 			Control::postEvent(_itemEvent);
 		}
 	// マウス押下
-	} else if (event->type == MOUSE_PRESSED && enabled == true) {
+	} else if (event->type == MOUSE_PRESSED) {
 		int my = ((MouseEvent *)event)->y;
 		//printf("y = %d\n", my);
 		select((my - 7) / 16);

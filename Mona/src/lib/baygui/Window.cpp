@@ -258,6 +258,9 @@ void Window::remove(Control *control)
 /** イベント処理 */
 void Window::postEvent(Event *event)
 {
+	// 非活性の時はイベントを受け付けない
+	if (enabled == false) return;
+
 	// 活性部品にキーイベントを投げる
 	if (KEY_PRESSED <= event->type && event->type <= KEY_RELEASED) {
 		Control *control = findChild();
@@ -397,7 +400,7 @@ void Window::repaint()
 		_g->drawLine(4, 20, 4, height - 5);
 	}
 
-	if (enabled == true) {
+	if (focused == true) {
 		// タイトルライン
 		for (i = 5; i <= 15; i = i + 2) {
 			_g->setColor(128,128,128);
@@ -421,7 +424,7 @@ void Window::repaint()
 	int fh = FontManager::getInstance()->getHeight();
 	_g->setColor(200,200,200);
 	_g->fillRect(((width - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
-	if (enabled == true) {
+	if (focused == true) {
 		_g->setColor(0,0,0);
 	} else {
 		_g->setColor(128,128,128);
@@ -523,15 +526,13 @@ void Window::run()
 				repaint();
 				MonAPI::Message::reply(&info);
 				break;
-			case MSG_GUISERVER_ENABLED:
-				//printf("WindowManager->Window MSG_GUISERVER_ENABLED received %d\n", threadID);
-				setEnabled(true);
+			case MSG_GUISERVER_FOCUSED:
+				//printf("WindowManager->Window MSG_GUISERVER_FOCUSED received %d\n", threadID);
 				setFocused(true);
 				//MonAPI::Message::reply(&info);
 				break;
-			case MSG_GUISERVER_DISABLED:
-				//printf("WindowManager->Window MSG_GUISERVER_DISABLED received %d\n", threadID);
-				setEnabled(false);
+			case MSG_GUISERVER_DEFOCUSED:
+				//printf("WindowManager->Window MSG_GUISERVER_DEFOCUSED received %d\n", threadID);
 				setFocused(false);
 				{
 					// 部品をフォーカスアウト状態にする

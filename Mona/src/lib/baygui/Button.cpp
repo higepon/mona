@@ -115,13 +115,16 @@ void Button::repaint()
 
 /** イベント処理 */
 void Button::postEvent(Event *event) {
-	if (event->type == MOUSE_PRESSED && enabled == true) {
+	// 非活性の時はイベントを受け付けない
+	if (enabled == false) return;
+
+	if (event->type == MOUSE_PRESSED) {
 		pushed = true;
 		if (firstpaint == true) {
 			repaint();
 			Control::postEvent(event);
 		}
-	} else if (event->type == MOUSE_RELEASED && enabled == true) {
+	} else if (event->type == MOUSE_RELEASED) {
 		pushed = false;
 		if (firstpaint == true) {
 			repaint();

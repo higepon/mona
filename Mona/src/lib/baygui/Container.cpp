@@ -30,8 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** コンストラクタ */
 Container::Container()
 {
-	enabled = true;
-	firstpaint = false;
 	_controlList = new LinkedList();
 }
 
