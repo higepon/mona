@@ -220,10 +220,14 @@ int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag
     charP = ' ';
   }
 
-  for(real_width = 0; num != 0; real_width++){
-    num /= base;
+  if(num == 0){
+    real_width = 1;
+  } else {
+    for(real_width = 0; num != 0; real_width++){
+      num /= base;
+    }
   }
-  
+
   if((flag & P_FORMAT_ZERO) && (real_width >= width)){
     flag &= ~P_FORMAT_ZERO;
   }
