@@ -197,7 +197,7 @@ bool FAT12::initilize() {
 
 //      } while (0xff8 > cluster);
 
-    char buf[] = "yyyy/mm/dd";
+    char buf[] = "yyyymmdd";
     printf("@@@%s@@", strtok(buf, "/"));
     printf("@@@%s@@", strtok(NULL, "/"));
 
@@ -296,6 +296,12 @@ int FAT12::getErrorNo() const {
     return errNum_;
 }
 
+/*!
+  \brief get fat at cluster
+
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
 word FAT12::getFATAt(int cluster) const {
 
     word result;
@@ -312,28 +318,30 @@ word FAT12::getFATAt(int cluster) const {
     return result;
 }
 
+/*!
+  \brief change directory
+
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
 bool FAT12::changeDirectory(const char* path) {
 
-    int  dirCount;
     int  currentCluster;
     char buf[PATH_LENGTH];
+    char sep[] = {PATH_SEP, '\0'};
+    char* rpath;
 
-    /* count directory separateor */
-    for (int i = 0, dirCount = 0; i < PATH_LENGTH; i++) {
+    strcpy(buf, path);
 
-        if (path[i] == PATH_SEP) dirCount++;
-    }
-
-    /* no direcotry found */
-    if (dirCount == 0) {
-        errNum_ = NOT_DIR_ERROR;
-        return false;
-    }
-
+    /* save current cluster */
     currentCluster = currentCluster_;
-    for (int i = 0; i < dirCount; i++) {
 
-        char* rpath = getPathAt(path, i);
+    for (int i = 0; i < 512; i++) {
+
+        char* p = (i == 0) ? buf : NULL;
+
+        /* get token */
+        if (!(rpath = strtok(p, sep))) break;
 
         printf("try to cdr to %s", rpath);
 
@@ -348,6 +356,12 @@ bool FAT12::changeDirectory(const char* path) {
     return true;
 }
 
+/*!
+  \brief change directory relative
+
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
 bool FAT12::changeDirectoryRelative(const char* path) {
 
     DirectoryEntry entries[16];
@@ -381,30 +395,18 @@ bool FAT12::changeDirectoryRelative(const char* path) {
     return false;
 }
 
-char* FAT12::getPathAt(const char* path, int index) const {
 
-    static char buff[PATH_LENGTH];
-    int start   = 0;
-    int end     = 0;
-    int counter = 0;
+/*!
+  \brief compare file name
 
-    for (int i = 0; i < PATH_LENGTH; i++) {
+  \param name1 not teminated by '\0'
+  \param name2 terminated by '\0'
 
-        if (path[i] == PATH_SEP) counter++;
+  \return true/false OK/NG
 
-        if (counter == index && start == 0) start = i;
-        if (counter == index + 1) {
-            end = i;
-            break;
-        }
-    }
-
-    path += (start - 1);
-    strncpy(buff, path, end - start + 1);
-
-    return buff;
-}
-
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
 bool FAT12::compareName(const char* name1, const char* name2) const {
 
     for (int i = 0; i < 9; i++) {
