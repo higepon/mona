@@ -16,7 +16,7 @@
 /*!
     memory mangement class
 */
-class X86MemoryManager:MemoryManager {
+class X86MemoryManager:virtual MemoryManager {
 
   public:
     char* getMessage();

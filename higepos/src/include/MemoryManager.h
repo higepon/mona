@@ -16,7 +16,7 @@
 /*!
     abstract class MemoryManager
 */
-class MemoryManager:public Object {
+class MemoryManager:virtual Object {
   public:
     virtual char* getMessage() = 0;
     virtual char* getName() =0;
