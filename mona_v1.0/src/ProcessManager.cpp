@@ -24,7 +24,13 @@ void ProcessManager::switchProcess() {
     info(DUMP, "esp=%x pid=%x eip=%x eflags=%x cs=%x", g_current_process->esp, g_current_process->pid
              , g_current_process->eip, g_current_process->eflags, g_current_process->cs);
 
-    arch_switch_process();
+
+    if (scheduler_->isDplDown()) {
+
+        arch_switch_process_dpl_down();
+    } else {
+        arch_switch_process();
+    }
 }
 
 void ProcessManager::schedule(){
