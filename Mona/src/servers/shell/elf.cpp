@@ -32,6 +32,8 @@ const char* errorNames[] =
 #define PT_SHLIB   5
 #define PT_PHDR    6
 
+#define SH_NOBITS 8
+
 #define SHARED_MM_ERROR -1
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
@@ -81,6 +83,25 @@ void ELFLoader::prepare()
     MONAGED_COPY2(this->sheaders, 0, slen, this->elf, this->header.shdrpos, slen)
 
     /* get size of image */
+#if 1  // Tino
+    dword endaddr = 0;
+    FOREACH (ELFProgramHeader, phdr, this->pheaders)
+    {
+        if (phdr.type != PT_LOAD) continue;
+
+        dword addr = phdr.virtualaddr + phdr.memorysize;
+        if (endaddr < addr) endaddr = addr;
+    }
+    FOREACH (ELFSectionHeader, shdr, this->sheaders)
+    {
+        /* .bss */
+        if (shdr.type != SH_NOBITS) continue;
+
+        dword addr = shdr.address + shdr.size;
+        if (endaddr < addr) endaddr = addr;
+    }
+    int size = (int)(endaddr - ORG);
+#else
     int size = 0;
     dword start = ORG;
     FOREACH (ELFSectionHeader, shdr, this->sheaders)
@@ -91,32 +112,28 @@ void ELFLoader::prepare()
             size = start - ORG + 1 + shdr.size;
         }
     }
+#endif
 
     if (size > MAX_IMAGE_SIZE)
     {
-        printf("alert!!! : ELF size over size = %d \n", size);
+        printf("alert!!! : ELF size over size = 0x%x / 0x%x\n", size, MAX_IMAGE_SIZE);
     }
 
     this->imageSize = size;
     return;
 }
 
-#define SH_NOBITS 8
 dword ELFLoader::load(_A<byte> image)
 {
     FOREACH (ELFProgramHeader, phdr, this->pheaders)
     {
         if (phdr.type != PT_LOAD) continue;
 
-#if 1   // yui this->pheaders[0]->virtualaddr != ORG‚Ìê‡‚Éƒ[ƒh‚ÉŽ¸”s‚·‚é
+#if 1   // yui this->pheaders[0].virtualaddr != ORG‚Ìê‡‚Éƒ[ƒh‚ÉŽ¸”s‚·‚é
         MONAGED_COPY(image, phdr.virtualaddr - ORG, this->elf, phdr.offset, phdr.filesize)
         if (phdr.memorysize > phdr.filesize)
         {
-            dword pos = phdr.virtualaddr + phdr.filesize - ORG;
-            dword len = phdr.memorysize - phdr.filesize;
-            printf("%s:%d:[%x+%x(%x)/%x]", __FILE__, __LINE__, pos, len, pos + len, image.get_Length());
-            MONAGED_FILL(image, pos, len, 0)
-            printf("OK!\n");
+            MONAGED_FILL(image, phdr.virtualaddr + phdr.filesize - ORG, phdr.memorysize - phdr.filesize, 0)
         }
 #else
         if (phdr.filesize == phdr.memorysize)
