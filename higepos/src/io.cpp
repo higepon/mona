@@ -13,6 +13,14 @@
 */
 #include <io.h>
 
+/*!
+    \brief initilize I/O
+
+    initilize I/O,PIC
+
+    \author HigePon
+    \date   create:2002/08/02 update:
+*/
 void _sysInitIo() {
 
     /* Enable IRQ0 (timer) and IRQ1 (keyboard) at the
