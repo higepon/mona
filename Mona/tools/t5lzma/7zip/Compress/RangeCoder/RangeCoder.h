@@ -22,9 +22,10 @@ public:
   COutBuffer Stream;
   bool Create(UInt32 bufferSize) { return Stream.Create(bufferSize); }
 
-  void Init(ISequentialOutStream *stream)
+  void SetStream(ISequentialOutStream *stream) { Stream.SetStream(stream); }
+  void Init()
   {
-    Stream.Init(stream);
+    Stream.Init();
     Low = 0;
     Range = 0xFFFFFFFF;
     _ffNum = 0;
@@ -40,10 +41,7 @@ public:
 
   HRESULT FlushStream() { return Stream.Flush();  }
 
-  /*
-  void ReleaseStream()
-    { Stream.ReleaseStream(); }
-  */
+  void ReleaseStream() { Stream.ReleaseStream(); }
 
   void Encode(UInt32 start, UInt32 size, UInt32 total)
   {
@@ -142,16 +140,17 @@ public:
     }
   }
   
-  void Init(ISequentialInStream *stream)
+  void SetStream(ISequentialInStream *stream) { Stream.SetStream(stream); }
+  void Init()
   {
-    Stream.Init(stream);
+    Stream.Init();
     Code = 0;
     Range = 0xFFFFFFFF;
     for(int i = 0; i < 5; i++)
       Code = (Code << 8) | Stream.ReadByte();
   }
 
-  // void ReleaseStream() { Stream.ReleaseStream(); }
+  void ReleaseStream() { Stream.ReleaseStream(); }
 
   UInt32 GetThreshold(UInt32 total)
   {

@@ -4,7 +4,7 @@
 
 #include "StringToInt.h"
 
-UInt64 ConvertStringToUINT64(const char *s, const char **end)
+UInt64 ConvertStringToUInt64(const char *s, const char **end)
 {
   UInt64 result = 0;
   while(true)
@@ -22,7 +22,7 @@ UInt64 ConvertStringToUINT64(const char *s, const char **end)
   }
 }
 
-UInt64 ConvertStringToUINT64(const wchar_t *s, const wchar_t **end)
+UInt64 ConvertStringToUInt64(const wchar_t *s, const wchar_t **end)
 {
   UInt64 result = 0;
   while(true)
@@ -41,9 +41,9 @@ UInt64 ConvertStringToUINT64(const wchar_t *s, const wchar_t **end)
 }
 
 
-Int64 ConvertStringToINT64(const char *s, const char **end)
+Int64 ConvertStringToInt64(const char *s, const char **end)
 {
   if (*s == '-')
-    return -(Int64)ConvertStringToUINT64(s + 1, end);
-  return ConvertStringToUINT64(s, end);
+    return -(Int64)ConvertStringToUInt64(s + 1, end);
+  return ConvertStringToUInt64(s, end);
 }

@@ -32,9 +32,10 @@ public:
   ~CLZOutWindow() { Free();  /* ReleaseStream(); */ }
   bool Create(UInt32 windowSize);
   
-  void Init(ISequentialOutStream *stream, bool solid = false);
+  void SetStream(ISequentialOutStream *stream);
+  void Init(bool solid = false);
   HRESULT Flush();
-  // void ReleaseStream();
+  void ReleaseStream();
   
   void CopyBlock(UInt32 distance, UInt32 len)
   {

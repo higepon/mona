@@ -113,7 +113,7 @@ DEFINE_GUID(IID_ICompressSetInStream,
 MIDL_INTERFACE("23170F69-40C1-278A-0000-000200260000")
 ICompressSetInStream: public IUnknown
 {
-  STDMETHOD(SetInStream)(ISequentialInStream *inStream, const UInt64 *inSize) PURE;
+  STDMETHOD(SetInStream)(ISequentialInStream *inStream) PURE;
 };
 
 // {23170F69-40C1-278A-0000-000200270000}
@@ -122,7 +122,50 @@ DEFINE_GUID(IID_ICompressSetOutStream,
 MIDL_INTERFACE("23170F69-40C1-278A-0000-000200270000")
 ICompressSetOutStream: public IUnknown
 {
-  STDMETHOD(SetOutStream)(ISequentialOutStream *outStream, const UInt64 *outSize) PURE;
+  STDMETHOD(SetOutStream)(ISequentialOutStream *outStream) PURE;
+};
+
+// {23170F69-40C1-278A-0000-000200280000}
+DEFINE_GUID(IID_ICompressSetInStreamSize, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x28, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000200280000")
+ICompressSetInStreamSize: public IUnknown
+{
+  STDMETHOD(SetInStreamSize)(const UInt64 *inSize) PURE;
+};
+
+// {23170F69-40C1-278A-0000-000200290000}
+DEFINE_GUID(IID_ICompressSetOutStreamSize, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x29, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000200290000")
+ICompressSetOutStreamSize: public IUnknown
+{
+  STDMETHOD(SetOutStreamSize)(const UInt64 *outSize) PURE;
+};
+
+// {23170F69-40C1-278A-0000-000200400000}
+DEFINE_GUID(IID_ICompressFilter, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x40, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000200400000")
+ICompressFilter: public IUnknown
+{
+  STDMETHOD(Init)() PURE;
+  STDMETHOD_(UInt32, Filter)(Byte *data, UInt32 size) PURE;
+  // Filter return outSize (UInt32)
+  // if (outSize <= size): Filter have converted outSize bytes
+  // if (outSize > size): Filter have not converted anything.
+  //      and it needs at least outSize bytes to convert one block 
+  //      (it's for crypto block algorithms).
+};
+
+// {23170F69-40C1-278A-0000-000200800000}
+DEFINE_GUID(IID_ICryptoProperties, 
+0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x80, 0x00, 0x00);
+MIDL_INTERFACE("23170F69-40C1-278A-0000-000200800000")
+ICryptoProperties: public IUnknown
+{
+  STDMETHOD(SetKey)(const Byte *data, UInt32 size) PURE;
+  STDMETHOD(SetInitVector)(const Byte *data, UInt32 size) PURE;
 };
 
 //////////////////////

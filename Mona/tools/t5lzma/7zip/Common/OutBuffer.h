@@ -4,6 +4,7 @@
 #define __OUTBUFFER_H
 
 #include "../IStream.h"
+#include "../../Common/MyCom.h"
 
 #ifndef _NO_EXCEPTIONS
 struct COutBufferException
@@ -18,7 +19,7 @@ class COutBuffer
   Byte *_buffer;
   UInt32 _pos;
   UInt32 _bufferSize;
-  ISequentialOutStream *_stream;
+  CMyComPtr<ISequentialOutStream> _stream;
   UInt64 _processedSize;
 
   void WriteBlock();
@@ -33,9 +34,10 @@ public:
   bool Create(UInt32 bufferSize);
   void Free();
 
-  void Init(ISequentialOutStream *stream);
+  void SetStream(ISequentialOutStream *stream);
+  void Init();
   HRESULT Flush();
-  // void ReleaseStream(); {  _stream.Release(); }
+  void ReleaseStream() {  _stream.Release(); }
 
   /*
   void *GetBuffer(UInt32 &sizeAvail)

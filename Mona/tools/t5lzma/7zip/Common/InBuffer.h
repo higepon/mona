@@ -4,6 +4,7 @@
 #define __INBUFFER_H
 
 #include "../IStream.h"
+#include "../../Common/MyCom.h"
 
 #ifndef _NO_EXCEPTIONS
 class CInBufferException
@@ -21,7 +22,7 @@ class CInBuffer
   UInt32 _bufferSize;
   Byte *_buffer;
   Byte *_bufferLimit;
-  ISequentialInStream *_stream;
+  CMyComPtr<ISequentialInStream> _stream;
   bool _wasFinished;
 
   bool ReadBlock();
@@ -37,8 +38,9 @@ public:
   bool Create(UInt32 bufferSize);
   void Free();
   
-  void Init(ISequentialInStream *stream);
-  // void ReleaseStream() { _stream.Release(); }
+  void SetStream(ISequentialInStream *stream);
+  void Init();
+  void ReleaseStream() { _stream.Release(); }
 
   bool ReadByte(Byte &b)
   {

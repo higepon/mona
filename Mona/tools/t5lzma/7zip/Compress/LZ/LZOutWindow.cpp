@@ -7,13 +7,16 @@
 
 bool CLZOutWindow::Create(UInt32 windowSize)
 {
-  _pos = 0;
-  _streamPos = 0;
   const UInt32 kMinBlockSize = 1;
   if (windowSize < kMinBlockSize)
     windowSize = kMinBlockSize;
   if (_buffer != 0 && _windowSize == windowSize)
     return true;
+
+  // It's here to allow Solid decoding / and calling Create for RAR
+  _pos = 0;
+  _streamPos = 0;
+  
   Free();
   _windowSize = windowSize;
   _buffer = (Byte *)::BigAlloc(windowSize);
@@ -26,12 +29,15 @@ void CLZOutWindow::Free()
   _buffer = 0;
 }
 
-void CLZOutWindow::Init(ISequentialOutStream *stream, bool solid)
+void CLZOutWindow::SetStream(ISequentialOutStream *stream)
 {
-  // ReleaseStream();
+  ReleaseStream();
   _stream = stream;
-  // _stream->AddRef();
+  _stream->AddRef();
+}
 
+void CLZOutWindow::Init(bool solid)
+{
   if(!solid)
   {
     _streamPos = 0;
@@ -42,7 +48,6 @@ void CLZOutWindow::Init(ISequentialOutStream *stream, bool solid)
   #endif
 }
 
-/*
 void CLZOutWindow::ReleaseStream()
 {
   if(_stream != 0)
@@ -52,7 +57,6 @@ void CLZOutWindow::ReleaseStream()
     _stream = 0;
   }
 }
-*/
 
 void CLZOutWindow::FlushWithCheck()
 {
@@ -75,12 +79,15 @@ HRESULT CLZOutWindow::Flush()
     return ErrorCode;
   #endif
 
-  UInt32 processedSize;
-  HRESULT result = _stream->Write(_buffer + _streamPos, size, &processedSize);
-  if (result != S_OK)
-    return result;
-  if (size != processedSize)
-    return E_FAIL;
+  if(_stream != 0)
+  {
+    UInt32 processedSize;
+    HRESULT result = _stream->Write(_buffer + _streamPos, size, &processedSize);
+    if (result != S_OK)
+      return result;
+    if (size != processedSize)
+      return E_FAIL;
+  }
   if (_pos >= _windowSize)
     _pos = 0;
   _streamPos = _pos;

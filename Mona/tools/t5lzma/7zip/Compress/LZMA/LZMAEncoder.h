@@ -189,10 +189,9 @@ public:
 
 }
 
-
 class CEncoder : 
   public ICompressCoder,
-  // public IInitMatchFinder,
+  public ICompressSetOutStream,
   public ICompressSetCoderProperties,
   public ICompressWriteCoderProperties,
   public CBaseState,
@@ -201,8 +200,6 @@ class CEncoder :
   COptimal _optimum[kNumOpts];
   CMyComPtr<IMatchFinder> _matchFinder; // test it
   NRangeCoder::CEncoder _rangeEncoder;
-public:
-private:
 
   CMyBitEncoder _isMatch[kNumStates][NLength::kNumPosStatesEncodingMax];
   CMyBitEncoder _isRep[kNumStates];
@@ -342,17 +339,22 @@ private:
   void FillDistancesPrices();
   void FillAlignPrices();
     
-  void ReleaseStreams()
+  void ReleaseMFStream()
   {
     if (_matchFinder && _needReleaseMFStream)
     {
       _matchFinder->ReleaseStream();
       _needReleaseMFStream = false;
     }
-    // _rangeEncoder.ReleaseStream();
   }
 
-  HRESULT Flush();
+  void ReleaseStreams()
+  {
+    ReleaseMFStream();
+    _rangeEncoder.ReleaseStream();
+  }
+
+  HRESULT Flush(UInt32 nowPos);
   class CCoderReleaser
   {
     CEncoder *_coder;
@@ -374,13 +376,13 @@ public:
 
   HRESULT Create();
 
-  MY_UNKNOWN_IMP2(
+  MY_UNKNOWN_IMP3(
+      ICompressSetOutStream,
       ICompressSetCoderProperties,
       ICompressWriteCoderProperties
       )
     
-  STDMETHOD(Init)(
-      ISequentialOutStream *outStream);
+  HRESULT Init();
   
   // ICompressCoder interface
   HRESULT SetStreams(ISequentialInStream *inStream,
@@ -408,6 +410,8 @@ public:
   
   // ICompressWriteCoderProperties
   STDMETHOD(WriteCoderProperties)(ISequentialOutStream *outStream);
+
+  STDMETHOD(SetOutStream)(ISequentialOutStream *outStream);
 
   virtual ~CEncoder() {}
 };

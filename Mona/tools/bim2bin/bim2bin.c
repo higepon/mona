@@ -5623,7 +5623,7 @@ int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksi
 				*q = *p;
 		}
 	}
-	for (p = " -a2"; *p; *q++ = *p++);
+	for (p = " -notitle"; *p; *q++ = *p++);
 	*q = '\0';
 	i = system(outbuf);
 	remove(TEK5_TMPNAME "0");

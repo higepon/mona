@@ -302,11 +302,23 @@ static UInt32 GetLogSize(UInt32 size)
   return (32 << kSubBits);
 }
 
+static UInt64 MyMultDiv64(UInt64 value, UInt64 elapsedTime)
+{
+  UInt64 freq = GetFreq();
+  UInt64 elTime = elapsedTime;
+  while(freq > 1000000)
+  {
+    freq >>= 1;
+    elTime >>= 1;
+  }
+  if (elTime == 0)
+    elTime = 1;
+  return value * freq / elTime;
+}
+
 static UInt64 GetCompressRating(UInt32 dictionarySize, bool isBT4,
     UInt64 elapsedTime, UInt64 size)
 {
-  if (elapsedTime == 0)
-    elapsedTime = 1;
   UInt64 numCommandsForOne;
   if (isBT4)
   {
@@ -319,16 +331,14 @@ static UInt64 GetCompressRating(UInt32 dictionarySize, bool isBT4,
     numCommandsForOne = 1500 + ((t * t * 41) >> (2 * kSubBits));
   }
   UInt64 numCommands = (UInt64)(size) * numCommandsForOne;
-  return numCommands * GetFreq() / elapsedTime;
+  return MyMultDiv64(numCommands, elapsedTime);
 }
 
 static UInt64 GetDecompressRating(UInt64 elapsedTime, 
     UInt64 outSize, UInt64 inSize)
 {
-  if (elapsedTime == 0)
-    elapsedTime = 1;
   UInt64 numCommands = inSize * 250 + outSize * 21;
-  return numCommands * GetFreq() / elapsedTime;
+  return MyMultDiv64(numCommands, elapsedTime);
 }
 
 static UInt64 GetTotalRating(
@@ -355,9 +365,7 @@ static void PrintResults(
     UInt64 size, 
     bool decompressMode, UInt64 secondSize)
 {
-  if (elapsedTime == 0)
-    elapsedTime = 1;
-  UInt64 speed = size * GetFreq() / elapsedTime;
+  UInt64 speed = MyMultDiv64(size, elapsedTime);
   fprintf(f, "%6d KB/s  ", (unsigned int)(speed / 1024));
   UInt64 rating;
   if (decompressMode)

@@ -25,9 +25,13 @@ void COutBuffer::Free()
   _buffer = 0;
 }
 
-void COutBuffer::Init(ISequentialOutStream *stream)
+void COutBuffer::SetStream(ISequentialOutStream *stream)
 {
   _stream = stream;
+}
+
+void COutBuffer::Init()
+{
   _processedSize = 0;
   _pos = 0;
   #ifdef _NO_EXCEPTIONS

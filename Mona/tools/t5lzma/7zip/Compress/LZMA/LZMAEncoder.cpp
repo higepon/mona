@@ -210,7 +210,7 @@ void CEncoder::Encode(NRangeCoder::CEncoder *rangeEncoder, UInt32 symbol, UInt32
         int l0, l1;
         symbol -= (1 << kNumHighBits) - 8 - 1; /* 1以上 */
         /* このsymbolを表現するのに何ビット必要だろうか？ */
-        for (l0 = 1; (int)symbol >= (1 << l0); l0++);
+        for (l0 = 1; symbol >= (1 << l0); l0++);
         /* 答え：l0ビット(l0=1-255) */
         /* このl0を表現するのに何ビット必要だろうか */
         for (l1 = 0; l0 >= (2 << l1); l1++);
@@ -511,13 +511,18 @@ STDMETHODIMP CEncoder::WriteCoderProperties(ISequentialOutStream *outStream)
   return S_OK;
 }
 
-STDMETHODIMP CEncoder::Init(
-    ISequentialOutStream *outStream)
+STDMETHODIMP CEncoder::SetOutStream(ISequentialOutStream *outStream)
+{
+  _rangeEncoder.SetStream(outStream);
+  return S_OK;
+}
+
+HRESULT CEncoder::Init()
 {
   CBaseState::Init();
 
   // RINOK(_matchFinder->Init(inStream));
-  _rangeEncoder.Init(outStream);
+  _rangeEncoder.Init();
 
   for(int i = 0; i < kNumStates; i++)
   {
@@ -1192,8 +1197,10 @@ STDMETHODIMP CEncoder::InitMatchFinder(IMatchFinder *matchFinder)
   return S_OK;
 }
 
-HRESULT CEncoder::Flush()
+HRESULT CEncoder::Flush(UInt32 nowPos)
 {
+  ReleaseMFStream();
+  WriteEndMarker(nowPos & _posStateMask);
   _rangeEncoder.FlushData();
   return _rangeEncoder.FlushStream();
 }
@@ -1249,7 +1256,8 @@ HRESULT CEncoder::SetStreams(ISequentialInStream *inStream,
   _inStream = inStream;
   _finished = false;
   RINOK(Create());
-  RINOK(Init(outStream));
+  RINOK(SetOutStream(outStream));
+  RINOK(Init());
   
   // CCoderReleaser releaser(this);
 
@@ -1296,11 +1304,7 @@ HRESULT CEncoder::CodeOneBlock(UInt64 *inSize, UInt64 *outSize, Int32 *finished)
   if (nowPos64 == 0)
   {
     if (_matchFinder->GetNumAvailableBytes() == 0)
-    {
-      ReleaseStreams();
-      WriteEndMarker(UInt32(nowPos64) & _posStateMask);
-      return Flush();
-    }
+      return Flush(UInt32(nowPos64));
     UInt32 len; // it's not used
     RINOK(ReadMatchDistances(len));
     UInt32 posState = UInt32(nowPos64) & _posStateMask;
@@ -1313,11 +1317,7 @@ HRESULT CEncoder::CodeOneBlock(UInt64 *inSize, UInt64 *outSize, Int32 *finished)
     nowPos64++;
   }
   if (_matchFinder->GetNumAvailableBytes() == 0)
-  {
-    ReleaseStreams();
-    WriteEndMarker(UInt32(nowPos64) & _posStateMask);
-    return Flush();
-  }
+    return Flush(UInt32(nowPos64));
   while(true)
   {
     #ifdef _NO_EXCEPTIONS
@@ -1445,11 +1445,7 @@ HRESULT CEncoder::CodeOneBlock(UInt64 *inSize, UInt64 *outSize, Int32 *finished)
       *inSize = nowPos64;
       *outSize = _rangeEncoder.GetProcessedSize();
       if (_matchFinder->GetNumAvailableBytes() == 0)
-      {
-        ReleaseStreams();
-        WriteEndMarker(UInt32(nowPos64) & _posStateMask);
-        return Flush();
-      }
+        return Flush(UInt32(nowPos64));
       if (nowPos64 - progressPosValuePrev >= (1 << 12))
       {
         _finished = false;

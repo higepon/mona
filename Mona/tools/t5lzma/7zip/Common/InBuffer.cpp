@@ -33,9 +33,13 @@ void CInBuffer::Free()
   _bufferBase = 0;
 }
 
-void CInBuffer::Init(ISequentialInStream *stream)
+void CInBuffer::SetStream(ISequentialInStream *stream)
 {
   _stream = stream;
+}
+
+void CInBuffer::Init()
+{
   _processedSize = 0;
   _buffer = _bufferBase;
   _bufferLimit = _buffer;

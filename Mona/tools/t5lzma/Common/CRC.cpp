@@ -28,21 +28,27 @@ public:
   CCRCTableInit() { CCRC::InitTable(); }
 } g_CRCTableInit;
 
-void CCRC::Update(Byte b)
+void CCRC::UpdateByte(Byte b)
 {
   _value = Table[((Byte)(_value)) ^ b] ^ (_value >> 8);
 }
 
-void CCRC::Update(UInt32 v)
+void CCRC::UpdateUInt16(UInt16 v)
 {
-  for (int i = 0; i < 4; i++)
-    Update((Byte)(v >> (8 * i)));
+  UpdateByte(Byte(v));
+  UpdateByte(Byte(v >> 8));
 }
 
-void CCRC::Update(const UInt64 &v)
+void CCRC::UpdateUInt32(UInt32 v)
+{
+  for (int i = 0; i < 4; i++)
+    UpdateByte((Byte)(v >> (8 * i)));
+}
+
+void CCRC::UpdateUInt64(const UInt64 &v)
 {
   for (int i = 0; i < 8; i++)
-    Update((Byte)(v >> (8 * i)));
+    UpdateByte((Byte)(v >> (8 * i)));
 }
 
 void CCRC::Update(const void *data, UInt32 size)
