@@ -1,3 +1,7 @@
+2004-09-28  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/main.cpp (MessageLoop): MSG_GRAB_STDOUT, MSG_UNGRAB_STDOUT
+
 2004-09-27  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/Assert.h: ファイル追加 ASSERTマクロ追加

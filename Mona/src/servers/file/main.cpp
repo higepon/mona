@@ -8,6 +8,8 @@ using namespace MonAPI;
 
 void MessageLoop()
 {
+    HList<dword> grabList;
+
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg)) continue;
@@ -83,11 +85,40 @@ void MessageLoop()
                 }
                 break;
             }
-            case MSG_STDOUT:
+            case MSG_STDOUT: /* higepon exp */
             {
-                Message::reply(&msg);
-                printf("%s", msg.str);
 
+                if (grabList.size() == 0)
+                {
+                    syscall_print(msg.str);
+                }
+                else
+                {
+                    MessageInfo message;
+                    MessageInfo reply;
+                    Message::create(&message, MSG_STDOUT, msg.arg1, 0, 0, msg.str);
+
+                    if (Message::sendReceive(&reply, grabList.get(grabList.size() - 1), &message))
+                    {
+                        /* target not exist */
+                        grabList.remove(grabList.size() - 1);
+                    }
+                }
+
+                Message::reply(&msg);
+            }
+            case MSG_GRAB_STDOUT: /* higepon exp */
+            {
+                grabList.add(msg.from);
+                Message::reply(&msg);
+            }
+            case MSG_UNGRAB_STDOUT: /* higepon exp */
+            {
+                if (grabList.size() > 0)
+                {
+                    grabList.remove(grabList.size() - 1);
+                }
+                Message::reply(&msg);
             }
         }
     }

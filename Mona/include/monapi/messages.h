@@ -40,7 +40,9 @@ enum
     MSG_PROCESS_UNGRAB_STDOUT,         // temporary
     MSG_PROCESS_STDOUT_DATA,           // temporary
     // higepon stdout exp
-    MSG_STDOUT
+    MSG_STDOUT, 
+    MSG_GRAB_STDOUT,
+    MSG_UNGRAB_STDOUT,
 };
 
 enum
