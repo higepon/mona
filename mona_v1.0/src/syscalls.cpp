@@ -388,7 +388,8 @@ void syscall_entrance() {
 
         {
             g_scheduler->wait(g_currentThread->thread, WAIT_MESSAGE);
-            bool isProcessChange = g_scheduler->schedule();
+//            bool isProcessChange = g_scheduler->schedule();
+	    bool isProcessChange = true;
             ThreadOperation::switchThread(isProcessChange);
         }
 
@@ -428,8 +429,9 @@ void syscall_entrance() {
        debug_waitorwake = -105;
           g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
        debug_waitorwake = -110;
-     bool isProcessChange = g_scheduler->schedule3();
-//bool isProcessChange = true;
+       ThreadInfo* info = g_currentThread;
+//       bool isProcessChange = g_scheduler->schedule3();
+  bool isProcessChange = true;
        debug_waitorwake = -111;
                 ThreadOperation::switchThread(isProcessChange);
             }

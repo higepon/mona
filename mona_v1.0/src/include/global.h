@@ -75,6 +75,7 @@ GLOBAL dword gt[128];
 GLOBAL int debug_faultpoint;
 GLOBAL int debug_waitorwake;
 GLOBAL int debug_empty;
+GLOBAL int debug_which_sche;
 
 #define DEBUG_MODE
 

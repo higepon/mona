@@ -200,13 +200,8 @@ bool Scheduler::schedule()
 
 bool Scheduler::schedule3()
 {
-//    FOREACH(Thread*, queue, runq)
-
     debug_empty = 555;
-
-    if ((runq).getLength() > 0) \
-        for ({int __i = 0; Thread* queue;} \
-            __i < (runq).getLength() && (&(queue= (runq)[__i]) || true); __i++)
+    FOREACH(Thread*, queue, runq)
     {
         if (queue->isEmpty())
         {
