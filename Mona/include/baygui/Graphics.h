@@ -33,9 +33,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class Graphics : public Object {
 private:
-	int tx, ty, cx, cy, cw, ch, drawOp;
+	int tx, ty, cx, cy, cw, ch;
 	unsigned char r, g, b;
 	unsigned int rgb24;
+	bool xormode;
+
+	void drawPixelXOR(int x, int y, unsigned int color);
 
 public:
 	/** MONA描画用スクリーンクラス */
@@ -44,6 +47,7 @@ public:
 	virtual Graphics::~Graphics();
 	virtual void drawImage(Image *image, int x, int y);
 	virtual void drawImage(Image *image, int x, int y, int w, int h);
+	virtual void drawPixel(int x, int y, unsigned int color);
 	virtual void drawLine(int x0, int y0, int x1, int y1);
 	virtual void drawRect(int x, int y, int width, int height);
 	virtual void drawText(char *s, int x, int y);
@@ -51,7 +55,7 @@ public:
 	virtual void translate(int x, int y);
 	virtual void setClip(int cx, int cy, int cw, int ch);
 	virtual void setColor(unsigned char r, unsigned char g, unsigned char b);
-	virtual void setDrawOp(int drawOp);
+	virtual void setXORMode(bool mode);
 };
 
 #endif // _GRAPHICS_H_INCLUDED_

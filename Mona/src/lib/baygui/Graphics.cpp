@@ -33,6 +33,7 @@ Graphics::Graphics()
 	tx = ty = cx = cy = cw = ch = 0;
 	r = g = b = rgb24 = 0;
 	screen = new MonAPI::Screen();
+	xormode = false;
 }
 
 /** デストラクタ */
@@ -65,8 +66,7 @@ void Graphics::drawImage(Image *image, int x, int y)
 	for (int j = 0; j < J; j++) {
 		for (int i = 0; i < I; i++) {
 			if (data[width * j + i] < 0xff000000) {
-				//sys_gs_set_pixel_RGB(tx + x + i, ty + y + j, data[width * j + i]);
-				screen->putPixel16(tx + x + i, ty + y + j, data[width * j + i]);
+				drawPixel(x + i ,y + j, data[width * j + i]);
 			}
 		}
 	}
@@ -93,11 +93,36 @@ void Graphics::drawImage(Image *image, int x, int y, int w, int h)
 	for (int j = y; j < y + h; j++) {
 		for (int i = x; i < x + w; i++) {
 			if (data[width * j + i] < 0xff000000) {
-				//sys_gs_set_pixel_RGB(tx + i, ty + j, data[width * j + i]);
-				screen->putPixel16(tx + i, ty + j, data[width * j + i]);
+				drawPixel(i ,j, data[width * j + i]);
 			}
 		}
 	}
+}
+
+/**
+ 点描画
+ @param x X座標
+ @param y Y座標
+ @param color 描画する色
+ */
+void Graphics::drawPixel(int x, int y, unsigned int color)
+{
+#if defined(PEKOE)
+	sys_gs_set_pixel_RGB(tx + i, ty + j, color);
+#elif defined(MONA)
+	screen->putPixel16(tx + x, ty + y, color);
+#endif
+}
+
+/**
+ 点描画（XOR描画）
+ @param x X座標
+ @param y Y座標
+ @param color 描画する色
+ */
+void Graphics::drawPixelXOR(int x, int y, unsigned int color)
+{
+	screen->putPixel16(tx + x, ty + y, color);
 }
 
 /**
@@ -127,8 +152,13 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
 	if ( dx >= dy ) {
 		E = -dx;
 		for ( i = 0; i < ( ( dx + 1 ) >> 1 ); i++ ) {
-			screen->putPixel16(tx + xx0, ty + yy0, rgb24);
-			screen->putPixel16(tx + xx1, ty + yy1, rgb24);
+			if (xormode == true) {
+				drawPixelXOR(xx0, yy0, rgb24);
+				drawPixelXOR(xx1, yy1, rgb24);
+			} else {
+				drawPixel(xx0, yy0, rgb24);
+				drawPixel(xx1, yy1, rgb24);
+			}
 			xx0 += sx;
 			xx1 -= sx;
 			E += 2 * dy;
@@ -139,13 +169,22 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
 			}
 		}
 		if ( ( ( dx + 1 ) % 2 ) != 0 ) {
-			screen->putPixel16(tx + xx0, ty + yy0, rgb24);
+			if (xormode == true) {
+				drawPixelXOR(xx0, yy0, rgb24);
+			} else {
+				drawPixel(xx0, yy0, rgb24);
+			}
 		}
 	} else {
 		E = -dy;
 		for ( i = 0; i < ( (dy + 1) >> 1 ); i++ ) {
-			screen->putPixel16(tx + xx0, ty + yy0, rgb24);
-			screen->putPixel16(tx + xx1, ty + yy1, rgb24);
+			if (xormode == true) {
+				drawPixelXOR(xx0, yy0, rgb24);
+				drawPixelXOR(xx1, yy1, rgb24);
+			} else {
+				drawPixel(xx0, yy0, rgb24);
+				drawPixel(xx1, yy1, rgb24);
+			}
 			yy0 += sy;
 			yy1 -= sy;
 			E += 2 * dx;
@@ -156,7 +195,11 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
 			}
 		}
 		if ( ( ( dy + 1 ) % 2 ) != 0 ) {
-			screen->putPixel16(tx + xx0, ty + yy0, rgb24);
+			if (xormode == true) {
+				drawPixelXOR(xx0, yy0, rgb24);
+			} else {
+				drawPixel(xx0, yy0, rgb24);
+			}
 		}
 	}
 }
@@ -198,7 +241,11 @@ void Graphics::drawText(char *str, int x, int y)
 			for (k = 0; k < list[i]->getWidth(); k++) {
 				// 行パディングなし
 				if ((fp[pos] & bit) != 0) {
-					screen->putPixel16(tx + x + w + k, ty + y + j, rgb24);
+					if (xormode == true) {
+						drawPixelXOR(x + w + k, y + j, rgb24);
+					} else {
+						drawPixel(x + w + k, y + j, rgb24);
+					}
 				}
 				bit <<= 1;
 				if (bit == 256) {
@@ -264,10 +311,10 @@ void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
 }
 
 /**
- 描画オプション設定
- @param drawOp 描画オプション
+ XOR描画モード設定.
+ OSによってはXOR描画はサポートされない
  */
-void Graphics::setDrawOp(int drawOp)
+void Graphics::setXORMode(bool mode)
 {
-	this->drawOp = drawOp;
+	this->xormode = mode;
 }

@@ -378,8 +378,8 @@ void Window::repaint()
 		// 閉じるアイコン
 		for (i = 0; i < 13; i++) {
 			for (j = 0; j < 13; j++) {
-				_g->screen->putPixel16(x + 4 + j, y + 5 + i, closeIcon[i][j]);
-				_g->screen->putPixel16(x + width - 16 + j, y + 5 + i, minimizeIcon[i][j]);
+				_g->drawPixel(4 + j, 5 + i, closeIcon[i][j]);
+				_g->drawPixel(width - 16 + j, 5 + i, minimizeIcon[i][j]);
 			}
 		}
 	} else {
