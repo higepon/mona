@@ -21,12 +21,25 @@
 #define enableInterrupt()  asm volatile("sti")      /*!< \def enable  interupts */
 #define pusha()            asm volatile("pusha");   /*!< \def  pusha            */
 #define popa()             asm volatile("popa");    /*!< \def  popa             */
-#define pushf();           asm volatile("pushfl");  /*!< \def  pushf             */
+#define pushf();           asm volatile("pushfl");  /*!< \def  pushf            */
 #define popf();            asm volatile("popfl");   /*!< \def  popf             */
 #define SYS_BG_COLOR BG_TEAL
 #define SYS_CH_COLOR CH_WHITE
 
 extern dword demoStep;
+
+typedef struct {
+
+    dword stack0;
+    dword stack1;
+    dword stack2;
+    dword stack3;
+    dword stack4;
+    dword stack5;
+    dword stack6;
+    dword stack7;
+} StackView;
+
 
 /*!< \def _sysdumpReg() */
 #define _sysdumpReg(str, stopflag, unlockint) { \
