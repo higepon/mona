@@ -201,3 +201,36 @@ size_t strcspn(const char* str1, const char* str2) {
     }
         return str1 - head;
 }
+
+char* ltona(long value, char* str, int n, int base) {
+
+    static const char xdigit[] = {"012345678ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+    unsigned long ulvalue;
+    unsigned int ubase;
+    int sign = 0;
+    char* ps = str + n;
+
+    *ps = '\0';
+    if (base < 0) {
+        ubase = -base;
+        if (value < 0) {
+            value = -value;
+            sign  = -1;
+            --n;
+        }
+    } else {
+        ubase = base;
+    }
+
+    ulvalue  = value;
+    if (n > 0 && (2 <= ubase && ubase <  sizeof(xdigit))) {
+        do {
+            *--ps = xdigit[(unsigned)(ulvalue % ubase)];
+        } while (--n > 0 && (ulvalue /= ubase) != 0);
+    }
+    if (sign < 0)
+        *--ps = '-';
+    while (--n >= 0)
+        *--ps = ' ';
+    return str;
+}
