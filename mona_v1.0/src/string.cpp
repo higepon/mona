@@ -15,6 +15,46 @@
 #include <string.h>
 
 /*!
+    \brief memmove
+*/
+void *memmove(void* s1, const void* s2, size_t size)
+{
+    void *p = s1;
+    char *c1 = (char*)s1;
+    char *c2 = (char*)s2;
+
+    if (c1 > c2) {
+        c1 += size;
+        c2 += size;
+        while (0 < size--)
+            *c1-- = *c2--;
+    } else {
+        while (0 < size--)
+            *c1++ = *c2++;
+    }
+
+    return p;
+}
+
+/*!
+    \brief memcmp
+*/
+int memcmp(const void* s1, const void* s2, size_t size)
+{
+    char *c1 = (char*)s1;
+    char *c2 = (char*)s2;
+
+    while (0 < size--) {
+        if (*c1 != *c2)
+            return *c1 - *c2;
+        c1++;
+        c2++;
+    }
+
+    return 0;
+}
+
+/*!
     \brief memset
 
     function memset
@@ -201,7 +241,6 @@ size_t strcspn(const char* str1, const char* str2) {
     }
         return str1 - head;
 }
-
 
 char* ltona(long value, char* str, int n, int base) {
 

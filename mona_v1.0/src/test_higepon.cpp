@@ -44,11 +44,7 @@ void tryMouse() {
     outportb(0x60, 0xf4);
 
     /* enable mouse interrupt */
-    outportb(0x64, 0x20);
-    byte result = inportb(0x60);
-
-    /* enable mouse interrupt */
-    outportb(0x21, inportb(0x21) & 0xF7);
+    //    outportb(0x21, inportb(0x21) & 0xF7);
 
 }
 

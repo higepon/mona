@@ -27,6 +27,8 @@ typedef __SIZE_TYPE__ size_t;
 extern "C" {
 #endif
 
+void *memmove(void* s1, const void* s2, size_t size);
+int memcmp(const void* s1, const void* s2, size_t size);
 void* memset(void*, int, size_t);
 size_t strlen(const char*);
 char* strcpy(char*, const char*);

@@ -1,5 +1,7 @@
 2004-02-04  higepon  <higepon@users.sourceforge.jp>
 
+        * string.cpp: memcomp, memmove from Gakuさん
+
         * elf.cpp: プロセスロードのサイズを200KBにする。
 
         * kernel.cpp: user/lib/libuser.aを作成
