@@ -92,7 +92,7 @@ private:
     bool waitDrdySet(IDEController* ide);
 
 private:
-    IDEController controller[2];
+    IDEController controllers[2];
     IDEController* whichController;
 
 private:

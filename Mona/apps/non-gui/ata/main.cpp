@@ -31,6 +31,22 @@ int MonaMain(List<char*>* pekoe)
     int device;
     int type;
 
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+    printf("type=%d\n", ide.getDeviceType(1, 0));
+
+
     if (!FindATAPIDevice(&ide, &controller, &device))
     {
         printf("atapi device not found \n");
