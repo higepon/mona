@@ -22,6 +22,6 @@ write:
 clean:
 	rm -f $(TARGET)
 	rm -f root/KERNEL.IMG
-	rm -f root/MONA-12.MNF
+	rm -f root/MONA-12.M*
 	rm -rf root/APPS/*.*
 	rm -rf root/SERVERS/*.*

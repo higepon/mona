@@ -9,7 +9,11 @@ MemoryInfo::MemoryInfo() : Handle(0), Size(0), Width(0), Height(0), Data(NULL)
 {
 }
 
-bool MemoryInfo::Create(int size, bool prompt /*= false*/)
+MemoryInfo::MemoryInfo(dword handle, dword size) : Handle(handle), Size(size), Width(0), Height(0)
+{
+}
+
+bool MemoryInfo::Create(dword size, bool prompt /*= false*/)
 {
 	this->Handle = MemoryMap::create(size);
 	if (this->Handle == 0)
@@ -19,18 +23,26 @@ bool MemoryInfo::Create(int size, bool prompt /*= false*/)
 		return false;
 	}
 	
-	this->Data = MemoryMap::map(this->Handle);
-	if (this->Data == NULL)
+	if (!this->Map())
 	{
-		if (prompt) printf("ERROR\n");
-		printf("%s: map error\n", SVR);
-		MemoryMap::unmap(this->Handle);
-		this->Handle = 0;
+		printf("ERROR\n");
 		return false;
 	}
 	
 	this->Size = size;
 	return true;
+}
+
+bool MemoryInfo::Map()
+{
+	this->Data = MemoryMap::map(this->Handle);
+	if (this->Data != NULL) return true;
+	
+	printf("%s: map error\n", SVR);
+	MemoryMap::unmap(this->Handle);
+	this->Handle = 0;
+	this->Size   = 0;
+	return false;
 }
 
 void MemoryInfo::Dispose()

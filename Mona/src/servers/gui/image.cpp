@@ -5,6 +5,7 @@
 #include "GUIServer.h"
 #include "image.h"
 #include "file.h"
+#include "bzip2.h"
 
 #define BYTE2INT(array, index) (*(int*)&array[index])
 
@@ -13,7 +14,7 @@ MemoryInfo* ReadBitmap(MemoryInfo* mi)
 	if (mi->Size < 6) return NULL;
 	
 	if (mi->Data[0] != 'B' || mi->Data[1] != 'M') return NULL;
-	if (mi->Size != BYTE2INT(mi->Data, 2)) return NULL;
+	if (mi->Size != (dword)BYTE2INT(mi->Data, 2)) return NULL;
 	if (BYTE2INT(mi->Data, 6) != 0) return NULL;
 	if (BYTE2INT(mi->Data, 14) != 40) return NULL;
 	if (mi->Data[28] + (mi->Data[29] << 8) != 24) return NULL; // 24bpp only
@@ -100,8 +101,23 @@ MemoryInfo* ReadImage(const char* file, bool prompt /*= false*/)
 		ret = ReadJPEG(mi);
 		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
+	else if (strcmp(p, ".BM2") == 0)
+	{
+		if (prompt) printf("%s: Decompressing %s....", SVR, file);
+		MemoryInfo* mi2 = BZ2Decompress(mi);
+		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
+		
+		if (mi2 != NULL)
+		{
+			if (prompt) printf("%s: Decoding %s....", SVR, file);
+			ret = ReadBitmap(mi2);
+			if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
+			mi2->Dispose();
+			delete mi2;
+		}
+	}
 	
-	MemoryMap::unmap(mi->Handle);
+	mi->Dispose();
 	delete mi;
 	return ret;
 }

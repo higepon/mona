@@ -23,4 +23,4 @@ clean:
 	rm -f $(TARGET) $(BIT2MNF)
 
 install:
-	cp MONA-12.MNF $(MONADIR)/bin/root
+	bzip2 -c MONA-12.MNF > $(MONADIR)/bin/root/MONA-12.MF2

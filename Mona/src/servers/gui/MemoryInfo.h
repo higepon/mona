@@ -10,12 +10,15 @@ using namespace MonAPI;
 class MemoryInfo
 {
 public:
-	dword Handle;
-	int Size, Width, Height;
+	dword Handle, Size;
+	int Width, Height;
 	byte* Data;
 	
 	MemoryInfo();
-	bool Create(int size, bool prompt = false);
+	MemoryInfo(dword handle, dword size);
+	
+	bool Create(dword size, bool prompt = false);
+	bool Map();
 	void Dispose();
 };
 

@@ -1,15 +1,14 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
-// This file's encoding is UTF-8.
-
+#include <gui/messages.h>
 #include "GUIServer.h"
 #include "MemoryInfo.h"
 #include "file.h"
 #include "image.h"
 #include "screen.h"
+#include "bzip2.h"
 #include "utils.h"
-#include <gui/messages.h>
 
 using namespace MonAPI;
 
@@ -20,7 +19,7 @@ static bool wallpaper_prompt = false;
 
 static void ReadFont(const char* file)
 {
-	MemoryInfo* mi = ReadFile(file, true);
+	MemoryInfo* mi = BZ2DecompressFile(file, true);
 	if (mi == NULL) return;
 	
 	default_font = mi;
@@ -34,33 +33,33 @@ void DrawWallPaper()
 	int x = 0, y = 0, sw = scr->getWidth(), sh = scr->getHeight();
 	switch (wallpaper_pos)
 	{
-		case 1: // ¶ã
+		case 1: // Top Left
 			break;
-		case 2: // ’†‰›ã
+		case 2: // Top Center
 			x = (sw - wallpaper->Width) / 2;
 			break;
-		case 3: // ‰Eã
+		case 3: // Top Right
 			x = sw - wallpaper->Width;
 			break;
-		case 4: // ¶’†‰›
+		case 4: // Center Left
 			y = (sh - wallpaper->Height) / 2;
 			break;
-		case 5: // ’†‰›
+		case 5: // Center Center
 			x = (sw - wallpaper->Width) / 2;
 			y = (sh - wallpaper->Height) / 2;
 			break;
-		case 6: // ‰E’†‰›
+		case 6: // Center Right
 			x = sw - wallpaper->Width;
 			y = (sh - wallpaper->Height) / 2;
 			break;
-		case 7: // ¶‰º
+		case 7: // Bottom Left
 			y = sh - wallpaper->Height;
 			break;
-		case 8: // ’†‰›‰º
+		case 8: // Bottom Center
 			x = (sw - wallpaper->Width) / 2;
 			y = sh - wallpaper->Height;
 			break;
-		case 9: // ‰E‰º
+		case 9: // Bottom Right
 			x = sw - wallpaper->Width;
 			y = sh - wallpaper->Height;
 			break;
@@ -87,7 +86,7 @@ void ReadConfig()
 	
 	char line[256], src[256] = "";
 	int linepos = 0, wppos = 5, wptp = -1;
-	for (int pos = 0; pos <= cfg->Size; pos++)
+	for (dword pos = 0; pos <= cfg->Size; pos++)
 	{
 		char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
 		if (ch == '\r' || ch == '\n')
@@ -148,7 +147,7 @@ void MessageLoop()
 				}
 				break;
 			}
-			case MSG_GUISERVER_DISPOSEIMAGE:
+			case MSG_GUISERVER_DISPOSEHANDLE:
 				MemoryMap::unmap(msg.arg1);
 				break;
 			case MSG_GUISERVER_SETWALLPAPER:
@@ -159,6 +158,41 @@ void MessageLoop()
 				DrawWallPaper();
 				Message::send(msg.from, MSG_RESULT_OK, msg.header);
 				break;
+			case MSG_GUISERVER_DECOMPRESSBZ2:
+			{
+				MemoryInfo* mi1 = new MemoryInfo(msg.arg1, msg.arg2);
+				MemoryInfo* mi2 = NULL;
+				if (mi1->Map())
+				{
+					mi2 = BZ2Decompress(mi1);
+					mi1->Dispose();
+				}
+				if (mi2 != NULL)
+				{
+					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi2->Handle);
+					delete mi2;
+				}
+				else
+				{
+					Message::send(msg.from, MSG_RESULT_OK, msg.header);
+				}
+				delete mi1;
+				break;
+			}
+			case MSG_GUISERVER_DECOMPRESSBZ2FILE:
+			{
+				MemoryInfo* mi = BZ2DecompressFile(msg.str);
+				if (mi != NULL)
+				{
+					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle);
+					delete mi;
+				}
+				else
+				{
+					Message::send(msg.from, MSG_RESULT_OK, msg.header);
+				}
+				break;
+			}
 		}
 	}
 }
@@ -166,7 +200,7 @@ void MessageLoop()
 int MonaMain(List<char*>* pekoe)
 {
 	ReadConfig();
-	ReadFont("/MONA-12.MNF");
+	ReadFont("/MONA-12.MF2");
 	if (default_font == NULL) exit(1);
 	
 	if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)

@@ -1,15 +1,15 @@
 TARGET  = GUI.SVR
-SOURCES = main.cpp MemoryInfo.cpp file.cpp image.cpp screen.cpp utils.cpp
+SOURCES = main.cpp MemoryInfo.cpp file.cpp image.cpp screen.cpp utils.cpp bzip2.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
 
 INCLUDE = -I$(INCDIR) -I.
-LINK    = $(LIBDIR)/monapi.o -lmonapi -lmonalibc -ljpegls
+LINK    = $(LIBDIR)/monapi.o -lbz2 -lmonapi -lmonalibc -ljpegls
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a $(LIBDIR)/libjpegls.a
+$(TARGET): $(OBJECTS) $(LIBDIR)/libbz2.a $(LIBMONAPI) $(LIBDIR)/libmonalibc.a $(LIBDIR)/libjpegls.a
 	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@

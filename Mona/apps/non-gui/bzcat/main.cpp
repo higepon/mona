@@ -2,12 +2,10 @@
 // There are no restrictions on any sort of usage of this file.
 
 #include <monapi.h>
-using namespace MonAPI;
-
 #include <gui/System/Array.h>
-using namespace System;
-
 #include <bzlib.h>
+
+using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
