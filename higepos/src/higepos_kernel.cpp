@@ -15,6 +15,7 @@
 #include<vga.h>
 #include<idt.h>
 #include<io.h>
+#include<X86MemoryManager.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -23,7 +24,7 @@
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2002/07/27
+    \date   create:2002/07/21 update:2002/08/04
 */
 void startKernel(void) {
     _sysInitVga();
@@ -31,6 +32,13 @@ void startKernel(void) {
     _sysPrint("**************************************\n");
     _sysPrint("Higepos Kernel start!!\nPowered by 2ch\n");
     _sysPrint("**************************************\n");
+
+    X86MemoryManager mm;
+    _sysPrint(mm.getMessage());
+    _sysPrint("\n");
+    _sysPrint(mm.getName());
+    _sysPrint("\n");
+
     _sysSetIdt();
     _sysInitIo();
     _sysUnlock();

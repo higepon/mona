@@ -7,28 +7,38 @@ STRIP      = ${HIGE_TOOLS}/djgpp/bin/strip.exe
 DOXYGEN    = doxygen.exe
 INCLUDE    = include
 LFLAGS     = -Ttext 0x200 --oformat binary
-CFLAGS     = -fno-exceptions -ffreestanding -Wall -c
+CFLAGS     = -fno-exceptions -fno-rtti -ffreestanding -Wall -c
 BIN        = ../../bin
 LIST       = ../../list
 SCRIPTS    = ${HIGE_TOOLS}/scripts
 FIRST      = ${BIN}/firstboot.bin
 SECOND     = ${BIN}/secondboot.bin
 THIRD      = ${BIN}/third.bin
-SRC        = higepos_kernel.cpp \
-             vga.cpp            \
-             idt.cpp            \
-             ihandler.cpp       \
-             io.cpp
-HEADER     = ${INCLUDE}/kernel.h \
-             ${INCLUDE}/vga.h    \
-             ${INCLUDE}/idt.h    \
-             ${INCLUDE}/io.h
-OBJ        = ${BIN}/cstart.o         \
-             ${BIN}/higepos_kernel.o \
-             ${BIN}/vga.o            \
-             ${BIN}/idt.o            \
-             ${BIN}/ihandler.o       \
-             ${BIN}/io.o
+SRC        = higepos_kernel.cpp   \
+             vga.cpp              \
+             idt.cpp              \
+             ihandler.cpp         \
+             io.cpp               \
+             MemoryManager.cpp    \
+             x86MemoryManager.cpp \
+             purevirtual.cpp
+
+HEADER     = ${INCLUDE}/kernel.h           \
+             ${INCLUDE}/vga.h              \
+             ${INCLUDE}/idt.h              \
+             ${INCLUDE}/io.h               \
+             ${INCLUDE}/Object.h           \
+             ${INCLUDE}/MemoryManager.h    \
+             ${INCLUDE}/X86MemoryManager.h
+OBJ        = ${BIN}/cstart.o           \
+             ${BIN}/higepos_kernel.o   \
+             ${BIN}/vga.o              \
+             ${BIN}/idt.o              \
+             ${BIN}/ihandler.o         \
+             ${BIN}/io.o               \
+             ${BIN}/MemoryManager.o    \
+             ${BIN}/X86MemoryManager.o \
+             ${BIN}/purevirtual.o
 
 # src to html & document
 WEB : ${BIN}/higeboot.bin
@@ -51,10 +61,12 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} idt.cpp -o ${BIN}/idt.o
 	${CC} -I $(INCLUDE) ${CFLAGS} ihandler.cpp -o ${BIN}/ihandler.o
 	${CC} -I $(INCLUDE) ${CFLAGS} io.cpp -o ${BIN}/io.o
+	${CC} -I $(INCLUDE) ${CFLAGS} MemoryManager.cpp -o ${BIN}/MemoryManager.o
+	${CC} -I $(INCLUDE) ${CFLAGS} X86MemoryManager.cpp -o ${BIN}/X86MemoryManager.o
+	${CC} -I $(INCLUDE) ${CFLAGS} purevirtual.cpp -o ${BIN}/purevirtual.o
 	${LD} -n -Ttext 0x1200 -static --oformat binary -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third_dis.asm
 #	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}
 
 clean :
 	cd ${BIN}; rm *
-
