@@ -8,6 +8,7 @@ all:
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
+	@cd cube; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -19,6 +20,7 @@ install:
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
+	@cd cube; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -30,6 +32,7 @@ clean: touchdepend
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
+	@cd cube; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -41,6 +44,7 @@ depend: touchdepend
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
+	@cd cube; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -52,7 +56,7 @@ distclean:
 	rm -f waba/dependencies
 	rm -f shell/dependencies
 	rm -f clock/dependencies
-#	@cd clock; $(MAKE) $@
+	rm -f cube/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -64,4 +68,4 @@ touchdepend:
 	touch waba/dependencies
 	touch shell/dependencies
 	touch clock/dependencies
-#	@cd clock; $(MAKE) $@
+	touch cube/dependencies
