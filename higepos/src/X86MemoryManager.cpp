@@ -58,7 +58,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     for (; ; previous = current, current = previous->next) {
 
         /* first fit found */
-        if (current->size > realSize) break;
+        if (current->size >= realSize) break;
 
         /* block not found */
         if (current == freeEntry_) return NULL;
@@ -76,7 +76,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     this->deleteFromEntry(freeEntry_, current, current->size);
     this->addToEntry(usedEntry_, usedBlock, usedBlockSize);
 
-    /* adress of allocated memory */
+    /* address of allocated memory */
     return (void*)usedBlock->startAddress;
 }
 
@@ -159,8 +159,6 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
 */
 void X86MemoryManager::printInfo() {
 
-    _sysPrintln("X86MemoryManager Information");
-
 }
 
 /*!
@@ -176,7 +174,27 @@ void X86MemoryManager::printInfo() {
     \date   create:2002/09/07 update:
 */
 void X86MemoryManager::addToEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
-    _sysPrintln("X86MemoryManager Information");
+
+    struct memoryEntry* previous = (struct memoryEntry*)NULL;
+    struct memoryEntry* current  = entry;
+    for (; ; previous = current, current = previous->next) {
+
+        /* the add position */
+        if (block >= current) break;
+
+        /* block not found */
+        if (current == entry) return;
+    }
+
+    struct memoryEntry* next = current->next;
+
+    if (previous) {
+        previous->next = block;
+        block->next    = next;
+        block->size    = size;
+    } else {
+        entry->size = size;
+    }
 }
 
 /*!
@@ -192,7 +210,11 @@ void X86MemoryManager::addToEntry(struct memoryEntry* entry, struct memoryEntry*
     \date   create:2002/09/07 update:
 */
 void X86MemoryManager::deleteFromEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
-    _sysPrintln("X86MemoryManager Information");
+
+
+
+
+
 }
 
 /*!
@@ -204,5 +226,4 @@ void X86MemoryManager::deleteFromEntry(struct memoryEntry* entry, struct memoryE
     \date   create:2002/09/07 update:
 */
 void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry* block) {
-    _sysPrintln("X86MemoryManager Information");
 }
