@@ -26,20 +26,35 @@
     /* no switch */                                 \
     if (currentProcess == nextProcess) iret();      \
                                                     \
+    _sys_printf("switchProcess");\
     /* switch to next */                            \
     asm volatile(                                   \
-                 "movl %%ebp, %%esp\n  "            \
-                 "pushal           \n"              \
-                 "mov %%esp, %0    \n"              \
-                 "mov %1, %%esp    \n"              \
-                 "popal            \n"              \
-                 "addl $4, %%esp   \n"              \
-                 "iretl            \n"              \
-                 : "=m" (currentProcess->esp)       \
-                 : "m" (nextProcess->esp)           \
+                 "movl  %%esp, %0    \n"            \
+                 "movl  %1, %%eax    \n"            \
+                 "movl  %2, %%ebx    \n"            \
+                 "movl  %3, %%ecx    \n"            \
+                 "movl  %4, %%edx    \n"            \
+                 "movl  %5, %%edi    \n"            \
+                 "movl  %6, %%esi    \n"            \
+                 "movl  %7, %%esp    \n"            \
+                 "pushl %8           \n"            \
+                 "pushl %9           \n"            \
+                 "pushl %10          \n"            \
+                 "iretl              \n"            \
+                 : "=m"(currentProcess->esp)        \
+                 : "m"(nextProcess->eax)            \
+                 , "m"(nextProcess->ebx)            \
+                 , "m"(nextProcess->ecx)            \
+                 , "m"(nextProcess->edx)            \
+                 , "m"(nextProcess->edi)            \
+                 , "m"(nextProcess->esi)            \
+                 , "m"(nextProcess->esp)            \
+                 , "m"(nextProcess->eflags)         \
+                 , "m"(nextProcess->cs)             \
+                 , "m"(nextProcess->eip)            \
                  );                                 \
 
-/*! \def save all registers */
+/*! \def save registers */
 #define _saveRegisters(process) {            \
                                              \
     asm volatile("movl %%ebx,     %0     \n" \
@@ -54,6 +69,7 @@
                  "movl %%edx    ,  %6    \n" \
                  "movl %%esi    ,  %7    \n" \
                  "movl %%edi    ,  %8    \n" \
+                 "movl %%ebp    ,  %9    \n" \
                  : "=m"(process->ebx)        \
                  , "=m"(process->eip)        \
                  , "=m"(process->cs)         \
@@ -63,6 +79,7 @@
                  , "=m"(process->edx)        \
                  , "=m"(process->esi)        \
                  , "=m"(process->edi)        \
+                 , "=m"(process->esp)        \
                  );                          \
 }                                            \
 

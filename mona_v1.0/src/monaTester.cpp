@@ -143,19 +143,19 @@ void process1Tester() {
 void process2Tester() {
     enableInterrupt();
 
-    KeyBoardManager& km = KeyBoardManager::instance();
-    char ch;
+    //    KeyBoardManager& km = KeyBoardManager::instance();
+    //    char ch;
     while (true) {
-               while ((ch = km.getCharacter()) == -1) {}
-               _sys_printf("%c\n", ch);
+	//               while ((ch = km.getCharacter()) == -1) {}
+	//               _sys_printf("%c\n", ch);
 
-	//          _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
-	//          _sys_printf("  ( '  v ')  ");
-	//          _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-	//          for (dword i = 0; i < 99000000; i++) {
-	//              i += 1;
-	//              i -= 1;
-	//          }
+          _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
+          _sys_printf("  ( '  v ')  ");
+          _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+          for (dword i = 0; i < 99000000; i++) {
+              i += 1;
+              i -= 1;
+          }
     }
     return;
 }

@@ -264,18 +264,24 @@ inline void ProcessManager::initProcess(void (*f)()) {
 
     dword* firstStack = (dword*)FIRST_PROCESS_STACK;
 
-    *(--firstStack) = (dword)0x0200046; /* EFLAGS */
-    *(--firstStack) = (dword)0x38;      /* CS     */
-    *(--firstStack) = (dword)f;         /* EIP    */
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
-    *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x0200046; /* EFLAGS */
+//      *(--firstStack) = (dword)0x38;      /* CS     */
+//      *(--firstStack) = (dword)f;         /* EIP    */
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
+//      *(--firstStack) = (dword)0x9884;
     current->esp = firstStack;
     next->esp    = firstStack;
+    next->eflags = (dword)0x0200046; /* EFLAGS */
+    next->cs     = (dword)0x38;      /* CS     */
+    next->eip    = (dword)f;         /* EIP    */
+    current->eflags = (dword)0x0200046; /* EFLAGS */
+    current->cs     = (dword)0x38;      /* CS     */
+    current->eip    = (dword)f;         /* EIP    */
 }
