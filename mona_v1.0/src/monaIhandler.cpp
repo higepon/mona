@@ -35,6 +35,8 @@
 */
 void keyStrokeHandler() {
 
+    g_demo_step++;
+
     /* get scancode */
     byte scancode = inportb(0x60);
 
@@ -118,7 +120,7 @@ void timerHandler() {
 */
 void MFDCHandler(void) {
 
-    gMFDCDriver->interrupt();
+    g_fdcdriver->interrupt();
     outportb(0x20, 0x20);
 }
 
@@ -130,7 +132,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x03, &arch_dummyhandler}
    , {0x04, &arch_dummyhandler}
    , {0x05, &arch_dummyhandler}
-   , {0x06, &arch_dummyhandler}
+   , {0x06, &arch_fdchandler}
    , {0x07, &arch_dummyhandler}
    , {0x08, &arch_dummyhandler}
    , {0x09, &arch_dummyhandler}
@@ -138,7 +140,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x0B, &arch_dummyhandler}
    , {0x0C, &arch_dummyhandler}
    , {0x0D, &arch_fault0dhandler}
-   , {0x0E, &arch_fdchandler}
+   , {0x0E, &arch_dummyhandler}
    , {0x0F, &arch_dummyhandler}
    , {0x10, &arch_dummyhandler}
    , {0x11, &arch_dummyhandler}

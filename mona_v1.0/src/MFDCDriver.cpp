@@ -76,8 +76,6 @@
 
 #define FDC_DMA_BUFF_SIZE 512
 
-MFDCDriver* gMFDCDriver;
-
 bool            MFDCDriver::interrupt_ ;
 byte*           MFDCDriver::dmabuff_;
 byte            MFDCDriver::results_[10];
@@ -191,7 +189,6 @@ void MFDCDriver::initilize() {
         return;
     }
 
-
     recalibrate();
     recalibrate();
     if (!read(0, 0, 150)) {
@@ -200,7 +197,6 @@ void MFDCDriver::initilize() {
         motor(OFF);
         return;
     }
-
     g_console->printf("reading result is %s\n", dmabuff_);
     motor(OFF);
     return;
@@ -607,8 +603,7 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
 #endif
 
     sendCommand(command, sizeof(command));
-    while(!waitInterrupt());
-
+    //    while(!waitInterrupt());
     stopDMA();
 
     readResults();

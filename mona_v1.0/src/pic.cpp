@@ -37,6 +37,9 @@ void pic_init() {
     outportb(0x21, 0xff);
     outportb(0xA1, 0xff);
 
+    /* enable key board */
+    outportb(0x21, inportb(0x21) & 0x3f);
+
     return;
 }
 

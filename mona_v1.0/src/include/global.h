@@ -21,3 +21,5 @@ GLOBAL KthreadInfo g_kthreadInfo;                    /*< common thread Informati
 GLOBAL StackView g_stack_view;                       /*< struct for stack view               */
 
 GLOBAL MFDCDriver* g_fdcdriver;
+
+GLOBAL dword g_demo_step GLOBAL_VAL(0);

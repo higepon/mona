@@ -80,8 +80,15 @@ void startKernel(void) {
         g_console->printf("CPUID NG  \n");
     }
 
-    //    g_fdcdriver = new MFDCDriver(g_console);
 
+    g_console->printf("hit any key to start fd read/write test\n");
+    disableTimer();
+    enableInterrupt();
+    while (g_demo_step < 2);
+    g_fdcdriver = new MFDCDriver(g_console);
+
+    g_console->printf("hit any key to start kernel thread demo\n");
+    while (g_demo_step < 5);
     kthread_init();
     while (true);
 

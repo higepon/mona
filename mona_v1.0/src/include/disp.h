@@ -20,6 +20,7 @@ void disp_name2();
 void disp_name3();
 void disp_name4();
 void disp_kthread_info();
+void disp_fd_demo();
 void kthread_idle();
 void disp_write_font(int x, int y, char ch, byte color);
 
