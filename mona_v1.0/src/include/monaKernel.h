@@ -15,6 +15,7 @@
 #define _MONA_KERNEL_
 
 #include <monaTypes.h>
+#include <VirtualConsole.h>
 
 #define disableInterrupt() asm volatile("cli")    /*!< \def disable interupts */
 #define enableInterrupt()  asm volatile("sti")    /*!< \def enable  interupts */
@@ -23,9 +24,11 @@
 #define SYS_BG_COLOR BG_TEAL
 #define SYS_CH_COLOR CH_WHITE
 
+extern VirtualConsole* console;
+
 /*!< \def _sysdumpReg() */
 #define _sysdumpReg(str, stopflag, unlockint) { \
-    disableInterrupt();                                 \
+    disableInterrupt();                         \
     dword __eax, __ebx, __ecx, __edx;           \
     dword __esp, __ebp, __esi, __edi;           \
     dword __cs , __ds , __fs , __es;            \
@@ -66,14 +69,14 @@
                  , "=m" (__eflags)              \
                  : /* no input */               \
                 );                              \
-    _sys_printf("%s _sysdump()\n", str);        \
-    _sys_printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
+    console->printf("%s _sysdump()\n", str);        \
+    console->printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
                 , __eax, __ebx, __ecx, __edx);  \
-    _sys_printf("esp=%x ebp=%x esi=%x edi=%x\n" \
+    console->printf("esp=%x ebp=%x esi=%x edi=%x\n" \
                 , __esp, __ebp, __esi, __edi);  \
-    _sys_printf("cs =%x ds =%x es =%x fs =%x\n" \
+    console->printf("cs =%x ds =%x es =%x fs =%x\n" \
                 , __cs , __ds , __es , __fs);   \
-    _sys_printf("gs =%x ss =%x eflags=%x\n"     \
+    console->printf("gs =%x ss =%x eflags=%x\n"     \
                 , __gs , __ss , __eflags);      \
      if (unlockint)enableInterrupt();                \
      if (stopflag) while (true);                \
@@ -94,15 +97,15 @@
     value[6] = *(stack + 6);                         \
     value[7] = *(stack + 7);                         \
     value[8] = *(stack + 8);                         \
-    _sys_printf("%x  ", value[0]);                   \
-    _sys_printf("%x  ", value[1]);                   \
-    _sys_printf("%x  ", value[2]);                   \
-    _sys_printf("%x  ", value[3]);                   \
-    _sys_printf("%x  ", value[4]);                   \
-    _sys_printf("%x  ", value[5]);                   \
-    _sys_printf("%x  ", value[6]);                   \
-    _sys_printf("%x  ", value[7]);                   \
-    _sys_printf("%x  ", value[8]);                   \
+    console->printf("%x  ", value[0]);                   \
+    console->printf("%x  ", value[1]);                   \
+    console->printf("%x  ", value[2]);                   \
+    console->printf("%x  ", value[3]);                   \
+    console->printf("%x  ", value[4]);                   \
+    console->printf("%x  ", value[5]);                   \
+    console->printf("%x  ", value[6]);                   \
+    console->printf("%x  ", value[7]);                   \
+    console->printf("%x  ", value[8]);                   \
 
 /*!
    \struct FARJMP

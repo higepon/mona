@@ -155,8 +155,8 @@ void MFDCDriver::initilize() {
 
     recalibrate();
 
-    write(0, 0, 1);
-    printStatus("after write()");
+    //    write(0, 0, 1);
+    printStatus("before read");
     read(0, 0, 1);
 
     motor(OFF);
@@ -547,11 +547,6 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-    for (int k = 0; k < 5000; k++) {
-         k++;
-         k--;
-    }
-
     printStatus("before seek in read");
     seek(track);
     printStatus("after seek in read");
@@ -564,8 +559,6 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
 
     sendCommand(command, sizeof(command));
     //while(!waitInterrupt());
-
-
 
     stopDMA();
 

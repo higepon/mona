@@ -40,7 +40,7 @@
 */
 void hvectorTester() {
 
-    _sys_printf("HVector test start\n");
+    console->printf("HVector test start\n");
     HVector<char*>* v = new HVector<char*>(3, 5);
     v->add("one");
     v->add("two");
@@ -49,12 +49,12 @@ void hvectorTester() {
     v->add("five");
     v->add("six");
     v->add("seven");
-    _sys_printf("element %s removed\n", v->remove(0));
-    _sys_printf("element %s removed\n", v->remove(4));
+    console->printf("element %s removed\n", v->remove(0));
+    console->printf("element %s removed\n", v->remove(4));
     for (size_t j = 0; j < v->size(); j++) {
-        _sys_printf("(%d, %s) ", j, v->get(j));
+        console->printf("(%d, %s) ", j, v->get(j));
     }
-    _sys_printf("\n");
+    console->printf("\n");
     delete(v);
 }
 
@@ -72,9 +72,9 @@ void operatorTester() {
     Point* point2 = new Point(6, -2);
     Point* point3 = new Point(7, -100);
     delete(point3);
-    _sys_printf("[Point() getY() = %d]\n", point1->getY());
-    _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
-    _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
+    console->printf("[Point() getY() = %d]\n", point1->getY());
+    console->printf("[Point(6, -2) getY() = %d]\n", point2->getY());
+    console->printf("[Point(7, -100) getY() = %d]\n", point3->getY());
 }
 
 /*!
@@ -90,7 +90,7 @@ void floppyTester(){
     gFDCDriver1 = new FDCDriver(0);
     gFDCDriver1->readSector(1, 1, buff);
     for(int i = 0; i < 512; i++){
-         _sys_printf("[%d]", buff[i]);
+         console->printf("[%d]", buff[i]);
     }
 }
 
@@ -104,9 +104,9 @@ void floppyTester(){
 */
 void typeTester() {
 
-    _sys_printf("size of byte =%d\n", sizeof(byte));
-    _sys_printf("size of word =%d\n", sizeof(word));
-    _sys_printf("size of dword=%d\n", sizeof(dword));
+    console->printf("size of byte =%d\n", sizeof(byte));
+    console->printf("size of word =%d\n", sizeof(word));
+    console->printf("size of dword=%d\n", sizeof(dword));
 }
 
 /*!
@@ -134,7 +134,7 @@ void process1Tester() {
             i -= 1;
         }
         _sysSetColor(SYS_BG_COLOR | CH_RED);
-        _sys_printf("  (.o'v'o)  ");
+        console->printf("  (.o'v'o)  ");
         _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
     }
     return;
@@ -152,12 +152,12 @@ void process2Tester() {
 //          if (Semaphore::down(&sm) == 0) {
 
 //              ch = km.getCharacter();
-//              if (ch != -1) _sys_printf("%c\n", ch);
+//              if (ch != -1) console->printf("%c\n", ch);
 //              Semaphore::up(&sm);
 //          }
 
       _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
-      _sys_printf("  ( '  v ')  ");
+      console->printf("  ( '  v ')  ");
       _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
       for (dword i = 0; i < 99000000; i++) {
           i += 1;
@@ -173,7 +173,7 @@ void process3Tester() {
     while (true) {
 
           _sysSetColor(SYS_BG_COLOR | CH_ORANGE);
-          _sys_printf("  ( \"  A \")  ");
+          console->printf("  ( \"  A \")  ");
           _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
           for (dword i = 0; i < 99000000; i++) {
               i += 1;
@@ -194,7 +194,7 @@ void process3Tester() {
 */
 void STLTester() {
 
-    _sys_printf("--------STL Test--------------------------------------------------------\n");
+    console->printf("--------STL Test--------------------------------------------------------\n");
 
     // string
     std::string str = "---";
@@ -202,8 +202,8 @@ void STLTester() {
     str += "@mona ";
     str += "is OK";
     str += "---";
-    _sys_printf("string: %s\n", str.data());
-    _sys_printf("string: str.substr(3, 11): %s\n", str.substr(3, 11).data());
+    console->printf("string: %s\n", str.data());
+    console->printf("string: str.substr(3, 11): %s\n", str.substr(3, 11).data());
 
     // list
     std::list<const char*> li;
@@ -212,9 +212,9 @@ void STLTester() {
     li.push_back("network suit architecture ");
     li.push_back("\n");
     std::list<const char*>::iterator it;
-    _sys_printf("list  : iterate->");
+    console->printf("list  : iterate->");
     for (it = li.begin(); it != li.end(); it++) {
-        _sys_printf("%s", *it);
+        console->printf("%s", *it);
     }
 
     // vector
@@ -224,22 +224,22 @@ void STLTester() {
     ve.push_back("3");
     ve.push_back("4");
     std::vector<const char*>::iterator it2;
-    _sys_printf("vector : iterate->");
+    console->printf("vector : iterate->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
-        _sys_printf("%s ", *it2);
+        console->printf("%s ", *it2);
     }
 
     // argorithm
     std::reverse(ve.begin(), ve.end());
-    _sys_printf("\nargorithm : reverse->");
+    console->printf("\nargorithm : reverse->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
-        _sys_printf("%s ", *it2);
+        console->printf("%s ", *it2);
     }
 
     std::fill(ve.begin(), ve.end(), (char*)"7");
-    _sys_printf("\nargorithm : fill with \"7\"->");
+    console->printf("\nargorithm : fill with \"7\"->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
-        _sys_printf("%s ", *it2);
+        console->printf("%s ", *it2);
     }
-    _sys_printf("\n--------STL Test END---------------------------------------------------\n");
+    console->printf("\n--------STL Test END---------------------------------------------------\n");
 }
