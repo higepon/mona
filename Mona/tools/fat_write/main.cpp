@@ -31,19 +31,19 @@ struct WriteInf
     \author Higepon
     \date   create:2003/03/08 update:
 */
-bool initialize(char* filename)
+bool initialize(const char* filename)
 {
     inf.fp = fopen(filename, "rb+");
     if (inf.fp == NULL)
     {
-        printf("initialize error: fopen()\n");
+        fprintf(stderr, "initialize error: fopen()\n");
         return false;
     }
 
     inf.device = new VirtualFloppy(inf.fp);
     if (inf.device == NULL)
     {
-        printf("initialize error: VirtualFloppy\n");
+        fprintf(stderr, "initialize error: VirtualFloppy\n");
         return false;
     }
 
@@ -52,20 +52,20 @@ bool initialize(char* filename)
     inf.fat = new FatStorage();
     if (inf.fat == NULL)
     {
-        printf("initialize error: FatStorage\n");
+        fprintf(stderr, "initialize error: FatStorage\n");
         return false;
     }
 
     if (!inf.fat->initialize(inf.device))
     {
-        printf("initialize error: FatStorage initialize\n");
+        fprintf(stderr, "initialize error: FatStorage initialize\n");
         return false;
     }
 
     inf.current = inf.fat->getRootDirectory();
     if (inf.current == NULL)
     {
-        printf("getRootDirectory error\n");
+        fprintf(stderr, "getRootDirectory error\n");
         return false;
     }
 
@@ -95,7 +95,7 @@ bool finalize()
     \author Gaku
     \date   create: update:
 */
-void freeDirectory (Directory *p)
+void freeDirectory(Directory *p)
 {
     if (p->getIdentifer() == inf.current->getIdentifer()) {
         if (p != inf.current) {
@@ -113,12 +113,14 @@ void freeDirectory (Directory *p)
     \author Gaku
     \date   create: update:
 */
-Directory* trackingDirectory (char *path, int *cursor)
+Directory* trackingDirectory(const char *path_, int *cursor)
 {
     Directory *p = inf.current;
     int i = *cursor;
     int j;
 
+    char path[128];
+    strncpy(path, path_, sizeof(path));
     if ('/' == path[i]) {
         p = inf.fat->getRootDirectory();
         i++;
@@ -172,11 +174,13 @@ Directory* trackingDirectory (char *path, int *cursor)
     \author Gaku
     \date   create: update:
 */
-Directory* searchFile (char *path, int *entry, int *cursor)
+Directory* searchFile(const char *path_, int *entry, int *cursor)
 {
     Directory *p = inf.current;
     int index = -1;
 
+    char path[128];
+    strncpy(path, path_, sizeof(path));
     for (int i = 0; '\0' != path[i]; i++) {
         if ('/' == path[i])
             index = i;
@@ -195,12 +199,12 @@ Directory* searchFile (char *path, int *entry, int *cursor)
 
         p = trackingDirectory(dir, &tmp);
         if (NULL == p) {
-            printf("can not get directory\n");
+            fprintf(stderr, "can not get directory\n");
             return NULL;
         }
 
         if ('\0' != dir[tmp]) {
-            printf("directory not exist\n");
+            fprintf(stderr, "directory not exist\n");
             freeDirectory(p);
             return NULL;
         }
@@ -219,7 +223,7 @@ Directory* searchFile (char *path, int *entry, int *cursor)
     \author Gaku
     \date   create: update:
 */
-bool saveImage (char *path, byte *bf, dword size)
+bool saveImage(const char *path, byte *bf, dword size)
 {
     int entry, cursor;
 
@@ -228,27 +232,27 @@ bool saveImage (char *path, byte *bf, dword size)
         return false;
 
     if (-1 != entry) {
-        printf("file already exist error\n");
+        fprintf(stderr, "file already exist error\n");
         freeDirectory(p);
         return false;
     }
 
     entry = p->newFile((byte*)path+cursor, size);
     if (-1 == entry) {
-        printf("can not create file\n");
+        fprintf(stderr, "can not create file\n");
         freeDirectory(p);
         return false;
     }
 
     File *df = p->getFile(entry);
     if (NULL == df) {
-        printf("can not open file\n");
+        fprintf(stderr, "can not open file\n");
         freeDirectory(p);
         return false;
     }
 
     if (false == df->write(bf, size)) {
-        printf("write error\n");
+        fprintf(stderr, "write error\n");
         delete df;
         freeDirectory(p);
         return false;
@@ -266,7 +270,7 @@ bool saveImage (char *path, byte *bf, dword size)
     \author Higepon
     \date   create:2003/03/08 update:
 */
-byte* loadFromFile(char* path, dword* size)
+byte* loadFromFile(const char* path, dword* size)
 {
     byte* buf;
     FILE* fp;
@@ -274,7 +278,7 @@ byte* loadFromFile(char* path, dword* size)
     fp = fopen(path, "rb");
     if (fp == NULL)
     {
-        printf("loadFromFile: file not found\n");
+        fprintf(stderr, "loadFromFile: file not found\n");
         return NULL;
     }
 
@@ -292,7 +296,7 @@ byte* loadFromFile(char* path, dword* size)
     buf = new byte [*size];
     if (buf == NULL)
     {
-        printf("loadFromFile: memory allocate error\n");
+        fprintf(stderr, "loadFromFile: memory allocate error\n");
         fclose(fp);
         return NULL;
     }
@@ -309,7 +313,7 @@ byte* loadFromFile(char* path, dword* size)
     \author Gaku
     \date   create: update:
 */
-void touch (char *path)
+void touch(const char *path)
 {
     int entry, cursor = 0;
 
@@ -318,14 +322,14 @@ void touch (char *path)
         return;
 
     if (-1 != entry) {
-        printf("touch:file already exist!\n");
+        fprintf(stderr, "touch:file already exist!\n");
         freeDirectory(p);
         return;
     }
 
     entry = p->newFile((byte*)path+cursor, 0);
     if (-1 == entry) {
-        printf("touch: can not create file\n");
+        fprintf(stderr, "touch: can not create file\n");
         freeDirectory(p);
         return;
     }
@@ -339,7 +343,7 @@ void touch (char *path)
     \author Gaku
     \date   create: update:
 */
-void rm (char *path)
+void rm(const char *path)
 {
     int entry, cursor;
 
@@ -361,7 +365,7 @@ void rm (char *path)
     freeDirectory(p);
 }
 
-bool cp (char *src, char *dst)
+bool cp(const char *src, const char *dst)
 {
     dword size = 0;
     byte *buf = loadFromFile(src, &size);
@@ -387,7 +391,7 @@ bool cp (char *src, char *dst)
     return true;
 }
 
-bool read(char* path, byte* buf, int size)
+bool read(const char* path, byte* buf, int size)
 {
     int entry;
     int cursor;
@@ -403,16 +407,16 @@ bool read(char* path, byte* buf, int size)
 
     if (df == NULL)
     {
-        printf("read: can not open file\n");
+        fprintf(stderr, "read: can not open file\n");
         freeDirectory(p);
         return false;
     }
 
-    printf("size = %d bytes", df->size());
+    fprintf(stderr, "size = %d bytes", df->size());
 
     if (!df->read(buf, size))
      {
-        printf("write error\n");
+        fprintf(stderr, "write error\n");
         freeDirectory(p);
         return false;
     }
@@ -425,31 +429,66 @@ bool read(char* path, byte* buf, int size)
 /*!
     \brief
 
+    \author Tino
+    \date   create:2004/04/27 update:
+*/
+bool mkdir(const char *path)
+{
+    int tmp = 0;
+    Directory* d = trackingDirectory(path, &tmp);
+    if (d == NULL)
+    {
+        fprintf(stderr, "mkdir: can not create directory\n");
+        return false;
+    }
+
+    bool ret = false;
+    if (path[tmp] != '\0')
+    {
+        char path_[128];
+        strncpy(path_, path, 128);
+        int entry = d->newDirectory((byte*)&path_[tmp]);
+        if (entry != -1) ret = true;
+    }
+    if (!ret) fprintf(stderr, "mkdir: can not create directory\n");
+    freeDirectory(d);
+    return ret;
+}
+
+/*!
+    \brief
+
+    \author Tino
+    \date   create:2004/04/27 update:
+*/
+bool writeMBR(const char *src)
+{
+    FILE* fp = fopen(src, "rb");
+    if (fp == NULL)
+    {
+        fprintf(stderr, "writeMBR: can not open file\n");
+        return false;
+    }
+
+    byte buf[512];
+    for (int i = 0; i < 512; i++) buf[i] = 0;
+    fread(buf, sizeof(byte), 512, fp);
+    fseek(inf.fp, 0, SEEK_SET);
+    fwrite(buf, sizeof(byte), 512, inf.fp);
+    return true;
+}
+
+/*!
+    \brief
+
     \author Higepon
-    \date   create:2003/03/08 update:
+    \date   create:2003/03/08 update:2004/04/27
 */
 int main(int argc, char *argv[])
 {
-    char destFile1[128];
-    char destFile2[128];
-
     if (argc != 4) {
-        printf("usage: fat_write.exe fdimage argc = %d\n", argc);
-
-        for (int i = 0; i < argc; i++)
-        {
-            printf("argv[%d]=%s\n", i, argv[i]);
-        }
-
-        exit(-1);
-    }
-
-    sprintf(destFile1, "/%s", argv[3]);
-    sprintf(destFile2, "/%s", argv[3]);
-
-    if (!initialize(argv[1]))
-    {
-        return -1;
+        printf("usage: fat_write [--mkdir/--mbr] image [source] [path]\n");
+        return 0;
     }
 
 //     byte buf[512];
@@ -457,15 +496,24 @@ int main(int argc, char *argv[])
 //     read(argv[2], buf, 512);
 //     for (int i = 0; i < 512; i++) printf("%x", buf[i]);
 
-    rm(destFile1);
-
-    if (!cp(argv[2], destFile2))
+    int ret = 0;
+    if (strcmp(argv[1], "--mkdir") == 0)
     {
-        return -1;
-        finalize();
+        if (!initialize(argv[2])) return 1;
+        if (!mkdir(argv[3])) ret = 1;
+    }
+    else if (strcmp(argv[1], "--mbr") == 0)
+    {
+        if (!initialize(argv[2])) return 1;
+        if (!writeMBR(argv[3])) ret = 1;
+    }
+    else
+    {
+        if (!initialize(argv[1])) return 1;
+        rm(argv[3]);
+        if (!cp(argv[2], argv[3])) ret = 1;
     }
 
     finalize();
-
-    return 0;
+    return ret;
 }

@@ -2,7 +2,7 @@
 
         * Makefile.in: イメージ作成を分離
 
-        * bin/Makefile: イメージ作成
+        * bin/Makefile: イメージ作成, fat_writeで--mbr, --mkdirを使用
 
         * その他Makefile: stripの後にmonaelfを適用するようにした
 
@@ -19,6 +19,12 @@
         * include/monapi/System.h (getProcessInfo, getProcessPath, getBundlePath): 追加
 
         * src/lib/monapi/System.cpp: 追加
+
+        * tools/fat_write/main.cpp: --mkdir, --mbrオプションを実装
+
+        * tools/fat_write/fat.cpp: エントリ拡張で落ちる問題を修正
+
+        * bin/fat_template.img: フォーマット直後のものに差し替え (fat_writeの--mkdirを使用するため)
 
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 

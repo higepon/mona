@@ -1210,10 +1210,8 @@ int FatDirectory::searchFreeEntry ()
         }
 
         // ‚È‚¯‚ê‚ÎƒGƒ“ƒgƒŠ‚ðŠg’£‚·‚é
-        if (true == expandEntry()) {
-                unused += 0x20;
-                return ( tmp - entrys ) / 0x20;
-        }
+        if (true == expandEntry())
+                return searchFreeEntry();
 
         return -1;
 }
@@ -1269,6 +1267,7 @@ bool FatDirectory::expandEntry ()
         end = ptr + size;
         lba = (dword*)( ptr + size );
         sectors = sects;
+        unused = searchUnusedEntry();
 
         return true;
 }

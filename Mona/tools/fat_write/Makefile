@@ -3,7 +3,7 @@ SOURCES = main.cpp VirtualFloppy.cpp fat.cpp
 
 MONADIR = ../..
 include $(MONADIR)/env/Makefile.inc
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -g
 INCLUDE  = -idirafter . -idirafter ../../include/sys
 
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -12,6 +12,7 @@ all : $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) -o $(TARGET)
+#	strip $(TARGET)
 
 .SUFFIXES: .cpp .o
 .cpp.o:
