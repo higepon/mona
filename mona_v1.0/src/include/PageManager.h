@@ -34,12 +34,19 @@ class PageDirectory : public Queue {
 
 class PageManager {
 
+  public:
+
     PageManager(dword totalMemorySize);
 
   public:
+    void setup();
     void flushPageCache() const;
 
     bool allocatePhysicalPage(PageEntry* pageEntry);
+
+    void setPageDirectory(PhysicalAddress address);
+    void startPaging();
+    void stopPaging();
 
   private:
     PageDirectory* allocatePageDirectory();
@@ -54,7 +61,7 @@ class PageManager {
 
 inline void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const {
 
-    *entry = present | rw | user | address << 12;
+    *entry = present | rw | user | (address & 0xfffff000);
 }
 
 inline PageEntry* PageManager::allocatePageTable() const {

@@ -43,6 +43,7 @@
 #include <Message.h>
 #include <MessageServer.h>
 #include <syscalls.h>
+#include <PageManager.h>
 
 char* version = "Mona version 0.1.0 $Date$";
 void userTest();
@@ -85,11 +86,14 @@ void startKernel(void) {
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
     g_console->printf("\nSystem TotalL Memory %d[MB]\n", g_total_system_memory);
 
+    PageManager* pageManager = new PageManager(g_total_system_memory);
+    pageManager->setup();
+
     /* now paging is off. */
     //   PagingUtil::setup();
     //   dword* p = (dword*)0x3FFFFC;
-    //   dword* p = (dword*)0x3FFFFE;
-    //   *p = 5;
+    dword* p = (dword*)0x3FFFFE;
+    *p = 5;
 
 //     SystemInfo::rdtscsub();
 //     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
