@@ -1,5 +1,7 @@
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
+        * *.asmでsection .text指定。 NFLAGS= -f elf, -f win32の振り分け
+
         * _user_startのリンクがLinuxでうまくいかない件をenv/振り分けで修正 (Yui_Nekoさんありがとう)
 
         * ヘッダファイル名の大文字･小文字のミス修正

@@ -28,6 +28,7 @@ cextern g_currentThread
 cextern g_tss
 cextern g_dokodemo_view
 
+section .text
 arch_idle:
         hlt
         ret

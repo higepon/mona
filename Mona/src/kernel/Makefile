@@ -76,13 +76,13 @@ $(BOOT2) : secondboot.asm
 	$(NASM) secondboot.asm -o $@ -l $(LISTDIR)/second.list
 
 mode12h.o : mode12h.asm
-	$(NASM) $(NFLAGS) mode12h.asm -felf -o $@ -l $(LISTDIR)/mode12h.list
+	$(NASM) $(NFLAGS) mode12h.asm  -o $@ -l $(LISTDIR)/mode12h.list
 
 ihandler.o : ihandler.asm
-	$(NASM) $(NFLAGS) ihandler.asm -felf -o $@ -l $(LISTDIR)/ihandler.list
+	$(NASM) $(NFLAGS) ihandler.asm  -o $@ -l $(LISTDIR)/ihandler.list
 
 core.o : core.asm
-	$(NASM) $(NFLAGS) core.asm -felf -o $@ -l $(LISTDIR)/core.list
+	$(NASM) $(NFLAGS) core.asm  -o $@ -l $(LISTDIR)/core.list
 
 doxygen :
 	$(DOXYGEN)

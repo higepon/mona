@@ -59,7 +59,7 @@ cextern arch_set_dokodemo_view
         pop  ds
 %endmacro
 
-
+section .text
 ;;; fdc handler
 arch_fdchandler:
         pushAll

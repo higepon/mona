@@ -9,7 +9,7 @@ cglobal write_font
 cglobal get_font_address
 cglobal pos_x
 cglobal pos_y
-
+section .text
 ; rectangle(int,x, int y,int xx, int yy, char color)
 rectangle:
         push    ebp
