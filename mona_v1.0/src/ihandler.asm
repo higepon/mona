@@ -79,7 +79,12 @@ _arch_timerhandler:
 _arch_keystrokehandler:
         pushAll
         changeData
+        xor eax, eax
+        mov dx , 0x60
+        in  al , dx
+        push eax
         call _keyStrokeHandler
+        add  esp, 0x04
         popAll
         iretd
 
@@ -115,7 +120,7 @@ _arch_irqhandler_%1:
         irqhandler 10
         irqhandler 11
         irqhandler 12
-        irqhandler 13
+         irqhandler 13
         irqhandler 14
         irqhandler 15
 

@@ -8,6 +8,7 @@
 #include<IA32MemoryManager.h>
 #include<z.h>
 #include<MemoryManager.h>
+#include<KeyBoardManager.h>
 
 extern "C" void put_pixel(int x, int y, char color);
 
@@ -25,6 +26,21 @@ struct read_info {
     FAT12 *fat;
     int sz;
 } read_info;
+
+
+void userKeyStrokeHandler() {
+
+    KeyBoardManager& km = KeyBoardManager::instance();
+    KeyInfo* info = km.getKeyInfo();
+
+    g_console->printf("keycode=[%d], modifiers=[%d]", info->keycode, info->modifiers);
+}
+
+void keyStrokeTest() {
+
+    KeyBoardManager& km = KeyBoardManager::instance();
+    km.setHandler(userKeyStrokeHandler);
+}
 
 int read(input_stream *p, int sz)
 {

@@ -26,19 +26,15 @@
   key storoke handler IRQ 1
 
   \author HigePon
-  \date   create:2002/07/25 update:2002/02/24
+  \date   create:2002/07/25 update:2003/10/03
 */
-void keyStrokeHandler() {
+void keyStrokeHandler(dword scancode) {
 
     g_demo_step++;
-    //    g_console->printf("%d", g_demo_step);
 
-    /* get scancode */
-    byte scancode = inportb(0x60);
-
-//     /* set key scan code */
-//     KeyBoardManager& km = KeyBoardManager::instance();
-//     km.setKeyScanCode(scancode);
+    /* set key scan code */
+    KeyBoardManager& km = KeyBoardManager::instance();
+    km.setKeyScanCode((byte)scancode);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);

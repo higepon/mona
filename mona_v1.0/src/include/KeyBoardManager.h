@@ -121,6 +121,7 @@ class KeyBoardManager {
     static const int keyMapE0_[128];
     byte idHigh_;
     byte idLow_;
+    void (*f_)();
   public:
     static KeyBoardManager& instance() {
         static KeyBoardManager theInstance;
@@ -128,6 +129,7 @@ class KeyBoardManager {
     }
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
+    void setHandler(void (*f)());
     void printInfo(byte, byte) const;
 };
 

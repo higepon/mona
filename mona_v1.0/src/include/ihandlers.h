@@ -26,7 +26,7 @@ extern "C" void arch_syscall_handler(void);
 
 extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
-extern "C" void keyStrokeHandler(void);
+extern "C" void keyStrokeHandler(dword scancode);
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(void);
 
