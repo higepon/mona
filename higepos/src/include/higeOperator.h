@@ -15,7 +15,7 @@
 #ifndef _HIGE_POS_OPERATOR
 #define _HIGE_POS_OPERATOR
 
-void* operator new(unsigned long size);
+void* operator new(unsigned int size);
 void  operator delete(void* address);
 void* malloc(unsigned long size);
 void __builtin_delete(void* address);
