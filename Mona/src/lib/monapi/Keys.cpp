@@ -187,6 +187,21 @@ char Keys::ToChar(KeyInfo keyInfo){
     case(Keys::OemSemicolon):
         result = ';';
         break;
+    case(Keys::OemColon):
+        result = ':';
+        break;
+    case(Keys::OemAt):
+        result = '@';
+        break;
+    case(Keys::OemOpenBrackets):
+        result = '[';
+        break;
+    case(Keys::OemCloseBrackets):
+        result = ']';
+        break;
+    case(Keys::OemBackslash):
+        result = '\\';
+        break;
     default:
         result = ' ';
         break;
@@ -194,5 +209,19 @@ char Keys::ToChar(KeyInfo keyInfo){
     return result;
 }
 
+bool Keys::IsToChar(KeyInfo keyInfo){
 
+  int keycode = keyInfo.keycode;
+  
+  if( (keycode == Space)
+    || ((keycode >= D0) && (keycode <= D9)) 
+    || ((keycode >= A) && (keycode <= Z))
+    || ((keycode >= NumPad0) && (keycode <= Divide))
+    || ((keycode >= OemSemicolon) && (keycode <= Oemtilde))
+    || ((keycode >= OemOpenBrackets) && (keycode <= OemQuotes))
+    || (keycode == OemBackslash)
+    || (keycode == OemAt)
+    || (keycode == OemColon) ) return true;
 
+  return false;
+}

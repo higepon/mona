@@ -14,9 +14,18 @@ class Keys{
         Back    = 8 ,
         Tab     = 9,
         Enter   = 13,
+        ShiftKey= 16,
+        ControlKey= 17,
         Menu    = 18,
+        Pause   = 19,
         CapsLock= 20,
+        KanaMode= 21,
+        KanjiMode= 25,
         Escape  = 27,
+        IMEConvert= 28,
+        IMENonconvert= 29,
+        IMEAceept= 30,
+        IMEModeChange= 31,
         Space   = 32,
         PageUp  = 33,
         PageDown= 34,
@@ -28,6 +37,7 @@ class Keys{
         Down    = 40,
         PrintScreen = 44,
         Insert  = 45,
+        Delete  = 46,
         D0      = 48,
         D1      = 49,
         D2      = 50,
@@ -106,12 +116,19 @@ class Keys{
         Oemcomma = 188,
         OemMinus = 189,
         OemPeriod= 190,
+        OemQuestion= 191,
+        Oemtilde = 192,
+        OemAt   = 200, /* Only Mona */
+        OemColon= 201, /* Only Mona */
+        OemOpenBrackets= 219,
+        OemCloseBrackets= 221,
+        OemQuotes= 222,
+        OemBackslash= 226,
 
-        OemAt   = 200,
-        Colon   = 201,
     };
     
     static char ToChar(KeyInfo keyInfo);
+    static bool IsToChar(KeyInfo keyInfo);
 };
 
 }
