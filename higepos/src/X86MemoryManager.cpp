@@ -37,7 +37,7 @@ char* X86MemoryManager::getName() {
     \return address to allocated memory
 
     \author HigePon
-    \date   create:2002/08/07 update:2002/09/07
+    \date   create:2002/08/07 update:2002/09/08
 */
 void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
@@ -93,7 +93,11 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 */
 void X86MemoryManager::freeMemory(void* address) {
 
-    return;
+    struct memoryEntry* targetAddress = (struct memoryEntry*)address;
+
+    this->deleteFromEntry(usedEntry_, targetAddress, targetAddress->size);
+    this->addToEntry(freeEntry_, targetAddress, targetAddress->size);
+    this->concatBlock(freeEntry_, targetAddress);
 }
 
 /*!
