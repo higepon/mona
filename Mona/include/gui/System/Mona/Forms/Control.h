@@ -1,0 +1,108 @@
+// This file is in the public domain.
+// There are no restrictions on any sort of usage of this file.
+
+#ifndef __SYSTEM_MONA_FORMS_CONTROL_H__
+#define __SYSTEM_MONA_FORMS_CONTROL_H__
+
+#include <gui/System/Mona/Forms/Events.h>
+#include <gui/System/Drawing/Bitmap.h>
+#include <gui/System/Drawing/Color.h>
+#include <gui/System/Drawing/Font.h>
+#include <gui/System/Drawing/Graphics.h>
+#include <gui/System/Drawing/Point.h>
+#include <gui/System/Drawing/Rectangle.h>
+#include <gui/System/Drawing/Size.h>
+
+namespace System { namespace Mona { namespace Forms
+{
+	class Control : public System::Object
+	{
+		class ControlCollection : public System::Collections::ArrayList<_P<Control> >
+		{
+		private:
+			_P<Control> parent;
+		
+		public:
+			ControlCollection(Control* p) : parent(p) {}
+			virtual ~ControlCollection() {}
+			
+			virtual void Add(_P<Control> control);
+		};
+		
+	protected:
+		System::Drawing::Rectangle bounds;
+		bool visible;
+		System::Drawing::Color background;
+		_P<System::Drawing::Bitmap> buffer;
+		_P<Control> parent;
+		_P<ControlCollection> controls;
+		System::String text;
+		System::Drawing::Size clientSize;
+		System::Drawing::Point offset;
+		System::Drawing::Point clickPoint;
+	
+	public:
+		virtual String get_TypeName() { return "System.Mona.Forms.Control"; }
+		Control();
+		virtual ~Control();
+		
+		virtual void Show();
+		virtual void Hide();
+		virtual void Create();
+		virtual void Close();
+		virtual void Dispose();
+		void Refresh();
+		virtual _P<System::Drawing::Graphics> CreateGraphics();
+		virtual void WndProc(MessageType type, _P<EventArgs> e);
+		
+		System::Drawing::Point PointToClient(System::Drawing::Point p);
+		System::Drawing::Point PointToScreen(System::Drawing::Point p);
+		_P<Control> get_TopLevelControl();
+		_P<Control> FindControl(int x, int y);
+	
+		inline _P<Control> get_Parent() { return this->parent; }
+		inline _P<ControlCollection> get_Controls() { return this->controls; }
+		
+		inline int get_X() { return this->bounds.X; }
+		inline int get_Y() { return this->bounds.Y; }
+		inline System::Drawing::Rectangle get_Bounds() { return this->bounds; }
+		inline void set_Bounds(System::Drawing::Rectangle r) { this->bounds = r; }
+		inline System::Drawing::Point get_Location() { return this->bounds.get_Location(); }
+		inline void set_Location(System::Drawing::Point p) { this->bounds.X = p.X; this->bounds.Y = p.Y; }
+		inline System::Drawing::Size get_Size() { return this->bounds.get_Size(); }
+		inline void set_Size(System::Drawing::Size sz) { this->bounds.Width = sz.Width; this->bounds.Height = sz.Height; }
+		inline int get_Width() { return this->bounds.Width; }
+		inline void set_Width(int width) { this->bounds.Width = width; }
+		inline int get_Height() { return this->bounds.Height; }
+		inline void set_Height(int height) { this->bounds.Height = height; }
+		
+		System::Drawing::Size get_ClientSize();
+		void set_ClientSize(System::Drawing::Size sz);
+		
+		inline System::String get_Text() { return this->text; }
+		void set_Text(System::String text);
+		
+		static _P<System::Drawing::Font> get_DefaultFont();
+	
+	protected:
+		System::Drawing::Rectangle get_VisibleRectangle();
+		void DrawImage(_P<System::Drawing::Bitmap> image);
+		
+		virtual void OnPaint() {}
+		virtual void OnTextChanged();
+		virtual void OnMouseMove(_P<MouseEventArgs> e);
+		virtual void OnMouseDown(_P<MouseEventArgs> e);
+		virtual void OnMouseUp(_P<MouseEventArgs> e);
+		virtual void OnClick(_P<EventArgs> e);
+		virtual void OnNCMouseDown(_P<MouseEventArgs> e) {};
+		virtual void OnNCMouseUp(_P<MouseEventArgs> e) {};
+		virtual void OnNCMouseMove(_P<MouseEventArgs> e) {};
+	
+		DECLARE_EVENT(IMouseEventHandler, MouseMove, _P<MouseEventArgs>)
+		DECLARE_EVENT(IMouseEventHandler, MouseDown, _P<MouseEventArgs>)
+		DECLARE_EVENT(IMouseEventHandler, MouseUp, _P<MouseEventArgs>)
+		DECLARE_EVENT(System::IEventHandler, Click, _P<System::EventArgs>)
+	};
+}}}
+
+#endif  // __SYSTEM_MONA_FORMS_CONTROL_H__

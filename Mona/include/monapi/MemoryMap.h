@@ -1,0 +1,30 @@
+#ifndef _MONA_USERLIB_MEMORY_MAP_
+#define _MONA_USERLIB_MEMORY_MAP_
+
+#include <sys/types.h>
+
+namespace MonAPI {
+
+/*----------------------------------------------------------------------
+    MemoryMap
+----------------------------------------------------------------------*/
+class MemoryMap
+{
+public:
+    static void initialize();
+    static dword create(dword size);
+    static byte* map(dword id);
+    static bool unmap(dword id);
+    static dword getLastError();
+    static dword getSize(dword id);
+
+private:
+    static const dword START_ADDRESS;
+    static const dword MAX_SIZE;
+    static dword lastError;
+    static dword nextAddress;
+};
+
+}
+
+#endif

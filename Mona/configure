@@ -1,0 +1,37 @@
+#! /bin/sh
+###
+#      \file  configure
+#      \brief configure file
+
+#      Copyright (c) 2004 Higepon
+#      All rights reserved.
+#      License=MIT/X Licnese
+
+#      \author  HigePon and nanashi
+#      \version $Revision$
+#      \date   create:2003/10/07 update:$Date$
+###
+# gcc is 3.x or 2.x
+isOldVersion=`gcc --version|egrep '2\.9.*'`
+isMinGW32=`uname|egrep MINGW32`
+export OSTYPE="$(uname | cut -d _ -f 1 | tr [:upper:] [:lower:])"
+
+   cat Makefile.in > Makefile
+
+# cygwin
+if test "$OSTYPE" = "cygwin" ; then
+   cp  env/cygwin.env env/Makefile.inc
+   echo "cygwin"
+# MinGW (MSys)
+elif test $isMinGW32; then
+   cp  env/mingw.env env/Makefile.inc
+   echo "MinGW32"
+# linux gcc2.9x
+elif test $isOldVersion ; then
+   cp  env/linux2.x.env env/Makefile.inc
+   echo "linux gcc2.x"
+# linux gcc3.x
+else
+   cp  env/linux3.x.env env/Makefile.inc
+   echo "linux gcc3.x"
+fi

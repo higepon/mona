@@ -1,0 +1,1749 @@
+2004-04-07  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/shell/main.cpp : 内部コマンド CD, LS, DIRを実装
+
+        * syscall_dir_open, syscall_dir_read, syscall_dir_close, sys_call_cd実装
+
+2004-04-04  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp (init): マウス初期化処理変更 thx! 893(2ch)
+
+        * user/include/monapi/Random.h (class Random): 乱数生成 http://www.math.keio.ac.jp/home2/matumoto/public_html/MT2002/mt19937ar.html
+
+2004-04-02  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (startKernel): MemoryMapの仕様変更
+
+2004-04-01  higepon  <higepon@users.sourceforge.jp>
+
+        * Makefile : make->$(MAKE)
+
+        * FDCDriver.cpp: FDCのモーターのOFF忘れを無くした｡
+
+        * user/jpegls/jpegdemo.cpp (MonaMain): メモリ解放をまじめに
+
+2004-03-31  higepon  <higepon@users.sourceforge.jp>
+
+        * user/ShellServer/ShellServer.cpp: シェル入力時に .ELFを補う
+
+        * user/jpegls/jpegdemo.cpp (MonaMain): FileOutputStreamを使用して外部jpg読み込み対応
+
+2004-03-30  higepon  <higepon@users.sourceforge.jp>
+
+        * user/monapi/userlib.cpp: Mutexをユーザーライブラリに追加(テスト済み)
+
+2004-03-29  higepon  <higepon@users.sourceforge.jp>
+
+        * ユーザー用ファイル書き込み用クラス FileOutputStream
+
+        * file writeのシステムコール作成
+
+        * fs.cpp (createFile): ファイル作成関数追加
+
+2004-03-28  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/monapi/monalibc.cpp & .h strncpy2追加
+
+2004-03-28  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/monapi/monalibc.cpp & .h strncpy2追加
+
+2004-03-27  higepon  <higepon@users.sourceforge.jp>
+
+        * user/monapi/userlib.cpp: inp/outp 8/16/32を実装
+
+        * user/include/monapi/MemoryMap.h (class MemoryMap): MemoryMapクラスを位置から書き直しました。userlibに影響があります。
+
+2004-03-25  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (loadServer): MONA.CFGで起動されるサーバーはINITプロセスにサーバー起動完了メッセージを送信しなければいけなくなった｡
+
+        * Process.cpp (lookupMainThread): プロセス名からメインThreadのtidを取得で切るようにした。
+
+        * uselib: Message::lookupMainThread関数追加
+
+2004-03-24  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: ディスク交換検出APIの改良
+
+        * Process.cpp (kill): プロセス終了時に物理ページの返却を行う
+
+        * PageManager.cpp: VRAMのマッピングのロジックミスを修正
+
+2004-03-23  higepon  <higepon@users.sourceforge.jp>
+
+        * FDのモーターOFFの制御をまじめに｡
+
+        * Process.cpp (Process): messageListのメッセージdeleteを無くした｡
+
+2004-03-22  higepon  <higepon@users.sourceforge.jp>
+
+        * user/monapi/userlib.cpp: syscall_mthread_create, joinを生ポインタからID制にした｡
+
+        * IDManager.cpp: ID管理用のクラスを追加｡
+
+2004-03-19  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp : KEventクラス追加
+
+2004-03-18  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (execSysConf): サーバーを外部ファイルを読み込んで起動(by Tinoさん)
+
+        * string.cpp : strstrの追加(by Tinoさん)
+
+        * user/ShellServer/ShellServer.cpp: Tinoさんのパッチ適用(空行無視・AUTOEXEC.BAT)
+
+        * mona_v1.0/tools/fat_write/main.cpp : サイズ0のファイルの書き込みに対応
+
+2004-03-17  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : syscall_get_io()のバグ修正
+
+        * スレッドベースのメッセージングに変更
+
+2004-03-15  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandler.asm : スレッドセーブのコード追加
+
+2004-03-14  higepon  <higepon@users.sourceforge.jp>
+
+        * user/monapi/Makefile ($(LIB_USER)): Tinoさんのpatch適用
+
+2004-03-13  shadow  <shadowin@users.sourceforge.jp>
+
+        * monalibc関連ヘッダファイル : 関数宣言場所整理
+
+        * monalibc関連ソースファイル : 関数定義場所整理
+
+        * user/monapi/MlcStdarg.cpp & .h 追加
+
+        * user/monapi/MlcStdio.cpp & .h 追加
+
+        * user/monapi/Makefile 上記ファイルを対象に追加
+
+2004-03-13  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp : checkDiskChange()実装
+
+2004-03-12  higepon  <higepon@users.sourceforge.jp>
+
+        * システムコールの整理
+
+        * fs.cpp (FSOperation): fs.cppに移動
+
+2004-03-11  higepon  <higepon@users.sourceforge.jp>
+
+        * fat_write.exe : Msysのshellが「/」から始まる引数に勝手にパス補完してしまうので仕様変更
+
+        * user/monapi/userlib.cpp: sleep実装
+
+        * monaAppへの代入をMonaApplicationコンストラクタで行なう｡
+
+2004-03-10  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : システムコールの引数のバグ(レジスタ破壊)を修正
+
+        * user/ShellServer/ShellServer.cpp: プロセスロード処理を見直し
+
+        * operator.cpp (free): メモリ割当てを割り込み禁止領域で行なう事にした
+
+        * FDCDriver.cpp: IStorageDeviceを継承するようにした。
+
+2004-03-09  higepon  <higepon@users.sourceforge.jp>
+
+        * fat_write.exeがファイルを上書きできるようになった。
+
+        * user/monapi/userlib.cpp (exist): Message::exist()追加
+
+        * fat_write.exeが動作するようになった｡
+
+        * kernel.cpp : fat_write.exeを改装中のためまともに動きません。
+
+2004-03-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core.asm (from_kernel): レジスタセーブロジックを書換
+
+2004-03-07  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: ファイルオープン時のエラーコードを取得
+
+        * user/monapi/userlib.cpp: ~MonaApplicationのデストラクタでキー送信登録解除
+
+        * user/KeyBoardServer/KeyBoardServer.cpp : キー送信登録解除を出来るようにした。
+
+        * user/MouseServer/MouseServer.cpp: マウス送信先登録解除を出来るようにした。
+
+        * MonaApplicationの名前引数をやめた。
+
+2004-03-06  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: スレッドスイッチのバグを１つつぶす。
+                      一時カーネルモードへの昇格中に別一時カーネルモードスレッドにスイッチしてtssのesp0を更新していなかった。
+
+        * FAT12.cpp: 長いファイル名が渡されたときにメモリを壊すバグを修正
+
+        * kernel.cpp: まずはkillがおかしい。未修正
+
+2004-03-04  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: スケジューラをrunq × 1, waitq × 1 の単純なラウンドロビンのスケジューラにした。
+
+2004-03-02  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : スケジューラが激しく不安定だが他のことをやることにする。
+
+2004-02-29  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: FDCの割り込みが割込み待ちWAIT処理中の隙間を縫ってくることがあるのに対応
+
+2004-02-29  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/monapi/MlcCtype.cpp & .h コメント付け
+
+        * user/monapi/MlcStdlib.cpp & .h 追加
+
+        * user/monapi/Makefile 上記ファイルを対象に追加
+
+        * user/include/monapi/MlcLimits.h 追加
+
+
+2004-02-28  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (mainProcess): 新スケジューラのFDでの速度の実験
+
+        * スケジューラのバグが直らないので一番原始的なwakeup無しモードでの動作を確認。0.1.5と同じ水準であることを確認。
+
+        * ChangeLogの文字コードをshift-jis-unixにした。euc-jp-unixだと開発環境で文字化けを起こすので
+          一時的な処置
+
+2004-02-27  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: まだ安定しない。
+
+        * syscalls.cpp : FD読み込みもwait/wakeup機能を使用しての実装に変更
+                         bochs/vmwareではまだ動かない
+
+        * test_higepon.cpp (send): スケジューラのwait/wakeupの実装がほぼ終了してリバーシなどがまた動くようになった。
+          マウスカーソル・キーボードの反応が良くなった。
+
+        * changeLogの文字コードを戻した。
+
+2004-02-26  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp (schedule2): Scheduler::joinの中でのschedule()呼び出しを廃止(バグです。)
+
+        * ihandlers.cpp: Thread Tickするようにした。
+
+2004-02-25  higepon  <higepon@users.sourceforge.jp>
+
+        * Segments.cpp: システムコール周りを徐々に再構成中
+
+2004-02-24  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h (class Scheduler): findProcess()
+
+2004-02-23  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/monapi/userlib.cpp: printf(if 0)書換え。
+
+2004-02-23  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: これ以降は当分カーネルは動きません。
+
+2004-02-23  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/monapi/monalibc.c: vsprintf修正。strcpy2追加。
+
+        * user/include/monapi/monalibc.h: strcpy2追加。
+
+2004-02-20  higepon  <higepon@users.sourceforge.jp>
+
+        * ちょっとだけArrayを使ってみた。
+
+        * Process.cpp: プロセス・スケジューラー周り全部作り直し
+
+        * Queue追加
+
+2004-02-18  higepon  <higepon@users.sourceforge.jp>
+
+        * user/monapi/string.cpp: strcat
+
+        * Process.cpp: idleスレッドの中でhltするようにした
+
+        * user/monapi/monalibc.c: 追加。
+
+2004-02-15  higepon  <higepon@users.sourceforge.jp>
+
+        * VesaConsole.cpp: VesaConsole 黄色い線が出る件修正(Gakuさん)
+
+        * syscalls.cpp : ディスクイメージ構成を大幅に変えた。
+
+2004-02-14  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (printOK): オセロ追加人同士の対戦のみサポート
+
+2004-02-12  higepon  <higepon@users.sourceforge.jp>
+
+        * user/userlib.cpp: Observer/Observable追加 さて何に使うのでしょうか？
+
+        * user/clock.cpp: 時刻取得追加
+
+        * Message::receiveを変更。メッセージキューがからの場合はCPUを明け渡す
+
+        * Process.cpp: メッセージ待ちyiledを追加。
+
+2004-02-11  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: noiz2bgのバグ修正 thx nikqさん
+
+        * kernel.cpp: 最適化オプション-O3
+
+        * Process.cpp: Threadにwaitとwakeupを作った。でもまだ載せていない。
+
+        * kernel.cpp: gccの最適化オプション-O2でビルドするようにした。
+
+2004-02-10  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: Shellが引数をもてるようになった。
+
+        * MonaMain関数が引数をもてるようになった
+
+        * syscalls.cpp : FDアクセス箇所にセマフォでロックを追加。
+
+        * FDCDriver.cpp: モーターの制御を追加。
+
+2004-02-09  higepon  <higepon@users.sourceforge.jp>
+
+        * user/userlib.cpp: printfのバグ修正
+
+        * syscalls.cpp : プロセスexit();時のバグをやっと修正
+                         原因はプロセスが代わったかどうかの isProcessChangedが問題だった。
+
+        * include/collection.h: Arrayクラス作成
+
+        * send時にfromを自動セット。
+
+2004-02-08  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp: System::getPID();
+
+        * user/MouseServer.cpp: マウスサーバ追加
+
+        * user/string.cpp: strcmpのバグ修正 thx Gakuさん
+
+        * user/hello.cpp: MemoryMap::unmap実装
+
+2004-02-07  higepon  <higepon@users.sourceforge.jp>
+
+        * user/userlib.cpp: 仮想VRAM VirtualScreenを追加。
+
+        * bitbltでXOR出来るようにした(マウス用) 未テスト
+
+        * kernel.cpp: ユーザーモードでのマウス描画完了。
+
+        * Mouse初期化をまとめた
+
+        * picのありえないバグをつぶした。
+
+        * userlib.cpp, userlib.h : きれいに整形読まれることを前提としてみた。
+
+2004-02-06  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: Floppy, Device, StorageDevice追加
+
+2004-02-05  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: 8MBヒープ
+
+        * test_higepon.cpp: マウス割り込みが来た(VitualPCのみ)
+
+        * user/userlib.cpp: プロセスの最大ヒープサイズ(自動拡張)を2MBとしました。
+
+2004-02-04  higepon  <higepon@users.sourceforge.jp>
+
+        * string.cpp: memcomp, memmove from Gakuさん
+
+        * elf.cpp: プロセスロードのサイズを200KBにする。
+
+        * kernel.cpp: user/lib/libmonapi.aを作成
+
+2004-02-03  higepon  <higepon@users.sourceforge.jp>
+
+        * user/include/userlib.h: MemoryMapクラス作成
+
+        * syscall_map2()完成
+
+        * syscalls.cpp : syscall_map2()の途中
+
+2004-02-02  higepon  <higepon@users.sourceforge.jp>
+
+        * MonaApplicationの作成
+
+        * FileInputStream作成
+
+        * syscalls.cpp : ファイル読み込みのためのシステムコールを追加
+
+2004-02-01  higepon  <higepon@users.sourceforge.jp>
+
+        * include/tester.h: send/receive時のmalloc/freeをやめた。
+
+        * user/hello.cpp (main): Mapサーバーを介してのマッピングに成功
+
+2004-01-31  higepon  <higepon@users.sourceforge.jp>
+
+        * user/ShellServer.cpp: BackSpaceキーに対応
+          HELLO.ELFの文字化けを修正
+
+        * といっている間にVesaConsole, GraphicalConsoleも直した。
+
+        * kernel.cpp: ユーザーモードのprintfを改善 VesaConsole, GraphicalConsoleもそのうち直そう
+
+        * user/userlib.cpp: Mapping用に新しい関数を作ったがテストしていない。
+
+2004-01-30  higepon  <higepon@users.sourceforge.jp>
+
+        * user/hello.cpp: Mapサーバの準備を着々と進めてみた。
+
+        * user/ShellServer.cpp: Serverを継承するようにした。
+
+        * kernel.cpp: 数字キーの入力も対応
+
+        * VesaConsole.cpp: Gaku氏により複数bpp対応
+
+2004-01-29  higepon  <higepon@users.sourceforge.jp>
+
+        * ユーザーモードからのシステムコール時に割り込みを許可をしたときに発生していたバグを修正
+
+        * user/hello.cpp: Shell実装中
+
+2004-01-28  higepon  <higepon@users.sourceforge.jp>
+
+        * Makefile.in (write): 記述間違い修正
+
+        * kernel.cpp: Process Killの改善
+
+        * ユーザーモードからの描画・Vram取得・fillRect・putPixel
+
+2004-01-27  higepon  <higepon@users.sourceforge.jp>
+
+        * user/include/userlib.h: putPixel16
+
+        * secondboot.asm (get_vesa_info): VESAモードをトライする関数を追加。
+
+        * test_higepon.cpp: bitbltで24bppに対応
+
+2004-01-26  higepon  <higepon@users.sourceforge.jp>
+
+        * メッセージの送信をpidベースでもできるように変更した。
+
+        * プロセス名からpid取得できる lookup機構を作成。
+
+2004-01-25  higepon  <higepon@users.sourceforge.jp>
+
+        * elf.cpp: load時に memorysize と fileSizeが異なる場合に無条件に0埋めしていたのを修正
+
+        * user/KeyBoardManager.cpp: キーボードドライバをユーザーモードに追い出し成功
+
+2004-01-24  higepon  <higepon@users.sourceforge.jp>
+
+        * userlib.cpp: 暫定版ダメダメprintfを追加。
+
+2004-01-23  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager: VRAMにアクセスできるように各プロセスにマッピングを行った。
+
+        * VesaConsole.cpp: Gakuさん提供のVESA対応版のコンソールを追加
+
+2004-01-22  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: bitblt(8, 16, 32bpp)に対応
+
+        * collection.h: 最適化してみた。
+
+        * vbe.h: Screenクラスの作成
+
+        * vbe.h: bitblt16(16bpp版のbitblt実装)
+
+2004-01-21  higepon  <higepon@users.sourceforge.jp>
+
+        * pagemanager.cpp: マッピングのバグ修正
+
+        * vmware対応。スタックを0xFFFFFFFFから0xEFFFFFFFに変更
+
+2004-01-19  higepon  <higepon@users.sourceforge.jp>
+
+        * secondboot.asm: mode105 bochs OK vmware OK
+                                  twoOstwo VPCは画面の色が変わらない
+
+        * kernel.cpp: VMWAREでVESA
+
+        * configure 改良
+
+2004-01-18  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: バグ修正
+
+        * kernel.cpp: writeFileAppend
+
+2004-01-17  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: writeFileAppendの途中
+
+        * MemoryManager.cpp: 0埋めしてメモリを割り当てるように変更
+
+        * loadProcessのロジック見直し修正・整形
+
+        * include/FAT12.h: isOpenのバグ修正
+
+        * loadProcess()のdetachし忘れバグ修正 Gakuさん指摘による
+
+2004-01-16  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp:フォルト時のダンプ関数を作成
+
+2004-01-15  higepon  <higepon@users.sourceforge.jp>
+
+        * oemstringポインタの取得
+
+        * ページアラインのバグ修正
+          VESAバージョンの取得
+
+        * VESAに対応しているかどうかをチェック
+
+        * FAT12イメージファイルにファイルを書き込むツールfat_writeを改善。
+          前の作りが余りにひどかったのでやっと直しました。
+          使い方等興味のある方はMakeFileを御参照ください。
+
+2004-01-14  higepon  <higepon@users.sourceforge.jp>
+
+        * core.asm (arch_save_thread_registers): 重大なバグ修正TSSのesp0にタスク固有の
+                                                 カーネルスタックを格納し忘れていた。
+
+        * システムコール時のレジスタ破壊によるバグを修正
+
+        * kernel.cpp: プロセスkill時にスケジュールしなおすようにした。
+
+2004-01-13  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h: KMutexの作成。ただし未テスト
+
+2004-01-12  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: wakeupTimer()のバグを修正 名無しさんに感謝
+
+        * Process.cpp: ProcessManger::find()のバグを修正
+
+        * kernel.cpp: ユーザー側にMutexクラスを用意。
+
+2004-01-11  higepon  <higepon@users.sourceforge.jp>
+
+        * user/userlib.cpp: userlib.oをカーネルにリンクしないようにした。
+
+        * Process.cpp: killの実装
+
+        * userlib.cpp: mthread_create, mthread_join作成
+
+        * pic.cpp: setTimerInterval()作成 OSASK Kさんに感謝
+
+        * Process.cpp: loadProcess(ユーザーモード)のスレッド対応終了
+
+2004-01-10  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp: ページフォルトハンドラのバグ1つめ修正(エラーコードが正しく取れていなかった)
+
+2004-01-09  higepon  <higepon@users.sourceforge.jp>
+
+        * KeyBoardManager.cpp: loadProcess(カーネルモード)のスレッド対応終了
+
+        * MemoryManager.cpp: メモリ割り当て時のバグを発見･修正
+
+2004-01-08  higepon  <higepon@users.sourceforge.jp>
+
+        * loadProcessデバッグ中
+
+        * カーネルモードで複数スレッドの実行で動作がおかしいところがあったが
+          設定していた関数がretしていたのが原因だった。
+
+        * スレッドのスイッチをThreadManagerのメンバ関数とした。
+
+        * スレッド生成時にスタックを割り当てるようにした。
+          1プロセス複数スレッドもカーネルモードであれば順調に動作している。
+
+        * スレッド動作の様子がわかるようにProcessManger::printAllProcess()を追加
+
+        * プロセス生成時にHeapSegmentを割当てるように変更。
+
+        * SharedMemorySegment、Queueを継承しないようにしたListクラスを使用
+
+        * Segments.cpp：大幅に書換え(スレッド対応)
+
+        * Queue.h廃止。
+
+        * ページフォルトハンドラのスレッド対応
+
+        * スレッド破棄時のSharedMemorySegmentのdetach処理
+
+        * Messageのsend/receiveのスレッド対応
+
+2004-01-06  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: スレッド切り替え(カーネルモード)実装中。
+
+        * 現在カーネルは全く動きません。
+
+        * スレッドスケジューラのバグを修正
+
+        * kernel.cpp: プロセスのスケジューラがうまくいっていることを確認
+
+2004-01-05  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: ThreadManager::setup()の呼び出し。dummyのカレントスレッドをセットする。
+                      タイマが有効になる前にこの処理を呼び出す必要がある。
+
+2004-01-03  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: thread周りの整理。dispatchList, waitListの作成
+
+2004-01-02  higepon  <higepon@users.sourceforge.jp>
+
+        * class ProcessScheduler: 廃止
+
+        * Process.cpp: thread周りの本格実装開始
+                       ThreadScheculer, ProcessScheculerを廃止xxxxManagerに統合
+          これよりしばらく大きな変更が続きます。
+
+
+2003-12-30  higepon  <higepon@users.sourceforge.jp>
+
+        * core.asm: スレッドスイッチ(アーキテクチャ依存を作成)
+
+        * hashtest.cpp: HashMapのテストコードを追加。hashの衝突もなくなった。
+
+        * include/collection.h: hash関数の改良 thx!名無しさん@dev-j
+          HashMapはあらかた完成。
+
+2003-12-28  higepon  <higepon@users.sourceforge.jp>
+
+        * include/collection.h: BinaryTreeの実装&テスト
+
+        * test_higepon.cpp: とりあえずUSER.ELFが正常に読み込まれるように復帰.
+
+2003-12-25  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: 分かったこと umi.initilizeが呼ばれるとダメ。receiveも怪しい
+
+        * test_higepon.cpp: バグの症状 hello.cppでum.initilize以降でエラーとなる。
+                            ありえないメモリ領域にアクセス違反でKILLされる。
+
+2003-12-24  higepon  <higepon@users.sourceforge.jp>
+
+        * include/collection.h: removeAt()のバグ修正 Gakuさん感謝
+
+        * KeyBoardManager.cpp: KeyバッファをListにした。
+                               Listの初期化タイミングに問題あり要修正
+
+        * test_higepon.cpp: userKeyStrokeHandlerでは正しくデータが取得できません。
+
+        * Process.cpp: スレッドの生成に関わる部分プログラムカウンタなど
+
+2003-12-23  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h: getThreadInfo()追加
+
+        * Process.cpp: Threadのコンストラクタ
+
+        * ihandlers.cpp: スレッド生成･スケジュールなどをじっくりと
+
+2003-12-21  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: hasProcess();など。いろいろ見直し
+
+2003-12-20  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: ThreadManagerを肉付け
+
+        * ビルド時のWarnningをなくした
+
+2003-12-18  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h: Threadクラスを少しずつ肉付け
+
+2003-12-17  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: スレッドマネージャ
+
+        * include/Process.h: ThreadSchedulerクラスをヘッダに追加(未実装)
+
+2003-12-16  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: タイマハンドラでスケジューラたちがどのように呼ばれるかの部分を
+                         設計.
+
+2003-12-14  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: ProcessManager_::createProcessの骨格を作成
+                       ProcessManager_::addProcessを作成
+                       KernelProces,UserProcessの追加
+
+2003-12-09  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: メモリ割り当てに失敗したらpanic()に突入する関数を用意
+
+        * include/Process.h: ProcessManagerとページ管理の関係を整理
+
+2003-12-07  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: ProcessSchedulerを追加
+
+        * include/collection.h: コレクションクラスHListを追加
+                                HVectorを廃止
+
+2003-11-30  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h: 新しいプロセス情報構造体を追加
+
+2003-11-13  higepon  <higepon@users.sourceforge.jp>
+
+        * string.cpp: memcpyが遅かったのでチューニング.インラインアセンブラで書き直した
+
+2003-11-12  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: ユーザープロセスに対してメッセージを送信できるようになった。
+
+        * システムコールの戻り値が正常に取得できるようになった。
+
+        * syscalls.cpp システムコールの戻り値が取れていない?
+                       loadProcess遅すぎ
+
+        * test_higepon.cpp: Message格納先をHVector(テンプレート)で実装することにより複数のメッセージにも対応
+
+        * ihandlers.cpp: send/receiveをキーボード割り込みで実験してみた。
+                         メッセージの送信としてはかなり上出来。ただし現在
+                         Messageの格納先が1つなのでそれが問題。
+
+2003-11-11  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: send,receive実験実装.
+                            findProcess未実装
+
+        * include/Process.h: プロセス構造体にMessageを追加
+
+2003-11-05  higepon  <higepon@users.sourceforge.jp>
+
+        * Segments.cpp: スタック自動伸張バグつぶし中。検証中のコード多数のため注意
+
+2003-11-03  higepon  <higepon@users.sourceforge.jp>
+
+        * ユーザー用にヒープ領域を確保 umalloc, ufreeの提供
+
+        * ユーザーモードのエントリポイントをuser_start()に変更
+
+        * syscalls.cpp : システムコールにexit追加(ただし中身はkill)
+
+        * syscalls.cpp (put_pixel): システムコールにput_pixelを追加
+
+        * test_higepon.cpp: LoadProcess ユーザーモードに対応
+
+2003-11-02  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: LoadProcessが動いた。
+                制限事項: カーネルモードののみ
+                    メモ: USER.ELFをリンク時に_monamainをシンボル指定するところが肝心
+                          extern "C"等
+
+2003-10-29  higepon  <higepon@users.sourceforge.jp>
+
+
+        * disp.cpp: 1つのプロセスが複数の共有メモリセグメントをもてるように改造
+                    初めて多重継承を使用した。(今のところうまく機能しているようだ)
+                    disp_name3, disp_name4で、３つのメモリ領域を共有している事が分かる。
+
+                    attach, openそれぞれロックが必要なのでセマフォを使うこと
+
+2003-10-28  higepon  <higepon@users.sourceforge.jp>
+
+        * disp.cpp: 共有メモリAPI呼び出し時にセマフォでロックしてみた。
+
+2003-10-27  higepon  <higepon@users.sourceforge.jp>
+
+        * Segments.cpp: 共有メモリ機構の実装をほぼ完了
+
+2003-10-26  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp: 共有MAP実装用にI/Fを刷新
+
+        * include/Segments.h: 共有map用のAPI実装中
+
+2003-10-24  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Segments.h: SharedMemoryObjectを実装中。
+
+2003-10-19  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: 実験組み込み中動作しません。
+
+        * PageManager.cpp: コメント整理
+
+2003-10-18  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp: 全く実験してないけどスタックの実装
+        *                  全く実験してないけどヒープの実装
+
+2003-10-17  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp: ページフォルトで物理ページを割り当てた際にキャッシュを削除
+
+        * MemoryManagerのシングルトンをやめた。KernelMemory管理以外にも使えるので。
+
+2003-10-13  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp: 各プロセス生成時に独立空間を割り当てるのでesp=0x400300と固定で割り当てられるようになった。
+
+        * kernel.cpp : 割込みの許可のバグの修正
+
+        * env : #LFLAGS     = -n -Ttext 0x1200 -static --oformat binaryから--oformat binaryを削除
+
+        * env : libz.aの環境による分岐
+
+2003-10-03  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: プロセスのkillをなんとなく実装。
+
+2003-10-09  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: プロセス生成時に独自空間をなんとなく割り当てるようにした。
+
+2003-10-08  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: 0-1GBをカーネル領域とした。
+
+2003-10-07  higepon  <higepon@users.sourceforge.jp>
+
+        * nasmとg++部のリンクの際のエラー対応
+
+        * Makefile.in: configureの追加
+
+2003-10-03  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp:KeystrokeHandler.scancodeを引数で受け取るように変更
+
+2003-09-29  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: MemoryManager入れ替え終了
+
+                new/delete malloc/freeの動作が不良なときはtools/mmtest/mem.cppでテストすること。
+
+2003-09-28  higepon  <higepon@users.sourceforge.jp>
+
+        * MemoryManager.cpp: MemoryManager導入したもののFDC割り込みで落ちる原因不明。
+
+        * include/MemoryManger.h: IA32MemoryManagerが初期のコードでバグが多かっため
+          完全リライトしたMemoryManagerを導入。
+
+2003-09-25  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: z.cpp z.h zlibのGaku氏からの移植版の提供。
+                         テキストファイルの解凍を確認。
+
+2003-09-23  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: Gaku氏提供のパッチを適用 getFileSize()
+
+        * ソース全体の整理第二弾:FreeBSDディレクトリを参照しないようにした。
+
+        * ソース全体の整理第一弾:compile時のwarningの抑止
+
+2003-09-22  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: FDCがVmwareに対応しました.
+
+        * まともに動くようになりました。ロゴ表示が出来たりする。
+
+        * 現在まともに動きません。FDCDriverTester();の呼び出しをコメントアウトすれば動くかもしれません。
+
+2003-09-21  higepon  <higepon@users.sourceforge.jp>
+
+        * Guripon氏によるput_pixcel等の関数の追加
+
+        * GraphicalConsole.cpp: Guripon氏のmode12改良のとりこみ。
+
+2003-09-20  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: bochsでもrecalibrate後の割り込みが来るようになった。OSASKのKさんに感謝
+
+2003-09-19  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: FDC大改造中
+
+        * ihandlers.cpp: FDCの割り込み関数をFDCDriverのクラスメソッドにした。
+
+2003-09-18  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: FDC大改造中
+
+2003-09-13  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: FDCの割込みの処理を改善(K-tanに感謝)
+
+        * kernel.cpp: mainプロセスが他のプロセスを立ち上げるような設計に変更
+
+2003-09-10  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: タスクスイッチの際にページディレクトリとページキャッシュのflush処理を入れた。
+
+        * FDCDriver.cpp: ページングでもFDCDrvierが正常動作することを確認できた。
+
+        * コードの整理など。だいぶFDCDriverが安定してきた。
+
+2003-09-09  higepon  <higepon@users.sourceforge.jp>
+
+        ページングに対応していない->FDCDriver
+        キーボード割り込みがなんかへん
+
+        * kernel.cpp: FDCDriverのいたるところにdelay()を追加
+
+2003-09-08  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: FDCのテストのため
+                ページングOFF
+                FDCドライバ
+
+2003-09-07  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: FAT12からELFをロードして実行成功
+
+        * elf.cpp: ELFLoader作成中。
+
+        * kernel.cpp: tools/elfview.exeで作成したプロセスイメージをカーネルに組み込んで実行成功。
+
+2003-09-05  higepon  <higepon@users.sourceforge.jp>
+
+        * include/elf.h: ELFのセクションヘッダ列挙, ELFのプログラムヘッダ列挙
+
+        * kernel.cpp: /toolsにelfTest.cppを追加 elfヘッダの表示が出来るようになった。
+
+2003-09-04  higepon  <higepon@users.sourceforge.jp>
+
+        * include/elf.h: elf.h追加
+
+2003-09-02  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: DSの設定が割込み時に行われるようになった仮想86はまだおかしい
+
+2003-08-30  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: 仮想86サポートを試みるがまだ動作がおかしいので保留
+
+        * syscalls.cpp syscall_printを追加
+
+        * src/userディレクトリ追加. ユーザー開発環境整備の布石
+
+2003-08-28  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: 限界までページフォルト＆割り当て繰り返してテスト
+
+        * PageManager.cpp: ページフォルトが発生したときに物理ページを割り当てる処理を入れました。
+
+2003-08-24  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp: ページフォルト処理デバッグ中
+
+        * GraphicalConsole.cpp: putIntのbugfix
+
+2003-08-23  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager.cpp:論理アドレス0-4MBと物理アドレス0-4MBをマッピング
+        * PagingUtil.cppの廃止
+
+2003-08-22  higepon  <higepon@users.sourceforge.jp>
+
+        * BitMap.cpp: getBitsNumber()追加
+
+2003-08-17  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp: exit_kernel_lock_mode();enter_kernel_lock_mode();の追加
+
+2003-08-16  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandler.asm (_arch_syscall_handler): システムコールの戻り値を取得できるようになった
+
+        * syscalls.cpp: システムコール中に割り込みを許可することが可能になった。
+                        これからソースの整理を開始
+
+2003-08-15  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: ユーザープロセス・カーネルプロセスの二つがReadyキューにある状態でユーザープロセスからおもいシステムコールを
+                      呼ぶと割り込みを許可してりスケジュールが可能になる。特定のポイントで割込み不可も可能。
+                      core.asmの _arch_save_process_registersでcsを直接見て判断したのが良かった。でも整理しないと。
+
+2003-08-13  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: システムコールのバグとり終了
+          ただしユーザーモードでのシステムコール時は割り込みは不許可
+
+2003-08-10  higepon  <higepon@users.sourceforge.jp>
+
+        * ユーザーモードからシステムコールを実行したときの動作がおかしい。(調査中)
+                * dispach queueにユーザープロセスオンリーでsleepを行うことで再現可
+        * kernel.cpp: idleプロセス機構を追加
+
+2003-08-09  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: システムコールデバッグ中
+
+2003-08-07  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp: システムコール中に割込み許可してりスケジュールを許可する。
+        * syscalls.cpp: システムコール実験用 syscall_heavyを追加
+
+2003-08-06  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: ユーザーモードへのタスクスイッチ時にss0, esp0をセットするように改善
+
+        * ProcessManager.cpp: ユーザープロセス生成時にカーネルスタックを割り当てる処理を追加
+
+        * GDTUtil.cpp (setupTSS): g_tssをTSS*にした。
+
+        * include/Process.h: ss0,esp0の追加.
+
+2003-07-29  higepon  <higepon@users.sourceforge.jp>
+
+        * MessageServer.cpp: メッセージサーバクラスを追加
+        * MessageServerをカーネルプロセスとしてプロセスリストに追加
+
+2003-07-28  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Message.h: Queueを継承してMessageを宣言
+
+        * include/Queue.h: 汎用Queueクラスと管理クラスを追加。未検証
+
+2003-07-26  higepon  <higepon@users.sourceforge.jp>
+
+        * pic.cpp: タイマ割り込みを10ms毎に行うように変更
+
+        * syscalls.cpp: インラインアセンブラでも#defineで定義したものを使用できるようにした。
+
+2003-07-23  higepon  <higepon@users.sourceforge.jp>
+
+        * core.asm (_arch_save_process_registers): ユーザーモードからのシステムコールの実装完了
+
+2003-07-21  higepon  <higepon@users.sourceforge.jp>
+
+        * SystemInfo.cpp: RDTSC命令を用いたパフォーマンス計測
+
+2003-07-20  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: CS,SS,DSのセレクタ値を埋め込まないようにした。
+
+        * ProcessManager.cpp: プロセスのスリープを実装
+
+2003-07-19  higepon  <higepon@users.sourceforge.jp>
+
+        * kthread.cpp, kthread.hの廃止
+
+        * kernel.cpp:
+
+        * disp.cpp: ユーザーモードの実装･テスト成功
+
+2003-07-17  higepon  <higepon@users.sourceforge.jp>
+
+        * GDTUtil.cpp: userモードのcs, ds, ssを定義
+
+        * core.asm (_arch_switch_process): dsをprocess switchの前後で保持するように変更
+                   (_arch_switch_process_dpl_low): ssも保持
+                   (_arch_switch_process_dpl_low): dplが下がるときようのtask_switc
+
+        * Scheduler.cpp: dplが下がったかどうかを判断するメソッドを追加
+
+        * GDTUtil.cpp (setupTSS): ユーザーモード対応の準備としてTSS#esp0, ss0を準備
+
+2003-07-16  higepon  <higepon@users.sourceforge.jp>
+
+        * disp.cpp: Semaphore, semaphoreの修正
+
+2003-07-10  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: プロセススイッチテスト中 まあうまくいっているかも
+
+2003-07-09  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: makeはできるがプロセススイッチで落ちている模様。
+
+2003-07-08  higepon  <higepon@users.sourceforge.jp>
+
+        * include/global.h: またmake出来なくなりました。ヘッダの整理をせねば
+
+        * kernel.cpp: makeできるようになりました。
+
+2003-07-06  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: makeできない状態だがこのソースを失うのは非常にまずいのでやむなくcommit
+
+        * Process周りを改良中
+
+2003-06-29  higepon  <higepon@users.sourceforge.jp>
+
+        * Scheduler.cpp: スケジューラ追加
+
+2003-06-28  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: Processを追加。
+
+2003-06-24  higepon  <higepon@users.sourceforge.jp>
+
+        * include/PagingUtil.h: page操作系関数追加
+
+2003-06-22  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: pagefaulthandlerを改良。infoが効かないのは何故？
+
+        * include/PagingUtil.h: ちょっと改良中
+
+2003-06-15  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: ページング成功 意図的にページフォルトを起こしてそのリニアアドレスを調べる。
+
+        * PagingUtil.cpp: ページング実験中。うまく動かないでkernel.cppのPagingUtil::setup()をコメントアウトして下さい。
+
+2003-06-10  higepon  <higepon@users.sourceforge.jp>
+
+        * PagingUtil.cpp:追加
+
+2003-06-08  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: cmosでもメモリ総量を得る
+
+        * IDTUtil.cpp,IDTUtil.h追加
+
+        * idt.cpp, idt.hの廃止
+
+        * IA32MemoryManager.cpp: メモリ使用量を返す関数を追加
+
+2003-06-07  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: GDT関連のコードをGDTUtilに移動
+
+        * GDTUtil.cpp: メモリ周りの整理のためGDT関連のクラス
+
+2003-05-31  higepon  <higepon@users.sourceforge.jp>
+
+        FAT12ブート対応
+
+        * firstboot.asm : FAT12ブート対応 ぐりぽん氏提供のコードにBPBなどを追加。
+                          デバッグルーチンを削除
+
+        * fat_write.cpp : 新規作成 FAT12.cppを駆使して配布用ディスクイメージを作成する。
+
+        * Makefile : FAT12イメージを作成するためいろいろと変更
+
+        * secondboot.asm : a20enableとgraphicalmodeをfirstboot.asmからsecondboot.asmに移動。
+
+2003-05-25  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp (FDCTester): g_cosole->printfを各レベルにあわせてinfo()に置き換え
+
+        * info.cpp (info): info関数追加:情報レベルはg_info_levelで変更可能。
+
+        * include/global.h (g_process_name): infoから参照する。プロセス名称(仮)を作成.
+
+        * FAT12.cpp: releaseCluster()書き込みの際にファイルサイズが小さくなったらクラスタを開放する。
+
+        * FDCDriver.cpp: DMA転送サイズは必ずマイナスすること!Thanks Sakky@meg-os.org
+
+2003-05-24  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp:motor(ON)改善
+
+2003-05-24  .mjt
+
+        * 昨日の２つの記述はウソ
+        * PICの設定ルーチンのマスタとスレーブが逆になってるところがあった…
+        * PCICの初期化は不十分なので、起動時にカードが刺さっていないと認識しない。
+
+2003-05-23  .mjt
+
+        * 割り込みハンドラはIRQ 0-7に関しては正常に機能している。
+        * PCICは全然ダメ。IDバイトの読み出しのみ正常。
+
+2003-05-22  .mjt
+
+        * CPU faultの種類を表示する
+        * マウスドライバ書きかけ
+        BUG : 割り込みが発生すると確実に落ちる
+                -> IRQHandlerはクラスではなく、関数へのポインタに変更予定 -> 完了。
+        TODO: オブジェクト機構の実装。名前で属性値を取得できるように。
+
+2003-05-22  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: write/read失敗時のリトライ機能追加
+
+2003-05-21 .mjt
+
+        * IRQの割り込みハンドラをIRQ 0-7はINT 0x60 - 0x67に移動。
+
+        * ドライバ周りはちょっと凍結モード。
+        * IDEDriver.cpp: CHSリード実装。LBAデバイスに対してCHSモードとLBAモードでリードテスト。
+        * IDEDriver.h: インターフェースの追加。
+        BUG : 一部のマシンで落ちる問題はマシン側問題と判断。。。
+        BUG : driverの設計はマズそう。
+
+        CHS読み込みは問題なさげ。マウスドライバは設計がマズいのでPS2Driverとしてマウスとキーボード一緒に制御の方向で。
+
+2003-05-21  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: いまだ実機で安定した読み書きができない。割り込みをきちんとキャッチすることが必要。
+                         readResultsで割り込みが入るのが謎
+
+2003-05-20  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: FDCDriver#readがlba=0でうまく動作せず。0割をコントロールせねば
+
+
+2003-05-20 .mjt
+        * driver/ISADevice/Mouse/*: 新規。マウスドライバ(書きかけ
+        * IRQインタフェースの整備。ドライバは既に書けなくもない。未テスト
+        BUG: マウスドライバがマウスをイネーブルにしてない。
+
+2003-05-19 .mjt
+
+        * 動的IRQハンドラ変更のための実験コード幾つかに渡って追加。
+        * また、ihandlers.cppとかもかなり汚くなりました(涙
+        * Makefile:(自分専用の)ビルドターゲット write追加。allをビルド後、/dev/fd0への書き込みを行う(確認なし)。
+        * Makefile: 更新。cygwin環境でのビルド時、makeのみで正常make可能(env.local)。
+        * sysresource.cpp: 新規。
+        * sysresource.h: 新規。IRQの仮のクラス。
+        * ISADriver.*: 新規。ISAバスのオブジェクト。
+        * include/driver: 新規。ドライバインターフェース。他プラットフォームとの共有も視野に入れて分離。
+        * HowToBuild: 更新。
+        * env.local: 新規。何らかの設定スクリプトの出力すべきmakefileヘッダ部。現在は固定。
+        * mjt_test.cpp: CMOS読み出しのテスト。拡張メモリサイズの取得。
+        * IDEDriver.cpp: 起動時にdiagコマンドを実行しないようにした(Bochs対策) その他細かい修正。
+        BUG : 一部のマシンで起動しない(IPL直後にリブート)
+        BUG : IRQの割り込みハンドラとCPUの割り込みハンドラがけっこう被っている。
+        BUG : env.localがCVSの更新対象になっている(env.localが存在しないとmake出来ないため。
+
+2003-05-18  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp:Write連続が可能に
+
+        * MakeFile改良 環境変数MONA_DEVELOPERを参照します。
+
+        * FDCDriver.cpp: DiskDriverのlbaをint⇒dword
+
+        * kernel.cpp: 実機のread/writeテスト中recalibrateが重要
+
+        * FDCDriver.cpp: lbaToTHS修正。こいつが間違っていたおかげでいろいろ困った。
+
+2003-05-18  .mjt
+
+        * IDEDriver.*:IDEドライバ作成開始。
+        * IDEDriver.cpp: LBAモードのサポートとReadの仮実装
+        * kernel.cpp: IDE Driverのテスト
+        * スレッド管理機構を大分コメントアウトした。
+        * ToDo:BlockDeviceクラスの設計/auqireIRQ他割り込み系インターフェースのマージ
+
+2003-05-17  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: readコマンドのEOTは0x12でよいのかな。
+
+2003-05-10  higepon  <higepon@users.sourceforge.jp>
+
+        * operator.cpp: free()を実装。
+
+        * FAT12.cpp: write(),close()のリファクタリング
+
+        * FAT12.cpp: createFile()のリファクタリング
+
+2003-05-05  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: write(buf, size)完成
+
+2003-05-04  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: createFile()成功
+
+2003-05-02  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: FATのサイズはbpbに持っているのでfat用バッファはメモリを動的に求めるようにした。
+        * FAT12.cpp: クラスタの状態をBitMapにもつようにした。
+
+2003-04-29  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp  open(),read()の実装
+
+        * FAT12.cpp  changeDirectory完成
+
+        * string.cpp strtok改良
+
+2003-04-27  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: changeDirectoryRelativeのルートエントリー版をなんとなく実装
+
+2003-04-21  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: 最近更新停滞気味ですね。ディレクトリ、ファイル読み取りの
+                     方法は分かったので実装中。
+
+2003-04-13  higepon  <higepon@users.sourceforge.jp>
+
+        * FAT12.cpp: ルートエントリの取得に成功
+
+        * include/FAT12.h: fat12実装中
+
+2003-03-29  higepon  <higepon@users.sourceforge.jp>
+
+        * Semaphore.cpp: Semaphoreをクラスにした。
+
+2003-03-22  higepon  <higepon@users.sourceforge.jp>
+
+        * disp.cpp: semaphoreによる、描画リソースロック実験成功
+
+        * syscalls.cpp: システムコール
+
+        * kthread.cpp: カーネルスレッド実装
+
+2003-03-09  higepon  <higepon@users.sourceforge.jp>
+
+        * kthread.cpp: 4つのスレッドを動かすことに成功
+
+2003-03-08  higepon  <higepon@users.sourceforge.jp>
+
+        * pic.cpp: PIC初期化処理をいまさら作成
+
+2003-03-07  higepon  <higepon@users.sourceforge.jp>
+
+        * mode12h.asm (_write_font): font変更(by Guripon)
+
+2003-03-02  higepon  <higepon@users.sourceforge.jp>
+
+        * kthread.cpp: thread_idle追加
+
+2003-03-01  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandler.asm (_arch_timerhandler): タイマ割り込み時にレジスタをセーブ
+
+        * include/kthread.h: kthread 特権レベルスレッド作成
+
+2003-02-28  higepon  <higepon@users.sourceforge.jp>
+
+        * boot.mac削除
+
+        * FDCDriver.cpp:削除
+
+        * MFDCDriver.cpp: FD read 実機成功バージョン
+
+        * Guripon氏のスクロール改善
+
+        * MFDCDriver.cpp: FD write 実機成功バージョン
+
+2003-02-25  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandler.asm (_arch_timerhandler): 追加
+
+        * ihandler.asm (_arch_dummyhandler): 追加
+
+
+2003-02-24  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandler.asm (_arch_fdchandler): 割り込みハンドラを少しずつアセンブラに移行
+
+2003-02-23  higepon  <higepon@users.sourceforge.jp>
+
+        * GraphicalConsole.cpp: カーソル関連のバグフィックス
+
+        * IA32MemoryManager.cpp:カーネルメモリマップの変更
+
+2003-02-22  higepon  <higepon@users.sourceforge.jp>
+
+        * GraphicalConsole.cpp:write_fontのラッパーです。
+
+2003-02-21  guripon  <guripon@users.sourceforge.jp>
+
+        * mode12h.asmを追加 これによりいろいろおいしくなります。
+
+2003-02-20  higepon  <higepon@users.sourceforge.jp>
+
+        * MFDCDriver.cpp: read成功.実機で怪しい動作が・・・
+
+2003-02-16  higepon  <higepon@users.sourceforge.jp>
+
+        * Makefile (SOURCES): cygwin.env変更 nasmw->nasm
+
+2003-02-15  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: allocateMemory()の最大アドレスを0x150000
+
+2003-02-14  higepon  <higepon@users.sourceforge.jp>
+
+        * MFDCDriver.cpp: seekまで実装完了
+
+2003-02-10  higepon  <higepon@users.sourceforge.jp>
+
+        * MFDCDriver.cpp: motor(on/off)
+
+2003-02-09  higepon  <higepon@users.sourceforge.jp>
+
+        * MFDCDriver.cpp: FDCDriverを一から書き直し始める。
+
+2003-02-03  higepon  <higepon@users.sourceforge.jp>
+
+        * include/ProcessManager.h: Processを構造体からクラスに変更
+
+2003-02-02  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp (initProcess): 3つのタスクを実行するよう変更。
+
+        * タスク切り替えの時にレジスタを構造体に退避するように変更。
+
+2003-02-01  higepon  <higepon@users.sourceforge.jp>
+
+        * include/ProcessManager.h (_saveRegisters): レジスタセーブ用のマクロを追加
+
+2003-01-31  higepon  <higepon@users.sourceforge.jp>
+
+        * include/ProcessManager.h struct Processにメンバ追加。
+
+        * _sysUnlock,_sysLock()を名前変更
+
+        * Semaphore.cpp: セマフォクラスのスケルトン追加
+
+2003-01-28  higepon  <higepon@users.sourceforge.jp>
+
+        * include/ProcessManager.h (_switchProcess): pop %%eax修正
+
+2003-01-27  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: enableA20()廃止 secondboot.asmに移行
+2003-01-26  higepon  <higepon@users.sourceforge.jp>
+
+        * KeyBoardManager.cpp:getCharacter();
+
+        * monaKernel.cpp: printOK追加
+                          printBanner追加
+
+2003-01-25  higepon  <higepon@users.sourceforge.jp>
+
+        * Mona develop beta 0.02bリリース
+
+        * monaKernel.cpp: 背景色・文字色を変更
+
+        * monaIhandler.cpp: スタック切り替えテストに成功
+
+2003-01-24  higepon  <higepon@users.sourceforge.jp>
+
+        * monaIhandler.cpp: スタック実験中まともに動きません。
+
+2003-01-19  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: タスクスイッチ実験中につきあまり動きません。
+
+2003-01-16  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: TSSを使わないタスクスイッチ実験に成功
+
+2003-01-14  higepon  <higepon@users.sourceforge.jp>
+
+        * monaVga.cpp:_sys_printf() %xを改善
+
+        * _sysdump()マクロ追加: 呼び出された時点でのレジスタを表示します。
+
+2003-01-13  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp
+
+        * メモ：関数呼び出し
+          呼び出された関数はEBPからの相対位置でパラメータにアクセスする。
+          dword[EBP]  :EBPが保持していた前の値
+          dword[EBP+4]:呼び出し元でpushされていたリターンアドレス
+          dwodd[EBP+8]:第一パラメータ
+
+2003-01-12  higepon  <higepon@users.sourceforge.jp>
+
+        * monaIdt.cpp: enableTimer(),disableTimer()を追加。
+          thanks OSASK川合さん
+
+2003-01-12 Guripon  <>
+
+        * firstboot.asm: VirtualPCでFD起動するようになった。
+          原因はTEMPSEGを0x9fe0がまずかったみたい。
+
+2003-01-10  higepon  <higepon@users.sourceforge.jp>
+
+        * firstboot.asm: VirtualPCでFD起動しないエラーが改善しないので
+          以前のバージョンに巻き戻し。
+
+2003-01-08  higepon  <higepon@users.sourceforge.jp>
+
+        * Tino氏提供のパッチによりSTLportが使用できるようになりました。
+          またこれに伴いgcc2.95→3.2に移行しました。
+
+2003-01-04  Guripon  <>
+
+        * firstboot.asm:A20を有効にするコードを追加
+
+2003-01-03  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: カーネル用メモリ領域を拡張
+        (resetGDT): typeをキチンと実装するようにした。
+
+        * monaIdt.cpp: IDT_BASEを0に変更。
+
+2003-01-01  higepon  <higepon@users.sourceforge.jp>
+
+        * SystemInfo.cpp: vendorID取得
+
+2002-12-31  higepon  <higepon@users.sourceforge.jp>
+
+        * SystemInfo:cpuid命令を使用して、システム情報を取得するクラスを追加
+
+        * IA32MemoryManager.h: secondboot.asmでのGDTの設定を一時的なものとして
+                               C++移行後GDTを設定しなおすように変更。
+
+2002-12-29  higepon  <higepon@users.sourceforge.jp>
+
+        * monaKernel.cpp: IntelのマニュアルにTSSのサイズに関して記述があったので
+                          あわせて修正。
+
+2002-12-28  higepon  <higepon@users.sourceforge.jp>
+
+        * monaIhandler.cpp: fault0d()を変更
+
+2002-12-27  higepon  <higepon@users.sourceforge.jp>
+
+        * monaIhandler.cpp (handlers): 割り込みハンドラにpusha(),popa();追加
+
+2002-12-26  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp (flushTLB): flushTLB()追加。
+
+2002-12-25  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: 一部static関数を.hから.cppに移動
+
+        * include/IA32MemoryManager.h: startPaging(),stopPaging()追加
+
+        * IA32MemoryManager.cpp: setCR3()を追加
+
+2002-12-24  higepon  <higepon@users.sourceforge.jp>
+
+        * IA32MemoryManager.cpp: X86MemoryManagerをリネームしました。
+
+        * X86MemoryManager:enableA20()を大幅に改良
+        * monaKernel.cpp: KeyBoardManagerをタスクスイッチの前に
+                          インスタンス化しておく
+
+2002-12-23  higepon  <higepon@users.sourceforge.jp>
+
+        * secondboot.asm (gdtr): CS,DS base=0,limit=4GBとしました。
+
+2002-12-22  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: タイマ割り込みによるタスク切り替えに成功
+
+2002-12-16  higepon  <higepon@users.sourceforge.jp>
+
+        * monaOperator.cpp: new[],delete[]を追加 gcc3.2対応
+
+2002-12-15  higepon  <higepon@users.sourceforge.jp>
+
+        * doxygen:dot.exeというクラス図生成ツールを導入。
+
+        * Makefile : libディレクトリ対応
+
+2002-12-09  higepon  <higepon@users.sourceforge.jp>
+
+        * include/ProcessManager.h: シングルトンパターン適用
+
+        * monaIhandler.cpp : iret()作成 マクロ。
+
+        * H_SIZE_T,H_BYTEの廃止
+
+        * monaTester.cpp: multi task ok!! but some error.
+
+2002-12-06  Guripon  <>
+
+        * firstboot.asm: add retry on errror
+
+2002-12-03  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: add ltr()
+        * ProcessManager.cpp: add setTSS()
+        * ProcessManager.cpp: add setGDT()
+
+2002-12-02  higepon  <higepon@users.sourceforge.jp>
+
+        * ProcessManager.cpp: add sgdt()
+
+        * monaKernel.cpp: panic()追加
+
+2002-12-01  higepon  <higepon@users.sourceforge.jp>
+
+        * secondboot.asm:TSSディスクリプタ追加
+
+2002-11-23  higepon  <higepon@users.sourceforge.jp>
+
+        * firstboot.asm: Guriponさんによる改良
+
+2002-11-22  higepon  <higepon@users.sourceforge.jp>
+
+        * monaIhandler.cpp (handlers): add timerHandler
+
+        * include/ProcessManager.h: add
+
+        * ProcessManager.cpp: add
+
+        * monaTester.cpp: processTester()追加 処理はまだ何もなし
+
+2002-11-20  higepon  <higepon@users.sourceforge.jp>
+
+        * monaTester.cpp: typeTester()追加
+
+        * include/monaTypes.h: byte,word,dword追加
+
+2002-11-17  higepon  <higepon@users.sourceforge.jp>
+
+        * MakeFileの統合:HowToBuild参照
+
+2002-11-16  higepon  <higepon@users.sourceforge.jp>
+
+        * higeKernel.cpp (startKernel): enableA20()コメントアウト
+          実機だとキーボード入力がとれない！！！
+
+        * higeVga.cpp (scrollUp): 文字色･背景色対応
+
+2002-11-15  higepon  <higepon@users.sourceforge.jp>
+
+        * higeVga.cpp:文字色・背景色の設定追加
+
+2002-11-14  syn <syn@users.sourceforge.jp>
+
+        * higeKernel.cpp, higeTester.cpp: FDCDriverのテストコードを higeTester.cppへ移行
+        * FDCDrive.cpp, FDCDrive.h: 2002/11/02に巻き戻した変更を復活
+
+2002-11-11  higepon  <higepon@users.sourceforge.jp>
+
+        * X86MemoryManager.cpp: enableA20追加
+        * higeTester.cpp: add
+        * higeTester.h: add
+        * テストコードを徐々にhigeTester.cppに移行します。
+        * firstboot.asm:マルチセクタ読み込み対応 powered by Guripon,syn
+        * higeIdt.h:上記対応に伴いidtrアドレスを0x6800→0x0500へ変更
+
+2002-11-04  higepon  <higepon@users.sourceforge.jp>
+
+        * KeyBoardManager.cpp:一部冗長なコードの見直し
+
+2002-11-02  syn <syn@users.sourceforge.jp>
+
+        * boot不能のため、前項目の巻き戻し
+
+2002-11-02  syn <syn@users.sourceforge.jp>
+
+        * FDCDriver.cpp, FDCDriver.h writeSectorの実装
+          FDCDriver::write_dma 追加
+        * FDCDriver.cpp 複数セクタ読み込みの実装
+        * FDCDriver::motor motor-offの実装(忘れてた:-P)
+        * FDCDriver::sector_to_hcr 追加
+        * FDCDriver.cpp 各種エラー処理追加
+
+2002-10-31  syn <syn@users.sourceforge.jp>
+
+        * FDCDriver.cpp readSectorの実装
+
+2002-10-26  higepon  <higepon@users.sourceforge.jp>
+
+        * higeVga.cpp: _sys_printf() %x対応
+
+2002-10-23  higepon  <higepon@users.sourceforge.jp>
+
+        * firstboot.asm: number of sector to read を18→32に変更
+
+2002-10-23  syn <syn@users.sourceforge.jp>
+
+        * FDCDriver.cpp 追加
+        * include/FDCDriver.h 追加
+        * higeKernel.cpp: FDCDriver用のテストコード追加(コメントアウト状態)
+        * higeIhandler.cpp: fdcHandler add
+        * higeIo.cpp: _sysInitIo: 割り込みマスクを変更し、FDCによる割り込みを許可
+        * Makefile*: FDCDriverの記述追加
+
+
+2002-10-23  higepon  <higepon@users.sourceforge.jp>
+
+        * higeKernel.cpp:test for HVector記述追加
+        * MakeFile.cygwin:HVector.hの記述追加
+        * HVector追加
+        * higeOperator.cpp: __builtin_vec_delete add
+
+2002-10-22  higepon  <higepon@users.sourceforge.jp>
+
+        * KeyBoardManager.cpp:constキーワード等追加
+        * KeyBoardManager.h:constキーワード等追加
+        * MemoryManager.cpp:不要なデバッグメッセージをHIGEPOS_DEBUG_MMで抑制
+
+        synさんcommit後MakeFileに手直しを入れる。
+
+2002-10-20  higepon  <higepon@users.sourceforge.jp>
+
+        * 開発環境をhigepos_v1.1に移行しました。
+
+2002-10-19  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: _sys_printfに%c 機能追加
+
+        * KeyBoardManager.cpp:通常のキー取得を実験中
+
+        * firstboot.asm : Guripon rawwrite
+
+2002-10-12  higepon  <higepon@users.sourceforge.jp>
+
+        KeyBoardManager追加 中身はまだ空です。
+
+        * Makefile.linux: KeyBoardManager追加対応
+        * Makefile: KeyBoardManager追加対応
+        * KeyBoardManager.cpp: 新規追加キーボード入力管理クラス
+        * KeyBoardManager.h: 新規追加キーボード入力管理クラス
+2002-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        linux対応
+
+        * higeOperator.cpp: operator newの引数をsize_tに変更。
+          higepostypes.hをincludeするように変更
+
+        * higepostypes.h:size_tを定義。
+
+2002-10-06  syn <syn@users.sourceforge.jp>
+
+        * higeOperator.cpp: operator new とoperator deleteをコメントアウト
+          (gccが __builtin_new(delete)とぶつかるとエラーを出すため)
+        * higeOperator.cpp: operetor new の引数を unsigned intへ変更
+          (gccが 型が違うとエラーを出すため)
+        * higeOperator.h: operetor new の引数を unsigned intへ変更
+          (gccが 型が違うとエラーを出すため)
+
+2002-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: add scrollUp()function, but it seems bad.
+
+2002-09-08  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: create _sys_printf().
+
+        * higeOperator.cpp: modify return value of allocateMemory, param value of freeMemory
+
+2002-09-07  higepon  <higepon@users.sourceforge.jp>
+
+        * X86MemoryManager.cpp: modify constructor
+
+2002-09-07  higepon  <higepon@users.sourceforge.jp>
+
+        * include/X86MemoryManager.h: add higepostypes.h
+          and define H_SIZE_T
+                     H_BYTE
+
+2002-09-06  higepon  <higepon@users.sourceforge.jp>
+
+        * メモリ管理 メモリ割り当て失敗時にfault0Handlerが呼ばれるようにした。
+
+        * add fault0Handler

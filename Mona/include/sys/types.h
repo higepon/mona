@@ -1,0 +1,232 @@
+/*!
+    \file  types.h
+    \brief types defineition
+
+    types defintion
+    Copyright (c) 2002 HigePon
+    WITHOUT ANY WARRANTY
+
+    \author  HigePon
+    \version $Revision$
+    \date   create:2002/09/08 update:$Date$
+*/
+
+#ifndef _MONA_TYPES_
+#define _MONA_TYPES_
+
+#define NULL     0
+#define NORMAL   0
+#define DEBUG_MODE
+
+typedef unsigned char  byte;
+typedef unsigned short word;
+typedef unsigned int   dword;
+typedef dword          kevent;
+#define interface class
+
+#ifndef SEEK_SET
+#  define SEEK_SET        0       /* Seek from beginning of file.  */
+#  define SEEK_CUR        1       /* Seek from current position.  */
+#  define SEEK_END        2       /* Set file pointer to EOF plus "offset" */
+#endif
+
+/* file open mode */
+#define FILE_OPEN_READ         1
+#define FILE_OPEN_NORMAL_WRITE 2
+#define FILE_OPEN_APPEND_WRITE 3
+
+
+typedef dword linear_addr;  /* 32bit */
+typedef dword virtual_addr; /* 32bit */
+typedef dword phys_addr;    /* 32bit */
+
+typedef struct {
+    int year;
+    int month;
+    int day;
+    int dayofweek;
+    int hour;
+    int min;
+    int sec;
+} KDate;
+
+struct CommandOption {
+    char str[32];
+    struct CommandOption* next;
+};
+typedef struct CommandOption CommandOption;
+
+typedef struct {
+    dword header;
+    dword arg1;
+    dword arg2;
+    dword arg3;
+    dword from;
+    char str[128];
+    int length;
+} MessageInfo;
+
+typedef struct {
+    dword vram;
+    dword bpp;
+    dword x;
+    dword y;
+} ScreenInfo;
+
+typedef struct Pixel16 {
+    byte p[2];
+};
+
+typedef struct Pixel24 {
+    byte p[3];
+};
+
+typedef struct Pixel32 {
+    dword p;
+};
+
+typedef struct Pixel8 {
+    byte p;
+};
+
+typedef struct MappingInfo {
+    dword attachPid;
+    dword linearAddress1;
+    dword linearAddress2;
+    dword size;
+    dword errorCd;
+};
+
+typedef struct SysArg
+{
+    dword arg1;
+    dword arg2;
+    dword arg3;
+    dword arg4;
+};
+
+#define WAIT_TIMER   0x60
+#define WAIT_NONE    0xFF
+
+
+#define MSG_KEY_SCANCODE               0x00
+#define MSG_KEY_REGIST_TO_SERVER       0x01
+#define MSG_MAP                        0x02
+#define MSG_RESULT_OK                  0x03
+#define MSG_RESULT_ERROR               0x04
+#define MSG_KEY_VIRTUAL_CODE           0x05
+#define MSG_MOUSE_1                    0x06
+#define MSG_MOUSE_2                    0x07
+#define MSG_MOUSE_3                    0x08
+#define MSG_MOUSE_REGIST_TO_SERVER     0x09
+#define MSG_MOUSE_INFO                 0x0A
+#define MSG_MOUSE_UNREGIST_FROM_SERVER 0x0B
+#define MSG_KEY_UNREGIST_FROM_SERVER   0x0C
+#define MSG_SERVER_START_OK            0x0D
+#define MSG_MEMORY_MAP_ID              0x0E
+
+#define SHARED_FDC_BUFFER 0x4000
+
+#define SYSTEM_CALL_PRINT                    0x0001
+#define SYSTEM_CALL_KILL                     0x0002
+#define SYSTEM_CALL_SEND                     0x0003
+#define SYSTEM_CALL_RECEIVE                  0x0004
+#define SYSTEM_CALL_EXIST_MESSAGE            0x0005
+#define SYSTEM_CALL_MTHREAD_CREATE           0x0006
+#define SYSTEM_CALL_MTHREAD_JOIN             0x0007
+#define SYSTEM_CALL_MTHREAD_SLEEP            0x0008
+#define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE    0x0009
+#define SYSTEM_CALL_MUTEX_CREATE             0x000A
+#define SYSTEM_CALL_MUTEX_LOCK               0x000B
+#define SYSTEM_CALL_MUTEX_TRYLOCK            0x000C
+#define SYSTEM_CALL_MUTEX_UNLOCK             0x000D
+#define SYSTEM_CALL_MUTEX_DESTROY            0x000E
+#define SYSTEM_CALL_LOOKUP                   0x000F
+#define SYSTEM_CALL_LOOKUP_MAIN_THREAD       0x0010
+#define SYSTEM_CALL_GET_VRAM_INFO            0x0011
+#define SYSTEM_CALL_LOAD_PROCESS             0x0012
+#define SYSTEM_CALL_SET_CURSOR               0x0013
+#define SYSTEM_CALL_GET_CURSOR               0x0014
+#define SYSTEM_CALL_FILE_OPEN                0x0015
+#define SYSTEM_CALL_FILE_READ                0x0016
+#define SYSTEM_CALL_FILE_WRITE               0x0017
+#define SYSTEM_CALL_FILE_CLOSE               0x0018
+#define SYSTEM_CALL_FDC_OPEN                 0x0019
+#define SYSTEM_CALL_FDC_CLOSE                0x001A
+#define SYSTEM_CALL_FDC_READ                 0x001B
+#define SYSTEM_CALL_FDC_WRITE                0x001C
+#define SYSTEM_CALL_FDC_DISK_CHANGED         0x001D
+#define SYSTEM_CALL_WAIT_FDC                 0x001E
+#define SYSTEM_CALL_GET_PID                  0x001F
+#define SYSTEM_CALL_GET_TID                  0x0020
+#define SYSTEM_CALL_ARGUMENTS_NUM            0x0021
+#define SYSTEM_CALL_GET_ARGUMENTS            0x0022
+#define SYSTEM_CALL_DATE                     0x0023
+#define SYSTEM_CALL_GET_IO                   0x0024
+#define SYSTEM_CALL_MEMORY_MAP_CREATE        0x0025
+#define SYSTEM_CALL_MEMORY_MAP_GET_SIZE      0x0026
+#define SYSTEM_CALL_MEMORY_MAP_MAP           0x0027
+#define SYSTEM_CALL_MEMORY_MAP_UNMAP         0x0028
+#define SYSTEM_CALL_FILE_CREATE              0x0029
+#define SYSTEM_CALL_DIR_OPEN                 0x002A
+#define SYSTEM_CALL_DIR_CLOSE                0x002B
+#define SYSTEM_CALL_DIR_READ                 0x002C
+#define SYSTEM_CALL_CD                       0x002D
+
+
+#define SYSCALL_0(syscall_number, result)                                         \
+    asm volatile("movl $%c1, %%ebx \n"                                            \
+                 "int  $0x80       \n"                                            \
+                 "movl %%eax, %0   \n"                                            \
+                 :"=m"(result)                                                    \
+                 :"g"(syscall_number)                                             \
+                 :"ebx"                                                           \
+                 );                                                               \
+
+#define SYSCALL_1(syscall_number, result, arg1)                                   \
+    asm volatile("movl $%c1, %%ebx \n"                                            \
+                 "movl %2  , %%esi \n"                                            \
+                 "int  $0x80       \n"                                            \
+                 "movl %%eax, %0   \n"                                            \
+                 :"=m"(result)                                                    \
+                 :"g"(syscall_number), "m"(arg1)                                  \
+                 :"ebx", "esi"                                                    \
+                 );                                                               \
+
+#define SYSCALL_2(syscall_number, result, arg1, arg2)                             \
+    asm volatile("movl $%c1, %%ebx \n"                                            \
+                 "movl %2  , %%esi \n"                                            \
+                 "movl %3  , %%ecx \n"                                            \
+                 "int  $0x80       \n"                                            \
+                 "movl %%eax, %0   \n"                                            \
+                 :"=m"(result)                                                    \
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2)                       \
+                 :"ebx", "esi", "ecx"                                             \
+                 );                                                               \
+
+#define SYSCALL_3(syscall_number, result, arg1, arg2, arg3)                       \
+    asm volatile("movl $%c1, %%ebx \n"                                            \
+                 "movl %2  , %%esi \n"                                            \
+                 "movl %3  , %%ecx \n"                                            \
+                 "movl %4  , %%edi \n"                                            \
+                 "int  $0x80       \n"                                            \
+                 "movl %%eax, %0   \n"                                            \
+                 :"=m"(result)                                                    \
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3)            \
+                 :"ebx", "esi", "ecx", "edi"                                      \
+                 );                                                               \
+
+#define SYSCALL_4(syscall_number, result, arg1, arg2, arg3, arg4)                 \
+    asm volatile("movl $%c1, %%ebx \n"                                            \
+                 "movl %2  , %%esi \n"                                            \
+                 "movl %3  , %%ecx \n"                                            \
+                 "movl %4  , %%edi \n"                                            \
+                 "movl %5  , %%edx \n"                                            \
+                 "int  $0x80       \n"                                            \
+                 "movl %%eax, %0   \n"                                            \
+                 :"=m"(result)                                                    \
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3), "m"(arg4) \
+                 :"ebx", "esi", "ecx", "edi", "edx"                               \
+                 );                                                               \
+
+#endif

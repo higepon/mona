@@ -1,0 +1,49 @@
+MONADIR = .
+include $(MONADIR)/env/dirnames.inc
+
+TARGET = $(BINDIR)/mona.img
+
+ELF_FILES = `ls $(BINDIR)/root/APPS/*.ELF`
+SVR_FILES = `ls $(BINDIR)/root/SERVERS/*.SVR`
+
+all:
+	@cd tools; $(MAKE) $@
+	@cd src; $(MAKE) $@
+	@cd apps; $(MAKE) $@
+	@cd samples; $(MAKE) $@
+
+install:
+	@cd tools; $(MAKE) $@
+	@cd src; $(MAKE) $@
+	@cd apps; $(MAKE) $@
+	@cd samples; $(MAKE) $@
+	for file in $(ELF_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file APPS/`basename $$file`; done
+	for file in $(SVR_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file SERVERS/`basename $$file`; done
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/AUTOEXEC.MSH AUTOEXEC.MSH
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA.CFG MONA.CFG
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/NEKO.JPG NEKO.JPG
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA-12.MNF MONA-12.MNF
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/WABA.LIB  APPS/WABA.LIB
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/HELLO.WRP APPS/HELLO.WRP
+
+clean:
+	@cd tools; $(MAKE) $@
+	@cd src; $(MAKE) $@
+	@cd apps; $(MAKE) $@
+	@cd samples; $(MAKE) $@
+	rm -f $(BINDIR)/root/APPS/*.ELF
+	rm -f $(BINDIR)/root/SERVERS/*.SVR
+	rm -f $(BINDIR)/mona.img
+
+depend:
+	@cd tools; $(MAKE) $@
+	@cd src; $(MAKE) $@
+	@cd apps; $(MAKE) $@
+	@cd samples; $(MAKE) $@
+
+distclean: clean
+	rm -f Makefile
+	rm -f env/Makefile.inc
+
+write :
+	cp $(TARGET) /dev/fd0
