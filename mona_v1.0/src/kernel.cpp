@@ -118,10 +118,8 @@ void startKernel(void) {
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
-    g_page_manager->setup();
+    //    g_page_manager->setup();
 
-//     SystemInfo::rdtscsub();
-//     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
 
 #ifdef MJT
     test_mjt();
@@ -133,18 +131,17 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
-    g_console->printf("Hit any key to start ProcessManager \n");
+    g_console->printf("Hit any key to start Main Process \n");
     while (g_demo_step < 2);
 
-    g_info_level = DEBUG;
+    g_info_level = MSG;
 
-    Process* idle     = new Process("idle     ");
-    Process* mprocess = new Process("mainProc ");
+    Process* idle     = new Process("idle         ");
+    Process* mprocess = new Process("mainProc     ");
     g_process_manager = new ProcessManager(idle);
 
     g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
 
-    mainProcess();
     enableTimer();
 #endif
 
@@ -157,6 +154,7 @@ void startKernel(void) {
 void mainProcess() {
 
     g_console->printf("Hit any key to Load ELF\n");
+
     while (g_demo_step < 5);
 
     ELFTester(user_func_from);
@@ -167,8 +165,8 @@ void mainProcess() {
     g_console->printf("loader result = %d\n", loader->prepare((dword)user_func_from));
     loader->load(user_func);
 
-    //    enableInterrupt();
-    //    enableTimer();
+    g_console->printf("Hit any key to start USER.ELF\n");
+    while (g_demo_step < 9);
 
     UserProcess* process1 = new UserProcess("user_process ");
     Process*     process2 = new Process("krnl_o       ");

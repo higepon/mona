@@ -25,7 +25,7 @@ ProcessManager::ProcessManager(Process* idle) {
 
 void ProcessManager::switchProcess() {
 
-    info(DEV_NOTICE, "[ name=%s  esp0=%x eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x ss0=%x]\n"
+    info(DEBUG, "[ name=%s  esp0=%x eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x ss0=%x]\n"
          , g_current_process->name
          , g_current_process->esp0
          , g_current_process->eip
@@ -47,7 +47,7 @@ void ProcessManager::switchProcess() {
         g_tss->esp0 = g_current_process->esp0;
         g_tss->ss0  = g_current_process->ss0;
 
-        info(DEV_NOTICE, "TO USER\n");
+        info(DEBUG, "TO USER\n");
 
         if ((g_current_process->eflags & 0x20000) == 0x20000) {
 
@@ -58,7 +58,7 @@ void ProcessManager::switchProcess() {
 
     } else {
 
-        info(DEV_NOTICE, "TO KERNEL\n");
+        info(DEBUG, "TO KERNEL\n");
         arch_switch_process();
     }
 }

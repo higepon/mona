@@ -113,13 +113,13 @@ void timerHandler() {
     counter++;
 #endif
 
-    g_console->printf("Timer");
+    //    g_console->printf("Timer");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    g_process_manager->schedule();
+   g_process_manager->schedule();
 }
 
 /*!

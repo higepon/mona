@@ -263,6 +263,10 @@ void FDCDriver::motor(bool on) {
         interrupt_ = false;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
         while (!waitInterrupt());
+        delay();
+        delay();
+        delay();
+        delay();
 
         info(DUMP, "motor on:after waitInterrupt\n");
 
@@ -293,6 +297,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
 
+        delay();
         delay();
         delay();
         delay();
@@ -328,6 +333,7 @@ bool FDCDriver::recalibrate() {
 
     info(DEV_NOTICE, "recalibrate:after waitInterrupt\n");
 
+    delay();
     delay();
     delay();
     delay();
@@ -402,6 +408,7 @@ bool FDCDriver::seek(byte track) {
     delay();
     delay();
     delay();
+    delay();
 
     info(DEV_WARNING, "seek:after waitInterrupt\n");
 
@@ -432,6 +439,7 @@ bool FDCDriver::senseInterrupt() {
 
     info(DEV_WARNING, "senseInterrrupt:before result\n");
 
+    delay();
     delay();
     delay();
     delay();
@@ -615,6 +623,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     delay();
     delay();
     delay();
+    delay();
 
     setupDMARead(512);
 
@@ -632,6 +641,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     while (!waitInterrupt());
 
+    delay();
     delay();
     delay();
     delay();
@@ -709,6 +719,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     delay();
     delay();
     delay();
+    delay();
 
     interrupt_ = false;
     sendCommand(command, sizeof(command));
@@ -716,6 +727,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
     info(DEV_NOTICE, "write:after waitInterrupt\n");
 
+    delay();
     delay();
     delay();
     delay();
