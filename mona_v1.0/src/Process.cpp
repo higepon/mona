@@ -14,125 +14,9 @@
 #include <global.h>
 #include <PageManager.h>
 
-extern "C" Process** g_process;
-
 const int Process::RUNNING  = 0;
 const int Process::READY    = 1;
 const int Process::SLEEPING = 2;
-
-/*!
-    \brief setup
-
-    \author HigePon
-    \date   create:2003/06/28 update:
-*/
-void Process::setup() {
-
-    g_process = new Process*[MAX_PROCESS];
-
-    Process* kernel = new Process("Kernel");
-    g_current_process = &(kernel->pinfo_);
-
-    return;
-}
-
-Process::Process(const char* name) {
-
-    pinfo_.process = this;
-    strncpy(pinfo_.name, name, sizeof(pinfo_.name));
-
-    pinfo_.cs      = KERNEL_CS;
-    pinfo_.ds      = KERNEL_DS;
-    pinfo_.es      = KERNEL_DS;
-    pinfo_.ss      = KERNEL_SS;
-    pinfo_.eflags  = 0x200;
-    pinfo_.eax     = 0;
-    pinfo_.ecx     = 0;
-    pinfo_.edx     = 0;
-    pinfo_.ebx     = 0;
-    pinfo_.esi     = 0;
-    pinfo_.edi     = 0;
-    pinfo_.tick    = 0;
-    pinfo_.dpl     = DPL_KERNEL;
-
-    pinfo_.shared      = new SharedMemorySegment();
-    pinfo_.heap        = new HeapSegment(0xC0000000, 1024 * 1024); /* 1MB */
-    pinfo_.messageList = new HList<Message*>(3, 5);
-    QueueManager::init(pinfo_.shared);
-
-}
-
-Process::~Process() {
-
-    if (pinfo_.shared) {
-        delete(pinfo_.shared);
-    }
-
-    if (pinfo_.heap) {
-        delete(pinfo_.heap);
-    }
-
-    if (pinfo_.messageList) {
-        delete(pinfo_.messageList);
-    }
-}
-
-void Process::setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid) {
-
-    pinfo_.eip  = (dword)entryPoint;
-    pinfo_.esp  = (dword)stack;
-    pinfo_.ebp  = (dword)stack;
-    pinfo_.cr3  = (dword)pagedir;
-    pinfo_.pid  = pid;
-    pinfo_.ss0  = KERNEL_SS;
-    pinfo_.esp0 = (dword)kernel_stack;
-    return;
-}
-
-UserProcess::UserProcess(const char* name) {
-
-    pinfo_.process = this;
-    strncpy(pinfo_.name, name, sizeof(pinfo_.name));
-
-    pinfo_.cs      = USER_CS;
-    pinfo_.ds      = USER_DS;
-    pinfo_.es      = USER_DS;
-    pinfo_.ss      = USER_SS;
-    pinfo_.eflags  = 0x200;
-    pinfo_.eax     = 0;
-    pinfo_.ecx     = 0;
-    pinfo_.edx     = 0;
-    pinfo_.ebx     = 0;
-    pinfo_.esi     = 0;
-    pinfo_.edi     = 0;
-    pinfo_.tick    = 0;
-    pinfo_.dpl     = DPL_USER;
-
-    pinfo_.shared      = new SharedMemorySegment();
-    pinfo_.heap        = new HeapSegment(0xC0000000, 1024 * 1024); /* 1MB */
-    pinfo_.messageList = new HList<Message*>(3, 5);
-    QueueManager::init(pinfo_.shared);
-}
-
-V86Process::V86Process(const char* name) {
-
-    pinfo_.process = this;
-    strncpy(pinfo_.name, name, sizeof(pinfo_.name));
-
-    pinfo_.cs      = USER_CS;
-    pinfo_.ds      = USER_DS;
-    pinfo_.es      = USER_DS;
-    pinfo_.ss      = USER_SS;
-    pinfo_.eflags  = 0x20200;
-    pinfo_.eax     = 0;
-    pinfo_.ecx     = 0;
-    pinfo_.edx     = 0;
-    pinfo_.ebx     = 0;
-    pinfo_.esi     = 0;
-    pinfo_.edi     = 0;
-    pinfo_.tick    = 0;
-    pinfo_.dpl     = DPL_USER;
-}
 
 /*----------------------------------------------------------------------
     Thread
@@ -284,22 +168,23 @@ Thread* ThreadManager::schedule() {
 void idleThread() {
     for (;;);
 }
+
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
-ProcessManager_::ProcessManager_(PageManager* pageManager) : current_(NULL) {
+ProcessManager::ProcessManager(PageManager* pageManager) : current_(NULL) {
 
     /* page manager */
     pageManager_ = pageManager;
 
     /* dispach and wait list */
-    dispatchList_ = new HList<Process_*>();
-    waitList_     = new HList<Process_*>();
+    dispatchList_ = new HList<Process*>();
+    waitList_     = new HList<Process*>();
     checkMemoryAllocate(dispatchList_, "ProcessManager dispatch list");
     checkMemoryAllocate(waitList_    , "ProcessManager wait     list");
 
     /* create idle process */
-    idle_ = new KernelProcess_("Idle", pageManager_->createNewPageDirectory());
+    idle_ = new KernelProcess("Idle", pageManager_->createNewPageDirectory());
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
     add(idle_);
 
@@ -309,14 +194,14 @@ ProcessManager_::ProcessManager_(PageManager* pageManager) : current_(NULL) {
     join(idle_, thread);
 }
 
-ProcessManager_::~ProcessManager_() {
+ProcessManager::~ProcessManager() {
 
     /* destroy */
     delete dispatchList_;
     delete idle_;
 }
 
-int ProcessManager_::join(Process_* process, Thread* thread) {
+int ProcessManager::join(Process* process, Thread* thread) {
 
     bool wait;
 
@@ -339,7 +224,7 @@ int ProcessManager_::join(Process_* process, Thread* thread) {
     return NORMAL;
 }
 
-int ProcessManager_::kill(Process_* process) {
+int ProcessManager::kill(Process* process) {
 
     /* remove from list */
     dispatchList_->remove(process);
@@ -351,22 +236,22 @@ int ProcessManager_::kill(Process_* process) {
     return NORMAL;
 }
 
-int ProcessManager_::switchProcess() {
+int ProcessManager::switchProcess() {
 
     /* do nothing ??? */
 
     return NORMAL;
 }
 
-LinearAddress ProcessManager_::allocateKernelStack() const {
+LinearAddress ProcessManager::allocateKernelStack() const {
     static int i = 0;
     return 0x100000 + i * 4096;
 }
 
-bool ProcessManager_::schedule() {
+bool ProcessManager::schedule() {
 
     bool      isProcessChanged;
-    Process_* next;
+    Process* next;
 
     /* tick */
     current_->tick();
@@ -396,28 +281,28 @@ bool ProcessManager_::schedule() {
     return isProcessChanged;
 }
 
-Process_* ProcessManager_::create(int type, const char* name) {
+Process* ProcessManager::create(int type, const char* name) {
 
-    Process_* result;
+    Process* result;
 
     /* process type */
     switch (type) {
 
       case USER_PROCESS:
-          result = new UserProcess_(name, pageManager_->createNewPageDirectory());
+          result = new UserProcess(name, pageManager_->createNewPageDirectory());
           break;
       case KERNEL_PROCESS:
-          result = new KernelProcess_(name, pageManager_->createNewPageDirectory());
+          result = new KernelProcess(name, pageManager_->createNewPageDirectory());
           break;
       default:
-          result = (Process_*)NULL;
+          result = (Process*)NULL;
           break;
     }
 
     return result;
 }
 
-int ProcessManager_::add(Process_* process) {
+int ProcessManager::add(Process* process) {
 
     /* process has Thread? */
     if (process->hasActiveThread()) {
@@ -438,7 +323,7 @@ int ProcessManager_::add(Process_* process) {
     return NORMAL;
 }
 
-Thread* ProcessManager_::createThread(Process_* process, dword programCounter) {
+Thread* ProcessManager::createThread(Process* process, dword programCounter) {
 
     /* check process */
     if (!(dispatchList_->hasElement(process)) && !(waitList_->hasElement(process))) {
@@ -452,7 +337,7 @@ Thread* ProcessManager_::createThread(Process_* process, dword programCounter) {
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-Process_::Process_(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4) {
+Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
@@ -461,25 +346,25 @@ Process_::Process_(const char* name, PageEntry* directory) : tick_(0), timeLeft_
     pageDirectory_ = directory;
 }
 
-Process_::~Process_() {
+Process::~Process() {
 }
 
-int Process_::join(Thread* thread) {
+int Process::join(Thread* thread) {
     return threadManager_->join(thread);
 }
 
-Thread* Process_::createThread(dword programCounter) {
+Thread* Process::createThread(dword programCounter) {
     return threadManager_->create(programCounter, pageDirectory_);
 }
 
-Thread* Process_::schedule() {
+Thread* Process::schedule() {
     return threadManager_->schedule();
 }
 
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/
-UserProcess_::UserProcess_(const char* name, PageEntry* directory) : Process_(name, directory) {
+UserProcess::UserProcess(const char* name, PageEntry* directory) : Process(name, directory) {
 
     /* not kernel mode */
     isUserMode_ = true;
@@ -488,13 +373,13 @@ UserProcess_::UserProcess_(const char* name, PageEntry* directory) : Process_(na
     threadManager_ = new ThreadManager(isUserMode_);
 }
 
-UserProcess_::~UserProcess_() {
+UserProcess::~UserProcess() {
 }
 
 /*----------------------------------------------------------------------
     KernelProcess
 ----------------------------------------------------------------------*/
-KernelProcess_::KernelProcess_(const char* name, PageEntry* directory) : Process_(name, directory) {
+KernelProcess::KernelProcess(const char* name, PageEntry* directory) : Process(name, directory) {
 
     /* kernel mode */
     isUserMode_ = false;
@@ -503,5 +388,5 @@ KernelProcess_::KernelProcess_(const char* name, PageEntry* directory) : Process
     threadManager_ = new ThreadManager(isUserMode_);
 }
 
-KernelProcess_::~KernelProcess_() {
+KernelProcess::~KernelProcess() {
 }

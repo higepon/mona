@@ -55,9 +55,6 @@ GLOBAL dword g_total_system_memory;
 
 /* Process */
 GLOBAL TSS* g_tss;
-GLOBAL Process** g_process;
-GLOBAL ProcessInfo* g_current_process;
-GLOBAL class ProcessManager* g_process_manager;
 
 GLOBAL PageEntry* g_page_directory;
 GLOBAL PageManager* g_page_manager;
@@ -66,6 +63,6 @@ GLOBAL MemoryManager km; /* Kernel Memory Management */
 
 GLOBAL SharedMemoryObject* g_sharedMemoryList;
 
-GLOBAL ProcessManager_* g_processManager;
+GLOBAL ProcessManager* g_processManager;
 GLOBAL ThreadInfo* g_currentThread;
 #endif

@@ -143,7 +143,7 @@ void timerHandler() {
 
     g_console->printf("********%s[%x]\n", g_processManager->getCurrentProcess()->getName(), g_currentThread);
 
-    g_process_manager->schedule();
+    //    g_process_manager->schedule();
 }
 
 /*!

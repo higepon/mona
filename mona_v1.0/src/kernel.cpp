@@ -121,7 +121,7 @@ void startKernel(void) {
     g_page_manager->setup();
 
     /* this is test code 2003/12/14 */
-    g_processManager = new ProcessManager_(g_page_manager);
+    //  g_processManager = new ProcessManager_(g_page_manager);
   //    Process_* testProcess1 = g_processManager->create(ProcessManager_::KERNEL_PROCESS, "TEST1");
     //    g_processManager->add(testProcess1);
 //     Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
@@ -151,11 +151,11 @@ void startKernel(void) {
     //    g_console->printf("[2]");
     g_info_level = MSG;
 
-    Process* idle     = new Process("idle         ");
-    Process* mprocess = new Process("mainProc     ");
-    g_process_manager = new ProcessManager(idle);
+    //    Process* idle     = new Process("idle         ");
+    //    Process* mprocess = new Process("mainProc     ");
+    //    g_process_manager = new ProcessManager(idle);
 
-    g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
+    //    g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
 
     enableTimer();
 #endif

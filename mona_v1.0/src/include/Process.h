@@ -24,42 +24,9 @@
 #define DPL_KERNEL  0
 #define DPL_USER    3
 
-typedef struct ProcessInfo {
-    dword  eip;       // 0
-    dword  cs;        // 4
-    dword  eflags;    // 8
-    dword  eax;       // 12
-    dword  ecx;       // 16
-    dword  edx;       // 20
-    dword  ebx;       // 24
-    dword  esp;       // 28
-    dword  ebp;       // 32
-    dword  esi;       // 36
-    dword  edi;       // 40
-    dword  ds;        // 44
-    dword  es;        // 48
-    dword  fs;        // 52
-    dword  gs;        // 56
-    dword  ss;        // 60
-    dword  dpl;       // 64
-    dword  esp0;      // 68
-    dword  ss0;       // 72
-    dword  cr3;       // 76
-    dword  tick;
-    dword  pid;
-    dword  wakeupTimer;
-    int    state;
-    class  Process* process;
-    ProcessInfo* prev;
-    ProcessInfo* next;
-    class StackSegment* stack;
-    class SharedMemorySegment* shared;
-    class HeapSegment* heap;
-    char  name[16];
-    Message* message;
-    List<Message*>* messageList;
-};
-
+/*----------------------------------------------------------------------
+    ArchThreadInfo
+----------------------------------------------------------------------*/
 typedef struct ArchThreadInfo {
     dword  eip;       // 0
     dword  cs;        // 4
@@ -135,7 +102,6 @@ class Thread {
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-class ProcessManager_;
 class ThreadManager {
 
   public:
@@ -178,12 +144,12 @@ class ThreadManager {
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-class Process_ {
+class Process {
 
   public:
-    Process_() {}
-    Process_(const char* name, PageEntry* directory);
-    virtual ~Process_();
+    Process() {}
+    Process(const char* name, PageEntry* directory);
+    virtual ~Process();
 
   public:
     inline const char* getName() const {
@@ -234,43 +200,43 @@ class Process_ {
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/
-class UserProcess_ : public Process_ {
+class UserProcess : public Process {
 
   public:
-    UserProcess_();
-    UserProcess_(const char* name, PageEntry* directory);
-    virtual ~UserProcess_();
+    UserProcess();
+    UserProcess(const char* name, PageEntry* directory);
+    virtual ~UserProcess();
 };
 
 /*----------------------------------------------------------------------
     KernelInfo
 ----------------------------------------------------------------------*/
-class KernelProcess_ : public Process_ {
+class KernelProcess : public Process {
 
   public:
-    KernelProcess_();
-    KernelProcess_(const char* name, PageEntry* directory);
-    virtual ~KernelProcess_();
+    KernelProcess();
+    KernelProcess(const char* name, PageEntry* directory);
+    virtual ~KernelProcess();
 };
 
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
-class ProcessManager_ {
+class ProcessManager {
 
   public:
-    ProcessManager_(PageManager* pageManager);
-    virtual ~ProcessManager_();
+    ProcessManager(PageManager* pageManager);
+    virtual ~ProcessManager();
 
   public:
-    Process_* create(int type, const char* name);
-    Thread* createThread(Process_* process, dword programCounter);
-    int join(Process_* process, Thread* thread);
-    int add(Process_* process);
-    int kill(Process_* process);
+    Process* create(int type, const char* name);
+    Thread* createThread(Process* process, dword programCounter);
+    int join(Process* process, Thread* thread);
+    int add(Process* process);
+    int kill(Process* process);
     int switchProcess();
     bool schedule();
-    inline Process_* getCurrentProcess() const {
+    inline Process* getCurrentProcess() const {
         return current_;
     }
     LinearAddress allocateKernelStack() const;
@@ -280,69 +246,11 @@ class ProcessManager_ {
     static const int KERNEL_PROCESS = 1;
 
   private:
-    List<Process_*>* dispatchList_;
-    List<Process_*>* waitList_;
+    List<Process*>* dispatchList_;
+    List<Process*>* waitList_;
     PageManager* pageManager_;
-    Process_* current_;
-    Process_* idle_;
-};
-
-/*!
-    class Process
-*/
-class Process {
-
-  public:
-    Process(const char*);
-
-    Process() {}
-    virtual ~Process();
-
-  protected:
-
-  public:
-    ProcessInfo pinfo_;
-
-    virtual void setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid);
-
-    static void setup();
-
-  public:
-    static const int RUNNING;
-    static const int READY;
-    static const int SLEEPING;
-};
-
-/*!
-    class UserProcess
-*/
-class UserProcess : public Process {
-
-  public:
-    UserProcess(const char*);
-
-    virtual ~UserProcess() {
-    }
-
-
-    //    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
-
-};
-
-/*!
-    class V86Process
-*/
-class V86Process : public Process {
-
-  public:
-    V86Process(const char*);
-
-    virtual ~V86Process() {
-    }
-
-
-    //    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
-
+    Process* current_;
+    Process* idle_;
 };
 
 #endif
