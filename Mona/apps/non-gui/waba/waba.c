@@ -27,7 +27,6 @@ Cambridge, MA 02139, USA.
 //#define WIN32 1
 //#define PALMOS 1
 //#define WINCE 1
-#define MONA 1
 
 #if defined(NO_PLATFORM_DEFINED)
 To compile, you need to define one of the platforms above.
@@ -76,8 +75,10 @@ Rick Wild
 #include "nmpalm_a.c"
 #elif defined(WIN32)
 #include "nmwin32_a.c"
+#elif defined(OSASK)
+#include "nmport_a.c"
 #elif defined(MONA)
-#include "nmmona_a.cpp"
+#include "nmport_a.c"
 #endif
 
 /*
@@ -733,9 +734,12 @@ typedef struct
 #include "nmpalm_b.c"
 #elif defined(WIN32)
 #include "nmwin32_b.c"
+#elif defined(OSASK)
+#include "mona8x16.fnt"
+#include "nmport_b.c"
 #elif defined(MONA)
 #include "mona8x16.fnt"
-#include "nmmona_b.cpp"
+#include "nmport_b.c"
 #endif
 
 //
@@ -1465,15 +1469,15 @@ unlockReturnNull:
 	int i;
 
 	AllocConsole();
-	cprintf("className: ");
+	printf("className: ");
 	className = getUtfString(wclass, wclass->classNameIndex);
 	for (i = 0; i < className.len; i++)
-		cprintf("%c", className.str[i]);
-	cprintf("\n");
-	cprintf("- nSuperClasses=%2d inherited=%2d new=%2d override=%2d total=%2d\n",
+		printf("%c", className.str[i]);
+	printf("\n");
+	printf("- nSuperClasses=%2d inherited=%2d new=%2d override=%2d total=%2d\n",
 	wclass->numSuperClasses, vMap->mapSize, vMap->numVirtualMethods, vMap->numOverriddenMethods,
 	wclass->numMethods);
-	cprintf("- FULL METHOD MAP\n");
+	printf("- FULL METHOD MAP\n");
 
 	for (ii = 0; ii < vMap->mapSize + wclass->numMethods; ii++)
 		{
@@ -1486,20 +1490,20 @@ unlockReturnNull:
 			else
 				iclass = wclass;
 			methodIndex = mapValue.methodNum;
-			cprintf("- inherited %d/%d %d ", superIndex, wclass->numSuperClasses, methodIndex);
+			printf("- inherited %d/%d %d ", superIndex, wclass->numSuperClasses, methodIndex);
 			}
 		else
 			{
 			iclass = wclass;
 			methodIndex = ii - vMap->mapSize;
-			cprintf("- this class %d ", methodIndex);
+			printf("- this class %d ", methodIndex);
 			}
 		method = &iclass->methods[methodIndex];
 		if (methodIndex >= iclass->numMethods)
-			cprintf("*************************************\n");
+			printf("*************************************\n");
 		mname = getUtfString(iclass, METH_nameIndex(method));
 		mdesc = getUtfString(iclass, METH_descIndex(method));
-		cprintf("- [%d] %s %s\n", ii, mname.str, mdesc.str);
+		printf("- [%d] %s %s\n", ii, mname.str, mdesc.str);
 		}
 	}
 #endif
@@ -2702,8 +2706,10 @@ typedef struct
 #include "nmpalm_c.c"
 #elif defined(WIN32)
 #include "nmwin32_c.c"
+#elif defined(OSASK)
+#include "nmport_c.c"
 #elif defined(MONA)
-#include "nmmona_c.cpp"
+#include "nmport_c.c"
 #endif
 
 typedef struct
@@ -2941,18 +2947,18 @@ NativeMethod nativeMethods[] =
 	uint16 i;
 
 	AllocConsole();
-	cprintf("** Native Method Missing:\n");
-	cprintf("// ");
+	printf("** Native Method Missing:\n");
+	printf("// ");
 	for (i = 0; i < className.len; i++)
-		cprintf("%c", className.str[i]);
-	cprintf("_");
+		printf("%c", className.str[i]);
+	printf("_");
 	for (i = 0; i < methodName.len; i++)
-		cprintf("%c", methodName.str[i]);
-	cprintf("_");
+		printf("%c", methodName.str[i]);
+	printf("_");
 	for (i = 0; i < methodDesc.len; i++)
-		cprintf("%c", methodDesc.str[i]);
-	cprintf("\n");
-	cprintf("{ %u, func },\n", hash);
+		printf("%c", methodDesc.str[i]);
+	printf("\n");
+	printf("{ %u, func },\n", hash);
 	}
 #endif
 #endif

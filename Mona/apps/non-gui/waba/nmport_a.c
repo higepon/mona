@@ -75,18 +75,26 @@ function files and the VM code itself contained in waba.c
 #define int16 short
 #define uint16 unsigned short
 
-#define WABA_VERSION "0.0.9"
-#define VM_OS        "MONA"
-#define VM_USER      "MONA"
-#define MAX_CLASS       64
-#define g_mainWinOffX   176
-#define g_mainWinOffY   250
-#define g_mainWinWidth  200
-#define g_mainWinHeight 200
-#define DRAW_OVER 1
-#define DRAW_AND  2
-#define DRAW_OR   3
-#define DRAW_XOR  4
+#define MAX_CLASS    64
+#define AUTO_MALLOC  0
+#define REWIND_CODE  1
+#define COORDINATE   180
+#define OUT_WINDOW   181
+#define LEFT_DOWN    182
+#define CENTER_DOWN  183
+#define RIGHT_DOWN   184
+#define LEFT_UP      185
+#define CENTER_UP    186
+#define RIGHT_UP     187
+#define TIMER_SIGNAL 190
+#define CLIP_LEFT    1
+#define CLIP_RIGHT   2
+#define CLIP_TOP     4
+#define CLIP_BOTTOM  8
+#define DRAW_OVER    1
+#define DRAW_AND     2
+#define DRAW_OR      3
+#define DRAW_XOR     4
 
 // WHEN PORTING: You need to define functions that convert a string
 // of 2 or 4 bytes in network byte order to a 16 or 32 bit value as follows:
@@ -121,13 +129,17 @@ function files and the VM code itself contained in waba.c
     }
 
 /* static */ void *calloc(int size) {
-char *p = (char*)malloc(size);
+    char *p = (char*)malloc(size);
     if(p){
         memset(p, 0, size);
         return (void *)p; 
     }else{
         //mallocé∏îs
+#if defined(OSASK)
+        lib_close(1);
+#elif defined(MONA)
         exit(1);
+#endif
         return NULL;
     }
     }

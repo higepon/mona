@@ -214,13 +214,62 @@ ClassHook classHooks[] =
 /* static */ Var WindowCreate(Var stack[])
 	{
 	Var v;
-	WObject window;
+	WObject win;
 
-	window = stack[0].obj;
-	WOBJ_ControlX(window) = 0;
-	WOBJ_ControlY(window) = 0;
-	WOBJ_ControlWidth(window) = g_mainWinWidth;
-	WOBJ_ControlHeight(window) = g_mainWinHeight;
+#if defined(OSASK)
+	// ウィンドウのオープン
+	window = lib_openwindow(AUTO_MALLOC, 0x0210, g_mainWinWidth, g_mainWinHeight);
+
+	// ウィンドウタイトル用のテキストボックスをオープン
+	wintitle = lib_opentextbox(0x1000, AUTO_MALLOC, 0, 4, 1, 0, 0, window, 0x00c0, 0);
+
+	// グラフィックボックスのオープン
+	//gbox = lib_opengraphbox(1, AUTO_MALLOC, 1, 8, g_mainWinWidth, g_mainWinHeight, 0, 0, window);
+	gbox = lib_opengraphbox(1, AUTO_MALLOC, 4, 0xC6C6C6, g_mainWinWidth, g_mainWinHeight, 0, 0, window);
+
+	// 文字描画用グラフィックボックスのオープン
+	//sbox = xmalloc(sizeof (struct LIB_GRAPHBOX) + g_mainWinWidth * g_mainWinHeight);
+
+	// ウィンドウタイトルを表示
+	lib_putstring_ASCII(0x0000, 0, 0, wintitle, 0, 0, "waba");
+
+	// サウンドトラックのオープン
+	lib_opensoundtrack(0x0250);
+
+	// シグナルの定義
+	// タイマーオープン
+	lib_opentimer(0x01c0 /* SYSTEM_TIMER */);
+
+	//キーシグナル定義
+	//ESC～DOWNを32～79に設定
+	lib_definesignal1p0(47, 0x0100, 0x80, window, 32);
+	//ASCIIコードをに80～173設定
+	lib_definesignal1p0(0x7e - 0x20, 0x0100, 0x20, window, 48 + 0x20);
+
+	// クリックとドラッグと自由移動(ウィンドウ内のみ)
+	lib_definesignal1p0(0, 0x0200, 0x2010, window, COORDINATE);  /* 座標 */
+	lib_definesignal1p0(0, 0x0200, 0x2011, window, OUT_WINDOW);  /* ウィンドウ外 */
+	lib_definesignal1p0(0, 0x0200, 0x2020, window, LEFT_DOWN);   /* 左プレス */
+	lib_definesignal1p0(0, 0x0200, 0x2021, window, CENTER_DOWN); /* 右プレス */
+	lib_definesignal1p0(0, 0x0200, 0x2022, window, RIGHT_DOWN);  /* 中プレス */
+	lib_definesignal1p0(0, 0x0200, 0x2030, window, LEFT_UP);     /* 左リリース */
+	lib_definesignal1p0(0, 0x0200, 0x2031, window, CENTER_UP);   /* 右リリース */
+	lib_definesignal1p0(0, 0x0200, 0x2032, window, RIGHT_UP);    /* 中リリース */
+
+	// システムタイマー
+	lib_definesignal1p0(0, 0x0010 /* timer */, 0x01c0 /* SYSTEM_TIMER */, 0, TIMER_SIGNAL);
+
+	//割り当て終了通知
+	lib_definesignal0p0(0, 0, 0, 0);
+#endif
+
+	// ウィンドウサイズの設定
+	win = stack[0].obj;
+	WOBJ_ControlX(win) = 0;
+	WOBJ_ControlY(win) = 0;
+	WOBJ_ControlWidth(win) = g_mainWinWidth;
+	WOBJ_ControlHeight(win) = g_mainWinHeight;
+
 	v.obj = 0;
 	return v;
 	}
@@ -234,13 +283,17 @@ ClassHook classHooks[] =
 	Var v;
 
 	printf("MainWinCreate\n");
+#if defined(MONA)
+	// スクリーン初期化
+	screen = Screen();
 	// 領域を白で塗りつぶす
-	screen.fillRect16(g_mainWinOffX, g_mainWinOffY, g_mainWinWidth, g_mainWinHeight, getRGB16(200,200,200));
+	my_fillrect0(0, 0, g_mainWinWidth, g_mainWinHeight, getRGB16(200,200,200));
 	// 枠線を描く
-	my_drawline0(-1, -1, g_mainWinWidth + 1, -1, getRGB16(0,0,0));
-	my_drawline0(-1, -1, -1, g_mainWinHeight + 1, getRGB16(0,0,0));
-	my_drawline0(g_mainWinWidth, -1, g_mainWinWidth, g_mainWinHeight, getRGB16(0,0,0));
-	my_drawline0(-1, g_mainWinHeight, g_mainWinWidth, g_mainWinHeight, getRGB16(0,0,0));
+	//my_drawline0(-1, -1, g_mainWinWidth + 1, -1, getRGB16(0,0,0));
+	//my_drawline0(-1, -1, -1, g_mainWinHeight + 1, getRGB16(0,0,0));
+	//my_drawline0(g_mainWinWidth, -1, g_mainWinWidth, g_mainWinHeight, getRGB16(0,0,0));
+	//my_drawline0(-1, g_mainWinHeight, g_mainWinWidth, g_mainWinHeight, getRGB16(0,0,0));
+#endif
 	v.obj = 0;
 	return v;
 	}
@@ -248,16 +301,24 @@ ClassHook classHooks[] =
 /* static */ Var MainWinExit(Var stack[])
 	{
 	Var v;
+	int exitCode;
 
 	v.obj = 0;
+	exitCode = stack[1].intValue;
+	my_exit(exitCode);
 	return v;
 	}
 
 /* static */ Var MainWinSetTimerInterval(Var stack[])
 	{
 	Var v;
+	int32 millis;
 
 	v.obj = 0;
+	millis = stack[1].intValue;
+	g_mainWinTimerId = millis;
+	if (millis > 0)
+		setsystimer(millis);
 	return v;
 	}
 
@@ -280,7 +341,7 @@ ClassHook classHooks[] =
 
 	// cache class pointers for performance
 	if (!mainWinClass)
-		mainWinClass = getClass(createUtfString("waba/ui/MainWindow"));
+		mainWinClass = getClass(createUtfString("waba/ui/Window"));
 	if (!imageClass)
 		imageClass = getClass(createUtfString("waba/fx/Image"));
 
@@ -491,10 +552,10 @@ ClassHook classHooks[] =
 
 	v.obj = 0;
 	gr = stack[0].obj;
-	printf("GraphicsCreate gr %d\n", gr);
+	//printf("GraphicsCreate gr %d\n", gr);
 	surface = WOBJ_GraphicsSurface(gr);
 	WOBJ_GraphicsSurfType(gr) = SurfaceGetType(surface);
-	WOBJ_GraphicsRGB(gr) = 0;
+	//WOBJ_GraphicsRGB(gr) = 0;
 	//WOBJ_GraphicsHasClip(gr) = 0;
 	//WOBJ_GraphicsClipX(gr) = 0;
 	//WOBJ_GraphicsClipY(gr) = 0;
@@ -504,15 +565,15 @@ ClassHook classHooks[] =
 	//WOBJ_GraphicsDrawOp(gr) = DRAW_OVER;
 	//WOBJ_GraphicsTransX(gr) = 0;
 	//WOBJ_GraphicsTransY(gr) = 0;
+	GraphicsRGB16  = 0;
+	GraphicsDrawOP = DRAW_OVER;
 	GraphicsTransX = 0;
 	GraphicsTransY = 0;
-
-	int32 surfaceType, rgb16, transX, transY;
+#if 0
+	int32 surfaceType;
 	surfaceType = WOBJ_GraphicsSurfType(gr);
-	rgb16 = WOBJ_GraphicsRGB(gr);
-	transX = WOBJ_GraphicsTransX(gr);
-	transY = WOBJ_GraphicsTransY(gr);
-	printf("GraphicsCreate %d,%d,%d,%d\n", surfaceType, rgb16, transX, transY);
+	printf("GraphicsCreate %d,%d,%d,%d\n", surfaceType, GraphicsRGB16, GraphicsTransX, GraphicsTransY);
+#endif
 	return v;
 	}
 
@@ -540,8 +601,8 @@ ClassHook classHooks[] =
 	r = stack[1].intValue;
 	g = stack[2].intValue;
 	b = stack[3].intValue;
-	//WOBJ_GraphicsRGB(gr) = 0xFF000000 | Color::rgb(r, g, b);
-	WOBJ_GraphicsRGB(gr) = getRGB16(r,g,b);
+	//GraphicsRGB16 = 0xFF000000 | Color::rgb(r, g, b);
+	GraphicsRGB16 = getRGB16(r,g,b);
 	return v;
 	}
 
@@ -553,7 +614,8 @@ ClassHook classHooks[] =
 
 	gr = stack[0].obj;
 	op = stack[1].intValue;
-	WOBJ_GraphicsDrawOp(gr) = op;
+	//WOBJ_GraphicsDrawOp(gr) = op;
+	GraphicsDrawOP = op;
 	v.obj = 0;
 	return v;
 	}
@@ -562,18 +624,18 @@ ClassHook classHooks[] =
 	{
 	Var v;
 	WObject gr;
-	//int32 transX, transY;
+	//int32 GraphicsTransX, GraphicsTransY;
 
 	gr = stack[0].obj;
 	//printf("GraphicsSetClip gr %d\n", gr);
-	//transX = WOBJ_GraphicsTransX(gr);
-	//transY = WOBJ_GraphicsTransY(gr);
+	//GraphicsTransX = WOBJ_GraphicsTransX(gr);
+	//GraphicsTransY = WOBJ_GraphicsTransY(gr);
 	//printf("%d,%d,%d,%d,%d,%d\n", 
-	//	transX, transY, stack[1].intValue, stack[2].intValue, stack[3].intValue, stack[4].intValue);
+	//	GraphicsTransX, GraphicsTransY, stack[1].intValue, stack[2].intValue, stack[3].intValue, stack[4].intValue);
 	// clip X and Y are stored in absolute coordinates
 	/*WOBJ_GraphicsHasClip(gr) = 1;
-	WOBJ_GraphicsClipX(gr) = stack[1].intValue + transX;
-	WOBJ_GraphicsClipY(gr) = stack[2].intValue + transY;
+	WOBJ_GraphicsClipX(gr) = stack[1].intValue + GraphicsTransX;
+	WOBJ_GraphicsClipY(gr) = stack[2].intValue + GraphicsTransY;
 	WOBJ_GraphicsClipWidth(gr) = stack[3].intValue;
 	WOBJ_GraphicsClipHeight(gr) = stack[4].intValue;*/
 
@@ -603,16 +665,16 @@ ClassHook classHooks[] =
 	{
 	Var v;
 	WObject gr;
-	//int32 transX, transY;
+	//int32 GraphicsTransX, GraphicsTransY;
 
 	gr = stack[0].obj;
 	//printf("GraphicsClearClip gr %d\n", gr);
-	//transX = WOBJ_GraphicsTransX(gr);
-	//transY = WOBJ_GraphicsTransY(gr);
+	//GraphicsTransX = WOBJ_GraphicsTransX(gr);
+	//GraphicsTransY = WOBJ_GraphicsTransY(gr);
 	// clip X and Y are stored in absolute coordinates
 	//WOBJ_GraphicsHasClip(gr) = 0;
-	//WOBJ_GraphicsClipX(gr) = transX;
-	//WOBJ_GraphicsClipY(gr) = transY;
+	//WOBJ_GraphicsClipX(gr) = GraphicsTransX;
+	//WOBJ_GraphicsClipY(gr) = GraphicsTransY;
 	//WOBJ_GraphicsClipWidth(gr) = g_mainWinWidth;
 	//WOBJ_GraphicsClipHeight(gr) = g_mainWinHeight;
 	v.obj = 0;
@@ -638,7 +700,12 @@ ClassHook classHooks[] =
 	{
 	Var v;
 	WObject gr, surface;
-	int32 surfaceType, rgb16, transX, transY;
+	int32 surfaceType;
+
+#if defined(MONA)
+	// スクリーン初期化
+	screen = Screen();
+#endif
 	gr = stack[0].obj;
 	//printf("GraphicsDraw gr %d\n", gr);
 	surface = WOBJ_GraphicsSurface(gr);
@@ -646,23 +713,19 @@ ClassHook classHooks[] =
 	if(surfaceType != SURF_WINDOW && surfaceType != SURF_IMAGE){
 		surfaceType = SURF_WINDOW;
 	}
-	rgb16 = WOBJ_GraphicsRGB(gr);
-	//transX = WOBJ_GraphicsTransX(gr);
-	//transY = WOBJ_GraphicsTransY(gr);
-	transX = GraphicsTransX;
-	transY = GraphicsTransY;
 	v.obj = 0;
-	//printf("GraphicsDraw %d,%d,%d,%d\n", surfaceType, rgb16, transX, transY);
+	//printf("GraphicsDraw %d,%d,%d,%d\n", surfaceType, GraphicsRGB16, GraphicsTransX, GraphicsTransY);
 	switch(type) {
 		case GR_FILLRECT:
 			{
 			int x, y, w, h;
 			
-			x = stack[1].intValue + transX;
-			y = stack[2].intValue + transY;
+			x = stack[1].intValue + GraphicsTransX;
+			y = stack[2].intValue + GraphicsTransY;
 			w = stack[3].intValue;
 			h = stack[4].intValue;
-			screen.fillRect16(x + g_mainWinOffX, y + g_mainWinOffY, w, h, rgb16);
+			//printf("GR_FILLRECT %d,%d,%d,%d\n", x, y, w, h);
+			my_fillrect0(x, y, w, h, GraphicsRGB16);
 			break;
 			}
 		case GR_DRAWLINE:
@@ -670,14 +733,15 @@ ClassHook classHooks[] =
 			{
 			int x0, y0, x1, y1;
 			
-			x0 = stack[1].intValue + transX;
-			y0 = stack[2].intValue + transY;
-			x1 = stack[3].intValue + transX;
-			y1 = stack[4].intValue + transY;
+			x0 = stack[1].intValue + GraphicsTransX;
+			y0 = stack[2].intValue + GraphicsTransY;
+			x1 = stack[3].intValue + GraphicsTransX;
+			y1 = stack[4].intValue + GraphicsTransY;
+			//printf("GR_DRAWLINE %d,%d,%d,%d\n", x0, y0, x1, y1);
 			if (surfaceType == SURF_WINDOW) {
-				my_drawline0(x0, y0, x1, y1, rgb16);
+				my_drawline0(x0, y0, x1, y1, GraphicsRGB16);
 			} else if (surfaceType == SURF_IMAGE) {
-				my_drawline0(x0, y0, x1, y1, rgb16);
+				my_drawline0(x0, y0, x1, y1, GraphicsRGB16);
 			}
 			break;
 			}
@@ -697,20 +761,21 @@ ClassHook classHooks[] =
 				break;
 			for (i = 0; i < count; i++) {
 				if(i == count - 1){
-					x0 = x[0] + transX;
-					y0 = y[0] + transY;
-					x1 = x[i] + transX;
-					y1 = y[i] + transY;
+					x0 = x[0] + GraphicsTransX;
+					y0 = y[0] + GraphicsTransY;
+					x1 = x[i] + GraphicsTransX;
+					y1 = y[i] + GraphicsTransY;
 				}else{
-					x0 = x[ i ] + transX;
-					y0 = y[ i ] + transY;
-					x1 = x[i+1] + transX;
-					y1 = y[i+1] + transY;
+					x0 = x[ i ] + GraphicsTransX;
+					y0 = y[ i ] + GraphicsTransY;
+					x1 = x[i+1] + GraphicsTransX;
+					y1 = y[i+1] + GraphicsTransY;
 				}
+				//printf("GR_DRAWLINE %d,%d,%d,%d\n", x0, y0, x1, y1);
 				if (surfaceType == SURF_WINDOW) {
-					my_drawline0(x0, y0, x1, y1, rgb16);
+					my_drawline0(x0, y0, x1, y1, GraphicsRGB16);
 				} else if (surfaceType == SURF_IMAGE) {
-					my_drawline0(x0, y0, x1, y1, rgb16);
+					my_drawline0(x0, y0, x1, y1, GraphicsRGB16);
 				}
 			}
 			break;
@@ -751,9 +816,12 @@ ClassHook classHooks[] =
 				buf[j] = (char)(chars[i] & 0xFF);
 			}
 			buf[j] = '\0';
-			x += transX;
-			y += transY;
-			my_drawstr0(x, y, buf, rgb16);
+			x += GraphicsTransX;
+			y += GraphicsTransY;
+			if (0 <= x && x < g_mainWinWidth && 0 <= y && y < g_mainWinHeight) {
+				//printf("GR_DRAWSTRING %d,%d\n", x, y);
+				my_drawstr0(x, y, buf, GraphicsRGB16);
+			}
 			break;
 			}
 		case GR_COPYRECT:
@@ -764,22 +832,23 @@ ClassHook classHooks[] =
 
 			surface0 = stack[1].obj;
 			surfaceType0 = SurfaceGetType(surface0);
-			x = stack[2].intValue + transX;
-			y = stack[3].intValue + transY;
+			x = stack[2].intValue + GraphicsTransX;
+			y = stack[3].intValue + GraphicsTransY;
 			w = stack[4].intValue;
 			h = stack[5].intValue;
-			dx = stack[6].intValue + transX;
-			dy = stack[7].intValue + transY;*/
+			dx = stack[6].intValue + GraphicsTransX;
+			dy = stack[7].intValue + GraphicsTransY;*/
 			break;
 			}
 		case GR_DRAWCURSOR:
 			{
 			int x0, y0, x1, y1;
-			x0 = stack[1].intValue + transX;
-			y0 = stack[2].intValue + transY;
+			x0 = stack[1].intValue + GraphicsTransX;
+			y0 = stack[2].intValue + GraphicsTransY;
 			x1 = stack[3].intValue + x0 - 1;
 			y1 = stack[4].intValue + y0 - 1;
-			my_drawline0(x0, y0, x1, y1, rgb16);
+			//printf("GR_DRAWCURSOR %d,%d,%d,%d\n", x0, y0, x1, y1);
+			my_drawline0(x0, y0, x1, y1, GraphicsRGB16);
 			break;
 			}
 		}
@@ -925,10 +994,32 @@ ClassHook classHooks[] =
 //
 // all functions static
 
+/* static */ void NativeTone(int32 freq, int32 duration)
+	{
+#if defined(OSASK)
+	/* NULLチェック */
+	if (window == NULL) return;
+
+	freq = 4294967290UL / freq /* 1/f */;
+
+	lib_controlfreq(0x0250, freq);
+	
+	if(duration != 0)
+		{
+		wait(duration);
+		lib_controlfreq(0x0250, 0);
+		}
+#endif
+	}
+
 /* static */ Var SoundTone(Var stack[])
 	{
 	Var v;
+	int32 freq, duration;
 
+	freq = stack[0].intValue;
+	duration = stack[1].intValue;
+	NativeTone(freq, duration);
 	v.obj = 0;
 	return v;
 	}
@@ -936,7 +1027,11 @@ ClassHook classHooks[] =
 /* static */ Var SoundBeep(Var stack[])
 	{
 	Var v;
+	int32 freq, duration;
 
+	freq = (int32)659.26/* E5 */;
+	duration = 500;
+	NativeTone(freq, duration);
 	v.obj = 0;
 	return v;
 	}
@@ -953,57 +1048,90 @@ ClassHook classHooks[] =
 
 /* static */ Var ConvertFloatToIntBitwise(Var stack[])
 	{
-	Var v;
-
-	v.obj = 0;
-	return v;
+	return stack[0];
 	}
 
 /* static */ Var ConvertIntToFloatBitwise(Var stack[])
 	{
-	Var v;
-
-	v.obj = 0;
-	return v;
+	return stack[0];
 	}
 
 /* static */ Var ConvertStringToInt(Var stack[])
 	{
+	WObject string, charArray;
+	int32 i, isNeg, len, value;
+	uint16 *chars;
 	Var v;
 
-	v.obj = 0;
+	// NOTE: We do it all here instead of calling atoi() since it looks
+	// like various versions of CE don't support atoi(). It's also faster
+	// this way since we don't have to convert to a byte array.
+	v.intValue = 0;
+	string = stack[0].obj;
+	if (string == 0)
+		return v;
+	charArray = WOBJ_StringCharArrayObj(string);
+	if (charArray == 0)
+		return v;
+	chars = (uint16 *)WOBJ_arrayStart(charArray);
+	len = WOBJ_arrayLen(charArray);
+	isNeg = 0;
+	if (len > 0 && chars[0] == '-')
+		isNeg = 1;
+	value = 0;
+	for (i = isNeg; i < len; i++)
+		{
+		if (chars[i] < (uint16)'0' || chars[i] > (uint16)'9')
+			return v;
+		value = (value * 10) + ((int32)chars[i] - (int32)'0');
+		}
+	if (isNeg)
+		value = -(value);
+	v.intValue = value;
 	return v;
 	}
 
 /* static */ Var ConvertIntToString(Var stack[])
 	{
 	Var v;
+	char buf[20];
 
-	v.obj = 0;
+	sprintf(buf, "%d", stack[0].intValue);
+	v.obj = createString(buf);
 	return v;
 	}
 
 /* static */ Var ConvertFloatToString(Var stack[])
 	{
 	Var v;
+	char buf[40];
 
-	v.obj = 0;
+	sprintf(buf, "%f", stack[0].floatValue);
+	v.obj = createString(buf);
 	return v;
 	}
 
 /* static */ Var ConvertCharToString(Var stack[])
 	{
 	Var v;
+	char buf[2];
 
-	v.obj = 0;
+	buf[0] = (char)stack[0].intValue;
+	buf[1] = 0;
+	v.obj = createString(buf);
 	return v;
 	}
 
 /* static */ Var ConvertBooleanToString(Var stack[])
 	{
 	Var v;
+	char *s;
 
-	v.obj = 0;
+	if (stack[0].intValue == 0)
+		s = "false";
+	else
+		s = "true";
+	v.obj = createString(s);
 	return v;
 	}
 
@@ -1280,6 +1408,7 @@ ClassHook classHooks[] =
 	Var v;
 
 	v.obj = 0;
+	wait(stack[0].intValue);
 	return v;
 	}
 
@@ -1287,7 +1416,7 @@ ClassHook classHooks[] =
 	{
 	Var v;
 
-	v.obj = 0;
+	v.obj = createString(VM_OS);
 	return v;
 	}
 
@@ -1296,6 +1425,7 @@ ClassHook classHooks[] =
 	Var v;
 
 	v.obj = 0;
+	my_exit(1);
 	return v;
 	}
 
@@ -1303,6 +1433,6 @@ ClassHook classHooks[] =
 	{
 	Var v;
 
-	v.obj = 0;
+	v.obj = createString(VM_USER);
 	return v;
 	}
