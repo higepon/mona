@@ -1,3 +1,9 @@
+2004-04-25  tino  <tino@users.sourceforge.jp>
+
+        * configure: コンパイル手順を表示
+
+        * Makefile.in: make distcleanでdependenciesを削除
+
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
         * Yui_Nekoさんの monaelf, tubeを追加

@@ -1,15 +1,23 @@
 all:
 	@cd hello; $(MAKE) $@
-	#@cd kanji; $(MAKE) $@
+#	@cd kanji; $(MAKE) $@
 
 install:
 	@cd hello; $(MAKE) $@
-	#@cd kanji; $(MAKE) $@
+#	@cd kanji; $(MAKE) $@
 
-clean:
+clean: touchdepend
 	@cd hello; $(MAKE) $@
-	#@cd kanji; $(MAKE) $@
+#	@cd kanji; $(MAKE) $@
 
-depend:
+depend: touchdepend
 	@cd hello; $(MAKE) $@
-	#@cd kanji; $(MAKE) $@
+#	@cd kanji; $(MAKE) $@
+
+distclean:
+	rm -f hello/dependencies
+#	rm -f kanji/dependencies
+
+touchdepend:
+	touch hello/dependencies
+#	touch kanji/dependencies

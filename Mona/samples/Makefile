@@ -13,3 +13,7 @@ clean:
 depend:
 	@cd non-gui; $(MAKE) $@
 	@cd gui; $(MAKE) $@
+
+distclean:
+	@cd non-gui; $(MAKE) $@
+	@cd gui; $(MAKE) $@
