@@ -46,6 +46,9 @@
 #define FDC_START_MOTOR (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
 #define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_ENABLE | FDC_DR_SELECT_A)
 
+/* time out */
+#define FDC_RETRY_MAX 100000
+
 MFDCDriver* gMFDCDriver = 0;
 bool MFDCDriver::interrupt_ = false;
 
@@ -68,6 +71,8 @@ MFDCDriver::MFDCDriver() {
     \date   create:2003/02/03 update:
 */
 MFDCDriver::~MFDCDriver() {
+
+    motor(OFF);
     return;
 }
 
@@ -82,7 +87,6 @@ void MFDCDriver::initilize() {
     printStatus("before");
 
     /* reset drive */
-    _sys_printf("FDC_DOR_RESET=%x\n", FDC_DOR_RESET);
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
 
     printStatus("reset");
@@ -105,17 +109,17 @@ void MFDCDriver::initilize() {
 */
 void MFDCDriver::printStatus(const char* str) const {
 
-    byte mrq = inportb(FDC_MSR_PRIMARY);
+    byte msr = inportb(FDC_MSR_PRIMARY);
     _sys_printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
     _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
-              , mrq & FDC_MRQ_READY    ? "  ready  ":"not ready"
-              , mrq & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
-              , mrq & FDC_NDMA_NOT_DMA ? " Y "      :" N "
-              , mrq & FDC_BUSY_ACTIVE  ? "  Y "     :"  N "
-              , mrq & FDC_ACTD_ACTIVE  ? " Y "      :" N "
-              , mrq & FDC_ACTC_ACTIVE  ? " Y "      :" N "
-              , mrq & FDC_ACTB_ACTIVE  ? " Y "      :" N "
-              , mrq & FDC_ACTA_ACTIVE  ? " Y "      :" N "
+              , msr & FDC_MRQ_READY    ? "  ready  ":"not ready"
+              , msr & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
+              , msr & FDC_NDMA_NOT_DMA ? " Y "      :" N "
+              , msr & FDC_BUSY_ACTIVE  ? "  Y "     :"  N "
+              , msr & FDC_ACTD_ACTIVE  ? " Y "      :" N "
+              , msr & FDC_ACTC_ACTIVE  ? " Y "      :" N "
+              , msr & FDC_ACTB_ACTIVE  ? " Y "      :" N "
+              , msr & FDC_ACTA_ACTIVE  ? " Y "      :" N "
               , interrupt_ ? " T " : " F "
               , str
     );
@@ -161,4 +165,48 @@ void MFDCDriver::motor(bool on) {
     if (on) outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
     else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
+}
+
+bool MFDCDriver::sendCommand(const byte command[], const byte length) {
+
+    /* check fdc status ready */
+    if (!waitMSRReady()) {
+
+	_sys_printf("MFDCDriver#sendCommand: timeout\n");
+	return false;
+    }
+
+
+    for (int i = 0; i < length; i++) {
+        //outprotb
+    }
+
+    return true;
+}
+
+void MFDCDriver::calibrate() {
+
+    /* before command, it is necesary check MRQ bit */
+
+
+}
+
+/*!
+    \brief wait until FDC is ready.
+
+    \return true ready/false time out
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
+bool MFDCDriver::waitMSRReady() {
+
+    /* check whether FDC is ready or not */
+    for (dword i = 0; i < FDC_RETRY_MAX; i++) {
+
+        bool isMSRReady = inportb(FDC_MSR_PRIMARY) | FDC_MRQ_READY;
+        if (isMSRReady) return true;
+    }
+
+    /* time out */
+    return false;
 }

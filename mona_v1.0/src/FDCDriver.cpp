@@ -29,17 +29,17 @@
 
 /* ==== DMA ports ==== */
 #define PORT_SDMA_BASE_C2   (0x04) /* Slave DMA BaseAddress (Channel 2) */
-#define PORT_SDMA_COUNT_C2	(0x05) /* Slave DMA Count (Channel 2) */
-#define PORT_SDMA_CMD	(0x08)
-#define PORT_SDMA_SINGLE_MASK	(0x0A)
-#define PORT_SDMA_MODE	(0x0B)
-#define PORT_SDMA_CLEAR_BYTE	(0x0C)
-#define PORT_SDMA_CLEAR	(0x0D)
-#define PORT_DMA_PAGE_C2	(0x81)
-#define PORT_MDMA_CMD	(0xD0)
-#define PORT_MDMA_SINGLE_MASK	(0xD4)
-#define PORT_MDMA_MODE	(0xD6)
-#define PORT_MDMA_CLEAR	(0xDA)
+#define PORT_SDMA_COUNT_C2      (0x05) /* Slave DMA Count (Channel 2) */
+#define PORT_SDMA_CMD   (0x08)
+#define PORT_SDMA_SINGLE_MASK   (0x0A)
+#define PORT_SDMA_MODE  (0x0B)
+#define PORT_SDMA_CLEAR_BYTE    (0x0C)
+#define PORT_SDMA_CLEAR (0x0D)
+#define PORT_DMA_PAGE_C2        (0x81)
+#define PORT_MDMA_CMD   (0xD0)
+#define PORT_MDMA_SINGLE_MASK   (0xD4)
+#define PORT_MDMA_MODE  (0xD6)
+#define PORT_MDMA_CLEAR (0xDA)
 
 /* Global Variables */
 FDCDriver* gFDCDriver1 = 0;
@@ -118,7 +118,7 @@ int FDCDriver::initialize()
         return 0;
     }
 
-	motor(1);
+        motor(1);
     recalibrate(); 
     motor(0);
 
