@@ -11,7 +11,7 @@ a20enable:
         in      al,0x64
         test    al,0x02
         jnz     a20enable
-        
+
         mov     al,0xD1
         out     0x64,al
 a20enable_1:
@@ -100,7 +100,7 @@ set_cs_desc1:
         mov  es, ax             ; 0x10
         mov  ax, 0x18           ; ss selector
         mov  ss, ax             ; is 0x18
-        mov  esp, 1024*1024*3   ; sp is 8MB
+        mov  esp, 1024*1024*2   ; sp is 3MB
         push eax
         jmp  0x200
 ;  hang:
