@@ -14,7 +14,8 @@
 #include<X86MemoryManager.h>
 #include<higeOperator.h>
 
-void* operator new(unsigned long size) {
+#ifndef BUILD_ON_LINUX
+void* operator new(unsigned int size) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
     return mm.allocateMemory(size);
@@ -26,6 +27,7 @@ void operator delete(void* address) {
     mm.freeMemory(address);
     return;
 }
+#endif
 
 void* malloc(unsigned long size) {
 
