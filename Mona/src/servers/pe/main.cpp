@@ -27,6 +27,10 @@ static PEData* OpenPE(const CString& path, bool prompt)
 	{
 		ret->Data = monapi_call_file_decompress_bz2_file(path, prompt);
 	}
+	else if (path.endsWith(".EX5") || path.endsWith(".DL5"))
+	{
+		ret->Data = monapi_call_file_decompress_st5_file(path, prompt);
+	}
 	else
 	{
 		ret->Data = monapi_call_file_read_data(path, prompt);
@@ -78,7 +82,7 @@ static CString SearchDLL(const CString& path, monapi_cmemoryinfo* files, const C
 	for (int i = 0; i < size; i++, p++)
 	{
 		CString n = CString(p->name).toUpper();
-		if (dll + ".DLL" == n || dll + ".DL2" == n)
+		if (dll + ".DLL" == n || dll + ".DL2" == n || dll + ".DL5")
 		{
 			return path == "/" ? "/" + n : path + "/" + n;
 		}
