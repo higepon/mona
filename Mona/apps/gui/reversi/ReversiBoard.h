@@ -1,3 +1,5 @@
+// This file's encoding is UTF-8.
+
 #ifndef _MONA_REVERSI_BOARD_
 #define _MONA_REVERSI_BOARD_
 

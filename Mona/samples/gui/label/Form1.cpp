@@ -1,6 +1,8 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
+// This file's encoding is UTF-8.
+
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Label.h>

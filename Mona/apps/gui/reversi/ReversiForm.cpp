@@ -1,3 +1,5 @@
+// This file's encoding is UTF-8.
+
 #include <gui/System/Console.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>

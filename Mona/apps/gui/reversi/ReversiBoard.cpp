@@ -1,3 +1,5 @@
+// This file's encoding is UTF-8.
+
 #include "ReversiBoard.h"
 
 using namespace MonAPI;

@@ -1,3 +1,5 @@
+// This file's encoding is UTF-8.
+
 #include <monapi.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
