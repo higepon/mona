@@ -113,6 +113,42 @@ int getColorNumber(byte* rgba) {
     return result;
 }
 
+void mmChangeTester() {
+
+    byte out[512];
+
+    g_console->printf("out=%x", out);
+
+    g_fdcdriver = new FDCDriver();
+    g_fdcdriver->motor(ON);
+
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+
+    if (!fat->initilize()) {
+        g_console->printf("error fat initialize\n");
+        g_fdcdriver->motor(false);
+        return;
+    }
+
+
+    if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
+        g_console->printf("error open mona.z\n");
+        g_fdcdriver->motor(false);
+        return;
+    }
+
+    if (!fat->read(out)) {
+         info(ERROR, "read failed");
+    }
+
+
+
+}
+
 void FDCDriverTester() {
 
     g_info_level = MSG;
@@ -137,7 +173,7 @@ void FDCDriverTester() {
         }
     g_console->printf("[1.3]");
 
-        if (!fat->open(".", "Z.Z", FAT12::READ_MODE)) {
+        if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
                 g_console->printf("error open mona.z\n");
                 g_fdcdriver->motor(false);
                 return;
@@ -165,7 +201,7 @@ void FDCDriverTester() {
         is.read = read;
 
     g_console->printf("[1.6]************************************");
-        int bf_size = 1024 * 1024 * 1;
+        int bf_size = 1024 * 1024 * 2;
         bf = (unsigned char*)malloc(bf_size);
     g_console->printf("[1.7]malloc=%x", (dword)bf);
         if (NULL == bf) {
@@ -185,10 +221,10 @@ void FDCDriverTester() {
         decode(&is, &os);
     g_console->printf("[3.0]");
 
-              for (int i = 0; i < 25; i++) {
-                  g_console->printf("%c", bf[i]);
-              }
-    //        drawARGB(bf, 0, 0, image_size);
+    //              for (int i = 0; i < 25; i++) {
+    //            g_console->printf("%c", bf[i]);
+    //        }
+            drawARGB(bf, 0, 0, image_size);
 
 
         if (!fat->close()) {

@@ -11,7 +11,7 @@ kernel.o: kernel.cpp user/types.h include/global.h include/info.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/pic.h include/io.h include/rtc.h \
   include/disp.h include/IA32MemoryManager.h include/syscalls.h \
-  user/userlib.h include/elf.h
+  user/userlib.h include/elf.h include/MemoryManager.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
@@ -32,7 +32,13 @@ IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/FAT12.h
 operator.o: operator.cpp include/IA32MemoryManager.h user/types.h \
   include/kernel.h include/VirtualConsole.h include/string.h \
-  include/operator.h
+  include/MemoryManager.h include/operator.h include/global.h \
+  include/info.h include/FDCDriver.h include/DiskDriver.h \
+  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
+  include/Process.h include/PageManager.h include/Queue.h \
+  include/BitMap.h include/Scheduler.h include/ProcessManager.h \
+  include/ihandlers.h include/sysresource.h include/MessageServer.h \
+  include/Message.h include/FAT12.h
 purevirtual.o: purevirtual.cpp include/kernel.h user/types.h \
   include/VirtualConsole.h include/string.h include/global.h \
   include/info.h include/FDCDriver.h include/DiskDriver.h \
@@ -123,7 +129,7 @@ test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
   include/io.h include/GraphicalConsole.h include/operator.h \
   include/IA32MemoryManager.h include/z.h contrib/include/zlib.h \
-  contrib/include/zconf.h
+  contrib/include/zconf.h include/MemoryManager.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \

@@ -86,13 +86,15 @@ int decode (input_stream *is, output_stream *os)
         for (;;) {
     g_console->printf("[2.3]");
                 if (zst.avail_in == 0) {
+
                         zst.next_in = is->bf;
+
                         zst.avail_in = is->read(is, is->sz);
                         if (zst.avail_in <= 0)
                                 flag = Z_FINISH;
                 }
     g_console->printf("[2.4]");
-    g_console->printf("[2.4.1]");
+    g_console->printf("[2.4.1][%x][%x][%x][%x]", (dword)(&zst), (dword)(zst.next_in), (dword)(zst.avail_in), (dword)(zst.next_out), (dword)(zst.avail_out));
                 st = inflate(&zst, Z_NO_FLUSH);
     g_console->printf("[2.4.2]");
                 if (st == Z_STREAM_END)

@@ -28,4 +28,5 @@ void STLTester();
 void FDCTester();
 void ELFTester(byte* out);
 void FDCDriverTester();
+void mmChangeTester();
 #endif

@@ -69,7 +69,7 @@
 #include <elf.h>
 #include <MemoryManager.h>
 
-char* version = "Mona version 0.1.1 $Date$";
+char* version = "Mona version.0.1.2 $Date$";
 void userTest();
 void userTest2();
 void v86Test();
@@ -90,15 +90,15 @@ static byte v86_func[] = {0xEB, 0xFE}; //loop forever
 */
 void startKernel(void) {
 
+    /* kernel memory range */
+    MemoryManager& mm = MemoryManager::instance();
+    mm.initialize(0x200000, 0x9fffff);
+
     /* set segment */
     GDTUtil::setup();
 
     /* Process setup */
     Process::setup();
-
-    /* kernel memory range */
-    MemoryManager& mm = MemoryManager::instance();
-    mm.initialize(0x200000, 0x9fffff);
 
     /* initialze console */
     g_console = new GraphicalConsole();
@@ -138,6 +138,9 @@ void startKernel(void) {
     g_console->printf("Hit any key to start loading Mona logo \n");
     while (g_demo_step < 2);
 
+    //    mmChangeTester();
+    //    while (true);
+
     FDCDriverTester();
     while (true);
 
@@ -158,7 +161,7 @@ void startKernel(void) {
 
     rectangle(0, 0, 640, 480, GP_BLACK);
 
-    ELFTester(user_func_from);
+    //    ELFTester(user_func_from);
     while (true);
 (true);
     enableTimer();
@@ -175,8 +178,8 @@ void mainProcess() {
     enableInterrupt();
 
     rectangle(0, 0, 640, 480, GP_BLACK);
-    while (true);
-    ELFTester(user_func_from);
+    //    while (true);
+    //    ELFTester(user_func_from);
 
 
     //    byte* user_func = (byte*)0xA00000;

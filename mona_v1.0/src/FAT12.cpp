@@ -444,7 +444,6 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     ext  = strtok(NULL, ".");
 
     if (!changeDirectory(path)) return false;
-
     if (!readEntry()) return false;
 
     /* find file to open */
@@ -521,10 +520,21 @@ bool FAT12::read(byte* buffer) {
     /* has no next */
     if (!readHasNext_) return false;
 
+    printf("h[1]");
+
     /* read */
     int lba = clusterToLba(currentCluster_);
+
+    printf("h[2]");
+
     if (!(driver_->read(lba, buf_))) return false;
+
+    printf("h[3]");
+
     memcpy(buffer, buf_, 512);
+
+    printf("h[4]");
+
     readCounter_ -= 512;
 
     /* check fat & size */
