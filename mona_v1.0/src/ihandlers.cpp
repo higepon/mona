@@ -57,17 +57,15 @@ void mouseHandler()
     }
 
     message.arg1   = data;
+    counter++;
 
+    /* EOI */
+    outportb(0xA0, 0x20);
+    outportb(0x20, 0x20);
     if (g_messenger->send("MOUSE.SVR", &message))
     {
         g_console->printf("mouse send failed");
     }
-
-    counter++;
-
-    /* EOI is below for IRQ 8-15 */
-    outportb(0xA0, 0x20);
-    outportb(0x20, 0x20);
 }
 
 /*!
@@ -85,13 +83,13 @@ void keyStrokeHandler(dword scancode)
     message.header = MSG_KEY_SCANCODE;
     message.arg1   = scancode;
 
+    /* EOI */
+    outportb(0x20, 0x20);
+
     if (g_messenger->send("KEYBDMNG.SVR", &message))
     {
         g_console->printf("send failed");
     }
-
-    /* EOI is below for IRQ 0-7 */
-    outportb(0x20, 0x20);
 }
 
 /*!

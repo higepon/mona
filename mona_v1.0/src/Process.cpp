@@ -154,7 +154,7 @@ int Scheduler::calcPriority(Thread* thread)
 
 bool Scheduler::schedule2()
 {
-    Thread* root;
+    Thread* root = NULL;
 
     FOREACH(Thread*, queue, runq)
     {
@@ -254,26 +254,43 @@ int Scheduler::wakeup(Thread* thread, int waitReason)
 {
     if (thread->getWaitReason() != waitReason)
     {
-        return -1;
+        return 0;
     }
 
     thread->remove();
     runq[0]->addToPrev(thread);
     thread->setWaitReason(WAIT_NONE);
 
-    this->schedule();
-    return NORMAL;
+    return this->schedule() ? 1 : -1;
 }
 
 int Scheduler::wakeup(Process* process, int waitReason)
 {
+    int count  = 0;
+    int wakeupResult;
+    bool processChanged = false;
+
     List<Thread*>* list = process->getThreadList();
 
     for (int i = 0; i < list->size(); i++)
     {
-        wakeup(list->get(i), waitReason);
+        wakeupResult = wakeup(list->get(i), waitReason);
+
+        if (wakeupResult != 0)
+        {
+            processChanged = processChanged || (wakeupResult == 1);
+            count++;
+        }
     }
-    return NORMAL;
+
+    if (count == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return (processChanged ? 1 : -1);
+    }
 }
 
 void Scheduler::dump()

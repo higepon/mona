@@ -527,8 +527,8 @@ int Message::receive(MessageInfo* info) {
 
     int result = syscall_receive(info);
     if (result != 0) {
-        syscall_mthread_yeild_message();
-        result = syscall_receive(info);
+         syscall_mthread_yeild_message();
+         result = syscall_receive(info);
     }
     return result;
 }
@@ -866,7 +866,8 @@ int syscall_send(dword pid, MessageInfo* message) {
 
     int result;
 
-    asm volatile("movl $%c1, %%ebx \n"
+    asm volatile("movl $0  , %%eax \n"
+                 "movl $%c1, %%ebx \n"
                  "movl %2  , %%esi \n"
                  "movl %3  , %%ecx \n"
                  "int  $0x80       \n"
