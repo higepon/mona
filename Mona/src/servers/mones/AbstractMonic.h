@@ -13,6 +13,7 @@
 #define _MONA_ABSTRACT_MONIC_
 
 #include <sys/types.h>
+#include <monapi.h>
 
 /*!
     abstract class AbstractMonic
@@ -36,7 +37,11 @@ class AbstractMonic {
     dword    frame_len;
     
     AbstractMonic();
+    //基底クラスなので、仮想デスクトラクタを定義
     virtual ~AbstractMonic();
+    
+    virtual void enableNetWork(void);
+    virtual void disableNetWork(void);
     
     //各種インターフェースメソッド サブクラス(具象クラス(NIC)で実装を期待)
     virtual void frame_input(void) = 0;
@@ -44,8 +49,6 @@ class AbstractMonic {
     virtual int init(void) = 0;
     virtual int nic_probe(void) = 0;
     //virtual void nic_init(void) = 0;
-    virtual void enableNetWork(void) = 0;
-    virtual void disableNetWork(void) = 0;
     virtual int getNicIRQ() = 0;
     virtual void setNicIRQ(int) = 0;
     virtual int getNicIOBASE() = 0;

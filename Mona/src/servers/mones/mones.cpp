@@ -105,7 +105,7 @@ int MonaMain(List<char*>* pekoe)
             {
             case MSG_INTERRUPTED:
                 
-                //printf("MSG_INTERRUPTED\n");
+                printf("MSG_INTERRUPTED\n");
                 
                 dword    i;
                 

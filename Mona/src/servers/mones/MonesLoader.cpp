@@ -93,7 +93,7 @@ AbstractMonic* MonesLoader::getNicInstance()
         nicDriver = new Ne2000MoNic();
         
         //QEMUÝ’è
-        nicDriver->setNicIRQ(11);
+        nicDriver->setNicIRQ(9);
         nicDriver->setNicIOBASE(0xC100);
         
     }

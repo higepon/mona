@@ -169,9 +169,8 @@ class Ne2000MoNic : public AbstractMonic
     void frame_output( byte *, byte *, dword, word );
     int nic_probe(void);
     
-    
-    void enableNetWork(void);
-    void disableNetWork(void);
+    //void enableNetWork(void);
+    //void disableNetWork(void);
     
 
     //NIC IRQ ゲッター、セッター

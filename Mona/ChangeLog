@@ -1,3 +1,7 @@
+2004-11-16  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/servers/mones/: Code:Mones QEMUからの割り込み到達。デバッグコード有効のまま
+        
 2004-11-14  Yamami  <yamamimail@users.sourceforge.jp>
 
         * samples/non-gui/yamami/main.cpp: テストコード追加

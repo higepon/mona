@@ -654,39 +654,6 @@ int Ne2000MoNic::ne_bcompare( byte *src, byte *dest, dword size )
 }
 
 
-/*!
-    \brief disable netRecv interrupt
-
-    \author Yamami
-    \date   create:2004/08/08 update:
-*/
-void Ne2000MoNic::disableNetWork() 
-{
-
-    byte IrqMask;
-    
-    IrqMask = 1 << (nicIRQ - 1);
-    //outp8(0x21, inp8(0x21) | 0x04);
-    outp8(0x21, inp8(0x21) | IrqMask);
-}
-
-/*!
-    \brief enable netRecv interrupt
-
-    \author Yamami
-    \date   create:2004/08/08 update:
-*/
-void Ne2000MoNic::enableNetWork() 
-{
-
-    byte IrqMask;
-    IrqMask = 0;
-    IrqMask = IrqMask ^ (1 << (nicIRQ - 1));  //XOR 当該ビットのみ0とする。
-
-    //outp8(0x21, inp8(0x21) & 0xF7);
-    outp8(0x21, inp8(0x21) & IrqMask);
-}
-
 
 /*!
     \brief getNicIRQ
