@@ -118,11 +118,7 @@ Window::Window()
 }
 
 Window::~Window() {
-	// タイマースレッド停止
-	syscall_kill_thread(timerID);
-	
-	// GUIサーバーから自分を抹消する
-	monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
+	onExit();
 }
 
 void Window::onStart()
@@ -184,6 +180,12 @@ void Window::onExit()
 	if (MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DISPOSEWINDOW, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
+	
+	// タイマースレッド停止
+	syscall_kill_thread(timerID);
+	
+	// GUIサーバーから自分を抹消する
+	monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
 }
 
 unsigned int Window::getHandle()
