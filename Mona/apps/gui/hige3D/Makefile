@@ -4,12 +4,12 @@ INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lgui-imp
-ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a
+ADDLINK    = -lgui-imp -lmonalibc
 include $(MONADIR)/env/monapi-ex2.inc
+ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a $(MONADIR)/lib/libmonalibc.a
 else
 ADDLINK    = -lgui
-ADDLINKDEP = $(MONADIR)/lib/libgui.a
+ADDLINKDEP = $(MONADIR)/lib/libgui.a $(MONADIR)/lib/libmonalibc.a
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
