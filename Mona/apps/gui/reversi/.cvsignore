@@ -3,5 +3,4 @@
 *.list
 *.map
 *.local
-Makefile
 TAGS

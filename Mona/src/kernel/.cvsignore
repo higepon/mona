@@ -4,3 +4,5 @@
 *.map
 *.local
 TAGS
+*.img
+*.IMG
