@@ -127,6 +127,7 @@ int MonaMain(List<char*>* pekoe)
 
        printf("**** device(%d)*****************************************************************************\n",i);
        printf("vendor    = %x  ", vendor);
+       printf("device    = %x  ", ReadConfig(0, i, 0, PCI_VENDOR_ID, 4));
        printf("device    = %x  ", ReadConfig(0, i, 0, PCI_DEVICE_ID, 2));
        printf("revision  = %x  ", ReadConfig(0, i, 0, PCI_REVISION , 1));
        printf("status    = %x\n", ReadConfig(0, i, 0, PCI_STATUS   , 2));
