@@ -30,6 +30,32 @@ int myApplication::main() {
 
     strcpy((char*)0x90005000, "data share Mona");
 
+    char buf[1024];
+    memset(buf      , (byte)0x12, 512);
+    memset(buf + 512, (byte)0x34, 512);
+
+    /* floppy read/write test */
+    StorageDevice* device = new Floppy(Floppy::FLOPPY_1);
+
+    printf("device block size=%d\n", device->getBlockSize());
+
+    device->open();
+    device->write(5, (byte*)buf, 2);
+
+    memset(buf, (byte)0x00, 1024);
+
+    device->read(5, (byte*)buf, 2);
+    device->close();
+    delete device;
+
+    for (int i = 0; i < 10; i++) {
+        printf("[%x]", buf[i]);
+    }
+    printf("\n--------------------------\n");
+
+    for (int i = 0; i < 10; i++) {
+        printf("[%x]", buf[512 + i]);
+    }
     return 0;
 }
 

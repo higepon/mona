@@ -46,6 +46,35 @@ void messageLoop() {
     }
 }
 
+
+Floppy::Floppy(int device) {
+}
+
+Floppy::~Floppy() {
+}
+
+int Floppy::open() {
+    return syscall_fdc_open();
+}
+
+int Floppy::close() {
+    return syscall_fdc_close();
+}
+
+int Floppy::read(dword lba,  byte* buf, dword blocknum) {;
+    return syscall_fdc_read(lba, buf, blocknum);
+}
+
+int Floppy::write(dword lba, byte* buf, dword blocknum) {
+    return syscall_fdc_write(lba, buf, blocknum);
+}
+
+int Floppy::ioctl(void* p) {
+
+    /* not supported */
+    return 0;
+}
+
 MonaApplication::MonaApplication(char* name) {
 
     int id = syscall_mthread_create((dword)MESSAGE_LOOP);
@@ -436,6 +465,42 @@ int syscall_file_close() {
     return (int)result;
 }
 
+int syscall_fdc_read(dword lba, byte* buffer, dword blocknum) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "movl %4  , %%edi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_FDC_READ), "m"(lba), "m"(buffer), "m"(blocknum)
+                 : "ebx", "esi", "ecx", "edi"
+                 );
+
+    return (int)result;
+}
+
+int syscall_fdc_write(dword lba, byte* buffer, dword blocknum) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "movl %4  , %%edi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_FDC_WRITE), "m"(lba), "m"(buffer), "m"(blocknum)
+                 : "ebx", "esi", "ecx", "edi"
+                 );
+
+    return (int)result;
+}
+
 int syscall_test() {
 
     int result;
@@ -445,6 +510,36 @@ int syscall_test() {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_TEST)
+                 : "ebx"
+                 );
+
+    return (int)result;
+}
+
+int syscall_fdc_open() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_FDC_OPEN)
+                 : "ebx"
+                 );
+
+    return (int)result;
+}
+
+int syscall_fdc_close() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_FDC_CLOSE)
                  : "ebx"
                  );
 

@@ -27,6 +27,10 @@
 #define SYSTEM_CALL_FILE_READ      26
 #define SYSTEM_CALL_FILE_CLOSE     27
 #define SYSTEM_CALL_MAP_TWO        28
+#define SYSTEM_CALL_FDC_OPEN       29
+#define SYSTEM_CALL_FDC_CLOSE      30
+#define SYSTEM_CALL_FDC_READ       31
+#define SYSTEM_CALL_FDC_WRITE      32
 
 #define SYSTEM_CALL_TEST 99
 
@@ -67,6 +71,10 @@ extern "C" int syscall_map(dword pid, dword sharedId, dword linearAddress, dword
 extern "C" int syscall_file_open(char* path, char* file, dword* size);
 extern "C" int syscall_file_read(char* buf, dword size, dword* readSize);
 extern "C" int syscall_file_close();
+extern "C" int syscall_fdc_open();
+extern "C" int syscall_fdc_close();
+extern "C" int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);
+extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword size);
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
@@ -82,6 +90,53 @@ void  operator delete(void* address);
 
 class MonaApplication;
 extern MonaApplication* monaApp;
+
+/*----------------------------------------------------------------------
+    Device
+----------------------------------------------------------------------*/
+interface Device {
+
+  public:
+    virtual int open()         = 0;
+    virtual int close()        = 0;
+    virtual int ioctl(void* p) = 0;
+};
+
+/*----------------------------------------------------------------------
+    StorageDevice
+----------------------------------------------------------------------*/
+interface StorageDevice : public Device {
+
+  public:
+    virtual dword getBlockSize() const = 0;
+    virtual int read(dword lba,  byte* buf, dword blocknum)  = 0;
+    virtual int write(dword lba, byte* buf, dword blocknum)  = 0;
+};
+
+/*----------------------------------------------------------------------
+    Floppy
+----------------------------------------------------------------------*/
+class Floppy : public StorageDevice {
+
+  public:
+    Floppy(int device);
+    virtual ~Floppy();
+
+  public:
+    virtual int open();
+    virtual int close();
+    virtual int read(dword lba,  byte* buf, dword blocknum);
+    virtual int write(dword lba, byte* buf, dword blocknum);
+    virtual int ioctl(void* p);
+
+    inline virtual dword getBlockSize() const {
+        return BLOCK_SIZE;
+    }
+
+  public:
+    static const dword BLOCK_SIZE = 512;
+    static const int FLOPPY_1     = 0;
+};
 
 /*----------------------------------------------------------------------
     Receiver

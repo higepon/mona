@@ -1,3 +1,7 @@
+2004-02-06  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: Floppy, Device, StorageDeviceí«â¡
+
 2004-02-05  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp: 8MBÉqÅ[Év

@@ -33,7 +33,7 @@ void syscall_entrance() {
     switch(info->ebx) {
 
     case SYSTEM_CALL_PRINT:
-        enableInterrupt();
+        //enableInterrupt();
         g_console->printf("%s", (char*)(info->esi));
 
         info->eax = 0;
@@ -170,6 +170,59 @@ void syscall_entrance() {
         enableInterrupt();
         g_console->getCursor((int*)(info->esi), (int*)(info->ecx));
         info->eax = 0;
+        break;
+
+    case SYSTEM_CALL_FDC_OPEN:
+
+        enableInterrupt();
+        g_fdcdriver->motor(ON);
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        info->eax = 0;
+        break;
+
+    case SYSTEM_CALL_FDC_CLOSE:
+
+        enableInterrupt();
+        g_fdcdriver->motor(OFF);
+        info->eax = 0;
+        break;
+
+    case SYSTEM_CALL_FDC_READ:
+
+        enableInterrupt();
+        {
+            bool readResult = true;
+            dword lba      = info->esi;
+            byte* buffer   = (byte*)(info->ecx);
+            dword blocknum = info->edi;
+
+            for (dword i = 0; i < blocknum; i++) {
+                readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
+                if (!readResult) break;
+            }
+
+            info->eax = readResult ? 0 : 1;
+        }
+        break;
+
+    case SYSTEM_CALL_FDC_WRITE:
+
+        enableInterrupt();
+        {
+            bool writeResult = true;
+            dword lba      = info->esi;
+            byte* buffer   = (byte*)(info->ecx);
+            dword blocknum = info->edi;
+
+            for (dword i = 0; i < blocknum; i++) {
+                writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
+                if (!writeResult) break;
+            }
+
+            info->eax = writeResult ? 0 : 1;
+        }
         break;
 
     case SYSTEM_CALL_FILE_OPEN:

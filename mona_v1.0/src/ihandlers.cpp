@@ -53,7 +53,7 @@ void mouseHandler() {
     message.arg1   = data;
 
     if (g_messenger->send("KEYBDMNG.SVR", &message)) {
-        g_console->printf("send failed");
+        g_console->printf("mouse send failed");
     }
 
     counter++;
