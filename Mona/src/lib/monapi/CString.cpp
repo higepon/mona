@@ -96,7 +96,7 @@ namespace MonAPI
 
     void CString::operator +=(const char* text)
     {
-        int len1 = this->length, len2 = strlen(text);
+        int len1 = this->length, len2 = text != NULL ? strlen(text) : 0;
         this->length = len1 + len2;
         char* buf;
         if (this->length == 0)
