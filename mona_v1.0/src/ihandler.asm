@@ -13,65 +13,25 @@
 ;;;
 BITS 32
 
-%ifdef BUILD_ON_LINUX
-    [global arch_fdchandler]
-    [global arch_fault0dhandler]
-    [global arch_timerhandler]
-    [global arch_keystrokehandler]
-    [global arch_dummyhandler]
-    [global arch_syscall_handler]
-    [global arch_cpufaulthandler_e]
-    [extern arch_switch_process]
-    [extern cpufaultHandler_e]
-    [extern arch_set_stack_view]
-    [extern MFDCHandler]
-    [extern timerHandler]
-    [extern keyStrokeHandler]
-    [extern fault0dHandler]
-    [extern syscall_entrance]
-    [extern dummyHandler]
-    [extern arch_save_process_registers]
-    [extern timerHandler]
-    [extern g_current_process]
-    %define _arch_fdchandler              arch_fdchandler
-    %define _arch_fault0dhandler          arch_fault0dhandler
-    %define _arch_timerhandler            arch_timerhandler
-    %define _arch_keystrokehandler        arch_keystrokehandler
-    %define _arch_dummyhandler            arch_dummyhandler
-    %define _arch_syscall_handler         arch_syscall_handler
-    %define _arch_cpufaulthandler_e       arch_cpufaulthandler_e
-    %define _arch_switch_process          arch_switch_process
-    %define _cpufaultHandler_e            cpufaultHandler_e
-    %define _arch_set_stack_view          arch_set_stack_view
-    %define _MFDCHandler                  MFDCHandler
-    %define _timerHandler                 timerHandler
-    %define _keyStrokeHandler             keyStrokeHandler
-    %define _fault0dHandler               fault0dHandler
-    %define _syscall_entrance             syscall_entrance
-    %define _dummyHandler                 dummyHandler
-    %define _arch_save_process_registers  arch_save_process_registers
-    %define _timerHandler                 timerHandler
-%else
-    [global _arch_fdchandler]
-    [global _arch_fault0dhandler]
-    [global _arch_timerhandler]
-    [global _arch_keystrokehandler]
-    [global _arch_dummyhandler]
-    [global _arch_syscall_handler]
-    [global _arch_cpufaulthandler_e]
-    [extern _arch_switch_process]
-    [extern _cpufaultHandler_e]
-    [extern _arch_set_stack_view]
-    [extern _MFDCHandler]
-    [extern _timerHandler]
-    [extern _keyStrokeHandler]
-    [extern _fault0dHandler]
-    [extern _syscall_entrance]
-    [extern _dummyHandler]
-    [extern _arch_save_process_registers]
-    [extern _timerHandler]
-    [extern _g_current_process]
-%endif
+%include "macro.asm"
+cglobal arch_fdchandler
+cglobal arch_fault0dhandler
+cglobal arch_timerhandler
+cglobal arch_keystrokehandler
+cglobal arch_dummyhandler
+cglobal arch_syscall_handler
+cglobal arch_cpufaulthandler_e
+cextern arch_switch_process
+cextern cpufaultHandler_e
+cextern arch_set_stack_view
+cextern MFDCHandler
+cextern timerHandler
+cextern keyStrokeHandler
+cextern fault0dHandler
+cextern syscall_entrance
+cextern dummyHandler
+cextern arch_save_process_registers
+cextern g_current_process
 
 %define KERNEL_DS 0x10
 
@@ -96,7 +56,7 @@ BITS 32
 
 
 ;;; fdc handler
-_arch_fdchandler:
+arch_fdchandler:
         pushAll
         changeData
         call _MFDCHandler
@@ -105,43 +65,43 @@ _arch_fdchandler:
 
 ;;; timer handler
 ;;; save all context to Kthread* current
-_arch_timerhandler:
+arch_timerhandler:
         pushAll
         changeData
-        call _arch_save_process_registers
-        call _timerHandler
+        call arch_save_process_registers
+        call timerHandler
         popAll
         iretd
 
 ;;; keystroke handler
-_arch_keystrokehandler:
+arch_keystrokehandler:
         pushAll
         changeData
         xor eax, eax
         mov dx , 0x60
         in  al , dx
         push eax
-        call _keyStrokeHandler
+        call keyStrokeHandler
         add  esp, 0x04
         popAll
         iretd
 
 ;;; dummy handler
-_arch_dummyhandler:
+arch_dummyhandler:
         pushAll
         changeData
-        call _dummyHandler
+        call dummyHandler
         popAll
         iretd
 
 ;;; IRQ handler(expr)
 %macro irqhandler 1
-[global _arch_irqhandler_%1]
-[extern _irqHandler_%1]
-_arch_irqhandler_%1:
+cglobal arch_irqhandler_%1
+cextern irqHandler_%1
+arch_irqhandler_%1:
         pushAll
         changeData
-        call _irqHandler_%1
+        call irqHandler_%1
         popAll
         iretd
 %endmacro
@@ -163,20 +123,20 @@ _arch_irqhandler_%1:
         irqhandler 15
 
 ;;; fault0dHandler
-_arch_fault0dhandler:
+arch_fault0dhandler:
         pushAll
         changeData
-        call _fault0dHandler
+        call fault0dHandler
         popAll
         iretd
 
 %macro cpufaulthandler 1
-[global _arch_cpufaulthandler_%1]
-[extern _cpufaultHandler_%1]
-_arch_cpufaulthandler_%1:
+cglobal arch_cpufaulthandler_%1
+cextern cpufaultHandler_%1
+arch_cpufaulthandler_%1:
         pushAll
         changeData
-        call _cpufaultHandler_%1
+        call cpufaultHandler_%1
         popAll
         iretd
 %endmacro
@@ -194,25 +154,25 @@ _arch_cpufaulthandler_%1:
         cpufaulthandler 10
         cpufaulthandler 11
 
-_arch_cpufaulthandler_e:
+arch_cpufaulthandler_e:
         pushAll
         changeData
         push dword[esp + 48]
         mov  eax, cr2
         push eax
-        call _cpufaultHandler_e
+        call cpufaultHandler_e
         add  esp, 0x08          ; remove parameter
         popAll
         add  esp, 0x04          ; remove error_cd
         iretd
 
 ;;; entrance of syscall
-_arch_syscall_handler:
+arch_syscall_handler:
         pushAll
         changeData
-        call _arch_save_process_registers
-        call _syscall_entrance
-        mov ebx, dword[_g_current_process] ; system call return code is
+        call arch_save_process_registers
+        call syscall_entrance
+        mov ebx, dword[g_current_process] ; system call return code is
         mov eax, dword [ebx + 12]          ; at g_current_process->eax
         mov dword[esp + 28], eax           ; so set this to stack
         popAll

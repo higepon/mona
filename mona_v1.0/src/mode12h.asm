@@ -1,29 +1,16 @@
 bits 32
 
-%ifdef BUILD_ON_LINUX
-    global rectangle
-    global put_pixel
-    global scroll_up
-    global write_font
-    global pos_x
-    global pos_y
-    %define _rectangle  rectangle
-    %define _put_pixel  put_pixcel
-    %define _scroll_up  scroll_up
-    %define _write_font write_font
-    %define _pos_x      pos_x
-    %define _pos_y      pos_y
-%else
-    global _rectangle
-    global _put_pixel
-    global _scroll_up
-    global _write_font
-    global _pos_x
-    global _pos_y
-%endif
+%include "macro.asm"
+
+cglobal rectangle
+cglobal put_pixel
+cglobal scroll_up
+cglobal write_font
+cglobal pos_x
+cglobal pos_y
 
 ; rectangle(int,x, int y,int xx, int yy, char color)
-_rectangle:
+rectangle:
         push    ebp
         mov     ebp,esp
         pushad
@@ -34,7 +21,7 @@ _rectangle:
 .rect0: mov     word [esp+0x00],ax
         mov     word [esp+0x04],bx
         mov     byte [esp+0x08],cl
-        call    _put_pixel
+        call    put_pixel
         inc     ax
         cmp     ax,word [ebp+0x10]
         jb      .rect0
@@ -49,7 +36,7 @@ _rectangle:
         ret
 
 ; put_pixel(int x, int y, char color)
-_put_pixel:
+put_pixel:
         push    ebp
         mov     ebp,esp
         pushad
@@ -93,7 +80,7 @@ _put_pixel:
         ret
 
 ; scroll_up() --- scroll up only for 16 dot font.
-_scroll_up:
+scroll_up:
         pushad
         mov     edi,0x000a0000
         mov     esi,0x000a0500
@@ -125,18 +112,18 @@ _scroll_up:
         ret
 
 ; write_font(char character, char fontcolor, char backcolor)
-_write_font:
+write_font:
         push    ebp
         mov     ebp,esp
         pushad
         xor     eax,eax
         mov     edx,eax
         mov     edi,0x000a0000
-        mov     al,byte [_pos_y]
+        mov     al,byte [pos_y]
         mov     cx,0x0500
         mul     cx
         add     edi,eax
-        mov     dl,byte [_pos_x]
+        mov     dl,byte [pos_x]
         add     edi,edx
         mov     dx,0x03c4
         mov     ax,0x0f02
@@ -177,7 +164,7 @@ _write_font:
         pop     ebp
         ret
 
-_pos_x  db      0
-_pos_y  db      0
+pos_x  db      0
+pos_y  db      0
 
 font    incbin  "font/paw16a.fnt"
