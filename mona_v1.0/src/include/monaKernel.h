@@ -92,5 +92,6 @@ typedef struct {
 #define TypeTaskGate 0x85
 
 void startKernel(void);
+void panic(const char*);
 
 #endif

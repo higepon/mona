@@ -24,7 +24,8 @@ SRC        = monaKernel.cpp       \
              KeyBoardManager.cpp  \
              FDCDriver.cpp        \
              monaTester.cpp       \
-             ProcessManager.cpp
+             ProcessManager.cpp   \
+             monaChecker.cpp
 
 HEADER     = ${INCLUDE}/monaKernel.h       \
              ${INCLUDE}/monaVga.h          \
@@ -37,7 +38,9 @@ HEADER     = ${INCLUDE}/monaKernel.h       \
              ${INCLUDE}/KeyBoardManager.h  \
              ${INCLUDE}/FDCDriver.h        \
              ${INCLUDE}/monaTester.h       \
-             ${INCLUDE}/ProcessManager.h
+             ${INCLUDE}/ProcessManager.h   \
+             ${INCLUDE}/monaChecker.h      \
+
 
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/monaKernel.o       \
@@ -52,7 +55,8 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/KeyBoardManager.o  \
              ${BIN}/FDCDriver.o        \
              ${BIN}/monaTester.o       \
-             ${BIN}/ProcessManager.o
+             ${BIN}/ProcessManager.o   \
+             ${BIN}/monaChecker.o
 
 # src to html & document
 WEB : ${BIN}/mona.img
@@ -82,6 +86,7 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} FDCDriver.cpp  -o ${BIN}/FDCDriver.o
 	${CC} -I $(INCLUDE) ${CFLAGS} monaTester.cpp  -o ${BIN}/monaTester.o
 	${CC} -I $(INCLUDE) ${CFLAGS} ProcessManager.cpp  -o ${BIN}/ProcessManager.o
+	${CC} -I $(INCLUDE) ${CFLAGS} monaChecker.cpp  -o ${BIN}/monaChecker.o
 	${LD} ${LFLAGS} -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third.list
 	${STRIP}  -O binary ${THIRD}

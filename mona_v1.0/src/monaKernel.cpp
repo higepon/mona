@@ -19,6 +19,7 @@
 #include<monaOperator.h>
 #include<FDCDriver.h>
 #include<monaTester.h>
+#include<monaChecker.h>
 
 /*!
     \brief  mona kernel start at this point
@@ -51,6 +52,9 @@ void startKernel(void) {
     _sysUnlock();
     _sys_printf("idt set done\n");
 
+    /* check some */
+    checkTypeSize();
+
     /* enable A20 */
     //    X86MemoryManager::enableA20();
 
@@ -67,3 +71,17 @@ void startKernel(void) {
     }
 }
 
+/*!
+    \brief  mona kernel panic
+
+    kernel panic
+
+    \author HigePon
+    \date   create:2002/12/02 update:$Date$
+*/
+void panic(const char* msg) {
+
+    _sys_printf("kernel panic!!!!!\n%s", msg);
+    while (true) {
+    }
+}
