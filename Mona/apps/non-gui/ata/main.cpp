@@ -1,7 +1,9 @@
 #include <monapi.h>
+#include <fat_write/IStorageDevice.h>
 
 using namespace MonAPI;
 
+#if 0
 #define ATA_DTR     0
 #define ATA_ERR     1
 #define ATA_FTR     1
@@ -17,6 +19,8 @@ using namespace MonAPI;
 #define ATA_CMR     7
 #define ATA_ASR     8
 #define ATA_DCR     8
+#endif
+
 
 class IDEController
 {
@@ -24,6 +28,214 @@ public:
     int selectedDevice;
     int registers[10];
 };
+
+
+class IDEDriver : public IStorageDevice
+{
+public:
+    IDEDriver();
+    virtual ~IDEDriver();
+    int open();
+    int close();
+    int read(int lba, void* buf, int size);
+    int write(int lba, void* buf, int size);
+    int ioctl(void* p);
+
+    int setDevice(int ide, int device);
+
+public:
+    enum
+    {
+        PRIMARY   = 0,
+        SECONDARY = 1,
+        MASTER    = 0,
+        SLAVE     = 1
+    };
+
+private:
+    void outp8(IDEController* ide, int reg, byte value);
+    byte inp8(IDEController* ide, int reg);
+    word inp16(IDEController* ide, int reg);
+    bool waitBusyClear(IDEController* ide);
+    bool waitDrdySet(IDEController* ide);
+    bool selectDevice(IDEController* ide, int device);
+
+
+    enum
+    {
+        ATA_DTR     = 0,
+        ATA_ERR     = 1,
+        ATA_FTR     = 1,
+        ATA_SCR     = 2,
+        ATA_IRR     = 2,
+        ATA_SNR     = 3,
+        ATA_CLR     = 4,
+        ATA_BLR     = 4,
+        ATA_CHR     = 5,
+        ATA_BHR     = 5,
+        ATA_DHR     = 6,
+        ATA_STR     = 7,
+        ATA_CMR     = 7,
+        ATA_ASR     = 8,
+        ATA_DCR     = 8,
+        ATA_TIMEOUT = 100000,
+        BIT_BSY     =  0x80,
+        BIT_DRDY    =  0x40,
+        BIT_DRQ     =  8,
+        BIT_ABRT    =  4,
+        BIT_CHK     =  1,
+        BIT_ERR     =  1,
+        BIT_IO      =  2,
+        BIT_CD      =  1,
+        RETRY_MAX   =  2
+    };
+
+private:
+    bool deviceOK;
+    IDEController ide[2];
+
+};
+
+IDEDriver::IDEDriver() : deviceOK(false)
+{
+    this->ide[0].registers[ATA_DTR] = 0x1f0;
+    this->ide[0].registers[ATA_ERR] = 0x1f1;
+    this->ide[0].registers[ATA_SCR] = 0x1f2;
+    this->ide[0].registers[ATA_SNR] = 0x1f3;
+    this->ide[0].registers[ATA_CLR] = 0x1f4;
+    this->ide[0].registers[ATA_CHR] = 0x1f5;
+    this->ide[0].registers[ATA_DHR] = 0x1f6;
+    this->ide[0].registers[ATA_STR] = 0x1f7;
+    this->ide[0].registers[ATA_ASR] = 0x3f6;
+    this->ide[0].selectedDevice = -1;
+
+    this->ide[1].registers[ATA_DTR] = 0x170;
+    this->ide[1].registers[ATA_ERR] = 0x171;
+    this->ide[1].registers[ATA_SCR] = 0x172;
+    this->ide[1].registers[ATA_SNR] = 0x173;
+    this->ide[1].registers[ATA_CLR] = 0x174;
+    this->ide[1].registers[ATA_CHR] = 0x175;
+    this->ide[1].registers[ATA_DHR] = 0x176;
+    this->ide[1].registers[ATA_STR] = 0x177;
+    this->ide[1].registers[ATA_ASR] = 0x376;
+    this->ide[1].selectedDevice = -1;
+}
+
+IDEDriver::~IDEDriver()
+{
+
+}
+
+int IDEDriver::open()
+{
+    return 0;
+}
+
+int IDEDriver::close()
+{
+    return 0;
+}
+
+int IDEDriver::read(int lba, void* buf, int size)
+{
+    if (!this->deviceOK) return 1;
+
+    return 0;
+}
+
+int IDEDriver::write(int lba, void* buf, int size)
+{
+    printf("IDEDriver#write not implemented\n");
+    return 0;
+}
+
+int IDEDriver::ioctl(void* p)
+{
+    printf("IDEDriver#ioctl not implemented\n");
+    return 0;
+}
+
+int IDEDriver::setDevice(int ide, int device)
+{
+    if (ide != PRIMARY && ide != SECONDARY)  return 1;
+    if (device != MASTER && device != SLAVE) return 2;
+
+}
+
+void IDEDriver::outp8(IDEController* ide, int reg, byte value)
+{
+    ::outp8(ide->registers[reg], value);
+}
+
+byte IDEDriver::inp8(IDEController* ide, int reg)
+{
+    return ::inp8(ide->registers[reg]);
+}
+
+word IDEDriver::inp16(IDEController* ide, int reg)
+{
+    return ::inp16(ide->registers[reg]);
+}
+
+bool IDEDriver::waitBusyClear(IDEController* ide)
+{
+    dword i;
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(ide, ATA_ASR);
+        if ((status & BIT_BSY) == 0) break;
+    }
+    return (i != ATA_TIMEOUT);
+}
+
+
+bool IDEDriver::waitDrdySet(IDEController* ide)
+{
+    dword i;
+
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(ide, ATA_ASR);
+        if (status & BIT_DRDY) break;
+    }
+
+    return (i != ATA_TIMEOUT);
+}
+
+bool IDEDriver::selectDevice(IDEController* ide, int device)
+{
+    dword i;
+
+    if (ide->selectedDevice == device) return true;
+
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte data = inp8(ide, ATA_ASR);
+        if ((data & BIT_BSY) == 0 && (data & BIT_DRQ) == 0) break;
+    }
+
+    /* time out */
+    if (i == ATA_TIMEOUT) return false;
+
+    /* select device */
+    outp8(ide, ATA_DHR, device << 4);
+    sleep(1);
+
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte data = inp8(ide, ATA_ASR);
+        if ((data & BIT_BSY) == 0 && (data & BIT_DRQ) == 0) break;
+    }
+
+    /* time out */
+    if (i == ATA_TIMEOUT) return false;
+
+    ide->selectedDevice = device;
+    return true;
+}
+
+
+#if 0
 
 typedef struct
 {
@@ -400,11 +612,13 @@ int Read(IDEController* ide, int device, dword lba, byte blocknum, void* buff)
     return SendPioDataCommand(ide, &com, blocknum, buff);
 }
 
+#endif
+
 int MonaMain(List<char*>* pekoe)
 {
     /* use io */
     syscall_get_io();
-
+#if 0
     ide[0].registers[ATA_DTR] = 0x1f0;
     ide[0].registers[ATA_ERR] = 0x1f1;
     ide[0].registers[ATA_SCR] = 0x1f2;
@@ -456,6 +670,6 @@ int MonaMain(List<char*>* pekoe)
     {
         printf("[%x]", buf[i]);
     }
-
+#endif
     return 0;
 }
