@@ -10,6 +10,7 @@
 
 using namespace MonAPI;
 
+static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
 static guiserver_bitmap* wallpaper = NULL;
 static unsigned int background_color = 0;
@@ -207,8 +208,37 @@ static void MessageLoop()
 					DrawImage(wallpaper, 0, 0, msg.arg1, msg.arg2,
 						GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
 				}
+				/// temporary
+				for (int i = 0; i < clients.size(); i++)
+				{
+					if (monapi_cmessage_send_args(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3, msg.str) != 0)
+					{
+						clients.removeAt(i);
+						i--;
+					}
+				}
 				monapi_cmessage_reply(&msg);
 				break;
+			case MSG_REGISTER_TO_SERVER:
+				clients.add(msg.arg1);
+				monapi_cmessage_reply(&msg);
+				break;
+			case MSG_UNREGISTER_FROM_SERVER:
+				clients.remove(msg.arg1);
+				monapi_cmessage_reply(&msg);
+				break;
+#if 0
+			case MSG_MOUSE_INFO:
+				for (int i = 0; i < clients.size(); i++)
+				{
+					if (monapi_cmessage_send_args(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3, msg.str) != 0)
+					{
+						clients.removeAt(i);
+						i--;
+					}
+				}
+				break;
+#endif
 			default:
 				if (ImageHandler(&msg)) break;
 				break;
@@ -219,6 +249,8 @@ static void MessageLoop()
 int MonaMain(List<char*>* pekoe)
 {
 	CheckGUIServer();
+	///if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE);
 
 	ReadFont("/MONA-12.MF2");
 	if (default_font == NULL) exit(1);
@@ -239,5 +271,9 @@ int MonaMain(List<char*>* pekoe)
 	monapi_cmemoryinfo_dispose(default_font);
 	monapi_cmemoryinfo_delete(default_font);
 	if (wallpaper != NULL) MemoryMap::unmap(wallpaper->Handle);
+	
+	///monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
+	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+	
 	return 0;
 }

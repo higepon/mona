@@ -19,6 +19,12 @@ namespace System { namespace Drawing
 		
 		void Intersect(const Rectangle& r);
 		
+		inline bool IntersectsWith(Rectangle r)
+		{
+			r.Intersect(*this);
+			return r.Width != 0 && r.Height != 0;
+		}
+		
 		inline int get_Left() const { return this->X; }
 		inline int get_Top() const { return this->Y; }
 		inline int get_Right() const { return this->X + this->Width; }

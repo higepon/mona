@@ -1,3 +1,9 @@
+2004-05-26  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/gui/main.cpp: クライアントの登録・管理
+
+        * src/lib/gui/System/Mona/Forms/Application.cpp: 背面再描画（超手抜き）
+
 2004-05-26  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monalibc/math.cpp : monalibcにsin(), cos(), sqrt()を追加

@@ -40,6 +40,8 @@ namespace System { namespace Mona { namespace Forms
 		Application::forms = new ArrayList<_P<Form> >;
 		
 #ifdef MONA
+		if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) ::exit(1);
+		if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) ::exit(1);
 		__gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		if (__gui_server == THREAD_UNKNOWN) ::exit(1);
 		MessageInfo msg;
@@ -57,7 +59,6 @@ namespace System { namespace Mona { namespace Forms
 		Application::defaultFontData = new unsigned char[msg.arg3];
 		::memcpy(Application::defaultFontData, font_data, msg.arg3);
 		MonAPI::MemoryMap::unmap(msg.arg2);
-		if (monapi_register_to_server(ID_MOUSE_SERVER, 1) == 0) ::exit(1);
 #else
 		Application::defaultFontData = MONA_12_MNF;
 #ifdef WIN32
@@ -69,7 +70,8 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Dispose()
 	{
 #ifdef MONA
-		monapi_register_to_server(ID_MOUSE_SERVER, 0);
+		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
+		monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 #endif
 	}
 	
@@ -140,6 +142,17 @@ namespace System { namespace Mona { namespace Forms
 			case MSG_GUI_TIMER:
 				((Timer*)arg1)->OnTick(EventArgs::get_Empty());
 				break;
+#ifdef MONA
+			case MSG_GUISERVER_DRAWWALLPAPER:  /// temporary
+			{
+				Rectangle r(arg1, arg2, GET_X_DWORD(arg3), GET_Y_DWORD(arg3));
+				FOREACH_AL (_P<Form>, f, Application::forms)
+				{
+					if (r.IntersectsWith(f->get_Bounds())) f->Refresh();
+				}
+				break;
+			}
+#endif
 		}
 	}
 	
