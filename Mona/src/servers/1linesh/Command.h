@@ -14,10 +14,12 @@
 #ifndef _COMAND_
 #define _COMAND_
 #include <sys/types.h>
-#include "Charing.h"
+#include <monapi/CString.h>
 
 #define POSITION_RIGHT -2
 #define POSITION_LEFT -1
+
+using namespace MonAPI;
 
 /*!
   \brief Command class
@@ -25,7 +27,7 @@
 class Command{
 
   private:
-    Charing commandLine;
+    CString commandLine;
     int posCurrent;
     bool isTerminateFlag;
     
@@ -36,17 +38,17 @@ class Command{
     ~Command();
     int GetCurrentPos();
     int SetCurrentPos(int pos);
-    bool InsertCommandLine(const Charing& s);
+    bool InsertCommandLine(const CString& s);
     bool RemoveCommandLine();
     bool InitializeCommandLine();
     bool IsTerminate();
     int ExecuteCommand();
 
-    Command operator+(const Charing& s);
-    Command& operator=(const Charing& s);
-    Command& operator+=(const Charing& s);
-    operator char *();
-    operator Charing *();
+    Command operator+(const CString& s);
+    Command& operator=(const CString& s);
+    Command& operator+=(const CString& s);
+    operator const char *();
+    operator CString *();
 };
 
 

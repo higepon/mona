@@ -106,7 +106,7 @@ Command CommandHistory::GetCommand(int numIndex){
   return tmp->command;
 }
 
-Charing CommandHistory::GetHistoryInfo(int numIndex, unsigned int numSize){
+CString CommandHistory::GetHistoryInfo(int numIndex, unsigned int numSize){
   
   return "Nothing";
 }

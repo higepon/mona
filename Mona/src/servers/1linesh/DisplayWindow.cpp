@@ -13,7 +13,6 @@
 */
 #include <monapi.h>
 #include "DisplayWindow.h"
-#include "Charing.h"
 #include "mona8x16.fnt"
 
 using namespace MonAPI;
@@ -43,18 +42,18 @@ int DisplayWindow::SetWindowPos(int x, int y, int w, int h){
   return 0;
 }
 
-int DisplayWindow::DrawCommandLine(const Charing c){
+int DisplayWindow::DrawCommandLine(const CString c){
 
   int i, j;
-  char *tmp;
+  const char *tmp;
   int pos;
   int x, y;
-  Charing ss("1Lsh> ");
+  CString ss("1Lsh> ");
 
   this->ClearCommandLine();
   ss += c;
   pos = this->posX + 2;
-  tmp = (char *)ss;
+  tmp = (const char *)ss;
   while(*tmp != NULL){
     pos += 8;
     y = this->posY+2;
@@ -100,18 +99,18 @@ int DisplayWindow::DrawCursor(int pos){
   return 0;
 }
 
-int DisplayWindow::DrawMessageLine(const Charing c){
+int DisplayWindow::DrawMessageLine(const CString c){
 
   int i, j;
-  char *tmp;
+  const char *tmp;
   int pos;
   int x, y;
-  Charing ss(" Msg: ");
+  CString ss(" Msg: ");
 
   this->ClearMessageLine();
   ss += c;
   pos = this->posX + 2;
-  tmp = (char *)ss;
+  tmp = (const char *)ss;
   while(*tmp != NULL){
     pos += 8;
     y = this->posY+22;

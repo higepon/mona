@@ -15,19 +15,18 @@
 #define _ONE_LINE_SHELL_
 #include <sys/types.h>
 #include <monapi.h>
+#include <monapi/CString.h>
 #include "Command.h"
 #include "CommandHistory.h"
 
 using namespace MonAPI;
-
-
 
 class OneLineShell : public Server{
 
   private:
     Command cmd;
     CommandHistory cmdHst;
-    Charing msg;
+    CString msg;
 
   public:
     enum{
@@ -43,7 +42,7 @@ class OneLineShell : public Server{
     virtual ~OneLineShell();
     void service();
     int OnKeyDown(KeyInfo keyInfo);
-    void SetMessage(Charing message);
+    void SetMessage(CString message);
     void SetMessage(int nMsg);
 
 };

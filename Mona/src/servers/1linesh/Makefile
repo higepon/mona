@@ -3,7 +3,6 @@ SOURCES         = main.cpp          \
                   OneLineShell.cpp  \
                   Command.cpp       \
                   DisplayWindow.cpp \
-                  Charing.cpp       \
                   CommandHistory.cpp
 
 MONADIR = ../../..

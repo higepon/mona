@@ -15,8 +15,8 @@
 #define _DISPLAY_WINDOW_
 
 #include <monapi.h>
+#include <monapi/CString.h>
 #include <sys/types.h>
-#include "Charing.h"
 #include "Command.h"
 
 using namespace MonAPI;
@@ -35,12 +35,12 @@ class DisplayWindow{
     DisplayWindow();
     ~DisplayWindow();
     int SetWindowPos(int x, int y, int w, int h);
-    int DrawCommandLine(const Charing c);
+    int DrawCommandLine(const CString c);
     int ClearCommandLine();
     int DrawCommandWindow();
     int ClearCommandWindow();
     int DrawCursor(int pos);
-    int DrawMessageLine(const Charing c);
+    int DrawMessageLine(const CString c);
     int ClearMessageLine();
 
 };

@@ -14,6 +14,7 @@
 #ifndef _COMAND_HISTORY_
 #define _COMAND_HISTORY_
 #include <sys/types.h>
+#include <monapi/CString.h>
 #include "Command.h"
 
 #define HISTORYSIZE 32
@@ -46,7 +47,7 @@ class CommandHistory{
     ~CommandHistory();
     bool AddCommand(Command cmd);
     Command GetCommand(int numIndex);
-    Charing GetHistoryInfo(int numIndex, unsigned int numSize);
+    CString GetHistoryInfo(int numIndex, unsigned int numSize);
     bool UpdateHistory(Command cmd);
     int RemoveHistory(int numIndex, unsigned int numSize);
 

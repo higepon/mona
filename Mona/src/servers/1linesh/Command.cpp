@@ -13,10 +13,10 @@
 */
 #include <monapi.h>
 #include <monapi/string.h>
+#include <monapi/CString.h>
 #include <monalibc/stdio.h>
 #include <monapi/messages.h>
 #include "Command.h"
-#include "Charing.h"
 
 using namespace MonAPI;
 
@@ -55,17 +55,17 @@ int Command::SetCurrentPos(int pos){
 
   if(this->posCurrent < 0){
     this->posCurrent = 0;
-  } else if(this->posCurrent > this->commandLine.GetLength()){
-    this->posCurrent = this->commandLine.GetLength();
+  } else if(this->posCurrent > this->commandLine.getLength()){
+    this->posCurrent = this->commandLine.getLength();
   }
 
   this->isTerminateFlag = false;
   return this->posCurrent;
 }
 
-bool Command::InsertCommandLine(const Charing& s){
+bool Command::InsertCommandLine(const CString& s){
 
-  this->commandLine.Insert(this->posCurrent, s);
+  this->commandLine.insert(this->posCurrent, s);
   this->posCurrent++;
   this->isTerminateFlag = false;
   return true;
@@ -76,14 +76,14 @@ bool Command::RemoveCommandLine(){
   if(this->posCurrent <= 0) return false;
   this->posCurrent--;
   this->isTerminateFlag = false;
-  this->commandLine.Remove(this->posCurrent, 1);
+  this->commandLine.remove(this->posCurrent, 1);
   return true;
 }
 
 bool Command::InitializeCommandLine(){
 
   this->isTerminateFlag = false;
-  this->commandLine.Remove(0, this->commandLine.GetLength());
+  this->commandLine.remove(0, this->commandLine.getLength());
   this->posCurrent = 0;
   return true;
 }
@@ -96,10 +96,10 @@ bool Command::IsTerminate(){
 int Command::ExecuteCommand(){
   
   int result = 0;
-  CommandOption list;
-  list.next = NULL;
-  char* arg;
-  CommandOption* option;
+  //CommandOption list;
+  //list.next = NULL;
+  //char* arg;
+  //CommandOption* option;
 /*
   char* command = strtok((char *)this->commandLine, " ");
 
@@ -111,7 +111,7 @@ int Command::ExecuteCommand(){
   }*/
 
   char path[128];
-  sprintf(path, "/APPS/%s", (char *)this->commandLine);
+  sprintf(path, "/APPS/%s", (const char *)this->commandLine);
 /*
   result = syscall_load_process(path, command, &list);
 
@@ -121,39 +121,39 @@ int Command::ExecuteCommand(){
 
   result = monapi_call_elf_execute_file(path, 0);
 
-  this->SetCurrentPos(this->commandLine.GetLength());
+  this->SetCurrentPos(this->commandLine.getLength());
   this->isTerminateFlag = true;
   return result;
 }
 
-Command Command::operator+(const Charing& s){
+Command Command::operator+(const CString& s){
 
   this->commandLine += s;
-  this->SetCurrentPos(this->commandLine.GetLength());
+  this->SetCurrentPos(this->commandLine.getLength());
   return *this;
 }
 
-Command& Command::operator=(const Charing& s){
+Command& Command::operator=(const CString& s){
 
   this->commandLine = s;
-  this->SetCurrentPos(this->commandLine.GetLength());
+  this->SetCurrentPos(this->commandLine.getLength());
   return *this;
 }
 
-Command& Command::operator+=(const Charing& s){
+Command& Command::operator+=(const CString& s){
 
   this->commandLine += s;
-  this->SetCurrentPos(this->commandLine.GetLength());
+  this->SetCurrentPos(this->commandLine.getLength());
   return *this;
 }
 
-Command::operator Charing *(){
+Command::operator CString *(){
 
   return &this->commandLine;
 }
 
-Command::operator char *(){
+Command::operator const char *(){
 
-  return (char *)this->commandLine;
+  return (const char *)this->commandLine;
 }
 

@@ -14,9 +14,9 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
+#include <monapi/CString.h>
 #include "OneLineShell.h"
 #include "DisplayWindow.h"
-#include "Charing.h"
 #include "Command.h"
 #include "CommandHistory.h"
 
@@ -37,7 +37,7 @@ OneLineShell::~OneLineShell(){
 void OneLineShell::service() {
 
   /* look up */
-  dword myID = System::getThreadID();
+  dword myID = MonAPI::System::getThreadID();
 
   dword keysvrID = Message::lookupMainThread("KEYBDMNG.SVR");
   if(keysvrID == 0xFFFFFFFF){
@@ -78,7 +78,7 @@ void OneLineShell::service() {
         keyInfo.modifiers = info.arg2;
         keyInfo.charcode = info.arg3;
         this->OnKeyDown(keyInfo);
-        ds.DrawCommandLine((char *)this->cmd);
+        ds.DrawCommandLine((const char *)this->cmd);
         if(!hasExited) ds.DrawCursor(this->cmd.GetCurrentPos());
         ds.DrawMessageLine(this->msg);
       }
@@ -95,12 +95,12 @@ void OneLineShell::service() {
 
 int OneLineShell::OnKeyDown(KeyInfo keyInfo){
   
-  Charing *cTmp;
+  CString *cTmp;
 
   switch(keyInfo.keycode){
   case Keys::Enter:
-    cTmp = (Charing *)this->cmd;
-    if(cTmp->GetLength() == 0) break;
+    cTmp = (CString *)this->cmd;
+    if(cTmp->getLength() == 0) break;
     if(strcmp(*cTmp, "CHSH") == 0 || strcmp(*cTmp, "chsh") == 0){
       int result = syscall_load_process("/SERVERS/SHELL.SVR", "SHELL.SVR", NULL);
       if(result != 0){
@@ -116,8 +116,8 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     } else {
       this->SetMessage(this->cmd.ExecuteCommand());
     }
-    cTmp = (Charing *)(this->cmdHst.GetCommand(GETLAST));
-    if(cTmp->GetLength() == 0){
+    cTmp = (CString *)(this->cmdHst.GetCommand(GETLAST));
+    if(cTmp->getLength() == 0){
       this->cmdHst.UpdateHistory(this->cmd);
     } else {
       this->cmdHst.AddCommand(this->cmd);
@@ -144,14 +144,16 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     break;
   default:
     if(keyInfo.modifiers & KEY_MODIFIER_CHAR){
-      this->cmd.InsertCommandLine(keyInfo.charcode);
+      CString tmp;
+      tmp += keyInfo.charcode;
+      this->cmd.InsertCommandLine(tmp);
     }
     break;
   }
   return 0;
 }
 
-void OneLineShell::SetMessage(Charing message){
+void OneLineShell::SetMessage(CString message){
 
   this->msg = message;
   return;
@@ -159,7 +161,7 @@ void OneLineShell::SetMessage(Charing message){
 
 void OneLineShell::SetMessage(int nMsg){
 
-  Charing tmpMsg;
+  CString tmpMsg;
 
   switch(nMsg){
     case Excute:
