@@ -74,6 +74,40 @@ class IA32MemoryManager {
     inline void printInfo(char*) const;
 
     /*!
+        \brief start paging
+
+        start paging on
+
+        \author HigePon
+        \date   create:2002/12/25 update:
+    */
+    static void startPaging() {
+
+        asm volatile("movd %%cr0, %%eax       \n"
+                     "or   %%eax, $0x80000000 \n"
+                     "movd %%eax, %%cr0       \n"
+                     : /* no output */
+                     : /* no input  */ : "ax");
+    }
+
+    /*!
+        \brief stop paging
+
+        set paging off
+
+        \author HigePon
+        \date   create:2002/12/25 update:
+    */
+    static void stopPaging() {
+
+        asm volatile("movd %%cr0, %%eax       \n"
+                     "or   %%eax, $0x7fffffff \n"
+                     "movd %%eax, %%cr0       \n"
+                     : /* no output */
+                     : /* no input  */ : "ax");
+    }
+
+    /*!
         \brief enable A20
 
         enable A20 line
