@@ -65,11 +65,15 @@ next:
         mov     es,ax
         xor     bx,bx
         mov     ax,0x0001       ; read kernel from second sector (0 = boot sec)
-        mov     di,0x0240       ; change it (now ... read ??? sectors)
+        mov     di,0x0050       ; change it (now ... read 80 sectors)
         call    readsector
         ;
         mov     si,good
         call    print
+        ;
+        mov     dx,0x03f2       ; stop fdd motor
+        mov     al,0x0c
+        out     dx,al
         ;
         jmp     KERNEL:0000     ; jump to secondboot
 
@@ -135,20 +139,22 @@ readsector:
         jnz     .r1             ; jump over dma boundary
         popa
         ret
-        
+
 .error:
+        push    si
         mov     si,err
         call    print
-        xchg	ah,al
+        xchg    ah,al
         mov     cl,0x04
-        call    tohex		; print error code
-        mov	si,crlf
-        call	print
-        xor	ax,ax
-        xor	dl,dl
-        int	0x13		; re-initialize
-        pop	ax
-        jmp     short .r2	; retry
+        call    tohex           ; print error code
+        mov     si,crlf
+        call    print
+        xor     ax,ax
+        xor     dl,dl
+        int     0x13            ; re-initialize
+        pop     si
+        pop     ax
+        jmp     short .r2       ; retry
 
 debug:
         pusha
