@@ -5,11 +5,6 @@
 # dot     http://www.research.att.com/sw/tools/graphviz/
 #
 
-# with DJGPP on Win32
-make DJGPP="djgpp"
-
-# with cygwin on Win32
-make
-
-# with gnu on Linux
+cd src
+./configure
 make
