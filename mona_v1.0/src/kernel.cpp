@@ -104,8 +104,6 @@ void startKernel(void) {
     //   dword* p = (dword*)0x3FFFFE;
     //   *p = 5;
 
-
-
     SystemInfo::rdtscsub();
     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
     g_console->printf("userTestAddress=%x\n", (dword)userTest);
@@ -151,11 +149,11 @@ void startKernel(void) {
 
     g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
     g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
+    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
 
     enableTimer();
@@ -172,13 +170,10 @@ void startKernel(void) {
 
 void userTest() {
 
-    // you can't use hlt here
-    //    asm volatile("hlt");
     while (true) {
 
-        syscall_heavy();
+        int result = syscall_heavy();
         while(true);
-
     }
 }
 

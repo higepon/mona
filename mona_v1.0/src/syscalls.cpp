@@ -1,13 +1,13 @@
 /*!
-    \file  syscalls.cpp
-    \brief syscalls
+  \file  syscalls.cpp
+  \brief syscalls
 
-    Copyright (c) 2003 HigePon
-    WITHOUT ANY WARRANTY
+  Copyright (c) 2003 HigePon
+  WITHOUT ANY WARRANTY
 
-    \author  HigePon
-    \version $Revision$
-    \date   create:2003/03/22 update:$Date$
+  \author  HigePon
+  \version $Revision$
+  \date   create:2003/03/22 update:$Date$
 */
 
 #include<syscalls.h>
@@ -21,29 +21,31 @@ extern "C"     void arch_set_stack_view();
 
 void syscall_entrance() {
 
-    int x,y;
+    int x, y;
     dword eflags;
 
     switch(g_current_process->ebx) {
 
+    case SYSTEM_CALL_PROCESS_SLEEP:
 
-      case SYSTEM_CALL_PROCESS_SLEEP:
+        g_process_manager->sleep(g_current_process, g_current_process->esi);
 
-          g_process_manager->sleep(g_current_process, g_current_process->esi);
+        /* return code */
+        g_current_process->eax = 0x12345678;
 
-          break;
+        break;
 
-      case SYSTEM_CALL_HEAVEY:
+    case SYSTEM_CALL_HEAVEY:
 
-          eflags = get_eflags();
-          disableInterrupt();
+        eflags = get_eflags();
+        disableInterrupt();
 
         x = pos_x;
         y = pos_y;
 
         pos_x = 1, pos_y = 2;
 
-          g_console->printf("heavy start\n");
+        g_console->printf("heavy start\n");
 
         pos_x = x;
         pos_y = y;
@@ -51,16 +53,16 @@ void syscall_entrance() {
 
         enableInterrupt();
 
-          for (dword i = 0; i < 0xffff; i++) {
+        for (dword i = 0; i < 0xffff; i++) {
 
-              i++;
-              i--;
-              i++;
-              i--;
-          }
+            i++;
+            i--;
+            i++;
+            i--;
+        }
 
-          eflags = get_eflags();
-          disableInterrupt();
+        eflags = get_eflags();
+        disableInterrupt();
 
         x = pos_x;
         y = pos_y;
@@ -71,13 +73,18 @@ void syscall_entrance() {
 
         pos_x = x;
         pos_y = y;
+
+
+        /* return code */
+        g_current_process->eax = 0x12345678;
+
         set_eflags(eflags);
 
         break;
 
-      default:
-          g_console->printf("syscall:default");
-          break;
+    default:
+        g_console->printf("syscall:default");
+        break;
     }
     return;
 }

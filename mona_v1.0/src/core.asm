@@ -21,10 +21,11 @@ BITS 32
 
 [extern _fault0dHandler]
 
+;; before call this, pushad should be called
 _arch_save_process_registers:
         mov ebx, dword[_g_current_process]
-        mov eax, dword [esp + 40] ; get cs
-        and  eax, 0x03            ; check dpl is 3
+        mov eax, dword[esp + 40]  ; get cs
+        and eax, 0x03             ; check cpl is 3
         cmp eax, 0x03
         jnz dpl0
         mov eax, dword[esp + 52] ; save ss3
@@ -59,8 +60,6 @@ dpl3:
         mov dword[ebx + 40], eax
         mov eax, ds              ; save ds
         mov dword[ebx + 44], eax
-;         mov eax, ss              ; save ss
-;         mov dword[ebx + 48], eax
         ret
 
 _arch_switch_process:

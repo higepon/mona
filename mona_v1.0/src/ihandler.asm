@@ -32,6 +32,8 @@ BITS 32
 [extern _arch_save_process_registers]
 [extern _timerHandler]
 
+[extern _g_current_process] ;; pointer to current process
+
 ;;; fdc handler
 _arch_fdchandler:
         pushad
@@ -136,5 +138,8 @@ _arch_syscall_handler:
         pushad
         call _arch_save_process_registers
         call _syscall_entrance
+        mov ebx, dword[_g_current_process] ; system call return code is
+        mov eax, dword [ebx + 12]          ; at g_current_process->eax
+        mov dword[esp + 28], eax           ; so set this to stack
         popad
         iretd
