@@ -283,8 +283,6 @@ bool FAT12::changeDirectory(const char* path) {
         char* p = (i == 0) ? buf : NULL;
         if (!(rpath = strtok(p, sep))) break;
 
-        printf("\n--try to cdr to %s--", rpath);
-
         if (!changeDirectoryRelative(rpath)) {
 
             errNum_           = NOT_DIR_ERROR;
@@ -336,8 +334,6 @@ bool FAT12::changeDirectoryRelative(const char* path) {
 
             currentDirecotry_ = entries_[j].cluster;
             strcpy(currentPath_, path);
-            printf("\n--directory %s found\n", path);
-            printf("\n--current cluster = %d\n", currentDirecotry_);
             return true;
         }
     }
@@ -411,20 +407,11 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     file = strtok(buf, ".");
     ext  = strtok(NULL, ".");
 
-    /* change direcotory */
     if (!changeDirectory(path)) return false;
 
-    /* find file in entries_ */
-    int lbp = clusterToLbp(currentDirecotry_);
+    if (!readEntry()) return false;
 
-    /* read current directory */
-    if (!(driver_->read(lbp, buf_))) {
-        currentDirecotry_ = currentDirecotry;
-        return false;
-    }
-
-    memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
-
+    /* find file to open */
     for (int j = 0; j < 16; j++) {
 
         /* free */
@@ -440,21 +427,31 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
         if (compareName((char*)(entries_[j].filename), file)
             && compareName((char*)(entries_[j].extension), ext)) {
 
-            currentCluster_ = entries_[j].cluster;
-            fileSize_       = entries_[j].filesize;
+            currentEntry_   = &(entries_[j]);
+            currentCluster_ = currentEntry_->cluster;
+            fileSize_       = currentEntry_->filesize;
             isOpen_         = true;
             readHasNext_    = true;
             firstWrite_     = true;
             openMode_       = mode;
-            currentEntry_ = &(entries_[j]);
-            printf("flie %s found\n", filename);
+            if (mode == WRITE_MODE) currentEntry_->filesize = 0;
             return true;
         }
     }
+
+    /* file not found */
     currentDirecotry_ = currentDirecotry;
     return false;
 }
 
+/*!
+  \brief file close
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::close() {
 
     isOpen_ = false;
@@ -471,6 +468,16 @@ bool FAT12::close() {
     return true;
 }
 
+/*!
+  \brief read
+
+  \param buffer read buffer
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::read(byte* buffer) {
 
     /* has no next */
@@ -480,14 +487,24 @@ bool FAT12::read(byte* buffer) {
     int lbp = clusterToLbp(currentCluster_);
     if (!(driver_->read(lbp, buf_))) return false;
     memcpy(buffer, buf_, 512);
+    fileSize_ -= 512;
 
-    /* check fat */
-    if ((currentCluster_ = getFATAt(currentCluster_)) > 0xff8) {
+    /* check fat & size */
+    if ((currentCluster_ = getFATAt(currentCluster_)) > 0xff8 || fileSize_ <= 0) {
         readHasNext_ = false;
     }
     return true;
 }
 
+/*!
+  \brief check read has next
+
+
+  \return true/false hasnext/has no next
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::readHasNext() const {
 
     return readHasNext_;
