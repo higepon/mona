@@ -39,14 +39,12 @@ public:
 		label->setRect(0, 4, 200, 16);
 		add(label);
 		date = new MonAPI::Date();
-		setTimer(1000);
 	}
 	~GClock(){
 		delete(label);
 		delete(date);
 	}
 	void onEvent(Event *event) {
-		#if 0
 		if (event->type == TIMER) {
 			const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
 			const char* ampm[] = { "午前", "午後" };
@@ -55,10 +53,12 @@ public:
 			sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d",
 				date->year(), date->month(), date->day(), day[date->dayofweek() % 7],
 				ampm[date->hour() / 12], date->hour() % 12, date->min(), date->sec());
-			label->setText(time);
+			if (iconified == false)
+				label->setText(time);
 			setTimer(1000);
+		} else if (event->type == FOCUS_IN) {
+			setTimer(0);
 		}
-		#endif
 	}
 };
 
