@@ -16,6 +16,7 @@
 #define WARNING     20
 #define DEV_ERROR   30
 #define DEV_WARNING 40
+#drine  DEBUG       45
 #define DUMP        50
 
 void info(int level, const char *format, ...);

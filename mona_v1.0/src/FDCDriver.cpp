@@ -130,14 +130,7 @@ void FDCDriver::initilize() {
         panic("dma buff allocate error");
     }
 
-    g_info_level = ERROR;
     info(DUMP, "dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
-    info(WARNING, "warinig");
-    info(ERROR, "error");
-    info(DEV_WARNING, "dev warning");
-    info(DEV_ERROR, "dev error");
-
-    while (true);
 
     /* setup DMAC */
     outportb(0xda, 0x00);
