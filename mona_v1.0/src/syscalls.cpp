@@ -413,9 +413,7 @@ void syscall_entrance() {
             if (!g_fdcdriver->interrupted())
             {
                 g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
-                ThreadInfo* info = g_currentThread;
-                bool isProcessChange = g_scheduler->schedule3();
-            //  bool isProcessChange = true;
+                bool isProcessChange = g_scheduler->setCurrentThread();
                 ThreadOperation::switchThread(isProcessChange);
             }
         }

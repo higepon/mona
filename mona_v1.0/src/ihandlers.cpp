@@ -154,7 +154,7 @@ void timerHandler()
     g_currentThread->thread->tick();
     dword tick = g_scheduler->getTick();
 
-    bool isProcessChange = (tick % 5) ? g_scheduler->schedule2() : g_scheduler->schedule();
+    bool isProcessChange = g_scheduler->schedule();
 
     ThreadOperation::switchThread(isProcessChange);
 
@@ -177,9 +177,9 @@ void MFDCHandler(void)
     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
 
     if (wakeupResult != 0)
-     {
-          ThreadOperation::switchThread((wakeupResult == 1));
-     }
+    {
+        ThreadOperation::switchThread((wakeupResult == 1));
+    }
 }
 
 /* IRQ Handler (expr) */
@@ -226,10 +226,9 @@ void cpufaultHandler_5(void)
 void cpufaultHandler_6(void)
 {
     dokodemoView();
-    g_console->printf("%s, error=%x\n fault=%d\n", g_currentThread->process->getName(), error);
 
-     dword realcr3;
-     asm volatile("mov %%cr3, %%eax  \n"
+    dword realcr3;
+    asm volatile("mov %%cr3, %%eax  \n"
                   "mov %%eax, %0     \n"
                   : "=m"(realcr3):: "eax");
 

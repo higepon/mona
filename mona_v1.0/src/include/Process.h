@@ -127,11 +127,10 @@ public:
 
 public:
     bool schedule();
-    bool schedule2();
-    bool schedule3();
+    bool setCurrentThread();
     void tick();
     void dump();
-    void join(Thread* thread, int priority = 30);
+    void join(Thread* thread);
     int kill(Thread* thread);
     int wait(Thread* thread, int waitReason);
     int wakeup(Thread* thread, int waitReason);
@@ -141,13 +140,9 @@ public:
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);
 
-private:
-    int calcPriority(Thread* thread);
-    volatile bool working;
-
 protected:
-    Array<Thread*> runq;
-    Array<Thread*> waitq;
+    Thread* runq;
+    Thread* waitq;
     dword tickTotal;
     int monaMin;
 };
@@ -193,8 +188,6 @@ class Thread : public Node
     }
 
   public:
-    int currPriority;
-    int basePriotity;
     int totalTick;
     int partTick;
     int waitReason;
