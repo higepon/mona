@@ -131,6 +131,7 @@ void startKernel(void) {
     //        *p = 5;
     //    }
 
+    g_console->printf("address of v86 = %x", (dword)v86_func);
 
     //     SystemInfo::rdtscsub();
 //     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
@@ -159,7 +160,7 @@ void startKernel(void) {
 //     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
 //     while (g_demo_step < 5);
 
-    g_info_level = DEV_NOTICE;
+    g_info_level = MSG;
 
     Process* idle = new Process("idle     ");
 
@@ -176,15 +177,16 @@ void startKernel(void) {
     Process*     process8 = new Process("MessageServer");
     V86Process*  process9 = new V86Process("V86_process");
 
-    //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func+15));
-    //    g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
-    //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
-    //    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
-    //    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
-    //    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-    //    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    //    g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
-    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
+    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func+15));
+    g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
+    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
+    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
+    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
+    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
+    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
+    g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
+    //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
+    //    process9->pinfo_.esp = 0x1000;
 
     enableTimer();
 
