@@ -251,6 +251,7 @@ void cpufaultHandler_6(void)
     logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
     logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
     logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+    logprintf("unhandled:fault06 - invalid op code");
 #endif
     g_scheduler->dump();
     panic("unhandled:fault06 - invalid op code");
