@@ -363,8 +363,8 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(Keys::NumPad7):
     case(Keys::NumPad8):
     case(Keys::NumPad9):
-    case(Keys::OemMinus):
-    case(Keys::OemPlus):
+    case(Keys::Subtract):
+    case(Keys::Add):
     case(Keys::Space):
     case(Keys::Divide):
 
