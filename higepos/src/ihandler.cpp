@@ -18,15 +18,19 @@
 /*!
     \brief key stroke handler
 
-    key storoke handler
+    key storoke handler IRQ 1
 
     \author HigePon
     \date   create:2002/07/25 update:2002/07/27
 */
 void keyStrokeHandler() {
+
     _sysPrint("key stroke\n");
-    outportb(0xA0, 0x20);
+
+    /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
+
+    /* iret */
     asm("mov %ebp,%esp");
     asm("pop %ebp");
     asm("iret");
@@ -43,9 +47,13 @@ void keyStrokeHandler() {
     \date   create:2002/07/25 update:2002/07/27
 */
 void dummy() {
+
     //    _sysPrint("dummy");
+
+    /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
+
     asm("mov %ebp,%esp");
     asm("pop %ebp");
     asm("iret");
