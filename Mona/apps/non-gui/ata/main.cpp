@@ -186,10 +186,8 @@ void DataRead(IDEController* ide, word length, void* buf)
 }
 
 
-
 int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void* buf)
 {
-    byte device;
     word* p;
 
     p = (word*)buf;
@@ -197,7 +195,7 @@ int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void
     /* select deviece */
     if (ide->selectedDevice != command->device)
     {
-        if (!SelectDevice(ide, command->device)) return -1;
+        if (!SelectDevice(ide, command->device)) return 1;
     }
     else
     {
@@ -212,7 +210,7 @@ int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void
     outp8(ide, ATA_CHR, command->cylinderHigh); /* cylinderHigh      */
 
     /* drdy check */
-    if (command->drdyCheck && !WaitDrdySet(ide)) return -2;
+    if (command->drdyCheck && !WaitDrdySet(ide)) return 2;
 
     outp8(ide, ATA_CMR, command->command);      /* command           */
     sleep(1);
@@ -223,15 +221,15 @@ int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void
     /* read */
     for (int i = 0; i < count; i++, p+=256)
     {
-        if (!waitBusyClear(ide)) return -3;
+        if (!waitBusyClear(ide)) return -1;
 
         byte status = inp8(ide, ATA_STR);
 
         /* command error */
-        if ((status & BIT_ERR) != 0) return -4;
+        if ((status & BIT_ERR) != 0) return -2;
 
         /* data not ready */
-        if ((status & BIT_DRQ) == 0) return -5;
+        if ((status & BIT_DRQ) == 0) return -3;
 
         /* data read */
         DataRead(ide, 256, p);
@@ -245,6 +243,50 @@ int SendPioDataCommand(IDEController* ide, ATACommand* command, word count, void
         byte error = inp8(ide, ATA_ERR);
         return 0x1000 | error;
     }
+
+    return 0;
+}
+
+
+enum DeviceType
+{
+    DEVICE_UNKNOWN,
+    DEVICE_ATA,
+    DEVICE_ATAPI
+};
+
+
+
+#define DEV_HEAD_OBS    0xa0
+
+int IDE_Identifye(IDEController* ide, int device, DeviceType type, void* buf)
+{
+    ATACommand com;
+    int result;
+
+    /* feature, sector count, sector number, cylinder is 0 */
+    memset(&com, 0, sizeof(ATACommand));
+
+    com.device = DEV_HEAD_OBS | (device << 4);
+
+    if (type == DEVICE_ATA)
+    {
+        com.drdyCheck = 1;
+        com.command = 0xec; /* Identify device */
+    }
+    else
+    {
+        com.drdyCheck = 0;
+        com.command = 0xa1; /* Identify Packet device */
+    }
+
+    /* command execute */
+    result = SendPioDataCommand(ide, &com, 1, buf);
+
+    if (result > -3) return 1; /* device not exist */
+    else if (result > 0 && (result & BIT_ABRT) != 0) return 2; /* abort */
+    else if (result > 0) return 3; /* error */
+    else if (result < 0) return 4; /* timeout or device select error */
 
     return 0;
 }
@@ -284,12 +326,19 @@ int MonaMain(List<char*>* pekoe)
     outp8(&ide[0], ATA_DCR, 0x02);
     sleep(5);
 
+    char buf[1024];
+
     printf("signature=%x\n", getSignature(&ide[0], 0));
     printf("signature=%x\n", getSignature(&ide[0], 1));
     printf("signature=%x\n", getSignature(&ide[1], 0));
     printf("signature=%x\n", getSignature(&ide[1], 1));
 
+    printf("identify=%x\n", IDE_Identifye(&ide[0], 0, DEVICE_ATA, buf));
 
+    for (int i = 0; i < 1024; i++)
+    {
+        printf("%c", buf[i]);
+    }
 
     return 0;
 }

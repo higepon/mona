@@ -1,5 +1,7 @@
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
 
+        * apps/non-gui/ata/main.cpp (IDE_Identifye): identifyコマンド送信(挙動がおかしい)
+
         * src/servers/moniter/main.cpp (ReadConfig): Moniter->Monitor (thanks Tinoさん)
 
 2004-06-28  tino  <tino@users.sourceforge.jp>
