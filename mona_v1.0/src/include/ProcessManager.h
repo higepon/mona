@@ -15,6 +15,7 @@
 #define _MONA_PROCESSMANAGER_
 
 #include <monaKernel.h>
+#include <GDTUtil.h>
 
 #define GDTNUM 7 /*!< \def number of entry gdt */
 

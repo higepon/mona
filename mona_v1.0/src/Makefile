@@ -31,6 +31,7 @@ SRC        = monaKernel.cpp       \
              monaTester.cpp       \
              ProcessManager.cpp   \
              monaChecker.cpp      \
+             GDTUtil.cpp
 
 HEADER     = ${INCLUDE}/monaKernel.h       \
              ${INCLUDE}/monaVga.h          \
@@ -45,6 +46,7 @@ HEADER     = ${INCLUDE}/monaKernel.h       \
              ${INCLUDE}/monaTester.h       \
              ${INCLUDE}/ProcessManager.h   \
              ${INCLUDE}/monaChecker.h      \
+             ${INCLUDE}/GDTUtil.h
 
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/monaKernel.o       \
@@ -62,6 +64,7 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/ProcessManager.o   \
              ${BIN}/monaChecker.o      \
              ${BIN}/string.o           \
+             ${BIN}/GDTUtil.o
 
 # document
 WEB : ${BIN}/mona.img
@@ -93,6 +96,7 @@ ${THIRD} : ${SRC} ${HEADER} ${LIBSRC} ${LIBHEADER}
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} ProcessManager.cpp   -o ${BIN}/ProcessManager.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaChecker.cpp      -o ${BIN}/monaChecker.o
 	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} ./lib/string.c       -o ${BIN}/string.o
+	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} GDTUtil.cpp          -o ${BIN}/GDTUtil.o
 	${LD} ${LFLAGS} -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third.list
 	${STRIP}  -O binary ${THIRD}
