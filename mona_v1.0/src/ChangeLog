@@ -1,5 +1,7 @@
 2003-11-12  higepon  <higepon@users.sourceforge.jp>
 
+        * システムコールの戻り値が正常に取得できるようになった。
+
         * syscalls.cpp システムコールの戻り値が取れていない?
                        loadProcess遅すぎ
 

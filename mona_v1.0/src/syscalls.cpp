@@ -118,6 +118,7 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_RECEIVE:
+
         g_current_process->eax = receive((Message*)(g_current_process->esi));
         break;
 

@@ -174,6 +174,6 @@ arch_syscall_handler:
         call syscall_entrance
         mov ebx, dword[g_current_process] ; system call return code is
         mov eax, dword [ebx + 12]          ; at g_current_process->eax
-        mov dword[esp + 28], eax           ; so set this to stack
+        mov dword[esp + 36], eax           ; so set this to stack
         popAll
         iretd
