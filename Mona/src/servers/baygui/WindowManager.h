@@ -93,6 +93,8 @@ private:
 	virtual void postRepaintToWindow(Control *control);
 	virtual void postRepaintToWindows(int length, Rect *drect);
 	virtual void restoreBackGround(Control *control);
+	virtual void restoreMenu();
+	virtual void restoreCorner();
 	virtual int getKeycode(int keycode, int mod, int charcode);
 
 public:

@@ -109,7 +109,7 @@ void FontManager::loadFont(char *path)
 	}
 	
 	if (fp != NULL) {
-		copyString(name, FONT_NAME);
+		xstrncpy(this->name, FONT_NAME, 8 + 1);
 		// 幅と高さ
 		width  = 6;
 		height = 12;
@@ -157,30 +157,31 @@ Font **FontManager::decodeString(char *str, int *length)
 		// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
 		} else if (0xC2 <= c1 && c1 <= 0xDF) {
 			// 2 バイト目
+			if (str[i] == strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
 			n = ((c1 & 0x1F) >> 6) | (c2 & 0x3F);
 		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
 		} else if (0xE0 <= c1 && c1 <= 0xEF) {
 			// 2 バイト目
+			if (str[i] == strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
 			// 3 バイト目
+			if (str[i] == strlen(str) - 1) break;
 			c3 = (unsigned char)str[++i];
 			n = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
 		} else {
-			n = 0;
+			*length = 0;
+			return NULL;
 		}
 		// デコード開始
-		if (n != 0 && fp != NULL) {
-			for (j = 0; j < offsetListLength; j++) {
-				int fw = fp[offsetList[n] + 4];
-				int fh = fp[offsetList[n] + 5];
-				fontList[len]->setName(name);
-				fontList[len]->setWidth(fw);
-				fontList[len]->setHeight(fh);
-				memcpy(fontList[len]->getData(), &fp[offsetList[n] + 6],
-					(int)((fw * fh + 7) / 8));
-				break;
-			}
+		if (0 < n && n <= 0xFFFF && fp != NULL) {
+			int fw = fp[offsetList[n] + 4];
+			int fh = fp[offsetList[n] + 5];
+			fontList[len]->setName(this->name);
+			fontList[len]->setWidth(fw);
+			fontList[len]->setHeight(fh);
+			memcpy(fontList[len]->getData(), &fp[offsetList[n] + 6],
+				(int)((fw * fh + 7) / 8));
 			len++;
 		}
 	}

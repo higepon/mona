@@ -86,22 +86,22 @@ void ListBox::repaint()
 	// 枠線
 	if (focused == true && enabled == true) {
 		_g->setColor(0,128,255);
-		_g->drawRect(0, 0, width, height);
+		_g->drawRect(0, 0, _width, _height);
 	} else {
 		_g->setColor(getParent()->getBackground());
-		_g->drawRect(0, 0, width, height);
+		_g->drawRect(0, 0, _width, _height);
 	}
 	_g->setColor(foreColor);
-	_g->drawRect(1, 1, width - 2, height - 2);
+	_g->drawRect(1, 1, _width - 2, _height - 2);
 	_g->setColor(~foreColor);
-	_g->fillRect(2, 2, width - 3, height - 3);
+	_g->fillRect(2, 2, _width - 3, _height - 3);
 
 	// 文字
 	int fh = FontManager::getInstance()->getHeight();
 	for (i = 0; i < _dataList->getLength(); i++) {
 		if (selectedIndex == i && enabled == true) {
 			_g->setColor(0,128,255);
-			_g->fillRect(3, 3 + (16 * i), width - 5, 17);
+			_g->fillRect(3, 3 + (16 * i), _width - 5, 17);
 			_g->setColor(~foreColor);
 			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);

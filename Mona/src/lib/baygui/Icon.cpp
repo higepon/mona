@@ -111,10 +111,14 @@ bool Icon::decode(unsigned char *fp)
 	bitmapOffset = 62 + (colors * 4);
 
 	// set default system color
-	palette256[0]  = 0x000000; palette256[1]  = 0x800000; palette256[2]  = 0x008000; palette256[3]  = 0x808000;
-	palette256[4]  = 0x000080; palette256[5]  = 0x800080; palette256[6]  = 0x008080; palette256[7]  = 0xC6C6C6;
-	palette256[8]  = 0x808080; palette256[9]  = 0xff0000; palette256[10] = 0x00ff00; palette256[11] = 0xffff00;
-	palette256[12] = 0x0000ff; palette256[13] = 0xff00ff; palette256[14] = 0x00ffff; palette256[15] = 0xffffff;
+	palette256[0]  = 0x000000; palette256[1]  = 0x800000;
+	palette256[2]  = 0x008000; palette256[3]  = 0x808000;
+	palette256[4]  = 0x000080; palette256[5]  = 0x800080;
+	palette256[6]  = 0x008080; palette256[7]  = 0xC6C6C6;
+	palette256[8]  = 0x808080; palette256[9]  = 0xff0000;
+	palette256[10] = 0x00ff00; palette256[11] = 0xffff00;
+	palette256[12] = 0x0000ff; palette256[13] = 0xff00ff;
+	palette256[14] = 0x00ffff; palette256[15] = 0xffffff;
 	
 	// initialize color palette
 	for (i = 0; i < (int)colors; i++){

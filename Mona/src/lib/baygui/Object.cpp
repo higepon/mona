@@ -27,29 +27,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
-Object::Object() {
-	threadID = THREAD_UNKNOWN;
-}
-
-/** デストラクタ */
-Object::~Object() {
-}
-
-/** スレッドIDを設定する */
-void Object::setThreadID(dword threadID)
+/** 文字列コピー */
+void xstrncpy(char *dst, char *src, int len)
 {
-	this->threadID = threadID;
+	memset(dst, 0, len);
+	strncpy(dst, src, len - 1);
+	dst[len - 1] = 0;
 }
 
-/** スレッドIDを得る */
-dword Object::getThreadID()
+/** 10進数を文字列に変換する */
+void xitoa(int n, char *s)
 {
-	return threadID;
+	int k, i = 0, j;
+	char tmp;
+	
+	k = 0;
+	
+	if (n < 0) {
+		n = -1 * n;
+		i = 1;
+	}
+	if (n == 0) {
+		s[k++] = 0 + '0';
+	}
+	while (n != 0) {
+		s[k++] = n%10 + '0';
+		n = n/10;
+	}
+	if (i == 1) s[k++] = '-';
+	s[k] = '\0';
+
+	i = j = 0;
+	while (s[j]) ++j;
+	while (i < --j) {
+		tmp = s[i];
+		s[i++] = s[j];
+		s[j] = tmp;
+	}
 }
 
 /** ファイルを開きバイト列を得る */
-unsigned char *Object::getByteArray(char *path)
+unsigned char *getByteArray(char *path)
 {
 #if defined(PEKOE)
 	int file1, filesize1, readsize1;
@@ -101,45 +119,24 @@ unsigned char *Object::getByteArray(char *path)
 #endif
 }
 
-/** 文字列をコピーする */
-void Object::copyString(char *dst, char *src)
-{
-	memset(dst, 0, strlen(dst));
-	strcpy(dst, src);
-	//int i;
-	//for (i = 0; i < (int)strlen(src); i++) {
-	//	dst[i] = src[i];
-	//}
-	//dst[i] = '\0';
+/** コンストラクタ */
+Object::Object() {
+	threadID = THREAD_UNKNOWN;
 }
 
-/** 10進数を文字列に変換する */
-void Object::toDecimalString(int n, char *s)
-{
-	int k, i = 0, j;
-	char tmp;
-	
-	k = 0;
-	
-	if (n < 0) {
-		n = -1 * n;
-		i = 1;
-	}
-	if (n == 0) {
-		s[k++] = 0 + '0';
-	}
-	while (n != 0) {
-		s[k++] = n%10 + '0';
-		n = n/10;
-	}
-	if (i == 1) s[k++] = '-';
-	s[k] = '\0';
-
-	i = j = 0;
-	while (s[j]) ++j;
-	while (i < --j) {
-		tmp = s[i];
-		s[i++] = s[j];
-		s[j] = tmp;
-	}
+/** デストラクタ */
+Object::~Object() {
 }
+
+/** スレッドIDを設定する */
+void Object::setThreadID(dword threadID)
+{
+	this->threadID = threadID;
+}
+
+/** スレッドIDを得る */
+dword Object::getThreadID()
+{
+	return threadID;
+}
+

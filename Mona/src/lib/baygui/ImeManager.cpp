@@ -53,6 +53,7 @@ void ImeManager::clearBuffer(char *buffer)
 /** 指定したバッファーに文字を追加する */
 void ImeManager::insertCharacter(char *buffer, char c)
 {
+	if (strlen(buffer) >= MAX_TEXT_LEN - 1) return;
 	buffer[strlen(buffer)] = c;
 }
 
@@ -61,6 +62,7 @@ void ImeManager::insertString(char *buffer, const char *str)
 {
 	int len = strlen(buffer);
 	for(int i = len; i < len + (int)strlen(str); i++) {
+		if (i >= MAX_TEXT_LEN - 1) return;
 		buffer[i] = str[i - len];
 	}
 }
@@ -147,7 +149,7 @@ bool ImeManager::getKana(char *str, char *result)
 	MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANA, 0, 0, 0, str);
 	if (info.arg2 > 0) {
 		//printf("MSG_IMESERVER_GETKANA: %s -> %s\n", str, info.str);
-		copyString(result, info.str);
+		xstrncpy(result, info.str, MAX_TEXT_LEN);
 		return true;
 	} else {
 		return false;
@@ -186,20 +188,20 @@ void ImeManager::repaint()
 	// 塗りつぶし
 	_g->setColor(~foreColor);
 	//_g->setColor(255,255,128);
-	_g->fillRect(0, 0, width + 1, height + 1);
+	_g->fillRect(0, 0, _width + 1, _height + 1);
 
 	// 確定文字列
 	//if (strlen(decideBuffer) > 0) {
 	//	fw1 = FontManager::getInstance()->getWidth(decideBuffer);
 	//	_g->setColor(foreColor);
-	//	_g->drawText(decideBuffer, 0, (height - fh) / 2);
+	//	_g->drawText(decideBuffer, 0, (_height - fh) / 2);
 	//}
 	
 	// 変換対象文字列
 	if (strlen(translateBuffer) > 0) {
 		fw1 = FontManager::getInstance()->getWidth(translateBuffer);
 		_g->setColor(0, 0, 255);
-		_g->drawText(translateBuffer, 0, (height - fh) / 2);
+		_g->drawText(translateBuffer, 0, (_height - fh) / 2);
 		_g->drawLine(0, 13, fw1, 13);
 	}
 	
@@ -207,7 +209,7 @@ void ImeManager::repaint()
 	//if (strlen(inputBuffer) > 0) {
 	//	fw2 = FontManager::getInstance()->getWidth(inputBuffer);
 	//	_g->setColor(0, 0, 255);
-	//	_g->drawText(inputBuffer, fw1, (height - fh) / 2);
+	//	_g->drawText(inputBuffer, fw1, (_height - fh) / 2);
 	//	_g->drawLine(fw1, 13, fw1 + fw2, 13);
 	//}
 	

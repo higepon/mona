@@ -62,6 +62,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
 
 // ==================================================
+// BayGUI グローバル関数
+// ==================================================
+void xstrncpy(char *dst, char *src, int len);
+void xitoa(int n, char *s);
+unsigned char *getByteArray(char *path);
+
+// ==================================================
 // BayGUI ヘッダファイル
 // ==================================================
 #include "baygui/messages.h"

@@ -34,7 +34,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Label::Label(char *text)
 {
 	align = ALIGN_LEFT;
-	copyString(this->text, text);
+	xstrncpy(this->text, text, MAX_TEXT_LEN);
 }
 
 /**
@@ -45,7 +45,7 @@ Label::Label(char *text)
 Label::Label(char *text, int align)
 {
 	this->align = align;
-	copyString(this->text, text);
+	xstrncpy(this->text, text, MAX_TEXT_LEN);
 }
 
 /** デストラクタ */
@@ -59,7 +59,7 @@ Label::~Label()
  */
 void Label::setText(char *text)
 {
-	copyString(this->text, text);
+	xstrncpy(this->text, text, MAX_TEXT_LEN);
 	if (firstpaint == true) {
 		repaint();
 	}
@@ -79,7 +79,7 @@ void Label::repaint()
 
 	// 塗りつぶし
 	_g->setColor(backColor);
-	_g->fillRect(0,0,width,height);
+	_g->fillRect(0,0,_width,_height);
 
 	// 文字
 	int fw = FontManager::getInstance()->getWidth(text);
@@ -90,10 +90,10 @@ void Label::repaint()
 		_g->setColor(128,128,128);
 	}
 	if (align == ALIGN_RIGHT) {
-		_g->drawText(text, (width - fw), (height - fh) / 2);
+		_g->drawText(text, (_width - fw), (_height - fh) / 2);
 	} else if (align == ALIGN_CENTER) {
-		_g->drawText(text, (width - fw) / 2, (height - fh) / 2);
+		_g->drawText(text, (_width - fw) / 2, (_height - fh) / 2);
 	} else {
-		_g->drawText(text, 0, (height - fh) / 2);
+		_g->drawText(text, 0, (_height - fh) / 2);
 	}
 }

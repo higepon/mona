@@ -34,7 +34,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Button::Button(char *label)
 {
 	pushed = false;
-	copyString(this->label, label);
+	xstrncpy(this->label, label, MAX_TEXT_LEN);
 }
 
 /** デストラクタ */
@@ -48,7 +48,7 @@ Button::~Button()
  */
 void Button::setLabel(char *label)
 {
-	copyString(this->label, label);
+	xstrncpy(this->label, label, MAX_TEXT_LEN);
 	if (firstpaint == true) {
 		repaint();
 	}
@@ -68,34 +68,34 @@ void Button::repaint()
 
 	// 領域
 	_g->setColor(backColor);
-	_g->fillRect(1, 1, width - 2, height - 2);
+	_g->fillRect(1, 1, _width - 2, _height - 2);
 	
 	// 枠線
 	_g->setColor(foreColor);
-	_g->drawLine(2, 0, width - 2, 0);
-	_g->drawLine(2, height, width - 2, height);
-	_g->drawLine(0, 2, 0, height - 2);
-	_g->drawLine(width, 2, width, height - 2);
+	_g->drawLine(2, 0, _width - 2, 0);
+	_g->drawLine(2, _height, _width - 2, _height);
+	_g->drawLine(0, 2, 0, _height - 2);
+	_g->drawLine(_width, 2, _width, _height - 2);
 	_g->drawLine(1, 1, 1, 1);
-	_g->drawLine(1, height - 1 , 1, height - 1);
-	_g->drawLine(width - 1 , 1, width - 1, 1);
-	_g->drawLine(width - 1 , height - 1, width - 1, height - 1);
+	_g->drawLine(1, _height - 1 , 1, _height - 1);
+	_g->drawLine(_width - 1 , 1, _width - 1, 1);
+	_g->drawLine(_width - 1 , _height - 1, _width - 1, _height - 1);
 	if (pushed == true) {
 		_g->setColor(~foreColor);
-		_g->drawLine(2, height - 1, width - 2, height - 1);
-		_g->drawLine(width - 1, 2, width - 1, height - 2);
-		_g->drawLine(width - 2 , height - 2, width - 2, height - 2);
+		_g->drawLine(2, _height - 1, _width - 2, _height - 1);
+		_g->drawLine(_width - 1, 2, _width - 1, _height - 2);
+		_g->drawLine(_width - 2 , _height - 2, _width - 2, _height - 2);
 		_g->setColor(foreColor);
-		_g->drawLine(1, 2, 1, height - 2);
-		_g->drawLine(2, 1, width - 2, 1);
+		_g->drawLine(1, 2, 1, _height - 2);
+		_g->drawLine(2, 1, _width - 2, 1);
 	} else {
 		_g->setColor(128,128,128);
-		_g->drawLine(2, height - 1, width - 2, height - 1);
-		_g->drawLine(width - 1, 2, width - 1, height - 2);
-		_g->drawLine(width - 2 , height - 2, width - 2, height - 2);
+		_g->drawLine(2, _height - 1, _width - 2, _height - 1);
+		_g->drawLine(_width - 1, 2, _width - 1, _height - 2);
+		_g->drawLine(_width - 2 , _height - 2, _width - 2, _height - 2);
 		_g->setColor(~foreColor);
-		_g->drawLine(1, 2, 1, height - 2);
-		_g->drawLine(2, 1, width - 2, 1);
+		_g->drawLine(1, 2, 1, _height - 2);
+		_g->drawLine(2, 1, _width - 2, 1);
 	}
 	
 	// 文字
@@ -107,9 +107,9 @@ void Button::repaint()
 	int fw = FontManager::getInstance()->getWidth(label);
 	int fh = FontManager::getInstance()->getHeight();
 	if (pushed == true) {
-		_g->drawText(label, (width - fw) / 2 + 1, (height - fh) / 2 + 1);
+		_g->drawText(label, (_width - fw) / 2 + 1, (_height - fh) / 2 + 1);
 	} else {
-		_g->drawText(label, (width - fw) / 2, (height - fh) / 2);
+		_g->drawText(label, (_width - fw) / 2, (_height - fh) / 2);
 	}
 }
 

@@ -35,11 +35,11 @@ WindowManager *WindowManager::instance = NULL;
 WindowManager::WindowManager()
 {
 	isRunning = false;
-	x = y = modifiers = 0;
-	width = _g->getWidth();
-	height = _g->getHeight();
-	_g->translate(0,0);
-	_g->setClip(0,0,width,height);
+	_x = _y = modifiers = 0;
+	_width = _g->getWidth();
+	_height = _g->getHeight();
+	_g->translate(0, 0);
+	_g->setClip(0, 0, _width, _height);
 
 	// 壁紙読み込み
 	wallpaper = new Bitmap(WALLPAPER_NAME);
@@ -344,9 +344,9 @@ void WindowManager::onMouseDrag(int mx, int my)
 	if (state == STATE_NORMAL) {
 		// 境界チェック
 		if (mx <= 0) mx = 0;
-		if (mx >= width) mx = width;
+		if (mx >= _width) mx = _width;
 		if (my <= 0) my = 0;
-		if (my >= height) my = height;
+		if (my >= _height) my = _height;
 		
 		// ウィンドウ移動開始
 		if (rect->x <= mx && mx <= rect->x + rect->width && 
@@ -389,9 +389,9 @@ void WindowManager::onMouseDrag(int mx, int my)
 	} else if (state == STATE_MOVING) {
 		// 境界チェック
 		if (mx - dX < 0) mx = dX;
-		if (mx - dX + rect->width + 1 >= width) mx = width + dX - rect->width - 1;
+		if (mx - dX + rect->width + 1 >= _width) mx = _width + dX - rect->width - 1;
 		if (my - dY < 22) my = 22 + dY;
-		if (my - dY + rect->height + 1 >= height) my = height + dY - rect->height - 1;
+		if (my - dY + rect->height + 1 >= _height) my = _height + dY - rect->height - 1;
 		
 		_g->setXORMode(true);
 		_g->setColor(255,255,255);
@@ -433,6 +433,9 @@ void WindowManager::onMouseRelease(int mx, int my)
 		
 		// 背景を塗りつぶす
 		restoreBackGround(control);
+		
+		// ４隅再描画
+		restoreCorner();
 		
 		// 描画が必要かどうかチェックする領域
 		Rect srect;
@@ -536,6 +539,9 @@ void WindowManager::remove(Control *control)
 	// 背景を塗りつぶす
 	restoreBackGround(control);
 	
+	// ４隅再描画
+	restoreCorner();
+
 	// ウィンドウ削除
 	_controlList->remove(getLinkedItem(control));
 	
@@ -719,7 +725,7 @@ void WindowManager::restoreBackGround(Control *control)
 			_g->drawImage(wallpaper, 0, 0);
 		} else {
 			_g->setColor(128,128,255);
-			_g->fillRect(0, 0, width, height);
+			_g->fillRect(0, 0, _width, _height);
 		}
 	} else {
 		Rect *rect = control->getRect();
@@ -734,7 +740,7 @@ void WindowManager::restoreBackGround(Control *control)
 	#else
 	if (control == NULL) {
 		_g->setColor(255,255,255);
-		_g->fillRect(0, 0, width, height);
+		_g->fillRect(0, 0, _width, _height);
 	} else {
 		Rect *rect = control->getRect();
 		_g->setColor(255,255,255);
@@ -743,54 +749,17 @@ void WindowManager::restoreBackGround(Control *control)
 	#endif
 }
 
-/** 再描画 */
-void WindowManager::repaint()
+/** メニューバー再描画 */
+void WindowManager::restoreMenu()
 {
 	int i, j;
 	
-	if (isRunning == false)
-		return;
-	if (firstpaint == false)
-		firstpaint = true;
-
-	// 背景を塗りつぶす
-	restoreBackGround(NULL);
-	
-	// メニューバー
 	_g->setColor(200,200,200);
-	_g->fillRect(0,0,width,20);
+	_g->fillRect(0,0,_width,20);
 	_g->setColor(128,128,128);
-	_g->drawLine(0,20,width-1,20);
+	_g->drawLine(0,20,_width-1,20);
 	_g->setColor(0,0,0);
-	_g->drawLine(0,21,width-1,21);
-
-	// 左上
-	_g->drawLine(0,0,4,0);
-	_g->drawLine(0,1,2,1);
-	_g->drawLine(0,2,1,2);
-	_g->drawLine(0,3,0,3);
-	_g->drawLine(0,4,0,4);
-	
-	// 右上
-	_g->drawLine(width-5,0,width-1,0);
-	_g->drawLine(width-3,1,width-1,1);
-	_g->drawLine(width-2,2,width-1,2);
-	_g->drawLine(width-1,3,width-1,3);
-	_g->drawLine(width-1,4,width-1,4);
-
-	// 左下
-	_g->drawLine(0,height-5,0,height-5);
-	_g->drawLine(0,height-4,0,height-4);
-	_g->drawLine(0,height-3,1,height-3);
-	_g->drawLine(0,height-2,2,height-2);
-	_g->drawLine(0,height-1,4,height-1);
-
-	// 右下
-	_g->drawLine(width-5,height-1,width-1,height-1);
-	_g->drawLine(width-3,height-2,width-1,height-2);
-	_g->drawLine(width-2,height-3,width-1,height-3);
-	_g->drawLine(width-1,height-4,width-1,height-4);
-	_g->drawLine(width-1,height-5,width-1,height-5);
+	_g->drawLine(0,21,_width-1,21);
 
 	// オレンジアイコン
 #if defined(PEKOE)
@@ -811,6 +780,58 @@ void WindowManager::repaint()
 	int fh = FontManager::getInstance()->getHeight();
 	_g->setColor(128,128,128);
 	_g->drawText(WINDOWMANAGER_MENU_TITLE_JP, 45, 4 + (16 - fh) / 2);
+}
+
+/** ４隅再描画 */
+void WindowManager::restoreCorner()
+{
+	_g->setColor(0,0,0);
+	
+	// 左上
+	_g->drawLine(0,0,4,0);
+	_g->drawLine(0,1,2,1);
+	_g->drawLine(0,2,1,2);
+	_g->drawLine(0,3,0,3);
+	_g->drawLine(0,4,0,4);
+	
+	// 右上
+	_g->drawLine(_width-5,0,_width-1,0);
+	_g->drawLine(_width-3,1,_width-1,1);
+	_g->drawLine(_width-2,2,_width-1,2);
+	_g->drawLine(_width-1,3,_width-1,3);
+	_g->drawLine(_width-1,4,_width-1,4);
+
+	// 左下
+	_g->drawLine(0,_height-5,0,_height-5);
+	_g->drawLine(0,_height-4,0,_height-4);
+	_g->drawLine(0,_height-3,1,_height-3);
+	_g->drawLine(0,_height-2,2,_height-2);
+	_g->drawLine(0,_height-1,4,_height-1);
+
+	// 右下
+	_g->drawLine(_width-5,_height-1,_width-1,_height-1);
+	_g->drawLine(_width-3,_height-2,_width-1,_height-2);
+	_g->drawLine(_width-2,_height-3,_width-1,_height-3);
+	_g->drawLine(_width-1,_height-4,_width-1,_height-4);
+	_g->drawLine(_width-1,_height-5,_width-1,_height-5);
+}
+
+/** 再描画 */
+void WindowManager::repaint()
+{
+	if (isRunning == false)
+		return;
+	if (firstpaint == false)
+		firstpaint = true;
+
+	// 背景を塗りつぶす
+	restoreBackGround(NULL);
+	
+	// メニューバー再描画
+	restoreMenu();
+
+	// ４隅再描画
+	restoreCorner();
 }
 
 /**

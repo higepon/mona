@@ -48,6 +48,14 @@ Control *Container::findChild()
 	// NULLチェック
 	if (_controlList->endItem == NULL) return NULL;
 
+	#if 1
+	// 後ろからチェックしていく
+	for (int i = _controlList->getLength() - 1; i >= 0; i--) {
+		Control *c = (Control *)_controlList->getItem(i)->data;
+		if (c->getFocused() == true) return c;
+	}
+	#endif
+	#if 0
 	// 後ろからチェックしていく
 	LinkedItem *item = _controlList->endItem;
 	Control *c = (Control *)item->data;
@@ -57,6 +65,7 @@ Control *Container::findChild()
 		c = (Control *)item->data;
 		if (c->getFocused() == true) return c;
 	}
+	#endif
 	return NULL;
 }
 
@@ -69,6 +78,27 @@ Control *Container::findChild(int x, int y)
 {
 	// NULLチェック
 	if (_controlList->endItem == NULL) return NULL;
+	
+	#if 1
+	// 後ろからチェックしていく
+	for (int i = _controlList->getLength() - 1; i >= 0; i--) {
+		Control *c = (Control *)_controlList->getItem(i)->data;
+		Rect *rect = c->getRect();
+		// マウスカーソルがある範囲に部品があるかどうかチェック
+		if (c->getIconified() == false &&
+			rect->x <= x && x <= rect->x + rect->width && 
+			rect->y <= y && y <= rect->y + rect->height)
+		{
+			return c;
+		} else if (c->getIconified() == true &&
+			rect->x <= x && x <= rect->x + rect->width && 
+			rect->y <= y && y <= rect->y + INSETS_TOP)
+		{
+			return c;
+		}
+	}
+	#endif
+	#if 0
 	// 後ろからチェックしていく
 	LinkedItem *item = _controlList->endItem;
 	Control *c = (Control *)item->data;
@@ -102,6 +132,7 @@ Control *Container::findChild(int x, int y)
 			return c;
 		}
 	}
+	#endif
 	return NULL;
 }
 
@@ -115,6 +146,15 @@ LinkedItem *Container::getLinkedItem(Control *control)
 	// NULLチェック
 	if (_controlList->endItem == NULL) return NULL;
 
+	#if 1
+	// 後ろからチェックしていく
+	for (int i = _controlList->getLength() - 1; i >= 0; i--) {
+		LinkedItem *item = _controlList->getItem(i);
+		Control *c = (Control *)item->data;
+		if (control == c) return item;
+	}
+	#endif
+	#if 0
 	// 後ろからチェックしていく
 	LinkedItem *item = _controlList->endItem;
 	Control *c = (Control *)item->data;
@@ -124,6 +164,7 @@ LinkedItem *Container::getLinkedItem(Control *control)
 		c = (Control *)item->data;
 		if (control == c) return item;
 	}
+	#endif
 	return NULL;
 }
 

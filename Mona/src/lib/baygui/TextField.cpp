@@ -48,7 +48,7 @@ TextField::~TextField()
  */
 void TextField::setText(char *text)
 {
-	copyString(this->text, text);
+	xstrncpy(this->text, text, MAX_TEXT_LEN);
 	if (firstpaint == true) {
 		repaint();
 	}
@@ -71,26 +71,26 @@ void TextField::repaint()
 	// 枠線
 	if (focused == true && enabled == true) {
 		_g->setColor(0,128,255);
-		_g->drawRect(0, 0, width, height);
+		_g->drawRect(0, 0, _width, _height);
 	} else {
 		_g->setColor(getParent()->getBackground());
-		_g->drawRect(0, 0, width, height);
+		_g->drawRect(0, 0, _width, _height);
 	}
 	_g->setColor(foreColor);
-	_g->drawRect(1, 1, width - 2, height - 2);
+	_g->drawRect(1, 1, _width - 2, _height - 2);
 
 	// 塗りつぶし
 	_g->setColor(~foreColor);
-	_g->fillRect(2, 2, width - 3, height - 3);
+	_g->fillRect(2, 2, _width - 3, _height - 3);
 
 	// 文字
 	int fw = FontManager::getInstance()->getWidth(text);
 	int fh = FontManager::getInstance()->getHeight();
 	_g->setColor(foreColor);
-	_g->drawText(text, offx, (height - fh) / 2);
+	_g->drawText(text, offx, (_height - fh) / 2);
 
 	// IME再描画
-	_imeManager->setRect(x + offx + fw, y + offy, width - offx * 2 - fw, height - offy * 2);
+	_imeManager->setRect(_x + offx + fw, _y + offy, _width - offx * 2 - fw, _height - offy * 2);
 	_imeManager->setForeground(foreColor);
 	_imeManager->setBackground(~foreColor);
 	_imeManager->setFocused(focused);

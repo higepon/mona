@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Control::Control() {
 	enabled = true;
 	focused = iconified = firstpaint = false;
-	x = y = height = width = 0;
+	_x = _y = _height = _width = 0;
 	_rect = new Rect(0,0,0,0);
 	_g = new Graphics();
 	_focusEvent = new Event(FOCUS_IN, this);
@@ -122,10 +122,10 @@ bool Control::getIconified()
 */
 Rect *Control::getRect()
 {
-	_rect->x = this->x;
-	_rect->y = this->y;
-	_rect->height = this->height;
-	_rect->width = this->width;
+	_rect->x = this->_x;
+	_rect->y = this->_y;
+	_rect->height = this->_height;
+	_rect->width = this->_width;
 	return _rect;
 }
 
@@ -215,11 +215,11 @@ void Control::setIconified(bool iconified)
 */
 void Control::setRect(int x, int y, int width, int height)
 {
-	this->x = x;
-	this->y = y;
-	this->height = height;
-	this->width = width;
-	_g->translate(x,y);
+	this->_x = x;
+	this->_y = y;
+	this->_height = height;
+	this->_width = width;
+	_g->translate(x, y);
 	_g->setClip(x, y, width, height);
 }
 

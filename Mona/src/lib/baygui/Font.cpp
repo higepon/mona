@@ -40,7 +40,7 @@ Font::~Font()
 /** 名前を設定する */
 void Font::setName(char *name)
 {
-	copyString(this->name, name);
+	xstrncpy(this->name, name, 8 + 1);
 }
 
 /** 幅を設定する */
