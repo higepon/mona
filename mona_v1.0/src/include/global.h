@@ -52,3 +52,4 @@ GLOBAL dword g_total_system_memory;
 
 /* Paging */
 GLOBAL PTE* g_page_dir;
+GLOBAL PTE* g_page_tbl;

@@ -15,6 +15,7 @@
 #include<PagingUtil.h>
 
 #define PAGE_DIR_NUM 1024
+#define PAGE_TBL_NUM 1024
 
 void PagingUtil::setup() {
 
@@ -23,6 +24,19 @@ void PagingUtil::setup() {
     if (g_page_dir == NULL) panic("Page Directory memory allocate error\n");
     for (; (dword)g_page_dir % 4096; g_page_dir++);
 
+    g_page_tbl = (PTE*)malloc(sizeof(PTE) * PAGE_TBL_NUM * 2);
+    if (g_page_dir == NULL) panic("Page Table memory allocate error\n");
+    for (; (dword)g_page_tbl % 4096; g_page_tbl++);
+
+
 
     return;
+}
+
+void PagingUtil::makePTE(PTE* pte) {
+
+}
+
+void PagingUtil::makePTE(PTE* pte, dword physaddr) {
+
 }

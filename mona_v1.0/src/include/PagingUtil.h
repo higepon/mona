@@ -33,6 +33,8 @@ class PagingUtil {
 
   public:
     static void setup();
+    static void makePTE(PTE* pte);
+    static void makePTE(PTE* pte, dword physaddr);
 };
 
 #endif
