@@ -68,6 +68,8 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
     if (current->size != realSize) {
         this->addToEntry(0, freeBlock, freeBlockSize);
+        this->addToEntry(0, freeBlock + 1, 1);
+        this->addToEntry(0, freeBlock + 2, 1);
         this->concatBlock(freeEntry_, freeBlock);
         this->printInfo();
     }
