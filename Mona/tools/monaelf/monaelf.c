@@ -119,12 +119,6 @@ static ELF loadelfhdr(FILE *fp) {
 	ELFHDR32	hdr32;
 	ELF			ret;
 
-#if 0
-	if (fstat(fileno(fp), &sb) != 0) {
-		printf("ELF header: file system error\n");
-		goto leh_err1;
-	}
-#endif
 	if (fread(&hdr, sizeof(hdr), 1, fp) != 1) {
 		printf("ELF header: read error\n");
 		goto leh_err1;
@@ -196,19 +190,100 @@ leh_err1:
 	return(NULL);
 }
 
+static ELF elfcollect(ELF elf) {
+
+	UINT		phdrcnt;
+	UINT		shdrcnt;
+	ELFPRG		*prg1;
+	ELFSCT		*sct1;
+	UINT		phdr;
+	UINT		hit;
+	ELFHDR32	hdr32;
+	ELFPRG		*prg2;
+//	ELFSCT		*sct2;
+	ELF			ret;
+	UINT32		offset;
+
+	if (elf == NULL) {
+		goto ecl_err;
+	}
+	phdr = 0;
+	phdrcnt = elf->hdr32.phdrcnt;
+	prg1 = elf->prg;
+	while(phdrcnt) {
+		if (prg1->filesize) {
+			shdrcnt = elf->hdr32.shdrcnt;
+			sct1 = elf->sct;
+			hit = 0;
+			while(shdrcnt) {
+				if ((sct1->size) && (sct1->offset >= prg1->offset) &&
+					((sct1->offset + sct1->size) <=
+										(prg1->offset + prg1->filesize))) {
+					hit++;
+				}
+				shdrcnt--;
+				sct1++;
+			}
+			if (hit == 0) {
+				printf("elf collect: not found section\n");
+				goto ecl_err;
+			}
+			phdr += hit;
+		}
+		phdrcnt--;
+		prg1++;
+	}
+	hdr32.phdrcnt = phdr;
+	ret = elfcre32(&elf->hdr, &hdr32);
+	if (ret == NULL) {
+		goto ecl_err;
+	}
+	memcpy(ret->sct, elf->sct, hdr32.shdrent * hdr32.shdrcnt);
+
+	phdrcnt = elf->hdr32.phdrcnt;
+	prg1 = elf->prg;
+	prg2 = ret->prg;
+	while(phdrcnt) {
+		if (prg1->filesize) {
+			shdrcnt = elf->hdr32.shdrcnt;
+			sct1 = elf->sct;
+			while(shdrcnt) {
+				if ((sct1->size) && (sct1->offset >= prg1->offset) &&
+					((sct1->offset + sct1->size) <=
+										(prg1->offset + prg1->filesize))) {
+					*prg2 = *prg1;
+					offset = sct1->offset - prg1->offset;
+					prg2->offset += offset;
+					prg2->filesize = sct1->size;
+					prg2->virtualaddr += offset;
+					prg2->physaddr += offset;
+					prg2++;
+				}
+				shdrcnt--;
+				sct1++;
+			}
+			phdr += hit;
+		}
+		phdrcnt--;
+		prg1++;
+	}
+	return(ret);
+
+ecl_err:
+	return(NULL);
+}
+
 static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 
 	ELF		tmp;
 	FILE	*fdp;
 	UINT	fpos;
-	UINT	phdrcnt;
 	UINT	shdrcnt;
-	ELFPRG	*prg1;
-	ELFPRG	*prg2;
 	ELFSCT	*sct1;
 	ELFSCT	*sct2;
-	UINT	i;
-	UINT	j;
+	UINT	phdrcnt;
+	ELFPRG	*prg1;
+	ELFPRG	*prg2;
 	UINT	pad;
 
 	if (elf == NULL) {
@@ -218,42 +293,16 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 	if (tmp == NULL) {
 		goto erl_err1;
 	}
-
 	tmp->hdr32.hdrsize = sizeof(ELFHDR) + sizeof(ELFHDR32);
 	tmp->hdr32.phdrpos = 0;
 	tmp->hdr32.phdrcnt = 0;
 	tmp->hdr32.shdrpos = 0;
 	tmp->hdr32.shdrcnt = 0;
 
-	// アドレス整理
-	sct1 = elf->sct;
-	sct2 = tmp->sct;
-	shdrcnt = elf->hdr32.shdrcnt;
-	memcpy(sct2, sct1, elf->hdr32.shdrent * shdrcnt);
-
-	prg1 = elf->prg;
-	prg2 = tmp->prg;
-	phdrcnt = 0;
-	for (i=0; i<elf->hdr32.phdrcnt; i++) {
-		if (prg1[i].filesize) {
-			for (j=0; j<shdrcnt; j++) {
-				if ((prg1[i].offset == sct1[j].offset) &&
-					(prg1[i].filesize == sct1[j].size)) {
-					break;
-				}
-			}
-			if (!(j < shdrcnt)) {
-				printf("elf section: not found section\n");
-				goto erl_err2;
-			}
-			prg2[phdrcnt++] = prg1[i];
-		}
-	}
-
 	// ファイル～
 	fdp = fopen(dstname, "wb");
 	if (fdp == NULL) {
-		printf("ELF relocate: output file coultn't create\n");
+		printf("ELF relocate: output file couldn't create\n");
 		goto erl_err2;
 	}
 
@@ -267,17 +316,21 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 	}
 	fpos = sizeof(tmp->hdr) + sizeof(tmp->hdr32);
 	tmp->hdr32.phdrpos = fpos;
-	if (fwrite(tmp->prg, elf->hdr32.phdrent, phdrcnt, fdp) != phdrcnt) {
+	tmp->hdr32.phdrcnt = elf->hdr32.phdrcnt;
+	if (fwrite(tmp->prg, elf->hdr32.phdrent, elf->hdr32.phdrcnt, fdp)
+													!= elf->hdr32.phdrcnt) {
 		printf("ELF32 program header: write error\n");
 		goto erl_err3;
 	}
-	fpos += elf->hdr32.phdrent * phdrcnt;
+	fpos += elf->hdr32.phdrent * elf->hdr32.phdrcnt;
 	tmp->hdr32.shdrpos = fpos;
-	if (fwrite(tmp->sct, elf->hdr32.shdrent, shdrcnt, fdp) != shdrcnt) {
+	tmp->hdr32.shdrcnt = elf->hdr32.shdrcnt;
+	if (fwrite(tmp->sct, elf->hdr32.shdrent, elf->hdr32.shdrcnt, fdp)
+													!= elf->hdr32.shdrcnt) {
 		printf("ELF32 section header: write error\n");
 		goto erl_err3;
 	}
-	fpos += elf->hdr32.shdrent * shdrcnt;
+	fpos += elf->hdr32.shdrent * elf->hdr32.shdrcnt;
 
 	pad = (0 - fpos) & 15;
 	if (filedatafill(fdp, 0, pad) != 0) {
@@ -286,20 +339,24 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 	}
 	fpos += pad;
 
-	for (i=0; i<shdrcnt; i++) {
-		if (sct1[i].type == 0) {
+	sct1 = elf->sct;
+	sct2 = tmp->sct;
+	shdrcnt = elf->hdr32.shdrcnt;
+	while(shdrcnt) {
+		*sct2 = *sct1;
+		if (sct1->type == 0) {
 		}
-		else if ((sct1[i].type == 1) || (sct1[i].type == 3)) {
-			sct2[i].offset = fpos;
-			if (fseek(fp, sct1[i].offset, SEEK_SET) != 0) {
+		else if ((sct1->type == 1) || (sct1->type == 3)) {
+			sct2->offset = fpos;
+			if (fseek(fp, sct1->offset, SEEK_SET) != 0) {
 				printf("ELF relocate: seek error\n");
 				goto erl_err3;
 			}
-			if (filedatacopy(fdp, fp, sct1[i].size) != 0) {
+			if (filedatacopy(fdp, fp, sct1->size) != 0) {
 				printf("ELF relocate: file error\n");
 				goto erl_err3;
 			}
-			fpos += sct1[i].size;
+			fpos += sct1->size;
 
 			pad = (0 - fpos) & 15;
 			if (filedatafill(fdp, 0, pad) != 0) {
@@ -308,29 +365,42 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 			}
 			fpos += pad;
 		}
-		else if (sct2->type == 8) {
-			sct2[i].offset = fpos;
+		else if (sct1->type == 8) {
+			sct2->offset = fpos;
 		}
 		else {
 			printf("ELF relocate: unknown type\n");
-			sct2[i].offset = fpos;
-			sct2[i].size = 0;
+			sct2->offset = fpos;
+			sct2->size = 0;
 		}
+		sct1++;
+		sct2++;
+		shdrcnt--;
 	}
 
-	for (i=0; i<phdrcnt; i++) {
-		for (j=0; j<shdrcnt; j++) {
-			if ((prg2[i].offset == sct1[j].offset) &&
-				(prg2[i].filesize == sct1[j].size)) {
-				prg2[i].offset = sct2[j].offset;
-				prg2[i].filesize = sct2[j].size;
-				break;
+	prg1 = elf->prg;
+	prg2 = tmp->prg;
+	phdrcnt = elf->hdr32.phdrcnt;
+	while(phdrcnt) {
+		*prg2 = *prg1;
+		sct1 = elf->sct;
+		sct2 = tmp->sct;
+		shdrcnt = elf->hdr32.shdrcnt;
+		while(shdrcnt) {
+			if ((prg1->offset == sct1->offset) &&
+				(prg1->filesize == sct1->size)) {
+				prg2->offset = sct2->offset;
+				prg2->filesize = sct2->size;
 			}
+			sct1++;
+			sct2++;
+			shdrcnt--;
 		}
+		prg1++;
+		prg2++;
+		phdrcnt--;
 	}
 
-	tmp->hdr32.phdrcnt = phdrcnt;
-	tmp->hdr32.shdrcnt = shdrcnt;
 	if (fseek(fdp, 0, SEEK_SET) != 0) {
 		printf("ELF header: seek error\n");
 		goto erl_err3;
@@ -343,11 +413,13 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 		printf("ELF32 header: write error\n");
 		goto erl_err3;
 	}
-	if (fwrite(tmp->prg, elf->hdr32.phdrent, phdrcnt, fdp) != phdrcnt) {
+	if (fwrite(tmp->prg, elf->hdr32.phdrent, elf->hdr32.phdrcnt, fdp)
+													!= elf->hdr32.phdrcnt) {
 		printf("ELF32 program header: write error\n");
 		goto erl_err3;
 	}
-	if (fwrite(tmp->sct, elf->hdr32.shdrent, shdrcnt, fdp) != shdrcnt) {
+	if (fwrite(tmp->sct, elf->hdr32.shdrent, elf->hdr32.shdrcnt, fdp)
+													!= elf->hdr32.shdrcnt) {
 		printf("ELF32 section header: write error\n");
 		goto erl_err3;
 	}
@@ -358,7 +430,7 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 
 erl_err3:
 	fclose(fdp);
-	unlink(dstname);
+	remove(dstname);
 
 erl_err2:
 	free(tmp);
@@ -370,6 +442,7 @@ erl_err1:
 int monaelf(const char *srcname, const char *dstname) {
 
 	FILE	*fp;
+	ELF		orgelf;
 	ELF		elf;
 
 	if (dstname == NULL) {
@@ -380,21 +453,29 @@ int monaelf(const char *srcname, const char *dstname) {
 		printf("input file couldn't open\n");
 		goto me_err1;
 	}
-	elf = loadelfhdr(fp);
+	orgelf = loadelfhdr(fp);
+	if (orgelf == NULL) {
+		goto me_err2;
+	}
+	elf = elfcollect(orgelf);
+	free(orgelf);
 	if (elf == NULL) {
 		goto me_err2;
 	}
 	if (elfrelocate(fp, elf, dstname) != 0) {
-		goto me_err2;
+		goto me_err3;
 	}
 	free(elf);
 	fclose(fp);
 
 	if (dstname == elftmp) {
 		filecopy(elftmp, srcname);
-		unlink(elftmp);
+		remove(elftmp);
 	}
 	return(0);
+
+me_err3:
+	free(elf);
 
 me_err2:
 	fclose(fp);
