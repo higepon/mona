@@ -13,7 +13,7 @@
 #define _MONA_ELF_
 
 #include <monapi.h>
-#include <sys/types.h>
+#include <gui/System/Array.h>
 
 typedef struct {
     byte  magic[4];      // 0x7F, 'E', 'L', 'F'
@@ -37,6 +37,17 @@ typedef struct {
 } ELFHeader;
 
 typedef struct {
+    dword type;
+    dword offset;
+    dword virtualaddr;
+    dword physaddr;
+    dword filesize;
+    dword memorysize;
+    dword flags;
+    dword align;
+} ELFProgramHeader;
+
+typedef struct {
     dword name;
     dword type;
     dword flags;
@@ -49,49 +60,29 @@ typedef struct {
     dword entsize;
 } ELFSectionHeader;
 
-typedef struct {
-    dword type;
-    dword offset;
-    dword virtualaddr;
-    dword physaddr;
-    dword filesize;
-    dword memorysize;
-    dword flags;
-    dword align;
-} ELFProgramHeader;
-
-#define ELF_ERROR_NOT_ELF           -1
-#define ELF_ERORR_NOT_SUPPORTED_ELF -2
-#define ELF_ERORR_NOT_EXECUTABLE    -3
-
-#define PT_NULL    0
-#define PT_LOAD    1
-#define PT_DYNAMIC 2
-#define PT_INTERP  3
-#define PT_NOTE    4
-#define PT_SHLIB   5
-#define PT_PHDR    6
-
-class ELFLoader {
-
-  public:
-    ELFLoader();
+class ELFLoader
+{
+public:
+    ELFLoader(_A<byte> elf);
     ~ELFLoader();
 
-  public:
-    int prepare(dword elf);
-    int getErrorCode() const;
-    dword load(byte* toAddress);
+public:
+    inline int getImageSize() const { return this->imageSize; }
+    inline int getErrorCode() const { return this->errorCode; }
+    const char* getErrorName() const;
+    dword load(_A<byte> image);
 
-  private:
+private:
+    void prepare();
     bool isValidELF();
 
-  private:
-    int errorCode_;
-    ELFHeader*        header_;
-    ELFProgramHeader* pheader_;
-    ELFSectionHeader* sheader_;
-
+private:
+    _A<byte> elf;
+    int imageSize;
+    int errorCode;
+    ELFHeader header;
+    _A<ELFProgramHeader> pheaders;
+    _A<ELFSectionHeader> sheaders;
 };
 
 #endif

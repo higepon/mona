@@ -443,19 +443,17 @@ int Shell::executeProcess(const CString& path, const CString& name, CommandOptio
     monapi_cmemoryinfo* mi1 = monapi_call_file_read_data(path, 1);
     if (mi1 == NULL) return -1;
 
-    ELFLoader loader;
-
-    int imageSize = loader.prepare((dword)mi1->Data);
-    if (imageSize < 0)
+    ELFLoader loader(_A<byte>(mi1->Data, mi1->Size, false));
+    if (loader.getErrorCode() != 0)
     {
-        printf("unknown executable format: %d\n", imageSize);
+        printf("unknown executable format: %s\n", loader.getErrorName());
         monapi_cmemoryinfo_dispose(mi1);
         monapi_cmemoryinfo_delete(mi1);
-        return imageSize;
+        return loader.getErrorCode();
     }
 
     monapi_cmemoryinfo* mi2 = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(mi2, imageSize, 0))
+    if (!monapi_cmemoryinfo_create(mi2, loader.getImageSize(), 0))
     {
         printf("image buffer allocate error\n");
         monapi_cmemoryinfo_delete(mi2);
@@ -464,14 +462,14 @@ int Shell::executeProcess(const CString& path, const CString& name, CommandOptio
         return -1;
     }
 
-    dword entrypoint = loader.load(mi2->Data);
+    dword entrypoint = loader.load(_A<byte>(mi2->Data, mi2->Size, false));
 
     monapi_cmemoryinfo_dispose(mi1);
     monapi_cmemoryinfo_delete(mi1);
 
     LoadProcessInfo info;
     info.image = mi2->Data;
-    info.size = imageSize;
+    info.size = mi2->Size;
     info.entrypoint = entrypoint;
     info.path = path;
     info.name = name;
