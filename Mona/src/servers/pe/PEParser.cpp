@@ -103,9 +103,9 @@ bool PEParser::ReadExportTable()
 	{
 		int idx = this->exp->OrdinalBase + i;
 		uint32_t addr = this->GetExportAddress(idx);
-		const char* name = this->GetExportName(idx);
-		if (addr == 0 || name == NULL) return false;
-		//printf("- %x[%d] %s\n", addr, idx, name);
+		if (addr == 0) return false;
+		//const char* name = this->GetExportName(idx);
+		//printf(name == NULL ? "- %x[%d]\n" : "- %x[%d] %s\n", addr, idx, name);
 	}
 	return true;
 }
@@ -160,9 +160,9 @@ const char* PEParser::GetExportName(int index)
 	index -= this->exp->OrdinalBase;
 	uint32_t addr = this->exp->OrdinalTable;
 	uint32_t paddr = this->ConvertToPhysical(addr);
-	if (this->size < paddr + this->exp->NumberOfNamePointers * 2) return NULL;
-	
 	int len = this->exp->NumberOfNamePointers;
+	if (this->size < paddr + len * 2) return NULL;
+	
 	for (int i = 0; i < len; i++)
 	{
 		int v = *(uint16_t*)&this->data[paddr + i * 2];
@@ -179,23 +179,40 @@ const char* PEParser::GetExportName(int index)
 			
 			return (const char*)&this->data[ret_paddr];
 		}
-		else if (v > index)
-		{
-			break;
-		}
 	}
 	return NULL;
 }
 
-int PEParser::ConvertHintToOrdinal(int hint)
+int PEParser::GetExportOrdinal(const char* name)
 {
-	if (this->exp == NULL || hint < 0 || (int)this->exp->NumberOfNamePointers <= hint) return -1;
+	if (this->exp == NULL) return -1;
 	
-	uint32_t addr = this->exp->OrdinalTable;
-	uint32_t paddr = this->ConvertToPhysical(addr) + hint * 2;
-	if (this->size < paddr + 2) return -1;
+	uint32_t addr = this->exp->NamePointer;
+	uint32_t paddr = this->ConvertToPhysical(addr);
+	uint32_t paddr_end = paddr + this->exp->NumberOfNamePointers * 4;
+	if (this->size < paddr_end) return -1;
 	
-	return *(uint16_t*)&this->data[paddr] + this->exp->OrdinalBase;
+	int num = -1;
+	for (int i = 0; paddr < paddr_end; paddr += 4, i++)
+	{
+		uint32_t name_addr = *(uint32_t*)&this->data[paddr];
+		uint32_t name_paddr = this->ConvertToPhysical(name_addr);
+		if (this->size < name_paddr) return -1;
+		
+		const char* n = (const char*)&this->data[name_paddr];
+		if (strcmp(n, name) == 0)
+		{
+			num = i;
+			break;
+		}
+	}
+	if (num == -1) return -1;
+	
+	uint32_t ordinal_addr = this->exp->OrdinalTable + num * 2;
+	uint32_t ordinal_paddr = this->ConvertToPhysical(ordinal_addr);
+	if (this->size < ordinal_paddr + 2) return -1;
+	
+	return *(uint16_t*)&this->data[ordinal_paddr] + this->exp->OrdinalBase;
 }
 
 bool PEParser::Load(uint8_t* image)
@@ -272,30 +289,27 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
 		if (*ptr == 0) break;
 		
 		int ordinal = -1;
-		const char* name = NULL;
+		const char* name = (const char*)&image[(*ptr) + 2];
 		if ((*ptr & 0x80000000) != 0)
 		{
 			// Ordinal Number
 			ordinal = (int)(*ptr & 0x7fffffff);
-			//printf("* [%d]\n", ordinal);
 		}
 		else
 		{
 			// Hint/Name Table RVA
-			int hint = *(uint16_t*)&image[*ptr];
-			ordinal = parser->ConvertHintToOrdinal(hint);
-			name = (const char*)&image[(*ptr) + 2];
-			//printf("* [%d]%s\n", ordinal, name);
+			ordinal = parser->GetExportOrdinal(name);
 		}
+		//printf("* [%d]%s\n", ordinal, name);
 		if (ordinal == -1) return false;
 		
 		uint32_t exp_addr = parser->GetExportAddress(ordinal);
 		const char* exp_name = parser->GetExportName(ordinal);
-		if (name != NULL && strcmp(name, exp_name) != 0) return false;
+		if (name != NULL && (exp_name == NULL || strcmp(name, exp_name) != 0)) return false;
 		if (exp_addr == 0) return false;
 		
 		*ptr = exp_addr + parser->address;
-		//printf("%x\n", *ptr);
+		//printf("  address = %x\n", *ptr);
 	}
 	
 	return true;

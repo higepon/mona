@@ -33,7 +33,7 @@ public:
 	const char* GetImportTableName(int index);
 	uint32_t GetExportAddress(int index);
 	const char* GetExportName(int index);
-	int ConvertHintToOrdinal(int hint);
+	int GetExportOrdinal(const char* name);
 
 	inline uint32_t get_ImageSize() { return this->imageSize; }
 	inline uint32_t get_EntryPoint() { return this->data == NULL ? 0 : this->specific->ImageBase + this->standard->EntryPointRVA; }
