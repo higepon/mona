@@ -1,8 +1,20 @@
 2005-03-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/ISO9660FileSystemManager.cpp : 追加。一時タグ ref4をつけた。
+
+        * src/servers/file/FatFileSystemManager.h: 追加。
+
+        * src/servers/file/FatFileSystemManager.cpp : 追加。
+
+        * src/servers/file/ISO9660FileSystemManager.h: 追加。
+
+        * src/servers/file/FileSystemManager.h: 追加。
+
+        * src/servers/file/file.cpp (getParentDirectory): 大整理。
+
         * src/servers/file/main.cpp : Initialize(true)とするとCDブートイメージ用。 一時タグ ref3をつけた。
 
-        * src/servers/file/file : 適切な変数・関数名をつけた。 
+        * src/servers/file/file : 適切な変数・関数名をつけた。
 
         * src/servers/file/file.cpp : 関数分割のリファクタリング。動作確認OK. 一時タグ ref2をつけた。
 
