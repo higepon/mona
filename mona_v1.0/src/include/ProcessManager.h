@@ -4,7 +4,7 @@
 
     ProcessManager, management of maltitask.
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002,2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -28,10 +28,10 @@ class ProcessManager {
     ProcessManager();
     void setTSS(TSS*, word, word, void (*f)(), dword, byte*, word, byte*, word);
     void setDT(GDT*, dword, dword, byte);
-    void switchProcess();
     inline void switchProcess(dword) const;
     void printInfo();
     void multiTaskTester();
+    void schedule();
     static ProcessManager& instance() {
         static ProcessManager theInstance;
         return theInstance;
@@ -43,6 +43,7 @@ class ProcessManager {
     inline void ltr(word) const;
     inline void lldt(word) const;
     inline void setNTflag1() const;
+    inline void switchProcess();
     GDT* gdt_;
     word taskidx_;
 };

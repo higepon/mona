@@ -113,7 +113,7 @@ void fdcHandler(){
     at this function task switch occurs.
 
     \author HigePon
-    \date   create:2002/11/21 update:2002/12/19
+    \date   create:2002/11/21 update:2003/01/10
 */
 void timerHandler() {
 
@@ -123,8 +123,9 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
+    /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
-    pm.switchProcess();
+    pm.schedule();
 
     popa();
 

@@ -4,7 +4,7 @@
 
     class ProcessManager
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002,2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -199,9 +199,9 @@ void ProcessManager::printInfo() {
     switch process to next process
 
     \author HigePon
-    \date   create:2002/12/02 update:2002/12/22
+    \date   create:2002/12/02 update:2003/01/10
 */
-void ProcessManager::switchProcess() {
+inline void ProcessManager::switchProcess() {
 
     bool next = taskidx_ %2 == 0;
 
@@ -266,4 +266,17 @@ inline void ProcessManager::setNTflag1() const {
                  "popf               \n"
                  : /* no output */ : /* no input */ : "ax"
                 );
+}
+
+/*!
+    \brief scheduling function
+
+    this function re-scheduling running process
+
+    \author HigePon
+    \date   create:2003/01/10 update:
+*/
+void ProcessManager::schedule() {
+
+    switchProcess();
 }
