@@ -42,8 +42,21 @@ Thread::~Thread() {
 ----------------------------------------------------------------------*/
 ThreadManager::ThreadManager(bool isUser) : current_(NULL), threadCount(0) {
 
-    /* user or kernel */
+    /* user or kernel or V86 */
     isUser_ = isUser;
+    isV86_  = false;
+
+    /* list of thread */
+    dispatchList_ = new HList<Thread*>();
+    waitList_     = new HList<Thread*>();
+    checkMemoryAllocate(dispatchList_, "ThreadManager memory allocate list");
+}
+
+ThreadManager::ThreadManager(bool isUser, bool isV86) {
+
+    /* user or kernel or V86 */
+    isUser_ = isUser;
+    isV86_  = isV86;
 
     /* list of thread */
     dispatchList_ = new HList<Thread*>();
@@ -340,6 +353,9 @@ Process* ProcessManager::create(int type, const char* name) {
       case KERNEL_PROCESS:
           result = new KernelProcess(name, pageManager_->createNewPageDirectory());
           break;
+      case V86_PROCESS:
+          result = new V86Process(name, pageManager_->createNewPageDirectory());
+          break;
       default:
           result = (Process*)NULL;
           break;
@@ -530,5 +546,21 @@ KernelProcess::KernelProcess(const char* name, PageEntry* directory) : Process(n
 }
 
 KernelProcess::~KernelProcess() {
+    delete threadManager_;
+}
+
+/*----------------------------------------------------------------------
+    V86Process
+----------------------------------------------------------------------*/
+V86Process::V86Process(const char* name, PageEntry* directory) : Process(name, directory) {
+
+    /* kernel mode */
+    isUserMode_ = true;
+
+    /* thread manager */
+    threadManager_ = new ThreadManager(isUserMode_, true);
+}
+
+V86Process::~V86Process() {
     delete threadManager_;
 }

@@ -131,6 +131,7 @@ class ThreadManager {
 
   public:
     ThreadManager(bool isUser);
+    ThreadManager(bool isUser, bool isV86);
     virtual ~ThreadManager();
 
   public:
@@ -196,6 +197,7 @@ class ThreadManager {
     List<Thread*>* dispatchList_;
     List<Thread*>* waitList_;
     bool isUser_;
+    bool isV86_;
 
   private:
     static const LinearAddress STACK_START = 0xFFFFFFFF;
@@ -342,7 +344,7 @@ class UserProcess : public Process {
 };
 
 /*----------------------------------------------------------------------
-    KernelInfo
+    KernelProcess
 ----------------------------------------------------------------------*/
 class KernelProcess : public Process {
 
@@ -350,6 +352,17 @@ class KernelProcess : public Process {
     KernelProcess();
     KernelProcess(const char* name, PageEntry* directory);
     virtual ~KernelProcess();
+};
+
+/*----------------------------------------------------------------------
+    V86Process
+----------------------------------------------------------------------*/
+class V86Process : public Process {
+
+  public:
+    V86Process();
+    V86Process(const char* name, PageEntry* directory);
+    virtual ~V86Process();
 };
 
 /*----------------------------------------------------------------------
@@ -391,6 +404,7 @@ class ProcessManager {
   public:
     static const int USER_PROCESS   = 0;
     static const int KERNEL_PROCESS = 1;
+    static const int V86_PROCESS    = 2;
 
   private:
     dword tick_;
