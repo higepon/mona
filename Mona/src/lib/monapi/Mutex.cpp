@@ -41,6 +41,7 @@ int Mutex::tryLock()
 
 int Mutex::destroy()
 {
+    if (destroyed_) return 0;
     destroyed_ = true;
     return syscall_mutex_destroy(mutexId_);
 }
