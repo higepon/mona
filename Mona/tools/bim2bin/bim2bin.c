@@ -12,9 +12,9 @@
 
 #define	get32(ptr)		*((int *) (ptr))
 
-#define	SIZEOFBUF		(4 * 1024 * 1024)
-#define	SIZEOFOVERBUF	(4 * 1024 * 1024)
-#define	SIZEOFSUBBUF	(SIZEOFOVERBUF * 4)
+#define	SIZEOFBUF		(16 * 1024 * 1024)
+#define	SIZEOFOVERBUF	(16 * 1024 * 1024)
+#define	SIZEOFSUBBUF	(SIZEOFOVERBUF * 4 / 4)
 
 //#define DEBUGMSG		1
 
@@ -159,8 +159,6 @@ int getnum(UCHAR *p)
 	return i;
 }
 
-void test(UCHAR *arg, UCHAR *eprm);
-
 UCHAR *glb_str_eprm = NULL;
 
 int main(int argc, char **argv)
@@ -171,8 +169,6 @@ int main(int argc, char **argv)
 	UCHAR *filepath[2], c, *buf, *overbuf, *s7ptr, *eopt = NULL, *argv0 = argv[0];
 	int code_end, data_begin, entry, opt = -1, rjc = -1;
 	static unsigned char signature[15] = "\xff\xff\xff\x01\x00\x00\x00OSASKCMP";
-
-//if (argc <= 3) { test(argv[1], argv[2]); exit(1); }
 
 	#if (defined(NOWARN))
 		j = 0;
@@ -5587,28 +5583,27 @@ void osarjc(int siz, UCHAR *p, int mode)
 	}
 }
 
-//#define TEK5_TMPNAME	"$tektmp$.$$"
 #define TEK5_TMPNAME	"_tektmp_.__"
+
+struct str_testall_t5lzma {
+	int a, d, fb, lc, lp, pb, mf;
+	int phase, min, min_p, *tst_p;
+};
 
 int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksiz, UCHAR *work, UCHAR *argv0, UCHAR *eopt, int bsiz, int flags, int opt, int prm, int maxdis, int submaxdis)
 {
 	int i, j;
+	struct str_testall_t5lzma testall;
+	UCHAR eoptmp[100];
 	FILE *fp;
-	UCHAR *p, *q;
+	UCHAR *p, *q, *r;
+	testall.phase = 0;
 	if (bsiz > srcsiz) {
 		while ((bsiz >> 1) >= srcsiz)
 			bsiz >>= 1;
 	}
 	if (bsiz < srcsiz)
 		return 0;
-	q = p = outbuf;
-	do {
-		*p = *argv0++;
-		if (*p == '/' || *p == '\\')
-			q = p + 1;
-		p++;
-	} while (*argv0);
-	for (p = "t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
 	fp = fopen(TEK5_TMPNAME "0", "wb");
 	if (fp == NULL)
 		return 0;
@@ -5616,19 +5611,207 @@ int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksi
 	fclose(fp);
 	if (i != srcsiz)
 		return 0;
+retry:
+	q = p = outbuf;
+	r = argv0;
+	do {
+		*p = *r++;
+		if (*p == '/' || *p == '\\')
+			q = p + 1;
+		p++;
+	} while (*r);
+	for (p = "t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
 	if (eopt) {
-		for (p = eopt; *p; p++, q++) {
+		if (eopt[0] == '@' && (eopt[1] == '\0' || (eopt[1] == '@' && eopt[2] == '\0'))) {
+			static UCHAR *mfname[] = {
+				"bt2", "bt3", "bt4", "bt4b",
+				"pat2r", "pat2", "pat2h", "pat3h", "pat4h",
+				"hc3", "hc4"
+			};
+
+			if (testall.phase == 0) {
+				testall.phase = 1;
+				testall.a = 2;
+				testall.d = 23;
+				testall.fb = 5;
+				testall.lc = 0;
+				testall.lp = 0;
+				testall.pb = 0;
+				testall.mf = 2;
+				testall.min = 0x7fffffff;
+				testall.tst_p = &testall.fb;
+			} else if (testall.phase == 1) {
+				 /* fb決定ループ */
+				if (testall.fb < 255)
+					testall.fb++;
+				else {
+					testall.fb = testall.min_p;
+					testall.phase = 2;
+					testall.tst_p = &testall.lc;
+					testall.min_p = 0;
+					testall.lc = 1;
+				}
+			} else if (testall.phase == 2) {
+				 /* lc決定ループ */
+				if (testall.lc < 8)
+					testall.lc++;
+				else {
+					testall.lc = testall.min_p;
+					testall.phase = 3;
+					testall.tst_p = &testall.lp;
+					testall.min_p = 0;
+					testall.lp = 1;
+				}
+			} else if (testall.phase == 3) {
+				 /* lp決定ループ */
+				if (testall.lp < 4)
+					testall.lp++;
+				else {
+					testall.lp = testall.min_p;
+					testall.phase = 4;
+					testall.tst_p = &testall.pb;
+					testall.min_p = 0;
+					testall.pb = 1;
+				}
+			} else if (testall.phase == 4) {
+				 /* pb決定ループ */
+				if (testall.pb < 4)
+					testall.pb++;
+				else {
+					testall.pb = testall.min_p;
+					testall.phase = -1;
+					if (testall.lc | testall.lp | testall.pb) {
+						testall.phase = 5;
+						testall.tst_p = &testall.fb;
+						testall.min_p = testall.fb;
+						testall.fb = 5;
+					}
+				}
+			} else if (testall.phase == 5) {
+				 /* fb決定ループ2 */
+				if (testall.fb < 255)
+					testall.fb++;
+				else {
+					testall.fb = testall.min_p;
+					testall.phase = -1;
+				}
+			}
+
+#if 0
+			if (testall.phase == 0) {
+				testall.phase = 1;
+				testall.a = 2;
+				testall.d = 23;
+				testall.fb = 128;
+				testall.lc = 0;
+				testall.lp = 0;
+				testall.pb = 0;
+				testall.mf = 2;
+				testall.min = 0x7fffffff;
+				testall.tst_p = &testall.lc;
+			} else if (testall.phase == 1) {
+				 /* lc決定ループ */
+				if (testall.lc < 8)
+					testall.lc++;
+				else {
+					testall.lc = testall.min_p;
+					testall.phase = 2;
+					testall.tst_p = &testall.lp;
+					testall.min_p = 0;
+					testall.lp = 1;
+				}
+			} else if (testall.phase == 2) {
+				 /* lp決定ループ */
+				if (testall.lp < 4)
+					testall.lp++;
+				else {
+					testall.lp = testall.min_p;
+					testall.phase = 3;
+					testall.tst_p = &testall.pb;
+					testall.min_p = 0;
+					testall.pb = 1;
+				}
+			} else if (testall.phase == 3) {
+				 /* pb決定ループ */
+				if (testall.pb < 4)
+					testall.pb++;
+				else {
+					testall.pb = testall.min_p;
+					testall.phase = 4;
+					testall.tst_p = &testall.mf;
+					testall.min_p = 2;
+					testall.mf = 0;
+				}
+			} else if (testall.phase == 4) {
+				 /* mf決定ループ */
+				if (testall.mf < 10)
+					testall.mf++;
+				else {
+					testall.mf = testall.min_p;
+					testall.phase = 5;
+					testall.tst_p = &testall.d;
+					testall.min_p = 23;
+					testall.d = 22;
+				}
+			} else if (testall.phase == 5) {
+				 /* d決定ループ */
+				if (testall.d > 0)
+					testall.d--;
+				else {
+					testall.d = testall.min_p;
+					testall.phase = 6;
+					testall.tst_p = &testall.a;
+					testall.min_p = 2;
+					testall.a = 1;
+				}
+			} else if (testall.phase == 6) {
+				 /* a決定ループ */
+				if (testall.a > 0)
+					testall.a--;
+				else {
+					testall.a = testall.min_p;
+					testall.phase = 7;
+					testall.tst_p = &testall.fb;
+					testall.min_p = 128;
+					testall.fb = 5;
+				}
+			} else if (testall.phase == 7) {
+				 /* a決定ループ */
+				if (testall.fb < 255)
+					testall.fb++;
+				else {
+					testall.fb = testall.min_p;
+					testall.phase = -1;
+				}
+			}
+#endif
+
+			sprintf(eoptmp, "-a%d_-d%d_-fb%d_-lc%d_-lp%d_-pb%d_-mf%s",
+				testall.a, testall.d, testall.fb, testall.lc, testall.lp, testall.pb, mfname[testall.mf]);
+			p = eoptmp;
+			if (eopt[1])
+				fputs(eoptmp, stderr);
+		} else
+			p = eopt;
+		for (; *p; p++, q++) {
 			*q = ' ';
 			if (*p != '_')
 				*q = *p;
+		}
+		if (testall.phase < 0) {
+			if (eopt[1])
+				fputc('\n', stderr);
+			printf("eopt:%s\n", eoptmp);
 		}
 	}
 	for (p = " -notitle"; *p; *q++ = *p++);
 	*q = '\0';
 	i = system(outbuf);
-	remove(TEK5_TMPNAME "0");
 	if (i != 0) {
 		remove(TEK5_TMPNAME "1");
+		if (testall.phase > 0)
+			goto retry;
+		remove(TEK5_TMPNAME "0");
 		return 0;
 	}
 	fp = fopen(TEK5_TMPNAME "1", "rb");
@@ -5637,6 +5820,7 @@ int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksi
 	if (fread(outbuf, 1, 14, fp) != 14) {
 		fclose(fp);
 		remove(TEK5_TMPNAME "1");
+		remove(TEK5_TMPNAME "0");
 		return 0;
 	}
 	p = outbuf;
@@ -5653,8 +5837,25 @@ int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksi
 	i = fread(p, 1, q - p, fp);
 	fclose(fp);
 	remove(TEK5_TMPNAME "1");
-	if (i >= q - p)
+	if (i >= q - p) {
+		if (testall.phase > 0) {
+			if (eopt[1])
+				fprintf(stderr, "  i = %d\n", i);
+			goto retry;
+		}
 		return 0;
+	}
+
+	if (testall.phase > 0) {
+		if (eopt[1])
+			fprintf(stderr, "  i = %d\n", i);
+		if (testall.min > i) {
+			testall.min = i;
+			testall.min_p = *testall.tst_p;
+		}
+		goto retry;
+	}
+	remove(TEK5_TMPNAME "0");
 
 	q = malloc(i = (p + i) - outbuf);
 	for (j = 0; j < i; j++)
@@ -5756,7 +5957,7 @@ struct RC {
 	unsigned long long code;
 
 	unsigned int *prob0, rmsk, probs, phase, idnext;
-	struct STR_RCLOG *log1, log0[10000];
+	struct STR_RCLOG *log1, log0[64 * 1024];
 	struct STR_BACKUP_PROB backup[256 * 256 * 16 * 2];
 	UCHAR prbflg[sizeof (struct STR_PRB) / sizeof (int)];
 	unsigned int *fchgprm, *tbmt, *tbmm, *fchglt;
@@ -5809,7 +6010,8 @@ int tek_conv_tek5(int csiz, UCHAR *src, int osiz, UCHAR *tmp, UCHAR *dst, UCHAR 
 	struct STR_PRB *prb = malloc(sizeof (struct STR_PRB));
 	int i, j, k, m, *ip, l, d, r, rep[MAX_REP], bylz;
 	int lc, lp, pb, s, pos, s_pos, m_pos, m_lp, nst;
-	UCHAR eprm[26+26];
+	unsigned int testall_z2_a = 0x7fffffff, testall_z2_b = 0;
+	UCHAR eprm[26+26], testall[10];
 	struct RC *rc = malloc(sizeof (struct RC));
 	static int state_table[] = { 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 4, 5 };
 	tek_lzrestore_tek5(csiz, src, osiz, tmp, mclp0);
@@ -5824,6 +6026,12 @@ int tek_conv_tek5(int csiz, UCHAR *src, int osiz, UCHAR *tmp, UCHAR *dst, UCHAR 
 	eprm[EPRM_PLT] = 1;
 	eprm[EPRM_NST] = 2; /* fullset, not small */
 
+	testall[0] = 0;
+	if (str_eprm != NULL && str_eprm[0] == '@' && str_eprm[1] == '\0')
+		testall[0] = 1;
+
+retry:
+
 	rc->bm[0].lt = 0; /* 寿命なし */
 	tek_conv_tek5_setbm(&rc->bm[0], 16 - 11, 5);
 
@@ -5831,18 +6039,69 @@ int tek_conv_tek5(int csiz, UCHAR *src, int osiz, UCHAR *tmp, UCHAR *dst, UCHAR 
 	tek_conv_tek5_setbm(&rc->bm[1], 0, 16); /* 不変型(常に1/2) */
 
 	p = str_eprm;
-	if (p != NULL /* && p[0] == 'e' && p[1] == 'p' && p[2] == 'r' && p[3] == 'm' && p[4] == ':' */) {
-	//	p += 5;
-		while (('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')) {
-			if ('a' <= *p && *p <= 'z')
-				i = *p++ - 'a';
-			else
-				i = (*p++ - 'A') + 26;
-			eprm[i] = 0;
-			while ('0' <= *p && *p <= '9')
-				eprm[i] = eprm[i] * 10 + (*p++ - '0');
+	if (testall[0] == 0) {
+		if (p != NULL /* && p[0] == 'e' && p[1] == 'p' && p[2] == 'r' && p[3] == 'm' && p[4] == ':' */) {
+		//	p += 5;
+			while (('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')) {
+				if ('a' <= *p && *p <= 'z')
+					i = *p++ - 'a';
+				else
+					i = (*p++ - 'A') + 26;
+				eprm[i] = 0;
+				while ('0' <= *p && *p <= '9')
+					eprm[i] = eprm[i] * 10 + (*p++ - '0');
+			}
+		}
+	} else {
+		if (testall[0] == 1) {
+			/* z2試行フェーズ */
+			for (i = 3; i <= 7; i++)
+				eprm[i] = testall[i] = 0;
+			eprm[EPRM_NST] = 2;
+			testall[0] = 2;
+			testall[1] = 3;
+		} else if (testall[0] == 2) {
+			if (eprm[3] < 3)
+				eprm[3]++;
+			else {
+				eprm[3] = testall[3];
+				testall[0] = 3;
+				testall[1] = 4;
+				eprm[4] = 1;
+			}
+		} else if (testall[0] == 3) {
+			i = testall[1];
+			eprm[i] = testall[i];
+			if (i < 7) {
+				i++;
+				testall[1] = i;
+				eprm[i] = 1;
+			} else {
+				testall[0] = 4;
+				testall[2] = 2;
+				testall[1] = 2;
+				eprm[EPRM_NST] = 1;
+				for (i = 3; i <= 7; i++)
+					eprm[i] = 0;
+			}
+		} else if (testall[0] == 4) {
+			if (eprm[EPRM_NST])
+				eprm[EPRM_NST]--;
+			else {
+				eprm[EPRM_NST] = testall[2];
+printf("eprm:z%d", eprm[EPRM_NST]);
+				if (eprm[EPRM_NST] == 2) {
+					for (i = 3; i <= 7; i++)
+						eprm[i] = testall[i];
+printf("d%de%df%dg%dh%d", eprm[3], eprm[4], eprm[5], eprm[6], eprm[7]);
+				}
+putchar('\n');
+				testall[0] = 0;
+			}
 		}
 	}
+
+//printf("z%dd%de%df%dg%dh%d  ", eprm[EPRM_NST], eprm[3], eprm[4], eprm[5], eprm[6], eprm[7]);
 
 	rc->rmsk = -1;
 	rc->phase = 0;
@@ -6280,6 +6539,20 @@ skip1:
 		j = 1;
 		r = 2;
 	}
+
+	if (testall[0]) {
+//printf("%d\n", i - r);
+		if ((testall_z2_a > i - r) || (testall_z2_a == i - r && testall_z2_b < rc->range)) {
+			testall_z2_a = i - r;
+			testall_z2_b = rc->range;
+			if (testall[1] != 2)
+				testall[testall[1]] = eprm[testall[1]];
+			else
+				testall[2] = eprm[EPRM_NST];
+		}
+		goto retry;
+	}
+
 	for (; j < i - r; j++)
 		dst[j] = dst[j + r];
 
@@ -6371,38 +6644,6 @@ void tek_conv_tek5_len(struct RC *rc, struct STR_PRB *prb, int mode, int s_pos, 
 		rc_treeout0(rc, l0, len);
 	return;
 }
-
-void test(UCHAR *arg, UCHAR *eprm)
-{
-	UCHAR *buf = malloc(4 * 1024 * 1024);
-	UCHAR *ibuf = malloc(4 * 1024 * 1024);
-	UCHAR *obuf = malloc(4 * 1024 * 1024), *p, *p1;
-	int siz_stk5, osiz, hed, bsiz, nsiz;
-	FILE *fp;
-	fp = fopen(arg, "rb");
-	siz_stk5 = fread(p = ibuf, 1, 1024 * 1024, fp);
-	fclose(fp);
-	p1 = p + siz_stk5;
-	p += 16;
-	osiz = tek1_getnum_s7s(&p);
-
-	hed = tek1_getnum_s7s(&p);
-	if ((hed & 1) == 0)
-		nsiz = tek_conv_tek5(p1 - p + 1, p - 1, osiz, buf, obuf, eprm);
-	else {
-		bsiz = 1 << (((hed >> 1) & 0x0f) + 8);
-		if (bsiz == 256)
-			nsiz = tek_conv_tek5(p1 - p, p, osiz, buf, obuf, eprm);
-		else {
-			if (hed & 0x40)
-				tek1_getnum_s7s(&p); /* オプション情報へのポインタを読み飛ばす */
-			nsiz = tek_conv_tek5(p1 - p, p, osiz, buf, obuf, eprm);
-		}
-	}
-
-	return;
-}
-
 
 void rc_init(struct RC *rc, UCHAR *p)
 {
@@ -6833,7 +7074,7 @@ int tek_rdget1(struct tek_STR_RNGDEC *rd, UINT32 *prob0, int n, int j)
 				if ((bm->s = tek_rdget1(rd, &rd->fchgprm[(*prob >> 16) * 2 + bm->s], 1, 0)) == 0) {
 					if ((i = tek_rdget1(rd, rd->tbmt, 4, 1) & 15) == 15)
 						goto err;
-					tek_setbm5(bm, i, tek_rdget1(rd, rd->tbmm, 4, 1) & 15);
+					tek_setbm5(bm, i, ((tek_rdget1(rd, rd->tbmm, 4, 1) - 1) & 15) + 1);
 				}
 				bm->lt = bm->lt0;
 			}
