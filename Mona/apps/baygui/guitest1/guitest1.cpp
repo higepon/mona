@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 #if 1
 	// ウィンドウを作成
 	Window *window1 = new Window();
-	window1->setRect(260,80,300,200);
+	window1->setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
 	window1->setTitle("(oAo) ﾅｶﾏ");	
 	
 	// 部品を追加

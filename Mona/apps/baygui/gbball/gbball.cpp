@@ -17,7 +17,7 @@ static int point[16][2] = {
 class GBBall : public Window {
 public:
 	GBBall(){
-		setRect(220, 140, 211, 227);
+		setRect((800 - 211) / 2, (600 - 227) / 2, 211, 227);
 		setTitle("bball");
 	}
 	void onPaint(Graphics *g) {

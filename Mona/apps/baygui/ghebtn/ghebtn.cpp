@@ -35,7 +35,7 @@ private:
 	
 public:
 	HeButton(){
-		setRect(220, 140, 180 + 11, 178 + 27);
+		setRect((800 - 191) / 2, (600 - 205) / 2, 191, 205);
 		setTitle("へぇ～ボタン");
 		count = 0;
 		pushed = false;

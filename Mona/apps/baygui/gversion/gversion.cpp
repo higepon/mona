@@ -110,7 +110,7 @@ static int versionIcon [30][21] = {
 
 GVersion::GVersion()
 {
-	setRect(20, 240, 270 + INSETS_LEFT + INSETS_RIGHT , 150 + INSETS_TOP + INSETS_BOTTOM);
+	setRect((800 - 282) / 2, (600 - 178) / 2, 282, 178);
 	setTitle("ﾊﾞｰｼﾞｮﾝ情報");
 }
 

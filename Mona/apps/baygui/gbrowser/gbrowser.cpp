@@ -37,7 +37,7 @@ private:
 
 public:
 	GBrowser(){
-		setRect(240, 140, 200 + 12, 200 + 28);
+		setRect((800 - 212) / 2, (600 - 228) /2, 212, 228);
 		setTitle("ブラウザもどき");
 		// いろいろな部品の作成
 		reload = new Button("更新");
