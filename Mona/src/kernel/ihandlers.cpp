@@ -44,6 +44,10 @@ void mouseHandler()
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
 
+#if 1
+    g_scheduler->dump();
+#endif
+
     /* modified 2004/04/09 by nikq
      *
      * - counter -> state machine
