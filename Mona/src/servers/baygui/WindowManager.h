@@ -76,7 +76,7 @@ static int monaIcon [15][16] = {
 class WindowManager : public MonAPI::Server, public Container {
 private:
 	bool isRunning;
-	dword threadID, keysvrID, mousesvrID, shellsvrID, launcherID;
+	dword threadID, keysvrID, mousesvrID, shellsvrID, imesvrID, launcherID;
 	int dX, dY, preX, preY, state, modifiers;
 	Bitmap *wallpaper;
 	static WindowManager *instance;

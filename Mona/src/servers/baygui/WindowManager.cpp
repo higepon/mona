@@ -40,50 +40,6 @@ WindowManager::WindowManager()
 	_height = _g->getHeight();
 	_g->translate(0, 0);
 	_g->setClip(0, 0, _width, _height);
-
-	// 壁紙読み込み
-	wallpaper = new Bitmap(WALLPAPER_NAME);
-
-	// スレッドIDを得る
-	threadID = MonAPI::System::getThreadID();
-
-	// キーサーバーを探す
-	keysvrID = MonAPI::Message::lookupMainThread(KEYSERVER_NAME);
-	if (keysvrID == 0xFFFFFFFF) {
-		//printf("Window: KeyServer not found %d\n", threadID);
-	} else {
-		//printf("Window: KeyServer found %d\n", threadID);
-	}
-	
-	// キーサーバーにキー情報をくれるように自分自身を登録するメッセージを送信
-	if (MonAPI::Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, threadID, 0, 0, NULL)) {
-		//printf("Window: KeyServer regist error %d\n", threadID);
-	} else {
-		//printf("Window: KeyServer registered %d\n", threadID);
-	}
-
-	// マウスサーバーを探す
-	mousesvrID = MonAPI::Message::lookupMainThread(MOUSESERVER_NAME);
-	if (mousesvrID == 0xFFFFFFFF) {
-		//printf("Window: MouseServer not found %d\n", threadID);
-	} else {
-		//printf("Window: MouseServer found %d\n", threadID);
-	}
-
-	// マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信
-	if (MonAPI::Message::send(mousesvrID, MSG_MOUSE_REGIST_TO_SERVER, threadID, 0, 0, NULL)) {
-		//printf("Window: MouseServer regist error %d\n", threadID);
-	} else {
-		//printf("Window: MouseServer registered %d\n", threadID);
-	}
-
-	// シェルサーバーを探す
-	shellsvrID = MonAPI::Message::lookupMainThread(SHELLSERVER_NAME);
-	if (shellsvrID == 0xFFFFFFFF) {
-		//printf("Window: ShellServer not found %d\n", threadID);
-	} else {
-		//printf("Window: ShellServer found %d\n", threadID);
-	}
 }
 
 /** デストラクタ */
@@ -91,34 +47,26 @@ WindowManager::~WindowManager()
 {
 	// 全てのウィンドウを殺す
 	for (int i = 0; i < _controlList->getLength(); i++) {
-		Control *control = (Control *)_controlList->getItem(i)->data;
+		Control *control = (Control *)_controlList->get(i);
 		// 削除メッセージを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", controlList[i]->getThreadID());
+		if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", controlList[i]->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", controlList[i]->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", controlList[i]->getHandle());
 		}
 	}
 	
 	// キーサーバーから自分自身の登録を抹消する
-	if (MonAPI::Message::send(keysvrID, MSG_KEY_UNREGIST_FROM_SERVER, threadID)) {
-		//printf("baygui: KeyServer unregist error %d\n", threadID);
-	} else {
-		//printf("baygui: KeyServer unregistered %d\n", threadID);
-	}
+	monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
 
 	// マウスサーバーから自分自身の登録を抹消する
-	if (MonAPI::Message::send(mousesvrID, MSG_MOUSE_UNREGIST_FROM_SERVER, threadID)) {
-		//printf("baygui: MouseServer unregist error %d\n", threadID);
-	} else {
-		//printf("baygui: MouseServer unregistered %d\n", threadID);
-	}
+	monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 
 	// シェルサーバーに終了メッセージを投げる
-	if (MonAPI::Message::send(shellsvrID, MSG_PROCESS_TERMINATED, threadID, 0, 0, NULL)) {
-		//printf("baygui: ShellServer unregist error %d\n", threadID);
+	if (MonAPI::Message::send(shellsvrID, MSG_PROCESS_TERMINATED, _handle, 0, 0, NULL)) {
+		//printf("baygui: ShellServer unregist error %d\n", _handle);
 	} else {
-		//printf("baygui: ShellServer unregistered %d\n", threadID);
+		//printf("baygui: ShellServer unregistered %d\n", _handle);
 	}
 }
 
@@ -198,15 +146,15 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
 	
 	// イベント発生
 	if (keycode != 0) {
-		Control *control = (Control *)_controlList->endItem->data;
+		Control *control = (Control *)_controlList->getLast();
 		//KeyEvent *event = new KeyEvent(KEY_PRESSED, control, keycode, 0);
 		//control->postEvent(event);
 		//delete(event);
 		// キーイベントを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYPRESS, keycode, this->modifiers, charcode, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS failed %d\n", control->getThreadID());
+		if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_ONKEYPRESS, keycode, this->modifiers, charcode, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS sended %d\n", control->getHandle());
 		}
 	}
 }
@@ -224,15 +172,15 @@ void WindowManager::onKeyRelease(int keycode, int mod, int charcode)
 	
 	// イベント発生
 	if (keycode != 0) {
-		Control *control = (Control *)_controlList->endItem->data;
+		Control *control = (Control *)_controlList->getLast();
 		//KeyEvent *event = new KeyEvent(KEY_RELEASED, control, keycode, 0);
 		//control->postEvent(event);
 		//delete(event);
 		// キーイベントを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYRELEASE, keycode, this->modifiers, charcode, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE failed %d\n", control->getThreadID());
+		if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_ONKEYRELEASE, keycode, this->modifiers, charcode, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE sended %d\n", control->getHandle());
 		}
 	}
 }
@@ -256,7 +204,7 @@ void WindowManager::onMousePress(int mx, int my)
 			rect->y + 5 <= my && my <= rect->y + 5 + 13)
 		{
 			// ランチャーは殺さない
-			if (control->getThreadID() != launcherID) {
+			if (control->getHandle() != launcherID) {
 				remove(control);
 			}
 			
@@ -298,17 +246,17 @@ void WindowManager::onMousePress(int mx, int my)
 			//control->postEvent(event);
 			//delete(event);
 			// マウスイベントを投げる
-			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSEPRESS, mx, my, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS failed %d\n", control->getThreadID());
+			if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_ONMOUSEPRESS, mx, my, 0, NULL)) {
+				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS failed %d\n", control->getHandle());
 			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS sended %d\n", control->getThreadID());
+				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEPRESS sended %d\n", control->getHandle());
 			}
 			//printf("throw mouse_press event\n");
 		}
 	// アクティブウィンドウを切り替える
 	} else {
 		// ウィンドウ並び替え
-		_controlList->sort(getLinkedItem(control));
+		_controlList->sort(control);
 		
 		LinkedItem *item = _controlList->endItem->prev;
 		if (item != NULL) {
@@ -322,7 +270,7 @@ void WindowManager::onMousePress(int mx, int my)
 			postRepaintToWindow(prevControl);
 		}
 		
-		Control *c = (Control *)_controlList->endItem->data;
+		Control *c = (Control *)_controlList->getLast();
 		
 		// フォーカスインメッセージを投げる
 		// __g->setLocked(false) -> postEvent(FOCUS_IN) -> focused = true -> repaint()
@@ -335,7 +283,7 @@ void WindowManager::onMousePress(int mx, int my)
  */
 void WindowManager::onMouseDrag(int mx, int my)
 {
-	Control *control = (Control *)_controlList->endItem->data;
+	Control *control = (Control *)_controlList->getLast();
 
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control == NULL) return;
@@ -378,10 +326,10 @@ void WindowManager::onMouseDrag(int mx, int my)
 			//control->postEvent(event);
 			//delete(event);
 			// マウスイベントを投げる
-			//if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSEDRAG, mx, my, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEDRAG failed %d\n", control->getThreadID());
+			//if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_ONMOUSEDRAG, mx, my, 0, NULL)) {
+				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEDRAG failed %d\n", control->getHandle());
 			//} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEDRAG sended %d\n", control->getThreadID());
+				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEDRAG sended %d\n", control->getHandle());
 			//}
 			//printf("throw mouse_drag event\n");
 		}
@@ -416,7 +364,7 @@ void WindowManager::onMouseDrag(int mx, int my)
  */
 void WindowManager::onMouseRelease(int mx, int my)
 {
-	Control *control = (Control *)_controlList->endItem->data;
+	Control *control = (Control *)_controlList->getLast();
 	
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control == NULL) return;
@@ -453,11 +401,11 @@ void WindowManager::onMouseRelease(int mx, int my)
 		);
 		
 		// 領域変更メッセージを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_SETRECT, 
+		if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_SETRECT, 
 			(preX << 16 | preY), (rect->width << 16 | rect->height), 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getHandle());
 		}
 		
 		// ウィンドウ再描画
@@ -473,10 +421,10 @@ void WindowManager::onMouseRelease(int mx, int my)
 		//control->postEvent(event);
 		//delete(event);
 		// マウスイベントを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSERELEASE, mx, my, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE failed %d\n", control->getThreadID());
+		if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_ONMOUSERELEASE, mx, my, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSERELEASE sended %d\n", control->getHandle());
 		}
 		//printf("throw mouse_up event\n");
 	}
@@ -495,7 +443,7 @@ void WindowManager::add(Control *control)
 	if (control == NULL) return;
 	
 	// ウィンドウ追加
-	_controlList->add(new LinkedItem(control));
+	_controlList->add(control);
 	
 	if (_controlList->endItem->prev != NULL) {
 		Control *c = (Control *)_controlList->endItem->prev->data;
@@ -530,10 +478,10 @@ void WindowManager::remove(Control *control)
 	srect.height = rect->height;
 	
 	// 削除メッセージを投げる
-	if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
-		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getThreadID());
+	if (MonAPI::Message::send(control->getHandle(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
+		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getHandle());
 	} else {
-		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", control->getThreadID());
+		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", control->getHandle());
 	}
 	
 	// 背景を塗りつぶす
@@ -543,7 +491,7 @@ void WindowManager::remove(Control *control)
 	restoreCorner();
 
 	// ウィンドウ削除
-	_controlList->remove(getLinkedItem(control));
+	_controlList->remove(control);
 	
 	// NULLチェック
 	if (_controlList->endItem == NULL) return;
@@ -555,7 +503,7 @@ void WindowManager::remove(Control *control)
 	// 再描画メッセージを投げる
 	postRepaintToWindows(_controlList->getLength() - 1, &srect);
 	
-	Control *c = (Control *)_controlList->endItem->data;
+	Control *c = (Control *)_controlList->getLast();
 	
 	// フォーカスインメッセージを投げる
 	// __g->setLocked(false) -> postEvent(FOCUS_IN) -> focused = true -> repaint()
@@ -578,17 +526,17 @@ void WindowManager::postEnabledToWindow(bool enabled, Control *control)
 	control->setEnabled(enabled);
 	if (enabled == true) {
 		MessageInfo info;
-		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", control->getHandle());
 		}
 	} else {
 		MessageInfo info;
-		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", control->getHandle());
 		}
 	}
 }
@@ -609,17 +557,17 @@ void WindowManager::postFocusedToWindow(bool focused, Control *control)
 	control->setFocused(focused);
 	if (focused == true) {
 		MessageInfo info;
-		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_FOCUSED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_FOCUSED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED sended %d\n", control->getHandle());
 		}
 	} else {
 		MessageInfo info;
-		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_DEFOCUSED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_DEFOCUSED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_DEFOCUSED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DEFOCUSED failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_DEFOCUSED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_DEFOCUSED sended %d\n", control->getHandle());
 		}
 	}
 }
@@ -636,7 +584,7 @@ void WindowManager::postFocusedToWindow(bool focused, Control *control)
 void WindowManager::postFocusedToWindows(bool focused, int length)
 {
 	for (int i = 0; i < length; i++) {
-		Control *control = (Control *)_controlList->getItem(i)->data;
+		Control *control = (Control *)_controlList->get(i);
 		postFocusedToWindow(focused, control);
 	}
 }
@@ -657,17 +605,17 @@ void WindowManager::postIconifiedToWindow(bool iconified, Control *control)
 	control->setIconified(iconified);
 	if (iconified == true) {
 		MessageInfo info;
-		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getHandle());
 		}
 	} else {
 		MessageInfo info;
-		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_DEICONIFIED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getHandle());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getHandle());
 		}
 	}
 }
@@ -685,10 +633,10 @@ void WindowManager::postRepaintToWindow(Control *control)
 
 	// 再描画メッセージを投げる
 	MessageInfo info;
-	if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-		//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", control->getThreadID());
+	if (MonAPI::Message::sendReceive(&info, control->getHandle(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
+		//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", control->getHandle());
 	} else {
-		//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", control->getThreadID());
+		//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", control->getHandle());
 	}
 }
 
@@ -705,7 +653,7 @@ void WindowManager::postRepaintToWindows(int length, Rect *drect)
 {
 	// 再描画メッセージを投げる
 	for (int i = 0; i < length; i++) {
-		Control *control = (Control *)_controlList->getItem(i)->data;
+		Control *control = (Control *)_controlList->get(i);
 		if (checkNeedsPaint(control->getRect(), drect) == true) {
 			postRepaintToWindow(control);
 		}
@@ -777,7 +725,7 @@ void WindowManager::restoreMenu()
 #endif
 
 	// メニュー
-	int fh = FontManager::getInstance()->getHeight();
+	int fh = FontMetrics::getInstance()->getHeight();
 	_g->setColor(128,128,128);
 	_g->drawText(WINDOWMANAGER_MENU_TITLE_JP, 45, 4 + (16 - fh) / 2);
 }
@@ -855,16 +803,43 @@ void WindowManager::service()
 
 	// スタートメッセージ
 	monapi_call_mouse_set_cursor(0);
-	syscall_clear_screen();
-	syscall_set_cursor(0, 0);
+	//syscall_clear_screen();
+	//syscall_set_cursor(0, 0);
 	printf(WINDOWMANAGER_STARUP_MESSAGE);
 
-	// テストアプリ
-	monapi_call_process_execute_file(LAUNCHER_NAME, MONAPI_FALSE);
+	// 壁紙読み込み
+	wallpaper = new Bitmap(WALLPAPER_NAME);
 
-	// 再描画
-	repaint();
+	// スレッドIDを得る
+	_handle = MonAPI::System::getThreadID();
+
+	// キーサーバーにキー情報をくれるように自分自身を登録するメッセージを送信
+	if (monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE) == MONAPI_FALSE) {
+		isRunning = false;
+	}
 	
+	// マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信
+	if (monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE) == MONAPI_FALSE) {
+		isRunning = false;
+	}
+
+	// IMEサーバーを探す
+	if ((imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME)) == THREAD_UNKNOWN) {
+		isRunning = false;
+	}
+	
+	// シェルサーバーを探す
+	if ((shellsvrID = MonAPI::Message::lookupMainThread(SHELLSERVER_NAME)) == THREAD_UNKNOWN) {
+		isRunning = false;
+	}
+
+	if (isRunning == true) {
+		// 再描画
+		repaint();
+		// ランチャー
+		monapi_call_process_execute_file(LAUNCHER_NAME, MONAPI_FALSE);
+	}
+
 	// draw mouse_cursor
 	monapi_call_mouse_set_cursor(1);
 
@@ -915,7 +890,7 @@ void WindowManager::service()
 			case MSG_GUISERVER_ADD:
 				{
 					Control *control = new Control();
-					control->setThreadID(info.arg1);
+					control->setHandle(info.arg1);
 					// ランチャーID登録
 					if (_controlList->endItem == NULL) {
 						launcherID = info.arg1;
@@ -933,7 +908,7 @@ void WindowManager::service()
 			case MSG_GUISERVER_REMOVE:
 				//printf("Window->WindowManager MSG_GUISERVER_REMOVE received %d\n", info.arg1);
 				if (_controlList->endItem != NULL) {
-					remove((Control *)_controlList->endItem->data);
+					remove((Control *)_controlList->getLast());
 				}
 				break;
 			case MSG_GUISERVER_STOP:
@@ -943,15 +918,17 @@ void WindowManager::service()
 			case MSG_GUISERVER_GETFONT:
 				//printf("FontManager->WindowManager MSG_GUISERVER_GETFONT received\n");
 				{
-					monapi_cmemoryinfo *fpMemory = FontManager::getInstance()->fpMemory;
-					MonAPI::Message::reply(&info, fpMemory->Handle, fpMemory->Size);
+					MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETFONT, 0, 0, 0, NULL);
+					MonAPI::Message::reply(&info, info.arg2, info.arg3);
+					//monapi_cmemoryinfo *fpMemory = FontManager::getInstance()->fpMemory;
+					//MonAPI::Message::reply(&info, fpMemory->Handle, fpMemory->Size);
 				}
 				break;
 			case MSG_GUISERVER_RESTORE:
 				// KUKURIを移植するのに必要
 				//printf("Window->WindowManager MSG_GUISERVER_RESTORE received %d\n", info.arg1);
 				if (_controlList->endItem != NULL) {
-					restoreBackGround((Control *)_controlList->endItem->data);
+					restoreBackGround((Control *)_controlList->getLast());
 				}
 				MonAPI::Message::reply(&info);
 				break;
