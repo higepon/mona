@@ -47,7 +47,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include <monalibc.h>
 #endif
 
-#define GUILIB_VERSION "BayGUI build 04.10.17"
+#define GUILIB_VERSION "BayGUI build 04.10.18"
 
 #define MAX_TITLE_LEN       64
 #define MAX_TEXT_LEN        64
@@ -180,7 +180,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui/messages.h"
 #include "baygui/Object.h"
-//#include "baygui/NativeUtility.h"
+#include "baygui/String.h"
+#include "baygui/TwoWayItem.h"
+#include "baygui/TwoWayList.h"
 #include "baygui/Event.h"
 #include "baygui/KeyEvent.h"
 #include "baygui/MouseEvent.h"
