@@ -60,7 +60,7 @@ h1
 h2
 {
 	font-size:150%;
-	background-image:url(../img/headingbg.gif);
+	background-image:url(./pukiwiki/pukiwiki/img/headingbg.gif);
 	background-repeat:repeat-x;
 	background-color:#FFFFFF;
 	padding:0.2em;
@@ -75,7 +75,7 @@ h2
 h3
 {
 	font-size:120%;
-	background-image:url(../img/headingbg.gif);
+	background-image:url(./pukiwiki/pukiwiki/img/headingbg.gif);
 	background-repeat:repeat-x;
 	background-color:#FFFFFF;
 	padding:0.2em;
