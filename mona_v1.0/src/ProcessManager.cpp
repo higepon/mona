@@ -80,10 +80,20 @@ inline void ProcessManager::ltr(word selector) const {
     \return address to allocated memory
 
     \author HigePon
-    \date   create:2002/11/21 update:
+    \date   create:2002/11/21 update:2002/12/03
 */
-void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflags, byte* esp, word ss, byte* esp0, word ss0) {
+void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflags
+                          , byte* esp, word ss, byte* esp0, word ss0) {
 
+    memset(tss, 0, sizeof(TSS));
+    tss->cs     = cs;
+    tss->ds     = ds;
+    tss->eip    = (byte)f;
+    tss->eflags = eflags;
+    tss->esp    = (byte)esp;
+    tss->ss     = ss;
+    tss->esp0   = (byte)esp0;
+    tss->ss0    = ss0;
     return;
 }
 
