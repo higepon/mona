@@ -72,11 +72,10 @@ void OneLineShell::service() {
   /* service loop */
   while(1){
     if(!Message::receive(&info)){
-      //printf("[%2x:%2x] ", info.arg1, info.arg2);
       if((info.arg2 & KEY_MODIFIER_DOWN)){
-        //printf("[%2x:%2x] ", info.arg1, info.arg2);
         this->OnKeyDown(info.arg1, info.arg2);
-        ds.DrawCommandLine((char *)(Charing *)this->cmd);
+        ds.DrawCommandLine((char *)this->cmd);
+        ds.DrawCursor(this->cmd.GetCurrentPos());
       }
     }
   }
@@ -89,7 +88,6 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
 
   keys.keycode = keycode;
   keys.modifiers = modifiers;
-  //printf("[%d,%d] ",keycode,modifiers);
   switch(keycode){
   case Keys::Enter:
     this->cmd.ExecuteCommand();
@@ -98,11 +96,9 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
     this->cmd.RemoveCommandLine();
     break;
   case Keys::Right:
-    //printf("RIGHT");
     this->cmd.SetCurrentPos(POSITION_RIGHT);
     break;
   case Keys::Left:
-    //printf("LEFT");
     this->cmd.SetCurrentPos(POSITION_LEFT);
     break;
   case Keys::Up:
@@ -112,8 +108,8 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
     //printf("DOWN");//this->cmd.;??
     break;
   default:
-    char c = Keys::ToChar(keys);
-    if(isprint(c)){
+    if(Keys::IsToChar(keys) == true){
+      char c = Keys::ToChar(keys);
       this->cmd.InsertCommandLine(c);
     }
     break;
