@@ -394,6 +394,17 @@ Process::~Process()
     delete threadList_;
 }
 
+dword Process::getStackBottom(Thread* thread)
+{
+    for (int i = 0; i < threadList_->size(); i++)
+    {
+        if (threadList_->get(i) != thread) continue;
+
+        return STACK_START - (STACK_SIZE + STACK_SIZE) * i - STACK_SIZE;
+    }
+    return 0;
+}
+
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/

@@ -1,5 +1,7 @@
 2004-10-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/Process.cpp (getStackBottom): stack overflowを検出してエラーメッセージを出す
+
         * src/servers/pe/main.cpp: ななしさんのPE Serverキャッシュパッチを取り込み
 
         * bim2bin, t5lzma を tools に追加

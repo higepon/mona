@@ -668,15 +668,19 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error)
     else
     {
 #if 1
-    ArchThreadInfo* i = g_currentThread->archinfo;
-    logprintf("name=%s\n", g_currentThread->process->getName());
-    logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
-    logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-    logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
-    logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+        ArchThreadInfo* i = g_currentThread->archinfo;
+        logprintf("name=%s\n", g_currentThread->process->getName());
+        logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+        logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+        logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+        logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
-        g_console->printf("access denied.address = %x Process %s killed", address, current->getName());
-        logprintf("access denied.address = %x Process %s killed", address, current->getName());
+
+        dword stackButtom = current->getStackBottom(g_currentThread->thread);
+        bool stackOver = address < stackButtom && stackButtom - 4096 < address;
+
+        g_console->printf("access denied.address = %x Process %s killed %s", address, current->getName(), stackOver ? "stack overflow?" : "");
+        logprintf("access denied.address = %x Process %s killed %s", address, current->getName(), stackOver ? "stack overflow?" : "");
 
         ThreadOperation::kill();
         return true;

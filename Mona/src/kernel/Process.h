@@ -134,6 +134,9 @@ class Process
     virtual ~Process();
 
   public:
+
+    dword getStackBottom(Thread* thread);
+
     inline virtual const char* getName() const
     {
         return name_;

@@ -6,7 +6,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_5
+#define MAIN_1
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -153,9 +153,9 @@ int TuripProbe()
     return 0;
 }
 
-
 int MonaMain(List<char*>* pekoe)
 {
+
    /* ユーザーモードI/O */
    syscall_get_io();
 
@@ -233,8 +233,19 @@ void write(const char* buf, int size)
     }
 }
 
+void hoge()
+{
+    char hige[1024];
+    memset(hige, 0, 1024);
+    hoge();
+    return;
+}
+
+
 int MonaMain(List<char*>* pekoe)
 {
+    hoge();
+
     dword filesize;
     printf("open=%d\n", syscall_file_open("hoge", 0, &filesize));
 
