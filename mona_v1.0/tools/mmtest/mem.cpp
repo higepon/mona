@@ -1,360 +1,176 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <vector>
+#include <time.h>
 #include "MemoryManager.h"
 #include "types.h"
 
-//#define printf      printf
+
 #define MANAGE_SIZE (10 * 1024 * 1024)
+#define RANDOMIZE() srand(time(NULL))
+#define RANDOM(x) (rand() % (x) + 1)
+
 
 typedef unsigned int dword;
 typedef unsigned char byte;
 
-void test(MemoryManager* mm, dword start, dword end);
+void test1(int id, dword start, dword end, int size);
+void test2(int id, dword start, dword end, int size);
+void test3(int id, dword start, dword end);
+void exitMessage(int id, const char* message);
+
+using namespace std;
 
 /*
     main()
 */
 int main(int argc, char** argv) {
 
-    byte* memory = (byte*)malloc(MANAGE_SIZE);
+    int id = 0;
+    byte* memory = new byte[MANAGE_SIZE];
 
     if (memory == NULL) {
-
-        printf("memory allocate error\n");
-        exit(-1);
+        exitMessage(0, "memory allocate");
     }
 
-    MemoryManager mm;
-    mm.initialize((dword)memory, (dword)memory + MANAGE_SIZE);
+    RANDOMIZE();
 
-    test(&mm, (dword)memory, (dword)memory + MANAGE_SIZE);
+    /* test1 */
+    for (int i = 1; i < 1025; i++) {
+        test1(id++, (dword)memory, MANAGE_SIZE + (dword)memory, i);
+    }
 
-    free(memory);
+    /* test2 */
+    for (int i = 1; i < 1025; i++) {
+        test2(id++, (dword)memory, MANAGE_SIZE + (dword)memory, i);
+    }
+
+    /* test3 */
+    for (int i = 1; i < 1000000; i++) {
+        test3(id++, (dword)memory, MANAGE_SIZE + (dword)memory);
+    }
+
+    delete memory;
     return 0;
 }
 
-void test(MemoryManager* mm, dword start, dword end) {
+void exitMessage(int id, const char* message) {
 
-    /* this test code expects 10mb of memory is availble */
-    dword testNumber = 1;
+    printf("test[%d] errror:%s\n", id, message);
+    exit(-1);
+}
 
-    /* test for message */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
+void test1(int id, dword start, dword end, int size) {
 
-        Message* message = (Message*)mm->allocate(sizeof(Message));
-        Message* message2 = (Message*)mm->allocate(sizeof(Message));
-        Message* message3 = (Message*)mm->allocate(sizeof(Message));
+    MemoryManager mm;
+    mm.initialize(start, end);
+    vector<void*> v;
 
-        if ((dword)message > end || (dword)message < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
+    /* free memory(original) */
+    dword freeSize = mm.getFreeMemorySize();
+
+    dword freeSz = freeSize;
+
+    for (int i = 0; i < 50; i++) {
+
+        void* p = mm.allocate(size);
+
+        if ((dword)p >= end || (dword)p < start) {
+            exitMessage(id, "range error");
         }
 
-        if ((dword)message2 > end || (dword)message2 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
+        freeSz -= sizeof(MemoryEntry) + size;
+        if (mm.getFreeMemorySize() != freeSz) {
+            exitMessage(id, "size unmatch");
         }
 
-        mm->free((void*)message3);
-        mm->free((void*)message2);
-        mm->free((void*)message);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+        v.push_back(p);
     }
 
-    /* test normal */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p = (dword)mm->allocate(8* 1024);
-
-        if (p > end || p < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
-        }
-
-        mm->free((void*)p);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+    for (int i = 0; i < v.size(); i++) {
+        mm.free(v.at(i));
     }
 
-    /* test normal */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p = (dword)mm->allocate(513);
-
-        if (p > end || p < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
-        }
-
-        mm->free((void*)p);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+    if (freeSize != mm.getFreeMemorySize()) {
+        exitMessage(id, "size error");
     }
 
-    /* test normal */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
+    printf("test1 OK\n");
+}
 
-        dword p = (dword)mm->allocate(5);
+void test2(int id, dword start, dword end, int size) {
 
-        if (p > end || p < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
+    MemoryManager mm;
+    mm.initialize(start, end);
+    vector<void*> v;
+
+    /* free memory(original) */
+    dword freeSize = mm.getFreeMemorySize();
+
+    dword freeSz = freeSize;
+
+    for (int i = 0; i < 50; i++) {
+
+        void* p = mm.allocate(size);
+
+        if ((dword)p >= end || (dword)p < start) {
+            exitMessage(id, "range error");
         }
 
-        mm->free((void*)p);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
+        freeSz -= sizeof(MemoryEntry) + size;
+        if (mm.getFreeMemorySize() != freeSz) {
+            exitMessage(id, "size unmatch");
         }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+
+        v.push_back(p);
     }
 
-    /* test 2 times allocate */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p1 = (dword)mm->allocate(5);
-        dword p2 = (dword)mm->allocate(512);
-
-        if (p1 > end || p1 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
-        }
-        if (p2 > end || p2 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
-        }
-
-        mm->free((void*)p2);
-        mm->free((void*)p1);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+    for (int i = v.size() - 1; i >= 0; i--) {
+        mm.free(v.at(i));
     }
 
-    /* test 2 times allocate */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p1 = (dword)mm->allocate(2 * 1024 * 1024);
-        dword p2 = (dword)mm->allocate(512);
-
-        if (p1 > end || p1 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
-        }
-        if (p2 > end || p2 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
-        }
-
-        mm->free((void*)p2);
-        mm->free((void*)p1);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+    if (freeSize != mm.getFreeMemorySize()) {
+        exitMessage(id, "size error");
     }
 
-    /* test 2 times allocate */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
+    printf("test2 OK\n");
+}
 
-        dword p1 = (dword)mm->allocate(2 * 1024 * 1024);
-        dword p2 = (dword)mm->allocate(512);
+void test3(int id, dword start, dword end) {
 
-        if (p1 > end || p1 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
+    MemoryManager mm;
+    mm.initialize(start, end);
+    vector<void*> v;
+    dword size;
+
+    /* free memory(original) */
+    dword freeSize = mm.getFreeMemorySize();
+    dword freeSz   = freeSize;
+
+    for (int i = 0; i < 100; i++) {
+
+        size = RANDOM(1024);
+        void* p = mm.allocate(size);
+
+        if ((dword)p >= end || (dword)p < start) {
+            exitMessage(id, "range error");
         }
-        if (p2 > end || p2 < start) {
-            printf("test%d failed range\n", testNumber);
-            exit(-1);
+
+        freeSz -= sizeof(MemoryEntry) + size;
+        if (mm.getFreeMemorySize() != freeSz) {
+            exitMessage(id, "size unmatch");
         }
 
-        mm->free((void*)p1);
-        mm->free((void*)p2);
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+        v.push_back(p);
     }
 
-    /* test 30 times allocate */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p[30];
-
-        for (int i = 0; i < 30; i++) {
-
-            p[i] = (dword)mm->allocate(100 * 1024);
-            if (p[i] == (dword)NULL) {
-                printf("test%d failed allocate error\n", testNumber);
-                exit(-1);
-            }
-
-            if (p[i] > end || p[i] < start) {
-                printf("test%d failed range\n", testNumber);
-                exit(-1);
-            }
-        }
-
-        for (int i = 0; i < 30; i++) {
-
-            mm->free((void*)p[i]);
-        }
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+    for (int i = 0; i < v.size(); i++) {
+        mm.free(v.at(i));
     }
 
-    /* test 30 times allocate reverse */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p[30];
-
-        for (int i = 0; i < 30; i++) {
-
-            p[i] = (dword)mm->allocate(100 * 1024);
-            if (p[i] == (dword)NULL) {
-                printf("test%d failed allocate error\n", testNumber);
-                exit(-1);
-            }
-            if (p[i] > end || p[i] < start) {
-                printf("test%d failed range\n", testNumber);
-                exit(-1);
-            }
-
-        }
-
-        for (int i = 29; i >= 0 ; i--) {
-
-            mm->free((void*)p[i]);
-        }
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
+    if (freeSize != mm.getFreeMemorySize()) {
+        exitMessage(id, "size error");
     }
 
-    /* test 100 times allocate reverse */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p[100];
-
-        for (int i = 0; i < 100; i++) {
-
-            p[i] = (dword)mm->allocate(i + 1);
-            if (p[i] == (dword)NULL) {
-                printf("test%d failed allocate error\n", testNumber);
-                exit(-1);
-            }
-            if (p[i] > end || p[i] < start) {
-                printf("test%d failed range\n", testNumber);
-                exit(-1);
-            }
-        }
-
-        for (int i = 99; i >= 0 ; i--) {
-
-            mm->free((void*)p[i]);
-        }
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
-    }
-
-    /* test 500 times allocate reverse */
-    {
-        dword freeMememorySize = mm->getFreeMemorySize();
-        dword usedMememorySize = mm->getUsedMemorySize();
-
-        dword p;
-
-        for (int i = 0; i < 500; i++) {
-
-            p = (dword)mm->allocate(i + 1);
-
-            if (p > end || p < start) {
-                printf("test%d failed range\n", testNumber);
-                exit(-1);
-            }
-
-            mm->free((void*)p);
-        }
-
-        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
-
-            printf("test%d failed\n", testNumber);
-            exit(-1);
-        }
-        printf("test%d OK\n", testNumber);
-        testNumber++;
-    }
+    printf("test3 OK\n");
 }

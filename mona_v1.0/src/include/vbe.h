@@ -54,7 +54,9 @@ typedef struct VesaInfoDetail {
     byte  blueMaskSize;
     byte  blueFieldPosition;
     byte  rsvdMaskSize;
+    byte  rsvdFieldPos;
     byte  directColorModeInfo;
+    dword physBasePtr;
 };
 
 #endif
