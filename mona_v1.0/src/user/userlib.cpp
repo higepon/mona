@@ -165,6 +165,7 @@ void Observable::notifyObservers(void* arg) {
     for (int i = 0; i < this->observers.size(); i++) {
         this->observers.get(i)->update(this, arg);
     }
+    clearChanged();
 }
 
 /*----------------------------------------------------------------------
