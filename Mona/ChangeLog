@@ -1,5 +1,9 @@
 2004-11-27  higepon  <higepon@users.sourceforge.jp>
 
+        * samples/non-gui/hello/hello.cpp (MonaMain) :monapi_cmemoryinfo_dispose()を呼び出す。
+
+        * apps/non-gui/Makefile : ataをビルド対象外にした。
+
         * src/servers/file/IDEDriver.cpp : identifyのデータ引き取りサイズバグ修正。これでセカンダリのデバイスも認識。
 
 2004-11-26  higepon  <higepon@users.sourceforge.jp>
