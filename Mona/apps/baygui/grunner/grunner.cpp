@@ -99,7 +99,8 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char **argv)
 #endif
 {
-	GRunner *grunner = new GRunner();
-	grunner->run();
+	GRunner *runner = new GRunner();
+	runner->run();
+	delete(runner);
 	return 0;
 }
