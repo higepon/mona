@@ -134,9 +134,6 @@ void timerHandler() {
     ProcessManager& pm = ProcessManager::instance();
     pm.schedule();
 
-    /* if current = next, do nothing */
-    if (pm.current == pm.next) iret();
-
     /* switch to next */
     _switchProcess(pm.current, pm.next);
 }

@@ -22,6 +22,11 @@
 
 /*! \def switch process */
 #define _switchProcess(currentProcess, nextProcess) \
+                                                    \
+    /* no switch */                                 \
+    if (currentProcess == nextProcess) iret();      \
+                                                    \
+    /* switch to next */                            \
     asm volatile(                                   \
                  "movl %%ebp, %%esp\n  "            \
                  "pushal           \n"              \
