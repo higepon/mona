@@ -79,6 +79,8 @@ void* IA32MemoryManager::allocateMemory(size_t size) {
     this->printInfo("allocate memory");
 #endif
 
+    usedMemorySize_ += size;
+
     /* return address of allocated memory */
     return (void*)usedBlock->startAddress;
 }
@@ -107,6 +109,7 @@ void IA32MemoryManager::freeMemory(void* address) {
     this->printInfo("free memory");
 #endif
 
+    usedMemorySize_ -= targetAddress->size;
     return;
 }
 
@@ -142,6 +145,8 @@ IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x210000), MEMORY_END(0x3900
 
     /* there is no usedEntry */
     usedEntry_ = (struct memoryEntry*)NULL;
+
+    usedMemorySize_ = 0;
     return;
 }
 
@@ -415,4 +420,14 @@ inline void IA32MemoryManager::flushTLB() const {
                  "mov %%eax, %%cr3\n"
                  : /* no output */
                  : /* no input  */ : "ax");
+}
+
+dword IA32MemoryManager::getTotalMemory() {
+
+    return (MEMORY_END - MEMORY_START);
+}
+
+dword IA32MemoryManager::getUsedMemory() {
+
+    return usedMemorySize_;
 }

@@ -63,6 +63,7 @@ class IA32MemoryManager {
     inline void lgdt() const;
     const size_t MEMORY_START;
     const size_t MEMORY_END;
+    dword usedMemorySize_;
     struct memoryEntry* freeEntry_;
     struct memoryEntry* usedEntry_;
 
@@ -71,6 +72,8 @@ class IA32MemoryManager {
     char* getName() const;
     void* allocateMemory(size_t);
     void freeMemory(void*);
+    dword getTotalMemory();
+    dword getUsedMemory();
     void printInfo(char*) const;
     static IA32MemoryManager& instance();
     static void startPaging();

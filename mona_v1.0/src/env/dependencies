@@ -8,7 +8,7 @@ kernel.o: kernel.cpp include/global.h include/kthread.h include/types.h \
   include/test_mjt.h include/checker.h include/KeyBoardManager.h \
   include/SystemInfo.h include/GraphicalConsole.h include/ihandlers.h \
   include/pic.h include/io.h include/rtc.h include/FAT12.h \
-  include/IDEDriver.h
+  include/IA32MemoryManager.h include/IDEDriver.h
 idt.o: idt.cpp include/idt.h
 ihandlers.o: ihandlers.cpp include/idt.h include/KeyBoardManager.h \
   include/types.h include/string.h include/FDCDriver.h \
@@ -45,47 +45,3 @@ IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
 operator.o: operator.cpp include/IA32MemoryManager.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
   include/operator.h
-purevirtual.o: purevirtual.cpp include/kernel.h include/types.h \
-  include/string.h include/VirtualConsole.h include/global.h \
-  include/kthread.h include/info.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/sysresource.h include/BitMap.h
-KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
-  include/types.h include/string.h include/global.h include/kthread.h \
-  include/info.h include/kernel.h include/VirtualConsole.h \
-  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/GDTUtil.h include/sysresource.h include/BitMap.h \
-  include/operator.h
-tester.o: tester.cpp include/global.h include/kthread.h include/types.h \
-  include/string.h include/info.h include/kernel.h \
-  include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h include/GDTUtil.h include/sysresource.h \
-  include/BitMap.h include/idt.h include/operator.h include/HVector.h \
-  include/tester.h include/test_mjt.h include/KeyBoardManager.h
-checker.o: checker.cpp include/checker.h include/types.h include/string.h \
-  include/kernel.h include/VirtualConsole.h include/IA32MemoryManager.h \
-  include/GDTUtil.h include/kthread.h
-string.o: string.cpp include/string.h include/types.h
-SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/types.h \
-  include/string.h include/VirtualConsole.h
-Semaphore.o: Semaphore.cpp include/semaphore.h include/kernel.h \
-  include/types.h include/string.h include/VirtualConsole.h include/io.h \
-  include/global.h include/kthread.h include/info.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/sysresource.h include/BitMap.h
-FDCDriver.o: FDCDriver.cpp include/FDCDriver.h include/types.h \
-  include/string.h include/VirtualConsole.h include/DiskDriver.h \
-  include/kernel.h include/operator.h include/io.h include/global.h \
-  include/kthread.h include/info.h include/Semaphore.h include/GDTUtil.h \
-  include/sysresource.h include/BitMap.h
-GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
-  include/VirtualConsole.h include/types.h include/string.h
-kthread.o: kthread.cpp include/kthread.h include/types.h include/string.h \
-  include/kernel.h include/VirtualConsole.h include/ihandlers.h \
-  include/idt.h include/pic.h include/io.h include/operator.h \
-  include/disp.h include/global.h include/info.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/sysresource.h include/BitMap.h include/rtc.h
-pic.o: pic.cpp include/pic.h include/io.h include/types.h \
-  include/string.h
-io.o: io.cpp include/io.h include/types.h include/string.h

@@ -34,6 +34,7 @@
 #include<rtc.h>
 #include<BitMap.h>
 #include<FAT12.h>
+#include<IA32MemoryManager.h>
 #include<string.h>
 
 #include <IDEDriver.h> //in test...
@@ -50,7 +51,7 @@ char* version = "Mona develop beta 0.08a $Date$";
 */
 void startKernel(void) {
 
-    GDTUtil::setUpGDT();
+    GDTUtil::setup();
 
     /* initialze console */
     g_console = new GraphicalConsole();
@@ -110,6 +111,8 @@ void startKernel(void) {
 #ifdef HIGE
     g_info_level = ERROR;
     FDCTester();
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
+    g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalMemory());
 #endif
 
     while (g_demo_step < 5);

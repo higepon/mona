@@ -39,15 +39,13 @@ void GDTUtil::setSegDesc(SegDesc* desc, dword base, dword limit, byte type) {
 /*!
     \brief call lgdt
 
+    \param gdtr gdtr
     \author HigePon
-    \date   create:2003/06/07 update:
+    \date   create:2003/06/07 update:2003/06/08
 */
-void GDTUtil::lgdt() {
+void GDTUtil::lgdt(GDTR* gdtr) {
 
-    GDTR gdtr;
-    gdtr.base  = (dword)g_gdt;
-    gdtr.limit = sizeof(SegDesc) * GDT_ENTRY_NUM - 1;
-    asm volatile("lgdt %0\n" : /* no output */ : "m" (gdtr));
+    asm volatile("lgdt %0\n" : /* no output */ : "m" (*gdtr));
     return;
 }
 
@@ -57,7 +55,7 @@ void GDTUtil::lgdt() {
     \author HigePon
     \date   create:2003/06/07 update:
 */
-void GDTUtil::setUpGDT() {
+void GDTUtil::setup() {
 
     g_gdt = (SegDesc*)malloc(sizeof(SegDesc) * GDT_ENTRY_NUM);
     if (g_gdt == NULL) panic("GDT memory allcate error");
@@ -75,7 +73,11 @@ void GDTUtil::setUpGDT() {
     /* SYS SS 0-4GB */
     setSegDesc(&g_gdt[3], 0, 0xFFFFF, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
 
-    lgdt();
+    /* lgdt */
+    GDTR gdtr;
+    gdtr.base  = (dword)g_gdt;
+    gdtr.limit = sizeof(SegDesc) * GDT_ENTRY_NUM - 1;
+    lgdt(&gdtr);
     return;
 }
 

@@ -50,8 +50,8 @@ class GDTUtil {
 
   public:
     static void setSegDesc(SegDesc* desc, dword base, dword limit, byte type);
-    static void lgdt();
-    static void setUpGDT();
+    static void lgdt(GDTR* gdtr);
+    static void setup();
 };
 
 #endif
