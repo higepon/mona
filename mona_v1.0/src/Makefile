@@ -14,7 +14,6 @@ BIN        = ../bin
 LIST       = ../list
 INCLUDE    = include
 STLINCLUDE = stlport
-DEVELOPER  = -D$(MONA_DEVELOPER)
 CFINCLUDE  = -I$(INCLUDE) -I$(STLINCLUDE)
 TARGET     = $(BIN)/mona.img
 BOOT1      = $(BIN)/firstboot.bin
@@ -70,7 +69,7 @@ memmove.o : ./FreeBSD/memmove.c
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CC) $(CFLAGS) $(DEVELOPER) $(CFINCLUDE) -c $<
+	$(CC) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
 	$(NASM) firstboot.asm -o $@ -l $(LIST)/first.list
