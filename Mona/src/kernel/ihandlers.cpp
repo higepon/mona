@@ -67,6 +67,7 @@ void SendInterrupt(int irq)
     /* set message */
     memset(&msg, 0, sizeof(MessageInfo));
     msg.header = MSG_INTERRUPTED;
+    msg.arg1   = irq;
 
     if (g_messenger->send(g_irqInfo[irq].thread->thread->id, &msg))
     {

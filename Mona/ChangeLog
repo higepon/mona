@@ -1,13 +1,17 @@
+2004-11-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/ihandlers.cpp (SendInterrupt):irq番号をarg1で通知する仕様を追加
+
 2004-11-16  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones/: Code:Mones QEMUからの割り込み到達。デバッグコード有効のまま
-        
+
 2004-11-14  Yamami  <yamamimail@users.sourceforge.jp>
 
         * samples/non-gui/yamami/main.cpp: テストコード追加
-        
+
         * src/servers/mones/: ARP要求、IP送信実装(QEMU未動作 デバッグ中)
-        
+
         * include/sys/types.h: Mones用のメッセージ追加(MSG_MONES_WAKEUP_ARP_WAIT)
 
 2004-11-16  higepon  <higepon@users.sourceforge.jp>

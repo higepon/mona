@@ -27,6 +27,7 @@ public:
 
 public:
     void printDebug();
+    void interrupt();
     bool selectDevice(int controller, int deviceNo);
     int read(dword lba, void* buffer, int size);
     bool findDevice(int type, int detail, int* controller, int* deviceNo);
@@ -50,7 +51,6 @@ private:
         int type;
         int typeDetail;
         int deviceNo;
-        dword dataTransferSize;
         MonAPI::CString name;
     };
 
@@ -108,6 +108,9 @@ private:
 private:
     IDEController controllers[2];
     IDEController* whichController;
+    volatile void* atapiBuffer;
+    volatile int atapiReadDone;
+    volatile dword atapiTransferSize;
 
 private:
     enum
