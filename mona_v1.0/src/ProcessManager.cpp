@@ -315,8 +315,8 @@ inline void ProcessManager::initProcess(void (*f)()) {
     process_[2].edx    = 0;
     process_[2].edi    = 0;
     process_[2].esi    = 0;
-    process_[2].ebp    = (dword*)35000;
-    process_[2].esp    = (dword*)35000;
+    process_[2].ebp    = (dword*)15000;
+    process_[2].esp    = (dword*)15000;
     process_[2].eflags = (dword)0x0200046;
     process_[2].cs     = (dword)0x38;
     process_[2].eip    = (dword)process3Tester;

@@ -20,14 +20,13 @@
 */
 class MFDCDriver {
   public:
-    MFDCDriver(const byte drive);
+    MFDCDriver();
     ~MFDCDriver();
 
   public:
-
+    void printStatus();
   private:
-    void initilize(const byte drive);
-
+    void initilize();
 };
 
 #endif

@@ -27,10 +27,11 @@
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
 #include<SystemConsole.h>
+#include<MFDCDriver.h>
 
 char* version = "Mona develop beta 0.03b $Date$";
 
-VirtualConsole* console = new SystemConsole();
+//VirtualConsole* console = new SystemConsole();
 
 /*!
     \brief  mona kernel start at this point
@@ -81,7 +82,8 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
-    console->printf("this is test %x", 0x12345678);
+    //    console->printf("this is test %x", 0x12345678);
+    MFDCDriver* f = new MFDCDriver();
 
     /* test code is here */
 #if 0
