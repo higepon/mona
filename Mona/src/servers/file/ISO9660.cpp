@@ -11,7 +11,7 @@
 */
 
 #include <monapi/string.h>
-#include "iso9660.h"
+#include "ISO9660.h"
 #include <monapi.h>
 
 using namespace MonAPI;
@@ -465,7 +465,7 @@ _A<CString> ISO9660::GetFileSystemEntries(const CString& path)
     }
 
     HList<CString> names;
-    for (dword position = 0, ; position < readSize;)
+    for (dword position = 0 ; position < readSize;)
     {
         ISODirectoryEntry* iEntry = (ISODirectoryEntry*)(buffer + position);
 
