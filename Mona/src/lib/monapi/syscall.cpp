@@ -232,6 +232,12 @@ void putCharacter(char ch) {
 
 void printInt(int num) {
 
+    if (num == 0)
+    {
+        print("0");
+        return;
+    }
+
     char revstr[20];
     char str[20];
     int  i = 0;

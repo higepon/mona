@@ -1,3 +1,7 @@
+2004-05-29  tino  <tino@users.sourceforge.jp>
+
+        * src/lib/monapi/syscall.cpp (putInt): 0‚ğ•\¦
+
 2004-05-29  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/Message.h: ³í‚É“®ì‚µ‚½‚Ì‚Åadd, modify“™‚ÌƒRƒƒ“ƒg‚ğíœ
