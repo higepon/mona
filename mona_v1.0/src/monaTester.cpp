@@ -159,6 +159,22 @@ void process2Tester() {
     return;
 }
 
+void process3Tester() {
+    enableInterrupt();
+
+    while (true) {
+
+          _sysSetColor(SYS_BG_COLOR | CH_ORANGE);
+          _sys_printf("  ( \"  A \")  ");
+          _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+          for (dword i = 0; i < 99000000; i++) {
+              i += 1;
+              i -= 1;
+          }
+    }
+    return;
+}
+
 
 /*!
     \brief test code for STLport

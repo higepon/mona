@@ -149,7 +149,7 @@ class ProcessManager {
     TSS tss[2];
   private:
     GDT* gdt_;
-    Process process_[2];
+    Process process_[3];
 };
 
 #endif

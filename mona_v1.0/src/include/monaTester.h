@@ -21,5 +21,6 @@ void floppyTester();
 void processTester();
 void process1Tester();
 void process2Tester();
+void process3Tester();
 void STLTester();
 #endif

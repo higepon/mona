@@ -251,14 +251,25 @@ inline void ProcessManager::setNTflag1() const {
 void ProcessManager::schedule() {
 
     static byte count = 0;
+    static byte idx   = 0;
     if (!count) {
         count++;
         return;
     }
 
-    /* now there are only two process */
-    std::swap(current, next);
+    current = next;
 
+    /* now there are only two process */
+    //    std::swap(current, next);
+    if (idx == 0) {
+        next    = &(process_[0]);
+    } else if (idx == 1) {
+        next    = &(process_[1]);
+    } else {
+        next    = &(process_[2]);
+    }
+    idx++;
+    if (idx > 2) idx = 0;
     /* switch to next */
     //    _switchProcess(current, next);
 }
@@ -274,27 +285,39 @@ void ProcessManager::schedule() {
 */
 inline void ProcessManager::initProcess(void (*f)()) {
 
-    next->eax    = 0;
-    next->ebx    = 0;
-    next->ecx    = 0;
-    next->edx    = 0;
-    next->edi    = 0;
-    next->esi    = 0;
-    next->ebp    = (dword*)FIRST_PROCESS_STACK;
-    next->esp    = (dword*)FIRST_PROCESS_STACK;
-    next->eflags = (dword)0x0200046;
-    next->cs     = (dword)0x38;
-    next->eip    = (dword)f;
+    process_[0].eax    = 0;
+    process_[0].ebx    = 0;
+    process_[0].ecx    = 0;
+    process_[0].edx    = 0;
+    process_[0].edi    = 0;
+    process_[0].esi    = 0;
+    process_[0].ebp    = (dword*)FIRST_PROCESS_STACK;
+    process_[0].esp    = (dword*)FIRST_PROCESS_STACK;
+    process_[0].eflags = (dword)0x0200046;
+    process_[0].cs     = (dword)0x38;
+    process_[0].eip    = (dword)f;
 
-    current->eax    = 0;
-    current->ebx    = 0;
-    current->ecx    = 0;
-    current->edx    = 0;
-    current->edi    = 0;
-    current->esi    = 0;
-    current->ebp    = (dword*)FIRST_PROCESS_STACK;
-    current->esp    = (dword*)FIRST_PROCESS_STACK;
-    current->eflags = (dword)0x0200046;
-    current->cs     = (dword)0x38;
-    current->eip    = (dword)f;
+    process_[1].eax    = 0;
+    process_[1].ebx    = 0;
+    process_[1].ecx    = 0;
+    process_[1].edx    = 0;
+    process_[1].edi    = 0;
+    process_[1].esi    = 0;
+    process_[1].ebp    = (dword*)FIRST_PROCESS_STACK;
+    process_[1].esp    = (dword*)FIRST_PROCESS_STACK;
+    process_[1].eflags = (dword)0x0200046;
+    process_[1].cs     = (dword)0x38;
+    process_[1].eip    = (dword)f;
+
+    process_[2].eax    = 0;
+    process_[2].ebx    = 0;
+    process_[2].ecx    = 0;
+    process_[2].edx    = 0;
+    process_[2].edi    = 0;
+    process_[2].esi    = 0;
+    process_[2].ebp    = (dword*)35000;
+    process_[2].esp    = (dword*)35000;
+    process_[2].eflags = (dword)0x0200046;
+    process_[2].cs     = (dword)0x38;
+    process_[2].eip    = (dword)process3Tester;
 }
