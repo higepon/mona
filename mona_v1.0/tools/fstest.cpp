@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include "DiskDriver.h"
+#include "FAT12.h"
+#include "kernel.h"
 
 main(int argc, char *argv[]) {
 
@@ -15,6 +17,8 @@ main(int argc, char *argv[]) {
     for (int i = 0; i < 512; i++) {
 	printf("%x", buf[i]);
     }
+
+    FAT12* fat = new FAT12();
 
     delete driver;
     printf("test");
