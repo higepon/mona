@@ -1,3 +1,7 @@
+2004-05-30  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp (MessageLoop): マウスの物理的マウス移動量に応じて移動量を変える。
+
 2004-05-30  tino  <tino@users.sourceforge.jp>
 
         * src/servers/gui: Zオーダー管理、透過ウインドウ対応

@@ -158,8 +158,8 @@ void MouseServer::MessageLoop()
                 char x = (byte)(receive.arg2);
                 char y = (byte)(receive.arg3) * (-1);
 
-                this->posX += x;
-                this->posY += y;
+                this->posX += x * 1.5;
+                this->posY += y * 1.5;
 
                 /* mouse cursor size */
                 if (this->posX >= this->w) this->posX = this->w - 1;
