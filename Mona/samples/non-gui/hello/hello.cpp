@@ -6,7 +6,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_9
+#define MAIN_1
 
 #ifdef MAIN_9
 int MonaMain(List<char*>* pekoe)
