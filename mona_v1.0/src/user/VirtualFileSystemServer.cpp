@@ -16,6 +16,20 @@
 
 int main() {
 
-    FAT12* fat = new FAT12(NULL);
+    /* Message loop */
+    for (;;) {
 
+        MessageInfo info;
+
+        /* receive */
+        if (!Message::receive(&info)) {
+
+            switch(info.header) {
+
+            }
+
+
+        }
+
+    }
 }

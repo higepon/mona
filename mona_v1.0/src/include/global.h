@@ -25,6 +25,7 @@
 #include <Segments.h>
 #include <sysresource.h>
 #include <tester.h>
+#include <vbe.h>
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
@@ -64,4 +65,6 @@ GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 
 GLOBAL ProcessManager* g_processManager;
 GLOBAL ThreadInfo* g_currentThread;
+GLOBAL VesaInfo* g_vesaInfo;
+GLOBAL VesaInfoDetail* g_vesaDetail;
 #endif

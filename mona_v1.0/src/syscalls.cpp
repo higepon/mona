@@ -27,6 +27,7 @@ void syscall_entrance() {
 
     Thread* thread;
     KMutex* mutex;
+    ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
 
     switch(info->ebx) {
@@ -117,6 +118,15 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_LOOKUP:
         info->eax = g_processManager->lookup((char*)(info->esi));
+        break;
+
+    case SYSTEM_CALL_GET_VRAM_INFO:
+        screenInfo = (ScreenInfo*)(info->esi);
+        screenInfo->vram = (dword)(g_vesaDetail->physBasePtr);
+        screenInfo->bpp  = (dword)(g_vesaDetail->bitsPerPixel);
+        screenInfo->x    = (dword)(g_vesaDetail->xResolution);
+        screenInfo->y    = (dword)(g_vesaDetail->yResolution);
+        info->eax = 0;
         break;
     default:
         g_console->printf("syscall:default");

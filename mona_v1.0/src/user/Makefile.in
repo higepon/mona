@@ -45,6 +45,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(USER_PROCESS) $(USER_PROCESS2)
+	rm -f $(OBJECTS) $(USER_PROCESS) $(USER_PROCESS2) $(KEYBOARD_SERVER) $(VFS_SERVER)
 
 include dependencies

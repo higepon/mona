@@ -214,9 +214,9 @@ void PageManager::setup(PhysicalAddress vram) {
 
             table = allocatePageTable();
             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            setAttribute(&(g_page_directory[directoryIndex]), true, true, false, (PhysicalAddress)table);
+            setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
-        setAttribute(&(table[tableIndex]), true, true, false, vram);
+        setAttribute(&(table[tableIndex]), true, true, true, vram);
     }
 
     setPageDirectory((PhysicalAddress)g_page_directory);
@@ -268,9 +268,9 @@ PageEntry* PageManager::createNewPageDirectory() {
 
             table = allocatePageTable();
             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            setAttribute(&(directory[directoryIndex]), true, true, false, (PhysicalAddress)table);
+            setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
-        setAttribute(&(table[tableIndex]), true, true, false, vram);
+        setAttribute(&(table[tableIndex]), true, true, true, vram);
     }
 
     return directory;

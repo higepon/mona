@@ -6,7 +6,6 @@
 ; All rights reserved.
 ; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
-%define vesa_mode        0x4114
 %define vesa_info        0x800
 %define vesa_info_detail 0x830
 
@@ -40,7 +39,26 @@ a20enable_3:
 ;-------------------------------------------------------------------------------
 ; try VESA mode
 ;-------------------------------------------------------------------------------
-        pusha
+        mov  dx, 0x0114
+        call try_vesa_mode
+        cmp  ax, 0x00
+        je   RealToProtect
+        mov  dx, 0x010E
+        call try_vesa_mode
+        cmp  ax, 0x00
+        je   RealToProtect
+vesa_not_supported:
+        mov  di, vesa_info
+        mov  byte[di], 'N'
+        jmp  graphicalmode
+;; try VESA dx = mode number
+try_vesa_mode:
+        mov  ax, 0x4F02         ; functon 02h
+        mov  bx, dx             ; set video mode
+        or   bx, 0x4000         ; set linear mode
+        int  0x10
+        cmp  ax, 0x004F
+        jne  vesa_this_mode_ng
 get_vesa_info:
         xor bx, bx
         mov es, bx
@@ -48,26 +66,20 @@ get_vesa_info:
         mov di, vesa_info         ; 0x0000:vesa_info
         int 0x10
         cmp ax, 0x004F
-        jne vesa_not_supported
+        jne vesa_this_mode_ng
 get_vesa_info_detail
         mov ax, 0x4F01            ; function 01h
-        mov cx, vesa_mode
+        mov cx, dx                ; set video mode
         mov di, vesa_info_detail  ; 0x0000:vesa_info_detail
         int 0x10
         cmp ax, 0x004F
-        jne vesa_not_supported
-vesa_supported:
-        mov ax, 0x4F02
-        mov bx, vesa_mode
-        int 0x10
-        cmp ax, 0x004F
-        jne vesa_not_supported
-        popa
-        jmp RealToProtect
-vesa_not_supported:
-        mov di, vesa_info
-        mov byte[di], 'N'
-        popa
+        jne vesa_this_mode_ng
+vesa_this_mode_ok:
+        xor ax, ax
+        ret
+vesa_this_mode_ng:
+        mov ax, 0x01
+        ret
 graphicalmode:
         mov ax, 0x0012
         int 0x10

@@ -32,6 +32,13 @@ typedef struct {
     dword arg3;
 } MessageInfo;
 
+typedef struct {
+    dword vram;
+    dword bpp;
+    dword x;
+    dword y;
+} ScreenInfo;
+
 #define MSG_KEY_SCANCODE         0x00
 #define MSG_KEY_REGIST_TO_SERVER 0x01
 

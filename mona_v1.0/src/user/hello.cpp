@@ -7,10 +7,83 @@ static char buf[32];
 static bool come;
 static Mutex* mutex;
 
+class Color {
+
+  public:
+
+    inline static byte bpp24to8(dword color) {
+        return color;
+    }
+
+    inline static word bpp24to1555(dword color) {
+        return color;
+    }
+};
+
+class Screen {
+
+  public:
+    Screen();
+    virtual ~Screen();
+
+
+  public:
+
+    bool fillRect(int x, int y, int width, int height, dword color);
+
+    inline byte* getVRAM() const {
+        return vram_;
+    }
+
+    inline int getBpp() const {
+        return bpp_;
+    }
+
+    inline int getXResolution() const {
+        return xResolution_;
+    }
+
+    inline int getYResolution() const {
+        return yResolution_;
+    }
+
+  public:
+
+  protected:
+    byte* vram_;
+    int bpp_;
+    int xResolution_;
+    int yResolution_;
+
+  private:
+    ScreenInfo sinfo;
+};
+
+Screen::Screen() {
+
+    /* get and set vram information */
+    syscall_get_vram_info(&sinfo);
+    vram_        = (byte*)sinfo.vram;
+    bpp_         = sinfo.bpp;
+    xResolution_ = sinfo.x;
+    yResolution_ = sinfo.y;
+}
+
+Screen::~Screen() {
+}
+
+bool Screen::fillRect(int x, int y, int width, int height, dword color) {
+    return false;
+}
+
 int main() {
 
     dword id;
     mutex = new Mutex();
+
+    Screen screen;
+
+    printf("get x = %x", screen.getXResolution());
 
     /* look up */
     dword myPid   = Message::lookup("USER.ELF");

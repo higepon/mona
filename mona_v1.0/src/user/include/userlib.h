@@ -18,6 +18,7 @@
 #define SYSTEM_CALL_MUTEX_UNLOCK   17
 #define SYSTEM_CALL_MUTEX_DESTROY  18
 #define SYSTEM_CALL_LOOKUP         19
+#define SYSTEM_CALL_GET_VRAM_INFO  20
 
 #define main() monamain()
 
@@ -45,6 +46,7 @@ int syscall_mutex_create();
 int syscall_mutex_trylock();
 int syscall_mutex_lock();
 int syscall_mutex_unlock();
+int syscall_get_vram_info(ScreenInfo* info);
 dword syscall_lookup(const char* name);
 int syscall_mutex_destroy(int id);
 void* malloc(unsigned long size);

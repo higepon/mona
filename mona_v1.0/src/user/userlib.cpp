@@ -249,6 +249,23 @@ dword syscall_lookup(const char* name) {
     return pid;
 }
 
+int syscall_get_vram_info(ScreenInfo* info) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_GET_VRAM_INFO), "m"(info)
+                 : "ebx", "esi"
+                 );
+
+    return result;
+}
+
+
 void* malloc(unsigned long size) {
     return um.allocate(size);
 }

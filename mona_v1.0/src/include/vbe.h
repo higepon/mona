@@ -63,6 +63,10 @@ typedef struct Pixel16 {
     byte dummy[2];
 };
 
+typedef struct Pixel24 {
+    byte dummy[3];
+};
+
 typedef struct Pixel32 {
     dword dummy;
 };
@@ -104,6 +108,12 @@ class Screen {
     static inline void copyPixel16(byte* dvram, int destX, int destY, byte* svram, int sourceX, int sourceY, int xResolution, int raster) {
         Pixel16* dpixel = (Pixel16*)dvram;
         Pixel16* spixel = (Pixel16*)svram;
+        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
+    }
+
+    static inline void copyPixel24(byte* dvram, int destX, int destY, byte* svram, int sourceX, int sourceY, int xResolution, int raster) {
+        Pixel24* dpixel = (Pixel24*)dvram;
+        Pixel24* spixel = (Pixel24*)svram;
         dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
     }
 

@@ -1,3 +1,9 @@
+2004-01-27  higepon  <higepon@users.sourceforge.jp>
+
+        * secondboot.asm (get_vesa_info): VESAモードをトライする関数を追加。
+
+        * test_higepon.cpp: bitbltで24bppに対応
+
 2004-01-26  higepon  <higepon@users.sourceforge.jp>
 
         * メッセージの送信をpidベースでもできるように変更した。

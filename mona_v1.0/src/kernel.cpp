@@ -72,7 +72,6 @@ void printInfo() {
     g_console->printf("loading KEYBOARD SERVER....");
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
 
     for (;;);
 }
@@ -94,21 +93,20 @@ void startKernel(void) {
     /* set segment */
     GDTUtil::setup();
 
-    /* test for vesa */
-    VesaInfo* vesaInfo = new VesaInfo;
-    VesaInfoDetail* vesaDetail;
-    memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
+    /* VESA */
+    g_vesaInfo = new VesaInfo;
+    memcpy(g_vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
 
     /* console */
-    if (vesaInfo->sign[0] == 'N') {
+    if (g_vesaInfo->sign[0] == 'N') {
 
         g_console = new GraphicalConsole();
-        g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[0]);
+        g_console->printf("VESA not supported[%c]\n", g_vesaInfo->sign[0]);
         for (;;);
     } else {
-        vesaDetail = new VesaInfoDetail;
-        memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
-        g_console = new VesaConsole(vesaDetail);
+        g_vesaDetail = new VesaInfoDetail;
+        memcpy(g_vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
+        g_console = new VesaConsole(g_vesaDetail);
     }
 
     pic_init();
@@ -121,63 +119,16 @@ void startKernel(void) {
     checkTypeSize();
     printOK("Checking type size ");
 
-    /* test for vesa */
-//     VesaInfo* vesaInfo = new VesaInfo;
-//     memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
-//     if (vesaInfo->sign[0] == 'N') {
-//         g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
-//         for (;;);
-//     } else {
-
-//         VesaInfoDetail* vesaDetail = new VesaInfoDetail;
-//         memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
-
-//         /* 800 * 600 16bpp */
-//         int xResolution  = vesaDetail->xResolution;
-//         int yResolution  = vesaDetail->yResolution;
-//         int bitsPerPixel = vesaDetail->bitsPerPixel;
-
-//         /* vram */
-//         byte* realVram    = (byte*)(vesaDetail->physBasePtr);
-//         byte* virtualVram = new byte[xResolution * yResolution * bitsPerPixel / 8];
-
-//         /* create Screen */
-//         Screen* realScreen    = new Screen(xResolution, yResolution, bitsPerPixel, realVram);
-//         Screen* virtualScreen = new Screen(xResolution, yResolution, bitsPerPixel, virtualVram);
-
-//         for (;;) {
-//             for (int y = 0; y < yResolution; y++) {
-
-//                 /* draw line */
-//                 memset(virtualVram, y % 0xFE, xResolution* bitsPerPixel / 8);
-
-//                 /* BitBlt */
-//                 Screen::bitblt(realScreen, 0, y, 800, 1, virtualScreen, 0, 0, NULL);
-//             }
-
-//             /* fill virtual vram */
-//             memset(virtualVram, 0x12, xResolution * yResolution * bitsPerPixel / 8);
-
-//             /* regtangle */
-//             for (int x = 0, y = 0; y < yResolution; x += 50, y += 50) {
-
-//                 /* BitBlt */
-//                 Screen::bitblt(realScreen, x, y, 50, 50, virtualScreen, 50, 50, NULL);
-//             }
-
-//         }
-//     }
-
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%xPaging on \n", g_total_system_memory / 1024 / 1024, vesaDetail->physBasePtr);
+    g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%xPaging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
 
     /* shared memory object */
     SharedMemoryObject::setup();
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
-    g_page_manager->setup((PhysicalAddress)(vesaDetail->physBasePtr));
+    g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
 
     /* this should be called, before timer enabled */
     ThreadManager::setup();
