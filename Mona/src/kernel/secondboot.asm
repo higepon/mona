@@ -269,7 +269,7 @@ _read_error:
 ; try VESA mode
 ;------------------------------------------------------------------------------
 vesa_mode:
-        mov     ax, word[cs:vesares]
+        mov     ax, [cs:vesares]
         mov     dx, 0x010f
         cmp     ax, 320+1
         jc      vesa_loop
