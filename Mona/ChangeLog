@@ -6,7 +6,7 @@
 
         * include/monapi/cmemoryinfo.h: ’Ç‰Á
 
-        * src/lib/monapi/cmemoryinfo.cpp: ’Ç‰Á
+        * src/lib/monapi/cmemoryinfo.c: ’Ç‰Á
 
         * src/servers/gui: —]•ª‚È‹@”\‚ğ•ªŠ„ ¨ FILE.SVR
 
