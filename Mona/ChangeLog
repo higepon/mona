@@ -4,6 +4,8 @@
 
         * src/lib/monapi/syscall.cpp (print): ELF.BINがなくても無限ループにならないように修正
 
+        * src/lib/monapi/monapi.cpp (user_start): extern "C"によりリンク時の警告に対処
+
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp (IDE_Identifye): identifyコマンド送信(挙動がおかしい)

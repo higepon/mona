@@ -31,7 +31,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(TARGET1) $(TARGET2)
 
-$(TARGET1):
+$(TARGET1): monapi.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDE) monapi.cpp
 
 $(TARGET2) : $(OBJECTS)
