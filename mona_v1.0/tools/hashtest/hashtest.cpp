@@ -157,7 +157,7 @@ int main(int argc, char** argv) {
     /*----------------------------------------------------------------------
         Binary Tree test
     ----------------------------------------------------------------------*/
-    //    testBinaryTree();
+    testBinaryTree();
 
     /*----------------------------------------------------------------------
         HashMap TEST
@@ -174,6 +174,15 @@ int main(int argc, char** argv) {
     printf("%s\n", map->get("/Mona/System/FDC"));
     printf("%s\n", map->get("/Mona/System/Console"));
 
+    map->put("AAAAB", "AAAAB");
+    map->put("AAABA", "AAABA");
+    map->put("AABAA", "AABAA");
+    map->put("ABAAA", "ABAAA");
+
+    printf("%s\n", map->get("AAAAB"));
+    printf("%s\n", map->get("AAABA"));
+    printf("%s\n", map->get("AABAA"));
+    printf("%s\n", map->get("ABAAA"));
     delete map;
     return 0;
 }

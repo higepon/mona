@@ -1,5 +1,7 @@
 2003-12-30  higepon  <higepon@users.sourceforge.jp>
 
+        * hashtest.cpp: HashMapのテストコードを追加。hashの衝突もなくなった。
+
         * include/collection.h: hash関数の改良 thx!名無しさん@dev-j
           HashMapはあらかた完成。
 
