@@ -23,10 +23,12 @@ unsigned int IDEDriver::cylinderL_;
 unsigned int IDEDriver::cylinderH_;
 unsigned int IDEDriver::head_;
 unsigned int IDEDriver::status2_;
-unsigned int IDEDriver::drive_;
+bool IDEDriver::HasMaster;
+bool IDEDriver::HasSlave;
+IDEDevice* IDEDriver::Master;
+IDEDevice* IDEDriver::Slave;
 
-
-IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port,unsigned int drive) {
+IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port) {
 
     /* set console */
     console_ = console;
@@ -43,9 +45,16 @@ IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port,unsigned int driv
     status_ = port+7;
     driveaddr_ = port+0x207;
     status2_ = port+0x206;
-    drive_ = drive;
     
-    initilize();
+    if(inportb(status_) == 0xff){
+      console_->printf("ide:constructor:can't find IDE Drive in Port:%x\n",port);
+      HasMaster = false;
+      return;
+    }
+    
+    if(!initilize()){
+      HasMaster = false;
+    }
 }
 
 #define TIMEOUT 0xffffffff
@@ -98,7 +107,7 @@ bool IDEDriver::waitready(unsigned long timeout){
 
 
 
-bool IDEDriver::sendcmd(int cmd,short int *bfr,int bfrsize){
+bool IDEDriver::sendcmd(int cmd,char *bfr,int bfrsize/* must be 2n size */){
   long t;
   char c;
   waitready(TIMEOUT);
@@ -107,10 +116,7 @@ bool IDEDriver::sendcmd(int cmd,short int *bfr,int bfrsize){
     c = inportb(status_);
     if(c & 0x80){
       continue;
-    }/*
-    if(!(c & 0x29)){
-      continue;
-    }*/
+    }
     if(c & 0x21){
       console_->printf("ide:sendcmd:device reports error..\n");
       return false;
@@ -119,23 +125,23 @@ bool IDEDriver::sendcmd(int cmd,short int *bfr,int bfrsize){
       break;
     }
   }
-  for(t=0;t!=bfrsize;t++){
-    asm volatile ("in %%dx, %%ax": "=a"(bfr[t]): "d"(data_));
+  for(t=0;t!=bfrsize;t+=2){
+    int a;
+    asm volatile ("in %%dx, %%ax": "=a"(a): "d"(data_));
+    bfr[t] = a >> 8;
+    bfr[t+1] = a & 0xff;
   }
   return true;
 }
-bool IDEDriver::senddrive(int drive){
+bool IDEDriver::senddevice(int drive){
   char c;
   c = inportb(head_);
   if(drive == 1){
     c |= 0x10;
   }else if(drive == 0){
     c &= 0xef;
-  }else{
-    console_->printf("ide:senddrive:unsurpported drive no.\n");
-    return false;
   }
-  outportb(head_,drive);
+  outportb(head_,c);
   waithdc(TIMEOUT);
   return true;
 }
@@ -144,46 +150,79 @@ IDEDriver::~IDEDriver() {
     return;
 }
 
-void IDEDriver::initilize() {
+bool IDEDriver::initilize() {
     /* send software reset*/
     char c;
-    short int buf[256];
-    int i;
     console_->printf("ide:init:");
+
     waithdc(TIMEOUT);
     console_->printf("diag...");
-    sendcmd(IDE_CMD_DIAG,0,0);
+    if(!sendcmd(IDE_CMD_DIAG,0,0)){
+      console_->printf("\naborting...\n");
+      HasMaster = false;
+      return false;
+    }
     c = inportb(error_);
     if(c & 0x0e){
       console_->printf("error.");
+      HasMaster = false;
+      return false;
     }else{
       console_->printf("ok.");
+      HasMaster = true;
     }
     if(c & 0x80){
       console_->printf("and there is NO slave drive.\n");
+      HasSlave = false;
     }else{
       console_->printf("and there is slave drive.\n");
+      HasSlave = true;
     }
-    sendcmd(IDE_CMD_ID,buf,256);
-    console_->printf("Name: ");
-    for(i=0;i!=40;i+=2){
-      console_->printf("%c",*((char *)&buf[0x1b]+i+1));
-      console_->printf("%c",*((char *)&buf[0x1b]+i));
+    if(HasMaster){
+      Master = new IDEDevice(this,0);
     }
-    console_->printf("\nVersion: ");
-    for(i=0;i!=8;i+=2){
-      console_->printf("%c",*((char *)&buf[0x17]+i+1));
-      console_->printf("%c",*((char *)&buf[0x17]+i));
+    if(HasSlave){
+      Slave = new IDEDevice(this,1);
     }
+
     console_->printf("\n");
-    return;
+    return true;
 }
 
-bool IDEDriver::read(int lba, byte* buf) {
+unsigned int IDEDevice::device_;
+IDEDriver* IDEDevice::Bus;
+IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
+    char buf[256];
+    int i;
+    device_ = device;
+    Bus = bus;
+    Bus->senddevice(device_);
+    bus->sendcmd(IDE_CMD_ID,buf,256);
+    if(device == 0){
+      Bus->console_->printf("Master:\n");
+    }else if(device == 1){
+      Bus->console_->printf("Slave:\n");
+    }
+    Bus->console_->printf("Name: ");
+    for(i=0;i!=40;i++){
+      Bus->console_->printf("%c",buf[0x1b*2+i]);
+    }
+    Bus->console_->printf("\nVersion: ");
+    for(i=0;i!=8;i++){
+      Bus->console_->printf("%c",buf[0x17*2+i]);
+    }
+    Bus->console_->printf("\n\n");
+}
+
+IDEDevice::~IDEDevice(){
+}
+
+bool IDEDevice::read(int lba, byte* buf) {
     return true;
 }
 
 
-bool IDEDriver::write(int lba, byte* buf) {
+bool IDEDevice::write(int lba, byte* buf) {
     return true;
 }
+

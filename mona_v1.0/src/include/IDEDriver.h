@@ -6,25 +6,39 @@
 #ifndef _MONA_MIDEDRIVER_MJT
 #define _MONA_MIDEDRIVER_MJT
 
-/*!
-    Floppy Disk Controller class
-*/
-class IDEDriver : public DiskDriver {
-  public:
-    IDEDriver(VirtualConsole* console,unsigned int port,unsigned int drive);
-    ~IDEDriver();
 
+class IDEDevice : public DiskDriver {
   public:
     bool read(int lba, byte* buf);
     bool write(int lba, byte* buf);
-  
+    IDEDevice(class IDEDriver *bus,unsigned int device);
+    ~IDEDevice();
+    static class IDEDriver* Bus;
   private:
-    bool sendcmd(int cmd,short int *bfr,int bfrsize /* ignored */);
-    bool senddrive(int drive);
+    static unsigned int device_;
+};
+
+
+
+class IDEDriver {
+  public:
+    IDEDriver(VirtualConsole* console,unsigned int port);
+    ~IDEDriver();
+
+  public:
+    static IDEDevice* Master;
+    static IDEDevice* Slave;
+    static bool HasMaster;
+    static bool HasSlave;
+  
+  public:
+    bool sendcmd(int cmd,char *bfr,int bfrsize /* ignored */);
+    bool senddevice(int drive);
     bool waithdc(unsigned long timeout);
     bool waitdata(unsigned long timeout);
     bool waitready(unsigned long timeout);
-    void initilize();
+    bool initilize();
+    static VirtualConsole* console_;
   private:
     byte version_;
     static unsigned int control_;
@@ -38,12 +52,10 @@ class IDEDriver : public DiskDriver {
     static unsigned int head_;
     static unsigned int status2_;
     static unsigned int driveaddr_;
-    static unsigned int drive_;
     
     static byte results_[10];
     static int resultsLength_;
     static bool interrupt_;
-    static VirtualConsole* console_;
     static byte* dmabuff_;
 };
 

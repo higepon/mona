@@ -96,10 +96,16 @@ void startKernel(void) {
     }
     g_console->printf("\n");
 
+    /* IDE TEST routine */
     g_console->printf("IDE init...\n");
-    DiskDriver *d;
-    d = new IDEDriver(g_console,0x1f0,0);
-
+    IDEDriver *d0;
+    IDEDriver *d1;
+    g_console->printf("Primary...\n");
+    d0 = new IDEDriver(g_console,0x1f0);
+    g_console->printf("Secondry...\n");
+    d1 = new IDEDriver(g_console,0x170);
+    
+    /* ~IDE */
 
     g_console->printf("Hit any key to start [floppy read/write test]\n");
     disableTimer();
