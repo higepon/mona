@@ -1,17 +1,6 @@
 /*
-Copyright (c) 2004 bayside
+Copyright (c) 2004 Tino, bayside
 All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -25,76 +14,45 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_BAYGUI_H_INCLUDED_)
-#define _BAYGUI_H_INCLUDED_
+#ifndef __BAYGUI_BAYGUI_H__
+#define __BAYGUI_BAYGUI_H__
 
-// ==================================================
-// OS 定義部分
-// ==================================================
-//#define PEKOE 1
-#define MONA  1
-//#define OSASK 1
+#include "monapi.h"
+#include "monapi/Array.h"
+#include "monapi/syscall.h"
 
-// ==================================================
-// OS 依存ヘッダファイル
-// ==================================================
-#if defined(PEKOE)
-	#include "baygui.h"
-	#include "stdlib.h"
-	#include "stdint.h"
-	#include "stdio.h"
-	#include "string.h"
-	#include "fcntl.h"
-	#include "rpcss.h"
-	#include "sys/gbc.h"
-#elif defined(MONA)
-	#include <monapi.h>
-	#include <monapi/CString.h>
-	#include <monapi/messages.h>
-	#include <monalibc.h>
-#endif
+#include "monapi/messages.h"
 
-// ==================================================
-// BayGUI グローバルマクロ
-// ==================================================
-#define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
-#define inGetUInt32(b) (unsigned int)( (unsigned int)((b)[3])<<24 | (unsigned int)((b)[2])<<16 | (unsigned int)((b)[1])<<8 | (unsigned int)((b)[0]) )
-#define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
-
-// ==================================================
-// BayGUI グローバル関数
-// ==================================================
-void xstrncpy(char *dst, char *src, int len);
-void xitoa(int n, char *s);
-unsigned char *getByteArray(char *path);
-
-// ==================================================
-// BayGUI ヘッダファイル
-// ==================================================
 #include "baygui/messages.h"
-#include "baygui/resources.h"
+//#include "baygui/Encoding.h"
+//#include "baygui/String.h"
+//#include "baygui/Console.h"
 #include "baygui/Object.h"
 #include "baygui/String.h"
-#include "baygui/LinkedItem.h"
-#include "baygui/LinkedList.h"
-#include "baygui/Thread.h"
+#include "baygui/Pointer.h"
 #include "baygui/Event.h"
-#include "baygui/KeyEvent.h"
-#include "baygui/MouseEvent.h"
-#include "baygui/Rect.h"
-#include "baygui/Font.h"
-#include "baygui/FontMetrics.h"
-#include "baygui/Image.h"
+//#include "baygui/Math.h"
+#include "baygui/ArrayList.h"
+#include "baygui/Color.h"
 #include "baygui/Bitmap.h"
-#include "baygui/Icon.h"
+#include "baygui/Dimention.h"
+#include "baygui/Point.h"
+#include "baygui/Rect.h"
+//#include "baygui/Font.h"
+#include "baygui/FontMetrics.h"
 #include "baygui/Graphics.h"
+//#include "baygui/Message.h"
+//#include "baygui/Events.h"
+//#include "baygui/IMessageFilter.h"
+#include "baygui/Application.h"
 #include "baygui/Control.h"
-#include "baygui/ImeManager.h"
+//#include "baygui/ControlPaint.h"
 #include "baygui/Button.h"
-#include "baygui/Label.h"
-#include "baygui/ListBox.h"
-#include "baygui/TextField.h"
-#include "baygui/Container.h"
+//#include "baygui/Cursor.h"
 #include "baygui/Window.h"
+#include "baygui/Label.h"
+#include "baygui/Timer.h"
 
-#endif // _BAYGUI_H_INCLUDED_
+using namespace baygui;
+
+#endif  // __BAYGUI_BAYGUI_H__

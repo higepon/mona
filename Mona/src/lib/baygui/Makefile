@@ -4,14 +4,43 @@ TARGET       = $(LIB_STATIC)
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = $(LIBDIR)/libbaygui-imp.a
 LIB_DYNAMIC  = BAYGUI.DLL
-LIB_DYNAMIC2 = BAYGUI.DL5
-TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC2)
+LIB_DYNAMIC5 = BAYGUI.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 endif
 
-SOURCES = Bitmap.cpp Button.cpp Control.cpp Container.cpp Event.cpp Font.cpp \
-FontMetrics.cpp Graphics.cpp Icon.cpp Image.cpp ImeManager.cpp KeyEvent.cpp \
-Label.cpp LinkedItem.cpp LinkedList.cpp ListBox.cpp MouseEvent.cpp Object.cpp Rect.cpp \
-String.cpp TextField.cpp Window.cpp
+#SOURCES = \
+#	./stub.cpp \
+#	Console.cpp \
+#	String.cpp \
+#	Bitmap.cpp \
+#	Font.cpp \
+#	FontMetrics.cpp \
+#	Graphics.cpp \
+#	Rectangle.cpp \
+#	Application.cpp \
+#	Button.cpp \
+#	Control.cpp \
+#	ControlPaint.cpp \
+#	Cursor.cpp \
+#	Window.cpp \
+#	Label.cpp \
+#	Timer.cpp \
+#	Encoding.cpp \
+#	PString.cpp
+
+SOURCES = \
+	./stub.cpp \
+	Application.cpp \
+	Bitmap.cpp \
+	Button.cpp \
+	Control.cpp \
+	FontMetrics.cpp \
+	Graphics.cpp \
+	Label.cpp \
+	Rect.cpp \
+	String.cpp \
+	Timer.cpp \
+	Window.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
@@ -33,8 +62,7 @@ $(LIB_DYNAMIC): $(OBJECTS)
 	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
 	$(STRIP) $@
 
-$(LIB_DYNAMIC2): $(LIB_DYNAMIC)
-#	bzip2 -c $(LIB_DYNAMIC) > $@
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
 	$(MONADIR)/bin/bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
 endif
 
@@ -56,7 +84,7 @@ depend:
 install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
 	mkdir -p $(MONADIR)/bin/root/LIBS
-	$(INSTALL) $(LIB_DYNAMIC2) $(MONADIR)/bin/root/LIBS
+	$(INSTALL) $(LIB_DYNAMIC5) $(MONADIR)/bin/root/LIBS
 endif
 
 include dependencies
