@@ -183,11 +183,19 @@ static void StdoutMessageLoop()
                 }
                 else
                 {
+#if 1  /// temporary
+                    char buf[128];
+                    sprintf(buf, "?%d?", msg.from);
+                    syscall_print(buf);
+#endif
                     if (monapi_cmessage_send_receive_args(&msg_queue, NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) != 0)
                     {
                         StdoutUngrab(grabs[size - 1]);
                         syscall_print(msg.str);
                     }
+#if 1  /// temporary
+                    syscall_print("?E?");
+#endif
                 }
                 monapi_cmessage_reply(&msg);
                 break;

@@ -6,6 +6,8 @@
 
         * src/servers/shell/main.cpp: デバッグコード追加 (/// temporary)
 
+        * src/servers/elf/main.cpp: デバッグコード追加 (/// temporary)
+
 2004-05-19  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/ihandlers.cpp (keyStrokeHandler): キー割り込みの際にCOMポートにスレッドダンプを書き出すように変更
