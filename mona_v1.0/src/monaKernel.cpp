@@ -97,6 +97,8 @@ void startKernel(void) {
 
 
     gMFDCDriver = new MFDCDriver(console);
+
+    kthread_init();
     while (true);
 
     /* test code is here */

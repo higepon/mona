@@ -16,6 +16,7 @@ BITS 32
 [global _arch_timerhandler]
 [global _arch_keystrokehandler]
 [global _arch_dummyhandler]
+[global _arch_kthread_switch]
 
 [extern _MFDCHandler]
 [extern _timerHandler]
@@ -80,3 +81,20 @@ _arch_dummyhandler:
         call _dummyHandler
         popad
         iretd
+
+;;; kthread switch to next
+_arch_kthread_switch:
+        mov ebx, [_current]
+        mov eax, [ebx + 12]     ; restore eax
+        mov ecx, [ebx + 16]     ; restore ecx
+        mov edx, [ebx + 20]     ; restore edx
+        mov esp, [ebx + 28]     ; restore esp
+        mov ebp, [ebx + 32]     ; restore ebp
+        mov esi, [ebx + 36]     ; restore esi
+        mov edi, [ebx + 40]     ; restore edi
+        push dword [ebx + 8]    ; push eflags
+        push dword [ebx + 4]    ; push cs
+        push dword [ebx    ]    ; pusc eip
+        push dword [ebx + 24]
+        pop  ebx                ; restore ebp
+        iretd                   ; switch to next

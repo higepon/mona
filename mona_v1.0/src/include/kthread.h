@@ -33,12 +33,23 @@ typedef struct Kthread {
     Kthread* next;
 };
 
+/*! struct for all thread information */
+typedef struct KthreadInfo {
+    dword threadNum;
+    dword tick;
+};
+
 extern Kthread* current;
 
 
 void kthread_init();
 void kthread_tick();
-void kethread_add_to_run(Kthread* thread);
-
-
+void kthread_add_to_run(Kthread* thread);
+void kthread_remove_from_run(Kthread* thread);
+void kthread_yield();
+Kthread* kthread_create_thread(dword stack, void (*f)());
+dword kthread_allocate_stack();
+void kthread_idle();
+void kthread_schedule();
+void kthread_switch();
 #endif

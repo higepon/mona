@@ -96,7 +96,6 @@ MFDCDriver::MFDCDriver(VirtualConsole* console) {
     console_ = console;
 
     initilize();
-    while (true);
 }
 
 /*!

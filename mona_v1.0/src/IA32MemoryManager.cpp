@@ -134,7 +134,7 @@ IA32MemoryManager::~IA32MemoryManager() {
     \date   create:2002/08/10 update:2003/01/03
 */
 //IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x15000), MEMORY_END(0x150000) {
-IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x150000), MEMORY_END(0x1500000) {
+IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x150000), MEMORY_END(0x650000) {
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
     freeEntry_->size = MEMORY_END - MEMORY_START;

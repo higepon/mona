@@ -19,6 +19,7 @@ extern "C" void arch_fdchandler(void);
 extern "C" void arch_timerhandler(void);
 extern "C" void arch_keystrokehandler(void);
 extern "C" void arch_dummyhandler(void);
+extern "C" void arch_kthread_switch(void);
 
 extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
