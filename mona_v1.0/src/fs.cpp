@@ -183,7 +183,7 @@ bool FSOperation::createFile(char* path)
         return false;
     }
 
-    entry = p->newFile((byte*)path+cursor, 0);
+    entry = p->newFile((byte*)path+cursor, 1);
     if (-1 == entry)
     {
         this->errorNo = FS_FILE_CREATE_ERROR;

@@ -1,10 +1,10 @@
 #include <userlib.h>
 
-int MonaMain(List<char*>* pekoe)
-{
-    printf("Hello World\n");
-    return 0;
-}
+// int MonaMain(List<char*>* pekoe)
+// {
+//     printf("Hello World\n");
+//     return 0;
+// }
 
 // Mutexを使ってみたり
 // static Mutex* mutex;
@@ -43,63 +43,63 @@ int MonaMain(List<char*>* pekoe)
 // }
 
 // 共有メモリなやつ
-// int MonaMain(List<char*>* pekoe)
-// {
-//     /* インスタンス取得 */
-//     MemoryMap* mm = MemoryMap::getInstance();
+int MonaMain(List<char*>* pekoe)
+{
+    /* インスタンス取得 */
+    MemoryMap* mm = MemoryMap::getInstance();
 
-//     /* 5000byteの共有メモリ(グローバル)を作成 実際のサイズは8192byteになる */
-//     dword id1 = mm->create(5000);
+    /* 5000byteの共有メモリ(グローバル)を作成 実際のサイズは8192byteになる */
+    dword id1 = mm->create(5000);
 
-//     if (id1 == 0)
-//     {
-//         printf("map create error = %x", mm->getLastError());
-//         exit(1);
-//     }
+    if (id1 == 0)
+    {
+        printf("map create error = %x", mm->getLastError());
+        exit(1);
+    }
 
-//     printf("shared size = %d", mm->getSize(id1));
+    printf("shared size = %d", mm->getSize(id1));
 
-//     /* 作成した共有メモリを自分の空間に貼り付ける */
-//     byte* p = mm->map(id1);
-//     if (p == NULL)
-//     {
-//         printf("map error\n");
-//         exit(1);
-//     }
+    /* 作成した共有メモリを自分の空間に貼り付ける */
+    byte* p = mm->map(id1);
+    if (p == NULL)
+    {
+        printf("map error\n");
+        exit(1);
+    }
 
-//     /* 共有エリアに書き込み */
-//     strcpy((char*)p, "data share top hello!!\n");
+    /* 共有エリアに書き込み */
+    strcpy((char*)p, "data share top hello!!\n");
 
-//     /* ためしにServerにid1を送ってみよう */
-//     dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
-//     if (targetID == 0xFFFFFFFF)
-//     {
-//         printf("hello:Server not found\n");
-//         exit(1);
-//     }
+    /* ためしにServerにid1を送ってみよう */
+    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("hello:Server not found\n");
+        exit(1);
+    }
 
-//     MessageInfo info;
-//     Message::create(&info, MSG_MEMORY_MAP_ID, id1, 0, 0, NULL);
+    MessageInfo info;
+    Message::create(&info, MSG_MEMORY_MAP_ID, id1, 0, 0, NULL);
 
-//     /* send */
-//     if (Message::send(targetID, &info)) {
-//         printf("hello send error\n");
-//     }
+    /* send */
+    if (Message::send(targetID, &info)) {
+        printf("hello send error\n");
+    }
 
-//     /* 共有メモリを自分の空間からはずす */
-//     //mm->unmap(id1);
+    /* 共有メモリを自分の空間からはずす */
+    //mm->unmap(id1);
 
-//     /* ついでにファイルでも作るか */
-//     FileOutputStream fos("HELLO.LOG", false);
+    /* ついでにファイルでも作るか */
+    FileOutputStream fos("HELLO.LOG", true);
 
-//     printf("open=%x\n", fos.open());
+    printf("open=%x\n", fos.open());
 
-//     char str[] = "Hello! \n Mona can create file and write\n";
-//     printf("write%x\n", fos.write((byte*)str, sizeof(str)));
-//     printf("write%x\n", fos.write((byte*)str, sizeof(str)));
-//     fos.close();
-//     for (;;);
-// }
+    char str[] = "Hello! \n Mona can create file and write\n";
+    printf("write%x\n", fos.write((byte*)str, sizeof(str)));
+    printf("write%x\n", fos.write((byte*)str, sizeof(str)));
+    fos.close();
+    for (;;);
+}
 
 
 // ファイルの中身をはくやつ
