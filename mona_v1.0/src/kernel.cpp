@@ -35,7 +35,7 @@
 #include<pic.h>
 #include<rtc.h>
 
-char* version = "Mona develop beta 0.05a $Date$";
+char* version = "Mona develop beta 0.06a $Date$";
 
 /*!
     \brief  mona kernel start at this point
