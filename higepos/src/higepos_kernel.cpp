@@ -35,8 +35,11 @@ void startKernel(void) {
     _sysClearScreen();
     _sysPrintln("------------------------------------------");
     _sysPrintln("      Higepos Kernel starting             ");
-    _sysPrintln("      Powered by 2ch                      ");
+    _sysPrintln("        ________ A A                      ");
+    _sysPrintln("      ~/ ______( `D`) < Powerd by 2ch     ");
+    _sysPrintln("        UU       U U                      ");
     _sysPrintln("------------------------------------------");
+
 
     _sysSetIdt();
     _sysInitIo();
