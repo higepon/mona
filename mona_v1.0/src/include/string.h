@@ -4,7 +4,7 @@
 
     standard library
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002, 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon

@@ -17,7 +17,6 @@
 void hvectorTester();
 void operatorTester();
 void typeTester();
-void floppyTester();
 void processTester();
 void process1Tester();
 void process2Tester();

@@ -39,7 +39,7 @@ _arch_timerhandler:
         mov [_eip], eax
         mov eax, dword[esp + 36]
         mov [_cs], eax
-	mov ebx, [_current]
+        mov ebx, [_current]
         mov [ebx + 4], eax
         call _dummyHandler
         popad

@@ -226,40 +226,11 @@ void GraphicalConsole::newLine() {
     scroll up
 
     \author  HigePon
-    \date    create:2003/02/22 update:
+    \date    create:2003/02/22 update:2003/03/01
 */
 void GraphicalConsole::scrollUp() {
 
-    int curx = pos_x;
-    int cury = pos_y;
-
-//      for (int x = 0; x < GP_MAX_WIDTH; x++) {
-
-//          for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
-
-//              vram_[x][y] = vram_[x][y + 1];
-//          }
-//      }
-
-//      for (int x = 0; x < GP_MAX_WIDTH; x++) {
-
-//          vram_[x][GP_MAX_HEIGHT - 1] = ' ';
-//      }
-
-//      for (int y = 0; y < GP_MAX_HEIGHT; y++) {
-
-//          for (int x = 0; x < GP_MAX_WIDTH; x++) {
-
-//              pos_x = x;
-//              pos_y = y;
-//              write_font(vram_[x][y], chcolor_, bgcolor_);
-//          }
-//      }
-
     scroll_down(16);
-
-    pos_x = curx;
-    pos_y = cury;
     return;
 }
 

@@ -94,7 +94,6 @@ void startKernel(void) {
 #if 0
     operatorTester();
     hvectorTester();
-    floppyTester();
     typeTester();
     STLTester();
 #endif

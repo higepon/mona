@@ -15,7 +15,6 @@
 #include<monaIo.h>
 #include<monaIdt.h>
 #include<monaOperator.h>
-#include<monaUtil.h>
 #include<monaTypes.h>
 #include<HVector.h>
 #include<monaTester.h>
@@ -55,40 +54,6 @@ void hvectorTester() {
     }
     console->printf("\n");
     delete(v);
-}
-
-/*!
-    \brief test code for operator new
-
-    test code for operator new
-
-    \author HigePon
-    \date   create:2002/11/11 update:2003/01/11
-*/
-void operatorTester() {
-
-    Point* point1 = new Point();
-    Point* point2 = new Point(6, -2);
-    Point* point3 = new Point(7, -100);
-    delete(point3);
-    console->printf("[Point() getY() = %d]\n", point1->getY());
-    console->printf("[Point(6, -2) getY() = %d]\n", point2->getY());
-    console->printf("[Point(7, -100) getY() = %d]\n", point3->getY());
-}
-
-/*!
-    \brief test code for monaTypes
-
-    test code for monaTypes
-
-    \author HigePon
-    \date   create:2002/11/20 update:2003/01/11
-*/
-void typeTester() {
-
-    console->printf("size of byte =%d\n", sizeof(byte));
-    console->printf("size of word =%d\n", sizeof(word));
-    console->printf("size of dword=%d\n", sizeof(dword));
 }
 
 /*!

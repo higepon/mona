@@ -66,7 +66,6 @@ monaOperator.o: monaOperator.cpp include/IA32MemoryManager.h \
   include/monaOperator.h
 monaPureVirtual.o: monaPureVirtual.cpp include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h
-monaUtil.o: monaUtil.cpp include/monaUtil.h
 KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   include/monaTypes.h include/string.h include/monaVga.h stlport/queue \
   stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
@@ -87,11 +86,10 @@ KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   include/monaOperator.h
 monaTester.o: monaTester.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaIo.h include/monaIdt.h \
-  include/monaOperator.h include/monaUtil.h include/HVector.h \
-  include/monaTester.h include/ProcessManager.h include/monaKernel.h \
-  include/VirtualConsole.h include/IA32MemoryManager.h \
-  include/KeyBoardManager.h stlport/queue stlport/stl/_prolog.h \
-  stlport/stl/_config.h stlport/stl_user_config.h \
+  include/monaOperator.h include/HVector.h include/monaTester.h \
+  include/ProcessManager.h include/monaKernel.h include/VirtualConsole.h \
+  include/IA32MemoryManager.h include/KeyBoardManager.h stlport/queue \
+  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
   stlport/config/stlcomp.h stlport/config/stl_gcc.h \
   stlport/config/stl_confix.h stlport/stl/_queue.h stlport/stl/_deque.h \
