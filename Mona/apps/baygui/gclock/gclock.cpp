@@ -53,10 +53,11 @@ public:
 			sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d",
 				date->year(), date->month(), date->day(), day[date->dayofweek() % 7],
 				ampm[date->hour() / 12], date->hour() % 12, date->min(), date->sec());
-			if (iconified == false)
+			if (iconified == false) {
 				label->setText(time);
-			setTimer(1000);
-		} else if (event->type == FOCUS_IN) {
+				setTimer(1000);
+			}
+		} else if (event->type == FOCUS_IN || event->type == DEICONIFIED) {
 			setTimer(10);
 		}
 	}

@@ -35,6 +35,7 @@ Control::Control() {
 	_rect = new Rect(0,0,0,0);
 	_g = new Graphics();
 	_focusEvent = new Event(FOCUS_IN, this);
+	_iconEvent = new Event(ICONIFIED, this);
 	backColor = 0xC8C8C8;
 	foreColor = 0x000000;
 	font = new Font();
@@ -49,6 +50,7 @@ Control::~Control() {
 	delete(_rect);
 	delete(_g);
 	delete(_focusEvent);
+	delete(_iconEvent);
 	delete(font);
 }
 
@@ -128,6 +130,14 @@ Rect *Control::getRect()
 }
 
 /**
+ 描画領域を得る
+ */
+Graphics *Control::getGraphics()
+{
+	return _g;
+}
+
+/**
  親コンポーネントを得る
  @return 親コンポーネント
 */
@@ -169,21 +179,7 @@ void Control::setEnabled(bool enabled)
  */
 void Control::setFocused(bool focused)
 {
-	if (this->focused == true &&
-		focused == false)
-	{
-		//printf("FOCUS_OUT %d\n", threadID);
-		this->focused = focused;
-		_focusEvent->type = FOCUS_OUT;
-		postEvent(_focusEvent);
-	} else if (this->focused == false &&
-		focused == true)
-	{
-		//printf("FOCUS_IN %d\n", threadID);
-		this->focused = focused;
-		_focusEvent->type = FOCUS_IN;
-		postEvent(_focusEvent);
-	}
+	this->focused = focused;
 }
 
 /**
