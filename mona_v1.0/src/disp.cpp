@@ -133,15 +133,11 @@ void disp_kthread_info() {
 
          pos_x = 0, pos_y = 22;
 
-         g_console->printf("  ___/Í/Í____ -----kernel thread Information -----\n");
-         g_console->printf(" /__(");
-         g_console->setCHColor(GP_PINK);
-         g_console->printf("*");
-         g_console->setCHColor(GP_WHITE);
-         g_console->printf("ß°ß)_ /|thread total number : %d[threads]\n", g_kthreadInfo.threadNum);
-         g_console->printf("|    U~~U  | |System total tick   : %d[ticks]\n", g_kthreadInfo.tick);
-         g_console->printf("|    Mona  | |thread yield        : %d[times]\n", g_kthreadInfo.yield);
-         g_console->printf("|__________|/ [idle] %d%%         : [kernel] %d%% \n"
+         g_console->printf("   *  __/\x18/\x18____   *    -----kernel thread Information -----\n");
+         g_console->printf("*    /_(*ß°ß)_ /\x18    *  thread total number : %d[threads]\n", g_kthreadInfo.threadNum);
+         g_console->printf("  * /___U__U_/|\x18/ *     System total tick   : %d[ticks]\n", g_kthreadInfo.tick);
+         g_console->printf(" *   |________|/    *   thread yield        : %d[times]\n", g_kthreadInfo.yield);
+         g_console->printf("                        [idle] %d%%          : [kernel] %d%% \n"
                            , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
                            , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
 
