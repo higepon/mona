@@ -53,27 +53,27 @@ Kukuri::Kukuri()
   tmpo = 0;
   nowPix = 0;
   
-  px = 0; py = 0;   // x‘•ª, y‘•ª
-  d =  2;           // •ûŒü
-  r = 90;           // Šp“x
-  t_num =  0;       // ‰ñ“]‚ÌXPM ‚Ì‡”Ô (turning_number)
-                    // ‹y‚Ñ turn(),byebye(),wow()‚Å‚ÌŒo‰ßƒJƒEƒ“ƒg
-  distance = 0;     // ƒ}ƒEƒX‚Æƒ|ƒCƒ“ƒ^‚Ì‹——£
-  s_pixmap = 0;     // Q‚Ä‚é‚Æ‚«‚Ì‰æ‘œ‚Ì”Ô†
-  n_state = 1;      // •’Ê‚Ìó‘Ô (normal_state)
-  a_state = 0;      // ©“®‚Ìó‘Ô (auto_state)
-  w_num = 0;        // •à‚­‚Æ‚«‚ÌXPMŒvZ—p (walking_number)
-  a_t_num = 0;      // ‰ñ“]‚ÌŒãŒo‰ß‚µ‚½•à”(ƒJƒEƒ“ƒg)
+  px = 0; py = 0;   // xå¢—åˆ†, yå¢—åˆ†
+  d =  2;           // æ–¹å‘
+  r = 90;           // è§’åº¦
+  t_num =  0;       // å›è»¢æ™‚ã®XPM ã®é †ç•ª (turning_number)
+                    // åŠã³ turn(),byebye(),wow()ã§ã®çµŒéã‚«ã‚¦ãƒ³ãƒˆ
+  distance = 0;     // ãƒã‚¦ã‚¹ã¨ãƒã‚¤ãƒ³ã‚¿ã®è·é›¢
+  s_pixmap = 0;     // å¯ã¦ã‚‹ã¨ãã®ç”»åƒã®ç•ªå·
+  n_state = 1;      // æ™®é€šæ™‚ã®çŠ¶æ…‹ (normal_state)
+  a_state = 0;      // è‡ªå‹•æ™‚ã®çŠ¶æ…‹ (auto_state)
+  w_num = 0;        // æ­©ãã¨ãã®XPMè¨ˆç®—ç”¨ (walking_number)
+  a_t_num = 0;      // å›è»¢ã®å¾ŒçµŒéã—ãŸæ­©æ•°(ã‚«ã‚¦ãƒ³ãƒˆ)
                     //      (number_after_turning)
-  a_t_dir = 0;      // ‰ñ“]Œã‚Ç‚¿‚ç‚É‚¸‚ê‚é‚©
+  a_t_dir = 0;      // å›è»¢å¾Œã©ã¡ã‚‰ã«ãšã‚Œã‚‹ã‹
                     //      (direction_after_turning)
-  a_t_dir2= 0;      // ã‚É“¯‚¶
-  s_interval = 0;   // –°‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg (sleep_interval)
-  s_count = 0;      // –°‚Á‚Ä‚©‚ç‚ÌƒJƒEƒ“ƒg (sleep_count)
-  a_flag = true;    // ©“®ƒ‚[ƒh‚Å•ûŒü“]Š·‚·‚é‚©(©“®ƒ‚[ƒh’†)
-                    // ©“®ƒ‚[ƒh‚Å‚ ‚é‚©‚Ç‚¤‚©(¸”sì¬’†)
+  a_t_dir2= 0;      // ä¸Šã«åŒã˜
+  s_interval = 0;   // çœ ã‚‹ã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆ (sleep_interval)
+  s_count = 0;      // çœ ã£ã¦ã‹ã‚‰ã®ã‚«ã‚¦ãƒ³ãƒˆ (sleep_count)
+  a_flag = true;    // è‡ªå‹•ãƒ¢ãƒ¼ãƒ‰ã§æ–¹å‘è»¢æ›ã™ã‚‹ã‹(è‡ªå‹•ãƒ¢ãƒ¼ãƒ‰ä¸­)
+                    // è‡ªå‹•ãƒ¢ãƒ¼ãƒ‰ã§ã‚ã‚‹ã‹ã©ã†ã‹(å¤±æ•—ä½œæˆä¸­)
                     //      (auto_flag)
-  th_num = 0;       // l‚¦’†‚Ì XPM ”Ô† (thinking_number)
+  th_num = 0;       // è€ƒãˆä¸­ã® XPM ç•ªå· (thinking_number)
   
   MonAPI::Date date;
   date.refresh();
@@ -88,7 +88,7 @@ Kukuri::Kukuri()
     (scr->getHeight() - KUKURI_HEIGHT) / 2));
   
   this->set_TransparencyKey(KUKURI_NONE);
-  this->set_Text("ƒNƒNƒŠ—l");
+  this->set_Text("ã‚¯ã‚¯ãƒªæ§˜");
   
   this->timer = new Timer();
   this->timer->set_Interval(100);
@@ -99,7 +99,7 @@ Kukuri::Kukuri()
 
 
 /**
-  ‰E‚©‚çŒv‰ñ‚è‚É‚®‚é‚Á‚Æ‰ñ‚é‡”Ô
+  å³ã‹ã‚‰æ™‚è¨ˆå›ã‚Šã«ãã‚‹ã£ã¨å›ã‚‹é †ç•ª
 */
 
 void Kukuri::setBitmaps()
@@ -117,59 +117,59 @@ void Kukuri::setBitmaps()
     }
   }
   
-  // •à‚¢‚Ä‚¢‚é‚Æ‚«‚Ì‰æ‘œ
-  kuPix[ 0] = kukuri_r  ;  // ‰E   1
-  kuPix[ 1] = kukuri_fr ;  // ‰E‰º 1
-  kuPix[ 2] = kukuri_f  ;  // @‰º 1
-  kuPix[ 6] = kukuri_b  ;  // @ã 1
-  kuPix[ 7] = kukuri_br ;  // ‰Eã 1
-  kuPix[ 8] = kukuri_r2 ;  // ‰E   2
-  kuPix[ 9] = kukuri_fr2;  // ‰E‰º 2
-  kuPix[10] = kukuri_f2 ;  // @‰º 2
-  kuPix[14] = kukuri_b2 ;  // @ã 2
-  kuPix[15] = kukuri_br2;  // ‰Eã 2
-  kuPix[24] = kukuri_r3 ;  // ‰E   3
-  kuPix[25] = kukuri_fr3;  // ‰E‰º 3
-  kuPix[31] = kukuri_br3;  // ‰Eã 3
-  kuPix[ 3] = kuPix[ 1] + MIRROR; // ¶‰º 1
-  kuPix[ 4] = kuPix[ 0] + MIRROR; // ¶   1
-  kuPix[ 5] = kuPix[ 7] + MIRROR; // ¶ã 1
-  kuPix[11] = kuPix[ 9] + MIRROR; // ¶‰º 2
-  kuPix[12] = kuPix[ 8] + MIRROR; // ¶   2
-  kuPix[13] = kuPix[15] + MIRROR; // ¶ã 2
-  kuPix[26] = kuPix[10] + MIRROR; // @‰º 2
-  kuPix[27] = kuPix[25] + MIRROR; // ¶‰º 3
-  kuPix[28] = kuPix[24] + MIRROR; // ¶   3
-  kuPix[29] = kuPix[31] + MIRROR; // ¶ã 3
-  kuPix[30] = kuPix[14] + MIRROR; // @ã 2
+  // æ­©ã„ã¦ã„ã‚‹ã¨ãã®ç”»åƒ
+  kuPix[ 0] = kukuri_r  ;  // å³   1
+  kuPix[ 1] = kukuri_fr ;  // å³ä¸‹ 1
+  kuPix[ 2] = kukuri_f  ;  // ã€€ä¸‹ 1
+  kuPix[ 6] = kukuri_b  ;  // ã€€ä¸Š 1
+  kuPix[ 7] = kukuri_br ;  // å³ä¸Š 1
+  kuPix[ 8] = kukuri_r2 ;  // å³   2
+  kuPix[ 9] = kukuri_fr2;  // å³ä¸‹ 2
+  kuPix[10] = kukuri_f2 ;  // ã€€ä¸‹ 2
+  kuPix[14] = kukuri_b2 ;  // ã€€ä¸Š 2
+  kuPix[15] = kukuri_br2;  // å³ä¸Š 2
+  kuPix[24] = kukuri_r3 ;  // å³   3
+  kuPix[25] = kukuri_fr3;  // å³ä¸‹ 3
+  kuPix[31] = kukuri_br3;  // å³ä¸Š 3
+  kuPix[ 3] = kuPix[ 1] + MIRROR; // å·¦ä¸‹ 1
+  kuPix[ 4] = kuPix[ 0] + MIRROR; // å·¦   1
+  kuPix[ 5] = kuPix[ 7] + MIRROR; // å·¦ä¸Š 1
+  kuPix[11] = kuPix[ 9] + MIRROR; // å·¦ä¸‹ 2
+  kuPix[12] = kuPix[ 8] + MIRROR; // å·¦   2
+  kuPix[13] = kuPix[15] + MIRROR; // å·¦ä¸Š 2
+  kuPix[26] = kuPix[10] + MIRROR; // ã€€ä¸‹ 2
+  kuPix[27] = kuPix[25] + MIRROR; // å·¦ä¸‹ 3
+  kuPix[28] = kuPix[24] + MIRROR; // å·¦   3
+  kuPix[29] = kuPix[31] + MIRROR; // å·¦ä¸Š 3
+  kuPix[30] = kuPix[14] + MIRROR; // ã€€ä¸Š 2
   
-  kuTurn[ 0] = kukuri_turn_f ; // @‰º
-  kuTurn[ 4] = kukuri_turn_b ; // @ã
-  kuTurn[ 5] = kukuri_turn_br; // ‰Eã
-  kuTurn[ 6] = kukuri_turn_r ; // ‰E
-  kuTurn[ 7] = kukuri_turn_fr; // ‰E‰º
-  kuTurn[ 8] = kukuri_turn_f ; // @‰º
-  kuTurn[10] = kukuri_turn_r2; // ‰Eñ
-  kuTurn[ 1] = kuTurn[ 7] + MIRROR;   // ¶‰º
-  kuTurn[ 2] = kuTurn[ 6] + MIRROR;   // ¶
-  kuTurn[ 3] = kuTurn[ 5] + MIRROR;   // ¶ã
-  kuTurn[ 9] = kuTurn[10] + MIRROR;   // ¶ñ
+  kuTurn[ 0] = kukuri_turn_f ; // ã€€ä¸‹
+  kuTurn[ 4] = kukuri_turn_b ; // ã€€ä¸Š
+  kuTurn[ 5] = kukuri_turn_br; // å³ä¸Š
+  kuTurn[ 6] = kukuri_turn_r ; // å³
+  kuTurn[ 7] = kukuri_turn_fr; // å³ä¸‹
+  kuTurn[ 8] = kukuri_turn_f ; // ã€€ä¸‹
+  kuTurn[10] = kukuri_turn_r2; // å³æ–
+  kuTurn[ 1] = kuTurn[ 7] + MIRROR;   // å·¦ä¸‹
+  kuTurn[ 2] = kuTurn[ 6] + MIRROR;   // å·¦
+  kuTurn[ 3] = kuTurn[ 5] + MIRROR;   // å·¦ä¸Š
+  kuTurn[ 9] = kuTurn[10] + MIRROR;   // å·¦æ–
   
-  // ‚±‚Á‚­‚è
+  // ã“ã£ãã‚Š
   kuSleep[0] = kukuri_sl1; 
   kuSleep[1] = kukuri_sl2;
   
-  // ‚Î‚¢‚Î‚¢
+  // ã°ã„ã°ã„
   kuBye[0] = kukuri_bye_1;
   kuBye[1] = kukuri_bye_2;
   kuBye[2] = kukuri_bye_3;
   kuBye[3] = kukuri_bye_4;
   
-  // ƒƒbI
+  // ãƒ¯ãƒƒï¼
   kuWow[1] = kukuri_wow;
   kuWow[0] = kuWow[1] + MIRROR;
   
-  //’¾–Ù‚Í‹à
+  //æ²ˆé»™ã¯é‡‘
   kuThink[0] = kukuri_th1;
   kuThink[1] = kukuri_th2;
   kuThink[2] = kukuri_th3;
@@ -199,8 +199,8 @@ void Kukuri::Dispose()
 
 
 /**
-  ‚±‚ÌŠÖ”‚Í’¼ÚŒÄ‚ñ‚Å‚Í‚¢‚¯‚È‚¢B
-  •K‚¸Refresh()‚É‚æ‚èŠÔÚ“I‚ÉŒÄ‚Ô‚±‚ÆB
+  ã“ã®é–¢æ•°ã¯ç›´æ¥å‘¼ã‚“ã§ã¯ã„ã‘ãªã„ã€‚
+  å¿…ãšRefresh()ã«ã‚ˆã‚Šé–“æ¥çš„ã«å‘¼ã¶ã“ã¨ã€‚
 */
 
 void Kukuri::OnPaint()
@@ -210,7 +210,7 @@ void Kukuri::OnPaint()
     0, 0 - KUKURI_HEIGHT * (this->nowPix % MIRROR));
   g->Dispose();
   
-  // Å‘O–Ê‚ÉˆÚ“®
+  // æœ€å‰é¢ã«ç§»å‹•
   MonAPI::Message::send(__gui_server, MSG_GUISERVER_WINDOWTOFRONTMOST, this->get_Handle());
 }
 
@@ -242,7 +242,7 @@ void Kukuri::OnNCMouseUp(_P<MouseEventArgs> e)
 
 
 /**
-  ƒ^ƒCƒ}[
+  ã‚¿ã‚¤ãƒãƒ¼
 */
 
 void Kukuri::timer_Tick(_P<Object> sender, _P<EventArgs> e)
@@ -254,32 +254,32 @@ void Kukuri::timer_Tick(_P<Object> sender, _P<EventArgs> e)
   this->count = 2;
   
   switch(this->n_state){
-  case 1:  // •’Ê‚Ì
+  case 1:  // æ™®é€šã®æ™‚
     this->normal();
     break;
-  case 2:  // ‚®‚¤‚®‚¤B
+  case 2:  // ãã†ãã†ã€‚
     this->sleeping();
     break;
-  case 3:  // ‚­‚é‚­‚éB
-  case 4:  // ƒƒjƒ…[•ÒW
-  case 5:  // About•\¦
+  case 3:  // ãã‚‹ãã‚‹ã€‚
+  case 4:  // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç·¨é›†
+  case 5:  // Aboutè¡¨ç¤º
     count = 1;
     this->turn();
     break;
-  case 7:  // ¸”s¶¬
+  case 7:  // å¤±æ•—ç”Ÿæˆ
     this->turn();
     break;
-  case 6:  // ‚Î‚¢‚Î‚¢
+  case 6:  // ã°ã„ã°ã„
     count = 4;
     this->byebye();
     break;
-  case 8:  // ‚Ñ‚Á‚­‚è
+  case 8:  // ã³ã£ãã‚Š
     this->wow();
     break;
-  case 9:  // Ÿèƒ‚[ƒh
+  case 9:  // å‹æ‰‹ãƒ¢ãƒ¼ãƒ‰
     //this->self();
     break;
-  default: // ‰ñ”ğB—‚Æ‚·B
+  default: // å›é¿ã€‚è½ã¨ã™ã€‚
     this->Hide();
     Application::Exit();
     return;
@@ -288,30 +288,30 @@ void Kukuri::timer_Tick(_P<Object> sender, _P<EventArgs> e)
 
 
 /**
-  ’Êí‚Ìó‘Ô(’Ç‚Á‚©‚¯‚é)
+  é€šå¸¸ã®çŠ¶æ…‹(è¿½ã£ã‹ã‘ã‚‹)
 */
 
 void Kukuri::normal()
 {
-  /** ŒÃ‚¢•ûŒü */
+  /** å¤ã„æ–¹å‘ */
   int old_d = 0;
   int w_tmp = 0;
   
   Point mp = Cursor::get_Position();
   this->calculation(mp.X, mp.Y);
   
-  if(distance > 16){    // ‹ß‚·‚¬‚é‚Æ‚«‚ÍŒü‚«‚ğ•Ï‚¦‚È‚¢
-    old_d = d;          //360“x‚ğ8“™•ª‚·‚é‚Æ45“x‚È‚Ì‚ÅA
-    d = int((r+22)/45); //22.5“x‚©‚ç45“x‚¸‚Â‚ÅŒü‚«‚ğŒˆ‚ß‚éB
+  if(distance > 16){    // è¿‘ã™ãã‚‹ã¨ãã¯å‘ãã‚’å¤‰ãˆãªã„
+    old_d = d;          //360åº¦ã‚’8ç­‰åˆ†ã™ã‚‹ã¨45åº¦ãªã®ã§ã€
+    d = int((r+22)/45); //22.5åº¦ã‹ã‚‰45åº¦ãšã¤ã§å‘ãã‚’æ±ºã‚ã‚‹ã€‚
     if(d > 7) d -= 8;
   }
   
-  // w_num=0, 2 ‚Í‹C‚ğ•t‚¯B1 ‚Í‰E‘«, 3 ‚Í¶‘«‚ª‘OB
-  // 2 ‚Ì‚Æ‚«‚Í w_tmp = 0 ‚ğŠ|‚¯‚Äƒ`ƒƒƒ‰‚É‚·‚é
+  // w_num=0, 2 ã¯æ°—ã‚’ä»˜ã‘ã€‚1 ã¯å³è¶³, 3 ã¯å·¦è¶³ãŒå‰ã€‚
+  // 2 ã®ã¨ãã¯ w_tmp = 0 ã‚’æ›ã‘ã¦ãƒãƒ£ãƒ©ã«ã™ã‚‹
   if(w_num == 2) w_tmp = 0; else w_tmp = 1;
   nowPix = kuPix[d + (8 * w_num) * w_tmp];
   
-  // ‹——£‚ª70ˆÈã‚Ì‚¾‚¯“®‚©‚·
+  // è·é›¢ãŒ70ä»¥ä¸Šã®æ™‚ã ã‘å‹•ã‹ã™
   if(distance > 70){
     if(w_num == 3) w_num = 0; else w_num++;
     this->set_Location(Point((int)(this->get_X() + px), (int)(this->get_Y() + py)));
@@ -322,9 +322,9 @@ void Kukuri::normal()
 
 
 /**
-  ˆÊ’u‚ÌŒvZ
+  ä½ç½®ã®è¨ˆç®—
   
-  ‰æ‘œ‚Ì’†S‚©‚çŒvZ‚·‚é‚æ‚¤‚É•â³B
+  ç”»åƒã®ä¸­å¿ƒã‹ã‚‰è¨ˆç®—ã™ã‚‹ã‚ˆã†ã«è£œæ­£ã€‚
 */
 
 void Kukuri::calculation(int tmp_x, int tmp_y)
@@ -332,9 +332,17 @@ void Kukuri::calculation(int tmp_x, int tmp_y)
   double tx = tmp_x - (this->get_X() + KUKURI_WIDTH  / 2);
   double ty = tmp_y - (this->get_Y() + KUKURI_HEIGHT / 2);
   distance = sqrt(tx * tx + ty * ty);
-  /** Šp“xiƒ‰ƒWƒAƒ“j */
-  double rr = atan2(tx, ty);
+  /** è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰ */
+  double rr = 0;
   
+  if(tx == 0){  // ã‚¼ãƒ­ã§å‰²ã‚Œãªã„
+    if(ty > 0) rr = RAD(270);
+    else       rr = RAD( 90);
+  }else{
+    rr = atan(ty / tx);
+    if(tx < 0) rr += RAD(180);
+    if(rr < 0) rr += RAD(360);
+  }
   r = int(DEG(rr));
   
   px = IDOU * cos(rr);
@@ -343,23 +351,23 @@ void Kukuri::calculation(int tmp_x, int tmp_y)
 
 
 /**
-  ˆê‰ñ“]‚µ‚Ä‰¡‚É‚¸‚ê‚é
+  ä¸€å›è»¢ã—ã¦æ¨ªã«ãšã‚Œã‚‹
 */
 
 void Kukuri::turn()
 {
   int t = 0;
   
-  if(t_num < 9){  // ‰ñ“] Pixmap ‚Í9–‡
+  if(t_num < 9){  // å›è»¢ Pixmap ã¯9æš
     nowPix = kuTurn[t_num];
     t_num++;
     this->Refresh();
     return;
   }
   
-  if(a_t_num == 11){  // ˆÚ“®‚àI—¹,ñ‚à‚Â‚¢‚½‚ç
+  if(a_t_num == 11){  // ç§»å‹•ã‚‚çµ‚äº†,æ–ã‚‚ã¤ã„ãŸã‚‰
     t_num = a_t_num = 0;
-    switch(n_state){  // ‚±‚±‚©‚ç‚»‚ê‚¼‚êÀs
+    switch(n_state){  // ã“ã“ã‹ã‚‰ãã‚Œãã‚Œå®Ÿè¡Œ
     //case 4:  editMenu();n_state=1;break;
     //case 5:  about(0, 0);break;
     //case 7:  generate();          break;
@@ -368,8 +376,8 @@ void Kukuri::turn()
     }
     a_t_dir = 0;
     return;
-  }else if(a_t_num > 6){  // ˆÚ“®‚¾‚¯I—¹‚µ‚Ä‚½‚çñ‚ğ‚Â‚­
-    switch(a_t_num){  // Œ´n“I‚Èˆ—
+  }else if(a_t_num > 6){  // ç§»å‹•ã ã‘çµ‚äº†ã—ã¦ãŸã‚‰æ–ã‚’ã¤ã
+    switch(a_t_num){  // åŸå§‹çš„ãªå‡¦ç†
     case 7:
     case 10:
       if(a_t_dir2) t = 2; else t = 6;
@@ -385,11 +393,11 @@ void Kukuri::turn()
     }
     nowPix = kuTurn[t];
     a_t_num++;
-  }else{  // ‰¡‚É‚¸‚ê‚é
-    if(a_t_dir == 0){  // ‰‚ß‚Ä‚¾‚Á‚½‚çˆ—
-      a_t_dir= 1; a_t_dir2=1; // ¶Œü‚«‚Å‰EˆÚ“®
+  }else{  // æ¨ªã«ãšã‚Œã‚‹
+    if(a_t_dir == 0){  // åˆã‚ã¦ã ã£ãŸã‚‰å‡¦ç†
+      a_t_dir= 1; a_t_dir2=1; // å·¦å‘ãã§å³ç§»å‹•
     }
-    switch(a_t_num){  // Œ´n“I‚Èˆ—
+    switch(a_t_num){  // åŸå§‹çš„ãªå‡¦ç†
     case 0:
     case 4:
     case 2:
@@ -418,22 +426,22 @@ void Kukuri::turn()
 
 
 /**
-  ƒNƒNƒŠ—l‚Ë‚Ş‚Ë‚Ş
+  ã‚¯ã‚¯ãƒªæ§˜ã­ã‚€ã­ã‚€
 */
 
 void Kukuri::sleeping()
 {
-  // 10ƒJƒEƒ“ƒg‚Å‚±‚Á‚­‚è‚·‚é
+  // 10ã‚«ã‚¦ãƒ³ãƒˆã§ã“ã£ãã‚Šã™ã‚‹
   if(s_count != 10){
-    s_count++;  // ƒJƒEƒ“ƒg‚·‚é
+    s_count++;  // ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
     return;
   }
   
-  s_pixmap = !s_pixmap; // 0, 1 ‚Å Pixmap‚ğ“ü‚êŠ·‚¦
+  s_pixmap = !s_pixmap; // 0, 1 ã§ Pixmapã‚’å…¥ã‚Œæ›ãˆ
   nowPix = kuSleep[s_pixmap];
   s_count = 0;
   
-  // ‚à‚µ©“®ƒ‚[ƒh‚È‚ç‹N‚«‚é‚©‚Ç‚¤‚©”»’è
+  // ã‚‚ã—è‡ªå‹•ãƒ¢ãƒ¼ãƒ‰ãªã‚‰èµ·ãã‚‹ã‹ã©ã†ã‹åˆ¤å®š
   if(a_state == 3 && (int)(rand.nextDouble() * 10) == 0){
     n_state = 9;
     a_state = 0;
@@ -442,7 +450,7 @@ void Kukuri::sleeping()
 
 
 /**
-  ‚Î‚¢‚Î[‚¢
+  ã°ã„ã°ãƒ¼ã„
 */
 
 void Kukuri::byebye()
@@ -454,7 +462,7 @@ void Kukuri::byebye()
   }
   
   switch(t_num){
-  case 4:   // Œ´n“I‚É Pixmap‚ğŒˆ’è
+  case 4:   // åŸå§‹çš„ã« Pixmapã‚’æ±ºå®š
   case 6:
   case 8:
     nowPix = kuBye[2];
@@ -472,27 +480,27 @@ void Kukuri::byebye()
 
 
 /**
-  ‚Ñ‚Á‚­‚è
+  ã³ã£ãã‚Š
 */
 
 void Kukuri::wow()
 {
   int t = 0;
   
-  // turn() ‚Ì’†‚É“ü‚ê‚é‚ÆA
-  // turn() ‚ªI‚í‚Á‚½‚çŸ‚ªÀs‚³‚ê‚é‚Ì‚Å
-  // ‚Ñ‚Á‚­‚è‚ªI‚í‚Á‚Ä‚©‚ç ¸”s‚ª¶¬‚³‚ê‚Ä‚µ‚Ü‚¢
-  // “s‡‚ªˆ«‚¢‚Ì‚Å•Ê‚É‚µ‚Ä‚¢‚é
+  // turn() ã®ä¸­ã«å…¥ã‚Œã‚‹ã¨ã€
+  // turn() ãŒçµ‚ã‚ã£ãŸã‚‰æ¬¡ãŒå®Ÿè¡Œã•ã‚Œã‚‹ã®ã§
+  // ã³ã£ãã‚ŠãŒçµ‚ã‚ã£ã¦ã‹ã‚‰ å¤±æ•—ãŒç”Ÿæˆã•ã‚Œã¦ã—ã¾ã„
+  // éƒ½åˆãŒæ‚ªã„ã®ã§åˆ¥ã«ã—ã¦ã„ã‚‹
   
-  if(t_num < 13){  // ‚Ñ‚Á‚­‚è‚ÌƒJƒEƒ“ƒg’†
-    if(a_t_dir2) t = 0; else t = 1; // PixmapŒˆ’è
+  if(t_num < 13){  // ã³ã£ãã‚Šã®ã‚«ã‚¦ãƒ³ãƒˆä¸­
+    if(a_t_dir2) t = 0; else t = 1; // Pixmapæ±ºå®š
     nowPix = kuWow[t];
     t_num++;
-  }else{  // ƒJƒEƒ“ƒg‚ªI‚í‚Á‚½‚ç
+  }else{  // ã‚«ã‚¦ãƒ³ãƒˆãŒçµ‚ã‚ã£ãŸã‚‰
     nowPix = kuPix[d];
     t_num = 0;
     if(a_state == 2){
-      // ©“®ƒ‚[ƒh‚Å—ˆ‚½ê‡‚Ìˆ—
+      // è‡ªå‹•ãƒ¢ãƒ¼ãƒ‰ã§æ¥ãŸå ´åˆã®å‡¦ç†
       n_state = 9;
       a_state = 0;
     }else{

@@ -37,14 +37,14 @@
 
 #define KUKURI_WIDTH  32
 #define KUKURI_HEIGHT 48
-#define KUKURI_NONE   Color::FromArgb(142, 187, 138)  // “§‰ßF (DarkSeaGreen)
+#define KUKURI_NONE   Color::FromArgb(142, 187, 138)  // é€éè‰² (DarkSeaGreen)
 #define MIRROR 100
 
-#define PI       (atan(1) * 4)   // ‰~ü—¦
-#define RAD(d)   (d / 180 * PI)  // “x”¨ƒ‰ƒWƒAƒ“
-#define DEG(r)   (r * 180 / PI)  // ƒ‰ƒWƒAƒ“¨“x”
+#define PI       (atan(1) * 4)   // å††å‘¨ç‡
+#define RAD(d)   (d / 180 * PI)  // åº¦æ•°â†’ãƒ©ã‚¸ã‚¢ãƒ³
+#define DEG(r)   (r * 180 / PI)  // ãƒ©ã‚¸ã‚¢ãƒ³â†’åº¦æ•°
 
-#define IDOU    5       // ˆÚ“®—Ê
+#define IDOU    5       // ç§»å‹•é‡
 
 enum KukuriBitmaps
 {
@@ -81,7 +81,7 @@ enum KukuriBitmaps
 };
 
 /**
-  ƒNƒNƒŠ—l‚Ì‚¨p
+  ã‚¯ã‚¯ãƒªæ§˜ã®ãŠå§¿
 */
 
 class Kukuri: public System::Mona::Forms::Form
@@ -115,49 +115,49 @@ private:
   _P<System::Mona::Forms::Timer> timer;
   _P<System::Drawing::Bitmap> kukuri, kukuriMirror;
   int nowCount, count;
-  /** Šp“x */
+  /** è§’åº¦ */
   int r;
-  /** •ûŒü */
+  /** æ–¹å‘ */
   int d;
-  /** •’Ê‚Ìó‘Ô */
+  /** æ™®é€šæ™‚ã®çŠ¶æ…‹ */
   int n_state;
-  /** Ÿè‚É“®‚­‚Æ‚«‚Ìó‘Ô */
+  /** å‹æ‰‹ã«å‹•ãã¨ãã®çŠ¶æ…‹ */
   int a_state;
-  /** •à‚­‚Æ‚«‚ÌXPMŒvZ—p */
+  /** æ­©ãã¨ãã®XPMè¨ˆç®—ç”¨ */
   int w_num;
-  /** ‰ñ“]‚ÌŒãŒo‰ß‚µ‚½•à”(ƒJƒEƒ“ƒg) */
+  /** å›è»¢ã®å¾ŒçµŒéã—ãŸæ­©æ•°(ã‚«ã‚¦ãƒ³ãƒˆ) */
   int a_t_num;
-  /** ‰ñ“]Œã‚Ç‚¿‚ç‚É‚¸‚ê‚é‚© */
+  /** å›è»¢å¾Œã©ã¡ã‚‰ã«ãšã‚Œã‚‹ã‹ */
   int a_t_dir;
-  /** ‰ñ“]Œã‚Ç‚¿‚ç‚É‚¸‚ê‚½‚© */
+  /** å›è»¢å¾Œã©ã¡ã‚‰ã«ãšã‚ŒãŸã‹ */
   bool a_t_dir2;
-  /** ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚Æ‚Ì‹——£ */
+  /** ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã¨ã®è·é›¢ */
   double distance;
-  /** x‘•ª */
+  /** xå¢—åˆ† */
   double px;
-  /** y‘•ª */
+  /** yå¢—åˆ† */
   double py;
-  /** ©“®ˆÚ“®‚ÌˆÚ“®æxÀ•W */
+  /** è‡ªå‹•ç§»å‹•æ™‚ã®ç§»å‹•å…ˆxåº§æ¨™ */
   int auto_x;
-  /** ©“®ˆÚ“®‚ÌˆÚ“®æyÀ•W */
+  /** è‡ªå‹•ç§»å‹•æ™‚ã®ç§»å‹•å…ˆyåº§æ¨™ */
   int auto_y;
-  /** –°‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg */
+  /** çœ ã‚‹ã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆ */
   int s_interval;
-  /** ‰ñ“]‚ÌXPM‚Ì‡”Ô */
+  /** å›è»¢æ™‚ã®XPMã®é †ç•ª */
   int t_num;
   int tmpo;
-  /** Q‚Ä‚é‚Æ‚«‚Ì‰æ‘œ‚Ì”Ô† */
+  /** å¯ã¦ã‚‹ã¨ãã®ç”»åƒã®ç•ªå· */
   bool s_pixmap;
-  /** –°‚Á‚Ä‚©‚ç‚ÌƒJƒEƒ“ƒg */
+  /** çœ ã£ã¦ã‹ã‚‰ã®ã‚«ã‚¦ãƒ³ãƒˆ */
   int s_count;
-  /** ©“®ƒ‚[ƒhŠÖŒW */
+  /** è‡ªå‹•ãƒ¢ãƒ¼ãƒ‰é–¢ä¿‚ */
   bool a_flag;
-  /** l‚¦’†‚ÌXPM”Ô† */
+  /** è€ƒãˆä¸­ã®XPMç•ªå· */
   int th_num;
   int nowPix;
-  /** ƒNƒNƒŠ—l‚Ì‰æ‘œ */
+  /** ã‚¯ã‚¯ãƒªæ§˜ã®ç”»åƒ */
   int kuPix[32];
-  /** ‡–°’†‚Ì‰æ‘œ */
+  /** ç¡çœ ä¸­ã®ç”»åƒ */
   int kuSleep[2];
   int kuTurn[11];
   int kuBye[4];
