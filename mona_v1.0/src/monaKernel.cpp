@@ -51,8 +51,8 @@ void startKernel(void) {
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
 
-    _sysSetColor(BG_BLACK | CH_ORANGE);
-    _sys_printf("\nMona develop beta 0.01\n\n");
+    _sysSetColor(BG_MAROON | CH_BLUE);
+    _sys_printf("\nMona develop beta 0.01a\n\n");
     _sysSetColor(BG_BLACK | CH_SILVER);
 
     /* set interrept */

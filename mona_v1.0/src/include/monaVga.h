@@ -38,7 +38,7 @@
 #define CH_BLACK   0x00
 #define BG_WHITE   0xF0
 #define BG_YELLOW  0xE0
-#define BG_FUBGSIA 0xD0
+#define BG_FUCHSIA 0xD0
 #define BG_RED     0xC0
 #define BG_AQUA    0xB0
 #define BG_LIME    0xA0
