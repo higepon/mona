@@ -1,4 +1,7 @@
 2005-03-19  higepon  <higepon@users.sourceforge.jp>
+        
+        * Make変更完了。./configure, make depend, make, make installの手順は変わらないようにした。ただしmona.imgは最低限のものしか入れない。
+          ISOに収録したいものはMona/bin/iso/以下に入れてください。
 
         * Make変更前なので 一時タグ ref5をつけた。
 
