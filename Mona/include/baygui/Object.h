@@ -27,14 +27,16 @@ namespace baygui
 		int refCount;
 	
 	public:
-		virtual char* className() { return "System.Object"; }
+		virtual char* className() { return "baygui.Object"; }
 		
 		Object() : refCount(0) {}
 		
 		virtual ~Object() {}
-
+		
+		/** 参照カウントを得る */
 		inline int getRefCount() { return this->refCount; }
 		
+		/** 参照カウントのアドレスを得る */
 		inline int* getRefCountPtr() { return &this->refCount; }
 	};
 }

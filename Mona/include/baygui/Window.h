@@ -46,13 +46,13 @@ namespace baygui
 		String title;
 	
 	public:
-		virtual char* className() { return "System.Mona.Windows.Window"; }
+		virtual char* className() { return "baygui.Window"; }
 		
 		Window();
 		
 		virtual ~Window();
 		
-		/** 部品を作成したあとに呼ぶ */
+		/** 初めて表示開始されたときに呼ばれる */
 		virtual void onStart();
 		
 		/** 部品が破棄されるときに呼ばれる */

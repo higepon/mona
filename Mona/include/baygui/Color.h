@@ -26,12 +26,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // システム標準16色に準拠
 
 #define COLOR_BLACK     0xff000000
-//#define COLOR_MAROON  0xff800000
-//#define COLOR_GREEN   0xff008000
-//#define COLOR_OLIVE   0xff808000
-//#define COLOR_NAVY    0xff000080
-//#define COLOR_PURPLE  0xff800080
-//#define COLOR_TEAL    0xff008080
+#define COLOR_MAROON    0xff800000
+#define COLOR_GREEN     0xff008000
+#define COLOR_OLIVE     0xff808000
+#define COLOR_NAVY      0xff000080
+#define COLOR_PURPLE    0xff800080
+#define COLOR_TEAL      0xff008080
 #define COLOR_LIGHTGRAY 0xffC0C0C0
 #define COLOR_GRAY      0xff808080
 #define COLOR_RED       0xffff0000

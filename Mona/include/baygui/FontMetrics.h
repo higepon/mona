@@ -30,17 +30,10 @@ namespace baygui
 		/** フォントオフセットリスト */
 		int *offsetList;
 
-	protected:
-		FontMetrics::FontMetrics();
-
 	public:
-		/** インスタンスを得る */
-		static FontMetrics *getFontMetrics()
-		{
-			if (instance == NULL)
-				instance = new FontMetrics();
-			return instance;
-		}
+		virtual char* className() { return "baygui.FontMetrics"; }
+		
+		FontMetrics::FontMetrics();
 		
 		virtual FontMetrics::~FontMetrics();
 		

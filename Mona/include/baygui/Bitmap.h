@@ -37,7 +37,7 @@ namespace baygui
 		guiserver_bitmap* _object;
 	
 	public:
-		virtual char* className() { return "System.Drawing.Bitmap"; }
+		virtual char* className() { return "baygui.Bitmap"; }
 		
 		Bitmap(int width, int height);
 		
@@ -45,16 +45,20 @@ namespace baygui
 		
 		virtual ~Bitmap();
 		
+		/** ハンドルを得る */
 		inline unsigned int getHandle() {
 			return this->_object->Handle;
 		}
 		
+		/** バッファーをクリアする */
 		virtual void flush();
 		
+		/** 幅を得る */
 		inline int getWidth() {
 			return this->width;
 		}
 		
+		/** 高さを得る */
 		inline int getHeight() {
 			return this->height;
 		}

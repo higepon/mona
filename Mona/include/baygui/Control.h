@@ -44,7 +44,12 @@ namespace baygui
 		
 	public:
 		/** 画面中のどこをクリックしたかで変わる値 */
-		enum NCState { NCState_Client, NCState_None, NCState_TitleBar, NCState_CloseButton } ncState;
+		enum NCState {
+			NCState_Client,
+			NCState_None,
+			NCState_TitleBar,
+			NCState_CloseButton
+		} ncState;
 		
 	private:
 		/** 領域 */
@@ -145,36 +150,50 @@ namespace baygui
 			this->rect.Height = height;
 		}
 		
+		/** X座標を得る */
 		inline int getX() { return this->rect.X; }
 		
+		/** Y座標を得る */
 		inline int getY() { return this->rect.Y; }
 		
+		/** 幅を得る */
 		inline int getWidth() { return this->rect.Width; }
 		
+		/** 高さを得る */
 		inline int getHeight() { return this->rect.Height; }
 		
+		/** 位置を得る */
 		inline Point getLocation() { return this->rect.get_Location(); }
 		
+		/** 位置を設定する */
 		void setLocation(int x, int y);
 		
+		/** 大きさを得る */
 		inline Dimention getSize() { return this->rect.get_Size(); }
 		
+		/** 大きさを設定する */
 		inline void setSize(int width, int height) {
 			this->rect.Width = width;
 			this->rect.Height = height;
 		}
 		
+		/** 内部領域の大きさを得る */
+		Dimention getInnerSize();
+		
+		/** 内部領域の大きさを設定する */
 		void setInnerSize(int width, int height);
 		
+		/** 表示・非表示を得る */
 		inline bool getVisible() { return this->visible; }
 		
+		/** 表示・非表示を設定する */
 		void setVisible(bool v);
 		
+		/** フォーカスがあるかどうかを得る */
 		inline bool getFocused() { return this->focused; }
 		
+		/** フォーカスを設定する */
 		void setFocused(bool v);
-		
-		Dimention getInnerSize();
 		
 		/** 前景色を得る */
 		inline unsigned int getForeground() { return this->foreColor; }

@@ -33,13 +33,10 @@ namespace baygui
 		/** 内部描画領域 */
 		Rect clientRect;
 	
-	private:
-		Graphics(_P<Bitmap> image);
-	
 	public:
-		virtual char* className() { return "System.Drawing.Graphics"; }
+		virtual char* className() { return "baygui.Graphics"; }
 		
-		static _P<Graphics> getGraphics(_P<Bitmap> image);
+		Graphics(_P<Bitmap> image);
 		
 		virtual ~Graphics();
 		

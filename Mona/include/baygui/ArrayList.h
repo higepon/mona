@@ -32,7 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace baygui
 {
-	/** 汎用リスト (テンプレート) */
+	/** 汎用リスト (テンプレートクラス) */
 	template <class T> class ArrayList : public Object
 	{
 	protected:
@@ -46,6 +46,7 @@ namespace baygui
 		int capacity;
 	
 	private:
+		/** 初期化 */
 		inline void Initialize()
 		{
 			this->pointer  = new T[ArrayList::DefaultCapacity];
@@ -54,21 +55,23 @@ namespace baygui
 		}
 	
 	public:
-		virtual char* className() { return "System.Collections.ArrayList"; }
+		virtual char* className() { return "baygui.ArrayList"; }
 		
 		ArrayList() {
 			this->Initialize();
 		}
-	
+		
 		virtual ~ArrayList() {
 			delete [] this->pointer;
 		}
-	
+		
+		/** リストをクリアする */
 		void Clear() {
 			delete [] this->pointer;
 			this->Initialize();
 		}
 		
+		/** 指定された項目を追加する */
 		virtual void Add(T item)
 		{
 			if (this->count == this->capacity)
@@ -83,6 +86,7 @@ namespace baygui
 			this->count++;
 		}
 		
+		/** 指定された順番の項目を削除する */
 		virtual void RemoveAt(int index)
 		{
 			this->count--;
@@ -93,6 +97,7 @@ namespace baygui
 			this->pointer[this->count] = *(new T());
 		}
 		
+		/** 指定された項目を削除する */
 		virtual void Remove(T item)
 		{
 			int idx = this->IndexOf(item);
@@ -101,6 +106,7 @@ namespace baygui
 			this->RemoveAt(idx);
 		}
 		
+		/** 指定された項目が何番目に格納されているかを得る */
 		virtual int IndexOf(T item)
 		{
 			for (int i = 0; i < this->count; i++)
@@ -115,14 +121,17 @@ namespace baygui
 			return this->pointer;
 		}
 		
+		/** 参照カウントを得る */
 		inline int get_Count() const {
 			return this->count;
 		}
 		
+		/** 容量を得る */
 		inline int get_Capacity() const {
 			return this->capacity;
 		}
 		
+		/** 指定された順番の項目を得る */
 		inline T& get_Item(int index)
 		{
 	#ifdef DEBUG
