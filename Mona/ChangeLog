@@ -1,3 +1,9 @@
+2004-10-24  bayside  <bayside@users.sourceforge.jp>
+
+        * tools/t5lzma/Compress/LZMA_Alone/Makefile: msysでもcygwinでもビルドが通るように修正
+
+        * servers/baygui: ランチャーは殺せないように修正。アイコンをモナーに修正
+
 2004-10-23  bayside  <bayside@users.sourceforge.jp>
 
         * tools/t5lzma/Common/Vector.h: shadowさんのパッチ適用
