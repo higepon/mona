@@ -5,6 +5,7 @@ all:
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
+	@cd waba; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -13,6 +14,7 @@ install:
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
+	@cd waba; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -21,6 +23,7 @@ clean: touchdepend
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
+	@cd waba; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -29,6 +32,7 @@ depend: touchdepend
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
+	@cd waba; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -37,6 +41,7 @@ distclean:
 	rm -f noiz2bg/dependencies
 	rm -f fire/dependencies
 	rm -f launcher/dependencies
+	rm -f waba/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -45,3 +50,4 @@ touchdepend:
 	touch noiz2bg/dependencies
 	touch fire/dependencies
 	touch launcher/dependencies
+	touch waba/dependencies
