@@ -16,8 +16,6 @@ isOldVersion=`gcc --version|egrep '2\.9.*'`
 isMinGW32=`uname|egrep MINGW32`
 export OSTYPE="$(uname | cut -d _ -f 1 | tr [:upper:] [:lower:])"
 
-   cat Makefile.in > Makefile
-
 echo -n "OSTYPE: "
 # cygwin
 if test "$OSTYPE" = "cygwin" ; then
@@ -44,6 +42,8 @@ fi
 #   cp  env/linux3.x.env env/Makefile.inc
 #   echo "linux gcc3.x"
 #fi
+
+cp Makefile.in > Makefile
 
 echo ""
 echo "[How to build]"
