@@ -214,15 +214,13 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
 */
 char KeyBoardManager::getCharacter() {
 
-    return -1;
+      if (keyQueue_.empty()) return -1;
 
-//      if (keyQueue_.empty()) return -1;
+      KeyInfo info = keyQueue_.back();
+      keyQueue_.pop();
 
-//      KeyInfo info = keyQueue_.back();
-//      keyQueue_.pop();
+      if (info.modifiers & KEY_MODIFIER_UP) return -1;
+      if (info.keycode < 'a' && info.keycode > 'z') return -1;
 
-//      if (info.modifiers & KEY_MODIFIER_UP) return -1;
-//      if (info.keycode < 'a' && info.keycode > 'z') return -1;
-
-//      return (char)(info.keycode);
+      return (char)(info.keycode);
 }

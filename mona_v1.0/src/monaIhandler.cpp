@@ -128,7 +128,7 @@ void timerHandler() {
         iret();
     } else if (idx > 0xf000000) {
         idx = 1;
-    } else if (idx % 20 != 0) iret();
+    } else if (idx % 50 != 0) iret();
 
     /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
