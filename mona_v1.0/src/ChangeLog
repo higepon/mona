@@ -1,7 +1,7 @@
 2004-03-17  higepon  <higepon@users.sourceforge.jp>
 
         * syscalls.cpp : syscall_get_io()のバグ修正
-        
+
         * スレッドベースのメッセージングに変更
 
 2004-03-15  higepon  <higepon@users.sourceforge.jp>
