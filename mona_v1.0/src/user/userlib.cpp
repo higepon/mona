@@ -148,12 +148,10 @@ int syscall_receive(Message* message) {
 }
 
 void* malloc(unsigned long size) {
-
     return um.allocate(size);
 }
 
 void free(void * address) {
-
     um.free(address);
     return;
 }
@@ -167,7 +165,29 @@ void* operator new(size_t size) {
 }
 
 void operator delete(void* address) {
-
     um.free(address);
     return;
+}
+
+/*----------------------------------------------------------------------
+    Mutex
+----------------------------------------------------------------------*/
+Mutex::Mutex() {
+    mutex = new StMutex;
+}
+
+Mutex::~Mutex() {
+    delete mutex;
+}
+
+int Mutex::lock() {
+
+}
+
+int Mutex::unlock() {
+
+}
+
+int Mutex::tryLock() {
+
 }

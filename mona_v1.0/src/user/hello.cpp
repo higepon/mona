@@ -9,6 +9,8 @@ int main() {
 
     dword id;
 
+    Mutex* mutex = new Mutex();
+
     if (!(id = mthread_create((dword)listener))) {
         print("mthread create error\n");
         exit(-1);

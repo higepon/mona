@@ -55,6 +55,9 @@ class Mutex {
   public:
     Mutex();
     ~Mutex();
+    int lock();
+    int unlock();
+    int tryLock();
 
   public:
     inline StMutex* getStMutex() const {
