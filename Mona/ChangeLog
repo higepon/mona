@@ -1,9 +1,13 @@
+2004-12-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp (disableKeyboard): mouseのバグ修正
+
 2004-12-09  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones/AbstractMonic.h : #include <monapi/io.h> 追加
-        
+
         * src/servers/mones/mones.cpp: TCPバッファのメモリ確保バグ修正
-        
+
         * src/servers/mones/MoIcmp.cpp: テストコード追加
 
 2004-12-08  higepon  <higepon@users.sourceforge.jp>
