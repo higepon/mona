@@ -39,7 +39,9 @@ HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/higeUtil.h         \
              ${INCLUDE}/Base.h             \
              ${INCLUDE}/Sub.h              \
-             ${INCLUDE}/Vector.h
+             ${INCLUDE}/Vector.h           \
+             ${INCLUDE}/higepostypes.h
+
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higepos_kernel.o   \
              ${BIN}/vga.o              \

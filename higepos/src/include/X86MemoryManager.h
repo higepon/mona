@@ -14,6 +14,8 @@
 #ifndef _HIGEPOS_X86MEMORYMANAGER_
 #define _HIGEPOS_X86MEMORYMANAGER_
 
+#include<higepostypes.h>
+
 /*!
     struct for memory management
     startAdress is the adress of allocated memory
@@ -35,7 +37,7 @@ class X86MemoryManager {
     ~X86MemoryManager();
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
-    const unsigned long MEMORY_START;
+    const H_SIZE_T MEMORY_START;
     const unsigned long MEMORY_END;
     unsigned long current_;
     struct memoryEntry* entry_;

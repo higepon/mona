@@ -19,6 +19,7 @@
 #include<higeOperator.h>
 #include<higeUtil.h>
 #include<Vector.h>
+#include<higepostypes.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -47,6 +48,11 @@ void startKernel(void) {
     _sysPrintlnInt(point1->getX());
     Point* point2 = new Point(5, 5);
     _sysPrintlnInt(point2->getX());
+
+    /* testing types */
+    _sysPrintlnInt(sizeof(H_SIZE_T));
+    _sysPrintlnInt(sizeof(H_BYTE));
+
 
     /* testing malloc */
     _sysPrintlnInt((int)malloc(sizeof(int)));
