@@ -51,6 +51,8 @@ void _sysClearScreen() {
 
     print string like printf
 
+    \param format use %d %s like printf
+
     \author HigePon
     \date   create:2002/09/08 update:
 */

@@ -49,8 +49,6 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
     /* getRealSize */
     H_SIZE_T realSize = this->getRealSize(size);
-    _sysPrint("real size is");
-    _sysPrintlnInt((int)realSize);
 
     /* search block in free list that has enough size for needed */
     struct memoryEntry* previous = (struct memoryEntry*)NULL;

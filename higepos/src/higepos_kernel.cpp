@@ -47,24 +47,18 @@ void startKernel(void) {
     //    Point* point1 = new Point();?????????
     //    _sysPrintlnInt(point1->getX());
     Point* point2 = new Point(5, 5);
-    _sysPrintlnInt(point2->getX());
-    Point* point3 = new Point(6, 6);
-    _sysPrintlnInt(point3->getX());
+    Point* point3 = new Point(6, 4);
+    _sys_printf("[Point(5, 5) getX() = %d]  ", point2->getX());
+    _sys_printf("[Point(6, 4) getY() = %d]\n", point3->getY());
 
     /* testing types */
-    _sysPrintlnInt(sizeof(H_SIZE_T));
-    _sysPrintlnInt(sizeof(H_BYTE));
-
+    _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));
+    _sys_printf("[sizeof(H_BYTE) is %d byte]\n", sizeof(H_BYTE));
 
     /* testing malloc */
-    _sysPrintlnInt((int)malloc(sizeof(int)));
-    _sysPrintlnInt((int)malloc(sizeof(int)));
+    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
+    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
 
-    /* testing _sys_printf */
-    _sysPrintln("printf start");
-    _sys_printf("1+4 = %d %s is the%d\n", 5, "hige",10);
-    _sys_printf("1+4 = %d this is the%d\n", 5, -1);
-    _sys_printf("%d %s %s %d", (int)5,"can you see me?", "yes", (int)-1);
     /* testing vector */
 //      Vector<int> list;
 //      list.add(10);
