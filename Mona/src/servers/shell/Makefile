@@ -3,7 +3,7 @@ MONADIR = ../../..
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 
-LFLAGS		= -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstatic
+LFLAGS		= $(MONAELF_LDS) -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstatic
 OFLAGS		= --output-target=elf32-i386
 
 RM		=	rm -f
@@ -47,7 +47,7 @@ $(BINS): $(OBJS)
 	$(BINDIR)/monaelf $@
 
 install: all
-	cp -u $(BINS) $(BINDIR)/root/SERVERS
+	$(INSTALL) $(BINS) $(BINDIR)/root/SERVERS
 
 clean:
 	$(RM) $(OBJS) $(BINS)
