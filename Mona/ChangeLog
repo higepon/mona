@@ -1,3 +1,7 @@
+2004-04-27  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp (MessageLoop): マウスカーソル描画を間引いてみた。
+
 2004-04-26  higepon  <higepon@users.sourceforge.jp>
 
         * Makefile.in (image): Yui_Nekoさんのmonaelf.exeでELF/SVRのファイルサイズを小さくするようにしただいぶ節約!

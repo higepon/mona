@@ -102,6 +102,8 @@ void MouseServer::MessageLoop()
     MessageInfo receive;
     MessageInfo send;
 
+    int i = 0;
+
     for (;;)
     {
         if (!Message::receive(&receive))
@@ -160,7 +162,8 @@ void MouseServer::MessageLoop()
                     if (this->posX < 0) this->posX = 0;
                     if (this->posY < 0) this->posY = 0;
 
-                    Paint();
+                    i++;
+                    if (i % 5 == 0) Paint();
 
                     Message::create(&send, MSG_MOUSE_INFO, posX, posY, clickInfo);
                     SendMouseInformation(&send);
