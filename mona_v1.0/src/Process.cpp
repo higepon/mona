@@ -159,9 +159,22 @@ ThreadScheduler::~ThreadScheduler() {
 
 Thread* ThreadScheduler::schedule(Thread* current) {
 
-    /* not implemented */
+    /* tick */
+    current->tick();
 
-    return (Thread*)NULL;
+    /* thread has time yet */
+    if (current->hasTimeLeft()) {
+        return current;
+    }
+
+    /* check dispach list is empty */
+    if (list_->isEmpty()) {
+        return current;
+    }
+
+    /* round robin */
+    list_->add(current);
+    return (list_->removeAt(0));
 }
 
 int ThreadScheduler::join(Thread* thread) {
@@ -206,7 +219,9 @@ Process_* ProcessScheduler::schedule(Process_* current) {
     if (list_->isEmpty()) return idle_;
 
     /* round robin */
-    if(current != idle_) list_->add(current);
+    if (current != idle_) {
+        list_->add(current);
+    }
     return (list_->removeAt(0));
 }
 
