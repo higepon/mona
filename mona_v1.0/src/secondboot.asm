@@ -71,6 +71,7 @@ set_cs_desc1:
         mov  ax, 0x18           ; ss selector
         mov  ss, ax             ; is 0x18
         mov  esp, 1024*1024*3   ; sp is 8MB
+        push eax
         jmp  0x200
 ;  hang:
 ;          jmp hang

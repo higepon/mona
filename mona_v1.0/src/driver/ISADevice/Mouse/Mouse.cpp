@@ -32,14 +32,31 @@ Mouse::Mouse(ISADriver* isa){
   Send(0xf4); /* enable */
 }
 
+bool Mouse::PS2Wait(void){
+  isa_->console->printf("Mouse:wait...\n");
+  while(isa_->InPort8(0x64) & 8);
+  return true;
+}
+
+void Mouse::PS2Comm(byte *b,int sendsize,int recvsize){
+  int i;
+  if(sendsize){
+    for(i = 0;i!=size;i++){
+      PS2Wait(); 
+      if(!i){
+        isa_->console->printf("Mouse:PS2Send KBC %x\n",b[i]);isa_->OutPort8(0x64,b[i]);
+      }else{
+        isa_->console->printf("Mouse:PS2Send KBC %x\n",b[i]);isa_->OutPort8(0x60,b[i]);
+      }
+    }
+  }
+  if(recvsize){
+    
+  }
+}
+
 void Mouse::Send(byte b){
-  outportb(0x64,0xd4);
-  while(inportb(0x64) & 0x01);
-  outportb(0x60,b);
-/*
-  isa_->OutPort8(0x64,0xd4);
-  isa_->OutPort8(0x60,b);
-*/
+  
 }
 
 byte Mouse::Recv(){

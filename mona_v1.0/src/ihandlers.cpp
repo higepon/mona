@@ -145,15 +145,14 @@ IRQHANDLERSlave(15)
 
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
-     {0x00, &arch_timerhandler} /* IRQ 0 and DIV 0 */
-   , {0x01, &arch_keystrokehandler}
-//   , {0x01, &arch_irqhandler_1}
-   , {0x02, &arch_irqhandler_2}
-   , {0x03, &arch_irqhandler_3}
-   , {0x04, &arch_irqhandler_4}
-   , {0x05, &arch_irqhandler_5}
-   , {0x06, &arch_fdchandler}
-   , {0x07, &arch_irqhandler_7}
+     {0x00, &arch_dummyhandler}
+   , {0x01, &arch_dummyhandler}
+   , {0x02, &arch_dummyhandler}
+   , {0x03, &arch_dummyhandler}
+   , {0x04, &arch_dummyhandler}
+   , {0x05, &arch_dummyhandler}
+   , {0x06, &arch_dummyhandler}
+   , {0x07, &arch_dummyhandler}
    , {0x08, &arch_dummyhandler}
    , {0x09, &arch_dummyhandler}
    , {0x0A, &arch_dummyhandler}
@@ -242,14 +241,14 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x5D, &arch_dummyhandler}
    , {0x5E, &arch_dummyhandler}
    , {0x5F, &arch_dummyhandler}
-   , {0x60, &arch_dummyhandler}
-   , {0x61, &arch_dummyhandler}
-   , {0x62, &arch_dummyhandler}
-   , {0x63, &arch_dummyhandler}
-   , {0x64, &arch_dummyhandler}
-   , {0x65, &arch_dummyhandler}
-   , {0x66, &arch_dummyhandler}
-   , {0x67, &arch_dummyhandler}
+   , {0x60, &arch_timerhandler} /* IRQ 0 */
+   , {0x61, &arch_keystrokehandler}
+   , {0x62, &arch_irqhandler_2}
+   , {0x63, &arch_irqhandler_3}
+   , {0x64, &arch_irqhandler_4}
+   , {0x65, &arch_irqhandler_5}
+   , {0x66, &arch_fdchandler}
+   , {0x67, &arch_irqhandler_7}
    , {0x68, &arch_dummyhandler}
    , {0x69, &arch_dummyhandler}
    , {0x6A, &arch_dummyhandler}

@@ -23,7 +23,7 @@ void pic_init() {
 
     /* master */
     outportb(0x20, 0x11); /* ICW1 */
-    outportb(0x21, 0x00); /* ICW2 */ /* IRQ 0h = int 0h */
+    outportb(0x21, 0x60); /* ICW2 */ /* IRQ 0h = int 60h */
     outportb(0x21, 0x04); /* ICW3 */
     outportb(0x21, 0x01); /* ICW4 */
 

@@ -144,13 +144,10 @@ test_mjt.o: test_mjt.cpp include/IDEDriver.h include/types.h \
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   include/types.h include/string.h include/global.h include/kthread.h \
   include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/pic.h include/io.h
+  include/DiskDriver.h include/Semaphore.h include/pic.h include/io.h \
+  include/idt.h
 ISADriver.o: ISADriver.cpp include/BitMap.h include/types.h \
   include/string.h include/global.h include/kthread.h include/kernel.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/sysresource.h include/driver/ISADriver.h \
   include/GraphicalConsole.h
-Mouse.o: driver/ISADevice/Mouse/Mouse.cpp include/driver/ISADriver.h \
-  include/types.h include/string.h include/BitMap.h include/sysresource.h \
-  include/GraphicalConsole.h include/VirtualConsole.h \
-  driver/ISADevice/Mouse/Mouse.h

@@ -4,17 +4,19 @@
 #include <test_mjt.h>
 #include <sysresource.h>
 #include <driver/ISADriver.h>
-#include "driver/ISADevice/Mouse/Mouse.h"
+//#include "driver/ISADevice/Mouse/Mouse.h"
 #include<pic.h>
 //#include <expr_driver/module.h>
 void test_mjt_init(){
   g_irqMap = new BitMap(16);
 }
 void test_sysresource(){
+/*
   ISADriver *isa;
   Mouse *m;
   isa = new ISADriver(g_console);
   m = new Mouse(isa);
+*/
 }
 void test_cmos(){
   dword b; /* byte */
@@ -52,6 +54,6 @@ void test_mjt(void){
   test_mjt_init();
   test_ide();
   test_cmos();
-  test_sysresource();
+ // test_sysresource();
 }
 

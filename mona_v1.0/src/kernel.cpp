@@ -51,7 +51,6 @@ char* version = "Mona develop beta 0.07a $Date$";
     \date   create:2002/07/21 update:2003/02/22
 */
 void startKernel(void) {
-
     /* re-set up GDT */
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();

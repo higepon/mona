@@ -14,6 +14,8 @@ class Mouse {
     static bool btnstate[3];
   private:
     static ISADriver *isa_;
+    bool PS2Wait(void);
+    bool PS2Comm(byte *b,int outsize,int recvsize);
     void Send(byte b);
     byte Recv();
 };
