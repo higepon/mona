@@ -22,7 +22,7 @@
     \author HigePon
     \date   create:2002/08/04 update:
 */
-char* X86MemoryManager::getName() {
+inline char* X86MemoryManager::getName() const {
 
     static char buf[] = "X86MemoryManager";
     return buf;
@@ -72,8 +72,11 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     this->deleteFromEntry(&freeEntry_, current, current->size);
     this->addToEntry(&usedEntry_, usedBlock, usedBlockSize);
 
-    /* return address of allocated memory */
+#ifdef HIGEPOS_DEBUG_MM
     this->printInfo("allocate memory");
+#endif
+
+    /* return address of allocated memory */
     return (void*)usedBlock->startAddress;
 }
 
@@ -96,7 +99,12 @@ void X86MemoryManager::freeMemory(void* address) {
     this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
     this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
+
+#ifdef HIGEPOS_DEBUG_MM
     this->printInfo("free memory");
+#endif
+
+    return;
 }
 
 /*!
@@ -129,6 +137,7 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) 
 
     /* there is no usedEntry */
     usedEntry_ = (struct memoryEntry*)NULL;
+    return;
 }
 
 /*!
@@ -143,7 +152,7 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) 
     \author HigePon
     \date   create:2002/09/07 update:
 */
-H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
+inline H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) const {
 
     return (size + sizeof(struct memoryEntry));
 }
@@ -156,7 +165,7 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
     \author HigePon
     \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::printInfo(char* str) {
+void X86MemoryManager::printInfo(char* str) const {
 
 //      struct memoryEntry* entry;
 //      int i;
@@ -190,6 +199,7 @@ void X86MemoryManager::printInfo(char* str) {
         }
     }
     _sys_printf(" %s \n", str);
+    return;
 }
 
 /*!

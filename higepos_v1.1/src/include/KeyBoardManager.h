@@ -80,7 +80,7 @@ class KeyBoardManager {
     KeyInfo keyInfo_[MAX_KEY_BUF];
     int keyBufIndex_;
     int keyBufGottenIndex_;
-    const int test[1];
+    static const int keyMap_[128];
   public:
 
     static KeyBoardManager& instance() {

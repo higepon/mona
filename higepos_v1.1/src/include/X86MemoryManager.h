@@ -37,7 +37,7 @@ class X86MemoryManager {
     ~X86MemoryManager();
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
-    H_SIZE_T getRealSize(H_SIZE_T);
+    H_SIZE_T getRealSize(H_SIZE_T) const;
     void addToEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
     void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
@@ -47,10 +47,10 @@ class X86MemoryManager {
     struct memoryEntry* usedEntry_;
   public:
 
-    char* getName();
+    char* getName() const;
     void* allocateMemory(H_SIZE_T);
     void freeMemory(void*);
-    void printInfo(char*);
+    void printInfo(char*) const;
     static X86MemoryManager& instance() {
         static X86MemoryManager theInstance;
         return theInstance;
