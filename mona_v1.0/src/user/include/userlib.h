@@ -296,7 +296,7 @@ class Color {
     Raster
 ----------------------------------------------------------------------*/
 class Raster {
-
+  public:
     static const int XOR = 1;
 };
 

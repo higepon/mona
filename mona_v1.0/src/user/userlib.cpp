@@ -307,8 +307,6 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     int xResolution  = destScreen->getXResolution();
     int bitsPerPixel = destScreen->getBpp();
 
-    printf("%d", destScreen->getBpp());
-
     switch(bitsPerPixel) {
 
     case(16):
@@ -329,6 +327,7 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
         break;
 
     case(32):
+
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
 
@@ -353,8 +352,6 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     byte* svram      = sourceScreen->getVRAM();
     int xResolution  = destScreen->getXResolution();
     int bitsPerPixel = destScreen->getBpp();
-
-    printf("%d", destScreen->getBpp());
 
     switch(bitsPerPixel) {
 

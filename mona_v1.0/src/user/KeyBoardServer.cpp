@@ -43,10 +43,13 @@ int main() {
     bool rightClickd;
     Screen screen;
 
+    MessageInfo info;
+    VirtualScreen vscreen;
+    vscreen.fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
+
+
     /* Message loop */
     for (;;) {
-
-        MessageInfo info;
 
         /* receive */
         if (!Message::receive(&info)) {
@@ -98,12 +101,9 @@ int main() {
                 if (posY > screen.getYResolution()) posY = screen.getYResolution();
                 if (posY < 0) posY = 0;
 
-                if (leftClickd) {
-                    screen.fillRect16(prevX , prevY, 10, 10, Color::rgb(0x00, 0x00, 0x00));
-                    screen.fillRect16(posX , posY, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
-                } else {
-                    screen.fillRect16(posX , posY, 1, 1, Color::rgb(0xFF, 0xFF, 0xFF));
-                }
+                Screen::bitblt(&screen, prevX, prevY, 10, 10, &vscreen, 0, 0, Raster::XOR);
+                Screen::bitblt(&screen, posX , posY, 10, 10, &vscreen, 0, 0, Raster::XOR);
+                //                screen.fillRect16(posX, posX, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
 
                 prevX = posX;
                 prevY = posY;
