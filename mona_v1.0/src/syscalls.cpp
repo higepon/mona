@@ -224,6 +224,9 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
+    case SYSTEM_CALL_MAP_TWO:
+
+
     default:
         g_console->printf("syscall:default");
         break;

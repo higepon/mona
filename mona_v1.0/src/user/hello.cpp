@@ -6,7 +6,7 @@ class myApplication : public MonaApplication {
 
   public:
     myApplication(char* name);
-    ~virtual myApplication() {}
+    virtual ~myApplication() {}
 
   public:
     virtual int main();

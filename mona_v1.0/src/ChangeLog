@@ -1,3 +1,7 @@
+2004-02-03  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : syscall_map2()‚Ì“r’†
+
 2004-02-02  higepon  <higepon@users.sourceforge.jp>
 
         * MonaApplication‚Ìì¬
