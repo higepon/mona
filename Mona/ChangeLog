@@ -1,3 +1,7 @@
+2004-05-18  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/syscalls.cpp : ファイル操作関連のビジーウェイトがすぐに発覚するようにデバッグコード追加
+
 2004-05-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/test_higepon.cpp : デッドロックの原因を探るべくデバッグコード追加。

@@ -235,7 +235,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FDC_OPEN:
 
         enableInterrupt();
-        while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait fdc open");};
 
         g_fdcdriver->motor(ON);
         g_fdcdriver->recalibrate();
@@ -249,7 +249,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FDC_CLOSE:
 
         enableInterrupt();
-        while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait fdc close");};
 
         g_fdcdriver->motorAutoOff();
 
@@ -267,7 +267,7 @@ void syscall_entrance() {
             byte* buffer   = (byte*)(info->ecx);
             dword blocknum = info->edi;
 
-            while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait fdc read");};
             for (dword i = 0; i < blocknum; i++) {
                 readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
                 if (!readResult) break;
@@ -286,7 +286,7 @@ void syscall_entrance() {
             byte* buffer   = (byte*)(info->ecx);
             dword blocknum = info->edi;
 
-            while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait fdc write");};
             for (dword i = 0; i < blocknum; i++) {
                 writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
                 if (!writeResult) {
@@ -311,7 +311,7 @@ void syscall_entrance() {
             g_fdcdriver->recalibrate();
             g_fdcdriver->recalibrate();
 
-            while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait file open");};
 
             if (!g_fs->open(path, mode))
             {
@@ -335,7 +335,7 @@ void syscall_entrance() {
             dword size     = (dword)(info->ecx);
 
             enableInterrupt();
-            while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait file read");};
 
             if (!g_fs->read(buf, size))
             {
@@ -357,7 +357,7 @@ void syscall_entrance() {
             dword size     = (dword)(info->ecx);
 
             enableInterrupt();
-            while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait file write");};
 
             if (!g_fs->write(buf, size))
             {
@@ -382,7 +382,7 @@ void syscall_entrance() {
             g_fdcdriver->recalibrate();
             g_fdcdriver->recalibrate();
             g_fdcdriver->recalibrate();
-            while (Semaphore::down(&g_semaphore_fd));
+            while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait file create");};
 
             if (!g_fs->createFile(path))
             {
@@ -401,7 +401,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_CLOSE:
 
         enableInterrupt();
-        while (Semaphore::down(&g_semaphore_fd));
+        while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait file close");};
         g_fs->close();
         g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
