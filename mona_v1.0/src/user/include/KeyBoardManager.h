@@ -123,8 +123,8 @@ class KeyBoardManager {
     bool isWin_;
     bool isMenu_;
     bool isInit_;
-    //    static const int keyMap_[128];
-    //    static const int keyMapE0_[128];
+    static const int keyMap_[128];
+    static const int keyMapE0_[128];
     byte idHigh_;
     byte idLow_;
     List<KeyInfo*>* keyInfoList_;

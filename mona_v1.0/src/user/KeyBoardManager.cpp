@@ -15,7 +15,7 @@
 #include<userlib.h>
 #include<KeyBoardManager.h>
 
-int keyMap_[128] = {
+const int KeyBoardManager::keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
         '7'      , '8'      , '9'          , '0'           , '-'       , '^'            , KEY_BACKSPACE, KEY_TAB  ,
         'q'      , 'w'      , 'e'          , 'r'           , 't'       , 'y'            , 'u'          , 'i'      ,
@@ -30,7 +30,7 @@ int keyMap_[128] = {
         KEY_F12  , 0        , 0            , 0             , 0         , 0              , 0            , 0
 };
 
-int keyMapE0_[128] = {
+const int KeyBoardManager::keyMapE0_[128] = {
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
@@ -123,7 +123,7 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
 
-    //    g_console->printf("scancode=%x ", scancode);
+    printf("scancode=%x ", scancode);
 
     /* first, check some scancodes */
     switch(scancode) {

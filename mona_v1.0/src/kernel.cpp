@@ -102,7 +102,7 @@ void startKernel(void) {
     if (vesaInfo->sign[0] == 'N') {
 
         g_console = new GraphicalConsole();
-        g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
+        g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[0]);
         for (;;);
     } else {
         vesaDetail = new VesaInfoDetail;
