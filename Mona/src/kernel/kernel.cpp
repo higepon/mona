@@ -65,7 +65,6 @@
 #include "string.h"
 #include "syscalls.h"
 #include "PageManager.h"
-#include "elf.h"
 #include "MemoryManager.h"
 #include "vbe.h"
 #include "VesaConsole.h"
@@ -255,7 +254,7 @@ void loadServer(const char* server, const char* name)
     }
     else
     {
-        g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
+        g_console->printf("unknown server type!\n");
     }
 
     MessageInfo msg;

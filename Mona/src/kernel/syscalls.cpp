@@ -15,7 +15,6 @@
 #include "global.h"
 #include "tester.h"
 #include "io.h"
-#include "elf.h"
 #include "Loader.h"
 
 extern const char* version;

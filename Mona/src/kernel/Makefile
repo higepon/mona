@@ -31,7 +31,6 @@ SOURCES      = cstart.cpp            \
                GDTUtil.cpp           \
                IDTUtil.cpp           \
                PageManager.cpp       \
-               elf.cpp               \
                MemoryManager.cpp     \
                sysresource.cpp       \
                Segments.cpp          \

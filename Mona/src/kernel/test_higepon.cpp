@@ -5,7 +5,6 @@
 #include "GraphicalConsole.h"
 #include "operator.h"
 #include "MemoryManager.h"
-#include "elf.h"
 #include "syscalls.h"
 #include "Process.h"
 #include "vbe.h"
