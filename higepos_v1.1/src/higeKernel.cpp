@@ -52,7 +52,7 @@ void startKernel(void) {
     _sys_printf("idt set done\n");
 
     /* enable A20 */
-    X86MemoryManager::enableA20();
+    //    X86MemoryManager::enableA20();
 
     /* test code is here */
 #if 0

@@ -1,5 +1,8 @@
 2002-11-16  higepon  <higepon@users.sourceforge.jp>
 
+        * higeKernel.cpp (startKernel): enableA20()コメントアウト
+          実機だとキーボード入力がとれない！！！
+
         * higeVga.cpp (scrollUp): 文字色･背景色対応
 
 2002-11-15  higepon  <higepon@users.sourceforge.jp>
