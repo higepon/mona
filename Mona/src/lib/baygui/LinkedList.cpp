@@ -32,16 +32,20 @@ LinkedList::LinkedList()
 	this->dataListLength = 0;
 	this->firstItem = NULL;
 	this->endItem = NULL;
+	this->autoDelete = true;
+}
+
+LinkedList::LinkedList(bool autoDelete)
+{
+	this->dataListLength = 0;
+	this->firstItem = NULL;
+	this->endItem = NULL;
+	this->autoDelete = autoDelete;
 }
 
 LinkedList::~LinkedList()
 {
-	while (this->firstItem != NULL) {
-		// データそのものをdeleteすると他に持っている人が
-		// いるときに困るためdeleteはしない
-		remove(0);
-	}
-	this->dataListLength = 0;
+	removeAll();
 }
 
 LinkedItem *LinkedList::getLinkedItem(int index)
@@ -143,7 +147,9 @@ Object *LinkedList::remove(Object *o)
 		}
 		item->prev = NULL;
 		item->next = NULL;
-		//delete(item);
+		if (this->autoDelete == true) {
+			delete(item);
+		}
 		dataListLength--;
 		return item->data;
 	} else {
@@ -156,7 +162,9 @@ Object *LinkedList::remove(Object *o)
 		}
 		item->prev = NULL;
 		item->next = NULL;
-		//delete(item);
+		if (this->autoDelete == true) {
+			delete(item);
+		}
 		dataListLength--;
 		return item->data;
 	}
@@ -166,7 +174,9 @@ void LinkedList::removeAll()
 {
 	while (this->firstItem != NULL) {
 		Object *obj = remove(0);
-		delete(obj);
+		if (this->autoDelete == true) {
+			delete(obj);
+		}
 	}
 	this->dataListLength = 0;
 }
