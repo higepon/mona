@@ -535,7 +535,7 @@ Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer
     shared_ = new HList<SharedMemorySegment*>();
 
     /* message list */
-    messageList_ = new HList<KMessage*>();
+    messageList_ = new HList<MessageInfo*>();
 
     /* mutex tree */
     kmutexTree_ = new BinaryTree<KMutex*>();

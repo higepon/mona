@@ -325,12 +325,12 @@ void testFDWrite() {
     return;
 }
 
-int send(const char* name, KMessage* message) {
+int send(const char* name, MessageInfo* message) {
 
     Process* process;
-    KMessage* kmessage;
+    MessageInfo* kmessage;
 
-    if (message == (KMessage*)NULL) {
+    if (message == (MessageInfo*)NULL) {
         return -1;
     }
 
@@ -338,23 +338,23 @@ int send(const char* name, KMessage* message) {
         return -1;
     }
 
-    if ((kmessage = new KMessage) == NULL) {
+    if ((kmessage = new MessageInfo) == NULL) {
         return -1;
     }
 
-    memcpy(kmessage, message, sizeof(KMessage));
+    memcpy(kmessage, message, sizeof(MessageInfo));
     process->getMessageList()->add(kmessage);
     return 0;
 }
 
-int receive(Process* process, KMessage* message) {
+int receive(Process* process, MessageInfo* message) {
 
-    KMessage* from = process->getMessageList()->get(0);
-    if (from == (KMessage*)NULL) {
+    MessageInfo* from = process->getMessageList()->get(0);
+    if (from == (MessageInfo*)NULL) {
         return -1;
     }
 
-    memcpy(message, from, sizeof(KMessage));
+    memcpy(message, from, sizeof(MessageInfo));
     free(from);
     process->getMessageList()->removeAt(0);
     return 0;
