@@ -4,6 +4,8 @@
 
         * src/lib/gui/System/Mona/Forms/Application.cpp: ”w–ÊÄ•`‰æi’´è”²‚«j
 
+        * include/gui/System/Drawing/Rectangle.h (IntersectsWith): ’Ç‰Á
+
 2004-05-26  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monalibc/math.cpp : monalibc‚Ésin(), cos(), sqrt()‚ğ’Ç‰Á
