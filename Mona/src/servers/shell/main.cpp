@@ -2,15 +2,13 @@
 
 #include "Shell.h"
 
-#define MSG_THREAD_INITIALIZED 0xfff0
-
 using namespace MonAPI;
 
 static dword my_tid;
 
 static void StdoutMessageLoop()
 {
-    Message::send(my_tid, MSG_THREAD_INITIALIZED);
+    Message::send(my_tid, MSG_SERVER_START_OK);
 
     for (MessageInfo msg;;)
     {
@@ -44,7 +42,7 @@ int MonaMain(List<char*>* pekoe)
     {
         if (Message::receive(&msg) != 0) continue;
         
-        if (msg.header == MSG_THREAD_INITIALIZED)
+        if (msg.header == MSG_SERVER_START_OK)
         {
             stdout_tid = msg.from;
             break;
