@@ -1,7 +1,7 @@
 TARGET  = GNULLPO
 SOURCES = gnullpo.cpp 
 INSTDIR = $(BINDIR)/root/APPS/GNULLPO.APP
-INSTFILES = HENORMAL.BM5 HEPUSHED.BM5
+INSTFILES = NULLPO.BM5 GAT.BM5
 CLEANFILES = $(INSTFILES)
 
 $(TARGET).EX5: $(INSTFILES)
@@ -19,10 +19,10 @@ endif
 
 CXXFLAGS += -DDEBUG
 
-HENORMAL.BM5: HENORMAL.BMP
+NULLPO.BM5: nullpo.bmp
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
-HEPUSHED.BM5: HEPUSHED.BMP
+GAT.BM5: gat.bmp
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 include dependencies

@@ -37,8 +37,8 @@ public:
 		setRect((800 - 191) / 2, (600 - 205) / 2, 191, 205);
 		setTitle("ぬるぽボタン");
 		pushed = false;
-		image_normal = new Bitmap("/APPS/GNULLPO.APP/HENORMAL.BM5");
-		image_pushed = new Bitmap("/APPS/GNULLPO.APP/HEPUSHED.BM5");
+		image_normal = new Bitmap("/APPS/GNULLPO.APP/NULLPO.BM5");
+		image_pushed = new Bitmap("/APPS/GNULLPO.APP/GAT.BM5");
 	}
 	
 	~GNullpo(){
