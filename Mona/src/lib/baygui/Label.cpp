@@ -89,6 +89,7 @@ void Label::repaint()
 	} else {
 		_g->setColor(128,128,128);
 	}
+	_g->setFont(this->font);
 	if (align == ALIGN_RIGHT) {
 		_g->drawText(text, (width - fw), (height - fh) / 2);
 	} else if (align == ALIGN_CENTER) {
