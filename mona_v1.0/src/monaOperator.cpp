@@ -15,6 +15,7 @@
 #include<monaOperator.h>
 #include<monaTypes.h>
 
+#ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
@@ -40,6 +41,8 @@ void operator delete[](void* address) {
     mm.freeMemory(address);
     return;
 }
+
+#endif
 
 void* malloc(unsigned long size) {
 
