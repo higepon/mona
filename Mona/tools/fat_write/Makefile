@@ -1,12 +1,10 @@
-BASE   = ../..
-BIN    = $(BASE)/bin
+TARGET  = $(MONADIR)/bin/fat_write.exe
+SOURCES = main.cpp VirtualFloppy.cpp fat.cpp
 
-TARGET = $(BIN)/fat_write.exe
-
-CXX         = g++
-CXXFLAGS    = -Wall
-INCLUDE     = -idirafter . -idirafter ../../include/sys
-SOURCES     = main.cpp VirtualFloppy.cpp fat.cpp
+MONADIR = ../..
+include $(MONADIR)/env/Makefile.inc
+CXXFLAGS = -Wall
+INCLUDE  = -idirafter . -idirafter ../../include/sys
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
