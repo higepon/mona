@@ -67,67 +67,9 @@ extern int pos_x;
 extern int pos_y;
 void printInfo() {
 
-    IOStream io;
-    io.dir  = ".";
-    io.file = "USER.ELF";
-
-    if (!readFile(&io)) {
-        g_console->printf("read:io error=%d\n", io.error);
-        for (;;);
-    }
-
-    io.file = "HIGE.ELF";
-        g_console->printf("write:io size=%d\n", io.size);
-    if (!writeFile(&io)) {
-        g_console->printf("write:io error=%d\n", io.error);
-        for (;;);
-    }
-
-    if (!writeFile(&io)) {
-        g_console->printf("write:io error=%d\n", io.error);
-        for (;;);
-    }
-
-
-    delete(io.buffer);
-
-
-    testFDWrite();
-    g_console->printf("done\n");
-    testFDWrite();
-    g_console->printf("done\n");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-
-
-
     for (;;) {
-
-        //        while (Semaphore::down(&g_semaphore_console));
-        int tempx = pos_x;
-        int tempy = pos_y;
-
-        pos_x = 0;
-        pos_y = 0;
-        //g_processManager->printProcess();
-
-        pos_x = tempx;
-        pos_y = tempy;
-        //        Semaphore::up(&g_semaphore_console);
-
     }
 }
-
 /*!
     \brief  mona kernel start at this point
 
@@ -214,10 +156,10 @@ void startKernel(void) {
     g_processManager = new ProcessManager(g_page_manager);
 
     /* add testProces1(testThread1) */
-     Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST1");
-     g_processManager->add(testProcess1);
-     Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printInfo);
-     g_processManager->join(testProcess1, testThread1);
+    Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST1");
+    g_processManager->add(testProcess1);
+    Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printInfo);
+    g_processManager->join(testProcess1, testThread1);
 
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();

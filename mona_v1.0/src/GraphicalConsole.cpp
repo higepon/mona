@@ -14,6 +14,7 @@
 */
 
 #include<GraphicalConsole.h>
+#include<global.h>
 
 extern "C" void write_font(char ch, char fc, char bc);
 extern "C" void scroll_up();

@@ -54,4 +54,29 @@ bool writeFileAppend(IOStream* io);
 #define IO_ERROR_CLOSE 5
 #define IO_ERROR_WRITE 6
 
+class Logger {
+
+  public:
+    Logger(char* dir, char* file);
+    virtual ~Logger();
+
+  public:
+    void write(char ch);
+    void flush();
+
+    static const char CR    = 0x0D;
+    static const char LF    = 0x0A;
+
+  private:
+    void writeBuf(char ch);
+
+  private:
+    char* dir_;
+    char* file_;
+    char buf_[1024];
+    int pos_;
+    int prevpos_;
+};
+
+
 #endif

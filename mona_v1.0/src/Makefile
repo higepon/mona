@@ -80,12 +80,12 @@ userlib.o : ./user/userlib.cpp
 
 $(USER_PROCESS) : userlib.o ./user/hello.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/hello.cpp -o hello.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o -o $(USER_PROCESS)
+	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o string.o -o $(USER_PROCESS)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS)
 
 $(USER_PROCESS2) : userlib.o ./user/test.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/test.cpp -o test.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static test.o userlib.o MemoryManager.o -o $(USER_PROCESS2)
+	ld -n -Ttext 0xA0000000 -e _user_start -static test.o userlib.o MemoryManager.o string.o -o $(USER_PROCESS2)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS2)
 
 .SUFFIXES: .cpp .o

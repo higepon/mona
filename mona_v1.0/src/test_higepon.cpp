@@ -10,6 +10,7 @@
 #include<KeyBoardManager.h>
 #include<elf.h>
 #include<userlib.h>
+#include<syscalls.h>
 #include<Process.h>
 
 /*!
@@ -47,25 +48,94 @@ struct read_info {
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
+Logger::Logger(char* dir, char* file) : dir_(dir), file_(file), pos_(0), prevpos_(0) {
+}
+
+Logger::~Logger() {
+}
+
+void Logger::flush() {
+
+        g_console->printf("flush \n");
+
+    if (pos_ == prevpos_) {
+        return;
+    } else if (pos_ > prevpos_) {
+
+        int pos, prevpos;
+
+        g_console->printf("flush2 \n");
+        enter_kernel_lock_mode();
+        pos     = pos_;
+        g_console->printf("flush3 \n");
+        prevpos = prevpos_;
+        g_console->printf("flush4 \n");
+        exit_kernel_lock_mode();
+
+        g_console->printf("flush5 \n");
+
+        char* tmp = new char[pos - prevpos];
+        memcpy(tmp, buf_ + prevpos, pos - prevpos);
+        IOStream io;
+        io.dir  = dir_;
+        io.file = file_;
+        io.buffer = (byte*)tmp;
+        io.size = pos - prevpos;
+        writeFileAppend(&io);
+        prevpos_ = pos;
+    }
+}
+
+void Logger::write(char ch) {
+
+    if (ch == '\n') {
+        writeBuf(CR);
+        writeBuf(LF);
+    } else {
+        writeBuf(ch);
+    }
+}
+
+void Logger::writeBuf(char ch) {
+
+    buf_[pos_] = ch;
+    pos_++;
+    if (pos_ >= 1024) {
+        pos_ = 0;
+    }
+}
+
 bool writeFileAppend(IOStream* io) {
 
     IOStream src;
     src.dir  = io->dir;
     src.file = io->file;
+    src.size = 0;
 
-    if (!readFile(&src)) {
+    if (!readFile(&src) && src.error != 1) {
         io->error = src.error;
         return false;
     }
 
+    byte* buf = new byte[io->size + src.size];
+    memset(buf, 0, io->size + src.size);
+    memcpy(buf, src.buffer, src.size);
+    memcpy(buf + src.size, io->buffer, io->size);
+    delete src.buffer;
+    src.size   += io->size;
+    src.buffer = buf;
 
-
-
+    if (!writeFile(&src)) {
+        io->error = src.error;
+        return false;
+    }
+    return true;
 }
 
 bool readFile(IOStream* io) {
 
     /* prepare */
+    //    while (Semaphore::down(&g_semaphore_fd));
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -107,6 +177,7 @@ bool readFile(IOStream* io) {
         return false;
     }
     g_fdcdriver->motor(OFF);
+    //    Semaphore::up(&g_semaphore_fd);
     return true;
 }
 
@@ -116,6 +187,7 @@ bool writeFile(IOStream* io) {
     buf[0] = '\0';
 
     /* prepare */
+    //    while (Semaphore::down(&g_semaphore_fd));
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -156,6 +228,7 @@ bool writeFile(IOStream* io) {
         return false;
     }
     g_fdcdriver->motor(OFF);
+    //    Semaphore::up(&g_semaphore_fd);
     return true;
 }
 
@@ -256,7 +329,6 @@ int write(output_stream *p, int sz)
 
     return sz;
 }
-
 
 bool drawARGB(byte* rgba, int x, int y, int size) {
 

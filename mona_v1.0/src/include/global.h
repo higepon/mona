@@ -24,6 +24,7 @@
 #include <MemoryManager.h>
 #include <Segments.h>
 #include <sysresource.h>
+#include <tester.h>
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
