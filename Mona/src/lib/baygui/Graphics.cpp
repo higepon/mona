@@ -44,7 +44,7 @@ Graphics::Graphics()
 	font->setHeight(12);
 	font->setStyle(FONT_PLAIN);
 #endif
-	xormode = false;
+	xormode = locked = false;
 }
 
 /** デストラクタ */
@@ -66,6 +66,8 @@ void Graphics::drawImage(Image *image, int x, int y)
 	int height = image->getHeight();
 	int I = width;
 	int J = height;
+	
+	if (locked == true) return;
 	
 	// 透過イメージのためにα値が必要なのでbitbltは使えない
 	unsigned int *data = ((Bitmap *)image)->getData();
@@ -97,6 +99,8 @@ void Graphics::drawImage(Image *image, int x, int y, int w, int h)
 	int width  = image->getWidth();
 	//int height = image->getHeight();
 	
+	if (locked == true) return;
+
 	// 透過イメージのためにα値が必要なのでbitbltは使えない
 	unsigned int *data = ((Bitmap *)image)->getData();
 	// NULL チェック
@@ -119,6 +123,7 @@ void Graphics::drawImage(Image *image, int x, int y, int w, int h)
  */
 void Graphics::drawPixel(int x, int y, unsigned int color)
 {
+	if (locked == true) return;
 #if defined(PEKOE)
 	sys_gs_set_pixel_RGB(tx + x, ty + y, color);
 #elif defined(MONA)
@@ -141,6 +146,8 @@ void Graphics::drawPixelXOR(int x, int y, unsigned int color)
 
 	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
 	byte* colorPtr = (byte*)&color;
+
+	if (locked == true) return;
 
 	switch (bytesPerPixel) {
 	case 2: // 16bpp
@@ -165,6 +172,8 @@ void Graphics::drawPixelXOR(int x, int y, unsigned int color)
 void Graphics::drawLine(int x0, int y0, int x1, int y1)
 {
 	int E, xx0, xx1, yy0, yy1, dx, dy, sx, sy, i;
+
+	if (locked == true) return;
 
 	// 領域チェック
 	if (tx + x0 > cx + cw) return;
@@ -243,6 +252,8 @@ void Graphics::drawLine(int x0, int y0, int x1, int y1)
  */
 void Graphics::drawRect(int x, int y, int width, int height)
 {
+	if (locked == true) return;
+
 	drawLine(x, y, x + width, y);
 	drawLine(x, y, x, y + height);
 	drawLine(x + width, y, x + width, y + height);
@@ -258,6 +269,9 @@ void Graphics::drawRect(int x, int y, int width, int height)
 void Graphics::drawText(char *str, int x, int y)
 {
 	int len = 0;
+
+	if (locked == true) return;
+
 	FontManager *manager = FontManager::getInstance();
 	Font **list = manager->decodeString(str, &len);
 	drawText(list, len, x, y);
@@ -272,6 +286,8 @@ void Graphics::drawText(char *str, int x, int y)
  */
 void Graphics::drawText(Font **list, int len, int x, int y) {
 	int i, j, k, pos, bit, w = 0;
+
+	if (locked == true) return;
 
 	for (i = 0; i < len; i++) {
 		pos = 0;
@@ -309,6 +325,8 @@ void Graphics::drawText(Font **list, int len, int x, int y) {
  */
 void Graphics::fillRect(int x, int y, int width, int height)
 {
+	if (locked == true) return;
+
 	screen->fillRect16(tx + x, ty + y, width, height, rgb24);
 }
 
