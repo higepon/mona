@@ -18,4 +18,6 @@
 void* operator new(unsigned long size);
 void  operator delete(void* address);
 void* malloc(unsigned long size);
+void __builtin_delete(void* address);
+void* __builtin_new(unsigned long size);
 #endif
