@@ -91,8 +91,18 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
+    _sys_printf("scancode=%d ", scancode);
+
+    if (scancode == 0xAB) {
+        isKeyboardId_ = true;
+        return;
+    }
 
     /* check spceial key */
+    if (scancode == SPECIAL_KEY) {
+        isSpecialKey_ = true;
+        return;
+    }
 
         /* if spceial key flg = true */
 
@@ -109,14 +119,7 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     scancode &= 0x7f;
     keyInfo_[keyBufIndex_].keycode = keyMap_[scancode];
 
-    _sys_printf("(bufIdx, bufGotIdx, scancd, keycd, \"char\")=(%d, %d, %d, %d, %c)"
-               , keyBufIndex_
-               , keyBufGottenIndex_
-               , scancode
-               , (char)keyMap_[scancode]
-               , (char)keyMap_[scancode]);
-
-
+    _sys_printf("char=\"%c\"\n", (char)keyMap_[scancode]);
     return;
 }
 

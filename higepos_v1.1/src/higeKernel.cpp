@@ -95,6 +95,7 @@ void startKernel(void) {
     for (int j = 0; j < v->size(); j++) {
         _sys_printf("(%d, %s) ", j, v->get(j));
     }
+    _sys_printf("\n");
     delete(v);
 
     /* testing keyboardmanager */

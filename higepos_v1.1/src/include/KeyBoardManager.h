@@ -17,6 +17,7 @@
 #include<higeTypes.h>
 
 #define MAX_KEY_BUF 255
+#define SPECIAL_KEY 0xE0
 
 typedef enum {
     KEY_ESC
@@ -80,6 +81,8 @@ class KeyBoardManager {
     KeyInfo keyInfo_[MAX_KEY_BUF];
     int keyBufIndex_;
     int keyBufGottenIndex_;
+    bool isSpecialKey_;
+    bool isKeyboardId_;
     static const int keyMap_[128];
   public:
 

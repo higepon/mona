@@ -36,7 +36,6 @@ void keyStrokeHandler() {
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
-    _sysPrint("key stroke\n");
 
     /* iret */
     asm("mov %ebp,%esp");
