@@ -146,6 +146,9 @@ void MoIcmp::saveRecv(IP_HEADER *ipHead, int size)
     MessageInfo info;
     MONES_IP_REGIST *regist;
 
+//Yamamiデバッグ
+printf("MoIcmp::saveRecv Call!!\n");
+
     //登録しているプロセスに通知する。
     for (int i = 0; i < MonesRList->size() -1; i++) {
         regist = MonesRList->get(i);

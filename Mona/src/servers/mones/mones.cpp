@@ -153,7 +153,8 @@ int MonaMain(List<char*>* pekoe)
                 
                 int ret;
                 dword ip;
-                TRANS_BUF_INFO tbi;
+                TRANS_BUF_INFO *tbi;
+                tbi = new TRANS_BUF_INFO();
                 
                 ICMP_HEADER *icmpHead;
                 icmpHead = new ICMP_HEADER();
@@ -172,16 +173,18 @@ int MonaMain(List<char*>* pekoe)
                 icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,0);
 
                 //送信バッファテーブルの設定
-                tbi.data[2]=NULL;
-                tbi.size[2]=0;
-                tbi.data[1]=(char*)icmpHead;
-                //tbi.size[1]=size;
-                tbi.size[1]=0;
-                tbi.ipType=IPPROTO_ICMP;
+                tbi->data[2]=NULL;
+                tbi->size[2]=0;
+                tbi->data[1]=(char*)icmpHead;
+                //tbi->size[1]=size;
+                tbi->size[1]=0;
+                tbi->ipType=IPPROTO_ICMP;
     
-                ret = g_MoIp->transIp(&tbi , MoPacUtl::swapLong(ip) ,0, 0);
+                ret = g_MoIp->transIp(tbi , MoPacUtl::swapLong(ip) ,0, 0);
 
+                //TODO メモリ解放のタイミングを考えないとメモリリーク !!
                 //delete icmpHead;
+                //delete tbi;
                 
                 break;
 

@@ -14,6 +14,7 @@
 
 #include <sys/types.h>
 #include <monapi.h>
+#include <monapi/io.h>
 
 /*!
     abstract class AbstractMonic
