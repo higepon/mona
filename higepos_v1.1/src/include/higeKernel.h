@@ -1,5 +1,5 @@
 /*!
-    \file  kernel.h
+    \file  higeKernel.h
     \brief definition for kernel
 
     definition for kernel & macros

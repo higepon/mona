@@ -1,5 +1,5 @@
 /*!
-    \file  MemoryManager.cpp
+    \file  X86MemoryManager.cpp
     \brief class X86MemoryManager
 
     class X86MemoryManager
@@ -197,7 +197,8 @@ void X86MemoryManager::printInfo(char* str) {
 
     add block to entries
 
-    \param block block to entry
+    \param entry free or used
+    \param block block to add
     \param size  size of block
 
     \author HigePon
