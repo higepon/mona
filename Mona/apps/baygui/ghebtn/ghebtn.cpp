@@ -39,18 +39,18 @@ public:
 		setTitle("へぇ～ボタン");
 		count = 0;
 		pushed = false;
-		number[0] = new Bitmap("/APPS/GHEBTN.APP/0.BM2");
-		number[1] = new Bitmap("/APPS/GHEBTN.APP/1.BM2");
-		number[2] = new Bitmap("/APPS/GHEBTN.APP/2.BM2");
-		number[3] = new Bitmap("/APPS/GHEBTN.APP/3.BM2");
-		number[4] = new Bitmap("/APPS/GHEBTN.APP/4.BM2");
-		number[5] = new Bitmap("/APPS/GHEBTN.APP/5.BM2");
-		number[6] = new Bitmap("/APPS/GHEBTN.APP/6.BM2");
-		number[7] = new Bitmap("/APPS/GHEBTN.APP/7.BM2");
-		number[8] = new Bitmap("/APPS/GHEBTN.APP/8.BM2");
-		number[9] = new Bitmap("/APPS/GHEBTN.APP/9.BM2");
-		image_normal = new Bitmap("/APPS/GHEBTN.APP/HENORMAL.BM2");
-		image_pushed = new Bitmap("/APPS/GHEBTN.APP/HEPUSHED.BM2");
+		number[0] = new Bitmap("/APPS/GHEBTN.APP/0.BM5");
+		number[1] = new Bitmap("/APPS/GHEBTN.APP/1.BM5");
+		number[2] = new Bitmap("/APPS/GHEBTN.APP/2.BM5");
+		number[3] = new Bitmap("/APPS/GHEBTN.APP/3.BM5");
+		number[4] = new Bitmap("/APPS/GHEBTN.APP/4.BM5");
+		number[5] = new Bitmap("/APPS/GHEBTN.APP/5.BM5");
+		number[6] = new Bitmap("/APPS/GHEBTN.APP/6.BM5");
+		number[7] = new Bitmap("/APPS/GHEBTN.APP/7.BM5");
+		number[8] = new Bitmap("/APPS/GHEBTN.APP/8.BM5");
+		number[9] = new Bitmap("/APPS/GHEBTN.APP/9.BM5");
+		image_normal = new Bitmap("/APPS/GHEBTN.APP/HENORMAL.BM5");
+		image_pushed = new Bitmap("/APPS/GHEBTN.APP/HEPUSHED.BM5");
 	}
 	
 	void onPaint(Graphics *g) {
