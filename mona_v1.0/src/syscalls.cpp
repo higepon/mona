@@ -18,10 +18,15 @@ void syscall_entrance() {
 
     outportb(0x20, 0x20);
 
+    g_console->printf("syscall entrance");
+
     switch(g_current_process->ebx) {
 
 
-      case 0:
+      case SYSTEM_CALL_PROCESS_SLEEP:
+
+          g_process_manager->sleep(g_current_process, g_current_process->esi);
+
           break;
 
       default:
@@ -29,5 +34,18 @@ void syscall_entrance() {
           break;
     }
 
+    return;
+}
+
+void syscall_sleep(dword tick) {
+
+    g_console->printf("syscall sleep");
+
+    asm volatile("movw $5, %%ebx \n"
+                 "movw %0, %%esi \n"
+                 "int $0x80        "
+                 :/* no output */
+                 :"m"(tick)
+                 );
     return;
 }

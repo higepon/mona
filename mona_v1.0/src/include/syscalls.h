@@ -12,7 +12,12 @@
 #ifndef _MONA_SYSCALL_
 #define _MONA_SYSCALL_
 
+#include <global.h>
+
+#define SYSTEM_CALL_PROCESS_SLEEP 5
 
 extern "C" void syscall_entrance(void);
+
+void syscall_sleep(dword tick);
 
 #endif

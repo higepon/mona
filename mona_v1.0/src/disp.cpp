@@ -97,7 +97,7 @@ void disp_name4() {
 
         disp_write_font(78, 0, 'a', color%16);
 
-        g_process_manager->sleep(g_current_process, 15);
+    syscall_sleep(15);
 
         Semaphore::up(&g_semaphore_console);
         color++;
