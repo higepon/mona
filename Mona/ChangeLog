@@ -1,5 +1,7 @@
 2004-04-13  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/main.cpp: Keys‚É‘Î‰ž
+
         * include/monapi/Keys.h (class Keys): Keys—ñ‹“’Ç‰Á
 
 2004-04-11  higepon  <higepon@users.sourceforge.jp>

@@ -317,69 +317,68 @@ void Shell::backspace() {
 int Shell::onKeyDown(int keycode, int modifiers) {
 
     switch(keycode) {
-    case(VK_A):
-    case(VK_B):
-    case(VK_C):
-    case(VK_D):
-    case(VK_E):
-    case(VK_F):
-    case(VK_G):
-    case(VK_H):
-    case(VK_I):
-    case(VK_J):
-    case(VK_K):
-    case(VK_L):
-    case(VK_M):
-    case(VK_N):
-    case(VK_O):
-    case(VK_P):
-    case(VK_Q):
-    case(VK_R):
-    case(VK_S):
-    case(VK_T):
-    case(VK_U):
-    case(VK_V):
-    case(VK_W):
-    case(VK_X):
-    case(VK_Y):
-    case(VK_Z):
-    case(VK_PERIOD):
-    case(VK_0):
-    case(VK_1):
-    case(VK_2):
-    case(VK_3):
-    case(VK_4):
-    case(VK_5):
-    case(VK_6):
-    case(VK_7):
-    case(VK_8):
-    case(VK_9):
-    case(VK_TEN_1):
-    case(VK_TEN_2):
-    case(VK_TEN_3):
-    case(VK_TEN_4):
-    case(VK_TEN_5):
-    case(VK_TEN_6):
-    case(VK_TEN_7):
-    case(VK_TEN_8):
-    case(VK_TEN_9):
-    case(VK_TEN_MINUS):
-    case(VK_TEN_PLUS):
-    case(VK_TEN_PERIOD):
-    case(VK_SPACE):
-    case(VK_SLASH):
+    case(Keys::A):
+    case(Keys::B):
+    case(Keys::C):
+    case(Keys::D):
+    case(Keys::E):
+    case(Keys::F):
+    case(Keys::G):
+    case(Keys::H):
+    case(Keys::I):
+    case(Keys::J):
+    case(Keys::K):
+    case(Keys::L):
+    case(Keys::M):
+    case(Keys::N):
+    case(Keys::O):
+    case(Keys::P):
+    case(Keys::Q):
+    case(Keys::R):
+    case(Keys::S):
+    case(Keys::T):
+    case(Keys::U):
+    case(Keys::V):
+    case(Keys::W):
+    case(Keys::X):
+    case(Keys::Y):
+    case(Keys::Z):
+    case(Keys::Decimal):
+    case(Keys::D0):
+    case(Keys::D1):
+    case(Keys::D2):
+    case(Keys::D3):
+    case(Keys::D4):
+    case(Keys::D5):
+    case(Keys::D6):
+    case(Keys::D7):
+    case(Keys::D8):
+    case(Keys::D9):
+    case(Keys::NumPad1):
+    case(Keys::NumPad2):
+    case(Keys::NumPad3):
+    case(Keys::NumPad4):
+    case(Keys::NumPad5):
+    case(Keys::NumPad6):
+    case(Keys::NumPad7):
+    case(Keys::NumPad8):
+    case(Keys::NumPad9):
+    case(Keys::OemMinus):
+    case(Keys::OemPlus):
+    case(Keys::Space):
+    case(Keys::Divide):
 
         commandChar(KeyBoardManager::toChar(keycode));
         break;
-    case(VK_ENTER):
+    case(Keys::Enter):
         commandTerminate();
         commandExecute();
         break;
-    case(VK_BACKSPACE):
+    case(Keys::Back):
         backspace();
         break;
 
-    case(VK_TEN_0):
+    case(Keys::NumPad0):
 
         strcpy(commandLine_, getHistory());
         printf("%s", commandLine_);

@@ -67,7 +67,9 @@ public:
         NumPad8 = 104,
         NumPad9 = 105,
         Decimal = 110,
-        Divide  = 111
+        Divide  = 111,
+        OemPlus = 187,
+        OemMinus= 189
     };
 };
 
