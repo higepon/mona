@@ -28,6 +28,7 @@ class MFDCDriver {
     void printStatus(const char*) const;
     void interrupt();
     bool read(byte track, byte head, byte sector);
+    bool writeID(byte track, byte head, byte data);
   private:
     void initilize();
     void setFDCVersion();

@@ -66,7 +66,7 @@
 #define FDC_COMMAND_READ            0x46
 
 /* time out */
-#define FDC_RETRY_MAX 600000
+#define FDC_RETRY_MAX 6000000
 
 /* delay */
 #define delay() inportb(0x80);
@@ -302,7 +302,7 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
     /* time out */
     console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
-                   , expectedCondition, inportb(FDC_MSR_PRIMARY), mask & inportb(FDC_MSR_PRIMARY));
+                   , expectedCondition, inportb(FDC_MSR_PRIMARY), status);
     return false;
 }
 
@@ -506,4 +506,12 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
     while (true);
 
     return true;
+}
+
+bool MFDCDriver::writeID(byte track, byte head, byte data) {
+
+    seek(track);
+
+
+    return false;
 }
