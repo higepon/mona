@@ -73,16 +73,10 @@ void TextField::repaint()
 	// 枠線
 	if (enabled == true) {
 		_g->setColor(0,128,255);
-		_g->drawLine(1, 0, width - 1, 0);
-		_g->drawLine(1, height, width - 1, height);
-		_g->drawLine(0, 1, 0, height - 1);
-		_g->drawLine(width, 1, width, height - 1);
+		_g->drawRect(0, 0, width, height);
 	} else {
 		_g->setColor(200,200,200);
-		_g->drawLine(1, 0, width - 1, 0);
-		_g->drawLine(1, height, width - 1, height);
-		_g->drawLine(0, 1, 0, height - 1);
-		_g->drawLine(width, 1, width, height - 1);
+		_g->drawRect(0, 0, width, height);
 	}
 	_g->setColor(0,0,0);
 	_g->drawRect(1, 1, width - 2, height - 2);
