@@ -8,7 +8,7 @@
 
 2004-05-26  higepon  <higepon@users.sourceforge.jp>
 
-        * src/lib/monalibc/math.cpp : monalibc‚Ésin(), cos(), sqrt()‚ð’Ç‰Á
+        * src/lib/monalibc/math.cpp : monalibc‚Ésin(), cos(), sqrt(), tan()‚ð’Ç‰Á
 
 2004-05-25  higepon  <higepon@users.sourceforge.jp>
 

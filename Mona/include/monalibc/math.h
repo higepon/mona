@@ -17,6 +17,7 @@ extern "C" {
 
 double sin(double angle);
 double cos(double angle);
+double tan(double angle);
 double sqrt(double num);
 
 #ifdef __cplusplus

@@ -24,6 +24,11 @@ double cos(double angle)
     return result;
 }
 
+double tan(double angle)
+{
+    return sin(angle) / cos(angle);
+}
+
 double sqrt(double num)
 {
     double result;
