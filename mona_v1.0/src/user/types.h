@@ -15,6 +15,7 @@
 #define _MONA_TYPES_
 
 #define NULL     0
+#define NORMAL   0
 
 typedef unsigned char  byte;
 typedef unsigned short word;

@@ -133,3 +133,40 @@ V86Process::V86Process(const char* name) {
     pinfo_.tick    = 0;
     pinfo_.dpl     = DPL_USER;
 }
+
+ProcessScheduler::ProcessScheduler() {
+
+    list_ = new HList<ProcessInfo_*>();
+
+    if (list_ == NULL) {
+        panic("ProcessScheduler::memory allocate error");
+        for (;;);
+    }
+}
+
+ProcessScheduler::~ProcessScheduler() {
+
+    delete list_;
+}
+
+ProcessInfo_* ProcessScheduler::schedule(ProcessInfo_* current) {
+
+    /* check dispach is empty */
+    if (list_->isEmpty()) return current;
+
+    /* round robin */
+    list_->add(current);
+    return (list_->remove(0));
+}
+
+int ProcessScheduler::addProcess(ProcessInfo_* pinfo) {
+
+    list_->add(pinfo);
+    return NORMAL;
+}
+
+int ProcessScheduler::kill(ProcessInfo_* pinfo) {
+
+    list_->remove(pinfo);
+    return NORMAL;
+}

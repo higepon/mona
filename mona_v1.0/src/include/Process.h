@@ -18,6 +18,7 @@
 #include <PageManager.h>
 #include <Segments.h>
 #include <collection.h>
+#include <kernel.h>
 
 #define MAX_PROCESS 512
 #define DPL_KERNEL  0
@@ -73,21 +74,22 @@ typedef struct ProcessInfo_ {
     byte state;
 };
 
-/* class ProcessScheduler { */
+class ProcessScheduler {
 
-/*   public: */
-/*     ProcessScheduler(); */
-/*     virtual ~ProcessScheduler(); */
+  public:
+    ProcessScheduler();
+    virtual ~ProcessScheduler();
 
-/*   public: */
-/*     schedule(); */
-/*     sleep(Process_* process); */
-/*     kill(Process_* process); */
+  public:
+    ProcessInfo_* schedule(ProcessInfo_* current);
+    int addProcess(ProcessInfo_* pinfo);
+    int kill(ProcessInfo_* pinfo);
 
-/*   private: */
-/*     HVector<Process_*>* list_; */
+  private:
+    List<ProcessInfo_*>* list_;
 
-/* } */
+};
+
 
 /*!
     class Process

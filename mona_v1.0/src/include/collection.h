@@ -21,7 +21,8 @@ template <class T> class List {
 
   public:
     virtual void add(T element)       = 0;
-    virtual T remove(size_t index)    = 0;
+    virtual T removeAt(size_t index)  = 0;
+    virtual T remove(T element)       = 0;
     virtual T get(size_t index) const = 0;
     virtual bool isEmpty() const      = 0;
     virtual size_t size() const       = 0;
@@ -37,7 +38,8 @@ template <class T> class HList : public List<T> {
     void add(T element);
     T get(size_t index) const;
     T operator[](size_t index);
-    T remove(size_t index);
+    T removeAt(size_t index);
+    T remove(T element);
     size_t size() const;
     virtual bool isEmpty() const;
   private:
@@ -217,7 +219,7 @@ template <class T> size_t HList<T>::size() const {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::remove(size_t index) {
+template <class T> T HList<T>::removeAt(size_t index) {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
@@ -235,6 +237,29 @@ template <class T> T HList<T>::remove(size_t index) {
     }
     numElements_--;
     return toRemove;
+}
+
+/*!
+    \brief remove element
+
+    remove element
+
+    \param element element to remove
+
+    \author HigePon
+    \date   create:2003/12/07 update:
+*/
+template <class T> T HList<T>::remove(T element) {
+
+    for (dword i = 0; i < size(); i++) {
+
+        /* element to remove found */
+        if (data_[i] == element) {
+            return (removeAt(i));
+        }
+    }
+
+    return (T)NULL;
 }
 
 /*!
