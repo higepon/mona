@@ -38,7 +38,7 @@ SOURCES    = cstart.cpp            \
              SystemInfo.cpp        \
              Semaphore.cpp         \
              SystemConsole.cpp     \
-             MFDCDriver.cpp
+             MFDCDriver.cpp        \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
