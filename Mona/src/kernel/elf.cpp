@@ -194,6 +194,14 @@ dword ELFLoader::load(byte* toAddress)
 {
     for (int i = 0; i < header_->phdrcnt; i++)
     {
+#if 1   // yui pheader_[0]->virtualaddr != ORG‚Ìê‡‚Éƒ[ƒh‚ÉŽ¸”s‚·‚é
+        if (pheader_[i].type == PT_LOAD) {
+            memcpy((void*)(pheader_[i].virtualaddr - ORG + toAddress), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
+            if (pheader_[i].memorysize > pheader_[i].filesize) {
+                memset((void*)(pheader_[i].virtualaddr + pheader_[i].filesize - ORG + toAddress), 0, pheader_[i].memorysize - pheader_[i].filesize);
+            }
+        }
+#else
         if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize)
         {
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - pheader_->virtualaddr), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
@@ -205,6 +213,7 @@ dword ELFLoader::load(byte* toAddress)
             /* zero clear*/
             //memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint + pheader_[i].filesize), 0, pheader_[i].memorysize - pheader_[i].filesize);
         }
+#endif
     }
 
     for (int i = 0; i < header_->shdrcnt; i++)
