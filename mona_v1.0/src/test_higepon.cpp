@@ -89,8 +89,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     static dword sharedId = 0x1000;
     sharedId++;
 
-    g_console->printf("hello load sharedId=%x \n\n\n", sharedId);
-
     int    fileSize;
     int    readTimes;
     byte*  buf;
@@ -162,7 +160,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     Thread*  thread = g_processManager->createThread(process, entrypoint);
     g_processManager->join(process, thread);
 
-    g_console->printf("end load\n");
     Semaphore::up(&g_semaphore_loadProcess);
     return 0;
 }
