@@ -143,6 +143,7 @@ void Shell::commandExecute(bool prompt)
     {
         this->executeMSH(cmdLine);
         if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
+        monapi_call_mouse_set_cursor(1);
         return;
     }
 
