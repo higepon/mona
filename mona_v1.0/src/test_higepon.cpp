@@ -15,6 +15,71 @@
     \version $Revision$
     \date   create:2003/05/18 update:$Date$
 */
+
+void ELFTester(byte* out) {
+
+    g_fdcdriver = new FDCDriver(g_console);
+
+    byte tbuf[512];
+    for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
+    for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
+
+    g_fdcdriver->motor(true);
+
+    info(DEV_NOTICE, "before recalibrate");
+
+    g_fdcdriver->recalibrate();
+
+    info(DEV_NOTICE, "before read");
+    for (int i = 0; i < 10; i++) {
+        memset(tbuf, 0x99, 512);
+        g_fdcdriver->read(1, tbuf);
+
+    }
+
+    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) {
+
+        int errorNo = fat->getErrorNo();
+
+        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else info(ERROR, "unknown error \n");
+
+        info(ERROR, "fat initilize faild\n");
+        while (true);
+    }
+
+    info(MSG, "initilize OK\n");
+
+    info(MSG, "try to open file hige.cpp\n");
+    if (!fat->open(".", "USER.ELF", FAT12::READ_MODE)) {
+
+        info(ERROR, "open failed");
+    }
+
+    for (int i = 0; i < 10; i++) {
+
+        if (!fat->read(out + 512 * i)) {
+
+            info(ERROR, "read failed %d", i);
+        }
+
+    }
+
+    if (!fat->close()) {
+       info(ERROR, "close failed");
+    }
+
+    g_console->printf("\nUSER.ELF\n");
+    g_fdcdriver->motor(false);
+
+}
+
+
+
+
 void FDCTester() {
 
     g_fdcdriver = new FDCDriver(g_console);

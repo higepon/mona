@@ -13,7 +13,10 @@
 
 #ifndef _MONA_TESTER_
 #define _MONA_TESTER_
+
+#include <types.h>
 #include <test_mjt.h>
+
 void hvectorTester();
 void operatorTester();
 void typeTester();
@@ -23,4 +26,5 @@ void process2Tester();
 void process3Tester();
 void STLTester();
 void FDCTester();
+void ELFTester(byte* out);
 #endif

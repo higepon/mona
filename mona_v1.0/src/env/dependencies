@@ -110,14 +110,14 @@ FAT12.o: FAT12.cpp include/FAT12.h user/types.h include/DiskDriver.h \
   include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
   include/operator.h
-test_higepon.o: test_higepon.cpp include/tester.h include/test_mjt.h \
-  include/FAT12.h user/types.h include/DiskDriver.h include/BitMap.h \
-  include/FDCDriver.h include/VirtualConsole.h include/string.h \
-  include/global.h include/info.h include/kernel.h include/Semaphore.h \
-  include/GDTUtil.h include/IDTUtil.h include/Process.h \
-  include/PageManager.h include/Queue.h include/Scheduler.h \
-  include/ProcessManager.h include/ihandlers.h include/sysresource.h \
-  include/MessageServer.h include/Message.h
+test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
+  include/test_mjt.h include/FAT12.h include/DiskDriver.h \
+  include/BitMap.h include/FDCDriver.h include/VirtualConsole.h \
+  include/string.h include/global.h include/info.h include/kernel.h \
+  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
+  include/Process.h include/PageManager.h include/Queue.h \
+  include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
+  include/sysresource.h include/MessageServer.h include/Message.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \
@@ -187,4 +187,5 @@ PageManager.o: PageManager.cpp include/PageManager.h include/Queue.h \
   include/Process.h include/Scheduler.h include/ProcessManager.h \
   include/ihandlers.h include/sysresource.h include/MessageServer.h \
   include/Message.h
+elf.o: elf.cpp include/elf.h user/types.h include/string.h
 test_mjt.o: test_mjt.cpp

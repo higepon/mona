@@ -56,6 +56,7 @@ SOURCES    = cstart.cpp            \
              ProcessManager.cpp    \
              MessageServer.cpp     \
              PageManager.cpp       \
+             elf.cpp               \
              test_mjt.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)

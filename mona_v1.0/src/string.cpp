@@ -102,7 +102,7 @@ int strcmp(const char* str1, const char* str2) {
     return (unsigned char)*str1 - (unsigned char)*str2;
 }
 
-void* memcpy(void* s1, const void* s2, size_t size) {
+void* memcpy(void* s1, void* s2, size_t size) {
 
     char* p = (char*)s1;
     const char* s = (char*)s2;
