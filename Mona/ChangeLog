@@ -1,3 +1,11 @@
+2004-04-29  tino  <tino@users.sourceforge.jp>
+
+        * bin/root/MONA.CFG: VESAの設定を記述
+
+        * src/kernel/secondboot.asm: MONA.CFGを読み込んでVESAの解像度とbppを設定
+
+        * src/kernel/Makefile: secondboot.asmのサイズが確定したためKERNEL_ADDR=0x0400に変更
+
 2004-04-29  shadow  <shadowin@users.sourceforge.jp>
 
         * include/monapi/Keys.h: KEY_MODIFIER_CHAR追加
@@ -18,7 +26,7 @@
                                カーネルの開始位置をKERNEL_ADDRで定義
                                secondboot.asm拡張のためKERNEL_ADDR=0x1000に変更
 
-        * src/secondboot.asm: KERNEL_ADDRに対応
+        * src/kernel/secondboot.asm: KERNEL_ADDRに対応
 
         * src/servers/shell/main.cpp: 小文字で入力された内部コマンドに対応
                                       ファイルの中身を表示する内部コマンドCAT/TYPEを追加

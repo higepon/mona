@@ -3,8 +3,8 @@ MONADIR         = ../..
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 
-KERNEL_ADDR  = 0x1000
-LFLAGS       = -n -Ttext 0x2000 -static
+KERNEL_ADDR  = 0x0400
+LFLAGS       = -n -Ttext 0x1400 -static
 TOOLSDIR     = $(MONADIR)/tools
 INCLUDE      = -I$(INCDIR) -I$(TOOLSDIR)
 KERNEL_IMG   = KERNEL.IMG
