@@ -35,7 +35,7 @@ _arch_fdchandler:
 ;;; save all context to Kthread* current
 _arch_timerhandler:
         pushad
-        call _save_registers
+;          call _save_registers
         call _timerHandler
         popad
         iretd

@@ -76,7 +76,7 @@ void fault0dHandler() {
 */
 void dummyHandler() {
 
-    //    console->printf("dummy Handler\n");
+    console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
@@ -94,6 +94,7 @@ void dummyHandler() {
 */
 void timerHandler() {
 
+    console->printf("timer handler");
     static dword idx = 0;
     idx++;
     /* EOI is below for IRQ 8-15 */
@@ -138,16 +139,16 @@ void MFDCHandler(void) {
 
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
-     {0x00, &arch_dummyhandler}
-   , {0x01, &arch_dummyhandler}
+     {0x00, &arch_timerhandler}
+   , {0x01, &arch_keystrokehandler}
    , {0x02, &arch_dummyhandler}
    , {0x03, &arch_dummyhandler}
    , {0x04, &arch_dummyhandler}
    , {0x05, &arch_dummyhandler}
    , {0x06, &arch_dummyhandler}
    , {0x07, &arch_dummyhandler}
-   , {0x08, &arch_timerhandler}
-   , {0x09, &arch_keystrokehandler}
+   , {0x08, &arch_dummyhandler}
+   , {0x09, &arch_dummyhandler}
    , {0x0A, &arch_dummyhandler}
    , {0x0B, &arch_dummyhandler}
    , {0x0C, &arch_dummyhandler}

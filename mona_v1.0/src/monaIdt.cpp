@@ -12,8 +12,8 @@
     \date   create:2002/07/23 update:$Date$
 */
 #include <monaIdt.h>
-#include <monaVga.h>
 #include <monaIo.h>
+
 /*!
     \brief set up idt
 

@@ -14,6 +14,7 @@
 #include<monaKernel.h>
 #include<monaOperator.h>
 #include<monaIhandler.h>
+#include<monaIdt.h>
 
 Kthread*    current = NULL; /*< pointer to current kernel thread    */
 Kthread    runningList;
@@ -45,7 +46,6 @@ void kthread_init() {
     kthread_add_to_prev_list(&runningList, idle);
 
     dword stack2 = kthread_allocate_stack();
-
     if (stack2 == NULL) {
         panic("idle thread:stack allocate error");
     }
@@ -58,9 +58,8 @@ void kthread_init() {
 
     kthread_add_to_prev_list(&runningList, idle2);
 
-    current = idle;
-    console->printf("runlist=[%x], idle=[%x] idle2=[%x]\n", &runningList, idle, idle2);
-
+    current = idle2;
+    //    kthread_schedule();
 }
 
 void kthread_printInfo() {
@@ -146,7 +145,7 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
     /* create thread */
     thread->eip    = (dword)f;
     thread->cs     = 0x08;
-    thread->eflags = 0x200046;
+    thread->eflags = 0x0200046;
     thread->esp    = stack;
     thread->ebp    = stack;
 
@@ -169,7 +168,9 @@ extern "C" char pos_y;
 */
 void kthread_idle() {
 
-    while (true) console->printf("[1]");
+    console->printf("kthread idle\n");
+    while (true) {
+       console->printf("[1]");}
 
 //      dword color = 0;
 
@@ -198,7 +199,7 @@ void kthread_idle() {
 */
 void kthread_idle2() {
 
-    while (true) console->printf("[2]");
+    while (true)    { enableInterrupt();console->printf("[2]");}
 //      dword color = 0;
 
 //      while (true) {
@@ -226,12 +227,11 @@ void kthread_idle2() {
 void kthread_schedule() {
 
     /* change runlist */
-    //    Kthread* temp = current;
+    Kthread* temp = kthread_get_next_from_list(&runningList);
 
-    //    current = kthread_get_next_from_list(&runningList);
+    kthread_add_to_prev_list(&runningList, temp);
 
-    //    console->printf("temp=[%x]", (dword)temp);
-    //    kthread_add_to_prev_list(&runningList, temp);
+    //    current =  (&runningList)->next;
 
     /* switch */
     kthread_switch();
@@ -245,6 +245,7 @@ void kthread_schedule() {
 */
 void kthread_switch() {
 
+    console->printf("switch\n");
     arch_kthread_switch();
 }
 

@@ -56,20 +56,38 @@ void startKernel(void) {
     /* show start message */
     printBanner();
 
-    /* set interrept */
+
+
+    outportb(0x20, 0x11); /* ICW1 */
+    outportb(0x21, 0x00); /* ICW2 */
+    outportb(0x21, 0x04); /* ICW3 */
+    outportb(0x21, 0x01); /* ICW4 */
+    outportb(0xa0, 0x11);
+
+    outportb(0xa1, 0x28);
+
+    outportb(0xa1, 0x02);
+
+    outportb(0xa1, 0x01);
+
+    /* set interrupt */
     _sysSetIdt();
-    _sysInitIo();
+
+    console->printf("IMR [%x]\n", (dword)inportb(0x21));
+
+    //    _sysInitIo();
     printOK("Setting IDT        ");
+    printOK("Setting GDT        ");
+
+    console->printf("IMR [%x]\n", (dword)inportb(0x21));
+
     disableTimer();
 
-    /* enable interrupt */
-    enableInterrupt();
-
-    Kthread thread;
-    current = &thread;
+    console->printf("IMR [%x]\n", (dword)inportb(0x21));
 
     //    enableTimer();
-    printOK("Setting GDT        ");
+    /* enable interrupt */
+    enableInterrupt();
 
     /* check some */
     checkTypeSize();
@@ -88,18 +106,8 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
-    /* disk read demo */
-    console->printf("\ndisk read test start. Hit any key\n\n");
-    while (true) {
-        console->printf("");
-        if (demoStep > 1) break;
-    }
-
-
-    gMFDCDriver = new MFDCDriver(console);
-
-    kthread_init();
-    enableTimer();
+    //    kthread_init();
+    //    enableTimer();
     while (true);
 
     /* test code is here */
@@ -175,7 +183,7 @@ inline void printBanner() {
     console->setCHColor(GP_GRAY);
     console->printf(") < ");
     console->setCHColor(GP_SKYBLUE);
-    console->printf("ÓÅ ½À°Ä\n");
+    console->printf("ŽÓŽÅ\n");
     console->setCHColor(GP_GRAY);
     console->printf("        UU       U U                                  \n");
     console->printf("------------------------------------------------------\n");

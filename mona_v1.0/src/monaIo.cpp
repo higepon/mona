@@ -42,7 +42,7 @@ void _sysInitIo() {
 */
 byte inportb(dword port) {
 
-    unsigned char ret;
+    byte ret;
     asm volatile ("inb %%dx,%%al":"=a" (ret):"d" (port));
     return ret;
 }

@@ -24,8 +24,8 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
   include/ProcessManager.h include/kthread.h include/monaIhandler.h
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h
-monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
-  include/monaTypes.h include/string.h include/monaIo.h
+monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaIo.h \
+  include/monaTypes.h include/string.h
 monaIhandler.o: monaIhandler.cpp include/monaIdt.h include/monaIo.h \
   include/monaTypes.h include/string.h include/KeyBoardManager.h \
   include/monaVga.h stlport/queue stlport/stl/_prolog.h \
@@ -146,4 +146,4 @@ GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h include/monaTypes.h include/string.h
 kthread.o: kthread.cpp include/kthread.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h \
-  include/monaOperator.h include/monaIhandler.h
+  include/monaOperator.h include/monaIhandler.h include/monaIdt.h
