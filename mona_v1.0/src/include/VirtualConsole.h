@@ -21,8 +21,8 @@ class VirtualConsole {
 
   public:
     virtual void printf(const char *, ...) = 0;
-    //    virtual void setBGColor(const char color) = 0;
-    //    virtual void setCGColor(const char color) = 0;
+    virtual void setBGColor(const char color) = 0;
+    virtual void setCHColor(const char color) = 0;
 };
 
 

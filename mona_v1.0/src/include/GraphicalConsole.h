@@ -25,6 +25,24 @@
 #define GP_MAX_WIDTH  80
 #define GP_MAX_HEIGHT 28
 
+#define GP_BLACK      0
+#define GP_BLUE       1
+#define GP_GREEN      2
+#define GP_SKYBLUE    3
+#define GP_RED        4
+#define GP_PINK       5
+#define GP_ORANGE     6
+#define GP_GRAY       7
+#define GP_DARKGRAY   8
+#define GP_LIGHTBLUE  9
+#define GP_LIGHTBLUE  10
+#define GP_LIGHTGREEN 11
+#define GP_LIGHTRED   12
+#define GP_DARKPINK   13
+#define GP_YELLOW     14
+#define GP_WHITE      15
+
+
 /*!
     Graphical console class
 */
@@ -33,6 +51,8 @@ class GraphicalConsole : public VirtualConsole {
   public:
     GraphicalConsole();
     void printf(const char *, ...);
+    void setBGColor(const char color);
+    void setCHColor(const char color);
 
   private:
     void forwardCursor();

@@ -132,9 +132,9 @@ inline void printOK(const char* msg) {
 
     console->printf((char*)msg);
     console->printf("[");
-    _sysSetColor(SYS_BG_COLOR | CH_RED);
+    console->setCHColor(GP_RED);
     console->printf("OK");
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    console->setCHColor(GP_GRAY);
     console->printf("]\n");
 }
 
@@ -149,23 +149,25 @@ inline void printOK(const char* msg) {
 inline void printBanner() {
 
     console->printf("------------------------------------------------------\n");
-    _sysSetColor(SYS_BG_COLOR | CH_AQUA);
+    console->setCHColor(GP_SKYBLUE);
     console->printf("      Mona Kernel starting                            \n");
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    console->setCHColor(GP_GRAY);
     console->printf("        ________ A A                                  \n");
     console->printf("      ~/ ______( ");
-    _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
+    console->setCHColor(GP_RED);
     console->printf("`");
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    console->setCHColor(GP_GRAY);
     console->printf("D");
-    _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
+    console->setCHColor(GP_RED);
     console->printf("`");
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    console->printf(") < thanks ProgrammingBoard@2Á¬Ý  \n");
+    console->setCHColor(GP_GRAY);
+    console->printf(") < ");
+    console->setCHColor(GP_SKYBLUE);
+    console->printf("ÓÅ ½À°Ä\n");
+    console->setCHColor(GP_GRAY);
     console->printf("        UU       U U                                  \n");
     console->printf("------------------------------------------------------\n");
-    _sysSetColor(SYS_BG_COLOR | CH_MAROON);
-    console->printf("%s\n", version);
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    console->printf("\nÓÅ Ä Ò¸Þ Ê ·®³ÀÞ²ÃÞ½\n\n");
+    console->setCHColor(GP_LIGHTGREEN);
+    console->printf("%s\n\n", version);
+    console->setCHColor(GP_GRAY);
 }

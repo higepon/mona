@@ -30,9 +30,35 @@ GraphicalConsole::GraphicalConsole() {
 
     pos_x    = 0;
     pos_y    = 0;
-    bgcolor_ = 0;
-    chcolor_ = 1;
+    bgcolor_ = GP_BLACK;
+    chcolor_ = GP_GRAY;
     clearScreen();
+}
+
+/*!
+    \brief printf
+
+    \param  color background color
+    \author HigePon
+    \date   create:2003/03/01 update:
+*/
+void GraphicalConsole::setBGColor(const char color) {
+
+    bgcolor_ = color;
+    return;
+}
+
+/*!
+    \brief printf
+
+    \param  color character color
+    \author HigePon
+    \date   create:2003/03/01 update:
+*/
+void GraphicalConsole::setCHColor(const char color) {
+
+    chcolor_ = color;
+    return;
 }
 
 /*!
