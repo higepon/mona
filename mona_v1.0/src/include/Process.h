@@ -195,7 +195,7 @@ class Process_ {
 
   public:
     Process_() {}
-    Process_(const char* name);
+    Process_(const char* name, PageEntry* directory);
     virtual ~Process_();
 
   public:
@@ -218,6 +218,7 @@ class Process_ {
   protected:
     bool isKernelMode_;
     ThreadManager* threadManager_;
+    PageEntry* pageDirectory_;
     char name_[16];
     //    OutputStream* stdout;
     //    OutputStream* stderr;
@@ -236,7 +237,7 @@ class UserProcess_ : public Process_ {
 
   public:
     UserProcess_();
-    UserProcess_(const char* name);
+    UserProcess_(const char* name, PageEntry* directory);
     virtual ~UserProcess_();
 };
 
@@ -247,7 +248,7 @@ class KernelProcess_ : public Process_ {
 
   public:
     KernelProcess_();
-    KernelProcess_(const char* name);
+    KernelProcess_(const char* name, PageEntry* directory);
     virtual ~KernelProcess_();
 };
 

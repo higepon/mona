@@ -360,16 +360,16 @@ bool ProcessScheduler::hasProcess(Process_* process) const {
 ----------------------------------------------------------------------*/
 ProcessManager_::ProcessManager_(PageManager* pageManager) {
 
+    /* page manager */
+    pageManager_ = pageManager;
+
     /* create idle process */
-    idle_ = new KernelProcess_("Idle");
+    idle_ = new KernelProcess_("Idle", pageManager_->createNewPageDirectory());
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
 
     /* scheduler */
     scheduler_ = new ProcessScheduler(idle_);
     checkMemoryAllocate(scheduler_, "ProcessManager memory allocate scheduler");
-
-    /* page manager */
-    pageManager_ = pageManager;
 }
 
 ProcessManager_::~ProcessManager_() {
@@ -442,10 +442,10 @@ Process_* ProcessManager_::create(int type, const char* name) {
     switch (type) {
 
       case USER_PROCESS:
-          result = new UserProcess_(name);
+          result = new UserProcess_(name, pageManager_->createNewPageDirectory());
           break;
       case KERNEL_PROCESS:
-          result = new KernelProcess_(name);
+          result = new KernelProcess_(name, pageManager_->createNewPageDirectory());
           break;
       default:
           result = (Process_*)NULL;
@@ -484,10 +484,13 @@ bool ProcessManager_::hasProcess(Process_* process) const {
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-Process_::Process_(const char* name) : tick_(0), timeLeft_(4) {
+Process_::Process_(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
+
+    /* address space */
+    pageDirectory_ = directory;
 }
 
 Process_::~Process_() {
@@ -508,7 +511,7 @@ Thread* Process_::schedule() {
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/
-UserProcess_::UserProcess_(const char* name) : Process_(name) {
+UserProcess_::UserProcess_(const char* name, PageEntry* directory) : Process_(name, directory) {
 
     /* not kernel mode */
     isKernelMode_ = false;
@@ -520,7 +523,7 @@ UserProcess_::~UserProcess_() {
 /*----------------------------------------------------------------------
     KernelProcess
 ----------------------------------------------------------------------*/
-KernelProcess_::KernelProcess_(const char* name) : Process_(name) {
+KernelProcess_::KernelProcess_(const char* name, PageEntry* directory) : Process_(name, directory) {
 
     /* kernel mode */
     isKernelMode_ = true;
