@@ -154,7 +154,5 @@ void ListBox::postEvent(Event *event)
 			repaint();
 			Control::postEvent(_focusEvent);
 		}
-	} else {
-		Control::postEvent(event);
 	}
 }
