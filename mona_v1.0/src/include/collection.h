@@ -29,7 +29,7 @@ template <class T> class BinaryTree {
   public:
     dword size() const;
     T get(const dword key) const;
-    bool conatains(const dword key) const;
+    bool contains(const dword key) const;
     void add(const dword key, const T element);
 
   private:
@@ -61,6 +61,10 @@ template <class T> void BinaryTree<T>::add(const dword key, const T element) {
 
     add(root_, key, element);
     numberOfElements_++;
+}
+
+template <class T> bool BinaryTree<T>::contains(const dword key) const {
+    return contains(root_, key);
 }
 
 template <class T> void BinaryTree<T>::add(Node* tree, const dword key, const T element) {
