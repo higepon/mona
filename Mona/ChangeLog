@@ -1,3 +1,7 @@
+2004-10-18  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/syscall.h (log): logprintf + __FILE_ + __LINE__
+
 2004-10-18  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gbrowser: ƒuƒ‰ƒEƒU‚à‚Ç‚«’Ç‰Á
