@@ -127,8 +127,6 @@ void printInfo() {
         testFD("KERNEL.IMG");
     }
 
-    delete(g_fdcdriver);
-
     for (;;) {
 
         //        while (Semaphore::down(&g_semaphore_console));
