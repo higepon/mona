@@ -231,8 +231,6 @@ void mainProcess()
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
-    g_console->printf("[0p]");
-
     if (!g_fat12->initilize())
     {
         g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
