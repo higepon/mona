@@ -23,6 +23,9 @@
 
 #include <stdio.h>
 
+#elif defined USER_LIB
+
+#define printf g_console->printf
 #else
 
 #include <global.h>

@@ -18,8 +18,8 @@ int main() {
     //         }
     //     }
 
-    Message message;
-    char buf[32];
+    //    Message message;
+    //    char buf[32];
     for (;;) {
 
 //         if (!_receive(&message)) {

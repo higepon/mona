@@ -120,6 +120,8 @@ bool ProcessManager::addProcess(Process* process, PageEntry* directory, virtual_
     process->pinfo_.stack  = new StackSegment(0xFFFFEFFF, 0x1000, 0x3000);
     g_page_manager->allocatePhysicalPage((PageEntry*)(process->pinfo_.cr3), 0xFFFFFFFF, true, true, true);
 
+    g_console->printf("esp=[%s, %x]", process->pinfo_.name, process->pinfo_.esp);
+
     g_process[pnum_] = process;
     pnum_++;
 

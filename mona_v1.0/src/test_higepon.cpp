@@ -132,9 +132,10 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     }
 
     ELFLoader* loader = new ELFLoader();
-    g_console->printf("elf size = %d", loader->prepare((dword)buf));
-    dword entrypoint = loader->load((byte*)0x80000000);
 
+    g_console->printf("elf size = %d", loader->prepare((dword)buf));
+
+    dword entrypoint = loader->load((byte*)0x80000000);
     g_console->printf("entrypoint=%x", entrypoint);
 
     delete(loader);
@@ -149,7 +150,10 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
+    g_console->printf("@@12@@\n");
+    while (true);
     g_process_manager->addProcess(process1, entrypoint);
+
     return 0;
 }
 

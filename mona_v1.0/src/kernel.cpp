@@ -162,58 +162,28 @@ void startKernel(void) {
 
 void mainProcess() {
 
-    //   disableInterrupt();
-    //    ELFTester(user_func_from);
-    //    byte* user_func = (byte*)0xA00000;
-    //    ELFLoader* loader = new ELFLoader();
+    /*
+       User Process should be exec by LoadProcess()
 
-    //    loader->prepare((dword)user_func_from);
-    //    loader->load(user_func);
+       You can't exec User Process here.
+    */
 
-    //    UserProcess* process1 = new UserProcess("user_process ");
     //Process*     process2 = new Process("krnl_o       ");
-    //Process*     process3 = new Process("krnl_n       ");
-    //Process*     process4 = new Process("krnl_m       ");
     //Process*     process5 = new Process("krnl_o2      ");
-    //UserProcess* process6 = new UserProcess("user_process2");
+    //Process*     process3 = new Process("krnl_n       ");
+    Process*     process4 = new Process("krnl_m       ");
     Process*     process7 = new Process("show_process ");
-    //V86Process*  process9 = new V86Process("V86_process");
-
-    //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));S
-    //    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
-    //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
 
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    //    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
-    //    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
-    //    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-    //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
-    //    process9->pinfo_.esp = 0x1000;
+    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
 
-    //    g_console->printf("load prcess 0");
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", false));
+    //  g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
+    //  g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
+    //  g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
+
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
 
     while (true);
-}
-
-
-void userTest() {
-
-    while (true) {
-
-        //        int result = syscall_heavy();
-        while(true);
-    }
-}
-
-void userTest2() {
-    while (true) {
-
-        //syscall_sleep(500);
-        //        syscall_print("Hello");
-        //        syscall_heavy();
-        while (true);
-    }
 }
 
 void idle_process() {

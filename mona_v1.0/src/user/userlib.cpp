@@ -13,12 +13,12 @@ int _receive(Message* message) {return syscall_receive(message);}
 
 int monamain();
 
-static MemoryManager um;
+//static MemoryManager um;
 
 int user_start() {
     int result;
     //    um.initialize(0xC0000000,0xC0000000 + 1024 * 1024);
-
+    while (true);
     result = monamain();
     exit(result);
     for (;;);
@@ -132,11 +132,11 @@ int syscall_receive(Message* message) {
 
 void* umalloc(unsigned long size) {
 
-    return um.allocate(size);
+    //    return um.allocate(size);
 }
 
 void ufree(void * address) {
 
-    um.free(address);
+    //    um.free(address);
     return;
 }
