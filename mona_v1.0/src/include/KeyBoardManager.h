@@ -119,8 +119,8 @@ class KeyBoardManager {
     bool isMenu_;
     static const int keyMap_[128];
     static const int keyMapE0_[128];
-    H_BYTE idHigh_;
-    H_BYTE idLow_;
+    byte idHigh_;
+    byte idLow_;
   public:
 
     static KeyBoardManager& instance() {
@@ -130,7 +130,7 @@ class KeyBoardManager {
 
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
-    void printInfo(H_BYTE, H_BYTE) const;
+    void printInfo(byte, byte) const;
 };
 
 

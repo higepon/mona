@@ -24,8 +24,8 @@
  */
 typedef struct memoryEntry {
     struct memoryEntry* next;
-    H_SIZE_T size;
-    H_BYTE startAddress[0];
+    size_t size;
+    byte startAddress[0];
 };
 
 /*!
@@ -39,18 +39,18 @@ class X86MemoryManager {
     ~X86MemoryManager();
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
-    H_SIZE_T getRealSize(H_SIZE_T) const;
-    void addToEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
-    void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
+    size_t getRealSize(size_t) const;
+    void addToEntry(struct memoryEntry**, struct memoryEntry*, size_t);
+    void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, size_t);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
-    const H_SIZE_T MEMORY_START;
-    const H_SIZE_T MEMORY_END;
+    const size_t MEMORY_START;
+    const size_t MEMORY_END;
     struct memoryEntry* freeEntry_;
     struct memoryEntry* usedEntry_;
   public:
 
     char* getName() const;
-    void* allocateMemory(H_SIZE_T);
+    void* allocateMemory(size_t);
     void freeMemory(void*);
     void printInfo(char*) const;
     static void enableA20() {

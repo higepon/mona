@@ -122,7 +122,7 @@ void _sys_printf (char* format, ...) {
     \author  HigePon
     \date    create:2002/10/26 update:
 */
-void _sysPutInt(H_SIZE_T n, int base) {
+void _sysPutInt(size_t n, int base) {
 
     int ch;
 

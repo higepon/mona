@@ -69,6 +69,6 @@ void backwardCursor(void);
 void backwardCursor(int);
 void setCursor(int, int);
 void scrollUp();
-void _sysPutInt(H_SIZE_T, int);
+void _sysPutInt(size_t, int);
 void _sysSetColor(char);
 #endif

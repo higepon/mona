@@ -23,22 +23,22 @@ template <class T> class HVector {
 
   public:
     HVector();
-    HVector(H_SIZE_T size);
-    HVector(H_SIZE_T size, H_SIZE_T increase);
+    HVector(size_t size);
+    HVector(size_t size, size_t increase);
     ~HVector();
     void add(T element);
-    T get(H_SIZE_T index) const;
-    T operator[](H_SIZE_T index);
-    T remove(H_SIZE_T index);
-    H_SIZE_T size() const;
+    T get(size_t index) const;
+    T operator[](size_t index);
+    T remove(size_t index);
+    size_t size() const;
   private:
     T* data_;              /* internal array     */
-    H_SIZE_T size_;        /* size of vector     */
-    H_SIZE_T numElements_; /* number of elements */
-    H_SIZE_T increase_;    /* increase           */
+    size_t size_;        /* size of vector     */
+    size_t numElements_; /* number of elements */
+    size_t increase_;    /* increase           */
 
     /* initilize */
-    void init(H_SIZE_T size, H_SIZE_T increase);
+    void init(size_t size, size_t increase);
 
 };
 
@@ -66,7 +66,7 @@ template <class T> HVector<T>::HVector() {
     \author HigePon
     \date   create:2002/10/22 update:
 */
-template <class T> HVector<T>::HVector(H_SIZE_T size) {
+template <class T> HVector<T>::HVector(size_t size) {
 
     init(size, 5);
     return;
@@ -83,7 +83,7 @@ template <class T> HVector<T>::HVector(H_SIZE_T size) {
     \author HigePon
     \date   create:2002/10/23 update:
 */
-template <class T> HVector<T>::HVector(H_SIZE_T size, H_SIZE_T increase) {
+template <class T> HVector<T>::HVector(size_t size, size_t increase) {
 
     init(size, increase);
     return;
@@ -145,7 +145,7 @@ template <class T> void HVector<T>::add(T element) {
     \author HigePon
     \date   create:2002/10/23 update:
 */
-template <class T> T HVector<T>::get(H_SIZE_T index) const {
+template <class T> T HVector<T>::get(size_t index) const {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
@@ -165,7 +165,7 @@ template <class T> T HVector<T>::get(H_SIZE_T index) const {
     \author HigePon
     \date   create:2002/10/23 update:
 */
-template <class T> T HVector<T>::operator[](H_SIZE_T index) {
+template <class T> T HVector<T>::operator[](size_t index) {
 
     return (this->get(index));
 }
@@ -180,7 +180,7 @@ template <class T> T HVector<T>::operator[](H_SIZE_T index) {
     \author HigePon
     \date   create:2002/10/22 update:
 */
-template <class T> H_SIZE_T HVector<T>::size() const {
+template <class T> size_t HVector<T>::size() const {
     return numElements_;
 }
 
@@ -194,7 +194,7 @@ template <class T> H_SIZE_T HVector<T>::size() const {
     \author HigePon
     \date   create:2002/10/23 update:
 */
-template <class T> T HVector<T>::remove(H_SIZE_T index) {
+template <class T> T HVector<T>::remove(size_t index) {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
@@ -222,7 +222,7 @@ template <class T> T HVector<T>::remove(H_SIZE_T index) {
     \author HigePon
     \date   create:2002/10/23 update:
 */
-template <class T> void HVector<T>::init(H_SIZE_T size, H_SIZE_T increase) {
+template <class T> void HVector<T>::init(size_t size, size_t increase) {
 
     /* number of elements */
     numElements_ = 0;

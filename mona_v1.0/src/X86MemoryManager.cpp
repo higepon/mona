@@ -39,7 +39,7 @@ inline char* X86MemoryManager::getName() const {
     \author HigePon
     \date   create:2002/08/07 update:2002/09/08
 */
-void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
+void* X86MemoryManager::allocateMemory(size_t size) {
 
     /* size 0 */
     if (size == 0) return NULL;
@@ -48,7 +48,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     if (freeEntry_ == NULL) return NULL;
 
     /* getRealSize */
-    H_SIZE_T realSize = this->getRealSize(size);
+    size_t realSize = this->getRealSize(size);
 
     /* search block in free list that has enough size for needed */
     struct memoryEntry* current;
@@ -61,8 +61,8 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
     struct memoryEntry* usedBlock = current;
     struct memoryEntry* freeBlock = current + realSize;
-    H_SIZE_T usedBlockSize = realSize;
-    H_SIZE_T freeBlockSize = current->size - realSize;
+    size_t usedBlockSize = realSize;
+    size_t freeBlockSize = current->size - realSize;
 
     if (current->size != realSize) {
         this->addToEntry(&freeEntry_, freeBlock, freeBlockSize);
@@ -93,8 +93,8 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 */
 void X86MemoryManager::freeMemory(void* address) {
 
-    struct memoryEntry* targetAddress = (struct memoryEntry*)((H_SIZE_T)address
-                                      - sizeof(H_SIZE_T)
+    struct memoryEntry* targetAddress = (struct memoryEntry*)((size_t)address
+                                      - sizeof(size_t)
                                       - sizeof(struct memoryEntry*));
     this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
     this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
@@ -152,7 +152,7 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) 
     \author HigePon
     \date   create:2002/09/07 update:
 */
-inline H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) const {
+inline size_t X86MemoryManager::getRealSize(size_t size) const {
 
     return (size + sizeof(struct memoryEntry));
 }
@@ -214,7 +214,7 @@ void X86MemoryManager::printInfo(char* str) const {
     \author HigePon
     \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry* block, H_SIZE_T size) {
+void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry* block, size_t size) {
 
     if (*entry == (struct memoryEntry*)NULL) {
 
@@ -241,7 +241,7 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
 
     struct memoryEntry* current;
     struct memoryEntry* next;
-    H_SIZE_T nextSize;
+    size_t nextSize;
 
     for (current = (*entry); current != (struct memoryEntry*)NULL; current = current->next) {
 
@@ -276,7 +276,7 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memoryEntry* block, H_SIZE_T size) {
+void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memoryEntry* block, size_t size) {
 
     /* delete block is top of the list */
     if (*entry == block && (*entry)->next == (struct memoryEntry*)NULL) {
@@ -285,7 +285,7 @@ void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memory
     } else if (*entry == block && (*entry)->next != (struct memoryEntry*)NULL) {
 
         struct memoryEntry* nextNextEntry = (*entry)->next->next;
-        H_SIZE_T nextSize = (*entry)->next->size;
+        size_t nextSize = (*entry)->next->size;
         *entry = (*entry)->next;
         (*entry)->size = nextSize;
         (*entry)->next = nextNextEntry;
@@ -320,7 +320,7 @@ void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry
     if (block->next == (struct memoryEntry*)NULL) return;
 
     struct memoryEntry* canConcatAddress = block + (block->size);     /* address of block we can concat */
-    H_SIZE_T nextSize;
+    size_t nextSize;
 
     /* we can concat two block into one block */
     if (block->next == canConcatAddress) {

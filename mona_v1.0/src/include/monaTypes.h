@@ -14,8 +14,6 @@
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
 
-#define H_SIZE_T unsigned long
-#define H_BYTE   unsigned char
 #define NULL     0
 
 #ifndef __SIZE_TYPE__

@@ -104,8 +104,8 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
-    H_BYTE keycode   = 0; /* keycode       */
-    H_BYTE modifiers = 0; /* key modifiers */
+    byte keycode   = 0; /* keycode       */
+    byte modifiers = 0; /* key modifiers */
 
     _sys_printf("scancode=%x ", scancode);
 
@@ -191,7 +191,7 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     \author HigePon
     \date   create:2002/10/25 update:2002/10/25
 */
-void KeyBoardManager::printInfo(H_BYTE keycode, H_BYTE modifiers) const {
+void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
 
     _sys_printf("%s %s%s%s%s%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN )? "down" : "up  "
                                    , (modifiers & KEY_MODIFIER_SHIFT)? "shift": ""
