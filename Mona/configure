@@ -27,15 +27,18 @@ echo -n "OSTYPE: "
 # cygwin
 if test "$OSTYPE" = "cygwin" ; then
    cp  env/cygwin.env env/Makefile.inc
+   cp  tools/t5lzma/7zip/Compress/LZMA_Alone/Makefile.posix tools/t5lzma/7zip/Compress/LZMA_Alone/Makefile
    echo "cygwin"
 # MinGW (MSys)
 elif test $isMinGW32; then
    cp  env/mingw.env env/Makefile.inc
+   cp  tools/t5lzma/7zip/Compress/LZMA_Alone/Makefile.mingw32 tools/t5lzma/7zip/Compress/LZMA_Alone/Makefile
    echo "MinGW32"
 # MinGW (Unix)
 elif test -x `printf "%s%s" $MINGWPREFIX "g++"` ; then
    echo "MINGWPREFIX = $MINGWPREFIX" > env/Makefile.inc
    cat env/uxmingw.env >> env/Makefile.inc
+   cp  tools/t5lzma/7zip/Compress/LZMA_Alone/Makefile.posix tools/t5lzma/7zip/Compress/LZMA_Alone/Makefile
    echo "MinGW32 (Unix)"
 else
    echo $OSTYPE

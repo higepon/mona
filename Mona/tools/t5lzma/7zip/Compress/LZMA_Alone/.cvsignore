@@ -3,4 +3,5 @@
 *.list
 *.exe
 TAGS
+Makefile
 dependencies
