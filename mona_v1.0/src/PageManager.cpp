@@ -212,11 +212,25 @@ PageEntry* PageManager::allocatePageTable() const {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user) {
+bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) {
 
-    /* if already allocated, change attribute */
+    PageEntry* table;
+    dword directoryIndex = getDirectoryIndex(address);
 
-    return true;
+    if (isPresent(&(directory[directoryIndex]))) {
+
+        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    } else {
+
+        table = allocatePageTable();
+        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        setAttribute(&(directory[directoryIndex]), present, writable, isUser, (PhysicalAddress)table);
+    }
+
+    bool allocateResult = allocatePhysicalPage(&(table[getTableIndex(address)]));
+    if (allocateResult) flushPageCache();
+
+    return allocateResult;
 }
 
 /*!

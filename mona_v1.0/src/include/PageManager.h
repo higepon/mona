@@ -33,7 +33,7 @@ class PageManager {
     void setup();
     void flushPageCache() const;
     bool allocatePhysicalPage(PageEntry* pageEntry);
-    bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
+    bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser);
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const;
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const;
     bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const;
