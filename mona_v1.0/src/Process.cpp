@@ -56,6 +56,7 @@ Process::Process(const char* name) {
     pinfo_.dpl     = DPL_KERNEL;
 
     pinfo_.shared = new SharedMemorySegment();
+    pinfo_.heap = new HeapSegment(0xC0000000, 1024 * 1024); /* 1MB */
     QueueManager::init(pinfo_.shared);
 }
 
@@ -96,6 +97,7 @@ UserProcess::UserProcess(const char* name) {
     pinfo_.dpl     = DPL_USER;
 
     pinfo_.shared = new SharedMemorySegment();
+    pinfo_.heap = new HeapSegment(0xC0000000, 1024 * 1024); /* 1MB */
     QueueManager::init(pinfo_.shared);
 }
 

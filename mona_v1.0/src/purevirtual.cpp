@@ -16,6 +16,7 @@
 
 #include <kernel.h>
 #include <global.h>
+#include <userlib.h>
 
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);
@@ -78,3 +79,8 @@ int __cxa_atexit() {return -1;}
 void*   __dso_handle = (void*) &__dso_handle;
 #endif
 
+void monamain() {
+
+    asm volatile("nop");
+    /* dummy */
+}

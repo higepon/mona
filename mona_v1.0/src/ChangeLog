@@ -1,5 +1,11 @@
 2003-11-03  higepon  <higepon@users.sourceforge.jp>
 
+        * ユーザー用にヒープ領域を確保 umalloc, ufreeの提供
+
+        * ユーザーモードのエントリポイントをuser_start()に変更
+
+        * syscalls.cpp : システムコールにexit追加(ただし中身はkill)
+
         * syscalls.cpp (put_pixel): システムコールにput_pixelを追加
 
         * test_higepon.cpp: LoadProcess ユーザーモードに対応

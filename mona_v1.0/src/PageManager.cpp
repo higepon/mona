@@ -329,6 +329,11 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
         if ((SharedMemorySegment*)shared->getNext() == g_current_process->shared) break;
     }
 
+    if (g_current_process->heap->inRange(address)) {
+
+        return g_current_process->heap->faultHandler(address, FAULT_NOT_EXIST);
+    }
+
     if (g_current_process->stack->inRange(address)) {
 
         return g_current_process->stack->faultHandler(address, FAULT_NOT_EXIST);

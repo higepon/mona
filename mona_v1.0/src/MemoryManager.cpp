@@ -233,20 +233,20 @@ dword MemoryManager::getUsedMemorySize() const {
 
 void MemoryManager::debugPrint() const {
 
-    printf("Rage[%x-%x]\n", start_, end_);
-    printf("FreeMemorySize=%x\n", getFreeMemorySize());
+//     printf("Rage[%x-%x]\n", start_, end_);
+//     printf("FreeMemorySize=%x\n", getFreeMemorySize());
 
-    for (MemoryEntry* current = freeList_; current != (MemoryEntry*)NULL; current = current->next) {
+//     for (MemoryEntry* current = freeList_; current != (MemoryEntry*)NULL; current = current->next) {
 
-        printf("F[%x][%x]\n", current, current->size);
-    }
+//         printf("F[%x][%x]\n", current, current->size);
+//     }
 
-    printf("UsedMemorySize=%x\n", getUsedMemorySize());
+//     printf("UsedMemorySize=%x\n", getUsedMemorySize());
 
-    for (MemoryEntry* current = usedList_; current != (MemoryEntry*)NULL; current = current->next) {
+//     for (MemoryEntry* current = usedList_; current != (MemoryEntry*)NULL; current = current->next) {
 
-        printf("U[%x][%x]\n", current, current->size);
-    }
+//         printf("U[%x][%x]\n", current, current->size);
+//     }
 }
 
 dword MemoryManager::getPhysicalMemorySize() {

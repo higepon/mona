@@ -82,7 +82,7 @@ userlib.o : ./user/userlib.cpp
 
 $(USER_PROCESS) : userlib.o ./user/hello.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./user/hello.cpp -o hello.o
-	ld -n -Ttext 0xA0000000 -e _monamain -static hello.o userlib.o -o $(USER_PROCESS)
+	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o -o $(USER_PROCESS)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS)
 
 .SUFFIXES: .cpp .o

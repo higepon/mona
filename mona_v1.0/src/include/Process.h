@@ -52,6 +52,7 @@ typedef struct ProcessInfo {
     ProcessInfo* next;
     class StackSegment* stack;
     class SharedMemorySegment* shared;
+    class HeapSegment* heap;
     char  name[16];
 };
 

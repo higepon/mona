@@ -1,10 +1,23 @@
 #include <userlib.h>
+#include <MemoryManager.h>
 
 int sleep(dword tick) {return syscall_sleep(tick);}
 int heavy() {return syscall_heavy();}
 int print(const char* msg) {return syscall_print(msg);}
 int _put_pixel(int x, int y, char color) {return syscall_put_pixel(x, y, color);}
 int kill() {return syscall_kill();}
+int exit(int error) {return syscall_kill();}
+int monamain();
+
+static MemoryManager um;
+
+int user_start() {
+    int result;
+    um.initialize(0xC0000000,0xC0000000 + 1024 * 1024);
+    result = monamain();
+    exit(result);
+    for (;;);
+}
 
 int syscall_sleep(dword tick) {
 
@@ -81,4 +94,16 @@ int syscall_kill() {
 
     /* don't come here */
     return result;
+}
+
+
+void* umalloc(unsigned long size) {
+
+    return um.allocate(size);
+}
+
+void ufree(void * address) {
+
+    um.free(address);
+    return;
 }
