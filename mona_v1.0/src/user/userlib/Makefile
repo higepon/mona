@@ -8,7 +8,8 @@ SOURCES         = string.cpp        \
                   MlcCtype.cpp      \
                   MlcStdlib.cpp     \
                   MlcStdio.cpp      \
-                  MlcStdarg.cpp
+                  MlcStdarg.cpp     \
+                  mt19937ar.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

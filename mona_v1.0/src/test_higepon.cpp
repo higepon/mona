@@ -147,6 +147,8 @@ void rdtscsub(dword* timeL, dword* timeH) {
 ----------------------------------------------------------------------*/
 int Mouse::init() {
 
+
+/* back up */
     /*
        status = inp8(0x64);
 
@@ -174,67 +176,67 @@ int Mouse::init() {
 
 // bochs comment out
 
-    /* enable aux */
-    outp8(0x64, 0xa8);
+//     /* enable aux */
+//     outp8(0x64, 0xa8);
 
-    /* get command written before */
-    byte data;
-    outp8(0x64, 0x20);
-    if (waitReadable()) {
-        return 3;
-    }
-    data = inp8(0x60);
-
-    /* kbc command write keyboard & enable mouse intterupt */
-    outp8(0x64, 0x60);
-    if (waitWritable()) {
-        return 4;
-    }
-    outp8(0x60, data | 0x03);
-
-    /* after kbc command write, read one data */
+//     /* get command written before */
+//     byte data;
+//     outp8(0x64, 0x20);
 //     if (waitReadable()) {
-//         return 5;
+//         return 3;
 //     }
 //     data = inp8(0x60);
-//     not necesarry? above?
 
-    /* mouse reset */
-    outp8(0x64, 0xd4);
-    if (waitWritable()) {
-        return 6;
-    }
-    outp8(0x60, 0xff);
+//     /* kbc command write keyboard & enable mouse intterupt */
+//     outp8(0x64, 0x60);
+//     if (waitWritable()) {
+//         return 4;
+//     }
+//     outp8(0x60, data | 0x03);
 
-    /* after kbc command write, read 3 times */
-    if (waitReadable()) {
-        return 7;
-    }
-    data = inp8(0x60);
+//     /* after kbc command write, read one data */
+// //     if (waitReadable()) {
+// //         return 5;
+// //     }
+// //     data = inp8(0x60);
+// //     not necesarry? above?
 
-/* no need below two block ? */
-    if (waitReadable()) {
-        return 8;
-    }
-    data = inp8(0x60);
+//     /* mouse reset */
+//     outp8(0x64, 0xd4);
+//     if (waitWritable()) {
+//         return 6;
+//     }
+//     outp8(0x60, 0xff);
 
-    if (waitReadable()) {
-        return 9;
-    }
-    data = inp8(0x60);
+//     /* after kbc command write, read 3 times */
+//     if (waitReadable()) {
+//         return 7;
+//     }
+//     data = inp8(0x60);
 
-    /* enable mouse */
-    outp8(0x64, 0xd4);
-    if (waitWritable()) {
-        return 10;
-    }
-    outp8(0x60, 0xf4);
+// /* no need below two block ? */
+//     if (waitReadable()) {
+//         return 8;
+//     }
+//     data = inp8(0x60);
 
-    /* after enable mouse read one data */
-    if (waitReadable()) {
-        return 11;
-    }
-    data = inp8(0x60);
+//     if (waitReadable()) {
+//         return 9;
+//     }
+//     data = inp8(0x60);
+
+//     /* enable mouse */
+//     outp8(0x64, 0xd4);
+//     if (waitWritable()) {
+//         return 10;
+//     }
+//     outp8(0x60, 0xf4);
+
+//     /* after enable mouse read one data */
+//     if (waitReadable()) {
+//         return 11;
+//     }
+//     data = inp8(0x60);
 
     return 0;
 }

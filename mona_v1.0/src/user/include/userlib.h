@@ -18,6 +18,7 @@
 #include <monalibc.h>
 #include <Color.h>
 #include <error.h>
+#include <Random.h>
 
 #define MESSAGE_LOOP messageLoop
 

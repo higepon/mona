@@ -1,3 +1,7 @@
+2004-04-04  higepon  <higepon@users.sourceforge.jp>
+
+        * user/include/userlib/Random.h (class Random): —”¶¬ http://www.math.keio.ac.jp/home2/matumoto/public_html/MT2002/mt19937ar.html
+
 2004-04-02  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp (startKernel): MemoryMap‚Ìd—l•ÏX
