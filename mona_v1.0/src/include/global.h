@@ -19,4 +19,3 @@ GLOBAL KthreadInfo g_kthreadInfo;                    /*< common thread Informati
 
 GLOBAL StackView g_stack_view;                       /*< struct for stack view               */
 
-GLOBAL dword debug_index GLOBAL_VAL(0);
