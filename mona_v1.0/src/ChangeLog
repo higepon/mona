@@ -1,3 +1,7 @@
+2004-03-12  higepon  <higepon@users.sourceforge.jp>
+
+        * fs.cpp (FSOperation): fs.cppに移動
+
 2004-03-11  higepon  <higepon@users.sourceforge.jp>
 
         * fat_write.exe : Msysのshellが「/」から始まる引数に勝手にパス補完してしまうので仕様変更
