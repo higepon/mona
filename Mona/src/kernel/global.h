@@ -27,6 +27,7 @@
 #include "FSOperation.h"
 #include "IDManager.h"
 #include "Scheduler.h"
+#include "BootManager.h"
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
@@ -81,6 +82,8 @@ GLOBAL Thread* g_idleThread;
 
 GLOBAL dword g_mutexFloppy;
 GLOBAL dword g_mutexShared;
+
+GLOBAL BootManager* g_bootManager;
 
 #define DEBUG_MODE
 

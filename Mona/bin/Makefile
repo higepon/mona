@@ -6,6 +6,13 @@ APP_FILES  = `cd root; ls APPS/*.E* APPS/*.MSH`
 LIB_FILES  = `cd root; ls LIBS/*.*`
 
 all:
+	./getFileSize.exe root/SERVERS/FILE.BIN FILE.BIN file.head
+	./getFileSize.exe root/SERVERS/PROCESS.BIN PROCESS.BIN process.head
+	./getFileSize.exe root/SERVERS/MONITOR.BIN MONITOR.BIN monitor.head
+	mv root/KERNEL.IMG root/tmp
+	cat ./root/tmp file.head root/SERVERS/FILE.BIN process.head root/SERVERS/PROCESS.BIN monitor.head root/SERVERS/MONITOR.BIN terminater.head > root/KERNEL.IMG
+	rm -f file.head process.head monitor.head root/tmp
+	cd root/SERVERS; rm -f PROCESS.BIN FILE.BIN MONITOR.BIN
 	cp fat_template.img $(TARGET)
 	./fat_write $(TARGET) --mbr firstboot.bin
 	./fat_write $(TARGET) --mkdir SERVERS

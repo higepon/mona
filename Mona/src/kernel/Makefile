@@ -7,8 +7,11 @@ REL_KERNEL_ADDR  = 0x0400
 KERNEL_BASE_ADDR = 0x1000
 MONA_HEADER_SIZE = 0x10
 KERNEL_START_ADDR= 0x1410 # ($(REL_KERNEL_ADDR) + $(KERNEL_BASE_ADDR) + $(MONA_HEADER_SIZE))
+MONA_CFG_SIZE    = 0x1000
+MONA_CFG_ADDR    = 0x90000
 LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
 CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR)
+CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
 TOOLSDIR     = $(MONADIR)/tools
 INCLUDE      = -I$(INCDIR) -I$(TOOLSDIR)
 KERNEL_IMG   = KERNEL.IMG
@@ -46,6 +49,7 @@ SOURCES      = cstart.cpp            \
                KObject.cpp           \
                Loader.cpp            \
                Scheduler.cpp         \
+               BootManager.cpp       \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -75,7 +79,7 @@ $(BOOT1) : firstboot.asm
 	$(NASM) firstboot.asm -o $@ -l $(LISTDIR)/first.list
 
 $(BOOT2) : secondboot.asm
-	$(NASM) -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DMONA_HEADER_SIZE=$(MONA_HEADER_SIZE) secondboot.asm -o $@ -l $(LISTDIR)/second.list
+	$(NASM) -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DMONA_HEADER_SIZE=$(MONA_HEADER_SIZE) -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR) secondboot.asm -o $@ -l $(LISTDIR)/second.list
 
 mode12h.o : mode12h.asm
 	$(NASM) $(NFLAGS) mode12h.asm  -o $@ -l $(LISTDIR)/mode12h.list

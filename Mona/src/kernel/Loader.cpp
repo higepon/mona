@@ -43,7 +43,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     if (!(g_fs->open(name, 1)))
     {
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
         return NULL;
     }
 
@@ -56,7 +56,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     if (buf == NULL)
     {
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
         return NULL;
     }
     memset(buf, 0, 512 * readTimes);
@@ -66,7 +66,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     {
             free(buf);
             g_fdcdriver->motorAutoOff();
-	    systemcall_mutex_unlock(g_mutexFloppy);
+            systemcall_mutex_unlock(g_mutexFloppy);
             return NULL;
     }
 
@@ -74,7 +74,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     if (!g_fs->close())
     {
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
     }
 
     g_fdcdriver->motorAutoOff();

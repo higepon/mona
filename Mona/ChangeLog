@@ -1,11 +1,17 @@
+2004-12-13  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/BootManager.cpp : MONA.CFG、RAMディスクなど
+
+        * src/kernel/secondboot.asm (file_load): MONA_CFG_SIZEを使用
+
 2004-12-12  higepon  <higepon@users.sourceforge.jp>
 
         * tools/fileheader/main.cpp: ツール追加
 
         * src/kernel/Makefile (KERNEL_ADDR): REL_KERNEL_ADDRに改名
-                              (MONA_HEADER_SIZE):定義追加 
+                              (MONA_HEADER_SIZE):定義追加
 
-        * src/kernel/secondboot.asm :KERNEL_ADDR + 0x10に jmp 
+        * src/kernel/secondboot.asm :KERNEL_ADDR + 0x10に jmp
 
         * src/kernel/Makefile (CXXFLAGS): KERNEL_ADDR追加
 

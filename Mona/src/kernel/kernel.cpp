@@ -72,6 +72,7 @@
 #include "Loader.h"
 #include "Scheduler.h"
 #include "monaboot.h"
+#include "BootManager.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -176,9 +177,7 @@ void startKernel(void)
     g_console->printf("%s ["CC_NAME" @ %s]\n", version, CC_VER, OSTYPE);
     g_console->printf("Copyright (c) 2002-2004 higepon\n\n");
 
-    // temporary for Eltorito 2004/12/12 higepon
-    dword* p = (dword*)(REL_KERNEL_ADDR + KERNEL_BASE_ADDR);
-    g_console->printf("kernel size = %x\n" , *p);
+    g_bootManager = new BootManager(REL_KERNEL_ADDR + KERNEL_BASE_ADDR, MONA_CFG_ADDR, MONA_CFG_SIZE);
 
     pic_init();
     RTC::init();
@@ -232,7 +231,6 @@ void startKernel(void)
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
     Thread*  initThread  = ThreadOperation::create(initProcess, (dword)mainProcess);
     g_scheduler->Join(initThread);
-
 
     disableTimer();
     enableInterrupt();
@@ -304,7 +302,16 @@ void loadServer(const char* server, const char* name)
     g_console->printf("loading %s....", server);
     if (strstr(server, ".BIN"))
     {
-        g_console->printf("%s\n", Loader::Load(server, name, true, NULL) ? "NG" : "OK");
+        dword size;
+        byte* image = g_bootManager->getFile(name, &size);
+
+        if (image == NULL)
+        {
+            g_console->printf("server %s not found\n", name);
+            return;
+        }
+
+        g_console->printf("%s\n", Loader::Load(image, size, Loader::ORG, name, true, NULL) ? "NG" : "OK");
     }
     else
     {
@@ -323,54 +330,10 @@ void loadServer(const char* server, const char* name)
 
 int execSysConf()
 {
-    /* only one process can use fd */
-    systemcall_mutex_lock(g_mutexFloppy);
+    dword fileSize;
+    byte* buf = g_bootManager->getMonaConfig(&fileSize);
 
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    /* file open */
-    if (!(g_fs->open("/MONA.CFG", 1)))
-    {
-        g_fdcdriver->motorAutoOff();
-        systemcall_mutex_unlock(g_mutexFloppy);
-        return 1;
-    }
-
-    /* get file size and allocate buffer */
-    int fileSize  = g_fs->size();
-
-    int readTimes = (fileSize + 512 - 1) / 512;
-    byte* buf     = (byte*)malloc(512 * readTimes);
-
-    memset(buf, 0, 512 * readTimes);
-    if (buf == NULL)
-    {
-        g_fdcdriver->motorAutoOff();
-        systemcall_mutex_unlock(g_mutexFloppy);
-        return 2;
-    }
-
-    /* read */
-    if (!g_fs->read(buf, fileSize))
-    {
-        free(buf);
-        g_fdcdriver->motorAutoOff();
-        systemcall_mutex_unlock(g_mutexFloppy);
-        return g_fs->getErrorNo();
-    }
-
-    /* close */
-    if (!g_fs->close())
-    {
-        g_fdcdriver->motorAutoOff();
-        systemcall_mutex_unlock(g_mutexFloppy);
-    }
-
-    g_fdcdriver->motorAutoOff();
-    systemcall_mutex_unlock(g_mutexFloppy);
+    if (buf == NULL) return 1;
 
     /* execute */
     char line[256];
@@ -402,8 +365,6 @@ int execSysConf()
         }
     }
 
-    free(buf);
-
     return 0;
 }
 
@@ -432,6 +393,8 @@ void mainProcess()
         g_console->printf("/MONA.CFG does not exist\n");
         for (;;);
     }
+
+    delete g_bootManager;
 
     enableKeyboard();
 

@@ -7,7 +7,7 @@
 ; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
 %define fat              0x6000
-%define file_buf_seg     0x9000
+%define file_buf_seg     (MONA_CFG_ADDR / 16)
 %define vesa_info        0x0800
 %define vesa_info_detail 0x0830
 
@@ -84,7 +84,7 @@ file_load:
         mov     cx, ax
         add     bx, 0x0200
 ;         jnc     file_load
-        cmp     bx, 0x1000      ; limit file size
+        cmp     bx, MONA_CFG_SIZE ; limit file size
         jc      file_load
 ;         mov     bx, es
 ;         add     bh, 0x10
