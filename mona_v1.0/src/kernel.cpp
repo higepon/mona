@@ -135,15 +135,11 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
-    //    g_console->printf("Hit any key to start loading Mona logo \n");
-    //    while (g_demo_step < 2);
-
-
+    /* show Logo */
     FDCDriverTester();
-    while (true);
 
     //    g_console->printf("Hit any key to start Main Process and Load ELF\n");
-    //    while (g_demo_step < 5);
+    while (g_demo_step < 2);
     //    g_console->printf("[2]");
     g_info_level = MSG;
 
@@ -153,9 +149,7 @@ void startKernel(void) {
 
     g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
 
-    //    rectangle(0, 0, 640, 480, GP_BLACK);
-
-    mmChangeTester();
+    rectangle(0, 0, 640, 480, GP_BLACK);
 
     enableTimer();
 #endif
