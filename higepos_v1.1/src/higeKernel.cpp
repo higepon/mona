@@ -21,6 +21,7 @@
 #include<higeTypes.h>
 #include<HVector.h>
 #include<FDCDriver.h>
+#include<KeyBoardManager.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -95,6 +96,10 @@ void startKernel(void) {
         _sys_printf("(%d, %s) ", j, v->get(j));
     }
     delete(v);
+
+    /* testing keyboardmanager */
+    KeyBoardManager& km = KeyBoardManager::instance();
+    km.printInfo();
 
     while (true) {
     }

@@ -13,6 +13,7 @@
 */
 #include<KeyBoardManager.h>
 #include<higeVga.h>
+#include<higeIo.h>
 
 
 const int KeyBoardManager::keyMap_[128] = {
@@ -52,6 +53,7 @@ KeyBoardManager::KeyBoardManager() {
 
     keyBufIndex_       = 0; /* index is 0 */
     keyBufGottenIndex_ = 0; /* index is 0 */
+
     return;
 }
 
@@ -114,6 +116,20 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
                , (char)keyMap_[scancode]
                , (char)keyMap_[scancode]);
 
+
+    return;
+}
+
+/*!
+    \brief print info about keyboard
+
+    print keyboard infomation ID
+
+    \author HigePon
+    \date   create:2002/10/25 update:2002/10/25
+*/
+void KeyBoardManager::printInfo() const {
+    outportb(0x60, 0xF2);
 
     return;
 }

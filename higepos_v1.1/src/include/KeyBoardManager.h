@@ -90,6 +90,7 @@ class KeyBoardManager {
 
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
+    void printInfo() const;
 };
 
 
