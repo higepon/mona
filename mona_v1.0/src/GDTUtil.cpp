@@ -18,12 +18,12 @@
 
     \param  desc  segment descriptor
     \param  base  base address 32bit
-    \param  limit limit        20bit
-    \param  type  segment type 12bit
+    \param  limit limit        20bit include G, D/B, 0, AVL
+    \param  type  segment type 8bit
     \author HigePon
     \date   create:2003/06/06 update:
 */
-void GDTUtil::setSegDesc(SegDesc* desc, dword base, dword limit, word type) {
+void GDTUtil::setSegDesc(SegDesc* desc, dword base, dword limit, byte type) {
 
     desc->baseL  = (word)(base & 0xFFFF);
     desc->baseM  = (byte)((base >> 16) & 0xFF);

@@ -27,7 +27,7 @@ typedef struct {
 class GDTUtil {
 
   public:
-    static void setSegDesc(SegDesc* desc, dword base, dword limit, word type);
+    static void setSegDesc(SegDesc* desc, dword base, dword limit, byte type);
 };
 
 #endif
