@@ -181,6 +181,7 @@ void OneLineShell::SetMessage(int nMsg){
       tmpMsg = "Shared Memory error2";
       break;
     default:
+      if(nMsg == -1) tmpMsg = "Error from FILE.SVR or ELF.SVR";
       break;
   }
 

@@ -14,6 +14,7 @@
 #include <monapi.h>
 #include <monapi/string.h>
 #include <monalibc/stdio.h>
+#include <monapi/messages.h>
 #include "Command.h"
 #include "Charing.h"
 
@@ -99,7 +100,7 @@ int Command::ExecuteCommand(){
   list.next = NULL;
   char* arg;
   CommandOption* option;
-
+/*
   char* command = strtok((char *)this->commandLine, " ");
 
   while ((arg = strtok(NULL, " ")) != NULL) {
@@ -107,16 +108,18 @@ int Command::ExecuteCommand(){
     strncpy(option->str, arg, 32);
     option->next = list.next;
     list.next = option;
-  }
+  }*/
 
   char path[128];
-  sprintf(path, "/APPS/%s", command);
-
+  sprintf(path, "/APPS/%s", (char *)this->commandLine);
+/*
   result = syscall_load_process(path, command, &list);
 
   for (option = list.next; option; option = option->next) {
     delete option;
-  }
+  }*/
+
+  result = monapi_call_elf_execute_file(path, 0);
 
   this->SetCurrentPos(this->commandLine.GetLength());
   this->isTerminateFlag = true;
