@@ -14,6 +14,7 @@
 
 #include <ProcessManager.h>
 #include <monaVga.h>
+#include <monaTester.h>
 
 /*!
     \brief set TSS
@@ -64,7 +65,12 @@ void ProcessManager::printInfo() {
                  : "m" (gdtr)
                 );
     _sys_printf("gdtr.limit = %d\n", gdtr.limit);
-    _sys_printf("gdtr.base  = %d\n", gdtr.base);
+
+    _sys_printf("gdtr.base  = %d\n", (gdtr.base) >> 16);
+
+    GDT* some = (GDT*)(gdtr.base);
+    _sys_printf("type =%x", some[4].type);
+
 
     return;
 }
@@ -75,6 +81,6 @@ void ProcessManager::switchProcess() {
 
 void ProcessManager::switchProcess(word selector) {
 
-    //    asm volatile("jmp %0" : /* NO OUT PUT */ : "m" (selector));
+    asm volatile("ljmp %0\n": /* NO OUT PUT */ : "m" (selector));
     return;
 }

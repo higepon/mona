@@ -67,6 +67,28 @@ typedef struct {
     dword base;
 } GDTR;
 
+/*! gdt */
+typedef struct {
+    word limitL;
+    word baseL;
+    byte baseM;
+    byte type;
+    byte limitH;
+    byte baseH;
+} GDT;
+
+/*! Descriptor Type */
+#define TypeCode     0x9a
+#define TypeData     0x92
+#define TypeStack    0x96
+#define TypeLDT      0x82
+#define TypeTSS      0x89
+#define TypeTSSBusy  0x8b
+#define TypeCallGate 0x84
+#define TypeIntrGate 0x8e
+#define TypeTrapGate 0x8f
+#define TypeTaskGate 0x85
+
 void startKernel(void);
 
 #endif

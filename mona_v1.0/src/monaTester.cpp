@@ -117,3 +117,20 @@ void processTester() {
     //    pm->switchProcess(0x08);
 
 }
+
+
+void process1Tester() {
+
+    while (true) {
+        _sys_printf("process1");
+    }
+    return;
+}
+
+void process2Tester() {
+
+    while (true) {
+        _sys_printf("process2");
+    }
+    return;
+}
