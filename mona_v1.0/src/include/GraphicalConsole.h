@@ -20,7 +20,7 @@
 #define _MONA_GRAPHICAL_CONSOLE_
 
 #include<VirtualConsole.h>
-#include<monaTypes.h>
+#include<types.h>
 
 #define GP_MAX_WIDTH  80
 #define GP_MAX_HEIGHT 28

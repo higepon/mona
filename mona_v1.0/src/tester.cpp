@@ -14,10 +14,10 @@
 #include<global.h>
 #include<monaIdt.h>
 #include<operator.h>
-#include<monaTypes.h>
+#include<types.h>
 #include<HVector.h>
 #include<tester.h>
-#include<monaTypes.h>
+#include<types.h>
 #include<ProcessManager.h>
 #include<KeyBoardManager.h>
 #include<Semaphore.h>

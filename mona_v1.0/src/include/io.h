@@ -13,7 +13,7 @@
 #ifndef _MONA_IO_
 #define _MONA_IO_
 
-#include <monaTypes.h>
+#include <types.h>
 
 byte inportb(dword);
 void outportb(dword, byte);

@@ -14,7 +14,7 @@
 #ifndef _MONA_SYSTEMINFO_
 #define _MONA_SYSTEMINFO_
 
-#include<monaTypes.h>
+#include<types.h>
 #include<VirtualConsole.h>
 
 #define INTEL          0

@@ -14,8 +14,7 @@
 #ifndef _MONA_KEYBOARDMANAGER_
 #define _MONA_KEYBOARDMANAGER_
 
-#include<monaTypes.h>
-#include<queue>
+#include<types.h>
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
@@ -122,13 +121,11 @@ class KeyBoardManager {
     static const int keyMapE0_[128];
     byte idHigh_;
     byte idLow_;
-    std::queue<KeyInfo> keyQueue_;
   public:
     static KeyBoardManager& instance() {
         static KeyBoardManager theInstance;
         return theInstance;
     }
-    char getCharacter();
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
     void printInfo(byte, byte) const;

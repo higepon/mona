@@ -13,7 +13,7 @@
 */
 #include<IA32MemoryManager.h>
 #include<operator.h>
-#include<monaTypes.h>
+#include<types.h>
 
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {

@@ -12,7 +12,7 @@
     \date   create:2002/08/08 update:$Date$
 */
 
-#include<monaTypes.h>
+#include<types.h>
 
 #ifndef _MONA_POS_OPERATOR
 #define _MONA_POS_OPERATOR

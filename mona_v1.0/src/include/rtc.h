@@ -13,7 +13,7 @@
 #ifndef _MONA_RTC_
 #define _MONA_RTC_
 
-#include <monaTypes.h>
+#include <types.h>
 #include <io.h>
 
 typedef struct Date {

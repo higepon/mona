@@ -10,7 +10,7 @@
     \date create:2003/02/07 update:$Date$
 */
 
-#include<monaTypes.h>
+#include<types.h>
 #include<VirtualConsole.h>
 
 #ifndef _MONA_MFDCDRIVER_

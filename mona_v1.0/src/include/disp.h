@@ -13,7 +13,7 @@
 #ifndef _MONA_DISP_
 #define _MONA_DISP_
 
-#include <monaTypes.h>
+#include <types.h>
 
 void disp_name1();
 void disp_name2();

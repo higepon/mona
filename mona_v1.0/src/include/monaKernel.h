@@ -14,7 +14,7 @@
 #ifndef _MONA_KERNEL_
 #define _MONA_KERNEL_
 
-#include <monaTypes.h>
+#include <types.h>
 #include <VirtualConsole.h>
 
 #define disableInterrupt() asm volatile("cli")      /*!< \def disable interupts */

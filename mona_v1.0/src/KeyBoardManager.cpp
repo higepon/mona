@@ -179,8 +179,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     keyInfo_[keyBufIndex_].keycode   = keycode;
     keyInfo_[keyBufIndex_].modifiers = modifiers;
 
-    keyQueue_.push(keyInfo_[keyBufIndex_]);
-
     //    printInfo(keycode, modifiers);
     return;
 }
@@ -205,21 +203,3 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
     return;
 }
 
-/*!
-    \brief get Character in key buffer
-
-    \author HigePon
-    \date   create:2003/01/23 update:2002/10/25
-*/
-char KeyBoardManager::getCharacter() {
-
-      if (keyQueue_.empty()) return -1;
-
-      KeyInfo info = keyQueue_.back();
-      keyQueue_.pop();
-
-      if (info.modifiers & KEY_MODIFIER_UP) return -1;
-      if (info.keycode < 'a' && info.keycode > 'z') return -1;
-
-      return (char)(info.keycode);
-}

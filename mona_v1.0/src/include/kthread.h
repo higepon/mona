@@ -13,7 +13,7 @@
 #ifndef _MONA_KTHREAD_
 #define _MONA_KTHREAD_
 
-#include<monaTypes.h>
+#include<types.h>
 
 /*! struct for kernel thread */
 typedef struct Kthread {

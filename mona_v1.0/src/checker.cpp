@@ -12,7 +12,7 @@
     \date   create:2002/12/02 update:$Date$
 */
 #include <checker.h>
-#include <monaTypes.h>
+#include <types.h>
 #include <monaKernel.h>
 #include <IA32MemoryManager.h>
 #include <kthread.h>

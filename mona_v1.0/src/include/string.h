@@ -11,7 +11,7 @@
     \version $Revision$
     \date   create:2002/12/15 update:$Date$
 */
-#include<monaTypes.h>
+#include<types.h>
 
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
