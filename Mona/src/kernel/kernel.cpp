@@ -90,6 +90,13 @@ void  mainProcess();
     \author HigePon
     \date   create:2002/07/21 update:2003/06/08
 */
+
+#define CR3_TEST
+#ifdef CR3_TEST
+static dword cr31, cr32;
+#endif
+
+
 void startKernel(void)
 {
     /* kernel memory range */
@@ -173,6 +180,12 @@ void startKernel(void)
     Thread*  initThread  = ThreadOperation::create(initProcess, (dword)mainProcess);
     g_scheduler->Join(initThread);
 
+
+#ifdef CR3_TEST
+    cr31 = g_idleThread->tinfo->archinfo->cr3;
+    cr32 = initThread->tinfo->archinfo->cr3;
+
+#endif
     disableTimer();
 
     enableInterrupt();
@@ -351,6 +364,67 @@ int execSysConf()
 
 void mainProcess()
 {
+
+#ifdef CR3_TEST
+#define TEST_NUM 500
+    disableInterrupt();
+
+    g_page_manager->setPageDirectory(cr31);
+    g_page_manager->setPageDirectory(cr32);
+
+    dword l1, l2, h1, h2;
+    dword total = 0;
+    int count   = 0;
+
+    g_console->printf("CR3 TEST ********************************************\n");
+
+    for (int i = 0; i < TEST_NUM; i++)
+    {
+
+        rdtsc(&l1, &h1);
+
+        g_page_manager->setPageDirectory(cr31);
+
+        rdtsc(&l2, &h2);
+
+        g_page_manager->setPageDirectory(cr32);
+
+        if (h1 != h2) continue;
+
+        total += (l2 - l1);
+        count++;
+    }
+
+    g_console->printf("cr3 average=%x\n", total / count);
+
+    total = 0;
+    count = 0;
+
+    for (int i = 0; i < TEST_NUM; i++)
+    {
+
+        rdtsc(&l1, &h1);
+
+        for (int j = 0; j < 1000; j++)
+        {
+            j++;
+            j--;
+        }
+
+        rdtsc(&l2, &h2);
+
+        if (h1 != h2) continue;
+
+        total += (l2 - l1);
+        count++;
+    }
+
+    g_console->printf("loop average=%x\n", total / count);
+
+    g_page_manager->setPageDirectory(cr32);
+    enableInterrupt();
+#endif
+
     /* FDC do not delete */
     enableFDC();
     g_fdcdriver = new FDCDriver();

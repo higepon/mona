@@ -1,3 +1,7 @@
+2004-09-19  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/kernel.cpp (mainProcess): rdtscでCR3の切替コストの計測
+
 2004-09-13  higepon  <higepon@users.sourceforge.jp>
 
         * samples/non-gui/hello/hello.cpp (MonaMain): irq とio baseの取得でもかなり怪しい。io_base4がdeviceとvendorのIDと一緒だし。

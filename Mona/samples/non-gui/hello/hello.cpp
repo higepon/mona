@@ -164,6 +164,9 @@ int MonaMain(List<char*>* pekoe)
 
    if (!found) return 1;
 
+   printf("revision=%x\n", ReadConfig(0, index, 0, 0x10, 4));
+
+
    byte irq = ReadConfig(0, index, 0, PCI_IRQ_LINE, 1);
 
    printf("irq=%d\n", irq);
