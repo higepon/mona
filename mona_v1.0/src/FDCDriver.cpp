@@ -483,12 +483,22 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , 0xFF//0x00
                    };
 
+    rdtsc(&(gt[2]), &(gt[3]));
+
     if (!seek(track)) {
         info(ERROR, "read#seek:error");
         return false;
     }
 
+    rdtscsub(&(gt[2]), &(gt[3]));
+
+    rdtsc(&(gt[4]), &(gt[5]));
+
     setupDMARead(512);
+
+    rdtscsub(&(gt[4]), &(gt[5]));
+
+    rdtsc(&(gt[6]), &(gt[7]));
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))) {
@@ -497,16 +507,24 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         return false;
     }
 
+    rdtscsub(&(gt[6]), &(gt[7]));
+
+    rdtsc(&(gt[8]), &(gt[9]));
     waitInterrupt();
+    rdtscsub(&(gt[8]), &(gt[9]));
 
     //    delay(30000);
 
+    rdtsc(&(gt[10]), &(gt[11]));
     for (int i = 0; i < 7; i++) {
 
         results_[i] = getResult();
     }
+    rdtscsub(&(gt[10]), &(gt[11]));
 
+    rdtsc(&(gt[12]), &(gt[13]));
     stopDMA();
+    rdtscsub(&(gt[12]), &(gt[13]));
     //  g_console->printf("status=%x", results_[0]);
     //    g_console->printf("%s", ((results_[0] & 0xC0) != 0x00) ? "true":"false");
 
@@ -569,26 +587,23 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 */
 bool FDCDriver::read(dword lba, byte* buf) {
 
-    info(DEV_WARNING, "read start \n");
-
     byte track, head, sector;
 
     lbaToTHS(lba, track, head, sector);
 
-    //    info(DEBUG, "read lba=%d", lba);
-    //    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
-
     /* read. if error, retry 10 times */
     for (int i = 0; i < 10; i++) {
-
-        info(DEV_WARNING, "read %d times \n", i);
 
 
         if (read(track, head, sector)) {
 
+            rdtsc(&(gt[14]), &(gt[15]));
             memcpy(buf, dmabuff_, 512);
+            rdtscsub(&(gt[14]), &(gt[15]));
             return true;
         }
+
+        g_console->printf("read retry=%d", i);
     }
 
     return false;

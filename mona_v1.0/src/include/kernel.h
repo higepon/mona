@@ -99,4 +99,6 @@ void panic(const char*);
 void checkMemoryAllocate(void* p, const char* msg);
 inline void printOK(const char*);
 inline void printBanner();
+void rdtscsub(dword* timeL, dword* timeH);
+void rdtsc(dword* timeL, dword* timeH);
 #endif
