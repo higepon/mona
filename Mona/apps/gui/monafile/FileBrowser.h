@@ -1,12 +1,13 @@
 #ifndef __MONAFILE_FILEBROWSER_H__
 #define __MONAFILE_FILEBROWSER_H__
 
+#include <monapi/cmemoryinfo.h>
 #include <gui/System/Mona/Forms/Form.h>
 
 class FileBrowser : public System::Mona::Forms::Control
 {
 private:
-	String path;
+	System::String path;
 	monapi_cmemoryinfo* files;
 	
 public:
@@ -14,8 +15,8 @@ public:
 	virtual ~FileBrowser() {}
 	
 	void Dispose();
-	void ReadDirectory(String path);
-	int GetIcon(String fileName);
+	void ReadDirectory(System::String path);
+	int GetIcon(System::String fileName);
 	
 protected:
 	virtual void OnPaint();

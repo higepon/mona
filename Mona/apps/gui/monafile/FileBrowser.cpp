@@ -3,6 +3,7 @@
 #include "FileWindow.h"
 #include "Icon.h"
 #include <gui/System/Mona/Forms/ControlPaint.h>
+#include <monapi/messages.h>
 
 using namespace System;
 using namespace System::Drawing;
@@ -33,7 +34,7 @@ void FileBrowser::ReadDirectory(String path)
 	for (int i = 0; i < len; i++)
 	{
 		wchar ch = path[i];
-		buf[i] = ch < 128 ? (char)ch : "?";
+		buf[i] = ch < 128 ? (char)ch : '?';
 	}
 	buf[len] = '\0';
 	if (this->files != NULL)
@@ -50,6 +51,49 @@ void FileBrowser::ReadDirectory(String path)
 
 int FileBrowser::GetIcon(String fileName)
 {
+	if (fileName == "KERNEL.IMG")
+	{
+		return Icons_Kernel;
+	}
+	else if (fileName == "GSHELL.EL2")
+	{
+		return Icons_Terminal;
+	}
+	
+	int len = fileName.get_Length();
+	int p = -1;
+	for (int i = len - 1; i >= 0; i--)
+	{
+		if (fileName[i] == '.')
+		{
+			p = i;
+			break;
+		}
+	}
+	if (p == -1) return Icons_File;
+	
+	String ext = fileName.Substring(p, len - p);
+	if (ext == ".BZ2")
+	{
+		return Icons_Archive;
+	}
+	else if (ext == ".ELF" || ext == ".EL2" || ext == ".APP")
+	{
+		return Icons_Executable;
+	}
+	else if (ext == ".BMP" || ext == ".BM2" || ext == ".JPG")
+	{
+		return Icons_Picture;
+	}
+	else if (ext == ".SVR")
+	{
+		return Icons_Server;
+	}
+	else if (ext == ".TXT" || ext == ".MSH" || ext == ".CFG" || ext == ".INI")
+	{
+		return Icons_Text;
+	}
+	return Icons_File;
 }
 
 void FileBrowser::OnPaint()
@@ -61,8 +105,9 @@ void FileBrowser::OnPaint()
 	gf->Dispose();
 	
 	_P<Graphics> g = this->CreateGraphics();
-	int w = this->clientRectangle.Width, h = this->clientRectangle.Height;
-	g->FillRectangle(0, 0, w, h, this->get_BackColor());
+	Size sz = this->get_ClientSize();
+	int w = sz.Width, h = sz.Height;
+	g->FillRectangle(this->get_BackColor(), 0, 0, w, h);
 	if (this->files == NULL)
 	{
 		g->DrawString("ディレクトリが開けません:\n\n" + this->path,
@@ -71,7 +116,7 @@ void FileBrowser::OnPaint()
 	else
 	{
 		int x = 0, y = 0;
-		int len = *(*int)this->files->Data;
+		int len = *(int*)this->files->Data;
 		monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->Data[sizeof(int)];
 		for (int i = 0; i < len; i++, di++)
 		{
