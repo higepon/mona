@@ -138,8 +138,8 @@ void startKernel(void) {
     //    g_console->printf("Hit any key to start loading Mona logo \n");
     //    while (g_demo_step < 2);
 
-    //    mmChangeTester();
-    //    while (true);
+    mmChangeTester();
+    while (true);
 
     //    FDCDriverTester();
     //    while (true);

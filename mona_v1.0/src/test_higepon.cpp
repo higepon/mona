@@ -109,11 +109,11 @@ int getColorNumber(byte* rgba) {
 
 void mmChangeTester() {
 
-    byte out[512];
+    g_info_level = MSG;
 
-    g_console->printf("out=%x", out);
-
+    /* test1 FD read */
     g_fdcdriver = new FDCDriver();
+
     g_fdcdriver->motor(ON);
 
     g_fdcdriver->recalibrate();
@@ -121,25 +121,49 @@ void mmChangeTester() {
     g_fdcdriver->recalibrate();
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
-
     if (!fat->initilize()) {
-        g_console->printf("error fat initialize\n");
-        g_fdcdriver->motor(false);
-        return;
+
+        int errorNo = fat->getErrorNo();
+
+        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else info(ERROR, "unknown error \n");
+
+        info(ERROR, "fat initilize faild\n");
+        while (true);
+    }
+
+    //    if (!fat->open(".", "NIKQ.LGO", FAT12::READ_MODE)) {
+    if (!fat->open(".", "OKU.LGO", FAT12::READ_MODE)) {
+
+        info(ERROR, "open failed");
+    }
+
+    int fileSize  = fat->getFileSize();
+    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+
+    byte* buf = (byte*)malloc(512 * readTimes);
+
+    for (int i = 0; i < readTimes; i++) {
+
+        if (!fat->read(buf + 512 * i)) {
+
+            info(ERROR, "read failed %d", i);
+        }
     }
 
 
-    if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
-        g_console->printf("error open mona.z\n");
-        g_fdcdriver->motor(false);
-        return;
+    drawARGB(buf, 0, 0, fileSize);
+
+    if (!fat->close()) {
+       info(ERROR, "close failed");
     }
 
-    if (!fat->read(out)) {
-         info(ERROR, "read failed");
-    }
+    g_fdcdriver->motor(false);
 
-    for (int i = 0; i < 50; i++) g_console->printf("[%x]");
+    delete(fat);
+    //    free(buf);
 
 }
 

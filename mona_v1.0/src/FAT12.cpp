@@ -520,20 +520,12 @@ bool FAT12::read(byte* buffer) {
     /* has no next */
     if (!readHasNext_) return false;
 
-    printf("h[1]");
-
     /* read */
     int lba = clusterToLba(currentCluster_);
 
-    printf("h[2]");
-
     if (!(driver_->read(lba, buf_))) return false;
 
-    printf("h[3]");
-
     memcpy(buffer, buf_, 512);
-
-    printf("h[4]");
 
     readCounter_ -= 512;
 
