@@ -14,6 +14,7 @@
 #include<string.h>
 
 #include<stdio.h>
+#include<stdlib.h>
 //#include<global.h>
 
 #define ATTR_READ_ONLY  0x01
@@ -44,6 +45,7 @@ FAT12::FAT12(DiskDriver* driver) {
     driver_ = driver;
     errNum_ = 0;
     currentDirecotry_ = 0;
+    fat_ = (byte*)0;
     return;
 }
 
@@ -55,6 +57,7 @@ FAT12::FAT12(DiskDriver* driver) {
 */
 FAT12::~FAT12() {
 
+    free(fat_);
     return;
 }
 
@@ -66,6 +69,9 @@ bool FAT12::initilize() {
         return false;
     }
 
+    printf("fat size16 %d", bpb_.fatSize16);
+    printf("reserved %d", bpb_.reservedSectorCount);
+
     /* specify file system */
     if (!isFAT12()) {
         errNum_ = NOT_FAT12_ERROR;
@@ -74,9 +80,18 @@ bool FAT12::initilize() {
 
     /* read fat */
     fatStart_ = bpb_.reservedSectorCount;
-    if (!(driver_->read(fatStart_, fat_))) {
+    if (!(fat_ = (byte*)malloc(512 * bpb_.fatSize16))) {
+
         errNum_ = FAT_READ_ERROR;
         return false;
+    }
+
+    for (int i = 0; i < bpb_.fatSize16; i++) {
+
+        if (!(driver_->read(fatStart_ + i, fat_ + i * 512))) {
+            errNum_ = FAT_READ_ERROR;
+            return false;
+        }
     }
 
     /* set parameters depend on bpb */

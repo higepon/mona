@@ -117,7 +117,7 @@ class FAT12 {
  private:
 
     byte buf_[512];             /* file buffer     */
-    byte fat_[512];             /* fat region      */
+    byte* fat_;                 /* fat region      */
     DiskDriver* driver_;        /* disk driver     */
     byte errNum_;               /* error number    */
 
