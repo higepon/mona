@@ -47,6 +47,25 @@ static int orangeIcon [15][15] = {
 	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0x40204,0x40204,0x40204,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
 };
 
+/** モナーアイコン */
+static int monaIcon [15][16] = {
+	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
+	{0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
+	{0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
+	{0xcccecc,0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0x000000,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc},
+	{0xcccecc,0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc,0xcccecc},
+	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc},
+	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0x000000,0xcccecc},
+	{0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0x000000},
+	{0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000},
+	{0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0x000000},
+	{0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0x000000,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000},
+	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xfc6604,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc},
+	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc},
+	{0xcccecc,0xcccecc,0x000000,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc,0xcccecc},
+	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0xcccecc,0xcccecc,0xcccecc},
+};
+
 /** タイマースレッドID */
 static dword timerID = THREAD_UNKNOWN;
 
@@ -300,8 +319,8 @@ void WindowManager::onMousePress(int mx, int my)
 			if (rect->x + 4 <= mx && mx <= rect->x + 4 + 13 && 
 				rect->y + 5 <= my && my <= rect->y + 5 + 13)
 			{
-				// ぬるぽ対策
-				if (_controlList->getLength() > 1) {
+				// ランチャーは殺さない
+				if (control->getThreadID() != launcherID) {
 					remove(control);
 				}
 			// アイコン化
@@ -374,9 +393,7 @@ void WindowManager::onMouseDrag(int mx, int my)
 	if (my <= 0) my = 0;
 	if (my >= height) my = height;
 	
-	// モード設定
-	state == STATE_NORMAL;
-	Control *control = findChild();
+	Control *control = (Control *)_controlList->endItem->data;
 
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control != NULL && control->getFocused() == true) {
@@ -501,15 +518,15 @@ void WindowManager::remove(Control *control)
 	// 背景を塗りつぶす
 	restoreBackGround(control);
 
-	// ウィンドウ削除
-	_controlList->remove(getLinkedItem(control));
-	
 	// 削除メッセージを投げる
 	if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
 		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getThreadID());
 	} else {
 		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", control->getThreadID());
 	}
+	
+	// ウィンドウ削除
+	_controlList->remove(getLinkedItem(control));
 	
 	// 非活性メッセージを投げる
 	postActivatedToWindows(false, _controlList->getLength());
@@ -685,11 +702,20 @@ void WindowManager::repaint()
 	_g->drawLine(width-1,height-5,width-1,height-5);
 
 	// オレンジアイコン
+#if defined(PEKOE)
 	for (i = 0; i < 15; i++) {
 		for (j = 0; j < 15; j++) {
 			_g->screen->putPixel16(19 + j, 4 + i, orangeIcon[i][j]);
 		}
 	}
+#elif defined(MONA)
+	for (i = 0; i < 15; i++) {
+		for (j = 0; j < 16; j++) {
+			_g->screen->putPixel16(18 + j, 4 + i, monaIcon[i][j]);
+		}
+	}
+#else
+#endif
 
 	// メニュー
 	int fh = FontManager::getInstance()->getHeight();
@@ -802,6 +828,10 @@ void WindowManager::service()
 				{
 					Control *control = new Control();
 					control->setThreadID(info.arg1);
+					// ランチャーID登録
+					if (_controlList->getLength() == 0) {
+						launcherID = info.arg1;
+					}
 					int x = info.arg2 >> 16;
 					int y = info.arg2 & 0xFFFF;
 					int w = info.arg3 >> 16;
@@ -814,7 +844,7 @@ void WindowManager::service()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("Window->WindowManager MSG_GUISERVER_REMOVE received %d\n", info.arg1);
-				remove(findChild());
+				remove((Control *)_controlList->endItem->data);
 				break;
 			case MSG_GUISERVER_STOP:
 				//printf("Window->WindowManager MSG_GUISERVER_STOP received %d\n", info.arg1);
@@ -830,7 +860,7 @@ void WindowManager::service()
 			case MSG_GUISERVER_RESTORE:
 				// KUKURIを移植するのに必要
 				//printf("Window->WindowManager MSG_GUISERVER_RESTORE received %d\n", info.arg1);
-				restoreBackGround(findChild());
+				restoreBackGround((Control *)_controlList->endItem->data);
 				break;
 			case MSG_GUISERVER_SETTIMER:
 				//printf("Window->WindowManager MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);
