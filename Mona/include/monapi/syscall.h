@@ -79,6 +79,7 @@ extern dword syscall_memory_map_create(dword size);
 extern dword syscall_memory_map_get_size(dword id);
 extern int syscall_memory_map_map(dword id, dword address);
 extern int syscall_memory_map_unmap(dword id);
+extern int syscall_get_memory_info(MemoryInfo* info);
 
 extern dword syscall_lookup(const char* name);
 extern dword syscall_get_tick();

@@ -703,3 +703,10 @@ int syscall_free_pages(dword address, dword size)
     SYSCALL_2(SYSTEM_CALL_FRRE_PAGES, result, address, size);
     return result;
 }
+
+int syscall_get_memory_info(MemoryInfo* info)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_GET_MEMORY_INFO, result, info);
+    return result;
+}

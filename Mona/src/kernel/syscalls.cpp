@@ -844,6 +844,15 @@ void syscall_entrance() {
             break;
         }
 
+    case SYSTEM_CALL_GET_MEMORY_INFO:
+        {
+            MemoryInfo* i = (MemoryInfo*)(info->esi);
+
+            i->totalMemoryL = g_total_system_memory;
+            g_page_manager->getPagePoolInfo(&(i->freePageNum), &(i->totalPageNum), &(i->pageSize));
+            break;
+        }
+
     default:
         g_console->printf("syscall:default");
         break;

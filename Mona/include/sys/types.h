@@ -45,6 +45,15 @@ typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
+typedef struct
+{
+    dword totalMemoryH;
+    dword totalMemoryL;
+    dword freePageNum;
+    dword totalPageNum;
+    dword pageSize;
+} MemoryInfo;
+
 typedef struct PsInfo {
     char name[16];
     dword state;

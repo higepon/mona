@@ -432,7 +432,7 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
     dword tmp;
 
     /* do nothing */
-    if (address < 0xC0000000 ||  0xC0000000 + 8 * 1024 * 1024 > address) return;
+    if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
 
     /* get start index of directory */
     tmp = ((int)address + 4096 - 1) & 0xFFFFF000;
