@@ -145,14 +145,15 @@ WindowManager::~WindowManager()
 	}
 
 	// シェル出力を元に戻す
+	#if 0
 	if (procsvrID == THREAD_UNKNOWN) {
 		//printf("baygui: MSG_PROCESS_UNGRAB_STDOUT failed\n");
 	} else {
 		//printf("baygui: MSG_PROCESS_UNGRAB_STDOUT succeed\n");
 		MonAPI::Message::sendReceive(NULL, procsvrID + 1, MSG_PROCESS_UNGRAB_STDOUT, stdoutID);
 		syscall_kill_thread(stdoutID);
-		printf("shutdown baygui ...\n");
 	}
+	#endif
 }
 
 /** インスタンスを得る */
@@ -198,13 +199,13 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
 		keycode = VKEY_BACKSPACE;
 	} else if (keycode == 46) {
 		keycode = VKEY_DELETE;
-	} else if (keycode == 0) {
+	} else if (keycode == 104) {
 		keycode = VKEY_UP_QEMU;
-	} else if (keycode == 0) {
+	} else if (keycode == 98) {
 		keycode = VKEY_DOWN_QEMU;
-	} else if (keycode == 0) {
+	} else if (keycode == 100) {
 		keycode = VKEY_LEFT_QEMU;
-	} else if (keycode == 0) {
+	} else if (keycode == 102) {
 		keycode = VKEY_RIGHT_QEMU;
 	} else {
 		keycode = charcode;
@@ -918,6 +919,7 @@ void WindowManager::service()
 	syscall_clear_screen();
 	monapi_call_mouse_set_cursor(1);
 	syscall_set_cursor(0, 0);
+	printf("shutdown baygui ...\n");
 }
 
 /** メイン */
