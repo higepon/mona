@@ -144,6 +144,8 @@ void MFDCDriver::initilize() {
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
 
+    printStatus("after specify");
+
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
     delay();
@@ -151,7 +153,6 @@ void MFDCDriver::initilize() {
     delay();
 
     /* start driveA */
-    interrupt_ = false;
     //    motor(ON);
     //    while (!waitInterrupt());
 
@@ -161,13 +162,14 @@ void MFDCDriver::initilize() {
 
     /* test */
     interrupt_ = false;
+    printStatus("before motor on");
     motor(ON);
     while (!waitInterrupt());
 
     /* seek test */
     //    seek(3);
-    printStatus("after seek");
 
+    printStatus("before read");
 
     read(0, 0, 1);
 
@@ -534,13 +536,13 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-     for (int k = 0; k < 5000000; k++) {
+    for (int k = 0; k < 5000000; k++) {
          k++;
          k--;
-     }
-
+    }
 
     seek(track);
+
     setupDMARead(512);
     memset(dmabuff_, 0xfffe, 512);
 
