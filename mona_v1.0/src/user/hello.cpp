@@ -16,7 +16,20 @@ int main() {
 //         }
 //     }
 
-    for (;;) asm volatile("push $1");
+
+    Message message;
+    char buf[32];
+//     for (;;) {
+//         memset(&message, 0, sizeof(Message));
+
+//         if (!receive(&message)) {
+
+//             buf[0] = (char)message.arg1;
+//             buf[1] = '\0';
+//             printf(buf);
+//         }
+
+//     }
 
     return 0;
 }
