@@ -172,6 +172,7 @@ void Window::create()
 		}
 	}
 	this->_g = new Graphics(this->_buffer);
+	this->_metrics = new FontMetrics();
 	this->__buffer = new Image(this->width, this->height);
 	this->__g = new Graphics(this->__buffer);
 
@@ -206,6 +207,12 @@ void Window::create()
 	//	this->backColor = this->parent->getBackground();
 	//}
 	this->_window->__internal2 = true;
+	this->focused = true;
+
+	// ウィンドウをアクティブにする
+	if (MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_ACTIVATEWINDOW, this->_window->Handle)) {
+		printf("%s:%d:ERROR: can not activate window!\n", __FILE__, __LINE__);
+	}
 }
 
 /**
@@ -324,18 +331,20 @@ void Window::repaint()
 	__g->drawLine(4, 20, w - 6, 20);
 	__g->drawLine(4, 20, 4, h - 6);
 	
-	// タイトルバー
-	for (i = 4; i <= 14; i = i + 2) {
-		__g->setColor(COLOR_GRAY);
-		__g->drawLine(20, i, w - 7, i);
-		__g->setColor(COLOR_WHITE);
-		__g->drawLine(21, i + 1, w - 6, i + 1);
-	}
-	
-	// 閉じるボタン
-	for (i = 0; i < 13; i++) {
-		for (j = 0; j < 13; j++) {
-			__g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
+	if (this->focused == true) {
+		// タイトルバー
+		for (i = 4; i <= 14; i = i + 2) {
+			__g->setColor(COLOR_GRAY);
+			__g->drawLine(20, i, w - 7, i);
+			__g->setColor(COLOR_WHITE);
+			__g->drawLine(21, i + 1, w - 6, i + 1);
+		}
+		
+		// 閉じるボタン
+		for (i = 0; i < 13; i++) {
+			for (j = 0; j < 13; j++) {
+				__g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
+			}
 		}
 	}
 
@@ -345,7 +354,11 @@ void Window::repaint()
 	int fh = metrics.getHeight(getTitle());
 	__g->setColor(COLOR_LIGHTGRAY);
 	__g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
-	__g->setColor(COLOR_BLACK);
+	if (this->focused == true) {
+		__g->setColor(COLOR_BLACK);
+	} else {
+		__g->setColor(COLOR_GRAY);
+	}
 	__g->drawText(getTitle(), ((w - fw) / 2), ((INSETS_TOP - fh) / 2));
 
 	Container::repaint();
@@ -546,6 +559,14 @@ void Window::run()
 				
 				break;
 			}
+			case MSG_GUISERVER_ACTIVATED:
+				setFocused(true);
+				repaint();
+				break;
+			case MSG_GUISERVER_DEACTIVATE:
+				setFocused(false);
+				repaint();
+				break;
 			case TIMER:
 				postEvent(&this->timerEvent);
 				break;

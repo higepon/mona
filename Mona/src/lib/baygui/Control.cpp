@@ -58,10 +58,8 @@ void Control::create()
 
 	// 内部バッファー、描画オブジェクトの生成
 	this->_buffer = new Image(width, height);
-	this->_metrics = new FontMetrics();
-	//this->_metrics->setFontStyle(this->fontStyle);
 	this->_g = new Graphics(this->_buffer);
-	//this->_g->setFontStyle(this->fontStyle);
+	this->_metrics = new FontMetrics();
 }
 
 /**
