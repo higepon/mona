@@ -23,7 +23,7 @@
 #include<monaTypes.h>
 
 #define GP_MAX_WIDTH  80
-#define GP_MAX_HEIGHT 25
+#define GP_MAX_HEIGHT 35
 
 /*!
     Graphical console class
@@ -50,8 +50,8 @@ class GraphicalConsole : public VirtualConsole {
 
   private:
     int vram_[GP_MAX_WIDTH][GP_MAX_HEIGHT];
-    static char bgcolor_;
-    static char chcolor_;
+    char bgcolor_;
+    char chcolor_;
 };
 
 

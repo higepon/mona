@@ -53,6 +53,11 @@ void startKernel(void) {
 
     console->printf("\nŽÓŽÅŽÊŽÛŽ°ŽÜŽ°ŽÙŽÄŽÞ ŽÒŽ¸ŽÞŽÈŽ°ŽÁŽ¬ŽÝ ŽºŽºŽÏŽÃŽÞŽ·ŽÀŽÖ\n\n");
 
+    for (int i = 0; i < 30; i++) {
+    console->printf("Ž½Ž¸ŽÛŽ°ŽÙŽÃŽ½ŽÄ%d\n", i);
+    }
+
+    while (true);
     /* set interrept */
     _sysSetIdt();
     _sysInitIo();

@@ -19,8 +19,8 @@ extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
 extern "C" char pos_x;
 extern "C" char pos_y;
 
-char GraphicalConsole::bgcolor_;
-char GraphicalConsole::chcolor_;
+//char GraphicalConsole::bgcolor_;
+//char GraphicalConsole::chcolor_;
 
 /*!
     \brief initilize
@@ -241,14 +241,16 @@ void GraphicalConsole::scrollUp() {
 
             pos_x = x;
             pos_y = y;
-            write_font(vram_[x][y], chcolor_, bgcolor_);
+            write_font(vram_[x][y + 1], chcolor_, bgcolor_);
         }
     }
 
-    pos_y = GP_MAX_HEIGHT - 2;
     for (int x = 0; x < GP_MAX_WIDTH; x++) {
-        pos_x = x;
-        write_font(vram_[x][pos_y], chcolor_, bgcolor_);
+
+        for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
+
+            vram_[x][y] = vram_[x][y + 1];
+        }
     }
 
     pos_x = curx;
@@ -287,7 +289,7 @@ void GraphicalConsole::putCharacter(char ch) {
 
         /* write charcter at (x, y) */
         write_font(ch, chcolor_, bgcolor_);
-        vram_[pos_x][pos_y];
+        vram_[pos_x][pos_y] = ch;
         forwardCursor();
     }
     return;
