@@ -17,6 +17,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BAYGUI_BAYGUI_H__
 #define __BAYGUI_BAYGUI_H__
 
+#define BAYGUI_VERSION "BayGUI build "__DATE__
+
 #include "monapi.h"
 #include "monapi/Array.h"
 #include "monapi/syscall.h"
@@ -24,31 +26,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "monapi/messages.h"
 
 #include "baygui/messages.h"
-//#include "baygui/Encoding.h"
-//#include "baygui/String.h"
-//#include "baygui/Console.h"
 #include "baygui/Object.h"
 #include "baygui/String.h"
 #include "baygui/Pointer.h"
 #include "baygui/Event.h"
-//#include "baygui/Math.h"
 #include "baygui/ArrayList.h"
 #include "baygui/Color.h"
 #include "baygui/Bitmap.h"
 #include "baygui/Dimention.h"
 #include "baygui/Point.h"
 #include "baygui/Rect.h"
-//#include "baygui/Font.h"
 #include "baygui/FontMetrics.h"
 #include "baygui/Graphics.h"
-//#include "baygui/Message.h"
-//#include "baygui/Events.h"
-//#include "baygui/IMessageFilter.h"
 #include "baygui/Application.h"
 #include "baygui/Control.h"
-//#include "baygui/ControlPaint.h"
 #include "baygui/Button.h"
-//#include "baygui/Cursor.h"
 #include "baygui/Window.h"
 #include "baygui/Label.h"
 #include "baygui/Timer.h"
