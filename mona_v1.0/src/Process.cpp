@@ -155,9 +155,9 @@ ProcessInfo_* ProcessScheduler::schedule(ProcessInfo_* current) {
     return (list_->remove(0));
 }
 
-int ProcessScheduler::addProcess(ProcessInfo_* pinfo) {
+int ProcessScheduler::addProcess(Process_* process) {
 
-    list_->add(pinfo);
+    list_->add(process->info);
     return NORMAL;
 }
 
@@ -219,9 +219,29 @@ ProcessInfo_* ProcessManager_::schedule() {
     return NULL;
 }
 
-int ProcessManager_::createProcess() {
+Process_* ProcessManager_::createProcess(int type, const char* name) {
 
+    Process_* result;
 
+    switch (type) {
 
+    case USER_PROCESS:
 
+        /* like this? */
+        //tesult = new UserProcess();
+        break;
+
+    case KERNEL_PROCESS:
+        break;
+
+    default:
+        result = (Process_*)NULL;
+
+    }
+
+    return result;
+}
+
+int ProcessManager_::addProcess(Process_* process) {
+    return (scheduler_->addProcess(process));
 }

@@ -106,6 +106,19 @@ class Thread {
 
 };
 
+class Process_ {
+
+  public:
+    Process_() {}
+    Process_(const char* name);
+    virtual ~Process_();
+
+
+  public:
+    ProcessInfo_* info;
+};
+
+
 class ProcessScheduler {
 
   public:
@@ -114,7 +127,7 @@ class ProcessScheduler {
 
   public:
     ProcessInfo_* schedule(ProcessInfo_* current);
-    int addProcess(ProcessInfo_* pinfo);
+    int addProcess(Process_* pinfo);
     int kill(ProcessInfo_* pinfo);
 
   private:
@@ -129,15 +142,22 @@ class ProcessManager_ {
     ~ProcessManager_();
 
   public:
-    int createProcess();
+    Process_* createProcess(int type, const char* name);
+    int addProcess(Process_* process);
     int kill(ProcessInfo_* process);
     int switchProcess();
     ProcessInfo_* schedule();
 
+  public:
+    static const int USER_PROCESS   = 0;
+    static const int KERNEL_PROCESS = 1;
+
   private:
     ProcessScheduler* scheduler_;
     PageManager* pageManager_;
+
 };
+
 
 /*!
     class Process

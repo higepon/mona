@@ -1,3 +1,8 @@
+2003-12-14  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: ProcessManager_::createProcess‚ÌœŠi‚ğì¬
+                       ProcessManager_::addProcess‚ğì¬
+
 2003-12-09  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp: ƒƒ‚ƒŠŠ„‚è“–‚Ä‚É¸”s‚µ‚½‚çpanic()‚É“Ë“ü‚·‚éŠÖ”‚ğ—pˆÓ
