@@ -43,6 +43,7 @@ void disp_name1() {
         disp_write_font(75, 0, 'M', color%13);
 
         Semaphore::up(&g_semaphore_console);
+        syscall_heavy();
         int result = syscall_sleep(40);
         color++;
     }
@@ -65,6 +66,7 @@ void disp_name2() {
         disp_write_font(76, 0, 'o', color%14);
 
         Semaphore::up(&g_semaphore_console);
+        syscall_heavy();
         int result = syscall_sleep(50);
         color++;
     }
@@ -84,6 +86,7 @@ void disp_name3() {
 
         Message msg;
         //        g_message_server->send(&msg);
+        syscall_heavy();
         int result = syscall_sleep(300);
 
         color++;

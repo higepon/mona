@@ -74,9 +74,6 @@ virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
     return 0x100000 + i * 4096;
 }
 
-
-
-
 PTE* ProcessManager::allocatePageDir() {
 
 

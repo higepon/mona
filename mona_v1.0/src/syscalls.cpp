@@ -27,6 +27,19 @@ void syscall_entrance() {
 
           break;
 
+      case SYSTEM_CALL_HEAVEY:
+
+          g_console->printf("heavy start");
+          for (dword i = 0; i < 0xfffffff; i++) {
+
+              i++;
+              i--;
+              i++;
+              i--;
+          }
+
+          g_console->printf("heavy done\n");
+
       default:
           g_console->printf("syscall:default");
           break;
@@ -45,6 +58,20 @@ int syscall_sleep(dword tick) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"m"(tick), "g"(SYSTEM_CALL_PROCESS_SLEEP)
+                 );
+
+    return result;
+}
+
+int syscall_heavy() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_HEAVEY)
                  );
 
     return result;
