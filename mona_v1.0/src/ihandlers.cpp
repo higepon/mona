@@ -31,6 +31,7 @@
 void keyStrokeHandler() {
 
     g_demo_step++;
+    g_console->printf("%d", g_demo_step);
 
     /* get scancode */
     byte scancode = inportb(0x60);

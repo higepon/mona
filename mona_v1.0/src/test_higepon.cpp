@@ -17,10 +17,11 @@ typedef struct {
 } ARGBHeader;
 
 static bool drawARGB(byte* rgba, int x, int y, int size);
+static int getColorNumber(byte* rgba);
 
 bool drawARGB(byte* rgba, int x, int y, int size) {
 
-    int color;
+    //    int color;
     int startx = x;
     int starty = y;
     ARGBHeader* header = (ARGBHeader*)rgba;
@@ -40,17 +41,45 @@ bool drawARGB(byte* rgba, int x, int y, int size) {
         if (y >= starty + (int)(header->height)) break;
 
         //color = (rgba[i * 4 + 0] || rgba[i * 4 + 1] || rgba[i * 4 + 2]) ? GP_WHITE : GP_BLACK;
-        if (rgba[i * 4 + 0] == 0xFF) color = GP_WHITE;
-        else if (rgba[i * 4 + 0] == 0xC0) color = GP_GRAY;
-        else color = GP_BLACK;
+        //        if (rgba[i * 4 + 0] == 0xFF) color = GP_WHITE;
+        //        else if (rgba[i * 4 + 0] == 0xC0) color = GP_GRAY;
+        //        else color = GP_BLACK;
 
 
-        put_pixel(x, y, color);
+        put_pixel(x, y, getColorNumber(&(rgba[i * 4])));
         x++;
     }
 
     return true;
 }
+
+int getColorNumber(byte* rgba) {
+
+    byte r = rgba[2];
+    byte g = rgba[1];
+    byte b = rgba[0];
+    int result;
+
+    if (r == 0x00 && g == 0x00 && b == 0x00) result = 0;
+    else if (r == 0x00 && g == 0x00 && b == 0x80) result = 1;
+    else if (r == 0x00 && g == 0x80 && b == 0x00) result = 2;
+    else if (r == 0x00 && g == 0x80 && b == 0x80) result = 3;
+    else if (r == 0x80 && g == 0x00 && b == 0x00) result = 4;
+    else if (r == 0x80 && g == 0x00 && b == 0x80) result = 5;
+    else if (r == 0x80 && g == 0x80 && b == 0x00) result = 6;
+    else if (r == 0xc0 && g == 0xc0 && b == 0xc0) result = 7;
+    else if (r == 0x80 && g == 0x80 && b == 0x80) result = 8;
+    else if (r == 0x00 && g == 0x00 && b == 0xff) result = 9;
+    else if (r == 0x00 && g == 0xff && b == 0x00) result = 10;
+    else if (r == 0x00 && g == 0xff && b == 0xff) result = 11;
+    else if (r == 0x00 && g == 0xff && b == 0xff) result = 12;
+    else if (r == 0xff && g == 0x00 && b == 0x00) result = 13;
+    else if (r == 0xff && g == 0x00 && b == 0xff) result = 14;
+    else result = 15;
+
+    return result;
+}
+
 
 void FDCDriverTester() {
 
@@ -79,7 +108,8 @@ void FDCDriverTester() {
         while (true);
     }
 
-    if (!fat->open(".", "NIKQ.LGO", FAT12::READ_MODE)) {
+    //    if (!fat->open(".", "NIKQ.LGO", FAT12::READ_MODE)) {
+    if (!fat->open(".", "LOGO.LGO", FAT12::READ_MODE)) {
 
         info(ERROR, "open failed");
     }
@@ -97,15 +127,27 @@ void FDCDriverTester() {
         }
     }
 
-    for (int i = 0; i < 11; i++) {
-        drawARGB(buf, i * 53, 250, fileSize);
-    }
+
+    drawARGB(buf, 0, 0, fileSize);
+
+    //    for (int i = 0; i < 11; i++) {
+        drawARGB(buf, 0, 0, fileSize);
+	//    }
 
     if (!fat->close()) {
        info(ERROR, "close failed");
     }
 
     g_fdcdriver->motor(false);
+    while (true);
+    rectangle(0, 0, 640, 480, GP_SKYBLUE);
+    rectangle(100, 100, 400, 300, GP_GRAY);
+    rectangle(102, 102, 398, 112, GP_BLUE);
+    rectangle(102, 122, 398, 297, GP_WHITE);
+    rectangle(388, 103, 397, 111, GP_GRAY);
+    rectangle(0, 460, 640, 480, GP_GRAY);
+    while (true);
+
     delete(fat);
     //    free(buf);
 
