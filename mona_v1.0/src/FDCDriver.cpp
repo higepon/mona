@@ -172,6 +172,7 @@ void FDCDriver::interrupt() {
 */
 void FDCDriver::waitInterrupt() {
 
+            g_console->printf("here2");
     setWaitThread(g_currentThread->thread);
 
     asm volatile("movl $%c0, %%ebx \n"

@@ -422,6 +422,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_WAIT_FDC:
 
         {
+            g_console->printf("here");
             g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
             bool isProcessChange = g_scheduler->schedule();
             ThreadOperation::switchThread(isProcessChange);

@@ -163,6 +163,7 @@ void MFDCHandler(void)
     outportb(0x20, 0x66);
 
     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
+    g_console->printf("[%x]", wakeupResult);
     ThreadOperation::switchThread((wakeupResult == 1));
 }
 
