@@ -7,6 +7,7 @@
         * src/lib/gui/System/Mona/Forms/Control.cpp (Refresh): OnPaint()を呼び出し
 
         * 各MonaGUIアプリ: Refresh()の前に明示的に呼んでいたOnPaint()を削除
+                           アプリから原則的にRefreshInternal()は呼ばないように変更したため、Refresh()に置換
 
         * apps/gui/anaclock/Form1.cpp: 描画をOnPaint()で行い、縁をなくした
 
