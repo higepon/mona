@@ -121,8 +121,9 @@ void MFDCDriver::initilize() {
 
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
-
     console_->printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
+
+    /* dma buff should be 64kb < dma buff < 16Mb
     if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
         panic("dma buff allocate error");
     }
@@ -132,7 +133,6 @@ void MFDCDriver::initilize() {
     outportb(0x08, 0);
     outportb(0xd6, 0xc0);
     outportb(0xd4, 0);
-
 
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
@@ -195,11 +195,6 @@ void MFDCDriver::printStatus(const char* str) const {
     return;
 }
 
-void MFDCDriver::setFDCVersion() {
-
-
-}
-
 /*!
     \brief interrupt handler
 
@@ -251,6 +246,7 @@ bool MFDCDriver::sendCommand(const byte* command, const byte length) {
             console_->printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
         }
+        console_->printf("command[%x] ", command[i]);
         outportb(FDC_DR_PRIMARY, command[i]);
     }
 
@@ -305,8 +301,8 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
     }
 
     /* time out */
-    console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x]\n"
-                   , expectedCondition, inportb(FDC_MSR_PRIMARY));
+    console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
+                   , expectedCondition, inportb(FDC_MSR_PRIMARY), mask & inportb(FDC_MSR_PRIMARY));
     return false;
 }
 
@@ -401,7 +397,7 @@ void MFDCDriver::readResults() {
 
     for (int j = 0; j < resultsLength_; j++) {
 
-         console_->printf("result[%d] = %x\n", j, results_[j]);
+         _sys_printf("result[%d] = %x ", j, results_[j]);
     }
     return;
 }
@@ -479,13 +475,13 @@ void MFDCDriver::setupDMAWrite(dword size) {
 
 bool MFDCDriver::read(byte track, byte head, byte sector) {
 
-    byte command[] = {FDC_COMMAND_READ
+    byte command[] = {0x46//FDC_COMMAND_READ
                    , (head & 1) << 2
                    , track
                    , head
                    , sector
                    , 0x02
-                   , sector
+                   , 3
                    , 0x1b
                    , 0x00
                    };
@@ -495,16 +491,18 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
     setupDMARead(512);
 
     memset(dmabuff_, 0xfffe, 512);
+    interrupt_ = false;
     sendCommand(command, sizeof(command));
-
+    //while(!waitInterrupt());
 
     printStatus("after readcommand");
 
     stopDMA();
 
-    //    for (int i = 0; i < 512; i++) _sys_printf("%d", dmabuff_[i]);
+    for (int i = 0; i < 10; i++) _sys_printf("dmabuff%d", dmabuff_[i]);
 
     readResults();
+    motor(OFF);
     while (true);
 
     return true;
