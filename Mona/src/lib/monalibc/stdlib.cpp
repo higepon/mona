@@ -86,20 +86,20 @@ size_t strtoi(const char *s, char **endptr, int base, int width, char flag){
     base = 10;
   }
   head = s;
-  if(width == 0) width = M_INT_MAX;
+  if(width == 0) width = INT_MAX;
   width -= (int)(head - tmp);
   if(flag & S_FORMAT_UNSIGNED){
     mflag = 1;
     if(flag & S_FORMAT_LONG){
-      max = M_ULONG_MAX;
+      max = ULONG_MAX;
     } else {
-      max = M_UINT_MAX;
+      max = UINT_MAX;
     }
   } else {
     if(flag & S_FORMAT_LONG){
-      max = M_LONG_MAX;
+      max = LONG_MAX;
     } else {
-      max = M_INT_MAX;
+      max = INT_MAX;
     }
   }
 

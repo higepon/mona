@@ -18,20 +18,20 @@
 extern "C" {
 #endif
 
-#define M_CHAR_BIT 8
-#define M_SCHAR_MIN -127
-#define M_SCHAR_MAX 127
-#define M_UCHAR_MAX 255
-#define M_CHAR_MIN M_SCHAR_MIN
-#define M_CHAR_MAX M_UCHAR_MAX
+#define CHAR_BIT 8
+#define SCHAR_MIN -127
+#define SCHAR_MAX 127
+#define UCHAR_MAX 255
+#define CHAR_MIN M_SCHAR_MIN
+#define CHAR_MAX M_UCHAR_MAX
 
-#define M_INT_MIN -2147483647
-#define M_INT_MAX 2147483647
-#define M_UINT_MAX 4294967295U
+#define INT_MIN -2147483647
+#define INT_MAX 2147483647
+#define UINT_MAX 4294967295U
 
-#define M_LONG_MIN -2147483647
-#define M_LONG_MAX 2147483647
-#define M_ULONG_MAX 4294967295U
+#define LONG_MIN -2147483647
+#define LONG_MAX 2147483647
+#define ULONG_MAX 4294967295U
 
 #ifdef __cplusplus
 }
