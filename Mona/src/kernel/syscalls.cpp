@@ -215,7 +215,8 @@ void syscall_entrance() {
             CommandOption* option = (CommandOption*)(info->edi);
 
             enableInterrupt();
-            info->eax = loadProcess(path, name, true, option);
+//            info->eax = loadProcess(path, name, true, option);
+            info->eax = Loader::Load(path, name, true, option);
             break;
         }
 

@@ -1,5 +1,7 @@
 2004-06-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/InternalCommands.cpp (internalCommandExecute): syscall_load_processを利用(Tinoさん確認をお願いします。)
+
         * src/servers/gui/STARTGUI.MSH: GUI.SVRをGUI.ELFに改名
 
         * GUI.SVR以外はバイナリに対応

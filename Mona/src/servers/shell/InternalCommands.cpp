@@ -153,7 +153,8 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
 
     case COMMAND_CHSH:
-        if (monapi_call_elf_execute_file("/SERVERS/SHELL.SVR", 1) != 0) break;
+//        if (monapi_call_elf_execute_file("/SERVERS/SHELL.BIN", 1) != 0) break;
+        if (syscall_load_process("/SERVERS/SHELL.BIN", "SHELL.BIN", NULL) != 0) break;
 #if 0
         for (MessageInfo msg;;)
         {
