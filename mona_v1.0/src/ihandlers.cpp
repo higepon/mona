@@ -40,6 +40,7 @@ void keyStrokeHandler(dword scancode) {
     km.getKeyInfo(&info);
 
     memset(&message, 0, sizeof(Message));
+
     message.arg1 = info.keycode;
     message.arg2 = info.modifiers;
 

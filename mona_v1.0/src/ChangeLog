@@ -1,5 +1,9 @@
 2004-01-12  higepon  <higepon@users.sourceforge.jp>
 
+        * Process.cpp: wakeupTimer()のバグを修正 名無しさんに感謝
+
+        * Process.cpp: ProcessManger::find()のバグを修正
+
         * kernel.cpp: ユーザー側にMutexクラスを用意。
 
 2004-01-11  higepon  <higepon@users.sourceforge.jp>

@@ -12,12 +12,12 @@ int main() {
 
     mutex = new Mutex();
 
-    if (!mutex->init()) {
-        print("mutex init  error\n");
-        exit(-1);
-    }
+//     if (!mutex->init()) {
+//         print("mutex init  error\n");
+//         exit(-1);
+//     }
 
-    mutex->lock();
+//     mutex->lock();
 
     if (!(id = mthread_create((dword)listener))) {
         print("mthread create error\n");
@@ -30,6 +30,7 @@ int main() {
     }
 
     disp();
+    return 0;
 }
 
 int disp() {

@@ -52,10 +52,10 @@ ThreadManager::ThreadManager(bool isUser) : current_(NULL), threadCount(0) {
 
 ThreadManager::~ThreadManager() {
 
-    for (dword i = 0; i < dispatchList_->size(); i++) {
+    for (int i = 0; i < dispatchList_->size(); i++) {
         kill(dispatchList_->get(i));
     }
-    for (dword i = 0; i < dispatchList_->size(); i++) {
+    for (int i = 0; i < dispatchList_->size(); i++) {
         kill(waitList_->get(i));
     }
 
@@ -154,7 +154,7 @@ int ThreadManager::kill(Thread* thread) {
 
 int ThreadManager::kill(List<Thread*>* list) {
 
-    for (dword i = 0; i < list->size(); i++) {
+    for (int i = list->size() - 1; i >=0; i--) {
         Thread* thread = list->get(i);
         list->removeAt(i);
         delete thread;
@@ -193,13 +193,13 @@ void ThreadManager::printAllThread() {
     Thread* thread;
     ArchThreadInfo* a;
 
-    for (dword i = 0; i < dispatchList_->size(); i++) {
+    for (int i = 0; i < dispatchList_->size(); i++) {
         thread = dispatchList_->get(i);
         a = thread->getThreadInfo()->archinfo;
         g_console->printf("    %x %x %x %x %d                       \n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
     }
 
-    for (dword i = 0; i < waitList_->size(); i++) {
+    for (int i = 0; i < waitList_->size(); i++) {
         thread = waitList_->get(i);
         a = thread->getThreadInfo()->archinfo;
         g_console->printf("    %x %x %x %x %d                       \n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
@@ -383,13 +383,13 @@ void ProcessManager::printProcess() {
 
     Process* p;
 
-    for (dword i = 0; i < dispatchList_->size(); i++) {
+    for (int i = 0; i < dispatchList_->size(); i++) {
         p = dispatchList_->get(i);
         g_console->printf("[%s]dispatch %d                                           \n", p->getName(), p->getTick());
         p->printAllThread();
     }
 
-    for (dword i = 0; i < waitList_->size(); i++) {
+    for (int i = 0; i < waitList_->size(); i++) {
         p = waitList_->get(i);
         g_console->printf("[%s]waiting %d                                             \n", p->getName(), p->getTick());
         p->printAllThread();
@@ -400,14 +400,14 @@ Process* ProcessManager::find(const char* name) {
 
     if (!name) return (Process*)NULL;
 
-    for (dword i = 0; dispatchList_->size(); i++) {
+    for (int i = 0; i < dispatchList_->size(); i++) {
 
         Process* process = dispatchList_->get(i);
         if (!strcmp(name, process->getName())) {
             return process;
         }
     }
-    for (dword i = 0; waitList_->size(); i++) {
+    for (int i = 0; i < waitList_->size(); i++) {
 
         Process* process = waitList_->get(i);
         if (!strcmp(name, process->getName())) {
@@ -433,9 +433,11 @@ void ProcessManager::wakeup() {
 
     dword tick = getTick();
 
-    for (dword i = 0; i < waitList_->size(); i++) {
+    for (int i = waitList_->size() - 1; i >=0; i--) {
         Process* process = waitList_->get(i);
         if (process->getWakeupTimer() < tick) {
+
+            g_console->printf("%d=%s", i, process->getName());
             dispatchList_->add(process);
             waitList_->remove(process);
         }
@@ -469,13 +471,13 @@ Process::~Process() {
     delete heap_;
 
     /* shared MemorySegment */
-    for (dword i = 0; i < shared_->size(); i++) {
+    for (int i = 0; i < shared_->size(); i++) {
         SharedMemoryObject::detach(shared_->get(i)->getId(), this);
     }
     delete(shared_);
 
     /* message list */
-    for (dword i = 0; i < messageList_->size(); i++) {
+    for (int i = 0; i < messageList_->size(); i++) {
         delete messageList_->get(i);
     }
 }
