@@ -106,13 +106,14 @@ void fdcHandler(){
 */
 void timerHandler() {
 
-    //_sysPrint("timer");
+    /* iret */
+    _sysPrint("timer");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
-
-    /* iret */
+    //ProcessManager& pm = ProcessManager::instance();
+    //pm.switchProcess(cnt%2 == 0?0x28:0x20);
     iret();
     return;
 }
