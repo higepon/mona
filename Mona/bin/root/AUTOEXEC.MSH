@@ -1,3 +1,5 @@
 @ECHO
 @ECHO Welcome to Mona!
-@ECHO If you want to know how to use shell, please type "HELP".
+@ECHO To show internal commands, please type "HELP".
+@ECHO To launch MonaGUI, please type "STARTGUI".
+@ECHO Thank you! -- Mona Project Team
