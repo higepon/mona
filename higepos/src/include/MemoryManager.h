@@ -20,4 +20,6 @@ class MemoryManager:virtual Object {
   public:
     virtual char* getMessage() = 0;
     virtual char* getName() =0;
+    virtual unsigned long allocateMemory(unsigned long) = 0;
+    virtual unsigned long freeMemory(unsigned long) = 0;
 };

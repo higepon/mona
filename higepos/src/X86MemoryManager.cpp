@@ -40,3 +40,36 @@ char* X86MemoryManager::getName() {
     static char buf[] = "X86MemoryManager";
     return buf;
 }
+
+/*!
+    \brief allocate memory
+
+    allocate memory
+
+    \param size size of memory to allocate
+    \return address to allocated memory
+
+    \author HigePon
+    \date   create:2002/08/07 update:
+*/
+unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
+
+    return 0;
+}
+
+/*!
+    \brief free memory
+
+    free memory
+
+    \param address adrress of memory to be free
+    \return result
+
+    \author HigePon
+    \date   create:2002/08/07 update:
+*/
+unsigned long X86MemoryManager::freeMemory(unsigned long size) {
+
+    return 0;
+}
+

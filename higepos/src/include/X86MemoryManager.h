@@ -21,4 +21,6 @@ class X86MemoryManager:virtual MemoryManager {
   public:
     char* getMessage();
     char* getName();
+    unsigned long allocateMemory(unsigned long);
+    unsigned long freeMemory(unsigned long);
 };
