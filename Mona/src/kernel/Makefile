@@ -2,14 +2,15 @@ MONADIR         = ../..
 
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
-include $(MONADIR)/env/kernel.inc
 
-TOOLSDIR        = $(MONADIR)/tools
-INCLUDE         = -I$(INCDIR) -I$(TOOLSDIR)
-KERNEL_IMG      = KERNEL.IMG
-BOOT1           = firstboot.bin
-BOOT2           = secondboot.bin
-KERNEL          = third.bin
+KERNEL_ADDR  = 0x1000
+LFLAGS       = -n -Ttext 0x2000 -static
+TOOLSDIR     = $(MONADIR)/tools
+INCLUDE      = -I$(INCDIR) -I$(TOOLSDIR)
+KERNEL_IMG   = KERNEL.IMG
+BOOT1        = firstboot.bin
+BOOT2        = secondboot.bin
+KERNEL       = third.bin
 SOURCES      = cstart.cpp            \
                kernel.cpp            \
                ihandlers.cpp         \
@@ -68,7 +69,7 @@ $(BOOT1) : firstboot.asm
 	$(NASM) firstboot.asm -o $@ -l $(LISTDIR)/first.list
 
 $(BOOT2) : secondboot.asm
-	$(NASM) secondboot.asm -o $@ -l $(LISTDIR)/second.list
+	$(NASM) -DKERNEL_ADDR=$(KERNEL_ADDR) secondboot.asm -o $@ -l $(LISTDIR)/second.list
 
 mode12h.o : mode12h.asm
 	$(NASM) $(NFLAGS) mode12h.asm  -o $@ -l $(LISTDIR)/mode12h.list
