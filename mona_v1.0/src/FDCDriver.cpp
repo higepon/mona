@@ -68,7 +68,6 @@
 #define FDC_COMMAND_READ            0xe6 // bochs & VPC
 //#define FDC_COMMAND_READ            0x46
 
-
 /* time out */
 #define FDC_RETRY_MAX 600000
 

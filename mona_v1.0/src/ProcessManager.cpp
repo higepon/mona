@@ -25,17 +25,21 @@ ProcessManager::ProcessManager(Process* idle) {
 
 void ProcessManager::switchProcess() {
 
-     info(DEV_NOTICE, "[ name=%s  esp0=%x eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x ss0=%x]\n"
-          , g_current_process->name
-          , g_current_process->esp0
-          , g_current_process->eip
-          , g_current_process->cs
-          , g_current_process->eflags
-          , g_current_process->esp
-          , g_current_process->ds
-          , g_current_process->ss
-          , g_current_process->ss0
-          );
+    info(DEV_NOTICE, "[ name=%s  esp0=%x eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x ss0=%x]\n"
+         , g_current_process->name
+         , g_current_process->esp0
+         , g_current_process->eip
+         , g_current_process->cs
+         , g_current_process->eflags
+         , g_current_process->esp
+         , g_current_process->ds
+         , g_current_process->ss
+         , g_current_process->ss0
+         );
+
+    /* switch page */
+    g_page_manager->setPageDirectory(g_current_process->cr3);
+    g_page_manager->flushPageCache();
 
     /* switch to user process */
     if ((g_current_process->cs & DPL_USER) == DPL_USER) {
@@ -95,7 +99,7 @@ virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
 PageEntry* ProcessManager::allocatePageDir() {
 
 
-    return (PageEntry*)0;
+    return g_page_directory;
 }
 
 dword ProcessManager::allocatePID() {

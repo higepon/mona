@@ -178,7 +178,7 @@ void startKernel(void) {
     //    process9->pinfo_.esp = 0x1000;
 
     g_console->printf("Hit any key to start all process\n");
-    while (g_demo_step < 4);
+    //    while (g_demo_step < 4);
 
 
     enableTimer();

@@ -31,6 +31,7 @@ void ELFTester(byte* out) {
         delay();
         delay();
     }
+
     g_fdcdriver->motor(true);
 
     info(DEV_NOTICE, "before recalibrate");
