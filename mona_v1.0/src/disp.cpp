@@ -21,7 +21,7 @@ void disp_name1() {
 
     enableTimer();
     while (true) {
-        asm volatile("nop");
+	console->printf("[1]");
     }
 }
 
@@ -35,7 +35,7 @@ void disp_name2() {
 
     enableTimer();
     while (true) {
-        asm volatile("nop");
+	console->printf("[2]");
     }
 }
 

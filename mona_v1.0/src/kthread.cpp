@@ -57,28 +57,28 @@ void kthread_init() {
     kthread_add_to_prev_list(&runningList, disp2);
 
     /* thread3 */
-    dword stack3 = kthread_allocate_stack();
-    if (stack3 == NULL) {
-        panic("idle thread:stack allocate error");
-    }
-    Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
-    if (disp3 == NULL) {
-        panic("idle thread:create thread error");
-    }
-    kthread_add_to_prev_list(&runningList, disp3);
+//      dword stack3 = kthread_allocate_stack();
+//      if (stack3 == NULL) {
+//          panic("idle thread:stack allocate error");
+//      }
+//      Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
+//      if (disp3 == NULL) {
+//          panic("idle thread:create thread error");
+//      }
+//      kthread_add_to_prev_list(&runningList, disp3);
 
-    /* thread4 */
-    dword stack4 = kthread_allocate_stack();
-    if (stack4 == NULL) {
-        panic("idle thread:stack allocate error");
-    }
-    Kthread* disp4 = kthread_create_thread(stack4, disp_name4);
-    if (disp4 == NULL) {
-        panic("idle thread:create thread error");
-    }
-    kthread_add_to_prev_list(&runningList, disp4);
+//      /* thread4 */
+//      dword stack4 = kthread_allocate_stack();
+//      if (stack4 == NULL) {
+//          panic("idle thread:stack allocate error");
+//      }
+//      Kthread* disp4 = kthread_create_thread(stack4, disp_name4);
+//      if (disp4 == NULL) {
+//          panic("idle thread:create thread error");
+//      }
+    //    kthread_add_to_prev_list(&runningList, disp4);
 
-    current = disp1;
+    current = disp2;
     kthread_schedule();
 }
 

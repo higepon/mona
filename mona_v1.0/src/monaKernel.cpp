@@ -80,9 +80,9 @@ void startKernel(void) {
         console->printf("CPUID NG  \n");
     }
 
-    Date date;
-    rtc_get_date(&date);
-    console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
+//      Date date;
+//      rtc_get_date(&date);
+//      console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
 
     /* enable interrupt */
     enableInterrupt();
