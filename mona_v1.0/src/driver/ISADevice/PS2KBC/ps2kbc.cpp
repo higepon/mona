@@ -27,7 +27,13 @@ class KeyBoardIRQHandler : public IRQHandler {
 */
 
 void keyboardirqhandler(void){
-      g_console->printf("PS2:INT\n");
+      g_console->printf("PS2:INT Key\n");
+      g_demo_step++;
+      ps2->Recv();
+}
+
+void mouseirqhandler(void){
+      g_console->printf("PS2:INT Mouse\n");
       g_demo_step++;
       ps2->Recv();
 }
@@ -101,7 +107,7 @@ PS2KBC::PS2KBC(ISADriver *isa){
   Send();
   
   /* KB init */
-  g_console->printf("ps2:installing IRQ Handler(%x).\n",(dword)keyboardirqhandler);
+  g_console->printf("ps2:installing Keyboard IRQ Handler(%x).\n",(dword)keyboardirqhandler);
   
   if(!isa_->AcquireIRQ(1, keyboardirqhandler)){
     isa_->console->printf("PS2:init:can't acquire IRQ.\n");
@@ -110,7 +116,32 @@ PS2KBC::PS2KBC(ISADriver *isa){
   isa_->EnableIRQ(1);
   
   /* MOUSE init */
-  isa_->AcquireIRQ(12, keyboardirqhandler);
+  g_console->printf("ps2:checking Mouse...");
+  
+  OutBuf[0] = 0xa9;
+  OutBuf[1] = 0xff;
+  OutBufEndPtr = 2;
+  Send();
+  InBufEndPtr = 0;
+  if(InBuf[0] != 0){
+    g_console->printf("error(%x).\n",InBuf[0]);
+    return;
+  }
+  g_console->printf("ok.\n");
+  OutBuf[0] = 0xa8;
+  OutBufEndPtr = 1;
+  Send();
+  
+  OutBuf[0] = 0xd4;
+  OutBuf[1] = 0xff;
+  OutBufEndPtr = 2;
+  Send();
+  
+  g_console->printf("ps2:installing Mouse IRQ Handler(%x).\n",(dword)mouseirqhandler);
+  if(!isa_->AcquireIRQ(12, keyboardirqhandler)){
+    isa_->console->printf("PS2:init:can't acquire IRQ.\n");
+    return;
+  }
   isa_->EnableIRQ(12);
   
   InBufEndPtr = 0;

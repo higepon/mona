@@ -110,7 +110,9 @@ void startKernel(void) {
 #endif
 
     while (g_demo_step < 5);
+#ifndef MJT
     disableInterrupt();
+#endif
     kthread_init();
     while (true);
 
