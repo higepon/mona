@@ -114,7 +114,7 @@ void startKernel(void) {
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024);
+    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024); // 
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);

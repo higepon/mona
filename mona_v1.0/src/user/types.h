@@ -24,4 +24,11 @@ typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
+typedef struct {
+    dword header;
+    dword arg1;
+    dword arg2;
+    dword arg3;
+} Message;
+
 #endif

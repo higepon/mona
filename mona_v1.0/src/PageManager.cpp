@@ -419,7 +419,7 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
 
-    if (!isPresent(&(directory[directoryIndex]))) return false;
+    //    if (!isPresent(&(directory[directoryIndex]))) return false;
 
      table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
      return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);

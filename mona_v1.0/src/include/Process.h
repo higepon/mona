@@ -54,6 +54,7 @@ typedef struct ProcessInfo {
     class SharedMemorySegment* shared;
     class HeapSegment* heap;
     char  name[16];
+    Message* message;
 };
 
 /*!

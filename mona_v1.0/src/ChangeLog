@@ -1,3 +1,10 @@
+2003-11-11  higepon  <higepon@users.sourceforge.jp>
+
+        * test_higepon.cpp: send,receive実験実装.
+                            findProcess未実装
+
+        * include/Process.h: プロセス構造体にMessageを追加
+
 2003-11-05  higepon  <higepon@users.sourceforge.jp>
 
         * Segments.cpp: スタック自動伸張バグつぶし中。検証中のコード多数のため注意

@@ -46,6 +46,50 @@ struct read_info {
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
+ProcessInfo* findProcess(const char* name) {
+
+    /* process manager ? */
+    return NULL;
+}
+
+int send(const char* name, Message* message) {
+
+    ProcessInfo* pinfo;
+    Message* kmessage;
+
+    if (message == (Message*)NULL) {
+        return -1;
+    }
+
+    if ((pinfo = findProcess(name)) == (ProcessInfo*)NULL) {
+        return -1;
+    }
+
+    if (pinfo->message == (Message*)NULL) {
+        return -1;
+    }
+
+    if ((message = (Message*)malloc(sizeof(Message))) == NULL) {
+        return -1;
+    }
+
+    memcpy(kmessage, message, sizeof(Message));
+    pinfo->message = kmessage;
+
+    return 0;
+}
+
+int receive(Message* message) {
+
+    if (g_current_process->message == (Message*)NULL) {
+        return -1;
+    }
+
+    memcpy(message, g_current_process->message, sizeof(Message));
+    g_current_process->message = (Message*)NULL;
+    return 0;
+}
+
 int loadProcess(const char* path, const char* file, bool isUser) {
 
     static dword sharedId = 0x1000;

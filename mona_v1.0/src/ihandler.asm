@@ -48,9 +48,9 @@ cextern g_current_process
 %endmacro
 
 %macro changeData 0
-        push KERNEL_DS
+        push dword KERNEL_DS
         pop  es
-        push KERNEL_DS
+        push dword KERNEL_DS
         pop  ds
 %endmacro
 

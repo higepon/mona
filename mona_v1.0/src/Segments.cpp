@@ -128,8 +128,7 @@ bool StackSegment::tryExtend(LinearAddress address) {
     /* page allocation */
     if (!(g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, address, true, true, true))) {
 
-	panic("wan");
-
+        panic("wan");
     }
 
     /* read only */
