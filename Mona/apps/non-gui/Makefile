@@ -8,6 +8,7 @@ all:
 	@cd tube; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
 	@cd monamona; $(MAKE) $@
+	@cd pciinfo; $(MAKE) $@
 
 install:
 	@cd noiz2bg; $(MAKE) $@
@@ -19,6 +20,7 @@ install:
 	@cd tube; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
 	@cd monamona; $(MAKE) $@
+	@cd pciinfo; $(MAKE) $@
 
 clean: touchdepend
 	@cd noiz2bg; $(MAKE) $@
@@ -30,6 +32,7 @@ clean: touchdepend
 	@cd tube; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
 	@cd monamona; $(MAKE) $@
+	@cd pciinfo; $(MAKE) $@
 
 depend: touchdepend
 	@cd noiz2bg; $(MAKE) $@
@@ -40,6 +43,7 @@ depend: touchdepend
 	@cd waba; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
 	@cd monamona; $(MAKE) $@
+	@cd pciinfo; $(MAKE) $@
 
 distclean:
 	rm -f noiz2bg/dependencies
@@ -49,6 +53,7 @@ distclean:
 	rm -f waba/dependencies
 	rm -f bzcat/dependencies
 	rm -f monamona/dependencies
+	rm -f pciinfo/dependencies
 	@cd nic; $(MAKE) $@
 
 touchdepend:
@@ -59,3 +64,4 @@ touchdepend:
 	touch waba/dependencies
 	touch bzcat/dependencies
 	touch monamona/dependencies
+	touch pciinfo/dependencies

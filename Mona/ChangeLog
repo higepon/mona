@@ -1,3 +1,7 @@
+2004-06-12  tino  <tino@users.sourceforge.jp>
+
+        * apps/non-gui/pciinfo: 追加 (thanks Yamamiさん)
+
 2004-06-10  tino  <tino@users.sourceforge.jp>
 
         * include/gui/System/Drawing/Bitmap.h (GetPixel): 範囲チェック
