@@ -157,11 +157,11 @@ template <class T> T BinaryTree<T>::add(Node*& tree, const int key, const T elem
 
     /* add to left */
     } else if (key < tree->key) {
-        add(tree->left, key, element);
+        return add(tree->left, key, element);
 
     /* add to right */
     } else {
-        add(tree->right, key, element);
+        return add(tree->right, key, element);
     }
 }
 
@@ -248,11 +248,11 @@ template <class T> class List {
 
   public:
     virtual void add(T element)              = 0;
-    virtual T removeAt(size_t index)         = 0;
+    virtual T removeAt(int index)         = 0;
     virtual T remove(T element)              = 0;
-    virtual T get(size_t index) const        = 0;
+    virtual T get(int index) const        = 0;
     virtual bool isEmpty() const             = 0;
-    virtual size_t size() const              = 0;
+    virtual int size() const              = 0;
     virtual bool hasElement(T element) const = 0;
 };
 
@@ -329,28 +329,28 @@ template <class T> class HList : public List<T> {
 
   public:
     HList();
-    HList(size_t size);
-    HList(size_t size, size_t increase);
+    HList(int size);
+    HList(int size, int increase);
     virtual ~HList();
 
   public:
     void add(T element);
-    T get(size_t index) const;
-    T operator[](size_t index);
-    T removeAt(size_t index);
+    T get(int index) const;
+    T operator[](int index);
+    T removeAt(int index);
     T remove(T element);
-    size_t size() const;
+    int size() const;
     virtual bool isEmpty() const;
     bool hasElement(T element) const;
 
   private:
-    T* data_;            /*! internal array     */
-    size_t size_;        /*! size of liset      */
-    size_t numElements_; /*! number of elements */
-    size_t increase_;    /*! increase           */
+    T* data_;         /*! internal array     */
+    int size_;        /*! size of liset      */
+    int numElements_; /*! number of elements */
+    int increase_;    /*! increase           */
 
     /* initilize */
-    void init(size_t size, size_t increase);
+    void init(int size, int increase);
 
 };
 
@@ -378,7 +378,7 @@ template <class T> HList<T>::HList() {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> HList<T>::HList(size_t size) {
+template <class T> HList<T>::HList(int size) {
 
     init(size, 5);
     return;
@@ -395,7 +395,7 @@ template <class T> HList<T>::HList(size_t size) {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> HList<T>::HList(size_t size, size_t increase) {
+template <class T> HList<T>::HList(int size, int increase) {
 
     init(size, increase);
     return;
@@ -449,7 +449,7 @@ template <class T> void HList<T>::add(T element) {
         T* temp = new T[size_];
 
         /* copy original to new array */
-        for (size_t i = 0; i < numElements_; i++) {
+        for (int i = 0; i < numElements_; i++) {
             temp[i] = data_[i];
         }
         delete[] data_;
@@ -472,7 +472,7 @@ template <class T> void HList<T>::add(T element) {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::get(size_t index) const {
+template <class T> T HList<T>::get(int index) const {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
@@ -491,7 +491,7 @@ template <class T> T HList<T>::get(size_t index) const {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::operator[](size_t index) {
+template <class T> T HList<T>::operator[](int index) {
 
     return (this->get(index));
 }
@@ -506,7 +506,7 @@ template <class T> T HList<T>::operator[](size_t index) {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> size_t HList<T>::size() const {
+template <class T> int HList<T>::size() const {
     return numElements_;
 }
 
@@ -520,7 +520,7 @@ template <class T> size_t HList<T>::size() const {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> T HList<T>::removeAt(size_t index) {
+template <class T> T HList<T>::removeAt(int index) {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
@@ -533,7 +533,7 @@ template <class T> T HList<T>::removeAt(size_t index) {
     T toRemove = data_[index];
 
     /* fix hole */
-    for (size_t i = index; i < numElements_ - 1; i++) {
+    for (int i = index; i < numElements_ - 1; i++) {
         data_[i] = data_[i + 1];
     }
     numElements_--;
@@ -571,7 +571,7 @@ template <class T> T HList<T>::remove(T element) {
     \author HigePon
     \date   create:2003/12/07 update:
 */
-template <class T> void HList<T>::init(size_t size, size_t increase) {
+template <class T> void HList<T>::init(int size, int increase) {
 
     /* number of elements */
     numElements_ = 0;

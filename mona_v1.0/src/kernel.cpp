@@ -161,18 +161,6 @@ void startKernel(void) {
     Thread*   testThread3  = g_processManager->createThread(testProcess3, (dword)test81);
     g_processManager->join(testProcess3, testThread3);
 
-    /* add testProces4(testThread4) */
-    Process* testProcess4 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST4");
-    g_processManager->add(testProcess4);
-    Thread*   testThread4  = g_processManager->createThread(testProcess4, (dword)test81);
-    g_processManager->join(testProcess4, testThread4);
-
-    /* add testProces5(testThread5) */
-    Process* testProcess5 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST5");
-    g_processManager->add(testProcess5);
-    Thread*   testThread5  = g_processManager->createThread(testProcess5, (dword)test81);
-    g_processManager->join(testProcess5, testThread5);
-
     /* add testProces6(has no thread) */
     Process* testProcess6 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST6");
     g_processManager->add(testProcess6);
@@ -182,9 +170,9 @@ void startKernel(void) {
     g_processManager->add(testProcess7);
     Thread*   testThread7  = g_processManager->createThread(testProcess7, (dword)test81);
     g_processManager->join(testProcess7, testThread7);
-   Thread*   testThread71  = g_processManager->createThread(testProcess7, (dword)test81);
+    Thread*   testThread71  = g_processManager->createThread(testProcess7, (dword)test81);
     g_processManager->join(testProcess7, testThread71);
-   Thread*   testThread72  = g_processManager->createThread(testProcess7, (dword)test81);
+    Thread*   testThread72  = g_processManager->createThread(testProcess7, (dword)test81);
     g_processManager->join(testProcess7, testThread72);
 
     /* add testProces8(testThread8) */
@@ -216,23 +204,12 @@ void startKernel(void) {
     enableInterrupt();
 
     //    keyStrokeTest();
-
-
     /* show Logo */
     //    mmChangeTester();
     //    while (true);
     //    FDCDriverTester();
 
-    //    g_console->printf("Hit any key to start Main Process and Load ELF\n");
-    //    while (g_demo_step < 2);
-    //    g_console->printf("[2]");
     g_info_level = MSG;
-
-    //    Process* idle     = new Process("idle         ");
-    //    Process* mprocess = new Process("mainProc     ");
-    //    g_process_manager = new ProcessManager(idle);
-
-    //    g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
     enableTimer();
 #endif
 
@@ -240,27 +217,6 @@ void startKernel(void) {
 }
 
 void mainProcess() {
-
-    /*
-       User Process should be exec by LoadProcess()
-
-       You can't exec User Process here.
-    */
-
-    //Process*     process2 = new Process("krnl_o       ");
-    //Process*     process5 = new Process("krnl_o2      ");
-    //Process*     process3 = new Process("krnl_n       ");
-    //    Process*     process4 = new Process("krnl_m       ");
-    //    Process*     process7 = new Process("show_process ");
-
-    //    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    //    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
-
-    //  g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
-    //  g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-    //  g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
-
-    //    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
 
     while (true);
 }

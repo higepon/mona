@@ -324,7 +324,7 @@ SharedMemorySegment* SharedMemorySegment::find(Process* process, dword id) {
 
     List<SharedMemorySegment*>* list = process->getSharedList();
 
-    for (dword i = 0; i < list->size(); i++) {
+    for (int i = 0; i < list->size(); i++) {
 
         SharedMemorySegment* segment = list->get(i);
 
@@ -403,7 +403,7 @@ SharedMemoryObject* SharedMemoryObject::find(dword id) {
 
     SharedMemoryObject* current;
 
-    for (dword i = 0; i < g_sharedMemoryObjectList->size(); i++) {
+    for (int i = 0; i < g_sharedMemoryObjectList->size(); i++) {
 
         current = g_sharedMemoryObjectList->get(i);
 

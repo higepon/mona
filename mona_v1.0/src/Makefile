@@ -52,6 +52,7 @@ SOURCES     = cstart.cpp            \
               sysresource.cpp       \
               Segments.cpp          \
               test_higepon.cpp      \
+              Mutex.cpp             \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

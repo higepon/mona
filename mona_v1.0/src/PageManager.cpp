@@ -303,7 +303,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     /* search shared memory segment */
     List<SharedMemorySegment*>* list = current->getSharedList();
-    for (dword i = 0; i < list->size(); i++) {
+    for (int i = 0; i < list->size(); i++) {
         SharedMemorySegment* segment = list->get(i);
 
         if (segment->inRange(address)) {

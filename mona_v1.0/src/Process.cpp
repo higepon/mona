@@ -447,7 +447,7 @@ void ProcessManager::wakeup() {
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4), wakeupTimer_(0xFFFFFFFF) {
+Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
@@ -463,6 +463,9 @@ Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4
 
     /* message list */
     messageList_ = new HList<Message*>();
+
+    /* mutex tree */
+    kmutexTree_ = new BinaryTree<KMutex*>();
 }
 
 Process::~Process() {
@@ -480,6 +483,9 @@ Process::~Process() {
     for (int i = 0; i < messageList_->size(); i++) {
         delete messageList_->get(i);
     }
+
+    /* we need for each ! don't forge */
+    delete kmutexTree_;
 }
 
 int Process::join(Thread* thread) {

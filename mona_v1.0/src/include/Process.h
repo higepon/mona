@@ -19,6 +19,7 @@
 #include <Segments.h>
 #include <collection.h>
 #include <kernel.h>
+#include <Mutex.h>
 
 #define DPL_KERNEL  0
 #define DPL_USER    3
@@ -100,6 +101,14 @@ class Thread {
         return threadInfo_;
     }
 
+    inline void setWaitReason(int reason) {
+        waitReason_ = reason;
+    }
+
+    inline int getWaitReason() const {
+        return waitReason_;
+    }
+
   private:
 
     /* this is public , because of getXXX */
@@ -108,6 +117,7 @@ class Thread {
   protected:
     dword tick_;
     dword timeLeft_;
+    int waitReason_;
 };
 
 /*----------------------------------------------------------------------
@@ -157,6 +167,14 @@ class ThreadManager {
         return NORMAL;
     }
 
+    inline void waitMutex(Thread* thread) {
+        dispatchList_->remove(thread);
+    }
+
+    inline void activateMutex(Thread* thread) {
+        dispatchList_->add(thread);
+    }
+
   public:
     static void setup();
 
@@ -179,6 +197,11 @@ class ThreadManager {
     static const LinearAddress STACK_START = 0xFFFFFFFF;
     static const dword STACK_SIZE          = 4 * 1024;
     int threadCount;
+
+  public:
+    static const int WAIT_MUTEX = 0;
+    static const int WAIT_SLEEP = 1;
+    static const int WAIT_NONE  = 2;
 };
 
 /*----------------------------------------------------------------------
@@ -251,6 +274,10 @@ class Process {
         return messageList_;
     }
 
+    inline virtual BinaryTree<class KMutex*>* getKMutexTree() const {
+        return kmutexTree_;
+    }
+
     inline virtual int killSelf() {
         return threadManager_->killAllThread();
     }
@@ -263,6 +290,14 @@ class Process {
         return wakeupTimer_;
     }
 
+    inline virtual void waitMutex(Thread* thread) {
+        threadManager_->waitMutex(thread);
+    }
+
+    inline virtual void activateMutex(Thread* thread) {
+        threadManager_->activateMutex(thread);
+    }
+
     virtual int join(Thread* thread);
     virtual Thread* schedule();
     virtual Thread* createThread(dword programCounter);
@@ -271,6 +306,7 @@ class Process {
     class HeapSegment* heap_;
     List<SharedMemorySegment*>* shared_;
     List<Message*>* messageList_;
+    BinaryTree<KMutex*>* kmutexTree_;
     bool isUserMode_;
     ThreadManager* threadManager_;
     PageEntry* pageDirectory_;
