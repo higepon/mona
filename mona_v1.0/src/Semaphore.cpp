@@ -12,7 +12,7 @@
     \date   create:2003/01/30 update:$Date$
 */
 
-#include<semaphore.h>
+#include<Semaphore.h>
 #include<kernel.h>
 #include<io.h>
 #include<global.h>

@@ -15,7 +15,7 @@
 #include<disp.h>
 #include<io.h>
 #include<pic.h>
-#include<semaphore.h>
+#include<Semaphore.h>
 #include<global.h>
 #include<syscalls.h>
 #include<rtc.h>
