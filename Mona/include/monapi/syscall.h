@@ -61,7 +61,7 @@ extern int syscall_mthread_yeild_message();
 extern int syscall_get_date(KDate* date);
 extern int syscall_get_io();
 extern int syscall_dir_open();
-extern int syscall_dir_read(const char* name, int* size);
+extern int syscall_dir_read(const char* name, int* size, int* attr);
 extern int syscall_dir_close();
 extern int syscall_cd(const char* path);
 extern int syscall_set_ps_dump();

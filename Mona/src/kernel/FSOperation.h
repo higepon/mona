@@ -40,7 +40,7 @@ class FSOperation
     bool isOpen() const;
     bool cd(char* path);
     bool openDir();
-    bool readDir(char* name, int* size);
+    bool readDir(char* name, int* size, int* attribute);
     bool closeDir();
     bool seek(dword pt, int flag);
     dword position();

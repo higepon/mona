@@ -555,10 +555,10 @@ int syscall_dir_open()
     return result;
 }
 
-int syscall_dir_read(const char* name, int* size)
+int syscall_dir_read(const char* name, int* size, int* attr)
 {
     int result;
-    SYSCALL_2(SYSTEM_CALL_DIR_READ, result, name, size);
+    SYSCALL_3(SYSTEM_CALL_DIR_READ, result, name, size, attr);
     return result;
 }
 

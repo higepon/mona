@@ -622,10 +622,11 @@ void syscall_entrance() {
            int result;
            char* name = (char*)info->esi;
            int* size = (int*)info->ecx;
+           int* attr = (int*)info->edi;
            enableInterrupt();
            while (Semaphore::down(&g_semaphore_fd));
 
-           result = g_fs->readDir(name, size) ? 0 : 1;
+           result = g_fs->readDir(name, size, attr) ? 0 : 1;
            Semaphore::up(&g_semaphore_fd);
            g_fdcdriver->motorAutoOff();
            disableInterrupt();

@@ -91,8 +91,9 @@ bool FSOperation::openDir()
     return true;
 }
 
-bool FSOperation::readDir(char* name, int* size)
+bool FSOperation::readDir(char* name, int* size, int* attribute)
 {
+    *attribute = 0;
     if (lsinfo.entry == -1)
     {
         if (lsinfo.p != this->current) freeDirectory(lsinfo.p);
@@ -103,6 +104,12 @@ bool FSOperation::readDir(char* name, int* size)
     {
         freeDirectory(lsinfo.p);
         return false;
+    }
+
+    /* directory */
+    if (lsinfo.p->isDirectory(lsinfo.entry))
+    {
+        *attribute |= ATTRIBUTE_DIRECTORY;
     }
 
 //     File * file = lsinfo.p->getFile(lsinfo.entry);

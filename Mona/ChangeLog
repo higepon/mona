@@ -1,3 +1,13 @@
+2004-05-10  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/syscalls.cpp (syscall_entrance): syscall_dir_read拡張
+
+        * src/kernel/fs.cpp (readDir): attribute対応
+
+        * src/servers/shell/Shell.cpp (printFiles): syscall_dir_readの引数変更に対応。
+
+        * apps/gui/launcher/Form1.cpp (class Form1): syscall_dir_readの引数変更に対応。
+
 2004-05-09  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell/Makefile.old: 以前のSHELL.SVRをOLDSHELL.SVRとしてmake

@@ -319,6 +319,7 @@ int Shell::makeApplicationList()
 {
     char name[15];
     int  size;
+    int  attr;
 
     if (syscall_cd(APPSDIR) != 0)
     {
@@ -332,7 +333,7 @@ int Shell::makeApplicationList()
         return 2;
     }
 
-    while (syscall_dir_read(name, &size) == 0)
+    while (syscall_dir_read(name, &size, &attr) == 0)
     {
         CString file = name;
         if (file.endsWith(".EL2") || file.endsWith(".APP") || file.endsWith(".MSH"))
@@ -398,6 +399,7 @@ void Shell::printFiles(const CString& dir)
 {
     char name[15];
     int  size;
+    int  attr;
 
     if (syscall_cd(dir) != 0)
     {
@@ -412,7 +414,7 @@ void Shell::printFiles(const CString& dir)
 
     CString spc = "               ";
     int w = 0, sw = this->screen.getWidth();
-    while (syscall_dir_read(name, &size) == 0)
+    while (syscall_dir_read(name, &size, &attr) == 0)
     {
         CString file = name;
         if (file == "." || file == "..") continue;
@@ -424,7 +426,7 @@ void Shell::printFiles(const CString& dir)
             printf("\n");
             w = 0;
         }
-        printf("%s", (const char*)file);
+        printf("%s%s", attr & ATTRIBUTE_DIRECTORY ? "[D]" : "", (const char*)file);
         w += fw;
     }
     printf("\n");

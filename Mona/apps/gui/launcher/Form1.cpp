@@ -89,7 +89,8 @@ public:
 		Form1::elfs = new ArrayList<String>;
 		char name[16];
 		int size;
-		while (syscall_dir_read(name, &size) == 0)
+		int attr;
+		while (syscall_dir_read(name, &size, &attr) == 0)
 		{
 			String n = name;
 			if (n.EndsWith(".ELF") || n.EndsWith(".EL2") || n.EndsWith(".APP"))

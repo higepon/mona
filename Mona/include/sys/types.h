@@ -156,6 +156,12 @@ enum
     MSG_MOUSE
 };
 
+enum
+{
+    ATTRIBUTE_DIRECTORY = 0x10
+};
+
+
 #define SHARED_FDC_BUFFER 0x4000
 
 #define SYSTEM_CALL_PRINT                    0x0001
