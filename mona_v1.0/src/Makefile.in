@@ -65,7 +65,8 @@ copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO
 	(cd $(BIN); $(FAT_TOOL) mona.img MAP.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img MOUSE.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img NOIZ2BG.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img CLOCK.ELF)
+#	(cd $(BIN); $(FAT_TOOL) mona.img CLOCK.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img OTHELLO.ELF)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)

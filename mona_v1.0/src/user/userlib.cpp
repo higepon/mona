@@ -44,12 +44,10 @@ void setupArguments(List<char*>* arg) {
 ----------------------------------------------------------------------*/
 void messageLoop() {
 
-    MessageInfo message;
-
-    printf("here");
+    volatile MessageInfo message;
 
     for (;;) {
-        if (!Message::receive(&message)) {
+        if (!Message::receive((MessageInfo*)(&message))) {
 
             switch(message.header) {
 
@@ -60,9 +58,9 @@ void messageLoop() {
 
             case MSG_MOUSE_INFO:
 
-                //                if (message.arg3 & 0x01) {
+                if (message.arg3 & 0x01) {
                     monaApp->onMouseClick((int)(message.arg1), (int)(message.arg2));
-                    //                }
+                }
                 break;
             default:
 

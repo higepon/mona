@@ -41,6 +41,7 @@ SOURCES         = hello.cpp                   \
                   MouseServer.cpp             \
                   noiz2bg.cpp                 \
                   clock.cpp                   \
+                  OthelloBoard.cpp            \
                   othello.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -54,8 +55,8 @@ $(HELLO) : hello.o $(LIB_USER)
 	$(LD) $(LFLAGS) hello.o $(LIB) -o $(HELLO)
 	objcopy $(OFLAGS) $(HELLO)
 
-$(OTHELLO) : othello.o $(LIB_USER)
-	$(LD) $(LFLAGS) othello.o $(LIB) -o $(OTHELLO)
+$(OTHELLO) : othello.o OthelloBoard.o $(LIB_USER)
+	$(LD) $(LFLAGS) othello.o OthelloBoard.o $(LIB) -o $(OTHELLO)
 	objcopy $(OFLAGS) $(OTHELLO)
 
 $(CLOCK) : clock.o $(LIB_USER)

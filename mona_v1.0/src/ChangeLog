@@ -1,3 +1,7 @@
+2004-02-14  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (printOK): オセロ追加人同士の対戦のみサポート
+
 2004-02-12  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib.cpp: Observer/Observable追加 さて何に使うのでしょうか？
