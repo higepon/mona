@@ -126,8 +126,8 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    //    ProcessManager& pm = ProcessManager::instance();
-    //    pm.switchProcess();
+    ProcessManager& pm = ProcessManager::instance();
+    pm.switchProcess();
 
     popa();
 

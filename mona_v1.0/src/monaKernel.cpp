@@ -52,7 +52,7 @@ void startKernel(void) {
     _sysPrintln("------------------------------------------------------");
 
     _sysSetColor(BG_BLACK | CH_ORANGE);
-    _sys_printf("\nMona devlop beta 0.01\n\n");
+    _sys_printf("\nMona develop beta 0.01\n\n");
     _sysSetColor(BG_BLACK | CH_SILVER);
 
     /* set interrept */
@@ -77,9 +77,8 @@ void startKernel(void) {
     hvectorTester();
     floppyTester();
     typeTester();
-    processTester();
 #endif
-
+    processTester();
 
     while (true) {
     }

@@ -57,7 +57,7 @@ gdt18:                          ; segment 18(stack segment)
         db 0                    ; segment baseH
 
 gdt20:                          ; segment 20(task state segment)
-        dw 0                    ; segment limitL
+        dw 0x67                 ; segment limitL
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x89                 ; Type TSS
@@ -65,7 +65,7 @@ gdt20:                          ; segment 20(task state segment)
         db 0                    ; segment baseH
 
 gdt28:                          ; segment 28(task state segment)
-        dw 0                    ; segment limitL
+        dw 0x67                 ; segment limitL
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x89                 ; Type TSS
@@ -73,7 +73,7 @@ gdt28:                          ; segment 28(task state segment)
         db 0                    ; segment baseH
 
 gdt30:                          ; segment 30(LDT)
-        dw 0                    ; segment limitL
+        dw 0x67                 ; segment limitL
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x82                 ; Type LDT
