@@ -216,7 +216,7 @@ void X86MemoryManager::addToEntry(H_BYTE type, struct memoryEntry* block, H_SIZE
     }
 
     struct memoryEntry* next = current->next;
-
+    _sys_printf("here %d", previous);
     if (previous) {
         previous->next = block;
         block->next    = next;
