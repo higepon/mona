@@ -50,8 +50,8 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
 	cat $@ /dev/zero|dd of=$(BIN)/mona.tmp bs=1k count=1440
 	mv $(BIN)/mona.tmp $@
 
-$(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o
-	$(LD) $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o
+$(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o
+	$(LD) $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
 
@@ -74,6 +74,9 @@ $(BOOT2) : secondboot.asm
 mode12h.o : mode12h.asm
 	$(NASM) mode12h.asm -felf -o $@ -l $(LIST)/mode12h.list
 
+ihandler.o : ihandler.asm
+	$(NASM) ihandler.asm -felf -o $@ -l $(LIST)/ihandler.list
+
 doxygen :
 	$(DOXYGEN)
 
@@ -81,7 +84,7 @@ depend:
 	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) > $(ENV)/dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o ihandler.o
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img

@@ -23,6 +23,7 @@
 #include<monaTester.h>
 #include<monaKernel.h>
 #include<string>
+#include<monaIhandler.h>
 
 /*!
     \brief key stroke handler
@@ -146,13 +147,12 @@ void timerHandler() {
 */
 void MFDCHandler(void) {
 
-    pusha();
+    //    pusha();
     gMFDCDriver->interrupt();
-    _sys_printf("\nfdc interrupt\n");
+    console->printf("\nfdc interrupt\n");
     outportb(0x20, 0x20);
-
-    popa();
-    iret();
+    //    popa();
+    //    iret();
 }
 
 /*! \def global handler list */
@@ -171,7 +171,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x0B, &dummy}
    , {0x0C, &dummy}
    , {0x0D, &fault0dHandler}
-   , {0x0E, &MFDCHandler}
+   , {0x0E, &arch_fdchandler}
    , {0x0F, &dummy}
    , {0x10, &dummy}
    , {0x11, &dummy}
