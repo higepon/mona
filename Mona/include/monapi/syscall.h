@@ -146,12 +146,4 @@ void  operator delete(void* address);
 #define VK_TEN_PLUS   0x90
 #define VK_TEN_PERIOD 0x91
 
-#define KEY_MODIFIER_DOWN  0x1
-#define KEY_MODIFIER_UP    0x2
-#define KEY_MODIFIER_SHIFT 0x4
-#define KEY_MODIFIER_ALT   0x8
-#define KEY_MODIFIER_CTRL  0x10
-#define KEY_MODIFIER_WIN   0x20
-#define KEY_MODIFIER_MENU  0x40
-
 #endif
