@@ -156,8 +156,8 @@ void ProcessManager::multiTaskTester() {
     printInfo();
 
     setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x10, 0, 0);
-    setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSS);
-    setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
+    setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS);
+    setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), SYS_TSS);
     //    setDT(gdt_ + 6, (dword)(ldt)    , sizeof(GDT), TypeLDT);
     //    setDT(ldt     , (dword)(sss)    , sizeof(GDT), TypeLDT);
     //    setDT(sss     , (dword)(0)      , sizeof(GDT), TypeLDT);
@@ -208,7 +208,7 @@ void ProcessManager::switchProcess() {
     bool next = taskidx_ %2 == 0;
 
     /* wait for */
-    if (taskidx_ <1000) {
+    if (taskidx_ <20) {
         taskidx_++;
         return;
     }
@@ -216,10 +216,10 @@ void ProcessManager::switchProcess() {
     /* set back link and tss busy */
     if (next) {
         tss[0].backlink = 0x28;
-        setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSSBusy);
+        setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), SYS_TSS_BUSY);
     } else {
         tss[1].backlink = 0x20;
-        setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSSBusy);
+        setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS_BUSY);
     }
 
     taskidx_ ++;

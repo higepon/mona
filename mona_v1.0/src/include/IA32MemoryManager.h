@@ -71,17 +71,45 @@ typedef struct  {
     unsigned pageBaseAddress:20; /*!< base address of page   */
 } PTE;
 
+/*! Type */
+#define TYPE_RESERVED1   0x0
+#define TYPE_TSS16       0x1
+#define TYPE_LDT         0x2
+#define TYPE_TSS_BUSY16  0x3
+#define TYPE_CALL_GATE16 0x4
+#define TYPE_TASK_GATE   0x5
+#define TYPE_INTR_GATE16 0x6
+#define TYPE_TRAP_GATE16 0x7
+#define TYPE_RESERVED2   0x8
+#define TYPE_TSS         0x9
+#define TYPE_RESERVED3   0xA
+#define TYPE_TSS_BUSY    0xB
+#define TYPE_CALL_GATE   0xC
+#define TYPE_RESERVED4   0xD
+#define TYPE_INTR_GATE   0xE
+#define TYPE_TRAP_GATE   0xF
+
 /*! Descriptor Type */
-#define TypeCode     0x9a
-#define TypeData     0x92
-#define TypeStack    0x96
-#define TypeLDT      0x82
-#define TypeTSS      0x89
-#define TypeTSSBusy  0x8b
-#define TypeCallGate 0x84
-#define TypeIntrGate 0x8e
-#define TypeTrapGate 0x8f
-#define TypeTaskGate 0x85
+#define SYSTEM_SEGMENT 0x00
+#define CODE_OR_DATA   0x10
+
+/* Descriptor Privilege Level */
+#define DPL0 0x00
+#define DPL1 0x20
+#define DPL2 0x40
+#define DPL3 0x60
+
+/* Present */
+#define SEGMENT_ABSENT  0x00
+#define SEGMENT_PRESENT 0x80
+
+/* TYPE SUM */
+#define SYS_CODE     (byte)(SEGMENT_PRESENT | DPL0 | CODE_OR_DATA   | 0xA          )
+#define SYS_DATA     (byte)(SEGMENT_PRESENT | DPL0 | CODE_OR_DATA   | 0x2          )
+#define SYS_STACK    (byte)(SEGMENT_PRESENT | DPL0 | CODE_OR_DATA   | 0x6          )
+#define SYS_TSS      (byte)(SEGMENT_PRESENT | DPL0 | SYSTEM_SEGMENT | TYPE_TSS     )
+#define SYS_TSS_BUSY (byte)(SEGMENT_PRESENT | DPL0 | SYSTEM_SEGMENT | TYPE_TSS_BUSY)
+#define SYS_LDT      (byte)(SEGMENT_PRESENT | DPL0 | SYSTEM_SEGMENT | TYPE_LDT     )
 
 /*!
     memory management class
@@ -118,7 +146,7 @@ class IA32MemoryManager {
     static IA32MemoryManager& instance();
     static void startPaging();
     static void stopPaging();
-    void setGDT(word, dword, dword, byte, byte, byte);
+    void setGDT(word, dword, dword, byte, byte);
     void resetGDT();
     /* memo setWriter(write);setReader(reader); */
 
