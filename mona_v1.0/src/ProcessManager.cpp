@@ -98,8 +98,7 @@ virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
 
 PageEntry* ProcessManager::allocatePageDir() {
 
-
-    return g_page_directory;
+    return g_page_manager->createNewPageDirectory();
 }
 
 dword ProcessManager::allocatePID() {

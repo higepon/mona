@@ -142,7 +142,7 @@ void startKernel(void) {
     FDCDriverTester();
 
     //    g_console->printf("Hit any key to start Main Process and Load ELF\n");
-    while (g_demo_step < 2);
+    //    while (g_demo_step < 2);
     //    g_console->printf("[2]");
     g_info_level = MSG;
 
@@ -152,7 +152,7 @@ void startKernel(void) {
 
     g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
 
-    rectangle(0, 0, 640, 480, GP_BLACK);
+    //    rectangle(0, 0, 640, 480, GP_BLACK);
 
     enableTimer();
 #endif
@@ -185,7 +185,7 @@ void mainProcess() {
 
     //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));
     //    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
-    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
+    //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
@@ -202,7 +202,7 @@ void userTest() {
 
     while (true) {
 
-        int result = syscall_heavy();
+        //        int result = syscall_heavy();
         while(true);
     }
 }
@@ -210,9 +210,9 @@ void userTest() {
 void userTest2() {
     while (true) {
 
-        syscall_sleep(500);
+        //syscall_sleep(500);
         //        syscall_print("Hello");
-        syscall_heavy();
+        //        syscall_heavy();
         while (true);
     }
 }

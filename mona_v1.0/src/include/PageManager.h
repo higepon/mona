@@ -47,6 +47,7 @@ class PageManager {
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
+    PageEntry* createNewPageDirectory();
     bool pageFaultHandler(LinearAddress address);
 
   private:

@@ -75,6 +75,23 @@ void PageManager::setup() {
 
 }
 
+PageEntry* PageManager::createNewPageDirectory() {
+
+    PageEntry* table     = allocatePageTable();
+    PageEntry* directory = allocatePageTable();
+
+    /* allocate page to physical address 0-4MB */
+    for (dword i = 0; i < PAGE_TABLE_NUM; i++) {
+
+        makePageEntry(&(table[i]), 4096 * i, PAGE_PRESENT, PAGE_RW, PAGE_KERNEL);
+    }
+
+    memset(directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
+    makePageEntry(directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_KERNEL);
+
+    return directory;
+}
+
 void PageManager::setPageDirectory(PhysicalAddress address) {
 
     asm volatile("movl %0   , %%eax \n"
