@@ -1,6 +1,6 @@
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
-        * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加
+        * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)
 
         * env/*.env: INSTALL追加, MONAELF_LDS追加 (linux*のみ)
 
