@@ -82,21 +82,8 @@ void startKernel(void) {
     checkTypeSize();
     printOK("Checking type size ");
 
-    /* get System Information */
-    SystemInfo& si = SystemInfo::instance();
-    if (si.hasCpuid()) {
-
-        printOK("Checking CPUID     ");
-        si.printCpuid(g_console);
-    } else {
-        g_console->printf("CPUID NG  \n");
-    }
-
-    SystemInfo::rdtsc();
-    g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
-
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
-    g_console->printf("System TotalL Memory %d[MB]\n", g_total_system_memory);
+    g_console->printf("\nSystem TotalL Memory %d[MB]\n", g_total_system_memory);
 
     /* now paging is off. */
     //   PagingUtil::setup();
@@ -104,9 +91,9 @@ void startKernel(void) {
     //   dword* p = (dword*)0x3FFFFE;
     //   *p = 5;
 
-    SystemInfo::rdtscsub();
-    g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
-    g_console->printf("userTestAddress=%x\n", (dword)userTest);
+//     SystemInfo::rdtscsub();
+//     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
+//     g_console->printf("userTestAddress=%x\n", (dword)userTest);
 
     Message* msg = new Message();
     msg->getNext();
@@ -221,12 +208,19 @@ void panic(const char* msg) {
 */
 inline void printOK(const char* msg) {
 
+    static int i = 0;
+
+    if (i % 2) g_console->printf("   ");
+
     g_console->printf((char*)msg);
     g_console->printf("[");
-    g_console->setCHColor(GP_RED);
+    g_console->setCHColor(GP_LIGHTBLUE);
     g_console->printf("OK");
     g_console->setCHColor(GP_WHITE);
-    g_console->printf("]\n");
+    g_console->printf("]");
+
+    if (i % 2) g_console->printf("\n");
+    i++;
 }
 
 /*!
