@@ -10,7 +10,7 @@ using namespace MonAPI;
 
 static bool hasExited = false;
 static bool callAutoExec = true;
-static bool waiting = false;
+static dword waiting = THREAD_UNKNOWN;
 
 int MonaMain(List<char*>* pekoe)
 {
@@ -52,10 +52,10 @@ int MonaMain(List<char*>* pekoe)
                 }
                 break;
             case MSG_PROCESS_TERMINATED:
-                if (waiting)
+                if (waiting == msg.arg1)
                 {
                     printf("\n%s", PROMPT);
-                    waiting = false;
+                    waiting = THREAD_UNKNOWN;
                 }
                 break;
         }
@@ -203,12 +203,13 @@ void Shell::commandExecute()
         cmdLine += args[i];
     }
 
-    int result = monapi_call_elf_execute_file(cmdLine, 1);
+    dword tid;
+    int result = monapi_call_elf_execute_file_get_tid(cmdLine, 1, &tid);
 
     position_ = 0;
     if (!callAutoExec && result == 0)
     {
-        waiting = true;
+        waiting = tid;
     }
     else
     {
@@ -353,10 +354,10 @@ void Shell::backspace() {
 
 void Shell::onKeyDown(int keycode, int modifiers)
 {
-    if (waiting)
+    if (waiting != THREAD_UNKNOWN)
     {
         printf("\n%s", PROMPT);
-        waiting = false;
+        waiting = THREAD_UNKNOWN;
         if (keycode == Keys::Enter) return;
     }
 
