@@ -38,7 +38,6 @@ ListBox::ListBox()
 
 ListBox::~ListBox()
 {
-	this->dataList->removeAll();
 	delete(this->dataList);
 }
 

@@ -100,7 +100,6 @@ GChat::GChat()
 
 GChat::~GChat()
 {
-	history->removeAll();
 	delete(messageList);
 	delete(memberList);
 	delete(channelList);

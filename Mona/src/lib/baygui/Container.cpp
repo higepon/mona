@@ -33,7 +33,6 @@ Container::Container()
 }
 
 Container::~Container() {
-	this->controlList->removeAll();
 	delete(this->controlList);
 }
 

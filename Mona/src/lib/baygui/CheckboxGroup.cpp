@@ -29,7 +29,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CheckboxGroup::CheckboxGroup()
 {
-	this->checkboxList = new LinkedList();
+	// checkboxListのメンバーはウィンドウが保持しているので
+	// autoDeleteしないようにする
+	this->checkboxList = new LinkedList(false);
 }
 
 CheckboxGroup::~CheckboxGroup()

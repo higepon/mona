@@ -58,7 +58,6 @@ GRunner::GRunner()
 
 GRunner::~GRunner()
 {
-	history->removeAll();
 	delete(text);
 	delete(history);
 }
