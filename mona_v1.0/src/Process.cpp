@@ -104,6 +104,27 @@ Process* Scheduler::findProcess(const char* name)
     return (Process*)NULL;
 }
 
+Thread* Scheduler::find(dword id)
+{
+    FOREACH_N(runq, Thread*, thread)
+    {
+        if (id == thread->id)
+        {
+            return thread;
+        }
+    }
+
+    FOREACH_N(waitq, Thread*, thread)
+    {
+        if (id == thread->id)
+        {
+            return thread;
+        }
+    }
+
+    return (Thread*)NULL;
+}
+
 dword Scheduler::lookup(const char* name)
 {
     Process* process = findProcess(name);
@@ -339,6 +360,10 @@ Process* ProcessOperation::create(int type, const char* name)
     return result;
 }
 
+/*----------------------------------------------------------------------
+    ThreadOperation
+----------------------------------------------------------------------*/
+dword ThreadOperation::id = 56;
 Thread* ThreadOperation::create(Process* process, dword programCounter)
 {
     Thread* thread = new Thread();
@@ -347,6 +372,25 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     LinearAddress stack  = process->allocateStack();
 
     thread->tinfo->process = process;
+
+    /* caution !!! it is temp code. wait object manager */
+    if (!strcmp(process->getName(), "MOUSE.SVR"))
+    {
+        thread->id = MOUSE_SERVER;
+    }
+    else if (!strcmp(process->getName(), "SHELL.SVR"))
+    {
+        thread->id = SHELL_SERVER;
+    }
+    else if (!strcmp(process->getName(), "KEYBDMNG.SVR"))
+    {
+        g_console->printf("hererere");
+        thread->id = KEYBOARD_SERVER;
+    }
+    else
+    {
+        thread->id = ThreadOperation::id++;
+    }
 
     if (process->isUserMode())
     {
@@ -488,11 +532,15 @@ Thread::Thread() : waitReason(WAIT_NONE), totalTick(0)
     /* thread information arch dependent */
     tinfo->archinfo = new ArchThreadInfo;
     checkMemoryAllocate(tinfo->archinfo, "class Thread arch info allocate");
+
+    messageList = new HList<MessageInfo*>();
+    checkMemoryAllocate(tinfo->archinfo, "class Thread messageList allocate");
 }
 
 Thread::~Thread()
 {
     /* free memory */
+    delete messageList;
     delete tinfo->archinfo;
     delete tinfo;
 }

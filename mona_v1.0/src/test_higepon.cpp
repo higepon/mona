@@ -256,9 +256,9 @@ MessageInfo* Messenger::allocateMessageInfo() {
     return result;
 }
 
-int Messenger::send(const char* name, MessageInfo* message)
+int Messenger::send(dword id, MessageInfo* message)
 {
-    Process* process;
+    Thread* thread;
     MessageInfo* info;
 
     if (message == (MessageInfo*)NULL)
@@ -266,36 +266,7 @@ int Messenger::send(const char* name, MessageInfo* message)
         return -1;
     }
 
-    if ((process = g_scheduler->findProcess(name)) == (Process*)NULL)
-    {
-        return -1;
-    }
-
-    info = allocateMessageInfo();
-    *info = *message;
-
-    info->from = g_currentThread->process->getPid();
-
-    process->getMessageList()->add(info);
-    int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
-    if (wakeupResult)
-    {
-        ThreadOperation::switchThread((wakeupResult == 1), 6);
-    }
-    return 0;
-}
-
-int Messenger::send(dword pid, MessageInfo* message)
-{
-    Process* process;
-    MessageInfo* info;
-
-    if (message == (MessageInfo*)NULL)
-    {
-        return -1;
-    }
-
-    if ((process = g_scheduler->findProcess(pid)) == (Process*)NULL)
+    if ((thread = g_scheduler->find(id)) == (Thread*)NULL)
     {
         return -1;
     }
@@ -303,10 +274,10 @@ int Messenger::send(dword pid, MessageInfo* message)
     info = allocateMessageInfo();
 
     *info = *message;
-    info->from = g_currentThread->process->getPid();
-    process->getMessageList()->add(info);
+    info->from = g_currentThread->thread->id;
+    thread->messageList->add(info);
 
-    int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
+    int wakeupResult = g_scheduler->wakeup(thread, WAIT_MESSAGE);
     if (wakeupResult)
     {
         ThreadOperation::switchThread((wakeupResult == 1), 7);
@@ -314,9 +285,9 @@ int Messenger::send(dword pid, MessageInfo* message)
     return 0;
 }
 
-int Messenger::receive(Process* process, MessageInfo* message)
+int Messenger::receive(Thread* thread, MessageInfo* message)
 {
-    MessageInfo* from = process->getMessageList()->get(0);
+    MessageInfo* from = thread->messageList->get(0);
 
     if (from == (MessageInfo*)NULL)
     {
@@ -324,7 +295,7 @@ int Messenger::receive(Process* process, MessageInfo* message)
     }
 
     *message = *from;
-    process->getMessageList()->removeAt(0);
+    thread->messageList->removeAt(0);
     return 0;
 }
 

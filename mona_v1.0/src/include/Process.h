@@ -114,6 +114,7 @@ class ThreadOperation
   private:
     static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
     static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
+    static dword id;
 };
 
 /*----------------------------------------------------------------------
@@ -138,6 +139,7 @@ public:
     int wakeup(Process* process, int waitReason);
     dword getTick() const;
     dword lookup(const char* name);
+    Thread* find(dword id);
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);
 
@@ -196,6 +198,8 @@ class Thread : public Node
     dword totalTick;
     dword wakeupTimer;
     ThreadInfo* tinfo;
+    List<MessageInfo*>* messageList;
+    dword id;
 };
 
 /*----------------------------------------------------------------------

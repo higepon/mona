@@ -26,20 +26,14 @@ ShellServer::~ShellServer() {
 void ShellServer::service() {
 
     /* look up */
-    dword myPid   = Message::lookup("SHELL.SVR");
-    dword destPid = Message::lookup("KEYBDMNG.SVR");
-
-    if (destPid == 0) {
-        printf("process KEYBDMNG.SVR not found\n");
-        for (;;);
-    }
+    dword myID = System::getThreadID();
 
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
-    Message::create(&info, MSG_KEY_REGIST_TO_SERVER, myPid, 0, 0, NULL);
+    Message::create(&info, MSG_KEY_REGIST_TO_SERVER, myID, 0, 0, NULL);
 
     /* send */
-    if (Message::send(destPid, &info)) {
+    if (Message::send(KEYBOARD_SERVER, &info)) {
         printf("Shell: key regist error\n");
     }
 

@@ -80,13 +80,7 @@ MonaApplication::MonaApplication() {
     int id = syscall_mthread_create((dword)MESSAGE_LOOP);
     syscall_mthread_join(id);
 
-    //    dword myPid   = Message::lookup(name);
-    mypid_ = System::getPID();
-    dword destPid = Message::lookup("KEYBDMNG.SVR");
-    if (destPid == 0) {
-        printf("process KEYBDMNG.SVR not found\n");
-        exit(-1);
-    }
+    mypid_ = System::getThreadID();
 
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
@@ -94,18 +88,12 @@ MonaApplication::MonaApplication() {
     info.arg1   = mypid_;
 
     /* send */
-    if (Message::send(destPid, &info)) {
+    if (Message::send(KEYBOARD_SERVER, &info)) {
         printf("MonaApp: key regist error\n");
     }
 }
 
 MonaApplication::~MonaApplication() {
-
-    dword destPid = Message::lookup("KEYBDMNG.SVR");
-    if (destPid == 0) {
-        printf("process KEYBDMNG.SVR not found\n");
-        exit(-1);
-    }
 
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
@@ -113,7 +101,7 @@ MonaApplication::~MonaApplication() {
     info.arg1   = mypid_;
 
     /* send */
-    if (Message::send(destPid, &info)) {
+    if (Message::send(KEYBOARD_SERVER, &info)) {
         printf("MonaApp: key unregist error\n");
     }
 }
@@ -545,8 +533,8 @@ void Screen::fillCircle16(int x, int y, int r, dword color) {
 /*----------------------------------------------------------------------
     Message
 ----------------------------------------------------------------------*/
-int Message::send(dword pid, MessageInfo* info) {
-    return syscall_send(pid, info);
+int Message::send(dword id, MessageInfo* info) {
+    return syscall_send(id, info);
 }
 
 int Message::receive(MessageInfo* info) {
@@ -960,10 +948,17 @@ int syscall_unmap2(dword sharedId)
     return result;
 }
 
-int syscall_get_pid()
+dword syscall_get_pid()
 {
     dword result;
     SYSCALL_0(SYSTEM_CALL_GET_PID, result);
+    return result;
+}
+
+dword syscall_get_tid()
+{
+    dword result;
+    SYSCALL_0(SYSTEM_CALL_GET_TID, result);
     return result;
 }
 

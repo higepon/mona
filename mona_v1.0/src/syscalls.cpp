@@ -60,13 +60,13 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_RECEIVE:
 
-        info->eax = g_messenger->receive(g_currentThread->process, (MessageInfo*)(info->esi));
+        info->eax = g_messenger->receive(g_currentThread->thread, (MessageInfo*)(info->esi));
         break;
 
     case SYSTEM_CALL_EXIST_MESSAGE:
 
         {
-            bool existMessage = !(g_currentThread->process->getMessageList()->isEmpty());
+            bool existMessage = !(g_currentThread->thread->messageList->isEmpty());
             info->eax = existMessage ? 1 : 0;
         }
         break;
@@ -368,6 +368,11 @@ void syscall_entrance() {
     case SYSTEM_CALL_GET_PID:
 
         info->eax = g_currentThread->process->getPid();
+        break;
+
+    case SYSTEM_CALL_GET_TID:
+
+        info->eax = g_currentThread->thread->id;
         break;
 
     case SYSTEM_CALL_ARGUMENTS_NUM:

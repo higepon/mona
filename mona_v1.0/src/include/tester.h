@@ -124,8 +124,7 @@ class Messenger {
   public:
     int send(const char* name, MessageInfo* message);
     int send(dword pid, MessageInfo* message);
-    int receive(Process* process, MessageInfo* message);
-    int receive(Process* process, Thread* thread, MessageInfo* message);
+    int receive(Thread* thread, MessageInfo* message);
 
   private:
     MessageInfo* allocateMessageInfo();

@@ -117,7 +117,7 @@ int sendMouseInformation(List<dword>* destList, MessageInfo* info) {
     for (int i = destList->size() - 1; i >= 0; i--) {
 
         if (Message::send(destList->get(i), info)) {
-            printf("Mouse:send error to pid = %x", destList->get(i));
+            printf("Mouse:send error to thread id = %x", destList->get(i));
             destList->removeAt(i);
         }
     }
@@ -127,15 +127,15 @@ int sendMouseInformation(List<dword>* destList, MessageInfo* info) {
 
 int regist(List<dword>* destList, MessageInfo* info) {
 
-    dword pid = info->arg1;
-    destList->add(pid);
+    dword id = info->arg1;
+    destList->add(id);
     return 0;
 }
 
 int unregist(List<dword>* destList, MessageInfo* info) {
 
-    dword pid = info->arg1;
-    destList->remove(pid);
+    dword id = info->arg1;
+    destList->remove(id);
     return 0;
 }
 

@@ -3,14 +3,22 @@
 
 #include <types.h>
 
-extern "C" int syscall_get_pid();
+extern "C" dword syscall_get_pid();
+extern "C" dword syscall_get_tid();
 /*----------------------------------------------------------------------
     System
 ----------------------------------------------------------------------*/
-class System {
+class System
+{
   public:
-    static inline dword getPID() {
+    static inline dword getProcessID()
+    {
         return syscall_get_pid();
+    }
+
+    static inline dword getThreadID()
+    {
+        return syscall_get_tid();
     }
 };
 

@@ -138,20 +138,13 @@ void myApplication::update(Observable* o, void* arg) {
 
 void myApplication::init() {
 
-    // マウスサーバーと自分自身のPIDを得る
-    dword myPid   = System::getPID();
-    dword destPid = Message::lookup("MOUSE.SVR");
-
-    // マウスサーバは起動している？
-    if (destPid == 0) {
-        printf("process MOUSE.SVR not found\n");
-        exit(-1);
-    }
+    // マウスサーバーと自分自身のスレッドIDを得る
+    dword myPid   = System::getThreadID();
 
     // マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信 
     MessageInfo info;
     Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
-    if (Message::send(destPid, &info)) {
+    if (Message::send(MOUSE_SERVER, &info)) {
         printf("Reversi:Mouse regist error\n");
     }
 
