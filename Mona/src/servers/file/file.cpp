@@ -16,7 +16,7 @@ static bool cdInitialized;
 #define IRQ_PRIMARY   14
 #define IRQ_SECONDARY 15
 
-static int irq;
+static byte irq;
 static IDEDriver* cd;
 static FDCDriver* fd;
 static ISO9660FileSystem* fs;
@@ -211,70 +211,10 @@ void initialize()
     cdInitialized = false;
 }
 
-monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
+
+monapi_cmemoryinfo* ReadFileFromISO9660(const char* path, bool prompt)
 {
-    if (prompt) printf("%s: Reading %s....", SVR, path);
-
-    int drive        = currentDrive;
-    CString filePath = path;
-    if (filePath.startsWith("CD0:"))
-    {
-        if (!initializeCD()) return NULL;
-        filePath = filePath.substring(4, filePath.getLength());
-        drive = DRIVE_CD0;
-    }
-    else if (filePath.startsWith("FD0:"))
-    {
-        filePath = filePath.substring(4, filePath.getLength());
-        drive = DRIVE_FD0;
-    }
-
-    if (drive == DRIVE_FD0)
-    {
-        fd->motor(ON);
-        fd->recalibrate();
-        fd->recalibrate();
-        fd->recalibrate();
-
-        CString copyPath = path;
-
-        if (!fso->open((char*)(const char*)copyPath, FILE_OPEN_READ))
-        {
-            fd->motorAutoOff();
-
-            if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
-            return NULL;
-        }
-
-        dword size = fso->size();
-
-        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-        if (!monapi_cmemoryinfo_create(ret, size + 1, prompt))
-        {
-            monapi_cmemoryinfo_delete(ret);
-            fd->motorAutoOff();
-            return NULL;
-        }
-
-        ret->Size--;
-
-        if (!fso->read(ret->Data, ret->Size))
-        {
-            fd->motorAutoOff();
-            monapi_cmemoryinfo_delete(ret);
-            if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
-            return NULL;
-        }
-
-        fso->close();
-        fd->motorAutoOff();
-        ret->Data[ret->Size] = 0;
-        if (prompt) printf("OK\n");
-        return ret;
-    }
-    else if (drive == DRIVE_CD0)
-    {
-        File* file = fs->Open(filePath, 0);
+        File* file = fs->Open(path, 0);
 
         if (file == NULL)
         {
@@ -322,6 +262,78 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
         ret->Data[ret->Size] = 0;
         if (prompt) printf("OK\n");
         return ret;
+}
+
+monapi_cmemoryinfo* ReadFileFromFat(const char* path, bool prompt)
+{
+    fd->motor(ON);
+    fd->recalibrate();
+    fd->recalibrate();
+    fd->recalibrate();
+
+    CString copyPath = path;
+
+    if (!fso->open((char*)(const char*)copyPath, FILE_OPEN_READ))
+    {
+        fd->motorAutoOff();
+
+        if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
+        return NULL;
+    }
+
+    dword size = fso->size();
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(ret, size + 1, prompt))
+    {
+        monapi_cmemoryinfo_delete(ret);
+        fd->motorAutoOff();
+        return NULL;
+    }
+
+    ret->Size--;
+
+    if (!fso->read(ret->Data, ret->Size))
+    {
+        fd->motorAutoOff();
+        monapi_cmemoryinfo_delete(ret);
+        if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
+        return NULL;
+    }
+
+    fso->close();
+    fd->motorAutoOff();
+    ret->Data[ret->Size] = 0;
+    if (prompt) printf("OK\n");
+    return ret;
+}
+
+
+monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
+{
+    if (prompt) printf("%s: Reading %s....", SVR, path);
+
+    int drive        = currentDrive;
+    CString filePath = path;
+    if (filePath.startsWith("CD0:"))
+    {
+        if (!initializeCD()) return NULL;
+        filePath = filePath.substring(4, filePath.getLength());
+        drive = DRIVE_CD0;
+    }
+    else if (filePath.startsWith("FD0:"))
+    {
+        filePath = filePath.substring(4, filePath.getLength());
+        drive = DRIVE_FD0;
+    }
+
+    if (drive == DRIVE_FD0)
+    {
+        return ReadFileFromFat(filePath, prompt);
+    }
+    else if (drive == DRIVE_CD0)
+    {
+        return ReadFileFromISO9660(filePath, prompt);
     }
     return NULL;
 }
