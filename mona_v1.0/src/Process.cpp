@@ -57,7 +57,9 @@ Process::Process(const char* name) {
 
     pinfo_.shared = new SharedMemorySegment();
     pinfo_.heap   = new HeapSegment(0xC0000000, 1024 * 1024); /* 1MB */
+    pinfo_.vec    = new HVector<Message*>(3, 5);
     QueueManager::init(pinfo_.shared);
+
 }
 
 Process::~Process() {
@@ -68,6 +70,10 @@ Process::~Process() {
 
     if (pinfo_.heap) {
         delete(pinfo_.heap);
+    }
+
+    if (pinfo_.vec) {
+        delete(pinfo_.vec);
     }
 }
 
@@ -104,6 +110,7 @@ UserProcess::UserProcess(const char* name) {
 
     pinfo_.shared = new SharedMemorySegment();
     pinfo_.heap   = new HeapSegment(0xC0000000, 1024 * 1024); /* 1MB */
+    pinfo_.vec    = new HVector<Message*>(3, 5);
     QueueManager::init(pinfo_.shared);
 }
 
