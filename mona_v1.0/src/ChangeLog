@@ -1,3 +1,9 @@
+2004-02-20  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: プロセス・スケジューラー周り全部作り直し
+
+        * Queue追加
+
 2004-02-18  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib/string.cpp: strcat

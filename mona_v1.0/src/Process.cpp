@@ -15,6 +15,201 @@
 #include <Process.h>
 #include <PageManager.h>
 
+Array<Thread> queues(10);
+
+/*----------------------------------------------------------------------
+    Queue
+----------------------------------------------------------------------*/
+class Queue
+{
+  public:
+    static void initialize(Queue* queue);
+    static void addToNext(Queue* p, Queue* q);
+    static void addToPrev(Queue* p, Queue* q);
+    static bool isEmpty(Queue* p);
+    static Queue* deleteNext(Queue* p);
+  public:
+    Queue* next;
+    Queue* prev;
+};
+
+void Queue::initialize(Queue* queue)
+{
+    queue->prev = queue;
+    queue->next = queue;
+}
+
+void Queue::addToNext(Queue* p, Queue* q)
+{
+    q->next = p->next;
+    q->prev = p;
+    p->next->prev = q;
+    p->next = q;
+}
+
+void Queue::addToPrev(Queue* p, Queue* q)
+{
+    q->prev = p->prev;
+    q->next = p;
+    p->prev->next = q;
+    p->prev = q;
+}
+
+bool Queue::isEmpty(Queue* p)
+{
+    return (p->next == p);
+}
+
+Queue* Queue::deleteNext(Queue* p)
+{
+    Queue* result = p->next;
+    p->next = result->next;
+    result->next->prev = p;
+    return result;
+}
+
+/*----------------------------------------------------------------------
+    ProcessOperation
+----------------------------------------------------------------------*/
+class ProcessOperation
+{
+  public:
+    static void initialize(PageManager* manager);
+    static Process* create(int type, const char* name);
+    static LinearAddress allocateKernelStack();
+
+  private:
+    static const LinearAddress KERNEL_STACK_START     = 0x100000;
+    static const LinearAddress KERNEL_STACK_UNIT_SIZE = 0x1000;
+    static const int USER_PROCESS   = 1;
+    static const int KERNEL_PROCESS = 2;
+
+  public:
+    static PageManager* pageManager;
+};
+
+/*----------------------------------------------------------------------
+    ProcessOperation
+----------------------------------------------------------------------*/
+PageManager* ProcessOperation::pageManager;
+
+void ProcessOperation::initialize(PageManager* manager)
+{
+    ProcessOperation::pageManager = manager;
+}
+
+LinearAddress ProcessOperation::allocateKernelStack()
+{
+    static int i = 0;
+    i++;
+    return KERNEL_STACK_START + i * KERNEL_STACK_UNIT_SIZE;
+}
+
+Process* ProcessOperation::create(int type, const char* name)
+{
+    Process* result;
+
+    switch (type)
+    {
+
+      case USER_PROCESS:
+          result = new UserProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          break;
+      case KERNEL_PROCESS:
+          result = new KernelProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
+          break;
+      default:
+          result = (Process*)NULL;
+          break;
+    }
+    return result;
+}
+
+/*----------------------------------------------------------------------
+    ThreadOperation
+----------------------------------------------------------------------*/
+class ThreadOperation
+{
+  public:
+    static Thread* create(Process* process, dword programCounter);
+
+  private:
+    static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
+    static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
+};
+
+Thread* ThreadOperation::create(Process* process, dword programCounter)
+{
+    Thread* thread = new Thread();
+    PageEntry* directory = process->getPageDirectory();
+    LinearAddress stack  = process->allocateStack();
+
+    if (process->isUserMode())
+    {
+        archCreateUserThread(thread, programCounter, directory, stack);
+    }
+    else
+    {
+        archCreateThread(thread, programCounter, directory, stack);
+    }
+
+    (process->threadNum)++;
+    return thread;
+};
+
+void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
+                                           , PageEntry* pageDirectory, LinearAddress stack)
+{
+    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
+
+    ThreadInfo* info      = thread->getThreadInfo();
+    ArchThreadInfo* ainfo = info->archinfo;
+    ainfo->cs      = USER_CS;
+    ainfo->ds      = USER_DS;
+    ainfo->es      = USER_DS;
+    ainfo->ss      = USER_SS;
+    ainfo->ss0     = KERNEL_SS;
+    ainfo->eflags  = 0x200;
+    ainfo->eax     = 0;
+    ainfo->ecx     = 0;
+    ainfo->edx     = 0;
+    ainfo->ebx     = 0;
+    ainfo->esi     = 0;
+    ainfo->edi     = 0;
+    ainfo->dpl     = DPL_USER;
+    ainfo->esp     = stack;
+    ainfo->ebp     = stack;
+    ainfo->esp0    = ProcessOperation::allocateKernelStack();
+    ainfo->eip     = programCounter;
+    ainfo->cr3     = (PhysicalAddress)pageDirectory;
+}
+
+void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
+                                       , PageEntry* pageDirectory, LinearAddress stack)
+{
+
+    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
+
+    ThreadInfo* info      = thread->getThreadInfo();
+    ArchThreadInfo* ainfo = info->archinfo;
+    ainfo->cs      = KERNEL_CS;
+    ainfo->ds      = KERNEL_DS;
+    ainfo->es      = KERNEL_DS;
+    ainfo->ss      = KERNEL_SS;
+    ainfo->eflags  = 0x200;
+    ainfo->eax     = 0;
+    ainfo->ecx     = 0;
+    ainfo->edx     = 0;
+    ainfo->ebx     = 0;
+    ainfo->esi     = 0;
+    ainfo->edi     = 0;
+    ainfo->dpl     = DPL_KERNEL;
+    ainfo->esp     = stack;
+    ainfo->ebp     = stack;
+    ainfo->eip     = programCounter;
+    ainfo->cr3     = (PhysicalAddress)pageDirectory;
+}
+
 /*----------------------------------------------------------------------
     schedule
 ----------------------------------------------------------------------*/
@@ -645,7 +840,7 @@ int ProcessManager::wakeup(Process* process, int waitReason) {
     Process
 ----------------------------------------------------------------------*/
 dword Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4) {
+Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4), threadNum(0) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));

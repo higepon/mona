@@ -347,6 +347,16 @@ class Process {
     virtual int join(Thread* thread);
     virtual Thread* schedule(bool tick);
     virtual Thread* createThread(dword programCounter);
+    inline dword allocateStack() const {
+        return STACK_START - STACK_SIZE * (threadNum - 1);
+    }
+
+
+    static const LinearAddress STACK_START = 0xEFFFFFFF;
+    static const dword STACK_SIZE          = 0x1000;
+
+  public:
+    int threadNum;
 
   protected:
     static dword pid;
