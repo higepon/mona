@@ -46,7 +46,7 @@ void syscall_entrance() {
         pos_y = y;
 
         Semaphore::up(&g_semaphore_console);
-
+        info->eax = 0;
         break;
 
     case SYSTEM_CALL_PROCESS_SLEEP:
@@ -54,8 +54,8 @@ void syscall_entrance() {
         info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
         break;
     case SYSTEM_CALL_KILL:
-
         g_processManager->kill(g_processManager->getCurrentProcess());
+        schedule();
         break;
 
     case SYSTEM_CALL_PUT_PIXEL:
@@ -130,5 +130,6 @@ void syscall_entrance() {
         g_console->printf("syscall:default");
         break;
     }
+
     return;
 }

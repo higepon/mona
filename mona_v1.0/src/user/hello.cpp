@@ -9,15 +9,12 @@ static Mutex* mutex;
 int main() {
 
     dword id;
-
     mutex = new Mutex();
 
-//      if (!mutex->init()) {
-//          print("mutex init  error\n");
-//          exit(-1);
-//      }
-
-//     mutex->lock();
+    if (mutex->init()) {
+        print("mutex init errror\n");
+        exit(-1);
+    }
 
     if (!(id = mthread_create((dword)listener))) {
         print("mthread create error\n");
@@ -37,9 +34,11 @@ int disp() {
 
     for (;;) {
         if (come) {
+            mutex->lock();
             print(buf);
             buf[0] = '0';
             come = false;
+            mutex->unlock();
         }
     }
 }
@@ -50,11 +49,13 @@ int listener() {
 
     for (;;) {
         if (!_receive(&message)) {
+            mutex->lock();
             buf[0] = '<';
             buf[1] = (char)message.arg1;
             buf[2] = '>';
             buf[3] = '\0';
             come = true;
+            mutex->unlock();
         }
     }
 }

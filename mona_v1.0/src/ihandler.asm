@@ -22,6 +22,7 @@ cglobal arch_dummyhandler
 cglobal arch_syscall_handler
 cglobal arch_cpufaulthandler_e
 cglobal arch_cpufaulthandler_c
+cextern g_currentThread
 cextern arch_switch_process
 cextern cpufaultHandler_c
 cextern cpufaultHandler_e
@@ -186,8 +187,9 @@ arch_syscall_handler:
         changeData
         call arch_save_thread_registers
         call syscall_entrance
-;        mov ebx, dword[g_current_process] ; system call return code is
-        mov eax, dword [ebx + 12]          ; at g_current_process->eax
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]           ; ArchThreadInfo
+        mov eax, dword [ebx + 12]          ; at g_current_thread->eax
         mov dword[esp + 36], eax           ; so set this to stack
         popAll
         iretd

@@ -84,7 +84,7 @@ void printInfo() {
 
         pos_x = 0;
         pos_y = 0;
-        g_processManager->printProcess();
+        //        g_processManager->printProcess();
 
         pos_x = tempx;
         pos_y = tempy;

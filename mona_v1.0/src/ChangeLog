@@ -1,3 +1,9 @@
+2004-01-14  higepon  <higepon@users.sourceforge.jp>
+
+        * システムコール時のレジスタ破壊によるバグを修正
+
+        * kernel.cpp: プロセスkill時にスケジュールしなおすようにした。
+
 2004-01-13  higepon  <higepon@users.sourceforge.jp>
 
         * include/Process.h: KMutexの作成。ただし未テスト

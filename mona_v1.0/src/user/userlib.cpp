@@ -34,6 +34,7 @@ int syscall_mthread_create(dword f) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"m"(f), "g"(SYSTEM_CALL_MTHREAD_CREATE)
+                 :"ebx", "esi"
                  );
 
     return result;
@@ -49,6 +50,7 @@ int syscall_mthread_join(dword id) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"m"(id), "g"(SYSTEM_CALL_MTHREAD_JOIN)
+                 :"ebx", "esi"
                  );
 
     return result;
@@ -65,6 +67,7 @@ int syscall_sleep(dword tick) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"m"(tick), "g"(SYSTEM_CALL_PROCESS_SLEEP)
+                 :"ebx", "esi"
                  );
 
     return result;
@@ -80,6 +83,7 @@ int syscall_print(const char* msg) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_PRINT), "m"(msg)
+                 :"ebx", "esi"
                  );
 
     return result;
@@ -97,6 +101,7 @@ int syscall_put_pixel(int x, int y, char color) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_PUT_PIXEL), "m"(x), "m"(y), "m"(color)
+                 :"ebx", "esi", "ecx", "edi"
                  );
 
     return result;
@@ -111,6 +116,7 @@ int syscall_kill() {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_KILL)
+                 :"ebx"
                  );
 
     /* don't come here */
@@ -128,6 +134,7 @@ int syscall_send(const char* name, Message* message) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_SEND), "m"(name), "m"(message)
+                 :"ebx", "esi", "ecx"
                  );
 
     return result;
@@ -142,6 +149,7 @@ int syscall_receive(Message* message) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_RECEIVE), "m"(message)
+                 : "ebx", "esi"
                  );
 
     return result;
@@ -156,6 +164,7 @@ int syscall_mutex_create() {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_MUTEX_CREATE)
+                 :"ebx"
                  );
 
     return result;
@@ -171,6 +180,7 @@ int syscall_mutex_trylock(int id) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_MUTEX_TRYLOCK), "m"(id)
+                 : "ebx", "esi"
                  );
 
     return result;
@@ -186,6 +196,7 @@ int syscall_mutex_lock (int id ) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_MUTEX_LOCK), "m"(id)
+                 : "ebx", "esi"
                  );
 
     return result;
@@ -201,6 +212,7 @@ int syscall_mutex_unlock(int id) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_MUTEX_UNLOCK), "m"(id)
+                 : "ebx", "esi"
                  );
 
     return result;
@@ -216,6 +228,7 @@ int syscall_mutex_destroy(int id) {
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_MUTEX_DESTROY), "m"(id)
+                 : "ebx", "esi"
                  );
 
     return result;
@@ -253,6 +266,7 @@ Mutex::~Mutex() {
 }
 
 int Mutex::init() {
+
     mutexId_ = syscall_mutex_create();
     return mutexId_;
 }

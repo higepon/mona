@@ -16,6 +16,28 @@
 #include <PageManager.h>
 
 /*----------------------------------------------------------------------
+    schedule
+----------------------------------------------------------------------*/
+void schedule() {
+
+    /* Process schedule */
+    bool isProcessChanged = g_processManager->schedule();
+
+    /* Thread schedule */
+    Process* current = g_processManager->getCurrentProcess();
+    bool isUser = current->isUserMode();
+    g_currentThread = current->schedule()->getThreadInfo();
+
+    /* debug information */
+//     ArchThreadInfo* i = g_currentThread->archinfo;
+//     const char* name = g_processManager->getCurrentProcess()->getName();
+//     g_console->printf("%s eip=%x esp=%x:%x,%x cr3=%x cs=%x\n", name, i->eip, i->ss, i->esp, i->ebp, i->cr3, i->cs);
+
+    /* Thread switch */
+    current->switchThread(isProcessChanged, isUser);
+}
+
+/*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
 Thread::Thread() : tick_(0), timeLeft_(1) {
@@ -326,9 +348,10 @@ int ProcessManager::kill(Process* process) {
     dispatchList_->remove(process);
     waitList_->remove(process);
 
+    current_ =  dispatchList_->removeAt(dispatchList_->size() -1);
+
     /* delete process */
     delete process;
-
     return NORMAL;
 }
 
@@ -528,6 +551,7 @@ Process::~Process() {
     for (int i = 0; i < shared_->size(); i++) {
         SharedMemoryObject::detach(shared_->get(i)->getId(), this);
     }
+
     delete(shared_);
 
     /* message list */

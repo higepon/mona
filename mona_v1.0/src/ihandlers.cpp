@@ -109,21 +109,8 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    /* Process schedule */
-    bool isProcessChanged = g_processManager->schedule();
+    schedule();
 
-    /* Thread schedule */
-    Process* current = g_processManager->getCurrentProcess();
-    bool isUser = current->isUserMode();
-    g_currentThread = current->schedule()->getThreadInfo();
-
-    /* debug information */
-//     ArchThreadInfo* i = g_currentThread->archinfo;
-//     const char* name = g_processManager->getCurrentProcess()->getName();
-//     g_console->printf("%s eip=%x esp=%x:%x,%x cr3=%x cs=%x\n", name, i->eip, i->ss, i->esp, i->ebp, i->cr3, i->cs);
-
-    /* Thread switch */
-    current->switchThread(isProcessChanged, isUser);
     /* does not come here */
 }
 

@@ -18,6 +18,7 @@
 #include <string.h>
 #include <Process.h>
 
+extern VirtualConsole*g_console;
 class SharedMemoryObject {
 
   public:
@@ -91,6 +92,8 @@ class Segment {
     }
 
     inline virtual bool inRange(LinearAddress address) {
+
+        g_console->printf("%x < %x < %x\n", start_, address, start_ + size_);
         return (address >= start_ && address < start_ + size_);
     }
 
