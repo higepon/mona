@@ -221,6 +221,10 @@ int Floppy::write(dword lba, byte* buf, dword blocknum) {
     return syscall_fdc_write(lba, buf, blocknum);
 }
 
+bool Floppy::diskChanged() {
+    return syscall_fdc_disk_changed();
+}
+
 int Floppy::ioctl(void* p) {
 
     /* not supported */
@@ -1002,5 +1006,12 @@ int syscall_exist_message()
 {
     int result;
     SYSCALL_0(SYSTEM_CALL_EXIST_MESSAGE, result);
+    return result;
+}
+
+int syscall_fdc_disk_changed()
+{
+    int result;
+    SYSCALL_0(SYSTEM_CALL_FDC_DISK_CHANGED, result);
     return result;
 }

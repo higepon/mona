@@ -54,6 +54,7 @@ extern "C" int syscall_fdc_open();
 extern "C" int syscall_fdc_close();
 extern "C" int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
+extern "C" int syscall_fdc_disk_changed();
 extern "C" int syscall_map2(MappingInfo* info);
 extern "C" int syscall_unmap2(dword sharedId);
 extern "C" int syscall_get_pid();

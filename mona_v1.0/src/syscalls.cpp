@@ -427,6 +427,11 @@ void syscall_entrance() {
         }
         break;
 
+    case SYSTEM_CALL_FDC_DISK_CHANGED:
+
+        info->eax = g_fdcdriver->checkDiskChange();
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

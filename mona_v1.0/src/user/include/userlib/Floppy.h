@@ -39,6 +39,7 @@ class Floppy : public StorageDevice {
     virtual int close();
     virtual int read(dword lba,  byte* buf, dword blocknum);
     virtual int write(dword lba, byte* buf, dword blocknum);
+    virtual bool diskChanged();
     virtual int ioctl(void* p);
 
     inline virtual dword getBlockSize() const {
