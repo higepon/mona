@@ -74,6 +74,8 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
         }
     }
 
+    g_fat12->changeDirectory("..");
+
     /* close */
     if (!g_fat12->close()) {
 

@@ -100,15 +100,15 @@ void mainProcess() {
 
     /* KEY Server */
     g_console->printf("loading KeyBoard Server....");
-    g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
+    g_console->printf("%s\n", loadProcess("SERVER", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
 
     /* Mouse Server */
     g_console->printf("loading Mouse    Server....");
-    g_console->printf("%s\n", loadProcess(".", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
+    g_console->printf("%s\n", loadProcess("SERVER", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
 
     /* Shell Server */
     g_console->printf("loading Shell    Server....");
-    g_console->printf("%s\n", loadProcess(".", "SHELL.SVR", true, NULL) ? "NG" : "OK");
+    g_console->printf("%s\n", loadProcess("SERVER", "SHELL.SVR", true, NULL) ? "NG" : "OK");
     enableKeyboard();
     enableMouse();
 

@@ -1,3 +1,7 @@
+2004-02-15  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : ディスクイメージ構成を大幅に変えた。
+
 2004-02-14  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp (printOK): オセロ追加人同士の対戦のみサポート

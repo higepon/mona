@@ -19,6 +19,8 @@
 int main(int argc, char *argv[]) {
 
     char filename[128];
+    char* dir;
+    char* file;
 
     /* arg check */
     if (argc != 3) {
@@ -26,8 +28,18 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
+    /* path? */
+    if (strstr(argv[2], "/")) {
+
+        dir  = strtok(argv[2], "/");
+        file = strtok(NULL,    "/");
+    } else {
+        file = argv[2];
+        dir = ".";
+    }
+
     /* tokenize */
-    char* name = strtok(argv[2], ".");
+    char* name = strtok(file   , ".");
     char* ext  = strtok(NULL   , ".");
     if (!name || !ext) {
         printf("toknize error %s %s\n", name, ext);
@@ -53,7 +65,16 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
-    /* create file to write to image */
+    /* cd */
+    if (!fat->changeDirectory(dir)) {
+
+        printf("cd failed");
+        delete driver;
+        delete fat;
+        exit(-1);
+    }
+
+    /* create file to write into image */
     if (!fat->createFlie(name, ext)) {
 
         printf("can not create file %s.%s errorno=%d", name, ext, fat->getErrorNo());
@@ -65,7 +86,7 @@ int main(int argc, char *argv[]) {
     /* open file */
     if (!fat->open(".", filename, FAT12::WRITE_MODE)) {
 
-        printf("open %s failed", filename);
+        printf("open %s/%s failed", dir, filename);
         delete driver;
         delete fat;
         exit(-1);
