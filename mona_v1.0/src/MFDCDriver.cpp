@@ -115,6 +115,12 @@ void MFDCDriver::initilize() {
                            , 0xC1 /* SRT = 4ms HUT = 16ms */
                            , 0x10 /* HLT = 16ms DMA       */
                             };
+    /* setup DMAC */
+    outportb(0xda, 0);
+    outportb(0x08, 0);
+    outportb(0xd6, 0xc0);
+    outportb(0xd4, 0);
+
 
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
@@ -381,10 +387,10 @@ void MFDCDriver::readResults() {
     }
     resultsLength_ = i;
 
-    //    for (int j = 0; j < resultsLength_; j++) {
-    //
-    //        console_->printf("result[%d] = %x\n", j, results_[j]);
-    //    }
+    for (int j = 0; j < resultsLength_; j++) {
+
+         console_->printf("result[%d] = %x\n", j, results_[j]);
+    }
     return;
 }
 
@@ -473,21 +479,21 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    };
 
     seek(track);
+    printStatus("seek:track");
     setupDMARead(512);
-    memset(dmabuff_, 0xffff, 512);
+
+    memset(dmabuff_, 0xfffe, 512);
     sendCommand(command, sizeof(command));
+
+
+    printStatus("after readcommand");
 
     stopDMA();
 
-    for (int i = 0; i < 512; i++) _sys_printf("%x", dmabuff_[i]);
-    while (true);
-
-    for (dword j = 0; j < 0xffffff; j++) {
-	j++;
-	j--;
-    }
+    for (int i = 0; i < 512; i++) _sys_printf("%d", dmabuff_[i]);
 
     readResults();
+    while (true);
 
     return true;
 }
