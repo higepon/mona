@@ -1,14 +1,14 @@
 /*!
-    \file  PageManager.cpp
-    \brief class PageManager
+  \file  PageManager.cpp
+  \brief class PageManager
 
-    Copyright (c) 2003 Higepon
-    All rights reserved.
-    License=MIT/X Licnese
+  Copyright (c) 2003 Higepon
+  All rights reserved.
+  License=MIT/X Licnese
 
-    \author  HigePon
-    \version $Revision$
-    \date   create:2003/08/23 update:$Date$
+  \author  HigePon
+  \version $Revision$
+  \date   create:2003/08/23 update:$Date$
 */
 
 #include <PageManager.h>
@@ -133,22 +133,37 @@ PageEntry* PageManager::allocatePageTable() const {
     return table;
 }
 
-bool PageManager::pageFaultHandler(LinearAddress address) {
+#define PAGE_NOT_EXIST         0x00
+#define PAGE_ACCESS_DENIED     0x01
+#define PAGE_FAULT_READ        0x00
+#define PAGE_FAULT_WRITE       0x02
+#define PAGE_FAULT_WHEN_KERNEL 0x00
+#define PAGE_FAULT_WHEN_USER   0x04
+
+bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     PageEntry* table;
     dword directoryIndex = address >> 22;
     dword tableIndex     = (address >> 12) & 0x3FF;
     byte user            = address >= 0x4000000 ? PAGE_USER : PAGE_KERNEL;
 
-    if (isPresent(&(g_page_directory[directoryIndex]))) {
+    if (error & 0x01 == PAGE_NOT_EXIST) {
 
-        table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+
+        if (isPresent(&(g_page_directory[directoryIndex]))) {
+
+            table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+        } else {
+
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
+            makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, user);
+        }
+
+        return allocatePhysicalPage(&(table[tableIndex]));
     } else {
 
-        table = allocatePageTable();
-        memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-        makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, user);
+        panic("page access denied");
     }
 
-    return allocatePhysicalPage(&(table[tableIndex]));
 }

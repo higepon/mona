@@ -48,7 +48,7 @@ class PageManager {
     void startPaging();
     void stopPaging();
     PageEntry* createNewPageDirectory();
-    bool pageFaultHandler(LinearAddress address);
+    bool pageFaultHandler(LinearAddress address, dword error);
 
   private:
     PageDirectory* allocatePageDirectory();
