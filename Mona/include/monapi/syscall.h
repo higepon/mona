@@ -107,12 +107,6 @@ extern void logprintf(const char* format, ...);
 extern void printInt(int num);
 extern size_t _power(size_t x, size_t y);
 
-extern byte inp8(dword port);
-extern void outp8(dword port, byte value);
-extern word inp16(dword port);
-extern void outp16(dword port, word value);
-extern dword inp32(dword port);
-extern void outp32(dword port, dword value);
 #ifdef __cplusplus
 }
 

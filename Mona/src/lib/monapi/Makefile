@@ -29,7 +29,8 @@ SOURCES = monapi_impl.cpp \
           mt19937ar.cpp \
           Keys.cpp \
           messages.cpp \
-          cmemoryinfo.cpp
+          cmemoryinfo.cpp \
+          io.cpp
 
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc

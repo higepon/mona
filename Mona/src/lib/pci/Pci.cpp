@@ -19,6 +19,7 @@
 
 #include <monapi.h>
 #include <monapi/messages.h>
+#include <monapi/io.h>
 #include <monapi/CString.h>
 #include <pci/Pci.h>
 

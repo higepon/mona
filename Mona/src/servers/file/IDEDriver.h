@@ -15,6 +15,7 @@
 #include "../../../tools/fat_write/IStorageDevice.h"
 #include <sys/types.h>
 #include <monapi/CString.h>
+#include <monapi/io.h>
 
 /*----------------------------------------------------------------------
     IDEDriver

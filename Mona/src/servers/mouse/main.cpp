@@ -14,6 +14,7 @@
 #include <monapi.h>
 #include <monalibc.h>
 #include <monapi/messages.h>
+#include <monapi/io.h>
 
 using namespace MonAPI;
 

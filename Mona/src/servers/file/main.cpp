@@ -2,6 +2,7 @@
 #include <monapi/messages.h>
 #include <sys/BinaryTree.h>
 #include <monapi/Assert.h>
+#include <monapi/io.h>
 #include "FileServer.h"
 #include "file.h"
 #include "bzip2.h"

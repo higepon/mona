@@ -9,6 +9,7 @@
 */
 
 #include <monapi.h>
+#include <monapi/io.h>
 
 // NIC io address
 #define IO_ADDR 0x240
