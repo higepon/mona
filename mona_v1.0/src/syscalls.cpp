@@ -31,11 +31,10 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PRINT:
 
-        enter_kernel_lock_mode();
+        while (Semaphore::down(&g_semaphore_console));
 
         x = pos_x;
         y = pos_y;
-
         pos_x = 1, pos_y = 27;
 
         g_console->printf("user:stdout[%s]", (char*)(g_current_process->esi));
@@ -43,7 +42,7 @@ void syscall_entrance() {
         pos_x = x;
         pos_y = y;
 
-        exit_kernel_lock_mode();
+        Semaphore::up(&g_semaphore_console);
 
         break;
 
