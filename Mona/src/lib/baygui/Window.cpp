@@ -368,12 +368,9 @@ void Window::postEvent(Event *event)
 		if (event->type == MOUSE_PRESSED) {
 			// 閉じるボタンクリック
 			if (4 <= px && px < 17 && 4 <= py && py < 17) {
-				// ランチャーは終了できないようにする
-				if (this->threadID != MonAPI::Message::lookupMainThread("GLAUNCH.EX5")) {
-					isRunning = false;
-					dispose();
-					return;
-				}
+				isRunning = false;
+				dispose();
+				return;
 			// タイトルバークリック
 			} else if (0 <= px && px < this->width && 0 <= py && py < INSETS_TOP) {
 				this->state = STATE_MOVING;
