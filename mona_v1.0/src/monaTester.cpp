@@ -22,6 +22,7 @@
 #include<FDCDriver.h>
 #include<monaTypes.h>
 #include<ProcessManager.h>
+#include<KeyBoardManager.h>
 
 #include<string>
 #include<list>
@@ -128,7 +129,7 @@ void process1Tester() {
     enableTimer();
 
     while (true) {
-         for (dword i = 0; i < 9900000; i++) {
+        for (dword i = 0; i < 9900000; i++) {
             i += 1;
             i -= 1;
         }
@@ -142,8 +143,11 @@ void process1Tester() {
 void process2Tester() {
     _sysUnlock();
 
-    //    _sysdumpReg("process2", true, false);
+    KeyBoardManager& km = KeyBoardManager::instance();
+    char ch;
     while (true) {
+        //        while ((ch = km.getCharacter()) == -1) {}
+        //        _sys_printf("%c", ch);
         _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
         _sys_printf("  ( '  v ')  ");
         _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);

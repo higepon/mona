@@ -14,6 +14,7 @@
 #include<KeyBoardManager.h>
 #include<monaVga.h>
 #include<monaIo.h>
+#include<monaOperator.h>
 
 const int KeyBoardManager::keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
@@ -107,7 +108,7 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
 
-    _sys_printf("scancode=%x ", scancode);
+    //    _sys_printf("scancode=%x ", scancode);
 
     /* first, check some scancodes */
     switch(scancode) {
@@ -179,7 +180,9 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     keyInfo_[keyBufIndex_].keycode   = keycode;
     keyInfo_[keyBufIndex_].modifiers = modifiers;
 
-    printInfo(keycode, modifiers);
+    keyQueue_.push(keyInfo_[keyBufIndex_]);
+
+    //    printInfo(keycode, modifiers);
     return;
 }
 
@@ -201,4 +204,18 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
                                    , (modifiers & KEY_MODIFIER_MENU )? "menu" : ""
                                    , keycode);
     return;
+}
+
+char KeyBoardManager::getCharacter() {
+
+    if (keyQueue_.empty()) return -1;
+
+    KeyInfo info = keyQueue_.back();
+    keyQueue_.pop();
+
+    //   if (info == 0) return -1;
+    if (info.modifiers & KEY_MODIFIER_UP) return -1;
+    if (info.keycode < 'a' && info.keycode > 'z') return -1;
+
+    return (char)(info.keycode);
 }

@@ -84,10 +84,10 @@ void startKernel(void) {
     hvectorTester();
     floppyTester();
     typeTester();
-#endif
     STLTester();
+#endif
+    //    process2Tester();
     processTester();
-
     while (true) {
     }
 }

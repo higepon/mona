@@ -16,6 +16,7 @@
 
 #include<monaTypes.h>
 #include<monaVga.h>
+#include<queue>
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
@@ -122,12 +123,13 @@ class KeyBoardManager {
     static const int keyMapE0_[128];
     byte idHigh_;
     byte idLow_;
+    std::queue<KeyInfo> keyQueue_;
   public:
     static KeyBoardManager& instance() {
         static KeyBoardManager theInstance;
         return theInstance;
     }
-
+    char getCharacter();
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
     void printInfo(byte, byte) const;
