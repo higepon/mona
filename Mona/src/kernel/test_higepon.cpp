@@ -227,6 +227,8 @@ MessageInfo* Messenger::allocateMessageInfo() {
     MessageInfo* result = &(info_[allocated_]);
     allocated_++;
     if (allocated_ > size_ - 1) {
+
+        g_console->printf("message buffer over flow***********************************");
         allocated_ = 0;
     }
     return result;
@@ -262,6 +264,11 @@ int Messenger::send(dword id, MessageInfo* message)
 
     *info = *message;
     info->from = g_currentThread->thread->id;
+
+#if 1 // temp for debug
+    if (id == 60 || id == 63) g_console->printf("@%d->%d@", info->from, id);
+#endif
+
     thread->messageList->add(info);
 
     KEvent::set(thread, KEvent::MESSAGE_COME);
