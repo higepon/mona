@@ -12,5 +12,6 @@ extern void addProcessInfo(dword tid, dword parent, const MonAPI::CString& name,
 extern void removeProcessInfo(dword tid);
 extern void notifyProcessChanged(dword header, dword tid, dword parent = 0, const MonAPI::CString& path = NULL);
 extern bool processHandler(MessageInfo* msg);
+extern void registerStdout(dword tid, dword stdout);
 
 #endif  // __PROCESS_SERVER_PROCESS_MANAGER_H__

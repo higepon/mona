@@ -1,3 +1,17 @@
+2004-10-04  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/main.cpp (MessageLoop): MSG_STDOUT_REGIST_TO_SERVER追加
+        (MessageLoop): 標準出力改造中
+
+2004-10-03  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/process/ProcessManager.h (registerStdout): 標準出力先登録の関数追加
+
+        * src/servers/process/main.cpp (ExecuteFile): 引数 stdout_id 追加
+
+        * include/monapi/messages.h : extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id == NULL)
+                                      引数 stdout_id追加
+
 2004-09-28  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/main.cpp (MessageLoop): MSG_GRAB_STDOUT, MSG_UNGRAB_STDOUT

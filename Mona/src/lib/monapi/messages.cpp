@@ -165,12 +165,12 @@ int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL promp
     return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL);
 }
 
-int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid)
+int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id /* = NULL */)
 {
     dword svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
 
     MessageInfo msg;
-    if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
+    if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, stdout_id, 0, command_line) != 0)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;

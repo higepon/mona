@@ -186,7 +186,7 @@ void Shell::commandExecute(bool prompt)
     }
 
     dword tid;
-    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid);
+    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, monapi_get_server_thread_id(ID_FILE_SERVER));
 
     if (!this->callAutoExec && result == 0)
     {

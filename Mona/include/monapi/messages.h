@@ -40,9 +40,8 @@ enum
     MSG_PROCESS_UNGRAB_STDOUT,         // temporary
     MSG_PROCESS_STDOUT_DATA,           // temporary
     // higepon stdout exp
-    MSG_STDOUT, 
-    MSG_GRAB_STDOUT,
-    MSG_UNGRAB_STDOUT,
+    MSG_STDOUT,
+    MSG_STDOUT_REGIST_TO_SERVER
 };
 
 enum
@@ -85,7 +84,7 @@ extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* m
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
-extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid);
+extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id = NULL);
 #ifdef __cplusplus
 }
 #endif

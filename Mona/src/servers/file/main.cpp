@@ -1,5 +1,7 @@
 #include <monapi.h>
 #include <monapi/messages.h>
+#include <sys/BinaryTree.h>
+#include <monapi/Assert.h>
 #include "FileServer.h"
 #include "file.h"
 #include "bzip2.h"
@@ -8,7 +10,8 @@ using namespace MonAPI;
 
 void MessageLoop()
 {
-    HList<dword> grabList;
+    BinaryTree<dword> stdoutTree;
+    dword self = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     for (MessageInfo msg;;)
     {
@@ -87,37 +90,26 @@ void MessageLoop()
             }
             case MSG_STDOUT: /* higepon exp */
             {
+                dword stdout = stdoutTree.get(msg.from);
 
-                if (grabList.size() == 0)
+                ASSERT(stdout != NULL);
+
+                if (stdout == self)
                 {
                     syscall_print(msg.str);
                 }
                 else
                 {
-                    MessageInfo message;
-                    MessageInfo reply;
-                    Message::create(&message, MSG_STDOUT, msg.arg1, 0, 0, msg.str);
-
-                    if (Message::sendReceive(&reply, grabList.get(grabList.size() - 1), &message))
-                    {
-                        /* target not exist */
-                        grabList.remove(grabList.size() - 1);
-                    }
+                    syscall_print("not implemented yet\n");
                 }
 
                 Message::reply(&msg);
             }
-            case MSG_GRAB_STDOUT: /* higepon exp */
+            case MSG_STDOUT_REGIST_TO_SERVER:
             {
-                grabList.add(msg.from);
-                Message::reply(&msg);
-            }
-            case MSG_UNGRAB_STDOUT: /* higepon exp */
-            {
-                if (grabList.size() > 0)
-                {
-                    grabList.remove(grabList.size() - 1);
-                }
+                dword tid       = msg.arg1;
+                dword stdout_id = msg.arg2;
+                stdoutTree.add(tid, stdout_id);
                 Message::reply(&msg);
             }
         }

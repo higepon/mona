@@ -7,7 +7,7 @@
 
 using namespace MonAPI;
 
-static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, dword* tid)
+static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint, const CString& path, const CString& name, CommandOption* option, bool prompt, dword stdout_id, dword* tid)
 {
     LoadProcessInfo info;
     info.image = mi->Data;
@@ -34,6 +34,8 @@ static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint
         }
     }
 
+    registerStdout(*tid, stdout_id);
+
     return ret;
 }
 
@@ -46,7 +48,7 @@ static CString GetFileName(const CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword* tid)
+static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword stdout_id, dword* tid)
 {
     /* list initilize */
     CommandOption list;
@@ -122,7 +124,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     }
     else
     {
-        result = ExecuteProcess(parent, mi, entryPoint, path, GetFileName(path), &list, prompt, tid);
+        result = ExecuteProcess(parent, mi, entryPoint, path, GetFileName(path), &list, prompt, stdout_id, tid);
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
     }
@@ -232,7 +234,7 @@ static void MessageLoop()
             {
                 dword tid;
 
-                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, &tid);
+                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, &tid);
 
                 Message::reply(&msg, result, tid);
                 break;

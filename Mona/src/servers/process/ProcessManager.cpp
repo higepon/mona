@@ -3,6 +3,7 @@
 
 #include <monapi.h>
 #include <monapi/messages.h>
+#include <monapi/Assert.h>
 
 using namespace MonAPI;
 
@@ -42,6 +43,22 @@ void addProcessInfo(const CString& name)
         pi.tid  = info.tid;
         pi.name = info.name;
         infos.add(pi);
+    }
+}
+
+
+void registerStdout(dword tid, dword stdout)
+{
+    if (tid == THREAD_UNKNOWN) return;
+
+    MessageInfo msg;
+    MessageInfo reply;
+    Message::create(&msg, MSG_STDOUT_REGIST_TO_SERVER, tid, stdout);
+
+    if (Message::sendReceive(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
+    {
+        /* error, but nothing to do */
+        ASSERT(!"stdout Error");
     }
 }
 
