@@ -13,7 +13,7 @@
 #define _MONA_SCHEDULER_
 
 #include <Process.h>
-#include<global.h>
+#include <global.h>
 
 class Scheduler {
 

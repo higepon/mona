@@ -42,7 +42,7 @@ class ProcessManager {
 
   private:
     dword pid_;
-    Scheduler scheduler_;
+    class Scheduler* scheduler_;
 };
 
 #endif

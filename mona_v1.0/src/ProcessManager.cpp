@@ -15,6 +15,7 @@
 ProcessManager::ProcessManager() {
 
     pid_ = 0;
+    scheduler_ = new Scheduler();
 }
 
 void ProcessManager::switchProcess() {
@@ -24,7 +25,7 @@ void ProcessManager::switchProcess() {
 
 void ProcessManager::schedule(){
 
-    scheduler_.schedule();
+    scheduler_->schedule();
     this->switchProcess();
 
 }

@@ -21,6 +21,8 @@
 #include<Process.h>
 #include<string.h>
 #include<types.h>
+#include<Scheduler.h>
+#include<ProcessManager.h>
 #include <sysresource.h> /* (expr) */
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
@@ -63,5 +65,6 @@ GLOBAL PTE* g_page_tbl;
 /* Process */
 GLOBAL Process** g_process;
 GLOBAL ProcessInfo* g_current_process;
+GLOBAL ProcessManager* g_process_manager;
 
 #endif

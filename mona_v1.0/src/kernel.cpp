@@ -33,6 +33,7 @@
 #include<ihandlers.h>
 #include<pic.h>
 #include<rtc.h>
+#include<disp.h>
 #include<BitMap.h>
 #include<FAT12.h>
 #include<IA32MemoryManager.h>
@@ -126,8 +127,10 @@ void startKernel(void) {
 #ifdef HIGE
     g_info_level = ERROR;
 
-    //    ProcessManager* mp = new ProcessManager();
-
+    g_process_manager = new ProcessManager();
+    Process* process = new Process("test");
+    g_process_manager->addProcess(process, (dword)disp_name3);
+    enableTimer();
 
     FDCTester();
     IA32MemoryManager& mm = IA32MemoryManager::instance();

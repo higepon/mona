@@ -99,7 +99,7 @@ void timerHandler() {
 
     outportb(0x20, 0x20);
 
-//    kthread_schedule(); // for test IDE Driver
+    kthread_schedule(); // for test IDE Driver
 }
 
 /*!
