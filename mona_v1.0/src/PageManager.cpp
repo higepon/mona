@@ -66,7 +66,8 @@ PageManager::PageManager(dword totalMemorySize) {
     \author HigePon
     \date   create:2003/10/25 update:
 */
-int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const {
+int PageManager::allocatePhysicalPage(PageEntry* pageEntry
+                                      , bool present, bool writable, bool isUser, PhysicalAddress address) const {
 
     setAttribute(pageEntry, present, writable, isUser, address);
     return address;
@@ -312,7 +313,11 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword tableIndex     = getTableIndex(address);
     byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
-    while (true) {if (g_console) g_console->printf("page fault");}
+    if (g_current_process->shared && address >= g_current_process->shared->getStart()
+        && address <= g_current_process->shared->getStart() + g_current_process->shared->getSize()) {
+
+        return g_current_process->shared->faultHandler(address, FAULT_NOT_EXIST);
+    }
 
     if (address >= g_current_process->stack->getStart()
         && address <= g_current_process->stack->getStart() + g_current_process->stack->getSize()) {
@@ -405,4 +410,45 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
 
      table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
      return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);
+}
+
+/*!
+    \brief set page absent between start and start + size(LinearAddress)
+
+    \param  directory page directory
+    \param  start     start address
+    \param  size      size of absent pages
+
+    \author HigePon
+    \date   create:2003/10/27 update:
+*/
+void PageManager::setAbsent(PageEntry* directory, LinearAddress start, dword size) const {
+
+    LinearAddress address;
+    dword directoryIndex;
+    PageEntry* table;
+
+    for (address = start; address < start + size; address += ARCH_PAGE_SIZE) {
+
+        directoryIndex= getDirectoryIndex(address);
+        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+
+        setAttribute(&(table[getTableIndex(address)]), false, true, true);
+    }
+
+    flushPageCache();
+    return;
+}
+
+/*!
+    \brief return physical page to page manager
+
+    \param  address physical address
+
+    \author HigePon
+    \date   create:2003/10/27 update:
+*/
+void PageManager::returnPhysicalPage(PhysicalAddress address) {
+
+    memoryMap_->clear(address / ARCH_PAGE_SIZE);
 }

@@ -26,15 +26,29 @@ class SharedMemoryObject : public Queue {
     SharedMemoryObject(dword id, dword size);
     virtual ~SharedMemoryObject();
 
+    inline virtual int getAttachedCount() const {return attachedCount_;}
+    inline virtual void setAttachedCount(int count) {attachedCount_ = count;}
     inline virtual dword getId() const {return id_;}
     inline virtual dword getSize() const {return size_;}
-    bool isAllocated(dword physicalIndex);
+    inline virtual int isMapped(int physicalIndex) const {
+
+        if (physicalIndex >= physicalPageCount_) return UN_MAPPED;
+
+        return physicalPages_[physicalIndex];
+    }
+
+    inline virtual void map(int physicalIndex, PhysicalAddress address) {
+
+        if (physicalIndex >= physicalPageCount_) return;
+
+        physicalPages_[physicalIndex] = address;
+    }
 
   public:
     static void setup();
     static bool open(dword id, dword size);
     static bool attach(dword id, struct ProcessInfo* process, LinearAddress address);
-    static bool detach(dword id, PageEntry* directory);
+    static bool detach(dword id, struct ProcessInfo* process);
 
     static const int UN_MAPPED = -1;
 

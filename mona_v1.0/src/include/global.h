@@ -67,6 +67,6 @@ GLOBAL PageManager* g_page_manager;
 
 GLOBAL MemoryManager km; /* Kernel Memory Management */
 
-GLOBAL SharedMemoryObject g_sharedMemoryList;
+GLOBAL SharedMemoryObject* g_sharedMemoryList;
 
 #endif

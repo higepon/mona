@@ -250,6 +250,10 @@ SharedMemorySegment::~SharedMemorySegment() {
 */
 bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
+    int mapResult;
+
+    g_console->printf("shared fault");
+
     if (error != PageManager::FAULT_NOT_EXIST) {
 
         errorNumber_ = FAULT_UNKNOWN;
@@ -272,25 +276,46 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     /* check already allocated physical page? */
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
-    if (sharedMemoryObject_->isAllocated(physicalIndex)) {
+    int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
 
+    if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
+
+        mapResult = g_page_manager->allocatePhysicalPage((PageEntry*)(g_current_process->cr3),address, true, true, true);
+
+        sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
 
     } else {
 
-
+        mapResult = g_page_manager->allocatePhysicalPage((PageEntry*)(g_current_process->cr3), address, mappedAddress, true, true, true);
     }
 
-    return true;
+    return (mapResult != -1);
 }
 
 /*----------------------------------------------------------------------
     SharedMemoryObject
 ----------------------------------------------------------------------*/
+
+/*!
+    \brief initilize SharedMemoryObject
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 SharedMemoryObject::SharedMemoryObject() {
 
     /* dummy for g_sharedMemoryList */
 }
 
+/*!
+    \brief initilize SharedMemoryObject
+
+    \param id   shared memory object ID of identify
+    \param size shared memory size
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 SharedMemoryObject::SharedMemoryObject(dword id, dword size) {
 
     if (size == 0) return;
@@ -309,22 +334,50 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size) {
     return;
 }
 
+/*!
+    \brief destruct SharedMemoryObject
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 SharedMemoryObject::~SharedMemoryObject() {
+
+    for (int i = 0; i < physicalPageCount_; i++) {
+
+        g_page_manager->returnPhysicalPage(physicalPages_[i]);
+    }
+
+    delete(physicalPages_);
 
     return;
 }
 
+/*!
+    \brief set up karnel for using sharedMemoryObject
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 void SharedMemoryObject::setup() {
 
-    QueueManager::init(&g_sharedMemoryList);
+    g_sharedMemoryList = new SharedMemoryObject();
+    QueueManager::init(g_sharedMemoryList);
 }
 
+/*!
+    \brief find sharedMemoryObject that has the ID
+
+    \param id id for sharedMemoryObject
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 SharedMemoryObject* SharedMemoryObject::find(dword id) {
 
     SharedMemoryObject* current;
     SharedMemoryObject* result = NULL;
 
-    for (current = &g_sharedMemoryList; (SharedMemoryObject*)current->getNext() != &g_sharedMemoryList; current = (SharedMemoryObject*)current->getNext()) {
+    for (current = g_sharedMemoryList; ; current = (SharedMemoryObject*)current->getNext()) {
 
         /* found */
         if (id == current->getId()) {
@@ -332,11 +385,23 @@ SharedMemoryObject* SharedMemoryObject::find(dword id) {
             result = current;
             break;
         }
+
+        if ((SharedMemoryObject*)current->getNext() == g_sharedMemoryList) break;
     }
 
     return result;
 }
 
+/*!
+    \brief open sharedMemoryObject
+
+    if sharedMemoryObject id not present. create one.
+
+    \param id   id for sharedMemoryObject
+    \param size size of sharedMemory
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 bool SharedMemoryObject::open(dword id, dword size) {
 
     SharedMemoryObject* target = find(id);
@@ -347,7 +412,7 @@ bool SharedMemoryObject::open(dword id, dword size) {
         target = new SharedMemoryObject(id, size);
         if (target == NULL) panic("SharedMemory open: failed");
 
-        QueueManager::addToPrevious(&g_sharedMemoryList, target);
+        QueueManager::addToPrevious(g_sharedMemoryList, target);
 
     } else {
 
@@ -357,6 +422,16 @@ bool SharedMemoryObject::open(dword id, dword size) {
     return true;
 }
 
+/*!
+    \brief attach sharedMemory to process space
+
+    \param id      id for sharedMemoryObject
+    \param process target process
+    \param address attach point at process space
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
 bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAddress address) {
 
     SharedMemoryObject* target = find(id);
@@ -365,14 +440,39 @@ bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAdd
     if (process->shared != NULL) return false;
 
     process->shared = new SharedMemorySegment(address, target->getSize(), target);
-    (target->attachedCount_)++;
+
+    target->setAttachedCount(target->getAttachedCount() + 1);
 
     return true;
 }
 
-bool SharedMemoryObject::isAllocated(dword physicalIndex) {
+/*!
+    \brief detach sharedMemoryObject from process
 
-    if (physicalPageCount_ <= physicalIndex) return false;
+    \param id      id for sharedMemoryObject
+    \param process process
 
-    return (physicalPages_[physicalIndex] != UN_MAPPED);
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
+bool SharedMemoryObject::detach(dword id, struct ProcessInfo* process) {
+
+    SharedMemoryObject* target = find(id);
+    if (target == NULL) return false;
+
+    g_page_manager->setAbsent((PageEntry*)process->cr3, process->shared->getStart(), process->shared->getSize());
+
+    delete(process->shared);
+    process->shared = NULL;
+
+    target->setAttachedCount(target->getAttachedCount() - 1);
+
+    /* should be removed */
+    if (target->getAttachedCount() == 0) {
+
+        QueueManager::remove(target);
+        delete(target);
+    }
+
+    return true;
 }

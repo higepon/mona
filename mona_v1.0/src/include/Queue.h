@@ -14,6 +14,9 @@
 #ifndef _MONA_QUEUE_
 #define _MONA_QUEUE_
 
+#include <GraphicalConsole.h>
+extern VirtualConsole* g_console;
+
 class Queue {
 
   public:

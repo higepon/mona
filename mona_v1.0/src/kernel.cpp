@@ -97,6 +97,9 @@ void startKernel(void) {
     /* initialze console */
     g_console = new GraphicalConsole();
 
+    /* for Shared Memory */
+    SharedMemoryObject::setup();
+
     /* show start message */
     printBanner();
 

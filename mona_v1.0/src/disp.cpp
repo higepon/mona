@@ -38,6 +38,12 @@ void disp_name1() {
 
     dword color = 0;
 
+    //    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+    //    g_console->printf("shared memory is %s", isOpen ? "open" : "closed");
+
+    //    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0xA0000000);
+    //    g_console->printf("shared memory is %s", isAttaced ? "attaced" : "detached");
+
     while (true) {
 
 
@@ -47,6 +53,10 @@ void disp_name1() {
 
         Semaphore::up(&g_semaphore_console);
         syscall_sleep(40);
+
+	//        dword* p = (dword*)0xA0000020;
+	//        g_console->printf("value=**%x**", *p);
+
         color++;
     }
 }
@@ -75,38 +85,51 @@ void disp_name2() {
 
 void disp_name3() {
 
-    dword color = 0;
+    enter_kernel_lock_mode();
+
+    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+    g_console->printf("shared memory is %s", isOpen ? "open" : "closed");
+
+    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
+    g_console->printf("shared memory is %s", isAttaced ? "attaced" : "detached");
+
+    g_console->printf("[%x]", g_current_process->shared);
+
+    g_console->printf("[%x]", g_current_process->shared->getSize());
+
+    exit_kernel_lock_mode();
+
+    dword* p = (dword*)0x80000020;
+    *p = 0x1234;
+    dword* p2 = (dword*)0x80001020;
+    *p2 = 0x5678;
+
+    SharedMemoryObject::detach(0x1234, g_current_process);
+    g_console->printf("here %x", *p);
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console)) syscall_sleep(3);
-
-        disp_write_font(77, 0, 'n', color%13);
-
-        Semaphore::up(&g_semaphore_console);
-
-        //        Message msg;
-        //        g_message_server->send(&msg);
-        syscall_sleep(300);
-
-        color++;
     }
 }
 
 void disp_name4() {
 
-    dword color = 0;
+    enter_kernel_lock_mode();
+
+    //    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+    //    g_console->printf("shared memory is %s", isOpen ? "open" : "closed");
+
+    //    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x90000000);
+    //    g_console->printf("shared memory is %s", isAttaced ? "attaced" : "detached");
+
+    exit_kernel_lock_mode();
 
     while (true) {
-
-        while (Semaphore::down(&g_semaphore_console)) syscall_sleep(6);
-
-        disp_write_font(78, 0, 'a', color%16);
-
-        Semaphore::up(&g_semaphore_console);
-        syscall_sleep(20);
-        color++;
-        syscall_kill();
+	//        dword* p = (dword*)0x90000020;
+	//        g_console->printf("value=%x", *p);
+	//        dword* p2 = (dword*)0x90001020;
+	//        g_console->printf("value=%x", *p2);
+	//        SharedMemoryObject::detach(0x1234, g_current_process);
     }
 }
 
@@ -121,7 +144,7 @@ void disp_process() {
 
         pos_x = 0, pos_y = 15;
 
-        g_process_manager->printAllProcesses();
+	//        g_process_manager->printAllProcesses();
 
         pos_x = x;
         pos_y = y;

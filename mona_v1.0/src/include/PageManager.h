@@ -33,6 +33,8 @@ class PageManager {
     void setup();
     void flushPageCache() const;
 
+    void returnPhysicalPage(PhysicalAddress address);
+
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const;
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const;
     int allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress, bool present, bool writable, bool isUser) const;
@@ -41,6 +43,8 @@ class PageManager {
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const;
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const;
     bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const;
+
+    void setAbsent(PageEntry* directory, LinearAddress start, dword size) const;
 
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
