@@ -14,8 +14,6 @@
 #include "BitMap.h"
 #include "string.h"
 
-const int BitMap::DWORD_BITS;
-const int BitMap::NOT_FOUND;
 /*!
     \brief initilize BitMap
 

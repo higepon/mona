@@ -1,3 +1,9 @@
+2004-07-06  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/z.h, z.cpp:[リファクタリング] ファイルを削除 
+
+        * src/kernel/BitMap.cpp: [リファクタリング] static const int を enumに変更
+
 2004-07-05  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/ihandlers.cpp (mouseHandler): マウス状態が以前と同じならsendしないコードを追加 #ifで切り替え可能

@@ -31,17 +31,17 @@ class BitMap {
     bool marked(int index);
     int getBitsNumber() const;
 
-
   public:
-    static const int NOT_FOUND = -1;
+    enum
+    {
+        NOT_FOUND  = -1,
+        DWORD_BITS = sizeof(dword) * 8
+    };
 
   private:
     int* map_;
     int bitsNumber_;
     int dwordNumber_;
-
-    static const int DWORD_BITS  = sizeof(dword) * 8;
-
 };
 
 #endif
