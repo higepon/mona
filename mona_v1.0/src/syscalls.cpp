@@ -33,7 +33,7 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
-    case SYSTEM_CALL_THREAD_SLEEP:
+    case SYSTEM_CALL_MTHREAD_SLEEP:
 
         {
             g_scheduler->sleep(g_currentThread->thread, info->esi);
@@ -257,6 +257,7 @@ void syscall_entrance() {
             if (!g_fs->open(path, mode))
             {
                 info->eax = g_fs->getErrorNo();
+                g_fdcdriver->motorAutoOff();
                 Semaphore::up(&g_semaphore_fd);
                 break;
             }
@@ -290,6 +291,54 @@ void syscall_entrance() {
             break;
         }
 
+    case SYSTEM_CALL_FILE_WRITE:
+
+        {
+            byte* buf      = (byte*)(info->esi);
+            dword size     = (dword)(info->ecx);
+
+            enableInterrupt();
+            while (Semaphore::down(&g_semaphore_fd));
+
+            if (!g_fs->write(buf, size))
+            {
+                info->eax = g_fs->getErrorNo();
+                Semaphore::up(&g_semaphore_fd);
+                break;
+            }
+
+            Semaphore::up(&g_semaphore_fd);
+            disableInterrupt();
+            info->eax = 0;
+            break;
+        }
+
+    case SYSTEM_CALL_FILE_CREATE:
+
+        {
+            char* path = (char*)(info->esi);
+
+            enableInterrupt();
+            g_fdcdriver->motor(ON);
+            g_fdcdriver->recalibrate();
+            g_fdcdriver->recalibrate();
+            g_fdcdriver->recalibrate();
+            while (Semaphore::down(&g_semaphore_fd));
+
+            if (!g_fs->createFile(path))
+            {
+                info->eax = g_fs->getErrorNo();
+                g_fdcdriver->motorAutoOff();
+                Semaphore::up(&g_semaphore_fd);
+                break;
+            }
+
+            Semaphore::up(&g_semaphore_fd);
+            disableInterrupt();
+            info->eax = 0;
+            break;
+        }
+
     case SYSTEM_CALL_FILE_CLOSE:
 
         enableInterrupt();
@@ -298,7 +347,6 @@ void syscall_entrance() {
         Semaphore::up(&g_semaphore_fd);
 
         break;
-
 
     case SYSTEM_CALL_GET_PID:
 

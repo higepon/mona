@@ -1,3 +1,15 @@
+2004-03-29  higepon  <higepon@users.sourceforge.jp>
+
+        * ユーザー用ファイル書き込み用クラス FileOutputStream
+
+        * file writeのシステムコール作成
+
+        * fs.cpp (createFile): ファイル作成関数追加
+
+2004-03-28  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/userlib/monalibc.cpp & .h strncpy2追加
+
 2004-03-28  shadow  <shadowin@users.sourceforge.jp>
 
         * user/userlib/monalibc.cpp & .h strncpy2追加

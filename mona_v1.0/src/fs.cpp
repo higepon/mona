@@ -162,6 +162,42 @@ Directory* FSOperation::trackingDirectory (char *path, int *cursor)
 /*!
     \brief
 
+    \author Gaku & Higepon
+    \date   create: update:
+*/
+bool FSOperation::createFile(char* path)
+{
+    int entry, cursor = 0;
+
+    Directory *p = searchFile(path, &entry, &cursor);
+    if (NULL == p)
+    {
+        this->errorNo = FS_DIR_NOT_EXIST_ERROR;
+        return false;
+    }
+
+    if (-1 != entry)
+    {
+        this->errorNo = FS_FILE_EXIST;
+        freeDirectory(p);
+        return false;
+    }
+
+    entry = p->newFile((byte*)path+cursor, 0);
+    if (-1 == entry)
+    {
+        this->errorNo = FS_FILE_CREATE_ERROR;
+        freeDirectory(p);
+        return false;
+    }
+
+    freeDirectory(p);
+    return true;
+}
+
+/*!
+    \brief
+
     \author Gaku
     \date   create: update:
 */
@@ -234,12 +270,34 @@ bool FSOperation::open(char* path, int mode)
         return false;
     }
 
+    this->mode = mode;
+
+    switch(mode)
+    {
+    case FILE_OPEN_APPEND_WRITE:
+        this->file->seek(0, SEEK_END);
+        break;
+
+    case FILE_OPEN_NORMAL_WRITE:
+        break;
+
+    case FILE_OPEN_READ:
+        break;
+
+    default:
+        break;
+    }
+
     this->isOpenFlag = true;
     return true;
 }
 
 bool FSOperation::close()
 {
+    if (this->mode == FILE_OPEN_NORMAL_WRITE || this->mode == FILE_OPEN_APPEND_WRITE)
+    {
+        this->file->flush();
+    }
     delete this->file;
     this->file = NULL;
     this->isOpenFlag = false;
@@ -255,6 +313,22 @@ bool FSOperation::read(byte* buf, int size)
     }
 
     if (!this->file->read(buf, size))
+    {
+        freeDirectory(dir);
+        return false;
+    }
+    return true;
+}
+
+bool FSOperation::write(byte* buf, int size)
+{
+    if (!isOpenFlag)
+    {
+        this->errorNo = FS_FILE_IS_NOT_OPEN;
+        return false;
+    }
+
+    if (!this->file->write(buf, size))
     {
         freeDirectory(dir);
         return false;

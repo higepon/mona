@@ -8,6 +8,7 @@ userlib.o: userlib.cpp ../include/userlib.h ../../share/types.h \
   ../include/userlib/Thread.h ../include/userlib/string.h \
   ../include/userlib/MemoryManager.h ../include/userlib/Floppy.h \
   ../include/userlib/FileInputStream.h ../include/userlib/InputStream.h \
+  ../include/userlib/FileOutputStream.h ../include/userlib/OutputStream.h \
   ../include/userlib/monalibc.h ../include/userlib/MlcCtype.h \
   ../include/userlib/MlcLimits.h ../include/userlib/MlcStdarg.h \
   ../include/userlib/MlcStdlib.h ../include/userlib/MlcStdio.h \

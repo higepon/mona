@@ -47,7 +47,15 @@ int MonaMain(List<char*>* pekoe)
     /* 共有メモリを自分の空間からはずす */
     //mm->unmap(id1);
 
-    return 0;
+    /* ついでにファイルでも作るか */
+    FileOutputStream fos("HELLO.LOG", false);
+
+    printf("open=%x\n", fos.open());
+
+    char str[] = "Hello! \n Mona can create file and write\n";
+    printf("write%x\n", fos.write((byte*)str, sizeof(str)));
+    printf("write%x\n", fos.write((byte*)str, sizeof(str)));
+    fos.close();
     for (;;);
 }
 

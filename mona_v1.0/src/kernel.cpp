@@ -338,6 +338,11 @@ void mainProcess()
         for (;;);
     }
 
+    g_console->printf("open=%x", g_fs->open("MONA.CFG", FILE_OPEN_APPEND_WRITE));
+    char buf[] = "hello\n";
+    g_console->printf("write=%x", g_fs->write((byte*)buf, strlen(buf)+ 1));
+    g_fs->close();
+
     g_fdcdriver->motorAutoOff();
 
     if (execSysConf() != 0)

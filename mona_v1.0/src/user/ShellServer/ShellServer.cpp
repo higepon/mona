@@ -250,6 +250,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_6):
     case(VK_7):
     case(VK_8):
+    case(VK_9):
     case(VK_TEN_1):
     case(VK_TEN_2):
     case(VK_TEN_3):
@@ -273,14 +274,6 @@ int Shell::onKeyDown(int keycode, int modifiers) {
         break;
     case(VK_BACKSPACE):
         backspace();
-        break;
-
-    case(VK_9):
-
-        /* map test */
-        printf("top    message is %s\n", (char*)0x90000000);
-        printf("bottom message is %s\n", (char*)0x90090000);
-
         break;
 
     case(VK_TEN_0):

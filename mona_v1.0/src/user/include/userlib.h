@@ -14,8 +14,10 @@
 #include <MemoryManager.h>
 #include <Floppy.h>
 #include <FileInputStream.h>
+#include <FileOutputStream.h>
 #include <monalibc.h>
 #include <Color.h>
+#include <error.h>
 
 #define MESSAGE_LOOP messageLoop
 
@@ -49,7 +51,9 @@ extern "C" int syscall_mutex_destroy(int id);
 extern "C" int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
 extern "C" int syscall_file_open(char* path, int mode, volatile dword* size);
 extern "C" int syscall_file_read(char* buf, dword size, dword* readSize);
+extern "C" int syscall_file_write(char* buf, dword size, dword* writeSize);
 extern "C" int syscall_file_close();
+extern "C" int syscall_file_create(char* path);
 extern "C" int syscall_fdc_open();
 extern "C" int syscall_fdc_close();
 extern "C" int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);

@@ -30,6 +30,12 @@ typedef dword          kevent;
 #  define SEEK_END        2       /* Set file pointer to EOF plus "offset" */
 #endif
 
+/* file open mode */
+#define FILE_OPEN_READ         1
+#define FILE_OPEN_NORMAL_WRITE 2
+#define FILE_OPEN_APPEND_WRITE 3
+
+
 typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
@@ -121,48 +127,47 @@ typedef struct SysArg
 
 #define SHARED_FDC_BUFFER 0x4000
 
-#define SYSTEM_CALL_THREAD_SLEEP          5
-#define SYSTEM_CALL_HEAVEY                6
-#define SYSTEM_CALL_PRINT                 7
-#define SYSTEM_CALL_KILL                  8
-#define SYSTEM_CALL_PUT_PIXEL             9
-#define SYSTEM_CALL_SEND                  10
-#define SYSTEM_CALL_RECEIVE               11
-#define SYSTEM_CALL_MTHREAD_CREATE        12
-#define SYSTEM_CALL_MTHREAD_JOIN          13
-#define SYSTEM_CALL_MUTEX_CREATE          14
-#define SYSTEM_CALL_MUTEX_LOCK            15
-#define SYSTEM_CALL_MUTEX_TRYLOCK         16
-#define SYSTEM_CALL_MUTEX_UNLOCK          17
-#define SYSTEM_CALL_MUTEX_DESTROY         18
-#define SYSTEM_CALL_LOOKUP                19
-#define SYSTEM_CALL_GET_VRAM_INFO         20
-#define SYSTEM_CALL_LOAD_PROCESS          21
-#define SYSTEM_CALL_SET_CURSOR            23
-#define SYSTEM_CALL_GET_CURSOR            24
-#define SYSTEM_CALL_FILE_OPEN             25
-#define SYSTEM_CALL_FILE_READ             26
-#define SYSTEM_CALL_FILE_CLOSE            27
-#define SYSTEM_CALL_FDC_OPEN              29
-#define SYSTEM_CALL_FDC_CLOSE             30
-#define SYSTEM_CALL_FDC_READ              31
-#define SYSTEM_CALL_FDC_WRITE             32
-#define SYSTEM_CALL_GET_PID               34
-#define SYSTEM_CALL_ARGUMENTS_NUM         35
-#define SYSTEM_CALL_GET_ARGUMENTS         36
-#define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE 37
-#define SYSTEM_CALL_DATE                  38
-#define SYSTEM_CALL_GET_IO                39
-#define SYSTEM_CALL_WAIT_FDC              40
-#define SYSTEM_CALL_EXIST_MESSAGE         41
-#define SYSTEM_CALL_FDC_DISK_CHANGED      42
-#define SYSTEM_CALL_GET_TID               43
-#define SYSTEM_CALL_LOOKUP_MAIN_THREAD    44
-#define SYSTEM_CALL_MEMORY_MAP_CREATE     45
-#define SYSTEM_CALL_MEMORY_MAP_GET_SIZE   46
-#define SYSTEM_CALL_MEMORY_MAP_MAP        47
-#define SYSTEM_CALL_MEMORY_MAP_UNMAP      48
-#define SYSTEM_CALL_TEST                  99
+#define SYSTEM_CALL_PRINT                    0x0001
+#define SYSTEM_CALL_KILL                     0x0002
+#define SYSTEM_CALL_SEND                     0x0003
+#define SYSTEM_CALL_RECEIVE                  0x0004
+#define SYSTEM_CALL_EXIST_MESSAGE            0x0005
+#define SYSTEM_CALL_MTHREAD_CREATE           0x0006
+#define SYSTEM_CALL_MTHREAD_JOIN             0x0007
+#define SYSTEM_CALL_MTHREAD_SLEEP            0x0008
+#define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE    0x0009
+#define SYSTEM_CALL_MUTEX_CREATE             0x000A
+#define SYSTEM_CALL_MUTEX_LOCK               0x000B
+#define SYSTEM_CALL_MUTEX_TRYLOCK            0x000C
+#define SYSTEM_CALL_MUTEX_UNLOCK             0x000D
+#define SYSTEM_CALL_MUTEX_DESTROY            0x000E
+#define SYSTEM_CALL_LOOKUP                   0x000F
+#define SYSTEM_CALL_LOOKUP_MAIN_THREAD       0x0010
+#define SYSTEM_CALL_GET_VRAM_INFO            0x0011
+#define SYSTEM_CALL_LOAD_PROCESS             0x0012
+#define SYSTEM_CALL_SET_CURSOR               0x0013
+#define SYSTEM_CALL_GET_CURSOR               0x0014
+#define SYSTEM_CALL_FILE_OPEN                0x0015
+#define SYSTEM_CALL_FILE_READ                0x0016
+#define SYSTEM_CALL_FILE_WRITE               0x0017
+#define SYSTEM_CALL_FILE_CLOSE               0x0018
+#define SYSTEM_CALL_FDC_OPEN                 0x0019
+#define SYSTEM_CALL_FDC_CLOSE                0x001A
+#define SYSTEM_CALL_FDC_READ                 0x001B
+#define SYSTEM_CALL_FDC_WRITE                0x001C
+#define SYSTEM_CALL_FDC_DISK_CHANGED         0x001D
+#define SYSTEM_CALL_WAIT_FDC                 0x001E
+#define SYSTEM_CALL_GET_PID                  0x001F
+#define SYSTEM_CALL_GET_TID                  0x0020
+#define SYSTEM_CALL_ARGUMENTS_NUM            0x0021
+#define SYSTEM_CALL_GET_ARGUMENTS            0x0022
+#define SYSTEM_CALL_DATE                     0x0023
+#define SYSTEM_CALL_GET_IO                   0x0024
+#define SYSTEM_CALL_MEMORY_MAP_CREATE        0x0025
+#define SYSTEM_CALL_MEMORY_MAP_GET_SIZE      0x0026
+#define SYSTEM_CALL_MEMORY_MAP_MAP           0x0027
+#define SYSTEM_CALL_MEMORY_MAP_UNMAP         0x0028
+#define SYSTEM_CALL_FILE_CREATE              0x0029
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

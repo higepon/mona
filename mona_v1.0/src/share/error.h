@@ -23,7 +23,9 @@ enum
     FS_ALREADY_OPEN_ERROR  = 0x05,
     FS_FILE_OPEN_ERROR     = 0x06,
     FS_FILE_NOT_FOUND      = 0x06,
-    FS_FILE_IS_NOT_OPEN    = 0x07
+    FS_FILE_IS_NOT_OPEN    = 0x07,
+    FS_FILE_EXIST          = 0x08,
+    FS_FILE_CREATE_ERROR   = 0x09
 };
 
 enum

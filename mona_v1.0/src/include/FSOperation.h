@@ -30,6 +30,7 @@ class FSOperation
     bool close();
     bool read(byte* buf, int size);
     bool write(byte* buf, int size);
+    bool createFile(char* path);
     bool isOpen() const;
     int getErrorNo() const;
     int size();
@@ -46,6 +47,7 @@ class FSOperation
     FatStorage* fat;
     IStorageDevice* device;
     int errorNo;
+    int mode;
     bool isOpenFlag;
 };
 
