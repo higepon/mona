@@ -28,8 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_IMEMANAGER_H_INCLUDED_)
 #define _IMEMANAGER_H_INCLUDED_
 
-#include "monapi/CString.h"
-
 /**
  IMEマネージャクラス
 */
@@ -52,6 +50,11 @@ private:
 	/** 親部品 */
 	Control *parent;
 	
+	virtual void clearKanjiList();
+	virtual void clearBuffer();
+	virtual bool getKanji(char *str, HList<MonAPI::CString> *result);
+	virtual bool getKana(char *inputBuffer, char *str);
+
 public:
 	ImeManager::ImeManager();
 	virtual ImeManager::~ImeManager();
@@ -59,10 +62,7 @@ public:
 	virtual void insertCharacter(char *buffer, char c);
 	virtual void insertString(char *buffer, const char *str);
 	virtual int  deleteCharacter(char *buffer);
-	virtual bool getKanji(char *str, HList<MonAPI::CString> *result);
-	virtual bool getKana(char *inputBuffer, char *str);
 	virtual void setParent(Control *parent);
-	virtual void clearBuffer();
 	virtual void repaint();
 	virtual void postEvent(Event *event);
 };
