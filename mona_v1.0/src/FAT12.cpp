@@ -558,6 +558,14 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     return true;
 }
 
+/*!
+  \brief write FAT
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::writeFAT() {
 
     for (int i = 0; i < bpb_.fatSize16; i++) {
@@ -589,13 +597,21 @@ bool FAT12::readFAT(bool allocate) {
     return true;
 }
 
+/*!
+  \brief write to file. file should be open.
+  \buffer buffer to write
+  \size   buffer size.  0 <= size <=512
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::write(byte* buffer, int size) {
 
-    if (size <= 0 || size > 512) return false;
+    if (!isOpen_ || size <= 0 || size > 512) return false;
 
     int cluster = currentCluster_;
-
-    if (!isOpen_) return false;
 
     if (firstWrite_) {
         firstWrite_ = false;
@@ -603,7 +619,7 @@ bool FAT12::write(byte* buffer, int size) {
 
         int nextCluster = getFATAt(cluster);
 
-        printf("[[nextCluster=%d]]", nextCluster);
+
 
         if (nextCluster > 0xff8) {
 
@@ -611,10 +627,7 @@ bool FAT12::write(byte* buffer, int size) {
             if (next == -1) return false;
 
             setFATAt(cluster, next);
-            printf("cluseter** %d, %d", cluster, next);
-            printf("conf %d$$", getFATAt(44));
             setFATAt(next   , getFATAt(1));
-            printf("cluster** %d, %d", next, getFATAt(1));
             cluster         = next;
             currentCluster_ = cluster;
         } else {
@@ -629,8 +642,6 @@ bool FAT12::write(byte* buffer, int size) {
     memcpy(inbuf, buffer, size);
 
     (currentEntry_->filesize) += size;
-    printf("@@write@@");
-    for (int k = 0; k < 8; k++) printf("%c", (char)(currentEntry_->filename[k]));
 
     writeEntry();
 
@@ -647,11 +658,27 @@ bool FAT12::write(byte* buffer, int size) {
     return true;
 }
 
+/*!
+  \brief write to file. file should be open. write size is 512.
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::write(byte* buffer) {
 
     return write(buffer, 512);
 }
 
+/*!
+  \brief write directory entry
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
 bool FAT12::writeEntry() {
 
     byte buf[512];
