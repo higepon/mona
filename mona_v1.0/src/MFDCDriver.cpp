@@ -173,7 +173,7 @@ void MFDCDriver::motor(bool on) {
 bool MFDCDriver::sendCommand(const byte command[], const byte length) {
 
     /* check fdc status ready */
-    if (!waitMSRReady(FDC_MRQ_READY, FDC_MRQ_READY)) {
+    if (!checkMSR(FDC_MRQ_READY)) {
 
         _sys_printf("MFDCDriver#sendCommand: timeout\n");
         return false;
@@ -181,6 +181,12 @@ bool MFDCDriver::sendCommand(const byte command[], const byte length) {
 
     /* send command */
     for (int i = 0; i < length; i++) {
+
+        if (!checkMSR(FDC_MRQ_READY | FDC_DIO_TO_CPU)) {
+
+            _sys_printf("MFDCDriver#sendCommand: timeout[%d]\n", i);
+            return false;
+        }
         outportb(FDC_DR_PRIMARY, command[i]);
     }
 
@@ -202,26 +208,12 @@ void MFDCDriver::calibrate() {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-bool MFDCDriver::waitMSRReady(byte expectedCondition) {
-
-    return waitMSRReady(expectedCondition, 0xff);
-}
-
-/*!
-    \brief wait until FDC is ready.
-
-    \param  expectedcondition
-    \param  mask masking
-    \return true ready/false time out
-    \author HigePon
-    \date   create:2003/02/10 update:
-*/
-bool MFDCDriver::waitMSRReady(byte expectedCondtion, byte mask) {
+bool MFDCDriver::checkMSR(byte expectedCondition) {
 
     /* check whether FDC is ready or not */
     for (dword i = 0; i < FDC_RETRY_MAX; i++) {
 
-        bool isMSRReady = (inportb(FDC_MSR_PRIMARY) & mask) == expectedCondtion;
+        bool isMSRReady = (inportb(FDC_MSR_PRIMARY) & expectedCondition) == expectedCondition;
         if (isMSRReady) return true;
     }
 

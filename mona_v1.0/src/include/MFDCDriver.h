@@ -33,8 +33,7 @@ class MFDCDriver {
     bool sendCommand(const byte command[], const byte length);
     bool waitInterrupt();
     void calibrate();
-    bool waitMSRReady(byte expectedCondition);
-    bool waitMSRReady(byte expectedCondition, byte mask);
+    bool checkMSR(byte expectedCondition);
 
   private:
     byte version_;
