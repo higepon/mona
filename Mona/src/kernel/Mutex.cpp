@@ -34,7 +34,7 @@ KMutex::~KMutex()
     delete waitList_;
 }
 
-int KMutex::lock(Thread* thread)
+int KMutex::lock(Thread* thread, bool adaptive /* = false */)
 {
     enter_kernel_lock_mode();
 
@@ -44,6 +44,22 @@ int KMutex::lock(Thread* thread)
         owner_ = thread;
 
     /* lock NG, so wait */
+    }
+    else if (adaptive)
+    {
+        if (waitList_->size() > 1)
+        {
+            waitList_->add(thread);
+
+            g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
+            g_scheduler->SwitchToNext();
+
+            /* not reached */
+        }
+        else
+        {
+            while (isLocked());
+        }
     }
     else
     {

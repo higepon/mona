@@ -27,7 +27,7 @@ class KMutex : public KObject {
     virtual ~KMutex();
 
   public:
-    int lock(Thread* thread);
+    int lock(Thread* thread, bool adaptive = false);
     int tryLock(Thread* thread);
     int unlock();
 

@@ -1,4 +1,7 @@
 2004-09-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Mutex.cpp (lock): Adaptive Lockを実装した。
+
 2004-09-25  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Mutex.h: Mutexのコンストラクタ変更。プロセスを受け取らないようにした。
