@@ -515,26 +515,6 @@ void syscall_entrance()
 
         break;
 
-    case SYSTEM_CALL_TEST:
-    {
-        dword laddress = (dword)(info->esi);
-        dword paddress;
-
-        g_console->printf("conver=%s\n", g_page_manager->getPhysicalAddress(g_currentThread->process->getPageDirectory(), laddress, &paddress) ? "true" : "false");
-
-        dword* p = (dword*)paddress;
-
-        g_console->printf("laddress=%x paddress=%x", laddress, paddress);
-
-        g_page_manager->setPageDirectory((dword)g_page_manager->getKernelDirectory());
-
-
-        g_console->printf("pvalue=%x\n", *p);
-
-        g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
-        break;
-    }
-
     case SYSTEM_CALL_REMOVE_IRQ_RECEIVER:
     {
         int irq = (int)info->esi;

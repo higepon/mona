@@ -562,37 +562,6 @@ void PageManager::returnPageTable(PageEntry* table)
     pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 
-PageEntry* PageManager::createNewPageDirectoryForV86()
-{
-    PageEntry* table1    = allocatePageTable();
-    PageEntry* table2    = allocatePageTable();
-    PageEntry* directory = allocatePageTable();
-
-    /* allocate page to physical address 0-4MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
-    {
-        /* user access ok beyond 1MB */
-        if (i < 256)
-        {
-            setAttribute(&(table1[i]), true, true, true, 4096 * i);
-        } else
-        {
-            setAttribute(&(table1[i]), true, true, false, 4096 * i);
-        }
-    }
-
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
-    {
-
-        setAttribute(&(table2[i]), true, true, false, 4096 * 1024 + 4096 * i);
-    }
-
-    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    setAttribute(&(directory[0]), true, true, true, (PhysicalAddress)table1);
-    setAttribute(&(directory[1]), true, true, false, (PhysicalAddress)table2);
-    return directory;
-}
-
 /*!
     \brief change page directory
 
@@ -689,22 +658,8 @@ PageEntry* PageManager::allocatePageTable() const
 */
 bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip)
 {
-//    PageEntry* table;
-//    dword directoryIndex = getDirectoryIndex(address);
-//    dword tableIndex     = getTableIndex(address);
     Process* current     = g_currentThread->process;
 
-    dword realcr3;
-    asm volatile("mov %%cr3, %%eax  \n"
-                 "mov %%eax, %0     \n"
-                 : "=m"(realcr3): : "eax");
-
-//    if (realcr3 != (dword)current->getPageDirectory()) {
-    if (realcr3 != g_currentThread->archinfo->cr3)
-    {
-        g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
-        g_console->printf("realCR3=%x processCR3=%x\n", realcr3, current->getPageDirectory());
-    }
 
     /* search shared memory segment */
     List<SharedMemorySegment*>* list = current->getSharedList();
@@ -725,34 +680,12 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
         return heap->faultHandler(address, FAULT_NOT_EXIST);
     }
 
-//     /* physical page not exist */
-//     if (error & ARCH_FAULT_NOT_EXIST)
-//     {
-//         if (isPresent(&(g_page_directory[directoryIndex])))
-//         {
-//             table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-//         } else
-//         {
-//             table = allocatePageTable();
-//             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-//             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-//         }
-
-//         bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
-//         if (allocateResult) flushPageCache();
-
-//         return allocateResult;
-
-//     /* access falut */
-//     }
-//     else
-//     {
 #if 1
         ArchThreadInfo* i = g_currentThread->archinfo;
         logprintf("name=%s\n", g_currentThread->process->getName());
         logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
         logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-        logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+        logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
         logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
 
@@ -764,7 +697,6 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
 
         ThreadOperation::kill();
         return true;
-//    }
     return true;
 }
 

@@ -53,16 +53,10 @@ class PageManager {
     void stopPaging();
     PageEntry* createNewPageDirectory();
     PageEntry* createKernelPageDirectory();
-    PageEntry* createNewPageDirectoryForV86();
     bool pageFaultHandler(LinearAddress address, dword error, dword eip);
     inline static bool isPresent(PageEntry* entry) {
 
         return (*entry) & ARCH_PAGE_PRESENT;
-    }
-
-    inline PageEntry* getKernelDirectory() const
-    {
-        return kernelDirectory_;
     }
 
   public:
