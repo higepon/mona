@@ -14,6 +14,10 @@
 #include <MlcLimits.h>
 #include <MlcCtype.h>
 #include <MlcStdlib.h>
+#include <monalibc.h>
+
+int uitos(char* s, unsigned int n, int real_width, int base, char flag);
+
 
 /*!
   \brief string to long int
@@ -57,6 +61,7 @@ size_t strtoi(const char *s, char **endptr, int base, int width, char flag){
   int mflag = 1;
   unsigned long int max;
 
+  if(s == NULL) return result;
   if(base > 36) base = 36; /* check base */
   if(base < 0) base = 0;
   while(isspace(*s)) s++; /* skip spaces */
@@ -164,3 +169,166 @@ int atoi(const char *s){
 
   return result*mflag;
 }
+
+int itos(char *s, int n, int width, int base, char flag){
+  int num;
+  int real_width;
+  int i;
+  int j = 0;
+  char charP = '+';
+  
+  if(s == NULL){
+    return 0;
+  }
+
+  if(!(flag & P_FORMAT_UNSIGNED) && (n < 0)){/* negative number */
+    flag |= P_FORMAT_PLUS;
+    charP = '-';
+    n = n * -1;
+  }
+  num = n;
+
+  if((flag & P_FORMAT_SPACE) && !(flag & P_FORMAT_PLUS)){
+    flag |= P_FORMAT_PLUS;
+    charP = ' ';
+  }
+
+  for(real_width = 0; num != 0; real_width++){
+    num /= base;
+  }
+  
+  if((flag & P_FORMAT_ZERO) && (real_width >= width)){
+    flag &= ~P_FORMAT_ZERO;
+  }
+
+  if(flag & P_FORMAT_PLUS){
+    if(flag & P_FORMAT_MINUS){
+      s[j] = charP;
+      j++;
+      j += uitos(&s[j], n, real_width, base, flag);
+      for(i = 0; j < width; i++){
+        s[j] = ' ';
+         j++;
+      }
+    } else if(flag & P_FORMAT_ZERO){
+      s[j] = charP;
+      j++;
+      for(i = 0; j < width - real_width; i++){
+        s[j] = '0';
+         j++;
+      }
+      j += uitos(&s[j], n, real_width, base, flag);
+    } else {
+      for(i = 0; j < width - real_width - 1; i++){
+        s[j] = ' ';
+         j++;
+      }
+      s[j] = charP;
+      j++;
+      j += uitos(&s[j], n, real_width, base, flag);
+    }
+  } else {
+    if(flag & P_FORMAT_MINUS){
+      j += uitos(&s[j], n, real_width, base, flag);
+      for(i = 0; j < width; i++){
+        s[j] = ' ';
+         j++;
+      }
+    } else if(flag & P_FORMAT_ZERO){
+      for(i = 0; j < width - real_width; i++){
+        s[j] = '0';
+         j++;
+      }
+      j += uitos(&s[j], n, real_width, base, flag);
+    } else {
+      for(i = 0; j < width - real_width; i++){
+        s[j] = ' ';
+         j++;
+      }
+      j += uitos(&s[j], n, real_width, base, flag);
+    }
+  }
+  if(flag & P_FORMAT_TERMINATE){
+    s[j] = 0;
+    j++;
+  }
+  return j;
+}
+
+int uitos(char* s, unsigned int n, int real_width, int base, char flag){
+  int j = 0;
+  int i;
+  size_t ch;
+  char basechar = 'a';
+
+  if(s == NULL) return 0;
+
+  if(flag & P_FORMAT_CAPITAL){
+    basechar = 'A';
+  }
+
+  for(i = real_width -1; i >= 0; i--){
+    ch = n / __power(base, i);
+    n %= __power(base, i);
+
+    if(i == 0 && n > 9){
+      s[j] = (basechar + n -10);
+      j++;
+    } else if (i == 0){
+      s[j] = ('0' + n);
+      j++;
+    } else if (ch > 9){
+      s[j] = (basechar + ch -10);
+      j++;
+    } else {
+      s[j] = ('0' + ch);
+      j++;
+    }
+  }
+
+  return j;
+}
+
+int ftos(char *s, double n, int width, int precision, char flag){
+  int num, fraction;
+  int j = 0;
+  char tmpflag = 0;
+
+  if(s == NULL){
+    return 0;
+  }
+
+  num = (int)n;
+  fraction = (int)((n - (double)num)*__power(10, precision));
+  if(precision > 0){
+    if(flag & P_FORMAT_TERMINATE){
+      flag &= ~P_FORMAT_TERMINATE;
+      tmpflag = P_FORMAT_TERMINATE;
+    }
+    if(num != 0){
+     width -= (precision + 1);
+     j += itos(s, num, width, 10, flag);
+     s[j] = '.';
+     j++;
+     if(fraction < 0) fraction *= -1;
+     j += itos(&s[j], fraction, precision, 10, tmpflag);
+    } else { /* num == 0 */
+      if(fraction >= 0){
+       s[j++] = '0';
+       s[j++] = '.';
+       j += itos(&s[j], fraction, precision, 10, tmpflag);
+      } else { /* num == 0 && fraction < 0 */
+       s[j++] = '-';
+       s[j++] = '0';
+       s[j++] = '.';
+       fraction *= -1;
+       j += itos(&s[j], fraction, precision, 10, tmpflag);
+      }
+    }
+  } else { /* precision <= 0 */
+    j += itos(s, num, width, 10, flag);
+  }
+
+  return j;
+}
+
