@@ -15,6 +15,8 @@
 #include<higeVga.h>
 #include<higeIo.h>
 #include<KeyBoardManager.h>
+#include<FDCDriver.h>
+
 /*!
     \brief key stroke handler
 
@@ -80,6 +82,24 @@ void dummy() {
     asm("pop %ebp");
     asm("iret");
     return;
+}
+
+/*!
+    \brief floppy disk controller's interrupt handler
+
+    floppy disk controller's interrupt handler
+
+    \author syn
+    \date create:2002/10/14 update:2002/10/14
+*/
+void fdcHandler(){
+    gFDCDriver1->interruptHandler();
+    outportb(0x20, 0x20);
+
+    /* iret */
+    asm("mov %ebp,%esp");
+    asm("pop %ebp");
+    asm("iret");
 }
 
 /*! global handler list */

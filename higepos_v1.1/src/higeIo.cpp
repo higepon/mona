@@ -19,13 +19,13 @@
     initilize I/O,PIC
 
     \author HigePon
-    \date   create:2002/08/02 update:
+    \date   create:2002/08/02 update:2002/10/23
 */
 void _sysInitIo() {
 
     /* Enable IRQ0 (timer) and IRQ1 (keyboard) at the
     8259 PIC chips, disable others: */
-    outportb(0x21, ~0x03);
+    outportb(0x21, ~0x43);
     outportb(0xA1, ~0x00);
     return;
 }
