@@ -33,6 +33,7 @@ else
    echo "Sorry, currently your platform is not supported."
    echo "If you can support your platform, please contact with Mona PJ."
    echo "http://mona.sourceforge.jp/"
+   exit 1
 fi
 ## linux gcc2.9x
 #elif test $isOldVersion ; then
