@@ -117,6 +117,12 @@ void fdcHandler(){
 */
 void timerHandler() {
 
+    //    asm volatile("pushl $0x87654321");
+    //    asm volatile("pushl $0x87654321");
+    //    asm volatile("pushl $0x87654321");
+    //    asm volatile("pushl $0x87654321");
+    _sysdumpStack5();
+
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
