@@ -9,6 +9,7 @@ all:
 install:
 	@cd fat_write && $(MAKE)
 	@cd bim2bin && $(MAKE)
+	@cd t5lzma/7zip/Compress/LZMA_Alone && $(MAKE) all
 	@cd bit2mnf && $(MAKE) $@
 	@cd monaelf && $(MAKE)
 	@cd elf_tool && $(MAKE)
