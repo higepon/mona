@@ -93,6 +93,16 @@ void GDTUtil::setup() {
     /* TSS. Mona has only one TSS */
     setSegDesc(&g_gdt[4], (dword)&g_tss, 0x00000067, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x00 | 0x09);
 
+    /* USER CS 0-4GB */
+    setSegDesc(&g_gdt[5], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x0A);
+
+    /* USER DS 0-4GB */
+    setSegDesc(&g_gdt[6], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
+
+    /* USER SS 0-4GB */
+    setSegDesc(&g_gdt[7], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
+
+
     /* lgdt */
     GDTR gdtr;
     gdtr.base  = (dword)g_gdt;

@@ -19,6 +19,7 @@
 
 #define MAX_PROCESS 512
 #define DPL_KERNEL  0
+#define DPL_USER    3
 
 typedef struct ProcessInfo {
     dword  eip;
@@ -52,6 +53,8 @@ class Process {
   public:
     Process(const char*);
 
+    Process() {}
+
     virtual ~Process() {
     }
 
@@ -63,6 +66,22 @@ class Process {
     void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
 
     static void setup();
+};
+
+/*!
+    class UserProcess
+*/
+class UserProcess : Process {
+
+  public:
+    UserProcess(const char*);
+
+    virtual ~UserProcess() {
+    }
+
+
+    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
+
 };
 
 #endif

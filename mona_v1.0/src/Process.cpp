@@ -52,3 +52,21 @@ void Process::setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, d
     pinfo_.pid = pid;
     return;
 }
+
+UserProcess::UserProcess(const char* name) {
+
+    pinfo_.process = this;
+    strncpy(pinfo_.name, name, sizeof(pinfo_.name));
+
+    pinfo_.cs      = 0x08;
+    pinfo_.ds      = 0x10;
+    pinfo_.eflags  = 0x200;
+    pinfo_.eax     = 0;
+    pinfo_.ecx     = 0;
+    pinfo_.edx     = 0;
+    pinfo_.ebx     = 0;
+    pinfo_.esi     = 0;
+    pinfo_.edi     = 0;
+    pinfo_.tick    = 0;
+    pinfo_.dpl     = DPL_USER;
+}
