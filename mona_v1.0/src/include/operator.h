@@ -12,10 +12,10 @@
     \date   create:2002/08/08 update:$Date$
 */
 
-#include<types.h>
-
 #ifndef _MONA_POS_OPERATOR
 #define _MONA_POS_OPERATOR
+
+#include<types.h>
 
 void* operator new(size_t size);
 void  operator delete(void* address);

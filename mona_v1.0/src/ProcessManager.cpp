@@ -84,10 +84,10 @@ virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
     return 0x100000 + i * 4096;
 }
 
-PTE* ProcessManager::allocatePageDir() {
+PageEntry* ProcessManager::allocatePageDir() {
 
 
-    return g_page_dir;
+    return (PageEntry*)0;
 }
 
 dword ProcessManager::allocatePID() {

@@ -37,7 +37,6 @@
 #include <FAT12.h>
 #include <IA32MemoryManager.h>
 #include <string.h>
-#include <PagingUtil.h>
 #include <syscalls.h>
 #include <ProcessManager.h>
 #include <Message.h>

@@ -12,6 +12,9 @@
 
 #include <PageManager.h>
 #include <BitMap.h>
+#include <types.h>
+#include <string.h>
+#include <operator.h>
 #include <global.h>
 
 PageManager::PageManager(dword totalMemorySize) {
@@ -88,4 +91,21 @@ void PageManager::stopPaging() {
                  "mov %%eax      , %%cr0 \n"
                  : /* no output */
                  : /* no input  */ : "ax");
+}
+
+void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const {
+
+    *entry = present | rw | user | (address & 0xfffff000);
+}
+
+PageEntry* PageManager::allocatePageTable() const {
+
+    PageEntry* table;
+
+    table = (PageEntry*)malloc(sizeof(PageEntry) * PAGE_TABLE_NUM * 2);
+
+    if (table == NULL) panic("Page Table memory allocate error\n");
+    for (; (dword)table % 4096; table++);
+
+    return table;
 }

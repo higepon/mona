@@ -14,8 +14,8 @@
 #ifndef _MONA_PROCESS_
 #define _MONA_PROCESS_
 
-#include<types.h>
-#include<PagingUtil.h>
+#include <types.h>
+#include <PageManager.h>
 
 #define MAX_PROCESS 512
 #define DPL_KERNEL  0
@@ -67,7 +67,7 @@ class Process {
   public:
     ProcessInfo pinfo_;
 
-    void setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PTE* pagedir, dword pid);
+    void setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid);
 
     static void setup();
 

@@ -11,6 +11,7 @@
 */
 
 #include <global.h>
+#include <PageManager.h>
 
 extern "C" Process** g_process;
 
@@ -53,7 +54,7 @@ Process::Process(const char* name) {
     pinfo_.dpl     = DPL_KERNEL;
 }
 
-void Process::setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PTE* pagedir, dword pid) {
+void Process::setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid) {
 
     pinfo_.eip  = (dword)entryPoint;
     pinfo_.esp  = (dword)stack;

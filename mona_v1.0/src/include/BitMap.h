@@ -20,22 +20,22 @@
 class BitMap {
 
  public:
-    BitMap(dword number);
+    BitMap(int number);
     ~BitMap();
 
  public:
-    void mark(dword index);
-    void clear(dword index);
-    dword find();
-    dword countClear();
-    bool marked(dword index);
-    dword getBitsNumber() const;
+    void mark(int index);
+    void clear(int index);
+    int find();
+    int countClear();
+    bool marked(int index);
+    int getBitsNumber() const;
 
  private:
-    dword* map_;
-    dword bitsNumber_;
-    dword dwordNumber_;
-    static const dword DWORD_BITS;
+    int* map_;
+    int bitsNumber_;
+    int dwordNumber_;
+    static const int DWORD_BITS;
 
 };
 

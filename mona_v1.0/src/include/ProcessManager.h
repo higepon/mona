@@ -17,6 +17,7 @@
 #include<types.h>
 #include<Process.h>
 #include<ihandlers.h>
+#include<PageManager.h>
 #include<Scheduler.h>
 
 /*!
@@ -31,7 +32,7 @@ class ProcessManager {
     }
 
   protected:
-    PTE*  allocatePageDir();
+    PageEntry* allocatePageDir();
     virtual_addr allocateStack();
     virtual_addr allocateKernelStack(dword dpl);
     dword allocatePID();

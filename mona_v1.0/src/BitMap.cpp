@@ -12,7 +12,7 @@
 
 #include<BitMap.h>
 
-const dword BitMap::DWORD_BITS = sizeof(dword) * 8;
+const int BitMap::DWORD_BITS = sizeof(dword) * 8;
 
 /*!
     \brief initilize BitMap
@@ -21,15 +21,15 @@ const dword BitMap::DWORD_BITS = sizeof(dword) * 8;
     \author HigePon
     \date   create:2003/03/30 update:
 */
-BitMap::BitMap(dword number) {
+BitMap::BitMap(int number) {
 
     bitsNumber_ = number;
     dwordNumber_ = (bitsNumber_ / DWORD_BITS)
                  + ((bitsNumber_ % DWORD_BITS) ? 1 : 0);
 
-    map_ = new dword[dwordNumber_];
+    map_ = new int[dwordNumber_];
 
-    for (dword i = 0; i < bitsNumber_; i++) clear(i);
+    for (int i = 0; i < bitsNumber_; i++) clear(i);
     return;
 }
 
@@ -51,7 +51,7 @@ BitMap::~BitMap() {
     \author HigePon
     \date   create:2003/08/22 update:
 */
-dword BitMap::getBitsNumber() const {
+int BitMap::getBitsNumber() const {
 
     return bitsNumber_;
 }
@@ -63,7 +63,7 @@ dword BitMap::getBitsNumber() const {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-void BitMap::mark(dword index) {
+void BitMap::mark(int index) {
 
     map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
     return;
@@ -76,7 +76,7 @@ void BitMap::mark(dword index) {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-void BitMap::clear(dword index) {
+void BitMap::clear(int index) {
 
     map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
     return;
@@ -89,9 +89,9 @@ void BitMap::clear(dword index) {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-dword BitMap::find() {
+int BitMap::find() {
 
-    for (dword i = 0; i < bitsNumber_; i++) {
+    for (int i = 0; i < bitsNumber_; i++) {
 
         if (!marked(i)) {
             mark(i);
@@ -108,11 +108,11 @@ dword BitMap::find() {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-dword BitMap::countClear() {
+int BitMap::countClear() {
 
-    dword count = 0;
+    int count = 0;
 
-    for (dword i = 0; i < bitsNumber_; i++) {
+    for (int i = 0; i < bitsNumber_; i++) {
 
         if (!marked(i)) count++;
     }
@@ -128,7 +128,7 @@ dword BitMap::countClear() {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-bool BitMap::marked(dword index) {
+bool BitMap::marked(int index) {
 
     return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
 }

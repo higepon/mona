@@ -50,7 +50,6 @@ SOURCES    = cstart.cpp            \
              info.cpp              \
              GDTUtil.cpp           \
              IDTUtil.cpp           \
-             PagingUtil.cpp        \
              Process.cpp           \
              Scheduler.cpp         \
              ProcessManager.cpp    \

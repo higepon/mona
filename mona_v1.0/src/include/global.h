@@ -16,13 +16,13 @@
 #include<Semaphore.h>
 #include<GDTUtil.h>
 #include<IDTUtil.h>
-#include<PagingUtil.h>
 #include<Process.h>
 #include<string.h>
 #include<types.h>
 #include<Scheduler.h>
 #include<ProcessManager.h>
 #include <sysresource.h> /* (expr) */
+#include <PageManager.h>
 #include <MessageServer.h>
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console    */
@@ -48,10 +48,6 @@ GLOBAL SegDesc* g_gdt;
 GLOBAL GateDesc* g_idt;
 
 GLOBAL dword g_total_system_memory;
-
-/* Paging */
-GLOBAL PTE* g_page_dir;
-GLOBAL PTE* g_page_tbl;
 
 /* Process */
 GLOBAL TSS* g_tss;
