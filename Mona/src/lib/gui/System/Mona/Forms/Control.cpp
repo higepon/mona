@@ -295,6 +295,8 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::set_Location(Point p)
 	{
+		if (this->get_Location() == p) return;
+		
 		this->bounds.X = p.X;
 		this->bounds.Y = p.Y;
 		if (this->_object == NULL) return;

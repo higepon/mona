@@ -10,6 +10,7 @@ SOURCES = \
 	System/Mona/Forms/Button.cpp \
 	System/Mona/Forms/Control.cpp \
 	System/Mona/Forms/ControlPaint.cpp \
+	System/Mona/Forms/Cursor.cpp \
 	System/Mona/Forms/Form.cpp \
 	System/Mona/Forms/Label.cpp \
 	System/Mona/Forms/Timer.cpp \

@@ -20,6 +20,7 @@ double cos(double angle);
 double tan(double angle);
 double sqrt(double num);
 double atan2(double x, double y);
+double atan(double x);
 double acos(double x);
 
 #ifdef __cplusplus
