@@ -1,3 +1,7 @@
+2004-09-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (kill): sendKilledMessage()をコメントアウト。
+
 2004-09-08  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (switchThread): FileOutputStreamでハングする件デバッグ中。

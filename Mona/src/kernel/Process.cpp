@@ -223,7 +223,11 @@ int ThreadOperation::kill()
 
 //    logprintf("%s:%d\n", __FILE__, __LINE__);
 
-//    sendKilledMessage();
+#if 0
+
+    /* if do this, FileOutputStream hang up@hello.cpp*/
+    sendKilledMessage();
+#endif
 
 //    logprintf("%s:%d\n", __FILE__, __LINE__);
 
