@@ -98,7 +98,6 @@ static void StdoutMessageLoop()
 		switch (msg.header)
 		{
 			case MSG_PROCESS_STDOUT_DATA:
-			case MSG_STDOUT: /* higepon exp */
 			{
 				msg.str[127] = '\0';
 				terminal->Output(msg.str);

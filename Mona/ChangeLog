@@ -1,3 +1,17 @@
+2005-03-17  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/baygui/gshell/gshell.cpp: STDOUT実験用コードの削除。
+
+        * apps/gui/shell/Form1.cpp (StdoutMessageLoop): STDOUT実験用コードの削除。
+
+        * src/servers/gui/main.cpp (StdoutMessageLoop): STDOUT実験用コードの削除。
+
+        * src/servers/shell/Shell.cpp (run): STDOUT実験用コードの削除。
+
+        * include/monapi/messages.h (enum): STDOUT実験用コードの削除。
+
+        * src/servers/file/main.cpp (MessageLoop): STDOUT実験用コードの削除。
+
 2005-03-16  higepon  <higepon@users.sourceforge.jp>
 
         * apps/baygui/gshell/gshell.cpp: touchのsyscall_file_createをコメントアウト。あとでサポートします。

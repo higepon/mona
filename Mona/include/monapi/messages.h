@@ -45,9 +45,6 @@ enum
     MSG_PROCESS_GRAB_STDOUT = 0x10f0,  // temporary
     MSG_PROCESS_UNGRAB_STDOUT,         // temporary
     MSG_PROCESS_STDOUT_DATA,           // temporary
-    // higepon stdout exp
-    MSG_STDOUT,
-    MSG_STDOUT_REGIST_TO_SERVER
 };
 
 enum

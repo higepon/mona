@@ -354,7 +354,6 @@ static void StdoutMessageLoop()
 		switch (msg.header)
 		{
 			case MSG_PROCESS_STDOUT_DATA:
-			case MSG_STDOUT: /* higepon exp */
 				MonAPI::Message::reply(&msg);
 				break;
 		}

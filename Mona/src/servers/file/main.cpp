@@ -12,8 +12,6 @@ using namespace MonAPI;
 
 void MessageLoop()
 {
-    BinaryTree<dword> stdoutTree;
-
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg)) continue;
@@ -151,31 +149,6 @@ void MessageLoop()
                 {
                     Message::reply(&msg);
                 }
-                break;
-            }
-            case MSG_STDOUT: /* higepon exp */
-            {
-                dword stdout = stdoutTree.get(msg.from);
-
-                ASSERT(stdout != NULL);
-
-                MessageInfo reply;
-
-                if (Message::sendReceiveA(&reply, stdout, &msg))
-                {
-                    /* error, but nothing to do */
-                    ASSERT(!"stdout Error");
-                }
-
-                Message::reply(&msg);
-                break;
-            }
-            case MSG_STDOUT_REGIST_TO_SERVER:
-            {
-                dword tid       = msg.arg1;
-                dword stdout_id = msg.arg2;
-                stdoutTree.add(tid, stdout_id);
-                Message::reply(&msg);
                 break;
             }
         }

@@ -42,7 +42,6 @@ static void StdoutMessageLoop() {
 		if (!MonAPI::Message::receive(&info)) {
 			switch (info.header) {
 			case MSG_PROCESS_STDOUT_DATA:
-		        case MSG_STDOUT:
 				//info.str[127] = '\0';
 				id = MonAPI::Message::lookupMainThread("GSHELL.EX5");
 				MonAPI::Message::sendReceive(NULL, id, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, info.str);

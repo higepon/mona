@@ -34,8 +34,6 @@ static int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, dword entryPoint
         }
     }
 
-    registerStdout(*tid, stdout_id);
-
     return ret;
 }
 

@@ -46,22 +46,6 @@ void addProcessInfo(const CString& name)
     }
 }
 
-
-void registerStdout(dword tid, dword stdout)
-{
-    if (tid == THREAD_UNKNOWN) return;
-
-    MessageInfo msg;
-    MessageInfo reply;
-    Message::create(&msg, MSG_STDOUT_REGIST_TO_SERVER, tid, stdout);
-
-    if (Message::sendReceiveA(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
-    {
-        /* error, but nothing to do */
-        ASSERT(!"stdout Error");
-    }
-}
-
 void addProcessInfo(dword tid, dword parent, const CString& path)
 {
     ProcessInfo pi = getProcessInfo(tid);
