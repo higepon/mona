@@ -1,3 +1,8 @@
+2002-11-14  syn <syn@users.sourceforge.jp>
+        
+        * higeKernel.cpp, higeTester.cpp: FDCDriverのテストコードを higeTester.cppへ移行
+        * FDCDrive.cpp, FDCDrive.h: 2002/11/02に巻き戻した変更を復活
+
 2002-11-11  higepon  <higepon@users.sourceforge.jp>
 
         * X86MemoryManager.cpp: enableA20追加
