@@ -41,6 +41,9 @@ char* X86MemoryManager::getName() {
 */
 unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
 
+    /* size 0 */
+    if (size == 0) return 0;
+
     unsigned long oldAddress = current_;
     current_ += size;
 
