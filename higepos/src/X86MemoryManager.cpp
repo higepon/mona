@@ -66,11 +66,11 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     H_SIZE_T freeBlockSize = current->size - realSize;
 
     if (current->size != realSize) {
-        this->addToEntry(freeEntry_, freeBlock, freeBlockSize);
+        this->addToEntry(0, freeBlock, freeBlockSize);
         this->concatBlock(freeEntry_, freeBlock);
     }
     this->deleteFromEntry(freeEntry_, current, current->size);
-    this->addToEntry(usedEntry_, usedBlock, usedBlockSize);
+    this->addToEntry(1, usedBlock, usedBlockSize);
 
     /* address of allocated memory */
     this->printInfo();
@@ -93,7 +93,7 @@ void X86MemoryManager::freeMemory(void* address) {
     struct memoryEntry* targetAddress = (struct memoryEntry*)address;
 
     this->deleteFromEntry(usedEntry_, targetAddress, targetAddress->size);
-    this->addToEntry(freeEntry_, targetAddress, targetAddress->size);
+    this->addToEntry(0, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
 }
 
@@ -177,24 +177,32 @@ void X86MemoryManager::printInfo() {
 
     add block to entries
 
-    \param entry freeEntry of usedEntry
+    \param type  0 FREE: 1 USED
     \param block block to entry
     \param size  size of block
 
     \author HigePon
-    \date   create:2002/09/07 update:
+    \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::addToEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
+void X86MemoryManager::addToEntry(H_BYTE type, struct memoryEntry* block, H_SIZE_T size) {
 
+    struct memoryEntry* entry    = type? usedEntry_ : freeEntry_;
     struct memoryEntry* previous = (struct memoryEntry*)NULL;
     struct memoryEntry* current  = entry;
+
+    if (type && usedEntry_ == (struct memoryEntry*)NULL) {
+
+        usedEntry_ = block;
+        usedEntry_->size = size;
+    }
+
     for (; ; previous = current, current = previous->next) {
 
         /* the add position */
         if (block >= current) break;
 
         /* block not found */
-        if (current == entry) return;
+        if (current->next == entry) return;
     }
 
     struct memoryEntry* next = current->next;

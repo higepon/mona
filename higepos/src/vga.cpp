@@ -49,12 +49,12 @@ void _sysClearScreen() {
 /*!
     \brief print string like printf
 
-    print string like printf
+    print string like printf thanks for 2ch
 
     \param format use %d %s like printf
 
     \author HigePon
-    \date   create:2002/09/08 update:
+    \date   create:2002/09/08 update:2002/09/08
 */
 void _sys_printf (char* format, ...) {
 
@@ -75,6 +75,12 @@ void _sys_printf (char* format, ...) {
                   _sysPrintInt((int)*list);
                   ((int*)list) += 1;
                   break;
+              case '%':
+                  _sysPutCharcter('%');
+                  break;
+             case '\0':
+                 i--;
+                 break;
             }
         } else {
             _sysPutCharcter(format[i]);

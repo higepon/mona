@@ -38,7 +38,7 @@ class X86MemoryManager {
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
     H_SIZE_T getRealSize(H_SIZE_T);
-    void addToEntry(struct memoryEntry*, struct memoryEntry*, H_SIZE_T);
+    void addToEntry(H_BYTE, struct memoryEntry*, H_SIZE_T);
     void deleteFromEntry(struct memoryEntry*, struct memoryEntry*, H_SIZE_T);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
     const H_SIZE_T MEMORY_START;
