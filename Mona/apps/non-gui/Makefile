@@ -41,8 +41,8 @@ distclean:
 	@cd nic; $(MAKE) $@
 
 touchdepend:
-	touchdepend noiz2bg/dependencies
-	touchdepend reversi/dependencies
-	touchdepend jpegdemo/dependencies
-#	touchdepend clock/dependencies
-	touchdepend waba/dependencies
+	touch noiz2bg/dependencies
+	touch reversi/dependencies
+	touch jpegdemo/dependencies
+#	touch clock/dependencies
+	touch waba/dependencies
