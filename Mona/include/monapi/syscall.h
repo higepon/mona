@@ -57,7 +57,7 @@ extern dword syscall_get_pid();
 extern dword syscall_get_tid();
 extern int syscall_get_arg_count();
 extern int syscall_get_arg(char* buf, int n);
-extern int syscall_mthread_yeild_message();
+extern int syscall_mthread_yield_message();
 extern int syscall_get_date(KDate* date);
 extern int syscall_get_io();
 extern int syscall_dir_open();

@@ -44,7 +44,7 @@ void mouseHandler()
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
 
-#if 1
+#if 0  // DEBUG for message
     g_scheduler->dump();
 #endif
 
@@ -95,7 +95,7 @@ void keyStrokeHandler(dword scancode)
     message.header = MSG_KEY_SCANCODE;
     message.arg1   = scancode;
 
-#if 1
+#if 0  // DEBUG for message
     g_scheduler->dump();
 #endif
 

@@ -39,7 +39,7 @@ int monapi_cmessage_receive(monapi_clist* queue, MessageInfo* dst)
     result = syscall_receive(dst);
     if (result != 0)
     {
-         syscall_mthread_yeild_message();
+         syscall_mthread_yield_message();
          result = syscall_receive(dst);
     }
     return result;
@@ -68,7 +68,7 @@ int monapi_cmessage_receive_cond(monapi_clist* queue, MessageInfo* dst, MessageI
         int result = syscall_receive(dst);
         if (result != 0)
         {
-             syscall_mthread_yeild_message();
+             syscall_mthread_yield_message();
              result = syscall_receive(dst);
         }
         if (result != 0) continue;

@@ -165,7 +165,7 @@ bool Scheduler::schedule()
     current->remove();
     runq->addToPrev(current);
 
-    wakeupTimer();
+    wakeupEvents();
 
     g_prevThread    = g_currentThread;
     g_currentThread = PTR_THREAD(runq->top());
@@ -173,26 +173,20 @@ bool Scheduler::schedule()
     return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
-int Scheduler::wakeupTimer()
+int Scheduler::wakeupEvents()
 {
     FOREACH_N(waitq, Thread*, thread)
     {
-        if (thread->waitReason != WAIT_TIMER)
+        if ((thread->waitReason == WAIT_TIMER && thread->wakeupTimer <= getTick())
+            || (thread->waitReason == (int)KEvent::MESSAGE_COME && thread->messageList->size() > 0))
         {
-            continue;
+            Thread* target = thread;
+            thread = (Thread*)(thread->prev);
+
+            target->remove();
+            target->waitReason = WAIT_NONE;
+            runq->addToNext(target);
         }
-
-        if (thread->wakeupTimer > getTick())
-        {
-            continue;
-        }
-
-        Thread* target = thread;
-        thread = (Thread*)(thread->prev);
-
-        target->remove();
-        target->waitReason = WAIT_NONE;
-        runq->addToNext(target);
     }
     return 0;
 }

@@ -183,7 +183,7 @@ static void StdoutMessageLoop()
                 }
                 else
                 {
-#if 1  /// temporary
+#if 0  /// DEBUG for message
                     char buf[128];
                     sprintf(buf, "?%d?", msg.from);
                     syscall_print(buf);
@@ -193,7 +193,7 @@ static void StdoutMessageLoop()
                         StdoutUngrab(grabs[size - 1]);
                         syscall_print(msg.str);
                     }
-#if 1  /// temporary
+#if 0  /// DEBUG for message
                     syscall_print("?E?");
 #endif
                 }
@@ -219,7 +219,7 @@ static void MessageLoop()
     {
         if (Message::receive(&msg) != 0) continue;
 
-#if 1 /// temporary
+#if 0  /// DEBUG for message
         if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
         {
             char buf[128];

@@ -20,7 +20,7 @@ static void StdoutMessageLoop()
         {
             case MSG_PROCESS_STDOUT_DATA:
             {
-#if 1  /// temporary
+#if 0  /// DEBUG for message
                 char buf[256];
                 sprintf(buf, "!%d!", msg.from);
                 syscall_print(buf);
@@ -29,7 +29,7 @@ static void StdoutMessageLoop()
                 msg.str[127] = '\0';
                 syscall_print(msg.str);
                 monapi_call_mouse_set_cursor(&msg_queue, 1);
-#if 1  /// temporary
+#if 0  /// DEBUG for message
                 syscall_print("!E!");
 #endif
                 monapi_cmessage_reply(&msg);

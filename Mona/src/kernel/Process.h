@@ -151,7 +151,7 @@ public:
     PsInfo* readDump();
 
 private:
-    int wakeupTimer();
+    int wakeupEvents();
 
 protected:
     Thread* runq;

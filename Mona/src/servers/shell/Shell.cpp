@@ -36,7 +36,7 @@ void Shell::run()
     {
         if (Message::receive(&msg) != 0) continue;
 
-#if 1 /// temporary
+#if 0  /// DEBUG for message
         if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
         {
             char buf[128];

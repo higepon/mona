@@ -228,7 +228,9 @@ MessageInfo* Messenger::allocateMessageInfo() {
     allocated_++;
     if (allocated_ > size_ - 1) {
 
+#if 0  // DEBUG for message
         g_console->printf("***** msg buf index set to zero again ****");
+#endif
         allocated_ = 0;
     }
     return result;
@@ -268,7 +270,7 @@ int Messenger::send(dword id, MessageInfo* message)
     *info = *message;
     info->from = g_currentThread->thread->id;
 
-#if 1 // temp for debug
+#if 0  // DEBUG for message
     if (id == 60 || id == 63) g_console->printf("@%d->%d@", info->from, id);
 #endif
 
@@ -276,7 +278,9 @@ int Messenger::send(dword id, MessageInfo* message)
     thread->messageList->add(info);
     exit_kernel_lock_mode();
 
+#if 0  // Tino: do at Schedule::wakeupEvents()
     KEvent::set(thread, KEvent::MESSAGE_COME);
+#endif
     return 0;
 }
 

@@ -24,7 +24,7 @@ int print(const char* msg) {
     for (int len = strlen(msg); len > 0; msg += 127, len -= 127)
     {
         strncpy(buf, msg, 127);
-#if 1  /// temporary
+#if 0  /// DEBUG for message
         char buf2[128];
         sprintf(buf2, "{%d", syscall_get_tid());
         syscall_print(buf2);
@@ -33,7 +33,7 @@ int print(const char* msg) {
         {
             syscall_print(buf);
         }
-#if 1  /// temporary
+#if 0  /// DEBUG for message
         syscall_print("}");
 #endif
     }
@@ -493,7 +493,7 @@ int syscall_get_arg(char* buf, int n)
     return result;
 }
 
-int syscall_mthread_yeild_message()
+int syscall_mthread_yield_message()
 {
     int result;
     SYSCALL_0(SYSTEM_CALL_MTHREAD_YIELD_MESSAGE, result);
