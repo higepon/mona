@@ -97,15 +97,15 @@ extern VirtualConsole* console;
     value[6] = *(stack + 6);                         \
     value[7] = *(stack + 7);                         \
     value[8] = *(stack + 8);                         \
-    console->printf("%x  ", value[0]);                   \
-    console->printf("%x  ", value[1]);                   \
-    console->printf("%x  ", value[2]);                   \
-    console->printf("%x  ", value[3]);                   \
-    console->printf("%x  ", value[4]);                   \
-    console->printf("%x  ", value[5]);                   \
-    console->printf("%x  ", value[6]);                   \
-    console->printf("%x  ", value[7]);                   \
-    console->printf("%x  ", value[8]);                   \
+    console->printf("%x  ", value[0]);               \
+    console->printf("%x  ", value[1]);               \
+    console->printf("%x  ", value[2]);               \
+    console->printf("%x  ", value[3]);               \
+    console->printf("%x  ", value[4]);               \
+    console->printf("%x  ", value[5]);               \
+    console->printf("%x  ", value[6]);               \
+    console->printf("%x  ", value[7]);               \
+    console->printf("%x  ", value[8]);               \
 
 /*!
    \struct FARJMP

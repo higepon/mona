@@ -31,7 +31,7 @@ GraphicalConsole::GraphicalConsole() {
     pos_x    = 0;
     pos_y    = 0;
     bgcolor_ = 0;
-    chcolor_ = 15;
+    chcolor_ = 1;
     clearScreen();
 }
 

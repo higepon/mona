@@ -154,9 +154,14 @@ void MFDCDriver::initilize() {
     while (!waitInterrupt());
 
     recalibrate();
+    //    printStatus("after recalibrate1");
 
+    recalibrate();
+    //    printStatus("after recalibrate2");
     //    write(0, 0, 1);
+    while (true);
     printStatus("before read");
+    read(0, 0, 1);
     read(0, 0, 1);
 
     motor(OFF);
