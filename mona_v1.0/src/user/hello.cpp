@@ -2,8 +2,6 @@
 
 void main() {
 
-    while (true) {
-
-        syscall_print("Hello Mona!!!");
-    }
+    syscall_print("Hello Mona!!!");
+    while (true);
 }
