@@ -1,3 +1,13 @@
+2004-11-28  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui: リファクタリング
+
+        * include/baygui: リファクタリング
+
+        * src/lib/baygui: リファクタリング
+
+        * src/servers/baygui: リファクタリング
+
 2004-11-28  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/file.cpp (ReadFile): メモリ開放忘れのバグ修正
