@@ -118,6 +118,9 @@ class Thread {
         return (timeLeft_ > 0);
     }
 
+  public:
+    ThreadInfo* threadInfo_;
+
   protected:
     dword tick_;
     dword timeLeft_;

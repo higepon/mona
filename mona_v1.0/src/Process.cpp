@@ -138,6 +138,14 @@ V86Process::V86Process(const char* name) {
     Thread
 ----------------------------------------------------------------------*/
 Thread::Thread() : tick_(0), timeLeft_(4) {
+
+    /* thread information */
+    threadInfo_ = (ThreadInfo*)malloc(sizeof(ThreadInfo));
+    checkMemoryAllocate(threadInfo_, "class Thread info allocate");
+
+    /* thread information arch dependent */
+    threadInfo_->archinfo = (ArchThreadInfo*)malloc(sizeof(ArchThreadInfo));
+    checkMemoryAllocate(threadInfo_->archinfo, "class Thread arch info allocate");
 }
 
 Thread::~Thread() {
