@@ -32,7 +32,11 @@ namespace System { namespace Drawing
 		inline Color* get() { return this->buffer.get(); }
 	
 		void SetPixel(int x, int y, Color c);
-		inline Color GetPixel(int x, int y) { return this->buffer[x + y * this->width]; }
+		inline Color GetPixel(int x, int y)
+		{
+			return (x < 0 || this->width <= x || y < 0 || this->height <= y)
+				? Color::get_Empty() : this->buffer[x + y * this->width];
+		}
 	};
 }}
 

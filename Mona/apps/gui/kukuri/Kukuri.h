@@ -32,12 +32,20 @@
 #ifndef __KUKURI_H__
 #define __KUKURI_H__
 
+#include <gui/System/Mona/Forms/Form.h>
+#include <gui/System/Mona/Forms/Timer.h>
+#include <gui/System/Drawing/Bitmap.h>
+
 #define KUKURI_WIDTH  32
 #define KUKURI_HEIGHT 48
 #define KUKURI_NONE   Color::FromArgb(142, 187, 138)  // 透過色 (DarkSeaGreen)
+#define MIRROR 100
+
+#define PI       (atan(1) * 4)   // 円周率
+#define RAD(d)   (d / 180 * PI)  // 度数→ラジアン
+#define DEG(r)   (r * 180 / PI)  // ラジアン→度数
 
 #define IDOU    5       // 移動量
-#define SPEED   0.180   // 少ないと早くなる
 
 enum KukuriBitmaps
 {
@@ -71,6 +79,91 @@ enum KukuriBitmaps
     kukuri_turn_r,
     kukuri_turn_r2,
     kukuri_wow
+};
+
+/**
+  ククリ様のお姿
+*/
+
+class Kukuri: public System::Mona::Forms::Form
+{
+public:
+  Kukuri();
+  virtual ~Kukuri();
+  
+  virtual void Create();
+  virtual void Dispose();
+  
+  static void Main(_A<System::String> args);
+  
+protected:
+  virtual void OnPaint();
+  virtual System::Mona::Forms::Control::NCState NCHitTest(int x, int y);
+  virtual void OnNCMouseDown(_P<System::Mona::Forms::MouseEventArgs> e);
+  virtual void OnNCMouseUp(_P<System::Mona::Forms::MouseEventArgs> e);
+  
+private:
+  void setBitmaps();
+  void timer_Tick(_P<System::Object> sender, _P<System::EventArgs> e);
+  void normal();
+  void calculation(int tmp_x, int tmp_y);
+  void turn();
+  void sleeping();
+  void byebye();
+  void wow();
+  
+private:
+  _P<System::Mona::Forms::Timer> timer;
+  _P<System::Drawing::Bitmap> kukuri, kukuriMirror;
+  int nowCount, count;
+  /** 角度 */
+  int r;
+  /** 方向 */
+  int d;
+  /** 普通時の状態 */
+  int n_state;
+  /** 勝手に動くときの状態 */
+  int a_state;
+  /** 歩くときのXPM計算用 */
+  int w_num;
+  /** 回転の後経過した歩数(カウント) */
+  int a_t_num;
+  /** 回転後どちらにずれるか */
+  int a_t_dir;
+  /** 回転後どちらにずれたか */
+  bool a_t_dir2;
+  /** マウスポインタとの距離 */
+  double distance;
+  /** x増分 */
+  double px;
+  /** y増分 */
+  double py;
+  /** 自動移動時の移動先x座標 */
+  int auto_x;
+  /** 自動移動時の移動先y座標 */
+  int auto_y;
+  /** 眠るまでのカウント */
+  int s_interval;
+  /** 回転時のXPMの順番 */
+  int t_num;
+  int tmpo;
+  /** 寝てるときの画像の番号 */
+  bool s_pixmap;
+  /** 眠ってからのカウント */
+  int s_count;
+  /** 自動モード関係 */
+  bool a_flag;
+  /** 考え中のXPM番号 */
+  int th_num;
+  int nowPix;
+  /** ククリ様の画像 */
+  int kuPix[32];
+  /** 睡眠中の画像 */
+  int kuSleep[2];
+  int kuTurn[11];
+  int kuBye[4];
+  int kuWow[2];
+  int kuThink[4];
 };
 
 #endif  // __KUKURI_H__
