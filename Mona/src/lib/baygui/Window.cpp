@@ -132,7 +132,7 @@ Window::Window()
 	this->timerEvent.source = this;
 	
 	// カスタムイベント
-	this->customEvent.type = CUSTOME_EVENT;
+	this->customEvent.type = CUSTOM_EVENT;
 	this->customEvent.source = this;
 	
 	// タイマー起動
