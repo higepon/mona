@@ -210,10 +210,10 @@ updatescreen:	mov		esi, [ebx + tube_t.step]
 				inc		ecx
 				inc		ebp
 				cmp		ebp, byte (SCREEN_W / 2)
-				jl		.lp1
+				jl		near .lp1
 				inc		edi
 				cmp		edi, byte (SCREEN_H / 2)
-				jl		.lp2
+				jl		near .lp2
 				fstp	st0
 				fstp	st0
 
