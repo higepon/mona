@@ -19,14 +19,16 @@ BITS 32
 [extern _g_current_process] ;; pointer to current process
 [extern _g_stack_view]      ;; for debug stack viewer
 
+[extern _fault0dHandler]
+
 _arch_save_process_registers:
         mov ebx, dword[_g_current_process]
-        mov eax, dword[esp + 52] ; get dpl
+        mov eax, dword[ebx + 52] ; get dpl
         cmp eax, 0x03            ; check dpl is 3
         jnz dpl0
-        mov eax, dword[esp + 48] ; save ss3
+        mov eax, dword[esp + 52] ; save ss3
         mov dword[ebx + 48], eax
-        mov eax, dword[esp + 52] ; save esp3
+        mov eax, dword[esp + 48] ; save esp3
         mov dword[ebx + 28], eax
 dpl0:
         mov eax, dword [esp + 36]; save eip

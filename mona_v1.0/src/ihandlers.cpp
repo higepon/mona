@@ -52,6 +52,8 @@ void keyStrokeHandler() {
 */
 void fault0dHandler() {
 
+    g_console->printf("ss3 = %x esp3 = %x \n", g_current_process->ss, g_current_process->esp);
+
     g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
                       , g_stack_view.stack0
                       , g_stack_view.stack1

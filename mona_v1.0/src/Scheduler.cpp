@@ -66,13 +66,11 @@ void Scheduler::schedule() {
 
     ProcessInfo* next = getNext(&dispatchList_);
 
-    toUserMode_ = (next->dpl > g_current_process->dpl);
+    toUserMode_ = next->dpl > 0;
 
     addToPrev(&dispatchList_, next);
 
     g_current_process = next;
-
-    if (next->pid == 1) g_console->printf("to PID name =%s cs=%x, ss=%x esp=%x, eip=%x \n", g_current_process->name,g_current_process->cs, g_current_process->ss, g_current_process->esp, g_current_process->eip);
 
     return;
 }
