@@ -161,12 +161,13 @@ void MFDCHandler(void)
     /* thx! K-tan */
     outportb(0x20, 0x66);
 
-//     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread()->tinfo->process, WAIT_FDC);
+    int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
 
-//     if (wakeupResult != 0)
-//     {
-//         ThreadOperation::switchThread((wakeupResult == 1));
-//     }
+//    g_console->printf("wake up result =%d\n", wakeupResult);
+    if (wakeupResult != 0)
+    {
+         ThreadOperation::switchThread((wakeupResult == 1));
+    }
 }
 
 /* IRQ Handler (expr) */

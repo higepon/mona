@@ -1,5 +1,7 @@
 2004-02-28  higepon  <higepon@users.sourceforge.jp>
 
+        * kernel.cpp (mainProcess): 新スケジューラのFDでの速度の実験
+
         * スケジューラのバグが直らないので一番原始的なwakeup無しモードでの動作を確認。0.1.5と同じ水準であることを確認。
 
         * ChangeLogの文字コードをshift-jis-unixにした。euc-jp-unixだと開発環境で文字化けを起こすので

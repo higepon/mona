@@ -172,21 +172,22 @@ void FDCDriver::interrupt() {
     \brief wait interrupt
 
     \author HigePon
-    \date   create:2003/02/10 update:2003/09/19
+    \date   create:2003/02/10 update:2004/02/28
 */
-void FDCDriver::waitInterrupt() {
+void FDCDriver::waitInterrupt(bool yield) {
 
-//     setWaitThread(g_currentThread->thread);
+    if (yield)
+    {
+        setWaitThread(g_currentThread->thread);
 
-//     asm volatile("movl $%c0, %%ebx \n"
-//                  "int  $0x80       \n"
-//                  :
-//                  :"g"(SYSTEM_CALL_WAIT_FDC)
-//                  :"ebx"
-//         );
+        asm volatile("movl $%c0, %%ebx \n"
+                     "int  $0x80       \n"
+                     :
+                     :"g"(SYSTEM_CALL_WAIT_FDC)
+                     :"ebx"
+            );
+    }
 
-//     g_scheduler->dump();
-//     g_console->printf("true=%s", interrupt_? "TRUE" : "FALSE");
     while (!interrupt_);
 }
 
@@ -266,7 +267,7 @@ bool FDCDriver::recalibrate() {
 
     while (true) {
 
-        waitInterrupt();
+        waitInterrupt(false);
 
         waitStatus(0x10, 0x00);
 
@@ -351,7 +352,7 @@ bool FDCDriver::seek(byte track) {
 
     while (true) {
 
-        waitInterrupt();
+        waitInterrupt(false);
         waitStatus(0x10, 0x00);
 
         if (senseInterrupt()) break;
@@ -513,7 +514,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         return false;
     }
 
-    waitInterrupt();
+    waitInterrupt(true);
 
     //    delay(30000);
 
@@ -559,7 +560,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
     interrupt_ = false;
     sendCommand(command, sizeof(command));
-    waitInterrupt();
+    waitInterrupt(true);
 
     info(DEV_NOTICE, "write:after waitInterrupt\n");
 

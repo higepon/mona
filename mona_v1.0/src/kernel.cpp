@@ -223,7 +223,24 @@ inline void printOK(const char* msg)
 
 void mainProcess()
 {
-#if 0
+    /* FDC do not delete */
+    enableFDC();
+    g_fdcdriver = new FDCDriver();
+    g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    if (!g_fat12->initilize())
+    {
+        g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
+        for (;;);
+    }
+
+    g_fdcdriver->motorAutoOff();
+
+#if 1
     byte buf[512];
 
     KDate dt1;
@@ -258,23 +275,6 @@ void mainProcess()
     g_console->printf("%d/%d/%d %d:%d:%d\n", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
 
 #endif
-
-    /* FDC do not delete */
-    enableFDC();
-    g_fdcdriver = new FDCDriver();
-    g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    if (!g_fat12->initilize())
-    {
-        g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
-        for (;;);
-    }
-
-    g_fdcdriver->motorAutoOff();
 
     /* KEY Server */
     g_console->printf("loading KeyBoard Server....");

@@ -46,7 +46,7 @@ class FDCDriver : public DiskDriver {
 
   private:
     void initilize();
-    void waitInterrupt();
+    void waitInterrupt(bool yield);
     void waitStatus(byte expected);
     void waitStatus(byte mask, byte expected);
     bool sendCommand(const byte command[], const byte length);
