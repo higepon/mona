@@ -119,13 +119,13 @@ void Button::postEvent(Event *event) {
 		pushed = true;
 		if (firstpaint == true) {
 			repaint();
+			Control::postEvent(event);
 		}
 	} else if (event->type == MOUSE_RELEASED && enabled == true) {
 		pushed = false;
 		if (firstpaint == true) {
 			repaint();
+			Control::postEvent(event);
 		}
-	} else {
-		Control::postEvent(event);
 	}
 }
