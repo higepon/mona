@@ -6,19 +6,29 @@
 #include <monapi/CString.h>
 #include <gui/System/Array.h>
 
+#define SVR "Shell Server"
+#define FONT_WIDTH   8
+#define FONT_HEIGHT 16
+#define FOREGROUND 0x000000
+#define BACKGROUND 0xffffff
+#define APPSDIR  "/APPS"
+#define STARTDIR "/APPS"
+
 /*----------------------------------------------------------------------
     Shell
 ----------------------------------------------------------------------*/
 class Shell {
 
   public:
-    Shell();
+    Shell(bool callAutoExec);
     virtual ~Shell();
 
   public:
+    void run();
     void onKeyDown(int keycode, int modifiers);
     void printPrompt(const MonAPI::CString& prefix = NULL);
     void drawCaret(bool erase = false);
+    inline bool getHasExited() { return this->hasExited; }
 
   protected:
     void commandChar(char c);
@@ -28,7 +38,7 @@ class Shell {
     void putHistory(const MonAPI::CString& command);
     MonAPI::CString getHistory();
     int isInternalCommand(const MonAPI::CString& command);
-    void internalCommandExecute(int command, _A<MonAPI::CString> args);
+    bool internalCommandExecute(int command, _A<MonAPI::CString> args);
     _A<MonAPI::CString> parseCommandLine();
     int makeApplicationList();
     MonAPI::CString getParentDirectory(const MonAPI::CString& dir);
@@ -42,6 +52,9 @@ class Shell {
     HList<MonAPI::CString> history;
     HList<MonAPI::CString> apps;
     MonAPI::CString current;
+    bool hasExited, callAutoExec;
+    dword waiting;
+    MonAPI::Screen screen;
 };
 
 #endif

@@ -1,4 +1,4 @@
-TARGET  = PS
+TARGET  = GPS
 SOURCES = Form1.cpp
 
 MONADIR = ../../..

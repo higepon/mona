@@ -1,5 +1,5 @@
 TARGET  = SHELL.SVR
-SOURCES = main.cpp
+SOURCES = main.cpp Shell.cpp InternalCommands.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-elf.inc

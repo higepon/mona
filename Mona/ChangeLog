@@ -1,3 +1,12 @@
+2004-05-09  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/shell/Shell.cpp: main.cppが肥大化したため分割
+
+        * src/servers/shell/InternalCommands.cpp: 内部コマンドが増えたので分割
+                                                  内部コマンドPSを追加
+
+        * apps/gui/ps: 内部コマンドPSと被るのでGPS.EL2に改名
+
 2004-05-09  higepon  <higepon@users.sourceforge.jp>
 
         * Mona/Doxyfile: doxygen用のファイル追加
