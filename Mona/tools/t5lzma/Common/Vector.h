@@ -127,7 +127,7 @@ public:
   int Find(const T& item) const
   {
     for(int i = 0; i < Size(); i++)
-      //if (item == (*this)[mid]) thanx shadow
+      //if (item == (*this)[mid])
       if (item == (*this)[i])
         return i;
       return -1;
