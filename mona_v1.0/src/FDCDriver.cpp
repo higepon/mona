@@ -295,6 +295,10 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
 
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
+
+        delay();
+        delay();
+        delay();
     }
     return true;
 }
@@ -323,6 +327,9 @@ bool FDCDriver::recalibrate() {
 
     info(DEV_NOTICE, "recalibrate:after waitInterrupt\n");
 
+    delay();
+    delay();
+    delay();
     senseInterrupt();
     return true;
 }
@@ -391,6 +398,10 @@ bool FDCDriver::seek(byte track) {
     /* and then senseInterrupt                  */
     while (!waitInterrupt());
 
+    delay();
+    delay();
+    delay();
+
     info(DEV_WARNING, "seek:after waitInterrupt\n");
 
     if (!senseInterrupt()) {
@@ -419,6 +430,10 @@ bool FDCDriver::senseInterrupt() {
     }
 
     info(DEV_WARNING, "senseInterrrupt:before result\n");
+
+    delay();
+    delay();
+    delay();
 
     if (!readResults()) {
         info(ERROR, "FDCDriver#senseInterrrupt:resultError\n");
@@ -611,6 +626,11 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     info(DEV_WARNING, "wait loop");
 
     while (!waitInterrupt());
+
+    delay();
+    delay();
+    delay();
+
     stopDMA();
 
     info(DEV_NOTICE, "raed results");
@@ -686,6 +706,10 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     while (!waitInterrupt());
 
     info(DEV_NOTICE, "write:after waitInterrupt\n");
+
+    delay();
+    delay();
+    delay();
 
     stopDMA();
 

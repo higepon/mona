@@ -84,7 +84,11 @@ void ELFTester(byte* out) {
 
 void FDCTester() {
 
+    info(DEV_NOTICE, "start1");
+
     g_fdcdriver = new FDCDriver(g_console);
+
+    info(DEV_NOTICE, "start2");
 
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}

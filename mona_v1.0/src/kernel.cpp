@@ -117,7 +117,7 @@ void startKernel(void) {
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
-    g_page_manager->setup();
+    //    g_page_manager->setup();
 
 //     SystemInfo::rdtscsub();
 //     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
@@ -129,11 +129,15 @@ void startKernel(void) {
 
 #ifdef HIGE
 
+    g_info_level = MSG;
+
     g_console->printf("Hit any key to start [Process]\n");
 
     disableTimer();
     enableKeyboard();
     enableInterrupt();
+
+    //    FDCTester();
 
     ELFTester(user_func_from);
 
@@ -147,8 +151,6 @@ void startKernel(void) {
 
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
-
-    g_info_level = MSG;
 
     Process* idle = new Process("idle     ");
 
