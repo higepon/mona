@@ -19,6 +19,16 @@ extern "C" char pos_y;
 
 extern "C"     void arch_set_stack_view();
 
+#define enter_kernel_lock_mode() {\
+    dword eflags = get_eflags();  \
+    disableInterrupt();           \
+
+#define exit_kernel_lock_mode() \
+         set_eflags(eflags);    \
+         }                      \
+
+
+
 void syscall_entrance() {
 
     int x, y;
@@ -37,8 +47,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_HEAVEY:
 
-        eflags = get_eflags();
-        disableInterrupt();
+        enter_kernel_lock_mode();
 
         x = pos_x;
         y = pos_y;
@@ -49,7 +58,8 @@ void syscall_entrance() {
 
         pos_x = x;
         pos_y = y;
-        set_eflags(eflags);
+
+        exit_kernel_lock_mode();
 
         enableInterrupt();
 
@@ -61,8 +71,7 @@ void syscall_entrance() {
             i--;
         }
 
-        eflags = get_eflags();
-        disableInterrupt();
+        enter_kernel_lock_mode();
 
         x = pos_x;
         y = pos_y;
@@ -78,7 +87,7 @@ void syscall_entrance() {
         /* return code */
         g_current_process->eax = 0x12345678;
 
-        set_eflags(eflags);
+        exit_kernel_lock_mode();
 
         break;
 
