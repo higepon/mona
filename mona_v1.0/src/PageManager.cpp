@@ -74,6 +74,18 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
     return true;
 }
 
+bool PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) {
+
+    int foundMemory = memoryMap_->find();
+
+    /* no free memory found */
+    if (foundMemory == -1) return false;
+
+    setAttribute(pageEntry, present, writable, isUser, 4096 * 1);
+
+    return true;
+}
+
 /*!
     \brief initilize system pages
 
@@ -227,8 +239,7 @@ bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress addre
         setAttribute(&(directory[directoryIndex]), present, writable, isUser, (PhysicalAddress)table);
     }
 
-    bool allocateResult = allocatePhysicalPage(&(table[getTableIndex(address)]));
-    setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);
+    bool allocateResult = allocatePhysicalPage(&(table[getTableIndex(address)]), present, writable, isUser);
     if (allocateResult) flushPageCache();
 
     return allocateResult;
@@ -262,7 +273,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
 
-        bool allocateResult = allocatePhysicalPage(&(table[tableIndex]));
+        bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
         if (allocateResult) flushPageCache();
 
         return allocateResult;
