@@ -4,6 +4,8 @@
 
         * apps/gui/noiz2bg: noiz2bgをMonaGUIに移植
 
+        * apps/gui/fire: NWSOSから移植
+
 2004-04-23  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: マウスカーソルの初期位置を画面中央.

@@ -1,0 +1,36 @@
+TARGET  = FIRE.ELF
+SOURCES = Form1.cpp
+
+MONADIR = ../../..
+include $(MONADIR)/env/monapi.inc
+OBJECTS += fire.o
+
+INCLUDE = -I$(INCDIR)
+LINK    = -lgui -lmonapi -lmonalibc
+
+CXXFLAGS += -DMONA -DDEBUG
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
+	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
+	objcopy $(OFLAGS) $@
+	$(STRIP) $@
+
+install: all
+	cp -u $(TARGET) $(BINDIR)/root/APPS
+
+clean :
+	rm -f $(OBJECTS) $(TARGET)
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
+
+fire.o: fire.asm
+	$(NASM) $(NFLAGS) -o $@ -felf fire.asm
+
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+include dependencies
