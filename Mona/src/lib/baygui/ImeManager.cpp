@@ -159,6 +159,17 @@ void ImeManager::setParent(Control *parent) {
 	this->parent = parent;
 }
 
+/** 漢字リストをクリアする */
+void ImeManager::clearKanjiList()
+{
+	// 漢字リスト初期化
+	kanjiListPtr = -1;
+	int I = kanjiList.size();
+	for (int i = 0; i < I; i++) {
+		kanjiList.removeAt(0);
+	}
+}
+
 /** すべての内部バッファーをクリアする */
 void ImeManager::clearBuffer()
 {
@@ -187,12 +198,18 @@ void ImeManager::repaint()
 	// 変換対象文字列
 	if (strlen(translateBuffer) > 0) {
 		fw1 = FontManager::getInstance()->getWidth(translateBuffer);
-		fw2 = FontManager::getInstance()->getWidth(inputBuffer);
 		_g->setColor(0, 0, 255);
 		_g->drawText(translateBuffer, 0, (height - fh) / 2);
-		_g->drawText(inputBuffer, fw1, (height - fh) / 2);
-		_g->drawLine(0, 13, fw1 + fw2, 13);
+		_g->drawLine(0, 13, fw1, 13);
 	}
+	
+	// 入力中文字列
+	//if (strlen(inputBuffer) > 0) {
+	//	fw2 = FontManager::getInstance()->getWidth(inputBuffer);
+	//	_g->setColor(0, 0, 255);
+	//	_g->drawText(inputBuffer, fw1, (height - fh) / 2);
+	//	_g->drawLine(fw1, 13, fw1 + fw2, 13);
+	//}
 	
 	// キャレット
 	if (focused == true && enabled == true) {
@@ -210,9 +227,11 @@ void ImeManager::postEvent(Event *event)
 		int modifiers = ((KeyEvent *)event)->modifiers;
 		
 		// IMEオン・オフ切り替え
-		if (modifiers == VKEY_CTRL && keycode == '\\') {
-			clearBuffer(inputBuffer);
-			clearBuffer(translateBuffer);
+		if (imesvrID != THREAD_UNKNOWN && 
+			((modifiers == VKEY_CTRL && keycode == '\\') ||
+			(modifiers == VKEY_LSHIFT && keycode == ' '))) {
+			clearBuffer();
+			clearKanjiList();
 			if (imemode == true) {
 				imemode = false;
 			} else {
@@ -223,32 +242,38 @@ void ImeManager::postEvent(Event *event)
 		} else if (keycode == VKEY_BACKSPACE) {
 			int len = 0;
 			
-			// 入力文字列を削除
-			if (strlen(inputBuffer) > 0) {
-				len = deleteCharacter(inputBuffer);
+			if (0 <= kanjiListPtr && kanjiListPtr < kanjiList.size() - 1) {
+				// 変換中にバックスペース押したときは無変換と同等に扱う
+				clearBuffer();
+				insertString(translateBuffer, (const char *)kanjiList.get(kanjiList.size() - 1));
+				clearKanjiList();
 				repaint();
-			// 変換対象文字列を削除
-			} else if (strlen(translateBuffer) > 0) {
-				len = deleteCharacter(translateBuffer);
-				repaint();
-			// 親部品の確定文字列を削除
 			} else {
-				// バックスペース送信
-				_imeEvent->type = IME_CHAR | (VKEY_BACKSPACE << 16);
-				parent->postEvent(_imeEvent);
+				// 入力文字列を削除
+				if (strlen(inputBuffer) > 0) {
+					len = deleteCharacter(inputBuffer);
+					repaint();
+				// 変換対象文字列を削除
+				} else if (strlen(translateBuffer) > 0) {
+					len = deleteCharacter(translateBuffer);
+					repaint();
+				// 親部品の確定文字列を削除
+				} else {
+					// バックスペース送信
+					_imeEvent->type = IME_CHAR | (VKEY_BACKSPACE << 16);
+					parent->postEvent(_imeEvent);
+				}
 			}
 		// 変換
 		} else if (keycode == ' ' && strlen(translateBuffer) > 0) {
 			if (kanjiListPtr == -1) {
 				// 変換成功
 				if (getKanji(translateBuffer, &kanjiList) == true) {
-					clearBuffer(inputBuffer);
-					clearBuffer(translateBuffer);
+					clearBuffer();
 					insertString(translateBuffer, (const char *)kanjiList.get(++kanjiListPtr));
 				// 変換失敗
 				} else {
-					clearBuffer(inputBuffer);
-					clearBuffer(translateBuffer);
+					clearBuffer();
 					insertString(translateBuffer, "変換失敗");
 				}
 			} else {
@@ -256,14 +281,16 @@ void ImeManager::postEvent(Event *event)
 				if (kanjiListPtr == kanjiList.size() - 1) {
 					kanjiListPtr = -1;
 				}
-				clearBuffer(inputBuffer);
-				clearBuffer(translateBuffer);
+				clearBuffer();
 				insertString(translateBuffer, (const char *)kanjiList.get(++kanjiListPtr));
 			}
 			repaint();
 		// 確定
 		} else if (keycode == VKEY_ENTER) {
 			if (strlen(translateBuffer) == 0) {
+				clearBuffer();
+				clearKanjiList();
+				
 				// ENTER送信
 				_imeEvent->type = IME_CHAR | (VKEY_ENTER << 16);
 				parent->postEvent(_imeEvent);
@@ -274,13 +301,8 @@ void ImeManager::postEvent(Event *event)
 					parent->postEvent(_imeEvent);
 				}
 				
-				// 漢字リスト初期化
-				kanjiListPtr = -1;
-				int I = kanjiList.size();
-				for (int i = 0; i < I; i++) {
-					kanjiList.removeAt(0);
-				}
-				clearBuffer(translateBuffer);
+				clearBuffer();
+				clearKanjiList();
 				
 				// 確定イベント送信
 				_imeEvent->type = IME_ENDCOMPOSITION;
@@ -293,11 +315,13 @@ void ImeManager::postEvent(Event *event)
 				// まちがっていっぱい入力してしまったとき（xjrakjra等）
 				if (strlen(inputBuffer) > 4) {
 					clearBuffer(inputBuffer);
+					clearKanjiList();
 				// 入力文字列を変換して変換文字列バッファーに移す
 				} else {
 					char kana[MAX_TEXT_LEN];
 					if (getKana(inputBuffer, kana) == true) {
 						clearBuffer(inputBuffer);
+						clearKanjiList();
 						insertString(translateBuffer, kana);
 					}
 				}
