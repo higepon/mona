@@ -1,3 +1,7 @@
+2005-03-15  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/file.cpp (ReadFile): CDのREAD時にファイルサイズが1大きくなってしまうバグを修正。
+
 2005-03-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/key/main.cpp (WaitInterrruptWithTimeout): タイムアウトつき割り込み待ち関数を追加。ここでテストした。

@@ -247,6 +247,7 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
             return NULL;
         }
 
+        ret->Size--;
         file->Seek(0, SEEK_SET);
         file->Read(ret->Data, ret->Size);
 

@@ -17,6 +17,8 @@
 
 using namespace MonAPI;
 
+//#define DEBUG_READ_TRACE
+
 /*----------------------------------------------------------------------
     IDEDRIVER
 ----------------------------------------------------------------------*/
@@ -549,18 +551,32 @@ void IDEDriver::protocolInterrupt()
     byte status = inp8(whichController, ATA_STR);
     byte reason = inp8(whichController, ATA_IRR);
 
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
     /* read */
     if (((reason & BIT_IO) != 0) && ((reason & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
     {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
         word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
         atapiTransferSize += transferSize;
 
         if (atapiTransferSize > atapiTotalReadSize)
         {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
             inp16(whichController, NULL, transferSize);
         }
         else
         {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
             inp16(whichController, (word*)atapiBuffer, transferSize);
             atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
         }
@@ -569,8 +585,16 @@ void IDEDriver::protocolInterrupt()
     /* read / write done */
     if (((reason & BIT_IO)!=0) && ((reason & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
     {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
         atapiReadDone = true;
     }
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
 }
 
 /*----------------------------------------------------------------------

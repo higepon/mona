@@ -509,6 +509,7 @@ void Shell::executeMSH(const CString& msh)
                     this->printPrompt("\n");
                     printf("%s", this->commandLine);
                 }
+
                 this->commandExecute(prompt);
             }
             start = pos + 1;
@@ -562,4 +563,3 @@ bool Shell::changeDirecotory(const MonAPI::CString& path)
     makeApplicationList();
     return true;
 }
-
