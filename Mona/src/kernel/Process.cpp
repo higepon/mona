@@ -654,6 +654,7 @@ int ThreadOperation::kill(dword tid)
 
 void ThreadOperation::sendKilledMessage()
 {
+#if 0
     dword threadNum;
     dword* list;
     MessageInfo msg;
@@ -680,6 +681,7 @@ void ThreadOperation::sendKilledMessage()
     }
     g_console->printf("here4");
     delete[] list;
+#endif
 }
 
 /*----------------------------------------------------------------------
