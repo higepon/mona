@@ -329,6 +329,10 @@ bool IDEDriver::waitDrdySet(IDEController* controller)
 ----------------------------------------------------------------------*/
 bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
 {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
     outp8(controller, ATA_DCR, 0x8);  /* use interrupt */
 
     atapiBuffer        = command->buffer;
@@ -337,6 +341,9 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
 
     if (!selectDevice(controller, command->deviceNo))
     {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
         this->lastError = SELECTION_ERROR;
         return false;
     }
@@ -357,6 +364,10 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
         if ((status & BIT_BSY) != 0) continue;
         if ((status & BIT_CHK) != 0)
         {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
             atapiBuffer = NULL;
             inp8(controller, ATA_ERR); /* must? */
             this->lastError = STATUS_ERROR;
@@ -369,6 +380,10 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
 
     if (i == ATA_TIMEOUT)
     {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
         atapiBuffer = NULL;
         this->lastError = BUSY_TIMEOUT_ERROR;
         return false;
@@ -383,6 +398,10 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
 
         if ((status & BIT_CHK) != 0)
         {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
             atapiBuffer = NULL;
             this->lastError = STATUS_ERROR;
             return false;
@@ -394,6 +413,10 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
 
     if (i == ATA_TIMEOUT)
     {
+#ifdef DEBUG_READ_TRACE
+Log("\n");
+#endif
+
         atapiBuffer = NULL;
         this->lastError = BUSY_TIMEOUT_ERROR;
         return false;
