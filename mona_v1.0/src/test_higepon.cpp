@@ -30,11 +30,20 @@ License=MIT/X Licnese
 /*----------------------------------------------------------------------
     try Mouse Driver now coding
 ----------------------------------------------------------------------*/
-#define KBC_COM 0x64
-#define PS2_TEST 0x9A
 void tryMouse() {
 
-    outportb(KBC_COM, PS2_TEST);
+    /* enable mouse */
+    outportb(0x64, 0xa8);
+
+    /* enable mouse */
+    outportb(0x64, 0xd4);
+    outportb(0x60, 0xf4);
+
+    /* enable mouse interrupt */
+    outportb(0x64, 0x20);
+    byte result = inportb(0x60);
+
+    outportb(0xa1, (inportb(0xa1) & (~ (byte) (1 << (4) ) ) ) );
 
 }
 

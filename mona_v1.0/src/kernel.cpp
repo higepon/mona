@@ -173,7 +173,7 @@ void startKernel(void) {
     g_fdcdriver->motor(OFF);
 
     g_info_level = MSG;
-
+    //tryMouse();
     enableTimer();
 
 #ifdef HIGE

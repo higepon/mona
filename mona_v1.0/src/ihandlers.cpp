@@ -20,6 +20,10 @@
 #include <tester.h>
 #include <Process.h>
 
+void mouseHandler() {
+    g_console->printf("mouse");
+}
+
 /*!
   \brief key stroke handler
 
@@ -260,7 +264,7 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     , {0x29, &arch_irqhandler_9}
     , {0x2A, &arch_irqhandler_10}
     , {0x2B, &arch_irqhandler_11}
-    , {0x2C, &arch_irqhandler_12}
+    , {0x2C, &arch_mousehandler}
     , {0x2D, &arch_irqhandler_13}
     , {0x2E, &arch_irqhandler_14}
     , {0x2F, &arch_irqhandler_15}

@@ -17,6 +17,7 @@
 extern "C" void arch_fdchandler(void);
 extern "C" void arch_timerhandler(void);
 extern "C" void arch_keystrokehandler(void);
+extern "C" void arch_mousehandler(void);
 extern "C" void arch_dummyhandler(void);
 extern "C" void arch_switch_process(void);
 extern "C" void arch_switch_process_to_user_mode(void);
@@ -27,6 +28,7 @@ extern "C" void arch_syscall_handler(void);
 extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
 extern "C" void keyStrokeHandler(dword scancode);
+extern "C" void mouseHandler();
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(dword error);
 

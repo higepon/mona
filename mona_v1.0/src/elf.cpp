@@ -95,7 +95,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     /* attach Shared to this process */
     while (Semaphore::down(&g_semaphore_shared));
-    isOpen    = SharedMemoryObject::open(sharedId, 4096 * 20);
+    isOpen    = SharedMemoryObject::open(sharedId, 4096 * 50);
     isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), 0x80000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) {
@@ -116,7 +116,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));
-    isOpen    = SharedMemoryObject::open(sharedId, 4096 * 20);
+    isOpen    = SharedMemoryObject::open(sharedId, 4096 * 50);
     isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) {

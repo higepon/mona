@@ -18,6 +18,7 @@ cglobal arch_fdchandler
 cglobal arch_fault0dhandler
 cglobal arch_timerhandler
 cglobal arch_keystrokehandler
+cglobal arch_mousehandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
 cglobal arch_cpufaulthandler_e
@@ -30,6 +31,7 @@ cextern arch_set_stack_view
 cextern MFDCHandler
 cextern timerHandler
 cextern keyStrokeHandler
+cextern mouseHandler
 cextern fault0dHandler
 cextern syscall_entrance
 cextern dummyHandler
@@ -89,6 +91,14 @@ arch_keystrokehandler:
         popAll
         iretd
 
+;;; mouse handler
+arch_mousehandler
+        pushAll
+        changeData
+        call mouseHandler
+        popAll
+        iretd
+
 ;;; dummy handler
 arch_dummyhandler:
         pushAll
@@ -123,7 +133,7 @@ arch_irqhandler_%1:
         irqhandler 10
         irqhandler 11
         irqhandler 12
-         irqhandler 13
+        irqhandler 13
         irqhandler 14
         irqhandler 15
 
