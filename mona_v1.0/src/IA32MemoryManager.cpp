@@ -47,12 +47,8 @@ void* IA32MemoryManager::allocateMemory(size_t size) {
     /* size 0 */
     if (size == 0) return NULL;
 
-    console->printf("[1]");
-
     /* there is no free list */
     if (freeEntry_ == NULL) return NULL;
-
-    console->printf("[2]");
 
     /* getRealSize */
     size_t realSize = this->getRealSize(size);
@@ -63,10 +59,8 @@ void* IA32MemoryManager::allocateMemory(size_t size) {
 
         if (current->size >= realSize) break;
 
-    console->printf("[2.5]");
         if (current->next == (struct memoryEntry*)NULL) return NULL;
     }
-    console->printf("[3]");
 
     struct memoryEntry* usedBlock = current;
     struct memoryEntry* freeBlock = current + realSize;
@@ -125,7 +119,7 @@ void IA32MemoryManager::freeMemory(void* address) {
     \date   create:2002/08/08 update:
 */
 IA32MemoryManager::~IA32MemoryManager() {
-    console->printf("IA32MemoryManager:destructor\n");
+    _sys_printf("IA32MemoryManager:destructor\n");
 
 }
 
@@ -139,7 +133,7 @@ IA32MemoryManager::~IA32MemoryManager() {
     \author HigePon
     \date   create:2002/08/10 update:2003/01/03
 */
-IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) {
+IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x15000), MEMORY_END(0x150000) {
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
@@ -183,12 +177,12 @@ void IA32MemoryManager::printInfo(char* str) const {
 
 //      for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-//          console->printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
 //      }
 
 //      for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-//          console->printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
 //      }
 
@@ -198,18 +192,18 @@ void IA32MemoryManager::printInfo(char* str) const {
     while (fentry || uentry) {
 
         if ((uentry && fentry > uentry) || (!fentry && uentry)) {
-            console->printf("[U%x-%x]", uentry->size, uentry);
+            _sys_printf("[U%x-%x]", uentry->size, uentry);
             uentry = uentry->next;
             continue;
         }
 
         if ((fentry && uentry > fentry) || (!uentry && fentry)) {
-            console->printf("[F%x-%x]", fentry->size, fentry);
+            _sys_printf("[F%x-%x]", fentry->size, fentry);
             fentry = fentry->next;
             continue;
         }
     }
-    console->printf(" %s \n", str);
+    _sys_printf(" %s \n", str);
     return;
 }
 

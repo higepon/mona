@@ -14,17 +14,11 @@
 #include<IA32MemoryManager.h>
 #include<monaOperator.h>
 #include<monaTypes.h>
-#include<VirtualConsole.h>
-
-extern VirtualConsole* console;
 
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
 
-    console->printf("new size = %d\n", size);
-
     IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.printInfo("new");
     return mm.allocateMemory(size);
 }
 
@@ -52,9 +46,7 @@ void operator delete[](void* address) {
 
 void* malloc(unsigned long size) {
 
-    console->printf("malloc size = %d\n", size);
     IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.printInfo("malloc");
     return mm.allocateMemory(size);
 }
 

@@ -75,7 +75,7 @@ void startKernel(void) {
     if (si.hasCpuid()) {
 
         printOK("Checking CPUID     ");
-        si.printCpuid(console);
+	//        si.printCpuid(console);
     } else {
         console->printf("CPUID NG  \n");
     }
@@ -83,7 +83,6 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
-    while (true);
     gMFDCDriver = new MFDCDriver(console);
 
     /* test code is here */
