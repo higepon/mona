@@ -216,16 +216,16 @@ test_higepon.o: test_higepon.cpp include/tester.h share/types.h \
   contrib/include/zlib.h contrib/include/zconf.h \
   include/KeyBoardManager.h include/elf.h include/syscalls.h \
   include/pic.h
-Mutex.o: Mutex.cpp include/Mutex.h include/Process.h share/types.h \
-  include/PageManager.h include/BitMap.h include/Segments.h \
+Mutex.o: Mutex.cpp include/Mutex.h include/KObject.h include/Process.h \
+  share/types.h include/PageManager.h include/BitMap.h include/Segments.h \
   include/operator.h include/string.h include/kernel.h \
-  include/VirtualConsole.h share/List.h share/BinaryTree.h \
-  include/KObject.h include/io.h include/global.h include/info.h \
-  include/FDCDriver.h include/IStorageDevice.h include/Semaphore.h \
-  include/GDTUtil.h include/IDTUtil.h include/MemoryManager.h \
-  include/sysresource.h include/tester.h include/test_mjt.h share/error.h \
-  include/vbe.h include/FSOperation.h include/fat.h include/file.h \
-  include/IDManager.h include/syscalls.h
+  include/VirtualConsole.h share/List.h share/BinaryTree.h include/io.h \
+  include/global.h include/info.h include/FDCDriver.h \
+  include/IStorageDevice.h include/Semaphore.h include/GDTUtil.h \
+  include/IDTUtil.h include/MemoryManager.h include/sysresource.h \
+  include/tester.h include/test_mjt.h share/error.h include/vbe.h \
+  include/FSOperation.h include/fat.h include/file.h include/IDManager.h \
+  include/syscalls.h share/HList.h
 VesaConsole.o: VesaConsole.cpp include/VesaConsole.h \
   include/VirtualConsole.h share/types.h include/string.h \
   include/GraphicalConsole.h include/vbe.h

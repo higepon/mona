@@ -573,9 +573,6 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     /* message list */
     messageList_ = new HList<MessageInfo*>();
 
-    /* mutex tree */
-    kmutexTree_ = new BinaryTree<KMutex*>();
-
     /* argument list */
     arguments_ = new HList<char*>();
 
@@ -598,9 +595,6 @@ Process::~Process()
     }
 
     delete(shared_);
-
-    /* we need for each ! don't forget */
-    delete kmutexTree_;
 
     /* arguments */
     for (int i = 0; i < arguments_->size(); i++)

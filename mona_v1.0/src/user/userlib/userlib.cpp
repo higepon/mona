@@ -446,31 +446,37 @@ void operator delete[](void* address) {
 /*----------------------------------------------------------------------
     Mutex
 ----------------------------------------------------------------------*/
-Mutex::Mutex() {
+Mutex::Mutex() : destroyed_(false)
+{
+    mutexId_ = syscall_mutex_create();
 }
 
 Mutex::~Mutex() {
+
+    if (!destroyed_)
+    {
+        destroy();
+    }
 }
 
-int Mutex::init() {
-
-    mutexId_ = syscall_mutex_create();
-    return mutexId_;
-}
-
-int Mutex::lock() {
+int Mutex::lock()
+{
     return syscall_mutex_lock(mutexId_);
 }
 
-int Mutex::unlock() {
+int Mutex::unlock()
+{
     return syscall_mutex_unlock(mutexId_);
 }
 
-int Mutex::tryLock() {
+int Mutex::tryLock()
+{
     return syscall_mutex_trylock(mutexId_);
 }
 
-int Mutex::destory() {
+int Mutex::destroy()
+{
+    destroyed_ = true;
     return syscall_mutex_destroy(mutexId_);
 }
 

@@ -29,6 +29,7 @@
 /*----------------------------------------------------------------------
     KEvent
 ----------------------------------------------------------------------*/
+/* this function should be used on system call or interrupt handler */
 void KEvent::wait(Thread* thread, kevent e)
 {
     g_scheduler->wait(thread, e);
@@ -42,6 +43,8 @@ void KEvent::set(Thread* thread, kevent e)
 {
     int wakeupResult = g_scheduler->wakeup(thread, e);
 
+    if (e == MUTEX_LOCKED) g_console->printf("result=%x", wakeupResult);
+
     if (wakeupResult != 0)
     {
         ThreadOperation::switchThread((wakeupResult == 1), 78);
@@ -52,6 +55,7 @@ void KEvent::set(Thread* thread, kevent e)
 
 const kevent KEvent::MESSAGE_COME  = 0x0001;
 const kevent KEvent::FDC_INTERRUPT = 0x0002;
+const kevent KEvent::MUTEX_LOCKED  = 0x0003;
 
 /*----------------------------------------------------------------------
     RTC

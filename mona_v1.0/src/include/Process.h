@@ -256,16 +256,6 @@ class Process
         return messageList_;
     }
 
-    inline virtual BinaryTree<class KMutex*>* getKMutexTree() const
-    {
-        return kmutexTree_;
-    }
-
-    inline virtual KMutex* getKMutex(int id)
-    {
-        return kmutexTree_->get(id);
-    }
-
     inline virtual List<char*>* getArguments()
     {
         return arguments_;
@@ -294,7 +284,6 @@ class Process
     class HeapSegment* heap_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
-    BinaryTree<KMutex*>* kmutexTree_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
     char name_[16];

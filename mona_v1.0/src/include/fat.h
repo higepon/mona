@@ -89,18 +89,21 @@ private:
 private:
     dword last;
     FAT *fat;
+    Directory *parent;
     byte *file;
     byte *flag;
     dword *lba;
     dword fsize;
     dword sectors;
     dword pos;
+    int entry;
+    bool sizeChanged;
 
 public:
     FatFile ();
     ~FatFile ();
 
-    bool initialize (FAT *p, dword cluster, dword size);
+    bool initialize (FAT *p, Directory *d, int e, dword c, dword s);
 
     dword read (byte *bf, dword sz);
     dword write (byte *bf, dword sz);
@@ -167,6 +170,7 @@ public:
 
     Directory* getDirectory (int entry);
     File* getFile (int entry);
+    bool setFileSize (int entry, dword size);
     dword getIdentifer ();
 
 protected:

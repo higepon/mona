@@ -22,6 +22,7 @@ private:
 public:
     static const int KOBJECT;
     static const int THREAD;
+    static const int KMUTEX;
 };
 
 #endif

@@ -75,7 +75,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_MTHREAD_JOIN:
 
         {
-            KObject* object = (Thread*)(g_id->get(info->esi, g_currentThread->thread));
+            KObject* object = g_id->get(info->esi, g_currentThread->thread);
 
             if (object == NULL)
             {
@@ -94,45 +94,94 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_MUTEX_CREATE:
-//        mutex = new KMutex(g_processManager->getCurrentProcess());
-//        info->eax = mutex->init();
+
+        {
+            KMutex* mutex = new KMutex(g_currentThread->process);
+            info->eax = g_id->allocateID(mutex);
+	    g_console->printf("[0]%x", info->eax);
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_LOCK:
-//        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-//         if (mutex == NULL) {
-//             info->eax = 1;
-//         } else {
-//             info->eax = mutex->lock(g_currentThread->thread);
-//         }
+
+        {
+            KObject* object = g_id->get(info->esi, g_currentThread->thread);
+
+            if (object == NULL)
+            {
+                info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::KMUTEX)
+            {
+                info->eax = (dword)-10;
+            }
+            else
+            {
+                info->eax = ((KMutex*)object)->lock(g_currentThread->thread);
+            }
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_TRYLOCK:
-//         mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-//         if (mutex == NULL) {
-//             info->eax = 1;
-//         } else {
-//             info->eax = mutex->tryLock(g_currentThread->thread);
-//         }
+
+        {
+            KObject* object = g_id->get(info->esi, g_currentThread->thread);
+
+            if (object == NULL)
+            {
+                info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::KMUTEX)
+            {
+                info->eax = (dword)-10;
+            }
+            else
+            {
+                info->eax = ((KMutex*)object)->tryLock(g_currentThread->thread);
+            }
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
-//         mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-//         if (mutex == NULL) {
-//             info->eax = 1;
-//         } else {
-//             info->eax = mutex->unlock();
-//         }
+
+        {
+            KObject* object = g_id->get(info->esi, g_currentThread->thread);
+
+            if (object == NULL)
+            {
+                info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::KMUTEX)
+            {
+                info->eax = (dword)-10;
+            }
+            else
+            {
+                info->eax = ((KMutex*)object)->unlock();
+            }
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_DESTROY:
-//         mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-//         if (mutex == NULL) {
-//             info->eax = 1;
-//         } else {
-//             delete mutex;
-//             info->eax = 0;
-//         }
+
+        {
+            KObject* object = g_id->get(info->esi, g_currentThread->thread);
+
+            if (object == NULL)
+            {
+                info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::KMUTEX)
+            {
+                info->eax = (dword)-10;
+            }
+            else
+            {
+                KMutex* mutex = (KMutex*)object;
+                delete mutex;
+                info->eax = 0;
+            }
+        }
         break;
 
     case SYSTEM_CALL_LOOKUP:

@@ -43,6 +43,7 @@ public:
 public:
     static const dword FDC_INTERRUPT;
     static const dword MESSAGE_COME;
+    static const dword MUTEX_LOCKED;
 };
 
 class RTC {

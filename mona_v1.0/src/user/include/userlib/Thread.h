@@ -6,23 +6,23 @@
 /*----------------------------------------------------------------------
     Mutex
 ----------------------------------------------------------------------*/
-class Mutex {
-
-  public:
+class Mutex
+{
+public:
     Mutex();
     ~Mutex();
-    int init();
     int lock();
     int unlock();
     int tryLock();
-    int destory();
+    int destroy();
 
-  public:
+public:
     inline int getId() const {
         return mutexId_;
     }
 
-  private:
+private:
     int mutexId_;
+    bool destroyed_;
 };
 #endif

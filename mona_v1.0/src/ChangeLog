@@ -1,3 +1,7 @@
+2004-03-30  higepon  <higepon@users.sourceforge.jp>
+
+        * user/userlib/userlib.cpp: Mutexをユーザーライブラリに追加(テスト済み)
+
 2004-03-29  higepon  <higepon@users.sourceforge.jp>
 
         * ユーザー用ファイル書き込み用クラス FileOutputStream

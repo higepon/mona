@@ -46,6 +46,7 @@ public:
     virtual int newFile (byte *bf, dword sz) = 0;
     virtual Directory* getDirectory (int entry) = 0;
     virtual File* getFile (int entry) = 0;
+    virtual bool setFileSize (int entry, dword size) = 0;
     virtual dword getIdentifer () = 0;
 };
 
