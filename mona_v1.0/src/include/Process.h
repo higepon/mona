@@ -193,7 +193,7 @@ class Process_ {
 
   protected:
     bool isKernelMode_;
-    List<ThreadInfo*>* threadList_;
+    ThreadManager* threadManager;
     char name_[16];
     //    OutputStream* stdout;
     //    OutputStream* stderr;
@@ -258,6 +258,7 @@ class ProcessManager_ {
 
   public:
     Process_* create(int type, const char* name);
+    int join(Process_* process, Thread* thread);
     int add(Process_* process);
     int kill(Process_* process);
     int switchProcess();

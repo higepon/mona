@@ -188,7 +188,7 @@ void mainProcess() {
     //    process9->pinfo_.esp = 0x1000;
 
     g_console->printf("load prcess 0");
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", false));
 
     while (true);
 }

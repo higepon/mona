@@ -135,6 +135,8 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_console->printf("elf size = %d", loader->prepare((dword)buf));
     dword entrypoint = loader->load((byte*)0x80000000);
 
+    g_console->printf("entrypoint=%x", entrypoint);
+
     delete(loader);
     delete(g_fdcdriver);
     free(buf);
@@ -148,7 +150,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
     g_process_manager->addProcess(process1, entrypoint);
-
     return 0;
 }
 

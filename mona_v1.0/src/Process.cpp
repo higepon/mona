@@ -311,6 +311,11 @@ ProcessManager_::~ProcessManager_() {
     delete idle_;
 }
 
+int ProcessManager_::join(Process_* process, Thread* thread) {
+
+    return NORMAL;
+}
+
 int ProcessManager_::kill(Process_* process) {
 
     int result;
