@@ -6,21 +6,23 @@ SOURCES         = string.cpp        \
                   MemoryManager.cpp \
                   monalibc.cpp      \
                   MlcCtype.cpp      \
-                  MlcStdlib.cpp
+                  MlcStdlib.cpp     \
+                  MlcStdio.cpp      \
+                  MlcStdarg.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(LIB_USER)
 
-$(LIB_USER) : userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o
-	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o
+$(LIB_USER) : userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o MlcStdio.o MlcStdarg.o
+	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o MlcStdio.o MlcStdarg.o
 
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CFINCLUDE) -c $<
 
 clean :
-	rm -f $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o
+	rm -f $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o MlcStdio.o MlcStdarg.o
 
 depend:
 	$(CXX) -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
