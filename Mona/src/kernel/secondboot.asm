@@ -30,7 +30,6 @@ Mona_SecondBoot__Main:
 
 ; void Mona.SecondBoot::ReadConfig()
 Mona_SecondBoot__ReadConfig:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	14
@@ -185,17 +184,14 @@ PE_00000309: ;[native] get register
 ;PE_0000031D: stloc.3
 ;	pop	word [ss:bp-8]	; [optimize] ignore
 ;	mov	word [ss:bp-8],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-8],	0	; [optimize] add, [optimize] ignore
-;	mov	bx,	0	; [optimize] add, [optimize] ignore
-	xor	bx,	bx	; [optimize] add
+	mov	word [ss:bp-8],	0	; [optimize] add
 ;PE_0000031E: br 00000098
 	jmp	PE_000003BB
 PE_00000323: ;ldstr 7000003F
 	mov	ax,	US_0000003F
 	push	ax
 ;PE_00000328: ldloc.3
-;	push	word [ss:bp-8]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-8]
 ;PE_00000329: call 06000006
 	call	boolean__Mona_Str__StartsWith__string_u2
 ;	push	ax	; [optimize] ignore
@@ -204,8 +200,7 @@ PE_00000323: ;ldstr 7000003F
 	or	ax,	ax
 	jz	PE_00000352
 ;PE_00000330: ldloc.3
-;	push	word [ss:bp-8]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-8]
 ;PE_00000331: ldstr 7000003F
 	mov	ax,	US_0000003F
 	push	ax
@@ -246,8 +241,7 @@ PE_00000352: ;ldstr 70000061
 	mov	ax,	US_00000061
 	push	ax
 ;PE_00000357: ldloc.3
-;	push	word [ss:bp-8]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-8]
 ;PE_00000358: call 06000006
 	call	boolean__Mona_Str__StartsWith__string_u2
 ;	push	ax	; [optimize] ignore
@@ -256,8 +250,7 @@ PE_00000352: ;ldstr 70000061
 	or	ax,	ax
 	jz	PE_0000037F
 ;PE_0000035F: ldloc.3
-;	push	word [ss:bp-8]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-8]
 ;PE_00000360: ldstr 70000061
 	mov	ax,	US_00000061
 	push	ax
@@ -295,8 +288,7 @@ PE_00000352: ;ldstr 70000061
 PE_0000037F: ;br.s 36
 	jmp	PE_000003B7
 PE_00000381: ;[native] set register
-;	mov	di,	[ss:bp-8]	; [optimize] ignore
-	mov	di,	bx	; [optimize] add
+	mov	di,	[ss:bp-8]
 ;PE_00000387: [native] inline
 	mov	al,	[es:di]
 ;PE_00000392: [native] inline
@@ -322,8 +314,7 @@ PE_00000381: ;[native] set register
 ;	pop	word [ss:bp-8]	; [optimize] ignore
 ;	mov	word [ss:bp-8],	ax	; [optimize] add, [optimize] ignore
 ;	add	word [ss:bp-8],	1	; [optimize] add, [optimize] ignore
-;	inc	word [ss:bp-8]	; [Optimize] add, [optimize] ignore
-	inc	bx	; [optimize] add
+	inc	word [ss:bp-8]	; [Optimize] add
 ;PE_000003A9: ldloc.s 06
 ;	push	word [ss:bp-14]	; [optimize] ignore
 ;PE_000003AB: ldc.i4.s 0D
@@ -360,8 +351,7 @@ PE_000003B7: ;ldloc.3
 ;	pop	ax	; [optimize] ignore
 ;	mov	ax,	word [ss:bp-6]	; [optimize] add, [optimize] ignore
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp-8]	; [optimize] add, [optimize] ignore
-	mov	dx,	bx	; [optimize] add
+	mov	dx,	word [ss:bp-8]	; [optimize] add
 ;	cmp	dx,	ax	; [optimize] ignore
 	cmp	dx,	word [ss:bp-6]	; [optimize] add
 	jc	PE_00000381
@@ -373,20 +363,17 @@ PE_000003BB: ;ldloc.3
 ;	pop	ax	; [optimize] ignore
 ;	mov	ax,	word [ss:bp-6]	; [optimize] add, [optimize] ignore
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp-8]	; [optimize] add, [optimize] ignore
-	mov	dx,	bx	; [optimize] add
+	mov	dx,	word [ss:bp-8]	; [optimize] add
 ;	cmp	dx,	ax	; [optimize] ignore
 	cmp	dx,	word [ss:bp-6]	; [optimize] add
 	jc	PE_00000323
 PE_000003C2: ;ret
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret
 
 ; void Mona.SecondBoot::SetVesaMode()
 Mona_SecondBoot__SetVesaMode:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	6
@@ -407,8 +394,7 @@ Mona_SecondBoot__SetVesaMode:
 ;PE_000003E1: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-4],	271	; [optimize] add, [optimize] ignore
-	mov	bx,	271	; [optimize] add
+	mov	word [ss:bp-4],	271	; [optimize] add
 ;PE_000003E2: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000003E3: ldc.i4 00000140
@@ -436,8 +422,7 @@ Mona_SecondBoot__SetVesaMode:
 ;PE_000003EE: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	add	word [ss:bp-4],	3	; [optimize] add, [optimize] ignore
-	add	bx,	3	; [optimize] add
+	add	word [ss:bp-4],	3	; [optimize] add
 PE_000003EF: ;ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000003F0: ldc.i4 00000280
@@ -465,8 +450,7 @@ PE_000003EF: ;ldloc.0
 ;PE_000003FB: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	add	word [ss:bp-4],	3	; [optimize] add, [optimize] ignore
-	add	bx,	3	; [optimize] add
+	add	word [ss:bp-4],	3	; [optimize] add
 PE_000003FC: ;ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000003FD: ldc.i4 00000320
@@ -494,8 +478,7 @@ PE_000003FC: ;ldloc.0
 ;PE_00000408: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	add	word [ss:bp-4],	3	; [optimize] add, [optimize] ignore
-	add	bx,	3	; [optimize] add
+	add	word [ss:bp-4],	3	; [optimize] add
 PE_00000409: ;ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_0000040A: ldc.i4 00000400
@@ -523,8 +506,7 @@ PE_00000409: ;ldloc.0
 ;PE_00000415: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	add	word [ss:bp-4],	3	; [optimize] add, [optimize] ignore
-	add	bx,	3	; [optimize] add
+	add	word [ss:bp-4],	3	; [optimize] add
 PE_00000416: ;ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_00000417: ldc.i4 00000500
@@ -552,8 +534,7 @@ PE_00000416: ;ldloc.0
 ;PE_00000422: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	add	word [ss:bp-4],	3	; [optimize] add, [optimize] ignore
-	add	bx,	3	; [optimize] add
+	add	word [ss:bp-4],	3	; [optimize] add
 PE_00000423: ;ldsfld 0400000D
 	push	word [cs:Mona_VESA__Bpp]
 ;PE_00000428: stloc.2
@@ -573,8 +554,7 @@ PE_0000042B: ;ldloc.2
 	cmp	ax,	word [ss:bp-6]	; [optimize] add
 	jnc	PE_00000444
 ;PE_00000430: ldloc.1
-;	push	word [ss:bp-4]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-4]
 ;PE_00000431: ldc.i4 00000800
 	mov	ax,	2048
 	push	ax
@@ -608,11 +588,9 @@ PE_00000444: ;ldloc.1
 ;PE_00000448: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	dec	word [ss:bp-4]	; [optimize] add, [optimize] ignore
-	dec	bx	; [optimize] add
+	dec	word [ss:bp-4]	; [optimize] add
 ;PE_00000449: ldloc.1
-;	push	word [ss:bp-4]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-4]
 ;PE_0000044A: ldc.i4 00000800
 	mov	ax,	2048
 	push	ax
@@ -645,8 +623,7 @@ PE_0000045D: ;ldloc.1
 ;PE_00000461: stloc.1
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 ;	mov	word [ss:bp-4],	ax	; [optimize] add, [optimize] ignore
-;	sub	word [ss:bp-4],	2	; [optimize] add, [optimize] ignore
-	sub	bx,	2	; [optimize] add
+	sub	word [ss:bp-4],	2	; [optimize] add
 PE_00000462: ;ldloc.1
 ;	push	word [ss:bp-4]	; [optimize] ignore
 ;PE_00000463: ldc.i4 0000010E
@@ -658,8 +635,7 @@ PE_00000462: ;ldloc.1
 ;	mov	dx,	word [ss:bp-4]	; [optimize] add, [optimize] ignore
 ;	cmp	dx,	ax	; [optimize] ignore
 ;	cmp	dx,	270	; [optimize] add, [optimize] ignore
-;	cmp	word [ss:bp-4],	270	; [optimize] add, [optimize] ignore
-	cmp	bx,	270	; [optimize] add
+	cmp	word [ss:bp-4],	270	; [optimize] add
 	jnc	PE_0000042B
 ;PE_0000046A: [native] set register
 	mov	di,	2048
@@ -670,22 +646,20 @@ PE_00000462: ;ldloc.1
 PE_00000484: ;ret
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret
 
 ; class Mona.Str
 
 ; u2 Mona.Str::GetLength(string)
 u2__Mona_Str__GetLength__string:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
-;	sub	sp,	2	; [optimize] ignore
+	sub	sp,	2
 ;PE_000004A8: ldarg.0
-;	push	word [ss:bp+6]	; [optimize] ignore
+;	push	word [ss:bp+4]	; [optimize] ignore
 ;PE_000004AE: [native] set register
 ;	pop	si	; [optimize] ignore
-	mov	si,	word [ss:bp+6]	; [optimize] add
+	mov	si,	word [ss:bp+4]	; [optimize] add
 ;PE_000004B3: [native] inline
 	mov	al,	[si]
 ;PE_000004BE: [native] inline
@@ -694,33 +668,28 @@ u2__Mona_Str__GetLength__string:
 ;	push	ax	; [optimize] ignore
 ;PE_000004CE: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	bx,	ax	; [optimize] add, [optimize] ignore
+	mov	word [ss:bp-2],	ax	; [optimize] add
 ;PE_000004CF: br.s 00
 ;	jmp	PE_000004D1	; [optimize] ignore
 ;PE_000004D1: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000004D2: ret
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-;	mov	ax,	bx	; [optimize] add, [optimize] ignore
-;	mov	ax,	ax	; [optimize] add, [optimize] ignore
-;	mov	sp,	bp	; [optimize] ignore
+	mov	ax,	word [ss:bp-2]	; [optimize] add
+	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; boolean Mona.Str::StartsWith(string, u2)
 boolean__Mona_Str__StartsWith__string_u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
-;	sub	sp,	2	; [optimize] ignore
+	sub	sp,	2
 ;PE_000004E0: ldarg.0
-;	push	word [ss:bp+8]	; [optimize] ignore
+;	push	word [ss:bp+6]	; [optimize] ignore
 ;PE_000004E6: [native] set register
 ;	pop	si	; [optimize] ignore
-	mov	si,	word [ss:bp+8]	; [optimize] add
+	mov	si,	word [ss:bp+6]	; [optimize] add
 ;PE_000004EB: [native] inline
 	mov	cl,	[si]
 ;PE_000004F6: [native] inline
@@ -728,7 +697,7 @@ boolean__Mona_Str__StartsWith__string_u2:
 ;PE_00000501: [native] inline
 	inc	si
 ;PE_0000050C: [native] set register
-	mov	di,	[ss:bp+6]
+	mov	di,	[ss:bp+4]
 ;PE_00000512: [native] inline
 	rep	cmpsb
 ;PE_0000051D: [native] get flag
@@ -741,25 +710,20 @@ NM_00000001: ;[native] get flag internal
 ;	push	ax	; [optimize] ignore
 ;PE_00000522: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	bx,	ax	; [optimize] add, [optimize] ignore
+	mov	word [ss:bp-2],	ax	; [optimize] add
 ;PE_00000523: br.s 00
 ;	jmp	PE_00000525	; [optimize] ignore
 ;PE_00000525: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_00000526: ret
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-;	mov	ax,	bx	; [optimize] add, [optimize] ignore
-;	mov	ax,	ax	; [optimize] add, [optimize] ignore
-;	mov	sp,	bp	; [optimize] ignore
+	mov	ax,	word [ss:bp-2]	; [optimize] add
+	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	4
 
 ; u2 Mona.Str::ReadNumber(u2)
 u2__Mona_Str__ReadNumber__u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	6
@@ -769,11 +733,9 @@ u2__Mona_Str__ReadNumber__u2:
 ;PE_00000535: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-2],	0	; [optimize] add, [optimize] ignore
-;	mov	bx,	0	; [optimize] add, [optimize] ignore
-	xor	bx,	bx	; [optimize] add
+	mov	word [ss:bp-2],	0	; [optimize] add
 ;PE_00000536: [native] set register
-	mov	di,	[ss:bp+6]
+	mov	di,	[ss:bp+4]
 ;PE_0000053C: br.s 42
 	jmp	PE_00000580
 PE_0000053E: ;[native] inline
@@ -822,14 +784,12 @@ PE_00000571: ;ldloc.0
 ;PE_00000574: mul
 ;	pop	ax	; [optimize] ignore
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	mov	dx,	bx	; [optimize] add
+	mov	dx,	word [ss:bp-2]	; [optimize] add
 	mul	dx
 ;	push	ax	; [optimize] ignore
 ;PE_00000576: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	bx,	ax	; [optimize] add, [optimize] ignore
+	mov	word [ss:bp-2],	ax	; [optimize] add
 ;PE_00000577: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_00000578: ldloc.1
@@ -851,22 +811,17 @@ PE_00000571: ;ldloc.0
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
 ;	add	ax,	dx	; [optimize] ignore
-;	add	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-;	add	ax,	bx	; [optimize] add, [optimize] ignore
-	add	ax,	ax	; [optimize] add
+	add	ax,	word [ss:bp-2]	; [optimize] add
 ;	push	ax	; [optimize] ignore
 ;PE_0000057F: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-	mov	bx,	ax	; [optimize] add
+	mov	word [ss:bp-2],	ax	; [optimize] add
 PE_00000580: ;br.s BC
 	jmp	PE_0000053E
 PE_00000582: ;ldloc.0
-;	push	word [ss:bp-2]	; [optimize] ignore
-;	push	bx	; [optimize] add, [optimize] ignore
+	push	word [ss:bp-2]
 ;PE_00000583: stloc.2
-;	pop	word [ss:bp-6]	; [optimize] ignore
-	mov	word [ss:bp-6],	bx	; [optimize] add
+	pop	word [ss:bp-6]
 ;PE_00000584: br.s 00
 ;	jmp	PE_00000586	; [optimize] ignore
 ;PE_00000586: ldloc.2
@@ -876,7 +831,6 @@ PE_00000582: ;ldloc.0
 	mov	ax,	word [ss:bp-6]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; class Mona.A20
@@ -958,7 +912,6 @@ PE_000005EA: ;[native] in
 
 ; u2 Mona.FDC::SearchFile(string)
 u2__Mona_FDC__SearchFile__string:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	6
@@ -968,9 +921,7 @@ u2__Mona_FDC__SearchFile__string:
 ;PE_00000619: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-2],	0	; [optimize] add, [optimize] ignore
-;	mov	bx,	0	; [optimize] add, [optimize] ignore
-	xor	bx,	bx	; [optimize] add
+	mov	word [ss:bp-2],	0	; [optimize] add
 ;PE_0000061A: ldc.i4.0
 ;	mov	ax,	0	; [optimize] ignore
 ;	push	ax	; [optimize] ignore
@@ -981,10 +932,9 @@ u2__Mona_FDC__SearchFile__string:
 ;PE_0000061C: br.s 31
 	jmp	PE_0000064F
 PE_0000061E: ;ldarg.0
-	push	word [ss:bp+6]
+	push	word [ss:bp+4]
 ;PE_0000061F: ldloc.0
-;	push	word [ss:bp-2]	; [optimize] ignore
-	push	bx	; [optimize] add
+	push	word [ss:bp-2]
 ;PE_00000620: call 06000006
 	call	boolean__Mona_Str__StartsWith__string_u2
 ;	push	ax	; [optimize] ignore
@@ -1002,8 +952,7 @@ PE_0000061E: ;ldarg.0
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
 ;	add	ax,	dx	; [optimize] ignore
-;	add	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	add	ax,	bx	; [optimize] add
+	add	ax,	word [ss:bp-2]	; [optimize] add
 ;	push	ax	; [optimize] ignore
 ;PE_0000062C: [native] set register
 ;	pop	di	; [optimize] ignore
@@ -1048,8 +997,7 @@ PE_00000644: ;ldloc.1
 ;PE_0000064E: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	add	word [ss:bp-2],	32	; [optimize] add, [optimize] ignore
-	add	bx,	32	; [optimize] add
+	add	word [ss:bp-2],	32	; [optimize] add
 PE_0000064F: ;ldloc.1
 ;	push	word [ss:bp-4]	; [optimize] ignore
 ;PE_00000650: ldc.i4 000000E0
@@ -1079,28 +1027,26 @@ PE_0000065B: ;ldloc.2
 	mov	ax,	word [ss:bp-6]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; u2 Mona.FDC::GetFAT(u2)
 u2__Mona_FDC__GetFAT__u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	2
 ;PE_0000066C: [native] set register
-	mov	si,	[ss:bp+6]
+	mov	si,	[ss:bp+4]
 ;PE_00000672: ldarg.0
-;	push	word [ss:bp+6]	; [optimize] ignore
+;	push	word [ss:bp+4]	; [optimize] ignore
 ;PE_00000673: ldc.i4 00006000
 	mov	ax,	24576
 ;	push	ax	; [optimize] ignore
 ;PE_00000678: add
 ;	pop	ax	; [optimize] ignore
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp+6]	; [optimize] add, [optimize] ignore
+;	mov	dx,	word [ss:bp+4]	; [optimize] add, [optimize] ignore
 ;	add	ax,	dx	; [optimize] ignore
-	add	ax,	word [ss:bp+6]	; [optimize] add
+	add	ax,	word [ss:bp+4]	; [optimize] add
 ;	push	ax	; [optimize] ignore
 ;PE_0000067A: [native] set register
 ;	pop	bx	; [optimize] ignore
@@ -1141,12 +1087,10 @@ PE_000006B4: ;[native] get register
 	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; void Mona.FDC::ReadSectors(u2, u2, u2)
 Mona_FDC__ReadSectors__u2_u2_u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	12
@@ -1155,16 +1099,15 @@ Mona_FDC__ReadSectors__u2_u2_u2:
 ;PE_000006D7: br 00000099
 	jmp	PE_00000775
 PE_000006DC: ;ldarg.2
-;	push	word [ss:bp+6]	; [optimize] ignore
+;	push	word [ss:bp+4]	; [optimize] ignore
 ;PE_000006DE: neg
 ;	pop	ax	; [optimize] ignore
-	mov	ax,	word [ss:bp+6]	; [optimize] add
+	mov	ax,	word [ss:bp+4]	; [optimize] add
 	neg	ax
 ;	push	ax	; [optimize] ignore
 ;PE_000006E0: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-	mov	bx,	ax	; [optimize] add
+	mov	word [ss:bp-2],	ax	; [optimize] add
 ;PE_000006E1: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000006E2: ldc.i4.1
@@ -1183,8 +1126,7 @@ PE_000006DC: ;ldarg.2
 ;PE_000006E5: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	dec	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	dec	bx	; [optimize] add
+	dec	word [ss:bp-2]	; [optimize] add
 ;PE_000006E6: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000006E7: ldc.i4.s 09
@@ -1195,14 +1137,12 @@ PE_000006DC: ;ldarg.2
 ;	mov	cx,	ax	; [optimize] add, [optimize] ignore
 	mov	cx,	9	; [optimize] add
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	mov	ax,	bx	; [optimize] add
+	mov	ax,	word [ss:bp-2]	; [optimize] add
 	shr	ax,	cl
 ;	push	ax	; [optimize] ignore
 ;PE_000006EB: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-	mov	bx,	ax	; [optimize] add
+	mov	word [ss:bp-2],	ax	; [optimize] add
 ;PE_000006EC: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000006ED: ldc.i4.1
@@ -1219,31 +1159,27 @@ PE_000006DC: ;ldarg.2
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
 ;	add	word [ss:bp-2],	1	; [optimize] add, [optimize] ignore
-;	inc	word [ss:bp-2]	; [Optimize] add, [optimize] ignore
-	inc	bx	; [optimize] add
+	inc	word [ss:bp-2]	; [Optimize] add
 ;PE_000006F1: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_000006F2: ldarg.1
-;	push	word [ss:bp+8]	; [optimize] ignore
+;	push	word [ss:bp+6]	; [optimize] ignore
 ;PE_000006F3: ble.s 02
 ;	pop	ax	; [optimize] ignore
-	mov	ax,	word [ss:bp+8]	; [optimize] add
+	mov	ax,	word [ss:bp+6]	; [optimize] add
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
 ;	cmp	ax,	dx	; [optimize] ignore
-;	cmp	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	cmp	ax,	bx	; [optimize] add
+	cmp	ax,	word [ss:bp-2]	; [optimize] add
 	jnc	PE_000006F7
 ;PE_000006F5: ldarg.1
-;	push	word [ss:bp+8]	; [optimize] ignore
+	push	word [ss:bp+6]
 ;PE_000006F6: stloc.0
-;	pop	word [ss:bp-2]	; [optimize] ignore
-;	pop	bx	; [optimize] add, [optimize] ignore
-	mov	bx,	word [ss:bp+8]	; [optimize] add
+	pop	word [ss:bp-2]
 PE_000006F7: ;br.s 64
 	jmp	PE_0000075D
 PE_000006F9: ;ldarg.0
-;	push	word [ss:bp+10]	; [optimize] ignore
+;	push	word [ss:bp+8]	; [optimize] ignore
 ;PE_000006FA: ldc.i4.s 24
 ;	mov	ax,	36	; [optimize] ignore
 ;	push	ax	; [optimize] ignore
@@ -1252,7 +1188,7 @@ PE_000006F9: ;ldarg.0
 ;	mov	cx,	ax	; [optimize] add, [optimize] ignore
 	mov	cx,	36	; [optimize] add
 ;	pop	ax	; [optimize] ignore
-	mov	ax,	word [ss:bp+10]	; [optimize] add
+	mov	ax,	word [ss:bp+8]	; [optimize] add
 	xor	dx,	dx
 	div	cx
 ;	push	ax	; [optimize] ignore
@@ -1264,7 +1200,7 @@ PE_000006F9: ;ldarg.0
 ;	pop	word [ss:bp-4]	; [optimize] ignore
 	mov	word [ss:bp-4],	ax	; [optimize] add
 ;PE_000006FF: ldarg.0
-;	push	word [ss:bp+10]	; [optimize] ignore
+;	push	word [ss:bp+8]	; [optimize] ignore
 ;PE_00000700: ldc.i4.s 24
 ;	mov	ax,	36	; [optimize] ignore
 ;	push	ax	; [optimize] ignore
@@ -1273,7 +1209,7 @@ PE_000006F9: ;ldarg.0
 ;	mov	cx,	ax	; [optimize] add, [optimize] ignore
 	mov	cx,	36	; [optimize] add
 ;	pop	ax	; [optimize] ignore
-	mov	ax,	word [ss:bp+10]	; [optimize] add
+	mov	ax,	word [ss:bp+8]	; [optimize] add
 	xor	dx,	dx
 	div	cx
 ;	push	dx	; [optimize] ignore
@@ -1355,8 +1291,7 @@ PE_000006F9: ;ldarg.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_0000071D: ble.s 04
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	mov	ax,	bx	; [optimize] add
+	mov	ax,	word [ss:bp-2]	; [optimize] add
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-12]	; [optimize] add, [optimize] ignore
 ;	cmp	ax,	dx	; [optimize] ignore
@@ -1366,18 +1301,16 @@ PE_000006F9: ;ldarg.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_00000720: conv.u1
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-;	mov	ax,	bx	; [optimize] add, [optimize] ignore
+	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	ah,	0
 ;	push	ax	; [optimize] ignore
 ;PE_00000721: stloc.s 05
 ;	pop	word [ss:bp-12]	; [optimize] ignore
-;	mov	word [ss:bp-12],	ax	; [optimize] add, [optimize] ignore
-	mov	word [ss:bp-12],	bx	; [optimize] add
+	mov	word [ss:bp-12],	ax	; [optimize] add
 PE_00000723: ;ldloc.s 05
 	push	word [ss:bp-12]
 ;PE_00000725: ldarg.2
-	push	word [ss:bp+6]
+	push	word [ss:bp+4]
 ;PE_00000726: ldloc.1
 	push	word [ss:bp-4]
 ;PE_00000727: ldloc.s 04
@@ -1421,7 +1354,7 @@ PE_00000723: ;ldloc.s 05
 ;PE_0000073C: br.s 1F
 	jmp	PE_0000075D
 PE_0000073E: ;ldarg.2
-	push	word [ss:bp+6]
+	push	word [ss:bp+4]
 ;PE_0000073F: ldloc.s 05
 ;	push	word [ss:bp-12]	; [optimize] ignore
 ;PE_00000741: ldc.i4.s 09
@@ -1441,38 +1374,38 @@ PE_0000073E: ;ldarg.2
 	add	ax,	dx
 ;	push	ax	; [optimize] ignore
 ;PE_00000747: starg.s 02
-;	pop	word [ss:bp+6]	; [optimize] ignore
-	mov	word [ss:bp+6],	ax	; [optimize] add
+;	pop	word [ss:bp+4]	; [optimize] ignore
+	mov	word [ss:bp+4],	ax	; [optimize] add
 ;PE_00000749: ldarg.0
-;	push	word [ss:bp+10]	; [optimize] ignore
+;	push	word [ss:bp+8]	; [optimize] ignore
 ;PE_0000074A: ldloc.s 05
 ;	push	word [ss:bp-12]	; [optimize] ignore
 ;PE_0000074C: add
 ;	pop	ax	; [optimize] ignore
 	mov	ax,	word [ss:bp-12]	; [optimize] add
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp+10]	; [optimize] add, [optimize] ignore
+;	mov	dx,	word [ss:bp+8]	; [optimize] add, [optimize] ignore
 ;	add	ax,	dx	; [optimize] ignore
-	add	ax,	word [ss:bp+10]	; [optimize] add
+	add	ax,	word [ss:bp+8]	; [optimize] add
 ;	push	ax	; [optimize] ignore
 ;PE_0000074E: starg.s 00
-;	pop	word [ss:bp+10]	; [optimize] ignore
-	mov	word [ss:bp+10],	ax	; [optimize] add
+;	pop	word [ss:bp+8]	; [optimize] ignore
+	mov	word [ss:bp+8],	ax	; [optimize] add
 ;PE_00000750: ldarg.1
-;	push	word [ss:bp+8]	; [optimize] ignore
+;	push	word [ss:bp+6]	; [optimize] ignore
 ;PE_00000751: ldloc.s 05
 ;	push	word [ss:bp-12]	; [optimize] ignore
 ;PE_00000753: sub
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-12]	; [optimize] add, [optimize] ignore
 ;	pop	ax	; [optimize] ignore
-	mov	ax,	word [ss:bp+8]	; [optimize] add
+	mov	ax,	word [ss:bp+6]	; [optimize] add
 ;	sub	ax,	dx	; [optimize] ignore
 	sub	ax,	word [ss:bp-12]	; [optimize] add
 ;	push	ax	; [optimize] ignore
 ;PE_00000755: starg.s 01
-;	pop	word [ss:bp+8]	; [optimize] ignore
-	mov	word [ss:bp+8],	ax	; [optimize] add
+;	pop	word [ss:bp+6]	; [optimize] ignore
+	mov	word [ss:bp+6],	ax	; [optimize] add
 ;PE_00000757: ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_00000758: ldloc.s 05
@@ -1481,15 +1414,13 @@ PE_0000073E: ;ldarg.2
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-12]	; [optimize] add, [optimize] ignore
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	mov	ax,	bx	; [optimize] add
+	mov	ax,	word [ss:bp-2]	; [optimize] add
 ;	sub	ax,	dx	; [optimize] ignore
 	sub	ax,	word [ss:bp-12]	; [optimize] add
 ;	push	ax	; [optimize] ignore
 ;PE_0000075C: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
-;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-	mov	bx,	ax	; [optimize] add
+	mov	word [ss:bp-2],	ax	; [optimize] add
 PE_0000075D: ;ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_0000075E: ldc.i4.0
@@ -1501,8 +1432,7 @@ PE_0000075D: ;ldloc.0
 ;	pop	dx	; [optimize] ignore
 ;	mov	dx,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
 ;	cmp	ax,	dx	; [optimize] ignore
-;	cmp	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	cmp	ax,	bx	; [optimize] add
+	cmp	ax,	word [ss:bp-2]	; [optimize] add
 	jc	PE_000006F9
 ;PE_00000761: [native] get register
 ;	push	es	; [optimize] ignore
@@ -1522,11 +1452,11 @@ PE_0000075D: ;ldloc.0
 ;	mov	ax,	0	; [optimize] ignore
 ;	push	ax	; [optimize] ignore
 ;PE_00000773: starg.s 02
-;	pop	word [ss:bp+6]	; [optimize] ignore
-;	mov	word [ss:bp+6],	ax	; [optimize] add, [optimize] ignore
-	mov	word [ss:bp+6],	0	; [optimize] add
+;	pop	word [ss:bp+4]	; [optimize] ignore
+;	mov	word [ss:bp+4],	ax	; [optimize] add, [optimize] ignore
+	mov	word [ss:bp+4],	0	; [optimize] add
 PE_00000775: ;ldarg.1
-;	push	word [ss:bp+8]	; [optimize] ignore
+;	push	word [ss:bp+6]	; [optimize] ignore
 ;PE_00000776: ldc.i4.0
 ;	mov	ax,	0	; [optimize] ignore
 	xor	ax,	ax	; [optimize] add
@@ -1534,38 +1464,36 @@ PE_00000775: ;ldarg.1
 ;PE_00000777: bgt FFFFFF60
 ;	pop	ax	; [optimize] ignore
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp+8]	; [optimize] add, [optimize] ignore
+;	mov	dx,	word [ss:bp+6]	; [optimize] add, [optimize] ignore
 ;	cmp	ax,	dx	; [optimize] ignore
-	cmp	ax,	word [ss:bp+8]	; [optimize] add
+	cmp	ax,	word [ss:bp+6]	; [optimize] add
 	jc	PE_000006DC
 ;PE_0000077C: [native] inline
 	pop	es
 ;PE_00000787: ret
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	6
 
 ; boolean Mona.FDC::Read(u1, u2, u1, u1, u1, u1)
 boolean__Mona_FDC__Read__u1_u2_u1_u1_u1_u1:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	2
 ;PE_00000794: [native] set register
 	mov	ah,	2
 ;PE_0000079A: [native] set register
-	mov	al,	[ss:bp+16]
+	mov	al,	[ss:bp+14]
 ;PE_000007A0: [native] set register
-	mov	bx,	[ss:bp+14]
+	mov	bx,	[ss:bp+12]
 ;PE_000007A6: [native] set register
-	mov	ch,	[ss:bp+12]
+	mov	ch,	[ss:bp+10]
 ;PE_000007AC: [native] set register
-	mov	cl,	[ss:bp+10]
+	mov	cl,	[ss:bp+8]
 ;PE_000007B2: [native] set register
-	mov	dh,	[ss:bp+8]
+	mov	dh,	[ss:bp+6]
 ;PE_000007B9: [native] set register
-	mov	dl,	[ss:bp+6]
+	mov	dl,	[ss:bp+4]
 ;PE_000007C0: [native] inline
 	int	0x13
 ;PE_000007CB: [native] get flag
@@ -1588,19 +1516,17 @@ NM_00000005: ;[native] get flag internal
 	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	12
 
 ; boolean Mona.FDC::Reset(u1)
 boolean__Mona_FDC__Reset__u1:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	2
 ;PE_000007E4: [native] set register
 	mov	ah,	0
 ;PE_000007EA: [native] set register
-	mov	dl,	[ss:bp+6]
+	mov	dl,	[ss:bp+4]
 ;PE_000007F0: [native] inline
 	int	0x13
 ;PE_000007FB: [native] get flag
@@ -1623,7 +1549,6 @@ NM_00000007: ;[native] get flag internal
 	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; class Mona.VESA
@@ -1633,21 +1558,20 @@ Mona_VESA__Bpp dw 0
 
 ; boolean Mona.VESA::TryMode(u2, u2, u2)
 boolean__Mona_VESA__TryMode__u2_u2_u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
-;	sub	sp,	2	; [optimize] ignore
+	sub	sp,	2
 ;PE_00000828: ldarg.0
-;	push	word [ss:bp+10]	; [optimize] ignore
+;	push	word [ss:bp+8]	; [optimize] ignore
 ;PE_00000829: ldc.i4 00004000
 	mov	ax,	16384
 ;	push	ax	; [optimize] ignore
 ;PE_0000082E: or
 ;	pop	ax	; [optimize] ignore
 ;	pop	dx	; [optimize] ignore
-;	mov	dx,	word [ss:bp+10]	; [optimize] add, [optimize] ignore
+;	mov	dx,	word [ss:bp+8]	; [optimize] add, [optimize] ignore
 ;	or	ax,	dx	; [optimize] ignore
-	or	ax,	word [ss:bp+10]	; [optimize] add
+	or	ax,	word [ss:bp+8]	; [optimize] add
 	push	ax
 ;PE_00000830: call 06000013
 	call	boolean__Mona_VESA__SetMode__u2
@@ -1662,13 +1586,11 @@ boolean__Mona_VESA__TryMode__u2_u2_u2:
 ;PE_00000838: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-2],	0	; [optimize] add, [optimize] ignore
-;	mov	bx,	0	; [optimize] add, [optimize] ignore
-	xor	bx,	bx	; [optimize] add
+	mov	word [ss:bp-2],	0	; [optimize] add
 ;PE_00000839: br.s 1D
 	jmp	PE_00000858
 PE_0000083B: ;ldarg.1
-	push	word [ss:bp+8]
+	push	word [ss:bp+6]
 ;PE_0000083C: call 06000014
 	call	boolean__Mona_VESA__GetInfo__u2
 ;	push	ax	; [optimize] ignore
@@ -1682,15 +1604,13 @@ PE_0000083B: ;ldarg.1
 ;PE_00000844: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-2],	0	; [optimize] add, [optimize] ignore
-;	mov	bx,	0	; [optimize] add, [optimize] ignore
-	xor	bx,	bx	; [optimize] add
+	mov	word [ss:bp-2],	0	; [optimize] add
 ;PE_00000845: br.s 11
 	jmp	PE_00000858
 PE_00000847: ;ldarg.0
-	push	word [ss:bp+10]
+	push	word [ss:bp+8]
 ;PE_00000848: ldarg.2
-	push	word [ss:bp+6]
+	push	word [ss:bp+4]
 ;PE_00000849: call 06000015
 	call	boolean__Mona_VESA__GetInfoDetails__u2_u2
 ;	push	ax	; [optimize] ignore
@@ -1704,9 +1624,7 @@ PE_00000847: ;ldarg.0
 ;PE_00000851: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-2],	0	; [optimize] add, [optimize] ignore
-;	mov	bx,	0	; [optimize] add, [optimize] ignore
-	xor	bx,	bx	; [optimize] add
+	mov	word [ss:bp-2],	0	; [optimize] add
 ;PE_00000852: br.s 04
 	jmp	PE_00000858
 PE_00000854: ;ldc.i4.1
@@ -1715,31 +1633,27 @@ PE_00000854: ;ldc.i4.1
 ;PE_00000855: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 ;	mov	word [ss:bp-2],	ax	; [optimize] add, [optimize] ignore
-;	mov	word [ss:bp-2],	1	; [optimize] add, [optimize] ignore
-	mov	bx,	1	; [optimize] add
+	mov	word [ss:bp-2],	1	; [optimize] add
 ;PE_00000856: br.s 00
 ;	jmp	PE_00000858	; [optimize] ignore
 PE_00000858: ;ldloc.0
 ;	push	word [ss:bp-2]	; [optimize] ignore
 ;PE_00000859: ret
 ;	pop	ax	; [optimize] ignore
-;	mov	ax,	word [ss:bp-2]	; [optimize] add, [optimize] ignore
-	mov	ax,	bx	; [optimize] add
-;	mov	sp,	bp	; [optimize] ignore
+	mov	ax,	word [ss:bp-2]	; [optimize] add
+	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	6
 
 ; boolean Mona.VESA::SetMode(u2)
 boolean__Mona_VESA__SetMode__u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	2
 ;PE_00000868: [native] set register
 	mov	ax,	20226
 ;PE_00000872: [native] set register
-	mov	bx,	[ss:bp+6]
+	mov	bx,	[ss:bp+4]
 ;PE_00000878: [native] inline
 	int	0x10
 ;PE_00000883: [native] get register
@@ -1773,19 +1687,17 @@ NM_00000009: ;ceq internal
 	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; boolean Mona.VESA::GetInfo(u2)
 boolean__Mona_VESA__GetInfo__u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	2
 ;PE_000008A0: [native] set register
 	mov	ax,	20224
 ;PE_000008AA: [native] set register
-	mov	di,	[ss:bp+6]
+	mov	di,	[ss:bp+4]
 ;PE_000008B0: [native] inline
 	int	0x10
 ;PE_000008BB: [native] get register
@@ -1819,21 +1731,19 @@ NM_0000000B: ;ceq internal
 	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	2
 
 ; boolean Mona.VESA::GetInfoDetails(u2, u2)
 boolean__Mona_VESA__GetInfoDetails__u2_u2:
-	push	bx	; [optimize] add
 	push	bp
 	mov	bp,	sp
 	sub	sp,	2
 ;PE_000008D8: [native] set register
 	mov	ax,	20225
 ;PE_000008E2: [native] set register
-	mov	cx,	[ss:bp+8]
+	mov	cx,	[ss:bp+6]
 ;PE_000008E8: [native] set register
-	mov	di,	[ss:bp+6]
+	mov	di,	[ss:bp+4]
 ;PE_000008EE: [native] inline
 	int	0x10
 ;PE_000008F9: [native] get register
@@ -1867,17 +1777,14 @@ NM_0000000D: ;ceq internal
 	mov	ax,	word [ss:bp-2]	; [optimize] add
 	mov	sp,	bp
 	pop	bp
-	pop	bx	; [optimize] add
 	ret	4
 
 ; void Mona.VESA::SetVGA()
 Mona_VESA__SetVGA:
-	push	bx	; [optimize] add
 ;PE_00000914: [native] set register
 	mov	ax,	18
 ;PE_0000091B: [native] inline
 	int	0x10
-	pop	bx	; [optimize] add
 ;PE_00000926: ret
 	ret
 

@@ -1,7 +1,7 @@
 include MakeInclude
 
 TARGET = I8086.dll secondboot.bin
-ILOPT  = /OPT:2
+ILOPT  = /OPT:1
 ASMFLG = -DREL_KERNEL_ADDR=0x0800 -DMONA_HEADER_SIZE=0x10
 
 all: .subdirs $(TARGET)
