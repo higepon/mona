@@ -273,18 +273,18 @@ namespace System { namespace Mona { namespace Forms
 					case 16: // 565
 					{
 						unsigned short c = MonAPI::Color::bpp24to565(pBuf->ToArgb());
-						if (*(unsigned short*)pVram != c) *(unsigned short*)pVram = c;
+						/*if (*(unsigned short*)pVram != c)*/ *(unsigned short*)pVram = c;
 						break;
 					}
 					case 24:
-						if (pVram[0] != pBuf->get_B()) pVram[0] = pBuf->get_B();
-						if (pVram[1] != pBuf->get_G()) pVram[1] = pBuf->get_G();
-						if (pVram[2] != pBuf->get_R()) pVram[2] = pBuf->get_R();
+						/*if (pVram[0] != pBuf->get_B())*/ pVram[0] = pBuf->get_B();
+						/*if (pVram[1] != pBuf->get_G())*/ pVram[1] = pBuf->get_G();
+						/*if (pVram[2] != pBuf->get_R())*/ pVram[2] = pBuf->get_R();
 						break;
 					case 32:
 					{
 						unsigned int c = pBuf->ToArgb() & 0xffffff;
-						if (*(unsigned int*)pVram != c) *(unsigned int*)pVram = c;
+						/*if (*(unsigned int*)pVram != c)*/ *(unsigned int*)pVram = c;
 						break;
 					}
 				}
