@@ -21,10 +21,6 @@ extern "C"     void arch_set_stack_view();
 
 void syscall_entrance() {
 
-    g_console->printf("Syscall\n");
-
-    outportb(0x20, 0x20);
-
     int x,y;
     dword eflags;
 
@@ -55,7 +51,7 @@ void syscall_entrance() {
 
         enableInterrupt();
 
-          for (dword i = 0; i < 0xffffff; i++) {
+          for (dword i = 0; i < 0xffff; i++) {
 
               i++;
               i--;
@@ -83,9 +79,6 @@ void syscall_entrance() {
           g_console->printf("syscall:default");
           break;
     }
-
-    g_console->printf("Syscall end\n");
-
     return;
 }
 

@@ -77,8 +77,6 @@ void Scheduler::schedule() {
 
     addToPrev(&dispatchList_, next);
 
-    //    g_console->printf("schedule [%s] to [%s] \n", g_current_process->name, next->name);
-
     g_current_process = next;
 
     return;
@@ -108,7 +106,6 @@ void Scheduler::wakeup() {
             ProcessInfo* prev = start->prev;
 
             removeFrom(start);
-            g_console->printf("wakeup [%s]\n", start->name);
             addToPrev(&dispatchList_, start);
             start = prev;
         }

@@ -78,9 +78,9 @@ virtual_addr ProcessManager::allocateStack() {
 
 virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
 
-    if (dpl == DPL_KERNEL) return 0;
-
     static int i = 0;
+
+    if (dpl == DPL_KERNEL) return 0;
 
     i++;
 
