@@ -27,6 +27,8 @@
     if (currentProcess == nextProcess) iret();      \
                                                     \
     _sys_printf("switchProcess");\
+    _sysDumpProcess("next"   , pm.next);\
+    _sysDumpProcess("current", pm.current);\
     /* switch to next */                            \
     asm volatile(                                   \
                  "movl  %%esp, %0    \n"            \
@@ -37,9 +39,10 @@
                  "movl  %5, %%edi    \n"            \
                  "movl  %6, %%esi    \n"            \
                  "movl  %7, %%esp    \n"            \
-                 "pushl %8           \n"            \
+                 "movl  %8, %%ebp    \n"            \
                  "pushl %9           \n"            \
                  "pushl %10          \n"            \
+                 "pushl %11          \n"            \
                  "iretl              \n"            \
                  : "=m"(currentProcess->esp)        \
                  : "m"(nextProcess->eax)            \
@@ -49,10 +52,14 @@
                  , "m"(nextProcess->edi)            \
                  , "m"(nextProcess->esi)            \
                  , "m"(nextProcess->esp)            \
+                 , "m"(nextProcess->ebp)            \
                  , "m"(nextProcess->eflags)         \
                  , "m"(nextProcess->cs)             \
                  , "m"(nextProcess->eip)            \
                  );                                 \
+_sysdumpStack(); \
+_sysdumpReg("reg", true, false);\
+
 
 /*! \def save registers */
 #define _saveRegisters(process) {            \
@@ -64,16 +71,19 @@
                  "movl %%ebx    ,  %2    \n" \
                  "movl 12(%%ebp), %%ebx  \n" \
                  "movl %%ebx    ,  %3    \n" \
-                 "movl %%eax    ,  %4    \n" \
-                 "movl %%ecx    ,  %5    \n" \
-                 "movl %%edx    ,  %6    \n" \
-                 "movl %%esi    ,  %7    \n" \
-                 "movl %%edi    ,  %8    \n" \
-                 "movl %%ebp    ,  %9    \n" \
+                 "movl (%%ebp), %%ebx    \n" \
+                 "movl %%ebx    ,  %4    \n" \
+                 "movl %%eax    ,  %5    \n" \
+                 "movl %%ecx    ,  %6    \n" \
+                 "movl %%edx    ,  %7    \n" \
+                 "movl %%esi    ,  %8    \n" \
+                 "movl %%edi    ,  %9    \n" \
+                 "movl %%ebp    ,  %10   \n" \
                  : "=m"(process->ebx)        \
                  , "=m"(process->eip)        \
                  , "=m"(process->cs)         \
                  , "=m"(process->eflags)     \
+                 , "=m"(process->ebp)        \
                  , "=m"(process->eax)        \
                  , "=m"(process->ecx)        \
                  , "=m"(process->edx)        \
@@ -83,9 +93,26 @@
                  );                          \
 }                                            \
 
+#define _sysDumpProcess(str, process) {           \
+                                                  \
+    _sys_printf("%s ", str);                      \
+    _sys_printf("eax=(%x)", process->eax);        \
+    _sys_printf("ebx=(%x)", process->ebx);        \
+    _sys_printf("ecx=(%x)", process->ecx);        \
+    _sys_printf("edx=(%x)", process->edx);        \
+    _sys_printf("esi=(%x)", process->esi);        \
+    _sys_printf("edi=(%x)", process->edi);        \
+    _sys_printf("esp=(%x)", process->esp);        \
+    _sys_printf("ebp=(%x)", process->ebp);        \
+    _sys_printf("eflags=(%x)", process->eflags);  \
+    _sys_printf("cs=(%x)", process->cs);          \
+    _sys_printf("eip=(%x)", process->eip);        \
+}                                                 \
+
 /*! \def struct for process */
 typedef struct Process {
     dword* esp;
+    dword* ebp;
     dword  eip;
     dword  cs;
     dword  eflags;

@@ -276,12 +276,29 @@ inline void ProcessManager::initProcess(void (*f)()) {
 //      *(--firstStack) = (dword)0x9884;
 //      *(--firstStack) = (dword)0x9884;
 //      *(--firstStack) = (dword)0x9884;
-    current->esp = firstStack;
+
+    next->eax = 0;
+    next->ebx = 0;
+    next->ecx = 0;
+    next->edx = 0;
+    next->edi = 0;
+    next->esi = 0;
+    next->ebp    = firstStack;
     next->esp    = firstStack;
     next->eflags = (dword)0x0200046; /* EFLAGS */
     next->cs     = (dword)0x38;      /* CS     */
     next->eip    = (dword)f;         /* EIP    */
+
+    current->eax = 0;
+    current->ebx = 0;
+    current->ecx = 0;
+    current->edx = 0;
+    current->edi = 0;
+    current->esi = 0;
+    current->ebp    = firstStack;
+    current->esp    = firstStack;
     current->eflags = (dword)0x0200046; /* EFLAGS */
     current->cs     = (dword)0x38;      /* CS     */
     current->eip    = (dword)f;         /* EIP    */
+
 }
