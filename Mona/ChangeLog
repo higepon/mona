@@ -1,3 +1,7 @@
+2005-02-12  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/IDEDriver.cpp (protocolPioDataIn): セカンダリの認識不良バグを修正。
+
 2004-02-12  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gshell/gshell.cpp: 存在しないディレクトリでlsすると落ちる不具合修正＆各種修正

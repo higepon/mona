@@ -462,7 +462,7 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
         }
 
         /* data read */
-        inp16(controller, p, 256);
+        inp16(controller, p, 512);
     }
 
     inp8(controller, ATA_ASR);
