@@ -6,6 +6,7 @@ cglobal rectangle
 cglobal put_pixel
 cglobal scroll_up
 cglobal write_font
+cglobal get_font_address
 cglobal pos_x
 cglobal pos_y
 
@@ -162,6 +163,11 @@ write_font:
         popad
         mov     esp,ebp
         pop     ebp
+        ret
+
+; get_font_address()
+get_font_address:
+        mov     eax, font
         ret
 
 pos_x  db      0

@@ -10,7 +10,7 @@ kernel.o: kernel.cpp user/types.h include/global.h include/info.h \
   include/test_mjt.h include/checker.h include/KeyBoardManager.h \
   include/GraphicalConsole.h include/ihandlers.h include/pic.h \
   include/io.h include/syscalls.h user/userlib.h include/elf.h \
-  include/vbe.h
+  include/vbe.h include/VesaConsole.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
@@ -196,3 +196,6 @@ Mutex.o: Mutex.cpp include/Mutex.h include/Process.h user/types.h \
   include/IDTUtil.h include/FAT12.h include/MemoryManager.h \
   include/sysresource.h include/tester.h include/test_mjt.h \
   user/userlib.h
+VesaConsole.o: VesaConsole.cpp include/VesaConsole.h \
+  include/VirtualConsole.h user/types.h include/string.h \
+  include/GraphicalConsole.h include/vbe.h

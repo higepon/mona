@@ -169,12 +169,11 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::setup() {
+void PageManager::setup(PhysicalAddress vram) {
 
     PageEntry* table1 = allocatePageTable();
     PageEntry* table2 = allocatePageTable();
     g_page_directory  = allocatePageTable();
-
 
     /* allocate page to physical address 0-4MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
@@ -190,9 +189,35 @@ void PageManager::setup() {
         setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
     }
 
+    /* Map 0-8MB */
     memset(g_page_directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     setAttribute(&(g_page_directory[0]), true, true, true, (PhysicalAddress)table1);
     setAttribute(&(g_page_directory[1]), true, true, true, (PhysicalAddress)table2);
+
+    /* VRAM */
+    vram_ = vram;
+
+    /* find 4KB align */
+    for (; vram % 4096; vram--);
+
+    /* MAP VRAM 2MB */
+    for (int i = 0; i < 512; i++, vram += 4096) {
+
+        PageEntry* table;
+        dword directoryIndex = getDirectoryIndex(vram);
+        dword tableIndex     = getTableIndex(vram);
+
+        if (isPresent(&(g_page_directory[directoryIndex]))) {
+
+            table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+        } else {
+
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(g_page_directory[directoryIndex]), true, true, false, (PhysicalAddress)table);
+        }
+        setAttribute(&(table[tableIndex]), true, true, false, vram);
+    }
 
     setPageDirectory((PhysicalAddress)g_page_directory);
     startPaging();
@@ -224,6 +249,30 @@ PageEntry* PageManager::createNewPageDirectory() {
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     setAttribute(&(directory[0]), true, true, false, (PhysicalAddress)table1);
     setAttribute(&(directory[1]), true, true, false, (PhysicalAddress)table2);
+
+    /* find 4KB align for VRAM */
+    dword vram = vram_;
+    for (; vram % 4096; vram--);
+
+    /* MAP VRAM 2MB */
+    for (int i = 0; i < 512; i++, vram += 4096) {
+
+        PageEntry* table;
+        dword directoryIndex = getDirectoryIndex(vram);
+        dword tableIndex     = getTableIndex(vram);
+
+        if (isPresent(&(directory[directoryIndex]))) {
+
+            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+        } else {
+
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(directory[directoryIndex]), true, true, false, (PhysicalAddress)table);
+        }
+        setAttribute(&(table[tableIndex]), true, true, false, vram);
+    }
+
     return directory;
 }
 

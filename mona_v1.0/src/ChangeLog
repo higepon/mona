@@ -1,3 +1,9 @@
+2004-01-23  higepon  <higepon@users.sourceforge.jp>
+
+        * PageManager: VRAMにアクセスできるように各プロセスにマッピングを行った。
+
+        * VesaConsole.cpp: Gakuさん提供のVESA対応版のコンソールを追加
+
 2004-01-22  higepon  <higepon@users.sourceforge.jp>
 
         * test_higepon.cpp: bitblt(8, 16, 32bpp)に対応

@@ -4,6 +4,7 @@
     Copyright (c) 2002,2003,2004 Higepon
     Copyright (c) 2002,2003      Guripon
     Copyright (c) 2003           .mjt
+    Copyright (c) 2004           Gaku
 
     All rights reserved.
 
@@ -60,6 +61,7 @@
 #include <elf.h>
 #include <MemoryManager.h>
 #include <vbe.h>
+#include <VesaConsole.h>
 
 char* version = "Mona version.0.1.4 $Date$";
 
@@ -67,10 +69,8 @@ extern int pos_x;
 extern int pos_y;
 void printInfo() {
 
-    //    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
-    //    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
-
-
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
     for (;;);
 }
 
@@ -91,78 +91,90 @@ void startKernel(void) {
     /* set segment */
     GDTUtil::setup();
 
-    /* initialze console */
-    g_console = new GraphicalConsole();
-
-    pic_init();
-    //    printOK("Setting PIC        ");
-
-    IDTUtil::setup();
-    //    printOK("Setting IDT        ");
-    //    printOK("Setting GDT        ");
-
-    checkTypeSize();
-    //    printOK("Checking type size ");
-
     /* test for vesa */
     VesaInfo* vesaInfo = new VesaInfo;
+    VesaInfoDetail* vesaDetail;
     memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
+
+    /* console */
     if (vesaInfo->sign[0] == 'N') {
+
+        g_console = new GraphicalConsole();
         g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
         for (;;);
     } else {
-
-        VesaInfoDetail* vesaDetail = new VesaInfoDetail;
+        vesaDetail = new VesaInfoDetail;
         memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
-
-        /* 800 * 600 16bpp */
-        int xResolution  = vesaDetail->xResolution;
-        int yResolution  = vesaDetail->yResolution;
-        int bitsPerPixel = vesaDetail->bitsPerPixel;
-
-        /* vram */
-        byte* realVram    = (byte*)(vesaDetail->physBasePtr);
-        byte* virtualVram = new byte[xResolution * yResolution * bitsPerPixel / 8];
-
-        /* create Screen */
-        Screen* realScreen    = new Screen(xResolution, yResolution, bitsPerPixel, realVram);
-        Screen* virtualScreen = new Screen(xResolution, yResolution, bitsPerPixel, virtualVram);
-
-        for (;;) {
-            for (int y = 0; y < yResolution; y++) {
-
-                /* draw line */
-                memset(virtualVram, y % 0xFE, xResolution* bitsPerPixel / 8);
-
-                /* BitBlt */
-                Screen::bitblt(realScreen, 0, y, 800, 1, virtualScreen, 0, 0, NULL);
-            }
-
-            /* fill virtual vram */
-            memset(virtualVram, 0x12, xResolution * yResolution * bitsPerPixel / 8);
-
-            /* regtangle */
-            for (int x = 0, y = 0; y < yResolution; x += 50, y += 50) {
-
-                /* BitBlt */
-                Screen::bitblt(realScreen, x, y, 50, 50, virtualScreen, 50, 50, NULL);
-            }
-
-        }
+        g_console = new VesaConsole(vesaDetail);
     }
 
+    pic_init();
+    printOK("Setting PIC        ");
 
+    IDTUtil::setup();
+    printOK("Setting IDT        ");
+    printOK("Setting GDT        ");
+
+    checkTypeSize();
+    printOK("Checking type size ");
+
+    /* test for vesa */
+//     VesaInfo* vesaInfo = new VesaInfo;
+//     memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
+//     if (vesaInfo->sign[0] == 'N') {
+//         g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
+//         for (;;);
+//     } else {
+
+//         VesaInfoDetail* vesaDetail = new VesaInfoDetail;
+//         memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
+
+//         /* 800 * 600 16bpp */
+//         int xResolution  = vesaDetail->xResolution;
+//         int yResolution  = vesaDetail->yResolution;
+//         int bitsPerPixel = vesaDetail->bitsPerPixel;
+
+//         /* vram */
+//         byte* realVram    = (byte*)(vesaDetail->physBasePtr);
+//         byte* virtualVram = new byte[xResolution * yResolution * bitsPerPixel / 8];
+
+//         /* create Screen */
+//         Screen* realScreen    = new Screen(xResolution, yResolution, bitsPerPixel, realVram);
+//         Screen* virtualScreen = new Screen(xResolution, yResolution, bitsPerPixel, virtualVram);
+
+//         for (;;) {
+//             for (int y = 0; y < yResolution; y++) {
+
+//                 /* draw line */
+//                 memset(virtualVram, y % 0xFE, xResolution* bitsPerPixel / 8);
+
+//                 /* BitBlt */
+//                 Screen::bitblt(realScreen, 0, y, 800, 1, virtualScreen, 0, 0, NULL);
+//             }
+
+//             /* fill virtual vram */
+//             memset(virtualVram, 0x12, xResolution * yResolution * bitsPerPixel / 8);
+
+//             /* regtangle */
+//             for (int x = 0, y = 0; y < yResolution; x += 50, y += 50) {
+
+//                 /* BitBlt */
+//                 Screen::bitblt(realScreen, x, y, 50, 50, virtualScreen, 50, 50, NULL);
+//             }
+
+//         }
+//     }
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    //    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024);
+    g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%xPaging on \n", g_total_system_memory / 1024 / 1024, vesaDetail->physBasePtr);
 
     /* shared memory object */
     SharedMemoryObject::setup();
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
-    g_page_manager->setup();
+    g_page_manager->setup((PhysicalAddress)(vesaDetail->physBasePtr));
 
     /* this should be called, before timer enabled */
     ThreadManager::setup();
@@ -244,7 +256,7 @@ inline void printOK(const char* msg) {
 
     g_console->printf((char*)msg);
     g_console->printf("[");
-    g_console->setCHColor(GP_LIGHTBLUE);
+    g_console->setCHColor(GP_RED);
     g_console->printf("OK");
     g_console->setCHColor(GP_WHITE);
     g_console->printf("]");
