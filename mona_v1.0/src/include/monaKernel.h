@@ -101,22 +101,22 @@
                , stack0, stack1, stack2);     \
 }                                             \
 
-#define _sysdumpStack2(str) {                        \
-                                                     \
-    dword* stack;                                    \
-    asm volatile("mov %%ebp, %0 \n" : "=m"(stack));  \
-    _sys_printf("_sysdumpStack2(%s):%x %x %x\n"      \
-              , str, *(stack + 0), *(stack + 1)      \
-              , *(stack + 2));                       \
+#define _sysdumpStack2(str) {                          \
+                                                       \
+    dword* stack;                                      \
+    asm volatile("mov %%ebp, %0 \n" : "=m"(stack));    \
+    _sys_printf("_sysdumpStack2(%s:%x):%x %x %x\n"     \
+              , str, stack, *(stack + 1), *(stack + 2) \
+              , *(stack + 3));                         \
 }
 
-#define _sysdumpStack3(str) {                        \
-                                                     \
-    dword* stack;                                    \
-    asm volatile("mov %%esp, %0 \n" : "=m"(stack));  \
-    _sys_printf("_sysdumpStack2(%s):%x %x %x\n"      \
-              , str, *(stack + 0), *(stack + 1)      \
-              , *(stack + 2));                       \
+#define _sysdumpStack3(str) {                          \
+                                                       \
+    dword* stack;                                      \
+    asm volatile("mov %%esp, %0 \n" : "=m"(stack));    \
+    _sys_printf("_sysdumpStack3(%s:%x):%x %x %x\n"     \
+              , str, stack, *(stack + 1), *(stack + 2) \
+              , *(stack + 2));                         \
 }
 
 /*!

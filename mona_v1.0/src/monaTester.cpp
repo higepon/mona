@@ -143,15 +143,15 @@ void process1Tester() {
 void process2Tester() {
     _sysUnlock();
 
+    //    _sysdumpReg("process2", true, false);
     while (true) {
-
+        _sysSetColor(BG_BLACK | CH_YELLOW);
+        _sys_printf("  ( '  v ')  ");
+        _sysSetColor(BG_BLACK | CH_SILVER);
         for (dword i = 0; i < 900000; i++) {
             i += 1;
             i -= 1;
         }
-        _sysSetColor(BG_BLACK | CH_YELLOW);
-        _sys_printf("  ( '  v ')  ");
-        _sysSetColor(BG_BLACK | CH_SILVER);
     }
     return;
 }

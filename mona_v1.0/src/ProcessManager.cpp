@@ -278,7 +278,7 @@ inline void ProcessManager::setNTflag1() const {
     \date   create:2003/01/10 update:
 */
 void ProcessManager::schedule() {
-    _sysdumpStack3("schedule");
+
     switchProcess2();
 }
 
@@ -303,32 +303,29 @@ inline void ProcessManager::switchProcess2() {
 
     if (prev == 2) {
         prev = 1;
-	//	_sysdumpStack2("prev");
-    _sysdumpReg("process2", true, false);
-        asm volatile(
-                     "pusha         \n"
+	_sysdumpReg("prev==2 \n", true, false);
+        _sys_printf("prev == 2\n");
+        asm volatile("pushal        \n"
                      "mov %%esp, %0 \n"
                      "mov %1, %%esp \n"
-                     "popa          \n"
-		     //                     "iretl         \n"
+                     "popal         \n"
+                     "iretl \n"
                      : "=m" (esp1)
                      : "m" (esp2)
                     );
     } else {
 
-        prev = 2;
-        _sys_printf("go");
-        asm volatile(
-                     "pusha         \n"
-                     "mov %%esp, %0 \n"
-                     "mov %1, %%esp \n"
-                     "popa          \n"
-		     //                     "iretl          \n"
-                     : "=m" (esp2)
-                     : "m" (esp1)
-                    );
-
-        //  _sysdump("process2", true, false);
+         prev = 2;
+	 _sys_printf("prev == 1\n");
+         asm volatile(
+                      "pushal        \n"
+                      "mov %%esp, %0 \n"
+                      "mov %1, %%esp \n"
+                      "popal         \n"
+                      "iretl \n"
+                      : "=m" (esp2)
+                      : "m" (esp1)
+                     );
     }
 }
 

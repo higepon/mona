@@ -117,8 +117,6 @@ void fdcHandler(){
 */
 void timerHandler() {
 
-    //    _sysdumpStack3("timer");
-
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
