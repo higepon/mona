@@ -4,6 +4,8 @@
 
 2005-02-12  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/Shell.cpp (printFiles): ディレクトリがない場合にぬるぽになるバグを修正
+
         * src/servers/file/file.cpp : CD-ROMが見つからないときにファイルサーバが落ちてしまうバグを修正
 
 2005-02-11  csharp  <csharp@users.sourceforge.jp>

@@ -441,8 +441,8 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
 void Shell::printFiles(const CString& dir)
 {
     monapi_cmemoryinfo* mi = monapi_call_file_read_directory(dir, MONAPI_TRUE);
-    int size = *(int*)mi->Data;
-    if (mi == NULL || size == 0)
+    int size;
+    if (mi == NULL || (size = *(int*)mi->Data) == 0)
     {
         printf("%s: directory not found: %s\n", SVR, (const char*)dir);
         return;
