@@ -294,28 +294,21 @@ void cpufaultHandler_c(void){
 }
 
 
-void cpufaultHandler_e(void){
+void cpufaultHandler_e(dword address, dword error){
 
-    dword address;
+    info(DUMP, "page fault address is %x error is %x\n", address, error);
 
-    asm volatile ("mov %%cr2, %%eax \n"
-                  "mov %%eax, %0    \n" :  "=m"(address));
-
-    g_console->printf("page fault address is %x\n", address);
-
-
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
-                      , g_stack_view.stack0
-                      , g_stack_view.stack1
-                      , g_stack_view.stack2
-                      , g_stack_view.stack3
-                      , g_stack_view.stack4
-                      , g_stack_view.stack5
-                      , g_stack_view.stack6
-                      , g_stack_view.stack7
-                      );
+    info(DUMP, "stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+         , g_stack_view.stack0
+         , g_stack_view.stack1
+         , g_stack_view.stack2
+         , g_stack_view.stack3
+         , g_stack_view.stack4
+         , g_stack_view.stack5
+         , g_stack_view.stack6
+         , g_stack_view.stack7
+         );
     panic("unhandled:fault0E - page fault");
-
 }
 
 

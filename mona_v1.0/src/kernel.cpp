@@ -95,14 +95,14 @@ void startKernel(void) {
     }
     g_console->printf("\n");
 
-    PagingUtil::setup();
-
-    //    dword* p = (dword*)0x3FFFFC;
-dword* p = (dword*)0x3FFFFD;
-    *p = 5;
-
     /* set process name for info() */
     strcpy(g_process_name, "KERNEL");
+    g_info_level = ERROR;
+    PagingUtil::setup();
+
+    //dword* p = (dword*)0x3FFFFC;
+    dword* p = (dword*)0x3FFFFE;
+    *p = 5;
 
 #ifdef MJT
     test_mjt();

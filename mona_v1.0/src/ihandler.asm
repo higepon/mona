@@ -19,7 +19,9 @@ BITS 32
 [global _arch_dummyhandler]
 [global _arch_kthread_switch]
 [global _arch_syscall_handler]
+[global _arch_cpufaulthandler_e]
 
+[extern _cpufaultHandler_e]
 [extern _arch_save_registers]
 [extern _arch_set_stack_view]
 [extern _MFDCHandler]
@@ -115,10 +117,19 @@ _arch_cpufaulthandler_%1:
         cpufaulthandler a
         cpufaulthandler b
         cpufaulthandler c
-        cpufaulthandler e
+;          cpufaulthandler e;;;; removed by higepon
         cpufaulthandler 10
         cpufaulthandler 11
 
+_arch_cpufaulthandler_e:
+        call _arch_set_stack_view
+        pushad
+        push dword[esp + 32]
+        mov  cr2, eax
+        push eax
+        call _cpufaultHandler_e
+        popad
+        iretd
 
 ;;; entrance of syscall
 _arch_syscall_handler:

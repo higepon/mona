@@ -58,9 +58,12 @@ FAULTHANDLERHEADER(8);
 FAULTHANDLERHEADER(a);
 FAULTHANDLERHEADER(b);
 FAULTHANDLERHEADER(c);
-FAULTHANDLERHEADER(e);
+//FAULTHANDLERHEADER(e);
 FAULTHANDLERHEADER(10);
 FAULTHANDLERHEADER(11);
 
+
+extern "C" void cpufaultHandler_e(dword address, dword error);
+extern "C" void arch_cpufaulthandler_e(void);
 
 #endif
