@@ -113,6 +113,24 @@ dword ReadConfig(byte bus, byte device, byte function, byte reg, byte readSize)
    return result;
 }
 
+bool FindDevice(byte bus, word vendor, word device, byte* deviceIndex)
+{
+   for (int i = 0; i < 32; i++)
+   {
+       word foundVendor = ReadConfig(0, i, 0, PCI_VENDOR_ID, 2);
+
+       if (foundVendor == 0xFFFF || foundVendor != vendor) continue;
+
+       word foundDevice = ReadConfig(0, i, 0, PCI_DEVICE_ID, 2);
+
+       if (foundDevice != device) continue;
+
+       *deviceIndex = i;
+       return true;
+   }
+   return false;
+}
+
 int MonaMain(List<char*>* pekoe)
 {
    /* ユーザーモードI/O */
