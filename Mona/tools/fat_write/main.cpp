@@ -473,7 +473,7 @@ bool writeMBR(const char *src)
     byte buf[512];
     for (int i = 0; i < 512; i++) buf[i] = 0;
     fread(buf, sizeof(byte), 512, fp);
-	fclose(fp);
+    fclose(fp);
     fseek(inf.fp, 0, SEEK_SET);
     fwrite(buf, sizeof(byte), 512, inf.fp);
     return true;
