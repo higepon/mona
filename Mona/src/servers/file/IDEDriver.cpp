@@ -120,7 +120,7 @@ int IDEDriver::read(dword lba, void* buffer, int size)
 
             for (int j = 0; j < 20; j++)
             {
-                readResult = commandRead10(this->whichController, lba, buffer, readSize);
+                readResult = commandRead10(this->whichController, lba + 0xf800 * i / 2048, buffer, readSize);
                 if (readResult) break;
             }
 

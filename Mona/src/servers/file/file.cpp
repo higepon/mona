@@ -252,6 +252,31 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
 
         fs->Close(file);
 
+#if 0
+        logprintf("\n\n%s read start\n", (const char*)filePath);
+        int size = ret->Size / 16;
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                char buf[128];
+                sprintf(buf, "%2x ", ret->Data[i* 16 + j]);
+                logprintf(buf);
+            }
+            logprintf("   ");
+            for (int j = 0; j < 16; j++)
+            {
+                char buf[128];
+                sprintf(buf, "%c", ret->Data[i* 16 + j]);
+                logprintf(buf);
+            }
+
+
+            logprintf("\n");
+        }
+
+#endif
         ret->Data[ret->Size] = 0;
         if (prompt) printf("OK\n");
         return ret;

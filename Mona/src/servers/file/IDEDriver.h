@@ -152,7 +152,7 @@ private:
         ATA_CMR        = 7,
         ATA_ASR        = 8,
         ATA_DCR        = 8,
-        ATA_TIMEOUT    = 10000, // for Virtual PC changed from 100000 -> 10000
+        ATA_TIMEOUT    = 100000, // for Virtual PC changed from 100000 -> 10000
         BIT_BSY        = 0x80,
         BIT_DRDY       = 0x40,
         BIT_DRQ        = 8,

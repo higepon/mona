@@ -1,3 +1,9 @@
+2005-02-10  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/IDEDriver.h (class IDEDriver): ATA_TIMEOUTを100000->10000
+
+        * src/servers/file/IDEDriver.cpp (read): lbaのバグを修正
+
 2004-02-09  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gshell/gshell.cpp: リファクタリング＆品質向上
