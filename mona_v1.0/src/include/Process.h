@@ -174,6 +174,10 @@ class ThreadManager {
     }
 
   private:
+    void archCreateUserThread(Thread* thread) const;
+    void archCreateThread(Thread* thread) const;
+
+  private:
     ThreadScheduler* scheduler_;
     PageManager* pageManager_;
     Thread* current_;

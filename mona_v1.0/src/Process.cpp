@@ -186,13 +186,54 @@ Thread* ThreadManager::create(dword programCounter) {
 
     Thread* thread = new Thread(programCounter);
 
-    //    archCreateUserThread(thread);
-
+    /* arch dependent */
+    if (isUser_) {
+        archCreateUserThread(thread);
+    } else {
+        archCreateThread(thread);
+    }
 
     /*                 */
     /* not implemented */
     /*                 */
     return (Thread*)NULL;
+}
+
+void ThreadManager::archCreateThread(Thread* thread) const {
+
+    ThreadInfo* info      = thread->getThreadInfo();
+    ArchThreadInfo* ainfo = info->archinfo;
+    ainfo->cs      = KERNEL_CS;
+    ainfo->cs      = KERNEL_CS;
+    ainfo->ds      = KERNEL_DS;
+    ainfo->es      = KERNEL_DS;
+    ainfo->ss      = KERNEL_SS;
+    ainfo->eflags  = 0x200;
+    ainfo->eax     = 0;
+    ainfo->ecx     = 0;
+    ainfo->edx     = 0;
+    ainfo->ebx     = 0;
+    ainfo->esi     = 0;
+    ainfo->edi     = 0;
+    ainfo->dpl     = DPL_KERNEL;
+}
+
+void ThreadManager::archCreateUserThread(Thread* thread) const {
+
+    ThreadInfo* info      = thread->getThreadInfo();
+    ArchThreadInfo* ainfo = info->archinfo;
+    ainfo->cs      = USER_CS;
+    ainfo->ds      = USER_DS;
+    ainfo->es      = USER_DS;
+    ainfo->ss      = USER_SS;
+    ainfo->eflags  = 0x200;
+    ainfo->eax     = 0;
+    ainfo->ecx     = 0;
+    ainfo->edx     = 0;
+    ainfo->ebx     = 0;
+    ainfo->esi     = 0;
+    ainfo->edi     = 0;
+    ainfo->dpl     = DPL_USER;
 }
 
 int ThreadManager::join(Thread* thread) {
@@ -386,8 +427,6 @@ bool ProcessManager_::schedule() {
     /* next is current ? */
     isProcessChanged = (next != current_);
     current_         = next;
-
-    g_console->printf("[%x]", current_);
     return isProcessChanged;
 }
 
