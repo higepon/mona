@@ -1,3 +1,7 @@
+2003-12-21  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: hasProcess();‚È‚ÇB‚¢‚ë‚¢‚ëŒ©’¼‚µ
+
 2003-12-20  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: ThreadManager‚ğ“÷•t‚¯

@@ -20,12 +20,13 @@
 template <class T> class List {
 
   public:
-    virtual void add(T element)       = 0;
-    virtual T removeAt(size_t index)  = 0;
-    virtual T remove(T element)       = 0;
-    virtual T get(size_t index) const = 0;
-    virtual bool isEmpty() const      = 0;
-    virtual size_t size() const       = 0;
+    virtual void add(T element)              = 0;
+    virtual T removeAt(size_t index)         = 0;
+    virtual T remove(T element)              = 0;
+    virtual T get(size_t index) const        = 0;
+    virtual bool isEmpty() const             = 0;
+    virtual size_t size() const              = 0;
+    virtual bool hasElement(T element) const = 0;
 };
 
 template <class T> class HList : public List<T> {
@@ -42,6 +43,7 @@ template <class T> class HList : public List<T> {
     T remove(T element);
     size_t size() const;
     virtual bool isEmpty() const;
+    bool hasElement(T element) const;
   private:
     T* data_;            /*! internal array     */
     size_t size_;        /*! size of liset      */
@@ -284,6 +286,26 @@ template <class T> void HList<T>::init(size_t size, size_t increase) {
     /* create internal array */
     data_ = new T[size_];
     return;
+}
+
+/*!
+    \brief check list has the element
+
+    \author HigePon
+    \date   create:2003/12/21 update:
+*/
+template <class T> bool HList<T>::hasElement(T element) const {
+
+    /* find element */
+    for (dword i = 0; i < size(); i++) {
+
+        if (data_[i] == element) {
+            return true;
+        }
+    }
+
+    /* not found */
+    return false;
 }
 
 #endif

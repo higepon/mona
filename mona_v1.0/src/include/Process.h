@@ -191,6 +191,7 @@ class Process_ {
     inline dword getTick() {return tick_;}
     inline bool hasTimeLeft() const {return timeLeft_ > 0;}
     int join(Thread* thread);
+    Thread* createThread(dword programCounter);
 
   protected:
     bool isKernelMode_;
@@ -241,6 +242,7 @@ class ProcessScheduler {
     Process_* schedule(Process_* current);
     int add(Process_* process);
     int kill(Process_* process);
+    bool hasProcess(Process_* process) const;
 
   private:
     List<Process_*>* list_;
@@ -259,12 +261,14 @@ class ProcessManager_ {
 
   public:
     Process_* create(int type, const char* name);
+    Thread* createThread(Process_* process, dword programCounter);
     int join(Process_* process, Thread* thread);
     int add(Process_* process);
     int kill(Process_* process);
     int switchProcess();
     bool schedule();
     Process_* getCurrentProcess() const;
+    bool hasProcess(Process_* process) const;
 
   public:
     static const int USER_PROCESS   = 0;

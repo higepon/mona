@@ -287,6 +287,12 @@ int ProcessScheduler::kill(Process_* process) {
     return NORMAL;
 }
 
+bool ProcessScheduler::hasProcess(Process_* process) const {
+
+    /* check has process */
+    return list_->hasElement(process);
+}
+
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
@@ -388,6 +394,21 @@ int ProcessManager_::add(Process_* process) {
     return (scheduler_->add(process));
 }
 
+Thread* ProcessManager_::createThread(Process_* process, dword programCounter) {
+
+    /* check process */
+    if (!hasProcess(process)) {
+        return (Thread*)NULL;
+    }
+
+    /* create thread */
+    return process->createThread(programCounter);
+}
+
+bool ProcessManager_::hasProcess(Process_* process) const {
+    return scheduler_->hasProcess(process);
+}
+
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
@@ -402,6 +423,10 @@ Process_::~Process_() {
 
 int Process_::join(Thread* thread) {
     return threadManager_->join(thread);
+}
+
+Thread* Process_::createThread(dword programCounter) {
+    return threadManager_->create(programCounter);
 }
 
 /*----------------------------------------------------------------------
