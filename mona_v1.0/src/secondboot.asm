@@ -61,7 +61,7 @@ gdt20:                          ; segment 20(task state segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x89                 ; Type TSS
-        db 0xc0                 ; segment limitH
+        db 0                    ; segment limitH
         db 0                    ; segment baseH
 
 gdt28:                          ; segment 28(task state segment)
@@ -69,7 +69,7 @@ gdt28:                          ; segment 28(task state segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x89                 ; Type TSS
-        db 0xc0                 ; segment limitH
+        db 0                    ; segment limitH
         db 0                    ; segment baseH
 
 gdt30:                          ; segment 30(LDT)

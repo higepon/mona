@@ -19,6 +19,8 @@
 #include<monaKernel.h>
 #include<monaVga.h>
 
+#define GD_NUM 8192 /*!< number of Descripter */
+
 #pragma pack(2)
 
 /*!
@@ -69,6 +71,18 @@ typedef struct  {
     unsigned pageBaseAddress:20; /*!< base address of page   */
 } PTE;
 
+/*! Descriptor Type */
+#define TypeCode     0x9a
+#define TypeData     0x92
+#define TypeStack    0x96
+#define TypeLDT      0x82
+#define TypeTSS      0x89
+#define TypeTSSBusy  0x8b
+#define TypeCallGate 0x84
+#define TypeIntrGate 0x8e
+#define TypeTrapGate 0x8f
+#define TypeTaskGate 0x85
+
 /*!
     memory management class
     single pattern  applyes the instance of this class
@@ -86,10 +100,14 @@ class IA32MemoryManager {
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
     inline void setCR3(dword) const;
     inline void flushTLB() const;
+    inline void lgdt() const;
     const size_t MEMORY_START;
     const size_t MEMORY_END;
     struct memoryEntry* freeEntry_;
     struct memoryEntry* usedEntry_;
+
+    GDT gdt_[8192]; /*!< Global Descriptor table */
+
   public:
 
     char* getName() const;
@@ -100,6 +118,8 @@ class IA32MemoryManager {
     static IA32MemoryManager& instance();
     static void startPaging();
     static void stopPaging();
+    void setGDT(word, dword, dword, byte, byte, byte);
+    void resetGDT();
     /* memo setWriter(write);setReader(reader); */
 
 };

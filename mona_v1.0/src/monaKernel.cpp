@@ -58,6 +58,10 @@ void startKernel(void) {
     /* set interrept */
     _sysSetIdt();
     _sysInitIo();
+
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
+    mm.resetGDT();
+
     _sysUnlock();
     _sys_printf("Idt set done\n");
 

@@ -14,6 +14,7 @@
 #include<IA32MemoryManager.h>
 #include<monaIdt.h>
 #include<monaVga.h>
+#include<monaKernel.h>
 
 /*!
     \brief get class Name
@@ -459,4 +460,39 @@ inline void IA32MemoryManager::flushTLB() const {
                  "mov %%eax, %%cr3\n"
                  : /* no output */
                  : /* no input  */ : "ax");
+}
+
+void IA32MemoryManager::setGDT(word index, dword base, dword limit, byte type, byte type32, byte dpl) {
+
+    /* check index */
+    if (index >= GD_NUM) return;
+
+    /* set descriptor */
+    gdt_[index].baseL  = (word)(base & 0xffff);
+    gdt_[index].baseM  = (byte)((base >> 16) & 0xff);
+    gdt_[index].baseH  = (byte)((base >> 24) & 0xff);
+    gdt_[index].limitL = (word)(limit & 0xffff);
+    gdt_[index].limitH = (byte)((limit >> 16) & 0xff + type32);
+    gdt_[index].type   = (byte)(type | (dpl << 5));
+}
+
+inline void IA32MemoryManager::lgdt() const {
+
+    GDTR gdtr;
+    gdtr.base  = (dword)gdt_;
+    gdtr.limit = sizeof(GDT) * GD_NUM - 1;
+    asm volatile("lgdt %0\n" : /* no output */ : "m" (gdtr));
+}
+
+void IA32MemoryManager::resetGDT() {
+
+    setGDT(0, 0, 0, 0, 0, 0);
+    setGDT(1, 0, 0xFFFFFFFF, TypeCode , 0, 0);
+    setGDT(2, 0, 0xFFFFFFFF, TypeData , 0, 0);
+    setGDT(3, 0, 0x00C00000, TypeStack, 0, 0);
+    setGDT(4, 0, 0x00000067, TypeTSS  , 0, 0);
+    setGDT(5, 0, 0x00000067, TypeTSS  , 0, 0);
+    setGDT(6, 0, 0x00000067, TypeLDT  , 0, 0);
+    lgdt();
+    return;
 }
