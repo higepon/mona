@@ -56,7 +56,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
         if (current->size >= realSize) break;
 
-        if(current->next == freeEntry_) return NULL;
+        if (current->next == freeEntry_) return NULL;
     }
 
     struct memoryEntry* usedBlock = current;
