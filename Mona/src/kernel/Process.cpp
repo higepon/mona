@@ -464,32 +464,24 @@ Process* ProcessOperation::create(int type, const char* name)
 dword ThreadOperation::id = 56;
 Thread* ThreadOperation::create(Process* process, dword programCounter)
 {
-
-    logprintf("before idle2.1\n");
     Thread* thread = new Thread();
-    logprintf("before idle2.2\n");
+
     (process->threadNum)++;
     PageEntry* directory = process->getPageDirectory();
 
-    logprintf("before idle2.3\n");
-
     thread->tinfo->process = process;
 
-    logprintf("before idle2.4\n");
     thread->id = ThreadOperation::id++;
 
     if (process->isUserMode())
     {
         LinearAddress stack  = process->allocateStack();
-    logprintf("before idle2.5\n");
         archCreateUserThread(thread, programCounter, directory, stack);
     }
     else
     {
         LinearAddress stack  = ProcessOperation::allocateKernelStack();
-    logprintf("before idle2.6\n");
         archCreateThread(thread, programCounter, directory, stack);
-    logprintf("before idle2.7\n");
     }
 
     process->getThreadList()->add(thread);

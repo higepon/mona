@@ -14,10 +14,6 @@
 #define _MONA_IHANDLER_
 
 
-extern "C" void arch_fdchandler(void);
-extern "C" void arch_timerhandler(void);
-extern "C" void arch_keystrokehandler(void);
-extern "C" void arch_mousehandler(void);
 extern "C" void arch_dummyhandler(void);
 extern "C" void arch_switch_process(void);
 extern "C" void arch_switch_process_to_user_mode(void);
@@ -25,16 +21,12 @@ extern "C" void arch_switch_process_to_v86_mode(void);
 extern "C" void arch_fault0dhandler(void);
 extern "C" void arch_syscall_handler(void);
 
-extern "C" void MFDCHandler(void);
-extern "C" void timerHandler(void);
-extern "C" void keyStrokeHandler(dword scancode);
-extern "C" void mouseHandler();
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(dword error);
 extern "C" void doIrqHandler(int irq);
 
-/* expr:IRQ Handler */
-#define IRQHANDLERHEADER(x) extern "C" void irqHandler_##x(void); extern "C" void arch_irqhandler_##x(void)
+/* IRQ Handler */
+#define IRQHANDLERHEADER(x) extern "C" void irqHandler_##x(); extern "C" void arch_irqhandler_##x()
 IRQHANDLERHEADER(0);
 IRQHANDLERHEADER(1);
 IRQHANDLERHEADER(2);

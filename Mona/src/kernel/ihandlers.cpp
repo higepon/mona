@@ -19,6 +19,36 @@
 #include "tester.h"
 #include "Process.h"
 
+#define IRQHANDLERMaster(x) void irqHandler_##x()   \
+{                                                   \
+    outp8(0x20, 0x20);                              \
+    doIrqHandler(x);                                \
+}
+
+#define IRQHANDLERSlave(x) void irqHandler_##x()    \
+{                                                   \
+    outp8(0xA0, 0x20);                              \
+    outp8(0x20, 0x20);                              \
+    doIrqHandler(x);                                \
+}
+
+// IRQHANDLERMaster(0)
+// IRQHANDLERMaster(1)
+IRQHANDLERMaster(2)
+IRQHANDLERMaster(3)
+IRQHANDLERMaster(4)
+IRQHANDLERMaster(5)
+// IRQHANDLERMaster(6)
+IRQHANDLERMaster(7)
+IRQHANDLERSlave(8)
+IRQHANDLERSlave(9)
+IRQHANDLERSlave(10)
+IRQHANDLERSlave(11)
+IRQHANDLERSlave(12)
+IRQHANDLERSlave(13)
+IRQHANDLERSlave(14)
+IRQHANDLERSlave(15)
+
 /*!
   \brief do registerd irq handler
 
@@ -40,41 +70,43 @@ void doIrqHandler(int irq)
     KEvent::set(thread->thread, KEvent::MESSAGE_COME);
 }
 
-/*!
-  \brief mouse handler
 
-  mouse handler IRQ 12
+/*!
+  \brief timer handler
 
   \author HigePon
-  \date   create:2004/02/05 update:2004/08/9
+  \date   create:2004/08/10 update:
 */
-void mouseHandler()
+void irqHandler_0()
 {
     /* EOI */
-    outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
 
-    doIrqHandler(12);
+    g_scheduler->tick();
+    g_currentThread->thread->tick();
+
+    bool isProcessChange = g_scheduler->schedule();
+
+    ThreadOperation::switchThread(isProcessChange, 1);
+
+    /* not reached */
 }
 
 /*!
-  \brief key stroke handler
-
-  key storoke handler IRQ 1
+  \brief key handler
 
   \author HigePon
-  \date   create:2002/07/25 update:2003/10/03
+  \date   create:2004/08/10 update:
 */
-void keyStrokeHandler(dword scancode)
+void irqHandler_1()
 {
     MessageInfo message;
+
+    byte scancode = inp8(0x60);
+
     memset(&message, 0, sizeof(MessageInfo));
     message.header = MSG_KEY_SCANCODE;
     message.arg1   = scancode;
-
-#if 0  // DEBUG for message
-    g_scheduler->dump();
-#endif
 
     /* EOI */
     outp8(0x20, 0x20);
@@ -85,6 +117,28 @@ void keyStrokeHandler(dword scancode)
     {
         g_console->printf("send failed");
     }
+
+    /* not reached */
+}
+
+/*!
+  \brief irq6 handler
+
+  \author HigePon
+  \date   create:2004/08/10 update:
+*/
+void irqHandler_6()
+{
+    g_fdcdriver->interrupt();
+
+    /* thx! K-tan */
+    outp8(0x20, 0x66);
+
+    doIrqHandler(6);
+
+    KEvent::set(g_fdcdriver->getWaitThread(), KEvent::FDC_INTERRUPT);
+
+    /* not reached */
 }
 
 /*!
@@ -137,72 +191,6 @@ void dummyHandler()
     //    outp8(0xA0, 0x20);
     //    outp8(0x20, 0x20);
 }
-
-/*!
-  \brief timer handler
-
-  timer handler
-  at this function task switch occurs.
-
-  \author HigePon
-  \date   create:2002/11/21 update:2003/02/24
-*/
-void timerHandler()
-{
-    /* EOI */
-    outp8(0x20, 0x20);
-
-    g_scheduler->tick();
-    g_currentThread->thread->tick();
-
-    bool isProcessChange = g_scheduler->schedule();
-
-    ThreadOperation::switchThread(isProcessChange, 1);
-
-    /* does not come here */
-}
-
-/*!
-  \brief MFDC handlerp
-
-  \author HigePon
-  \date   create:2003/02/09 update:2004/03/19
-*/
-void MFDCHandler(void)
-{
-    g_fdcdriver->interrupt();
-
-    /* thx! K-tan */
-    outp8(0x20, 0x66);
-
-    doIrqHandler(6);
-
-    KEvent::set(g_fdcdriver->getWaitThread(), KEvent::FDC_INTERRUPT);
-
-    /* not reached */
-}
-
-/* IRQ Handler (expr) */
-#define IRQHANDLERMaster(x) void irqHandler_##x(void) {  int i ; i = x ; g_console->printf("IRQMaster:%d\n",i); g_irqHandlers[x](); outp8(0x20, 0x20); }
-
-#define IRQHANDLERSlave(x) void irqHandler_##x(void) {  int i ; i = x ;  g_console->printf("IRQSlave:%d\n",i);  g_irqHandlers[x]();outp8(0xA0, 0x20); outp8(0x20, 0x20); }
-
-IRQHANDLERMaster(0)
-    IRQHANDLERMaster(1)
-    IRQHANDLERMaster(2)
-    IRQHANDLERMaster(3)
-    IRQHANDLERMaster(4)
-    IRQHANDLERMaster(5)
-    IRQHANDLERMaster(6)
-    IRQHANDLERMaster(7)
-    IRQHANDLERSlave(8)
-    IRQHANDLERSlave(9)
-    IRQHANDLERSlave(10)
-    IRQHANDLERSlave(11)
-    IRQHANDLERSlave(12)
-    IRQHANDLERSlave(13)
-    IRQHANDLERSlave(14)
-    IRQHANDLERSlave(15)
 
 void cpufaultHandler_0(void)
 {
@@ -297,9 +285,6 @@ void cpufaultHandler_e(dword address, dword error)
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
 
-        logprintf("fault:cr3=%x address=%x error=%x\n", g_currentThread->archinfo->cr3, address, error);
-
-
 #if 0
     g_console->printf("[page:%s<%x><%x><%x>]", g_currentThread->process->getName(), address, error, g_currentThread->archinfo->eip);
 #endif
@@ -391,7 +376,7 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     , {0x29, &arch_irqhandler_9}
     , {0x2A, &arch_irqhandler_10}
     , {0x2B, &arch_irqhandler_11}
-    , {0x2C, &arch_mousehandler}
+    , {0x2C, &arch_irqhandler_12}
     , {0x2D, &arch_irqhandler_13}
     , {0x2E, &arch_irqhandler_14}
     , {0x2F, &arch_irqhandler_15}
@@ -443,21 +428,14 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     , {0x5D, &arch_dummyhandler}
     , {0x5E, &arch_dummyhandler}
     , {0x5F, &arch_dummyhandler}
-    , {0x60, &arch_timerhandler} /* IRQ 0 */
-#ifdef MJT
+    , {0x60, &arch_irqhandler_0} /* IRQ 0 */
     , {0x61, &arch_irqhandler_1}
-#else
-    , {0x61, &arch_keystrokehandler}
-#endif
     , {0x62, &arch_irqhandler_2}
     , {0x63, &arch_irqhandler_3}
     , {0x64, &arch_irqhandler_4}
     , {0x65, &arch_irqhandler_5}
-    , {0x66, &arch_fdchandler}
-#if 0
+    , {0x66, &arch_irqhandler_6}
     , {0x67, &arch_irqhandler_7}
-#endif
-    , {0x67, &arch_dummyhandler}
     , {0x68, &arch_dummyhandler}
     , {0x69, &arch_dummyhandler}
     , {0x6A, &arch_dummyhandler}

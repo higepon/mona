@@ -14,11 +14,8 @@
 BITS 32
 
 %include "macro.asm"
-cglobal arch_fdchandler
+
 cglobal arch_fault0dhandler
-cglobal arch_timerhandler
-cglobal arch_keystrokehandler
-cglobal arch_mousehandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
 cglobal arch_cpufaulthandler_e
@@ -28,10 +25,6 @@ cextern arch_switch_process
 cextern cpufaultHandler_c
 cextern cpufaultHandler_e
 cextern arch_set_stack_view
-cextern MFDCHandler
-cextern timerHandler
-cextern keyStrokeHandler
-cextern mouseHandler
 cextern fault0dHandler
 cextern syscall_entrance
 cextern dummyHandler
@@ -59,48 +52,39 @@ cextern arch_set_dokodemo_view
         pop  ds
 %endmacro
 
+;;; IRQ handlers
+%macro irqhandler 1
+cglobal arch_irqhandler_%1
+cextern irqHandler_%1
+arch_irqhandler_%1:
+        pushAll
+        changeData
+        call arch_save_thread_registers
+;         call arch_set_dokodemo_view
+;         call arch_set_stack_view
+        call irqHandler_%1
+        popAll
+        iretd
+%endmacro
+
 section .text
-;;; fdc handler
-arch_fdchandler:
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call MFDCHandler
-        popAll
-        iretd
 
-;;; timer handler
-;;; save all context to Kthread* current
-arch_timerhandler:
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call timerHandler
-        popAll
-        iretd
-
-;;; keystroke handler
-arch_keystrokehandler:
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        xor eax, eax
-        mov dx , 0x60
-        in  al , dx
-        push eax
-        call keyStrokeHandler
-        add  esp, 0x04
-        popAll
-        iretd
-
-;;; mouse handler
-arch_mousehandler
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call mouseHandler
-        popAll
-        iretd
+irqhandler 0
+irqhandler 1
+irqhandler 2
+irqhandler 3
+irqhandler 4
+irqhandler 5
+irqhandler 6
+irqhandler 7
+irqhandler 8
+irqhandler 9
+irqhandler 10
+irqhandler 11
+irqhandler 12
+irqhandler 13
+irqhandler 14
+irqhandler 15
 
 ;;; dummy handler
 arch_dummyhandler:
@@ -109,37 +93,6 @@ arch_dummyhandler:
         call dummyHandler
         popAll
         iretd
-
-;;; IRQ handler(expr)
-%macro irqhandler 1
-cglobal arch_irqhandler_%1
-cextern irqHandler_%1
-arch_irqhandler_%1:
-        pushAll
-        changeData
-        call arch_save_thread_registers
-        call arch_set_dokodemo_view
-        call arch_set_stack_view
-        call irqHandler_%1
-        popAll
-        iretd
-%endmacro
-        irqhandler 0
-        irqhandler 1
-        irqhandler 2
-        irqhandler 3
-        irqhandler 4
-        irqhandler 5
-        irqhandler 6
-        irqhandler 7
-        irqhandler 8
-        irqhandler 9
-        irqhandler 10
-        irqhandler 11
-        irqhandler 12
-        irqhandler 13
-        irqhandler 14
-        irqhandler 15
 
 ;;; fault0dHandler
 arch_fault0dhandler:

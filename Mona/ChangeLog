@@ -1,3 +1,9 @@
+2004-08-10  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/ihandlers.cpp : IRQ周りを整理。動的登録がIRQ0以外全てで行えるようになった。
+
+        * src/kernel/ihandler.asm: IRQ周りを整理
+
 2004-08-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp (SetData): マウス割り込みハンドラをカーネルから追い出した。
