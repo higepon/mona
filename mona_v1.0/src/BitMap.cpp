@@ -46,6 +46,17 @@ BitMap::~BitMap() {
 }
 
 /*!
+    \brief get number of bits
+
+    \author HigePon
+    \date   create:2003/08/22 update:
+*/
+dword BitMap::getBitsNumber() const {
+
+    return bitsNumber_;
+}
+
+/*!
     \brief mark bitmap
 
     \param index index to mark

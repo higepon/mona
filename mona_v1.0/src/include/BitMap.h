@@ -29,6 +29,7 @@ class BitMap {
     int find();
     int countClear();
     bool marked(int index);
+    dword getBitsNumber() const;
 
  private:
     dword* map_;
