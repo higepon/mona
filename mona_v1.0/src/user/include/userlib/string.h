@@ -41,7 +41,7 @@ size_t strcspn(const char* str1, const char* str2);
 size_t strspn(const char* str1, const char* str2);
 char* strtok(char* str, const char* delim);
 char* ltona(long value, char* str, int n, int base);
-
+char *strcat(char *s,char *t);
 #ifdef __cplusplus
 }
 #endif

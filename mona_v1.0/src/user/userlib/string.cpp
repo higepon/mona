@@ -274,3 +274,15 @@ char* ltona(long value, char* str, int n, int base) {
         *--ps = '0';
     return str;
 }
+
+char *strcat(char *s,char *t) {
+  int i = 0;
+
+  while(*(s+i)) {
+    i++;
+  }
+  while(*(s+i)=*(t++)) {
+    i++;
+  }
+  return s;
+}

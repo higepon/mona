@@ -597,6 +597,58 @@ void printf(const char *format, ...) {
     }
 }
 
+#if 0
+void printf(const char *format, ...) {
+
+    char str[512];
+    char tmp[256];
+    str[0] = '\0';
+
+    void** list = (void **)&format;
+
+    ((char**)list) += 1;
+    for (int i = 0; format[i] != '\0'; i++) {
+
+        if (format[i] == '%') {
+            i++;
+
+            switch (format[i]) {
+              case 's':
+                  sprintf(tmp, "%s", (char *)(*list));
+                  strcat(str, tmp);
+                  ((char**)list) += 1;
+                  break;
+              case 'd':
+                  sprintf(tmp, "%d", (int)(*list));
+                  strcat(str, tmp);
+                  ((int*)list) += 1;
+                  break;
+              case 'x':
+                  sprintf(tmp, "0x%x", (int)(*list));
+                  strcat(str, tmp);
+                  ((int*)list) += 1;
+                  break;
+              case 'c':
+                  sprintf(tmp, "%c", (char)(int)(*list));
+                  strcat(str, tmp);
+                  ((char*)list) += 1;
+                  break;
+              case '%':
+                  strcat(str, "%");
+                  break;
+              case '\0':
+                  i--;
+                  break;
+            }
+        } else {
+            sprintf(tmp, "%c", format[i]);
+            strcat(str, tmp);
+        }
+    }
+    print(str);
+}
+#endif
+
 void putInt(size_t n, int base) {
 
     static char buf[256];
