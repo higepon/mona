@@ -126,23 +126,39 @@ void Shell::commandChar(char c)
     position_++;
 }
 
-#define COMMAND_LS 1
-#define COMMAND_CD 2
+enum
+{
+    COMMAND_NONE,
+    COMMAND_LS,
+    COMMAND_CD,
+    COMMAND_CAT
+};
 
 int Shell::isInternalCommand(char* command)
 {
-    if (!strcmp(command, "LS") || !strcmp(command, "DIR"))
+    int ret = COMMAND_NONE;
+    int len = strlen(command);
+    char* cmd = new char[len + 1];
+    for (int i = 0; i <= len; i++)
     {
-        return COMMAND_LS;
+        char ch = command[i];
+        if ('a' <= ch && ch <= 'z') ch -= 'a' - 'A';
+        cmd[i] = ch;
     }
-    else if (!strcmp(command, "CD"))
+    if (strcmp(cmd, "LS") == 0 || strcmp(cmd, "DIR") == 0)
     {
-        return COMMAND_CD;
+        ret = COMMAND_LS;
     }
-    else
+    else if (strcmp(cmd, "CD") == 0)
     {
-        return 0;
+        ret = COMMAND_CD;
     }
+    else if (strcmp(cmd, "CAT") == 0 || strcmp(cmd, "TYPE") == 0)
+    {
+        ret = COMMAND_CAT;
+    }
+    delete cmd;
+    return ret;
 }
 
 void Shell::commandExecute()
@@ -255,24 +271,21 @@ void Shell::commandExecute()
 
 void Shell::internalCommandExecute(int command, CommandOption* option)
 {
-    switch(command)
+    switch (command)
     {
-    case(COMMAND_CD):
+    case COMMAND_CD:
         {
-            char* path = option ? option->str : NULL;
-            if (path == NULL)
+            if (option == NULL)
             {
-                break;
+                printf("usage: CD directory\n");
             }
-
-            if (syscall_cd(path))
+            else if (syscall_cd(option->str))
             {
-                printf("directory %s not found\n", path);
-                break;
+                printf("directory not found: %s\n", option->str);
             }
             break;
         }
-    case(COMMAND_LS):
+    case COMMAND_LS:
        {
            char name[15];
            int  size;
@@ -290,6 +303,53 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
 
            syscall_dir_close();
            break;
+       }
+    case COMMAND_CAT:
+       {
+            if (option == NULL)
+            {
+                printf("usage: CAT/TYPE file\n");
+                break;
+            }
+
+            FileInputStream fis(option->str);
+            if (fis.open() != 0)
+            {
+                printf("file open error: %s\n", option->str);
+                break;
+            }
+            int size = fis.getFileSize();
+            byte* buf = new byte[size + 1];
+            fis.read(buf, size);
+            fis.close();
+            if (size > 0)
+            {
+                byte* p = buf;
+                bool cr = false;
+                for (int i = 0; i < size; i++)
+                {
+                    byte b = buf[i];
+                    switch (b)
+                    {
+                        case '\r':
+                            *p++ = '\n';
+                            cr = true;
+                            break;
+                        case '\n':
+                            if (!cr) *p++ = '\n';
+                            cr = false;
+                            break;
+                        default:
+                            *p++ = b;
+                            cr = false;
+                            break;
+                    }
+                }
+                *p = 0;
+                printf((const char*)buf);
+            }
+            delete [] buf;
+            break;
        }
     default:
         break;

@@ -8,6 +8,9 @@
 
         * src/secondboot.asm: KERNEL_ADDRに対応
 
+        * src/servers/shell/main.cpp: 小文字で入力された内部コマンドに対応
+                                      ファイルの中身を表示する内部コマンドCAT/TYPEを追加
+
 2004-04-29  Yui  <yuinejp@users.sourceforge.jp>
 
         * src/kernel/elf.cpp: ロードアドレス演算の修正
