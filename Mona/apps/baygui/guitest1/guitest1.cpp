@@ -69,6 +69,7 @@ int main(int argc, char **argv)
 	window->add(text3);
 	window->add(list1);
 	window->run();
+	delete(window);
 	
 	return 0;
 }

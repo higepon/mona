@@ -53,6 +53,14 @@ public:
 		image_pushed = new Bitmap("/APPS/GHEBTN.APP/HEPUSHED.BM5");
 	}
 	
+	~HeButton(){
+		for (int i = 0; i < 10; i++) {
+			delete(number[i]);
+		}
+		delete(image_normal);
+		delete(image_pushed);
+	}
+
 	void onPaint(Graphics *g) {
 		if (pushed == false) {
 			g->drawImage(image_normal, 0, 0);

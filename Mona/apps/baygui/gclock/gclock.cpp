@@ -65,5 +65,6 @@ public:
 int MonaMain(List<char*>* pekoe) {
 	GClock *clock = new GClock();
 	clock->run();
+	delete(clock);
 	return 0;
 }

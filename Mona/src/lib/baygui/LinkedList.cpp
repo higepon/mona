@@ -118,8 +118,8 @@ void LinkedList::remove(LinkedItem *item)
 /** ‘Síœ */
 void LinkedList::removeAll()
 {
-	while (endItem != NULL) {
-		remove(endItem);
+	while (firstItem != NULL) {
+		remove(firstItem);
 	}
 	dataListLength = 0;
 }

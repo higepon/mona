@@ -190,5 +190,6 @@ int main(int argc, char **argv)
 {
 	GVersion *version = new GVersion();
 	version->run();
+	delete(version);
 	return 0;
 }

@@ -65,6 +65,16 @@ public:
 		add(panel);
 	}
 	
+	~GBrowser(){
+		free(address);
+		free(reload);
+		free(stop);
+		free(home);
+		free(favorites);
+		free(go);
+		free(panel);
+	}
+	
 	void onEvent(Event *event){
 		// 更新を押したとき
 		if (event->source == reload) {
@@ -96,5 +106,6 @@ public:
 int MonaMain(List<char*>* pekoe) {
 	GBrowser *browser = new GBrowser();
 	browser->run();
+	delete(browser);
 	return 0;
 }

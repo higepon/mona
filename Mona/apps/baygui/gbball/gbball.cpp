@@ -44,5 +44,6 @@ public:
 int MonaMain(List<char*>* pekoe) {
 	GBBall *bball = new GBBall();
 	bball->run();
+	delete(bball);
 	return 0;
 }

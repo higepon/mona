@@ -77,9 +77,6 @@ GLaunch::GLaunch()
 
 GLaunch::~GLaunch()
 {
-	for (int i = 0; i < MAX_APP_LEN; i++) {
-		delete(buttonList[i]);
-	}
 }
 
 void GLaunch::onEvent(Event *event)
@@ -102,7 +99,8 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char **argv)
 #endif
 {
-	GLaunch *glaunch = new GLaunch();
-	glaunch->run();
+	GLaunch *launch = new GLaunch();
+	launch->run();
+	delete(launch);
 	return 0;
 }

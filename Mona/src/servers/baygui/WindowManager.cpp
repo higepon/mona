@@ -474,6 +474,9 @@ void WindowManager::onMouseRelease(int mx, int my)
  */
 void WindowManager::add(Control *control)
 {
+	// NULLチェック
+	if (control == NULL) return;
+	
 	// ウィンドウ追加
 	_controlList->add(new LinkedItem(control));
 	
@@ -495,16 +498,17 @@ void WindowManager::add(Control *control)
 }
 
 /**
- 指定したウィンドウを削除する.
- 用がすんだら、返ってきたインスタンスを必ずdeleteすること。
+ 指定したウィンドウを削除する
  @param control 指定するウィンドウ
- @return 削除されたウィンドウ（なければNULL）
  */
 void WindowManager::remove(Control *control)
 {
+	// NULLチェック
+	if (control == NULL) return;
+	
 	// 背景を塗りつぶす
 	restoreBackGround(control);
-
+	
 	// 削除メッセージを投げる
 	if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
 		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getThreadID());
@@ -515,13 +519,16 @@ void WindowManager::remove(Control *control)
 	// ウィンドウ削除
 	_controlList->remove(getLinkedItem(control));
 	
+	// NULLチェック
+	if (_controlList->endItem == NULL) return;
+	
 	// 非活性メッセージを投げる
 	postActivatedToWindows(false, _controlList->getLength());
 	
 	// 活性メッセージを投げる
 	Control *c = (Control *)_controlList->endItem->data;
 	postActivatedToWindow(true, c);
-
+	
 	// 再描画メッセージを投げる
 	postRepaintToWindows(_controlList->getLength());
 }
@@ -756,7 +763,7 @@ void WindowManager::service()
 					}
 				}
 				// ウィンドウが一つもないときはイベントを送らない
-				if (_controlList->getLength() > 0) {
+				if (_controlList->endItem != NULL) {
 					if (info.arg2 & KEY_MODIFIER_DOWN) {
 						onKeyPress(info.arg1, info.arg2, info.arg3);
 					} else if (info.arg2 & KEY_MODIFIER_UP) {
@@ -766,20 +773,23 @@ void WindowManager::service()
 				break;
 			case MSG_MOUSE_INFO:
 				monapi_call_mouse_set_cursor(0);
-				if(info.arg3 != 0){
-					// press
-					if(isMouseClick == false){
-						isMouseClick = true;
-						onMousePress(info.arg1, info.arg2);
-					// drag
+				// ウィンドウが一つもないときはイベントを送らない
+				if (_controlList->endItem != NULL) {
+					if(info.arg3 != 0){
+						// press
+						if(isMouseClick == false){
+							isMouseClick = true;
+							onMousePress(info.arg1, info.arg2);
+						// drag
+						}else{
+							onMouseDrag(info.arg1, info.arg2);
+						}
 					}else{
-						onMouseDrag(info.arg1, info.arg2);
-					}
-				}else{
-					// release
-					if(isMouseClick == true){
-						isMouseClick = false;
-						onMouseRelease(info.arg1, info.arg2);
+						// release
+						if(isMouseClick == true){
+							isMouseClick = false;
+							onMouseRelease(info.arg1, info.arg2);
+						}
 					}
 				}
 				monapi_call_mouse_set_cursor(1);
@@ -789,7 +799,7 @@ void WindowManager::service()
 					Control *control = new Control();
 					control->setThreadID(info.arg1);
 					// ランチャーID登録
-					if (_controlList->getLength() == 0) {
+					if (_controlList->endItem == NULL) {
 						launcherID = info.arg1;
 					}
 					int x = info.arg2 >> 16;
@@ -804,7 +814,9 @@ void WindowManager::service()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("Window->WindowManager MSG_GUISERVER_REMOVE received %d\n", info.arg1);
-				remove((Control *)_controlList->endItem->data);
+				if (_controlList->endItem != NULL) {
+					remove((Control *)_controlList->endItem->data);
+				}
 				break;
 			case MSG_GUISERVER_STOP:
 				//printf("Window->WindowManager MSG_GUISERVER_STOP received %d\n", info.arg1);
@@ -820,7 +832,9 @@ void WindowManager::service()
 			case MSG_GUISERVER_RESTORE:
 				// KUKURIを移植するのに必要
 				//printf("Window->WindowManager MSG_GUISERVER_RESTORE received %d\n", info.arg1);
-				restoreBackGround((Control *)_controlList->endItem->data);
+				if (_controlList->endItem != NULL) {
+					restoreBackGround((Control *)_controlList->endItem->data);
+				}
 				break;
 			}
 		}
