@@ -38,6 +38,7 @@ class Command{
     int SetCurrentPos(int pos);
     bool InsertCommandLine(const Charing& s);
     bool RemoveCommandLine();
+    bool InitializeCommandLine();
     bool IsTerminate();
     int ExecuteCommand();
 

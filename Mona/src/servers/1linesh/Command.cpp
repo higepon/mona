@@ -79,6 +79,14 @@ bool Command::RemoveCommandLine(){
   return true;
 }
 
+bool Command::InitializeCommandLine(){
+
+  this->isTerminateFlag = false;
+  this->commandLine.Remove(0, this->commandLine.GetLength());
+  this->posCurrent = 0;
+  return true;
+}
+
 bool Command::IsTerminate(){
 
   return this->isTerminateFlag;
