@@ -114,7 +114,7 @@ arch_switch_thread_to_user1:
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
-        mov esp, dword[ebx + 28]     ; restore esp ;iranai?
+        mov esp, dword[ebx + 28]     ; restore esp
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
@@ -126,7 +126,7 @@ arch_switch_thread_to_user1:
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
-        pop  ebx                     ; restore ebp
+        pop  ebx                     ; restore ebx
         iretd                        ; switch to next
 
 ;;----------------------------------------------------------------------
