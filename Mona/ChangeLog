@@ -1,3 +1,15 @@
+2004-04-29  shadow  <shadowin@users.sourceforge.jp>
+
+        * include/monapi/Keys.h: KEY_MODIFIER_CHAR追加
+
+        * src/lib/monapi/Keys.cpp: keytopmap追加、ToChar　IsToChar対応文字追加、設計変更
+
+        * src/servers/key/main.cpp: KEY_MODIFIER_CHAR対応
+
+        * src/servers/key/KeyboardManager.h: SetKeyTopMap追加
+
+        * src/servers/key/KeyboardManager.cpp: SetKeyTopMap追加
+
 2004-04-29  tino  <tino@users.sourceforge.jp>
 
         * env/kernel.inc: 共通化するのは無意味なので削除
