@@ -34,6 +34,7 @@ class PageManager {
 
     void returnPhysicalPage(PhysicalAddress address);
     void returnPhysicalPages(PageEntry* directory);
+    void returnPageTable(PageEntry* table);
 
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const;
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const;

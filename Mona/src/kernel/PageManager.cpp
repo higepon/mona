@@ -299,14 +299,23 @@ PageEntry* PageManager::createNewPageDirectory() {
 void PageManager::returnPhysicalPages(PageEntry* directory)
 {
     dword vram = vram_;
-    for (; vram % 4096; vram--);
+    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
     int vramIndex = getDirectoryIndex(vram);
+
+    returnPageTable((PageEntry*)(directory[0] & 0xfffff000));
+    returnPageTable((PageEntry*)(directory[1] & 0xfffff000));
 
     /* 0-8MB don't return */
     for (int i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
     {
         /* not allocated */
-        if (i == vramIndex || !isPresent(&(directory[i])))
+        if (i == vramIndex)
+        {
+            returnPageTable((PageEntry*)(directory[i] & 0xfffff000));
+            continue;
+        }
+
+        if (!isPresent(&(directory[i])))
         {
             continue;
         }
@@ -323,8 +332,16 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
             PhysicalAddress address = ((dword)(table[j])) & 0xfffff000;
             returnPhysicalPage(address);
         }
+        returnPageTable(table);
     }
+    returnPageTable(directory);
     return;
+}
+
+void PageManager::returnPageTable(PageEntry* table)
+{
+    PhysicalAddress address = (PhysicalAddress)table;
+    pageTablePool_->clear((address - pageTablePoolAddress_) / ARCH_PAGE_SIZE);
 }
 
 PageEntry* PageManager::createNewPageDirectoryForV86()

@@ -2,6 +2,8 @@
 
         * src/kernel/PageManager.cpp (allocatePageTable): ページテーブルをプールから割り当てるように変更
 
+                                                          プロセス破棄時にページテーブルをきっちり返却
+
 2004-04-13  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/fat.cpp (initialize): バグ修正(Yui_Nekoさん指摘による)
