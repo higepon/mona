@@ -1,3 +1,7 @@
+2004-11-01  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/baygui/ghebtn/Makefile (CLEANFILES): BM5‚Ìíœ‚ğ’Ç‰Á
+
 2004-10-31  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones Code:Mones Ver0.14 MoTcp,MonesLoaderƒNƒ‰ƒX’Ç‰Á QEMU NIC”F¯
