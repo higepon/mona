@@ -33,6 +33,7 @@ clean:
 	@cd src; $(MAKE) $@
 	@cd apps; $(MAKE) $@
 	@cd samples; $(MAKE) $@
+	rm -f $(BINDIR)/root/MONA-12.MNF
 	rm -f $(BINDIR)/root/APPS/*.ELF
 	rm -f $(BINDIR)/root/SERVERS/*.SVR
 	rm -f $(BINDIR)/mona.img
