@@ -42,21 +42,6 @@ void keyStrokeHandler() {
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
 
-    g_console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
-                 , g_kthread_current->eip
-                 , g_kthread_current->cs
-                 , g_kthread_current->eflags
-                 , g_kthread_current->eax
-                 , g_kthread_current->ecx
-                 , g_kthread_current->edx
-                 , g_kthread_current->ebx
-                 , g_kthread_current->esp
-                 , g_kthread_current->ebp
-                 , g_kthread_current->esi
-                 , g_kthread_current->edi);
-
-    demoStep++;
-
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
 }

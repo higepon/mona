@@ -18,6 +18,7 @@
 #include<semaphore.h>
 #include<global.h>
 #include<syscalls.h>
+#include<rtc.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
@@ -140,6 +141,10 @@ void disp_kthread_info() {
          g_console->printf("[idle] %d%% [kernel] %d%% "
                            , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
                            , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
+
+//      Date date;
+//      rtc_get_date(&date);
+//      g_console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
 
          pos_x = x;
          pos_y = y;

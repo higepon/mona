@@ -35,11 +35,7 @@
 #include<pic.h>
 #include<rtc.h>
 
-
 char* version = "Mona develop beta 0.05a $Date$";
-
-
-dword demoStep;
 
 /*!
     \brief  mona kernel start at this point
@@ -83,13 +79,6 @@ void startKernel(void) {
     } else {
         g_console->printf("CPUID NG  \n");
     }
-
-//      Date date;
-//      rtc_get_date(&date);
-//      g_console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
-
-    /* enable interrupt */
-    //    enableInterrupt();
 
     kthread_init();
     while (true);
