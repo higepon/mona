@@ -173,13 +173,12 @@ void FDCDriver::interrupt() {
 /*!
     \brief wait interrupt
 
-    \return true:interrupt
     \author HigePon
-    \date   create:2003/02/10 update:
+    \date   create:2003/02/10 update:2003/09/19
 */
-bool FDCDriver::waitInterrupt() {
+void FDCDriver::waitInterrupt() {
 
-    return interrupt_;
+    while (!interrupt_);
 }
 
 /*!
@@ -194,7 +193,7 @@ void FDCDriver::motor(bool on) {
     if (on) {
         interrupt_ = false;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
-        while (!waitInterrupt());
+        waitInterrupt();
         delay();
         delay();
         delay();
@@ -253,7 +252,7 @@ bool FDCDriver::recalibrate() {
     }
 
     while (true) {
-        while (!waitInterrupt());
+	waitInterrupt();
 
         while (true) {
 
@@ -264,23 +263,6 @@ bool FDCDriver::recalibrate() {
 
         }
         if (senseInterrupt()) break;
-    }
-
-    return true;
-}
-
-bool FDCDriver::waitSeekEnd() {
-
-    retry_seek_end:
-
-    while (!waitInterrupt());
-
-    readResults();
-
-    if (results_[0] & 0xC0) {
-
-        interrupt_ = false;
-        goto retry_seek_end;
     }
 
     return true;
@@ -348,7 +330,7 @@ bool FDCDriver::seek(byte track) {
 
     /* seek, recalibreate should wait interrupt */
     /* and then senseInterrupt                  */
-    while (!waitInterrupt());
+    waitInterrupt();
 
     delay();
     delay();
@@ -573,7 +555,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     info(DEV_WARNING, "wait loop");
 
-    while (!waitInterrupt());
+    waitInterrupt();
 
     delay();
     delay();
@@ -635,7 +617,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
     interrupt_ = false;
     sendCommand(command, sizeof(command));
-    while (!waitInterrupt());
+    waitInterrupt();
 
     info(DEV_NOTICE, "write:after waitInterrupt\n");
 

@@ -134,7 +134,7 @@ void startKernel(void) {
     g_console->printf("Hit any key to start Main Process \n");
     while (g_demo_step < 2);
 
-    g_info_level = MSG;
+    g_info_level = DEV_NOTICE;
 
     Process* idle     = new Process("idle         ");
     Process* mprocess = new Process("mainProc     ");

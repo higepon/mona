@@ -34,9 +34,8 @@ class FDCDriver : public DiskDriver {
     bool recalibrate();
   private:
     void initilize();
-    void setFDCVersion();
+    void waitInterrupt();
     bool sendCommand(const byte command[], const byte length);
-    bool waitInterrupt();
     bool waitSeekEnd();
     bool checkMSR(byte expectedCondition, byte mask);
     bool checkMSR(byte expectedCondition);
