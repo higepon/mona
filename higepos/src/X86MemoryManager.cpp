@@ -190,9 +190,8 @@ void X86MemoryManager::printInfo() {
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::addToEntry(struct MemoryEntry* entry, struct MemoryEntry* block, H_SIZE_T size) {
-
-    return;
+void X86MemoryManager::addToEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
+    _sysPrintln("X86MemoryManager Information");
 }
 
 /*!
@@ -203,6 +202,6 @@ void X86MemoryManager::addToEntry(struct MemoryEntry* entry, struct MemoryEntry*
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::concatBlock(struct MemoryEntry* block) {
-    return;
+void X86MemoryManager::concatBlock(struct memoryEntry* block) {
+    _sysPrintln("X86MemoryManager Information");
 }
