@@ -12,7 +12,7 @@
   $Date$
 */
 #include <monapi.h>
-#include <monalibc.h>
+#include <monapi/messages.h>
 #include <monapi/Keys.h>
 #include "OneLineShell.h"
 #include "DisplayWindow.h"

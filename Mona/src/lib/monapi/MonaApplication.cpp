@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <monapi/messages.h>
 
 namespace MonAPI {
 

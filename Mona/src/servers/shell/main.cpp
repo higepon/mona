@@ -1,7 +1,9 @@
 #include <monapi.h>
-#include <ShellServer.h>
-#include <Shell.h>
+#include <monapi/messages.h>
 #include <monapi/Keys.h>
+
+#include "ShellServer.h"
+#include "Shell.h"
 #include "elf.h"
 
 static bool hasExited = false;

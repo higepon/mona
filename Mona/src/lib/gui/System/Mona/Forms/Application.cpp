@@ -5,7 +5,9 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 
-#if !defined(MONA) && defined(WIN32)
+#ifdef MONA
+#include <monapi/messages.h>
+#elif defined(WIN32)
 extern void MonaGUI_Initialize();
 extern void MonaGUI_Run();
 extern void MonaGUI_Exit();
@@ -16,7 +18,7 @@ using namespace System::Collections;
 using namespace System::Drawing;
 
 #ifdef MONA
-dword __mouse_server, __gui_server;
+dword __gui_server;
 #else
 #include "MONA-12.h"
 #endif
@@ -35,14 +37,9 @@ namespace System { namespace Mona { namespace Forms
 		Application::forms = new ArrayList<_P<Form> >;
 		
 #ifdef MONA
-		__mouse_server = MonAPI::Message::lookupMainThread("MOUSE.SVR");
-		if (MonAPI::Message::send(__mouse_server, MSG_MOUSE_REGIST_TO_SERVER, MonAPI::System::getThreadID()) != 0)
-		{
-			::printf("ERROR: Can't connect to mouse server!\n");
-			::exit(1);
-		}
+		if (monapi_register_to_server(ID_MOUSE_SERVER, 1) == 0) ::exit(1);
 		
-		__gui_server = MonAPI::Message::lookupMainThread("GUI.SVR");
+		__gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		MessageInfo msg;
 		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_GETFONT) != 0)
 		{
@@ -69,7 +66,7 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Dispose()
 	{
 #ifdef MONA
-		if (MonAPI::Message::send(__mouse_server, MSG_MOUSE_UNREGIST_FROM_SERVER, MonAPI::System::getThreadID()) != 0)
+		if (monapi_register_to_server(ID_MOUSE_SERVER, 0) == 0)
 		{
 			::printf("ERROR: Can't connect to mouse server!\n");
 			//::exit(1);

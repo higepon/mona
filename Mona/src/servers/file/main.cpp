@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <monapi/messages.h>
 #include <monapi/cmemoryinfo.h>
 
 #define SVR "File Server"

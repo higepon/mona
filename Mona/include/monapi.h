@@ -21,7 +21,6 @@
 #include <monapi/Random.h>
 #include <monapi/syscall.h>
 #include <monapi/Keys.h>
-#include <monapi/messages.h>
 #include <monalibc.h>
 
 #endif

@@ -3,6 +3,7 @@
 
 #ifdef MONA
 #include <monapi.h>
+#include <monapi/messages.h>
 #endif
 
 #include <gui/System/Mona/Forms/Application.h>
@@ -25,14 +26,6 @@ _P<MonAPI::Screen> GetDefaultScreen()
 		ret.Set(new MonAPI::Screen(), true);
 	}
 	return ret;
-}
-
-extern dword __mouse_server;
-
-void __SetMouseCursor(bool enabled)
-{
-	dword hdr = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
-	MonAPI::Message::sendReceive(NULL, __mouse_server, hdr);
 }
 #else
 extern unsigned char* screen_buffer;
@@ -142,11 +135,11 @@ namespace System { namespace Mona { namespace Forms
 	void Control::Refresh()
 	{
 #ifdef MONA
-		::__SetMouseCursor(false);
+		::monapi_call_mouse_set_cursor(0);
 #endif
 		this->RefreshInternal();
 #ifdef MONA
-		::__SetMouseCursor(true);
+		::monapi_call_mouse_set_cursor(1);
 #endif
 	}
 	

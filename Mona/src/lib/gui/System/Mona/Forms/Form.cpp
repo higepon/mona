@@ -1,6 +1,9 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
+#ifdef MONA
+#include <monapi/messages.h>
+#endif
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/ControlPaint.h>
@@ -11,10 +14,6 @@
 
 using namespace System;
 using namespace System::Drawing;
-
-#ifdef MONA
-extern void __SetMouseCursor(bool enabled);
-#endif
 
 namespace System { namespace Mona { namespace Forms
 {
@@ -61,9 +60,9 @@ namespace System { namespace Mona { namespace Forms
 		{
 			(*bmp.get())[i] = (*this->buffer.get())[i].get_A() != 0 ? white : empty;
 		}
-		__SetMouseCursor(false);
+		monapi_call_mouse_set_cursor(0);
 		this->DrawImage(bmp);
-		__SetMouseCursor(true);
+		monapi_call_mouse_set_cursor(1);
 	}
 	
 	bool Form::CheckPoint(int x, int y)
