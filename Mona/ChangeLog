@@ -1,5 +1,7 @@
 2004-10-07  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/PageManager.cpp (getPagePoolInfo): ページ情報追加
+
         * src/lib/monapi/MemoryManager.cpp (free): syscall_free_pagesの組み込み
 
         * src/lib/monapi/syscall.cpp (syscall_free_pages): 追加

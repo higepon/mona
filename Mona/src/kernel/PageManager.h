@@ -26,6 +26,7 @@ class PageManager {
   public:
     void setup(PhysicalAddress vram);
     void flushPageCache() const;
+    void getPagePoolInfo(dword* freeNum, dword* totalNum, dword* pageSize);
 
     void returnPhysicalPage(PhysicalAddress address);
     void returnPhysicalPages(PageEntry* directory);

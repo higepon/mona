@@ -795,3 +795,10 @@ bool PageManager::getPhysicalAddress(PageEntry* directory, LinearAddress laddres
 
     return true;
 }
+
+void PageManager::getPagePoolInfo(dword* freeNum, dword* totalNum, dword* pageSize)
+{
+    *freeNum  = memoryMap_->countClear();
+    *totalNum = memoryMap_->getBitsNumber();
+    *pageSize = ARCH_PAGE_SIZE;
+}
