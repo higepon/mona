@@ -367,12 +367,13 @@ bool MFDCDriver::seek(byte track) {
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
-
+    printStatus("seek sense before");
     if (!senseInterrupt()) {
 
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
+    printStatus("seek sense after");
     return true;
 }
 
