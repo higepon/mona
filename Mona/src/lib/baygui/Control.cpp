@@ -108,8 +108,7 @@ void Control::postEvent(Event *event)
 void Control::repaint()
 {
 	if (this->_buffer == NULL) return;
-	this->_metrics->setFontStyle(this->fontStyle);
-	this->_g->setFontStyle(this->fontStyle);
+	setFontStyle(this->fontStyle);
 	onPaint(this->_g);
 	update();
 }
@@ -230,5 +229,11 @@ void Control::setForeground(unsigned int foreColor)
  */
 void Control::setFontStyle(int style)
 {
+	if (this->_metrics != NULL) {
+		_metrics->setFontStyle(style);
+	}
+	if (this->_g != NULL) {
+		_g->setFontStyle(style);
+	}
 	this->fontStyle = style;
 }

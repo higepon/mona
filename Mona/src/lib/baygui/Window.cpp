@@ -496,7 +496,8 @@ void Window::run()
 					key = charcode;
 				}
 				
-				if (key != 0) {
+				// キーコードが０ならイベントを投げない
+				if (key > 0) {
 					this->keyEvent.keycode = key;
 					this->keyEvent.modifiers = this->modifiers;
 					if (info.arg2 & KEY_MODIFIER_DOWN) {

@@ -179,13 +179,12 @@ void Container::repaint()
 	
 	onPaint(this->_g);
 
-	if (_controlList->getLength() == 0) {
-		update();
-	} else {
-		// 子部品を再描画する
-		for(int i = 0; i < _controlList->getLength(); i++) {
-			Control *control = (Control *)_controlList->get(i);
-			control->repaint(); // この中でupdate()が呼ばれる
-		}
+	// 自分の領域を更新する
+	update();
+
+	// 子部品を再描画する
+	for(int i = 0; i < _controlList->getLength(); i++) {
+		Control *control = (Control *)_controlList->get(i);
+		control->repaint();
 	}
 }
