@@ -65,6 +65,7 @@ namespace System { namespace Mona { namespace Forms
 	{
 		BASE::Create();
 		Application::AddForm(this);
+		if ((this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0) this->offset = Point::get_Empty();
 		this->isCloseButtonPushed = false;
 		this->ncState = NCState_None;
 		this->formBuffer = new Bitmap(this->get_Width(), this->get_Height());
@@ -125,7 +126,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::OnPaint()
 	{
-		if (this->buffer == NULL) return;
+		if (this->buffer == NULL || (this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0) return;
 		
 		_P<Graphics> g = Graphics::FromImage(this->buffer);
 		int w = this->get_Width(), h = this->get_Height(), oy = this->offset.Y;
@@ -162,7 +163,10 @@ namespace System { namespace Mona { namespace Forms
 	
 	Control::NCState Form::NCHitTest(int x, int y)
 	{
-		if (BASE::NCHitTest(x, y) == NCState_Client) return NCState_Client;
+		if ((this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0 || BASE::NCHitTest(x, y) == NCState_Client)
+		{
+			return NCState_Client;
+		}
 		
 		int oy = this->offset.Y, xx = x + this->offset.X, yy = y + oy;
 		if (Rectangle(4, 4, oy - 8, oy - 8).Contains(xx, yy)) return NCState_CloseButton;
@@ -291,5 +295,15 @@ namespace System { namespace Mona { namespace Forms
 		
 		this->ncState = NCState_None;
 		if (destroy) this->Dispose();
+	}
+	
+	void Form::OnActivated(_P<EventArgs> e)
+	{
+		this->raise_Activated(this, e);
+	}
+	
+	void Form::OnDeactivate(_P<EventArgs> e)
+	{
+		this->raise_Deactivate(this, e);
 	}
 }}}

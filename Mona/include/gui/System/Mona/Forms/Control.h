@@ -121,6 +121,8 @@ namespace System { namespace Mona { namespace Forms
 		virtual void OnMouseMove(_P<MouseEventArgs> e);
 		virtual void OnMouseDown(_P<MouseEventArgs> e);
 		virtual void OnMouseUp(_P<MouseEventArgs> e);
+		virtual void OnMouseEnter(_P<EventArgs> e);
+		virtual void OnMouseLeave(_P<EventArgs> e);
 		virtual void OnClick(_P<EventArgs> e);
 		virtual void OnNCMouseDown(_P<MouseEventArgs> e) {};
 		virtual void OnNCMouseUp(_P<MouseEventArgs> e) {};
@@ -132,6 +134,8 @@ namespace System { namespace Mona { namespace Forms
 		DECLARE_EVENT(IMouseEventHandler, MouseMove, _P<MouseEventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseDown, _P<MouseEventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseUp, _P<MouseEventArgs>)
+		DECLARE_EVENT(System::IEventHandler, MouseEnter, _P<System::EventArgs>)
+		DECLARE_EVENT(System::IEventHandler, MouseLeave, _P<System::EventArgs>)
 		DECLARE_EVENT(System::IEventHandler, Click, _P<System::EventArgs>)
 	};
 }}}

@@ -47,6 +47,12 @@ namespace System { namespace Mona { namespace Forms
 		virtual void OnNCMouseMove(_P<MouseEventArgs> e);
 		virtual void OnNCMouseDown(_P<MouseEventArgs> e);
 		virtual void OnNCMouseUp(_P<MouseEventArgs> e);
+		
+		virtual void OnActivated(_P<EventArgs> e);
+		virtual void OnDeactivate(_P<EventArgs> e);
+		
+		DECLARE_EVENT(System::IEventHandler, Activated, _P<System::EventArgs>)
+		DECLARE_EVENT(System::IEventHandler, Deactivate, _P<System::EventArgs>)
 	};
 }}}
 

@@ -453,6 +453,16 @@ namespace System { namespace Mona { namespace Forms
 		this->raise_MouseUp(this, e);
 	}
 	
+	void Control::OnMouseEnter(_P<EventArgs> e)
+	{
+		this->raise_MouseEnter(this, e);
+	}
+	
+	void Control::OnMouseLeave(_P<EventArgs> e)
+	{
+		this->raise_MouseLeave(this, e);
+	}
+	
 	void Control::OnClick(_P<EventArgs> e)
 	{
 		this->raise_Click(this, e);
