@@ -282,11 +282,11 @@ int Scheduler::wakeup(Process* process, int waitReason)
 
 void Scheduler::dump()
 {
-    g_console->printf("current=%x, prev=%x\n", g_currentThread, g_prevThread);
+    logprintf("current=%x, prev=%x\n", g_currentThread, g_prevThread);
     FOREACH_N(runq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+//        g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
         logprintf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 

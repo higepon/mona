@@ -302,6 +302,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_OPEN:
 
         {
+            g_console->printf("fopen:S");
             char* path  = (char*)info->esi;
             int mode    = (int)info->ecx;
             dword* size = (dword*)info->edi;
@@ -324,6 +325,7 @@ void syscall_entrance() {
             Semaphore::up(&g_semaphore_fd);
 
             *size = g_fs->size();
+            g_console->printf("fopen:E");
             info->eax = 0;
             break;
         }
@@ -331,6 +333,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_READ:
 
         {
+            g_console->printf("fread:S");
             byte* buf      = (byte*)(info->esi);
             dword size     = (dword)(info->ecx);
 
@@ -346,6 +349,7 @@ void syscall_entrance() {
 
             Semaphore::up(&g_semaphore_fd);
             disableInterrupt();
+            g_console->printf("fread:E");
             info->eax = 0;
             break;
         }
@@ -353,6 +357,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_WRITE:
 
         {
+            g_console->printf("fwrite:S");
             byte* buf      = (byte*)(info->esi);
             dword size     = (dword)(info->ecx);
 
@@ -368,6 +373,7 @@ void syscall_entrance() {
 
             Semaphore::up(&g_semaphore_fd);
             disableInterrupt();
+            g_console->printf("fwrite:E");
             info->eax = 0;
             break;
         }
@@ -400,11 +406,13 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_FILE_CLOSE:
 
+        g_console->printf("fclose:S");
         enableInterrupt();
         while (Semaphore::down(&g_semaphore_fd)) {g_console->printf("wait file close");};
         g_fs->close();
         g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
+        g_console->printf("fclose:E");
         break;
 
     case SYSTEM_CALL_GET_PID:

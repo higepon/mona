@@ -91,6 +91,10 @@ void keyStrokeHandler(dword scancode)
     message.header = MSG_KEY_SCANCODE;
     message.arg1   = scancode;
 
+#if 1
+    g_scheduler->dump();
+#endif
+
     /* EOI */
     outp8(0x20, 0x20);
 

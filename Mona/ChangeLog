@@ -1,3 +1,7 @@
+2004-05-19  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/ihandlers.cpp (keyStrokeHandler): キー割り込みの際にCOMポートにスレッドダンプを書き出すように変更
+
 2004-05-18  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/syscalls.cpp : ファイル操作関連のビジーウェイトがすぐに発覚するようにデバッグコード追加
