@@ -37,16 +37,18 @@ int64_t GetBZ2DecompressedSize(MemoryInfo* mi)
 MemoryInfo* BZ2Decompress(MemoryInfo* mi)
 {
 	int64_t size = GetBZ2DecompressedSize(mi);
+	if (size < 0) return NULL;
 	
 	// if size >= 4GB abort...
 	if ((size >> 32) > 0) return NULL;
 	
 	MemoryInfo* ret = new MemoryInfo();
-	if (!ret->Create((dword)size))
+	if (!ret->Create((dword)(size + 1)))
 	{
 		delete ret;
 		return NULL;
 	}
+	ret->Size--;
 	
 	bz_stream bzs;
 	bzs.bzalloc = NULL;
@@ -66,6 +68,7 @@ MemoryInfo* BZ2Decompress(MemoryInfo* mi)
 		return NULL;
 	}
 	
+	ret->Data[ret->Size] = 0;
 	return ret;
 }
 

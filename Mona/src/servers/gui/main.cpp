@@ -169,7 +169,7 @@ void MessageLoop()
 				}
 				if (mi2 != NULL)
 				{
-					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi2->Handle);
+					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi2->Handle, mi2->Size);
 					delete mi2;
 				}
 				else
@@ -181,10 +181,10 @@ void MessageLoop()
 			}
 			case MSG_GUISERVER_DECOMPRESSBZ2FILE:
 			{
-				MemoryInfo* mi = BZ2DecompressFile(msg.str);
+				MemoryInfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
 				if (mi != NULL)
 				{
-					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle);
+					Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle, mi->Size);
 					delete mi;
 				}
 				else
