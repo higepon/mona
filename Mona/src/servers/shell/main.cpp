@@ -22,7 +22,7 @@ int MonaMain(List<char*>* pekoe)
         targetID = Message::lookupMainThread("1LINESH.SVR");
         if (targetID == THREAD_UNKNOWN)
         {
-            printf("Shell Server:INIT not found\n");
+            printf("Shell Server: INIT not found\n");
             exit(1);
         }
         callAutoExec = false;
@@ -31,7 +31,7 @@ int MonaMain(List<char*>* pekoe)
     /* send */
     if (Message::send(targetID, MSG_SERVER_START_OK))
     {
-        printf("Shell Server:INIT error\n");
+        printf("Shell Server: INIT error\n");
     }
 
     /* service loop */
