@@ -21,9 +21,7 @@ BITS 32
 [extern _timerHandler]
 [extern _keyStrokeHandler]
 [extern _dummyHandler]
-[extern _eip]
-[extern _cs]
-[extern _current]
+[extern _current];; pointer to current thread
 
 ;;; fdc handler
 _arch_fdchandler:
@@ -33,14 +31,32 @@ _arch_fdchandler:
         iretd
 
 ;;; timer handler
+;;; save all context to Kthread* current
 _arch_timerhandler:
         pushad
-        mov eax, dword[esp + 32]
-        mov [_eip], eax
-        mov eax, dword[esp + 36]
-        mov [_cs], eax
         mov ebx, [_current]
+        mov eax, dword [esp + 32]; save eip
+        mov [ebx], eax
+        mov eax, dword [esp + 36]; save cs
         mov [ebx + 4], eax
+        mov eax, dword [esp + 40]; save eflags
+        mov [ebx + 8], eax
+        mov eax, dword [esp + 28]; save eax
+        mov [ebx + 12], eax
+        mov eax, dword [esp + 24]; save ecx
+        mov [ebx + 16], eax
+        mov eax, dword [esp + 20]; save edx
+        mov [ebx + 20], eax
+        mov eax, dword [esp + 16]; save ebx
+        mov [ebx + 24], eax
+        mov eax, dword [esp + 12]; save esp
+        mov [ebx + 28], eax
+        mov eax, dword [esp +  8]; save ebp
+        mov [ebx + 32], eax
+        mov eax, dword [esp +  4]; save esi
+        mov [ebx + 36], eax
+        mov eax, dword [esp +  0]; save edi
+        mov [ebx + 40], eax
         call _dummyHandler
         popad
         iretd

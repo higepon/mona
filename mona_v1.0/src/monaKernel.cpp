@@ -27,12 +27,12 @@
 #include<MFDCDriver.h>
 #include<GraphicalConsole.h>
 #include<ProcessManager.h>
+#include<kthread.h>
 #include<monaIhandler.h>
 
 char* version = "Mona develop beta 0.04a $Date$";
 
 VirtualConsole* console;
-Process* current;
 dword demoStep;
 
 /*!
@@ -65,8 +65,8 @@ void startKernel(void) {
     /* enable interrupt */
     enableInterrupt();
 
-    Process process;
-    current = &process;
+    Kthread thread;
+    current = &thread;
 
     enableTimer();
     printOK("Setting GDT        ");
@@ -118,11 +118,11 @@ void startKernel(void) {
     kernel panic
 
     \author HigePon
-    \date   create:2002/12/02 update:2003/01/25
+    \date   create:2002/12/02 update:2003/03/01
 */
 void panic(const char* msg) {
 
-    _sysSetColor(SYS_BG_COLOR | CH_RED);
+    console->setCHColor(GP_RED);
     console->printf("kernel panic!!!!!\n%s", msg);
     while (true) {
     }

@@ -13,6 +13,8 @@
 #ifndef _MONA_IHANDLER_
 #define _MONA_IHANDLER_
 
+#include <kthread.h>
+
 extern "C" void arch_fdchandler(void);
 extern "C" void arch_timerhandler(void);
 extern "C" void arch_keystrokehandler(void);
@@ -26,6 +28,6 @@ extern "C" void dummyHandler(void);
 extern "C" dword eip;
 extern "C" dword cs;
 extern "C" dword eflags;
-extern "C" Process* current;
+extern "C" Kthread* current;
 
 #endif

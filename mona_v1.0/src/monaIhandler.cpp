@@ -23,11 +23,6 @@
 #include<string>
 #include<monaIhandler.h>
 
-dword eip;
-dword cs;
-dword eflags;
-
-
 /*!
     \brief key stroke handler
 
@@ -45,7 +40,9 @@ void keyStrokeHandler() {
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
 
-    //    console->printf("eip=%x cs=%x eip=%x, esp=%x, ebp=%x", eip, cs, current->eip, current->esp, current->ebp);
+    console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
+                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
 
     demoStep++;
 

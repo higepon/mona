@@ -21,7 +21,7 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/SystemInfo.h \
   include/MFDCDriver.h include/GraphicalConsole.h \
-  include/ProcessManager.h include/monaIhandler.h
+  include/ProcessManager.h include/kthread.h include/monaIhandler.h
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h
 monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
@@ -53,7 +53,7 @@ monaIhandler.o: monaIhandler.cpp include/monaIdt.h include/monaIo.h \
   stlport/stl/_ctraits_fns.h stlport/stl/_string.c \
   stlport/stl/_string_fwd.c stlport/stl/_string_io.h \
   stlport/stl/_string_io.c stlport/stl/_string_hash.h \
-  stlport/stl/_hash_fun.h include/monaIhandler.h
+  stlport/stl/_hash_fun.h include/monaIhandler.h include/kthread.h
 monaIo.o: monaIo.cpp include/monaIo.h include/monaTypes.h \
   include/string.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
@@ -132,7 +132,8 @@ ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   stlport/stl/_config_compat_post.h
 monaChecker.o: monaChecker.cpp include/monaChecker.h include/monaVga.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
-  include/VirtualConsole.h include/IA32MemoryManager.h include/monaIo.h
+  include/VirtualConsole.h include/IA32MemoryManager.h include/monaIo.h \
+  include/kthread.h
 string.o: string.cpp include/string.h include/monaTypes.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h
@@ -143,3 +144,5 @@ MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
   include/monaVga.h include/monaKernel.h include/monaOperator.h
 GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h include/monaTypes.h include/string.h
+kthread.o: kthread.cpp include/kthread.h include/monaTypes.h \
+  include/string.h
