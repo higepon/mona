@@ -70,7 +70,7 @@ Window::Window()
 	threadID = MonAPI::System::getThreadID();
 
 	// GUIサーバーを探す
-	guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX2");
+	guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX5");
 	if (guisvrID == 0xFFFFFFFF) {
 		//printf("Window: GuiServer not found %d\n", threadID);
 	} else {

@@ -104,7 +104,7 @@ void FontManager::loadFullByteFont(char *path)
 	MessageInfo info;
 
 	// GUIサーバーを探す
-	dword guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX2");
+	dword guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX5");
 	if (guisvrID == 0xFFFFFFFF) {
 		//printf("FontManager: GuiServer not found %d\n", guisvrID);
 		fullFp = NULL;

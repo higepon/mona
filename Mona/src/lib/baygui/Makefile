@@ -4,7 +4,7 @@ TARGET       = $(LIB_STATIC)
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = $(LIBDIR)/libbaygui-imp.a
 LIB_DYNAMIC  = BAYGUI.DLL
-LIB_DYNAMIC2 = BAYGUI.DL2
+LIB_DYNAMIC2 = BAYGUI.DL5
 TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC2)
 endif
 
@@ -34,7 +34,8 @@ $(LIB_DYNAMIC): $(OBJECTS)
 	$(STRIP) $@
 
 $(LIB_DYNAMIC2): $(LIB_DYNAMIC)
-	bzip2 -c $(LIB_DYNAMIC) > $@
+#	bzip2 -c $(LIB_DYNAMIC) > $@
+	$(MONADIR)/bin/bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
 endif
 
 .SUFFIXES: .cpp .o

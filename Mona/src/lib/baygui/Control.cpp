@@ -190,7 +190,7 @@ void Control::setTimer(int duration)
 {
 	_timerEvent->setDuration(duration);
 	// GUIサーバーIDを得る
-	dword guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX2");
+	dword guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX5");
 	if (guisvrID == 0xFFFFFFFF) {
 		//printf("Control: GuiServer not found %d\n", threadID);
 		return;
