@@ -118,7 +118,7 @@ _arch_cpufaulthandler_%1:
         cpufaulthandler e
         cpufaulthandler 10
         cpufaulthandler 11
-        
+
 
 ;;; entrance of syscall
 _arch_syscall_handler:

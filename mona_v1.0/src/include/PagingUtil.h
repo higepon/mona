@@ -34,7 +34,10 @@ class PagingUtil {
   public:
     static void setup();
     static void makePTE(PTE* pte);
-    static void makePTE(PTE* pte, dword physaddr);
+    static void makePTE(PTE* pte, dword physaddr, byte readWrite, byte user);
+    static void setCR3(dword physaddr);
+    static void startPaging();
+    static void stopPaging();
 };
 
 #endif
