@@ -7,6 +7,7 @@
     License=MIT/X Licnese
 
   \author  HigePon
+  \author  Gaku bugfix patch
   \version $Revision$
   \date   create:2003/04/10 update:$Date$
 */
@@ -465,7 +466,6 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
             currentEntry_   = &(entries_[j]);
             currentCluster_ = currentEntry_->cluster;
             readCounter_    = currentEntry_->filesize;
-            fileSize_       = currentEntry_->filesize;
             isOpen_         = true;
             readHasNext_    = true;
             firstWrite_     = true;
@@ -806,7 +806,7 @@ int FAT12::getFileSize() const {
     /* file is not open */
     if (!isOpen_) return -1;
 
-    return fileSize_;
+    return currentEntry_->filesize;
 }
 
 
