@@ -52,7 +52,7 @@ bool ELFLoader::load(byte* toAddress) {
 
         if (pheader_[i].type == PT_LOAD) {
 
-            memcpy((void*)(toAddress + pheader_->virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_->offset), pheader_->filesize);
+            memcpy((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
         }
     }
 

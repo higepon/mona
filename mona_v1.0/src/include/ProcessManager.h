@@ -32,7 +32,6 @@ class ProcessManager {
     }
 
   protected:
-    PageEntry* allocatePageDir();
     virtual_addr allocateStack();
     virtual_addr allocateKernelStack(dword dpl);
     dword allocatePID();
@@ -48,6 +47,7 @@ class ProcessManager {
     void printAllProcesses() const;
     bool addProcess(Process* process, virtual_addr entry);
     bool addProcess(Process* process, PageEntry* directory, virtual_addr entry);
+    PageEntry* allocatePageDir();
 
   private:
     dword pid_;

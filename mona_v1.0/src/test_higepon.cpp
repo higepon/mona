@@ -10,6 +10,7 @@
 #include<MemoryManager.h>
 #include<KeyBoardManager.h>
 #include<elf.h>
+#include<userlib.h>
 
 /*!
 
@@ -43,11 +44,27 @@ struct read_info {
 } read_info;
 
 
+void mame() {
+
+    int result;
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_PRINT), "m"(&"hoge")
+                 );
+
+    while (true);
+}
+
 int loadProcess(const char* path, const char* file) {
 
     while (Semaphore::down(&g_semaphore_shared));
-    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 5);
     bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
+
+    Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
     g_fdcdriver = new FDCDriver();
@@ -57,6 +74,8 @@ int loadProcess(const char* path, const char* file) {
     g_fdcdriver->recalibrate();
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+
+
     if (!fat->initilize()) {
 
         int errorNo = fat->getErrorNo();
@@ -94,17 +113,27 @@ int loadProcess(const char* path, const char* file) {
         info(ERROR, "close failed");
     }
 
-    ELFLoader* loader = new ELFLoader();
-    loader->prepare((dword)buf);
-    loader->load((byte*)0x80000000);
+    //    ELFLoader* loader = new ELFLoader();
+    //    g_console->printf("elf size = %d", loader->prepare((dword)buf));
+    //    loader->load((byte*)0x80000000);
 
+    //    delete(loader);
+    free(buf);
 
+    memcpy((void*)0x80000000, (void*)mame, 1024);
 
+    PageEntry* entry    = g_process_manager->allocatePageDir();
+    Process*   process1 = new Process(file);
 
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen = SharedMemoryObject::open(0x1234, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(0x1234, &(process1->pinfo_), 0xA0000000);
+    Semaphore::up(&g_semaphore_shared);
+    if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
+    g_process_manager->addProcess(process1, 0xA0000000);
 
-
-
+    return 0;
 }
 
 void userKeyStrokeHandler() {

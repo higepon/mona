@@ -86,7 +86,7 @@ void mainProcess();
 void startKernel(void) {
 
     /* kernel memory range */
-    km.initialize(0x200000, 0x9fffff);
+    km.initialize(0x200000, 0xAfffff);
 
     /* set segment */
     GDTUtil::setup();

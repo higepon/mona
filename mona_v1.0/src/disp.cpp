@@ -22,6 +22,7 @@
 #include <rtc.h>
 #include <GraphicalConsole.h>
 #include <Message.h>
+#include <tester.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
@@ -85,29 +86,31 @@ void disp_name2() {
 
 void disp_name3() {
 
-    while (Semaphore::down(&g_semaphore_shared));
-    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
-    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
-    if (!isOpen || !isAttaced) panic("disp_name3");
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
 
-    isOpen = SharedMemoryObject::open(0x1235, 4096 * 3);
-    isAttaced = SharedMemoryObject::attach(0x1235, g_current_process, 0x90000000);
-    if (!isOpen || !isAttaced) panic("disp_name3");
+//     while (Semaphore::down(&g_semaphore_shared));
+//     bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+//     bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
+//     if (!isOpen || !isAttaced) panic("disp_name3");
 
-    isOpen = SharedMemoryObject::open(0x9999, 4096 * 3);
-    isAttaced = SharedMemoryObject::attach(0x9999, g_current_process, 0xA0000000);
-    if (!isOpen || !isAttaced) panic("disp_name3");
-    Semaphore::up(&g_semaphore_shared);
+//     isOpen = SharedMemoryObject::open(0x1235, 4096 * 3);
+//     isAttaced = SharedMemoryObject::attach(0x1235, g_current_process, 0x90000000);
+//     if (!isOpen || !isAttaced) panic("disp_name3");
+
+//     isOpen = SharedMemoryObject::open(0x9999, 4096 * 3);
+//     isAttaced = SharedMemoryObject::attach(0x9999, g_current_process, 0xA0000000);
+//     if (!isOpen || !isAttaced) panic("disp_name3");
+//     Semaphore::up(&g_semaphore_shared);
 
 
-    if (!isOpen || !isAttaced) panic("disp_name3");
+//     if (!isOpen || !isAttaced) panic("disp_name3");
 
-    dword* p = (dword*)0x80000020;
-    *p = 0x1234;
-    dword* p2 = (dword*)0x90001020;
-    *p2 = 0x5678;
-    dword* p3 = (dword*)0xA0000020;
-    *p3 = 0x4649;
+//     dword* p = (dword*)0x80000020;
+//     *p = 0x1234;
+//     dword* p2 = (dword*)0x90001020;
+//     *p2 = 0x5678;
+//     dword* p3 = (dword*)0xA0000020;
+//     *p3 = 0x4649;
 
     while (true) {
 
@@ -117,29 +120,29 @@ void disp_name3() {
 void disp_name4() {
 
 
-    while (Semaphore::down(&g_semaphore_shared));
+//     while (Semaphore::down(&g_semaphore_shared));
 
-    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
-    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x90000000);
-    if (!isOpen || !isAttaced) panic("disp_name4");
+//     bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+//     bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x90000000);
+//     if (!isOpen || !isAttaced) panic("disp_name4");
 
-    isOpen = SharedMemoryObject::open(0x1235, 4096 * 3);
-    isAttaced = SharedMemoryObject::attach(0x1235, g_current_process, 0x80000000);
-    if (!isOpen || !isAttaced) panic("disp_name4");
+//     isOpen = SharedMemoryObject::open(0x1235, 4096 * 3);
+//     isAttaced = SharedMemoryObject::attach(0x1235, g_current_process, 0x80000000);
+//     if (!isOpen || !isAttaced) panic("disp_name4");
 
-    isOpen = SharedMemoryObject::open(0x9999, 4096 * 3);
-    isAttaced = SharedMemoryObject::attach(0x9999, g_current_process, 0xA0000000);
-    if (!isOpen || !isAttaced) panic("disp_name4");
+//     isOpen = SharedMemoryObject::open(0x9999, 4096 * 3);
+//     isAttaced = SharedMemoryObject::attach(0x9999, g_current_process, 0xA0000000);
+//     if (!isOpen || !isAttaced) panic("disp_name4");
 
-    Semaphore::up(&g_semaphore_shared);
+//     Semaphore::up(&g_semaphore_shared);
 
 
-    dword* p = (dword*)0x90000020;
-    g_console->printf("value=%x", *p);
-    dword* p2 = (dword*)0x80001020;
-    g_console->printf("value=%x", *p2);
-    dword* p3 = (dword*)0xA0000020;
-    g_console->printf("value=%x", *p3);
+//     dword* p = (dword*)0x90000020;
+//     g_console->printf("value=%x", *p);
+//     dword* p2 = (dword*)0x80001020;
+//     g_console->printf("value=%x", *p2);
+//     dword* p3 = (dword*)0xA0000020;
+//     g_console->printf("value=%x", *p3);
 
     while (true) {
     }
@@ -156,7 +159,7 @@ void disp_process() {
 
         pos_x = 0, pos_y = 15;
 
-        //        g_process_manager->printAllProcesses();
+        g_process_manager->printAllProcesses();
 
         pos_x = x;
         pos_y = y;
