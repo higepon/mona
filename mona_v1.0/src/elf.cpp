@@ -165,14 +165,12 @@ dword ELFLoader::load(byte* toAddress) {
 
         if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize) {
 
-	    g_console->printf("PD SIZE=%d",  pheader_[i].filesize);
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - pheader_->virtualaddr), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
 
         } else if (pheader_[i].type == PT_LOAD && pheader_[i].filesize != pheader_[i].memorysize) {
 
-	    g_console->printf("PH SIZE=%d",  pheader_[i].memorysize);
-
-            memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), 0, pheader_[i].memorysize);
+            /* zero clear*/
+            //            memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), 0, pheader_[i].memorysize);
         }
 
     }

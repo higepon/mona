@@ -396,6 +396,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
                  "mov %%eax, %0     \n"
                  : "=m"(realcr3):: "eax");
 
+
+        g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
     if (realcr3 != (dword)current->getPageDirectory()) {
         g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
         g_console->printf("realCR3=%x processCR3=%x\n", realcr3, current->getPageDirectory());
