@@ -1,62 +1,62 @@
 all:
-	@cd reversi; $(MAKE) $@
-	@cd ps; $(MAKE) $@
-	@cd 2chAA; $(MAKE) $@
-	@cd noiz2bg; $(MAKE) $@
-	@cd fire; $(MAKE) $@
-#	@cd launcher; $(MAKE) $@
-	@cd shell; $(MAKE) $@
-	@cd clock; $(MAKE) $@
-	@cd cube; $(MAKE) $@
-	@cd kukuri; $(MAKE) $@
-	@cd mtorz; $(MAKE) $@
-	@cd monafile; $(MAKE) $@
-	@cd hige3D; $(MAKE) $@
+	@cd reversi && $(MAKE) $@
+	@cd ps && $(MAKE) $@
+	@cd 2chAA && $(MAKE) $@
+	@cd noiz2bg && $(MAKE) $@
+	@cd fire && $(MAKE) $@
+#	@cd launcher && $(MAKE) $@
+	@cd shell && $(MAKE) $@
+	@cd clock && $(MAKE) $@
+	@cd cube && $(MAKE) $@
+	@cd kukuri && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
+	@cd monafile && $(MAKE) $@
+	@cd hige3D && $(MAKE) $@
 
 install:
-	@cd reversi; $(MAKE) $@
-	@cd ps; $(MAKE) $@
-	@cd 2chAA; $(MAKE) $@
-	@cd noiz2bg; $(MAKE) $@
-	@cd fire; $(MAKE) $@
-#	@cd launcher; $(MAKE) $@
-	@cd shell; $(MAKE) $@
-	@cd clock; $(MAKE) $@
-	@cd cube; $(MAKE) $@
-	@cd kukuri; $(MAKE) $@
-	@cd mtorz; $(MAKE) $@
-	@cd monafile; $(MAKE) $@
-	@cd hige3D; $(MAKE) $@
+	@cd reversi && $(MAKE) $@
+	@cd ps && $(MAKE) $@
+	@cd 2chAA && $(MAKE) $@
+	@cd noiz2bg && $(MAKE) $@
+	@cd fire && $(MAKE) $@
+#	@cd launcher && $(MAKE) $@
+	@cd shell && $(MAKE) $@
+	@cd clock && $(MAKE) $@
+	@cd cube && $(MAKE) $@
+	@cd kukuri && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
+	@cd monafile && $(MAKE) $@
+	@cd hige3D && $(MAKE) $@
 
 clean: touchdepend
-	@cd reversi; $(MAKE) $@
-	@cd ps; $(MAKE) $@
-	@cd 2chAA; $(MAKE) $@
-	@cd noiz2bg; $(MAKE) $@
-	@cd fire; $(MAKE) $@
-#	@cd launcher; $(MAKE) $@
-	@cd shell; $(MAKE) $@
-	@cd clock; $(MAKE) $@
-	@cd cube; $(MAKE) $@
-	@cd kukuri; $(MAKE) $@
-	@cd mtorz; $(MAKE) $@
-	@cd monafile; $(MAKE) $@
-	@cd hige3D; $(MAKE) $@
+	@cd reversi && $(MAKE) $@
+	@cd ps && $(MAKE) $@
+	@cd 2chAA && $(MAKE) $@
+	@cd noiz2bg && $(MAKE) $@
+	@cd fire && $(MAKE) $@
+#	@cd launcher && $(MAKE) $@
+	@cd shell && $(MAKE) $@
+	@cd clock && $(MAKE) $@
+	@cd cube && $(MAKE) $@
+	@cd kukuri && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
+	@cd monafile && $(MAKE) $@
+	@cd hige3D && $(MAKE) $@
 
 depend: touchdepend
-	@cd reversi; $(MAKE) $@
-	@cd ps; $(MAKE) $@
-	@cd 2chAA; $(MAKE) $@
-	@cd noiz2bg; $(MAKE) $@
-	@cd fire; $(MAKE) $@
-#	@cd launcher; $(MAKE) $@
-	@cd shell; $(MAKE) $@
-	@cd clock; $(MAKE) $@
-	@cd cube; $(MAKE) $@
-	@cd kukuri; $(MAKE) $@
-	@cd mtorz; $(MAKE) $@
-	@cd monafile; $(MAKE) $@
-	@cd hige3D; $(MAKE) $@
+	@cd reversi && $(MAKE) $@
+	@cd ps && $(MAKE) $@
+	@cd 2chAA && $(MAKE) $@
+	@cd noiz2bg && $(MAKE) $@
+	@cd fire && $(MAKE) $@
+#	@cd launcher && $(MAKE) $@
+	@cd shell && $(MAKE) $@
+	@cd clock && $(MAKE) $@
+	@cd cube && $(MAKE) $@
+	@cd kukuri && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
+	@cd monafile && $(MAKE) $@
+	@cd hige3D && $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies

@@ -1,5 +1,7 @@
 2004-10-23  higepon  <higepon@users.sourceforge.jp>
 
+        * Makefile‘S”Ê: cd hoge; $(MAKE) -> cd hoge && $(MAKE)
+
         * waba‚Ìíœ
 
 2004-10-21  higepon  <higepon@users.sourceforge.jp>

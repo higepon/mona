@@ -1,39 +1,39 @@
 all:
-	@cd monapi; $(MAKE) $@
-	@cd monalibc; $(MAKE) $@
-	@cd gui; $(MAKE) $@
-	@cd jpegls; $(MAKE) $@
-	@cd bzip2; $(MAKE) $@
-	@cd baygui; $(MAKE) $@
-	@cd pci; $(MAKE) $@
+	@cd monapi && $(MAKE) $@
+	@cd monalibc && $(MAKE) $@
+	@cd gui && $(MAKE) $@
+	@cd jpegls && $(MAKE) $@
+	@cd bzip2 && $(MAKE) $@
+	@cd baygui && $(MAKE) $@
+	@cd pci && $(MAKE) $@
 
 install:
-	@cd monapi; $(MAKE) $@
-	@cd monalibc; $(MAKE) $@
-	@cd gui; $(MAKE) $@
-	@cd jpegls; $(MAKE) $@
-	@cd bzip2; $(MAKE) $@
-	@cd baygui; $(MAKE) $@
-	@cd pci; $(MAKE) $@
+	@cd monapi && $(MAKE) $@
+	@cd monalibc && $(MAKE) $@
+	@cd gui && $(MAKE) $@
+	@cd jpegls && $(MAKE) $@
+	@cd bzip2 && $(MAKE) $@
+	@cd baygui && $(MAKE) $@
+	@cd pci && $(MAKE) $@
 
 clean: touchdepend
-	@cd monapi; $(MAKE) $@
-	@cd monalibc; $(MAKE) $@
-	@cd gui; $(MAKE) $@
-	@cd jpegls; $(MAKE) $@
-	@cd bzip2; $(MAKE) $@
-	@cd baygui; $(MAKE) $@
-	@cd pci; $(MAKE) $@
+	@cd monapi && $(MAKE) $@
+	@cd monalibc && $(MAKE) $@
+	@cd gui && $(MAKE) $@
+	@cd jpegls && $(MAKE) $@
+	@cd bzip2 && $(MAKE) $@
+	@cd baygui && $(MAKE) $@
+	@cd pci && $(MAKE) $@
 	rm -f ../../lib/*.a
 
 depend: touchdepend
-	@cd monapi; $(MAKE) $@
-	@cd monalibc; $(MAKE) $@
-	@cd gui; $(MAKE) $@
-	@cd jpegls; $(MAKE) $@
-	@cd bzip2; $(MAKE) $@
-	@cd baygui; $(MAKE) $@
-	@cd pci; $(MAKE) $@
+	@cd monapi && $(MAKE) $@
+	@cd monalibc && $(MAKE) $@
+	@cd gui && $(MAKE) $@
+	@cd jpegls && $(MAKE) $@
+	@cd bzip2 && $(MAKE) $@
+	@cd baygui && $(MAKE) $@
+	@cd pci && $(MAKE) $@
 
 distclean:
 	rm -f monapi/dependencies

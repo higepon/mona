@@ -1,29 +1,29 @@
 all:
-	@cd fat_write; $(MAKE) $@
-	@cd bim2bin; $(MAKE) $@
-	@cd t5lzma/7zip/Compress/LZMA_Alone; $(MAKE) $@
-	@cd bit2mnf; $(MAKE) $@
-	@cd monaelf; $(MAKE) $@
-	@cd elf_tool; $(MAKE) $@
+	@cd fat_write && $(MAKE) $@
+	@cd bim2bin && $(MAKE) $@
+	@cd t5lzma/7zip/Compress/LZMA_Alone && $(MAKE) $@
+	@cd bit2mnf && $(MAKE) $@
+	@cd monaelf && $(MAKE) $@
+	@cd elf_tool && $(MAKE) $@
 
 install:
-	@cd fat_write; $(MAKE)
-	@cd bim2bin; $(MAKE)
-	@cd bit2mnf; $(MAKE) $@
-	@cd monaelf; $(MAKE)
-	@cd elf_tool; $(MAKE)
+	@cd fat_write && $(MAKE)
+	@cd bim2bin && $(MAKE)
+	@cd bit2mnf && $(MAKE) $@
+	@cd monaelf && $(MAKE)
+	@cd elf_tool && $(MAKE)
 
 clean: touchdepend
-	@cd fat_write; $(MAKE) $@
-	@cd bim2bin; $(MAKE) $@
-	@cd bit2mnf; $(MAKE) $@
-	@cd monaelf; $(MAKE) $@
-	@cd elf_tool; $(MAKE) $@
+	@cd fat_write && $(MAKE) $@
+	@cd bim2bin && $(MAKE) $@
+	@cd bit2mnf && $(MAKE) $@
+	@cd monaelf && $(MAKE) $@
+	@cd elf_tool && $(MAKE) $@
 
 depend: touchdepend
-	@cd fat_write; $(MAKE) $@
-	@cd bim2bin; $(MAKE) $@
-	@cd elf_tool; $(MAKE) $@
+	@cd fat_write && $(MAKE) $@
+	@cd bim2bin && $(MAKE) $@
+	@cd elf_tool && $(MAKE) $@
 
 distclean:
 	rm -f fat_write/dependencies

@@ -1,42 +1,42 @@
 all:
-	@cd gbball; $(MAKE) $@
-	@cd gbrowser; $(MAKE) $@
-	@cd gclock; $(MAKE) $@
-	@cd glaunch; $(MAKE) $@
-	@cd ghebtn; $(MAKE) $@
-	@cd grunner; $(MAKE) $@
-	@cd guitest1; $(MAKE) $@
-	@cd gversion; $(MAKE) $@
+	@cd gbball && $(MAKE) $@
+	@cd gbrowser && $(MAKE) $@
+	@cd gclock && $(MAKE) $@
+	@cd glaunch && $(MAKE) $@
+	@cd ghebtn && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
+	@cd guitest1 && $(MAKE) $@
+	@cd gversion && $(MAKE) $@
 
 install:
-	@cd gbball; $(MAKE) $@
-	@cd gbrowser; $(MAKE) $@
-	@cd gclock; $(MAKE) $@
-	@cd glaunch; $(MAKE) $@
-	@cd ghebtn; $(MAKE) $@
-	@cd grunner; $(MAKE) $@
-	@cd guitest1; $(MAKE) $@
-	@cd gversion; $(MAKE) $@
+	@cd gbball && $(MAKE) $@
+	@cd gbrowser && $(MAKE) $@
+	@cd gclock && $(MAKE) $@
+	@cd glaunch && $(MAKE) $@
+	@cd ghebtn && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
+	@cd guitest1 && $(MAKE) $@
+	@cd gversion && $(MAKE) $@
 
 clean: touchdepend
-	@cd gbball; $(MAKE) $@
-	@cd gbrowser; $(MAKE) $@
-	@cd gclock; $(MAKE) $@
-	@cd glaunch; $(MAKE) $@
-	@cd ghebtn; $(MAKE) $@
-	@cd grunner; $(MAKE) $@
-	@cd guitest1; $(MAKE) $@
-	@cd gversion; $(MAKE) $@
+	@cd gbball && $(MAKE) $@
+	@cd gbrowser && $(MAKE) $@
+	@cd gclock && $(MAKE) $@
+	@cd glaunch && $(MAKE) $@
+	@cd ghebtn && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
+	@cd guitest1 && $(MAKE) $@
+	@cd gversion && $(MAKE) $@
 
 depend: touchdepend
-	@cd gbball; $(MAKE) $@
-	@cd gbrowser; $(MAKE) $@
-	@cd gclock; $(MAKE) $@
-	@cd glaunch; $(MAKE) $@
-	@cd ghebtn; $(MAKE) $@
-	@cd grunner; $(MAKE) $@
-	@cd guitest1; $(MAKE) $@
-	@cd gversion; $(MAKE) $@
+	@cd gbball && $(MAKE) $@
+	@cd gbrowser && $(MAKE) $@
+	@cd gclock && $(MAKE) $@
+	@cd glaunch && $(MAKE) $@
+	@cd ghebtn && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
+	@cd guitest1 && $(MAKE) $@
+	@cd gversion && $(MAKE) $@
 
 distclean:
 	rm -f gbball/dependencies
