@@ -85,3 +85,22 @@ UserProcess::UserProcess(const char* name) {
     pinfo_.tick    = 0;
     pinfo_.dpl     = DPL_USER;
 }
+
+V86Process::V86Process(const char* name) {
+
+    pinfo_.process = this;
+    strncpy(pinfo_.name, name, sizeof(pinfo_.name));
+
+    pinfo_.cs      = USER_CS;
+    pinfo_.ds      = USER_DS;
+    pinfo_.ss      = USER_SS;
+    pinfo_.eflags  = 0x20200;
+    pinfo_.eax     = 0;
+    pinfo_.ecx     = 0;
+    pinfo_.edx     = 0;
+    pinfo_.ebx     = 0;
+    pinfo_.esi     = 0;
+    pinfo_.edi     = 0;
+    pinfo_.tick    = 0;
+    pinfo_.dpl     = DPL_USER;
+}

@@ -93,4 +93,20 @@ class UserProcess : public Process {
 
 };
 
+/*!
+    class V86Process
+*/
+class V86Process : public Process {
+
+  public:
+    V86Process(const char*);
+
+    virtual ~V86Process() {
+    }
+
+
+    //    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
+
+};
+
 #endif

@@ -25,15 +25,17 @@ ProcessManager::ProcessManager(Process* idle) {
 
 void ProcessManager::switchProcess() {
 
-//     info(DEV_NOTICE, "[eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x esp0=%x ss0=%x]\n"
-//          , g_current_process->eip
-//          , g_current_process->cs
-//          , g_current_process->eflags
-//          , g_current_process->esp
-//          , g_current_process->ds
-//          , g_current_process->ss
-//          , g_current_process->esp0
-//          , g_current_process->ss0);
+     info(DEV_NOTICE, "[ name=%s eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x esp0=%x ss0=%x]\n"
+          , g_current_process->name
+          , g_current_process->eip
+          , g_current_process->cs
+          , g_current_process->eflags
+          , g_current_process->esp
+          , g_current_process->ds
+          , g_current_process->ss
+          , g_current_process->esp0
+          , g_current_process->ss0
+          );
 
     /* switch to user process */
     if ((g_current_process->cs & DPL_USER) == DPL_USER) {
@@ -43,7 +45,12 @@ void ProcessManager::switchProcess() {
 
         info(WARNING, "TO USER");
 
-        arch_switch_process_to_user_mode();
+        if ((g_current_process->eflags & 0x20000) == 0x20000) {
+
+            g_console->printf("to v86");
+            arch_switch_process_to_v86_mode();
+        }
+        else arch_switch_process_to_user_mode();
 
     } else {
 

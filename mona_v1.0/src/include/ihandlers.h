@@ -20,6 +20,7 @@ extern "C" void arch_keystrokehandler(void);
 extern "C" void arch_dummyhandler(void);
 extern "C" void arch_switch_process(void);
 extern "C" void arch_switch_process_to_user_mode(void);
+extern "C" void arch_switch_process_to_v86_mode(void);
 extern "C" void arch_fault0dhandler(void);
 extern "C" void arch_syscall_handler(void);
 

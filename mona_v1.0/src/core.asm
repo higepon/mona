@@ -16,6 +16,7 @@ BITS 32
 [global _arch_save_process_registers]
 [global _arch_switch_process]
 [global _arch_switch_process_to_user_mode]
+[global _arch_switch_process_to_v86_mode]
 
 [extern _g_current_process] ;; pointer to current process
 [extern _g_stack_view]      ;; for debug stack viewer
@@ -61,6 +62,12 @@ dpl3:
         mov dword[ebx + 40], eax
         mov eax, ds              ; save ds
         mov dword[ebx + 44], eax
+        mov eax, dword [esp + 44] ; get eflags
+        and eax, 0x20000          ; check VM bit
+        cmp eax, 0x20000          ;
+        jnz save_end
+        ;; here code for VM task
+save_end:
         ret
 
 _arch_switch_process:
@@ -93,6 +100,32 @@ _arch_switch_process_to_user_mode:
         mov es , word[ebx + 44]      ; restore es
         mov fs , word[ebx + 44]      ; restore fs
         mov gs , word[ebx + 44]      ; restore gs
+        push dword[ebx + 48]         ; push ss  here dpl lowwer
+        push dword[ebx + 28]         ; push esp here dpl lowwer
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
+
+_arch_switch_process_to_v86_mode:
+        mov ebx, dword[_g_current_process]
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov ds , word[ebx + 44]      ; restore ds
+        mov es , word[ebx + 44]      ; restore es
+        mov fs , word[ebx + 44]      ; restore fs
+        mov gs , word[ebx + 44]      ; restore gs
+        push dword[ebx + 44]
+        push dword[ebx + 44]
+        push dword[ebx + 44]
+        push dword[ebx + 44]
         push dword[ebx + 48]         ; push ss  here dpl lowwer
         push dword[ebx + 28]         ; push esp here dpl lowwer
         push dword[ebx + 8]          ; push eflags
