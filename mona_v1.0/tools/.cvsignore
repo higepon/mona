@@ -1,0 +1,5 @@
+*.o
+*.bin
+*.list
+*.img
+TAGS
