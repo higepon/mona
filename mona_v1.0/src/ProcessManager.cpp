@@ -250,8 +250,15 @@ inline void ProcessManager::setNTflag1() const {
 */
 void ProcessManager::schedule() {
 
+    static byte count = 0;
+    if (!count) {
+        count++;
+        return;
+    }
+
     /* now there are only two process */
     std::swap(current, next);
+    //_switchProcess(current, next);
 }
 
 /*!
