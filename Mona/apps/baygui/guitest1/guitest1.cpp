@@ -43,8 +43,13 @@ int main(int argc, char **argv)
 	Button *button1 = new Button("ｵﾏｴﾓﾅ orz");
 	button1->setRect(5,5,80,20);
 	Label *label1 = new Label("Label<-");
+	Font *font;
+	font = label1->getFont();
+	font->setStyle(FONT_BOLD);
 	label1->setRect(5,26,100,20);
 	Label *label2 = new Label("=Label=", ALIGN_CENTER);
+	label2->setBackground(0x0);
+	label2->setForeground(0xFFFFFF);
 	label2->setRect(5,46,100,20);
 	Label *label3 = new Label("Label->", ALIGN_RIGHT);
 	label3->setRect(5,66,100,20);
