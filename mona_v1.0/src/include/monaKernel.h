@@ -25,6 +25,7 @@
 #define SYS_CH_COLOR CH_WHITE
 
 extern VirtualConsole* console;
+extern dword demoStep;
 
 /*!< \def _sysdumpReg() */
 #define _sysdumpReg(str, stopflag, unlockint) { \

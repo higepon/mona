@@ -33,6 +33,7 @@ char* version = "Mona develop beta 0.04 $Date$";
 
 VirtualConsole* console;
 Process* current;
+dword demoStep;
 
 /*!
     \brief  mona kernel start at this point
@@ -86,6 +87,14 @@ void startKernel(void) {
 
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
+
+    /* disk read demo */
+    console->printf("disk read test start. Hit any key\n");
+    while (true) {
+        console->printf("");
+        if (demoStep > 1) break;
+    }
+
 
     gMFDCDriver = new MFDCDriver(console);
     while (true);

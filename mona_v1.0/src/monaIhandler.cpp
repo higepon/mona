@@ -45,7 +45,9 @@ void keyStrokeHandler() {
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
 
-    console->printf("eip=%x cs=%x eip=%x, esp=%x, ebp=%x", eip, cs, current->eip, current->esp, current->ebp);
+    //    console->printf("eip=%x cs=%x eip=%x, esp=%x, ebp=%x", eip, cs, current->eip, current->esp, current->ebp);
+
+    demoStep++;
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
