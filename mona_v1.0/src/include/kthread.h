@@ -44,8 +44,11 @@ extern Kthread* current;
 
 void kthread_init();
 void kthread_tick();
-void kthread_add_to_run(Kthread* thread);
-void kthread_remove_from_run(Kthread* thread);
+void kthread_init_list(Kthread* list);
+void kthread_add_to_prev_list(Kthread* list, Kthread* thread);
+void kthread_remove_from_list(Kthread* list, Kthread* thread);
+bool kthread_is_list_empty(Kthread* list);
+Kthread* kthread_get_next_from_list(Kthread* list);
 void kthread_yield();
 Kthread* kthread_create_thread(dword stack, void (*f)());
 dword kthread_allocate_stack();

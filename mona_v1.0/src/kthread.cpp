@@ -16,7 +16,7 @@
 #include<monaIhandler.h>
 
 Kthread*    current = NULL; /*< pointer to current kernel thread    */
-Kthread*    runlist = NULL; /*< run list                            */
+Kthread    runningList;
 KthreadInfo kthreadInfo;    /*< common thread Information           */
 
 /*!
@@ -29,8 +29,9 @@ void kthread_init() {
 
     console->printf("kthread init");
 
-    dword stack = kthread_allocate_stack();
+    kthread_init_list(&runningList);
 
+    dword stack = kthread_allocate_stack();
     if (stack == NULL) {
         panic("idle thread:stack allocate error");
     }
@@ -41,7 +42,7 @@ void kthread_init() {
         panic("idle thread:create thread error");
     }
 
-    kthread_add_to_run(idle);
+    kthread_add_to_prev_list(&runningList, idle);
 
     dword stack2 = kthread_allocate_stack();
 
@@ -51,16 +52,20 @@ void kthread_init() {
 
     /* create idle thread */
     Kthread* idle2 = kthread_create_thread(stack2, kthread_idle2);
-    if ( idle == NULL) {
+    if ( idle2 == NULL) {
         panic("idle thread:create thread error");
     }
 
-    kthread_add_to_run(idle2);
-    kthread_printInfo();
+    kthread_add_to_prev_list(&runningList, idle2);
+
+    current = idle;
+    console->printf("runlist=[%x], idle=[%x] idle2=[%x]\n", &runningList, idle, idle2);
+
 }
 
 void kthread_printInfo() {
 
+    Kthread* runlist = &runningList;
     console->printf("kthread:runlist[%x][%x][x]\n", runlist, runlist->next, runlist->next->next);
 
 }
@@ -80,54 +85,7 @@ void kthread_tick() {
     return;
 }
 
-/*!
-    \brief add thread to run
 
-    \param thread thraed added to run
-
-    \author HigePon
-    \date   create:2003/03/01 update:
-*/
-void kthread_add_to_run(Kthread* thread) {
-
-    /* there is no running thread */
-    if (runlist == NULL) {
-
-        runlist = thread;
-        runlist->next = NULL;
-        return;
-    }
-
-    /* add thread at the end */
-    Kthread* temp = runlist;
-    while (temp->next != NULL) {
-
-        temp = temp->next;
-    }
-
-    temp->next = thread;
-    thread->next = NULL;
-    return;
-}
-
-/*!
-    \brief remove thread from run
-
-    \param thread thraed removed from run
-
-    \author HigePon
-    \date   create:2003/03/01 update:
-*/
-void kthread_remove_from_run(Kthread* thread) {
-
-    /* do nothing */
-    if (runlist == NULL) return;
-
-    /* remove */
-    //    runlist = current->next;
-
-    return;
-}
 
 #define KTHREAD_STACK_START 0x800000
 #define KTHREAD_STACK_END   0x700000
@@ -211,23 +169,25 @@ extern "C" char pos_y;
 */
 void kthread_idle() {
 
-    dword color = 0;
+    while (true) console->printf("[1]");
 
-    while (true) {
+//      dword color = 0;
 
-        if (current->tick % 50) continue;
-        disableInterrupt();
+//      while (true) {
 
-        int x = pos_x;
-        int y = pos_y;
+//          if (current->tick % 50) continue;
+//          disableInterrupt();
 
-        pos_x = 20, pos_y = 20;
-        write_font('$', color%2 + 5, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
-        enableInterrupt();
-    }
+//          int x = pos_x;
+//          int y = pos_y;
+
+//          pos_x = 20, pos_y = 1;
+//          write_font('$', color%2 + 5, 0);
+//          color++;
+//          pos_x = x;
+//          pos_y = y;
+//          enableInterrupt();
+//      }
 }
 
 /*!
@@ -238,22 +198,23 @@ void kthread_idle() {
 */
 void kthread_idle2() {
 
-    dword color = 0;
+    while (true) console->printf("[2]");
+//      dword color = 0;
 
-    while (true) {
+//      while (true) {
 
-        disableInterrupt();
+//          disableInterrupt();
 
-        int x = pos_x;
-        int y = pos_y;
+//          int x = pos_x;
+//          int y = pos_y;
 
-        pos_x = 22, pos_y = 20;
-        write_font('$', color%15, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
-        enableInterrupt();
-    }
+//          pos_x = 22, pos_y = 1;
+//          write_font('$', color%15, 0);
+//          color++;
+//          pos_x = x;
+//          pos_y = y;
+//          enableInterrupt();
+//      }
 }
 
 /*!
@@ -264,14 +225,17 @@ void kthread_idle2() {
 */
 void kthread_schedule() {
 
+    console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
+                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
+
     /* change runlist */
     Kthread* temp = current;
 
-    kthread_remove_from_run(temp);
-    kthread_add_to_run(temp);
+    //    current = kthread_get_next_from_list(&runningList);
 
-    /* change current */
-    current = runlist;
+    //    console->printf("temp=[%x]", (dword)temp);
+    //    kthread_add_to_prev_list(&runningList, temp);
 
     /* switch */
     kthread_switch();
@@ -289,4 +253,60 @@ void kthread_switch() {
 }
 
 
+void kthread_init_list(Kthread* list) {
 
+    list->prev = list;
+    list->next = list;
+    return;
+}
+
+bool kthread_is_list_empty(Kthread* list) {
+
+    if (list->next == list) return true;
+    return false;
+}
+
+/*!
+    \brief add thread to list
+
+    \param list   thread list
+    \param thread thraed added to list
+
+    \author HigePon
+    \date   create:2003/03/01 update:2003/03/06
+*/
+void kthread_add_to_prev_list(Kthread* list, Kthread* thread) {
+
+    thread->prev = list->prev;
+    thread->next = list;
+    list->prev->next = thread;
+    list->prev = thread;
+    return;
+}
+
+/*!
+    \brief remove thread from list
+
+    \param list   thread list
+    \param thread thread to removed from list
+
+    \author HigePon
+    \date   create:2003/03/01 update:2003/03/06
+*/
+void kthread_remove_from_list(Kthread* list, Kthread* thread) {
+
+    thread->prev->next = thread->next;
+    thread->next->prev = thread->prev;
+    return;
+}
+
+
+Kthread* kthread_get_next_from_list(Kthread* list) {
+
+    Kthread* result;
+
+    result = list->next;
+    list->next = result->next;
+    result->next->prev = list;
+    return(result);
+}
