@@ -46,11 +46,11 @@ public:
 
 GRunner::GRunner()
 {
-	setRect((800 - 200) / 2, (600 - 48) / 2, 200, 48);
+	setRect((800 - 200) / 2, (600 - 49) / 2, 200, 49);
 	setTitle("ファイル名を指定して実行");
 	text = new TextField();
 	text->setText("/APPS/");
-	text->setRect(0,0,188,20);
+	text->setRect(0,0,187,20);
 	add(text);
 	history = new LinkedList();
 	historyPtr = 0;

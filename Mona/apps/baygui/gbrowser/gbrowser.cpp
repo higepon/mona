@@ -37,7 +37,7 @@ private:
 
 public:
 	GBrowser(){
-		setRect((800 - 212) / 2, (600 - 228) /2, 212, 228);
+		setRect((800 - 213) / 2, (600 - 229) /2, 213, 229);
 		setTitle("ブラウザもどき");
 		// いろいろな部品の作成
 		reload = new Button("更新");
@@ -54,7 +54,7 @@ public:
 		favorites->setRect(130,0,70,20);
 		go->setRect(160,21,40,20);
 		address->setRect(0,21,159,20);
-		panel->setRect(0,44,199,130);
+		panel->setRect(1,44,200,140);
 		// いろいろな部品をウィンドウに貼り付ける
 		add(address);
 		add(reload);

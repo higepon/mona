@@ -63,7 +63,7 @@ public:
 
 GChat::GChat()
 {
-	setRect((800 - 312) / 2, (600 - 328) /2, 312, 328);
+	setRect((800 - 313) / 2, (600 - 329) /2, 313, 329);
 	setTitle("#osdev-j - IRCもどき");
 	messageList = new ListBox();
 	memberList  = new ListBox();

@@ -310,9 +310,9 @@ void WindowManager::onMouseDrag(int mx, int my)
 			_g->setXORMode(true);
 			_g->setColor(255,255,255);
 			if (control->getIconified() == false) {
-				_g->drawRect(rect->x, rect->y, rect->width, rect->height);
+				_g->drawRect(rect->x, rect->y, rect->width - 1, rect->height - 1);
 			} else {
-				_g->drawRect(rect->x, rect->y, rect->width, INSETS_TOP - 1);
+				_g->drawRect(rect->x, rect->y, rect->width - 1, INSETS_TOP - 1);
 			}
 			_g->setXORMode(false);
 			
@@ -344,11 +344,11 @@ void WindowManager::onMouseDrag(int mx, int my)
 		_g->setXORMode(true);
 		_g->setColor(255,255,255);
 		if (control->getIconified() == false) {
-			_g->drawRect(preX, preY, rect->width, rect->height);
-			_g->drawRect(mx - dX, my - dY, rect->width, rect->height);
+			_g->drawRect(preX, preY, rect->width - 1, rect->height - 1);
+			_g->drawRect(mx - dX, my - dY, rect->width - 1, rect->height - 1);
 		} else {
-			_g->drawRect(preX, preY, rect->width, INSETS_TOP - 1);
-			_g->drawRect(mx - dX, my - dY, rect->width, INSETS_TOP - 1);
+			_g->drawRect(preX, preY, rect->width - 1, INSETS_TOP - 1);
+			_g->drawRect(mx - dX, my - dY, rect->width - 1, INSETS_TOP - 1);
 		}
 		_g->setXORMode(false);
 		

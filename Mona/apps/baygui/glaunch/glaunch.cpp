@@ -55,7 +55,7 @@ GLaunch::GLaunch()
 	
 	// アプリ一覧リスト
 	list = new ListBox();
-	list->setRect(0, 0, 108, 250);
+	list->setRect(0, 0, 107, 249);
 	add(list);
 
 	// APPSに移動
