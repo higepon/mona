@@ -193,6 +193,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
 #define SEGMENT_FAULT_STACK_OVERFLOW 0x01
 #define SEGMENT_FAULT_OUT_OF_RANGE   0x02
+#define SEGMENT_FAULT_OUT_UKNOWN     0x03
 
 #define PAGE_FAULT_NOT_EXIST     0x01
 #define PAGE_FAULT_NOT_WRITABLE  0x02
@@ -204,6 +205,8 @@ StackSegment::StackSegment(LinearAddress start, dword size) {
     start_        = start;
     size_         = size + PAGE_SIZE;
     isAutoExtend_ = false;
+
+    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PAGE_RW, g_current_process->dpl);
 }
 
 StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize) {
@@ -212,6 +215,8 @@ StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize
     size_         = initileSize + PAGE_SIZE;
     maxSize_      = maxSize;
     isAutoExtend_ = true;
+
+    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PAGE_RW, g_current_process->dpl);
 }
 
 StackSegment::~StackSegment() {
@@ -257,7 +262,7 @@ bool StackSegment::tryExtend(LinearAddress address) {
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
     g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address - PAGE_SIZE, PAGE_READ_ONLY, g_current_process->dpl);
 
     /* extention done */
@@ -276,6 +281,37 @@ bool StackSegment::allocatePage(LinearAddress address) {
 
     /* page allocation */
     g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+
+    return true;
+}
+
+HeapSegment::HeapSegment(LinearAddress start, dword size) {
+
+    start_ = start;
+    size_ = size;
+}
+
+HeapSegment::~HeapSegment() {
+
+}
+
+bool HeapSegment::faultHandler(LinearAddress address, dword error) {
+
+    if (error != PAGE_FAULT_NOT_EXIST) {
+
+        errorNumber_ = SEGMENT_FAULT_OUT_UKNOWN;
+        return false;
+    }
+
+    if (address < start_ || address > start_ + size_) {
+
+        errorNumber_ = SEGMENT_FAULT_OUT_OF_RANGE;
+        return false;
+    }
+
+    /* page allocation */
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+
 
     return true;
 }

@@ -107,4 +107,16 @@ class StackSegment : public Segment {
 
 };
 
+class HeapSegment : public Segment {
+
+  public:
+    HeapSegment(LinearAddress start, dword size);
+    virtual ~HeapSegment();
+
+  public:
+    virtual bool faultHandler(LinearAddress address, dword error);
+
+
+};
+
 #endif
