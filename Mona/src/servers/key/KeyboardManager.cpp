@@ -20,13 +20,13 @@ using namespace MonAPI;
 
 const int KeyBoardManager::keyMapJP109[128] = {
         0        , Keys::Escape, Keys::D1, Keys::D2, Keys::D3, Keys::D4, Keys::D5, Keys::D6,
-        Keys::D7, Keys::D8, Keys::D9, Keys::D0, Keys::OemMinus, '^', Keys::Back, Keys::Tab  ,
+        Keys::D7, Keys::D8, Keys::D9, Keys::D0, Keys::OemMinus, '^', Keys::Back, Keys::Tab,
         Keys::Q, Keys::W, Keys::E, Keys::R, Keys::T, Keys::Y, Keys::U, Keys::I,
-        Keys::O, Keys::P, Keys::OemAt, '[', Keys::Enter, Keys::LControlKey, Keys::A, Keys::S,
+        Keys::O, Keys::P, Keys::OemAt, Keys::OemOpenBrackets, Keys::Enter, Keys::LControlKey, Keys::A, Keys::S,
         Keys::D, Keys::F, Keys::G, Keys::H, Keys::J, Keys::K, Keys::L, Keys::OemSemicolon,
-        Keys::Colon, ']', Keys::LShiftKey, ']', Keys::Z, Keys::X, Keys::C, Keys::V,
+        Keys::OemColon, Keys::KanjiMode, Keys::LShiftKey, Keys::OemCloseBrackets, Keys::Z, Keys::X, Keys::C, Keys::V,
         Keys::B, Keys::N, Keys::M, Keys::Oemcomma, Keys::OemPeriod, '/', Keys::RShiftKey, Keys::Multiply,
-        Keys::LMenu, ' ', Keys::CapsLock, Keys::F1        , Keys::F2    , Keys::F3         , Keys::F4       , Keys::F5   ,
+        Keys::LMenu, Keys::Space, Keys::CapsLock, Keys::F1, Keys::F2, Keys::F3, Keys::F4       , Keys::F5   ,
         Keys::F6, Keys::F7, Keys::F8, Keys::F9, Keys::F10, Keys::NumLock, Keys::Scroll, Keys::NumPad7,
         Keys::NumPad8, Keys::NumPad9, Keys::Subtract, Keys::NumPad4, Keys::NumPad5, Keys::NumPad6 , Keys::Add, Keys::NumPad1,
         Keys::NumPad2, Keys::NumPad3, Keys::NumPad0    , Keys::Decimal, 0         , 0              , 0            , Keys::F11  ,
