@@ -135,7 +135,6 @@ bytecode that waba supports.
 #elif defined(MONA)
 /* static */ //Screen screen;
 /* static */ _P<System::Drawing::Bitmap> image;
-/* static */ //uchar *image;
 /* static */ WObject mainWinObj;
 /* static */ WClassMethod *method_event, *method_paint;
 #endif
@@ -539,9 +538,9 @@ bytecode that waba supports.
 }
 
 /* static */ void my_putpixel0(int x0, int y0, uint32 rgb24, int32 dop, int width, int height, uint32 *ibuff){
-#if defined(OSASK)
 	if (x0 >= g_mainWinCX1 || y0 >= g_mainWinCY1) return;
 	if (width == 0 && height == 0) {
+#if defined(OSASK)
 		uint32 src;
 		
 		if (rgb24 >= 0xFF000000) {
@@ -559,6 +558,15 @@ bytecode that waba supports.
 		} else {
 			*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) = rgb24;
 		}
+#elif defined(MONA)
+		if (rgb24 >= 0xFF000000) {
+			// “§‰ßFi•`‰æ‚µ‚È‚¢j
+		} else {
+			//screen.putPixel16(x0 + g_mainWinOffX, y0 + g_mainWinOffY, rgb24);
+			//screen.putPixel16(x0 + g_mainWinOffX, y0 + g_mainWinOffY, (0xffffff & rgb24));
+			image->SetPixel(x0, y0, System::Drawing::Color::FromArgb((rgb24 >>16) & 0xFF, (rgb24 >> 8) & 0xFF, rgb24 & 0xFF));
+		}
+#endif
 	} else {
 		//width  = WOBJ_ImageWidth(image);
 		//height = WOBJ_ImageHeight(image);
@@ -573,15 +581,6 @@ bytecode that waba supports.
 			ibuff[width * y0 + x0] = rgb24;
 		}
 	}
-#elif defined(MONA)
-	//screen.putPixel16(x0 + g_mainWinOffX, y0 + g_mainWinOffY, rgb24);
-	image->SetPixel(x0, y0, System::Drawing::Color::FromArgb((rgb24 >>16) & 0xFF, (rgb24 >> 8) & 0xFF, rgb24 & 0xFF));
-	//int i = ((y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) * 3;
-	//image[i] = ((rgb24 >>16) & 0xFF);
-	//image[i + 1] = ((rgb24 >> 8) & 0xFF);
-	//image[i + 2] = (rgb24 & 0xFF);
-	//image[i] = 0xFF;
-#endif
 }
 
 /* static */ void my_drawstr0(int x0, int y0, char* str, int32 fstyle, uint32 rgb24, int32 dop, int iw, int ih, uint32 *ibuff) {
@@ -947,7 +946,7 @@ bytecode that waba supports.
 	if((vlist[0] == 200 || vlist[0] == 201 || vlist[0] == 202) && 
 		(vlist[2] <= 0 || g_mainWinWidth <= vlist[2] || vlist[3] <= 0 || g_mainWinHeight <= vlist[3]))
 	{
-		printf("position is out of bouds! %d,%d,%d\n", vlist[0], vlist[2], vlist[3]);
+		//printf("position is out of bouds! %d,%d,%d\n", vlist[0], vlist[2], vlist[3]);
 		return;
 	}
 	

@@ -26,11 +26,9 @@ using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
-#ifdef WIN32
-#undef WIN32
-#endif
-
-#define  WABA_VERSION    "0.1.7"
+#define  MONA 1
+#undef   WIN32
+#define  WABA_VERSION    "0.1.8"
 #define  VM_OS           "MONA"
 #define  VM_USER         "MONA"
 #define  g_mainWinOffX   0

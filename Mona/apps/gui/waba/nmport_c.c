@@ -276,7 +276,7 @@ ClassHook classHooks[] =
 	lib_definesignal0p0(0, 0, 0, 0);
 #elif defined(MONA)
 	// —Ìˆæ‚ğŠDF‚Å“h‚è‚Â‚Ô‚·
-	//my_fillrect0(0, 0, g_mainWinWidth, g_mainWinHeight, getRGB24(200,200,200));
+	//my_fillrect0(0, 0, g_mainWinWidth, g_mainWinHeight, getRGB24(200,200,200), DRAW_OVER, 0, 0, NULL);
 	// ˜gü‚ğ•`‚­
 	//my_drawline0(-1, -1, g_mainWinWidth + 1, -1, getRGB24(0,0,0));
 	//my_drawline0(-1, -1, -1, g_mainWinHeight + 1, getRGB24(0,0,0));
