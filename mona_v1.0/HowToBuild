@@ -1,6 +1,6 @@
 #
 # require
-# g++, ld, strip, nasm
+# g++, ld, strip, nasm,ndisasm
 # doxygen http://www.doxygen.org/
 # dot     http://www.research.att.com/sw/tools/graphviz/
 #
