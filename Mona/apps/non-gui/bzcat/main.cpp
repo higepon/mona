@@ -42,7 +42,7 @@ int MonaMain(List<char*>* pekoe)
 	
 	bzs.next_in = buf1.get();
 	bzs.avail_in = size;
-	_A<char> buf2(16);
+	_A<char> buf2(256);
 	while (result == BZ_OK)
 	{
 		bzs.next_out  = buf2.get();
