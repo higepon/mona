@@ -1,5 +1,7 @@
 2004-02-20  higepon  <higepon@users.sourceforge.jp>
 
+        * ちょっとだけArrayを使ってみた。
+
         * Process.cpp: プロセス・スケジューラー周り全部作り直し
 
         * Queue追加

@@ -15,23 +15,52 @@
 #include <Process.h>
 #include <PageManager.h>
 
-Array<Thread> queues(10);
+Array<Thread> dispatch(10);
 
-/*----------------------------------------------------------------------
-    Queue
-----------------------------------------------------------------------*/
-class Queue
+class Scheduler
 {
-  public:
-    static void initialize(Queue* queue);
-    static void addToNext(Queue* p, Queue* q);
-    static void addToPrev(Queue* p, Queue* q);
-    static bool isEmpty(Queue* p);
-    static Queue* deleteNext(Queue* p);
-  public:
-    Queue* next;
-    Queue* prev;
+public:
+    Scheduler();
+    virtual ~Scheduler();
+
+public:
+    void schedule();
+
+
+
 };
+
+Scheduler::Scheduler()
+{
+}
+
+Scheduler::~Scheduler()
+{
+}
+
+
+#define ptrThread(queue) (((Thread*)(queue))->getThreadInfo())
+
+
+/*
+    output: g_currentThread
+*/
+void Scheduler::schedule()
+{
+
+    FOREACH(Thread, queue, dispatch)
+    {
+        if (Queue::isEmpty(&queue))
+        {
+            continue;
+        }
+        else
+        {
+            g_currentThread = ptrThread(Queue::top(&queue));
+            break;
+        }
+    }
+}
 
 void Queue::initialize(Queue* queue)
 {
@@ -67,6 +96,12 @@ Queue* Queue::deleteNext(Queue* p)
     result->next->prev = p;
     return result;
 }
+
+Queue* Queue::top(Queue* root)
+{
+    return root->next;
+}
+
 
 /*----------------------------------------------------------------------
     ProcessOperation

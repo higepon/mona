@@ -17,6 +17,10 @@
     \date   create:2003/12/07 update:$Date$
 */
 
+#define FOREACH(type, iterator, array) \
+    if (array.getLength() > 0) \
+        for ({int __##array = 0; type iterator;} \
+            __##array < array.getLength() && (&(iterator = array[__##array]) || true); __##array++)
 /*----------------------------------------------------------------------
     Array
 ----------------------------------------------------------------------*/
@@ -48,6 +52,10 @@ template <class T> class Array {
         }
 #endif
         return array_[index];
+    }
+
+    inline int getLength() const {
+        return length_;
     }
 
   private:

@@ -79,9 +79,26 @@ typedef struct ThreadInfo {
 };
 
 /*----------------------------------------------------------------------
+    Queue
+----------------------------------------------------------------------*/
+class Queue
+{
+public:
+    static void initialize(Queue* queue);
+    static void addToNext(Queue* p, Queue* q);
+    static void addToPrev(Queue* p, Queue* q);
+    static bool isEmpty(Queue* p);
+    static Queue* deleteNext(Queue* p);
+    static Queue* top(Queue* root);
+public:
+    Queue* next;
+    Queue* prev;
+};
+
+/*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-class Thread {
+class Thread : public Queue {
 
   public:
     Thread();
