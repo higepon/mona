@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <monapi/messages.h>
 #include <jpegls.h>
 
 /* nikq and Higepon */
@@ -28,38 +29,21 @@ int MonaMain(List<char*>* pekoe)
 
     CJPEGLS *jpeg = new CJPEGLS;
 
-    /* file open */
-    FileInputStream in(pekoe->get(0));
-    if (in.open() != 0)
+    monapi_cmemoryinfo* mi = NULL;
+    mi = monapi_call_file_read_data(pekoe->get(0), MONAPI_FALSE);
+
+    if (mi == NULL)
     {
         printf("file %s not found", pekoe->get(0));
         return -1;
     }
 
-    /* allocate file buffer */
-    int size = in.getFileSize();
-    byte* filebuf = new byte[size];
-
-    if (filebuf == NULL)
-    {
-        printf("memory allocate error\n");
-        return -1;
-    }
-
-    /* read file */
-    if (in.read(filebuf, size) != 0)
-    {
-        printf("file read error\n");
-        delete filebuf;
-        return -1;
-    }
-    in.close();
-
     /* jpeg operation */
-    if (jpeg->Open(filebuf, size) != 0)
+    if (jpeg->Open(mi->Data, mi->Size) != 0)
     {
         printf("not supported image\n");
-        delete filebuf;
+        monapi_cmemoryinfo_dispose(mi);
+        monapi_cmemoryinfo_delete(mi);
         return -1;
     }
 
@@ -93,6 +77,8 @@ int MonaMain(List<char*>* pekoe)
     }
 
     delete picture;
-    delete filebuf;
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+
     return 0;
 }

@@ -1,3 +1,7 @@
+2004-12-25  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/jpegdemo/jpegdemo.cpp :”ñ„§API‚Ìg—p‚ğ‚â‚ß‚½(FileInputStream -> monapi_call_file_read_data) 
+
 2004-12-20  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gbball : VBayGUI‘Î‰

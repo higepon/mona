@@ -64,25 +64,20 @@ void Monitor::Service()
 
 bool Monitor::Initialize()
 {
-    char* config;
+    monapi_cmemoryinfo* mi = NULL;
+    mi = monapi_call_file_read_data("/MONITOR.CFG", MONAPI_FALSE);
 
-    config = (char*)ReadConfig("/MONITOR.CFG");
-    if (config == NULL)
+    if (mi == NULL)
     {
         printf("Config file read error\n");
         return false;
     }
 
-    ParseConfig(config);
+    ParseConfig((char*)(mi->Data));
 
-#if 0
-    for (int i = 0; i < servers.size(); i++)
-    {
-        printf("[%s]\n", (const char*)servers.get(i));
-    }
-#endif
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 
-    delete[] config;
     return true;
 }
 
@@ -111,37 +106,6 @@ void Monitor::ParseConfig(CString content)
     alive = new bool[servers.size()];
 
     return;
-}
-
-byte* Monitor::ReadConfig(CString file)
-{
-    int result;
-    int fileSize;
-    byte* buf;
-
-    FileInputStream fis(file);
-
-    result = fis.open();
-
-    if (result != 0) return NULL;
-
-    fileSize = fis.getFileSize();
-    buf = new byte[fileSize];
-
-    if (buf == NULL)
-    {
-        fis.close();
-        return NULL;
-    }
-
-    if (fis.read(buf, fileSize))
-    {
-        fis.close();
-        return NULL;
-    }
-
-    fis.close();
-    return buf;
 }
 
 void Monitor::CheckServers()
