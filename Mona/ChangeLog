@@ -1,3 +1,15 @@
+2004-01-10  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/Makefile: grunner 追加
+
+        * apps/baygui/grunner: GUIコンソール作成開始
+
+        * bin/root/BAYGUI.INI: スタート時のアプリを /APPS/GLAUNCH.EX5 に変更
+
+        * include/baygui: リファクタリング
+
+        * src/lib/baygui: リファクタリング
+
 2005-01-05  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/kernel.cpp (startKernel): 起動時のロゴの位置を変更
