@@ -43,7 +43,7 @@
 #include <Message.h>
 #include <MessageServer.h>
 
-char* version = "Mona develop beta 0.09 $Date$";
+char* version = "Mona version 0.1.0 $Date$";
 void userTest();
 void userTest2();
 /*!
