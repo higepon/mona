@@ -2,11 +2,16 @@
 
 void main() {
 
-    while (true) {
+    for (;;) {
+        sleep(100);
+        print("Mona!!!_( ;'[]`)_");
+        sleep(100);
+        print("Mona!!!|( ;'<>`)/");
 
-        syscall_sleep(100);
-        syscall_print("Mona!!!_( ;'[]`)_");
-        syscall_sleep(100);
-        syscall_print("Mona!!!|( ;'<>`)/");
+        for (int x = 10;  x < 150; x++) {
+            for (char color = 0; color < 16; color++) {
+                _put_pixel(x, 5 + color, color);
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 2003-11-03  higepon  <higepon@users.sourceforge.jp>
 
+        * syscalls.cpp (put_pixel): システムコールにput_pixelを追加
+
         * test_higepon.cpp: LoadProcess ユーザーモードに対応
 
 2003-11-02  higepon  <higepon@users.sourceforge.jp>

@@ -19,7 +19,8 @@
 extern "C" char pos_x;
 extern "C" char pos_y;
 
-extern "C"     void arch_set_stack_view();
+extern "C" void arch_set_stack_view();
+extern "C" void put_pixel(int x, int y, char color);
 
 void syscall_entrance() {
 
@@ -102,6 +103,12 @@ void syscall_entrance() {
     case SYSTEM_CALL_KILL:
 
         g_process_manager->kill(g_current_process);
+        break;
+
+    case SYSTEM_CALL_PUT_PIXEL:
+
+        put_pixel((int)(g_current_process->esi), (int)(g_current_process->ecx), (char)(g_current_process->edi));
+        g_current_process->eax = 0;
         break;
 
     default:
