@@ -28,6 +28,7 @@ class Thread;
 class Process;
 extern VirtualConsole*g_console;
 
+
 /*----------------------------------------------------------------------
     schedule
 ----------------------------------------------------------------------*/
@@ -87,8 +88,9 @@ public:
     static void initialize(Queue* queue);
     static void addToNext(Queue* p, Queue* q);
     static void addToPrev(Queue* p, Queue* q);
+    static void remove(Queue* p);
     static bool isEmpty(Queue* p);
-    static Queue* deleteNext(Queue* p);
+    static Queue* removeNext(Queue* p);
     static Queue* top(Queue* root);
 public:
     Queue* next;

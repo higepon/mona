@@ -15,7 +15,17 @@
 #include <Process.h>
 #include <PageManager.h>
 
-Array<Thread> dispatch(10);
+#define FOREACH_Q(top, type, element) \
+for (type element = (type )((top).next); element != &(top); element = (type )((element)->next))
+
+#define PTR_THREAD(queue) (((Thread*)(queue))->getThreadInfo())
+
+
+typedef struct
+{
+    dword reason;
+    dword who;
+} WaitFor;
 
 class Scheduler
 {
@@ -25,13 +35,20 @@ public:
 
 public:
     void schedule();
+    void join(Thread* thread, int priority = 5);
+    int kill(Thread* thread);
+    int wait(Thread* thread);
 
+private:
 
-
+protected:
+    Array<Thread> mona;
+    int monaMin;
 };
 
-Scheduler::Scheduler()
+Scheduler::Scheduler() : mona(10)
 {
+    this->monaMin = this->mona.getLength() - 1;
 }
 
 Scheduler::~Scheduler()
@@ -39,16 +56,18 @@ Scheduler::~Scheduler()
 }
 
 
-#define ptrThread(queue) (((Thread*)(queue))->getThreadInfo())
-
-
-/*
-    output: g_currentThread
-*/
 void Scheduler::schedule()
 {
+    /* do something about */
+    FOREACH(Thread, queue, mona)
+    {
+        FOREACH_Q(queue, Thread*, thread)
+        {
+            thread->getThreadInfo();
+        }
+    }
 
-    FOREACH(Thread, queue, dispatch)
+    FOREACH(Thread, queue, mona)
     {
         if (Queue::isEmpty(&queue))
         {
@@ -56,12 +75,32 @@ void Scheduler::schedule()
         }
         else
         {
-            g_currentThread = ptrThread(Queue::top(&queue));
+            g_currentThread = PTR_THREAD(Queue::top(&queue));
             break;
         }
     }
 }
 
+void Scheduler::join(Thread* thread, int priority)
+{
+}
+
+int Scheduler::kill(Thread* thread)
+{
+    Queue::remove(thread);
+    this->schedule();
+    return NORMAL;
+}
+
+int Scheduler::wait(Thread* thread)
+{
+    Queue::remove(thread);
+//    Qeueue::addToPrev(&(mona[monaMin]), thread);
+}
+
+/*----------------------------------------------------------------------
+    Queue
+----------------------------------------------------------------------*/
 void Queue::initialize(Queue* queue)
 {
     queue->prev = queue;
@@ -84,12 +123,18 @@ void Queue::addToPrev(Queue* p, Queue* q)
     p->prev = q;
 }
 
+void Queue::remove(Queue* p)
+{
+    p->prev->next = p->next;
+    p->next->prev = p->prev;
+}
+
 bool Queue::isEmpty(Queue* p)
 {
     return (p->next == p);
 }
 
-Queue* Queue::deleteNext(Queue* p)
+Queue* Queue::removeNext(Queue* p)
 {
     Queue* result = p->next;
     p->next = result->next;
@@ -101,7 +146,6 @@ Queue* Queue::top(Queue* root)
 {
     return root->next;
 }
-
 
 /*----------------------------------------------------------------------
     ProcessOperation

@@ -18,9 +18,9 @@
 */
 
 #define FOREACH(type, iterator, array) \
-    if (array.getLength() > 0) \
-        for ({int __##array = 0; type iterator;} \
-            __##array < array.getLength() && (&(iterator = array[__##array]) || true); __##array++)
+    if ((array).getLength() > 0) \
+        for ({int __i = 0; type iterator;} \
+            __i < (array).getLength() && (&(iterator = (array)[__i]) || true); __##i++)
 /*----------------------------------------------------------------------
     Array
 ----------------------------------------------------------------------*/
