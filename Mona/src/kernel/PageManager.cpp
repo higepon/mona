@@ -220,8 +220,12 @@ void PageManager::setup(PhysicalAddress vram)
     /* find 4KB align */
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
 
-    /* MAP VRAM 4MB */
-    for (int i = 0; i < 1024; i++, vram += 4096)
+    /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
+    int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
+    int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
+
+    /* Map VRAM */
+    for (int i = 0; i < vramMaxIndex; i++, vram += 4096)
     {
         PageEntry* table;
         dword directoryIndex = getDirectoryIndex(vram);
@@ -274,12 +278,15 @@ PageEntry* PageManager::createNewPageDirectory() {
     dword vram = vram_;
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
 
-    dword directoryIndex = getDirectoryIndex(vram);
+    /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
+    int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
+    int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
 
-    /* MAP VRAM 4MB */
-    for (int i = 0; i < 1024; i++, vram += 4096) {
+    /* Map VRAM */
+    for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
 
         PageEntry* table;
+        dword directoryIndex = getDirectoryIndex(vram);
         dword tableIndex     = getTableIndex(vram);
 
         if (isPresent(&(directory[directoryIndex]))) {
