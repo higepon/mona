@@ -171,11 +171,15 @@ static MemoryInfo* ReadImage(const char* file, bool prompt = false)
 	
 	if (strcmp(p, ".BMP") == 0)
 	{
+		if (prompt) printf("%s: Decoding %s....", SVR, file);
 		ret = ReadBitmap(mi);
+		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
 	else if (strcmp(p, ".JPG") == 0)
 	{
+		if (prompt) printf("%s: Decoding %s....", SVR, file);
 		ret = ReadJPEG(mi);
+		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
 	
 	MemoryMap::unmap(mi->Handle);
