@@ -31,6 +31,10 @@
 #define FDC_ACTB_ACTIVE  0x02
 #define FDC_ACTA_ACTIVE  0x01
 
+/* definition on/off */
+#define ON  true
+#define OFF false
+
 /* port address */
 #define FDC_DOR_PRIMARY   0x3f2
 #define FDC_DOR_SECONDARY 0x372
@@ -39,7 +43,8 @@
 
 /* summary */
 #define FDC_DOR_RESET   0
-#define FDC_START_DRIVE (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
+#define FDC_START_MOTOR (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
+#define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_ENABLE | FDC_DR_SELECT_A)
 
 MFDCDriver* gMFDCDriver = 0;
 bool MFDCDriver::interrupt_ = false;
@@ -84,13 +89,20 @@ void MFDCDriver::initilize() {
 
     /* start driveA */
     interrupt_ = false;
-    outportb(FDC_DOR_PRIMARY, FDC_START_DRIVE);
+    motor(ON);
     while (!waitInterrupt());
 
     printStatus("after");
     return;
 }
 
+/*!
+    \brief print status of FDC
+
+    \param  str message
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
 void MFDCDriver::printStatus(const char* str) const {
 
     byte mrq = inportb(FDC_MSR_PRIMARY);
@@ -114,13 +126,39 @@ void MFDCDriver::setFDCVersion() {
 
 }
 
+/*!
+    \brief interrupt handler
+
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
 void MFDCDriver::interrupt() {
 
     interrupt_ = true;
 }
 
+/*!
+    \brief wait interrupt
+
+    \return true:interrupt
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
 bool MFDCDriver::waitInterrupt() {
 
     return interrupt_;
 }
 
+/*!
+    \brief print status of FDC
+
+    \param  on ON/OFF
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
+void MFDCDriver::motor(bool on) {
+
+    if (on) outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
+    else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
+    return;
+}

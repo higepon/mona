@@ -29,6 +29,7 @@ class MFDCDriver {
   private:
     void initilize();
     void setFDCVersion();
+    void motor(const bool on);
     bool waitInterrupt();
 
   private:
