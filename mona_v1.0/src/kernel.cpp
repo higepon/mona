@@ -138,8 +138,6 @@ void startKernel(void) {
     //    g_console->printf("Hit any key to start loading Mona logo \n");
     //    while (g_demo_step < 2);
 
-    mmChangeTester();
-    while (true);
 
     //    FDCDriverTester();
     //    while (true);
@@ -157,6 +155,8 @@ void startKernel(void) {
 
     //    rectangle(0, 0, 640, 480, GP_BLACK);
 
+    mmChangeTester();
+
     enableTimer();
 #endif
 
@@ -167,6 +167,7 @@ void startKernel(void) {
 }
 
 void mainProcess() {
+
 
     //    ELFTester(user_func_from);
     //    byte* user_func = (byte*)0xA00000;
