@@ -4,7 +4,7 @@
 
         * bin/Makefile: イメージ作成, fat_writeで--mbr, --mkdirを使用
 
-        * その他Makefile: stripの後にmonaelfを適用するようにした
+        * その他Makefile: stripの後にmonaelfを適用, install前にディレクトリ作成
 
         * include/sys/types.h: PsInfoにpathを追加
 
@@ -25,6 +25,10 @@
         * tools/fat_write/fat.cpp: エントリ拡張で落ちる問題を修正
 
         * bin/fat_template.img: フォーマット直後のものに差し替え (fat_writeの--mkdirを使用するため)
+
+        * bin/root/APPS: インストール時に作成するため削除
+
+        * bin/root/SERVERS: インストール時に作成するため削除
 
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 

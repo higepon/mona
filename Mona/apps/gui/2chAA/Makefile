@@ -18,9 +18,10 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmona
 	$(BINDIR)/monaelf $@
 
 install: all
+	mkdir -p $(BINDIR)/root/APPS
 	cp -u $(TARGET) $(BINDIR)/root/APPS
 
-clean :
+clean:
 	rm -f $(OBJECTS) $(TARGET)
 
 .SUFFIXES: .cpp .o

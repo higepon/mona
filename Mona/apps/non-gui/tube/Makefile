@@ -29,6 +29,7 @@ $(BINS): $(OBJS)
 	$(BINDIR)/monaelf $@
 
 install: all
+	mkdir -p $(BINDIR)/root/APPS
 	cp -u $(BINS) $(BINDIR)/root/APPS
 
 clean:

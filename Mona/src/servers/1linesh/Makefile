@@ -21,9 +21,10 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
 	$(BINDIR)/monaelf $@
 
 install: all
+	mkdir -p $(BINDIR)/root/SERVERS
 	cp -u $(TARGET) $(BINDIR)/root/SERVERS
 
-clean :
+clean:
 	rm -f $(OBJECTS) $(TARGET)
 
 .SUFFIXES: .cpp .o
