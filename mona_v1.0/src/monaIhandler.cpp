@@ -148,7 +148,7 @@ void MFDCHandler() {
 
     pusha();
     gMFDCDriver->interrupt();
-    _sys_printf("fdc interrupt\n");
+    _sys_printf("\nfdc interrupt\n");
     outportb(0x20, 0x20);
 
     popa();

@@ -47,7 +47,7 @@
 #define FDC_CCR_PRIMARY   0x3f7
 #define FDC_CCR_SECONDARY 0x377
 
-#define FDC_DMA_S_SMR     0x04
+#define FDC_DMA_S_SMR     0x0a
 #define FDC_DMA_S_MR      0x0b
 #define FDC_DMA_S_CBP     0x0c
 #define FDC_DMA_S_BASE    0x04
@@ -78,6 +78,8 @@ MFDCDriver* gMFDCDriver;
 bool            MFDCDriver::interrupt_ ;
 byte*           MFDCDriver::dmabuff_;
 VirtualConsole* MFDCDriver::console_;
+byte            MFDCDriver::results_[10];
+int             MFDCDriver::resultsLength_;
 
 /*!
     \brief Constructer
@@ -122,6 +124,8 @@ void MFDCDriver::initilize() {
 
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
+    //    dmabuff_ = (byte*)0x400;
+
     console_->printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
 
     /* dma buff should be 64kb < dma buff < 16Mb */
@@ -455,7 +459,7 @@ void MFDCDriver::readResults() {
 void MFDCDriver::startDMA() {
 
     /* mask channel2 */
-    outportb(FDC_DMA_S_SMR, 0x06);
+    outportb(FDC_DMA_S_SMR, 0x02);
     return;
 }
 
@@ -468,7 +472,7 @@ void MFDCDriver::startDMA() {
 void MFDCDriver::stopDMA() {
 
     /* unmask channel2 */
-    outportb(FDC_DMA_S_SMR, 0x02);
+    outportb(FDC_DMA_S_SMR, 0x06);
     return;
 }
 
@@ -530,6 +534,12 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
+     for (int k = 0; k < 5000000; k++) {
+         k++;
+         k--;
+     }
+
+
     seek(track);
     setupDMARead(512);
     memset(dmabuff_, 0xfffe, 512);
@@ -546,7 +556,7 @@ printDMACStatus(inportb(0x0008), " after read send\n");
 
     stopDMA();
 printDMACStatus(inportb(0x0008), " after stop DMA\n");
-    for (int i = 0; i < 30; i++) console_->printf("[%x]", (int)dmabuff_[i]);
+    for (int i = 0; i < 10; i++) console_->printf("[%x]", (int)dmabuff_[i]);
 
     readResults();
     motor(OFF);

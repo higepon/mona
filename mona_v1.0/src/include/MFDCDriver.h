@@ -50,8 +50,8 @@ class MFDCDriver {
 
   private:
     byte version_;
-    byte results_[10];
-    int resultsLength_;
+    static byte results_[10];
+    static int resultsLength_;
     static bool interrupt_;
     static VirtualConsole* console_;
     static byte* dmabuff_;
