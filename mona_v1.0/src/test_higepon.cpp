@@ -70,12 +70,20 @@ void FDCTester() {
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
 
+        int errorNo = fat->getErrorNo();
+
+        if (errorNo == FAT12::BPB_ERROR) g_console->printf("BPB read  error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) g_console->printf("NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) g_console->printf("NOT FAT12 error \n");
+        else g_console->printf("unknown error \n");
+
+
         g_console->printf("fat initilize faild\n");
         while (true);
     }
 
     g_console->printf("init ok");
-    while (true);
+
     g_console->printf("changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         g_console->printf("some dir not found");

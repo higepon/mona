@@ -33,6 +33,7 @@ class FDCDriver : public DiskDriver {
     void motor(const bool on);
     void test();
     bool recalibrate();
+    bool read(byte track, byte head, byte sector); // temp public
   private:
     void initilize();
     void setFDCVersion();
@@ -51,7 +52,7 @@ class FDCDriver : public DiskDriver {
     void printDMACStatus(const byte status, const char*) const;
     void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
     void waitPrint(const char* msg);
-    bool read(byte track, byte head, byte sector);
+    //    bool read(byte track, byte head, byte sector);
     bool write(byte track, byte head, byte sector);
     bool writeID(byte track, byte head, byte data);
   private:

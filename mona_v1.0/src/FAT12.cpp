@@ -1,3 +1,4 @@
+#define FAT12_DEBUG
 /*!
   \file  FAT12.cpp
   \brief class FAT12 File System
@@ -99,7 +100,9 @@ bool FAT12::initilize() {
         return false;
     }
 
+#ifdef FAT12_DEBUG
     printf("after is FAT12\n");
+#endif
 
     /* read fat */
     if (!readFAT(true)) {
@@ -138,7 +141,7 @@ bool FAT12::isFAT12() {
     int dataSector;
     int countOfClusters;
 
-    if (!(bpb_.bytesPerSector) || bpb_.sectorPerCluster) {
+    if (!(bpb_.bytesPerSector) || !(bpb_.sectorPerCluster)) {
 
         printf("FAT12: 0 %d, %d", bpb_.bytesPerSector, bpb_.sectorPerCluster);
         return false;
@@ -172,7 +175,7 @@ bool FAT12::readBPB() {
 
     byte* p = buf_;
 
-    if (!(driver_->read(1, buf_))) return false;
+    if (!(driver_->read(0, buf_))) return false;
 
     for (int i = 0; i < 512; i++) {
 
@@ -217,6 +220,12 @@ bool FAT12::readBPB() {
     memcpy(&(bpb_.volumeLabel), p, 11);
     p += 11;
     memcpy(&(bpb_.fileSysType), p, 8);
+
+    //#ifdef FAT12_DEBUG
+    printf("bytesPerSector=[%d]", bpb_.bytesPerSector);
+
+    //#endif
+
     return true;
 }
 

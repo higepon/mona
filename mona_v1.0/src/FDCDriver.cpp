@@ -1,4 +1,4 @@
-#define FDC_DEBUG
+//#define FDC_DEBUG
 /*!
     \file  FDCDriver.cpp
     \brief class Floppy Disk Controller for MultiTask
@@ -517,10 +517,11 @@ void FDCDriver::stopDMA() {
     \brief setup dmac for read
 
     \author HigePon
-    \date   create:2003/02/15 update:
+    \date   create:2003/02/15 update:2003/05/25
 */
 void FDCDriver::setupDMARead(dword size) {
 
+    size--; /* size should be */
     dword p = (dword)dmabuff_;
 
     stopDMA();
@@ -552,6 +553,7 @@ void FDCDriver::setupDMARead(dword size) {
 */
 void FDCDriver::setupDMAWrite(dword size) {
 
+    size--;
     dword p = (dword)dmabuff_;
 
     stopDMA();
@@ -598,6 +600,10 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
+#ifdef FDC_DEBUG
+    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+#endif
+
     seek(track);
 
     setupDMARead(512);
@@ -616,7 +622,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     stopDMA();
 
 #ifdef FDC_DEBUG
-    console_->printf("raed results");
+    console_->printf("read results");
 #endif
 
     return readResults();
@@ -708,7 +714,7 @@ bool FDCDriver::read(dword lba, byte* buf) {
     g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 #endif
 
-    /* read. if error, retry 3 times */
+    /* read. if error, retry 10 times */
     for (int i = 0; i < 10; i++) {
         if (read(track, head, sector)) {
             memcpy(buf, dmabuff_, 512);
@@ -733,7 +739,7 @@ bool FDCDriver::write(dword lba, byte* buf) {
 
     memcpy(dmabuff_, buf,  512);
 
-    /* write. if error, retry 3 times */
+    /* write. if error, retry 10 times */
     for (int i = 0; i < 10; i++) {
         if (write(track, head, sector)) return true;
     }
