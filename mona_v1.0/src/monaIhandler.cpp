@@ -94,33 +94,11 @@ void dummyHandler() {
 */
 void timerHandler() {
 
-    static dword idx = 0;
-    idx++;
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
     kthread_schedule();
-
-    return; /* todo */
-
-    /* note: if you don't want to task switch */
-    /* uncomment this iret()                  */
-    //    iret();
-
-    if (idx < 50) {
-        iret();
-    } else if (idx > 0xf000000) {
-        idx = 1;
-    } else if (idx % 50 != 0) iret();
-
-    /* determine next process or thread and run it */
-    ProcessManager& pm = ProcessManager::instance();
-    pm.schedule();
-    _saveRegisters(ProcessManager::current);
-
-    /* switch to next */
-    _switchProcess(ProcessManager::current, ProcessManager::next);
 }
 
 /*!

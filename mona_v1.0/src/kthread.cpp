@@ -12,9 +12,10 @@
 
 #include<kthread.h>
 #include<monaKernel.h>
-#include<monaOperator.h>
 #include<monaIhandler.h>
 #include<monaIdt.h>
+#include<pic.h>
+#include<monaOperator.h>
 
 Kthread*    current = NULL; /*< pointer to current kernel thread    */
 Kthread    runningList;
@@ -83,8 +84,8 @@ void kthread_init() {
 
     kthread_add_to_prev_list(&runningList, idle4);
 
-
-    current = idle2;
+    current = idle;
+    kthread_schedule();
 }
 
 void kthread_printInfo() {
@@ -194,6 +195,7 @@ extern "C" char pos_y;
 */
 void kthread_idle() {
 
+    enableTimer();
     while (true) {
 
         dword color;
@@ -221,6 +223,7 @@ void kthread_idle() {
 */
 void kthread_idle2() {
 
+    enableTimer();
     while (true) {
 
         dword color;
@@ -242,6 +245,7 @@ void kthread_idle2() {
 
 void kthread_idle3() {
 
+    enableTimer();
     while (true) {
 
         dword color;
@@ -263,6 +267,7 @@ void kthread_idle3() {
 
 void kthread_idle4() {
 
+    enableTimer();
     while (true) {
 
         dword color;
@@ -281,6 +286,7 @@ void kthread_idle4() {
         enableInterrupt();
     }
 }
+
 
 /*!
     \brief schedule

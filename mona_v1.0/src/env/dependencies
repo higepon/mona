@@ -52,7 +52,8 @@ monaIhandler.o: monaIhandler.cpp include/monaIdt.h \
   stlport/stl/_ctraits_fns.h stlport/stl/_string.c \
   stlport/stl/_string_fwd.c stlport/stl/_string_io.h \
   stlport/stl/_string_io.c stlport/stl/_string_hash.h \
-  stlport/stl/_hash_fun.h include/monaIhandler.h include/kthread.h
+  stlport/stl/_hash_fun.h include/monaIhandler.h include/kthread.h \
+  include/io.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
   include/VirtualConsole.h include/monaVga.h include/monaIdt.h \
@@ -134,12 +135,28 @@ Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h
 MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h include/monaVga.h \
-  include/monaKernel.h include/monaOperator.h
+  include/monaKernel.h include/monaOperator.h include/io.h
 GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h include/monaTypes.h include/string.h
 kthread.o: kthread.cpp include/kthread.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h \
-  include/monaOperator.h include/monaIhandler.h include/monaIdt.h
+  include/KeyBoardManager.h include/monaVga.h stlport/queue \
+  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
+  stlport/stl/_config_compat.h stlport/stl/_site_config.h \
+  stlport/config/stlcomp.h stlport/config/stl_gcc.h \
+  stlport/config/stl_confix.h stlport/stl/_queue.h stlport/stl/_deque.h \
+  stlport/stl/_algobase.h stlport/cstring stlport/stl/_range_errors.h \
+  stlport/stl/_pair.h stlport/stl/_iterator_base.h \
+  stlport/stl/type_traits.h stlport/stl/_algobase.c \
+  stlport/stl/_iterator.h stlport/stl/_alloc.h stlport/new \
+  stlport/stl/_threads.h stlport/pthread.h stlport/stl/_threads.c \
+  stlport/stl/_construct.h stlport/stl/_alloc.c \
+  stlport/stl/_uninitialized.h stlport/stl/_deque.c stlport/stl/_vector.h \
+  stlport/stl/_relops_cont.h stlport/stl/_vector.c stlport/stl/_bvector.h \
+  stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
+  stlport/stl/_function_base.h stlport/stl/_epilog.h \
+  stlport/stl/_config_compat_post.h include/monaIhandler.h \
+  include/monaIdt.h include/pic.h include/io.h include/monaOperator.h
 pic.o: pic.cpp include/pic.h include/io.h include/monaTypes.h \
   include/string.h
 io.o: io.cpp include/io.h include/monaTypes.h include/string.h

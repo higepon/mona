@@ -15,7 +15,6 @@
 #define _MONA_KEYBOARDMANAGER_
 
 #include<monaTypes.h>
-#include<monaVga.h>
 #include<queue>
 
 #define MAX_KEY_BUF  255
