@@ -10,6 +10,8 @@
 
         * env/*.env: NFLAGSでインクルードパスを指定
 
+        * src/lib/monapi: 謎のリンカエラーに対処するためmonapi.oをlibmonapi.aから外して個別リンク
+
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
         * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)

@@ -1,6 +1,6 @@
-TARGET  = $(LIBDIR)/libmonapi.a
+TARGET1 = $(LIBDIR)/monapi.o
+TARGET2 = $(LIBDIR)/libmonapi.a
 SOURCES = string.cpp \
-          monapi.cpp \
           syscall.cpp \
           FileInputStream.cpp \
           FileOutputStream.cpp \
@@ -25,9 +25,12 @@ include $(MONADIR)/env/Makefile.inc
 INCLUDE = -I$(INCDIR)
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(TARGET)
+all : $(TARGET1) $(TARGET2)
 
-$(TARGET) : $(OBJECTS)
+$(TARGET1):
+	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDE) monapi.cpp
+
+$(TARGET2) : $(OBJECTS)
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 
@@ -36,11 +39,11 @@ $(TARGET) : $(OBJECTS)
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
 
 clean :
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET1) $(TARGET2) $(OBJECTS)
 
 depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
 
-install: $(TARGET)
+install: $(TARGET1) $(TARGET2)
 
 include dependencies

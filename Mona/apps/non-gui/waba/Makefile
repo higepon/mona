@@ -5,11 +5,11 @@ MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
 
 INCLUDE = -I$(INCDIR)
-LINK    = -lmonapi -lmonalibc
+LINK    = $(LIBDIR)/monapi.o -lmonapi -lmonalibc
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
+$(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
 	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@

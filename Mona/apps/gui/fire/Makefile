@@ -6,13 +6,13 @@ include $(MONADIR)/env/monapi.inc
 OBJECTS += fire.o
 
 INCLUDE = -I$(INCDIR)
-LINK    = -lgui -lmonapi -lmonalibc
+LINK    = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
 
 CXXFLAGS += -DDEBUG
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
+$(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
 	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
