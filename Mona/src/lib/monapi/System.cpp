@@ -17,7 +17,7 @@ namespace MonAPI
         return &psInfo;
     }
 
-    dword getParentThreadID()
+    dword System::getParentThreadID()
     {
         MessageInfo msg;
         if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
