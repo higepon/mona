@@ -77,7 +77,7 @@ Rick Wild
 #include "nmwin32_a.c"
 #elif defined(OSASK)
 #include "nmport_a.c"
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
 #include "nmport_a.c"
 #endif
 
@@ -737,7 +737,7 @@ typedef struct
 #elif defined(OSASK)
 #include "mona8x16.fnt"
 #include "nmport_b.c"
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
 #include "mona8x16.fnt"
 #include "nmport_b.c"
 #endif
@@ -2708,7 +2708,7 @@ typedef struct
 #include "nmwin32_c.c"
 #elif defined(OSASK)
 #include "nmport_c.c"
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
 #include "nmport_c.c"
 #endif
 

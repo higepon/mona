@@ -128,10 +128,10 @@ function files and the VM code itself contained in waba.c
     return f;
     }
 
-#ifndef MONAGUI
-/* static */ void *calloc(int size) {
-#else
+#if defined(MONAGUI) || defined(YAWIN32)
 /* static */ void *waba_calloc(int size) {
+#else
+/* static */ void *calloc(int size) {
 #endif
     char *p = (char*)malloc(size);
     if(p){
@@ -141,7 +141,7 @@ function files and the VM code itself contained in waba.c
         //mallocé∏îs
 #if defined(OSASK)
         lib_close(1);
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
         exit(1);
 #endif
         return NULL;
@@ -238,7 +238,7 @@ function files and the VM code itself contained in waba.c
 // On platforms that have malloc() and free, we can simply use them as
 // follows:
 
-#ifdef MONAGUI
+#if defined(MONAGUI) || defined(YAWIN32)
 #define xmalloc(size) waba_calloc(size);
 #else
 #define xmalloc(size) calloc(size);

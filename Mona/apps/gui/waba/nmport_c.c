@@ -283,7 +283,7 @@ ClassHook classHooks[] =
 	Var v;
 
 	printf("MainWinCreate\n");
-#if defined(MONA) || defined(MONAGUI)
+#if defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
 	// —Ìˆæ‚ğŠDF‚Å“h‚è‚Â‚Ô‚·
 	my_fillrect0(0, 0, g_mainWinWidth, g_mainWinHeight, getRGB16(200,200,200));
 	// ˜gü‚ğ•`‚­

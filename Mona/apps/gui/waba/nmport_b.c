@@ -329,14 +329,14 @@ _P<System::Drawing::Bitmap> image;
 /* アプリケーション終了 */
 #if defined(OSASK)
 #define my_exit(code) lib_close(code)
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
 #define my_exit(code) exit(code)
 #endif
 
 /* 24bit -> 16bit */
 #if defined(OSASK)
 #define getRGB16(r, g, b) ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF))
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
 //#define getRGB16(r, g, b) ((r & 0xF8) << 8 | (g & 0xFC) << 3 | (b & 0xF8) >> 3)
 #define getRGB16(r, g, b) ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF))
 #endif
@@ -444,6 +444,13 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 #elif defined(MONA) || defined(MONAGUI)
 	//screen.putPixel16(x0 + g_mainWinOffX, y0 + g_mainWinOffY, rgb16);
 	image->SetPixel(x0, y0, System::Drawing::Color::FromArgb((rgb16 >>16) & 0xFF, (rgb16 >> 8) & 0xFF, rgb16 & 0xFF));
+#elif defined(YAWIN32)
+	unsigned char* p;
+	if (x0 < 0 || x0 >= g_mainWinWidth || y0 < 0 || y0 >= g_mainWinHeight) return;
+	p = &g_mainWinBuffer[(x0 + y0 * g_mainWinWidth) * 3];
+	p[0] = rgb16 & 0xFF;
+	p[1] = (rgb16 >> 8) & 0xFF;
+	p[2] = (rgb16 >>16) & 0xFF;
 #endif
 }
 
@@ -685,9 +692,9 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		}
 		syscall_file_close();
 	}
-#elif defined(MONAGUI)
+#elif defined(MONAGUI) || defined(YAWIN32)
 	int i;
-	/*volatile*/ dword filesize1 = 0, filesize2 = 0;
+	/*volatile*/ unsigned int filesize1 = 0, filesize2 = 0;
 	uchar *fp1, *fp2;
 
 	//
@@ -787,6 +794,15 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		param7[4].intValue = vlist[3]; // y
 		param7[5].intValue = vlist[4]; // modifiers
 		param7[6].intValue = vlist[5]; // timeStamp
+#ifdef QUICKBIND
+		// cache method map numbers for commonly called methods
+		postEventMethodMapNum = getMethodMapNum(vclass, createUtfString("_postEvent"),
+			createUtfString("(IIIIII)V"), SEARCH_ALL);
+		if (postEventMethodMapNum == -1) return;
+		method_event = getMethodByMapNum(vclass, &vclass, (uint16)postEventMethodMapNum);
+#else
+		method_event = getMethod(vclass, createUtfString("_postEvent"), createUtfString("(IIIIII)V"), &vclass);
+#endif
 		executeMethod(vclass, method_event, param7, 7);
 	}
 }

@@ -66,16 +66,81 @@ public:
 	/* デストラクタ */
 	}
 
-	void Next() {
-	/* 次のフレームを表示 */
-		this->Refresh();
-	}
-
 protected:
 	virtual void Create() {
 		Control::Create();
 		image = this->buffer;
 	}
+	
+	virtual void OnMouseDown(_P<MouseEventArgs> e) {
+	/* マウスクリック */
+		int vlist[6];
+
+		printf("x, y %d,%d\n", e->X, e->Y);
+		vlist[0] = 200; // type
+		vlist[1] = 0; // key
+		vlist[2] = e->X; // x
+		vlist[3] = e->Y; // y
+		vlist[4] = 0; // modifiers
+		vlist[5] = 0; // timeStamp
+		processEvent(vlist);
+		
+		this->Refresh();
+		Control::OnMouseDown(e);
+	}
+
+	virtual void OnMouseMove(_P<MouseEventArgs> e) {
+	/* マウスドラッグ */
+		int vlist[6];
+
+		//printf("x, y %d,%d\n", e->X, e->Y);
+		vlist[0] = 201; // type
+		vlist[1] = 0; // key
+		vlist[2] = e->X; // x
+		vlist[3] = e->Y; // y
+		vlist[4] = 0; // modifiers
+		vlist[5] = 0; // timeStamp
+		processEvent(vlist);
+		
+		this->Refresh();
+		Control::OnMouseMove(e);
+	}
+
+	virtual void OnMouseUp(_P<MouseEventArgs> e) {
+	/* マウスアップ */
+		int vlist[6];
+
+		//printf("x, y %d,%d\n", e->X, e->Y);
+		vlist[0] = 202; // type
+		vlist[1] = 0; // key
+		vlist[2] = e->X; // x
+		vlist[3] = e->Y; // y
+		vlist[4] = 0; // modifiers
+		vlist[5] = 0; // timeStamp
+		processEvent(vlist);
+		
+		this->Refresh();
+		Control::OnMouseUp(e);
+	}
+
+#if 0
+	virtual void OnKeyDown(_P<KeyEventArgs> e){
+	/* キークリック */
+		int vlist[6];
+
+		printf("keycode %d\n", e->keycode);
+		vlist[0] = 100; // type
+		vlist[1] = e->keycode; // key
+		vlist[2] = 0; // x
+		vlist[3] = 0; // y
+		vlist[4] = e->modifiers; // modifiers
+		vlist[5] = 0; // timeStamp
+		processEvent(vlist);
+		
+		this->Refresh();
+		Control::OnKeyDown(e);
+	}
+#endif
 };
 
 class Form1 : public Form {
@@ -88,64 +153,6 @@ public:
 private:
 	_P<WabaPanel> wabaPanel;
 
-	void Form1::mouseDown(_P<Object> sender, _P<MouseEventArgs> e) {
-	/* マウスクリック */
-		int vlist[6];
-
-		printf("x, y %d,%d\n", e->X, e->Y);
-		vlist[0] = 200; // type
-		vlist[1] = 0; // key
-		vlist[2] = e->X; // x
-		vlist[3] = e->Y; // y
-		vlist[4] = 0; // modifiers
-		vlist[5] = 0; // timeStamp
-		processEvent(vlist);
-	}
-
-	void Form1::mouseMove(_P<Object> sender, _P<MouseEventArgs> e) {
-	/* マウスドラッグ */
-		int vlist[6];
-
-		//printf("x, y %d,%d\n", e->X, e->Y);
-		vlist[0] = 201; // type
-		vlist[1] = 0; // key
-		vlist[2] = e->X; // x
-		vlist[3] = e->Y; // y
-		vlist[4] = 0; // modifiers
-		vlist[5] = 0; // timeStamp
-		processEvent(vlist);
-	}
-
-	void Form1::mouseUp(_P<Object> sender, _P<MouseEventArgs> e) {
-	/* マウスアップ */
-		int vlist[6];
-
-		//printf("x, y %d,%d\n", e->X, e->Y);
-		vlist[0] = 202; // type
-		vlist[1] = 0; // key
-		vlist[2] = e->X; // x
-		vlist[3] = e->Y; // y
-		vlist[4] = 0; // modifiers
-		vlist[5] = 0; // timeStamp
-		processEvent(vlist);
-	}
-
-#if 0
-	void keyDown(_P<KeyEventArgs> e){
-	/* キークリック */
-		int vlist[6];
-
-		printf("keycode %d\n", e->keycode);
-		vlist[0] = 100; // type
-		vlist[1] = e->keycode; // key
-		vlist[2] = 0; // x
-		vlist[3] = 0; // y
-		vlist[4] = e->modifiers; // modifiers
-		vlist[5] = 0; // timeStamp
-		processEvent(vlist);
-	}
-#endif
-
 	void InitializeComponent() {
 	/* コンポーネント初期化 */
 		// ファイルを選択
@@ -155,9 +162,6 @@ private:
 		this->set_ClientSize(Size(g_mainWinWidth, g_mainWinHeight));
 		this->set_Text("WABA");
 		this->get_Controls()->Add(this->wabaPanel.get());
-		this->wabaPanel->add_MouseDown(new MouseEventHandler<Form1>(this, &Form1::mouseDown));
-		this->wabaPanel->add_MouseMove(new MouseEventHandler<Form1>(this, &Form1::mouseMove));
-		this->wabaPanel->add_MouseUp(new MouseEventHandler<Form1>(this, &Form1::mouseUp));
 	}
 
 public:

@@ -1,3 +1,9 @@
+2004-06-06  tino  <tino@users.sourceforge.jp>
+
+        * apps/gui/waba/nmport_b.c (processEvent): executeMethod()で落ちる問題を修正 (thanks 覆面さん)
+
+        * apps/gui/waba/wabamona.cpp: イベント処理を委譲から仮想関数に書き換え
+
 2004-06-04  tino  <tino@users.sourceforge.jp>
 
         * include/gui/System/Drawing/Mona/Control.h (get_TransparencyKey, set_TransparencyKey): 追加
