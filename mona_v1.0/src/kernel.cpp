@@ -117,7 +117,7 @@ void startKernel(void) {
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
-    //    g_page_manager->setup();
+    g_page_manager->setup();
 
 //     SystemInfo::rdtscsub();
 //     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);

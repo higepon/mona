@@ -608,6 +608,10 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         return false;
     }
 
+    delay();
+    delay();
+    delay();
+
     setupDMARead(512);
 
     interrupt_ = false;
@@ -697,6 +701,10 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     setupDMAWrite(512);
 
     seek(track);
+
+    delay();
+    delay();
+    delay();
 
     interrupt_ = false;
     sendCommand(command, sizeof(command));
