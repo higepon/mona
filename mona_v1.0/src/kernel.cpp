@@ -102,16 +102,17 @@ void startKernel(void) {
     test_mjt();
 #endif
 
-    g_console->printf("Hit any key to start [floppy read/write test]\n");
+    g_console->printf("insert FAT disk and Hit any key to start [FAT12 create file test]\n");
     disableTimer();
     enableKeyboard();
     enableInterrupt();
 
     /* set process name for info() */
-    strcpy(g_process_name, "FDCDriver");
+    strcpy(g_process_name, "FAT12");
     while (g_demo_step < 2);
 
 #ifdef HIGE
+    g_info_level = ERROR;
     FDCTester();
 #endif
 

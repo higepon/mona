@@ -12,6 +12,7 @@
 #ifndef _MONA_INFO_
 #define _MONA_INFO_
 
+#define MSG          5
 #define ERROR       10
 #define WARNING     20
 #define DEV_ERROR   30

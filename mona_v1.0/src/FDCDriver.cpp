@@ -249,7 +249,7 @@ void FDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void FDCDriver::interrupt() {
 
-    info(DEBUG, "\ninterrupt:");
+    info(DEV_WARNING, "\ninterrupt:");
     interrupt_ = true;
 }
 
@@ -320,6 +320,8 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
 */
 bool FDCDriver::recalibrate() {
 
+    info(DEV_WARNING, "racalibrate start \n");
+
     byte command[] = {0x07, 0x00}; /* recalibrate */
 
     interrupt_ = false;
@@ -385,6 +387,8 @@ bool FDCDriver::checkMSR(byte expectedCondition) {
 */
 bool FDCDriver::seek(byte track) {
 
+    info(DEV_WARNING, "seek start \n");
+
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
     interrupt_ = false;
@@ -399,7 +403,7 @@ bool FDCDriver::seek(byte track) {
     /* and then senseInterrupt                  */
     while (!waitInterrupt());
 
-    info(DEV_NOTICE, "seek:after waitInterrupt\n");
+    info(DEV_WARNING, "seek:after waitInterrupt\n");
 
     if (!senseInterrupt()) {
 
@@ -426,10 +430,13 @@ bool FDCDriver::senseInterrupt() {
         return false;
     }
 
+    info(DEV_WARNING, "senseInterrrupt:before result\n");
+
     if (!readResults()) {
         info(ERROR, "FDCDriver#senseInterrrupt:resultError\n");
         return false;
     }
+    info(DEV_WARNING, "senseInterrrupt after result\n");
     return true;
 }
 
@@ -440,6 +447,8 @@ bool FDCDriver::senseInterrupt() {
     \date   create:2003/02/13 update:
 */
 bool FDCDriver::readResults() {
+
+    //    info(DEV_WARNING, "read results start \n");
 
     int i;
     byte msr = 0;
@@ -472,7 +481,7 @@ bool FDCDriver::readResults() {
 
         for (int j = 0; j < resultsLength_; j++) {
 
-            console_->printf("result[%d] = %x ", j, (int)(results_[j]));
+            info(ERROR, "result[%d] = %x ", j, (int)(results_[j]));
         }
         return false;
     }
@@ -603,11 +612,15 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     interrupt_ = false;
 
-    info(DEV_NOTICE, "before read command");
+    info(DEV_WARNING, "before read command");
 
-    sendCommand(command, sizeof(command));
+    if (!sendCommand(command, sizeof(command))) {
 
-    info(DEV_NOTICE, "wait loop");
+        info(ERROR, "read#send command:error\n");
+        return false;
+    }
+
+    info(DEV_WARNING, "wait loop");
 
     while (!waitInterrupt());
     stopDMA();
@@ -693,6 +706,8 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
 bool FDCDriver::read(dword lba, byte* buf) {
 
+    info(DEV_WARNING, "read start \n");
+
     byte track, head, sector;
 
     lbaToTHS(lba, track, head, sector);
@@ -702,6 +717,9 @@ bool FDCDriver::read(dword lba, byte* buf) {
 
     /* read. if error, retry 10 times */
     for (int i = 0; i < 10; i++) {
+
+        info(DEV_WARNING, "read %d times \n", i);
+
         if (read(track, head, sector)) {
             memcpy(buf, dmabuff_, 512);
             return true;

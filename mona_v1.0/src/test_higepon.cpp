@@ -24,7 +24,6 @@ void FDCTester() {
 
     g_fdcdriver->motor(true);
 
-    g_info_level = DEV_NOTICE;
     info(DEV_NOTICE, "before recalibrate");
 
     g_fdcdriver->recalibrate();
@@ -88,30 +87,30 @@ void FDCTester() {
         while (true);
     }
 
-    info(DEV_NOTICE, "init ok");
+    info(MSG, "initilize OK\n");
+    info(MSG, "changeDirectory to SOMEDIR\n");
 
-    info(DEV_NOTICE, "changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         info(ERROR, "some dir not found");
         while (true);
     }
 
-    info(DEV_NOTICE, "cdr ok\n");
+    info(MSG, "changeDirectoryRelative OK\n");
+    info(MSG, "try to create file hige.cpp\n");
 
-    info(DEV_NOTICE, "create file hige.cpp\n");
     if (!fat->createFlie("HIGE", "CPP")) {
 
         info(ERROR, "can not create file=%d", fat->getErrorNo());
         while (true);
     }
 
-    info(DEV_NOTICE, "open file hige.cpp\n");
+    info(MSG, "try to open file hige.cpp\n");
     if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
 
         info(ERROR, "open failed");
     }
 
-    info(DEV_NOTICE, "write to hige.cpp\n");
+    info(MSG, "try to write to hige.cpp 'M' * 512\n");
     byte text[512];
     memset(text, 'M', 512);
     if (!fat->write(text)) {
@@ -119,23 +118,28 @@ void FDCTester() {
         info(ERROR, "write failed");
     }
 
+    info(MSG, "try to write to hige.cpp 'o' * 512\n");
     memset(text, 'o', 512);
     if (!fat->write(text)) {
 
        info(ERROR, "write failed");
     }
 
+    info(MSG, "try to write to hige.cpp 'n' * 512\n");
     memset(text, 'n', 512);
     if (!fat->write(text)) {
 
        info(ERROR, "write failed");
     }
 
+    info(MSG, "try to write to hige.cpp 'a' * 512\n");
     memset(text, 'a', 512);
     if (!fat->write(text)) {
 
        info(ERROR, "write failed");
     }
+
+    info(MSG, "try to close  hige.cpp\n");
 
     if (!fat->close()) {
        info(ERROR, "close failed");
@@ -143,4 +147,6 @@ void FDCTester() {
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     g_fdcdriver->motor(false);
+
+    info(MSG, "test done!! Boot Windows & read floppy disk \\somedir\\hige.cpp\n");
 }
