@@ -17,33 +17,33 @@
 void* operator new(unsigned long size) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
-    return (void*)mm.allocateMemory(size);
+    return mm.allocateMemory(size);
 }
 
 void operator delete(void* address) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
-    mm.freeMemory((unsigned long)address);
+    mm.freeMemory(address);
     return;
 }
 
 void* malloc(unsigned long size) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
-    return (void*)mm.allocateMemory(size);
+    return mm.allocateMemory(size);
 }
 
 void __builtin_delete(void* address) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
-    mm.freeMemory((unsigned long)address);
+    mm.freeMemory(address);
     return;
 }
 
 void* __builtin_new(unsigned long size) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
-    return (void*)mm.allocateMemory(size);
+    return mm.allocateMemory(size);
 }
 
 void* __builtin_vec_new(unsigned long size) {

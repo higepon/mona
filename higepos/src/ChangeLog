@@ -1,5 +1,8 @@
-2002-09-07  higepon  <>
+2002-09-08  higepon  <>
 
+        * higeOperator.cpp: modify return value of allocateMemory, param value of freeMemory
+
+2002-09-07  higepon  <>
 
         * X86MemoryManager.cpp: modify constructor
 

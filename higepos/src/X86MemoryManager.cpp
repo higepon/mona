@@ -39,7 +39,7 @@ char* X86MemoryManager::getName() {
     \author HigePon
     \date   create:2002/08/07 update:2002/09/07
 */
-H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
+void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
     /* size 0 */
     if (size == 0) return NULL;
@@ -69,34 +69,15 @@ H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
     H_SIZE_T usedBlockSize = realSize;
     H_SIZE_T freeBlockSize = current->size + realSize;
 
+    if (current->size != realSize) {
+        this->addToEntry(freeEntry_, freeBlock, freeBlockSize);
+        this->concatBlock(freeEntry_, freeBlock);
+    }
     this->deleteFromEntry(freeEntry_, current, current->size);
     this->addToEntry(usedEntry_, usedBlock, usedBlockSize);
-    this->addToEntry(freeEntry_, freeBlock, freeBlockSize);
-
-    if (current->size == realSize) {
-
-    }
-
-    /* split the found free block into used and free */
-
-
-    /* regist to used list */
-
-    /* regist to free list */
-
-
-    H_SIZE_T oldAddress = current_;
-    current_ += size;
-
-    /* check limit */
-    if (current_ > MEMORY_END) {
-        oldAddress = MEMORY_START;
-        current_   = MEMORY_START;
-        fault0dHandler();
-    }
 
     /* adress of allocated memory */
-    return oldAddress;
+    return (void*)usedBlock->startAddress;
 }
 
 /*!
@@ -110,9 +91,9 @@ H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
     \author HigePon
     \date   create:2002/08/07 update:
 */
-H_SIZE_T X86MemoryManager::freeMemory(H_SIZE_T address) {
+void X86MemoryManager::freeMemory(void* address) {
 
-    return 0;
+    return;
 }
 
 /*!
@@ -137,7 +118,6 @@ X86MemoryManager::~X86MemoryManager() {
     \date   create:2002/08/10 update:2002/09/07
 */
 X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) {
-    current_ = MEMORY_START;
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
@@ -219,6 +199,6 @@ void X86MemoryManager::deleteFromEntry(struct memoryEntry* entry, struct memoryE
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::concatBlock(struct memoryEntry* block) {
+void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry* block) {
     _sysPrintln("X86MemoryManager Information");
 }
