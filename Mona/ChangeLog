@@ -1,3 +1,23 @@
+2004-03-08  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gchat/gchat.cpp: LinkedList修正に対応
+
+        * apps/baygui/grunner/grunner.cpp: LinkedList修正に対応
+
+        * apps/baygui/gshell/gshell.cpp: LinkedList修正に対応
+
+        * include/baygui/LinkedList.h: コンストラクタのオーバーロード
+
+        * include/baygui/Window.h: set_timer() を使うように修正
+
+        * src/lib/baygui/CheckboxGroup.cpp: LinkedList修正に対応
+
+        * src/lib/baygui/Container.cpp: LinkedList修正に対応
+
+        * src/lib/baygui/ListBox.cpp: LinkedList修正に対応
+
+        * src/lib/baygui/Window.cpp: set_timer() を使うように修正
+
 2005-03-07  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/core.asm (from_user): eipのバグ修正
