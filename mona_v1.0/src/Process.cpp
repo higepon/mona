@@ -35,6 +35,16 @@ typedef struct
 Scheduler::Scheduler() : runq(64), waitq(3)
 {
     this->monaMin = this->runq.getLength() - 1;
+
+    for (int i = 0; i < this->runq.getLength(); i++)
+    {
+        Queue::initialize(&(runq[i]));
+    }
+
+    for (int i = 0; i < this->waitq.getLength(); i++)
+    {
+        Queue::initialize(&(waitq[i]));
+    }
 }
 
 Scheduler::~Scheduler()
@@ -62,24 +72,34 @@ bool Scheduler::schedule()
     /* schedule for each run queue */
     FOREACH(Thread, queue, runq)
     {
-        FOREACH_Q(queue, Thread*, thread)
+//        FOREACH_Q(queue, Thread*, thread)
+	for (Thread* thread = (Thread*)(queue.next); thread != &queue; thread = (Thread*)(thread->next))
         {
+            g_console->printf("[%x][1]", thread);
             /* already scheduled ? */
             if (this->tickTotal == thread->scheduled)
             {
+            g_console->printf("[%x][2]", thread);
                 continue;
             }
 
+            g_console->printf("[%x][3]", thread);
             calcPriority(thread);
 
+            g_console->printf("[%x][4]", thread);
             /* insert into runq[priority] */
             Thread* prev = (Thread*)(thread->prev);
+            g_console->printf("[%x][5]", thread);
             Queue::remove(thread);
+            g_console->printf("[%x][6]", thread);
             Thread targetQueue = runq[thread->currPriority];
+            g_console->printf("[%x][7]", thread);
             Queue::addToPrev(&targetQueue, thread);
             thread = prev;
         }
     }
+
+    for (;;);
 
     FOREACH(Thread, queue, runq)
     {
@@ -214,7 +234,6 @@ Process* ProcessOperation::create(int type, const char* name)
 
     switch (type)
     {
-
       case USER_PROCESS:
           result = new UserProcess(name, ProcessOperation::pageManager->createNewPageDirectory());
           break;
@@ -299,6 +318,34 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
     ainfo->ebp     = stack;
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
+}
+
+int ThreadOperation::switchThread(bool isProcessChanged)
+{
+    bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
+
+    if (isProcessChanged && isUser)
+    {
+        /* address space & therad switch */
+        arch_switch_thread_to_user2();
+    }
+    else if (!isProcessChanged && isUser)
+    {
+        /* only thread switch */
+        arch_switch_thread_to_user1();
+    }
+    else if (isProcessChanged && !isUser)
+    {
+        /* address space & therad switch */
+        arch_switch_thread2();
+    }
+    else
+    {
+        arch_switch_thread1();
+    }
+
+    /* does not come here */
+    return NORMAL;
 }
 
 /*----------------------------------------------------------------------

@@ -137,7 +137,9 @@ void timerHandler() {
     //    outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-//    schedule(true);
+    bool isProcessChange = g_scheduler->schedule();
+    ThreadOperation::switchThread(isProcessChange);
+
     /* does not come here */
 }
 

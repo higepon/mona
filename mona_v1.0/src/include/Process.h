@@ -107,6 +107,7 @@ class ThreadOperation
 {
   public:
     static Thread* create(Process* process, dword programCounter);
+    static int switchThread(bool isProcessChanged);
 
   private:
     static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
