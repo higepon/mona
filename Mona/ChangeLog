@@ -2,6 +2,12 @@
 
         * apps/baygui/gnullpo: nullpo.bmp ‚Æ gat.bmp ‚É–¼Ì•ÏX
 
+        * apps/baygui/Makefile: mblupin’Ç‰Á
+
+        * apps/baygui/glaunch/glaunch.cpp: mblupin’Ç‰Á
+
+        * apps/baygui/mblupin/mblupin.cpp: mblupin’Ç‰Á
+
 2004-11-01  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gnullpo/Makefile (CLEANFILES): BM5‚Ìíœ‚ğ’Ç‰Á

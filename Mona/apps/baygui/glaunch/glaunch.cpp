@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-#define MAX_APP_LEN 10
+#define MAX_APP_LEN 11
 
 /**
  アプリケーションランチャー
@@ -53,7 +53,8 @@ static char *buttonLabelList[MAX_APP_LEN] = {
 	"GNULLPO",
 	"GRUNNER",
 	"GUITEST1",
-	"GVERSION"
+	"GVERSION",
+	"MBLUPIN"
 };
 
 /** コマンド名一覧 */
@@ -67,12 +68,13 @@ static char *buttonCommandList[MAX_APP_LEN] = {
 	"/APPS/GNULLPO.APP/GNULLPO.EX5",
 	"/APPS/GRUNNER.EX5",
 	"/APPS/GUITEST1.EX5",
-	"/APPS/GVERSION.EX5"
+	"/APPS/GVERSION.EX5",
+	"/APPS/MBLUPIN.EX5"
 };
 
 GLaunch::GLaunch()
 {
-	setRect(0, 22, 100, 250);
+	setRect(0, 22, 100, 260);
 	setTitle("mokon");
 	for (int i = 0; i < MAX_APP_LEN; i++) {
 		buttonList[i] = new Button(buttonLabelList[i]);

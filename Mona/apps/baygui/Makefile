@@ -10,6 +10,7 @@ all:
 	@cd grunner && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
+	@cd mblupin && $(MAKE) $@
 
 install:
 	@cd gbball && $(MAKE) $@
@@ -23,6 +24,7 @@ install:
 	@cd grunner && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
+	@cd mblupin && $(MAKE) $@
 
 clean: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -36,6 +38,7 @@ clean: touchdepend
 	@cd grunner && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
+	@cd mblupin && $(MAKE) $@
 
 depend: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -49,6 +52,7 @@ depend: touchdepend
 	@cd grunner && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
+	@cd mblupin && $(MAKE) $@
 
 distclean:
 	rm -f gbball/dependencies
@@ -62,6 +66,7 @@ distclean:
 	rm -f grunner/dependencies
 	rm -f guitest1/dependencies
 	rm -f gversion/dependencies
+	rm -f mblupin/dependencies
 
 touchdepend:
 	touch gbball/dependencies
@@ -75,3 +80,4 @@ touchdepend:
 	touch grunner/dependencies
 	touch guitest1/dependencies
 	touch gversion/dependencies
+	touch mblupin/dependencies	

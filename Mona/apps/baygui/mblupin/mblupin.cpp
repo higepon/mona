@@ -1,0 +1,177 @@
+/*!
+    \file  mblupin.cpp
+    \brief Mona ルパンタイトル BayGUI版
+
+    Copyright (c) 2004 Yamami
+    WITHOUT ANY WARRANTY
+
+    \author  Yamami
+    \version $Revision$
+    \date   create:2004/11/02 update:$Date$
+*/
+
+
+#include <baygui.h>
+
+#include "TITLE.h"
+
+
+//---------------------------------------------------------------------------
+const int MAXSTRING = 256;          //表示文字列の最大長
+//---------------------------------------------------------------------------
+
+
+/*!
+    \brief GetString
+        指定した番号のタイトルを得る。
+
+    \param char *string タイトル文字列へのポインタ
+    \param int num タイトル番号
+    \return 結果
+    
+    \author  Yamami
+    \date    create:2004/11/02 update:2004/11/02
+*/
+int GetString(char *string , int num)
+{
+    
+    if(num < MAX_TITLE){
+        strcpy(string, Titles[num]);
+        return 0;
+    }
+    
+    return 1;
+}
+
+
+/*! \class MbLupin
+ *  \brief MbLupinクラス
+
+    \author  Yamami
+    \date    create:2004/11/02 update:2004/11/02
+*/
+class MbLupin : public Window {
+private:
+    Label *label;
+    int nowTitle;           //現在表示中のタイトル
+    int nowViewChar;        //現在表示中の文字位置
+    int geted;          //現在の状態 タイトル取得済みかどうか？ 0:未取得 0以外取得済み
+    MonAPI::Random *rnd;
+
+public:
+    MbLupin(){
+        setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
+        setTitle("mblupin");
+        label = new Label("", ALIGN_CENTER);
+        label->setRect(0,0,280,170);
+        label->setBackground(0x0);
+        label->setForeground(0xFFFFFF);
+        add(label);
+        
+        rnd = new MonAPI::Random();
+        
+        nowTitle = 0;
+        nowViewChar = 0;
+        geted = 0;
+    }
+    ~MbLupin(){
+        delete(label);
+    }
+    
+    void onEvent(Event *event) {
+        int tmprand;
+        int ret;
+        char buf[MAXSTRING];
+        char OneBuf[5];
+        int titleStrCount;      //現在表示中のタイトル文字数
+        
+        if (event->type == TIMER) {
+
+            //タイマーイベント処理
+            if (geted == 0){
+                //タイトル未取得なら、タイトル取得
+                if(nowTitle > MAX_TITLE){
+                    nowTitle = 0;
+                }
+                
+                //タイトルはランダムで取得
+                tmprand = rnd->nextInt();
+                nowTitle = tmprand % MAX_TITLE;
+                
+                ret = GetString(buf , nowTitle);
+                geted = 1;
+                
+                setTimer(10);
+            }
+            else{
+                
+                //タイトル全体表示。表示位置左
+                //label->setText(buf);
+                //geted = 0;
+                //nowViewChar = 0;
+                //nowTitle++;
+                
+                
+                //タイトル取得済みなら、表示
+                //文字数カウント
+                titleStrCount = strlen(buf);
+                
+                if(nowViewChar > titleStrCount){
+                    //タイトル全体表示。表示位置左
+                    label->setText(buf);
+                    geted = 0;
+                    nowViewChar = 0;
+                    nowTitle++;
+                    
+                    setTimer(3000);
+                }
+                else{
+                    //一文字表示、表示位置中央
+                    //無理矢理文字列処理・・・
+                    //3バイト表現？？ UTF-8 ってよく分からない。。
+                    OneBuf[0] = buf[nowViewChar];
+                    OneBuf[1] = buf[nowViewChar+1];
+                    OneBuf[2] = buf[nowViewChar+2];
+                    OneBuf[3] = 0;
+                    //sprintf(OneBuf , "%d" ,titleStrCount);
+                    label->setText(OneBuf);
+                    nowViewChar+=3;
+                    
+                    setTimer(250);
+                }
+                
+            }
+            
+            
+        
+        } else if (event->type == FOCUS_IN) {
+            //最初にフォーカスを得た時に、タイマー発動
+            setTimer(10);
+        }
+    }
+};
+
+
+
+/*!
+    \brief MonaMain
+        mblupinメイン
+
+    \param List<char*>* pekoe
+
+    \author  Yamami
+    \date    create:2004/11/02 update:2004/11/02
+*/
+#if defined(MONA)
+int MonaMain(List<char*>* pekoe)
+#else
+int main(int argc, char **argv)
+#endif
+{
+    
+    MbLupin *lupin = new MbLupin();
+    lupin->run();
+    delete(lupin);
+    return 0;
+    
+}
