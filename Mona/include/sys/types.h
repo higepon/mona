@@ -116,6 +116,14 @@ typedef struct SysArg
     dword arg4;
 };
 
+/*!
+    struct for key information
+*/
+typedef struct {
+    unsigned int keycode;
+    unsigned int modifiers;
+} KeyInfo;
+
 #define WAIT_TIMER   0x60
 #define WAIT_NONE    0xFF
 
