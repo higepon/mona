@@ -31,7 +31,6 @@ template <class T> class BinaryTree {
     T get(const dword key) const;
     bool contains(const dword key) const;
     void add(const dword key, const T element);
-    void clear();
 
   private:
     struct Node {
@@ -46,9 +45,11 @@ template <class T> class BinaryTree {
     static const int NO_DATA = 0;
 
   private:
-    void add(Node* tree, const dword key, const T element);
+    void add(Node*& tree, const dword key, const T element);
     bool contains(const Node* tree, const dword key) const;
-    void clear(Node* tree);
+    void clear();
+    void clear(Node*& tree);
+    T get(const Node* tree, const dword key) const;
 };
 
 template <class T> BinaryTree<T>::BinaryTree() : root_(NO_DATA), numberOfElements_(0) {
@@ -63,7 +64,7 @@ template <class T> dword BinaryTree<T>::size() const {
 }
 
 template <class T> T BinaryTree<T>::get(const dword key) const {
-    return get(root, key);
+    return get(root_, key);
 }
 
 template <class T> void BinaryTree<T>::clear() {
@@ -80,7 +81,18 @@ template <class T> bool BinaryTree<T>::contains(const dword key) const {
     return contains(root_, key);
 }
 
-template <class T> void BinaryTree<T>::clear(Node* tree) {
+template <class T> T BinaryTree<T>::get(const Node* tree, const dword key) const {
+
+    if (key == tree->key) {
+        return tree->element;
+    } else if (key < tree->key) {
+        return get(tree->left, key);
+    } else {
+        return get(tree->right, key);
+    }
+}
+
+template <class T> void BinaryTree<T>::clear(Node*& tree) {
 
     if (tree != NO_DATA) {
         clear(tree->left);
@@ -90,7 +102,7 @@ template <class T> void BinaryTree<T>::clear(Node* tree) {
     }
 }
 
-template <class T> void BinaryTree<T>::add(Node* tree, const dword key, const T element) {
+template <class T> void BinaryTree<T>::add(Node*& tree, const dword key, const T element) {
 
     /* add */
     if (tree == NO_DATA) {

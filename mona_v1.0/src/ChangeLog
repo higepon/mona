@@ -1,5 +1,7 @@
 2003-12-28  higepon  <higepon@users.sourceforge.jp>
 
+        * include/collection.h: BinaryTreeの実装&テスト
+
         * test_higepon.cpp: とりあえずUSER.ELFが正常に読み込まれるように復帰.
 
 2003-12-25  higepon  <higepon@users.sourceforge.jp>
