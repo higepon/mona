@@ -17,6 +17,8 @@ LIBINCLUDE = lib/include
 LIBSRC     = lib/string.c
 LIBHEADER  = lib/include/string.h
 INCLUDE    = include
+STLINCLUDE = stlport
+CFINCLUDE  = -I${INCLUDE} -I${LIBINCLUDE} -I${STLINCLUDE}
 SRC        = monaKernel.cpp       \
              monaVga.cpp          \
              monaIdt.cpp          \
@@ -65,6 +67,8 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/monaChecker.o      \
              ${BIN}/string.o           \
              ${BIN}/SystemInfo.o       \
+             ${BIN}/memcmp.o           \
+             ${BIN}/memmove.o          \
 
 # document
 WEB : ${BIN}/mona.img
@@ -72,6 +76,7 @@ WEB : ${BIN}/mona.img
 
 ${BIN}/mona.img : ${FIRST} ${SECOND} ${THIRD}
 	cat  ${FIRST} ${SECOND} ${THIRD} >$@
+	cat ${BIN}/mona.img /dev/zero|dd of=${BIN}/Mona.vfd bs=1k count=1440
 
 ${FIRST} : firstboot.asm boot.mac
 	${NASM} firstboot.asm  -o $@ -l ${LIST}/first.list
@@ -80,23 +85,25 @@ ${SECOND} : secondboot.asm
 	${NASM} secondboot.asm  -o $@ -l ${LIST}/second.list
 
 ${THIRD} : ${SRC} ${HEADER} ${LIBSRC} ${LIBHEADER}
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} cstart.cpp           -o ${BIN}/cstart.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaKernel.cpp       -o ${BIN}/monaKernel.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaVga.cpp          -o ${BIN}/monaVga.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaIdt.cpp          -o ${BIN}/monaIdt.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaIhandler.cpp     -o ${BIN}/monaIhandler.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaIo.cpp           -o ${BIN}/monaIo.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} IA32MemoryManager.cpp -o ${BIN}/IA32MemoryManager.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaPureVirtual.cpp  -o ${BIN}/monaPureVirtual.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaOperator.cpp     -o ${BIN}/monaOperator.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaUtil.cpp         -o ${BIN}/monaUtil.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} KeyBoardManager.cpp  -o ${BIN}/KeyBoardManager.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} FDCDriver.cpp        -o ${BIN}/FDCDriver.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaTester.cpp       -o ${BIN}/monaTester.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} ProcessManager.cpp   -o ${BIN}/ProcessManager.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} monaChecker.cpp      -o ${BIN}/monaChecker.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} ./lib/string.c       -o ${BIN}/string.o
-	${CC} -I $(INCLUDE) -I $(LIBINCLUDE) ${CFLAGS} SystemInfo.cpp       -o ${BIN}/SystemInfo.o
+	${CC} ${CFINCLUDE} ${CFLAGS} cstart.cpp           -o ${BIN}/cstart.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaKernel.cpp       -o ${BIN}/monaKernel.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaVga.cpp          -o ${BIN}/monaVga.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaIdt.cpp          -o ${BIN}/monaIdt.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaIhandler.cpp     -o ${BIN}/monaIhandler.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaIo.cpp           -o ${BIN}/monaIo.o
+	${CC} ${CFINCLUDE} ${CFLAGS} IA32MemoryManager.cpp -o ${BIN}/IA32MemoryManager.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaPureVirtual.cpp  -o ${BIN}/monaPureVirtual.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaOperator.cpp     -o ${BIN}/monaOperator.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaUtil.cpp         -o ${BIN}/monaUtil.o
+	${CC} ${CFINCLUDE} ${CFLAGS} KeyBoardManager.cpp  -o ${BIN}/KeyBoardManager.o
+	${CC} ${CFINCLUDE} ${CFLAGS} FDCDriver.cpp        -o ${BIN}/FDCDriver.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaTester.cpp       -o ${BIN}/monaTester.o
+	${CC} ${CFINCLUDE} ${CFLAGS} ProcessManager.cpp   -o ${BIN}/ProcessManager.o
+	${CC} ${CFINCLUDE} ${CFLAGS} monaChecker.cpp      -o ${BIN}/monaChecker.o
+	${CC} ${CFINCLUDE} ${CFLAGS} ./lib/string.c       -o ${BIN}/string.o
+	${CC} ${CFINCLUDE} ${CFLAGS} SystemInfo.cpp       -o ${BIN}/SystemInfo.o
+	${CC} ${CFINCLUDE} ${CFLAGS} ./FreeBSD/memcmp.c   -o ${BIN}/memcmp.o
+	${CC} ${CFINCLUDE} ${CFLAGS} ./FreeBSD/memmove.c  -o ${BIN}/memmove.o
 	${LD} ${LFLAGS} -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third.list
 	${STRIP}  -O binary ${THIRD}

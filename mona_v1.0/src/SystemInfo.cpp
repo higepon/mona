@@ -70,11 +70,16 @@ bool SystemInfo::hasCpuid() const {
 
     cpuid get cpu information
 
-    \return true:has cpuid
     \author HigePon
-    \date   create:2003/01/01 update:
+    \date   create:2003/01/01 update:2002/01/07
 */
 void SystemInfo::cpuid(dword id) {
+
+    /*
+       these variables don't seem to be necessary,
+       but they are on gcc3.2. thanks to tino.
+     */
+    dword a, b, c, d;
 
     asm volatile("mov %4   , %%eax \n"
                  "cpuid            \n"
@@ -82,8 +87,13 @@ void SystemInfo::cpuid(dword id) {
                  "mov %%ecx, %1    \n"
                  "mov %%edx, %2    \n"
                  "mov %%eax, %3    \n"
-                 : "=m" (ebx_), "=m" (ecx_), "=m" (edx_), "=m" (eax_)
+                 : "=m" (b), "=m" (c), "=m" (d), "=m" (a)
                  : "m"  (id) : "ax", "bx", "cx", "dx");
+
+    eax_ = a;
+    ebx_ = b;
+    ecx_ = c;
+    edx_ = d;
 }
 
 /*!
@@ -91,7 +101,6 @@ void SystemInfo::cpuid(dword id) {
 
     cpuid get cpu information
 
-    \return true:has cpuid
     \author HigePon
     \date   create:2002/12/31 update:
 */

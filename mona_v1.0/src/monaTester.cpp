@@ -22,6 +22,12 @@
 #include<monaTypes.h>
 #include<ProcessManager.h>
 
+#include<string>
+#include<list>
+#include<vector>
+#include<algorithm>
+
+
 /*!
     \brief test code for HVector
 
@@ -144,4 +150,57 @@ void process2Tester() {
         _sysSetColor(BG_BLACK | CH_SILVER);
     }
     return;
+}
+
+
+void STLTester() {
+
+    _sys_printf("--------STL Test--------------------------------------------------------\n");
+
+    // string
+    std::string str = "---";
+    str += "string";
+    str += "@mona ";
+    str += "is OK";
+    str += "---";
+    _sys_printf("string: %s\n", str.data());
+    _sys_printf("string: str.substr(3, 11): %s\n", str.substr(3, 11).data());
+
+    // list
+    std::list<char*> li;
+    li.push_back("micoro kernel ");
+    li.push_back("operating system with ");
+    li.push_back("network suit architecture ");
+    li.push_back("\n");
+    std::list<char*>::iterator it;
+    _sys_printf("list  : iterate->");
+    for (it = li.begin(); it != li.end(); it++) {
+        _sys_printf("%s", *it);
+    }
+
+    // vector
+    std::vector<char*> ve;
+    ve.push_back("1");
+    ve.push_back("2");
+    ve.push_back("3");
+    ve.push_back("4");
+    std::vector<char*>::iterator it2;
+    _sys_printf("vector : iterate->");
+    for (it2 = ve.begin(); it2 != ve.end(); it2++) {
+        _sys_printf("%s ", *it2);
+    }
+
+    // argorithm
+    std::reverse(ve.begin(), ve.end());
+    _sys_printf("\nargorithm : reverse->");
+    for (it2 = ve.begin(); it2 != ve.end(); it2++) {
+        _sys_printf("%s ", *it2);
+    }
+
+    std::fill(ve.begin(), ve.end(), (char*)"7");
+    _sys_printf("\nargorithm : fill with \"7\"->");
+    for (it2 = ve.begin(); it2 != ve.end(); it2++) {
+        _sys_printf("%s ", *it2);
+    }
+    _sys_printf("\n--------STL Test END---------------------------------------------------\n");
 }

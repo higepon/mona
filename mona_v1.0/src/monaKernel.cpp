@@ -92,6 +92,7 @@ void startKernel(void) {
     floppyTester();
     typeTester();
 #endif
+    STLTester();
     processTester();
 
     while (true) {

@@ -153,7 +153,7 @@ void ProcessManager::multiTaskTester() {
 
     _sys_printf("address of GDT=%d\n", gdt_);
 
-    printInfo();
+    //    printInfo();
 
     setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x10, 0, 0);
     setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS);
@@ -167,8 +167,6 @@ void ProcessManager::multiTaskTester() {
 
     /* process start */
     process1Tester();
-
-    printInfo();
 
     return;
 }
