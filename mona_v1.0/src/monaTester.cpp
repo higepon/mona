@@ -20,6 +20,7 @@
 #include<monaTester.h>
 #include<FDCDriver.h>
 #include<monaTypes.h>
+#include<ProcessManager.h>
 
 /*!
     \brief test code for HVector
@@ -111,5 +112,7 @@ void typeTester() {
 */
 void processTester() {
 
+    ProcessManager* pm = new ProcessManager();
+    pm->printInfo();
     /* do nothing */
 }

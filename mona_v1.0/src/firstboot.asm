@@ -5,7 +5,7 @@
 ; Copyright (c) 2002 HigePon, Guripon, syn
 ; WITHOUT ANY WARRANTY
 ;-------------------------------------------------------------------------------
-%define DEBUG   1
+;; %define DEBUG   1
 
 %define TEMPSEG 0x9fe0
 %define KERNEL  0x0100

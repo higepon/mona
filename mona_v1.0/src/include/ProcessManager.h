@@ -23,6 +23,9 @@ class ProcessManager {
 
   public:
     void setTSS(TSS*, word, word, void (*f)(), dword, byte*, word, byte*, word);
+    void switchProcess();
+    void switchProcess(word);
+    void printInfo();
 };
 
 #endif
