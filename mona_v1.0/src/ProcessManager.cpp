@@ -87,9 +87,9 @@ virtual_addr ProcessManager::allocateStack() {
 
     i++;
 
-    //    return 0x70000 + i * 4096;
-    g_console->printf("stack=%d", i);
-    return 0x400300;
+        return 0x70000 + i * 4096;
+    //    g_console->printf("stack=%d", i);
+    //    return 0x400300;
 }
 
 virtual_addr ProcessManager::allocateKernelStack(dword dpl) {

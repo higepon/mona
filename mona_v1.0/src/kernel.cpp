@@ -42,7 +42,6 @@
 
 #include <types.h>
 #include <global.h>
-
 #include <kernel.h>
 #include <operator.h>
 #include <tester.h>
@@ -74,10 +73,6 @@ void userTest();
 void userTest2();
 void v86Test();
 void mainProcess();
-
-static byte user_func_from[10240];
-
-static byte v86_func[] = {0xEB, 0xFE}; //loop forever
 
 /*!
     \brief  mona kernel start at this point
@@ -126,10 +121,6 @@ void startKernel(void) {
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup();
 
-#ifdef MJT
-    test_mjt();
-#endif
-
 #ifdef HIGE
 
     disableTimer();
@@ -160,9 +151,6 @@ void startKernel(void) {
     enableTimer();
 #endif
 
-#ifndef MJT
-    disableInterrupt();
-#endif
     while (true);
 }
 
@@ -189,7 +177,10 @@ void mainProcess() {
     //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));
     //    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
     //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
+
+    g_console->printf("add 2");
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
+    g_console->printf("add 3");
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
