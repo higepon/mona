@@ -36,6 +36,7 @@ private:
 	Checkbox *check1, *check2;
 	CheckboxGroup *group1;
 	ListBox *list1;
+	Scrollbar *scroll1, *scroll2;
 	Window *dialog;
 
 public:
@@ -78,6 +79,10 @@ public:
 		list1->add("ひげぽん");
 		list1->add("ｷﾀｰｰ!!");
 		list1->add("Mona is here");
+		scroll1 = new Scrollbar();
+		scroll1->setRect(273,0,16,158);
+		scroll2 = new Scrollbar(Scrollbar::HORIZONTAL);
+		scroll2->setRect(0,157,274,16);
 		
 		// 部品を追加
 		add(button1);
@@ -90,6 +95,8 @@ public:
 		add(check1);
 		add(check2);
 		add(list1);
+		add(scroll1);
+		add(scroll2);
 	}
 	
 	/** デストラクタ */
