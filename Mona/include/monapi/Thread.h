@@ -12,6 +12,7 @@ class Mutex
 {
 public:
     Mutex();
+    Mutex(dword mutexId);
     ~Mutex();
     int lock();
     int unlock();

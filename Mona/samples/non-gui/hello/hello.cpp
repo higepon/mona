@@ -156,6 +156,7 @@ int MonaMain(List<char*>* pekoe)
    /* ユーザーモードI/O */
    syscall_get_io();
 
+#if 0
    byte index;
    bool found = FindDevice(0, VENDOR_ID_DEC, DEVICE_ID_DEC_DC21140, &index);
 
@@ -163,17 +164,24 @@ int MonaMain(List<char*>* pekoe)
 
    if (!found) return 1;
 
-   printf("revision=%x\n", ReadConfig(0, index, 0, 0x10, 4));
+   printf("revision=%d\n", ReadConfig(0, index, 0, PCI_REVISION, 1));
+#endif
+
+   /* とりあえず列挙でも */
+   for (int i = 0; i < 32; i++)
+   {
+       word foundVendor = ReadConfig(0, i, 0, PCI_VENDOR_ID, 2);
+
+       if (foundVendor == 0xFFFF) continue;
+
+       printf("** PCI Device[%d] ** \n", i);
+       printf("vendor = %x \n", foundVendor);
+       printf("device = %x \n", ReadConfig(0, i, 0, PCI_DEVICE_ID, 2));
+
+   }
 
 
-   byte irq = ReadConfig(0, index, 0, PCI_IRQ_LINE, 1);
 
-   printf("irq=%d\n", irq);
-   printf("io base1=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS1, 4));
-   printf("io base2=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS2, 4));
-   printf("io base3=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS3, 4));
-   printf("io base4=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS4, 4));
-   printf("io base5=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS5, 4));
 
    return 0;
 }

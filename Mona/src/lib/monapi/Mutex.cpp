@@ -11,6 +11,11 @@ Mutex::Mutex() : destroyed_(false)
     mutexId_ = syscall_mutex_create();
 }
 
+Mutex::Mutex(dword mutexId) : destroyed_(false)
+{
+    mutexId_ = mutexId;
+}
+
 Mutex::~Mutex() {
 
     if (!destroyed_)

@@ -1,3 +1,7 @@
+2004-09-24  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/Mutex.cpp (Mutex): Mutexのコンストラクタ追加。mutexIDの共有によりグローバルMutexが使用できる。
+
 2004-09-21  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/kernel.cpp (mainProcess): invlpg命令を使用したコスト計測

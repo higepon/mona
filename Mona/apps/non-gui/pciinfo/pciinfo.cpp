@@ -23,12 +23,12 @@ int MonaMain(List<char*>* pekoe) {
     int reti;
     dword c_deviceid;
     dword InValue;
-    
+
     word Vendor;
     word Device;
 
     syscall_get_io();
-    
+
     CString bundlePath = MonAPI::System::getBundlePath();
     //pciinfoファイルをオープン
     monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_bz2_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
@@ -36,7 +36,7 @@ int MonaMain(List<char*>* pekoe) {
     if(pciinfData == NULL){
         printf("PCI DATA FILE OPEN ERROR !!!\n");
     }
-    
+
     printf("PCI Information !!!\n");
 
     //バス番号0について、デバイス番号を0～31のそれぞれについて、ベンダーIDを読み出す
@@ -54,7 +54,7 @@ int MonaMain(List<char*>* pekoe) {
             printf("DeviceNo=%d , Vendor=%x VendorName=%s Device=%x DeviceName=%s \n" ,c_deviceid , Vendor , (const char*)VendorName , Device , (const char*)DeviceName );
         }
     }
-    
+
 
     monapi_cmemoryinfo_dispose(pciinfData);
     monapi_cmemoryinfo_dispose(pciinfData);
@@ -70,7 +70,7 @@ int MonaMain(List<char*>* pekoe) {
         PCIデバイス探し
     \param  dword deviceid [in] デバイス番号
     \param  dword func [in] ファンクション番号
-    \param  dword bus [in] バス番号    
+    \param  dword bus [in] バス番号
     \param  dword regaddr [in] レジスタアドレス
     \param  dword * InValue [OUT] 取得レジスタの値
     \return int 結果
@@ -81,22 +81,22 @@ int MonaMain(List<char*>* pekoe) {
 
 int lookup_pci_hw( dword deviceid , dword func , dword bus , dword regaddr , dword *InValue)
 {
-    
+
     dword   outvalue;
     dword   outport;
     dword   inport;
     dword   tmp;
-    
+
     //printf("lookup_pci_hw !!!\n");
 
     tmp = 0;
     //PCI CONFIG_ADDRESSレジスタの値設定
     //bit0-1：0に固定
     //bit2-7：レジスタアドレス
-    
+
     //bit8-10：機能番号
     //bit11-15：デバイス番号
-    
+
     //bit16-23：バス番号
     //bit24-30：リザーブで、0に固定
     //bit31：イネーブルビットで、1に固定
@@ -106,26 +106,26 @@ int lookup_pci_hw( dword deviceid , dword func , dword bus , dword regaddr , dwo
     outvalue = 0x8000;
     outvalue = outvalue | bus;
     outvalue = outvalue << 16;
-    
+
     //デバイス番号、機能番号設定
     tmp = deviceid;
     tmp = tmp << 3;
     tmp = tmp + func;
     tmp = tmp << 8;
-    
+
     outvalue = outvalue + tmp;
-    
+
     tmp = 0;
     //レジスタアドレスの指定
     tmp = regaddr;
     tmp = tmp << 2;
-    
+
     outvalue = outvalue + tmp;
-    
+
 
     //I/Oポートの指定 (0x0cf8、32bit、Read/Write可)
     outport = PCI_CONFIG_ADDRESS_ADDR;
-    
+
     //ここで、デバッグプリントをしてみる。
     //printf("Value= %x \n" , outvalue);
     //printf("Port= %x \n" , outport);
@@ -149,7 +149,7 @@ int lookup_pci_hw( dword deviceid , dword func , dword bus , dword regaddr , dwo
 /*!
     \brief IsLineSeparator
         セパレータ判定
-        
+
     \param  char ch [IN] キャラクタ
     \return bool セパレータ文字ならtrue 以外ならfalse
     \author Tino氏
@@ -170,7 +170,7 @@ inline bool IsLineSeparator(char ch)
     \param  dword InValue [IN] PCIレジスタ値(ベンダーCD & デバイスCD)
     \param  CString& VendorName [OUT] ベンダー名称
     \param  CString& DeviceName [OUT] デバイス名称
-    
+
     \return MonAPI::CString dummy(ダミー戻り値)
 
     \author Yamami
@@ -178,10 +178,10 @@ inline bool IsLineSeparator(char ch)
 */
 
 CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , CString* DeviceName){
-    
+
     word Vendor;
     word Device;
-    
+
     //ベンダーIDの取得
     Vendor = InValue & 0x0000FFFF;
     Device = InValue >> 16;
@@ -190,12 +190,12 @@ CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , C
     char DeviceHex[5];    //ベンダーCD格納用
     sprintf(VendorHex, "%04x", Vendor);
     sprintf(DeviceHex, "%04x", Device);
-    
+
     //NULLまで繰り返し
     while (*PciInfData != 0){
-        
+
         //printf("%c",*PciInfData);
-        
+
         //まず、ベンダー名称を探す
         //ラインセパレータなら次の文字へ
         if (IsLineSeparator(*PciInfData)){
@@ -204,13 +204,13 @@ CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , C
         else if (strncmp((const char*)PciInfData, VendorHex, 4) == 0){
             const char* ps = (const char*)(PciInfData + 5), * pe = ps;
             for (; !IsLineSeparator(*pe); pe++);
-            
+
             //return CString(ps, pe - ps);
             //ベンダー情報確定
             *VendorName = CString(ps, pe - ps);
-            
+
             //printf("%s\n",(const char*)VendorName);
-            
+
             //ベンダー名以下のデバイスを検索する。
             //1行読み飛ばし
             for (; !IsLineSeparator(*PciInfData); PciInfData++);
@@ -225,9 +225,9 @@ CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , C
                             const char* ps = (const char*)(PciInfData + 5), * pe = ps;
                             for (; !IsLineSeparator(*pe); pe++);
                             *DeviceName = CString(ps, pe - ps);
-                            
+
                             //printf("%s\n",(const char*)DeviceName);
-                            
+
                             return "dumy";
                         }
                         else{
@@ -244,7 +244,7 @@ CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , C
                 }
                 else{
                     printf("tobashi\n");
-                    
+
                     //どれにも該当しない行は読み飛ばし
                     for (; !IsLineSeparator(*PciInfData); PciInfData++);
                 }
@@ -256,7 +256,7 @@ CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , C
             for (; !IsLineSeparator(*PciInfData); PciInfData++);
         }
     }
-    
+
     // 不明
     *VendorName = "???";
     *DeviceName = "???";
