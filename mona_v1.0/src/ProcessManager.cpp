@@ -29,7 +29,6 @@ ProcessManager::ProcessManager() {
 
     /* get address of gdtr */
     sgdt();
-
 }
 
 /*!
@@ -52,6 +51,23 @@ void ProcessManager::sgdt() {
 
     /* set start address of gdt */
     gdt_ = (GDT*)gdtr.base;
+    return;
+}
+
+/*!
+    \brief do ltr
+
+    do ltr, load selector value into tr register
+
+    \param selector selector value
+
+    \author HigePon
+    \date   create:2002/12/02 update:
+*/
+inline void ProcessManager::ltr(word selector) const {
+
+    /* ltr */
+    asm volatile("ltr %0\n": "=m" (selector));
     return;
 }
 

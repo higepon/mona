@@ -2,7 +2,7 @@
     \file  ProcessManager.h
     \brief ProcessManager
 
-    ProcessManager
+    ProcessManager, management of maltitask.
 
     Copyright (c) 2002 HigePon
     WITHOUT ANY WARRANTY
@@ -31,6 +31,7 @@ class ProcessManager {
     void printInfo();
   private:
     void sgdt();
+    inline void ltr(word) const;
 
     GDT* gdt_;
 };
