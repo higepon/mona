@@ -43,7 +43,7 @@ fi
 #   echo "linux gcc3.x"
 #fi
 
-cp Makefile.in > Makefile
+cp Makefile.in Makefile
 
 echo ""
 echo "[How to build]"
