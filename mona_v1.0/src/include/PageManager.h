@@ -34,8 +34,9 @@ class PageManager {
     void flushPageCache() const;
     bool allocatePhysicalPage(PageEntry* pageEntry);
     bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
-    bool setAttribute(PageEntry* entry, bool present, bool writable, bool kernel);
-    bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel);
+    bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const;
+    bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const;
+    bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const;
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
@@ -44,7 +45,6 @@ class PageManager {
 
   private:
     PageDirectory* allocatePageDirectory();
-    void makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const;
     PageEntry* allocatePageTable() const;
 
     inline bool isPresent(PageEntry* entry) const {

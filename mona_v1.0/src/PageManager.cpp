@@ -89,11 +89,11 @@ void PageManager::setup() {
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
         memoryMap_->mark(i);
-        makePageEntry(&(table[i]), 4096 * i, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_USER);
+        setAttribute(&(table[i]), true, true, true, 4096 * i);
     }
 
     memset(g_page_directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    makePageEntry(g_page_directory, (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_USER);
+    setAttribute(g_page_directory, true, true, true, (PhysicalAddress)table);
 
     setPageDirectory((PhysicalAddress)g_page_directory);
     startPaging();
@@ -113,11 +113,11 @@ PageEntry* PageManager::createNewPageDirectory() {
     /* allocate page to physical address 0-4MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
-        makePageEntry(&(table[i]), 4096 * i, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_KERNEL);
+        setAttribute(&(table[i]), true, true, false, 4096 * i);
     }
 
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    makePageEntry(directory, (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_KERNEL);
+    setAttribute(directory, true, true, false, (PhysicalAddress)table);
 
     dword directoryIndex = getDirectoryIndex(0xFFFFFC00);
     dword tableIndex     = getTableIndex(0xFFFFFC00);
@@ -125,7 +125,7 @@ PageEntry* PageManager::createNewPageDirectory() {
     /* test code. stack is always 0xFFFFFFFF */
     table = allocatePageTable();
     memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    makePageEntry(&(directory[directoryIndex]), (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_USER);
+    setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
     allocatePhysicalPage(&(table[tableIndex]));
 
     return directory;
@@ -189,22 +189,6 @@ void PageManager::flushPageCache() const {
 }
 
 /*!
-    \brief set up page entry
-
-    \param  entry    entry to set up
-    \param  address  physical address to set
-    \param  present  page present bit
-    \param  rw       read/write   bit
-    \param  user     user/kernel  bit
-    \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const {
-
-    *entry = present | rw | user | (address & 0xfffff000);
-}
-
-/*!
     \brief allocate page table
 
     \author HigePon
@@ -260,7 +244,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
             table = allocatePageTable();
             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, user);
+            setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
         }
 
         bool allocateResult = allocatePhysicalPage(&(table[tableIndex]));
@@ -283,16 +267,34 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     \param  entry    page entry
     \param  present  true:page present
     \param  writable true:writable
-    \param  kernel   true:kernel access mode
+    \param  isUser   true:user access mode
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool kernel) {
+bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const {
 
-    if (!(*entry)) return false;
 
     (*entry) = ((*entry) & (0xFFFFFFF8)) | (present ? ARCH_PAGE_PRESENT : 0x00)
-             | (writable ? ARCH_PAGE_RW : 0x00) | (kernel ? ARCH_PAGE_KERNEL : 0x00);
+             | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
+
+    return true;
+}
+
+/*!
+    \brief set page attribute
+
+    \param  entry    page entry
+    \param  present  true:page present
+    \param  writable true:writable
+    \param  isUser   true:user access mode
+    \param  address  physical address
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
+bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const {
+
+    (*entry) = (address & 0xfffff000) | (present ? ARCH_PAGE_PRESENT : 0x00)
+             | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
 
     return true;
 }
@@ -304,11 +306,11 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
     \param  address  Linear address
     \param  present  true:page present
     \param  writable true:writable
-    \param  kernel   true:kernel access mode
+    \param  isUser   true:user access mode
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel) {
+bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const {
 
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
@@ -316,5 +318,5 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     if (!isPresent(&(directory[directoryIndex]))) return false;
 
      table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-     return setAttribute(&(table[getTableIndex(address)]), present, writable, kernel);
+     return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);
 }
