@@ -40,6 +40,7 @@ public:
     int wait(Thread* thread);
 
 private:
+    int calcPriority(Thread* thread);
 
 protected:
     Array<Thread> mona;
@@ -55,6 +56,18 @@ Scheduler::~Scheduler()
 {
 }
 
+int Scheduler::calcPriority(Thread* thread)
+{
+    thread->partTick /= 2;
+    thread->currPriority = thread->basePriotity + thread->partTick;
+
+    if (thread->currPriority > this->monaMin)
+    {
+        thread->currPriority = this->monaMin;
+    }
+
+    return NORMAL;
+}
 
 void Scheduler::schedule()
 {
@@ -63,7 +76,7 @@ void Scheduler::schedule()
     {
         FOREACH_Q(queue, Thread*, thread)
         {
-            thread->getThreadInfo();
+            calcPriority(thread);
         }
     }
 
@@ -84,8 +97,10 @@ void Scheduler::schedule()
 void Scheduler::join(Thread* thread, int priority)
 {
     if (priority > monaMin || priority < 0) return;
+
     Thread targetQueue = mona[0];
     Queue::addToPrev(&targetQueue, thread);
+
     this->schedule();
 }
 

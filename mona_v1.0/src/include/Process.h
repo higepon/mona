@@ -149,6 +149,8 @@ class Thread : public Queue {
   public:
     int currPriority;
     int basePriotity;
+    int totalTick;
+    int partTick;
 
   protected:
     dword tick_;
