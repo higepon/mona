@@ -40,8 +40,8 @@ int vsprintf(char *s, const char *format, va_list arg){
         i++;
         switch(format[i]){
           case 's':
-            //memcpy?
-            va_arg(arg, char *);
+            result += strcpy2(&s[result], va_arg(arg, char *));
+            result--;
             loop = 0;
             break;
           case 'd':
@@ -330,4 +330,12 @@ int atoi(const char *s){
   }
 
   return result*flag;
+}
+
+int strcpy2(char *s1, const char *s2){
+  char *tmp = s1;
+
+  while((*tmp++ = *s2++));
+
+  return (int)(tmp - s1);
 }
