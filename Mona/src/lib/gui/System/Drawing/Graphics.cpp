@@ -149,4 +149,17 @@ namespace System { namespace Drawing
 	{
 		return font->GetSize(text);
 	}
+	
+	void Graphics::DrawImage(_P<Bitmap> image, int x, int y)
+	{
+		int w = image->get_Width(), h = image->get_Height(), p = 0;
+		Bitmap& bmp = *image.get();
+		for (int yy = 0; yy < h; yy++)
+		{
+			for (int xx = 0; xx < w; xx++, p++)
+			{
+				this->SetPixel(x + xx, y + yy, bmp[p]);
+			}
+		}
+	}
 }}

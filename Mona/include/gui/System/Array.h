@@ -49,7 +49,7 @@ namespace System
 		Array(int length)
 		{
 			this->Initialize();
-			this->Set(new T[length], length);
+			this->Alloc(length);
 		}
 	
 		Array(T* pointer, int length, bool isManaged = true)
@@ -67,6 +67,12 @@ namespace System
 		virtual ~Array()
 		{
 			this->Unset();
+		}
+		
+		void Alloc(int length)
+		{
+			this->Unset();
+			this->Set(new T[length], length);
 		}
 	
 		void Set(T* pointer, int length, bool isManaged = true)

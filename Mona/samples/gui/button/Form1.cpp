@@ -13,7 +13,7 @@ using namespace System::Mona::Forms;
 class Form1 : public Form
 {
 public:
-	Pointer<Button> button1;
+	_P<Button> button1;
 	
 	Form1()
 	{
@@ -35,13 +35,13 @@ private:
 		this->get_Controls()->Add(this->button1.get());
 	}
 	
-	void button1_Click(Pointer<Object> sender, Pointer<EventArgs> e)
+	void button1_Click(_P<Object> sender, _P<EventArgs> e)
 	{
 		Console::WriteLine("Uwaaaaaaan!!");
 	}
 	
 public:
-	static void Main(Array<String> args)
+	static void Main(_A<String> args)
 	{
 		Application::Run(new Form1());
 	}

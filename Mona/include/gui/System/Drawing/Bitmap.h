@@ -19,8 +19,11 @@ namespace System { namespace Drawing
 	public:
 		virtual String get_TypeName() { return "System.Drawing.Bitmap"; }
 		Bitmap(int width, int height);
+		Bitmap(String fileName);
 		virtual ~Bitmap();
 		
+		inline int get_Width() { return this->width; }
+		inline int get_Height() { return this->height; }
 		inline Color& operator [](int index) { return this->buffer[index]; }
 		inline Color* get() { return this->buffer.get(); }
 	
