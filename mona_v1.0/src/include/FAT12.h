@@ -14,6 +14,7 @@
 
 #include<types.h>
 #include<DiskDriver.h>
+#include<BitMap.h>
 
 /*! Bios Parameter Block */
 typedef struct BPB {
@@ -128,10 +129,11 @@ class FAT12 {
     int  currentCluster_;       /* read state      */
     int  fileSize_;             /* read state      */
 
-    char currentPath_[512];      /* current path    */
+    char currentPath_[512];      /* current path   */
     int currentDirecotry_;      /* current cluster */
 
     int fatStart_;              /* fatStart        */
+    BitMap* map_;               /* cluster map     */
 
     /* depends on bpb */
     int rootDirSectors_;

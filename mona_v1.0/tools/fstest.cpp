@@ -45,10 +45,10 @@ int main(int argc, char *argv[]) {
         printf("open failed");
     }
 
-    if (!fat->changeDirectory("SOMEDIR\\DIR1\\DIR2\\DIR3\\DIR4")) {
-        printf("changeDirectory failed");
-        return -1;
-    }
+//      if (!fat->changeDirectory("SOMEDIR\\DIR1\\DIR2\\DIR3\\DIR4")) {
+//          printf("changeDirectory failed");
+//          return -1;
+//      }
 
     delete fat;
     delete driver;

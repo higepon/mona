@@ -58,6 +58,7 @@ FAT12::FAT12(DiskDriver* driver) {
 FAT12::~FAT12() {
 
     free(fat_);
+    delete(map_);
     return;
 }
 
@@ -92,6 +93,14 @@ bool FAT12::initilize() {
             errNum_ = FAT_READ_ERROR;
             return false;
         }
+    }
+
+    /* cluster map */
+    int mapSize = 512 * bpb_.fatSize16 / 3 + 1;
+    map_ = new BitMap(mapSize);
+    for (int j = 0; j < mapSize; j++) {
+
+        if (getFATAt(j)) map_->mark(j);
     }
 
     /* set parameters depend on bpb */
