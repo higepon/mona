@@ -1,3 +1,13 @@
+2004-04-28  tino  <tino@users.sourceforge.jp>
+
+        * env/kernel.inc: 共通化するのは無意味なので削除
+
+        * src/kernel/Makefile: kernel.incの中身を移動
+                               カーネルの開始位置をKERNEL_ADDRで定義
+                               secondboot.asm拡張のためKERNEL_ADDR=0x1000に変更
+
+        * src/secondboot.asm: KERNEL_ADDRに対応
+
 2004-04-29  Yui  <yuinejp@users.sourceforge.jp>
 
         * src/kernel/elf.cpp: ロードアドレス演算の修正
