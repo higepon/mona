@@ -79,7 +79,7 @@ void OneLineShell::service() {
         keyInfo.charcode = info.arg3;
         this->OnKeyDown(keyInfo);
         ds.DrawCommandLine((char *)this->cmd);
-        ds.DrawCursor(this->cmd.GetCurrentPos());
+        if(!isExited) ds.DrawCursor(this->cmd.GetCurrentPos());
         ds.DrawMessageLine(this->msg);
       }
     }

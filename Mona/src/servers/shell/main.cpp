@@ -4,6 +4,7 @@
 #include <monapi/Keys.h>
 
 static bool isExited = false;
+static bool callAutoExec = true;
 
 using namespace MonAPI;
 
@@ -57,6 +58,7 @@ void ShellServer::service()
             printf("ShellServer:INIT not found\n");
             exit(1);
         }
+        callAutoExec = false;
     }
 
     /* send */
@@ -89,35 +91,36 @@ void ShellServer::service()
 Shell::Shell() : position_(0)
 {
     history_ = new HList<char*>();
+    if (!callAutoExec) printf("\n");
     printf("%s", PROMPT);
+    if (!callAutoExec) return;
 
-    FileInputStream* fis = new FileInputStream("/AUTOEXEC.MSH");
-    if (fis->open() == 0)
+    FileInputStream fis("/AUTOEXEC.MSH");
+    if (fis.open() != 0) return;
+
+    int len = fis.getFileSize();
+    byte* data = new byte[len];
+    fis.read(data, len);
+    fis.close();
+
+    for (int pos = 0; pos <= len; pos++)
     {
-        int len = fis->getFileSize();
-        byte* data = new byte[len];
-        fis->read(data, len);
-        fis->close();
-        for (int pos = 0; pos <= len; pos++)
+        char ch = pos < len ? (char)data[pos] : '\n';
+        if (ch == '\r' || ch == '\n')
         {
-            char ch = pos < len ? (char)data[pos] : '\n';
-            if (ch == '\r' || ch == '\n')
+            if (position_ > 0)
             {
-                if (position_ > 0)
-                {
-                    commandTerminate();
-                    commandExecute();
-                }
-            }
-            else
-            {
-                commandChar(ch);
+                commandTerminate();
+                commandExecute();
             }
         }
-        delete [] data;
+        else
+        {
+            commandChar(ch);
+        }
     }
 
-    delete fis;
+    delete [] data;
 }
 
 Shell::~Shell()
