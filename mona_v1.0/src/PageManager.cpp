@@ -51,8 +51,8 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
 
 void PageManager::setup() {
 
-    PageEntry* table     = allocatePageTable();
-    PageEntry* directory = allocatePageTable();
+    PageEntry* table = allocatePageTable();
+    g_page_directory = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
     for (dword i = 0; i < PAGE_TABLE_NUM; i++) {
@@ -60,10 +60,10 @@ void PageManager::setup() {
         makePageEntry(&(table[i]), 4096 * i, PAGE_PRESENT, PAGE_RW, PAGE_USER);
     }
 
-    memset(directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-    makePageEntry(directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+    memset(g_page_directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
+    makePageEntry(g_page_directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
 
-    setPageDirectory((PhysicalAddress)directory);
+    setPageDirectory((PhysicalAddress)g_page_directory);
     startPaging();
 
 
@@ -112,8 +112,29 @@ PageEntry* PageManager::allocatePageTable() const {
 
 bool PageManager::pageFaultHandler(LinearAddress address) {
 
-    dword directoryIndex = address / (4096 * 1024);
+    dword directoryIndex = address >> 22;
 
-    //    if (isPresent(
+    g_console->printf("directoryIndex=%d", directoryIndex);
 
+    if (isPresent(&(g_page_directory[directoryIndex]))) {
+
+    g_console->printf("here");
+
+        PageEntry* table = (PageEntry*)g_page_directory[directoryIndex];
+
+        dword tableIndex = (address >> 12) & 0x3FF;
+
+        return allocatePhysicalPage(&(table[tableIndex]));
+
+    } else {
+
+    g_console->printf("there");
+
+        PageEntry* table = allocatePageTable();
+
+        memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
+
+        makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+        return true;
+    }
 }

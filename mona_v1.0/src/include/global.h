@@ -58,4 +58,7 @@ GLOBAL class ProcessManager* g_process_manager;
 /* MessageServer */
 GLOBAL MessageServer* g_message_server;
 
+GLOBAL PageEntry* g_page_directory;
+GLOBAL PageManager* g_page_manager;
+
 #endif

@@ -85,8 +85,8 @@ void startKernel(void) {
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
     g_console->printf("\nSystem TotalL Memory %d[MB]\n", g_total_system_memory);
 
-    PageManager* pageManager = new PageManager(g_total_system_memory);
-    pageManager->setup();
+    g_page_manager = new PageManager(g_total_system_memory);
+    g_page_manager->setup();
 
     /* now paging is off. */
     //   PagingUtil::setup();
