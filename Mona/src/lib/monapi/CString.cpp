@@ -1,7 +1,6 @@
 #include <monapi/string.h>
 #include <monapi/CString.h>
 #include <monapi/syscall.h>
-#include <gui/System/Collections/ArrayList.h>
 
 #define ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
 
@@ -275,47 +274,67 @@ namespace MonAPI
 
     _A<CString> CString::split(char ch) const
     {
-        System::Collections::ArrayList<CString> list;
-        int p = 0, pp = 0;
+        int len = 0, p = 0, pp = 0;
         for (;;)
         {
             pp = p;
             p = this->indexOf(ch, p);
             if (p < 0)
             {
-                list.Add(this->substring(pp, this->length - pp));
+                len++;
                 break;
             }
-            list.Add(this->substring(pp, p - pp));
+            len++;
             p++;
         }
 
-        int len = list.get_Count();
         _A<CString> ret(len);
-        for (int i = 0; i < len; i++) ret[i] = list.get_Item(i);
+        p = 0;
+        for (int i = 0;; i++)
+        {
+            pp = p;
+            p = this->indexOf(ch, p);
+            if (p < 0)
+            {
+                ret[i] = this->substring(pp, this->length - pp);
+                break;
+            }
+            ret[i] = this->substring(pp, p - pp);
+            p++;
+        }
         return ret;
     }
 
     _A<CString> CString::split(const CString& value) const
     {
-        System::Collections::ArrayList<CString> list;
-        int p = 0, pp = 0;
+        int len = 0, p = 0, pp = 0;
         for (;;)
         {
             pp = p;
             p = this->indexOf(value, p);
             if (p < 0)
             {
-                list.Add(this->substring(pp, this->length - pp));
+                len++;
                 break;
             }
-            list.Add(this->substring(pp, p - pp));
+            len++;
             p += value.length;
         }
 
-        int len = list.get_Count();
         _A<CString> ret(len);
-        for (int i = 0; i < len; i++) ret[i] = list.get_Item(i);
+        p = 0;
+        for (int i = 0;; i++)
+        {
+            pp = p;
+            p = this->indexOf(value, p);
+            if (p < 0)
+            {
+                ret[i] = this->substring(pp, this->length - pp);
+                break;
+            }
+            ret[i] = this->substring(pp, p - pp);
+            p += value.length;
+        }
         return ret;
     }
 
