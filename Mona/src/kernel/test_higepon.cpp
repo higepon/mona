@@ -282,7 +282,9 @@ int Messenger::send(dword id, MessageInfo* message)
 
 int Messenger::receive(Thread* thread, MessageInfo* message)
 {
-    MessageInfo* from = thread->messageList->get(0);
+    enter_kernel_lock_mode();
+    MessageInfo* from = thread->messageList->removeAt(0);
+    exit_kernel_lock_mode();
 
     if (from == (MessageInfo*)NULL)
     {
@@ -301,10 +303,6 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
 #endif
 
     *message = *from;
-
-    enter_kernel_lock_mode();
-    thread->messageList->removeAt(0);
-    exit_kernel_lock_mode();
 
     return 0;
 }
