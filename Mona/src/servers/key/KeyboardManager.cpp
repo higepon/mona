@@ -114,7 +114,7 @@ KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
     \author HigePon
     \date   create:2002/10/12 update:2002/11/04
 */
-void KeyBoardManager::setKeyScanCode(byte scancode) {
+int KeyBoardManager::setKeyScanCode(byte scancode) {
 
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
@@ -123,10 +123,10 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     switch(scancode) {
 
       case KEYBOARD_ACK:
-          return;
+          return 0;
       case SPECIAL_KEY:
           isSpecialKey_ = true;
-          return;
+          return 0;
     }
 
     /* regular key */
@@ -153,7 +153,7 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
 
       /* invalid keycode */
       case 0:
-          return;
+          return 0;
 
       case KEY_LSHIFT:
       case KEY_RSHIFT:
@@ -182,14 +182,16 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     else if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
     else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
+    printf("{%2x:%2x} ", scancode, modifiers);
     /* allocate keyinfo */
     KeyInfo* kinfo = (KeyInfo*)malloc(sizeof(KeyInfo));
 
     /* set virtual keyinfo */
     toVirtual(keycode, modifiers, kinfo);
+    printf("{%2x:%2x} ", kinfo->keycode, kinfo->modifiers);
     keyInfoList_->add(kinfo);
 
-    return;
+    return 1;
 }
 
 void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
@@ -357,6 +359,18 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
     case(0x01):
         info->keycode = Keys::Back;
         break;
+/*    case KEY_ARROW_UP:
+        info->keycode = Keys::Up;
+        break;
+    case KEY_ARROW_DOWN:
+        info->keycode = Keys::Down;
+        break;
+    case KEY_ARROW_RIGHT:
+        info->keycode = Keys::Right;
+        break;
+    case KEY_ARROW_LEFT:
+        info->keycode = Keys::Left;
+        break;*/
     default:
         info->keycode = keycode;
         info->modifiers = modifiers;

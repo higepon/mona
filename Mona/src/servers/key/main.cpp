@@ -96,7 +96,8 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
 
     /* scan code to virtual key information */
     byte scancode = info->arg1;
-    manager->setKeyScanCode(scancode);
+    printf("(%x) ", scancode);
+    if(manager->setKeyScanCode(scancode) == 0) return 0;
     manager->getKeyInfo(&keyinfo);
 
     /* create message */

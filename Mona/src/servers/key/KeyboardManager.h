@@ -21,7 +21,7 @@
 #define KEYBOARD_ACK 0xFA
 
 typedef enum {
-    KEY_ESC
+  KEY_ESC = 1,
   , KEY_BACKSPACE
   , KEY_TAB
   , KEY_RETURN
@@ -57,7 +57,7 @@ typedef enum {
   , KEY_PAD_PERIOD
   , KEY_F11
   , KEY_F12
-  , KEY_PAD_ENTERKEY_RCTRL
+  , KEY_PAD_ENTER
   , KEY_PAD_DIVIDE
   , KEY_PRTSCRN
   , KEY_RALT
@@ -65,18 +65,16 @@ typedef enum {
   , KEY_ARROW_UP
   , KEY_PGUP
   , KEY_ARROW_LEFT
-  , KEY_ARROW_RIGHTKEY_END
-  , KEY_ARROW_DOWNKEY_PGDNKEY_INS
+  , KEY_ARROW_RIGHT
+  , KEY_END
+  , KEY_PGDNKEY_INS
   , KEY_LWIN
   , KEY_RWIN
   , KEY_MENU
   , KEY_RCTRL
-  , KEY_ARROW_RIGHT
-  , KEY_END
   , KEY_ARROW_DOWN
   , KEY_PGDN
   , KEY_INS
-  , KEY_PAD_ENTER
 } keyType;
 
 
@@ -99,7 +97,7 @@ class KeyBoardManager {
     KeyBoardManager(const KeyBoardManager&);
     KeyBoardManager& operator = (const KeyBoardManager&);
     KeyInfo* getKeyInfo(KeyInfo* keyinfo);
-    void setKeyScanCode(unsigned char);
+    int setKeyScanCode(unsigned char);
     void init();
     void toVirtual(byte keycode, byte modifiers, KeyInfo* info);
     inline bool isInit() const {
