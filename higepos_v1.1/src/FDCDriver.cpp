@@ -72,7 +72,7 @@ FDCDriver::~FDCDriver()
 /*!
     \brief initialize FDC
     \author syn
-    \date create:2002/10/14 update:2002/10/20
+    \date create:2002/10/14 update:2002/10/31
 */
 int FDCDriver::initialize()
 {
@@ -85,22 +85,25 @@ int FDCDriver::initialize()
     _sys_printf("dma_buff=%d\n", long(dma_buff));
 
     /* Initialize DMAC */
-    outportb(PORT_MDMA_CLEAR, 0);
-    busy_wait(10000);
-    outportb(PORT_SDMA_CLEAR, 0);
-    busy_wait(10000);
+    outportb(PORT_MDMA_CLEAR, 0);  /* reset master DMAC */
+    inportb(0x80);
+    outportb(PORT_SDMA_CLEAR, 0);  /* reset slave DMAC */
+    inportb(0x80);
     outportb(PORT_MDMA_CMD, 0);
     outportb(PORT_SDMA_CMD, 0);
     outportb(PORT_MDMA_MODE, 0xC0);
+    outportb(PORT_SDMA_MODE, 0x46);
     outportb(PORT_MDMA_SINGLE_MASK, 0);
 
     /* Reset FDC */
-    outportb(PORT_DSR_1, 0x03);
-    busy_wait(10000);
+    outportb(PORT_DSR_1, 0x00);
+    inportb(0x80);
+    outportb(PORT_CCR_1, 0x00);
+    inportb(0x80);
     outportb(PORT_DOR_1, 0x08);
-    busy_wait(10000);
+    inportb(0x80);
     outportb(PORT_DOR_1, 0x0C); /* Drive 0 Enable DMA */
-    busy_wait(10000);
+    inportb(0x80);
 
     /* Specify FDC */
     cmd[0] = 0x03;
@@ -111,8 +114,8 @@ int FDCDriver::initialize()
         return 0;
     }
 
-
     motor(1);
+    recalibrate(); 
 
     return 0;
 }
@@ -132,6 +135,35 @@ int FDCDriver::motor(int on)
     outportb(PORT_DOR_1, 0x1C);
     
     return 0;
+}
+
+/*!
+    \brief Do recaribrate
+
+    \result constant 0
+    
+    \author syn
+    \date create:2002/10/31 update:2002/10/31
+*/
+int FDCDriver::recalibrate()
+{
+    unsigned char cmd[2];
+
+    _sys_printf("recalibrate\n");
+    cmd[0] = 0x07;
+    cmd[1] = 0x00; /* Head1, drive 0*/
+ 
+    interrupt = false; 
+    if(command(cmd, sizeof(cmd)) != 0){
+        _sys_printf("FDCDriver::recalibrate:command fail\n");
+        return 1;
+    }
+
+    while(!wait_interrupt()){
+    }
+    sense_interrupt();
+    
+    return 0; 
 }
 
 /*!
@@ -165,6 +197,7 @@ int FDCDriver::seek(const unsigned int head, const unsigned int track)
 
     while(!wait_interrupt()){
     }
+    sense_interrupt();
 
     return 0;
 }
@@ -204,11 +237,13 @@ int FDCDriver::readSector(const unsigned long start_sector, const unsigned long 
     \return if succeed, return 0  
    
     \author syn
-    \date create:2002/10/20 update:2002/10/20
+    \date create:2002/10/20 update:2002/10/31
 */
 int FDCDriver::readSector(const int h, const int c, const int r, const int num_sector, unsigned char buff[])
 {
     unsigned char cmd[9];
+    unsigned char result[7];
+    int i;
 
     _sys_printf("FDCDriver::read_sector:h=%d,c=%d,r=%d\n", h, c, r);
     if(seek(h, c) != 0){
@@ -228,7 +263,7 @@ int FDCDriver::readSector(const int h, const int c, const int r, const int num_s
     cmd[3] = h&0xFF;
     cmd[4] = r&0xFF;
     cmd[5] = 2;        /* 512byte (= 128*(2^2) byte) */
-    cmd[6] = 12;       /* end track */
+    cmd[6] = 0x12;       /* end track */
     cmd[7] = 0x1B;     /* For 1.44M discket */
     cmd[8] = 0xFF;     /* DTL */
 
@@ -242,11 +277,18 @@ int FDCDriver::readSector(const int h, const int c, const int r, const int num_s
         return 0;
     }
 
-    _sys_printf("waiting interrupt ...\n");
-    cnt = 0;
+    _sys_printf("waiting interrupt ...");
     while(!wait_interrupt()){
+        inportb(0x80);
     }
-    _sys_printf("done.(%d)\n", cnt);
+    _sys_printf("done\n");
+    get_result(result, sizeof(result));
+    _sys_printf("FDCDrive::sense_interrupt:result = ");
+    for(i = 0; i < sizeof(result); i++){
+        _sys_printf("[%d] ", result[i]);
+    }
+    _sys_printf("\n");
+
     
     for(int i = 0; i < 512; i++){
         buff[i] = dma_buff[i];
@@ -276,12 +318,12 @@ int FDCDriver::writeSector(const unsigned long start_sector, const unsigned long
     \brief interrupt handler (called by higeIHandler.cpp:fdcHandler)
 
     \author syn
-    \date create:2002/10/14 update:2002/10/14
+    \date create:2002/10/14 update:2002/10/31
 */
 void FDCDriver::interruptHandler()
 {
     _sys_printf("FDCDriver::interrupt_handler\n");
-    sense_interrupt();
+    interrupt = true;
 }
 
 /*!
@@ -321,7 +363,7 @@ int FDCDriver::wait_MSR(const unsigned char mask, const unsigned char pat)
     \result 0:OK other NG(maybe timeout)
 
     \author syn
-    \date create:2002/10/16 update:2002/10/20
+    \date create:2002/10/16 update:2002/10/31
 */
 int FDCDriver::sense_interrupt()
 {
@@ -335,14 +377,12 @@ int FDCDriver::sense_interrupt()
     }
 
     get_result(result, 2);
-    _sys_printf("FDCDrive::sense_interrupt:result = [%d] [%d]\n", result[0]&0xFF, (int)result[1]&0xFF);
-
+    _sys_printf("FDCDrive::sense_interrupt:result = [%d] [%d]\n", result[0], result[1]);
+    
     /* decode result */
     /* ============================= */
     /* ==== NOT INPLEMENTED YET ==== */
     /* ============================= */
-    
-    interrupt = true;
 
     return 0;
 }
@@ -385,7 +425,7 @@ int FDCDriver::command(const unsigned char cmd[], const int len)
     \result 0:OK other NG(maybe timeout)
 
     \author syn
-    \date create:2002/10/15 update:2002/10/15
+    \date create:2002/10/15 update:2002/10/31
 */
 int FDCDriver::get_result(unsigned char r[], int n)
 {
@@ -395,30 +435,34 @@ int FDCDriver::get_result(unsigned char r[], int n)
     unsigned char result;
     long count;
 
-    while(!done){
-        /* wait MSR */
+    for(count = 0; count < MAX_COUNT; count++){
         msr = inportb(PORT_MSR_1);
-        count = 0;
-        while(1){
-            if((msr & 0xC0) == 0xC0){
-                break;
-            }
-            if(++count > MAX_COUNT){
-                _sys_printf("FDCDriver::get_result:timeout(msr=%d)\n", msr);
-                return -1;
-            }
+        if((msr & 0xC0) == 0xC0){
+            break;
         }
-    
-        if((msr & 0x40) != 0){
-            result = inportb(PORT_FIFO_1);
-            if(index < n){
-                r[index++] = result;
-            }
-        }else{
-            done = true;
-        }
+        inportb(0x80); /* delay */
+    }
+    if(count == MAX_COUNT){
+        _sys_printf("FDCDriver::get_result:timeout(msr=%d)\n", msr);
+        return 0;
     }
 
+    do{
+        result = inportb(PORT_FIFO_1);
+        if(index < n){
+            r[index++] = result;
+        }
+        for(count = 0; count < MAX_COUNT; count++){
+            msr = inportb(PORT_MSR_1);
+            if((msr & 0x80) == 0x80){
+                break;
+            }
+        }
+        if(count == MAX_COUNT){
+            _sys_printf("FDCDriver::get_result:timeout2(msr=%d)\n", msr);
+            return index;
+        }
+    }while(msr &0x40);
     return index;
 }
 
@@ -432,7 +476,6 @@ int FDCDriver::get_result(unsigned char r[], int n)
 */
 bool FDCDriver::wait_interrupt()
 {
-    cnt++;
     return interrupt;
 }
 
@@ -443,39 +486,26 @@ bool FDCDriver::wait_interrupt()
     \return constant 0
 
     \autor syn
-    \date create:2002/10/20 update:2002/10/20
+    \date create:2002/10/20 update:2002/10/31
 */
 int FDCDriver::dma_read(const unsigned long len)
 {
     unsigned long p = (unsigned long)dma_buff;
 
     /* setup DMA registor */
+    asm("cli");
     outportb(PORT_SDMA_SINGLE_MASK, 0x06); /* mask channel #2 */
     outportb(PORT_SDMA_MODE, 0x46);        /* fdc -> memory */
-    asm("cli");
     outportb(PORT_SDMA_CLEAR_BYTE, 0);     /* clear flip-flop */
     outportb(PORT_SDMA_BASE_C2, p&0xFF);
     outportb(PORT_SDMA_BASE_C2, (p>>8)&0xFF);
     outportb(PORT_SDMA_COUNT_C2, len &0xFF);
     outportb(PORT_SDMA_COUNT_C2, (len >>8)&0xFF);
     outportb(PORT_DMA_PAGE_C2, (p >>16)&0xFF);
-    asm("sti");
 
     /* and, go! */
     outportb(PORT_SDMA_SINGLE_MASK, 0x02);
+    asm("sti");
 
     return 0;
-}
-
-/*!
-    \brief Do busy wait
-  
-    \param n wait counter
- 
-    \author syn
-    \date create:2002/10/16 update:2002/10/16
-*/
-void FDCDriver::busy_wait(unsigned long n){
-   while(n-- > 0){
-   }
 }

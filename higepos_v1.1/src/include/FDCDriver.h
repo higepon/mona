@@ -30,15 +30,14 @@ class FDCDriver{
     int motor(int on);
     int wait_MSR(const unsigned char mask, const unsigned char pat);
     int sense_interrupt();
+    int recalibrate();
     int command(const unsigned char cmd[], const int n);
-    void busy_wait(unsigned long n);
     bool wait_interrupt();
     int dma_read(const unsigned long len);
     static int get_result(unsigned char r[], int n);
   
   protected:
     bool interrupt;
-    unsigned long cnt;
     unsigned char* dma_buff;
 };
 
