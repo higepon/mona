@@ -112,6 +112,7 @@ class FAT12 {
     bool isFAT12();
     word getFATAt(int cluster) const;
     char* getPathAt(const char* path, int index) const;
+    int getEmptyEntry(int cluster);
     bool compareName(const char* name1, const char* name2) const;
     int clusterToLbp(int cluster);
 

@@ -435,8 +435,6 @@ bool FAT12::close() {
     return true;
 }
 
-bool FAT12::createFlie(const char* name) {return true;}
-
 bool FAT12::read(byte* buffer) {
 
     /* has no next */
@@ -457,6 +455,42 @@ bool FAT12::read(byte* buffer) {
 bool FAT12::readHasNext() const {
 
     return readHasNext_;
+}
+
+bool FAT12::createFlie(const char* name) {
+
+    /* check current directory */
+
+    /* has empty entry? */
+
+
+    return true;
+
+}
+
+int FAT12::getEmptyEntry(int cluster) {
+
+    DirectoryEntry entries[16];
+    int lbp = clusterToLbp(cluster);
+
+    /* read current directory */
+    if (!(driver_->read(lbp, buf_))) {
+        errNum_ = DRIVER_READ_ERROR;
+        return -1;
+    }
+    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+
+    for (int j = 0; j < 16; j++) {
+
+        /* free */
+        if (entries[j].filename[0] == 0xe5) return j;
+
+        /* no other entries */
+        if (entries[j].filename[0] == 0x00) return -1;
+    }
+    return -1;
+
+
 }
 
 bool FAT12::write(const char* file, byte* buffer) {return true;}
