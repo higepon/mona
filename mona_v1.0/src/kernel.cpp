@@ -101,22 +101,39 @@ void startKernel(void) {
 
     while (g_demo_step < 2);
     g_fdcdriver = new FDCDriver(g_console);
+
+    byte tbuf[512];
+    for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
+    for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
+
     //    g_fdcdriver->test();
 
     g_fdcdriver->motor(true);
+    //    g_fdcdriver->write(1, tbuf);
+    g_fdcdriver->write(2, tbuf);
+    while (true);
+
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
 
         g_console->printf("fat initilize faild\n");
+	while (true);
     }
 
+
+    g_console->printf("¢£changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         g_console->printf("some dir not found");
-        while(true);
+	while (true);
     }
-    g_console->printf("change directory");
-    g_fdcdriver->motor(false);
 
+
+    g_console->printf("¢£create file hige.cpp\n");
+    if (!fat->createFlie("HIGE", "CPP")) {
+
+        g_console->printf("can not create file=%d", fat->getErrorNo());
+	while (true);
+    }
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     while (g_demo_step < 5);

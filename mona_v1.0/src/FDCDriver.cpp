@@ -679,7 +679,7 @@ bool FDCDriver::read(int lba, byte* buf) {
 
     lbaToTHS(lba, track, head, sector);
 
-    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+    //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!read(track, head, sector)) return false;
 
@@ -693,11 +693,13 @@ bool FDCDriver::write(int lba, byte* buf) {
 
     byte track, head, sector;
 
+    g_console->printf("**** write called ****\n");
+
     lbaToTHS(lba, track, head, sector);
 
     memcpy(dmabuff_, buf,  512);
 
-    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+    //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!write(track, head, sector)) return false;
 
