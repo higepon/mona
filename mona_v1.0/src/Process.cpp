@@ -83,6 +83,10 @@ void Scheduler::schedule()
 
 void Scheduler::join(Thread* thread, int priority)
 {
+    if (priority > monaMin || priority < 0) return;
+    Thread targetQueue = mona[0];
+    Queue::addToPrev(&targetQueue, thread);
+    this->schedule();
 }
 
 int Scheduler::kill(Thread* thread)
@@ -95,7 +99,9 @@ int Scheduler::kill(Thread* thread)
 int Scheduler::wait(Thread* thread)
 {
     Queue::remove(thread);
-//    Qeueue::addToPrev(&(mona[monaMin]), thread);
+    Thread targetQueue = mona[monaMin];
+    Queue::addToPrev(&targetQueue, thread);
+    return NORMAL;
 }
 
 /*----------------------------------------------------------------------
@@ -919,7 +925,7 @@ int ProcessManager::wakeup(Process* process, int waitReason) {
     Process
 ----------------------------------------------------------------------*/
 dword Process::pid = 0;
-Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4), threadNum(0) {
+Process::Process(const char* name, PageEntry* directory) : threadNum(0), tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
