@@ -4,18 +4,18 @@ INSTDIR = $(BINDIR)/root/APPS/GHEBTN.APP
 INSTFILES = 0.BM5 1.BM5 2.BM5 3.BM5 4.BM5 5.BM5 6.BM5 7.BM5 8.BM5 9.BM5 HENORMAL.BM5 HEPUSHED.BM5
 CLEANFILES = $(INSTFILES)
 
-$(TARGET).EX5: $(INSTFILES)
+$(TARGET).EXE: $(INSTFILES)
 
 MONADIR    = ../../..
-#ifneq ($(BUILD_TARGET),ELF)
-#ADDLINK    = -lbaygui-imp
-#ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
-#include $(MONADIR)/env/monapi-ex2.inc
-#else
+ifneq ($(BUILD_TARGET),ELF)
+ADDLINK    = -lbaygui-imp
+ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+include $(MONADIR)/env/monapi-ex5.inc
+else
 ADDLINK    = -lbaygui
 ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
-include $(MONADIR)/env/monapi-el2.inc
-#endif
+include $(MONADIR)/env/monapi-el5.inc
+endif
 
 CXXFLAGS += -DDEBUG
 
