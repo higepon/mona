@@ -29,6 +29,7 @@ class VirtualConsole {
     virtual void print(char* str)  = 0;
     virtual void printInt(int num) = 0;
     virtual void putInt(size_t n, int base) = 0;
+    virtual void clearScreen() = 0;
 };
 
 

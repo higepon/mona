@@ -86,7 +86,6 @@ Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
 void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     dword stackAddress = allocateStack();
-    g_console->printf("%x stack=%x\n", thread, stackAddress);
     g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
 
     ThreadInfo* info      = thread->getThreadInfo();
@@ -178,13 +177,13 @@ void ThreadManager::printAllThread() {
     for (dword i = 0; i < dispatchList_->size(); i++) {
         thread = dispatchList_->get(i);
         a = thread->getThreadInfo()->archinfo;
-        g_console->printf("    %x %x %x %x %d\n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
+        g_console->printf("    %x %x %x %x %d                       \n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
     }
 
     for (dword i = 0; i < waitList_->size(); i++) {
         thread = waitList_->get(i);
         a = thread->getThreadInfo()->archinfo;
-        g_console->printf("    %x %x %x %x %d\n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
+        g_console->printf("    %x %x %x %x %d                       \n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
     }
 }
 
@@ -363,13 +362,13 @@ void ProcessManager::printProcess() {
 
     for (dword i = 0; i < dispatchList_->size(); i++) {
         p = dispatchList_->get(i);
-        g_console->printf("[%s]dispatch %d\n", p->getName(), p->getTick());
+        g_console->printf("[%s]dispatch %d                                           \n", p->getName(), p->getTick());
         p->printAllThread();
     }
 
     for (dword i = 0; i < waitList_->size(); i++) {
         p = waitList_->get(i);
-        g_console->printf("[%s]waiting %d\n", p->getName(), p->getTick());
+        g_console->printf("[%s]waiting %d                                             \n", p->getName(), p->getTick());
         p->printAllThread();
     }
 }

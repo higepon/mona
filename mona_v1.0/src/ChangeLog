@@ -1,3 +1,7 @@
+2004-01-11  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: loadProcess(ユーザーモード)のスレッド対応終了
+
 2004-01-10  higepon  <higepon@users.sourceforge.jp>
 
         * PageManager.cpp: ページフォルトハンドラのバグ1つめ修正(エラーコードが正しく取れていなかった)

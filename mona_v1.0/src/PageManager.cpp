@@ -120,19 +120,13 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     dword tableIndex     = getTableIndex(laddress);
 
     if (isPresent(&(directory[directoryIndex]))) {
-        g_console->printf("[8.3]");
         table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
     } else {
-        g_console->printf("[8.4]");
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
-        g_console->printf("[8.5]");
-	g_console->printf("presnt?=%s\n", isPresent(&table[tableIndex]) ? "true" : "false");
-bool result = allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
-	g_console->printf("presnt2?=%s\n", isPresent(&table[tableIndex]) ? "true" : "false");
-	return result;
+    return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
 }
 
 /*!
@@ -305,13 +299,14 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword tableIndex     = getTableIndex(address);
     Process* current     = g_processManager->getCurrentProcess();
 
+    g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
+
     /* search shared memory segment */
     List<SharedMemorySegment*>* list = current->getSharedList();
     for (dword i = 0; i < list->size(); i++) {
         SharedMemorySegment* segment = list->get(i);
 
         if (segment->inRange(address)) {
-            g_console->printf("error=%x", error);
             return segment->faultHandler(address, FAULT_NOT_EXIST);
         }
     }

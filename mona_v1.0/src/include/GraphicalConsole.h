@@ -57,6 +57,7 @@ class GraphicalConsole : public VirtualConsole {
     void print(char* str);
     void printInt(int num);
     void putInt(size_t n, int base);
+    void clearScreen();
 
   private:
     void forwardCursor();
@@ -70,7 +71,6 @@ class GraphicalConsole : public VirtualConsole {
     void setCursor(int x, int y);
     void scrollUp();
     size_t _power(size_t x, size_t y);
-    void clearScreen();
 
   private:
     char bgcolor_;

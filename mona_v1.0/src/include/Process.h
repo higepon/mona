@@ -139,11 +139,11 @@ class ThreadManager {
         if (isProcessChanged && isUser) {
 
             /* address space & therad switch */
-            arch_switch_thread_to_user1();
+            arch_switch_thread_to_user2();
         } else if (!isProcessChanged && isUser) {
 
             /* only thread switch */
-            arch_switch_thread_to_user2();
+            arch_switch_thread_to_user1();
         } else if (isProcessChanged && !isUser) {
 
             /* address space & therad switch */

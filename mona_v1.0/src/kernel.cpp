@@ -74,8 +74,7 @@ extern int pos_y;
 
 void printInfo() {
 
-    g_console->printf("free[%d]kb used[%d]kb", km.getFreeMemorySize() / 1024, km.getUsedMemorySize() / 1024);
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
 
     for (;;) {
 
@@ -84,9 +83,9 @@ void printInfo() {
         int tempy = pos_y;
 
         pos_x = 0;
-        pos_y = 3;
+        pos_y = 0;
 
-        //        g_processManager->printProcess();
+        g_processManager->printProcess();
 
         pos_x = tempx;
         pos_y = tempy;

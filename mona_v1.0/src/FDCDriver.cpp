@@ -118,8 +118,6 @@ void FDCDriver::initilize() {
         panic("dma buff allocate error");
     }
 
-    g_console->printf("dma=%x\n", (dword)dmabuff_);
-
     /* setup DMAC */
     outportb(0xda, 0x00);
     delay(1);

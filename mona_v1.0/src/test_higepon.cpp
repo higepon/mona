@@ -129,12 +129,12 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     ELFLoader* loader = new ELFLoader();
 
-    g_console->printf("elf size = %d", loader->prepare((dword)buf));
-
+    //    g_console->printf("elf size = %d", loader->prepare((dword)buf));
+    loader->prepare((dword)buf);
     /* prod_ code */
     dword entrypoint = loader->load((byte*)0x80000000);
 
-    g_console->printf("entrypoint=%x", entrypoint);
+    //    g_console->printf("entrypoint=%x", entrypoint);
     delete(loader);
     delete(g_fdcdriver);
     free(buf);

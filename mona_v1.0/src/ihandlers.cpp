@@ -298,7 +298,6 @@ void cpufaultHandler_b(void){
 
 void cpufaultHandler_c(dword error){
 
-    g_console->printf("error=%x\n", error);
 
     g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
                       , g_stack_view.stack0
