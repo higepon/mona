@@ -109,8 +109,6 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     process->setup(entry, allocateStack(), allocateKernelStack(process->pinfo_.dpl), allocatePageDir(), allocatePID());
 
-    scheduler_->addProcess(&(process->pinfo_));
-
     process->pinfo_.state = Process::READY;
 
     process->pinfo_.stack = new StackSegment(0xFFFFF400, 0xBFF);
@@ -118,6 +116,8 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     g_process[pnum_] = process;
     pnum_++;
+
+    scheduler_->addProcess(&(process->pinfo_));
     return true;
 }
 

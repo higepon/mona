@@ -248,6 +248,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword tableIndex     = getTableIndex(address);
     byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
+    while (true) {if (g_console) g_console->printf("page fault");}
+
     if (address >= g_current_process->stack->getStart()
         && address <= g_current_process->stack->getStart() + g_current_process->stack->getSize()) {
 

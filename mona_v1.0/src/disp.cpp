@@ -38,7 +38,10 @@ void disp_name1() {
 
     dword color = 0;
 
+    disp_name1();
+
     while (true) {
+
 
         while (Semaphore::down(&g_semaphore_console)) syscall_sleep(8);
 
