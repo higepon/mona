@@ -82,10 +82,22 @@ guiserver_window* GetWindowPointer(dword handle)
 	return NULL;
 }
 
+static void ActivateWindow(guiserver_window* w)
+{
+	if (activeWindow != NULL) Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle);
+	if (w != NULL) Message::send(w->ThreadID, MSG_GUISERVER_ACTIVATED, w->Handle);
+	activeWindow = w;
+	if (w == NULL) return;
+	
+	windows.remove(w);
+	windows.add(w);
+	if (w->Protocol == 0) DrawWindow(w);
+}
+
 bool DisposeWindow(dword handle)
 {
 	if (prevWindow != NULL && prevWindow->Handle == handle) prevWindow = NULL;
-	if (activeWindow != NULL && activeWindow->Handle == handle) activeWindow = NULL;
+	if (activeWindow != NULL && activeWindow->Handle == handle) ActivateWindow(NULL);
 	
 	int size_c = captures.size();
 	for (int i = 0; i < size_c; i++)
@@ -127,7 +139,7 @@ void DisposeWindowFromThreadID(dword tid)
 		if (w->ThreadID == tid)
 		{
 			if (prevWindow == w) prevWindow = NULL;
-			if (activeWindow == w) activeWindow = NULL;
+			if (activeWindow == w) ActivateWindow(NULL);
 			if (w->FormBufferHandle != 0)
 			{
 				w->Visible = false;
@@ -138,18 +150,6 @@ void DisposeWindowFromThreadID(dword tid)
 			i--;
 		}
 	}
-}
-
-static void ActivateWindow(guiserver_window* w)
-{
-	if (activeWindow != NULL) Message::send(activeWindow->ThreadID, MSG_GUISERVER_DEACTIVATE, activeWindow->Handle);
-	if (w != NULL) Message::send(w->ThreadID, MSG_GUISERVER_ACTIVATED, w->Handle);
-	activeWindow = w;
-	if (w == NULL) return;
-	
-	windows.remove(w);
-	windows.add(w);
-	if (w->Protocol == 0) DrawWindow(w);
 }
 
 static void DrawWindowInternal(guiserver_window* w, const _R& r)
@@ -296,13 +296,11 @@ static void ProcessMouseInfo(MessageInfo* msg)
 		if (target != NULL) Message::send(target->ThreadID, MSG_GUISERVER_MOUSEENTER, target->Handle);
 		prevWindow = target;
 	}
+	if (prevButton < msg->arg3 && activeWindow != top) ActivateWindow(top);
 	
 	MessageInfo m = *msg;
 	if (target != NULL) switch (target->Protocol)
 	{
-		case 0:
-			if (prevButton < msg->arg3 && activeWindow != target) ActivateWindow(target);
-			break;
 		case 1:
 			m.arg1 = target->Handle;
 			m.arg2 = MAKE_DWORD(msg->arg1, msg->arg2);
@@ -312,7 +310,6 @@ static void ProcessMouseInfo(MessageInfo* msg)
 			}
 			else if (prevButton < msg->arg3)
 			{
-				if (activeWindow != top) ActivateWindow(top);
 				m.header = MSG_GUISERVER_MOUSEDOWN;
 				m.arg3 = msg->arg3 - prevButton;
 			}
