@@ -1,3 +1,7 @@
+2004-04-21  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.h (ArchThreadInfo): FPU対応、FPUステート・データレジスタの退避・復帰機能を入れた
+
 2004-04-21  tino  <tino@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: 原点のゴミを除去

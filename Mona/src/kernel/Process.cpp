@@ -489,6 +489,15 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
     ainfo->esp0    = ProcessOperation::allocateKernelStack();
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
+
+    /* fpu (=fninit) */
+    ainfo->fpu[0] = 0xFFFF037F;
+    ainfo->fpu[1] = 0xFFFF0000;
+    ainfo->fpu[2] = 0xFFFFFFFF;
+    ainfo->fpu[3] = 0x00000000;
+    ainfo->fpu[4] = 0x00000000;
+    ainfo->fpu[5] = 0x00000000;
+    ainfo->fpu[6] = 0xFFFF0000;
 }
 
 void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
@@ -514,6 +523,15 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
     ainfo->ebp     = stack;
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
+ 
+   /* fpu (=fninit) */
+    ainfo->fpu[0] = 0xFFFF037F;
+    ainfo->fpu[1] = 0xFFFF0000;
+    ainfo->fpu[2] = 0xFFFFFFFF;
+    ainfo->fpu[3] = 0x00000000;
+    ainfo->fpu[4] = 0x00000000;
+    ainfo->fpu[5] = 0x00000000;
+    ainfo->fpu[6] = 0xFFFF0000;
 }
 
 int ThreadOperation::switchThread(bool isProcessChanged, int num)
@@ -523,6 +541,11 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 #if 0
     ArchThreadInfo* i = g_currentThread->archinfo;
     logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x eax=%x gss0=%d gesp0=%x %s %s p(%s) u(%s)\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, i->eax, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "", isProcessChanged ? "t" : "f", isUser ? "t": "f");
+
+    for (int j = 0; j < 27; j++)
+    {
+        logprintf("fpu[%d]=%x", j, i->fpu[j]);
+    }
 
 #endif
 
