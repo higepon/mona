@@ -19,7 +19,7 @@ extern guiserver_bitmap* screen_buffer;
 
 CommonParameters* commonParams;
 guiserver_bitmap* wallpaper = NULL;
-int we_creation = 0, we_destruction = 0;
+int we_creation = 0, we_destruction = 0, we_step = 6, we_wait = 30;
 
 static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
@@ -183,6 +183,14 @@ static void ReadConfig()
 							else if (name == "DESTRUCTION")
 							{
 								we_destruction = atoi(data[1]);
+							}
+							else if (name == "STEP")
+							{
+								we_step = atoi(data[1]);
+							}
+							else if (name == "WAIT")
+							{
+								we_wait = atoi(data[1]);
 							}
 						}
 					}

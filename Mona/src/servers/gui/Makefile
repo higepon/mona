@@ -1,5 +1,5 @@
 TARGET  = GUI.SVR
-SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp Rectangle.cpp Overlap.cpp
+SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc

@@ -17,7 +17,8 @@
 
         * src/servers/gui/window.cpp: Overlapと新規関連メッセージに対応
                                       クリックしたウインドウを最前面に移動
-                                      ウインドウ生成・破棄のイフェクト
+
+        * src/servers/gui/effect.h, .cpp: 追加 (ウインドウ生成・破棄のイフェクト)
 
         * src/lib/gui/System/Mona/Forms/Form.cpp: 移動中の枠線にOverlapを使用
 

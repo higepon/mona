@@ -8,6 +8,7 @@
 #include "window.h"
 #include "screen.h"
 #include "image.h"
+#include "effect.h"
 #include "Overlap.h"
 
 #define DEFAULT_WIDTH  240
@@ -17,98 +18,12 @@ using namespace MonAPI;
 
 extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;
-extern int we_creation, we_destruction;
 
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
 static HList<guiserver_window*> captures;
 static HList<Overlap*> overlaps;
 static int prevButton = 0;
-
-#define EFFECT_STEP 6
-#define EFFECT_WAIT 30
-
-static void CreationEffect(guiserver_window* w)
-{
-	if (!w->Visible) return;
-
-	w->Visible = false;
-	switch (we_creation)
-	{
-		case 1:  // simple expansion
-		{
-			int cx = w->X + w->Width / 2, cy = w->Y + w->Height / 2;
-			int dx = cx - w->X, dy = cy - w->Y;
-			Overlap* prev = NULL;
-			for (int i = 1; i <= EFFECT_STEP; i++)
-			{
-				int ow = dx * i / EFFECT_STEP, oh = dy * i / EFFECT_STEP;
-				Overlap* ov = new Overlap(cx - ow, cy - oh, ow * 2, oh * 2);
-				sleep(EFFECT_WAIT);
-				if (prev != NULL) delete prev;
-				prev = ov;
-			}
-			if (prev != NULL) delete prev;
-			break;
-		}
-	}
-	w->Visible = true;
-	w->__reserved2 = true;
-}
-
-static void DestructionEffect(guiserver_window* w)
-{
-	if (w->Parent != 0) return;
-	
-	switch (we_destruction)
-	{
-		case 1:  // simple reduction
-		{
-			int cx = w->X + w->Width / 2, cy = w->Y + w->Height / 2;
-			int dx = cx - w->X, dy = cy - w->Y;
-			Overlap* prev = NULL;
-			for (int i = EFFECT_STEP; i > 0; i--)
-			{
-				int ow = dx * i / EFFECT_STEP, oh = dy * i / EFFECT_STEP;
-				Overlap* ov = new Overlap(cx - ow, cy - oh, ow * 2, oh * 2);
-				sleep(EFFECT_WAIT);
-				if (prev != NULL) delete prev;
-				prev = ov;
-			}
-			if (prev != NULL) delete prev;
-			break;
-		}
-		case 2:  // explosion
-		{
-			int cx = w->X + w->Width / 2, cy = w->Y + w->Height / 2;
-			int dx = cx - w->X, dy = cy - w->Y;
-			Overlap* prev[] = { NULL, NULL, NULL, NULL };
-			for (int i = EFFECT_STEP; i > 0; i--)
-			{
-				int ow = dx * i / EFFECT_STEP, oh = dy * i / EFFECT_STEP;
-				int sx = (EFFECT_STEP - i) * 8, sy = (EFFECT_STEP - i) * 8;
-				Overlap* ov[] =
-					{
-						new Overlap(w->X - sx, w->Y - sy, ow, oh),
-						new Overlap(w->X + w->Width + sx - ow, w->Y - sy, ow, oh),
-						new Overlap(w->X - sx, w->Y + w->Height + sy - oh, ow, oh),
-						new Overlap(w->X + w->Width + sx - ow, w->Y + w->Height + sy - oh, ow, oh)
-					};
-				sleep(EFFECT_WAIT);
-				for (int i = 0; i < 4; i++)
-				{
-					if (prev[i] != NULL) delete prev[i];
-					prev[i] = ov[i];
-				}
-			}
-			for (int i = 0; i < 4; i++)
-			{
-				if (prev[i] != NULL) delete prev[i];
-			}
-			break;
-		}
-	}
-}
 
 guiserver_window* CreateWindow()
 {
