@@ -85,11 +85,41 @@ int main(int argc, char* argv[])
     _A<byte> elf = loadFromFile(target);
     if (elf.get() == NULL) return 1;
 
+    /*
+    ||
+    || ELF Operation start
+    ||
+    */
     ELFParser parser;
 
+    /* Set Elf */
     parser.Set(elf.get(), elf.get_Length());
     printf("elf type=%d\n", parser.GetType());
 
+    /* Parse */
+    switch(parser.GetType())
+    {
+    case ELFParser::ET_REL:
 
+        parser.Parse(0xA0000);
+        break;
+    case ELFParser::ET_EXEC:
+
+        parser.Parse();
+        break;
+    default:
+        printf("unknown type\n");
+        return -1;
+
+        /* not reached */
+        break;
+    }
+
+    /* Get Image size */
+
+
+    /* create Image */
+
+    /* call */
     return 0;
 }

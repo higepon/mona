@@ -1,3 +1,7 @@
+2004-06-09  higepon  <higepon@users.sourceforge.jp>
+
+        * tools/elf_tool/elfparser.cpp (ParseExecutable): いろいろ手直し
+
 2004-06-08  tino  <tino@users.sourceforge.jp>
 
         * bin/Makefile: バンドルを自動認識してインストール

@@ -57,6 +57,18 @@ typedef struct
 
 typedef struct
 {
+    Elf32_Word p_type;
+    Elf32_Off  p_offset;
+    Elf32_Addr p_vaddr;
+    Elf32_Addr p_paddr;
+    Elf32_Word p_filesz;
+    Elf32_Word p_memsz;
+    Elf32_Word p_flags;
+    Elf32_Word p_align;
+} Elf32_Phdr;
+
+typedef struct
+{
     Elf32_Addr r_offset;
     Elf32_Word r_info;
 } Elf32_Rel;
@@ -83,16 +95,22 @@ public:
 public:
     bool Set(byte* elf, dword size);
     int GetType() const;
+    bool Parse(Elf32_Addr base = 0);
+    dword GetImageSize() const;
     bool CreateImage(byte* to);
 
 private:
     void SetType();
+    bool ParseExecutable();
+    bool ParseRelocatable(Elf32_Addr base);
 
 private:
     int type;
+    dword elfSize;
     Elf32_Addr  imageSize;
     Elf32_Ehdr* header;
     Elf32_Shdr* sheader;
+    Elf32_Phdr* pheader;
 
 public:
 
