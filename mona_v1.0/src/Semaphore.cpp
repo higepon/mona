@@ -14,6 +14,7 @@
 
 #include<semaphore.h>
 #include<monaKernel.h>
+#include<io.h>
 
 /*!
     \brief up
@@ -37,15 +38,15 @@ int semaphore_up(semaphore* sem) {
 */
 int semaphore_down(semaphore* sem) {
 
-    pushf();
+    dword eflags = get_eflags();
     disableInterrupt();
 
     if (*sem) {
         (*sem)--;
-        popf();
+        set_eflags(eflags);
         return 0;
     } else {
-        popf();
+        set_eflags(eflags);
         return -1;
     }
 }

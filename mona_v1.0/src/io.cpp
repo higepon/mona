@@ -40,3 +40,13 @@ dword get_eflags() {
                  : "=m"(result) : /* no input */ : "eax");
     return result;
 }
+
+void  set_eflags(dword eflags) {
+
+    asm volatile("movl   %0, %%eax \n"
+                 "push   %%eax     \n"
+                 "popfl            \n"
+                 : /* no output */ : "m"(eflags) : "eax");
+
+    return;
+}
