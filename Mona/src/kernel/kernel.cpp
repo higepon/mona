@@ -395,7 +395,7 @@ void mainProcess()
         count++;
     }
 
-    g_console->printf("cr3 average=%x\n", total / count);
+    g_console->printf("cr3 average=%d\n", total / count);
 
     total = 0;
     count = 0;
@@ -405,7 +405,7 @@ void mainProcess()
 
         rdtsc(&l1, &h1);
 
-        for (int j = 0; j < 1000; j++)
+        for (int j = 0; j < 10000; j++)
         {
             j++;
             j--;
@@ -419,7 +419,7 @@ void mainProcess()
         count++;
     }
 
-    g_console->printf("loop average=%x\n", total / count);
+    g_console->printf("loop average=%d\n", total / count);
 
     g_page_manager->setPageDirectory(cr32);
     enableInterrupt();
