@@ -33,9 +33,8 @@ typedef struct memoryEntry {
 */
 class IA32MemoryManager {
 
-  private:
-    IA32MemoryManager();
   public:
+    IA32MemoryManager();
     ~IA32MemoryManager();
   private:
     IA32MemoryManager(const IA32MemoryManager&);
