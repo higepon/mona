@@ -119,8 +119,8 @@ PageEntry* PageManager::createNewPageDirectory() {
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     makePageEntry(directory, (PhysicalAddress)table, ARCH_PAGE_PRESENT, ARCH_PAGE_RW, ARCH_PAGE_KERNEL);
 
-    dword directoryIndex = 0xFFFFFC00 >> 22;
-    dword tableIndex     = (0xFFFFFC00 >> 12) & 0x3FF;
+    dword directoryIndex = getDirectoryIndex(0xFFFFFC00);
+    dword tableIndex     = getTableIndex(0xFFFFFC00);
 
     /* test code. stack is always 0xFFFFFFFF */
     table = allocatePageTable();
@@ -246,12 +246,12 @@ bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress addre
 bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     PageEntry* table;
-    dword directoryIndex = address >> 22;
-    dword tableIndex     = (address >> 12) & 0x3FF;
+    dword directoryIndex = getDirectoryIndex(address);
+    dword tableIndex     = getTableIndex(address);
     byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
     /* physical page not exist */
-    if (error & 0x01 == ARCH_FAULT_NOT_EXIST) {
+    if (error & ARCH_FAULT_NOT_EXIST) {
 
         if (isPresent(&(g_page_directory[directoryIndex]))) {
 
@@ -311,11 +311,10 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
 bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel) {
 
     PageEntry* table;
-    dword directoryIndex = address >> 22;
-    dword tableIndex     = (address >> 12) & 0x3FF;
+    dword directoryIndex = getDirectoryIndex(address);
 
     if (!isPresent(&(directory[directoryIndex]))) return false;
 
      table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-     return setAttribute(table, present, writable, kernel);
+     return setAttribute(&(table[getTableIndex(address)]), present, writable, kernel);
 }

@@ -52,6 +52,16 @@ class PageManager {
         return (*entry) & ARCH_PAGE_PRESENT;
     }
 
+    inline int getDirectoryIndex(LinearAddress address) const {
+
+        return (address >> 22);
+    }
+
+    inline int getTableIndex(LinearAddress address) const {
+
+        return ((address >> 12) & 0x3FF);
+    }
+
   private:
     BitMap*       memoryMap_;
     PageDirectory pageDirectory_;
