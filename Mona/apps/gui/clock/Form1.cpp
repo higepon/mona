@@ -79,7 +79,6 @@ private:
         if (s == this->clock) return;
 
         this->clock = s;
-        this->OnPaint();
         this->Refresh();
     }
 

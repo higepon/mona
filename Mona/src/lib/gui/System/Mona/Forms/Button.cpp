@@ -67,7 +67,6 @@ namespace System { namespace Mona { namespace Forms
 			if (this->isPushed != pushed)
 			{
 				this->isPushed = pushed;
-				this->OnPaint();
 				this->Refresh();
 			}
 		}
@@ -78,7 +77,6 @@ namespace System { namespace Mona { namespace Forms
 	void Button::OnMouseDown(_P<MouseEventArgs> e)
 	{
 		this->isPushed = true;
-		this->OnPaint();
 		this->Refresh();
 		
 		BASE::OnMouseDown(e);
@@ -91,7 +89,6 @@ namespace System { namespace Mona { namespace Forms
 			if (e->Button == 1) this->OnClick(EventArgs::get_Empty());
 			
 			this->isPushed = false;
-			this->OnPaint();
 			this->Refresh();
 		}
 		

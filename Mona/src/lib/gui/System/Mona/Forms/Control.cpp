@@ -164,7 +164,6 @@ namespace System { namespace Mona { namespace Forms
 			if (!this->foreColorChanged) this->foreColor = this->parent->foreColor;
 			if (!this->backColorChanged) this->backColor = this->parent->backColor;
 		}
-		this->OnPaint();
 		
 		FOREACH_AL(_P<Control>, ctrl, this->controls)
 		{
@@ -205,16 +204,13 @@ namespace System { namespace Mona { namespace Forms
 	{
 		if (this->buffer == NULL) return;
 		
-#ifdef MONA
-		::monapi_call_mouse_set_cursor(MONAPI_FALSE);
-#endif
 		this->RefreshInternal();
 #ifdef MONA
-		::monapi_call_mouse_set_cursor(MONAPI_TRUE);
+		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, this->get_TopLevelControl()->get_Handle());
 #endif
 	}
 	
-	void Control::RefreshInternal(bool draw /*= true*/)
+	void Control::RefreshInternal()
 	{
 		if (this->buffer == NULL) return;
 		
@@ -238,14 +234,11 @@ namespace System { namespace Mona { namespace Forms
 			form = c;
 		}
 		
+		this->OnPaint();
 		DrawImage(((Form*)form.get())->formBuffer, this->buffer, r.X, r.Y, r.X - x, r.Y - y, r.Width, r.Height, this->parent == NULL);
 		FOREACH_AL(_P<Control>, ctrl, this->controls)
 		{
-			ctrl->RefreshInternal(false);
-		}
-		if (draw)
-		{
-			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, form->get_Handle());
+			ctrl->RefreshInternal();
 		}
 	}
 	
@@ -325,7 +318,6 @@ namespace System { namespace Mona { namespace Forms
 		this->raise_TextChanged(this, e);
 		if (this->buffer == NULL) return;
 		
-		this->OnPaint();
 		this->Refresh();
 	}
 	
@@ -343,7 +335,6 @@ namespace System { namespace Mona { namespace Forms
 		this->raise_ForeColorChanged(this, e);
 		if (this->buffer == NULL) return;
 		
-		this->OnPaint();
 		this->Refresh();
 	}
 	
@@ -361,7 +352,6 @@ namespace System { namespace Mona { namespace Forms
 		this->raise_BackColorChanged(this, e);
 		if (this->buffer == NULL) return;
 		
-		this->OnPaint();
 		this->Refresh();
 	}
 	

@@ -68,7 +68,7 @@ public:
 
 	void Next() {
 	/* ŽŸ‚ÌƒtƒŒ[ƒ€‚ð•\Ž¦ */
-		this->RefreshInternal();
+		this->Refresh();
 	}
 
 protected:

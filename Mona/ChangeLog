@@ -1,3 +1,15 @@
+2004-05-31  tino  <tino@users.sourceforge.jp>
+
+        * include/monapi/messages.h: MSG_MOUSE_GET_CURSOR_POSITIONを追加
+
+        * src/servers/mouse/main.cpp: MSG_MOUSE_GET_CURSOR_POSITIONをサポート
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp (Refresh): OnPaint()を呼び出し
+
+        * 各MonaGUIアプリ: Refresh()の前に明示的に呼んでいたOnPaint()を削除
+
+        * apps/gui/anaclock/Form1.cpp: 描画をOnPaint()で行い、縁をなくした
+
 2004-05-31  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/anaclock/Form1.cpp (class Form1): 駄目人間さん提供のAnaClock追加

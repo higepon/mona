@@ -14,6 +14,7 @@ using namespace MonAPI;
 extern guiserver_bitmap* screen_buffer;
 
 guiserver_bitmap* wallpaper = NULL;
+int mouse_x = 0, mouse_y = 0;
 
 static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
@@ -214,8 +215,10 @@ static void MessageLoop()
 				clients.remove(msg.arg1);
 				Message::reply(&msg);
 				break;
-#if 0
 			case MSG_MOUSE_INFO:
+				mouse_x = msg.arg1;
+				mouse_y = msg.arg2;
+#if 0
 				for (int i = 0; i < clients.size(); i++)
 				{
 					if (monapi_cmessage_send_args(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3, msg.str) != 0)
@@ -224,8 +227,8 @@ static void MessageLoop()
 						i--;
 					}
 				}
-				break;
 #endif
+				break;
 			default:
 				if (ImageHandler(&msg)) break;
 				if (WindowHandler(&msg)) break;
@@ -239,7 +242,12 @@ int MonaMain(List<char*>* pekoe)
 	CheckGUIServer();
 	if (!InitScreen()) exit(1);
 	
-	///if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+	if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
+	MessageInfo msg;
+	Message::sendReceive(&msg, monapi_get_server_thread_id(ID_MOUSE_SERVER), MSG_MOUSE_GET_CURSOR_POSITION);
+	mouse_x = msg.arg2;
+	mouse_y = msg.arg3;
+
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE);
 
 	ReadFont("/MONA-12.MF2");
@@ -263,7 +271,7 @@ int MonaMain(List<char*>* pekoe)
 	if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
 	DisposeScreen();
 	
-	///monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
+	monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
 	
 	return 0;

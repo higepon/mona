@@ -65,7 +65,7 @@ namespace System { namespace Mona { namespace Forms
 		this->ncState = NCState_None;
 		this->formBuffer = new Bitmap(this->get_Width(), this->get_Height());
 		this->_object->FormBufferHandle = this->formBuffer->get_Handle();
-		this->set_Opacity(this->opacity);
+		this->_object->Opacity = (int)(this->opacity * 255.0);
 	}
 	
 	void Form::Dispose()
@@ -129,7 +129,10 @@ namespace System { namespace Mona { namespace Forms
 		}
 		
 		// Border
-		ControlPaint::DrawEngraved(g, 0, oy - 2, w, h - (oy - 2));
+		if (this->get_BackColor() != Color::get_Empty())
+		{
+			ControlPaint::DrawEngraved(g, 0, oy - 2, w, h - (oy - 2));
+		}
 		
 		// Caption
 		g->set_ClientRectangle(Rectangle(tx, 4, w - tx - 4, oy - 8));
@@ -170,7 +173,6 @@ namespace System { namespace Mona { namespace Forms
 				if (this->isCloseButtonPushed != pushed)
 				{
 					this->isCloseButtonPushed = pushed;
-					this->OnPaint();
 					this->Refresh();
 				}
 				break;
@@ -195,7 +197,6 @@ namespace System { namespace Mona { namespace Forms
 		{
 			case NCState_CloseButton:
 				this->isCloseButtonPushed = true;
-				this->OnPaint();
 				this->Refresh();
 				break;
 			case NCState_TitleBar:

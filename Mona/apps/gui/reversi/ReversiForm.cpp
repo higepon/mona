@@ -168,7 +168,6 @@ private:
                 for (int y = 0; y < 8; y++)
                 {
                     this->pieces[x][y]->SetState(this->board->getPiece(x, y));
-                    this->pieces[x][y]->Refresh();
                 }
             }
         }
@@ -178,7 +177,6 @@ private:
             int x = point->x;
             int y = point->y;
             this->pieces[x][y]->SetState(this->board->getPiece(x, y));
-            this->pieces[x][y]->Refresh();
 
             sleep(100);
         }

@@ -21,7 +21,7 @@ public:
     Piece(int state, int x, int y, _P<Bitmap> white, _P<Bitmap> black);
     virtual ~Piece();
 
-    virtual void SetState(int state) { this->state = state; this->OnPaint(); }
+    virtual void SetState(int state) { this->state = state; this->Refresh(); }
     virtual int GetState() const { return this->state; }
     virtual int GetX() const { return this->x; }
     virtual int GetY() const { return this->y; }

@@ -50,12 +50,16 @@ private:
 
     nullpo = 0;
     oldsec = -1;
-    ycenter = 95;
-    xcenter = 75;
+    ycenter = 95 - 18;
+    xcenter = 75 - 2;
 
     this->set_Location(Point(50, 50));
     this->set_ClientSize(Size(150, 150));
     this->set_Text("ぬるぽ時計");
+
+    // Tino: for transparency
+    this->set_BackColor(Color::get_Empty());
+    this->set_Opacity(0.8);
 
     this->timer1 = new Timer();
     this->timer1->set_Interval(500);
@@ -74,19 +78,31 @@ private:
   virtual void PaintClock(_P<Object> sender, _P<EventArgs> e)
   {
 
-    _P<Graphics> g = Graphics::FromImage(this->buffer);
+    this->Refresh();
+
+  }
+
+  virtual void OnPaint()
+  {
+
+    Form::OnPaint();
+
+    _P<Graphics> g = this->CreateGraphics();
     double PI = 3.14159265, dh, dm;
     int i = 1;
 
-    int w = this->get_Width(), h = this->get_Height();
-
     // Clear
+#if 1  // Tino
+    g->FillEllipse(ControlPaint::get_Light(), 3, 7, 140, 140);
+#else
+    int w = this->get_Width(), h = this->get_Height();
     g->FillRectangle(this->get_BackColor(), 0, 18, w, h - 18);
 
     // Border
     ControlPaint::DrawEngraved(g, 0, 18, w, h - 18);
+#endif
 
-    g->DrawEllipse(Color::get_Black(), 5, 25, 140, 140);
+    g->DrawEllipse(Color::get_Black(), 3, 7, 140, 140);
 
     // 目盛の描画
     for(i = 0;i < 360;i += 6){
@@ -112,7 +128,7 @@ private:
     //nullpoの描画
     if((oldsec != date.sec() & nullpo == 0) || (oldsec == date.sec() & nullpo == 1)){
       g->DrawString("　∧＿∧ 　　\n"
-                    "　（　´∀｀）＜　ぬるぽ ", Control::get_DefaultFont(), Color::get_Blue(), 20, 70);
+                    "　（　´∀｀）＜　ぬるぽ ", Control::get_DefaultFont(), Color::get_Blue(), 18, 52);
       nullpo = 1;
       oldsec = date.sec();
     }else{
@@ -121,12 +137,10 @@ private:
                     "　　 Ｙ　/ノ　　　 人 \n"
                     "　　　 /　）　 　 < 　>__Λ∩\n"
                     "　 ＿/し'　／／. Ｖ｀Д´）/ \n"
-                    "　（＿フ彡　　　　　 　　/\n", Control::get_DefaultFont(), Color::get_Blue(), 10, 65);
+                    "　（＿フ彡　　　　　 　　/\n", Control::get_DefaultFont(), Color::get_Blue(), 8, 47);
       nullpo = 0;
       oldsec = date.sec();
     }
-
-    this->Refresh();
     g->Dispose();
 
   }

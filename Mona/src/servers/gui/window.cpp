@@ -15,6 +15,7 @@
 using namespace MonAPI;
 
 extern guiserver_bitmap* screen_buffer, * wallpaper;
+extern int mouse_x, mouse_y;
 
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
@@ -100,7 +101,12 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 		
 		DrawImage(screen_buffer, bmp, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
 	}
-	if (draw_screen) DrawScreen(w->X, w->Y, w->Width, w->Height);
+	if (!draw_screen) return;
+	
+	bool mouse = _R(mouse_x - 4, mouse_y - 4, 16, 16).IntersectsWith(r);
+	if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
+	DrawScreen(w->X, w->Y, w->Width, w->Height);
+	if (mouse) monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
 
 void MoveWindow(guiserver_window* w, int x, int y)

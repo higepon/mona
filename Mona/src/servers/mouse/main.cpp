@@ -170,6 +170,11 @@ void MouseServer::MessageLoop()
 
             break;
 
+        case MSG_MOUSE_GET_CURSOR_POSITION:
+
+            Message::reply(&receive, this->prevX, this->prevY);
+            break;
+
         default:
 
             /* ignore */

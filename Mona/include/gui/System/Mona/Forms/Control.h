@@ -101,7 +101,7 @@ namespace System { namespace Mona { namespace Forms
 		static _P<System::Drawing::Font> get_DefaultFont();
 	
 	protected:
-		void RefreshInternal(bool draw = true);
+		void RefreshInternal();
 		
 		virtual void OnPaint() {}
 		virtual void OnTextChanged(_P<EventArgs> e);
