@@ -19,8 +19,8 @@ static bool cdInitialized;
 static byte irq;
 static IDEDriver* cd;
 static FDCDriver* fd;
-static ISO9660FileSystem* fs;
-static FSOperation* fso;
+static ISO9660FileSystem* isofs;
+static FSOperation* fatfs;
 
 void DeviceOn(int drive)
 {
@@ -51,7 +51,7 @@ void DeviceOff(int drive)
     return;
 }
 
-bool fdInitialize()
+bool InitializeFD()
 {
     syscall_get_io();
 
@@ -61,9 +61,9 @@ bool fdInitialize()
     fd = new FDCDriver();
 
     DeviceOn(DRIVE_FD0);
-    fso = new FSOperation();
+    fatfs = new FSOperation();
 
-    if (fso == NULL || !(fso->initialize((IStorageDevice*)fd)))
+    if (fatfs == NULL || !(fatfs->initialize((IStorageDevice*)fd)))
     {
         printf("FSOperation::initialize error\n");
         for (;;);
@@ -74,7 +74,7 @@ bool fdInitialize()
     return true;
 }
 
-bool initializeCD()
+bool InitializeCD()
 {
     if (cdInitialized) return true;
 
@@ -105,12 +105,12 @@ bool initializeCD()
         return false;
     }
 
-    fs = new ISO9660FileSystem(cd);
+    isofs = new ISO9660FileSystem(cd);
 
-    if (!fs->Initialize())
+    if (!isofs->Initialize())
     {
-        printf("Initialize Error = %d\n", fs->GetLastError());
-        delete fs;
+        printf("Initialize Error = %d\n", isofs->GetLastError());
+        delete isofs;
         delete cd;
         return false;
     }
@@ -133,7 +133,7 @@ int ChangeDrive(int drive)
     }
     else if (drive == DRIVE_CD0)
     {
-        if (!initializeCD()) return MONA_FAILURE;
+        if (!InitializeCD()) return MONA_FAILURE;
         currentDrive = DRIVE_CD0;
         return MONA_SUCCESS;
     }
@@ -148,7 +148,7 @@ const char* GetCurrentDirectory()
 bool fatChangeDirectory(char* dir)
 {
     DeviceOn(DRIVE_FD0);
-    bool result = fso->cd(dir);
+    bool result = fatfs->cd(dir);
 
     DeviceOff(DRIVE_FD0);
     return result;
@@ -168,7 +168,7 @@ int ChangeDirectory(const CString& dir)
     }
     else if (currentDrive == DRIVE_CD0)
     {
-        if (!fs->IsExistDirectory(fullPath))
+        if (!isofs->IsExistDirectory(fullPath))
         {
             return MONA_FAILURE;
         }
@@ -213,8 +213,7 @@ CString mergeDirectory(const CString& dir1, const CString& dir2)
     return ret;
 }
 
-
-void initialize()
+void Initialize(bool bootFromCD)
 {
     /* current directory */
     currentDirectory.Alloc(2);
@@ -222,16 +221,28 @@ void initialize()
     currentDirectory[DRIVE_FD0] = "/";
     currentDirectory[DRIVE_CD0] = "/";
 
+    /* current drive */
     currentDrive = DRIVE_FD0;
     cdInitialized = false;
-}
 
+    if (bootFromCD)
+    {
+        /* boot from CD */
+        ChangeDrive(DRIVE_CD0);
+        InitializeCD();
+    }
+    else
+    {
+        /* boot from FD */
+        InitializeFD();
+    }
+}
 
 monapi_cmemoryinfo* ReadFileFromISO9660(const char* path, bool prompt)
 {
-        if (!initializeCD()) return NULL;
+        if (!InitializeCD()) return NULL;
 
-        File* file = fs->Open(path, 0);
+        File* file = isofs->Open(path, 0);
 
         if (file == NULL)
         {
@@ -249,7 +260,7 @@ monapi_cmemoryinfo* ReadFileFromISO9660(const char* path, bool prompt)
         file->Seek(0, SEEK_SET);
         file->Read(ret->Data, ret->Size);
 
-        fs->Close(file);
+        isofs->Close(file);
 
 #if 0
         logprintf("\n\n%s read start\n", (const char*)filePath);
@@ -288,15 +299,15 @@ monapi_cmemoryinfo* ReadFileFromFat(const char* path, bool prompt)
 
     DeviceOn(DRIVE_FD0);
 
-    if (!fso->open((char*)(const char*)copyPath, FILE_OPEN_READ))
+    if (!fatfs->open((char*)(const char*)copyPath, FILE_OPEN_READ))
     {
         DeviceOff(DRIVE_FD0);
 
-        if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
+        if (prompt) printf("ERROR=%d\n", fatfs->getErrorNo());
         return NULL;
     }
 
-    dword size = fso->size();
+    dword size = fatfs->size();
 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     if (!monapi_cmemoryinfo_create(ret, size + 1, prompt))
@@ -308,15 +319,15 @@ monapi_cmemoryinfo* ReadFileFromFat(const char* path, bool prompt)
 
     ret->Size--;
 
-    if (!fso->read(ret->Data, ret->Size))
+    if (!fatfs->read(ret->Data, ret->Size))
     {
         DeviceOff(DRIVE_FD0);
         monapi_cmemoryinfo_delete(ret);
-        if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
+        if (prompt) printf("ERROR=%d\n", fatfs->getErrorNo());
         return NULL;
     }
 
-    fso->close();
+    fatfs->close();
     DeviceOff(DRIVE_FD0);
     ret->Data[ret->Size] = 0;
     if (prompt) printf("OK\n");
@@ -380,7 +391,7 @@ monapi_cmemoryinfo* ReadDirectoryFromFat(const char* path, bool prompt)
 
     DeviceOn(DRIVE_FD0);
 
-    if (!fso->openDir())
+    if (!fatfs->openDir())
     {
         if (prompt) printf("%s: ERROR: can not open directory: %s\n", SVR, path);
         DeviceOff(DRIVE_FD0);
@@ -390,11 +401,11 @@ monapi_cmemoryinfo* ReadDirectoryFromFat(const char* path, bool prompt)
     /* read directory */
     HList<monapi_directoryinfo*> files;
     monapi_directoryinfo di;
-    while (fso->readDir(di.name, &di.size, &di.attr))
+    while (fatfs->readDir(di.name, &di.size, &di.attr))
     {
         files.add(new monapi_directoryinfo(di));
     }
-    fso->closeDir();
+    fatfs->closeDir();
 
     DeviceOff(DRIVE_FD0);
 
@@ -424,7 +435,7 @@ monapi_cmemoryinfo* ReadDirectoryFromFat(const char* path, bool prompt)
 
 monapi_cmemoryinfo* ReadDirectoryFromISO9660(const char* path, bool prompt)
 {
-    _A<FileSystemEntry*> files = fs->GetFileSystemEntries(path);
+    _A<FileSystemEntry*> files = isofs->GetFileSystemEntries(path);
 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     int size = files.get_Length();

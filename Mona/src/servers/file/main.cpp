@@ -163,10 +163,8 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
 
-    fdInitialize();
-
-    initialize();
-//    ChangeDrive(DRIVE_CD0);
+    /* true/false boot from CD/FD */
+    Initialize(false);
 
     MessageLoop();
 
