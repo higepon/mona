@@ -64,16 +64,22 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     H_SIZE_T usedBlockSize = realSize;
     H_SIZE_T freeBlockSize = current->size - realSize;
 
+    this->printInfo();
+
     if (current->size != realSize) {
         this->addToEntry(0, freeBlock, freeBlockSize);
         this->concatBlock(freeEntry_, freeBlock);
+        this->printInfo();
     }
     this->deleteFromEntry(freeEntry_, current, current->size);
-    this->addToEntry(1, usedBlock, usedBlockSize);
 
-    /* address of allocated memory */
     this->printInfo();
 
+    this->addToEntry(1, usedBlock, usedBlockSize);
+
+    this->printInfo();
+
+    /* return address of allocated memory */
     return (void*)usedBlock->startAddress;
 }
 
