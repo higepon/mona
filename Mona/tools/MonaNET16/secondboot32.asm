@@ -13,7 +13,7 @@ SecondBootMain:
         mov     ax, KERNEL_SEG
         mov     es, ax
         xor     di, di
-        mov     cx, end_second - RealToProtect
+        mov     cx, gdt_end - RealToProtect
         rep     movsb
 
         jmp     KERNEL_SEG:0
@@ -33,6 +33,17 @@ RealToProtect:
         jmp     flush_q1
 flush_q1:
 	jmp     0x0008:(KERNEL_SEG * 16 + set_cs_desc1) - RealToProtect
+
+[bits 32]
+set_cs_desc1:
+        mov     ax, 0x10        ; ds & es
+        mov     ds, ax          ; selector is
+        mov     es, ax          ; 0x10
+        mov     ax, 0x18        ; ss selector
+        mov     ss, ax          ; is 0x18
+        mov     esp, 0x80000    ; sp is 3MB
+        push    eax
+        jmp     0x0200 + RealToProtect
 
 ;-------------------------------------------------------------------------------
 ; GDT definition: It is temporary.
@@ -74,16 +85,3 @@ gdt18:                          ; segment 18(stack segment)
         db 0                    ; segment baseH
 
 gdt_end:                        ; end of gdt
-
-[bits 32]
-set_cs_desc1:
-        mov     ax, 0x10        ; ds & es
-        mov     ds, ax          ; selector is
-        mov     es, ax          ; 0x10
-        mov     ax, 0x18        ; ss selector
-        mov     ss, ax          ; is 0x18
-        mov     esp, 0x80000    ; sp is 3MB
-        push    eax
-        jmp     0x0200 + RealToProtect
-
-end_second
