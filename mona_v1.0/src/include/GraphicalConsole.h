@@ -35,7 +35,7 @@
 #define GP_GRAY       7
 #define GP_DARKGRAY   8
 #define GP_LIGHTBLUE  9
-#define GP_LIGHTBLUE  10
+#define GP_LIGHTBUE  10
 #define GP_LIGHTGREEN 11
 #define GP_LIGHTRED   12
 #define GP_DARKPINK   13

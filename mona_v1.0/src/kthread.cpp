@@ -12,10 +12,8 @@
 
 #include<kthread.h>
 
-
 /* pointer to current kernel thread */
 Kthread* current;
-
 
 /*!
     \brief init kernel thread
@@ -40,4 +38,28 @@ void kthread_tick() {
 
     (current->tick)++;
     return;
+}
+
+/*!
+    \brief add thread to run
+
+    \param thread thraed added to run
+
+    \author HigePon
+    \date   create:2003/03/01 update:
+*/
+void kethread_add_to_run(Kthread* thread) {
+
+}
+
+/*!
+    \brief remove thread from run
+
+    \param thread thraed removed from run
+
+    \author HigePon
+    \date   create:2003/03/01 update:
+*/
+void kethread_remove_from_run(Kthread* thread) {
+
 }

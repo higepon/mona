@@ -36,6 +36,7 @@ extern Kthread* current;
 
 void kthread_init();
 void kthread_tick();
+void kethread_add_to_runqueue(Kthread* thread);
 
 
 #endif
