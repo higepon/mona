@@ -36,6 +36,16 @@ void FDCTester() {
             while (true);
         }
     }
+
+    memset(tbuf, 0x99, 512);
+    if (!g_fdcdriver->read(50, tbuf)) {
+         g_console->printf("read failed %d", 50);
+         g_fdcdriver->motor(false);
+         while (true);
+    }
+
+    for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
+
     g_fdcdriver->motor(false);
     g_console->printf("ok");
     while (true);
