@@ -103,7 +103,7 @@ _arch_kthread_switch:
         push dword[ebx + 0]    ; push eip
         push dword[ebx + 24]
         pop  ebx                ; restore ebp
-;          call _arch_set_stack_view
+        call _arch_set_stack_view
         iretd                   ; switch to next
 
 

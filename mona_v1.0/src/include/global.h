@@ -13,6 +13,8 @@
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
 
 GLOBAL Kthread* g_kthread_current GLOBAL_VAL(NULL);  /*< pointer to current kernel thread    */
+GLOBAL Kthread* g_kthread_idle    GLOBAL_VAL(NULL);  /*< pointer to kernel idle thread       */
+
 GLOBAL KthreadInfo g_kthreadInfo;                    /*< common thread Information           */
 
 GLOBAL StackView g_stack_view;                       /*< struct for stack view               */

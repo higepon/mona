@@ -19,5 +19,7 @@ void disp_name1();
 void disp_name2();
 void disp_name3();
 void disp_name4();
+void disp_kthread_info();
+void kthread_idle();
 
 #endif
