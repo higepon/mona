@@ -9,8 +9,8 @@
 
 class IDEDevice : public DiskDriver {
   public:
-    bool read(int lba, byte* buf);
-    bool write(int lba, byte* buf);
+    bool read(dword lba, byte* buf);
+    bool write(dword lba, byte* buf);
     IDEDevice(class IDEDriver *bus,unsigned int device);
     ~IDEDevice();
     static class IDEDriver* Bus;

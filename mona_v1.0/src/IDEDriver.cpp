@@ -217,12 +217,12 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
 IDEDevice::~IDEDevice(){
 }
 
-bool IDEDevice::read(int lba, byte* buf) {
+bool IDEDevice::read(dword lba, byte* buf) {
     return true;
 }
 
 
-bool IDEDevice::write(int lba, byte* buf) {
+bool IDEDevice::write(dword lba, byte* buf) {
     return true;
 }
 

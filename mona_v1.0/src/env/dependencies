@@ -109,11 +109,3 @@ syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/io.h
 BitMap.o: BitMap.cpp include/BitMap.h include/types.h include/string.h
-FAT12.o: FAT12.cpp include/FAT12.h include/types.h include/string.h \
-  include/DiskDriver.h include/BitMap.h include/global.h \
-  include/kthread.h include/kernel.h include/VirtualConsole.h \
-  include/FDCDriver.h include/Semaphore.h include/operator.h
-IDEDriver.o: IDEDriver.cpp include/IDEDriver.h include/types.h \
-  include/string.h include/VirtualConsole.h include/DiskDriver.h \
-  include/kernel.h include/operator.h include/io.h include/global.h \
-  include/kthread.h include/FDCDriver.h include/Semaphore.h
