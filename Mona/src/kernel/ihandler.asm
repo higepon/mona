@@ -29,6 +29,7 @@ cextern fault0dHandler
 cextern syscall_entrance
 cextern dummyHandler
 cextern arch_save_thread_registers
+cextern arch_save_thread_registers2
 cextern arch_set_dokodemo_view
 
 %define KERNEL_DS 0x10
@@ -147,7 +148,9 @@ arch_cpufaulthandler_c:
 arch_cpufaulthandler_e:
         pushAll
         changeData
-        call arch_save_thread_registers
+                ;;         add esp, 0x04
+        call arch_save_thread_registers2
+                ;;         sub esp, 0x04
         push ebp
         mov  ebp, esp
         sub  esp, 8

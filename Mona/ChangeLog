@@ -1,3 +1,7 @@
+2005-03-07  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/core.asm (from_user): eipのバグ修正
+
 2004-03-07  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gclock/gclock.cpp: 起動時に時刻が表示されるように修正。
@@ -35,6 +39,8 @@
         * include/sys/types.h (SYSTEM_CALL_TIMER): タイマー追加。
 
 2005-03-07  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/core.asm : arch_save_thread_registers2追加。
 
         * アプリビルド時にアプリ名.mapというファイルにアドレスマップを出力するように変更。eipと連動してデバッグが便利になるかも。
 

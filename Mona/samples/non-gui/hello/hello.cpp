@@ -6,7 +6,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_10
+#define MAIN_9
 
 
 #ifdef MAIN_10
@@ -43,6 +43,10 @@ int MonaMain(List<char*>* pekoe)
 #ifdef MAIN_9
 int MonaMain(List<char*>* pekoe)
 {
+    dword* p = (dword*)1;
+
+    *p = 0x400;
+
    printf("Hello World from CD\n");
    return 0;
 }
