@@ -39,9 +39,7 @@ void keyStrokeHandler() {
     outportb(0x20, 0x20);
 
     /* iret */
-    asm("mov %ebp,%esp");
-    asm("pop %ebp");
-    asm("iret");
+    iret();
 
     return;
 }
@@ -78,9 +76,7 @@ void dummy() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    asm("mov %ebp,%esp");
-    asm("pop %ebp");
-    asm("iret");
+    iret();
     return;
 }
 
@@ -97,9 +93,7 @@ void fdcHandler(){
     outportb(0x20, 0x20);
 
     /* iret */
-    asm("mov %ebp,%esp");
-    asm("pop %ebp");
-    asm("iret");
+    iret();
 }
 
 /*!
@@ -118,9 +112,8 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    asm("mov %ebp,%esp");
-    asm("pop %ebp");
-    asm("iret");
+    /* iret */
+    iret();
     return;
 }
 

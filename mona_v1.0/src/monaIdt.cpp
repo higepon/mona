@@ -77,7 +77,7 @@ void setIdt(handler_st* p, int selector) {
 
 void _sysLoadIdtr(idtr_st* idtr) {
 
-    asm("lidt (%0) ": :"p" (idtr));
+    asm volatile("lidt (%0) ": :"p" (idtr));
     return;
 }
 

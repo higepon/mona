@@ -20,6 +20,9 @@
 #define IDT_HIGHBASE 0x0000 /* idt high base address */
 #define IDT_UNUSED   0x00   /* unused                */
 
+#define iret() asm volatile("mov %ebp,%esp\n pop %ebp\n iret"); /*! iret */
+
+
 /*! struct for idtr */
 typedef struct idtr_st {
     unsigned short limit;    /*! idtr limit           */
@@ -48,5 +51,4 @@ void _sysLoadIdtr(idtr_st*);
 void setIdt(handler_st*, int selector);
 void fault0dHandler();
 unsigned char inportb(unsigned int);
-
 #endif
