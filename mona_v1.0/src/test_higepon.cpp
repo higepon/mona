@@ -46,12 +46,6 @@ struct read_info {
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
-ProcessInfo* findProcess(const char* name) {
-
-    /* process manager ? */
-    return NULL;
-}
-
 int send(const char* name, Message* message) {
 
     ProcessInfo* pinfo;
@@ -61,21 +55,20 @@ int send(const char* name, Message* message) {
         return -1;
     }
 
-    if ((pinfo = findProcess(name)) == (ProcessInfo*)NULL) {
+    if ((pinfo = g_process_manager->findProcess(name)) == (ProcessInfo*)NULL) {
         return -1;
     }
 
-    if (pinfo->message == (Message*)NULL) {
+    if (pinfo->message != (Message*)NULL) {
         return -1;
     }
 
-    if ((message = (Message*)malloc(sizeof(Message))) == NULL) {
+    if ((kmessage = (Message*)malloc(sizeof(Message))) == NULL) {
         return -1;
     }
 
     memcpy(kmessage, message, sizeof(Message));
     pinfo->message = kmessage;
-
     return 0;
 }
 
@@ -86,6 +79,7 @@ int receive(Message* message) {
     }
 
     memcpy(message, g_current_process->message, sizeof(Message));
+    free(g_current_process->message);
     g_current_process->message = (Message*)NULL;
     return 0;
 }

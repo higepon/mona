@@ -26,6 +26,7 @@ class Scheduler {
     void tick();
     bool kill(ProcessInfo* process);
     dword getTick();
+    ProcessInfo* findProcess(const char* name);
 
   private:
     void removeFrom(ProcessInfo* process);

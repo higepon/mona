@@ -31,4 +31,6 @@ void FDCDriverTester();
 void mmChangeTester();
 void keyStrokeTest();
 int loadProcess(const char* path, const char* file, bool isUser);
+int send(const char* name, Message* message);
+int receive(Message* message);
 #endif

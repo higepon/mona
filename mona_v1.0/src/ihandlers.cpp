@@ -19,6 +19,7 @@
 #include <KeyBoardManager.h>
 #include <SystemInfo.h>
 #include <sysresource.h> /* (expr) */
+#include <tester.h>
 
 /*!
   \brief key stroke handler
@@ -30,11 +31,23 @@
 */
 void keyStrokeHandler(dword scancode) {
 
+    KeyInfo* info;
+    Message* message;
     g_demo_step++;
 
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode((byte)scancode);
+
+    info = km.getKeyInfo();
+
+    message = (Message*)malloc(sizeof(Message));
+    memset(message, 0, sizeof(Message));
+    message->arg1 = info->keycode;
+    message->arg2 = info->modifiers;
+
+    send("mainProc     ", message);
+    free(message);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);

@@ -114,7 +114,7 @@ void startKernel(void) {
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024); // 
+    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024); //
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
@@ -175,13 +175,23 @@ void mainProcess() {
     //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
 
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
-    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
-    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
+    //    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
+    //    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
+    //    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
     //    process9->pinfo_.esp = 0x1000;
 
-    while (true);
+    Message message;
+    enableKeyboard();
+    while (true) {
+
+        memset(&message, 0, sizeof(Message));
+
+        if (!receive(&message)) {
+
+            g_console->printf("[%c]", (char)(message.arg1));
+        }
+    }
 }
 
 

@@ -48,6 +48,7 @@ class ProcessManager {
     bool addProcess(Process* process, virtual_addr entry);
     bool addProcess(Process* process, PageEntry* directory, virtual_addr entry);
     PageEntry* allocatePageDir();
+    ProcessInfo* findProcess(const char* name);
 
   private:
     dword pid_;

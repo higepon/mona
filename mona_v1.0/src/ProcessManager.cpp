@@ -189,3 +189,8 @@ bool ProcessManager::kill(ProcessInfo* process) {
     this->switchProcess();
     return true;
 }
+
+ProcessInfo* ProcessManager::findProcess(const char* name) {
+
+    return scheduler_->findProcess(name);
+}

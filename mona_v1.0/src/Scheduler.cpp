@@ -140,3 +140,27 @@ bool Scheduler::kill(ProcessInfo* process) {
 
     return true;
 }
+
+ProcessInfo* Scheduler::findProcess(const char* name) {
+
+    ProcessInfo* start;
+
+    if (!name) return (ProcessInfo*)NULL;
+
+    for (start = sleepList_.next; start != &sleepList_; start = start->next) {
+
+        /* found */
+        if (!strcmp(name, start->name)) {
+            return start;
+        }
+    }
+
+    for (start = dispatchList_.next; start != &dispatchList_; start = start->next) {
+
+        /* found */
+        if (!strcmp(name, start->name)) {
+            return start;
+        }
+    }
+    return (ProcessInfo*)NULL;
+}
