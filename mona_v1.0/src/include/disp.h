@@ -18,6 +18,6 @@
 void disp_name1();
 void disp_name2();
 void disp_name3();
-//static void disp_name4();
+void disp_name4();
 
 #endif

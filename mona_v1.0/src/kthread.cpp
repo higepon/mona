@@ -19,7 +19,11 @@
 #include<disp.h>
 #include<global.h>
 #include<ProcessManager.h>
+#include<rtc.h>
 static Kthread runningList;
+
+
+extern "C" void write_font(int a, char b, char c);
 
 /*!
     \brief init kernel thread
@@ -78,6 +82,30 @@ void kthread_init() {
     //    kthread_add_to_prev_list(&runningList, disp4);
 
     g_kthread_current = disp1;
+
+    g_console->printf("kthread init:disp_name1[%x]\n", disp_name1);
+    g_console->printf("kthread init:kthread_schedule[%x]\n", kthread_schedule);
+    g_console->printf("kthread init:kthread_switch[%x]\n", kthread_switch);
+    g_console->printf("kthread init:arch_kthread_switch[%x]\n", arch_kthread_switch);
+    g_console->printf("kthread init:arch_timerhandler[%x]\n", arch_timerhandler);
+    g_console->printf("kthread init:timerHandler[%x]\n", timerHandler);
+    g_console->printf("kthread init:arch_kthread_switch[%x]\n", arch_kthread_switch);
+    g_console->printf("kthread init:kthread_add_to_prev_list[%x]\n", kthread_add_to_prev_list);
+    g_console->printf("kthread init:disp_name2[%x]\n", disp_name2);
+    g_console->printf("kthread init:disp_name3[%x]\n", disp_name3);
+    g_console->printf("kthread init:disp_name4[%x]\n", disp_name4);
+    g_console->printf("kthread init:kthread_init[%x]\n", kthread_init);
+    g_console->printf("kthread init:kthread_get_next_from_list[%x]\n", kthread_get_next_from_list);
+    g_console->printf("kthread init:enableTimer[%x]\n", enableTimer);
+    g_console->printf("kthread init:disableTimer[%x]\n", disableTimer);
+    g_console->printf("kthread init:enableKeyboard[%x]\n", enableKeyboard);
+    g_console->printf("kthread init:enableKeyboard[%x]\n", disableKeyboard);
+    g_console->printf("kthread init:inportb[%x]\n", inportb);
+    g_console->printf("kthread init:rtc_read[%x]\n", rtc_read);
+    g_console->printf("kthread init:rtc_get_date[%x]\n", rtc_get_date);
+    g_console->printf("kthread init:write_font[%x]\n", write_font);
+
+    enableTimer();
     kthread_schedule();
 }
 
@@ -185,6 +213,8 @@ void kthread_schedule() {
 
     g_kthread_current = temp;
 
+    debug_index++;
+
     /* switch */
     kthread_switch();
 }
@@ -219,7 +249,10 @@ void kthread_switch() {
 //                         , g_stack_view.stack7
 //                         );
 
-      g_console->printf("kthread_switch");
+    g_console->printf("eip=%x demo1[%x]\n"
+                 , g_kthread_current->eip, g_kthreadInfo.demo1);
+
+      g_console->printf("kthread_switch@%d@", (int)debug_index);
 //      g_console->printf("esp=%x, ebp=%x\n"
 //                   , g_kthread_current->esp
 //  		      , g_kthread_current->ebp);

@@ -20,10 +20,9 @@ static semaphore sem = 1;
 */
 void disp_name1() {
 
-    enableTimer();
+
     while (true) {
-        //    g_console->printf("demo1 = %d, demo2 = %d demo3 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2, g_kthreadInfo.demo2);
-       g_console->printf("d");
+	//            g_console->printf("demo1 = %d, demo2 = %d demo3 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2, g_kthreadInfo.demo2);
 //          asm volatile ("mov $0x12345678, %eax \n"
 //                        "mov $0x23456789, %ebx \n"
 //                        "mov $0x34567890, %ecx \n"

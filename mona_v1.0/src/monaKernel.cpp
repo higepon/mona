@@ -89,10 +89,9 @@ void startKernel(void) {
 //      g_console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
 
     /* enable interrupt */
-    enableInterrupt();
+    //    enableInterrupt();
 
     kthread_init();
-    enableTimer();
     while (true);
 
     /* test code is here */
