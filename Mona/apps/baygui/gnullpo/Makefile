@@ -19,10 +19,10 @@ endif
 
 CXXFLAGS += -DDEBUG
 
-HENORMAL.BM5: henormal.bmp
+HENORMAL.BM5: HENORMAL.BMP
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
-HEPUSHED.BM5: hepushed.bmp
+HEPUSHED.BM5: HEPUSHED.BMP
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 include dependencies
