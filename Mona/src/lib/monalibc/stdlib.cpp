@@ -12,8 +12,10 @@
   $Date$
 */
 #include <monalibc.h>
+#include <monapi/string.h>
 
-int uitos(char* s, unsigned int n, int real_width, int base, char flag);
+int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag);
+int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int base, char flag);
 
 
 /*!
@@ -167,16 +169,22 @@ int atoi(const char *s){
   return result*mflag;
 }
 
-int itos(char *s, int n, int width, int base, char flag){
+int itos(char *s, int n, int width, unsigned int base, char flag){
+  return itosn(s, -1, n, width, base, flag);
+}
+
+int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag){
   int num;
   int real_width;
   int i;
   int j = 0;
   char charP = '+';
   
-  if(s == NULL){
+  if((s == NULL) || (max_width == 0) || (base == 0) || (base > 36)){
     return 0;
   }
+
+  if((max_width > 0) && (max_width < width)) width = max_width;
 
   if(!(flag & P_FORMAT_UNSIGNED) && (n < 0)){/* negative number */
     flag |= P_FORMAT_PLUS;
@@ -202,7 +210,7 @@ int itos(char *s, int n, int width, int base, char flag){
     if(flag & P_FORMAT_MINUS){
       s[j] = charP;
       j++;
-      j += uitos(&s[j], n, real_width, base, flag);
+      j += uitosn(&s[j], max_width - j, n, real_width, base, flag);
       for(i = 0; j < width; i++){
         s[j] = ' ';
          j++;
@@ -214,7 +222,7 @@ int itos(char *s, int n, int width, int base, char flag){
         s[j] = '0';
          j++;
       }
-      j += uitos(&s[j], n, real_width, base, flag);
+      j += uitosn(&s[j], max_width - j, n, real_width, base, flag);
     } else {
       for(i = 0; j < width - real_width - 1; i++){
         s[j] = ' ';
@@ -222,11 +230,11 @@ int itos(char *s, int n, int width, int base, char flag){
       }
       s[j] = charP;
       j++;
-      j += uitos(&s[j], n, real_width, base, flag);
+      j += uitosn(&s[j], max_width - j, n, real_width, base, flag);
     }
   } else {
     if(flag & P_FORMAT_MINUS){
-      j += uitos(&s[j], n, real_width, base, flag);
+      j += uitosn(&s[j], max_width - j, n, real_width, base, flag);
       for(i = 0; j < width; i++){
         s[j] = ' ';
          j++;
@@ -236,13 +244,13 @@ int itos(char *s, int n, int width, int base, char flag){
         s[j] = '0';
          j++;
       }
-      j += uitos(&s[j], n, real_width, base, flag);
+      j += uitosn(&s[j], max_width - j, n, real_width, base, flag);
     } else {
       for(i = 0; j < width - real_width; i++){
         s[j] = ' ';
          j++;
       }
-      j += uitos(&s[j], n, real_width, base, flag);
+      j += uitosn(&s[j], max_width - j, n, real_width, base, flag);
     }
   }
   if(flag & P_FORMAT_TERMINATE){
@@ -252,13 +260,38 @@ int itos(char *s, int n, int width, int base, char flag){
   return j;
 }
 
-int uitos(char* s, unsigned int n, int real_width, int base, char flag){
+/*!
+  \brief unsigned int to string
+
+  \param s          string buffer printed characters
+  \param n          number converted
+  \param real_width width of number to be converted
+  \param base       radix of number to be converted
+  \param flag       conversion using flag
+  \return  result of the conversion
+*/
+int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag){
+  return uitosn(s, -1, n, real_width, base, flag);
+}
+
+/*!
+  \brief unsigned int to string with max size n
+
+  \param s          string buffer printed characters
+  \param max_width  string buffer size, 0< : infinity
+  \param n          number converted
+  \param real_width width of number to be converted
+  \param base       radix of number to be converted
+  \param flag       conversion using flag
+  \return  result of the conversion
+*/
+int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int base, char flag){
   int j = 0;
   int i;
   size_t ch;
   char basechar = 'a';
 
-  if(s == NULL) return 0;
+  if((s == NULL) || (max_width == 0)) return 0;
 
   if(flag & P_FORMAT_CAPITAL){
     basechar = 'A';
@@ -268,19 +301,14 @@ int uitos(char* s, unsigned int n, int real_width, int base, char flag){
     ch = n / __power(base, i);
     n %= __power(base, i);
 
-    if(i == 0 && n > 9){
-      s[j] = (basechar + n -10);
-      j++;
-    } else if (i == 0){
-      s[j] = ('0' + n);
-      j++;
-    } else if (ch > 9){
+    if (ch > 9){
       s[j] = (basechar + ch -10);
       j++;
     } else {
       s[j] = ('0' + ch);
       j++;
     }
+    if((max_width - j) == 0) break;
   }
 
   return j;
