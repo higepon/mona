@@ -4,6 +4,7 @@
 #include "Thread.h"
 #include "Array.h"
 #include "Process.h"
+#include "sys/ThreadPriority.h"
 
 /*----------------------------------------------------------------------
     Scheduler
@@ -17,13 +18,12 @@ public:
 public:
     bool Schedule1();
     bool Schedule2();
-    bool Schedule3();
+    void SwitchToNext();
 
     void Join(Thread* thread)
     {
         Join(thread, ThreadPriority::Normal);
     }
-
 
     void Join(Thread* thread, dword basePriority)
     {

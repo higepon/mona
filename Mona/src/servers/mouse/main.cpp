@@ -49,13 +49,14 @@ public:
 public:
     bool Initialize();
     void MessageLoop();
-    void Paint();
-    void SetData(byte data);
 
-private:
+protected:
+    void Paint();
     bool SendServerOK();
     void SendMouseInformation();
     void PaintCursor(int x, int y);
+    int GetMouseData();
+    bool SetCurosor();
 
 private:
     bool needPaint;
@@ -246,31 +247,7 @@ void MouseServer::MessageLoop()
 
     for (;;)
     {
-        if (Message::receive(&receive) != 0)
-        {
-            if (!needPaint) continue;
-
-            /* mouse info */
-            this->posX += (int)(((double)dx) * 1.5);
-            this->posY += (int)(((double)dy) * 1.5);
-
-            /* mouse cursor size */
-            if (this->posX >= this->w) this->posX = this->w - 1;
-            if (this->posY >= this->h) this->posY = this->h - 1;
-            if (this->posX < 0) this->posX = 0;
-            if (this->posY < 0) this->posY = 0;
-
-            if (this->prevButton != this->button
-                || ((this->prevX != this->posX || this->prevY != this->posY)))
-            {
-
-                this->Paint();
-                this->SendMouseInformation();
-            }
-
-            /* wait next message or event */
-            continue;
-        }
+        if (Message::receive(&receive)) continue;
 
         switch(receive.header)
         {
@@ -314,6 +291,19 @@ void MouseServer::MessageLoop()
             Message::reply(&receive, this->prevX, this->prevY);
             break;
 
+        case MSG_INTERRUPTED:
+
+            /* we get not all data */
+            if (GetMouseData() != 2) break;
+
+            /* state not changed. */
+            if (!SetCurosor()) break;
+
+            Paint();
+            SendMouseInformation();
+
+            break;
+
         default:
 
             /* ignore */
@@ -321,6 +311,51 @@ void MouseServer::MessageLoop()
             break;
         }
     }
+}
+
+bool MouseServer::SetCurosor()
+{
+    /* mouse info */
+    this->posX += (int)(((double)dx) * 1.5);
+    this->posY += (int)(((double)dy) * 1.5);
+
+    /* mouse cursor size */
+    if (this->posX >= this->w) this->posX = this->w - 1;
+    if (this->posY >= this->h) this->posY = this->h - 1;
+    if (this->posX < 0) this->posX = 0;
+    if (this->posY < 0) this->posY = 0;
+
+    /* mouse state changed? */
+    return ((this->prevButton != this->button) || ((this->prevX != this->posX || this->prevY != this->posY)));
+}
+
+int MouseServer::GetMouseData()
+{
+    static int state = 0;
+
+    byte data = inp8(0x60);
+
+    if(state == 0 && !(data & 0x08)) return -1;
+
+    switch(state & 3)
+    {
+    case 0:
+        this->button = (data & 0x01) | (data & 0x02);
+        state = 1;
+        this->needPaint = false;
+        break;
+    case 1:
+        this->dx = data;
+        state = 2;
+        break;
+    case 2:
+        this->dy = -1 * data;
+        state = 0;
+        this->needPaint = true;
+        break;
+    }
+
+    return state & 3;
 }
 
 void MouseServer::Paint()
@@ -371,49 +406,6 @@ void MouseServer::PaintCursor(int x, int y)
     Screen::bitblt(screen, x, y, 5, 7, vscreen, 0, 0, Raster::XOR);
 }
 
-void MouseServer::SetData(byte data)
-{
-    static int state = 0;
-
-    if(state == 0 && !(data & 0x08)) return;
-
-    switch(state & 3)
-    {
-    case 0:
-        this->button = (data & 0x01) | (data & 0x02);
-        state = 1;
-        this->needPaint = false;
-        break;
-    case 1:
-        this->dx = data;
-        state = 2;
-        break;
-    case 2:
-        this->dy = -1 * data;
-        state = 0;
-        this->needPaint = true;
-        break;
-    }
-}
-
-/*
-||
-|| this function called by kernel.
-|| set data as fast as possible!
-||
-*/
-void mouseHandler()
-{
-    if (Mouse::waitReadable())
-    {
-        /* time out */
-        return;
-    }
-
-    byte data = inp8(0x60);
-    server->SetData(data);
-}
-
 /*----------------------------------------------------------------------
     Main
 ----------------------------------------------------------------------*/
@@ -441,11 +433,13 @@ int MonaMain(List<char*>* pekoe)
         return -1;
     }
 
-    /* set irq12 handler to kernel */
-    syscall_set_irq_handler(12, (void*)mouseHandler);
-
     Mouse::enable();
     Mouse::enableKeyboard();
+
+    /* we receive MSG_INTERRUPTED from IRQ12 Handler */
+    syscall_set_irq_receiver(12);
+
+
 
     /* service start */
     server->MessageLoop();

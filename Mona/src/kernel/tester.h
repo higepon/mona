@@ -35,13 +35,6 @@ void mmChangeTester();
 void testFDWrite();
 void keyStrokeTest();
 
-class KEvent
-{
-public:
-    static void wait(Thread* thread, kevent e);
-    static void set(Thread* thread, kevent e);
-};
-
 class RTC {
 
   public:

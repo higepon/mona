@@ -1,3 +1,16 @@
+2004-08-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/syscall.cpp: int syscall_set_irq_receiver(int irq); 追加
+                                      int syscall_remove_irq_receiver(int irq); 追加
+                                      int syscall_set_irq_handler(int irq, void* handler) 廃止
+                                      int syscall_remove_irq_handler(int irq) 廃止
+
+        * src/kernel/Process.cpp (sendKilledMessage): スレッドがKillされたときに、MSG_THREAD_KILLEDのメッセージが全スレッドに送信される。
+
+        * src/kernel/tester.h: KEventクラス廃止。Eventはスケジューラに任せる。
+
+        * src/kernel/test_higepon.cpp (send): sendの内部ロジックを変更。send後のスレッドスイッチを外出しにした。
+
 2004-08-25  higepon  <higepon@users.sourceforge.jp>
 
         * include/sys/types.h: ThreadPriorityクラスを追加

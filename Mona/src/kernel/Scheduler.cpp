@@ -44,11 +44,13 @@ bool Scheduler::Schedule1()
     return SetNextThread();
 }
 
-bool Scheduler::Schedule3()
+void Scheduler::SwitchToNext()
 {
-    return SetNextThread();
-}
+    bool isProcessChanged = SetNextThread();
+    ThreadOperation::switchThread(isProcessChanged, 6532);
 
+    /* not reached */
+}
 
 bool Scheduler::Schedule2()
 {

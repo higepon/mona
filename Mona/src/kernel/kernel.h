@@ -98,9 +98,8 @@ struct ThreadInfo;
 
 typedef struct
 {
-    bool hasUserHandler;
-    void* handler;
     ThreadInfo* thread;
+    bool hasReceiver;
 } IRQInfo;
 
 void startKernel(void);

@@ -19,10 +19,13 @@ using namespace MonAPI;
 
 int regist(List<dword>* destList, MessageInfo* info);
 int unregist(List<dword>* destList, MessageInfo* info);
-int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info);
+int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte scancode);
 
 int MonaMain(List<char*>* pekoe)
 {
+    /* user mode I/O */
+    syscall_get_io();
+
     /* initilize KeyBoardManager */
     KeyBoardManager* manager = new KeyBoardManager();
     manager->init();
@@ -47,6 +50,8 @@ int MonaMain(List<char*>* pekoe)
         printf("KeyBoardServer:INIT error\n");
     }
 
+    syscall_set_irq_receiver(1);
+
     /* Message loop */
     for (;;)
     {
@@ -55,9 +60,9 @@ int MonaMain(List<char*>* pekoe)
         {
             switch(info.header)
             {
-            case MSG_KEY_SCANCODE:
+            case MSG_INTERRUPTED:
 
-                sendKeyInformation(manager, destList, &info);
+                sendKeyInformation(manager, destList, inp8(0x60));
                 break;
 
             case MSG_KEY_REGIST_TO_SERVER:
@@ -85,6 +90,7 @@ int MonaMain(List<char*>* pekoe)
 
             default:
                 /* igonore this message */
+
                 break;
             }
         }
@@ -92,14 +98,12 @@ int MonaMain(List<char*>* pekoe)
     return 0;
 }
 
-int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info)
+int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte scancode)
 {
     MessageInfo message;
     KeyInfo keyinfo;
 
     /* scan code to virtual key information */
-    byte scancode = info->arg1;
-    //printf("(%x) ", scancode);
     if(manager->setKeyScanCode(scancode) == 0) return 0;
     manager->getKeyInfo(&keyinfo);
 

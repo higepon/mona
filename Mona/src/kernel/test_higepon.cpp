@@ -24,35 +24,6 @@
 */
 
 /*----------------------------------------------------------------------
-    KEvent
-----------------------------------------------------------------------*/
-/* this function should be used on system call or interrupt handler */
-void KEvent::wait(Thread* thread, kevent e)
-{
-    g_scheduler->WaitEvent(thread, e);
-    bool isProcessChange = g_scheduler->Schedule3();
-
-    ThreadOperation::switchThread(isProcessChange, 79);
-
-    /* not reached */
-}
-
-void KEvent::set(Thread* thread, kevent e)
-{
-    int wakeupResult = g_scheduler->EventComes(thread, e);
-
-    if (e == MEvent::MUTEX_UNLOCKED) g_console->printf("result=%x:%d", wakeupResult, e);
-
-    if (wakeupResult != 0)
-    {
-        bool isProcessChange = g_scheduler->Schedule3();
-        ThreadOperation::switchThread(isProcessChange, 78);
-    }
-
-    /* not reached */
-}
-
-/*----------------------------------------------------------------------
     RTC
 ----------------------------------------------------------------------*/
 void RTC::init() {
@@ -196,7 +167,7 @@ int Messenger::send(dword id, MessageInfo* message)
     thread->flags |= MEvent::MESSAGE;
     thread->messageList->add(info);
 
-    KEvent::set(thread, MEvent::MESSAGE);
+    g_scheduler->EventComes(thread, MEvent::MESSAGE);
 
     return 0;
 }

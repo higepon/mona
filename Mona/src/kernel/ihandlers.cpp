@@ -23,18 +23,18 @@
 #define IRQHANDLERMaster(x) void irqHandler_##x()   \
 {                                                   \
     outp8(0x20, 0x20);                              \
-    doIrqHandler(x);                                \
+    SendInterrupt(x);                               \
 }
 
 #define IRQHANDLERSlave(x) void irqHandler_##x()    \
 {                                                   \
     outp8(0xA0, 0x20);                              \
     outp8(0x20, 0x20);                              \
-    doIrqHandler(x);                                \
+    SendInterrupt(x);                               \
 }
 
 // IRQHANDLERMaster(0)
-// IRQHANDLERMaster(1)
+IRQHANDLERMaster(1)
 IRQHANDLERMaster(2)
 IRQHANDLERMaster(3)
 IRQHANDLERMaster(4)
@@ -51,26 +51,33 @@ IRQHANDLERSlave(14)
 IRQHANDLERSlave(15)
 
 /*!
-  \brief do registerd irq handler
+  \brief send irq event
 
   \param irq irq number
 
   \author HigePon
-  \date   create:2004/08/07 update:
+  \date   create:2004/08/26 update:
 */
-void doIrqHandler(int irq)
+void SendInterrupt(int irq)
 {
-    if (!g_irqInfo[irq].hasUserHandler) return;
+    MessageInfo msg;
 
-    ThreadInfo* thread = g_irqInfo[irq].thread;
-    void (*handler)() = (void (*)())g_irqInfo[irq].handler;
+    if (!g_irqInfo[irq].hasReceiver) return;
 
-    g_page_manager->setPageDirectory((dword)thread->process->getPageDirectory());
-    handler();
-    g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
-    KEvent::set(thread->thread, MEvent::MESSAGE);
+    /* set message */
+    memset(&msg, 0, sizeof(MessageInfo));
+    msg.header = MSG_INTERRUPTED;
+
+    if (g_messenger->send(g_irqInfo[irq].thread->thread->id, &msg))
+    {
+        g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
+        g_irqInfo[irq].hasReceiver = false;
+    }
+
+    g_scheduler->SwitchToNext();
+
+    /* not reached */
 }
-
 
 /*!
   \brief timer handler
@@ -107,37 +114,6 @@ void irqHandler_0()
 }
 
 /*!
-  \brief key handler
-
-  \author HigePon
-  \date   create:2004/08/10 update:
-*/
-void irqHandler_1()
-{
-    MessageInfo message;
-
-    byte scancode = inp8(0x60);
-
-    memset(&message, 0, sizeof(MessageInfo));
-    message.header = MSG_KEY_SCANCODE;
-    message.arg1   = scancode;
-
-    g_scheduler->Dump();
-
-    /* EOI */
-    outp8(0x20, 0x20);
-
-    doIrqHandler(1);
-
-    if (g_messenger->send(g_scheduler->LookupMainThread("KEYBDMNG.EX2"), &message))
-    {
-        g_console->printf("send failed");
-    }
-
-    /* not reached */
-}
-
-/*!
   \brief irq6 handler
 
   \author HigePon
@@ -150,9 +126,10 @@ void irqHandler_6()
     /* thx! K-tan */
     outp8(0x20, 0x66);
 
-    doIrqHandler(6);
+    SendInterrupt(6);
 
-    KEvent::set(g_fdcdriver->getWaitThread(), MEvent::INTERRUPT_HIGH);
+    g_scheduler->EventComes(g_fdcdriver->getWaitThread(), MEvent::INTERRUPT_HIGH);
+    g_scheduler->SwitchToNext();
 
     /* not reached */
 }

@@ -23,7 +23,7 @@ extern "C" void arch_syscall_handler(void);
 
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(dword error);
-extern "C" void doIrqHandler(int irq);
+extern "C" void SendInterrupt(int irq);
 
 /* IRQ Handler */
 #define IRQHANDLERHEADER(x) extern "C" void irqHandler_##x(); extern "C" void arch_irqhandler_##x()

@@ -41,8 +41,7 @@ void syscall_entrance() {
 
         {
             g_scheduler->Sleep(g_currentThread->thread, info->esi);
-            bool isProcessChange = g_scheduler->Schedule3();
-            ThreadOperation::switchThread(isProcessChange, 3);
+            g_scheduler->SwitchToNext();
         }
         break;
     case SYSTEM_CALL_KILL:
@@ -61,6 +60,10 @@ void syscall_entrance() {
     case SYSTEM_CALL_SEND:
 
         info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
+        g_scheduler->SwitchToNext();
+
+        /* not reaced */
+
         break;
 
     case SYSTEM_CALL_RECEIVE:
@@ -450,7 +453,8 @@ void syscall_entrance() {
             break;
         }
 
-        KEvent::wait(g_currentThread->thread, MEvent::MESSAGE);
+        g_scheduler->WaitEvent(g_currentThread->thread, MEvent::MESSAGE);
+        g_scheduler->SwitchToNext();
 
         /* not reached */
         break;
@@ -479,7 +483,8 @@ void syscall_entrance() {
         {
             if (!g_fdcdriver->interrupted())
             {
-                KEvent::wait(g_currentThread->thread, MEvent::INTERRUPT_HIGH);
+                g_scheduler->WaitEvent(g_currentThread->thread, MEvent::INTERRUPT_HIGH);
+                g_scheduler->SwitchToNext();
 
                 /* not reached */
             }
@@ -733,27 +738,7 @@ void syscall_entrance() {
         break;
     }
 
-    case SYSTEM_CALL_SET_IRQ_HANDLER:
-
-    {
-        int   irq     = (int)info->esi;
-        void* handler = (void*)info->ecx;
-
-        /* out of range */
-        if (irq > 15 || irq < 0)
-        {
-            info->eax = 1;
-            break;
-        }
-
-        g_irqInfo[irq].hasUserHandler = true;
-        g_irqInfo[irq].handler        = handler;
-        g_irqInfo[irq].thread         = g_currentThread;
-
-        break;
-    }
-
-    case SYSTEM_CALL_REMOVE_IRQ_HANDLER:
+    case SYSTEM_CALL_REMOVE_IRQ_RECEIVER:
 
     {
         int irq = (int)info->esi;
@@ -765,7 +750,26 @@ void syscall_entrance() {
             break;
         }
 
-        g_irqInfo[irq].hasUserHandler = false;
+        g_irqInfo[irq].hasReceiver = false;
+
+        break;
+    }
+
+    case SYSTEM_CALL_SET_IRQ_RECEIVER:
+
+    {
+        int   irq     = (int)info->esi;
+
+        /* out of range */
+        if (irq > 15 || irq < 0)
+        {
+            break;
+        }
+
+        g_irqInfo[irq].hasReceiver = true;
+        g_irqInfo[irq].thread      = g_currentThread;
+
+        break;
     }
 
     default:

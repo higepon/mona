@@ -683,16 +683,16 @@ int syscall_test(dword laddress)
     return result;
 }
 
-int syscall_set_irq_handler(int irq, void* handler)
+int syscall_set_irq_receiver(int irq)
 {
     dword result;
-    SYSCALL_2(SYSTEM_CALL_SET_IRQ_HANDLER, result, irq, handler);
+    SYSCALL_1(SYSTEM_CALL_SET_IRQ_RECEIVER, result, irq);
     return result;
 }
 
-int syscall_remove_irq_handler(int irq)
+int syscall_remove_irq_receiver(int irq)
 {
     dword result;
-    SYSCALL_1(SYSTEM_CALL_SET_IRQ_HANDLER, result, irq);
+    SYSCALL_1(SYSTEM_CALL_REMOVE_IRQ_RECEIVER, result, irq);
     return result;
 }

@@ -65,17 +65,6 @@ typedef struct {
     int sec;
 } KDate;
 
-class ThreadPriority
-{
-public:
-    enum
-    {
-        Max    = 0,
-        Normal = 30,
-        Min    = 63
-    };
-};
-
 struct CommandOption {
     char str[32];
     struct CommandOption* next;
@@ -163,7 +152,7 @@ enum
     MSG_RESULT_OK,
     MSG_RESULT_ERROR,
     MSG_SERVER_START_OK,
-    MSG_KEY_SCANCODE,
+    MSG_INTERRUPTED,
     MSG_THREAD_KILLED = 0x800
 };
 
@@ -235,8 +224,10 @@ enum
 #define SYSTEM_CALL_CLEAR_SCREEN             0x0036
 #define SYSTEM_CALL_PEEK                     0x0037
 #define SYSTEM_CALL_TEST                     0x0038
-#define SYSTEM_CALL_SET_IRQ_HANDLER          0x0039
-#define SYSTEM_CALL_REMOVE_IRQ_HANDLER       0x003A
+#define SYSTEM_CALL_SET_IRQ_RECEIVER         0x0039
+#define SYSTEM_CALL_REMOVE_IRQ_RECEIVER      0x003A
+
+
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

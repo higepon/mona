@@ -53,10 +53,10 @@ void pic_init() {
     outp8(PIT_COUNT0, timer_count & 0xff);
     outp8(PIT_COUNT0, timer_count >> 8);
 
-    /* no user interrupt handler yet */
+    /* no user interrupt receiver yet */
     for (int i = 0; i < 16; i++)
     {
-        g_irqInfo[i].hasUserHandler = false;
+        g_irqInfo[i].hasReceiver    = false;
     }
 
     return;
@@ -136,4 +136,3 @@ void enableFDC() {
 
     outp8(0x21, inp8(0x21) & 0xBF);
 }
-

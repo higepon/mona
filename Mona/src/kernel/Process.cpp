@@ -217,9 +217,10 @@ int ThreadOperation::kill()
     Thread* thread   = g_currentThread->thread;
     Process* process = thread->tinfo->process;
 
+    g_scheduler->Kill(thread);
+
     sendKilledMessage();
 
-    g_scheduler->Kill(thread);
     (process->threadNum)--;
 
     if (process->threadNum < 1)
@@ -229,9 +230,12 @@ int ThreadOperation::kill()
         g_page_manager->returnPhysicalPages(directory);
     }
 
-    bool isProcessChange = g_scheduler->Schedule3();
     delete thread;
-    ThreadOperation::switchThread(isProcessChange, 5);
+
+    g_scheduler->SwitchToNext();
+
+    /* not reached */
+
     return NORMAL;
 }
 
@@ -243,6 +247,9 @@ int ThreadOperation::kill(dword tid)
     Process* process = thread->tinfo->process;
 
     g_scheduler->Kill(thread);
+
+    sendKilledMessage();
+
     (process->threadNum)--;
 
     if (process->threadNum < 1)
@@ -252,42 +259,40 @@ int ThreadOperation::kill(dword tid)
         g_page_manager->returnPhysicalPages(directory);
     }
 
-    bool isProcessChange = g_scheduler->Schedule3();
     delete thread;
-    ThreadOperation::switchThread(isProcessChange, 5);
+
+    g_scheduler->SwitchToNext();
+
+    /* not reached */
+
     return NORMAL;
 }
 
 void ThreadOperation::sendKilledMessage()
 {
-#if 0
     dword threadNum;
     dword* list;
     MessageInfo msg;
 
-    list = g_scheduler->getAllThreadID(&threadNum);
+    list = g_scheduler->GetAllThreadID(&threadNum);
 
     /* set message */
     msg.header = MSG_THREAD_KILLED;
     msg.arg1   = g_currentThread->thread->id;
 
-    g_console->printf("here");
-
     if (list == NULL) return;
-
-    g_console->printf("here2");
 
     for (dword i = 0; i < threadNum; i++)
     {
-    g_console->printf("here3");
+
         dword id = list[i];
         if (id == msg.arg1) continue;
-        dword result;
-        SYSCALL_2(SYSTEM_CALL_SEND, result, id, (void*)(&msg));
+
+        g_messenger->send(id, &msg);
+
     }
-    g_console->printf("here4");
+
     delete[] list;
-#endif
 }
 
 /*----------------------------------------------------------------------
