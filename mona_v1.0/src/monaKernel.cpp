@@ -80,6 +80,7 @@ void startKernel(void) {
     KeyBoardManager::instance();
 
     gMFDCDriver = new MFDCDriver(console);
+    while (true);
 
     /* test code is here */
 #if 0

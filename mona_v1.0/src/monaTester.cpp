@@ -88,6 +88,7 @@ void operatorTester() {
 void floppyTester(){
     unsigned char buff[512];
     gFDCDriver1 = new FDCDriver(0);
+    while(true);
     gFDCDriver1->readSector(1, 1, buff);
     for(int i = 0; i < 512; i++){
          console->printf("[%d]", buff[i]);

@@ -124,8 +124,6 @@ void MFDCDriver::initilize() {
 
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
-    //    dmabuff_ = (byte*)0x400;
-
     console_->printf("dma buff_=[%x]=[%dkb]\n", (dword)dmabuff_, ((dword)dmabuff_/1024));
 
     /* dma buff should be 64kb < dma buff < 16Mb */
@@ -153,33 +151,33 @@ void MFDCDriver::initilize() {
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
     delay();
     outportb(FDC_CCR_PRIMARY, 0);
+    //    while(!waitInterrupt());
     //    outportb(0x3f2, 0xc);
 
-    /* specify */
-    sendCommand(specifyCommand, sizeof(specifyCommand));
-
-    /* test */
     interrupt_ = false;
     motor(ON);
-    while (!waitInterrupt());
+    while(!waitInterrupt());
+
+    printStatus("abcd");
+    /* specify */
+    sendCommand(specifyCommand, sizeof(specifyCommand));
+    /* test */
+    //    interrupt_ = false;
+    //    motor(ON);
+    //    while(!waitInterrupt());
+
 
     recalibrate();
-    //    printStatus("after recalibrate1");
+    printStatus("after recalibrate1");
 
     recalibrate();
-    //    printStatus("after recalibrate2");
+    printStatus("after recalibrate2");
     //    write(0, 0, 1);
 
     printStatus("before read");
     read(0, 0, 1);
-    read(0, 0, 1);
-    read(0, 0, 1);
     motor(OFF);
     while (true);
-    read(0, 0, 1);
-
-
-
     return;
 }
 
@@ -378,14 +376,12 @@ bool MFDCDriver::seek(byte track) {
         return false;
     }
 
-    //    printStatus("before sense interrupt in seek");
-    // here status 0x81??????????????????????????????????????????????
-
     if (!senseInterrupt()) {
 
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
+    printStatus("seek after sense Interrupt");
     return true;
 }
 
@@ -575,9 +571,9 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
 
     interrupt_ = false;
 
-
     sendCommand(command, sizeof(command));
-    //while(!waitInterrupt());
+    printStatus("read wait");
+    while(!waitInterrupt());
 
     stopDMA();
 
