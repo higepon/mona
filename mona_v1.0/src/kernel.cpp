@@ -86,8 +86,7 @@ void mainProcess();
 void startKernel(void) {
 
     /* kernel memory range */
-    MemoryManager& mm = MemoryManager::instance();
-    mm.initialize(0x200000, 0x9fffff);
+    km.initialize(0x200000, 0x9fffff);
 
     /* set segment */
     GDTUtil::setup();
@@ -145,8 +144,6 @@ void startKernel(void) {
     g_process_manager = new ProcessManager(idle);
 
     g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
-
-    //    rectangle(0, 0, 640, 480, GP_BLACK);
 
     enableTimer();
 #endif

@@ -117,6 +117,14 @@ void PageManager::stopPaging() {
                  : /* no input  */ : "ax");
 }
 
+void PageManager::flushPageCache() const {
+
+    asm volatile("mov %%cr3, %%eax\n"
+                 "mov %%eax, %%cr3\n"
+                 : /* no output */
+                 : /* no input  */ : "ax");
+}
+
 void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const {
 
     *entry = present | rw | user | (address & 0xfffff000);
@@ -146,7 +154,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     PageEntry* table;
     dword directoryIndex = address >> 22;
     dword tableIndex     = (address >> 12) & 0x3FF;
-    byte user            = address >= 0x4000000 ? PAGE_USER : PAGE_KERNEL;
+    byte  user           = address >= 0x4000000 ? PAGE_USER : PAGE_KERNEL;
 
     /* physical page not exist */
     if (error & 0x01 == PAGE_NOT_EXIST) {
@@ -161,7 +169,10 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
             makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, user);
         }
 
-        return allocatePhysicalPage(&(table[tableIndex]));
+        bool allocateResult = allocatePhysicalPage(&(table[tableIndex]));
+        if (allocateResult) flushPageCache();
+
+        return allocateResult;
 
     /* access falut */
     } else {

@@ -21,27 +21,23 @@
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    return mm.allocate(size);
+    return km.allocate(size);
 }
 
 void operator delete(void* address) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    mm.free(address);
+    km.free(address);
     return;
 }
 
 void* operator new[](size_t size) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    return mm.allocate(size);
+    return km.allocate(size);
 }
 
 void operator delete[](void* address) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    mm.free(address);
+    km.free(address);
     return;
 }
 
@@ -49,15 +45,13 @@ void operator delete[](void* address) {
 
 void __builtin_delete(void* address) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    mm.free(address);
+    km.free(address);
     return;
 }
 
 void* __builtin_new(unsigned long size) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    return mm.allocate(size);
+    return km.allocate(size);
 }
 
 void* __builtin_vec_new(unsigned long size) {
@@ -75,14 +69,14 @@ void __builtin_vec_delete(void* address) {
 
 void* malloc(unsigned long size) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    return mm.allocate(size);
+    return km.allocate(size);
 }
 
 void free(void * address) {
 
-    MemoryManager& mm = MemoryManager::instance();
-    mm.free(address);
+    km.free(address);
     return;
 }
+
+
 

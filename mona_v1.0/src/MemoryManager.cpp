@@ -249,12 +249,6 @@ void MemoryManager::debugPrint() const {
     }
 }
 
-MemoryManager& MemoryManager::instance() {
-    static MemoryManager theInstance;
-    return theInstance;
-}
-
-
 dword MemoryManager::getPhysicalMemorySize() {
 
     /* assume there is at least 1MB memory */

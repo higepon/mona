@@ -9,24 +9,25 @@
 #define GLOBAL_VAL(v) /* */
 #endif
 
-#include<info.h>
-#include<kernel.h>
-#include<VirtualConsole.h>
-#include<FDCDriver.h>
-#include<Semaphore.h>
-#include<GDTUtil.h>
-#include<IDTUtil.h>
-#include<Process.h>
-#include<string.h>
-#include<types.h>
-#include<Scheduler.h>
-#include<ProcessManager.h>
+#include <info.h>
+#include <kernel.h>
+#include <VirtualConsole.h>
+#include <FDCDriver.h>
+#include <Semaphore.h>
+#include <GDTUtil.h>
+#include <IDTUtil.h>
+#include <Process.h>
+#include <string.h>
+#include <types.h>
+#include <Scheduler.h>
+#include <ProcessManager.h>
 #include <sysresource.h> /* (expr) */
 #include <PageManager.h>
 #include <MessageServer.h>
 #include <FAT12.h>
+#include <MemoryManager.h>
 
-GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);                    /*< pointer to console    */
+GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
 
 GLOBAL FDCDriver* g_fdcdriver;
@@ -62,5 +63,7 @@ GLOBAL MessageServer* g_message_server;
 
 GLOBAL PageEntry* g_page_directory;
 GLOBAL PageManager* g_page_manager;
+
+GLOBAL MemoryManager km; /* Kernel Memory Management */
 
 #endif

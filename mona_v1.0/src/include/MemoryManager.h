@@ -26,7 +26,6 @@ class MemoryManager {
 
   public:
     MemoryManager();
-    MemoryManager(const MemoryManager&);
     ~MemoryManager();
 
   public:
@@ -36,7 +35,6 @@ class MemoryManager {
     dword getFreeMemorySize() const;
     dword getUsedMemorySize() const;
     void debugPrint() const;
-    static MemoryManager& instance();
     static dword getPhysicalMemorySize();
 
   private:
