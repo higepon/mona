@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
     if (!fat->open("..", "HELLO.TXT", FAT12::READ_MODE)) {
 
-	printf("open failed");
+        printf("open failed");
     }
 
 

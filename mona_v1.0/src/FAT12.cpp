@@ -84,124 +84,6 @@ bool FAT12::initilize() {
     firstDataSector_ = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors_;
     rootEntryStart_  = bpb_.reservedSectorCount + bpb_.fatSize16 * bpb_.numberFats;
 
-
-    for (int i = 0; i < 20; i++) printf("[%d:%x]", i, getFATAt(i));
-
-    printf("fat[");
-    for (int k = 0; k < 20; k++) printf("%x", fat_[k]);
-
-
-
-    int rootEntryStart = bpb_.reservedSectorCount
-        + bpb_.fatSize16 * bpb_.numberFats;
-
-    if (!(driver_->read(rootEntryStart, buf_))) return false;
-
-    printf("rootEntryStart = %d\n", rootEntryStart);
-
-    DirectoryEntry entry[50];
-
-    memcpy(entry, buf_, sizeof(DirectoryEntry) * 20);
-
-    for (int j = 0; j < 15; j++) {
-
-        if (entry[j].filename[0] == 0xe5 || entry[j].filename[0] == 0x00) continue;
-
-        printf("[");
-        for (int i = 0; i < 8; i++) printf("%c", (char)(entry[j].filename[i]));
-        printf("]");
-        printf("[");
-
-        if (entry[j].attribute & ATTR_DIRECTORY) printf("DIR");
-        else {
-            for (int i = 0; i < 3; i++) printf("%c", (char)(entry[j].extension[i]));
-        }
-        printf("]");
-        printf("size[%d]=%d ", j, entry[j].filesize);
-        printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
-        printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
-        printf("cluster = %d\n", entry[j].cluster);
-    }
-
-
-    int rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
-    int firstDataSector = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors;
-
-    int cluster = 5;
-    int size = entry[10].filesize;
-
-    printf("size of entry[10]=%d", entry[10].filesize);
-
-//      do {
-
-//          int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
-
-//          if (!(driver_->read(lbp, buf_))) return false;
-
-//          for (int k = 0; k < 512 && size > 0; k++, size--) {
-//              printf("%c", (char)buf_[k]);
-//          }
-
-//          cluster = getFATAt(cluster);
-//          printf("cluster = %d \n", cluster);
-
-//      } while (0xff8 > cluster);
-
-    printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
-
-    int lbp = ((4 - 2) * bpb_.sectorPerCluster) + firstDataSector;
-
-    if (!(driver_->read(lbp, buf_))) return false;
-
-    memcpy(entry, buf_, sizeof(DirectoryEntry) * 50);
-
-    for (int j = 0; j < 50; j++) {
-
-        /* free */
-        if (entry[j].filename[0] == 0xe5) continue;
-
-        if (entry[j].filename[0] == 0x00) break;
-
-        printf("[");
-        for (int i = 0; i < 8; i++) printf("%c", (char)(entry[j].filename[i]));
-        printf("]");
-        printf("[");
-
-        if (entry[j].attribute & ATTR_DIRECTORY) printf("DIR");
-        else {
-            for (int i = 0; i < 3; i++) printf("%c", (char)(entry[j].extension[i]));
-        }
-        printf("]");
-        printf("size[%d]=%d ", j, entry[j].filesize);
-        printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
-        printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
-        printf("cluster = %d\n", entry[j].cluster);
-    }
-
-    cluster = 15;
-    size = entry[2].filesize;
-
-    printf("size of entry[2]=%d", entry[2].filesize);
-
-//      do {
-
-//          int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
-
-//          if (!(driver_->read(lbp, buf_))) return false;
-
-//          for (int k = 0; k < 512 && size > 0; k++, size--) {
-//              printf("%c", (char)buf_[k]);
-//          }
-
-//          cluster = getFATAt(cluster);
-//          printf("cluster = %d \n", cluster);
-
-//      } while (0xff8 > cluster);
-
-    char buf[] = "yyyymmdd";
-    printf("@@@%s@@", strtok(buf, "/"));
-    printf("@@@%s@@", strtok(NULL, "/"));
-
     return true;
 }
 
@@ -513,9 +395,9 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
             && compareName((char*)(entries[j].extension), ext)) {
 
             currentCluster_ = entries[j].cluster;
-	    fileSize_       = entries[j].filesize;
+            fileSize_       = entries[j].filesize;
             isOpen_         = true;
-	    readHasNext_    = true;
+            readHasNext_    = true;
             printf("flie %s found\n", filename);
             return true;
         }
