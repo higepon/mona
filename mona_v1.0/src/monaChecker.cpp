@@ -16,6 +16,7 @@
 #include <monaTypes.h>
 #include <monaKernel.h>
 #include <IA32MemoryManager.h>
+#include <GDTUtil.h>
 
 /*!
     \brief check size of byte,word,dword

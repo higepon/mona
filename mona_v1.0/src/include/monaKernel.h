@@ -21,6 +21,15 @@
 #define pusha()      asm volatile("pusha"); /*!< \def  pusha            */
 #define popa()       asm volatile("popa");  /*!< \def  popa             */
 
+
+/*!
+   \struct far jmp
+*/
+typedef struct {
+    dword offset;
+    word selector;
+} FARJMP;
+
 /*!
     \struct TSS(Task State Segment)
 */
@@ -64,15 +73,6 @@ typedef struct {
     word  debugtrap;
     word  iobase;
 } TSS;
-
-/*!
-   \struct far jmp
-*/
-typedef struct {
-    dword offset;
-    word selector;
-} FARJMP;
-
 
 /*! Descriptor Type */
 #define TypeCode     0x9a

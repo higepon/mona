@@ -17,6 +17,7 @@
 #include <monaTester.h>
 #include <string.h>
 #include <monaTester.h>
+#include <GDTUtil.h>
 
 /*!
     \brief constructor
