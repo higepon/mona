@@ -101,6 +101,15 @@ bool MapServer::map(dword pid, char* identifier, dword linearAddress) {
 int main() {
 
     printf("Hello World\n");
+
+
+    dword pid = Message::lookup("HELLO.ELF");
+
+    printf("map result = %d\n", syscall_map(pid, SHARED_FDC_BUFFER, 0x20000000, 4096));
+    printf("str=%s", (char*)(0x20000000));
+
+    for (;;);
+
     Server* server = new MapServer();
     server->service();
     return 0;

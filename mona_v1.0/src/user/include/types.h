@@ -42,4 +42,6 @@ typedef struct {
 #define MSG_KEY_SCANCODE         0x00
 #define MSG_KEY_REGIST_TO_SERVER 0x01
 
+#define SHARED_FDC_BUFFER 0x4000
+
 #endif
