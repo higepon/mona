@@ -9,7 +9,7 @@ LINK    = -lmonapi -lmonalibc -ljpegls
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
+$(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a $(LIBDIR)/libjpegls.a
 	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
