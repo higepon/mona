@@ -175,18 +175,21 @@ class X86Code
 			if (listx.Count < 2) continue;
 			
 			X86Code[] x = listx.ToArray(typeof(X86Code)) as X86Code[];
-			if (IsMovEtc(x[0].Mnemonic) && !IsXS(x[0].Operand1) && IsXX(x[0].Operand2))
+			if (IsMovEtc(x[0].Mnemonic) && !IsXS(x[0].Operand1) && IsXX(x[0].Operand2) && x[0].Operand1 != x[0].Operand2)
 			{
 				for (int j = 1; j < x.Length; j++)
 				{
 					if (x[j].Mnemonic == "mov" && x[j].Operand1 == x[0].Operand2 && !IsXS(x[j].Operand2)
 						&& !(IsAddr(x[0].Operand1) && IsAddr(x[j].Operand2)))
 					{
-						x[j].Ignore();
-						x[0].Ignore();
-						X86Code xx = new X86Code(x[0].Mnemonic, x[0].Operand1, x[j].Operand2);
-						xx.Notes = "[optimize] add";
-						list.Insert(i + 1, xx);
+						if (x[0].Operand1 != x[j].Operand2 && (IsXX(x[0].Operand1) || IsXX(x[j].Operand2)))
+						{
+							x[j].Ignore();
+							x[0].Ignore();
+							X86Code xx = new X86Code(x[0].Mnemonic, x[0].Operand1, x[j].Operand2);
+							xx.Notes = "[optimize] add";
+							list.Insert(i + 1, xx);
+						}
 					}
 					else if (IsMovEtc(x[j].Mnemonic) && x[j].Operand1 != x[0].Operand2)
 					{

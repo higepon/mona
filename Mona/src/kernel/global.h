@@ -83,7 +83,9 @@ GLOBAL Thread* g_idleThread;
 GLOBAL dword g_mutexFloppy;
 GLOBAL dword g_mutexShared;
 
+#ifdef USE_BOOTMGR
 GLOBAL BootManager* g_bootManager;
+#endif
 
 #define DEBUG_MODE
 

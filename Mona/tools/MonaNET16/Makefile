@@ -2,7 +2,6 @@ include MakeInclude
 
 TARGET = I8086.dll secondboot.bin
 ILOPT  = /OPT:1
-ASMFLG = -DREL_KERNEL_ADDR=0x0800 -DMONA_HEADER_SIZE=0x10
 
 all: .subdirs $(TARGET)
 
@@ -12,15 +11,14 @@ all: .subdirs $(TARGET)
 	cd SecondBoot && $(MAKE)
 
 secondboot.bin: secondboot.asm
-	$(NASM) -o $@ $(ASMFLG) secondboot.asm
+	$(NASM) -o $@ secondboot.asm
 
 secondboot_.asm: secondboot.asm
 	grep -v "^;" $< > $@
 
 secondboot.asm: IL2Asm16.exe SecondBoot.exe secondboot32.asm
-	$(NETRT) ./IL2Asm16.exe /MAIN:SecondBootMain $(ILOPT) /OUT:secondboot.as_ SecondBoot.exe
+	$(NETRT) ./IL2Asm16.exe /MAIN:SecondBootMain $(ILOPT) /POST:secondboot32.asm /OUT:secondboot.as_ SecondBoot.exe
 	mv secondboot.as_ $@
-	cat secondboot32.asm >> $@
 
 I8086.dll: I8086.cs
 	$(CSC) /t:library $<

@@ -5,10 +5,11 @@ include $(MONADIR)/env/Makefile.inc
 
 MONA_HEADER_SIZE = 0x10
 KERNEL_BASE_ADDR = 0x1000
-REL_KERNEL_ADDR  = 0x0800
-KERNEL_START_ADDR= 0x1810 # ($(REL_KERNEL_ADDR) + $(KERNEL_BASE_ADDR) + $(MONA_HEADER_SIZE))
+REL_KERNEL_ADDR  = 0x0200
+#KERNEL_START_ADDR= 0x1A10 # ($(REL_KERNEL_ADDR) + $(KERNEL_BASE_ADDR) + $(MONA_HEADER_SIZE))
+KERNEL_START_ADDR = 0x1200
 MONA_CFG_SIZE    = 0x1000
-MONA_CFG_ADDR    = 0x90000
+MONA_CFG_ADDR    = 0x88000
 LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
 CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR)
 CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
@@ -53,12 +54,13 @@ SOURCES      = cstart.cpp            \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(BOOT1) $(KERNEL_IMG)
+#all : $(BOOT1) $(KERNEL_IMG)
+all : $(BOOT1) $(BOOT2) $(KERNEL)
 
-$(KERNEL_IMG) : $(BOOT2) $(KERNEL)
-	$(BINDIR)/getFileSize$(EXEEXT) $(KERNEL) $(KERNEL) head.txt
-	cat $(BOOT2) head.txt $(KERNEL) > $@
-	rm -f head.txt
+#$(KERNEL_IMG) : $(BOOT2) $(KERNEL)
+#	$(BINDIR)/getFileSize$(EXEEXT) $(KERNEL) $(KERNEL) head.txt
+#	cat $(BOOT2) head.txt $(KERNEL) > $@
+#	rm -f head.txt
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o
@@ -67,7 +69,7 @@ $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 
 install : all
 	$(INSTALL) $(BOOT1) $(BINDIR)
-	$(INSTALL) $(KERNEL_IMG) $(BINDIR)/root
+#	$(INSTALL) $(KERNEL_IMG) $(BINDIR)/root
 
 .SUFFIXES: .cpp .o
 

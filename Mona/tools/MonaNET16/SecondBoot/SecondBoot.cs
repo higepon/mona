@@ -5,45 +5,67 @@ namespace Mona
 {
 	class SecondBoot
 	{
-		const ushort MaxConfigSize = 0x1000;
+		const ushort KernelSeg = 0x0120, ConfigSeg = 0x8800, SizeAddr = 0xf000;
 		public const ushort VESAInfoAddr = 0x0800, VESAInfoDetailsAddr = 0x0830;
 		
 		static void Main()
 		{
+			Console.WriteLine();
+			Console.WriteLine("/\\ /\\");
+			Console.WriteLine(" 'V `) < Booting MONA!!");
+			Console.WriteLine();
+			
+			Registers.DS = Registers.CS;
 			new Inline("cli");
 			A20.Enable();
 			
-			Console.Write("Reading MONA.CFG");
-			new Inline("push ds");
-			ReadConfig(0x9000, "MONA    CFG");
-			new Inline("pop ds");
-			Console.WriteLine();
+			ReadServer("KERNEL.BIN");
+			ReadServer("FILE.BIN");
+			ReadServer("PROCESS.BIN");
+			ReadServer("MONITOR.BIN");
 			
+			ReadConfig("MONA.CFG");
 			SetVesaMode();
+			
+			WriteSize(0);
 		}
 		
-		static void ReadConfig(ushort seg, string config)
+		static ushort fileseg = KernelSeg;
+		
+		static void ReadServer(string svr)
 		{
-			Registers.DS = Registers.CS;
-			Registers.ES = seg;
-			
-			ushort pos = FDC.SearchFile(config);
-			if (pos == 0) return;
-			
-			//FDC.ReadSectors(1, FDC.SPF, FDC.FAT);
-
-			Registers.DS = seg;
-			ushort ptr1 = 0;
-			for (;; ptr1 += 0x0200)
+			ushort size = ReadFile(fileseg, svr);
+			if (size == 0)
 			{
-				FDC.ReadSectors((ushort)(pos + 31), 1, ptr1);
-				Console.Write(".");
-				pos = FDC.GetFAT(pos);
-				if (pos == 0x0fff) break;
+				Console.WriteLine("Boot failure!!");
+				Console.WriteLine("System has halted.");
+				new Inline("cli");
+				new Inline("hlt");
 			}
-
-			Registers.DS = Registers.CS;
-			ushort size = (ushort)(ptr1 + 0x0200);
+			
+			WriteSize(size);
+			size *= 0x20;
+			fileseg += size;
+		}
+		
+		static void ReadConfig(string config)
+		{
+			ushort size = ReadFile(ConfigSeg, config);
+			if (size == 0)
+			{
+				Console.WriteLine("Default settings will be applied.");
+				return;
+			}
+			
+			Registers.ES = 0;
+			Registers.DI = SizeAddr;
+			Registers.AX = size;
+			new Inline("mov [es:di], ax");
+			Registers.AX = 0;
+			new Inline("mov [es:di+2], ax");
+			
+			size *= 512;
+			Registers.ES = ConfigSeg;
 			for (ushort ptr2 = 0; ptr2 < size;)
 			{
 				if (Str.StartsWith("VESA_RESOLUTION=", ptr2))
@@ -95,6 +117,50 @@ namespace Mona
 			new Inline("mov byte [es:di], 'N'");
 			
 			VESA.SetVGA();
+		}
+		
+		static ushort ReadFile(ushort seg, string fn)
+		{
+			Console.Write("Reading ");
+			Console.Write(fn);
+			Console.Write(' ');
+			
+			ushort pos = FDC.SearchFile(fn);
+			if (pos == 0)
+			{
+				Console.WriteLine();
+				Console.WriteLine("ERROR: can not find!");
+				return 0;
+			}
+			
+			new Inline("push es");
+			Registers.ES = seg;
+			ushort ret = 0;
+			for (;;)
+			{
+				FDC.ReadSectors((ushort)(pos + 31), 1, 0);
+				ret++;
+				Registers.ES += 0x20;
+				Console.Write(".");
+				pos = FDC.GetFAT(pos);
+				if (pos == 0x0fff) break;
+			}
+			new Inline("pop es");
+			Console.WriteLine();
+			return ret;
+		}
+		
+		static ushort sizeptr = SizeAddr + 4;
+		
+		static void WriteSize(ushort size)
+		{
+			Registers.ES = 0;
+			Registers.DI = sizeptr;
+			Registers.AX = size;
+			new Inline("mov [es:di], ax");
+			Registers.AX = 0;
+			new Inline("mov [es:di+2], ax");
+			sizeptr += 4;
 		}
 	}
 }

@@ -5,29 +5,36 @@ namespace Mona
 {
 	public class FDC
 	{
-		public const ushort FAT = 0x6000, SPF = 0x0009, RDE = 0x00e0;
+		public const ushort FATSeg = 0x9000, FATAddr = 0x6000, SPF = 0x0009, RDE = 0x00e0;
 		
 		public static ushort SearchFile(string fn)
 		{
-			ushort ptr = 0;
+			new Inline("push es");
+			Registers.ES = FDC.FATSeg;
+			ushort ptr = 0, ret = 0;
+			string fn2 = FDC.ConvertFileName(fn);
 			for (ushort i = 0; i < FDC.RDE; i++, ptr += 0x20)
 			{
-				if (Str.StartsWith(fn, ptr))
+				if (Str.StartsWith(fn2, ptr))
 				{
 					Registers.DI = (ushort)(ptr + 0x1a);  // start sector
 					new Inline("mov ax, [es:di]");
-					return Registers.AX;
+					ret = Registers.AX;
+					break;
 				}
 			}
-			return 0;
+			new Inline("pop es");
+			return ret;
 		}
 		
 		public static ushort GetFAT(ushort pos)
 		{
 			Registers.SI = pos;
-			Registers.BX = (ushort)(pos + FDC.FAT);
+			new Inline("push es");
+			Registers.ES = FDC.FATSeg;
+			Registers.BX = (ushort)(FDC.FATAddr + pos);
 			new Inline("shr si, 1");
-			new Inline("mov cx, [si+bx]");
+			new Inline("mov cx, [es:si+bx]");
 			if (Flags.C)
 			{
 				new Inline("shr cx, 4");
@@ -36,6 +43,7 @@ namespace Mona
 			{
 				new Inline("and ch, 0x0f");
 			}
+			new Inline("pop es");
 			return Registers.CX;
 		}
 		
@@ -104,6 +112,38 @@ namespace Mona
 			Registers.DL = drive;
 			new Inline("int 0x13");
 			return Flags.NC;
-		} 
+		}
+		
+		private static string buffer = "           ";
+		
+		private static string ConvertFileName(string fn)
+		{
+			ushort len = Str.GetLength(fn);
+			Registers.SI = (ushort)(StringPtr.Get(fn) + 1);
+			Registers.DI = (ushort)(StringPtr.Get(buffer) + 1);
+			for (ushort i = 0; i < 11; i++)
+			{
+				new Inline("mov byte [cs:di], ' '");
+				Registers.DI++;
+			}
+			Registers.DI = (ushort)(StringPtr.Get(buffer) + 1);
+			for (ushort i = 0; i < len; i++)
+			{
+				new Inline("mov al, [cs:si]");
+				Registers.AH = 0;
+				Registers.SI++;
+				char ch = (char)Registers.AX;
+				if (ch == '.')
+				{
+					Registers.DI = (ushort)(StringPtr.Get(buffer) + 9);
+				}
+				else
+				{
+					new Inline("mov [cs:di], al");
+					Registers.DI++;
+				}
+			}
+			return buffer;
+		}
 	}
 }

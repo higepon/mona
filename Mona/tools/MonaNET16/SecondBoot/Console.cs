@@ -5,6 +5,14 @@ namespace Mona
 {
 	public class Console
 	{
+		public static void Write(char ch)
+		{
+			Registers.AX = ch;
+			Registers.AH = 0x0e;
+			Registers.BX = 0;
+			new Inline("int 0x10");
+		}
+		
 		public static void Write(string s)
 		{
 			Registers.SI = StringPtr.Get(s);

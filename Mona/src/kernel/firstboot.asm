@@ -7,9 +7,11 @@
 ; All rights reserved.
 ; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
-%define kernel  0x1000
-%define tempseg 0x9f00
-%define fat     0x6000
+%define KERNEL   0x1000
+%define TEMPSEG  0x9f00
+%define LDRSEG   0x8000
+%define FATSEG   0x9000
+%define FATADDR  0x6000
 
 ;%define DEBUG  1
 
@@ -43,11 +45,11 @@ realstart:
         mov     di,si
         mov     ax,0x07c0
         mov     ds,ax
-        mov     ax,tempseg
+        mov     ax,TEMPSEG
         mov     es,ax
         mov     cx,0x0100
         rep     movsw
-        jmp     tempseg:realnext
+        jmp     TEMPSEG:realnext
 realnext:
         mov     ds,ax
         sub     ah,0x10
@@ -64,7 +66,7 @@ realnext:
         xor     dx,dx
         mov     cx,dx
         mov     bx,dx
-        mov     ax,0x9000
+        mov     ax,FATSEG
         mov     es,ax
         mov     ax,word [spf]
         mov     cl,byte [nof]
@@ -98,20 +100,25 @@ kernel_found:
 %ifdef DEBUG
        call    register_dump
 %endif
-        mov     bx,fat
+        mov     bx,FATADDR
         mov     ax,0x0001
         mov     di,[spf]
         call    readsector
         mov     ax,es
         mov     ds,ax
-        xor     ax,ax
+        mov     ax,LDRSEG
         mov     es,ax
-        mov     bx,0x1000
+        xor     bx,bx
 kernel_load:
         mov     ax,cx
         add     ax,31
         mov     di,1
         call    readsector
+        pusha
+        mov     ax, 0x0e2e
+        xor     bx, bx
+        int     0x10
+        popa
         push    bx
         mov     bx,cx
         call    get_fat
@@ -130,19 +137,25 @@ kernel_load:
         xor     bx,bx
         jmp     kernel_load
 end_of_kernel:
+        mov     ax,cs
+	mov     ds,ax
+	mov     si,crlf
+	call    putstring
         xor     ax,ax
         mov     ds,ax
         mov     es,ax
         mov     ss,ax
-        mov     sp,kernel
+        mov     sp,KERNEL
+%ifdef DEBUG
         call    memory_dump
+%endif
 
-        jmp     0x0100:0x0000
+        jmp     LDRSEG:0x0000
 
 get_fat:
         mov     si,bx
         shr     si,1
-        mov     ax,[si+bx+fat]
+        mov     ax,[si+bx+FATADDR]
         jnc     _get_fat
         shr     ax,4
 _get_fat:
@@ -238,6 +251,7 @@ putstring:
 .pute:  popa
         ret
 
+%ifdef DEBUG
 ; tohex
 ;   ax = data to convert and display, cl = shift count
 
@@ -273,7 +287,7 @@ memory_dump:
         call    putstring
         popa
         ret
-%ifdef DEBUG
+
 register_dump:
         pusha
         push    sp
@@ -297,8 +311,8 @@ register_dump:
         ret
 %endif
 
-bname   db      "KERNEL  IMG"
-boot    db      "Mona loading..."
+bname   db      "LOADER  BIN"
+boot    db      "Reading LOADER.BIN ", 0
 ;  not_found db "KERNEL.IMG not found"
 crlf    db      0x0d,0x0a,0
 

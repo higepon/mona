@@ -1,3 +1,4 @@
+%define KERNEL_SEG 0x0100
 
 ;-------------------------------------------------------------------------------
 ; entry point
@@ -6,6 +7,17 @@
 SecondBootMain:
         call    ILMain
 
+        mov     ax, cs
+        mov     ds, ax
+        mov     si, RealToProtect
+        mov     ax, KERNEL_SEG
+        mov     es, ax
+        xor     di, di
+        mov     cx, end_second - RealToProtect
+        rep     movsb
+
+        jmp     KERNEL_SEG:0
+
 ;-------------------------------------------------------------------------------
 ; To Protect mode
 ;-------------------------------------------------------------------------------
@@ -13,7 +25,7 @@ RealToProtect:
 ;;; Real to Protect
         mov     ax, cs          ; we jump from firstboot
         mov     ds, ax          ; so ds is changed
-        lgdt    [gdtr]          ; load gdtr
+        lgdt    [gdtr - RealToProtect]  ; load gdtr
         cli                     ; disable interrupt
         mov     eax, cr0        ; real
         or      eax, 1          ; to
@@ -25,7 +37,7 @@ RealToProtect:
 ;-------------------------------------------------------------------------------
 gdtr:
         dw gdt_end - gdt0 - 1   ; gdt limit
-        dd gdt0 + 0x100 * 16    ; start adderess
+        dd gdt0 - RealToProtect + 0x100 * 16  ; start adderess
 
 gdt0:                           ; segment 00
         dw 0                    ; segment limitL
@@ -64,7 +76,7 @@ gdt_end:                        ; end of gdt
 [bits 32]
 flush_q1:
         db 0eah
-        dw set_cs_desc1 + 0x100 * 16
+        dw set_cs_desc1 - RealToProtect + 0x100 * 16
         dw 08h
 
 set_cs_desc1:
@@ -75,8 +87,7 @@ set_cs_desc1:
         mov     ss, ax          ; is 0x18
         mov     esp, 0x80000    ; sp is 3MB
         push    eax
-        jmp     REL_KERNEL_ADDR + MONA_HEADER_SIZE
-;  hang:
-;          jmp hang
+jump_to_kernel:
+        jmp     $ + 0x0200 - (jump_to_kernel - RealToProtect)
 
-        times (REL_KERNEL_ADDR)-($-$$) db 0
+end_second

@@ -1,3 +1,7 @@
+2005-02-02  csharp  <csharp@users.sourceforge.jp>
+
+        * src/kernel/firstboot.asm, secondboot.asm: バイナリをファイルごとに読み込み
+
 2005-02-01  higepon  <higepon@users.sourceforge.jp>
 
         * MonaForms, BayGUIアプリのディレクトリを分ける様に修正

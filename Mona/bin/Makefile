@@ -8,11 +8,11 @@ BAYGUI_FILES   = `cd root; ls APPS/BAYGUI/*.E* APPS/BAYGUI/*.MSH`
 MONAFRMS_FILES = `cd root; ls APPS/MONAFRMS/*.E* APPS/MONAFRMS/*.MSH`
 
 all:
-	./getFileSize$(EXEEXT) ../src/servers/file/FILE.BIN FILE.BIN file.head
-	./getFileSize$(EXEEXT) ../src/servers/process/PROCESS.BIN PROCESS.BIN process.head
-	./getFileSize$(EXEEXT) ../src/servers/moniter/MONITOR.BIN MONITOR.BIN monitor.head
-	cp ../src/kernel/KERNEL.IMG root/tmp
-	cat ./root/tmp file.head ../src/servers/file/FILE.BIN process.head ../src/servers/process/PROCESS.BIN monitor.head ../src/servers/moniter/MONITOR.BIN terminater.head > root/KERNEL.IMG
+#	./getFileSize$(EXEEXT) ../src/servers/file/FILE.BIN FILE.BIN file.head
+#	./getFileSize$(EXEEXT) ../src/servers/process/PROCESS.BIN PROCESS.BIN process.head
+#	./getFileSize$(EXEEXT) ../src/servers/moniter/MONITOR.BIN MONITOR.BIN monitor.head
+#	cp ../src/kernel/KERNEL.IMG root/tmp
+#	cat ./root/tmp file.head ../src/servers/file/FILE.BIN process.head ../src/servers/process/PROCESS.BIN monitor.head ../src/servers/moniter/MONITOR.BIN terminater.head > root/KERNEL.IMG
 	rm -f file.head process.head monitor.head root/tmp
 	cd root/SERVERS; rm -f PROCESS.BIN FILE.BIN MONITOR.BIN
 	cp fat_template.img $(TARGET)
@@ -22,6 +22,11 @@ all:
 	./fat_write $(TARGET) --mkdir APPS/MONAFRMS
 	./fat_write $(TARGET) --mkdir APPS/BAYGUI
 	./fat_write $(TARGET) --mkdir LIBS
+	./fat_write $(TARGET) ../src/kernel/secondboot.bin LOADER.BIN
+	./fat_write $(TARGET) ../src/kernel/third.bin KERNEL.BIN
+	./fat_write $(TARGET) ../src/servers/file/FILE.BIN FILE.BIN
+	./fat_write $(TARGET) ../src/servers/process/PROCESS.BIN PROCESS.BIN
+	./fat_write $(TARGET) ../src/servers/moniter/MONITOR.BIN MONITOR.BIN
 	@for file in $(ROOT_FILES) $(SVR_FILES) $(APP_FILES) $(LIB_FILES) $(BAYGUI_FILES) $(MONAFRMS_FILES); \
 	do \
 	  echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; \

@@ -83,6 +83,8 @@ const char* version = "Mona version.0.3.0Alpha3 $Date$";
 dword version_number  = 0x00000300;
 void  mainProcess();
 
+static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x0000f000;
+
 /*!
     \brief  mona kernel start at this point
 
@@ -178,7 +180,9 @@ void startKernel(void)
 
     g_log = new LogConsole();
 
+#ifdef USE_BOOTMGR
     g_bootManager = new BootManager(REL_KERNEL_ADDR + KERNEL_BASE_ADDR, MONA_CFG_ADDR, MONA_CFG_SIZE);
+#endif
 
     pic_init();
     RTC::init();
@@ -303,8 +307,15 @@ void loadServer(const char* server, const char* name)
     g_console->printf("loading %s....", server);
     if (strstr(server, ".BIN"))
     {
+#ifdef USE_BOOTMGR
         dword size;
         byte* image = g_bootManager->getFile(name, &size);
+#else
+        byte* image = (byte*)fileptr;
+        dword size = (*(int*)sizeptr) * 512;
+        sizeptr += 4;
+        fileptr += size;
+#endif
 
         if (image == NULL)
         {
@@ -331,10 +342,17 @@ void loadServer(const char* server, const char* name)
 
 int execSysConf()
 {
+#ifdef USE_BOOTMGR
     dword fileSize;
     byte* buf = g_bootManager->getMonaConfig(&fileSize);
-
     if (buf == NULL) return 1;
+#else
+    byte* buf = (byte*)MONA_CFG_ADDR;
+    int fileSize = (*(int*)sizeptr) * 512;
+    sizeptr += 4;
+    fileptr += (*(int*)sizeptr) * 512;
+    sizeptr += 4;
+#endif
 
     /* execute */
     char line[256];
@@ -395,7 +413,9 @@ void mainProcess()
         for (;;);
     }
 
+#ifdef USE_BOOTMGR
     delete g_bootManager;
+#endif
 
     enableKeyboard();
 
