@@ -6,9 +6,9 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
 1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
+   notice, this history of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
+   notice, this history of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
 3. The name of the author may not be used to endorse or promote products
    derived from this software without specific prior written permission.
@@ -28,11 +28,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <baygui.h>
 
 /**
- 名前を指定して実行
+ 名前を指定して実行（コマンド履歴つき）
 */
 class GRunner : public Window {
 private:
 	TextField *text;
+	/** コマンド履歴 */
+	LinkedList *history;
+	/** コマンド履歴ポインター */
+	int historyPtr;
 
 public:
 	GRunner::GRunner();
@@ -45,20 +49,46 @@ GRunner::GRunner()
 	setRect(300, 280, 200, 48);
 	setTitle("ファイル名を指定して実行");
 	text = new TextField();
-	text->setText("/apps/");
+	text->setText("/APPS/");
 	text->setRect(0,0,188,20);
 	add(text);
+	history = new LinkedList();
+	historyPtr = 0;
 }
 
 GRunner::~GRunner()
 {
 	delete(text);
+	delete(history);
 }
 
 void GRunner::onEvent(Event *event)
 {
+	// 実行
 	if (event->type == TEXT_CHANGED) {
+		// 履歴追加
+		history->add(new LinkedItem(new String(text->getText())));
+		historyPtr = history->getLength();
 		monapi_call_process_execute_file(text->getText(), MONAPI_FALSE);
+		text->setText("/APPS/");
+	// キー押下
+	} else if (event->type == KEY_PRESSED) {
+		int keycode = ((KeyEvent *)event)->key;
+		// １つ前の履歴
+		if (keycode == VKEY_UP || keycode == VKEY_UP_QEMU) {
+			if (historyPtr > 0) {
+				historyPtr--;
+				text->setText(((String *)history->getItem(historyPtr)->data)->toString());
+			}
+		// １つ次の履歴
+		} else if (keycode == VKEY_DOWN || keycode == VKEY_DOWN_QEMU) {
+			if (historyPtr < history->getLength() - 1) {
+				historyPtr++;
+				text->setText(((String *)history->getItem(historyPtr)->data)->toString());
+			} else {
+				text->setText("/APPS/");
+			}
+		}
 	}
 }
 
