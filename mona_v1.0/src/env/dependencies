@@ -112,7 +112,8 @@ disp.o: disp.cpp include/kernel.h user/types.h include/VirtualConsole.h \
   include/operator.h include/Scheduler.h include/ProcessManager.h \
   include/ihandlers.h include/sysresource.h include/MessageServer.h \
   include/Message.h include/FAT12.h include/MemoryManager.h \
-  include/syscalls.h user/userlib.h include/rtc.h
+  include/syscalls.h user/userlib.h include/rtc.h include/tester.h \
+  include/test_mjt.h
 syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/info.h include/kernel.h user/types.h include/VirtualConsole.h \
   include/string.h include/FDCDriver.h include/DiskDriver.h \
@@ -144,7 +145,7 @@ test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
   include/MemoryManager.h include/io.h include/IA32MemoryManager.h \
   include/z.h contrib/include/zlib.h contrib/include/zconf.h \
-  include/KeyBoardManager.h
+  include/KeyBoardManager.h include/elf.h user/userlib.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \
@@ -235,7 +236,8 @@ elf.o: elf.cpp include/elf.h user/types.h include/string.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
   include/operator.h include/Scheduler.h include/ProcessManager.h \
   include/ihandlers.h include/sysresource.h include/MessageServer.h \
-  include/Message.h include/FAT12.h include/MemoryManager.h
+  include/Message.h include/FAT12.h include/MemoryManager.h include/io.h \
+  include/syscalls.h user/userlib.h
 test_mjt.o: test_mjt.cpp
 z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h \
   include/string.h user/types.h include/operator.h include/global.h \
