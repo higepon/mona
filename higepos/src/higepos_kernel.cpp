@@ -18,6 +18,7 @@
 #include<X86MemoryManager.h>
 #include<higeOperator.h>
 #include<higeUtil.h>
+#include<Vector.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -42,14 +43,22 @@ void startKernel(void) {
     _sysPrintln("idt set done");
 
     /* testing operator new */
-    Point* point = new Point();
-    _sysPrintlnInt(point->getX());
-    point = new Point(5, 5);
-    _sysPrintlnInt(point->getX());
+    Point* point1 = new Point();
+    _sysPrintlnInt(point1->getX());
+    Point* point2 = new Point(5, 5);
+    _sysPrintlnInt(point2->getX());
 
     /* testing malloc */
     _sysPrintlnInt((int)malloc(sizeof(int)));
     _sysPrintlnInt((int)malloc(sizeof(int)));
+
+
+    /* testing vector */
+//      Vector<int> list;
+//      list.add(10);
+//      list.add(10);
+//      _sysPrintlnInt(list.get(0));
+
     while (true) {
     }
 }

@@ -7,7 +7,7 @@ STRIP      = ${HIGE_TOOLS}/djgpp/bin/strip.exe
 DOXYGEN    = doxygen.exe
 INCLUDE    = include
 LFLAGS     = -Ttext 0x200 --oformat binary
-CFLAGS     = -fno-exceptions -fno-rtti -ffreestanding -Wall -c
+CFLAGS     = -nostdlib -fno-builtin -fno-exceptions -fno-rtti -ffreestanding -Wall -c
 BIN        = ../../bin
 LIST       = ../../list
 SCRIPTS    = ${HIGE_TOOLS}/scripts
@@ -25,7 +25,8 @@ SRC        = higepos_kernel.cpp   \
              higeOperator.cpp     \
              higeUtil.cpp         \
              Sub.cpp              \
-             Base.cpp
+             Base.cpp             \
+             Vector.cpp
 
 HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/vga.h              \
@@ -37,7 +38,8 @@ HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/higeOperator.h     \
              ${INCLUDE}/higeUtil.h         \
              ${INCLUDE}/Base.h             \
-             ${INCLUDE}/Sub.h
+             ${INCLUDE}/Sub.h              \
+             ${INCLUDE}/Vector.h
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higepos_kernel.o   \
              ${BIN}/vga.o              \
@@ -50,7 +52,8 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/purevirtual.o      \
              ${BIN}/higeUtil.o         \
              ${BIN}/Base.o             \
-             ${BIN}/Sub.o
+             ${BIN}/Sub.o              \
+             ${BIN}/Vector.o
 
 
 # src to html & document
@@ -81,6 +84,7 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} higeUtil.cpp -o ${BIN}/higeUtil.o
 	${CC} -I $(INCLUDE) ${CFLAGS} Base.cpp -o ${BIN}/Base.o
 	${CC} -I $(INCLUDE) ${CFLAGS} Sub.cpp  -o ${BIN}/Sub.o
+	${CC} -I $(INCLUDE) ${CFLAGS} Vector.cpp  -o ${BIN}/Vector.o
 	${LD} -n -Ttext 0x1200 -static --oformat binary -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third_dis.asm
 #	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}

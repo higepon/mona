@@ -53,6 +53,7 @@ unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
         current_   = MEMORY_START;
     }
 
+    /* adress of allocated memory */
     return oldAddress;
 }
 
