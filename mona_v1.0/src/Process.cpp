@@ -234,14 +234,16 @@ int ThreadManager::wakeup(int waitReason) {
 
     Thread* thread;
 
+    if (waitList_->size() == 0) {
+        return 0;
+    }
+
     for (int i = waitList_->size() - 1; i >=0; i--) {
 
         thread = waitList_->get(i);
         if (thread->getWaitReason() != waitReason) {
             continue;
         }
-
-        g_console->printf("here%d", waitReason);
 
         dispatchList_->add(waitList_->removeAt(i));
         if (dispatchList_->size() == 1) {
