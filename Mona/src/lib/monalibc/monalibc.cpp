@@ -15,9 +15,9 @@
 
 size_t __power(size_t x, size_t y){
 
-  size_t result = x;
+  size_t result = 1;
   size_t i;
-  for(i = 1; i < y; i++){
+  for(i = 0; i < y; i++){
     result *= x;
   }
   return result;
