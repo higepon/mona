@@ -114,12 +114,12 @@ void dummyHandler() {
     \date   create:2002/11/21 update:2003/02/24
 */
 void timerHandler() {
-    g_console->printf("timer");
+
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
-    g_console->printf("timer1");
+
     outportb(0x20, 0x20);
-    g_console->printf("timer2");
+
     kthread_schedule();
 }
 

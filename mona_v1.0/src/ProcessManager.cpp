@@ -175,7 +175,7 @@ void ProcessManager::multiTaskTester() {
     ltr(0x20);
 
     /* process start */
-    process1Tester();
+    //    process1Tester();
 
     return;
 }

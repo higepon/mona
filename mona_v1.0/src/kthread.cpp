@@ -18,7 +18,7 @@
 #include<monaOperator.h>
 #include<disp.h>
 #include<global.h>
-
+#include<ProcessManager.h>
 static Kthread runningList;
 
 /*!
@@ -196,18 +196,30 @@ void kthread_schedule() {
 void kthread_switch() {
 
     g_console->printf("kthread_switch");
-//      g_console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
-//                   , g_kthread_current->eip
-//                   , g_kthread_current->cs
-//                   , g_kthread_current->eflags
-//                   , g_kthread_current->eax
-//                   , g_kthread_current->ecx
-//                   , g_kthread_current->edx
-//                   , g_kthread_current->ebx
-//                   , g_kthread_current->esp
-//                   , g_kthread_current->ebp
-//                   , g_kthread_current->esi
-//                   , g_kthread_current->edi);
+//     g_console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+//                  , g_kthread_current->eip
+//                  , g_kthread_current->cs
+//                  , g_kthread_current->eflags
+//                  , g_kthread_current->eax
+//                  , g_kthread_current->ecx
+//                  , g_kthread_current->edx
+//                  , g_kthread_current->ebx
+//                  , g_kthread_current->esp
+//                  , g_kthread_current->ebp
+//                  , g_kthread_current->esi
+//                  , g_kthread_current->edi);
+
+//      g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]"
+//                        , g_stack_view.stack0
+//                        , g_stack_view.stack1
+//                        , g_stack_view.stack2
+//                        , g_stack_view.stack3
+//                        , g_stack_view.stack4
+//                        , g_stack_view.stack5
+//                        , g_stack_view.stack6
+//                        , g_stack_view.stack7
+//                        );
+
 
     g_console->printf("demo1 = %d, demo2 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2);
 
