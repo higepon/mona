@@ -1,3 +1,6 @@
+2002-10-19  higepon  <higepon@users.sourceforge.jp>
+
+        * firstboot.asm : Guripon rawwrite
 
 2002-10-12  higepon  <higepon@users.sourceforge.jp>
 
@@ -52,6 +55,7 @@
         * add fault0Handler
 
 ----------------------課題----------------------
+* A20問題
 * プロセス管理実装
 * キーボード入力
 * Pointのコンストラクタ(引数なし)の挙動が怪しい
