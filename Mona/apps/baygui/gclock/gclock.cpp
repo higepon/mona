@@ -31,33 +31,40 @@ class GClock : public Window {
 private:
 	Label *label;
 	MonAPI::Date *date;
+	char time[128];
+	
 public:
 	GClock(){
 		setRect((800 - 212) / 2, (600 - 50) / 2, 212, 50);
 		setTitle("とけい");
-		label = new Label("", ALIGN_CENTER);
+		date = new MonAPI::Date();
+		refreshDate();
+		label = new Label(time, ALIGN_CENTER);
 		label->setRect(0, 4, 200, 16);
 		add(label);
-		date = new MonAPI::Date();
 		setTimer(1000);
 	}
+	
 	~GClock(){
 		delete(label);
 		delete(date);
 	}
+	
+	void refreshDate() {
+		const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
+		const char* ampm[] = { "午前", "午後" };
+		memset(time, 0, sizeof(time));
+		date->refresh();
+		sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d",
+			date->year(), date->month(), date->day(), day[date->dayofweek() % 7],
+			ampm[date->hour() / 12], date->hour() % 12, date->min(), date->sec());
+	}
+	
 	void onEvent(Event *event) {
 		if (event->getType() == Event::TIMER) {
-			const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
-			const char* ampm[] = { "午前", "午後" };
-			char time[128];
-			date->refresh();
-			sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d",
-				date->year(), date->month(), date->day(), day[date->dayofweek() % 7],
-				ampm[date->hour() / 12], date->hour() % 12, date->min(), date->sec());
+			refreshDate();
 			label->setText(time);
 			setTimer(1000);
-		} else if (event->getType() == Event::FOCUS_IN) {
-			//setTimer(10);
 		}
 	}
 };
