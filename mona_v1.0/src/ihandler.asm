@@ -124,13 +124,14 @@ _arch_cpufaulthandler_%1:
         cpufaulthandler 11
 
 _arch_cpufaulthandler_e:
-        call _arch_set_stack_view
         pushad
         push dword[esp + 32]
         mov  eax, cr2
         push eax
         call _cpufaultHandler_e
+        add  esp, 0x08          ; remove parameter
         popad
+        add  esp, 0x04          ; remove error_cd
         iretd
 
 ;;; entrance of syscall
