@@ -244,17 +244,12 @@ void WindowManager::onMousePress(int mx, int my)
 			if (control->getThreadID() != launcherID) {
 				remove(control);
 			}
+			
 		// アイコン化
 		} else if (rect->x + rect->width - 16 <= mx && 
 			mx <= rect->x + rect->width - 16 + 13 && 
 			rect->y + 5 <= my && my <= rect->y + 5 + 13)
 		{
-			// 非活性化メッセージを投げる
-			postEnabledToWindow(false, control);
-			
-			// フォーカスアウトメッセージを投げる
-			postFocusedToWindow(false, control);
-			
 			// 描画が必要かどうかチェックする領域
 			Rect srect;
 			srect.x = rect->x;
@@ -264,23 +259,24 @@ void WindowManager::onMousePress(int mx, int my)
 			
 			// ウィンドウを非アイコン化
 			if (control->getIconified() == true) {
+				// __g->setLocked(false) -> postEvent(DEICONIFIED) -> iconified = false -> repaint()
 				postIconifiedToWindow(false, control);
 			// ウィンドウをアイコン化
 			} else {
-				postIconifiedToWindow(true, control);
 				// 背景を塗りつぶす
-				syscall_sleep(10);
 				restoreBackGround(control);
+				
+				// ウィンドウ再描画
+				postRepaintToWindows(_controlList->getLength() - 1, &srect);
+				
+				// ウィンドウをアイコン化
+				// __g->setLocked(true) -> postEvent(ICONIFIED) -> iconified = true -> repaint()
+				postIconifiedToWindow(true, control);
 			}
 			
-			// ウィンドウ再描画
-			postRepaintToWindows(_controlList->getLength() - 1, &srect);
+			// 再描画メッセージを投げる
+			postRepaintToWindow(control);
 			
-			// 活性化メッセージを投げる
-			postEnabledToWindow(true, control);
-			
-			// フォーカスインメッセージを投げる
-			postFocusedToWindow(true, control);
 		// クリックイベント発生
 		} else if (rect->y + INSETS_TOP < my && control->getIconified() == false) {
 			//MouseEvent *event = new MouseEvent(MOUSE_PRESSED, control, mx, my);
@@ -304,14 +300,17 @@ void WindowManager::onMousePress(int mx, int my)
 			Control *prevControl = (Control *)item->data;
 			
 			// フォーカスアウトメッセージを投げる
+			// __g->setLocked(true) -> postEvent(FOCUS_OUT) -> focused = false -> repaint()
 			postFocusedToWindow(false, prevControl);
 			
 			// 再描画メッセージを投げる
 			postRepaintToWindow(prevControl);
 		}
 		
-		// フォーカスインメッセージを投げる
 		Control *c = (Control *)_controlList->endItem->data;
+		
+		// フォーカスインメッセージを投げる
+		// __g->setLocked(false) -> postEvent(FOCUS_IN) -> focused = true -> repaint()
 		postFocusedToWindow(true, c);
 	}
 }
@@ -413,14 +412,11 @@ void WindowManager::onMouseRelease(int mx, int my)
 		// debug
 		//printf("moved: %d, %d\n", (rect->x + mx + preX), (rect->y + my + preY));
 		
-		// 非活性化メッセージを投げる
-		postEnabledToWindow(false, control);
-		
 		// フォーカスアウトメッセージを投げる
+		// __g->setLocked(true) -> postEvent(FOCUS_OUT) -> focused = false -> repaint()
 		postFocusedToWindow(false, control);
 		
 		// 背景を塗りつぶす
-		syscall_sleep(10);
 		restoreBackGround(control);
 		
 		// 描画が必要かどうかチェックする領域
@@ -449,11 +445,10 @@ void WindowManager::onMouseRelease(int mx, int my)
 		// ウィンドウ再描画
 		postRepaintToWindows(_controlList->getLength() - 1, &srect);
 		
-		// 活性化メッセージを投げる
-		postEnabledToWindow(true, control);
-		
 		// フォーカスインメッセージを投げる
+		// __g->setLocked(false) -> postEvent(FOCUS_IN) -> focused = true -> repaint()
 		postFocusedToWindow(true, control);
+		
 		//printf("move window end: %d,%d\n", preX, preY);
 	} else  if (control->getIconified() == false) {
 		//MouseEvent *event = new MouseEvent(MOUSE_RELEASED, control, mx, my);
@@ -484,13 +479,13 @@ void WindowManager::add(Control *control)
 	// ウィンドウ追加
 	_controlList->add(new LinkedItem(control));
 	
-	// フォーカスアウトメッセージを投げる
-	//postFocusedToWindows(false, _controlList->getLength());
-	
-	// 再描画メッセージを投げる
 	if (_controlList->endItem->prev != NULL) {
 		Control *c = (Control *)_controlList->endItem->prev->data;
+		// フォーカスアウトメッセージを投げる
+		// __g->setLocked(true) -> postEvent(FOCUS_OUT) -> focused = false -> repaint()
 		postFocusedToWindow(false, c);
+		
+		// 再描画メッセージを投げる
 		postRepaintToWindow(c);
 	}
 	
@@ -533,13 +528,16 @@ void WindowManager::remove(Control *control)
 	if (_controlList->endItem == NULL) return;
 	
 	// フォーカスアウトメッセージを投げる
-	postFocusedToWindows(false, _controlList->getLength());
+	// __g->setLocked(true) -> postEvent(FOCUS_OUT) -> focused = false -> repaint()
+	postFocusedToWindows(false, _controlList->getLength() - 1);
 	
 	// 再描画メッセージを投げる
 	postRepaintToWindows(_controlList->getLength() - 1, &srect);
 	
-	// フォーカスインメッセージを投げる
 	Control *c = (Control *)_controlList->endItem->data;
+	
+	// フォーカスインメッセージを投げる
+	// __g->setLocked(false) -> postEvent(FOCUS_IN) -> focused = true -> repaint()
 	postFocusedToWindow(true, c);
 }
 

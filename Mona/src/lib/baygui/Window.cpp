@@ -185,6 +185,48 @@ void Window::setRect(int x, int y, int width, int height)
 }
 
 /**
+ フォーカス状態を設定する
+ @param focused フォーカス状態 (true / false)
+ */
+void Window::setFocused(bool focused)
+{
+	//if (this->focused == focused) return;
+	if (focused == false) {
+		//printf("FOCUS_OUT %d\n", threadID);
+		this->focused = focused;
+		_focusEvent->type = FOCUS_OUT;
+		postEvent(_focusEvent);
+	} else {
+		//printf("FOCUS_IN %d\n", threadID);
+		this->focused = focused;
+		if (iconified == false) {
+			_focusEvent->type = FOCUS_IN;
+			postEvent(_focusEvent);
+		}
+	}
+}
+
+/**
+ アイコン状態を設定する
+ @param iconified アイコン状態 (true / false)
+ */
+void Window::setIconified(bool iconified)
+{
+	//if (this->iconified == iconified) return;
+	if (iconified == false) {
+		//printf("DEICONIFIED %d\n", threadID);
+		this->iconified = iconified;
+		_iconEvent->type = DEICONIFIED;
+		postEvent(_iconEvent);
+	} else {
+		//printf("ICONIFIED %d\n", threadID);
+		this->iconified = iconified;
+		_iconEvent->type = ICONIFIED;
+		postEvent(_iconEvent);
+	}
+}
+
+/**
  タイマーをセットする
  @param duration 発動するまでの時間[ms]
  */
@@ -381,7 +423,11 @@ void Window::repaint()
 		_g->setColor(0,0,0);
 		_g->drawRect(0, 0, width, height);
 		_g->setColor(200,200,200);
-		_g->fillRect(1, 1, width - 2, height - 2);
+		//if (focused == true) {
+			_g->fillRect(1, 1, width - 2, height - 2);
+		//} else {
+		//	_g->fillRect(3, 3, width - 4, INSETS_TOP - 4);
+		//}
 		// 内枠
 		_g->setColor(0,0,0);
 		_g->drawRect(5, 21, width - 10, height - 26);
@@ -428,7 +474,6 @@ void Window::repaint()
 		_g->setColor(128,128,128);
 	}
 	_g->drawText(title, ((width - fw) / 2), ((INSETS_TOP - fh) / 2));
-	//_g->drawText(title, ((width - fw) / 2) + 1, ((INSETS_TOP - fh) / 2));//太字
 
 	if (iconified == false) {
 		// 子部品も更新
@@ -547,6 +592,7 @@ void Window::run()
 			case MSG_GUISERVER_DEFOCUSED:
 				//printf("WindowManager->Window MSG_GUISERVER_DEFOCUSED received %d\n", threadID);
 				setFocused(false);
+				//repaint();
 				MonAPI::Message::reply(&info);
 				{
 					// 部品をフォーカスアウト状態にする
@@ -567,11 +613,13 @@ void Window::run()
 			case MSG_GUISERVER_ICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_ICONIFIED received %d\n", threadID);
 				setIconified(true);
+				//repaint();
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_DEICONIFIED received %d\n", threadID);
 				setIconified(false);
+				//repaint();
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_REMOVE:

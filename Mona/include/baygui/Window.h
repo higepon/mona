@@ -52,6 +52,8 @@ public:
 	virtual char *getTitle();
 	virtual void setTitle(char *title);
 	virtual void setRect(int x, int y, int width, int height);
+	virtual void setFocused(bool focused);
+	virtual void setIconified(bool iconified);
 	virtual void setTimer(int duration);
 	virtual void restoreBackGround();
 	virtual void add(Control *control);

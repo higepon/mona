@@ -59,6 +59,8 @@ protected:
 	Graphics *_g;
 	/** フォーカスイベント */
 	Event *_focusEvent;
+	/** アイコンイベント */
+	Event *_iconEvent;
 	/** 背景色 */
 	unsigned int backColor;
 	/** 前景色 */
@@ -77,6 +79,7 @@ public:
 	virtual bool getFocused();
 	virtual bool getIconified();
 	virtual Rect *getRect();
+	virtual Graphics *getGraphics();
 	virtual Container *getParent();
 	virtual unsigned int getBackground();
 	virtual unsigned int getForeground();
