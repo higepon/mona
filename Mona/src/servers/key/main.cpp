@@ -22,6 +22,49 @@ int regist(List<dword>* destList, MessageInfo* info);
 int unregist(List<dword>* destList, MessageInfo* info);
 int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, byte scancode);
 
+
+bool WaitInterrruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
+
+
+#define WAIT_INTERRUPT(ms, irq) WaitInterrruptWithTimeout(ms, irq, __FILE__, __LINE__)
+
+bool WaitInterrruptWithTimeout(dword ms, byte irq, const char* file, int line)
+{
+    MessageInfo msg;
+
+    dword timerId = set_timer(ms);
+
+    for (int i = 0; ; i++)
+    {
+        int result = Message::peek(&msg, i);
+
+        if (result != 0)
+        {
+            i--;
+            syscall_mthread_yield_message();
+        }
+        else if (msg.header == MSG_TIMER)
+        {
+            if (msg.arg1 != timerId) continue;
+            kill_timer(timerId);
+
+            Message::peek(&msg, i, PEEK_REMOVE);
+
+            printf("interrupt timeout %s:%d\n", file, line);
+            return false;
+        }
+        else if (msg.header == MSG_INTERRUPTED)
+        {
+            if (msg.arg1 != irq) continue;
+            kill_timer(timerId);
+
+            Message::peek(&msg, i, PEEK_REMOVE);
+            return true;
+        }
+    }
+    return false;
+}
+
 int MonaMain(List<char*>* pekoe)
 {
     /* user mode I/O */
@@ -53,6 +96,7 @@ int MonaMain(List<char*>* pekoe)
 
     syscall_set_irq_receiver(1);
 
+
     /* Message loop */
     for (;;)
     {
@@ -64,6 +108,7 @@ int MonaMain(List<char*>* pekoe)
             case MSG_INTERRUPTED:
 
                 sendKeyInformation(manager, destList, inp8(0x60));
+
                 break;
 
             case MSG_KEY_REGIST_TO_SERVER:

@@ -1,3 +1,8 @@
+2005-03-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/key/main.cpp (WaitInterrruptWithTimeout): タイムアウトつき割り込み待ち関数を追加。ここでテストした。
+                                              (WAIT_INTERRUPT): WaitInterrruptWithTimeoutをラップしたものタイムアウトの__FILE__, __LINE__が分かる。
+
 2004-03-08  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gchat/gchat.cpp: LinkedList修正に対応
