@@ -57,7 +57,7 @@ int MonaMain(List<char*>* pekoe) {
 
 
     monapi_cmemoryinfo_dispose(pciinfData);
-    monapi_cmemoryinfo_dispose(pciinfData);
+    monapi_cmemoryinfo_delete(pciinfData);
 
 
     return 0;
@@ -188,8 +188,8 @@ CString getPciInfName( byte* PciInfData, dword InValue , CString* VendorName , C
 
     char VendorHex[5];    //ベンダーCD格納用
     char DeviceHex[5];    //ベンダーCD格納用
-    sprintf(VendorHex, "%04x", Vendor);
-    sprintf(DeviceHex, "%04x", Device);
+    sprintf(VendorHex, "%04X", Vendor);
+    sprintf(DeviceHex, "%04X", Device);
 
     //NULLまで繰り返し
     while (*PciInfData != 0){

@@ -1,3 +1,8 @@
+2004-10-11  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * apps/non-gui/pciinfo:  monapi_cmemoryinfo_dispose → monapi_cmemoryinfo_delete に修正
+                ベンダーCDに、英字を含む場合に正しく名称が拾えないバグを修正（ 単純な、sprintf(%x) → %X のミス）
+
 2004-10-11  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/: moniter/process/shellを変更
