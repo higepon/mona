@@ -221,6 +221,23 @@ word FAT12::getFATAt(int cluster) const {
     return result;
 }
 
+bool FAT12::setFATAt(int cluster, word fat) {
+
+    int index = cluster * 12 / 8;
+
+    if (cluster % 2) {
+
+        fat_[index]     = (fat_[index] & 0x0f) | ((fat & 0x0f) << 4);
+        fat_[index + 1] = fat >> 4;
+    } else {
+
+        fat_[index] = fat & 0xff;
+        fat_[index + 1] = (fat_[index + 1] & 0xf0) | ((fat & 0xf00) >> 8);
+    }
+    return true;
+}
+
+
 /*!
   \brief change directory
 
@@ -249,7 +266,7 @@ bool FAT12::changeDirectory(const char* path) {
         char* p = (i == 0) ? buf : NULL;
         if (!(rpath = strtok(p, sep))) break;
 
-        printf("try to cdr to %s", rpath);
+        printf("\n--try to cdr to %s--", rpath);
 
         if (!changeDirectoryRelative(rpath)) {
 
@@ -303,8 +320,8 @@ bool FAT12::changeDirectoryRelative(const char* path) {
 
             currentDirecotry_ = entries[j].cluster;
             strcpy(currentPath_, path);
-            printf("directory %s found\n", path);
-            printf("current cluster = %d\n", currentDirecotry_);
+            printf("\n--directory %s found\n", path);
+            printf("\n--current cluster = %d\n", currentDirecotry_);
             return true;
         }
     }
@@ -455,7 +472,7 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     /* read current directory */
     if (!(driver_->read(lbp, buf_))) {
         errNum_ = DRIVER_READ_ERROR;
-        return -1;
+        return false;
     }
     memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
 
@@ -471,6 +488,14 @@ bool FAT12::createFlie(const char* name, const char* ext) {
 
         /* no other entries */
         if (entries[j].filename[0] == 0x00) break;
+
+	/* debug */
+        printf("\n");
+        for (int i = 0; i < 8; i++) printf("%c", (char)entries[j].filename[i]);
+	printf("\n attribute %d",entries[j].attribute);
+	printf("\n ftime[%d:%d:%d]", entries[j].ftime.sec, entries[j].ftime.min,  entries[j].ftime.hour);
+	printf("\n fdate[%d:%d:%d]", entries[j].fdate.day, entries[j].fdate.month,  entries[j].fdate.year);
+
 
         /* directory */
         if (entries[j].attribute & ATTR_DIRECTORY) continue;
@@ -495,13 +520,14 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     for (int k = 0; k < 3; k++) entries[freeIndex].extension[k] = ' ';
     for (int k = 0; k < 8 && name[k] != '\0'; k++) entries[freeIndex].filename[k]  = name[k];
     for (int k = 0; k < 3 && name[k] != '\0'; k++) entries[freeIndex].extension[k] = ext[k];
-    entries[freeIndex].filesize = 512;
-    entries[freeIndex].cluster  = cluster;
+    entries[freeIndex].filesize  = 512;
+    entries[freeIndex].cluster   = cluster;
+    entries[freeIndex].attribute = 0x20;
 
-    printf("createFile:cluster=%d", cluster);
+    printf("\n--createFile:cluster=%d", cluster);
 
     setFATAt(cluster, getFATAt(1));
-    printf("wrtten fat is %x", getFATAt(cluster));
+    printf("\n--wrtten fat is %x", getFATAt(cluster));
 
     /* write current directory */
     memcpy(buf_, entries, sizeof(DirectoryEntry) * 16);
@@ -515,22 +541,6 @@ bool FAT12::createFlie(const char* name, const char* ext) {
         return false;
     }
 
-    return true;
-}
-
-bool FAT12::setFATAt(int cluster, word fat) {
-
-    int index = cluster * 12 / 8;
-
-    if (cluster % 2) {
-
-        fat_[index]     = (fat_[index] & 0x0f) | ((fat & 0x0f) << 4);
-        fat_[index + 1] = fat >> 4;
-    } else {
-
-        fat_[index] = fat & 0xff;
-        fat_[index + 1] = (fat_[index + 1] & 0xf0) | ((fat & 0xf0) >> 4);
-    }
     return true;
 }
 
@@ -592,24 +602,34 @@ bool FAT12::readFAT(bool allocate) {
 
 bool FAT12::write(byte* buffer) {
 
-    int cluster;
+    int cluster = currentCluster_;
 
     if (!isOpen_) return false;
 
     if (firstWrite_) {
-        cluster     = currentCluster_;
         firstWrite_ = false;
     } else {
-        cluster = getFATAt(cluster);
 
-        if (cluster > 0xff8) {
+        int nextCluster = getFATAt(cluster);
+
+        printf("[[nextCluster=%d]]", nextCluster);
+
+        if (nextCluster > 0xff8) {
 
             int next = map_->find();
             if (next == -1) return false;
 
             setFATAt(cluster, next);
+            printf("cluseter** %d, %d", cluster, next);
+            printf("conf %d$$", getFATAt(44));
             setFATAt(next   , getFATAt(1));
+            printf("cluster** %d, %d", next, getFATAt(1));
             cluster         = next;
+            currentCluster_ = cluster;
+        } else {
+
+
+            currentCluster_= nextCluster;
         }
     }
 
@@ -626,6 +646,8 @@ bool FAT12::write(byte* buffer) {
         readFAT(false);
         return false;
     }
+
+    printf("fat at 44 %d, fat at 45 %d", getFATAt(44), getFATAt(45));
     return true;
 }
 bool FAT12::rename(const char* from, const char* to) {return true;}

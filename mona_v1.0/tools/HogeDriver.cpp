@@ -27,7 +27,6 @@ bool HogeDriver::write(int lba, byte* buf) {
 
     file_.seekg(0);
     file_.seekg((lba) * 512);
-    printf("writing");
     file_.write((char*)buf, 512);
     return true;
 }
