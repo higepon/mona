@@ -1,5 +1,7 @@
 2004-01-11  higepon  <higepon@users.sourceforge.jp>
 
+        * Process.cpp: kill‚ÌÀ‘•
+
         * userlib.cpp: mthread_create, mthread_joinì¬
 
         * pic.cpp: setTimerInterval()ì¬ OSASK K‚³‚ñ‚ÉŠ´Ó

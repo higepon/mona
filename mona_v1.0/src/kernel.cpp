@@ -85,7 +85,7 @@ void printInfo() {
         pos_x = 0;
         pos_y = 0;
 
-        //        g_processManager->printProcess();
+        g_processManager->printProcess();
 
         pos_x = tempx;
         pos_y = tempy;
@@ -205,7 +205,6 @@ void startKernel(void) {
 
     Thread*   testThread15  = g_processManager->createThread(testProcess8, (dword)test85);
     g_processManager->join(testProcess8, testThread15);
-
 
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();

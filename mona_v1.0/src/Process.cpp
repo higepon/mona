@@ -145,8 +145,27 @@ int ThreadManager::join(Thread* thread) {
 }
 
 int ThreadManager::kill(Thread* thread) {
+
     dispatchList_->remove(thread);
-    delete thread; /* ? */
+    delete thread;
+    return NORMAL;
+}
+
+
+int ThreadManager::kill(List<Thread*>* list) {
+
+    for (dword i = 0; i < list->size(); i++) {
+        Thread* thread = list->get(i);
+        list->removeAt(i);
+        delete thread;
+    }
+    return NORMAL;
+}
+
+int ThreadManager::killAllThread() {
+
+    kill(dispatchList_);
+    kill(waitList_);
     return NORMAL;
 }
 

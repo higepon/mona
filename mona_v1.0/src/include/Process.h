@@ -122,6 +122,7 @@ class ThreadManager {
   public:
     Thread* create(dword programCounter, PageEntry* pageDirectory);
     int join(Thread* thread);
+    int killAllThread();
     int kill(Thread* thread);
     Thread* schedule();
     void printAllThread();
@@ -166,6 +167,7 @@ class ThreadManager {
     }
     void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
     void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
+    int kill(List<Thread*>* list);
 
   private:
     Thread* current_;
@@ -247,6 +249,10 @@ class Process {
 
     inline virtual List<Message*>* getMessageList() const {
         return messageList_;
+    }
+
+    inline virtual int killSelf() {
+        return threadManager_->killAllThread();
     }
 
     virtual int join(Thread* thread);
