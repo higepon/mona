@@ -5,7 +5,7 @@
 int MonaMain(List<char*>* pekoe) {
 
     Screen screen;
-    printf("user mode screen (x, y) = (%x, %x) %dbpp\n", screen.getXResolution(), screen.getYResolution(), screen.getBpp());
+    printf("user mode screen (x, y) = (%x, %x) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
 
     /* check bpp */
     if (screen.getBpp() < 24) {
@@ -25,7 +25,7 @@ int MonaMain(List<char*>* pekoe) {
     jpeg->Decode(picture);
 
     int x,y;
-    int vesaWidth = screen.getXResolution();
+    int vesaWidth = screen.getWidth();
     int vesaBpp = screen.getBpp();
     byte* vesaVram = screen.getVRAM();
 

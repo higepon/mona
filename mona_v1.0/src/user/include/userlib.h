@@ -68,7 +68,7 @@ extern "C" int syscall_mutex_trylock(int id);
 extern "C" int syscall_mutex_lock (int id );
 extern "C" int syscall_mutex_unlock(int id);
 extern "C" int syscall_get_vram_info(ScreenInfo* info);
-extern "C" int syscall_load_process(const char* name);
+extern "C" int syscall_load_process(const char* name, CommandOption* list);
 extern "C" int syscall_get_cursor(int* x, int* y);
 extern "C" int syscall_set_cursor(int x, int y);
 extern "C" int syscall_mutex_destroy(int id);
@@ -177,7 +177,7 @@ class MonaApplication : public Receiver {
     virtual ~MonaApplication();
 
   public:
-    virtual int main() = 0;
+    virtual int main(List<char*>* pekoe) = 0;
 
     /* default implementation */
     virtual void onKeyDown(int keycode, int modifiers) {
@@ -371,11 +371,11 @@ class Screen {
         return bpp_;
     }
 
-    inline int getXResolution() const {
+    inline int getWidth() const {
         return xResolution_;
     }
 
-    inline int getYResolution() const {
+    inline int getHeight() const {
         return yResolution_;
     }
 

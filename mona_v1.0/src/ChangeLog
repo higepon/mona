@@ -1,5 +1,7 @@
 2004-02-10  higepon  <higepon@users.sourceforge.jp>
 
+        * Process.cpp: Shellが引数をもてるようになった。
+
         * MonaMain関数が引数をもてるようになった
 
         * syscalls.cpp : FDアクセス箇所にセマフォでロックを追加。

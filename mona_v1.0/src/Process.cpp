@@ -621,6 +621,11 @@ Process::~Process() {
     /* we need for each ! don't forge */
     delete kmutexTree_;
 
+    /* arguments */
+    for (int i = 0; i < arguments_->size(); i++) {
+        delete[](arguments_->get(i));
+    }
+
     delete arguments_;
 }
 

@@ -37,8 +37,8 @@ int MonaMain(List<char*>* pekoe) {
     byte result;
     int x, y;
     int posX, posY, prevX, prevY;
-    int xResolution = screen.getXResolution();
-    int yResolution = screen.getYResolution();
+    int xResolution = screen.getWidth();
+    int yResolution = screen.getHeight();
 
     /* draw mouse cursor to virtual screen */
     VirtualScreen vscreen(1024 * 40);

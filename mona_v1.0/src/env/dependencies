@@ -145,15 +145,15 @@ PageManager.o: PageManager.cpp include/PageManager.h include/BitMap.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h include/FAT12.h \
   include/MemoryManager.h include/sysresource.h include/tester.h \
   include/test_mjt.h include/vbe.h
-elf.o: elf.cpp include/elf.h user/include/types.h include/string.h \
-  include/global.h include/info.h include/kernel.h \
+elf.o: elf.cpp include/elf.h user/include/types.h include/collection.h \
+  include/string.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/Process.h include/PageManager.h include/BitMap.h \
-  include/Segments.h include/operator.h include/collection.h \
-  include/Mutex.h include/FAT12.h include/MemoryManager.h \
-  include/sysresource.h include/tester.h include/test_mjt.h include/vbe.h \
-  include/io.h include/syscalls.h user/include/userlib.h
+  include/Segments.h include/operator.h include/Mutex.h include/FAT12.h \
+  include/MemoryManager.h include/sysresource.h include/tester.h \
+  include/test_mjt.h include/vbe.h include/io.h include/syscalls.h \
+  user/include/userlib.h
 z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h \
   include/string.h user/include/types.h include/operator.h \
   include/global.h include/info.h include/kernel.h \

@@ -258,8 +258,8 @@ int Mutex::destory() {
 ----------------------------------------------------------------------*/
 VirtualScreen::VirtualScreen() : Screen() {
 
-    int x = getXResolution();
-    int y = getYResolution();
+    int x = getWidth();
+    int y = getHeight();
     vram_ = new byte[x * y * bpp_ / 8];
     if (vram_ == NULL) printf("vitual vram error\n");
 }
@@ -328,7 +328,7 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
 
     byte* dvram      = destScreen->getVRAM();
     byte* svram      = sourceScreen->getVRAM();
-    int xResolution  = destScreen->getXResolution();
+    int xResolution  = destScreen->getWidth();
     int bitsPerPixel = destScreen->getBpp();
 
     switch(bitsPerPixel) {
@@ -374,7 +374,7 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
 
     byte* dvram      = destScreen->getVRAM();
     byte* svram      = sourceScreen->getVRAM();
-    int xResolution  = destScreen->getXResolution();
+    int xResolution  = destScreen->getWidth();
     int bitsPerPixel = destScreen->getBpp();
 
     switch(bitsPerPixel) {
@@ -681,16 +681,17 @@ int syscall_print(const char* msg) {
     return (int)result;
 }
 
-int syscall_load_process(const char* name) {
+int syscall_load_process(const char* name, CommandOption* list) {
 
     int result;
 
     asm volatile("movl $%c1, %%ebx \n"
                  "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
                  "int  $0x80       \n"
                  "movl %%eax, %0   \n"
                  :"=m"(result)
-                 :"g"(SYSTEM_CALL_LOAD_PROCESS), "m"(name)
+                 :"g"(SYSTEM_CALL_LOAD_PROCESS), "m"(name), "m"(list)
                  :"ebx", "esi"
                  );
 

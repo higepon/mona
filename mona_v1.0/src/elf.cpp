@@ -24,7 +24,7 @@
 /*----------------------------------------------------------------------
     loadProcess
 ----------------------------------------------------------------------*/
-int loadProcess(const char* path, const char* file, bool isUser, List<char*>* arg) {
+int loadProcess(const char* path, const char* file, bool isUser, CommandOption* list) {
 
     /* shared ID */
     static dword sharedId = 0x1000;
@@ -122,15 +122,16 @@ int loadProcess(const char* path, const char* file, bool isUser, List<char*>* ar
     Semaphore::up(&g_semaphore_shared);
 
     /* set arguments */
-    if (arg != NULL) {
+    if (list != NULL) {
 
         char* p;
+        CommandOption* option;
         List<char*>* target = process->getArguments();
 
-        for (int i = 0; i < arg->size(); i++) {
+        for (option = list->next; option; option = option->next) {
 
             p = new char[32];
-            strcpy(p, arg->get(i));
+            strncpy(p, option->str, 32);
             target->add(p);
         }
     }

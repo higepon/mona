@@ -74,7 +74,29 @@ void Shell::commandExecute() {
 
     printf("\n");
     putHistory(commandLine_);
-    syscall_load_process(commandLine_);
+
+    /* list initilize */
+    CommandOption list;
+    list.next = NULL;
+
+    char* command = strtok(commandLine_, " ");
+    char* arg;
+    CommandOption* option;
+
+    while ((arg = strtok(NULL, " ")) != NULL) {
+
+        option = new CommandOption;
+        strncpy(option->str, arg, 32);
+        option->next = list.next;
+        list.next = option;
+    }
+
+    syscall_load_process(command, &list);
+
+    for (option = list.next; option; option = option->next) {
+        delete option;
+    }
+
     printf("\n%s", PROMPT);
     position_ = 0;
 }
@@ -167,6 +189,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_TEN_MINUS):
     case(VK_TEN_PLUS):
     case(VK_TEN_PERIOD):
+    case(VK_SPACE):
 
         commandChar(KeyBoardManager::toChar(keycode));
         break;

@@ -72,7 +72,7 @@ typedef struct {
 #define PT_SHLIB   5
 #define PT_PHDR    6
 
-int loadProcess(const char* path, const char* file, bool isUser, List<char*>* arg);
+int loadProcess(const char* path, const char* file, bool isUser, CommandOption* list);
 
 class ELFLoader {
 

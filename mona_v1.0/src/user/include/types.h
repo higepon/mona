@@ -26,6 +26,12 @@ typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
+struct CommandOption {
+    char str[32];
+    struct CommandOption* next;
+};
+typedef struct CommandOption CommandOption;
+
 typedef struct {
     dword header;
     dword arg1;

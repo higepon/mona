@@ -9,38 +9,40 @@ class myApplication : public MonaApplication {
     virtual ~myApplication() {}
 
   public:
-    virtual int main();
+    virtual int main(List<char*>* pekoe);
     virtual void onKeyDown(int keycode, int modifiers);
 };
 
 myApplication::myApplication(char* name) : MonaApplication(name) {
 }
 
-int myApplication::main() {
+int myApplication::main(List<char*>* pekoe) {
 
-    char buff[512];
+    /* arguments */
+    printf("\nargument list\n");
+    for (int i = 0; i < pekoe->size(); i++) {
+        printf("[%s]\n", pekoe->get(i));
+    }
 
+    /* draw rectangle */
     Screen screen;
     screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));
 
+    /* memory share between this process and SHELL.SVR */
     dword pid = Message::lookup("SHELL.SVR");
-
     MemoryMap* mm = MemoryMap::create();
-
     dword sharedId = mm->map(pid, 0x90000000, 0x90005000, 4096);
-
     strcpy((char*)0x90005000, "data share Mona");
-
     mm->unmap(sharedId);
 
     /* unmap? */
     //printf("%s", (char*)0x90005000);
 
+    /* floppy read/write test */
     char buf[1024];
     memset(buf      , (byte)0x12, 512);
     memset(buf + 512, (byte)0x34, 512);
 
-    /* floppy read/write test */
     StorageDevice* device = new Floppy(Floppy::FLOPPY_1);
 
     printf("device block size=%d\n", device->getBlockSize());
@@ -67,7 +69,6 @@ int myApplication::main() {
     virtualScreen->fillRect16(50, 50, 40, 40, Color::rgb(0x12, 0x34, 0x56));
     printf("%s", Screen::bitblt(&screen, 0, 0, 40, 40, virtualScreen, 50, 50) ? "OK" : "NG");
 
-
     return 0;
 }
 
@@ -77,12 +78,8 @@ void myApplication::onKeyDown(int keycode, int modifiers) {
 
 int MonaMain(List<char*>* pekoe) {
 
-    for (int i = 0; i < pekoe->size(); i++) {
-        printf("[%s]\n", pekoe->get(i));
-    }
-
     monaApp = new myApplication("HELLO.ELF");
-    monaApp->main();
+    monaApp->main(pekoe);
 
 //     byte buf[512];
 //     memset(buf, 0, 512);

@@ -71,7 +71,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
     memset(&message, 0, sizeof(MessageInfo));
     Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, 0, NULL);
 
-    //    printf("%x", keyinfo.keycode);
+    //    printf("%d", keyinfo.keycode);
 
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--) {

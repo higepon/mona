@@ -193,8 +193,6 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
 
     info->modifiers = modifiers;
 
-    //    printf("%x", keycode);
-
     switch(keycode) {
 
     case('a'):
@@ -339,7 +337,7 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
         info->keycode = VK_TEN_3;
         break;
     case(0x20):
-        info->keycode = VK_TEN_0;
+        info->keycode = VK_SPACE;
         break;
     case(0x21):
         info->keycode = VK_TEN_PERIOD;
@@ -354,6 +352,7 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
         info->keycode = VK_BACKSPACE;
         break;
     default:
+        printf("default%d", keycode);
         info->keycode = keycode;
         info->modifiers = modifiers;
         break;
@@ -516,6 +515,9 @@ char KeyBoardManager::toChar(int keycode) {
         break;
     case(VK_TEN_MINUS):
         result = '-';
+        break;
+    case(VK_SPACE):
+        result = ' ';
         break;
     default:
         result = ' ';
