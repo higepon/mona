@@ -201,6 +201,28 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
 }
 
+inline bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool kernel) {
+
+    if (!(*entry)) return false;
+
+    (*entry) = ((*entry) & (0xFFFFFFF8)) | (present ? ARCH_PAGE_PRESENT : 0x00)
+             | (writable ? ARCH_PAGE_RW : 0x00) | (kernel ? ARCH_PAGE_KERNEL : 0x00);
+
+    return true;
+}
+
+inline bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel) {
+
+    PageEntry* table;
+    dword directoryIndex = address >> 22;
+    dword tableIndex     = (address >> 12) & 0x3FF;
+
+    if (!isPresent(&(directory[directoryIndex]))) return false;
+
+     table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+     return setAttribute(table, present, writable, kernel);
+}
+
 StackSegment::StackSegment(LinearAddress start, dword size) {
 
     start_        = start;
