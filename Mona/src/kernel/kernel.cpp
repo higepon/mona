@@ -83,7 +83,7 @@ const char* version = "Mona version.0.3.0Alpha3 $Date$";
 dword version_number  = 0x00000300;
 void  mainProcess();
 
-static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x0000f000;
+static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
 
 /*!
     \brief  mona kernel start at this point
@@ -124,10 +124,13 @@ void startKernel(void)
         g_console->clearScreen();
     }
 
-    g_console->printf("\n");
-    g_console->printf("              %s\n", version);
-    g_console->printf("              ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
-    g_console->printf("              Copyright (c) 2002-2005 higepon\n\n\n\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  %s\n", version);
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff  Copyright (c) 2002-2005 higepon\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
+    g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
 
 #if 1
     int w = g_vesaDetail->xResolution;

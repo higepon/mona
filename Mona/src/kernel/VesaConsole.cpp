@@ -145,11 +145,14 @@ void VesaConsole::putCharacter(char ch)
         return;
     }
 
-    byte* p = font_ + 16 * ch;
-    screen.fillPat(pos_x_ * font_x_, pos_y_ * font_y_, font_x_, font_y_, ch_, bg_, p);
     int idx = pos_x_ + pos_y_ * console_x_;
     char_buffer_[idx] = ch;
     palette_buffer_[idx] = ch_;
+
+    if (ch == '\xff') ch = ' ';
+    byte* p = font_ + 16 * ch;
+    screen.fillPat(pos_x_ * font_x_, pos_y_ * font_y_, font_x_, font_y_, ch_, bg_, p);
+
     nextCursor();
 }
 
@@ -217,7 +220,11 @@ void VesaConsole::newLine ()
     {
         char c_i = char_buffer_[i], c_j = char_buffer_[j];
         dword p_i = palette_buffer_[i], p_j = palette_buffer_[j];
-        if (c_i != '\0')
+        if (c_i == '\xff')
+        {
+            screen.bitblt(x * font_x_, y * font_y_, x * font_x_, (y + 1) * font_y_, font_x_, font_y_);
+        }
+        else if (c_i != '\0')
         {
             if (c_i != c_j || p_i != p_j)
             {
@@ -266,6 +273,19 @@ void VesaConsole::VesaScreen::scrollUp (int y, int h)
         for (int j = 0; j < bytesPerScanLine; j++) {
             if (dst[j] != src[j]) dst[j] = src[j];
         }
+        dst += bytesPerScanLine;
+        src += bytesPerScanLine;
+    }
+}
+
+void VesaConsole::VesaScreen::bitblt (int dst_x, int dst_y, int src_x, int src_y, int w, int h)
+{
+    dword bytesPerPixel = bitsPerPixel/8, wb = w * bytesPerPixel;
+    byte* dst = (byte*)vramAddress + bytesPerScanLine * dst_y + bytesPerPixel * dst_x;
+    byte* src = (byte*)vramAddress + bytesPerScanLine * src_y + bytesPerPixel * src_x;
+    for (int i = 0; i < h; i++)
+    {
+        memcpy(dst, src, wb);
         dst += bytesPerScanLine;
         src += bytesPerScanLine;
     }

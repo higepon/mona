@@ -55,6 +55,7 @@ private:
         VesaScreen (VesaInfoDetail *info);
 
         void scrollUp (int y, int h);
+        void bitblt (int dst_x, int dst_y, int src_x, int src_y, int w, int h);
 
         void fill (int x, int y, int w, int h, dword c);
         void fillPat (int x, int y, int w, int h, dword c, dword b, byte* p);

@@ -5,7 +5,7 @@ namespace Mona
 {
 	class SecondBoot
 	{
-		const ushort KernelSeg = 0x0120, ConfigSeg = 0x8800, SizeAddr = 0xf000;
+		const ushort KernelSeg = 0x0120, ConfigSeg = 0x9000, SizeAddr = 0x1100;
 		public const ushort VESAInfoAddr = 0x0800, VESAInfoDetailsAddr = 0x0830;
 		
 		static void Main()

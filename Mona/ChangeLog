@@ -1,6 +1,8 @@
 2005-02-02  csharp  <csharp@users.sourceforge.jp>
 
-        * src/kernel/firstboot.asm, secondboot.asm: バイナリをファイルごとに読み込み
+        * src/kernel/VesaConsole.cpp: '\xff'を画像に割り当てることでスクロール対象にした。
+
+        * src/kernel/firstboot.asm, secondboot.asm: バイナリをファイルごとに読み込み。
 
 2005-02-01  higepon  <higepon@users.sourceforge.jp>
 

@@ -156,8 +156,8 @@ Mona_SecondBoot__ReadConfig__string:
 	push	bp
 	mov	bp,	sp
 	sub	sp,	10
-;PE_00000340: ldc.i4 00008800
-	mov	ax,	34816
+;PE_00000340: ldc.i4 00009000
+	mov	ax,	36864
 	push	ax
 ;PE_00000345: ldarg.0
 	push	word [ss:bp+4]
@@ -189,7 +189,7 @@ PE_0000035E: ;ldc.i4.0
 ;	pop	es	; [optimize] ignore
 	mov	es,	ax	; [optimize] add
 ;PE_00000364: [native] set register
-	mov	di,	61440
+	mov	di,	4352
 ;PE_0000036E: [native] set register
 	mov	ax,	[ss:bp-2]
 ;PE_00000374: [native] inline
@@ -213,8 +213,8 @@ PE_0000035E: ;ldc.i4.0
 ;PE_00000398: stloc.0
 ;	pop	word [ss:bp-2]	; [optimize] ignore
 	mov	word [ss:bp-2],	ax	; [optimize] add
-;PE_00000399: ldc.i4 00008800
-	mov	ax,	34816
+;PE_00000399: ldc.i4 00009000
+	mov	ax,	36864
 ;	push	ax	; [optimize] ignore
 ;PE_0000039E: [native] set register
 ;	pop	es	; [optimize] ignore
@@ -907,8 +907,8 @@ Mona_SecondBoot___cctor:
 ;PE_0000060D: stsfld 04000006
 ;	pop	word [cs:Mona_SecondBoot__fileseg]	; [optimize] ignore
 	mov	word [cs:Mona_SecondBoot__fileseg],	ax	; [optimize] add
-;PE_00000612: ldc.i4 0000F004
-	mov	ax,	61444
+;PE_00000612: ldc.i4 00001104
+	mov	ax,	4356
 ;	push	ax	; [optimize] ignore
 ;PE_00000617: stsfld 04000007
 ;	pop	word [cs:Mona_SecondBoot__sizeptr]	; [optimize] ignore
