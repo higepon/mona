@@ -45,9 +45,14 @@ VirtualConsole* console;
 */
 void startKernel(void) {
 
+    /* re-set up GDT */
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
+    mm.resetGDT();
+
     /* initialze console */
     console = new GraphicalConsole();
 
+    mm.printInfo("after console");
     /* show start message */
     printBanner();
 
@@ -56,10 +61,6 @@ void startKernel(void) {
     _sysInitIo();
     printOK("Setting IDT        ");
     disableTimer();
-
-    /* re-set up GDT */
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.resetGDT();
 
     /* enable interrupt */
     enableInterrupt();
@@ -74,7 +75,7 @@ void startKernel(void) {
     if (si.hasCpuid()) {
 
         printOK("Checking CPUID     ");
-        //        si.printCpuid(console);
+        si.printCpuid(console);
     } else {
         console->printf("CPUID NG  \n");
     }
@@ -83,7 +84,6 @@ void startKernel(void) {
     KeyBoardManager::instance();
 
     gMFDCDriver = new MFDCDriver(console);
-    while (true);
 
     /* test code is here */
 #if 0

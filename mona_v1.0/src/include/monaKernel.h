@@ -15,6 +15,7 @@
 #define _MONA_KERNEL_
 
 #include <monaTypes.h>
+#include <VirtualConsole.h>
 
 #define disableInterrupt() asm volatile("cli")    /*!< \def disable interupts */
 #define enableInterrupt()  asm volatile("sti")    /*!< \def enable  interupts */
@@ -111,6 +112,8 @@ typedef struct {
     dword offset;
     word selector;
 } FARJMP;
+
+extern VirtualConsole* console;
 
 /*!
     \struct TSS

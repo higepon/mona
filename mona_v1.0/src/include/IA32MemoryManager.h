@@ -141,7 +141,7 @@ class IA32MemoryManager {
     char* getName() const;
     void* allocateMemory(size_t);
     void freeMemory(void*);
-    inline void printInfo(char*) const;
+    void printInfo(char*) const;
     static void enableA20();
     static IA32MemoryManager& instance();
     static void startPaging();
