@@ -34,6 +34,7 @@ private:
 	Label *label1, *label2, *label3;
 	TextField *text1, *text2, *text3;
 	Checkbox *check1, *check2;
+	CheckboxGroup *group1;
 	ListBox *list1;
 	Window *dialog;
 
@@ -69,6 +70,9 @@ public:
 		check1->setRect(110,5,100,20);
 		check2 = new Checkbox("買っちゃう？");
 		check2->setRect(110,25,100,20);
+		group1 = new CheckboxGroup();
+		group1->add(check1);
+		group1->add(check2);
 		list1 = new ListBox();
 		list1->setRect(110,50,100,100);
 		list1->add("ひげぽん");

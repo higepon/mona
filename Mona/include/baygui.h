@@ -96,6 +96,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/Graphics.h"
 #include "baygui/Control.h"
 #include "baygui/Checkbox.h"
+#include "baygui/CheckboxGroup.h"
 #include "baygui/Button.h"
 #include "baygui/Label.h"
 #include "baygui/ListBox.h"

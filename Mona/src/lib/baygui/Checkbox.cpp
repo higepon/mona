@@ -92,6 +92,9 @@ Checkbox::Checkbox(char *label)
 {
 	this->checked = false;
 	this->label  = label;
+	this->itemEvent.setType(Event::ITEM_SELECTED);
+	this->itemEvent.setSource(this);
+	this->group = NULL;
 }
 
 Checkbox::~Checkbox()
@@ -105,6 +108,11 @@ void Checkbox::setChecked(bool checked)
 		repaint();
 	} else if (this->checked == false && checked == true) {
 		this->checked = true;
+		// 選択イベント発生
+		if (this->group != NULL) {
+			this->group->onEvent(&this->itemEvent);
+			getParent()->onEvent(&this->itemEvent);
+		}
 		repaint();
 	}
 }
@@ -124,29 +132,29 @@ void Checkbox::onPaint(Graphics *g)
 	g->fillRect(0, 0, w, h);
 	
 	// 文字
-	//int fw = getFontMetrics()->getWidth(getLabel());
 	int fh = getFontMetrics()->getHeight(getLabel());
-	//int x = (w - fw) / 2;
 	int y = (h - fh) / 2;
 	if (getEnabled() == true) {
 		g->setColor(getForeground());
 	} else {
 		g->setColor(Color::GRAY);
 	}
-	g->drawText(getLabel(), 14/*x*/, y);
+	g->drawText(getLabel(), 14, y);
 	
 	// チェック
-	if (this->checked == true) {
-		for (int i = 0; i < 12; i++) {
-			for (int j = 0; j < 12; j++) {
-				g->drawPixel(j + 0, i + y, checked_palette[checked_data[i * 12 + j] & 0xFF]);
+	for (int i = 0; i < 12; i++) {
+		for (int j = 0; j < 12; j++) {
+			// チェックの周りは背景色で塗る
+			unsigned int c = 0;
+			if (this->checked == true) {
+				c = checked_palette[checked_data[i * 12 + j] & 0xFF];
+			} else {
+				c = unchecked_palette[unchecked_data[i * 12 + j] & 0xFF];
 			}
-		}
-	} else {
-		for (int i = 0; i < 12; i++) {
-			for (int j = 0; j < 12; j++) {
-				g->drawPixel(j + 0, i + y, unchecked_palette[unchecked_data[i * 12 + j] & 0xFF]);
+			if (c == 0xffc0c0c0) {
+				c = getBackground();
 			}
+			g->drawPixel(j + 0, i + y, c);
 		}
 	}
 
@@ -158,8 +166,9 @@ void Checkbox::onEvent(Event *event)
 	if (getEnabled() == false) return;
 
 	if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-		setChecked(!this->checked);
-		event->setType(Event::ITEM_SELECTED);
+		if (this->checked == false || this->group == NULL) {
+			setChecked(!this->checked);
+		}
 		getParent()->onEvent(event);
 	}
 }

@@ -16,7 +16,7 @@ are met:
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+IN NO KEYEVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -25,64 +25,43 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_CHECKBOX_H_INCLUDED_)
-#define _CHECKBOX_H_INCLUDED_
+#include "baygui.h"
 
-class CheckboxGroup;
+CheckboxGroup::CheckboxGroup()
+{
+	this->checkboxList = new LinkedList();
+}
 
-/**
- ƒ`ƒFƒbƒNƒ{ƒbƒNƒXƒNƒ‰ƒX
-*/
-class Checkbox : public Control {
-private:
-	/** ƒ`ƒFƒbƒN‚³‚ê‚½‚©‚Ç‚¤‚© */
-	bool checked;
-	/** ƒ{ƒ^ƒ“‚Ìƒ‰ƒxƒ‹ */
-	String label;
-	/** ‘I‘ðƒCƒxƒ“ƒg */
-	Event itemEvent;
-	/** ƒ`ƒFƒbƒNƒ{ƒbƒNƒXƒOƒ‹[ƒv */
-	CheckboxGroup *group;
+CheckboxGroup::~CheckboxGroup()
+{
+	delete(this->checkboxList);
+}
 
-public:
-	/**
-	 ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	 @param label ƒ‰ƒxƒ‹
-	 */
-	Checkbox(char *label);
+void CheckboxGroup::add(Checkbox *check)
+{
+	// NULLãƒã‚§ãƒƒã‚¯
+	if (check == NULL) return;
 	
-	/** ƒfƒXƒgƒ‰ƒNƒ^ */
-	virtual ~Checkbox();
-	
-	/**
-	 ƒ`ƒFƒbƒN‚³‚ê‚½‚©‚Ç‚¤‚©‚ðÝ’è‚·‚é
-	 @param checked ƒtƒ‰ƒO (true / false)
-	 */
-	virtual void setChecked(bool checked);
-	
-	/** ƒ`ƒFƒbƒNƒ{ƒbƒNƒXƒOƒ‹[ƒv‚ðÝ’è‚·‚é */
-	inline void setCheckboxGroup(CheckboxGroup *group) { this->group = group; }
-	
-	/**
-	 ƒ‰ƒxƒ‹‚ðÝ’è‚·‚é
-	 @param label ƒ‰ƒxƒ‹
-	 */
-	virtual void setLabel(char *label);
-	
-	/** ƒ`ƒFƒbƒN‚³‚ê‚½‚©‚Ç‚¤‚©‚ð“¾‚é */
-	inline bool getChecked() { return this->checked; }
-	
-	/** ƒ`ƒFƒbƒNƒ{ƒbƒNƒXƒOƒ‹[ƒv‚ð“¾‚é */
-	inline CheckboxGroup *getCheckboxGroup() { return this->group; }
-	
-	/** ƒ‰ƒxƒ‹‚ð“¾‚é */
-	inline char *getLabel() { return this->label.getBytes(); }
-	
-	/** •`‰æƒnƒ“ƒhƒ‰ */
-	virtual void onPaint(Graphics *g);
-	
-	/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
-	virtual void onEvent(Event *event);
-};
+	check->setCheckboxGroup(this);
+	this->checkboxList->add(check);
+}
 
-#endif // _CHECKBOX_H_INCLUDED_
+Checkbox *CheckboxGroup::getSelectedCheckbox()
+{
+	for (int i = 0; i < this->checkboxList->getLength(); i++) {
+		Checkbox *chk = (Checkbox *)this->checkboxList->get(i);
+		if (chk->getChecked() == true) return chk;
+	}
+	return NULL;
+}
+
+void CheckboxGroup::onEvent(Event *e)
+{
+	// é¸æŠžã•ã‚Œã¦ã„ã‚‹ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ä»¥å¤–ã‚’æœªé¸æŠžã«ã™ã‚‹
+	for (int i = 0; i < this->checkboxList->getLength(); i++) {
+		Checkbox *chk = (Checkbox *)this->checkboxList->get(i);
+		if (e->getSource() != chk) {
+			chk->setChecked(false);
+		}
+	}
+}

@@ -12,13 +12,13 @@ SOURCES = \
 	main.cpp \
 	Button.cpp \
 	Checkbox.cpp \
+	CheckboxGroup.cpp \
 	Control.cpp \
 	Container.cpp \
 	FontMetrics.cpp \
 	Graphics.cpp \
 	Image.cpp \
 	Label.cpp \
-	LinkedItem.cpp \
 	LinkedList.cpp \
 	ListBox.cpp \
 	Object.cpp \

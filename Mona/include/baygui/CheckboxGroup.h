@@ -16,7 +16,7 @@ are met:
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+IN NO KEYEVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -25,64 +25,31 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_CHECKBOX_H_INCLUDED_)
-#define _CHECKBOX_H_INCLUDED_
-
-class CheckboxGroup;
+#if !defined(_CHECKBOXGROUP_H_INCLUDED_)
+#define _CHECKBOXGROUP_H_INCLUDED_
 
 /**
- チェックボックスクラス
+ チェックボックスグループクラス
 */
-class Checkbox : public Control {
+class CheckboxGroup : public Object {
 private:
-	/** チェックされたかどうか */
-	bool checked;
-	/** ボタンのラベル */
-	String label;
-	/** 選択イベント */
-	Event itemEvent;
-	/** チェックボックスグループ */
-	CheckboxGroup *group;
-
+	LinkedList *checkboxList;
+	
 public:
-	/**
-	 コンストラクタ
-	 @param label ラベル
-	 */
-	Checkbox(char *label);
+	/** コンストラクタ */
+	CheckboxGroup();
 	
 	/** デストラクタ */
-	virtual ~Checkbox();
+	virtual ~CheckboxGroup();
 	
-	/**
-	 チェックされたかどうかを設定する
-	 @param checked フラグ (true / false)
-	 */
-	virtual void setChecked(bool checked);
+	/** チェックボックスを追加する */
+	virtual void add(Checkbox *check);
 	
-	/** チェックボックスグループを設定する */
-	inline void setCheckboxGroup(CheckboxGroup *group) { this->group = group; }
-	
-	/**
-	 ラベルを設定する
-	 @param label ラベル
-	 */
-	virtual void setLabel(char *label);
-	
-	/** チェックされたかどうかを得る */
-	inline bool getChecked() { return this->checked; }
-	
-	/** チェックボックスグループを得る */
-	inline CheckboxGroup *getCheckboxGroup() { return this->group; }
-	
-	/** ラベルを得る */
-	inline char *getLabel() { return this->label.getBytes(); }
-	
-	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g);
+	/** 選択されたチェックボックスを得る */
+	virtual Checkbox *getSelectedCheckbox();
 	
 	/** イベントハンドラ */
-	virtual void onEvent(Event *event);
+	virtual void onEvent(Event *e);
 };
 
-#endif // _CHECKBOX_H_INCLUDED_
+#endif // _CHECKBOXGROUP_H_INCLUDED_
