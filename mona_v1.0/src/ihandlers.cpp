@@ -31,7 +31,7 @@
 */
 void keyStrokeHandler(dword scancode) {
 
-    KeyInfo* info;
+    KeyInfo info;
     Message message;
     g_demo_step++;
 
@@ -39,11 +39,11 @@ void keyStrokeHandler(dword scancode) {
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode((byte)scancode);
 
-    info = km.getKeyInfo();
+    km.getKeyInfo(&info);
 
     memset(&message, 0, sizeof(Message));
-    message.arg1 = info->keycode;
-    message.arg2 = info->modifiers;
+    message.arg1 = info.keycode;
+    message.arg2 = info.modifiers;
 
     send("USER.ELF", &message);
 

@@ -12,9 +12,9 @@
     \version $Revision$
     \date   create:2002/10/12 update:$Date$
 */
-#include<KeyBoardManager.h>
 #include<global.h>
 #include<operator.h>
+#include<KeyBoardManager.h>
 
 const int KeyBoardManager::keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
@@ -52,9 +52,10 @@ const int KeyBoardManager::keyMapE0_[128] = {
     destructor
 
     \author HigePon
-    \date   create:2002/10/12 update:
+    \date   create:2002/10/12 update:2003/12/24
 */
 KeyBoardManager::~KeyBoardManager() {
+    delete keyInfoList_;
 }
 
 /*!
@@ -63,14 +64,15 @@ KeyBoardManager::~KeyBoardManager() {
     constructor
 
     \author HigePon
-    \date   create:2002/10/12 update:
+    \date   create:2002/10/12 update:2003/12/24
 */
 KeyBoardManager::KeyBoardManager() {
 
-    keyBufIndex_       = 0; /* index is 0 */
-    keyBufGottenIndex_ = 0; /* index is 0 */
-
+    /* set Handler */
     f_ = NULL;
+
+    /* keyinfo list */
+    keyInfoList_ = new HList<KeyInfo*>();
     return;
 }
 
@@ -80,19 +82,20 @@ KeyBoardManager::KeyBoardManager() {
     get key information
 
     \author HigePon
-    \date   create:2002/10/12 update:
+    \date   create:2002/10/12 update:2003/12/24
 */
-KeyInfo* KeyBoardManager::getKeyInfo() {
+KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
 
-    KeyInfo* result = &(keyInfo_[keyBufGottenIndex_]);
-    keyBufGottenIndex_++;
+    KeyInfo* temp = keyInfoList_->removeAt(keyInfoList_->size() - 1);
 
-    /* check max */
-    if (keyBufGottenIndex_ >= MAX_KEY_BUF) {
-        keyBufGottenIndex_ = 0;
+    if (temp == NULL) {
+        return (KeyInfo*)NULL;
     }
 
-    return result;
+    /* copy to keyinfo */
+    memcpy(keyinfo, temp, sizeof(KeyInfo));
+    free(temp);
+    return keyinfo;
 }
 
 /*!
@@ -175,12 +178,14 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     else if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
     else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
-    keyBufIndex_++;
-    if (keyBufIndex_ >= MAX_KEY_BUF) {
-        keyBufIndex_ = 0;
-    }
-    keyInfo_[keyBufIndex_].keycode   = keycode;
-    keyInfo_[keyBufIndex_].modifiers = modifiers;
+    /* allocate keyinfo */
+    KeyInfo* info = (KeyInfo*)malloc(sizeof(KeyInfo));
+    checkMemoryAllocate(info, "KeyInfo allocate");
+
+    /* set keyinfo */
+    info->keycode   = keycode;
+    info->modifiers = modifiers;
+    keyInfoList_->add(info);
 
     if (f_) f_();
 

@@ -14,7 +14,7 @@
 #ifndef _MONA_KEYBOARDMANAGER_
 #define _MONA_KEYBOARDMANAGER_
 
-#include<types.h>
+#include<collection.h>
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
@@ -107,9 +107,6 @@ class KeyBoardManager {
     ~KeyBoardManager();
     KeyBoardManager(const KeyBoardManager&);
     KeyBoardManager& operator = (const KeyBoardManager&);
-    KeyInfo keyInfo_[MAX_KEY_BUF];
-    int keyBufIndex_;
-    int keyBufGottenIndex_;
     bool isSpecialKey_;
     bool isKeyboardId_;
     bool isShift_;
@@ -122,12 +119,13 @@ class KeyBoardManager {
     byte idHigh_;
     byte idLow_;
     void (*f_)();
+    List<KeyInfo*>* keyInfoList_;
   public:
     static KeyBoardManager& instance() {
         static KeyBoardManager theInstance;
         return theInstance;
     }
-    KeyInfo* getKeyInfo();
+    KeyInfo* getKeyInfo(KeyInfo* keyinfo);
     void setKeyScanCode(unsigned char);
     void setHandler(void (*f)());
     void printInfo(byte, byte) const;

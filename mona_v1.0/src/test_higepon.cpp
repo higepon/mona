@@ -156,9 +156,10 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 void userKeyStrokeHandler() {
 
     KeyBoardManager& km = KeyBoardManager::instance();
-    KeyInfo* info = km.getKeyInfo();
+    KeyInfo info;
+    km.getKeyInfo(&info);
 
-    g_console->printf("keycode=[%d], modifiers=[%d]", info->keycode, info->modifiers);
+    g_console->printf("keycode=[%d], modifiers=[%d]", info.keycode, info.modifiers);
 }
 
 void keyStrokeTest() {
