@@ -190,7 +190,7 @@ void MouseServer::MessageLoop()
         default:
 
             /* ignore */
-	    printf("mouse:header=%x", receive.header);
+            printf("mouse:header=%x", receive.header);
             break;
         }
 
@@ -259,6 +259,12 @@ volatile bool flag;
 void mouseHandler()
 {
 //    syscall_print(msg);
+//    syscall_remove_irq_handler(12);
+
+//    static int x = 0;
+//    x++;
+
+//    server->PaintCursor(x, 50);
     flag = true;
 }
 

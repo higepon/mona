@@ -1,5 +1,9 @@
 2004-08-08  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/ihandlers.cpp (doIrqHandler): ユーザー登録のirqハンドラを実行
+
+        * src/kernel/syscalls.cpp : SYSTEM_CALL_REMOVE_IRQ_HANDLERを追加
+
         * src/kernel/ihandlers.cpp (mouseHandler): マウスハンドラでフックが成功した予感。
 
         * src/kernel/Process.cpp (archCreateThread): カーネルスレッドに対して2重にスタック用の物理アドレスをマップしていたバグを修正

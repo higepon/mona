@@ -31,6 +31,7 @@ extern "C" void keyStrokeHandler(dword scancode);
 extern "C" void mouseHandler();
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(dword error);
+extern "C" void doIrqHandler(int irq);
 
 /* expr:IRQ Handler */
 #define IRQHANDLERHEADER(x) extern "C" void irqHandler_##x(void); extern "C" void arch_irqhandler_##x(void)

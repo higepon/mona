@@ -87,6 +87,7 @@ extern int syscall_clear_screen();
 extern int syscall_peek(MessageInfo* message, int index, int flags);
 
 extern int syscall_set_irq_handler(int irq, void* handler);
+extern int syscall_remove_irq_handler(int irq);
 
 extern void* malloc(unsigned long size);
 extern void free(void * address);

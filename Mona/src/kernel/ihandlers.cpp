@@ -20,6 +20,26 @@
 #include "Process.h"
 
 /*!
+  \brief do registerd irq handler
+
+  \param irq irq number
+
+  \author HigePon
+  \date   create:2004/08/07 update:
+*/
+void doIrqHandler(int irq)
+{
+    if (!g_irqInfo[irq].hasUserHandler) return;
+
+    ThreadInfo* thread = g_irqInfo[irq].thread;
+    void (*handler)() = (void (*)())g_irqInfo[irq].handler;
+
+    g_page_manager->setPageDirectory((dword)thread->process->getPageDirectory());
+    handler();
+    g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
+}
+
+/*!
   \brief mouse handler
 
   mouse handler IRQ 12
@@ -27,9 +47,6 @@
   \author HigePon
   \date   create:2004/02/05 update:
 */
-
-extern "C" void arch_set_cr3(dword hoge);
-
 void mouseHandler()
 {
     static int counter = 0;
@@ -47,17 +64,7 @@ void mouseHandler()
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
 
-    if (g_irqInfo[12].hasUserHandler)
-    {
-        ThreadInfo* thread = g_irqInfo[12].thread;
-        void (*handler)() = (void (*)())g_irqInfo[12].handler;
-
-        g_page_manager->setPageDirectory((dword)thread->process->getPageDirectory());
-
-        handler();
-        g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
-    }
-
+    doIrqHandler(12);
 
 #if 0  // DEBUG for message
     g_scheduler->dump();
@@ -130,6 +137,8 @@ void keyStrokeHandler(dword scancode)
 
     /* EOI */
     outp8(0x20, 0x20);
+
+    doIrqHandler(1);
 
     if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.EX2"), &message))
     {
@@ -224,6 +233,8 @@ void MFDCHandler(void)
 
     /* thx! K-tan */
     outp8(0x20, 0x66);
+
+    doIrqHandler(6);
 
     KEvent::set(g_fdcdriver->getWaitThread(), KEvent::FDC_INTERRUPT);
 

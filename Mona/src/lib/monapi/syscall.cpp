@@ -689,3 +689,10 @@ int syscall_set_irq_handler(int irq, void* handler)
     SYSCALL_2(SYSTEM_CALL_SET_IRQ_HANDLER, result, irq, handler);
     return result;
 }
+
+int syscall_remove_irq_handler(int irq)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_SET_IRQ_HANDLER, result, irq);
+    return result;
+}

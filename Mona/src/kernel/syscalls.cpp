@@ -753,6 +753,21 @@ void syscall_entrance() {
         break;
     }
 
+    case SYSTEM_CALL_REMOVE_IRQ_HANDLER:
+
+    {
+        int irq = (int)info->esi;
+
+        /* out of range */
+        if (irq > 15 || irq < 0)
+        {
+            info->eax = 1;
+            break;
+        }
+
+        g_irqInfo[irq].hasUserHandler = false;
+    }
+
     default:
         g_console->printf("syscall:default");
         break;
