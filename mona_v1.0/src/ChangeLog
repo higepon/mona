@@ -1,3 +1,7 @@
+2003-12-17  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h: ThreadSchedulerクラスをヘッダに追加(未実装)
+
 2003-12-16  higepon  <higepon@users.sourceforge.jp>
 
         * ihandlers.cpp: タイマハンドラでスケジューラたちがどのように呼ばれるかの部分を

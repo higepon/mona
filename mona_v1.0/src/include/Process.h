@@ -88,7 +88,8 @@ typedef struct ArchThreadInfo {
 ----------------------------------------------------------------------*/
 typedef struct ThreadInfo {
     ArchThreadInfo* archinfo;
-    dword dummy;
+    dword tick;
+    dword state;
 };
 
 /*----------------------------------------------------------------------
@@ -96,6 +97,25 @@ typedef struct ThreadInfo {
 ----------------------------------------------------------------------*/
 class Thread {
 
+};
+
+/*----------------------------------------------------------------------
+    ThreadScheduler
+----------------------------------------------------------------------*/
+class ThreadScheduler {
+
+  public:
+    ThreadScheduler();
+    virtual ~ThreadScheduler();
+
+  public:
+    Thread* schedule(Thread* current);
+    int add(Thread* thread);
+    int join(Thread* thread);
+    int kill(Thread* thread);
+
+  private:
+    List<Thread*>* list_;
 };
 
 /*----------------------------------------------------------------------
