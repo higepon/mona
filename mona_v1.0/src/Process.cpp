@@ -134,10 +134,14 @@ V86Process::V86Process(const char* name) {
     pinfo_.dpl     = DPL_USER;
 }
 
-ProcessScheduler::ProcessScheduler() {
+ProcessScheduler::ProcessScheduler(Process_* idle) {
 
+    /* list of process */
     list_ = new HList<Process_*>();
     checkMemoryAllocate(list_, "ProcessScheduler memory allocate list");
+
+    /* idle process */
+    idle_ = idle;
 }
 
 ProcessScheduler::~ProcessScheduler() {
@@ -148,7 +152,7 @@ ProcessScheduler::~ProcessScheduler() {
 Process_* ProcessScheduler::schedule(Process_* current) {
 
     /* check dispach is empty */
-    if (list_->isEmpty()) return current;
+    if (list_->isEmpty()) return idle_;
 
     /* round robin */
     list_->add(current);
@@ -178,25 +182,23 @@ int ProcessScheduler::kill(Process_* process) {
 ----------------------------------------------------------------------*/
 ProcessManager_::ProcessManager_(PageManager* pageManager) {
 
-    /* scheduler */
-    scheduler_ = new ProcessScheduler();
-    checkMemoryAllocate(scheduler_, "ProcessManager memory allocate scheduler");
-
-    /* page manager */
-    pageManager_ = pageManager;
-
     /* create idle process */
     idle_ = new KernelProcess_("Idle");
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
 
-    /* now current process is idle */
-    current_ = idle_;
+    /* scheduler */
+    scheduler_ = new ProcessScheduler(idle_);
+    checkMemoryAllocate(scheduler_, "ProcessManager memory allocate scheduler");
+
+    /* page manager */
+    pageManager_ = pageManager;
 }
 
 ProcessManager_::~ProcessManager_() {
 
-    /* destroy scheduler */
+    /* destroy */
     delete scheduler_;
+    delete idle_;
 }
 
 int ProcessManager_::kill(Process_* process) {
@@ -224,14 +226,7 @@ int ProcessManager_::switchProcess() {
 }
 
 Process_* ProcessManager_::schedule() {
-
-    Process_* result;
-
-    result = scheduler_->schedule(current_);
-    //    cu = scheduler_->schedule(g_currentprocess);
-    // return g_current_process;
-
-    return NULL;
+    return scheduler_->schedule(current_);
 }
 
 Process_* ProcessManager_::createProcess(int type, const char* name) {

@@ -150,7 +150,7 @@ class KernelProcess_ : public Process_ {
 class ProcessScheduler {
 
   public:
-    ProcessScheduler();
+    ProcessScheduler(Process_* idle);
     virtual ~ProcessScheduler();
 
   public:
@@ -160,6 +160,7 @@ class ProcessScheduler {
 
   private:
     List<Process_*>* list_;
+    Process_* idle_;
 
 };
 
