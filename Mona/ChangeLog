@@ -24,7 +24,7 @@
 
         * apps/non-gui/ata/main.cpp : ATAテスト用のアプリを追加。実行しないでね。
 
-        * src/kernel/IDEDriver.cpp : 削除;
+        * src/kernel/IDEDriver.cpp : 削除
 
 2004-06-26  higepon  <higepon@users.sourceforge.jp>
 
