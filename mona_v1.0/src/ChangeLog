@@ -1,3 +1,7 @@
+2004-02-08  higepon  <higepon@users.sourceforge.jp>
+
+        * user/hello.cpp: MemoryMap::unmapÀ‘•
+
 2004-02-07  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib.cpp: ‰¼‘zVRAM VirtualScreen‚ğ’Ç‰ÁB

@@ -33,6 +33,7 @@
 #define SYSTEM_CALL_FDC_CLOSE      30
 #define SYSTEM_CALL_FDC_READ       31
 #define SYSTEM_CALL_FDC_WRITE      32
+#define SYSTEM_CALL_UNMAP_TWO      33
 #define SYSTEM_CALL_TEST           99
 
 #define main() monaMain()
@@ -76,7 +77,8 @@ extern "C" int syscall_fdc_open();
 extern "C" int syscall_fdc_close();
 extern "C" int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
-extern "C" int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword size);
+extern "C" int syscall_map2(MappingInfo* info);
+extern "C" int syscall_unmap2(dword sharedId);
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
 extern "C" void __cxa_pure_virtual();
@@ -212,18 +214,36 @@ class MemoryMap {
         return &map;
     }
 
-    inline int map(dword pid, dword linearAddress, dword linearAddress2, dword size) {
+    inline dword map(dword pid, dword linearAddress, dword linearAddress2, dword size) {
 
         if (linearAddress < 0x90000000 || linearAddress >=0xA0000000) {
-            return 4;
+            info_.errorCd = 4;
+            return 0;
         }
 
         if (linearAddress2 < 0x90000000 || linearAddress2 >=0xA0000000) {
-            return 4;
+            info_.errorCd = 4;
+            return 0;
         }
 
-        return syscall_map2(pid, linearAddress, linearAddress2, size);
+        info_.attachPid = pid;
+        info_.linearAddress1 = linearAddress;
+        info_.linearAddress2 = linearAddress2;
+        info_.size           = size;
+
+        return syscall_map2(&info_);
     }
+
+    inline int unmap(dword sharedId) {
+        return syscall_unmap2(sharedId);
+    }
+
+    inline dword getLastErrorCode() const {
+        return info_.errorCd;
+    }
+
+  private:
+    MappingInfo info_;
 };
 
 /*----------------------------------------------------------------------

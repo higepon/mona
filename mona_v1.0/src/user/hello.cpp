@@ -26,9 +26,14 @@ int myApplication::main() {
 
     MemoryMap* mm = MemoryMap::create();
 
-    mm->map(pid, 0x90000000, 0x90005000, 4096);
+    dword sharedId = mm->map(pid, 0x90000000, 0x90005000, 4096);
 
     strcpy((char*)0x90005000, "data share Mona");
+
+    mm->unmap(sharedId);
+
+    /* unmap? */
+    //printf("%s", (char*)0x90005000);
 
     char buf[1024];
     memset(buf      , (byte)0x12, 512);

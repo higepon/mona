@@ -31,7 +31,7 @@
 void mouseHandler() {
 
     static int counter = 0;
-    static bool sendFlag = false;
+//     static bool sendFlag = false;
     if (Mouse::waitReadable()) {
         g_console->printf("mouse time out");
     }

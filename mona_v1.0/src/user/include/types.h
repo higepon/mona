@@ -58,6 +58,14 @@ typedef struct Pixel8 {
     byte p;
 };
 
+typedef struct MappingInfo {
+    dword attachPid;
+    dword linearAddress1;
+    dword linearAddress2;
+    dword size;
+    dword errorCd;
+};
+
 
 #define MSG_KEY_SCANCODE         0x00
 #define MSG_KEY_REGIST_TO_SERVER 0x01
