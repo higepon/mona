@@ -262,7 +262,7 @@ void setCursor(int x, int y) {
     forward cursor
 
     \author  HigePon
-    \date    create:2002/07/22 update:
+    \date    create:2002/07/22 update:2002/10/06
 */
 void forwardCursor() {
 
@@ -277,7 +277,8 @@ void forwardCursor() {
 
     /* scroll up */
     if (curY >= MAX_HEIGHT) {
-      //        scrollUp();
+        scrollUp();
+        curY--;
     }
     return;
 }
@@ -348,11 +349,19 @@ void backwardCursor(int n) {
     go to the next line
 
     \author  HigePon
-    \date    create:2002/07/22 update:
+    \date    create:2002/07/22 update:2002/10/06
 */
 void newLine() {
+
+    /* new line */
     curX = 0;
     curY++;
+
+    /* scroll up */
+    if (curY >= MAX_HEIGHT) {
+        scrollUp();
+        curY--;
+    }
 }
 
 /*!
@@ -361,15 +370,13 @@ void newLine() {
     scroll up
 
     \author  HigePon
-    \date    create:2002/10/05 update:
+    \date    create:2002/10/05 update:2002/10/06
 */
 void scrollUp() {
 
-    // copy current buffer
-    for (int i = MAX_WIDTH * 2,j = 0; i <= VRAMSIZE; i++, j++) {
-
-        VRAM[j] = VRAM[i];
+    /* copy current buffer */
+    for (int i = MAX_WIDTH, j = 0; i < VRAM_SIZE; i++, j++) {
+        VRAM[j * 2] = VRAM[i * 2];
     }
-    // scrollup
-
+    return;
 }

@@ -65,15 +65,12 @@ void startKernel(void) {
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);
 
+
     /* testing vector */
 //      Vector<int> list;
 //      list.add(10);
 //      list.add(10);
 //      _sysPrintlnInt(list.get(0));
-
-    scrollUp();
-    scrollUp();
-    scrollUp();
 
     while (true) {
     }

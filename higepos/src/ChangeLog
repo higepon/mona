@@ -1,29 +1,32 @@
-2002-09-08  higepon  <>
+2002-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: add scrollUp()function, but it seems bad.
+
+2002-09-08  higepon  <higepon@users.sourceforge.jp>
 
         * vga.cpp: create _sys_printf().
 
         * higeOperator.cpp: modify return value of allocateMemory, param value of freeMemory
 
-2002-09-07  higepon  <>
+2002-09-07  higepon  <higepon@users.sourceforge.jp>
 
         * X86MemoryManager.cpp: modify constructor
 
-2002-09-07  higepon  <>
+2002-09-07  higepon  <higepon@users.sourceforge.jp>
 
         * include/X86MemoryManager.h: add higepostypes.h
           and define H_SIZE_T
                      H_BYTE
 
-2002-09-06  higepon  <>
+2002-09-06  higepon  <higepon@users.sourceforge.jp>
 
         * メモリ管理 メモリ割り当て失敗時にfault0Handlerが呼ばれるようにした。
 
         * add fault0Handler
 
 ----------------------課題----------------------
-* メモリ管理ロジック決定
-* ファイルシステムFAT12の勉強
 * プロセス管理実装
 * キーボード入力
 * Pointのコンストラクタ(引数なし)の挙動が怪しい
 * allocateMemoryがNULLを返した時に割り込み処理を起動
+* 画面スクロールのデバッグ
