@@ -147,6 +147,8 @@ class ThreadManager {
     int join(Thread* thread);
     int killAllThread();
     int kill(Thread* thread);
+    int wait(Thread* thread, int waitReason);
+    int wakeup(Thread* thread, int waitReason);
     Thread* schedule();
     void printAllThread();
 

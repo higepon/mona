@@ -221,6 +221,33 @@ int ThreadManager::kill(Thread* thread) {
     return NORMAL;
 }
 
+int ThreadManager::wait(Thread* thread, int waitReason) {
+
+    if (!dispatchList_->hasElement(thread)) {
+        return 1;
+    }
+
+    thread->setWaitReason(waitReason);
+
+    dispatchList_->remove(thread);
+    waitList_->add(thread);
+    return NORMAL;
+}
+
+int ThreadManager::wakeup(Thread* thread, int waitReason) {
+
+    if (!waitList_->hasElement(thread)) {
+        return 1;
+    }
+
+    if (thread->getWaitReason() != waitReason) {
+        return 2;
+    }
+
+    waitList_->remove(thread);
+    dispatchList_->add(thread);
+    return NORMAL;
+}
 
 int ThreadManager::kill(List<Thread*>* list) {
 
