@@ -35,8 +35,6 @@ void keyStrokeHandler(dword scancode) {
     Message* message;
     g_demo_step++;
 
-    g_console->printf("hoge");
-
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode((byte)scancode);

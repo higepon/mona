@@ -38,7 +38,7 @@ void syscall_entrance() {
 
         pos_x = 1, pos_y = 27;
 
-        g_console->printf("user:stdout[[%s]]", (char*)(g_current_process->esi));
+        g_console->printf("user:stdout[%s]", (char*)(g_current_process->esi));
 
         pos_x = x;
         pos_y = y;
