@@ -1,7 +1,7 @@
 LIB_STATIC  = $(LIBDIR)/libgui.a
 TARGET      = $(LIB_STATIC)
 
-ifeq ($(BUILD_TARGET),PE-DLL)
+ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT  = $(LIBDIR)/libgui-imp.a
 LIB_DYNAMIC = GUI.DLL
 TARGET     += $(LIB_STATIC) $(LIB_IMPORT) $(LIB_DYNAMIC)
@@ -39,7 +39,7 @@ $(LIB_STATIC): $(OBJECTS)
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 
-ifeq ($(BUILD_TARGET),PE-DLL)
+ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
 	dllwrap -e dllmain --export-all --implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
@@ -62,7 +62,7 @@ depend:
 	done
 
 install: $(TARGET)
-ifeq ($(BUILD_TARGET),PE-DLL)
+ifneq ($(BUILD_TARGET),ELF)
 	mkdir -p $(MONADIR)/bin/root/LIBS
 	$(INSTALL) $(LIB_DYNAMIC) $(MONADIR)/bin/root/LIBS
 endif

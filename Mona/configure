@@ -27,15 +27,22 @@ if test "$OSTYPE" = "cygwin" ; then
 elif test $isMinGW32; then
    cp  env/mingw.env env/Makefile.inc
    echo "MinGW32"
-# linux gcc2.9x
-elif test $isOldVersion ; then
-   cp  env/linux2.x.env env/Makefile.inc
-   echo "linux gcc2.x"
-# linux gcc3.x
 else
-   cp  env/linux3.x.env env/Makefile.inc
-   echo "linux gcc3.x"
+   echo $OSTYPE
+   echo ""
+   echo "Sorry, currently your platform is not supported."
+   echo "If you can support your platform, please contact with Mona PJ."
+   echo "http://mona.sourceforge.jp/"
 fi
+## linux gcc2.9x
+#elif test $isOldVersion ; then
+#   cp  env/linux2.x.env env/Makefile.inc
+#   echo "linux gcc2.x"
+## linux gcc3.x
+#else
+#   cp  env/linux3.x.env env/Makefile.inc
+#   echo "linux gcc3.x"
+#fi
 
 echo ""
 echo "[How to build]"

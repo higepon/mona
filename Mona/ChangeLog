@@ -1,5 +1,12 @@
 2004-07-09  tino  <tino@users.sourceforge.jp>
 
+        * configure: PE移行に伴ってELFシステムを非サポート
+                     ※サポート担当者募集のメッセージを表示
+
+        * src/lib/monapi/Makefile: デフォルトでMONAPI.DLLを生成
+
+        * src/lib/gui/Makefile: デフォルトでGUI.DLLを生成
+
         * src/lib/monapi/string.cpp (memmove): バグ修正
 
         * include/stlport: STLport-4.6.2を移植

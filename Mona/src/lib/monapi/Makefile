@@ -2,7 +2,7 @@ CRT_OBJECT  = $(LIBDIR)/monapi.o
 LIB_STATIC  = $(LIBDIR)/libmonapi.a
 TARGET      = $(CRT_OBJECT) $(LIB_STATIC)
 
-ifeq ($(BUILD_TARGET),PE-DLL)
+ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT  = $(LIBDIR)/libmonapi-imp.a
 LIB_DYNAMIC = MONAPI.DLL
 TARGET     += $(LIB_IMPORT) $(LIB_DYNAMIC)
@@ -47,7 +47,7 @@ $(LIB_STATIC): $(OBJECTS)
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 
-ifeq ($(BUILD_TARGET),PE-DLL)
+ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
 	dllwrap -e dllmain --export-all --implib $(LIB_IMPORT) -o $@ $(OBJECTS)
@@ -65,7 +65,7 @@ depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
 
 install: $(TARGET)
-ifeq ($(BUILD_TARGET),PE-DLL)
+ifneq ($(BUILD_TARGET),ELF)
 	mkdir -p $(MONADIR)/bin/root/LIBS
 	$(INSTALL) $(LIB_DYNAMIC) $(MONADIR)/bin/root/LIBS
 endif
