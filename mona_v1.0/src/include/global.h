@@ -56,4 +56,4 @@ GLOBAL PTE* g_page_dir;
 GLOBAL PTE* g_page_tbl;
 
 /* Process */
-GLOBAL Process* g_process;
+GLOBAL Process** g_process;

@@ -47,8 +47,10 @@ class Process {
     }
     virtual ~Process() {
     }
-    virtual int  main();
+
+    int main();
     virtual void init();
+    virtual int execute() = 0;
     virtual void destroy();
 
   public:

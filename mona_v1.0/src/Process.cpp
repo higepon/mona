@@ -15,12 +15,20 @@
 /*!
     \brief main
 
+    apply template method pattern
+
     \author HigePon
     \date   create:2003/06/28 update:
 */
 int Process::main() {
 
+    int error;
 
+    init();
+    error = execute();
+    destroy();
+
+    return error;
 }
 
 /*!
@@ -45,7 +53,7 @@ void Process::destroy() {
 
 }
 
-extern "C" Process* g_process;
+extern "C" Process** g_process;
 /*!
     \brief setup
 
@@ -54,6 +62,6 @@ extern "C" Process* g_process;
 */
 void Process::setup() {
 
-    g_process = new Process[MAX_PROCESS];
+    g_process = new Process*[MAX_PROCESS];
     return;
 }
