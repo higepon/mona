@@ -156,19 +156,20 @@ void MFDCDriver::initilize() {
 
     interrupt_ = false;
     motor(ON);
-    while(!waitInterrupt());
+    while(!waitInterrupt()); console->printf("motor on catch\n");
 
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
 
-    //    recalibrate();
-    //    recalibrate();
-
-    //    write(0, 0, 1);
+    recalibrate();
+    recalibrate();
+    memset(dmabuff_, 0x56, 512);
+    write(0, 0, 1);
 
     recalibrate();
     recalibrate();
     read(0, 0, 1);
+
     motor(OFF);
     while (true);
     return;
@@ -222,7 +223,7 @@ void MFDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void MFDCDriver::interrupt() {
 
-    console_->printf("\n interrupet\n");
+    console_->printf("interrpt:");
     interrupt_ = true;
 }
 
@@ -299,11 +300,10 @@ bool MFDCDriver::recalibrate() {
         return false;
     }
 
+
     // comment out for bochs x86 emulator
     //    while(!waitInterrupt());
-
     senseInterrupt();
-
     return true;
 }
 
@@ -367,7 +367,7 @@ bool MFDCDriver::seek(byte track) {
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
-    printStatus("seek sense before");
+
     if (!senseInterrupt()) {
 
         console_->printf("MFDCDriver#seek:command fail\n");
@@ -386,6 +386,7 @@ bool MFDCDriver::seek(byte track) {
 bool MFDCDriver::senseInterrupt() {
 
     byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
+
 
     if(!sendCommand(command, sizeof(command))){
 
