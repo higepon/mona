@@ -150,16 +150,16 @@ void GVersion::onPaint(Graphics *g)
 		}
 	}
 
-	//MemoryInfo info;
-	//syscall_get_memory_info(&info);
+	MemoryInfo info;
+	syscall_get_memory_info(&info);
 	
 	char mesg1[64], mesg2[64], mesg3[64];
-	//toDecimalString(info.totalMemoryL / 1024, mesg1);
-	//toDecimalString(info.freePageNum * info.pageSize / 1024, mesg2);
-	//toDecimalString(info.totalPageNum * info.pageSize / 1024, mesg3);
-	toDecimalString(32768, mesg1);
-	toDecimalString(16384, mesg2);
-	toDecimalString(32768, mesg3);
+	toDecimalString(info.totalMemoryL / 1024, mesg1);
+	toDecimalString(info.freePageNum * info.pageSize / 1024, mesg2);
+	toDecimalString(info.totalPageNum * info.pageSize / 1024, mesg3);
+	//toDecimalString(32768, mesg1);
+	//toDecimalString(16384, mesg2);
+	//toDecimalString(32768, mesg3);
 	strcat(mesg1, "KB");
 	strcat(mesg2, "KB");
 	strcat(mesg3, "KB");
