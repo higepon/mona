@@ -97,13 +97,13 @@ _arch_kthread_switch:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
-        push 0x200    ; push eflags
-;          push dword [ebx + 8]    ; push eflags
+;        push 0x200    ; push eflags
+        push dword[ebx + 8]    ; push eflags
         push dword[ebx + 4]    ; push cs
         push dword[ebx + 0]    ; push eip
         push dword[ebx + 24]
         pop  ebx                ; restore ebp
-        call _arch_set_stack_view
+;          call _arch_set_stack_view
         iretd                   ; switch to next
 
 

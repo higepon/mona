@@ -19,6 +19,7 @@
 #include<global.h>
 
 extern "C" void write_font(int a, char b, char c);
+extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
 extern "C" char pos_x;
 extern "C" char pos_y;
 
@@ -36,11 +37,11 @@ void disp_name1() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
-        disableTimer();
+        while (semaphore_down(&sem));
 
         disp_write_font(76, 0, 'M', color%16);
 
-        enableTimer();
+        semaphore_up(&sem);
         color++;
     }
 }
@@ -57,11 +58,11 @@ void disp_name2() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
-        disableTimer();
+        while (semaphore_down(&sem));
 
         disp_write_font(77, 0, 'o', color%16);
 
-        enableTimer();
+        semaphore_up(&sem);
         color++;
     }
 }
@@ -72,11 +73,12 @@ void disp_name3() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
-        disableTimer();
+        while (semaphore_down(&sem));
 
         disp_write_font(78, 0, 'n', color%16);
 
-        enableTimer();
+
+        semaphore_up(&sem);
         color++;
     }
 }
@@ -87,16 +89,19 @@ void disp_name4() {
 
     while (true) {
         //        if (g_kthread_current->tick % 50) continue;
-        disableTimer();
+        //        disableTimer();
 
+        while (semaphore_down(&sem));
         disp_write_font(79, 0, 'a', color%16);
 
-        enableTimer();
+        //        enableTimer();
+        semaphore_up(&sem);
         color++;
     }
 }
 
 void disp_write_font(int x, int y, char ch, byte color) {
+
 
     int tempx = pos_x;
     int tempy = pos_y;
@@ -117,7 +122,7 @@ void disp_kthread_info() {
 
     while (true) {
 
-        disableTimer();
+        while (semaphore_down(&sem));
 
         int x = pos_x;
         int y = pos_y;
@@ -133,7 +138,7 @@ void disp_kthread_info() {
 
          pos_x = x;
          pos_y = y;
-         enableTimer();
+        semaphore_up(&sem);
     }
 }
 
