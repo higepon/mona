@@ -23,7 +23,7 @@ int print(const char* msg) {
 #if 1  // temporary
 
     static dword tid = THREAD_UNKNOWN;
-    if (tid == THREAD_UNKNOWN) tid = Message::lookupMainThread("ELF.BIN");
+    if (tid == THREAD_UNKNOWN) tid = Message::lookupMainThread("PROCESS.BIN");
 
     char buf[128];
 

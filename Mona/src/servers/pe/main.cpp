@@ -1,58 +1,19 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monapi/messages.h>
-#include "ELFServer.h"
-#include "elfparser.h"
+#include "PEServer.h"
 
 using namespace MonAPI;
 
 static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, monapi_cmemoryinfo* mi, bool prompt)
 {
-    ELFParser parser;
-    bool ok = parser.set(mi->Data, mi->Size);
-    if (!ok)
-    {
-        if (prompt) printf("%s: file type is not ELF!\n", SVR);
-        return 3;
-    }
-
-    int type = parser.getType();
-    if (type != ELFParser::TYPE_RELOCATABLE && type != ELFParser::TYPE_EXECUTABLE)
-    {
-        if (prompt) printf("%s: file type is not supported!\n", SVR);
-        return 3;
-    }
-
-    int result = parser.parse();
-    if (result != 0)
-    {
-        if (prompt) printf("%s: can not parse!\n", SVR);
-        return 3;
-    }
-
-    monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(dst, parser.getImageSize(), prompt ? MONAPI_TRUE : MONAPI_FALSE))
-    {
-        monapi_cmemoryinfo_delete(dst);
-        return 3;
-    }
-
-    if (!parser.load(dst->Data))
-    {
-        if (prompt) printf("%s: load failed!\n", SVR);
-        monapi_cmemoryinfo_delete(dst);
-        return 3;
-    }
-    
-    *dest = dst;
-    *entryPoint = parser.getEntryPoint();
-    return 0;
+    return 3;
 }
 
 static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CString& path, bool prompt)
 {
     monapi_cmemoryinfo* mi = NULL;
-    if (path.endsWith(".EL2"))
+    if (path.endsWith(".EX2"))
     {
         mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }

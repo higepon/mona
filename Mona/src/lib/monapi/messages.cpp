@@ -11,12 +11,13 @@ static dword server_ids[] =
     THREAD_UNKNOWN,  // ID_FILE_SERVER
     THREAD_UNKNOWN,  // ID_GUI_SERVER
     THREAD_UNKNOWN,  // ID_ELF_SERVER
-    THREAD_UNKNOWN   // ID_PROCESS_SERVER
+    THREAD_UNKNOWN,  // ID_PROCESS_SERVER
+    THREAD_UNKNOWN   // ID_PE_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.BIN", "KEYBDMNG.BIN", "FILE.BIN", "GUI.BIN", "ELF.BIN", "ELF.BIN"/*"PROCESS.BIN"*/
+    "MOUSE.BIN", "KEYBDMNG.BIN", "FILE.BIN", "GUI.BIN", "ELF.BIN", "PROCESS.BIN", "PE.BIN"
 };
 
 dword monapi_get_server_thread_id(int id)
@@ -157,16 +158,16 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
     return ret;
 }
 
-int monapi_call_elf_execute_file(const char* command_line, MONAPI_BOOL prompt)
+int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
-    return monapi_call_elf_execute_file_get_tid(command_line, prompt, NULL);
+    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL);
 }
 
-int monapi_call_elf_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid)
+int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid)
 {
-    dword svr = monapi_get_server_thread_id(ID_ELF_SERVER);
+    dword svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, svr, MSG_ELF_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
+    if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;

@@ -119,7 +119,7 @@ int Command::ExecuteCommand(){
     delete option;
   }*/
 
-  result = monapi_call_elf_execute_file(path, 0);
+  result = monapi_call_process_execute_file(path, MONAPI_FALSE);
 
   this->SetCurrentPos(this->commandLine.getLength());
   this->isTerminateFlag = true;

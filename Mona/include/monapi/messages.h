@@ -30,13 +30,12 @@ enum
     MSG_FILE_DECOMPRESS_BZ2_FILE,
     MSG_FILE_READ_DIRECTORY = 0x0410,
 
-    MSG_ELF_EXECUTE_FILE = 0x0500,
-
+    MSG_PROCESS_EXECUTE_FILE = 0x0500,
+    MSG_PROCESS_CREATE_IMAGE,
     MSG_PROCESS_GET_PROCESS_INFO = 0x1000,
     MSG_PROCESS_CREATED,
     MSG_PROCESS_TERMINATED,
     MSG_PROCESS_GET_COMMON_PARAMS,
-
     MSG_PROCESS_GRAB_STDOUT = 0x10f0,  // temporary
     MSG_PROCESS_UNGRAB_STDOUT,         // temporary
     MSG_PROCESS_STDOUT_DATA            // temporary
@@ -50,6 +49,7 @@ enum
     ID_GUI_SERVER,
     ID_ELF_SERVER,
     ID_PROCESS_SERVER,
+    ID_PE_SERVER,
     ID_NUMBER_OF_SERVERS
 };
 
@@ -79,8 +79,8 @@ extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_B
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt);
-extern int monapi_call_elf_execute_file(const char* command_line, MONAPI_BOOL prompt);
-extern int monapi_call_elf_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid);
+extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
+extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid);
 #ifdef __cplusplus
 }
 #endif

@@ -179,7 +179,7 @@ void Shell::commandExecute(bool prompt)
     }
 
     dword tid;
-    int result = monapi_call_elf_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid);
+    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid);
 
     this->position = 0;
     if (!this->callAutoExec && result == 0)

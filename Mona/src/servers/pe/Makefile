@@ -1,5 +1,5 @@
-TARGET  = ELF.BIN
-SOURCES = main.cpp elfparser.cpp
+TARGET  = PE.BIN
+SOURCES = main.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-bin.inc

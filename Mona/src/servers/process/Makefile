@@ -1,5 +1,5 @@
-TARGET  = ELF.BIN
-SOURCES = main.cpp elfparser.cpp
+TARGET  = PROCESS.BIN
+SOURCES = main.cpp ProcessManager.cpp ProcessInfo.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-bin.inc

@@ -6,6 +6,14 @@
 
         * src/lib/monapi/monapi.cpp (user_start): extern "C"によりリンク時の警告に対処
 
+        * src/servers/elf: ELFをバイナリイメージに展開する部分以外はPROCESSサーバーに分離
+
+        * src/servers/process: ELFサーバーから分離した部分を独立
+
+        * src/servers/Makefile: 容量節約のためmonitorサーバーを外した
+
+        * apps/gui/Makefile: 容量節約のためlauncherを外した
+
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp (IDE_Identifye): identifyコマンド送信(挙動がおかしい)

@@ -102,7 +102,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     cTmp = (CString *)this->cmd;
     if(cTmp->getLength() == 0) break;
     if(strcmp(*cTmp, "CHSH") == 0 || strcmp(*cTmp, "chsh") == 0){
-      int result = monapi_call_elf_execute_file("/SERVERS/OLDSHELL.BIN", MONAPI_TRUE);
+      int result = monapi_call_process_execute_file("/SERVERS/OLDSHELL.BIN", MONAPI_TRUE);
       if(result != 0){
         this->SetMessage(result);
       } else {
