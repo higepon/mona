@@ -254,6 +254,7 @@ void Shell::commandExecute(bool prompt)
 
 void Shell::internalCommandExecute(int command, _A<CString> args)
 {
+    monapi_call_mouse_set_cursor(0);
     switch (command)
     {
     case COMMAND_CD:
@@ -367,6 +368,7 @@ void Shell::internalCommandExecute(int command, _A<CString> args)
     default:
         break;
     }
+    monapi_call_mouse_set_cursor(1);
 }
 
 void Shell::commandTerminate()
