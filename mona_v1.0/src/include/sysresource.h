@@ -10,15 +10,17 @@ class SysresourceHandler{
     char *Name;
     dword Version;
 };
-
+/*
 class IRQHandler{
   public:
     virtual void process(void) = 0;
 };
+*/
 
+typedef  void (*IRQHandler)(void);
 void irq_init(void);
 sys_irq irq_request(BitMap* irqmap);
-bool irq_acquire(sys_irq irq,IRQHandler* ih);
+bool irq_acquire(sys_irq irq,IRQHandler ih);
 void irq_free(sys_irq irq);
 void irq_enable(sys_irq irq);
 void irq_disable(sys_irq irq);

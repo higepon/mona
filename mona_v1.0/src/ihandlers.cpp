@@ -123,9 +123,9 @@ void MFDCHandler(void) {
 }
 
 /* IRQ Handler (expr) */
-#define IRQHANDLERMaster(x) void irqHandler_##x(void) {  int i ; i = x ; g_console->printf("IRQ:%d\n",i); g_irqHandlers[x]->process(); outportb(0x20, 0x20); }
+#define IRQHANDLERMaster(x) void irqHandler_##x(void) {  int i ; i = x ; g_console->printf("IRQMaster:%d\n",i); g_irqHandlers[x](); outportb(0x20, 0x20); }
 
-#define IRQHANDLERSlave(x) void irqHandler_##x(void) {  int i ; i = x ;  g_console->printf("IRQ:%d\n",i);  g_irqHandlers[x]->process();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
+#define IRQHANDLERSlave(x) void irqHandler_##x(void) {  int i ; i = x ;  g_console->printf("IRQSlave:%d\n",i);  g_irqHandlers[x]();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
 
 IRQHANDLERMaster(0)
 IRQHANDLERMaster(1)

@@ -4,7 +4,7 @@
 #include <pic.h>
 #include<idt.h> /* —v‚ç‚È‚¢? */
 
-
+/*
 class NullIRQHandler : public IRQHandler {
   public:
     virtual void process(void);
@@ -23,10 +23,16 @@ NullIRQHandler::NullIRQHandler(sys_irq irq){
 NullIRQHandler::~NullIRQHandler(){
 }
 
+*/
+
+void nullirqhandler(void){
+}
+
+
 void irq_init(void){
   int i;
   for(i=0;i!=16;i++){
-    g_irqHandlers[i] = new NullIRQHandler(i); /*  */
+    g_irqHandlers[i] = nullirqhandler; /*  */
   }
   
   /* enable slave int. */
@@ -50,7 +56,7 @@ sys_irq irq_request(BitMap* irqmap){
   return IRQ_INVALID;
 }
 
-bool irq_acquire(sys_irq irq,IRQHandler* ih){
+bool irq_acquire(sys_irq irq,IRQHandler ih){
   if(g_irqMap->marked(irq)){
     g_console->printf("irq:irq_acquire() failed.\n");
     return false;
@@ -59,7 +65,7 @@ bool irq_acquire(sys_irq irq,IRQHandler* ih){
   
   g_irqMap->mark(irq);
   g_console->printf("irq:dummy process().\n");
-  ih->process();
+  ih();
   g_irqHandlers[irq] = ih;
   return true;
 }

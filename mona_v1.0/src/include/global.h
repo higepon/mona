@@ -32,4 +32,4 @@ GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
 
 /* expr:sysresource */
 GLOBAL BitMap *g_irqMap;
-GLOBAL IRQHandler* g_irqHandlers[16];
+GLOBAL IRQHandler g_irqHandlers[16];

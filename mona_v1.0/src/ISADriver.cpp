@@ -16,7 +16,7 @@ sys_irq ISADriver::MapIRQ(BitMap *irqmap){
   return irq_request(irqmap);
 }
 
-bool ISADriver::AcquireIRQ(sys_irq irq,IRQHandler* ih){
+bool ISADriver::AcquireIRQ(sys_irq irq,IRQHandler ih){
   console->printf("ISA:AcqureIRQ(%d)\n",irq);
   return irq_acquire(irq,ih);
 }

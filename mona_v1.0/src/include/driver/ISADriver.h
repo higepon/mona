@@ -10,7 +10,7 @@ class ISADriver : public SysresourceHandler{
     ISADriver(VirtualConsole *con);
     ~ISADriver();
     sys_irq MapIRQ(BitMap *irqm);
-    bool AcquireIRQ(sys_irq irq,IRQHandler *irqh);
+    bool AcquireIRQ(sys_irq irq,IRQHandler irqh);
     void EnableIRQ(sys_irq irq);
     void DisableIRQ(sys_irq irq);
     
