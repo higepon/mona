@@ -4,6 +4,7 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <monalibc/math.h>
+#include <monapi/messages.h>
 #include <monalibc/ctype.h>
 #include <gui/System/Mona/Forms/Timer.h>
 #include <monapi/CString.h>
@@ -25,8 +26,10 @@ class Canvas : public Control
 public:
     Canvas()
     {
-        char* file = ReadData("/KUMA.OBJ");
-        if (file == NULL)
+        mi = NULL;
+        mi = monapi_call_file_read_data("/KUMA.OBJ", MONAPI_FALSE);
+
+        if (mi == NULL)
         {
             printf("File Read Error\n");
             return;
@@ -37,7 +40,7 @@ public:
         v2 = new Vertex(0, 0, 0);
         tempFace = new Face(v0, v1, v2);
 
-        this->CreateModel(file);
+        this->CreateModel((const char*)mi->Data);
         this->Rotate(0, 3.14 / 4);
     }
 
@@ -48,6 +51,8 @@ public:
         delete v1;
         delete v2;
         delete tempFace;
+        monapi_cmemoryinfo_dispose(mi);
+        monapi_cmemoryinfo_delete(mi);
     }
 
 public:
@@ -224,41 +229,6 @@ protected:
                *midX = 1;
            }
        }
-    }
-
-    /*----------------------------------------------------------------------
-        Read Data
-    ----------------------------------------------------------------------*/
-    virtual char* ReadData(const char* path)
-    {
-        int result;
-        int fileSize;
-        byte* buf;
-
-        MonAPI::FileInputStream fis(path);
-
-        result = fis.open();
-
-        if (result != 0) return NULL;
-
-        fileSize = fis.getFileSize();
-        buf = new byte[fileSize];
-
-        if (buf == NULL)
-        {
-            fis.close();
-            return NULL;
-        }
-
-        if (fis.read(buf, fileSize))
-        {
-            fis.close();
-            return NULL;
-        }
-
-        fis.close();
-
-        return (char*)buf;
     }
 
     void Rotate(double phi, double theta)
@@ -466,6 +436,7 @@ protected:
     Vertex* v2;
     Face* tempFace;
     Face** face;
+    monapi_cmemoryinfo* mi;
 };
 
 #endif
