@@ -140,9 +140,9 @@ int vsprintf(char *s, const char *format, va_list arg){
 int vsscanf(const char *s, const char *format, va_list arg){
   int result = 0;
   int loop;
-  int i;
+//  int i; /* comment out by higepon */
   int width;
-  int precision;
+//  int precision; /* comment out by higepon */
   char s_flag;
   const char *tmps = s;
   int *argiptr;

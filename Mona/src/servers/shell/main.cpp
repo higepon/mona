@@ -165,7 +165,7 @@ void Shell::commandExecute()
 
     char* command = strtok(commandLine_, " ");
     char* arg;
-    CommandOption* option;
+    CommandOption* option = NULL;
 
     while ((arg = strtok(NULL, " ")) != NULL)
     {

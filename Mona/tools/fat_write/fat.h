@@ -25,6 +25,7 @@ private:
         RESERVED_SECTORS    = 0x0e,
         NUMBER_OF_FATS      = 0x10,
         NUMBER_OF_DIRENTRY  = 0x11,
+        NUMBER_OF_SECTORS   = 0x13,
         SECTORS_PER_FAT     = 0x16,
         FILE_SYSTEM_ID      = 0x36,
         SECTOR_SIZE = 0x0200,
@@ -41,6 +42,7 @@ private:
     dword numberOfDirEntry;
     dword sectorsPerFat;
     dword rootDirectoryEntry;
+    dword dataArea;
     dword numberOfClusters;
 
     IStorageDevice *floppy;
@@ -79,6 +81,8 @@ private:
 // FatFile
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+class FatDirectory;
+
 class FatFile : public File
 {
 private:
@@ -89,18 +93,21 @@ private:
 private:
     dword last;
     FAT *fat;
+    FatDirectory *parent;
     byte *file;
     byte *flag;
     dword *lba;
     dword fsize;
     dword sectors;
     dword pos;
+    int entry;
+    bool sizeChanged;
 
 public:
     FatFile ();
     ~FatFile ();
 
-    bool initialize (FAT *p, dword cluster, dword size);
+    bool initialize (FAT *p, FatDirectory *d, int e, dword c, dword s);
 
     dword read (byte *bf, dword sz);
     dword write (byte *bf, dword sz);
@@ -139,6 +146,7 @@ protected:
         FILESIZE    = 0x1c,
         SIZE_FILENAME  = 8,
         SIZE_EXTENTION = 3,
+        END_OF_CLUSTER = 0xfff,
         MARK_DELETE = 0xe5,
         MARK_UNUSED = 0x00
     };
@@ -167,7 +175,12 @@ public:
 
     Directory* getDirectory (int entry);
     File* getFile (int entry);
+    bool isDirectory (int entry);
+    bool isFile (int entry);
     dword getIdentifer ();
+
+    bool setFileSize (int entry, dword size);
+    bool setCluster (int entry, dword cluster);
 
 protected:
     byte* searchUnusedEntry ();

@@ -49,17 +49,22 @@ bool FAT::initialize (IStorageDevice *p)
                 return false;
 
         // BIOS Parameter Block の情報を読み込む
+        dword numberOfSectors;
+
         bytesPerSector    = *((word*)( bf + BYTES_PER_SECTOR    ));
         sectorsPerCluster = *((byte*)( bf + SECTORS_PER_CLUSTER ));
         reservedSectors   = *((word*)( bf + RESERVED_SECTORS    ));
         numberOfFats      = *((byte*)( bf + NUMBER_OF_FATS      ));
         numberOfDirEntry  = *((word*)( bf + NUMBER_OF_DIRENTRY  ));
+        numberOfSectors   = *((word*)( bf + NUMBER_OF_SECTORS   ));
         sectorsPerFat     = *((word*)( bf + SECTORS_PER_FAT     ));
 
         dword bytesPerFat = bytesPerSector * sectorsPerFat;
+        dword sectorsPerDirEntry = numberOfDirEntry / ( bytesPerSector / 0x20 );
 
         rootDirectoryEntry = reservedSectors + sectorsPerFat * numberOfFats;
-        numberOfClusters = bytesPerFat * 2 / 3;
+        dataArea = rootDirectoryEntry + sectorsPerDirEntry;
+        numberOfClusters = numberOfSectors - dataArea;
 
         // メモリ確保
         byte *ptr = new byte [bytesPerFat + sectorsPerFat];
@@ -181,8 +186,7 @@ bool FAT::write (dword lba, byte *bf)
 //=============================================================================
 dword FAT::getLbaFromCluster (dword cluster)
 {
-        return rootDirectoryEntry + numberOfDirEntry / ( bytesPerSector / 0x20 )
-                + sectorsPerCluster * ( cluster - 2 );
+        return dataArea + sectorsPerCluster * ( cluster - 2 );
 }
 
 //=============================================================================
@@ -224,6 +228,9 @@ void FAT::setNextCluster (dword cluster, dword next)
 //-----------------------------------------------------------------------------
 dword FAT::searchFreeCluster (dword cluster)
 {
+        // 大きすぎるクラスタ番号が来たら、検索開始位置を先頭へ戻す
+        if (numberOfClusters <= cluster)
+                cluster = START_OF_CLUSTER;
         dword start = cluster;
 
         do {
@@ -232,6 +239,7 @@ dword FAT::searchFreeCluster (dword cluster)
                 if (0 == next)
                         return cluster;
                 cluster++;
+
                 // 末尾まで来たら、先頭から調べなおす
                 if (numberOfClusters <= cluster)
                         cluster = START_OF_CLUSTER;
@@ -280,7 +288,7 @@ FatFile::~FatFile ()
 }
 
 //=============================================================================
-bool FatFile::initialize (FAT *p, Directory *d, int e, dword c, dword s)
+bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
 {
         dword nbytes = p->getBytesPerSector();
         dword sz = ( s + nbytes - 1 ) & ( ~( nbytes - 1 ) );
@@ -684,7 +692,6 @@ bool FatDirectory::deleteEntry (int entry)
         dword bytesPerSector = fat->getBytesPerSector();
         dword n = ( tmp - entrys ) / bytesPerSector;
 
-
         tmp[0] = MARK_DELETE;
 
         // VFAT を開放して回る
@@ -841,6 +848,42 @@ File* FatDirectory::getFile (int entry)
 }
 
 //=============================================================================
+bool FatDirectory::isDirectory (int entry)
+{
+        byte *tmp = entrys + 0x20 * entry;
+
+        if (false == isValid(tmp))
+                return false;
+
+        if (0 == (tmp[ATTRIBUTE] & ATTR_DIRECTORY))
+                return false;
+
+        return true;
+}
+
+//=============================================================================
+bool FatDirectory::isFile (int entry)
+{
+        byte *tmp = entrys + 0x20 * entry;
+
+        if (false == isValid(tmp))
+                return false;
+
+        if (tmp[ATTRIBUTE] & ATTR_DIRECTORY)
+                return false;
+        if (tmp[ATTRIBUTE] & ATTR_VOLUME)
+                return false;
+
+        return true;
+}
+
+//=============================================================================
+dword FatDirectory::getIdentifer ()
+{
+        return start;
+}
+
+//=============================================================================
 bool FatDirectory::setFileSize (int entry, dword size)
 {
         byte *tmp = entrys + 0x20 * entry;
@@ -870,12 +913,6 @@ bool FatDirectory::setCluster (int entry, dword cluster)
         fat->write(lba[n], entrys + n * bytesPerSector);
 
         return true;
-}
-
-//-----------------------------------------------------------------------------
-dword FatDirectory::getIdentifer ()
-{
-        return start;
 }
 
 //-----------------------------------------------------------------------------

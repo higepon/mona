@@ -146,6 +146,7 @@ unsigned char hextoa(int hex)
    } else  {
      return (hex+'0');
    }
+   return ' ';
 }
 
 void char_to_MAC_string(unsigned char *from,unsigned char *to)

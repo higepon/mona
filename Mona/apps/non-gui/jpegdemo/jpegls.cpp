@@ -440,7 +440,7 @@ int CJPEGLS::get_value(int size) {
 // ハフマンデコード＋逆量子化＋逆ジグザグ
 int CJPEGLS::decode_huff(int scan,int *block)
 {
-    int size, len, val, run, index;
+    int size, val, run, index;
     int *pQt = (int *)(qt[scan_qt[scan]]);
 
     // DC
@@ -491,7 +491,7 @@ void CJPEGLS::mcu_bitblt(int *src,int *dest,int width,
     int x,y,x2,y2;
     int dx,dy;
     int c1,c2,c3,c4;
-    int vx1,vx2,v;
+    int vx1,vx2;
     w = x1 - x0;
     h = y1 - y0;
 
@@ -536,7 +536,7 @@ void CJPEGLS::mcu_bitblt(int *src,int *dest,int width,
 void CJPEGLS::decode_mcu(void)
 {
     int scan,val;
-    int unit,i,h,v;
+    int h,v;
     int *p,hh,vv;
     int block[64],dest[64];
 
@@ -627,8 +627,6 @@ void CJPEGLS::decode(unsigned char *rgb)
 {
     int h_unit,v_unit;
     int mcu_count,h,v;
-    int val;
-    unsigned char m;
 
     // MCUサイズ計算
     decode_init();

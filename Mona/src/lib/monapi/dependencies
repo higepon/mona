@@ -264,3 +264,5 @@ VirtualScreen.o: VirtualScreen.cpp ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h
 mt19937ar.o: mt19937ar.cpp
+Keys.o: Keys.cpp ../../../include/monapi/Keys.h \
+  ../../../include/sys/types.h
