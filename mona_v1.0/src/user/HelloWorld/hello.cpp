@@ -2,6 +2,8 @@
 
 int MonaMain(List<char*>* pekoe)
 {
+    Screen screen;
+    printf("user mode screen (x, y) = (%x, %x) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
     int result;
     byte buf[32];
 

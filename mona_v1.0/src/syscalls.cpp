@@ -134,6 +134,7 @@ void syscall_entrance() {
         screenInfo->bpp  = (dword)(g_vesaDetail->bitsPerPixel);
         screenInfo->x    = (dword)(g_vesaDetail->xResolution);
         screenInfo->y    = (dword)(g_vesaDetail->yResolution);
+	g_console->printf("(x, y) = (%d, %d)", g_vesaDetail->xResolution, g_vesaDetail->yResolution);
         info->eax = 0;
         break;
     case SYSTEM_CALL_LOAD_PROCESS:

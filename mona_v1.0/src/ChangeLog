@@ -1,3 +1,7 @@
+2004-03-15  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandler.asm : スレッドセーブのコード追加
+
 2004-03-14  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib/Makefile ($(LIB_USER)): Tinoさんのpatch適用

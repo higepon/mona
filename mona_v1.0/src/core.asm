@@ -180,7 +180,7 @@ arch_switch_thread1:
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
-        pop  ebx                     ; restore ebp
+        pop  ebx                     ; restore ebx
         iretd                        ; switch to next
 
 ;;----------------------------------------------------------------------
@@ -207,7 +207,7 @@ arch_switch_thread2:
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
-        pop  ebx                     ; restore ebp
+        pop  ebx                     ; restore ebx
         iretd                        ; switch to next
 
 ;;----------------------------------------------------------------------

@@ -64,6 +64,7 @@ cextern arch_set_dokodemo_view
 arch_fdchandler:
         pushAll
         changeData
+        call arch_save_thread_registers
         call MFDCHandler
         popAll
         iretd
@@ -82,6 +83,7 @@ arch_timerhandler:
 arch_keystrokehandler:
         pushAll
         changeData
+        call arch_save_thread_registers
         xor eax, eax
         mov dx , 0x60
         in  al , dx
@@ -95,6 +97,7 @@ arch_keystrokehandler:
 arch_mousehandler
         pushAll
         changeData
+        call arch_save_thread_registers
         call mouseHandler
         popAll
         iretd
@@ -114,6 +117,7 @@ cextern irqHandler_%1
 arch_irqhandler_%1:
         pushAll
         changeData
+        call arch_save_thread_registers
         call arch_set_dokodemo_view
         call arch_set_stack_view
         call irqHandler_%1
@@ -142,6 +146,7 @@ arch_fault0dhandler:
         call arch_set_dokodemo_view
         pushAll
         changeData
+        call arch_save_thread_registers
         push dword[esp + 40]
         call arch_set_stack_view
         call fault0dHandler
@@ -153,8 +158,10 @@ arch_fault0dhandler:
 cglobal arch_cpufaulthandler_%1
 cextern cpufaultHandler_%1
 arch_cpufaulthandler_%1:
+        call arch_set_dokodemo_view
         pushAll
         changeData
+        call arch_save_thread_registers
         call arch_set_stack_view
         call cpufaultHandler_%1
         popAll
@@ -177,6 +184,7 @@ arch_cpufaulthandler_%1:
 arch_cpufaulthandler_c:
         pushAll
         changeData
+        call arch_save_thread_registers
         push dword[esp + 40]
         call cpufaultHandler_c
         add  esp, 0x04          ; remove error_cd
@@ -186,6 +194,7 @@ arch_cpufaulthandler_c:
 arch_cpufaulthandler_e:
         pushAll
         changeData
+        call arch_save_thread_registers
         push ebp
         mov  ebp, esp
         sub  esp, 8
