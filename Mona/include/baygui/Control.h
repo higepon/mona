@@ -34,8 +34,6 @@ class Container;
  コントロールクラス
 */
 class Control : public Object {
-private:
-	
 protected:
 	/** 親部品 */
 	Container *parent;
@@ -67,16 +65,16 @@ protected:
 	unsigned int foreColor;
 	/** フォントスタイル */
 	int fontStyle;
+	/** 描画領域 */
+	Graphics *_g;
+	/** 描画バッファー */
+	Image *_buffer;
 #ifdef MONA
 	/** GUIサーバーID */
 	dword guisvrID;
 	/** GUIサーバー上のウィンドウオブジェクト */
 	guiserver_window *_window;
 #endif
-	/** 描画領域 */
-	Graphics *_g;
-	/** 描画バッファー */
-	Image *_buffer;
 
 public:
 	Control::Control();
@@ -89,15 +87,24 @@ public:
 	virtual void repaint();
 	virtual void update();
 	virtual unsigned int getHandle();
-	inline bool getEnabled() { return this->enabled; }
-	inline bool getFocused() { return this->focused; }
-	inline bool getVisible() { return this->visible; }
-	inline Rect *getRect() { return &this->rect; }
-	inline unsigned int getBackground() { return this->backColor; }
-	inline unsigned int getForeground() { return this->foreColor; }
-	inline int getFontStyle() { return this->fontStyle; }
-	virtual Container *getParent() { return this->parent; }
-	virtual Graphics *getGraphics();
+	/** 活性・非活性を得る */
+	inline  bool getEnabled() { return this->enabled; }
+	/** フォーカス状態を得る */
+	inline  bool getFocused() { return this->focused; }
+	/** 表示・非表示を得る */
+	inline  bool getVisible() { return this->visible; }
+	/** 部品の大きさ */
+	inline  Rect *getRect() { return &this->rect; }
+	/** 背景色を得る */
+	inline  unsigned int getBackground() { return this->backColor; }
+	/** 前景色を得る */
+	inline  unsigned int getForeground() { return this->foreColor; }
+	/** フォントスタイルを得る */
+	inline  int getFontStyle() { return this->fontStyle; }
+	/** 親部品を得る */
+	inline  Container *getParent() { return this->parent; }
+	/** 描画オブジェクトを得る */
+	inline  Graphics *getGraphics() { return this->_g; }
 	virtual Control *getMainWindow();
 	virtual void setEnabled(bool enabled);
 	virtual void setFocused(bool focused);

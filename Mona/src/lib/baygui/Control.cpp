@@ -172,12 +172,6 @@ unsigned int Control::getHandle()
 	}
 }
 
-/** 描画オブジェクトを得る */
-Graphics *Control::getGraphics()
-{
-	return this->_g;
-}
-
 /** メインウィンドウを得る */
 Control *Control::getMainWindow()
 {

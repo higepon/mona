@@ -319,6 +319,7 @@ void Window::postEvent(Event *event)
 		if (event->type == MOUSE_PRESSED) {
 			// 閉じるボタンクリック
 			if (4 <= px && px < 17 && 4 <= py && py < 17) {
+				// ランチャーは終了できないようにする
 				if (this->threadID != MonAPI::Message::lookupMainThread("GLAUNCH.EX5")) {
 					isRunning = false;
 					dispose();
@@ -327,10 +328,13 @@ void Window::postEvent(Event *event)
 			// タイトルバークリック
 			} else if (0 <= px && px < this->width && 0 <= py && py < INSETS_TOP) {
 				this->state = STATE_MOVING;
-				//MessageInfo info;
-				//MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_CREATEOVERLAP,
-				//	this->x, this->y, MAKE_DWORD(this->width, this->height));
-				//this->overlap = info.arg2;
+				// キャプチャー要求とウィンドウ移動用オブジェクト作成要求
+				MessageInfo info;
+				MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOUSECAPTURE, 
+					getHandle(), 1);
+				MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_CREATEOVERLAP, 
+					this->x, this->y, MAKE_DWORD(this->width, this->height));
+				this->overlap = info.arg2;
 				this->preX = px;
 				this->preY = py;
 			// ウィンドウ内クリック
@@ -344,15 +348,13 @@ void Window::postEvent(Event *event)
 			// タイトルバーリリース
 			if (this->state == STATE_MOVING) {
 				this->state = STATE_NORMAL;
-				//MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
-				//this->overlap = 0;
-				// はじめに元のウィンドウを非表示にする
-				//this->_window->X = this->x;
-				//this->_window->Y = this->y;
-				//this->_window->Visible = false;
-				//update();
+				// キャプチャー破棄要求とウィンドウ移動用オブジェクト破棄要求
+				MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DISPOSEOVERLAP, 
+					this->overlap);
+				MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOUSECAPTURE, 
+					getHandle(), 0);
+				this->overlap = 0;
 				// ウィンドウを実際に移動させる
-				//this->_window->Visible = true;
 				setLocation(me->x - this->preX, me->y - this->preY);
 			// ウィンドウ内リリース
 			} else {
@@ -364,13 +366,10 @@ void Window::postEvent(Event *event)
 		} else if (event->type == MOUSE_DRAGGED) {
 			// ウィンドウ移動
 			if (this->state == STATE_MOVING) {
-				//MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
-				//	MAKE_DWORD(me->x - this->preX, me->y - this->preY), 
-				//	MAKE_DWORD(this->width, this->height));
-				// ウィンドウ位置を擬似的に移動してGUIサーバーをだます
-				//this->_window->X = me->x - this->width / 2;
-				//this->_window->Y = me->y - this->height / 2;
-				setLocation(me->x - this->preX, me->y - this->preY);
+				// ウィンドウ移動用オブジェクトの移動
+				MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+					MAKE_DWORD(me->x - this->preX, me->y - this->preY), 
+					MAKE_DWORD(this->width, this->height));
 			// ウィンドウ内移動
 			} else {
 				// 絶対座標→相対座標

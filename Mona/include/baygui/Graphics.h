@@ -51,10 +51,11 @@ public:
 	void fillCircle(int x0, int y0, int r);
 	void fillRect(int x, int y, int width, int height);
 	void translate(int x, int y);
-	inline int getTransX() { return this->tx; }
-	inline int getTransY() { return this->ty; }
+	/** 幅を得る */
 	inline int getWidth() { return this->width; }
+	/** 高さを得る */
 	inline int getHeight() { return this->height; }
+	/** フォントスタイルを得る */
 	inline int getFontStyle() { return this->fontStyle; }
 	void setClip(int cx, int cy, int cw, int ch);
 	void setColor(unsigned int color);

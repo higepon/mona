@@ -40,6 +40,7 @@ public:
 	Button::Button(char *label);
 	virtual Button::~Button();
 	virtual void setLabel(char *label);
+	/** ラベルを得る */
 	inline  char *getLabel() { return this->label.getBytes(); }
 	virtual void onPaint(Graphics *g);
 	virtual void onEvent(Event *event);

@@ -46,6 +46,7 @@ private:
 public:
 	LinkedList::LinkedList();
 	virtual LinkedList::~LinkedList();
+	/** リストの長さを得る */
 	inline int getLength() { return this->dataListLength; }
 	LinkedItem *getLinkedItem(Object *o);
 	Object *get(int index);

@@ -45,6 +45,7 @@ public:
 	TextField::TextField();
 	virtual TextField::~TextField();
 	virtual void setText(char *text);
+	/** テキストを得る */
 	inline  char *getText() { return this->text; }
 	virtual void onPaint(Graphics *g);
 	virtual void onEvent(Event *event);

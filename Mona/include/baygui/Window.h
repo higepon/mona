@@ -67,6 +67,7 @@ public:
 	virtual Window::~Window();
 	virtual void create();
 	virtual void dispose();
+	/** タイトルを得る */
 	inline char  *getTitle() { return this->title.getBytes(); }
 	virtual void setTitle(char *title);
 	virtual void setTimer(int duration);

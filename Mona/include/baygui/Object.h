@@ -39,7 +39,7 @@ protected:
 public:
 	Object::Object();
 	virtual Object::~Object();
-	unsigned char *getByteArray(char *path);
+	//unsigned char *getByteArray(char *path);
 };
 
 #endif // _OBJECT_H_INCLUDED_

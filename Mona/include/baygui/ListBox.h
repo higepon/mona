@@ -43,6 +43,7 @@ private:
 public:
 	ListBox::ListBox();
 	virtual ListBox::~ListBox();
+	/** 選択位置を得る */
 	inline  int getSelectedIndex() { return this->selectedIndex; }
 	virtual char *getSelectedItem();
 	virtual void select(int index);

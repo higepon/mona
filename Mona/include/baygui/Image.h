@@ -48,7 +48,9 @@ public:
 	Image::Image(char *path);
 	virtual Image::~Image();
 	unsigned int getHandle();
+	/** 幅を得る */
 	inline int getWidth() { return this->width; }
+	/** 高さを得る */
 	inline int getHeight() { return this->height; }
 	unsigned int getPixel(int x, int y);
 	void setPixel(int x, int y, unsigned int color);

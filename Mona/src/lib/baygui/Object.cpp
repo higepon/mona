@@ -36,6 +36,7 @@ Object::Object() {
 Object::~Object() {
 }
 
+#if 0
 /** ファイルを開きバイト列を得る */
 unsigned char *Object::getByteArray(char *path)
 {
@@ -88,3 +89,4 @@ unsigned char *Object::getByteArray(char *path)
 	}
 #endif
 }
+#endif
