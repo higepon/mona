@@ -39,8 +39,6 @@ private:
 	char inputBuffer[MAX_TEXT_LEN];
 	/** 変換対象文字列バッファー */
 	char translateBuffer[MAX_TEXT_LEN];
-	/** 確定文字列バッファー */
-	char decideBuffer[MAX_TEXT_LEN];
 	/** IMEモード（オンなら日本語入力中）*/
 	bool imemode;
 	/** IMEイベント */
@@ -48,15 +46,14 @@ private:
 	/** 親部品 */
 	Control *parent;
 	
+public:
+	ImeManager::ImeManager();
+	virtual ImeManager::~ImeManager();
 	virtual void clearBuffer(char *buffer);
 	virtual void insertCharacter(char *buffer, char c);
 	virtual void insertString(char *buffer, char *str);
 	virtual int  deleteCharacter(char *buffer);
-	virtual char *getKana();
-
-public:
-	ImeManager::ImeManager();
-	virtual ImeManager::~ImeManager();
+	virtual bool getKana(char *inputBuffer, char *str);
 	virtual void setParent(Control *parent);
 	virtual void clearBuffer();
 	virtual void repaint();
