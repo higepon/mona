@@ -99,7 +99,6 @@ void startKernel(void) {
     operatorTester();
     hvectorTester();
     typeTester();
-    STLTester();
 #endif
     //    process2Tester();
     processTester();

@@ -12,7 +12,7 @@
     \date   create:2002/10/12 update:$Date$
 */
 #include<KeyBoardManager.h>
-#include<monaVga.h>
+#include<global.h>
 #include<monaOperator.h>
 
 const int KeyBoardManager::keyMap_[128] = {
@@ -107,7 +107,7 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
 
-    //    _sys_printf("scancode=%x ", scancode);
+    //    g_console->printf("scancode=%x ", scancode);
 
     /* first, check some scancodes */
     switch(scancode) {
@@ -195,7 +195,7 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
 */
 void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
 
-    _sys_printf("%s %s%s%s%s%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN )? "down" : "up  "
+    g_console->printf("%s %s%s%s%s%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN )? "down" : "up  "
                                    , (modifiers & KEY_MODIFIER_SHIFT)? "shift": ""
                                    , (modifiers & KEY_MODIFIER_CTRL )? "ctrl" : ""
                                    , (modifiers & KEY_MODIFIER_ALT  )? "alt"  : ""

@@ -12,7 +12,6 @@
     \date   create:2002/12/02 update:$Date$
 */
 #include <monaChecker.h>
-#include <monaVga.h>
 #include <monaTypes.h>
 #include <monaKernel.h>
 #include <IA32MemoryManager.h>

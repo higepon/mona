@@ -149,7 +149,7 @@ template <class T> T HVector<T>::get(size_t index) const {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
-        _sys_printf("HVector<T>::get() out of bounds\n");
+        g_console->printf("HVector<T>::get() out of bounds\n");
         return (T)NULL;
     }
     return data_[index];

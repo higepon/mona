@@ -25,8 +25,6 @@
 #define SYS_BG_COLOR BG_TEAL
 #define SYS_CH_COLOR CH_RED
 
-extern dword demoStep;
-
 typedef struct {
 
     dword stack0;

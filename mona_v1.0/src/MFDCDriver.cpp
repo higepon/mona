@@ -11,7 +11,6 @@
 */
 
 #include<MFDCDriver.h>
-#include<monaVga.h>
 #include<monaKernel.h>
 #include<monaOperator.h>
 #include<io.h>

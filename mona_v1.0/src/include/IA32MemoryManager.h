@@ -16,7 +16,6 @@
 
 #include<monaTypes.h>
 #include<monaKernel.h>
-#include<monaVga.h>
 
 #define GD_NUM 8192 /*!< number of Descripter */
 

@@ -13,7 +13,7 @@
 */
 
 #include <ProcessManager.h>
-#include <monaVga.h>
+#include <global.h>
 #include <monaTester.h>
 #include <string.h>
 #include <monaTester.h>
@@ -39,7 +39,7 @@ ProcessManager::ProcessManager() {
     /* init first or second process */
     current = &(process_[0]);
     next    = &(process_[1]);
-    initProcess(process2Tester);
+    //    initProcess(process2Tester);
 }
 
 /*!
@@ -161,10 +161,10 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 void ProcessManager::multiTaskTester() {
 
 
-    //_sys_printf("address of GDT=%d\n", gdt_);
+    //g_console->printf("address of GDT=%d\n", gdt_);
     //    printInfo();
 
-    setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x18, (byte*)0xfff, 0x18);
+    //    setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x18, (byte*)0xfff, 0x18);
     setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS);
     setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), SYS_TSS);
     //    setDT(gdt_ + 6, (dword)(ldt)    , sizeof(GDT), TypeLDT);
@@ -192,7 +192,7 @@ void ProcessManager::printInfo() {
 
     for (int i = 0; i < GDTNUM; i++) {
 
-        _sys_printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
+        g_console->printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
                                                 , gdt_[i].baseL
                                                 , gdt_[i].baseM
                                                 , gdt_[i].type
@@ -319,5 +319,5 @@ inline void ProcessManager::initProcess(void (*f)()) {
     process_[2].esp    = (dword*)15000;
     process_[2].eflags = (dword)0x0200046;
     process_[2].cs     = (dword)0x38;
-    process_[2].eip    = (dword)process3Tester;
+    //    process_[2].eip    = (dword)process3Tester;
 }

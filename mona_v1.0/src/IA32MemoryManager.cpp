@@ -13,9 +13,9 @@
 */
 #include<IA32MemoryManager.h>
 #include<monaIdt.h>
-#include<monaVga.h>
 #include<monaKernel.h>
 #include<monaOperator.h>
+#include<global.h>
 
 /*!
     \brief get class Name
@@ -119,7 +119,7 @@ void IA32MemoryManager::freeMemory(void* address) {
     \date   create:2002/08/08 update:
 */
 IA32MemoryManager::~IA32MemoryManager() {
-    _sys_printf("IA32MemoryManager:destructor\n");
+    g_console->printf("IA32MemoryManager:destructor\n");
 
 }
 
@@ -177,12 +177,12 @@ void IA32MemoryManager::printInfo(char* str) const {
 
 //      for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-//          _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          g_console->printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
 //      }
 
 //      for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-//          _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          g_console->printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
 //      }
 
@@ -192,18 +192,18 @@ void IA32MemoryManager::printInfo(char* str) const {
     while (fentry || uentry) {
 
         if ((uentry && fentry > uentry) || (!fentry && uentry)) {
-            _sys_printf("[U%x-%x]", uentry->size, uentry);
+            g_console->printf("[U%x-%x]", uentry->size, uentry);
             uentry = uentry->next;
             continue;
         }
 
         if ((fentry && uentry > fentry) || (!uentry && fentry)) {
-            _sys_printf("[F%x-%x]", fentry->size, fentry);
+            g_console->printf("[F%x-%x]", fentry->size, fentry);
             fentry = fentry->next;
             continue;
         }
     }
-    _sys_printf(" %s \n", str);
+    g_console->printf(" %s \n", str);
     return;
 }
 
