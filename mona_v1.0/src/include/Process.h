@@ -33,6 +33,7 @@ typedef struct ProcessInfo {
     dword  esi;
     dword  edi;
     dword  ds;
+    dword  ss;
     dword  cr3;
     dword  tick;
     dword  pid;
