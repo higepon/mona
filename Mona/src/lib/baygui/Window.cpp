@@ -115,7 +115,7 @@ namespace baygui
 	{
 		if (this->buffer == NULL || (this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0) return;
 		
-		_P<Graphics> g = Graphics::getGraphics(this->buffer);
+		_P<Graphics> g = new Graphics(this->buffer);
 		int w = this->getWidth(), h = this->getHeight();
 		
 		// 外枠
@@ -156,7 +156,7 @@ namespace baygui
 		}
 		
 		// タイトル
-		FontMetrics* metrics = FontMetrics::getFontMetrics();
+		_P<FontMetrics> metrics = new FontMetrics();
 		int fw = metrics->getWidth(this->getTitle());
 		int fh = metrics->getHeight(this->getTitle());
 		g->setColor(COLOR_LIGHTGRAY);
@@ -261,6 +261,7 @@ namespace baygui
 				this->repaint();
 			}
 			
+			this->onEvent(e);
 			this->ncState = NCState_None;
 			if (destroy) this->onExit();
 		} else {

@@ -18,7 +18,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace baygui
 {
-	FontMetrics *FontMetrics::instance = NULL;
+	//FontMetrics *FontMetrics::instance = NULL;
 
 	FontMetrics::FontMetrics()
 	{

@@ -23,10 +23,10 @@ namespace baygui
 		this->image = image;
 	}
 	
-	_P<Graphics> Graphics::getGraphics(_P<Bitmap> image)
-	{
-		return new Graphics(image);
-	}
+	//_P<Graphics> Graphics::getGraphics(_P<Bitmap> image)
+	//{
+	//	return new Graphics(image);
+	//}
 	
 	Graphics::~Graphics()
 	{
@@ -111,7 +111,7 @@ namespace baygui
 	void Graphics::drawText(char* str, int x, int y)
 	{
 		int i, j, k, pos, bit, width, height, w = 0, h = 0;
-		FontMetrics *manager = FontMetrics::getFontMetrics();
+		_P<FontMetrics> manager = new FontMetrics();
 		
 		// NULLチェック
 		if (str == NULL || strlen(str) == 0) return;

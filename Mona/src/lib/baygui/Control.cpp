@@ -209,7 +209,7 @@ namespace baygui
 	
 	_P<Graphics> Control::getGraphics()
 	{
-		_P<Graphics> ret = Graphics::getGraphics(this->buffer);
+		_P<Graphics> ret = new Graphics(this->buffer);
 		Dimention sz = this->getInnerSize();
 		ret->setClientRect(Rect(this->offset.X, this->offset.Y, sz.Width, sz.Height));
 		return ret;

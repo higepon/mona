@@ -81,7 +81,7 @@ namespace baygui
 		}
 		
 		// テキストを描画
-		FontMetrics *manager = FontMetrics::getFontMetrics();
+		_P<FontMetrics> manager = new FontMetrics();
 		int fw = manager->getWidth(this->getText());
 		int fh = manager->getHeight(this->getText());
 		int x = (w - fw) / 2;
