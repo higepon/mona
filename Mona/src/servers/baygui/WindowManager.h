@@ -77,7 +77,7 @@ class WindowManager : public MonAPI::Server, public Container {
 private:
 	bool isRunning;
 	dword threadID, keysvrID, mousesvrID, shellsvrID, launcherID;
-	int dX, dY, preX, preY, state;
+	int dX, dY, preX, preY, state, modifiers;
 	Bitmap *wallpaper;
 	static WindowManager *instance;
 	

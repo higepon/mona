@@ -35,7 +35,7 @@ WindowManager *WindowManager::instance = NULL;
 WindowManager::WindowManager()
 {
 	isRunning = false;
-	x = y = 0;
+	x = y = modifiers = 0;
 	width = _g->getWidth();
 	height = _g->getHeight();
 	_g->translate(0,0);
@@ -137,6 +137,21 @@ int WindowManager::getKeycode(int keycode, int mod, int charcode)
 {
 	int key = 0;
 	
+	// 修飾キーの判別
+	if ((mod & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+		if ((mod & KEY_MODIFIER_SHIFT) == KEY_MODIFIER_SHIFT) {
+			modifiers = VKEY_LSHIFT;
+		} else if ((mod & KEY_MODIFIER_ALT) == KEY_MODIFIER_ALT) {
+			modifiers = VKEY_ALT;
+		} else if ((mod & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) {
+			modifiers = VKEY_CTRL;
+		}
+	}
+	if ((mod & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
+		modifiers = 0;
+	}
+	
+	// それ以外のキーの判別
 	if (keycode == 33) {
 		key = VKEY_PGUP;
 	} else if (keycode == 34) {
@@ -188,7 +203,7 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
 		//control->postEvent(event);
 		//delete(event);
 		// キーイベントを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYPRESS, keycode, mod, charcode, NULL)) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYPRESS, keycode, this->modifiers, charcode, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS failed %d\n", control->getThreadID());
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS sended %d\n", control->getThreadID());
@@ -214,7 +229,7 @@ void WindowManager::onKeyRelease(int keycode, int mod, int charcode)
 		//control->postEvent(event);
 		//delete(event);
 		// キーイベントを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYRELEASE, keycode, mod, charcode, NULL)) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYRELEASE, keycode, this->modifiers, charcode, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE failed %d\n", control->getThreadID());
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE sended %d\n", control->getThreadID());
