@@ -282,7 +282,7 @@ void cpufaultHandler_e(dword address, dword error)
 #if 0
     g_console->printf("[page:%s<%x><%x><%x>]", g_currentThread->process->getName(), address, error, g_currentThread->archinfo->eip);
 #endif
-    if (!g_page_manager->pageFaultHandler(address, error)) {
+    if (!g_page_manager->pageFaultHandler(address, error, g_currentThread->archinfo->eip)) {
 
         dokodemoView();
         panic("unhandled:fault0E - page fault");

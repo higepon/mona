@@ -42,7 +42,7 @@ public:
     dword age;
     dword schedulerTotalTick;
     dword flags;
-    dword wakeupTimer;
+    dword wakeupSleep;
 };
 
 #endif

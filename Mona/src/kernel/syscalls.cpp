@@ -95,18 +95,24 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
+    case SYSTEM_CALL_SET_TIMER:
+
+        {
+            info->eax = g_scheduler->SetTimer(g_currentThread->thread, info->esi);
+            break;
+        }
+
+    case SYSTEM_CALL_KILL_TIMER:
+
+        {
+            info->eax = g_scheduler->KillTimer(info->esi, g_currentThread->thread);
+            break;
+        }
+
     case SYSTEM_CALL_MTHREAD_SLEEP:
 
         {
             g_scheduler->Sleep(g_currentThread->thread, info->esi);
-            g_scheduler->SwitchToNext();
-        }
-        break;
-
-    case SYSTEM_CALL_TIMER:
-
-        {
-            g_scheduler->Sleep(g_currentThread->thread, info->esi, true);
             g_scheduler->SwitchToNext();
         }
         break;

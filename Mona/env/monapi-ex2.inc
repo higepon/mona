@@ -19,7 +19,7 @@ $(TARGET).EX2: $(TARGET).EXE
 	bzip2 -c $< > $@
 
 $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
-	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	$(STRIP) $@
 
 install: all
@@ -27,7 +27,7 @@ install: all
 	$(INSTALL) $(TARGET).EX2 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX2 $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX2 $(CLEANFILES) $(TARGET).map
 
 depend:
 	rm -f dependencies

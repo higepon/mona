@@ -687,11 +687,11 @@ PageEntry* PageManager::allocatePageTable() const
     \author HigePon
     \date   create:2003/10/15 update:2004/01/08
 */
-bool PageManager::pageFaultHandler(LinearAddress address, dword error)
+bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip)
 {
-    PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(address);
-    dword tableIndex     = getTableIndex(address);
+//    PageEntry* table;
+//    dword directoryIndex = getDirectoryIndex(address);
+//    dword tableIndex     = getTableIndex(address);
     Process* current     = g_currentThread->process;
 
     dword realcr3;
@@ -759,8 +759,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error)
         dword stackButtom = current->getStackBottom(g_currentThread->thread);
         bool stackOver = address < stackButtom && stackButtom - 4096 < address;
 
-        g_console->printf("access denied.address = %x Process %s killed %s", address, current->getName(), stackOver ? "stack overflow?" : "");
-        logprintf("access denied.address = %x Process %s killed %s", address, current->getName(), stackOver ? "stack overflow?" : "");
+        g_console->printf("access denied.address = %x Process %s killed %s eip=%x\n", address, current->getName(), stackOver ? "stack overflow?" : "", eip);
+        logprintf("access denied.address = %x Process %s killed %s eip=%x", address, current->getName(), stackOver ? "stack overflow?" : "", eip);
 
         ThreadOperation::kill();
         return true;

@@ -16,7 +16,7 @@ include $(MONADIR)/env/monapi.inc
 all: $(TARGET).EXE
 
 $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
-	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	$(STRIP) $@
 
 install: all
@@ -24,7 +24,7 @@ install: all
 	$(INSTALL) $(TARGET).EXE $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).EXE $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).EXE $(CLEANFILES) $(TARGET).map
 
 depend:
 	rm -f dependencies

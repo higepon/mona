@@ -40,6 +40,7 @@ int IDManager::allocateID(KObject* object)
 
     tree.add(id, object);
     object->setReferance();
+    object->setId(id);
     return id;
 }
 

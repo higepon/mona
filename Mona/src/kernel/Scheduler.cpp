@@ -40,6 +40,7 @@ bool Scheduler::Schedule1()
     MoveToNewPosition(runq, g_currentThread->thread);
 
     WakeupTimer();
+    WakeupSleep();
 
     return SetNextThread();
 }
@@ -76,6 +77,7 @@ bool Scheduler::Schedule2()
     END_FOREACH
 
     WakeupTimer();
+    WakeupSleep();
 
     return SetNextThread();
 }
@@ -110,12 +112,36 @@ void Scheduler::SetPriority(Thread* thread)
 
 void Scheduler::WakeupTimer()
 {
+    for (int i = 0; i < timers.size(); i++)
+    {
+        KTimer* timer = timers[i];
+
+        if (!timer->timer(this->totalTick)) continue;
+
+        Thread* thread = timer->getThread();
+
+        MessageInfo msg;
+        memset(&msg, 0, sizeof(MessageInfo));
+        msg.header = MSG_TIMER;
+        msg.arg1   = timer->getId();
+
+        timer->setNextTimer(this->totalTick);
+
+        if (g_messenger->send(thread->id, &msg))
+        {
+            g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
+        }
+    }
+}
+
+void Scheduler::WakeupSleep()
+{
     FOREACH(Thread*, queue, waitq)
     {
         FOREACH_N(queue, Thread*, thread)
         {
             Thread* prev = (Thread*)(thread->prev);
-            if (!WakeupTimer(thread)) continue;
+            if (!WakeupSleep(thread)) continue;
 
             thread = prev;
         }
@@ -123,37 +149,19 @@ void Scheduler::WakeupTimer()
     END_FOREACH
 }
 
-bool Scheduler::WakeupTimer(Thread* thread)
+bool Scheduler::WakeupSleep(Thread* thread)
 {
     ASSERT(thread);
 
-    if (thread->waitEvent != MEvent::TIMER && thread->waitEvent != MEvent::TIMER_MESSAGE) return false;
+    if (thread->waitEvent != MEvent::SLEEP) return false;
 
-    if (thread->wakeupTimer > this->totalTick) return false;
+    if (thread->wakeupSleep > this->totalTick) return false;
 
-    int waitEvent = thread->waitEvent;
-
-    thread->priority = MEvent::TIMER; // umm
+    thread->priority = MEvent::SLEEP; // umm
     thread->lastCpuUsedTick = 0;
 
-    if (waitEvent == MEvent::TIMER)
-    {
-        thread->waitEvent = MEvent::NONE;
-        MoveToNewPosition(runq, thread);
-    }
-    else if (waitEvent == MEvent::TIMER_MESSAGE)
-    {
-        thread->waitEvent = MEvent::MESSAGE;
-
-        MessageInfo msg;
-        memset(&msg, 0, sizeof(MessageInfo));
-        msg.header = MSG_TIMER;
-
-        if (g_messenger->send(thread->id, &msg))
-        {
-            g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
-        }
-    }
+    thread->waitEvent = MEvent::NONE;
+    MoveToNewPosition(runq, thread);
 
     return true;
 }
@@ -211,15 +219,44 @@ void Scheduler::Dump()
     END_FOREACH
 }
 
-void Scheduler::Sleep(Thread* thread, dword tick , bool msg/* = false */)
+dword Scheduler::SetTimer(Thread* thread, dword tick)
+{
+    dword id;
+
+    KTimer* timer = new KTimer(thread, tick);
+    id = g_id->allocateID(timer);
+
+    timers.add(timer);
+    timer->setNextTimer(this->totalTick);
+
+    return id;
+}
+
+dword Scheduler::KillTimer(dword id, Thread* thread)
+{
+    KObject* object = g_id->get(id, thread);
+
+    if (object == NULL)
+    {
+        return 1;
+    }
+
+    KTimer* timer = (KTimer*)object;
+    g_id->returnID(id);
+    timers.remove(timer);
+    delete timer;
+    return 0;
+}
+
+void Scheduler::Sleep(Thread* thread, dword tick)
 {
     ASSERT(thread);
     ASSERT(tick > 0);
 
     dword now = this->totalTick;
-    thread->wakeupTimer = now + tick;
+    thread->wakeupSleep = now + tick;
 
-    WaitEvent(thread, msg ? MEvent::TIMER_MESSAGE : MEvent::TIMER);
+    WaitEvent(thread, MEvent::SLEEP);
 }
 
 void Scheduler::WaitEvent(Thread* thread, int waitEvent)

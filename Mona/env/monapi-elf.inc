@@ -15,7 +15,7 @@ include $(MONADIR)/env/monapi.inc
 all: $(TARGET).ELF
 
 $(TARGET).ELF: $(OBJECTS) $(LINKDEP)
-	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@
@@ -25,7 +25,7 @@ install: all
 	$(INSTALL) $(TARGET).ELF $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).ELF $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).ELF $(CLEANFILES) $(TARGET).map
 
 depend:
 	rm -f dependencies

@@ -1,5 +1,9 @@
 2005-03-07  higepon  <higepon@users.sourceforge.jp>
 
+        * アプリビルド時にアプリ名.mapというファイルにアドレスマップを出力するように変更。eipと連動してデバッグが便利になるかも。
+
+        * src/kernel/PageManager.cpp (pageFaultHandler): アクセス違反のときにeipを表示するようにする。
+
         * src/kernel/syscalls.cpp: kill_timer(), set_timer()追加。timer()廃止。
 
 2005-03-06  higepon  <higepon@users.sourceforge.jp>

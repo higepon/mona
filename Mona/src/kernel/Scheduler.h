@@ -4,7 +4,9 @@
 #include "Thread.h"
 #include "Array.h"
 #include "Process.h"
-#include "sys/ThreadPriority.h"
+#include "tester.h"
+#include <sys/ThreadPriority.h>
+#include <sys/HList.h>
 
 /*----------------------------------------------------------------------
     Scheduler
@@ -60,10 +62,12 @@ public:
 
     void Dump();
     void SetDump();
-    void Sleep(Thread* thread, dword tick, bool msg = false);
+    void Sleep(Thread* thread, dword tick);
     void WaitEvent(Thread* thread, int waitEvent);
     int EventComes(Thread* thread, int waitEvent);
     int Kill(Thread* thread);
+    dword SetTimer(Thread* thread, dword tick);
+    dword KillTimer(dword id, Thread* thread);
     bool SetNextThread();
     Process* FindProcess(dword pid);
     Process* FindProcess(const char* name);
@@ -75,7 +79,8 @@ public:
 
 protected:
     void WakeupTimer();
-    bool WakeupTimer(Thread* thread);
+    void WakeupSleep();
+    bool WakeupSleep(Thread* thread);
     void SetPriority(Thread* thread);
     void SetPriority(Thread* thread, unsigned char rate);
 
@@ -96,6 +101,7 @@ protected:
     PsInfo* dumpCurrent;
     Array<Thread*> runq;
     Array<Thread*> waitq;
+    HList<KTimer*> timers;
     dword maxPriority;
     dword totalTick;
 };

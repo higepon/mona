@@ -18,16 +18,20 @@ int sleep(dword ms) {
     return syscall_sleep(tick);
 }
 
-int timer(dword ms) {
-
+int set_timer(dword ms)
+{
     dword tick = ms / 10;
 
     if (tick <= 0)
     {
         tick = 1;
     }
+    return syscall_set_timer(tick);
+}
 
-    return syscall_timer(tick);
+int kill_timer(dword id)
+{
+    return syscall_kill_timer(id);
 }
 
 int print(const char* msg) {
@@ -292,13 +296,6 @@ int syscall_sleep(dword tick)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_MTHREAD_SLEEP, result, tick);
-    return result;
-}
-
-int syscall_timer(dword tick)
-{
-    int result;
-    SYSCALL_1(SYSTEM_CALL_TIMER, result, tick);
     return result;
 }
 
@@ -707,5 +704,19 @@ dword syscall_deallocate_dma_memory(void* address)
 {
     dword result;
     SYSCALL_1(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, result, address);
+    return result;
+}
+
+int syscall_set_timer(dword tick)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_SET_TIMER, result, tick);
+    return result;
+}
+
+int syscall_kill_timer(dword id)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_KILL_TIMER, result, id);
     return result;
 }

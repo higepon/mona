@@ -18,7 +18,7 @@ $(TARGET).EL2: $(TARGET).ELF
 	bzip2 -c $< > $@
 
 $(TARGET).ELF: $(OBJECTS) $(LINKDEP)
-	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@
@@ -28,7 +28,7 @@ install: all
 	$(INSTALL) $(TARGET).EL2 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL2 $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL2 $(CLEANFILES) $(TARGET).map
 
 depend:
 	rm -f dependencies

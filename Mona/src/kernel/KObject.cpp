@@ -3,6 +3,7 @@
 const int KObject::KOBJECT = 0;
 const int KObject::THREAD  = 1;
 const int KObject::KMUTEX  = 2;
+const int KObject::KTIMER  = 3;
 
 KObject::KObject()
 {

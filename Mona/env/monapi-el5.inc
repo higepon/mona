@@ -18,7 +18,7 @@ $(TARGET).EL5: $(TARGET).ELF
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 $(TARGET).ELF: $(OBJECTS) $(LINKDEP)
-	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@
@@ -28,7 +28,7 @@ install: all
 	$(INSTALL) $(TARGET).EL5 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL5 $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL5 $(CLEANFILES) $(TARGET).map
 
 depend:
 	rm -f dependencies

@@ -19,7 +19,7 @@ $(TARGET).BN2: $(TARGET).BIN
 	bzip2 -c $< > $@
 
 $(TARGET).BIN: $(OBJECTS) $(LINKDEP)
-	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	$(STRIP) -O binary $@
 
 install: all
@@ -27,7 +27,7 @@ install: all
 	$(INSTALL) $(TARGET).BN2 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN2 $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN2 $(CLEANFILES) $(TARGET).map
 
 depend:
 	rm -f dependencies
