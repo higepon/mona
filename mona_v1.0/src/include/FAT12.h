@@ -120,7 +120,7 @@ class FAT12 {
     bool setFATAt(int cluster, word fat);
     char* getPathAt(const char* path, int index) const;
     bool compareName(const char* name1, const char* name2) const;
-    int clusterToLbp(int cluster);
+    int clusterToLba(int cluster);
 
  private:
 

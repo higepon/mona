@@ -13,13 +13,22 @@
 #include<FAT12.h>
 #include<string.h>
 
-// for fstest.cpp
-//#include<stdio.h>
-//#include<stdlib.h>
 
-// for mona
+// for test on Windows
+#ifdef FS_TEST
+
+#include<stdio.h>
+#include<stdlib.h>
+
+// for Mona
+#else
+
 #include<global.h>
 #include<operator.h>
+
+#define printf g_console->printf
+
+#endif
 
 #define ATTR_READ_ONLY  0x01
 #define ATTR_HIDDEN     0x02
@@ -83,20 +92,20 @@ bool FAT12::initilize() {
         errNum_ = BPB_ERROR;
         return false;
     }
-    g_console->printf("is FAT12");
+    printf("is FAT12");
     /* specify file system */
     if (!isFAT12()) {
         errNum_ = NOT_FAT12_ERROR;
         return false;
     }
-    g_console->printf("read fat");
+    printf("read fat");
     /* read fat */
     if (!readFAT(true)) {
         errNum_ = FAT_READ_ERROR;
         return false;
     }
 
-    g_console->printf("bitmap");
+    printf("bitmap");
     /* cluster map */
     int mapSize = 512 * bpb_.fatSize16 / 3 + 1;
     map_ = new BitMap(mapSize);
@@ -128,16 +137,16 @@ bool FAT12::isFAT12() {
     int dataSector;
     int countOfClusters;
 
-    g_console->printf("1");
+    printf("1");
     rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1))
         / bpb_.bytesPerSector;
 
-    g_console->printf("2");
+    printf("2");
     totalSector = (bpb_.totalSector16 != 0) ? bpb_.totalSector16 : bpb_.totalSector32;
     dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFATs * bpb_.fatSize16) + rootDirSectors);
     countOfClusters = dataSector / bpb_.sectorPerCluster;
 
-    g_console->printf("3");
+    printf("3");
     /* FAT12 */
     if (countOfClusters < 4085) return true;
 
@@ -156,9 +165,9 @@ bool FAT12::isFAT12() {
 bool FAT12::readBPB() {
 
     byte* p = buf_;
-    g_console->printf("read start");
+    printf("read start");
     if (!(driver_->read(1, buf_))) return false;
-    g_console->printf("read end");
+    printf("read end");
 
     p += 3;
     memcpy(bpb_.oemName, p, 8);
@@ -315,26 +324,26 @@ bool FAT12::changeDirectory(const char* path) {
 */
 bool FAT12::changeDirectoryRelative(const char* path) {
 
-    int lbp = clusterToLbp(currentDirecotry_);
+    int lba = clusterToLba(currentDirecotry_);
 
     /* root directory has no "." or "..", but they are necessary */
     if (currentDirecotry_ == 0 && !strcmp(path, ".")) return true;
     if (currentDirecotry_ == 0 && !strcmp(path, "..")) return true;
 
-    g_console->printf("1");
+    printf("1");
     /* read */
-    if (!(driver_->read(lbp, buf_))) return false;
+    if (!(driver_->read(lba, buf_))) return false;
     memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
 
     /* debug */
-    for (int l = 0; l < 512; l++) g_console->printf("%c", (char)buf_[l]);
+    for (int l = 0; l < 512; l++) printf("%c", (char)buf_[l]);
 
 
     for (int j = 0; j < 16; j++) {
 
-    g_console->printf("%d", j);
+    printf("%d", j);
 
-    for (int k = 0; k < 8; k++) g_console->printf("%c", (char)(entries_[j].filename[k]));
+    for (int k = 0; k < 8; k++) printf("%c", (char)(entries_[j].filename[k]));
 
         /* free */
         if (entries_[j].filename[0] == 0xe5) continue;
@@ -381,21 +390,21 @@ bool FAT12::compareName(const char* name1, const char* name2) const {
 }
 
 /*!
-  \brief convert cluster to LBP
+  \brief convert cluster to LBA
 
   \param cluster cluster
 
-  \return LBP
+  \return LBA
 
   \author HigePon
   \date   create:2003/04/10 update:
 */
-int FAT12::clusterToLbp(int cluster) {
+int FAT12::clusterToLba(int cluster) {
 
     if (cluster < 2) return rootEntryStart_;
 
-    int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector_;
-    return lbp;
+    int lba = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector_;
+    return lba;
 }
 
 /*!
@@ -500,8 +509,8 @@ bool FAT12::read(byte* buffer) {
     if (!readHasNext_) return false;
 
     /* read */
-    int lbp = clusterToLbp(currentCluster_);
-    if (!(driver_->read(lbp, buf_))) return false;
+    int lba = clusterToLba(currentCluster_);
+    if (!(driver_->read(lba, buf_))) return false;
     memcpy(buffer, buf_, 512);
     fileSize_ -= 512;
 
@@ -676,8 +685,8 @@ bool FAT12::write(byte* buffer, int size) {
     (currentEntry_->filesize) += size;
 
     /* write buffer to Disk */
-    int lbp = clusterToLbp(currentCluster_);
-    if (!(driver_->write(lbp, buffer))) {
+    int lba = clusterToLba(currentCluster_);
+    if (!(driver_->write(lba, buffer))) {
         currentCluster_ = cluster;
         errNum_ = DRIVER_READ_ERROR;
         return false;
@@ -709,10 +718,10 @@ bool FAT12::write(byte* buffer) {
 bool FAT12::writeEntry() {
 
     byte buf[512];
-    int lbp = clusterToLbp(currentDirecotry_);
+    int lba = clusterToLba(currentDirecotry_);
 
     memcpy(buf, entries_, sizeof(DirectoryEntry) * 16);
-    if (!(driver_->write(lbp, buf))) {
+    if (!(driver_->write(lba, buf))) {
         errNum_ = DRIVER_WRITE_ERROR;
         return false;
     }
@@ -730,9 +739,9 @@ bool FAT12::writeEntry() {
 bool FAT12::readEntry() {
 
     byte buf[512];
-    int lbp = clusterToLbp(currentDirecotry_);
+    int lba = clusterToLba(currentDirecotry_);
 
-    if (!(driver_->read(lbp, buf))) {
+    if (!(driver_->read(lba, buf))) {
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
