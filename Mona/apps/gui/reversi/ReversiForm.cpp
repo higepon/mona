@@ -185,7 +185,6 @@ public:
     static void Main(Array<String> args)
     {
         String bundlePath = MonAPI::System::getBundlePath();
-
         _P<Bitmap> bitmapWhite = new Bitmap(bundlePath + "/WHITE.BMP");
         _P<Bitmap> bitmapBlack = new Bitmap(bundlePath + "/RED.BMP");
 
