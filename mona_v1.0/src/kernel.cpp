@@ -62,13 +62,12 @@
 #include <vbe.h>
 
 char* version = "Mona version.0.1.4 $Date$";
-void mainProcess();
 
 extern int pos_x;
 extern int pos_y;
 void printInfo() {
 
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
 
 
@@ -197,20 +196,7 @@ void startKernel(void) {
     enableTimer();
 #endif
 
-    while (true);
-}
-
-void mainProcess() {
-
-    while (true);
-}
-
-void idle_process() {
-
-    while (true) {
-
-        /* do nothing */
-    }
+    for (;;);
 }
 
 /*!
@@ -225,8 +211,7 @@ void panic(const char* msg) {
 
     g_console->setCHColor(GP_RED);
     g_console->printf("kernel panic\nMessage:%s\n", msg);
-    while (true) {
-    }
+    for (;;);
 }
 
 void checkMemoryAllocate(void* p, const char* msg) {
