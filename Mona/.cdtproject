@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<cdtproject id="org.eclipse.cdt.make.core.make">
-    <extension id="org.eclipse.cdt.make.core.MakeScannerProvider" point="org.eclipse.cdt.core.ScannerInfoProvider"/>
-    <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-    <data>
-        <item id="org.eclipse.cdt.make.core.makeScannerInfo"/>
-    </data>
-</cdtproject>

@@ -6,7 +6,7 @@
 
         * tools/monafont: 追加（巨大ですみません）
 
-        * tools/codetable: 追加
+        * tools/code_table: 追加
 
         * bin/root/MONA-12.MNF: 削除（bit2mnfにより生成されるため）
 
