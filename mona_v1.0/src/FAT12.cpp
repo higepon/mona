@@ -73,7 +73,7 @@ bool FAT12::initilize() {
         return false;
     }
 
-    for (int i = 0; i < 10; i++) getFATAt(i);
+    for (int i = 0; i < 20; i++) printf("[%d:%x]", i, getFATAt(i));
 
     printf("fat[");
     for (int k = 0; k < 20; k++) printf("%x", fat_[k]);
@@ -114,7 +114,7 @@ bool FAT12::initilize() {
 
     int rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
     int firstDataSector = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors;
-    int lbp = ((3 - 2) * bpb_.sectorPerCluster) + firstDataSector;
+    int lbp = ((5 - 2) * bpb_.sectorPerCluster) + firstDataSector;
 
     if (!(driver_->read(lbp, buf_))) return false;
 
@@ -221,18 +221,16 @@ int FAT12::getErrorNo() {
 word FAT12::getFATAt(int cluster) {
 
     word result;
-    int index = cluster * 12 / 8 ;
-    //int index = cluster;
+    int index = cluster * 12 / 8;
 
     if (cluster % 2) {
 
-        result = ((fat_[index] & 0x0f) << 8) | fat_[index + 1];
-        printf("[%x][%x]", ((fat_[index] & 0x0f) << 8), fat_[index + 1]);
+        result = ((fat_[index] & 0xf0) >> 4) | (fat_[index + 1] << 4);
     } else {
-        result = (fat_[index] << 4) | ((fat_[index + 1] & 0xf0) >> 4);
-        printf("[%x][%x]", (fat_[index] << 4), ((fat_[index + 1] & 0xf0) >> 4));
+
+        result = (fat_[index]) | ((fat_[index + 1] & 0xf) << 8);
     }
-    printf("result%d = %x\n", cluster, result);
+
     return result;
 }
 
