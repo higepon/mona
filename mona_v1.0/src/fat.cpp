@@ -839,7 +839,7 @@ bool FatDirectory::isValid (byte *ent)
 //-----------------------------------------------------------------------------
 void FatDirectory::expandFileName (byte *name, byte *bf)
 {
-        int i, j, index = -1;
+        int i, index = -1;
 
         for (i = 0; '\0' != bf[i]; i++) {
                 if ('.' == bf[i])

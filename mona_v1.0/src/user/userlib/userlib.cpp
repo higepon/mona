@@ -137,10 +137,6 @@ int print(const char* msg) {
     return syscall_print(msg);
 }
 
-int _put_pixel(int x, int y, char color) {
-    return syscall_put_pixel(x, y, color);
-}
-
 int kill() {
     return syscall_kill();
 }
@@ -769,588 +765,297 @@ void FileInputStream::close() {
 /*----------------------------------------------------------------------
     System call
 ----------------------------------------------------------------------*/
-int syscall_mthread_create(dword f) {
+#define SYSCALL_0(syscall_number, result)        \
+    asm volatile("movl $%c1, %%ebx \n"           \
+                 "int  $0x80       \n"           \
+                 "movl %%eax, %0   \n"           \
+                 :"=m"(result)                   \
+                 :"g"(syscall_number)            \
+                 :"ebx"                          \
+                 );                              \
 
+#define SYSCALL_1(syscall_number, result, arg1)  \
+    asm volatile("movl $%c1, %%ebx \n"           \
+                 "movl %2  , %%esi \n"           \
+                 "int  $0x80       \n"           \
+                 "movl %%eax, %0   \n"           \
+                 :"=m"(result)                   \
+                 :"g"(syscall_number), "m"(arg1) \
+                 :"ebx", "esi"                   \
+                 );                              \
+
+#define SYSCALL_2(syscall_number, result, arg1, arg2)       \
+    asm volatile("movl $%c1, %%ebx \n"                      \
+                 "movl %2  , %%esi \n"                      \
+                 "movl %3  , %%ecx \n"                      \
+                 "int  $0x80       \n"                      \
+                 "movl %%eax, %0   \n"                      \
+                 :"=m"(result)                              \
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2) \
+                 :"ebx", "esi", "ecx"                       \
+                 );                                         \
+
+#define SYSCALL_3(syscall_number, result, arg1, arg2, arg3)            \
+    asm volatile("movl $%c1, %%ebx \n"                                 \
+                 "movl %2  , %%esi \n"                                 \
+                 "movl %3  , %%ecx \n"                                 \
+                 "movl %4  , %%edi \n"                                 \
+                 "int  $0x80       \n"                                 \
+                 "movl %%eax, %0   \n"                                 \
+                 :"=m"(result)                                         \
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3) \
+                 :"ebx", "esi", "ecx", "edi"                           \
+                 );                                                    \
+
+#define SYSCALL_4(syscall_number, result, arg1, arg2, arg3, arg4)                 \
+    asm volatile("movl $%c1, %%ebx \n"                                            \
+                 "movl %2  , %%esi \n"                                            \
+                 "movl %3  , %%ecx \n"                                            \
+                 "movl %4  , %%edi \n"                                            \
+                 "movl %5  , %%edx \n"                                            \
+                 "int  $0x80       \n"                                            \
+                 "movl %%eax, %0   \n"                                            \
+                 :"=m"(result)                                                    \
+                 :"g"(syscall_number), "m"(arg1), "m"(arg2), "m"(arg3), "m"(arg4) \
+                 :"ebx", "esi", "ecx", "edi", "edx"                               \
+                 );                                                               \
+
+int syscall_mthread_create(dword f)
+{
     int result;
-
-    asm volatile("movl $%c2, %%ebx \n"
-                 "movl %1  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"m"(f), "g"(SYSTEM_CALL_MTHREAD_CREATE)
-                 :"ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MTHREAD_CREATE, result, f);
+    return result;
 }
 
-int syscall_mthread_join(dword id) {
-
+int syscall_mthread_join(dword id)
+{
     int result;
-
-    asm volatile("movl $%c2, %%ebx \n"
-                 "movl %1  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"m"(id), "g"(SYSTEM_CALL_MTHREAD_JOIN)
-                 :"ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MTHREAD_JOIN, result, id);
+    return result;
 }
 
-int syscall_sleep(dword tick) {
-
+int syscall_sleep(dword tick)
+{
     int result;
-
-    asm volatile("movl $%c2, %%ebx \n"
-                 "movl %1  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"m"(tick), "g"(SYSTEM_CALL_PROCESS_SLEEP)
-                 :"ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_PROCESS_SLEEP, result, tick);
+    return result;
 }
 
-int syscall_print(const char* msg) {
-
+int syscall_print(const char* msg)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_PRINT), "m"(msg)
-                 :"ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_PRINT, result, msg);
+    return result;
 }
 
-int syscall_load_process(const char* path, const char* name, CommandOption* list) {
-
+int syscall_load_process(const char* path, const char* name, CommandOption* list)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_LOAD_PROCESS), "m"(path), "m"(name), "m"(list)
-                 :"ebx", "esi", "ecx", "edi"
-                 );
-
-    return (int)result;
+    SYSCALL_3(SYSTEM_CALL_LOAD_PROCESS, result, path, name, list);
+    return result;
 }
 
-int syscall_put_pixel(int x, int y, char color) {
-
+int syscall_kill()
+{
     int result;
+    SYSCALL_0(SYSTEM_CALL_KILL, result);
 
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_PUT_PIXEL), "m"(x), "m"(y), "m"(color)
-                 :"ebx", "esi", "ecx", "edi"
-                 );
-
-    return (int)result;
+    /* not reached */
+    return result;
 }
 
-int syscall_kill() {
-
+int syscall_send(dword pid, MessageInfo* message)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_KILL)
-                 :"ebx"
-                 );
-
-    /* don't come here */
-    return (int)result;
+    SYSCALL_2(SYSTEM_CALL_SEND, result, pid, message);
+    return result;
 }
 
-int syscall_send(dword pid, MessageInfo* message) {
-
+int syscall_receive(MessageInfo* message)
+{
     int result;
-
-    asm volatile("movl $0  , %%eax \n"
-                 "movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_SEND), "m"(pid), "m"(message)
-                 :"ebx", "esi", "ecx"
-                 );
-
-    return (int)result;
-}
-int syscall_receive(MessageInfo* message) {
-
-    int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_RECEIVE), "m"(message)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_RECEIVE, result, message);
+    return result;
 }
 
-int syscall_mutex_create() {
-
+int syscall_mutex_create()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MUTEX_CREATE)
-                 :"ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_0(SYSTEM_CALL_MUTEX_CREATE, result);
+    return result;
 }
 
-int syscall_mutex_trylock(int id) {
-
+int syscall_mutex_trylock(int id)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MUTEX_TRYLOCK), "m"(id)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MUTEX_TRYLOCK, result, id);
+    return result;
 }
 
-int syscall_mutex_lock (int id ) {
-
+int syscall_mutex_lock (int id )
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MUTEX_LOCK), "m"(id)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MUTEX_LOCK, result, id);
+    return result;
 }
 
-int syscall_mutex_unlock(int id) {
-
+int syscall_mutex_unlock(int id)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MUTEX_UNLOCK), "m"(id)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
+    return result;;
 }
 
-int syscall_mutex_destroy(int id) {
-
+int syscall_mutex_destroy(int id)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MUTEX_DESTROY), "m"(id)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MUTEX_DESTROY, result, id);
+    return result;
 }
 
-dword syscall_lookup(const char* name) {
-
+dword syscall_lookup(const char* name)
+{
     dword pid;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(pid)
-                 :"g"(SYSTEM_CALL_LOOKUP), "m"(name)
-                 : "ebx", "esi"
-                 );
-
+    SYSCALL_1(SYSTEM_CALL_LOOKUP, pid, name);
     return pid;
 }
 
-int syscall_get_vram_info(volatile ScreenInfo* info) {
-
+int syscall_get_vram_info(volatile ScreenInfo* info)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_GET_VRAM_INFO), "m"(info)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_GET_VRAM_INFO, result, info);
+    return result;
 }
 
-int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size) {
-
+int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "movl %5 , %%edx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MAP), "m"(pid), "m"(sharedId), "m"(linearAddress), "m"(size)
-                 : "ebx", "esi", "ecx", "edi", "edx"
-                 );
-
-    return (int)result;
+    SYSCALL_4(SYSTEM_CALL_MAP, result, pid, sharedId, linearAddress, size);
+    return result;
 }
 
-int syscall_get_cursor(int* x, int* y) {
-
+int syscall_get_cursor(int* x, int* y)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_GET_CURSOR), "m"(x), "m"(y)
-                 : "ebx", "esi", "ecx"
-                 );
-
-    return (int)result;
+    SYSCALL_2(SYSTEM_CALL_GET_CURSOR, result, x, y);
+    return result;
 }
 
-int syscall_set_cursor(int x, int y) {
-
+int syscall_set_cursor(int x, int y)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_SET_CURSOR), "m"(x), "m"(y)
-                 : "ebx", "esi", "ecx"
-                 );
-
-    return (int)result;
+    SYSCALL_2(SYSTEM_CALL_SET_CURSOR, result, x, y);
+    return result;
 }
 
-int syscall_file_open(char* path, int mode, volatile dword* size) {
-
+int syscall_file_open(char* path, int mode, volatile dword* size)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FILE_OPEN), "m"(path), "m"(mode), "m"(size)
-                 : "ebx", "esi", "ecx", "edi"
-                 );
-
-    return (int)result;
+    SYSCALL_3(SYSTEM_CALL_FILE_OPEN, result, path, mode, size);
+    return result;
 }
 
-int syscall_file_read(char* buf, dword size, dword* readSize) {
-
+int syscall_file_read(char* buf, dword size, dword* readSize)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FILE_READ), "m"(buf), "m"(size), "m"(readSize)
-                 : "ebx", "esi", "ecx", "edi"
-                 );
-
-    return (int)result;
+    SYSCALL_3(SYSTEM_CALL_FILE_READ, result, buf, size, readSize);
+    return result;
 }
 
-int syscall_file_close() {
-
+int syscall_file_close()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FILE_CLOSE)
-                 : "ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_0(SYSTEM_CALL_FILE_CLOSE, result);
+    return result;
 }
 
-int syscall_fdc_read(dword lba, byte* buffer, dword blocknum) {
-
+int syscall_fdc_read(dword lba, byte* buffer, dword blocknum)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FDC_READ), "m"(lba), "m"(buffer), "m"(blocknum)
-                 : "ebx", "esi", "ecx", "edi"
-                 );
-
-    return (int)result;
+    SYSCALL_3(SYSTEM_CALL_FDC_READ, result, lba, buffer, blocknum);
+    return result;
 }
 
-int syscall_fdc_write(dword lba, byte* buffer, dword blocknum) {
-
+int syscall_fdc_write(dword lba, byte* buffer, dword blocknum)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "movl %4  , %%edi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FDC_WRITE), "m"(lba), "m"(buffer), "m"(blocknum)
-                 : "ebx", "esi", "ecx", "edi"
-                 );
-
-    return (int)result;
+    SYSCALL_3(SYSTEM_CALL_FDC_WRITE, result, lba, buffer, blocknum);
+    return result;
 }
 
-int syscall_test() {
-
+int syscall_fdc_open()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_TEST)
-                 : "ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_0(SYSTEM_CALL_FDC_OPEN, result);
+    return result;
 }
 
-int syscall_fdc_open() {
-
+int syscall_fdc_close()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FDC_OPEN)
-                 : "ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_0(SYSTEM_CALL_FDC_CLOSE, result);
+    return result;
 }
 
-int syscall_fdc_close() {
-
+int syscall_map2(MappingInfo* map)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_FDC_CLOSE)
-                 : "ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_MAP_TWO, result, map);
+    return result;
 }
 
-int syscall_map2(MappingInfo* map) {
+int syscall_unmap2(dword sharedId)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_UNMAP_TWO, result, sharedId);
+    return result;
+}
 
+int syscall_get_pid()
+{
     dword result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MAP_TWO), "m"(map)
-                 : "ebx", "esi"
-                 );
-
+    SYSCALL_0(SYSTEM_CALL_GET_PID, result);
     return result;
 }
 
-int syscall_unmap2(dword sharedId) {
-
+int syscall_get_arg_count()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_UNMAP_TWO), "m"(sharedId)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
-}
-
-int syscall_get_pid() {
-
-    dword  result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_GET_PID)
-                 : "ebx"
-                 );
-
+    SYSCALL_0(SYSTEM_CALL_ARGUMENTS_NUM, result);
     return result;
 }
 
-int syscall_get_arg_count() {
-
+int syscall_get_arg(char* buf, int n)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_ARGUMENTS_NUM)
-                 : "ebx"
-                 );
-
+    SYSCALL_2(SYSTEM_CALL_GET_ARGUMENTS, result, buf, n);
     return result;
 }
 
-int syscall_get_arg(char* buf, int n) {
-
+int syscall_mthread_yeild_message()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "movl %3  , %%ecx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_GET_ARGUMENTS), "m"(buf), "m"(n)
-                 : "ebx", "esi", "ecx"
-                 );
-
-    return (int)result;
+    SYSCALL_0(SYSTEM_CALL_MTHREAD_YIELD_M, result);
+    return result;
 }
 
-int syscall_mthread_yeild_message() {
-
+int syscall_get_date(KDate* date)
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_MTHREAD_YIELD_M)
-                 : "ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_1(SYSTEM_CALL_DATE, result, date);
+    return result;
 }
 
-int syscall_get_date(KDate* date) {
-
+int syscall_get_io()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_DATE), "m"(date)
-                 : "ebx", "esi"
-                 );
-
-    return (int)result;
-
+    SYSCALL_0(SYSTEM_CALL_GET_IO, result);
+    return result;
 }
 
-int syscall_get_io() {
-
+int syscall_exist_message()
+{
     int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_GET_IO)
-                 : "ebx"
-                 );
-
-    return (int)result;
-}
-
-int syscall_exist_message() {
-
-    int result;
-
-    asm volatile("movl $%c1, %%ebx \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_EXIST_MESSAGE)
-                 : "ebx"
-                 );
-
-    return (int)result;
+    SYSCALL_0(SYSTEM_CALL_EXIST_MESSAGE, result);
+    return result;
 }

@@ -477,7 +477,7 @@ int ThreadOperation::kill()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : totalTick(0), waitReason(WAIT_NONE)
+Thread::Thread() : waitReason(WAIT_NONE), totalTick(0)
 {
     /* thread information */
     tinfo = new ThreadInfo;
