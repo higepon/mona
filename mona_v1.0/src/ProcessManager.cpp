@@ -19,6 +19,7 @@
 #include <monaTester.h>
 
 TSS tss[2];
+GDT ldt[1];
 
 /*!
     \brief constructor
@@ -71,6 +72,23 @@ inline void ProcessManager::ltr(word selector) const {
 
     /* ltr */
     asm volatile("ltr %0\n": "=m" (selector));
+    return;
+}
+
+/*!
+    \brief do lldt
+
+    do lldt
+
+    \param address ldtr
+
+    \author HigePon
+    \date   create:2002/12/05 update:
+*/
+inline void ProcessManager::lldt(word address) const {
+
+    /* lldt */
+    asm volatile("lldt %0\n": "=m" (address));
     return;
 }
 
@@ -152,12 +170,14 @@ void ProcessManager::printInfo() {
     setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack[1] + 512, 0x10, 0, 0);
     setGDT(gdt_ + 4, (dword)tss    , sizeof(TSS), TypeTSS);
     setGDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
-
+    memset(ldt, 0, sizeof(GDT));
+    setGDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
+    //    lldt((word)ldt);
     _sys_printf("tss=%x", (dword)tss);
 
 
     ltr(0x20);
-    process1Tester();
+    //    process1Tester();
     _sys_printf("cs=%d\n", (tss+1)->cs);
     for (int i = 0; i < GDTNUM; i++) {
 

@@ -72,6 +72,14 @@ gdt28:                          ; segment 28(task state segment)
         db 0xc0                 ; segment limitH
         db 0                    ; segment baseH
 
+gdt30:                          ; segment 30(LDT)
+        dw 0                    ; segment limitL
+        dw 0                    ; segment baseL
+        db 0                    ; segment baseM
+        db 0x82                 ; Type LDT
+        db 0                    ; segment limitH
+        db 0                    ; segment baseH
+
 gdt_end:                        ; end of gdt
 
 [bits 32]

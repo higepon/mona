@@ -33,7 +33,7 @@ class ProcessManager {
   private:
     void sgdt();
     inline void ltr(word) const;
-
+    inline void lldt(word) const;
     GDT* gdt_;
 };
 
