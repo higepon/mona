@@ -31,10 +31,12 @@ OBJS = \
 
 all: $(PROG)
 
+install: $(PROG)
+	cp $(PROG) ../../../../../bin/$(PROG)
+
 $(PROG): $(OBJS)
 	$(CXX) -o $(PROG) $(LDFLAGS) $(OBJS) $(LIB)
 	$(STRIP) $(PROG)
-	cp $(PROG) ../../../../../bin/$(PROG)
 
 LzmaAlone.o: LzmaAlone.cpp
 	$(CXX) $(CFLAGS) LzmaAlone.cpp
@@ -97,5 +99,5 @@ Vector.o: ../../../Common/Vector.cpp
 	$(CXX) $(CFLAGS) ../../../Common/Vector.cpp
 
 clean:
-	-$(RM) $(PROG) $(OBJS)
+	-$(RM) $(PROG) ../../../../../bin/$(PROG) $(OBJS)
 
