@@ -14,11 +14,11 @@ endif
 install-gui: MONAWALL.BM5
 	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/iso/APPS
 	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/iso/APPS
-	$(INSTALL) MONAWALL.BM5 $(MONADIR)/bin/iso
+#	$(INSTALL) MONAWALL.BM5 $(MONADIR)/bin/iso
 
-MONAWALL.BM5: MONAWALL.BMP
-	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
+#MONAWALL.BM5: MONAWALL.BMP
+#	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
-install: install-tino
+install: install-gui
 
 include dependencies
