@@ -117,8 +117,6 @@ void FDCDriver::initilize() {
         panic("dma buff allocate error");
     }
 
-    info(DEBUG, "dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
-
     /* setup DMAC */
     outportb(0xda, 0x00);
     delay(1);
@@ -163,9 +161,7 @@ void FDCDriver::initilize() {
 */
 void FDCDriver::interrupt() {
 
-
-
-    info(DEV_WARNING, "\ninterrupt:");
+    info(DEV_WARNING, "\ninterrupt:"); // here is point
     interrupt_ = true;
 }
 
@@ -195,8 +191,6 @@ void FDCDriver::motor(bool on) {
 
         delay(4);
 
-        info(DUMP, "motor on:after waitInterrupt\n");
-
     } else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
 }
@@ -214,13 +208,12 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
     /* send command */
     for (int i = 0; i < length; i++) {
 
-    g_console->printf("2");
         waitStatus(0x80 | 0x40, 0x80);
 
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
     }
-    g_console->printf("3");
+
     return true;
 }
 
@@ -251,7 +244,6 @@ bool FDCDriver::recalibrate() {
         if (senseInterrupt()) break;
         interrupt_ = false;
     }
-
     return true;
 }
 
@@ -315,8 +307,6 @@ byte FDCDriver::getResult() {
 */
 bool FDCDriver::seek(byte track) {
 
-    //    info(DEV_WARNING, "seek start \n");
-
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
     interrupt_ = false;
@@ -326,10 +316,10 @@ bool FDCDriver::seek(byte track) {
         return false;
     }
 
-    //    info(DEV_WARNING, "seek start2 \n");
     while (true) {
 
-	//    info(DEV_WARNING, "seek start3 \n");
+       info(DEV_WARNING, "seek start3 \n");// here is point
+
         waitInterrupt();
 
         waitStatus(0x10, 0x00);
@@ -338,7 +328,7 @@ bool FDCDriver::seek(byte track) {
         interrupt_ = false;
     }
 
-    //    info(DEV_WARNING, "seek start4 \n");
+    info(DEV_WARNING, "seek start4 \n"); // here is point
     return true;
 }
 
@@ -479,17 +469,12 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-    //    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
-
     if (!seek(track)) {
         info(ERROR, "read#seek:error");
         return false;
     }
 
-    g_console->printf("1");
     setupDMARead(512);
-
-    //    info(DEV_WARNING, "before read command");
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))) {
@@ -497,14 +482,10 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         info(ERROR, "read#send command:error\n");
         return false;
     }
-    g_console->printf("5");
-    //    info(DEV_WARNING, "wait loop");
 
     waitInterrupt();
 
     stopDMA();
-
-    //    info(DEV_NOTICE, "read results");
 
     for (int i = 0; i < 7; i++) {
 
@@ -579,8 +560,8 @@ bool FDCDriver::read(dword lba, byte* buf) {
 
     lbaToTHS(lba, track, head, sector);
 
-    info(DEBUG, "read lba=%d", lba);
-    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
+    //    info(DEBUG, "read lba=%d", lba);
+    //    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     /* read. if error, retry 10 times */
     for (int i = 0; i < 10; i++) {
