@@ -31,7 +31,9 @@
 #include "Kukuri.h"
 #include <gui/System/Collections/ArrayList.h>
 #include <gui/System/Mona/Forms/Application.h>
+#include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Mona/Forms/Cursor.h>
+#include <gui/System/Mona/Forms/Label.h>
 #include <gui/messages.h>
 #include <monapi.h>
 #include <monapi/CString.h>
@@ -528,6 +530,58 @@ void Kukuri::wow()
   this->Refresh();
 }
 
+class KukuriMessageBox : public Form
+{
+private:
+	_P<Label> label1;
+	_P<Button> button1;
+	
+public:
+	KukuriMessageBox()
+	{
+		this->InitializeComponents();
+		
+		_P<MonAPI::Screen> scr = GetDefaultScreen();
+		int w = this->label1->get_Width() + 16;
+		this->set_ClientSize(Size(w, 62));
+		this->set_Location(Point(
+			(scr->getWidth () - this->get_Width ()) / 2,
+			(scr->getHeight() - this->get_Height()) / 2));
+		this->button1->set_Bounds(Rectangle(
+			(w - 56) / 2, 32, 56, 24));
+	}
+	
+	virtual ~KukuriMessageBox() {}
+	
+private:
+	void InitializeComponents()
+	{
+		this->label1 = new Label();
+		this->button1 = new Button();
+		
+		this->set_Text("ククリ様");
+		
+		this->label1->set_Bounds(Rectangle(8, 8, 134, 16));
+		this->label1->set_Text("5人以上は増やせないよ！");
+		this->get_Controls()->Add(this->label1.get());
+		
+		this->button1->set_Text("OK");
+		this->button1->add_Click(new EventHandler<KukuriMessageBox>(this, &KukuriMessageBox::button1_Click));
+		this->get_Controls()->Add(this->button1.get());
+	}
+	
+	void button1_Click(_P<Object> sender, _P<EventArgs> e)
+	{
+		//_P<Graphics> g = this->CreateGraphics();
+		//Size sz = g->MeasureString(this->label1->get_Text(), Control::get_DefaultFont());
+		//printf("{%d, %d}\n", sz.Width, sz.Height);
+		//g->Dispose();
+		this->Hide();
+	}
+};
+
+static _P<KukuriMessageBox> kukuriMessageBox;
+
 class KukuriMessageFilter : public IMessageFilter
 {
 public:
@@ -539,9 +593,10 @@ public:
 		{
 			(new Kukuri())->Show();
 		}
-		else
+		else if (kukuriMessageBox == NULL)
 		{
-			printf("Kukuri: limit is 5!\n");
+			kukuriMessageBox = new KukuriMessageBox();
+			kukuriMessageBox->Show();
 		}
 		return true;
 	}
@@ -569,15 +624,16 @@ void Kukuri::Main(_A<String> args)
 			}
 		}
 		
+		Application::AddMessageFilter(&kukuriMessageFilter);
+		
 		kukuriTimer = new Timer();
 		kukuriTimer->set_Interval(100);
+		kukuriTimer->Start();
 		
 		(new Kukuri())->Show();
 		
-		Application::AddMessageFilter(&kukuriMessageFilter);
-		kukuriTimer->Start();
-		
-		while (kukuris.size() > 0)
+		bool v = false;
+		while (kukuris.size() > 0 || v)
 		{
 			Application::DoEvents();
 			for (int i = 0; i < kukuris.size(); i++)
@@ -589,6 +645,18 @@ void Kukuri::Main(_A<String> args)
 					kukuris.remove(k);
 					i--;
 				}
+			}
+			if (kukuriMessageBox == NULL) continue;
+			
+			if (v && !kukuriMessageBox->get_Visible())
+			{
+				kukuriMessageBox->Dispose();
+				kukuriMessageBox = NULL;
+				v = false;
+			}
+			else
+			{
+				v = kukuriMessageBox->get_Visible();
 			}
 		}
 		kukuriTimer->Dispose();
