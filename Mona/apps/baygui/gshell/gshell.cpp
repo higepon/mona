@@ -75,10 +75,7 @@ private:
 		// ディレクトリを開く
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(str, MONAPI_TRUE);
 		int size = *(int*)mi->Data;
-		if (mi == NULL || size == 0) {
-			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
-			return;
-		}
+		if (mi == NULL || size == 0) return;
 		// ディレクトリを検索
 		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
 		char temp[128];
@@ -157,21 +154,31 @@ private:
 	
 	/** ファイルの内容を表示 */
 	inline void cat(char *str) {
-		// 絶対パスへ変換する
 		char temp[256];
 		memset(temp, 0, sizeof(temp));
-		strcpy(temp, currentPath);
-		strcat(temp, "/");
-		strcat(temp, str);
+		
+		// 絶対パスへ変換する
+		if (str[0] != '/') {
+			strcpy(temp, currentPath);
+			strcat(temp, "/");
+			strcat(temp, str);
+		// ルート
+		} else if (strcmp(currentPath, "/") == 0) {
+			strcpy(temp, "/");
+			strcat(temp, str);
+		// 相対パスのままにする
+		} else {
+			strcpy(temp, str);
+		}
 		
 		// 圧縮されたファイルも表示する
 		monapi_cmemoryinfo* mi = NULL;
 		if (str[strlen(str) - 1] == '2') {
-			mi = monapi_call_file_decompress_bz2_file(str, MONAPI_FALSE);
+			mi = monapi_call_file_decompress_bz2_file(temp, MONAPI_FALSE);
 		} else if (str[strlen(str) - 1] == '5') {
-			mi = monapi_call_file_decompress_st5_file(str, MONAPI_FALSE);
+			mi = monapi_call_file_decompress_st5_file(temp, MONAPI_FALSE);
 		} else {
-			mi = monapi_call_file_read_data(str, MONAPI_FALSE);
+			mi = monapi_call_file_read_data(temp, MONAPI_FALSE);
 		}
 		
 		if (mi == NULL) return;
@@ -281,10 +288,7 @@ private:
 		// ディレクトリを開く
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_TRUE);
 		int size = *(int*)mi->Data;
-		if (mi == NULL || size == 0) {
-			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
-			return false;
-		}
+		if (mi == NULL || size == 0) return false;
 		// ディレクトリを検索
 		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
 		for (int i = 0; i < size; i++, p++) {
@@ -325,8 +329,10 @@ private:
 			char pathname[128];
 			sscanf(cmd, "cd %s", pathname);
 			// NULLチェック
-			if (pathname != NULL && strlen(pathname) > 0 && existsFile(pathname) == true) {
-				this->cd(pathname);
+			if (pathname != NULL && strlen(pathname) > 0) {
+				if (pathname[0] == '/' || existsFile(pathname) == true) {
+					this->cd(pathname);
+				}
 			}
 		//
 		// cat [filename]
@@ -335,8 +341,10 @@ private:
 			char filename[128];
 			sscanf(cmd, "cat %s", filename);
 			// NULLチェック
-			if (filename != NULL && strlen(filename) > 0 && existsFile(filename) == true) {
-				this->cat(filename);
+			if (filename != NULL && strlen(filename) > 0) {
+				if (filename[0] == '/' || existsFile(filename) == true) {
+					this->cat(filename);
+				}
 			}
 		//
 		// type [filename]
@@ -345,8 +353,10 @@ private:
 			char filename[128];
 			sscanf(cmd, "type %s", filename);
 			// NULLチェック
-			if (filename != NULL && strlen(filename) > 0 && existsFile(filename) == true) {
-				this->cat(filename);
+			if (filename != NULL && strlen(filename) > 0) {
+				if (filename[0] == '/' || existsFile(filename) == true) {
+					this->cat(filename);
+				}
 			}
 		//
 		// date
@@ -382,19 +392,29 @@ private:
 			sscanf(cmd, "kill %d", &pid);
 			syscall_kill_thread((dword)pid);
 		//
-		// exec [filename]
+		// exec [args]
 		//
 		} else if (s.startsWith("exec ")) {
-			char filename[128];
-			memset(filename, 0, sizeof(filename));
+			char args[128];
+			memset(args, 0, sizeof(args));
 			// NULLチェック
 			if (strlen(cmd) > 5) {
 				// 先頭の"exec "を削る
 				for (int i = 5; i < (int)strlen(cmd); i++) {
-					filename[i - 5] = cmd[i];
+					args[i - 5] = cmd[i];
 				}
-				if (filename[0] == '/' || existsFile(filename) == true) {
-					this->exec(filename);
+				// 引数つきのときファイル名だけを得る
+				char filename[128];
+				memset(filename, 0, sizeof(filename));
+				for (int i = 0; i < (int)strlen(args); i++) {
+					if (args[i] == ' ') {
+						break;
+					} else {
+						filename[i] = args[i];
+					}
+				}
+				if (args[0] == '/' || existsFile(filename) == true) {
+					this->exec(args);
 				}
 			}
 		//
@@ -419,7 +439,7 @@ public:
 	GShell() {
 		setRect((800-GSHELL_WIDTH-12)/2,(600-GSHELL_HEIGHT-28)/2,GSHELL_WIDTH+12,GSHELL_HEIGHT+28);
 		setTitle("GUIシェル");
-		historyPtr = 0;
+		historyPtr = -1;
 		this->history = new LinkedList();
 		this->lines = new LinkedList();
 		memset(lineBuffer, 0, sizeof(lineBuffer));
@@ -480,7 +500,8 @@ public:
 				sprintf(temp, "%s%% %s", currentPath, commandBuffer);
 				// リストに追加
 				this->addLine(temp);
-				this->history->add(new String(temp));
+				this->history->add(new String(commandBuffer));
+				this->historyPtr = this->history->getLength();
 				// 入力したコマンドを解析
 				parse(commandBuffer);
 				memset(lineBuffer, 0, 256);
@@ -498,17 +519,17 @@ public:
 				update();
 			// １つ前の履歴
 			} else if (ke->keycode == VKEY_UP) {
-				if (historyPtr == 0) return;
-				historyPtr--;
-				strcpy(commandBuffer, ((String *)history->get(historyPtr))->getBytes());
+				if (this->historyPtr == -1) return;
+				this->historyPtr--;
+				strcpy(commandBuffer, ((String *)history->get(this->historyPtr))->getBytes());
 				// 再描画
 				onPaint(getGraphics());
 				update();
 			// １つ次の履歴
 			} else if (ke->keycode == VKEY_DOWN) {
-				if (historyPtr < history->getLength() - 1) {
-					historyPtr++;
-					strcpy(commandBuffer, ((String *)history->get(historyPtr))->getBytes());
+				if (this->historyPtr < this->history->getLength() - 1) {
+					this->historyPtr++;
+					strcpy(commandBuffer, ((String *)history->get(this->historyPtr))->getBytes());
 				} else {
 					memset(commandBuffer, 0, sizeof(commandBuffer));
 				}
