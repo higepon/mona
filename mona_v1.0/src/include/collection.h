@@ -143,6 +143,27 @@ template <class T> bool BinaryTree<T>::contains(const Node* tree, const dword ke
 }
 
 /*----------------------------------------------------------------------
+    HashMap
+----------------------------------------------------------------------*/
+template <class T> class HashMap : public Map {
+
+  pulblic:
+    HashMap();
+    virtual ~HashMap();
+
+  public:
+    bool containsKey(const char* key) const;;
+    bool containsValue(T value) const;
+    T get(const char* key);
+    T put(const char* key, T value);
+    T remove(const char* key);
+    dword size() const;
+
+
+
+}
+
+/*----------------------------------------------------------------------
     Map Interface
 ----------------------------------------------------------------------*/
 template <class T> class Map {
@@ -181,6 +202,8 @@ template <class T> class HList : public List<T> {
     HList(size_t size);
     HList(size_t size, size_t increase);
     virtual ~HList();
+
+  public:
     void add(T element);
     T get(size_t index) const;
     T operator[](size_t index);
@@ -189,6 +212,7 @@ template <class T> class HList : public List<T> {
     size_t size() const;
     virtual bool isEmpty() const;
     bool hasElement(T element) const;
+
   private:
     T* data_;            /*! internal array     */
     size_t size_;        /*! size of liset      */
