@@ -34,7 +34,7 @@ private:
     void PaintCursor(int x, int y);
 
 private:
-    bool needPaint;
+    volatile bool needPaint;
     int disableCount;
     int posX;
     int posY;
@@ -160,7 +160,8 @@ void MouseServer::MessageLoop()
                     if (this->posX < 0) this->posX = 0;
                     if (this->posY < 0) this->posY = 0;
 
-                    Paint();
+//                    Paint();
+		    needPaint = true;
 
                     Message::create(&send, MSG_MOUSE_INFO, posX, posY, clickInfo);
                     SendMouseInformation(&send);
@@ -179,10 +180,17 @@ void MouseServer::MessageLoop()
 
 void MouseServer::Paint()
 {
+    for (;;)
+    {
+	if (needPaint)
+	{
     PaintCursor(this->prevX, this->prevY);
     PaintCursor(this->posX , this->posY);
     prevX = posX;
     prevY = posY;
+    needPaint = false;
+	}
+    }
 }
 
 void MouseServer::SendMouseInformation(MessageInfo* info)
@@ -224,6 +232,12 @@ void MouseServer::PaintCursor(int x, int y)
 
 static MouseServer* server;
 
+void Paint()
+{
+
+    server->Paint();
+}
+
 int MonaMain(List<char*>* pekoe)
 {
     server = new MouseServer();
@@ -233,6 +247,9 @@ int MonaMain(List<char*>* pekoe)
         printf("MouseServer:initialize error\n");
         return -1;
     }
+
+    int id = syscall_mthread_create((dword)Paint);
+    syscall_mthread_join(id);
 
     server->MessageLoop();
 
