@@ -40,12 +40,12 @@ bool ELFParser::set(byte* elf, dword size)
     /* Program Header */
     dword phdrend = this->header->phdrpos + sizeof(ELFProgramHeader) * this->header->phdrcnt;
     if (size < phdrend) return false;
-    this->pheaders = (ELFProgramHeader*)&elf[this->header->phdrpos];
+    this->pheader = (ELFProgramHeader*)&elf[this->header->phdrpos];
 
     /* Section Header */
     dword shdrend = this->header->shdrpos + sizeof(ELFSectionHeader) * this->header->shdrcnt;
     if (size < shdrend) return false;
-    this->sheaders = (ELFSectionHeader*)&elf[this->header->shdrpos];
+    this->sheader = (ELFSectionHeader*)&elf[this->header->shdrpos];
 
     /* find min of start address, and max of end address */
     this->startAddr = 0xFFFFFFFF;
@@ -53,7 +53,7 @@ bool ELFParser::set(byte* elf, dword size)
 
     for (int i = 0; i < this->header->phdrcnt; i++)
     {
-        ELFProgramHeader p = this->pheaders[i];
+        ELFProgramHeader p = this->pheader[i];
         if (p.type != PT_LOAD) continue;
 
         if (p.virtualaddr < this->startAddr) this->startAddr = p.virtualaddr;
@@ -62,7 +62,7 @@ bool ELFParser::set(byte* elf, dword size)
 
     for (int i = 0; i < this->header->shdrcnt; i++)
     {
-        ELFSectionHeader s = this->sheaders[i];
+        ELFSectionHeader s = this->sheader[i];
         if (!(s.flags & ALLOC)) continue;
 
         if (s.address < this->startAddr) this->startAddr = s.address;
@@ -103,17 +103,17 @@ int ELFParser::getType()
 const char* ELFParser::getSectionName(dword index)
 {
     if (this->sectionNames == 0) return "";
-    if (index >= this->sheaders[sectionNames].size) return "";
+    if (index >= this->sheader[sectionNames].size) return "";
 
-    return (const char*)&this->elf[this->sheaders[sectionNames].offset + index];
+    return (const char*)&this->elf[this->sheader[sectionNames].offset + index];
 }
 
 const char* ELFParser::getSymbolName(dword index)
 {
     if (this->symbolNames == 0) return "";
-    if (index >= this->sheaders[symbolNames].size) return "";
+    if (index >= this->sheader[symbolNames].size) return "";
 
-    return (const char*)&this->elf[this->sheaders[symbolNames].offset + index];
+    return (const char*)&this->elf[this->sheader[symbolNames].offset + index];
 }
 
 int ELFParser::parse()
@@ -123,7 +123,7 @@ int ELFParser::parse()
     /* String Table Symbol Table */
     for (int i = 0, strTableIndex = 0; i < this->header->shdrcnt; i++)
     {
-        ELFSectionHeader s = this->sheaders[i];
+        ELFSectionHeader s = this->sheader[i];
 
         if (s.type == SYMTAB) symbols = (ELFSymbolEntry*)&this->elf[s.offset];
 
@@ -144,14 +144,14 @@ int ELFParser::parse()
 #ifdef _DEBUG_ELF
     for (int i = 0; i < this->header->phdrcnt; i++)
     {
-        ELFProgramHeader p = this->pheaders[i];
+        ELFProgramHeader p = this->pheader[i];
         printf("pheaders[%2d].virtualaddr=%08x physaddr=%08x type=%2d\n",
             i, p.virtualaddr, p.physaddr, p.type);
     }
 
     for (int i = 0; i < this->header->shdrcnt; i++)
     {
-        ELFSectionHeader s = this->sheaders[i];
+        ELFSectionHeader s = this->sheader[i];
         printf("sheaders[%2d].address=%08x size=%8x type=%2d %s\n",
             i, s.address, s.size, s.type, getSectionName(s.name));
     }
@@ -162,7 +162,7 @@ int ELFParser::parse()
 
 //     for (int i = 0; i < this->header->shdrcnt; i++)
 //     {
-//         ELFSectionHeader s = this->sheaders[i];
+//         ELFSectionHeader s = this->sheader[i];
 
 //         if (s.type == SYMTAB)
 //         {
@@ -183,7 +183,7 @@ int ELFParser::parse()
 
     for (int i = 0; i < this->header->shdrcnt; i++)
     {
-        ELFSectionHeader s = this->sheaders[i];
+        ELFSectionHeader s = this->sheader[i];
 
         if (s.type == REL)
         {
@@ -196,13 +196,13 @@ int ELFParser::parse()
 
 #ifdef _DEBUG_ELF
                 printf("relocate offset=%8x symbol [%10s]",
-                    rel[j].offset, getSectionName(this->sheaders[entry.section].name));
+                    rel[j].offset, getSectionName(this->sheader[entry.section].name));
                 printf("value = %8x size = %8x %s",
                     entry.value, entry.size, getSymbolName(entry.name));
 #endif
 
 #ifdef _DEBUG_ELF
-                dword* p = (dword*)&this->elf[this->sheaders[entry.section].offset + rel[j].offset];
+                dword* p = (dword*)&this->elf[this->sheader[entry.section].offset + rel[j].offset];
                 printf("relocate target address = %8x\n", *p);
 #endif
             }
@@ -220,7 +220,7 @@ bool ELFParser::load(byte* image)
             memset(image, 0, this->imageSize);
             for (int i = 0; i < this->header->phdrcnt; i++)
             {
-                ELFProgramHeader p = this->pheaders[i];
+                ELFProgramHeader p = this->pheader[i];
                 if (p.type != PT_LOAD) continue;
 
                 memcpy(&image[p.virtualaddr - this->startAddr], &this->elf[p.offset], p.filesize);

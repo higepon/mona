@@ -39,8 +39,8 @@ private:
 private:
     byte* elf;
     ELFHeader* header;
-    ELFProgramHeader* pheaders;
-    ELFSectionHeader* sheaders;
+    ELFProgramHeader* pheader;
+    ELFSectionHeader* sheader;
     ELFSymbolEntry* symbols;
     dword sectionNames, symbolNames;
     dword startAddr, endAddr, imageSize;
