@@ -3,8 +3,9 @@
 ----------------------------------------------------------------------*/
 
 #include <monapi.h>
+#include <monapi/clist.h>
 
-static HList<MessageInfo*> msg_queue;
+static monapi_clist msg_queue;
 
 namespace MonAPI {
 
@@ -23,9 +24,9 @@ int Message::send(dword tid, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*
 
 int Message::receive(MessageInfo* info)
 {
-    if (msg_queue.size() > 0)
+    if (msg_queue.count > 0)
     {
-        MessageInfo* msg = msg_queue.removeAt(0);
+        MessageInfo* msg = (MessageInfo*)monapi_clist_remove_at(&msg_queue, 0);
         *info = *msg;
         delete msg;
         return 0;
@@ -42,14 +43,14 @@ int Message::receive(MessageInfo* info)
 
 int Message::receive(MessageInfo* info, dword tid)
 {
-    int size = msg_queue.size();
+    int size = msg_queue.count;
     for (int i = 0; i < size; i++)
     {
-        MessageInfo* msg = msg_queue.get(i);
+        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
         if (msg->from == tid)
         {
             *info = *msg;
-            msg_queue.removeAt(i);
+            monapi_clist_remove_at(&msg_queue, i);
             delete msg;
             return 0;
         }
@@ -65,21 +66,21 @@ int Message::receive(MessageInfo* info, dword tid)
         }
         if (result != 0) continue;
         if (info->from == tid) break;
-        msg_queue.add(new MessageInfo(*info));
+        monapi_clist_add(&msg_queue, new MessageInfo(*info));
     }
     return 0;
 }
 
 int Message::receive(MessageInfo* info, dword tid, dword header)
 {
-    int size = msg_queue.size();
+    int size = msg_queue.count;
     for (int i = 0; i < size; i++)
     {
-        MessageInfo* msg = msg_queue.get(i);
+        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
         if (msg->from == tid && msg->header == header)
         {
             *info = *msg;
-            msg_queue.removeAt(i);
+            monapi_clist_remove_at(&msg_queue, i);
             delete msg;
             return 0;
         }
@@ -95,21 +96,21 @@ int Message::receive(MessageInfo* info, dword tid, dword header)
         }
         if (result != 0) continue;
         if (info->from == tid && info->header == header) break;
-        msg_queue.add(new MessageInfo(*info));
+        monapi_clist_add(&msg_queue, new MessageInfo(*info));
     }
     return 0;
 }
 
 int Message::receive(MessageInfo* info, dword tid, dword header, dword arg1)
 {
-    int size = msg_queue.size();
+    int size = msg_queue.count;
     for (int i = 0; i < size; i++)
     {
-        MessageInfo* msg = msg_queue.get(i);
+        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
         if (msg->from == tid && msg->header == header && msg->arg1 == arg1)
         {
             *info = *msg;
-            msg_queue.removeAt(i);
+            monapi_clist_remove_at(&msg_queue, i);
             delete msg;
             return 0;
         }
@@ -125,8 +126,7 @@ int Message::receive(MessageInfo* info, dword tid, dword header, dword arg1)
         }
         if (result != 0) continue;
         if (info->from == tid && info->header == header && info->arg1 == arg1) break;
-        MessageInfo* mi = new MessageInfo(*info);
-        msg_queue.add(mi);
+        monapi_clist_add(&msg_queue, new MessageInfo(*info));
     }
     return 0;
 }
@@ -173,7 +173,7 @@ void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword 
 
 bool Message::exist()
 {
-    if (msg_queue.size() > 0) return true;
+    if (msg_queue.count > 0) return true;
     return (syscall_exist_message() == 1);
 }
 

@@ -1,6 +1,8 @@
 #ifndef _MONA_USERLIB_SYSCALL_H_
 #define _MONA_USERLIB_SYSCALL_H_
 
+#include <sys/types.h>
+
 #ifdef __cplusplus
 #define MESSAGE_LOOP MonAPI::messageLoop
 

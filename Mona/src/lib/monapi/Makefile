@@ -17,13 +17,14 @@ SOURCES = string.cpp \
           VirtualScreen.cpp \
           mt19937ar.cpp \
           Keys.cpp
+CSOURCES = clist.c
 
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 
 INCLUDE = -I$(INCDIR)
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
 
 all : $(TARGET1) $(TARGET2)
 
@@ -39,11 +40,16 @@ $(TARGET2) : $(OBJECTS)
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
 
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) -c $(CFLAGS) $(INCLUDE) $<
+
 clean :
 	rm -f $(TARGET1) $(TARGET2) $(OBJECTS)
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
+	$(CC) -MM $(INCLUDE) $(CFLAGS) $(CSOURCES) >> dependencies
 
 install: $(TARGET1) $(TARGET2)
 
