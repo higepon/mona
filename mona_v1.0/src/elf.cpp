@@ -24,8 +24,8 @@
 /*----------------------------------------------------------------------
     loadProcess
 ----------------------------------------------------------------------*/
-int loadProcess(const char* path, const char* file, bool isUser, CommandOption* list) {
-
+int loadProcess(const char* path, const char* file, bool isUser, CommandOption* list)
+{
     /* shared ID */
     static dword sharedId = 0x1000;
     sharedId++;
@@ -46,8 +46,8 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     g_fdcdriver->recalibrate();
 
     /* file open */
-    if (!g_fat12->open(path, file, FAT12::READ_MODE)) {
-
+    if (!g_fat12->open(path, file, FAT12::READ_MODE))
+    {
         Semaphore::up(&g_semaphore_fd);
         return 1;
     }
@@ -59,15 +59,17 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     buf       = (byte*)malloc(512 * readTimes);
 
     memset(buf, 0, 512 * readTimes);
-    if (buf == NULL) {
+    if (buf == NULL)
+    {
         Semaphore::up(&g_semaphore_fd);
         return 2;
     }
 
     /* read */
-    for (int i = 0; i < readTimes; i++) {
-        if (!g_fat12->read(buf + 512 * i)) {
-
+    for (int i = 0; i < readTimes; i++)
+    {
+        if (!g_fat12->read(buf + 512 * i))
+        {
             free(buf);
             Semaphore::up(&g_semaphore_fd);
             return 3;
@@ -77,7 +79,8 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     g_fat12->changeDirectory("..");
 
     /* close */
-    if (!g_fat12->close()) {
+    if (!g_fat12->close())
+    {
 
         Semaphore::up(&g_semaphore_fd);
     }
@@ -89,7 +92,8 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     isOpen    = SharedMemoryObject::open(sharedId, 4096 * 50);
     isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
     Semaphore::up(&g_semaphore_shared);
-    if (!isOpen || !isAttaced) {
+    if (!isOpen || !isAttaced)
+    {
         free(buf);
         return 4;
     }
@@ -109,7 +113,8 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     isOpen    = SharedMemoryObject::open(sharedId, 4096 * 50);
     isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
     Semaphore::up(&g_semaphore_shared);
-    if (!isOpen || !isAttaced) {
+    if (!isOpen || !isAttaced)
+    {
         return 5;
     }
 
@@ -119,14 +124,14 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     Semaphore::up(&g_semaphore_shared);
 
     /* set arguments */
-    if (list != NULL) {
-
+    if (list != NULL)
+    {
         char* p;
         CommandOption* option;
         List<char*>* target = process->getArguments();
 
-        for (option = list->next; option; option = option->next) {
-
+        for (option = list->next; option; option = option->next)
+        {
             p = new char[32];
             strncpy(p, option->str, 32);
             target->add(p);
@@ -139,15 +144,16 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     return 0;
 }
 
-ELFLoader::ELFLoader() : errorCode_(0), header_(NULL), pheader_(NULL) {
+ELFLoader::ELFLoader() : errorCode_(0), header_(NULL), pheader_(NULL)
+{
 }
 
-ELFLoader::~ELFLoader() {
-
+ELFLoader::~ELFLoader()
+{
 }
 
-int ELFLoader::prepare(dword elf) {
-
+int ELFLoader::prepare(dword elf)
+{
     int size = 0;
 
     /* check ELF header */
@@ -158,10 +164,10 @@ int ELFLoader::prepare(dword elf) {
     pheader_ = (ELFProgramHeader*)((dword)header_ + header_->phdrpos);
 
     /* get size of image */
-    for (int i = 0; i < header_->phdrcnt; i++) {
-
-        if (pheader_[i].type == PT_LOAD) {
-
+    for (int i = 0; i < header_->phdrcnt; i++)
+    {
+        if (pheader_[i].type == PT_LOAD)
+        {
             size += pheader_[i].memorysize;
         }
     }
@@ -169,52 +175,51 @@ int ELFLoader::prepare(dword elf) {
     return size;
 }
 
-dword ELFLoader::load(byte* toAddress) {
-
-    for (int i = 0; i < header_->phdrcnt; i++) {
-
-        if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize) {
-
+dword ELFLoader::load(byte* toAddress)
+{
+    for (int i = 0; i < header_->phdrcnt; i++)
+    {
+        if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize)
+        {
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - pheader_->virtualaddr), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
-
-        } else if (pheader_[i].type == PT_LOAD && pheader_[i].filesize != pheader_[i].memorysize) {
-
+        }
+        else if (pheader_[i].type == PT_LOAD && pheader_[i].filesize != pheader_[i].memorysize)
+        {
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - pheader_->virtualaddr), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].memorysize);
 
             /* zero clear*/
             //            memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), 0, pheader_[i].memorysize);
         }
-
     }
 
     return header_->entrypoint;
 }
 
-int ELFLoader::getErrorCode() const {
-
+int ELFLoader::getErrorCode() const
+{
     return errorCode_;
 }
 
-bool ELFLoader::isValidELF() {
-
+bool ELFLoader::isValidELF()
+{
     /* check magic number */
     if (header_->magic[0] != 0x7F || header_->magic[1] != 'E'
-        || header_->magic[2] != 'L' ||header_->magic[3] != 'F') {
-
+        || header_->magic[2] != 'L' ||header_->magic[3] != 'F')
+    {
         errorCode_ = ELF_ERROR_NOT_ELF;
         return false;
     }
 
     /* little endian, version 1, x86 */
-    if (header_->clazz != 1 || header_->headerversion != 1 || header_->archtype != 3) {
-
+    if (header_->clazz != 1 || header_->headerversion != 1 || header_->archtype != 3)
+    {
         errorCode_ = ELF_ERORR_NOT_SUPPORTED_ELF;
         return false;
     }
 
     /* check executable */
-    if (header_->type != 2) {
-
+    if (header_->type != 2)
+    {
         errorCode_ = ELF_ERORR_NOT_EXECUTABLE;
         return false;
     }

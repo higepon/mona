@@ -137,6 +137,7 @@ template <class T> void HList<T>::add(T element) {
         for (int i = 0; i < numElements; i++) {
             temp[i] = data_[i];
         }
+
         delete[] data_;
         data_ = temp;
     }

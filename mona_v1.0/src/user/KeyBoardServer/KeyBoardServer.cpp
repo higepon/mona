@@ -17,28 +17,25 @@
 int regist(List<dword>* destList, MessageInfo* info);
 int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info);
 
-void dummy() {
-}
-
-int MonaMain(List<char*>* pekoe) {
-
+int MonaMain(List<char*>* pekoe)
+{
     /* initilize KeyBoardManager */
     KeyBoardManager* manager = new KeyBoardManager();
     manager->init();
 
     /* initilize destination list */
     List<dword>* destList = new HList<dword>();
+    destList->add(1);
     MessageInfo info;
 
     /* Message loop */
-    for (;;) {
-
+    for (;;)
+    {
         /* receive */
-        if (!Message::receive(&info)) {
-
-            printf("message come");
-            switch(info.header) {
-
+        if (!Message::receive(&info))
+        {
+            switch(info.header)
+            {
             case MSG_KEY_SCANCODE:
 
                 sendKeyInformation(manager, destList, &info);
@@ -58,45 +55,35 @@ int MonaMain(List<char*>* pekoe) {
     return 0;
 }
 
-int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info) {
-
+int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info)
+{
     MessageInfo message;
     KeyInfo keyinfo;
-
-            printf("message come4");
 
     /* scan code to virtual key information */
     byte scancode = info->arg1;
     manager->setKeyScanCode(scancode);
     manager->getKeyInfo(&keyinfo);
 
-            printf("message come5");
-
     /* create message */
     memset(&message, 0, sizeof(MessageInfo));
     Message::create(&message, MSG_KEY_VIRTUAL_CODE, keyinfo.keycode, keyinfo.modifiers, 0, NULL);
 
-    //    printf("%d", keyinfo.keycode);
-
-            printf("message come6");
-
     /* send message */
-    for (int i = destList->size() - 1; i >= 0; i--) {
-
-        if (Message::send(destList->get(i), &message)) {
+    for (int i = destList->size() - 1; i >= 0; i--)
+    {
+        if (Message::send(destList->get(i), &message))
+        {
             printf("send error to pid = %x", destList->get(i));
             destList->removeAt(i);
         }
     }
-            printf("message com7");
     return 0;
 }
 
-int regist(List<dword>* destList, MessageInfo* info) {
-            printf("message come2");
+int regist(List<dword>* destList, MessageInfo* info)
+{
     dword pid = info->arg1;
-            printf("message come[%x]3", pid);
-//    destList->add(pid);
-            printf("message come3.5");
+    destList->add(pid);
     return 0;
 }

@@ -278,8 +278,7 @@ int Messenger::send(const char* name, MessageInfo* message)
     info->from = g_currentThread->process->getPid();
 
     process->getMessageList()->add(info);
-// should be
-//    g_processManager->wakeup(process, 55);
+    g_scheduler->wakeup(process, WAIT_MESSAGE);
     return 0;
 }
 
@@ -303,8 +302,8 @@ int Messenger::send(dword pid, MessageInfo* message) {
     *info = *message;
     info->from = g_currentThread->process->getPid();
     process->getMessageList()->add(info);
-// should be
-//    g_processManager->wakeup(process, 55);
+
+    g_scheduler->wakeup(process, WAIT_MESSAGE);
     return 0;
 }
 

@@ -400,9 +400,9 @@ void syscall_entrance() {
     case SYSTEM_CALL_MTHREAD_YIELD_M:
 
         {
-//             Process* process = g_currentThread->process;
-//             g_processManager->wait(process, g_currentThread->thread, 55);
-//             schedule(false);
+            g_scheduler->wait(g_currentThread->thread, WAIT_MESSAGE);
+            bool isProcessChange = g_scheduler->schedule();
+            ThreadOperation::switchThread(isProcessChange);
         }
 
     case SYSTEM_CALL_DATE:

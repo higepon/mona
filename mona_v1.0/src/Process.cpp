@@ -154,9 +154,22 @@ int Scheduler::calcPriority(Thread* thread)
 
 bool Scheduler::schedule2()
 {
-    Thread* root = runq[g_currentThread->thread->currPriority];
-    Thread* curr = (Thread*)(root->top());
+    Thread* root;
 
+    FOREACH(Thread*, queue, runq)
+    {
+        if (queue->isEmpty())
+        {
+            continue;
+        }
+        else
+        {
+            root = queue;
+            break;
+        }
+    }
+
+    Thread* curr = (Thread*)(root->top());
     curr->remove();
     root->addToPrev(curr);
 
@@ -219,8 +232,6 @@ void Scheduler::join(Thread* thread, int priority)
     if (priority > monaMin || priority < 0) return;
 
     runq[0]->addToPrev(thread);
-
-    this->schedule();
 }
 
 int Scheduler::kill(Thread* thread)
@@ -248,9 +259,34 @@ int Scheduler::wakeup(Thread* thread, int waitReason)
 
     thread->remove();
     runq[0]->addToPrev(thread);
+    thread->setWaitReason(WAIT_NONE);
 
     this->schedule();
     return NORMAL;
+}
+
+int Scheduler::wakeup(Process* process, int waitReason)
+{
+    List<Thread*>* list = process->getThreadList();
+
+    for (int i = 0; i < list->size(); i++)
+    {
+        wakeup(list->get(i), waitReason);
+    }
+    return NORMAL;
+}
+
+void Scheduler::dump()
+{
+    g_console->printf("current=%x, prev=%x\n", g_currentThread, g_prevThread);
+    FOREACH(Thread*, queue, runq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            ThreadInfo* i = PTR_THREAD(thread);
+            g_console->printf("[%s:t=%x,eip=%x,cr3=%x,pos=%d]\n", i->process->getName(), i, i->archinfo->eip, i->archinfo->cr3, thread->currPriority);
+        }
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -357,6 +393,8 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     {
         archCreateThread(thread, programCounter, directory, stack);
     }
+
+    process->getThreadList()->add(thread);
     return thread;
 };
 
@@ -489,6 +527,8 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0), tick_(0
     /* argument list */
     arguments_ = new HList<char*>();
 
+    threadList_ = new HList<Thread*>();
+
     /* pid */
     pid++;
     pid_ = pid;
@@ -520,6 +560,7 @@ Process::~Process() {
     }
 
     delete arguments_;
+    delete threadList_;
 }
 
 /*----------------------------------------------------------------------

@@ -113,6 +113,9 @@ class ThreadOperation
     static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
 };
 
+/*----------------------------------------------------------------------
+    Scheduler
+----------------------------------------------------------------------*/
 class Scheduler
 {
 public:
@@ -123,10 +126,12 @@ public:
     bool schedule();
     bool schedule2();
     void tick();
+    void dump();
     void join(Thread* thread, int priority = 30);
     int kill(Thread* thread);
     int wait(Thread* thread, int waitReason);
     int wakeup(Thread* thread, int waitReason);
+    int wakeup(Process* process, int waitReason);
     dword getTick() const;
     dword lookup(const char* name);
     Process* findProcess(dword pid);
@@ -318,6 +323,9 @@ class Process {
         return STACK_START - STACK_SIZE * (threadNum - 1);
     }
 
+    inline List<Thread*>* getThreadList() const {
+        return threadList_;
+    }
 
     static const LinearAddress STACK_START = 0xEFFFFFFF;
     static const dword STACK_SIZE          = 0x1000;
@@ -327,6 +335,7 @@ class Process {
 
   protected:
     static dword pid;
+    List<Thread*>* threadList_;
     List<char*>* arguments_;
     class HeapSegment* heap_;
     List<SharedMemorySegment*>* shared_;

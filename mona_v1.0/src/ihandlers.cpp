@@ -28,33 +28,38 @@
   \author HigePon
   \date   create:2004/02/05 update:
 */
-void mouseHandler() {
-
+void mouseHandler()
+{
     static int counter = 0;
 //     static bool sendFlag = false;
-    if (Mouse::waitReadable()) {
+    if (Mouse::waitReadable())
+    {
         g_console->printf("mouse time out");
     }
 
     byte data = inportb(0x60);
-
     MessageInfo message;
-
     memset(&message, 0, sizeof(MessageInfo));
 
     int type = counter % 3;
 
-    if (type == 0) {
+    if (type == 0)
+    {
         message.header = MSG_MOUSE_1;
-    } else if (type == 1) {
+    }
+    else if (type == 1)
+    {
         message.header = MSG_MOUSE_2;
-    } else {
+    }
+    else
+    {
         message.header = MSG_MOUSE_3;
     }
 
     message.arg1   = data;
 
-    if (g_messenger->send("MOUSE.SVR", &message)) {
+    if (g_messenger->send("MOUSE.SVR", &message))
+    {
         g_console->printf("mouse send failed");
     }
 
@@ -73,16 +78,15 @@ void mouseHandler() {
   \author HigePon
   \date   create:2002/07/25 update:2003/10/03
 */
-void keyStrokeHandler(dword scancode) {
-
+void keyStrokeHandler(dword scancode)
+{
     MessageInfo message;
-
     memset(&message, 0, sizeof(MessageInfo));
-
     message.header = MSG_KEY_SCANCODE;
     message.arg1   = scancode;
 
-    if (g_messenger->send("KEYBDMNG.SVR", &message)) {
+    if (g_messenger->send("KEYBDMNG.SVR", &message))
+    {
         g_console->printf("send failed");
     }
 
@@ -98,8 +102,8 @@ void keyStrokeHandler(dword scancode) {
   \author HigePon
   \date   create:2002/09/06 update:2003/01/26
 */
-void fault0dHandler(dword error) {
-
+void fault0dHandler(dword error)
+{
     dokodemoView();
     g_console->printf("error=%x\n", error);
     panic("fault0d");
@@ -113,8 +117,8 @@ void fault0dHandler(dword error) {
   \author HigePon
   \date   create:2002/07/25 update:2003/03/24
 */
-void dummyHandler() {
-
+void dummyHandler()
+{
     g_console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
@@ -137,10 +141,10 @@ void timerHandler()
     outportb(0x20, 0x20);
 
     g_scheduler->tick();
+    g_currentThread->thread->tick();
     dword tick = g_scheduler->getTick();
     bool isProcessChange = (tick % 10) ? g_scheduler->schedule2() : g_scheduler->schedule();
 
-    g_currentThread->thread->tick();
     ThreadOperation::switchThread(isProcessChange);
 
     /* does not come here */
@@ -152,8 +156,8 @@ void timerHandler()
   \author HigePon
   \date   create:2003/02/09 update:2003/09/19
 */
-void MFDCHandler(void) {
-
+void MFDCHandler(void)
+{
     /* even if FDCDriver has no instance, it works */
     FDCDriver::interrupt();
 
@@ -183,56 +187,82 @@ IRQHANDLERMaster(0)
     IRQHANDLERSlave(14)
     IRQHANDLERSlave(15)
 
-void cpufaultHandler_0(void) {
+void cpufaultHandler_0(void)
+{
     dokodemoView();
     panic("unhandled:fault00 - devied by 0");
 }
 
-void cpufaultHandler_1(void){
+void cpufaultHandler_1(void)
+{
     dokodemoView();
     panic("unhandled:fault01 - debug");
 }
 
-void cpufaultHandler_5(void){
+void cpufaultHandler_5(void)
+{
     dokodemoView();
     panic("unhandled:fault05 - BOUND");
 
 }
 
-void cpufaultHandler_6(void){
+void cpufaultHandler_6(void)
+{
     dokodemoView();
     panic("unhandled:fault06 - invalid op code");
 
 }
 
-void cpufaultHandler_7(void){
+void cpufaultHandler_7(void)
+{
     dokodemoView();
     panic("unhandled:fault07 no co-processor presents");
 }
 
-void cpufaultHandler_8(void){
+void cpufaultHandler_8(void)
+{
     dokodemoView();
     panic("unhandled:abort08 - double fault");
 }
 
-void cpufaultHandler_a(void){
+void cpufaultHandler_a(void)
+{
     dokodemoView();
     panic("unhandled:fault0A - invalid TSS");
 }
 
-
-void cpufaultHandler_b(void){
+void cpufaultHandler_b(void)
+{
     dokodemoView();
     panic("unhandled:fault0B - segment not presents");
 }
 
-void cpufaultHandler_c(dword error){
+void cpufaultHandler_c(dword error)
+{
     dokodemoView();
     panic("unhandled:fault0C - stack fault");
 }
 
-void cpufaultHandler_e(dword address, dword error){
+void cpufaultHandler_e(dword address, dword error)
+{
+#if 0
+    dword realcr3;
+    asm volatile("mov %%cr3, %%eax  \n"
+                 "mov %%eax, %0     \n"
+                 : "=m"(realcr3):: "eax");
 
+    g_console->printf("[%s]\n", g_currentThread->process->getName());
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    g_console->printf("\n");
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#endif
+
+#if 0
+    g_console->printf("[page:%s<%x><%x><%x>]", g_currentThread->process->getName(), address, error, g_currentThread->archinfo->eip);
+#endif
     if (!g_page_manager->pageFaultHandler(address, error)) {
 
         dokodemoView();
@@ -240,7 +270,8 @@ void cpufaultHandler_e(dword address, dword error){
     }
 }
 
-void cpufaultHandler_10(void){
+void cpufaultHandler_10(void)
+{
     dokodemoView();
     panic("unhandled:fault10 - co-processor error");
 }

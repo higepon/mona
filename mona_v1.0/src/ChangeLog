@@ -1,5 +1,7 @@
 2004-02-26  higepon  <higepon@users.sourceforge.jp>
 
+        * Process.cpp (schedule2): Scheduler::joinの中でのschedule()呼び出しを廃止(バグです。)
+
         * ihandlers.cpp: Thread Tickするようにした。
 
 2004-02-25  higepon  <higepon@users.sourceforge.jp>
