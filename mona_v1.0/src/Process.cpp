@@ -515,7 +515,10 @@ Thread* Process_::schedule() {
 UserProcess_::UserProcess_(const char* name, PageEntry* directory) : Process_(name, directory) {
 
     /* not kernel mode */
-    isKernelMode_ = false;
+    isUserMode_ = true;
+
+    /* thread manager */
+    threadManager_ = new ThreadManager(isUserMode_, g_processManager);
 }
 
 UserProcess_::~UserProcess_() {
@@ -527,7 +530,10 @@ UserProcess_::~UserProcess_() {
 KernelProcess_::KernelProcess_(const char* name, PageEntry* directory) : Process_(name, directory) {
 
     /* kernel mode */
-    isKernelMode_ = true;
+    isUserMode_ = false;
+
+    /* thread manager */
+    threadManager_ = new ThreadManager(isUserMode_, g_processManager);
 }
 
 KernelProcess_::~KernelProcess_() {

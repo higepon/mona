@@ -215,7 +215,7 @@ class Process_ {
     Thread* createThread(dword programCounter);
 
   protected:
-    bool isKernelMode_;
+    bool isUserMode_;
     ThreadManager* threadManager_;
     PageEntry* pageDirectory_;
     char name_[16];

@@ -314,8 +314,6 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     SharedMemorySegment* shared;
 
-     g_console->printf("address = %x", address);
-
     /* for each shared segment */
     for (shared = g_current_process->shared; ; shared = (SharedMemorySegment*)shared->getNext()) {
 

@@ -122,8 +122,11 @@ void startKernel(void) {
 
     /* this is test code 2003/12/14 */
     g_processManager = new ProcessManager_(g_page_manager);
-    g_processManager->add(g_processManager->create(ProcessManager_::USER_PROCESS, "TEST1"));
-    g_processManager->add(g_processManager->create(ProcessManager_::KERNEL_PROCESS, "TEST2"));
+    Process_* testProcess1 = g_processManager->create(ProcessManager_::KERNEL_PROCESS, "TEST1");
+    g_processManager->add(testProcess1);
+    Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
+    g_console->printf("testThread1=%x", testThread1);
+    g_processManager->join(testProcess1, testThread1);
 
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();
