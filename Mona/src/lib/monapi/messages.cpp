@@ -218,3 +218,13 @@ int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BO
     if (tid != NULL) *tid = msg.arg3;
     return msg.arg2;
 }
+
+byte* monapi_allocate_dma_memory()
+{
+    return syscall_allocate_dma_memory();
+}
+
+void monapi_deallocate_dma_memory(void* address)
+{
+    syscall_deallocate_dma_memory(address);
+}

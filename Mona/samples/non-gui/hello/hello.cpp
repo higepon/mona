@@ -17,7 +17,6 @@ int MonaMain(List<char*>* pekoe)
     printf("dma = %x\n", dma);
 
     dma[3] = 0xff;
-
     printf("after\n");
     monapi_deallocate_dma_memory(dma);
 

@@ -676,3 +676,17 @@ int syscall_get_memory_info(MemoryInfo* info)
     SYSCALL_1(SYSTEM_CALL_GET_MEMORY_INFO, result, info);
     return result;
 }
+
+byte* syscall_allocate_dma_memory()
+{
+    dword result;
+    SYSCALL_0(SYSTEM_CALL_ALLOCATE_DMA_MEMORY, result);
+    return (byte*)result;
+}
+
+dword syscall_deallocate_dma_memory(void* address)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, result, address);
+    return result;
+}

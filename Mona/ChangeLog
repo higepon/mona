@@ -1,5 +1,10 @@
 2004-12-27  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/FDCDriver.cpp: とりあえずコンパイルを通した
+                                        : #defineの定数類をprivateのenumにした。
+                                        : そしてリファクタリング
+                                        : 割り込みをメッセージで受け取るようにした
+
         * src/lib/monapi/messages.cpp (monapi_allocate_dma_memory): 追加
                                     (monapi_deallocate_dma_memory): 追加
 
