@@ -128,13 +128,13 @@ void startKernel(void) {
 
     g_process_manager = new ProcessManager();
 
-    UserProcess* process1 = new UserProcess("user_process");
-    Process*     process2 = new Process("krnl_o");
-    Process*     process3 = new Process("krnl_n");
-    Process*     process4 = new Process("krnl_m");
-    Process*     process5 = new Process("krnl_o2");
+    UserProcess* process1 = new UserProcess("user_process ");
+    Process*     process2 = new Process("krnl_o       ");
+    Process*     process3 = new Process("krnl_n       ");
+    Process*     process4 = new Process("krnl_m       ");
+    Process*     process5 = new Process("krnl_o2      ");
     UserProcess* process6 = new UserProcess("user_process2");
-    Process*     process7 = new Process("show_process");
+    Process*     process7 = new Process("show_process ");
 
     g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
     g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);

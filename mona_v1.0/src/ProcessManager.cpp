@@ -41,6 +41,7 @@ void ProcessManager::switchProcess() {
 
 void ProcessManager::schedule(){
 
+    g_current_process->tick++;
     scheduler_->schedule();
     this->switchProcess();
 
@@ -78,13 +79,17 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
 void ProcessManager::printOneProcess(ProcessInfo* info) const {
 
-    g_console->printf("[%s]\n", info->name);
+    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %d\n", info->name, info->pid, info->dpl, info->cs, info->ss, info->esp, info->tick);
 
 }
 
 void ProcessManager::printAllProcesses() const {
 
+    g_console->printf("|    name     | pid | dpl |    cs    |    ss    |    esp   | tick\n");
+    g_console->printf("-----------------------------------------------------------------\n");
+
     for (dword i = 0; i < pnum_; i++) {
         printOneProcess(&(g_process[i]->pinfo_));
     }
 }
+

@@ -36,6 +36,7 @@ Process::Process(const char* name) {
 
     pinfo_.cs      = 0x08;
     pinfo_.ds      = 0x10;
+    pinfo_.ss      = 0x18;
     pinfo_.eflags  = 0x200;
     pinfo_.eax     = 0;
     pinfo_.ecx     = 0;

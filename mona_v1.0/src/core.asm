@@ -49,8 +49,8 @@ _arch_save_process_registers:
         mov dword[ebx + 40], eax
         mov eax, ds              ; save ds
         mov dword[ebx + 44], eax
-        mov eax, ss              ; save ss
-        mov dword[ebx + 48], eax
+;         mov eax, ss              ; save ss
+;         mov dword[ebx + 48], eax
         ret
 
 _arch_switch_process:
