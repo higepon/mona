@@ -1,5 +1,5 @@
 # How To Boot
-# require
+# requires
 # native machine or bochs
 # dd or rawwrite.exe
 #
@@ -9,5 +9,8 @@
 # Linux
 use dd command
 
-# Windows
+# Windows(95/98/ME) or MS-DOS
 use rawwrite.exe
+
+# for Cygwin , Linux and other UNIXy environment
+make write

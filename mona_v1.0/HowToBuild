@@ -9,7 +9,7 @@
 make DJGPP="djgpp"
 
 # with cygwin on Win32
-make CYGWIN="cygwin"
+make
 
 # with gnu on Linux
 make
