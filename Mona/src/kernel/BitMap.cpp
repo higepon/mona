@@ -26,8 +26,7 @@ const int BitMap::NOT_FOUND;
 BitMap::BitMap(int number) {
 
     bitsNumber_ = number;
-    dwordNumber_ = (bitsNumber_ / DWORD_BITS)
-                 + ((bitsNumber_ % DWORD_BITS) ? 1 : 0);
+    dwordNumber_ = (bitsNumber_ + DWORD_BITS - 1) / DWORD_BITS;
 
     map_ = new int[dwordNumber_];
     memset(map_, 0, sizeof(int) * dwordNumber_);

@@ -59,7 +59,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     /* get file size and allocate buffer */
     fileSize  = g_fs->size();
 
-    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+    readTimes = (fileSize + 512 -1) / 512;
     buf       = (byte*)malloc(512 * readTimes);
 
     memset(buf, 0, 512 * readTimes);

@@ -264,7 +264,7 @@ int execSysConf()
     /* get file size and allocate buffer */
     int fileSize  = g_fs->size();
 
-    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+    int readTimes = (fileSize + 512 - 1) / 512;
     byte* buf     = (byte*)malloc(512 * readTimes);
 
     memset(buf, 0, 512 * readTimes);

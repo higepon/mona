@@ -46,7 +46,7 @@ const int  PageManager::ARCH_PAGE_TABLE_NUM;
 */
 PageManager::PageManager(dword totalMemorySize)
 {
-    dword pageNumber = totalMemorySize / ARCH_PAGE_SIZE + ((totalMemorySize % ARCH_PAGE_SIZE) ? 1 : 0);
+    dword pageNumber = (totalMemorySize + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
 
     memoryMap_ = new BitMap(pageNumber);
     checkMemoryAllocate(memoryMap_, "PageManager memoryMap");
