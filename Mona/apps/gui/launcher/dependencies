@@ -1,0 +1,39 @@
+Form1.o: Form1.cpp ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
+  ../../../include/gui/System/Mona/Forms/Application.h \
+  ../../../include/gui/System/Pointer.h \
+  ../../../include/gui/System/Object.h \
+  ../../../include/gui/System/String.h \
+  ../../../include/gui/System/Text/Encoding.h \
+  ../../../include/gui/System/Array.h \
+  ../../../include/gui/System/Collections/ArrayList.h \
+  ../../../include/gui/System/Mona/Forms/Button.h \
+  ../../../include/gui/System/Mona/Forms/Control.h \
+  ../../../include/gui/System/Mona/Forms/Events.h \
+  ../../../include/gui/System/Event.h \
+  ../../../include/gui/System/Drawing/Bitmap.h \
+  ../../../include/gui/System/Drawing/Color.h \
+  ../../../include/gui/System/Drawing/Font.h \
+  ../../../include/gui/System/Drawing/Size.h \
+  ../../../include/gui/System/Drawing/Graphics.h \
+  ../../../include/gui/System/Drawing/Rectangle.h \
+  ../../../include/gui/System/Drawing/Point.h \
+  ../../../include/gui/System/Mona/Forms/Form.h
