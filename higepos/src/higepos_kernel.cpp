@@ -47,9 +47,13 @@ void startKernel(void) {
     _sysUnlock();
     _sysPrint("idt set done!\n");
 
-    Sub& sub = Sub::instance();
-    _sysPrintInt(sub.getNumber());
-    _sysPrint(sub.getName());
+    //  Sub& sub = Sub::instance();
+//      _sysPrintInt(sub.getNumber());
+//      _sysPrint(sub.getName());
+
+    Sub* sub = &Sub::instance();
+    _sysPrintInt((int)sub);
+
     //    _sysPrint(getName());
     //    _sysPrintInt(getNumber());
 
