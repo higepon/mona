@@ -1,4 +1,3 @@
-//#define FDC_DEBUG
 /*!
     \file  FDCDriver.cpp
     \brief class Floppy Disk Controller for MultiTask
@@ -332,7 +331,7 @@ bool FDCDriver::recalibrate() {
 
     while (!waitInterrupt());
 
-    info(NOTICE, "recalibrate:after waitInterrupt\n");
+    info(DEV_NOTICE, "recalibrate:after waitInterrupt\n");
 
     senseInterrupt();
     return true;
@@ -400,7 +399,7 @@ bool FDCDriver::seek(byte track) {
     /* and then senseInterrupt                  */
     while (!waitInterrupt());
 
-    info(NOTICE, "seek:after waitInterrupt\n");
+    info(DEV_NOTICE, "seek:after waitInterrupt\n");
 
     if (!senseInterrupt()) {
 
@@ -423,12 +422,12 @@ bool FDCDriver::senseInterrupt() {
 
     if (!sendCommand(command, sizeof(command))){
 
-        console_->printf("FDCDriver#senseInterrrupt:command fail\n");
+        info(ERROR, "FDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
 
     if (!readResults()) {
-        console_->printf("FDCDriver#senseInterrrupt:resultError\n");
+        info(ERROR, "FDCDriver#senseInterrrupt:resultError\n");
         return false;
     }
     return true;
@@ -452,7 +451,7 @@ bool FDCDriver::readResults() {
         /* expected condition is ready & data I/O to CPU */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            console_->printf("FDCDriver#readResults: timeout results_[%d]\n", i);
+            info(ERROR, "FDCDriver#readResults: timeout results_[%d]\n", i);
             printStatus("status");
             break;
         }
@@ -469,16 +468,12 @@ bool FDCDriver::readResults() {
     /* if not normal end show result */
     if (resultsLength_ > 0 && (results_[0] & 0xC0)) {
 
-        console_->printf("FDC ERROR:");
+        info(WARNING, "result error");
 
         for (int j = 0; j < resultsLength_; j++) {
 
             console_->printf("result[%d] = %x ", j, (int)(results_[j]));
         }
-        console_->printf("\n");
-#ifdef FDC_DEBUG
-        console_->printf("result error");
-#endif
         return false;
     }
     return true;;
@@ -597,34 +592,27 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-#ifdef FDC_DEBUG
-    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
-#endif
-
+    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!seek(track)) {
-        g_console->printf("FDCDriver#read#seek:error");
+        info(ERROR, "read#seek:error");
         return false;
     }
 
     setupDMARead(512);
 
     interrupt_ = false;
-#ifdef FDC_DEBUG
-    printStatus("before read command");
-#endif
+
+    info(DEV_NOTICE, "before read command");
+
     sendCommand(command, sizeof(command));
 
-#ifdef FDC_DEBUG
-    console_->printf("wait loop");
-#endif
+    info(DEV_NOTICE, "wait loop");
 
     while (!waitInterrupt());
     stopDMA();
 
-#ifdef FDC_DEBUG
-    console_->printf("read results");
-#endif
+    info(DEV_NOTICE, "raed results");
 
     return readResults();
 }
@@ -695,9 +683,8 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     while (!waitInterrupt());
-#ifdef FDC_DEBUG
-    console_->printf("write:after waitInterrupt\n");
-#endif
+
+    info(DEV_NOTICE, "write:after waitInterrupt\n");
 
     stopDMA();
 
@@ -710,10 +697,8 @@ bool FDCDriver::read(dword lba, byte* buf) {
 
     lbaToTHS(lba, track, head, sector);
 
-#ifdef FDC_DEBUG
-    g_console->printf("read lba=%d", lba);
-    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
-#endif
+    info(DEBUG, "read lba=%d", lba);
+    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     /* read. if error, retry 10 times */
     for (int i = 0; i < 10; i++) {
@@ -733,10 +718,8 @@ bool FDCDriver::write(dword lba, byte* buf) {
 
     lbaToTHS(lba, track, head, sector);
 
-#ifdef FDC_DEBUG
-    g_console->printf("write lba=%d", lba);
-    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
-#endif
+    info(DEBUG, "write lba=%d", lba);
+    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     memcpy(dmabuff_, buf,  512);
 
