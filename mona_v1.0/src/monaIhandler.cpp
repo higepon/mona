@@ -64,7 +64,6 @@ void fault0dHandler() {
     panic("fault0d");
 }
 
-
 /*!
     \brief dummy handler
 
