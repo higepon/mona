@@ -1,3 +1,4 @@
+//#define FDC_DEBUG
 /*!
     \file  FDCDriver.cpp
     \brief class Floppy Disk Controller for MultiTask
@@ -153,7 +154,7 @@ void FDCDriver::initilize() {
 
     interrupt_ = false;
     motor(ON);
-    while(!waitInterrupt());
+    while (!waitInterrupt());
 
     /* specify */
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
@@ -271,12 +272,13 @@ bool FDCDriver::waitInterrupt() {
 
     \param  on ON/OFF
     \author HigePon
-    \date   create:2003/02/10 update:
+    \date   create:2003/02/10 update:2003/05/18
 */
 void FDCDriver::motor(bool on) {
 
-    if (on) outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
-    else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
+    if (on) {
+        outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
+    } else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
 }
 
