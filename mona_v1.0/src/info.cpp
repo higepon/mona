@@ -18,6 +18,8 @@ void info(int level, const char *format, ...) {
     /* do nothing */
     if (level > g_info_level) return;
 
+    if (level == ERROR) g_console->setCHColor(GP_RED);
+
     /* out */
     g_console->printf("[%s]:", g_process_name);
 
@@ -58,6 +60,7 @@ void info(int level, const char *format, ...) {
             g_console->putCharacter(format[i]);
         }
     }
+    if (level == ERROR) g_console->setCHColor(GP_WHITE);
 }
 
 

@@ -130,7 +130,7 @@ void FDCDriver::initilize() {
         panic("dma buff allocate error");
     }
 
-    info(DUMP, "dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
+    info(DEBUG, "dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
 
     /* setup DMAC */
     outportb(0xda, 0x00);
@@ -159,7 +159,7 @@ void FDCDriver::initilize() {
     /* specify */
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
 
-        g_console->printf("Specify command failed\n");
+        info(ERROR, "Specify command failed\n");
         motor(OFF);
         return;
     }
@@ -179,7 +179,7 @@ void FDCDriver::test() {
         memset(dmabuff_, i, 512);
         if (!write(i, dmabuff_)) {
 
-            g_console->printf("read failed\n");
+            info(DEBUG, "read failed\n");
             motor(OFF);
             return;
         }
@@ -199,9 +199,7 @@ void FDCDriver::waitPrint(const char* msg) {
         i--;
     }
 
-#ifdef FDC_DEBUG
     g_console->printf("%s:%d\n", msg, counter);
-#endif
 }
 
 /*!
@@ -252,9 +250,7 @@ void FDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void FDCDriver::interrupt() {
 
-#ifdef FDC_DEBUG
-    console_->printf("\ninterrupt:");
-#endif
+    info(DEBUG, "\ninterrupt:");
     interrupt_ = true;
 }
 
@@ -284,9 +280,8 @@ void FDCDriver::motor(bool on) {
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
         while (!waitInterrupt());
 
-#ifdef FDC_DEBUG
-    console_->printf("motor on:after waitInterrupt\n");
-#endif
+        info(DUMP, "motor on:after waitInterrupt\n");
+
     } else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
 }

@@ -14,6 +14,7 @@
 
 #define ERROR       10
 #define WARNING     20
+#define NOTICE      25
 #define DEV_ERROR   30
 #define DEV_WARNING 40
 #drine  DEBUG       45
