@@ -126,3 +126,43 @@ LinkedItem *Container::getLinkedItem(Control *control)
 	}
 	return NULL;
 }
+
+/**
+ 指定した部品について描画が必要かどうかチェックする.
+ @param srect 参照する部品の領域
+ @param drect 参照される部品の領域
+ @return drectとsrectに重なっていたらtrue、重なっていなければfalse
+ */
+bool Container::checkNeedsPaint(Rect *srect, Rect *drect) {
+	int i, sp[4][2], dp[4][2];
+
+	// 参照する部品の領域
+	sp[0][0] = srect->x;
+	sp[0][1] = srect->y;
+	sp[1][0] = srect->x + srect->width;
+	sp[1][1] = srect->y;
+	sp[2][0] = srect->x;
+	sp[2][1] = srect->y + srect->height;
+	sp[3][0] = srect->x + srect->width;
+	sp[3][1] = srect->y + srect->height;
+
+	// 参照される部品の領域
+	dp[0][0] = drect->x;
+	dp[0][1] = drect->y;
+	dp[1][0] = drect->x + drect->width;
+	dp[1][1] = drect->y;
+	dp[2][0] = drect->x;
+	dp[2][1] = drect->y + drect->height;
+	dp[3][0] = drect->x + drect->width;
+	dp[3][1] = drect->y + drect->height;
+	
+	// 両者の大小関係も考慮して冗長だが２重チェック
+	for (i = 0; i < 4; i++) {
+		if (sp[0][0] <= dp[i][0] && dp[i][0] <= sp[1][0] && sp[0][1] <= dp[i][1] && dp[i][1] <= sp[2][1]) {
+			return true;
+		}
+		if (dp[0][0] <= sp[i][0] && sp[i][0] <= dp[1][0] && dp[0][1] <= sp[i][1] && sp[i][1] <= dp[2][1]) {
+			return true;
+		}
+	}
+}

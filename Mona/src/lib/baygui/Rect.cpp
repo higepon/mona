@@ -27,6 +27,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
+/** デフォルトコンストラクタ */
+Rect::Rect() {
+	x = y = width = height = 0;
+}
+
 /** コンストラクタ */
 Rect::Rect(int x, int y, int height, int width) {
 	this->x = x;

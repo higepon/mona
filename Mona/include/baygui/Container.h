@@ -38,7 +38,8 @@ protected:
 
 	virtual Control *findChild();
 	virtual Control *findChild(int x, int y);
-	LinkedItem *getLinkedItem(Control *control);
+	virtual LinkedItem *getLinkedItem(Control *control);
+	virtual bool checkNeedsPaint(Rect *srect, Rect *drect);
 
 public:
 	Container::Container();

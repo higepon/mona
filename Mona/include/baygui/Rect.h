@@ -42,6 +42,7 @@ public:
 	/** 幅 */
 	int width;
 	
+	Rect::Rect();
 	Rect::Rect(int x, int y, int height, int width);
 	virtual Rect::~Rect();
 };
