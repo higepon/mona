@@ -20,7 +20,7 @@ class ReversiForm : public Form, public MonAPI::Observer
 private:
     _A<_A<_P<Piece> > > pieces;
     _P<Button> button1;
-    _P<Label> label1;
+    _P<Label> label1, label2, label3, label4;
     _P<ReversiBoard> board;
 
 public:
@@ -54,24 +54,73 @@ private:
     {
         // Form
         this->set_Location(::System::Drawing::Point(20, 64));
-        this->set_ClientSize(Size(BOARD_SIZE + 20, BOARD_SIZE + 20));
+        this->set_ClientSize(Size(BOARD_SIZE, BOARD_SIZE + 20));
         this->set_Text("Reversi");
 
         // ボタン
         this->button1 = new Button();
-        this->button1->set_Bounds(Rectangle(0, BOARD_SIZE, 50, 15));
+        this->button1->set_Bounds(Rectangle(0, BOARD_SIZE + 2, 50, 16));
         this->button1->set_Text("reset");
         this->get_Controls()->Add(this->button1.get());
 
         // ラベル
         this->label1 = new Label();
-        this->label1->set_Bounds(Rectangle(50, BOARD_SIZE, 50, 15));
+        this->label2 = new Label();
+        this->label3 = new Label();
+        this->label4 = new Label();
+        this->label1->set_Bounds(Rectangle( 60, BOARD_SIZE + 2, 40, 16));
+        this->label2->set_Bounds(Rectangle(105, BOARD_SIZE + 2, 20, 16));
+        this->label3->set_Bounds(Rectangle(130, BOARD_SIZE + 2, 40, 16));
+        this->label4->set_Bounds(Rectangle(175, BOARD_SIZE + 2, 20, 16));
+        this->label1->set_Text("  red");
+        this->label2->set_Text("0");
+        this->label3->set_Text(" white");
+        this->label4->set_Text("0");
         this->get_Controls()->Add(this->label1.get());
+        this->get_Controls()->Add(this->label2.get());
+        this->get_Controls()->Add(this->label3.get());
+        this->get_Controls()->Add(this->label4.get());
     }
 
     void refreshLables()
     {
-        this->label1->set_Text(this->board->getCurrentHand() == ReversiBoard::BLACK ? " red" : " white");
+        switch (this->board->getCurrentHand())
+        {
+            case ReversiBoard::BLACK:
+            	this->label1->set_ForeColor(Color::get_White());
+                this->label1->set_BackColor(Color::get_Blue());
+                this->label3->set_ForeColor(this->get_ForeColor());
+                this->label3->set_BackColor(this->get_BackColor());
+                break;
+            case ReversiBoard::WHITE:
+                this->label1->set_ForeColor(this->get_ForeColor());
+                this->label1->set_BackColor(this->get_BackColor());
+                this->label3->set_ForeColor(Color::get_White());
+                this->label3->set_BackColor(Color::get_Blue());
+                break;
+        }
+
+        int black = 0, white = 0;
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                switch (this->board->getPiece(x, y))
+                {
+                    case ReversiBoard::BLACK:
+                        black++;
+                        break;
+                    case ReversiBoard::WHITE:
+                        white++;
+                        break;
+                }
+            }
+        }
+        char buf[16];
+        sprintf(buf, "%d", black);
+        this->label2->set_Text(buf);
+        sprintf(buf, "%d", white);
+        this->label4->set_Text(buf);
     }
 
     void button1_Click(Pointer<Object> sender, Pointer<EventArgs> e)

@@ -8,6 +8,8 @@
 
         * src/lib/gui/System/Mona/Forms/Control.cpp: マウスカーソルの残像が残らないように対処
 
+        * apps/gui/reversi/ReversiForm.cpp: コマの数を表示
+
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
         * *.asmでsection .text指定。 NFLAGS= -f elf, -f win32の振り分け
