@@ -59,7 +59,7 @@ Shell::Shell() : position_(0)
     printf(PROMPT);
     if (!callAutoExec) return;
 
-    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH", 1);
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH", 0);
     if (mi == NULL) return;
 
     for (dword pos = 0; pos <= mi->Size; pos++)
@@ -438,7 +438,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     return 0;
 }
 
-int Shell::executeProcess(const char* path, const char* name, CommandOption* option)
+int Shell::executeProcess(const CString& path, const CString& name, CommandOption* option)
 {
     monapi_cmemoryinfo* mi1 = monapi_call_file_read_data(path, 1);
     if (mi1 == NULL) return -1;

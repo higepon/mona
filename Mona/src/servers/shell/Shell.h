@@ -25,7 +25,7 @@ class Shell {
     MonAPI::CString getHistory();
     int isInternalCommand(const MonAPI::CString& command);
     void internalCommandExecute(int command, CommandOption* option);
-    int executeProcess(const char* path, const char* name ,CommandOption* option);
+    int executeProcess(const MonAPI::CString& path, const MonAPI::CString& name ,CommandOption* option);
 
   protected:
     char commandLine_[1024];
