@@ -5,6 +5,7 @@
 #include "FileServer.h"
 #include "file.h"
 #include "bzip2.h"
+#include "dtk5s.h"
 
 using namespace MonAPI;
 
@@ -77,6 +78,43 @@ void MessageLoop()
             case MSG_FILE_DECOMPRESS_BZ2_FILE:
             {
                 monapi_cmemoryinfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
+                if (mi != NULL)
+                {
+                    Message::reply(&msg, mi->Handle, mi->Size);
+                    delete mi;
+                }
+                else
+                {
+                    Message::reply(&msg);
+                }
+                break;
+            }
+            case MSG_FILE_DECOMPRESS_ST5:
+            {
+                monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
+                mi1->Handle = msg.arg1;
+                mi1->Size   = msg.arg2;
+                monapi_cmemoryinfo* mi2 = NULL;
+                if (monapi_cmemoryinfo_map(mi1))
+                {
+                    mi2 = ST5Decompress(mi1);
+                    monapi_cmemoryinfo_dispose(mi1);
+                }
+                if (mi2 != NULL)
+                {
+                    Message::reply(&msg, mi2->Handle, mi2->Size);
+                    monapi_cmemoryinfo_delete(mi2);
+                }
+                else
+                {
+                    Message::reply(&msg);
+                }
+                monapi_cmemoryinfo_delete(mi1);
+                break;
+            }
+            case MSG_FILE_DECOMPRESS_ST5_FILE:
+            {
+                monapi_cmemoryinfo* mi = ST5DecompressFile(msg.str, msg.arg1 != 0);
                 if (mi != NULL)
                 {
                     Message::reply(&msg, mi->Handle, mi->Size);

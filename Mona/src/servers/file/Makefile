@@ -1,5 +1,5 @@
 TARGET  = FILE
-SOURCES = main.cpp file.cpp bzip2.cpp
+SOURCES = main.cpp file.cpp bzip2.cpp dtk5s.cpp
 INSTDIR = $(BINDIR)/root/SERVERS
 
 MONADIR    = ../../..
