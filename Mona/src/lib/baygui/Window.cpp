@@ -306,62 +306,69 @@ void Window::repaint()
 	
 	if (this->_buffer == NULL) return;
 	
-	w = this->width;
-	h = this->height;
-	
-	// 外枠
-	__g->setColor(COLOR_LIGHTGRAY);
-	__g->fillRect(0, 0, w, h);
-	__g->setColor(COLOR_BLACK);
-	__g->drawRect(0, 0, w, h);
-	
-	// 内枠
-	__g->setColor(COLOR_BLACK);
-	__g->drawRect(5, 21, w - 10, h - 26);
-	
-	// 枠
-	__g->setColor(COLOR_WHITE);
-	__g->drawLine(1, 1, w - 2, 1);
-	__g->drawLine(1, 1, 1, h - 2);
-	__g->drawLine(w - 5, 21, w - 5, h - 5);
-	__g->drawLine(5, h - 5, w - 5, h - 5);
-	__g->setColor(COLOR_GRAY);
-	__g->drawLine(w - 2, 2, w - 2, h - 2);
-	__g->drawLine(2, h - 2, w - 2, h - 2);
-	__g->drawLine(4, 20, w - 6, 20);
-	__g->drawLine(4, 20, 4, h - 6);
-	
-	if (this->focused == true) {
-		// タイトルバー
-		for (i = 4; i <= 14; i = i + 2) {
-			__g->setColor(COLOR_GRAY);
-			__g->drawLine(20, i, w - 7, i);
-			__g->setColor(COLOR_WHITE);
-			__g->drawLine(21, i + 1, w - 6, i + 1);
-		}
+	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) == WINDOWFLAGS_NOBORDER) {
+		// 非矩形ウィンドウ
+		onPaint(__g);
+		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle());
+	} else {
+		// 矩形ウィンドウ
+		w = this->width;
+		h = this->height;
 		
-		// 閉じるボタン
-		for (i = 0; i < 13; i++) {
-			for (j = 0; j < 13; j++) {
-				__g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
+		// 外枠
+		__g->setColor(COLOR_LIGHTGRAY);
+		__g->fillRect(0, 0, w, h);
+		__g->setColor(COLOR_BLACK);
+		__g->drawRect(0, 0, w, h);
+		
+		// 内枠
+		__g->setColor(COLOR_BLACK);
+		__g->drawRect(5, 21, w - 10, h - 26);
+		
+		// 枠
+		__g->setColor(COLOR_WHITE);
+		__g->drawLine(1, 1, w - 2, 1);
+		__g->drawLine(1, 1, 1, h - 2);
+		__g->drawLine(w - 5, 21, w - 5, h - 5);
+		__g->drawLine(5, h - 5, w - 5, h - 5);
+		__g->setColor(COLOR_GRAY);
+		__g->drawLine(w - 2, 2, w - 2, h - 2);
+		__g->drawLine(2, h - 2, w - 2, h - 2);
+		__g->drawLine(4, 20, w - 6, 20);
+		__g->drawLine(4, 20, 4, h - 6);
+		
+		if (this->focused == true) {
+			// タイトルバー
+			for (i = 4; i <= 14; i = i + 2) {
+				__g->setColor(COLOR_GRAY);
+				__g->drawLine(20, i, w - 7, i);
+				__g->setColor(COLOR_WHITE);
+				__g->drawLine(21, i + 1, w - 6, i + 1);
+			}
+			
+			// 閉じるボタン
+			for (i = 0; i < 13; i++) {
+				for (j = 0; j < 13; j++) {
+					__g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
+				}
 			}
 		}
-	}
 
-	// タイトル
-	FontMetrics metrics;
-	int fw = metrics.getWidth(getTitle());
-	int fh = metrics.getHeight(getTitle());
-	__g->setColor(COLOR_LIGHTGRAY);
-	__g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
-	if (this->focused == true) {
-		__g->setColor(COLOR_BLACK);
-	} else {
-		__g->setColor(COLOR_GRAY);
-	}
-	__g->drawText(getTitle(), ((w - fw) / 2), ((INSETS_TOP - fh) / 2));
+		// タイトル
+		FontMetrics metrics;
+		int fw = metrics.getWidth(getTitle());
+		int fh = metrics.getHeight(getTitle());
+		__g->setColor(COLOR_LIGHTGRAY);
+		__g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
+		if (this->focused == true) {
+			__g->setColor(COLOR_BLACK);
+		} else {
+			__g->setColor(COLOR_GRAY);
+		}
+		__g->drawText(getTitle(), ((w - fw) / 2), ((INSETS_TOP - fh) / 2));
 
-	Container::repaint();
+		Container::repaint();
+	}
 }
 
 /** 領域更新 */
@@ -579,6 +586,10 @@ void Window::run()
 				strcpy(this->customEvent.str, info.str);
 				this->customEvent.length = info.length;
 				postEvent(&this->customEvent);
+				// MSG_PROCESS_STDOUT_DATA は SendReceive で送るので必要
+				if (info.header == MSG_PROCESS_STDOUT_DATA) {
+					MonAPI::Message::reply(&info);
+				}
 				break;
 			}
 		}

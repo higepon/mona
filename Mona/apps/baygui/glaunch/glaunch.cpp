@@ -354,26 +354,26 @@ public:
 	}
 
 	/** 再描画 */
-	virtual void repaint() {
+	virtual void onPaint(Graphics *g) {
 		if (this->_buffer == NULL) return;
 		
 		int w = this->width;
 		int h = this->height;
 		
-		__g->setColor(0xfffcfcfc);
-		__g->fillRect(0,0,w,h);
+		g->setColor(0xfffcfcfc);
+		g->fillRect(0,0,w,h);
 		
 		for (int i = 0; i < 32; i++) {
 			for (int j = 0; j < 32; j++) {
 				// ディスクアイコン
 				if (this->type == DISKICON) {
-					__g->drawPixel(16 + j, i, diskIconPalette[(int)(diskIconData[i][j])]);
+					g->drawPixel(16 + j, i, diskIconPalette[(int)(diskIconData[i][j])]);
 				// 端末アイコン
 				} else if (this->type == TERMINALICON) {
-					__g->drawPixel(16 + j, i, terminalIconPalette[(int)(terminalIconData[i][j])]);
+					g->drawPixel(16 + j, i, terminalIconPalette[(int)(terminalIconData[i][j])]);
 				// ゴミ箱アイコン
 				} else if (this->type == TRASHBOXICON) {
-					__g->drawPixel(16 + j, i, trashboxIconPalette[(int)(trashboxIconData[i][j])]);
+					g->drawPixel(16 + j, i, trashboxIconPalette[(int)(trashboxIconData[i][j])]);
 				}
 			}
 		}
@@ -381,10 +381,10 @@ public:
 		// タイトル
 		int fw = this->_metrics->getWidth(getTitle());
 		int fh = this->_metrics->getHeight(getTitle());
-		__g->setColor(COLOR_WHITE);
-		__g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
-		__g->setColor(COLOR_BLACK);
-		__g->drawText(getTitle(), (w - fw)/2, 36);
+		g->setColor(COLOR_WHITE);
+		g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
+		g->setColor(COLOR_BLACK);
+		g->drawText(getTitle(), (w - fw)/2, 36);
 		
 		// _gへの描画が反映されると困るので直接ウィンドウを更新
 		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle());
