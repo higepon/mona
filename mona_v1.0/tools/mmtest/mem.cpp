@@ -23,54 +23,11 @@ void exitMessage(int id, const char* message);
 
 using namespace std;
 
-char* ltona(long value, char* str, int n, int base) {
-
-    static const char xdigit[] = {"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
-    unsigned long ulvalue;
-    unsigned int ubase;
-    int sign = 0;
-    char* ps = str + n;
-
-    *ps = '\0';
-    if (base < 0) {
-        ubase = -base;
-        if (value < 0) {
-            value = -value;
-            sign  = -1;
-            --n;
-        }
-    } else {
-        ubase = base;
-    }
-
-    ulvalue  = value;
-    if (n > 0 && (2 <= ubase && ubase <  sizeof(xdigit))) {
-        do {
-            *--ps = xdigit[(unsigned)(ulvalue % ubase)];
-        } while (--n > 0 && (ulvalue /= ubase) != 0);
-    }
-    if (sign < 0)
-        *--ps = '-';
-    while (--n >= 0)
-        *--ps = ' ';
-    return str;
-}
-
-
 /*
     main()
 */
 int main(int argc, char** argv) {
 
-    static char hoge[255];
-
-    printf("[%s]\n", ltona(0x12345678, hoge, 8, 16));
-    printf("[%s]\n", ltona(0x12345678, hoge, 9, 16));
-    printf("[%s]\n", ltona(640, hoge, 16, 16));
-    printf("[%s]\n", ltona(640, hoge, 16, 10));
-
-
-    exit(-1);
     int id = 0;
     byte* memory = new byte[MANAGE_SIZE];
 
