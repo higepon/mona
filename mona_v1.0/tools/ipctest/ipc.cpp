@@ -1,50 +1,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include "types.h"
 
 extern "C" int sleep(int time);
 extern "C" int fork();
 void child();
 void parent();
-
-typedef unsigned char byte;
-typedef unsigned int  dword;
-
-int main(int argc, char** argv) {
-
-    int pid;
-
-    /* fork fail */
-    if ((pid = fork()) < 0) {
-
-        printf("can not fork())\n");
-        exit(-1);
-    }
-
-    if (pid == 0) {
-
-        child();
-    } else {
-
-        parent();
-    }
-
-    return 0;
-}
-
-void parent() {
-
-    printf("parent");
-    fflush(stdout);
-    sleep(5);
-    printf("parent");
-}
-
-void child() {
-
-    printf("child");
-    printf("child");
-}
 
 class InputStream {
 
@@ -74,23 +37,73 @@ class DRMNInputStream : public InputStream {
 
 };
 
+typedef unsigned char byte;
+typedef unsigned int  dword;
+
+#define COMMON_BUF_SIZE 512
+static byte commonBuf[COMMON_BUF_SIZE];
+
+int main(int argc, char** argv) {
+
+    int pid;
+
+    /* common buffer */
+    memset(commonBuf, 0xFE, COMMON_BUF_SIZE);
+
+    /* fork fail */
+    if ((pid = fork()) < 0) {
+
+        printf("can not fork())\n");
+        exit(-1);
+    }
+
+    if (pid == 0) {
+
+        child();
+    } else {
+
+        parent();
+    }
+
+    return 0;
+}
+
+void parent() {
+
+    DRMNInputStream* stream = new DRMNInputStream(commonBuf, COMMON_BUF_SIZE);
+
+    while (!stream->isEndOfStream()) {
+
+        printf("[%d]", stream->read());
+    }
+
+
+}
+
+void child() {
+
+    printf("child");
+    printf("child");
+}
+
 DRMNInputStream::DRMNInputStream(byte* start, int size) {
 
     start_  = start;
     offset_ = 0;
-    end_    = (dword)start + size;
+    end_    = size;
 }
 
 byte DRMNInputStream::read() {
 
     byte result = start_[offset_];
+
     if (offset_ < end_) offset_++;
     return result;
 }
 
 int DRMNInputStream::read(byte* buf, int size) {
 
-    int bufferSize = offset_ - (dword)start + 1;
+    int bufferSize = offset_ - (dword)start_ + 1;
     int readSize;
 
     /* check size */
@@ -115,5 +128,5 @@ bool DRMNInputStream::isEndOfStream() {
 
 void DRMNInputStream::close() {
 
-
+    /* do nothing */
 }
