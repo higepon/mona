@@ -580,3 +580,10 @@ int syscall_get_kernel_version(char* buf, dword size)
     SYSCALL_2(SYSTEM_CALL_GET_KERNEL_VERSION, result, buf, size);
     return result;
 }
+
+int syscall_load_process_image(LoadProcessInfo* info)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_LOAD_PROCESS_IMAGE, result, info);
+    return result;
+}

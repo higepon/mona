@@ -670,6 +670,14 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
+    case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
+
+    {
+        LoadProcessInfo* p = (LoadProcessInfo*)(info->esi);
+        info->eax = loadProcess(p->image, p->size, p->entrypoint, p->path, p->name, true, p->list);
+        break;
+    }
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -62,6 +62,7 @@ extern int syscall_dir_close();
 extern int syscall_cd(const char* path);
 extern int syscall_set_ps_dump();
 extern int syscall_read_ps_dump(PsInfo* info);
+extern int syscall_load_process_image(LoadProcessInfo* info);
 extern dword syscall_file_position();
 extern dword syscall_file_seek(dword pt, int flag);
 

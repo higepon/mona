@@ -2,6 +2,7 @@
 #include <ShellServer.h>
 #include <Shell.h>
 #include <monapi/Keys.h>
+#include "elf.h"
 
 static bool hasExited = false;
 static bool callAutoExec = true;
@@ -502,23 +503,69 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     return 0;
 }
 
-int Shell::executeProcess(const char* path, const char* name ,CommandOption* option)
+int Shell::executeProcess(const char* path, const char* name, CommandOption* option)
 {
-    int result = syscall_load_process(path, name, option);
+    FileInputStream istream(path);
+
+    if (istream.open() != 0)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    dword fileSize = istream.getFileSize();
+
+    byte* filebuf  = (byte*)malloc(fileSize);
+    if (NULL == fileSize)
+    {
+        printf("File Buffer allcate error\n");
+        return -1;
+    }
+
+    if (istream.read(filebuf, fileSize))
+    {
+        printf("File read error\n");
+        return -1;
+    }
+    istream.close();
+
+    ELFLoader loader;
+
+    int imageSize = loader.prepare((dword)filebuf);
+    if (imageSize < 0)
+    {
+        printf("unknown executable format %d", imageSize);
+        free(filebuf);
+        return imageSize;
+    }
+
+    byte* imagebuf = (byte*)malloc(imageSize);
+    if (NULL == imagebuf)
+    {
+        printf("image buffer allcate error\n");
+        return -1;
+    }
+
+    dword entrypoint = loader.load(imagebuf);
+
+    free(filebuf);
+
+    LoadProcessInfo info;;
+    info.image = imagebuf;
+    info.size = imageSize;
+    info.entrypoint = entrypoint;
+    info.path = path;
+    info.name = name;
+    info.list = option;
+
+    int result = syscall_load_process_image(&info);
+
+    free(imagebuf);
 
     switch(result)
     {
 
       case(0):
-          break;
-      case(1):
-          printf("File not found");
-          break;
-      case(2):
-          printf("load Process memory allocate error");
-          break;
-      case(3):
-          printf("File read error");
           break;
       case(4):
           printf("Shared Memory error1");

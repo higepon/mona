@@ -1,5 +1,5 @@
 TARGET  = SHELL.SVR
-SOURCES = main.cpp
+SOURCES = main.cpp elf.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc

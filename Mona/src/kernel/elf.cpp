@@ -52,7 +52,7 @@ int loadProcess(byte* image, dword size, dword entrypoint, const char* path, con
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) return 5;
 
-    memcpy((byte*)0x8000000, image, size);
+    memcpy((byte*)0x80000000, image, size);
 
     /* detach from this process */
     while (Semaphore::down(&g_semaphore_shared));
@@ -229,11 +229,13 @@ int ELFLoader::prepare(dword elf)
     sheader_ = (ELFSectionHeader*)((dword)header_ + header_->shdrpos);
 
     /* get size of image */
-    for (int i = 0; i < header_->phdrcnt; i++)
+    dword start = ORG;
+    for (int i = 0; i < header_->shdrcnt; i++)
     {
-        if (pheader_[i].type == PT_LOAD)
+        if (sheader_[i].address >= start)
         {
-            size += pheader_[i].memorysize;
+            start = sheader_[i].address;
+            size = start - ORG + 1 + sheader_[i].size;
         }
     }
 

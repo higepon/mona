@@ -1,5 +1,9 @@
 2004-05-01  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/elf.cpp (prepare): イメージサイズ取得のバグ修正
+
+        * src/servers/shell/main.cpp (executeProcess): ELFローダーを試しに組み込んでみた。
+
         * src/kernel/elf.cpp (loadProcess): elf.cppにバイナリイメージを受け取るloadProcessを作成
 
 2004-05-01  tino  <tino@users.sourceforge.jp>

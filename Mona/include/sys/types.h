@@ -73,6 +73,16 @@ struct CommandOption {
 typedef struct CommandOption CommandOption;
 
 typedef struct {
+    byte* image;
+    dword size;
+    dword entrypoint;
+    const char* path;
+    const char* name;
+    CommandOption* list;
+} LoadProcessInfo;
+
+
+typedef struct {
     dword header;
     dword arg1;
     dword arg2;
@@ -203,6 +213,7 @@ typedef struct {
 #define SYSTEM_CALL_FILE_SEEK                0x0031
 #define SYSTEM_CALL_FILE_POSITION            0x0032
 #define SYSTEM_CALL_GET_KERNEL_VERSION       0x0033
+#define SYSTEM_CALL_LOAD_PROCESS_IMAGE       0x0034
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \
