@@ -195,7 +195,9 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
 
     case COMMAND_CLEAR:
+        monapi_call_mouse_set_cursor(0);
         screen.fillRect16(0, 0, screen.getWidth(), screen.getHeight(), BACKGROUND);
+        monapi_call_mouse_set_cursor(1);
         syscall_set_cursor(0, 0);
         return false;
 

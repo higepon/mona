@@ -136,6 +136,34 @@ int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword* ti
 #if 1  // temporary
 HList<dword> grabs;
 
+static void StdoutGrab(dword tid)
+{
+    int size = grabs.size();
+    bool ok = true;
+    for (int i = 0; i < size; i++)
+    {
+        if (grabs[i] == tid)
+        {
+            ok = false;
+            break;
+        }
+    }
+    if (ok) grabs.add(tid);
+}
+
+static void StdoutUngrab(dword tid)
+{
+    int size = grabs.size();
+    for (int i = 0; i < size; i++)
+    {
+        if (grabs[i] == tid)
+        {
+            grabs.removeAt(i);
+            return;
+        }
+    }
+}
+
 static void StdoutMessageLoop()
 {
     for (MessageInfo msg;;)
@@ -153,41 +181,23 @@ static void StdoutMessageLoop()
                 }
                 else
                 {
-                    Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str);
+                    if (Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) != 0)
+                    {
+                        StdoutUngrab(grabs[size - 1]);
+                        syscall_print(msg.str);
+                    }
                 }
                 Message::reply(&msg);
                 break;
             }
             case MSG_PROCESS_GRAB_STDOUT:
-            {
-                int size = grabs.size();
-                bool ok = true;
-                for (int i = 0; i < size; i++)
-                {
-                    if (grabs[i] == msg.arg1)
-                    {
-                        ok = false;
-                        break;
-                    }
-                }
-                if (ok) grabs.add(msg.arg1);
+                StdoutGrab(msg.arg1);
                 Message::reply(&msg);
                 break;
-            }
             case MSG_PROCESS_UNGRAB_STDOUT:
-            {
-                int size = grabs.size();
-                for (int i = 0; i < size; i++)
-                {
-                    if (grabs[i] == msg.arg1)
-                    {
-                        grabs.removeAt(i);
-                        break;
-                    }
-                }
+                StdoutUngrab(msg.arg1);
                 Message::reply(&msg);
                 break;
-            }
         }
     }
 }
@@ -218,7 +228,6 @@ static void MessageLoop()
 int MonaMain(List<char*>* pekoe)
 {
 #if 1  // temporary
-    char buf[128];
     dword id = syscall_mthread_create((dword)StdoutMessageLoop);
     syscall_mthread_join(id);
 #endif
