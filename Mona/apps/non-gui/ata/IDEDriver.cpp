@@ -48,6 +48,15 @@ IDEDriver::IDEDriver()
     outp8(&controller[0], ATA_DCR, 0x02);
     sleep(5);
 
+    /* soft reset */
+    outp8(&controller[1], ATA_DCR, 0x06);
+    sleep(5);
+
+    /* disable interrupt */
+    outp8(&controller[1], ATA_DCR, 0x02);
+    sleep(5);
+
+
 //    setDevice(PRIMARY, MASTER);Ç¢ÇÁÇ»Ç¢ÅH
 }
 
