@@ -1,3 +1,7 @@
+2004-04-24  higepon  <higepon@users.sourceforge.jp>
+
+        * .cvsignoreをいろいろと追加。
+
 2004-04-24  tino  <tino@users.sourceforge.jp>
 
         * include/gui/System/Mona/Forms/Control.h: Visibleプロパティ
