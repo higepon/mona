@@ -94,9 +94,12 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     bool   isAttaced;
     FAT12* fat;
 
+    //    g_console->printf("load prcess 1");
     while (Semaphore::down(&g_semaphore_shared));
     isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
+    //    g_console->printf("load prcess 2");
     isAttaced = SharedMemoryObject::attach(sharedId, g_current_process, 0x80000000);
+    //    g_console->printf("load prcess 3");
     Semaphore::up(&g_semaphore_shared);
 
     if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
@@ -107,21 +110,31 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
+    //    g_console->printf("load prcess 4");
+
     fat = new FAT12((DiskDriver*)g_fdcdriver);
+    //    g_console->printf("load prcess 4.5");
     if (!fat->initilize()) return FAT_INIT_ERROR;
+    //    g_console->printf("load prcess 5");
     if (!fat->open(path, file, FAT12::READ_MODE)) return FAT_OPEN_ERROR;
+
+    //    g_console->printf("load prcess 6");
 
     fileSize  = fat->getFileSize();
     readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
     buf = (byte*)malloc(512 * readTimes);
     if (buf == NULL) return -1;
 
+    //    g_console->printf("load prcess 7[%d]", readTimes);
     for (int i = 0; i < readTimes; i++) {
         if (!fat->read(buf + 512 * i)) {
             g_console->printf("read failed %d", i);
             while (true);
         }
+	//    g_console->printf("load prcess 7.5");
     }
+
+    //    g_console->printf("load prcess 8");
 
     if (!fat->close()) {
         info(ERROR, "close failed");
@@ -130,10 +143,16 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     ELFLoader* loader = new ELFLoader();
     g_console->printf("elf size = %d", loader->prepare((dword)buf));
 
+    //    g_console->printf("load prcess 9");
+
     dword entrypoint = loader->load((byte*)0x80000000);
+
+    //    g_console->printf("load prcess 10");
 
     delete(loader);
     free(buf);
+
+    //    g_console->printf("load prcess 11");
 
     Process* process1 = isUser ? new UserProcess(file) : new Process(file);
 
@@ -149,7 +168,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     //    SharedMemoryObject::detach(sharedId, g_current_process);
     //    Semaphore::up(&g_semaphore_shared);
 
-
+    //    g_console->printf("load prcess 12");
     return 0;
 }
 
