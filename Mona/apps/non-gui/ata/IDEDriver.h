@@ -13,24 +13,21 @@
 #define _MONA_IDEDRIVER_
 
 #include <fat_write/IStorageDevice.h>
+#include <sys/types.h>
+#include <monapi/Cstring.h>
 
 /*----------------------------------------------------------------------
     IDEDriver
 ----------------------------------------------------------------------*/
-class IDEDriver : public IStorageDevice
+class IDEDriver
 {
 public:
     IDEDriver();
     virtual ~IDEDriver();
 
 public:
-    int open();
-    int close();
-    int read(dword lba, void* buf, int size);
-    int write(dword lba, void* buf, int size);
-    int ioctl(void* p);
-    int setDevice(int controller, int device);
-    int getDeviceType(int controller, int device);
+    void printDebug();
+
 
 public:
     enum
@@ -40,25 +37,25 @@ public:
         MASTER    = 0,
         SLAVE     = 1,
         DEVICE_UNKNOWN,
-        DEVICE_NON,
+        DEVICE_NONE,
         DEVICE_ATA,
         DEVICE_ATAPI
     };
 
 private:
-    typedef struct IDEController
+    typedef struct IDEDevice
     {
-        int selectedDevice;
-        int selectedDeviceType;
-        int registers[10];
-        dword dataTransferSize;
+        int type;
+        int typeDetail;
+        MonAPI::CString name;
     };
 
-    typedef struct ATAPICommand
+    typedef struct IDEController
     {
-        byte feature;
-        byte device;
-        byte packet[12];
+        IDEController() : selectedDevice(NULL) {}
+        int registers[10];
+        IDEDevice devices[2];
+        IDEDevice* selectedDevice;
     };
 
     typedef struct
@@ -74,28 +71,26 @@ private:
     } ATACommand;
 
 private:
-    int readATAPI(IDEController* controller, dword lba, void* buffer, int size);
-    int sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer);
+    void resetAndIdentify(IDEController* controller);
+    void identify(IDEController* controller, int deviceNo);
+    void identifyDetail(IDEController* controller, int deviceNo);
+    bool waitBusyClear(IDEController* controller);
+    int judgeDeviceType(byte high, byte low);
+    void printDebug(IDEController* controller, int deviceNo);
+    bool waitBusyAndDataRequestBothClear(IDEController* controller);
+    bool waitDrdySet(IDEController* controller);
     int sendPioDataInCommand(IDEController* controller, ATACommand* command, word count, void* buf);
-    bool selectDevice(IDEController* controller, int device);
+    bool selectDevice(IDEController* controller, int deviceNo);
+
+private:
     void outp8(IDEController* controller, int reg, byte value);
-    void outp16(IDEController* controller, int reg, word value);
-    void outp16(IDEController* controller, word* data, int length);
+    byte inp8(IDEController* controller, int reg);
     void inp16(IDEController* controller, word* data, int length);
     word inp16(IDEController* controller, int reg);
-    byte inp8(IDEController* controller, int reg);
-    word getSignature(IDEController* controller, int device);
-    void read(IDEController* controller, word length, void* buf);
-    int identify(IDEController* controller, int device, int type, void* buf);
-    int judgeDevice(IDEController* controller, int device);
-    bool waitBusyClear(IDEController* controller);
-    bool waitDrdySet(IDEController* controller);
-    int readATA(IDEController* controller, int device, dword lba, byte blocknum, void* buff);
+
 
 private:
     IDEController controllers[2];
-    IDEController* whichController;
-    int deviceType[4];
 
 private:
     enum
@@ -127,8 +122,10 @@ private:
         RETRY_MAX      = 2,
         DEV_HEAD_OBS   = 0xa0,
         LBA_FLG        = 0x40,
-        CD_SECTOR_SIZE = 2048
     };
+
 };
+
+
 
 #endif

@@ -1,9 +1,13 @@
+2004-11-15  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/IDEDriver.cpp (identifyDetail): identifyコマンド発行まで
+
 2004-11-14  Yamami  <yamamimail@users.sourceforge.jp>
 
         * samples/non-gui/Makefile: YamamiをデフォルトMake非対象
-        
+
         * samples/non-gui/yamami/main.cpp: テストコード追加
-        
+
         * include/sys/types.h: Mones用のメッセージ追加
 
 2004-11-12  bayside  <bayside@users.sourceforge.jp>
