@@ -54,7 +54,7 @@ void _sysClearScreen() {
     \param format use %d %s like printf
 
     \author HigePon
-    \date   create:2002/09/08 update:2002/10/19
+    \date   create:2002/09/08 update:2002/10/26
 */
 void _sys_printf (char* format, ...) {
 
@@ -75,6 +75,11 @@ void _sys_printf (char* format, ...) {
                   _sysPrintInt((int)*list);
                   ((int*)list) += 1;
                   break;
+              case 'x':
+                  _sysPrint("0x");
+                  _sysPutInt((int)*list, 16);
+                  ((int*)list) += 1;
+                  break;
               case 'c':
                   _sysPutCharacter((char)*list);
                   ((char*)list) += 1;
@@ -91,6 +96,33 @@ void _sys_printf (char* format, ...) {
         }
     }
 }
+
+/*!
+    \brief print int
+
+    \param n integer to print
+    \param base ex)16
+
+    \author  HigePon
+    \date    create:2002/10/26 update:
+*/
+void _sysPutInt(H_SIZE_T n, int base) {
+
+    int ch;
+
+    if (n > 0) {
+        _sysPutInt(n / base, base);
+        ch = n % base;
+        if ((ch >= 0) && (ch <= 9)) {
+            ch += '0';
+        } else {
+            ch = (ch - 10) + 'A';
+        }
+        _sysPutCharacter(ch);
+    }
+    return;
+}
+
 
 /*!
     \brief direct write charcter on vram
