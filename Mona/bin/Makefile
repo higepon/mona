@@ -1,7 +1,7 @@
 TARGET = mona.img
 
 ROOT_FILES = `cd root; ls *.*`
-SVR_FILES  = `cd root; ls SERVERS/*.SVR`
+SVR_FILES  = `cd root; ls SERVERS/*.ELF`
 BIN_FILES  = `cd root; ls SERVERS/*.BIN`
 APP_FILES  = `cd root; ls APPS/*.EL* APPS/*.LIB APPS/*.WRP APPS/*.MSH`
 

@@ -5,7 +5,7 @@
 *.exe
 *.ELF
 *.EL2
-*.SVR
+*.BIN
 *.LIB
 *.WRP
 *.APP

@@ -4,6 +4,6 @@
 *.img
 *.exe
 *.ELF
-*.SVR
+*.BIN
 TAGS
 *.a

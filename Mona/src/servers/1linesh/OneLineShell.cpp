@@ -85,7 +85,7 @@ void OneLineShell::service() {
     }
   }
 
-  /* send message for KEYBDMNG.SVR */
+  /* send message for KEYBDMNG.BIN */
   if(Message::send(keysvrID, MSG_KEY_UNREGIST_FROM_SERVER, myID)){
       printf("Shell: key unregist error\n");
   }

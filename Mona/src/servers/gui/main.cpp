@@ -217,7 +217,7 @@ static void CheckGUIServer()
 	PsInfo info;
 
 	bool ok = true;
-	CString self = "GUI.SVR";
+	CString self = "GUI.ELF";
 	dword tid = MonAPI::System::getThreadID();
 
 	while (syscall_read_ps_dump(&info) == 0)

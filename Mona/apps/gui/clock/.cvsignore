@@ -5,6 +5,6 @@
 *.local
 *.ELF
 *.EL2
-*.SVR
+*.BIN
 TAGS
 dependencies

@@ -1,5 +1,7 @@
 2004-06-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/gui/STARTGUI.MSH: GUI.SVRをGUI.ELFに改名
+
         * GUI.SVR以外はバイナリに対応
 
         * include/sys/HashMap.h: include修正 (thanks Yamamiさん)

@@ -4,5 +4,5 @@
 *.map
 *.local
 *.ELF
-*.SVR
+*.BIN
 TAGS

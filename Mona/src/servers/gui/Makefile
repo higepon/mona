@@ -1,4 +1,4 @@
-TARGET  = GUI.SVR
+TARGET  = GUI.ELF
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
 
 MONADIR = ../../..

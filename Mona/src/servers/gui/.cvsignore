@@ -4,6 +4,6 @@
 *.map
 *.local
 *.ELF
-*.SVR
+*.BIN
 TAGS
 dependencies
