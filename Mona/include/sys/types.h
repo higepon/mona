@@ -18,6 +18,11 @@
 #define NORMAL   0
 #define DEBUG_MODE
 
+#ifndef __SIZE_TYPE__
+#define __SIZE_TYPE__ unsigned long
+#endif
+typedef __SIZE_TYPE__ size_t;
+
 typedef unsigned char  byte;
 typedef unsigned short word;
 typedef unsigned int   dword;
@@ -84,37 +89,37 @@ typedef struct {
     dword y;
 } ScreenInfo;
 
-typedef struct Pixel16 {
+typedef struct {
     byte p[2];
-};
+} Pixel16;
 
-typedef struct Pixel24 {
+typedef struct {
     byte p[3];
-};
+} Pixel24;
 
-typedef struct Pixel32 {
+typedef struct {
     dword p;
-};
+} Pixel32;
 
-typedef struct Pixel8 {
+typedef struct {
     byte p;
-};
+} Pixel8;
 
-typedef struct MappingInfo {
+typedef struct {
     dword attachPid;
     dword linearAddress1;
     dword linearAddress2;
     dword size;
     dword errorCd;
-};
+} MappingInfo;
 
-typedef struct SysArg
+typedef struct
 {
     dword arg1;
     dword arg2;
     dword arg3;
     dword arg4;
-};
+} SysArg;
 
 /*!
     struct for key information

@@ -1,97 +1,104 @@
 #ifndef _MONA_USERLIB_SYSCALL_H_
 #define _MONA_USERLIB_SYSCALL_H_
 
+#ifdef __cplusplus
 #define MESSAGE_LOOP MonAPI::messageLoop
 
-extern "C" int MonaMain(List<char*>* pekoe);
-extern "C" int user_start();
-extern "C" int sleep(dword ms);
-extern "C" int heavy();
-extern "C" int print(const char*);
-extern "C" int kill();
-extern "C" int exit(int error);
-extern "C" int mthread_create(dword f);
-extern "C" int mthread_join(dword id);
-extern "C" int syscall_test();
-extern "C" int syscall_sleep(dword tick);
-extern "C" int syscall_print(const char*);
-extern "C" int syscall_kill();
-extern "C" int syscall_send(dword id, MessageInfo* message);
-extern "C" int syscall_receive(MessageInfo* message);
-extern "C" int syscall_exist_message();
-extern "C" int syscall_mthread_create(dword f);
-extern "C" int syscall_mthread_join(dword id);
-extern "C" int syscall_mutex_create();
-extern "C" int syscall_mutex_trylock(int id);
-extern "C" int syscall_mutex_lock (int id );
-extern "C" int syscall_mutex_unlock(int id);
-extern "C" int syscall_get_vram_info(volatile ScreenInfo* info);
-extern "C" int syscall_load_process(const char* path, const char* name, CommandOption* list);
-extern "C" int syscall_get_cursor(int* x, int* y);
-extern "C" int syscall_set_cursor(int x, int y);
-extern "C" int syscall_mutex_destroy(int id);
-extern "C" int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
-extern "C" int syscall_file_open(const char* path, int mode, volatile dword* size);
-extern "C" int syscall_file_read(const char* path, dword size, dword* readSize);
-extern "C" int syscall_file_write(const char* path, dword size, dword* writeSize);
-extern "C" int syscall_file_close();
-extern "C" int syscall_file_create(const char* path);
-extern "C" int syscall_fdc_open();
-extern "C" int syscall_fdc_close();
-extern "C" int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);
-extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
-extern "C" int syscall_fdc_disk_changed();
-extern "C" int syscall_map2(MappingInfo* info);
-extern "C" int syscall_unmap2(dword sharedId);
-extern "C" int syscall_lookup_main_thread(const char* name);
-extern "C" dword syscall_get_pid();
-extern "C" dword syscall_get_tid();
-extern "C" int syscall_get_arg_count();
-extern "C" int syscall_get_arg(char* buf, int n);
-extern "C" int syscall_mthread_yeild_message();
-extern "C" int syscall_get_date(KDate* date);
-extern "C" int syscall_get_io();
-extern "C" int syscall_dir_open();
-extern "C" int syscall_dir_read(const char* name, int* size);
-extern "C" int syscall_dir_close();
-extern "C" int syscall_cd(const char* path);
-extern "C" int syscall_set_ps_dump();
-extern "C" int syscall_read_ps_dump(PsInfo* info);
-extern "C" dword syscall_file_position();
-extern "C" dword syscall_file_seek(dword pt, int flag);
+extern int MonaMain(List<char*>* pekoe);
+extern void setupArguments(List<char*>* arg);
 
-extern "C" dword syscall_memory_map_create(dword size);
-extern "C" dword syscall_memory_map_get_size(dword id);
-extern "C" int syscall_memory_map_map(dword id, dword address);
-extern "C" int syscall_memory_map_unmap(dword id);
+extern "C" {
+#endif
+extern int user_start();
+extern int sleep(dword ms);
+extern int heavy();
+extern int print(const char*);
+extern int kill();
+extern int exit(int error);
+extern int mthread_create(dword f);
+extern int mthread_join(dword id);
+extern int syscall_test();
+extern int syscall_sleep(dword tick);
+extern int syscall_print(const char*);
+extern int syscall_kill();
+extern int syscall_send(dword id, MessageInfo* message);
+extern int syscall_receive(MessageInfo* message);
+extern int syscall_exist_message();
+extern int syscall_mthread_create(dword f);
+extern int syscall_mthread_join(dword id);
+extern int syscall_mutex_create();
+extern int syscall_mutex_trylock(int id);
+extern int syscall_mutex_lock (int id );
+extern int syscall_mutex_unlock(int id);
+extern int syscall_get_vram_info(volatile ScreenInfo* info);
+extern int syscall_load_process(const char* path, const char* name, CommandOption* list);
+extern int syscall_get_cursor(int* x, int* y);
+extern int syscall_set_cursor(int x, int y);
+extern int syscall_mutex_destroy(int id);
+extern int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
+extern int syscall_file_open(const char* path, int mode, volatile dword* size);
+extern int syscall_file_read(const char* path, dword size, dword* readSize);
+extern int syscall_file_write(const char* path, dword size, dword* writeSize);
+extern int syscall_file_close();
+extern int syscall_file_create(const char* path);
+extern int syscall_fdc_open();
+extern int syscall_fdc_close();
+extern int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);
+extern int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
+extern int syscall_fdc_disk_changed();
+extern int syscall_map2(MappingInfo* info);
+extern int syscall_unmap2(dword sharedId);
+extern int syscall_lookup_main_thread(const char* name);
+extern dword syscall_get_pid();
+extern dword syscall_get_tid();
+extern int syscall_get_arg_count();
+extern int syscall_get_arg(char* buf, int n);
+extern int syscall_mthread_yeild_message();
+extern int syscall_get_date(KDate* date);
+extern int syscall_get_io();
+extern int syscall_dir_open();
+extern int syscall_dir_read(const char* name, int* size);
+extern int syscall_dir_close();
+extern int syscall_cd(const char* path);
+extern int syscall_set_ps_dump();
+extern int syscall_read_ps_dump(PsInfo* info);
+extern dword syscall_file_position();
+extern dword syscall_file_seek(dword pt, int flag);
 
-extern "C" dword syscall_lookup(const char* name);
-extern "C" dword syscall_get_tick();
-extern "C" int syscall_get_kernel_version(char* buf, dword size);
+extern dword syscall_memory_map_create(dword size);
+extern dword syscall_memory_map_get_size(dword id);
+extern int syscall_memory_map_map(dword id, dword address);
+extern int syscall_memory_map_unmap(dword id);
 
-extern "C" void* malloc(unsigned long size);
-extern "C" void free(void * address);
-extern "C" void __cxa_pure_virtual();
-extern "C" void _pure_virtual(void);
-extern "C" void __pure_virtual(void);
-extern "C" int atexit( void (*func)(void));
-extern "C" void setupArguments(List<char*>* arg);
+extern dword syscall_lookup(const char* name);
+extern dword syscall_get_tick();
+extern int syscall_get_kernel_version(char* buf, dword size);
 
-void putCharacter(char ch);
-void putInt(size_t n, int base);
-void printf(const char *format, ...);
-void printInt(int num);
-size_t _power(size_t x, size_t y);
+extern void* malloc(unsigned long size);
+extern void free(void * address);
+extern void __cxa_pure_virtual();
+extern void _pure_virtual(void);
+extern void __pure_virtual(void);
+extern int atexit( void (*func)(void));
 
-byte inp8(dword port);
-void outp8(dword port, byte value);
-word inp16(dword port);
-void outp16(dword port, word value);
-dword inp32(dword port);
-void outp32(dword port, dword value);
+extern void putCharacter(char ch);
+extern void putInt(size_t n, int base);
+extern void printf(const char *format, ...);
+extern void printInt(int num);
+extern size_t _power(size_t x, size_t y);
 
-void* operator new(size_t size);
-void  operator delete(void* address);
+extern byte inp8(dword port);
+extern void outp8(dword port, byte value);
+extern word inp16(dword port);
+extern void outp16(dword port, word value);
+extern dword inp32(dword port);
+extern void outp32(dword port, dword value);
+#ifdef __cplusplus
+}
+
+extern void* operator new(size_t size);
+extern void  operator delete(void* address);
+#endif
 
 /* key info */
 #define VK_SPACE      0x20

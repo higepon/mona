@@ -20,13 +20,6 @@
 #include <monalibc/stdlib.h>
 #include <monalibc/stdio.h>
 
-#ifndef __SIZE_TYPE__
-#define __SIZE_TYPE__ unsigned long
-#endif
-typedef __SIZE_TYPE__ size_t;
-
-#define __FBSDID(s)
-
 #ifdef __cplusplus
 extern "C" {
 #endif

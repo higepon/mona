@@ -63,16 +63,16 @@
 #define _BZLIB_PRIVATE_H
 
 #ifdef MONA
-extern void* malloc(unsigned long size);
-extern void free(void * address);
+#include <sys/types.h>
+#include <monapi/syscall.h>
 #else
 #include <stdlib.h>
-#endif
 
 #ifndef BZ_NO_STDIO
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#endif
 #endif
 
 #include <bzlib.h>

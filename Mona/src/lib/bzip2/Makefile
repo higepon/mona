@@ -11,7 +11,7 @@ MONADIR = ../../..
 include $(MONADIR)/env/Makefile.inc
 include $(MONADIR)/env/dirnames.inc
 
-CFLAGS  += -Winline -ffreestanding -fomit-frame-pointer -fno-strength-reduce -DBZ_NO_STDIO
+CFLAGS  += -Winline -ffreestanding -fomit-frame-pointer -fno-strength-reduce
 OBJECTS  = $(SOURCES:.c=.o)
 INCLUDE  = -I$(INCDIR)
 

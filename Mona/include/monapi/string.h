@@ -16,13 +16,6 @@
 #ifndef _MONA_STRING_
 #define _MONA_STRING_
 
-#ifndef __SIZE_TYPE__
-#define __SIZE_TYPE__ unsigned long
-#endif
-#define __FBSDID(s)
-
-typedef __SIZE_TYPE__ size_t;
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -62,6 +62,10 @@
 #ifndef _BZLIB_H
 #define _BZLIB_H
 
+#ifdef MONA
+#define BZ_NO_STDIO
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

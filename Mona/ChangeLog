@@ -17,9 +17,17 @@
 
         * src/kernel/kernel.cpp: 起動メッセージでどの環境でコンパイルされたかを表示
 
+        * include/sys/types.h: Cからのincludeに対応, ここでsize_tを定義
+
         * include/sys/types.h (SYSTEM_CALL_GET_KERNEL_VERSION): 追加
 
+        * include/monapi/syscall.h: Cからのincludeに対応
+
         * include/monapi/syscall.h (syscall_get_kernel_version): 追加
+
+        * include/monapi/string.h: size_t定義を削除
+
+        * include/monalibc/*.h: size_t定義を削除
 
         * src/lib/bzip2: 追加
 

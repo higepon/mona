@@ -6,6 +6,7 @@ all:
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd tube; $(MAKE) $@
+	@cd bzcat; $(MAKE) $@
 
 install:
 	@cd noiz2bg; $(MAKE) $@
@@ -15,6 +16,7 @@ install:
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd tube; $(MAKE) $@
+	@cd bzcat; $(MAKE) $@
 
 clean: touchdepend
 	@cd noiz2bg; $(MAKE) $@
@@ -24,6 +26,7 @@ clean: touchdepend
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd tube; $(MAKE) $@
+	@cd bzcat; $(MAKE) $@
 
 depend: touchdepend
 	@cd noiz2bg; $(MAKE) $@
@@ -32,6 +35,7 @@ depend: touchdepend
 #	@cd clock; $(MAKE) $@
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd bzcat; $(MAKE) $@
 
 distclean:
 	rm -f noiz2bg/dependencies
@@ -39,6 +43,7 @@ distclean:
 	rm -f jpegdemo/dependencies
 #	rm -f clock/dependencies
 	rm -f waba/dependencies
+	rm -f bzcat/dependencies
 	@cd nic; $(MAKE) $@
 
 touchdepend:
@@ -47,3 +52,4 @@ touchdepend:
 	touch jpegdemo/dependencies
 #	touch clock/dependencies
 	touch waba/dependencies
+	touch bzcat/dependencies

@@ -16,12 +16,6 @@
 
 #include <sys/types.h>
 
-#ifndef __SIZE_TYPE__
-#define __SIZE_TYPE__ unsigned long
-#endif
-
-typedef __SIZE_TYPE__ size_t;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
