@@ -13,6 +13,9 @@
 #define _MONA_SEGMENTS_
 
 #include <PageManager.h>
+#include <operator.h>
+#include <kernel.h>
+#include <string.h>
 
 class Segment {
 
@@ -62,5 +65,41 @@ class HeapSegment : public Segment {
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
 };
+
+class SharedMemoryObject {
+
+  public:
+    SharedMemoryObject(dword id, dword size) {
+
+        /* check dup */
+
+
+        physicalPageCount_ = size / 4096;
+        physicalPages_     = new int[physicalPageCount_];
+
+        if (physicalPages_ == NULL) panic("SharedMemoryObject: new failed");
+
+        memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
+
+
+    }
+    virtual ~SharedMemoryObject();
+
+  public:
+    static bool open(dword id, dword size);
+    static bool attach(dword id, PageEntry* directory, LinearAddress address);
+    static bool detach(dword id, PageEntry* directory);
+
+    static const int UN_MAPPED = -1;
+
+  private:
+    dword id_;
+    dword size_;
+    int attachedCount_;
+    int physicalPageCount_;
+    int* physicalPages_;
+
+};
+
 
 #endif
