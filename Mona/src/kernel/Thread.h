@@ -16,7 +16,6 @@ class Thread : public Node, public KObject
 {
 public:
     Thread();
-    Thread(dword basePriority);
     virtual ~Thread();
 
     inline int getType() const

@@ -65,6 +65,17 @@ typedef struct {
     int sec;
 } KDate;
 
+class ThreadPriority
+{
+public:
+    enum
+    {
+        Max    = 0,
+        Normal = 30,
+        Min    = 63
+    };
+};
+
 struct CommandOption {
     char str[32];
     struct CommandOption* next;

@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------
     Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/
-Scheduler::Scheduler() : runq(64), waitq(3), totalTick(0)
+Scheduler::Scheduler() : runq(ThreadPriority::Min + 1), waitq(3), totalTick(0)
 {
     for (int i = 0; i < runq.GetLength(); i++)
     {

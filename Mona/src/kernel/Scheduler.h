@@ -21,6 +21,16 @@ public:
 
     void Join(Thread* thread)
     {
+        Join(thread, ThreadPriority::Normal);
+    }
+
+
+    void Join(Thread* thread, dword basePriority)
+    {
+        thread->basePriority = basePriority >= maxPriority ? maxPriority - 1 : basePriority;
+        thread->priority     = thread->basePriority;
+
+
         ASSERT(thread->priority < maxPriority);
 
         runq[thread->priority]->AddToPrev(thread);

@@ -1,5 +1,7 @@
 2004-08-25  higepon  <higepon@users.sourceforge.jp>
 
+        * include/sys/types.h: ThreadPriorityクラスを追加
+
         * src/kernel/Scheduler.cpp (Schedule2): 実機で動かないバグを修正FPU例外が上がっていたと推測される。
 
 2004-08-24  higepon  <higepon@users.sourceforge.jp>

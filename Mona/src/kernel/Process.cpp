@@ -65,7 +65,7 @@ Process* ProcessOperation::create(int type, const char* name)
 dword ThreadOperation::id = 56;
 Thread* ThreadOperation::create(Process* process, dword programCounter)
 {
-    Thread* thread = new Thread(30);
+    Thread* thread = new Thread();
 
     (process->threadNum)++;
     PageEntry* directory = process->getPageDirectory();
@@ -293,7 +293,7 @@ void ThreadOperation::sendKilledMessage()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : waitEvent(MEvent::NONE), basePriority(0), lastCpuUsedTick(0), age(0)
+Thread::Thread() : waitEvent(MEvent::NONE), lastCpuUsedTick(0), age(0)
 {
     /* thread information */
     tinfo = new ThreadInfo;
@@ -306,25 +306,6 @@ Thread::Thread() : waitEvent(MEvent::NONE), basePriority(0), lastCpuUsedTick(0),
 
     messageList = new HList<MessageInfo*>();
     ASSERT(messageList);
-
-    priority = basePriority;
-}
-
-Thread::Thread(dword basePriority) : waitEvent(MEvent::NONE), basePriority(basePriority), lastCpuUsedTick(0), age(0)
-{
-    /* thread information */
-    tinfo = new ThreadInfo;
-    ASSERT(tinfo);
-    tinfo->thread = this;
-
-    /* thread information arch dependent */
-    tinfo->archinfo = new ArchThreadInfo;
-    ASSERT(tinfo->archinfo);
-
-    messageList = new HList<MessageInfo*>();
-    ASSERT(messageList);
-
-    priority = basePriority;
 }
 
 Thread::~Thread()
