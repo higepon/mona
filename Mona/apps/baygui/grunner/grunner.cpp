@@ -42,9 +42,10 @@ public:
 
 GRunner::GRunner()
 {
-	setRect(300, 300, 200, 48);
+	setRect(300, 290, 200, 48);
 	setTitle("ファイル名を指定して実行");
 	text = new TextField();
+	text->setText("/apps/");
 	text->setRect(0,0,188,20);
 	add(text);
 }
