@@ -1,4 +1,8 @@
-2002-10-31  syn <syn@users.sourceforge.jp>
+2002-11-02  syn <syn@users.sourceforge.jp>
+       
+        * boot不能のため、前項目の巻き戻し
+
+2002-11-02  syn <syn@users.sourceforge.jp>
         
         * FDCDriver.cpp, FDCDriver.h writeSectorの実装
           FDCDriver::write_dma 追加
