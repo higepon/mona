@@ -213,15 +213,15 @@ int Mouse::init() {
     data = inp8(0x60);
 
 /* no need below two block ? */
-//     if (waitReadable()) {
-//         return 8;
-//     }
-//     data = inp8(0x60);
+    if (waitReadable()) {
+        return 8;
+    }
+    data = inp8(0x60);
 
-//     if (waitReadable()) {
-//         return 9;
-//     }
-//     data = inp8(0x60);
+    if (waitReadable()) {
+        return 9;
+    }
+    data = inp8(0x60);
 
     /* enable mouse */
     outp8(0x64, 0xd4);

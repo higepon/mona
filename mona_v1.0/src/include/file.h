@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 #include "types.h"
 
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // File
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -47,6 +48,7 @@ public:
     virtual Directory* getDirectory (int entry) = 0;
     virtual File* getFile (int entry) = 0;
     virtual bool setFileSize (int entry, dword size) = 0;
+    virtual bool setCluster (int entry, dword cluster) = 0;
     virtual dword getIdentifer () = 0;
 };
 

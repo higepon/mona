@@ -256,6 +256,7 @@ bool FSOperation::open(char* path, int mode)
         return false;
     }
 
+    g_console->printf("entry = %d", entry);
     dir = searchFile(path, &entry, &cursor);
 
     if (dir == NULL)

@@ -12,6 +12,7 @@
 #include "file.h"
 #include "IStorageDevice.h"
 
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // FAT
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -83,7 +84,7 @@ class FatFile : public File
 {
 private:
     enum {
-        RESIZE_DELTA = 1
+        RESIZE_DELTA = 8
     };
 
 private:
@@ -142,6 +143,7 @@ protected:
         FILESIZE    = 0x1c,
         SIZE_FILENAME  = 8,
         SIZE_EXTENTION = 3,
+        END_OF_CLUSTER = 0xfff,
         MARK_DELETE = 0xe5,
         MARK_UNUSED = 0x00
     };
@@ -171,6 +173,7 @@ public:
     Directory* getDirectory (int entry);
     File* getFile (int entry);
     bool setFileSize (int entry, dword size);
+    bool setCluster (int entry, dword cluster);
     dword getIdentifer ();
 
 protected:
