@@ -142,6 +142,57 @@ Thread::Thread() : tick_(0), timeLeft_(4) {
 
 Thread::~Thread() {
 }
+
+/*----------------------------------------------------------------------
+    ThreadManager
+----------------------------------------------------------------------*/
+ThreadManager::ThreadManager(PageManager* pageManager) {
+
+    /* how? idle       */
+    /*                 */
+    /* not implemented */
+    /*                 */
+
+    /* scheduler */
+    scheduler_ = new ThreadScheduler();
+    checkMemoryAllocate(scheduler_, "ThreadManager scheduler memory allocate");
+
+    /* page manager */
+    pageManager_ = pageManager;
+}
+
+ThreadManager::~ThreadManager() {
+}
+
+Thread* ThreadManager::create(dword programCounter) {
+
+    /*                 */
+    /* not implemented */
+    /*                 */
+    return (Thread*)NULL;
+}
+
+int ThreadManager::join(Thread* thread) {
+    return scheduler_->join(thread);
+}
+
+int ThreadManager::kill(Thread* thread) {
+    return scheduler_->kill(thread);
+}
+
+int ThreadManager::switchThread() {
+
+    /*                 */
+    /* not implemented */
+    /*                 */
+    /* arch_xxxxx      */
+
+    return NORMAL;
+}
+
+Thread* ThreadManager::schedule() {
+    return scheduler_->schedule(current_);
+}
 /*----------------------------------------------------------------------
     ThreadScheduler
 ----------------------------------------------------------------------*/
@@ -153,7 +204,6 @@ ThreadScheduler::ThreadScheduler() {
 }
 
 ThreadScheduler::~ThreadScheduler() {
-
     delete list_;
 }
 

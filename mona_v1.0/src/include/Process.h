@@ -88,8 +88,6 @@ typedef struct ArchThreadInfo {
 ----------------------------------------------------------------------*/
 typedef struct ThreadInfo {
     ArchThreadInfo* archinfo;
-    dword tick;
-    dword state;
 };
 
 /*----------------------------------------------------------------------
@@ -153,19 +151,20 @@ class ThreadManager {
     virtual ~ThreadManager();
 
   public:
-    Thread* create(int type, const char* name);
+    Thread* create(dword programCounter);
     int join(Thread* thread);
     int kill(Thread* thread);
-    int switchThraed();
-    bool schedule();
-    Thread* getCurrentThread() const;
+    int switchThread();
+    Thread* schedule();
+    Thread* getCurrentThread() const {
+        return current_;
+    }
 
   private:
     ThreadScheduler* scheduler_;
     PageManager* pageManager_;
     Thread* current_;
     Thread* idle_;
-
 };
 
 /*----------------------------------------------------------------------
