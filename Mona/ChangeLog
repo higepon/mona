@@ -1,3 +1,9 @@
+2004-04-25  tino  <tino@users.sourceforge.jp>
+
+        * apps/gui/launcher: 簡単なランチャーを作成
+
+        * src/lib/gui/System/Mona/Forms/Button.cpp: Clickイベントの処理が終わってから絵を戻すようにした
+
 2004-04-24  tino  <tino@users.sourceforge.jp>
 
         * apps/gui/ps/Form1.cpp: 更新ボタンを追加

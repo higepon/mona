@@ -4,6 +4,7 @@ all:
 	@cd 2chAA; $(MAKE) $@
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
+	@cd launcher; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -11,6 +12,7 @@ install:
 	@cd 2chAA; $(MAKE) $@
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
+	@cd launcher; $(MAKE) $@
 
 clean:
 	@cd reversi; $(MAKE) $@
@@ -18,6 +20,7 @@ clean:
 	@cd 2chAA; $(MAKE) $@
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
+	@cd launcher; $(MAKE) $@
 
 depend:
 	@cd reversi; $(MAKE) $@
@@ -25,3 +28,4 @@ depend:
 	@cd 2chAA; $(MAKE) $@
 	@cd noiz2bg; $(MAKE) $@
 	@cd fire; $(MAKE) $@
+	@cd launcher; $(MAKE) $@
