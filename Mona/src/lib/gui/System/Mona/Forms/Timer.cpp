@@ -74,6 +74,7 @@ namespace System { namespace Mona { namespace Forms
 		if (this->sleep_tid != THREAD_UNKNOWN)
 		{
 			syscall_kill_thread(this->sleep_tid);
+			this->sleep_tid = THREAD_UNKNOWN;
 		}
 #endif
 	}

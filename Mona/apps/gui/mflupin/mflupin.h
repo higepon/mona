@@ -86,11 +86,13 @@ public:
 protected:
     virtual void OnPaint();
 
-    //virtual NCState NCHitTest(int x, int y);
+/*
+    virtual NCState NCHitTest(int x, int y);
 
     virtual void OnNCMouseDown(_P<MouseEventArgs> e);
 
     virtual void OnNCMouseUp(_P<MouseEventArgs> e);
+*/
 
 public:
     static void Main(_A<String> args);

@@ -254,10 +254,11 @@ void Mflupin::OnPaint()
 }
 
 
-//NCState Mflupin::NCHitTest(int x, int y)
-//{
-//    return NCState_TitleBar;
-//}
+/*
+NCState Mflupin::NCHitTest(int x, int y)
+{
+    return NCState_TitleBar;
+}
 
 
 void Mflupin::OnNCMouseDown(_P<MouseEventArgs> e)
@@ -282,6 +283,7 @@ void Mflupin::OnNCMouseUp(_P<MouseEventArgs> e)
         Form::OnNCMouseUp(e);
     }
 }
+*/
 
 
 void Mflupin::Main(_A<String> args)
