@@ -1,5 +1,7 @@
 2004-04-25  tino  <tino@users.sourceforge.jp>
 
+        * include/sys/types.h: MSG_MOUSE_ENABLE_CURSOR, MSG_MOUSE_DISABLE_CURSOR
+
         * src/servers/mouse/main.cpp: マウスポインタを描画するかどうかを制御
 
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
