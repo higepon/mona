@@ -108,9 +108,7 @@ bool FAT12::initilize() {
         return false;
     }
 
-    printf("read fat");
-    while (true);
-
+    printf("read fat ok");
 
     printf("bitmap");
     /* cluster map */
@@ -631,7 +629,7 @@ bool FAT12::writeFAT() {
 
     for (int i = 0; i < bpb_.fatSize16; i++) {
 
-        if (!(driver_->write(fatStart_ + i, fat_ + i * 512))) return false;
+        if (!(driver_->write(fatStart_ + i + 1, fat_ + i * 512))) return false;
     }
     return true;
 }

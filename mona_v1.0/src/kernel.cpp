@@ -128,7 +128,6 @@ void startKernel(void) {
     }
 
     g_console->printf("init ok");
-    while (true);
 
     g_console->printf("changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
@@ -137,13 +136,19 @@ void startKernel(void) {
     }
 
     g_console->printf("cdr ok");
-    while (true);
+
     g_console->printf("create file hige.cpp\n");
     if (!fat->createFlie("HIGE", "CPP")) {
 
         g_console->printf("can not create file=%d", fat->getErrorNo());
         while (true);
     }
+
+    if (!fat->open(".", "HIGE.CPP", FAT12::READ_MODE)) {
+         g_console->printf("open failed");
+    }
+
+    g_console->printf("open ok");
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     g_fdcdriver->motor(false);

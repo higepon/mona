@@ -579,7 +579,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , head
                    , sector
                    , 0x02
-                   , 3
+                   , 0x12
                    , 0x1b
                    , 0x00
                    };
@@ -594,7 +594,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 #endif
 
     sendCommand(command, sizeof(command));
-    //    while(!waitInterrupt());
+    while (!waitInterrupt());
     stopDMA();
 
     readResults();
@@ -611,6 +611,7 @@ bool FDCDriver::writeID(byte track, byte head, byte data) {
 
     seek(track);
 
+    /* not imlemented */
 
     return false;
 }
@@ -668,7 +669,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     while(!waitInterrupt());
 
     stopDMA();
-    g_console->printf("before read results");
+    //    g_console->printf("before read results");
 
     readResults();
     return true;
@@ -677,6 +678,8 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 bool FDCDriver::read(int lba, byte* buf) {
 
     byte track, head, sector;
+
+    g_console->printf("read lba=%d", lba);
 
     lbaToTHS(lba, track, head, sector);
 
@@ -693,13 +696,17 @@ bool FDCDriver::write(int lba, byte* buf) {
 
     byte track, head, sector;
 
-    g_console->printf("**** write called ****\n");
+    g_console->printf("write lba=%d", lba);
+
+    //    g_console->printf("**** write called ****\n");
 
     lbaToTHS(lba, track, head, sector);
 
     memcpy(dmabuff_, buf,  512);
 
-    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+    if (lba == 8 || lba == 7) for (int i = 0; i < 512; i++) if (buf[i] != 0) g_console->printf("%x", buf[i]);
+
+    //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!write(track, head, sector)) return false;
 
