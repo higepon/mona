@@ -1,3 +1,11 @@
+2004-01-22  higepon  <higepon@users.sourceforge.jp>
+
+        * collection.h: 最適化してみた。
+
+        * vbe.h: Screenクラスの作成
+
+        * vbe.h: bitblt16(16bpp版のbitblt実装)
+
 2004-01-21  higepon  <higepon@users.sourceforge.jp>
 
         * pagemanager.cpp: マッピングのバグ修正

@@ -448,8 +448,11 @@ template <class T> void HList<T>::add(T element) {
         size_ += increase_;
         T* temp = new T[size_];
 
+        /* optimize ? */
+        int numElements = numElements_;
+
         /* copy original to new array */
-        for (int i = 0; i < numElements_; i++) {
+        for (int i = 0; i < numElements; i++) {
             temp[i] = data_[i];
         }
         delete[] data_;
@@ -533,7 +536,8 @@ template <class T> T HList<T>::removeAt(int index) {
     T toRemove = data_[index];
 
     /* fix hole */
-    for (int i = index; i < numElements_ - 1; i++) {
+    int numElements = numElements_;
+    for (int i = index; i < numElements - 1; i++) {
         data_[i] = data_[i + 1];
     }
     numElements_--;
@@ -552,7 +556,10 @@ template <class T> T HList<T>::removeAt(int index) {
 */
 template <class T> T HList<T>::remove(T element) {
 
-    for (int i = 0; i < size(); i++) {
+    /* optimize */
+    int size = this->size();
+
+    for (int i = 0; i < size; i++) {
 
         /* element to remove found */
         if (data_[i] == element) {
@@ -593,8 +600,11 @@ template <class T> void HList<T>::init(int size, int increase) {
 */
 template <class T> bool HList<T>::hasElement(T element) const {
 
+    /* optimize? */
+    int size = this->size();
+
     /* find element */
-    for (int i = 0; i < size(); i++) {
+    for (int i = 0; i < size; i++) {
 
         if (data_[i] == element) {
             return true;
