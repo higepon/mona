@@ -92,6 +92,9 @@ bool FAT12::initilize() {
         errNum_ = BPB_ERROR;
         return false;
     }
+
+    for (int k = 0; k < 8; k++) printf("%c", bpb_.fileSysType[k]);
+
     printf("is FAT12");
     /* specify file system */
     if (!isFAT12()) {
@@ -104,6 +107,9 @@ bool FAT12::initilize() {
         errNum_ = FAT_READ_ERROR;
         return false;
     }
+
+    for (int k = 0; k < 55; k++) printf("[%d]", getFATAt(k));
+    return false;
 
     printf("bitmap");
     /* cluster map */
