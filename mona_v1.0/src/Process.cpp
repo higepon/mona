@@ -227,6 +227,7 @@ Process_* ProcessManager_::createProcess(int type, const char* name) {
 
     case USER_PROCESS:
 
+        result = new UserProcess_(name);
         /* like this? */
         //tesult = new UserProcess();
         break;
@@ -244,4 +245,32 @@ Process_* ProcessManager_::createProcess(int type, const char* name) {
 
 int ProcessManager_::addProcess(ProcessInfo_* process) {
     return (scheduler_->addProcess(process));
+}
+
+/*----------------------------------------------------------------------
+    Process
+----------------------------------------------------------------------*/
+Process_::Process_(const char* name) {
+
+    /* create process information */
+    info = new ProcessInfo_;
+    checkMemoryAllocate(info, "Process:ProcessInfo allocate error");
+
+    /* name */
+    strncpy(info->name, name, sizeof(info->name));
+}
+
+Process_::~Process_() {
+}
+
+/*----------------------------------------------------------------------
+    UserProcess
+----------------------------------------------------------------------*/
+UserProcess_::UserProcess_(const char* name) : Process_(name) {
+
+    /* not kernel mode */
+    isKernelMode_ = false;
+}
+
+UserProcess_::~UserProcess_() {
 }

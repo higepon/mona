@@ -108,14 +108,24 @@ class Thread {
 
 class Process_ {
 
-  public:
+  protected:
     Process_() {}
     Process_(const char* name);
     virtual ~Process_();
 
-
   public:
     ProcessInfo_* info;
+
+  protected:
+    bool isKernelMode_;
+};
+
+class UserProcess_ : public Process_ {
+
+  public:
+    UserProcess_();
+    UserProcess_(const char* name);
+    virtual ~UserProcess_();
 };
 
 
