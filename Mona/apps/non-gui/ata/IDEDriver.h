@@ -125,6 +125,7 @@ private:
     void setDeviceTypeFirst(IDEController* controller, int deviceNo);
     void setDeviceTypeSecond(IDEController* controller, int deviceNo);
     bool selectDevice(IDEController* controller, int deviceNo);
+    byte deviceValue(int deviceNo) const;
 
 private:
     enum

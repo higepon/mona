@@ -479,7 +479,7 @@ bool IDEDriver::commandIdleImmediate(IDEController* controller, int deviceNo)
     ATACommand command;
     memset(&command, 0, sizeof(command));
 
-    command.deviceNo  = DEV_HEAD_OBS | (deviceNo << 4);
+    command.deviceNo  = deviceNo;
     command.command   = controller->selectedDevice->type == DEVICE_ATA ? 0xe3 : 0xe1;
     command.drdyCheck = true;
 
@@ -534,7 +534,7 @@ bool IDEDriver::commandIdentify(IDEController* controller, int deviceNo, word* b
 
     IDEDevice* device = &controller->devices[deviceNo];
 
-    command.deviceNo = DEV_HEAD_OBS | (deviceNo << 4);
+    command.deviceNo = deviceNo;
     if (device->type == DEVICE_ATA)
     {
         command.drdyCheck = true;
@@ -597,7 +597,7 @@ void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
     for (l = 0; l < RETRY_MAX; l++)
     {
         /* select device */
-        outp8(controller, ATA_DHR, deviceNo << 4);
+        outp8(controller, ATA_DHR, deviceValue(deviceNo));
         sleep(10);
 
         c = inp8(controller, ATA_STR);
@@ -716,7 +716,7 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
         IDEDevice* device = whichController->selectedDevice;
         if (whichController == controller && device->deviceNo == deviceNo)
         {
-            outp8(controller, ATA_DHR, deviceNo << 4);
+            outp8(controller, ATA_DHR, deviceValue(deviceNo));
             sleep(10);
             return true;
         }
@@ -725,7 +725,7 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
     if (!waitBusyAndDataRequestBothClear(controller)) return false;
 
     /* select device */
-    outp8(controller, ATA_DHR, deviceNo << 4);
+    outp8(controller, ATA_DHR, deviceValue(deviceNo));
     sleep(10);
 
     if (!waitBusyAndDataRequestBothClear(controller)) return false;
@@ -734,4 +734,9 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
     whichController->selectedDevice = &controller->devices[deviceNo];
 
     return true;
+}
+
+byte IDEDriver::deviceValue(int deviceNo) const
+{
+    return (byte)(DEV_HEAD_OBS | (deviceNo << 4));
 }
