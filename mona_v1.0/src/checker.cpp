@@ -17,6 +17,7 @@
 #include <IA32MemoryManager.h>
 #include <GDTUtil.h>
 #include <IDTUtil.h>
+#include <PagingUtil.h>
 #include <kthread.h>
 
 /*!

@@ -28,22 +28,6 @@ typedef struct memoryEntry {
 };
 
 /*!
-    \struct PTE
- */
-typedef struct  {
-    unsigned present:1;          /*!< present bit            */
-    unsigned readWrite:1;        /*!< read/write bit         */
-    unsigned user:1;             /*!< user superviser bit    */
-    unsigned pageWriteThrough:1; /*!< page write through bit */
-    unsigned pageCacheDisable:1; /*!< page cache disable bit */
-    unsigned accesse:1;          /*!< access bit             */
-    unsigned dirty:1;            /*!< dirty bit              */
-    unsigned intelReserved:2;    /*!< reserved by intel      */
-    unsigned monaAvailable:3;    /*!< mona may use this      */
-    unsigned pageBaseAddress:20; /*!< base address of page   */
-} PTE;
-
-/*!
     memory management class
     single pattern  applyes the instance of this class
 */
