@@ -294,6 +294,7 @@ bool WindowHandler(MessageInfo* msg)
 			guiserver_window* w = CreateWindow();
 			w->ThreadID = msg->from;
 			Message::reply(msg, w->Handle);
+			activeWindow = w;
 			break;
 		}
 		// ウィンドウ破棄要求
@@ -329,6 +330,7 @@ bool WindowHandler(MessageInfo* msg)
 		case MSG_KEY_VIRTUAL_CODE:
 			ProcessKeyInfo(msg);
 			break;
+		// キャプチャー要求
 		case MSG_GUISERVER_MOUSECAPTURE:
 		{
 			guiserver_window* w = GetWindowPointer(msg->arg1);
@@ -347,6 +349,7 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg);
 			break;
 		}
+		// 移動領域作成要求
 		case MSG_GUISERVER_CREATEOVERLAP:
 		{
 			Overlap* ov = new Overlap(
@@ -356,6 +359,7 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg, (dword)ov);
 			break;
 		}
+		// 移動領域削除要求
 		case MSG_GUISERVER_DISPOSEOVERLAP:
 		{
 			Overlap* ov = (Overlap*)msg->arg1;
@@ -364,6 +368,7 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg);
 			break;
 		}
+		// 移動領域移動要求
 		case MSG_GUISERVER_MOVEOVERLAP:
 			((Overlap*)msg->arg1)->Move(
 				GET_X_DWORD(msg->arg2), GET_Y_DWORD(msg->arg2),
