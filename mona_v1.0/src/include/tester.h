@@ -32,8 +32,8 @@ void FDCDriverTester();
 void mmChangeTester();
 void testFDWrite();
 void keyStrokeTest();
-int send(const char* name, Message* message);
-int receive(Process* process, Message* message);
+int send(const char* name, KMessage* message);
+int receive(Process* process, KMessage* message);
 
 typedef struct {
     char* dir;

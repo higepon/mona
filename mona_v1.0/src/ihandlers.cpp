@@ -30,9 +30,9 @@
 */
 void keyStrokeHandler(dword scancode) {
 
-    Message message;
+    KMessage message;
 
-    memset(&message, 0, sizeof(Message));
+    memset(&message, 0, sizeof(KMessage));
 
     message.arg1 = scancode;
 

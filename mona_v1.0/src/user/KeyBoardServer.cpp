@@ -6,7 +6,7 @@ int main() {
     KeyBoardManager* manager = new KeyBoardManager();
     manager->init();
 
-    Message message;
+    KMessage message;
     KeyInfo info;
     for (;;) {
         if (!_receive(&message)) {
@@ -14,7 +14,7 @@ int main() {
             byte scancode = message.arg1;
             manager->setKeyScanCode(scancode);
             manager->getKeyInfo(&info);
-            memset(&message, 0, sizeof(Message));
+            memset(&message, 0, sizeof(KMessage));
             message.arg1 = info.keycode;
             message.arg2 = info.modifiers;
 

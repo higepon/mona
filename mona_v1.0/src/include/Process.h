@@ -291,7 +291,7 @@ class Process {
         return heap_;
     }
 
-    inline virtual List<Message*>* getMessageList() const {
+    inline virtual List<KMessage*>* getMessageList() const {
         return messageList_;
     }
 
@@ -330,7 +330,7 @@ class Process {
   protected:
     class HeapSegment* heap_;
     List<SharedMemorySegment*>* shared_;
-    List<Message*>* messageList_;
+    List<KMessage*>* messageList_;
     BinaryTree<KMutex*>* kmutexTree_;
     bool isUserMode_;
     ThreadManager* threadManager_;

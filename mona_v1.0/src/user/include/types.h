@@ -30,6 +30,6 @@ typedef struct {
     dword arg1;
     dword arg2;
     dword arg3;
-} Message;
+} KMessage;
 
 #endif

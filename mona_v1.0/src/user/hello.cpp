@@ -47,7 +47,7 @@ int disp() {
 
 int listener() {
 
-    Message message;
+    KMessage message;
 
     for (;;) {
         if (!_receive(&message)) {
