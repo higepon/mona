@@ -151,8 +151,6 @@ void MFDCDriver::initilize() {
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
     delay();
     outportb(FDC_CCR_PRIMARY, 0);
-    //    while(!waitInterrupt());
-    //    outportb(0x3f2, 0xc);
 
     interrupt_ = false;
     motor(ON);
@@ -161,18 +159,12 @@ void MFDCDriver::initilize() {
     printStatus("abcd");
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
-    /* test */
-    //    interrupt_ = false;
-    //    motor(ON);
-    //    while(!waitInterrupt());
-
 
     recalibrate();
-    printStatus("after recalibrate1");
-
     recalibrate();
-    printStatus("after recalibrate2");
-    //    write(0, 0, 1);
+
+    memset(dmabuff_, 0x1234, 512);
+    write(0, 0, 1);
 
     printStatus("before read");
     read(0, 0, 1);
@@ -624,11 +616,9 @@ bool MFDCDriver::write(byte track, byte head, byte sector) {
     printDMACStatus(inportb(0x08), "after set up");
     seek(track);
     printDMACStatus(inportb(0x08), "after seek");
-    memset(dmabuff_, 0x1234, 512);
-
     interrupt_ = false;
     sendCommand(command, sizeof(command));
-    //while(!waitInterrupt());
+    while(!waitInterrupt());
     printDMACStatus(inportb(0x08), "after command");
     stopDMA();
 
