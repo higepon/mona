@@ -20,11 +20,26 @@ static void StdoutMessageLoop()
         {
             case MSG_PROCESS_STDOUT_DATA:
             {
+#if 1  /// temporary
+                syscall_print("=");
+#endif
                 monapi_call_mouse_set_cursor(&msg_queue, 0);
                 msg.str[127] = '\0';
+#if 1  /// temporary
+                syscall_print("=");
+#endif
                 syscall_print(msg.str);
+#if 1  /// temporary
+                syscall_print("=");
+#endif
                 monapi_call_mouse_set_cursor(&msg_queue, 1);
+#if 1  /// temporary
+                syscall_print("=");
+#endif
                 monapi_cmessage_reply(&msg);
+#if 1  /// temporary
+                syscall_print("=");
+#endif
                 break;
             }
         }

@@ -24,7 +24,7 @@ int print(const char* msg) {
     for (int len = strlen(msg); len > 0; msg += 127, len -= 127)
     {
         strncpy(buf, msg, 127);
-#if 1
+#if 1  /// temporary
         char buf2[128];
         sprintf(buf2, "{%d", syscall_get_tid());
         syscall_print(buf2);
@@ -33,7 +33,7 @@ int print(const char* msg) {
         {
             syscall_print(buf);
         }
-#if 1
+#if 1  /// temporary
         syscall_print("}");
 #endif
     }
