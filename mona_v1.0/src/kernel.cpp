@@ -102,7 +102,7 @@ void startKernel(void) {
     test_mjt();
 #endif
 
-    g_console->printf("insert FAT disk and Hit any key to start [FAT12 create file test]\n");
+    g_console->printf("Hit any key to start [FAT12 create file test]\n");
     disableTimer();
     enableKeyboard();
     enableInterrupt();

@@ -17,7 +17,7 @@
 
 int main(int argc, char *argv[]) {
 
-    printf("template image is %s\n", argv[1]);
+    printf("making %s...\n", argv[1]);
 
     DiskDriver* driver = new HogeDriver(argv[1], 50);
     FAT12*      fat    = new FAT12(driver);
