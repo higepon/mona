@@ -13,9 +13,9 @@ using namespace MonAPI;
 
 ImageInfo::ImageInfo() : Width(0), Height(0)
 {
-    this->Handle = 0;
-    this->Size   = 0;
-    this->Data   = NULL;
+	this->Handle = 0;
+	this->Size   = 0;
+	this->Data   = NULL;
 }
 
 ImageInfo* ReadBitmap(monapi_cmemoryinfo* mi)
@@ -126,6 +126,6 @@ ImageInfo* ReadImage(const CString& file, bool prompt /*= false*/)
 	}
 
 	monapi_cmemoryinfo_dispose(mi);
-    monapi_cmemoryinfo_delete(mi);
+	monapi_cmemoryinfo_delete(mi);
 	return ret;
 }
