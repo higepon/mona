@@ -31,7 +31,8 @@ int myApplication::main(List<char*>* pekoe) {
 
     /* draw rectangle */
     Screen screen;
-    screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));
+    //    screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));
+    screen.fillRect16(10, 10, 40, 50, Color::rgb(0x89, 0x67, 0x81));
 
     /* memory share between this process and SHELL.SVR */
     dword pid = Message::lookup("SHELL.SVR");
