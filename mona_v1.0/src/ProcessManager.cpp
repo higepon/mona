@@ -17,9 +17,7 @@ ProcessManager::ProcessManager() {
     pid_ = 0;
 }
 
-void ProcessManager::switchTo(ProcessInfo* pinfo){
-
-    g_current_process = pinfo;
+void ProcessManager::switch() {
 
     arch_switch_process();
 }
@@ -27,7 +25,7 @@ void ProcessManager::switchTo(ProcessInfo* pinfo){
 void ProcessManager::schedule(){
 
     scheduler_.schedule();
-    switchTo(g_current_process);
+    switch();
 
 }
 

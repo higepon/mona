@@ -31,7 +31,7 @@ class ProcessManager {
     PTE*  allocatePageDir();
     virtual_addr allocateStack();
     dword allocatePID();
-    void switchTo(ProcessInfo* pinfo);
+    void switch();
 
   public:
     schedule();
