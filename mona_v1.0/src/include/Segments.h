@@ -18,12 +18,13 @@
 #include <string.h>
 #include <Process.h>
 
-extern VirtualConsole*g_console;
 class SharedMemoryObject {
 
   public:
     SharedMemoryObject();
     SharedMemoryObject(dword id, dword size);
+    SharedMemoryObject(dword id, dword size, dword pid, dword linearAddress);
+    void initilize(dword id, dword size);
     virtual ~SharedMemoryObject();
 
     inline virtual int getAttachedCount() const {
@@ -58,6 +59,7 @@ class SharedMemoryObject {
   public:
     static void setup();
     static bool open(dword id, dword size);
+    static bool open(dword id, dword size, dword pid, dword linearAddress);
     static bool attach(dword id, struct Process* process, LinearAddress address);
     static bool detach(dword id, struct Process* process);
 

@@ -349,6 +349,38 @@ SharedMemorySegment* SharedMemorySegment::find(Process* process, dword id) {
 */
 SharedMemoryObject::SharedMemoryObject(dword id, dword size) {
 
+    initilize(id, size);
+    return;
+}
+
+SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword linearAddress) {
+
+    initilize(id, size);
+
+    Process* process = g_processManager->find(pid);
+    if (process == NULL) {
+        return;
+    }
+
+    PageEntry* table;
+    PageEntry* directory = process->getPageDirectory();
+
+    for (int i = 0; i < physicalPageCount_; i++, linearAddress += 4096) {
+        dword tableIndex     = PageManager::getTableIndex(linearAddress);
+        dword directoryIndex = PageManager::getDirectoryIndex(linearAddress);
+
+        if (PageManager::isPresent(&(directory[directoryIndex]))) {
+
+            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+        } else {
+            break;
+        }
+        physicalPages_[i] = table[tableIndex] & 0xFFFFF000;
+    }
+}
+
+void SharedMemoryObject::initilize(dword id, dword size) {
+
     if (size <= 0) return;
 
     physicalPageCount_ = size / 4096;
@@ -431,6 +463,24 @@ bool SharedMemoryObject::open(dword id, dword size) {
     if (target == NULL) {
 
         target = new SharedMemoryObject(id, size);
+        checkMemoryAllocate(target, "SharedMemoryObject memory allcate target");
+        g_sharedMemoryObjectList->add(target);
+
+    } else {
+        if (target->getSize() != size) return false;
+    }
+
+    return true;
+}
+
+bool SharedMemoryObject::open(dword id, dword size, dword pid, dword linearAddress) {
+
+    SharedMemoryObject* target = find(id);
+
+    /* new SharedMemory */
+    if (target == NULL) {
+
+        target = new SharedMemoryObject(id, size, pid, linearAddress);
         checkMemoryAllocate(target, "SharedMemoryObject memory allcate target");
         g_sharedMemoryObjectList->add(target);
 

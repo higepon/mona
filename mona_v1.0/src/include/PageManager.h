@@ -51,6 +51,10 @@ class PageManager {
     PageEntry* createNewPageDirectory();
     PageEntry* createNewPageDirectoryForV86();
     bool pageFaultHandler(LinearAddress address, dword error);
+    inline static bool isPresent(PageEntry* entry) {
+
+        return (*entry) & ARCH_PAGE_PRESENT;
+    }
 
   public:
     inline static int getDirectoryIndex(LinearAddress address) {
@@ -66,11 +70,6 @@ class PageManager {
   private:
     PageDirectory* allocatePageDirectory();
     PageEntry* allocatePageTable() const;
-
-    inline bool isPresent(PageEntry* entry) const {
-
-        return (*entry) & ARCH_PAGE_PRESENT;
-    }
 
   private:
     BitMap*       memoryMap_;
