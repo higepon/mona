@@ -47,18 +47,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include <monalibc.h>
 #endif
 
-#define GUILIB_VERSION "BayGUI build 04.10.18"
+#define GUILIB_VERSION "BayGUI build 04.10.19"
 
-#define MAX_TITLE_LEN       64
-#define MAX_TEXT_LEN        64
+#define MAX_TITLE_LEN     64
+#define MAX_TEXT_LEN      64
+#define MAX_FONTLIST_LEN  96
 #define MAX_CONTROLLIST_LEN 50
-#define MAX_DATALIST_LEN    50
-#define MAX_FONTLIST_LEN    128
-
-#define INSETS_TOP        22
-#define INSETS_BOTTOM     6
-#define INSETS_LEFT       6
-#define INSETS_RIGHT      6
 
 #define INSETS_TOP        22
 #define INSETS_BOTTOM     6
@@ -80,12 +74,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ALIGN_LEFT        1
 #define ALIGN_CENTER      2
 #define ALIGN_RIGHT       3
-
-#define HALF_BYTE_FONT    0
-#define FULL_BYTE_FONT    1
-
-#define CODE_PAGE_UTF8    8
-#define CODE_PAGE_SJIS    932
 
 /** キー押下 */
 #define KEY_PRESSED     100
@@ -181,8 +169,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/messages.h"
 #include "baygui/Object.h"
 #include "baygui/String.h"
-#include "baygui/TwoWayItem.h"
-#include "baygui/TwoWayList.h"
+#include "baygui/LinkedItem.h"
+#include "baygui/LinkedList.h"
 #include "baygui/Event.h"
 #include "baygui/KeyEvent.h"
 #include "baygui/MouseEvent.h"
