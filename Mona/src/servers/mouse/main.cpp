@@ -126,12 +126,20 @@ int MonaMain(List<char*>* pekoe) {
                     disable_count--;
                     paintCursor(&screen, posX, posY, &vscreen);
                 }
+
+                Message::create(&send, MSG_RESULT_OK, receive.header, 0, 0, NULL);
+                Message::send(receive.from, &send);
+
                 break;
 
             case MSG_MOUSE_DISABLE_CURSOR:
 
                 paintCursor(&screen, posX, posY, &vscreen);
                 disable_count++;
+
+                Message::create(&send, MSG_RESULT_OK, receive.header, 0, 0, NULL);
+                Message::send(receive.from, &send);
+
                 break;
 
             default:
