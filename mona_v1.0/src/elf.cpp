@@ -17,6 +17,115 @@
 #include <io.h>
 #include <syscalls.h>
 
+/*----------------------------------------------------------------------
+    loadProcess
+----------------------------------------------------------------------*/
+int loadProcess(const char* path, const char* file, bool isUser) {
+
+    /* shared ID */
+    static dword sharedId = 0x1000;
+    sharedId++;
+
+    int    fileSize;
+    int    readTimes;
+    bool   isOpen;
+    bool   isAttaced;
+    dword entrypoint;
+    FAT12* fat;
+    ELFLoader *loader;
+    byte* buf;
+
+    /* only one process can use fd */
+    while (Semaphore::down(&g_semaphore_fd));
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    /* read FAT */
+    fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) {
+        Semaphore::up(&g_semaphore_fd);
+        return -1;
+    }
+
+    /* file open */
+    if (!fat->open(path, file, FAT12::READ_MODE)) {
+        delete fat;
+        Semaphore::up(&g_semaphore_fd);
+        return -1;
+    }
+
+    /* get file size and allocate buffer */
+    fileSize  = fat->getFileSize();
+    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+    buf       = (byte*)malloc(512 * readTimes);
+    if (buf == NULL) {
+        delete fat;
+        Semaphore::up(&g_semaphore_fd);
+        return -1;
+    }
+
+    /* read */
+    for (int i = 0; i < readTimes; i++) {
+        if (!fat->read(buf + 512 * i)) {
+            delete fat;
+            free(buf);
+            Semaphore::up(&g_semaphore_fd);
+            return -1;
+        }
+    }
+
+    /* close */
+    if (!fat->close()) {
+        delete fat;
+        Semaphore::up(&g_semaphore_fd);
+    }
+    delete fat;
+    g_fdcdriver->motor(false);
+    Semaphore::up(&g_semaphore_fd);
+
+    /* attach Shared to this process */
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen    = SharedMemoryObject::open(sharedId, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), 0x80000000);
+    Semaphore::up(&g_semaphore_shared);
+    if (!isOpen || !isAttaced) {
+        free(buf);
+        return -1;
+    }
+
+    /* load */
+    loader = new ELFLoader();
+    loader->prepare((dword)buf);
+    entrypoint = loader->load((byte*)0x80000000);
+    delete(loader);
+    free(buf);
+
+    /* create process */
+    Process* process = g_processManager->create(isUser ? ProcessManager::USER_PROCESS : ProcessManager::KERNEL_PROCESS, file);
+
+    /* attach binary image to process */
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen    = SharedMemoryObject::open(sharedId, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
+    Semaphore::up(&g_semaphore_shared);
+    if (!isOpen || !isAttaced) {
+        return -1;
+    }
+
+    /* detach from this process */
+    while (Semaphore::down(&g_semaphore_shared));
+    SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
+    Semaphore::up(&g_semaphore_shared);
+
+    /* now process is loaded */
+    g_processManager->add(process);
+    Thread*  thread = g_processManager->createThread(process, entrypoint);
+    g_processManager->join(process, thread);
+    return 0;
+}
+
 ELFLoader::ELFLoader() {
 
 }

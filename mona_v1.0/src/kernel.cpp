@@ -59,73 +59,18 @@
 #include <PageManager.h>
 #include <elf.h>
 #include <MemoryManager.h>
+#include <vbe.h>
 
-char* version = "Mona version.0.1.3 $Date$";
+char* version = "Mona version.0.1.4 $Date$";
 void mainProcess();
-
-void test81() {for(;;);}
-void test82() {for(;;);}
-void test83() {for(;;);}
-void test84() {for(;;);}
-void test85() {for(;;);}
 
 extern int pos_x;
 extern int pos_y;
-
-int testFD(char* file) {
-
-    int    fileSize;
-    int    readTimes;
-    byte*  buf;
-    FAT12* fat;
-
-    g_fdcdriver->motor(ON);
-
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    fat = new FAT12((DiskDriver*)g_fdcdriver);
-    if (!fat->initilize()) return -1;
-
-    if (!fat->open(".", file, FAT12::READ_MODE)) return -2;
-
-    fileSize  = fat->getFileSize();
-
-    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
-
-    buf = (byte*)malloc(512 * readTimes);
-    memset(buf, 0, 512 * readTimes);
-
-    if (buf == NULL) return -1;
-
-    for (int i = 0; i < readTimes; i++) {
-        if (!fat->read(buf + 512 * i)) {
-            g_console->printf("read failed %d", i);
-            while (true);
-        }
-    }
-
-    if (!fat->close()) {
-        info(ERROR, "close failed");
-    }
-
-    g_console->printf("[%d][%d][%d]", buf[1], buf[512 * readTimes - 10], buf[3]);
-
-    delete fat;
-    free(buf);
-    return 0;
-}
-
 void printInfo() {
 
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
 
-    //   for (int i = 0; i < 10; i++) {
-    //       testFD("USER.ELF");
-    //       testFD("KERNEL.IMG");
-    //   }
 
     for (;;) {
 
@@ -135,7 +80,7 @@ void printInfo() {
 
         pos_x = 0;
         pos_y = 0;
-        g_processManager->printProcess();
+        //g_processManager->printProcess();
 
         pos_x = tempx;
         pos_y = tempy;
@@ -143,48 +88,6 @@ void printInfo() {
 
     }
 }
-
-#pragma pack(2)
-typedef struct VesaInfo {
-    byte  sign[4];
-    byte  versionL;
-    byte  versionH;
-    dword oemStringPtr;
-    byte  capabilities[4];
-    dword videoModePtr;
-};
-#pragma pack()
-
-typedef struct VesaInfoDetail {
-    word  modeAttributes;
-    byte  winAAttributes;
-    byte  winBAttributes;
-    word  winGranularity;
-    word  winSize;
-    word  winASegment;
-    word  winBSegment;
-    dword winFuncPtr;
-    word  bytesPerScanLine;
-    word  xResolution;
-    word  yResolution;
-    byte  xCharSize;
-    byte  yCharSize;
-    byte  numberOfPlanes;
-    byte  bitsPerPixel;
-    byte  numberOfBanks;
-    byte  memoryModel;
-    byte  bankSize;
-    byte  numberOfImagePages;
-    byte  reserved;
-    byte  redMaskSize;
-    byte  redFieldPosition;
-    byte  greenMaskSize;
-    byte  greenFieldPosition;
-    byte  blueMaskSize;
-    byte  blueFieldPosition;
-    byte  rsvdMaskSize;
-    byte  directColorModeInfo;
-};
 
 /*!
     \brief  mona kernel start at this point
@@ -206,15 +109,10 @@ void startKernel(void) {
     /* initialze console */
     g_console = new GraphicalConsole();
 
-    /* show start message */
-    //    printBanner();
-
     pic_init();
-
     printOK("Setting PIC        ");
 
     IDTUtil::setup();
-
     printOK("Setting IDT        ");
     printOK("Setting GDT        ");
 
@@ -272,12 +170,6 @@ void startKernel(void) {
         g_console->printf("(directColorModeInfo=%x)", vesaDetail->directColorModeInfo);
     }
 
-    /* v86_func */
-    byte* v86_func = (byte*)0x100;
-    (v86_func)[0] = 0xFA;
-    (v86_func)[1] = 0xEB;
-    (v86_func)[2] = 0xFE;
-
     /* FDC do not delete */
     g_fdcdriver = new FDCDriver();
 
@@ -291,56 +183,6 @@ void startKernel(void) {
      Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printInfo);
      g_processManager->join(testProcess1, testThread1);
 
-     /* add testProces2(testThread2) */
-     Process* testProcess2 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST2");
-     g_processManager->add(testProcess2);
-     Thread*   testThread2  = g_processManager->createThread(testProcess2, (dword)test81);
-     g_processManager->join(testProcess2, testThread2);
-
-    /* add testProces3(testThread3) */
-    Process* testProcess3 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST3");
-    g_processManager->add(testProcess3);
-    Thread*   testThread3  = g_processManager->createThread(testProcess3, (dword)test81);
-    g_processManager->join(testProcess3, testThread3);
-
-    /* add testProces6(has no thread) */
-    Process* testProcess6 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST6");
-    g_processManager->add(testProcess6);
-
-    /* add testProces7(testThread7) */
-    Process* testProcess7 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST7");
-    g_processManager->add(testProcess7);
-    Thread*   testThread7  = g_processManager->createThread(testProcess7, (dword)test81);
-    g_processManager->join(testProcess7, testThread7);
-    Thread*   testThread71  = g_processManager->createThread(testProcess7, (dword)test81);
-    g_processManager->join(testProcess7, testThread71);
-    Thread*   testThread72  = g_processManager->createThread(testProcess7, (dword)test81);
-    g_processManager->join(testProcess7, testThread72);
-
-    /* add testProces8(testThread8) */
-    Process* testProcess8 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST8");
-    g_processManager->add(testProcess8);
-    Thread*   testThread11 = g_processManager->createThread(testProcess8, (dword)test81);
-    g_processManager->join(testProcess8, testThread11);
-
-    Thread*   testThread12  = g_processManager->createThread(testProcess8, (dword)test82);
-    g_processManager->join(testProcess8, testThread12);
-
-    Thread*   testThread13  = g_processManager->createThread(testProcess8, (dword)test83);
-    g_processManager->join(testProcess8, testThread13);
-
-    Thread*   testThread14  = g_processManager->createThread(testProcess8, (dword)test84);
-    g_processManager->join(testProcess8, testThread14);
-
-    Thread*   testThread15  = g_processManager->createThread(testProcess8, (dword)test85);
-    g_processManager->join(testProcess8, testThread15);
-
-    /* add testProces9(testThread9) for V86 */
-//     Process* testProcess9 = g_processManager->create(ProcessManager::V86_PROCESS, "V86");
-//     g_processManager->add(testProcess9);
-//     Thread*   testThread9  = g_processManager->createThread(testProcess9, (dword)(v86_func));
-//     g_processManager->join(testProcess9, testThread9);
-
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.init();
@@ -350,12 +192,6 @@ void startKernel(void) {
     disableTimer();
     enableKeyboard();
     enableInterrupt();
-
-    //    keyStrokeTest();
-    /* show Logo */
-    //    mmChangeTester();
-    //    while (true);
-    //    FDCDriverTester();
 
     g_info_level = MSG;
     enableTimer();

@@ -65,6 +65,7 @@ FAT12::FAT12(DiskDriver* driver) {
     errNum_ = NORMAL_STATE;
     fat_    = (byte*)0;
     currentDirectory_ = 0;
+    isOpen_ = false;
     return;
 }
 

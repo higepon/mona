@@ -14,15 +14,15 @@
 
 /*!
 
-  \brief  test code for higepon
+\brief  test code for higepon
 
-  Copyright (c) 2002,2003 Higepon
-  All rights reserved.
-  License=MIT/X Licnese
+Copyright (c) 2002,2003 Higepon
+All rights reserved.
+License=MIT/X Licnese
 
-  \author  HigePon
-  \version $Revision$
-  \date   create:2003/05/18 update:$Date$
+\author  HigePon
+\version $Revision$
+\date   create:2003/05/18 update:$Date$
 */
 
 
@@ -79,88 +79,6 @@ int receive(Process* process, Message* message) {
     memcpy(message, from, sizeof(Message));
     free(from);
     process->getMessageList()->removeAt(0);
-    return 0;
-}
-
-int loadProcess(const char* path, const char* file, bool isUser) {
-
-    while (Semaphore::down(&g_semaphore_loadProcess));
-
-    static dword sharedId = 0x1000;
-    sharedId++;
-
-    int    fileSize;
-    int    readTimes;
-    byte*  buf;
-    bool   isOpen;
-    bool   isAttaced;
-    FAT12* fat;
-
-    while (Semaphore::down(&g_semaphore_shared));
-    isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
-    isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), 0x80000000);
-    Semaphore::up(&g_semaphore_shared);
-
-    if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
-
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    fat = new FAT12((DiskDriver*)g_fdcdriver);
-    if (!fat->initilize()) return FAT_INIT_ERROR;
-
-    if (!fat->open(path, file, FAT12::READ_MODE)) return FAT_OPEN_ERROR;
-
-    fileSize  = fat->getFileSize();
-
-    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
-
-    buf = (byte*)malloc(512 * readTimes);
-
-    if (buf == NULL) return -1;
-
-    for (int i = 0; i < readTimes; i++) {
-        if (!fat->read(buf + 512 * i)) {
-            g_console->printf("read failed %d", i);
-            while (true);
-        }
-    }
-
-    if (!fat->close()) {
-        info(ERROR, "close failed");
-    }
-
-    ELFLoader* loader = new ELFLoader();
-
-    //    g_console->printf("elf size = %d", loader->prepare((dword)buf));
-    loader->prepare((dword)buf);
-
-    /* prod_ code */
-    dword entrypoint = loader->load((byte*)0x80000000);
-
-    //    g_console->printf("entrypoint=%x", entrypoint);
-    delete(loader);
-    free(buf);
-
-    Process* process = g_processManager->create(isUser ? ProcessManager::USER_PROCESS : ProcessManager::KERNEL_PROCESS, file);
-
-    while (Semaphore::down(&g_semaphore_shared));
-    isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
-    isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
-    Semaphore::up(&g_semaphore_shared);
-    if (!isOpen || !isAttaced) panic("loadProcess: not open");
-
-    while (Semaphore::down(&g_semaphore_shared));
-    SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
-    Semaphore::up(&g_semaphore_shared);
-
-    g_processManager->add(process);
-    Thread*  thread = g_processManager->createThread(process, entrypoint);
-    g_processManager->join(process, thread);
-
-    Semaphore::up(&g_semaphore_loadProcess);
     return 0;
 }
 
