@@ -31,16 +31,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define TAB_SIZE   4
 
 /** コンストラクタ */
-TextArea::TextArea(int buffer_size)
+TextArea::TextArea(int buffer_size, bool draw_line)
 {
 	text = new char[buffer_size];
-	_textEvent = new Event(TEXT_CHANGED, this);
-	_buffer_size = buffer_size;
+	_textEvent = new Event(Event::TEXT_CHANGED, this);
+	_buffer_size = buffer_size; _draw_line = draw_line;
 
 	// 当り障り無い初期値
+	_overwrite = false;
 	_max_line = 0; _max_col = 0;
 	_offset_x = 0; _offset_y = 0;
-	_ptr_x = 0; _ptr_y = 0;_ptr_len = 0;
+	_ptr_x = 0; _ptr_y = 0;
 	_text_len = 0; text[0] = '\0';
 }
 
@@ -60,9 +61,9 @@ TextArea::~TextArea()
 */
 void TextArea::setRect(int x, int y, int width, int height)
 {
-	TextField::setRect( x, y, width, height );
-	_max_line = height / FontManager::getInstance()->getHeight() - 1;
-	_max_col = width / FontManager::getInstance()->getWidth(WIDTH_BASE) - 1;
+	TextField::setRect( x, y, getWidth(), getHeight() );
+	_max_line = getHeight() / getFontMetrics()->getHeight(WIDTH_BASE) - 1;
+	_max_col = width / getFontMetrics()->getWidth(WIDTH_BASE) - 1;
 }
 
 /**
@@ -72,11 +73,12 @@ void TextArea::setRect(int x, int y, int width, int height)
 void TextArea::setText(char* text)
 {
 	if( (int)strlen(text) >= _buffer_size ) return;
+	memset(this->text, 0, sizeof(this->text));
 	strcpy(this->text, text);
 	_text_len = strlen(text);
-	SetPos(-1); _ptr_len = 0;
+	SetPos(-1);
 	OffsetChange();
-	if( firstpaint == true ) repaint();
+	//if( firstpaint == true ) repaint();
 }
 
 /** テキスト取得 */
@@ -85,63 +87,118 @@ char* TextArea::getText()
 	return text;
 }
 
-/** 再描画 */
-void TextArea::repaint()
+/** 行番号フォーマット */
+void TextArea::LineNoFormat(char* buff, int line, int size)
 {
-	if( firstpaint == false ) firstpaint = true;
+	// 初期化
+	for(int i=0; i<size; i++) buff[i] = ' '; buff[size] = '\0';
+
+	// 10進文字列化
+	for(int i=size-1; i>=0; i--) {
+		buff[i] = '0' + (line % 10);
+		line /= 10; if( line == 0 ) break;
+	}
+}
+
+/** 再描画 */
+void TextArea::onPaint(Graphics *g)
+{
+	/*if( firstpaint == false ) firstpaint = true;*/
+
+	// 色
+	int clr_focuse = 0xffc8c8c8;
+	int clr_border = 0xff000000;
+	int clr_back   = 0xffffffff;
+	int clr_fore   = 0xff000000;
+	int clr_caret  = 0xff000000;
+	int clr_line   = 0xff000000;
+	if (getFocused() == true && getEnabled() == true) {
+		clr_focuse = 0xff0080ff;
+	}
+	if (getEnabled() == false) {
+		clr_fore = 0xff808080;
+	}
+
+	// 文字サイズ
+	int fh = getFontMetrics()->getHeight(WIDTH_BASE);
+	int fw = getFontMetrics()->getWidth(WIDTH_BASE);
 
 	// 枠線
-	if (focused == true && enabled == true) {
-		_g->setColor(0,128,255);
-		_g->drawRect(0, 0, width, height);
-	} else {
-		_g->setColor(200,200,200);
-		_g->drawRect(0, 0, width, height);
-	}
-	_g->setColor(0,0,0);
-	_g->drawRect(1, 1, width - 2, height - 2);
-	_g->setColor(255,255,255);
-	_g->fillRect(2, 2, width - 3, height - 3);
+	g->setColor(clr_focuse);
+	g->drawRect(0, 0, getWidth(), getHeight());
+	g->setColor(clr_border);
+	g->drawRect(1, 1, getWidth() - 2, getHeight() - 2);
+	g->setColor(clr_back);
+	g->fillRect(2, 2, getWidth() - 3, getHeight() - 3);
 
-	// 文字
-	int fh = FontManager::getInstance()->getHeight();
-	int fw = FontManager::getInstance()->getWidth(WIDTH_BASE);
-	if (enabled == true) {
-		_g->setColor(0,0,0);
-	} else {
-		_g->setColor(128,128,128);
+	int draw_left = 4;
+	int draw_top = 4;
+
+	g->setColor(clr_line);
+	if( _draw_line ) {
+		draw_left += 2;
+		int fw = getFontMetrics()->getWidth("0");
+		int keta = 1, tmp = LineCount(); while( tmp >= 10 ) { keta++; tmp/=10; }
+
+		char* buff = new char[keta+1];
+		for(int i=0; i<_max_line; i++) {
+			if( i + _offset_y >= LineCount() ) break;
+			LineNoFormat( buff, i + _offset_y + 1, keta );
+			g->drawText(buff, draw_left, i * fh + draw_top );
+		}
+		delete[] buff;
+
+		draw_left += keta * fw + 3;
+		g->drawLine( draw_left - 3, draw_top, draw_left - 3, getHeight() - draw_top );
+	}
+
+	// キャレットの描画
+	if (getFocused() == true && getEnabled() == true) {
+		if (_overwrite) {
+			g->setColor(clr_caret);
+			g->fillRect( (_ptr_x-_offset_x) * fw + draw_left - 1, (_ptr_y-_offset_y) * fh + draw_top, fw, fh );
+		} else {
+			g->setColor(clr_caret);
+			g->drawLine( (_ptr_x-_offset_x) * fw + draw_left - 1, (_ptr_y-_offset_y) * fh + draw_top,
+			              (_ptr_x-_offset_x) * fw + draw_left - 1, (_ptr_y-_offset_y) * fh + draw_top + fh - 2 );
+		}
 	}
 
 	// 一行ずつ描画
 	char* draw_text = text + Y2P(_offset_y);
 	for(int i=0; i<_max_line; i++) {
 		int col = 0;
+
+		// 表示しない文字を飛ばす
 		for(int j=0; j<_offset_x; ) {
 			if( *draw_text == '\0' || *draw_text == '\n' ) break;
 			if( *draw_text == '\t' ) j+=TAB_SIZE; else j++;
 			if( j >= _offset_x ) col = j - _offset_x;
 			draw_text++;
 		}
+
+		// 一文字ずつ描画
 		for(; col<_max_col; col++) {
 			if( *draw_text == '\0' || *draw_text == '\n' ) break;
 			if( *draw_text == '\t' ) {
 				col += TAB_SIZE - ( (col+_offset_x) % TAB_SIZE ) - 1;
 			} else {
 				char tmp[2] = { *draw_text, '\0' };
-				int width = FontManager::getInstance()->getWidth(tmp);
-				_g->drawText(tmp, col * fw + 4 + (fw-width) / 2, i * fh + 4 );
+				int width = getFontMetrics()->getWidth(tmp);
+				if( _overwrite && draw_text == text+XY2P(_ptr_x,_ptr_y) ) {
+					g->setColor(clr_back);
+				} else {
+					g->setColor(clr_fore);
+				}
+				g->drawText(tmp, col * fw + draw_left + (fw-width) / 2, i * fh + draw_top );
 			}
 			draw_text++;
 		}
+
+		// 残りも飛ばす
 		while( *draw_text != '\0' && *draw_text != '\n' ) draw_text++;
 		if( *draw_text == '\0' ) break;
 		draw_text++;
-	}
-
-	// キャレット
-	if (focused == true && enabled == true) {
-		_g->drawLine( (_ptr_x-_offset_x) * fw + 4, (_ptr_y-_offset_y) * fh + 4,
-		              (_ptr_x-_offset_x) * fw + 4, (_ptr_y-_offset_y) * fh + 4 + fh - 2 );
 	}
 }
 
@@ -162,63 +219,70 @@ void TextArea::insertCharacter(char c)
 void TextArea::deleteCharacter()
 {
 	int pos = XY2P(_ptr_x,_ptr_y);
+	if( text[pos] == '\0' ) return;
 	if( _ptr_x > _offset_x + _max_col - 1 ) _offset_x = _ptr_x - _max_col + 1;
+	if( _ptr_y <= _offset_y ) _offset_y = (_ptr_y != 0) ? _ptr_y - 1 : _ptr_y;
+	if( _ptr_x <= _offset_x ) _offset_x = (_ptr_x != 0) ? _ptr_x - 1 : _ptr_x;
 	while( (text[pos] = text[pos+1]) != '\0' ) pos++;
-	_text_len--;
+	_text_len -= 1;
 }
 
 /** イベント処理 */
-void TextArea::postEvent(Event* event)
+void TextArea::onEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
-	if (enabled == false) return;
+	if (getEnabled() == false) return;
 
 	// キー押下
-	if (event->type == KEY_PRESSED) {
-		int keycode = ((KeyEvent *)event)->keycode;
-		if (keycode == VKEY_BACKSPACE) {
+	if (event->getType() == KeyEvent::KEY_PRESSED) {
+		int keycode = ((KeyEvent *)event)->getKeycode();
+		if (keycode == KeyEvent::VKEY_BACKSPACE) {
 			if (_ptr_x > 0 || _ptr_y > 0) {
 				// バックスペース
 				SetPos( XY2P(_ptr_x,_ptr_y) - 1 );
 				OffsetChange();
 				deleteCharacter();
-				if (firstpaint == true) repaint();
+				/*if (firstpaint == true)*/ repaint();
 			}
-		} else if (keycode == VKEY_DELETE) {
+		} else if (keycode == KeyEvent::VKEY_DELETE) {
 			// 一文字削除
 			if (text[XY2P(_ptr_x,_ptr_y)] != '\0' ) {
 				deleteCharacter();
-				if (firstpaint == true) repaint();
+				/*if (firstpaint == true)*/ repaint();
 			}
-		} else if (keycode == VKEY_LEFT) {
+		} else if (keycode == KeyEvent::VKEY_INSERT) {
+			// 上書き設定変更
+			_overwrite = !_overwrite;
+			/*if (firstpaint == true)*/ repaint();
+		} else if (keycode == KeyEvent::VKEY_LEFT) {
 			// ←移動
 			if( _ptr_x != 0 || _ptr_y != 0 ) {
 				SetPos( XY2P(_ptr_x,_ptr_y) - 1 );
 				OffsetChange();
-				if (firstpaint == true) repaint();
+				/*if (firstpaint == true)*/ repaint();
 			}
-		} else if (keycode == VKEY_RIGHT) {
+		} else if (keycode == KeyEvent::VKEY_RIGHT) {
 			// →移動
 			if (text[XY2P(_ptr_x,_ptr_y)] != '\0' ) {
 				SetPos( XY2P(_ptr_x,_ptr_y) + 1 );
 				OffsetChange();
-				if (firstpaint == true) repaint();
+				/*if (firstpaint == true)*/ repaint();
 			}
-		} else if (keycode == VKEY_UP) {
+		} else if (keycode == KeyEvent::VKEY_UP) {
 			// ↑移動
 			if (_ptr_y > 0) {
 				SetPos( XY2P(_ptr_x,_ptr_y-1) );
 				OffsetChange();
-				if (firstpaint == true) repaint();
+				/*if (firstpaint == true)*/ repaint();
 			}
-		} else if (keycode == VKEY_DOWN) {
+		} else if (keycode == KeyEvent::VKEY_DOWN) {
 			// ↓移動
 			if (_ptr_y < LineCount()-1) {
 				SetPos( XY2P(_ptr_x,_ptr_y+1) );
 				OffsetChange();
-				if (firstpaint == true) repaint();
+				/*if (firstpaint == true)*/ repaint();
 			}
-		} else if (keycode == VKEY_PGUP) {
+		} else if (keycode == KeyEvent::VKEY_PGUP) {
 			// 前ページ
 			_ptr_y -= _max_line - 1;
 			if( _ptr_y < 0 ) _ptr_y = 0;
@@ -226,45 +290,55 @@ void TextArea::postEvent(Event* event)
 			if( _offset_y < 0 ) _offset_y = 0;
 			SetPos( XY2P(_ptr_x,_ptr_y) );
 			OffsetChange();
-			if (firstpaint == true) repaint();
-		} else if (keycode == VKEY_PGDOWN) {
+			/*if (firstpaint == true)*/ repaint();
+		} else if (keycode == KeyEvent::VKEY_PGDOWN) {
 			// 次ページ
 			_ptr_y += _max_line - 1;
 			if( _ptr_y > LineCount() ) _ptr_y = LineCount();
 			_offset_y += _max_line - 1;
 			if( _offset_y > LineCount() - _max_line / 2 ) _offset_y = LineCount() - _max_line / 2;
+			if( _offset_y < 0 ) _offset_y = 0;
 			SetPos( XY2P(_ptr_x,_ptr_y) );
 			OffsetChange();
-			if (firstpaint == true) repaint();
-		} else if (keycode == VKEY_HOME) {
+			/*if (firstpaint == true)*/ repaint();
+		} else if (keycode == KeyEvent::VKEY_HOME) {
 			// 行の先頭へ移動
 			SetPos( Y2P(_ptr_y) );
 			OffsetChange();
-			if (firstpaint == true) repaint();
-		} else if (keycode == VKEY_END) {
+			/*if (firstpaint == true)*/ repaint();
+		} else if (keycode == KeyEvent::VKEY_END) {
 			// 行の末尾へ移動
 			SetPos( Y2P(_ptr_y+1) - 1 );
 			OffsetChange();
-			if (firstpaint == true) repaint();
-		} else if (keycode == VKEY_TAB) {
+			/*if (firstpaint == true)*/ repaint();
+		} else if (keycode == KeyEvent::VKEY_TAB) {
 			// タブの挿入
 			insertCharacter( '\t' );
-			if (firstpaint == true) repaint();
-		} else if (keycode == VKEY_ENTER) {
+			/*if (firstpaint == true)*/ repaint();
+		} else if (keycode == KeyEvent::VKEY_ENTER) {
 			// 改行
 			insertCharacter( '\n' );
-			if (firstpaint == true) repaint();
+			/*if (firstpaint == true)*/ repaint();
 		} else if (keycode < 128) {
 			// 1文字挿入
+			if (_overwrite && text[XY2P(_ptr_x,_ptr_y)] != '\n') deleteCharacter();
 			insertCharacter(keycode);
-			if (firstpaint == true) repaint();
+			/*if (firstpaint == true)*/ repaint();
 		}
+	// マウスで押された
+	} else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
+		int ry = ((MouseEvent*)event)->getY();
+		int rx = ((MouseEvent*)event)->getX();
+		int fh = getFontMetrics()->getHeight(WIDTH_BASE);
+		int fw = getFontMetrics()->getWidth(WIDTH_BASE);
+		SetPos( XY2P( ( rx - 4 ) / fw, ( ry - 4 ) / fh ) );
+		/*if (firstpaint == true)*/ repaint();
 	// フォーカス状態変更
-	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
-		if (firstpaint == true) {
+	} else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
+		//if (firstpaint == true) {
 			repaint();
-			Control::postEvent(_focusEvent);
-		}
+			//Control::postEvent(_focusEvent);
+		//}
 	}
 }
 
