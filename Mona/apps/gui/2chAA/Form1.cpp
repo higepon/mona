@@ -46,7 +46,6 @@ public:
         for (; this->visible; Application::DoEvents())
         {
             this->label1->set_Text(aa[(i++) % aa.get_Length()]);
-            this->OnPaint();
             sleep(300);
         }
     }
