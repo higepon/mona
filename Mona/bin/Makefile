@@ -2,7 +2,7 @@ TARGET = mona.img
 
 ROOT_FILES = `cd root; ls *.*`
 SVR_FILES  = `cd root; ls SERVERS/*.SVR`
-APP_FILES  = `cd root; ls APPS/*.EL* APPS/*.LIB APPS/*.WRP`
+APP_FILES  = `cd root; ls APPS/*.EL* APPS/*.LIB APPS/*.WRP APPS/*.MSH`
 
 all:
 	cp fat_template.img $(TARGET)

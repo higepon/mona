@@ -9,6 +9,10 @@
 
         * 各Makefile: libgui.aを使うものが更新に追随しなかった問題を修正
 
+        * bin/root/MONAHERE.JPG: 新壁紙 (thanks nikqさん)
+
+        * src/servers/gui/STARTGUI.MSH: GUI.SVR起動バッチ
+
 2004-05-08  shadow  <shadowin@users.sourceforge.jp>
 
         * monapi/CString: reset insert remove追加

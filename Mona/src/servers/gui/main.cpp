@@ -168,15 +168,11 @@ void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
-    ReadConfig();
     ReadFont("/MONA-12.MF2");
+    ReadConfig();
     if (default_font == NULL) exit(1);
-    
-    if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
-    {
-        printf("%s: INIT error\n", SVR);
-        exit(1);
-    }
+
+    Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK);
 
     MessageLoop();
 
