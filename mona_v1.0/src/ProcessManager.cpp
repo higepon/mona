@@ -65,11 +65,11 @@ void ProcessManager::printInfo() {
                  : "m" (gdtr)
                 );
     _sys_printf("gdtr.limit = %d\n", gdtr.limit);
-    _sys_printf("gdtr.base  = %d\n", gdtr.dummy);
-    _sys_printf("gdtr.base  = %d\n", gdtr.dummy2);
+    //    _sys_printf("gdtr.base  = %d\n", gdtr.dummy);
+    //    _sys_printf("gdtr.base  = %d\n", gdtr.dummy2);
     _sys_printf("gdtr.base  = %d\n", gdtr.base);
 
-    GDT* some = (GDT*)(gdtr.dummy);
+    GDT* some = (GDT*)(gdtr.base);
     _sys_printf("type =%x", some[1].type);
 
 
