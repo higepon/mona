@@ -59,8 +59,8 @@ void startKernel(void) {
     operatorTester();
     hvectorTester();
     floppyTester();
+    typeTester();
 #endif
-
 
     while (true) {
     }

@@ -21,6 +21,10 @@
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
 #endif
-typedef  __SIZE_TYPE__ size_t;
+
+typedef __SIZE_TYPE__ size_t;
+typedef unsigned char  byte;
+typedef unsigned short word;
+typedef unsigned int   dword;
 
 #endif

@@ -189,7 +189,7 @@ template <class T> H_SIZE_T HVector<T>::size() const {
 
     remove element at index
 
-    \param element that removed
+    \param index that removed
 
     \author HigePon
     \date   create:2002/10/23 update:

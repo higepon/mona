@@ -14,8 +14,52 @@
 #ifndef _MONA_KERNEL_
 #define _MONA_KERNEL_
 
+#include <monaTypes.h>
+
 #define _sysLock()   asm("cli") /*! disable interupts */
 #define _sysUnlock() asm("sti") /*! enable  interupts */
+
+/*! TSS */
+typedef struct {
+    word  backlink;
+    word  pad0;
+    dword esp0;
+    word  ss0;
+    word  pad1;
+    dword esp1;
+    word  ss1;
+    word  pad2;
+    dword esp2;
+    word  ss2;
+    word  pad3;
+    dword cr3;
+    dword eip;
+    dword eflags;
+    dword eax;
+    dword ecx;
+    dword edx;
+    dword ebx;
+    dword esp;
+    dword ebp;
+    dword esi;
+    dword edi;
+    word  es;
+    word  pad4;
+    word  cs;
+    word  pad5;
+    word  ss;
+    word  pad6;
+    word  ds;
+    word  pad7;
+    word  fs;
+    word  pad8;
+    word  gs;
+    word  pad9;
+    word  ldt;
+    word  padA;
+    word  debugtrap;
+    word  iobase;
+} TSS;
 
 void startKernel(void);
 

@@ -19,6 +19,7 @@
 #include<HVector.h>
 #include<monaTester.h>
 #include<FDCDriver.h>
+#include<monaTypes.h>
 
 /*!
     \brief test code for HVector
@@ -72,7 +73,7 @@ void operatorTester() {
     \brief test code for floppy disk (class FDCDriver)
 
     test code for floppy disk (class FDCDriver)
-    
+
     \author syn
     \date create:2002/11/14 update:2002/11/14
 */
@@ -85,3 +86,17 @@ void floppyTester(){
     }
 }
 
+/*!
+    \brief test code for monaTypes
+
+    test code for monaTypes
+
+    \author HigePon
+    \date   create:2002/11/20 update:$Date$
+*/
+void typeTester() {
+
+    _sys_printf("size of byte =%d\n", sizeof(byte));
+    _sys_printf("size of word =%d\n", sizeof(word));
+    _sys_printf("size of dword=%d\n", sizeof(dword));
+}
