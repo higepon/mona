@@ -32,15 +32,14 @@ Image::Image()
 {
 }
 
-/** デストラクタ */
-Image::~Image()
+/** コンストラクタ */
+Image::Image(int width, int height)
 {
 }
 
-/** 画像のタイプを得る */
-int Image::getType()
+/** デストラクタ */
+Image::~Image()
 {
-	return UNKNOWN_IMAGE;
 }
 
 /** 画像の高さを得る */
@@ -53,4 +52,10 @@ int Image::getHeight()
 int Image::getWidth()
 {
 	return width;
+}
+
+/** 画像のバッファーを得る */
+unsigned int *Image::getData()
+{
+	return data;
 }

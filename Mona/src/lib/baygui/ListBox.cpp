@@ -51,7 +51,7 @@ int ListBox::getSelectedIndex()
 /** 選択項目を得る */
 char *ListBox::getSelectedItem()
 {
-	return ((String *)_dataList->getItem(selectedIndex)->data)->toString();
+	return ((String *)_dataList->get(selectedIndex))->toString();
 }
 
 /** index 番目を選択する */
@@ -66,13 +66,13 @@ void ListBox::select(int index)
 /** 項目を追加する */
 void ListBox::add(char *item)
 {
-	_dataList->add(new LinkedItem(new String(item)));
+	_dataList->add(new String(item));
 }
 
 /** index 番目の項目を削除する */
 void ListBox::remove(int index)
 {
-	_dataList->remove(_dataList->getItem(index));
+	_dataList->remove(index);
 }
 
 /** 再描画 */
@@ -97,17 +97,17 @@ void ListBox::repaint()
 	_g->fillRect(2, 2, _width - 3, _height - 3);
 
 	// 文字
-	int fh = FontManager::getInstance()->getHeight();
+	int fh = FontMetrics::getInstance()->getHeight();
 	for (i = 0; i < _dataList->getLength(); i++) {
 		if (selectedIndex == i && enabled == true) {
 			_g->setColor(0,128,255);
 			_g->fillRect(3, 3 + (16 * i), _width - 5, 17);
 			_g->setColor(~foreColor);
-			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
+			_g->drawText(((String *)_dataList->get(i))->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);
 		} else {
 			_g->setColor(foreColor);
-			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
+			_g->drawText(((String *)_dataList->get(i))->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);
 		}
 	} 

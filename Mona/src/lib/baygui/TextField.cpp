@@ -84,8 +84,8 @@ void TextField::repaint()
 	_g->fillRect(2, 2, _width - 3, _height - 3);
 
 	// 文字
-	int fw = FontManager::getInstance()->getWidth(text);
-	int fh = FontManager::getInstance()->getHeight();
+	int fw = FontMetrics::getInstance()->getWidth(text);
+	int fh = FontMetrics::getInstance()->getHeight();
 	_g->setColor(foreColor);
 	_g->drawText(text, offx, (_height - fh) / 2);
 

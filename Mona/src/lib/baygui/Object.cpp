@@ -121,22 +121,22 @@ unsigned char *getByteArray(char *path)
 
 /** コンストラクタ */
 Object::Object() {
-	threadID = THREAD_UNKNOWN;
+	_handle = THREAD_UNKNOWN;
 }
 
 /** デストラクタ */
 Object::~Object() {
 }
 
-/** スレッドIDを設定する */
-void Object::setThreadID(dword threadID)
+/** を設定する */
+void Object::setHandle(unsigned int handle)
 {
-	this->threadID = threadID;
+	this->_handle = handle;
 }
 
-/** スレッドIDを得る */
-dword Object::getThreadID()
+/** ハンドルを得る */
+unsigned int Object::getHandle()
 {
-	return threadID;
+	return _handle;
 }
 

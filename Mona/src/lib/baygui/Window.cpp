@@ -93,14 +93,14 @@ Window::Window()
 	xstrncpy(title, "window", MAX_TITLE_LEN);
 
 	// スレッドIDを得る
-	threadID = MonAPI::System::getThreadID();
+	_handle = MonAPI::System::getThreadID();
 
 	// GUIサーバーを探す
 	guisvrID = MonAPI::Message::lookupMainThread(GUISERVER_NAME);
 	if (guisvrID == 0xFFFFFFFF) {
-		//printf("Window: GuiServer not found %d\n", threadID);
+		//printf("Window: GuiServer not found %d\n", _handle);
 	} else {
-		//printf("Window: GuiServer found %d\n", threadID);
+		//printf("Window: GuiServer found %d\n", _handle);
 	}
 
 	// ウィンドウ内部描画領域
@@ -116,7 +116,7 @@ Window::Window()
 	_timerEvent = new Event(TIMER, this);
 
 	// フォントロード
-	FontManager::getInstance();
+	FontMetrics::getInstance();
 
 	// タイマー起動
 	if (timerID == THREAD_UNKNOWN) timerID = syscall_get_tid();
@@ -178,7 +178,7 @@ void Window::setRect(int x, int y, int width, int height)
 
 	// 子部品の位置も更新
 	for(i = 0; i < _controlList->getLength(); i++) {
-		Control *control = (Control *)_controlList->getItem(i)->data;
+		Control *control = (Control *)_controlList->get(i);
 		Rect *rect = control->getRect();
 		control->setRect(
 			rect->x + mx, 
@@ -197,7 +197,7 @@ void Window::setFocused(bool focused)
 {
 	//if (this->focused == focused) return;
 	if (focused == false) {
-		//printf("FOCUS_OUT %d\n", threadID);
+		//printf("FOCUS_OUT %d\n", _handle);
 		this->focused = focused;
 		_focusEvent->type = FOCUS_OUT;
 		postEvent(_focusEvent);
@@ -205,26 +205,12 @@ void Window::setFocused(bool focused)
 		// 部品をフォーカスアウト状態にする
 		if (iconified == false) {
 			for (int i = 0; i < _controlList->getLength(); i++) {
-				Control *c = (Control *)_controlList->getItem(i)->data;
+				Control *c = (Control *)_controlList->get(i);
 				c->setFocused(false);
 			}
 		}
-		#if 0
-		// NULLチェック
-		if (_controlList->firstItem == NULL) return;
-		
-		// 前からチェックしていく
-		LinkedItem *item = _controlList->firstItem;
-		Control *c = (Control *)item->data;
-		c->setFocused(false);
-		while (item->next != NULL) {
-			item = item->next;
-			c = (Control *)item->data;
-			c->setFocused(false);
-		}
-		#endif
 	} else {
-		//printf("FOCUS_IN %d\n", threadID);
+		//printf("FOCUS_IN %d\n", _handle);
 		this->focused = focused;
 		if (iconified == false) {
 			_focusEvent->type = FOCUS_IN;
@@ -241,12 +227,12 @@ void Window::setIconified(bool iconified)
 {
 	//if (this->iconified == iconified) return;
 	if (iconified == false) {
-		//printf("DEICONIFIED %d\n", threadID);
+		//printf("DEICONIFIED %d\n", _handle);
 		this->iconified = iconified;
 		_iconEvent->type = DEICONIFIED;
 		postEvent(_iconEvent);
 	} else {
-		//printf("ICONIFIED %d\n", threadID);
+		//printf("ICONIFIED %d\n", _handle);
 		this->iconified = iconified;
 		_iconEvent->type = ICONIFIED;
 		postEvent(_iconEvent);
@@ -263,10 +249,10 @@ void Window::setTimer(int duration)
 	if (focused == false || enabled == false || iconified == true) return;
 	
 	// タイマー設定メッセージを投げる
-	if (MonAPI::Message::send(timerID, MSG_GUISERVER_SETTIMER, threadID, duration, 0, NULL)) {
-		//printf("Window->Window: MSG_GUISERVER_SETTIMER failed %d\n", threadID);
+	if (MonAPI::Message::send(timerID, MSG_GUISERVER_SETTIMER, _handle, duration, 0, NULL)) {
+		//printf("Window->Window: MSG_GUISERVER_SETTIMER failed %d\n", _handle);
 	} else {
-		//printf("Window->Window: MSG_GUISERVER_SETTIMER sended %d\n", threadID);
+		//printf("Window->Window: MSG_GUISERVER_SETTIMER sended %d\n", _handle);
 	}
 }
 
@@ -281,10 +267,10 @@ void Window::restoreBackGround()
 {
 	// 背景復元メッセージを投げる
 	MessageInfo info;
-	if (MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_RESTORE, threadID, 0, 0, NULL)) {
-		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE failed %d\n", threadID);
+	if (MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_RESTORE, _handle, 0, 0, NULL)) {
+		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE failed %d\n", _handle);
 	} else {
-		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE sended %d\n", threadID);
+		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE sended %d\n", _handle);
 	}
 }
 
@@ -304,7 +290,7 @@ void Window::add(Control *control)
 	if (firstpaint == true) {
 		control->repaint();
 	}
-	_controlList->add(new LinkedItem(control));
+	_controlList->add(control);
 }
 
 /**
@@ -314,12 +300,7 @@ void Window::add(Control *control)
  */
 void Window::remove(Control *control)
 {
-	for(int i = 0; i < _controlList->getLength(); i++) {
-		LinkedItem *item = _controlList->getItem(i);
-		if (item->data == control) {
-			_controlList->remove(item);
-		}
-	}
+	_controlList->remove(control);
 }
 
 /** イベント処理 */
@@ -349,7 +330,7 @@ void Window::postEvent(Event *event)
 		if (control != NULL) {
 			// イベントが起こった部品以外をフォーカスアウト状態にする
 			for (int i = 0; i < _controlList->getLength(); i++) {
-				Control *c = (Control *)_controlList->getItem(i)->data;
+				Control *c = (Control *)_controlList->get(i);
 				if (c == control) {
 					if (c->getFocused() == false) {
 						c->setFocused(true);
@@ -358,31 +339,6 @@ void Window::postEvent(Event *event)
 					c->setFocused(false);
 				}
 			}
-			#if 0
-			LinkedItem *item = _controlList->firstItem;
-			// NULLチェック
-			if (item != NULL) {
-				Control *c = (Control *)item->data;
-				if (c == control) {
-					if (c->getFocused() == false) {
-						c->setFocused(true);
-					}
-				} else if (c->getFocused() == true) {
-					c->setFocused(false);
-				}
-				while (item->next != NULL) {
-					item = item->next;
-					c = (Control *)item->data;
-					if (c == control) {
-						if (c->getFocused() == false) {
-							c->setFocused(true);
-						}
-					} else if (c->getFocused() == true) {
-						c->setFocused(false);
-					}
-				}
-			}
-			#endif
 			event->source = control;
 			// 座標変換
 			Rect *rect = control->getRect();
@@ -393,22 +349,9 @@ void Window::postEvent(Event *event)
 		} else {
 			// 部品をフォーカスアウト状態にする
 			for (int i = 0; i < _controlList->getLength(); i++) {
-				Control *c = (Control *)_controlList->getItem(i)->data;
+				Control *c = (Control *)_controlList->get(i);
 				c->setFocused(false);
 			}
-			#if 0
-			LinkedItem *item = _controlList->firstItem;
-			// NULLチェック
-			if (item != NULL) {
-				Control *c = (Control *)item->data;
-				c->setFocused(false);
-				while (item->next != NULL) {
-					item = item->next;
-					c = (Control *)item->data;
-					c->setFocused(false);
-				}
-			}
-			#endif
 			onEvent(event);
 		}
 	// マウスリリース
@@ -516,8 +459,8 @@ void Window::repaint()
 	}
 
 	// タイトル
-	int fw = FontManager::getInstance()->getWidth(title);
-	int fh = FontManager::getInstance()->getHeight();
+	int fw = FontMetrics::getInstance()->getWidth(title);
+	int fh = FontMetrics::getInstance()->getHeight();
 	_g->setColor(200,200,200);
 	_g->fillRect(((_width - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
 	if (focused == true) {
@@ -530,7 +473,7 @@ void Window::repaint()
 	if (iconified == false) {
 		// 子部品も更新
 		for(i = 0; i < _controlList->getLength(); i++) {
-			Control *control = (Control *)_controlList->getItem(i)->data;
+			Control *control = (Control *)_controlList->get(i);
 			control->repaint();
 		}
 		onPaint(__g);
@@ -545,10 +488,10 @@ void Window::run()
 
 	// ウィンドウ追加メッセージを投げる
 	MessageInfo info;
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_ADD, threadID, (_x << 16 | _y), (_width << 16 | _height), NULL)) {
-		//printf("Window->WindowManager: MSG_GUISERVER_ADD failed %d\n", threadID);
+	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_ADD, _handle, (_x << 16 | _y), (_width << 16 | _height), NULL)) {
+		//printf("Window->WindowManager: MSG_GUISERVER_ADD failed %d\n", _handle);
 	} else {
-		//printf("Window->WindowManager: MSG_GUISERVER_ADD sended %d\n", threadID);
+		//printf("Window->WindowManager: MSG_GUISERVER_ADD sended %d\n", _handle);
 		setFocused(true);
 		repaint();
 		isRunning = true;
@@ -619,45 +562,45 @@ void Window::run()
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_REPAINT:
-				//printf("WindowManager->Window MSG_GUISERVER_REPAINT received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_REPAINT received %d\n", _handle);
 				repaint();
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_ENABLED:
-				//printf("WindowManager->Window MSG_GUISERVER_ENABLED received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_ENABLED received %d\n", _handle);
 				setEnabled(true);
 				MonAPI::Message::reply(&info);
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DISABLED:
-				//printf("WindowManager->Window MSG_GUISERVER_DISABLED received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_DISABLED received %d\n", _handle);
 				setEnabled(false);
 				MonAPI::Message::reply(&info);
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_FOCUSED:
-				//printf("WindowManager->Window MSG_GUISERVER_FOCUSED received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_FOCUSED received %d\n", _handle);
 				setFocused(true);
 				repaint();
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEFOCUSED:
-				//printf("WindowManager->Window MSG_GUISERVER_DEFOCUSED received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_DEFOCUSED received %d\n", _handle);
 				setFocused(false);
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_ICONIFIED:
-				//printf("WindowManager->Window MSG_GUISERVER_ICONIFIED received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_ICONIFIED received %d\n", _handle);
 				setIconified(true);
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEICONIFIED:
-				//printf("WindowManager->Window MSG_GUISERVER_DEICONIFIED received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_DEICONIFIED received %d\n", _handle);
 				setIconified(false);
 				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_REMOVE:
-				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", threadID);
+				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", _handle);
 				MonAPI::Message::reply(&info);
 				// タイマースレッド停止
 				syscall_kill_thread(timerID);

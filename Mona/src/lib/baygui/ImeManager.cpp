@@ -183,7 +183,7 @@ void ImeManager::clearBuffer()
 void ImeManager::repaint()
 {
 	int fw1 = 0, fw2 = 0;
-	int fh  = FontManager::getInstance()->getHeight();
+	int fh  = FontMetrics::getInstance()->getHeight();
 	
 	// 塗りつぶし
 	_g->setColor(~foreColor);
@@ -192,14 +192,14 @@ void ImeManager::repaint()
 
 	// 確定文字列
 	//if (strlen(decideBuffer) > 0) {
-	//	fw1 = FontManager::getInstance()->getWidth(decideBuffer);
+	//	fw1 = FontMetrics::getInstance()->getWidth(decideBuffer);
 	//	_g->setColor(foreColor);
 	//	_g->drawText(decideBuffer, 0, (_height - fh) / 2);
 	//}
 	
 	// 変換対象文字列
 	if (strlen(translateBuffer) > 0) {
-		fw1 = FontManager::getInstance()->getWidth(translateBuffer);
+		fw1 = FontMetrics::getInstance()->getWidth(translateBuffer);
 		_g->setColor(0, 0, 255);
 		_g->drawText(translateBuffer, 0, (_height - fh) / 2);
 		_g->drawLine(0, 13, fw1, 13);
@@ -207,7 +207,7 @@ void ImeManager::repaint()
 	
 	// 入力中文字列
 	//if (strlen(inputBuffer) > 0) {
-	//	fw2 = FontManager::getInstance()->getWidth(inputBuffer);
+	//	fw2 = FontMetrics::getInstance()->getWidth(inputBuffer);
 	//	_g->setColor(0, 0, 255);
 	//	_g->drawText(inputBuffer, fw1, (_height - fh) / 2);
 	//	_g->drawLine(fw1, 13, fw1 + fw2, 13);
@@ -232,6 +232,7 @@ void ImeManager::postEvent(Event *event)
 		if (imesvrID != THREAD_UNKNOWN && 
 			((modifiers == VKEY_CTRL && keycode == '\\') ||
 			(modifiers == VKEY_LSHIFT && keycode == ' '))) {
+			#if 0
 			clearBuffer();
 			clearKanjiList();
 			if (imemode == true) {
@@ -240,6 +241,7 @@ void ImeManager::postEvent(Event *event)
 				imemode = true;
 			}
 			repaint();
+			#endif
 		// バックスペース
 		} else if (keycode == VKEY_BACKSPACE) {
 			int len = 0;

@@ -104,8 +104,8 @@ void Button::repaint()
 	} else {
 		_g->setColor(128,128,128);
 	}
-	int fw = FontManager::getInstance()->getWidth(label);
-	int fh = FontManager::getInstance()->getHeight();
+	int fw = FontMetrics::getInstance()->getWidth(label);
+	int fh = FontMetrics::getInstance()->getHeight();
 	if (pushed == true) {
 		_g->drawText(label, (_width - fw) / 2 + 1, (_height - fh) / 2 + 1);
 	} else {

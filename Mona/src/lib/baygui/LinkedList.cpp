@@ -48,7 +48,7 @@ int LinkedList::getLength()
 }
 
 /** 指定した順番の項目を得る */
-LinkedItem *LinkedList::getItem(int index)
+LinkedItem *LinkedList::_get(int index)
 {
 	// NULLチェック
 	if (index >= dataListLength) return NULL;
@@ -64,8 +64,52 @@ LinkedItem *LinkedList::getItem(int index)
 	return item;
 }
 
+/** ObjectをLinkedItemに変換する */
+LinkedItem *LinkedList::getLinkedItem(Object *o)
+{
+	// NULLチェック
+	if (o == NULL || firstItem == NULL) return NULL;
+	
+	for (int i = 0; i < getLength(); i++) {
+		LinkedItem *item = _get(i);
+		if (item->data == o) return item;
+	}
+	return NULL;
+}
+
+/** 指定した順番の項目を得る */
+Object *LinkedList::get(int index)
+{
+	LinkedItem *item = _get(index);
+	if (item != NULL) {
+		return item->data;
+	} else {
+		return NULL;
+	}
+}
+
+/** 一番最初の項目を得る */
+Object *LinkedList::getFirst()
+{
+	if (firstItem != NULL) {
+		return firstItem->data;
+	} else {
+		return NULL;
+	}
+}
+
+/** 一番最後の項目を得る */
+Object *LinkedList::getLast()
+{
+	if (endItem != NULL) {
+		return endItem->data;
+	} else {
+		return NULL;
+	}
+}
+
 /** 追加 */
-void LinkedList::add(LinkedItem *item)
+void LinkedList::_add(LinkedItem *item)
 {
 	if (item == NULL) {
 		return;
@@ -84,8 +128,14 @@ void LinkedList::add(LinkedItem *item)
 	dataListLength++;
 }
 
+/** 追加 */
+void LinkedList::add(Object *o)
+{
+	_add(new LinkedItem(o));
+}
+
 /** 削除 */
-void LinkedList::remove(LinkedItem *item)
+void LinkedList::_remove(LinkedItem *item)
 {
 	if (item == NULL) {
 		return;
@@ -115,17 +165,29 @@ void LinkedList::remove(LinkedItem *item)
 	dataListLength--;
 }
 
+/** 削除 */
+void LinkedList::remove(int index)
+{
+	_remove(_get(index));
+}
+
+/** 削除 */
+void LinkedList::remove(Object *o)
+{
+	_remove(getLinkedItem(o));
+}
+
 /** 全削除 */
 void LinkedList::removeAll()
 {
 	while (firstItem != NULL) {
-		remove(firstItem);
+		_remove(firstItem);
 	}
 	dataListLength = 0;
 }
 
 /** 指定した項目を一番最後に持っていく */
-void LinkedList::sort(LinkedItem *item)
+void LinkedList::_sort(LinkedItem *item)
 {
 	if (item == NULL) {
 		return;
@@ -144,4 +206,10 @@ void LinkedList::sort(LinkedItem *item)
 		item->next = NULL;
 		endItem = item;
 	}
+}
+
+/** 指定した項目を一番最後に持っていく */
+void LinkedList::sort(Object *o)
+{
+	_sort(getLinkedItem(o));
 }

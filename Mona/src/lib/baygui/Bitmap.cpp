@@ -166,15 +166,3 @@ bool Bitmap::decode(unsigned char *fp)
 
 	return true;
 }
-
-/** 画像のバッファーを得る */
-unsigned int *Bitmap::getData()
-{
-	return data;
-}
-
-/** 画像のタイプを得る */
-int Bitmap::getType()
-{
-	return BITMAP_IMAGE;
-}

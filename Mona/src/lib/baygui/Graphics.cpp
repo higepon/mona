@@ -276,7 +276,7 @@ void Graphics::drawText(char *str, int x, int y)
 {
 	int i , j, k, n = 0, pos, bit, width, height, w = 0;
 	unsigned char c1 = 0, c2 = 0, c3 = 0;
-	FontManager *manager = FontManager::getInstance();
+	FontMetrics *manager = FontMetrics::getInstance();
 
 	if (locked == true) return;
 	
@@ -293,7 +293,7 @@ void Graphics::drawText(char *str, int x, int y)
 			// 2 バイト目
 			if (str[i] == (int)strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
-			n = ((c1 & 0x1F) >> 6) | (c2 & 0x3F);
+			n = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
 		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
 		} else if (0xE0 <= c1 && c1 <= 0xEF) {
 			// 2 バイト目

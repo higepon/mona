@@ -46,7 +46,7 @@ void Font::setName(char *name)
 /** 書体を設定する */
 void Font::setStyle(int style)
 {
-	this->style = style;
+	this->_style = style;
 }
 
 /** 名前を得る */
@@ -58,5 +58,5 @@ char *Font::getName()
 /** 書体を得る */
 int Font::getStyle()
 {
-	return style;
+	return _style;
 }

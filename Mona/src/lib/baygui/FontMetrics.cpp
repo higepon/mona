@@ -27,36 +27,36 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-FontManager *FontManager::instance = NULL;
+FontMetrics *FontMetrics::instance = NULL;
 
 /** コンストラクタ */
-FontManager::FontManager()
+FontMetrics::FontMetrics()
 {
 	// 変数初期化
 	width = height = offsetListLength = 0;
 	offsetList = NULL;
 	fp = NULL;
-	fpMemory = NULL;
+	//fpMemory = NULL;
 
 	// スレッドIDを得る
-	threadID = MonAPI::System::getThreadID();
+	_handle = MonAPI::System::getThreadID();
 
 }
 
 /** デストラクタ */
-FontManager::~FontManager()
+FontMetrics::~FontMetrics()
 {
 	free(offsetList);
 	free(fp);
-	monapi_cmemoryinfo_dispose(fpMemory);
-	monapi_cmemoryinfo_delete(fpMemory);
+	//monapi_cmemoryinfo_dispose(fpMemory);
+	//monapi_cmemoryinfo_delete(fpMemory);
 }
 
 /** インスタンスを得る */
-FontManager *FontManager::getInstance()
+FontMetrics *FontMetrics::getInstance()
 {
 	if (instance == NULL) {
-		instance = new FontManager();
+		instance = new FontMetrics();
 		// 全角フォント読み込み
 		instance->loadFont(FONTFILE_NAME);
 	}
@@ -64,34 +64,34 @@ FontManager *FontManager::getInstance()
 }
 
 /** 全角フォントロード */
-void FontManager::loadFont(char *path)
+void FontMetrics::loadFont(char *path)
 {
 	int i, fw, fh, pos = 0;
 	MessageInfo info;
 
 	// GUIサーバーを探す
-	dword guisvrID = MonAPI::Message::lookupMainThread(GUISERVER_NAME);
+	dword guisvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
 	if (guisvrID == 0xFFFFFFFF) {
-		//printf("FontManager: GuiServer not found %d\n", guisvrID);
+		//printf("FontMetrics: GuiServer not found %d\n", guisvrID);
 		fp = NULL;
 		return;
 	} else {
-		//printf("FontManager: GuiServer found %d\n", guisvrID);
+		//printf("FontMetrics: GuiServer found %d\n", guisvrID);
 	}
 	
 	// 共有メモリーからフォントをロード
-	if (guisvrID == threadID) {
-		// フォント初期化
-		fpMemory = monapi_call_file_decompress_bz2_file(path, false);
-		// サーバーは直接ロード
-		fp = fpMemory->Data;
-	} else {
+	//if (guisvrID == _handle) {
+	//	// フォント初期化
+	//	fpMemory = monapi_call_file_decompress_bz2_file(path, false);
+	//	// サーバーは直接ロード
+	//	fp = fpMemory->Data;
+	//} else {
 		// フォント取得メッセージを投げる
-		MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
-		//printf("WindowManager->FontManager: MSG_GUISERVER_GETFONT received %d, %d\n", info.arg2, info.arg3);
+		MonAPI::Message::sendReceive(&info, guisvrID, MSG_IMESERVER_GETFONT, 0, 0, 0, NULL);
+		//printf("WindowManager->FontMetrics: MSG_GUISERVER_GETFONT received %d, %d\n", info.arg2, info.arg3);
 		byte* font_data = MonAPI::MemoryMap::map(info.arg2);
 		if (font_data == NULL) {
-			//printf("FontManager: cannot get font data\n");
+			//printf("FontMetrics: cannot get font data\n");
 			fp = NULL;
 			return;
 		} else {
@@ -99,7 +99,7 @@ void FontManager::loadFont(char *path)
 			memcpy(fp, font_data, info.arg3);
 			MonAPI::MemoryMap::unmap(info.arg2);
 		}
-	}
+	//}
 	
 	if (fp != NULL) {
 		xstrncpy(this->name, FONT_NAME, 8 + 1);
@@ -109,7 +109,7 @@ void FontManager::loadFont(char *path)
 		offsetListLength = inGetUInt16(&fp[0]);
 		// 文字までのオフセット(byte)
 		offsetList = (int *)malloc(65536);
-		memset(offsetList, 4, 65536);
+		memset(offsetList, 0, 65536);
 		pos += 4;
 		// debug
 		//printf("open file %s [name = %s, w = %d, h = %d]\n", path, name, width, height);
@@ -136,9 +136,9 @@ void FontManager::loadFont(char *path)
  @param [out] data フォントビットデータ
  @return 成功ならtrue、失敗ならfalse
 */
-bool FontManager::decodeCharacter(unsigned int utf16, int *width, int *height, char *data)
+bool FontMetrics::decodeCharacter(unsigned int utf16, int *width, int *height, char *data)
 {
-	if (0 < utf16 && utf16 <= 0xFFFF && fp != NULL) {
+	if (fp != NULL && 0 < utf16 && utf16 <= 0xFFFF && offsetList[utf16] != 0) {
 		int fw = fp[offsetList[utf16] + 4];
 		int fh = fp[offsetList[utf16] + 5];
 		*width  = fw;
@@ -154,7 +154,7 @@ bool FontManager::decodeCharacter(unsigned int utf16, int *width, int *height, c
  文字列の幅を得る
  @param str 文字列 (UTF-8)
 */
-int FontManager::getWidth(char *str)
+int FontMetrics::getWidth(char *str)
 {
 	int i , n = 0, w = 0;
 	unsigned char c1 = 0, c2 = 0, c3 = 0;
@@ -172,7 +172,7 @@ int FontManager::getWidth(char *str)
 			// 2 バイト目
 			if (str[i] == (int)strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
-			n = ((c1 & 0x1F) >> 6) | (c2 & 0x3F);
+			n = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
 		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
 		} else if (0xE0 <= c1 && c1 <= 0xEF) {
 			// 2 バイト目
@@ -186,7 +186,7 @@ int FontManager::getWidth(char *str)
 			n = 0;
 		}
 		// デコード開始
-		if (0 < n && n <= 0xFFFF && fp != NULL) {
+		if (fp != NULL && 0 < n && n <= 0xFFFF && offsetList[n] != 0) {
 			int fw = fp[offsetList[n] + 4];
 			w += fw;
 		}
@@ -197,7 +197,7 @@ int FontManager::getWidth(char *str)
 /**
  文字列の高さを得る
 */
-int FontManager::getHeight()
+int FontMetrics::getHeight()
 {
 	return height;
 }
