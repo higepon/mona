@@ -74,7 +74,11 @@ void OneLineShell::service() {
   while(1){
     if(!Message::receive(&info)){
       if((info.arg2 & KEY_MODIFIER_DOWN)){
-        this->OnKeyDown(info.arg1, info.arg2);
+        KeyInfo keyInfo;
+        keyInfo.keycode = info.arg1;
+        keyInfo.modifiers = info.arg2;
+        keyInfo.charcode = info.arg3;
+        this->OnKeyDown(keyInfo);
         ds.DrawCommandLine((char *)this->cmd);
         ds.DrawCursor(this->cmd.GetCurrentPos());
         ds.DrawMessageLine(this->msg);
@@ -84,14 +88,11 @@ void OneLineShell::service() {
   return;
 }
 
-int OneLineShell::OnKeyDown(int keycode, int modifiers){
+int OneLineShell::OnKeyDown(KeyInfo keyInfo){
   
-  KeyInfo keys;
   Charing *cTmp;
 
-  keys.keycode = keycode;
-  keys.modifiers = modifiers;
-  switch(keycode){
+  switch(keyInfo.keycode){
   case Keys::Enter:
     cTmp = (Charing *)this->cmd;
     if(cTmp->GetLength() == 0) break;
@@ -123,12 +124,10 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
     this->cmd = this->cmdHst.GetCommand(GETNEXT);
     break;
   default:
-    if(Keys::IsToChar(keys) == true){
-      char c = Keys::ToChar(keys);
-      this->cmd.InsertCommandLine(c);
+    if(keyInfo.modifiers & KEY_MODIFIER_CHAR){
+      this->cmd.InsertCommandLine(keyInfo.charcode);
     }
     break;
-
   }
   return 0;
 }

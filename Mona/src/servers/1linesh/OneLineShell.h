@@ -42,7 +42,7 @@ class OneLineShell : public Server{
     OneLineShell();
     virtual ~OneLineShell();
     void service();
-    int OnKeyDown(int keycode, int modifiers);
+    int OnKeyDown(KeyInfo keyInfo);
     void SetMessage(Charing message);
     void SetMessage(int nMsg);
 
