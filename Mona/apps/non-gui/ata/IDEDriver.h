@@ -86,7 +86,7 @@ private:
     byte inp8(IDEController* controller, int reg);
     word getSignature(IDEController* controller, int device);
     void read(IDEController* controller, word length, void* buf);
-    int identify(IDEController controller, int device, int type, void* buf);
+    int identify(IDEController* controller, int device, int type, void* buf);
     int judgeDevice(IDEController* controller, int device);
     bool waitBusyClear(IDEController* controller);
     bool waitDrdySet(IDEController* controller);
@@ -94,6 +94,7 @@ private:
 private:
     IDEController controllers[2];
     IDEController* whichController;
+    int deviceType[4];
 
 private:
     enum

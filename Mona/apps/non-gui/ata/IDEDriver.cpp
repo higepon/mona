@@ -56,6 +56,14 @@ IDEDriver::IDEDriver()
     outp8(&controllers[1], ATA_DCR, 0x02);
     sleep(5);
 
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            deviceType[i + j * 2] = judgeDevice(&(this->controllers[i]), j);
+        }
+    }
+
 
 //    setDevice(PRIMARY, MASTER);‚¢‚ç‚È‚¢H
 }
@@ -76,16 +84,14 @@ int IDEDriver::close()
 
 int IDEDriver::read(dword lba, void* buffer, int size)
 {
-//    if (this->whichController->selectedDeviceType == DEVICE_ATAPI)
-//    {
-    printf("%s:%d:%d\n", __FILE__, __LINE__, whichController->selectedDeviceType);
+    if (this->whichController->selectedDeviceType == DEVICE_ATAPI)
+    {
         return readATAPI(this->whichController, lba, buffer, size);
-//    }
-//    else
-//    {
-//    printf("%s:%d\n", __FILE__, __LINE__);
-//        return 0;
-//    }
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer)
@@ -201,7 +207,7 @@ int IDEDriver::readATAPI(IDEController* controller, dword lba, void* buffer, int
 {
     ATAPICommand command;
     memset(&command, 0, sizeof(command));
-    printf("%s:%d\n", __FILE__, __LINE__);
+
     /* sector count */
     int count = (size + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE; // Mm...
 
@@ -214,9 +220,8 @@ int IDEDriver::readATAPI(IDEController* controller, dword lba, void* buffer, int
     command.packet[5] = (lba       ) & 0xff;
     command.packet[7] = (count >> 8) & 0xff;
     command.packet[8] = (count     ) & 0xff;
-    printf("%s:%d\n", __FILE__, __LINE__);
     controller->dataTransferSize = 0;
-    printf("%s:%d\n", __FILE__, __LINE__);
+
     return sendPacketCommand(controller, &command, CD_SECTOR_SIZE, buffer);
 }
 
@@ -285,7 +290,7 @@ int IDEDriver::getDeviceType(int controller, int device)
     if (controller != PRIMARY && controller != SECONDARY)  return DEVICE_NON;
     if (device != MASTER && device != SLAVE) return DEVICE_NON;
 
-    return judgeDevice(&(this->controllers[controller]), device);
+    return this->deviceType[controller + device * 2];
 }
 
 word IDEDriver::getSignature(IDEController* ide, int device)
@@ -307,6 +312,9 @@ word IDEDriver::getSignature(IDEController* ide, int device)
 
         timeout = !waitBusyClear(ide);
         if (timeout) break;
+
+        c = inp8(ide, ATA_ERR);
+        if ((c & 0x7f) != 1) break;
 
         c = inp8(ide, ATA_DHR);
         if ((c & (device << 4)) == (device << 4))
@@ -345,15 +353,13 @@ bool IDEDriver::waitDrdySet(IDEController* controller)
     return (i != ATA_TIMEOUT);
 }
 
+// can call once why?
 int IDEDriver::judgeDevice(IDEController* controller, int device)
 {
     dword i;
     char buf[1024];
     int type;
     word sigature = getSignature(controller, device);
-
-    printf("judgeDevice:%d\n", sigature);
-
 
     switch(sigature)
     {
@@ -502,8 +508,6 @@ void IDEDriver::read(IDEController* controller, word length, void* buf)
 
 int IDEDriver::setDevice(int controller, int device)
 {
-    printf("setDevice:%d %d\n", controller, device);
-
     if (controller != PRIMARY && controller != SECONDARY)  return 1;
     if (device != MASTER && device != SLAVE) return 2;
 
@@ -511,8 +515,6 @@ int IDEDriver::setDevice(int controller, int device)
 
     whichController->selectedDevice = device;
     whichController->selectedDeviceType = getDeviceType(controller, device);
-
-    printf("selectedDeviceType=%d\n", whichController->selectedDeviceType);
 
     return 0;
 }

@@ -25,27 +25,9 @@ int MonaMain(List<char*>* pekoe)
 {
     syscall_get_io();
 
-    IDEDriver ide;
-
     int controller;
     int device;
-    int type;
-
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-    printf("type=%d\n", ide.getDeviceType(1, 0));
-
+    IDEDriver ide;
 
     if (!FindATAPIDevice(&ide, &controller, &device))
     {
