@@ -29,6 +29,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** 静的スレッドID */
 static dword staticThreadID = THREAD_UNKNOWN;
+/** スレッドインスタンスのアドレス */
+static dword threadAddress = 0;
 
 /** コンストラクタ */
 Thread::Thread()
@@ -38,6 +40,7 @@ Thread::Thread()
 /** デストラクタ */
 Thread::~Thread()
 {
+	syscall_kill_thread(staticThreadID);
 }
 
 /** スレッド実行開始 */
@@ -52,8 +55,7 @@ void Thread::start()
 		src.header = MSG_SERVER_START_OK;
 		MonAPI::Message::receive(&info, &src, MonAPI::Message::equalsHeader);
 		staticThreadID = info.from;
-		info.arg1 = (dword)this;
-		MonAPI::Message::reply(&info);
+		threadAddress = (dword)this;
 	}
 }
 
@@ -72,10 +74,9 @@ void Thread::run()
 /** スレッド実行 */
 void Thread::staticFunc()
 {
-	MessageInfo info;
-	MonAPI::Message::sendReceive(&info, staticThreadID, MSG_SERVER_START_OK);
+	MonAPI::Message::send(staticThreadID, MSG_SERVER_START_OK);
 
 	while (1) {
-		((Thread *)info.arg1)->run();
+		((Thread *)threadAddress)->run();
 	}
 }
