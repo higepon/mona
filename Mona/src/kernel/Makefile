@@ -5,6 +5,7 @@ include $(MONADIR)/env/Makefile.inc
 
 KERNEL_ADDR  = 0x0400
 LFLAGS       = -n -Ttext 0x1400 -static
+CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\""
 TOOLSDIR     = $(MONADIR)/tools
 INCLUDE      = -I$(INCDIR) -I$(TOOLSDIR)
 KERNEL_IMG   = KERNEL.IMG

@@ -10,8 +10,10 @@
 
         * env/*.env: NFLAGSでインクルードパスを指定
 
-        * src/lib/monapi: 謎のリンカ警告に対処するためmonapi.oをlibmonapi.aから外して個別リンク
+        * src/lib/monapi: リンク問題に対処するためmonapi.oをlibmonapi.aから外して個別リンク (thanks Yuiさん)
                           FreeBSDでHELLO.ELFが正常にコンパイルできることを確認
+
+        * src/kernel/kernel.cpp: 起動メッセージでどの環境でコンパイルされたかを表示
 
 2004-04-30  tino  <tino@users.sourceforge.jp>
 

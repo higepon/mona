@@ -62,6 +62,11 @@
 #include "VesaConsole.h"
 #include "LogConsole.h"
 
+#ifdef __GNUC__
+#define CC_NAME "gcc-%d.%d.%d"
+#define CC_VER  __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__
+#endif
+
 char* version = "Mona version.0.2.0 $Date$";
 void  mainProcess();
 
@@ -105,7 +110,8 @@ void startKernel(void)
 
     g_log = new LogConsole();
 
-    g_console->printf("%s\nCopyright (c) 2002-2004 higepon\n\n", version);
+    g_console->printf("%s ["CC_NAME" @ %s]\n", version, CC_VER, OSTYPE);
+    g_console->printf("Copyright (c) 2002-2004 higepon\n\n");
 
     pic_init();
     RTC::init();
