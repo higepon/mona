@@ -9,14 +9,13 @@
 #include "image.h"
 #include "screen.h"
 
-using namespace MonAPI;
 
 extern CommonParameters* commonParams;
 
 guiserver_bitmap* screen_buffer, * vram_buffer;
-static Screen screen;
+static MonAPI::Screen screen;
 
-Screen* GetDefaultScreen()
+MonAPI::Screen* GetDefaultScreen()
 {
 	return &screen;
 }
@@ -82,7 +81,7 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 					*pVram = (p[0] + p[1] + p[2]) / 3;
 					break;
 				case 16: // 565
-					*(unsigned short*)pVram = Color::bpp24to565(p);
+					*(unsigned short*)pVram = MonAPI::Color::bpp24to565(p);
 					break;
 				case 24:
 					pVram[0] = p[0];

@@ -2,7 +2,7 @@
 // There are no restrictions on any sort of usage of this software.
 
 #include <gui/System/Drawing/Rectangle.h>
-#define _R System::Drawing::Rectangle
+#define _R ::System::Drawing::Rectangle
 
 #include <monapi/messages.h>
 #include "window.h"
@@ -14,7 +14,6 @@
 #define DEFAULT_WIDTH  240
 #define DEFAULT_HEIGHT 160
 
-using namespace MonAPI;
 
 extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;
@@ -28,10 +27,10 @@ static int prevButton = 0;
 
 guiserver_window* CreateWindow()
 {
-	dword handle = MemoryMap::create(sizeof(guiserver_window));
+	dword handle = MonAPI::MemoryMap::create(sizeof(guiserver_window));
 	if (handle == 0) return NULL;
 	
-	guiserver_window* ret = (guiserver_window*)MemoryMap::map(handle);
+	guiserver_window* ret = (guiserver_window*)MonAPI::MemoryMap::map(handle);
 	if (ret == NULL) return NULL;
 	
 	ret->Handle   = handle;
@@ -55,7 +54,7 @@ guiserver_window* CreateWindow()
 	windows.add(ret);
 	
 	start_pos += 32;
-	Screen* scr = GetDefaultScreen();
+	MonAPI::Screen* scr = GetDefaultScreen();
 	if (start_pos + DEFAULT_WIDTH >= scr->getWidth()
 		&& start_pos + DEFAULT_HEIGHT >= scr->getHeight())
 	{
@@ -94,7 +93,7 @@ bool DisposeWindow(dword handle)
 		{
 			if (w->__internal2) DestructionEffect(w);
 			windows.removeAt(i);
-			MemoryMap::unmap(handle);
+			MonAPI::MemoryMap::unmap(handle);
 			return true;
 		}
 	}
@@ -122,13 +121,13 @@ void DisposeWindowFromThreadID(dword tid)
 				DrawWindow(w);
 			}
 			windows.removeAt(i);
-			MemoryMap::unmap(w->Handle);
+			MonAPI::MemoryMap::unmap(w->Handle);
 			i--;
 		}
 	}
 }
 
-static void DrawWindowInternal(guiserver_window* w, const System::Drawing::Rectangle& r)
+static void DrawWindowInternal(guiserver_window* w, const ::System::Drawing::Rectangle& r)
 {
 	if (!w->Visible || w->FormBufferHandle == 0) return;
 	
@@ -264,7 +263,7 @@ static void ProcessMouseInfo(MessageInfo* msg)
 		DrawWindow(target);
 	}
 	prevButton = (int)msg->arg3;
-	if (Message::send(target->ThreadID, msg) != 0)
+	if (MonAPI::Message::send(target->ThreadID, msg) != 0)
 	{
 		DisposeWindowFromThreadID(target->ThreadID);
 	}
@@ -278,20 +277,20 @@ bool WindowHandler(MessageInfo* msg)
 		{
 			guiserver_window* w = CreateWindow();
 			w->ThreadID = msg->from;
-			Message::reply(msg, w->Handle);
+			MonAPI::Message::reply(msg, w->Handle);
 			break;
 		}
 		case MSG_GUISERVER_DISPOSEWINDOW:
 			DisposeWindow(msg->arg1);
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		case MSG_GUISERVER_DRAWWINDOW:
 			DrawWindow(GetWindowPointer(msg->arg1));
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		case MSG_GUISERVER_MOVEWINDOW:
 			MoveWindow(GetWindowPointer(msg->arg1), (int)msg->arg2, (int)msg->arg3);
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		case MSG_GUISERVER_WINDOWTOFRONTMOST:
 		{
@@ -299,7 +298,7 @@ bool WindowHandler(MessageInfo* msg)
 			windows.remove(w);
 			windows.add(w);
 			if (msg->arg2 != 0) DrawWindow(w);
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		}
 		case MSG_MOUSE_INFO:
@@ -319,7 +318,7 @@ bool WindowHandler(MessageInfo* msg)
 					captures.add(w);
 				}
 			}
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		}
 		case MSG_GUISERVER_CREATEOVERLAP:
@@ -328,7 +327,7 @@ bool WindowHandler(MessageInfo* msg)
 				(int)msg->arg1, (int)msg->arg2,
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
 			overlaps.add(ov);
-			Message::reply(msg, (dword)ov);
+			MonAPI::Message::reply(msg, (dword)ov);
 			break;
 		}
 		case MSG_GUISERVER_DISPOSEOVERLAP:
@@ -336,28 +335,28 @@ bool WindowHandler(MessageInfo* msg)
 			Overlap* ov = (Overlap*)msg->arg1;
 			overlaps.remove(ov);
 			delete ov;
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		}
 		case MSG_GUISERVER_MOVEOVERLAP:
 			((Overlap*)msg->arg1)->Move(
 				GET_X_DWORD(msg->arg2), GET_Y_DWORD(msg->arg2),
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		case MSG_GUISERVER_EXPANSIONEFFECT:
 			ExpansionEffect(
 				GET_X_DWORD(msg->arg1), GET_Y_DWORD(msg->arg1),
 				GET_X_DWORD(msg->arg2), GET_Y_DWORD(msg->arg2),
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		case MSG_GUISERVER_REDUCTIONEFFECT:
 			ReductionEffect(
 				GET_X_DWORD(msg->arg1), GET_Y_DWORD(msg->arg1),
 				GET_X_DWORD(msg->arg2), GET_Y_DWORD(msg->arg2),
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
-			Message::reply(msg);
+			MonAPI::Message::reply(msg);
 			break;
 		default:
 			return false;
