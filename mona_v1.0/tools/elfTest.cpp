@@ -3,13 +3,14 @@
 #include <iostream>
 #include "elf.h"
 
-#define FILE_BUF (8 * 1024)
-
+#define FILE_BUF (16 * 1024)
 
 int main(int argc, char *argv[]) {
 
-    FILE* fin;
+    FILE *fin, *fout;
+
     byte buf[FILE_BUF];
+    byte out[FILE_BUF];
 
     if ((fin = fopen(argv[1], "rb")) == NULL) {
         printf("can't open %s \n", argv[0]);
@@ -75,7 +76,49 @@ int main(int argc, char *argv[]) {
                , pheader->flags
                , pheader->align
                );
-
-
     }
+
+//     for (int k = 0; k < header->shdrcnt; k++) {
+
+//         ELFSectionHeader* sheader = (ELFSectionHeader*)((dword)header + header->shdrpos + k * (header->shdrent));
+
+//         if (sheader->flags & 0x02 && sheader->type == 8) {
+
+//             memset(out + sheader->address, 0, sheader->size);
+
+//         } else if (sheader->flags & 0x02) {
+
+//             memcpy(out + sheader->address, buf + sheader->offset, sheader->size);
+//         }
+//     }
+
+    memset(out, 0, FILE_BUF);
+    dword size = 0;
+
+    for (int k = 0; k < header->phdrcnt; k++) {
+
+        ELFProgramHeader* pheader = (ELFProgramHeader*)((dword)header + header->phdrpos + k * (header->phdrent));
+
+        if (pheader->type == 1) {
+
+            printf("program virtual address = %x\n", pheader->virtualaddr);
+            memcpy(out + pheader->virtualaddr - header->entrypoint, buf + pheader->offset, pheader->filesize);
+            size += pheader->filesize;
+        }
+    }
+
+
+    if ((fout = fopen("user.img", "wb")) == NULL) {
+        printf("can't open user.img \n");
+        exit (2);
+    }
+
+    for (int l = 0; l < FILE_BUF; l++) {
+
+        fprintf(fout, "%d,", out[l]);
+    }
+
+    printf("image size = %d byte\n", size);
+
+    fclose(fout);
 }
