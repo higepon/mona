@@ -28,6 +28,31 @@ int main(int argc, char *argv[]) {
         printf("some dir not found");
     }
 
+    if (!fat->changeDirectoryRelative(".")) {
+	printf(". not found");
+    }
+
+    if (!fat->changeDirectoryRelative("DIR1")) {
+        printf("dir1 not found");
+    }
+
+    if (!fat->changeDirectoryRelative("DIR2")) {
+	printf("dir2 not found");
+    }
+
+    if (!fat->changeDirectoryRelative("DIR3")) {
+	printf("dir3 not found");
+    }
+
+    if (!fat->changeDirectoryRelative("DIR4")) {
+	printf("dir4 not found");
+    }
+
+    if (!fat->changeDirectoryRelative("..")) {
+	printf(".. not found");
+    }
+
+
     delete fat;
     delete driver;
 

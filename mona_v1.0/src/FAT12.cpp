@@ -78,6 +78,12 @@ bool FAT12::initilize() {
         return false;
     }
 
+    /* set parameters depend on bpb */
+    rootDirSectors_  = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
+    firstDataSector_ = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors_;
+    rootEntryStart_  = bpb_.reservedSectorCount + bpb_.fatSize16 * bpb_.numberFats;
+
+
     for (int i = 0; i < 20; i++) printf("[%d:%x]", i, getFATAt(i));
 
     printf("fat[");
@@ -190,8 +196,6 @@ bool FAT12::initilize() {
         printf("cluster = %d \n", cluster);
 
    } while (0xff8 > cluster);
-
-    changeDirectoryRelative("SOMEDIR");
 
     return true;
 }
@@ -322,7 +326,6 @@ bool FAT12::changeDirectory(const char* path) {
         return false;
     }
 
-
     currentCluster = currentCluster_;
     for (int i = 0; i < dirCount; i++) {
 
@@ -342,36 +345,32 @@ bool FAT12::changeDirectory(const char* path) {
 bool FAT12::changeDirectoryRelative(const char* path) {
 
     DirectoryEntry entries[16];
+    int lbp = clusterToLbp(currentDirecotry_);
 
-    /* read root entryies */
-    if (currentDirecotry_ == 0) {
+    if (!(driver_->read(lbp, buf_))) return false;
 
-        int rootEntryStart = bpb_.reservedSectorCount
-            + bpb_.fatSize16 * bpb_.numberFats;
+    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
 
-        if (!(driver_->read(rootEntryStart, buf_))) return false;
+    for (int j = 0; j < 16; j++) {
 
-        memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+        /* free */
+        if (entries[j].filename[0] == 0xe5) continue;
 
-        for (int j = 0; j < 50; j++) {
+        /* no other entries */
+        if (entries[j].filename[0] == 0x00) break;
 
-            /* free */
-            if (entries[j].filename[0] == 0xe5) continue;
+        /* not directory */
+        if (!(entries[j].attribute & ATTR_DIRECTORY)) continue;
 
-            if (entries[j].filename[0] == 0x00) break;
+        /* change directory ok */
+        if (compareName((char*)(entries[j].filename), path)) {
 
-            /* not directory */
-            if (!(entries[j].attribute & ATTR_DIRECTORY)) continue;
-
-            if (!compareName((char*)(entries[j].filename), path)) {
-
-                printf("directory %s found\n", entries[j].filename);
-                return true;
-            }
+            currentDirecotry_ = entries[j].cluster;
+            strcpy(currentPath_, path);
+            printf("directory %s found\n", path);
+            printf("current cluster = %d\n", currentDirecotry_);
+            return true;
         }
-    } else {
-
-
     }
     return false;
 }
@@ -402,12 +401,24 @@ char* FAT12::getPathAt(const char* path, int index) const {
 
 bool FAT12::compareName(const char* name1, const char* name2) const {
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 9; i++) {
 
-        if (name1[i] != name2[i]) return false;
-        if (name1[i] == ' ' && name2[i + 1] == '\0') return true;
+        if (name2[i] == '\0') return true;
+
+        if (name1[i] != name2[i]) {
+            return false;
+        }
     }
     return false;
+}
+
+int FAT12::clusterToLbp(int cluster) {
+
+    if (cluster < 2) return rootEntryStart_;
+
+    int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector_;
+
+    return lbp;
 }
 
 bool FAT12::createFlie(const char* name) {return true;}

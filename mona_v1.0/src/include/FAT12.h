@@ -109,6 +109,7 @@ class FAT12 {
     word getFATAt(int cluster) const;
     char* getPathAt(const char* path, int index) const;
     bool compareName(const char* name1, const char* name2) const;
+    int clusterToLbp(int cluster);
 
  private:
 
@@ -122,10 +123,16 @@ class FAT12 {
     bool readHasNext_;          /* read state      */
     int  currentCluster_;       /* read state      */
 
-    char curentPath_[512];      /* current path    */
+    char currentPath_[512];      /* current path    */
     int currentDirecotry_;      /* current cluster */
 
     int fatStart_;              /* fatStart        */
+
+    /* depends on bpb */
+    int rootDirSectors_;
+    int firstDataSector_;
+    int rootEntryStart_;
+
 
 };
 
