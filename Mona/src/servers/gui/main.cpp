@@ -235,27 +235,34 @@ void SetMouseCursor(bool enabled)
 	WaitMessage(msvr, MSG_RESULT_OK, hdr);
 }
 
-void DrawImage(MemoryInfo* img, int spx, int spy, int transparent = -1)
+void DrawImage(MemoryInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
 {
 	SetDefaultScreen();
 	SetMouseCursor(false);
 	unsigned char* vram = screen->getVRAM();
 	int bpp = screen->getBpp(), sw = screen->getWidth(), sh = screen->getHeight();
 	int bypp = bpp >> 3;
-	byte* pBuf = img->Data;
-	for (int y = 0; y < img->Height; y++)
+	if (ix < 0) ix = 0;
+	if (iy < 0) iy = 0;
+	if (iw < 0) iw = img->Width;
+	if (ih < 0) ih = img->Height;
+	int x1 = ix, y1 = iy, x2 = ix + iw, y2 = iy + ih;
+	if (x2 > img->Width ) x2 = img->Width;
+	if (y2 > img->Height) y2 = img->Height;
+	for (int y = y1; y < y2; y++)
 	{
 		int sy = spy + y;
-		if (sy < 0 || sh <= sy)
+		if (sy >= sh) break;
+		if (sy < 0) continue;
+		
+		byte* pBuf = &img->Data[(x1 + y * img->Width) * 4];
+		unsigned char* pVram = &vram[(spx + x1 + sy * sw) * bypp];
+		for (int x = x1; x < x2; x++, pVram += bypp, pBuf += 4)
 		{
-			pBuf += img->Width * 4;
-			continue;
-		}
-		unsigned char* pVram = &vram[(spx + sy * sw) * bypp];
-		for (int x = 0; x < img->Width; x++, pVram += bypp, pBuf += 4)
-		{
-			int sx = spx + x, c32 = (int)((*(unsigned int*)pBuf) & 0xffffff);
-			if (sx < 0 || sw <= sx || pBuf[3] == 0 || c32 == transparent) continue;
+			int sx = spx + x;
+			if (sx >= sw) break;
+			int c32 = (int)((*(unsigned int*)pBuf) & 0xffffff);
+			if (sx < 0 || pBuf[3] == 0 || c32 == transparent) continue;
 			
 			switch (bpp)
 			{
@@ -324,7 +331,7 @@ void DrawWallPaper()
 			y = sh - wallpaper->Height;
 			break;
 	}
-	DrawImage(wallpaper, x, y, wallpaper_transparent);
+	DrawImage(wallpaper, x, y, -1, -1, -1, -1, wallpaper_transparent);
 }
 
 void DrawWallPaper(const char* src, int pos, int transparent)
