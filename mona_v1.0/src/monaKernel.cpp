@@ -1,3 +1,7 @@
+/*! \mainpage Mona Project source document
+ *  &copy; Higepon Japan
+ */
+
 /*!
     \file   monaKernel.cpp
     \brief  mona kernel start at this point
