@@ -275,93 +275,60 @@ void drawBackground(unsigned char *pbuf) {
 
 /* ----------- these are written by bayside ------------ */
 
-class GNoiz2bg : public Window {
-public:
+/** クラス宣言 */
+class GNoiz2bg : public Window
+{
+private:
+	int scene_count, scene;
 	unsigned char *pbuf;
-	GNoiz2bg::GNoiz2bg();
-	GNoiz2bg::~GNoiz2bg();
-	void draw();
-	void onPaint(Graphics *g);
+
+public:
+	/** コンストラクタ */
+	GNoiz2bg::GNoiz2bg() {
+		setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
+		setTitle("noiz2bg for GUI");
+		this->pbuf = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 4);
+		initBackground();
+		setStageBackground(1);
+		this->scene = 1;
+		this->scene_count = FPS * 10;
+		setTimer(500);
+	}
+
+	/** デストラクタ */
+	GNoiz2bg::~GNoiz2bg() {
+		free(pbuf);
+	}
+
+	/** イベント処理 */
+	void GNoiz2bg::onEvent(Event *e) {
+		if (e->type == TIMER) {
+			moveBackground();
+			drawBackground(this->pbuf);
+			for (int y = 0; y < SCREEN_H; y++) {
+				for (int x = 0; x < SCREEN_W; x++) {
+					//int k = (x + y * SCREEN_W) * 4;
+					//unsigned char blue  = pbuf[k];
+					//unsigned char green = pbuf[k + 1];
+					//unsigned char red   = pbuf[k + 2];
+					unsigned char *p = &pbuf[(x + y * SCREEN_W) * 4];
+					this->_buffer->setPixel(x, y, *((int*)p));
+				}
+			}
+			update();
+			scene_count--;
+			if(scene_count <= 0){
+				scene       = (scene + 1) % 6;
+				scene_count = FPS * 20;
+				setStageBackground(scene);
+			}
+			MonAPI::Message::send(this->threadID, TIMER, 0, 0, 0);
+		}
+	}
 };
 
-/** アプリケーションインスタンス */
-static GNoiz2bg *noiz = NULL;
-
-/** 描画スレッドID */
-static dword drawThreadID = THREAD_UNKNOWN;
-
-/** 描画スレッド */
-static void DrawThread()
-{
-	MonAPI::Message::send(drawThreadID, MSG_SERVER_START_OK);
-
-	int scene_count, scene;
-	
-	initBackground();
-	setStageBackground(1);
-	scene = 1;
-	scene_count = FPS * 10;
-	
-	while (1) {
-		moveBackground();
-		drawBackground(noiz->pbuf);
-		noiz->draw();
-		scene_count--;
-		if(scene_count <= 0){
-			scene       = (scene + 1) % 6;
-			scene_count = FPS * 20;
-			setStageBackground(scene);
-		}
-	}
-}
-
-/** コンストラクタ */
-GNoiz2bg::GNoiz2bg() {
-	setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
-	setTitle("noiz2bg for GUI");
-	pbuf = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 4);
-}
-
-/** デストラクタ */
-GNoiz2bg::~GNoiz2bg() {
-	// 描画スレッド停止
-	syscall_kill_thread(drawThreadID);
-	drawThreadID = THREAD_UNKNOWN;
-	free(pbuf);
-}
-
-/** 内部描画 */
-void GNoiz2bg::draw() {
-	// 描画
-	for (int y = 0; y < SCREEN_H; y++) {
-		for (int x = 0; x < SCREEN_W; x++) {
-			//int k = (x + y * SCREEN_W) * 4;
-			//unsigned char blue  = pbuf[k];
-			//unsigned char green = pbuf[k + 1];
-			//unsigned char red   = pbuf[k + 2];
-			unsigned char *p = &pbuf[(x + y * SCREEN_W) * 4];
-			this->_buffer->setPixel(x, y, *((int*)p));
-		}
-	}
-	update();
-}
-
-/** 描画 */
-void GNoiz2bg::onPaint(Graphics *g) {
-	// 描画スレッド起動
-	if (drawThreadID == THREAD_UNKNOWN) {
-		drawThreadID = syscall_get_tid();
-		MessageInfo msg, src;
-		dword id = syscall_mthread_create((dword)DrawThread);
-		syscall_mthread_join(id);
-		src.header = MSG_SERVER_START_OK;
-		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-		drawThreadID = msg.from;
-	}
-}
-
 int MonaMain(List<char*>* pekoe) {
-	noiz = new GNoiz2bg();
+	GNoiz2bg *noiz = new GNoiz2bg();
 	noiz->run();
 	delete(noiz);
 	return 0;

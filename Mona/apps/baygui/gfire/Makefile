@@ -4,15 +4,15 @@ NASMSRCS = fire.asm
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..
-ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp
-ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
-include $(MONADIR)/env/monapi-ex5.inc
-else
+#ifneq ($(BUILD_TARGET),ELF)
+#ADDLINK    = -lbaygui-imp
+#ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+#include $(MONADIR)/env/monapi-ex5.inc
+#else
 ADDLINK    = -lbaygui
 ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
 include $(MONADIR)/env/monapi-el5.inc
-endif
+#endif
 
 CXXFLAGS += -DDEBUG
 

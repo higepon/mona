@@ -25,7 +25,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #include <baygui.h>
 
 #define SCREEN_W 160
@@ -37,90 +36,47 @@ int typeDraw = 0, fireSeed = 0x1234;
 unsigned char calc, *fireScreen, *pImage;
 
 /** クラス宣言 */
-class GFire : public Window {
+class GFire : public Window
+{
 public:
-	unsigned char *pbuf;
-	GFire::GFire();
-	GFire::~GFire();
-	void draw();
-	void onEvent(Event *e);
-	void onPaint(Graphics *g);
+	/** コンストラクタ */
+	GFire::GFire() {
+		setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
+		setTitle("FIRE EFFECT");
+		fireScreen = (unsigned char *)malloc(0x2300);
+		pImage = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 3);
+		setTimer(500);
+	}
+
+	/** デストラクタ */
+	GFire::~GFire() {
+		free(fireScreen);
+		free(pImage);
+	}
+
+	/** イベント処理 */
+	void GFire::onEvent(Event *e) {
+		if (e->type == TIMER) {
+			if (DrawFire() != 0) {
+				for (int y = 0; y < SCREEN_H; y++) {
+					for (int x = 0; x < SCREEN_W; x++) {
+						int k = (x + y * SCREEN_W) * 3;
+						unsigned char r = pImage[k];
+						unsigned char g = pImage[k + 1];
+						unsigned char b = pImage[k + 2];
+						//this->_g->drawPixel(x, y, 0xff000000 | r << 16 | g << 8 | b);
+						this->_buffer->setPixel(x, y, 0xff000000 | r << 16 | g << 8 | b);
+					}
+				}
+				update();
+			}
+			MonAPI::Message::send(this->threadID, TIMER, 0, 0, 0);
+		}
+	}
 };
 
-
-/** アプリケーションインスタンス */
-static GFire *fire = NULL;
-
-/** 描画スレッドID */
-static dword drawThreadID = THREAD_UNKNOWN;
-
-/** 描画スレッド */
-static void DrawThread()
-{
-	MonAPI::Message::send(drawThreadID, MSG_SERVER_START_OK);
-
-	while (1) {
-		if (DrawFire() != 0) {
-			fire->draw();
-		}
-	}
-}
-
-/** コンストラクタ */
-GFire::GFire() {
-	setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
-	setTitle("FIRE EFFECT");
-	fireScreen = (unsigned char *)malloc(0x2300);
-	pImage = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 3);
-}
-
-/** デストラクタ */
-GFire::~GFire() {
-	syscall_kill_thread(drawThreadID);
-	free(fireScreen);
-	free(pImage);
-}
-
-/** ウィンドウ内部領域のみの描画 */
-void GFire::draw() {
-	for (int y = 0; y < SCREEN_H; y++) {
-		for (int x = 0; x < SCREEN_W; x++) {
-			int k = (x + y * SCREEN_W) * 3;
-			unsigned char r = pImage[k];
-			unsigned char g = pImage[k + 1];
-			unsigned char b = pImage[k + 2];
-			__g->drawPixel(x, y, r << 16 | g << 8 | b);
-		}
-	}
-}
-
-/** イベント処理 */
-void GFire::onEvent(Event *e) {
-	if (e->type == FOCUS_IN || e->type == DEICONIFIED) {
-		// 描画スレッド起動
-		if (drawThreadID == THREAD_UNKNOWN) {
-			drawThreadID = syscall_get_tid();
-			MessageInfo msg, src;
-			dword id = syscall_mthread_create((dword)DrawThread);
-			syscall_mthread_join(id);
-			src.header = MSG_SERVER_START_OK;
-			MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-			drawThreadID = msg.from;
-		}
-	} else if (e->type == FOCUS_OUT || e->type == ICONIFIED) {
-		// 描画スレッド停止
-		syscall_kill_thread(drawThreadID);
-		drawThreadID = THREAD_UNKNOWN;
-	}
-}
-
-/** 描画 */
-void GFire::onPaint(Graphics *g) {
-	draw();
-}
-
 int MonaMain(List<char*>* pekoe) {
-	fire = new GFire();
+	GFire *fire = new GFire();
 	fire->run();
 	delete(fire);
 	return 0;
