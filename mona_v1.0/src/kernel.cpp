@@ -97,7 +97,9 @@ void rdtscsub(dword* timeL, dword* timeH) {
 
 void mainProcess() {
 
-    for (;;);
+    for (;;) {
+        asm volatile("nop");
+    }
 
 #if 0
     byte buf[512];
@@ -151,6 +153,7 @@ void mainProcess() {
 
     /* end */
     //g_processManager->killSelf();
+    for (;;);
 }
 
 /*!
@@ -224,8 +227,8 @@ void startKernel(void) {
     g_scheduler = new Scheduler();
 
     /* at first create idle process */
-    Process* idleProcess = ProcessOperation::create(ProcessOperation::USER_PROCESS, "IDLE");
-    Thread* idleThread = ThreadOperation::create(idleProcess, (dword)mainProcess);
+    Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
+    Thread* idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
     g_scheduler->join(idleThread);
 
     /* start up Process */
@@ -252,6 +255,7 @@ void startKernel(void) {
     g_fdcdriver->motorAutoOff();
     g_info_level = MSG;
 
+    g_currentThread = (new Thread())->getThreadInfo();
     enableTimer();
 
 #ifdef HIGE

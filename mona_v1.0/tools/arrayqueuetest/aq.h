@@ -4,13 +4,13 @@
 class Queue
 {
 public:
-    static void initialize(Queue* queue);
-    static void addToNext(Queue* p, Queue* q);
-    static void addToPrev(Queue* p, Queue* q);
-    static void remove(Queue* p);
-    static bool isEmpty(Queue* p);
-    static Queue* removeNext(Queue* p);
-    static Queue* top(Queue* root);
+    void initialize();
+    void addToNext(Queue* q);
+    void addToPrev(Queue* q);
+    void remove();
+    bool isEmpty();
+    Queue* removeNext();
+    Queue* top();
 public:
     Queue* next;
     Queue* prev;

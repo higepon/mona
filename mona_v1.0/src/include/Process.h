@@ -28,11 +28,10 @@ class Thread;
 class Process;
 extern VirtualConsole*g_console;
 
-
 /*----------------------------------------------------------------------
-    schedule
+    Idle function
 ----------------------------------------------------------------------*/
-void schedule(bool tick);
+void monaIdle();
 
 /*----------------------------------------------------------------------
     Arch dependent functions
@@ -131,35 +130,36 @@ private:
     int calcPriority(Thread* thread);
 
 protected:
-    Array<Thread> runq;
-    Array<Thread> waitq;
+    Array<Thread*> runq;
+    Array<Thread*> waitq;
     dword tickTotal;
     int monaMin;
 };
 
 
 /*----------------------------------------------------------------------
-    Queue
+    Node
 ----------------------------------------------------------------------*/
-class Queue
+class Node
 {
 public:
-    static void initialize(Queue* queue);
-    static void addToNext(Queue* p, Queue* q);
-    static void addToPrev(Queue* p, Queue* q);
-    static void remove(Queue* p);
-    static bool isEmpty(Queue* p);
-    static Queue* removeNext(Queue* p);
-    static Queue* top(Queue* root);
+    void initialize();
+    void addToNext(Node* q);
+    void addToPrev(Node* q);
+    void remove();
+    bool isEmpty();
+    Node* removeNext();
+    Node* top();
+
 public:
-    Queue* next;
-    Queue* prev;
+    Node* next;
+    Node* prev;
 };
 
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-class Thread : public Queue {
+class Thread : public Node {
 
   public:
     Thread();

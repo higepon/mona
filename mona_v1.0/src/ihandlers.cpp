@@ -230,6 +230,7 @@ void cpufaultHandler_c(dword error){
 
 void cpufaultHandler_e(dword address, dword error){
 
+    g_console->printf("page fault");
     if (!g_page_manager->pageFaultHandler(address, error)) {
 
         dokodemoView();

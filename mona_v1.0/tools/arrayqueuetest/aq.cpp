@@ -8,7 +8,7 @@
 #include "aq.h"
 
 #define FOREACH_Q(top, type, element) \
-for (type element = (type )((top).next); element != &(top); element = (type )((element)->next))
+for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
 
 #define FOREACH(type, iterator, array) \
     if ((array).getLength() > 0) \
@@ -21,8 +21,8 @@ for (type element = (type )((top).next); element != &(top); element = (type )((e
 int main(int argc, char** argv)
 {
     /* only Queue test */
-    Queue top;
-    Queue::initialize(&top);
+    Queue* top = new Queue();
+    top->initialize();
 
     printf("Queue Test\n");
 
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
     {
         Queue* q = new Queue();
         printf("[%x]", q);
-        Queue::addToPrev(&top, q);
+        top->addToPrev(q);
     }
 
     FOREACH_Q(top, Queue*, hoge)
@@ -54,73 +54,72 @@ int main(int argc, char** argv)
     }
 
     /* Array  & Queue test */
-    Array<Queue> runq(10);
+    Array<Queue*> runq(10);
+    for (int i = 0; i < 10; i++) runq[i] = new Queue();
 
     printf("\nArray and Queue Test\n");
 
-    FOREACH(Queue, value, runq)
+    FOREACH(Queue*, value, runq)
     {
-        Queue::initialize(&value);
+        value->initialize();
         Queue* q = new Queue();
         printf("[%x]", q);
-        Queue::addToPrev(&top, q);
+        top->addToPrev(q);
     }
 
-    FOREACH(Queue, value, runq)
+    FOREACH(Queue*, value, runq)
     {
-//        FOREACH_Q(value, Queue*, hoge)
-       for (Queue* hoge = (Queue* )((value).next); hoge != &(value); hoge = (Queue* )((hoge)->next))
+        FOREACH_Q(value, Queue*, hoge)
        {
            printf("<%x>", hoge);
-           fflush(stdout);
        }
     }
 
     return 0;
 }
 
-void Queue::initialize(Queue* queue)
+void Queue::initialize()
 {
-    queue->prev = queue;
-    queue->next = queue;
+    this->prev = this;
+    this->next = this;
 }
 
-void Queue::addToNext(Queue* p, Queue* q)
+void Queue::addToNext(Queue* q)
 {
-    q->next = p->next;
-    q->prev = p;
-    p->next->prev = q;
-    p->next = q;
+    q->next = this->next;
+    q->prev = this;
+    this->next->prev = q;
+    this->next = q;
 }
 
-void Queue::addToPrev(Queue* p, Queue* q)
+void Queue::addToPrev(Queue* q)
 {
-    q->prev = p->prev;
-    q->next = p;
-    p->prev->next = q;
-    p->prev = q;
+    q->prev = this->prev;
+    q->next = this;
+    this->prev->next = q;
+    this->prev = q;
 }
 
-void Queue::remove(Queue* p)
+void Queue::remove()
 {
-    p->prev->next = p->next;
-    p->next->prev = p->prev;
+    this->prev->next = this->next;
+    this->next->prev = this->prev;
 }
 
-bool Queue::isEmpty(Queue* p)
+bool Queue::isEmpty()
 {
-    return (p->next == p);
+    return (this->next == this);
 }
 
-Queue* Queue::removeNext(Queue* p)
+Queue* Queue::removeNext()
 {
-    Queue* result = p->next;
-    p->next = result->next;
-    result->next->prev = p;
+    Queue* result = this->next;
+    this->next = result->next;
+    result->next->prev = this;
     return result;
 }
 
-Queue* Queue::top(Queue* root)
+Queue* Queue::top()
 {
-    return root->next;
+    return this->next;
 }

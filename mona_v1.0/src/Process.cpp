@@ -15,8 +15,8 @@
 #include <Process.h>
 #include <PageManager.h>
 
-#define FOREACH_Q(top, type, element) \
-for (type element = (type )((top).next); element != &(top); element = (type )((element)->next))
+#define FOREACH_N(top, type, element) \
+for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->getThreadInfo())
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
@@ -34,17 +34,21 @@ typedef struct
 
 Scheduler::Scheduler() : runq(64), waitq(3)
 {
+    /* initialize run queue */
+    for (int i = 0; i < runq.getLength(); i++)
+    {
+        runq[i] = new Thread();
+        runq[i]->initialize();
+    }
+
+    /* initialize wait queue */
+    for (int i = 0; i < waitq.getLength(); i++)
+    {
+        waitq[i] = new Thread();
+        waitq[i]->initialize();
+    }
+
     this->monaMin = this->runq.getLength() - 1;
-
-    for (int i = 0; i < this->runq.getLength(); i++)
-    {
-        Queue::initialize(&(runq[i]));
-    }
-
-    for (int i = 0; i < this->waitq.getLength(); i++)
-    {
-        Queue::initialize(&(waitq[i]));
-    }
 }
 
 Scheduler::~Scheduler()
@@ -70,69 +74,64 @@ int Scheduler::calcPriority(Thread* thread)
 bool Scheduler::schedule()
 {
     /* schedule for each run queue */
-    FOREACH(Thread, queue, runq)
+    FOREACH(Thread*, queue, runq)
     {
 
-//        FOREACH_Q(queue, Thread*, thread)
-	for (Thread* thread = (Thread*)(queue.next); thread != &queue; thread = (Thread*)(thread->next))
+        FOREACH_N(queue, Thread*, thread)
         {
-            g_console->printf("[%x][%x][0]", &queue, thread);
-            g_console->printf("[%x][1]", thread);
             /* already scheduled ? */
             if (this->tickTotal == thread->scheduled)
             {
-            g_console->printf("[%x][2]", thread);
                 continue;
             }
 
-            g_console->printf("[%x][3]", thread);
             calcPriority(thread);
 
-            g_console->printf("[%x][4]", thread);
             /* insert into runq[priority] */
-//             Thread* prev = (Thread*)(thread->prev);
-//             g_console->printf("[%x][5]", thread);
-//             Queue::remove(thread);
-//             g_console->printf("[%x][6]", thread);
-//             Thread targetQueue = runq[thread->currPriority];
-//             g_console->printf("[%x][7]", thread);
-//             Queue::addToPrev(&targetQueue, thread);
-//             thread = prev;
+            Thread* prev = (Thread*)(thread->prev);
+            thread->remove();
+            runq[thread->currPriority]->addToPrev(thread);
+            thread = prev;
         }
     }
 
-    for (;;);
-
-    FOREACH(Thread, queue, runq)
+    FOREACH(Thread*, queue, runq)
     {
-        if (Queue::isEmpty(&queue))
+        if (queue->isEmpty())
         {
             continue;
         }
         else
         {
             g_prevThread    = g_currentThread;
-            g_currentThread = PTR_THREAD(Queue::top(&queue));
+            g_currentThread = PTR_THREAD(queue->top());
             break;
         }
     }
-
-    return IN_SAME_SPACE(g_prevThread, g_currentThread);
+    g_console->printf("[%s]\n", g_currentThread->process->getName());
+#if 0
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    g_console->printf("\n");
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#endif
+    return true;//IN_SAME_SPACE(g_prevThread, g_currentThread);
 }
 
 void Scheduler::join(Thread* thread, int priority)
 {
     if (priority > monaMin || priority < 0) return;
 
-    Thread targetQueue = runq[0];
-    Queue::addToPrev(&targetQueue, thread);
+    runq[0]->addToPrev(thread);
 
     this->schedule();
 }
 
 int Scheduler::kill(Thread* thread)
 {
-    Queue::remove(thread);
+    thread->remove();
     this->schedule();
     return NORMAL;
 }
@@ -141,9 +140,8 @@ int Scheduler::wait(Thread* thread, int waitReason)
 {
     thread->setWaitReason(waitReason);
 
-    Queue::remove(thread);
-    Thread targetQueue = waitq[WAITQ_IDX(waitReason)];
-    Queue::addToPrev(&targetQueue, thread);
+    thread->remove();
+    waitq[WAITQ_IDX(waitReason)]->addToPrev(thread);
     return NORMAL;
 }
 
@@ -154,61 +152,60 @@ int Scheduler::wakeup(Thread* thread, int waitReason)
         return -1;
     }
 
-    Queue::remove(thread);
-    Thread targetQueue = runq[0];
-    Queue::addToPrev(&targetQueue, thread);
+    thread->remove();
+    runq[0]->addToPrev(thread);
 
     this->schedule();
     return NORMAL;
 }
 
 /*----------------------------------------------------------------------
-    Queue
+    Node
 ----------------------------------------------------------------------*/
-void Queue::initialize(Queue* queue)
+void Node::initialize()
 {
-    queue->prev = queue;
-    queue->next = queue;
+    this->prev = this;
+    this->next = this;
 }
 
-void Queue::addToNext(Queue* p, Queue* q)
+void Node::addToNext(Node* q)
 {
-    q->next = p->next;
-    q->prev = p;
-    p->next->prev = q;
-    p->next = q;
+    q->next = this->next;
+    q->prev = this;
+    this->next->prev = q;
+    this->next = q;
 }
 
-void Queue::addToPrev(Queue* p, Queue* q)
+void Node::addToPrev(Node* q)
 {
-    q->prev = p->prev;
-    q->next = p;
-    p->prev->next = q;
-    p->prev = q;
+    q->prev = this->prev;
+    q->next = this;
+    this->prev->next = q;
+    this->prev = q;
 }
 
-void Queue::remove(Queue* p)
+void Node::remove()
 {
-    p->prev->next = p->next;
-    p->next->prev = p->prev;
+    this->prev->next = this->next;
+    this->next->prev = this->prev;
 }
 
-bool Queue::isEmpty(Queue* p)
+bool Node::isEmpty()
 {
-    return (p->next == p);
+    return (this->next == this);
 }
 
-Queue* Queue::removeNext(Queue* p)
+Node* Node::removeNext()
 {
-    Queue* result = p->next;
-    p->next = result->next;
-    result->next->prev = p;
+    Node* result = this->next;
+    this->next = result->next;
+    result->next->prev = this;
     return result;
 }
 
-Queue* Queue::top(Queue* root)
+Node* Node::top()
 {
-    return root->next;
+    return this->next;
 }
 
 /*----------------------------------------------------------------------
@@ -252,8 +249,11 @@ Process* ProcessOperation::create(int type, const char* name)
 Thread* ThreadOperation::create(Process* process, dword programCounter)
 {
     Thread* thread = new Thread();
+    (process->threadNum)++;
     PageEntry* directory = process->getPageDirectory();
     LinearAddress stack  = process->allocateStack();
+
+    g_console->printf("stack=%x", stack);
 
     thread->getThreadInfo()->process = process;
 
@@ -265,8 +265,6 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     {
         archCreateThread(thread, programCounter, directory, stack);
     }
-
-    (process->threadNum)++;
     return thread;
 };
 
@@ -469,4 +467,15 @@ V86Process::V86Process(const char* name, PageEntry* directory) : Process(name, d
 
 V86Process::~V86Process()
 {
+}
+
+/*----------------------------------------------------------------------
+    Idle function
+----------------------------------------------------------------------*/
+void monaIdle()
+{
+    for (;;)
+    {
+        arch_idle();
+    }
 }
