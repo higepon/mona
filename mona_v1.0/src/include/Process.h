@@ -37,6 +37,7 @@ typedef struct ProcessInfo {
     class  Process* process;
     ProcessInfo* prev;
     ProcessInfo* next;
+    char  name[16];
 };
 
 /*!
@@ -45,26 +46,17 @@ typedef struct ProcessInfo {
 class Process {
 
   public:
-    Process(const char* name) {
+    Process(const char*);
 
-        pinfo_.process = this;
-
-        strncpy(name_, name, sizeof(name_));
-    }
     virtual ~Process() {
     }
 
-    int main();
-
   protected:
-    virtual void init();
-    virtual int execute();
-    virtual void destroy();
     void setEntryPoint(virtual_addr point);
+    void setup(dword statck, dword pid);
 
   public:
     ProcessInfo pinfo_;
-    char name_[16];
     static void setup();
 };
 

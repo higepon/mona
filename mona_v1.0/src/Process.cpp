@@ -13,47 +13,6 @@
 #include<Process.h>
 #include<global.h>
 
-/*!
-    \brief main
-
-    apply template method pattern
-
-    \author HigePon
-    \date   create:2003/06/28 update:
-*/
-int Process::main() {
-
-    int error;
-
-    init();
-    error = execute();
-    destroy();
-
-    return error;
-}
-
-/*!
-    \brief init
-
-    \author HigePon
-    \date   create:2003/06/28 update:
-*/
-void Process::init() {
-
-
-}
-
-/*!
-    \brief destroy
-
-    \author HigePon
-    \date   create:2003/06/28 update:
-*/
-void Process::destroy() {
-
-
-}
-
 extern "C" Process** g_process;
 /*!
     \brief setup
@@ -67,13 +26,33 @@ void Process::setup() {
     return;
 }
 
-int Process::execute() {
-
-    return 0;
-}
-
 void Process::setEntryPoint(virtual_addr point) {
 
     pinfo_.eip = (dword)point;
+    return;
+}
+
+Process::Process(const char* name) {
+
+    pinfo_.process = this;
+    strncpy(pinfo_.name, name, sizeof(pinfo_.name));
+
+    pinfo_.cs      = 0x08;
+    pinfo_.eflags  = 0x200;
+    pinfo_.eax     = 0;
+    pinfo_.ecx     = 0;
+    pinfo_.edx     = 0;
+    pinfo_.ebx     = 0;
+    pinfo_.esi     = 0;
+    pinfo_.edi     = 0;
+    pinfo_.tick    = 0;
+    pinfo_.dpl     = DPL_KERNEL;
+}
+
+void Process::setup(dword stack, dword pid) {
+
+    pinfo_.esp = stack;
+    pinfo_.ebp = stack;
+    pinfo_.pid = pid;
     return;
 }
