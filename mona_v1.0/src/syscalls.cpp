@@ -28,6 +28,7 @@ void syscall_entrance() {
     KMutex* mutex;
     ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
+    dword readSize = 0;
 
     switch(info->ebx) {
 
@@ -169,6 +170,51 @@ void syscall_entrance() {
         enableInterrupt();
         g_console->getCursor((int*)(info->esi), (int*)(info->ecx));
         info->eax = 0;
+        break;
+
+    case SYSTEM_CALL_FILE_OPEN:
+
+        enableInterrupt();
+        g_fdcdriver->motor(ON);
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        if (!g_fat12->open((char*)(info->ecx), (char*)(info->esi), FAT12::READ_MODE)) {
+
+            info->eax = g_fat12->getErrorNo();
+            break;
+        }
+
+        *((dword*)(info->edi)) = g_fat12->getFileSize();
+        info->eax = 0;
+
+        break;
+
+    case SYSTEM_CALL_FILE_READ:
+
+        enableInterrupt();
+        info->eax = 0;
+        {
+            byte* buf      = (byte*)(info->ecx);
+            dword size     = (dword)(info->esi);
+            int readTimes  = size / 512 + (size % 512 ? 1 : 0);
+
+            for (int i = 0; i < readTimes; i++) {
+
+                bool readOk = g_fat12->read(buf + 512 * i);
+
+                if (!readOk && g_fat12->getErrorNo() != FAT12::END_OF_FILE) {
+                    info->eax = 1;
+                    break;
+                } else if (!readOk) {
+                    readSize += 512;
+                    info->eax = 2;
+                    break;
+                }
+                readSize += 512;
+            }
+        }
+        *((dword*)(info->edi)) = readSize;
         break;
 
     default:

@@ -47,6 +47,7 @@ const int FAT12::NOT_DIR_ERROR      = 4;
 const int FAT12::DRIVER_READ_ERROR  = 5;
 const int FAT12::FILE_EXIST_ERROR   = 6;
 const int FAT12::DRIVER_WRITE_ERROR = 7;
+const int FAT12::END_OF_FILE        = 8;
 const int FAT12::PATH_LENGTH        = 512;
 const char FAT12::PATH_SEP          = '\\';
 
@@ -551,6 +552,7 @@ bool FAT12::read(byte* buffer) {
 
     /* check fat & size */
     if ((currentCluster_ = getFATAt(currentCluster_)) > 0xff8 || readCounter_ <= 0) {
+        errNum_ = END_OF_FILE;
         readHasNext_ = false;
     }
 

@@ -56,7 +56,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     /* file open */
     if (!g_fat12->open(path, file, FAT12::READ_MODE)) {
 
-        delete g_fat12;
         Semaphore::up(&g_semaphore_fd);
         g_console->printf("fat open error\n %x", g_fat12->getErrorNo());
         return -1;
@@ -70,7 +69,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     memset(buf, 0, 512 * readTimes);
     if (buf == NULL) {
-        delete g_fat12;
         Semaphore::up(&g_semaphore_fd);
         g_console->printf("allocate error\n");
         return -1;
@@ -79,7 +77,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     /* read */
     for (int i = 0; i < readTimes; i++) {
         if (!g_fat12->read(buf + 512 * i)) {
-            delete g_fat12;
+
             free(buf);
             Semaphore::up(&g_semaphore_fd);
             g_console->printf("allocate error\n");
@@ -89,7 +87,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     /* close */
     if (!g_fat12->close()) {
-        delete g_fat12;
+
         Semaphore::up(&g_semaphore_fd);
     }
     g_fdcdriver->motor(false);

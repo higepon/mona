@@ -406,63 +406,6 @@ void testFDWrite() {
     return;
 }
 
-int send(const char* name, MessageInfo* message) {
-
-    Process* process;
-    MessageInfo* info;
-
-    if (message == (MessageInfo*)NULL) {
-        return -1;
-    }
-
-    if ((process = g_processManager->find(name)) == (Process*)NULL) {
-        return -1;
-    }
-
-    if ((info = new MessageInfo) == NULL) {
-        return -1;
-    }
-
-    *info = *message;
-    process->getMessageList()->add(info);
-    return 0;
-}
-
-int send(dword pid, MessageInfo* message) {
-
-    Process* process;
-    MessageInfo* info;
-
-    if (message == (MessageInfo*)NULL) {
-        return -1;
-    }
-
-    if ((process = g_processManager->find(pid)) == (Process*)NULL) {
-        return -1;
-    }
-
-    if ((info = new MessageInfo) == NULL) {
-        return -1;
-    }
-
-    *info = *message;
-    process->getMessageList()->add(info);
-    return 0;
-}
-
-int receive(Process* process, MessageInfo* message) {
-
-    MessageInfo* from = process->getMessageList()->get(0);
-    if (from == (MessageInfo*)NULL) {
-        return -1;
-    }
-
-    *message = *from;
-    free(from);
-    process->getMessageList()->removeAt(0);
-    return 0;
-}
-
 int read(input_stream *p, int sz)
 {
     if (0 >= read_info.sz)

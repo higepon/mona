@@ -660,6 +660,20 @@ int main() {
 
     printf("Hello World\n");
 
+    char buf[512];
+    dword size;
+    dword readSize;
+    memset(buf, 0, 512);
+    syscall_file_open(".", "KERNEL.IMG", &size);
+    syscall_file_read(buf, 512, &readSize);
+
+    for (;;);
+    for (int i = 0; i < 512; i++) {
+        printf("[%x]", buf[i]);
+    }
+
+    printf("readsize=%d", readSize);
+
     dword mypid = Message::lookup("HELLO.ELF");
     dword pid   = Message::lookup("MAP.SVR");
 
@@ -695,4 +709,3 @@ int main() {
 
     return 0;
 }
-

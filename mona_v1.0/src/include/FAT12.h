@@ -85,6 +85,7 @@ class FAT12 {
     static const int DRIVER_READ_ERROR;
     static const int DRIVER_WRITE_ERROR;
     static const int FILE_EXIST_ERROR;
+    static const int END_OF_FILE;
     static const char PATH_SEP;
 
     static const int READ_MODE;

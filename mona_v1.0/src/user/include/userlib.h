@@ -23,6 +23,8 @@
 #define SYSTEM_CALL_MAP            22
 #define SYSTEM_CALL_SET_CURSOR     23
 #define SYSTEM_CALL_GET_CURSOR     24
+#define SYSTEM_CALL_FILE_OPEN      25
+#define SYSTEM_CALL_FILE_READ      26
 
 #define main() monamain()
 
@@ -57,6 +59,8 @@ int syscall_set_cursor(int x, int y);
 dword syscall_lookup(const char* name);
 int syscall_mutex_destroy(int id);
 int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
+int syscall_file_open(char* path, char* file, dword* size);
+int syscall_file_read(char* buf, dword size, dword* readSize);
 void* malloc(unsigned long size);
 void free(void * address);
 byte inportb(dword);
