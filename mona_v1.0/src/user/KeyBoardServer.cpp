@@ -44,9 +44,9 @@ int main() {
     Screen screen;
 
     MessageInfo info;
-    VirtualScreen vscreen;
-    vscreen.fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
 
+    VirtualScreen vscreen(1024 * 40);
+    vscreen.fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
 
     /* Message loop */
     for (;;) {
@@ -101,9 +101,9 @@ int main() {
                 if (posY > screen.getYResolution()) posY = screen.getYResolution();
                 if (posY < 0) posY = 0;
 
-                Screen::bitblt(&screen, prevX, prevY, 10, 10, &vscreen, 0, 0, Raster::XOR);
-                Screen::bitblt(&screen, posX , posY, 10, 10, &vscreen, 0, 0, Raster::XOR);
-                //                screen.fillRect16(posX, posX, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
+                 Screen::bitblt(&screen, prevX, prevY, 10, 10, &vscreen, 0, 0, Raster::XOR);
+                 Screen::bitblt(&screen, posX , posY, 10, 10, &vscreen, 0, 0, Raster::XOR);
+                //screen.fillRect16(posX, posX, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
 
                 prevX = posX;
                 prevY = posY;

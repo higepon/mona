@@ -33,6 +33,56 @@ License=MIT/X Licnese
 ----------------------------------------------------------------------*/
 int Mouse::init() {
 
+//     /* aux interface test */
+//     outportb(0x64, 0xa9);
+//     g_console->printf("read wait = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("aux interface test result = %s\n", !inportb(0x60) ? "OK" : "NG");
+
+//     /* enable aux */
+//     outportb(0x64, 0xa8);
+
+//     /* get command written before */
+//     byte data;
+//     outportb(0x64, 0x20);
+//     g_console->printf("read wait2 = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("%x\n", (data = inportb(0x60)));
+
+//     /* kbc command write keyboard & enable mouse intterupt */
+//     outportb(0x64, 0x60);
+//     g_console->printf("write wait1 = %s\n", waitWritable() ? "NG" : "OK");
+//     outportb(0x60, data | 0x03);
+
+//     /* after kbc command write, read one data */
+//     g_console->printf("read wait3 = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("%x\n", (data = inportb(0x60)));
+
+//     /* mouse reset */
+//     outportb(0x64, 0xd4);
+//     g_console->printf("read write2 = %s\n", waitWritable() ? "NG" : "OK");
+//     outportb(0x60, 0xff);
+
+//     /* after kbc command write, read 3 times */
+//     g_console->printf("read wait3 = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("%x\n", (data = inportb(0x60)));
+//     g_console->printf("read wait2 = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("%x\n", (data = inportb(0x60)));
+//     g_console->printf("read wait2 = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("%x\n", (data = inportb(0x60)));
+
+//     /* enable mouse */
+//     outportb(0x64, 0xd4);
+//     g_console->printf("read write3 = %s\n", waitWritable() ? "NG" : "OK");
+//     outportb(0x60, 0xf4);
+
+//     /* after enable mouse read one data */
+//     g_console->printf("@read wait3 = %s\n", waitReadable() ? "NG" : "OK");
+//     g_console->printf("%x\n", (data = inportb(0x60)));
+
+//     /* enable mouse interrupt slave unmask */
+//     outportb(0x21, (inportb(0x21) & 0xFB)); /* IR2 cascade */
+//     outportb(0xA1, (inportb(0xA1) & 0xEF)); /* IR4         */
+
+
     /*
        status = inportb(0x64);
 
@@ -213,6 +263,7 @@ int Messenger::send(dword pid, MessageInfo* message) {
 int Messenger::receive(Process* process, MessageInfo* message) {
 
     MessageInfo* from = process->getMessageList()->get(0);
+
     if (from == (MessageInfo*)NULL) {
         return -1;
     }

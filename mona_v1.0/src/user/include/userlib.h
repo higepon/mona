@@ -402,6 +402,7 @@ class VirtualScreen : public Screen {
 
   public:
     VirtualScreen();
+    VirtualScreen(dword vramsize);
     virtual ~VirtualScreen();
 
   protected:
