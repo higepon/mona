@@ -25,17 +25,19 @@ ProcessManager::ProcessManager(Process* idle) {
 
 void ProcessManager::switchProcess() {
 
-     info(DEV_NOTICE, "[ name=%s eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x esp0=%x ss0=%x]\n"
+     info(DEV_NOTICE, "[ name=%s  esp0=%x eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x ss0=%x]\n"
           , g_current_process->name
+          , g_current_process->esp0
           , g_current_process->eip
           , g_current_process->cs
           , g_current_process->eflags
           , g_current_process->esp
           , g_current_process->ds
           , g_current_process->ss
-          , g_current_process->esp0
           , g_current_process->ss0
           );
+
+     if (g_current_process->name[0] == 'V') g_console->printf("ds = %x", g_current_process->ds);
 
     /* switch to user process */
     if ((g_current_process->cs & DPL_USER) == DPL_USER) {
@@ -43,18 +45,18 @@ void ProcessManager::switchProcess() {
         g_tss->esp0 = g_current_process->esp0;
         g_tss->ss0  = g_current_process->ss0;
 
-        info(WARNING, "TO USER");
+        info(DEV_NOTICE, "TO USER\n");
 
         if ((g_current_process->eflags & 0x20000) == 0x20000) {
 
-            g_console->printf("to v86");
+            g_console->printf("to v86\n");
             arch_switch_process_to_v86_mode();
         }
         else arch_switch_process_to_user_mode();
 
     } else {
 
-        info(WARNING, "TO KERNEL");
+        info(DEV_NOTICE, "TO KERNEL\n");
         arch_switch_process();
     }
 }
@@ -124,7 +126,7 @@ void ProcessManager::printOneProcess(ProcessInfo* info) const {
     else if (info->state == Process::SLEEPING) state = "Sleeping";
     else if (info->state == Process::READY)    state = "Ready   ";
 
-    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %s |%d\n", info->name, info->pid, info->dpl, info->cs, info->ss, info->esp, state, info->tick);
+    g_console->printf("|%s|  %d  |  %d  |%x|%x|%x| %s |%d\n", info->name, info->pid, info->dpl, info->cs, info->ds, info->esp, state, info->tick);
 
 }
 

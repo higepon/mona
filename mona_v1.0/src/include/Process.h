@@ -22,23 +22,26 @@
 #define DPL_USER    3
 
 typedef struct ProcessInfo {
-    dword  eip;
-    dword  cs;
-    dword  eflags;
-    dword  eax;
-    dword  ecx;
-    dword  edx;
-    dword  ebx;
-    dword  esp;
-    dword  ebp;
-    dword  esi;
-    dword  edi;
-    dword  ds;
-    dword  ss;
-    dword  dpl;
-    dword  esp0;
-    dword  ss0;
-    dword  cr3;
+    dword  eip;       // 0
+    dword  cs;        // 4
+    dword  eflags;    // 8
+    dword  eax;       // 12
+    dword  ecx;       // 16
+    dword  edx;       // 20
+    dword  ebx;       // 24
+    dword  esp;       // 28
+    dword  ebp;       // 32
+    dword  esi;       // 36
+    dword  edi;       // 40
+    dword  ds;        // 44
+    dword  es;        // 48
+    dword  fs;        // 52
+    dword  gs;        // 56
+    dword  ss;        // 60
+    dword  dpl;       // 64
+    dword  esp0;      // 68
+    dword  ss0;       // 72
+    dword  cr3;       // 76
     dword  tick;
     dword  pid;
     dword  wakeupTimer;

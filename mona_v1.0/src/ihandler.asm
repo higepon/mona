@@ -35,34 +35,68 @@ BITS 32
 
 [extern _g_current_process] ;; pointer to current process
 
+%define KERNEL_DS 0x10
+
+%macro pushAll 0
+        pushad
+        push ds
+        push es
+        push fs
+        push gs
+%endmacro
+
+%macro popAll 0
+        pop gs
+        pop fs
+        pop es
+        pop ds
+        popad
+%endmacro
+
+%macro changeData 0
+        push KERNEL_DS
+        pop  es
+        push KERNEL_DS
+        pop  fs
+        push KERNEL_DS
+        pop  gs
+        push KERNEL_DS
+        pop  ds
+%endmacro
+
+
 ;;; fdc handler
 _arch_fdchandler:
-        pushad
+        pushAll
+        changeData
         call _MFDCHandler
-        popad
+        popAll
         iretd
 
 ;;; timer handler
 ;;; save all context to Kthread* current
 _arch_timerhandler:
-        pushad
+        pushAll
+        changeData
         call _arch_save_process_registers
         call _timerHandler
-        popad
+        popAll
         iretd
 
 ;;; keystroke handler
 _arch_keystrokehandler:
-        pushad
+        pushAll
+        changeData
         call _keyStrokeHandler
-        popad
+        popAll
         iretd
 
 ;;; dummy handler
 _arch_dummyhandler:
-        pushad
+        pushAll
+        changeData
         call _dummyHandler
-        popad
+        popAll
         iretd
 
 ;;; IRQ handler(expr)
@@ -70,9 +104,10 @@ _arch_dummyhandler:
 [global _arch_irqhandler_%1]
 [extern _irqHandler_%1]
 _arch_irqhandler_%1:
-        pushad
+        pushAll
+        changeData
         call _irqHandler_%1
-        popad
+        popAll
         iretd
 %endmacro
         irqhandler 0
@@ -94,20 +129,20 @@ _arch_irqhandler_%1:
 
 ;;; fault0dHandler
 _arch_fault0dhandler:
-        call _arch_set_stack_view
-        pushad
+        pushAll
+        changeData
         call _fault0dHandler
-        popad
+        popAll
         iretd
 
 %macro cpufaulthandler 1
 [global _arch_cpufaulthandler_%1]
 [extern _cpufaultHandler_%1]
 _arch_cpufaulthandler_%1:
-        call _arch_set_stack_view
-        pushad
+        pushAll
+        changeData
         call _cpufaultHandler_%1
-        popad
+        popAll
         iretd
 %endmacro
 
@@ -125,23 +160,25 @@ _arch_cpufaulthandler_%1:
         cpufaulthandler 11
 
 _arch_cpufaulthandler_e:
-        pushad
+        pushAll
+        changeData
         push dword[esp + 32]
         mov  eax, cr2
         push eax
         call _cpufaultHandler_e
         add  esp, 0x08          ; remove parameter
-        popad
+        popAll
         add  esp, 0x04          ; remove error_cd
         iretd
 
 ;;; entrance of syscall
 _arch_syscall_handler:
-        pushad
+        pushAll
+        changeData
         call _arch_save_process_registers
         call _syscall_entrance
         mov ebx, dword[_g_current_process] ; system call return code is
         mov eax, dword [ebx + 12]          ; at g_current_process->eax
         mov dword[esp + 28], eax           ; so set this to stack
-        popad
+        popAll
         iretd

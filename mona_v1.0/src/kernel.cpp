@@ -159,7 +159,7 @@ void startKernel(void) {
 //     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
 //     while (g_demo_step < 5);
 
-    g_info_level = MSG;
+    g_info_level = DEV_NOTICE;
 
     Process* idle = new Process("idle     ");
 
@@ -176,9 +176,9 @@ void startKernel(void) {
     Process*     process8 = new Process("MessageServer");
     V86Process*  process9 = new V86Process("V86_process");
 
-    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func+15));
+    //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func+15));
     g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
-    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
+    //    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
