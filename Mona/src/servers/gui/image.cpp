@@ -173,6 +173,21 @@ guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 			monapi_cmemoryinfo_delete(mi2);
 		}
 	}
+	else if (fn.endsWith(".BM5"))
+	{
+		if (prompt) printf("%s: Decompressing %s....", SVR, (const char*)fn);
+		monapi_cmemoryinfo* mi2 = monapi_call_file_decompress_st5(mi);
+		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
+		
+		if (mi2 != NULL)
+		{
+			if (prompt) printf("%s: Decoding %s....", SVR, (const char*)fn);
+			ret = ReadBitmap(mi2);
+			if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
+			monapi_cmemoryinfo_dispose(mi2);
+			monapi_cmemoryinfo_delete(mi2);
+		}
+	}
 
 	monapi_cmemoryinfo_dispose(mi);
 	monapi_cmemoryinfo_delete(mi);
@@ -279,8 +294,10 @@ bool ImageHandler(MessageInfo* msg)
 {
 	switch (msg->header)
 	{
+		// イメージデコード要求
 		case MSG_GUISERVER_DECODEIMAGE:
 		{
+			// ファイル名
 			guiserver_bitmap* bmp = ReadImage(msg->str);
 			if (bmp != NULL)
 			{
@@ -292,8 +309,10 @@ bool ImageHandler(MessageInfo* msg)
 			}
 			break;
 		}
+		// イメージ生成要求
 		case MSG_GUISERVER_CREATEBITMAP:
 		{
+			// 幅、高さ、背景色
 			guiserver_bitmap* bmp = CreateBitmap(msg->arg1, msg->arg2, msg->arg3);
 			if (bmp != NULL)
 			{
@@ -305,6 +324,7 @@ bool ImageHandler(MessageInfo* msg)
 			}
 			break;
 		}
+		// イメージ破棄要求
 		case MSG_GUISERVER_DISPOSEBITMAP:
 			DisposeBitmap(msg->arg1);
 			Message::reply(msg);
