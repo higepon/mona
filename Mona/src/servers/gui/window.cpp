@@ -31,6 +31,7 @@ guiserver_window* CreateWindow()
 	ret->Handle  = handle;
 	ret->Parent  = 0;
 	ret->Owner   = 0;
+	ret->TID     = 0;
 	ret->X       = start_pos;
 	ret->Y       = start_pos;
 	ret->Width   = DEFAULT_WIDTH;
@@ -42,6 +43,7 @@ guiserver_window* CreateWindow()
 	ret->Flags   = 0;
 	ret->TransparencyKey = 0;
 	ret->BufferHandle = ret->FormBufferHandle = 0;
+	ret->__reserved1 = NULL;
 	windows.add(ret);
 	
 	start_pos += 32;
@@ -96,10 +98,12 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 		rr.Intersect(r);
 		if (r.Width == 0 || rr.Height == 0) continue;
 		
-		guiserver_bitmap* bmp = GetBitmapPointer(ww->FormBufferHandle);
-		if (bmp == NULL) continue;
-		
-		DrawImage(screen_buffer, bmp, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
+		if (ww->__reserved1 == NULL)
+		{
+			ww->__reserved1 = GetBitmapPointer(ww->FormBufferHandle);
+			if (ww->__reserved1 == NULL) return;
+		}
+		DrawImage(screen_buffer, ww->__reserved1, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
 	}
 	if (!draw_screen) return;
 	
