@@ -28,9 +28,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_IMESERVER_H_INCLUDED_)
 #define _IMESERVER_H_INCLUDED_
 
-#define MAX_TEXT_LEN     64
+#define MAX_TEXT_LEN     128
 #define BASICDIC_NAME    "/BASICDIC.TX5"
-#define BASICDIC_ENTRIES 24253
+#define FONTFILE_NAME    "/MONA-12.MF2"
 
 /** IMEサーバークラス */
 class ImeServer : public MonAPI::Server {
@@ -39,9 +39,12 @@ private:
 	char *basicDic;
 	/** 辞書データサイズ */
 	int basicDicSize;
+	/** フォントデータ */
+	monapi_cmemoryinfo *fpMemory;
 
 protected:
 	virtual bool loadDictionary();
+	virtual bool loadFont();
 	virtual int  getKanji(char *yomi, HList<MonAPI::CString>* result);
 	virtual bool getYomi(char *kanji, char *result);
 	virtual bool getKana(char *inputString, char *result);

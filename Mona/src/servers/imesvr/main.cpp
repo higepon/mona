@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <monapi.h>
 #include <monapi/CString.h>
+#include <monapi/messages.h>
 
 #include "ImeServer.h"
 

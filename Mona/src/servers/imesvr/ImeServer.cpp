@@ -29,8 +29,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 
-//using namespace MonAPI;
-
 #include "ImeServer.h"
 #include "messages.h"
 #include "rule_roma.h"
@@ -44,6 +42,8 @@ ImeServer::ImeServer()
 ImeServer::~ImeServer()
 {
 	free(basicDic);
+	monapi_cmemoryinfo_dispose(fpMemory);
+	monapi_cmemoryinfo_delete(fpMemory);
 }
 
 /** 辞書ロード */
@@ -64,6 +64,18 @@ bool ImeServer::loadDictionary()
 	} else {
 		printf("IME: Basic dictionary not found\n");
 		return false;
+	}
+}
+
+/** 辞書ロード */
+bool ImeServer::loadFont()
+{
+	// フォント初期化
+	fpMemory = monapi_call_file_decompress_bz2_file(FONTFILE_NAME, false);
+	if (fpMemory == NULL || fpMemory->Size == 0) {
+		return false;
+	} else {
+		return true;
 	}
 }
 
@@ -93,7 +105,7 @@ int ImeServer::getKanji(char *yomi, HList<MonAPI::CString>* result)
 			if (strncmp(src, yomi, strlen(src)) == 0) {
 				// 漢字を追加
 				int j0 = strlen(dst);
-				for (j = 0; j < strlen(yomi) - strlen(src); j++) {
+				for (j = 0; j < (int)strlen(yomi) - (int)strlen(src); j++) {
 					dst[j + j0] = yomi[j + strlen(src)];
 				}
 				result->add(dst);
@@ -175,7 +187,6 @@ bool ImeServer::getRoman(char *kana, char *result)
 	return false;
 }
 
-
 /** メインスレッド */
 void ImeServer::service()
 {
@@ -191,7 +202,11 @@ void ImeServer::service()
 	}
 	
 	// 辞書が読めなかったときはかな漢字変換はすべて失敗を返す
-	bool dicLoaded = loadDictionary();
+	//bool dicLoaded = loadDictionary();
+	bool dicLoaded = false;
+	
+	// フォントが読めなかったときは失敗を返す
+	bool fontLoaded = loadFont();
 
 	MessageInfo info;
 	while (1) {
@@ -272,6 +287,17 @@ void ImeServer::service()
 					} else {
 						strcpy(info.str, "");
 						MonAPI::Message::reply(&info, 0, 0, "");
+					}
+				}
+				break;
+			case MSG_IMESERVER_GETFONT:
+				{
+					// MSG_IMESERVER_GETFONT
+					// arg2: 0-失敗 1-成功
+					if (fontLoaded == true) {
+						MonAPI::Message::reply(&info, fpMemory->Handle, fpMemory->Size);
+					} else {
+						MonAPI::Message::reply(&info, 0, 0);
 					}
 				}
 				break;
