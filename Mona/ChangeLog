@@ -1,5 +1,7 @@
 2004-10-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/PageManager.cpp (returnPages): ƒy[ƒW•Ô‹pÀŒ±’†
+
         * include/monapi/syscall.h: syscall_get_memory_info‚Ì’Ç‰Á
 
 2004-10-17  bayside  <bayside@users.sourceforge.jp>
