@@ -1,10 +1,20 @@
+2004-10-17  bayside  <bayside@users.sourceforge.jp>
+
+        * bim2bin, t5lzma を tools に追加
+
+        * src/servers/pe/main.cpp: ななしさんのPE Serverキャッシュパッチを取り込み（不足分）
+
+        * src/servers/shell/InternalCommands.cpp: 処理を占有させる内部コマンドEXECを追加（ななしさんのパッチ）
+
+        * src/servers/shell/Shell.cpp: 処理を占有させる内部コマンドEXECを追加（ななしさんのパッチ）
+
+        * src/servers/shell/Shell.h: 処理を占有させる内部コマンドEXECを追加（ななしさんのパッチ）
+
 2004-10-17  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (getStackBottom): stack overflowを検出してエラーメッセージを出す
 
         * src/servers/pe/main.cpp: ななしさんのPE Serverキャッシュパッチを取り込み
-
-        * bim2bin, t5lzma を tools に追加
 
 2004-10-16  higepon  <higepon@users.sourceforge.jp>
 
