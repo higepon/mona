@@ -20,7 +20,6 @@
 #include <collection.h>
 #include <kernel.h>
 
-#define MAX_PROCESS 512
 #define DPL_KERNEL  0
 #define DPL_USER    3
 
@@ -124,8 +123,9 @@ class ThreadManager {
     Thread* create(dword programCounter, PageEntry* pageDirectory);
     int join(Thread* thread);
     int kill(Thread* thread);
-    int switchThread();
     Thread* schedule();
+    void printAllThread();
+
     inline Thread* getCurrentThread() const {
         return current_;
     }
@@ -134,13 +134,35 @@ class ThreadManager {
         return dispatchList_->size();
     }
 
+    inline int switchThread(bool isProcessChanged, bool isUser) const {
+
+        if (isProcessChanged && isUser) {
+
+            /* address space & therad switch */
+            arch_switch_thread_to_user1();
+        } else if (!isProcessChanged && isUser) {
+
+            /* only thread switch */
+            arch_switch_thread_to_user2();
+        } else if (isProcessChanged && !isUser) {
+
+            /* address space & therad switch */
+            arch_switch_thread2();
+        } else {
+            arch_switch_thread1();
+        }
+
+        /* does not come here */
+        return NORMAL;
+    }
+
   public:
     static void setup();
 
   private:
     inline dword allocateStack() const {
-        //        return STACK_START - STACK_SIZE * threadCount;
-        return 0xFFFFFFFF;
+        return STACK_START - STACK_SIZE * (threadCount - 1);
+        //        return 0xFFFFFFFF;
     }
     void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
     void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
@@ -202,11 +224,39 @@ class Process {
         return isUserMode_;
     }
 
+    inline virtual int switchThread(bool isProcessChanged, bool isUser) const {
+        threadManager_->switchThread(isProcessChanged, isUser);
+        return NORMAL;
+    }
+
+    inline virtual void printAllThread() {
+        threadManager_->printAllThread();
+    }
+
+    inline virtual PageEntry* getPageDirectory() const {
+        return pageDirectory_;
+    }
+
+    inline virtual List<class SharedMemorySegment*>* getSharedList() const {
+        return shared_;
+    }
+
+    inline virtual class HeapSegment* getHeapSegment() const {
+        return heap_;
+    }
+
+    inline virtual List<Message*>* getMessageList() const {
+        return messageList_;
+    }
+
     virtual int join(Thread* thread);
     virtual Thread* schedule();
     virtual Thread* createThread(dword programCounter);
 
   protected:
+    class HeapSegment* heap_;
+    List<SharedMemorySegment*>* shared_;
+    List<Message*>* messageList_;
     bool isUserMode_;
     ThreadManager* threadManager_;
     PageEntry* pageDirectory_;
@@ -264,6 +314,8 @@ class ProcessManager {
         return current_;
     }
     LinearAddress allocateKernelStack() const;
+    void printProcess();
+    Process* find(const char* name);
 
   public:
     static const int USER_PROCESS   = 0;

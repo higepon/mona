@@ -52,6 +52,13 @@ ThreadManager::ThreadManager(bool isUser) : current_(NULL), threadCount(0) {
 
 ThreadManager::~ThreadManager() {
 
+    for (dword i = 0; i < dispatchList_->size(); i++) {
+        kill(dispatchList_->get(i));
+    }
+    for (dword i = 0; i < dispatchList_->size(); i++) {
+        kill(waitList_->get(i));
+    }
+
     delete dispatchList_;
     delete waitList_;
 }
@@ -78,6 +85,9 @@ Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
 
 void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
+    dword stackAddress = allocateStack();
+    g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
+
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
     ainfo->cs      = KERNEL_CS;
@@ -93,13 +103,16 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageE
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_KERNEL;
-    ainfo->esp     = allocateStack();
-    ainfo->ebp     = allocateStack();
+    ainfo->esp     = stackAddress;
+    ainfo->ebp     = stackAddress;
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
 void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
+
+    dword stackAddress = allocateStack();
+    g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -116,8 +129,8 @@ void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, P
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_USER;
-    ainfo->esp     = allocateStack();
-    ainfo->ebp     = allocateStack();
+    ainfo->esp     = stackAddress;
+    ainfo->ebp     = stackAddress;
     ainfo->esp0    = g_processManager->allocateKernelStack();
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
@@ -134,16 +147,6 @@ int ThreadManager::join(Thread* thread) {
 int ThreadManager::kill(Thread* thread) {
     dispatchList_->remove(thread);
     delete thread; /* ? */
-    return NORMAL;
-}
-
-int ThreadManager::switchThread() {
-
-    /*                 */
-    /* not implemented */
-    /*                 */
-    /* arch_xxxxx      */
-
     return NORMAL;
 }
 
@@ -166,6 +169,24 @@ Thread* ThreadManager::schedule() {
     return current_;
 }
 
+void ThreadManager::printAllThread() {
+
+    Thread* thread;
+    ArchThreadInfo* a;
+
+    for (dword i = 0; i < dispatchList_->size(); i++) {
+        thread = dispatchList_->get(i);
+        a = thread->getThreadInfo()->archinfo;
+        g_console->printf("    %x %x %x %x %d\n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
+    }
+
+    for (dword i = 0; i < waitList_->size(); i++) {
+        thread = waitList_->get(i);
+        a = thread->getThreadInfo()->archinfo;
+        g_console->printf("    %x %x %x %x %d\n", a->cr3, a->eip, a->esp, a->cs, thread->getTick());
+    }
+}
+
 /*----------------------------------------------------------------------
     Idle Thread
 ----------------------------------------------------------------------*/
@@ -176,6 +197,8 @@ void idleThread() {
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
+const int ProcessManager::USER_PROCESS;
+const int ProcessManager::KERNEL_PROCESS;
 ProcessManager::ProcessManager(PageManager* pageManager) {
 
     /* page manager */
@@ -333,6 +356,44 @@ Thread* ProcessManager::createThread(Process* process, dword programCounter) {
     return process->createThread(programCounter);
 }
 
+void ProcessManager::printProcess() {
+
+    Process* p;
+
+    for (dword i = 0; i < dispatchList_->size(); i++) {
+        p = dispatchList_->get(i);
+        g_console->printf("[%s]dispatch %d\n", p->getName(), p->getTick());
+        p->printAllThread();
+    }
+
+    for (dword i = 0; i < waitList_->size(); i++) {
+        p = waitList_->get(i);
+        g_console->printf("[%s]waiting %d\n", p->getName(), p->getTick());
+        p->printAllThread();
+    }
+}
+
+Process* ProcessManager::find(const char* name) {
+
+    if (!name) return (Process*)NULL;
+
+    for (dword i = 0; dispatchList_->size(); i++) {
+
+        Process* process = dispatchList_->get(i);
+        if (strcmp(name, process->getName())) {
+            return process;
+        }
+    }
+    for (dword i = 0; waitList_->size(); i++) {
+
+        Process* process = waitList_->get(i);
+        if (strcmp(name, process->getName())) {
+            return process;
+        }
+    }
+    return (Process*)NULL;
+}
+
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
@@ -344,10 +405,31 @@ Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4
     /* address space */
     pageDirectory_ = directory;
 
-    g_page_manager->allocatePhysicalPage(directory, 0xFFFFFFFF, true, true, true);
+    /* allocate heap */
+    heap_ = new HeapSegment(0xC0000000, 1024 * 1024);
+
+    /* shared list */
+    shared_ = new HList<SharedMemorySegment*>();
+
+    /* message list */
+    messageList_ = new HList<Message*>();
 }
 
 Process::~Process() {
+
+    /* heap */
+    delete heap_;
+
+    /* shared MemorySegment */
+    for (dword i = 0; i < shared_->size(); i++) {
+        SharedMemoryObject::detach(shared_->get(i)->getId(), this);
+    }
+    delete(shared_);
+
+    /* message list */
+    for (dword i = 0; i < messageList_->size(); i++) {
+        delete messageList_->get(i);
+    }
 }
 
 int Process::join(Thread* thread) {
@@ -375,6 +457,7 @@ UserProcess::UserProcess(const char* name, PageEntry* directory) : Process(name,
 }
 
 UserProcess::~UserProcess() {
+    delete threadManager_;
 }
 
 /*----------------------------------------------------------------------
@@ -390,4 +473,5 @@ KernelProcess::KernelProcess(const char* name, PageEntry* directory) : Process(n
 }
 
 KernelProcess::~KernelProcess() {
+    delete threadManager_;
 }

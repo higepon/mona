@@ -31,8 +31,6 @@ GLOBAL StackView g_stack_view;                       /*< struct for stack view *
 GLOBAL FDCDriver* g_fdcdriver;
 GLOBAL FAT12*     g_fat12;
 
-GLOBAL dword g_demo_step GLOBAL_VAL(0);
-
 /* semaphore */
 GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
 GLOBAL semaphore g_semaphore_shared  GLOBAL_VAL(1);
@@ -59,7 +57,7 @@ GLOBAL PageManager* g_page_manager;
 
 GLOBAL MemoryManager km; /* Kernel Memory Management */
 
-GLOBAL SharedMemoryObject* g_sharedMemoryList;
+GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 
 GLOBAL ProcessManager* g_processManager;
 GLOBAL ThreadInfo* g_currentThread;

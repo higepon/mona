@@ -10,6 +10,7 @@
 #include<KeyBoardManager.h>
 #include<elf.h>
 #include<userlib.h>
+#include<Process.h>
 
 /*!
 
@@ -45,6 +46,111 @@ struct read_info {
 #define SHARED_MM_ERROR -1
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
+
+int send(const char* name, Message* message) {
+
+    Process* process;
+    Message* kmessage;
+
+    if (message == (Message*)NULL) {
+        return -1;
+    }
+
+    if ((process = g_processManager->find(name)) == (Process*)NULL) {
+        return -1;
+    }
+
+    if ((kmessage = (Message*)malloc(sizeof(Message))) == NULL) {
+        return -1;
+    }
+
+    memcpy(kmessage, message, sizeof(Message));
+    process->getMessageList()->add(kmessage);
+    return 0;
+}
+
+int receive(Process* process, Message* message) {
+
+    Message* from = process->getMessageList()->get(0);
+
+    if (from == (Message*)NULL) {
+        return -1;
+    }
+
+    memcpy(message, from, sizeof(Message));
+    free(from);
+    process->getMessageList()->removeAt(0);
+    return 0;
+}
+
+int loadProcess(const char* path, const char* file, bool isUser) {
+
+    static dword sharedId = 0x1000;
+    sharedId++;
+
+    int    fileSize;
+    int    readTimes;
+    byte*  buf;
+    bool   isOpen;
+    bool   isAttaced;
+    FAT12* fat;
+
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), 0x80000000);
+    Semaphore::up(&g_semaphore_shared);
+
+    if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
+
+    g_fdcdriver = new FDCDriver();
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) return FAT_INIT_ERROR;
+    if (!fat->open(path, file, FAT12::READ_MODE)) return FAT_OPEN_ERROR;
+
+    fileSize  = fat->getFileSize();
+    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+    buf = (byte*)malloc(512 * readTimes);
+    if (buf == NULL) return -1;
+
+    for (int i = 0; i < readTimes; i++) {
+        if (!fat->read(buf + 512 * i)) {
+            g_console->printf("read failed %d", i);
+            while (true);
+        }
+    }
+
+    if (!fat->close()) {
+        info(ERROR, "close failed");
+    }
+
+    ELFLoader* loader = new ELFLoader();
+
+    g_console->printf("elf size = %d", loader->prepare((dword)buf));
+
+    /* prod_ code */
+    dword entrypoint = loader->load((byte*)0x80000000);
+
+    g_console->printf("entrypoint=%x", entrypoint);
+    delete(loader);
+    delete(g_fdcdriver);
+    free(buf);
+
+    Process* process = g_processManager->create(isUser ? ProcessManager::USER_PROCESS : ProcessManager::KERNEL_PROCESS, file);
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
+    Semaphore::up(&g_semaphore_shared);
+    if (!isOpen || !isAttaced) panic("loadProcess: not open");
+    g_processManager->add(process);
+    Thread*  thread = g_processManager->createThread(process, entrypoint);
+    g_processManager->join(process, thread);
+    return 0;
+}
 
 int read(input_stream *p, int sz)
 {

@@ -18,17 +18,29 @@
 #include <string.h>
 #include <Process.h>
 
-class SharedMemoryObject : public Queue {
+class SharedMemoryObject {
 
   public:
     SharedMemoryObject();
     SharedMemoryObject(dword id, dword size);
     virtual ~SharedMemoryObject();
 
-    inline virtual int getAttachedCount() const {return attachedCount_;}
-    inline virtual void setAttachedCount(int count) {attachedCount_ = count;}
-    inline virtual dword getId() const {return id_;}
-    inline virtual dword getSize() const {return size_;}
+    inline virtual int getAttachedCount() const {
+        return attachedCount_;
+    }
+
+    inline virtual void setAttachedCount(int count) {
+        attachedCount_ = count;
+    }
+
+    inline virtual dword getId() const {
+        return id_;
+    }
+
+    inline virtual dword getSize() const {
+        return size_;
+    }
+
     inline virtual int isMapped(int physicalIndex) const {
 
         if (physicalIndex >= physicalPageCount_) return UN_MAPPED;
@@ -45,8 +57,8 @@ class SharedMemoryObject : public Queue {
   public:
     static void setup();
     static bool open(dword id, dword size);
-    static bool attach(dword id, struct ProcessInfo* process, LinearAddress address);
-    static bool detach(dword id, struct ProcessInfo* process);
+    static bool attach(dword id, struct Process* process, LinearAddress address);
+    static bool detach(dword id, struct Process* process);
 
     static const int UN_MAPPED = -1;
 
@@ -65,14 +77,22 @@ class Segment {
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error) = 0;
-    virtual int getErrorNumber() {return errorNumber_;}
-    virtual LinearAddress getStart() {return start_;}
-    virtual dword getSize() {return size_;}
-    virtual bool inRange(LinearAddress address) {
 
-        return (address >= start_ && address < start_ + size_);
+    inline virtual int getErrorNumber() {
+        return errorNumber_;
     }
 
+    inline virtual LinearAddress getStart() {
+        return start_;
+    }
+
+    inline virtual dword getSize() {
+        return size_;
+    }
+
+    inline virtual bool inRange(LinearAddress address) {
+        return (address >= start_ && address < start_ + size_);
+    }
 
   protected:
     LinearAddress start_;
@@ -89,24 +109,22 @@ class StackSegment : public Segment {
 
   public:
     StackSegment(LinearAddress start, dword size);
-    StackSegment(LinearAddress start, dword initileSize, dword maxSize);
+    StackSegment(Process* process, LinearAddress start, dword initileSize, dword maxSize);
     virtual ~StackSegment();
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
     virtual bool inRange(LinearAddress address) {
-
         return (address >= start_ - PageManager::ARCH_PAGE_SIZE && address <= start_);
     }
 
   private:
-    bool tryExtend(LinearAddress address);
-    bool allocatePage(LinearAddress address);
+    bool tryExtend(Process* process, LinearAddress address);
+    bool allocatePage(Process* process, LinearAddress address);
 
   protected:
     bool isAutoExtend_;
     dword maxSize_;
-
 };
 
 class HeapSegment : public Segment {
@@ -119,7 +137,7 @@ class HeapSegment : public Segment {
     virtual bool faultHandler(LinearAddress address, dword error);
 };
 
-class SharedMemorySegment : public Segment, public Queue {
+class SharedMemorySegment : public Segment {
 
   public:
     SharedMemorySegment();
@@ -128,10 +146,12 @@ class SharedMemorySegment : public Segment, public Queue {
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
-    virtual dword getId() const {return sharedMemoryObject_->getId();}
+    inline virtual dword getId() const {
+        return sharedMemoryObject_->getId();
+    }
 
   public:
-    static SharedMemorySegment* find(SharedMemorySegment* head, dword id);
+    static SharedMemorySegment* find(Process* process, dword id);
 
   protected:
     SharedMemoryObject* sharedMemoryObject_;

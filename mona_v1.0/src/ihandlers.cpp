@@ -31,8 +31,7 @@
 void keyStrokeHandler(dword scancode) {
 
     KeyInfo info;
-    //    static Message message;
-    g_demo_step++;
+    Message message;
 
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
@@ -42,11 +41,11 @@ void keyStrokeHandler(dword scancode) {
 
     g_console->printf("key");
 
-//     memset(&message, 0, sizeof(Message));
-//     message.arg1 = info.keycode;
-//     message.arg2 = info.modifiers;
+    memset(&message, 0, sizeof(Message));
+    message.arg1 = info.keycode;
+    message.arg2 = info.modifiers;
 
-//     send("USER.ELF", &message);
+    send("USER.ELF", &message);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
@@ -103,23 +102,6 @@ void dummyHandler() {
 */
 void timerHandler() {
 
-#if 0
-    SystemInfo::rdtsc();
-
-    static dword counter = 0;
-    static dword l = 0;
-    static dword h = 0;
-
-    if (counter %2) {
-        l = SystemInfo::timeL;
-        h = SystemInfo::timeH;
-    } else {
-
-        g_console->printf("time=%x %x\n", SystemInfo::timeH - h, SystemInfo::timeL - l);
-    }
-    counter++;
-#endif
-
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
@@ -132,26 +114,13 @@ void timerHandler() {
     bool isUser = current->isUserMode();
     g_currentThread = current->schedule()->getThreadInfo();
 
-    ArchThreadInfo* i = g_currentThread->archinfo;
-    const char* name = g_processManager->getCurrentProcess()->getName();
+    /* debug information */
+//     ArchThreadInfo* i = g_currentThread->archinfo;
+//     const char* name = g_processManager->getCurrentProcess()->getName();
+//     g_console->printf("%s eip=%x esp=%x:%x,%x cr3=%x cs=%x\n", name, i->eip, i->ss, i->esp, i->ebp, i->cr3, i->cs);
 
-    g_console->printf("%s eip=%x esp=%x:%x,%x cr3=%x cs=%x\n", name, i->eip, i->ss, i->esp, i->ebp, i->cr3, i->cs);
-
-    if (isProcessChanged && isUser) {
-
-        /* address space & therad switch */
-        arch_switch_thread_to_user1();
-    } else if (!isProcessChanged && isUser) {
-
-        /* only thread switch */
-        arch_switch_thread_to_user2();
-    } else if (isProcessChanged && !isUser) {
-
-        /* address space & therad switch */
-        arch_switch_thread2();
-    } else {
-        arch_switch_thread1();
-    }
+    /* Thread switch */
+    current->switchThread(isProcessChanged, isUser);
     /* does not come here */
 }
 

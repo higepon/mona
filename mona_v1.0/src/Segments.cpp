@@ -45,16 +45,15 @@ StackSegment::StackSegment(LinearAddress start, dword size) {
     \param  initilieSize segment size
     \param  maxSize      segment max size
     \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
+    \date   create:2003/10/15 update:2004/01/08
 */
-StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize) {
+StackSegment::StackSegment(Process* process, LinearAddress start, dword initileSize, dword maxSize) {
 
     start_        = start;
     size_         = initileSize + PageManager::ARCH_PAGE_SIZE;
     maxSize_      = maxSize;
     isAutoExtend_ = true;
-
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, true, false, true);
+    g_page_manager->setAttribute(process->getPageDirectory(), start, true, false, true);
 }
 
 /*!
@@ -64,7 +63,6 @@ StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize
     \date   create:2003/10/15 update:2003/10/19
 */
 StackSegment::~StackSegment() {
-
 }
 
 /*!
@@ -83,14 +81,14 @@ bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
     case PageManager::FAULT_NOT_WRITABLE:
 
-        if (!tryExtend(address)) {
+        if (!tryExtend(g_processManager->getCurrentProcess(), address)) {
             return false;
         }
         break;
 
     case PageManager::FAULT_NOT_EXIST:
 
-        if (!allocatePage(address)) {
+        if (!allocatePage(g_processManager->getCurrentProcess(), address)) {
             return false;
         }
         break;
@@ -106,9 +104,9 @@ bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
     \param  address fault point
     \author HigePon
-    \date   create:2003/10/15 update:2003/11/06
+    \date   create:2003/10/15 update:2004/01/08
 */
-bool StackSegment::tryExtend(LinearAddress address) {
+bool StackSegment::tryExtend(Process* process, LinearAddress address) {
 
     g_console->printf("extend start");
 
@@ -126,14 +124,14 @@ bool StackSegment::tryExtend(LinearAddress address) {
     }
 
     /* page allocation */
-    if (!(g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, address, true, true, true))) {
+    if (!(g_page_manager->setAttribute(process->getPageDirectory(), address, true, true, true))) {
 
-        panic("wan");
+         panic("wan");
     }
 
     /* read only */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3
-                                         , address - PageManager::ARCH_PAGE_SIZE, true, false, (bool)g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage(process->getPageDirectory()
+                                         , address - PageManager::ARCH_PAGE_SIZE, true, false, process->isUserMode());
 
     /* extention done */
     size_  += PageManager::ARCH_PAGE_SIZE;
@@ -149,9 +147,9 @@ bool StackSegment::tryExtend(LinearAddress address) {
 
     \param  address LinearAddress
     \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
+    \date   create:2003/10/15 update:2004/01/08
 */
-bool StackSegment::allocatePage(LinearAddress address) {
+bool StackSegment::allocatePage(Process* process, LinearAddress address) {
 
     if (address < start_ || address > start_ + size_) {
 
@@ -160,7 +158,7 @@ bool StackSegment::allocatePage(LinearAddress address) {
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, true, true, (bool)(g_current_process->dpl));
+    g_page_manager->allocatePhysicalPage(process->getPageDirectory(), address, true, true, process->isUserMode());
 
     return true;
 }
@@ -190,7 +188,6 @@ HeapSegment::HeapSegment(LinearAddress start, dword size) {
     \date   create:2003/10/15 update:2003/10/19
 */
 HeapSegment::~HeapSegment() {
-
 }
 
 /*!
@@ -216,7 +213,8 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, true, true, (bool)(g_current_process->dpl));
+    Process* current = g_processManager->getCurrentProcess();
+    g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
 
     return true;
 }
@@ -279,8 +277,6 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     g_console->printf("[shared] address = %x", address);
 
-    g_console->printf("%s\n", g_current_process->name);
-
     if (error != PageManager::FAULT_NOT_EXIST) {
 
         errorNumber_ = FAULT_UNKNOWN;
@@ -305,12 +301,13 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
 
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
+    Process* current = g_processManager->getCurrentProcess();
 
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
-        mapResult = g_page_manager->allocatePhysicalPage((PageEntry*)(g_current_process->cr3),address, true, true, true);
+        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     } else {
-        mapResult = g_page_manager->allocatePhysicalPage((PageEntry*)(g_current_process->cr3), address, mappedAddress, true, true, true);
+        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, true, true);
     }
     return (mapResult != -1);
 }
@@ -320,25 +317,22 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     \param  id ID for SharedMemorySegment
     \author HigePon
-    \date   create:2003/10/29 update:
+    \date   create:2003/10/29 update:2004/01/08
 */
-SharedMemorySegment* SharedMemorySegment::find(SharedMemorySegment* head, dword id) {
+SharedMemorySegment* SharedMemorySegment::find(Process* process, dword id) {
 
-    SharedMemorySegment* current;
-    SharedMemorySegment* result = NULL;
+    List<SharedMemorySegment*>* list = process->getSharedList();
 
-    for (current = head; ; current = (SharedMemorySegment*)current->getNext()) {
+    for (dword i = 0; i < list->size(); i++) {
+
+        SharedMemorySegment* segment = list->get(i);
 
         /* found */
-        if (id == current->getId()) {
-
-            result = current;
-            break;
+        if (id == segment->getId()) {
+            return segment;
         }
-
-        if ((SharedMemorySegment*)current->getNext() == head) break;
     }
-    return result;
+    return (SharedMemorySegment*)NULL;
 }
 
 /*----------------------------------------------------------------------
@@ -348,29 +342,15 @@ SharedMemorySegment* SharedMemorySegment::find(SharedMemorySegment* head, dword 
 /*!
     \brief initilize SharedMemoryObject
 
-    \author HigePon
-    \date   create:2003/10/25 update:
-*/
-SharedMemoryObject::SharedMemoryObject() {
-
-    /* dummy for g_sharedMemoryList */
-}
-
-/*!
-    \brief initilize SharedMemoryObject
-
     \param id   shared memory object ID of identify
     \param size shared memory size
 
     \author HigePon
-    \date   create:2003/10/25 update:
+    \date   create:2003/10/25 update:2003/01/08
 */
 SharedMemoryObject::SharedMemoryObject(dword id, dword size) {
 
-    if (size == 0) return;
-
-    /* check dup id */
-
+    if (size <= 0) return;
 
     physicalPageCount_ = size / 4096;
     physicalPages_     = new int[physicalPageCount_];
@@ -396,7 +376,6 @@ SharedMemoryObject::~SharedMemoryObject() {
     }
 
     delete(physicalPages_);
-
     return;
 }
 
@@ -404,12 +383,11 @@ SharedMemoryObject::~SharedMemoryObject() {
     \brief set up karnel for using sharedMemoryObject
 
     \author HigePon
-    \date   create:2003/10/25 update:
+    \date   create:2003/10/25 update:2004/01/08
 */
 void SharedMemoryObject::setup() {
 
-    g_sharedMemoryList = new SharedMemoryObject();
-    QueueManager::init(g_sharedMemoryList);
+    g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
 }
 
 /*!
@@ -418,26 +396,22 @@ void SharedMemoryObject::setup() {
     \param id id for sharedMemoryObject
 
     \author HigePon
-    \date   create:2003/10/25 update:
+    \date   create:2003/10/25 update:2004/01/08
 */
 SharedMemoryObject* SharedMemoryObject::find(dword id) {
 
     SharedMemoryObject* current;
-    SharedMemoryObject* result = NULL;
 
-    for (current = g_sharedMemoryList; ; current = (SharedMemoryObject*)current->getNext()) {
+    for (dword i = 0; i < g_sharedMemoryObjectList->size(); i++) {
+
+        current = g_sharedMemoryObjectList->get(i);
 
         /* found */
         if (id == current->getId()) {
-
-            result = current;
-            break;
+            return current;
         }
-
-        if ((SharedMemoryObject*)current->getNext() == g_sharedMemoryList) break;
     }
-
-    return result;
+    return (SharedMemoryObject*)NULL;
 }
 
 /*!
@@ -448,7 +422,7 @@ SharedMemoryObject* SharedMemoryObject::find(dword id) {
     \param id   id for sharedMemoryObject
     \param size size of sharedMemory
     \author HigePon
-    \date   create:2003/10/25 update:
+    \date   create:2003/10/25 update:2004/01/08
 */
 bool SharedMemoryObject::open(dword id, dword size) {
 
@@ -459,11 +433,9 @@ bool SharedMemoryObject::open(dword id, dword size) {
 
         target = new SharedMemoryObject(id, size);
         checkMemoryAllocate(target, "SharedMemoryObject memory allcate target");
-
-        QueueManager::addToPrevious(g_sharedMemoryList, target);
+        g_sharedMemoryObjectList->add(target);
 
     } else {
-
         if (target->getSize() != size) return false;
     }
 
@@ -478,20 +450,21 @@ bool SharedMemoryObject::open(dword id, dword size) {
     \param address attach point at process space
 
     \author HigePon
-    \date   create:2003/10/25 update:
+    \date   create:2003/10/25 update:2004/01/08
 */
-bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAddress address) {
+bool SharedMemoryObject::attach(dword id, Process* process, LinearAddress address) {
 
     SharedMemorySegment* segment;
     SharedMemoryObject* target = find(id);
-    if (target == NULL) return false;
+    if (target == NULL) {
+        return false;
+    }
 
     segment = new SharedMemorySegment(address, target->getSize(), target);
     if (segment == NULL) return false;
 
-    QueueManager::addToPrevious(process->shared, segment);
+    process->getSharedList()->add(segment);
     target->setAttachedCount(target->getAttachedCount() + 1);
-
     return true;
 }
 
@@ -502,29 +475,27 @@ bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAdd
     \param process process
 
     \author HigePon
-    \date   create:2003/10/25 update:2003/10/29
+    \date   create:2003/10/25 update:2004/01/08
 */
-bool SharedMemoryObject::detach(dword id, struct ProcessInfo* process) {
+bool SharedMemoryObject::detach(dword id, Process* process) {
 
     SharedMemoryObject* target = find(id);
     if (target == NULL) return false;
 
-    SharedMemorySegment* segment = SharedMemorySegment::find(process->shared, id);
+    SharedMemorySegment* segment = SharedMemorySegment::find(process, id);
     if (segment == NULL) return false;
 
-    g_page_manager->setAbsent((PageEntry*)process->cr3, process->shared->getStart(), process->shared->getSize());
-
-    QueueManager::remove(segment);
+    /* destroy */
+    g_page_manager->setAbsent(process->getPageDirectory(), segment->getStart(), segment->getSize());
+    process->getSharedList()->remove(segment);
     delete(segment);
 
     target->setAttachedCount(target->getAttachedCount() - 1);
 
     /* should be removed */
     if (target->getAttachedCount() == 0) {
-
-        QueueManager::remove(target);
+        g_sharedMemoryObjectList->remove(target);
         delete(target);
     }
-
     return true;
 }

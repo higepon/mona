@@ -12,14 +12,13 @@
 #ifndef _MONA_PAGE_MANAGER_
 #define _MONA_PAGE_MANAGER_
 
-#include <Queue.h>
 #include <BitMap.h>
 
 typedef dword PageEntry;
 typedef dword LinearAddress;
 typedef dword PhysicalAddress;
 
-class PageDirectory : public Queue {
+class PageDirectory {
 
     PageEntry* pageEntry_;
 };

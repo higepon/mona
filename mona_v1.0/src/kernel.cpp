@@ -1,9 +1,9 @@
 /*!
     COPYRIGHT AND PERMISSION NOTICE
 
-    Copyright (c) 2002,2003 Higepon
-    Copyright (c) 2002,2003 Guripon
-    Copyright (c) 2003      .mjt
+    Copyright (c) 2002,2003,2004 Higepon
+    Copyright (c) 2002,2003      Guripon
+    Copyright (c) 2003           .mjt
 
     All rights reserved.
 
@@ -69,6 +69,32 @@ void test83() {for(;;);}
 void test84() {for(;;);}
 void test85() {for(;;);}
 
+extern int pos_x;
+extern int pos_y;
+
+void printInfo() {
+
+//     g_console->printf("free[%d]kb used[%d]kb", km.getFreeMemorySize() / 1024, km.getUsedMemorySize() / 1024);
+//     g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", false));
+
+    for (;;) {
+
+        while (Semaphore::down(&g_semaphore_console));
+        int tempx = pos_x;
+        int tempy = pos_y;
+
+        pos_x = 0;
+        pos_y = 3;
+
+        g_processManager->printProcess();
+
+        pos_x = tempx;
+        pos_y = tempy;
+        Semaphore::up(&g_semaphore_console);
+
+    }
+}
+
 /*!
     \brief  mona kernel start at this point
 
@@ -108,6 +134,9 @@ void startKernel(void) {
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024); //
 
+    /* shared memory object */
+    SharedMemoryObject::setup();
+
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup();
@@ -119,53 +148,46 @@ void startKernel(void) {
     /* add testProces1(testThread1) */
      Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST1");
      g_processManager->add(testProcess1);
-     Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
+     Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printInfo);
      g_processManager->join(testProcess1, testThread1);
 
      /* add testProces2(testThread2) */
-//      Process* testProcess2 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST2");
-//      g_processManager->add(testProcess2);
-//      Thread*   testThread2  = g_processManager->createThread(testProcess2, (dword)printBanner);
-//      g_processManager->join(testProcess2, testThread2);
+     Process* testProcess2 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST2");
+     g_processManager->add(testProcess2);
+     Thread*   testThread2  = g_processManager->createThread(testProcess2, (dword)test81);
+     g_processManager->join(testProcess2, testThread2);
 
-//     /* add testProces3(testThread3) */
-//     Process* testProcess3 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST3");
-//     g_processManager->add(testProcess3);
-//     Thread*   testThread3  = g_processManager->createThread(testProcess3, (dword)printBanner);
-//     g_processManager->join(testProcess3, testThread3);
+    /* add testProces3(testThread3) */
+    Process* testProcess3 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST3");
+    g_processManager->add(testProcess3);
+    Thread*   testThread3  = g_processManager->createThread(testProcess3, (dword)test81);
+    g_processManager->join(testProcess3, testThread3);
 
-//     /* add testProces4(testThread4) */
-//     Process* testProcess4 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST4");
-//     g_processManager->add(testProcess4);
-//     Thread*   testThread4  = g_processManager->createThread(testProcess4, (dword)printBanner);
-//     g_processManager->join(testProcess4, testThread4);
+    /* add testProces4(testThread4) */
+    Process* testProcess4 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST4");
+    g_processManager->add(testProcess4);
+    Thread*   testThread4  = g_processManager->createThread(testProcess4, (dword)test81);
+    g_processManager->join(testProcess4, testThread4);
 
-//     /* add testProces5(testThread5) */
-//     Process* testProcess5 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST5");
-//     g_processManager->add(testProcess5);
-//     Thread*   testThread5  = g_processManager->createThread(testProcess5, (dword)printBanner);
-//     g_processManager->join(testProcess5, testThread5);
+    /* add testProces5(testThread5) */
+    Process* testProcess5 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST5");
+    g_processManager->add(testProcess5);
+    Thread*   testThread5  = g_processManager->createThread(testProcess5, (dword)test81);
+    g_processManager->join(testProcess5, testThread5);
 
-//     /* add testProces6(testThread6) */
-//     Process* testProcess6 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST6");
-//     g_processManager->add(testProcess6);
-//     Thread*   testThread6  = g_processManager->createThread(testProcess6, (dword)printBanner);
-//     g_processManager->join(testProcess6, testThread6);
+    /* add testProces6(has no thread) */
+    Process* testProcess6 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST6");
+    g_processManager->add(testProcess6);
 
-//     /* add testProces7(testThread7) */
-//     Process* testProcess7 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST7");
-//     g_processManager->add(testProcess7);
-//     Thread*   testThread7  = g_processManager->createThread(testProcess7, (dword)printBanner);
-//     g_processManager->join(testProcess7, testThread7);
-
-//     Thread*   testThread8  = g_processManager->createThread(testProcess7, (dword)printBanner);
-//     g_processManager->join(testProcess7, testThread8);
-
-//     Thread*   testThread9  = g_processManager->createThread(testProcess7, (dword)printBanner);
-//     g_processManager->join(testProcess7, testThread9);
-
-//     Thread*   testThread10  = g_processManager->createThread(testProcess7, (dword)printBanner);
-//     g_processManager->join(testProcess7, testThread10);
+    /* add testProces7(testThread7) */
+    Process* testProcess7 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST7");
+    g_processManager->add(testProcess7);
+    Thread*   testThread7  = g_processManager->createThread(testProcess7, (dword)test81);
+    g_processManager->join(testProcess7, testThread7);
+   Thread*   testThread71  = g_processManager->createThread(testProcess7, (dword)test81);
+    g_processManager->join(testProcess7, testThread71);
+   Thread*   testThread72  = g_processManager->createThread(testProcess7, (dword)test81);
+    g_processManager->join(testProcess7, testThread72);
 
     /* add testProces8(testThread8) */
     Process* testProcess8 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST8");

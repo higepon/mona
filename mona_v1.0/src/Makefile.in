@@ -32,16 +32,17 @@ SOURCES     = cstart.cpp            \
               syscalls.cpp          \
               BitMap.cpp            \
               FAT12.cpp             \
-              test_higepon.cpp      \
+              Process.cpp           \
               info.cpp              \
               GDTUtil.cpp           \
               IDTUtil.cpp           \
-              Process.cpp           \
               PageManager.cpp       \
               elf.cpp               \
               z.cpp                 \
               MemoryManager.cpp     \
-              sysresource.cpp
+              sysresource.cpp       \
+              Segments.cpp          \
+              test_higepon.cpp      \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

@@ -210,16 +210,6 @@ PageEntry* PageManager::createNewPageDirectory() {
 
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     setAttribute(directory, true, true, false, (PhysicalAddress)table);
-
-    //    dword directoryIndex = getDirectoryIndex(0xFFFFFC00);
-    //dword tableIndex     = getTableIndex(0xFFFFFC00);
-
-    /* test code. stack is always 0xFFFFFFFF */
-    //    table = allocatePageTable();
-    //    memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    //    setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-    //    allocatePhysicalPage(&(table[tableIndex]), true, true, true);
-
     return directory;
 }
 
@@ -303,64 +293,56 @@ PageEntry* PageManager::allocatePageTable() const {
     \param  address linear address of page fault point
     \param  errror  fault type
     \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
+    \date   create:2003/10/15 update:2004/01/08
 */
 bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
-//     PageEntry* table;
-//     dword directoryIndex = getDirectoryIndex(address);
-//     dword tableIndex     = getTableIndex(address);
-    //    byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
+    PageEntry* table;
+    dword directoryIndex = getDirectoryIndex(address);
+    dword tableIndex     = getTableIndex(address);
+    Process* current     = g_processManager->getCurrentProcess();
 
-//     SharedMemorySegment* shared;
+    /* search shared memory segment */
+    List<SharedMemorySegment*>* list = current->getSharedList();
+    for (dword i = 0; i < list->size(); i++) {
+        SharedMemorySegment* segment = list->get(i);
 
-//     /* for each shared segment */
-//     for (shared = g_current_process->shared; ; shared = (SharedMemorySegment*)shared->getNext()) {
+        if (segment->inRange(address)) {
+            return segment->faultHandler(address, FAULT_NOT_EXIST);
+        }
+    }
 
-//         /* found */
-//         if (shared->inRange(address)) {
+    /* heap */
+    HeapSegment* heap = current->getHeapSegment();
+    if (heap->inRange(address)) {
+        return heap->faultHandler(address, FAULT_NOT_EXIST);
+    }
 
-//             return shared->faultHandler(address, FAULT_NOT_EXIST);
-//         }
+    /* physical page not exist */
+    if (error & ARCH_FAULT_NOT_EXIST) {
 
-//         if ((SharedMemorySegment*)shared->getNext() == g_current_process->shared) break;
-//     }
+        if (isPresent(&(g_page_directory[directoryIndex]))) {
 
-//     if (g_current_process->heap->inRange(address)) {
+            table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+        } else {
 
-//         return g_current_process->heap->faultHandler(address, FAULT_NOT_EXIST);
-//     }
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+        }
 
-//     if (g_current_process->stack->inRange(address)) {
+        bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
+        if (allocateResult) flushPageCache();
 
-//         return g_current_process->stack->faultHandler(address, (error & ARCH_FAULT_NOT_EXIST)  ? FAULT_NOT_EXIST : FAULT_NOT_WRITABLE);
-//     }
+        return allocateResult;
 
-//     /* physical page not exist */
-//     if (error & ARCH_FAULT_NOT_EXIST) {
+    /* access falut */
+    } else {
 
-//         if (isPresent(&(g_page_directory[directoryIndex]))) {
-
-//             table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-//         } else {
-
-//             table = allocatePageTable();
-//             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-//             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-//         }
-
-//         bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
-//         if (allocateResult) flushPageCache();
-
-//         return allocateResult;
-
-//     /* access falut */
-//     } else {
-
-//         g_console->printf("access denied.Process %s killed", g_current_process->name);
-//         g_process_manager->kill(g_current_process);
-//         return true;
-//     }
+        g_console->printf("access denied.Process %s killed", current->getName());
+        g_processManager->kill(current);
+        return true;
+    }
     return true;
 }
 

@@ -1,3 +1,31 @@
+2004-01-08  higepon  <higepon@users.sourceforge.jp>
+
+        * loadProcessデバッグ中
+
+        * カーネルモードで複数スレッドの実行で動作がおかしいところがあったが
+          設定していた関数がretしていたのが原因だった。
+
+        * スレッドのスイッチをThreadManagerのメンバ関数とした。
+
+        * スレッド生成時にスタックを割り当てるようにした。
+          1プロセス複数スレッドもカーネルモードであれば順調に動作している。
+
+        * スレッド動作の様子がわかるようにProcessManger::printAllProcess()を追加
+
+        * プロセス生成時にHeapSegmentを割当てるように変更。
+
+        * SharedMemorySegment、Queueを継承しないようにしたListクラスを使用
+
+        * Segments.cpp：大幅に書換え(スレッド対応)
+
+        * Queue.h廃止。
+
+        * ページフォルトハンドラのスレッド対応
+
+        * スレッド破棄時のSharedMemorySegmentのdetach処理
+
+        * Messageのsend/receiveのスレッド対応
+
 2004-01-06  higepon  <higepon@users.sourceforge.jp>
 
         * ihandlers.cpp: スレッド切り替え(カーネルモード)実装中。
