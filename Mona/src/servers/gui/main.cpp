@@ -15,7 +15,8 @@ enum
 	MSG_GUISERVER_RETURNFONT,
 	MSG_GUISERVER_DECODEIMAGE,
 	MSG_GUISERVER_RETURNIMAGE,
-	MSG_GUISERVER_DISPOSEIMAGE
+	MSG_GUISERVER_DISPOSEIMAGE,
+	MSG_GUISERVER_SETWALLPAPER
 };
 
 static int SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3)
@@ -24,9 +25,6 @@ static int SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg
 	Message::create(&msg, header, arg1, arg2, arg3, NULL);
 	return Message::send(to, &msg);
 }
-
-static dword font_handle = 0;
-static int font_size = 0;
 
 class MemoryInfo
 {
@@ -62,6 +60,8 @@ public:
 	}
 };
 
+static MemoryInfo* default_font = NULL;
+
 static MemoryInfo* ReadFile(const char* file, bool prompt = false)
 {
 	FileInputStream fis((char*)file);
@@ -90,9 +90,7 @@ static void ReadFont(const char* file)
 	MemoryInfo* mi = ReadFile(file, true);
 	if (mi == NULL) return;
 	
-	font_handle = mi->Handle;
-	font_size = mi->Size;
-	delete mi;
+	this->default_font = mi;
 }
 
 static MemoryInfo* ReadBitmap(MemoryInfo* mi)
@@ -209,7 +207,7 @@ int MonaMain(List<char*>* pekoe)
 		switch (msg.header)
 		{
 			case MSG_GUISERVER_GETFONT:
-				SendMessage(msg.from, MSG_GUISERVER_RETURNFONT, font_handle, font_size, 0);
+				SendMessage(msg.from, MSG_GUISERVER_RETURNFONT, default_font->Handle, default_font->Size, 0);
 				break;
 			case MSG_GUISERVER_DECODEIMAGE:
 			{
@@ -228,9 +226,12 @@ int MonaMain(List<char*>* pekoe)
 			case MSG_GUISERVER_DISPOSEIMAGE:
 				MemoryMap::unmap(msg.arg1);
 				break;
+			case MSG_GUISERVER_SETWALLPAPER:
+				break;
 		}
 	}
 	
-	MemoryMap::unmap(font_handle);
+	MemoryMap::unmap(default_font->Handle);
+	delete default_font;
 	return 0;
 }
