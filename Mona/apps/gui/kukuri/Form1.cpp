@@ -58,7 +58,8 @@ private:
     _P<Timer> timer;
     int x;
     int y;
-    double angle;
+    double cos;
+    double sin;
 
 public:
     Form1()
@@ -112,17 +113,15 @@ private:
 
         if ((int)distance == 0) return;
 
-        double cos = (g_x - x) / distance;
-        double sin = (g_y - y) / distance;
-
-        this->angle = acos(cos);
+        this->cos = (g_x - this->x) / distance;
+        this->sin = (g_y - this->y) / distance;
 
         if (v > distance) v = distance;
 
-        x = (int)(v * cos + x);
-        y = (int)(v * sin + y);
+        this->x = (int)(v * this->cos + this->x);
+        this->y = (int)(v * this->sin + this->y);
 
-        this->set_Location(Point(x, y));
+        this->set_Location(Point(this->x, this->y));
         this->Refresh();
     }
 
@@ -131,7 +130,7 @@ private:
         Form::OnPaint();
         _P<Graphics> g = this->CreateGraphics();
         g->FillEllipse(Color::get_Blue(), 0, 0, 14, 14);
-        g->FillEllipse(Color::get_Red(), 7 * cos(angle), 7 * sin(angle), 3, 3);
+        g->FillEllipse(Color::get_Red(), 2 * this->cos + 7, 2 * this->sin + 7, 3, 3);
         g->Dispose();
     }
 
