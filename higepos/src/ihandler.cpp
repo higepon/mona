@@ -27,6 +27,8 @@ void keyStrokeHandler() {
 
     _sysPrint("key stroke\n");
 
+    char key = inportb(0x60);
+
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
 
