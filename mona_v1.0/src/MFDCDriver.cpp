@@ -126,7 +126,7 @@ void MFDCDriver::initilize() {
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
     //    dmabuff_ = (byte*)0x400;
 
-    console_->printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
+    console_->printf("dma buff_=[%x]=[%dkb]\n", (dword)dmabuff_, ((dword)dmabuff_/1024));
 
     /* dma buff should be 64kb < dma buff < 16Mb */
     if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
@@ -159,9 +159,10 @@ void MFDCDriver::initilize() {
     recalibrate();
     //    printStatus("after recalibrate2");
     //    write(0, 0, 1);
-    while (true);
+
     printStatus("before read");
     read(0, 0, 1);
+    while (true);
     read(0, 0, 1);
 
     motor(OFF);
