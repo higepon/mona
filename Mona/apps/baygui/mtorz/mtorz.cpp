@@ -34,65 +34,43 @@ static int col = 0;
 class Mtorz : public Window
 {
 public:
-	_P<Label> label1;
-	_P<Timer> timer1;
+	Label *label1;
 
-	Mtorz()
-	{
-		label1 = new Label();
-
+	Mtorz() {
 		setBackground(osapal[8]);
 		setRect(200, 64, 14 * 8 + 12, 4 * 16 + 28);
 		setTitle("M t . o r z 0");
-
-		/* ＜Xpos, Ypos, Xsize, Ysize＞ */
-		label1->setRect(20, 8, 12 * 8, 3 * 16);
-		label1->setBackground(osapal[8]);
-		label1->setText(
+		label1 = new Label(
 			"　　　orz\n"
 			"　　orz orz\n"
 			"　orz orz orz\n"
 			"orz orz orz orz");
-
-		add(label1.get());
-
-		timer1 = new Timer();
-		timer1->setInterval(500);
-		ChangeColor();
+		label1->setRect(20, 8, 12 * 8, 3 * 16);
+		label1->setBackground(osapal[8]);
+		add(label1);
+		setTimer(500);
 	}
 
-	void onEvent(Event *e)
-	{
+	void onEvent(Event *e) {
 		if (e->type == TIMER) {
 			ChangeColor();
 		}
-		Window::onEvent(e);
-	}
-
-	virtual void onStart()
-	{
-		Window::onStart();
-		timer1->start();
-	}
-
-	virtual void onExit()
-	{
-		timer1->dispose();
-		Window::onExit();
 	}
 
 private:
-	void ChangeColor()
-	{
+	void ChangeColor() {
 		label1->setForeground(osapal[col]);
+		label1->repaint();
 		if (++col > 7) {
 			col = 0;
 		}
+		setTimer(500);
 	}
 };
 
 int MonaMain(List<char*>* pekoe) {
 	Mtorz *mtorz = new Mtorz();
 	mtorz->run();
+	delete(mtorz);
 	return 0;
 }

@@ -11,6 +11,7 @@ all:
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
 
 install:
 	@cd gbball && $(MAKE) $@
@@ -25,6 +26,7 @@ install:
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
 
 clean: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -39,6 +41,7 @@ clean: touchdepend
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
 
 depend: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -53,6 +56,7 @@ depend: touchdepend
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
+	@cd mtorz && $(MAKE) $@
 
 distclean:
 	rm -f gbball/dependencies
@@ -67,6 +71,7 @@ distclean:
 	rm -f guitest1/dependencies
 	rm -f gversion/dependencies
 	rm -f mblupin/dependencies
+	rm -f mtorz/dependencies
 
 touchdepend:
 	touch gbball/dependencies
@@ -80,4 +85,5 @@ touchdepend:
 	touch grunner/dependencies
 	touch guitest1/dependencies
 	touch gversion/dependencies
-	touch mblupin/dependencies	
+	touch mblupin/dependencies
+	touch mtorz/dependencies

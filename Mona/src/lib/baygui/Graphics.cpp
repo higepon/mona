@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Graphics::Graphics()
 {
 	tx = ty = cx = cy = cw = ch = 0;
-	rgb24 = 0;
-	fontStyle = FONT_PLAIN;
+	this->rgb24 = 0;
+	this->fontStyle = FONT_PLAIN;
 	this->image = NULL;
 }
 
@@ -40,8 +40,8 @@ Graphics::Graphics()
 Graphics::Graphics(Image *image)
 {
 	tx = ty = cx = cy = 0;
-	rgb24 = 0;
-	fontStyle = FONT_PLAIN;
+	this->rgb24 = 0;
+	this->fontStyle = FONT_PLAIN;
 	this->image = image;
 	this->cw = image->getWidth();
 	this->ch = image->getHeight();
@@ -152,14 +152,14 @@ void Graphics::drawCircle(int x0, int y0, int r){
 	f = -2 * r + 3;
 
 	while (x >= y) {
-		drawPixel(x0 + x, y0 + y, rgb24);
-		drawPixel(x0 - x, y0 + y, rgb24);
-		drawPixel(x0 + y, y0 + x, rgb24);
-		drawPixel(x0 - y, y0 + x, rgb24);
-		drawPixel(x0 - x, y0 - y, rgb24);
-		drawPixel(x0 - y, y0 - x, rgb24);
-		drawPixel(x0 + y, y0 - x, rgb24);
-		drawPixel(x0 + x, y0 - y, rgb24);
+		drawPixel(x0 + x, y0 + y, this->rgb24);
+		drawPixel(x0 - x, y0 + y, this->rgb24);
+		drawPixel(x0 + y, y0 + x, this->rgb24);
+		drawPixel(x0 - y, y0 + x, this->rgb24);
+		drawPixel(x0 - x, y0 - y, this->rgb24);
+		drawPixel(x0 - y, y0 - x, this->rgb24);
+		drawPixel(x0 + y, y0 - x, this->rgb24);
+		drawPixel(x0 + x, y0 - y, this->rgb24);
 		if (f >= 0) {
 			x--;
 			f -= 4 * x;
@@ -201,18 +201,18 @@ void Graphics::drawText(char *str, int x, int y)
 					if ((fp[pos] & bit) != 0) {
 						// 通常書体
 						if (getFontStyle() == FONT_PLAIN) {
-							drawPixel(x + w + k, y + h + j, rgb24);
+							drawPixel(x + w + k, y + h + j, this->rgb24);
 						// 太字体
 						} else if (getFontStyle() == FONT_BOLD) {
-							drawPixel(x + w + k, y + j, rgb24);
-							drawPixel(x + w + k + 1, y + j, rgb24);
+							drawPixel(x + w + k, y + j, this->rgb24);
+							drawPixel(x + w + k + 1, y + j, this->rgb24);
 						// 斜字体
 						} else if (getFontStyle() == FONT_ITALIC) {
-							drawPixel(x + w + k + (height - j) / 4, y + j, rgb24);
+							drawPixel(x + w + k + (height - j) / 4, y + j, this->rgb24);
 						// 太字体＋斜字体
 						} else if (getFontStyle() == FONT_BOLD | FONT_ITALIC) {
-							drawPixel(x + w + k + (height - j) / 4, y + j, rgb24);
-							drawPixel(x + w + k + (height - j) / 4 + 1, y + j, rgb24);
+							drawPixel(x + w + k + (height - j) / 4, y + j, this->rgb24);
+							drawPixel(x + w + k + (height - j) / 4 + 1, y + j, this->rgb24);
 						}
 					}
 					bit <<= 1;
@@ -243,12 +243,12 @@ void Graphics::fillCircle(int x0, int y0, int r)
 
 	while(x >= y) {
 		for (i = x0 - x; i <= x0 + x; i ++) {
-			drawPixel(i, y0 + y, rgb24);
-			drawPixel(i, y0 - y, rgb24);
+			drawPixel(i, y0 + y, this->rgb24);
+			drawPixel(i, y0 - y, this->rgb24);
 		}
 		for (i = x0 - y; i <= x0 + y; i ++) {
-			drawPixel(i, y0 - x, rgb24);
-			drawPixel(i, y0 + x, rgb24);
+			drawPixel(i, y0 - x, this->rgb24);
+			drawPixel(i, y0 + x, this->rgb24);
 		}
 		if (f >= 0) {
 			x--;
@@ -320,7 +320,7 @@ void Graphics::setClip(int cx, int cy, int cw, int ch)
  */
 void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
 {
-	rgb24 = 0xff000000 | r << 16 | g << 8 | b;
+	this->rgb24 = 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
 /**
@@ -329,7 +329,7 @@ void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
  */
 void Graphics::setColor(unsigned int color)
 {
-	rgb24 = 0xff000000 | color;
+	this->rgb24 = 0xff000000 | color;
 }
 
 /**
