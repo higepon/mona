@@ -6,6 +6,7 @@ all:
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 
+
 install:
 	@cd noiz2bg; $(MAKE) $@
 	@cd reversi; $(MAKE) $@
@@ -13,6 +14,7 @@ install:
 #	@cd clock; $(MAKE) $@
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd tube; $(MAKE) $@
 
 clean:
 	@cd noiz2bg; $(MAKE) $@
@@ -21,6 +23,7 @@ clean:
 #	@cd clock; $(MAKE) $@
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd tube; $(MAKE) $@
 
 depend:
 	@cd noiz2bg; $(MAKE) $@
@@ -29,3 +32,4 @@ depend:
 #	@cd clock; $(MAKE) $@
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd tube; $(MAKE) $@

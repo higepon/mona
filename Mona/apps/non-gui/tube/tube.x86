@@ -1,0 +1,266 @@
+
+; 256bytes demos archive Baze氏作のtubeを移植
+; オリジナル入手先 http://www.256b.com
+
+; 目標 1024bytes…
+; 何も書いてないのに 次リリースの予定に入ってるなんて ひげぽん非道いや
+
+	bits	32
+
+SYSPRINT		equ		0x0001			; テキスト表示
+LEMMINGS		equ		0x0002			; レミングス
+GETVRAMINFO		equ		0x0011			; VRAM取得
+
+%if 0
+SCREEN_W		equ		160
+SCREEN_H		equ		160
+%else
+SCREEN_W		equ		240
+SCREEN_H		equ		240
+%endif
+
+		struc	tube_t
+.fpuwork	resq	1
+.angle		resq	1
+.step		resd	1
+.yalign		resd	1
+.vram		resd	1
+.bpp		resd	1
+.width		resd	1
+.height		resd	1
+.r240		resq	1
+.r128ppi	resq	1
+.anglestep	resq	1
+.size
+		endstruc
+
+screen		equ		0xc0000000
+palettes	equ		(screen + (SCREEN_W * SCREEN_H))
+texture		equ		(palettes + (0x100 * 4))
+dataend		equ		(texture + 0x10000)
+
+section .text
+
+%ifdef BUILD_ON_LINUX
+	global	user_start
+user_start:
+%else
+	global	_user_start
+_user_start:
+%endif
+				sub		esp, byte (tube_t.size)
+
+				; FPUチェック
+				xor		eax, eax
+				fninit
+				fnstcw	word [esp]
+				cmp		word [esp], 0x37f
+				mov		esi, errfpumsg
+				jne		short .lemmings
+
+				; VRAM取得
+				mov		ebx, GETVRAMINFO
+				lea		esi, [esp + tube_t.vram]
+				int		0x80
+				mov		eax, [esp + tube_t.bpp]
+				cmp		eax, byte 24
+				mov		esi, errvrammsg
+				jae		short .main
+
+				; プロセス終了
+.lemmings:		mov		ebx, SYSPRINT
+				int		0x80
+				mov		ebx, LEMMINGS
+				int		0x80
+
+				; めいん～
+.main:			cld
+				shr		eax, 3
+				mov		edx, [esp + tube_t.width]
+				sub		edx, SCREEN_W
+				imul	edx
+				mov		[esp + tube_t.yalign], eax
+
+				; rdataコピー
+				mov		esi, const_tbl
+				lea		edi, [esp + tube_t.r240]
+				xor		ecx, ecx
+				mov		cl, 6
+				rep movsd
+
+				; パレット作成
+makepalettes:	mov		edi, palettes
+;				xor		ecx, ecx
+.lp1:			mov		eax, ecx
+				imul	eax
+				shr		eax, 7
+				mov		ah, cl
+				rcl		eax, 9
+				stosd
+				inc		ecx
+				cmp		ecx, byte 0x7f
+				jbe		short .lp1
+				dec		ecx
+				xor		eax, eax
+.lp2:			imul	eax, ecx, 0x000201
+				stosd
+				dec		ecx
+				jns		short .lp2
+
+				; テクスチャ作成 (乱数が面倒なんでオリジナルから借りて来る)
+maketexture:	xor		ecx, ecx
+;				mov		edi, texture
+.lp1:			mov		[edi + ecx], cl
+				inc		ecx
+				cmp		cx, byte 0
+				jne		short .lp1
+				mov		dl, 0xc9
+				xor		eax, eax
+.lp2:			lea		esi, [ecx + 255]
+				movzx	esi, si
+				movzx	ebx, cx
+				add		eax, ecx
+				rol		ax, cl
+				mov		dh, al
+				sar		dh, 5
+				adc		dl, dh
+				adc		dl, [edi + esi]
+				shr		dl, 1
+				mov		[edi + ebx], dl
+				not		bh
+				mov		[edi + ebx], dl
+				loop	.lp2
+
+				; 計算～
+updatescreen:	mov		esi, [esp + tube_t.step]
+				add		byte [esp + tube_t.step + 1], 8
+				mov		ebx, screen
+				fld		qword [esp + tube_t.angle]
+				fadd	qword [esp + tube_t.anglestep]
+				fst		qword [esp + tube_t.angle]
+				fsincos
+				mov		edi, -(SCREEN_H / 2)
+.lp2:			mov		ebp, -(SCREEN_W / 2)
+.lp1:			mov		[esp], ebp
+				fild	dword [esp]
+				mov		[esp], edi
+				fild	dword [esp]
+				fld		st0				; y
+				fmul	st0, st3
+				fld		st2				; x
+				fmul	st0, st5
+				fsubp	st1, st0
+				fxch	st0, st2
+				fmul	st0, st3
+				fxch	st0, st1
+				fmul	st0, st4
+				faddp	st1, st0
+				fld		qword [esp + tube_t.r240]
+%if 1
+				fld		st1				; y
+				fmul	st0, st4
+				fld		st1				; z
+				fmul	st0, st6
+				fsubp	st1, st0
+				fxch	st0, st1
+				fmul	st0, st4
+				fxch	st0, st2
+				fmul	st0, st5
+				faddp	st2, st0
+%endif
+				fld		st2
+				fmul	st0, st0
+				fld		st2
+				fmul	st0, st0
+				faddp	st1, st0
+				fsqrt
+				fdivp	st1, st0
+				fxch	st0, st2
+				fpatan
+				fmul	qword [esp + tube_t.r128ppi]
+				fistp	dword [esp]
+				mov		dl, [esp]
+				fmul	qword [esp + tube_t.r128ppi]
+				fistp	dword [esp]
+				mov		dh, [esp]
+				lea		eax, [esi + edx]
+				add		al, ah
+				and		al, 64
+				mov		ah, 10
+				je		short .store
+				shl		edx, 2
+				lea		eax, [esi + edx]
+				sub		al, ah
+				mov		ah, 16
+				jns		short .store
+				add		edx, edx
+				mov		ah, 48
+.store:			mov		al, byte [ebx]
+				sar		al, 2
+				sub		al, ah
+				lea		edx, [esi + edx]
+				movzx	edx, dx
+				add		al, [texture + edx]
+				mov		[ebx], al
+				inc		ebx
+				inc		ebp
+				cmp		ebp, byte (SCREEN_W / 2)
+				jl		.lp1
+				inc		edi
+				cmp		edi, byte (SCREEN_H / 2)
+				jl		.lp2
+				fstp	st0
+				fstp	st0
+
+				; んで VRAMに反映～
+vramdraw:		mov		ecx, [esp + tube_t.vram]
+;				mov		ebx, palettes
+				mov		edx, screen
+				mov		edi, SCREEN_H
+				cmp		[esp + tube_t.bpp], byte 24
+				je		short vramdraw24
+
+vramdraw32:
+.lp2:			mov		esi, SCREEN_W
+.lp1:			movzx	eax, byte [edx]
+				inc		edx
+				mov		eax, [ebx + eax * 4]
+				mov		[ecx], eax
+				add		ecx, byte 4
+				dec		esi
+				jne		short .lp1
+				add		ecx, [esp + tube_t.yalign]
+				dec		edi
+				jne		short .lp2
+
+				jmp		updatescreen
+
+vramdraw24:
+.lp2:			mov		esi, SCREEN_W
+.lp1:			movzx	eax, byte [edx]
+				inc		edx
+				mov		eax, [ebx + eax * 4]
+				mov		[ecx], ax
+				shr		eax, 16
+				mov		[ecx+2], al
+				add		ecx, byte 3
+				dec		esi
+				jne		short .lp1
+				add		ecx, [esp + tube_t.yalign]
+				dec		edi
+				jne		short .lp2
+
+				jmp		updatescreen
+
+errfpumsg		db	'Require FPU.', 13, 0
+errvrammsg		db	'Require 24/32bpp.', 13, 0
+
+				align	8
+const_tbl		dq		240.							; Zのデフォルト
+				dq		40.743665431525205956834		; 128 / PI
+				dq		0.05							; てきとー回転θ
+
+const_term:
+
+	ends
+

@@ -1,3 +1,9 @@
+2004-04-25  higepon  <higepon@users.sourceforge.jp>
+
+        * Yui_Nekoさんの monaelf, tubeを追加
+
+          tubeはサイズが熱い
+
 2004-04-25  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: MSG_MOUSE_ENABLE_CURSOR, MSG_MOUSE_DISABLE_CURSOR
@@ -1958,4 +1964,3 @@
         * メモリ管理 メモリ割り当て失敗時にfault0Handlerが呼ばれるようにした。
 
         * add fault0Handler
-

@@ -1,0 +1,8 @@
+*.o
+*.bin
+*.list
+*.map
+*.local
+*.ELF
+*.SVR
+TAGS
