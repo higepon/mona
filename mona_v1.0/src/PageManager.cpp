@@ -183,3 +183,19 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     }
 
 }
+
+Stack::Stack(LinearAddress start, dword size) {
+
+    start_ = start;
+    size_  = size;
+}
+
+Stack::~Stack() {
+
+}
+
+bool Stack::faultHandler(LinearAddress address, dword error) {
+
+    return true;
+}
+

@@ -61,6 +61,8 @@ ProcessInfo* Scheduler::getNext(ProcessInfo* list) {
 
 void Scheduler::schedule() {
 
+    if (g_console) g_console->printf("schdule");
+
     this->wakeup();
 
     if (g_current_process->state != Process::SLEEPING) {

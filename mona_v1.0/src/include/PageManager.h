@@ -67,5 +67,29 @@ class PageManager {
 
 };
 
+class Segment {
+
+  public:
+    virtual Segment(LinearAddress start, dword size);
+
+  public:
+    virtual bool faultHandler(LinearAddress address, dword error) = 0;
+};
+
+class Stack : public Segment {
+
+  public:
+    Stack(LinearAddress start, dword size);
+    virtual ~Stack();
+
+  public:
+    bool faultHandler(LinearAddress address, dword error);
+
+  private:
+    LinearAddress start_;
+    dword         size_;
+};
+
+
 
 #endif
