@@ -388,8 +388,8 @@ void syscall_entrance() {
 
         {
             g_scheduler->wait(g_currentThread->thread, WAIT_MESSAGE);
-//            bool isProcessChange = g_scheduler->schedule();
-	    bool isProcessChange = true;
+            bool isProcessChange = g_scheduler->schedule();
+//    bool isProcessChange = true;
             ThreadOperation::switchThread(isProcessChange);
         }
 
