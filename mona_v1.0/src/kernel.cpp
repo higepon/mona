@@ -137,12 +137,9 @@ void startKernel(void) {
 
     //    keyStrokeTest();
 
-      while (true);
 
     /* show Logo */
     FDCDriverTester();
-
-    while (true);
 
     //    g_console->printf("Hit any key to start Main Process and Load ELF\n");
     while (g_demo_step < 2);

@@ -18,6 +18,7 @@
 #define PAGE_PRESENT 0x01
 #define PAGE_RW      0x02
 #define PAGE_USER    0x04
+#define PAGE_KERNEL  0x00
 
 #define PAGE_TABLE_NUM 1024
 

@@ -121,6 +121,7 @@ bool PageManager::pageFaultHandler(LinearAddress address) {
     PageEntry* table;
     dword directoryIndex = address >> 22;
     dword tableIndex     = (address >> 12) & 0x3FF;
+    byte user            = address >= 0x4000000 ? PAGE_USER : PAGE_KERNEL;
 
     if (isPresent(&(g_page_directory[directoryIndex]))) {
 
@@ -129,7 +130,7 @@ bool PageManager::pageFaultHandler(LinearAddress address) {
 
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
-        makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+        makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, user);
     }
 
     return allocatePhysicalPage(&(table[tableIndex]));
