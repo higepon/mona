@@ -1,5 +1,25 @@
 2005-03-17  higepon  <higepon@users.sourceforge.jp>
 
+        * bin/root/SERVERS/.cvsignore: BN5追加。
+
+        * src/lib/gui/.cvsignore: DL5追加。
+
+        * src/lib/monapi/.cvsignore: DL5追加。
+
+        * src/servers/1linesh/.cvsignore: EX5追加。
+
+        * src/servers/elf/.cvsignore: BN5追加。
+
+        * src/servers/gui/.cvsignore: EX5追加。
+
+        * src/servers/key/.cvsignore: EX5追加。
+
+        * src/servers/mouse/.cvsignore: EX5追加。
+
+        * src/servers/pe/.cvsignore: BN5追加。
+
+        * src/servers/shell/.cvsignore: EX5追加。
+
         * src/servers/file/ISO9660FileSystemManager.cpp : 追加。一時タグ ref4をつけた。
 
         * src/servers/file/FatFileSystemManager.h: 追加。
