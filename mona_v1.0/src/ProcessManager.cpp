@@ -18,10 +18,10 @@
 #include <monaLib.h>
 #include <monaTester.h>
 
+byte stack[5120];
 TSS tss[2];
 GDT ldt[2];
 GDT sss[1];
-byte stack[5120];
 
 /*!
     \brief constructor
@@ -154,6 +154,7 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 */
 void ProcessManager::printInfo() {
 
+
     _sys_printf("address of GDT=%d\n", gdt_);
 
     for (int i = 0; i < GDTNUM; i++) {
@@ -172,10 +173,10 @@ void ProcessManager::printInfo() {
     setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSS);
     setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
     setDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
-    //    setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
-    //    setDT(ldt  +1   , (dword)(sss), sizeof(GDT), TypeLDT);
-    //    setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
-    //    lldt(0x30);
+    setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
+    setDT(ldt  +1   , (dword)(sss), sizeof(GDT), TypeLDT);
+    setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
+    lldt(0x30);
     //    _sys_printf("tss=%x", (dword)tss);
 
     ltr(0x20);
