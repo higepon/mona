@@ -2,6 +2,7 @@
 #include <KeyBoardManager.h>
 #include <ShellServer.h>
 #include <Shell.h>
+#include <monapi/Keys.h>
 
 using namespace MonAPI;
 
@@ -367,8 +368,11 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(Keys::Add):
     case(Keys::Space):
     case(Keys::Divide):
-
-        commandChar(KeyBoardManager::toChar(keycode));
+    case(Keys::OemPeriod):
+        KeyInfo key;
+        key.keycode = keycode;
+        key.modifiers = modifiers;
+        commandChar(Keys::ToChar(key));
         break;
     case(Keys::Enter):
         commandTerminate();
