@@ -95,6 +95,5 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     scancode &= 0x7f;
     keyInfo_[keyBufIndex_].keycode = keyMap_[scancode];
     _sys_printf("scancode is %d keycode is %d char is \"%c\" ", scancode, (char)keyMap_[scancode], (char)keyMap_[scancode]);
-    _sys_printf("test is %d ", test[0]);
     return;
 }
