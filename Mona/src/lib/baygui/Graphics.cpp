@@ -81,6 +81,11 @@ void Graphics::drawImage(Image *image, int x, int y)
 		for (int i = 0; i < I; i++) {
 			if (data[width * j + i] < 0xff000000) {
 				drawPixel(x + i ,y + j, data[width * j + i]);
+#if defined(MONA)
+				screen->putPixel16(tx + x + i, ty + y + j, data[width * j + i]);
+#else
+				drawPixel(x + i ,y + j, data[width * j + i]);
+#endif
 			}
 		}
 	}
@@ -109,7 +114,11 @@ void Graphics::drawImage(Image *image, int x, int y, int w, int h)
 	for (int j = y; j < y + h; j++) {
 		for (int i = x; i < x + w; i++) {
 			if (data[width * j + i] < 0xff000000) {
+#if defined(MONA)
+				screen->putPixel16(tx + i, ty + j, data[width * j + i]);
+#else
 				drawPixel(i ,j, data[width * j + i]);
+#endif
 			}
 		}
 	}
@@ -299,10 +308,20 @@ void Graphics::drawText(Font **list, int len, int x, int y) {
 			for (k = 0; k < list[i]->getWidth(); k++) {
 				// 行パディングなし
 				if ((fp[pos] & bit) != 0) {
-					drawPixel(x + w + k, y + j, rgb24);
+					// 通常書体
+					if (font->getStyle() == FONT_PLAIN) {
+						drawPixel(x + w + k, y + j, rgb24);
 					// 太字体
-					if ((font->getStyle() & FONT_BOLD) == FONT_BOLD) {
+					} else if (font->getStyle() == FONT_BOLD) {
+						drawPixel(x + w + k, y + j, rgb24);
 						drawPixel(x + w + k + 1, y + j, rgb24);
+					// 斜字体
+					} else if (font->getStyle() == FONT_ITALIC) {
+						drawPixel(x + w + k + (list[i]->getHeight() - j) / 4, y + j, rgb24);
+					// 太字体＋斜字体
+					} else if (font->getStyle() == FONT_BOLD | FONT_ITALIC) {
+						drawPixel(x + w + k + (list[i]->getHeight() - j) / 4, y + j, rgb24);
+						drawPixel(x + w + k + (list[i]->getHeight() - j) / 4 + 1, y + j, rgb24);
 					}
 				}
 				bit <<= 1;
@@ -420,7 +439,6 @@ void Graphics::setLocked(bool locked)
 
 /**
  フォントを設定する.
- 【注意】現状は通常文字か太字かを指定できる程度です。
  */
 void Graphics::setFont(Font *font)
 {
