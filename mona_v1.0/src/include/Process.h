@@ -17,6 +17,7 @@
 #include<types.h>
 
 #define MAX_PROCESS 512
+#define DPL_KERNEL  0
 
 typedef struct ProcessInfo {
     dword  eip;
@@ -32,6 +33,7 @@ typedef struct ProcessInfo {
     dword  edi;
     dword  tick;
     dword  pid;
+    dword  dpl;
     class  Process* process;
     ProcessInfo* prev;
     ProcessInfo* next;
@@ -71,6 +73,7 @@ class KernelProcess : Process {
     KernelProcess() {
 
         pinfo_.process = this;
+        pinfo_.dpl     = DPL_KERNEL;
     }
     virtual ~KernelProcess() {
     }
@@ -81,6 +84,8 @@ class KernelProcess : Process {
     virtual void init();
     virtual int execute();
     virtual void destroy();
+
+    // i think UserProcess class need setFunction(*)
 };
 
 #endif
