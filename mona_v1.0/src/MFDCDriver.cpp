@@ -63,7 +63,9 @@
 #define FDC_COMMAND_SEEK            0x0f
 #define FDC_COMMAND_SENSE_INTERRUPT 0x08
 #define FDC_COMMAND_SPECIFY         0x03
-#define FDC_COMMAND_READ            0x46
+#define FDC_COMMAND_READ            0xe6 // bochs & VPC
+//#define FDC_COMMAND_READ            0x46
+
 
 /* time out */
 #define FDC_RETRY_MAX 6000000
@@ -156,17 +158,16 @@ void MFDCDriver::initilize() {
     motor(ON);
     while(!waitInterrupt());
 
-    printStatus("abcd");
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
 
+    //    recalibrate();
+    //    recalibrate();
+
+    //    write(0, 0, 1);
+
     recalibrate();
     recalibrate();
-
-    memset(dmabuff_, 0x1234, 512);
-    write(0, 0, 1);
-
-    printStatus("before read");
     read(0, 0, 1);
     motor(OFF);
     while (true);
@@ -277,7 +278,6 @@ bool MFDCDriver::sendCommand(const byte* command, const byte length) {
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
     }
-
     return true;
 }
 
@@ -373,7 +373,6 @@ bool MFDCDriver::seek(byte track) {
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
-    printStatus("seek after sense Interrupt");
     return true;
 }
 
@@ -428,21 +427,6 @@ void MFDCDriver::readResults() {
     }
     resultsLength_ = i;
     console_->printf("resultsLength_=%d\n", resultsLength_);
-
-//      for (int k = 0; k < 500000000; k++) {
-//      k++;
-//      k--;
-//      }
-
-//      resultsLength_ = i;
-//      console_->printf("resultsLength_=%d\n", resultsLength_);
-
-//      for (int k = 0; k < 500000000; k++) {
-//      k++;
-//      k--;
-//      }
-
-
 
     /* debug show result */
     for (int j = 0; j < resultsLength_; j++) {
@@ -543,7 +527,7 @@ void MFDCDriver::setupDMAWrite(dword size) {
 
 bool MFDCDriver::read(byte track, byte head, byte sector) {
 
-    byte command[] = {0xe6//FDC_COMMAND_READ
+    byte command[] = {FDC_COMMAND_READ
                    , (head & 1) << 2
                    , track
                    , head
@@ -554,17 +538,14 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-    printStatus("before seek in read");
     seek(track);
-    printStatus("after seek in read");
 
     setupDMARead(512);
     memset(dmabuff_, 0xfffe, 512);
 
     interrupt_ = false;
-
+    printStatus("before read command");
     sendCommand(command, sizeof(command));
-    printStatus("read wait");
     while(!waitInterrupt());
 
     stopDMA();
@@ -611,15 +592,14 @@ bool MFDCDriver::write(byte track, byte head, byte sector) {
                    , 0x1b
                    , 0x00
                    };
-    printDMACStatus(inportb(0x08), "before set up");
     setupDMAWrite(512);
-    printDMACStatus(inportb(0x08), "after set up");
     seek(track);
-    printDMACStatus(inportb(0x08), "after seek");
+
+    memset(dmabuff_, 0x1234, 512);
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     while(!waitInterrupt());
-    printDMACStatus(inportb(0x08), "after command");
+
     stopDMA();
 
     readResults();

@@ -78,50 +78,51 @@ _put_pixel:
 
 ; scroll_down(unsigned int y)
 ;   do scroll down (y = number of pixels down at one time)
+; scroll_down(unsigned char y)
+;   do scroll down (y = number of pixels scroll down at once)
 
 _scroll_down:
                 push    ebp
                 mov     ebp,esp
-                pusha
-
+                
+                pushad
                 mov     edi,0x000a0000
                 mov     esi,edi
                 xor     edx,edx
                 xor     eax,eax
-                mov     ax,word [ebp+0x08]
-                mov     cx,0x0050
+                mov     al,byte [ebp+0x08]
+                xor     ecx,ecx
+                mov     cl,0x50
                 mul     cx
-                add     esi,eax
-
-                mov     ecx,0x000a9600
-                mov     dx,0x03c4               ; map mask reg
-                mov     ax,0x0802
-.wl002
-                out     dx,ax
-                push    edi
-                push    esi
-.wl003
-                mov     ebx,dword [esi]
-                mov     dword [edi],ebx
-                add     edi,byte 0x04
-                add     esi,byte 0x04
-                cmp     esi,ecx
-                jne     .wl003
-
-                pop     esi
-                pop     edi
-                shr     ah,1
-                or      ah,ah
-                jnz     .wl002
-
-                mov     ah,0x0f
-                out     dx,ax                   ; unmask all planes
-
-                popa
-                mov     esp,ebp
-                pop     ebp
+                add     edi,eax                 ; copy from
+                
+                mov     dx,0x03ce
+                mov     al,0x05
+                out     dx,al
+                inc     dx
+                in      al,dx
+                dec     dx
+                xchg    ah,al
+                push    eax
+                and     ah,0xfd
+                or      ah,0x01                 ; write mode 1 (latch)
+                mov     al,0x05
+                out     dx,ax                   ; read mode is ignore
+.sl001          
+                mov     al,byte [edi]
+                inc     edi
+                mov     byte [esi],al
+                inc     esi
+                cmp     esi,0x000a9600
+                jb      .sl001
+                
+                pop     eax
+                mov     al,0x05
+                out     dx,ax                   ; previous write mode
+                popad
+                
+                leave
                 ret
-
 
 
 ; write_font(int character,char ch_color,char bg_color)
