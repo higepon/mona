@@ -123,9 +123,6 @@ void ProcessManager::setDT(GDT* gdt, dword base, dword limit, byte type) {
 
     set Task State Segment
 
-    \param size size of memory to allocate
-    \return address to allocated memory
-
     \author HigePon
     \date   create:2002/11/21 update:2002/12/03
 */
