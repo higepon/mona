@@ -13,7 +13,65 @@
 #ifndef __MONA_ELF_PARSER_H__
 #define __MONA_ELF_PARSER_H__
 
-#include "elf.h"
+#include "elf32.h"
+
+#include "types.h"
+
+typedef dword Elf32_Addr;
+typedef word  Elf32_Half;
+typedef dword Elf32_Off;
+typedef long  Elf32_Sword;
+typedef dword Elf32_Word;
+
+#define EI_NIDENT 16
+
+typedef struct
+{
+    byte       e_ident[EI_NIDENT];
+    Elf32_Half e_type;
+    Elf32_Half e_machine;
+    Elf32_Word e_version;
+    Elf32_Addr e_entry;
+    Elf32_Off  e_phoff;
+    Elf32_Off  e_shoff;
+    Elf32_Word e_flags;
+    Elf32_Half e_ehsize;
+    Elf32_Half e_phentsize;
+    Elf32_Half e_phnum;
+    Elf32_Half e_shentsize;
+    Elf32_Half e_shnum;
+    Elf32_Half e_shstrndx;
+} Elf32_Ehdr;
+
+typedef struct
+{
+    Elf32_Word sh_name;
+    Elf32_Word sh_type;
+    Elf32_Word sh_flags;
+    Elf32_Addr sh_addr;
+    Elf32_Off  sh_offset;
+    Elf32_Word sh_size;
+    Elf32_Word sh_link;
+    Elf32_Word sh_info;
+    Elf32_Word sh_addralign;
+    Elf32_Word sh_entsize;
+} Elf32_Shdr;
+
+typedef struct
+{
+    Elf32_Addr r_offset;
+    Elf32_Word r_info;
+} Elf32_Rel;
+
+typedef struct
+{
+    Elf32_Word st_name;
+    Elf32_Addr st_value;
+    Elf32_Word st_size;
+    byte       st_info;
+    byte       st_other;
+    Elf32_Half st_shndx;
+} Elf32_Sym;
 
 class ELFParser
 {
@@ -22,32 +80,57 @@ public:
     virtual ~ELFParser();
 
 public:
-    bool set(byte* elf, dword size, dword toAddress = 0);
-    int getType();
-    int parse();
-    bool load(byte* image);
-
-    inline dword getStartAddr()  const { return this->startAddr; }
-    inline dword getEndAddr()    const { return this->endAddr; }
-    inline dword getImageSize()  const { return this->imageSize; }
-    inline dword getEntryPoint() const { return this->header->entrypoint; }
-
-private:
-    const char* getSectionName(dword index);
-    const char* getSymbolName(dword index);
+    bool Set(byte* elf, dword size);
+    int GetType() const;
+    bool Relocate(byte* base);
+    bool Relocate(Elf32_Shdr* relSection, Elf32_Rel* relEntry);
+    bool CreateImage(byte* to);
+    Elf32_Addr GetEntry() const;
+    Elf32_Addr GetImageSize() const;
 
 private:
     byte* elf;
-    ELFHeader* header;
-    ELFProgramHeader* pheader;
-    ELFSectionHeader* sheader;
-    ELFSymbolEntry* symbols;
-    dword sectionNames, symbolNames;
-    dword startAddr, endAddr;
-    dword imageSize;
-    dword toAddress;
+    int type;
+    Elf32_Addr  imageSize;
+    Elf32_Ehdr* header;
+    Elf32_Shdr* sheader;
 
 public:
+
+    enum
+    {
+        EI_MAG0    = 0,
+        EI_MAG1    = 1,
+        EI_MAG2    = 2,
+        EI_MAG3    = 3,
+        EI_CLASS   = 4,
+    };
+
+    enum
+    {
+        EM_386 = 3
+    };
+
+    enum
+    {
+        ELFCLASS32 = 1
+    };
+
+    enum
+    {
+        EV_CURRENT = 1
+    };
+
+    enum
+    {
+        ET_NONE          = 0,
+        ET_REL           = 1,
+        ET_EXEC          = 2,
+        ET_DYN           = 3,
+        ET_CORE          = 4,
+        ET_NOT_SUPPORTED = 6
+    } e_type;
+
     enum
     {
         ERR_SIZE           = 6,
