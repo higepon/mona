@@ -16,6 +16,7 @@
 #include <monaVga.h>
 #include <monaTester.h>
 #include <monaLib.h>
+#include <monaTester.h>
 
 /*!
     \brief constructor
@@ -72,6 +73,29 @@ inline void ProcessManager::ltr(word selector) const {
 }
 
 /*!
+    \brief set gdt
+
+    set gdt
+
+    \param gdt   address of gdt to set
+    \param base  address of segment start
+    \param limit limit size of segment
+    \param type  type of segment, see monaKernel.h
+    \author HigePon
+    \date   create:2002/12/02 update:
+*/
+void ProcessManager::setGDT(GDT* gdt, dword base, dword limit, byte type) {
+
+    gdt->type   = type;
+    gdt->baseL  = base & 0xffff;
+    gdt->baseM  = (base >> 16) & 0xff;
+    gdt->baseH  = (base >> 24) & 0xff;
+    gdt->limitL = limit & 0xffff;
+    gdt->limitH = (limit >> 16) & 0xff;
+    return;
+}
+
+/*!
     \brief set TSS
 
     set Task State Segment
@@ -119,6 +143,24 @@ void ProcessManager::printInfo() {
                                                 , gdt_[i].baseH
                     );
     }
+
+    TSS tss[2];
+    byte stack[1][512];
+    setTSS(tss + 1, 0x08, 0x10, process1Tester, 0x200, stack[1] + 512, 0x10, 0, 0);
+    setGDT(gdt_ + 4, (dword)tss    , sizeof(TSS), TypeTSS);
+    setGDT(gdt_ + 5, (dword)tss + 1, sizeof(TSS), TypeTSS);
+
+    for (int i = 0; i < GDTNUM; i++) {
+
+        _sys_printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
+                                                , gdt_[i].baseL
+                                                , gdt_[i].baseM
+                                                , gdt_[i].type
+                                                , gdt_[i].limitH
+                                                , gdt_[i].baseH
+                    );
+    }
+
     return;
 }
 
