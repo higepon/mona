@@ -90,7 +90,7 @@ static void ReadFont(const char* file)
 	MemoryInfo* mi = ReadFile(file, true);
 	if (mi == NULL) return;
 	
-	this->default_font = mi;
+	default_font = mi;
 }
 
 static MemoryInfo* ReadBitmap(MemoryInfo* mi)
@@ -190,7 +190,7 @@ static MemoryInfo* ReadImage(const char* file)
 int MonaMain(List<char*>* pekoe)
 {
 	ReadFont("/MONA-12.MNF");
-	if (font_size == 0) exit(1);
+	if (default_font == NULL) exit(1);
 	
 	dword init = Message::lookupMainThread("INIT");
     if (init == 0xFFFFFFFF || SendMessage(init, MSG_SERVER_START_OK, 0, 0, 0) != 0)
