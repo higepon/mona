@@ -51,7 +51,7 @@ class MFDCDriver {
     int resultsLength_;
     static bool interrupt_;
     static VirtualConsole* console_;
-    static byte dmabuff_[512];
+    static byte* dmabuff_;
 };
 
 extern MFDCDriver* gMFDCDriver;

@@ -14,6 +14,7 @@
 #include<monaIo.h>
 #include<monaVga.h>
 #include<monaKernel.h>
+#include<monaOperator.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10
@@ -70,10 +71,12 @@
 /* delay */
 #define delay() inportb(0x80);
 
+#define FDC_DMA_BUFF_SIZE 512
+
 MFDCDriver* gMFDCDriver = 0;
 bool MFDCDriver::interrupt_ = false;
 VirtualConsole* MFDCDriver::console_;
-byte MFDCDriver::dmabuff_[512];
+byte* MFDCDriver::dmabuff_;
 
 /*!
     \brief Constructer
@@ -115,6 +118,15 @@ void MFDCDriver::initilize() {
                            , 0xC1 /* SRT = 4ms HUT = 16ms */
                            , 0x10 /* HLT = 16ms DMA       */
                             };
+
+    /* allocate dma buffer */
+    dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
+
+    console_->printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
+    if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
+        panic("dma buff allocate error");
+    }
+
     /* setup DMAC */
     outportb(0xda, 0);
     outportb(0x08, 0);
@@ -490,7 +502,7 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
 
     stopDMA();
 
-    for (int i = 0; i < 512; i++) _sys_printf("%d", dmabuff_[i]);
+    //    for (int i = 0; i < 512; i++) _sys_printf("%d", dmabuff_[i]);
 
     readResults();
     while (true);
