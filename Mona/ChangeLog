@@ -1,3 +1,11 @@
+2004-11-28  bayside  <bayside@users.sourceforge.jp>
+
+        * src/servers/gui/window.cpp: コメント追加
+
+        * src/servers/gui/image.cpp: BM5対応
+
+        * src/servers/gui/main.cpp: キーイベント対応
+
 2004-11-30  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp (enableKeyboard): monapi_set_irqを使用するように変更
