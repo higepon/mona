@@ -1,8 +1,8 @@
 #ifndef _MONA_USERLIB_HASHMAP_
 #define _MONA_USERLIB_HASHMAP_
 
-#include <types.h>
-#include <BinaryTree.h>
+#include <sys/types.h>
+#include <sys/BinaryTree.h>
 /*----------------------------------------------------------------------
     For Hash
 ----------------------------------------------------------------------*/
