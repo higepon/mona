@@ -55,6 +55,7 @@ class Shell {
     MonAPI::CString current;
     bool hasExited, callAutoExec;
     dword waiting;
+    dword self;
     MonAPI::Screen screen;
     int prevX, prevY;
 };

@@ -94,13 +94,12 @@ void MessageLoop()
 
                 ASSERT(stdout != NULL);
 
-                if (stdout == self)
+                MessageInfo reply;
+
+                if (Message::sendReceive(&reply, stdout, &msg))
                 {
-                    syscall_print(msg.str);
-                }
-                else
-                {
-                    syscall_print("not implemented yet\n");
+                    /* error, but nothing to do */
+                    ASSERT(!"stdout Error");
                 }
 
                 Message::reply(&msg);

@@ -1,5 +1,9 @@
 2004-10-04  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/Shell.cpp (run): 起動時 shell->process server->file server
+                                             実行時 hello->file server->shell server
+                                             どこか化けているのでまだ様子見
+
         * src/servers/file/main.cpp (MessageLoop): MSG_STDOUT_REGIST_TO_SERVER追加
         (MessageLoop): 標準出力改造中
 

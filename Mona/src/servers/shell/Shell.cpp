@@ -21,6 +21,8 @@ Shell::Shell(bool callAutoExec)
         this->callAutoExec = false;
     }
 
+    this->self = syscall_get_tid();
+
     this->printPrompt("\n");
     this->drawCaret();
 }
@@ -60,6 +62,12 @@ void Shell::run()
                     this->drawCaret();
                     this->waiting = THREAD_UNKNOWN;
                 }
+            case MSG_STDOUT:
+
+                msg.str[127] = '\0';
+                syscall_print("Shell");
+                syscall_print(msg.str);
+                Message::reply(&msg);
                 break;
         }
     }
@@ -186,7 +194,7 @@ void Shell::commandExecute(bool prompt)
     }
 
     dword tid;
-    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, monapi_get_server_thread_id(ID_FILE_SERVER));
+    int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, this->self);
 
     if (!this->callAutoExec && result == 0)
     {

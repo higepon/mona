@@ -219,7 +219,7 @@ int MonaMain(List<char*>* pekoe)
 
 void write(const char* buf, int size)
 {
-    ASSERT(size < 512);
+    ASSERT(size < 127);
 
     MessageInfo msg;
     MessageInfo reply;
