@@ -48,7 +48,7 @@ SOURCES    = cstart.cpp            \
              test_higepon.cpp      \
              test_mjt.cpp          \
              sysresource.cpp       \
-             ISADriver.cpp
+             ISADriver.cpp         
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -59,10 +59,13 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
 	cat $@ /dev/zero|dd of=$(BIN)/mona.tmp bs=1k count=1440
 	mv $(BIN)/mona.tmp $@
 
-$(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
-	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
+$(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o Mouse.o
+	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o Mouse.o
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
+
+Mouse.o : driver/ISADevice/Mouse/Mouse.cpp driver/ISADevice/Mouse/Mouse.h
+	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/Mouse/Mouse.cpp -o Mouse.o
 
 memcmp.o : ./FreeBSD/memcmp.c
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./FreeBSD/memcmp.c -o memcmp.o
@@ -93,10 +96,10 @@ doxygen :
 	$(DOXYGEN)
 
 depend:
-	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) > $(ENV)/dependencies
+	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) driver/ISADevice/Mouse/Mouse.cpp > $(ENV)/dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o ihandler.o core.o
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o ihandler.o core.o Mouse.o
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img

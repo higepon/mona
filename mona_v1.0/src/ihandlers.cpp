@@ -123,8 +123,8 @@ void MFDCHandler(void) {
 }
 
 /* IRQ Handler (expr) */
-#define IRQHANDLERMaster(x) void irqHandler_##x(void) { g_irqHandlers[x]->process(); outportb(0x20, 0x20); }
-#define IRQHANDLERSlave(x) void irqHandler_##x(void) { g_irqHandlers[x]->process();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
+#define IRQHANDLERMaster(x) void irqHandler_##x(void) { g_console->printf("IRQ:"); g_irqHandlers[x]->process(); outportb(0x20, 0x20); }
+#define IRQHANDLERSlave(x) void irqHandler_##x(void) { g_console->printf("IRQ:");  g_irqHandlers[x]->process();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
 
 IRQHANDLERMaster(0)
 IRQHANDLERMaster(1)
@@ -147,6 +147,7 @@ IRQHANDLERSlave(15)
 handler_st handlers[HANDLER_NUM] = {
      {0x00, &arch_timerhandler} /* IRQ 0 and DIV 0 */
    , {0x01, &arch_keystrokehandler}
+//   , {0x01, &arch_irqhandler_1}
    , {0x02, &arch_irqhandler_2}
    , {0x03, &arch_irqhandler_3}
    , {0x04, &arch_irqhandler_4}

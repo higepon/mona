@@ -2,6 +2,7 @@
 #include <sysresource.h>
 #include <global.h>
 #include <pic.h>
+#include<idt.h> /* óvÇÁÇ»Ç¢? */
 
 
 class NullIRQHandler : public IRQHandler {
@@ -52,10 +53,12 @@ sys_irq irq_request(BitMap* irqmap){
 
 bool irq_acquire(sys_irq irq,IRQHandler* ih){
   if(g_irqMap->marked(irq)){
+    g_console->printf("irq:irq_acquire() failed.\n");
     return false;
   }
   g_irqMap->mark(irq);
   g_irqHandlers[irq] = ih;
+ // _sysSetIdt(); /* óvÇÁÇ»Ç¢ÅH */
   return true;
 }
 
