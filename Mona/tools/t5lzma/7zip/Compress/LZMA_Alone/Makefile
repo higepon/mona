@@ -2,13 +2,16 @@ PROG=t5lzma$(EXEEXT)
 
 include ../../../../../env/Makefile.inc
 
-CXX = g++
-CC  = gcc
-LIB = -lstdc++ -lm
-RM=-rm
-CFLAGS = -c -O3 -UWIN32
-LDFLAGS = -Wl,-s
+# MSYS for Win32 ‚Å‚Í 1 ‚É‚·‚é
+#isMinGW32 = 1
 
+LIB = -lm
+RM = rm -f
+STRIP = strip
+CFLAGS = -c
+
+ifneq ($(isMinGW32),)
+CXX = g++ -O3 -Wall -mno-cygwin
 OBJS = \
   LzmaAlone.o \
   LzmaBench.o \
@@ -20,7 +23,28 @@ OBJS = \
   InBuffer.o \
   OutBuffer.o \
   FileStreams.o \
-  AlignedBuffer.o \
+  Alloc.o \
+  FileIO.o \
+  CommandLineParser.o \
+  CRC.o \
+  String.o \
+  StringConvert.o \
+  StringToInt.o \
+  Vector.o
+else
+CXX = g++ -O3 -Wall
+OBJS = \
+  LzmaAlone.o \
+  LzmaBench.o \
+  LZMADecoder.o \
+  LZMAEncoder.o \
+  LZInWindow.o \
+  LZOutWindow.o \
+  RangeCoderBit.o \
+  InBuffer.o \
+  OutBuffer.o \
+  FileStreams.o \
+  Alloc.o \
   C_FileIO.o \
   CommandLineParser.o \
   CRC.o \
@@ -28,13 +52,13 @@ OBJS = \
   StringConvert.o \
   StringToInt.o \
   Vector.o
-# FileIO.o
+endif
 
 all: $(PROG)
 
 $(PROG): $(OBJS)
 	$(CXX) -o $(PROG) $(LDFLAGS) $(OBJS) $(LIB)
-	strip $(PROG)
+	$(STRIP) $(PROG)
 	cp $(PROG) ../../../../../bin/$(PROG)
 
 LzmaAlone.o: LzmaAlone.cpp
@@ -67,11 +91,14 @@ OutBuffer.o: ../../Common/OutBuffer.cpp
 FileStreams.o: ../../Common/FileStreams.cpp
 	$(CXX) $(CFLAGS) ../../Common/FileStreams.cpp
 
-AlignedBuffer.o: ../../../Common/AlignedBuffer.cpp
-	$(CXX) $(CFLAGS) ../../../Common/AlignedBuffer.cpp
+Alloc.o: ../../../Common/Alloc.cpp
+	$(CXX) $(CFLAGS) ../../../Common/Alloc.cpp
 
 C_FileIO.o: ../../../Common/C_FileIO.cpp
 	$(CXX) $(CFLAGS) ../../../Common/C_FileIO.cpp
+
+FileIO.o: ../../../Windows/FileIO.cpp
+	$(CXX) $(CFLAGS) ../../../Windows/FileIO.cpp
 
 CommandLineParser.o: ../../../Common/CommandLineParser.cpp
 	$(CXX) $(CFLAGS) ../../../Common/CommandLineParser.cpp
@@ -79,8 +106,8 @@ CommandLineParser.o: ../../../Common/CommandLineParser.cpp
 CRC.o: ../../../Common/CRC.cpp
 	$(CXX) $(CFLAGS) ../../../Common/CRC.cpp
 
-#MyWindows.o: ../../../Common/MyWindows.cpp
-#	$(CXX) $(CFLAGS) ../../../Common/MyWindows.cpp
+MyWindows.o: ../../../Common/MyWindows.cpp
+	$(CXX) $(CFLAGS) ../../../Common/MyWindows.cpp
 
 String.o: ../../../Common/String.cpp
 	$(CXX) $(CFLAGS) ../../../Common/String.cpp
@@ -93,9 +120,6 @@ StringToInt.o: ../../../Common/StringToInt.cpp
 
 Vector.o: ../../../Common/Vector.cpp
 	$(CXX) $(CFLAGS) ../../../Common/Vector.cpp
-
-FileIO.o: ../../../Windows/FileIO.cpp
-	$(CXX) $(CFLAGS) ../../../Windows/FileIO.cpp
 
 clean:
 	-$(RM) $(PROG) $(OBJS)
