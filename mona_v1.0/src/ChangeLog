@@ -1,3 +1,8 @@
+2003-12-07  higepon  <higepon@users.sourceforge.jp>
+
+        * include/collection.h: コレクションクラスHListを追加
+                                HVectorを廃止
+
 2003-11-30  higepon  <higepon@users.sourceforge.jp>
 
         * include/Process.h: 新しいプロセス情報構造体を追加

@@ -65,13 +65,13 @@ int send(const char* name, Message* message) {
     }
 
     memcpy(kmessage, message, sizeof(Message));
-    pinfo->vec->add(kmessage);
+    pinfo->messageList->add(kmessage);
     return 0;
 }
 
 int receive(Message* message) {
 
-    Message* from = g_current_process->vec->get(0);
+    Message* from = g_current_process->messageList->get(0);
 
     if (from == (Message*)NULL) {
         return -1;
@@ -79,7 +79,7 @@ int receive(Message* message) {
 
     memcpy(message, from, sizeof(Message));
     free(from);
-    g_current_process->vec->remove(0);
+    g_current_process->messageList->remove(0);
     return 0;
 }
 

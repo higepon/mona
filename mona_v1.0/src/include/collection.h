@@ -1,36 +1,45 @@
-#ifndef _MONA_VECTOR_
-#define _MONA_VECTOR_
+#ifndef _MONA_COLLECTION_
+#define _MONA_COLLECTION_
 
 #include<types.h>
 
 /*!
-    \file  HVector.h
-    \brief class HVector
-
-    class HVector this is simple vector.
-    I hope this class will be replaced by real vector.
+    \file  collection.h
+    \brief collection utilities
 
     !!! in first use, you should debug this class. !!!
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
     \version $Revision$
-    \date   create:2002/10/22 update:$Date$
+    \date   create:2003/12/07 update:$Date$
 */
-template <class T> class HVector {
+
+template <class T> class List {
 
   public:
-    HVector();
-    HVector(size_t size);
-    HVector(size_t size, size_t increase);
-    ~HVector();
+    virtual void add(T element)       = 0;
+    virtual T remove(size_t index)    = 0;
+    virtual T get(size_t index) const = 0;
+    virtual bool isEmpty() const      = 0;
+    virtual size_t size() const       = 0;
+};
+
+template <class T> class HList : public List<T> {
+
+  public:
+    HList();
+    HList(size_t size);
+    HList(size_t size, size_t increase);
+    virtual ~HList();
     void add(T element);
     T get(size_t index) const;
     T operator[](size_t index);
     T remove(size_t index);
     size_t size() const;
+    virtual bool isEmpty() const;
   private:
     T* data_;            /*! internal array     */
     size_t size_;        /*! size of vector     */
@@ -50,7 +59,7 @@ template <class T> class HVector {
     \author HigePon
     \date   create:2002/10/22 update:
 */
-template <class T> HVector<T>::HVector() {
+template <class T> HList<T>::HList() {
 
     init(5, 5);
     return;
@@ -64,9 +73,9 @@ template <class T> HVector<T>::HVector() {
     \param size size of initial size of vector
 
     \author HigePon
-    \date   create:2002/10/22 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> HVector<T>::HVector(size_t size) {
+template <class T> HList<T>::HList(size_t size) {
 
     init(size, 5);
     return;
@@ -77,13 +86,13 @@ template <class T> HVector<T>::HVector(size_t size) {
 
     constructor
 
-    \param size size of initial size of vector
+    \param size size of initial size of list
     \param increase when resize this value used
 
     \author HigePon
-    \date   create:2002/10/23 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> HVector<T>::HVector(size_t size, size_t increase) {
+template <class T> HList<T>::HList(size_t size, size_t increase) {
 
     init(size, increase);
     return;
@@ -95,13 +104,28 @@ template <class T> HVector<T>::HVector(size_t size, size_t increase) {
     destructor
 
     \author HigePon
-    \date   create:2002/10/22 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> HVector<T>::~HVector() {
+template <class T> HList<T>::~HList() {
 
     /* release memory */
     delete[] data_;
     return;
+}
+
+/*!
+    \brief isEmpty
+
+    return is Empty or not
+
+    \return true/false empty/has elements
+
+    \author HigePon
+    \date   create:2003/12/07 update:
+*/
+template <class T> bool HList<T>::isEmpty() const {
+
+    return numElements_ == 0;
 }
 
 /*!
@@ -110,9 +134,9 @@ template <class T> HVector<T>::~HVector() {
     add element at the end of array
 
     \author HigePon
-    \date   create:2002/10/23 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> void HVector<T>::add(T element) {
+template <class T> void HList<T>::add(T element) {
 
     /* if array is full */
     if (size_ == numElements_) {
@@ -143,13 +167,12 @@ template <class T> void HVector<T>::add(T element) {
     \param index index of element to get
 
     \author HigePon
-    \date   create:2002/10/23 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> T HVector<T>::get(size_t index) const {
+template <class T> T HList<T>::get(size_t index) const {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
-        //        g_console->printf("HVector<T>::get() out of bounds\n");
         return (T)NULL;
     }
     return data_[index];
@@ -163,9 +186,9 @@ template <class T> T HVector<T>::get(size_t index) const {
     \param index index of element to get
 
     \author HigePon
-    \date   create:2002/10/23 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> T HVector<T>::operator[](size_t index) {
+template <class T> T HList<T>::operator[](size_t index) {
 
     return (this->get(index));
 }
@@ -178,9 +201,9 @@ template <class T> T HVector<T>::operator[](size_t index) {
     \return size of vector
 
     \author HigePon
-    \date   create:2002/10/22 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> size_t HVector<T>::size() const {
+template <class T> size_t HList<T>::size() const {
     return numElements_;
 }
 
@@ -192,9 +215,9 @@ template <class T> size_t HVector<T>::size() const {
     \param index that removed
 
     \author HigePon
-    \date   create:2002/10/23 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> T HVector<T>::remove(size_t index) {
+template <class T> T HList<T>::remove(size_t index) {
 
     /* check range */
     if (index < 0 || index >=numElements_) {
@@ -220,16 +243,16 @@ template <class T> T HVector<T>::remove(size_t index) {
     set size of vector & increase
 
     \author HigePon
-    \date   create:2002/10/23 update:
+    \date   create:2003/12/07 update:
 */
-template <class T> void HVector<T>::init(size_t size, size_t increase) {
+template <class T> void HList<T>::init(size_t size, size_t increase) {
 
     /* number of elements */
     numElements_ = 0;
 
     /* set size and increase */
-    size_     = size     > 0 ? size:5;
-    increase_ = increase > 0 ? increase:5;
+    size_     = size     > 0 ? size : 5;
+    increase_ = increase > 0 ? increase : 5;
 
     /* create internal array */
     data_ = new T[size_];
