@@ -156,12 +156,23 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 	for (int i = 0; i < size_w; i++)
 	{
 		guiserver_window* w = windows[i];
-		if ((w->Flags & WINDOWFLAGS_TOPMOST) == 0) DrawWindowInternal(w, r);
+		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) == 0) continue;
+		
+		DrawWindowInternal(w, r);
 	}
 	for (int i = 0; i < size_w; i++)
 	{
 		guiserver_window* w = windows[i];
-		if ((w->Flags & WINDOWFLAGS_TOPMOST) != 0) DrawWindowInternal(w, r);
+		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) != 0) continue;
+		
+		DrawWindowInternal(w, r);
+	}
+	for (int i = 0; i < size_w; i++)
+	{
+		guiserver_window* w = windows[i];
+		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) == 0) continue;
+		
+		DrawWindowInternal(w, r);
 	}
 	int size_ov = overlaps.size();
 	for (int i = 0; i < size_ov; i++)
@@ -216,7 +227,7 @@ guiserver_window* GetTargetWindow(int x, int y)
 	for (int i = windows.size() - 1; i >= 0; i--)
 	{
 		guiserver_window* w = windows[i];
-		if ((w->Flags & WINDOWFLAGS_TOPMOST) == 0) continue;
+		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) == 0) continue;
 		
 		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
 		if (ww != NULL) return ww;
@@ -224,13 +235,39 @@ guiserver_window* GetTargetWindow(int x, int y)
 	for (int i = windows.size() - 1; i >= 0; i--)
 	{
 		guiserver_window* w = windows[i];
-		if ((w->Flags & WINDOWFLAGS_TOPMOST) != 0) continue;
+		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) != 0) continue;
+		
+		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
+		if (ww != NULL) return ww;
+	}
+	for (int i = windows.size() - 1; i >= 0; i--)
+	{
+		guiserver_window* w = windows[i];
+		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) == 0) continue;
 		
 		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
 		if (ww != NULL) return ww;
 	}
 	
 	return NULL;
+}
+
+static void ProcessMouseInfo(MessageInfo* msg)
+{
+	guiserver_window* target = GetTargetWindow(msg->arg1, msg->arg2);
+	if (target == NULL) return;
+	
+	if (prevButton != (int)msg->arg3 && windows[windows.size() - 1] != target)
+	{
+		windows.remove(target);
+		windows.add(target);
+		DrawWindow(target);
+	}
+	prevButton = (int)msg->arg3;
+	if (Message::send(target->ThreadID, msg) != 0)
+	{
+		DisposeWindowFromThreadID(target->ThreadID);
+	}
 }
 
 bool WindowHandler(MessageInfo* msg)
@@ -266,24 +303,8 @@ bool WindowHandler(MessageInfo* msg)
 			break;
 		}
 		case MSG_MOUSE_INFO:
-		{
-			guiserver_window* target = GetTargetWindow(msg->arg1, msg->arg2);
-			if (target != NULL)
-			{
-				if (prevButton != (int)msg->arg3 && windows[windows.size() - 1] != target)
-				{
-					windows.remove(target);
-					windows.add(target);
-					DrawWindow(target);
-				}
-				prevButton = (int)msg->arg3;
-				if (Message::send(target->ThreadID, msg) != 0)
-				{
-					DisposeWindowFromThreadID(target->ThreadID);
-				}
-			}
+			ProcessMouseInfo(msg);
 			break;
-		}
 		case MSG_GUISERVER_MOUSECAPTURE:
 		{
 			guiserver_window* w = GetWindowPointer(msg->arg1);
