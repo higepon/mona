@@ -50,8 +50,8 @@ class CBitEncoder: public CBitModel<numMoveBits>
 public:
   void Encode(CEncoder *encoder, UInt32 symbol)
   {
-    encoder->EncodeBit(Prob, kNumBitModelTotalBits, symbol);
-    UpdateModel(symbol);
+    encoder->EncodeBit(this->Prob, kNumBitModelTotalBits, symbol);
+    this->UpdateModel(symbol);
     /*
     UInt32 newBound = (encoder->Range >> kNumBitModelTotalBits) * Prob;
     if (symbol != 0)
@@ -75,7 +75,7 @@ public:
   UInt32 GetPrice(UInt32 symbol) const
   {
     symbol ^= 1; return CPriceTables::ProbPrices[
-      (((Prob - symbol) ^ ((-(int)symbol))) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
+      (((this->Prob - symbol) ^ ((-(int)symbol))) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
   }
 };
 
@@ -86,11 +86,11 @@ class CBitDecoder: public CBitModel<numMoveBits>
 public:
   UInt32 Decode(CDecoder *decoder)
   {
-    UInt32 newBound = (decoder->Range >> kNumBitModelTotalBits) * Prob;
+    UInt32 newBound = (decoder->Range >> kNumBitModelTotalBits) * this->Prob;
     if (decoder->Code < newBound)
     {
       decoder->Range = newBound;
-      Prob += (kBitModelTotal - Prob) >> numMoveBits;
+      this->Prob += (kBitModelTotal - this->Prob) >> numMoveBits;
       if (decoder->Range < kTopValue)
       {
         decoder->Code = (decoder->Code << 8) | decoder->Stream.ReadByte();
@@ -102,7 +102,7 @@ public:
     {
       decoder->Range -= newBound;
       decoder->Code -= newBound;
-      Prob -= (Prob) >> numMoveBits;
+      this->Prob -= (this->Prob) >> numMoveBits;
       if (decoder->Range < kTopValue)
       {
         decoder->Code = (decoder->Code << 8) | decoder->Stream.ReadByte();
