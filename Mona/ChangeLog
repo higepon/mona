@@ -1,5 +1,11 @@
 2005-02-04  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/Shell.cpp : cd0: コマンドの追加。今はまだ使えない。
+
+        * src/servers/shell/Shell.cpp (onKeyDown): 「:」「;」の入力を可能にした。
+
+        * src/lib/monapi/messages.cpp (monapi_call_change_dirctory): 追加。
+
         * src/servers/shell/InternalCommands.cpp : ドライブ変更実装中。
 
         * src/servers/file/ : CFile.hを削除
@@ -60,7 +66,7 @@
 
 2005-01-28  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/non-gui/ata/main.cpp : CDセクタリードツールをリリース 
+        * apps/non-gui/ata/main.cpp : CDセクタリードツールをリリース
 
 2004-01-21  bayside  <bayside@users.sourceforge.jp>
 
@@ -125,11 +131,11 @@
 
 2004-12-25  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/gui/hige3D/Canvas.h : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 
+        * apps/gui/hige3D/Canvas.h : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data)
 
-        * src/servers/moniter/main.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 
+        * src/servers/moniter/main.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data)
 
-        * apps/non-gui/jpegdemo/jpegdemo.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 
+        * apps/non-gui/jpegdemo/jpegdemo.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data)
 
 2004-12-20  bayside  <bayside@users.sourceforge.jp>
 

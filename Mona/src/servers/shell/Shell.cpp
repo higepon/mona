@@ -297,6 +297,8 @@ void Shell::onKeyDown(int keycode, int modifiers)
     case(Keys::OemQuestion):
     case(Keys::OemMinus):
     case(Keys::OemBackslash):
+    case(Keys::OemSemicolon):
+    case(Keys::Oemplus):
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;

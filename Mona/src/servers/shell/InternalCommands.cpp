@@ -266,7 +266,14 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
     case COMMAND_CHANGE_DRIVE_CD0:
     {
-
+        if (monapi_call_change_dirctory(2, MONAPI_FALSE) == 0)
+        {
+            printf("change drive error\n");
+        }
+        else
+        {
+            printf("change drive ok\n");
+        }
 
         break;
     }

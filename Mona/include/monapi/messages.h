@@ -90,6 +90,7 @@ extern monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file
 extern monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id = NULL);
+extern int monapi_call_change_dirctory(int drive, MONAPI_BOOL prompt);
 
 extern byte* monapi_allocate_dma_memory();
 extern void monapi_deallocate_dma_memory(void* address);

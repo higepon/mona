@@ -8,6 +8,15 @@ using namespace MonAPI;
 
 #define MAIN_1
 
+#ifdef MAIN_9
+int MonaMain(List<char*>* pekoe)
+{
+   printf("Hello World from CD\n");
+   return 0;
+}
+#endif
+
+
 #ifdef MAIN_8
 
 int MonaMain(List<char*>* pekoe)
