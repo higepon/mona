@@ -105,3 +105,4 @@ syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/kthread.h include/types.h include/string.h include/kernel.h \
   include/VirtualConsole.h include/FDCDriver.h include/Semaphore.h \
   include/io.h
+BitMap.o: BitMap.cpp include/BitMap.h include/types.h include/string.h

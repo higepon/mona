@@ -40,7 +40,8 @@ SOURCES    = cstart.cpp            \
              io.cpp                \
              rtc.cpp               \
              disp.cpp              \
-             syscalls.cpp
+             syscalls.cpp          \
+             BitMap.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
