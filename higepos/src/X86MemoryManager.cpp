@@ -176,7 +176,7 @@ void X86MemoryManager::printInfo(char* str) {
 
     struct memoryEntry* fentry = freeEntry_;
     struct memoryEntry* uentry = usedEntry_;
-    _sys_printf("memory codition @@@@@@@@@ ");
+
     while (fentry || uentry) {
 
         if ((uentry && fentry > uentry) || (!fentry && uentry)) {
