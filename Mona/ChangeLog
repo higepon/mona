@@ -13,6 +13,8 @@
 
         * src/servers/gui/STARTGUI.MSH: GUI.SVR起動バッチ
 
+        * src/servers/gui/image.h, image.cpp: 拡張子判定ミスを修正 (thanks ひげぽんさん)
+
 2004-05-08  shadow  <shadowin@users.sourceforge.jp>
 
         * monapi/CString: reset insert remove追加
