@@ -71,6 +71,7 @@
 #include "LogConsole.h"
 #include "Loader.h"
 #include "Scheduler.h"
+#include "monaboot.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -126,8 +127,39 @@ void startKernel(void)
         g_console->clearScreen();
     }
 
+#if 0
+    int w = g_vesaDetail->xResolution;
+    int bpp = g_vesaDetail->bitsPerPixel / 8;
+    byte *vram = (byte*)g_vesaDetail->physBasePtr;
+
+    switch (bpp) {
+        case 2:
+            for (int y = 0; y < 105; y++) {
+                for (int x = 0; x < 110; x++) {
+                    byte *pixel = &vram[(x + y * w) * bpp];
+                    word rgb16 = (word)(((palette16[monaboot[y][x]] >> 8) & 0xF800) | 
+                        ((palette16[monaboot[y][x]] >> 5) & 0x07E0) | ((palette16[monaboot[y][x]] >> 3) & 0x001F));
+                    *((word*)pixel) = rgb16;
+                }
+           }
+            break;
+        default:
+            for (int y = 0; y < 105; y++) {
+                for (int x = 0; x < 110; x++) {
+                    byte *pixel = &vram[(x + y * w) * bpp];
+                    byte* p_color = (byte*)&palette16[monaboot[y][x]];
+                    pixel[0] = p_color[0];
+                    pixel[1] = p_color[1];
+                    pixel[2] = p_color[2];
+                }
+            }
+            break;
+    }
+#endif
+
     g_log = new LogConsole();
 
+    //g_console->printf("\n\n\n\n\n\n\n"); // added by bayside
     g_console->printf("%s ["CC_NAME" @ %s]\n", version, CC_VER, OSTYPE);
     g_console->printf("Copyright (c) 2002-2004 higepon\n\n");
 
