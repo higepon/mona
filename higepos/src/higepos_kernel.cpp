@@ -18,7 +18,7 @@
 #include<X86MemoryManager.h>
 #include<Sub.h>
 #include<higeOperator.h>
-//#include<higeUtil.h>
+#include<higeUtil.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -49,7 +49,37 @@ void startKernel(void) {
 
     Sub& sub = Sub::instance();
     _sysPrintlnInt(sub.getNumber());
+
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+
     _sysPrintln(sub.getName());
+
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+
+    _sysPrintln(getName());
+
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+
+    //    Point* point = new Point();
+    //    _sysPrintlnInt(point->getX());
 
     //    Sub* sub = &Sub::instance();
     //    _sysPrintInt((int)sub);

@@ -6,6 +6,16 @@ int Sub::getNumber(void) {
 
 char* Sub::getName(void) {
 
-    static char* name = "BASE\n";
+    static char* name = "SAVE\n";
     return name;
+}
+
+Sub::Sub() {
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("hlt");
+    return;
 }
