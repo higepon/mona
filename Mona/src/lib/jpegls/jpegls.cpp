@@ -279,7 +279,6 @@ void CJPEGLS::init(void)
 
     //printf("-------init----\n");
 
-    idct_init();
 
     for(i=0;i<3;i++)
         mcu_preDC[i]=0;
@@ -404,32 +403,92 @@ void JPEG::idct(int *block,int *dest)
 }
 #else
 
-#include "dct_tab"
-// ８×８個 の『基底画像』生成
-void CJPEGLS::idct_init(void)
-{
-    int i,j;
-    for(i=0;i<64;i++)
-        for(j=0;j<64;j++)
-            base_img[i][j] = base_tab[i][j];
-}
+const int C1_16 = 4017;					// cos( pi/16) x4096 (2^12)
+const int C2_16 = 3784;					// cos(2pi/16) x4096 (2^12)
+const int C3_16 = 3406;					// cos(3pi/16) x4096 (2^12)
+const int C4_16 = 2896;					// cos(4pi/16) x4096 (2^12)
+const int C5_16 = 2276;					// cos(5pi/16) x4096 (2^12)
+const int C6_16 = 1567;					// cos(6pi/16) x4096 (2^12)
+const int C7_16 = 799;					// cos(7pi/16) x4096 (2^12)
 
-void CJPEGLS::idct(int *block,int *dest)
-{
-    int i,j;
-    int temp[64];
-    for(i=0;i<64;i++)
-        temp[i] = 0;
+//  original code from Yui's code
 
-    for(i=0;i<64;i++){
-        if(block[i] != 0){
-            for(j=0;j<64;j++) {
-                temp[j] += block[i] * base_img[i][j];
-            }
-        }
+void CJPEGLS::idct(int *src,int *dst){
+
+    int		w;
+    int		s0, s1, s2, s3, s4, s5, s6, s7;
+    int		t0, t1, t2, t3, t4, t5, t6, t7;
+
+
+    for (w = 0; w < 8; w++) {
+        s4 = (src[1] * C7_16) - (src[7] * C1_16);
+        s5 = (src[5] * C3_16) - (src[3] * C5_16);
+        s6 = (src[3] * C3_16) + (src[5] * C5_16);
+        s7 = (src[7] * C7_16) + (src[1] * C1_16);
+
+        t0 = (src[0] + src[4]) * C4_16;
+        t1 = (src[0] - src[4]) * C4_16;
+        t2 = (src[2] * C6_16) - (src[6] * C2_16);
+        t3 = (src[2] * C2_16) + (src[6] * C6_16);
+        t4 = s4 + s5;
+        t5 = s4 - s5;
+        t6 = s7 - s6;
+        t7 = s6 + s7;
+
+        s0 = t0 + t3;
+        s1 = t1 + t2;
+        s2 = t1 - t2;
+        s3 = t0 - t3;
+        s5 = (t6 - t5) * 41 / 58;			// 1/sqrt(2)  12/17
+        s6 = (t5 + t6) * 41 / 58;			// 1/sqrt(2)
+
+        *src++ = (s0 + t7) >> 11;
+        *src++ = (s1 + s6) >> 11;
+        *src++ = (s2 + s5) >> 11;
+        *src++ = (s3 + t4) >> 11;
+        *src++ = (s3 - t4) >> 11;
+        *src++ = (s2 - s5) >> 11;
+        *src++ = (s1 - s6) >> 11;
+        *src++ = (s0 - t7) >> 11;
     }
-    for(i=0;i<64;i++)
-        dest[i] = (int)( temp[i] / 4096);
+
+    src -= 64;
+
+    for (w = 0; w < 8; w++) {
+
+        t0 = (src[ 0] + src[32]) * C4_16;
+        t1 = (src[ 0] - src[32]) * C4_16;
+        t2 = src[16] * C6_16 - src[48] * C2_16;
+        t3 = src[16] * C2_16 + src[48] * C6_16;
+        s0 = t0 + t3;
+        s1 = t1 + t2;
+        s2 = t1 - t2;
+        s3 = t0 - t3;
+
+        s4 = src[ 8] * C7_16 - src[56] * C1_16;
+        s5 = src[40] * C3_16 - src[24] * C5_16;
+        s6 = src[24] * C3_16 + src[40] * C5_16;
+        s7 = src[56] * C7_16 + src[ 8] * C1_16;
+        t4 = s4 + s5;
+        t5 = s4 - s5;
+        t6 = s7 - s6;
+        t7 = s6 + s7;
+
+        s5 = (t6 - t5) * 41 / 58;			// 1/sqrt(2)
+        s6 = (t5 + t6) * 41 / 58;			// 1/sqrt(2)
+
+        dst[ 0] = ((s0 + t7) >> 15);		// 結果は 1/2 になってる！
+        dst[ 8] = ((s1 + s6) >> 15);		// signed を unsignedにキャスト
+        dst[16] = ((s2 + s5) >> 15);		// してるのを注意する事。
+        dst[24] = ((s3 + t4) >> 15);
+        dst[32] = ((s3 - t4) >> 15);
+        dst[40] = ((s2 - s5) >> 15);
+        dst[48] = ((s1 - s6) >> 15);
+        dst[56] = ((s0 - t7) >> 15);
+
+        src++;
+        dst++;
+    }
 }
 
 #endif
