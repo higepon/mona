@@ -244,6 +244,36 @@ void free(void * address) {
     return;
 }
 
+void* operator new[](size_t size) {
+    return um.allocate(size);
+}
+
+void operator delete[](void* address) {
+
+    um.free(address);
+    return;
+}
+extern "C" void __cxa_pure_virtual();
+extern "C" void _pure_virtual(void);
+extern "C" void __pure_virtual(void);
+
+
+void __cxa_pure_virtual() {
+
+    print("__cxa_pure_virtual called\n");
+}
+
+
+void _pure_virtual() {
+
+    print("_pure_virtual called\n");
+}
+
+void __pure_virtual() {
+
+    print("_pure_virtual called\n");
+}
+
 
 /*----------------------------------------------------------------------
     operator new/delete

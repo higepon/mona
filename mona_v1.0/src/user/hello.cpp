@@ -1,4 +1,5 @@
 #include <userlib.h>
+#include <KeyBoardManager.h>
 
 int listener();
 int disp();
@@ -11,7 +12,6 @@ int main() {
     dword id;
     mutex = new Mutex();
 
-    kill();
 
     if (mutex->init()) {
         print("mutex init errror\n");

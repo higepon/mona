@@ -70,9 +70,10 @@ $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
 userlib.o : ./user/userlib.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./user/userlib.cpp -o userlib.o
 
-$(USER_PROCESS) : userlib.o ./user/hello.cpp
+$(USER_PROCESS) : userlib.o ./user/hello.cpp ./user/KeyBoardManager.cpp ./user/KeyBoardManager.h
 	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/hello.cpp -o hello.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o string.o -o $(USER_PROCESS)
+	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/KeyBoardManager.cpp -o uKeyBoardManager.o
+	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o uKeyBoardManager.o string.o -o $(USER_PROCESS)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS)
 
 $(USER_PROCESS2) : userlib.o ./user/test.cpp

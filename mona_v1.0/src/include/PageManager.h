@@ -29,7 +29,7 @@ class PageManager {
     PageManager(dword totalMemorySize);
 
   public:
-    void setup();
+    void setup(PhysicalAddress vram);
     void flushPageCache() const;
 
     void returnPhysicalPage(PhysicalAddress address);
@@ -75,6 +75,7 @@ class PageManager {
   private:
     BitMap*       memoryMap_;
     PageDirectory pageDirectory_;
+    PhysicalAddress vram_;
 
   public:
     static const byte FAULT_NOT_EXIST          = 0x01;
