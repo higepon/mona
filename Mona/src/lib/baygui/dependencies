@@ -31,7 +31,7 @@ main.cppmain.o: main.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
   ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
   ../../../include/baygui/Window.h
-Bitmap.cppBitmap.o: Bitmap.cpp baygui.h ../../../include/monapi.h \
+Bitmap.cppBitmap.o: Bitmap.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -52,13 +52,19 @@ Bitmap.cppBitmap.o: Bitmap.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Button.cppButton.o: Button.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Button.cppButton.o: Button.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -79,13 +85,87 @@ Button.cppButton.o: Button.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Control.cppControl.o: Control.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Control.cppControl.o: Control.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Container.cppContainer.o: Container.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Event.cppEvent.o: Event.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -106,13 +186,19 @@ Control.cppControl.o: Control.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Container.cppContainer.o: Container.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Font.cppFont.o: Font.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -133,13 +219,87 @@ Container.cppContainer.o: Container.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Event.cppEvent.o: Event.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+FontManager.cppFontManager.o: FontManager.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Graphics.cppGraphics.o: Graphics.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Icon.cppIcon.o: Icon.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -160,13 +320,19 @@ Event.cppEvent.o: Event.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Font.cppFont.o: Font.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Image.cppImage.o: Image.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -187,13 +353,53 @@ Font.cppFont.o: Font.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-FontManager.cppFontManager.o: FontManager.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+KeyEvent.cppKeyEvent.o: KeyEvent.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Label.cppLabel.o: Label.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -214,13 +420,87 @@ FontManager.cppFontManager.o: FontManager.cpp baygui.h ../../../include/monapi.h
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Graphics.cppGraphics.o: Graphics.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+ListBox.cppListBox.o: ListBox.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+MouseEvent.cppMouseEvent.o: MouseEvent.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Object.cppObject.o: Object.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -241,13 +521,19 @@ Graphics.cppGraphics.o: Graphics.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Icon.cppIcon.o: Icon.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Rect.cppRect.o: Rect.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -268,13 +554,87 @@ Icon.cppIcon.o: Icon.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Image.cppImage.o: Image.cpp baygui.h ../../../include/monapi.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+TextField.cppTextField.o: TextField.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+TimerEvent.cppTimerEvent.o: TimerEvent.cpp ../../../include/baygui.h \
+  ../../../include/monapi.h ../../../include/sys/types.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  ../../../include/monapi/messages.h \
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
+Window.cppWindow.o: Window.cpp ../../../include/baygui.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -295,252 +655,15 @@ Image.cppImage.o: Image.cpp baygui.h ../../../include/monapi.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-KeyEvent.cppKeyEvent.o: KeyEvent.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Label.cppLabel.o: Label.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-ListBox.cppListBox.o: ListBox.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-MouseEvent.cppMouseEvent.o: MouseEvent.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Object.cppObject.o: Object.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Rect.cppRect.o: Rect.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-TextField.cppTextField.o: TextField.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-TimerEvent.cppTimerEvent.o: TimerEvent.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
-Window.cppWindow.o: Window.cpp baygui.h ../../../include/monapi.h \
-  ../../../include/sys/types.h ../../../include/sys/error.h \
-  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
-  ../../../include/sys/List.h ../../../include/monapi/Date.h \
-  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
-  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
-  ../../../include/monapi/MonaApplication.h \
-  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
-  ../../../include/monapi/string.h \
-  ../../../include/monapi/MemoryManager.h \
-  ../../../include/monapi/Floppy.h \
-  ../../../include/monapi/FileInputStream.h \
-  ../../../include/monapi/InputStream.h \
-  ../../../include/monapi/FileOutputStream.h \
-  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
-  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
-  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
-  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
-  ../../../include/monapi/messages.h \
-  ../../../include/monapi/cmemoryinfo.h baygui/messages.h baygui/Object.h \
-  baygui/Event.h baygui/KeyEvent.h baygui/MouseEvent.h \
-  baygui/TimerEvent.h baygui/Rect.h baygui/Font.h baygui/FontManager.h \
-  baygui/Image.h baygui/Bitmap.h baygui/Icon.h baygui/Graphics.h \
-  baygui/Control.h baygui/Button.h baygui/Label.h baygui/ListBox.h \
-  baygui/TextField.h baygui/Container.h baygui/Window.h
+  ../../../include/monapi/cmemoryinfo.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
+  ../../../include/baygui/Event.h ../../../include/baygui/KeyEvent.h \
+  ../../../include/baygui/MouseEvent.h \
+  ../../../include/baygui/TimerEvent.h ../../../include/baygui/Rect.h \
+  ../../../include/baygui/Font.h ../../../include/baygui/FontManager.h \
+  ../../../include/baygui/Image.h ../../../include/baygui/Bitmap.h \
+  ../../../include/baygui/Icon.h ../../../include/baygui/Graphics.h \
+  ../../../include/baygui/Control.h ../../../include/baygui/Button.h \
+  ../../../include/baygui/Label.h ../../../include/baygui/ListBox.h \
+  ../../../include/baygui/TextField.h ../../../include/baygui/Container.h \
+  ../../../include/baygui/Window.h
