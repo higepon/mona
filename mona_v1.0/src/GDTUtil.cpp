@@ -81,26 +81,29 @@ void GDTUtil::setup() {
     setSegDesc(&g_gdt[0], 0, 0, 0);
     g_gdt[0].limitH = 0;
 
+    /* allcate TSS */
+    g_tss = (TSS*)malloc(sizeof(TSS));
+
     /* SYS CS 0-4GB */
-    setSegDesc(&g_gdt[1], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
+    setSegDesc(&g_gdt[1], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
 
     /* SYS DS 0-4GB */
-    setSegDesc(&g_gdt[2], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
+    setSegDesc(&g_gdt[2], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
 
     /* SYS SS 0-4GB */
-    setSegDesc(&g_gdt[3], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
+    setSegDesc(&g_gdt[3], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
 
     /* TSS. Mona has only one TSS */
-    setSegDesc(&g_gdt[4], (dword)&g_tss, 0x00000067, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x00 | 0x09);
+    setSegDesc(&g_gdt[4], (dword)g_tss, 0x00000067, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x00 | 0x09);
 
     /* USER CS 0-4GB */
-    setSegDesc(&g_gdt[5], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x0A);
+    setSegDesc(&g_gdt[5], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x0A);
 
     /* USER DS 0-4GB */
-    setSegDesc(&g_gdt[6], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
+    setSegDesc(&g_gdt[6], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
 
     /* USER SS 0-4GB */
-    setSegDesc(&g_gdt[7], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
+    setSegDesc(&g_gdt[7], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
 
     /* lgdt */
     GDTR gdtr;
@@ -118,14 +121,14 @@ void GDTUtil::setup() {
     \brief set up TSS
 
     \author HigePon
-    \date   create:2003/07/17 update:
+    \date   create:2003/07/17 update:2003/08/06
 */
 void GDTUtil::setupTSS(word selector) {
 
     /* prepare dpl0 stack */
-    memset(&g_tss, 0, sizeof(TSS));
-    g_tss.esp0 = 0x90000;
-    g_tss.ss0  = KERNEL_SS;
+    memset(g_tss, 0, sizeof(TSS));
+    g_tss->esp0 = 0x90000;
+    g_tss->ss0  = KERNEL_SS;
 
     /* load TSS */
     ltr(selector);
