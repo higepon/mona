@@ -78,6 +78,7 @@ class FAT12 {
     static const int BPB_ERROR;
     static const int NOT_FAT12_ERROR;
     static const int FAT_READ_ERROR;
+    static const int NOT_DIR_ERROR;
     static const int PATH_LENGTH;
     static const char PATH_SEP;
 
@@ -95,7 +96,7 @@ class FAT12 {
     bool changeDirectory(const char* path);
     bool readHasNext();
 
-    int getErrorNo();
+    int getErrorNo() const;
     BPB bpb_;
 
 
@@ -103,7 +104,9 @@ class FAT12 {
 
     bool setBPB();
     bool isFAT12();
-    word getFATAt(int cluster);
+    word getFATAt(int cluster) const;
+    bool changeDirectoryRelative(const char* path);
+    char* getPathAt(const char* path, int index) const;
 
  private:
 

@@ -26,6 +26,7 @@
 const int FAT12::BPB_ERROR       = 1;
 const int FAT12::NOT_FAT12_ERROR = 2;
 const int FAT12::FAT_READ_ERROR  = 3;
+const int FAT12::NOT_DIR_ERROR   = 4;
 const int FAT12::PATH_LENGTH     = 512;
 const char FAT12::PATH_SEP       = '\\';
 
@@ -39,6 +40,7 @@ FAT12::FAT12(DiskDriver* driver) {
 
     driver_ = driver;
     errNum_ = 0;
+    currentDirecotry_ = 0;
     return;
 }
 
@@ -279,11 +281,11 @@ bool FAT12::setBPB() {
   \author HigePon
   \Date   create:2003/04/17 update:
 */
-int FAT12::getErrorNo() {
+int FAT12::getErrorNo() const {
     return errNum_;
 }
 
-word FAT12::getFATAt(int cluster) {
+word FAT12::getFATAt(int cluster) const {
 
     word result;
     int index = cluster * 12 / 8;
@@ -301,8 +303,75 @@ word FAT12::getFATAt(int cluster) {
 
 bool FAT12::changeDirectory(const char* path) {
 
+    int  dirCount;
+    int  currentCluster;
     char buf[PATH_LENGTH];
 
+    /* count directory separateor */
+    for (int i = 0, dirCount = 0; i < PATH_LENGTH; i++) {
+
+        if (path[i] == PATH_SEP) dirCount++;
+    }
+
+    /* no direcotry found */
+    if (dirCount == 0) {
+        errNum_ = NOT_DIR_ERROR;
+        return false;
+    }
+
+
+    currentCluster = currentCluster_;
+    for (int i = 0; i < dirCount; i++) {
+
+        char* rpath = getPathAt(path, i);
+
+        if (!changeDirectoryRelative(path)) {
+
+            errNum_ = NOT_DIR_ERROR;
+            currentCluster_ = currentCluster;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool FAT12::changeDirectoryRelative(const char* path) {
+
+    /* read root entryies */
+    if (currentDirecotry_ == 0) {
+
+        int rootEntryStart = bpb_.reservedSectorCount
+            + bpb_.fatSize16 * bpb_.numberFats;
+    } else {
+
+
+    }
+    return false;
+}
+
+char* FAT12::getPathAt(const char* path, int index) const {
+
+    static char buff[PATH_LENGTH];
+    int start   = 0;
+    int end     = 0;
+    int counter = 0;
+
+    for (int i = 0; i < PATH_LENGTH; i++) {
+
+        if (path[i] == PATH_SEP) counter++;
+
+        if (counter == index && start == 0) start = i;
+        if (counter == index + 1) {
+            end = i;
+            break;
+        }
+    }
+
+    path += start;
+    strncpy(buff, path, end - start);
+
+    return buff;
 }
 
 bool FAT12::createFlie(const char* name) {return true;}

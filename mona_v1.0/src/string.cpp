@@ -114,3 +114,22 @@ void* memcpy(void* s1, const void* s2, size_t size) {
     }
     return s1;
 }
+
+char* strncpy(char* s1, const char* s2, size_t n) {
+
+    char* p = s;
+
+    for (; n > 0; n--) {
+
+        if (*s2 == '\0') break;
+        *p = *s2;
+        p++;
+        s2++;
+    }
+
+    whlie (n > 1) {
+        n--;
+        *p = '\0';
+    }
+    return s1;
+}
