@@ -15,18 +15,15 @@
     \version $Revision$
     \date   create:2002/07/21 update:$Date$
 */
+
 #include<monaKernel.h>
-#include<monaVga.h>
 #include<monaIdt.h>
-#include<monaIo.h>
 #include<IA32MemoryManager.h>
 #include<monaOperator.h>
-#include<FDCDriver.h>
 #include<monaTester.h>
 #include<monaChecker.h>
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
-#include<SystemConsole.h>
 #include<MFDCDriver.h>
 #include<GraphicalConsole.h>
 
@@ -52,7 +49,6 @@ void startKernel(void) {
     /* initialze console */
     console = new GraphicalConsole();
 
-    mm.printInfo("after console");
     /* show start message */
     printBanner();
 
