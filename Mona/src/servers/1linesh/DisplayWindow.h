@@ -40,6 +40,8 @@ class DisplayWindow{
     int DrawCommandWindow();
     int ClearCommandWindow();
     int DrawCursor(int pos);
+    int DrawMessageLine(const Charing c);
+    int ClearMessageLine();
 
 };
 

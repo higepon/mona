@@ -21,9 +21,9 @@ using namespace MonAPI;
 DisplayWindow::DisplayWindow(){
 
   this->posX = 0;
-  this->posY = 550;
+  this->posY = 560;
   this->width = 800;
-  this->height = 50;
+  this->height = 40;
   this->mode =0;
   
   return;
@@ -75,7 +75,7 @@ int DisplayWindow::DrawCommandLine(const Charing c){
 
 int DisplayWindow::ClearCommandLine(){
 
-  commandWindow.fillRect16(this->posX, this->posY, this->width, this->height, Color::rgb(0x00, 0x00, 0x00));
+  commandWindow.fillRect16(this->posX, this->posY, this->width, 21, Color::rgb(0x00, 0x00, 0x00));
   return 0;
 }
 
@@ -83,6 +83,8 @@ int DisplayWindow::DrawCommandWindow(){
 
   commandWindow.fillRect16(this->posX, this->posY, this->width, this->height, Color::rgb(0x00, 0x00, 0x00));
   this->DrawCommandLine("");
+  this->DrawCursor(0);
+  this->DrawMessageLine("");
   return 0;
 }
 
@@ -94,6 +96,42 @@ int DisplayWindow::ClearCommandWindow(){
 
 int DisplayWindow::DrawCursor(int pos){
 
-  commandWindow.fillRect16(this->posX+2+8*(pos+7), this->posY+2+16, 8, 2, Color::rgb(0xFF, 0xFF, 0xFF));
+  commandWindow.fillRect16(this->posX+2+8*(pos+7), this->posY+18, 8, 2, Color::rgb(0xFF, 0xFF, 0xFF));
+  return 0;
+}
+
+int DisplayWindow::DrawMessageLine(const Charing c){
+
+  int i, j;
+  char *tmp;
+  int pos;
+  int x, y;
+  Charing ss(" Msg: ");
+
+  this->ClearMessageLine();
+  ss += c;
+  pos = this->posX + 2;
+  tmp = (char *)ss;
+  while(*tmp != NULL){
+    pos += 8;
+    y = this->posY+22;
+    for(i = 0; i < 16; i++){
+      y = i + this->posY + 22;
+      for(j = 7; j >= 0; j--){
+        if(((asciiMap[(int)*tmp][i] >> j) & 0x1) == 1){
+          x = pos + 7 - j;
+          commandWindow.putPixel16(x, y, Color::rgb(0xFF, 0xFF, 0xFF));
+        }
+      }
+    }
+    tmp++;
+  }
+
+  return 0;
+}
+
+int DisplayWindow::ClearMessageLine(){
+
+  commandWindow.fillRect16(this->posX, this->posY+22, this->width, 18, Color::rgb(0x00, 0x00, 0x00));
   return 0;
 }
