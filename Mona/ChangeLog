@@ -8,8 +8,6 @@
 
         * src/kernel/test_higepon.cpp: デバッグコードを外した (DEBUG for message)
 
-        * src/kernel/test_higepon.cpp (Messenger::send): KEvent::set()を外した
-
         * src/servers/shell/main.cpp, Shell.cpp: デバッグコードを外した (DEBUG for message)
 
         * src/servers/elf/main.cpp: デバッグコードを外した (DEBUG for message)
