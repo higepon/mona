@@ -117,11 +117,16 @@ void fdcHandler(){
 */
 void timerHandler() {
 
-    _sysdumpStack5();
+    static dword idx = 0;
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
+
+    if (idx ==0) {
+	idx ++;
+	iret();
+    }
 
     /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
@@ -131,6 +136,7 @@ void timerHandler() {
     if (pm.current == pm.next) iret();
 
     asm volatile(
+                 "mov %%ebp, %%esp \n"
                  "pushal           \n"
                  "mov %%esp, %0    \n"
                  "mov %1, %%esp    \n"
