@@ -178,6 +178,7 @@ void userTest() {
 
 void userTest2() {
     while (true) {
+        syscall_heavy();
         syscall_sleep(36);
     }
 }

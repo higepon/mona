@@ -34,6 +34,7 @@ void ProcessManager::switchProcess() {
 
         g_tss->esp0 = g_current_process->esp0;
         g_tss->ss0  = g_current_process->ss0;
+
         arch_switch_process_to_user_mode();
 
     } else {
@@ -46,8 +47,10 @@ void ProcessManager::switchProcess() {
 void ProcessManager::schedule(){
 
     g_current_process->tick += 10;
+
     g_process_manager->tick();
     scheduler_->schedule();
+
     g_current_process->state = Process::RUNNING;
 
     this->switchProcess();

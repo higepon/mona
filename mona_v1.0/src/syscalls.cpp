@@ -49,7 +49,7 @@ void syscall_entrance() {
         pos_y = y;
         set_eflags(eflags);
 
-          enableInterrupt();
+        enableInterrupt();
 
           for (dword i = 0; i < 0xffffff; i++) {
 
@@ -72,6 +72,8 @@ void syscall_entrance() {
         pos_x = x;
         pos_y = y;
         set_eflags(eflags);
+
+        break;
 
       default:
           g_console->printf("syscall:default");
