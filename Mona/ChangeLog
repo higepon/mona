@@ -1,3 +1,15 @@
+2004-02-09  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gshell/gshell.cpp: リファクタリング＆品質向上
+
+        * apps/gui/hige3D/Canvas.h: 圧縮済みKUMA.OBJを開くように修正
+
+        * bin/root/KUMA.OBJ: stk5圧縮（51kb→14kb）
+
+        * src/lib/baygui/Window.cpp: キーコードが０のときはキーイベントを投げないように修正
+
+        * src/lib/baygui/TextField.cpp: キーコードが０のときはキーイベントを投げないように修正
+
 2005-02-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/Shell.cpp (commandExecute): 未実装だったヒストリー機能を正式に廃止。
