@@ -89,55 +89,55 @@ void FDCTester() {
 
     info(DEV_NOTICE, "init ok");
 
-    g_console->printf("changeDirectory to SOMEDIR\n");
+    info(DEV_NOTICE, "changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
-        g_console->printf("some dir not found");
+        info(ERROR, "some dir not found");
         while (true);
     }
 
-    g_console->printf("cdr ok");
+    info(DEV_NOTICE, "cdr ok\n");
 
-    g_console->printf("create file hige.cpp\n");
+    info(DEV_NOTICE, "create file hige.cpp\n");
     if (!fat->createFlie("HIGE", "CPP")) {
 
-        g_console->printf("can not create file=%d", fat->getErrorNo());
+        info(ERROR, "can not create file=%d", fat->getErrorNo());
         while (true);
     }
 
-    g_console->printf("open file hige.cpp\n");
+    info(DEV_NOTICE, "open file hige.cpp\n");
     if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
 
-        g_console->printf("open failed");
+        info(ERROR, "open failed");
     }
 
-    g_console->printf("write to hige.cpp\n");
+    info(DEV_NOTICE, "write to hige.cpp\n");
     byte text[512];
     memset(text, 'M', 512);
     if (!fat->write(text)) {
 
-        g_console->printf("write failed");
+        info(ERROR, "write failed");
     }
 
     memset(text, 'o', 512);
     if (!fat->write(text)) {
 
-        g_console->printf("write failed");
+       info(ERROR, "write failed");
     }
 
     memset(text, 'n', 512);
     if (!fat->write(text)) {
 
-        g_console->printf("write failed");
+       info(ERROR, "write failed");
     }
 
     memset(text, 'a', 512);
     if (!fat->write(text)) {
 
-        g_console->printf("write failed");
+       info(ERROR, "write failed");
     }
 
     if (!fat->close()) {
-        g_console->printf("close failed");
+       info(ERROR, "close failed");
     }
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
