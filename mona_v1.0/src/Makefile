@@ -53,7 +53,8 @@ SOURCES    = cstart.cpp            \
              test_mjt.cpp          \
              sysresource.cpp       \
              ISADriver.cpp         \
-             info.cpp
+             info.cpp              \
+             GDTUtil.cpp
 
 DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp driver/ISADevice/PCIC/pcic.cpp
 DRVROBJ = ps2kbc.o pcic.o
