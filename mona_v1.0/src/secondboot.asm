@@ -18,7 +18,7 @@ RealToProtect:
         jmp  flush_q1
 
 ;-------------------------------------------------------------------------------
-; GDT definition
+; GDT definition: It is temporary.
 ;-------------------------------------------------------------------------------
 gdtr:
         dw gdt_end - gdt0 - 1   ; gdt limit
@@ -54,30 +54,6 @@ gdt18:                          ; segment 18(stack segment)
         db 0                    ; segment baseM
         db 0x96                 ; Type Stack
         db 0xc0                 ; segment limitH
-        db 0                    ; segment baseH
-
-gdt20:                          ; segment 20(task state segment)
-        dw 0x67                 ; segment limitL
-        dw 0                    ; segment baseL
-        db 0                    ; segment baseM
-        db 0x89                 ; Type TSS
-        db 0                    ; segment limitH
-        db 0                    ; segment baseH
-
-gdt28:                          ; segment 28(task state segment)
-        dw 0x67                 ; segment limitL
-        dw 0                    ; segment baseL
-        db 0                    ; segment baseM
-        db 0x89                 ; Type TSS
-        db 0                    ; segment limitH
-        db 0                    ; segment baseH
-
-gdt30:                          ; segment 30(LDT)
-        dw 0x67                 ; segment limitL
-        dw 0                    ; segment baseL
-        db 0                    ; segment baseM
-        db 0x82                 ; Type LDT
-        db 0                    ; segment limitH
         db 0                    ; segment baseH
 
 gdt_end:                        ; end of gdt

@@ -46,7 +46,7 @@ typedef struct {
 } GDT;
 
 /*!
-    \struct memory entry struct
+    \struct memoryEntry
     \brief  startAdress is the adress of allocated memory
  */
 typedef struct memoryEntry {
@@ -56,7 +56,7 @@ typedef struct memoryEntry {
 };
 
 /*!
-    \struct page table entry
+    \struct PTE
  */
 typedef struct  {
     unsigned present:1;          /*!< present bit            */
@@ -106,7 +106,7 @@ class IA32MemoryManager {
     struct memoryEntry* freeEntry_;
     struct memoryEntry* usedEntry_;
 
-    GDT gdt_[8192]; /*!< Global Descriptor table */
+    GDT* gdt_; /*!< Global Descriptor table */
 
   public:
 

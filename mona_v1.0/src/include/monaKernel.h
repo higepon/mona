@@ -23,7 +23,7 @@
 
 
 /*!
-   \struct far jmp
+   \struct FARJMP
 */
 typedef struct {
     dword offset;
@@ -31,7 +31,7 @@ typedef struct {
 } FARJMP;
 
 /*!
-    \struct TSS(Task State Segment)
+    \struct TSS
 */
 typedef struct {
     word  backlink;

@@ -15,6 +15,7 @@
 #include<monaIdt.h>
 #include<monaVga.h>
 #include<monaKernel.h>
+#include<monaOperator.h>
 
 /*!
     \brief get class Name
@@ -462,6 +463,21 @@ inline void IA32MemoryManager::flushTLB() const {
                  : /* no input  */ : "ax");
 }
 
+/*!
+    \brief set up GDT
+
+    set up descripter in GDT
+
+    \param index  index in GDT
+    \param base   base address of segment
+    \param limit  limit of segment
+    \param type   segment type
+    \param type32 type32
+    \param dpl    dpl
+
+    \author HigePon
+    \date   create:2002/12/31 update:
+*/
 void IA32MemoryManager::setGDT(word index, dword base, dword limit, byte type, byte type32, byte dpl) {
 
     /* check index */
@@ -476,6 +492,14 @@ void IA32MemoryManager::setGDT(word index, dword base, dword limit, byte type, b
     gdt_[index].type   = (byte)(type | (dpl << 5));
 }
 
+/*!
+    \brief lgdt
+
+    load adress and limit to gdtr register
+
+    \author HigePon
+    \date   create:2002/12/31 update:
+*/
 inline void IA32MemoryManager::lgdt() const {
 
     GDTR gdtr;
@@ -484,7 +508,18 @@ inline void IA32MemoryManager::lgdt() const {
     asm volatile("lgdt %0\n" : /* no output */ : "m" (gdtr));
 }
 
+/*!
+    \brief reset GDT
+
+    at secondboot.asm, set up GDT temporary.
+    here, set up GDT.
+
+    \author HigePon
+    \date   create:2002/12/31 update:
+*/
 void IA32MemoryManager::resetGDT() {
+
+    gdt_ = (GDT*)malloc(GD_NUM * sizeof(GDT));
 
     setGDT(0, 0, 0, 0, 0, 0);
     setGDT(1, 0, 0xFFFFFFFF, TypeCode , 0, 0);

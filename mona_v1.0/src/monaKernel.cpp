@@ -59,11 +59,11 @@ void startKernel(void) {
     _sysSetIdt();
     _sysInitIo();
 
+    /* re-set up GDT */
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
-
     _sysUnlock();
-    _sys_printf("Idt set done\n");
+    _sys_printf("IDT,GDT set done\n");
 
     /* check some */
     checkTypeSize();

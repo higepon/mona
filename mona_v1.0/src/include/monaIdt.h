@@ -42,7 +42,7 @@ typedef struct idt_st {
 };
 
 
-/*! \struct interrupt handler */
+/*! \struct handler_st */
 typedef struct handler_st {
     int  number;       /*< handler number              */
     void (*handler)(); /*< pointer to handler function */
