@@ -12,6 +12,7 @@
 */
 
 #include<BitMap.h>
+#include<string.h>
 
 const int BitMap::DWORD_BITS;
 const int BitMap::NOT_FOUND;
@@ -29,6 +30,7 @@ BitMap::BitMap(int number) {
                  + ((bitsNumber_ % DWORD_BITS) ? 1 : 0);
 
     map_ = new int[dwordNumber_];
+    memset(map_, 0, sizeof(int) * dwordNumber_);
 
     for (int i = 0; i < bitsNumber_; i++) clear(i);
     return;

@@ -104,6 +104,8 @@ cextern irqHandler_%1
 arch_irqhandler_%1:
         pushAll
         changeData
+        call arch_set_dokodemo_view
+        call arch_set_stack_view
         call irqHandler_%1
         popAll
         iretd

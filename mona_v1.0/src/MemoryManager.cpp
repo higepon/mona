@@ -153,7 +153,7 @@ void* MemoryManager::allocate(dword size) {
 
         deleteFromList(&freeList_, current);
         addToList(&usedList_, current);
-        //        memset(current->startAddress, 0, size);
+        memset(current->startAddress, 0, size);
         return (current->startAddress);
 
     } else if (current->size >= realSize) {
@@ -165,7 +165,7 @@ void* MemoryManager::allocate(dword size) {
         deleteFromList(&freeList_, current);
         addToList(&usedList_, current);
         addToList(&freeList_, freeBlock);
-        //        memset(current->startAddress, 0, size);
+        memset(current->startAddress, 0, size);
         return (current->startAddress);
 
     } else {

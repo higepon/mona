@@ -79,6 +79,9 @@ FAT12::FAT12(DiskDriver* driver) {
     rootDirSectors_   = 0;
     firstDataSector_  = 0;
     rootEntryStart_   = 0;
+    memset(entries_, 0, 16 * sizeof(DirectoryEntry));
+    currentEntry_     = NULL;
+    memset(&bpb_, 0, sizeof(BPB));
     return;
 }
 

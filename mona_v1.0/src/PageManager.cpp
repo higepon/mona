@@ -341,14 +341,13 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword tableIndex     = getTableIndex(address);
     Process* current     = g_processManager->getCurrentProcess();
 
-    g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
-
     dword realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
                  "mov %%eax, %0     \n"
                  : "=m"(realcr3):: "eax");
 
     if (realcr3 != (dword)current->getPageDirectory()) {
+        g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
         g_console->printf("realCR3=%x processCR3=%x\n", realcr3, current->getPageDirectory());
     }
 
