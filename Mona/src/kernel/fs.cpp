@@ -402,3 +402,13 @@ bool FSOperation::write(byte* buf, int size)
     }
     return true;
 }
+
+bool FSOperation::seek(dword pt, int flag)
+{
+    return this->file->seek((int)pt, flag);
+}
+
+dword FSOperation::position()
+{
+    return this->file->position();
+}

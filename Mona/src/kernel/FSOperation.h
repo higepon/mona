@@ -42,6 +42,8 @@ class FSOperation
     bool openDir();
     bool readDir(char* name, int* size);
     bool closeDir();
+    bool seek(dword pt, int flag);
+    dword position();
     int getErrorNo() const;
     int size();
 

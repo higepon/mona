@@ -26,6 +26,7 @@ public:
     virtual bool seek (int pt, int flag) = 0;
     virtual bool flush () = 0;
     virtual bool resize (dword sz) = 0;
+    virtual dword position () = 0;
     virtual dword size () = 0;
 };
 
@@ -47,8 +48,8 @@ public:
     virtual int newFile (byte *bf, dword sz) = 0;
     virtual Directory* getDirectory (int entry) = 0;
     virtual File* getFile (int entry) = 0;
-    virtual bool setFileSize (int entry, dword size) = 0;
-    virtual bool setCluster (int entry, dword cluster) = 0;
+    virtual bool isDirectory (int entry) = 0;
+    virtual bool isFile (int entry) = 0;
     virtual dword getIdentifer () = 0;
 };
 

@@ -115,6 +115,7 @@ public:
     bool seek (int pt, int flag);
     bool flush ();
     bool resize (dword sz);
+    dword position ();
     dword size ();
 
 private:

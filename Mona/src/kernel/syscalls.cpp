@@ -652,6 +652,16 @@ void syscall_entrance() {
         info->eax = g_scheduler->getTick();
         break;
 
+    case SYSTEM_CALL_FILE_POSITION:
+
+        info->eax = g_fs->position();
+        break;
+
+    case SYSTEM_CALL_FILE_SEEK:
+
+        info->eax = g_fs->seek(info->esi, info->ecx);
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

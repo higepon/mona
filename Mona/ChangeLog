@@ -1,3 +1,7 @@
+2004-04-22  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/syscalls.cpp : SEEK, POSITIONのシステムコール追加
+
 2004-04-21  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.h (ArchThreadInfo): FPU対応、FPUステート・データレジスタの退避・復帰機能を入れた
