@@ -22,7 +22,7 @@ void disp_name1() {
 
     enableTimer();
     while (true) {
-	g_console->printf("[1][%x]", get_eflags());
+	//	g_console->printf("[1][%x]", get_eflags());
 	(g_kthreadInfo.demo1)++;
     }
 }
@@ -37,7 +37,7 @@ void disp_name2() {
 
     enableTimer();
     while (true) {
-	g_console->printf("[2][%x]", get_eflags());
+	//	g_console->printf("[2][%x]", get_eflags());
 	(g_kthreadInfo.demo2)++;
     }
 }
@@ -46,7 +46,7 @@ void disp_name3() {
 
     enableTimer();
     while (true) {
-        asm volatile("nop");
+	(g_kthreadInfo.demo3)++;
     }
 }
 void disp_name4() {
