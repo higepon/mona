@@ -14,6 +14,7 @@
 #include <global.h>
 #include <Process.h>
 #include <PageManager.h>
+#include <string.h>
 
 #define FOREACH_N(top, type, element) \
 for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
@@ -100,7 +101,7 @@ Process* Scheduler::findProcess(const char* name)
         FOREACH_N(queue, Thread*, thread)
         {
             Process* process = thread->getThreadInfo()->process;
-            if (!strstr(name, process->getName())
+            if (!strcmp(name, process->getName()))
             {
                 return process;
             }
@@ -112,13 +113,27 @@ Process* Scheduler::findProcess(const char* name)
         FOREACH_N(queue, Thread*, thread)
         {
             Process* process = thread->getThreadInfo()->process;
-            if (!strstr(name, process->getName())
+            if (!strcmp(name, process->getName()))
             {
                 return process;
             }
         }
     }
     return (Process*)NULL;
+}
+
+dword Scheduler::lookup(const char* name)
+{
+    Process* process = findProcess(name);
+
+    if (process == (Process*)NULL)
+    {
+        return 0xFFFFFFFF;
+    }
+    else
+    {
+        return process->getPid();
+    }
 }
 
 int Scheduler::calcPriority(Thread* thread)

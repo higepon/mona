@@ -226,22 +226,22 @@ MessageInfo* Messenger::allocateMessageInfo() {
     return result;
 }
 
-int Messenger::send(const char* name, MessageInfo* message) {
-
+int Messenger::send(const char* name, MessageInfo* message)
+{
     Process* process;
     MessageInfo* info;
 
-    if (message == (MessageInfo*)NULL) {
+    if (message == (MessageInfo*)NULL)
+    {
         return -1;
     }
 
-    // should be 
-//     if ((process = g_processManager->find(name)) == (Process*)NULL) {
-//         return -1;
-//     }
+    if ((process = g_scheduler->findProcess(name)) == (Process*)NULL)
+    {
+        return -1;
+    }
 
     info = allocateMessageInfo();
-
     *info = *message;
 
     info->from = g_currentThread->process->getPid();
@@ -257,14 +257,15 @@ int Messenger::send(dword pid, MessageInfo* message) {
     Process* process;
     MessageInfo* info;
 
-    if (message == (MessageInfo*)NULL) {
+    if (message == (MessageInfo*)NULL)
+    {
         return -1;
     }
 
-// should be
-//     if ((process = g_processManager->find(pid)) == (Process*)NULL) {
-//         return -1;
-//     }
+    if ((process = g_scheduler->findProcess(pid)) == (Process*)NULL)
+    {
+        return -1;
+    }
 
     info = allocateMessageInfo();
 
@@ -276,11 +277,12 @@ int Messenger::send(dword pid, MessageInfo* message) {
     return 0;
 }
 
-int Messenger::receive(Process* process, MessageInfo* message) {
-
+int Messenger::receive(Process* process, MessageInfo* message)
+{
     MessageInfo* from = process->getMessageList()->get(0);
 
-    if (from == (MessageInfo*)NULL) {
+    if (from == (MessageInfo*)NULL)
+    {
         return -1;
     }
 

@@ -128,8 +128,10 @@ public:
     int wait(Thread* thread, int waitReason);
     int wakeup(Thread* thread, int waitReason);
     dword getTick() const;
+    dword lookup(const char* name);
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);
+
 
 private:
     int calcPriority(Thread* thread);

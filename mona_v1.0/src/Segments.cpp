@@ -357,8 +357,7 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword li
 
     initilize(id, size);
 
-    Process* process = NULL;
-//    Process* process = g_processManager->find(pid);
+    Process* process = g_scheduler->findProcess(pid);
     if (process == NULL) {
         return;
     }
