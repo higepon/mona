@@ -44,6 +44,8 @@ distclean: clean
 	rm -f env/Makefile.inc
 
 image:
+	for file in $(ELF_FILES); do $(BINDIR)/monaelf.exe $$file; done
+	for file in $(SVR_FILES); do $(BINDIR)/monaelf.exe $$file; done
 	for file in $(ELF_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file APPS/`basename $$file`; done
 	for file in $(SVR_FILES); do $(BINDIR)/fat_write.exe $(BINDIR)/mona.img $$file SERVERS/`basename $$file`; done
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/AUTOEXEC.MSH AUTOEXEC.MSH
