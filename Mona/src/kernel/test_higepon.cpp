@@ -251,10 +251,7 @@ int Messenger::send(dword id, MessageInfo* message)
         return -1;
     }
 
-    dword eflags = get_eflags();
-    disableInterrupt();
     info = allocateMessageInfo();
-    set_eflags(eflags);
 
 #if 0
     logprintf("send:to=%x head=%x a1=%x a2=%x a3=%x from=%x\n"
@@ -270,13 +267,7 @@ int Messenger::send(dword id, MessageInfo* message)
     *info = *message;
     info->from = g_currentThread->thread->id;
 
-#if 0  // DEBUG for message
-    if (id == 60 || id == 63) g_console->printf("@%d->%d@", info->from, id);
-#endif
-
-    enter_kernel_lock_mode();
     thread->messageList->add(info);
-    exit_kernel_lock_mode();
 
     KEvent::set(thread, KEvent::MESSAGE_COME);
 
@@ -285,9 +276,7 @@ int Messenger::send(dword id, MessageInfo* message)
 
 int Messenger::receive(Thread* thread, MessageInfo* message)
 {
-    enter_kernel_lock_mode();
     MessageInfo* from = thread->messageList->removeAt(0);
-    exit_kernel_lock_mode();
 
     if (from == (MessageInfo*)NULL)
     {
@@ -307,5 +296,25 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
 
     *message = *from;
 
+    return 0;
+}
+
+int Messenger::peek(Thread* thread, MessageInfo* message, int index, int flags)
+{
+    List<MessageInfo*>* list = thread->messageList;
+
+    if (index > list->size())
+    {
+        return 1;
+    }
+
+    MessageInfo* from = flags & PEEK_REMOVE ? list->removeAt(index) : list->get(index);
+
+    if (from == (MessageInfo*)NULL)
+    {
+        return -1;
+    }
+
+    *message = *from;
     return 0;
 }

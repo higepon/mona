@@ -694,6 +694,16 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
+    case SYSTEM_CALL_PEEK:
+
+        info->eax = g_messenger->peek(g_currentThread->thread
+                                      , (MessageInfo*)(info->esi)
+                                      , (int)(info->ecx)
+                                      , (int)(info->edi)
+            );
+
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -24,6 +24,11 @@ int Message::receive(MessageInfo* info)
     return monapi_cmessage_receive(NULL, info);
 }
 
+int Message::peek(MessageInfo* info, int index, int flags)
+{
+    return syscall_peek(info, index, flags);
+}
+
 void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
 {
     info->header = header;

@@ -80,6 +80,7 @@ extern dword syscall_lookup(const char* name);
 extern dword syscall_get_tick();
 extern int syscall_get_kernel_version(char* buf, dword size);
 extern int syscall_clear_screen();
+extern int syscall_peek(MessageInfo* message, int index, int flags);
 
 extern void* malloc(unsigned long size);
 extern void free(void * address);

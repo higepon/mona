@@ -1,3 +1,13 @@
+2004-05-25  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/Message.cpp (peek): Message::peek()を追加しました。中身についてはsyscall_peekとなっていますが
+                                             cmessagexxxxとすべきかどうかTinoさんと要相談
+
+        * src/lib/monapi/syscall.cpp (syscall_peek): peekシステムコールを追加
+
+        * include/sys/types.h (enum): PEEK_REMOVE追加
+
+
 2004-05-24  tino  <tino@users.sourceforge.jp>
 
         * src/lib/monapi/Screen.cpp (putPixel16, fillRect16): 24/32bppでの描画を修正

@@ -14,6 +14,7 @@ public:
     static int send(dword tid, MessageInfo* info);
     static int send(dword tid, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
     static int receive(MessageInfo* info);
+    static int peek(MessageInfo* info, int index, int flags = 0);
     static void create(MessageInfo* info, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
     static bool exist();
     static dword lookup(const char* name);

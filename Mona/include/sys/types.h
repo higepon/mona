@@ -161,6 +161,10 @@ enum
     ATTRIBUTE_DIRECTORY = 0x10
 };
 
+enum
+{
+    PEEK_REMOVE = 0x01
+};
 
 #define SHARED_FDC_BUFFER 0x4000
 
@@ -218,6 +222,7 @@ enum
 #define SYSTEM_CALL_LOAD_PROCESS_IMAGE       0x0034
 #define SYSTEM_CALL_KILL_THREAD              0x0035
 #define SYSTEM_CALL_CLEAR_SCREEN             0x0036
+#define SYSTEM_CALL_PEEK                     0x0037
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

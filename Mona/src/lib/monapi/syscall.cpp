@@ -646,3 +646,10 @@ int syscall_clear_screen()
     SYSCALL_0(SYSTEM_CALL_CLEAR_SCREEN, result);
     return result;
 }
+
+int syscall_peek(MessageInfo* message, int index, int flags)
+{
+    int result;
+    SYSCALL_3(SYSTEM_CALL_PEEK, result, message, index, flags);
+    return result;
+}
