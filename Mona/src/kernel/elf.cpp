@@ -23,6 +23,8 @@
 
 #define MAX_IMAGE_SIZE (4096 * 150)
 
+#define ORG 0xA0000000
+
 int loadProcess(const char* path, const char* name, bool isUser, CommandOption* list)
 {
     char filepath[128];
@@ -114,7 +116,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));
     isOpen    = SharedMemoryObject::open(sharedId, MAX_IMAGE_SIZE);
-    isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
+    isAttaced = SharedMemoryObject::attach(sharedId, process, ORG);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced)
     {
@@ -167,6 +169,9 @@ int ELFLoader::prepare(dword elf)
     /* Program Header */
     pheader_ = (ELFProgramHeader*)((dword)header_ + header_->phdrpos);
 
+    /* Section Header */
+    sheader_ = (ELFSectionHeader*)((dword)header_ + header_->shdrpos);
+
     /* get size of image */
     for (int i = 0; i < header_->phdrcnt; i++)
     {
@@ -184,6 +189,7 @@ int ELFLoader::prepare(dword elf)
     return size;
 }
 
+#define SH_NOBITS 8
 dword ELFLoader::load(byte* toAddress)
 {
     for (int i = 0; i < header_->phdrcnt; i++)
@@ -197,7 +203,16 @@ dword ELFLoader::load(byte* toAddress)
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - pheader_->virtualaddr), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].memorysize);
 
             /* zero clear*/
-            //            memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), 0, pheader_[i].memorysize);
+            //memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint + pheader_[i].filesize), 0, pheader_[i].memorysize - pheader_[i].filesize);
+        }
+    }
+
+    for (int i = 0; i < header_->shdrcnt; i++)
+    {
+        /* .bss */
+        if (sheader_[i].type == SH_NOBITS)
+        {
+            memset((void*)(toAddress + sheader_[i].address - ORG), 0, sheader_[i].size);
         }
     }
 

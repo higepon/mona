@@ -1,3 +1,7 @@
+2004-04-17  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/elf.cpp (load): セクションヘッダを参照して.bssをゼロクリア
+
 2004-04-17  shadow  <shadowin@users.sourceforge.jp>
 
         * src/lib/monapi/Keys.cpp: IsToChar追加

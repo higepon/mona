@@ -420,7 +420,6 @@ LinearAddress ProcessOperation::allocateKernelStack()
 
 Process* ProcessOperation::create(int type, const char* name)
 {
-    g_console->printf("free memory = %d \n", km.getFreeMemorySize());
     Process* result;
 
     switch (type)

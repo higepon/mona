@@ -91,6 +91,7 @@ class ELFLoader {
     int errorCode_;
     ELFHeader*        header_;
     ELFProgramHeader* pheader_;
+    ELFSectionHeader* sheader_;
 
 };
 
