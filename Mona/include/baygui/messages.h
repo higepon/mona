@@ -28,6 +28,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_MESSAGES_H_INCLUDED_)
 #define _MESSAGES_H_INCLUDED_
 
+// ==================================================
+// BayGUI メッセージ
+// ==================================================
+
 enum {
 	MSG_GUISERVER_ADD = 0x4000,
 	MSG_GUISERVER_REMOVE,
