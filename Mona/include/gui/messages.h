@@ -37,8 +37,9 @@ typedef struct
 typedef struct
 {
 	unsigned int Handle, Parent, Owner;
-	int X, Y, Width, Height;
-	int OffsetX, OffsetY;
+	int X, Y, Width, Height, OffsetX, OffsetY, Opacity;
+	unsigned int Flags, TransparencyKey;
+	void* __reserved1, * __reserved2, * __reserved3;
 	guiserver_bitmap Buffer;
 } guiserver_window;
 

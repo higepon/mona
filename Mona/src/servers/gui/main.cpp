@@ -24,48 +24,63 @@ static void ReadFont(const char* file)
 	default_font = mi;
 }
 
-void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent)
+static void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent, const char* src, bool prompt)
 {
 	if (wallpaper == NULL || bmp == NULL) return;
 	
-	int x = 0, y = 0, sw = wallpaper->Width, sh = wallpaper->Height;
+	int x = 0, y = 0, ww = wallpaper->Width, wh = wallpaper->Height;
 	switch (pos)
 	{
+		case 0: // Stretch
+		{
+			Screen* scr = GetDefaultScreen();
+			int sw = scr->getWidth(), sh = scr->getHeight();
+			if (sw != ww || sh != wh)
+			{
+				if (prompt) printf("%s: Resizing %s....", SVR, (const char*)src);
+				guiserver_bitmap* bmp2 = ResizeBitmap(bmp, sw, sh);
+				MemoryMap::unmap(bmp->Handle);
+				bmp = bmp2;
+				if (prompt) printf("Done\n");
+			}
+			break;
+		}
 		case 1: // Top Left
 			break;
 		case 2: // Top Center
-			x = (sw - bmp->Width) / 2;
+			x = (ww - bmp->Width) / 2;
 			break;
 		case 3: // Top Right
-			x = sw - bmp->Width;
+			x = ww - bmp->Width;
 			break;
 		case 4: // Center Left
-			y = (sh - bmp->Height) / 2;
+			y = (wh - bmp->Height) / 2;
 			break;
 		case 5: // Center Center
-			x = (sw - bmp->Width) / 2;
-			y = (sh - bmp->Height) / 2;
+			x = (ww - bmp->Width) / 2;
+			y = (wh - bmp->Height) / 2;
 			break;
 		case 6: // Center Right
-			x = sw - bmp->Width;
-			y = (sh - bmp->Height) / 2;
+			x = ww - bmp->Width;
+			y = (wh - bmp->Height) / 2;
 			break;
 		case 7: // Bottom Left
-			y = sh - bmp->Height;
+			y = wh - bmp->Height;
 			break;
 		case 8: // Bottom Center
-			x = (sw - bmp->Width) / 2;
-			y = sh - bmp->Height;
+			x = (ww - bmp->Width) / 2;
+			y = wh - bmp->Height;
 			break;
 		case 9: // Bottom Right
-			x = sw - bmp->Width;
-			y = sh - bmp->Height;
+			x = ww - bmp->Width;
+			y = wh - bmp->Height;
 			break;
 	}
 	DrawImage(wallpaper, bmp, x, y, -1, -1, -1, -1, transparent);
+	MemoryMap::unmap(bmp->Handle);
 }
 
-void DrawWallPaper(const char* src, int pos, int transparent, int background)
+static void DrawWallPaper(const char* src, int pos, int transparent, int background)
 {
 	bool prompt = wallpaper_prompt;
 	wallpaper_prompt = false;
@@ -85,12 +100,11 @@ void DrawWallPaper(const char* src, int pos, int transparent, int background)
 	guiserver_bitmap* bmp = ReadImage(src, prompt);
 	if (bmp == NULL) return;
 	
-	DrawWallPaper(bmp, pos, transparent);
-	MemoryMap::unmap(bmp->Handle);
+	DrawWallPaper(bmp, pos, transparent, src, prompt);
 	DrawImage(wallpaper);
 }
 
-void ReadConfig()
+static void ReadConfig()
 {
 	monapi_cmemoryinfo* cfg = monapi_call_file_read_data("/MONA.CFG", 0);
 	if (cfg == NULL) return;
@@ -170,7 +184,7 @@ static void CheckGUIServer()
 	exit(1);
 }
 
-void MessageLoop()
+static void MessageLoop()
 {
 	for (MessageInfo msg;;)
 	{

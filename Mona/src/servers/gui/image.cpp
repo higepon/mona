@@ -23,7 +23,7 @@ guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background)
 	ret->Width  = width;
 	ret->Height = height;
 	
-	FillColor(ret, background);
+	FillColor(ret, (unsigned int)background);
 	
 	return ret;
 }
@@ -148,6 +148,45 @@ guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 
 	monapi_cmemoryinfo_dispose(mi);
 	monapi_cmemoryinfo_delete(mi);
+	return ret;
+}
+
+guiserver_bitmap* ResizeBitmap(guiserver_bitmap* bmp, int width, int height)
+{
+	guiserver_bitmap* ret = CreateBitmap(width, height, 0);
+	unsigned char* ptr = (unsigned char*)ret->Data;
+	for (int y = 0; y < height; y++)
+	{
+		double y1 = ((double)(y    )) * ((double)bmp->Height) / ((double)height);
+		double y2 = ((double)(y + 1)) * ((double)bmp->Height) / ((double)height);
+		for (int x = 0; x < width; x++)
+		{
+			double x1 = ((double)(x    )) * ((double)bmp->Width) / ((double)width);
+			double x2 = ((double)(x + 1)) * ((double)bmp->Width) / ((double)width);
+			double size = (x2 - x1) * (y2 - y1);
+			double r = 0.0, g = 0.0, b = 0.0;
+			for (double y3 = y1, y4; y3 < y2; y3 = y4)
+			{
+				y4 = (double)(int)(y3 + 1);
+				if (y4 > y2) y4 = y2;
+				for (double x3 = x1, x4; x3 < x2; x3 = x4)
+				{
+					x4 = (double)(int)(x3 + 1);
+					if (x4 > x2) x4 = x2;
+					double size2 = (x4 - x3) * (y4 - y3);
+					unsigned char* ptr2 = (unsigned char*)&bmp->Data[((int)x3) + ((int)y3) * bmp->Width];
+					b += ((double)ptr2[0]) * size2;
+					g += ((double)ptr2[1]) * size2;
+					r += ((double)ptr2[2]) * size2;
+				}
+			}
+			ptr[0] = (int)(b / size);
+			ptr[1] = (int)(g / size);
+			ptr[2] = (int)(r / size);
+			ptr[3] = 255;
+			ptr += 4;
+		}
+	}
 	return ret;
 }
 
