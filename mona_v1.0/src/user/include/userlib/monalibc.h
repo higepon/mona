@@ -1,9 +1,19 @@
+/*!
+  \file   monalibc.h
+  \brief  standard library
+
+  Copyright (c) 2002,2003,2004 shadow
+  All rights reserved.
+  License=NYSL
+
+  \author  shadow
+  \version $Revision$
+  \date   create:  update:$Date$
+*/
 #include <types.h>
 
-#ifndef _MONA_LIB_STDIO_
-#define _MONA_LIB_STDIO_
-
-
+#ifndef _MONA_LIB_C_
+#define _MONA_LIB_C_
 
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
@@ -25,6 +35,12 @@ extern "C" {
 #define P_FORMAT_CAPITAL 0x40
 #define P_FORMAT_TERMINATE 0x80
 
+typedef char *va_list;
+#define va_start(ap,last) (void)((ap)=(va_list)&(last)+sizeof(last))
+#define va_arg(ap,type) (*((type*)(ap))++)
+#define va_end(ap) (void)((ap)=NULL)
+
+int vsprintf(char *s, const char *format, va_list arg);
 int sprintf(char *s, const char *format, ...);
 int itos(char *s, int n, int width, int base, char flag);
 int atoi(const char *s);

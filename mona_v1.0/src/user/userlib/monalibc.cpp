@@ -1,4 +1,17 @@
+/*!
+  \file   monalibc.cpp
+  \brief  standard library
+
+  Copyright (c) 2002,2003,2004 shadow
+  All rights reserved.
+  License=NYSL
+
+  \author  shadow
+  \version $Revision$
+  \date   create:  update:$Date$
+*/
 #include <monalibc.h>
+#include <string.h>
 
 #define P_FLAG_WIDTH 0x01
 #define P_FLAG_PRECISION 0x02
@@ -7,7 +20,7 @@
 int uitos(char* s, unsigned int n, int real_width, int base, char flag);
 size_t __power(size_t x, size_t y);
 
-int sprintf(char *s, const char *format, ...){
+int vsprintf(char *s, const char *format, va_list arg){
   int result = 0;
   int loop;
   int i;
@@ -16,9 +29,6 @@ int sprintf(char *s, const char *format, ...){
   int precision;
   char p_flag;
 
-  void** list = (void **)&format;
-
-  ((char**)list) += 1;
   for(i = 0; format[i] != '\0'; i++){
     if(format[i] == '%'){
       loop = 1;
@@ -31,48 +41,41 @@ int sprintf(char *s, const char *format, ...){
         switch(format[i]){
           case 's':
             //memcpy?
-            ((char**)list) += 1;
+            va_arg(arg, char *);
             loop = 0;
             break;
           case 'd':
           case 'i':
-            result += itos(&s[result], ((int)*list), width, 10, flag);
-            ((int*)list) += 1;
+            result += itos(&s[result], va_arg(arg, int), width, 10, flag);
             loop = 0;
             break;
           case 'o':
             flag |= P_FORMAT_UNSIGNED;
-            result += itos(&s[result], ((int)*list), width, 8, flag);
-            ((int*)list) += 1;
+            result += itos(&s[result], va_arg(arg, int), width, 8, flag);
             loop = 0;
             break;
           case 'u':
             flag |= P_FORMAT_UNSIGNED;
-            result += itos(&s[result], ((int)*list), width, 10, flag);
-            ((int*)list) += 1;
+            result += itos(&s[result], va_arg(arg, int), width, 10, flag);
             loop = 0;
             break;
           case 'X':
             flag |= P_FORMAT_CAPITAL;
           case 'x':
             flag |= P_FORMAT_UNSIGNED;
-            result += itos(&s[result], ((int)*list), width, 16, flag);
-            ((int*)list) += 1;
+            result += itos(&s[result], va_arg(arg, int), width, 16, flag);
             loop = 0;
             break;
           case 'f':
-            result += ftos(&s[result], (*(double *)list), width, precision, flag);
-            ((double*)list) += 1;
+            result += ftos(&s[result], va_arg(arg, double), width, precision, flag);
             loop = 0;
             break;
           case 'c':
-            s[result] = (char)(int)(*list);
-            ((char*)list) += 1;
-            result++;
+            s[result++] = va_arg(arg, char);
             loop = 0;
             break;
           case '%':
-            s[result] = '%';
+            s[result++] = '%';
             loop = 0;
             break;
           case '-':
@@ -115,11 +118,21 @@ int sprintf(char *s, const char *format, ...){
         }
       }
     } else {
-      s[result] = format[i];
-      result++;
+      s[result++] = format[i];
     }
   }
   s[result] = 0;
+  return result;
+}
+
+int sprintf(char *s, const char *format, ...){
+  int result;
+  va_list args;
+
+  va_start(args, format);
+  result = vsprintf(s, format, args);
+  va_end(args);
+
   return result;
 }
 
@@ -244,6 +257,7 @@ int ftos(char *s, double n, int width, int precision, char flag){
   int num, fraction;
   int j = 0;
   char tmpflag = 0;
+
   if(s == NULL){
     return 0;
   }
@@ -255,12 +269,27 @@ int ftos(char *s, double n, int width, int precision, char flag){
       flag &= ~P_FORMAT_TERMINATE;
       tmpflag = P_FORMAT_TERMINATE;
     }
-    width -= (precision + 1);
-    j += itos(s, num, width, 10, flag);
-    s[j] = '.';
-    j++;
-    j += itos(&s[j], fraction, precision, 10, tmpflag);
-  } else {
+    if(num != 0){
+     width -= (precision + 1);
+     j += itos(s, num, width, 10, flag);
+     s[j] = '.';
+     j++;
+     if(fraction < 0) fraction *= -1;
+     j += itos(&s[j], fraction, precision, 10, tmpflag);
+    } else { /* num == 0 */
+      if(fraction >= 0){
+       s[j++] = '0';
+       s[j++] = '.';
+       j += itos(&s[j], fraction, precision, 10, tmpflag);
+      } else { /* num == 0 && fraction < 0 */
+       s[j++] = '-';
+       s[j++] = '0';
+       s[j++] = '.';
+       fraction *= -1;
+       j += itos(&s[j], fraction, precision, 10, tmpflag);
+      }
+    }
+  } else { /* precision <= 0 */
     j += itos(s, num, width, 10, flag);
   }
 
