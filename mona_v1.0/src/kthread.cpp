@@ -16,6 +16,7 @@
 #include<monaIdt.h>
 #include<pic.h>
 #include<monaOperator.h>
+#include<disp.h>
 
 Kthread*    current = NULL; /*< pointer to current kernel thread    */
 Kthread    runningList;
@@ -33,66 +34,52 @@ void kthread_init() {
 
     kthread_init_list(&runningList);
 
+    /* thread 1 */
     dword stack = kthread_allocate_stack();
     if (stack == NULL) {
         panic("idle thread:stack allocate error");
     }
-
-    /* create idle thread */
-    Kthread* idle = kthread_create_thread(stack, kthread_idle);
-    if ( idle == NULL) {
+    Kthread* disp1 = kthread_create_thread(stack, disp_name1);
+    if (disp1 == NULL) {
         panic("idle thread:create thread error");
     }
+    kthread_add_to_prev_list(&runningList, disp1);
 
-    kthread_add_to_prev_list(&runningList, idle);
-
+    /* thread2 */
     dword stack2 = kthread_allocate_stack();
     if (stack2 == NULL) {
         panic("idle thread:stack allocate error");
     }
-
-    /* create idle thread */
-    Kthread* idle2 = kthread_create_thread(stack2, kthread_idle2);
-    if ( idle2 == NULL) {
+    Kthread* disp2 = kthread_create_thread(stack2, disp_name2);
+    if (disp2 == NULL) {
         panic("idle thread:create thread error");
     }
+    kthread_add_to_prev_list(&runningList, disp2);
 
-    kthread_add_to_prev_list(&runningList, idle2);
-
-
+    /* thread3 */
     dword stack3 = kthread_allocate_stack();
     if (stack3 == NULL) {
         panic("idle thread:stack allocate error");
     }
-
-    Kthread* idle3 = kthread_create_thread(stack3, kthread_idle3);
-    if ( idle3 == NULL) {
+    Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
+    if (disp3 == NULL) {
         panic("idle thread:create thread error");
     }
+    kthread_add_to_prev_list(&runningList, disp3);
 
-    kthread_add_to_prev_list(&runningList, idle3);
-
+    /* thread4 */
     dword stack4 = kthread_allocate_stack();
     if (stack4 == NULL) {
         panic("idle thread:stack allocate error");
     }
-
-    Kthread* idle4 = kthread_create_thread(stack4, kthread_idle4);
-    if ( idle4 == NULL) {
+    Kthread* disp4 = kthread_create_thread(stack4, disp_name4);
+    if (disp4 == NULL) {
         panic("idle thread:create thread error");
     }
+    kthread_add_to_prev_list(&runningList, disp4);
 
-    kthread_add_to_prev_list(&runningList, idle4);
-
-    current = idle;
+    current = disp1;
     kthread_schedule();
-}
-
-void kthread_printInfo() {
-
-    Kthread* runlist = &runningList;
-    console->printf("kthread:runlist[%x][%x][x]\n", runlist, runlist->next, runlist->next->next);
-
 }
 
 /*!
@@ -181,112 +168,6 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
 
     return thread;
 }
-
-
-extern "C" void write_font(int a, char b, char c);
-extern "C" char pos_x;
-extern "C" char pos_y;
-
-/*!
-    \brief idle thread
-
-    \author HigePon
-    \date   create:2003/03/02 update:
-*/
-void kthread_idle() {
-
-    enableTimer();
-    while (true) {
-
-        dword color;
-
-        if (current->tick % 500) continue;
-        disableInterrupt();
-
-        int x = pos_x;
-        int y = pos_y;
-
-        pos_x = 42, pos_y = 0;
-        write_font('M', color%2 + 5, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
-        enableInterrupt();
-    }
-}
-
-/*!
-    \brief idle thread
-
-    \author HigePon
-    \date   create:2003/03/02 update:
-*/
-void kthread_idle2() {
-
-    enableTimer();
-    while (true) {
-
-        dword color;
-
-        if (current->tick % 500) continue;
-        disableInterrupt();
-
-        int x = pos_x;
-        int y = pos_y;
-
-        pos_x = 43, pos_y = 0;
-        write_font('o', color%2 + 6, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
-        enableInterrupt();
-    }
-}
-
-void kthread_idle3() {
-
-    enableTimer();
-    while (true) {
-
-        dword color;
-
-        if (current->tick % 500) continue;
-        disableInterrupt();
-
-        int x = pos_x;
-        int y = pos_y;
-
-        pos_x = 44, pos_y = 0;
-        write_font('n', color%2 + 6, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
-        enableInterrupt();
-    }
-}
-
-void kthread_idle4() {
-
-    enableTimer();
-    while (true) {
-
-        dword color;
-
-        if (current->tick % 500) continue;
-        disableInterrupt();
-
-        int x = pos_x;
-        int y = pos_y;
-
-        pos_x = 45, pos_y = 0;
-        write_font('a', color%2 + 6, 0);
-        color++;
-        pos_x = x;
-        pos_y = y;
-        enableInterrupt();
-    }
-}
-
 
 /*!
     \brief schedule

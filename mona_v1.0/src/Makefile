@@ -38,7 +38,9 @@ SOURCES    = cstart.cpp            \
              GraphicalConsole.cpp  \
              kthread.cpp           \
              pic.cpp               \
-             io.cpp
+             io.cpp                \
+             rtc.cpp               \
+             disp.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
