@@ -197,7 +197,9 @@ bool FAT12::initilize() {
 
 //      } while (0xff8 > cluster);
 
-    printf("%s", strtok("yyyy/mm/dd", "/"));
+    char buf[] = "yyyy/mm/dd";
+    printf("@@@%s@@", strtok(buf, "/"));
+    printf("@@@%s@@", strtok(NULL, "/"));
 
     return true;
 }

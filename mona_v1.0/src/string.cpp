@@ -160,6 +160,7 @@ char* strtok(char* str, const char* delim) {
         token[length] = '\0';
         place = token + length + 1;
     }
+    return token;
 }
 
 size_t strspn(const char* str1, const char* str2) {
