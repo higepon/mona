@@ -122,6 +122,7 @@ typedef struct SysArg
 typedef struct {
     unsigned int keycode;
     unsigned int modifiers;
+    unsigned int charcode;
 } KeyInfo;
 
 #define WAIT_TIMER   0x60
