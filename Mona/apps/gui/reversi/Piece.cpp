@@ -38,7 +38,8 @@ void Piece::OnPaint()
     }
     else
     {
-        c = ::System::Drawing::Color::FromArgb(50, 120, 2, 2);
+        c = ::System::Drawing::Color::FromArgb(120, 2, 2);
+//        c = ::System::Drawing::Color::FromArgb(50, 120, 2, 2);
     }
 
     g->FillRectangle(c, 0, 0, w, h);

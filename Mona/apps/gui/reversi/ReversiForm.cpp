@@ -54,7 +54,7 @@ private:
 
     void button1_Click(Pointer<Object> sender, Pointer<EventArgs> e)
     {
-        Piece* p = (Piece*)(sender.get());
+        _P<Piece> p = sender.get();
         int x = p->GetX();
         int y = p->GetY();
 
@@ -92,7 +92,6 @@ private:
             this->pieces[x][y]->SetState(this->board->getPiece(x, y));
 
             sleep(100);
-            pieces[x][y]->Refresh();
         }
     }
 

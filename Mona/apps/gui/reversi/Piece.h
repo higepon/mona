@@ -14,7 +14,6 @@ protected:
     int y;
 
 public:
-    virtual String get_TypeName() { return "Reversi.Piece"; }
     Piece();
     Piece(int state, int x, int y);
     virtual ~Piece();
