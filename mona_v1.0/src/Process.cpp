@@ -136,7 +136,7 @@ V86Process::V86Process(const char* name) {
 
 ProcessScheduler::ProcessScheduler() {
 
-    list_ = new HList<ProcessInfo_*>();
+    list_ = new HList<Process_*>();
     checkMemoryAllocate(list_, "ProcessScheduler memory allocate list");
 }
 
@@ -145,7 +145,7 @@ ProcessScheduler::~ProcessScheduler() {
     delete list_;
 }
 
-ProcessInfo_* ProcessScheduler::schedule(ProcessInfo_* current) {
+Process_* ProcessScheduler::schedule(Process_* current) {
 
     /* check dispach is empty */
     if (list_->isEmpty()) return current;
@@ -155,13 +155,13 @@ ProcessInfo_* ProcessScheduler::schedule(ProcessInfo_* current) {
     return (list_->remove(0));
 }
 
-int ProcessScheduler::addProcess(ProcessInfo_* process) {
+int ProcessScheduler::addProcess(Process_* process) {
 
     list_->add(process);
     return NORMAL;
 }
 
-int ProcessScheduler::kill(ProcessInfo_* process) {
+int ProcessScheduler::kill(Process_* process) {
 
     list_->remove(process);
     return NORMAL;
@@ -184,6 +184,13 @@ ProcessManager_::ProcessManager_(PageManager* pageManager) {
 
     /* page manager */
     pageManager_ = pageManager;
+
+    /* create idle process */
+    idle_ = new KernelProcess_("Idle");
+    checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
+
+    /* now current process is idle */
+    current_ = idle_;
 }
 
 ProcessManager_::~ProcessManager_() {
@@ -192,7 +199,7 @@ ProcessManager_::~ProcessManager_() {
     delete scheduler_;
 }
 
-int ProcessManager_::kill(ProcessInfo_* process) {
+int ProcessManager_::kill(Process_* process) {
 
     int result;
 
@@ -204,7 +211,7 @@ int ProcessManager_::kill(ProcessInfo_* process) {
     /* destroy address space of proces */
 
     /* delete process */
-    delete process->process;
+    delete process;
 
     return NORMAL;
 }
@@ -216,9 +223,12 @@ int ProcessManager_::switchProcess() {
     return NORMAL;
 }
 
-ProcessInfo_* ProcessManager_::schedule() {
+Process_* ProcessManager_::schedule() {
 
-    // g_current_process =  scheduler_->schedule(g_current_process);
+    Process_* result;
+
+    result = scheduler_->schedule(current_);
+    //    cu = scheduler_->schedule(g_currentprocess);
     // return g_current_process;
 
     return NULL;
@@ -245,7 +255,11 @@ Process_* ProcessManager_::createProcess(int type, const char* name) {
     return result;
 }
 
-int ProcessManager_::addProcess(ProcessInfo_* process) {
+Process_* ProcessManager_::getCurrentProcess() const {
+    return current_;
+}
+
+int ProcessManager_::addProcess(Process_* process) {
     return (scheduler_->addProcess(process));
 }
 
@@ -254,21 +268,11 @@ int ProcessManager_::addProcess(ProcessInfo_* process) {
 ----------------------------------------------------------------------*/
 Process_::Process_(const char* name) {
 
-    /* create process information */
-    info = new ProcessInfo_;
-    checkMemoryAllocate(info, "Process ProcessInfo allocate error");
-
     /* name */
-    strncpy(info->name, name, sizeof(info->name));
-
-    /* regist instance */
-    info->process = this;
+    strncpy(name_, name, sizeof(name_));
 }
 
 Process_::~Process_() {
-
-    /* destroy process info */
-    delete info;
 }
 
 /*----------------------------------------------------------------------

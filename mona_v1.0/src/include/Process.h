@@ -92,24 +92,6 @@ typedef struct ThreadInfo {
 };
 
 /*----------------------------------------------------------------------
-    ProcessInfo
-----------------------------------------------------------------------*/
-typedef struct ProcessInfo_ {
-    List<ThreadInfo*>* threadList;
-    char name[16];
-    //    OutputStream* stdout;
-    //    OutputStream* stderr;
-    //    InputStream*  stdin;
-    dword timeLeft;
-    dword tick;
-    dword pid;
-    byte mode;
-    byte priority;
-    byte state;
-    class Process_* process;
-};
-
-/*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
 class Thread {
@@ -126,11 +108,18 @@ class Process_ {
     Process_(const char* name);
     virtual ~Process_();
 
-  public:
-    ProcessInfo_* info;
-
   protected:
     bool isKernelMode_;
+    List<ThreadInfo*>* threadList_;
+    char name_[16];
+    //    OutputStream* stdout;
+    //    OutputStream* stderr;
+    //    InputStream*  stdin;
+    dword timeLeft_;
+    dword tick_;
+    dword pid_;
+    byte priority_;
+    byte state_;
 };
 
 /*----------------------------------------------------------------------
@@ -165,12 +154,12 @@ class ProcessScheduler {
     virtual ~ProcessScheduler();
 
   public:
-    ProcessInfo_* schedule(ProcessInfo_* current);
-    int addProcess(ProcessInfo_* process);
-    int kill(ProcessInfo_* process);
+    Process_* schedule(Process_* current);
+    int addProcess(Process_* process);
+    int kill(Process_* process);
 
   private:
-    List<ProcessInfo_*>* list_;
+    List<Process_*>* list_;
 
 };
 
@@ -185,10 +174,11 @@ class ProcessManager_ {
 
   public:
     Process_* createProcess(int type, const char* name);
-    int addProcess(ProcessInfo_* process);
-    int kill(ProcessInfo_* process);
+    int addProcess(Process_* process);
+    int kill(Process_* process);
     int switchProcess();
-    ProcessInfo_* schedule();
+    Process_* schedule();
+    Process_* getCurrentProcess() const;
 
   public:
     static const int USER_PROCESS   = 0;
@@ -197,6 +187,8 @@ class ProcessManager_ {
   private:
     ProcessScheduler* scheduler_;
     PageManager* pageManager_;
+    Process_* current_;
+    Process_* idle_;
 
 };
 

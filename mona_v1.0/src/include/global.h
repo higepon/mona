@@ -66,7 +66,4 @@ GLOBAL MemoryManager km; /* Kernel Memory Management */
 
 GLOBAL SharedMemoryObject* g_sharedMemoryList;
 
-/* new Process and thread impementation */
-GLOBAL ProcessInfo_* g_currentProcessInfo;
-
 #endif
