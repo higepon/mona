@@ -1,3 +1,7 @@
+2004-10-17  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/syscall.h: syscall_get_memory_info‚Ì’Ç‰Á
+
 2004-10-17  bayside  <bayside@users.sourceforge.jp>
 
         * bim2bin, t5lzma ‚ð tools ‚É’Ç‰Á

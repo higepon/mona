@@ -88,6 +88,7 @@ extern int syscall_peek(MessageInfo* message, int index, int flags);
 
 extern int syscall_set_irq_receiver(int irq);
 extern int syscall_remove_irq_receiver(int irq);
+extern int syscall_get_memory_info(MemoryInfo* info);
 
 extern void* malloc(unsigned long size);
 extern void free(void * address);
