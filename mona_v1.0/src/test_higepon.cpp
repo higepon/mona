@@ -118,26 +118,27 @@ void FDCDriverTester() {
     g_info_level = MSG;
 
     g_fdcdriver = new FDCDriver();
-
+    g_console->printf("[1.1]");
     g_fdcdriver->motor(ON);
 
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
+    g_console->printf("[1.2]");
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
             g_console->printf("error fat initialize\n");
                 g_fdcdriver->motor(false);
                 return;
         }
-
-        if (!fat->open(".", "Z.Z", FAT12::READ_MODE)) {
+    g_console->printf("[1.3]");
+        if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
                 g_console->printf("error open mona.z\n");
                 g_fdcdriver->motor(false);
                 return;
         }
-
+    g_console->printf("[1.4]");
         read_info.fat = fat;
         read_info.sz = fat->getFileSize();
 
@@ -147,14 +148,16 @@ void FDCDriverTester() {
                 g_fdcdriver->motor(false);
                 return;
         }
-
+    g_console->printf("[1.5]");
         input_stream is;
         is.bf = bf;
         is.sz = 512;
         is.read = read;
 
-        int bf_size = 1024 * 10;
+    g_console->printf("[1.6]************************************");
+        int bf_size = 1024 * 1024 * 2;
         bf = (unsigned char*)malloc(bf_size);
+    g_console->printf("[1.7]malloc=%x", (dword)bf);
         if (NULL == bf) {
                 g_console->printf("not enough memory\n");
                 g_fdcdriver->motor(false);
@@ -164,15 +167,19 @@ void FDCDriverTester() {
         int image_size;
         output_stream os;
         os.bf = bf;
+    g_console->printf("[1.8]");
         os.sz = bf_size;
         os.write = write;
         os.data = &image_size;
 
         decode(&is, &os);
+    g_console->printf("[3.0]");
 
-        for (int i = 0; i < 25; i++) {
-            g_console->printf("%c", bf[i]);
-        }
+        //        for (int i = 0; i < 25; i++) {
+        //            g_console->printf("%c", bf[i]);
+        //        }
+        drawARGB(bf, 0, 0, image_size);
+
 
         if (!fat->close()) {
                 g_console->printf("error close\n");

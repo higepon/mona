@@ -17,6 +17,7 @@
 #include<operator.h>
 #include<io.h>
 #include<global.h>
+#include<info.h>
 
 /*!
     \brief get class Name
@@ -47,43 +48,52 @@ void* IA32MemoryManager::allocateMemory(size_t size) {
 
     /* size 0 */
     if (size == 0) return NULL;
-
+    if (g_console) info(MSG, "[1.6.1]\n");
     /* there is no free list */
     if (freeEntry_ == NULL) return NULL;
-
+    if (g_console) g_console->printf("[1.6.2]");
     /* getRealSize */
     size_t realSize = this->getRealSize(size);
-
+    if (g_console) g_console->printf("[1.6.3]");
     /* search block in free list that has enough size for needed */
     struct memoryEntry* current;
     for (current = freeEntry_; ; current = current->next) {
 
+    if (g_console) g_console->printf("[1.6.4]");
         if (current->size >= realSize) break;
-
+    if (g_console) g_console->printf("[1.6.5]");
         if (current->next == (struct memoryEntry*)NULL) return NULL;
     }
 
     struct memoryEntry* usedBlock = current;
-    struct memoryEntry* freeBlock = current + realSize;
+    if (g_console) g_console->printf("[1.6.6]realsize=%x", realSize);
+    struct memoryEntry* freeBlock = (struct memoryEntry*)((dword)current + (dword)realSize);
+    if (g_console) g_console->printf("[1.6.7]");
     size_t usedBlockSize = realSize;
+    if (g_console) g_console->printf("[1.6.8]");
     size_t freeBlockSize = current->size - realSize;
 
     if (current->size != realSize) {
+    if (g_console) g_console->printf("[1.6.9][%x][%x][%x]", &freeEntry_, freeBlock, freeBlockSize);
         this->addToEntry(&freeEntry_, freeBlock, freeBlockSize);
+    if (g_console) g_console->printf("[1.6.A]");
         this->concatBlock(freeEntry_, freeBlock);
     }
 
+    if (g_console) g_console->printf("[1.6.B]");
     this->deleteFromEntry(&freeEntry_, current, current->size);
+    if (g_console) g_console->printf("[1.6.C]");
     this->addToEntry(&usedEntry_, usedBlock, usedBlockSize);
 
 #ifdef MONA_DEBUG_MM
     this->printInfo("allocate memory");
 #endif
 
+    if (g_console) g_console->printf("[1.6.D]");
     usedMemorySize_ += size;
-
+    if (g_console) g_console->printf("[1.6.E][%x][%x]", usedBlock, usedBlock->startAddress);
     /* return address of allocated memory */
-    return (void*)usedBlock->startAddress;
+    return (void*)(usedBlock->startAddress);
 }
 
 /*!
@@ -123,7 +133,7 @@ void IA32MemoryManager::freeMemory(void* address) {
     \date   create:2002/08/08 update:
 */
 IA32MemoryManager::~IA32MemoryManager() {
-    g_console->printf("IA32MemoryManager:destructor\n");
+    if (g_console) g_console->printf("IA32MemoryManager:destructor\n");
 
 }
 
@@ -138,7 +148,7 @@ IA32MemoryManager::~IA32MemoryManager() {
     \date   create:2002/08/10 update:2003/01/03
 */
 //IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x15000), MEMORY_END(0x150000) {
-IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x210000), MEMORY_END(0x390000) {
+IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x200000), MEMORY_END(0x9fffff) {
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
     freeEntry_->size = MEMORY_END - MEMORY_START;
@@ -183,12 +193,12 @@ void IA32MemoryManager::printInfo(char* str) const {
 
 //      for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-//          g_console->printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          if (g_console) g_console->printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
 //      }
 
 //      for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-//          g_console->printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          if (g_console) g_console->printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
 //      }
 
@@ -198,18 +208,18 @@ void IA32MemoryManager::printInfo(char* str) const {
     while (fentry || uentry) {
 
         if ((uentry && fentry > uentry) || (!fentry && uentry)) {
-            g_console->printf("[U%x-%x]", uentry->size, uentry);
+            if (g_console) g_console->printf("[U%x-%x]", uentry->size, uentry);
             uentry = uentry->next;
             continue;
         }
 
         if ((fentry && uentry > fentry) || (!uentry && fentry)) {
-            g_console->printf("[F%x-%x]", fentry->size, fentry);
+            if (g_console) g_console->printf("[F%x-%x]", fentry->size, fentry);
             fentry = fentry->next;
             continue;
         }
     }
-    g_console->printf(" %s \n", str);
+    if (g_console) g_console->printf(" %s \n", str);
     return;
 }
 

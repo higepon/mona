@@ -164,6 +164,7 @@ void FDCDriver::initilize() {
 void FDCDriver::interrupt() {
 
     //    info(DEV_WARNING, "\ninterrupt:"); // here is point
+    g_console->printf("interrupt");
     interrupt_ = true;
 }
 

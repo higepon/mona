@@ -26,7 +26,7 @@
 #include <MessageServer.h>
 #include <FAT12.h>
 
-GLOBAL VirtualConsole* g_console;                    /*< pointer to console    */
+GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);                    /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
 
 GLOBAL FDCDriver* g_fdcdriver;

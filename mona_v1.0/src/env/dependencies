@@ -122,7 +122,8 @@ test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
   include/io.h include/GraphicalConsole.h include/operator.h \
-  include/IA32MemoryManager.h
+  include/IA32MemoryManager.h include/z.h contrib/include/zlib.h \
+  contrib/include/zconf.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \
@@ -204,4 +205,12 @@ elf.o: elf.cpp include/elf.h user/types.h include/string.h \
   include/ihandlers.h include/sysresource.h include/MessageServer.h \
   include/Message.h include/FAT12.h
 test_mjt.o: test_mjt.cpp
-z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h
+z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h \
+  include/string.h user/types.h include/operator.h include/global.h \
+  include/info.h include/kernel.h include/VirtualConsole.h \
+  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
+  include/GDTUtil.h include/IDTUtil.h include/Process.h \
+  include/PageManager.h include/Queue.h include/BitMap.h \
+  include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
+  include/sysresource.h include/MessageServer.h include/Message.h \
+  include/FAT12.h

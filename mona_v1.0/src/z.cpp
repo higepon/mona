@@ -1,4 +1,5 @@
 #include "z.h"
+#include <global.h>
 
 void *calloc(size_t nmemb, size_t size)
 {
@@ -64,6 +65,7 @@ int encode (input_stream *is, output_stream *os)
 
 int decode (input_stream *is, output_stream *os)
 {
+    g_console->printf("[2.0]");
         z_stream zst;
         int st, flag = Z_NO_FLUSH;
 
@@ -72,31 +74,40 @@ int decode (input_stream *is, output_stream *os)
         zst.opaque = Z_NULL;
         if (inflateInit(&zst) != Z_OK)
                 return -1;
+    g_console->printf("[2.1]");
 
         zst.next_in = is->bf;
         zst.avail_in = 0;
         zst.next_out = os->bf;
         zst.avail_out = os->sz;
 
+    g_console->printf("[2.2]");
+
         for (;;) {
+    g_console->printf("[2.3]");
                 if (zst.avail_in == 0) {
                         zst.next_in = is->bf;
                         zst.avail_in = is->read(is, is->sz);
                         if (zst.avail_in <= 0)
                                 flag = Z_FINISH;
                 }
-
+    g_console->printf("[2.4]");
                 st = inflate(&zst, Z_NO_FLUSH);
                 if (st == Z_STREAM_END)
                         break;
+
+    g_console->printf("[2.5]");
                 if (st != Z_OK)
                         return -1;
+
+    g_console->printf("[2.6]");
 
                 if (zst.avail_out == 0) {
                         os->write(os, os->sz);
                         zst.next_out = os->bf;
                         zst.avail_out = os->sz;
                 }
+    g_console->printf("[2.7]");
         }
 
         os->write(os, os->sz - zst.avail_out);

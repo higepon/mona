@@ -132,12 +132,17 @@ void startKernel(void) {
     enableInterrupt();
 
     g_console->printf("Hit any key to start loading Mona logo \n");
-    while (g_demo_step < 2);
+    //    while (g_demo_step < 2);
+    g_console->printf("[1]");
     FDCDriverTester();
 
-    g_console->printf("Hit any key to start Main Process and Load ELF\n");
-    while (g_demo_step < 5);
+    while (true);
 
+
+
+    g_console->printf("Hit any key to start Main Process and Load ELF\n");
+    //    while (g_demo_step < 5);
+    g_console->printf("[2]");
     g_info_level = MSG;
 
     Process* idle     = new Process("idle         ");
@@ -163,7 +168,7 @@ void mainProcess() {
 
     ELFTester(user_func_from);
 
-    byte* user_func = (byte*)0x400000;
+    byte* user_func = (byte*)0xA00000;
     ELFLoader* loader = new ELFLoader();
 
     loader->prepare((dword)user_func_from);
