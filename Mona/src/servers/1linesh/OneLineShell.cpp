@@ -53,13 +53,10 @@ void OneLineShell::service() {
   /* Server start ok */
   dword targetID = Message::lookupMainThread("INIT");
   if(targetID == THREAD_UNKNOWN){
-    targetID = Message::lookupMainThread("OLDSHELL.BIN");
+    targetID = MonAPI::System::getParentThreadID();
     if(targetID == THREAD_UNKNOWN){
-      targetID = Message::lookupMainThread("SHELL.BIN");
-      if(targetID == THREAD_UNKNOWN){
-        printf("ShellServer:INIT not found\n");
-        exit(1);
-      }
+      printf("ShellServer:INIT not found\n");
+      exit(1);
     }
   }
 
