@@ -1,3 +1,7 @@
+2004-10-18  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monalibc/stdio.cpp: logprintf’Ç‰ÁB
+
 2004-10-18  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/lib/pci PCIƒ‰ƒCƒuƒ‰ƒŠ’Ç‰Á

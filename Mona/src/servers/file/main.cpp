@@ -14,6 +14,7 @@ void MessageLoop()
     BinaryTree<dword> stdoutTree;
     dword self = monapi_get_server_thread_id(ID_FILE_SERVER);
 
+
     for (MessageInfo msg;;)
     {
         if (Message::receive(&msg)) continue;
@@ -141,7 +142,7 @@ void MessageLoop()
                 }
 
                 Message::reply(&msg);
-		break;
+                break;
             }
             case MSG_STDOUT_REGIST_TO_SERVER:
             {
@@ -149,7 +150,7 @@ void MessageLoop()
                 dword stdout_id = msg.arg2;
                 stdoutTree.add(tid, stdout_id);
                 Message::reply(&msg);
-		break;
+                break;
             }
         }
     }

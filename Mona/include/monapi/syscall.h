@@ -101,6 +101,8 @@ extern int atexit( void (*func)(void));
 extern void putCharacter(char ch);
 extern void putInt(size_t n, int base);
 extern void printf(const char *format, ...);
+extern void logprintf(const char* format, ...);
+
 extern void printInt(int num);
 extern size_t _power(size_t x, size_t y);
 

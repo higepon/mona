@@ -853,6 +853,13 @@ void syscall_entrance() {
             break;
         }
 
+    case SYSTEM_CALL_LOG_PRINT:
+        {
+
+            logprintf((const char*)(info->esi));
+            break;
+        }
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -15,7 +15,7 @@
 #include <monalibc/stdarg.h>
 #include <monalibc/stdlib.h>
 #include <monalibc/stdio.h>
-
+#include <monapi/syscall.h>
 
 /*!
   \brief sprintf
@@ -53,3 +53,35 @@ int sscanf(const char *s, const char *format, ...){
   return result;
 }
 
+
+int syscall_log_print(const char* msg)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_LOG_PRINT, result, msg);
+    return result;
+}
+
+/*!
+  \brief logprintf
+
+  \author Higepon
+  \param format specifies how subsequent arguments
+  \return  none
+*/
+void logprintf(const char* format, ...) {
+
+    char str[512];
+    str[0] = '\0';
+    va_list args;
+    int result;
+
+    va_start(args, format);
+    result = vsprintf(str, format, args);
+    va_end(args);
+    if(result > 512){
+        /* over flow */
+        syscall_log_print("logprintf:overflow");
+    }
+
+    syscall_log_print(str);
+}

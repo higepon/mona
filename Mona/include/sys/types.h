@@ -237,6 +237,7 @@ enum
 #define SYSTEM_CALL_REMOVE_IRQ_RECEIVER      0x003A
 #define SYSTEM_CALL_FRRE_PAGES               0x003B
 #define SYSTEM_CALL_GET_MEMORY_INFO          0x003C
+#define SYSTEM_CALL_LOG_PRINT                0x003D
 
 
 #define SYSCALL_0(syscall_number, result)                                         \
