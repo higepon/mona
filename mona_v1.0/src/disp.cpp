@@ -85,27 +85,19 @@ void disp_name2() {
 
 void disp_name3() {
 
-    enter_kernel_lock_mode();
+    while (Semaphore::down(&g_semaphore_shared));
 
     bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
-    g_console->printf("shared memory is %s", isOpen ? "open" : "closed");
-
     bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
-    g_console->printf("shared memory is %s", isAttaced ? "attaced" : "detached");
 
-    g_console->printf("[%x]", g_current_process->shared);
+    Semaphore::up(&g_semaphore_console);
 
-    g_console->printf("[%x]", g_current_process->shared->getSize());
-
-    exit_kernel_lock_mode();
+    if (!isOpen || !isAttaced) panic("disp_name3");
 
     dword* p = (dword*)0x80000020;
     *p = 0x1234;
     dword* p2 = (dword*)0x80001020;
     *p2 = 0x5678;
-
-    SharedMemoryObject::detach(0x1234, g_current_process);
-    g_console->printf("here %x", *p);
 
     while (true) {
 
@@ -114,22 +106,20 @@ void disp_name3() {
 
 void disp_name4() {
 
-    enter_kernel_lock_mode();
+    while (Semaphore::down(&g_semaphore_shared));
 
-    //    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
-    //    g_console->printf("shared memory is %s", isOpen ? "open" : "closed");
+    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
 
-    //    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x90000000);
-    //    g_console->printf("shared memory is %s", isAttaced ? "attaced" : "detached");
+    Semaphore::up(&g_semaphore_console);
 
-    exit_kernel_lock_mode();
+    if (!isOpen || !isAttaced) panic("disp_name4");
 
     while (true) {
-	//        dword* p = (dword*)0x90000020;
-	//        g_console->printf("value=%x", *p);
-	//        dword* p2 = (dword*)0x90001020;
-	//        g_console->printf("value=%x", *p2);
-	//        SharedMemoryObject::detach(0x1234, g_current_process);
+        dword* p = (dword*)0x90000020;
+        g_console->printf("value=%x", *p);
+        dword* p2 = (dword*)0x90001020;
+        g_console->printf("value=%x", *p2);
     }
 }
 
@@ -144,7 +134,7 @@ void disp_process() {
 
         pos_x = 0, pos_y = 15;
 
-	//        g_process_manager->printAllProcesses();
+        g_process_manager->printAllProcesses();
 
         pos_x = x;
         pos_y = y;
