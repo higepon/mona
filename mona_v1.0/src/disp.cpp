@@ -60,13 +60,13 @@ void disp_name2() {
     dword color = 0;
 
     while (true) {
-        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+        //        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(76, 0, 'o', color%14);
 
-        Semaphore::up(&g_semaphore_console);
+        //        Semaphore::up(&g_semaphore_console);
         color++;
-        syscall_kthread_yield();
+        //        syscall_kthread_yield();
     }
 }
 
@@ -160,4 +160,3 @@ void kthread_idle() {
         asm volatile("nop");
     }
 }
-

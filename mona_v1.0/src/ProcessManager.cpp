@@ -22,7 +22,6 @@ ProcessManager::ProcessManager() {
 
 void ProcessManager::switchProcess() {
 
-    g_console->printf("switch Process");
 
     info(DUMP, "esp=%x pid=%x eip=%x eflags=%x cs=%x", g_current_process->esp, g_current_process->pid
              , g_current_process->eip, g_current_process->eflags, g_current_process->cs);
@@ -39,7 +38,11 @@ void ProcessManager::schedule(){
 
 virtual_addr ProcessManager::allocateStack() {
 
-    return 0x80000;
+    static int i = 0;
+
+    i++;
+
+    return 0x80000 + i * 4096;
 }
 
 PTE* ProcessManager::allocatePageDir() {
