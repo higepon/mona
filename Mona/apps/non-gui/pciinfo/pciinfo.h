@@ -10,6 +10,7 @@
     \version $Revision$
     \date   create:2004/05/09 update:$Date$
 */
+//2004/09/03 Yamami CVS 更新テスト
 
 #ifndef _MY_PCI_INF
 #define _MY_PCI_INF
