@@ -11,6 +11,7 @@
 */
 
 #include<types.h>
+#include<Process.h>
 #include<VirtualConsole.h>
 #include<DiskDriver.h>
 
@@ -33,6 +34,15 @@ class FDCDriver : public DiskDriver {
     bool seek(byte track);//private
     void motor(const bool on);
     void motorAutoOff();
+    inline Thread* getWaitThread() const
+    {
+        return waitThread;
+    }
+
+    inline void setWaitThread(Thread* thread)
+    {
+        this->waitThread = thread;
+    }
 
   private:
     void initilize();
@@ -50,6 +60,7 @@ class FDCDriver : public DiskDriver {
     void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
     bool read(byte track, byte head, byte sector);
     bool write(byte track, byte head, byte sector);
+    Thread* waitThread;
   private:
     byte results_[10];
     int motorCount_;

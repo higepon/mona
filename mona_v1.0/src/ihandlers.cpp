@@ -161,6 +161,9 @@ void MFDCHandler(void)
 
     /* thx! K-tan */
     outportb(0x20, 0x66);
+
+    int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
+    ThreadOperation::switchThread((wakeupResult == 1));
 }
 
 /* IRQ Handler (expr) */

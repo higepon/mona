@@ -85,6 +85,7 @@ typedef struct MappingInfo {
 };
 
 #define WAIT_MESSAGE 0x00
+#define WAIT_FDC     0x50
 #define WAIT_NONE    0xFF
 
 
@@ -137,6 +138,7 @@ typedef struct MappingInfo {
 #define SYSTEM_CALL_MTHREAD_YIELD_M 37
 #define SYSTEM_CALL_DATE            38
 #define SYSTEM_CALL_GET_IO          39
+#define SYSTEM_CALL_WAIT_FDC        40
 #define SYSTEM_CALL_TEST            99
 
 #endif

@@ -419,6 +419,15 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
+    case SYSTEM_CALL_WAIT_FDC:
+
+        {
+            g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
+            bool isProcessChange = g_scheduler->schedule();
+            ThreadOperation::switchThread(isProcessChange);
+        }
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

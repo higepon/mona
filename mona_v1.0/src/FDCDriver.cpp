@@ -171,6 +171,16 @@ void FDCDriver::interrupt() {
     \date   create:2003/02/10 update:2003/09/19
 */
 void FDCDriver::waitInterrupt() {
+
+    setWaitThread(g_currentThread->thread);
+
+    asm volatile("movl $%c0, %%ebx \n"
+                 "int  $0x80       \n"
+                 :
+                 :"g"(SYSTEM_CALL_WAIT_FDC)
+                 :"ebx"
+                 );
+
     while (!interrupt_);
 }
 
