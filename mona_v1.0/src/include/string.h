@@ -29,7 +29,7 @@ char* strcpy(char*, const char*);
 int strcmp(const char*, const char*);
 void* memmove(void*, const void*, size_t);
 int memcmp(const void*, const void*, size_t);
-void* memcpy(void* s1, const void* s2, size_t size);
+void* memcpy(void* s1, void* s2, size_t size);
 char* strncpy(char* s1, const char* s2, size_t n);
 size_t strcspn(const char* str1, const char* str2);
 size_t strspn(const char* str1, const char* str2);

@@ -121,4 +121,10 @@ int main(int argc, char *argv[]) {
     printf("image size = %d byte\n", size);
 
     fclose(fout);
+
+    ELFLoader* loader = new ELFLoader();
+    printf("loader: size = %d \n", loader->prepare((dword)buf));
+
+    delete(loader);
+
 }

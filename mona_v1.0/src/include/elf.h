@@ -59,4 +59,38 @@ typedef struct {
     dword align;
 } ELFProgramHeader;
 
+#define ELF_ERROR_NOT_ELF           -1
+#define ELF_ERORR_NOT_SUPPORTED_ELF -2
+#define ELF_ERORR_NOT_EXECUTABLE    -3
+
+#define PT_NULL    0
+#define PT_LOAD    1
+#define PT_DYNAMIC 2
+#define PT_INTERP  3
+#define PT_NOTE    4
+#define PT_SHLIB   5
+#define PT_PHDR    6
+
+
+class ELFLoader {
+
+  public:
+    ELFLoader();
+    ~ELFLoader();
+
+  public:
+    int prepare(dword elf);
+    int getErrorCode() const;
+    bool load(byte* toAddress);
+
+  private:
+    bool isValidELF();
+
+  private:
+    int errorCode_;
+    ELFHeader*        header_;
+    ELFProgramHeader* pheader_;
+
+};
+
 #endif
