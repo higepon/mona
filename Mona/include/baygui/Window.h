@@ -32,7 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ウィンドウクラス
 */
 class Window : public Container {
-private:
+protected:
 	/** 内部描画領域 */
 	Graphics *__g;
 	/** 内部描画バッファー */
