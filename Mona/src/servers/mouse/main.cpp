@@ -254,6 +254,11 @@ void MouseServer::PaintCursor(int x, int y)
 
 static MouseServer* server;
 
+void mouseHandler()
+{
+    printf("comes");
+}
+
 int MonaMain(List<char*>* pekoe)
 {
     server = new MouseServer();
@@ -263,6 +268,8 @@ int MonaMain(List<char*>* pekoe)
         printf("MouseServer: initialize error\n");
         return -1;
     }
+
+    syscall_set_irq_handler(12, (void*)mouseHandler);
 
     server->MessageLoop();
 

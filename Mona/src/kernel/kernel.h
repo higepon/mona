@@ -94,6 +94,15 @@ typedef struct {
     word  iobase;
 } TSS;
 
+struct ThreadInfo;
+
+typedef struct
+{
+    bool hasUserHandler;
+    void* handler;
+    ThreadInfo* thread;
+} IRQInfo;
+
 void startKernel(void);
 void panic(const char*);
 void checkMemoryAllocate(void* p, const char* msg);

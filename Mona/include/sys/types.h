@@ -225,6 +225,7 @@ enum
 #define SYSTEM_CALL_CLEAR_SCREEN             0x0036
 #define SYSTEM_CALL_PEEK                     0x0037
 #define SYSTEM_CALL_TEST                     0x0038
+#define SYSTEM_CALL_SET_IRQ_HANDLER          0x0039
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

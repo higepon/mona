@@ -53,6 +53,12 @@ void pic_init() {
     outp8(PIT_COUNT0, timer_count & 0xff);
     outp8(PIT_COUNT0, timer_count >> 8);
 
+    /* no user interrupt handler yet */
+    for (int i = 0; i < 16; i++)
+    {
+        g_irqInfo[i].hasUserHandler = false;
+    }
+
     return;
 }
 

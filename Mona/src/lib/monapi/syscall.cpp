@@ -682,3 +682,10 @@ int syscall_test(dword laddress)
     SYSCALL_1(SYSTEM_CALL_TEST, result, laddress);
     return result;
 }
+
+int syscall_set_irq_handler(int irq, void* handler)
+{
+    dword result;
+    SYSCALL_2(SYSTEM_CALL_SET_IRQ_HANDLER, result, irq, handler);
+    return result;
+}

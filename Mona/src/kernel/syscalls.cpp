@@ -729,11 +729,29 @@ void syscall_entrance() {
 
         g_console->printf("pvalue=%x\n", *p);
 
-
-
         g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
+        break;
     }
-    break;
+
+    case SYSTEM_CALL_SET_IRQ_HANDLER:
+
+    {
+        int   irq     = (int)info->esi;
+        void* handler = (void*)info->ecx;
+
+        /* out of range */
+        if (irq > 15 || irq < 0)
+        {
+            info->eax = 1;
+            break;
+        }
+
+        g_irqInfo[irq].hasUserHandler = true;
+        g_irqInfo[irq].handler        = handler;
+        g_irqInfo[irq].thread         = g_currentThread;
+
+        break;
+    }
 
     default:
         g_console->printf("syscall:default");

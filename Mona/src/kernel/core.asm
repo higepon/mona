@@ -22,6 +22,7 @@ cglobal arch_switch_thread1
 cglobal arch_switch_thread2
 cglobal arch_set_dokodemo_view
 cglobal arch_idle
+cglobal arch_set_cr3
 cextern g_stack_view      ;; for debug stack viewer
 cextern fault0dHandler
 cextern g_currentThread
@@ -31,6 +32,29 @@ cextern g_dokodemo_view
 section .text
 arch_idle:
         hlt
+        ret
+
+
+arch_set_cr3:
+	push eax
+	mov eax, 0x22D000
+	mov cr3, eax
+	pop eax
+	ret
+
+	
+        push ebp
+        mov ebp, esp
+        push eax
+        push dword[ebp + 8]
+        pop eax
+        mov cr3, eax
+        pop eax
+        pop ebp
+	pop eax
+forever:
+	jmp forever
+
         ret
 
 ;;----------------------------------------------------------------------

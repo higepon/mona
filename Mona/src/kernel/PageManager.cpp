@@ -108,7 +108,11 @@ int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool w
     int foundMemory = memoryMap_->find();
     if (foundMemory == BitMap::NOT_FOUND) return -1;
 
+
     PhysicalAddress address = foundMemory * ARCH_PAGE_SIZE;
+
+    logprintf("alloc:cr3=%x address= %x\n", g_currentThread->archinfo->cr3, address);
+
     setAttribute(pageEntry, present, writable, isUser, address);
 
     return address;
@@ -271,6 +275,7 @@ PageEntry* PageManager::createKernelPageDirectory()
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
         {
             setAttribute(&(table[j]), true, true, false, i * 4 * 1024 * 1024 + 4096 * j);
+	    if (i == 0 && j == 256) g_console->printf("kernel=%x\n", (dword)table[j] & 0xfffff800);
         }
 
         setAttribute(&(directory[i]), true, true, false, (PhysicalAddress)table);
@@ -313,6 +318,7 @@ PageEntry* PageManager::createKernelPageDirectory()
 */
 PageEntry* PageManager::createNewPageDirectory() {
 
+#if 1
     PageEntry* directory = allocatePageTable();
     PageEntry* table;
 
@@ -327,11 +333,13 @@ PageEntry* PageManager::createNewPageDirectory() {
         for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
         {
             setAttribute(&(table[j]), true, true, false, i * 4 * 1024 * 1024 + 4096 * j);
+
+	    if (i == 0 && j == 256) g_console->printf("dir=%x new=%x %s\n", directory, (dword)table[j] & 0xfffff800, isPresent(&(table[j])) ? "present" : "not");
         }
 
         setAttribute(&(directory[i]), true, true, false, (PhysicalAddress)table);
     }
-
+#endif
 
 #if 0
     PageEntry* table1    = allocatePageTable();
@@ -361,6 +369,8 @@ PageEntry* PageManager::createNewPageDirectory() {
     /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
     int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
     int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
+
+    g_console->printf("vram=%x\n", vram);
 
     /* Map VRAM */
     for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
