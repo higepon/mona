@@ -28,6 +28,8 @@
 #define SYSTEM_CALL_FILE_CLOSE     27
 #define SYSTEM_CALL_MAP_TWO        28
 
+#define SYSTEM_CALL_TEST 99
+
 #define main() monaMain()
 
 extern "C" int user_start();
@@ -39,6 +41,8 @@ extern "C" int exit(int error);
 extern "C" int _put_pixel(int x, int y, char color);
 extern "C" int mthread_create(dword f);
 extern "C" int mthread_join(dword id);
+
+extern "C" int syscall_test();
 
 extern "C" int syscall_sleep(dword tick);
 extern "C" int syscall_heavy();

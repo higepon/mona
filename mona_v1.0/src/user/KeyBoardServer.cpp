@@ -53,7 +53,8 @@ int main() {
                 break;
 
             case MSG_MOUSE_2:
-		//		printf("x = (%d, %d)", info.arg1, i++);
+		printf("x = (%d, %d)", (int)(info.arg1), i++);
+
 
                 break;
 

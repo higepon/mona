@@ -436,6 +436,21 @@ int syscall_file_close() {
     return (int)result;
 }
 
+int syscall_test() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_TEST)
+                 : "ebx"
+                 );
+
+    return (int)result;
+}
+
 int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword size) {
 
     int result;
