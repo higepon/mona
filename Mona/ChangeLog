@@ -1,3 +1,7 @@
+2004-04-29  shadow  <shadowin@users.sourceforge.jp>
+
+        * 1linesh: charcodeメッセージ対応
+
 2004-04-29  tino  <tino@users.sourceforge.jp>
 
         * bin/root/MONA.CFG: VESAの設定を記述
