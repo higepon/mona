@@ -10,11 +10,7 @@ namespace MonAPI {
 ----------------------------------------------------------------------*/
 class Message {
 
-  private:
-    static HList<MessageInfo*>* queue;
-
-  public:
-    static void initialize();
+public:
     static int send(dword tid, MessageInfo* info);
     static int send(dword tid, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
     static int receive(MessageInfo* info);

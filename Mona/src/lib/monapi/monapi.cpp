@@ -1,6 +1,31 @@
 #include <monapi.h>
 
 /*----------------------------------------------------------------------
+    invoke constructors and destructors
+----------------------------------------------------------------------*/
+typedef void (Func)();
+
+extern "C"
+{
+    extern Func* __CTOR_LIST__[];
+    extern Func* __DTOR_LIST__[];
+}
+
+static void invokeFuncList(Func** list)
+{
+    int count = (int)*list++;
+    list = (Func**)((((dword)list) + 3) & ~3);
+    if (count == -1)
+    {
+        for (; *list != NULL; list++) (**list)();
+    }
+    else
+    {
+        for (int i = 0; i < count; i++, list++) (**list)();
+    }
+}
+
+/*----------------------------------------------------------------------
     Static
 ----------------------------------------------------------------------*/
 static MonAPI::MemoryManager um;
@@ -15,8 +40,9 @@ int user_start() {
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
     MonAPI::MemoryMap::initialize();
-    MonAPI::Message::initialize();
+	invokeFuncList(__CTOR_LIST__);
     result = MonaMain(arg);
+	invokeFuncList(__DTOR_LIST__);
     delete arg;
     exit(result);
     return 0;

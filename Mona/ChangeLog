@@ -1,496 +1,498 @@
 2004-04-25  tino  <tino@users.sourceforge.jp>
 
-        * configure: ƒRƒ“ƒpƒCƒ‹è‡‚ğ•\¦
+        * configure: ¥³¥ó¥Ñ¥¤¥ë¼ê½ç¤òÉ½¼¨
 
-        * Makefile.in: make distclean‚Ådependencies‚ğíœ
+        * Makefile.in: make distclean¤Çdependencies¤òºï½ü
 
-        * Makefile.in: make image‚ÅƒCƒ[ƒW‚¾‚¯‚ğì¬
+        * Makefile.in: make image¤Ç¥¤¥á¡¼¥¸¤À¤±¤òºîÀ®
 
-        * include/monapi/FileInputStream.h: const char*‰»
+        * include/monapi/FileInputStream.h: const char*²½
 
-        * include/monapi/FileOutputStream.h: const char*‰»
+        * include/monapi/FileOutputStream.h: const char*²½
 
-        * include/monapi/Message.h (Message, ~Message): –³ˆÓ–¡‚È‚Ì‚Åíœ
+        * include/monapi/Message.h (Message, ~Message): Ìµ°ÕÌ£¤Ê¤Î¤Çºï½ü
 
-        * include/monapi/Message.h (initialize): MemoryMap::initialize()‚Æ“¯‚¶‚æ‚¤‚È–Ú“I‚Å’Ç‰Á (À‚Í‚Ê‚é‚Û‘Îô)
+        * include/monapi/Message.h (initialize): MemoryMap::initialize()¤ÈÆ±¤¸¤è¤¦¤ÊÌÜÅª¤ÇÄÉ²Ã (¼Â¤Ï¤Ì¤ë¤İÂĞºö)
 
-        * include/monapi/Message.h (create): const char*‰», ƒfƒtƒHƒ‹ƒgˆø”’Ç‰Á
+        * include/monapi/Message.h (create): const char*²½, ¥Ç¥Õ¥©¥ë¥È°ú¿ôÄÉ²Ã
 
-        * include/monapi/Message.h (send): create()‚¹‚¸’¼Ú‘—M‚·‚éƒI[ƒo[ƒ[ƒh’Ç‰Á
+        * include/monapi/Message.h (send): create()¤»¤ºÄ¾ÀÜÁ÷¿®¤¹¤ë¥ª¡¼¥Ğ¡¼¥í¡¼¥ÉÄÉ²Ã
 
-        * include/monapi/Message.h (receive): “Á’è‚ÌƒƒbƒZ[ƒW‚ğ‘Ò‚¿ó‚¯‚·‚éƒI[ƒo[ƒ[ƒh’Ç‰Á
+        * include/monapi/Message.h (receive): ÆÃÄê¤Î¥á¥Ã¥»¡¼¥¸¤òÂÔ¤Á¼õ¤±¤¹¤ë¥ª¡¼¥Ğ¡¼¥í¡¼¥ÉÄÉ²Ã
 
-        * include/monapi/Message.h (sendReceive): ƒƒbƒZ[ƒW‚Ì‘—óM‚ğˆê“x‚És‚¤ (‹[—RPC)
+        * include/monapi/Message.h (sendReceive): ¥á¥Ã¥»¡¼¥¸¤ÎÁ÷¼õ¿®¤ò°ìÅÙ¤Ë¹Ô¤¦ (µ¼»÷RPC)
 
-        * src/lib/monapi/monapi.h (user_start): Message::initialize()‚ğŒÄ‚Ô
+        * src/lib/monapi/monapi.h (user_start): Message::initialize()¤ò¸Æ¤Ö
 
-        * include/gui/messages.h: GUIƒT[ƒo[‚Æ‚Ì’ÊM‚·‚éƒƒbƒZ[ƒW‚ğ’è‹`
+        * include/gui/messages.h: GUI¥µ¡¼¥Ğ¡¼¤È¤ÎÄÌ¿®¤¹¤ë¥á¥Ã¥»¡¼¥¸¤òÄêµÁ
 
-        * src/servers/gui/main.cpp: Message‚ÌV‹@”\‚Å’Pƒ‰»
+        * src/servers/gui/main.cpp: Message¤Î¿·µ¡Ç½¤ÇÃ±½ã²½
 
-        * src/lib/gui/System/Mona/Forms/Application.cpp: Message‚ÌV‹@”\‚Å’Pƒ‰»
+        * src/lib/gui/System/Mona/Forms/Application.cpp: Message¤Î¿·µ¡Ç½¤ÇÃ±½ã²½
 
-        * src/lib/gui/System/Mona/Forms/Control.cpp: Message‚ÌV‹@”\‚Å’Pƒ‰»
+        * src/lib/gui/System/Mona/Forms/Control.cpp: Message¤Î¿·µ¡Ç½¤ÇÃ±½ã²½
 
-        * src/lib/gui/System/Drawing/Bitmap.cpp: Message‚ÌV‹@”\‚Å’Pƒ‰»
+        * src/lib/gui/System/Drawing/Bitmap.cpp: Message¤Î¿·µ¡Ç½¤ÇÃ±½ã²½
+
+        * src/lib/monapi/monapi.cpp: __CTOR_LIST__, __DTOR_LIST__¤ò½èÍı
 
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
-        * Yui_Neko‚³‚ñ‚Ì monaelf, tube‚ğ’Ç‰Á
+        * Yui_Neko¤µ¤ó¤Î monaelf, tube¤òÄÉ²Ã
 
-          tube‚ÍƒTƒCƒY‚ª”M‚¢
+          tube¤Ï¥µ¥¤¥º¤¬Ç®¤¤
 
 2004-04-25  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: MSG_MOUSE_ENABLE_CURSOR, MSG_MOUSE_DISABLE_CURSOR
 
-        * src/servers/mouse/main.cpp: ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ğ•`‰æ‚·‚é‚©‚Ç‚¤‚©‚ğ§Œä
+        * src/servers/mouse/main.cpp: ¥Ş¥¦¥¹¥«¡¼¥½¥ë¤òÉÁ²è¤¹¤ë¤«¤É¤¦¤«¤òÀ©¸æ
 
-        * src/servers/gui/main.cpp: •Ç†‚ğƒTƒ|[ƒg (MONA.CFG‚Åw’è‰Â”\)
+        * src/servers/gui/main.cpp: ÊÉ»æ¤ò¥µ¥İ¡¼¥È (MONA.CFG¤Ç»ØÄê²ÄÇ½)
 
-        * src/lib/gui/System/Mona/Forms/Control.cpp: ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ìc‘œ‚ªc‚ç‚È‚¢‚æ‚¤‚É‘Îˆ
+        * src/lib/gui/System/Mona/Forms/Control.cpp: ¥Ş¥¦¥¹¥«¡¼¥½¥ë¤Î»ÄÁü¤¬»Ä¤é¤Ê¤¤¤è¤¦¤ËÂĞ½è
 
-        * apps/gui/reversi/ReversiForm.cpp: ƒRƒ}‚Ì”‚ğ•\¦
+        * apps/gui/reversi/ReversiForm.cpp: ¥³¥Ş¤Î¿ô¤òÉ½¼¨
 
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
-        * *.asm‚Åsection .textw’èB NFLAGS= -f elf, -f win32‚ÌU‚è•ª‚¯
+        * *.asm¤Çsection .text»ØÄê¡£ NFLAGS= -f elf, -f win32¤Î¿¶¤êÊ¬¤±
 
-        * _user_start‚ÌƒŠƒ“ƒN‚ªLinux‚Å‚¤‚Ü‚­‚¢‚©‚È‚¢Œ‚ğenv/U‚è•ª‚¯‚ÅC³ (Yui_Neko‚³‚ñ‚ ‚è‚ª‚Æ‚¤)
+        * _user_start¤Î¥ê¥ó¥¯¤¬Linux¤Ç¤¦¤Ş¤¯¤¤¤«¤Ê¤¤·ï¤òenv/¿¶¤êÊ¬¤±¤Ç½¤Àµ (Yui_Neko¤µ¤ó¤¢¤ê¤¬¤È¤¦)
 
-        * ƒwƒbƒ_ƒtƒ@ƒCƒ‹–¼‚Ì‘å•¶š¥¬•¶š‚Ìƒ~ƒXC³
+        * ¥Ø¥Ã¥À¥Õ¥¡¥¤¥ëÌ¾¤ÎÂçÊ¸»ú¥¾®Ê¸»ú¤Î¥ß¥¹½¤Àµ
 
 2004-04-25  tino  <tino@users.sourceforge.jp>
 
-        * apps/gui/launcher: ŠÈ’P‚Èƒ‰ƒ“ƒ`ƒƒ[‚ğì¬
+        * apps/gui/launcher: ´ÊÃ±¤Ê¥é¥ó¥Á¥ã¡¼¤òºîÀ®
 
-        * src/lib/gui/System/Mona/Forms/Button.cpp: ClickƒCƒxƒ“ƒg‚Ìˆ—‚ªI‚í‚Á‚Ä‚©‚çŠG‚ğ–ß‚·‚æ‚¤‚É‚µ‚½
+        * src/lib/gui/System/Mona/Forms/Button.cpp: Click¥¤¥Ù¥ó¥È¤Î½èÍı¤¬½ª¤ï¤Ã¤Æ¤«¤é³¨¤òÌá¤¹¤è¤¦¤Ë¤·¤¿
 
-        * samples/non-gui/kanji: MonaGUI”­Ë‚Ì’nB–³ˆÓ–¡‚È‚Ì‚Åmake‚ÍƒXƒ‹[B
+        * samples/non-gui/kanji: MonaGUIÈ¯¾Í¤ÎÃÏ¡£Ìµ°ÕÌ£¤Ê¤Î¤Çmake¤Ï¥¹¥ë¡¼¡£
 
 2004-04-24  tino  <tino@users.sourceforge.jp>
 
-        * apps/gui/ps/Form1.cpp: XVƒ{ƒ^ƒ“‚ğ’Ç‰Á
+        * apps/gui/ps/Form1.cpp: ¹¹¿·¥Ü¥¿¥ó¤òÄÉ²Ã
 
 2004-04-24  higepon  <higepon@users.sourceforge.jp>
 
-        * .cvsignore‚ğ‚¢‚ë‚¢‚ë‚Æ’Ç‰ÁB
+        * .cvsignore¤ò¤¤¤í¤¤¤í¤ÈÄÉ²Ã¡£
 
 2004-04-24  tino  <tino@users.sourceforge.jp>
 
-        * include/gui/System/Mona/Forms/Control.h: VisibleƒvƒƒpƒeƒB
+        * include/gui/System/Mona/Forms/Control.h: Visible¥×¥í¥Ñ¥Æ¥£
 
-        * apps/gui/noiz2bg: noiz2bg‚ğMonaGUI‚ÉˆÚA
+        * apps/gui/noiz2bg: noiz2bg¤òMonaGUI¤Ë°Ü¿¢
 
-        * apps/gui/fire: NWSOS‚©‚çˆÚA
+        * apps/gui/fire: NWSOS¤«¤é°Ü¿¢
 
-        * bin/root/STARTING.JPG: jpegdemo‚Ìtext.hex‚ğƒtƒ@ƒCƒ‹‰»
+        * bin/root/STARTING.JPG: jpegdemo¤Îtext.hex¤ò¥Õ¥¡¥¤¥ë²½
 
-        * src/lib/jpegls: jpegdemo‚ÌƒfƒR[ƒhƒGƒ“ƒWƒ“‚ğƒ‰ƒCƒuƒ‰ƒŠ‰»
+        * src/lib/jpegls: jpegdemo¤Î¥Ç¥³¡¼¥É¥¨¥ó¥¸¥ó¤ò¥é¥¤¥Ö¥é¥ê²½
 
-        * src/lib/jpegls/jpegls.cpp: ‚‘¬‹tDCT”Å‚É·‚µ‘Ö‚¦(thanks Yui_Neko‚³‚ñ, nikq‚³‚ñ)
+        * src/lib/jpegls/jpegls.cpp: ¹âÂ®µÕDCTÈÇ¤Ëº¹¤·ÂØ¤¨(thanks Yui_Neko¤µ¤ó, nikq¤µ¤ó)
 
-        * src/servers/gui/main.cpp: 24bpp–³ˆ³kBMP‚ÆJPEG‚ÌƒfƒR[ƒh‚É‘Î‰
+        * src/servers/gui/main.cpp: 24bppÌµ°µ½ÌBMP¤ÈJPEG¤Î¥Ç¥³¡¼¥É¤ËÂĞ±ş
 
-        * include/gui/System/Object.h (ToString): ’Ç‰Á
+        * include/gui/System/Object.h (ToString): ÄÉ²Ã
 
-        * include/gui/System/String.h (StartsWith, EndsWith): ’Ç‰Á
+        * include/gui/System/String.h (StartsWith, EndsWith): ÄÉ²Ã
 
-        * src/lib/gui/System/Drawing/Bitmap.cpp: ƒT[ƒo[‚Å‰æ‘œ‚ğƒfƒR[ƒh
+        * src/lib/gui/System/Drawing/Bitmap.cpp: ¥µ¡¼¥Ğ¡¼¤Ç²èÁü¤ò¥Ç¥³¡¼¥É
 
-        * samples/gui/bitmap/Form1.cpp: usage‚ÅJPEG‘Î‰‚ğ•\¦
+        * samples/gui/bitmap/Form1.cpp: usage¤ÇJPEGÂĞ±ş¤òÉ½¼¨
 
 2004-04-23  higepon  <higepon@users.sourceforge.jp>
 
-        * src/servers/mouse/main.cpp: ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì‰ŠúˆÊ’u‚ğ‰æ–Ê’†‰›.
+        * src/servers/mouse/main.cpp: ¥Ş¥¦¥¹¥«¡¼¥½¥ë¤Î½é´ü°ÌÃÖ¤ò²èÌÌÃæ±û.
 
-        * apps/gui/2chAA/Form1.cpp (class Form1): DoEvents()‚ÌÀ‘•—á‚Æ‚µ‚Ä’Ç‰Á‚µ‚Ä‚İ‚½B
+        * apps/gui/2chAA/Form1.cpp (class Form1): DoEvents()¤Î¼ÂÁõÎã¤È¤·¤ÆÄÉ²Ã¤·¤Æ¤ß¤¿¡£
 
 2004-04-23  tino  <tino@users.sourceforge.jp>
 
-        * env/*.env: EXEEXT’Ç‰Á
+        * env/*.env: EXEEXTÄÉ²Ã
 
-        * tools/bit2mnf: ’Ç‰Á
+        * tools/bit2mnf: ÄÉ²Ã
 
-        * tools/monafont: ’Ç‰Ái‹‘å‚Å‚·‚İ‚Ü‚¹‚ñj
+        * tools/monafont: ÄÉ²Ã¡ÊµğÂç¤Ç¤¹¤ß¤Ş¤»¤ó¡Ë
 
-        * tools/code_table: ’Ç‰Á
+        * tools/code_table: ÄÉ²Ã
 
-        * bin/root/MONA-12.MNF: íœibit2mnf‚É‚æ‚è¶¬‚³‚ê‚é‚½‚ßj
+        * bin/root/MONA-12.MNF: ºï½ü¡Êbit2mnf¤Ë¤è¤êÀ¸À®¤µ¤ì¤ë¤¿¤á¡Ë
 
-        * include/gui/System/String.h (operator +=): ’Ç‰Á
+        * include/gui/System/String.h (operator +=): ÄÉ²Ã
 
-        * include/gui/System/Mona/Forms/Application.h (DoEvents): ’Ç‰Á
+        * include/gui/System/Mona/Forms/Application.h (DoEvents): ÄÉ²Ã
 
-        * include/gui/System/Mona/Forms/Control.h: ForeColor, BackColorƒvƒƒpƒeƒB
+        * include/gui/System/Mona/Forms/Control.h: ForeColor, BackColor¥×¥í¥Ñ¥Æ¥£
 
-        * src/lib/gui/System/Mona/Forms/Button.cpp (OnPaint): ForeColor, BackColor‘Î‰
+        * src/lib/gui/System/Mona/Forms/Button.cpp (OnPaint): ForeColor, BackColorÂĞ±ş
 
-        * src/lib/gui/System/Mona/Forms/Label.cpp (OnPaint): ForeColor, BackColor‘Î‰
+        * src/lib/gui/System/Mona/Forms/Label.cpp (OnPaint): ForeColor, BackColorÂĞ±ş
 
-        * apps/gui/ps/Form1.cpp: MonaGUI‚ÌV‹@”\‚Å’Pƒ‰»
+        * apps/gui/ps/Form1.cpp: MonaGUI¤Î¿·µ¡Ç½¤ÇÃ±½ã²½
 
 2004-04-22  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/gui/reversi/Piece.cpp (OnPaint): Reversi2‰æ‘œƒŠƒ\[ƒX‘Î‰
+        * apps/gui/reversi/Piece.cpp (OnPaint): Reversi2²èÁü¥ê¥½¡¼¥¹ÂĞ±ş
 
-        * src/lib/monapi/syscall.cpp (syscall_seek): C³
+        * src/lib/monapi/syscall.cpp (syscall_seek): ½¤Àµ
 
-        * src/kernel/syscalls.cpp : SEEK, POSITION‚ÌƒVƒXƒeƒ€ƒR[ƒ‹’Ç‰Á
+        * src/kernel/syscalls.cpp : SEEK, POSITION¤Î¥·¥¹¥Æ¥à¥³¡¼¥ëÄÉ²Ã
 
 2004-04-21  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/Process.h (ArchThreadInfo): FPU‘Î‰AFPUƒXƒe[ƒgEƒf[ƒ^ƒŒƒWƒXƒ^‚Ì‘Ş”ğE•œ‹A‹@”\‚ğ“ü‚ê‚½
+        * src/kernel/Process.h (ArchThreadInfo): FPUÂĞ±ş¡¢FPU¥¹¥Æ¡¼¥È¡¦¥Ç¡¼¥¿¥ì¥¸¥¹¥¿¤ÎÂàÈò¡¦Éüµ¢µ¡Ç½¤òÆş¤ì¤¿
 
 2004-04-21  tino  <tino@users.sourceforge.jp>
 
-        * src/servers/mouse/main.cpp: Œ´“_‚ÌƒSƒ~‚ğœ‹
+        * src/servers/mouse/main.cpp: ¸¶ÅÀ¤Î¥´¥ß¤ò½üµî
 
-        * include/gui/System/Drawing/Bitmap.h: ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Åƒtƒ@ƒCƒ‹–¼‚ğw’è‚µ‚ÄBMP‚ğ“Ç‚İ‚İ
+        * include/gui/System/Drawing/Bitmap.h: ¥³¥ó¥¹¥È¥é¥¯¥¿¤Ç¥Õ¥¡¥¤¥ëÌ¾¤ò»ØÄê¤·¤ÆBMP¤òÆÉ¤ß¹ş¤ß
 
-        * include/gui/System/Drawing/Graphics.h: DrawImage()À‘•
+        * include/gui/System/Drawing/Graphics.h: DrawImage()¼ÂÁõ
 
-        * src/lib/gui/System/Mona/Forms/Control.cpp (OnTextChanged): ©“®Ä•`‰æ
+        * src/lib/gui/System/Mona/Forms/Control.cpp (OnTextChanged): ¼«Æ°ºÆÉÁ²è
 
-        * src/lib/gui/System/Mona/Forms/Form.cpp: ƒEƒCƒ“ƒhƒE‚Ì•Â‚¶‚éƒ{ƒ^ƒ“‚ğƒLƒƒƒ“ƒZƒ‹‚Å‚«‚é‚æ‚¤‚É‚µ‚½
+        * src/lib/gui/System/Mona/Forms/Form.cpp: ¥¦¥¤¥ó¥É¥¦¤ÎÊÄ¤¸¤ë¥Ü¥¿¥ó¤ò¥­¥ã¥ó¥»¥ë¤Ç¤­¤ë¤è¤¦¤Ë¤·¤¿
 
-        * apps/gui/reversi/ReversiForm.cpp: label1‚ÌÄ•`‰æˆ—‚ğ³í‰»
+        * apps/gui/reversi/ReversiForm.cpp: label1¤ÎºÆÉÁ²è½èÍı¤òÀµ¾ï²½
 
-        * apps/gui/reversi/ReversiForm.cpp (InitializeComponent): GUIƒrƒ‹ƒ_‚Å©“®¶¬‚Å‚«‚È‚¢ƒR[ƒh‚ğœ‹
+        * apps/gui/reversi/ReversiForm.cpp (InitializeComponent): GUI¥Ó¥ë¥À¤Ç¼«Æ°À¸À®¤Ç¤­¤Ê¤¤¥³¡¼¥É¤ò½üµî
 
-        * samples/gui/bitmap: BMP•\¦‚ÌƒTƒ“ƒvƒ‹
+        * samples/gui/bitmap: BMPÉ½¼¨¤Î¥µ¥ó¥×¥ë
 
 2004-04-19  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/gui/reversi/ReversiForm.cpp (Observer): resetƒ{ƒ^ƒ“‚Â‚¯‚½‚è
+        * apps/gui/reversi/ReversiForm.cpp (Observer): reset¥Ü¥¿¥ó¤Ä¤±¤¿¤ê
 
 2004-04-17  higepon  <higepon@users.sourceforge.jp>
 
-        * warning‚Â‚Ô‚µ
+        * warning¤Ä¤Ö¤·
 
 2004-04-17  shadow  <shadowin@users.sourceforge.jp>
 
-        * 1linesh: ƒRƒ}ƒ“ƒh—š—ğ‹@”\’Ç‰Á
+        * 1linesh: ¥³¥Ş¥ó¥ÉÍúÎòµ¡Ç½ÄÉ²Ã
 
 2004-04-17  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/elf.cpp (load): ƒZƒNƒVƒ‡ƒ“ƒwƒbƒ_‚ğQÆ‚µ‚Ä.bss‚ğƒ[ƒƒNƒŠƒA
+        * src/kernel/elf.cpp (load): ¥»¥¯¥·¥ç¥ó¥Ø¥Ã¥À¤ò»²¾È¤·¤Æ.bss¤ò¥¼¥í¥¯¥ê¥¢
 
 2004-04-17  shadow  <shadowin@users.sourceforge.jp>
 
-        * src/lib/monapi/Keys.cpp: IsToChar’Ç‰Á
+        * src/lib/monapi/Keys.cpp: IsToCharÄÉ²Ã
 
-        * include/monapi/Keys.h: Key’Ç‰ÁBIsToChar’Ç‰Á
+        * include/monapi/Keys.h: KeyÄÉ²Ã¡£IsToCharÄÉ²Ã
 
-        * 1linesh: bug fixAƒRƒ}ƒ“ƒh—š—ğ‹@”\’Ç‰ÁAƒƒbƒZ[ƒW•\¦’Ç‰Á
+        * 1linesh: bug fix¡¢¥³¥Ş¥ó¥ÉÍúÎòµ¡Ç½ÄÉ²Ã¡¢¥á¥Ã¥»¡¼¥¸É½¼¨ÄÉ²Ã
 
 2004-04-16  higepon  <higepon@users.sourceforge.jp>
 
-        * src/servers/mouse/main.cpp: ƒ}ƒEƒX‚Ìî•ñ‘—MEóM‚ğ3‰ñ‚©‚ç1‰ñ‚ÉíŒ¸
+        * src/servers/mouse/main.cpp: ¥Ş¥¦¥¹¤Î¾ğÊóÁ÷¿®¡¦¼õ¿®¤ò3²ó¤«¤é1²ó¤Ëºï¸º
 
-        * src/kernel/MemoryManager.cpp: ƒƒ‚ƒŠ‚ÌŠ„‚è“–‚Äalign16‘Î‰
+        * src/kernel/MemoryManager.cpp: ¥á¥â¥ê¤Î³ä¤êÅö¤Æalign16ÂĞ±ş
 
 2004-04-15  shadow  <shadowin@users.sourceforge.jp>
 
-        * src/lib/monapi/Keys.cpp: ToChar’Ç‰Á
+        * src/lib/monapi/Keys.cpp: ToCharÄÉ²Ã
 
-        * include/monapi/Keys.h: Key’Ç‰ÁBToChar’Ç‰Á
+        * include/monapi/Keys.h: KeyÄÉ²Ã¡£ToCharÄÉ²Ã
 
-        * include/sys/types.h: KeyInfo’Ç‰ÁBKeyBoardManager.h‚©‚çKeyInfoíœ
+        * include/sys/types.h: KeyInfoÄÉ²Ã¡£KeyBoardManager.h¤«¤éKeyInfoºï½ü
 
-        * 1linesh: ‰E–îˆóA¶–îˆó‘Î‰
+        * 1linesh: ±¦Ìğ°õ¡¢º¸Ìğ°õÂĞ±ş
 
 2004-04-15  higepon  <higepon@users.sourceforge.jp>
 
-        * include/sys/Map.h: ƒfƒXƒgƒ‰ƒNƒ^ì¬
+        * include/sys/Map.h: ¥Ç¥¹¥È¥é¥¯¥¿ºîÀ®
 
-        * include/sys/List.h (List): HList‚Ìƒƒ‚ƒŠƒŠ[ƒN‚ÌŒ´ˆö‚Æ‚È‚Á‚Ä‚¢‚½‚Ì‚ÅƒfƒXƒgƒ‰ƒNƒ^‚ğì¬
+        * include/sys/List.h (List): HList¤Î¥á¥â¥ê¥ê¡¼¥¯¤Î¸¶°ø¤È¤Ê¤Ã¤Æ¤¤¤¿¤Î¤Ç¥Ç¥¹¥È¥é¥¯¥¿¤òºîÀ®
 
-        * src/kernel/Process.h (class Process): ƒXƒ^ƒbƒNŠJnƒAƒhƒŒƒX‚ğ‹ô”‚É‚µ‚½B
+        * src/kernel/Process.h (class Process): ¥¹¥¿¥Ã¥¯³«»Ï¥¢¥É¥ì¥¹¤ò¶ö¿ô¤Ë¤·¤¿¡£
 
-        * src/kernel/MemoryManager.cpp: malloc‚ğalign8‚É’²®
-                                        free‚Éƒƒ‚ƒŠ”j‰ó‚ğƒ`ƒFƒbƒN(DEBUG_BUILD‚Ì‚İ)
+        * src/kernel/MemoryManager.cpp: malloc¤òalign8¤ËÄ´À°
+                                        free»ş¤Ë¥á¥â¥êÇË²õ¤ò¥Á¥§¥Ã¥¯(DEBUG_BUILD»ş¤Î¤ß)
 
 2004-04-14  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/PageManager.cpp (allocatePageTable): ƒy[ƒWƒe[ƒuƒ‹‚ğƒv[ƒ‹‚©‚çŠ„‚è“–‚Ä‚é‚æ‚¤‚É•ÏX
+        * src/kernel/PageManager.cpp (allocatePageTable): ¥Ú¡¼¥¸¥Æ¡¼¥Ö¥ë¤ò¥×¡¼¥ë¤«¤é³ä¤êÅö¤Æ¤ë¤è¤¦¤ËÊÑ¹¹
 
-                                                          ƒvƒƒZƒX”jŠü‚Éƒy[ƒWƒe[ƒuƒ‹‚ğ‚«‚Á‚¿‚è•Ô‹p
+                                                          ¥×¥í¥»¥¹ÇË´ş»ş¤Ë¥Ú¡¼¥¸¥Æ¡¼¥Ö¥ë¤ò¤­¤Ã¤Á¤êÊÖµÑ
 
 2004-04-13  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/fat.cpp (initialize): ƒoƒOC³(Yui_Neko‚³‚ñw“E‚É‚æ‚é)
+        * src/kernel/fat.cpp (initialize): ¥Ğ¥°½¤Àµ(Yui_Neko¤µ¤ó»ØÅ¦¤Ë¤è¤ë)
 
-        * src/kernel/PageManager.cpp (setup): ƒy[ƒW•ÛŒì‚ÌƒoƒOC³(Yui_Neko‚³‚ñw“E‚É‚æ‚é)
+        * src/kernel/PageManager.cpp (setup): ¥Ú¡¼¥¸Êİ¸î¤Î¥Ğ¥°½¤Àµ(Yui_Neko¤µ¤ó»ØÅ¦¤Ë¤è¤ë)
 
-        * src/servers/shell/main.cpp: Keys‚É‘Î‰
+        * src/servers/shell/main.cpp: Keys¤ËÂĞ±ş
 
-        * include/monapi/Keys.h (class Keys): Keys—ñ‹“’Ç‰Á
+        * include/monapi/Keys.h (class Keys): KeysÎóµóÄÉ²Ã
 
 2004-04-13  shadow  <shadowin@users.sourceforge.jp>
 
-        * 1linesh: ’Ç‰Á
+        * 1linesh: ÄÉ²Ã
 
 2004-04-11  higepon  <higepon@users.sourceforge.jp>
 
-        * include/monapi/System.h (class System): TICKæ“¾API’Ç‰ÁB
+        * include/monapi/System.h (class System): TICK¼èÆÀAPIÄÉ²Ã¡£
 
 2004-04-09  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/VesaConsole.cpp (scrollUp): ƒXƒNƒ[ƒ‹‚‘¬‰»
+        * src/kernel/VesaConsole.cpp (scrollUp): ¥¹¥¯¥í¡¼¥ë¹âÂ®²½
 
-        * src/kernel/ihandlers.cpp (mouseHandler): nikq‚³‚ñ‚Ìqemuƒ}ƒEƒX³í“®ìƒpƒbƒ`æ‚è‚İ(thx! nikq‚³‚ñ)
+        * src/kernel/ihandlers.cpp (mouseHandler): nikq¤µ¤ó¤Îqemu¥Ş¥¦¥¹Àµ¾ïÆ°ºî¥Ñ¥Ã¥Á¼è¤ê¹ş¤ß(thx! nikq¤µ¤ó)
 
-        * src/lib/monapi/syscall.cpp (syscall_read_ps_dump): ƒXƒŒƒbƒhƒ_ƒ“ƒvƒVƒXƒeƒ€ƒR[ƒ‹ì¬
+        * src/lib/monapi/syscall.cpp (syscall_read_ps_dump): ¥¹¥ì¥Ã¥É¥À¥ó¥×¥·¥¹¥Æ¥à¥³¡¼¥ëºîÀ®
 
-        * apps/gui/ps/Form1.cpp (class Form1): PSì¬
+        * apps/gui/ps/Form1.cpp (class Form1): PSºîÀ®
 
 2004-04-08  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/kernel.cpp (execSysConf):                     enableTimer(); // qemu need this why?‚ğ’Ç‰Á
+        * src/kernel/kernel.cpp (execSysConf):                     enableTimer(); // qemu need this why?¤òÄÉ²Ã
 
-        * apps/gui/reversi/Piece.cpp (OnMouseUp): –³‘Ê‚ÈƒI[ƒo[ƒ‰ƒCƒh‚ğ‚È‚­‚·
+        * apps/gui/reversi/Piece.cpp (OnMouseUp): ÌµÂÌ¤Ê¥ª¡¼¥Ğ¡¼¥é¥¤¥É¤ò¤Ê¤¯¤¹
 
 2004-04-07  higepon  <higepon@users.sourceforge.jp>
 
-        * src/servers/shell/main.cpp : “à•”ƒRƒ}ƒ“ƒh CD, LS, DIR‚ğÀ‘•
+        * src/servers/shell/main.cpp : ÆâÉô¥³¥Ş¥ó¥É CD, LS, DIR¤ò¼ÂÁõ
 
-        * syscall_dir_open, syscall_dir_read, syscall_dir_close, sys_call_cdÀ‘•
+        * syscall_dir_open, syscall_dir_read, syscall_dir_close, sys_call_cd¼ÂÁõ
 
 2004-04-04  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp (init): ƒ}ƒEƒX‰Šú‰»ˆ—•ÏX thx! 893(2ch)
+        * test_higepon.cpp (init): ¥Ş¥¦¥¹½é´ü²½½èÍıÊÑ¹¹ thx! 893(2ch)
 
-        * user/include/monapi/Random.h (class Random): —”¶¬ http://www.math.keio.ac.jp/home2/matumoto/public_html/MT2002/mt19937ar.html
+        * user/include/monapi/Random.h (class Random): Íğ¿ôÀ¸À® http://www.math.keio.ac.jp/home2/matumoto/public_html/MT2002/mt19937ar.html
 
 2004-04-02  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp (startKernel): MemoryMap‚Ìd—l•ÏX
+        * kernel.cpp (startKernel): MemoryMap¤Î»ÅÍÍÊÑ¹¹
 
 2004-04-01  higepon  <higepon@users.sourceforge.jp>
 
         * Makefile : make->$(MAKE)
 
-        * FDCDriver.cpp: FDC‚Ìƒ‚[ƒ^[‚ÌOFF–Y‚ê‚ğ–³‚­‚µ‚½¡
+        * FDCDriver.cpp: FDC¤Î¥â¡¼¥¿¡¼¤ÎOFFËº¤ì¤òÌµ¤¯¤·¤¿¡
 
-        * user/jpegls/jpegdemo.cpp (MonaMain): ƒƒ‚ƒŠ‰ğ•ú‚ğ‚Ü‚¶‚ß‚É
+        * user/jpegls/jpegdemo.cpp (MonaMain): ¥á¥â¥ê²òÊü¤ò¤Ş¤¸¤á¤Ë
 
 2004-03-31  higepon  <higepon@users.sourceforge.jp>
 
-        * user/ShellServer/ShellServer.cpp: ƒVƒFƒ‹“ü—Í‚É .ELF‚ğ•â‚¤
+        * user/ShellServer/ShellServer.cpp: ¥·¥§¥ëÆşÎÏ»ş¤Ë .ELF¤òÊä¤¦
 
-        * user/jpegls/jpegdemo.cpp (MonaMain): FileOutputStream‚ğg—p‚µ‚ÄŠO•”jpg“Ç‚İ‚İ‘Î‰
+        * user/jpegls/jpegdemo.cpp (MonaMain): FileOutputStream¤ò»ÈÍÑ¤·¤Æ³°ÉôjpgÆÉ¤ß¹ş¤ßÂĞ±ş
 
 2004-03-30  higepon  <higepon@users.sourceforge.jp>
 
-        * user/monapi/userlib.cpp: Mutex‚ğƒ†[ƒU[ƒ‰ƒCƒuƒ‰ƒŠ‚É’Ç‰Á(ƒeƒXƒgÏ‚İ)
+        * user/monapi/userlib.cpp: Mutex¤ò¥æ¡¼¥¶¡¼¥é¥¤¥Ö¥é¥ê¤ËÄÉ²Ã(¥Æ¥¹¥ÈºÑ¤ß)
 
 2004-03-29  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒ†[ƒU[—pƒtƒ@ƒCƒ‹‘‚«‚İ—pƒNƒ‰ƒX FileOutputStream
+        * ¥æ¡¼¥¶¡¼ÍÑ¥Õ¥¡¥¤¥ë½ñ¤­¹ş¤ßÍÑ¥¯¥é¥¹ FileOutputStream
 
-        * file write‚ÌƒVƒXƒeƒ€ƒR[ƒ‹ì¬
+        * file write¤Î¥·¥¹¥Æ¥à¥³¡¼¥ëºîÀ®
 
-        * fs.cpp (createFile): ƒtƒ@ƒCƒ‹ì¬ŠÖ”’Ç‰Á
-
-2004-03-28  shadow  <shadowin@users.sourceforge.jp>
-
-        * user/monapi/monalibc.cpp & .h strncpy2’Ç‰Á
+        * fs.cpp (createFile): ¥Õ¥¡¥¤¥ëºîÀ®´Ø¿ôÄÉ²Ã
 
 2004-03-28  shadow  <shadowin@users.sourceforge.jp>
 
-        * user/monapi/monalibc.cpp & .h strncpy2’Ç‰Á
+        * user/monapi/monalibc.cpp & .h strncpy2ÄÉ²Ã
+
+2004-03-28  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/monapi/monalibc.cpp & .h strncpy2ÄÉ²Ã
 
 2004-03-27  higepon  <higepon@users.sourceforge.jp>
 
-        * user/monapi/userlib.cpp: inp/outp 8/16/32‚ğÀ‘•
+        * user/monapi/userlib.cpp: inp/outp 8/16/32¤ò¼ÂÁõ
 
-        * user/include/monapi/MemoryMap.h (class MemoryMap): MemoryMapƒNƒ‰ƒX‚ğˆÊ’u‚©‚ç‘‚«’¼‚µ‚Ü‚µ‚½Buserlib‚É‰e‹¿‚ª‚ ‚è‚Ü‚·B
+        * user/include/monapi/MemoryMap.h (class MemoryMap): MemoryMap¥¯¥é¥¹¤ò°ÌÃÖ¤«¤é½ñ¤­Ä¾¤·¤Ş¤·¤¿¡£userlib¤Ë±Æ¶Á¤¬¤¢¤ê¤Ş¤¹¡£
 
 2004-03-25  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp (loadServer): MONA.CFG‚Å‹N“®‚³‚ê‚éƒT[ƒo[‚ÍINITƒvƒƒZƒX‚ÉƒT[ƒo[‹N“®Š®—¹ƒƒbƒZ[ƒW‚ğ‘—M‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚­‚È‚Á‚½¡
+        * kernel.cpp (loadServer): MONA.CFG¤Çµ¯Æ°¤µ¤ì¤ë¥µ¡¼¥Ğ¡¼¤ÏINIT¥×¥í¥»¥¹¤Ë¥µ¡¼¥Ğ¡¼µ¯Æ°´°Î»¥á¥Ã¥»¡¼¥¸¤òÁ÷¿®¤·¤Ê¤±¤ì¤Ğ¤¤¤±¤Ê¤¯¤Ê¤Ã¤¿¡
 
-        * Process.cpp (lookupMainThread): ƒvƒƒZƒX–¼‚©‚çƒƒCƒ“Thread‚Ìtid‚ğæ“¾‚ÅØ‚é‚æ‚¤‚É‚µ‚½B
+        * Process.cpp (lookupMainThread): ¥×¥í¥»¥¹Ì¾¤«¤é¥á¥¤¥óThread¤Îtid¤ò¼èÆÀ¤ÇÀÚ¤ë¤è¤¦¤Ë¤·¤¿¡£
 
-        * uselib: Message::lookupMainThreadŠÖ”’Ç‰Á
+        * uselib: Message::lookupMainThread´Ø¿ôÄÉ²Ã
 
 2004-03-24  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: ƒfƒBƒXƒNŒğŠ·ŒŸoAPI‚Ì‰ü—Ç
+        * FDCDriver.cpp: ¥Ç¥£¥¹¥¯¸ò´¹¸¡½ĞAPI¤Î²şÎÉ
 
-        * Process.cpp (kill): ƒvƒƒZƒXI—¹‚É•¨—ƒy[ƒW‚Ì•Ô‹p‚ğs‚¤
+        * Process.cpp (kill): ¥×¥í¥»¥¹½ªÎ»»ş¤ËÊªÍı¥Ú¡¼¥¸¤ÎÊÖµÑ¤ò¹Ô¤¦
 
-        * PageManager.cpp: VRAM‚Ìƒ}ƒbƒsƒ“ƒO‚ÌƒƒWƒbƒNƒ~ƒX‚ğC³
+        * PageManager.cpp: VRAM¤Î¥Ş¥Ã¥Ô¥ó¥°¤Î¥í¥¸¥Ã¥¯¥ß¥¹¤ò½¤Àµ
 
 2004-03-23  higepon  <higepon@users.sourceforge.jp>
 
-        * FD‚Ìƒ‚[ƒ^[OFF‚Ì§Œä‚ğ‚Ü‚¶‚ß‚É¡
+        * FD¤Î¥â¡¼¥¿¡¼OFF¤ÎÀ©¸æ¤ò¤Ş¤¸¤á¤Ë¡
 
-        * Process.cpp (Process): messageList‚ÌƒƒbƒZ[ƒWdelete‚ğ–³‚­‚µ‚½¡
+        * Process.cpp (Process): messageList¤Î¥á¥Ã¥»¡¼¥¸delete¤òÌµ¤¯¤·¤¿¡
 
 2004-03-22  higepon  <higepon@users.sourceforge.jp>
 
-        * user/monapi/userlib.cpp: syscall_mthread_create, join‚ğ¶ƒ|ƒCƒ“ƒ^‚©‚çID§‚É‚µ‚½¡
+        * user/monapi/userlib.cpp: syscall_mthread_create, join¤òÀ¸¥İ¥¤¥ó¥¿¤«¤éIDÀ©¤Ë¤·¤¿¡
 
-        * IDManager.cpp: IDŠÇ——p‚ÌƒNƒ‰ƒX‚ğ’Ç‰Á¡
+        * IDManager.cpp: ID´ÉÍıÍÑ¤Î¥¯¥é¥¹¤òÄÉ²Ã¡
 
 2004-03-19  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp : KEventƒNƒ‰ƒX’Ç‰Á
+        * test_higepon.cpp : KEvent¥¯¥é¥¹ÄÉ²Ã
 
 2004-03-18  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp (execSysConf): ƒT[ƒo[‚ğŠO•”ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚ñ‚Å‹N“®(by Tino‚³‚ñ)
+        * kernel.cpp (execSysConf): ¥µ¡¼¥Ğ¡¼¤ò³°Éô¥Õ¥¡¥¤¥ë¤òÆÉ¤ß¹ş¤ó¤Çµ¯Æ°(by Tino¤µ¤ó)
 
-        * string.cpp : strstr‚Ì’Ç‰Á(by Tino‚³‚ñ)
+        * string.cpp : strstr¤ÎÄÉ²Ã(by Tino¤µ¤ó)
 
-        * user/ShellServer/ShellServer.cpp: Tino‚³‚ñ‚Ìƒpƒbƒ`“K—p(‹ós–³‹EAUTOEXEC.BAT)
+        * user/ShellServer/ShellServer.cpp: Tino¤µ¤ó¤Î¥Ñ¥Ã¥ÁÅ¬ÍÑ(¶õ¹ÔÌµ»ë¡¦AUTOEXEC.BAT)
 
-        * mona_v1.0/tools/fat_write/main.cpp : ƒTƒCƒY0‚Ìƒtƒ@ƒCƒ‹‚Ì‘‚«‚İ‚É‘Î‰
+        * mona_v1.0/tools/fat_write/main.cpp : ¥µ¥¤¥º0¤Î¥Õ¥¡¥¤¥ë¤Î½ñ¤­¹ş¤ß¤ËÂĞ±ş
 
 2004-03-17  higepon  <higepon@users.sourceforge.jp>
 
-        * syscalls.cpp : syscall_get_io()‚ÌƒoƒOC³
+        * syscalls.cpp : syscall_get_io()¤Î¥Ğ¥°½¤Àµ
 
-        * ƒXƒŒƒbƒhƒx[ƒX‚ÌƒƒbƒZ[ƒWƒ“ƒO‚É•ÏX
+        * ¥¹¥ì¥Ã¥É¥Ù¡¼¥¹¤Î¥á¥Ã¥»¡¼¥¸¥ó¥°¤ËÊÑ¹¹
 
 2004-03-15  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandler.asm : ƒXƒŒƒbƒhƒZ[ƒu‚ÌƒR[ƒh’Ç‰Á
+        * ihandler.asm : ¥¹¥ì¥Ã¥É¥»¡¼¥Ö¤Î¥³¡¼¥ÉÄÉ²Ã
 
 2004-03-14  higepon  <higepon@users.sourceforge.jp>
 
-        * user/monapi/Makefile ($(LIB_USER)): Tino‚³‚ñ‚Ìpatch“K—p
+        * user/monapi/Makefile ($(LIB_USER)): Tino¤µ¤ó¤ÎpatchÅ¬ÍÑ
 
 2004-03-13  shadow  <shadowin@users.sourceforge.jp>
 
-        * monalibcŠÖ˜Aƒwƒbƒ_ƒtƒ@ƒCƒ‹ : ŠÖ”éŒ¾êŠ®—
+        * monalibc´ØÏ¢¥Ø¥Ã¥À¥Õ¥¡¥¤¥ë : ´Ø¿ôÀë¸À¾ì½êÀ°Íı
 
-        * monalibcŠÖ˜Aƒ\[ƒXƒtƒ@ƒCƒ‹ : ŠÖ”’è‹`êŠ®—
+        * monalibc´ØÏ¢¥½¡¼¥¹¥Õ¥¡¥¤¥ë : ´Ø¿ôÄêµÁ¾ì½êÀ°Íı
 
-        * user/monapi/MlcStdarg.cpp & .h ’Ç‰Á
+        * user/monapi/MlcStdarg.cpp & .h ÄÉ²Ã
 
-        * user/monapi/MlcStdio.cpp & .h ’Ç‰Á
+        * user/monapi/MlcStdio.cpp & .h ÄÉ²Ã
 
-        * user/monapi/Makefile ã‹Lƒtƒ@ƒCƒ‹‚ğ‘ÎÛ‚É’Ç‰Á
+        * user/monapi/Makefile ¾åµ­¥Õ¥¡¥¤¥ë¤òÂĞ¾İ¤ËÄÉ²Ã
 
 2004-03-13  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp : checkDiskChange()À‘•
+        * FDCDriver.cpp : checkDiskChange()¼ÂÁõ
 
 2004-03-12  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒVƒXƒeƒ€ƒR[ƒ‹‚Ì®—
+        * ¥·¥¹¥Æ¥à¥³¡¼¥ë¤ÎÀ°Íı
 
-        * fs.cpp (FSOperation): fs.cpp‚ÉˆÚ“®
+        * fs.cpp (FSOperation): fs.cpp¤Ë°ÜÆ°
 
 2004-03-11  higepon  <higepon@users.sourceforge.jp>
 
-        * fat_write.exe : Msys‚Ìshell‚ªu/v‚©‚çn‚Ü‚éˆø”‚ÉŸè‚ÉƒpƒX•âŠ®‚µ‚Ä‚µ‚Ü‚¤‚Ì‚Åd—l•ÏX
+        * fat_write.exe : Msys¤Îshell¤¬¡Ö/¡×¤«¤é»Ï¤Ş¤ë°ú¿ô¤Ë¾¡¼ê¤Ë¥Ñ¥¹Êä´°¤·¤Æ¤·¤Ş¤¦¤Î¤Ç»ÅÍÍÊÑ¹¹
 
-        * user/monapi/userlib.cpp: sleepÀ‘•
+        * user/monapi/userlib.cpp: sleep¼ÂÁõ
 
-        * monaApp‚Ö‚Ì‘ã“ü‚ğMonaApplicationƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Ås‚È‚¤¡
+        * monaApp¤Ø¤ÎÂåÆş¤òMonaApplication¥³¥ó¥¹¥È¥é¥¯¥¿¤Ç¹Ô¤Ê¤¦¡
 
 2004-03-10  higepon  <higepon@users.sourceforge.jp>
 
-        * syscalls.cpp : ƒVƒXƒeƒ€ƒR[ƒ‹‚Ìˆø”‚ÌƒoƒO(ƒŒƒWƒXƒ^”j‰ó)‚ğC³
+        * syscalls.cpp : ¥·¥¹¥Æ¥à¥³¡¼¥ë¤Î°ú¿ô¤Î¥Ğ¥°(¥ì¥¸¥¹¥¿ÇË²õ)¤ò½¤Àµ
 
-        * user/ShellServer/ShellServer.cpp: ƒvƒƒZƒXƒ[ƒhˆ—‚ğŒ©’¼‚µ
+        * user/ShellServer/ShellServer.cpp: ¥×¥í¥»¥¹¥í¡¼¥É½èÍı¤ò¸«Ä¾¤·
 
-        * operator.cpp (free): ƒƒ‚ƒŠŠ„“–‚Ä‚ğŠ„‚è‚İ‹Ö~—Ìˆæ‚Ås‚È‚¤–‚É‚µ‚½
+        * operator.cpp (free): ¥á¥â¥ê³äÅö¤Æ¤ò³ä¤ê¹ş¤ß¶Ø»ßÎÎ°è¤Ç¹Ô¤Ê¤¦»ö¤Ë¤·¤¿
 
-        * FDCDriver.cpp: IStorageDevice‚ğŒp³‚·‚é‚æ‚¤‚É‚µ‚½B
+        * FDCDriver.cpp: IStorageDevice¤ò·Ñ¾µ¤¹¤ë¤è¤¦¤Ë¤·¤¿¡£
 
 2004-03-09  higepon  <higepon@users.sourceforge.jp>
 
-        * fat_write.exe‚ªƒtƒ@ƒCƒ‹‚ğã‘‚«‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½B
+        * fat_write.exe¤¬¥Õ¥¡¥¤¥ë¤ò¾å½ñ¤­¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
 
-        * user/monapi/userlib.cpp (exist): Message::exist()’Ç‰Á
+        * user/monapi/userlib.cpp (exist): Message::exist()ÄÉ²Ã
 
-        * fat_write.exe‚ª“®ì‚·‚é‚æ‚¤‚É‚È‚Á‚½¡
+        * fat_write.exe¤¬Æ°ºî¤¹¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡
 
-        * kernel.cpp : fat_write.exe‚ğ‰ü‘•’†‚Ì‚½‚ß‚Ü‚Æ‚à‚É“®‚«‚Ü‚¹‚ñB
+        * kernel.cpp : fat_write.exe¤ò²şÁõÃæ¤Î¤¿¤á¤Ş¤È¤â¤ËÆ°¤­¤Ş¤»¤ó¡£
 
 2004-03-08  higepon  <higepon@users.sourceforge.jp>
 
-        * core.asm (from_kernel): ƒŒƒWƒXƒ^ƒZ[ƒuƒƒWƒbƒN‚ğ‘Š·
+        * core.asm (from_kernel): ¥ì¥¸¥¹¥¿¥»¡¼¥Ö¥í¥¸¥Ã¥¯¤ò½ñ´¹
 
 2004-03-07  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“‚ÌƒGƒ‰[ƒR[ƒh‚ğæ“¾
+        * FAT12.cpp: ¥Õ¥¡¥¤¥ë¥ª¡¼¥×¥ó»ş¤Î¥¨¥é¡¼¥³¡¼¥É¤ò¼èÆÀ
 
-        * user/monapi/userlib.cpp: ~MonaApplication‚ÌƒfƒXƒgƒ‰ƒNƒ^‚ÅƒL[‘—M“o˜^‰ğœ
+        * user/monapi/userlib.cpp: ~MonaApplication¤Î¥Ç¥¹¥È¥é¥¯¥¿¤Ç¥­¡¼Á÷¿®ÅĞÏ¿²ò½ü
 
-        * user/KeyBoardServer/KeyBoardServer.cpp : ƒL[‘—M“o˜^‰ğœ‚ğo—ˆ‚é‚æ‚¤‚É‚µ‚½B
+        * user/KeyBoardServer/KeyBoardServer.cpp : ¥­¡¼Á÷¿®ÅĞÏ¿²ò½ü¤ò½ĞÍè¤ë¤è¤¦¤Ë¤·¤¿¡£
 
-        * user/MouseServer/MouseServer.cpp: ƒ}ƒEƒX‘—Mæ“o˜^‰ğœ‚ğo—ˆ‚é‚æ‚¤‚É‚µ‚½B
+        * user/MouseServer/MouseServer.cpp: ¥Ş¥¦¥¹Á÷¿®ÀèÅĞÏ¿²ò½ü¤ò½ĞÍè¤ë¤è¤¦¤Ë¤·¤¿¡£
 
-        * MonaApplication‚Ì–¼‘Oˆø”‚ğ‚â‚ß‚½B
+        * MonaApplication¤ÎÌ¾Á°°ú¿ô¤ò¤ä¤á¤¿¡£
 
 2004-03-06  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒXƒŒƒbƒhƒXƒCƒbƒ`‚ÌƒoƒO‚ğ‚P‚Â‚Â‚Ô‚·B
-                      ˆêƒJ[ƒlƒ‹ƒ‚[ƒh‚Ö‚Ì¸Ši’†‚É•ÊˆêƒJ[ƒlƒ‹ƒ‚[ƒhƒXƒŒƒbƒh‚ÉƒXƒCƒbƒ`‚µ‚Ätss‚Ìesp0‚ğXV‚µ‚Ä‚¢‚È‚©‚Á‚½B
+        * kernel.cpp: ¥¹¥ì¥Ã¥É¥¹¥¤¥Ã¥Á¤Î¥Ğ¥°¤ò£±¤Ä¤Ä¤Ö¤¹¡£
+                      °ì»ş¥«¡¼¥Í¥ë¥â¡¼¥É¤Ø¤Î¾º³ÊÃæ¤ËÊÌ°ì»ş¥«¡¼¥Í¥ë¥â¡¼¥É¥¹¥ì¥Ã¥É¤Ë¥¹¥¤¥Ã¥Á¤·¤Ætss¤Îesp0¤ò¹¹¿·¤·¤Æ¤¤¤Ê¤«¤Ã¤¿¡£
 
-        * FAT12.cpp: ’·‚¢ƒtƒ@ƒCƒ‹–¼‚ª“n‚³‚ê‚½‚Æ‚«‚Éƒƒ‚ƒŠ‚ğ‰ó‚·ƒoƒO‚ğC³
+        * FAT12.cpp: Ä¹¤¤¥Õ¥¡¥¤¥ëÌ¾¤¬ÅÏ¤µ¤ì¤¿¤È¤­¤Ë¥á¥â¥ê¤ò²õ¤¹¥Ğ¥°¤ò½¤Àµ
 
-        * kernel.cpp: ‚Ü‚¸‚Íkill‚ª‚¨‚©‚µ‚¢B–¢C³
+        * kernel.cpp: ¤Ş¤º¤Ïkill¤¬¤ª¤«¤·¤¤¡£Ì¤½¤Àµ
 
 2004-03-04  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: ƒXƒPƒWƒ…[ƒ‰‚ğrunq ~ 1, waitq ~ 1 ‚Ì’Pƒ‚Èƒ‰ƒEƒ“ƒhƒƒrƒ“‚ÌƒXƒPƒWƒ…[ƒ‰‚É‚µ‚½B
+        * FDCDriver.cpp: ¥¹¥±¥¸¥å¡¼¥é¤òrunq ¡ß 1, waitq ¡ß 1 ¤ÎÃ±½ã¤Ê¥é¥¦¥ó¥É¥í¥Ó¥ó¤Î¥¹¥±¥¸¥å¡¼¥é¤Ë¤·¤¿¡£
 
 2004-03-02  higepon  <higepon@users.sourceforge.jp>
 
-        * syscalls.cpp : ƒXƒPƒWƒ…[ƒ‰‚ªŒƒ‚µ‚­•sˆÀ’è‚¾‚ª‘¼‚Ì‚±‚Æ‚ğ‚â‚é‚±‚Æ‚É‚·‚éB
+        * syscalls.cpp : ¥¹¥±¥¸¥å¡¼¥é¤¬·ã¤·¤¯ÉÔ°ÂÄê¤À¤¬Â¾¤Î¤³¤È¤ò¤ä¤ë¤³¤È¤Ë¤¹¤ë¡£
 
 2004-02-29  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: FDC‚ÌŠ„‚è‚İ‚ªŠ„‚İ‘Ò‚¿WAITˆ—’†‚ÌŒ„ŠÔ‚ğ–D‚Á‚Ä‚­‚é‚±‚Æ‚ª‚ ‚é‚Ì‚É‘Î‰
+        * FDCDriver.cpp: FDC¤Î³ä¤ê¹ş¤ß¤¬³ä¹ş¤ßÂÔ¤ÁWAIT½èÍıÃæ¤Î·ä´Ö¤òË¥¤Ã¤Æ¤¯¤ë¤³¤È¤¬¤¢¤ë¤Î¤ËÂĞ±ş
 
 2004-02-29  shadow  <shadowin@users.sourceforge.jp>
 
-        * user/monapi/MlcCtype.cpp & .h ƒRƒƒ“ƒg•t‚¯
+        * user/monapi/MlcCtype.cpp & .h ¥³¥á¥ó¥ÈÉÕ¤±
 
-        * user/monapi/MlcStdlib.cpp & .h ’Ç‰Á
+        * user/monapi/MlcStdlib.cpp & .h ÄÉ²Ã
 
-        * user/monapi/Makefile ã‹Lƒtƒ@ƒCƒ‹‚ğ‘ÎÛ‚É’Ç‰Á
+        * user/monapi/Makefile ¾åµ­¥Õ¥¡¥¤¥ë¤òÂĞ¾İ¤ËÄÉ²Ã
 
-        * user/include/monapi/MlcLimits.h ’Ç‰Á
+        * user/include/monapi/MlcLimits.h ÄÉ²Ã
 
 
 2004-02-28  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp (mainProcess): VƒXƒPƒWƒ…[ƒ‰‚ÌFD‚Å‚Ì‘¬“x‚ÌÀŒ±
+        * kernel.cpp (mainProcess): ¿·¥¹¥±¥¸¥å¡¼¥é¤ÎFD¤Ç¤ÎÂ®ÅÙ¤Î¼Â¸³
 
-        * ƒXƒPƒWƒ…[ƒ‰‚ÌƒoƒO‚ª’¼‚ç‚È‚¢‚Ì‚Åˆê”ÔŒ´n“I‚Èwakeup–³‚µƒ‚[ƒh‚Å‚Ì“®ì‚ğŠm”FB0.1.5‚Æ“¯‚¶…€‚Å‚ ‚é‚±‚Æ‚ğŠm”FB
+        * ¥¹¥±¥¸¥å¡¼¥é¤Î¥Ğ¥°¤¬Ä¾¤é¤Ê¤¤¤Î¤Ç°ìÈÖ¸¶»ÏÅª¤ÊwakeupÌµ¤·¥â¡¼¥É¤Ç¤ÎÆ°ºî¤ò³ÎÇ§¡£0.1.5¤ÈÆ±¤¸¿å½à¤Ç¤¢¤ë¤³¤È¤ò³ÎÇ§¡£
 
-        * ChangeLog‚Ì•¶šƒR[ƒh‚ğshift-jis-unix‚É‚µ‚½Beuc-jp-unix‚¾‚ÆŠJ”­ŠÂ‹«‚Å•¶š‰»‚¯‚ğ‹N‚±‚·‚Ì‚Å
-          ˆê“I‚Èˆ’u
+        * ChangeLog¤ÎÊ¸»ú¥³¡¼¥É¤òshift-jis-unix¤Ë¤·¤¿¡£euc-jp-unix¤À¤È³«È¯´Ä¶­¤ÇÊ¸»ú²½¤±¤òµ¯¤³¤¹¤Î¤Ç
+          °ì»şÅª¤Ê½èÃÖ
 
 2004-02-27  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: ‚Ü‚¾ˆÀ’è‚µ‚È‚¢B
+        * FDCDriver.cpp: ¤Ş¤À°ÂÄê¤·¤Ê¤¤¡£
 
-        * syscalls.cpp : FD“Ç‚İ‚İ‚àwait/wakeup‹@”\‚ğg—p‚µ‚Ä‚ÌÀ‘•‚É•ÏX
-                         bochs/vmware‚Å‚Í‚Ü‚¾“®‚©‚È‚¢
+        * syscalls.cpp : FDÆÉ¤ß¹ş¤ß¤âwait/wakeupµ¡Ç½¤ò»ÈÍÑ¤·¤Æ¤Î¼ÂÁõ¤ËÊÑ¹¹
+                         bochs/vmware¤Ç¤Ï¤Ş¤ÀÆ°¤«¤Ê¤¤
 
-        * test_higepon.cpp (send): ƒXƒPƒWƒ…[ƒ‰‚Ìwait/wakeup‚ÌÀ‘•‚ª‚Ù‚ÚI—¹‚µ‚ÄƒŠƒo[ƒV‚È‚Ç‚ª‚Ü‚½“®‚­‚æ‚¤‚É‚È‚Á‚½B
-          ƒ}ƒEƒXƒJ[ƒ\ƒ‹EƒL[ƒ{[ƒh‚Ì”½‰‚ª—Ç‚­‚È‚Á‚½B
+        * test_higepon.cpp (send): ¥¹¥±¥¸¥å¡¼¥é¤Îwait/wakeup¤Î¼ÂÁõ¤¬¤Û¤Ü½ªÎ»¤·¤Æ¥ê¥Ğ¡¼¥·¤Ê¤É¤¬¤Ş¤¿Æ°¤¯¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
+          ¥Ş¥¦¥¹¥«¡¼¥½¥ë¡¦¥­¡¼¥Ü¡¼¥É¤ÎÈ¿±ş¤¬ÎÉ¤¯¤Ê¤Ã¤¿¡£
 
-        * changeLog‚Ì•¶šƒR[ƒh‚ğ–ß‚µ‚½B
+        * changeLog¤ÎÊ¸»ú¥³¡¼¥É¤òÌá¤·¤¿¡£
 
 2004-02-26  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp (schedule2): Scheduler::join‚Ì’†‚Å‚Ìschedule()ŒÄ‚Ño‚µ‚ğ”p~(ƒoƒO‚Å‚·B)
+        * Process.cpp (schedule2): Scheduler::join¤ÎÃæ¤Ç¤Îschedule()¸Æ¤Ó½Ğ¤·¤òÇÑ»ß(¥Ğ¥°¤Ç¤¹¡£)
 
-        * ihandlers.cpp: Thread Tick‚·‚é‚æ‚¤‚É‚µ‚½B
+        * ihandlers.cpp: Thread Tick¤¹¤ë¤è¤¦¤Ë¤·¤¿¡£
 
 2004-02-25  higepon  <higepon@users.sourceforge.jp>
 
-        * Segments.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹ü‚è‚ğ™X‚ÉÄ\¬’†
+        * Segments.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ë¼ş¤ê¤ò½ù¡¹¤ËºÆ¹½À®Ãæ
 
 2004-02-24  higepon  <higepon@users.sourceforge.jp>
 
@@ -498,1138 +500,1138 @@
 
 2004-02-23  shadow  <shadowin@users.sourceforge.jp>
 
-        * user/monapi/userlib.cpp: printf(if 0)‘Š·‚¦B
+        * user/monapi/userlib.cpp: printf(if 0)½ñ´¹¤¨¡£
 
 2004-02-23  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ‚±‚êˆÈ~‚Í“–•ªƒJ[ƒlƒ‹‚Í“®‚«‚Ü‚¹‚ñB
+        * kernel.cpp: ¤³¤ì°Ê¹ß¤ÏÅöÊ¬¥«¡¼¥Í¥ë¤ÏÆ°¤­¤Ş¤»¤ó¡£
 
 2004-02-23  shadow  <shadowin@users.sourceforge.jp>
 
-        * user/monapi/monalibc.c: vsprintfC³Bstrcpy2’Ç‰ÁB
+        * user/monapi/monalibc.c: vsprintf½¤Àµ¡£strcpy2ÄÉ²Ã¡£
 
-        * user/include/monapi/monalibc.h: strcpy2’Ç‰ÁB
+        * user/include/monapi/monalibc.h: strcpy2ÄÉ²Ã¡£
 
 2004-02-20  higepon  <higepon@users.sourceforge.jp>
 
-        * ‚¿‚å‚Á‚Æ‚¾‚¯Array‚ğg‚Á‚Ä‚İ‚½B
+        * ¤Á¤ç¤Ã¤È¤À¤±Array¤ò»È¤Ã¤Æ¤ß¤¿¡£
 
-        * Process.cpp: ƒvƒƒZƒXEƒXƒPƒWƒ…[ƒ‰[ü‚è‘S•”ì‚è’¼‚µ
+        * Process.cpp: ¥×¥í¥»¥¹¡¦¥¹¥±¥¸¥å¡¼¥é¡¼¼ş¤êÁ´Éôºî¤êÄ¾¤·
 
-        * Queue’Ç‰Á
+        * QueueÄÉ²Ã
 
 2004-02-18  higepon  <higepon@users.sourceforge.jp>
 
         * user/monapi/string.cpp: strcat
 
-        * Process.cpp: idleƒXƒŒƒbƒh‚Ì’†‚Åhlt‚·‚é‚æ‚¤‚É‚µ‚½
+        * Process.cpp: idle¥¹¥ì¥Ã¥É¤ÎÃæ¤Çhlt¤¹¤ë¤è¤¦¤Ë¤·¤¿
 
-        * user/monapi/monalibc.c: ’Ç‰ÁB
+        * user/monapi/monalibc.c: ÄÉ²Ã¡£
 
 2004-02-15  higepon  <higepon@users.sourceforge.jp>
 
-        * VesaConsole.cpp: VesaConsole ‰©F‚¢ü‚ªo‚éŒC³(Gaku‚³‚ñ)
+        * VesaConsole.cpp: VesaConsole ²«¿§¤¤Àş¤¬½Ğ¤ë·ï½¤Àµ(Gaku¤µ¤ó)
 
-        * syscalls.cpp : ƒfƒBƒXƒNƒCƒ[ƒW\¬‚ğ‘å•‚É•Ï‚¦‚½B
+        * syscalls.cpp : ¥Ç¥£¥¹¥¯¥¤¥á¡¼¥¸¹½À®¤òÂçÉı¤ËÊÑ¤¨¤¿¡£
 
 2004-02-14  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp (printOK): ƒIƒZƒ’Ç‰Ál“¯m‚Ì‘Îí‚Ì‚İƒTƒ|[ƒg
+        * kernel.cpp (printOK): ¥ª¥»¥íÄÉ²Ã¿ÍÆ±»Î¤ÎÂĞÀï¤Î¤ß¥µ¥İ¡¼¥È
 
 2004-02-12  higepon  <higepon@users.sourceforge.jp>
 
-        * user/userlib.cpp: Observer/Observable’Ç‰Á ‚³‚Ä‰½‚Ég‚¤‚Ì‚Å‚µ‚å‚¤‚©H
+        * user/userlib.cpp: Observer/ObservableÄÉ²Ã ¤µ¤Æ²¿¤Ë»È¤¦¤Î¤Ç¤·¤ç¤¦¤«¡©
 
-        * user/clock.cpp: æ“¾’Ç‰Á
+        * user/clock.cpp: »ş¹ï¼èÆÀÄÉ²Ã
 
-        * Message::receive‚ğ•ÏXBƒƒbƒZ[ƒWƒLƒ…[‚ª‚©‚ç‚Ìê‡‚ÍCPU‚ğ–¾‚¯“n‚·
+        * Message::receive¤òÊÑ¹¹¡£¥á¥Ã¥»¡¼¥¸¥­¥å¡¼¤¬¤«¤é¤Î¾ì¹ç¤ÏCPU¤òÌÀ¤±ÅÏ¤¹
 
-        * Process.cpp: ƒƒbƒZ[ƒW‘Ò‚¿yiled‚ğ’Ç‰ÁB
+        * Process.cpp: ¥á¥Ã¥»¡¼¥¸ÂÔ¤Áyiled¤òÄÉ²Ã¡£
 
 2004-02-11  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: noiz2bg‚ÌƒoƒOC³ thx nikq‚³‚ñ
+        * Process.cpp: noiz2bg¤Î¥Ğ¥°½¤Àµ thx nikq¤µ¤ó
 
-        * kernel.cpp: Å“K‰»ƒIƒvƒVƒ‡ƒ“-O3
+        * kernel.cpp: ºÇÅ¬²½¥ª¥×¥·¥ç¥ó-O3
 
-        * Process.cpp: Thread‚Éwait‚Æwakeup‚ğì‚Á‚½B‚Å‚à‚Ü‚¾Ú‚¹‚Ä‚¢‚È‚¢B
+        * Process.cpp: Thread¤Ëwait¤Èwakeup¤òºî¤Ã¤¿¡£¤Ç¤â¤Ş¤ÀºÜ¤»¤Æ¤¤¤Ê¤¤¡£
 
-        * kernel.cpp: gcc‚ÌÅ“K‰»ƒIƒvƒVƒ‡ƒ“-O2‚Åƒrƒ‹ƒh‚·‚é‚æ‚¤‚É‚µ‚½B
+        * kernel.cpp: gcc¤ÎºÇÅ¬²½¥ª¥×¥·¥ç¥ó-O2¤Ç¥Ó¥ë¥É¤¹¤ë¤è¤¦¤Ë¤·¤¿¡£
 
 2004-02-10  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: Shell‚ªˆø”‚ğ‚à‚Ä‚é‚æ‚¤‚É‚È‚Á‚½B
+        * Process.cpp: Shell¤¬°ú¿ô¤ò¤â¤Æ¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
 
-        * MonaMainŠÖ”‚ªˆø”‚ğ‚à‚Ä‚é‚æ‚¤‚É‚È‚Á‚½
+        * MonaMain´Ø¿ô¤¬°ú¿ô¤ò¤â¤Æ¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿
 
-        * syscalls.cpp : FDƒAƒNƒZƒX‰ÓŠ‚ÉƒZƒ}ƒtƒH‚ÅƒƒbƒN‚ğ’Ç‰ÁB
+        * syscalls.cpp : FD¥¢¥¯¥»¥¹²Õ½ê¤Ë¥»¥Ş¥Õ¥©¤Ç¥í¥Ã¥¯¤òÄÉ²Ã¡£
 
-        * FDCDriver.cpp: ƒ‚[ƒ^[‚Ì§Œä‚ğ’Ç‰ÁB
+        * FDCDriver.cpp: ¥â¡¼¥¿¡¼¤ÎÀ©¸æ¤òÄÉ²Ã¡£
 
 2004-02-09  higepon  <higepon@users.sourceforge.jp>
 
-        * user/userlib.cpp: printf‚ÌƒoƒOC³
+        * user/userlib.cpp: printf¤Î¥Ğ¥°½¤Àµ
 
-        * syscalls.cpp : ƒvƒƒZƒXexit();‚ÌƒoƒO‚ğ‚â‚Á‚ÆC³
-                         Œ´ˆö‚ÍƒvƒƒZƒX‚ª‘ã‚í‚Á‚½‚©‚Ç‚¤‚©‚Ì isProcessChanged‚ª–â‘è‚¾‚Á‚½B
+        * syscalls.cpp : ¥×¥í¥»¥¹exit();»ş¤Î¥Ğ¥°¤ò¤ä¤Ã¤È½¤Àµ
+                         ¸¶°ø¤Ï¥×¥í¥»¥¹¤¬Âå¤ï¤Ã¤¿¤«¤É¤¦¤«¤Î isProcessChanged¤¬ÌäÂê¤À¤Ã¤¿¡£
 
-        * include/collection.h: ArrayƒNƒ‰ƒXì¬
+        * include/collection.h: Array¥¯¥é¥¹ºîÀ®
 
-        * send‚Éfrom‚ğ©“®ƒZƒbƒgB
+        * send»ş¤Ëfrom¤ò¼«Æ°¥»¥Ã¥È¡£
 
 2004-02-08  higepon  <higepon@users.sourceforge.jp>
 
         * syscalls.cpp: System::getPID();
 
-        * user/MouseServer.cpp: ƒ}ƒEƒXƒT[ƒo’Ç‰Á
+        * user/MouseServer.cpp: ¥Ş¥¦¥¹¥µ¡¼¥ĞÄÉ²Ã
 
-        * user/string.cpp: strcmp‚ÌƒoƒOC³ thx Gaku‚³‚ñ
+        * user/string.cpp: strcmp¤Î¥Ğ¥°½¤Àµ thx Gaku¤µ¤ó
 
-        * user/hello.cpp: MemoryMap::unmapÀ‘•
+        * user/hello.cpp: MemoryMap::unmap¼ÂÁõ
 
 2004-02-07  higepon  <higepon@users.sourceforge.jp>
 
-        * user/userlib.cpp: ‰¼‘zVRAM VirtualScreen‚ğ’Ç‰ÁB
+        * user/userlib.cpp: ²¾ÁÛVRAM VirtualScreen¤òÄÉ²Ã¡£
 
-        * bitblt‚ÅXORo—ˆ‚é‚æ‚¤‚É‚µ‚½(ƒ}ƒEƒX—p) –¢ƒeƒXƒg
+        * bitblt¤ÇXOR½ĞÍè¤ë¤è¤¦¤Ë¤·¤¿(¥Ş¥¦¥¹ÍÑ) Ì¤¥Æ¥¹¥È
 
-        * kernel.cpp: ƒ†[ƒU[ƒ‚[ƒh‚Å‚Ìƒ}ƒEƒX•`‰æŠ®—¹B
+        * kernel.cpp: ¥æ¡¼¥¶¡¼¥â¡¼¥É¤Ç¤Î¥Ş¥¦¥¹ÉÁ²è´°Î»¡£
 
-        * Mouse‰Šú‰»‚ğ‚Ü‚Æ‚ß‚½
+        * Mouse½é´ü²½¤ò¤Ş¤È¤á¤¿
 
-        * pic‚Ì‚ ‚è‚¦‚È‚¢ƒoƒO‚ğ‚Â‚Ô‚µ‚½B
+        * pic¤Î¤¢¤ê¤¨¤Ê¤¤¥Ğ¥°¤ò¤Ä¤Ö¤·¤¿¡£
 
-        * userlib.cpp, userlib.h : ‚«‚ê‚¢‚É®Œ`“Ç‚Ü‚ê‚é‚±‚Æ‚ğ‘O’ñ‚Æ‚µ‚Ä‚İ‚½B
+        * userlib.cpp, userlib.h : ¤­¤ì¤¤¤ËÀ°·ÁÆÉ¤Ş¤ì¤ë¤³¤È¤òÁ°Äó¤È¤·¤Æ¤ß¤¿¡£
 
 2004-02-06  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: Floppy, Device, StorageDevice’Ç‰Á
+        * kernel.cpp: Floppy, Device, StorageDeviceÄÉ²Ã
 
 2004-02-05  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: 8MBƒq[ƒv
+        * kernel.cpp: 8MB¥Ò¡¼¥×
 
-        * test_higepon.cpp: ƒ}ƒEƒXŠ„‚è‚İ‚ª—ˆ‚½(VitualPC‚Ì‚İ)
+        * test_higepon.cpp: ¥Ş¥¦¥¹³ä¤ê¹ş¤ß¤¬Íè¤¿(VitualPC¤Î¤ß)
 
-        * user/userlib.cpp: ƒvƒƒZƒX‚ÌÅ‘åƒq[ƒvƒTƒCƒY(©“®Šg’£)‚ğ2MB‚Æ‚µ‚Ü‚µ‚½B
+        * user/userlib.cpp: ¥×¥í¥»¥¹¤ÎºÇÂç¥Ò¡¼¥×¥µ¥¤¥º(¼«Æ°³ÈÄ¥)¤ò2MB¤È¤·¤Ş¤·¤¿¡£
 
 2004-02-04  higepon  <higepon@users.sourceforge.jp>
 
-        * string.cpp: memcomp, memmove from Gaku‚³‚ñ
+        * string.cpp: memcomp, memmove from Gaku¤µ¤ó
 
-        * elf.cpp: ƒvƒƒZƒXƒ[ƒh‚ÌƒTƒCƒY‚ğ200KB‚É‚·‚éB
+        * elf.cpp: ¥×¥í¥»¥¹¥í¡¼¥É¤Î¥µ¥¤¥º¤ò200KB¤Ë¤¹¤ë¡£
 
-        * kernel.cpp: user/lib/libmonapi.a‚ğì¬
+        * kernel.cpp: user/lib/libmonapi.a¤òºîÀ®
 
 2004-02-03  higepon  <higepon@users.sourceforge.jp>
 
-        * user/include/userlib.h: MemoryMapƒNƒ‰ƒXì¬
+        * user/include/userlib.h: MemoryMap¥¯¥é¥¹ºîÀ®
 
-        * syscall_map2()Š®¬
+        * syscall_map2()´°À®
 
-        * syscalls.cpp : syscall_map2()‚Ì“r’†
+        * syscalls.cpp : syscall_map2()¤ÎÅÓÃæ
 
 2004-02-02  higepon  <higepon@users.sourceforge.jp>
 
-        * MonaApplication‚Ìì¬
+        * MonaApplication¤ÎºîÀ®
 
-        * FileInputStreamì¬
+        * FileInputStreamºîÀ®
 
-        * syscalls.cpp : ƒtƒ@ƒCƒ‹“Ç‚İ‚İ‚Ì‚½‚ß‚ÌƒVƒXƒeƒ€ƒR[ƒ‹‚ğ’Ç‰Á
+        * syscalls.cpp : ¥Õ¥¡¥¤¥ëÆÉ¤ß¹ş¤ß¤Î¤¿¤á¤Î¥·¥¹¥Æ¥à¥³¡¼¥ë¤òÄÉ²Ã
 
 2004-02-01  higepon  <higepon@users.sourceforge.jp>
 
-        * include/tester.h: send/receive‚Ìmalloc/free‚ğ‚â‚ß‚½B
+        * include/tester.h: send/receive»ş¤Îmalloc/free¤ò¤ä¤á¤¿¡£
 
-        * user/hello.cpp (main): MapƒT[ƒo[‚ğ‰î‚µ‚Ä‚Ìƒ}ƒbƒsƒ“ƒO‚É¬Œ÷
+        * user/hello.cpp (main): Map¥µ¡¼¥Ğ¡¼¤ò²ğ¤·¤Æ¤Î¥Ş¥Ã¥Ô¥ó¥°¤ËÀ®¸ù
 
 2004-01-31  higepon  <higepon@users.sourceforge.jp>
 
-        * user/ShellServer.cpp: BackSpaceƒL[‚É‘Î‰
-          HELLO.ELF‚Ì•¶š‰»‚¯‚ğC³
+        * user/ShellServer.cpp: BackSpace¥­¡¼¤ËÂĞ±ş
+          HELLO.ELF¤ÎÊ¸»ú²½¤±¤ò½¤Àµ
 
-        * ‚Æ‚¢‚Á‚Ä‚¢‚éŠÔ‚ÉVesaConsole, GraphicalConsole‚à’¼‚µ‚½B
+        * ¤È¤¤¤Ã¤Æ¤¤¤ë´Ö¤ËVesaConsole, GraphicalConsole¤âÄ¾¤·¤¿¡£
 
-        * kernel.cpp: ƒ†[ƒU[ƒ‚[ƒh‚Ìprintf‚ğ‰ü‘P VesaConsole, GraphicalConsole‚à‚»‚Ì‚¤‚¿’¼‚»‚¤
+        * kernel.cpp: ¥æ¡¼¥¶¡¼¥â¡¼¥É¤Îprintf¤ò²şÁ± VesaConsole, GraphicalConsole¤â¤½¤Î¤¦¤ÁÄ¾¤½¤¦
 
-        * user/userlib.cpp: Mapping—p‚ÉV‚µ‚¢ŠÖ”‚ğì‚Á‚½‚ªƒeƒXƒg‚µ‚Ä‚¢‚È‚¢B
+        * user/userlib.cpp: MappingÍÑ¤Ë¿·¤·¤¤´Ø¿ô¤òºî¤Ã¤¿¤¬¥Æ¥¹¥È¤·¤Æ¤¤¤Ê¤¤¡£
 
 2004-01-30  higepon  <higepon@users.sourceforge.jp>
 
-        * user/hello.cpp: MapƒT[ƒo‚Ì€”õ‚ğ’…X‚Æi‚ß‚Ä‚İ‚½B
+        * user/hello.cpp: Map¥µ¡¼¥Ğ¤Î½àÈ÷¤òÃå¡¹¤È¿Ê¤á¤Æ¤ß¤¿¡£
 
-        * user/ShellServer.cpp: Server‚ğŒp³‚·‚é‚æ‚¤‚É‚µ‚½B
+        * user/ShellServer.cpp: Server¤ò·Ñ¾µ¤¹¤ë¤è¤¦¤Ë¤·¤¿¡£
 
-        * kernel.cpp: ”šƒL[‚Ì“ü—Í‚à‘Î‰
+        * kernel.cpp: ¿ô»ú¥­¡¼¤ÎÆşÎÏ¤âÂĞ±ş
 
-        * VesaConsole.cpp: Gaku‚É‚æ‚è•¡”bpp‘Î‰
+        * VesaConsole.cpp: Gaku»á¤Ë¤è¤êÊ£¿ôbppÂĞ±ş
 
 2004-01-29  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒ†[ƒU[ƒ‚[ƒh‚©‚ç‚ÌƒVƒXƒeƒ€ƒR[ƒ‹‚ÉŠ„‚è‚İ‚ğ‹–‰Â‚ğ‚µ‚½‚Æ‚«‚É”­¶‚µ‚Ä‚¢‚½ƒoƒO‚ğC³
+        * ¥æ¡¼¥¶¡¼¥â¡¼¥É¤«¤é¤Î¥·¥¹¥Æ¥à¥³¡¼¥ë»ş¤Ë³ä¤ê¹ş¤ß¤òµö²Ä¤ò¤·¤¿¤È¤­¤ËÈ¯À¸¤·¤Æ¤¤¤¿¥Ğ¥°¤ò½¤Àµ
 
-        * user/hello.cpp: ShellÀ‘•’†
+        * user/hello.cpp: Shell¼ÂÁõÃæ
 
 2004-01-28  higepon  <higepon@users.sourceforge.jp>
 
-        * Makefile.in (write): ‹LqŠÔˆá‚¢C³
+        * Makefile.in (write): µ­½Ò´Ö°ã¤¤½¤Àµ
 
-        * kernel.cpp: Process Kill‚Ì‰ü‘P
+        * kernel.cpp: Process Kill¤Î²şÁ±
 
-        * ƒ†[ƒU[ƒ‚[ƒh‚©‚ç‚Ì•`‰æEVramæ“¾EfillRectEputPixel
+        * ¥æ¡¼¥¶¡¼¥â¡¼¥É¤«¤é¤ÎÉÁ²è¡¦Vram¼èÆÀ¡¦fillRect¡¦putPixel
 
 2004-01-27  higepon  <higepon@users.sourceforge.jp>
 
         * user/include/userlib.h: putPixel16
 
-        * secondboot.asm (get_vesa_info): VESAƒ‚[ƒh‚ğƒgƒ‰ƒC‚·‚éŠÖ”‚ğ’Ç‰ÁB
+        * secondboot.asm (get_vesa_info): VESA¥â¡¼¥É¤ò¥È¥é¥¤¤¹¤ë´Ø¿ô¤òÄÉ²Ã¡£
 
-        * test_higepon.cpp: bitblt‚Å24bpp‚É‘Î‰
+        * test_higepon.cpp: bitblt¤Ç24bpp¤ËÂĞ±ş
 
 2004-01-26  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒƒbƒZ[ƒW‚Ì‘—M‚ğpidƒx[ƒX‚Å‚à‚Å‚«‚é‚æ‚¤‚É•ÏX‚µ‚½B
+        * ¥á¥Ã¥»¡¼¥¸¤ÎÁ÷¿®¤òpid¥Ù¡¼¥¹¤Ç¤â¤Ç¤­¤ë¤è¤¦¤ËÊÑ¹¹¤·¤¿¡£
 
-        * ƒvƒƒZƒX–¼‚©‚çpidæ“¾‚Å‚«‚é lookup‹@\‚ğì¬B
+        * ¥×¥í¥»¥¹Ì¾¤«¤épid¼èÆÀ¤Ç¤­¤ë lookupµ¡¹½¤òºîÀ®¡£
 
 2004-01-25  higepon  <higepon@users.sourceforge.jp>
 
-        * elf.cpp: load‚É memorysize ‚Æ fileSize‚ªˆÙ‚È‚éê‡‚É–³ğŒ‚É0–„‚ß‚µ‚Ä‚¢‚½‚Ì‚ğC³
+        * elf.cpp: load»ş¤Ë memorysize ¤È fileSize¤¬°Û¤Ê¤ë¾ì¹ç¤ËÌµ¾ò·ï¤Ë0Ëä¤á¤·¤Æ¤¤¤¿¤Î¤ò½¤Àµ
 
-        * user/KeyBoardManager.cpp: ƒL[ƒ{[ƒhƒhƒ‰ƒCƒo‚ğƒ†[ƒU[ƒ‚[ƒh‚É’Ç‚¢o‚µ¬Œ÷
+        * user/KeyBoardManager.cpp: ¥­¡¼¥Ü¡¼¥É¥É¥é¥¤¥Ğ¤ò¥æ¡¼¥¶¡¼¥â¡¼¥É¤ËÄÉ¤¤½Ğ¤·À®¸ù
 
 2004-01-24  higepon  <higepon@users.sourceforge.jp>
 
-        * userlib.cpp: b’è”Åƒ_ƒƒ_ƒprintf‚ğ’Ç‰ÁB
+        * userlib.cpp: »ÃÄêÈÇ¥À¥á¥À¥áprintf¤òÄÉ²Ã¡£
 
 2004-01-23  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager: VRAM‚ÉƒAƒNƒZƒX‚Å‚«‚é‚æ‚¤‚ÉŠeƒvƒƒZƒX‚Éƒ}ƒbƒsƒ“ƒO‚ğs‚Á‚½B
+        * PageManager: VRAM¤Ë¥¢¥¯¥»¥¹¤Ç¤­¤ë¤è¤¦¤Ë³Æ¥×¥í¥»¥¹¤Ë¥Ş¥Ã¥Ô¥ó¥°¤ò¹Ô¤Ã¤¿¡£
 
-        * VesaConsole.cpp: Gaku‚³‚ñ’ñ‹Ÿ‚ÌVESA‘Î‰”Å‚ÌƒRƒ“ƒ\[ƒ‹‚ğ’Ç‰Á
+        * VesaConsole.cpp: Gaku¤µ¤óÄó¶¡¤ÎVESAÂĞ±şÈÇ¤Î¥³¥ó¥½¡¼¥ë¤òÄÉ²Ã
 
 2004-01-22  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp: bitblt(8, 16, 32bpp)‚É‘Î‰
+        * test_higepon.cpp: bitblt(8, 16, 32bpp)¤ËÂĞ±ş
 
-        * collection.h: Å“K‰»‚µ‚Ä‚İ‚½B
+        * collection.h: ºÇÅ¬²½¤·¤Æ¤ß¤¿¡£
 
-        * vbe.h: ScreenƒNƒ‰ƒX‚Ìì¬
+        * vbe.h: Screen¥¯¥é¥¹¤ÎºîÀ®
 
-        * vbe.h: bitblt16(16bpp”Å‚ÌbitbltÀ‘•)
+        * vbe.h: bitblt16(16bppÈÇ¤Îbitblt¼ÂÁõ)
 
 2004-01-21  higepon  <higepon@users.sourceforge.jp>
 
-        * pagemanager.cpp: ƒ}ƒbƒsƒ“ƒO‚ÌƒoƒOC³
+        * pagemanager.cpp: ¥Ş¥Ã¥Ô¥ó¥°¤Î¥Ğ¥°½¤Àµ
 
-        * vmware‘Î‰BƒXƒ^ƒbƒN‚ğ0xFFFFFFFF‚©‚ç0xEFFFFFFF‚É•ÏX
+        * vmwareÂĞ±ş¡£¥¹¥¿¥Ã¥¯¤ò0xFFFFFFFF¤«¤é0xEFFFFFFF¤ËÊÑ¹¹
 
 2004-01-19  higepon  <higepon@users.sourceforge.jp>
 
         * secondboot.asm: mode105 bochs OK vmware OK
-                                  twoOstwo VPC‚Í‰æ–Ê‚ÌF‚ª•Ï‚í‚ç‚È‚¢
+                                  twoOstwo VPC¤Ï²èÌÌ¤Î¿§¤¬ÊÑ¤ï¤é¤Ê¤¤
 
-        * kernel.cpp: VMWARE‚ÅVESA
+        * kernel.cpp: VMWARE¤ÇVESA
 
-        * configure ‰ü—Ç
+        * configure ²şÎÉ
 
 2004-01-18  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: ƒoƒOC³
+        * FAT12.cpp: ¥Ğ¥°½¤Àµ
 
         * kernel.cpp: writeFileAppend
 
 2004-01-17  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp: writeFileAppend‚Ì“r’†
+        * test_higepon.cpp: writeFileAppend¤ÎÅÓÃæ
 
-        * MemoryManager.cpp: 0–„‚ß‚µ‚Äƒƒ‚ƒŠ‚ğŠ„‚è“–‚Ä‚é‚æ‚¤‚É•ÏX
+        * MemoryManager.cpp: 0Ëä¤á¤·¤Æ¥á¥â¥ê¤ò³ä¤êÅö¤Æ¤ë¤è¤¦¤ËÊÑ¹¹
 
-        * loadProcess‚ÌƒƒWƒbƒNŒ©’¼‚µC³E®Œ`
+        * loadProcess¤Î¥í¥¸¥Ã¥¯¸«Ä¾¤·½¤Àµ¡¦À°·Á
 
-        * include/FAT12.h: isOpen‚ÌƒoƒOC³
+        * include/FAT12.h: isOpen¤Î¥Ğ¥°½¤Àµ
 
-        * loadProcess()‚Ìdetach‚µ–Y‚êƒoƒOC³ Gaku‚³‚ñw“E‚É‚æ‚é
+        * loadProcess()¤Îdetach¤·Ëº¤ì¥Ğ¥°½¤Àµ Gaku¤µ¤ó»ØÅ¦¤Ë¤è¤ë
 
 2004-01-16  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp:ƒtƒHƒ‹ƒg‚Ìƒ_ƒ“ƒvŠÖ”‚ğì¬
+        * ihandlers.cpp:¥Õ¥©¥ë¥È»ş¤Î¥À¥ó¥×´Ø¿ô¤òºîÀ®
 
 2004-01-15  higepon  <higepon@users.sourceforge.jp>
 
-        * oemstringƒ|ƒCƒ“ƒ^‚Ìæ“¾
+        * oemstring¥İ¥¤¥ó¥¿¤Î¼èÆÀ
 
-        * ƒy[ƒWƒAƒ‰ƒCƒ“‚ÌƒoƒOC³
-          VESAƒo[ƒWƒ‡ƒ“‚Ìæ“¾
+        * ¥Ú¡¼¥¸¥¢¥é¥¤¥ó¤Î¥Ğ¥°½¤Àµ
+          VESA¥Ğ¡¼¥¸¥ç¥ó¤Î¼èÆÀ
 
-        * VESA‚É‘Î‰‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğƒ`ƒFƒbƒN
+        * VESA¤ËÂĞ±ş¤·¤Æ¤¤¤ë¤«¤É¤¦¤«¤ò¥Á¥§¥Ã¥¯
 
-        * FAT12ƒCƒ[ƒWƒtƒ@ƒCƒ‹‚Éƒtƒ@ƒCƒ‹‚ğ‘‚«‚Şƒc[ƒ‹fat_write‚ğ‰ü‘PB
-          ‘O‚Ìì‚è‚ª—]‚è‚É‚Ğ‚Ç‚©‚Á‚½‚Ì‚Å‚â‚Á‚Æ’¼‚µ‚Ü‚µ‚½B
-          g‚¢•û“™‹»–¡‚Ì‚ ‚é•û‚ÍMakeFile‚ğŒäQÆ‚­‚¾‚³‚¢B
+        * FAT12¥¤¥á¡¼¥¸¥Õ¥¡¥¤¥ë¤Ë¥Õ¥¡¥¤¥ë¤ò½ñ¤­¹ş¤à¥Ä¡¼¥ëfat_write¤ò²şÁ±¡£
+          Á°¤Îºî¤ê¤¬Í¾¤ê¤Ë¤Ò¤É¤«¤Ã¤¿¤Î¤Ç¤ä¤Ã¤ÈÄ¾¤·¤Ş¤·¤¿¡£
+          »È¤¤ÊıÅù¶½Ì£¤Î¤¢¤ëÊı¤ÏMakeFile¤ò¸æ»²¾È¤¯¤À¤µ¤¤¡£
 
 2004-01-14  higepon  <higepon@users.sourceforge.jp>
 
-        * core.asm (arch_save_thread_registers): d‘å‚ÈƒoƒOC³TSS‚Ìesp0‚Éƒ^ƒXƒNŒÅ—L‚Ì
-                                                 ƒJ[ƒlƒ‹ƒXƒ^ƒbƒN‚ğŠi”[‚µ–Y‚ê‚Ä‚¢‚½B
+        * core.asm (arch_save_thread_registers): ½ÅÂç¤Ê¥Ğ¥°½¤ÀµTSS¤Îesp0¤Ë¥¿¥¹¥¯¸ÇÍ­¤Î
+                                                 ¥«¡¼¥Í¥ë¥¹¥¿¥Ã¥¯¤ò³ÊÇ¼¤·Ëº¤ì¤Æ¤¤¤¿¡£
 
-        * ƒVƒXƒeƒ€ƒR[ƒ‹‚ÌƒŒƒWƒXƒ^”j‰ó‚É‚æ‚éƒoƒO‚ğC³
+        * ¥·¥¹¥Æ¥à¥³¡¼¥ë»ş¤Î¥ì¥¸¥¹¥¿ÇË²õ¤Ë¤è¤ë¥Ğ¥°¤ò½¤Àµ
 
-        * kernel.cpp: ƒvƒƒZƒXkill‚ÉƒXƒPƒWƒ…[ƒ‹‚µ‚È‚¨‚·‚æ‚¤‚É‚µ‚½B
+        * kernel.cpp: ¥×¥í¥»¥¹kill»ş¤Ë¥¹¥±¥¸¥å¡¼¥ë¤·¤Ê¤ª¤¹¤è¤¦¤Ë¤·¤¿¡£
 
 2004-01-13  higepon  <higepon@users.sourceforge.jp>
 
-        * include/Process.h: KMutex‚Ìì¬B‚½‚¾‚µ–¢ƒeƒXƒg
+        * include/Process.h: KMutex¤ÎºîÀ®¡£¤¿¤À¤·Ì¤¥Æ¥¹¥È
 
 2004-01-12  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: wakeupTimer()‚ÌƒoƒO‚ğC³ –¼–³‚µ‚³‚ñ‚ÉŠ´Ó
+        * Process.cpp: wakeupTimer()¤Î¥Ğ¥°¤ò½¤Àµ Ì¾Ìµ¤·¤µ¤ó¤Ë´¶¼Õ
 
-        * Process.cpp: ProcessManger::find()‚ÌƒoƒO‚ğC³
+        * Process.cpp: ProcessManger::find()¤Î¥Ğ¥°¤ò½¤Àµ
 
-        * kernel.cpp: ƒ†[ƒU[‘¤‚ÉMutexƒNƒ‰ƒX‚ğ—pˆÓB
+        * kernel.cpp: ¥æ¡¼¥¶¡¼Â¦¤ËMutex¥¯¥é¥¹¤òÍÑ°Õ¡£
 
 2004-01-11  higepon  <higepon@users.sourceforge.jp>
 
-        * user/userlib.cpp: userlib.o‚ğƒJ[ƒlƒ‹‚ÉƒŠƒ“ƒN‚µ‚È‚¢‚æ‚¤‚É‚µ‚½B
+        * user/userlib.cpp: userlib.o¤ò¥«¡¼¥Í¥ë¤Ë¥ê¥ó¥¯¤·¤Ê¤¤¤è¤¦¤Ë¤·¤¿¡£
 
-        * Process.cpp: kill‚ÌÀ‘•
+        * Process.cpp: kill¤Î¼ÂÁõ
 
-        * userlib.cpp: mthread_create, mthread_joinì¬
+        * userlib.cpp: mthread_create, mthread_joinºîÀ®
 
-        * pic.cpp: setTimerInterval()ì¬ OSASK K‚³‚ñ‚ÉŠ´Ó
+        * pic.cpp: setTimerInterval()ºîÀ® OSASK K¤µ¤ó¤Ë´¶¼Õ
 
-        * Process.cpp: loadProcess(ƒ†[ƒU[ƒ‚[ƒh)‚ÌƒXƒŒƒbƒh‘Î‰I—¹
+        * Process.cpp: loadProcess(¥æ¡¼¥¶¡¼¥â¡¼¥É)¤Î¥¹¥ì¥Ã¥ÉÂĞ±ş½ªÎ»
 
 2004-01-10  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp: ƒy[ƒWƒtƒHƒ‹ƒgƒnƒ“ƒhƒ‰‚ÌƒoƒO1‚Â‚ßC³(ƒGƒ‰[ƒR[ƒh‚ª³‚µ‚­æ‚ê‚Ä‚¢‚È‚©‚Á‚½)
+        * PageManager.cpp: ¥Ú¡¼¥¸¥Õ¥©¥ë¥È¥Ï¥ó¥É¥é¤Î¥Ğ¥°1¤Ä¤á½¤Àµ(¥¨¥é¡¼¥³¡¼¥É¤¬Àµ¤·¤¯¼è¤ì¤Æ¤¤¤Ê¤«¤Ã¤¿)
 
 2004-01-09  higepon  <higepon@users.sourceforge.jp>
 
-        * KeyBoardManager.cpp: loadProcess(ƒJ[ƒlƒ‹ƒ‚[ƒh)‚ÌƒXƒŒƒbƒh‘Î‰I—¹
+        * KeyBoardManager.cpp: loadProcess(¥«¡¼¥Í¥ë¥â¡¼¥É)¤Î¥¹¥ì¥Ã¥ÉÂĞ±ş½ªÎ»
 
-        * MemoryManager.cpp: ƒƒ‚ƒŠŠ„‚è“–‚Ä‚ÌƒoƒO‚ğ”­Œ©¥C³
+        * MemoryManager.cpp: ¥á¥â¥ê³ä¤êÅö¤Æ»ş¤Î¥Ğ¥°¤òÈ¯¸«¥½¤Àµ
 
 2004-01-08  higepon  <higepon@users.sourceforge.jp>
 
-        * loadProcessƒfƒoƒbƒO’†
+        * loadProcess¥Ç¥Ğ¥Ã¥°Ãæ
 
-        * ƒJ[ƒlƒ‹ƒ‚[ƒh‚Å•¡”ƒXƒŒƒbƒh‚ÌÀs‚Å“®ì‚ª‚¨‚©‚µ‚¢‚Æ‚±‚ë‚ª‚ ‚Á‚½‚ª
-          İ’è‚µ‚Ä‚¢‚½ŠÖ”‚ªret‚µ‚Ä‚¢‚½‚Ì‚ªŒ´ˆö‚¾‚Á‚½B
+        * ¥«¡¼¥Í¥ë¥â¡¼¥É¤ÇÊ£¿ô¥¹¥ì¥Ã¥É¤Î¼Â¹Ô¤ÇÆ°ºî¤¬¤ª¤«¤·¤¤¤È¤³¤í¤¬¤¢¤Ã¤¿¤¬
+          ÀßÄê¤·¤Æ¤¤¤¿´Ø¿ô¤¬ret¤·¤Æ¤¤¤¿¤Î¤¬¸¶°ø¤À¤Ã¤¿¡£
 
-        * ƒXƒŒƒbƒh‚ÌƒXƒCƒbƒ`‚ğThreadManager‚Ìƒƒ“ƒoŠÖ”‚Æ‚µ‚½B
+        * ¥¹¥ì¥Ã¥É¤Î¥¹¥¤¥Ã¥Á¤òThreadManager¤Î¥á¥ó¥Ğ´Ø¿ô¤È¤·¤¿¡£
 
-        * ƒXƒŒƒbƒh¶¬‚ÉƒXƒ^ƒbƒN‚ğŠ„‚è“–‚Ä‚é‚æ‚¤‚É‚µ‚½B
-          1ƒvƒƒZƒX•¡”ƒXƒŒƒbƒh‚àƒJ[ƒlƒ‹ƒ‚[ƒh‚Å‚ ‚ê‚Î‡’²‚É“®ì‚µ‚Ä‚¢‚éB
+        * ¥¹¥ì¥Ã¥ÉÀ¸À®»ş¤Ë¥¹¥¿¥Ã¥¯¤ò³ä¤êÅö¤Æ¤ë¤è¤¦¤Ë¤·¤¿¡£
+          1¥×¥í¥»¥¹Ê£¿ô¥¹¥ì¥Ã¥É¤â¥«¡¼¥Í¥ë¥â¡¼¥É¤Ç¤¢¤ì¤Ğ½çÄ´¤ËÆ°ºî¤·¤Æ¤¤¤ë¡£
 
-        * ƒXƒŒƒbƒh“®ì‚Ì—lq‚ª‚í‚©‚é‚æ‚¤‚ÉProcessManger::printAllProcess()‚ğ’Ç‰Á
+        * ¥¹¥ì¥Ã¥ÉÆ°ºî¤ÎÍÍ»Ò¤¬¤ï¤«¤ë¤è¤¦¤ËProcessManger::printAllProcess()¤òÄÉ²Ã
 
-        * ƒvƒƒZƒX¶¬‚ÉHeapSegment‚ğŠ„“–‚Ä‚é‚æ‚¤‚É•ÏXB
+        * ¥×¥í¥»¥¹À¸À®»ş¤ËHeapSegment¤ò³äÅö¤Æ¤ë¤è¤¦¤ËÊÑ¹¹¡£
 
-        * SharedMemorySegmentAQueue‚ğŒp³‚µ‚È‚¢‚æ‚¤‚É‚µ‚½ListƒNƒ‰ƒX‚ğg—p
+        * SharedMemorySegment¡¢Queue¤ò·Ñ¾µ¤·¤Ê¤¤¤è¤¦¤Ë¤·¤¿List¥¯¥é¥¹¤ò»ÈÍÑ
 
-        * Segments.cppF‘å•‚É‘Š·‚¦(ƒXƒŒƒbƒh‘Î‰)
+        * Segments.cpp¡§ÂçÉı¤Ë½ñ´¹¤¨(¥¹¥ì¥Ã¥ÉÂĞ±ş)
 
-        * Queue.h”p~B
+        * Queue.hÇÑ»ß¡£
 
-        * ƒy[ƒWƒtƒHƒ‹ƒgƒnƒ“ƒhƒ‰‚ÌƒXƒŒƒbƒh‘Î‰
+        * ¥Ú¡¼¥¸¥Õ¥©¥ë¥È¥Ï¥ó¥É¥é¤Î¥¹¥ì¥Ã¥ÉÂĞ±ş
 
-        * ƒXƒŒƒbƒh”jŠü‚ÌSharedMemorySegment‚Ìdetachˆ—
+        * ¥¹¥ì¥Ã¥ÉÇË´ş»ş¤ÎSharedMemorySegment¤Îdetach½èÍı
 
-        * Message‚Ìsend/receive‚ÌƒXƒŒƒbƒh‘Î‰
+        * Message¤Îsend/receive¤Î¥¹¥ì¥Ã¥ÉÂĞ±ş
 
 2004-01-06  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: ƒXƒŒƒbƒhØ‚è‘Ö‚¦(ƒJ[ƒlƒ‹ƒ‚[ƒh)À‘•’†B
+        * ihandlers.cpp: ¥¹¥ì¥Ã¥ÉÀÚ¤êÂØ¤¨(¥«¡¼¥Í¥ë¥â¡¼¥É)¼ÂÁõÃæ¡£
 
-        * Œ»İƒJ[ƒlƒ‹‚Í‘S‚­“®‚«‚Ü‚¹‚ñB
+        * ¸½ºß¥«¡¼¥Í¥ë¤ÏÁ´¤¯Æ°¤­¤Ş¤»¤ó¡£
 
-        * ƒXƒŒƒbƒhƒXƒPƒWƒ…[ƒ‰‚ÌƒoƒO‚ğC³
+        * ¥¹¥ì¥Ã¥É¥¹¥±¥¸¥å¡¼¥é¤Î¥Ğ¥°¤ò½¤Àµ
 
-        * kernel.cpp: ƒvƒƒZƒX‚ÌƒXƒPƒWƒ…[ƒ‰‚ª‚¤‚Ü‚­‚¢‚Á‚Ä‚¢‚é‚±‚Æ‚ğŠm”F
+        * kernel.cpp: ¥×¥í¥»¥¹¤Î¥¹¥±¥¸¥å¡¼¥é¤¬¤¦¤Ş¤¯¤¤¤Ã¤Æ¤¤¤ë¤³¤È¤ò³ÎÇ§
 
 2004-01-05  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ThreadManager::setup()‚ÌŒÄ‚Ño‚µBdummy‚ÌƒJƒŒƒ“ƒgƒXƒŒƒbƒh‚ğƒZƒbƒg‚·‚éB
-                      ƒ^ƒCƒ}‚ª—LŒø‚É‚È‚é‘O‚É‚±‚Ìˆ—‚ğŒÄ‚Ño‚·•K—v‚ª‚ ‚éB
+        * kernel.cpp: ThreadManager::setup()¤Î¸Æ¤Ó½Ğ¤·¡£dummy¤Î¥«¥ì¥ó¥È¥¹¥ì¥Ã¥É¤ò¥»¥Ã¥È¤¹¤ë¡£
+                      ¥¿¥¤¥Ş¤¬Í­¸ú¤Ë¤Ê¤ëÁ°¤Ë¤³¤Î½èÍı¤ò¸Æ¤Ó½Ğ¤¹É¬Í×¤¬¤¢¤ë¡£
 
 2004-01-03  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: threadü‚è‚Ì®—BdispatchList, waitList‚Ìì¬
+        * Process.cpp: thread¼ş¤ê¤ÎÀ°Íı¡£dispatchList, waitList¤ÎºîÀ®
 
 2004-01-02  higepon  <higepon@users.sourceforge.jp>
 
-        * class ProcessScheduler: ”p~
+        * class ProcessScheduler: ÇÑ»ß
 
-        * Process.cpp: threadü‚è‚Ì–{ŠiÀ‘•ŠJn
-                       ThreadScheculer, ProcessScheculer‚ğ”p~xxxxManager‚É“‡
-          ‚±‚ê‚æ‚è‚µ‚Î‚ç‚­‘å‚«‚È•ÏX‚ª‘±‚«‚Ü‚·B
+        * Process.cpp: thread¼ş¤ê¤ÎËÜ³Ê¼ÂÁõ³«»Ï
+                       ThreadScheculer, ProcessScheculer¤òÇÑ»ßxxxxManager¤ËÅı¹ç
+          ¤³¤ì¤è¤ê¤·¤Ğ¤é¤¯Âç¤­¤ÊÊÑ¹¹¤¬Â³¤­¤Ş¤¹¡£
 
 
 2003-12-30  higepon  <higepon@users.sourceforge.jp>
 
-        * core.asm: ƒXƒŒƒbƒhƒXƒCƒbƒ`(ƒA[ƒLƒeƒNƒ`ƒƒˆË‘¶‚ğì¬)
+        * core.asm: ¥¹¥ì¥Ã¥É¥¹¥¤¥Ã¥Á(¥¢¡¼¥­¥Æ¥¯¥Á¥ã°ÍÂ¸¤òºîÀ®)
 
-        * hashtest.cpp: HashMap‚ÌƒeƒXƒgƒR[ƒh‚ğ’Ç‰ÁBhash‚ÌÕ“Ë‚à‚È‚­‚È‚Á‚½B
+        * hashtest.cpp: HashMap¤Î¥Æ¥¹¥È¥³¡¼¥É¤òÄÉ²Ã¡£hash¤Î¾×ÆÍ¤â¤Ê¤¯¤Ê¤Ã¤¿¡£
 
-        * include/collection.h: hashŠÖ”‚Ì‰ü—Ç thx!–¼–³‚µ‚³‚ñ@dev-j
-          HashMap‚Í‚ ‚ç‚©‚½Š®¬B
+        * include/collection.h: hash´Ø¿ô¤Î²şÎÉ thx!Ì¾Ìµ¤·¤µ¤ó@dev-j
+          HashMap¤Ï¤¢¤é¤«¤¿´°À®¡£
 
 2003-12-28  higepon  <higepon@users.sourceforge.jp>
 
-        * include/collection.h: BinaryTree‚ÌÀ‘•&ƒeƒXƒg
+        * include/collection.h: BinaryTree¤Î¼ÂÁõ&¥Æ¥¹¥È
 
-        * test_higepon.cpp: ‚Æ‚è‚ ‚¦‚¸USER.ELF‚ª³í‚É“Ç‚İ‚Ü‚ê‚é‚æ‚¤‚É•œ‹A.
+        * test_higepon.cpp: ¤È¤ê¤¢¤¨¤ºUSER.ELF¤¬Àµ¾ï¤ËÆÉ¤ß¹ş¤Ş¤ì¤ë¤è¤¦¤ËÉüµ¢.
 
 2003-12-25  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: •ª‚©‚Á‚½‚±‚Æ umi.initilize‚ªŒÄ‚Î‚ê‚é‚Æƒ_ƒBreceive‚à‰ö‚µ‚¢
+        * ihandlers.cpp: Ê¬¤«¤Ã¤¿¤³¤È umi.initilize¤¬¸Æ¤Ğ¤ì¤ë¤È¥À¥á¡£receive¤â²ø¤·¤¤
 
-        * test_higepon.cpp: ƒoƒO‚ÌÇó hello.cpp‚Åum.initilizeˆÈ~‚ÅƒGƒ‰[‚Æ‚È‚éB
-                            ‚ ‚è‚¦‚È‚¢ƒƒ‚ƒŠ—Ìˆæ‚ÉƒAƒNƒZƒXˆá”½‚ÅKILL‚³‚ê‚éB
+        * test_higepon.cpp: ¥Ğ¥°¤Î¾É¾õ hello.cpp¤Çum.initilize°Ê¹ß¤Ç¥¨¥é¡¼¤È¤Ê¤ë¡£
+                            ¤¢¤ê¤¨¤Ê¤¤¥á¥â¥êÎÎ°è¤Ë¥¢¥¯¥»¥¹°ãÈ¿¤ÇKILL¤µ¤ì¤ë¡£
 
 2003-12-24  higepon  <higepon@users.sourceforge.jp>
 
-        * include/collection.h: removeAt()‚ÌƒoƒOC³ Gaku‚³‚ñŠ´Ó
+        * include/collection.h: removeAt()¤Î¥Ğ¥°½¤Àµ Gaku¤µ¤ó´¶¼Õ
 
-        * KeyBoardManager.cpp: Keyƒoƒbƒtƒ@‚ğList‚É‚µ‚½B
-                               List‚Ì‰Šú‰»ƒ^ƒCƒ~ƒ“ƒO‚É–â‘è‚ ‚è—vC³
+        * KeyBoardManager.cpp: Key¥Ğ¥Ã¥Õ¥¡¤òList¤Ë¤·¤¿¡£
+                               List¤Î½é´ü²½¥¿¥¤¥ß¥ó¥°¤ËÌäÂê¤¢¤êÍ×½¤Àµ
 
-        * test_higepon.cpp: userKeyStrokeHandler‚Å‚Í³‚µ‚­ƒf[ƒ^‚ªæ“¾‚Å‚«‚Ü‚¹‚ñB
+        * test_higepon.cpp: userKeyStrokeHandler¤Ç¤ÏÀµ¤·¤¯¥Ç¡¼¥¿¤¬¼èÆÀ¤Ç¤­¤Ş¤»¤ó¡£
 
-        * Process.cpp: ƒXƒŒƒbƒh‚Ì¶¬‚ÉŠÖ‚í‚é•”•ªƒvƒƒOƒ‰ƒ€ƒJƒEƒ“ƒ^‚È‚Ç
+        * Process.cpp: ¥¹¥ì¥Ã¥É¤ÎÀ¸À®¤Ë´Ø¤ï¤ëÉôÊ¬¥×¥í¥°¥é¥à¥«¥¦¥ó¥¿¤Ê¤É
 
 2003-12-23  higepon  <higepon@users.sourceforge.jp>
 
-        * include/Process.h: getThreadInfo()’Ç‰Á
+        * include/Process.h: getThreadInfo()ÄÉ²Ã
 
-        * Process.cpp: Thread‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        * Process.cpp: Thread¤Î¥³¥ó¥¹¥È¥é¥¯¥¿
 
-        * ihandlers.cpp: ƒXƒŒƒbƒh¶¬¥ƒXƒPƒWƒ…[ƒ‹‚È‚Ç‚ğ‚¶‚Á‚­‚è‚Æ
+        * ihandlers.cpp: ¥¹¥ì¥Ã¥ÉÀ¸À®¥¥¹¥±¥¸¥å¡¼¥ë¤Ê¤É¤ò¤¸¤Ã¤¯¤ê¤È
 
 2003-12-21  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: hasProcess();‚È‚ÇB‚¢‚ë‚¢‚ëŒ©’¼‚µ
+        * Process.cpp: hasProcess();¤Ê¤É¡£¤¤¤í¤¤¤í¸«Ä¾¤·
 
 2003-12-20  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: ThreadManager‚ğ“÷•t‚¯
+        * Process.cpp: ThreadManager¤òÆùÉÕ¤±
 
-        * ƒrƒ‹ƒh‚ÌWarnning‚ğ‚È‚­‚µ‚½
+        * ¥Ó¥ë¥É»ş¤ÎWarnning¤ò¤Ê¤¯¤·¤¿
 
 2003-12-18  higepon  <higepon@users.sourceforge.jp>
 
-        * include/Process.h: ThreadƒNƒ‰ƒX‚ğ­‚µ‚¸‚Â“÷•t‚¯
+        * include/Process.h: Thread¥¯¥é¥¹¤ò¾¯¤·¤º¤ÄÆùÉÕ¤±
 
 2003-12-17  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: ƒXƒŒƒbƒhƒ}ƒl[ƒWƒƒ
+        * Process.cpp: ¥¹¥ì¥Ã¥É¥Ş¥Í¡¼¥¸¥ã
 
-        * include/Process.h: ThreadSchedulerƒNƒ‰ƒX‚ğƒwƒbƒ_‚É’Ç‰Á(–¢À‘•)
+        * include/Process.h: ThreadScheduler¥¯¥é¥¹¤ò¥Ø¥Ã¥À¤ËÄÉ²Ã(Ì¤¼ÂÁõ)
 
 2003-12-16  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: ƒ^ƒCƒ}ƒnƒ“ƒhƒ‰‚ÅƒXƒPƒWƒ…[ƒ‰‚½‚¿‚ª‚Ç‚Ì‚æ‚¤‚ÉŒÄ‚Î‚ê‚é‚©‚Ì•”•ª‚ğ
-                         İŒv.
+        * ihandlers.cpp: ¥¿¥¤¥Ş¥Ï¥ó¥É¥é¤Ç¥¹¥±¥¸¥å¡¼¥é¤¿¤Á¤¬¤É¤Î¤è¤¦¤Ë¸Æ¤Ğ¤ì¤ë¤«¤ÎÉôÊ¬¤ò
+                         Àß·×.
 
 2003-12-14  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: ProcessManager_::createProcess‚ÌœŠi‚ğì¬
-                       ProcessManager_::addProcess‚ğì¬
-                       KernelProces,UserProcess‚Ì’Ç‰Á
+        * Process.cpp: ProcessManager_::createProcess¤Î¹ü³Ê¤òºîÀ®
+                       ProcessManager_::addProcess¤òºîÀ®
+                       KernelProces,UserProcess¤ÎÄÉ²Ã
 
 2003-12-09  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒƒ‚ƒŠŠ„‚è“–‚Ä‚É¸”s‚µ‚½‚çpanic()‚É“Ë“ü‚·‚éŠÖ”‚ğ—pˆÓ
+        * kernel.cpp: ¥á¥â¥ê³ä¤êÅö¤Æ¤Ë¼ºÇÔ¤·¤¿¤épanic()¤ËÆÍÆş¤¹¤ë´Ø¿ô¤òÍÑ°Õ
 
-        * include/Process.h: ProcessManager‚Æƒy[ƒWŠÇ—‚ÌŠÖŒW‚ğ®—
+        * include/Process.h: ProcessManager¤È¥Ú¡¼¥¸´ÉÍı¤Î´Ø·¸¤òÀ°Íı
 
 2003-12-07  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: ProcessScheduler‚ğ’Ç‰Á
+        * Process.cpp: ProcessScheduler¤òÄÉ²Ã
 
-        * include/collection.h: ƒRƒŒƒNƒVƒ‡ƒ“ƒNƒ‰ƒXHList‚ğ’Ç‰Á
-                                HVector‚ğ”p~
+        * include/collection.h: ¥³¥ì¥¯¥·¥ç¥ó¥¯¥é¥¹HList¤òÄÉ²Ã
+                                HVector¤òÇÑ»ß
 
 2003-11-30  higepon  <higepon@users.sourceforge.jp>
 
-        * include/Process.h: V‚µ‚¢ƒvƒƒZƒXî•ñ\‘¢‘Ì‚ğ’Ç‰Á
+        * include/Process.h: ¿·¤·¤¤¥×¥í¥»¥¹¾ğÊó¹½Â¤ÂÎ¤òÄÉ²Ã
 
 2003-11-13  higepon  <higepon@users.sourceforge.jp>
 
-        * string.cpp: memcpy‚ª’x‚©‚Á‚½‚Ì‚Åƒ`ƒ…[ƒjƒ“ƒO.ƒCƒ“ƒ‰ƒCƒ“ƒAƒZƒ“ƒuƒ‰‚Å‘‚«’¼‚µ‚½
+        * string.cpp: memcpy¤¬ÃÙ¤«¤Ã¤¿¤Î¤Ç¥Á¥å¡¼¥Ë¥ó¥°.¥¤¥ó¥é¥¤¥ó¥¢¥»¥ó¥Ö¥é¤Ç½ñ¤­Ä¾¤·¤¿
 
 2003-11-12  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp: ƒ†[ƒU[ƒvƒƒZƒX‚É‘Î‚µ‚ÄƒƒbƒZ[ƒW‚ğ‘—M‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½B
+        * test_higepon.cpp: ¥æ¡¼¥¶¡¼¥×¥í¥»¥¹¤ËÂĞ¤·¤Æ¥á¥Ã¥»¡¼¥¸¤òÁ÷¿®¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
 
-        * ƒVƒXƒeƒ€ƒR[ƒ‹‚Ì–ß‚è’l‚ª³í‚Éæ“¾‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½B
+        * ¥·¥¹¥Æ¥à¥³¡¼¥ë¤ÎÌá¤êÃÍ¤¬Àµ¾ï¤Ë¼èÆÀ¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
 
-        * syscalls.cpp ƒVƒXƒeƒ€ƒR[ƒ‹‚Ì–ß‚è’l‚ªæ‚ê‚Ä‚¢‚È‚¢?
-                       loadProcess’x‚·‚¬
+        * syscalls.cpp ¥·¥¹¥Æ¥à¥³¡¼¥ë¤ÎÌá¤êÃÍ¤¬¼è¤ì¤Æ¤¤¤Ê¤¤?
+                       loadProcessÃÙ¤¹¤®
 
-        * test_higepon.cpp: MessageŠi”[æ‚ğHVector(ƒeƒ“ƒvƒŒ[ƒg)‚ÅÀ‘•‚·‚é‚±‚Æ‚É‚æ‚è•¡”‚ÌƒƒbƒZ[ƒW‚É‚à‘Î‰
+        * test_higepon.cpp: Message³ÊÇ¼Àè¤òHVector(¥Æ¥ó¥×¥ì¡¼¥È)¤Ç¼ÂÁõ¤¹¤ë¤³¤È¤Ë¤è¤êÊ£¿ô¤Î¥á¥Ã¥»¡¼¥¸¤Ë¤âÂĞ±ş
 
-        * ihandlers.cpp: send/receive‚ğƒL[ƒ{[ƒhŠ„‚è‚İ‚ÅÀŒ±‚µ‚Ä‚İ‚½B
-                         ƒƒbƒZ[ƒW‚Ì‘—M‚Æ‚µ‚Ä‚Í‚©‚È‚èão—ˆB‚½‚¾‚µŒ»İ
-                         Message‚ÌŠi”[æ‚ª1‚Â‚È‚Ì‚Å‚»‚ê‚ª–â‘èB
+        * ihandlers.cpp: send/receive¤ò¥­¡¼¥Ü¡¼¥É³ä¤ê¹ş¤ß¤Ç¼Â¸³¤·¤Æ¤ß¤¿¡£
+                         ¥á¥Ã¥»¡¼¥¸¤ÎÁ÷¿®¤È¤·¤Æ¤Ï¤«¤Ê¤ê¾å½ĞÍè¡£¤¿¤À¤·¸½ºß
+                         Message¤Î³ÊÇ¼Àè¤¬1¤Ä¤Ê¤Î¤Ç¤½¤ì¤¬ÌäÂê¡£
 
 2003-11-11  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp: send,receiveÀŒ±À‘•.
-                            findProcess–¢À‘•
+        * test_higepon.cpp: send,receive¼Â¸³¼ÂÁõ.
+                            findProcessÌ¤¼ÂÁõ
 
-        * include/Process.h: ƒvƒƒZƒX\‘¢‘Ì‚ÉMessage‚ğ’Ç‰Á
+        * include/Process.h: ¥×¥í¥»¥¹¹½Â¤ÂÎ¤ËMessage¤òÄÉ²Ã
 
 2003-11-05  higepon  <higepon@users.sourceforge.jp>
 
-        * Segments.cpp: ƒXƒ^ƒbƒN©“®L’£ƒoƒO‚Â‚Ô‚µ’†BŒŸØ’†‚ÌƒR[ƒh‘½”‚Ì‚½‚ß’ˆÓ
+        * Segments.cpp: ¥¹¥¿¥Ã¥¯¼«Æ°¿­Ä¥¥Ğ¥°¤Ä¤Ö¤·Ãæ¡£¸¡¾ÚÃæ¤Î¥³¡¼¥ÉÂ¿¿ô¤Î¤¿¤áÃí°Õ
 
 2003-11-03  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒ†[ƒU[—p‚Éƒq[ƒv—Ìˆæ‚ğŠm•Û umalloc, ufree‚Ì’ñ‹Ÿ
+        * ¥æ¡¼¥¶¡¼ÍÑ¤Ë¥Ò¡¼¥×ÎÎ°è¤ò³ÎÊİ umalloc, ufree¤ÎÄó¶¡
 
-        * ƒ†[ƒU[ƒ‚[ƒh‚ÌƒGƒ“ƒgƒŠƒ|ƒCƒ“ƒg‚ğuser_start()‚É•ÏX
+        * ¥æ¡¼¥¶¡¼¥â¡¼¥É¤Î¥¨¥ó¥È¥ê¥İ¥¤¥ó¥È¤òuser_start()¤ËÊÑ¹¹
 
-        * syscalls.cpp : ƒVƒXƒeƒ€ƒR[ƒ‹‚Éexit’Ç‰Á(‚½‚¾‚µ’†g‚Íkill)
+        * syscalls.cpp : ¥·¥¹¥Æ¥à¥³¡¼¥ë¤ËexitÄÉ²Ã(¤¿¤À¤·Ãæ¿È¤Ïkill)
 
-        * syscalls.cpp (put_pixel): ƒVƒXƒeƒ€ƒR[ƒ‹‚Éput_pixel‚ğ’Ç‰Á
+        * syscalls.cpp (put_pixel): ¥·¥¹¥Æ¥à¥³¡¼¥ë¤Ëput_pixel¤òÄÉ²Ã
 
-        * test_higepon.cpp: LoadProcess ƒ†[ƒU[ƒ‚[ƒh‚É‘Î‰
+        * test_higepon.cpp: LoadProcess ¥æ¡¼¥¶¡¼¥â¡¼¥É¤ËÂĞ±ş
 
 2003-11-02  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp: LoadProcess‚ª“®‚¢‚½B
-                §ŒÀ–€: ƒJ[ƒlƒ‹ƒ‚[ƒh‚Ì‚Ì‚İ
-                    ƒƒ‚: USER.ELF‚ğƒŠƒ“ƒN‚É_monamain‚ğƒVƒ“ƒ{ƒ‹w’è‚·‚é‚Æ‚±‚ë‚ªŠÌS
-                          extern "C"“™
+        * test_higepon.cpp: LoadProcess¤¬Æ°¤¤¤¿¡£
+                À©¸Â»ö¹à: ¥«¡¼¥Í¥ë¥â¡¼¥É¤Î¤Î¤ß
+                    ¥á¥â: USER.ELF¤ò¥ê¥ó¥¯»ş¤Ë_monamain¤ò¥·¥ó¥Ü¥ë»ØÄê¤¹¤ë¤È¤³¤í¤¬´Î¿´
+                          extern "C"Åù
 
 2003-10-29  higepon  <higepon@users.sourceforge.jp>
 
 
-        * disp.cpp: 1‚Â‚ÌƒvƒƒZƒX‚ª•¡”‚Ì‹¤—Lƒƒ‚ƒŠƒZƒOƒƒ“ƒg‚ğ‚à‚Ä‚é‚æ‚¤‚É‰ü‘¢
-                    ‰‚ß‚Ä‘½dŒp³‚ğg—p‚µ‚½B(¡‚Ì‚Æ‚±‚ë‚¤‚Ü‚­‹@”\‚µ‚Ä‚¢‚é‚æ‚¤‚¾)
-                    disp_name3, disp_name4‚ÅA‚R‚Â‚Ìƒƒ‚ƒŠ—Ìˆæ‚ğ‹¤—L‚µ‚Ä‚¢‚é–‚ª•ª‚©‚éB
+        * disp.cpp: 1¤Ä¤Î¥×¥í¥»¥¹¤¬Ê£¿ô¤Î¶¦Í­¥á¥â¥ê¥»¥°¥á¥ó¥È¤ò¤â¤Æ¤ë¤è¤¦¤Ë²şÂ¤
+                    ½é¤á¤ÆÂ¿½Å·Ñ¾µ¤ò»ÈÍÑ¤·¤¿¡£(º£¤Î¤È¤³¤í¤¦¤Ş¤¯µ¡Ç½¤·¤Æ¤¤¤ë¤è¤¦¤À)
+                    disp_name3, disp_name4¤Ç¡¢£³¤Ä¤Î¥á¥â¥êÎÎ°è¤ò¶¦Í­¤·¤Æ¤¤¤ë»ö¤¬Ê¬¤«¤ë¡£
 
-                    attach, open‚»‚ê‚¼‚êƒƒbƒN‚ª•K—v‚È‚Ì‚ÅƒZƒ}ƒtƒH‚ğg‚¤‚±‚Æ
+                    attach, open¤½¤ì¤¾¤ì¥í¥Ã¥¯¤¬É¬Í×¤Ê¤Î¤Ç¥»¥Ş¥Õ¥©¤ò»È¤¦¤³¤È
 
 2003-10-28  higepon  <higepon@users.sourceforge.jp>
 
-        * disp.cpp: ‹¤—Lƒƒ‚ƒŠAPIŒÄ‚Ño‚µ‚ÉƒZƒ}ƒtƒH‚ÅƒƒbƒN‚µ‚Ä‚İ‚½B
+        * disp.cpp: ¶¦Í­¥á¥â¥êAPI¸Æ¤Ó½Ğ¤·»ş¤Ë¥»¥Ş¥Õ¥©¤Ç¥í¥Ã¥¯¤·¤Æ¤ß¤¿¡£
 
 2003-10-27  higepon  <higepon@users.sourceforge.jp>
 
-        * Segments.cpp: ‹¤—Lƒƒ‚ƒŠ‹@\‚ÌÀ‘•‚ğ‚Ù‚ÚŠ®—¹
+        * Segments.cpp: ¶¦Í­¥á¥â¥êµ¡¹½¤Î¼ÂÁõ¤ò¤Û¤Ü´°Î»
 
 2003-10-26  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp: ‹¤—LMAPÀ‘•—p‚ÉI/F‚ğüV
+        * PageManager.cpp: ¶¦Í­MAP¼ÂÁõÍÑ¤ËI/F¤òºş¿·
 
-        * include/Segments.h: ‹¤—Lmap—p‚ÌAPIÀ‘•’†
+        * include/Segments.h: ¶¦Í­mapÍÑ¤ÎAPI¼ÂÁõÃæ
 
 2003-10-24  higepon  <higepon@users.sourceforge.jp>
 
-        * include/Segments.h: SharedMemoryObject‚ğÀ‘•’†B
+        * include/Segments.h: SharedMemoryObject¤ò¼ÂÁõÃæ¡£
 
 2003-10-19  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp: ÀŒ±‘g‚İ‚İ’†“®ì‚µ‚Ü‚¹‚ñB
+        * ProcessManager.cpp: ¼Â¸³ÁÈ¤ß¹ş¤ßÃæÆ°ºî¤·¤Ş¤»¤ó¡£
 
-        * PageManager.cpp: ƒRƒƒ“ƒg®—
+        * PageManager.cpp: ¥³¥á¥ó¥ÈÀ°Íı
 
 2003-10-18  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp: ‘S‚­ÀŒ±‚µ‚Ä‚È‚¢‚¯‚ÇƒXƒ^ƒbƒN‚ÌÀ‘•
-        *                  ‘S‚­ÀŒ±‚µ‚Ä‚È‚¢‚¯‚Çƒq[ƒv‚ÌÀ‘•
+        * PageManager.cpp: Á´¤¯¼Â¸³¤·¤Æ¤Ê¤¤¤±¤É¥¹¥¿¥Ã¥¯¤Î¼ÂÁõ
+        *                  Á´¤¯¼Â¸³¤·¤Æ¤Ê¤¤¤±¤É¥Ò¡¼¥×¤Î¼ÂÁõ
 
 2003-10-17  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp: ƒy[ƒWƒtƒHƒ‹ƒg‚Å•¨—ƒy[ƒW‚ğŠ„‚è“–‚Ä‚½Û‚ÉƒLƒƒƒbƒVƒ…‚ğíœ
+        * PageManager.cpp: ¥Ú¡¼¥¸¥Õ¥©¥ë¥È¤ÇÊªÍı¥Ú¡¼¥¸¤ò³ä¤êÅö¤Æ¤¿ºİ¤Ë¥­¥ã¥Ã¥·¥å¤òºï½ü
 
-        * MemoryManager‚ÌƒVƒ“ƒOƒ‹ƒgƒ“‚ğ‚â‚ß‚½BKernelMemoryŠÇ—ˆÈŠO‚É‚àg‚¦‚é‚Ì‚ÅB
+        * MemoryManager¤Î¥·¥ó¥°¥ë¥È¥ó¤ò¤ä¤á¤¿¡£KernelMemory´ÉÍı°Ê³°¤Ë¤â»È¤¨¤ë¤Î¤Ç¡£
 
 2003-10-13  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp: ŠeƒvƒƒZƒX¶¬‚É“Æ—§‹óŠÔ‚ğŠ„‚è“–‚Ä‚é‚Ì‚Åesp=0x400300‚ÆŒÅ’è‚ÅŠ„‚è“–‚Ä‚ç‚ê‚é‚æ‚¤‚É‚È‚Á‚½B
+        * PageManager.cpp: ³Æ¥×¥í¥»¥¹À¸À®»ş¤ËÆÈÎ©¶õ´Ö¤ò³ä¤êÅö¤Æ¤ë¤Î¤Çesp=0x400300¤È¸ÇÄê¤Ç³ä¤êÅö¤Æ¤é¤ì¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
 
-        * kernel.cpp : Š„‚İ‚Ì‹–‰Â‚ÌƒoƒO‚ÌC³
+        * kernel.cpp : ³ä¹ş¤ß¤Îµö²Ä¤Î¥Ğ¥°¤Î½¤Àµ
 
-        * env : #LFLAGS     = -n -Ttext 0x1200 -static --oformat binary‚©‚ç--oformat binary‚ğíœ
+        * env : #LFLAGS     = -n -Ttext 0x1200 -static --oformat binary¤«¤é--oformat binary¤òºï½ü
 
-        * env : libz.a‚ÌŠÂ‹«‚É‚æ‚é•ªŠò
+        * env : libz.a¤Î´Ä¶­¤Ë¤è¤ëÊ¬´ô
 
 2003-10-03  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp: ƒvƒƒZƒX‚Ìkill‚ğ‚È‚ñ‚Æ‚È‚­À‘•B
+        * ProcessManager.cpp: ¥×¥í¥»¥¹¤Îkill¤ò¤Ê¤ó¤È¤Ê¤¯¼ÂÁõ¡£
 
 2003-10-09  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒvƒƒZƒX¶¬‚É“Æ©‹óŠÔ‚ğ‚È‚ñ‚Æ‚È‚­Š„‚è“–‚Ä‚é‚æ‚¤‚É‚µ‚½B
+        * kernel.cpp: ¥×¥í¥»¥¹À¸À®»ş¤ËÆÈ¼«¶õ´Ö¤ò¤Ê¤ó¤È¤Ê¤¯³ä¤êÅö¤Æ¤ë¤è¤¦¤Ë¤·¤¿¡£
 
 2003-10-08  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: 0-1GB‚ğƒJ[ƒlƒ‹—Ìˆæ‚Æ‚µ‚½B
+        * kernel.cpp: 0-1GB¤ò¥«¡¼¥Í¥ëÎÎ°è¤È¤·¤¿¡£
 
 2003-10-07  higepon  <higepon@users.sourceforge.jp>
 
-        * nasm‚Æg++•”‚ÌƒŠƒ“ƒN‚ÌÛ‚ÌƒGƒ‰[‘Î‰
+        * nasm¤Èg++Éô¤Î¥ê¥ó¥¯¤Îºİ¤Î¥¨¥é¡¼ÂĞ±ş
 
-        * Makefile.in: configure‚Ì’Ç‰Á
+        * Makefile.in: configure¤ÎÄÉ²Ã
 
 2003-10-03  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp:KeystrokeHandler.scancode‚ğˆø”‚Åó‚¯æ‚é‚æ‚¤‚É•ÏX
+        * ihandlers.cpp:KeystrokeHandler.scancode¤ò°ú¿ô¤Ç¼õ¤±¼è¤ë¤è¤¦¤ËÊÑ¹¹
 
 2003-09-29  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: MemoryManager“ü‚ê‘Ö‚¦I—¹
+        * kernel.cpp: MemoryManagerÆş¤ìÂØ¤¨½ªÎ»
 
-                new/delete malloc/free‚Ì“®ì‚ª•s—Ç‚È‚Æ‚«‚Ítools/mmtest/mem.cpp‚ÅƒeƒXƒg‚·‚é‚±‚ÆB
+                new/delete malloc/free¤ÎÆ°ºî¤¬ÉÔÎÉ¤Ê¤È¤­¤Ïtools/mmtest/mem.cpp¤Ç¥Æ¥¹¥È¤¹¤ë¤³¤È¡£
 
 2003-09-28  higepon  <higepon@users.sourceforge.jp>
 
-        * MemoryManager.cpp: MemoryManager“±“ü‚µ‚½‚à‚Ì‚ÌFDCŠ„‚è‚İ‚Å—‚¿‚éŒ´ˆö•s–¾B
+        * MemoryManager.cpp: MemoryManagerÆ³Æş¤·¤¿¤â¤Î¤ÎFDC³ä¤ê¹ş¤ß¤ÇÍî¤Á¤ë¸¶°øÉÔÌÀ¡£
 
-        * include/MemoryManger.h: IA32MemoryManager‚ª‰Šú‚ÌƒR[ƒh‚ÅƒoƒO‚ª‘½‚©‚Á‚½‚ß
-          Š®‘SƒŠƒ‰ƒCƒg‚µ‚½MemoryManager‚ğ“±“üB
+        * include/MemoryManger.h: IA32MemoryManager¤¬½é´ü¤Î¥³¡¼¥É¤Ç¥Ğ¥°¤¬Â¿¤«¤Ã¤¿¤á
+          ´°Á´¥ê¥é¥¤¥È¤·¤¿MemoryManager¤òÆ³Æş¡£
 
 2003-09-25  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: z.cpp z.h zlib‚ÌGaku‚©‚ç‚ÌˆÚA”Å‚Ì’ñ‹ŸB
-                         ƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚Ì‰ğ“€‚ğŠm”FB
+        * ihandlers.cpp: z.cpp z.h zlib¤ÎGaku»á¤«¤é¤Î°Ü¿¢ÈÇ¤ÎÄó¶¡¡£
+                         ¥Æ¥­¥¹¥È¥Õ¥¡¥¤¥ë¤Î²òÅà¤ò³ÎÇ§¡£
 
 2003-09-23  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: Gaku’ñ‹Ÿ‚Ìƒpƒbƒ`‚ğ“K—p getFileSize()
+        * FAT12.cpp: Gaku»áÄó¶¡¤Î¥Ñ¥Ã¥Á¤òÅ¬ÍÑ getFileSize()
 
-        * ƒ\[ƒX‘S‘Ì‚Ì®—‘æ“ñ’e:FreeBSDƒfƒBƒŒƒNƒgƒŠ‚ğQÆ‚µ‚È‚¢‚æ‚¤‚É‚µ‚½B
+        * ¥½¡¼¥¹Á´ÂÎ¤ÎÀ°ÍıÂèÆóÃÆ:FreeBSD¥Ç¥£¥ì¥¯¥È¥ê¤ò»²¾È¤·¤Ê¤¤¤è¤¦¤Ë¤·¤¿¡£
 
-        * ƒ\[ƒX‘S‘Ì‚Ì®—‘æˆê’e:compile‚Ìwarning‚Ì—}~
+        * ¥½¡¼¥¹Á´ÂÎ¤ÎÀ°ÍıÂè°ìÃÆ:compile»ş¤Îwarning¤ÎÍŞ»ß
 
 2003-09-22  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: FDC‚ªVmware‚É‘Î‰‚µ‚Ü‚µ‚½.
+        * FDCDriver.cpp: FDC¤¬Vmware¤ËÂĞ±ş¤·¤Ş¤·¤¿.
 
-        * ‚Ü‚Æ‚à‚É“®‚­‚æ‚¤‚É‚È‚è‚Ü‚µ‚½BƒƒS•\¦‚ªo—ˆ‚½‚è‚·‚éB
+        * ¤Ş¤È¤â¤ËÆ°¤¯¤è¤¦¤Ë¤Ê¤ê¤Ş¤·¤¿¡£¥í¥´É½¼¨¤¬½ĞÍè¤¿¤ê¤¹¤ë¡£
 
-        * Œ»İ‚Ü‚Æ‚à‚É“®‚«‚Ü‚¹‚ñBFDCDriverTester();‚ÌŒÄ‚Ño‚µ‚ğƒRƒƒ“ƒgƒAƒEƒg‚·‚ê‚Î“®‚­‚©‚à‚µ‚ê‚Ü‚¹‚ñB
+        * ¸½ºß¤Ş¤È¤â¤ËÆ°¤­¤Ş¤»¤ó¡£FDCDriverTester();¤Î¸Æ¤Ó½Ğ¤·¤ò¥³¥á¥ó¥È¥¢¥¦¥È¤¹¤ì¤ĞÆ°¤¯¤«¤â¤·¤ì¤Ş¤»¤ó¡£
 
 2003-09-21  higepon  <higepon@users.sourceforge.jp>
 
-        * Guripon‚É‚æ‚éput_pixcel“™‚ÌŠÖ”‚Ì’Ç‰Á
+        * Guripon»á¤Ë¤è¤ëput_pixcelÅù¤Î´Ø¿ô¤ÎÄÉ²Ã
 
-        * GraphicalConsole.cpp: Guripon‚Ìmode12‰ü—Ç‚Ì‚Æ‚è‚±‚İB
+        * GraphicalConsole.cpp: Guripon»á¤Îmode12²şÎÉ¤Î¤È¤ê¤³¤ß¡£
 
 2003-09-20  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: bochs‚Å‚àrecalibrateŒã‚ÌŠ„‚è‚İ‚ª—ˆ‚é‚æ‚¤‚É‚È‚Á‚½BOSASK‚ÌK‚³‚ñ‚ÉŠ´Ó
+        * FDCDriver.cpp: bochs¤Ç¤ârecalibrate¸å¤Î³ä¤ê¹ş¤ß¤¬Íè¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£OSASK¤ÎK¤µ¤ó¤Ë´¶¼Õ
 
 2003-09-19  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: FDC‘å‰ü‘¢’†
+        * FDCDriver.cpp: FDCÂç²şÂ¤Ãæ
 
-        * ihandlers.cpp: FDC‚ÌŠ„‚è‚İŠÖ”‚ğFDCDriver‚ÌƒNƒ‰ƒXƒƒ\ƒbƒh‚É‚µ‚½B
+        * ihandlers.cpp: FDC¤Î³ä¤ê¹ş¤ß´Ø¿ô¤òFDCDriver¤Î¥¯¥é¥¹¥á¥½¥Ã¥É¤Ë¤·¤¿¡£
 
 2003-09-18  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: FDC‘å‰ü‘¢’†
+        * FDCDriver.cpp: FDCÂç²şÂ¤Ãæ
 
 2003-09-13  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: FDC‚ÌŠ„‚İ‚Ìˆ—‚ğ‰ü‘P(K-tan‚ÉŠ´Ó)
+        * ihandlers.cpp: FDC¤Î³ä¹ş¤ß¤Î½èÍı¤ò²şÁ±(K-tan¤Ë´¶¼Õ)
 
-        * kernel.cpp: mainƒvƒƒZƒX‚ª‘¼‚ÌƒvƒƒZƒX‚ğ—§‚¿ã‚°‚é‚æ‚¤‚ÈİŒv‚É•ÏX
+        * kernel.cpp: main¥×¥í¥»¥¹¤¬Â¾¤Î¥×¥í¥»¥¹¤òÎ©¤Á¾å¤²¤ë¤è¤¦¤ÊÀß·×¤ËÊÑ¹¹
 
 2003-09-10  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒ^ƒXƒNƒXƒCƒbƒ`‚ÌÛ‚Éƒy[ƒWƒfƒBƒŒƒNƒgƒŠ‚Æƒy[ƒWƒLƒƒƒbƒVƒ…‚Ìflushˆ—‚ğ“ü‚ê‚½B
+        * kernel.cpp: ¥¿¥¹¥¯¥¹¥¤¥Ã¥Á¤Îºİ¤Ë¥Ú¡¼¥¸¥Ç¥£¥ì¥¯¥È¥ê¤È¥Ú¡¼¥¸¥­¥ã¥Ã¥·¥å¤Îflush½èÍı¤òÆş¤ì¤¿¡£
 
-        * FDCDriver.cpp: ƒy[ƒWƒ“ƒO‚Å‚àFDCDrvier‚ª³í“®ì‚·‚é‚±‚Æ‚ğŠm”F‚Å‚«‚½B
+        * FDCDriver.cpp: ¥Ú¡¼¥¸¥ó¥°¤Ç¤âFDCDrvier¤¬Àµ¾ïÆ°ºî¤¹¤ë¤³¤È¤ò³ÎÇ§¤Ç¤­¤¿¡£
 
-        * ƒR[ƒh‚Ì®—‚È‚ÇB‚¾‚¢‚ÔFDCDriver‚ªˆÀ’è‚µ‚Ä‚«‚½B
+        * ¥³¡¼¥É¤ÎÀ°Íı¤Ê¤É¡£¤À¤¤¤ÖFDCDriver¤¬°ÂÄê¤·¤Æ¤­¤¿¡£
 
 2003-09-09  higepon  <higepon@users.sourceforge.jp>
 
-        ƒy[ƒWƒ“ƒO‚É‘Î‰‚µ‚Ä‚¢‚È‚¢->FDCDriver
-        ƒL[ƒ{[ƒhŠ„‚è‚İ‚ª‚È‚ñ‚©‚Ö‚ñ
+        ¥Ú¡¼¥¸¥ó¥°¤ËÂĞ±ş¤·¤Æ¤¤¤Ê¤¤->FDCDriver
+        ¥­¡¼¥Ü¡¼¥É³ä¤ê¹ş¤ß¤¬¤Ê¤ó¤«¤Ø¤ó
 
-        * kernel.cpp: FDCDriver‚Ì‚¢‚½‚é‚Æ‚±‚ë‚Édelay()‚ğ’Ç‰Á
+        * kernel.cpp: FDCDriver¤Î¤¤¤¿¤ë¤È¤³¤í¤Ëdelay()¤òÄÉ²Ã
 
 2003-09-08  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: FDC‚ÌƒeƒXƒg‚Ì‚½‚ß
-                ƒy[ƒWƒ“ƒOOFF
-                FDCƒhƒ‰ƒCƒo
+        * FDCDriver.cpp: FDC¤Î¥Æ¥¹¥È¤Î¤¿¤á
+                ¥Ú¡¼¥¸¥ó¥°OFF
+                FDC¥É¥é¥¤¥Ğ
 
 2003-09-07  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: FAT12‚©‚çELF‚ğƒ[ƒh‚µ‚ÄÀs¬Œ÷
+        * kernel.cpp: FAT12¤«¤éELF¤ò¥í¡¼¥É¤·¤Æ¼Â¹ÔÀ®¸ù
 
-        * elf.cpp: ELFLoaderì¬’†B
+        * elf.cpp: ELFLoaderºîÀ®Ãæ¡£
 
-        * kernel.cpp: tools/elfview.exe‚Åì¬‚µ‚½ƒvƒƒZƒXƒCƒ[ƒW‚ğƒJ[ƒlƒ‹‚É‘g‚İ‚ñ‚ÅÀs¬Œ÷B
+        * kernel.cpp: tools/elfview.exe¤ÇºîÀ®¤·¤¿¥×¥í¥»¥¹¥¤¥á¡¼¥¸¤ò¥«¡¼¥Í¥ë¤ËÁÈ¤ß¹ş¤ó¤Ç¼Â¹ÔÀ®¸ù¡£
 
 2003-09-05  higepon  <higepon@users.sourceforge.jp>
 
-        * include/elf.h: ELF‚ÌƒZƒNƒVƒ‡ƒ“ƒwƒbƒ_—ñ‹“, ELF‚ÌƒvƒƒOƒ‰ƒ€ƒwƒbƒ_—ñ‹“
+        * include/elf.h: ELF¤Î¥»¥¯¥·¥ç¥ó¥Ø¥Ã¥ÀÎóµó, ELF¤Î¥×¥í¥°¥é¥à¥Ø¥Ã¥ÀÎóµó
 
-        * kernel.cpp: /tools‚ÉelfTest.cpp‚ğ’Ç‰Á elfƒwƒbƒ_‚Ì•\¦‚ªo—ˆ‚é‚æ‚¤‚É‚È‚Á‚½B
+        * kernel.cpp: /tools¤ËelfTest.cpp¤òÄÉ²Ã elf¥Ø¥Ã¥À¤ÎÉ½¼¨¤¬½ĞÍè¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
 
 2003-09-04  higepon  <higepon@users.sourceforge.jp>
 
-        * include/elf.h: elf.h’Ç‰Á
+        * include/elf.h: elf.hÄÉ²Ã
 
 2003-09-02  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: DS‚Ìİ’è‚ªŠ„‚İ‚És‚í‚ê‚é‚æ‚¤‚É‚È‚Á‚½‰¼‘z86‚Í‚Ü‚¾‚¨‚©‚µ‚¢
+        * kernel.cpp: DS¤ÎÀßÄê¤¬³ä¹ş¤ß»ş¤Ë¹Ô¤ï¤ì¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿²¾ÁÛ86¤Ï¤Ş¤À¤ª¤«¤·¤¤
 
 2003-08-30  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ‰¼‘z86ƒTƒ|[ƒg‚ğ‚İ‚é‚ª‚Ü‚¾“®ì‚ª‚¨‚©‚µ‚¢‚Ì‚Å•Û—¯
+        * kernel.cpp: ²¾ÁÛ86¥µ¥İ¡¼¥È¤ò»î¤ß¤ë¤¬¤Ş¤ÀÆ°ºî¤¬¤ª¤«¤·¤¤¤Î¤ÇÊİÎ±
 
-        * syscalls.cpp syscall_print‚ğ’Ç‰Á
+        * syscalls.cpp syscall_print¤òÄÉ²Ã
 
-        * src/userƒfƒBƒŒƒNƒgƒŠ’Ç‰Á. ƒ†[ƒU[ŠJ”­ŠÂ‹«®”õ‚Ì•zÎ
+        * src/user¥Ç¥£¥ì¥¯¥È¥êÄÉ²Ã. ¥æ¡¼¥¶¡¼³«È¯´Ä¶­À°È÷¤ÎÉÛÀĞ
 
 2003-08-28  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ŒÀŠE‚Ü‚Åƒy[ƒWƒtƒHƒ‹ƒg•Š„‚è“–‚ÄŒJ‚è•Ô‚µ‚ÄƒeƒXƒg
+        * kernel.cpp: ¸Â³¦¤Ş¤Ç¥Ú¡¼¥¸¥Õ¥©¥ë¥È¡õ³ä¤êÅö¤Æ·«¤êÊÖ¤·¤Æ¥Æ¥¹¥È
 
-        * PageManager.cpp: ƒy[ƒWƒtƒHƒ‹ƒg‚ª”­¶‚µ‚½‚Æ‚«‚É•¨—ƒy[ƒW‚ğŠ„‚è“–‚Ä‚éˆ—‚ğ“ü‚ê‚Ü‚µ‚½B
+        * PageManager.cpp: ¥Ú¡¼¥¸¥Õ¥©¥ë¥È¤¬È¯À¸¤·¤¿¤È¤­¤ËÊªÍı¥Ú¡¼¥¸¤ò³ä¤êÅö¤Æ¤ë½èÍı¤òÆş¤ì¤Ş¤·¤¿¡£
 
 2003-08-24  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp: ƒy[ƒWƒtƒHƒ‹ƒgˆ—ƒfƒoƒbƒO’†
+        * PageManager.cpp: ¥Ú¡¼¥¸¥Õ¥©¥ë¥È½èÍı¥Ç¥Ğ¥Ã¥°Ãæ
 
-        * GraphicalConsole.cpp: putInt‚Ìbugfix
+        * GraphicalConsole.cpp: putInt¤Îbugfix
 
 2003-08-23  higepon  <higepon@users.sourceforge.jp>
 
-        * PageManager.cpp:˜_—ƒAƒhƒŒƒX0-4MB‚Æ•¨—ƒAƒhƒŒƒX0-4MB‚ğƒ}ƒbƒsƒ“ƒO
-        * PagingUtil.cpp‚Ì”p~
+        * PageManager.cpp:ÏÀÍı¥¢¥É¥ì¥¹0-4MB¤ÈÊªÍı¥¢¥É¥ì¥¹0-4MB¤ò¥Ş¥Ã¥Ô¥ó¥°
+        * PagingUtil.cpp¤ÎÇÑ»ß
 
 2003-08-22  higepon  <higepon@users.sourceforge.jp>
 
-        * BitMap.cpp: getBitsNumber()’Ç‰Á
+        * BitMap.cpp: getBitsNumber()ÄÉ²Ã
 
 2003-08-17  higepon  <higepon@users.sourceforge.jp>
 
-        * syscalls.cpp: exit_kernel_lock_mode();enter_kernel_lock_mode();‚Ì’Ç‰Á
+        * syscalls.cpp: exit_kernel_lock_mode();enter_kernel_lock_mode();¤ÎÄÉ²Ã
 
 2003-08-16  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandler.asm (_arch_syscall_handler): ƒVƒXƒeƒ€ƒR[ƒ‹‚Ì–ß‚è’l‚ğæ“¾‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½
+        * ihandler.asm (_arch_syscall_handler): ¥·¥¹¥Æ¥à¥³¡¼¥ë¤ÎÌá¤êÃÍ¤ò¼èÆÀ¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿
 
-        * syscalls.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹’†‚ÉŠ„‚è‚İ‚ğ‹–‰Â‚·‚é‚±‚Æ‚ª‰Â”\‚É‚È‚Á‚½B
-                        ‚±‚ê‚©‚çƒ\[ƒX‚Ì®—‚ğŠJn
+        * syscalls.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ëÃæ¤Ë³ä¤ê¹ş¤ß¤òµö²Ä¤¹¤ë¤³¤È¤¬²ÄÇ½¤Ë¤Ê¤Ã¤¿¡£
+                        ¤³¤ì¤«¤é¥½¡¼¥¹¤ÎÀ°Íı¤ò³«»Ï
 
 2003-08-15  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒ†[ƒU[ƒvƒƒZƒXEƒJ[ƒlƒ‹ƒvƒƒZƒX‚Ì“ñ‚Â‚ªReadyƒLƒ…[‚É‚ ‚éó‘Ô‚Åƒ†[ƒU[ƒvƒƒZƒX‚©‚ç‚¨‚à‚¢ƒVƒXƒeƒ€ƒR[ƒ‹‚ğ
-                      ŒÄ‚Ô‚ÆŠ„‚è‚İ‚ğ‹–‰Â‚µ‚Ä‚èƒXƒPƒWƒ…[ƒ‹‚ª‰Â”\‚É‚È‚éB“Á’è‚Ìƒ|ƒCƒ“ƒg‚ÅŠ„‚İ•s‰Â‚à‰Â”\B
-                      core.asm‚Ì _arch_save_process_registers‚Åcs‚ğ’¼ÚŒ©‚Ä”»’f‚µ‚½‚Ì‚ª—Ç‚©‚Á‚½B‚Å‚à®—‚µ‚È‚¢‚ÆB
+        * kernel.cpp: ¥æ¡¼¥¶¡¼¥×¥í¥»¥¹¡¦¥«¡¼¥Í¥ë¥×¥í¥»¥¹¤ÎÆó¤Ä¤¬Ready¥­¥å¡¼¤Ë¤¢¤ë¾õÂÖ¤Ç¥æ¡¼¥¶¡¼¥×¥í¥»¥¹¤«¤é¤ª¤â¤¤¥·¥¹¥Æ¥à¥³¡¼¥ë¤ò
+                      ¸Æ¤Ö¤È³ä¤ê¹ş¤ß¤òµö²Ä¤·¤Æ¤ê¥¹¥±¥¸¥å¡¼¥ë¤¬²ÄÇ½¤Ë¤Ê¤ë¡£ÆÃÄê¤Î¥İ¥¤¥ó¥È¤Ç³ä¹ş¤ßÉÔ²Ä¤â²ÄÇ½¡£
+                      core.asm¤Î _arch_save_process_registers¤Çcs¤òÄ¾ÀÜ¸«¤ÆÈ½ÃÇ¤·¤¿¤Î¤¬ÎÉ¤«¤Ã¤¿¡£¤Ç¤âÀ°Íı¤·¤Ê¤¤¤È¡£
 
 2003-08-13  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹‚ÌƒoƒO‚Æ‚èI—¹
-          ‚½‚¾‚µƒ†[ƒU[ƒ‚[ƒh‚Å‚ÌƒVƒXƒeƒ€ƒR[ƒ‹‚ÍŠ„‚è‚İ‚Í•s‹–‰Â
+        * kernel.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ë¤Î¥Ğ¥°¤È¤ê½ªÎ»
+          ¤¿¤À¤·¥æ¡¼¥¶¡¼¥â¡¼¥É¤Ç¤Î¥·¥¹¥Æ¥à¥³¡¼¥ë»ş¤Ï³ä¤ê¹ş¤ß¤ÏÉÔµö²Ä
 
 2003-08-10  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒ†[ƒU[ƒ‚[ƒh‚©‚çƒVƒXƒeƒ€ƒR[ƒ‹‚ğÀs‚µ‚½‚Æ‚«‚Ì“®ì‚ª‚¨‚©‚µ‚¢B(’²¸’†)
-                * dispach queue‚Éƒ†[ƒU[ƒvƒƒZƒXƒIƒ“ƒŠ[‚Åsleep‚ğs‚¤‚±‚Æ‚ÅÄŒ»‰Â
-        * kernel.cpp: idleƒvƒƒZƒX‹@\‚ğ’Ç‰Á
+        * ¥æ¡¼¥¶¡¼¥â¡¼¥É¤«¤é¥·¥¹¥Æ¥à¥³¡¼¥ë¤ò¼Â¹Ô¤·¤¿¤È¤­¤ÎÆ°ºî¤¬¤ª¤«¤·¤¤¡£(Ä´ººÃæ)
+                * dispach queue¤Ë¥æ¡¼¥¶¡¼¥×¥í¥»¥¹¥ª¥ó¥ê¡¼¤Çsleep¤ò¹Ô¤¦¤³¤È¤ÇºÆ¸½²Ä
+        * kernel.cpp: idle¥×¥í¥»¥¹µ¡¹½¤òÄÉ²Ã
 
 2003-08-09  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹ƒfƒoƒbƒO’†
+        * Process.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ë¥Ç¥Ğ¥Ã¥°Ãæ
 
 2003-08-07  higepon  <higepon@users.sourceforge.jp>
 
-        * syscalls.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹’†‚ÉŠ„‚İ‹–‰Â‚µ‚Ä‚èƒXƒPƒWƒ…[ƒ‹‚ğ‹–‰Â‚·‚éB
-        * syscalls.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹ÀŒ±—p syscall_heavy‚ğ’Ç‰Á
+        * syscalls.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ëÃæ¤Ë³ä¹ş¤ßµö²Ä¤·¤Æ¤ê¥¹¥±¥¸¥å¡¼¥ë¤òµö²Ä¤¹¤ë¡£
+        * syscalls.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ë¼Â¸³ÍÑ syscall_heavy¤òÄÉ²Ã
 
 2003-08-06  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp: ƒ†[ƒU[ƒ‚[ƒh‚Ö‚Ìƒ^ƒXƒNƒXƒCƒbƒ`‚Éss0, esp0‚ğƒZƒbƒg‚·‚é‚æ‚¤‚É‰ü‘P
+        * ProcessManager.cpp: ¥æ¡¼¥¶¡¼¥â¡¼¥É¤Ø¤Î¥¿¥¹¥¯¥¹¥¤¥Ã¥Á»ş¤Ëss0, esp0¤ò¥»¥Ã¥È¤¹¤ë¤è¤¦¤Ë²şÁ±
 
-        * ProcessManager.cpp: ƒ†[ƒU[ƒvƒƒZƒX¶¬‚ÉƒJ[ƒlƒ‹ƒXƒ^ƒbƒN‚ğŠ„‚è“–‚Ä‚éˆ—‚ğ’Ç‰Á
+        * ProcessManager.cpp: ¥æ¡¼¥¶¡¼¥×¥í¥»¥¹À¸À®»ş¤Ë¥«¡¼¥Í¥ë¥¹¥¿¥Ã¥¯¤ò³ä¤êÅö¤Æ¤ë½èÍı¤òÄÉ²Ã
 
-        * GDTUtil.cpp (setupTSS): g_tss‚ğTSS*‚É‚µ‚½B
+        * GDTUtil.cpp (setupTSS): g_tss¤òTSS*¤Ë¤·¤¿¡£
 
-        * include/Process.h: ss0,esp0‚Ì’Ç‰Á.
+        * include/Process.h: ss0,esp0¤ÎÄÉ²Ã.
 
 2003-07-29  higepon  <higepon@users.sourceforge.jp>
 
-        * MessageServer.cpp: ƒƒbƒZ[ƒWƒT[ƒoƒNƒ‰ƒX‚ğ’Ç‰Á
-        * MessageServer‚ğƒJ[ƒlƒ‹ƒvƒƒZƒX‚Æ‚µ‚ÄƒvƒƒZƒXƒŠƒXƒg‚É’Ç‰Á
+        * MessageServer.cpp: ¥á¥Ã¥»¡¼¥¸¥µ¡¼¥Ğ¥¯¥é¥¹¤òÄÉ²Ã
+        * MessageServer¤ò¥«¡¼¥Í¥ë¥×¥í¥»¥¹¤È¤·¤Æ¥×¥í¥»¥¹¥ê¥¹¥È¤ËÄÉ²Ã
 
 2003-07-28  higepon  <higepon@users.sourceforge.jp>
 
-        * include/Message.h: Queue‚ğŒp³‚µ‚ÄMessage‚ğéŒ¾
+        * include/Message.h: Queue¤ò·Ñ¾µ¤·¤ÆMessage¤òÀë¸À
 
-        * include/Queue.h: ”Ä—pQueueƒNƒ‰ƒX‚ÆŠÇ—ƒNƒ‰ƒX‚ğ’Ç‰ÁB–¢ŒŸØ
+        * include/Queue.h: ÈÆÍÑQueue¥¯¥é¥¹¤È´ÉÍı¥¯¥é¥¹¤òÄÉ²Ã¡£Ì¤¸¡¾Ú
 
 2003-07-26  higepon  <higepon@users.sourceforge.jp>
 
-        * pic.cpp: ƒ^ƒCƒ}Š„‚è‚İ‚ğ10ms–ˆ‚És‚¤‚æ‚¤‚É•ÏX
+        * pic.cpp: ¥¿¥¤¥Ş³ä¤ê¹ş¤ß¤ò10msËè¤Ë¹Ô¤¦¤è¤¦¤ËÊÑ¹¹
 
-        * syscalls.cpp: ƒCƒ“ƒ‰ƒCƒ“ƒAƒZƒ“ƒuƒ‰‚Å‚à#define‚Å’è‹`‚µ‚½‚à‚Ì‚ğg—p‚Å‚«‚é‚æ‚¤‚É‚µ‚½B
+        * syscalls.cpp: ¥¤¥ó¥é¥¤¥ó¥¢¥»¥ó¥Ö¥é¤Ç¤â#define¤ÇÄêµÁ¤·¤¿¤â¤Î¤ò»ÈÍÑ¤Ç¤­¤ë¤è¤¦¤Ë¤·¤¿¡£
 
 2003-07-23  higepon  <higepon@users.sourceforge.jp>
 
-        * core.asm (_arch_save_process_registers): ƒ†[ƒU[ƒ‚[ƒh‚©‚ç‚ÌƒVƒXƒeƒ€ƒR[ƒ‹‚ÌÀ‘•Š®—¹
+        * core.asm (_arch_save_process_registers): ¥æ¡¼¥¶¡¼¥â¡¼¥É¤«¤é¤Î¥·¥¹¥Æ¥à¥³¡¼¥ë¤Î¼ÂÁõ´°Î»
 
 2003-07-21  higepon  <higepon@users.sourceforge.jp>
 
-        * SystemInfo.cpp: RDTSC–½—ß‚ğ—p‚¢‚½ƒpƒtƒH[ƒ}ƒ“ƒXŒv‘ª
+        * SystemInfo.cpp: RDTSCÌ¿Îá¤òÍÑ¤¤¤¿¥Ñ¥Õ¥©¡¼¥Ş¥ó¥¹·×Â¬
 
 2003-07-20  higepon  <higepon@users.sourceforge.jp>
 
-        * Process.cpp: CS,SS,DS‚ÌƒZƒŒƒNƒ^’l‚ğ–„‚ß‚Ü‚È‚¢‚æ‚¤‚É‚µ‚½B
+        * Process.cpp: CS,SS,DS¤Î¥»¥ì¥¯¥¿ÃÍ¤òËä¤á¹ş¤Ş¤Ê¤¤¤è¤¦¤Ë¤·¤¿¡£
 
-        * ProcessManager.cpp: ƒvƒƒZƒX‚ÌƒXƒŠ[ƒv‚ğÀ‘•
+        * ProcessManager.cpp: ¥×¥í¥»¥¹¤Î¥¹¥ê¡¼¥×¤ò¼ÂÁõ
 
 2003-07-19  higepon  <higepon@users.sourceforge.jp>
 
-        * kthread.cpp, kthread.h‚Ì”p~
+        * kthread.cpp, kthread.h¤ÎÇÑ»ß
 
         * kernel.cpp:
 
-        * disp.cpp: ƒ†[ƒU[ƒ‚[ƒh‚ÌÀ‘•¥ƒeƒXƒg¬Œ÷
+        * disp.cpp: ¥æ¡¼¥¶¡¼¥â¡¼¥É¤Î¼ÂÁõ¥¥Æ¥¹¥ÈÀ®¸ù
 
 2003-07-17  higepon  <higepon@users.sourceforge.jp>
 
-        * GDTUtil.cpp: userƒ‚[ƒh‚Ìcs, ds, ss‚ğ’è‹`
+        * GDTUtil.cpp: user¥â¡¼¥É¤Îcs, ds, ss¤òÄêµÁ
 
-        * core.asm (_arch_switch_process): ds‚ğprocess switch‚Ì‘OŒã‚Å•Û‚·‚é‚æ‚¤‚É•ÏX
-                   (_arch_switch_process_dpl_low): ss‚à•Û
-                   (_arch_switch_process_dpl_low): dpl‚ª‰º‚ª‚é‚Æ‚«‚æ‚¤‚Ìtask_switc
+        * core.asm (_arch_switch_process): ds¤òprocess switch¤ÎÁ°¸å¤ÇÊİ»ı¤¹¤ë¤è¤¦¤ËÊÑ¹¹
+                   (_arch_switch_process_dpl_low): ss¤âÊİ»ı
+                   (_arch_switch_process_dpl_low): dpl¤¬²¼¤¬¤ë¤È¤­¤è¤¦¤Îtask_switc
 
-        * Scheduler.cpp: dpl‚ª‰º‚ª‚Á‚½‚©‚Ç‚¤‚©‚ğ”»’f‚·‚éƒƒ\ƒbƒh‚ğ’Ç‰Á
+        * Scheduler.cpp: dpl¤¬²¼¤¬¤Ã¤¿¤«¤É¤¦¤«¤òÈ½ÃÇ¤¹¤ë¥á¥½¥Ã¥É¤òÄÉ²Ã
 
-        * GDTUtil.cpp (setupTSS): ƒ†[ƒU[ƒ‚[ƒh‘Î‰‚Ì€”õ‚Æ‚µ‚ÄTSS#esp0, ss0‚ğ€”õ
+        * GDTUtil.cpp (setupTSS): ¥æ¡¼¥¶¡¼¥â¡¼¥ÉÂĞ±ş¤Î½àÈ÷¤È¤·¤ÆTSS#esp0, ss0¤ò½àÈ÷
 
 2003-07-16  higepon  <higepon@users.sourceforge.jp>
 
-        * disp.cpp: Semaphore, semaphore‚ÌC³
+        * disp.cpp: Semaphore, semaphore¤Î½¤Àµ
 
 2003-07-10  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: ƒvƒƒZƒXƒXƒCƒbƒ`ƒeƒXƒg’† ‚Ü‚ ‚¤‚Ü‚­‚¢‚Á‚Ä‚¢‚é‚©‚à
+        * kernel.cpp: ¥×¥í¥»¥¹¥¹¥¤¥Ã¥Á¥Æ¥¹¥ÈÃæ ¤Ş¤¢¤¦¤Ş¤¯¤¤¤Ã¤Æ¤¤¤ë¤«¤â
 
 2003-07-09  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: make‚Í‚Å‚«‚é‚ªƒvƒƒZƒXƒXƒCƒbƒ`‚Å—‚¿‚Ä‚¢‚é–Í—lB
+        * kernel.cpp: make¤Ï¤Ç¤­¤ë¤¬¥×¥í¥»¥¹¥¹¥¤¥Ã¥Á¤ÇÍî¤Á¤Æ¤¤¤ëÌÏÍÍ¡£
 
 2003-07-08  higepon  <higepon@users.sourceforge.jp>
 
-        * include/global.h: ‚Ü‚½makeo—ˆ‚È‚­‚È‚è‚Ü‚µ‚½Bƒwƒbƒ_‚Ì®—‚ğ‚¹‚Ë‚Î
+        * include/global.h: ¤Ş¤¿make½ĞÍè¤Ê¤¯¤Ê¤ê¤Ş¤·¤¿¡£¥Ø¥Ã¥À¤ÎÀ°Íı¤ò¤»¤Í¤Ğ
 
-        * kernel.cpp: make‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚µ‚½B
+        * kernel.cpp: make¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤ê¤Ş¤·¤¿¡£
 
 2003-07-06  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: make‚Å‚«‚È‚¢ó‘Ô‚¾‚ª‚±‚Ìƒ\[ƒX‚ğ¸‚¤‚Ì‚Í”ñí‚É‚Ü‚¸‚¢‚Ì‚Å‚â‚Ş‚È‚­commit
+        * kernel.cpp: make¤Ç¤­¤Ê¤¤¾õÂÖ¤À¤¬¤³¤Î¥½¡¼¥¹¤ò¼º¤¦¤Î¤ÏÈó¾ï¤Ë¤Ş¤º¤¤¤Î¤Ç¤ä¤à¤Ê¤¯commit
 
-        * Processü‚è‚ğ‰ü—Ç’†
+        * Process¼ş¤ê¤ò²şÎÉÃæ
 
 2003-06-29  higepon  <higepon@users.sourceforge.jp>
 
-        * Scheduler.cpp: ƒXƒPƒWƒ…[ƒ‰’Ç‰Á
+        * Scheduler.cpp: ¥¹¥±¥¸¥å¡¼¥éÄÉ²Ã
 
 2003-06-28  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp: Process‚ğ’Ç‰ÁB
+        * kernel.cpp: Process¤òÄÉ²Ã¡£
 
 2003-06-24  higepon  <higepon@users.sourceforge.jp>
 
-        * include/PagingUtil.h: page‘€ìŒnŠÖ”’Ç‰Á
+        * include/PagingUtil.h: pageÁàºî·Ï´Ø¿ôÄÉ²Ã
 
 2003-06-22  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: pagefaulthandler‚ğ‰ü—ÇBinfo‚ªŒø‚©‚È‚¢‚Ì‚Í‰½ŒÌH
+        * ihandlers.cpp: pagefaulthandler¤ò²şÎÉ¡£info¤¬¸ú¤«¤Ê¤¤¤Î¤Ï²¿¸Î¡©
 
-        * include/PagingUtil.h: ‚¿‚å‚Á‚Æ‰ü—Ç’†
+        * include/PagingUtil.h: ¤Á¤ç¤Ã¤È²şÎÉÃæ
 
 2003-06-15  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandlers.cpp: ƒy[ƒWƒ“ƒO¬Œ÷ ˆÓ}“I‚Éƒy[ƒWƒtƒHƒ‹ƒg‚ğ‹N‚±‚µ‚Ä‚»‚ÌƒŠƒjƒAƒAƒhƒŒƒX‚ğ’²‚×‚éB
+        * ihandlers.cpp: ¥Ú¡¼¥¸¥ó¥°À®¸ù °Õ¿ŞÅª¤Ë¥Ú¡¼¥¸¥Õ¥©¥ë¥È¤òµ¯¤³¤·¤Æ¤½¤Î¥ê¥Ë¥¢¥¢¥É¥ì¥¹¤òÄ´¤Ù¤ë¡£
 
-        * PagingUtil.cpp: ƒy[ƒWƒ“ƒOÀŒ±’†B‚¤‚Ü‚­“®‚©‚È‚¢‚Åkernel.cpp‚ÌPagingUtil::setup()‚ğƒRƒƒ“ƒgƒAƒEƒg‚µ‚Ä‰º‚³‚¢B
+        * PagingUtil.cpp: ¥Ú¡¼¥¸¥ó¥°¼Â¸³Ãæ¡£¤¦¤Ş¤¯Æ°¤«¤Ê¤¤¤Çkernel.cpp¤ÎPagingUtil::setup()¤ò¥³¥á¥ó¥È¥¢¥¦¥È¤·¤Æ²¼¤µ¤¤¡£
 
 2003-06-10  higepon  <higepon@users.sourceforge.jp>
 
-        * PagingUtil.cpp:’Ç‰Á
+        * PagingUtil.cpp:ÄÉ²Ã
 
 2003-06-08  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: cmos‚Å‚àƒƒ‚ƒŠ‘—Ê‚ğ“¾‚é
+        * IA32MemoryManager.cpp: cmos¤Ç¤â¥á¥â¥êÁíÎÌ¤òÆÀ¤ë
 
-        * IDTUtil.cpp,IDTUtil.h’Ç‰Á
+        * IDTUtil.cpp,IDTUtil.hÄÉ²Ã
 
-        * idt.cpp, idt.h‚Ì”p~
+        * idt.cpp, idt.h¤ÎÇÑ»ß
 
-        * IA32MemoryManager.cpp: ƒƒ‚ƒŠg—p—Ê‚ğ•Ô‚·ŠÖ”‚ğ’Ç‰Á
+        * IA32MemoryManager.cpp: ¥á¥â¥ê»ÈÍÑÎÌ¤òÊÖ¤¹´Ø¿ô¤òÄÉ²Ã
 
 2003-06-07  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: GDTŠÖ˜A‚ÌƒR[ƒh‚ğGDTUtil‚ÉˆÚ“®
+        * IA32MemoryManager.cpp: GDT´ØÏ¢¤Î¥³¡¼¥É¤òGDTUtil¤Ë°ÜÆ°
 
-        * GDTUtil.cpp: ƒƒ‚ƒŠü‚è‚Ì®—‚Ì‚½‚ßGDTŠÖ˜A‚ÌƒNƒ‰ƒX
+        * GDTUtil.cpp: ¥á¥â¥ê¼ş¤ê¤ÎÀ°Íı¤Î¤¿¤áGDT´ØÏ¢¤Î¥¯¥é¥¹
 
 2003-05-31  higepon  <higepon@users.sourceforge.jp>
 
-        FAT12ƒu[ƒg‘Î‰
+        FAT12¥Ö¡¼¥ÈÂĞ±ş
 
-        * firstboot.asm : FAT12ƒu[ƒg‘Î‰ ‚®‚è‚Û‚ñ’ñ‹Ÿ‚ÌƒR[ƒh‚ÉBPB‚È‚Ç‚ğ’Ç‰ÁB
-                          ƒfƒoƒbƒOƒ‹[ƒ`ƒ“‚ğíœ
+        * firstboot.asm : FAT12¥Ö¡¼¥ÈÂĞ±ş ¤°¤ê¤İ¤ó»áÄó¶¡¤Î¥³¡¼¥É¤ËBPB¤Ê¤É¤òÄÉ²Ã¡£
+                          ¥Ç¥Ğ¥Ã¥°¥ë¡¼¥Á¥ó¤òºï½ü
 
-        * fat_write.cpp : V‹Kì¬ FAT12.cpp‚ğ‹ìg‚µ‚Ä”z•z—pƒfƒBƒXƒNƒCƒ[ƒW‚ğì¬‚·‚éB
+        * fat_write.cpp : ¿·µ¬ºîÀ® FAT12.cpp¤ò¶î»È¤·¤ÆÇÛÉÛÍÑ¥Ç¥£¥¹¥¯¥¤¥á¡¼¥¸¤òºîÀ®¤¹¤ë¡£
 
-        * Makefile : FAT12ƒCƒ[ƒW‚ğì¬‚·‚é‚½‚ß‚¢‚ë‚¢‚ë‚Æ•ÏX
+        * Makefile : FAT12¥¤¥á¡¼¥¸¤òºîÀ®¤¹¤ë¤¿¤á¤¤¤í¤¤¤í¤ÈÊÑ¹¹
 
-        * secondboot.asm : a20enable‚Ægraphicalmode‚ğfirstboot.asm‚©‚çsecondboot.asm‚ÉˆÚ“®B
+        * secondboot.asm : a20enable¤Ègraphicalmode¤òfirstboot.asm¤«¤ésecondboot.asm¤Ë°ÜÆ°¡£
 
 2003-05-25  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp (FDCTester): g_cosole->printf‚ğŠeƒŒƒxƒ‹‚É‚ ‚í‚¹‚Äinfo()‚É’u‚«Š·‚¦
+        * test_higepon.cpp (FDCTester): g_cosole->printf¤ò³Æ¥ì¥Ù¥ë¤Ë¤¢¤ï¤»¤Æinfo()¤ËÃÖ¤­´¹¤¨
 
-        * info.cpp (info): infoŠÖ”’Ç‰Á:î•ñƒŒƒxƒ‹‚Íg_info_level‚Å•ÏX‰Â”\B
+        * info.cpp (info): info´Ø¿ôÄÉ²Ã:¾ğÊó¥ì¥Ù¥ë¤Ïg_info_level¤ÇÊÑ¹¹²ÄÇ½¡£
 
-        * include/global.h (g_process_name): info‚©‚çQÆ‚·‚éBƒvƒƒZƒX–¼Ì(‰¼)‚ğì¬.
+        * include/global.h (g_process_name): info¤«¤é»²¾È¤¹¤ë¡£¥×¥í¥»¥¹Ì¾¾Î(²¾)¤òºîÀ®.
 
-        * FAT12.cpp: releaseCluster()‘‚«‚İ‚ÌÛ‚Éƒtƒ@ƒCƒ‹ƒTƒCƒY‚ª¬‚³‚­‚È‚Á‚½‚çƒNƒ‰ƒXƒ^‚ğŠJ•ú‚·‚éB
+        * FAT12.cpp: releaseCluster()½ñ¤­¹ş¤ß¤Îºİ¤Ë¥Õ¥¡¥¤¥ë¥µ¥¤¥º¤¬¾®¤µ¤¯¤Ê¤Ã¤¿¤é¥¯¥é¥¹¥¿¤ò³«Êü¤¹¤ë¡£
 
-        * FDCDriver.cpp: DMA“]‘—ƒTƒCƒY‚Í•K‚¸ƒ}ƒCƒiƒX‚·‚é‚±‚Æ!Thanks Sakky@meg-os.org
+        * FDCDriver.cpp: DMAÅ¾Á÷¥µ¥¤¥º¤ÏÉ¬¤º¥Ş¥¤¥Ê¥¹¤¹¤ë¤³¤È!Thanks Sakky@meg-os.org
 
 2003-05-24  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp:motor(ON)‰ü‘P
+        * FDCDriver.cpp:motor(ON)²şÁ±
 
 2003-05-24  .mjt
 
-        * ğ“ú‚Ì‚Q‚Â‚Ì‹Lq‚ÍƒEƒ\
-        * PIC‚Ìİ’èƒ‹[ƒ`ƒ“‚Ìƒ}ƒXƒ^‚ÆƒXƒŒ[ƒu‚ª‹t‚É‚È‚Á‚Ä‚é‚Æ‚±‚ë‚ª‚ ‚Á‚½c
-        * PCIC‚Ì‰Šú‰»‚Í•s\•ª‚È‚Ì‚ÅA‹N“®‚ÉƒJ[ƒh‚ªh‚³‚Á‚Ä‚¢‚È‚¢‚Æ”F¯‚µ‚È‚¢B
+        * ºòÆü¤Î£²¤Ä¤Îµ­½Ò¤Ï¥¦¥½
+        * PIC¤ÎÀßÄê¥ë¡¼¥Á¥ó¤Î¥Ş¥¹¥¿¤È¥¹¥ì¡¼¥Ö¤¬µÕ¤Ë¤Ê¤Ã¤Æ¤ë¤È¤³¤í¤¬¤¢¤Ã¤¿¡Ä
+        * PCIC¤Î½é´ü²½¤ÏÉÔ½½Ê¬¤Ê¤Î¤Ç¡¢µ¯Æ°»ş¤Ë¥«¡¼¥É¤¬»É¤µ¤Ã¤Æ¤¤¤Ê¤¤¤ÈÇ§¼±¤·¤Ê¤¤¡£
 
 2003-05-23  .mjt
 
-        * Š„‚è‚İƒnƒ“ƒhƒ‰‚ÍIRQ 0-7‚ÉŠÖ‚µ‚Ä‚Í³í‚É‹@”\‚µ‚Ä‚¢‚éB
-        * PCIC‚Í‘S‘Rƒ_ƒBIDƒoƒCƒg‚Ì“Ç‚İo‚µ‚Ì‚İ³íB
+        * ³ä¤ê¹ş¤ß¥Ï¥ó¥É¥é¤ÏIRQ 0-7¤Ë´Ø¤·¤Æ¤ÏÀµ¾ï¤Ëµ¡Ç½¤·¤Æ¤¤¤ë¡£
+        * PCIC¤ÏÁ´Á³¥À¥á¡£ID¥Ğ¥¤¥È¤ÎÆÉ¤ß½Ğ¤·¤Î¤ßÀµ¾ï¡£
 
 2003-05-22  .mjt
 
-        * CPU fault‚Ìí—Ş‚ğ•\¦‚·‚é
-        * ƒ}ƒEƒXƒhƒ‰ƒCƒo‘‚«‚©‚¯
-        BUG : Š„‚è‚İ‚ª”­¶‚·‚é‚ÆŠmÀ‚É—‚¿‚é
-                -> IRQHandler‚ÍƒNƒ‰ƒX‚Å‚Í‚È‚­AŠÖ”‚Ö‚Ìƒ|ƒCƒ“ƒ^‚É•ÏX—\’è -> Š®—¹B
-        TODO: ƒIƒuƒWƒFƒNƒg‹@\‚ÌÀ‘•B–¼‘O‚Å‘®«’l‚ğæ“¾‚Å‚«‚é‚æ‚¤‚ÉB
+        * CPU fault¤Î¼ïÎà¤òÉ½¼¨¤¹¤ë
+        * ¥Ş¥¦¥¹¥É¥é¥¤¥Ğ½ñ¤­¤«¤±
+        BUG : ³ä¤ê¹ş¤ß¤¬È¯À¸¤¹¤ë¤È³Î¼Â¤ËÍî¤Á¤ë
+                -> IRQHandler¤Ï¥¯¥é¥¹¤Ç¤Ï¤Ê¤¯¡¢´Ø¿ô¤Ø¤Î¥İ¥¤¥ó¥¿¤ËÊÑ¹¹Í½Äê -> ´°Î»¡£
+        TODO: ¥ª¥Ö¥¸¥§¥¯¥Èµ¡¹½¤Î¼ÂÁõ¡£Ì¾Á°¤ÇÂ°À­ÃÍ¤ò¼èÆÀ¤Ç¤­¤ë¤è¤¦¤Ë¡£
 
 2003-05-22  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: write/read¸”s‚ÌƒŠƒgƒ‰ƒC‹@”\’Ç‰Á
+        * FDCDriver.cpp: write/read¼ºÇÔ»ş¤Î¥ê¥È¥é¥¤µ¡Ç½ÄÉ²Ã
 
 2003-05-21 .mjt
 
-        * IRQ‚ÌŠ„‚è‚İƒnƒ“ƒhƒ‰‚ğIRQ 0-7‚ÍINT 0x60 - 0x67‚ÉˆÚ“®B
+        * IRQ¤Î³ä¤ê¹ş¤ß¥Ï¥ó¥É¥é¤òIRQ 0-7¤ÏINT 0x60 - 0x67¤Ë°ÜÆ°¡£
 
-        * ƒhƒ‰ƒCƒoü‚è‚Í‚¿‚å‚Á‚Æ“€Œ‹ƒ‚[ƒhB
-        * IDEDriver.cpp: CHSƒŠ[ƒhÀ‘•BLBAƒfƒoƒCƒX‚É‘Î‚µ‚ÄCHSƒ‚[ƒh‚ÆLBAƒ‚[ƒh‚ÅƒŠ[ƒhƒeƒXƒgB
-        * IDEDriver.h: ƒCƒ“ƒ^[ƒtƒF[ƒX‚Ì’Ç‰ÁB
-        BUG : ˆê•”‚Ìƒ}ƒVƒ“‚Å—‚¿‚é–â‘è‚Íƒ}ƒVƒ“‘¤–â‘è‚Æ”»’fBBB
-        BUG : driver‚ÌİŒv‚Íƒ}ƒY‚»‚¤B
+        * ¥É¥é¥¤¥Ğ¼ş¤ê¤Ï¤Á¤ç¤Ã¤ÈÅà·ë¥â¡¼¥É¡£
+        * IDEDriver.cpp: CHS¥ê¡¼¥É¼ÂÁõ¡£LBA¥Ç¥Ğ¥¤¥¹¤ËÂĞ¤·¤ÆCHS¥â¡¼¥É¤ÈLBA¥â¡¼¥É¤Ç¥ê¡¼¥É¥Æ¥¹¥È¡£
+        * IDEDriver.h: ¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹¤ÎÄÉ²Ã¡£
+        BUG : °ìÉô¤Î¥Ş¥·¥ó¤ÇÍî¤Á¤ëÌäÂê¤Ï¥Ş¥·¥óÂ¦ÌäÂê¤ÈÈ½ÃÇ¡£¡£¡£
+        BUG : driver¤ÎÀß·×¤Ï¥Ş¥º¤½¤¦¡£
 
-        CHS“Ç‚İ‚İ‚Í–â‘è‚È‚³‚°Bƒ}ƒEƒXƒhƒ‰ƒCƒo‚ÍİŒv‚ªƒ}ƒY‚¢‚Ì‚ÅPS2Driver‚Æ‚µ‚Äƒ}ƒEƒX‚ÆƒL[ƒ{[ƒhˆê‚É§Œä‚Ì•ûŒü‚ÅB
+        CHSÆÉ¤ß¹ş¤ß¤ÏÌäÂê¤Ê¤µ¤²¡£¥Ş¥¦¥¹¥É¥é¥¤¥Ğ¤ÏÀß·×¤¬¥Ş¥º¤¤¤Î¤ÇPS2Driver¤È¤·¤Æ¥Ş¥¦¥¹¤È¥­¡¼¥Ü¡¼¥É°ì½ï¤ËÀ©¸æ¤ÎÊı¸ş¤Ç¡£
 
 2003-05-21  higepon  <higepon@users.sourceforge.jp>
 
-        * FDCDriver.cpp: ‚¢‚Ü‚¾À‹@‚ÅˆÀ’è‚µ‚½“Ç‚İ‘‚«‚ª‚Å‚«‚È‚¢BŠ„‚è‚İ‚ğ‚«‚¿‚ñ‚ÆƒLƒƒƒbƒ`‚·‚é‚±‚Æ‚ª•K—vB
-                         readResults‚ÅŠ„‚è‚İ‚ª“ü‚é‚Ì‚ª“ä
+        * FDCDriver.cpp: ¤¤¤Ş¤À¼Âµ¡¤Ç°ÂÄê¤·¤¿ÆÉ¤ß½ñ¤­¤¬¤Ç¤­¤Ê¤¤¡£³ä¤ê¹ş¤ß¤ò¤­¤Á¤ó¤È¥­¥ã¥Ã¥Á¤¹¤ë¤³¤È¤¬É¬Í×¡£
+                         readResults¤Ç³ä¤ê¹ş¤ß¤¬Æş¤ë¤Î¤¬Ææ
 
 2003-05-20  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: FDCDriver#read‚ªlba=0‚Å‚¤‚Ü‚­“®ì‚¹‚¸B0Š„‚ğƒRƒ“ƒgƒ[ƒ‹‚¹‚Ë‚Î
+        * FAT12.cpp: FDCDriver#read¤¬lba=0¤Ç¤¦¤Ş¤¯Æ°ºî¤»¤º¡£0³ä¤ò¥³¥ó¥È¥í¡¼¥ë¤»¤Í¤Ğ
 
 
 2003-05-20 .mjt
-        * driver/ISADevice/Mouse/*: V‹KBƒ}ƒEƒXƒhƒ‰ƒCƒo(‘‚«‚©‚¯
-        * IRQƒCƒ“ƒ^ƒtƒF[ƒX‚Ì®”õBƒhƒ‰ƒCƒo‚ÍŠù‚É‘‚¯‚È‚­‚à‚È‚¢B–¢ƒeƒXƒg
-        BUG: ƒ}ƒEƒXƒhƒ‰ƒCƒo‚ªƒ}ƒEƒX‚ğƒCƒl[ƒuƒ‹‚É‚µ‚Ä‚È‚¢B
+        * driver/ISADevice/Mouse/*: ¿·µ¬¡£¥Ş¥¦¥¹¥É¥é¥¤¥Ğ(½ñ¤­¤«¤±
+        * IRQ¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤ÎÀ°È÷¡£¥É¥é¥¤¥Ğ¤Ï´û¤Ë½ñ¤±¤Ê¤¯¤â¤Ê¤¤¡£Ì¤¥Æ¥¹¥È
+        BUG: ¥Ş¥¦¥¹¥É¥é¥¤¥Ğ¤¬¥Ş¥¦¥¹¤ò¥¤¥Í¡¼¥Ö¥ë¤Ë¤·¤Æ¤Ê¤¤¡£
 
 2003-05-19 .mjt
 
-        * “®“IIRQƒnƒ“ƒhƒ‰•ÏX‚Ì‚½‚ß‚ÌÀŒ±ƒR[ƒhŠô‚Â‚©‚É“n‚Á‚Ä’Ç‰ÁB
-        * ‚Ü‚½Aihandlers.cpp‚Æ‚©‚à‚©‚È‚è‰˜‚­‚È‚è‚Ü‚µ‚½(—Ü
-        * Makefile:(©•ªê—p‚Ì)ƒrƒ‹ƒhƒ^[ƒQƒbƒg write’Ç‰ÁBall‚ğƒrƒ‹ƒhŒãA/dev/fd0‚Ö‚Ì‘‚«‚İ‚ğs‚¤(Šm”F‚È‚µ)B
-        * Makefile: XVBcygwinŠÂ‹«‚Å‚Ìƒrƒ‹ƒhAmake‚Ì‚İ‚Å³ímake‰Â”\(env.local)B
-        * sysresource.cpp: V‹KB
-        * sysresource.h: V‹KBIRQ‚Ì‰¼‚ÌƒNƒ‰ƒXB
-        * ISADriver.*: V‹KBISAƒoƒX‚ÌƒIƒuƒWƒFƒNƒgB
-        * include/driver: V‹KBƒhƒ‰ƒCƒoƒCƒ“ƒ^[ƒtƒF[ƒXB‘¼ƒvƒ‰ƒbƒgƒtƒH[ƒ€‚Æ‚Ì‹¤—L‚à‹–ì‚É“ü‚ê‚Ä•ª—£B
-        * HowToBuild: XVB
-        * env.local: V‹KB‰½‚ç‚©‚Ìİ’èƒXƒNƒŠƒvƒg‚Ìo—Í‚·‚×‚«makefileƒwƒbƒ_•”BŒ»İ‚ÍŒÅ’èB
-        * mjt_test.cpp: CMOS“Ç‚İo‚µ‚ÌƒeƒXƒgBŠg’£ƒƒ‚ƒŠƒTƒCƒY‚Ìæ“¾B
-        * IDEDriver.cpp: ‹N“®‚ÉdiagƒRƒ}ƒ“ƒh‚ğÀs‚µ‚È‚¢‚æ‚¤‚É‚µ‚½(Bochs‘Îô) ‚»‚Ì‘¼×‚©‚¢C³B
-        BUG : ˆê•”‚Ìƒ}ƒVƒ“‚Å‹N“®‚µ‚È‚¢(IPL’¼Œã‚ÉƒŠƒu[ƒg)
-        BUG : IRQ‚ÌŠ„‚è‚İƒnƒ“ƒhƒ‰‚ÆCPU‚ÌŠ„‚è‚İƒnƒ“ƒhƒ‰‚ª‚¯‚Á‚±‚¤”í‚Á‚Ä‚¢‚éB
-        BUG : env.local‚ªCVS‚ÌXV‘ÎÛ‚É‚È‚Á‚Ä‚¢‚é(env.local‚ª‘¶İ‚µ‚È‚¢‚Æmakeo—ˆ‚È‚¢‚½‚ßB
+        * Æ°ÅªIRQ¥Ï¥ó¥É¥éÊÑ¹¹¤Î¤¿¤á¤Î¼Â¸³¥³¡¼¥É´ö¤Ä¤«¤ËÅÏ¤Ã¤ÆÄÉ²Ã¡£
+        * ¤Ş¤¿¡¢ihandlers.cpp¤È¤«¤â¤«¤Ê¤ê±ø¤¯¤Ê¤ê¤Ş¤·¤¿(ÎŞ
+        * Makefile:(¼«Ê¬ÀìÍÑ¤Î)¥Ó¥ë¥É¥¿¡¼¥²¥Ã¥È writeÄÉ²Ã¡£all¤ò¥Ó¥ë¥É¸å¡¢/dev/fd0¤Ø¤Î½ñ¤­¹ş¤ß¤ò¹Ô¤¦(³ÎÇ§¤Ê¤·)¡£
+        * Makefile: ¹¹¿·¡£cygwin´Ä¶­¤Ç¤Î¥Ó¥ë¥É»ş¡¢make¤Î¤ß¤ÇÀµ¾ïmake²ÄÇ½(env.local)¡£
+        * sysresource.cpp: ¿·µ¬¡£
+        * sysresource.h: ¿·µ¬¡£IRQ¤Î²¾¤Î¥¯¥é¥¹¡£
+        * ISADriver.*: ¿·µ¬¡£ISA¥Ğ¥¹¤Î¥ª¥Ö¥¸¥§¥¯¥È¡£
+        * include/driver: ¿·µ¬¡£¥É¥é¥¤¥Ğ¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹¡£Â¾¥×¥é¥Ã¥È¥Õ¥©¡¼¥à¤È¤Î¶¦Í­¤â»ëÌî¤ËÆş¤ì¤ÆÊ¬Î¥¡£
+        * HowToBuild: ¹¹¿·¡£
+        * env.local: ¿·µ¬¡£²¿¤é¤«¤ÎÀßÄê¥¹¥¯¥ê¥×¥È¤Î½ĞÎÏ¤¹¤Ù¤­makefile¥Ø¥Ã¥ÀÉô¡£¸½ºß¤Ï¸ÇÄê¡£
+        * mjt_test.cpp: CMOSÆÉ¤ß½Ğ¤·¤Î¥Æ¥¹¥È¡£³ÈÄ¥¥á¥â¥ê¥µ¥¤¥º¤Î¼èÆÀ¡£
+        * IDEDriver.cpp: µ¯Æ°»ş¤Ëdiag¥³¥Ş¥ó¥É¤ò¼Â¹Ô¤·¤Ê¤¤¤è¤¦¤Ë¤·¤¿(BochsÂĞºö) ¤½¤ÎÂ¾ºÙ¤«¤¤½¤Àµ¡£
+        BUG : °ìÉô¤Î¥Ş¥·¥ó¤Çµ¯Æ°¤·¤Ê¤¤(IPLÄ¾¸å¤Ë¥ê¥Ö¡¼¥È)
+        BUG : IRQ¤Î³ä¤ê¹ş¤ß¥Ï¥ó¥É¥é¤ÈCPU¤Î³ä¤ê¹ş¤ß¥Ï¥ó¥É¥é¤¬¤±¤Ã¤³¤¦Èï¤Ã¤Æ¤¤¤ë¡£
+        BUG : env.local¤¬CVS¤Î¹¹¿·ÂĞ¾İ¤Ë¤Ê¤Ã¤Æ¤¤¤ë(env.local¤¬Â¸ºß¤·¤Ê¤¤¤Èmake½ĞÍè¤Ê¤¤¤¿¤á¡£
 
 2003-05-18  higepon  <higepon@users.sourceforge.jp>
 
-        * test_higepon.cpp:Write˜A‘±‚ª‰Â”\‚É
+        * test_higepon.cpp:WriteÏ¢Â³¤¬²ÄÇ½¤Ë
 
-        * MakeFile‰ü—Ç ŠÂ‹«•Ï”MONA_DEVELOPER‚ğQÆ‚µ‚Ü‚·B
+        * MakeFile²şÎÉ ´Ä¶­ÊÑ¿ôMONA_DEVELOPER¤ò»²¾È¤·¤Ş¤¹¡£
 
-        * FDCDriver.cpp: DiskDriver‚Ìlba‚ğintËdword
+        * FDCDriver.cpp: DiskDriver¤Îlba¤òint¢Ídword
 
-        * kernel.cpp: À‹@‚Ìread/writeƒeƒXƒg’†recalibrate‚ªd—v
+        * kernel.cpp: ¼Âµ¡¤Îread/write¥Æ¥¹¥ÈÃærecalibrate¤¬½ÅÍ×
 
-        * FDCDriver.cpp: lbaToTHSC³B‚±‚¢‚Â‚ªŠÔˆá‚Á‚Ä‚¢‚½‚¨‚©‚°‚Å‚¢‚ë‚¢‚ë¢‚Á‚½B
+        * FDCDriver.cpp: lbaToTHS½¤Àµ¡£¤³¤¤¤Ä¤¬´Ö°ã¤Ã¤Æ¤¤¤¿¤ª¤«¤²¤Ç¤¤¤í¤¤¤íº¤¤Ã¤¿¡£
 
 2003-05-18  .mjt
 
-        * IDEDriver.*:IDEƒhƒ‰ƒCƒoì¬ŠJnB
-        * IDEDriver.cpp: LBAƒ‚[ƒh‚ÌƒTƒ|[ƒg‚ÆRead‚Ì‰¼À‘•
-        * kernel.cpp: IDE Driver‚ÌƒeƒXƒg
-        * ƒXƒŒƒbƒhŠÇ—‹@\‚ğ‘å•ªƒRƒƒ“ƒgƒAƒEƒg‚µ‚½B
-        * ToDo:BlockDeviceƒNƒ‰ƒX‚ÌİŒv/auqireIRQ‘¼Š„‚è‚İŒnƒCƒ“ƒ^[ƒtƒF[ƒX‚Ìƒ}[ƒW
+        * IDEDriver.*:IDE¥É¥é¥¤¥ĞºîÀ®³«»Ï¡£
+        * IDEDriver.cpp: LBA¥â¡¼¥É¤Î¥µ¥İ¡¼¥È¤ÈRead¤Î²¾¼ÂÁõ
+        * kernel.cpp: IDE Driver¤Î¥Æ¥¹¥È
+        * ¥¹¥ì¥Ã¥É´ÉÍıµ¡¹½¤òÂçÊ¬¥³¥á¥ó¥È¥¢¥¦¥È¤·¤¿¡£
+        * ToDo:BlockDevice¥¯¥é¥¹¤ÎÀß·×/auqireIRQÂ¾³ä¤ê¹ş¤ß·Ï¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹¤Î¥Ş¡¼¥¸
 
 2003-05-17  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: readƒRƒ}ƒ“ƒh‚ÌEOT‚Í0x12‚Å‚æ‚¢‚Ì‚©‚ÈB
+        * FAT12.cpp: read¥³¥Ş¥ó¥É¤ÎEOT¤Ï0x12¤Ç¤è¤¤¤Î¤«¤Ê¡£
 
 2003-05-10  higepon  <higepon@users.sourceforge.jp>
 
-        * operator.cpp: free()‚ğÀ‘•B
+        * operator.cpp: free()¤ò¼ÂÁõ¡£
 
-        * FAT12.cpp: write(),close()‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
+        * FAT12.cpp: write(),close()¤Î¥ê¥Õ¥¡¥¯¥¿¥ê¥ó¥°
 
-        * FAT12.cpp: createFile()‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
+        * FAT12.cpp: createFile()¤Î¥ê¥Õ¥¡¥¯¥¿¥ê¥ó¥°
 
 2003-05-05  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: write(buf, size)Š®¬
+        * FAT12.cpp: write(buf, size)´°À®
 
 2003-05-04  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: createFile()¬Œ÷
+        * FAT12.cpp: createFile()À®¸ù
 
 2003-05-02  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: FAT‚ÌƒTƒCƒY‚Íbpb‚É‚Á‚Ä‚¢‚é‚Ì‚Åfat—pƒoƒbƒtƒ@‚Íƒƒ‚ƒŠ‚ğ“®“I‚É‹‚ß‚é‚æ‚¤‚É‚µ‚½B
-        * FAT12.cpp: ƒNƒ‰ƒXƒ^‚Ìó‘Ô‚ğBitMap‚É‚à‚Â‚æ‚¤‚É‚µ‚½B
+        * FAT12.cpp: FAT¤Î¥µ¥¤¥º¤Ïbpb¤Ë»ı¤Ã¤Æ¤¤¤ë¤Î¤ÇfatÍÑ¥Ğ¥Ã¥Õ¥¡¤Ï¥á¥â¥ê¤òÆ°Åª¤Ëµá¤á¤ë¤è¤¦¤Ë¤·¤¿¡£
+        * FAT12.cpp: ¥¯¥é¥¹¥¿¤Î¾õÂÖ¤òBitMap¤Ë¤â¤Ä¤è¤¦¤Ë¤·¤¿¡£
 
 2003-04-29  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp  open(),read()‚ÌÀ‘•
+        * FAT12.cpp  open(),read()¤Î¼ÂÁõ
 
-        * FAT12.cpp  changeDirectoryŠ®¬
+        * FAT12.cpp  changeDirectory´°À®
 
-        * string.cpp strtok‰ü—Ç
+        * string.cpp strtok²şÎÉ
 
 2003-04-27  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: changeDirectoryRelative‚Ìƒ‹[ƒgƒGƒ“ƒgƒŠ[”Å‚ğ‚È‚ñ‚Æ‚È‚­À‘•
+        * FAT12.cpp: changeDirectoryRelative¤Î¥ë¡¼¥È¥¨¥ó¥È¥ê¡¼ÈÇ¤ò¤Ê¤ó¤È¤Ê¤¯¼ÂÁõ
 
 2003-04-21  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: Å‹ßXV’â‘Ø‹C–¡‚Å‚·‚ËBƒfƒBƒŒƒNƒgƒŠAƒtƒ@ƒCƒ‹“Ç‚İæ‚è‚Ì
-                     •û–@‚Í•ª‚©‚Á‚½‚Ì‚ÅÀ‘•’†B
+        * FAT12.cpp: ºÇ¶á¹¹¿·ÄäÂÚµ¤Ì£¤Ç¤¹¤Í¡£¥Ç¥£¥ì¥¯¥È¥ê¡¢¥Õ¥¡¥¤¥ëÆÉ¤ß¼è¤ê¤Î
+                     ÊıË¡¤ÏÊ¬¤«¤Ã¤¿¤Î¤Ç¼ÂÁõÃæ¡£
 
 2003-04-13  higepon  <higepon@users.sourceforge.jp>
 
-        * FAT12.cpp: ƒ‹[ƒgƒGƒ“ƒgƒŠ‚Ìæ“¾‚É¬Œ÷
+        * FAT12.cpp: ¥ë¡¼¥È¥¨¥ó¥È¥ê¤Î¼èÆÀ¤ËÀ®¸ù
 
-        * include/FAT12.h: fat12À‘•’†
+        * include/FAT12.h: fat12¼ÂÁõÃæ
 
 2003-03-29  higepon  <higepon@users.sourceforge.jp>
 
-        * Semaphore.cpp: Semaphore‚ğƒNƒ‰ƒX‚É‚µ‚½B
+        * Semaphore.cpp: Semaphore¤ò¥¯¥é¥¹¤Ë¤·¤¿¡£
 
 2003-03-22  higepon  <higepon@users.sourceforge.jp>
 
-        * disp.cpp: semaphore‚É‚æ‚éA•`‰æƒŠƒ\[ƒXƒƒbƒNÀŒ±¬Œ÷
+        * disp.cpp: semaphore¤Ë¤è¤ë¡¢ÉÁ²è¥ê¥½¡¼¥¹¥í¥Ã¥¯¼Â¸³À®¸ù
 
-        * syscalls.cpp: ƒVƒXƒeƒ€ƒR[ƒ‹
+        * syscalls.cpp: ¥·¥¹¥Æ¥à¥³¡¼¥ë
 
-        * kthread.cpp: ƒJ[ƒlƒ‹ƒXƒŒƒbƒhÀ‘•
+        * kthread.cpp: ¥«¡¼¥Í¥ë¥¹¥ì¥Ã¥É¼ÂÁõ
 
 2003-03-09  higepon  <higepon@users.sourceforge.jp>
 
-        * kthread.cpp: 4‚Â‚ÌƒXƒŒƒbƒh‚ğ“®‚©‚·‚±‚Æ‚É¬Œ÷
+        * kthread.cpp: 4¤Ä¤Î¥¹¥ì¥Ã¥É¤òÆ°¤«¤¹¤³¤È¤ËÀ®¸ù
 
 2003-03-08  higepon  <higepon@users.sourceforge.jp>
 
-        * pic.cpp: PIC‰Šú‰»ˆ—‚ğ‚¢‚Ü‚³‚çì¬
+        * pic.cpp: PIC½é´ü²½½èÍı¤ò¤¤¤Ş¤µ¤éºîÀ®
 
 2003-03-07  higepon  <higepon@users.sourceforge.jp>
 
-        * mode12h.asm (_write_font): font•ÏX(by Guripon)
+        * mode12h.asm (_write_font): fontÊÑ¹¹(by Guripon)
 
 2003-03-02  higepon  <higepon@users.sourceforge.jp>
 
-        * kthread.cpp: thread_idle’Ç‰Á
+        * kthread.cpp: thread_idleÄÉ²Ã
 
 2003-03-01  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandler.asm (_arch_timerhandler): ƒ^ƒCƒ}Š„‚è‚İ‚ÉƒŒƒWƒXƒ^‚ğƒZ[ƒu
+        * ihandler.asm (_arch_timerhandler): ¥¿¥¤¥Ş³ä¤ê¹ş¤ß»ş¤Ë¥ì¥¸¥¹¥¿¤ò¥»¡¼¥Ö
 
-        * include/kthread.h: kthread “ÁŒ ƒŒƒxƒ‹ƒXƒŒƒbƒhì¬
+        * include/kthread.h: kthread ÆÃ¸¢¥ì¥Ù¥ë¥¹¥ì¥Ã¥ÉºîÀ®
 
 2003-02-28  higepon  <higepon@users.sourceforge.jp>
 
-        * boot.macíœ
+        * boot.macºï½ü
 
-        * FDCDriver.cpp:íœ
+        * FDCDriver.cpp:ºï½ü
 
-        * MFDCDriver.cpp: FD read À‹@¬Œ÷ƒo[ƒWƒ‡ƒ“
+        * MFDCDriver.cpp: FD read ¼Âµ¡À®¸ù¥Ğ¡¼¥¸¥ç¥ó
 
-        * Guripon‚ÌƒXƒNƒ[ƒ‹‰ü‘P
+        * Guripon»á¤Î¥¹¥¯¥í¡¼¥ë²şÁ±
 
-        * MFDCDriver.cpp: FD write À‹@¬Œ÷ƒo[ƒWƒ‡ƒ“
+        * MFDCDriver.cpp: FD write ¼Âµ¡À®¸ù¥Ğ¡¼¥¸¥ç¥ó
 
 2003-02-25  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandler.asm (_arch_timerhandler): ’Ç‰Á
+        * ihandler.asm (_arch_timerhandler): ÄÉ²Ã
 
-        * ihandler.asm (_arch_dummyhandler): ’Ç‰Á
+        * ihandler.asm (_arch_dummyhandler): ÄÉ²Ã
 
 
 2003-02-24  higepon  <higepon@users.sourceforge.jp>
 
-        * ihandler.asm (_arch_fdchandler): Š„‚è‚İƒnƒ“ƒhƒ‰‚ğ­‚µ‚¸‚ÂƒAƒZƒ“ƒuƒ‰‚ÉˆÚs
+        * ihandler.asm (_arch_fdchandler): ³ä¤ê¹ş¤ß¥Ï¥ó¥É¥é¤ò¾¯¤·¤º¤Ä¥¢¥»¥ó¥Ö¥é¤Ë°Ü¹Ô
 
 2003-02-23  higepon  <higepon@users.sourceforge.jp>
 
-        * GraphicalConsole.cpp: ƒJ[ƒ\ƒ‹ŠÖ˜A‚ÌƒoƒOƒtƒBƒbƒNƒX
+        * GraphicalConsole.cpp: ¥«¡¼¥½¥ë´ØÏ¢¤Î¥Ğ¥°¥Õ¥£¥Ã¥¯¥¹
 
-        * IA32MemoryManager.cpp:ƒJ[ƒlƒ‹ƒƒ‚ƒŠƒ}ƒbƒv‚Ì•ÏX
+        * IA32MemoryManager.cpp:¥«¡¼¥Í¥ë¥á¥â¥ê¥Ş¥Ã¥×¤ÎÊÑ¹¹
 
 2003-02-22  higepon  <higepon@users.sourceforge.jp>
 
-        * GraphicalConsole.cpp:write_font‚Ìƒ‰ƒbƒp[‚Å‚·B
+        * GraphicalConsole.cpp:write_font¤Î¥é¥Ã¥Ñ¡¼¤Ç¤¹¡£
 
 2003-02-21  guripon  <guripon@users.sourceforge.jp>
 
-        * mode12h.asm‚ğ’Ç‰Á ‚±‚ê‚É‚æ‚è‚¢‚ë‚¢‚ë‚¨‚¢‚µ‚­‚È‚è‚Ü‚·B
+        * mode12h.asm¤òÄÉ²Ã ¤³¤ì¤Ë¤è¤ê¤¤¤í¤¤¤í¤ª¤¤¤·¤¯¤Ê¤ê¤Ş¤¹¡£
 
 2003-02-20  higepon  <higepon@users.sourceforge.jp>
 
-        * MFDCDriver.cpp: read¬Œ÷.À‹@‚Å‰ö‚µ‚¢“®ì‚ªEEE
+        * MFDCDriver.cpp: readÀ®¸ù.¼Âµ¡¤Ç²ø¤·¤¤Æ°ºî¤¬¡¦¡¦¡¦
 
 2003-02-16  higepon  <higepon@users.sourceforge.jp>
 
-        * Makefile (SOURCES): cygwin.env•ÏX nasmw->nasm
+        * Makefile (SOURCES): cygwin.envÊÑ¹¹ nasmw->nasm
 
 2003-02-15  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: allocateMemory()‚ÌÅ‘åƒAƒhƒŒƒX‚ğ0x150000
+        * IA32MemoryManager.cpp: allocateMemory()¤ÎºÇÂç¥¢¥É¥ì¥¹¤ò0x150000
 
 2003-02-14  higepon  <higepon@users.sourceforge.jp>
 
-        * MFDCDriver.cpp: seek‚Ü‚ÅÀ‘•Š®—¹
+        * MFDCDriver.cpp: seek¤Ş¤Ç¼ÂÁõ´°Î»
 
 2003-02-10  higepon  <higepon@users.sourceforge.jp>
 
@@ -1637,180 +1639,180 @@
 
 2003-02-09  higepon  <higepon@users.sourceforge.jp>
 
-        * MFDCDriver.cpp: FDCDriver‚ğˆê‚©‚ç‘‚«’¼‚µn‚ß‚éB
+        * MFDCDriver.cpp: FDCDriver¤ò°ì¤«¤é½ñ¤­Ä¾¤·»Ï¤á¤ë¡£
 
 2003-02-03  higepon  <higepon@users.sourceforge.jp>
 
-        * include/ProcessManager.h: Process‚ğ\‘¢‘Ì‚©‚çƒNƒ‰ƒX‚É•ÏX
+        * include/ProcessManager.h: Process¤ò¹½Â¤ÂÎ¤«¤é¥¯¥é¥¹¤ËÊÑ¹¹
 
 2003-02-02  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp (initProcess): 3‚Â‚Ìƒ^ƒXƒN‚ğÀs‚·‚é‚æ‚¤•ÏXB
+        * ProcessManager.cpp (initProcess): 3¤Ä¤Î¥¿¥¹¥¯¤ò¼Â¹Ô¤¹¤ë¤è¤¦ÊÑ¹¹¡£
 
-        * ƒ^ƒXƒNØ‚è‘Ö‚¦‚Ì‚ÉƒŒƒWƒXƒ^‚ğ\‘¢‘Ì‚É‘Ş”ğ‚·‚é‚æ‚¤‚É•ÏXB
+        * ¥¿¥¹¥¯ÀÚ¤êÂØ¤¨¤Î»ş¤Ë¥ì¥¸¥¹¥¿¤ò¹½Â¤ÂÎ¤ËÂàÈò¤¹¤ë¤è¤¦¤ËÊÑ¹¹¡£
 
 2003-02-01  higepon  <higepon@users.sourceforge.jp>
 
-        * include/ProcessManager.h (_saveRegisters): ƒŒƒWƒXƒ^ƒZ[ƒu—p‚Ìƒ}ƒNƒ‚ğ’Ç‰Á
+        * include/ProcessManager.h (_saveRegisters): ¥ì¥¸¥¹¥¿¥»¡¼¥ÖÍÑ¤Î¥Ş¥¯¥í¤òÄÉ²Ã
 
 2003-01-31  higepon  <higepon@users.sourceforge.jp>
 
-        * include/ProcessManager.h struct Process‚Éƒƒ“ƒo’Ç‰ÁB
+        * include/ProcessManager.h struct Process¤Ë¥á¥ó¥ĞÄÉ²Ã¡£
 
-        * _sysUnlock,_sysLock()‚ğ–¼‘O•ÏX
+        * _sysUnlock,_sysLock()¤òÌ¾Á°ÊÑ¹¹
 
-        * Semaphore.cpp: ƒZƒ}ƒtƒHƒNƒ‰ƒX‚ÌƒXƒPƒ‹ƒgƒ“’Ç‰Á
+        * Semaphore.cpp: ¥»¥Ş¥Õ¥©¥¯¥é¥¹¤Î¥¹¥±¥ë¥È¥óÄÉ²Ã
 
 2003-01-28  higepon  <higepon@users.sourceforge.jp>
 
-        * include/ProcessManager.h (_switchProcess): pop %%eaxC³
+        * include/ProcessManager.h (_switchProcess): pop %%eax½¤Àµ
 
 2003-01-27  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: enableA20()”p~ secondboot.asm‚ÉˆÚs
+        * IA32MemoryManager.cpp: enableA20()ÇÑ»ß secondboot.asm¤Ë°Ü¹Ô
 2003-01-26  higepon  <higepon@users.sourceforge.jp>
 
         * KeyBoardManager.cpp:getCharacter();
 
-        * monaKernel.cpp: printOK’Ç‰Á
-                          printBanner’Ç‰Á
+        * monaKernel.cpp: printOKÄÉ²Ã
+                          printBannerÄÉ²Ã
 
 2003-01-25  higepon  <higepon@users.sourceforge.jp>
 
-        * Mona develop beta 0.02bƒŠƒŠ[ƒX
+        * Mona develop beta 0.02b¥ê¥ê¡¼¥¹
 
-        * monaKernel.cpp: ”wŒiFE•¶šF‚ğ•ÏX
+        * monaKernel.cpp: ÇØ·Ê¿§¡¦Ê¸»ú¿§¤òÊÑ¹¹
 
-        * monaIhandler.cpp: ƒXƒ^ƒbƒNØ‚è‘Ö‚¦ƒeƒXƒg‚É¬Œ÷
+        * monaIhandler.cpp: ¥¹¥¿¥Ã¥¯ÀÚ¤êÂØ¤¨¥Æ¥¹¥È¤ËÀ®¸ù
 
 2003-01-24  higepon  <higepon@users.sourceforge.jp>
 
-        * monaIhandler.cpp: ƒXƒ^ƒbƒNÀŒ±’†‚Ü‚Æ‚à‚É“®‚«‚Ü‚¹‚ñB
+        * monaIhandler.cpp: ¥¹¥¿¥Ã¥¯¼Â¸³Ãæ¤Ş¤È¤â¤ËÆ°¤­¤Ş¤»¤ó¡£
 
 2003-01-19  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp: ƒ^ƒXƒNƒXƒCƒbƒ`ÀŒ±’†‚É‚Â‚«‚ ‚Ü‚è“®‚«‚Ü‚¹‚ñB
+        * ProcessManager.cpp: ¥¿¥¹¥¯¥¹¥¤¥Ã¥Á¼Â¸³Ãæ¤Ë¤Ä¤­¤¢¤Ş¤êÆ°¤­¤Ş¤»¤ó¡£
 
 2003-01-16  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp: TSS‚ğg‚í‚È‚¢ƒ^ƒXƒNƒXƒCƒbƒ`ÀŒ±‚É¬Œ÷
+        * ProcessManager.cpp: TSS¤ò»È¤ï¤Ê¤¤¥¿¥¹¥¯¥¹¥¤¥Ã¥Á¼Â¸³¤ËÀ®¸ù
 
 2003-01-14  higepon  <higepon@users.sourceforge.jp>
 
-        * monaVga.cpp:_sys_printf() %x‚ğ‰ü‘P
+        * monaVga.cpp:_sys_printf() %x¤ò²şÁ±
 
-        * _sysdump()ƒ}ƒNƒ’Ç‰Á: ŒÄ‚Ño‚³‚ê‚½“_‚Å‚ÌƒŒƒWƒXƒ^‚ğ•\¦‚µ‚Ü‚·B
+        * _sysdump()¥Ş¥¯¥íÄÉ²Ã: ¸Æ¤Ó½Ğ¤µ¤ì¤¿»şÅÀ¤Ç¤Î¥ì¥¸¥¹¥¿¤òÉ½¼¨¤·¤Ş¤¹¡£
 
 2003-01-13  higepon  <higepon@users.sourceforge.jp>
 
         * ProcessManager.cpp
 
-        * ƒƒ‚FŠÖ”ŒÄ‚Ño‚µ
-          ŒÄ‚Ño‚³‚ê‚½ŠÖ”‚ÍEBP‚©‚ç‚Ì‘Š‘ÎˆÊ’u‚Åƒpƒ‰ƒ[ƒ^‚ÉƒAƒNƒZƒX‚·‚éB
-          dword[EBP]  :EBP‚ª•Û‚µ‚Ä‚¢‚½‘O‚Ì’l
-          dword[EBP+4]:ŒÄ‚Ño‚µŒ³‚Åpush‚³‚ê‚Ä‚¢‚½ƒŠƒ^[ƒ“ƒAƒhƒŒƒX
-          dwodd[EBP+8]:‘æˆêƒpƒ‰ƒ[ƒ^
+        * ¥á¥â¡§´Ø¿ô¸Æ¤Ó½Ğ¤·
+          ¸Æ¤Ó½Ğ¤µ¤ì¤¿´Ø¿ô¤ÏEBP¤«¤é¤ÎÁêÂĞ°ÌÃÖ¤Ç¥Ñ¥é¥á¡¼¥¿¤Ë¥¢¥¯¥»¥¹¤¹¤ë¡£
+          dword[EBP]  :EBP¤¬Êİ»ı¤·¤Æ¤¤¤¿Á°¤ÎÃÍ
+          dword[EBP+4]:¸Æ¤Ó½Ğ¤·¸µ¤Çpush¤µ¤ì¤Æ¤¤¤¿¥ê¥¿¡¼¥ó¥¢¥É¥ì¥¹
+          dwodd[EBP+8]:Âè°ì¥Ñ¥é¥á¡¼¥¿
 
 2003-01-12  higepon  <higepon@users.sourceforge.jp>
 
-        * monaIdt.cpp: enableTimer(),disableTimer()‚ğ’Ç‰ÁB
-          thanks OSASKì‡‚³‚ñ
+        * monaIdt.cpp: enableTimer(),disableTimer()¤òÄÉ²Ã¡£
+          thanks OSASKÀî¹ç¤µ¤ó
 
 2003-01-12 Guripon  <>
 
-        * firstboot.asm: VirtualPC‚ÅFD‹N“®‚·‚é‚æ‚¤‚É‚È‚Á‚½B
-          Œ´ˆö‚ÍTEMPSEG‚ğ0x9fe0‚ª‚Ü‚¸‚©‚Á‚½‚İ‚½‚¢B
+        * firstboot.asm: VirtualPC¤ÇFDµ¯Æ°¤¹¤ë¤è¤¦¤Ë¤Ê¤Ã¤¿¡£
+          ¸¶°ø¤ÏTEMPSEG¤ò0x9fe0¤¬¤Ş¤º¤«¤Ã¤¿¤ß¤¿¤¤¡£
 
 2003-01-10  higepon  <higepon@users.sourceforge.jp>
 
-        * firstboot.asm: VirtualPC‚ÅFD‹N“®‚µ‚È‚¢ƒGƒ‰[‚ª‰ü‘P‚µ‚È‚¢‚Ì‚Å
-          ˆÈ‘O‚Ìƒo[ƒWƒ‡ƒ“‚ÉŠª‚«–ß‚µB
+        * firstboot.asm: VirtualPC¤ÇFDµ¯Æ°¤·¤Ê¤¤¥¨¥é¡¼¤¬²şÁ±¤·¤Ê¤¤¤Î¤Ç
+          °ÊÁ°¤Î¥Ğ¡¼¥¸¥ç¥ó¤Ë´¬¤­Ìá¤·¡£
 
 2003-01-08  higepon  <higepon@users.sourceforge.jp>
 
-        * Tino’ñ‹Ÿ‚Ìƒpƒbƒ`‚É‚æ‚èSTLport‚ªg—p‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚µ‚½B
-          ‚Ü‚½‚±‚ê‚É”º‚¢gcc2.95¨3.2‚ÉˆÚs‚µ‚Ü‚µ‚½B
+        * Tino»áÄó¶¡¤Î¥Ñ¥Ã¥Á¤Ë¤è¤êSTLport¤¬»ÈÍÑ¤Ç¤­¤ë¤è¤¦¤Ë¤Ê¤ê¤Ş¤·¤¿¡£
+          ¤Ş¤¿¤³¤ì¤ËÈ¼¤¤gcc2.95¢ª3.2¤Ë°Ü¹Ô¤·¤Ş¤·¤¿¡£
 
 2003-01-04  Guripon  <>
 
-        * firstboot.asm:A20‚ğ—LŒø‚É‚·‚éƒR[ƒh‚ğ’Ç‰Á
+        * firstboot.asm:A20¤òÍ­¸ú¤Ë¤¹¤ë¥³¡¼¥É¤òÄÉ²Ã
 
 2003-01-03  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: ƒJ[ƒlƒ‹—pƒƒ‚ƒŠ—Ìˆæ‚ğŠg’£
-        (resetGDT): type‚ğƒLƒ`ƒ“‚ÆÀ‘•‚·‚é‚æ‚¤‚É‚µ‚½B
+        * IA32MemoryManager.cpp: ¥«¡¼¥Í¥ëÍÑ¥á¥â¥êÎÎ°è¤ò³ÈÄ¥
+        (resetGDT): type¤ò¥­¥Á¥ó¤È¼ÂÁõ¤¹¤ë¤è¤¦¤Ë¤·¤¿¡£
 
-        * monaIdt.cpp: IDT_BASE‚ğ0‚É•ÏXB
+        * monaIdt.cpp: IDT_BASE¤ò0¤ËÊÑ¹¹¡£
 
 2003-01-01  higepon  <higepon@users.sourceforge.jp>
 
-        * SystemInfo.cpp: vendorIDæ“¾
+        * SystemInfo.cpp: vendorID¼èÆÀ
 
 2002-12-31  higepon  <higepon@users.sourceforge.jp>
 
-        * SystemInfo:cpuid–½—ß‚ğg—p‚µ‚ÄAƒVƒXƒeƒ€î•ñ‚ğæ“¾‚·‚éƒNƒ‰ƒX‚ğ’Ç‰Á
+        * SystemInfo:cpuidÌ¿Îá¤ò»ÈÍÑ¤·¤Æ¡¢¥·¥¹¥Æ¥à¾ğÊó¤ò¼èÆÀ¤¹¤ë¥¯¥é¥¹¤òÄÉ²Ã
 
-        * IA32MemoryManager.h: secondboot.asm‚Å‚ÌGDT‚Ìİ’è‚ğˆê“I‚È‚à‚Ì‚Æ‚µ‚Ä
-                               C++ˆÚsŒãGDT‚ğİ’è‚µ‚È‚¨‚·‚æ‚¤‚É•ÏXB
+        * IA32MemoryManager.h: secondboot.asm¤Ç¤ÎGDT¤ÎÀßÄê¤ò°ì»şÅª¤Ê¤â¤Î¤È¤·¤Æ
+                               C++°Ü¹Ô¸åGDT¤òÀßÄê¤·¤Ê¤ª¤¹¤è¤¦¤ËÊÑ¹¹¡£
 
 2002-12-29  higepon  <higepon@users.sourceforge.jp>
 
-        * monaKernel.cpp: Intel‚Ìƒ}ƒjƒ…ƒAƒ‹‚ÉTSS‚ÌƒTƒCƒY‚ÉŠÖ‚µ‚Ä‹Lq‚ª‚ ‚Á‚½‚Ì‚Å
-                          ‚ ‚í‚¹‚ÄC³B
+        * monaKernel.cpp: Intel¤Î¥Ş¥Ë¥å¥¢¥ë¤ËTSS¤Î¥µ¥¤¥º¤Ë´Ø¤·¤Æµ­½Ò¤¬¤¢¤Ã¤¿¤Î¤Ç
+                          ¤¢¤ï¤»¤Æ½¤Àµ¡£
 
 2002-12-28  higepon  <higepon@users.sourceforge.jp>
 
-        * monaIhandler.cpp: fault0d()‚ğ•ÏX
+        * monaIhandler.cpp: fault0d()¤òÊÑ¹¹
 
 2002-12-27  higepon  <higepon@users.sourceforge.jp>
 
-        * monaIhandler.cpp (handlers): Š„‚è‚İƒnƒ“ƒhƒ‰‚Épusha(),popa();’Ç‰Á
+        * monaIhandler.cpp (handlers): ³ä¤ê¹ş¤ß¥Ï¥ó¥É¥é¤Ëpusha(),popa();ÄÉ²Ã
 
 2002-12-26  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp (flushTLB): flushTLB()’Ç‰ÁB
+        * IA32MemoryManager.cpp (flushTLB): flushTLB()ÄÉ²Ã¡£
 
 2002-12-25  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: ˆê•”staticŠÖ”‚ğ.h‚©‚ç.cpp‚ÉˆÚ“®
+        * IA32MemoryManager.cpp: °ìÉôstatic´Ø¿ô¤ò.h¤«¤é.cpp¤Ë°ÜÆ°
 
-        * include/IA32MemoryManager.h: startPaging(),stopPaging()’Ç‰Á
+        * include/IA32MemoryManager.h: startPaging(),stopPaging()ÄÉ²Ã
 
-        * IA32MemoryManager.cpp: setCR3()‚ğ’Ç‰Á
+        * IA32MemoryManager.cpp: setCR3()¤òÄÉ²Ã
 
 2002-12-24  higepon  <higepon@users.sourceforge.jp>
 
-        * IA32MemoryManager.cpp: X86MemoryManager‚ğƒŠƒl[ƒ€‚µ‚Ü‚µ‚½B
+        * IA32MemoryManager.cpp: X86MemoryManager¤ò¥ê¥Í¡¼¥à¤·¤Ş¤·¤¿¡£
 
-        * X86MemoryManager:enableA20()‚ğ‘å•‚É‰ü—Ç
-        * monaKernel.cpp: KeyBoardManager‚ğƒ^ƒXƒNƒXƒCƒbƒ`‚Ì‘O‚É
-                          ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚µ‚Ä‚¨‚­
+        * X86MemoryManager:enableA20()¤òÂçÉı¤Ë²şÎÉ
+        * monaKernel.cpp: KeyBoardManager¤ò¥¿¥¹¥¯¥¹¥¤¥Ã¥Á¤ÎÁ°¤Ë
+                          ¥¤¥ó¥¹¥¿¥ó¥¹²½¤·¤Æ¤ª¤¯
 
 2002-12-23  higepon  <higepon@users.sourceforge.jp>
 
-        * secondboot.asm (gdtr): CS,DS base=0,limit=4GB‚Æ‚µ‚Ü‚µ‚½B
+        * secondboot.asm (gdtr): CS,DS base=0,limit=4GB¤È¤·¤Ş¤·¤¿¡£
 
 2002-12-22  higepon  <higepon@users.sourceforge.jp>
 
-        * ProcessManager.cpp: ƒ^ƒCƒ}Š„‚è‚İ‚É‚æ‚éƒ^ƒXƒNØ‚è‘Ö‚¦‚É¬Œ÷
+        * ProcessManager.cpp: ¥¿¥¤¥Ş³ä¤ê¹ş¤ß¤Ë¤è¤ë¥¿¥¹¥¯ÀÚ¤êÂØ¤¨¤ËÀ®¸ù
 
 2002-12-16  higepon  <higepon@users.sourceforge.jp>
 
-        * monaOperator.cpp: new[],delete[]‚ğ’Ç‰Á gcc3.2‘Î‰
+        * monaOperator.cpp: new[],delete[]¤òÄÉ²Ã gcc3.2ÂĞ±ş
 
 2002-12-15  higepon  <higepon@users.sourceforge.jp>
 
-        * doxygen:dot.exe‚Æ‚¢‚¤ƒNƒ‰ƒX}¶¬ƒc[ƒ‹‚ğ“±“üB
+        * doxygen:dot.exe¤È¤¤¤¦¥¯¥é¥¹¿ŞÀ¸À®¥Ä¡¼¥ë¤òÆ³Æş¡£
 
-        * Makefile : libƒfƒBƒŒƒNƒgƒŠ‘Î‰
+        * Makefile : lib¥Ç¥£¥ì¥¯¥È¥êÂĞ±ş
 
 2002-12-09  higepon  <higepon@users.sourceforge.jp>
 
-        * include/ProcessManager.h: ƒVƒ“ƒOƒ‹ƒgƒ“ƒpƒ^[ƒ““K—p
+        * include/ProcessManager.h: ¥·¥ó¥°¥ë¥È¥ó¥Ñ¥¿¡¼¥óÅ¬ÍÑ
 
-        * monaIhandler.cpp : iret()ì¬ ƒ}ƒNƒB
+        * monaIhandler.cpp : iret()ºîÀ® ¥Ş¥¯¥í¡£
 
-        * H_SIZE_T,H_BYTE‚Ì”p~
+        * H_SIZE_T,H_BYTE¤ÎÇÑ»ß
 
         * monaTester.cpp: multi task ok!! but some error.
 
@@ -1828,15 +1830,15 @@
 
         * ProcessManager.cpp: add sgdt()
 
-        * monaKernel.cpp: panic()’Ç‰Á
+        * monaKernel.cpp: panic()ÄÉ²Ã
 
 2002-12-01  higepon  <higepon@users.sourceforge.jp>
 
-        * secondboot.asm:TSSƒfƒBƒXƒNƒŠƒvƒ^’Ç‰Á
+        * secondboot.asm:TSS¥Ç¥£¥¹¥¯¥ê¥×¥¿ÄÉ²Ã
 
 2002-11-23  higepon  <higepon@users.sourceforge.jp>
 
-        * firstboot.asm: Guripon‚³‚ñ‚É‚æ‚é‰ü—Ç
+        * firstboot.asm: Guripon¤µ¤ó¤Ë¤è¤ë²şÎÉ
 
 2002-11-22  higepon  <higepon@users.sourceforge.jp>
 
@@ -1846,134 +1848,134 @@
 
         * ProcessManager.cpp: add
 
-        * monaTester.cpp: processTester()’Ç‰Á ˆ—‚Í‚Ü‚¾‰½‚à‚È‚µ
+        * monaTester.cpp: processTester()ÄÉ²Ã ½èÍı¤Ï¤Ş¤À²¿¤â¤Ê¤·
 
 2002-11-20  higepon  <higepon@users.sourceforge.jp>
 
-        * monaTester.cpp: typeTester()’Ç‰Á
+        * monaTester.cpp: typeTester()ÄÉ²Ã
 
-        * include/monaTypes.h: byte,word,dword’Ç‰Á
+        * include/monaTypes.h: byte,word,dwordÄÉ²Ã
 
 2002-11-17  higepon  <higepon@users.sourceforge.jp>
 
-        * MakeFile‚Ì“‡:HowToBuildQÆ
+        * MakeFile¤ÎÅı¹ç:HowToBuild»²¾È
 
 2002-11-16  higepon  <higepon@users.sourceforge.jp>
 
-        * higeKernel.cpp (startKernel): enableA20()ƒRƒƒ“ƒgƒAƒEƒg
-          À‹@‚¾‚ÆƒL[ƒ{[ƒh“ü—Í‚ª‚Æ‚ê‚È‚¢III
+        * higeKernel.cpp (startKernel): enableA20()¥³¥á¥ó¥È¥¢¥¦¥È
+          ¼Âµ¡¤À¤È¥­¡¼¥Ü¡¼¥ÉÆşÎÏ¤¬¤È¤ì¤Ê¤¤¡ª¡ª¡ª
 
-        * higeVga.cpp (scrollUp): •¶šF¥”wŒiF‘Î‰
+        * higeVga.cpp (scrollUp): Ê¸»ú¿§¥ÇØ·Ê¿§ÂĞ±ş
 
 2002-11-15  higepon  <higepon@users.sourceforge.jp>
 
-        * higeVga.cpp:•¶šFE”wŒiF‚Ìİ’è’Ç‰Á
+        * higeVga.cpp:Ê¸»ú¿§¡¦ÇØ·Ê¿§¤ÎÀßÄêÄÉ²Ã
 
 2002-11-14  syn <syn@users.sourceforge.jp>
 
-        * higeKernel.cpp, higeTester.cpp: FDCDriver‚ÌƒeƒXƒgƒR[ƒh‚ğ higeTester.cpp‚ÖˆÚs
-        * FDCDrive.cpp, FDCDrive.h: 2002/11/02‚ÉŠª‚«–ß‚µ‚½•ÏX‚ğ•œŠˆ
+        * higeKernel.cpp, higeTester.cpp: FDCDriver¤Î¥Æ¥¹¥È¥³¡¼¥É¤ò higeTester.cpp¤Ø°Ü¹Ô
+        * FDCDrive.cpp, FDCDrive.h: 2002/11/02¤Ë´¬¤­Ìá¤·¤¿ÊÑ¹¹¤òÉü³è
 
 2002-11-11  higepon  <higepon@users.sourceforge.jp>
 
-        * X86MemoryManager.cpp: enableA20’Ç‰Á
+        * X86MemoryManager.cpp: enableA20ÄÉ²Ã
         * higeTester.cpp: add
         * higeTester.h: add
-        * ƒeƒXƒgƒR[ƒh‚ğ™X‚ÉhigeTester.cpp‚ÉˆÚs‚µ‚Ü‚·B
-        * firstboot.asm:ƒ}ƒ‹ƒ`ƒZƒNƒ^“Ç‚İ‚İ‘Î‰ powered by Guripon,syn
-        * higeIdt.h:ã‹L‘Î‰‚É”º‚¢idtrƒAƒhƒŒƒX‚ğ0x6800¨0x0500‚Ö•ÏX
+        * ¥Æ¥¹¥È¥³¡¼¥É¤ò½ù¡¹¤ËhigeTester.cpp¤Ë°Ü¹Ô¤·¤Ş¤¹¡£
+        * firstboot.asm:¥Ş¥ë¥Á¥»¥¯¥¿ÆÉ¤ß¹ş¤ßÂĞ±ş powered by Guripon,syn
+        * higeIdt.h:¾åµ­ÂĞ±ş¤ËÈ¼¤¤idtr¥¢¥É¥ì¥¹¤ò0x6800¢ª0x0500¤ØÊÑ¹¹
 
 2002-11-04  higepon  <higepon@users.sourceforge.jp>
 
-        * KeyBoardManager.cpp:ˆê•”ç’·‚ÈƒR[ƒh‚ÌŒ©’¼‚µ
+        * KeyBoardManager.cpp:°ìÉô¾éÄ¹¤Ê¥³¡¼¥É¤Î¸«Ä¾¤·
 
 2002-11-02  syn <syn@users.sourceforge.jp>
 
-        * boot•s”\‚Ì‚½‚ßA‘O€–Ú‚ÌŠª‚«–ß‚µ
+        * bootÉÔÇ½¤Î¤¿¤á¡¢Á°¹àÌÜ¤Î´¬¤­Ìá¤·
 
 2002-11-02  syn <syn@users.sourceforge.jp>
 
-        * FDCDriver.cpp, FDCDriver.h writeSector‚ÌÀ‘•
-          FDCDriver::write_dma ’Ç‰Á
-        * FDCDriver.cpp •¡”ƒZƒNƒ^“Ç‚İ‚İ‚ÌÀ‘•
-        * FDCDriver::motor motor-off‚ÌÀ‘•(–Y‚ê‚Ä‚½:-P)
-        * FDCDriver::sector_to_hcr ’Ç‰Á
-        * FDCDriver.cpp ŠeíƒGƒ‰[ˆ—’Ç‰Á
+        * FDCDriver.cpp, FDCDriver.h writeSector¤Î¼ÂÁõ
+          FDCDriver::write_dma ÄÉ²Ã
+        * FDCDriver.cpp Ê£¿ô¥»¥¯¥¿ÆÉ¤ß¹ş¤ß¤Î¼ÂÁõ
+        * FDCDriver::motor motor-off¤Î¼ÂÁõ(Ëº¤ì¤Æ¤¿:-P)
+        * FDCDriver::sector_to_hcr ÄÉ²Ã
+        * FDCDriver.cpp ³Æ¼ï¥¨¥é¡¼½èÍıÄÉ²Ã
 
 2002-10-31  syn <syn@users.sourceforge.jp>
 
-        * FDCDriver.cpp readSector‚ÌÀ‘•
+        * FDCDriver.cpp readSector¤Î¼ÂÁõ
 
 2002-10-26  higepon  <higepon@users.sourceforge.jp>
 
-        * higeVga.cpp: _sys_printf() %x‘Î‰
+        * higeVga.cpp: _sys_printf() %xÂĞ±ş
 
 2002-10-23  higepon  <higepon@users.sourceforge.jp>
 
-        * firstboot.asm: number of sector to read ‚ğ18¨32‚É•ÏX
+        * firstboot.asm: number of sector to read ¤ò18¢ª32¤ËÊÑ¹¹
 
 2002-10-23  syn <syn@users.sourceforge.jp>
 
-        * FDCDriver.cpp ’Ç‰Á
-        * include/FDCDriver.h ’Ç‰Á
-        * higeKernel.cpp: FDCDriver—p‚ÌƒeƒXƒgƒR[ƒh’Ç‰Á(ƒRƒƒ“ƒgƒAƒEƒgó‘Ô)
+        * FDCDriver.cpp ÄÉ²Ã
+        * include/FDCDriver.h ÄÉ²Ã
+        * higeKernel.cpp: FDCDriverÍÑ¤Î¥Æ¥¹¥È¥³¡¼¥ÉÄÉ²Ã(¥³¥á¥ó¥È¥¢¥¦¥È¾õÂÖ)
         * higeIhandler.cpp: fdcHandler add
-        * higeIo.cpp: _sysInitIo: Š„‚è‚İƒ}ƒXƒN‚ğ•ÏX‚µAFDC‚É‚æ‚éŠ„‚è‚İ‚ğ‹–‰Â
-        * Makefile*: FDCDriver‚Ì‹Lq’Ç‰Á
+        * higeIo.cpp: _sysInitIo: ³ä¤ê¹ş¤ß¥Ş¥¹¥¯¤òÊÑ¹¹¤·¡¢FDC¤Ë¤è¤ë³ä¤ê¹ş¤ß¤òµö²Ä
+        * Makefile*: FDCDriver¤Îµ­½ÒÄÉ²Ã
 
 
 2002-10-23  higepon  <higepon@users.sourceforge.jp>
 
-        * higeKernel.cpp:test for HVector‹Lq’Ç‰Á
-        * MakeFile.cygwin:HVector.h‚Ì‹Lq’Ç‰Á
-        * HVector’Ç‰Á
+        * higeKernel.cpp:test for HVectorµ­½ÒÄÉ²Ã
+        * MakeFile.cygwin:HVector.h¤Îµ­½ÒÄÉ²Ã
+        * HVectorÄÉ²Ã
         * higeOperator.cpp: __builtin_vec_delete add
 
 2002-10-22  higepon  <higepon@users.sourceforge.jp>
 
-        * KeyBoardManager.cpp:constƒL[ƒ[ƒh“™’Ç‰Á
-        * KeyBoardManager.h:constƒL[ƒ[ƒh“™’Ç‰Á
-        * MemoryManager.cpp:•s—v‚ÈƒfƒoƒbƒOƒƒbƒZ[ƒW‚ğHIGEPOS_DEBUG_MM‚Å—}§
+        * KeyBoardManager.cpp:const¥­¡¼¥ï¡¼¥ÉÅùÄÉ²Ã
+        * KeyBoardManager.h:const¥­¡¼¥ï¡¼¥ÉÅùÄÉ²Ã
+        * MemoryManager.cpp:ÉÔÍ×¤Ê¥Ç¥Ğ¥Ã¥°¥á¥Ã¥»¡¼¥¸¤òHIGEPOS_DEBUG_MM¤ÇÍŞÀ©
 
-        syn‚³‚ñcommitŒãMakeFile‚Éè’¼‚µ‚ğ“ü‚ê‚éB
+        syn¤µ¤ócommit¸åMakeFile¤Ë¼êÄ¾¤·¤òÆş¤ì¤ë¡£
 
 2002-10-20  higepon  <higepon@users.sourceforge.jp>
 
-        * ŠJ”­ŠÂ‹«‚ğhigepos_v1.1‚ÉˆÚs‚µ‚Ü‚µ‚½B
+        * ³«È¯´Ä¶­¤òhigepos_v1.1¤Ë°Ü¹Ô¤·¤Ş¤·¤¿¡£
 
 2002-10-19  higepon  <higepon@users.sourceforge.jp>
 
-        * vga.cpp: _sys_printf‚É%c ‹@”\’Ç‰Á
+        * vga.cpp: _sys_printf¤Ë%c µ¡Ç½ÄÉ²Ã
 
-        * KeyBoardManager.cpp:’Êí‚ÌƒL[æ“¾‚ğÀŒ±’†
+        * KeyBoardManager.cpp:ÄÌ¾ï¤Î¥­¡¼¼èÆÀ¤ò¼Â¸³Ãæ
 
         * firstboot.asm : Guripon rawwrite
 
 2002-10-12  higepon  <higepon@users.sourceforge.jp>
 
-        KeyBoardManager’Ç‰Á ’†g‚Í‚Ü‚¾‹ó‚Å‚·B
+        KeyBoardManagerÄÉ²Ã Ãæ¿È¤Ï¤Ş¤À¶õ¤Ç¤¹¡£
 
-        * Makefile.linux: KeyBoardManager’Ç‰Á‘Î‰
-        * Makefile: KeyBoardManager’Ç‰Á‘Î‰
-        * KeyBoardManager.cpp: V‹K’Ç‰ÁƒL[ƒ{[ƒh“ü—ÍŠÇ—ƒNƒ‰ƒX
-        * KeyBoardManager.h: V‹K’Ç‰ÁƒL[ƒ{[ƒh“ü—ÍŠÇ—ƒNƒ‰ƒX
+        * Makefile.linux: KeyBoardManagerÄÉ²ÃÂĞ±ş
+        * Makefile: KeyBoardManagerÄÉ²ÃÂĞ±ş
+        * KeyBoardManager.cpp: ¿·µ¬ÄÉ²Ã¥­¡¼¥Ü¡¼¥ÉÆşÎÏ´ÉÍı¥¯¥é¥¹
+        * KeyBoardManager.h: ¿·µ¬ÄÉ²Ã¥­¡¼¥Ü¡¼¥ÉÆşÎÏ´ÉÍı¥¯¥é¥¹
 2002-10-06  higepon  <higepon@users.sourceforge.jp>
 
-        linux‘Î‰
+        linuxÂĞ±ş
 
-        * higeOperator.cpp: operator new‚Ìˆø”‚ğsize_t‚É•ÏXB
-          higepostypes.h‚ğinclude‚·‚é‚æ‚¤‚É•ÏX
+        * higeOperator.cpp: operator new¤Î°ú¿ô¤òsize_t¤ËÊÑ¹¹¡£
+          higepostypes.h¤òinclude¤¹¤ë¤è¤¦¤ËÊÑ¹¹
 
-        * higepostypes.h:size_t‚ğ’è‹`B
+        * higepostypes.h:size_t¤òÄêµÁ¡£
 
 2002-10-06  syn <syn@users.sourceforge.jp>
 
-        * higeOperator.cpp: operator new ‚Æoperator delete‚ğƒRƒƒ“ƒgƒAƒEƒg
-          (gcc‚ª __builtin_new(delete)‚Æ‚Ô‚Â‚©‚é‚ÆƒGƒ‰[‚ğo‚·‚½‚ß)
-        * higeOperator.cpp: operetor new ‚Ìˆø”‚ğ unsigned int‚Ö•ÏX
-          (gcc‚ª Œ^‚ªˆá‚¤‚ÆƒGƒ‰[‚ğo‚·‚½‚ß)
-        * higeOperator.h: operetor new ‚Ìˆø”‚ğ unsigned int‚Ö•ÏX
-          (gcc‚ª Œ^‚ªˆá‚¤‚ÆƒGƒ‰[‚ğo‚·‚½‚ß)
+        * higeOperator.cpp: operator new ¤Èoperator delete¤ò¥³¥á¥ó¥È¥¢¥¦¥È
+          (gcc¤¬ __builtin_new(delete)¤È¤Ö¤Ä¤«¤ë¤È¥¨¥é¡¼¤ò½Ğ¤¹¤¿¤á)
+        * higeOperator.cpp: operetor new ¤Î°ú¿ô¤ò unsigned int¤ØÊÑ¹¹
+          (gcc¤¬ ·¿¤¬°ã¤¦¤È¥¨¥é¡¼¤ò½Ğ¤¹¤¿¤á)
+        * higeOperator.h: operetor new ¤Î°ú¿ô¤ò unsigned int¤ØÊÑ¹¹
+          (gcc¤¬ ·¿¤¬°ã¤¦¤È¥¨¥é¡¼¤ò½Ğ¤¹¤¿¤á)
 
 2002-10-06  higepon  <higepon@users.sourceforge.jp>
 
@@ -1997,6 +1999,6 @@
 
 2002-09-06  higepon  <higepon@users.sourceforge.jp>
 
-        * ƒƒ‚ƒŠŠÇ— ƒƒ‚ƒŠŠ„‚è“–‚Ä¸”s‚Éfault0Handler‚ªŒÄ‚Î‚ê‚é‚æ‚¤‚É‚µ‚½B
+        * ¥á¥â¥ê´ÉÍı ¥á¥â¥ê³ä¤êÅö¤Æ¼ºÇÔ»ş¤Ëfault0Handler¤¬¸Æ¤Ğ¤ì¤ë¤è¤¦¤Ë¤·¤¿¡£
 
         * add fault0Handler
