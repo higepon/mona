@@ -1,7 +1,7 @@
 include ../MakeInclude
 
 TARGET = SecondBoot.exe
-SRCS   = SecondBoot.cs Str.cs A20.cs FDC.cs VESA.cs
+SRCS   = SecondBoot.cs Str.cs A20.cs FDC.cs VESA.cs Console.cs
 
 all: ../$(TARGET)
 

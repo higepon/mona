@@ -5,8 +5,7 @@ namespace Mona
 {
 	class SecondBoot
 	{
-		const string ConfigFile = "MONA    CFG";
-		const ushort MaxConfigSize = 0x1000, FileBufSeg = 0x9000;
+		const ushort MaxConfigSize = 0x1000;
 		public const ushort VESAInfoAddr = 0x0800, VESAInfoDetailsAddr = 0x0830;
 		
 		static void Main()
@@ -14,28 +13,31 @@ namespace Mona
 			new Inline("cli");
 			A20.Enable();
 			
+			Console.Write("Reading MONA.CFG");
 			new Inline("push ds");
-			ReadConfig();
+			ReadConfig(0x9000, "MONA    CFG");
 			new Inline("pop ds");
+			Console.WriteLine();
 			
 			SetVesaMode();
 		}
 		
-		static void ReadConfig()
+		static void ReadConfig(ushort seg, string config)
 		{
 			Registers.DS = Registers.CS;
-			Registers.ES = FileBufSeg;
+			Registers.ES = seg;
 			
-			ushort pos = FDC.SearchFile(ConfigFile);
+			ushort pos = FDC.SearchFile(config);
 			if (pos == 0) return;
 			
 			//FDC.ReadSectors(1, FDC.SPF, FDC.FAT);
 
-			Registers.DS = FileBufSeg;
+			Registers.DS = seg;
 			ushort ptr1 = 0;
-			for (; ptr1 < MaxConfigSize; ptr1 += 0x0200)
+			for (;; ptr1 += 0x0200)
 			{
 				FDC.ReadSectors((ushort)(pos + 31), 1, ptr1);
+				Console.Write(".");
 				pos = FDC.GetFAT(pos);
 				if (pos == 0x0fff) break;
 			}
