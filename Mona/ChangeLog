@@ -1,3 +1,7 @@
+2004-07-05  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/ihandlers.cpp (mouseHandler): マウス状態が以前と同じならsendしないコードを追加 #ifで切り替え可能
+
 2004-07-05  tino  <tino@users.sourceforge.jp>
 
         * src/lib/monapi/Makefile: BUILD_TARGET=PE-DLLの場合にMONAPI.DLLを生成

@@ -24,14 +24,15 @@ int MonaMain(List<char*>* pekoe)
     memset(buf, 0, sizeof(buf));
 
     /* lba 1’¤«’¤é1024byte’¤Þ’¤È’¤á’¤è’¤ß’¡¼’¡£512byte’¤¬1’Ã±’°Ì’¤Ç’¤¹ */
-    printf("read result = %d", ide.read(1, buf, 1024));
+    printf("read result = %d\N", ide.read(1, buf, 1024));
 
     /* ’ÆÉ’¤ó’¤À’Æâ’ÍÆ’¤òFD’¤Ë’ÊÝ’Â¸ */
-    FileOutputStream fos("/HDD.LOG");
-    fos.open();
+    FileOutputStream fos("HDDUMP.TXT");
 
-    fos.write((byte*)buf      , 512);
-    fos.write((byte*)(buf + 512), 512);
+    printf("fileout:open=%d\n", fos.open());
+
+    printf("fileout:read=%d\n", fos.write((byte*)buf        , 512));
+    printf("fileout:read=%d\n", fos.write((byte*)(buf + 512), 512));
 
     fos.close();
 

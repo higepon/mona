@@ -31,6 +31,7 @@ void mouseHandler()
 {
     static int counter = 0;
     static MessageInfo message;
+    static MessageInfo prev;
 
     if (Mouse::waitReadable())
     {
@@ -54,8 +55,8 @@ void mouseHandler()
      *   -> works in qemu correctly.
      */
 
-    if((data & 0xC8) == 0x08)
-        counter = 0;
+    if(counter == 0 && !(data & 0x08))
+        return;
 
     switch(counter&3)
     {
@@ -71,6 +72,20 @@ void mouseHandler()
         message.header = MSG_MOUSE;
         message.arg3 = data;
         counter = 0;
+
+#if 1
+        /*
+        ||
+        || for debug
+        || if (mouseState == prevMouseState) don't send
+        ||
+        */
+        if (message.arg2 == 0 && message.arg3 == 0 && message.arg1 == prev.arg1)
+        {
+            return;
+        }
+        prev = message;
+#endif
         if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.BN2"), &message))
         {
             g_console->printf("mouse send failed");
