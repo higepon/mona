@@ -75,7 +75,6 @@ void KeyBoardManager::init() {
 
     /* keyinfo list */
     keyInfoList_ = new HList<KeyInfo*>();
-
     isInit_ = true;
 }
 
@@ -89,22 +88,16 @@ void KeyBoardManager::init() {
 */
 KeyInfo* KeyBoardManager::getKeyInfo(KeyInfo* keyinfo) {
 
-    printf("[3.1%x, %s]", keyInfoList_, keyInfoList_->size());
-
     KeyInfo* temp = keyInfoList_->removeAt(keyInfoList_->size() - 1);
 
-    printf("[3.2]");
     if (temp == NULL) {
         return (KeyInfo*)NULL;
     }
 
-    printf("[3.3]");
     /* copy to keyinfo */
     memcpy(keyinfo, temp, sizeof(KeyInfo));
 
-    printf("[3.4]");
     free(temp);
-    printf("[3.5]");
     return keyinfo;
 }
 
@@ -123,10 +116,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
 
-    printf("scancode=%x ", scancode);
-
-    printf("[2.2]");
-
     /* first, check some scancodes */
     switch(scancode) {
 
@@ -136,8 +125,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
           isSpecialKey_ = true;
           return;
     }
-
-    printf("[2.3]");
 
     /* regular key */
     if (scancode & 0x80) {
@@ -158,8 +145,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     } else {
         keycode = keyMap_[scancode];
     }
-
-    printf("[2.4]");
 
     switch(keycode) {
 
@@ -188,28 +173,19 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
           break;
     }
 
-    printf("[2.5]");
-
     if      (isShift_) modifiers |= KEY_MODIFIER_SHIFT;
     else if (isCtrl_)  modifiers |= KEY_MODIFIER_CTRL;
     else if (isAlt_)   modifiers |= KEY_MODIFIER_ALT;
     else if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
     else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
-    printf("[2.6]");
-
     /* allocate keyinfo */
     KeyInfo* kinfo = (KeyInfo*)malloc(sizeof(KeyInfo));
 
-    printf("[2.7]");
-
     /* set keyinfo */
     kinfo->keycode   = keycode;
-    printf("[2.71]");
     kinfo->modifiers = modifiers;
-    printf("[2.72]");
     keyInfoList_->add(kinfo);
 
-    printf("[2.8]");
     return;
 }

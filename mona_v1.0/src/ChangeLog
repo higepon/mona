@@ -1,3 +1,9 @@
+2004-01-25  higepon  <higepon@users.sourceforge.jp>
+
+        * elf.cpp: load時に memorysize と fileSizeが異なる場合に無条件に0埋めしていたのを修正
+
+        * user/KeyBoardManager.cpp: キーボードドライバをユーザーモードに追い出し成功
+
 2004-01-24  higepon  <higepon@users.sourceforge.jp>
 
         * userlib.cpp: 暫定版ダメダメprintfを追加。

@@ -1,20 +1,23 @@
-ENV          = env
-VERSION      = 0.1.1
-DOXYGEN      = doxygen
-BIN          = ../bin
-LIST         = ../list
-TOOLS        = ../tools
-INCLUDE      = include
-USERINCLUDE  = user/include
-CNTRINCLUDE  = contrib/include
-CFINCLUDE    = -I$(INCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
-TARGET       = $(BIN)/mona.img
-KERNEL_IMG   = $(BIN)/KERNEL.IMG
-BOOT1        = $(BIN)/firstboot.bin
-BOOT2        = $(BIN)/secondboot.bin
-KERNEL       = $(BIN)/third.bin
-FAT_TOOL     = $(BIN)/fat_write.exe
-TEMPLATE     = $(TOOLS)/fat_template.img
+ENV             = env
+VERSION         = 0.1.1
+DOXYGEN         = doxygen
+BIN             = ../bin
+LIST            = ../list
+TOOLS           = ../tools
+INCLUDE         = include
+USERINCLUDE     = user/include
+CNTRINCLUDE     = contrib/include
+CFINCLUDE       = -I$(INCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
+TARGET          = $(BIN)/mona.img
+KERNEL_IMG      = $(BIN)/KERNEL.IMG
+BOOT1           = $(BIN)/firstboot.bin
+BOOT2           = $(BIN)/secondboot.bin
+KERNEL          = $(BIN)/third.bin
+USER_PROCESS    = $(BIN)/USER.ELF
+USER_PROCESS2   = $(BIN)/TEST.ELF
+KEYBOARD_SERVER = $(BIN)/KEYBDMNG.SVR
+FAT_TOOL        = $(BIN)/fat_write.exe
+TEMPLATE        = $(TOOLS)/fat_template.img
 SOURCES      = cstart.cpp            \
                kernel.cpp            \
                ihandlers.cpp         \
@@ -46,27 +49,26 @@ SOURCES      = cstart.cpp            \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(TARGET)
+all : copy_userapp
+
+copy_userapp : $(TARGET) $(USER_PROCESS2) $(USER_PROCESS) $(KEYBOARD_SERVER)
+	(cd $(BIN); $(FAT_TOOL) mona.img USER.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img TEST.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
 	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
-	(cd $(BIN); $(FAT_TOOL) mona.img USER.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img TEST.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR)
 
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
-	cp $@ $(BIN)/mona.dbg
-	$(NDISASM) -u $@ > $(LIST)/third.list
+#	cp $@ $(BIN)/mona.dbg
+#	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
-
-userlib.o : ./user/userlib.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./user/userlib.cpp -o userlib.o
 
 userapp :
 	(cd user; make)
