@@ -1,5 +1,7 @@
 2004-04-30  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/main.cpp: シェルから'/'が入力できなくなっていたのでOemQuestionを追加して対応
+
         * src/kernel/PageManager.cpp: VESA情報からVRAMサイズを取得してVRAMを適切にマッピング
 
 2004-04-29  higepon  <higepon@users.sourceforge.jp>

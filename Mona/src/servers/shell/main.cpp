@@ -449,6 +449,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(Keys::Space):
     case(Keys::Divide):
     case(Keys::OemPeriod):
+    case(Keys::OemQuestion):
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
