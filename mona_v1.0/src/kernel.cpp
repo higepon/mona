@@ -62,7 +62,7 @@
 #include <vbe.h>
 #include <VesaConsole.h>
 
-char* version = "Mona version.0.1.7 $Date$";
+char* version = "Mona version.0.1.6 $Date$";
 void  mainProcess();
 
 /*!
