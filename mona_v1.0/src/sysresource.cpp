@@ -81,9 +81,9 @@ void irq_enable(sys_irq irq){
   i = i << (irq & 7);
   i = 0xff - i;
   if(irq & 0x08){/* slave */
-    outportb(0x21, inportb(0x21) & i); /* -> pic.cpp */
+    outportb(0xA1, inportb(0xA1) & i); /* -> pic.cpp */
   }else{         /* master */
-    outportb(0xA1, inportb(0x21) & i); /* -> pic.cpp */
+    outportb(0x21, inportb(0x21) & i); /* -> pic.cpp */
   }
 }
 
@@ -92,8 +92,8 @@ void irq_disable(sys_irq irq){
   i = 1;
   i = i << (irq & 7);
   if(irq & 0x08){/* slave */
-    outportb(0x21, inportb(0x21) | i); /* -> pic.cpp */
+    outportb(0xA1, inportb(0xA1) | i); /* -> pic.cpp */
   }else{         /* master */
-    outportb(0xA1, inportb(0x21) | i); /* -> pic.cpp */
+    outportb(0x21, inportb(0x21) | i); /* -> pic.cpp */
   }
 }

@@ -264,6 +264,7 @@ bool IDEDriver::setLBA(dword lba,unsigned int device){
   if(d->IsSurpportLBA){
     c = ( lba >> 24 ) & 0xff;
     c &= 0x0f;
+    c |= 0xa0;
     c |= 0x40; /* LBA mode */
     if(device != 0){
       c |= 0x10;
@@ -309,6 +310,7 @@ bool IDEDriver::setCHS(dword lba,unsigned int device){
   S = 1 + ( lba % d->SectorsPerTrack );
   
   c = H;
+  c |= 0xa0;
   outportb(head_,c);
   
   c = ( T >> 8 ) & 0xff;
