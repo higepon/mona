@@ -8,6 +8,33 @@ using namespace MonAPI;
 
 #define MAIN_1
 
+
+#ifdef MAIN_10
+int MonaMain(List<char*>* pekoe)
+{
+    timer(1000);
+
+    for (int i = 0; i < 5; i++)
+    {
+        MessageInfo msg;
+
+        if (Message::receive(&msg)) continue;
+
+        switch (msg.header)
+        {
+            case MSG_TIMER:
+            {
+                printf("timer\n");
+                timer(1000);
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+#endif
+
 #ifdef MAIN_9
 int MonaMain(List<char*>* pekoe)
 {

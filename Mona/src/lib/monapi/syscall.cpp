@@ -18,6 +18,18 @@ int sleep(dword ms) {
     return syscall_sleep(tick);
 }
 
+int timer(dword ms) {
+
+    dword tick = ms / 10;
+
+    if (tick <= 0)
+    {
+        tick = 1;
+    }
+
+    return syscall_timer(tick);
+}
+
 int print(const char* msg) {
 
 #if 1  // temporary
@@ -185,9 +197,9 @@ void putInt(size_t n, int base) {
 
         if (n == 0) {
 
-		putCharacter('0');
-		return;
-	}
+            putCharacter('0');
+            return;
+        }
         for (geta = 0; num; num /= 10, geta++);
         if ((int)n < 0) {
             geta++;
@@ -280,6 +292,13 @@ int syscall_sleep(dword tick)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_MTHREAD_SLEEP, result, tick);
+    return result;
+}
+
+int syscall_timer(dword tick)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_TIMER, result, tick);
     return result;
 }
 

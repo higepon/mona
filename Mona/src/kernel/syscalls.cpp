@@ -102,6 +102,15 @@ void syscall_entrance() {
             g_scheduler->SwitchToNext();
         }
         break;
+
+    case SYSTEM_CALL_TIMER:
+
+        {
+            g_scheduler->Sleep(g_currentThread->thread, info->esi, true);
+            g_scheduler->SwitchToNext();
+        }
+        break;
+
     case SYSTEM_CALL_KILL:
 
         ThreadOperation::kill();

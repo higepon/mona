@@ -177,7 +177,8 @@ enum
     MSG_MONES_ICMP_NOTICE,
     MSG_MONES_ARPTBL_REQ,
     MSG_MONES_WAKEUP_ARP_WAIT,
-    MSG_THREAD_KILLED = 0x800
+    MSG_THREAD_KILLED = 0x800,
+    MSG_TIMER,
 };
 
 enum
@@ -262,6 +263,7 @@ enum
 #define SYSTEM_CALL_LOG_PRINT                0x003D
 #define SYSTEM_CALL_ALLOCATE_DMA_MEMORY      0x003E
 #define SYSTEM_CALL_DEALLOCATE_DMA_MEMORY    0x003F
+#define SYSTEM_CALL_TIMER                    0x0040
 
 
 #define SYSCALL_0(syscall_number, result)                                         \

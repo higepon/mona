@@ -127,15 +127,33 @@ bool Scheduler::WakeupTimer(Thread* thread)
 {
     ASSERT(thread);
 
-    if (thread->waitEvent != MEvent::TIMER) return false;
+    if (thread->waitEvent != MEvent::TIMER && thread->waitEvent != MEvent::TIMER_MESSAGE) return false;
 
     if (thread->wakeupTimer > this->totalTick) return false;
 
-    thread->waitEvent = MEvent::NONE;
+    int waitEvent = thread->waitEvent;
+
     thread->priority = MEvent::TIMER; // umm
     thread->lastCpuUsedTick = 0;
 
-    MoveToNewPosition(runq, thread);
+    if (waitEvent == MEvent::TIMER)
+    {
+        thread->waitEvent = MEvent::NONE;
+        MoveToNewPosition(runq, thread);
+    }
+    else if (waitEvent == MEvent::TIMER_MESSAGE)
+    {
+        thread->waitEvent = MEvent::MESSAGE;
+
+        MessageInfo msg;
+        memset(&msg, 0, sizeof(MessageInfo));
+        msg.header = MSG_TIMER;
+
+        if (g_messenger->send(thread->id, &msg))
+        {
+            g_console->printf("Send failed %s:%d\n", __FILE__, __LINE__);
+        }
+    }
 
     return true;
 }
@@ -193,14 +211,15 @@ void Scheduler::Dump()
     END_FOREACH
 }
 
-void Scheduler::Sleep(Thread* thread, dword tick)
+void Scheduler::Sleep(Thread* thread, dword tick , bool msg/* = false */)
 {
     ASSERT(thread);
     ASSERT(tick > 0);
 
     dword now = this->totalTick;
     thread->wakeupTimer = now + tick;
-    WaitEvent(thread, MEvent::TIMER);
+
+    WaitEvent(thread, msg ? MEvent::TIMER_MESSAGE : MEvent::TIMER);
 }
 
 void Scheduler::WaitEvent(Thread* thread, int waitEvent)

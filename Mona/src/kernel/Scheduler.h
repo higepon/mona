@@ -60,7 +60,7 @@ public:
 
     void Dump();
     void SetDump();
-    void Sleep(Thread* thread, dword tick);
+    void Sleep(Thread* thread, dword tick, bool msg = false);
     void WaitEvent(Thread* thread, int waitEvent);
     int EventComes(Thread* thread, int waitEvent);
     int Kill(Thread* thread);
