@@ -28,7 +28,7 @@ install: all
 	$(INSTALL) $(TARGET).EL2 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL2
+	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL2 $(CLEANFILES)
 
 depend:
 	rm -f dependencies
