@@ -3,6 +3,8 @@
         * samples/non-gui/yamami/main.cpp: テストコード追加
         
         * src/servers/mones/: ARP要求、IP送信実装(QEMU未動作 デバッグ中)
+        
+        * include/sys/types.h: Mones用のメッセージ追加(MSG_MONES_WAKEUP_ARP_WAIT)
 
 2004-11-16  higepon  <higepon@users.sourceforge.jp>
 
