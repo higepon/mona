@@ -30,3 +30,14 @@ int strcpy2(char *s1, const char *s2){
 
   return (int)(tmp - s1);
 }
+
+int strncpy2(char *s1, const char *s2, int n){
+  char *tmp = s1;
+  int result;
+
+  while((n-- > 0) && (*tmp++ = *s2++));
+  result = (int)(tmp - s1);
+  while(n-- > 0) *tmp++ = '\0';
+
+  return result;
+}
