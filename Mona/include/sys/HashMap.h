@@ -26,15 +26,15 @@ template <class T> class HashMap : public Map<T> {
     virtual ~HashMap();
 
   public:
-    bool containsKey(char* key);
-    T get(char* key);
-    T put(char* key, T value);
-    T remove(char* key);
+    bool containsKey(const char* key);
+    T get(const char* key);
+    T put(const char* key, T value);
+    T remove(const char* key);
     int size() const;
 
   private:
     HashMap() {}
-    int hash(char* str);
+    int hash(const char* str);
 
   private:
     int hashsize_;
@@ -50,7 +50,7 @@ template <class T> HashMap<T>::~HashMap() {
     delete tree_;
 }
 
-template <class T> int HashMap<T>::hash(char* str) {
+template <class T> int HashMap<T>::hash(const char* str) {
 
     int value = 0;
 
@@ -66,19 +66,19 @@ template <class T> int HashMap<T>::size() const {
     return tree_->size();
 }
 
-template <class T> bool HashMap<T>::containsKey(char* key) {
+template <class T> bool HashMap<T>::containsKey(const char* key) {
     return tree_->contains(hash(key));
 }
 
-template <class T> T HashMap<T>::get(char* key) {
+template <class T> T HashMap<T>::get(const char* key) {
     return tree_->get(hash(key));
 }
 
-template <class T> T HashMap<T>::put(char* key, T value) {
+template <class T> T HashMap<T>::put(const char* key, T value) {
     return tree_->add(hash(key), value);
 }
 
-template <class T> T HashMap<T>::remove(char* key) {
+template <class T> T HashMap<T>::remove(const char* key) {
     return tree_->remove(hash(key));
 }
 #endif

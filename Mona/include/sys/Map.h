@@ -11,11 +11,11 @@ public:
     virtual ~Map() {}
 
 public:
-    virtual bool containsKey(char* key) = 0;
-    virtual T get(char* key)            = 0;
-    virtual T put(char* key, T value)   = 0;
-    virtual T remove(char* key)         = 0;
-    virtual int size()          const = 0;
+    virtual bool containsKey(const char* key) = 0;
+    virtual T get(const char* key)            = 0;
+    virtual T put(const char* key, T value)   = 0;
+    virtual T remove(const char* key)         = 0;
+    virtual int size()                  const = 0;
 };
 
 #endif
