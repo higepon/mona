@@ -4,6 +4,10 @@
 
         * src/lib/monapi/clist.c: 追加
 
+        * include/monapi/cmessage.h: 追加
+
+        * src/lib/monapi/cmessage.c: 追加
+
 2004-05-01  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/elf.cpp (prepare): イメージサイズ取得のバグ修正

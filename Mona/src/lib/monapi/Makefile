@@ -17,7 +17,7 @@ SOURCES = string.cpp \
           VirtualScreen.cpp \
           mt19937ar.cpp \
           Keys.cpp
-CSOURCES = clist.c
+CSOURCES = clist.c cmessage.c
 
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc

@@ -4,6 +4,8 @@
 #include <sys/types.h>
 
 #ifdef __cplusplus
+#include <sys/List.h>
+
 #define MESSAGE_LOOP MonAPI::messageLoop
 
 extern int MonaMain(List<char*>* pekoe);
