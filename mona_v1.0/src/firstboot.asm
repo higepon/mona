@@ -1,246 +1,304 @@
 ;-------------------------------------------------------------------------------
 ; Name        : firstboot.asm
 ; Description : boot from floppy disk, echo String and read secondboot
+;               We use FAT12 File System.
 ; Revision    : $Revision$ $Date$
-; Copyright (c) 2002 HigePon, Guripon, syn
+; Copyright (c) 2002,2003 Guripon, HigePon
 ; WITHOUT ANY WARRANTY
 ;-------------------------------------------------------------------------------
-%define DEBUG   1
+%define kernel  0x1000
+%define tempseg 0x9f00
+%define fat     0x6000
 
-;; TEMPSEC should not be 0x9FE0(on VirtualPC)
-%define TEMPSEG 0x9f00
-%define KERNEL  0x0100
+;%define DEBUG  1
 
         org     0
 
-        jmp     short start
+        jmp     short realstart
         nop
 
-; fake boot parameter block(bpb) for RAWRITE
-        db      "mona    "      ; OEM label (maker name and version number)
-        dw      0x0200          ; bytes/sector
-        db      0x01            ; sectors/cluster
-        dw      0x0001          ; # of boot sectors
-        db      0x02            ; # of fats
-        dw      0x00e0          ; # of root directory entries
-        dw      0x0b40          ; # of sectors total in image
-        db      0xf0            ; media descripter: 0xf0 = 2sides18sectors
-        dw      0x0009          ; # of sectors in a fat
-        dw      0x0012          ; # of sectors/track
-        dw      0x0002          ; # of heads
-        dd      0x00000000      ; # of hidden sectors
-        dd      0x00000000      ; # of sectors if > 65536
-        dw      0x0000          ; drive number
-        db      0x29            ; extended bios parameter block signature
-        dd      0x00000000      ; volume id
-        db      "NO NAME    "   ; volume label
-        db      "FAT12   "      ; file system
+; boot parameter block(bpb)
+oem     db      "mona    "
+bps     dw      0x0200
+spc     db      0x01
+nob     dw      0x0001
+nof     db      0x02
+rde     dw      0x00e0
+nos     dw      0x0b40
+med     db      0xf0
+spf     dw      0x0009
+spt     dw      0x0012
+noh     dw      0x0002
+        dd      0x00000000
+        dd      0x00000000
+        dw      0x0000
+        db      0x29
+        dd      0x00000000
+        db      "NO NAME    "
+        db      "FAT12   "
 
-start:
-        xor     ax,ax
+realstart:
+        xor     si,si
+        mov     di,si
+        mov     ax,0x07c0
         mov     ds,ax
-        mov     si,0x7c00       ; src = 0000:7C00 (DS:SI)
-        mov     ax,TEMPSEG
+        mov     ax,tempseg
         mov     es,ax
-        xor     di,di           ; dst = 9FE0:0000 (ES:DI)
-        mov     cx,0x0200
-        ;
-        rep     movsb           ; move myself
-        ;
-        jmp     TEMPSEG:next    ; to higher address (for kernel load)
-
-next:
+        mov     cx,0x0100
+        rep     movsw
+        jmp     tempseg:realnext
+realnext:
         mov     ds,ax
-        mov     ax,TEMPSEG-0x1000
+        sub     ah,0x10
         mov     ss,ax
-        mov     sp,0xffff
+        xor     sp,sp
         ;
-        xor     ax,ax           ; dl = boot drive (in boot default)
-        int     0x13            ; boot drive initialize
-        jc      $               ; it will - disk drive broken
+        xor     ax,ax
+        int     0x13
+        jc      $
         ;
         mov     si,boot
-        call    print
+        call    putstring
         ;
-        mov     ax,KERNEL
+        xor     dx,dx
+        mov     cx,dx
+        mov     bx,dx
+        mov     ax,0x9000
         mov     es,ax
-        xor     bx,bx
-        mov     ax,0x0001       ; read kernel from second sector (0 = boot sec)
-        mov     di,0x0080       ; change it (now ... read 80 sectors)
+        mov     ax,word [spf]
+        mov     cl,byte [nof]
+        mul     cx
+        inc     ax
+        mov     di,word [rde]
+        push    di
+        shr     di,4            ; rde / 16 = required sectors
+        inc     di
         call    readsector
-        ;
-        mov     si,good
-        call    print
-        ;
-        mov     dx,0x03f2       ; stop fdd motor
-        mov     al,0x0c
-        out     dx,al
-a20enable:
-        in      al,0x64
-        test    al,0x02
-        jnz     a20enable
-        cli
-        mov     al,0xD1
-        out     0x64,al
-        mov     al,0xDF
-        out     0x60,al
-        sti
-        ;
-graphicalmode:
-        mov ax, 0x0012
-        int 0x10
-        ;
-        jmp     KERNEL:0000     ; jump to secondboot
 
+        xor     di,di
+        pop     bx
+kernel_next:
+        mov     si,bname
+        mov     cx,0x000b
+        push    di
+        rep     cmpsb
+        pop     di
+        je      kernel_found
+        add     di,0x20
+%ifdef DEBUG
+       call    register_dump
+%endif
+        dec     bx
+        jnz     kernel_next
+        jmp     file_not_found
+kernel_found:
+        add     di,0x1a                 ; start sector
+        mov     cx,[es:di]
+%ifdef DEBUG
+       call    register_dump
+%endif
+        mov     bx,fat
+        mov     ax,0x0001
+        mov     di,[spf]
+        call    readsector
+        mov     ax,es
+        mov     ds,ax
+        xor     ax,ax
+        mov     es,ax
+        mov     bx,0x1000
+kernel_load:
+        mov     ax,cx
+        add     ax,31
+        mov     di,1
+        call    readsector
+        push    bx
+        mov     bx,cx
+        call    get_fat
+        pop     bx
+%ifdef DEBUG
+       call    register_dump
+%endif
+        cmp     ax,0x0fff
+        je      end_of_kernel
+        mov     cx,ax
+        add     bx,0x0200
+        jnc     kernel_load
+        mov     bx,es
+        add     bh,0x10
+        mov     es,bx
+        xor     bx,bx
+        jmp     kernel_load
+end_of_kernel:
+        xor     ax,ax
+        mov     ds,ax
+        mov     es,ax
+        mov     ss,ax
+        mov     sp,kernel
+        call    memory_dump
 
-; readsector:
-;   ax = logical sector number (0, 1, 2 ...)
-;   di = # of sectors to read
-;   es:bx = pointer to read-data buffer (bx = 0, es = 0x20, 0x40, 0x60 ...)
+        jmp     0x0100:0x0000
+
+get_fat:
+        mov     si,bx
+        shr     si,1
+        mov     ax,[si+bx+fat]
+        jnc     _get_fat
+        shr     ax,4
+_get_fat:
+        and     ah,0x0f
+        ret
+
+file_not_found:
+%ifdef DEBUG
+       call    register_dump
+%endif
+;          mov     si,not_found
+;          call    putstring
+        jmp     $               ; loop forever
+
+; readsector
+;   ax = start sector, di = number of sectors to read
+;   es:bx = read address (es = 64kb align, bx = 512 bytes align)
 
 readsector:
         pusha
-.r1:    push    ax
-        mov     ax,es
-        neg     ax
-        dec     ax
-        and     ah,0x0f
-        inc     ax
-        mov     cl,0x05
-        shr     ax,cl
-        cmp     ax,di           ; ax = # of readable sectors until dma boundary
-        mov     si,ax
-        jbe     .dma1
-        mov     si,di           ; si = # of readable sectors (end of read)
-.dma1:  pop     ax
-.r2:    push    ax
-        mov     cx,0x0024
+        push    es
+        ;
+_read0: mov     si,bx
+        neg     si
+        dec     si
+        shr     si,9
+        inc     si
+        cmp     si,di
+        jbe     _read1
+        mov     si,di           ; di < si
+_read1: push    ax
         xor     dx,dx
-        div     cx
+        mov     cx,0x0024
+        div     cx              ; ax = track number
         xchg    dx,ax
         mov     cl,0x12
-        div     cl
+        div     cl              ; ah = sector number, al = head number
         sub     cl,ah
         cmp     cx,si
-        jbe     .dma2
-        mov     cx,si
-.dma2:  mov     ch,dl           ; ch = track number
+        jbe     .read1
+        mov     cx,si           ; si < cx
+.read1: mov     ch,dl           ; ch = track number
         mov     dh,al           ; dh = head number
-        mov     al,cl           ; al = # of sector to read at a time
-        mov     cl,ah
-        inc     cl              ; cl = sector number
+        mov     al,cl           ; al = number of sectors to read
+        mov     cl,ah           ; cl = sector number
+        inc     cl
         xor     dl,dl           ; dl = drive number
         mov     ah,0x02
 %ifdef DEBUG
-        call    debug
+        call    register_dump
 %endif
         int     0x13
-        jc      .error
+        jc      _read_error
         mov     dx,ax
         mov     cl,0x09
         shl     ax,cl
-        add     bx,ax           ; bx = next start of buffer
+        add     bx,ax
         pop     ax
-        add     ax,dx           ; ax = next logical sector number
+        add     ax,dx
         sub     di,dx
         sub     si,dx
-        jnz     .r2             ; not over dma boundary
+        jnz     _read1
         mov     cx,es
-        and     cx,0xf000
-        add     cx,0x1000
+        add     ch,0x10
         mov     es,cx
         xor     bx,bx
         or      di,di
-        jnz     .r1             ; jump over dma boundary
+        jnz     _read0
+        ;
+        pop     es
         popa
         ret
 
-.error:
-        push    si
-        mov     si,err
-        call    print
-        xchg    ah,al
-        mov     cl,0x04
-        call    tohex           ; print error code
-        mov     si,crlf
-        call    print
+_read_error:
+%ifdef DEBUG
+       call    register_dump
+%endif
         xor     ax,ax
         xor     dl,dl
-        int     0x13            ; re-initialize
-        pop     si
+        int     0x13
         pop     ax
-        jmp     short .r2       ; retry
+        jmp     _read1
 
-debug:
+putstring:
         pusha
-        push    cx
-        mov     cl,0x0c
-        call    tohex
-        mov     ax,bx
-        call    tohex
-        pop     ax
-        call    tohex
-        mov     ax,dx
-        call    tohex
-        mov     ax,di
-        call    tohex
-        mov     ax,si
-        call    tohex
-        mov     ax,cs
-        call    tohex
-        mov     ax,es
-        call    tohex
-        mov     ax,sp
-        call    tohex
-        mov     si,crlf
-        call    print
-        popa
-        ret
-
-; print
-;   ds:si = strings
-
-print:
-        pusha
-        xor     bx,bx
-.loop:  lodsb
+.put:   cs lodsb
         or      al,al
-        jz      .print
+        jz      .pute
+        xor     bx,bx
         mov     ah,0x0e
         int     0x10
-        jmp     short .loop
-.print: popa
+        jmp     .put
+.pute:  popa
         ret
 
 ; tohex
-;   ax = data to convert and display
-;   cl = shift count
+;   ax = data to convert and display, cl = shift count
 
 tohex:
         pusha
-        mov     dx,ax
-.loop:  shr     ax,cl
+.tol:   rol     ax,4
+        push    ax
         and     al,0x0f
         cmp     al,0x0a
-        jb      .low
+        jb      .to
         add     al,0x07
-.low:   add     al,0x30
+.to:    add     al,0x30
         mov     ah,0x0e
         int     0x10
-        sub     cl,4
-        mov     ax,dx
-        jnc     short .loop
+        pop     ax
+        dec     cl
+        jnz     .tol
         mov     ax,0x0e20
         int     0x10
         popa
         ret
 
+memory_dump:
+        pusha
+        mov     bl,0x10
+.mem:   mov     ah,byte [es:di]
+        inc     di
+        mov     cl,0x02
+        call    tohex
+        dec     bl
+        jnz     .mem
+        mov     si,crlf
+        call    putstring
+        popa
+        ret
+%ifdef DEBUG
+register_dump:
+        pusha
+        push    sp
+        push    es
+        push    ds
+        push    cs
+        push    di
+        push    si
+        push    dx
+        push    cx
+        push    bx
+        push    ax
+        mov     cx,0x0a04
+.reg:   pop     ax
+        call    tohex
+        dec     ch
+        jnz     .reg
+        mov     si,crlf
+        call    putstring
+        popa
+        ret
+%endif
 
-; various data
-
-boot    db      "mona loading",0x0d,0x0a,0
-err     db      "read error - ",0
-good    db      "disk read success!",0x0d,0x0a,0
+bname   db      "KERNEL  IMG"
+boot    db      "Mona loading..."
+;  not_found db "KERNEL.IMG not found"
 crlf    db      0x0d,0x0a,0
 
         times   0x01fe-($-$$) db 0

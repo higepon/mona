@@ -7,6 +7,20 @@
 ;-------------------------------------------------------------------------------
 [bits 16]
 
+a20enable:
+        in      al,0x64
+        test    al,0x02
+        jnz     a20enable
+        cli
+        mov     al,0xD1
+        out     0x64,al
+        mov     al,0xDF
+        out     0x60,al
+        sti
+        ;
+graphicalmode:
+        mov ax, 0x0012
+        int 0x10
 RealToProtect:
         mov  ax, cs             ; we jump from firstboot
         mov  ds, ax             ; so ds is changed

@@ -1,6 +1,5 @@
 *.o
 *.bin
 *.list
-*.img
 *.exe
 TAGS

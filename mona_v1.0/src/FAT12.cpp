@@ -13,12 +13,12 @@
 #include<FAT12.h>
 #include<string.h>
 
-
 // for test on Windows
 #ifdef FS_TEST
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<info.h>
 
 // for Mona
 #else
@@ -532,7 +532,6 @@ bool FAT12::read(byte* buffer) {
 
 /*!
   \brief check read has next
-
 
   \return true/false hasnext/has no next
 

@@ -167,27 +167,13 @@ void FDCDriver::initilize() {
     return;
 }
 
-void FDCDriver::test() {
+/*!
+    \brief wait Print
 
-    motor(ON);
-    recalibrate();
-    recalibrate();
-
-    for (int i = 1; i < 10; i++) {
-
-        memset(dmabuff_, i, 512);
-        if (!write(i, dmabuff_)) {
-
-            info(DEBUG, "read failed\n");
-            motor(OFF);
-            return;
-        }
-    }
-
-    motor(OFF);
-    return;
-}
-
+    \param  str message
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
 void FDCDriver::waitPrint(const char* msg) {
 
     static int counter = 0;

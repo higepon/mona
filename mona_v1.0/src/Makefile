@@ -9,17 +9,21 @@ else
     endif
 endif
 include env.local
-VERSION    = 0.0.7
+VERSION    = 0.0.8
 DOXYGEN    = doxygen
 BIN        = ../bin
 LIST       = ../list
+TOOLS      = ../tools
 INCLUDE    = include
 STLINCLUDE = stlport
 CFINCLUDE  = -I$(INCLUDE) -I$(STLINCLUDE)
 TARGET     = $(BIN)/mona.img
+KERNEL_IMG = $(BIN)/KERNEL.IMG
 BOOT1      = $(BIN)/firstboot.bin
 BOOT2      = $(BIN)/secondboot.bin
 KERNEL     = $(BIN)/third.bin
+FAT_TOOL   = $(BIN)/fat_write.exe
+TEMPLATE   = $(TOOLS)/fat_template.img
 SOURCES    = cstart.cpp            \
              kernel.cpp            \
              idt.cpp               \
@@ -58,10 +62,16 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(TARGET)
 
-$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
-	cat  $(BOOT1) $(BOOT2) $(KERNEL) >$@
-	cat $@ /dev/zero|dd of=$(BIN)/mona.tmp bs=1k count=1440
-	mv $(BIN)/mona.tmp $@
+$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL)
+	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
+#	cp  -f $(TEMPLATE) $(TARGET).tmp
+	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
+	$(FAT_TOOL) $(TARGET)
+#	(cat $(BOOT1);dd if=$(TARGET).tmp bs=512 skip=1 ) > $(TARGET)
+#	rm -f $(TARGET).tmp
+
+$(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
+	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) memcmp.o memmove.o mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o $(DRVROBJ)
@@ -107,7 +117,7 @@ depend:
 	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) $(DRVRSRC) > $(ENV)/dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o ihandler.o core.o $(DRVROBJ)
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) memmove.o memcmp.o mode12h.o ihandler.o core.o $(DRVROBJ)
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img
