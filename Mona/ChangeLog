@@ -6,6 +6,10 @@
 
         * apps/non-gui/tube/tube.x86: 16bpp対応
 
+        * include/macro.asm: src/kernel/macro.asmから移動
+
+        * env/*.env: NFLAGSでインクルードパスを指定
+
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
         * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)

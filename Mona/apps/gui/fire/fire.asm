@@ -1,5 +1,5 @@
 BITS 32
-%include "../../../src/kernel/macro.asm"
+%include "macro.asm"
 cglobal DrawFire
 cextern typeDraw
 cextern FireSeed
