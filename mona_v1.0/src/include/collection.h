@@ -18,6 +18,45 @@
 */
 
 /*----------------------------------------------------------------------
+    Array
+----------------------------------------------------------------------*/
+#define STACK_ARRAY(type, name, size) type __##name[size]; Array<type> name(__##name, size)
+
+template <class T> class Array {
+
+  public:
+    Array(dword length) : length_(length), alloc_(true) {
+        array_ = new T[length];
+    }
+
+    Array(T* array, dword length) : array_(array), length_(length), alloc_(false) {
+    }
+
+    virtual ~Array() {
+        if (alloc_) {
+            delete[] array_;
+        }
+    }
+
+  public:
+    inline T operator [](dword index) {
+
+#ifdef DEBUG_MODE
+        if (index < 0 || index > length_ - 1) {
+            g_console->printf("array index outof range %d\n", index);
+            for(;;);
+        }
+#endif
+        return array_[index];
+    }
+
+  private:
+    T* array_;
+    dword length_;
+    bool alloc_;
+};
+
+/*----------------------------------------------------------------------
     For Hash
 ----------------------------------------------------------------------*/
 inline char rol(char c) {

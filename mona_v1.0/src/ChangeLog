@@ -1,5 +1,10 @@
 2004-02-09  higepon  <higepon@users.sourceforge.jp>
 
+        * syscalls.cpp : プロセスexit();時のバグをやっと修正
+                         原因はプロセスが代わったかどうかの isProcessChangedが問題だった。
+
+        * include/collection.h: Arrayクラス作成
+
         * send時にfromを自動セット。
 
 2004-02-08  higepon  <higepon@users.sourceforge.jp>

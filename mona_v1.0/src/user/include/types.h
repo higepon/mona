@@ -16,6 +16,7 @@
 
 #define NULL     0
 #define NORMAL   0
+#define DEBUG_MODE
 
 typedef unsigned char  byte;
 typedef unsigned short word;

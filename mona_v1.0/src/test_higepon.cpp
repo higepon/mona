@@ -17,15 +17,15 @@
 
 /*!
 
-\brief  test code for higepon
+    \brief  test code for higepon
 
-Copyright (c) 2002,2003 Higepon
-All rights reserved.
-License=MIT/X Licnese
+    Copyright (c) 2002,2003 Higepon
+    All rights reserved.
+    License=MIT/X Licnese
 
-\author  HigePon
-\version $Revision$
-\date   create:2003/05/18 update:$Date$
+    \author  HigePon
+    \version $Revision$
+    \date   create:2003/05/18 update:$Date$
 */
 
 /*----------------------------------------------------------------------

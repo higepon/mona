@@ -46,7 +46,19 @@ void syscall_entrance() {
     case SYSTEM_CALL_KILL:
 
         g_processManager->kill(g_processManager->getCurrentProcess());
-        schedule();
+
+        /* Process schedule */
+        g_processManager->schedule();
+
+        /* Thread schedule */
+        {
+            Process* current = g_processManager->getCurrentProcess();
+            bool isUser = current->isUserMode();
+            g_currentThread = current->schedule()->getThreadInfo();
+
+            /* Thread switch */
+            current->switchThread(true, isUser);
+        }
         break;
 
     case SYSTEM_CALL_PUT_PIXEL:

@@ -68,4 +68,7 @@ GLOBAL ThreadInfo* g_currentThread;
 GLOBAL VesaInfo* g_vesaInfo;
 GLOBAL VesaInfoDetail* g_vesaDetail;
 GLOBAL Messenger* g_messenger;
+
+#define DEBUG_MODE
+
 #endif

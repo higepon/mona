@@ -56,6 +56,7 @@ void ShellServer::service() {
 ----------------------------------------------------------------------*/
 Shell::Shell() : position_(0) {
 
+    history_ = new HList<char*>();
     printf("%s", PROMPT);
 }
 
@@ -72,6 +73,7 @@ void Shell::commandChar(char c) {
 void Shell::commandExecute() {
 
     printf("\n");
+    putHistory(commandLine_);
     syscall_load_process(commandLine_);
     printf("\n%s", PROMPT);
     position_ = 0;
@@ -79,6 +81,22 @@ void Shell::commandExecute() {
 
 void Shell::commandTerminate() {
     commandChar('\0');
+}
+
+void Shell::putHistory(char* command) {
+
+    char* str = new char[strlen(command) + 1];
+    strcpy(str, command);
+
+    history_->add(str);
+}
+
+char* Shell::getHistory() {
+
+    if (history_->isEmpty()) {
+        return "";
+    }
+    return history_->get(0);
 }
 
 void Shell::backspace() {
@@ -137,7 +155,6 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_6):
     case(VK_7):
     case(VK_8):
-    case(VK_TEN_0):
     case(VK_TEN_1):
     case(VK_TEN_2):
     case(VK_TEN_3):
@@ -167,6 +184,11 @@ int Shell::onKeyDown(int keycode, int modifiers) {
         printf("message is %s", (char*)0x90000000);
         break;
 
+    case(VK_TEN_0):
+
+        strcpy(commandLine_, getHistory());
+        printf("%s", commandLine_);
+        break;
     default:
         break;
 

@@ -44,7 +44,7 @@ BitMap::BitMap(int number) {
 */
 BitMap::~BitMap() {
 
-    delete(map_);
+    delete[] map_;
     return;
 }
 

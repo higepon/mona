@@ -19,10 +19,13 @@ class Shell {
     void commandExecute();
     void commandTerminate();
     void backspace();
+    void putHistory(char* command);
+    char* getHistory();
 
   protected:
     char commandLine_[1024];
     int position_;
+    List<char*>* history_;
 
   protected:
     static char* const PROMPT;

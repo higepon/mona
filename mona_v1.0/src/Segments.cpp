@@ -406,7 +406,7 @@ SharedMemoryObject::~SharedMemoryObject() {
         g_page_manager->returnPhysicalPage(physicalPages_[i]);
     }
 
-    delete(physicalPages_);
+    delete[] physicalPages_;
     return;
 }
 

@@ -18,7 +18,7 @@ int user_start() {
     int result;
     um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
     result = monaMain();
-    //    exit(result);
+    exit(result);
     for (;;);
 }
 

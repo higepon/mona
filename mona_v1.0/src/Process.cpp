@@ -644,7 +644,7 @@ UserProcess::UserProcess(const char* name, PageEntry* directory) : Process(name,
 }
 
 UserProcess::~UserProcess() {
-    delete threadManager_;
+   delete threadManager_;
 }
 
 /*----------------------------------------------------------------------
