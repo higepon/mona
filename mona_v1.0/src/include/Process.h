@@ -190,10 +190,11 @@ class Process_ {
 
     inline dword getTick() {return tick_;}
     inline bool hasTimeLeft() const {return timeLeft_ > 0;}
+    int join(Thread* thread);
 
   protected:
     bool isKernelMode_;
-    ThreadManager* threadManager;
+    ThreadManager* threadManager_;
     char name_[16];
     //    OutputStream* stdout;
     //    OutputStream* stderr;

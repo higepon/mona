@@ -400,6 +400,10 @@ Process_::Process_(const char* name) : tick_(0), timeLeft_(4) {
 Process_::~Process_() {
 }
 
+int Process_::join(Thread* thread) {
+    return threadManager_->join(thread);
+}
+
 /*----------------------------------------------------------------------
     UserProcess
 ----------------------------------------------------------------------*/

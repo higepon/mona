@@ -571,8 +571,12 @@ bool FAT12::readHasNext() const {
 */
 bool FAT12::createFlie(const char* name, const char* ext) {
 
+    printf("+1+\n");
+
     /* read current directory */
     if (!readEntry()) return false;
+
+    printf("+2+\n");
 
     /* find free entry */
     int freeIndex = -1;
