@@ -62,9 +62,9 @@ div.day h2 {
 }
 
 div.body {
-	margin-left: 15%;
-	margin-right: 15%;
-	line-height: 150%;
+	margin-left: 2%;
+	margin-right: 2%;
+	line-height: 100%;
 }
 
 div.body h3 {
@@ -377,7 +377,7 @@ div.sidebar {
 }
 
 div.sidebar p {
-	line-height: 120%;
+	line-height: 100%;
 	text-align: center;
 	border-style: solid;
 	border-color: #89dbff;
