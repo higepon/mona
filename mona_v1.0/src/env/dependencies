@@ -64,8 +64,8 @@ monaOperator.o: monaOperator.cpp include/IA32MemoryManager.h \
   include/monaTypes.h include/string.h include/monaIo.h \
   include/monaKernel.h include/VirtualConsole.h include/monaVga.h \
   include/monaOperator.h
-monaPureVirtual.o: monaPureVirtual.cpp include/monaVga.h \
-  include/monaTypes.h include/string.h
+monaPureVirtual.o: monaPureVirtual.cpp include/monaKernel.h \
+  include/monaTypes.h include/string.h include/VirtualConsole.h
 monaUtil.o: monaUtil.cpp include/monaUtil.h
 KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   include/monaTypes.h include/string.h include/monaVga.h stlport/queue \
@@ -140,7 +140,7 @@ monaChecker.o: monaChecker.cpp include/monaChecker.h include/monaVga.h \
   include/VirtualConsole.h include/IA32MemoryManager.h include/monaIo.h
 string.o: string.cpp include/string.h include/monaTypes.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
-  include/string.h include/VirtualConsole.h include/monaVga.h
+  include/string.h include/VirtualConsole.h
 Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h
 SystemConsole.o: SystemConsole.cpp include/SystemConsole.h \

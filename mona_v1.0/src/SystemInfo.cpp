@@ -12,9 +12,7 @@
     \date   create:2002/12/31 update:$Date$
 */
 #include<SystemInfo.h>
-#include<monaVga.h>
 #include<string.h>
-#include<VirtualConsole.h>
 
 /*!
     \brief destructor

@@ -106,7 +106,6 @@ void timerHandler() {
 
     static dword idx = 0;
     //    idx++;
-
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);

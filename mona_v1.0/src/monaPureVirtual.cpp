@@ -13,7 +13,7 @@
     \date   create:2002/08/04 update:$Date$
 */
 
-#include<monaVga.h>
+#include <monaKernel.h>
 
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);
@@ -24,11 +24,11 @@ extern "C" int atexit( void (*func)(void));
     dummy
 
     \author HigePon
-    \date   create:2002/08/04 update:
+    \date   create:2002/08/04 update:2002/02/25
 */
 void __cxa_pure_virtual() {
 
-    _sysPrintln("__cxa_pure_virtual called");
+    console->printf("__cxa_pure_virtual called\n");
 }
 
 /*!
@@ -37,11 +37,11 @@ void __cxa_pure_virtual() {
     dummy
 
     \author HigePon
-    \date   create:2002/09/07 update:
+    \date   create:2002/09/07 update: 2003/02/25
 */
 void _pure_virtual() {
 
-    _sysPrintln("_pure_virtual called");
+    console->printf("_pure_virtual called\n");
 }
 
 /*!
@@ -50,6 +50,6 @@ void _pure_virtual() {
     dummy
 
     \author HigePon
-    \date   create:2002/08/08 update:2002/12/15
+    \date   create:2002/08/08 update:2002/02/25
 */
 int atexit( void (*func)(void)) {}
