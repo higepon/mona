@@ -6,14 +6,41 @@
 #include "file.h"
 #include "bzip2.h"
 #include "dtk5s.h"
+#include "IDEDriver.h"
+#include "ISO9660.h"
 
 using namespace MonAPI;
+
+bool hasCD;               /* public  */
+ISO9660* iso;             /* public  */
+static IDEDriver* ide;    /* private */
+static int irq;           /* private */
+#define IRQ_PRIMARY   14
+#define IRQ_SECONDARY 15
+
+static void interrupt()
+{
+    syscall_set_irq_receiver(irq);
+
+    for (MessageInfo msg;;)
+    {
+        if (MonAPI::Message::receive(&msg) != 0) continue;
+
+        switch (msg.header)
+        {
+        case MSG_INTERRUPTED:
+            ide->protocolInterrupt();
+            break;
+        default:
+            printf("default");
+        }
+    }
+}
 
 void MessageLoop()
 {
     BinaryTree<dword> stdoutTree;
     dword self = monapi_get_server_thread_id(ID_FILE_SERVER);
-
 
     for (MessageInfo msg;;)
     {
@@ -161,6 +188,61 @@ void MessageLoop()
     }
 }
 
+static bool cdInitialize()
+{
+    syscall_get_io();
+
+    ide = new IDEDriver();
+    IStorageDevice* cd = ide;
+
+    /* find CD-ROM */
+    int controller, deviceNo;
+    if (!ide->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
+    {
+        delete ide;
+        return false;
+    }
+
+    printf("mounting CD-ROM\n");
+
+    /* set irq number */
+    if (controller == IDEDriver::PRIMARY)
+    {
+        irq = IRQ_PRIMARY;
+        outp8(0xa1, inp8(0xa1) & 0xbf);
+    }
+    else
+    {
+        irq = IRQ_SECONDARY;
+        outp8(0xa1, inp8(0xa1) & 0x7f);
+    }
+
+    /* interrupt thread */
+    dword id = syscall_mthread_create((dword)interrupt);
+    syscall_mthread_join(id);
+
+    if (!ide->selectDevice(controller, deviceNo))
+    {
+        printf("select device NG error code = %d\n", ide->getLastError());
+        delete ide;
+        return false;
+    }
+
+    iso = new ISO9660(cd, "");
+
+    printf("creating directory cache\n");
+
+    if (!iso->Initialize())
+    {
+        printf("CD-ROM:initialize Error = %d\n", iso->GetLastError());
+        delete iso;
+        delete cd;
+        return false;
+    }
+
+    return true;
+}
+
 int MonaMain(List<char*>* pekoe)
 {
     if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
@@ -169,7 +251,11 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
 
+    /* CD-ROM */
+//    hasCD = cdInitialize();
+
     MessageLoop();
 
     return 0;
 }
+

@@ -6,7 +6,38 @@
 
 using namespace MonAPI;
 
-#define MAIN_6
+#define MAIN_7
+
+#ifdef MAIN_7
+
+int MonaMain(List<char*>* pekoe)
+{
+    if (pekoe->size() != 1)
+    {
+        printf("usage: hello filepath");
+        return 1;
+    }
+
+    monapi_cmemoryinfo* mi = NULL;
+    mi = monapi_call_file_read_data(pekoe->get(0), MONAPI_FALSE);
+
+    if (mi == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    for (int i = 0; i < mi->Size; i++)
+    {
+        printf("%c", mi->Data[i]);
+
+    }
+
+    monapi_cmemoryinfo_delete(mi);
+    return 0;
+}
+
+#endif
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -288,4 +319,3 @@ int MonaMain(List<char*>* pekoe)
     return 0;
 }
 #endif
-

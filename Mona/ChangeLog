@@ -1,3 +1,7 @@
+2004-11-24  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/main.cpp (cdInitialize): FileサーバにCD読み込みロジックを組み込んだけど落ちちゃうのでコメントアウト中
+
 2004-11-23  Yamami  <yamamimail@users.sourceforge.jp>
 
         * samples/non-gui/yamami/main.cpp: テストコード追加
