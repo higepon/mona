@@ -105,6 +105,10 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
             }
         }
     }
+    else if (path.endsWith(".BN2"))
+    {
+        mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+    }
     else
     {
         mi = monapi_call_file_read_data(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
