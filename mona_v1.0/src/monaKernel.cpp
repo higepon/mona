@@ -89,7 +89,7 @@ void startKernel(void) {
     KeyBoardManager::instance();
 
     /* disk read demo */
-    console->printf("disk read test start. Hit any key\n");
+    console->printf("\ndisk read test start. Hit any key\n\n");
     while (true) {
         console->printf("");
         if (demoStep > 1) break;

@@ -126,6 +126,7 @@ void MFDCDriver::initilize() {
 
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
+
     console_->printf("dma buff_=[%x]=[%dkb]\n", (dword)dmabuff_, ((dword)dmabuff_/1024));
 
     /* dma buff should be 64kb < dma buff < 16Mb */
@@ -156,22 +157,52 @@ void MFDCDriver::initilize() {
 
     interrupt_ = false;
     motor(ON);
-    while(!waitInterrupt()); console->printf("motor on catch\n");
+    while(!waitInterrupt());
+
+#ifdef FDC_DEBUG
+    console->printf("motor on catch\n");
+#endif
 
     /* specify */
-    sendCommand(specifyCommand, sizeof(specifyCommand));
+    if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
+
+        console->printf("Specify command failed\n");
+        motor(OFF);
+        return;
+    }
 
     recalibrate();
     recalibrate();
-    memset(dmabuff_, 0x56, 512);
-    write(0, 0, 1);
+
+    console->printf("recalibrate done\n");
+
+    memset(dmabuff_, 0x10, 512);
+    dmabuff_[0] = 'M';
+    dmabuff_[1] = 'o';
+    dmabuff_[2] = 'n';
+    dmabuff_[3] = 'a';
+    dmabuff_[4] = '\0';
+
+    console->printf("Writing [%s]\n", dmabuff_);
+    if (!write(0, 0, 150)) {
+
+        console->printf("write failed\n");
+        motor(OFF);
+        return;
+    }
+
 
     recalibrate();
     recalibrate();
-    read(0, 0, 1);
+    if (!read(0, 0, 150)) {
 
+        console->printf("read failed\n");
+        motor(OFF);
+        return;
+    }
+
+    console->printf("reading result is %s\n", dmabuff_);
     motor(OFF);
-    while (true);
     return;
 }
 
@@ -223,7 +254,9 @@ void MFDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void MFDCDriver::interrupt() {
 
+#ifdef DEBUG_FDC
     console_->printf("interrpt:");
+#endif
     interrupt_ = true;
 }
 
@@ -328,12 +361,19 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
 
        if (isOK) return true;
-       if (i == FDC_RETRY_MAX - 2)  console->printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
+       if (i == FDC_RETRY_MAX - 2)  {
+#ifdef DEBUG_FDC
+           console->printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
+#endif
+       }
     }
 
+#ifdef DEBUG_FDC
     /* time out */
     console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
                    , (int)expectedCondition, (int)inportb(FDC_MSR_PRIMARY), (int)(status & mask));
+#endif
+
     return false;
 }
 
@@ -373,7 +413,10 @@ bool MFDCDriver::seek(byte track) {
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
+
+#ifdef DEBUG_FDC
     printStatus("seek sense after");
+#endif
     return true;
 }
 
@@ -428,6 +471,8 @@ void MFDCDriver::readResults() {
 
     }
     resultsLength_ = i;
+
+#ifdef DEBUG_FDC
     console_->printf("resultsLength_=%d\n", resultsLength_);
 
     /* debug show result */
@@ -436,6 +481,8 @@ void MFDCDriver::readResults() {
          console_->printf("result[%d] = %x ", j, (int)(results_[j]));
     }
     console_->printf("\n");
+#endif
+
     return;
 }
 
@@ -527,6 +574,16 @@ void MFDCDriver::setupDMAWrite(dword size) {
     return;
 }
 
+/*!
+    \brief disk read
+
+    \param track  track
+    \param head   head
+    \param sector sector
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
 bool MFDCDriver::read(byte track, byte head, byte sector) {
 
     byte command[] = {FDC_COMMAND_READ
@@ -543,21 +600,27 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
     seek(track);
 
     setupDMARead(512);
-    memset(dmabuff_, 0xfffe, 512);
 
     interrupt_ = false;
+#ifdef DEBUG_FDC
     printStatus("before read command");
+#endif
+
     sendCommand(command, sizeof(command));
     while(!waitInterrupt());
 
     stopDMA();
 
-    for (int i = 0; i < 50; i++) console_->printf("[%x]", (int)dmabuff_[i]);
-
     readResults();
     return true;
 }
 
+/*!
+    \brief writeID
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
 bool MFDCDriver::writeID(byte track, byte head, byte data) {
 
     seek(track);
@@ -566,6 +629,12 @@ bool MFDCDriver::writeID(byte track, byte head, byte data) {
     return false;
 }
 
+/*!
+    \brief print dma controler status
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
 void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
 
     console_->printf("ch3|ch2|ch1|ch0|ch3|ch2|ch1|ch0|\n");
@@ -582,6 +651,16 @@ void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
     );
 }
 
+/*!
+    \brief disk write
+
+    \param track  track
+    \param head   head
+    \param sector sector
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
 bool MFDCDriver::write(byte track, byte head, byte sector) {
 
     byte command[] = {0xC5//FDC_COMMAND_WRITE
@@ -597,7 +676,6 @@ bool MFDCDriver::write(byte track, byte head, byte sector) {
     setupDMAWrite(512);
     seek(track);
 
-    memset(dmabuff_, 0x1234, 512);
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     while(!waitInterrupt());
