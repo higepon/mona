@@ -137,7 +137,7 @@ void startKernel(void) {
 
     //    keyStrokeTest();
 
-    //    while (true);
+      while (true);
 
     /* show Logo */
     FDCDriverTester();

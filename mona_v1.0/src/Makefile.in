@@ -1,11 +1,3 @@
-NASM       = nasm
-NDISASM    = ndisasm
-CC         = /usr/bin/g++
-LD         = /usr/bin/ld
-STRIP      = /usr/bin/strip
-LFLAGS     = -n -Ttext 0x1200 -static
-# for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -ffreestanding -Wall
 ENV        = env
 VERSION    = 0.1.1
 DOXYGEN    = doxygen

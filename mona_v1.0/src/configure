@@ -1,0 +1,18 @@
+#! /bin/sh
+
+# gcc is 3.x or 2.x
+isOldVersion=`gcc --version|egrep '2\.9.*'|wc -l`
+
+# cygwin
+if test "$OSTYPE" != cygwin; then
+
+    cat ./env/cygwin.env Makefile.in >MakeFile
+
+# linux gcc2.9x
+elif test isOldVersion > 0; then
+
+    cat ./env/cygwin.env Makefile.in >MakeFile
+# linux gcc3.x
+else
+    cat ./env/linux3.x.env Makefile.in >MakeFile
+fi
