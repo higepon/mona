@@ -1,3 +1,7 @@
+2004-11-16  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/IDEDriver.cpp (sendPacketCommand): atapi read(10)‚ª‚¤‚Ü‚­‚¢‚©‚È‚¢
+
 2004-11-15  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gbrowser/htmlpanel.cpp:  “à•”•Ï”–¼•ÏXix -> _x “™j

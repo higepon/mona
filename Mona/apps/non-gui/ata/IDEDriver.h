@@ -27,7 +27,9 @@ public:
 
 public:
     void printDebug();
-
+    bool selectDevice(int controller, int deviceNo);
+    int read(dword lba, void* buffer, int size);
+    bool findDevice(int type, int detail, int* controller, int* deviceNo);
 
 public:
     enum
@@ -47,6 +49,8 @@ private:
     {
         int type;
         int typeDetail;
+        int deviceNo;
+        dword dataTransferSize;
         MonAPI::CString name;
     };
 
@@ -70,6 +74,13 @@ private:
         byte drdyCheck;
     } ATACommand;
 
+    typedef struct ATAPICommand
+    {
+        byte feature;
+        byte device;
+        byte packet[12];
+    };
+
 private:
     void resetAndIdentify(IDEController* controller);
     void identify(IDEController* controller, int deviceNo);
@@ -80,17 +91,23 @@ private:
     bool waitBusyAndDataRequestBothClear(IDEController* controller);
     bool waitDrdySet(IDEController* controller);
     int sendPioDataInCommand(IDEController* controller, ATACommand* command, word count, void* buf);
+    int sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer);
     bool selectDevice(IDEController* controller, int deviceNo);
+    int readATAPI(IDEController* controller, dword lba, void* buffer, int size);
+    dword requestSense(IDEController* controller);
 
 private:
     void outp8(IDEController* controller, int reg, byte value);
     byte inp8(IDEController* controller, int reg);
     void inp16(IDEController* controller, word* data, int length);
     word inp16(IDEController* controller, int reg);
+    void outp16(IDEController* controller, int reg, word value);
+    void outp16(IDEController* controller, word* data, int length);
 
 
 private:
     IDEController controllers[2];
+    IDEController* whichController;
 
 private:
     enum
