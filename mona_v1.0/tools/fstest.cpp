@@ -24,9 +24,14 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
-    if (!fat->open(".", "HELLO.TXT", FAT12::READ_MODE)) {
+    if (!fat->open("SOMEDIR\\DIR1\\DIR2\\DIR3\\DIR4", "SOME.CPP", FAT12::READ_MODE)) {
+        printf("open failed");
+    }
 
-	printf("open failed");
+    while (fat->readHasNext()) {
+        byte buf[512];
+        fat->read(buf);
+        for (int i = 0; i < 512; i++) printf("%c", (char)buf[i]);
     }
 
     return 0;

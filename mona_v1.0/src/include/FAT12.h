@@ -91,7 +91,7 @@ class FAT12 {
     bool createFlie(const char* name);
     bool open(const char* path, const char* filename, int mode);
     bool close();
-    bool read(const char* file, byte* buffer);
+    bool read(byte* buffer);
     bool write(const char* file, byte* buffer);
     bool rename(const char* from, const char* to);
     bool remove(const char* file);
@@ -99,7 +99,7 @@ class FAT12 {
     bool makeDirectory(const char* name);
     bool changeDirectory(const char* path);
     bool changeDirectoryRelative(const char* path);
-    bool readHasNext();
+    bool readHasNext() const;
 
     int getErrorNo() const;
     BPB bpb_;
@@ -124,7 +124,9 @@ class FAT12 {
     bool dirty_;                /* dirty flag      */
 
     bool readHasNext_;          /* read state      */
+    bool isOpen_;               /* read state      */
     int  currentCluster_;       /* read state      */
+    int  fileSize_;             /* read state      */
 
     char currentPath_[512];      /* current path    */
     int currentDirecotry_;      /* current cluster */
