@@ -22,7 +22,7 @@
 
 using namespace MonAPI;
 
-bool isExited = false;
+bool hasExited = false;
 
 OneLineShell::OneLineShell(){
 
@@ -70,7 +70,7 @@ void OneLineShell::service() {
   this->cmdHst.AddCommand(this->cmd);
   /* service loop */
   MessageInfo info;
-  while(!isExited){
+  while(!hasExited){
     if(!Message::receive(&info)){
       if((info.arg2 & KEY_MODIFIER_DOWN)){
         KeyInfo keyInfo;
@@ -79,7 +79,7 @@ void OneLineShell::service() {
         keyInfo.charcode = info.arg3;
         this->OnKeyDown(keyInfo);
         ds.DrawCommandLine((char *)this->cmd);
-        if(!isExited) ds.DrawCursor(this->cmd.GetCurrentPos());
+        if(!hasExited) ds.DrawCursor(this->cmd.GetCurrentPos());
         ds.DrawMessageLine(this->msg);
       }
     }
@@ -110,7 +110,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
           if(Message::receive(&msg) != 0) continue;
           if(msg.header == MSG_SERVER_START_OK) break;
         }
-        isExited = true;
+        hasExited = true;
         this->SetMessage("Change shell to SHELL.SVR");
       }
     } else {

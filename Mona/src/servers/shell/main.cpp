@@ -3,7 +3,7 @@
 #include <Shell.h>
 #include <monapi/Keys.h>
 
-static bool isExited = false;
+static bool hasExited = false;
 static bool callAutoExec = true;
 
 using namespace MonAPI;
@@ -70,7 +70,7 @@ void ShellServer::service()
     /* service loop */
     Shell shell;
     MessageInfo info;
-    while (!isExited)
+    while (!hasExited)
     {
         if (!Message::receive(&info) && info.arg2 & KEY_MODIFIER_DOWN)
         {
@@ -224,7 +224,7 @@ void Shell::commandExecute()
         {
             delete option;
         }
-        if (!isExited) printf("\n%s", PROMPT);
+        if (!hasExited) printf("\n%s", PROMPT);
         position_ = 0;
         return;
     }
@@ -358,7 +358,7 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
             if (Message::receive(&msg) != 0) continue;
             if (msg.header == MSG_SERVER_START_OK) break;
         }
-        isExited = true;
+        hasExited = true;
         break;
     case COMMAND_UNAME:
         {
