@@ -1,6 +1,8 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
+// This file's encoding is UTF-8.
+
 // MonaGUI発祥の地。
 // すべてはここから始まった。
 
