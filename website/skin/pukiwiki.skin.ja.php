@@ -32,7 +32,7 @@
 <body>
 
 <div id="header">
- <a href="<?php echo $modifierlink ?>"><img id="logo" src="mona.gif" width="80" height="80" alt="[PukiWiki]" title="[PukiWiki]" /></a>
+ <a href="<?php echo $modifierlink ?>"><img id="logo" src="mona.gif" width="110" height="105" alt="[PukiWiki]" title="[PukiWiki]" /></a>
  <h1 class="title"><?php echo $page ?></h1>
 
 <?php if ($is_page) { ?>
