@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
     DiskDriver* driver = new HogeDriver(argv[1], 50);
     FAT12*      fat    = new FAT12(driver);
     std::fstream target;
+    std::fstream target2;
 
     target.open("../bin/KERNEL.IMG", std::ios::out|std::ios::in|std::ios::binary);
 
@@ -80,7 +81,7 @@ int main(int argc, char *argv[]) {
 
     fat    = new FAT12(driver);
 
-    target.open("../bin/USER.ELF", std::ios::out|std::ios::in|std::ios::binary);
+    target2.open("../bin/USER.ELF", std::ios::out|std::ios::in|std::ios::binary);
 
     if (!fat->initilize()) {
 
@@ -91,7 +92,7 @@ int main(int argc, char *argv[]) {
         else if (errorNo == FAT12::FAT_READ_ERROR) printf("NOT FAT12 error \n");
         else printf("unknown error \n");
 
-        target.close();
+        target2.close();
         return -1;
     }
 
@@ -111,16 +112,14 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    target.seekg(0);
+    target2.seekg(0);
     while (true) {
 
-        if (!target.read((char*)text, 512)) break;
-
-	printf("********\n");
+        if (!target2.read((char*)text, 512)) break;
 
         if (!fat->write(text)) {
             printf("write failed");
-            target.close();
+            target2.close();
             return -1;
         }
         memset(text, 0, 512);
@@ -128,10 +127,10 @@ int main(int argc, char *argv[]) {
 
     if (!fat->close()) {
         printf("close failed");
-        target.close();
+        target2.close();
     }
 
-    target.close();
+    target2.close();
 
     delete fat;
     delete driver;
