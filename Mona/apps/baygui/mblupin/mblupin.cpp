@@ -1,182 +1,149 @@
-/*!
-    \file  mblupin.cpp
-    \brief Mona ルパンタイトル BayGUI版
+/*
+Copyright (c) 2005 bayside
+All rights reserved.
 
-    Copyright (c) 2004 Yamami
-    WITHOUT ANY WARRANTY
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
-    \author  Yamami
-    \version $Revision$
-    \date   create:2004/11/02 update:$Date$
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 
 #include <baygui.h>
 
 #include "TITLE.h"
 
-
-//---------------------------------------------------------------------------
-const int MAXSTRING = 256;          //表示文字列の最大長
-//---------------------------------------------------------------------------
-
-
-/*!
-    \brief GetString
-        指定した番号のタイトルを得る。
-
-    \param char *string タイトル文字列へのポインタ
-    \param int num タイトル番号
-    \return 結果
-    
-    \author  Yamami
-    \date    create:2004/11/02 update:2004/11/02
-*/
-int GetString(char *string , int num)
-{
-    
-    if(num < MAX_TITLE){
-        strcpy(string, Titles[num]);
-        return 0;
-    }
-    
-    return 1;
-}
-
-
-/*! \class MbLupin
- *  \brief MbLupinクラス
-
-    \author  Yamami
-    \date    create:2004/11/02 update:2004/11/02
-*/
 class MbLupin : public Window {
 private:
-    Label *label;
-    int nowTitle;           //現在表示中のタイトル
-    int nowViewChar;        //現在表示中の文字位置
-    int geted;          //現在の状態 タイトル取得済みかどうか？ 0:未取得 0以外取得済み
-    MonAPI::Random *rnd;
+	char  titleString[256];
+	wchar titleCharcode;
+	MonAPI::Date date;
+	MonAPI::Random rnd;
+
+private:
+	void drawTitle()
+	{
+		memset(this->titleString, 0, sizeof(this->titleString));
+		strcpy(this->titleString, Titles[rnd.nextInt() % MAX_TITLE]);
+		String s = this->titleString;
+		
+		// １文字づつ描画
+		for (int i = 0; i < s.length(); i++) {
+			this->titleCharcode = s[i];
+			repaint();
+			sleep(250);
+		}
+		
+		// タイトル全部を表示
+		this->titleCharcode = 0xFFFFFFFF;
+		repaint();
+		setTimer(2000);
+	}
 
 public:
-    MbLupin(){
-        setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
-        setTitle("mblupin");
-        label = new Label("", ALIGN_CENTER);
-        label->setRect(0,0,280,170);
-        label->setBackground(0x0);
-        label->setForeground(0xFFFFFF);
-        add(label);
-        
-        rnd = new MonAPI::Random();
-        
-        //ランダムのシード値を与える。
-        MonAPI::Date date;
-        date.refresh();
-        rnd->setSeed(date.hour() * 3600 + date.min() * 60 + date.sec());
-        
-        nowTitle = 0;
-        nowViewChar = 0;
-        geted = 0;
-    }
-    ~MbLupin(){
-        delete(label);
-    }
-    
-    void onEvent(Event *event) {
-        int tmprand;
-        int ret;
-        char buf[MAXSTRING];
-        char OneBuf[5];
-        int titleStrCount;      //現在表示中のタイトル文字数
-        
-        if (event->getType() == Event::TIMER) {
-
-            //タイマーイベント処理
-            if (geted == 0){
-                //タイトル未取得なら、タイトル取得
-                if(nowTitle > MAX_TITLE){
-                    nowTitle = 0;
-                }
-                
-                //タイトルはランダムで取得
-                tmprand = rnd->nextInt();
-                nowTitle = tmprand % MAX_TITLE;
-                
-                ret = GetString(buf , nowTitle);
-                geted = 1;
-                
-                setTimer(10);
-            }
-            else{
-                
-                //タイトル全体表示。表示位置左
-                //label->setText(buf);
-                //geted = 0;
-                //nowViewChar = 0;
-                //nowTitle++;
-                
-                
-                //タイトル取得済みなら、表示
-                //文字数カウント
-                titleStrCount = strlen(buf);
-                
-                if(nowViewChar > titleStrCount){
-                    //タイトル全体表示。表示位置左
-                    label->setText(buf);
-                    geted = 0;
-                    nowViewChar = 0;
-                    nowTitle++;
-                    
-                    setTimer(3000);
-                }
-                else{
-                    //一文字表示、表示位置中央
-                    //無理矢理文字列処理・・・
-                    //3バイト表現？？ UTF-8 ってよく分からない。。
-                    OneBuf[0] = buf[nowViewChar];
-                    OneBuf[1] = buf[nowViewChar+1];
-                    OneBuf[2] = buf[nowViewChar+2];
-                    OneBuf[3] = 0;
-                    //sprintf(OneBuf , "%d" ,titleStrCount);
-                    label->setText(OneBuf);
-                    nowViewChar+=3;
-                    
-                    setTimer(250);
-                }
-                
-            }
-            
-            
-        
-        } else if (event->getType() == Event::FOCUS_IN) {
-            //最初にフォーカスを得た時に、タイマー発動
-            setTimer(10);
-        }
-    }
+	/** コンストラクタ */
+	MbLupin()
+	{
+		setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
+		setTitle("mblupin");
+		
+		// ランダムのシード値を与える。
+		date.refresh();
+		rnd.setSeed(date.hour() * 3600 + date.min() * 60 + date.sec());
+		this->titleCharcode = 0;
+	}
+	
+	/** デストラクタ */
+	~MbLupin()
+	{
+	}
+	
+	/** 起動ハンドラ */
+	void onStart()
+	{
+		Window::onStart();
+		drawTitle();
+	}
+	
+	/** 描画ハンドラ */
+	void onPaint(Graphics *g)
+	{
+		int  x, y, offset, width, height, pos, bit;
+		char fp[256];
+		
+		x = y = pos = 0;
+		bit = 1;
+		
+		if (this->titleCharcode == 0) return;
+		
+		// バックを黒に塗る
+		g->setColor(Color::BLACK);
+		g->fillRect(0,0,getWidth(),getHeight());
+		
+		// タイトル全部を表示
+		if (this->titleCharcode == 0xFFFFFFFF) {
+			x = (getWidth() - Window::INSETS_LEFT - Window::INSETS_RIGHT 
+				- getFontMetrics()->getWidth(this->titleString)) / 2;
+			y = (getHeight() - Window::INSETS_TOP - Window::INSETS_BOTTOM 
+				- getFontMetrics()->getHeight(this->titleString)) / 2;
+			g->setColor(Color::WHITE);
+			g->drawText(this->titleString, x, y);
+			return;
+		}
+		
+		// タイトル中の１文字を２倍に拡大して描画する
+		if (getFontMetrics()->decodeCharacter(this->titleCharcode, &offset, &width, &height, fp) == true)
+		{
+			x = (getWidth() - Window::INSETS_LEFT - Window::INSETS_RIGHT - 24) / 2;
+			y = (getHeight() - Window::INSETS_TOP - Window::INSETS_BOTTOM - 24) / 2;
+			
+			for (int j = 0; j < height; j++) {
+				for (int k = 0; k < width; k++) {
+					if ((fp[pos] & bit) != 0) {
+						g->drawPixel(x + k * 2, y + j * 2, Color::WHITE);
+						g->drawPixel(x + k * 2 + 1, y + j * 2, Color::WHITE);
+						g->drawPixel(x + k * 2, y + j * 2 + 1, Color::WHITE);
+						g->drawPixel(x + k * 2 + 1, y + j * 2 + 1, Color::WHITE);
+					}
+					bit <<= 1;
+					if (bit == 256) {
+						pos++;
+						bit = 1;
+					}
+				}
+			}
+		}
+	}
+	
+	/** イベントハンドラ */
+	void onEvent(Event *event)
+	{
+		if (event->getType() == Event::TIMER) {
+			drawTitle();
+		}
+	}
 };
 
-
-
-/*!
-    \brief MonaMain
-        mblupinメイン
-
-    \param List<char*>* pekoe
-
-    \author  Yamami
-    \date    create:2004/11/02 update:2004/11/02
-*/
-#if defined(MONA)
 int MonaMain(List<char*>* pekoe)
-#else
-int main(int argc, char **argv)
-#endif
 {
-    
-    MbLupin *lupin = new MbLupin();
-    lupin->run();
-    delete(lupin);
-    return 0;
-    
+	MbLupin *lupin = new MbLupin();
+	lupin->run();
+	delete(lupin);
+	return 0;
 }
