@@ -14,7 +14,7 @@
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
 
-#define DEBUG_READ_TRACE
+//#define DEBUG_READ_TRACE
 
 #define NULL     0
 #define NORMAL   0
