@@ -63,15 +63,12 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     struct memoryEntry* freeBlock = current + realSize;
     H_SIZE_T usedBlockSize = realSize;
     H_SIZE_T freeBlockSize = current->size - realSize;
-    this->printInfo("1");
 
     if (current->size != realSize) {
         this->addToEntry(&freeEntry_, freeBlock, freeBlockSize);
         this->concatBlock(freeEntry_, freeBlock);
-    this->printInfo("2");
     }
-    //    this->deleteFromEntry(&freeEntry_, current, current->size);
-    this->printInfo("3");
+
     this->deleteFromEntry(&freeEntry_, current, current->size);
     this->addToEntry(&usedEntry_, usedBlock, usedBlockSize);
 
@@ -96,7 +93,7 @@ void X86MemoryManager::freeMemory(void* address) {
     struct memoryEntry* targetAddress = (struct memoryEntry*)address;
 
     this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
-    this->addToEntry(0, targetAddress, targetAddress->size);
+    this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
 }
 
@@ -164,12 +161,12 @@ void X86MemoryManager::printInfo(char* str) {
 
     for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-    _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
+        _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
     }
 
     for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-    _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
+        _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
     }
 }
@@ -213,17 +210,25 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
     struct memoryEntry* current;
     struct memoryEntry* next;
     H_SIZE_T nextSize;
+
     for (current = (*entry); current != (struct memoryEntry*)NULL; current = current->next) {
 
-        /* block to delete found */
         if (current->next > block) {
             next = current->next;
             current->next = block;
             block->size = size;
             block->next = next;
-            break;
+            return;
+        }
+
+        if (current->next == (struct memoryEntry*)NULL) {
+            current->next = block;
+            block->next = (struct memoryEntry*)NULL;
+            block->size = size;
+            return;
         }
     }
+
     return;
 }
 

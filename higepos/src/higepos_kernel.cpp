@@ -33,13 +33,12 @@
 void startKernel(void) {
     _sysInitVga();
     _sysClearScreen();
-    _sysPrintln("------------------------------------------");
-    _sysPrintln("      Higepos Kernel starting             ");
-    _sysPrintln("        ________ A A                      ");
-    _sysPrintln("      ~/ ______( `D`) < Powerd by 2ch     ");
-    _sysPrintln("        UU       U U                      ");
-    _sysPrintln("------------------------------------------");
-
+    _sysPrintln("------------------------------------------------------");
+    _sysPrintln("      Higepos Kernel starting                         ");
+    _sysPrintln("        ________ A A                                  ");
+    _sysPrintln("      ~/ ______( `D`) < thanks ProgramingBoard@2ch    ");
+    _sysPrintln("        UU       U U                                  ");
+    _sysPrintln("------------------------------------------------------");
 
     _sysSetIdt();
     _sysInitIo();
@@ -51,6 +50,8 @@ void startKernel(void) {
     //    _sysPrintlnInt(point1->getX());
     Point* point2 = new Point(5, -1);
     _sys_printf("[Point(5, -1) getY() = %d]\n", point2->getY());
+    Point* point3 = new Point(5, -1);
+    _sys_printf("[Point(5, -1) getY() = %d]\n", point3->getY());
 
     /* testing types */
     _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));
@@ -58,14 +59,14 @@ void startKernel(void) {
 
     /* testing malloc */
     _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
-    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
+    //    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
 
     /* testing vector */
 //      Vector<int> list;
 //      list.add(10);
 //      list.add(10);
 //      _sysPrintlnInt(list.get(0));
-
+    delete(point3);
     while (true) {
     }
 }
