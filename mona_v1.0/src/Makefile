@@ -1,12 +1,12 @@
-NASM       = nasmw
-NDISASM    = ndisasmw
-CC         = ${DJGPP_HOME_H}/bin/gpp
-LD         = ${DJGPP_HOME_H}/bin/ld
-STRIP      = ${DJGPP_HOME_H}/bin/strip
-DOXYGEN    = doxygen
-INCLUDE    = include
-LFLAGS     = -n -Ttext 0x1200 -static --oformat binary
-CFLAGS     = -nostdlib -fno-exceptions -fno-rtti -ffreestanding -fno-builtin -Wall -c
+ifdef CYGWIN
+    include cygwin.env
+else
+    ifdef DJGPP
+        include djgpp.env
+    else
+        include linux.env
+    endif
+endif
 BIN        = ../bin
 LIST       = ../list
 FIRST      = ${BIN}/firstboot.bin
@@ -23,7 +23,7 @@ SRC        = monaKernel.cpp       \
              monaUtil.cpp         \
              KeyBoardManager.cpp  \
              FDCDriver.cpp        \
-             monaTeter.cpp
+             monaTester.cpp
 
 HEADER     = ${INCLUDE}/monaKernel.h       \
              ${INCLUDE}/monaVga.h          \
@@ -50,7 +50,6 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/KeyBoardManager.o  \
              ${BIN}/FDCDriver.o        \
              ${BIN}/monaTester.o       \
-
 
 # src to html & document
 WEB : ${BIN}/mona.img
@@ -81,7 +80,7 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} monaTester.cpp  -o ${BIN}/monaTester.o
 	${LD} ${LFLAGS} -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third.list
-#	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}
+	${STRIP}  -O binary ${THIRD}
 
 clean :
-	cd ${BIN}; rm *.bin; rm *.o; *.img
+	cd ${BIN}; rm *.bin; rm *.o; rm *.img
