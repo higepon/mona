@@ -81,14 +81,14 @@ bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
     case PageManager::FAULT_NOT_WRITABLE:
 
-        if (!tryExtend(g_processManager->getCurrentProcess(), address)) {
+        if (!tryExtend(g_currentThread->process, address)) {
             return false;
         }
         break;
 
     case PageManager::FAULT_NOT_EXIST:
 
-        if (!allocatePage(g_processManager->getCurrentProcess(), address)) {
+        if (!allocatePage(g_currentThread->process, address)) {
             return false;
         }
         break;
@@ -213,7 +213,7 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
     }
 
     /* page allocation */
-    Process* current = g_processManager->getCurrentProcess();
+    Process* current = g_currentThread->process;
     g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
 
     return true;
@@ -298,7 +298,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
 
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
-    Process* current = g_processManager->getCurrentProcess();
+    Process* current = g_currentThread->process;
 
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
 
@@ -357,7 +357,8 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size, dword pid, dword li
 
     initilize(id, size);
 
-    Process* process = g_processManager->find(pid);
+    Process* process = NULL;
+//    Process* process = g_processManager->find(pid);
     if (process == NULL) {
         return;
     }

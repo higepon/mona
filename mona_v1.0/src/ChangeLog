@@ -1,3 +1,7 @@
+2004-02-23  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: これ以降は当分カーネルは動きません。
+
 2004-02-20  higepon  <higepon@users.sourceforge.jp>
 
         * ちょっとだけArrayを使ってみた。

@@ -236,18 +236,20 @@ int Messenger::send(const char* name, MessageInfo* message) {
         return -1;
     }
 
-    if ((process = g_processManager->find(name)) == (Process*)NULL) {
-        return -1;
-    }
+    // should be 
+//     if ((process = g_processManager->find(name)) == (Process*)NULL) {
+//         return -1;
+//     }
 
     info = allocateMessageInfo();
 
     *info = *message;
 
-    info->from = g_processManager->getCurrentProcess()->getPid();
+    info->from = g_currentThread->process->getPid();
 
     process->getMessageList()->add(info);
-    g_processManager->wakeup(process, 55);
+// should be
+//    g_processManager->wakeup(process, 55);
     return 0;
 }
 
@@ -260,16 +262,18 @@ int Messenger::send(dword pid, MessageInfo* message) {
         return -1;
     }
 
-    if ((process = g_processManager->find(pid)) == (Process*)NULL) {
-        return -1;
-    }
+// should be
+//     if ((process = g_processManager->find(pid)) == (Process*)NULL) {
+//         return -1;
+//     }
 
     info = allocateMessageInfo();
 
     *info = *message;
-    info->from = g_processManager->getCurrentProcess()->getPid();
+    info->from = g_currentThread->process->getPid();
     process->getMessageList()->add(info);
-    g_processManager->wakeup(process, 55);
+// should be
+//    g_processManager->wakeup(process, 55);
     return 0;
 }
 

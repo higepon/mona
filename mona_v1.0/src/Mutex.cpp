@@ -18,85 +18,85 @@
 /*----------------------------------------------------------------------
     KMutex
 ----------------------------------------------------------------------*/
-int KMutex::idCount = 0;
+// int KMutex::idCount = 0;
 
-KMutex::KMutex(Process* process) : process_(process) {
-    id_ = allocateId();
-    waitList_ = new HList<Thread*>();
-}
+// KMutex::KMutex(Process* process) : process_(process) {
+//     id_ = allocateId();
+//     waitList_ = new HList<Thread*>();
+// }
 
-KMutex::~KMutex() {
+// KMutex::~KMutex() {
 
-    for (int i = 0; i < waitList_->size(); i++) {
-        process_->activateMutex(waitList_->get(i));
-    }
-    delete waitList_;
-}
+//     for (int i = 0; i < waitList_->size(); i++) {
+//         process_->activateMutex(waitList_->get(i));
+//     }
+//     delete waitList_;
+// }
 
-int KMutex::init() {
+// int KMutex::init() {
 
-    BinaryTree<KMutex*>* tree = process_->getKMutexTree();
-    tree->add(getId(), this);
-    return NORMAL;
-}
+//     BinaryTree<KMutex*>* tree = process_->getKMutexTree();
+//     tree->add(getId(), this);
+//     return NORMAL;
+// }
 
-int KMutex::lock(Thread* thread) {
+// int KMutex::lock(Thread* thread) {
 
-    enter_kernel_lock_mode();
+//     enter_kernel_lock_mode();
 
-    /* lock OK */
-    if (!isLocked()) {
-        owner_ = thread;
+//     /* lock OK */
+//     if (!isLocked()) {
+//         owner_ = thread;
 
-    /* lock NG, so wait */
-    } else {
-        process_->waitMutex(thread);
-        waitList_->add(thread);
-    }
-    exit_kernel_lock_mode();
-    return NORMAL;
-}
+//     /* lock NG, so wait */
+//     } else {
+//         process_->waitMutex(thread);
+//         waitList_->add(thread);
+//     }
+//     exit_kernel_lock_mode();
+//     return NORMAL;
+// }
 
-int KMutex::tryLock(Thread* thread) {
+// int KMutex::tryLock(Thread* thread) {
 
-    int result;
+//     int result;
 
-    /* not locked */
-    if (!isLocked()) {
-        return NORMAL;
-    }
+//     /* not locked */
+//     if (!isLocked()) {
+//         return NORMAL;
+//     }
 
-    enter_kernel_lock_mode();
+//     enter_kernel_lock_mode();
 
-    /* lock OK */
-    if (!isLocked()) {
-        owner_ = thread;
-        result = NORMAL;
-    } else {
-        result = -1;
-    }
+//     /* lock OK */
+//     if (!isLocked()) {
+//         owner_ = thread;
+//         result = NORMAL;
+//     } else {
+//         result = -1;
+//     }
 
-    exit_kernel_lock_mode();
-    return result;
-}
+//     exit_kernel_lock_mode();
+//     return result;
+// }
 
-int KMutex::unlock() {
+// int KMutex::unlock() {
 
-    /* not locked */
-    if (!isLocked()) {
-        return NORMAL;
-    }
+//     /* not locked */
+//     if (!isLocked()) {
+//         return NORMAL;
+//     }
 
-    enter_kernel_lock_mode();
+//     enter_kernel_lock_mode();
 
-    if (waitList_ ->size() == 0) {
-        process_->activateMutex(owner_);
-        owner_ = NULL;
+//     if (waitList_ ->size() == 0) {
+//         process_->activateMutex(owner_);
+//         owner_ = NULL;
 
-    } else {
-        owner_ = waitList_->remove(0);
-    }
+//     } else {
+//         owner_ = waitList_->remove(0);
+//     }
 
-    exit_kernel_lock_mode();
-    return NORMAL;
-}
+//     exit_kernel_lock_mode();
+//     return NORMAL;
+// }

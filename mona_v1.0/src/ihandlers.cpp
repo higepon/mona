@@ -137,7 +137,7 @@ void timerHandler() {
     //    outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    schedule(true);
+//    schedule(true);
     /* does not come here */
 }
 

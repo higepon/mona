@@ -87,7 +87,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     /* attach Shared to this process */
     while (Semaphore::down(&g_semaphore_shared));
     isOpen    = SharedMemoryObject::open(sharedId, 4096 * 50);
-    isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), 0x80000000);
+    isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) {
         free(buf);
@@ -102,7 +102,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     free(buf);
 
     /* create process */
-    Process* process = g_processManager->create(isUser ? ProcessManager::USER_PROCESS : ProcessManager::KERNEL_PROCESS, file);
+    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, file);
 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));
@@ -115,7 +115,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
 
     /* detach from this process */
     while (Semaphore::down(&g_semaphore_shared));
-    SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
+    SharedMemoryObject::detach(sharedId, g_currentThread->process);
     Semaphore::up(&g_semaphore_shared);
 
     /* set arguments */
@@ -134,9 +134,8 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     }
 
     /* now process is loaded */
-    g_processManager->add(process);
-    Thread*  thread = g_processManager->createThread(process, entrypoint);
-    g_processManager->join(process, thread);
+    Thread*  thread = ThreadOperation::create(process, entrypoint);
+    g_scheduler->join(thread);
     return 0;
 }
 

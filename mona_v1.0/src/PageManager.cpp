@@ -389,7 +389,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
     dword tableIndex     = getTableIndex(address);
-    Process* current     = g_processManager->getCurrentProcess();
+    Process* current     = g_currentThread->process;
 
     dword realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
@@ -439,8 +439,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     } else {
 
         g_console->printf("access denied.address = %x Process %s killed", address, current->getName());
-        g_processManager->kill(current);
-        schedule(false);
+//        g_processManager->kill(current);
+//        schedule(false);
         return true;
     }
     return true;

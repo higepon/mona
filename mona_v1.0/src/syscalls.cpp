@@ -25,7 +25,7 @@ void syscall_entrance() {
 
     Thread* thread;
     Process* process;
-    KMutex* mutex;
+//    KMutex* mutex;
     ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
     dword readSize = 0;
@@ -41,24 +41,24 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PROCESS_SLEEP:
 
-        info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
+        //info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
         break;
     case SYSTEM_CALL_KILL:
 
-        g_processManager->kill(g_processManager->getCurrentProcess());
+//         g_processManager->kill(g_processManager->getCurrentProcess());
 
-        /* Process schedule */
-        g_processManager->schedule(false);
+//         /* Process schedule */
+//         g_processManager->schedule(false);
 
-        /* Thread schedule */
-        {
-            Process* current = g_processManager->getCurrentProcess();
-            bool isUser = current->isUserMode();
-            g_currentThread = current->schedule(true)->getThreadInfo();
+//         /* Thread schedule */
+//         {
+//             Process* current = g_processManager->getCurrentProcess();
+//             bool isUser = current->isUserMode();
+//             g_currentThread = current->schedule(true)->getThreadInfo();
 
-            /* Thread switch */
-            current->switchThread(true, isUser);
-        }
+//             /* Thread switch */
+//             current->switchThread(true, isUser);
+//         }
         break;
 
     case SYSTEM_CALL_PUT_PIXEL:
@@ -69,68 +69,68 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_SEND:
 
-        info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
+//        info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
         break;
 
     case SYSTEM_CALL_RECEIVE:
 
-        info->eax = g_messenger->receive(g_processManager->getCurrentProcess(), (MessageInfo*)(info->esi));
+//        info->eax = g_messenger->receive(g_processManager->getCurrentProcess(), (MessageInfo*)(info->esi));
         break;
 
     case SYSTEM_CALL_MTHREAD_CREATE:
-        thread  = g_processManager->createThread(g_processManager->getCurrentProcess(), info->esi);
+//        thread  = g_processManager->createThread(g_processManager->getCurrentProcess(), info->esi);
         info->eax = (dword)thread;
         break;
 
     case SYSTEM_CALL_MTHREAD_JOIN:
-        g_processManager->join(g_processManager->getCurrentProcess(), (Thread*)info->esi);
+//        g_processManager->join(g_processManager->getCurrentProcess(), (Thread*)info->esi);
         info->eax = 0;
         break;
 
     case SYSTEM_CALL_MUTEX_CREATE:
-        mutex = new KMutex(g_processManager->getCurrentProcess());
-        info->eax = mutex->init();
+//        mutex = new KMutex(g_processManager->getCurrentProcess());
+//        info->eax = mutex->init();
         break;
 
     case SYSTEM_CALL_MUTEX_LOCK:
-        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-        if (mutex == NULL) {
-            info->eax = 1;
-        } else {
-            info->eax = mutex->lock(g_currentThread->thread);
-        }
+//        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+//         if (mutex == NULL) {
+//             info->eax = 1;
+//         } else {
+//             info->eax = mutex->lock(g_currentThread->thread);
+//         }
         break;
 
     case SYSTEM_CALL_MUTEX_TRYLOCK:
-        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-        if (mutex == NULL) {
-            info->eax = 1;
-        } else {
-            info->eax = mutex->tryLock(g_currentThread->thread);
-        }
+//         mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+//         if (mutex == NULL) {
+//             info->eax = 1;
+//         } else {
+//             info->eax = mutex->tryLock(g_currentThread->thread);
+//         }
         break;
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
-        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-        if (mutex == NULL) {
-            info->eax = 1;
-        } else {
-            info->eax = mutex->unlock();
-        }
+//         mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+//         if (mutex == NULL) {
+//             info->eax = 1;
+//         } else {
+//             info->eax = mutex->unlock();
+//         }
         break;
 
     case SYSTEM_CALL_MUTEX_DESTROY:
-        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
-        if (mutex == NULL) {
-            info->eax = 1;
-        } else {
-            delete mutex;
-            info->eax = 0;
-        }
+//         mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+//         if (mutex == NULL) {
+//             info->eax = 1;
+//         } else {
+//             delete mutex;
+//             info->eax = 0;
+//         }
         break;
 
     case SYSTEM_CALL_LOOKUP:
-        info->eax = g_processManager->lookup((char*)(info->esi));
+//         info->eax = g_processManager->lookup((char*)(info->esi));
         break;
 
     case SYSTEM_CALL_GET_VRAM_INFO:
@@ -149,21 +149,21 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_MAP:
 
-        if (!SharedMemoryObject::open(info->ecx, info->edx)) {
-            info->eax = 1;
-            break;
-        }
+//         if (!SharedMemoryObject::open(info->ecx, info->edx)) {
+//             info->eax = 1;
+//             break;
+//         }
 
-        process = g_processManager->find((dword)info->esi);
-        if (process == NULL) {
-            info->eax = 2;
-            break;
-        }
+//         process = g_processManager->find((dword)info->esi);
+//         if (process == NULL) {
+//             info->eax = 2;
+//             break;
+//         }
 
-        if (!SharedMemoryObject::attach(info->ecx, process, info->edi)) {
-            info->eax = 3;
-            break;
-        }
+//         if (!SharedMemoryObject::attach(info->ecx, process, info->edi)) {
+//             info->eax = 3;
+//             break;
+//         }
 
         info->eax = 0;
         break;
@@ -314,74 +314,74 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_MAP_TWO:
 
-        {
-            static dword sharedId = 0x9000;
-            sharedId++;
+//         {
+//             static dword sharedId = 0x9000;
+//             sharedId++;
 
-            MappingInfo* map = (MappingInfo*)(info->esi);
+//             MappingInfo* map = (MappingInfo*)(info->esi);
 
-            enableInterrupt();
+//             enableInterrupt();
 
-            /* process exist? */
-            Process* attachProcess = g_processManager->find(map->attachPid);
-            if (attachProcess == NULL) {
-                map->errorCd = 1;
-                info->eax = 0;
-                break;
-            }
+//             /* process exist? */
+//             Process* attachProcess = g_processManager->find(map->attachPid);
+//             if (attachProcess == NULL) {
+//                 map->errorCd = 1;
+//                 info->eax = 0;
+//                 break;
+//             }
 
-            while (Semaphore::down(&g_semaphore_shared));
-            bool isOpen    = SharedMemoryObject::open(sharedId, map->size);
-            bool isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), map->linearAddress2);
-            Semaphore::up(&g_semaphore_shared);
+//             while (Semaphore::down(&g_semaphore_shared));
+//             bool isOpen    = SharedMemoryObject::open(sharedId, map->size);
+//             bool isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), map->linearAddress2);
+//             Semaphore::up(&g_semaphore_shared);
 
-            if (!isOpen || !isAttaced) {
-                info->eax = 0;
-                map->errorCd = 2;
-                break;
-            }
+//             if (!isOpen || !isAttaced) {
+//                 info->eax = 0;
+//                 map->errorCd = 2;
+//                 break;
+//             }
 
-            while (Semaphore::down(&g_semaphore_shared));
-            isOpen    = SharedMemoryObject::open(sharedId, map->size);
-            isAttaced = SharedMemoryObject::attach(sharedId, attachProcess, map->linearAddress1);
-            Semaphore::up(&g_semaphore_shared);
+//             while (Semaphore::down(&g_semaphore_shared));
+//             isOpen    = SharedMemoryObject::open(sharedId, map->size);
+//             isAttaced = SharedMemoryObject::attach(sharedId, attachProcess, map->linearAddress1);
+//             Semaphore::up(&g_semaphore_shared);
 
-            if (!isOpen || !isAttaced) {
-                info->eax = 0;
-                map->errorCd = 3;
-                break;
-            }
+//             if (!isOpen || !isAttaced) {
+//                 info->eax = 0;
+//                 map->errorCd = 3;
+//                 break;
+//             }
 
-            info->eax = sharedId;
-        }
+//             info->eax = sharedId;
+//         }
         break;
 
     case SYSTEM_CALL_UNMAP_TWO:
 
-        {
-            dword sharedId = info->esi;
-            while (Semaphore::down(&g_semaphore_shared));
-            bool result = SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
-            Semaphore::up(&g_semaphore_shared);
+//         {
+//             dword sharedId = info->esi;
+//             while (Semaphore::down(&g_semaphore_shared));
+//             bool result = SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
+//             Semaphore::up(&g_semaphore_shared);
 
-            info->eax = result ? 0 : 1;
-        }
+//             info->eax = result ? 0 : 1;
+//         }
         break;
 
     case SYSTEM_CALL_GET_PID:
 
-        info->eax = g_processManager->getCurrentProcess()->getPid();
+        info->eax = g_currentThread->process->getPid();
         break;
 
     case SYSTEM_CALL_ARGUMENTS_NUM:
 
-        info->eax = g_processManager->getCurrentProcess()->getArguments()->size();
+        info->eax = g_currentThread->process->getArguments()->size();
         break;
 
     case SYSTEM_CALL_GET_ARGUMENTS:
 
         {
-            List<char*>* list = g_processManager->getCurrentProcess()->getArguments();
+            List<char*>* list = g_currentThread->process->getArguments();
             char* buf = (char*)(info->esi);
             int index = (int)(info->ecx);
 
@@ -399,9 +399,9 @@ void syscall_entrance() {
     case SYSTEM_CALL_MTHREAD_YIELD_M:
 
         {
-            Process* process = g_processManager->getCurrentProcess();
-            g_processManager->wait(process, g_currentThread->thread, 55);
-            schedule(false);
+//             Process* process = g_currentThread->process;
+//             g_processManager->wait(process, g_currentThread->thread, 55);
+//             schedule(false);
         }
 
     case SYSTEM_CALL_DATE:

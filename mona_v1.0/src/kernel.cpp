@@ -97,6 +97,8 @@ void rdtscsub(dword* timeL, dword* timeH) {
 
 void mainProcess() {
 
+    for (;;);
+
 #if 0
     byte buf[512];
 
@@ -148,7 +150,7 @@ void mainProcess() {
     enableMouse();
 
     /* end */
-    g_processManager->killSelf();
+    //g_processManager->killSelf();
 }
 
 /*!
@@ -218,14 +220,18 @@ void startKernel(void) {
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
 
     /* this should be called, before timer enabled */
-    ThreadManager::setup();
-    g_processManager = new ProcessManager(g_page_manager);
+    ProcessOperation::initialize(g_page_manager);
+    g_scheduler = new Scheduler();
 
-    /* add testProces1(testThread1) */
-    Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "INIT");
-    g_processManager->add(testProcess1);
-    Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)mainProcess);
-    g_processManager->join(testProcess1, testThread1);
+    /* at first create idle process */
+    Process* idleProcess = ProcessOperation::create(ProcessOperation::USER_PROCESS, "IDLE");
+    Thread* idleThread = ThreadOperation::create(idleProcess, (dword)mainProcess);
+    g_scheduler->join(idleThread);
+
+    /* start up Process */
+    Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
+    Thread*  initThread  = ThreadOperation::create(initProcess, (dword)mainProcess);
+    g_scheduler->join(initThread);
 
     disableTimer();
 

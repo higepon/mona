@@ -77,7 +77,65 @@ typedef struct ArchThreadInfo {
 typedef struct ThreadInfo {
     ArchThreadInfo* archinfo;
     Thread* thread;
+    Process* process;
 };
+
+/*----------------------------------------------------------------------
+    ProcessOperation
+----------------------------------------------------------------------*/
+class ProcessOperation
+{
+  public:
+    static void initialize(PageManager* manager);
+    static Process* create(int type, const char* name);
+    static LinearAddress allocateKernelStack();
+
+  private:
+    static const LinearAddress KERNEL_STACK_START     = 0x100000;
+    static const LinearAddress KERNEL_STACK_UNIT_SIZE = 0x1000;
+
+  public:
+    static PageManager* pageManager;
+    static const int USER_PROCESS   = 1;
+    static const int KERNEL_PROCESS = 2;
+};
+
+/*----------------------------------------------------------------------
+    ThreadOperation
+----------------------------------------------------------------------*/
+class ThreadOperation
+{
+  public:
+    static Thread* create(Process* process, dword programCounter);
+
+  private:
+    static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
+    static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
+};
+
+class Scheduler
+{
+public:
+    Scheduler();
+    virtual ~Scheduler();
+
+public:
+    bool schedule();
+    void join(Thread* thread, int priority = 30);
+    int kill(Thread* thread);
+    int wait(Thread* thread, int waitReason);
+    int wakeup(Thread* thread, int waitReason);
+
+private:
+    int calcPriority(Thread* thread);
+
+protected:
+    Array<Thread> runq;
+    Array<Thread> waitq;
+    dword tickTotal;
+    int monaMin;
+};
+
 
 /*----------------------------------------------------------------------
     Queue
@@ -159,102 +217,6 @@ class Thread : public Queue {
     int waitReason_;
 };
 
-/*----------------------------------------------------------------------
-    ThreadManager
-----------------------------------------------------------------------*/
-class ThreadManager {
-
-  public:
-    ThreadManager(bool isUser);
-    ThreadManager(bool isUser, bool isV86);
-    virtual ~ThreadManager();
-
-  public:
-    Thread* create(dword programCounter, PageEntry* pageDirectory);
-    int join(Thread* thread);
-    int killAllThread();
-    int kill(Thread* thread);
-    int wait(Thread* thread, int waitReason);
-    int wakeup(int waitReason);
-    Thread* schedule(bool tick);
-    void printAllThread();
-
-    inline Thread* getCurrentThread() const {
-        return current_;
-    }
-
-    inline bool hasActiveThread() const {
-        return dispatchList_->size();
-    }
-
-    inline int switchThread(bool isProcessChanged, bool isUser) const {
-
-        isUser = isUser && (current_->getThreadInfo()->archinfo->cs & 0x03);
-
-        if (isProcessChanged && isV86_) {
-
-            arch_switch_thread_to_v862();
-        } else if (!isProcessChanged && isV86_) {
-
-            arch_switch_thread_to_v861();
-        } else if (isProcessChanged && isUser) {
-
-            /* address space & therad switch */
-            arch_switch_thread_to_user2();
-        } else if (!isProcessChanged && isUser) {
-
-            /* only thread switch */
-            arch_switch_thread_to_user1();
-        } else if (isProcessChanged && !isUser) {
-
-            /* address space & therad switch */
-            arch_switch_thread2();
-        } else {
-            arch_switch_thread1();
-        }
-
-        /* does not come here */
-        return NORMAL;
-    }
-
-    inline void waitMutex(Thread* thread) {
-        dispatchList_->remove(thread);
-    }
-
-    inline void activateMutex(Thread* thread) {
-        dispatchList_->add(thread);
-    }
-
-  public:
-    static void setup();
-
-  private:
-    inline dword allocateStack() const {
-        return STACK_START - STACK_SIZE * (threadCount - 1);
-    }
-    void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
-    void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
-    void archCreateV86Thread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const;
-    int kill(List<Thread*>* list);
-
-  private:
-    Thread* current_;
-    List<Thread*>* dispatchList_;
-    List<Thread*>* waitList_;
-    bool isUser_;
-    bool isV86_;
-
-  private:
-    static const LinearAddress STACK_START = 0xEFFFFFFF;
-        //    static const LinearAddress STACK_START = 0xFFFFFFFF; vmware hate this.
-    static const dword STACK_SIZE          = 4 * 1024;
-    int threadCount;
-
-  public:
-    static const int WAIT_MUTEX = 0;
-    static const int WAIT_SLEEP = 1;
-    static const int WAIT_NONE  = 2;
-};
 
 /*----------------------------------------------------------------------
     Process
@@ -297,21 +259,8 @@ class Process {
         return timeLeft_ > 0;
     }
 
-    inline virtual bool hasActiveThread() const {
-        return threadManager_->hasActiveThread();
-    }
-
     inline virtual bool isUserMode() const {
         return isUserMode_;
-    }
-
-    inline virtual int switchThread(bool isProcessChanged, bool isUser) const {
-        threadManager_->switchThread(isProcessChanged, isUser);
-        return NORMAL;
-    }
-
-    inline virtual void printAllThread() {
-        threadManager_->printAllThread();
     }
 
     inline virtual PageEntry* getPageDirectory() const {
@@ -334,24 +283,12 @@ class Process {
         return kmutexTree_;
     }
 
-    inline virtual int killSelf() {
-        return threadManager_->killAllThread();
-    }
-
     inline virtual void setWakeupTimer(dword timer) {
         wakeupTimer_ = timer;
     }
 
     inline virtual dword getWakeupTimer() const {
         return wakeupTimer_;
-    }
-
-    inline virtual void waitMutex(Thread* thread) {
-        threadManager_->waitMutex(thread);
-    }
-
-    inline virtual void activateMutex(Thread* thread) {
-        threadManager_->activateMutex(thread);
     }
 
     inline virtual KMutex* getKMutex(int id) {
@@ -362,17 +299,6 @@ class Process {
         return arguments_;
     }
 
-    inline virtual int wait(Thread* thread, int waitReason) {
-        return threadManager_->wait(thread, waitReason);
-    }
-
-    inline virtual int wakeup(int waitReason) {
-        return threadManager_->wakeup(waitReason);
-    }
-
-    virtual int join(Thread* thread);
-    virtual Thread* schedule(bool tick);
-    virtual Thread* createThread(dword programCounter);
     inline dword allocateStack() const {
         return STACK_START - STACK_SIZE * (threadNum - 1);
     }
@@ -392,7 +318,6 @@ class Process {
     List<MessageInfo*>* messageList_;
     BinaryTree<KMutex*>* kmutexTree_;
     bool isUserMode_;
-    ThreadManager* threadManager_;
     PageEntry* pageDirectory_;
     char name_[16];
     //    OutputStream* stdout;
@@ -437,61 +362,6 @@ class V86Process : public Process {
     V86Process();
     V86Process(const char* name, PageEntry* directory);
     virtual ~V86Process();
-};
-
-/*----------------------------------------------------------------------
-    ProcessManager
-----------------------------------------------------------------------*/
-class ProcessManager {
-
-  public:
-    ProcessManager(PageManager* pageManager);
-    virtual ~ProcessManager();
-
-  public:
-    Process* create(int type, const char* name);
-    Thread* createThread(Process* process, dword programCounter);
-    int join(Process* process, Thread* thread);
-    int add(Process* process);
-    int kill(Process* process);
-    void killSelf();
-    int sleep(Process* process, dword tick);
-    int switchProcess();
-    int wait(Process* process, Thread* thread, int waitReason);
-    bool schedule(bool tick);
-    inline Process* getCurrentProcess() const {
-        return current_;
-    }
-
-    inline dword getTick() const {
-        return tick_;
-    }
-
-    inline void tick() {
-        tick_++;
-    }
-
-    LinearAddress allocateKernelStack() const;
-    void printProcess();
-    Process* find(const char* name);
-    Process* find(dword pid);
-    dword lookup(const char* name);
-    void wakeup();
-    int wakeup(Process* process, int waitReason);
-
-  public:
-    static const int USER_PROCESS   = 0;
-    static const int KERNEL_PROCESS = 1;
-    static const int V86_PROCESS    = 2;
-
-  private:
-    dword tick_;
-    List<Process*>* dispatchList_;
-    List<Process*>* waitList_;
-    PageManager* pageManager_;
-    Process* current_;
-    Process* idle_;
-    bool isProcessChanged_;
 };
 
 #endif
