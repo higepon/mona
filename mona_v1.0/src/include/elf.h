@@ -35,4 +35,28 @@ typedef struct {
     word  strsec;        // section number to string
 } ELFHeader;
 
+typedef struct {
+    dword name;
+    dword type;
+    dword flags;
+    dword address;
+    dword offset;
+    dword size;
+    dword link;
+    dword info;
+    dword align;
+    dword entsize;
+} ELFSectionHeader;
+
+typedef struct {
+    dword type;
+    dword offset;
+    dword virtualaddr;
+    dword physaddr;
+    dword filesize;
+    dword memorysize;
+    dword flags;
+    dword align;
+} ELFProgramHeader;
+
 #endif
