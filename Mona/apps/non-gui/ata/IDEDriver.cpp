@@ -14,54 +14,41 @@
 #include <monapi.h>
 
 /*----------------------------------------------------------------------
-    ATAPIDriver
-----------------------------------------------------------------------*/
-ATAPIDriver::ATAPIDriver()
-{
-}
-
-ATAPIDriver::~ATAPIDriver()
-{
-}
-
-
-
-/*----------------------------------------------------------------------
     IDEDriver
 ----------------------------------------------------------------------*/
-IDEDriver::IDEDriver() : deviceOK(false)
+IDEDriver::IDEDriver()
 {
-    this->ide[0].registers[ATA_DTR] = 0x1f0;
-    this->ide[0].registers[ATA_ERR] = 0x1f1;
-    this->ide[0].registers[ATA_SCR] = 0x1f2;
-    this->ide[0].registers[ATA_SNR] = 0x1f3;
-    this->ide[0].registers[ATA_CLR] = 0x1f4;
-    this->ide[0].registers[ATA_CHR] = 0x1f5;
-    this->ide[0].registers[ATA_DHR] = 0x1f6;
-    this->ide[0].registers[ATA_STR] = 0x1f7;
-    this->ide[0].registers[ATA_ASR] = 0x3f6;
-    this->ide[0].selectedDevice = -1;
+    this->controller[0].registers[ATA_DTR] = 0x1f0;
+    this->controller[0].registers[ATA_ERR] = 0x1f1;
+    this->controller[0].registers[ATA_SCR] = 0x1f2;
+    this->controller[0].registers[ATA_SNR] = 0x1f3;
+    this->controller[0].registers[ATA_CLR] = 0x1f4;
+    this->controller[0].registers[ATA_CHR] = 0x1f5;
+    this->controller[0].registers[ATA_DHR] = 0x1f6;
+    this->controller[0].registers[ATA_STR] = 0x1f7;
+    this->controller[0].registers[ATA_ASR] = 0x3f6;
+    this->controller[0].selectedDevice = -1;
 
-    this->ide[1].registers[ATA_DTR] = 0x170;
-    this->ide[1].registers[ATA_ERR] = 0x171;
-    this->ide[1].registers[ATA_SCR] = 0x172;
-    this->ide[1].registers[ATA_SNR] = 0x173;
-    this->ide[1].registers[ATA_CLR] = 0x174;
-    this->ide[1].registers[ATA_CHR] = 0x175;
-    this->ide[1].registers[ATA_DHR] = 0x176;
-    this->ide[1].registers[ATA_STR] = 0x177;
-    this->ide[1].registers[ATA_ASR] = 0x376;
-    this->ide[1].selectedDevice = -1;
+    this->controller[1].registers[ATA_DTR] = 0x170;
+    this->controller[1].registers[ATA_ERR] = 0x171;
+    this->controller[1].registers[ATA_SCR] = 0x172;
+    this->controller[1].registers[ATA_SNR] = 0x173;
+    this->controller[1].registers[ATA_CLR] = 0x174;
+    this->controller[1].registers[ATA_CHR] = 0x175;
+    this->controller[1].registers[ATA_DHR] = 0x176;
+    this->controller[1].registers[ATA_STR] = 0x177;
+    this->controller[1].registers[ATA_ASR] = 0x376;
+    this->controller[1].selectedDevice = -1;
 
     /* soft reset */
-    outp8(&ide[0], ATA_DCR, 0x06);
+    outp8(&controller[0], ATA_DCR, 0x06);
     sleep(5);
 
     /* disable interrupt */
-    outp8(&ide[0], ATA_DCR, 0x02);
+    outp8(&controller[0], ATA_DCR, 0x02);
     sleep(5);
 
-    setDevice(PRIMARY, MASTER);
+//    setDevice(PRIMARY, MASTER);‚¢‚ç‚È‚¢H
 }
 
 IDEDriver::~IDEDriver()
@@ -78,13 +65,153 @@ int IDEDriver::close()
     return 0;
 }
 
-int IDEDriver::read(dword lba, void* buf, int size)
+int IDEDriver::read(dword lba, void* buffer, int size)
 {
-    if (!this->deviceOK) return 10;
-    return read(&ide[whichIde], whichDevice, lba, (size + 512 - 1) / 512, buf);
+//    if (this->whichController->selectedDeviceType == DEVICE_ATAPI)
+//    {
+    printf("%s:%d\n", __FILE__, __LINE__);
+        return readATAPI(this->whichController, lba, buffer, size);
+//    }
+//    else
+//    {
+//    printf("%s:%d\n", __FILE__, __LINE__);
+//        return 0;
+//    }
 }
 
-int IDEDriver::write(dword lba, void* buf, int size)
+int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer)
+{
+    outp8(controller, ATA_DCR, 0xa);  /* no interrupt */
+
+    if (controller->selectedDevice != command->device)
+    {
+        if (!selectDevice(controller, command->device)) return 1;
+    }
+    else
+    {
+        outp8(controller, ATA_DHR, controller->selectedDevice << 4);
+    }
+
+    /* send packet command */
+    outp8(controller, ATA_FTR, command->feature);
+    outp8(controller, ATA_SCR, 0);
+    outp8(controller, ATA_BLR, (byte)(limit & 0xff));
+    outp8(controller, ATA_BHR, (byte)(limit >> 8));
+    outp8(controller, ATA_CMR, 0xa0);
+    sleep(1);
+
+    dword i;
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(controller, ATA_ASR);
+
+        if ((status & BIT_BSY) != 0) continue;
+        if ((status & BIT_CHK) != 0) return 2;
+
+        byte irr = inp8(controller, ATA_IRR);
+
+        if (((status & BIT_DRQ) != 0) && ((irr & BIT_IO) == 0) && ((irr & BIT_CD) != 0)) break;
+    }
+
+    if (i == ATA_TIMEOUT) return 3;
+
+    outp16(controller, (word*)command->packet, 6);
+
+    for (i = 0; i <= ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(controller, ATA_STR);
+        byte irr    = inp8(controller, ATA_IRR);
+
+        if ((status & BIT_BSY) != 0) continue;
+
+        if ((status & BIT_CHK) != 0)
+        {
+            return 4;
+        }
+
+        if (((irr & BIT_IO) != 0) && ((irr & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
+        {
+            /* read */
+            controller->dataTransferSize = (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);
+            inp16(controller, (word*)buffer, (controller->dataTransferSize + 1) / 2);
+
+        }
+
+        if (((irr & BIT_IO) == 0) && ((irr & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
+        {
+            /* write */
+            controller->dataTransferSize = (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);
+            outp16(controller, (word*)buffer, (controller->dataTransferSize + 1) / 2);
+        }
+
+        if (((irr & BIT_IO) != 0) && ((irr & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
+        {
+            break;
+        }
+    }
+
+    inp8(controller, ATA_STR);
+
+    if (i == ATA_TIMEOUT) return 5;
+    return 0;
+}
+
+bool IDEDriver::selectDevice(IDEController* controller, int device)
+{
+    dword i;
+
+    if (controller->selectedDevice == device) return true;
+
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte data = inp8(controller, ATA_ASR);
+        if ((data & BIT_BSY) == 0 && (data & BIT_DRQ) == 0) break;
+    }
+
+    /* time out */
+    if (i == ATA_TIMEOUT) return false;
+
+    /* select device */
+    outp8(controller, ATA_DHR, device << 4);
+    sleep(1);
+
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte data = inp8(controller, ATA_ASR);
+        if ((data & BIT_BSY) == 0 && (data & BIT_DRQ) == 0) break;
+    }
+
+    /* time out */
+    if (i == ATA_TIMEOUT) return false;
+
+    controller->selectedDevice = device;
+    return true;
+}
+
+int IDEDriver::readATAPI(IDEController* controller, dword lba, void* buffer, int size)
+{
+    ATAPICommand command;
+    memset(&command, 0, sizeof(command));
+    printf("%s:%d\n", __FILE__, __LINE__);
+    /* sector count */
+    int count = (size + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE; // Mm...
+
+    command.feature   = 0;
+    command.device    = controller->selectedDevice;
+    command.packet[0] = 0x28;
+    command.packet[2] = (lba >>  24) & 0xff;
+    command.packet[3] = (lba >>  16) & 0xff;
+    command.packet[4] = (lba >>   8) & 0xff;
+    command.packet[5] = (lba       ) & 0xff;
+    command.packet[7] = (count >> 8) & 0xff;
+    command.packet[8] = (count     ) & 0xff;
+    printf("%s:%d\n", __FILE__, __LINE__);
+    controller->dataTransferSize = 0;
+    printf("%s:%d\n", __FILE__, __LINE__);
+    return sendPacketCommand(controller, &command, CD_SECTOR_SIZE, buffer);
+}
+
+int IDEDriver::write(dword lba, void* buffer, int size)
 {
     printf("IDEDriver#write not implemented\n");
     return 0;
@@ -96,87 +223,60 @@ int IDEDriver::ioctl(void* p)
     return 0;
 }
 
-int IDEDriver::setDevice(int ide, int device)
+void IDEDriver::outp8(IDEController* controller, int reg, byte value)
 {
-    if (ide != PRIMARY && ide != SECONDARY)  return 1;
-    if (device != MASTER && device != SLAVE) return 2;
-
-    whichIde    = ide;
-    whichDevice = device;
-    deviceOK    = true;
-    return 0;
+    ::outp8(controller->registers[reg], value);
 }
 
-void IDEDriver::outp8(IDEController* ide, int reg, byte value)
+byte IDEDriver::inp8(IDEController* controller, int reg)
 {
-    ::outp8(ide->registers[reg], value);
+    return ::inp8(controller->registers[reg]);
 }
 
-byte IDEDriver::inp8(IDEController* ide, int reg)
+void IDEDriver::outp16(IDEController* controller, int reg, word value)
 {
-    return ::inp8(ide->registers[reg]);
+    ::outp16(controller->registers[reg], value);
 }
 
-word IDEDriver::inp16(IDEController* ide, int reg)
+void IDEDriver::outp16(IDEController* controller, word* data, int length)
 {
-    return ::inp16(ide->registers[reg]);
-}
-
-bool IDEDriver::waitBusyClear(IDEController* ide)
-{
-    dword i;
-    for (i = 0; i < ATA_TIMEOUT; i++)
+    for(int i=0; i < length; i++)
     {
-        byte status = inp8(ide, ATA_ASR);
-        if ((status & BIT_BSY) == 0) break;
+        outp16(controller, ATA_DTR, *data);
+        data++;
     }
-    return (i != ATA_TIMEOUT);
 }
 
-
-bool IDEDriver::waitDrdySet(IDEController* ide)
+word IDEDriver::inp16(IDEController* controller, int reg)
 {
-    dword i;
-
-    for (i = 0; i < ATA_TIMEOUT; i++)
-    {
-        byte status = inp8(ide, ATA_ASR);
-        if (status & BIT_DRDY) break;
-    }
-
-    return (i != ATA_TIMEOUT);
+    return ::inp16(controller->registers[reg]);
 }
 
-bool IDEDriver::selectDevice(IDEController* ide, int device)
+void IDEDriver::inp16(IDEController* controller, word* data, int length)
 {
-    dword i;
-
-    if (ide->selectedDevice == device) return true;
-
-    for (i = 0; i < ATA_TIMEOUT; i++)
+    if (data == NULL)
     {
-        byte data = inp8(ide, ATA_ASR);
-        if ((data & BIT_BSY) == 0 && (data & BIT_DRQ) == 0) break;
+        for (int i = 0; i < length; i++)
+        {
+            inp16(controller, ATA_DTR);
+        }
     }
-
-    /* time out */
-    if (i == ATA_TIMEOUT) return false;
-
-    /* select device */
-    outp8(ide, ATA_DHR, device << 4);
-    sleep(1);
-
-    for (i = 0; i < ATA_TIMEOUT; i++)
+    else
     {
-        byte data = inp8(ide, ATA_ASR);
-        if ((data & BIT_BSY) == 0 && (data & BIT_DRQ) == 0) break;
+        for (int i = 0; i < length; i++)
+        {
+            *data = inp16(controller, ATA_DTR);
+            data++;
+        }
     }
+}
 
-    /* time out */
-    if (i == ATA_TIMEOUT) return false;
+int IDEDriver::getDeviceType(int ide, int device)
+{
+    if (ide != PRIMARY && ide != SECONDARY)  return DEVICE_NON;
+    if (device != MASTER && device != SLAVE) return DEVICE_NON;
 
-    ide->selectedDevice = device;
-    return true;
+    return judgeDevice(&(this->controller[ide]), device);
 }
 
 word IDEDriver::getSignature(IDEController* ide, int device)
@@ -211,24 +311,100 @@ word IDEDriver::getSignature(IDEController* ide, int device)
     return c1 | (c2 << 8);
 }
 
-void IDEDriver::read(IDEController* ide, word length, void* buf)
+bool IDEDriver::waitBusyClear(IDEController* ide)
 {
-    word* p = (word*)buf;
-
-    if (p == NULL)
+    dword i;
+    for (i = 0; i < ATA_TIMEOUT; i++)
     {
-        for (int i = 0; i < length; i++)
-        {
-            inp16(ide, ATA_DTR);
-        }
+        byte status = inp8(ide, ATA_ASR);
+        if ((status & BIT_BSY) == 0) break;
+    }
+    return (i != ATA_TIMEOUT);
+}
+
+
+bool IDEDriver::waitDrdySet(IDEController* ide)
+{
+    dword i;
+
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(ide, ATA_ASR);
+        if (status & BIT_DRDY) break;
+    }
+
+    return (i != ATA_TIMEOUT);
+}
+
+int IDEDriver::judgeDevice(IDEController* ide, int device)
+{
+    dword i;
+    char buf[1024];
+    int type;
+    word sigature = getSignature(ide, device);
+
+    switch(sigature)
+    {
+    case 0xEB14:
+        type = DEVICE_ATAPI;
+        break;
+    case 0:
+        type = DEVICE_ATA;
+        break;
+    default:
+        return DEVICE_NON;
+    }
+
+    /* unknown device */
+    if (!waitBusyClear(ide)) return DEVICE_UNKNOWN;
+
+    for (i = 0; i < RETRY_MAX; i++)
+    {
+        /* try idetify 2 times */
+        sleep(5);
+        int id1 = identify(ide, device, type, buf);
+        sleep(5);
+        int id2 = identify(ide, device, type, buf);
+
+        /* retry */
+        if (id1 != id2) continue;
+        if (id1 == 3 || id1 == 4) continue;
+
+        if (id1 == 0) return type;
+    }
+
+    return DEVICE_UNKNOWN;
+}
+
+int IDEDriver::identify(IDEController* ide, int device, int type, void* buf)
+{
+    ATACommand com;
+    int result;
+
+    /* feature, sector count, sector number, cylinder is 0 */
+    memset(&com, 0, sizeof(ATACommand));
+    com.device = DEV_HEAD_OBS | (device << 4);
+
+    if (type == DEVICE_ATA)
+    {
+        com.drdyCheck = 1;
+        com.command = 0xec; /* Identify device */
     }
     else
     {
-        for (int i = 0; i < length; i++, p++)
-        {
-            *p = inp16(ide, ATA_DTR);
-        }
+        com.drdyCheck = 0;
+        com.command = 0xa1; /* Identify Packet device */
     }
+
+    /* command execute */
+    result = sendPioDataInCommand(ide, &com, 1, buf);
+
+    if (result == -3) return 1; /* device not exist */
+    else if (result > 0 && (result & BIT_ABRT) != 0) return 2; /* abort */
+    else if (result > 0) return 3; /* error */
+    else if (result < 0) return 4; /* timeout or device select error */
+
+    return 0;
 }
 
 int IDEDriver::sendPioDataInCommand(IDEController* ide, ATACommand* command, word count, void* buf)
@@ -292,104 +468,35 @@ int IDEDriver::sendPioDataInCommand(IDEController* ide, ATACommand* command, wor
     return 0;
 }
 
-
-int IDEDriver::identify(IDEController* ide, int device, int type, void* buf)
+void IDEDriver::read(IDEController* ide, word length, void* buf)
 {
-    ATACommand com;
-    int result;
+    word* p = (word*)buf;
 
-    /* feature, sector count, sector number, cylinder is 0 */
-    memset(&com, 0, sizeof(ATACommand));
-    com.device = DEV_HEAD_OBS | (device << 4);
-
-    if (type == DEVICE_ATA)
+    if (p == NULL)
     {
-        com.drdyCheck = 1;
-        com.command = 0xec; /* Identify device */
+        for (int i = 0; i < length; i++)
+        {
+            inp16(ide, ATA_DTR);
+        }
     }
     else
     {
-        com.drdyCheck = 0;
-        com.command = 0xa1; /* Identify Packet device */
+        for (int i = 0; i < length; i++, p++)
+        {
+            *p = inp16(ide, ATA_DTR);
+        }
     }
+}
 
-    /* command execute */
-    result = sendPioDataInCommand(ide, &com, 1, buf);
+int IDEDriver::setDevice(int ide, int device)
+{
+    if (ide != PRIMARY && ide != SECONDARY)  return 1;
+    if (device != MASTER && device != SLAVE) return 2;
 
-    if (result == -3) return 1; /* device not exist */
-    else if (result > 0 && (result & BIT_ABRT) != 0) return 2; /* abort */
-    else if (result > 0) return 3; /* error */
-    else if (result < 0) return 4; /* timeout or device select error */
+    whichController = &controller[ide];
+
+    whichController->selectedDevice = device;
+    whichController->selectedDeviceType = getDeviceType(ide, device);
 
     return 0;
 }
-
-int IDEDriver::getDeviceType(int ide, int device)
-{
-    if (ide != PRIMARY && ide != SECONDARY)  return DEVICE_NON;
-    if (device != MASTER && device != SLAVE) return DEVICE_NON;
-
-    return judgeDevice(&(this->ide[ide]), device);
-}
-
-int IDEDriver::judgeDevice(IDEController* ide, int device)
-{
-    dword i;
-    char buf[1024];
-    int type;
-    word sigature = getSignature(ide, device);
-
-    switch(sigature)
-    {
-    case 0xEB14:
-        type = DEVICE_ATAPI;
-        break;
-    case 0:
-        type = DEVICE_ATA;
-        break;
-    default:
-        return DEVICE_NON;
-    }
-
-    /* unknown device */
-    if (!waitBusyClear(ide)) return DEVICE_UNKNOWN;
-
-    for (i = 0; i < RETRY_MAX; i++)
-    {
-        /* try idetify 2 times */
-        sleep(5);
-        int id1 = identify(ide, device, type, buf);
-        sleep(5);
-        int id2 = identify(ide, device, type, buf);
-
-        /* retry */
-        if (id1 != id2) continue;
-        if (id1 == 3 || id1 == 4) continue;
-
-        if (id1 == 0) return type;
-    }
-
-    return DEVICE_UNKNOWN;
-}
-
-int IDEDriver::read(IDEController* ide, int device, dword lba, byte blocknum, void* buff)
-{
-    ATACommand com;
-    word cylinder;
-
-    /* feature, sector count, sector number, cylinder is 0 */
-    memset(&com, 0, sizeof(ATACommand));
-
-    com.sectorCount  = blocknum;
-    com.sectorNumber = lba & 0xff;
-    cylinder = (lba >> 8) & 0xffff;
-
-    com.cylinderLow = cylinder & 0xff;
-    com.cylinderHigh = (cylinder) >> 8 & 0xff;
-    com.device = DEV_HEAD_OBS | LBA_FLG | (device << 4) | ((lba >> 24) & 0xf);
-    com.command = 0x20;
-    com.drdyCheck = 1;
-
-    return sendPioDataInCommand(ide, &com, blocknum, buff);
-}
-

@@ -5,36 +5,45 @@ using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
-    /* ’¥æ’¡¼’¥¶’¡¼’¥â’¡¼’¥É’¤ÇI/O’¤·’¤Þ’¤¹’¤è’¡¼’¡£ */
     syscall_get_io();
 
-    /* ’¥³’¥ó’¥¹’¥È’¥é’¥¯’¥¿’¤Ç’¤Ï’¥Ç’¥Õ’¥©’¥ë’¥È’¤ÇPrimary:Master’¤Î’¥Ç’¥Ð’¥¤’¥¹’¤¬’Áª’Âò’¤µ’¤ì’¤Æ’¤¤’¤Þ’¤¹’¤è’¡¼ */
     IDEDriver ide;
 
-    /* ’°ì’±þ’¥Ç’¥Ð’¥¤’¥¹’¥Á’¥§’¥Ã’¥¯ */
-    int type = ide.getDeviceType(IDEDriver::PRIMARY, IDEDriver::MASTER);
+    int controller;
+    int device;
+    int type;
 
-    if (type != IDEDriver::DEVICE_ATA)
+    for (controller = 0; controller < 2; controller++)
+    {
+        for (device = 0; device < 2; device++)
+        {
+            type = ide.getDeviceType(controller, device);
+            if (type == IDEDriver::DEVICE_ATAPI) break;
+        }
+    }
+
+    if (type != IDEDriver::DEVICE_ATAPI)
     {
         printf("primary master device is not ATA\n");
         return 1;
     }
 
-    char buf[1024];
+    ide.setDevice(controller, device);
+
+    char buf[2048];
     memset(buf, 0, sizeof(buf));
 
-    /* lba 1’¤«’¤é1024byte’¤Þ’¤È’¤á’¤è’¤ß’¡¼’¡£512byte’¤¬1’Ã±’°Ì’¤Ç’¤¹ */
-    printf("read result = %d\N", ide.read(1, buf, 1024));
+    printf("read result = %d\n", ide.read(16, buf, 1024));
 
-    /* ’ÆÉ’¤ó’¤À’Æâ’ÍÆ’¤òFD’¤Ë’ÊÝ’Â¸ */
     FileOutputStream fos("HDDUMP.TXT");
 
     printf("fileout:open=%d\n", fos.open());
 
     printf("fileout:read=%d\n", fos.write((byte*)buf        , 512));
     printf("fileout:read=%d\n", fos.write((byte*)(buf + 512), 512));
+    printf("fileout:read=%d\n", fos.write((byte*)buf  +1024      , 512));
+    printf("fileout:read=%d\n", fos.write((byte*)(buf +1536), 512));
 
     fos.close();
-
     return 0;
 }
