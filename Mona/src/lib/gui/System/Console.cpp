@@ -1,7 +1,11 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
+#ifdef MONA
 #include <monapi.h>
+#else
+#include <stdio.h>
+#endif
 #include <gui/System/Console.h>
 
 namespace System
@@ -16,13 +20,13 @@ namespace System
 			buf[i] = ch < 128 ? (char)ch : '?';
 		}
 		buf[len] = '\0';
-		printf(buf);
+		::printf(buf);
 		delete [] buf;
 	}
 	
 	void Console::WriteLine(String text)
 	{
 		Console::Write(text);
-		printf("\n");
+		::printf("\n");
 	}
 }

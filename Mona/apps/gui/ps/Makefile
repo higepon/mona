@@ -7,6 +7,8 @@ include $(MONADIR)/env/monapi.inc
 INCLUDE = -I$(INCDIR)
 LINK    = -lgui -lmonapi -lmonalibc
 
+CXXFLAGS += -DMONA -DDEBUG
+
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a

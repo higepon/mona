@@ -1,7 +1,10 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
+#ifdef MONA
 #include <monapi.h>
+#endif
+
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Control.h>
 #include <gui/System/Mona/Forms/ControlPaint.h>
@@ -10,6 +13,7 @@ using namespace System;
 using namespace System::Collections;
 using namespace System::Drawing;
 
+#ifdef MONA
 _P<MonAPI::Screen> GetDefaultScreen()
 {
 	static _P<MonAPI::Screen> ret;
@@ -19,11 +23,22 @@ _P<MonAPI::Screen> GetDefaultScreen()
 	}
 	return ret;
 }
+#else
+extern unsigned char* screen_buffer;
+extern int screen_width, screen_height;
+#ifdef WIN32
+extern void MonaGUI_Invalidate();
+#endif
+#endif
 
 static Rectangle GetScreenRectangle()
 {
+#ifdef MONA
 	_P<MonAPI::Screen> scr = GetDefaultScreen();
 	return Rectangle(0, 0, scr->getWidth(), scr->getHeight());
+#else
+	return Rectangle(0, 0, screen_width, screen_height);
+#endif
 }
 
 namespace System { namespace Mona { namespace Forms
@@ -176,9 +191,15 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::DrawImage(_P<Bitmap> image)
 	{
+#ifdef MONA
 		_P<MonAPI::Screen> scr = ::GetDefaultScreen();
-		byte* vram = scr->getVRAM();
-		int bpp = scr->getBpp(), bypp = bpp >> 3, sw = scr->getWidth(), sh = scr->getHeight();
+		unsigned char* vram = scr->getVRAM();
+		int bpp = scr->getBpp(), sw = scr->getWidth(), sh = scr->getHeight();
+#else
+		unsigned char* vram = screen_buffer;
+		int bpp = 32, sw = screen_width, sh = screen_height;
+#endif
+		int bypp = bpp >> 3;
 		Point sp = this->PointToScreen(Point::get_Empty());
 		sp -= this->offset;
 		Rectangle r;
@@ -204,7 +225,7 @@ namespace System { namespace Mona { namespace Forms
 			}
 			
 			int sy = sp.Y + y;
-			byte* pVram = &vram[(sp.X + sy * sw) * bypp];
+			unsigned char* pVram = &vram[(sp.X + sy * sw) * bypp];
 			for (int x = 0; x < this->get_Width(); x++, pVram += bypp, pBuf++)
 			{
 				if (x < r.X || rr <= x || pBuf->get_A() == 0) continue;
@@ -217,7 +238,7 @@ namespace System { namespace Mona { namespace Forms
 						break;
 					}
 					case 16: // broken
-						*(word*)pVram = (word)pBuf->ToArgb();
+						*(unsigned short*)pVram = (unsigned short)pBuf->ToArgb();
 						break;
 					case 24:
 						pVram[0] = pBuf->get_B();
@@ -225,11 +246,14 @@ namespace System { namespace Mona { namespace Forms
 						pVram[2] = pBuf->get_R();
 						break;
 					case 32:
-						*(dword*)pVram = pBuf->ToArgb() & 0xffffff;
+						*(unsigned int*)pVram = pBuf->ToArgb() & 0xffffff;
 						break;
 				}
 			}
 		}
+#if !defined(MONA) && defined(WIN32)
+		MonaGUI_Invalidate();
+#endif
 	}
 	
 	Size Control::get_ClientSize()

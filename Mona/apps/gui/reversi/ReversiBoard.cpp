@@ -1,4 +1,3 @@
-#include <monapi.h>
 #include "ReversiBoard.h"
 
 using namespace MonAPI;

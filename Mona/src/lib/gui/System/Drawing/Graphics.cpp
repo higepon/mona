@@ -1,7 +1,10 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
+#ifdef MONA
 #include <monapi.h>
+#endif
+
 #include <gui/System/Drawing/Graphics.h>
 #include <gui/System/Drawing/Font.h>
 #include <gui/System/Math.h>

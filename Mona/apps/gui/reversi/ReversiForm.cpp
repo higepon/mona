@@ -29,7 +29,7 @@ private:
 
     int InitializeApplication()
     {
-        board = new ReversiBoard();
+        board.Set(new ReversiBoard(), true);
         board->addObserver(this);
         return 0;
     }
@@ -90,6 +90,7 @@ private:
             int x = point->x;
             int y = point->y;
             this->pieces[x][y]->SetState(this->board->getPiece(x, y));
+            this->pieces[x][y]->Refresh();
 
             sleep(100);
         }

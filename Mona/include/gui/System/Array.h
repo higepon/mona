@@ -7,7 +7,12 @@
 #define _A ::System::Array
 
 #ifdef DEBUG
+#ifdef MONA
 #include <monapi.h>
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#endif
 #define STACK_ARRAY(type, name, length) type __##name[length]; _A<type> name(__##name, length, false)
 #else
 #define STACK_ARRAY(type, name, length) type name[length]

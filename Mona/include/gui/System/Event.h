@@ -8,8 +8,6 @@
 #include <gui/System/Pointer.h>
 #include <gui/System/Collections/ArrayList.h>
 
-enum MessageType { WM_MOUSEMOVE, WM_MOUSEDOWN, WM_MOUSEUP };
-
 #define DECLARE_DELEGATE(name, argtype) \
 	class I##name : public System::Object { public: virtual void Invoke(_P<System::Object>, argtype) = 0; }; \
 	template <class T> class name : public I##name { \
@@ -34,15 +32,15 @@ enum MessageType { WM_MOUSEMOVE, WM_MOUSEDOWN, WM_MOUSEUP };
 		_P<System::Collections::ArrayList<_P<handler> > > name; \
 	public: \
 		void add_##name(_P<handler> delg) { \
-			if (this->name == NULL) this->name = new System::Collections::ArrayList<_P<handler> >; \
+			if (this->name == 0 /*NULL*/) this->name = new System::Collections::ArrayList<_P<handler> >; \
 			this->name->Add(delg); } \
 		void remove_##name(_P<handler> delg) { \
-			if (this->name == NULL) return; \
+			if (this->name == 0 /*NULL*/) return; \
 			this->name->Remove(delg); \
 			if (this->name->get_Count() == 0) this->name.Unset(); } \
 	protected: \
 		void raise_##name(_P<System::Object> sender, argtype e) { \
-			if (this->name == NULL) return; \
+			if (this->name == 0 /*NULL*/) return; \
 			FOREACH_AL(_P<handler>, h, this->name) h->Invoke(sender, e); }
 
 namespace System

@@ -5,7 +5,12 @@
 #define __SYSTEM_COLLECTIONS_ARRAYLIST_H__
 
 #ifdef DEBUG
+#ifdef MONA
 #include <monapi.h>
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#endif
 #endif
 
 #include <gui/System/Object.h>
@@ -65,17 +70,22 @@ namespace System { namespace Collections
 			this->count++;
 		}
 		
+		virtual void RemoveAt(int index)
+		{
+			this->count--;
+			for (int i = index; i < this->count; i++)
+			{
+				this->pointer[i] = this->pointer[i + 1];
+			}
+			this->pointer[this->count] = *(new T());
+		}
+		
 		virtual void Remove(T item)
 		{
 			int idx = this->IndexOf(item);
 			if (idx < 0) return;
 			
-			this->count--;
-			for (int i = idx; i < this->count; i++)
-			{
-				this->pointer[i] = this->pointer[i + 1];
-			}
-			this->pointer[this->count] = *(new T());
+			this->RemoveAt(idx);
 		}
 		
 		virtual int IndexOf(T item)

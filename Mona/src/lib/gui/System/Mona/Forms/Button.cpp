@@ -1,7 +1,6 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
-#include <monapi.h>
 #include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Drawing/Font.h>
 #include <gui/System/Math.h>

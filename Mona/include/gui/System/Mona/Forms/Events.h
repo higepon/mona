@@ -16,8 +16,8 @@ namespace System { namespace Mona { namespace Forms
 		int Button, X, Y;
 		
 		virtual String get_TypeName() { return "System.Mona.Forms.MouseEventArgs"; }
-		MouseEventArgs(int button, int x, int y) : Button(button), X(x), Y(y) {};
-		virtual ~MouseEventArgs() {};
+		MouseEventArgs(int button, int x, int y) : Button(button), X(x), Y(y) {}
+		virtual ~MouseEventArgs() {}
 	};
 	DECLARE_DELEGATE(MouseEventHandler, _P<MouseEventArgs>)
 }}}

@@ -8,7 +8,15 @@
 using namespace System;
 using namespace System::Drawing;
 
+#ifdef MONA
 extern _P<MonAPI::Screen> GetDefaultScreen();
+#else
+extern unsigned char* screen_buffer;
+extern int screen_width, screen_height;
+#ifdef WIN32
+extern void MonaGUI_Invalidate();
+#endif
+#endif
 
 namespace System { namespace Mona { namespace Forms
 {
@@ -63,27 +71,33 @@ namespace System { namespace Mona { namespace Forms
 	
 	void ControlPaint::DrawReversibleRectangle(Rectangle r)
 	{
+#ifdef MONA
 		_P<MonAPI::Screen> scr = ::GetDefaultScreen();
-		int w = scr->getWidth(), h = scr->getHeight(), bpp = scr->getBpp(), bypp = bpp >> 3;
+		int w = scr->getWidth(), h = scr->getHeight(), bpp = scr->getBpp();
+		unsigned char* vram = scr->getVRAM();
+#else
+		int w = screen_width, h = screen_height, bpp = 32;
+		unsigned char* vram = screen_buffer;
+#endif
+		int bypp = bpp >> 3;
 		int rr = r.get_Right() - 1, rb = r.get_Bottom() - 1;
-		byte* vram = scr->getVRAM();
 		int x1 = Math::Max(0, r.X), x2 = Math::Min(w - 1, rr);
 		if (0 <= r.Y && r.Y < h)
 		{
-			byte* pVram = &vram[(x1 + r.Y * w) * bypp];
+			unsigned char* pVram = &vram[(x1 + r.Y * w) * bypp];
 			int len = (x2 - x1 + 1) * bypp;
 			for (int i = 0; i < len; i++, pVram++) *pVram ^= 0xff;
 		}
 		if (0 <= rb && rb < h)
 		{
-			byte* pVram = &vram[(x1 + rb * w) * bypp];
+			unsigned char* pVram = &vram[(x1 + rb * w) * bypp];
 			int len = (x2 - x1 + 1) * bypp;
 			for (int i = 0; i < len; i++, pVram++) *pVram ^= 0xff;
 		}
 		int y1 = Math::Max(0, r.Y + 1), y2 = Math::Min(h - 1, rb - 1);
 		if (0 <= r.X && r.X < w)
 		{
-			byte* pVram = &vram[(r.X + y1 * w) * bypp];
+			unsigned char* pVram = &vram[(r.X + y1 * w) * bypp];
 			for (int y = y1; y <= y2; y++, pVram += w * bypp)
 			{
 				for (int i = 0; i < bypp; i++) pVram[i] ^= 0xff;
@@ -91,11 +105,14 @@ namespace System { namespace Mona { namespace Forms
 		}
 		if (0 <= rr && rr < w)
 		{
-			byte* pVram = &vram[(rr + y1 * w) * bypp];
+			unsigned char* pVram = &vram[(rr + y1 * w) * bypp];
 			for (int y = y1; y <= y2; y++, pVram += w * bypp)
 			{
 				for (int i = 0; i < bypp; i++) pVram[i] ^= 0xff;
 			}
 		}
+#if !defined(MONA) && defined(WIN32)
+		MonaGUI_Invalidate();
+#endif
 	}
 }}}

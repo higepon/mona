@@ -7,7 +7,12 @@
 #define _P ::System::Pointer
 
 #ifdef DEBUG
+#ifdef MONA
 #include <monapi.h>
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#endif
 #define __CHECK_NULL if (this->pointer == NULL) { \
 	::printf("ERROR: [Pointer] null reference exception\n"); ::exit(1); }
 #else
@@ -127,9 +132,9 @@ namespace System
 		inline bool operator ==(const Pointer<T>& arg) const { return this->pointer == arg.pointer; }
 		inline bool operator !=(const Pointer<T>& arg) const { return this->pointer != arg.pointer; }
 	
-		inline Pointer<T>& operator =(T* pointer)
+		inline Pointer<T>& operator =(Object* pointer)
 		{
-			this->Set(pointer, true);
+			this->Set(pointer);
 			return *this;
 		}
 	

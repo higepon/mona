@@ -18,7 +18,7 @@ public:
     Piece(int state, int x, int y);
     virtual ~Piece();
 
-    virtual void SetState(int state) { this->state = state;}
+    virtual void SetState(int state) { this->state = state; this->OnPaint(); }
     virtual int GetState() const { return this->state; }
     virtual int GetX() const { return this->x; }
     virtual int GetY() const { return this->y; }

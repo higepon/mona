@@ -1,8 +1,8 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
-#ifndef __SYSTEM_DRAWING_COLOR32_H__
-#define __SYSTEM_DRAWING_COLOR32_H__
+#ifndef __SYSTEM_DRAWING_COLOR_H__
+#define __SYSTEM_DRAWING_COLOR_H__
 
 namespace System { namespace Drawing
 {
@@ -56,4 +56,4 @@ namespace System { namespace Drawing
 	};
 }}
 
-#endif  // __SYSTEM_DRAWING_COLOR32_H__
+#endif  // __SYSTEM_DRAWING_COLOR_H__

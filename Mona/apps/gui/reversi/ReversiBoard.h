@@ -1,6 +1,7 @@
 #ifndef _MONA_REVERSI_BOARD_
 #define _MONA_REVERSI_BOARD_
 
+#include <monapi.h>
 #include <sys/types.h>
 
 /*----------------------------------------------------------------------
