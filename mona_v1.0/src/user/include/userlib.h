@@ -26,6 +26,7 @@
 #define SYSTEM_CALL_FILE_OPEN      25
 #define SYSTEM_CALL_FILE_READ      26
 #define SYSTEM_CALL_FILE_CLOSE     27
+#define SYSTEM_CALL_MAP_TWO        28
 
 #define main() monaMain()
 
@@ -63,6 +64,7 @@ int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
 int syscall_file_open(char* path, char* file, dword* size);
 int syscall_file_read(char* buf, dword size, dword* readSize);
 int syscall_file_close();
+int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword size);
 void* malloc(unsigned long size);
 void free(void * address);
 byte inportb(dword);
