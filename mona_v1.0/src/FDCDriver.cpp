@@ -309,6 +309,7 @@ bool FDCDriver::seek(byte track) {
 
     while (true) {
 
+    info(DEV_WARNING, "seek start3 \n");
         waitInterrupt();
 
         waitStatus(0x10, 0x00);
@@ -317,6 +318,7 @@ bool FDCDriver::seek(byte track) {
         interrupt_ = false;
     }
 
+    info(DEV_WARNING, "seek start4 \n");
     return true;
 }
 
@@ -501,17 +503,11 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         return false;
     }
 
-    delay();
-    delay();
-    delay();
-    delay();
-
     setupDMARead(512);
-
-    interrupt_ = false;
 
     info(DEV_WARNING, "before read command");
 
+    interrupt_ = false;
     if (!sendCommand(command, sizeof(command))) {
 
         info(ERROR, "read#send command:error\n");
@@ -522,16 +518,17 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     waitInterrupt();
 
-    delay();
-    delay();
-    delay();
-    delay();
-
     stopDMA();
 
-    info(DEV_NOTICE, "raed results");
+    info(DEV_NOTICE, "read results");
 
-    return readResults();
+    for (int i = 0; i < 7; i++) {
+        results_[i] = getResult();
+    }
+
+    if ((results_[0] & 0xC0) != 0x00) return false;
+
+    return true;
 }
 
 /*!
@@ -542,7 +539,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     \param sector sector
 
     \author HigePon
-    \date   create:2003/02/15 update:
+    \date   create:2003/02/15 update:2003/09/20
 */
 bool FDCDriver::write(byte track, byte head, byte sector) {
 
@@ -560,25 +557,21 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
     seek(track);
 
-    delay();
-    delay();
-    delay();
-    delay();
-
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     waitInterrupt();
 
     info(DEV_NOTICE, "write:after waitInterrupt\n");
 
-    delay();
-    delay();
-    delay();
-    delay();
-
     stopDMA();
 
-    return readResults();
+    for (int i = 0; i < 7; i++) {
+        results_[i] = getResult();
+    }
+
+    if ((results_[0] & 0xC0) != 0x00) return false;
+
+    return true;
 }
 
 bool FDCDriver::read(dword lba, byte* buf) {
