@@ -41,15 +41,15 @@ template <class T> class BinaryTree {
     };
 
     Node* root_;
-    dword numberOfElements;
+    dword numberOfElements_;
     static const int NO_DATA = 0;
 
   private:
     void add(Node* tree, const dword key, const T element);
-
+    bool contains(const Node* tree, const dword key) const;
 };
 
-template <class T> BinaryTree<T>::BinaryTree() : root_(NO_DATA), numberOfElements(0) {
+template <class T> BinaryTree<T>::BinaryTree() : root_(NO_DATA), numberOfElements_(0) {
 }
 
 template <class T> BinaryTree<T>::~BinaryTree() {
@@ -57,12 +57,24 @@ template <class T> BinaryTree<T>::~BinaryTree() {
     /* not implemeted */
 }
 
+template <class T> void BinaryTree<T>::add(const dword key, const T element) {
+
+    add(root_, key, element);
+    numberOfElements_++;
+}
+
 template <class T> void BinaryTree<T>::add(Node* tree, const dword key, const T element) {
 
     /* add */
     if (tree == NO_DATA) {
         tree = new Node;
-        if (tree == NULL) for (;;);
+
+        if (tree == NULL) {
+
+            /* not implemented */
+            for (;;);
+        }
+
         tree->left    = NO_DATA;
         tree->right   = NO_DATA;
         tree->key     = key;
@@ -75,6 +87,19 @@ template <class T> void BinaryTree<T>::add(Node* tree, const dword key, const T 
     /* add to right */
     } else {
         add(tree->right, key, element);
+    }
+}
+
+template <class T> bool BinaryTree<T>::contains(const Node* tree, const dword key) const {
+
+    if (tree == NO_DATA) {
+        return false;
+    } else if (key == tree->key) {
+        return true;
+    } else if (key < tree->key) {
+        return contains(tree->left, key);
+    } else {
+        return contains(tree->right, key);
     }
 }
 
