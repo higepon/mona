@@ -121,7 +121,13 @@ void processTester() {
 void process1Tester() {
 
     while (true) {
-        _sys_printf("process1");
+
+        for (dword i = 0; i < 500000; i++) {
+            i;
+        }
+        _sysSetColor(BG_BLACK | CH_TEAL);
+        _sys_printf("process1\n");
+        _sysSetColor(BG_BLACK | CH_SILVER);
         asm volatile("jmp $0x28, $0\n");
     }
     return;
@@ -130,7 +136,10 @@ void process1Tester() {
 void process2Tester() {
 
     while (true) {
-        _sys_printf("process2");
+        _sysSetColor(BG_BLACK | CH_RED);
+        _sys_printf("process2\n");
+        _sysSetColor(BG_BLACK | CH_SILVER);
+        asm volatile("jmp $0x20, $0\n");
     }
     return;
 }

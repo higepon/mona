@@ -21,7 +21,7 @@
 TSS tss[2];
 GDT ldt[2];
 GDT sss[1];
-byte stack[512];
+byte stack[5120];
 
 /*!
     \brief constructor
@@ -134,11 +134,11 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
     memset(tss, 0, sizeof(TSS));
     tss->cs     = cs;
     tss->ds     = ds;
-    tss->eip    = (byte)f;
+    tss->eip    = (dword)f;
     tss->eflags = eflags;
-    tss->esp    = (byte)esp;
+    tss->esp    = (dword)esp;
     tss->ss     = ss;
-    tss->esp0   = (byte)esp0;
+    tss->esp0   = (dword)esp0;
     tss->ss0    = ss0;
     tss->ldt    = 0x30;
     return;
