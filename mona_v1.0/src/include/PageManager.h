@@ -48,7 +48,7 @@ class PageManager {
     bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
 
     void setAttribute(PageEntry* entry, byte presnt, byte rw, byte user) {return;}
-    void setAttribute(PageEntry* directory, LinearAddress address, byte presen, byte rw, byte user) {return;}
+    bool setAttribute(PageEntry* directory, LinearAddress address, byte presen, byte rw, byte user) {return true;}
 
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
