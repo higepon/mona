@@ -46,15 +46,36 @@ public:
 
 protected:
     void SetPriority(Thread* thread);
+    void SetPriority(Thread* thread, double rate);
     void WakeupTimer();
     void WakeupTimer(Thread* thread);
     bool SetNextThread();
+    void Tick();
+    dword GetTick() const;
+
+    void dump();
+
+    int kill(Thread* thread);
+    int sleep(Thread* thread, dword tick);
+    int wait(Thread* thread, int waitReason);
+    int wakeup(Thread* thread, int waitReason);
+    int wakeup(Process* process, int waitReason);
+
+/* ↑とりあえずこのへんで実装が中断中 */
+    dword lookup(const char* name);
+    dword lookupMainThread(const char* name);
+    Thread* find(dword id);
+    Process* findProcess(dword pid);
+    Process* findProcess(const char* name);
+    void setDump();
+    PsInfo* readDump();
+    dword* getAllThreadID(dword* threadNum);
 
 
-    inline void RemoveAdd(Array<Thread*> queue, Thread* thread)
+    inline void RemoveAdd(Array<Thread*>& queue, Thread* thread)
     {
 #if 1
-        if (thread->priority >= queue.getLength() || thread->priority < 0)
+        if (thread->priority >= maxPriority)
         {
             panic("Scheduler:RemoveAdd index out");
         }
@@ -63,10 +84,24 @@ protected:
         queue[thread->priority]->addToPrev(thread);
     }
 
+    inline void Join(Thread* thread)
+    {
+#if 1
+        if (thread->priority >= maxPriority)
+        {
+            panic("Scheduler:Join index out");
+        }
+#endif
+        runq[thread->priority]->addToPrev(thread);
+    }
+
+
+
 protected:
     Array<Thread*> runq;
     Array<Thread*> waitq;
     dword tickTotal;
+    int maxPriority;
 };
 
 Scheduler2::Scheduler2() : runq(64), waitq(3), tickTotal(0)
@@ -84,6 +119,8 @@ Scheduler2::Scheduler2() : runq(64), waitq(3), tickTotal(0)
         checkMemoryAllocate(queue, "Scheduler::waitq");
         queue->initialize();
     }
+
+    maxPriority = runq.getLength();
 }
 
 Scheduler2::~Scheduler2()
@@ -98,22 +135,8 @@ bool Scheduler2::Schedule1()
     /* このスケジューラは10ms毎に呼ばれる */
     /* 今動いていたスレッドだけがcpu使用時間によって優先順位が変わり違うキューに入れられる。 */
     /* wakeup もするのでこれでいいかね？ */
-    Thread* root = NULL;
+    Thread* current =  g_currentThread->thread;
 
-    FOREACH(Thread*, queue, runq)
-    {
-        if (queue->isEmpty())
-        {
-            continue;
-        }
-        else
-        {
-            root = queue;
-            break;
-        }
-    }
-
-    Thread* current = (Thread*)(root->top());
     current->tick();
 
     /* set priority and set to the queue */
@@ -129,12 +152,49 @@ bool Scheduler2::Schedule2()
 {
 //あるサイクルでcpu使用時間を半分にしないと駄目よね
 
-    return false;
+    g_currentThread->thread->tick();
+
+    FOREACH(Thread*, queue, runq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            /* already scheduled ? */
+            if (this->tickTotal == thread->scheduled)
+            {
+                continue;
+            }
+
+            SetPriority(thread);
+
+            /* insert into runq[priority] */
+            Thread* prev = (Thread*)(thread->prev);
+            RemoveAdd(runq, thread);
+            thread = prev;
+        }
+    }
+
+    WakeupTimer();
+
+    return SetNextThread();
 }
 
 void Scheduler2::SetPriority(Thread* thread)
 {
+    int priority = thread->nobiPriority + thread->doraTick;
 
+    if (priority >= maxPriority)
+    {
+        priority = maxPriority - 1;
+    }
+
+    thread->priority = priority;
+    thread->scheduled = this->tickTotal;
+}
+
+void Scheduler2::SetPriority(Thread* thread, double rate)
+{
+    thread->priority = (int)(thread->priority * rate);
+    thread->scheduled = this->tickTotal;
 }
 
 void Scheduler2::WakeupTimer(Thread* thread)
@@ -187,7 +247,16 @@ bool Scheduler2::SetNextThread()
 }
 
 
-/* ↑とりあえずこのへんで実装が中断中 */
+inline void Scheduler2::Tick()
+{
+    tickTotal++;
+}
+
+inline dword Scheduler2::GetTick() const
+{
+    return tickTotal;
+}
+
 
 
 

@@ -260,6 +260,7 @@ class Thread : public Node, public KObject
     dword id;
     dword flags;
     dword doraTick; // this thread used cpu time at last cycle
+    int nobiPriority;
     int priority;
 };
 
