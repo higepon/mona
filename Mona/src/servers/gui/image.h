@@ -4,10 +4,18 @@
 #ifndef __GUISERVER_IMAGE_H__
 #define __GUISERVER_IMAGE_H__
 
-#include "MemoryInfo.h"
+#include <monapi/cmemoryinfo.h>
 
-extern MemoryInfo* ReadBitmap(MemoryInfo* mi);
-extern MemoryInfo* ReadJPEG(MemoryInfo* mi);
-extern MemoryInfo* ReadImage(const char* file, bool prompt = false);
+class ImageInfo : public monapi_cmemoryinfo
+{
+public:
+    int Width, Height;
+
+    ImageInfo();
+};
+
+extern ImageInfo* ReadBitmap(monapi_cmemoryinfo* mi);
+extern ImageInfo* ReadJPEG(monapi_cmemoryinfo* mi);
+extern ImageInfo* ReadImage(const char* file, bool prompt = false);
 
 #endif  // __GUISERVER_IMAGE_H__

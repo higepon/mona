@@ -1,4 +1,4 @@
-#include<monapi.h>
+#include <monapi.h>
 #include "ReversiBoard.h"
 
 /*----------------------------------------------------------------------

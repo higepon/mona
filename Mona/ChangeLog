@@ -1,3 +1,17 @@
+2004-05-02  tino  <tino@users.sourceforge.jp>
+
+        * include/sys/types.h: カーネルで使わないメッセージを削除
+
+        * include/monapi/messages.h: sys/types.hから削除したものを移動, クライアント関数
+
+        * include/monapi/cmemoryinfo.h: 追加
+
+        * src/lib/monapi/cmemoryinfo.cpp: 追加
+
+        * src/servers/gui: 余分な機能を分割 → FILE.SVR
+
+        * src/servers/file: 追加
+
 2004-05-02  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp (MessageLoop): マウスを画面最下部にもって言った場合のマウスサーバ突然死を修正

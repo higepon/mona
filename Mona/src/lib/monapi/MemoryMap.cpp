@@ -91,3 +91,18 @@ dword MemoryMap::getSize(dword id)
 }
 
 }
+
+dword monapi_cmemorymap_create(dword size)
+{
+    return MonAPI::MemoryMap::create(size);
+}
+
+byte* monapi_cmemorymap_map(dword id)
+{
+    return MonAPI::MemoryMap::map(id);
+}
+
+int monapi_cmemorymap_unmap(dword id)
+{
+    return MonAPI::MemoryMap::unmap(id) ? 1 : 0;
+}

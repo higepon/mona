@@ -4,6 +4,7 @@ all:
 	@cd shell; $(MAKE) $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
+	@cd file; $(MAKE) $@
 
 install:
 	@cd key; $(MAKE) $@
@@ -11,6 +12,7 @@ install:
 	@cd shell; $(MAKE) $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
+	@cd file; $(MAKE) $@
 
 clean: touchdepend
 	@cd key; $(MAKE) $@
@@ -18,6 +20,7 @@ clean: touchdepend
 	@cd shell; $(MAKE) $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
+	@cd file; $(MAKE) $@
 
 depend: touchdepend
 	@cd key; $(MAKE) $@
@@ -25,6 +28,7 @@ depend: touchdepend
 	@cd shell; $(MAKE) $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
+	@cd file; $(MAKE) $@
 
 distclean:
 	rm -f key/dependencies
@@ -32,6 +36,7 @@ distclean:
 	rm -f shell/dependencies
 	rm -f gui/dependencies
 	rm -f 1linesh/dependencies
+	rm -f file/dependencies
 
 touchdepend:
 	touch key/dependencies
@@ -39,3 +44,4 @@ touchdepend:
 	touch shell/dependencies
 	touch gui/dependencies
 	touch 1linesh/dependencies
+	touch file/dependencies

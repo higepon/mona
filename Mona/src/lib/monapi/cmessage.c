@@ -13,7 +13,7 @@ static monapi_clist msg_queue;
 
 int monapi_cmessage_send(dword tid, MessageInfo* info)
 {
-    if (tid == 0xffffffff) return 1;
+    if (tid == THREAD_UNKNOWN) return 1;
     return syscall_send(tid, info);
 }
 

@@ -12,6 +12,7 @@
 */
 
 #include <monapi.h>
+#include <monapi/messages.h>
 
 #define INIT_PROCESS "INIT"
 
@@ -202,7 +203,7 @@ void MouseServer::SendMouseInformation(MessageInfo* info)
 bool MouseServer::SendServerOK()
 {
     dword targetID = Message::lookupMainThread(INIT_PROCESS);
-    if (targetID == 0xFFFFFFFF)
+    if (targetID == THREAD_UNKNOWN)
     {
         printf("MouseServer:INIT not found\n");
         return false;

@@ -1,6 +1,7 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
+#include <monapi/messages.h>
 #include "GUIServer.h"
 #include "screen.h"
 using namespace MonAPI;
@@ -31,7 +32,7 @@ void SetMouseCursor(bool enabled)
 	Message::sendReceive(NULL, msvr, hdr);
 }
 
-void DrawImage(MemoryInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
+void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
 {
 	SetMouseCursor(false);
 	unsigned char* vram = screen.getVRAM();

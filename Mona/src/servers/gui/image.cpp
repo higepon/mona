@@ -1,15 +1,23 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
+#include <monapi.h>
+#include <monapi/messages.h>
 #include <jpegls.h>
 #include "GUIServer.h"
 #include "image.h"
-#include "file.h"
 #include "bzip2.h"
 
 #define BYTE2INT(array, index) (*(int*)&array[index])
 
-MemoryInfo* ReadBitmap(MemoryInfo* mi)
+ImageInfo::ImageInfo() : Width(0), Height(0)
+{
+    this->Handle = 0;
+    this->Size   = 0;
+    this->Data   = NULL;
+}
+
+ImageInfo* ReadBitmap(monapi_cmemoryinfo* mi)
 {
 	if (mi->Size < 6) return NULL;
 	
@@ -23,8 +31,8 @@ MemoryInfo* ReadBitmap(MemoryInfo* mi)
 	int bfOffBits = BYTE2INT(mi->Data, 10);
 	int w = BYTE2INT(mi->Data, 18);
 	int h = BYTE2INT(mi->Data, 22);
-	MemoryInfo* ret = new MemoryInfo();
-	if (!ret->Create(w * h * 4))
+	ImageInfo* ret = new ImageInfo();
+	if (!monapi_cmemoryinfo_create(ret, w * h * 4, 0))
 	{
 		delete ret;
 		return NULL;
@@ -48,7 +56,7 @@ MemoryInfo* ReadBitmap(MemoryInfo* mi)
 	return ret;
 }
 
-MemoryInfo* ReadJPEG(MemoryInfo* mi)
+ImageInfo* ReadJPEG(monapi_cmemoryinfo* mi)
 {
 	CJPEGLS* jpeg = new CJPEGLS();
 	if (jpeg->Open(mi->Data, mi->Size) != 0)
@@ -59,8 +67,8 @@ MemoryInfo* ReadJPEG(MemoryInfo* mi)
 	
 	int w, h;
 	jpeg->GetInfo(&w, &h);
-	MemoryInfo* ret = new MemoryInfo();
-	if (!ret->Create(w * h * 4))
+	ImageInfo* ret = new ImageInfo();
+	if (!monapi_cmemoryinfo_create(ret, w * h * 4, 0))
 	{
 		delete jpeg;
 		delete ret;
@@ -81,9 +89,10 @@ MemoryInfo* ReadJPEG(MemoryInfo* mi)
 	return ret;
 }
 
-MemoryInfo* ReadImage(const char* file, bool prompt /*= false*/)
+ImageInfo* ReadImage(const char* file, bool prompt /*= false*/)
 {
-	MemoryInfo* mi = ReadFile(file, prompt), * ret = NULL;
+	monapi_cmemoryinfo* mi = monapi_call_file_read_data(file, prompt);
+    ImageInfo* ret = NULL;
 	if (mi == NULL) return ret;
 	
 	const char* p = &file[strlen(file)];
@@ -104,7 +113,7 @@ MemoryInfo* ReadImage(const char* file, bool prompt /*= false*/)
 	else if (strcmp(p, ".BM2") == 0)
 	{
 		if (prompt) printf("%s: Decompressing %s....", SVR, file);
-		MemoryInfo* mi2 = BZ2Decompress(mi);
+		monapi_cmemoryinfo* mi2 = BZ2Decompress(mi);
 		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
 		
 		if (mi2 != NULL)
@@ -112,12 +121,12 @@ MemoryInfo* ReadImage(const char* file, bool prompt /*= false*/)
 			if (prompt) printf("%s: Decoding %s....", SVR, file);
 			ret = ReadBitmap(mi2);
 			if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
-			mi2->Dispose();
-			delete mi2;
+            monapi_cmemoryinfo_dispose(mi2);
+            monapi_cmemoryinfo_delete(mi2);
 		}
 	}
-	
-	mi->Dispose();
-	delete mi;
+
+	monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 	return ret;
 }

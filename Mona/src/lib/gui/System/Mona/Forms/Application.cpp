@@ -96,7 +96,7 @@ namespace System { namespace Mona { namespace Forms
 	{
 		switch (message)
 		{
-			case 0x0a /*MSG_MOUSE_INFO*/:
+			case MSG_MOUSE_INFO:
 			{
 				_P<Control> c;
 				if (Application::mouseButtons != 0)

@@ -1,12 +1,13 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
+#include <monapi/messages.h>
+#include <monapi/syscall.h>
 #include <bzlib.h>
 #include "GUIServer.h"
 #include "bzip2.h"
-#include "file.h"
 
-int64_t GetBZ2DecompressedSize(MemoryInfo* mi)
+int64_t GetBZ2DecompressedSize(monapi_cmemoryinfo* mi)
 {
 	static char buf[256];
 	
@@ -34,7 +35,7 @@ int64_t GetBZ2DecompressedSize(MemoryInfo* mi)
 	return ret;
 }
 
-MemoryInfo* BZ2Decompress(MemoryInfo* mi)
+monapi_cmemoryinfo* BZ2Decompress(monapi_cmemoryinfo* mi)
 {
 	int64_t size = GetBZ2DecompressedSize(mi);
 	if (size < 0) return NULL;
@@ -42,10 +43,10 @@ MemoryInfo* BZ2Decompress(MemoryInfo* mi)
 	// if size >= 4GB abort...
 	if ((size >> 32) > 0) return NULL;
 	
-	MemoryInfo* ret = new MemoryInfo();
-	if (!ret->Create((dword)(size + 1)))
+	monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
+	if (!monapi_cmemoryinfo_create(ret, (dword)(size + 1), 0))
 	{
-		delete ret;
+        monapi_cmemoryinfo_delete(ret);
 		return NULL;
 	}
 	ret->Size--;
@@ -63,8 +64,8 @@ MemoryInfo* BZ2Decompress(MemoryInfo* mi)
 	BZ2_bzDecompressEnd(&bzs);
 	if (result != BZ_STREAM_END)
 	{
-		ret->Dispose();
-		delete ret;
+        monapi_cmemoryinfo_dispose(ret);
+        monapi_cmemoryinfo_delete(ret);
 		return NULL;
 	}
 	
@@ -72,16 +73,16 @@ MemoryInfo* BZ2Decompress(MemoryInfo* mi)
 	return ret;
 }
 
-MemoryInfo* BZ2DecompressFile(const char* file, bool prompt /*= false*/)
+monapi_cmemoryinfo* BZ2DecompressFile(const char* file, bool prompt /*= false*/)
 {
-	MemoryInfo* mi = ReadFile(file, prompt), * ret = NULL;
+	monapi_cmemoryinfo* mi = monapi_call_file_read_data(file, prompt), * ret = NULL;
 	if (mi == NULL) return ret;
 	
 	if (prompt) printf("%s: Decompressing %s....", SVR, file);
 	ret = BZ2Decompress(mi);
 	if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
-	
-	mi->Dispose();
-	delete mi;
+
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 	return ret;
 }

@@ -4,10 +4,11 @@
 #ifndef __GUISERVER_SCREEN_H__
 #define __GUISERVER_SCREEN_H__
 
-#include "MemoryInfo.h"
+#include <monapi.h>
+#include "image.h"
 
 extern MonAPI::Screen* GetDefaultScreen();
 extern void SetMouseCursor(bool enabled);
-extern void DrawImage(MemoryInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent);
+extern void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent);
 
 #endif  // __GUISERVER_SCREEN_H__

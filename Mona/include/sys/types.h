@@ -143,22 +143,19 @@ typedef struct {
 #define WAIT_TIMER   0x60
 #define WAIT_NONE    0xFF
 
+#define THREAD_UNKNOWN 0xffffffff
 
-#define MSG_KEY_SCANCODE               0x00
-#define MSG_KEY_REGIST_TO_SERVER       0x01
-#define MSG_MAP                        0x02
-#define MSG_RESULT_OK                  0x03
-#define MSG_RESULT_ERROR               0x04
-#define MSG_KEY_VIRTUAL_CODE           0x05
-#define MSG_MOUSE                      0x06
-#define MSG_MOUSE_REGIST_TO_SERVER     0x09
-#define MSG_MOUSE_INFO                 0x0A
-#define MSG_MOUSE_UNREGIST_FROM_SERVER 0x0B
-#define MSG_KEY_UNREGIST_FROM_SERVER   0x0C
-#define MSG_SERVER_START_OK            0x0D
-#define MSG_MEMORY_MAP_ID              0x0E
-#define MSG_MOUSE_ENABLE_CURSOR        0x20
-#define MSG_MOUSE_DISABLE_CURSOR       0x21
+enum
+{
+    MSG_NONE = 0,
+    MSG_MAP,
+    MSG_MEMORY_MAP_ID,
+    MSG_RESULT_OK,
+    MSG_RESULT_ERROR,
+    MSG_SERVER_START_OK,
+    MSG_KEY_SCANCODE,
+    MSG_MOUSE
+};
 
 #define SHARED_FDC_BUFFER 0x4000
 
