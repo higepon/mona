@@ -421,10 +421,13 @@ void syscall_entrance() {
 //     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
 //     g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
 //     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
-             g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
-             bool isProcessChange = g_scheduler->schedule();
-//	g_console->printf("wake@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-            ThreadOperation::switchThread(isProcessChange);
+
+            if (!g_fdcdriver->interrupted())
+            {
+                g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
+                bool isProcessChange = g_scheduler->schedule();
+                ThreadOperation::switchThread(isProcessChange);
+            }
         }
         break;
 

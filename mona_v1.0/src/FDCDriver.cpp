@@ -176,10 +176,10 @@ void FDCDriver::interrupt() {
 */
 void FDCDriver::waitInterrupt(bool yield) {
 
+    setWaitThread(g_currentThread->thread);
+
     if (yield)
     {
-        setWaitThread(g_currentThread->thread);
-
         asm volatile("movl $%c0, %%ebx \n"
                      "int  $0x80       \n"
                      :

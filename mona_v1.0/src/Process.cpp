@@ -652,10 +652,10 @@ void monaIdle()
 {
     for (;;)
     {
-#if 1
+#if 0
         static dword count = 0;
-//        if (count % 200) g_console->printf(".");
-//        if (count % 20000000) g_scheduler->dump();
+        if (count % 0xFFFFFFF)  g_console->printf(".");
+        if (count % 20000000) g_scheduler->dump();
         count++;
 #endif
         arch_idle();

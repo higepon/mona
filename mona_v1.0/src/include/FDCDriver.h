@@ -44,6 +44,11 @@ class FDCDriver : public DiskDriver {
         this->waitThread = thread;
     }
 
+    inline bool interrupted() const
+    {
+        return interrupt_;
+    }
+
   private:
     void initilize();
     void waitInterrupt(bool yield);

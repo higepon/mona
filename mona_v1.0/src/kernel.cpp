@@ -230,7 +230,8 @@ void mainProcess()
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
+
+    g_console->printf("[0p]");
 
     if (!g_fat12->initilize())
     {
@@ -240,7 +241,7 @@ void mainProcess()
 
     g_fdcdriver->motorAutoOff();
 
-#if 1
+#if 0
     byte buf[512];
 
     KDate dt1;

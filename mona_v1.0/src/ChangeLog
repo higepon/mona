@@ -1,3 +1,7 @@
+2004-02-29  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp: FDCの割り込みが割込み待ちWAIT処理中の隙間を縫ってくることがあるのに対応
+
 2004-02-29  shadow  <shadowin@users.sourceforge.jp>
 
         * user/userlib/MlcCtype.cpp & .h コメント付け
@@ -7,6 +11,7 @@
         * user/userlib/Makefile 上記ファイルを対象に追加
 
         * user/include/userlib/MlcLimits.h 追加
+
 
 2004-02-28  higepon  <higepon@users.sourceforge.jp>
 
