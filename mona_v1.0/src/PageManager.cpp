@@ -319,13 +319,11 @@ void PageManager::flushPageCache() const {
 */
 PageEntry* PageManager::allocatePageTable() const {
 
-    PageEntry* table;
-
-    table = (PageEntry*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
+    byte* table;
+    table = (byte*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
     checkMemoryAllocate(table, "PageManager table memory allocate");
-    for (; (dword)table % 4096; table++);
-
-    return table;
+    for (; (int)table % 4096; table++);
+    return (PageEntry*)table;
 }
 
 /*!

@@ -33,8 +33,32 @@ a20enable_3:
         in      al,0x64
         test    al,0x02
         jnz     a20enable_3
-        ;sti                   ;keep DI
-        ;
+;; Vesa code
+        pusha
+get_vesa_info:
+        xor bx, bx
+        mov es, bx
+        mov ax, 0x4F00          ; function 00h
+        mov di, 0x0800          ; 0x0000:0x0800
+        int 0x10
+        cmp ah, 0x4F
+        je vesa_not_supported
+        mov ax, 0x4F01          ; function 01h
+        mov di, 0x0830          ; 0x0000:0x0830
+        int 0x10
+        cmp ah, 0x4F
+        je vesa_not_supported
+        popa
+        jmp graphicalmode
+; vesa_supported:
+;         mov ax, 0x4F02
+;         mov bx, 0x105
+;         int 0x10
+;         popa
+;         jmp RealToProtect
+vesa_not_supported:
+          mov byte[di], 'N'
+          popa
 graphicalmode:
         mov ax, 0x0012
         int 0x10

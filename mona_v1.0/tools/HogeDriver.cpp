@@ -5,6 +5,9 @@
 HogeDriver::HogeDriver(const char* file, long size) {
 
     file_.open(file, std::ios::out|std::ios::in|std::ios::binary);
+    if (!file_) {
+        printf("HogeDriver open error %s \n", file);
+    }
 
 }
 

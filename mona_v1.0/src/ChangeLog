@@ -1,3 +1,16 @@
+2004-01-15  higepon  <higepon@users.sourceforge.jp>
+
+        * oemstringポインタの取得
+
+        * ページアラインのバグ修正
+          VESAバージョンの取得
+
+        * VESAに対応しているかどうかをチェック
+
+        * FAT12イメージファイルにファイルを書き込むツールfat_writeを改善。
+          前の作りが余りにひどかったのでやっと直しました。
+          使い方等興味のある方はMakeFileを御参照ください。
+
 2004-01-14  higepon  <higepon@users.sourceforge.jp>
 
         * core.asm (arch_save_thread_registers): 重大なバグ修正TSSのesp0にタスク固有の

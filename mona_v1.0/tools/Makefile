@@ -1,7 +1,7 @@
-all: ./fat_write.exe
+all: ../bin/fat_write.exe
 
-./fat_write.exe : fat_write.cpp ../src/FAT12.cpp ../src/include/FAT12.h ../src/string.cpp ../src/BitMap.cpp
-	g++ -DFS_TEST -o fat_write.exe fat_write.cpp HogeDriver.cpp ../src/FAT12.cpp ../src/string.cpp ../src/BitMap.cpp -idirafter ../src/include/ -idirafter ../src/user/ -idirafter .
+../bin/fat_write.exe : fat_write.cpp ../src/FAT12.cpp ../src/include/FAT12.h ../src/string.cpp ../src/BitMap.cpp
+	g++ -DFS_TEST -o ../bin/fat_write.exe fat_write.cpp HogeDriver.cpp ../src/FAT12.cpp ../src/string.cpp ../src/BitMap.cpp -idirafter ../src/include/ -idirafter ../src/user/ -idirafter .
 
 #  ./test.exe: fstest.cpp HogeDriver.cpp HogeDriver.h ../src/FAT12.cpp ../src/include/FAT12.h
 #  	g++ -DFS_TEST -o test.exe fstest.cpp HogeDriver.cpp ../src/FAT12.cpp ../src/string.cpp ../src/BitMap.cpp -idirafter ../src/include -idirafter ../src/user
