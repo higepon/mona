@@ -14,6 +14,7 @@
 
         * src/lib/monapi: リンク問題に対処するためmonapi.oをlibmonapi.aから外して個別リンク (thanks Yuiさん)
                           FreeBSDでHELLO.ELFが正常にコンパイルできることを確認
+                          FreeBSDでコンパイルしたものはファイルの読み込み(FileInputStream)に失敗する
 
         * src/kernel/kernel.cpp: 起動メッセージでどの環境でコンパイルされたかを表示
 
