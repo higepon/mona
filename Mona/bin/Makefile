@@ -12,8 +12,11 @@ all:
 	@for file in $(ROOT_FILES); do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@for file in $(SVR_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@for file in $(APP_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
-	./fat_write $(TARGET) --mkdir APPS/GREVERSI.APP
-	@for file in `cd root; ls APPS/GREVERSI.APP/*.*`; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
+	@cd root; for dir in APPS/*.APP; \
+	do \
+	  echo "Creating: "$$dir"..."; ../fat_write ../$(TARGET) --mkdir $$dir; \
+	  for file in $$dir/*.*; do echo "Writing: "$$file"..."; ../fat_write ../$(TARGET) $$file $$file; done; \
+	done
 	@echo "Done."
 
 write:
