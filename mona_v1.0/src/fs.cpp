@@ -12,6 +12,9 @@
 */
 
 #include <FSOperation.h>
+#include <VirtualConsole.h>
+
+extern VirtualConsole* g_console;
 
 /*----------------------------------------------------------------------
     FSOperation

@@ -72,8 +72,11 @@ copy_userapp : $(TARGET) $(USER_APP)
 	(cd $(BIN); $(FAT_TOOL) mona.img CLOCK.ELF    APP/CLOCK.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img REVERSI.ELF  APP/REVERSI.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img GETMAC.ELF   APP/GETMAC.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img WABA.ELF     APP/WABA.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img AUTOEXEC.MSH AUTOEXEC.MSH)
 	(cd $(BIN); $(FAT_TOOL) mona.img MONA.CFG     MONA.CFG)
+	(cd $(BIN); $(FAT_TOOL) mona.img ../src/user/waba/WABA.LIB  APP/WABA.LIB)
+	(cd $(BIN); $(FAT_TOOL) mona.img ../src/user/waba/HELLO.WRP APP/HELLO.WRP)
 
 $(USER_APP) :
 	(cd user; make)
