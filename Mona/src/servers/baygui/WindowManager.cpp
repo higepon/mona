@@ -401,29 +401,52 @@ void WindowManager::onMouseDrag(int mx, int my)
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control != NULL && control->getFocused() == true) {
 		Rect *rect = control->getRect();
-		// ウィンドウを移動する
 		if (rect->x <= mx && mx <= rect->x + rect->width && 
-			rect->y <= my && my <= rect->y + INSETS_TOP)
+			rect->y <= my && my <= rect->y + INSETS_TOP && 
+			state == STATE_NORMAL)
 		{
-			if (state == STATE_NORMAL) {
-				// ドラッグ開始位置を記憶する
-				preX = mx;
-				preY = my;
-				// モード設定
-				state = STATE_MOVING;
-				//printf("move window start: %d,%d\n", preX, preY);
+			// モード設定
+			state = STATE_MOVING;
+			// ドラッグ開始位置を記憶する
+			dX = mx - rect->x;
+			dY = my - rect->y;
+			_g->setXORMode(true);
+			_g->setColor(255,255,255);
+			if (control->getIconified() == false) {
+				_g->drawRect(rect->x, rect->y, rect->width, rect->height);
+			} else {
+				_g->drawRect(rect->x, rect->y, rect->width, INSETS_TOP - 1);
 			}
+			_g->setXORMode(false);
+			preX = rect->x;
+			preY = rect->y;
+			//printf("move window start: %d,%d\n", preX, preY);
+		// ウィンドウを移動する
+		} else if (state == STATE_MOVING) {
+			_g->setXORMode(true);
+			_g->setColor(255,255,255);
+			if (control->getIconified() == false) {
+				_g->drawRect(preX, preY, rect->width, rect->height);
+				_g->drawRect(mx - dX, my - dY, rect->width, rect->height);
+			} else {
+				_g->drawRect(preX, preY, rect->width, INSETS_TOP - 1);
+				_g->drawRect(mx - dX, my - dY, rect->width, INSETS_TOP - 1);
+			}
+			_g->setXORMode(false);
+			// ドラッグ開始位置を記憶する
+			preX = mx - dX;
+			preY = my - dY;
 		// ドラッグイベント発生
 		} else if (control->getIconified() == false) {
 			//MouseEvent *event = new MouseEvent(MOUSE_DRAGGED, control, mx, my);
 			//control->postEvent(event);
 			//delete(event);
 			// マウスイベントを投げる
-			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSEDRAG, mx, my, 0, NULL)) {
+			//if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONMOUSEDRAG, mx, my, 0, NULL)) {
 				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEDRAG failed %d\n", control->getThreadID());
-			} else {
+			//} else {
 				//printf("WindowManager->Window: MSG_GUISERVER_ONMOUSEDRAG sended %d\n", control->getThreadID());
-			}
+			//}
 			//printf("throw mouse_drag event\n");
 		}
 	}
@@ -446,22 +469,20 @@ void WindowManager::onMouseRelease(int mx, int my)
 			// 背景を塗りつぶす
 			restoreBackGround(control);
 			// 画面からはみだしていないかチェック
-			int wx = rect->x + mx - preX;
-			int wy = rect->y + my - preY;
-			if (rect->x + mx - preX <= 0) wx = 0;
-			if (rect->y + my - preY <= 22) wy = 22;
-			if (rect->x + mx - preX + rect->width + 1 >= width) wx = width - rect->width - 1;
-			if (rect->y + my - preY + rect->height + 1 >= height) wy = height - rect->height - 1;
+			//if (preX <= 0) preX = 0;
+			//if (preY <= 22) preY = 22;
+			//if (preX + rect->width + 1 >= width) preX = width - rect->width - 1;
+			//if (preY + rect->height + 1 >= height) preY = height - rect->height - 1;
 			// ウィンドウ移動
 			control->setRect(
-				wx,
-				wy,
+				preX,
+				preY,
 				rect->width,
 				rect->height
 			);
 			// 領域変更メッセージを投げる
 			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_SETRECT, 
-				(wx << 16 | wy), (rect->width << 16 | rect->height), 0, NULL)) {
+				(preX << 16 | preY), (rect->width << 16 | rect->height), 0, NULL)) {
 				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", control->getThreadID());
 			} else {
 				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getThreadID());

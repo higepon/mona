@@ -1,3 +1,7 @@
+2004-10-25  bayside  <bayside@users.sourceforge.jp>
+
+        * servers/baygui: ウィンドウ移動時に枠線を出すように修正
+
 2004-10-25  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/baygui/BAYGUI.MSH : 追加
