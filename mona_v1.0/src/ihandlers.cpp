@@ -156,18 +156,18 @@ void timerHandler()
 */
 void MFDCHandler(void)
 {
-//    g_console->printf("fdc int");
+    g_console->printf("here");
     g_fdcdriver->interrupt();
 
     /* thx! K-tan */
     outportb(0x20, 0x66);
 
-//     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
+    int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
 
-//     if (wakeupResult != 0)
-//     {
-//         ThreadOperation::switchThread((wakeupResult == 1));
-//     }
+    if (wakeupResult != 0)
+    {
+        ThreadOperation::switchThread((wakeupResult == 1));
+    }
 }
 
 /* IRQ Handler (expr) */

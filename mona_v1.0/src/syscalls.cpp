@@ -411,7 +411,6 @@ void syscall_entrance() {
         {
             g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
             bool isProcessChange = g_scheduler->schedule();
-            g_scheduler->dump();
             ThreadOperation::switchThread(isProcessChange);
         }
         break;

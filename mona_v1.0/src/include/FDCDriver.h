@@ -66,7 +66,7 @@ class FDCDriver : public DiskDriver {
     int motorCount_;
     int resultsLength_;
     int currentTrack_;
-    volatile bool interrupt_;
+    static volatile bool interrupt_;
     byte* dmabuff_;
 };
 

@@ -150,7 +150,7 @@ bool Scheduler::schedule2()
 {
     Thread* root = NULL;
 
-    if (this->working) return true;
+//    if (this->working) return true;
 
     this->working = true;
 
@@ -176,12 +176,12 @@ bool Scheduler::schedule2()
 
     this->working = false;
 
-    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
+    return true;//!(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 bool Scheduler::schedule()
 {
-    if (this->working) return true;
+//    if (this->working) return true;
 
     this->working = true;
 
@@ -232,7 +232,7 @@ bool Scheduler::schedule()
 
     this->working = false;
 
-    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
+    return true;//!(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 void Scheduler::join(Thread* thread, int priority)
@@ -664,6 +664,12 @@ void monaIdle()
 {
     for (;;)
     {
+#if 1
+        static dword count = 0;
+        if (count % 200) g_console->printf(".");
+        if (count % 2000000) g_scheduler->dump();
+        count++;
+#endif
         arch_idle();
     }
 }

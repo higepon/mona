@@ -71,6 +71,7 @@
 #define FDC_DMA_BUFF_SIZE 512
 
 Thread* FDCDriver::waitThread;
+volatile bool FDCDriver::interrupt_;
 
 /*!
     \brief Constructer
@@ -175,15 +176,14 @@ void FDCDriver::interrupt() {
 */
 void FDCDriver::waitInterrupt() {
 
-//      setWaitThread(g_currentThread->thread);
+    setWaitThread(g_currentThread->thread);
 
-//      g_console->printf("wait");
-//     asm volatile("movl $%c0, %%ebx \n"
-//                  "int  $0x80       \n"
-//                  :
-//                  :"g"(SYSTEM_CALL_WAIT_FDC)
-//                  :"ebx"
-//                  );
+    asm volatile("movl $%c0, %%ebx \n"
+                 "int  $0x80       \n"
+                 :
+                 :"g"(SYSTEM_CALL_WAIT_FDC)
+                 :"ebx"
+        );
 
 //     g_scheduler->dump();
 //     g_console->printf("true=%s", interrupt_? "TRUE" : "FALSE");
