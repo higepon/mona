@@ -6,7 +6,7 @@
 
         * src/servers/gui/main.cpp: 壁紙をサポート (MONA.CFGで指定可能)
 
-        * src/lib/gui/System/Mona/Forms/Control.cpp: マウスカーソルの残像が残らないように対策
+        * src/lib/gui/System/Mona/Forms/Control.cpp: マウスカーソルの残像が残らないように対処
 
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
