@@ -195,7 +195,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             char buf[256];
             while (syscall_read_ps_dump(&info) == 0)
             {
-                sprintf(buf, "%05d %s %08x %08x %08x %s\n",
+                sprintf(buf, "%5d %s %08x %08x %08x %s\n",
                     info.tid, info.state ? "running" : "waiting",
                     info.eip, info.esp, info.cr3, info.name);
                 printf(buf);
