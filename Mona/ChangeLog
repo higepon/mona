@@ -8,6 +8,8 @@
 
         * src/servers/shell/main.cpp: printf独占, 文字出力時のマウスカーソルの残像に対処
 
+        * apps/gui/shell: MonaGUI版シェル (printfを独占して表示するだけ)
+
 2004-05-09  yui  <yuinejp@users.sourceforge.jp>
 
         * src/servers/shell/ 全て書き直し

@@ -6,6 +6,7 @@ all:
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd shell; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -15,6 +16,7 @@ install:
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd shell; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -24,6 +26,7 @@ clean: touchdepend
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd shell; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -33,6 +36,7 @@ depend: touchdepend
 	@cd fire; $(MAKE) $@
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd shell; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -42,6 +46,7 @@ distclean:
 	rm -f fire/dependencies
 	rm -f launcher/dependencies
 	rm -f waba/dependencies
+	rm -f shell/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -51,3 +56,4 @@ touchdepend:
 	touch fire/dependencies
 	touch launcher/dependencies
 	touch waba/dependencies
+	touch shell/dependencies
