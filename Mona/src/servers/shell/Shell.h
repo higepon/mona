@@ -34,6 +34,7 @@ class Shell {
     void backspace();
     void commandChar(char c);
     void commandExecute(bool prompt);
+    bool commandExecute(_A<MonAPI::CString> args);
     void commandTerminate();
     void putHistory(const MonAPI::CString& command);
     MonAPI::CString getHistory();
@@ -53,7 +54,7 @@ class Shell {
     HList<MonAPI::CString> history;
     HList<MonAPI::CString> apps;
     MonAPI::CString current;
-    bool hasExited, callAutoExec;
+    bool hasExited, callAutoExec, doExec;
     dword waiting;
     dword self;
     MonAPI::Screen screen;

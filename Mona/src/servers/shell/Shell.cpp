@@ -9,7 +9,7 @@ using namespace MonAPI;
     Shell
 ----------------------------------------------------------------------*/
 Shell::Shell(bool callAutoExec)
-    : position(0), hasExited(false), callAutoExec(callAutoExec),
+    : position(0), hasExited(false), callAutoExec(callAutoExec), doExec(false),
       waiting(THREAD_UNKNOWN), prevX(0), prevY(0)
 {
     this->current = STARTDIR;
@@ -50,7 +50,8 @@ void Shell::run()
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
-                if (msg.arg2 & KEY_MODIFIER_DOWN)
+                if (!this->doExec && (msg.arg2 & KEY_MODIFIER_DOWN) != 0)
+
                 {
                     this->onKeyDown(msg.arg1, msg.arg2);
                 }
@@ -61,6 +62,7 @@ void Shell::run()
                     this->printPrompt("\n");
                     this->drawCaret();
                     this->waiting = THREAD_UNKNOWN;
+                    this->doExec = false;
                 }
 
                 break;
@@ -139,6 +141,11 @@ void Shell::commandExecute(bool prompt)
         return;
     }
 
+    this->commandExecute(args);
+}
+
+bool Shell::commandExecute(_A<CString> args)
+{
     CString cmdLine;
     CString command = args[0].toUpper();
     if (command[0] == '/')
@@ -177,7 +184,7 @@ void Shell::commandExecute(bool prompt)
         {
             printf("Can not find command.\n");
             if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
-            return;
+            return false;;
         }
     }
 
@@ -185,7 +192,7 @@ void Shell::commandExecute(bool prompt)
     {
         this->executeMSH(cmdLine);
         if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
-        return;
+        return true;
     }
 
     for (int i = 1; i < args.get_Length(); i++)
@@ -205,6 +212,8 @@ void Shell::commandExecute(bool prompt)
     {
         this->printPrompt("\n");
     }
+
+    return result == 0;
 }
 
 void Shell::commandTerminate()
