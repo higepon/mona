@@ -28,48 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <baygui.h>
 #include "WindowManager.h"
 
-#ifdef PEKOE
-/** オレンジアイコン */
-static int orangeIcon [15][15] = {
-	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0x40204,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0x40204,0x40204,0x40204,0x4fe04,0x4fe04,0x4fe04,0x40204,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0xfc9a04,0xfc9a04,0x40204,0x4fe04,0x4fe04,0x40204,0x40204,0x40204,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0x40204,0x40204,0x40204,0x40204,0xfc9a04,0xfc9a04,0x40204,0xcccecc,0xcccecc},
-	{0xcccecc,0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204,0xcccecc},
-	{0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204},
-	{0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204},
-	{0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204},
-	{0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204},
-	{0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204},
-	{0xcccecc,0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204,0xcccecc},
-	{0xcccecc,0xcccecc,0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0xfc9a04,0x40204,0x40204,0xcccecc,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0x40204,0x40204,0x40204,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
-};
-#endif
-
-#ifdef MONA
-/** モナーアイコン */
-static int monaIcon [15][16] = {
-	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0x000000,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0x000000,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc,0xcccecc},
-	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc},
-	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0x000000,0xcccecc},
-	{0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0x000000},
-	{0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000},
-	{0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0x000000},
-	{0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0x000000,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000},
-	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xfc6604,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc},
-	{0xcccecc,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc},
-	{0xcccecc,0xcccecc,0x000000,0x000000,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0xffffff,0x000000,0xcccecc,0xcccecc},
-	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0xcccecc,0xcccecc,0xcccecc},
-};
-#endif
-
 /** インスタンス */
 WindowManager *WindowManager::instance = NULL;
 
@@ -84,13 +42,13 @@ WindowManager::WindowManager()
 	_g->setClip(0,0,width,height);
 
 	// 壁紙読み込み
-	wallpaper = new Bitmap("/SERVERS/MONAWALL.BM5");
+	wallpaper = new Bitmap(WALLPAPER_NAME);
 
 	// スレッドIDを得る
 	threadID = MonAPI::System::getThreadID();
 
 	// キーサーバーを探す
-	keysvrID = MonAPI::Message::lookupMainThread("KEYBDMNG.EX2");
+	keysvrID = MonAPI::Message::lookupMainThread(KEYSERVER_NAME);
 	if (keysvrID == 0xFFFFFFFF) {
 		//printf("Window: KeyServer not found %d\n", threadID);
 	} else {
@@ -105,7 +63,7 @@ WindowManager::WindowManager()
 	}
 
 	// マウスサーバーを探す
-	mousesvrID = MonAPI::Message::lookupMainThread("MOUSE.EX2");
+	mousesvrID = MonAPI::Message::lookupMainThread(MOUSESERVER_NAME);
 	if (mousesvrID == 0xFFFFFFFF) {
 		//printf("Window: MouseServer not found %d\n", threadID);
 	} else {
@@ -120,7 +78,7 @@ WindowManager::WindowManager()
 	}
 
 	// シェルサーバーを探す
-	shellsvrID = MonAPI::Message::lookupMainThread("OLDSHELL.EX2");
+	shellsvrID = MonAPI::Message::lookupMainThread(SHELLSERVER_NAME);
 	if (shellsvrID == 0xFFFFFFFF) {
 		//printf("Window: ShellServer not found %d\n", threadID);
 	} else {
@@ -297,9 +255,6 @@ void WindowManager::onMousePress(int mx, int my)
 			// フォーカスアウトメッセージを投げる
 			postFocusedToWindow(false, control);
 			
-			// 背景を塗りつぶす
-			restoreBackGround(control);
-			
 			// 描画が必要かどうかチェックする領域
 			Rect srect;
 			srect.x = rect->x;
@@ -313,6 +268,9 @@ void WindowManager::onMousePress(int mx, int my)
 			// ウィンドウをアイコン化
 			} else {
 				postIconifiedToWindow(true, control);
+				// 背景を塗りつぶす
+				syscall_sleep(10);
+				restoreBackGround(control);
 			}
 			
 			// ウィンドウ再描画
@@ -380,12 +338,6 @@ void WindowManager::onMouseDrag(int mx, int my)
 		if (rect->x <= mx && mx <= rect->x + rect->width && 
 			rect->y <= my && my <= rect->y + INSETS_TOP)
 		{
-			// 非活性化メッセージを投げる
-			postEnabledToWindow(false, control);
-			
-			// フォーカスアウトメッセージを投げる
-			postFocusedToWindow(false, control);
-			
 			// モード設定
 			state = STATE_MOVING;
 			
@@ -461,7 +413,14 @@ void WindowManager::onMouseRelease(int mx, int my)
 		// debug
 		//printf("moved: %d, %d\n", (rect->x + mx + preX), (rect->y + my + preY));
 		
+		// 非活性化メッセージを投げる
+		postEnabledToWindow(false, control);
+		
+		// フォーカスアウトメッセージを投げる
+		postFocusedToWindow(false, control);
+		
 		// 背景を塗りつぶす
+		syscall_sleep(10);
 		restoreBackGround(control);
 		
 		// 描画が必要かどうかチェックする領域
@@ -547,9 +506,6 @@ void WindowManager::remove(Control *control)
 	// NULLチェック
 	if (control == NULL) return;
 	
-	// 背景を塗りつぶす
-	restoreBackGround(control);
-	
 	// 描画が必要かどうかチェックする領域
 	Rect *rect = control->getRect();
 	Rect srect;
@@ -564,6 +520,9 @@ void WindowManager::remove(Control *control)
 	} else {
 		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", control->getThreadID());
 	}
+	
+	// 背景を塗りつぶす
+	restoreBackGround(control);
 	
 	// ウィンドウ削除
 	_controlList->remove(getLinkedItem(control));
@@ -672,13 +631,15 @@ void WindowManager::postIconifiedToWindow(bool iconified, Control *control)
 
 	control->setIconified(iconified);
 	if (iconified == true) {
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
+		MessageInfo info;
+		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_ICONIFIED, 0, 0, 0, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED failed %d\n", control->getThreadID());
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_ICONIFIED sended %d\n", control->getThreadID());
 		}
 	} else {
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, 0, NULL)) {
+		MessageInfo info;
+		if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_DEICONIFIED, 0, 0, 0, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED failed %d\n", control->getThreadID());
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_DEICONIFIED sended %d\n", control->getThreadID());
@@ -821,7 +782,7 @@ void WindowManager::repaint()
 	// メニュー
 	int fh = FontManager::getInstance()->getHeight();
 	_g->setColor(128,128,128);
-	_g->drawText("ファイル　編集　表示　特別　ヘルプ", 45, 4 + (16 - fh) / 2);
+	_g->drawText(WINDOWMANAGER_MENU_TITLE_JP, 45, 4 + (16 - fh) / 2);
 }
 
 /**
@@ -847,10 +808,10 @@ void WindowManager::service()
 	monapi_call_mouse_set_cursor(0);
 	syscall_clear_screen();
 	syscall_set_cursor(0, 0);
-	printf("starting baygui ...\n");
+	printf(WINDOWMANAGER_STARUP_MESSAGE);
 
 	// テストアプリ
-	monapi_call_process_execute_file("/APPS/GLAUNCH.EX5", MONAPI_FALSE);
+	monapi_call_process_execute_file(LAUNCHER_NAME, MONAPI_FALSE);
 
 	// 再描画
 	repaint();
@@ -943,6 +904,7 @@ void WindowManager::service()
 				if (_controlList->endItem != NULL) {
 					restoreBackGround((Control *)_controlList->endItem->data);
 				}
+				MonAPI::Message::reply(&info);
 				break;
 			}
 		}
@@ -953,7 +915,7 @@ void WindowManager::service()
 	syscall_clear_screen();
 	monapi_call_mouse_set_cursor(1);
 	syscall_set_cursor(0, 0);
-	printf("shutdown baygui ...\n");
+	printf(WINDOWMANAGER_SHUTDOWN_MESSAGE);
 }
 
 /** メイン */

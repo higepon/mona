@@ -210,11 +210,9 @@ void Window::setTimer(int duration)
  */
 void Window::restoreBackGround()
 {
-	// 非活性のときは復元しない
-	if (focused == false || iconified == true) return;
-
 	// 背景復元メッセージを投げる
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_RESTORE, threadID, 0, 0, NULL)) {
+	MessageInfo info;
+	if (MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_RESTORE, threadID, 0, 0, NULL)) {
 		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE failed %d\n", threadID);
 	} else {
 		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE sended %d\n", threadID);
@@ -565,18 +563,20 @@ void Window::run()
 			case MSG_GUISERVER_ICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_ICONIFIED received %d\n", threadID);
 				setIconified(true);
-				//MonAPI::Message::reply(&info);
+				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_DEICONIFIED received %d\n", threadID);
 				setIconified(false);
-				//MonAPI::Message::reply(&info);
+				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", threadID);
-				isRunning = false;
 				// タイマースレッド停止
 				syscall_kill_thread(timerID);
+				// フラグ変更
+				isRunning = false;
+				MonAPI::Message::reply(&info);
 				break;
 			default:
 				break;

@@ -165,4 +165,6 @@ bool Container::checkNeedsPaint(Rect *srect, Rect *drect) {
 			return true;
 		}
 	}
+	
+	return false;
 }
