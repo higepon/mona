@@ -176,7 +176,7 @@ bool FAT12::readBPB() {
 
     for (int i = 0; i < 512; i++) {
 
-        printf("%x", buf_[i]);
+        printf("%d", buf_[i]);
     }
 
     p += 3;

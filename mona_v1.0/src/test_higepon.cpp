@@ -25,41 +25,47 @@ void FDCTester() {
     g_fdcdriver->motor(true);
     g_fdcdriver->recalibrate();
 
-    // write
-    for (int i = 0; i < 73; i++) {
+    for (int i = 0; i < 10; i++) {
+        memset(tbuf, 0x99, 512);
+        g_fdcdriver->read(1, tbuf);
 
-	g_console->printf("write");
-        memset(tbuf, i + 5, 512);
-        if (!g_fdcdriver->write(i, tbuf)) {
-
-            g_console->printf("write failed %d", i);
-	    //            g_fdcdriver->motor(false);
-	    //            while (true);
-        }
     }
 
-    memset(tbuf, 0x99, 512);
-    if (!g_fdcdriver->read(0, tbuf)) {
-         g_console->printf("read failed %d", 50);
-         g_fdcdriver->motor(false);
-         while (true);
-    }
-    for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
+//      // write
+//      for (int i = 0; i < 73; i++) {
 
-    while (g_demo_step < 8);
+//          g_console->printf("write");
+//          memset(tbuf, i + 5, 512);
+//          if (!g_fdcdriver->write(i, tbuf)) {
 
-    memset(tbuf, 0x99, 512);
-    if (!g_fdcdriver->read(1, tbuf)) {
-         g_console->printf("read failed %d", 50);
-         g_fdcdriver->motor(false);
-         while (true);
-    }
-    for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
-    while (true);
+//              g_console->printf("write failed %d", i);
+//              //            g_fdcdriver->motor(false);
+//              //            while (true);
+//          }
+//      }
 
-    g_fdcdriver->motor(false);
-    g_console->printf("ok");
-    while (true);
+//      memset(tbuf, 0x99, 512);
+//      if (!g_fdcdriver->read(0, tbuf)) {
+//           g_console->printf("read failed %d", 50);
+//           g_fdcdriver->motor(false);
+//           while (true);
+//      }
+//      for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
+
+//      while (g_demo_step < 8);
+
+//      memset(tbuf, 0x99, 512);
+//      if (!g_fdcdriver->read(1, tbuf)) {
+//           g_console->printf("read failed %d", 50);
+//           g_fdcdriver->motor(false);
+//           while (true);
+//      }
+//      for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
+//      while (true);
+
+//      g_fdcdriver->motor(false);
+//      g_console->printf("ok");
+//      while (true);
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
