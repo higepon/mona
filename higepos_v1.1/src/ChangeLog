@@ -1,4 +1,13 @@
 2002-10-31  syn <syn@users.sourceforge.jp>
+        
+        * FDCDriver.cpp, FDCDriver.h writeSectorの実装
+          FDCDriver::write_dma 追加
+        * FDCDriver.cpp 複数セクタ読み込みの実装
+        * FDCDriver::motor motor-offの実装(忘れてた:-P)
+        * FDCDriver::sector_to_hcr 追加
+        * FDCDriver.cpp 各種エラー処理追加
+
+2002-10-31  syn <syn@users.sourceforge.jp>
    
         * FDCDriver.cpp readSectorの実装
 
