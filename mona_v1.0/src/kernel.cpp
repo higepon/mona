@@ -171,9 +171,8 @@ void startKernel(void) {
       }
 
         byte* p = (byte*)(vesaDetail->physBasePtr);
-        memset(p, 0x80, 1024 * 768 * vesaDetail->bitsPerPixel / 8);
+        memset(p, 0x44, 800 * 600 * vesaDetail->bitsPerPixel / 8);
      }
-
 
      for (;;);
 

@@ -2,10 +2,14 @@
 ; Name        : secondboot.asm
 ; Description : firstboot read this from disk and execute.
 ; Revision    : $Revision$ $Date$
-; Copyright (c) 2002,2003 Higepon
+; Copyright (c) 2002,2003 and 2004 Higepon
 ; All rights reserved.
 ; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
+%define vesa_mode        0x4114
+%define vesa_info        0x800
+%define vesa_info_detail 0x830
+
 [bits 16]
         cli
 a20enable:
@@ -33,25 +37,28 @@ a20enable_3:
         in      al,0x64
         test    al,0x02
         jnz     a20enable_3
-;; Vesa code
+;-------------------------------------------------------------------------------
+; try VESA mode
+;-------------------------------------------------------------------------------
         pusha
 get_vesa_info:
         xor bx, bx
         mov es, bx
-        mov ax, 0x4F00          ; function 00h
-        mov di, 0x0800          ; 0x0000:0x0800
+        mov ax, 0x4F00            ; function 00h
+        mov di, vesa_info         ; 0x0000:vesa_info
         int 0x10
         cmp ah, 0x4F
         je vesa_not_supported
-        mov ax, 0x4F01          ; function 01h
-        mov cx, 0x4105
-        mov di, 0x0830          ; 0x0000:0x0830
+get_vesa_info_detail
+        mov ax, 0x4F01            ; function 01h
+        mov cx, vesa_mode
+        mov di, vesa_info_detail  ; 0x0000:vesa_info_detail
         int 0x10
         cmp ah, 0x4F
         je vesa_not_supported
 vesa_supported:
         mov ax, 0x4F02
-        mov bx, 0x4105
+        mov bx, vesa_mode
         int 0x10
         popa
         jmp RealToProtect
@@ -61,6 +68,9 @@ vesa_not_supported:
 graphicalmode:
         mov ax, 0x0012
         int 0x10
+;-------------------------------------------------------------------------------
+; To Protect mode
+;-------------------------------------------------------------------------------
 RealToProtect:
         mov  ax, cs             ; we jump from firstboot
         mov  ds, ax             ; so ds is changed

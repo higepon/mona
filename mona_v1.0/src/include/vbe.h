@@ -27,36 +27,36 @@ typedef struct VesaInfo {
 #pragma pack()
 
 typedef struct VesaInfoDetail {
-    word  modeAttributes;
-    byte  winAAttributes;
+    word  modeAttributes;//0
+    byte  winAAttributes;//1
     byte  winBAttributes;
-    word  winGranularity;
-    word  winSize;
-    word  winASegment;
-    word  winBSegment;
-    dword winFuncPtr;
-    word  bytesPerScanLine;
-    word  xResolution;
-    word  yResolution;
-    byte  xCharSize;
+    word  winGranularity;//2
+    word  winSize;       //3
+    word  winASegment;   //4
+    word  winBSegment;   //5
+    dword winFuncPtr;    //67
+    word  bytesPerScanLine;//8
+    word  xResolution;     //9
+    word  yResolution;     //10
+    byte  xCharSize;       //11
     byte  yCharSize;
-    byte  numberOfPlanes;
+    byte  numberOfPlanes;  //12
     byte  bitsPerPixel;
-    byte  numberOfBanks;
+    byte  numberOfBanks;   //13
     byte  memoryModel;
-    byte  bankSize;
+    byte  bankSize;          //14
     byte  numberOfImagePages;
-    byte  reserved;
+    byte  reserved;              //15
     byte  redMaskSize;
-    byte  redFieldPosition;
+    byte  redFieldPosition;      //16
     byte  greenMaskSize;
-    byte  greenFieldPosition;
+    byte  greenFieldPosition;    // 17
     byte  blueMaskSize;
-    byte  blueFieldPosition;
+    byte  blueFieldPosition;     // 18
     byte  rsvdMaskSize;
-    byte  rsvdFieldPos;
-    byte  directColorModeInfo;
-    dword physBasePtr;
+    byte  rsvdFieldPos;          //20
+    byte  directColorModeInfo; 
+    dword physBasePtr;           //21 22
 };
 
 #endif
