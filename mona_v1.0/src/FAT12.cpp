@@ -26,7 +26,7 @@
 const int FAT12::BPB_ERROR       = 1;
 const int FAT12::NOT_FAT12_ERROR = 2;
 const int FAT12::FAT_READ_ERROR  = 3;
-
+const char FAT12::PATH_SEP       = '\\';
 /*!
   \brief initilize
 
@@ -87,7 +87,7 @@ bool FAT12::initilize() {
 
     printf("rootEntryStart = %d\n", rootEntryStart);
 
-    DirectoryEntry entry[20];
+    DirectoryEntry entry[50];
 
     memcpy(entry, buf_, sizeof(DirectoryEntry) * 20);
 
@@ -105,7 +105,7 @@ bool FAT12::initilize() {
             for (int i = 0; i < 3; i++) printf("%c", (char)(entry[j].extension[i]));
         }
         printf("]");
-        printf("size=%d ", entry[j].filesize);
+        printf("size[%d]=%d ", j, entry[j].filesize);
         printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
         printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
         printf("cluster = %d\n", entry[j].cluster);
@@ -116,6 +116,9 @@ bool FAT12::initilize() {
     int firstDataSector = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors;
 
     int cluster = 5;
+    int size = entry[10].filesize;
+
+    printf("size of entry[10]=%d", entry[10].filesize);
 
     do {
 
@@ -123,13 +126,65 @@ bool FAT12::initilize() {
 
         if (!(driver_->read(lbp, buf_))) return false;
 
-        for (int k = 0; k < 512; k++) printf("%c", (char)buf_[k]);
+        for (int k = 0; k < 512 && size > 0; k++, size--) {
+            printf("%c", (char)buf_[k]);
+        }
 
         cluster = getFATAt(cluster);
+        printf("cluster = %d \n", cluster);
 
-   } while (0xff8 < getFATAt(cluster));
+   } while (0xff8 > cluster);
 
     printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
+
+    int lbp = ((4 - 2) * bpb_.sectorPerCluster) + firstDataSector;
+
+    if (!(driver_->read(lbp, buf_))) return false;
+
+    memcpy(entry, buf_, sizeof(DirectoryEntry) * 50);
+
+    for (int j = 0; j < 50; j++) {
+
+        /* free */
+        if (entry[j].filename[0] == 0xe5) continue;
+
+        if (entry[j].filename[0] == 0x00) break;
+
+        printf("[");
+        for (int i = 0; i < 8; i++) printf("%c", (char)(entry[j].filename[i]));
+        printf("]");
+        printf("[");
+
+        if (entry[j].attribute & ATTR_DIRECTORY) printf("DIR");
+        else {
+            for (int i = 0; i < 3; i++) printf("%c", (char)(entry[j].extension[i]));
+        }
+        printf("]");
+        printf("size[%d]=%d ", j, entry[j].filesize);
+        printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
+        printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
+        printf("cluster = %d\n", entry[j].cluster);
+    }
+
+    cluster = 15;
+    size = entry[2].filesize;
+
+    printf("size of entry[2]=%d", entry[2].filesize);
+
+    do {
+
+        int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
+
+        if (!(driver_->read(lbp, buf_))) return false;
+
+        for (int k = 0; k < 512 && size > 0; k++, size--) {
+            printf("%c", (char)buf_[k]);
+        }
+
+        cluster = getFATAt(cluster);
+        printf("cluster = %d \n", cluster);
+
+   } while (0xff8 > cluster);
 
     return true;
 }
@@ -242,6 +297,10 @@ word FAT12::getFATAt(int cluster) {
     return result;
 }
 
+bool FAT12::changeDirectory(const char* path) {
+
+
+}
 
 bool FAT12::createFlie(const char* name) {return true;}
 bool FAT12::open(const char* name) {return true;}

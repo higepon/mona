@@ -52,7 +52,7 @@ typedef struct FTIME {
     unsigned min : 6;
     unsigned hour: 5;
 };
-#pragma pack()
+#pragma pack(0)
 
 #pragma pack(2)
 typedef struct DirectoryEntry {
@@ -78,6 +78,7 @@ class FAT12 {
     static const int BPB_ERROR;
     static const int NOT_FAT12_ERROR;
     static const int FAT_READ_ERROR;
+    static const char PATH_SEP;
 
  public:
 
@@ -90,6 +91,7 @@ class FAT12 {
     bool remove(const char* file);
     bool removeDirecotry(const char* name);
     bool makeDirectory(const char* name);
+    bool changeDirectory(const char* path);
     bool readHasNext();
 
     int getErrorNo();
@@ -104,15 +106,20 @@ class FAT12 {
 
  private:
 
-    byte buf_[512];             /* file buffer  */
-    byte fat_[512];             /* fat region   */
-    DiskDriver* driver_;        /* disk driver  */
-    byte errNum_;               /* error number */
+    byte buf_[512];             /* file buffer     */
+    byte fat_[512];             /* fat region      */
+    DiskDriver* driver_;        /* disk driver     */
+    byte errNum_;               /* error number    */
 
-    bool readHasNext_;          /* read state   */
-    int  currentCluster_;       /* read state   */
+    bool dirty_;                /* dirty flag      */
 
-    int fatStart_;              /* fatStart     */
+    bool readHasNext_;          /* read state      */
+    int  currentCluster_;       /* read state      */
+
+    char curentPath_[512];      /* current path    */
+    int currentDirecotry_;      /* current cluster */
+
+    int fatStart_;              /* fatStart        */
 
 };
 
