@@ -42,7 +42,8 @@ SOURCES    = cstart.cpp            \
              disp.cpp              \
              syscalls.cpp          \
              BitMap.cpp            \
-             FAT12.cpp
+             FAT12.cpp              \
+             IDEDriver.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
