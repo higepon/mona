@@ -282,6 +282,11 @@ namespace System { namespace Mona { namespace Forms
 		this->set_Size(Size(sz.Width + bw * 2, sz.Height + this->offset.Y + bw));
 	}
 	
+	void Control::set_Visible(bool v)
+	{
+		if (v) this->Show(); else this->Hide();
+	}
+	
 	void Control::set_Text(String text)
 	{
 		if (this->text == text) return;

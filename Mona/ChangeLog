@@ -1,3 +1,9 @@
+2004-04-24  tino  <tino@users.sourceforge.jp>
+
+        * include/gui/System/Mona/Forms/Control.h: Visibleプロパティ
+
+        * apps/gui/noiz2bg: noiz2bgをMonaGUIに移植
+
 2004-04-23  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: マウスカーソルの初期位置を画面中央.

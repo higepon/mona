@@ -78,6 +78,9 @@ namespace System { namespace Mona { namespace Forms
 		inline int get_Height() { return this->bounds.Height; }
 		inline void set_Height(int height) { this->bounds.Height = height; }
 		
+		inline bool get_Visible() { return this->visible; }
+		void set_Visible(bool v);
+		
 		System::Drawing::Size get_ClientSize();
 		void set_ClientSize(System::Drawing::Size sz);
 		
