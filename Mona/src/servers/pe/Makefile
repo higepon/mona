@@ -1,6 +1,6 @@
 TARGET  = PE
 SOURCES = main.cpp PEParser.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

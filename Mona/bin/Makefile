@@ -1,45 +1,40 @@
-TARGET = mona.img
+TARGET = mona.iso
+FD_IMG = mona.img
 
 ROOT_FILES     = `cd root; ls *.*`
-SVR_FILES      = `cd root; ls SERVERS/*.*`
-APP_FILES      = `cd root; ls APPS/*.E* APPS/*.MSH`
 LIB_FILES      = `cd root; ls LIBS/*.*`
-BAYGUI_FILES   = `cd root; ls APPS/BAYGUI/*.E*`
-MONAFRMS_FILES = `cd root; ls APPS/MONAFRMS/*.E*`
 
 all:
+# create mona.img
+	@echo "Creating mona.img"
 	cd root/SERVERS; rm -f PROCESS.BIN FILE.BIN MONITOR.BIN
-	cp fat_template.img $(TARGET)
-	./fat_write $(TARGET) --mbr firstboot.bin
-	./fat_write $(TARGET) --mkdir SERVERS
-	./fat_write $(TARGET) --mkdir APPS
-	./fat_write $(TARGET) --mkdir APPS/MONAFRMS
-	./fat_write $(TARGET) --mkdir APPS/BAYGUI
-	./fat_write $(TARGET) --mkdir LIBS
-	./fat_write $(TARGET) ../src/servers/file/FILE.BIN FILE.BIN
-	./fat_write $(TARGET) ../src/servers/process/PROCESS.BIN PROCESS.BIN
-	./fat_write $(TARGET) ../src/servers/moniter/MONITOR.BIN MONITOR.BIN
-	@for file in $(ROOT_FILES) $(SVR_FILES) $(APP_FILES) $(LIB_FILES) $(BAYGUI_FILES) $(MONAFRMS_FILES); \
+	cp fat_template.img $(FD_IMG)
+	./fat_write $(FD_IMG) --mbr firstboot.bin
+	./fat_write $(FD_IMG) --mkdir SERVERS
+	./fat_write $(FD_IMG) --mkdir APPS
+	./fat_write $(FD_IMG) --mkdir LIBS
+	./fat_write $(FD_IMG) ../src/servers/file/FILE.BIN FILE.BIN
+	./fat_write $(FD_IMG) ../src/servers/process/PROCESS.BIN PROCESS.BIN
+	./fat_write $(FD_IMG) ../src/servers/moniter/MONITOR.BIN MONITOR.BIN
+	@echo $(ROOT_FILES)
+	@echo $(LIB_FILES)
+	@for file in $(ROOT_FILES) $(LIB_FILES); \
 	do \
-	  echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; \
-	done
-	@cd root; for dir in APPS/*.APP APPS/BAYGUI/*.APP APPS/MONAFRMS/*.APP ; \
-	do \
-	  echo "Creating: "$$dir"..."; ../fat_write ../$(TARGET) --mkdir $$dir; \
-	  for file in $$dir/*.*; do echo "Writing: "$$file"..."; ../fat_write ../$(TARGET) $$file $$file; done; \
+	  echo "Writing: "$$file"..."; ./fat_write $(FD_IMG) root/$$file $$file; \
 	done
 	@echo "Done."
-
-mona.iso: $(TARGET)
-	cp $< root
-	mkisofs -v -iso-level 1 -b $< -o $@ root
-	rm -f root/$<
+# create mona.iso
+	@echo "Creating mona.img"
+	cp $(FD_IMG) iso
+	mkisofs -v -iso-level 1 -b $(FD_IMG) -o $(TARGET) iso
+	rm -f iso/$(FD_IMG)
+	@echo "Done."
 
 write:
 	dd if=$(TARGET) of=/dev/fd0
 
 clean:
-	rm -f $(TARGET) mona.iso
+	rm -f $(TARGET) $(FD_IMG)
 	rm -f root/*.BIN
 	rm -f root/MONA12.M*
 	rm -rf root/APPS/*.*
@@ -47,3 +42,10 @@ clean:
 	rm -rf root/APPS/BAYGUI
 	rm -rf root/SERVERS/*.*
 	rm -rf root/LIBS
+	rm -f iso/*.BIN
+	rm -f iso/MONA12.M*
+	rm -rf iso/APPS/*.*
+	rm -rf iso/APPS/MONAFRMS
+	rm -rf iso/APPS/BAYGUI
+	rm -rf iso/SERVERS/*.*
+	rm -rf iso/LIBS

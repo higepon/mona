@@ -29,8 +29,8 @@ $(BINS): $(OBJS)
 	$(BINDIR)/monaelf $@
 
 install: all
-	mkdir -p $(BINDIR)/root/APPS
-	$(INSTALL) $(BINS) $(BINDIR)/root/APPS
+	mkdir -p $(BINDIR)/iso/APPS
+	$(INSTALL) $(BINS) $(BINDIR)/iso/APPS
 
 clean:
 	$(RM) $(OBJS) $(BINS)

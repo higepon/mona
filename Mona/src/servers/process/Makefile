@@ -1,6 +1,6 @@
 TARGET  = PROCESS
 SOURCES = main.cpp ProcessManager.cpp ProcessInfo.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

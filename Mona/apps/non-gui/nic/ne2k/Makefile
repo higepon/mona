@@ -1,6 +1,6 @@
 TARGET  = GETMAC
 SOURCES = getmac.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR = ../../../..
 ifneq ($(BUILD_TARGET),ELF)

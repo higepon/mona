@@ -1,6 +1,6 @@
 TARGET  = MONITOR
 SOURCES = main.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-bin.inc

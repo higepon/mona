@@ -1,6 +1,6 @@
 TARGET  = CLOCK
 SOURCES = Form1.cpp
-INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
+INSTDIR = $(BINDIR)/iso/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

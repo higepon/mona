@@ -1,6 +1,6 @@
 TARGET  = JPEGDEMO
 SOURCES = jpegdemo.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR    = ../../..
 ADDLINK    = -ljpegls

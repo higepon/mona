@@ -23,6 +23,6 @@ clean:
 	rm -f $(TARGET) $(BIT2MNF)
 
 install: $(TARGET)
-	$(MONADIR)/bin/bim2bin in:MONA12.MNF out:$(MONADIR)/bin/root/MONA12.MF5 \
+	$(MONADIR)/bin/bim2bin in:MONA12.MNF out:$(MONADIR)/bin/iso/MONA12.MF5 \
 	-osacmp -tek5 BS:0 eprm:z0
 #	bzip2 -c MONA12.MNF > $(MONADIR)/bin/root/MONA12.MF2

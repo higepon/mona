@@ -1,6 +1,6 @@
 TARGET  = GUI
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc -ljpegls
@@ -12,8 +12,8 @@ include $(MONADIR)/env/monapi-bn5.inc
 endif
 
 install-tinogui:
-	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/root/APPS
-	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/root/APPS
+	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/iso/APPS
+	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/iso/APPS
 
 install: install-tinogui
 

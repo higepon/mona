@@ -1,6 +1,6 @@
 TARGET  = GNOIZ2BG
 SOURCES = gnoiz2bg.cpp
-INSTDIR = $(BINDIR)/root/APPS/BAYGUI
+INSTDIR = $(BINDIR)/iso/APPS/BAYGUI
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)

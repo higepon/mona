@@ -1,6 +1,6 @@
 TARGET  = BAYGUI
 SOURCES = WindowManager.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 INSTFILES  = MONAWALL.BM5
 CLEANFILES = MONAWALL.BM5
 
@@ -23,7 +23,7 @@ MONAWALL.BM5: MONAWALL.BMP
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 install-baygui:
-	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/root/APPS
+	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/iso/APPS
 
 install: install-baygui
 

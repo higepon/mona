@@ -1,6 +1,6 @@
 TARGET  = BZCAT
 SOURCES = main.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)

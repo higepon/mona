@@ -1,6 +1,6 @@
 TARGET  = GRUNNER
 SOURCES = grunner.cpp
-INSTDIR = $(BINDIR)/root/APPS/BAYGUI
+INSTDIR = $(BINDIR)/iso/APPS/BAYGUI
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)

@@ -1,6 +1,6 @@
 TARGET  = CUBE
 SOURCES = cube.cpp Form1.cpp geometry.cpp
-INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
+INSTDIR = $(BINDIR)/iso/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

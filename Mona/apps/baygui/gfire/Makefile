@@ -1,7 +1,7 @@
 TARGET  = GFIRE
 SOURCES = gfire.cpp
 NASMSRCS = fire.asm
-INSTDIR = $(BINDIR)/root/APPS/BAYGUI
+INSTDIR = $(BINDIR)/iso/APPS/BAYGUI
 
 MONADIR    = ../../..
 #ifneq ($(BUILD_TARGET),ELF)

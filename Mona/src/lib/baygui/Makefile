@@ -69,8 +69,8 @@ depend:
 
 install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
-	mkdir -p $(MONADIR)/bin/root/LIBS
-	$(INSTALL) $(LIB_DYNAMIC2) $(MONADIR)/bin/root/LIBS
+	mkdir -p $(MONADIR)/bin/iso/LIBS
+	$(INSTALL) $(LIB_DYNAMIC2) $(MONADIR)/bin/iso/LIBS
 endif
 
 include dependencies

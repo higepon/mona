@@ -8,6 +8,6 @@ else
 include $(MONADIR)/env/monapi-bn5.inc
 endif
 
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 include dependencies

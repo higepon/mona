@@ -1,6 +1,6 @@
 TARGET  = YAMAMI
 SOURCES = main.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/iso/APPS
 
 ADDLINK    = -lPci -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a

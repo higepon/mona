@@ -1,6 +1,6 @@
 TARGET  = CDFSREAD
 SOURCES = main.cpp ISO9660File.cpp ISO9660FileSystem.cpp IDEDriver.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR = ../../..
 

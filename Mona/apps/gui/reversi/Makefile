@@ -1,7 +1,7 @@
 TARGET    = REVERSI
 SOURCES   = ReversiForm.cpp ReversiBoard.cpp Piece.cpp
 
-INSTDIR   = $(BINDIR)/root/APPS/MONAFRMS/$(TARGET).APP
+INSTDIR   = $(BINDIR)/iso/APPS/MONAFRMS/$(TARGET).APP
 INSTFILES = RED.BMP WHITE.BMP
 
 MONADIR = ../../..

@@ -11,7 +11,7 @@ SOURCES = mones.cpp            \
           MonesLoader.cpp      \
           MoPacUtl.cpp
 
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR = ../../..
 ADDLINK    = -lPci -lmonalibc

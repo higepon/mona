@@ -1,6 +1,6 @@
 TARGET  = OLDSHELL
 SOURCES = main.cpp Shell.cpp InternalCommands.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

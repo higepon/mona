@@ -1,7 +1,7 @@
 TARGET  = MONAMONA
 SOURCES = main.cpp \
           BfMain.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

@@ -1,6 +1,6 @@
 TARGET  = MOUSE
 SOURCES = main.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)

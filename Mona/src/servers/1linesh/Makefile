@@ -4,7 +4,7 @@ SOURCES         = main.cpp          \
                   Command.cpp       \
                   DisplayWindow.cpp \
                   CommandHistory.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

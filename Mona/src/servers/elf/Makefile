@@ -1,6 +1,6 @@
 TARGET  = ELF
 SOURCES = main.cpp elfparser.cpp
-INSTDIR = $(BINDIR)/root/SERVERS
+INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc
