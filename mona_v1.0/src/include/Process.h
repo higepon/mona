@@ -157,11 +157,11 @@ class ProcessManager_;
 class ThreadManager {
 
   public:
-    ThreadManager(bool isUser, PageManager* pageManager, ProcessManager_* processmanager);
+    ThreadManager(bool isUser, ProcessManager_* processmanager);
     virtual ~ThreadManager();
 
   public:
-    Thread* create(dword programCounter);
+    Thread* create(dword programCounter, PageEntry* pageDirectory);
     int join(Thread* thread);
     int kill(Thread* thread);
     int switchThread();
@@ -171,12 +171,11 @@ class ThreadManager {
     }
 
   private:
-    void archCreateUserThread(Thread* thread, dword programCounter) const;
-    void archCreateThread(Thread* thread, dword programCounter) const;
+    void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
+    void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
 
   private:
     ThreadScheduler* scheduler_;
-    PageManager* pageManager_;
     ProcessManager_* processManager_;
     Thread* current_;
     Thread* idle_;

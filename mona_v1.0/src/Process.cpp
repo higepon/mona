@@ -158,7 +158,7 @@ Thread::~Thread() {
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-ThreadManager::ThreadManager(bool isUser, PageManager* pageManager, ProcessManager_* processManager) : threadCount(0) {
+ThreadManager::ThreadManager(bool isUser, ProcessManager_* processManager) : threadCount(0) {
 
     /* user or kernel */
     isUser_ = isUser;
@@ -168,28 +168,27 @@ ThreadManager::ThreadManager(bool isUser, PageManager* pageManager, ProcessManag
     checkMemoryAllocate(scheduler_, "ThreadManager scheduler memory allocate");
 
     /*  manager */
-    pageManager_    = pageManager;
     processManager_ = processManager;
 }
 
 ThreadManager::~ThreadManager() {
 }
 
-Thread* ThreadManager::create(dword programCounter) {
+Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
 
     Thread* thread = new Thread();
     threadCount++;
 
     /* arch dependent */
     if (isUser_) {
-        archCreateUserThread(thread, programCounter);
+        archCreateUserThread(thread, programCounter, pageDirectory);
     } else {
-        archCreateThread(thread, programCounter);
+        archCreateThread(thread, programCounter, pageDirectory);
     }
     return thread;
 }
 
-void ThreadManager::archCreateThread(Thread* thread, dword programCounter) const {
+void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -209,9 +208,10 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter) const
     ainfo->esp     = STACK_START - STACK_SIZE * threadCount;
     ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
     ainfo->eip     = programCounter;
+    ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
-void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter) const {
+void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -232,6 +232,7 @@ void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter) c
     ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
     ainfo->esp0    = processManager_->allocateKernelStack();
     ainfo->eip     = programCounter;
+    ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
 int ThreadManager::join(Thread* thread) {
@@ -501,7 +502,7 @@ int Process_::join(Thread* thread) {
 }
 
 Thread* Process_::createThread(dword programCounter) {
-    return threadManager_->create(programCounter);
+    return threadManager_->create(programCounter, pageDirectory_);
 }
 
 Thread* Process_::schedule() {
