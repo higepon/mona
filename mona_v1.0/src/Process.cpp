@@ -43,6 +43,7 @@ Process::Process(const char* name) {
 
     pinfo_.cs      = KERNEL_CS;
     pinfo_.ds      = KERNEL_DS;
+    pinfo_.es      = KERNEL_DS;
     pinfo_.ss      = KERNEL_SS;
     pinfo_.eflags  = 0x200;
     pinfo_.eax     = 0;
@@ -74,6 +75,7 @@ UserProcess::UserProcess(const char* name) {
 
     pinfo_.cs      = USER_CS;
     pinfo_.ds      = USER_DS;
+    pinfo_.es      = USER_DS;
     pinfo_.ss      = USER_SS;
     pinfo_.eflags  = 0x200;
     pinfo_.eax     = 0;
@@ -93,6 +95,7 @@ V86Process::V86Process(const char* name) {
 
     pinfo_.cs      = USER_CS;
     pinfo_.ds      = USER_DS;
+    pinfo_.es      = USER_DS;
     pinfo_.ss      = USER_SS;
     pinfo_.eflags  = 0x20200;
     pinfo_.eax     = 0;

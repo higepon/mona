@@ -41,13 +41,9 @@ BITS 32
         pushad
         push ds
         push es
-        push fs
-        push gs
 %endmacro
 
 %macro popAll 0
-        pop gs
-        pop fs
         pop es
         pop ds
         popad
@@ -56,10 +52,6 @@ BITS 32
 %macro changeData 0
         push KERNEL_DS
         pop  es
-        push KERNEL_DS
-        pop  fs
-        push KERNEL_DS
-        pop  gs
         push KERNEL_DS
         pop  ds
 %endmacro
@@ -162,7 +154,7 @@ _arch_cpufaulthandler_%1:
 _arch_cpufaulthandler_e:
         pushAll
         changeData
-        push dword[esp + 32]
+        push dword[esp + 48]
         mov  eax, cr2
         push eax
         call _cpufaultHandler_e

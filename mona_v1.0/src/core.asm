@@ -26,49 +26,49 @@ BITS 32
 ;; before call this, pushad should be called
 _arch_save_process_registers:
         mov ebx, dword[_g_current_process]
-        mov eax, dword[esp + 56]  ; get cs
+        mov eax, dword[esp + 48]  ; get cs
         and eax, 0x03             ; check cpl is 3
         cmp eax, 0x03
         jnz dpl0
-        mov eax, dword[esp + 68] ; save ss3
+        mov eax, dword[esp + 60] ; save ss3
         mov dword[ebx + 60], eax
-        mov eax, dword[esp + 64] ; save esp3
+        mov eax, dword[esp + 56] ; save esp3
         mov dword[ebx + 28], eax
 dpl0:
-        mov eax, dword [esp + 52]; save eip
+        mov eax, dword [esp + 44]; save eip
         mov dword[ebx], eax
-        mov eax, dword [esp + 56]; save cs
+        mov eax, dword [esp + 48]; save cs
         mov dword[ebx + 4], eax
-        mov eax, dword [esp + 60]; save eflags
+        mov eax, dword [esp + 52]; save eflags
         mov dword[ebx + 8], eax
-        mov eax, dword [esp + 48]; save eax
+        mov eax, dword [esp + 40]; save eax
         mov dword[ebx + 12], eax
-        mov eax, dword [esp + 44]; save ecx
+        mov eax, dword [esp + 36]; save ecx
         mov dword[ebx + 16], eax
-        mov eax, dword [esp + 40]; save edx
+        mov eax, dword [esp + 32]; save edx
         mov dword[ebx + 20], eax
-        mov eax, dword [esp + 36]; save ebx
+        mov eax, dword [esp + 28]; save ebx
         mov dword[ebx + 24], eax
         jz  dpl3
-        mov eax, dword [esp + 32]; save esp
+        mov eax, dword [esp + 24]; save esp
         add eax, 0xc
         mov dword[ebx + 28], eax
 dpl3:
-        mov eax, dword [esp + 28]; save ebp
+        mov eax, dword [esp + 20]; save ebp
         mov dword[ebx + 32], eax
-        mov eax, dword [esp + 24]; save esi
+        mov eax, dword [esp + 16]; save esi
         mov dword[ebx + 36], eax
-        mov eax, dword [esp + 20]; save edi
+        mov eax, dword [esp + 12]; save edi
         mov dword[ebx + 40], eax
-        mov eax, [esp + 12]      ; save ds
+        mov eax, [esp + 8]      ; save ds
         mov dword[ebx + 44], eax
-        mov eax, [esp + 12]      ; save es
+        mov eax, [esp + 4]      ; save es
         mov dword[ebx + 48], eax
-        mov eax, [esp +  8]      ; save fs
-        mov dword[ebx + 52], eax
-        mov eax, [esp +  4]      ; save gs
-        mov dword[ebx + 56], eax
-        mov eax, dword [esp + 60] ; get eflags
+;         mov eax, [esp +  8]      ; save fs
+;         mov dword[ebx + 52], eax
+;         mov eax, [esp +  4]      ; save gs
+;         mov dword[ebx + 56], eax
+        mov eax, dword [esp + 52] ; get eflags
         and eax, 0x20000          ; check VM bit
         cmp eax, 0x20000          ;
         jnz save_end
@@ -85,8 +85,8 @@ _arch_switch_process:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
-        mov gs , word[ebx + 56]      ; restore gs
-        mov fs , word[ebx + 52]      ; restore fs
+;         mov gs , word[ebx + 56]      ; restore gs
+;         mov fs , word[ebx + 52]      ; restore fs
         mov es , word[ebx + 48]      ; restore es
         mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 8]          ; push eflags
@@ -105,8 +105,8 @@ _arch_switch_process_to_user_mode:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
-        mov gs , word[ebx + 56]      ; restore gs
-        mov fs , word[ebx + 52]      ; restore fs
+;         mov gs , word[ebx + 56]      ; restore gs
+;         mov fs , word[ebx + 52]      ; restore fs
         mov es , word[ebx + 48]      ; restore es
         mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 60]         ; push ss  here dpl lowwer
