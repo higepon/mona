@@ -24,11 +24,13 @@
 #include <sysresource.h> /* (expr) */
 #include <PageManager.h>
 #include <MessageServer.h>
+#include <FAT12.h>
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
 
 GLOBAL FDCDriver* g_fdcdriver;
+GLOBAL FAT12*     g_fat12;
 
 GLOBAL dword g_demo_step GLOBAL_VAL(0);
 

@@ -29,9 +29,9 @@ class FDCDriver : public DiskDriver {
     static void interrupt();
     bool read(dword lba, byte* buf);
     bool write(dword lba, byte* buf);
-    void motor(const bool on);
     bool recalibrate();
     bool seek(byte track);//private
+    void motor(const bool on);
 
   private:
     void initilize();

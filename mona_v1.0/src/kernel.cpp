@@ -68,7 +68,7 @@
 #include <PageManager.h>
 #include <elf.h>
 
-char* version = "Mona version 0.1.0 $Date$";
+char* version = "Mona version 0.1.1 $Date$";
 void userTest();
 void userTest2();
 void v86Test();
@@ -114,11 +114,11 @@ void startKernel(void) {
     printOK("Checking type size ");
 
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
-    g_console->printf("\nSystem TotalL Memory %d[MB]\n", g_total_system_memory);
+    g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory);
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
-    //    g_page_manager->setup();
+    g_page_manager->setup();
 
 
 #ifdef MJT
@@ -131,16 +131,12 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
-    asm volatile("subl   $0x20, %esp \n");
-    rectangle(320,240,400,300,15);
-    rectangle(43,321,577,429,1);
-    asm volatile("addl   $0x20, %esp \n");
-
-    FDCDriverTester();
-    while (true);
-
-    g_console->printf("Hit any key to start Main Process \n");
+    g_console->printf("Hit any key to start loading Mona logo \n");
     while (g_demo_step < 2);
+    FDCDriverTester();
+
+    g_console->printf("Hit any key to start Main Process and Load ELF\n");
+    while (g_demo_step < 5);
 
     g_info_level = MSG;
 
@@ -161,20 +157,17 @@ void startKernel(void) {
 
 void mainProcess() {
 
-    g_console->printf("Hit any key to Load ELF\n");
+    //    enableInterrupt();
 
-    while (g_demo_step < 5);
+    rectangle(0, 0, 640, 480, GP_BLACK);
 
     ELFTester(user_func_from);
 
     byte* user_func = (byte*)0x400000;
     ELFLoader* loader = new ELFLoader();
 
-    g_console->printf("loader result = %d\n", loader->prepare((dword)user_func_from));
+    loader->prepare((dword)user_func_from);
     loader->load(user_func);
-
-    g_console->printf("Hit any key to start USER.ELF\n");
-    while (g_demo_step < 9);
 
     UserProcess* process1 = new UserProcess("user_process ");
     Process*     process2 = new Process("krnl_o       ");

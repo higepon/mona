@@ -88,11 +88,12 @@ FDCDriver::FDCDriver() {
     \brief Destructer
 
     \author HigePon
-    \date   create:2003/02/03 update:
+    \date   create:2003/02/03 update:2003/09/23
 */
 FDCDriver::~FDCDriver() {
 
     motor(OFF);
+    free(dmabuff_);
     return;
 }
 

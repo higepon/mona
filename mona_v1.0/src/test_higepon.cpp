@@ -5,6 +5,7 @@
 #include<io.h>
 #include<GraphicalConsole.h>
 #include<operator.h>
+#include<IA32MemoryManager.h>
 
 extern "C" void put_pixel(int x, int y, char color);
 
@@ -55,35 +56,9 @@ void FDCDriverTester() {
 
     g_info_level = MSG;
 
-    byte readbuf[512];
-
     /* test1 FD read */
-    g_console->printf("test1:read once\n");
     g_fdcdriver = new FDCDriver();
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->seek(5);
-    g_fdcdriver->seek(7);
-    g_fdcdriver->read(0, readbuf);
-    g_fdcdriver->motor(OFF);
 
-    for (int i = 500; i < 512; i++) g_console->printf("[%d]", readbuf[i]);
-    g_console->printf("\ntest1:done\n");
-
-    /* test2 FD read */
-    g_console->printf("test2:read once\n");
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->seek(5);
-    g_fdcdriver->seek(7);
-    g_fdcdriver->read(1, readbuf);
-    for (int i = 100; i < 105; i++) g_console->printf("[%d]", readbuf[i]);
-    g_fdcdriver->read(2, readbuf);
-    for (int i = 200; i < 205; i++) g_console->printf("[%d]", readbuf[i]);
-    g_fdcdriver->motor(OFF);
-    g_console->printf("\ntest2:done\n");
-
-    /* test3 image read */
     g_fdcdriver->motor(ON);
 
     g_fdcdriver->recalibrate();
@@ -112,8 +87,6 @@ void FDCDriverTester() {
     int fileSize  = fat->getFileSize();
     int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
 
-    g_console->printf("readTimes=%d", readTimes);
-
     byte* buf = (byte*)malloc(512 * readTimes);
 
     for (int i = 0; i < readTimes; i++) {
@@ -124,13 +97,8 @@ void FDCDriverTester() {
         }
     }
 
-    drawARGB(buf, 45, 350, fileSize);
-    drawARGB(buf, 100, 350, fileSize);
-    drawARGB(buf, 155, 350, fileSize);
-    drawARGB(buf, 210, 350, fat->getFileSize());
-
-    for (int i = 0; i < 6; i++) {
-        drawARGB(buf, i * 105, 0, fileSize);
+    for (int i = 0; i < 11; i++) {
+        drawARGB(buf, i * 53, 250, fileSize);
     }
 
     if (!fat->close()) {
@@ -138,7 +106,9 @@ void FDCDriverTester() {
     }
 
     g_fdcdriver->motor(false);
-    free(buf);
+    delete(fat);
+    //    free(buf);
+
 }
 
 /*!
@@ -156,7 +126,7 @@ void FDCDriverTester() {
 
 void ELFTester(byte* out) {
 
-    g_fdcdriver = new FDCDriver();
+    //    g_fdcdriver = new FDCDriver();
 
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
