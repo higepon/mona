@@ -132,10 +132,6 @@ search_next_line:
         cmp     al, 10
         je      line_loop
         jmp     search_next_line
-found_next_line:
-        inc     di
-        cmp     bx, di
-        jnc     line_loop
 
 change_vesa_mode:
         pop     ds
