@@ -3,7 +3,7 @@ PROG=t5lzma$(EXEEXT)
 include ../../../../../env/Makefile.inc
 
 # MSYS for Win32 ‚Å‚Í 1 ‚É‚·‚é
-#isMinGW32 = 1
+isMinGW32 = 
 
 LIB = -lm
 RM = rm -f
