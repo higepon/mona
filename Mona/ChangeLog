@@ -1,3 +1,7 @@
+2004-09-13  higepon  <higepon@users.sourceforge.jp>
+
+        * samples/non-gui/hello/hello.cpp (MonaMain): irq とio baseの取得でもかなり怪しい。io_base4がdeviceとvendorのIDと一緒だし。
+
 2004-09-11  higepon  <higepon@users.sourceforge.jp>
 
         * samples/non-gui/hello/hello.cpp (FindDevice): デバイス探索用関数追加

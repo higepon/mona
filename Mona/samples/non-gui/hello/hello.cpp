@@ -69,6 +69,11 @@ enum
    PCI_SUBCLASS       = 0x0a,
    PCI_BASECLASS      = 0x0b,
    PCI_HEADER         = 0x0e,
+   PCI_BASE_ADDRESS1  = 0x10,
+   PCI_BASE_ADDRESS2  = 0x14,
+   PCI_BASE_ADDRESS3  = 0x18,
+   PCI_BASE_ADDRESS4  = 0x1C,
+   PCI_BASE_ADDRESS5  = 0x20,
    PCI_IRQ_LINE       = 0x3c
 };
 
@@ -131,30 +136,43 @@ bool FindDevice(byte bus, word vendor, word device, byte* deviceIndex)
    return false;
 }
 
+enum
+{
+    VENDOR_ID_DEC         = 0x1011,
+    DEVICE_ID_DEC_DC21140 = 0x0009,
+    IRQ_NUMBER            = 0x0B,
+    IO_BASE               = 0xEC00
+};
+
+int TuripProbe()
+{
+
+
+    return 0;
+}
+
+
 int MonaMain(List<char*>* pekoe)
 {
    /* ユーザーモードI/O */
    syscall_get_io();
 
-   /* bus0 のデバイス探索 */
-   for (int i = 0; i < 32; i++)
-   {
-       word vendor = ReadConfig(0, i, 0, PCI_VENDOR_ID, 2);
+   byte index;
+   bool found = FindDevice(0, VENDOR_ID_DEC, DEVICE_ID_DEC_DC21140, &index);
 
-       /* no device */
-       if (vendor == 0xFFFF) continue;
+   printf("DEC 21140 search...[%s]\n", found ? "OK" : "NG");
 
-       printf("**** device(%d)*****************************************************************************\n",i);
-       printf("vendor    = %x  ", vendor);
-       printf("device    = %x  ", ReadConfig(0, i, 0, PCI_DEVICE_ID, 2));
-       printf("revision  = %x  ", ReadConfig(0, i, 0, PCI_REVISION , 1));
-       printf("status    = %x\n", ReadConfig(0, i, 0, PCI_STATUS   , 2));
-       printf("header    = %x  ", ReadConfig(0, i, 0, PCI_HEADER   , 1));
-       printf("api       = %x  ", ReadConfig(0, i, 0, PCI_API      , 1));
-       printf("subclass  = %x  ", ReadConfig(0, i, 0, PCI_SUBCLASS , 1));
-       printf("baseclass = %x\n", ReadConfig(0, i, 0, PCI_BASECLASS, 1));
-       printf("irq line  = %x  ", ReadConfig(0, i, 0, PCI_IRQ_LINE , 4));
-   }
+   if (!found) return 1;
+
+   byte irq = ReadConfig(0, index, 0, PCI_IRQ_LINE, 1);
+
+   printf("irq=%d\n", irq);
+   printf("io base1=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS1, 4));
+   printf("io base2=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS2, 4));
+   printf("io base3=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS3, 4));
+   printf("io base4=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS4, 4));
+   printf("io base5=%x\n", ReadConfig(0, index, 0, PCI_BASE_ADDRESS5, 4));
+
    return 0;
 }
 
