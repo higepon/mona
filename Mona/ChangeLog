@@ -1,6 +1,6 @@
 2005-03-17  higepon  <higepon@users.sourceforge.jp>
 
-        * src/servers/file/main.cpp : Initialize(true)とするとCDブートイメージ用。
+        * src/servers/file/main.cpp : Initialize(true)とするとCDブートイメージ用。 一時タグ ref3をつけた。
 
         * src/servers/file/file : 適切な変数・関数名をつけた。 
 
