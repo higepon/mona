@@ -6,13 +6,10 @@ include $(MONADIR)/env/kernel.inc
 
 KERNELDIR       = $(MONADIR)/src/kernel
 INCLUDE         = -I$(INCDIR) -I$(KERNELDIR)
-TARGET          = mona.img
 KERNEL_IMG      = KERNEL.IMG
 BOOT1           = firstboot.bin
 BOOT2           = secondboot.bin
 KERNEL          = third.bin
-FAT_TOOL        = $(BINDIR)/fat_write.exe
-TEMPLATE        = $(BINDIR)/fat_template.img
 SOURCES      = cstart.cpp            \
                kernel.cpp            \
                ihandlers.cpp         \
@@ -47,21 +44,19 @@ SOURCES      = cstart.cpp            \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(TARGET)
+all : $(BOOT1) $(KERNEL_IMG)
 
-$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
-	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
-	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
-	$(FAT_TOOL) $(TARGET) $(KERNEL_IMG) $(KERNEL_IMG)
+$(KERNEL_IMG) : $(BOOT2) $(KERNEL)
+	cat $(BOOT2) $(KERNEL) > $@
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o
-#	cp $@ $(BINDIR)/mona.dbg
 #	$(NDISASM) -u $@ > $(LISTDIR)/third.list
 	$(STRIP)  -O binary $@
 
 install : all
-	cp -u $(TARGET) $(BINDIR)/$(TARGET)
+	cp -u $(BOOT1) $(BINDIR)
+	cp -u $(KERNEL_IMG) $(BINDIR)/root
 
 .SUFFIXES: .cpp .o
 
@@ -87,10 +82,10 @@ core.o : core.asm
 doxygen :
 	$(DOXYGEN)
 
-depend:
+depend :
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(BINDIR)/mona.dbg mode12h.o ihandler.o core.o $(LISTDIR)/*.list *.map
+	rm -f $(OBJECTS) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) mode12h.o ihandler.o core.o $(LISTDIR)/*.list *.map
 
 include ./dependencies

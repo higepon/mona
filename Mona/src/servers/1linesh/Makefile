@@ -18,6 +18,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
 	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
+	$(BINDIR)/monaelf $@
 
 install: all
 	cp -u $(TARGET) $(BINDIR)/root/SERVERS

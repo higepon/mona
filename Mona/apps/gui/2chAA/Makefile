@@ -15,6 +15,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmona
 	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
+	$(BINDIR)/monaelf $@
 
 install: all
 	cp -u $(TARGET) $(BINDIR)/root/APPS

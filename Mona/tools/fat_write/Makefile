@@ -1,4 +1,4 @@
-TARGET  = $(MONADIR)/bin/fat_write.exe
+TARGET  = $(MONADIR)/bin/fat_write$(EXEEXT)
 SOURCES = main.cpp VirtualFloppy.cpp fat.cpp
 
 MONADIR = ../..

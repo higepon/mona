@@ -1,3 +1,11 @@
+2004-04-27  tino  <tino@users.sourceforge.jp>
+
+        * Makefile.in: イメージ作成を分離
+
+        * bin/Makefile: イメージ作成
+
+        * その他Makefile: stripの後にmonaelfを適用するようにした
+
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 
         * Gakuさんの修正分: fat.cpp, fat.h

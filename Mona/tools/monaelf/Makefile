@@ -8,7 +8,7 @@ COPT	=	-c -Wall -pipe -O3 -Wpointer-arith -fno-exceptions -fno-rtti \
 			-fomit-frame-pointer -fsigned-char
 
 OBJS	=	$(OBJ)/main.o     $(OBJ)/monaelf.o
-BINS	=	$(MONADIR)/bin/monaelf
+BINS	=	$(MONADIR)/bin/monaelf$(EXEEXT)
 
 
 all: $(OBJ) $(BINS)

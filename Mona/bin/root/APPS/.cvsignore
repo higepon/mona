@@ -5,4 +5,6 @@
 *.exe
 *.ELF
 *.SVR
+*.LIB
+*.WRP
 TAGS
