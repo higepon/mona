@@ -25,10 +25,7 @@ $(TARGET).ELF: $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) $(TARGET).EL2 $(INSTDIR)
-ifneq ($(INSTFILES),)
-	for file in $(INSTFILES); do $(INSTALL) $$file $(INSTDIR); done
-endif
+	$(INSTALL) $(TARGET).EL2 $(INSTFILES) $(INSTDIR)
 
 clean:
 	rm -f $(OBJECTS) $(TARGET).ELF $(TARGET).EL2
