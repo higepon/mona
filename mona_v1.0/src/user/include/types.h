@@ -42,6 +42,23 @@ typedef struct {
     dword y;
 } ScreenInfo;
 
+typedef struct Pixel16 {
+    byte p[2];
+};
+
+typedef struct Pixel24 {
+    byte p[3];
+};
+
+typedef struct Pixel32 {
+    dword p;
+};
+
+typedef struct Pixel8 {
+    byte p;
+};
+
+
 #define MSG_KEY_SCANCODE         0x00
 #define MSG_KEY_REGIST_TO_SERVER 0x01
 #define MSG_MAP                  0x02

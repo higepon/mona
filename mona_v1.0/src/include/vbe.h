@@ -59,23 +59,6 @@ typedef struct VesaInfoDetail {
     dword physBasePtr;              //21 22
 };
 
-typedef struct Pixel16 {
-    byte dummy[2];
-};
-
-typedef struct Pixel24 {
-    byte dummy[3];
-};
-
-typedef struct Pixel32 {
-    dword dummy;
-};
-
-typedef struct Pixel8 {
-    byte dummy;
-};
-
-
 class kScreen {
 
   public:

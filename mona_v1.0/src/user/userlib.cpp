@@ -236,6 +236,25 @@ int Mutex::destory() {
 }
 
 /*----------------------------------------------------------------------
+    VirtualScreen
+----------------------------------------------------------------------*/
+VirtualScreen::VirtualScreen() : Screen() {
+
+    int x = getXResolution();
+    int y = getYResolution();
+
+    vram_ = new byte[x * y * bpp_ / 8];
+    if (vram_ == NULL) printf("vitual vram error\n");
+}
+
+VirtualScreen::~VirtualScreen() {
+
+    if (vram_) {
+        delete vram_;
+    }
+}
+
+/*----------------------------------------------------------------------
     Screen
 ----------------------------------------------------------------------*/
 Screen::Screen() {
@@ -275,6 +294,100 @@ void Screen::fillRect16(int x, int y, int w, int h, dword color) {
             position += xResolution_ * bytesPerPixel;
             temp = position;
         }
+}
+
+bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int height
+                    , Screen* sourceScreen, int sourceX, int sourceY) {
+
+    /* check range */
+    /* not yet     */
+
+    byte* dvram      = destScreen->getVRAM();
+    byte* svram      = sourceScreen->getVRAM();
+    int xResolution  = destScreen->getXResolution();
+    int bitsPerPixel = destScreen->getBpp();
+
+    printf("%d", destScreen->getBpp());
+
+    switch(bitsPerPixel) {
+
+    case(16):
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                copyPixel16(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution);
+            }
+        }
+        break;
+
+    case(24):
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+
+                copyPixel24(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution);
+            }
+        }
+        break;
+
+    case(32):
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+
+                copyPixel32(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution);
+            }
+        }
+        break;
+
+    default:
+        return false;
+    }
+    return true;
+}
+
+bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int height
+                    , Screen* sourceScreen, int sourceX, int sourceY, int raster) {
+
+    /* check range */
+    /* not yet     */
+
+    byte* dvram      = destScreen->getVRAM();
+    byte* svram      = sourceScreen->getVRAM();
+    int xResolution  = destScreen->getXResolution();
+    int bitsPerPixel = destScreen->getBpp();
+
+    printf("%d", destScreen->getBpp());
+
+    switch(bitsPerPixel) {
+
+    case(16):
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                copyPixel16XOR(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution);
+            }
+        }
+        break;
+
+    case(24):
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+
+                copyPixel24XOR(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution);
+            }
+        }
+        break;
+
+    case(32):
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+
+                copyPixel32XOR(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution);
+            }
+        }
+        break;
+
+    default:
+        return false;
+    }
+    return true;
 }
 
 /*----------------------------------------------------------------------

@@ -56,6 +56,12 @@ int myApplication::main() {
     for (int i = 0; i < 10; i++) {
         printf("[%x]", buf[512 + i]);
     }
+
+    Screen* virtualScreen = new VirtualScreen();
+    virtualScreen->fillRect16(50, 50, 40, 40, Color::rgb(0x12, 0x34, 0x56));
+    printf("%s", Screen::bitblt(&screen, 0, 0, 40, 40, virtualScreen, 50, 50) ? "OK" : "NG");
+
+
     return 0;
 }
 

@@ -1,5 +1,9 @@
 2004-02-07  higepon  <higepon@users.sourceforge.jp>
 
+        * user/userlib.cpp: 仮想VRAM VirtualScreenを追加。
+
+        * bitbltでXOR出来るようにした(マウス用) 未テスト
+
         * kernel.cpp: ユーザーモードでのマウス描画完了。
 
         * Mouse初期化をまとめた

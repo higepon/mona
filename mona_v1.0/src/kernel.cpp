@@ -180,7 +180,6 @@ void startKernel(void) {
     }
     g_fdcdriver->motor(OFF);
     g_info_level = MSG;
-    g_console->printf("here");
     enableTimer();
 
 #ifdef HIGE
