@@ -3,6 +3,24 @@
 
 using namespace MonAPI;
 
+bool FindATAPIDevice(IDEDriver* ide, int* c, int* d)
+{
+    for (int controller = 0; controller < 2; controller++)
+    {
+        for (int device = 0; device < 2; device++)
+        {
+            int type = ide->getDeviceType(controller, device);
+            if (type == IDEDriver::DEVICE_ATAPI)
+            {
+                *c = controller;
+                *d = device;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 int MonaMain(List<char*>* pekoe)
 {
     syscall_get_io();
@@ -13,18 +31,9 @@ int MonaMain(List<char*>* pekoe)
     int device;
     int type;
 
-    for (controller = 0; controller < 2; controller++)
+    if (!FindATAPIDevice(&ide, &controller, &device))
     {
-        for (device = 0; device < 2; device++)
-        {
-            type = ide.getDeviceType(controller, device);
-            if (type == IDEDriver::DEVICE_ATAPI) break;
-        }
-    }
-
-    if (type != IDEDriver::DEVICE_ATAPI)
-    {
-        printf("primary master device is not ATA\n");
+        printf("atapi device not found \n");
         return 1;
     }
 
