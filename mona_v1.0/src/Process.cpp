@@ -58,8 +58,9 @@ UserProcess::UserProcess(const char* name) {
     pinfo_.process = this;
     strncpy(pinfo_.name, name, sizeof(pinfo_.name));
 
-    pinfo_.cs      = 0x08;
-    pinfo_.ds      = 0x10;
+    pinfo_.cs      = 0x28;
+    pinfo_.ds      = 0x30;
+    pinfo_.ss      = 0x38;
     pinfo_.eflags  = 0x200;
     pinfo_.eax     = 0;
     pinfo_.ecx     = 0;

@@ -42,7 +42,7 @@
 #include<ProcessManager.h>
 
 char* version = "Mona develop beta 0.08a $Date$";
-
+void userTest();
 /*!
     \brief  mona kernel start at this point
 
@@ -126,7 +126,7 @@ void startKernel(void) {
 
     info(DEV_NOTICE, "0");
 #ifdef HIGE
-    g_info_level = DEV_NOTICE;
+    g_info_level = DUMP;
 
     info(DEV_NOTICE, "1");
     g_process_manager = new ProcessManager();
@@ -138,9 +138,11 @@ void startKernel(void) {
     Process* process = new Process("test");
     g_process_manager->addProcess(process, (dword)disp_name3);
 
+    UserProcess* process4 = new UserProcess("user");
+    g_process_manager->addProcess((Process*)process4, (dword)userTest);
+
     Process* process3 = new Process("test");
     g_process_manager->addProcess(process3, (dword)disp_name2);
-
 
     info(DUMP, "before esp=%x pid=%x", g_current_process->esp, g_current_process->pid);
     enableTimer();
@@ -167,6 +169,13 @@ void startKernel(void) {
     processTester();
     while (true) {
     }
+}
+
+
+void userTest() {
+
+
+    while (true);
 }
 
 /*!
