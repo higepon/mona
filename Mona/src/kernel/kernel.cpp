@@ -127,7 +127,7 @@ void startKernel(void)
         g_console->clearScreen();
     }
 
-#if 0
+#if 1
     int w = g_vesaDetail->xResolution;
     int bpp = g_vesaDetail->bitsPerPixel / 8;
     byte *vram = (byte*)g_vesaDetail->physBasePtr;
@@ -159,7 +159,7 @@ void startKernel(void)
 
     g_log = new LogConsole();
 
-    //g_console->printf("\n\n\n\n\n\n\n"); // added by bayside
+    g_console->printf("\n\n\n\n\n\n\n"); // added by bayside
     g_console->printf("%s ["CC_NAME" @ %s]\n", version, CC_VER, OSTYPE);
     g_console->printf("Copyright (c) 2002-2004 higepon\n\n");
 

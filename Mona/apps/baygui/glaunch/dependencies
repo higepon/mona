@@ -21,8 +21,9 @@ glaunch.o: glaunch.cpp ../../../include/baygui.h \
   ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
   ../../../include/monapi/messages.h \
   ../../../include/monapi/cmemoryinfo.h \
-  ../../../include/baygui/messages.h ../../../include/baygui/Object.h \
-  ../../../include/baygui/String.h ../../../include/baygui/LinkedItem.h \
+  ../../../include/baygui/messages.h ../../../include/baygui/resources.h \
+  ../../../include/baygui/Object.h ../../../include/baygui/String.h \
+  ../../../include/baygui/LinkedItem.h \
   ../../../include/baygui/LinkedList.h ../../../include/baygui/Event.h \
   ../../../include/baygui/KeyEvent.h ../../../include/baygui/MouseEvent.h \
   ../../../include/baygui/Rect.h ../../../include/baygui/Font.h \
