@@ -1,4 +1,5 @@
 #include <monapi/messages.h>
+#include <monapi/cmessage.h>
 
 #include "Shell.h"
 
@@ -37,17 +38,9 @@ int MonaMain(List<char*>* pekoe)
     my_tid = syscall_get_tid();
     dword id = syscall_mthread_create((dword)StdoutMessageLoop);
     syscall_mthread_join(id);
-    dword stdout_tid;
-    for (MessageInfo msg;;)
-    {
-        if (Message::receive(&msg) != 0) continue;
-        
-        if (msg.header == MSG_SERVER_START_OK)
-        {
-            stdout_tid = msg.from;
-            break;
-        }
-    }
+    MessageInfo msg;
+    monapi_cmessage_receive_header_only(&msg, MSG_SERVER_START_OK);
+    dword stdout_tid = msg.from;
     Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 
     /* Server start ok */

@@ -19,11 +19,12 @@ namespace System { namespace Mona { namespace Forms
 	{
 		class ControlCollection : public System::Collections::ArrayList<_P<Control> >
 		{
+			friend class Control;
 		private:
-			_P<Control> parent;
+			_P<Control> target;
 		
 		public:
-			ControlCollection(Control* p) : parent(p) {}
+			ControlCollection() {}
 			virtual ~ControlCollection() {}
 			
 			virtual void Add(_P<Control> control);

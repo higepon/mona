@@ -62,7 +62,8 @@ namespace System { namespace Mona { namespace Forms
 		this->foreColorChanged = false;
 		this->backColorChanged = false;
 		this->visible = false;
-		this->controls = new ControlCollection(this);
+		this->controls = new ControlCollection();
+		this->controls->target = this;
 	}
 	
 	Control::~Control()
@@ -120,6 +121,9 @@ namespace System { namespace Mona { namespace Forms
 		this->Hide();
 		this->buffer = NULL;
 		
+		this->TextChanged = NULL;
+		this->ForeColorChanged = NULL;
+		this->BackColorChanged = NULL;
 		this->MouseMove = NULL;
 		this->MouseDown = NULL;
 		this->MouseUp = NULL;
@@ -130,6 +134,8 @@ namespace System { namespace Mona { namespace Forms
 			ctrl->Dispose();
 		}
 		this->controls->Clear();
+		//this->controls->target = NULL;
+		this->parent = NULL;
 	}
 	
 	void Control::Refresh()
@@ -418,7 +424,7 @@ namespace System { namespace Mona { namespace Forms
 	{
 		BASE::Add(control);
 		
-		control->parent = this->parent;
+		control->parent = this->target;
 		control->visible = true;
 	}
 }}}

@@ -4,6 +4,9 @@
 #include <gui/messages.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
+#include <gui/System/Mona/Forms/Timer.h>
+
+#define MSG_GUI_TIMER 0x40f0
 
 #ifdef MONA
 #include <monapi/messages.h>
@@ -83,6 +86,7 @@ namespace System { namespace Mona { namespace Forms
 #elif defined(WIN32)
 		::MonaGUI_Run();
 #endif
+		Application::prevControl = NULL;
 	}
 	
 	void Application::ProcessEvent(unsigned int message, unsigned int arg1, unsigned int arg2, unsigned int arg3)
@@ -133,6 +137,9 @@ namespace System { namespace Mona { namespace Forms
 				
 				break;
 			}
+			case MSG_GUI_TIMER:
+				((Timer*)arg1)->OnTick(EventArgs::get_Empty());
+				break;
 		}
 	}
 	
@@ -175,7 +182,11 @@ namespace System { namespace Mona { namespace Forms
 	void Application::RemoveForm(_P<Form> f)
 	{
 		Application::forms->Remove(f);
-		if (Application::mainForm == f) Application::Exit();
+		if (Application::mainForm == f)
+		{
+			Application::mainForm = NULL;
+			Application::Exit();
+		}
 	}
 	
 	_P<Form> Application::FindForm(int x, int y)

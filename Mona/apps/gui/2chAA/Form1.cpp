@@ -7,6 +7,7 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Label.h>
+#include <gui/System/Mona/Forms/Timer.h>
 
 using namespace System;
 using namespace System::Drawing;
@@ -14,11 +15,14 @@ using namespace System::Mona::Forms;
 
 class Form1 : public Form
 {
-public:
+private:
     _P<Label> label1;
+    _P<Timer> timer1;
     _A<String> aa;
+    int count;
 
-    Form1()
+public:
+    Form1() : count(0)
     {
         aa.Alloc(16);
         this->InitializeComponent();
@@ -40,16 +44,21 @@ public:
         this->aa[0]  = "                                   ";
     }
 
-    void animation()
+    virtual void Create()
     {
-        int i = 0;
+        Form::Create();
+        this->timer1->Start();
+    }
 
-        this->Show();
-        for (; this->get_Visible(); Application::DoEvents())
-        {
-            this->label1->set_Text(aa[(i++) % aa.get_Length()]);
-            sleep(300);
-        }
+    virtual void Dispose()
+    {
+        Form::Dispose();
+        this->timer1->Dispose();
+    }
+
+    void animation(_P<Object> sender, _P<EventArgs> e)
+    {
+        this->label1->set_Text(aa[(this->count++) % aa.get_Length()]);
     }
 
 private:
@@ -64,13 +73,16 @@ private:
         this->label1->set_Bounds(Rectangle(0, 20, 140, 40));
         this->label1->set_Text(aa[0]);
         this->get_Controls()->Add(this->label1.get());
+
+        this->timer1 = new Timer();
+        this->timer1->set_Interval(300);
+        this->timer1->add_Tick(new EventHandler<Form1>(this, &Form1::animation));
     }
 
 public:
     static void Main(_A<String> args)
     {
-        Form1* form = new Form1();
-        form->animation();
+        Application::Run(new Form1());
     }
 };
 

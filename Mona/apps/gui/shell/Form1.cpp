@@ -1,5 +1,6 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
+#include <monapi/cmessage.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Mona/Forms/Form.h>
@@ -99,16 +100,9 @@ static void InitThread()
 	my_tid = syscall_get_tid();
 	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
 	syscall_mthread_join(id);
-	for (MessageInfo msg;;)
-	{
-		if (MonAPI::Message::receive(&msg) != 0) continue;
-		
-		if (msg.header == MSG_SERVER_START_OK)
-		{
-			stdout_tid = msg.from;
-			break;
-		}
-	}
+	MessageInfo msg;
+	monapi_cmessage_receive_header_only(&msg, MSG_SERVER_START_OK);
+	stdout_tid = msg.from;
 	MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 }
 

@@ -1,3 +1,13 @@
+2004-05-16  tino  <tino@users.sourceforge.jp>
+
+        * include/monapi/cmessages.h (monapi_cmessage_receive_header_only): ’Ç‰Á
+
+        * include/gui/System/Mona/Forms/Timer.h: ’Ç‰Á
+
+        * src/lib/gui/System/Mona/Forms/Timer.cpp: ’Ç‰Á
+
+        * apps/gui/2chAA/Form1.cpp: Timer‚ğg—p‚µ‚Ä‘‚«Š·‚¦
+
 2004-05-15  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc/monalibc.cpp: __power•ÏX

@@ -150,6 +150,41 @@ int monapi_cmessage_receive_arg1(MessageInfo* info, dword tid, dword header, dwo
     return 0;
 }
 
+int monapi_cmessage_receive_header_only(MessageInfo* info, dword header)
+{
+    int i;
+    for (i = 0; i < msg_queue.count; i++)
+    {
+        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
+        if (msg->header == header)
+        {
+            *info = *msg;
+            monapi_clist_remove_at(&msg_queue, i);
+            free(msg);
+            return 0;
+        }
+    }
+
+    for (;;)
+    {
+        MessageInfo* mi;
+        int result = syscall_receive(info);
+        if (result != 0)
+        {
+             syscall_mthread_yeild_message();
+             result = syscall_receive(info);
+        }
+        if (result != 0) continue;
+        if (info->header == header) break;
+
+        mi = (MessageInfo*)malloc(sizeof(MessageInfo));
+        ASSERT(mi);
+        *mi = *info;
+        monapi_clist_add(&msg_queue, mi);
+    }
+    return 0;
+}
+
 int monapi_cmessage_send_receive(MessageInfo* result, dword tid, MessageInfo* info)
 {
     int ret = monapi_cmessage_send(tid, info);

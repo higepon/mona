@@ -12,6 +12,7 @@ SOURCES = \
 	System/Mona/Forms/ControlPaint.cpp \
 	System/Mona/Forms/Form.cpp \
 	System/Mona/Forms/Label.cpp \
+	System/Mona/Forms/Timer.cpp \
 	System/Text/Encoding.cpp
 
 MONADIR = ../../..
