@@ -134,10 +134,20 @@ void MFDCDriver::initilize() {
     }
 
     /* setup DMAC */
+    outportb(0xda, 0x00);
+    delay();
+    outportb(0x0d, 0x00);
+    delay();
     outportb(0xd0, 0x00);
+    delay();
     outportb(0x08, 0x00);
+    delay();
     outportb(0xd6, 0xc0);
+    delay();
+    outportb(0x0b, 0x46);
+    delay();
     outportb(0xd4, 0x00);
+    delay();
 
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
