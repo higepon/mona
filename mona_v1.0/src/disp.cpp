@@ -85,9 +85,7 @@ void disp_name2() {
 
 void disp_name3() {
 
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
 
 
 //     while (Semaphore::down(&g_semaphore_shared));

@@ -101,6 +101,8 @@ bool StackSegment::faultHandler(LinearAddress address, dword error) {
 */
 bool StackSegment::tryExtend(LinearAddress address) {
 
+    g_console->printf("extend start");
+
     if (!isAutoExtend_) {
 
         /* not auto extension mode */
@@ -129,6 +131,8 @@ bool StackSegment::tryExtend(LinearAddress address) {
 
     /* extention done */
     size_ += PageManager::ARCH_PAGE_SIZE;
+
+    g_console->printf("extend OK");
 
     return true;
 }

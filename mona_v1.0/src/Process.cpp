@@ -94,6 +94,9 @@ UserProcess::UserProcess(const char* name) {
     pinfo_.edi     = 0;
     pinfo_.tick    = 0;
     pinfo_.dpl     = DPL_USER;
+
+    pinfo_.shared = new SharedMemorySegment();
+    QueueManager::init(pinfo_.shared);
 }
 
 V86Process::V86Process(const char* name) {

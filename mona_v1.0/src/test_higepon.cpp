@@ -46,7 +46,7 @@ struct read_info {
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
-int loadProcess(const char* path, const char* file) {
+int loadProcess(const char* path, const char* file, bool isUser) {
 
     static dword sharedId = 0x1000;
     sharedId++;
@@ -99,7 +99,7 @@ int loadProcess(const char* path, const char* file) {
     delete(loader);
     free(buf);
 
-    Process*   process1 = new Process(file);
+    Process* process1 = isUser ? new UserProcess(file) : new Process(file);
 
     while (Semaphore::down(&g_semaphore_shared));
     isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
