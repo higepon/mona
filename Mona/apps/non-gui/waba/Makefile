@@ -2,7 +2,7 @@ TARGET    = WABA
 SOURCES   = wabamona.cpp
 
 INSTDIR   = $(BINDIR)/root/APPS
-INSTFILES = WABA.LIB HELLO.WRP
+INSTFILES = 
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-el2.inc
