@@ -116,7 +116,7 @@ printf("IrqMask Set = %x \n",IrqMask);
     IrqMask=inp8( 0xA1 );
     
 //Yamami!!! ‚í‚´‚ÆƒoƒO    
-outp8(0x21, inp8(0x21) | 0x04);
+//outp8(0x21, inp8(0x21) | 0x04);
 
 printf("0xA1 IN After = %x \n",IrqMask);
     
