@@ -17,4 +17,12 @@
 
 extern "C" void syscall_entrance(void);
 
+#define enter_kernel_lock_mode() {\
+    dword eflags = get_eflags();  \
+    disableInterrupt();           \
+
+#define exit_kernel_lock_mode() \
+         set_eflags(eflags);    \
+         }                      \
+
 #endif

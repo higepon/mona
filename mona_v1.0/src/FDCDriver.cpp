@@ -17,6 +17,7 @@
 #include<io.h>
 #include<global.h>
 #include<string.h>
+#include<syscalls.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10
@@ -283,7 +284,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
     for (int i = 0; i < length; i++) {
 
         /* expected condition is ready & date I/O to Controller */
-        if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
+        if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY | 0x40)) {
 
             info(ERROR, "FDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
@@ -319,7 +320,11 @@ bool FDCDriver::recalibrate() {
         return false;
     }
 
+    info(DEV_NOTICE, "recalibrate:before waitInterrupt\n");
+
+#ifndef BOCHS
     while (!waitInterrupt());
+#endif
 
     info(DEV_NOTICE, "recalibrate:after waitInterrupt\n");
 
@@ -529,7 +534,7 @@ void FDCDriver::setupDMARead(dword size) {
     /* direction write */
     outportb(FDC_DMA_S_MR, 0x46);
 
-    disableInterrupt();
+    enter_kernel_lock_mode();
 
     /* clear byte pointer */
     outportb(FDC_DMA_S_CBP, 0);
@@ -539,7 +544,7 @@ void FDCDriver::setupDMARead(dword size) {
     outportb(FDC_DMA_S_COUNT, byte(size >>8));
     outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
 
-    enableInterrupt();
+    exit_kernel_lock_mode();
 
     startDMA();
     return;
@@ -561,7 +566,7 @@ void FDCDriver::setupDMAWrite(dword size) {
     /* direction read */
     outportb(FDC_DMA_S_MR, 0x4a);
 
-    disableInterrupt();
+    enter_kernel_lock_mode();
 
     /* clear byte pointer */
     outportb(FDC_DMA_S_CBP, 0);
@@ -571,7 +576,7 @@ void FDCDriver::setupDMAWrite(dword size) {
     outportb(FDC_DMA_S_COUNT, byte(size >>8));
     outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
 
-    enableInterrupt();
+    exit_kernel_lock_mode();
 
     startDMA();
     return;

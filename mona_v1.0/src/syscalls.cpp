@@ -21,16 +21,6 @@ extern "C" char pos_y;
 
 extern "C"     void arch_set_stack_view();
 
-#define enter_kernel_lock_mode() {\
-    dword eflags = get_eflags();  \
-    disableInterrupt();           \
-
-#define exit_kernel_lock_mode() \
-         set_eflags(eflags);    \
-         }                      \
-
-
-
 void syscall_entrance() {
 
     int x, y;

@@ -72,6 +72,7 @@ char* version = "Mona version 0.1.0 $Date$";
 void userTest();
 void userTest2();
 void v86Test();
+void mainProcess();
 
 static byte user_func_from[10240];
 
@@ -126,20 +127,37 @@ void startKernel(void) {
     test_mjt();
 #endif
 
-
 #ifdef HIGE
-
-    g_info_level = MSG;
 
     disableTimer();
     enableKeyboard();
     enableInterrupt();
 
-    g_console->printf("Hit any key to start loading USER.ELF from FAT12!!\n");
+    g_console->printf("Hit any key to start ProcessManager \n");
     while (g_demo_step < 2);
-    g_console->printf("loading..\n");
 
-    //    FDCTester();
+    g_info_level = DEBUG;
+
+    Process* idle     = new Process("idle     ");
+    Process* mprocess = new Process("mainProc ");
+    g_process_manager = new ProcessManager(idle);
+
+    g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
+
+    mainProcess();
+    enableTimer();
+#endif
+
+#ifndef MJT
+    disableInterrupt();
+#endif
+    while (true);
+}
+
+void mainProcess() {
+
+    g_console->printf("Hit any key to Load ELF\n");
+    while (g_demo_step < 5);
 
     ELFTester(user_func_from);
 
@@ -149,12 +167,8 @@ void startKernel(void) {
     g_console->printf("loader result = %d\n", loader->prepare((dword)user_func_from));
     loader->load(user_func);
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
-
-    Process* idle = new Process("idle     ");
-
-    g_process_manager = new ProcessManager(idle);
+    //    enableInterrupt();
+    //    enableTimer();
 
     UserProcess* process1 = new UserProcess("user_process ");
     Process*     process2 = new Process("krnl_o       ");
@@ -177,20 +191,9 @@ void startKernel(void) {
     //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
     //    process9->pinfo_.esp = 0x1000;
 
-    g_console->printf("Hit any key to start all process\n");
-    while (g_demo_step < 4);
-
-
-    g_console->printf("enable timer\n");
-    enableTimer();
-
-#endif
-
-#ifndef MJT
-    disableInterrupt();
-#endif
     while (true);
 }
+
 
 void userTest() {
 

@@ -13,6 +13,7 @@
 
 #include <elf.h>
 #include <string.h>
+#include <global.h>
 
 ELFLoader::ELFLoader() {
 
