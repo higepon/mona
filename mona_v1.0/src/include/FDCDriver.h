@@ -32,6 +32,7 @@ class FDCDriver {
     bool read(int lba);
     bool write(int lba);
     bool writeID(byte track, byte head, byte data);
+    void test();
   private:
     void initilize();
     void setFDCVersion();

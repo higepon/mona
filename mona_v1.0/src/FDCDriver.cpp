@@ -124,8 +124,6 @@ void FDCDriver::initilize() {
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
 
-    console_->printf("dma buff_=[%x]=[%dkb]\n", (dword)dmabuff_, ((dword)dmabuff_/1024));
-
     /* dma buff should be 64kb < dma buff < 16Mb */
     if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
         panic("dma buff allocate error");
@@ -165,40 +163,20 @@ void FDCDriver::initilize() {
         return;
     }
 
-//      recalibrate();
-//      recalibrate(); /* 2nd recalibrate occurs 3interrupts on VPC and 2 on Bochs */
+    motor(OFF);
 
-//      g_console->printf("recalibrate done\n");
+    return;
+}
 
-//      memset(dmabuff_, 0x10, 512);
-//      dmabuff_[0] = 'M';
-//      dmabuff_[1] = 'o';
-//      dmabuff_[2] = 'n';
-//      dmabuff_[3] = 'a';
-//      dmabuff_[4] = '\0';
+void FDCDriver::test() {
 
-//      g_console->printf("Writing [%s]\n", dmabuff_);
-//      if (!write(0, 0, 150)) {
+    console_->printf("FDCDriver::test() start\n");
 
-//          g_console->printf("write failed\n");
-//          motor(OFF);
-//          return;
-//      }
+    motor(ON);
 
-//      recalibrate();
-//      recalibrate();
-//      if (!read(0, 0, 150)) {
+    for (int i = 1; i < 50; i++) {
 
-//          g_console->printf("read failed\n");
-//          motor(OFF);
-//          return;
-//      }
-
-//      g_console->printf("reading result is %s\n", dmabuff_);
-
-
-    for (int i = 1; i < 2; i++) {
-
+        recalibrate();
         recalibrate();
         memset(dmabuff_, i, 512);
         if (!write(i)) {
@@ -209,10 +187,19 @@ void FDCDriver::initilize() {
         }
 
     }
+
     motor(OFF);
 
     return;
 }
+
+
+
+
+
+
+
+
 
 /*!
     \brief print status of FDC(MSR)
@@ -262,7 +249,7 @@ void FDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void FDCDriver::interrupt() {
 
-    console_->printf("\ninterrpt:");
+    console_->printf("\ninterrupt:");
 
     interrupt_ = true;
 }
@@ -372,18 +359,7 @@ bool FDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
 
        if (isOK) return true;
-       if (i == FDC_RETRY_MAX - 2)  {
-#ifdef DEBUG_FDC
-           g_console->printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
-#endif
-       }
     }
-
-#ifdef DEBUG_FDC
-    /* time out */
-    console_->printf("FDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
-                   , (int)expectedCondition, (int)inportb(FDC_MSR_PRIMARY), (int)(status & mask));
-#endif
 
     return false;
 }
@@ -685,17 +661,13 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
                    , 0x00
                    };
     setupDMAWrite(512);
-    g_console->printf("1:wait seek interrupt");
+
     interrupt_ = false;
     seek(track);
     while(!waitInterrupt());
-    g_console->printf("seek interrupt catch!");
-    g_console->printf("2");
 
-    g_console->printf("3:wait write command interrupt");
     interrupt_ = false;
     sendCommand(command, sizeof(command));
-    g_console->printf("4");
 
     stopDMA();
     readResults();
