@@ -129,8 +129,6 @@ Window::~Window() {
 	delete(_keyEvent);
 	delete(_mouseEvent);
 	delete(_timerEvent);
-	// タイマースレッド停止
-	syscall_kill_thread(timerID);
 }
 
 /** タイトルを得る */
@@ -565,6 +563,8 @@ void Window::run()
 			case MSG_GUISERVER_REMOVE:
 				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", threadID);
 				isRunning = false;
+				// タイマースレッド停止
+				syscall_kill_thread(timerID);
 				break;
 			default:
 				break;
