@@ -45,7 +45,7 @@ void startKernel(void) {
     /* show message */
     _sysPrintln("------------------------------------------------------");
     _sysSetColor(BG_BLACK | CH_AQUA);
-    _sysPrintln("      Mona Kernel starting                         ");
+    _sysPrintln("      Mona Kernel starting                            ");
     _sysSetColor(BG_BLACK | CH_SILVER);
     _sysPrintln("        ________ A A                                  ");
     _sysPrintln("      ~/ ______( `D`) < thanks ProgrammingBoard@2ch   ");
@@ -53,7 +53,7 @@ void startKernel(void) {
     _sysPrintln("------------------------------------------------------");
 
     _sysSetColor(BG_MAROON | CH_BLUE);
-    _sys_printf("\nMona develop beta 0.01b\n\n");
+    _sys_printf("\nMona develop beta 0.02\n\n");
     _sysSetColor(BG_BLACK | CH_SILVER);
 
     /* set interrept */

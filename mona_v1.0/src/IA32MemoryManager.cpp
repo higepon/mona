@@ -473,7 +473,6 @@ inline void IA32MemoryManager::flushTLB() const {
     \param limit  limit of segment
     \param type   segment type
     \param type32 type32
-    \param dpl    dpl
 
     \author HigePon
     \date   create:2002/12/31 update:
