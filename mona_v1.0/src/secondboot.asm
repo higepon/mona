@@ -44,14 +44,14 @@ get_vesa_info:
         cmp ah, 0x4F
         je vesa_not_supported
         mov ax, 0x4F01          ; function 01h
-        mov cx, 0x4115
+        mov cx, 0x4101
         mov di, 0x0830          ; 0x0000:0x0830
         int 0x10
         cmp ah, 0x4F
         je vesa_not_supported
 vesa_supported:
         mov ax, 0x4F02
-        mov bx, 0x4115
+        mov bx, 0x4101
         int 0x10
         popa
         jmp RealToProtect
