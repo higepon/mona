@@ -1,3 +1,9 @@
+2004-03-17  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gshell/gshell.cpp: exit で終了したときに例外が出る問題を修正
+
+        * src/servers/gui/Makefile: MONAWALL.BM5 関連の記述を削除
+
 2005-03-19  higepon  <higepon@users.sourceforge.jp>
 
         * Make変更完了。./configure, make depend, make, make installの手順は変わらないようにした。ただしmona.imgは最低限のものしか入れない。
