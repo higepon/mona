@@ -1,5 +1,7 @@
 2003-12-23  higepon  <higepon@users.sourceforge.jp>
 
+        * include/Process.h: getThreadInfo()追加
+
         * Process.cpp: Threadのコンストラクタ
 
         * ihandlers.cpp: スレッド生成･スケジュールなどをじっくりと

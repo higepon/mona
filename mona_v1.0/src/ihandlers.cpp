@@ -130,7 +130,7 @@ void timerHandler() {
 
     /* Thread schedule */
     Process_* current = g_processManager->getCurrentProcess();
-    g_currentThread = current->schedule();
+    g_currentThread = current->schedule()->getThreadInfo();
 
     /* Process is changed, so address space switch */
     if (isProcessChanged) {

@@ -118,7 +118,13 @@ class Thread {
         return (timeLeft_ > 0);
     }
 
-  public:
+    inline ThreadInfo* getThreadInfo() const {
+        return threadInfo_;
+    }
+
+  private:
+
+    /* this is public , because of getXXX */
     ThreadInfo* threadInfo_;
 
   protected:
