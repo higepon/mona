@@ -167,4 +167,4 @@ write_font:
 pos_x  db      0
 pos_y  db      0
 
-font    incbin  "font/paw16a.fnt"
+font    incbin  "font/Gothn16x.tlf"
