@@ -24,27 +24,48 @@ Screen::~Screen() {
 void Screen::putPixel16(int x, int y, dword color) {
 
     int bytesPerPixel = bpp_ / 8;
-    byte* vram       = vram_;
+    byte* vram       = &vram_[(x + y * xResolution_) * bytesPerPixel];
+    byte* p_color  = (byte*)&color;
 
-    vram += (x + y * xResolution_) * bytesPerPixel;
-    *((word*)vram) = bytesPerPixel == 2 ? Color::bpp24to565(color) : (word)color;
+    switch (bytesPerPixel)
+    {
+        case 2:
+            *((word*)vram) = Color::bpp24to565(color);
+            break;
+        default:
+            vram[0] = p_color[0];
+            vram[1] = p_color[1];
+            vram[2] = p_color[2];
+            break;
+    }
 }
 
 void Screen::fillRect16(int x, int y, int w, int h, dword color) {
 
-        dword bytesPerPixel = bpp_ / 8;
+    dword bytesPerPixel = bpp_ / 8;
 
-        byte* position = vram_ + (x + y * xResolution_) * bytesPerPixel;
-        byte* temp     = position;
+    byte* position = &vram_[(x + y * xResolution_) * bytesPerPixel];
+    byte* temp     = position;
+    byte* p_color  = (byte*)&color;
 
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                *((word*)temp) = bytesPerPixel == 2 ? Color::bpp24to565(color) : (word)color;
-                temp += bytesPerPixel;
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            switch (bytesPerPixel)
+            {
+                case 2:
+                    *((word*)temp) = Color::bpp24to565(color);
+                    break;
+                default:
+                    temp[0] = p_color[0];
+                    temp[1] = p_color[1];
+                    temp[2] = p_color[2];
+                    break;
             }
-            position += xResolution_ * bytesPerPixel;
-            temp = position;
+            temp += bytesPerPixel;
         }
+        position += xResolution_ * bytesPerPixel;
+        temp = position;
+    }
 }
 
 bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int height
