@@ -23,16 +23,19 @@ void FDCTester() {
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
     g_fdcdriver->motor(true);
-    g_console->printf("before recalibrate");
+
+    info(DEV_NOTICE, "before recalibrate");
+
     g_fdcdriver->recalibrate();
 
-    g_console->printf("before read");
+    info(DEV_NOTICE, "before read");
     for (int i = 0; i < 10; i++) {
         memset(tbuf, 0x99, 512);
         g_fdcdriver->read(1, tbuf);
 
     }
-    g_console->printf("after read");
+
+    info(DEV_NOTICE, "after read");
 
 //      // write
 //      for (int i = 0; i < 73; i++) {
@@ -75,17 +78,16 @@ void FDCTester() {
 
         int errorNo = fat->getErrorNo();
 
-        if (errorNo == FAT12::BPB_ERROR) g_console->printf("BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12_ERROR) g_console->printf("NOT FAT12 error \n");
-        else if (errorNo == FAT12::FAT_READ_ERROR) g_console->printf("NOT FAT12 error \n");
-        else g_console->printf("unknown error \n");
+        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
+        else info(ERROR, "unknown error \n");
 
-
-        g_console->printf("fat initilize faild\n");
+        info(ERROR, "fat initilize faild\n");
         while (true);
     }
 
-    g_console->printf("init ok");
+    info(DEV_NOTICE, "init ok");
 
     g_console->printf("changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {

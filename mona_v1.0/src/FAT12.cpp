@@ -219,10 +219,7 @@ bool FAT12::readBPB() {
     p += 11;
     memcpy(&(bpb_.fileSysType), p, 8);
 
-    //#ifdef FAT12_DEBUG
-    printf("bytesPerSector=[%d]", bpb_.bytesPerSector);
-
-    //#endif
+    info(DEBUG, "bytesPerSector=[%d]", bpb_.bytesPerSector);
 
     return true;
 }
@@ -359,12 +356,7 @@ bool FAT12::changeDirectoryRelative(const char* path) {
         /* no other entries_ */
         if (entries_[j].filename[0] == 0x00) break;
 
-#ifdef FAT12_DEBUG
-        printf("currentDirecotry_ = %d cdr entry %s:", currentDirecotry_, path);
-        printf("&&[");
-        for (int k = 0; k < 8; k++) printf("%c", entries_[j].filename[k]);
-        printf("]&&");
-#endif
+        info(DEV_NOTICE, "currentDirecotry_ = %d cdr entry %s:", currentDirecotry_, path);
 
         /* not directory */
         if (!(entries_[j].attribute & ATTR_DIRECTORY)) continue;
@@ -705,9 +697,7 @@ bool FAT12::write(byte* buffer, int size) {
     /* write buffer to Disk */
     int lba = clusterToLba(currentCluster_);
 
-#ifdef FAT12_DEBUG
-    printf("FAT12::write called lba=%d", lba);
-#endif
+    info(DEV_NOTICE, "FAT12::write called lba=%d", lba);
 
     if (!(driver_->write(lba, buffer))) {
         currentCluster_ = cluster;
