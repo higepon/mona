@@ -219,7 +219,7 @@ void FDCDriverTester() {
         is.read = read;
 
     g_console->printf("[1.6]************************************");
-        int bf_size = 1024 * 1024 * 2;
+        int bf_size = 1300000;
         bf = (unsigned char*)malloc(bf_size);
     g_console->printf("[1.7]malloc=%x", (dword)bf);
         if (NULL == bf) {
@@ -248,8 +248,6 @@ void FDCDriverTester() {
         if (!fat->close()) {
                 g_console->printf("error close\n");
         }
-
-        g_console->printf("ok go on\n");
 
         g_fdcdriver->motor(false);
         delete(fat);
