@@ -1,4 +1,4 @@
-2004-12-09  higepon  <higepon@users.sourceforge.jp>
+2004-12-09  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones/AbstractMonic.h : #include <monapi/io.h> ’Ç‰Á
         
