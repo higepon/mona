@@ -39,11 +39,11 @@ class MapServer : public Server {
 
   public:
     void service();
+    bool map(dword pid, char* identifier, dword linearAddress);
 
   protected:
     bool registerMapInfo(char* identifier, MapInfo* info);
     MapInfo* getMapInfo(char* identifier) const;
-    bool map(dword pid, char* identifier, dword linearAddress);
 
   protected:
     Map<MapInfo*>* map_;
@@ -65,8 +65,7 @@ void MapServer::service() {
         return;
     }
 
-    registerMapInfo("mona://device/fd/buffer", new MapInfo(0x0100, 2 * 1024 * 1024, 0xB0000000, 0xB1000000));
-    printf("%d", getMapInfo("mona://device/fd/buffer")->getSize());
+    registerMapInfo("mona://device/fd/buffer", new MapInfo(SHARED_FDC_BUFFER, 4096, 0x20000000, 0x21000000));
 }
 
 bool MapServer::registerMapInfo(char* identifier, MapInfo* info) {
@@ -105,12 +104,11 @@ int main() {
 
     dword pid = Message::lookup("HELLO.ELF");
 
-    printf("map result = %d\n", syscall_map(pid, SHARED_FDC_BUFFER, 0x20000000, 4096));
+    Server* server = new MapServer();
+    server->service();
+    ((MapServer*)(server))->map(pid, "mona://device/fd/buffer", 0x20000000);
     printf("str=%s", (char*)(0x20000000));
 
     for (;;);
-
-    Server* server = new MapServer();
-    server->service();
     return 0;
 }

@@ -349,7 +349,7 @@ int send(const char* name, MessageInfo* message) {
         return -1;
     }
 
-    memcpy(info, message, sizeof(MessageInfo));
+    *info = *message;
     process->getMessageList()->add(info);
     return 0;
 }
@@ -371,7 +371,7 @@ int send(dword pid, MessageInfo* message) {
         return -1;
     }
 
-    memcpy(info, message, sizeof(MessageInfo));
+    *info = *message;
     process->getMessageList()->add(info);
     return 0;
 }
@@ -383,7 +383,7 @@ int receive(Process* process, MessageInfo* message) {
         return -1;
     }
 
-    memcpy(message, from, sizeof(MessageInfo));
+    *message = *from;
     free(from);
     process->getMessageList()->removeAt(0);
     return 0;
