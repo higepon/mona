@@ -6,6 +6,8 @@
 
         * 各Makefile: installでcp -uの代わりに$(INSTALL)を使用
 
+        * FreeBSD 5.2.1-R(gcc-3.3.3, ld-2.13.2)でコンパイルできるようになった
+
 2004-04-30  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/main.cpp: KeyBoardManager.cpp,hが不要なので削除
