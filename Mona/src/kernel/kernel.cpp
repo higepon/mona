@@ -72,7 +72,6 @@
 #include "Loader.h"
 #include "Scheduler.h"
 #include "monaboot.h"
-#include "BootManager.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -95,7 +94,7 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
     \date   create:2002/07/21 update:$Date$
 */
 
-void startKernel(void)
+void startKernel()
 {
     /* kernel memory range */
     km.initialize(0x200000, 0x7fffff);
@@ -182,10 +181,6 @@ void startKernel(void)
 #endif
 
     g_log = new LogConsole();
-
-#ifdef USE_BOOTMGR
-    g_bootManager = new BootManager(REL_KERNEL_ADDR + KERNEL_BASE_ADDR, MONA_CFG_ADDR, MONA_CFG_SIZE);
-#endif
 
     pic_init();
     RTC::init();
@@ -310,15 +305,10 @@ void loadServer(const char* server, const char* name)
     g_console->printf("loading %s....", server);
     if (strstr(server, ".BIN"))
     {
-#ifdef USE_BOOTMGR
-        dword size;
-        byte* image = g_bootManager->getFile(name, &size);
-#else
         byte* image = (byte*)fileptr;
         dword size = (*(int*)sizeptr) * 512;
         sizeptr += 4;
         fileptr += size;
-#endif
 
         if (image == NULL)
         {
@@ -345,17 +335,11 @@ void loadServer(const char* server, const char* name)
 
 int execSysConf()
 {
-#ifdef USE_BOOTMGR
-    dword fileSize;
-    byte* buf = g_bootManager->getMonaConfig(&fileSize);
-    if (buf == NULL) return 1;
-#else
     byte* buf = (byte*)MONA_CFG_ADDR;
     int fileSize = (*(int*)sizeptr) * 512;
     sizeptr += 4;
     fileptr += (*(int*)sizeptr) * 512;
     sizeptr += 4;
-#endif
 
     /* execute */
     char line[256];
@@ -415,10 +399,6 @@ void mainProcess()
         g_console->printf("/MONA.CFG does not exist\n");
         for (;;);
     }
-
-#ifdef USE_BOOTMGR
-    delete g_bootManager;
-#endif
 
     enableKeyboard();
 

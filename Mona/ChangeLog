@@ -1,3 +1,9 @@
+2005-02-05  csharp  <csharp@users.sourceforge.jp>
+
+        * env/*.env: SYMPREFIX追加
+
+        * src/kernel/BootManager.h, cpp: 削除
+
 2005-02-05  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/ISO9660FileSystem.cpp (FindDirectoryEntry): ルートディレクトリを取り扱えるように修整した。

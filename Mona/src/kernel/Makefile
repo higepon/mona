@@ -14,7 +14,7 @@ TOOLSDIR     = $(MONADIR)/tools
 INCLUDE      = -I$(INCDIR) -I$(TOOLSDIR)
 BOOT1        = firstboot.bin
 BOOT2        = secondboot.bin
-KERNEL       = third.bin
+KERNEL       = kernel.bin
 SOURCES      = cstart.cpp            \
                kernel.cpp            \
                ihandlers.cpp         \
@@ -46,14 +46,13 @@ SOURCES      = cstart.cpp            \
                KObject.cpp           \
                Loader.cpp            \
                Scheduler.cpp         \
-               BootManager.cpp       \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(BOOT1) $(BOOT2) $(KERNEL)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
-	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o
+	$(LD) -e $(SYMPREFIX)cstart --Map kernel.map $(LFLAGS) -o $@ $(OBJECTS) mode12h.o ihandler.o core.o
 #	$(NDISASM) -u $@ > $(LISTDIR)/third.list
 	$(STRIP)  -O binary $@
 
@@ -90,6 +89,6 @@ depend :
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(BOOT1) $(BOOT2) $(KERNEL) KERNEL.IMG mode12h.o ihandler.o core.o $(LISTDIR)/*.list *.map
+	rm -f $(OBJECTS) $(BOOT1) $(BOOT2) $(KERNEL) mode12h.o ihandler.o core.o $(LISTDIR)/*.list *.map
 
 include ./dependencies

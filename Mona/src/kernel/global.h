@@ -27,7 +27,6 @@
 #include "FSOperation.h"
 #include "IDManager.h"
 #include "Scheduler.h"
-#include "BootManager.h"
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);

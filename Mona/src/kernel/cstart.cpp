@@ -13,7 +13,8 @@
     \version $Revision$
     \date   create:2002/07/21 update:$Date$
 */
-#include "kernel.h"
+
+extern void startKernel();
 
 /*!
     \brief  mona kernel start at this point
@@ -23,6 +24,7 @@
     \author HigePon
     \date   create:2002/07/21 update:
 */
-void cstart(void) {
+extern "C" void cstart()
+{
     startKernel();
 }

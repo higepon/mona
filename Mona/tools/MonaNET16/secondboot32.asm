@@ -87,7 +87,6 @@ set_cs_desc1:
         mov     ss, ax          ; is 0x18
         mov     esp, 0x80000    ; sp is 3MB
         push    eax
-jump_to_kernel:
-        jmp     $ + 0x0200 - (jump_to_kernel - RealToProtect)
+        jmp     0x0200 + RealToProtect
 
 end_second
