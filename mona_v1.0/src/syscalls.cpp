@@ -39,8 +39,8 @@ void syscall_entrance() {
 
       case SYSTEM_CALL_HEAVEY:
 
-        eflags = get_eflags();
-        disableInterrupt();
+          eflags = get_eflags();
+          disableInterrupt();
 
         x = pos_x;
         y = pos_y;
@@ -55,7 +55,7 @@ void syscall_entrance() {
 
         enableInterrupt();
 
-          for (dword i = 0; i < 0xf; i++) {
+          for (dword i = 0; i < 0xffffff; i++) {
 
               i++;
               i--;
@@ -63,15 +63,15 @@ void syscall_entrance() {
               i--;
           }
 
-        eflags = get_eflags();
-        disableInterrupt();
+          eflags = get_eflags();
+          disableInterrupt();
 
         x = pos_x;
         y = pos_y;
 
         pos_x = 2, pos_y = 4;
 
-          g_console->printf("heavy end\n");
+        g_console->printf("heavy end\n");
 
         pos_x = x;
         pos_y = y;

@@ -23,7 +23,7 @@ BITS 32
 
 _arch_save_process_registers:
         mov ebx, dword[_g_current_process]
-        mov eax, dword[ebx + 4]   ; get dpl
+        mov eax, dword [esp + 40] ; get cs
         and  eax, 0x03            ; check dpl is 3
         cmp eax, 0x03
         jnz dpl0

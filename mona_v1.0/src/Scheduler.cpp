@@ -60,7 +60,7 @@ ProcessInfo* Scheduler::getNext(ProcessInfo* list) {
 
 void Scheduler::schedule() {
 
-    wakeup();
+    this->wakeup();
 
     if (g_current_process->state != Process::SLEEPING) {
         g_current_process->state = Process::READY;
@@ -77,7 +77,7 @@ void Scheduler::schedule() {
 
     addToPrev(&dispatchList_, next);
 
-    g_console->printf("schedule [%s] to [%s] \n", g_current_process->name, next->name);
+    //    g_console->printf("schedule [%s] to [%s] \n", g_current_process->name, next->name);
 
     g_current_process = next;
 

@@ -133,7 +133,7 @@ void startKernel(void) {
 //     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
 //     while (g_demo_step < 5);
 
-    g_info_level = WARNING;
+    g_info_level = MSG;
 
     Process* idle = new Process("idle     ");
 
@@ -149,12 +149,12 @@ void startKernel(void) {
     Process*     process7 = new Process("show_process ");
     Process*     process8 = new Process("MessageServer");
 
-    //                g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
-       g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
+    g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
+    //       g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
     //    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
      //     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
      //     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-//     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
+     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
 //     g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
 //     g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
 
@@ -176,7 +176,9 @@ void userTest() {
     //    asm volatile("hlt");
     while (true) {
 
-        syscall_sleep(50);
+        //        syscall_sleep(50);
+        syscall_heavy();
+        while(true);
 
     }
 }
@@ -193,7 +195,6 @@ void idle_process() {
     while (true) {
 
         /* do nothing */
-        g_console->printf("idle");
     }
 }
 

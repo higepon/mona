@@ -24,12 +24,19 @@ ProcessManager::ProcessManager(Process* idle) {
 
 void ProcessManager::switchProcess() {
 
-    dword debugesp = 0;
-
-
 
 //        if (scheduler_->toUserMode()) {
 
+
+//     info(DEV_NOTICE, "[eip=%x cs=%x eflags=%x esp=%x ds=%x ss=%x esp0=%x ss0=%x]\n"
+//          , g_current_process->eip
+//          , g_current_process->cs
+//          , g_current_process->eflags
+//          , g_current_process->esp
+//          , g_current_process->ds
+//          , g_current_process->ss
+//          , g_current_process->esp0
+//          , g_current_process->ss0);
 
     if ((g_current_process->cs & 0x03) == 0x03) {
 
