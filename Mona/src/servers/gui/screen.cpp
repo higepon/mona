@@ -65,7 +65,7 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 	if (y2 > sh) y2 = sh;
 	
 	_R r1(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-	_R r2(commonParams->mouse.x - 4, commonParams->mouse.y - 4, 16, 16);
+	_R r2(commonParams->mouse.x - 8, commonParams->mouse.y - 8, 32, 32);
 	bool mouse = r1.IntersectsWith(r2);
 	if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
 	

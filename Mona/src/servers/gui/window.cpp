@@ -77,7 +77,23 @@ guiserver_window* GetWindowPointer(dword handle)
 	int size = windows.size();
 	for (int i = 0; i < size; i++)
 	{
-		if (windows[i]->Handle == handle) return windows[i];
+		guiserver_window* w = windows[i];
+		if (w->Handle == handle) return w;
+	}
+	return NULL;
+}
+
+static guiserver_window* GetFrontWindow()
+{
+	for (int i = windows.size() - 1; i >= 0; i--)
+	{
+		guiserver_window* w = windows[i];
+		if (w->Parent == 0 && (w->Flags & WINDOWFLAGS_BOTTOMMOST) == 0) return w;
+	}
+	for (int i = windows.size() - 1; i >= 0; i--)
+	{
+		guiserver_window* w = windows[i];
+		if (w->Parent == 0 && (w->Flags & WINDOWFLAGS_BOTTOMMOST) != 0) return w;
 	}
 	return NULL;
 }
@@ -117,6 +133,7 @@ bool DisposeWindow(dword handle)
 			if (w->__internal2) DestructionEffect(w);
 			windows.removeAt(i);
 			MemoryMap::unmap(handle);
+			if (activeWindow == NULL) ActivateWindow(GetFrontWindow());
 			return true;
 		}
 	}
@@ -150,6 +167,7 @@ void DisposeWindowFromThreadID(dword tid)
 			i--;
 		}
 	}
+	if (activeWindow == NULL) ActivateWindow(GetFrontWindow());
 }
 
 static void DrawWindowInternal(guiserver_window* w, const _R& r)

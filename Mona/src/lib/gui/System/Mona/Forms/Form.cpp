@@ -10,7 +10,6 @@ extern dword __gui_server;
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/ControlPaint.h>
-#include <gui/System/Mona/Forms/Cursor.h>
 #include <gui/System/Drawing/Font.h>
 #include <gui/System/Math.h>
 
@@ -235,8 +234,7 @@ namespace System { namespace Mona { namespace Forms
 			case NCState_TitleBar:
 			{
 #ifdef MONA
-				Point p = this->PointToClient(Cursor::get_Position());
-				int ex = this->get_X() + (p.X - this->clickPoint.X), ey = this->get_Y() + (p.Y - this->clickPoint.Y);
+				int ex = this->get_X() + (e->X - this->clickPoint.X), ey = this->get_Y() + (e->Y - this->clickPoint.Y);
 				if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey)
 				{
 					this->ptRevRect = Point(ex, ey);

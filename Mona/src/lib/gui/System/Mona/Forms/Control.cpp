@@ -428,9 +428,16 @@ namespace System { namespace Mona { namespace Forms
 			case MSG_GUISERVER_MOUSEMOVE:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
-				Point pt = arg->Button == 0 ? Point(arg->X, arg->Y) : this->clickPoint;
-				this->NCHitTest(pt.X, pt.Y) == NCState_Client
-					? this->OnMouseMove(arg) : this->OnNCMouseMove(arg);
+				Point pt_arg(arg->X, arg->Y);
+				Point pt = arg->Button == 0 ? pt_arg : this->clickPoint;
+				if (this->NCHitTest(pt.X, pt.Y) == NCState_Client)
+				{
+					if (arg->Button != 0 || this->get_Bounds().Contains(pt_arg)) this->OnMouseMove(arg);
+				}
+				else
+				{
+					this->OnNCMouseMove(arg);
+				}
 				break;
 			}
 			case MSG_GUISERVER_MOUSEDOWN:

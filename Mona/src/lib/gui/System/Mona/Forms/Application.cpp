@@ -4,6 +4,7 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Timer.h>
+#include <gui/System/Mona/Forms/Cursor.h>
 
 #define MSG_GUI_TIMER 0x40f0
 
@@ -126,8 +127,10 @@ namespace System { namespace Mona { namespace Forms
 				_P<Control> c = mapControls[m->arg1];
 				if (c != NULL)
 				{
-					Point p = c->PointToClient(Point(GET_X_DWORD(m->arg2), GET_Y_DWORD(m->arg2)));
-					_P<MouseEventArgs> e = new MouseEventArgs(m->arg3, p.X, p.Y);
+					Point p1 = m->header == MSG_GUISERVER_MOUSEMOVE ?
+						Cursor::get_Position() : Point(GET_X_DWORD(m->arg2), GET_Y_DWORD(m->arg2));
+					Point p2 = c->PointToClient(p1);
+					_P<MouseEventArgs> e = new MouseEventArgs(m->arg3, p2.X, p2.Y);
 					c->WndProc(m->header, e.get());
 				}
 				break;
