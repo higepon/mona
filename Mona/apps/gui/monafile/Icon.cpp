@@ -8,7 +8,7 @@ using namespace System::Collections;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
-extern dword __gui_server;
+extern dword gui_server;
 extern int ProcessStart(const String& file);
 
 _P<Bitmap> icons;
@@ -95,7 +95,7 @@ void Icon::OnNCMouseUp(_P<MouseEventArgs> e)
 		{
 			_P<FileWindow> win = new FileWindow();
 			windows->Add(win);
-			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
+			MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
 				MAKE_DWORD(cx, cy),
 				MAKE_DWORD(win->get_X(), win->get_Y()),
 				MAKE_DWORD(win->get_Width(), win->get_Height()));
@@ -107,7 +107,7 @@ void Icon::OnNCMouseUp(_P<MouseEventArgs> e)
 
 void Icon::ExpansionEffect(int x, int y)
 {
-	MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
+	MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
 		MAKE_DWORD(x, y), MAKE_DWORD(x - 32, y - 32), MAKE_DWORD(64, 64));
 }
 

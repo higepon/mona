@@ -19,8 +19,8 @@ interface Observer {
 class Observable {
 
   public:
-    Observable() : changed(false) {}
-    virtual ~Observable(){}
+    Observable();
+    virtual ~Observable();
 
   public:
     virtual void addObserver(Observer* o);

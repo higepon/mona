@@ -1,26 +1,27 @@
+// This file's encoding is UTF-8.
+
 #ifndef _MONA_REVERSI_BOARD_
 #define _MONA_REVERSI_BOARD_
 
+#include <monapi.h>
 #include <sys/types.h>
 
-using namespace MonAPI;
-
 /*----------------------------------------------------------------------
-    Point (x, y)¤ÎºÂÉ¸´ÉÍı
+    Point (x, y)ã®åº§æ¨™ç®¡ç†
 ----------------------------------------------------------------------*/
-class Point {
+class Point2D {
   public:
-    Point(int x, int y) {
+    Point2D(int x, int y) {
         this->x = x;
         this->y = y;
     }
 
-    Point(Point* point) {
+    Point2D(Point2D* point) {
         this->x = point->x;
         this->y = point->y;
     }
 
-    virtual ~Point() {}
+    virtual ~Point2D() {}
 
   public:
     int x;
@@ -28,7 +29,7 @@ class Point {
 };
 
 /*----------------------------------------------------------------------
-    Point3D (x, y, ¤³¤Ş)¤Î´ÉÍı
+    Point3D (x, y, ã“ã¾)ã®ç®¡ç†
 ----------------------------------------------------------------------*/
 class Point3D {
 
@@ -47,9 +48,9 @@ class Point3D {
 };
 
 /*----------------------------------------------------------------------
-    ¥ê¥Ğ¡¼¥·ÈÄ(ÉÁ²èÉô¤ÏÊ¬Î¥¤µ¤ì¤Æ¤¤¤ë¤Î¤ÇÂ¾¤ÎOS¤Ç¤â»È¤¤¤Ş¤ï¤»¤Ş¤¹)
+    ãƒªãƒãƒ¼ã‚·æ¿(æç”»éƒ¨ã¯åˆ†é›¢ã•ã‚Œã¦ã„ã‚‹ã®ã§ä»–ã®OSã§ã‚‚ä½¿ã„ã¾ã‚ã›ã¾ã™)
 ----------------------------------------------------------------------*/
-class ReversiBoard : public Observable {
+class ReversiBoard : public MonAPI::Observable {
 
   public:
     ReversiBoard();
@@ -70,8 +71,9 @@ class ReversiBoard : public Observable {
   public:
     int countPieces(int piece);
     int getPiece(int x, int y);
-    int getPiece(Point* point);
+    int getPiece(Point2D* point);
     int getCurrentHand() const;
+    void setNextHand();
     bool setPieces(int x, int y, int piece);
     bool existNotReversedPieces();
     void reverseNext();
@@ -80,7 +82,6 @@ class ReversiBoard : public Observable {
     int countReversiblePieces(int x, int y, int piece);
     void resetBoard();
     bool setPiece(int x, int y, int piece);
-    void setNextHand();
     bool checkRange(int x, int y);
 
   private:
@@ -102,7 +103,7 @@ class ReversiBoard : public Observable {
     int board[8][8];
     int turn;
     int currentHand;
-    List<Point*>* allNotReversedPieces;
+    List<Point2D*>* allNotReversedPieces;
     List<Point3D*>* allTurns;
 
 };

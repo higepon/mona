@@ -6,16 +6,15 @@ INSTFILES = RED.BMP WHITE.BMP
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lgui-imp
+ADDLINK    = -lgui-imp -lmonalibc-imp
 ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a
 include $(MONADIR)/env/monapi-ex2.inc
 else
-ADDLINK    = -lgui
+ADDLINK    = -lgui -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libgui.a
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
-LINK      = -lgui -lmonapi -lmonalibc
 CXXFLAGS += -DDEBUG
 
 $(TARGET).EXE: $(LIBDIR)/libgui.a

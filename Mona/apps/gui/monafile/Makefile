@@ -16,7 +16,6 @@ ADDLINKDEP = $(MONADIR)/lib/libgui.a
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
-LINK    = -lgui -lmonapi -lmonalibc
 CXXFLAGS += -DDEBUG
 
 $(TARGET).EXE: $(LIBDIR)/libgui.a $(INSTFILES)

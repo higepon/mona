@@ -6,6 +6,10 @@
 
 namespace MonAPI {
 
+Observable::Observable() : changed(false) {}
+
+Observable::~Observable() {}
+
 void Observable::addObserver(Observer* o) {
     this->observers.add(o);
 }

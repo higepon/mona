@@ -2,6 +2,8 @@
 #include <monapi/messages.h>
 #include "ReversiBoard.h"
 
+using namespace MonAPI;
+
 /*----------------------------------------------------------------------
     Monaアプリケーション
 ----------------------------------------------------------------------*/
@@ -140,7 +142,7 @@ void myApplication::update(Observable* o, void* arg) {
         drawBoard();
     } else {
 
-        Point* point = (Point*)arg;
+        Point2D* point = (Point2D*)arg;
         sleep(100);
         drawPieces(point->x, point->y);
     }

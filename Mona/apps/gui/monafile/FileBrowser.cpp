@@ -12,7 +12,7 @@ using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
-extern dword __gui_server;
+extern dword gui_server;
 extern int ProcessStart(const String& file);
 
 #define BASE Control
@@ -186,7 +186,7 @@ void FileBrowser::Open(int target)
                 }
                 if (p >= 0)
                 {
-                    MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_REDUCTIONEFFECT,
+                    MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_REDUCTIONEFFECT,
                         MAKE_DWORD(po.X + sz.Width / 2, po.Y + sz.Height / 2),
                         MAKE_DWORD(po.X, po.Y), MAKE_DWORD(sz.Width, sz.Height));
                     fw->set_Directory(p == 0 ? "/" : this->path.Substring(0, p));
@@ -194,7 +194,7 @@ void FileBrowser::Open(int target)
             }
             else
             {
-                MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
+                MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
                     MAKE_DWORD(pc.X, pc.Y), MAKE_DWORD(po.X, po.Y), MAKE_DWORD(sz.Width, sz.Height));
                 fw->set_Directory(PathCombine(this->path, name));
             }

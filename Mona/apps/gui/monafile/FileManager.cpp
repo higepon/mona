@@ -10,6 +10,7 @@ using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
+dword gui_server;
 extern _P<Bitmap> icons;
 
 static bool ExistsProcess(const MonAPI::CString& self)
@@ -49,6 +50,7 @@ public:
 	{
 		if (ExistsProcess("MONAFILE.EX2")) return;
 		
+		gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		String bundlePath = MonAPI::System::getBundlePath();
 		icons = new Bitmap(bundlePath + "/ICONS.BM2");
 		int len = icons->get_Width() * icons->get_Height();

@@ -1,25 +1,26 @@
-#include <monapi.h>
+// This file's encoding is UTF-8.
+
 #include "ReversiBoard.h"
 
 using namespace MonAPI;
 
 /**
- * ¥³¥ó¥¹¥È¥é¥¯¥¿
+ * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  */
 ReversiBoard::ReversiBoard() {
     init();
 }
 
 /**
- * »ØÄê¤µ¤ì¤¿¶ğ¤¬È×ÌÌ¾å¤Ë¤¤¤¯¤Ä¤¢¤ë¤«¤ò¿ô¤¨¤ë
+ * æŒ‡å®šã•ã‚ŒãŸé§’ãŒç›¤é¢ä¸Šã«ã„ãã¤ã‚ã‚‹ã‹ã‚’æ•°ãˆã‚‹
  * @param  piece <code>ReversiBoard.WHITE, ReversiBoard.BLACK, ReversiBoard.EMPTY</code>
- * @return ¶ğ¤Î¸Ä¿ô
+ * @return é§’ã®å€‹æ•°
  */
 int ReversiBoard::countPieces(int piece) {
 
     int result = 0;
 
-    // ¶ğ¤Î¸Ä¿ô¤ò¿ô¤¨¤ë
+    // é§’ã®å€‹æ•°ã‚’æ•°ãˆã‚‹
     for (int x = 0; x < BOARDW; x++) {
         for (int y = 0; y < BOARDH; y++) {
             if (this->board[x][y] == piece) result++;
@@ -29,142 +30,146 @@ int ReversiBoard::countPieces(int piece) {
 }
 
 /**
- * »ØÄê¤µ¤ì¤¿°ÌÃÖ¤Î¶ğ¤òÊÖ¤¹
- * @param  x (x, y) ¶ğ¤Î°ÌÃÖ
- * @param  y (x, y) ¶ğ¤Î°ÌÃÖ
- * @return ¶ğ È×ÌÌ¤ÎÈÏ°Ï³°¤Î¾ì¹ç¤Ï<code>ReversiBoard.EMPTY</code>
+ * æŒ‡å®šã•ã‚ŒãŸä½ç½®ã®é§’ã‚’è¿”ã™
+ * @param  x (x, y) é§’ã®ä½ç½®
+ * @param  y (x, y) é§’ã®ä½ç½®
+ * @return é§’ ç›¤é¢ã®ç¯„å›²å¤–ã®å ´åˆã¯<code>ReversiBoard.EMPTY</code>
  */
 int ReversiBoard::getPiece(int x, int y) {
 
-    // x, y¤ÎÈÏ°Ï¤ò¥Á¥§¥Ã¥¯
-    if (!checkRange(x, y)) return EMPTY;
+    // x, yã®ç¯„å›²ã‚’ãƒã‚§ãƒƒã‚¯
+   if (!checkRange(x, y)) return EMPTY;
 
-    // ¶ğ¤òÊÖ¤¹
+    // é§’ã‚’è¿”ã™
     return board[x][y];
 }
 
 /**
- * »ØÄê¤µ¤ì¤¿°ÌÃÖ¤Î¶ğ¤òÊÖ¤¹
- * @param  point ¶ğ¤Î°ÌÃÖ
- * @return ¶ğ È×ÌÌ¤ÎÈÏ°Ï³°¤Î¾ì¹ç¤Ï<code>ReversiBoard.EMPTY</code>
+ * æŒ‡å®šã•ã‚ŒãŸä½ç½®ã®é§’ã‚’è¿”ã™
+ * @param  point é§’ã®ä½ç½®
+ * @return é§’ ç›¤é¢ã®ç¯„å›²å¤–ã®å ´åˆã¯<code>ReversiBoard.EMPTY</code>
  */
-int ReversiBoard::getPiece(Point* point) {
+int ReversiBoard::getPiece(Point2D* point) {
     return getPiece(point->x, point->y);
 }
 
 /**
- * ¸½ºß¤Î¼êÈÖ¤Î¥×¥ì¥¤¥ä¡¼¤òÊÖ¤¹<code>ReversiBoard.EMPTY</code>¤òÊÖ¤·¤¿¤È¤­¤Ï¾¡Éé¤Î·èÃå¤¬¤Ä¤¤¤Æ¤¤¤ë¾õÂÖ<BR>
- * @return ¸½ºß¤Î¼êÈÖ¤Î¥×¥ì¥¤¥ä¡¼ <code>ReversiBoard.BLACK, WHITE, EMPTY</code>
+ * ç¾åœ¨ã®æ‰‹ç•ªã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¿”ã™<code>ReversiBoard.EMPTY</code>ã‚’è¿”ã—ãŸã¨ãã¯å‹è² ã®æ±ºç€ãŒã¤ã„ã¦ã„ã‚‹çŠ¶æ…‹<BR>
+ * @return ç¾åœ¨ã®æ‰‹ç•ªã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ <code>ReversiBoard.BLACK, WHITE, EMPTY</code>
  */
 int ReversiBoard::getCurrentHand() const {
     return this->currentHand;
 }
 
 /**
- * »ØÄê¤µ¤ì¤¿°ÌÃÖ¤Ë¶ğ¤òÃÖ¤¯¡£<BR>
- * ¶ğ¤¬ÃÖ¤±¤¿¾ì¹ç¡¢ÃÖ¤¤¤¿¾ì½ê¤ò¼¨¤¹¡£<BR>
- * <code>Point</code>¤¬notifyObservers¤Ç<BR>
- * ´Æ»ë¸µ¤ËÄÌÃÎ¤µ¤ì¤ë
- * @param x (x, y) ¶ğ¤Î°ÌÃÖ
- * @param y (x, y) ¶ğ¤Î°ÌÃÖ
- * @param piece ÃÖ¤¯¶ğ
- * @return ¶ğ¤¬ÃÖ¤±¤¿¤é<code>true</code>, ¶ğ¤¬ÃÖ¤±¤Ê¤«¤Ã¤¿¤é<code>false</code>
+ * æŒ‡å®šã•ã‚ŒãŸä½ç½®ã«é§’ã‚’ç½®ãã€‚<BR>
+ * é§’ãŒç½®ã‘ãŸå ´åˆã€ç½®ã„ãŸå ´æ‰€ã‚’ç¤ºã™ã€‚<BR>
+ * <code>Point2D</code>ãŒnotifyObserversã§<BR>
+ * ç›£è¦–å…ƒã«é€šçŸ¥ã•ã‚Œã‚‹
+ * @param x (x, y) é§’ã®ä½ç½®
+ * @param y (x, y) é§’ã®ä½ç½®
+ * @param piece ç½®ãé§’
+ * @return é§’ãŒç½®ã‘ãŸã‚‰<code>true</code>, é§’ãŒç½®ã‘ãªã‹ã£ãŸã‚‰<code>false</code>
  */
 bool ReversiBoard::setPiece(int x, int y, int piece) {
 
-    int numReversiblePieces; // Î¢ÊÖ¤¹¤³¤È¤Î¤Ç¤­¤ë¶ğ¿ô
+    int numReversiblePieces; // è£è¿”ã™ã“ã¨ã®ã§ãã‚‹é§’æ•°
 
-    // ¸½ºß¤Î¼ê¤È¾È¹ç
+    // ç¾åœ¨ã®æ‰‹ã¨ç…§åˆ
     if (currentHand != piece) return false;
 
-    // Á°¼ê¤¬´°Á´¤Ë½ªÎ»¤·¤¿¤«¤É¤¦¤«¤ò¥Á¥§¥Ã¥¯
+    // å‰æ‰‹ãŒå®Œå…¨ã«çµ‚äº†ã—ãŸã‹ã©ã†ã‹ã‚’ãƒã‚§ãƒƒã‚¯
     if (existNotReversedPieces()) return false;
 
-    // ¤½¤³¤ËÃÖ¤±¤ë¤«¤É¤¦¤«¤òÄ´¤Ù¤ë
+    // ãã“ã«ç½®ã‘ã‚‹ã‹ã©ã†ã‹ã‚’èª¿ã¹ã‚‹
     numReversiblePieces = countReversiblePieces(x, y, piece);
     if (numReversiblePieces <= 0) return false;
 
-    // piece¤ò(x, y)¤ËÃÖ¤¤¤¿¤È¤­¤Ë¡¢Î¢ÊÖ¤¹¶ğ¤ò¤¹¤Ù¤Æµ­²±
+    // pieceã‚’(x, y)ã«ç½®ã„ãŸã¨ãã«ã€è£è¿”ã™é§’ã‚’ã™ã¹ã¦è¨˜æ†¶
     recordReversiblePieces(x, y, piece);
 
-    // ¶ğ¤òÃÖ¤¯
+    // é§’ã‚’ç½®ã
     board[x][y] = piece;
 
-    // ¥¿¡¼¥ó¤òµ­²±
+    // ã‚¿ãƒ¼ãƒ³ã‚’è¨˜æ†¶
     allTurns->add(new Point3D(x, y, piece));
 
-    // ÊÑ¹¹¤òObserver¤ËÄÌÃÎ
+    turn++;
+
+    // å¤‰æ›´ã‚’Observerã«é€šçŸ¥
     this->setChanged();
-    this->notifyObservers(new Point(x, y));
+    Point2D* p = new Point2D(x, y);
+    this->notifyObservers(p);
+    delete p;
     this->clearChanged();
 
     return true;
 }
 
 /**
- * <code>setPiece()</code>¤·¤¿¸å¤Ë¡¢Î¢ÊÖ¤·¤Æ¤Ê¤¤¶ğ¤¬Â¸ºß¤¹¤ë¤«¤òÊÖ¤¹<BR>
+ * <code>setPiece()</code>ã—ãŸå¾Œã«ã€è£è¿”ã—ã¦ãªã„é§’ãŒå­˜åœ¨ã™ã‚‹ã‹ã‚’è¿”ã™<BR>
  * <pre>
- *    »ÈÍÑÊıË¡
+ *    ä½¿ç”¨æ–¹æ³•
  *      board.setPiece(3, 5, OthlloBoard::BLACK);
  *      while (existNotReversedPieces()) {
  *          reverseNext();
- *          // ÉÁ²èÍÑ½èÍı
+ *          // æç”»ç”¨å‡¦ç†
  *      }
  * </pre>
- * @return Î¢ÊÖ¤·¤Æ¤Ê¤¤¶ğ¤¬Â¸ºß¤¹¤ë¾ì¹ç<code>true</code>
+ * @return è£è¿”ã—ã¦ãªã„é§’ãŒå­˜åœ¨ã™ã‚‹å ´åˆ<code>true</code>
  */
 bool ReversiBoard::existNotReversedPieces() {
     return allNotReversedPieces->size() > 0;
 }
 
 /**
- * ¼¡¤Î¶ğ¤òÎ¢ÊÖ¤¹<BR>
- * Î¢ÊÖ¤·¤¿¾ì½ê¤ò¼¨¤¹<code>Point</code>¤¬notifyObservers¤Ç´Æ»ë¸µ¤ËÄÌÃÎ¤µ¤ì¤ë
- * existNotReversedPieces()¤Î»ÈÍÑÊıË¡¤ò»²¾È
+ * æ¬¡ã®é§’ã‚’è£è¿”ã™<BR>
+ * è£è¿”ã—ãŸå ´æ‰€ã‚’ç¤ºã™<code>Point2D</code>ãŒnotifyObserversã§ç›£è¦–å…ƒã«é€šçŸ¥ã•ã‚Œã‚‹
+ * existNotReversedPieces()ã®ä½¿ç”¨æ–¹æ³•ã‚’å‚ç…§
  */
 void ReversiBoard::reverseNext() {
 
-    // Î¢ÊÖ¤¹°ÌÃÖ¤ò¼èÆÀ
-    Point* point = allNotReversedPieces->get(0);
+    // è£è¿”ã™ä½ç½®ã‚’å–å¾—
+    Point2D* point = allNotReversedPieces->get(0);
 
-    // Î¢ÊÖ¤¹
+    // è£è¿”ã™
     reversePiece(point->x, point->y);
 
-    // ÊÑ¹¹¤òÄÌÃÎ
+    // å¤‰æ›´ã‚’é€šçŸ¥
     this->setChanged();
-    notifyObservers(new Point(point));
+    notifyObservers(new Point2D(point));
     this->clearChanged();
 
-    // Î¢ÊÖ¤·¤¿¤Î¤Ç°ÌÃÖ¤ò¾Ãµî
+    // è£è¿”ã—ãŸã®ã§ä½ç½®ã‚’æ¶ˆå»
     allNotReversedPieces->removeAt(0);
 
     return;
 }
 
 /**
- * ¸½ºß¥¿¡¼¥ó¤òÊÖ¤¹
- * @return ¸½ºß¥¿¡¼¥ó
+ * ç¾åœ¨ã‚¿ãƒ¼ãƒ³ã‚’è¿”ã™
+ * @return ç¾åœ¨ã‚¿ãƒ¼ãƒ³
  */
 int ReversiBoard::getTurn() const {
     return this->turn;
 }
 
 /**
- * undoµ¡Ç½
- * 1¼êÌá¤ë
+ * undoæ©Ÿèƒ½
+ * 1æ‰‹æˆ»ã‚‹
  */
 void ReversiBoard::undo() {
 
-    // 1¼êÁ°¤ËÌá¤ì¤Ê¤¤¾ì¹ç
+    // 1æ‰‹å‰ã«æˆ»ã‚Œãªã„å ´åˆ
     if (getTurn() < 1) return;
 
-    // È×ÌÌ½é´ü²½
+    // ç›¤é¢åˆæœŸåŒ–
     initBoard();
 
-    // È×ÌÌÊÂ¤Ù¤Ê¤ª¤·
+    // ç›¤é¢ä¸¦ã¹ãªãŠã—
     for (int i = 0; i < allTurns->size() -1; i++) {
 
-        // ¶ğ¤òÃÖ¤¯
+        // é§’ã‚’ç½®ã
         Point3D* p = allTurns->get(i);
         setPiece(p->x, p->y, p->z);
         while (existNotReversedPieces()) {
@@ -172,30 +177,29 @@ void ReversiBoard::undo() {
         }
     }
 
-    // ºÇ¸å¤Î¥¿¡¼¥ó¤ò¾Ãµî
+    // æœ€å¾Œã®ã‚¿ãƒ¼ãƒ³ã‚’æ¶ˆå»
     allTurns->removeAt(allTurns->size() -1);
-
     return;
 }
 
 /**
- * »ØÄê¤µ¤ì¤¿°ÌÃÖ¤Ë¶ğ¤òÃÖ¤¤¤¿¤È¤­¤Ë¡¢¤¤¤¯¤Ä¶ğ¤¬Î¢ÊÖ¤»¤ë¤«¤òÊÖ¤¹
+ * æŒ‡å®šã•ã‚ŒãŸä½ç½®ã«é§’ã‚’ç½®ã„ãŸã¨ãã«ã€ã„ãã¤é§’ãŒè£è¿”ã›ã‚‹ã‹ã‚’è¿”ã™
  * @param x
  * @param y
- * @param piece ÃÖ¤¯¶ğ
- * @return Î¢ÊÖ¤»¤ë¶ğ¿ô
+ * @param piece ç½®ãé§’
+ * @return è£è¿”ã›ã‚‹é§’æ•°
  */
 int ReversiBoard::countReversiblePieces(int x, int y, int piece) {
 
     int result = 0;
 
-    // x, y¤ÎÈÏ°Ï¤ò¥Á¥§¥Ã¥¯
+    // x, yã®ç¯„å›²ã‚’ãƒã‚§ãƒƒã‚¯
     if (!checkRange(x, y)) return 0;
 
-    // ¤¹¤Ç¤Ë¶ğ¤¬ÃÖ¤«¤ì¤Æ¤¤¤ë¤«¤ò¥Á¥§¥Ã¥¯
+    // ã™ã§ã«é§’ãŒç½®ã‹ã‚Œã¦ã„ã‚‹ã‹ã‚’ãƒã‚§ãƒƒã‚¯
     if (board[x][y] != EMPTY) return 0;
 
-    // (x, y)¤Ëpiece¤òÃÖ¤¤¤¿¾ì¹ç¤ËÎ¢ÊÖ¤¹¤³¤È¤Î¤Ç¤­¤ë¶ğ¤ò8Êı¸ş¤ËÃµº÷
+    // (x, y)ã«pieceã‚’ç½®ã„ãŸå ´åˆã«è£è¿”ã™ã“ã¨ã®ã§ãã‚‹é§’ã‚’8æ–¹å‘ã«æ¢ç´¢
     result += countReversiblePieceToOneAngle(x, y,  1,  0, piece, false);
     result += countReversiblePieceToOneAngle(x, y,  1,  1, piece, false);
     result += countReversiblePieceToOneAngle(x, y,  0,  1 ,piece, false);
@@ -209,7 +213,7 @@ int ReversiBoard::countReversiblePieces(int x, int y, int piece) {
 }
 
 /**
- * ¥ê¥Ğ¡¼¥·È×¤ò¥ê¥»¥Ã¥È¤¹¤ë
+ * ãƒªãƒãƒ¼ã‚·ç›¤ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
  */
 void ReversiBoard::resetBoard() {
 
@@ -217,7 +221,7 @@ void ReversiBoard::resetBoard() {
     this->allTurns = new HList<Point3D*>();
     initBoard();
 
-    // ÊÑ¹¹¤òÄÌÃÎ
+    // å¤‰æ›´ã‚’é€šçŸ¥
     this->setChanged();
     this->notifyObservers(NULL);
     this->clearChanged();
@@ -225,111 +229,111 @@ void ReversiBoard::resetBoard() {
 }
 
 /**
- * ReversiBoardÀ¸À®¤È½é´ü²½¤ò¹Ô¤¦
+ * ReversiBoardç”Ÿæˆã¨åˆæœŸåŒ–ã‚’è¡Œã†
  */
 void ReversiBoard::init() {
 
-    // È×ÌÌ½é´ü²½
+    // ç›¤é¢åˆæœŸåŒ–
     initBoard();
 
-    // ¤¹¤Ù¤Æ¤Î¥¿¡¼¥ó¤òµ­²±¤¹¤ëVector½é´ü²½
+    // ã™ã¹ã¦ã®ã‚¿ãƒ¼ãƒ³ã‚’è¨˜æ†¶ã™ã‚‹HListåˆæœŸåŒ–
     allTurns = new HList<Point3D*>();
 
     return;
 }
 
 /**
- * È×ÌÌ½é´ü²½¹Ô¤¦
+ * ç›¤é¢åˆæœŸåŒ–è¡Œã†
  */
 void ReversiBoard::initBoard() {
 
-    // ¸½ºß¥¿¡¼¥ó¤òÀßÄê
+    // ç¾åœ¨ã‚¿ãƒ¼ãƒ³ã‚’è¨­å®š
     this->turn = 0;
 
-    // Àè¼ê¤Ï¹õ
+    // å…ˆæ‰‹ã¯é»’
     this->currentHand = BLACK;
 
-    // È×ÌÌ¤ò¶õ¤Ë¤¹¤ë
+    // ç›¤é¢ã‚’ç©ºã«ã™ã‚‹
     for (int x = 0; x < BOARDW; x++) {
         for (int y = 0; y < BOARDH; y++) board[x][y] = EMPTY;
     }
 
-    // ½é´ü¾õÂÖ¤ÇÃÖ¤«¤ì¤Æ¤¤¤ë¶ğ¤ò¥»¥Ã¥È
+    // åˆæœŸçŠ¶æ…‹ã§ç½®ã‹ã‚Œã¦ã„ã‚‹é§’ã‚’ã‚»ãƒƒãƒˆ
     board[3][3] = BLACK;
     board[4][4] = BLACK;
     board[4][3] = WHITE;
     board[3][4] = WHITE;
 
-    // Î¢ÊÖ¤¹¤Ù¤­¶ğ¤Î¤¹¤Ù¤Æ°ÌÃÖ¤òµ­²±¤¹¤ëList½é´ü²½
-    allNotReversedPieces = new HList<Point*>();
+    // è£è¿”ã™ã¹ãé§’ã®ã™ã¹ã¦ä½ç½®ã‚’è¨˜æ†¶ã™ã‚‹ListåˆæœŸåŒ–
+    allNotReversedPieces = new HList<Point2D*>();
 
     return;
 }
 
 /**
- * »ØÄê¤·¤¿¶ğ¤òÎ¢ÊÖ¤¹
+ * æŒ‡å®šã—ãŸé§’ã‚’è£è¿”ã™
  */
 void ReversiBoard::reversePiece(int x, int y) {
 
-    // x, y¤ÎÈÏ°Ï¤ò¥Á¥§¥Ã¥¯
+    // x, yã®ç¯„å›²ã‚’ãƒã‚§ãƒƒã‚¯
     if (!checkRange(x, y)) return;
 
-    // ¶ğ¤òÎ¢ÊÖ¤¹¤¤â¤·¶õ¤Ê¤é²¿¤â¤·¤Ê¤¤
+    // é§’ã‚’è£è¿”ã™ï½¤ã‚‚ã—ç©ºãªã‚‰ä½•ã‚‚ã—ãªã„
     board[x][y] = turnColor(board[x][y]);
 
     return;
 }
 
 /**
- * ÆşÎÏ¤µ¤ì¤¿ÃÍ¤¬È×ÌÌ¾å¤ËÂ¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯¤¹¤ë
+ * å…¥åŠ›ã•ã‚ŒãŸå€¤ãŒç›¤é¢ä¸Šã«å­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
  */
 bool ReversiBoard::checkRange(int x, int y) {
 
-    // È×ÌÌ¾å¤Ë¤¢¤ë¤È¤¤¤¦¾ò·ï
+    // ç›¤é¢ä¸Šã«ã‚ã‚‹ã¨ã„ã†æ¡ä»¶
     bool xRange = x >= 0 && x < BOARDW;
     bool yRange = y >= 0 && y < BOARDH;
 
-    // È×ÌÌ¾å¤Ë¤¢¤ë
+    // ç›¤é¢ä¸Šã«ã‚ã‚‹
     if (xRange && yRange) return true;
 
-    // È×ÌÌ¾å¤Ë¤Ê¤¤
+    // ç›¤é¢ä¸Šã«ãªã„
     return false;
 }
 
 /**
- *  »ØÄê¤µ¤ì¤¿¥Ù¥¯¥È¥ë(toX, toY)¤ÎÊı¸ş¤ØÎ¢ÊÖ¤»¤ë¶ğ¿ô¤ò¿ô¤¨¤ë
- *  reordFlag¤¬true¤Î»ş¤Ï°ÌÃÖ¤òµ­²±
+ *  æŒ‡å®šã•ã‚ŒãŸãƒ™ã‚¯ãƒˆãƒ«(toX, toY)ã®æ–¹å‘ã¸è£è¿”ã›ã‚‹é§’æ•°ã‚’æ•°ãˆã‚‹
+ *  reordFlagãŒtrueã®æ™‚ã¯ä½ç½®ã‚’è¨˜æ†¶
  */
 int ReversiBoard::countReversiblePieceToOneAngle(int x, int y, int toX,int toY
                                                  , int piece, bool recordFlag) {
     int result = 0;
 
-    // ÎÙ¤Î¶ğ¤Ø°ÜÆ°
+    // éš£ã®é§’ã¸ç§»å‹•
     x += toX;
     y += toY;
 
-    // È×ÌÌ¤ÎÃ¼¤Ş¤ÇÃµº÷¤òÂ³¤±¤ë
+    // ç›¤é¢ã®ç«¯ã¾ã§æ¢ç´¢ã‚’ç¶šã‘ã‚‹
     while (x >= 0 && y >= 0 && x < BOARDW && y < BOARDH) {
 
-        // Ãµº÷Ãæ¤Î¶ğ¤¬Î¢ÊÖ¤·¤Î¿§¤Ê¤éÎ¢ÊÖ¤»¤ë
+        // æ¢ç´¢ä¸­ã®é§’ãŒè£è¿”ã—ã®è‰²ãªã‚‰è£è¿”ã›ã‚‹
         if (board[x][y] == turnColor(piece)) {
 
-            // Î¢ÊÖ¤»¤ë¶ğ¤Î°ÌÃÖ¤òµ­²±
-            if (recordFlag) allNotReversedPieces->add(new Point(x, y));
+            // è£è¿”ã›ã‚‹é§’ã®ä½ç½®ã‚’è¨˜æ†¶
+            if (recordFlag) allNotReversedPieces->add(new Point2D(x, y));
 
-            // ¶ğ¿ô¥¤¥ó¥¯¥ê¥á¥ó¥È
+            // é§’æ•°ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
             result++;
         }
 
-        // Æ±¤¸¿§¤À¤Ã¤¿¤é¡¢¤½¤³¤Ş¤Ç¤¢¤Ã¤¿Î¢ÊÖ¤·¿§¤òÎ¢ÊÖ¤¹¤³¤È¤¬¤Ç¤­¤ë
+        // åŒã˜è‰²ã ã£ãŸã‚‰ã€ãã“ã¾ã§ã‚ã£ãŸè£è¿”ã—è‰²ã‚’è£è¿”ã™ã“ã¨ãŒã§ãã‚‹
         else if (board[x][y] == piece) return result;
 
-        // ¶õ¤Ê¤éÎ¢ÊÖ¤»¤Ê¤¤
+        // ç©ºãªã‚‰è£è¿”ã›ãªã„
         else if (board[x][y] == EMPTY) {
 
             if (recordFlag) {
 
-                // µ­²±¤·¤Æ¤¤¤¿¶ğ¤Î°ÌÃÖ
+                // è¨˜æ†¶ã—ã¦ã„ãŸé§’ã®ä½ç½®
                 for (int i = 0; i < result; i++) {
 
                     allNotReversedPieces->removeAt(allNotReversedPieces->size() - 1);
@@ -338,14 +342,14 @@ int ReversiBoard::countReversiblePieceToOneAngle(int x, int y, int toX,int toY
             return 0;
         }
 
-        // ¤µ¤é¤ËÎÙ¤Î¶ğ¤Ø°ÜÆ°
+        // ã•ã‚‰ã«éš£ã®é§’ã¸ç§»å‹•
         x += toX;
         y += toY;
     }
 
     if (recordFlag) {
 
-        // µ­²±¤·¤Æ¤¤¤¿¶ğ¤Î°ÌÃÖ
+        // è¨˜æ†¶ã—ã¦ã„ãŸé§’ã®ä½ç½®
         for (int i = 0; i < result; i++) {
 
             allNotReversedPieces->removeAt(allNotReversedPieces->size() - 1);
@@ -355,28 +359,28 @@ int ReversiBoard::countReversiblePieceToOneAngle(int x, int y, int toX,int toY
 }
 
 /**
- * Î¢ÊÖ¤·¤¿¿§¤òÊÖ¤¹
+ * è£è¿”ã—ãŸè‰²ã‚’è¿”ã™
  */
 int ReversiBoard::turnColor(int piece) {
     return piece * -1;
 }
 
 /**
- * piece¤ò(x, y)¤ËÃÖ¤¤¤¿¤È¤­¤Ë¡¢Î¢ÊÖ¤¹¶ğ¤ò¤¹¤Ù¤Æµ­²±
+ * pieceã‚’(x, y)ã«ç½®ã„ãŸã¨ãã«ã€è£è¿”ã™é§’ã‚’ã™ã¹ã¦è¨˜æ†¶
  */
 bool ReversiBoard::recordReversiblePieces(int x, int y, int piece) {
 
-    // x, y¤ÎÈÏ°Ï¤ò¥Á¥§¥Ã¥¯
+    // x, yã®ç¯„å›²ã‚’ãƒã‚§ãƒƒã‚¯
     if (!checkRange(x, y)) return false;
 
-    // ¤¹¤Ç¤Ë¶ğ¤¬ÃÖ¤«¤ì¤Æ¤¤¤ë¤«¤ò¥Á¥§¥Ã¥¯
+    // ã™ã§ã«é§’ãŒç½®ã‹ã‚Œã¦ã„ã‚‹ã‹ã‚’ãƒã‚§ãƒƒã‚¯
     if (board[x][y] != EMPTY) return false;
 
-    // ¶ğ°ÌÃÖµ­²±¥ª¥Ö¥¸¥§¥¯¥È¤ò½é´ü²½
+    // é§’ä½ç½®è¨˜æ†¶ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–
     delete allNotReversedPieces;
-    allNotReversedPieces = new HList<Point*>();
+    allNotReversedPieces = new HList<Point2D*>();
 
-    // Î¢ÊÖ¤»¤ë°ÌÃÖ¤òµ­²±
+    // è£è¿”ã›ã‚‹ä½ç½®ã‚’è¨˜æ†¶
     countReversiblePieceToOneAngle(x, y,  1,  0, piece, true);
     countReversiblePieceToOneAngle(x, y,  1,  1, piece, true);
     countReversiblePieceToOneAngle(x, y,  0,  1 ,piece, true);
@@ -389,29 +393,29 @@ bool ReversiBoard::recordReversiblePieces(int x, int y, int piece) {
     return true;
 }
 
-// ¼¡¼ê¤Î¥×¥ì¥¤¥ä¡¼¤òÈ½ÃÇ
+// æ¬¡æ‰‹ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’åˆ¤æ–­
 void ReversiBoard::setNextHand() {
 
     if (isTherePlace(turnColor(currentHand))) {
         currentHand = turnColor(currentHand);
     } else if (isTherePlace(currentHand)) {
 
-        // Â³¤±¤Æ¤â¤¦1¼ê
+        // ç¶šã‘ã¦ã‚‚ã†1æ‰‹
     } else {
 
-        // Î¾¥×¥ì¥¤¥ä¡¼¶¦¤ËÃÖ¤¯¾ì½ê¤¬¤Ê¤¤
+        // ä¸¡ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å…±ã«ç½®ãå ´æ‰€ãŒãªã„
         currentHand = EMPTY;
     }
 
     return;
 }
 
-// È×ÌÌ¾å¤Ë»ØÄê¤µ¤ì¤¿piece¤ò¤ª¤¯¤³¤È¤¬¤Ç¤­¤ë¤«¤òÈ½ÃÇ
+// ç›¤é¢ä¸Šã«æŒ‡å®šã•ã‚ŒãŸpieceã‚’ãŠãã“ã¨ãŒã§ãã‚‹ã‹ã‚’åˆ¤æ–­
 bool ReversiBoard::isTherePlace(int piece) {
 
     int result = 0;
 
-    // ¶ğ¤Î¸Ä¿ô¤ò¿ô¤¨¤ë
+    // é§’ã®å€‹æ•°ã‚’æ•°ãˆã‚‹
     for (int x = 0; x < BOARDW; x++) {
         for (int y = 0; y < BOARDH; y++) {
             result += countReversiblePieces(x, y, piece);
