@@ -251,6 +251,7 @@ bool FDCDriver::recalibrate() {
         waitStatus(0x10, 0x00);
 
         if (senseInterrupt()) break;
+        interrupt_ = false;
     }
 
     return true;
@@ -291,7 +292,7 @@ byte FDCDriver::getResult() {
     \param  track
     \return true OK/false time out
     \author HigePon
-    \date   create:2003/02/11 update:
+    \date   create:2003/02/11 update:2003/09/19
 */
 bool FDCDriver::seek(byte track) {
 
@@ -300,28 +301,20 @@ bool FDCDriver::seek(byte track) {
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
     interrupt_ = false;
-
     if (!sendCommand(command, sizeof(command))){
 
-        info(ERROR, "FDCDriver#seek:command fail\n");
+        info(ERROR, "FDCDriver#:seek command fail\n");
         return false;
     }
 
-    /* seek, recalibreate should wait interrupt */
-    /* and then senseInterrupt                  */
-    waitInterrupt();
+    while (true) {
 
-    delay();
-    delay();
-    delay();
-    delay();
+        waitInterrupt();
 
-    info(DEV_WARNING, "seek:after waitInterrupt\n");
+        waitStatus(0x10, 0x00);
 
-    if (!senseInterrupt()) {
-
-        info(ERROR, "FDCDriver#seek:command fail\n");
-        return false;
+        if (senseInterrupt()) break;
+        interrupt_ = false;
     }
 
     return true;
