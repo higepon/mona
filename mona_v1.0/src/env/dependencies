@@ -42,16 +42,16 @@ monaIhandler.o: monaIhandler.cpp include/monaIdt.h include/monaVga.h \
   stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/FDCDriver.h \
-  include/ProcessManager.h include/monaKernel.h \
-  include/IA32MemoryManager.h include/monaTester.h stlport/string \
-  stlport/stl/_string.h stlport/memory stlport/stl/_tempbuf.h \
-  stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
-  stlport/stl/_auto_ptr.h stlport/stl/_string_fwd.h stlport/iosfwd \
-  stlport/stl/_iosfwd.h stlport/stl/char_traits.h \
-  stlport/stl/_ctraits_fns.h stlport/stl/_string.c \
-  stlport/stl/_string_fwd.c stlport/stl/_string_io.h \
-  stlport/stl/_string_io.c stlport/stl/_string_hash.h \
-  stlport/stl/_hash_fun.h
+  include/MFDCDriver.h include/VirtualConsole.h include/ProcessManager.h \
+  include/monaKernel.h include/IA32MemoryManager.h include/monaTester.h \
+  stlport/string stlport/stl/_string.h stlport/memory \
+  stlport/stl/_tempbuf.h stlport/stl/_tempbuf.c \
+  stlport/stl/_raw_storage_iter.h stlport/stl/_auto_ptr.h \
+  stlport/stl/_string_fwd.h stlport/iosfwd stlport/stl/_iosfwd.h \
+  stlport/stl/char_traits.h stlport/stl/_ctraits_fns.h \
+  stlport/stl/_string.c stlport/stl/_string_fwd.c \
+  stlport/stl/_string_io.h stlport/stl/_string_io.c \
+  stlport/stl/_string_hash.h stlport/stl/_hash_fun.h
 monaIo.o: monaIo.cpp include/monaIo.h include/monaTypes.h \
   include/string.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
@@ -143,4 +143,5 @@ SystemConsole.o: SystemConsole.cpp include/SystemConsole.h \
   include/VirtualConsole.h include/monaVga.h include/monaTypes.h \
   include/string.h
 MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
-  include/string.h include/monaIo.h include/monaVga.h
+  include/string.h include/VirtualConsole.h include/monaIo.h \
+  include/monaVga.h

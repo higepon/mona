@@ -13,6 +13,7 @@
 #include<MFDCDriver.h>
 #include<monaIo.h>
 #include<monaVga.h>
+#include<monaKernel.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10
@@ -45,6 +46,13 @@
 #define FDC_CCR_PRIMARY   0x3f7
 #define FDC_CCR_SECONDARY 0x377
 
+#define FDC_DMA_S_SMR     0x04
+#define FDC_DMA_S_MR      0x0b
+#define FDC_DMA_S_CBP     0x0c
+#define FDC_DMA_S_BASE    0x04
+#define FDC_DMA_S_COUNT   0x05
+#define FDC_DMA_PAGE2     0x81
+
 /* summary */
 #define FDC_DOR_RESET   0
 #define FDC_START_MOTOR (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
@@ -64,6 +72,7 @@
 MFDCDriver* gMFDCDriver = 0;
 bool MFDCDriver::interrupt_ = false;
 VirtualConsole* MFDCDriver::console_;
+byte MFDCDriver::dmabuff_[512];
 
 /*!
     \brief Constructer
@@ -133,6 +142,9 @@ void MFDCDriver::initilize() {
     seek(3);
     printStatus("after seek");
     motor(OFF);
+
+    setupDMARead(512);
+
     while (true);
 
     return;
@@ -372,5 +384,76 @@ void MFDCDriver::readResults() {
     //
     //        console_->printf("result[%d] = %x\n", j, results_[j]);
     //    }
+    return;
+}
+
+/*!
+    \brief start dma
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
+void MFDCDriver::startDMA() {
+
+    /* mask channel2 */
+    outportb(FDC_DMA_S_SMR, 0x06);
+    return;
+}
+
+/*!
+    \brief stop dma
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
+void MFDCDriver::stopDMA() {
+
+    /* unmask channel2 */
+    outportb(FDC_DMA_S_SMR, 0x02);
+    return;
+}
+
+/*!
+    \brief setup dmac for read
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
+void MFDCDriver::setupDMARead(dword size) {
+
+    dword p = (dword)dmabuff_;
+
+    stopDMA();
+
+    /* direction write */
+    outportb(FDC_DMA_S_MR, 0x46);
+
+    disableInterrupt();
+
+    /* clear byte pointer */
+    outportb(FDC_DMA_S_CBP, 0);
+    outportb(FDC_DMA_S_BASE,  byte(p & 0xff));
+    outportb(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
+    outportb(FDC_DMA_S_COUNT, byte(size & 0xff));
+    outportb(FDC_DMA_S_COUNT, byte(size >>8));
+    outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
+
+    enableInterrupt();
+
+    startDMA();
+    return;
+}
+
+/*!
+    \brief setup dmac for write
+
+    \author HigePon
+    \date   create:2003/02/15 update:
+*/
+void MFDCDriver::setupDMAWrite(dword size) {
+
+    stopDMA();
+
+    startDMA();
     return;
 }

@@ -39,6 +39,10 @@ class MFDCDriver {
     bool seek(byte track);
     bool senseInterrupt();
     void readResults();
+    void startDMA();
+    void stopDMA();
+    void setupDMARead(dword size);
+    void setupDMAWrite(dword size);
 
   private:
     byte version_;
@@ -46,6 +50,7 @@ class MFDCDriver {
     int resultsLength_;
     static bool interrupt_;
     static VirtualConsole* console_;
+    static byte dmabuff_[512];
 };
 
 extern MFDCDriver* gMFDCDriver;
