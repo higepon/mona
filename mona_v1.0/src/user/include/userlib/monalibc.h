@@ -14,36 +14,24 @@
 #define _MONA_LIB_C_
 
 #include <types.h>
+#include <MlcCtype.h>
+#include <MlcLimits.h>
+#include <MlcStdarg.h>
+#include <MlcStdlib.h>
+#include <MlcStdio.h>
 
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
-typedef __SIZE_TYPE__ size_t;
 #endif
-#define __FBSDID(s)
+typedef __SIZE_TYPE__ size_t;
 
+#define __FBSDID(s)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define P_FORMAT_ZERO 0x01
-#define P_FORMAT_MINUS 0x02
-#define P_FORMAT_PLUS 0x04
-#define P_FORMAT_SPACE 0x08
-#define P_FORMAT_SHARP 0x10
-#define P_FORMAT_UNSIGNED 0x20
-#define P_FORMAT_CAPITAL 0x40
-#define P_FORMAT_TERMINATE 0x80
-
-typedef char *va_list;
-#define va_start(ap,last) (void)((ap)=(va_list)&(last)+sizeof(last))
-#define va_arg(ap,type) (*((type*)(ap))++)
-#define va_end(ap) (void)((ap)=NULL)
-
-int vsprintf(char *s, const char *format, va_list arg);
-int sprintf(char *s, const char *format, ...);
-int itos(char *s, int n, int width, int base, char flag);
-int ftos(char *s, double n, int width, int precision, char flag);
+size_t __power(size_t x, size_t y);
 int strcpy2(char *s1, const char *s2);
 
 #ifdef __cplusplus
