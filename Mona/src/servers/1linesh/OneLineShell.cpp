@@ -55,8 +55,11 @@ void OneLineShell::service() {
   /* Server start ok */
   targetID = Message::lookupMainThread("INIT");
   if(targetID == 0xFFFFFFFF){
-    printf("ShellServer:INIT not found\n");
-    exit(1);
+    targetID = Message::lookupMainThread("SHELL.SVR");
+    if(targetID == 0xFFFFFFFF){
+      printf("ShellServer:INIT not found\n");
+      exit(1);
+    }
   }
 
   /* create message */
@@ -66,7 +69,7 @@ void OneLineShell::service() {
   if(Message::send(targetID, &info)){
     printf("ShellServer:INIT error\n");
   }
-    
+
   DisplayWindow ds;
   ds.DrawCommandWindow();
   this->cmdHst.AddCommand(this->cmd);

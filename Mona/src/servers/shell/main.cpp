@@ -34,48 +34,52 @@ void ShellServer::service()
     /* look up */
     dword myID = System::getThreadID();
 
-    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
-    if (targetID == 0xFFFFFFFF)
+    dword keysvrID = Message::lookupMainThread("KEYBDMNG.SVR");
+    if (keysvrID == 0xFFFFFFFF)
     {
         printf("Shell:KeyBoardServer not found\n");
         exit(1);
     }
 
-    /* create message for KEYBDMNG.SVR */
-    MessageInfo info;
-    Message::create(&info, MSG_KEY_REGIST_TO_SERVER, myID, 0, 0, NULL);
-
     /* send */
-    if (Message::send(targetID, &info))
+    if (Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, myID))
     {
         printf("Shell: key regist error\n");
     }
 
     /* Server start ok */
-    targetID = Message::lookupMainThread("INIT");
+    dword targetID = Message::lookupMainThread("INIT");
     if (targetID == 0xFFFFFFFF)
     {
-        printf("ShellServer:INIT not found\n");
-        exit(1);
+        targetID = Message::lookupMainThread("1LINESH.SVR");
+        if (targetID == 0xFFFFFFFF)
+        {
+            printf("ShellServer:INIT not found\n");
+            exit(1);
+        }
     }
 
-    /* create message */
-    Message::create(&info, MSG_SERVER_START_OK, 0, 0, 0, NULL);
-
     /* send */
-    if (Message::send(targetID, &info))
+    if (Message::send(targetID, MSG_SERVER_START_OK))
     {
         printf("ShellServer:INIT error\n");
     }
 
     /* service loop */
     Shell shell;
+    MessageInfo info;
     while (!isExited)
     {
         if (!Message::receive(&info) && info.arg2 & KEY_MODIFIER_DOWN)
         {
             shell.onKeyDown(info.arg1, info.arg2);
         }
+    }
+
+    /* send */
+    if (Message::send(keysvrID, MSG_KEY_UNREGIST_FROM_SERVER, myID))
+    {
+        printf("Shell: key unregist error\n");
     }
 }
 
@@ -207,7 +211,7 @@ void Shell::commandExecute()
         {
             delete option;
         }
-        printf("\n%s", PROMPT);
+        if (!isExited) printf("\n%s", PROMPT);
         position_ = 0;
         return;
     }
@@ -336,6 +340,11 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
         }
     case COMMAND_CHSH:
         if (executeProcess("/SERVERS/1LINESH.SVR", "1LINESH.SVR", NULL) != 0) break;
+        for (MessageInfo msg;;)
+        {
+            if (Message::receive(&msg) != 0) continue;
+            if (msg.header == MSG_SERVER_START_OK) break;
+        }
         isExited = true;
         break;
     default:

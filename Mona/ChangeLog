@@ -1,3 +1,7 @@
+2004-05-01  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/shell/main.cpp: 内部コマンドCHSHで1lineshに切り替え
+
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
         * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)
@@ -7,6 +11,7 @@
         * 各Makefile: installでcp -uの代わりに$(INSTALL)を使用
 
         * FreeBSD 5.2.1-R(gcc-3.3.3, ld-2.13.2)でコンパイルできるようになった (gmake使用)
+          ただしHELLO.ELFは正常なバイナリができない
 
 2004-04-30  higepon  <higepon@users.sourceforge.jp>
 
