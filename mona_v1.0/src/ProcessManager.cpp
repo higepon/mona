@@ -16,11 +16,16 @@ ProcessManager::ProcessManager() {
 
     pid_ = 0;
     scheduler_ = new Scheduler();
+    Process* tmp = new Process("first");
+    g_current_process = &(tmp->pinfo_);
 }
 
 void ProcessManager::switchProcess() {
 
-    info(DUMP, "switch Process");
+    g_console->printf("switch Process");
+
+    info(DUMP, "esp=%x", g_current_process->esp);
+
     arch_switch_process();
 }
 
@@ -51,6 +56,6 @@ dword ProcessManager::allocatePID() {
 bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
-
+    scheduler_->addToPrev(&(process->pinfo_));
 
 }
