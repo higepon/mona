@@ -149,24 +149,15 @@ void MFDCDriver::initilize() {
     outportb(FDC_CCR_PRIMARY, 0);
     delay();
 
-    /* start driveA */
-    //    motor(ON);
-    //    while (!waitInterrupt());
-
-    /* recalibrate */
-    //    recalibrate();
-    //    motor(OFF);
-
     /* test */
     interrupt_ = false;
     motor(ON);
     while (!waitInterrupt());
 
-    /* seek test */
-    //    seek(3);
+    recalibrate();
 
-    //    recalibrate();
-    printStatus("before read");
+    write(0, 0, 1);
+    printStatus("after write()");
     read(0, 0, 1);
 
     motor(OFF);
@@ -451,6 +442,7 @@ void MFDCDriver::readResults() {
 
          console_->printf("result[%d] = %x ", j, (int)(results_[j]));
     }
+    console_->printf("\n");
     return;
 }
 
@@ -519,7 +511,24 @@ void MFDCDriver::setupDMARead(dword size) {
 */
 void MFDCDriver::setupDMAWrite(dword size) {
 
+    dword p = (dword)dmabuff_;
+
     stopDMA();
+
+    /* direction read */
+    outportb(FDC_DMA_S_MR, 0x4a);
+
+    disableInterrupt();
+
+    /* clear byte pointer */
+    outportb(FDC_DMA_S_CBP, 0);
+    outportb(FDC_DMA_S_BASE,  byte(p & 0xff));
+    outportb(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
+    outportb(FDC_DMA_S_COUNT, byte(size & 0xff));
+    outportb(FDC_DMA_S_COUNT, byte(size >>8));
+    outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
+
+    enableInterrupt();
 
     startDMA();
     return;
@@ -563,9 +572,6 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
     for (int i = 0; i < 10; i++) console_->printf("[%x]", (int)dmabuff_[i]);
 
     readResults();
-    motor(OFF);
-    while (true);
-
     return true;
 }
 
@@ -591,4 +597,33 @@ void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
               , status & 0x01 ? " Y ":" N "
               , str
     );
+}
+
+bool MFDCDriver::write(byte track, byte head, byte sector) {
+
+    byte command[] = {0xC5//FDC_COMMAND_WRITE
+                   , (head & 1) << 2
+                   , track
+                   , head
+                   , sector
+                   , 0x02
+                   , sector
+                   , 0x1b
+                   , 0x00
+                   };
+    printDMACStatus(inportb(0x08), "before set up");
+    setupDMAWrite(512);
+    printDMACStatus(inportb(0x08), "after set up");
+    seek(track);
+    printDMACStatus(inportb(0x08), "after seek");
+    memset(dmabuff_, 0x1234, 512);
+
+    interrupt_ = false;
+    sendCommand(command, sizeof(command));
+    //while(!waitInterrupt());
+    printDMACStatus(inportb(0x08), "after command");
+    stopDMA();
+
+    readResults();
+    return true;
 }
