@@ -284,14 +284,19 @@ void FDCDriver::motor(bool on) {
 */
 bool FDCDriver::sendCommand(const byte* command, const byte length) {
 
+    while (true) {
+
+        byte status = inportb(FDC_MSR_PRIMARY);
+        if (!(status & 0x10)) break;
+    }
+
     /* send command */
     for (int i = 0; i < length; i++) {
 
-        /* expected condition is ready & date I/O to Controller */
-        if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY | 0x40)) {
+        while (true) {
 
-            info(ERROR, "FDCDriver#sendCommand: timeout command[%d]\n", i);
-            return false;
+            byte status = inportb(FDC_MSR_PRIMARY);
+            if ((status & (0x80 | 0x40)) == 0x80) break;
         }
 
         /* send command */
