@@ -165,7 +165,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* true/false boot from CD/FD */
-    Initialize(false);
+    Initialize(true);
 
     MessageLoop();
 
