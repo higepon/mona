@@ -469,7 +469,7 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
 void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
-    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
+    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - Process::STACK_SIZE, true, true, true);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
@@ -505,7 +505,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
 void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
                                        , PageEntry* pageDirectory, LinearAddress stack)
 {
-    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
+    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - Process::STACK_SIZE, true, true, true);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;

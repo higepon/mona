@@ -230,7 +230,7 @@ class Process
         return path_;
     }
 
-	inline virtual const char* getName() const
+    inline virtual const char* getName() const
     {
         return name_;
     }
@@ -272,7 +272,7 @@ class Process
 
     inline dword allocateStack() const
     {
-        return STACK_START - STACK_SIZE * (threadNum - 1);
+        return STACK_START - (STACK_SIZE + STACK_SIZE) * (threadNum - 1);
     }
 
     inline List<Thread*>* getThreadList() const
@@ -280,8 +280,8 @@ class Process
         return threadList_;
     }
 
-    static const LinearAddress STACK_START = 0xEFFFFFFE;
-    static const dword STACK_SIZE          = 0xFFF;
+    static const LinearAddress STACK_START = 0xF0000000;
+    static const dword STACK_SIZE          = 0x1000;
 
   public:
     int threadNum;
@@ -295,7 +295,7 @@ class Process
     List<MessageInfo*>* messageList_;
     bool isUserMode_;
     PageEntry* pageDirectory_;
-	char path_[32];
+    char path_[32];
     char name_[16];
     dword pid_;
 };
