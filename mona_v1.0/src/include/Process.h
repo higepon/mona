@@ -147,7 +147,8 @@ class Thread : public Queue {
     ThreadInfo* threadInfo_;
 
   public:
-    int priority;
+    int currPriority;
+    int basePriotity;
 
   protected:
     dword tick_;

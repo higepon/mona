@@ -16,10 +16,10 @@ $(APP) : $(LIB_USER) $(OBJ) ReversiBoard.o
 	$(STRIP) $(APP)
 
 $(OBJ) : reversi.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c reversi.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c reversi.cpp
 
 ReversiBoard.o : ReversiBoard.cpp ReversiBoard.h
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c ReversiBoard.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c ReversiBoard.cpp
 
 clean :
 	rm -f $(OBJ) ReversiBoard.o $(APP)

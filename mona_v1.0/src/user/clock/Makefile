@@ -16,7 +16,7 @@ $(APP) : $(LIB_USER) $(OBJ)
 	$(STRIP) $(APP)
 
 $(OBJ) : clock.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c clock.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c clock.cpp
 
 clean :
 	rm -f $(OBJ) $(APP)

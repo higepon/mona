@@ -16,7 +16,7 @@ $(APP) : $(LIB_USER) $(OBJ)
 	$(STRIP) $(APP)
 
 $(OBJ) : MapServer.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c MapServer.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c MapServer.cpp
 
 clean :
 	rm -f $(OBJ) $(APP)

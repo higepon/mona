@@ -1,6 +1,6 @@
 NASM       = nasm
 NDISASM    = ndisasm
-CC         = /usr/bin/g++
+CXX         = /usr/bin/g++
 LD         = /usr/bin/ld
 STRIP      = /usr/bin/strip
 CONTRIB_LIB= ./contrib/lib_cygwin
@@ -77,7 +77,7 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
 
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
-	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(SHAREINCLUDE) -idirafter $(TOOLS)
+	$(CXX) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(SHAREINCLUDE) -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
@@ -90,7 +90,7 @@ userapp :
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CC) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
+	$(CXX) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
 	date;

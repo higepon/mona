@@ -16,10 +16,10 @@ $(APP) : $(LIB_USER) $(OBJ) KeyBoardManager.o
 	$(STRIP) $(APP)
 
 $(OBJ) : ShellServer.cpp Shell.h
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c ShellServer.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c ShellServer.cpp
 
 KeyBoardManager.o : KeyBoardManager.cpp KeyBoardManager.h
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c KeyBoardManager.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c KeyBoardManager.cpp
 
 clean :
 	rm -f $(OBJ) $(APP) KeyBoardManager.o

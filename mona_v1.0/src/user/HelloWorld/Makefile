@@ -16,7 +16,7 @@ $(APP) : $(LIB_USER) $(OBJ)
 	$(STRIP) $(APP)
 
 $(OBJ) : hello.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c hello.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c hello.cpp
 
 clean :
 	rm -f $(OBJ) $(APP)

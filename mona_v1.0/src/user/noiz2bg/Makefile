@@ -16,7 +16,7 @@ $(APP) : $(LIB_USER) $(OBJ)
 	$(STRIP) $(APP)
 
 $(OBJ) : noiz2bg.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c noiz2bg.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c noiz2bg.cpp
 
 clean :
 	rm -f $(OBJ) $(APP)

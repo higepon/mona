@@ -16,10 +16,10 @@ $(APP) : $(LIB_USER) $(OBJ) jpegls.o
 	$(STRIP) $(APP)
 
 $(OBJ) : jpegdemo.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c jpegdemo.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c jpegdemo.cpp
 
 jpegls.o : jpegls.cpp jpegls.h text.hex dct_tab
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c jpegls.cpp
+	$(CXX) $(CFLAGS) $(CFINCLUDE) -c jpegls.cpp
 
 clean :
 	rm -f $(OBJ) $(APP) jpegls.o
