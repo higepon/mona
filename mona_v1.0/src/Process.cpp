@@ -22,6 +22,10 @@ extern "C" Process** g_process;
 void Process::setup() {
 
     g_process = new Process*[MAX_PROCESS];
+
+    Process* kernel = new Process("Kernel");
+    g_current_process = &(kernel->pinfo_);
+
     return;
 }
 

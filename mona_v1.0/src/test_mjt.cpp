@@ -11,7 +11,7 @@
 #include <pic.h>
 
 void pn(char *p){
-	strcpy(g_process_name,p);
+    //	strcpy(g_process_name,p);
 }
 
 void test_mjt_init(){

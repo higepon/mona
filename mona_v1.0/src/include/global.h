@@ -46,8 +46,6 @@ GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
 GLOBAL BitMap *g_irqMap;
 GLOBAL IRQHandler g_irqHandlers[16];
 
-/* Process name refered by info.cpp */
-GLOBAL char g_process_name[16];
 GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
 
 /* GLOBAL DESCRIPTOR TABLE */

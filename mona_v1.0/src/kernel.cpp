@@ -103,10 +103,10 @@ void startKernel(void) {
     g_console->printf("\n");
 
     /* set process name for info() */
-    strcpy(g_process_name, "KERNEL");
     g_info_level = ERROR;
-    PagingUtil::setup();
 
+
+    //   PagingUtil::setup();
     //dword* p = (dword*)0x3FFFFC;
     //    dword* p = (dword*)0x3FFFFE;
     //    *p = 5;
@@ -121,32 +121,27 @@ void startKernel(void) {
     enableInterrupt();
 
     /* set process name for info() */
-    strcpy(g_process_name, "FAT12");
     while (g_demo_step < 2);
 
-    info(DEV_NOTICE, "0");
 #ifdef HIGE
-    g_info_level = DUMP;
+    g_info_level = ERROR;
 
-    info(DEV_NOTICE, "1");
     g_process_manager = new ProcessManager();
-    info(DEV_NOTICE, "2");
 
-    Process* process2 = new Process("test2");
-    g_current_process = &(process2->pinfo_);
+    UserProcess* process1 = new UserProcess("user_process");
+    Process*     process2 = new Process("krnl_o");
+    Process*     process3 = new Process("krnl_n");
+    Process*     process4 = new Process("krnl_m");
+    Process*     process5 = new Process("krnl_o2");
+    UserProcess* process6 = new UserProcess("user_process2");
 
-    UserProcess* process4 = new UserProcess("user");
-    g_process_manager->addProcess((Process*)process4, (dword)userTest);
+    g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
+    g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
+    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
+    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
+    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
+    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest);
 
-    Process* process = new Process("test");
-    g_process_manager->addProcess(process, (dword)disp_name3);
-
-    Process* process3 = new Process("test");
-    //    g_process_manager->addProcess(process3, (dword)disp_name2);
-
-    info(DEV_NOTICE, "address %x\n", userTest);
-
-    info(DUMP, "before esp=%x pid=%x", g_current_process->esp, g_current_process->pid);
     enableTimer();
 
     FDCTester();

@@ -51,7 +51,7 @@ virtual_addr ProcessManager::allocateStack() {
 
     i++;
 
-    return 0x80000 + i * 4096;
+    return 0x70000 + i * 4096;
 }
 
 PTE* ProcessManager::allocatePageDir() {

@@ -38,14 +38,14 @@ void disp_name1() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+	//        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(75, 0, 'M', color%13);
 
-        Semaphore::up(&g_semaphore_console);
+	//        Semaphore::up(&g_semaphore_console);
 
         color++;
-        syscall_kthread_yield();
+	//        syscall_kthread_yield();
     }
 }
 
@@ -93,14 +93,14 @@ void disp_name4() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+	//    while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(78, 0, 'a', color%16);
 
-        Semaphore::up(&g_semaphore_console);
+	//        Semaphore::up(&g_semaphore_console);
         color++;
 
-        syscall_kthread_yield();
+	//        syscall_kthread_yield();
     }
 }
 
