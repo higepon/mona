@@ -16,11 +16,12 @@
 
 #include <monapi.h>
 #include <monapi/Keys.h>
+//#include "KeyMaps.h"
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
 #define KEYBOARD_ACK 0xFA
-
+/*
 typedef enum {
     KEY_ESC
   , KEY_BACKSPACE
@@ -77,7 +78,7 @@ typedef enum {
   , KEY_PGDN
   , KEY_INS
 } keyType;
-
+*/
 
 /*!
     keyboard input management  class
@@ -96,6 +97,8 @@ class KeyBoardManager{
     inline bool isInit() const {
         return isInit_;
     }
+    bool SetKeyMap(int basicKeyMap);
+    bool SetKeyMap(const int *customKeyMap, const int *customKeyMapE0);
 
   private:
     bool isSpecialKey_;
@@ -106,10 +109,8 @@ class KeyBoardManager{
     bool isWin_;
     bool isMenu_;
     bool isInit_;
-    static const int keyMapJP109[128];
-    static const int keyMap_[128];
-    static const int keyMapJP109E0[128];
-    static const int keyMapE0_[128];
+    int keyMap[128];
+    int keyMapE0[128];
     byte idHigh_;
     byte idLow_;
     List<KeyInfo*>* keyInfoList_;

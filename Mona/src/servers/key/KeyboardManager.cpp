@@ -17,27 +17,27 @@
 #include <monapi/Keys.h>
 
 using namespace MonAPI;
-
-const int KeyBoardManager::keyMapJP109[128] = {
+/*
+const int KeyBoardManager::keyMapUS109[128] = {
         0        , Keys::Escape, Keys::D1, Keys::D2, Keys::D3, Keys::D4, Keys::D5, Keys::D6,
-        Keys::D7, Keys::D8, Keys::D9, Keys::D0, Keys::OemMinus, '^', Keys::Back, Keys::Tab,
+        Keys::D7, Keys::D8, Keys::D9, Keys::D0, Keys::OemMinus, Keys::Oemplus, Keys::Back, Keys::Tab,
         Keys::Q, Keys::W, Keys::E, Keys::R, Keys::T, Keys::Y, Keys::U, Keys::I,
-        Keys::O, Keys::P, Keys::OemAt, Keys::OemOpenBrackets, Keys::Enter, Keys::LControlKey, Keys::A, Keys::S,
+        Keys::O, Keys::P, Keys::OemOpenBrackets, Keys::OemCloseBrackets, Keys::Enter, Keys::LControlKey, Keys::A, Keys::S,
         Keys::D, Keys::F, Keys::G, Keys::H, Keys::J, Keys::K, Keys::L, Keys::OemSemicolon,
-        Keys::OemColon, Keys::KanjiMode, Keys::LShiftKey, Keys::OemCloseBrackets, Keys::Z, Keys::X, Keys::C, Keys::V,
-        Keys::B, Keys::N, Keys::M, Keys::Oemcomma, Keys::OemPeriod, Keys::Divide, Keys::RShiftKey, Keys::Multiply,
-        Keys::LMenu, Keys::Space, Keys::CapsLock, Keys::F1, Keys::F2, Keys::F3, Keys::F4       , Keys::F5   ,
+        Keys::OemQuotes, Keys::Oemtilde, Keys::LShiftKey, Keys::OemPipe, Keys::Z, Keys::X, Keys::C, Keys::V,
+        Keys::B, Keys::N, Keys::M, Keys::Oemcomma, Keys::OemPeriod, Keys::OemQuestion, Keys::RShiftKey, Keys::Multiply,
+        Keys::LMenu, Keys::Space, Keys::CapsLock, Keys::F1, Keys::F2, Keys::F3, Keys::F4, Keys::F5   ,
         Keys::F6, Keys::F7, Keys::F8, Keys::F9, Keys::F10, Keys::NumLock, Keys::Scroll, Keys::NumPad7,
         Keys::NumPad8, Keys::NumPad9, Keys::Subtract, Keys::NumPad4, Keys::NumPad5, Keys::NumPad6 , Keys::Add, Keys::NumPad1,
         Keys::NumPad2, Keys::NumPad3, Keys::NumPad0    , Keys::Decimal, 0         , 0              , 0            , Keys::F11  ,
         Keys::F12  , 0        , 0            , 0             , 0         , 0              , 0            , 0
 };
 
-const int KeyBoardManager::keyMapJP109E0[128] = {
+const int KeyBoardManager::keyMapUS109E0[128] = {
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , KEY_PAD_ENTER, Keys::RControlKey, 0, 0          ,
+       0             , 0       , 0      , 0             , Keys::Enter, Keys::RControlKey, 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , 0             , 0            , Keys::Divide   , 0, Keys::PrintScreen,
@@ -46,36 +46,8 @@ const int KeyBoardManager::keyMapJP109E0[128] = {
        Keys::Up  , Keys::PageUp, 0      , Keys::Left, 0            , Keys::Right, 0, Keys::End    ,
        Keys::Down, Keys::PageDown, Keys::Insert, 0             , 0            , 0              , 0, 0          ,
        0             , 0       , 0      , Keys::LWin      , Keys::RWin     , KEY_MENU       , 0, 0
-};
+};*/
 
-const int KeyBoardManager::keyMap_[128] = {
-        0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,
-        '7'      , '8'      , '9'          , '0'           , '-'       , '^'            , KEY_BACKSPACE, KEY_TAB  ,
-        'q'      , 'w'      , 'e'          , 'r'           , 't'       , 'y'            , 'u'          , 'i'      ,
-        'o'      , 'p'      , '@'          , '['           , KEY_RETURN, KEY_LCTRL      , 'a'          , 's'      ,
-        'd'      , 'f'      , 'g'          , 'h'           , 'j'       , 'k'            , 'l'          , ';'      ,
-        ':'      , ']'      , KEY_LSHIFT   , ']'           , 'z'       , 'x'            , 'c'          , 'v'      ,
-        'b'      , 'n'      , 'm'          , ','           , '.'       , '/'            , KEY_RSHIFT   , '*'      ,
-        KEY_LALT , ' '      , KEY_CAPSLOCK , KEY_F1        , KEY_F2    , KEY_F3         , KEY_F4       , KEY_F5   ,
-        KEY_F6   , KEY_F7   , KEY_F8       , KEY_F9        , KEY_F10   , KEY_PAD_NUMLOCK, KEY_SCRLOCK  , KEY_PAD_7,
-        KEY_PAD_8, KEY_PAD_9, KEY_PAD_MINUS, KEY_PAD_4     , KEY_PAD_5 , KEY_PAD_6      , KEY_PAD_PLUS , KEY_PAD_1,
-        KEY_PAD_2, KEY_PAD_3, KEY_PAD_0    , KEY_PAD_PERIOD, 0         , 0              , 0            , KEY_F11  ,
-        KEY_F12  , 0        , 0            , 0             , 0         , 0              , 0            , 0
-};
-const int KeyBoardManager::keyMapE0_[128] = {
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , KEY_PAD_ENTER, KEY_RCTRL      , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , KEY_PAD_DIVIDE , 0, KEY_PRTSCRN,
-       KEY_RALT      , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , 0             , 0            , 0              , 0, KEY_HOME   ,
-       KEY_ARROW_UP  , KEY_PGUP, 0      , KEY_ARROW_LEFT, 0            , KEY_ARROW_RIGHT, 0, KEY_END    ,
-       KEY_ARROW_DOWN, KEY_PGDN, KEY_INS, 0             , 0            , 0              , 0, 0          ,
-       0             , 0       , 0      , KEY_LWIN      , KEY_RWIN     , KEY_MENU       , 0, 0
-};
 
 /*!
     \brief destructor
@@ -108,6 +80,7 @@ void KeyBoardManager::init() {
     /* keyinfo list */
     keyInfoList_ = new HList<KeyInfo*>();
     isInit_ = true;
+    SetKeyMap(Keys::JP109);
 }
 
 /*!
@@ -173,11 +146,11 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
     /* scancode to keycode */
     if (isSpecialKey_) {
         //keycode       = keyMapE0_[scancode];
-        keycode       = keyMapJP109E0[scancode];
+        keycode       = keyMapE0[scancode];
         isSpecialKey_ = false;
     } else {
         //keycode = keyMap_[scancode];
-        keycode = keyMapJP109[scancode];
+        keycode = keyMap[scancode];
     }
 
     switch(keycode) {
@@ -186,23 +159,23 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
       case 0:
           return 0;
 
-      case KEY_LSHIFT:
-      case KEY_RSHIFT:
+      case Keys::LShiftKey:
+      case Keys::RShiftKey:
           isShift_ = !(modifiers & KEY_MODIFIER_UP);
           break;
-      case KEY_LALT:
-      case KEY_RALT:
+      case Keys::LMenu:
+      case Keys::RMenu:
           isAlt_   = !(modifiers & KEY_MODIFIER_UP);
           break;
-      case KEY_LCTRL:
-      case KEY_RCTRL:
+      case Keys::LControlKey:
+      case Keys::RControlKey:
           isCtrl_  = !(modifiers & KEY_MODIFIER_UP);
           break;
-      case KEY_LWIN:
-      case KEY_RWIN:
+      case Keys::LWin:
+      case Keys::RWin:
           isWin_   = !(modifiers & KEY_MODIFIER_UP);
           break;
-      case KEY_MENU:
+      case Keys::Apps:
           isMenu_  = !(modifiers & KEY_MODIFIER_UP);
           break;
     }
@@ -410,5 +383,36 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
         break;
     }
     return;
+}
+
+bool KeyBoardManager::SetKeyMap(int basicKeyMap){
+
+    bool result = false;
+
+    switch(basicKeyMap){
+    case Keys::US102:
+        result = SetKeyMap(Keys::mapUS102, Keys::mapUS102E0);
+        break;
+    case Keys::JP109:
+        result = SetKeyMap(Keys::mapJP109, Keys::mapJP109E0);
+        break;
+    }
+
+    return result;
+}
+
+bool KeyBoardManager::SetKeyMap(const int *customKeyMap, const int *customKeyMapE0){
+
+    bool result = false;
+
+    if((customKeyMap != NULL) && (customKeyMapE0 != NULL)){
+        for(int i = 0; i < 128; i++){
+            keyMap[i] = customKeyMap[i];
+            keyMapE0[i] = customKeyMapE0[i];
+        }
+        result = true;
+    }
+
+  return result;
 }
 
