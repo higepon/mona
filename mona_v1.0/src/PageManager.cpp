@@ -171,18 +171,27 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
 */
 void PageManager::setup() {
 
-    PageEntry* table = allocatePageTable();
-    g_page_directory = allocatePageTable();
+    PageEntry* table1 = allocatePageTable();
+    PageEntry* table2 = allocatePageTable();
+    g_page_directory  = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
         memoryMap_->mark(i);
-        setAttribute(&(table[i]), true, true, true, 4096 * i);
+        setAttribute(&(table1[i]), true, true, true, 4096 * i);
+    }
+
+    /* allocate page to physical address 0-4MB */
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
+
+        memoryMap_->mark(i + 4096);
+        setAttribute(&(table2[i]), true, true, true, 4096 * 4096 + 4096 * i);
     }
 
     memset(g_page_directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    setAttribute(g_page_directory, true, true, true, (PhysicalAddress)table);
+    setAttribute(&(g_page_directory[0]), true, true, true, (PhysicalAddress)table1);
+    setAttribute(&(g_page_directory[1]), true, true, true, (PhysicalAddress)table2);
 
     setPageDirectory((PhysicalAddress)g_page_directory);
     startPaging();
@@ -196,17 +205,24 @@ void PageManager::setup() {
 */
 PageEntry* PageManager::createNewPageDirectory() {
 
-    PageEntry* table     = allocatePageTable();
+    PageEntry* table1    = allocatePageTable();
+    PageEntry* table2    = allocatePageTable();
     PageEntry* directory = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
 
-        setAttribute(&(table[i]), true, true, false, 4096 * i);
+        setAttribute(&(table1[i]), true, true, false, 4096 * i);
+    }
+
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
+
+        setAttribute(&(table2[i]), true, true, false, 4096 * 4096 + 4096 * i);
     }
 
     memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    setAttribute(directory, true, true, false, (PhysicalAddress)table);
+    setAttribute(&(directory[0]), true, true, false, (PhysicalAddress)table1);
+    setAttribute(&(directory[1]), true, true, false, (PhysicalAddress)table2);
     return directory;
 }
 
