@@ -434,6 +434,7 @@ void Shell::printFiles(const CString& dir)
     printf("\n");
 
     syscall_dir_close();
+    syscall_cd(this->current);
 }
 
 void Shell::executeMSH(const CString& msh)
