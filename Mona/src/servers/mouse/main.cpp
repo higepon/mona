@@ -13,118 +13,119 @@
 
 #include <monapi.h>
 
+#define INIT_PROCESS "INIT"
+
 using namespace MonAPI;
 
-typedef struct {
-    int x;
-    int y;
-    bool leftClickd;
-    bool rightClickd;
-} MouseInfo;
+class MouseServer
+{
+public:
+    MouseServer();
+    virtual ~MouseServer();
 
-static int disable_count = 0;
+public:
+    bool Initialize();
+    void MessageLoop();
+    void Paint();
 
-int regist(List<dword>* destList, MessageInfo* info);
-int unregist(List<dword>* destList, MessageInfo* info);
-int sendMouseInformation(List<dword>* destList, MessageInfo* info);
-void paintCursor(Screen* scr, int x, int y, VirtualScreen* vscr);
+private:
+    bool SendServerOK();
+    void SendMouseInformation(MessageInfo* info);
+    void PaintCursor(int x, int y);
 
-int MonaMain(List<char*>* pekoe) {
+private:
+    bool needPaint;
+    int disableCount;
+    int posX;
+    int posY;
+    int prevX;
+    int prevY;
+    int w;
+    int h;
+    Screen* screen;
+    Screen* vscreen;
+    List<dword>* destList;
+};
 
-    /* initilize destination list */
-    List<dword>* destList = new HList<dword>();
+MouseServer::MouseServer() : needPaint(false), disableCount(0)
+{
+}
 
-    MouseInfo info;
-    Screen screen;
-    MessageInfo receive;
-    MessageInfo send;
-    byte result;
-    int posX, posY, prevX, prevY;
+MouseServer::~MouseServer()
+{
+    delete this->screen;
+    delete this->vscreen;
+}
 
-    int xResolution = screen.getWidth();
-    int yResolution = screen.getHeight();
+bool MouseServer::Initialize()
+{
+    /* mouse information destination list */
+    this->destList = new HList<dword>();
 
-    posX = prevX = xResolution / 2;
-    posY = prevY = yResolution / 2;
+    if (this->destList == NULL)
+    {
+        printf("MouseServer:destList error\n");
+        return false;
+    }
+
+    /* create screen */
+    this->screen  = new Screen();
+    this->vscreen = new VirtualScreen(40 * 1024);
+
+    if (this->screen == NULL || this->vscreen == NULL)
+    {
+        printf("MouseServer: screen error\n");
+        return false;
+    }
+
+    /* screen size */
+    this->w = screen->getWidth();
+    this->h = screen->getHeight();
 
     /* draw mouse cursor to virtual screen */
-    VirtualScreen vscreen(1024 * 40);
-    vscreen.fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0xCC, 0x56));
+    this->vscreen->fillRect16(0, 0, 10, 10, Color::rgb(0x00, 0xCC, 0x56));
 
-    /* Server start ok */
-    dword targetID = Message::lookupMainThread("INIT");
-    if (targetID == 0xFFFFFFFF)
+    /* cursor to center */
+    this->posX = this->prevX = this->w / 2;
+    this->posY = this->prevY = this->h / 2;
+
+    /* server start ok */
+    if (!SendServerOK()) return false;
+
+    PaintCursor(this->posX, this->posY);
+
+    return true;
+}
+
+void MouseServer::MessageLoop()
+{
+    MessageInfo receive;
+    MessageInfo send;
+
+    for (;;)
     {
-        printf("MouseServer:INIT not found\n");
-        exit(1);
-    }
-
-    /* create message */
-    Message::create(&send, MSG_SERVER_START_OK, 0, 0, 0, NULL);
-
-    /* send */
-    if (Message::send(targetID, &send)) {
-        printf("MouseServer:INIT error\n");
-    }
-
-    /* paint */
-    paintCursor(&screen, posX , posY, &vscreen);
-
-    /* Message loop */
-    for (;;) {
-
-        /* receive */
-        if (!Message::receive(&receive)) {
-
-            switch(receive.header) {
-
+        if (!Message::receive(&receive))
+        {
+            switch(receive.header)
+            {
             case MSG_MOUSE_REGIST_TO_SERVER:
 
-                regist(destList, &receive);
+                /* arg1 = tid */
+                this->destList->add(receive.arg1);
                 break;
 
             case MSG_MOUSE_UNREGIST_FROM_SERVER:
 
-                unregist(destList, &receive);
+                /* arg1 = tid */
+                this->destList->remove(receive.arg1);
                 break;
 
-            case MSG_MOUSE:
+           case MSG_MOUSE_ENABLE_CURSOR:
 
-                result = (byte)(receive.arg1);
-                info.leftClickd  = (bool)(result & 0x01);
-                info.rightClickd = (bool)(result & 0x02);
-
-                result = (byte)(receive.arg2);
-                info.x = (char)result;
-
-                result = (byte)(receive.arg3);
-                info.y = -1 * (char)result;
-
-                posX += info.x;
-                if (posX > xResolution) posX = xResolution;
-                if (posX < 0) posX = 0;
-                posY += info.y;
-                if (posY > yResolution) posY = yResolution;
-                if (posY < 0) posY = 0;
-
-                paintCursor(&screen, prevX, prevY, &vscreen);
-                paintCursor(&screen, posX , posY , &vscreen);
-
-                prevX = posX;
-                prevY = posY;
-
-                Message::create(&send, MSG_MOUSE_INFO, posX, posY
-                                , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00));
-                sendMouseInformation(destList, &send);
-
-                break;
-
-            case MSG_MOUSE_ENABLE_CURSOR:
-
-                if (disable_count > 0) {
-
-                    disable_count--;
-                    paintCursor(&screen, posX, posY, &vscreen);
+                if (this->disableCount > 0)
+                {
+                    disableCount--;
+                    PaintCursor(posX, posY);
                 }
 
                 Message::create(&send, MSG_RESULT_OK, receive.header);
@@ -134,55 +135,106 @@ int MonaMain(List<char*>* pekoe) {
 
             case MSG_MOUSE_DISABLE_CURSOR:
 
-                paintCursor(&screen, posX, posY, &vscreen);
-                disable_count++;
+                PaintCursor(posX, posY);
+                disableCount++;
 
                 Message::create(&send, MSG_RESULT_OK, receive.header);
                 Message::send(receive.from, &send);
 
                 break;
 
+            case MSG_MOUSE:
+
+                {
+                    byte result    = (byte)(receive.arg1);
+                    byte clickInfo = (result & 0x01) | (result & 0x02);
+
+                    char x = (byte)(receive.arg2);
+                    char y = (byte)(receive.arg3) * (-1);
+
+                    this->posX += x;
+                    this->posY += y;
+
+                    if (this->posX > this->w) this->posX = this->w;
+                    if (this->posY > this->h) this->posY = this->h;
+                    if (this->posX < 0) this->posX = 0;
+                    if (this->posY < 0) this->posY = 0;
+
+                    Paint();
+
+                    Message::create(&send, MSG_MOUSE_INFO, posX, posY, clickInfo);
+                    SendMouseInformation(&send);
+                }
+
+                break;
+
             default:
 
-                /* igonore this message */
+                /* ignore */
                 break;
             }
         }
     }
-    return 0;
 }
 
-int sendMouseInformation(List<dword>* destList, MessageInfo* info) {
+void MouseServer::Paint()
+{
+    PaintCursor(this->prevX, this->prevY);
+    PaintCursor(this->posX , this->posY);
+    prevX = posX;
+    prevY = posY;
+}
 
-    /* send message */
-    for (int i = destList->size() - 1; i >= 0; i--) {
-
-        if (Message::send(destList->get(i), info)) {
-            printf("Mouse:send error to thread id = %x", destList->get(i));
-            destList->removeAt(i);
+void MouseServer::SendMouseInformation(MessageInfo* info)
+{
+    for (int i = this->destList->size() - 1; i >= 0; i--)
+    {
+        if (Message::send(this->destList->get(i), info))
+        {
+            printf("Mouse:send error to thread id = %x", this->destList->get(i));
+            this->destList->removeAt(i);
         }
     }
-
-    return 0;
 }
 
-int regist(List<dword>* destList, MessageInfo* info) {
+bool MouseServer::SendServerOK()
+{
+    dword targetID = Message::lookupMainThread(INIT_PROCESS);
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("MouseServer:INIT not found\n");
+        return false;
+    }
 
-    dword id = info->arg1;
-    destList->add(id);
-    return 0;
+    if (Message::send(targetID, MSG_SERVER_START_OK))
+    {
+        printf("MouseServer:server start send error\n");
+        return false;
+    }
+
+    return true;
 }
 
-int unregist(List<dword>* destList, MessageInfo* info) {
-
-    dword id = info->arg1;
-    destList->remove(id);
-    return 0;
+void MouseServer::PaintCursor(int x, int y)
+{
+    if (this->disableCount > 0) return;
+    Screen::bitblt(screen, x, y, 3, 3, vscreen, 0, 0, Raster::XOR);
 }
 
-void paintCursor(Screen* scr, int x, int y, VirtualScreen* vscr) {
 
-    if (disable_count > 0) return;
-    
-    Screen::bitblt(scr, x, y, 3, 3, vscr, 0, 0, Raster::XOR);
+static MouseServer* server;
+
+int MonaMain(List<char*>* pekoe)
+{
+    server = new MouseServer();
+
+    if (!server->Initialize())
+    {
+        printf("MouseServer:initialize error\n");
+        return -1;
+    }
+
+    server->MessageLoop();
+
+    return 0;
 }
