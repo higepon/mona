@@ -97,6 +97,32 @@ typedef struct ThreadInfo {
 ----------------------------------------------------------------------*/
 class Thread {
 
+  public:
+    Thread();
+    virtual ~Thread();
+
+  public:
+    inline void tick() {
+        tick_++;
+        timeLeft_--;
+    }
+
+    inline void tick(dword tick) {
+        tick_     += tick;
+        timeLeft_ += tick;
+    }
+
+    inline dword getTick() const {
+        return tick_;
+    }
+
+    inline bool hasTimeLeft() const {
+        return (timeLeft_ > 0);
+    }
+
+  protected:
+    dword tick_;
+    dword timeLeft_;
 };
 
 /*----------------------------------------------------------------------

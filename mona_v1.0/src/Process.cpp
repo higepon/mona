@@ -134,6 +134,43 @@ V86Process::V86Process(const char* name) {
     pinfo_.dpl     = DPL_USER;
 }
 
+/*----------------------------------------------------------------------
+    ThreadScheduler
+----------------------------------------------------------------------*/
+ThreadScheduler::ThreadScheduler() {
+
+    /* list of thread */
+    list_ = new HList<Thread*>();
+    checkMemoryAllocate(list_, "ThreadScheduler memory allocate list");
+}
+
+ThreadScheduler::~ThreadScheduler() {
+
+    delete list_;
+}
+
+Thread* ThreadScheduler::schedule(Thread* current) {
+
+    /* not implemented */
+
+    return (Thread*)NULL;
+}
+
+int ThreadScheduler::join(Thread* thread) {
+
+    list_->add(thread);
+    return NORMAL;
+}
+
+int ThreadScheduler::kill(Thread* thread) {
+
+    list_->remove(thread);
+    return NORMAL;
+}
+
+/*----------------------------------------------------------------------
+    ProcessScheduler
+----------------------------------------------------------------------*/
 ProcessScheduler::ProcessScheduler(Process_* idle) {
 
     /* list of process */
@@ -176,7 +213,6 @@ int ProcessScheduler::kill(Process_* process) {
     list_->remove(process);
     return NORMAL;
 }
-
 
 /*----------------------------------------------------------------------
     ProcessManager
