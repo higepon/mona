@@ -43,7 +43,7 @@ int DisplayWindow::SetWindowPos(int x, int y, int w, int h){
   return 0;
 }
 
-int DisplayWindow::DrawCommandLine(const Charing s){
+int DisplayWindow::DrawCommandLine(const Charing c){
 
   int i, j;
   char *tmp;
@@ -52,7 +52,7 @@ int DisplayWindow::DrawCommandLine(const Charing s){
   Charing ss("1Lsh> ");
 
   this->ClearCommandLine();
-  ss += s;
+  ss += c;
   pos = this->posX + 2;
   tmp = (char *)ss;
   while(*tmp != NULL){
@@ -69,6 +69,7 @@ int DisplayWindow::DrawCommandLine(const Charing s){
     }
     tmp++;
   }
+
   return 0;
 }
 
@@ -91,3 +92,8 @@ int DisplayWindow::ClearCommandWindow(){
   return 0;
 }
 
+int DisplayWindow::DrawCursor(int pos){
+
+  commandWindow.fillRect16(this->posX+2+8*(pos+7), this->posY+2+16, 8, 2, Color::rgb(0xFF, 0xFF, 0xFF));
+  return 0;
+}

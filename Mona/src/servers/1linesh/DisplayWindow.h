@@ -17,6 +17,7 @@
 #include <monapi.h>
 #include <sys/types.h>
 #include "Charing.h"
+#include "Command.h"
 
 using namespace MonAPI;
 
@@ -34,10 +35,11 @@ class DisplayWindow{
     DisplayWindow();
     ~DisplayWindow();
     int SetWindowPos(int x, int y, int w, int h);
-    int DrawCommandLine(const Charing s);
+    int DrawCommandLine(const Charing c);
     int ClearCommandLine();
     int DrawCommandWindow();
     int ClearCommandWindow();
+    int DrawCursor(int pos);
 
 };
 
