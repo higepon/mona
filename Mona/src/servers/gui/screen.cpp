@@ -48,22 +48,22 @@ void DrawImage(guiserver_bitmap* img, int spx /*= 0*/, int spy /*= 0*/, int ix /
 				case 8: // broken
 				{
 					byte c = (pBuf[0] + pBuf[1] + pBuf[2]) / 3;
-					if (*pVram != c) *pVram = c;
+					/*if (*pVram != c)*/ *pVram = c;
 					break;
 				}
 				case 16: // 565
 				{
 					unsigned short c = Color::bpp24to565(pBuf);
-					if (*(unsigned short*)pVram != c) *(unsigned short*)pVram = c;
+					/*if (*(unsigned short*)pVram != c)*/ *(unsigned short*)pVram = c;
 					break;
 				}
 				case 24:
-					if (pVram[0] != pBuf[0]) pVram[0] = pBuf[0];
-					if (pVram[1] != pBuf[1]) pVram[1] = pBuf[1];
-					if (pVram[2] != pBuf[2]) pVram[2] = pBuf[2];
+					/*if (pVram[0] != pBuf[0])*/ pVram[0] = pBuf[0];
+					/*if (pVram[1] != pBuf[1])*/ pVram[1] = pBuf[1];
+					/*if (pVram[2] != pBuf[2])*/ pVram[2] = pBuf[2];
 					break;
 				case 32:
-					if (*(int*)pVram != c32) *(int*)pVram = c32;
+					/*if (*(int*)pVram != c32)*/ *(int*)pVram = c32;
 					break;
 			}
 		}

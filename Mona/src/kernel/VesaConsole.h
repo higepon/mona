@@ -39,6 +39,9 @@ private:
     dword bg_;
     dword ch_;
 
+    char* char_buffer_;
+    dword* palette_buffer_;
+
     dword getColor (char color);
     void nextCursor ();
     void newLine ();
