@@ -15,7 +15,8 @@
 #include <ProcessManager.h>
 #include <monaVga.h>
 #include <monaTester.h>
-#include <monaLib.h>
+//#include <monaLib.h>
+#include <string.h>
 #include <monaTester.h>
 
 byte stack[5120];

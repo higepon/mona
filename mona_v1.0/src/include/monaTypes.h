@@ -14,13 +14,10 @@
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
 
+#include <string.h>
+
 #define NULL     0
 
-#ifndef __SIZE_TYPE__
-#define __SIZE_TYPE__ unsigned long
-#endif
-
-typedef __SIZE_TYPE__ size_t;
 typedef unsigned char  byte;
 typedef unsigned short word;
 typedef unsigned int   dword;
