@@ -13,6 +13,7 @@ endif
 
 install-tinogui:
 	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/root/APPS
+	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/root/APPS
 
 install: install-tinogui
 
