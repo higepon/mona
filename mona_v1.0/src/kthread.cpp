@@ -157,8 +157,8 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
 
     /* create thread */
     thread->eip    = (dword)f;
-    thread->cs     = 0x08;
-    thread->eflags = 0x0200246;
+    thread->cs     = 0x038;
+    thread->eflags = 0x0200;
     thread->esp    = stack;
     thread->ebp    = stack;
 
@@ -219,7 +219,6 @@ void kthread_switch() {
 //                        , g_stack_view.stack6
 //                        , g_stack_view.stack7
 //                        );
-
 
     g_console->printf("demo1 = %d, demo2 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2);
 

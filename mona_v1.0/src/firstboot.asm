@@ -66,7 +66,7 @@ next:
         mov     es,ax
         xor     bx,bx
         mov     ax,0x0001       ; read kernel from second sector (0 = boot sec)
-        mov     di,0x0050       ; change it (now ... read 80 sectors)
+        mov     di,0x0080       ; change it (now ... read 80 sectors)
         call    readsector
         ;
         mov     si,good

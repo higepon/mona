@@ -96,7 +96,8 @@ _arch_kthread_switch:
         mov ebp, [ebx + 32]     ; restore ebp
         mov esi, [ebx + 36]     ; restore esi
         mov edi, [ebx + 40]     ; restore edi
-        push dword [ebx + 8]    ; push eflags
+        push 0x200    ; push eflags
+;          push dword [ebx + 8]    ; push eflags
         push dword [ebx + 4]    ; push cs
         push dword [ebx + 0]    ; push eip
         push dword [ebx + 24]
@@ -107,7 +108,7 @@ _arch_kthread_switch:
 
 ;;; fault0dHandler
 _arch_fault0dhandler:
-        call _arch_set_stack_view
+		;;         call _arch_set_stack_view
         pushad
         call _fault0dHandler
         popad
