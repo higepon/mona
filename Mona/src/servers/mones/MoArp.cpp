@@ -30,8 +30,9 @@
 MoArp::MoArp()
 {
     //ARPキャッシュ初期化
-    
-    ArpCache = new HashMap<char*>(ARP_CACHE_NUM);
+    ArpCache = new HashMap<byte*>(ARP_CACHE_NUM);
+    //ARP要求待ちリスト初期化
+    macWaitList = new HList<MAC_REPLY_WAIT*>();
 }
 
 /*!
@@ -68,7 +69,7 @@ MoArp::~MoArp()
     \return int 結果 
         
     \author Yamami
-    \date   create:2004/08/28 update:2004/08/29
+    \date   create:2004/08/28 update:$Date$
 */
 int MoArp::receiveArp(ARP_HEADER *arpHead)
 {
@@ -88,13 +89,14 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
         case OPE_CODE_ARP_REQ:
             transArp(arpHead->srcIp,arpHead->srcMac, OPE_CODE_ARP_REP);
             
-            //キャッシュに登録
-            addArpCache(arpHead->srcIp,(char*)arpHead->srcMac); 
+            //要求を受けた分も、キャッシュに登録
+            addArpCache(arpHead->srcIp,arpHead->srcMac); 
+            
             break;
+            
         //ARP応答
         case OPE_CODE_ARP_REP:
-            //未実装
-            //rest=receiveReply(arpHead->srcIp,arpHead->srcMac);
+            rest=receiveReply(arpHead->srcIp,arpHead->srcMac);
             break;
         
         //RARP要求
@@ -110,18 +112,79 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
 
 
 
-static char broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
+/*!
+    \brief receiveReply
+         ARP受信処理
+    \param  dword srcip [in] 送信元IPアドレス
+    \param  byte *mac [in] 送信元MACアドレス
+    \return void 無し 
+        
+    \author Yamami
+    \date   create:2004/11/15 update:$Date$
+*/
+int MoArp::receiveReply(dword srcip,byte *mac)
+{
+    //Yamami デバッグ
+    printf("MoArp::receiveReply \n");
+    printf("macWaitList->size() = %d \n",macWaitList->size());
+    
+    MAC_REPLY_WAIT* nowWait;
+    int findFlag = 0;
+    
+    //ARP要求待ちリストの検索
+    for (int i = 0; i < macWaitList->size() ; i++) {
+        nowWait = macWaitList->get(i);
+        
+        nowWait->wait++;
+        if(nowWait->ip == srcip){
+            //要求待ちのIPなら
+            //MACアドレスコピー
+            memcpy(nowWait->mac ,mac ,6);
+            nowWait->repFlg = 1;
+            
+            
+            //Yamami デバッグ!!!
+            printf("receiveReply srcip=%x" ,srcip);
+            for(int i = 0 ; i<6 ; i++){
+                printf("  mac[%d]=%x" , i,mac[i]);
+            }
+            printf("\n");
+            
+            
+            //ARPキャッシュ登録
+            addArpCache(srcip,mac); 
+            
+            //findFlagオン
+            findFlag = 1;
+        }
+    }
+    
+    if(findFlag == 1){
+        //Mones自身へメッセージ通知
+        MessageInfo info;
+        dword targetID = Message::lookupMainThread("MONES.EX2");  //TO DO この探し方良くないよなー
+        // create message
+        Message::create(&info, MSG_MONES_WAKEUP_ARP_WAIT, 0, 0, 0, NULL);
+        Message::send(targetID, &info);
+    }
+    
+    return 0;
+}
+
+
+//static char broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
+static byte broadcastMac[]={0xff,0xff,0xff,0xff,0xff,0xff};
 
 /*!
     \brief transArp
-         ARP応答処理 処理
+         ARP送信処理 (ARP応答、ARP要求)
     \param  dword dstip [in] 送信先IPアドレス
     \param  byte *dstmac [in] 送信先MACアドレス
     \param  word opecode [in] オペレーションコード
     \return void 無し 
         
     \author Yamami
-    \date   create:2004/08/28 update:
+    \date   create:2004/08/28 update:$Date$
 */
 void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
 {
@@ -136,11 +199,20 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
     memcpy(head.srcMac,insAbstractNic->ether_mac_addr,6);
     head.srcIp=MoPacUtl::swapLong(G_MonesCon.getGl_myIpAdr() );
     if(memcmp(dstmac,broadcastMac,6)==0){
-    head.srcIp=MoPacUtl::swapLong(G_MonesCon.getGl_myIpAdr() );
+        head.srcIp=MoPacUtl::swapLong(G_MonesCon.getGl_myIpAdr() );
     }else{
         memcpy(head.dstMac,dstmac,6);
     }
     head.dstIp=dstip;  //ここは受け取ったまま返却するので、エンディアン変換は不要
+
+
+//Yamami デバッグ
+printf("MoArp::transArp dstip = %x opecode=%x \n",dstip,opecode);
+for(int i = 0 ; i<6 ; i++){
+    printf("  dstmac[%d]=%x" , i,dstmac[i]);
+}
+printf("\n");
+
 
     //送信処理 ここでは、直接ドライバをコール
     insAbstractNic->frame_output((byte *)&head , dstmac , sizeof(head) , ETHER_PROTO_ARP);
@@ -156,16 +228,21 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
     \return void 無し 
         
     \author Yamami
-    \date   create:2004/09/19 update:
+    \date   create:2004/09/19 update:$Date$
 */
-void MoArp::addArpCache(dword ip, char *mac)
+void MoArp::addArpCache(dword ip, byte *mac)
 {
 
     char IpKey[10];    //IPアドレスキー
+    
+    byte* setMac;
+    
+    setMac = new byte(6);
+    memcpy(setMac,mac,6);
 
     //IPアドレスを、MAPのキー化(String化)
     sprintf(IpKey , "%08x",ip);
-    ArpCache->put(IpKey , mac);
+    ArpCache->put(IpKey , setMac);
 
 }
 
@@ -177,12 +254,12 @@ void MoArp::addArpCache(dword ip, char *mac)
     \return char *mac [in] 検索結果MACアドレス 見つからない場合はNULL
         
     \author Yamami
-    \date   create:2004/09/19 update:
+    \date   create:2004/09/19 update:$Date$
 */
-char* MoArp::searchCache(dword ip)
+byte* MoArp::searchCache(dword ip)
 {
     char IpKey[10];    //IPアドレスキー
-    char *RetMacValue;
+    byte *RetMacValue;
     
     //HashMapから検索
     //IPアドレスを、MAPのキー化(String化)
@@ -200,25 +277,23 @@ char* MoArp::searchCache(dword ip)
          ARP IPアドレス解決処理
     \param  dword ip [in] IPアドレス
     \param  byte *mac [OUT] 解決MACアドレスへのポインタ
-    \return void 無し 
+    \return int 0:キャッシュヒット 0以外:ARP要求をかけた、その待ち番号
         
     \author Yamami
-    \date   create:2004/09/20 update:
+    \date   create:2004/09/20 update:$Date$
 */
-int MoArp::getMac(dword ip,char *mac)
+int MoArp::getMac(dword ip,byte *mac)
 {
+    MAC_REPLY_WAIT* nowWait;
+    int waitNumber;
+    
     enum{
         RETRY_COUNT=3,          // リトライ送信回数
         REQUEST_TIMEOUT=2000,   // リクエストタイムアウトミリ秒
     };
 
-    char *retmac;
-
-    //int rest;
-    //REPLY_WAIT *wait;
-    //int i;
-    //REPLY_WAIT *p;
-
+    byte *retmac;
+    
 
     // キャッシュを検索
     if((retmac=searchCache(ip))!=NULL)
@@ -228,47 +303,28 @@ int MoArp::getMac(dword ip,char *mac)
         return 0;
     }
 
-/*
 
-    // 送信準備
-    if((wait=kmalloc(sizeof(REPLY_WAIT)))==NULL)return -ENOMEM;
-    wait->ip=ip;
-    wait->repFlg=0;
-    wait->next=replyWait;
-    replyWait=wait;
+    //キャッシュに無いのでARP要求
+
+    // 送信準備 待ちリストに登録
+    nowWait = new MAC_REPLY_WAIT();
+    
+    nowWait->ip=ip;
+    nowWait->repFlg=0;
+    nowWait->wait=0;
+
+    //待ちリストに追加
+    macWaitList->add(nowWait);
+    //待ち番号の取得
+    //TO DO Yamami!!! ここスレッドセーフにしないとやばそう・・・
+    waitNumber = macWaitList->size();
 
     // リクエストARPを送信
-    for(i=0;;)
-    {
-        transArp(num,ip,broadcastMac,OPE_CODE_ARP_REQ);
-        wait->wait.flag=0;
-        wait_intr(&wait->wait,REQUEST_TIMEOUT,TASK_SIGNAL_WAIT);
-        if(wait->repFlg)
-        {
-            addCache(ip,wait->mac);
-            memcpy(mac,wait->mac,6);
-            rest=0;
-            break;
-        }
-        if(++i>=RETRY_COUNT)
-        {
-            rest=-ENETUNREACH;
-            break;
-        }
-    }
-
-    // 送信後処理
-    if(replyWait==wait)replyWait=wait->next;
-    else
-    {
-        for(p=replyWait;p->next!=wait;p=p->next);
-        p->next=wait->next;
-    }
-    kfree(wait);
-
-    return rest;
-
-*/
+    //ブロードキャストで、ARP要求
+    transArp(ip,broadcastMac,OPE_CODE_ARP_REQ);
+    
+    // 待ち番号を返却
+    return waitNumber;
 
 }
 

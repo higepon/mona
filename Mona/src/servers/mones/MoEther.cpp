@@ -42,7 +42,6 @@ MoEther::MoEther()
 void MoEther::etherInit(AbstractMonic *pminsNic) 
 {
 
-    //printf("MoEther init\n");
     
     //イーサネットフレーム保持リスト 生成
     /* keyinfo list */
@@ -50,11 +49,6 @@ void MoEther::etherInit(AbstractMonic *pminsNic)
 
     //内部保持のNICドライバへ格納
     insAbstractNic = pminsNic;
-
-    //ARPクラスをインスタンス化  Yamami?? ここでARPとIPクラスはインスタンス化すべきか？
-    //2004/09/04 ARPクラスは、mones.cpp(メイン)でインスタンス化し、グローバルポインタで保持する。
-    //g_MoArp = new MoArp();
-    //g_MoArp->initArp(insAbstractNic);
 
     return;
 }
@@ -75,8 +69,9 @@ MoEther::~MoEther()
 /*!
     \brief setEtherFrame
          イーサネットフレームセット
-    \param  byte* frameBuf [in] イーサネットフレームバッファへのポインタ
-    \param  byte *mac [in] イーサネットフレームサイズ
+
+    \param  byte *frameBuf [in] イーサネットフレームバッファ
+    \param  int size [in] イーサネットフレームサイズ
     \return int 結果 
         
     \author Yamami
@@ -112,7 +107,6 @@ int MoEther::setEtherFrame(byte *frameBuf, int size)
     \date   create:2004/08/12 update:
 */
 int MoEther::getEtherFrame(ETHER_FRAME *frameBuf)
-//int MoEther::getEtherFrame()
 {
     
 
@@ -171,6 +165,37 @@ int MoEther::receiveEther()
     
     return 0;
 }
+
+
+
+
+/*!
+    \brief receiveEther
+         イーサネットフレーム受信処理 
+         バッファリングせず、直接処理版
+    \param  byte* frameBuf [in] イーサネットフレームバッファへのポインタ
+    \return int 結果 
+    \author Yamami
+    \date   create:2004/11/15 update:$Date$
+*/
+//int MoEther::receiveEther(ETHER_FRAME *frameBuf)
+//{
+//    
+//    // フレームを各プロトコルに渡す
+//    switch(frameBuf->type)
+//    {
+//        case ETHER_PROTO_IP:
+//            return g_MoIp->receiveIp((IP_HEADER*)frameBuf->data);
+//            break;
+//        case ETHER_PROTO_ARP:
+//            return g_MoArp->receiveArp((ARP_HEADER*)frameBuf->data);
+//            break;
+//            
+//    }
+//    
+//    return 0;
+//}
+
 
 
 /*!

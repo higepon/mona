@@ -70,6 +70,9 @@ MoIcmp::~MoIcmp()
 */
 int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
 {
+    //Yamami デバッグ
+    //printf("MoIcmp::receiveIcmp!!\n");
+    
     int icmp_size;
     ICMP_HEADER *icmp;
 
@@ -111,6 +114,9 @@ int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
 */
 void MoIcmp::transIcmp(dword dstip, byte type, byte code, ICMP_HEADER *icmpHead, int size)
 {
+    //Yamami デバッグ
+    //printf("MoIcmp::transIcmp!!\n");
+    
     TRANS_BUF_INFO tbi;
 
     //ICMPヘッダーの設定

@@ -49,16 +49,6 @@ enum{
     IP_HEAD_FRAG_NOT=0x4000,    /* フラグメント不可フラグ。 */
 };
 
-/*! 
- *  \struct TRANS_BUF_INFO
- *  \brief IP送信バッファ構造体
- */
-typedef struct{
-    char  *data[3];     /* 送信フレームアドレス。 */
-    int    size[3];     /* データフレームサイズ。 */
-    word type;        /* フレームタイプ。 */
-    dword  ipType;      /* IPプロトコルタイプ。 */
-}TRANS_BUF_INFO;
 
 
 /*!

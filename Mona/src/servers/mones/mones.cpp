@@ -37,7 +37,6 @@ using namespace MonAPI;
 */
 int MonaMain(List<char*>* pekoe)
 {
-    int ret;
     //syscall_get_io  
     //このプロセス動作中は、IOを特権レベル3まで許可する
     syscall_get_io();
@@ -54,9 +53,6 @@ int MonaMain(List<char*>* pekoe)
         printf("NIC Error Mones Quit \n");
         return 0;
     }
-    
-    //Ne2000MoNic* insAbstractNic = new Ne2000MoNic();
-    
     
     //Etherクラスのインスタンス化
     g_MoEther = new MoEther();
@@ -97,14 +93,6 @@ int MonaMain(List<char*>* pekoe)
     //IRQレシーバとして登録 (IRQは、NICドライバクラスより得る)
     syscall_set_irq_receiver(insAbstractNic->getNicIRQ());
 
-
-//Yamami デバッグ
-//FileOutputStream fos("MONES.LOG", true);
-//printf("open=%x\n", fos.open());
-
-//char logStr[1024];    //ログ出力文字列
-
-
     /* Message loop */
     //ここでメッセージループ
     for (;;)
@@ -126,21 +114,78 @@ int MonaMain(List<char*>* pekoe)
                 
                 //Etherクラスに登録
                 i = g_MoEther->setEtherFrame(insAbstractNic->frame_buf ,insAbstractNic->frame_len);
-                //イーサネットフレーム受信処理 
+                //イーサネットフレーム受信処理
                 i = g_MoEther->receiveEther();
                 
                 break;
 
-            //Yamami!! パケット送信処理、未実装
-            //case MSG_NET_PACKET_SEND:
+            //Yamami!! TO DO パケット送信処理、未実装
+            //アプリからのパケット送信要求
+            case MSG_MONES_IP_SEND:
                 //パケット送信
-                //テスト 自己MACアドレスへ出力処理
-                // insAbstractNic->frame_output( (byte *)ne_test_pattern, ether_mac_addr, ne_sizeof_test_pattern, 0x0806 );
-                //ホストアドレスへ出力処理
-                // insAbstractNic->frame_output( (byte *)ne_test_pattern, dest_ether_mac_addr, ne_sizeof_test_pattern, 0x0806 );
+                //TO DO 単純に、ここでテスト用のIPパケットを作成し送信要求
+                printf("MSG_MONES_IP_SEND\n");
+                
+                int ret;
+                dword ip;
+                TRANS_BUF_INFO tbi;
+                char* testPacket;
+                
+                testPacket = new char(100);
+                
+                //送信先 10.0.2.2(QEMU GW)
+                ip = 0x0A000202;
+                
+                sprintf(testPacket , "TEST_PACKET!!!!");
+                
+                
+                //送信バッファテーブルの設定
+                tbi.data[2]=NULL;
+                tbi.size[2]=0;
+                tbi.data[1]=(char*)testPacket;
+                tbi.size[1]=1024;
+                tbi.ipType=IPPROTO_IP;
+                
+                ret = g_MoIp->transIp(&tbi , MoPacUtl::swapLong(ip) ,0, 0);
+                
+                break;
 
-                //break;
+            //ARP待ちからのWake Up
+            case MSG_MONES_WAKEUP_ARP_WAIT:
+                
+                printf("MSG_MONES_WAKEUP_ARP_WAIT\n");
+                
+                MAC_REPLY_WAIT* nowWait;
+                TRANS_BUF_INFO *ipsend;
+    
+                //ARP要求待ちリストの検索
+                
+                //Yamami デバッグ
+                printf("Yamami!!!\n");
+                printf("g_MoArp->macWaitList->size() = %d \n",g_MoArp->macWaitList->size());
+                
+                
+                for (int i = 0; i < g_MoArp->macWaitList->size() ; i++) {
+                    nowWait = g_MoArp->macWaitList->get(i);
+                    
+                    if(nowWait->repFlg == 1){
+                        //ARP解決済みなら、待ちパケットを送信する。
+                        ret = g_MoIp->transIp(nowWait->ipPacketBuf , nowWait->ip ,0, 0);
+                        
+                        //待避していたIPパケットバッファの解放
+                        //一旦コメント化
+                        //free(nowWait->ipPacketBuf);
+                        
+                        //待ちリストから削除
+                        g_MoArp->macWaitList->removeAt(i);
+                        //カウンタデクリメントがいる。
+                        i--;
+                    }
+                }
+                
 
+                
+                break;
 
             default:
                 /* igonore this message */

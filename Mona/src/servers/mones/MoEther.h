@@ -52,7 +52,12 @@ class MoEther
     int setEtherFrame(byte* , int);
     int getEtherFrame(ETHER_FRAME* );
     int receiveEther();
+    
+//    int receiveEther(ETHER_FRAME*); //試験的に多重定義 直接受信(バッファリング無し)
+    
     void sendEther(byte* , dword , dword);
+    
+
 
   private:
     //イーサネットフレーム保持リスト

@@ -79,4 +79,28 @@ enum{
 };
 
 
+/*! 
+ *  \struct TRANS_BUF_INFO
+ *  \brief IP送信バッファ構造体
+ */
+typedef struct{
+    char  *data[3];     /* 送信フレームアドレス。 */
+    int    size[3];     /* データフレームサイズ。 */
+    word type;        /* フレームタイプ。 */
+    dword  ipType;      /* IPプロトコルタイプ。 */
+}TRANS_BUF_INFO;
+
+
+/*! 
+ *  \struct MAC_REPLY_WAIT
+ *  \brief ARP要求待ち管理 構造体
+ */
+struct MAC_REPLY_WAIT{
+    dword ip;         //要求中IPアドレス
+    int repFlg;       //Reply flag 0:待ち 1:完了
+    int wait;         //ウェイト数 
+    char mac[6];      //MACアドレス格納
+    TRANS_BUF_INFO* ipPacketBuf; //IPパケットバッファ
+};
+
 #endif

@@ -21,7 +21,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_5
+#define MAIN_7
 
 
 #ifdef MAIN_1
@@ -135,9 +135,14 @@ int MonaMain(List<char*>* pekoe)
         
         printf("ip=%d wait=%d mac=%s \n", p->ip , p->wait , p->mac);
         
+        //この後、ここでリストから削除するとどうなる？
+        testList->removeAt(i);
+        //カウンタデクリメントがいる。
+        i--;
+        
     }
     
-    
+    printf("testList->size() = %d\n",testList->size());
     
     return 0;
 
@@ -303,6 +308,40 @@ int MonaMain(List<char*>* pekoe)
         printf("local!!!! yamas:INIT error\n");
     }
 
+    
+    
+    return 0;
+
+}
+
+#endif
+
+
+
+
+#ifdef MAIN_7
+
+
+//Code:Mones IP送信テスト
+int MonaMain(List<char*>* pekoe)
+{
+
+    //ここで、Monesにメッセージを送る
+    MessageInfo info;
+
+    dword targetID = Message::lookupMainThread("MONES.EX2");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("local!!!! MONES:INIT not found\n");
+        exit(1);
+    }
+
+    // create message
+    Message::create(&info, MSG_MONES_IP_SEND, 0, 0, 0, NULL);
+    // send
+    if (Message::send(targetID, &info)) {
+        printf("local!!!! MONES:INIT error\n");
+    }
     
     
     return 0;

@@ -95,7 +95,7 @@ int MoIp::receiveIp(IP_HEADER *ipHead)
     \brief transIp
          IPプロトコル送信 処理
     \param  TRANS_BUF_INFO *tbi [in] 送信バッファ構造体へのポインタ
-    \param  dword dstip [in] 送信先IPアドレス
+    \param  dword dstip [in] 送信先IPアドレス(エンディアン変換済みが前提)
     \param  byte tos [in] サービスタイプ
     \param  int flag [in] フラグ
     \return int 結果 
@@ -108,7 +108,7 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
 
     byte *transPacket; //パケット送信バッファ
 
-    char dstmac[6];
+    byte dstmac[6];
     dword transip;
     //int num;
     int rest;
@@ -116,13 +116,31 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
     int max,total;
     //int trans;
 
-    //Yamami ここでルーティング解決？？ とりあえず、dst = transとする。
-    transip = dstip;
+    int ret;
+    //ルーティング解決
+    ret = ipRouting(dstip , &transip);
+    //transip = dstip;
+
+//Yamami デバッグ
+printf("MoIp::transIp dstip = %x transip=%x \n",dstip,transip);
 
     // 送信先 MACアドレス取得(ARP解決)
-    if((rest=g_MoArp->getMac(transip,dstmac))<0){
+    if((rest=g_MoArp->getMac(transip,dstmac)) != 0){
+        //ARPキャッシュでは見つからず、IP送信はすぐにできないので、待ちへ
+        //パケット内容を待ちリストへ追加
+        MAC_REPLY_WAIT* nowWait;
+        nowWait = g_MoArp->macWaitList->get(rest-1);
+        nowWait->ipPacketBuf = tbi;
+        
+        //Yamami デバッグ
+        printf("MoIp::transIp rest = %d!!\n",rest);
+        
         return rest;
     }
+
+//Yamami デバッグ
+printf("MoIp::transIp tuduki!!\n");
+
 
     //IPヘッダを作成する。
     ipHead.verhead=IP_HEAD_VERSION|(sizeof(IP_HEADER)/4);
@@ -158,10 +176,7 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
         //チェックサム
         ipHead.chksum=MoPacUtl::calcCheckSum((dword*)&ipHead,tbi->size[0]);
         
-        //抽象NICを使って送信!
-        //ethDev[num].dev->write(ethDev[num].dev->linf,(size_t)tbi,(size_t)dstmac);
-        //memcpy(ipHead.dstMac,tbi->data[1],tbi->size[1]);
-        
+        //抽象NICを使って送信!        
         //パケット作成
         transPacket = (byte *)malloc(sizeof(IP_HEADER) + total);
         memcpy(transPacket,(byte *)&ipHead,sizeof(ipHead));
@@ -234,16 +249,16 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
 */
 int MoIp::ipRouting(dword ip,dword *transip)
 {
-    //int i;
 
     //同一サブネット内かチェックする。
-    if((ip & G_MonesCon.getGl_mySubnet()) == (G_MonesCon.getGl_myIpAdr() & G_MonesCon.getGl_mySubnet()))
+    if((ip & MoPacUtl::swapLong(G_MonesCon.getGl_mySubnet())) 
+        == (MoPacUtl::swapLong(G_MonesCon.getGl_myIpAdr()) & MoPacUtl::swapLong(G_MonesCon.getGl_mySubnet())))
     {
         *transip=ip;
         return 0;
     }
 
     /* デフォルトゲートウェイへ。 */
-    *transip=G_MonesCon.getGl_myGw();
+    *transip=MoPacUtl::swapLong(G_MonesCon.getGl_myGw());
     return 0;
 }

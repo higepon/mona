@@ -74,19 +74,25 @@ class MoArp
     ~MoArp();
     void initArp(AbstractMonic*);
 
-    //int getMac(int,uint,char*);
     int receiveArp(ARP_HEADER*);
-    char* searchCache(dword );
-    int getMac(dword ,char*);
+    byte* searchCache(dword );
+    int getMac(dword ,byte*);
+
+    //TO DO Yamami とりあえずPublicメンバ ARPクラスが保持すべきか？
+    //ARP要求待ちリスト
+    List<MAC_REPLY_WAIT*>* macWaitList;
+
 
   private:
     //ARP応答処理 処理
     void transArp(dword , byte*, word );
-    void addArpCache(dword , char*);
-    
+    void addArpCache(dword , byte*);
+    //ARP応答受信処理
+    int receiveReply(dword ,byte*);
     
     //ARPキャッシュ用 HashMap
-    HashMap<char*>* ArpCache;
+    HashMap<byte*>* ArpCache;
+
 
     //NICドライバ
     AbstractMonic* insAbstractNic;

@@ -74,6 +74,8 @@ MoTcp::~MoTcp()
 */
 void send_tcp(T_TSOCK *sock, char flags, struct Packet *packet, char *data, dword size)
 {
+
+/*
     dword tsize;
     dword sum;
     char *ip_hdr;
@@ -94,7 +96,7 @@ void send_tcp(T_TSOCK *sock, char flags, struct Packet *packet, char *data, dwor
     // TCPデータ部のセット
     memcpy(tcp_body, data, size);
 
-/*
+
     // TCPヘッダのセット
     packet_put_n(tcp_hdr, tcphdr_src_port, sock->myport);
     packet_put_n(tcp_hdr, tcphdr_dest_port, sock->youport);
