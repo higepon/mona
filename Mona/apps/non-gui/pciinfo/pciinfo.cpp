@@ -26,6 +26,8 @@ int MonaMain(List<char*>* pekoe) {
     
     word Vendor;
     word Device;
+
+    syscall_get_io();
     
     CString bundlePath = MonAPI::System::getBundlePath();
     //pciinfoファイルをオープン

@@ -50,10 +50,6 @@ void KEvent::set(Thread* thread, kevent e)
     /* not reached */
 }
 
-const kevent KEvent::MESSAGE_COME  = 0x0001;
-const kevent KEvent::FDC_INTERRUPT = 0x0002;
-const kevent KEvent::MUTEX_LOCKED  = 0x0003;
-
 /*----------------------------------------------------------------------
     RTC
 ----------------------------------------------------------------------*/

@@ -21,8 +21,182 @@
 #define FOREACH_N(top, type, element) \
 for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))
 
+#define FOREACH(type, iterator, array) \
+        if ((array).getLength() > 0) \
+                for ({int __##iterator = 0; type iterator;} \
+                        __##iterator < (array).getLength() && (&(iterator = (array)[__##iterator]) || true); __##iterator++)
+
+
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
+
+/*----------------------------------------------------------------------
+    Scheduler2
+----------------------------------------------------------------------*/
+class Scheduler2
+{
+public:
+    Scheduler2();
+    virtual ~Scheduler2();
+
+public:
+    bool Schedule1();
+    bool Schedule2();
+
+
+protected:
+    void SetPriority(Thread* thread);
+    void WakeupTimer();
+    void WakeupTimer(Thread* thread);
+    bool SetNextThread();
+
+
+    inline void RemoveAdd(Array<Thread*> queue, Thread* thread)
+    {
+#if 1
+        if (thread->priority >= queue.getLength() || thread->priority < 0)
+        {
+            panic("Scheduler:RemoveAdd index out");
+        }
+#endif
+        thread->remove();
+        queue[thread->priority]->addToPrev(thread);
+    }
+
+protected:
+    Array<Thread*> runq;
+    Array<Thread*> waitq;
+    dword tickTotal;
+};
+
+Scheduler2::Scheduler2() : runq(64), waitq(3), tickTotal(0)
+{
+    FOREACH(Thread*, queue, runq)
+    {
+        queue = new Thread();
+        checkMemoryAllocate(queue, "Scheduler::runq");
+        queue->initialize();
+    }
+
+    FOREACH(Thread*, queue, waitq)
+    {
+        queue = new Thread();
+        checkMemoryAllocate(queue, "Scheduler::waitq");
+        queue->initialize();
+    }
+}
+
+Scheduler2::~Scheduler2()
+{
+
+
+}
+
+// kernel calls this 10ms cycle
+bool Scheduler2::Schedule1()
+{
+    /* このスケジューラは10ms毎に呼ばれる */
+    /* 今動いていたスレッドだけがcpu使用時間によって優先順位が変わり違うキューに入れられる。 */
+    /* wakeup もするのでこれでいいかね？ */
+    Thread* root = NULL;
+
+    FOREACH(Thread*, queue, runq)
+    {
+        if (queue->isEmpty())
+        {
+            continue;
+        }
+        else
+        {
+            root = queue;
+            break;
+        }
+    }
+
+    Thread* current = (Thread*)(root->top());
+    current->tick();
+
+    /* set priority and set to the queue */
+    SetPriority(current);
+
+    WakeupTimer();
+
+    return SetNextThread();
+}
+
+// kernel calls this 10ms * n cycle
+bool Scheduler2::Schedule2()
+{
+//あるサイクルでcpu使用時間を半分にしないと駄目よね
+
+    return false;
+}
+
+void Scheduler2::SetPriority(Thread* thread)
+{
+
+}
+
+void Scheduler2::WakeupTimer(Thread* thread)
+{
+    if (thread->waitReason != KEvent::TIMER) return;
+
+    thread->waitReason = KEvent::NONE;
+    thread->priority = 0;
+
+    RemoveAdd(runq, thread);
+}
+
+void Scheduler2::WakeupTimer()
+{
+    FOREACH(Thread*, queue, waitq)
+    {
+        FOREACH_N(queue, Thread*, thread)
+        {
+            WakeupTimer(thread);
+        }
+    }
+}
+
+bool Scheduler2::SetNextThread()
+{
+    Thread* root = NULL;
+
+    FOREACH(Thread*, queue, runq)
+    {
+        if (queue->isEmpty())
+        {
+            continue;
+        }
+        else
+        {
+            root = queue;
+            break;
+        }
+    }
+
+    if (root == NULL)
+    {
+        /* next is idle ******************************************/
+        panic("idle");
+    }
+
+    g_prevThread    = g_currentThread;
+    g_currentThread = PTR_THREAD(root->top());
+    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
+}
+
+
+/* ↑とりあえずこのへんで実装が中断中 */
+
+
+
+
+
+
+
+
+
 
 Scheduler::Scheduler() : tickTotal(0)
 {
@@ -688,7 +862,7 @@ void ThreadOperation::sendKilledMessage()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : waitReason(WAIT_NONE), totalTick(0)
+Thread::Thread() : waitReason(WAIT_NONE), totalTick(0), doraTick(0)
 {
     /* thread information */
     tinfo = new ThreadInfo;

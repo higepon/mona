@@ -36,6 +36,47 @@ extern VirtualConsole* g_console;
 void monaIdle();
 
 /*----------------------------------------------------------------------
+    Array
+----------------------------------------------------------------------*/
+template <class T> class Array {
+
+  public:
+    Array(dword length) : length_(length), alloc_(true) {
+        array_ = new T[length];
+    }
+
+    Array(T* array, dword length) : array_(array), length_(length), alloc_(false) {
+    }
+
+    virtual ~Array() {
+        if (alloc_) {
+            delete[] array_;
+        }
+    }
+
+  public:
+    inline T& operator [](dword index) {
+
+#if 1
+        if (index < 0 || index > length_ - 1) {
+            g_console->printf("array index outof range %d\n", index);
+            for(;;);
+        }
+#endif
+        return array_[index];
+    }
+
+    inline int getLength() const {
+        return length_;
+    }
+
+  private:
+    T* array_;
+    dword length_;
+    bool alloc_;
+};
+
+/*----------------------------------------------------------------------
     Arch dependent functions
 ----------------------------------------------------------------------*/
 extern "C" void arch_switch_thread_to_user1();
@@ -195,6 +236,7 @@ class Thread : public Node, public KObject
     inline void tick()
     {
         totalTick++;
+        doraTick++;
     }
 
     inline dword getTick() const
@@ -217,6 +259,8 @@ class Thread : public Node, public KObject
     List<MessageInfo*>* messageList;
     dword id;
     dword flags;
+    dword doraTick; // this thread used cpu time at last cycle
+    int priority;
 };
 
 /*----------------------------------------------------------------------

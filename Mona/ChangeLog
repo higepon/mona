@@ -1,3 +1,7 @@
+2004-08-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp: 新スケジューラ実装中
+
 2004-08-10  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/ihandlers.cpp : IRQ周りを整理。動的登録がIRQ0以外全てで行えるようになった。
