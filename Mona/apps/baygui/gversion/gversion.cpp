@@ -126,7 +126,7 @@ void GVersion::onPaint(Graphics *g)
 	gbc_blt_screen(32, x + INSETS_LEFT + 14, y + INSETS_TOP + 11, 24, 31, versionIcon);
 
 	g->setColor(0,0,0);
-	g->drawText(GUILIB_VERSION, 50, 10);
+	g->drawText(BAYGUI_VERSION, 50, 10);
 	g->drawText("copyright (C) 2004, bayside", 50, 26);
 	g->setColor(96,96,96);
 	g->drawRect(10,50,250,90);
@@ -165,7 +165,7 @@ void GVersion::onPaint(Graphics *g)
 	strcat(mesg3, "KB");
 
 	g->setColor(0,0,0);
-	g->drawText(GUILIB_VERSION, 50, 10);
+	g->drawText(BAYGUI_VERSION, 50, 10);
 	g->drawText("copyright (C) 2004, bayside", 50, 26);
 	g->setColor(96,96,96);
 	g->drawRect(10,50,250,90);
