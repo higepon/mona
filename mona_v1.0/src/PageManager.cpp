@@ -147,6 +147,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword tableIndex     = (address >> 12) & 0x3FF;
     byte user            = address >= 0x4000000 ? PAGE_USER : PAGE_KERNEL;
 
+    /* physical page not exist */
     if (error & 0x01 == PAGE_NOT_EXIST) {
 
 
@@ -161,9 +162,13 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
         }
 
         return allocatePhysicalPage(&(table[tableIndex]));
+
+    /* access falut */
     } else {
 
-        panic("page access denied");
+        g_console->printf("access denied.Process %s killed", g_current_process->name);
+        g_process_manager->kill(g_current_process);
+        return true;
     }
 
 }
