@@ -83,6 +83,11 @@ int receive(Message* message) {
     return 0;
 }
 
+void test_hello() {
+
+    syscall_print("hello mona");
+}
+
 int loadProcess(const char* path, const char* file, bool isUser) {
 
     static dword sharedId = 0x1000;
@@ -135,23 +140,26 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     g_console->printf("elf size = %d", loader->prepare((dword)buf));
 
+    /* prod_ code */
     dword entrypoint = loader->load((byte*)0x80000000);
-    g_console->printf("entrypoint=%x", entrypoint);
 
+    /* test code */
+    //    dword entrypoint = (dword)0xA0000000;
+    //    ((byte*)0x80000000)[0] = 0xeb;
+    //    ((byte*)0x80000000)[1] = 0xfe;
+
+    g_console->printf("entrypoint=%x", entrypoint);
     delete(loader);
     delete(g_fdcdriver);
     free(buf);
 
     Process* process1 = isUser ? new UserProcess(file) : new Process(file);
-
     while (Semaphore::down(&g_semaphore_shared));
     isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
     isAttaced = SharedMemoryObject::attach(sharedId, &(process1->pinfo_), 0xA0000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
-    g_console->printf("@@12@@\n");
-    while (true);
     g_process_manager->addProcess(process1, entrypoint);
 
     return 0;

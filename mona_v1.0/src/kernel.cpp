@@ -171,17 +171,17 @@ void mainProcess() {
     //Process*     process2 = new Process("krnl_o       ");
     //Process*     process5 = new Process("krnl_o2      ");
     //Process*     process3 = new Process("krnl_n       ");
-    Process*     process4 = new Process("krnl_m       ");
+    //    Process*     process4 = new Process("krnl_m       ");
     Process*     process7 = new Process("show_process ");
 
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
+    //    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
 
     //  g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     //  g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     //  g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
 
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", false));
 
     while (true);
 }

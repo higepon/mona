@@ -33,7 +33,6 @@ class SharedMemoryObject : public Queue {
     inline virtual int isMapped(int physicalIndex) const {
 
         if (physicalIndex >= physicalPageCount_) return UN_MAPPED;
-
         return physicalPages_[physicalIndex];
     }
 

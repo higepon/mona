@@ -250,6 +250,9 @@ SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, Shared
 SharedMemorySegment::SharedMemorySegment() {
 
     /* dummy */
+    start_ = 0;
+    size_  = 0;
+    sharedMemoryObject_ = 0;
 }
 
 /*!
@@ -276,6 +279,8 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     g_console->printf("[shared] address = %x", address);
 
+    g_console->printf("%s\n", g_current_process->name);
+
     if (error != PageManager::FAULT_NOT_EXIST) {
 
         errorNumber_ = FAULT_UNKNOWN;
@@ -298,19 +303,15 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     /* check already allocated physical page? */
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
+
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
 
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
-
         mapResult = g_page_manager->allocatePhysicalPage((PageEntry*)(g_current_process->cr3),address, true, true, true);
-
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
-
     } else {
-
         mapResult = g_page_manager->allocatePhysicalPage((PageEntry*)(g_current_process->cr3), address, mappedAddress, true, true, true);
     }
-
     return (mapResult != -1);
 }
 

@@ -114,17 +114,11 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 bool ProcessManager::addProcess(Process* process, PageEntry* directory, virtual_addr entry) {
 
     process->setup(entry, allocateStack(), allocateKernelStack(process->pinfo_.dpl), directory, allocatePID());
-
     process->pinfo_.state = Process::READY;
-
     process->pinfo_.stack  = new StackSegment(0xFFFFEFFF, 0x1000, 0x3000);
     g_page_manager->allocatePhysicalPage((PageEntry*)(process->pinfo_.cr3), 0xFFFFFFFF, true, true, true);
-
-    g_console->printf("esp=[%s, %x]", process->pinfo_.name, process->pinfo_.esp);
-
     g_process[pnum_] = process;
     pnum_++;
-
     enter_kernel_lock_mode();
     scheduler_->addProcess(&(process->pinfo_));
     exit_kernel_lock_mode();
