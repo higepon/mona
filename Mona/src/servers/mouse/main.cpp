@@ -31,18 +31,15 @@ public:
 
 private:
     bool SendServerOK();
-    void SendMouseInformation(MessageInfo* info);
+    void SendMouseInformation();
     void PaintCursor(int x, int y);
 
 private:
     bool needPaint;
     int disableCount;
-    int posX;
-    int posY;
-    int prevX;
-    int prevY;
-    int w;
-    int h;
+    int posX, posY, prevX, prevY;
+    byte button, prevButton;
+    int w, h;
     Screen* screen;
     Screen* vscreen;
     List<dword>* destList;
@@ -89,6 +86,7 @@ bool MouseServer::Initialize()
     /* cursor to center */
     this->posX = this->prevX = this->w / 2;
     this->posY = this->prevY = this->h / 2;
+    this->button = this->prevButton = 0;
 
     /* server start ok */
     if (!SendServerOK()) return false;
@@ -101,83 +99,81 @@ bool MouseServer::Initialize()
 void MouseServer::MessageLoop()
 {
     MessageInfo receive;
-    MessageInfo send;
 
     for (;;)
     {
-        if (!Message::receive(&receive))
+        if (Message::receive(&receive) != 0) continue;
+
+        switch(receive.header)
         {
-            switch(receive.header)
+        case MSG_MOUSE_REGIST_TO_SERVER:
+
+            /* arg1 = tid */
+            this->destList->add(receive.arg1);
+            Message::reply(&receive);
+            break;
+
+        case MSG_MOUSE_UNREGIST_FROM_SERVER:
+
+            /* arg1 = tid */
+            this->destList->remove(receive.arg1);
+            Message::reply(&receive);
+            break;
+
+       case MSG_MOUSE_ENABLE_CURSOR:
+
+            if (this->disableCount > 0)
             {
-            case MSG_MOUSE_REGIST_TO_SERVER:
-
-                /* arg1 = tid */
-                this->destList->add(receive.arg1);
-                Message::reply(&receive);
-                break;
-
-            case MSG_MOUSE_UNREGIST_FROM_SERVER:
-
-                /* arg1 = tid */
-                this->destList->remove(receive.arg1);
-                Message::reply(&receive);
-                break;
-
-           case MSG_MOUSE_ENABLE_CURSOR:
-
-                if (this->disableCount > 0)
-                {
-                    disableCount--;
-                    PaintCursor(posX, posY);
-                }
-
-                Message::create(&send, MSG_RESULT_OK, receive.header);
-                Message::send(receive.from, &send);
-
-                break;
-
-            case MSG_MOUSE_DISABLE_CURSOR:
-
-                PaintCursor(posX, posY);
-                disableCount++;
-
-                Message::create(&send, MSG_RESULT_OK, receive.header);
-                Message::send(receive.from, &send);
-
-                break;
-
-            case MSG_MOUSE:
-
-                {
-                    byte result    = (byte)(receive.arg1);
-                    byte clickInfo = (result & 0x01) | (result & 0x02);
-
-                    char x = (byte)(receive.arg2);
-                    char y = (byte)(receive.arg3) * (-1);
-
-                    this->posX += x;
-                    this->posY += y;
-
-                    if (this->posX >= this->w) this->posX = this->w;
-
-                    /* mouse cursor size */
-                    if (this->posY >= this->h - 4) this->posY = this->h - 4;
-                    if (this->posX <= 0) this->posX = 0;
-                    if (this->posY <= 0) this->posY = 0;
-
-                    Paint();
-
-                    Message::create(&send, MSG_MOUSE_INFO, posX, posY, clickInfo);
-                    SendMouseInformation(&send);
-                }
-
-                break;
-
-            default:
-
-                /* ignore */
-                break;
+                disableCount--;
+                PaintCursor(this->prevX, this->prevY);
             }
+
+            Message::reply(&receive);
+
+            break;
+
+        case MSG_MOUSE_DISABLE_CURSOR:
+
+            PaintCursor(this->prevX, this->prevY);
+            disableCount++;
+
+            Message::reply(&receive);
+
+            break;
+
+        case MSG_MOUSE:
+
+            {
+                byte result  = (byte)(receive.arg1);
+                this->button = (result & 0x01) | (result & 0x02);
+
+                char x = (byte)(receive.arg2);
+                char y = (byte)(receive.arg3) * (-1);
+
+                this->posX += x;
+                this->posY += y;
+
+                if (this->posX >= this->w) this->posX = this->w;
+
+                /* mouse cursor size */
+                if (this->posY >= this->h - 4) this->posY = this->h - 4;
+                if (this->posX <= 0) this->posX = 0;
+                if (this->posY <= 0) this->posY = 0;
+            }
+
+            break;
+
+        default:
+
+            /* ignore */
+            break;
+        }
+
+        if (this->prevButton != this->button
+            || ((this->prevX != this->posX || this->prevY != this->posY) && !Message::exist()))
+        {
+            this->Paint();
+            this->SendMouseInformation();
         }
     }
 }
@@ -186,15 +182,19 @@ void MouseServer::Paint()
 {
     PaintCursor(this->prevX, this->prevY);
     PaintCursor(this->posX , this->posY);
-    prevX = posX;
-    prevY = posY;
+    this->prevX = this->posX;
+    this->prevY = this->posY;
+    this->prevButton = this->button;
 }
 
-void MouseServer::SendMouseInformation(MessageInfo* info)
+void MouseServer::SendMouseInformation()
 {
+    MessageInfo info;
+    Message::create(&info, MSG_MOUSE_INFO, this->posX, this->posY, this->button);
+
     for (int i = this->destList->size() - 1; i >= 0; i--)
     {
-        if (Message::send(this->destList->get(i), info))
+        if (Message::send(this->destList->get(i), &info))
         {
             printf("Mouse:send error to thread id = %x", this->destList->get(i));
             this->destList->removeAt(i);
