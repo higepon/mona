@@ -3,7 +3,6 @@
 #include <monapi/Keys.h>
 
 #include "Shell.h"
-#include "elf.h"
 
 #define PROMPT "Mona>"
 
@@ -23,7 +22,7 @@ int MonaMain(List<char*>* pekoe)
         targetID = Message::lookupMainThread("1LINESH.SVR");
         if (targetID == THREAD_UNKNOWN)
         {
-            printf("ShellServer:INIT not found\n");
+            printf("Shell Server:INIT not found\n");
             exit(1);
         }
         callAutoExec = false;
@@ -32,7 +31,7 @@ int MonaMain(List<char*>* pekoe)
     /* send */
     if (Message::send(targetID, MSG_SERVER_START_OK))
     {
-        printf("ShellServer:INIT error\n");
+        printf("Shell Server:INIT error\n");
     }
 
     /* service loop */
@@ -138,8 +137,9 @@ int Shell::isInternalCommand(const CString& command)
 void Shell::commandExecute()
 {
     printf("\n");
+    _A<CString> args = this->parseCommandLine();
 
-    if (position_ < 2)
+    if (args.get_Length() == 0)
     {
         /* command is empty */
         printf(PROMPT);
@@ -149,86 +149,61 @@ void Shell::commandExecute()
 
     putHistory(commandLine_);
 
-    /* list initilize */
-    CommandOption list;
-    list.next = NULL;
-
-    CommandOption* option = NULL;
-    CString command;
-    _A<CString> args = CString(commandLine_).split(' ');
-    FOREACH (CString, arg, args)
-    {
-        if (arg == NULL) continue;
-
-        if (command == NULL) command = arg.toUpper();
-        option = new CommandOption;
-        strncpy(option->str, arg, sizeof(option->str));
-        option->next = list.next;
-        list.next = option;
-    }
-
     /* internal command */
     int isInternal;
-    if ((isInternal = isInternalCommand(command)))
+    if ((isInternal = isInternalCommand(args[0])))
     {
-        internalCommandExecute(isInternal, option);
-        for (option = list.next; option; option = option->next)
-        {
-            delete option;
-        }
+        internalCommandExecute(isInternal, args);
         if (!hasExited) printf("\n%s", PROMPT);
         position_ = 0;
         return;
     }
 
-    CString path;
-
+    CString cmdLine;
+    CString command = args[0].toUpper();
     if (command[0] == '/')
     {
-        path = command;
-        int p = path.lastIndexOf('/') + 1;
-        command = path.substring(p, path.getLength() - p);
+        cmdLine = command;
     }
     else if (command.endsWith(".ELF"))
     {
-        path = "/APPS/" + command;
+        cmdLine = "/APPS/" + command;
     }
     else if (command.endsWith(".APP"))
     {
         CString name = command.substring(0, command.getLength() - 4);
-        command = name + ".ELF";
-        path = "/APPS/" + name + ".APP/" + command;
+        cmdLine = "/APPS/" + name + ".APP/" + name + ".ELF";
     }
     else
     {
-        command += ".ELF";
-        path = "/APPS/" + command;
+        cmdLine = "/APPS/" + command + ".ELF";
     }
 
-    executeProcess(path, command, &list);
-
-    for (option = list.next; option; option = option->next)
+    for (int i = 1; i < args.get_Length(); i++)
     {
-        delete option;
+        cmdLine += ' ';
+        cmdLine += args[i];
     }
+
+    monapi_call_elf_execute_file(cmdLine, 1);
 
     printf("\n%s", PROMPT);
     position_ = 0;
 }
 
-void Shell::internalCommandExecute(int command, CommandOption* option)
+void Shell::internalCommandExecute(int command, _A<CString> args)
 {
     switch (command)
     {
     case COMMAND_CD:
         {
-            if (option == NULL)
+            if (args.get_Length() < 2)
             {
                 printf("usage: CD directory\n");
             }
-            else if (syscall_cd(option->str))
+            else if (syscall_cd(args[1]))
             {
-                printf("directory not found: %s\n", option->str);
+                printf("directory not found: %s\n", (const char*)args[1]);
             }
             break;
         }
@@ -253,13 +228,13 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
         }
     case COMMAND_CAT:
         {
-            if (option == NULL)
+            if (args.get_Length() < 2)
             {
                 printf("usage: CAT/TYPE file\n");
                 break;
             }
 
-            monapi_cmemoryinfo* mi = monapi_call_file_read_data(option->str, 1);
+            monapi_cmemoryinfo* mi = monapi_call_file_read_data(args[1], 1);
             if (mi == NULL) break;
 
             if (mi->Size > 0)
@@ -293,7 +268,7 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
             break;
         }
     case COMMAND_CHSH:
-        if (executeProcess("/SERVERS/1LINESH.SVR", "1LINESH.SVR", NULL) != 0) break;
+        if (monapi_call_elf_execute_file("/SERVERS/1LINESH.SVR", 1) != 0) break;
         for (MessageInfo msg;;)
         {
             if (Message::receive(&msg) != 0) continue;
@@ -318,7 +293,8 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
     }
 }
 
-void Shell::commandTerminate() {
+void Shell::commandTerminate()
+{
     commandChar('\0');
 }
 
@@ -438,61 +414,23 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     return 0;
 }
 
-int Shell::executeProcess(const CString& path, const CString& name, CommandOption* option)
+_A<CString> Shell::parseCommandLine()
 {
-    monapi_cmemoryinfo* mi1 = monapi_call_file_read_data(path, 1);
-    if (mi1 == NULL) return -1;
-
-    ELFLoader loader(_A<byte>(mi1->Data, mi1->Size, false));
-    if (loader.getErrorCode() != 0)
+    _A<CString> args = CString(this->commandLine_).split(' ');
+    int size = 0;
+    FOREACH (CString, arg, args)
     {
-        printf("unknown executable format: %s\n", loader.getErrorName());
-        monapi_cmemoryinfo_dispose(mi1);
-        monapi_cmemoryinfo_delete(mi1);
-        return loader.getErrorCode();
+        if (arg != NULL) size++;
     }
 
-    monapi_cmemoryinfo* mi2 = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(mi2, loader.getImageSize(), 0))
+    _A<CString> ret(size);
+    int i = 0;
+    FOREACH (CString, arg, args)
     {
-        printf("image buffer allocate error\n");
-        monapi_cmemoryinfo_delete(mi2);
-        monapi_cmemoryinfo_dispose(mi1);
-        monapi_cmemoryinfo_delete(mi1);
-        return -1;
+        if (arg == NULL) continue;
+
+        ret[i++] = arg;
     }
 
-    dword entrypoint = loader.load(_A<byte>(mi2->Data, mi2->Size, false));
-
-    monapi_cmemoryinfo_dispose(mi1);
-    monapi_cmemoryinfo_delete(mi1);
-
-    LoadProcessInfo info;
-    info.image = mi2->Data;
-    info.size = mi2->Size;
-    info.entrypoint = entrypoint;
-    info.path = path;
-    info.name = name;
-    info.list = option;
-
-    int result = syscall_load_process_image(&info);
-
-    monapi_cmemoryinfo_dispose(mi2);
-    monapi_cmemoryinfo_delete(mi2);
-
-    switch(result)
-    {
-      case(0):
-          break;
-      case(4):
-          printf("Shared Memory error1");
-          break;
-      case(5):
-          printf("Shared Memory error2");
-          break;
-      default:
-          break;
-    }
-
-    return result;
+    return ret;
 }

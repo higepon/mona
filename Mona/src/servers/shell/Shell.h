@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <monapi.h>
 #include <monapi/CString.h>
+#include <gui/System/Array.h>
 
 /*----------------------------------------------------------------------
     Shell
@@ -25,8 +26,8 @@ class Shell {
     void putHistory(const MonAPI::CString& command);
     MonAPI::CString getHistory();
     int isInternalCommand(const MonAPI::CString& command);
-    void internalCommandExecute(int command, CommandOption* option);
-    int executeProcess(const MonAPI::CString& path, const MonAPI::CString& name ,CommandOption* option);
+    void internalCommandExecute(int command, _A<MonAPI::CString> args);
+    _A<MonAPI::CString> parseCommandLine();
 
   protected:
     char commandLine_[1024];

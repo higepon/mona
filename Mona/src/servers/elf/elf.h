@@ -12,10 +12,14 @@
 #ifndef _MONA_ELF_
 #define _MONA_ELF_
 
-#include <monapi.h>
-#include <gui/System/Array.h>
+#ifdef MONA
+#include <sys/types.h>
+#else
+#include "types.h"
+#endif
 
-typedef struct {
+typedef struct
+{
     byte  magic[4];      // 0x7F, 'E', 'L', 'F'
     byte  clazz;         // address size 1:32bit / 2:64bit
     byte  byteorder;     // 1:little / 2:big
@@ -60,29 +64,21 @@ typedef struct {
     dword entsize;
 } ELFSectionHeader;
 
-class ELFLoader
+typedef struct
 {
-public:
-    ELFLoader(_A<byte> elf);
-    ~ELFLoader();
+    dword name;
+    dword value;
+    dword size;
+    byte type:4;
+    byte bind:4;
+    byte unused;
+    word section;
+} ELFSymbolEntry;
 
-public:
-    inline int getImageSize() const { return this->imageSize; }
-    inline int getErrorCode() const { return this->errorCode; }
-    const char* getErrorName() const;
-    dword load(_A<byte> image);
-
-private:
-    void prepare();
-    bool isValidELF();
-
-private:
-    _A<byte> elf;
-    int imageSize;
-    int errorCode;
-    ELFHeader header;
-    _A<ELFProgramHeader> pheaders;
-    _A<ELFSectionHeader> sheaders;
-};
+typedef struct
+{
+    dword offset;
+    dword indexType;
+} ELFRelocationEntry;
 
 #endif
