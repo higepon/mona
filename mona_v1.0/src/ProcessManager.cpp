@@ -240,7 +240,7 @@ void ProcessManager::switchProcess() {
     \author HigePon
     \date   create:2002/12/02 update:
 */
-void ProcessManager::switchProcess(dword selector) {
+inline void ProcessManager::switchProcess(dword selector) const {
 
     FARJMP far;
     far.offset   = 0;
