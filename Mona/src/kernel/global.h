@@ -78,6 +78,8 @@ GLOBAL dword gt[128];
 
 GLOBAL PsInfo g_ps;
 
+GLOBAL dword g_irqWaitThread[16];
+
 #define DEBUG_MODE
 
 #ifdef DEBUG_MODE

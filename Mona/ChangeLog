@@ -1,3 +1,7 @@
+2004-07-22  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/global.h: IRQフック用の配列を追加
+
 2004-07-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/FDCDriver.cpp: qemu対応 FDCリセットをコメントアウト、motor(OFF)時にリセットしない。(そうしないと割り込みがこない)
