@@ -172,11 +172,11 @@ void ProcessManager::printInfo() {
     setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSS);
     setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
     setDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
-    setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
+    //    setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
     //    setDT(ldt  +1   , (dword)(sss), sizeof(GDT), TypeLDT);
-    setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
-    lldt(0x30);
-    _sys_printf("tss=%x", (dword)tss);
+    //    setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
+    //    lldt(0x30);
+    //    _sys_printf("tss=%x", (dword)tss);
 
     ltr(0x20);
     process1Tester();
