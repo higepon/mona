@@ -59,6 +59,21 @@ typedef struct ProcessInfo {
     HVector<Message*>* vec;
 };
 
+typedef struct ProcessInfo_ {
+    //    ThreadInfo_ threadList;
+    char name[16];
+    //    OutputStream* stdout;
+    //    OutputStream* stderr;
+    //    InputStream*  stdin;
+    dword timeLeft;
+    dword tick;
+    dword pid;
+    byte mode;
+    byte priority;
+    byte state;
+};
+
+
 /*!
     class Process
 */
