@@ -20,10 +20,11 @@
 
     \param  sem target semaphore
     \author HigePon
-    \date   create:2003/01/31 update:
+    \date   create:2003/01/31 update:2003/02/01
 */
 int Semaphore::up(semaphore* sem) {
 
+    (*sem)++;
     return 0;
 }
 
