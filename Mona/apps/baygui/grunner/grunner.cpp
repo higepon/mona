@@ -73,15 +73,15 @@ void GRunner::onEvent(Event *event)
 		text->setText("/APPS/");
 	// キー押下
 	} else if (event->type == KEY_PRESSED) {
-		int keycode = ((KeyEvent *)event)->key;
+		int keycode = ((KeyEvent *)event)->keycode;
 		// １つ前の履歴
-		if (keycode == VKEY_UP || keycode == VKEY_UP_QEMU) {
+		if (keycode == VKEY_UP) {
 			if (historyPtr > 0) {
 				historyPtr--;
 				text->setText(((String *)history->getItem(historyPtr)->data)->toString());
 			}
 		// １つ次の履歴
-		} else if (keycode == VKEY_DOWN || keycode == VKEY_DOWN_QEMU) {
+		} else if (keycode == VKEY_DOWN) {
 			if (historyPtr < history->getLength() - 1) {
 				historyPtr++;
 				text->setText(((String *)history->getItem(historyPtr)->data)->toString());

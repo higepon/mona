@@ -45,7 +45,7 @@ Container::~Container() {
  部品を得る
  @return 活性部品（なければNULL）
 */
-Control *Container::getControl()
+Control *Container::findChild()
 {
 	// NULLチェック
 	if (_controlList->endItem == NULL) return NULL;
@@ -67,7 +67,7 @@ Control *Container::getControl()
  @param x 指定するX座標
  @param y 指定するY座標
  */
-Control *Container::getControl(int x, int y)
+Control *Container::findChild(int x, int y)
 {
 	// NULLチェック
 	if (_controlList->endItem == NULL) return NULL;
@@ -112,7 +112,7 @@ Control *Container::getControl(int x, int y)
  @param control 指定する部品
  @return 変換できなければNULL
  */
-LinkedItem *Container::search(Control *control)
+LinkedItem *Container::getLinkedItem(Control *control)
 {
 	// NULLチェック
 	if (_controlList->endItem == NULL) return NULL;

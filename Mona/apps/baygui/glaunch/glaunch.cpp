@@ -102,7 +102,7 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char **argv)
 #endif
 {
-	GLaunch *grunner = new GLaunch();
-	grunner->run();
+	GLaunch *glaunch = new GLaunch();
+	glaunch->run();
 	return 0;
 }

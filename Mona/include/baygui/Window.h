@@ -39,6 +39,10 @@ protected:
 	dword guisvrID;
 	/** 内部描画領域 */
 	Graphics *__g;
+	/** キーイベント */
+	KeyEvent *_keyEvent;
+	/** マウスイベント */
+	MouseEvent *_mouseEvent;
 	/** タイマーイベント */
 	Event *_timerEvent;
 

@@ -122,8 +122,8 @@ void ListBox::postEvent(Event *event)
 {
 	// キー押下
 	if (event->type == KEY_PRESSED && enabled == true) {
-		int keycode = ((KeyEvent *)event)->key;
-		if (keycode == VKEY_UP || keycode == VKEY_UP_QEMU) {
+		int keycode = ((KeyEvent *)event)->keycode;
+		if (keycode == VKEY_UP) {
 			if (selectedIndex > 0) {
 				selectedIndex--;
 				if (firstpaint == true) {
@@ -131,7 +131,7 @@ void ListBox::postEvent(Event *event)
 					Control::postEvent(_itemEvent);
 				}
 			}
-		} else if (keycode == VKEY_DOWN || keycode == VKEY_DOWN_QEMU) {
+		} else if (keycode == VKEY_DOWN) {
 			if (selectedIndex < _dataList->getLength() - 1) {
 				selectedIndex++;
 				if (firstpaint == true) {

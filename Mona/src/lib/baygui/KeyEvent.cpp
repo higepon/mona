@@ -34,12 +34,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  @param key キーコード
  @param modifires 修飾キー
  */
-KeyEvent::KeyEvent(int type, Control *source, int key, int modifires)
+KeyEvent::KeyEvent(int type, Control *source, int keycode, int modifiers)
 {
 	this->type = type;
 	this->source = source;
-	this->key = key;
-	this->modifires = modifires;
+	this->keycode = keycode;
+	this->modifiers = modifiers;
 }
 
 /** デストラクタ */

@@ -49,6 +49,7 @@ private:
 	virtual void postRepaintToWindow(Control *control);
 	virtual void postRepaintToWindows(int length);
 	virtual void restoreBackGround(Control *control);
+	virtual int getKeycode(int keycode, int mod, int charcode);
 
 public:
 	WindowManager::WindowManager();

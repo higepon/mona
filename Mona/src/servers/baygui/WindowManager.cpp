@@ -192,6 +192,46 @@ WindowManager *WindowManager::getInstance() {
 }
 
 /**
+ * ハードウェア固有のキーコードをBayGUI用に変換する
+ */
+int WindowManager::getKeycode(int keycode, int mod, int charcode)
+{
+	int key = 0;
+	
+	if (keycode == 33) {
+		key = VKEY_PGUP;
+	} else if (keycode == 34) {
+		key = VKEY_PGDOWN;
+	} else if (keycode == 36) {
+		key = VKEY_HOME;
+	} else if (keycode == 35) {
+		key = VKEY_END;
+	} else if (keycode == 38 || keycode == 104) {
+		key = VKEY_UP;
+	} else if (keycode == 40 || keycode == 98) {
+		key = VKEY_DOWN;
+	} else if (keycode == 37 || keycode == 100) {
+		key = VKEY_LEFT;
+	} else if (keycode == 39 || keycode == 102) {
+		key = VKEY_RIGHT;
+	} else if (keycode == 45) {
+		key = VKEY_INSERT;
+	} else if (keycode == 13) {
+		key = VKEY_ENTER;
+	} else if (VKEY_ENTER == 9) {
+		key = VKEY_TAB;
+	} else if (keycode == 8) {
+		key = VKEY_BACKSPACE;
+	} else if (keycode == 46) {
+		key = VKEY_DELETE;
+	} else {
+		key = charcode;
+	}
+	
+	return key;
+}
+
+/**
  キーイベント
  @param keycode キーコード
  @param mod 修飾キー
@@ -200,43 +240,7 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
 {
 	//printf("keycode = %d\n", keycode);
 	// キーコード判別
-	if (keycode == 33) {
-		keycode = VKEY_PGUP;
-	} else if (keycode == 34) {
-		keycode = VKEY_PGDOWN;
-	} else if (keycode == 36) {
-		keycode = VKEY_HOME;
-	} else if (keycode == 35) {
-		keycode = VKEY_END;
-	} else if (keycode == 38) {
-		keycode = VKEY_UP;
-	} else if (keycode == 40) {
-		keycode = VKEY_DOWN;
-	} else if (keycode == 37) {
-		keycode = VKEY_LEFT;
-	} else if (keycode == 39) {
-		keycode = VKEY_RIGHT;
-	} else if (keycode == 45) {
-		keycode = VKEY_INSERT;
-	} else if (keycode == 13) {
-		keycode = VKEY_ENTER;
-	} else if (VKEY_ENTER == 9) {
-		keycode = VKEY_TAB;
-	} else if (keycode == 8) {
-		keycode = VKEY_BACKSPACE;
-	} else if (keycode == 46) {
-		keycode = VKEY_DELETE;
-	} else if (keycode == 104) {
-		keycode = VKEY_UP_QEMU;
-	} else if (keycode == 98) {
-		keycode = VKEY_DOWN_QEMU;
-	} else if (keycode == 100) {
-		keycode = VKEY_LEFT_QEMU;
-	} else if (keycode == 102) {
-		keycode = VKEY_RIGHT_QEMU;
-	} else {
-		keycode = charcode;
-	}
+	keycode = getKeycode(keycode, mod, charcode);
 	
 	// イベント発生
 	if (keycode != 0) {
@@ -245,7 +249,7 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
 		//control->postEvent(event);
 		//delete(event);
 		// キーイベントを投げる
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYPRESS, keycode, 0, 0, NULL)) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYPRESS, keycode, mod, charcode, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS failed %d\n", control->getThreadID());
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYPRESS sended %d\n", control->getThreadID());
@@ -260,6 +264,23 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
  */
 void WindowManager::onKeyRelease(int keycode, int mod, int charcode)
 {
+	//printf("keycode = %d\n", keycode);
+	// キーコード判別
+	keycode = getKeycode(keycode, mod, charcode);
+	
+	// イベント発生
+	if (keycode != 0) {
+		Control *control = (Control *)_controlList->endItem->data;
+		//KeyEvent *event = new KeyEvent(KEY_RELEASED, control, keycode, 0);
+		//control->postEvent(event);
+		//delete(event);
+		// キーイベントを投げる
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYRELEASE, keycode, mod, charcode, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_ONKEYRELEASE sended %d\n", control->getThreadID());
+		}
+	}
 }
 
 /**
@@ -269,17 +290,20 @@ void WindowManager::onMousePress(int mx, int my)
 {
 	// モード設定
 	state = STATE_NORMAL;
-	Control *control = getControl(mx, my);
+	Control *control = findChild(mx, my);
+	
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control != NULL) {
-		if (control->getEnabled() == true) {
+		if (control->getFocused() == true) {
 			Rect *rect = control->getRect();
 			// ウィンドウを閉じる
 			if (rect->x + 4 <= mx && mx <= rect->x + 4 + 13 && 
 				rect->y + 5 <= my && my <= rect->y + 5 + 13)
 			{
-				remove(control);
-				//printf("close window: %x\n", control);
+				// ぬるぽ対策
+				if (_controlList->getLength() > 1) {
+					remove(control);
+				}
 			// アイコン化
 			} else if (rect->x + rect->width - 16 <= mx && 
 				mx <= rect->x + rect->width - 16 + 13 && 
@@ -323,7 +347,7 @@ void WindowManager::onMousePress(int mx, int my)
 		// アクティブウィンドウを切り替える
 		} else {
 			// ウィンドウ並び替え
-			_controlList->sort(search(control));
+			_controlList->sort(getLinkedItem(control));
 			
 			// 非活性メッセージを投げる
 			postActivatedToWindows(false, _controlList->getLength() - 1);
@@ -350,10 +374,12 @@ void WindowManager::onMouseDrag(int mx, int my)
 	if (my <= 0) my = 0;
 	if (my >= height) my = height;
 	
-	Control *control = getControl(mx, my);
+	// モード設定
+	state == STATE_NORMAL;
+	Control *control = findChild();
 
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control != NULL) {
+	if (control != NULL && control->getFocused() == true) {
 		Rect *rect = control->getRect();
 		// ウィンドウを移動する
 		if (rect->x <= mx && mx <= rect->x + rect->width && 
@@ -391,7 +417,7 @@ void WindowManager::onMouseRelease(int mx, int my)
 	Control *control = (Control *)_controlList->endItem->data;
 	
 	// ウィンドウが一つもないときはイベントを送らない
-	if (control != NULL) {
+	if (control != NULL && control->getFocused() == true) {
 		Rect *rect = control->getRect();
 		// ウィンドウ移動
 		if (state == STATE_MOVING) {
@@ -422,8 +448,6 @@ void WindowManager::onMouseRelease(int mx, int my)
 			}
 			// ウィンドウ再描画
 			postRepaintToWindows(_controlList->getLength());
-			// モード設定
-			state = STATE_NORMAL;
 			//printf("move window end: %d,%d\n", preX, preY);
 		} else  if (control->getIconified() == false) {
 			//MouseEvent *event = new MouseEvent(MOUSE_RELEASED, control, mx, my);
@@ -478,10 +502,17 @@ void WindowManager::remove(Control *control)
 	restoreBackGround(control);
 
 	// ウィンドウ削除
-	_controlList->remove(_controlList->endItem);
+	_controlList->remove(getLinkedItem(control));
+	
+	// 削除メッセージを投げる
+	if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
+		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getThreadID());
+	} else {
+		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", control->getThreadID());
+	}
 	
 	// 非活性メッセージを投げる
-	postActivatedToWindows(false,  _controlList->getLength());
+	postActivatedToWindows(false, _controlList->getLength());
 	
 	// 活性メッセージを投げる
 	Control *c = (Control *)_controlList->endItem->data;
@@ -783,7 +814,7 @@ void WindowManager::service()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("Window->WindowManager MSG_GUISERVER_REMOVE received %d\n", info.arg1);
-				remove(getControl());
+				remove(findChild());
 				break;
 			case MSG_GUISERVER_STOP:
 				//printf("Window->WindowManager MSG_GUISERVER_STOP received %d\n", info.arg1);
@@ -799,7 +830,7 @@ void WindowManager::service()
 			case MSG_GUISERVER_RESTORE:
 				// KUKURIを移植するのに必要
 				//printf("Window->WindowManager MSG_GUISERVER_RESTORE received %d\n", info.arg1);
-				restoreBackGround(getControl());
+				restoreBackGround(findChild());
 				break;
 			case MSG_GUISERVER_SETTIMER:
 				//printf("Window->WindowManager MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);

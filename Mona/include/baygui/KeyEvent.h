@@ -34,11 +34,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class KeyEvent : public Event {
 public:
 	/** キーコード */
-	int key;
+	int keycode;
 	/** 修飾キー */
-	int modifires;
+	int modifiers;
 	
-	KeyEvent::KeyEvent(int type, Control *target, int key, int modifires);
+	KeyEvent::KeyEvent(int type, Control *target, int keycode, int modifiers);
 	virtual KeyEvent::~KeyEvent();
 };
 

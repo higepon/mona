@@ -47,7 +47,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include <monalibc.h>
 #endif
 
-#define GUILIB_VERSION "BayGUI build 04.10.19"
+#define GUILIB_VERSION "BayGUI build 04.10.22"
 #define GUISERVER_NAME "BAYGUI.EX5"
 
 #define MAX_TITLE_LEN     64
@@ -106,27 +106,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ↓特殊キーコード一覧
 //
 
-// 以下共通コード
-
 #define VKEY_ESC          0
 #define VKEY_BACKSPACE   14
 #define VKEY_TAB         15
 #define VKEY_ENTER       28
-
-// 以下QEMU用コード（キーコード+300）
-
-#define VKEY_UP_QEMU     367
-#define VKEY_PGUP_QEMU   368
-#define VKEY_RIGHT_QEMU  372
-#define VKEY_END_QEMU    374
-#define VKEY_DOWN_QEMU   375
-#define VKEY_DELETE_QEMU 380
-#define VKEY_HOME_QEMU   366
-#define VKEY_LEFT_QEMU   370
-#define VKEY_PGDOWN_QEMU 376
-#define VKEY_INSERT_QEMU 378
-
-// 以下実機、VMWare用コード（キーコード+300）
 
 #define VKEY_PGUP   354
 #define VKEY_PGDOWN 355

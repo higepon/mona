@@ -36,9 +36,9 @@ protected:
 	/** 部品一覧 */
 	LinkedList *_controlList;
 
-	virtual Control *getControl();
-	virtual Control *getControl(int x, int y);
-	LinkedItem *search(Control *control);
+	virtual Control *findChild();
+	virtual Control *findChild(int x, int y);
+	LinkedItem *getLinkedItem(Control *control);
 
 public:
 	Container::Container();

@@ -135,7 +135,7 @@ void TextField::postEvent(Event *event)
 {
 	// キー押下
 	if (event->type == KEY_PRESSED && enabled == true) {
-		int keycode = ((KeyEvent *)event)->key;
+		int keycode = ((KeyEvent *)event)->keycode;
 		if (keycode == VKEY_BACKSPACE) {
 			if (textPtr >= 0) {
 				// バックスペース
@@ -144,7 +144,7 @@ void TextField::postEvent(Event *event)
 					repaint();
 				}
 			}
-		} else if (keycode == VKEY_LEFT || keycode == VKEY_LEFT_QEMU) {
+		} else if (keycode == VKEY_LEFT) {
 			// ←移動
 			if (textPtr >= 0) {
 				textPtr--;
@@ -152,7 +152,7 @@ void TextField::postEvent(Event *event)
 					repaint();
 				}
 			}
-		} else if (keycode == VKEY_RIGHT || keycode == VKEY_RIGHT_QEMU) {
+		} else if (keycode == VKEY_RIGHT) {
 			// →移動
 			if (textPtr < textLen - 1) {
 				textPtr++;

@@ -63,7 +63,7 @@ public:
 };
 
 int MonaMain(List<char*>* pekoe) {
-	GClock *gclock = new GClock();
-	gclock->run();
+	GClock *clock = new GClock();
+	clock->run();
 	return 0;
 }

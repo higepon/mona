@@ -34,10 +34,6 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char **argv)
 #endif
 {
-	// ウィンドウマネージャに接続
-	//WindowManager *manager = WindowManager::getInstance();
-
-#if 1
 	// ウィンドウを作成
 	Window *window1 = new Window();
 	window1->setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
@@ -73,7 +69,6 @@ int main(int argc, char **argv)
 	window1->add(text3);
 	window1->add(list1);
 	window1->run();
-#endif
 	
 	// バージョン表記
 	//Version *version = new Version();

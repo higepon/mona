@@ -80,6 +80,12 @@ Window::Window()
 	// ウィンドウ内部描画領域
 	__g = new Graphics();
 	
+	// キーイベント
+	_keyEvent = new KeyEvent(KEY_PRESSED, this, 0, 0);
+	
+	// マウスイベント
+	_mouseEvent = new MouseEvent(MOUSE_PRESSED, this, 0, 0);
+	
 	// タイマーイベント
 	_timerEvent = new Event(TIMER, this);
 
@@ -90,9 +96,9 @@ Window::Window()
 /** デストラクタ */
 Window::~Window() {
 	delete(__g);
+	delete(_keyEvent);
+	delete(_mouseEvent);
 	delete(_timerEvent);
-	// draw mouse_cursor
-	monapi_call_mouse_set_cursor(1);
 }
 
 /** タイトルを得る */
@@ -224,7 +230,7 @@ void Window::postEvent(Event *event)
 {
 	// 活性部品にキーイベントを投げる
 	if (KEY_PRESSED <= event->type && event->type <= KEY_RELEASED) {
-		Control *control = getControl();
+		Control *control = findChild();
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->source = control;
@@ -238,7 +244,7 @@ void Window::postEvent(Event *event)
 		// マウスイベントが起こった部品を探す
 		int ex = ((MouseEvent *)event)->x;
 		int ey = ((MouseEvent *)event)->y;
-		Control *control = getControl(ex, ey);
+		Control *control = findChild(ex, ey);
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			// イベントが起こった部品以外をフォーカスアウト状態にする
@@ -287,7 +293,7 @@ void Window::postEvent(Event *event)
 		// マウスイベントが起こった部品を探す
 		int ex = ((MouseEvent *)event)->x;
 		int ey = ((MouseEvent *)event)->y;
-		Control *control = getControl(ex, ey);
+		Control *control = findChild(ex, ey);
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->source = control;
@@ -301,7 +307,7 @@ void Window::postEvent(Event *event)
 		}
 	// マウスドラッグ
 	} else if (event->type == MOUSE_DRAGGED) {
-		Control *control = getControl();
+		Control *control = findChild();
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->source = control;
@@ -415,7 +421,10 @@ void Window::run()
 		//printf("Window->WindowManager: MSG_GUISERVER_ADD sended %d\n", threadID);
 	}
 
-	while (1) {
+	// 実行中フラグ
+	bool isRunning = true;
+
+	while (isRunning) {
 		if (!MonAPI::Message::receive(&info)) {
 		//if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) {
 			// draw mouse_cursor
@@ -424,51 +433,45 @@ void Window::run()
 			switch(info.header){
 			case MSG_GUISERVER_ONKEYPRESS:
 				//printf("WindowManager->Window MSG_GUISERVER_ONKEYPRESS received %d,%d,%d\n", info.arg1, info.arg2, info.arg3);
-				{
-					KeyEvent *event = new KeyEvent(KEY_PRESSED, this, info.arg1, 0);
-					postEvent(event);
-					delete(event);
-				}
+				_keyEvent->type = KEY_PRESSED;
+				_keyEvent->keycode = info.arg1;
+				_keyEvent->modifiers = info.arg2;
+				postEvent(_keyEvent);
 				break;
 			case MSG_GUISERVER_ONKEYRELEASE:
 				//printf("WindowManager->Window MSG_GUISERVER_ONKEYRELEASE received %d,%d,%d\n", info.arg1, info.arg2, info.arg3);
-				{
-					KeyEvent *event = new KeyEvent(KEY_RELEASED, this, info.arg1, 0);
-					postEvent(event);
-					delete(event);
-				}
+				_keyEvent->type = KEY_RELEASED;
+				_keyEvent->keycode = info.arg1;
+				_keyEvent->modifiers = info.arg2;
+				postEvent(_keyEvent);
 				break;
 			case MSG_GUISERVER_ONMOUSEPRESS:
 				//printf("WindowManager->Window MSG_GUISERVER_ONMOUSEPRESS received %d,%d,%d\n", info.arg1, info.arg2, info.arg3);
-				{
-					MouseEvent *event = new MouseEvent(MOUSE_PRESSED, this, info.arg1, info.arg2);
-					postEvent(event);
-					delete(event);
-				}
+				_mouseEvent->type = MOUSE_PRESSED;
+				_mouseEvent->x = info.arg1;
+				_mouseEvent->y = info.arg2;
+				postEvent(_mouseEvent);
 				break;
 			case MSG_GUISERVER_ONMOUSEDRAG:
 				//printf("WindowManager->Window MSG_GUISERVER_ONMOUSEDRAG received %d,%d,%d\n", info.arg1, info.arg2, info.arg3);
-				{
-					MouseEvent *event = new MouseEvent(MOUSE_DRAGGED, this, info.arg1, info.arg2);
-					postEvent(event);
-					delete(event);
-				}
+				_mouseEvent->type = MOUSE_DRAGGED;
+				_mouseEvent->x = info.arg1;
+				_mouseEvent->y = info.arg2;
+				postEvent(_mouseEvent);
 				break;
 			case MSG_GUISERVER_ONMOUSERELEASE:
 				//printf("WindowManager->Window MSG_GUISERVER_ONMOUSERELEASE received %d,%d,%d\n", info.arg1, info.arg2, info.arg3);
-				{
-					MouseEvent *event = new MouseEvent(MOUSE_RELEASED, this, info.arg1, info.arg2);
-					postEvent(event);
-					delete(event);
-				}
+				_mouseEvent->type = MOUSE_RELEASED;
+				_mouseEvent->x = info.arg1;
+				_mouseEvent->y = info.arg2;
+				postEvent(_mouseEvent);
 				break;
 			case MSG_GUISERVER_ONMOUSEMOVE:
 				//printf("WindowManager->Window MSG_GUISERVER_ONMOUSEMOVE received %d,%d,%d\n", info.arg1, info.arg2, info.arg3);
-				{
-					MouseEvent *event = new MouseEvent(MOUSE_MOVED, this, info.arg1, info.arg2);
-					postEvent(event);
-					delete(event);
-				}
+				_mouseEvent->type = MOUSE_MOVED;
+				_mouseEvent->x = info.arg1;
+				_mouseEvent->y = info.arg2;
+				postEvent(_mouseEvent);
 				break;
 			case MSG_GUISERVER_ONTIMER:
 				//printf("TimerThread->Window MSG_GUISERVER_ONTIMER received\n");
@@ -529,8 +532,7 @@ void Window::run()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", threadID);
-				//delete(this);
-				exit(0);
+				isRunning = false;
 				break;
 			default:
 				break;
