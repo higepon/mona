@@ -1,10 +1,38 @@
+/*
+Copyright (c) 2004 bayside
+All rights reserved.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #include <baygui.h>
 
-static int color4bit[16][3] = {
-	{   0,   0,   0 }, { 128,  0,   0 }, {  0, 128,   0 }, { 128, 128,   0},
-	{   0,   0, 128 }, { 128,  0, 128 }, {  0, 128, 128 }, { 192, 192, 192},
-	{ 128, 128, 128 }, { 255,  0,   0 }, {  0, 255,   0 }, { 255, 255,   0},
-	{   0,   0, 255 }, { 255,  0, 255 }, {  0, 255, 255 }, { 255, 255, 255}
+static unsigned int color4bit[16] = {
+	0xff000000,
+	0xff800000,
+	0xff008000,
+	0xff808000,
+	0xff000080,
+	0xff800080,
+	0xff008080,
+	0xffc0c0c0,
+	0xff808080,
+	0xffff0000,
+	0xff00ff00,
+	0xffffff00,
+	0xff0000ff,
+	0xffff00ff,
+	0xff00ffff,
+	0xffffffff,
 };
 
 static int point[16][2] = {
@@ -14,14 +42,20 @@ static int point[16][2] = {
 	{ 196, 100 }
 };
 
-class GBBall : public Window {
+class GBBall : public Window
+{
 public:
-	GBBall(){
-		setRect((800 - 211) / 2, (600 - 227) / 2, 211, 227);
-		setTitle("bball");
+	GBBall()
+	{
+		setLocation((800 - 200 - 12) / 2, (600 - 200 - 28) / 2);
+		setClientSize(200, 200);
+		setText("bball");
 	}
-	void onPaint(Graphics *g) {
+	
+	void onPaint(_P<Graphics> g)
+	{
 		int i, j;
+		Window::onPaint(g);
 		g->setColor(0, 0, 0);
 		g->fillRect(0, 0, 200, 200);
 		for (i = 0; i <= 14; i++) {
@@ -33,8 +67,8 @@ public:
 				if (dis >= 8)
 				dis = 15 - dis; /* ‹t‰ñ‚è‚É”‚¦‚é */
 				if (dis != 0) {
-				g->setColor(color4bit[16 - dis][0],color4bit[16 - dis][1],color4bit[16 - dis][2]);
-				g->drawLine(x0, y0, point[j][0], point[j][1]);
+					g->setColor(color4bit[16 - dis]);
+					g->drawLine(x0, y0, point[j][0], point[j][1]);
 				}
 			}
 		}
@@ -44,6 +78,5 @@ public:
 int MonaMain(List<char*>* pekoe) {
 	GBBall *bball = new GBBall();
 	bball->run();
-	delete(bball);
 	return 0;
 }
