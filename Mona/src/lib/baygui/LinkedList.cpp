@@ -144,6 +144,7 @@ Object *LinkedList::remove(Object *o)
 		item->prev = NULL;
 		item->next = NULL;
 		//delete(item);
+		dataListLength--;
 		return item->data;
 	} else {
 		if (item->prev != NULL) {
@@ -156,9 +157,9 @@ Object *LinkedList::remove(Object *o)
 		item->prev = NULL;
 		item->next = NULL;
 		//delete(item);
+		dataListLength--;
 		return item->data;
 	}
-	dataListLength--;
 }
 
 void LinkedList::removeAll()
