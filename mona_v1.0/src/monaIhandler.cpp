@@ -68,9 +68,6 @@ void fault0dHandler() {
                       , g_stack_view.stack6
                       , g_stack_view.stack7
                       );
-
-    _sysdumpReg("fault0d", false, false);
-    _sysdumpStack();
     panic("fault0d");
 }
 

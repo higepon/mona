@@ -29,7 +29,7 @@ SOURCES    = cstart.cpp            \
              KeyBoardManager.cpp   \
              monaTester.cpp        \
              ProcessManager.cpp    \
-             monaChecker.cpp       \
+             checker.cpp           \
              string.cpp            \
              SystemInfo.cpp        \
              Semaphore.cpp         \

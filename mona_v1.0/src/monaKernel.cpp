@@ -24,7 +24,7 @@
 #include<IA32MemoryManager.h>
 #include<monaOperator.h>
 #include<monaTester.h>
-#include<monaChecker.h>
+#include<checker.h>
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
 #include<MFDCDriver.h>
