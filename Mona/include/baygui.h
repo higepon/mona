@@ -47,7 +47,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include <monalibc.h>
 #endif
 
-#define GUILIB_VERSION "BayGUI build 04.10.14"
+#define GUILIB_VERSION "BayGUI build 04.10.17"
 
 #define MAX_TITLE_LEN       64
 #define MAX_TEXT_LEN        64
