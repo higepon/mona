@@ -33,7 +33,6 @@ public:
 				if (dis >= 8)
 				dis = 15 - dis; /* ‹t‰ñ‚è‚É”‚¦‚é */
 				if (dis != 0) {
-				g->setDrawOp(DRAW_OVER);
 				g->setColor(color4bit[16 - dis][0],color4bit[16 - dis][1],color4bit[16 - dis][2]);
 				g->drawLine(x0, y0, point[j][0], point[j][1]);
 				}
