@@ -2,6 +2,8 @@
 
         * apps/gui/waba: MonaGUI版WABA
 
+        * env/monapi-elf.inc: 名前に問題があったためapp-elf.incをリネーム
+
 2004-05-04  higepon  <higepon@users.sourceforge.jp>
 
         * tools/elf_tool/elfparser.cpp (parse): relocationテーブル詳細を調べる
