@@ -34,7 +34,8 @@ class ProcessManager {
     void switch();
 
   public:
-    schedule();
+    void schedule();
+    bool addProcess(Process* process, virtual_addr entry);
 
   private:
     dword pid_;

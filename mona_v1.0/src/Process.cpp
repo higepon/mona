@@ -42,11 +42,12 @@ Process::Process(const char* name) {
     pinfo_.dpl     = DPL_KERNEL;
 }
 
-void Process::setup(virtual_addr entryPoint, virtual_addr stack, dword pid) {
+void Process::setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid) {
 
     pinfo_.eip = (dword)entryPoint;
     pinfo_.esp = (dword)stack;
     pinfo_.ebp = (dword)stack;
+    pinfo_.cr3 = (dword)pagedir;
     pinfo_.pid = pid;
     return;
 }

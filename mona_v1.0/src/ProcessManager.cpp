@@ -46,3 +46,9 @@ dword ProcessManager::allocatePID() {
     return pid_;
 }
 
+bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
+
+    process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
+
+
+}

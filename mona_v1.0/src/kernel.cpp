@@ -106,8 +106,8 @@ void startKernel(void) {
     PagingUtil::setup();
 
     //dword* p = (dword*)0x3FFFFC;
-    dword* p = (dword*)0x3FFFFE;
-    *p = 5;
+    //    dword* p = (dword*)0x3FFFFE;
+    //    *p = 5;
 
 #ifdef MJT
     test_mjt();

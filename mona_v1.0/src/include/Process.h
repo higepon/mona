@@ -15,6 +15,7 @@
 #define _MONA_PROCESS_
 
 #include<types.h>
+#include<PagingUtil.h>
 
 #define MAX_PROCESS 512
 #define DPL_KERNEL  0
@@ -31,6 +32,7 @@ typedef struct ProcessInfo {
     dword  ebp;
     dword  esi;
     dword  edi;
+    dword  cr3;
     dword  tick;
     dword  pid;
     dword  dpl;
@@ -52,7 +54,7 @@ class Process {
     }
 
   protected:
-    void setup(virtual_addr entryPoint, virtual_addr stack, dword pid);
+    void setup(virtual_addr entryPoint, virtual_addr stack, PTE* pagedir, dword pid);
 
   public:
     ProcessInfo pinfo_;

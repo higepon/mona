@@ -92,7 +92,7 @@ void dummyHandler() {
 */
 void timerHandler() {
 
-    kthread_tick();
+    //    kthread_tick();
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
