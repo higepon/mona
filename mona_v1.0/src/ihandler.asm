@@ -95,6 +95,31 @@ _arch_fault0dhandler:
         popad
         iretd
 
+%macro cpufaulthandler 1
+[global _arch_cpufaulthandler_%1]
+[extern _cpufaultHandler_%1]
+_arch_cpufaulthandler_%1:
+        call _arch_set_stack_view
+        pushad
+        call _cpufaultHandler_%1
+        popad
+        iretd
+%endmacro
+
+        cpufaulthandler 0
+        cpufaulthandler 1
+        cpufaulthandler 5
+        cpufaulthandler 6
+        cpufaulthandler 7
+        cpufaulthandler 8
+        cpufaulthandler a
+        cpufaulthandler b
+        cpufaulthandler c
+        cpufaulthandler e
+        cpufaulthandler 10
+        cpufaulthandler 11
+        
+
 ;;; entrance of syscall
 _arch_syscall_handler:
         pushad

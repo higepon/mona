@@ -17,6 +17,7 @@ class ISADriver : public SysresourceHandler{
     //bool PrepareWaitForIRQ(sys_irq irq);
     //bool WaitForIRQWithTimeout(dword timeout);
     bool AcquireIO(word start,word end);
+
     byte InPort8(word port);
     void OutPort8(word port,byte b);
     word InPort16(word port);

@@ -50,6 +50,9 @@ SOURCES    = cstart.cpp            \
              sysresource.cpp       \
              ISADriver.cpp         
 
+DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
+DRVROBJ = ps2kbc.o
+
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(TARGET)
@@ -59,10 +62,14 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
 	cat $@ /dev/zero|dd of=$(BIN)/mona.tmp bs=1k count=1440
 	mv $(BIN)/mona.tmp $@
 
-$(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
-	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
+$(KERNEL) : $(OBJECTS) $(DRVROBJ) memcmp.o memmove.o mode12h.o ihandler.o core.o
+	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o $(DRVROBJ)
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
+
+ps2kbc.o : driver/ISADevice/PS2KBC/ps2kbc.cpp
+	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PS2KBC/ps2kbc.cpp -o ps2kbc.o
+
 
 memcmp.o : ./FreeBSD/memcmp.c
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./FreeBSD/memcmp.c -o memcmp.o
@@ -93,10 +100,10 @@ doxygen :
 	$(DOXYGEN)
 
 depend:
-	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) > $(ENV)/dependencies
+	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) $(DRVRSRC) > $(ENV)/dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o ihandler.o core.o Mouse.o
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o ihandler.o core.o $(DRVROBJ)
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img

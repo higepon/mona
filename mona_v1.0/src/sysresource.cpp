@@ -7,7 +7,7 @@
 
 class NullIRQHandler : public IRQHandler {
   public:
-    void process(void);
+    virtual void process(void);
   
   public:
     NullIRQHandler(sys_irq irq);
@@ -15,7 +15,6 @@ class NullIRQHandler : public IRQHandler {
 };
 
 void NullIRQHandler::process(){
-  return ;
 }
 
 NullIRQHandler::NullIRQHandler(sys_irq irq){
@@ -35,7 +34,7 @@ void irq_init(void){
 
   /* MapDefaultHandlers */
   g_irqMap->mark(0); /* Timer */
-  g_irqMap->mark(1); /* KEY   */
+  //g_irqMap->mark(1); /* KEY   */
   g_irqMap->mark(6); /* FDC   */
 }
 
@@ -56,9 +55,12 @@ bool irq_acquire(sys_irq irq,IRQHandler* ih){
     g_console->printf("irq:irq_acquire() failed.\n");
     return false;
   }
+  g_console->printf("irq:installing IRQ Handler(%x).\n",(dword)ih);
+  
   g_irqMap->mark(irq);
+  g_console->printf("irq:dummy process().\n");
+  ih->process();
   g_irqHandlers[irq] = ih;
- // _sysSetIdt(); /* —v‚ç‚È‚¢H */
   return true;
 }
 

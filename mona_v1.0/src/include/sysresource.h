@@ -13,7 +13,7 @@ class SysresourceHandler{
 
 class IRQHandler{
   public:
-    virtual void process(void){};
+    virtual void process(void) = 0;
 };
 
 void irq_init(void);

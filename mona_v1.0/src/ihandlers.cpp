@@ -59,7 +59,7 @@ void keyStrokeHandler() {
 */
 void fault0dHandler() {
 
-    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]"
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
                       , g_stack_view.stack0
                       , g_stack_view.stack1
                       , g_stack_view.stack2
@@ -85,8 +85,8 @@ void dummyHandler() {
     g_console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
-    outportb(0xA0, 0x20);
-    outportb(0x20, 0x20);
+//    outportb(0xA0, 0x20);
+//    outportb(0x20, 0x20);
 }
 
 /*!
@@ -123,8 +123,9 @@ void MFDCHandler(void) {
 }
 
 /* IRQ Handler (expr) */
-#define IRQHANDLERMaster(x) void irqHandler_##x(void) { g_console->printf("IRQ:"); g_irqHandlers[x]->process(); outportb(0x20, 0x20); }
-#define IRQHANDLERSlave(x) void irqHandler_##x(void) { g_console->printf("IRQ:");  g_irqHandlers[x]->process();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
+#define IRQHANDLERMaster(x) void irqHandler_##x(void) {  int i ; i = x ; g_console->printf("IRQ:%d\n",i); g_irqHandlers[x]->process(); outportb(0x20, 0x20); }
+
+#define IRQHANDLERSlave(x) void irqHandler_##x(void) {  int i ; i = x ;  g_console->printf("IRQ:%d\n",i);  g_irqHandlers[x]->process();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
 
 IRQHANDLERMaster(0)
 IRQHANDLERMaster(1)
@@ -143,26 +144,229 @@ IRQHANDLERSlave(13)
 IRQHANDLERSlave(14)
 IRQHANDLERSlave(15)
 
+void cpufaultHandler_0(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault00 - devied by 0");
+  
+}
+
+void cpufaultHandler_1(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault01 - debug");
+  
+}
+
+
+void cpufaultHandler_5(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault05 - BOUND");
+  
+}
+
+
+void cpufaultHandler_6(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault06 - invalid op code");
+  
+}
+
+
+void cpufaultHandler_7(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault07 no co-processor presents");
+  
+}
+
+
+void cpufaultHandler_8(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:abort08 - double fault");
+  
+}
+
+
+void cpufaultHandler_a(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault0A - invalid TSS");
+  
+}
+
+
+void cpufaultHandler_b(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault0B - segment not presents");
+  
+}
+
+
+void cpufaultHandler_c(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault0C - stack fault");
+  
+}
+
+
+void cpufaultHandler_e(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault0E - page fault");
+  
+}
+
+
+void cpufaultHandler_10(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault10 - co-processor error");
+  
+}
+
+
+void cpufaultHandler_11(void){
+
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+    panic("unhandled:fault11 - arign check");
+  
+}
+
+
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
-     {0x00, &arch_dummyhandler}
-   , {0x01, &arch_dummyhandler}
+     {0x00, &arch_cpufaulthandler_0}
+   , {0x01, &arch_cpufaulthandler_1}
    , {0x02, &arch_dummyhandler}
    , {0x03, &arch_dummyhandler}
    , {0x04, &arch_dummyhandler}
-   , {0x05, &arch_dummyhandler}
-   , {0x06, &arch_dummyhandler}
-   , {0x07, &arch_dummyhandler}
-   , {0x08, &arch_dummyhandler}
+   , {0x05, &arch_cpufaulthandler_5}
+   , {0x06, &arch_cpufaulthandler_6}
+   , {0x07, &arch_cpufaulthandler_7}
+   , {0x08, &arch_cpufaulthandler_8}
    , {0x09, &arch_dummyhandler}
-   , {0x0A, &arch_dummyhandler}
-   , {0x0B, &arch_dummyhandler}
-   , {0x0C, &arch_dummyhandler}
+   , {0x0A, &arch_cpufaulthandler_a}
+   , {0x0B, &arch_cpufaulthandler_b}
+   , {0x0C, &arch_cpufaulthandler_c}
    , {0x0D, &arch_fault0dhandler}
-   , {0x0E, &arch_dummyhandler}
+   , {0x0E, &arch_cpufaulthandler_e}
    , {0x0F, &arch_dummyhandler}
-   , {0x10, &arch_dummyhandler}
-   , {0x11, &arch_dummyhandler}
+   , {0x10, &arch_cpufaulthandler_10}
+   , {0x11, &arch_cpufaulthandler_11}
    , {0x12, &arch_dummyhandler}
    , {0x13, &arch_dummyhandler}
    , {0x14, &arch_dummyhandler}
@@ -242,7 +446,11 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x5E, &arch_dummyhandler}
    , {0x5F, &arch_dummyhandler}
    , {0x60, &arch_timerhandler} /* IRQ 0 */
+#ifdef MJT
+   , {0x61, &arch_irqhandler_1}
+#else
    , {0x61, &arch_keystrokehandler}
+#endif
    , {0x62, &arch_irqhandler_2}
    , {0x63, &arch_irqhandler_3}
    , {0x64, &arch_irqhandler_4}

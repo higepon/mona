@@ -298,7 +298,7 @@ bool IDEDriver::setCHS(dword lba,unsigned int device){
     return false;
   }
 
-/*
+/* from FDCDriver.cpp:
     track = lba / (2 * 18);
     head = (lba / 18) % 2;
     sector = 1 + lba % 18;
@@ -486,7 +486,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       }
       
     }
-    
+    /* READ TEST */ /*
     if(IsSurpportLBA){
       Bus->console_->printf("\nDevice read test...\n");
       dword tests;
@@ -508,7 +508,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       }
       g_demo_step = 3;
     }
-    
+    */ /* ~READ TEST */
     Bus->console_->printf("\n");
 }
 
