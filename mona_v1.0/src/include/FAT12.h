@@ -78,7 +78,11 @@ class FAT12 {
 
  public:
 
+    static const int BPB_ERROR;
+    static const int NOT_FAT12;
+
     bool initilize();
+    int getErrorNo();
     BPB bpb_;
 
 
@@ -89,8 +93,10 @@ class FAT12 {
 
  private:
 
-    byte buf_[512];
-    DiskDriver* driver_;
+    byte buf_[512];             /* file buffer  */
+    DiskDriver* driver_;        /* disk driver  */
+    byte errNum_;               /* error number */
+
 };
 
 #endif

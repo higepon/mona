@@ -23,6 +23,9 @@
 #define ATTR_DIRECTORY  0x10
 #define ATTR_ARCHIVE    0x20
 
+const int FAT12::BPB_ERROR = 1;
+const int FAT12::NOT_FAT12 = 2;
+
 /*!
   \brief initilize
 
@@ -32,6 +35,7 @@
 FAT12::FAT12(DiskDriver* driver) {
 
     driver_ = driver;
+    errNum_ = 0;
     return;
 }
 
@@ -49,10 +53,15 @@ FAT12::~FAT12() {
 
 bool FAT12::initilize() {
 
-    if (!setBPB()) return false;
+    if (!setBPB()) {
+        errNum_ = BPB_ERROR;
+        return false;
+    }
 
-    if (isFAT12()) printf("file system is FAT12");
-    else printf("file system unknown");
+    if (!isFAT12()) {
+        errNum_ = NOT_FAT12;
+        return false;
+    }
 
     int rootEntryStart = bpb_.reservedSectorCount
                        + bpb_.fatSize16 * bpb_.numberFats;
@@ -178,4 +187,16 @@ bool FAT12::setBPB() {
     p += 11;
     memcpy(&(bpb_.fileSysType), p, 8);
     return true;
+}
+
+/*!
+  \brief get ErrorNo
+
+  \return error number
+
+  \author HigePon
+  \Date   create:2003/04/17 update:
+*/
+int FAT12::getErrorNo() {
+    return errNum_;
 }
