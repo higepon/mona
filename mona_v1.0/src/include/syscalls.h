@@ -13,7 +13,6 @@
 #define _MONA_SYSCALL_
 
 #include <global.h>
-#include <userlib.h>
 
 extern "C" void syscall_entrance(void);
 

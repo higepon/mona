@@ -12,7 +12,6 @@
 */
 
 #include<syscalls.h>
-#include<userlib.h>
 #include<global.h>
 #include<tester.h>
 #include<io.h>

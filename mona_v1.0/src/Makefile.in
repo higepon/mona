@@ -5,23 +5,14 @@ BIN             = ../bin
 LIST            = ../list
 TOOLS           = ../tools
 INCLUDE         = include
-USERINCLUDE     = user/include
+SHAREINCLUDE    = share
 CNTRINCLUDE     = contrib/include
-CFINCLUDE       = -I$(INCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
+CFINCLUDE       = -I$(INCLUDE) -I$(SHAREINCLUDE) -I$(CNTRINCLUDE)
 TARGET          = $(BIN)/mona.img
 KERNEL_IMG      = $(BIN)/KERNEL.IMG
 BOOT1           = $(BIN)/firstboot.bin
 BOOT2           = $(BIN)/secondboot.bin
 KERNEL          = $(BIN)/third.bin
-HELLO           = $(BIN)/HELLO.ELF
-KEYBOARD_SERVER = $(BIN)/KEYBDMNG.SVR
-SHELL_SERVER    = $(BIN)/SHELL.SVR
-JPEG_DEMO       = $(BIN)/JPEGDEMO.ELF
-MAP_SERVER      = $(BIN)/MAP.SVR
-MOUSE_SERVER    = $(BIN)/MOUSE.SVR
-NOIZ2BG         = $(BIN)/NOIZ2BG.ELF
-CLOCK           = $(BIN)/CLOCK.ELF
-OTHELLO         = $(BIN)/OTHELLO.ELF
 FAT_TOOL        = $(BIN)/fat_write.exe
 TEMPLATE        = $(TOOLS)/fat_template.img
 SOURCES      = cstart.cpp            \
@@ -57,7 +48,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : copy_userapp
 
-copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER) $(NOIZ2BG) $(CLOCK) $(OTHELLO)
+copy_userapp : $(TARGET) $(USER_APP)
 	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/SHELL.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/KEYBDMNG.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/MAP.SVR)
@@ -66,7 +57,10 @@ copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO
 	(cd $(BIN); $(FAT_TOOL) mona.img APP/JPEGDEMO.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img APP/NOIZ2BG.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img APP/CLOCK.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img APP/OTHELLO.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img APP/REVERSI.ELF)
+
+$(USER_APP) :
+	(cd user; make)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
@@ -74,7 +68,7 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
 
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
-	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
+	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(SHAREINCLUDE) -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
@@ -110,7 +104,7 @@ doxygen :
 
 depend:
 	gcc -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > $(ENV)/dependencies
-	(cd user; make depend)
+	(cd user/userlib/; make depend)
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) $(BIN)/mona.dbg mode12h.o ihandler.o core.o ../list/*.list

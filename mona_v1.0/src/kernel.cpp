@@ -56,7 +56,6 @@
 #include <FAT12.h>
 #include <string.h>
 #include <syscalls.h>
-#include <userlib.h>
 #include <PageManager.h>
 #include <elf.h>
 #include <MemoryManager.h>

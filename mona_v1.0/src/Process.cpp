@@ -13,7 +13,6 @@
 
 #include <global.h>
 #include <Process.h>
-#include <userlib.h>
 #include <PageManager.h>
 
 /*----------------------------------------------------------------------
