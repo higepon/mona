@@ -19,7 +19,7 @@
 for (type element = (type )((top).next); element != &(top); element = (type )((element)->next))
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->getThreadInfo())
-
+#define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
 
 typedef struct
 {
@@ -30,7 +30,7 @@ typedef struct
 #define W_CRITICAL 0
 #define W_HUMAN    1
 #define W_NORMAL   2
-#define WAITQ_IDX(waitReason) ((int)(waitReason && 0x03))
+#define WAITQ_IDX(waitReason) ((int)(waitReason & 0x03))
 
 class Scheduler
 {
@@ -39,10 +39,11 @@ public:
     virtual ~Scheduler();
 
 public:
-    void schedule();
+    bool schedule();
     void join(Thread* thread, int priority = 5);
     int kill(Thread* thread);
     int wait(Thread* thread, int waitReason);
+    int wakeup(Thread* thread, int waitReason);
 
 private:
     int calcPriority(Thread* thread);
@@ -50,6 +51,7 @@ private:
 protected:
     Array<Thread> runq;
     Array<Thread> waitq;
+    dword tickTotal;
     int monaMin;
 };
 
@@ -72,17 +74,33 @@ int Scheduler::calcPriority(Thread* thread)
         thread->currPriority = this->monaMin;
     }
 
+    /* schedule done */
+    thread->scheduled = this->tickTotal;
+
     return NORMAL;
 }
 
-void Scheduler::schedule()
+bool Scheduler::schedule()
 {
-    /* do something about */
+    /* schedule for each run queue */
     FOREACH(Thread, queue, runq)
     {
         FOREACH_Q(queue, Thread*, thread)
         {
+            /* already scheduled ? */
+            if (this->tickTotal == thread->scheduled)
+            {
+                continue;
+            }
+
             calcPriority(thread);
+
+            /* insert into runq[priority] */
+            Thread* prev = (Thread*)(thread->prev);
+            Queue::remove(thread);
+            Thread targetQueue = runq[thread->currPriority];
+            Queue::addToPrev(&targetQueue, thread);
+            thread = prev;
         }
     }
 
@@ -94,10 +112,13 @@ void Scheduler::schedule()
         }
         else
         {
+            g_prevThread    = g_currentThread;
             g_currentThread = PTR_THREAD(Queue::top(&queue));
             break;
         }
     }
+
+    return IN_SAME_SPACE(g_prevThread, g_currentThread);
 }
 
 void Scheduler::join(Thread* thread, int priority)
@@ -119,9 +140,26 @@ int Scheduler::kill(Thread* thread)
 
 int Scheduler::wait(Thread* thread, int waitReason)
 {
+    thread->setWaitReason(waitReason);
+
     Queue::remove(thread);
     Thread targetQueue = waitq[WAITQ_IDX(waitReason)];
     Queue::addToPrev(&targetQueue, thread);
+    return NORMAL;
+}
+
+int Scheduler::wakeup(Thread* thread, int waitReason)
+{
+    if (thread->getWaitReason() != waitReason)
+    {
+        return -1;
+    }
+
+    Queue::remove(thread);
+    Thread targetQueue = runq[0];
+    Queue::addToPrev(&targetQueue, thread);
+
+    this->schedule();
     return NORMAL;
 }
 
@@ -293,7 +331,6 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
 void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
                                        , PageEntry* pageDirectory, LinearAddress stack)
 {
-
     ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack, true, true, true);
 
     ThreadInfo* info      = thread->getThreadInfo();

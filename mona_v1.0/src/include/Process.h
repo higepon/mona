@@ -151,6 +151,7 @@ class Thread : public Queue {
     int basePriotity;
     int totalTick;
     int partTick;
+    dword scheduled;
 
   protected:
     dword tick_;

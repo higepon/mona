@@ -65,6 +65,7 @@ GLOBAL List<SharedMemoryObject*>* g_sharedMemoryObjectList;
 
 GLOBAL ProcessManager* g_processManager;
 GLOBAL ThreadInfo* g_currentThread;
+GLOBAL ThreadInfo* g_prevThread;
 GLOBAL VesaInfo* g_vesaInfo;
 GLOBAL VesaInfoDetail* g_vesaDetail;
 GLOBAL Messenger* g_messenger;
