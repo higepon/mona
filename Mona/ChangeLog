@@ -16,7 +16,9 @@
 
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/non-gui/ata/main.cpp (IDE_Identifye): identifyコマンド送信(挙動がおかしい)
+        * apps/non-gui/ata/main.cpp (IDE_Identify): ATA ベンダー型番取得
+
+        * apps/non-gui/ata/main.cpp (IDE_Identify): identifyコマンド送信
 
         * src/servers/moniter/main.cpp (ReadConfig): Moniter->Monitor (thanks Tinoさん)
 

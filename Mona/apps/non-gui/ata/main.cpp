@@ -259,7 +259,7 @@ enum DeviceType
 
 #define DEV_HEAD_OBS    0xa0
 
-int IDE_Identifye(IDEController* ide, int device, DeviceType type, void* buf)
+int IDE_Identify(IDEController* ide, int device, DeviceType type, void* buf)
 {
     ATACommand com;
     int result;
@@ -333,12 +333,19 @@ int MonaMain(List<char*>* pekoe)
     printf("signature=%x\n", getSignature(&ide[1], 0));
     printf("signature=%x\n", getSignature(&ide[1], 1));
 
-    printf("identify=%x\n", IDE_Identifye(&ide[0], 0, DEVICE_ATA, buf));
+    printf("identify=%x\n", IDE_Identify(&ide[0], 0, DEVICE_ATA, buf));
 
-    for (int i = 0; i < 1024; i++)
+    word* p = (word*)buf;
+
+    printf("[");
+
+    for (int i = 27; i < 47; i++)
     {
-        printf("%c", buf[i]);
+        printf("%c", (p[i] & 0xff00)>>8);
+        printf("%c", p[i] & 0x00ff);
     }
+
+    printf("]");
 
     return 0;
 }
