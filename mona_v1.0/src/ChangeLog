@@ -1,3 +1,15 @@
+2004-03-13  shadow  <shadowin@users.sourceforge.jp>
+
+        * monalibc関連ヘッダファイル : 関数宣言場所整理
+
+        * monalibc関連ソースファイル : 関数定義場所整理
+
+        * user/userlib/MlcStdarg.cpp & .h 追加
+
+        * user/userlib/MlcStdio.cpp & .h 追加
+
+        * user/userlib/Makefile 上記ファイルを対象に追加
+
 2004-03-13  higepon  <higepon@users.sourceforge.jp>
 
         * FDCDriver.cpp : checkDiskChange()実装
