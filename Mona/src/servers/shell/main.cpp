@@ -539,7 +539,7 @@ int Shell::makeApplicationList()
 
 void Shell::printPrompt()
 {
-    printf("Mona:%s> ", (const char*)this->current);
+    printf("[Mona]%s> ", (const char*)this->current);
 }
 
 CString Shell::getParentDirectory(const CString& dir)
