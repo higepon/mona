@@ -3,7 +3,9 @@
 
 using namespace MonAPI;
 
-#if 1
+#define MAIN_1
+
+#ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
 {
     printf("Hello World\n");
@@ -12,7 +14,7 @@ int MonaMain(List<char*>* pekoe)
 #endif
 
 /* FileOutputStream‚ÌŽÀŒ± Process.cpp‚Ì sendKilledMessage‚ð—LŒø‚É‚·‚é‚Æƒnƒ“ƒO */
-#if 0
+#ifdef MAIN_2
 int MonaMain(List<char*>* pekoe)
 {
     int reti;
@@ -38,7 +40,7 @@ int MonaMain(List<char*>* pekoe)
 #endif
 
 /* PCI—ñ‹“ */
-#if 0
+#ifdef MAIN_3
 typedef union
 {
     dword command;

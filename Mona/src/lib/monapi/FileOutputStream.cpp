@@ -42,7 +42,6 @@ int FileOutputStream::open()
 
     /* file not found, so create file */
     strncpy(file, file_, 256);
-    printf("file create!!!!");
     result = syscall_file_create(file);
 
     if (result != 0)
@@ -51,7 +50,6 @@ int FileOutputStream::open()
     }
 
     strncpy(file, file_, 256);
-    printf("file reopen[%s]!!!!", file);
     result = syscall_file_open(file, this->append_ ? FILE_OPEN_APPEND_WRITE : FILE_OPEN_NORMAL_WRITE, &fileSize_);
 
     if (result == 0)
