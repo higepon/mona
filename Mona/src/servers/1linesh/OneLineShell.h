@@ -20,17 +20,31 @@
 
 using namespace MonAPI;
 
+
+
 class OneLineShell : public Server{
 
   private:
     Command cmd;
     CommandHistory cmdHst;
+    Charing msg;
 
   public:
+    enum{
+      Excute = 0,
+      NothingFile = 1,
+      MemErr = 2,
+      FileReadErr = 3,
+      SMemErr1 = 4,
+      SMemErr2 = 5,
+    };
+
     OneLineShell();
     virtual ~OneLineShell();
     void service();
     int OnKeyDown(int keycode, int modifiers);
+    void SetMessage(Charing message);
+    void SetMessage(int nMsg);
 
 };
 
