@@ -74,6 +74,16 @@ next:
         mov     dx,0x03f2       ; stop fdd motor
         mov     al,0x0c
         out     dx,al
+a20enable:
+        in      al,0x64
+        test    al,0x02
+        jnz     a20enable
+        cli
+        mov     al,0xD1
+        out     0x64,al
+        mov     al,0xDF
+        out     0x60,al
+        sti
         ;
         jmp     KERNEL:0000     ; jump to secondboot
 

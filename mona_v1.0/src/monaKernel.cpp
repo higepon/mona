@@ -53,7 +53,7 @@ void startKernel(void) {
     _sysPrintln("------------------------------------------------------");
 
     _sysSetColor(BG_MAROON | CH_BLUE);
-    _sys_printf("\nMona develop beta 0.01a\n\n");
+    _sys_printf("\nMona develop beta 0.01b\n\n");
     _sysSetColor(BG_BLACK | CH_SILVER);
 
     /* set interrept */

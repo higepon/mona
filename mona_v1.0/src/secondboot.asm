@@ -37,7 +37,7 @@ gdt08:                          ; segment 08(code segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x9a                 ; Type Code
-        db 0xffff               ; segment limitH
+        db 0xff               ; segment limitH
         db 0                    ; segment baseH
 
 gdt10:                          ; segment 10(data segment)
@@ -45,7 +45,7 @@ gdt10:                          ; segment 10(data segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x92                 ; Type Data
-        db 0xffff               ; segment limitH
+        db 0xff                 ; segment limitH
         db 0                    ; segment baseH
 
 gdt18:                          ; segment 18(stack segment)
@@ -70,7 +70,7 @@ set_cs_desc1:
         mov  es, ax             ; 0x10
         mov  ax, 0x18           ; ss selector
         mov  ss, ax             ; is 0x18
-        mov  esp, 1024*1024*8   ; sp is 8MB
+        mov  esp, 1024*1024*3   ; sp is 8MB
         jmp  0x200
 ;  hang:
 ;          jmp hang
