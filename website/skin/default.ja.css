@@ -30,21 +30,21 @@ a:link
 
 a:active
 {
-	color:#215dc6;
+	color:#ff9933;
 	background-color:#CCDDEE;
 	text-decoration:none;
 }
 
 a:visited
 {
-	color:#a63d21;
+	color:#9ACD32;
 	background-color:inherit;
 	text-decoration:none;
 }
 
 a:hover
 {
-	color:#215dc6;
+	color:#ff9933;
 	background-color:#CCDDEE;
 	text-decoration:underline;
 }
@@ -52,8 +52,8 @@ a:hover
 h1, h2, h3, h4, h5, h6
 {
 	font-family:verdana, arial, helvetica, Sans-Serif;
-	color:inherit;
-	background-color:#DDEEFF;
+	color:white;
+	background-color:#000066;
 	padding:.3em;
 	border:0px;
 	margin:0px 0px .5em 0px;
