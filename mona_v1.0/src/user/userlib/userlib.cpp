@@ -185,6 +185,99 @@ int mthread_join(dword id) {
 }
 
 /*----------------------------------------------------------------------
+    MemoryMap
+----------------------------------------------------------------------*/
+const dword MemoryMap::START_ADDRESS = 0x90000000;
+const dword MemoryMap::MAX_SIZE      = 0x10000000;
+
+MemoryMap::MemoryMap() : lastError(0), nextAddress(START_ADDRESS)
+{
+}
+
+MemoryMap::~MemoryMap()
+{
+}
+
+MemoryMap* MemoryMap::getInstance()
+{
+    static MemoryMap instance;
+    return &instance;
+}
+
+dword MemoryMap::create(dword size)
+{
+    /* error */
+    if (size <= 0)
+    {
+        this->lastError = 1;
+        return 0;
+    }
+
+    for (; size % 4096; size++);
+
+    dword result = syscall_memory_map_create(size);
+
+    /* error */
+    if (result == 0)
+    {
+        this->lastError = 2;
+        return 0;
+    }
+
+    return result;
+}
+
+byte* MemoryMap::map(dword id)
+{
+    /* to be first fit */
+
+    dword size = syscall_memory_map_get_size(id);
+
+    if (size == 0)
+    {
+        this->lastError = 3;
+        return NULL;
+    }
+
+    if (this->nextAddress + size > START_ADDRESS + MAX_SIZE)
+    {
+        this->lastError = 4;
+        return NULL;
+    }
+
+    if (syscall_memory_map_map(id, nextAddress))
+    {
+        this->lastError = 5;
+        return NULL;
+    }
+
+    byte* result = (byte*)(this->nextAddress);
+    this->nextAddress += size;
+    return result;
+}
+
+bool MemoryMap::unmap(dword id)
+{
+    if (syscall_memory_map_unmap(id))
+    {
+        this->lastError = 6;
+        return false;
+    }
+
+    return true;
+}
+
+dword MemoryMap::getLastError() const
+{
+    return this->lastError;
+}
+
+dword MemoryMap::getSize(dword id) const
+{
+    return syscall_memory_map_get_size(id);
+}
+
+/*----------------------------------------------------------------------
     Observer/Observable
 ----------------------------------------------------------------------*/
 void Observable::addObserver(Observer* o) {
@@ -918,13 +1011,6 @@ int syscall_get_vram_info(volatile ScreenInfo* info)
     return result;
 }
 
-int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size)
-{
-    int result;
-    SYSCALL_4(SYSTEM_CALL_MAP, result, pid, sharedId, linearAddress, size);
-    return result;
-}
-
 int syscall_get_cursor(int* x, int* y)
 {
     int result;
@@ -988,20 +1074,6 @@ int syscall_fdc_close()
     return result;
 }
 
-int syscall_map2(MappingInfo* map)
-{
-    int result;
-    SYSCALL_1(SYSTEM_CALL_MAP_TWO, result, map);
-    return result;
-}
-
-int syscall_unmap2(dword sharedId)
-{
-    int result;
-    SYSCALL_1(SYSTEM_CALL_UNMAP_TWO, result, sharedId);
-    return result;
-}
-
 dword syscall_get_pid()
 {
     dword result;
@@ -1062,5 +1134,33 @@ int syscall_fdc_disk_changed()
 {
     int result;
     SYSCALL_0(SYSTEM_CALL_FDC_DISK_CHANGED, result);
+    return result;
+}
+
+dword syscall_memory_map_create(dword size)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_MEMORY_MAP_CREATE, result, size);
+    return result;
+}
+
+dword syscall_memory_map_get_size(dword id)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_MEMORY_MAP_GET_SIZE, result, id);
+    return result;
+}
+
+int syscall_memory_map_map(dword id, dword address)
+{
+    int result;
+    SYSCALL_2(SYSTEM_CALL_MEMORY_MAP_MAP, result, id, address);
+    return result;
+}
+
+int syscall_memory_map_unmap(dword id)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_MEMORY_MAP_UNMAP, result, id);
     return result;
 }

@@ -67,6 +67,18 @@ int MonaMain(List<char*>* pekoe)
                 unregist(destList, &info);
                 break;
 
+            case MSG_MEMORY_MAP_ID:
+
+                {
+                    MemoryMap* mm = MemoryMap::getInstance();
+                    dword id = info.arg1;
+                    char* p = (char*)(mm->map(id));
+                    printf("[share!]%s\n", p);
+                    mm->unmap(id);
+
+                }
+                break;
+
             default:
                 /* igonore this message */
                 break;

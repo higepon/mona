@@ -1,6 +1,6 @@
 include Makefile.inc
 
-all : lib_user hello clockdemo jpegdemo key map mouse noizbg reversidemo shellsvr
+all : lib_user hello clockdemo jpegdemo key map mouse noizbg reversidemo shellsvr network
 
 lib_user :
 	cd userlib; make
@@ -32,6 +32,9 @@ reversidemo :
 shellsvr :
 	cd ShellServer; make
 
+network:
+	cd NIC; make
+
 clean :
 	(cd userlib; make clean)
 	(cd HelloWorld; make clean)
@@ -43,5 +46,6 @@ clean :
 	(cd noiz2bg; make clean)
 	(cd Reversi; make clean)
 	(cd ShellServer; make clean)
+	(cd NIC; make clean)
 
 

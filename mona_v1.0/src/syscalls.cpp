@@ -19,8 +19,6 @@
 
 void syscall_entrance() {
 
-    Process* process;
-//    KMutex* mutex;
     ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
 
@@ -160,27 +158,6 @@ void syscall_entrance() {
             info->eax = loadProcess(path, name, true, option);
             break;
         }
-
-    case SYSTEM_CALL_MAP:
-
-        if (!SharedMemoryObject::open(info->ecx, info->edx)) {
-            info->eax = 1;
-            break;
-        }
-
-        process = g_scheduler->findProcess((dword)info->esi);
-        if (process == NULL) {
-            info->eax = 2;
-            break;
-        }
-
-        if (!SharedMemoryObject::attach(info->ecx, process, info->edi)) {
-            info->eax = 3;
-            break;
-        }
-
-        info->eax = 0;
-        break;
 
     case SYSTEM_CALL_SET_CURSOR:
 
@@ -322,61 +299,6 @@ void syscall_entrance() {
 
         break;
 
-    case SYSTEM_CALL_MAP_TWO:
-
-        {
-            static dword sharedId = 0x9000;
-            sharedId++;
-
-            MappingInfo* map = (MappingInfo*)(info->esi);
-
-            enableInterrupt();
-
-            /* process exist? */
-            Process* attachProcess = g_scheduler->findProcess(map->attachPid);
-            if (attachProcess == NULL) {
-                map->errorCd = 1;
-                info->eax = 0;
-                break;
-            }
-
-            while (Semaphore::down(&g_semaphore_shared));
-            bool isOpen    = SharedMemoryObject::open(sharedId, map->size);
-            bool isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, map->linearAddress2);
-            Semaphore::up(&g_semaphore_shared);
-
-            if (!isOpen || !isAttaced) {
-                info->eax = 0;
-                map->errorCd = 2;
-                break;
-            }
-
-            while (Semaphore::down(&g_semaphore_shared));
-            isOpen    = SharedMemoryObject::open(sharedId, map->size);
-            isAttaced = SharedMemoryObject::attach(sharedId, attachProcess, map->linearAddress1);
-            Semaphore::up(&g_semaphore_shared);
-
-            if (!isOpen || !isAttaced) {
-                info->eax = 0;
-                map->errorCd = 3;
-                break;
-            }
-
-            info->eax = sharedId;
-        }
-        break;
-
-    case SYSTEM_CALL_UNMAP_TWO:
-
-        {
-            dword sharedId = info->esi;
-            while (Semaphore::down(&g_semaphore_shared));
-            bool result = SharedMemoryObject::detach(sharedId, g_currentThread->process);
-            Semaphore::up(&g_semaphore_shared);
-
-            info->eax = result ? 0 : 1;
-        }
-        break;
 
     case SYSTEM_CALL_GET_PID:
 
@@ -459,6 +381,74 @@ void syscall_entrance() {
 
         info->eax = g_scheduler->lookupMainThread((char*)(info->esi));
 
+        break;
+
+    case SYSTEM_CALL_MEMORY_MAP_CREATE:
+
+        {
+            static dword sharedId = 0x9000;
+            sharedId++;
+
+            dword size = info->esi;
+
+            while (Semaphore::down(&g_semaphore_shared));
+            bool isOpen = SharedMemoryObject::open(sharedId, size);
+            Semaphore::up(&g_semaphore_shared);
+
+            if (!isOpen)
+            {
+                info->eax = 0;
+                break;
+            }
+            info->eax = sharedId;
+        }
+        break;
+
+    case SYSTEM_CALL_MEMORY_MAP_GET_SIZE:
+
+        {
+            dword id = info->esi;
+
+            SharedMemoryObject* object = SharedMemoryObject::find(id);
+
+            if (object == NULL)
+            {
+                break;
+            }
+
+            info->eax = object->getSize();
+        }
+        break;
+
+    case SYSTEM_CALL_MEMORY_MAP_MAP:
+
+        {
+            dword id      = info->esi;
+            dword address = info->ecx;
+
+            while (Semaphore::down(&g_semaphore_shared));
+            bool isAttaced = SharedMemoryObject::attach(id, g_currentThread->process, address);
+            Semaphore::up(&g_semaphore_shared);
+
+            if (!isAttaced)
+            {
+                info->eax = 1;
+                break;
+            }
+        }
+        break;
+
+    case SYSTEM_CALL_MEMORY_MAP_UNMAP:
+
+        {
+            dword id = info->esi;
+
+            while (Semaphore::down(&g_semaphore_shared));
+            bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
+            Semaphore::up(&g_semaphore_shared);
+
+            info->eax = isDetached ? 0 : 1;
+        }
         break;
 
     default:

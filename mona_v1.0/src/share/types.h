@@ -91,6 +91,14 @@ typedef struct MappingInfo {
     dword errorCd;
 };
 
+typedef struct SysArg
+{
+    dword arg1;
+    dword arg2;
+    dword arg3;
+    dword arg4;
+};
+
 #define WAIT_TIMER   0x60
 #define WAIT_NONE    0xFF
 
@@ -109,6 +117,7 @@ typedef struct MappingInfo {
 #define MSG_MOUSE_UNREGIST_FROM_SERVER 0x0B
 #define MSG_KEY_UNREGIST_FROM_SERVER   0x0C
 #define MSG_SERVER_START_OK            0x0D
+#define MSG_MEMORY_MAP_ID              0x0E
 
 #define SHARED_FDC_BUFFER 0x4000
 
@@ -129,18 +138,15 @@ typedef struct MappingInfo {
 #define SYSTEM_CALL_LOOKUP                19
 #define SYSTEM_CALL_GET_VRAM_INFO         20
 #define SYSTEM_CALL_LOAD_PROCESS          21
-#define SYSTEM_CALL_MAP                   22
 #define SYSTEM_CALL_SET_CURSOR            23
 #define SYSTEM_CALL_GET_CURSOR            24
 #define SYSTEM_CALL_FILE_OPEN             25
 #define SYSTEM_CALL_FILE_READ             26
 #define SYSTEM_CALL_FILE_CLOSE            27
-#define SYSTEM_CALL_MAP_TWO               28
 #define SYSTEM_CALL_FDC_OPEN              29
 #define SYSTEM_CALL_FDC_CLOSE             30
 #define SYSTEM_CALL_FDC_READ              31
 #define SYSTEM_CALL_FDC_WRITE             32
-#define SYSTEM_CALL_UNMAP_TWO             33
 #define SYSTEM_CALL_GET_PID               34
 #define SYSTEM_CALL_ARGUMENTS_NUM         35
 #define SYSTEM_CALL_GET_ARGUMENTS         36
@@ -152,6 +158,10 @@ typedef struct MappingInfo {
 #define SYSTEM_CALL_FDC_DISK_CHANGED      42
 #define SYSTEM_CALL_GET_TID               43
 #define SYSTEM_CALL_LOOKUP_MAIN_THREAD    44
+#define SYSTEM_CALL_MEMORY_MAP_CREATE     45
+#define SYSTEM_CALL_MEMORY_MAP_GET_SIZE   46
+#define SYSTEM_CALL_MEMORY_MAP_MAP        47
+#define SYSTEM_CALL_MEMORY_MAP_UNMAP      48
 #define SYSTEM_CALL_TEST                  99
 
 #define SYSCALL_0(syscall_number, result)                                         \

@@ -1,56 +1,53 @@
 #include <userlib.h>
 
-// マルチスレッドなやつ
-// void sub1() {for (;;) printf("sub1");}
-// void sub2() {for (;;) printf("sub2");}
-// void sub3() {for (;;) printf("sub3");}
-
-// int MonaMain(List<char*>* pekoe)
-// {
-//     int id;
-
-//     id = syscall_mthread_create((dword)sub1);
-//     printf("join result = %x", syscall_mthread_join(id));
-
-//     id = syscall_mthread_create((dword)sub2);
-//     printf("join result = %x", syscall_mthread_join(id));
-
-//     id = syscall_mthread_create((dword)sub3);
-//     printf("join result = %x", syscall_mthread_join(id));
-
-//     for (;;)
-//     {
-//         printf("main");
-//     }
-
-//     return 0;
-// }
-
 // 共有メモリなやつ
 int MonaMain(List<char*>* pekoe)
 {
-//     Floppy fd(Floppy::FLOPPY_1);
-//     fd.open();
-//     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
-//     sleep(10000);
-//     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
-//     fd.close();
+    /* インスタンス取得 */
+    MemoryMap* mm = MemoryMap::getInstance();
 
-    /* 共有したい相手 */
-    dword pid = Message::lookup("SHELL.SVR");
+    /* 5000byteの共有メモリ(グローバル)を作成 実際のサイズは8192byteになる */
+    dword id1 = mm->create(5000);
 
-    /* メモリマップオブジェクト取得 */
-    MemoryMap* mm = MemoryMap::create();
+    if (id1 == 0)
+    {
+        printf("map create error = %x", mm->getLastError());
+        exit(1);
+    }
 
-    /* 自分の0x90005000にpidの0x90000000を1Mバイトマッピングする */
-    dword sharedid = mm->map(pid, 0x90000000, 0x90005000, 1 * 1024 * 1024);
+    printf("shared size = %d", mm->getSize(id1));
+
+    /* 作成した共有メモリを自分の空間に貼り付ける */
+    byte* p = mm->map(id1);
+    if (p == NULL)
+    {
+        printf("map error\n");
+        exit(1);
+    }
 
     /* 共有エリアに書き込み */
-    strcpy((char*)0x90005000, "data share top");
-    strcpy((char*)0x90095000, "data share bottom");
+    strcpy((char*)p, "data share top hello!!\n");
 
-    //    mm->unmap(sharedid);
+    /* ためしにServerにid1を送ってみよう */
+    dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
+    if (targetID == 0xFFFFFFFF)
+    {
+        printf("hello:Server not found\n");
+        exit(1);
+    }
 
+    MessageInfo info;
+    Message::create(&info, MSG_MEMORY_MAP_ID, id1, 0, 0, NULL);
+
+    /* send */
+    if (Message::send(targetID, &info)) {
+        printf("hello send error\n");
+    }
+
+    /* 共有メモリを自分の空間からはずす */
+    //mm->unmap(id1);
+
+    return 0;
     for (;;);
 }
 
@@ -96,3 +93,36 @@ int MonaMain(List<char*>* pekoe)
 
 //     return 0;
 // }
+
+// マルチスレッドなやつ
+// void sub1() {for (;;) printf("sub1");}
+// void sub2() {for (;;) printf("sub2");}
+// void sub3() {for (;;) printf("sub3");}
+
+// int MonaMain(List<char*>* pekoe)
+// {
+//     int id;
+
+//     id = syscall_mthread_create((dword)sub1);
+//     printf("join result = %x", syscall_mthread_join(id));
+
+//     id = syscall_mthread_create((dword)sub2);
+//     printf("join result = %x", syscall_mthread_join(id));
+
+//     id = syscall_mthread_create((dword)sub3);
+//     printf("join result = %x", syscall_mthread_join(id));
+
+//     for (;;)
+//     {
+//         printf("main");
+//     }
+
+//     return 0;
+// }
+
+//     Floppy fd(Floppy::FLOPPY_1);
+//     fd.open();
+//     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
+//     sleep(10000);
+//     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
+//     fd.close();

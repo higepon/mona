@@ -1,6 +1,10 @@
+2004-03-27  higepon  <higepon@users.sourceforge.jp>
+
+        * user/include/userlib/MemoryMap.h (class MemoryMap): MemoryMapクラスを位置から書き直しました。userlibに影響があります。
+
 2004-03-25  higepon  <higepon@users.sourceforge.jp>
 
-        * kernel.cpp (loadServer): MONA.CFGできどうされるサーバーはINITプロセスにサーバー起動完了メッセージを送信しなければいけなくなった｡
+        * kernel.cpp (loadServer): MONA.CFGで起動されるサーバーはINITプロセスにサーバー起動完了メッセージを送信しなければいけなくなった｡
 
         * Process.cpp (lookupMainThread): プロセス名からメインThreadのtidを取得で切るようにした。
 

@@ -60,8 +60,6 @@ void ShellServer::service() {
         printf("ShellServer:INIT error\n");
     }
 
-
-
     /* service loop */
     Shell shell;
     for (;;) {

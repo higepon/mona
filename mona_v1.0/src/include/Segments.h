@@ -62,11 +62,8 @@ class SharedMemoryObject {
     static bool open(dword id, dword size, dword pid, dword linearAddress);
     static bool attach(dword id, struct Process* process, LinearAddress address);
     static bool detach(dword id, struct Process* process);
-
-    static const int UN_MAPPED = -1;
-
-  private:
     static SharedMemoryObject* find(dword id);
+    static const int UN_MAPPED = -1;
 
   private:
     dword id_;
