@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-#define MAX_APP_LEN 7
+#define MAX_APP_LEN 8
 
 /**
  アプリケーションランチャー
@@ -48,6 +48,7 @@ static char *buttonLabelList[MAX_APP_LEN] = {
 	"GBROWSER",
 	"GCLOCK",
 	"GHEBTN",
+	"GNOIZ2BG",
 	"GRUNNER",
 	"GUITEST1",
 	"GVERSION"
@@ -59,6 +60,7 @@ static char *buttonCommandList[MAX_APP_LEN] = {
 	"/APPS/GBROWSER.EX5",
 	"/APPS/GCLOCK.EX5",
 	"/APPS/GHEBTN.APP/GHEBTN.EX5",
+	"/APPS/GNOIZ2BG.EX5",
 	"/APPS/GRUNNER.EX5",
 	"/APPS/GUITEST1.EX5",
 	"/APPS/GVERSION.EX5"
