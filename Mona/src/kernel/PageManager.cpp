@@ -187,7 +187,7 @@ void PageManager::setup(PhysicalAddress vram)
     /* allocate page to physical address 4-8MB */
     for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
     {
-        memoryMap_->mark(i + 4096);
+        memoryMap_->mark(i + 1024);
         setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
     }
 

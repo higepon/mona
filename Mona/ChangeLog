@@ -1,5 +1,9 @@
 2004-04-13  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/fat.cpp (initialize): バグ修正(Yui_Nekoさん指摘による)
+
+        * src/kernel/PageManager.cpp (setup): ページ保護のバグ修正(Yui_Nekoさん指摘による)
+
         * src/servers/shell/main.cpp: Keysに対応
 
         * include/monapi/Keys.h (class Keys): Keys列挙追加

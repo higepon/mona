@@ -283,7 +283,7 @@ FatFile::~FatFile ()
 bool FatFile::initialize (FAT *p, Directory *d, int e, dword c, dword s)
 {
         dword nbytes = p->getBytesPerSector();
-        dword sz = ( s + nbytes - 1 ) & ~nbytes;
+        dword sz = s + nbytes - 1;
         dword sects = sz / nbytes;
 
         byte *ptr = new byte [ sz + sects + sects*sizeof(dword) ];
