@@ -139,7 +139,7 @@ void mmChangeTester() {
          info(ERROR, "read failed");
     }
 
-
+    for (int i = 0; i < 50; i++) g_console->printf("[%x]");
 
 }
 
