@@ -18,8 +18,8 @@
 <?php } ?>
 
  <title><?php echo "$title - $page_title" ?></title>
- <link rel="stylesheet" href="default.ja.css" type="text/css" media="screen" charset="Shift_JIS" />
- <link rel="stylesheet" href="print.ja.css" type="text/css" media="print" charset="Shift_JIS" />
+ <link rel="stylesheet" href="skin/default.ja.css" type="text/css" media="screen" charset="Shift_JIS" />
+ <link rel="stylesheet" href="skin/print.ja.css" type="text/css" media="print" charset="Shift_JIS" />
 <?php
   global $trackback, $referer;
   if ($trackback) {
