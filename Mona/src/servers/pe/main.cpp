@@ -223,7 +223,7 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
 		for (int j = 0; j < its; j++)
 		{
 			CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
-			if (prompt) printf("%s: linking %s to %s....", SVR, (const char*)dll, (const char*)data->Name);
+			if (prompt) printf("%s: Linking %s to %s....", SVR, (const char*)dll, (const char*)data->Name);
 			PEParser* target = NULL;
 			for (int k = 0; k < len; k++)
 			{
