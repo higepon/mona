@@ -85,6 +85,9 @@ int main(int argc, char* argv[])
     if (elf == NULL) return 1;
 
     ELFParser parser;
+
+    printf("ELF length=%d", elf.get_Length());
+
     bool ok = parser.set(elf.get(), elf.get_Length());
     if (!ok)
     {

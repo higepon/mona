@@ -1,3 +1,7 @@
+2004-05-04  higepon  <higepon@users.sourceforge.jp>
+
+        * tools/elf_tool/elfparser.cpp (parse): relocationテーブル詳細を調べる
+
 2004-05-04  tino  <tino@users.sourceforge.jp>
 
         * env/app-elf.inc: アプリケーションのMakefileを単純化するために追加

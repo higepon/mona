@@ -195,15 +195,32 @@ int ELFParser::parse()
                 ELFSymbolEntry entry = symbols[(rel[j].indexType) >> 8];
 
 #ifdef _DEBUG_ELF
-                printf("relocate offset=%8x symbol [%10s]",
-                    rel[j].offset, getSectionName(this->sheader[entry.section].name));
-                printf("value = %8x size = %8x %s",
-                    entry.value, entry.size, getSymbolName(entry.name));
-#endif
+                printf("[%8s] sec_start=%8x sec_end = %8x reloc offset=%5x"
+                       , getSectionName(sheader[entry.section].name)
+                       , sheader[entry.section].offset
+                       , sheader[entry.section].size
+                       , rel[j].offset
+                    );
 
-#ifdef _DEBUG_ELF
-                dword* p = (dword*)&this->elf[this->sheader[entry.section].offset + rel[j].offset];
-                printf("relocate target address = %8x\n", *p);
+                char* reloctype[] = {
+                    "R_386_NONE",
+                    "R_386_32",
+                    "R_386_PC32",
+                    "R_386_GOT32",
+                    "R_386_PLT32",
+                    "R_386_COPY",
+                    "R_386_GLOB_DAT",
+                    "R_386_JMP_SLOT",
+                    "R_386_RELATIVE",
+                    "R_386_GOTOFF",
+                    "R_386_GOTPC"
+                };
+
+                if ((rel[j].indexType & 0xff) > 10) printf("relocation type=unknown");
+                else printf(" relocation type=[%10s]", reloctype[rel[j].indexType & 0xff]);
+
+                printf("symbol = %s\n", getSymbolName(entry.name));
+
 #endif
             }
         }
