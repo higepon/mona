@@ -43,7 +43,7 @@ int loadProcess(byte* image, dword size, dword entrypoint, const char* path, con
 
     /* create process */
     enter_kernel_lock_mode();
-    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, path, name);
+    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));
@@ -167,7 +167,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
 
     /* create process */
     enter_kernel_lock_mode();
-    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, path, name);
+    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
 
     /* attach binary image to process */
     while (Semaphore::down(&g_semaphore_shared));

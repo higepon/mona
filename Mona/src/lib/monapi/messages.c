@@ -8,12 +8,13 @@ static dword server_ids[] =
     THREAD_UNKNOWN,  // ID_KEYBOARD_SERVER
     THREAD_UNKNOWN,  // ID_FILE_SERVER
     THREAD_UNKNOWN,  // ID_GUI_SERVER
-    THREAD_UNKNOWN   // ID_ELF_SERVER
+    THREAD_UNKNOWN,  // ID_ELF_SERVER
+    THREAD_UNKNOWN   // ID_PROCESS_SERVER
 };
 
 static const char* server_names[] =
 {
-    "MOUSE.SVR", "KEYBDMNG.SVR", "FILE.SVR", "GUI.SVR", "ELF.SVR"
+    "MOUSE.SVR", "KEYBDMNG.SVR", "FILE.SVR", "GUI.SVR", "ELF.SVR", "ELF.SVR"/*"PROCESS.SVR"*/
 };
 
 dword monapi_get_server_thread_id(int id)
@@ -43,16 +44,17 @@ int monapi_call_dispose_handle(int id, dword handle)
 
 int monapi_register_to_server(int id, int enabled)
 {
-    dword tid = THREAD_UNKNOWN, header = MSG_NONE;
+    dword tid = monapi_get_server_thread_id(id), header = MSG_NONE;
     switch (id)
     {
         case ID_KEYBOARD_SERVER:
-            tid = monapi_get_server_thread_id(ID_KEYBOARD_SERVER);
             header = enabled ? MSG_KEY_REGIST_TO_SERVER : MSG_KEY_UNREGIST_FROM_SERVER;
             break;
         case ID_MOUSE_SERVER:
-            tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
             header = enabled ? MSG_MOUSE_REGIST_TO_SERVER : MSG_MOUSE_UNREGIST_FROM_SERVER;
+            break;
+        default:
+            header = enabled ? MSG_REGISTER_TO_SERVER : MSG_UNREGISTER_FROM_SERVER;
             break;
     }
     if (tid == THREAD_UNKNOWN) return 0;

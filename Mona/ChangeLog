@@ -4,6 +4,16 @@
 
         * env/monapi-elf.inc: 名前に問題があったためapp-elf.incをリネーム
 
+        * include/sys/types.h: PsInfo構造体からpathを削除
+
+        * src/kernel/kernel.cpp, elf.cpp, Process.h, Process.cpp: PsInfo構造体からpathを削除したのに対応
+
+        * include/sys/messages.h: プロセス管理メッセージ追加
+
+        * include/monapi/System.h (getParentThreadID): 追加
+
+        * src/servers/elf: プロセスの親とパスを管理 (ProcessInfo, ProcessManager)
+
 2004-05-04  higepon  <higepon@users.sourceforge.jp>
 
         * tools/elf_tool/elfparser.cpp (parse): relocationテーブル詳細を調べる

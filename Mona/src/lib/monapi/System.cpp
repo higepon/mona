@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <monapi/messages.h>
 
 namespace MonAPI
 {
@@ -15,12 +16,27 @@ namespace MonAPI
         }
         return &psInfo;
     }
-    
+
+    dword getParentThreadID()
+    {
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
+        {
+            return NULL;
+        }
+        return msg.arg2;
+    }
+
     const char* System::getProcessPath()
     {
-        return getProcessInfo()->path;
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
+        {
+            return NULL;
+        }
+        return msg.str;
     }
-    
+
     const char* System::getBundlePath()
     {
         const char* path = getProcessPath();

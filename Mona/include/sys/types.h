@@ -46,7 +46,6 @@ typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
 typedef struct PsInfo {
-    char path[128];
     char name[16];
     dword state;
     dword cr3;

@@ -2,13 +2,13 @@
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 #include <gui/System/Array.h>
+#include "ELFServer.h"
 #include "elfparser.h"
-
-#define SVR "ELF Server"
+#include "ProcessManager.h"
 
 using namespace MonAPI;
 
-int ExecuteProcess(monapi_cmemoryinfo* mi, const CString& path, const CString& name, CommandOption* option, bool prompt)
+int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, const CString& path, const CString& name, CommandOption* option, bool prompt)
 {
     ELFParser parser;
     bool ok = parser.set(mi->Data, mi->Size);
@@ -48,7 +48,9 @@ int ExecuteProcess(monapi_cmemoryinfo* mi, const CString& path, const CString& n
     info.name = name;
     info.list = option;
 
+    addProcessInfo(name);
     int ret = syscall_load_process_image(&info);
+    addProcessInfo(parent, name, path);
 
     if (prompt)
     {
@@ -75,7 +77,7 @@ static CString GetFileName(const CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-int ExecuteFile(const CString& commandLine, bool prompt)
+int ExecuteFile(dword parent, const CString& commandLine, bool prompt)
 {
     /* list initilize */
     CommandOption list;
@@ -117,7 +119,7 @@ int ExecuteFile(const CString& commandLine, bool prompt)
     }
     else
     {
-        result = ExecuteProcess(mi, path, GetFileName(path), &list, prompt);
+        result = ExecuteProcess(parent, mi, path, GetFileName(path), &list, prompt);
 
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
@@ -141,10 +143,13 @@ void MessageLoop()
         {
             case MSG_ELF_EXECUTE_FILE:
             {
-                int result = ExecuteFile(msg.str, msg.arg1 != 0);
+                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0);
                 Message::reply(&msg, result);
                 break;
             }
+            default:
+                if (handleMessage(msg)) break;
+                break;
         }
     }
 }

@@ -31,6 +31,7 @@ class System
     }
 
     static PsInfo* getProcessInfo();
+    static dword getParentThreadID();
     static const char* getProcessPath();
     static const char* getBundlePath();
 };
