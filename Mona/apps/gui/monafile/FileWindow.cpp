@@ -9,7 +9,7 @@ using namespace System::Mona::Forms;
 
 FileWindow::FileWindow()
 {
-	this->set_Bounds(Rectangle(100, 100, 300, 200));
+	this->set_Bounds(Rectangle(100, 100, 430, 340));
 	this->set_Text("ふぁいるまね～じゃ");
 	this->set_Opacity(0.8);
 	
@@ -22,4 +22,10 @@ void FileWindow::Create()
 {
 	Form::Create();
 	this->_object->__internal2 = true;
+}
+
+void FileWindow::set_Directory(String path)
+{
+	this->set_Text(path);
+	this->browser->ReadDirectory(path);
 }

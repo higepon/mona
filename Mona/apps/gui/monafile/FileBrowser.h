@@ -16,7 +16,6 @@ public:
 	
 	void Dispose();
 	void ReadDirectory(System::String path);
-	int GetIcon(System::String fileName);
 	
 protected:
 	virtual void OnPaint();

@@ -13,6 +13,8 @@ public:
 	virtual ~FileWindow() {}
 	
 	virtual void Create();
+	
+	void set_Directory(System::String path);
 };
 
 #endif  // __MONAFILE_FILEWINDOW_H__

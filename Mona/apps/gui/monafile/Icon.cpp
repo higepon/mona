@@ -17,7 +17,7 @@ Icon::Icon()
 	this->set_BackColor(TRANSPARENT_COLOR);
 	this->set_TransparencyKey(TRANSPARENT_COLOR);
 	this->offset = Point::get_Empty();
-	this->set_Size(Size(64, 48));
+	this->set_Size(Size(ARRANGE_WIDTH, 48));
 }
 
 void Icon::Create()
@@ -43,17 +43,8 @@ void Icon::set_Target(String target)
 void Icon::OnPaint()
 {
 	_P<Graphics> g = this->CreateGraphics();
-	g->DrawImage(icons, 16, 0, Rectangle(0, 32 * (int)this->icon, 32, 32));
-	
-	_P<Font> f = Control::get_DefaultFont();
-	Size sz = g->MeasureString(this->get_Text(), f);
-	int x = (this->get_Width() - sz.Width) / 2;
-	g->DrawString(this->get_Text(), f, Color::get_Black(), x + 1, 34);
-	g->DrawString(this->get_Text(), f, Color::get_Black(), x - 1, 34);
-	g->DrawString(this->get_Text(), f, Color::get_Black(), x, 32);
-	g->DrawString(this->get_Text(), f, Color::get_Black(), x, 35);
-	g->DrawString(this->get_Text(), f, Color::get_White(), x, 34);
-	
+	g->FillRectangle(TRANSPARENT_COLOR, 0, 0, this->get_Width(), this->get_Height());
+	Icon::DrawIcon(g, this->get_Text(), this->icon, 0, 0, true);
 	g->Dispose();
 }
 
@@ -83,5 +74,79 @@ void Icon::OnNCMouseUp(_P<MouseEventArgs> e)
 			MAKE_DWORD(win->get_X(), win->get_Y()),
 			MAKE_DWORD(win->get_Width(), win->get_Height()));
 		win->Show();
+		win->set_Directory(this->get_Text());
 	}
+}
+
+void Icon::DrawIcon(_P<Graphics> g, String name, Icons icon, int x, int y, bool emboss)
+{
+	g->DrawImage(icons, x + (ARRANGE_WIDTH - 32) / 2, y, Rectangle(0, 32 * (int)icon, 32, 32));
+	
+	_P<Font> f = Control::get_DefaultFont();
+	Size sz = g->MeasureString(name, f);
+	x += (ARRANGE_WIDTH - sz.Width) / 2;
+	if (emboss)
+	{
+		g->DrawString(name, f, Color::get_Black(), x + 1, y + 34);
+		g->DrawString(name, f, Color::get_Black(), x - 1, y + 34);
+		g->DrawString(name, f, Color::get_Black(), x, y + 32);
+		g->DrawString(name, f, Color::get_Black(), x, y + 35);
+		g->DrawString(name, f, Color::get_White(), x, y + 34);
+	}
+	else
+	{
+		g->DrawString(name, f, Color::get_Black(), x, y + 34);
+	}
+}
+
+Icons Icon::GetIcon(monapi_directoryinfo* di)
+{
+	String fn = di->name;
+	int len = fn.get_Length();
+	int p = -1;
+	for (int i = len - 1; i >= 0; i--)
+	{
+		if (fn[i] == '.')
+		{
+			p = i;
+			break;
+		}
+	}
+	String ext;
+	if (p >= 0) ext = fn.Substring(p, len - p);
+
+	if ((di->attr & ATTRIBUTE_DIRECTORY) != 0)
+	{
+		return ext == ".APP" ? Icons_Executable : Icons_Folder;
+	}
+	
+	if (fn == "KERNEL.IMG")
+	{
+		return Icons_Kernel;
+	}
+	else if (fn == "GSHELL.EL2")
+	{
+		return Icons_Terminal;
+	}
+	else if (ext == ".BZ2")
+	{
+		return Icons_Archive;
+	}
+	else if (ext == ".ELF" || ext == ".EL2" || ext == ".APP")
+	{
+		return Icons_Executable;
+	}
+	else if (ext == ".BMP" || ext == ".BM2" || ext == ".JPG")
+	{
+		return Icons_Picture;
+	}
+	else if (ext == ".SVR")
+	{
+		return Icons_Server;
+	}
+	else if (ext == ".TXT" || ext == ".MSH" || ext == ".CFG" || ext == ".INI")
+	{
+		return Icons_Text;
+	}
+	return Icons_File;
 }

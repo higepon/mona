@@ -3,9 +3,12 @@
 #ifndef __MONAFILE_ICON_H__
 #define __MONAFILE_ICON_H__
 
+#include <monapi/messages.h>
 #include <gui/System/Mona/Forms/Form.h>
 
 #define TRANSPARENT_COLOR Color::FromArgb(142, 187, 138)  // 透過色 (DarkSeaGreen)
+#define ARRANGE_WIDTH  80
+#define ARRANGE_HEIGHT 64
 
 enum Icons
 {
@@ -37,6 +40,8 @@ public:
 	void set_Icon(Icons icon);
 	inline System::String get_Target() { return this->target; }
 	void set_Target(System::String target);
+	static void DrawIcon(_P<System::Drawing::Graphics> g, System::String name, Icons icon, int x, int y, bool emboss);
+	static Icons GetIcon(monapi_directoryinfo* di);
 	
 protected:
 	virtual void OnPaint();

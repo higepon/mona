@@ -51,6 +51,13 @@ public:
 		
 		String bundlePath = MonAPI::System::getBundlePath();
 		icons = new Bitmap(bundlePath + "/ICONS.BM2");
+		int len = icons->get_Width() * icons->get_Height();
+		Color* ptr = icons->get();
+		Color trans = TRANSPARENT_COLOR, ept = Color::get_Empty();
+		for (int i = 0; i < len; i++, ptr++)
+		{
+			if (*ptr == trans) *ptr = ept;
+		}
 		
 		_P<Icon> root = new Icon();
 		root->set_Text("/");

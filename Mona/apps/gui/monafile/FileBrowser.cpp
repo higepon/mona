@@ -3,11 +3,12 @@
 #include "FileWindow.h"
 #include "Icon.h"
 #include <gui/System/Mona/Forms/ControlPaint.h>
-#include <monapi/messages.h>
 
 using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
+
+extern _P<Bitmap> icons;
 
 FileBrowser::FileBrowser()
 {
@@ -49,60 +50,12 @@ void FileBrowser::ReadDirectory(String path)
 	if (this->get_Visible()) this->Refresh();
 }
 
-int FileBrowser::GetIcon(String fileName)
-{
-	if (fileName == "KERNEL.IMG")
-	{
-		return Icons_Kernel;
-	}
-	else if (fileName == "GSHELL.EL2")
-	{
-		return Icons_Terminal;
-	}
-	
-	int len = fileName.get_Length();
-	int p = -1;
-	for (int i = len - 1; i >= 0; i--)
-	{
-		if (fileName[i] == '.')
-		{
-			p = i;
-			break;
-		}
-	}
-	if (p == -1) return Icons_File;
-	
-	String ext = fileName.Substring(p, len - p);
-	if (ext == ".BZ2")
-	{
-		return Icons_Archive;
-	}
-	else if (ext == ".ELF" || ext == ".EL2" || ext == ".APP")
-	{
-		return Icons_Executable;
-	}
-	else if (ext == ".BMP" || ext == ".BM2" || ext == ".JPG")
-	{
-		return Icons_Picture;
-	}
-	else if (ext == ".SVR")
-	{
-		return Icons_Server;
-	}
-	else if (ext == ".TXT" || ext == ".MSH" || ext == ".CFG" || ext == ".INI")
-	{
-		return Icons_Text;
-	}
-	return Icons_File;
-}
-
 void FileBrowser::OnPaint()
 {
-	if (this->path.get_Length() < 1) return;
-	
 	_P<Graphics> gf = Graphics::FromImage(this->buffer);
 	ControlPaint::DrawSunken(gf, 0, 0, this->get_Width(), this->get_Height());
 	gf->Dispose();
+	if (this->path.get_Length() < 1) return;
 	
 	_P<Graphics> g = this->CreateGraphics();
 	Size sz = this->get_ClientSize();
@@ -115,11 +68,18 @@ void FileBrowser::OnPaint()
 	}
 	else
 	{
-		int x = 0, y = 0;
+		int x = 8, y = 8;
 		int len = *(int*)this->files->Data;
 		monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->Data[sizeof(int)];
 		for (int i = 0; i < len; i++, di++)
 		{
+			Icon::DrawIcon(g, di->name, Icon::GetIcon(di), x, y, false);
+			x += ARRANGE_WIDTH;
+			if (x + ARRANGE_WIDTH >= w)
+			{
+				x = 8;
+				y += ARRANGE_HEIGHT;
+			}
 		}
 	}
 	g->Dispose();
