@@ -56,7 +56,7 @@
 /* summary */
 #define FDC_DOR_RESET   0
 #define FDC_START_MOTOR (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
-#define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_RESET | FDC_DR_SELECT_A)
+#define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_ENABLE | FDC_DR_SELECT_A)
 
 /* FDC Commands */
 #define FDC_COMMAND_SEEK            0x0f
@@ -138,10 +138,6 @@ void FDCDriver::initilize() {
     outp8(0xd4, 0x00);
     delay(1);
 
-    /* reset drive */
-    outp8(FDC_DOR_PRIMARY, FDC_DOR_RESET);
-
-    delay(1);
     outp8(FDC_CCR_PRIMARY, 0);
 
     motor(ON);

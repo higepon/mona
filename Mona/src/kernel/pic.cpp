@@ -36,6 +36,15 @@ void pic_init() {
     outp8(0xa1, 0x02); /* ICW3 */
     outp8(0xa1, 0x01); /* ICW4 */
 
+    /*
+       mask all interrupts
+
+       this should be done after controller initialize.
+       because qemu set imr set unmasked when initialize controller
+    */
+    outp8(0x21, 0xff);
+    outp8(0xA1, 0xff);
+
     /* timer settings 10ms */
     //    setTimerInterval(10);
     /* timer settings 10ms */
@@ -43,10 +52,6 @@ void pic_init() {
     outp8(PIT_MODE, 0x36);
     outp8(PIT_COUNT0, timer_count & 0xff);
     outp8(PIT_COUNT0, timer_count >> 8);
-
-    /* mask all interrupt */
-    outp8(0x21, 0xff);
-    outp8(0xA1, 0xff);
 
     return;
 }

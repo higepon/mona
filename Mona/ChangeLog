@@ -1,3 +1,9 @@
+2004-07-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/FDCDriver.cpp: qemu対応 FDCリセットをコメントアウト、motor(OFF)時にリセットしない。(そうしないと割り込みがこない)
+
+        * src/kernel/pic.cpp: qemu対応 タイマインターバルの設定の前に割り込みを全てマスクする。(そうしないとIRQ7割り込みが来る)
+
 2004-07-10  tino  <tino@users.sourceforge.jp>
 
         * env/monapi-exe.inc: 追加
