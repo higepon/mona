@@ -14,6 +14,7 @@
 
 #include <global.h>
 #include <Queue.h>
+#include <operator.h>
 
 #define PAGE_PRESENT 0x01
 #define PAGE_RW      0x02
@@ -35,22 +36,28 @@ class PageManager {
 
     PageManager(dword totalMemorySize);
 
+  public:
+    void flushPageCache() const;
+
+    bool allocatePhysicalPage(PageEntry* pageEntry);
+
   private:
     PageDirectory* allocatePageDirectory();
-    inline void makePageEntry(PageEntry* entry, PhysicalAddress address, bype present, byte rw, byte user) const;
+    inline void makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const;
     inline PageEntry* allocatePageTable() const;
 
   private:
-    BitMap memoryMap_;
+    BitMap*       memoryMap_;
+    PageDirectory pageDirectory_;
 
 };
 
-inline void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, bype present, byte rw, byte user) const {
+inline void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const {
 
     *entry = present | rw | user | address << 12;
 }
 
-inline PageEntry* allocatePageTable() const {
+inline PageEntry* PageManager::allocatePageTable() const {
 
     PageEntry* table;
 
@@ -60,15 +67,6 @@ inline PageEntry* allocatePageTable() const {
     for (; (dword)table % 4096; table++);
 
     return table;
-}
-
-PageManger::PageManger(dword totalMemorySize) {
-
-    dword pageNumber = totalMemorySize / 4096 + totalMemorySize % 4096 ? 1 : 0;
-
-    memoryMap_ = new BitMap(pageNumber);
-    if (memoryMap_ == NULL) panic("PageManager initilize error\n");
-
 }
 
 #endif

@@ -12,7 +12,7 @@
 
 #include<BitMap.h>
 
-const int BitMap::DWORD_BITS = sizeof(dword) * 8;
+const dword BitMap::DWORD_BITS = sizeof(dword) * 8;
 
 /*!
     \brief initilize BitMap
@@ -21,7 +21,7 @@ const int BitMap::DWORD_BITS = sizeof(dword) * 8;
     \author HigePon
     \date   create:2003/03/30 update:
 */
-BitMap::BitMap(int number) {
+BitMap::BitMap(dword number) {
 
     bitsNumber_ = number;
     dwordNumber_ = (bitsNumber_ / DWORD_BITS)
@@ -29,7 +29,7 @@ BitMap::BitMap(int number) {
 
     map_ = new dword[dwordNumber_];
 
-    for (int i = 0; i < bitsNumber_; i++) clear(i);
+    for (dword i = 0; i < bitsNumber_; i++) clear(i);
     return;
 }
 
@@ -63,7 +63,7 @@ dword BitMap::getBitsNumber() const {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-void BitMap::mark(int index) {
+void BitMap::mark(dword index) {
 
     map_[index / DWORD_BITS] |= 1 << (index % DWORD_BITS);
     return;
@@ -76,7 +76,7 @@ void BitMap::mark(int index) {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-void BitMap::clear(int index) {
+void BitMap::clear(dword index) {
 
     map_[index / DWORD_BITS] &= ~(1 << (index % DWORD_BITS));
     return;
@@ -89,9 +89,9 @@ void BitMap::clear(int index) {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-int BitMap::find() {
+dword BitMap::find() {
 
-    for (int i = 0; i < bitsNumber_; i++) {
+    for (dword i = 0; i < bitsNumber_; i++) {
 
         if (!marked(i)) {
             mark(i);
@@ -108,11 +108,11 @@ int BitMap::find() {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-int BitMap::countClear() {
+dword BitMap::countClear() {
 
-    int count = 0;
+    dword count = 0;
 
-    for (int i = 0; i < bitsNumber_; i++) {
+    for (dword i = 0; i < bitsNumber_; i++) {
 
         if (!marked(i)) count++;
     }
@@ -128,7 +128,7 @@ int BitMap::countClear() {
     \author HigePon
     \date   create:2003/03/30 update:
 */
-bool BitMap::marked(int index) {
+bool BitMap::marked(dword index) {
 
     return(map_[index / DWORD_BITS] & (1 << (index % DWORD_BITS)));
 }
