@@ -155,15 +155,15 @@ ProcessInfo_* ProcessScheduler::schedule(ProcessInfo_* current) {
     return (list_->remove(0));
 }
 
-int ProcessScheduler::addProcess(Process_* process) {
+int ProcessScheduler::addProcess(ProcessInfo_* process) {
 
-    list_->add(process->info);
+    list_->add(process);
     return NORMAL;
 }
 
-int ProcessScheduler::kill(ProcessInfo_* pinfo) {
+int ProcessScheduler::kill(ProcessInfo_* process) {
 
-    list_->remove(pinfo);
+    list_->remove(process);
     return NORMAL;
 }
 
@@ -242,6 +242,6 @@ Process_* ProcessManager_::createProcess(int type, const char* name) {
     return result;
 }
 
-int ProcessManager_::addProcess(Process_* process) {
+int ProcessManager_::addProcess(ProcessInfo_* process) {
     return (scheduler_->addProcess(process));
 }

@@ -127,8 +127,8 @@ class ProcessScheduler {
 
   public:
     ProcessInfo_* schedule(ProcessInfo_* current);
-    int addProcess(Process_* pinfo);
-    int kill(ProcessInfo_* pinfo);
+    int addProcess(ProcessInfo_* process);
+    int kill(ProcessInfo_* process);
 
   private:
     List<ProcessInfo_*>* list_;
@@ -143,7 +143,7 @@ class ProcessManager_ {
 
   public:
     Process_* createProcess(int type, const char* name);
-    int addProcess(Process_* process);
+    int addProcess(ProcessInfo_* process);
     int kill(ProcessInfo_* process);
     int switchProcess();
     ProcessInfo_* schedule();
