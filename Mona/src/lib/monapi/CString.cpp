@@ -47,14 +47,14 @@ namespace MonAPI
         return this->buffer[index];
     }
 
-    bool CString::operator ==(const char* text)
+    bool CString::operator ==(const char* text) const
     {
         if (this->buffer == NULL || text == NULL) return this->buffer == text;
 
         return strcmp(this->buffer, text) == 0;
     }
 
-    bool CString::operator ==(const CString& text)
+    bool CString::operator ==(const CString& text) const
     {
         if (this->buffer == NULL || text.buffer == NULL) return this->buffer == text.buffer;
         if (this->length != text.length) return false;
@@ -153,21 +153,21 @@ namespace MonAPI
         this->buffer = buf;
     }
 
-    CString CString::operator +(const char* text)
+    CString CString::operator +(const char* text) const
     {
         CString ret = *this;
         ret += text;
         return ret;
     }
 
-    CString CString::operator +(const CString& text)
+    CString CString::operator +(const CString& text) const
     {
         CString ret = *this;
         ret += text;
         return ret;
     }
 
-    bool CString::startsWith(const CString& value)
+    bool CString::startsWith(const CString& value) const
     {
         int len = value.length;
         if (len > this->length) return false;
@@ -178,7 +178,7 @@ namespace MonAPI
         return true;
     }
 
-    bool CString::endsWith(const CString& value)
+    bool CString::endsWith(const CString& value) const
     {
         int len = value.length;
         int pos = this->length - len;
@@ -190,7 +190,7 @@ namespace MonAPI
         return true;
     }
 
-    CString CString::substring(int start, int length)
+    CString CString::substring(int start, int length) const
     {
         if (start < 0 || this->length <= start) return NULL;
         int len = this->length - start;
