@@ -53,7 +53,7 @@ gdt18:                          ; segment 18(stack segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x96                 ; Type Stack
-        db 0xc0                 ; segment limitH
+        db 0xC0                 ; segment limitH
         db 0                    ; segment baseH
 
 gdt_end:                        ; end of gdt
