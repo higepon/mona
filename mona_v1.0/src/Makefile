@@ -9,7 +9,7 @@ else
     endif
 endif
 include env.local
-VERSION    = 0.0.8
+VERSION    = 0.0.8a
 DOXYGEN    = doxygen
 BIN        = ../bin
 LIST       = ../list

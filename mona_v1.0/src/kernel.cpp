@@ -115,7 +115,7 @@ void startKernel(void) {
     test_mjt();
 #endif
 
-    g_console->printf("Hit any key to start [FAT12 create file test]\n");
+    g_console->printf("Hit any key to start [Process]\n");
     disableTimer();
     enableKeyboard();
     enableInterrupt();
@@ -123,6 +123,9 @@ void startKernel(void) {
     while (g_demo_step < 2);
 
 #ifdef HIGE
+
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
+    g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
 
 //     FDCTester();
 //     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
@@ -150,8 +153,6 @@ void startKernel(void) {
 
     enableTimer();
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
 #endif
 
     while (g_demo_step < 5);
