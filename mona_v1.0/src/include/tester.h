@@ -27,4 +27,5 @@ void process3Tester();
 void STLTester();
 void FDCTester();
 void ELFTester(byte* out);
+void FDCDriverTester();
 #endif

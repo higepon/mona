@@ -31,6 +31,8 @@ class FDCDriver : public DiskDriver {
     bool write(dword lba, byte* buf);
     void motor(const bool on);
     bool recalibrate();
+    bool seek(byte track);//private
+
   private:
     void initilize();
     void waitInterrupt();
@@ -38,7 +40,6 @@ class FDCDriver : public DiskDriver {
     void waitStatus(byte mask, byte expected);
     bool sendCommand(const byte command[], const byte length);
     byte getResult();
-    bool seek(byte track);
     bool senseInterrupt();
     bool readResults();
     void startDMA();
@@ -58,5 +59,10 @@ class FDCDriver : public DiskDriver {
 extern FDCDriver* gFDCDriver;
 
 /* delay */
-#define delay() inportb(0x80);
+#define delay(n) {for (int i = 0; i < n; i++) inportb(0x80);}
+
+/* definition on/off */
+#define ON  true
+#define OFF false
+
 #endif

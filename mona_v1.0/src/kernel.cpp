@@ -131,9 +131,8 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
-    //    g_fdcdriver = new FDCDriver();
-    //    g_fdcdriver->motor(true);
-
+    FDCDriverTester();
+    while (true);
 
     g_console->printf("Hit any key to start Main Process \n");
     while (g_demo_step < 2);

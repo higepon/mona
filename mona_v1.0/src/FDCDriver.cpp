@@ -36,10 +36,6 @@
 #define FDC_ACTB_ACTIVE  0x02
 #define FDC_ACTA_ACTIVE  0x01
 
-/* definition on/off */
-#define ON  true
-#define OFF false
-
 /* port address */
 #define FDC_DOR_PRIMARY   0x3f2
 #define FDC_DOR_SECONDARY 0x372
@@ -125,24 +121,24 @@ void FDCDriver::initilize() {
 
     /* setup DMAC */
     outportb(0xda, 0x00);
-    delay();
+    delay(1);
     outportb(0x0d, 0x00);
-    delay();
+    delay(1);
     outportb(0xd0, 0x00);
-    delay();
+    delay(1);
     outportb(0x08, 0x00);
-    delay();
+    delay(1);
     outportb(0xd6, 0xc0);
-    delay();
+    delay(1);
     outportb(0x0b, 0x46);
-    delay();
+    delay(1);
     outportb(0xd4, 0x00);
-    delay();
+    delay(1);
 
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
 
-    delay();
+    delay(1);
     outportb(FDC_CCR_PRIMARY, 0);
 
     motor(ON);
@@ -195,10 +191,7 @@ void FDCDriver::motor(bool on) {
         interrupt_ = false;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
 
-        delay();
-        delay();
-        delay();
-        delay();
+        delay(4);
 
         info(DUMP, "motor on:after waitInterrupt\n");
 
@@ -323,7 +316,6 @@ bool FDCDriver::seek(byte track) {
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
-    waitStatus(0x11, 0x00);
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
@@ -631,7 +623,7 @@ bool FDCDriver::write(dword lba, byte* buf) {
     \param lba    logical block address
     \param track  track
     \param head   head
-    \param sector sector 
+    \param sector sector
 
     \author HigePon
     \date   create:2003/02/15 update:2003/09/20

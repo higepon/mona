@@ -4,6 +4,24 @@
 #include<global.h>
 #include<io.h>
 
+void FDCDriverTester() {
+
+    g_info_level = MSG;
+
+    byte readbuf[512];
+
+    g_fdcdriver = new FDCDriver();
+
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->seek(5);
+    g_fdcdriver->seek(7);
+    g_fdcdriver->read(0, readbuf);
+    g_fdcdriver->motor(OFF);
+
+    info(MSG, "FDCDriverTester(); done\n");
+}
+
 /*!
     \file   tester_higepon.cpp
     \brief  test code for higepon
@@ -28,8 +46,8 @@ void ELFTester(byte* out) {
     g_fdcdriver->motor(false);
 
     for (int i = 0; i< 20; i++) {
-        delay();
-        delay();
+        delay(1);
+        delay(1);
     }
 
     g_fdcdriver->motor(true);
