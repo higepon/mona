@@ -1,4 +1,8 @@
-2004-11-06  Yamami  <yamamimail@users.sourceforge.jp>
+2004-11-08  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * apps/gui/mflupin/: MFLUPIN(MonaForms版 LUPIN) 追加
+
+2004-11-07  Yamami  <yamamimail@users.sourceforge.jp>
 
         * include/gui/System/Text/Encoding.h: コメント記述
         
