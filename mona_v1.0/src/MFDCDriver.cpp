@@ -139,7 +139,7 @@ void MFDCDriver::initilize() {
 }
 
 /*!
-    \brief print status of FDC
+    \brief print status of FDC(MSR)
 
     \param  str message
     \author HigePon
@@ -305,8 +305,13 @@ bool MFDCDriver::seek(byte track) {
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
-    interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
+
+        console_->printf("MFDCDriver#seek:command fail\n");
+        return false;
+    }
+
+    if (!senseInterrupt()) {
 
         console_->printf("MFDCDriver#seek:command fail\n");
         return false;
@@ -314,6 +319,12 @@ bool MFDCDriver::seek(byte track) {
     return true;
 }
 
+/*!
+    \brief Sense Interrrupt Command
+
+    \author HigePon
+    \date   create:2003/02/13 update:
+*/
 bool MFDCDriver::senseInterrupt() {
 
     byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
@@ -328,6 +339,12 @@ bool MFDCDriver::senseInterrupt() {
     return true;
 }
 
+/*!
+    \brief result phase
+
+    \author HigePon
+    \date   create:2003/02/13 update:
+*/
 void MFDCDriver::readResults() {
 
     int i;
@@ -352,7 +369,7 @@ void MFDCDriver::readResults() {
     resultsLength_ = i;
 
     //    for (int j = 0; j < resultsLength_; j++) {
-
+    //
     //        console_->printf("result[%d] = %x\n", j, results_[j]);
     //    }
     return;
