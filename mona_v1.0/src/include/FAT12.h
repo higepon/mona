@@ -80,6 +80,7 @@ class FAT12 {
     static const int FAT_READ_ERROR;
     static const int NOT_DIR_ERROR;
     static const int PATH_LENGTH;
+    static const int DRIVER_READ_ERROR;
     static const char PATH_SEP;
 
  public:
@@ -94,6 +95,7 @@ class FAT12 {
     bool removeDirecotry(const char* name);
     bool makeDirectory(const char* name);
     bool changeDirectory(const char* path);
+    bool changeDirectoryRelative(const char* path);
     bool readHasNext();
 
     int getErrorNo() const;
@@ -105,8 +107,8 @@ class FAT12 {
     bool setBPB();
     bool isFAT12();
     word getFATAt(int cluster) const;
-    bool changeDirectoryRelative(const char* path);
     char* getPathAt(const char* path, int index) const;
+    bool compareName(const char* name1, const char* name2) const;
 
  private:
 

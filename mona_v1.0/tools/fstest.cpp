@@ -24,10 +24,12 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
+    if (!fat->changeDirectoryRelative("SOMEDIR")) {
+        printf("some dir not found");
+    }
+
     delete fat;
     delete driver;
-
-    printf("size of FTIME = %d FDATE = %d", sizeof(FTIME), sizeof(FDATE));
 
     return 0;
 }

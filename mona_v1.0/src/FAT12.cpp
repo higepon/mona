@@ -23,12 +23,13 @@
 #define ATTR_DIRECTORY  0x10
 #define ATTR_ARCHIVE    0x20
 
-const int FAT12::BPB_ERROR       = 1;
-const int FAT12::NOT_FAT12_ERROR = 2;
-const int FAT12::FAT_READ_ERROR  = 3;
-const int FAT12::NOT_DIR_ERROR   = 4;
-const int FAT12::PATH_LENGTH     = 512;
-const char FAT12::PATH_SEP       = '\\';
+const int FAT12::BPB_ERROR         = 1;
+const int FAT12::NOT_FAT12_ERROR   = 2;
+const int FAT12::FAT_READ_ERROR    = 3;
+const int FAT12::NOT_DIR_ERROR     = 4;
+const int FAT12::DRIVER_READ_ERROR = 5;
+const int FAT12::PATH_LENGTH       = 512;
+const char FAT12::PATH_SEP         = '\\';
 
 /*!
   \brief initilize
@@ -190,6 +191,8 @@ bool FAT12::initilize() {
 
    } while (0xff8 > cluster);
 
+    changeDirectoryRelative("SOMEDIR");
+
     return true;
 }
 
@@ -338,11 +341,34 @@ bool FAT12::changeDirectory(const char* path) {
 
 bool FAT12::changeDirectoryRelative(const char* path) {
 
+    DirectoryEntry entries[16];
+
     /* read root entryies */
     if (currentDirecotry_ == 0) {
 
         int rootEntryStart = bpb_.reservedSectorCount
             + bpb_.fatSize16 * bpb_.numberFats;
+
+        if (!(driver_->read(rootEntryStart, buf_))) return false;
+
+        memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+
+        for (int j = 0; j < 50; j++) {
+
+            /* free */
+            if (entries[j].filename[0] == 0xe5) continue;
+
+            if (entries[j].filename[0] == 0x00) break;
+
+            /* not directory */
+            if (!(entries[j].attribute & ATTR_DIRECTORY)) continue;
+
+            if (!compareName((char*)(entries[j].filename), path)) {
+
+                printf("directory %s found\n", entries[j].filename);
+                return true;
+            }
+        }
     } else {
 
 
@@ -372,6 +398,16 @@ char* FAT12::getPathAt(const char* path, int index) const {
     strncpy(buff, path, end - start);
 
     return buff;
+}
+
+bool FAT12::compareName(const char* name1, const char* name2) const {
+
+    for (int i = 0; i < 8; i++) {
+
+        if (name1[i] != name2[i]) return false;
+        if (name1[i] == ' ' && name2[i + 1] == '\0') return true;
+    }
+    return false;
 }
 
 bool FAT12::createFlie(const char* name) {return true;}
