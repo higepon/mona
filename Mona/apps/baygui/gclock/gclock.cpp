@@ -33,7 +33,7 @@ private:
 	MonAPI::Date *date;
 public:
 	GClock(){
-		setRect(220, 140, 212, 50);
+		setRect((800 - 212) / 2, (600 - 50) / 2, 212, 50);
 		setTitle("とけい");
 		label = new Label("", ALIGN_CENTER);
 		label->setRect(0, 4, 200, 16);
@@ -57,7 +57,7 @@ public:
 				label->setText(time);
 			setTimer(1000);
 		} else if (event->type == FOCUS_IN) {
-			setTimer(0);
+			setTimer(10);
 		}
 	}
 };
