@@ -1,3 +1,7 @@
+2004-09-05  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/servers/mones Code:Mones Ver0.11 ソースツリーに追加。ただしデフォルトではMaku非対象
+
 2004-09-01  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/hige3D/Canvas.h (class Canvas): 外部ファイルを読みこんでオブジェクト表示

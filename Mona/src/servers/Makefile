@@ -10,6 +10,7 @@ all:
 	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
+#	@cd mones; $(MAKE) $@
 
 install:
 	@cd key; $(MAKE) $@
@@ -23,6 +24,7 @@ install:
 	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
+#	@cd mones; $(MAKE) $@
 
 clean: touchdepend
 	@cd key; $(MAKE) $@
@@ -36,6 +38,7 @@ clean: touchdepend
 	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
+#	@cd mones; $(MAKE) $@
 
 depend: touchdepend
 	@cd key; $(MAKE) $@
@@ -48,6 +51,7 @@ depend: touchdepend
 	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
+#	@cd mones; $(MAKE) $@
 
 distclean:
 	rm -f key/dependencies
@@ -60,7 +64,8 @@ distclean:
 	rm -f moniter/dependencies
 	rm -f process/dependencies
 	rm -f pe/dependencies
-
+#	rm -f mones/dependencies
+	
 touchdepend:
 	touch key/dependencies
 	touch mouse/dependencies
@@ -72,3 +77,4 @@ touchdepend:
 	touch moniter/dependencies
 	touch process/dependencies
 	touch pe/dependencies
+#	touch mones/dependencies
