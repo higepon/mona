@@ -32,6 +32,7 @@ void FDCDriverTester();
 void mmChangeTester();
 void testFDWrite();
 void keyStrokeTest();
+void tryMouse();
 
 typedef struct {
     char* dir;
