@@ -21,6 +21,7 @@ static char color; /*! color of char&background */
 
     set color of back ground and character
 
+    \param c see definition of color at higeVga.h
     \author HigePon
     \date   create:2002/11/15 update:
 */
@@ -39,7 +40,7 @@ void _sysSetColor(char c) {
 */
 void _sysInitVga() {
     setCursor(0, 0);
-    _sysSetColor(0x07);
+    _sysSetColor(BG_BLACK | CH_SILVER);
     return;
 }
 
