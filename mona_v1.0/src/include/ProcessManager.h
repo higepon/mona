@@ -42,6 +42,9 @@
 /*! \def struct for process */
 typedef struct Process {
     dword* esp;
+    dword  eip;
+    dword  cs;
+    dword  eflags;
 };
 
 /*!
