@@ -171,7 +171,7 @@ void ProcessManager::printInfo() {
     setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
     setDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
     setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
-    setDT(ldt  +1   , (dword)(sss), sizeof(GDT), TypeLDT);
+    // setDT(ldt  +1   , (dword)(sss + 1), sizeof(GDT), TypeLDT);
     setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
     lldt(0x30);
     //    _sys_printf("tss=%x", (dword)tss);
@@ -195,6 +195,16 @@ void ProcessManager::printInfo() {
 
 void ProcessManager::switchProcess() {
 
+    tss[0].backlink = 0x28;
+
+    /* eflags NTビットを立てる */
+    asm volatile("pushf              \n"
+                 "pop %%eax          \n"
+                 "xor $0x4000, %%eax \n"
+                 "push %%eax         \n"
+                 "popf               \n"
+                 : /* no output */ : /* no input */ : "ax"
+                );
 }
 
 /*!

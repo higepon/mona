@@ -130,6 +130,9 @@ void process1Tester() {
         _sysSetColor(BG_BLACK | CH_SILVER);
         ProcessManager& pm = ProcessManager::instance();
         pm.switchProcess(0x28);
+	//        ProcessManager& pm = ProcessManager::instance();
+	//        pm.switchProcess();
+	//        asm volatile("iret");
 
     }
     return;
@@ -141,8 +144,8 @@ void process2Tester() {
         _sysSetColor(BG_BLACK | CH_RED);
         _sys_printf("process2");
         _sysSetColor(BG_BLACK | CH_SILVER);
-        ProcessManager& pm = ProcessManager::instance();
-        pm.switchProcess(0x20);
+	//        ProcessManager& pm = ProcessManager::instance();
+	//        pm.switchProcess(0x20);
     }
     return;
 }
