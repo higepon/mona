@@ -1,6 +1,5 @@
 /* IDE Driver test */
 #include<types.h>
-#include<VirtualConsole.h>
 #include<DiskDriver.h>
 
 #ifndef _MONA_MIDEDRIVER_MJT
@@ -9,29 +8,12 @@
 #define IDE_DEVICETYPE_HDD 1
 #define IDE_DEVICETYPE_OTHER 99
 
-class IDEDevice : public DiskDriver {
-  public:
-    bool read(dword lba, byte* buf);
-    bool write(dword lba, byte* buf);
-    IDEDevice(class IDEDriver *bus,unsigned int device);
-    ~IDEDevice();
-    static class IDEDriver* Bus;
-    static unsigned int Heads;
-    static unsigned int Tracks;
-    static unsigned int SectorsPerTrack;
-    static unsigned int BytesPerSector;
-    static unsigned int TotalSize;
-    static unsigned int DeviceType;
-    static bool IsSurpportLBA;
-  private:
-    static unsigned int device_;
-};
 
-
+class IDEDevice;
 
 class IDEDriver {
   public:
-    IDEDriver(VirtualConsole* console,unsigned int port);
+    IDEDriver(unsigned int port);
     ~IDEDriver();
 
   public:
@@ -70,6 +52,22 @@ class IDEDriver {
     static byte* dmabuff_;
 };
 
-extern IDEDriver* gIDEDriver;
+class IDEDevice : public DiskDriver {
+  public:
+    bool read(dword lba, byte* buf);
+    bool write(dword lba, byte* buf);
+    IDEDevice(IDEDriver *bus,unsigned int device);
+    //~IDEDevice(){};
+    static class IDEDriver* Bus;
+    static unsigned int Heads;
+    static unsigned int Tracks;
+    static unsigned int SectorsPerTrack;
+    static unsigned int BytesPerSector;
+    static unsigned int TotalSize;
+    static unsigned int DeviceType;
+    static bool IsSurpportLBA;
+  private:
+    static unsigned int device_;
+};
 
 #endif

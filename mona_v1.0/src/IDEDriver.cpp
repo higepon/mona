@@ -35,7 +35,7 @@ bool IDEDriver::HasSlave;
 IDEDevice* IDEDriver::Master;
 IDEDevice* IDEDriver::Slave;
 
-IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port) {
+IDEDriver::IDEDriver(unsigned int port) {
 
     /* set ports */
 
@@ -51,7 +51,7 @@ IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port) {
     status2_ = port+0x206;
     
     if(inportb(status_) == 0xff){
-      info(NOTICE,"constructor:can't find IDE Drive in Port:%x\n",port);
+      info(NOTICE,"constructor:can't find IDE I/F in Port:%x\n",port);
       HasMaster = false;
       return;
     }
@@ -515,9 +515,6 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
     }
     */ /* ~READ TEST */
     info(NOTICE,"\n");
-}
-
-IDEDevice::~IDEDevice(){
 }
 
 bool IDEDevice::read(dword lba, byte* buf) {

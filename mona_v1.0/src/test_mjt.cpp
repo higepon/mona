@@ -30,7 +30,7 @@ void test_sysresource(){
 	globals.error = g_console;
   isa = new ISADriver(g_console);
   m = new PS2KBC(isa,&globals);
-  p = new PCIC(isa);
+  //p = new PCIC(isa);
 }
 void test_cmos(){
   dword b; /* byte */
@@ -56,11 +56,11 @@ void test_ide(){
     IDEDriver *d1;
     g_console->printf("Primary...\n");
 		pn("IDE");
-    d0 = new IDEDriver(g_console,0x1f0);
+    d0 = new IDEDriver(0x1f0);
     pn("(test_mjt)");
     g_console->printf("Secondry...\n");
     pn("IDE");
-    d1 = new IDEDriver(g_console,0x170);
+    d1 = new IDEDriver(0x170);
     pn("(test_mjt)");
     g_console->printf("Disable timer...\n");
     disableTimer();
@@ -75,10 +75,10 @@ void test_mjt(void){
 	g_info_level = 9999;
   pn("(test_mjt)");
   test_mjt_init();
-  test_ide();
+  test_sysresource();
+	test_ide();
   test_cmos();
- // test_sysresource();
-	pn("KERNEL");
+  pn("KERNEL");
 	g_info_level = d;
   
 }

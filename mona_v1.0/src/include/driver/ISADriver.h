@@ -8,7 +8,7 @@
 class ISADriver : public SysresourceHandler{
   public:
     ISADriver(VirtualConsole *con);
-    ~ISADriver();
+    //~ISADriver(); /* Kernel Driver is NEVER destructs */
     virtual sys_irq MapIRQ(BitMap *irqm);
     virtual bool AcquireIRQ(sys_irq irq,IRQHandler irqh);
     virtual void EnableIRQ(sys_irq irq);

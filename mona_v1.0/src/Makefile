@@ -55,8 +55,8 @@ SOURCES    = cstart.cpp            \
              GDTUtil.cpp           \
              IDTUtil.cpp
 
-DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp driver/ISADevice/PCIC/pcic.cpp
-DRVROBJ = ps2kbc.o pcic.o
+DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
+DRVROBJ = ps2kbc.o
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -82,8 +82,8 @@ ps2kbc.o : driver/ISADevice/PS2KBC/ps2kbc.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PS2KBC/ps2kbc.cpp -o ps2kbc.o
 
 
-pcic.o : driver/ISADevice/PCIC/pcic.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PCIC/pcic.cpp -o pcic.o
+# pcic.o : driver/ISADevice/PCIC/pcic.cpp
+# 	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PCIC/pcic.cpp -o pcic.o
 
 memcmp.o : ./FreeBSD/memcmp.c
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./FreeBSD/memcmp.c -o memcmp.o

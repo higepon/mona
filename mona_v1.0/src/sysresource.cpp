@@ -2,28 +2,6 @@
 #include <sysresource.h>
 #include <global.h>
 #include <pic.h>
-//#include<idt.h> /* —v‚ç‚È‚¢? */
-
-/*
-class NullIRQHandler : public IRQHandler {
-  public:
-    virtual void process(void);
-  
-  public:
-    NullIRQHandler(sys_irq irq);
-    ~NullIRQHandler();
-};
-
-void NullIRQHandler::process(){
-}
-
-NullIRQHandler::NullIRQHandler(sys_irq irq){
-}
-
-NullIRQHandler::~NullIRQHandler(){
-}
-
-*/
 
 void nullirqhandler(void){
 }
@@ -71,7 +49,6 @@ bool irq_acquire(sys_irq irq,IRQHandler ih){
 void irq_free(sys_irq irq){
   irq_disable(irq);
   g_irqMap->clear(irq);
-  //delete g_irqHandlers[irq];
   return;
 }
 

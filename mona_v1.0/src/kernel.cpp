@@ -36,7 +36,6 @@
 #include<IA32MemoryManager.h>
 #include<string.h>
 
-#include <IDEDriver.h> //in test...
 char* version = "Mona develop beta 0.08a $Date$";
 
 /*!

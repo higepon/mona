@@ -10,9 +10,6 @@ ISADriver::ISADriver(VirtualConsole *con){
   irq_init();
 }
 
-ISADriver::~ISADriver(){
-}
-
 sys_irq ISADriver::MapIRQ(BitMap *irqmap){
   return irq_request(irqmap);
 }

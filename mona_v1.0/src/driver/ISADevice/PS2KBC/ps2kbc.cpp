@@ -118,6 +118,8 @@ PS2KBC::PS2KBC(ISADriver *isa,Globals* G){
   }
   isa_->EnableIRQ(1);
   
+	return;
+	
   /* MOUSE init */
   g->debug->printf("ps2:checking Mouse...");
   

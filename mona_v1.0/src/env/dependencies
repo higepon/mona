@@ -8,8 +8,7 @@ kernel.o: kernel.cpp include/global.h include/kthread.h include/types.h \
   include/tester.h include/test_mjt.h include/checker.h \
   include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/ihandlers.h include/pic.h \
-  include/io.h include/rtc.h include/FAT12.h include/IA32MemoryManager.h \
-  include/IDEDriver.h
+  include/io.h include/rtc.h include/FAT12.h include/IA32MemoryManager.h
 ihandlers.o: ihandlers.cpp include/KeyBoardManager.h include/types.h \
   include/string.h include/FDCDriver.h include/VirtualConsole.h \
   include/DiskDriver.h include/tester.h include/test_mjt.h \
@@ -112,9 +111,9 @@ FAT12.o: FAT12.cpp include/FAT12.h include/types.h include/string.h \
   include/GDTUtil.h include/IDTUtil.h include/sysresource.h \
   include/operator.h
 IDEDriver.o: IDEDriver.cpp include/IDEDriver.h include/types.h \
-  include/string.h include/VirtualConsole.h include/DiskDriver.h \
-  include/kernel.h include/operator.h include/io.h include/global.h \
-  include/kthread.h include/info.h include/FDCDriver.h \
+  include/string.h include/DiskDriver.h include/kernel.h \
+  include/VirtualConsole.h include/operator.h include/io.h \
+  include/global.h include/kthread.h include/info.h include/FDCDriver.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/sysresource.h include/BitMap.h
 test_higepon.o: test_higepon.cpp include/tester.h include/test_mjt.h \
@@ -124,11 +123,11 @@ test_higepon.o: test_higepon.cpp include/tester.h include/test_mjt.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/sysresource.h
 test_mjt.o: test_mjt.cpp include/IDEDriver.h include/types.h \
-  include/string.h include/VirtualConsole.h include/DiskDriver.h \
-  include/global.h include/kthread.h include/info.h include/kernel.h \
-  include/FDCDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/IDTUtil.h include/sysresource.h include/BitMap.h \
-  include/test_mjt.h include/driver/ISADriver.h \
+  include/string.h include/DiskDriver.h include/global.h \
+  include/kthread.h include/info.h include/kernel.h \
+  include/VirtualConsole.h include/FDCDriver.h include/Semaphore.h \
+  include/GDTUtil.h include/IDTUtil.h include/sysresource.h \
+  include/BitMap.h include/test_mjt.h include/driver/ISADriver.h \
   include/GraphicalConsole.h include/Module.h \
   driver/ISADevice/PS2KBC/ps2kbc.h driver/ISADevice/PCIC/PCIC.h \
   include/pic.h include/io.h
