@@ -4,6 +4,8 @@
 
         * include/monapi/messages.h: sys/types.hから削除したものを移動, クライアント関数
 
+        * src/lib/monapi/messages.c: 追加
+
         * include/monapi/cmemoryinfo.h: 追加
 
         * src/lib/monapi/cmemoryinfo.c: 追加
