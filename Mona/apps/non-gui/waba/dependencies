@@ -14,7 +14,8 @@ waba.o: waba.cpp nmmona_a.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  mona8x16.fnt nmmona_b.cpp nmmona_c.cpp
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h mona8x16.fnt nmmona_b.cpp \
+  nmmona_c.cpp

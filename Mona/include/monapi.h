@@ -20,6 +20,7 @@
 #include <monapi/Color.h>
 #include <monapi/Random.h>
 #include <monapi/syscall.h>
+#include <monapi/Keys.h>
 #include <monalibc.h>
 
 #endif

@@ -19,10 +19,10 @@ Form1.o: Form1.cpp ../../../include/gui/System/Console.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h \
   ../../../include/gui/System/Collections/ArrayList.h \
   ../../../include/gui/System/Mona/Forms/Button.h \

@@ -14,10 +14,10 @@ Console.o: System/Console.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Console.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Console.h \
   ../../../include/gui/System/String.h \
   ../../../include/gui/System/Text/Encoding.h \
   ../../../include/gui/System/Array.h
@@ -39,10 +39,10 @@ String.o: System/String.cpp ../../../include/gui/System/String.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h
 Bitmap.o: System/Drawing/Bitmap.cpp \
   ../../../include/gui/System/Drawing/Bitmap.h \
@@ -65,9 +65,10 @@ Bitmap.o: System/Drawing/Bitmap.cpp \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
   ../../../include/gui/System/Drawing/Color.h
 Font.o: System/Drawing/Font.cpp \
   ../../../include/gui/System/Drawing/Font.h \
@@ -90,10 +91,10 @@ Font.o: System/Drawing/Font.cpp \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h \
   ../../../include/gui/System/Drawing/Size.h \
   ../../../include/gui/System/Drawing/Graphics.h \
@@ -116,9 +117,10 @@ Graphics.o: System/Drawing/Graphics.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
   ../../../include/gui/System/Drawing/Graphics.h \
   ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h \
@@ -155,10 +157,10 @@ Application.o: System/Mona/Forms/Application.cpp \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h \
   ../../../include/gui/System/String.h \
   ../../../include/gui/System/Text/Encoding.h \
@@ -191,9 +193,10 @@ Button.o: System/Mona/Forms/Button.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
   ../../../include/gui/System/Mona/Forms/Button.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
@@ -229,9 +232,10 @@ Control.o: System/Mona/Forms/Control.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
   ../../../include/gui/System/Mona/Forms/Application.h \
   ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h \
@@ -268,10 +272,10 @@ ControlPaint.o: System/Mona/Forms/ControlPaint.cpp \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Object.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Object.h \
   ../../../include/gui/System/String.h \
   ../../../include/gui/System/Text/Encoding.h \
   ../../../include/gui/System/Array.h \
@@ -298,9 +302,10 @@ Form.o: System/Mona/Forms/Form.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
   ../../../include/gui/System/Mona/Forms/Form.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
@@ -337,9 +342,10 @@ Label.o: System/Mona/Forms/Label.cpp ../../../include/monapi.h \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h \
   ../../../include/gui/System/Mona/Forms/Label.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
@@ -375,6 +381,7 @@ Encoding.o: System/Text/Encoding.cpp \
   ../../../include/monapi/FileOutputStream.h \
   ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
   ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
-  ../../../include/monalibc.h ../../../include/monalibc/ctype.h \
-  ../../../include/monalibc/limits.h ../../../include/monalibc/stdarg.h \
-  ../../../include/monalibc/stdlib.h ../../../include/monalibc/stdio.h
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h

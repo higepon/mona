@@ -1,3 +1,7 @@
+2004-04-13  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/Keys.h (class Keys): Keys—ñ‹“’Ç‰Á
+
 2004-04-11  higepon  <higepon@users.sourceforge.jp>
 
         * include/monapi/System.h (class System): TICKæ“¾API’Ç‰ÁB

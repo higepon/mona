@@ -4,53 +4,59 @@ using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
-    byte buf[32];
-    int result;
-   FileInputStream fis("HOGE.TXT");
-
-   if (0 != (result = fis.open()))
-   {
-       printf("can not open %s\n", pekoe->get(0));
-       return -1;
-   }
-
-   printf("file size = %d\n", fis.getFileSize());
-
-   if (fis.read(buf, 32))
-   {
-       printf("can not read %s\n", pekoe->get(0));
-       fis.close();
-       return -1;
-   }
-
-   printf("contents\n");
-   sleep(5000);
-
-   for (int i = 0; i < 32; i++)
-   {
-       printf("[%x]", buf[i]);
-   }
-
-   fis.close();
-
-
-
-    printf("Hello World\n");
-
-    for (int i = 0; i < 10; i++)
-    {
-        printf("tick=%x\n", System::getTick());
-    }
-
-    sleep(100);
-
-    for (int i = 0; i < 10; i++)
-    {
-        printf("tick=%x\n", System::getTick());
-    }
-
+    printf("hello");
     return 0;
 }
+
+// int MonaMain(List<char*>* pekoe)
+// {
+//     byte buf[32];
+//     int result;
+//    FileInputStream fis("HOGE.TXT");
+
+//    if (0 != (result = fis.open()))
+//    {
+//        printf("can not open %s\n", pekoe->get(0));
+//        return -1;
+//    }
+
+//    printf("file size = %d\n", fis.getFileSize());
+
+//    if (fis.read(buf, 32))
+//    {
+//        printf("can not read %s\n", pekoe->get(0));
+//        fis.close();
+//        return -1;
+//    }
+
+//    printf("contents\n");
+//    sleep(5000);
+
+//    for (int i = 0; i < 32; i++)
+//    {
+//        printf("[%x]", buf[i]);
+//    }
+
+//    fis.close();
+
+
+
+//     printf("Hello World\n");
+
+//     for (int i = 0; i < 10; i++)
+//     {
+//         printf("tick=%x\n", System::getTick());
+//     }
+
+//     sleep(100);
+
+//     for (int i = 0; i < 10; i++)
+//     {
+//         printf("tick=%x\n", System::getTick());
+//     }
+
+//     return 0;
+// }
 
 // Mutex¤ò»È¤Ã¤Æ¤ß¤¿¤E// static Mutex* mutex;
 
