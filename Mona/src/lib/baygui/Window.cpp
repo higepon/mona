@@ -496,14 +496,16 @@ void Window::run()
 					key = charcode;
 				}
 				
-				this->keyEvent.keycode = key;
-				this->keyEvent.modifiers = this->modifiers;
-				if (info.arg2 & KEY_MODIFIER_DOWN) {
-					this->keyEvent.type = KEY_PRESSED;
-				} else if (info.arg2 & KEY_MODIFIER_UP) {
-					this->keyEvent.type = KEY_RELEASED;
+				if (key != 0) {
+					this->keyEvent.keycode = key;
+					this->keyEvent.modifiers = this->modifiers;
+					if (info.arg2 & KEY_MODIFIER_DOWN) {
+						this->keyEvent.type = KEY_PRESSED;
+					} else if (info.arg2 & KEY_MODIFIER_UP) {
+						this->keyEvent.type = KEY_RELEASED;
+					}
+					postEvent(&this->keyEvent);
 				}
-				postEvent(&this->keyEvent);
 				
 				break;
 			}

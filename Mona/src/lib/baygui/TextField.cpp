@@ -155,7 +155,7 @@ void TextField::onEvent(Event *event)
 			// 確定
 			getParent()->onEvent(&this->textEvent);
 			return;
-		} else if (0 < keycode && keycode < 128) {
+		} else if (keycode < 128) {
 			// 1文字挿入
 			insertCharacter(keycode);
 			repaint();
