@@ -1,12 +1,12 @@
 TARGET  = GUI.SVR
-SOURCES = main.cpp image.cpp screen.cpp utils.cpp bzip2.cpp
+SOURCES = main.cpp image.cpp screen.cpp utils.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/app-elf.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
-LINK    = $(LIBDIR)/monapi.o -lbz2 -lmonapi -lmonalibc -ljpegls
+LINK    = $(LIBDIR)/monapi.o -lmonapi -lmonalibc -ljpegls
 
-$(TARGET): $(LIBDIR)/libbz2.a $(LIBDIR)/libjpegls.a
+$(TARGET): $(LIBDIR)/libjpegls.a
 
 include dependencies

@@ -17,7 +17,9 @@ enum
     MSG_MOUSE_ENABLE_CURSOR,
     MSG_MOUSE_DISABLE_CURSOR,
 
-    MSG_FILE_READ_DATA = 0x0400
+    MSG_FILE_READ_DATA = 0x0400,
+    MSG_FILE_DECOMPRESS_BZ2,
+    MSG_FILE_DECOMPRESS_BZ2_FILE
 };
 
 enum
@@ -38,6 +40,8 @@ extern int monapi_call_dispose_handle(int id, dword handle);
 extern int monapi_register_to_server(int id, int enabled);
 extern int monapi_call_mouse_set_cursor(int enabled);
 extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prompt);
+extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
+extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int prompt);
 #ifdef __cplusplus
 }
 #endif

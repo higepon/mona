@@ -7,6 +7,7 @@ include $(MONADIR)/env/app-elf.inc
 
 INSTDIR = $(BINDIR)/root/APPS
 LINK    = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
+CXXFLAGS += -DDEBUG
 
 $(TARGET): $(LIBDIR)/libgui.a
 

@@ -78,6 +78,7 @@ int monapi_call_mouse_set_cursor(int enabled)
 
 monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prompt)
 {
+    monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (monapi_cmessage_send_receive_args(&msg, tid, MSG_FILE_READ_DATA, prompt, 0, 0, file) != 0)
@@ -86,7 +87,45 @@ monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prompt)
     }
     if (msg.arg2 == 0) return NULL;
 
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = tid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return ret;
+}
+
+monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, mi->Handle, mi->Size, 0, NULL) != 0)
+    {
+        return NULL;
+    }
+    if (msg.arg2 == 0) return NULL;
+
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = tid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return ret;
+}
+
+monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int prompt)
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_FILE_DECOMPRESS_BZ2_FILE, prompt, 0, 0, file) != 0)
+    {
+        return NULL;
+    }
+    if (msg.arg2 == 0) return NULL;
+
+    ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
     ret->Size   = msg.arg3;

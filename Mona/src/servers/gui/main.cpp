@@ -7,7 +7,6 @@
 #include "GUIServer.h"
 #include "image.h"
 #include "screen.h"
-#include "bzip2.h"
 #include "utils.h"
 
 using namespace MonAPI;
@@ -19,7 +18,7 @@ static bool wallpaper_prompt = false;
 
 static void ReadFont(const char* file)
 {
-    monapi_cmemoryinfo* mi = BZ2DecompressFile(file, true);
+    monapi_cmemoryinfo* mi = monapi_call_file_decompress_bz2_file(file, true);
     if (mi == NULL) return;
     
     default_font = mi;
@@ -163,43 +162,6 @@ void MessageLoop()
                 DrawWallPaper();
                 Message::reply(&msg);
                 break;
-            case MSG_GUISERVER_DECOMPRESSBZ2:
-            {
-                monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
-                mi1->Handle = msg.arg1;
-                mi1->Size   = msg.arg2;
-                monapi_cmemoryinfo* mi2 = NULL;
-                if (monapi_cmemoryinfo_map(mi1))
-                {
-                    mi2 = BZ2Decompress(mi1);
-                    monapi_cmemoryinfo_dispose(mi1);
-                }
-                if (mi2 != NULL)
-                {
-                    Message::reply(&msg, mi2->Handle, mi2->Size);
-                    monapi_cmemoryinfo_delete(mi2);
-                }
-                else
-                {
-                    Message::reply(&msg);
-                }
-                monapi_cmemoryinfo_delete(mi1);
-                break;
-            }
-            case MSG_GUISERVER_DECOMPRESSBZ2FILE:
-            {
-                monapi_cmemoryinfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
-                if (mi != NULL)
-                {
-                    Message::reply(&msg, mi->Handle, mi->Size);
-                    delete mi;
-                }
-                else
-                {
-                    Message::reply(&msg);
-                }
-                break;
-            }
         }
     }
 }

@@ -6,7 +6,6 @@
 #include <jpegls.h>
 #include "GUIServer.h"
 #include "image.h"
-#include "bzip2.h"
 
 #define BYTE2INT(array, index) (*(int*)&array[index])
 
@@ -113,7 +112,7 @@ ImageInfo* ReadImage(const char* file, bool prompt /*= false*/)
 	else if (strcmp(p, ".BM2") == 0)
 	{
 		if (prompt) printf("%s: Decompressing %s....", SVR, file);
-		monapi_cmemoryinfo* mi2 = BZ2Decompress(mi);
+		monapi_cmemoryinfo* mi2 = monapi_call_file_decompress_bz2(mi);
 		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
 		
 		if (mi2 != NULL)

@@ -5,5 +5,6 @@ MONADIR = ../../..
 include $(MONADIR)/env/app-elf.inc
 
 INSTDIR = $(BINDIR)/root/APPS
+CXXFLAGS += -DDEBUG
 
 include dependencies

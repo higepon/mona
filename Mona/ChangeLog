@@ -6,6 +6,10 @@
 
         * tools/elf_tool: ELFのテストツール
 
+        * src/servers/file: GUI.SVRからbzip2展開機能を移動
+
+        * src/servers/gui: FILE.SVRにbzip2展開機能を移動
+
 2004-05-02  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: カーネルで使わないメッセージを削除

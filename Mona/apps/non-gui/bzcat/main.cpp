@@ -3,7 +3,12 @@
 
 #include <monapi.h>
 #include <monapi/messages.h>
-#include <gui/messages.h>
+
+#ifdef DEBUG
+#define PROMPT 1
+#else
+#define PROMPT 0
+#endif
 
 using namespace MonAPI;
 
@@ -15,18 +20,11 @@ int MonaMain(List<char*>* pekoe)
 		return 1;
 	}
 	
-	MessageInfo msg;
-	dword guisvr = Message::lookupMainThread("GUI.SVR");
-	if (Message::sendReceive(&msg, guisvr, MSG_GUISERVER_DECOMPRESSBZ2FILE, 1, 0, 0, pekoe->get(0)) != 0)
-	{
-		printf("ERROR: can not connect to GUI.SVR\n");
-		return 1;
-	}
-	char* data = (char*)MemoryMap::map(msg.arg2);
-	if (data == NULL) return 1;
+	monapi_cmemoryinfo* mi = monapi_call_file_decompress_bz2_file(pekoe->get(0), PROMPT);
+	if (mi == NULL) return 1;
 	
-	printf(data);
-	MemoryMap::unmap(msg.arg2);
-	Message::send(guisvr, MSG_DISPOSE_HANDLE, msg.arg2);
+	printf((const char*)mi->Data);
+	monapi_cmemoryinfo_dispose(mi);
+	monapi_cmemoryinfo_delete(mi);
 	return 0;
 }
