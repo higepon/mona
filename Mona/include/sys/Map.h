@@ -42,8 +42,10 @@ class MapInfo {
     Map Interface
 ----------------------------------------------------------------------*/
 template <class T> class Map {
+public:
+    virtual ~Map() {}
 
-  public:
+public:
     virtual bool containsKey(char* key) = 0;
     virtual T get(char* key)            = 0;
     virtual T put(char* key, T value)   = 0;

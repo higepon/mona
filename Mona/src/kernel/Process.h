@@ -274,8 +274,8 @@ class Process
         return threadList_;
     }
 
-    static const LinearAddress STACK_START = 0xEFFFFFFF;
-    static const dword STACK_SIZE          = 0x1000;
+    static const LinearAddress STACK_START = 0xEFFFFFFE;
+    static const dword STACK_SIZE          = 0xFFF;
 
   public:
     int threadNum;

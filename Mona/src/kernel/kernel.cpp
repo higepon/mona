@@ -140,8 +140,6 @@ void startKernel(void)
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
 
-    g_console->printf("here");
-
     /* dummy thread struct */
     Thread* dummy1 = new Thread();
     Thread* dummy2 = new Thread();

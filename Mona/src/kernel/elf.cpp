@@ -62,13 +62,13 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     readTimes = (fileSize + 512 -1) / 512;
     buf       = (byte*)malloc(512 * readTimes);
 
-    memset(buf, 0, 512 * readTimes);
     if (buf == NULL)
     {
         g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
         return 2;
     }
+    memset(buf, 0, 512 * readTimes);
 
     /* read */
     if (!g_fs->read(buf, fileSize))
