@@ -175,6 +175,22 @@ namespace System { namespace Mona { namespace Forms
 		Application::Run();
 	}
 	
+	void Application::DoEvents()
+	{
+		if (Application::isExited) return;
+		
+#if defined(MONA)
+		MessageInfo msg;
+		while (MonAPI::Message::exist())
+		{
+			if (!MonAPI::Message::receive(&msg))
+			{
+				Application::ProcessEvent(msg.header, msg.arg1, msg.arg2, msg.arg3);
+			}
+		}
+#endif
+	}
+	
 	void Application::Exit()
 	{
 		Application::isExited = true;

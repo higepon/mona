@@ -1,3 +1,27 @@
+2004-04-23  tino  <tino@users.sourceforge.jp>
+
+        * env/*.env: EXEEXT追加
+
+        * tools/bit2mnf: 追加
+
+        * tools/monafont: 追加（巨大ですみません）
+
+        * tools/codetable: 追加
+
+        * bin/root/MONA-12.MNF: 削除（bit2mnfにより生成されるため）
+
+        * include/gui/System/String.h (operator +=): 追加
+
+        * include/gui/System/Mona/Forms/Application.h (DoEvents): 追加
+
+        * include/gui/System/Mona/Forms/Control.h: ForeColor, BackColorプロパティ
+
+        * src/lib/gui/System/Mona/Forms/Button.cpp (OnPaint): ForeColor, BackColor対応
+
+        * src/lib/gui/System/Mona/Forms/Label.cpp (OnPaint): ForeColor, BackColor対応
+
+        * apps/gui/ps/Form1.cpp: MonaGUIの新機能で単純化
+
 2004-04-22  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/reversi/Piece.cpp (OnPaint): Reversi2画像リソース対応

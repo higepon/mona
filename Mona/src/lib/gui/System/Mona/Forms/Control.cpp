@@ -53,7 +53,8 @@ namespace System { namespace Mona { namespace Forms
 	Control::Control()
 	{
 		this->bounds = Rectangle(0, 0, 32, 32);
-		this->background = ControlPaint::get_Light();
+		this->foreColor = Color::get_Black();
+		this->backColor = ControlPaint::get_Light();
 		this->visible = false;
 		this->controls = new ControlCollection(this);
 	}
@@ -88,7 +89,12 @@ namespace System { namespace Mona { namespace Forms
 		int len = this->get_Width() * this->get_Height();
 		for (int i = 0; i < len; i++)
 		{
-			(*this->buffer.get())[i] = this->background;
+			(*this->buffer.get())[i] = this->backColor;
+		}
+		if (this->parent != NULL)
+		{
+			this->foreColor = this->parent->foreColor;
+			this->backColor = this->parent->backColor;
 		}
 		this->OnPaint();
 		
@@ -282,6 +288,40 @@ namespace System { namespace Mona { namespace Forms
 	void Control::OnTextChanged(_P<EventArgs> e)
 	{
 		this->raise_TextChanged(this, e);
+		if (this->buffer == NULL) return;
+		
+		this->OnPaint();
+		this->Refresh();
+	}
+	
+	void Control::set_ForeColor(Color c)
+	{
+		if (this->foreColor == c) return;
+		
+		this->foreColor = c;
+		this->OnForeColorChanged(EventArgs::get_Empty());
+	}
+	
+	void Control::OnForeColorChanged(_P<EventArgs> e)
+	{
+		this->raise_ForeColorChanged(this, e);
+		if (this->buffer == NULL) return;
+		
+		this->OnPaint();
+		this->Refresh();
+	}
+	
+	void Control::set_BackColor(Color c)
+	{
+		if (this->backColor == c) return;
+		
+		this->backColor = c;
+		this->OnBackColorChanged(EventArgs::get_Empty());
+	}
+	
+	void Control::OnBackColorChanged(_P<EventArgs> e)
+	{
+		this->raise_BackColorChanged(this, e);
 		if (this->buffer == NULL) return;
 		
 		this->OnPaint();

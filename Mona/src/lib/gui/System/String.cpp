@@ -50,4 +50,14 @@ namespace System
 		this->Set(Encoding::ToWCharArray(text, -1));
 		return *this;
 	}
+	
+	void String::operator +=(const String& text)
+	{
+		int len1 = this->get_Length(), len2 = text.get_Length();
+		_A<wchar> s(len1 + len2);
+		int p = 0;
+		for (int i = 0; i < len1; i++) s[p++] = (*this)[i];
+		for (int i = 0; i < len2; i++) s[p++] = ((String&)text)[i];
+		this->Set(s);
+	}
 }

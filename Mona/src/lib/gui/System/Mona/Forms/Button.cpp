@@ -33,7 +33,7 @@ namespace System { namespace Mona { namespace Forms
 		int w = this->get_Width(), h = this->get_Height();
 		
 		// Erase
-		g->FillRectangle(this->background, 0, 0, w, h);
+		g->FillRectangle(this->backColor, 0, 0, w, h);
 		
 		// Text
 		_P<Font> f = Control::get_DefaultFont();
@@ -44,7 +44,7 @@ namespace System { namespace Mona { namespace Forms
 			x++;
 			y++;
 		}
-		g->DrawString(this->get_Text(), f, Color::get_Black(), x, y);
+		g->DrawString(this->get_Text(), f, this->get_ForeColor(), x, y);
 		
 		// Border
 		if (this->isPushed)

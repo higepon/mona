@@ -41,6 +41,7 @@ namespace System { namespace Mona { namespace Forms
 		
 		static void Run();
 		static void Run(_P<Form> form);
+		static void DoEvents();
 		static void ProcessEvent(unsigned int message, unsigned int arg1, unsigned int arg2, unsigned int arg3);
 	    static void Exit();
 		

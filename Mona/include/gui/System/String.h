@@ -19,6 +19,7 @@ namespace System
 		inline bool operator !=(String text) { return *this != text; }
 		String& operator =(const String& text);
 		String& operator =(const char* text);
+		void operator +=(const String& text);
 	};
 }
 

@@ -32,7 +32,8 @@ namespace System { namespace Mona { namespace Forms
 	protected:
 		System::Drawing::Rectangle bounds;
 		bool visible;
-		System::Drawing::Color background;
+		System::Drawing::Color foreColor;
+		System::Drawing::Color backColor;
 		_P<System::Drawing::Bitmap> buffer;
 		_P<Control> parent;
 		_P<ControlCollection> controls;
@@ -82,6 +83,11 @@ namespace System { namespace Mona { namespace Forms
 		inline System::String get_Text() { return this->text; }
 		void set_Text(System::String text);
 		
+		inline System::Drawing::Color get_ForeColor() { return this->foreColor; }
+		void set_ForeColor(System::Drawing::Color c);
+		inline System::Drawing::Color get_BackColor() { return this->backColor; }
+		void set_BackColor(System::Drawing::Color c);
+		
 		static _P<System::Drawing::Font> get_DefaultFont();
 	
 	protected:
@@ -90,6 +96,8 @@ namespace System { namespace Mona { namespace Forms
 		
 		virtual void OnPaint() {}
 		virtual void OnTextChanged(_P<EventArgs> e);
+		virtual void OnForeColorChanged(_P<EventArgs> e);
+		virtual void OnBackColorChanged(_P<EventArgs> e);
 		virtual void OnMouseMove(_P<MouseEventArgs> e);
 		virtual void OnMouseDown(_P<MouseEventArgs> e);
 		virtual void OnMouseUp(_P<MouseEventArgs> e);
@@ -99,6 +107,8 @@ namespace System { namespace Mona { namespace Forms
 		virtual void OnNCMouseMove(_P<MouseEventArgs> e) {};
 		
 		DECLARE_EVENT(System::IEventHandler, TextChanged, _P<EventArgs>)
+		DECLARE_EVENT(System::IEventHandler, ForeColorChanged, _P<EventArgs>)
+		DECLARE_EVENT(System::IEventHandler, BackColorChanged, _P<EventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseMove, _P<MouseEventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseDown, _P<MouseEventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseUp, _P<MouseEventArgs>)
