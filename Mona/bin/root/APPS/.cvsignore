@@ -4,6 +4,7 @@
 *.img
 *.exe
 *.ELF
+*.EL2
 *.SVR
 *.LIB
 *.WRP

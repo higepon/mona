@@ -1,8 +1,8 @@
-TARGET  = KANJI.ELF
+TARGET  = KANJI
 SOURCES = kanji.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/app-elf.inc
+include $(MONADIR)/env/monapi-el2.inc
 
 INSTDIR = $(BINDIR)/root/APPS
 

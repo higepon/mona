@@ -165,7 +165,7 @@ void Shell::commandExecute()
     {
         cmdLine = command;
     }
-    else if (command.endsWith(".ELF"))
+    else if (command.endsWith(".ELF") || command.endsWith(".EL2"))
     {
         cmdLine = "/APPS/" + command;
     }

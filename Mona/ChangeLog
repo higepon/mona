@@ -14,6 +14,8 @@
 
         * src/servers/shell: ELF.SVRを呼び出してコマンドを実行
 
+        * env/monapi-el2.inc: 圧縮ELF対応の部分Makefile
+
 2004-05-02  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: カーネルで使わないメッセージを削除
