@@ -1,9 +1,10 @@
 #include "types.h"
 #include "HogeDriver.h"
+#include <stdio.h>
 
 HogeDriver::HogeDriver(const char* file, long size) {
 
-    file_.open(file, std::ios::in|std::ios::binary);
+    file_.open(file, std::ios::out|std::ios::in|std::ios::binary);
 
 }
 
@@ -24,5 +25,9 @@ bool HogeDriver::read(int lba, byte* buf) {
 
 bool HogeDriver::write(int lba, byte* buf) {
 
+    file_.seekg(0);
+    file_.seekg((lba) * 512);
+    printf("writing");
+    file_.write((char*)buf, 512);
     return true;
 }

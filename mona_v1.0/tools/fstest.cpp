@@ -24,15 +24,57 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
-    if (!fat->open("SOMEDIR\\DIR1\\DIR2\\DIR3\\DIR4", "SOME.CPP", FAT12::READ_MODE)) {
+    if (!fat->createFlie("HIGE", "cpp")) {
+
+        printf("can not create file");
+    }
+
+    if (!fat->open(".", "HIGE.cpp", FAT12::READ_MODE)) {
+
         printf("open failed");
     }
+
+    byte text[512];
+
+    memset(text, 0x41, 512);
+    if (!fat->write(text)) {
+
+        printf("write failed");
+    }
+
+    if (!fat->write(text)) {
+
+         printf("write failed");
+    }
+
+    if (!fat->open(".", "HIGE.cpp", FAT12::READ_MODE)) {
+
+        printf("open failed");
+    }
+
 
     while (fat->readHasNext()) {
         byte buf[512];
         fat->read(buf);
-        for (int i = 0; i < 512; i++) printf("%c", (char)buf[i]);
+        for (int i = 0; i < 512; i++) printf("%x", (char)buf[i]);
     }
+
+
+//      memset(text, 1, 512);
+//      if (!fat->write(text)) {
+
+//           printf("write failed");
+//      }
+
+//      if (!fat->open("SOMEDIR\\DIR1\\DIR2\\DIR3\\DIR4", "SOME.CPP", FAT12::READ_MODE)) {
+//          printf("open failed");
+//      }
+
+//      while (fat->readHasNext()) {
+//          byte buf[512];
+//          fat->read(buf);
+//          for (int i = 0; i < 512; i++) printf("%c", (char)buf[i]);
+//      }
 
     return 0;
 
@@ -49,6 +91,7 @@ int main(int argc, char *argv[]) {
 //          printf("changeDirectory failed");
 //          return -1;
 //      }
+
 
     delete fat;
     delete driver;

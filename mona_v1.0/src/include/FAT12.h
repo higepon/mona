@@ -23,7 +23,7 @@ typedef struct BPB {
     word  bytesPerSector;
     byte  sectorPerCluster;
     word  reservedSectorCount;
-    byte  numberFats;
+    byte  numberFATs;
     word  rootEntryCount;
     word  totalSector16;
     byte  media;
@@ -82,6 +82,7 @@ class FAT12 {
     static const int NOT_DIR_ERROR;
     static const int PATH_LENGTH;
     static const int DRIVER_READ_ERROR;
+    static const int DRIVER_WRITE_ERROR;
     static const int FILE_EXIST_ERROR;
     static const char PATH_SEP;
 
@@ -94,7 +95,7 @@ class FAT12 {
     bool open(const char* path, const char* filename, int mode);
     bool close();
     bool read(byte* buffer);
-    bool write(const char* file, byte* buffer);
+    bool write(byte* buffer);
     bool rename(const char* from, const char* to);
     bool remove(const char* file);
     bool removeDirecotry(const char* name);
@@ -112,8 +113,9 @@ class FAT12 {
     bool readBPB();
     bool isFAT12();
     bool readFAT(bool allocate);
+    bool writeFAT();
     word getFATAt(int cluster) const;
-    bool setFatAt(int cluster, word fat);
+    bool setFATAt(int cluster, word fat);
     char* getPathAt(const char* path, int index) const;
     int getEmptyEntry(int cluster);
     bool compareName(const char* name1, const char* name2) const;
@@ -129,8 +131,9 @@ class FAT12 {
     bool dirty_;                /* dirty flag      */
 
     bool readHasNext_;          /* read state      */
-    bool isOpen_;               /* read state      */
-    int  currentCluster_;       /* read state      */
+    bool isOpen_;               /* r/w  state      */
+    int  currentCluster_;       /* r/w  state      */
+    bool firstWrite_;           /* write state     */
     int  fileSize_;             /* read state      */
 
     char currentPath_[512];      /* current path   */
