@@ -255,6 +255,14 @@ class Process {
         return threadManager_->killAllThread();
     }
 
+    inline virtual void setWakeupTimer(dword timer) {
+        wakeupTimer_ = timer;
+    }
+
+    inline virtual dword getWakeupTimer() const {
+        return wakeupTimer_;
+    }
+
     virtual int join(Thread* thread);
     virtual Thread* schedule();
     virtual Thread* createThread(dword programCounter);
@@ -271,6 +279,7 @@ class Process {
     //    OutputStream* stderr;
     //    InputStream*  stdin;
     dword tick_;
+    dword wakeupTimer_;
     long  timeLeft_;
     dword pid_;
     byte priority_;
@@ -314,20 +323,33 @@ class ProcessManager {
     int join(Process* process, Thread* thread);
     int add(Process* process);
     int kill(Process* process);
+    int sleep(Process* process, dword tick);
     int switchProcess();
     bool schedule();
     inline Process* getCurrentProcess() const {
         return current_;
     }
+
+    inline dword getTick() const {
+        return tick_;
+    }
+
+    inline void tick() {
+        tick_++;
+    }
+
     LinearAddress allocateKernelStack() const;
     void printProcess();
     Process* find(const char* name);
+    void wakeup();
+
 
   public:
     static const int USER_PROCESS   = 0;
     static const int KERNEL_PROCESS = 1;
 
   private:
+    dword tick_;
     List<Process*>* dispatchList_;
     List<Process*>* waitList_;
     PageManager* pageManager_;

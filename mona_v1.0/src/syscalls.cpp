@@ -50,13 +50,8 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PROCESS_SLEEP:
 
-        /* now not implemented */
-        //g_process_manager->sleep(g_current_process, g_current_process->esi);
+        info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
 
-        /* return code */
-        info->eax = 0x12345678;
-
-        break;
         break;
     case SYSTEM_CALL_KILL:
 

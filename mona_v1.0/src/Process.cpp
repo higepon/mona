@@ -218,7 +218,7 @@ void idleThread() {
 ----------------------------------------------------------------------*/
 const int ProcessManager::USER_PROCESS;
 const int ProcessManager::KERNEL_PROCESS;
-ProcessManager::ProcessManager(PageManager* pageManager) {
+ProcessManager::ProcessManager(PageManager* pageManager) : tick_(0) {
 
     /* page manager */
     pageManager_ = pageManager;
@@ -303,7 +303,11 @@ bool ProcessManager::schedule() {
     Process* tmp;
 
     /* tick */
+    this->tick();
     current_->tick();
+
+    /* wakeup */
+     wakeup();
 
     /* process has time yet */
     if (current_->hasTimeLeft()) {
@@ -413,10 +417,35 @@ Process* ProcessManager::find(const char* name) {
     return (Process*)NULL;
 }
 
+int ProcessManager::sleep(Process* process, dword tick) {
+
+    if (!dispatchList_->hasElement(process)) {
+        return -1;
+    }
+
+    process->setWakeupTimer(getTick() + tick);
+    dispatchList_->remove(process);
+    waitList_->add(process);
+    return NORMAL;
+}
+
+void ProcessManager::wakeup() {
+
+    dword tick = getTick();
+
+    for (dword i = 0; i < waitList_->size(); i++) {
+        Process* process = waitList_->get(i);
+        if (process->getWakeupTimer() < tick) {
+            dispatchList_->add(process);
+            waitList_->remove(process);
+        }
+    }
+}
+
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4) {
+Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4), wakeupTimer_(0xFFFFFFFF) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
