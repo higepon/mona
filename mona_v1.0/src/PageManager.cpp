@@ -228,6 +228,7 @@ bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress addre
     }
 
     bool allocateResult = allocatePhysicalPage(&(table[getTableIndex(address)]));
+    setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);
     if (allocateResult) flushPageCache();
 
     return allocateResult;
