@@ -38,9 +38,9 @@ void _sysInitIo() {
     \param  port port number
 
     \author HigePon
-    \date   create:2002/07/29 update:
+    \date   create:2002/07/29 update:2002/12/26
 */
-unsigned char inportb(unsigned int port) {
+unsigned char inportb(dword port) {
 
     unsigned char ret;
     asm volatile ("inb %%dx,%%al":"=a" (ret):"d" (port));
@@ -57,6 +57,6 @@ unsigned char inportb(unsigned int port) {
     \author HigePon
     \date   create:2002/07/29 update:
 */
-void outportb(unsigned int port,unsigned char value) {
+void outportb(dword port, byte value) {
    asm volatile ("outb %%al,%%dx": :"d" (port), "a" (value));
 }

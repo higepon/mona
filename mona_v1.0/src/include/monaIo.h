@@ -14,8 +14,10 @@
 #ifndef _MONA_IO_
 #define _MONA_IO_
 
-unsigned char inportb(unsigned int);
-void outportb(unsigned int,unsigned char);
+#include <monaTypes.h>
+
+unsigned char inportb(dword);
+void outportb(dword, byte);
 void _sysInitIo();
 
 #endif
