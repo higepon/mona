@@ -25,10 +25,14 @@ void ProcessManager::switchProcess() {
              , g_current_process->eip, g_current_process->eflags, g_current_process->cs);
 
 
-    if (scheduler_->isDplDown()) {
+    if (scheduler_->toUserMode()) {
 
-        arch_switch_process_dpl_down();
+        info(DEV_NOTICE, "to user mode\n");
+        arch_switch_process_to_user_mode();
+
     } else {
+
+        info(DEV_NOTICE, "to same mode");
         arch_switch_process();
     }
 }

@@ -126,7 +126,7 @@ void startKernel(void) {
 
     info(DEV_NOTICE, "0");
 #ifdef HIGE
-    g_info_level = DUMP;
+    g_info_level = DEV_NOTICE;
 
     info(DEV_NOTICE, "1");
     g_process_manager = new ProcessManager();
@@ -135,14 +135,14 @@ void startKernel(void) {
     Process* process2 = new Process("test2");
     g_current_process = &(process2->pinfo_);
 
-    Process* process = new Process("test");
-    g_process_manager->addProcess(process, (dword)disp_name3);
-
     UserProcess* process4 = new UserProcess("user");
     g_process_manager->addProcess((Process*)process4, (dword)userTest);
 
+    Process* process = new Process("test");
+    g_process_manager->addProcess(process, (dword)disp_name3);
+
     Process* process3 = new Process("test");
-    g_process_manager->addProcess(process3, (dword)disp_name2);
+    //    g_process_manager->addProcess(process3, (dword)disp_name2);
 
     info(DUMP, "before esp=%x pid=%x", g_current_process->esp, g_current_process->pid);
     enableTimer();

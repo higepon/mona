@@ -16,7 +16,7 @@ BITS 32
 [global _arch_set_stack_view]
 [global _arch_save_process_registers]
 [global _arch_switch_process]
-[global _arch_switch_process_dpl_down]
+[global _arch_switch_process_to_user_mode]
 
 [extern _g_kthread_current] ;; pointer to current thread
 [extern _g_current_process] ;; pointer to current process
@@ -70,7 +70,7 @@ _arch_switch_process:
         pop  ebx                     ; restore ebp
         iretd                        ; switch to next
 
-_arch_switch_process_dpl_down:
+_arch_switch_process_to_user_mode:
         mov ebx, dword[_g_current_process]
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx

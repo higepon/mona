@@ -24,13 +24,13 @@ class Scheduler {
     bool isEmpty();
     ProcessInfo* getNext();
     void schedule();
-    bool isDplDown() const;
+    bool toUserMode() const;
 
   public:
     static ProcessInfo list_;
 
   private:
-    bool isDplDown_;
+    bool toUserMode_;
 };
 
 #endif

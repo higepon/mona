@@ -52,18 +52,20 @@ ProcessInfo* Scheduler::getNext() {
 
 void Scheduler::schedule() {
 
-    ProcessInfo* temp = getNext();
+    ProcessInfo* next = getNext();
 
-    isDplDown_ = (temp->dpl < g_current_process->dpl);
+    toUserMode_ = (next->dpl > g_current_process->dpl);
 
-    addToPrev(temp);
+    info(DEV_NOTICE, "dpl %d to %d", g_current_process->dpl, next->dpl);
 
-    g_current_process = temp;
+    addToPrev(next);
+
+    g_current_process = next;
 
     return;
 }
 
-bool Scheduler::isDplDown() const {
+bool Scheduler::toUserMode() const {
 
-    return isDplDown_;
+    return toUserMode_;
 }
