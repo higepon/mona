@@ -47,14 +47,14 @@ bool initialize(char* filename)
         return false;
     }
 
+    inf.device->open();
+
     inf.fat = new FatStorage();
     if (inf.fat == NULL)
     {
         printf("initialize error: FatStorage\n");
         return false;
     }
-
-    inf.device->open();
 
     if (!inf.fat->initialize(inf.device))
     {
@@ -63,6 +63,11 @@ bool initialize(char* filename)
     }
 
     inf.current = inf.fat->getRootDirectory();
+    if (inf.current == NULL)
+    {
+        printf("getRootDirectory error\n");
+        return false;
+    }
 
     return true;
 }
