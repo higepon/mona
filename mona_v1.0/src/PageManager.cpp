@@ -37,7 +37,7 @@ void PageManager::flushPageCache() const {
 
 bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
 
-    dword foundMemory = memoryMap_->find();
+    int foundMemory = memoryMap_->find();
 
     /* no free memory found */
     if (foundMemory == -1) return false;

@@ -118,6 +118,7 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     g_process[pnum_] = process;
     pnum_++;
+    return true;
 }
 
 void ProcessManager::printOneProcess(ProcessInfo* info) const {

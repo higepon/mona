@@ -93,7 +93,7 @@ void GraphicalConsole::printf(const char *format, ...) {
                   ((int*)list) += 1;
                   break;
               case 'c':
-                  putCharacter((char)*list);
+                  putCharacter((char)(int)(*list));
                   ((char*)list) += 1;
                   break;
               case '%':

@@ -54,4 +54,4 @@ void _pure_virtual() {
     \author HigePon
     \date   create:2002/08/08 update:2002/02/25
 */
-int atexit( void (*func)(void)) {}
+int atexit( void (*func)(void)) {return -1;}

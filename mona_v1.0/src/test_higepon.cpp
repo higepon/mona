@@ -30,13 +30,13 @@ bool drawARGB(byte* rgba, int x, int y, int size) {
     /* draw loop */
     for (int i = sizeof(ARGBHeader) / 4; i < size / 4; i++) {
 
-        if (x >= startx + header->width) {
+        if (x >= startx + (int)(header->width)) {
 
             y++;
             x = startx;
         }
 
-        if (y >= starty + header->height) break;
+        if (y >= starty + (int)(header->height)) break;
 
         //color = (rgba[i * 4 + 0] || rgba[i * 4 + 1] || rgba[i * 4 + 2]) ? GP_WHITE : GP_BLACK;
         if (rgba[i * 4 + 0] == 0xFF) color = GP_WHITE;

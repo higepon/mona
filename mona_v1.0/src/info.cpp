@@ -51,7 +51,7 @@ void info(int level, const char *format, ...) {
                   ((int*)list) += 1;
                   break;
               case 'c':
-                  g_console->putCharacter((char)*list);
+                  g_console->putCharacter((char)(int)(*list));
                   ((char*)list) += 1;
                   break;
               case '%':

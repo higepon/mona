@@ -24,7 +24,6 @@ extern "C"     void arch_set_stack_view();
 void syscall_entrance() {
 
     int x, y;
-    dword eflags;
 
     switch(g_current_process->ebx) {
 
