@@ -165,36 +165,52 @@ void FDCDriver::initilize() {
         return;
     }
 
-    recalibrate();
-    recalibrate(); /* 2nd recalibrate occurs 3interrupts on VPC and 2 on Bochs */
+//      recalibrate();
+//      recalibrate(); /* 2nd recalibrate occurs 3interrupts on VPC and 2 on Bochs */
 
-    g_console->printf("recalibrate done\n");
+//      g_console->printf("recalibrate done\n");
 
-    memset(dmabuff_, 0x10, 512);
-    dmabuff_[0] = 'M';
-    dmabuff_[1] = 'o';
-    dmabuff_[2] = 'n';
-    dmabuff_[3] = 'a';
-    dmabuff_[4] = '\0';
+//      memset(dmabuff_, 0x10, 512);
+//      dmabuff_[0] = 'M';
+//      dmabuff_[1] = 'o';
+//      dmabuff_[2] = 'n';
+//      dmabuff_[3] = 'a';
+//      dmabuff_[4] = '\0';
 
-    g_console->printf("Writing [%s]\n", dmabuff_);
-    if (!write(0, 0, 150)) {
+//      g_console->printf("Writing [%s]\n", dmabuff_);
+//      if (!write(0, 0, 150)) {
 
-        g_console->printf("write failed\n");
-        motor(OFF);
-        return;
+//          g_console->printf("write failed\n");
+//          motor(OFF);
+//          return;
+//      }
+
+//      recalibrate();
+//      recalibrate();
+//      if (!read(0, 0, 150)) {
+
+//          g_console->printf("read failed\n");
+//          motor(OFF);
+//          return;
+//      }
+
+//      g_console->printf("reading result is %s\n", dmabuff_);
+
+
+    for (int i = 1; i < 2; i++) {
+
+        recalibrate();
+        memset(dmabuff_, i, 512);
+        if (!write(i)) {
+
+            g_console->printf("read failed\n");
+            motor(OFF);
+            return;
+        }
+
     }
-
-    recalibrate();
-    recalibrate();
-    if (!read(0, 0, 150)) {
-
-        g_console->printf("read failed\n");
-        motor(OFF);
-        return;
-    }
-    g_console->printf("reading result is %s\n", dmabuff_);
     motor(OFF);
+
     return;
 }
 
@@ -259,6 +275,11 @@ void FDCDriver::interrupt() {
     \date   create:2003/02/10 update:
 */
 bool FDCDriver::waitInterrupt() {
+
+    static int counter = 0;
+    counter++;
+
+    if (counter > 5000) interrupt_ = true;
 
     return interrupt_;
 }
@@ -450,6 +471,7 @@ void FDCDriver::readResults() {
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
             console_->printf("FDCDriver#readResults: timeout results_[%d]\n", i);
+            printStatus("status");
             break;
         }
 
@@ -663,13 +685,46 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
                    , 0x00
                    };
     setupDMAWrite(512);
+    g_console->printf("1:wait seek interrupt");
+    interrupt_ = false;
     seek(track);
+    while(!waitInterrupt());
+    g_console->printf("seek interrupt catch!");
+    g_console->printf("2");
 
+    g_console->printf("3:wait write command interrupt");
     interrupt_ = false;
     sendCommand(command, sizeof(command));
-    while(!waitInterrupt());
-    stopDMA();
+    g_console->printf("4");
 
+    stopDMA();
     readResults();
+
     return true;
+}
+
+bool FDCDriver::read(int lba) {
+
+    byte track, head, sector;
+    lbaToTHS(lba, track, head, sector);
+    return read(track, head, sector);
+}
+
+
+bool FDCDriver::write(int lba) {
+    byte track, head, sector;
+    lbaToTHS(lba, track, head, sector);
+
+    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+
+    return write(track, head, sector);
+}
+
+void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {
+
+    track   = lba / (80 * 18);
+    head    = lba - track;
+    head   /= 18;
+    sector  = lba % 18;
+    return;
 }

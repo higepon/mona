@@ -13,6 +13,8 @@
 #ifndef _MONA_DISK_DRIVER_
 #define _MONA_DISK_DRIVER_
 
+#include <fstream>
+#include <iostream>
 /*!
     Disk Driver class
 */
@@ -24,6 +26,10 @@ class DiskDriver {
   public:
     bool read(char* buf, int sector);
     bool write(char* buf, int sector);
+
+  private:
+
+    std::fstream file_;
 };
 
 #endif
