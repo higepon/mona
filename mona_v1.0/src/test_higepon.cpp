@@ -24,6 +24,7 @@ void FDCTester() {
 
     g_fdcdriver->motor(true);
 
+    g_info_level = DEV_NOTICE;
     info(DEV_NOTICE, "before recalibrate");
 
     g_fdcdriver->recalibrate();

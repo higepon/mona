@@ -15,7 +15,7 @@
 
 void info(int level, const char *format, ...) {
 
-    static bool msg_complete;
+    static bool msg_complete = true;
     int i;
 
     /* do nothing */

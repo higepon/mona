@@ -255,7 +255,7 @@ bool kthread_is_list_empty(Kthread* list) {
     \brief add thread to list
 
     \param list   thread list
-    \param thread thraed added to list
+    \param thread thread added to list
 
     \author HigePon
     \date   create:2003/03/01 update:2003/03/06

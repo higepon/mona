@@ -98,7 +98,6 @@ void startKernel(void) {
     /* set process name for info() */
     strcpy(g_process_name, "KERNEL");
 
-
 #ifdef MJT
     test_mjt();
 #endif

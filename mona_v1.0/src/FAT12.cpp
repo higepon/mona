@@ -109,7 +109,7 @@ bool FAT12::initilize() {
         return false;
     }
 
-    info(DEV_NOTICE, "after raedFAT\n");
+    info(DEV_NOTICE, "after readFAT\n");
 
     /* cluster map */
     int mapSize = 512 * bpb_.fatSize16 / 3 + 1;
