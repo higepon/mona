@@ -629,9 +629,9 @@ void PageManager::startPaging()
 */
 void PageManager::stopPaging()
 {
-    asm volatile("mov %%cr0      , %%eax \n"
-                 "or  $0x7fffffff, %%eax \n"
-                 "mov %%eax      , %%cr0 \n"
+    asm volatile("mov %%cr0       , %%eax \n"
+                 "and  $0x7fffffff, %%eax \n"
+                 "mov %%eax       , %%cr0 \n"
                  : /* no output */
                  : /* no input  */ : "ax");
 }
