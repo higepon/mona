@@ -29,7 +29,8 @@
     dword __esp, __ebp, __esi, __edi;           \
     dword __cs , __ds , __fs , __es;            \
     dword __gs, __ss  , __eflags;               \
-    asm volatile("mov %%eax, %0  \n"            \
+    asm volatile("xor %%eax, %%eax\n"\
+                 "mov %%eax, %0  \n"            \
                  "mov %%ebx, %1  \n"            \
                  "mov %%ecx, %2  \n"            \
                  "mov %%edx, %3  \n"            \

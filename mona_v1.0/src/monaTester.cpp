@@ -140,8 +140,9 @@ void process1Tester() {
 }
 
 void process2Tester() {
-    //    _sysdump("process2", true, false);
+    _sysdump("process2", true, false);
     while (true) {
+
         for (dword i = 0; i < 900000; i++) {
             i += 1;
             i -= 1;
