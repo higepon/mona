@@ -70,7 +70,7 @@ void GDTUtil::ltr(word selector) {
     \brief set up GDT
 
     \author HigePon
-    \date   create:2003/06/07 update:
+    \date   create:2003/06/07 update:2003/07/18
 */
 void GDTUtil::setup() {
 

@@ -54,9 +54,16 @@ void Scheduler::schedule() {
 
     ProcessInfo* temp = getNext();
 
+    isDplDown_ = (temp->dpl < g_current_process->dpl);
+
     addToPrev(temp);
 
     g_current_process = temp;
 
     return;
+}
+
+bool Scheduler::isDplDown() const {
+
+    return isDplDown_;
 }
