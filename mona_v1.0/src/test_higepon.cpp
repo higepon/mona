@@ -32,20 +32,36 @@ License=MIT/X Licnese
 ----------------------------------------------------------------------*/
 void tryMouse() {
 
+    //    outportb(0x64, 0xa9);
+    //    g_console->printf("aux test result = %x\n", !inportb(0x60) ? "OK" : "NG");
+
+    /* self test kbc */
+    outportb(0x64, 0xAA);
+
     /* enable mouse (AUX enable) */
     outportb(0x64, 0xa8);
 
     /* mouse reset */
-    //    outportb(0x64, 0xd4);
-    //    outportb(0x60, 0xff);
+    outportb(0x64, 0xd4);
+    outportb(0x60, 0xff);
 
-    /* enable mouse */
+    // set default parameter
+    outportb(0x64, 0xd4);
+    outportb(0x60, 0xf6);
+
+    // mouse enable
     outportb(0x64, 0xd4);
     outportb(0x60, 0xf4);
 
+
+    /* enable mouse */
+    //    outportb(0x64, 0xd4);
+    //    outportb(0x60, 0xf4);
+
     /* enable mouse interrupt */
-    outportb(0xA1, inportb(0xA1) & 0xF7);
-    //    outportb(0xA1, inportb(0xA1) & 0x00);
+    //    outportb(0xA1, inportb(0xA1) & 0xF7);
+       outportb(0xA1, inportb(0xA1) & 0x00);
+
 
 }
 
