@@ -28,7 +28,7 @@ public:
 	void Next()
 	{
 		this->OnPaint();
-		this->Refresh();
+		this->RefreshInternal();
 	}
 
 protected:

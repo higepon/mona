@@ -38,7 +38,7 @@ public:
 		if (::DrawFire() == 0) return;
 		
 		this->OnPaint();
-		this->Refresh();
+		this->RefreshInternal();
 	}
 
 protected:
