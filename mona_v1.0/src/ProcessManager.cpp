@@ -31,6 +31,9 @@ void ProcessManager::switchProcess() {
     if (scheduler_->toUserMode()) {
 
         info(DEV_NOTICE, "to user mode\n");
+
+        g_tss->esp0 = g_current_process->esp0;
+        g_tss->ss0  = g_current_process->ss0;
         arch_switch_process_to_user_mode();
 
     } else {
@@ -75,6 +78,11 @@ dword ProcessManager::allocatePID() {
 bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
+
+    /* temp */
+    process->pinfo_.esp0 = 0x90000;
+    process->pinfo_.ss0 = KERNEL_SS;
+
     scheduler_->addProcess(&(process->pinfo_));
 
     process->pinfo_.state = Process::READY;
