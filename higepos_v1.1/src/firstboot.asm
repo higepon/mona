@@ -64,7 +64,7 @@ read:
         mov bx, 0               ; data buffer
 
         mov ah, 0x02            ; read sectors into memory
-        mov al, 18              ; number of sectors to read
+        mov al, 32              ; number of sectors to read
         mov ch, 0               ; low eight bits of cylinder number
         mov cl, 2               ; sector number
         mov dh, 0               ; head number
