@@ -3,7 +3,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_1
+#define MAIN_3
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -47,7 +47,7 @@ typedef union
     struct
     {
         unsigned reserved1 : 2;
-        unsigned address   : 6;
+        unsigned reg       : 6;
         unsigned function  : 3;
         unsigned device    : 5;
         unsigned bus       : 8;
@@ -59,39 +59,81 @@ typedef union
 enum
 {
     REG_CONFIG_ADDRESS = 0x0CF8,
-    REG_CONFIG_DATA    = 0x0CFC
+    REG_CONFIG_DATA    = 0x0CFC,
 
-
+    PCI_VENDOR_ID      = 0x00,
+    PCI_DEVICE_ID      = 0x02,
+    PCI_STATUS         = 0x06,
+    PCI_REVISION       = 0x08,
+    PCI_API            = 0x09,
+    PCI_SUBCLASS       = 0x0a,
+    PCI_BASECLASS      = 0x0b
 };
+
+dword ReadConfig(byte bus, byte device, byte function, byte reg, byte readSize)
+{
+    dword result;
+    PciPacket packet;
+
+    packet.p.enabled   = 1;
+    packet.p.bus       = bus;
+    packet.p.device    = device;
+    packet.p.function  = function;
+    packet.p.reg       = reg;
+    packet.p.reserved1 = 0;
+    packet.p.reserved2 = 0;
+
+    /* set request and enable */
+    outp32(REG_CONFIG_ADDRESS, packet.command);
+
+    switch (readSize)
+    {
+    case 1:
+        result = inp8(REG_CONFIG_DATA + (reg & 3));
+        break;
+
+    case 2:
+        result = inp16(REG_CONFIG_DATA + (reg & 3));
+        break;
+
+    case 4:
+        result = inp32(REG_CONFIG_DATA + (reg & 3));
+        break;
+
+    default:
+        result = 0xFFFFFFFF;
+        break;
+    }
+
+    packet.p.enabled = 0;
+    outp32(REG_CONFIG_ADDRESS, packet.command);
+
+    return result;
+}
 
 int MonaMain(List<char*>* pekoe)
 {
-
+    /* ユーザーモードI/O */
     syscall_get_io();
 
-
+    /* bus0 のデバイス探索 */
     for (int i = 0; i < 32; i++)
     {
-        PciPacket packet;
-        dword in;
+        word vendor = ReadConfig(0, i, 0, PCI_VENDOR_ID, 2);
 
-        packet.p.enabled = 1;
-        packet.p.bus = 0;
-        packet.p.device = i;
-        packet.p.function = 0;
-        packet.p.address = 0;
-        packet.p.reserved1 = 0;
-        packet.p.reserved2 = 0;
+        /* no device */
+        if (vendor == 0xFFFF) continue;
 
-        outp32(REG_CONFIG_ADDRESS, packet.command);
-
-        in = inp32(REG_CONFIG_DATA);
-
-        printf("[%x:%x]\n", in & 0x0000FFFF, in >> 16);
-
-        packet.p.enabled = 0;
-        outp32(REG_CONFIG_ADDRESS, packet.command);
+        printf("**** device(%d)**************************************************************************\n",i);
+        printf("vendor    = %x  ", vendor);
+        printf("device    = %x  ", ReadConfig(0, i, 0, PCI_DEVICE_ID, 2));
+        printf("revision  = %x  ", ReadConfig(0, i, 0, PCI_REVISION , 1));
+        printf("status    = %x\n", ReadConfig(0, i, 0, PCI_STATUS   , 2));
+        printf("api       = %x  ", ReadConfig(0, i, 0, PCI_API      , 1));
+        printf("subclass  = %x  ", ReadConfig(0, i, 0, PCI_SUBCLASS , 1));
+        printf("baseclass = %x\n", ReadConfig(0, i, 0, PCI_BASECLASS, 1));
     }
+    return 0;
 }
 
 #endif
