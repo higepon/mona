@@ -49,7 +49,7 @@ class X86MemoryManager {
 
     char* getName();
     void* allocateMemory(H_SIZE_T);
-    void  freeMemory(void*);
+    void freeMemory(void*);
     void printInfo();
     static X86MemoryManager& instance() {
         static X86MemoryManager theInstance;
