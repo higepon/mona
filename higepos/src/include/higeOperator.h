@@ -17,6 +17,5 @@
 
 void* operator new(unsigned long size);
 void  operator delete(void* address);
-int   getNumber();
-char* getName();
+void* malloc(unsigned long size);
 #endif

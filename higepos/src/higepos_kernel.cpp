@@ -16,7 +16,6 @@
 #include<idt.h>
 #include<io.h>
 #include<X86MemoryManager.h>
-#include<Sub.h>
 #include<higeOperator.h>
 #include<higeUtil.h>
 
@@ -27,69 +26,30 @@
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2002/08/08
+    \date   create:2002/07/21 update:2002/08/23
 */
 void startKernel(void) {
     _sysInitVga();
     _sysClearScreen();
-    _sysPrint("**************************************\n");
-    _sysPrint("Higepos Kernel start!!\nPowered by 2ch\n");
-    _sysPrint("**************************************\n");
-
-//      X86MemoryManager& mm = X86MemoryManager::instance();
-//      _sysPrint(mm.getMessage());
-//      _sysPrint("\n");
-//      _sysPrint(mm.getName());
-//      _sysPrint("\n");
+    _sysPrintln("------------------------------------------");
+    _sysPrintln("      Higepos Kernel starting             ");
+    _sysPrintln("      Powered by 2ch                      ");
+    _sysPrintln("------------------------------------------");
 
     _sysSetIdt();
     _sysInitIo();
     _sysUnlock();
-    _sysPrint("idt set done!\n");
+    _sysPrintln("idt set done");
 
-    Sub& sub = Sub::instance();
-    _sysPrintlnInt(sub.getNumber());
+    /* testing operator new */
+    Point* point = new Point();
+    _sysPrintlnInt(point->getX());
+    point = new Point(5, 5);
+    _sysPrintlnInt(point->getX());
 
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-
-    _sysPrintln(sub.getName());
-
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-
-    _sysPrintln(getName());
-
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-
-    //    Point* point = new Point();
-    //    _sysPrintlnInt(point->getX());
-
-    //    Sub* sub = &Sub::instance();
-    //    _sysPrintInt((int)sub);
-
-    //    _sysPrint(getName());
-    //    _sysPrintInt(getNumber());
-
-    //    Point* point = new Point(-5, -10);
-    //    _sysPrintInt(point->getX());
-    //    _sysPrint(point->getName());
+    /* testing malloc */
+    _sysPrintlnInt((int)malloc(sizeof(int)));
+    _sysPrintlnInt((int)malloc(sizeof(int)));
     while (true) {
     }
 }

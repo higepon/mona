@@ -32,14 +32,6 @@ void _sysSetIdt() {
     /* idtr */
     struct idtr_st idtr;
 
-    /* size of */
-    _sysPrint("size of idtr_st\n");
-    _sysPrintInt(sizeof(idtr_st));
-    _sysPrint("\n");
-    _sysPrint("size of idt_st\n");
-    _sysPrintInt(sizeof(idt_st));
-    _sysPrint("\n");
-
     /* handler list */
     extern handler_st handlers[HANDLER_NUM];
 

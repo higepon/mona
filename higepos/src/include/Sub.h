@@ -5,7 +5,8 @@
 /*!
     abstract class Sub for testing C++ environment
 */
-class Sub : public Base {
+class Sub {
+    // : public Base {
   public:
       static Sub& instance() {
           asm("nop");

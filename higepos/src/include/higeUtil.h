@@ -1,9 +1,7 @@
-#include<Object.h>
-
 #ifndef _HIGEPOS_UTIL_
 #define _HIGEPOS_UTIL_
 
-class Point:public Object {
+class Point {
 
   public:
     Point();

@@ -11,16 +11,14 @@
     \version $Revision$
     \date   create:2002/08/04 update:$Date$
 */
-#include<MemoryManager.h>
-
 #ifndef _HIGEPOS_X86MEMORYMANAGER_
 #define _HIGEPOS_X86MEMORYMANAGER_
 
 /*!
-    memory mangement class
+    memory management class
     the instance of this class is single pattern
 */
-class X86MemoryManager:virtual MemoryManager {
+class X86MemoryManager {
 
   private:
     X86MemoryManager();
@@ -30,7 +28,6 @@ class X86MemoryManager:virtual MemoryManager {
     unsigned long start_;
   public:
 
-    char* getMessage();
     char* getName();
     unsigned long allocateMemory(unsigned long);
     unsigned long freeMemory(unsigned long);

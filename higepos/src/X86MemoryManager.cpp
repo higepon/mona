@@ -13,19 +13,6 @@
 */
 #include<X86MemoryManager.h>
 
-/*!
-    \brief get class Message
-
-    get class Message
-
-    \author HigePon
-    \date   create:2002/08/04 update:
-*/
-char* X86MemoryManager::getMessage() {
-
-    static char buf[] = "x86higepos";
-    return buf;
-}
 
 /*!
     \brief get class Name
