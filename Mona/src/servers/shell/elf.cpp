@@ -111,7 +111,7 @@ dword ELFLoader::load(_A<byte> image)
         MONAGED_COPY(image, phdr.virtualaddr - ORG, this->elf, phdr.offset, phdr.filesize)
         if (phdr.memorysize > phdr.filesize)
         {
-            printf("%s:%d:[%x+%x/%x]", __FILE__, __LINE__, phdr.virtualaddr + phdr.filesize - ORG, phdr.memorysize - phdr.filesize);
+            printf("%s:%d:[%x+%x/%x]", __FILE__, __LINE__, phdr.virtualaddr + phdr.filesize - ORG, phdr.memorysize - phdr.filesize, image.get_Length());
             MONAGED_FILL(image, phdr.virtualaddr + phdr.filesize - ORG, 0, phdr.memorysize - phdr.filesize)
             printf("OK!\n");
         }
