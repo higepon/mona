@@ -131,7 +131,9 @@ void timerHandler() {
 void MFDCHandler(void) {
 
     g_fdcdriver->interrupt();
-    outportb(0x20, 0x20);
+
+    /* thx! K-tan */
+    outportb(0x20, 0x66);
 }
 
 /* IRQ Handler (expr) */
