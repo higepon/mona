@@ -611,41 +611,40 @@ bool FAT12::write(byte* buffer, int size) {
 
     if (!isOpen_ || size <= 0 || size > 512) return false;
 
+    /* save current Cluster */
     int cluster = currentCluster_;
+
+    int nextCluster = getFATAt(currentCluster_);
 
     if (firstWrite_) {
         firstWrite_ = false;
+
+    } else if (nextCluster > 0xff8) {
+
+        int next;
+
+        /* allocate next cluster */
+        if ((next = map_->find()) == -1) return false;
+
+        /* set allocated cluster to FAT */
+        setFATAt(currentCluster_, next);
+        setFATAt(next           , getFATAt(1));
+
+        /* change current */
+        currentCluster_ = next;
     } else {
-
-        int nextCluster = getFATAt(cluster);
-
-
-
-        if (nextCluster > 0xff8) {
-
-            int next = map_->find();
-            if (next == -1) return false;
-
-            setFATAt(cluster, next);
-            setFATAt(next   , getFATAt(1));
-            cluster         = next;
-            currentCluster_ = cluster;
-        } else {
-            currentCluster_= nextCluster;
-        }
+        currentCluster_ = nextCluster;
     }
 
-    int lbp = clusterToLbp(cluster);
+    int lbp = clusterToLbp(currentCluster_);
 
-    byte inbuf[512];
-    memset(inbuf, 0, 512);
-    memcpy(inbuf, buffer, size);
+    memset(buffer + size, 0, 512 - size);
 
     (currentEntry_->filesize) += size;
 
     writeEntry();
 
-    if (!(driver_->write(lbp, inbuf))) {
+    if (!(driver_->write(lbp, buffer))) {
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
