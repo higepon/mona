@@ -632,8 +632,7 @@ void Kukuri::Main(_A<String> args)
 		
 		(new Kukuri())->Show();
 		
-		bool v = false;
-		while (kukuris.size() > 0 || v)
+		while (kukuris.size() > 0 || kukuriMessageBox != NULL)
 		{
 			Application::DoEvents();
 			for (int i = 0; i < kukuris.size(); i++)
@@ -646,17 +645,10 @@ void Kukuri::Main(_A<String> args)
 					i--;
 				}
 			}
-			if (kukuriMessageBox == NULL) continue;
-			
-			if (v && !kukuriMessageBox->get_Visible())
+			if (kukuriMessageBox != NULL && !kukuriMessageBox->get_Visible())
 			{
 				kukuriMessageBox->Dispose();
 				kukuriMessageBox = NULL;
-				v = false;
-			}
-			else
-			{
-				v = kukuriMessageBox->get_Visible();
 			}
 		}
 		kukuriTimer->Dispose();
