@@ -89,7 +89,7 @@ namespace System { namespace Mona { namespace Forms
 		void DrawImage(_P<System::Drawing::Bitmap> image);
 		
 		virtual void OnPaint() {}
-		virtual void OnTextChanged();
+		virtual void OnTextChanged(_P<EventArgs> e);
 		virtual void OnMouseMove(_P<MouseEventArgs> e);
 		virtual void OnMouseDown(_P<MouseEventArgs> e);
 		virtual void OnMouseUp(_P<MouseEventArgs> e);
@@ -97,7 +97,8 @@ namespace System { namespace Mona { namespace Forms
 		virtual void OnNCMouseDown(_P<MouseEventArgs> e) {};
 		virtual void OnNCMouseUp(_P<MouseEventArgs> e) {};
 		virtual void OnNCMouseMove(_P<MouseEventArgs> e) {};
-	
+		
+		DECLARE_EVENT(System::IEventHandler, TextChanged, _P<EventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseMove, _P<MouseEventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseDown, _P<MouseEventArgs>)
 		DECLARE_EVENT(IMouseEventHandler, MouseUp, _P<MouseEventArgs>)

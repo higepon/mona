@@ -62,6 +62,9 @@ int MonaMain(List<char*>* pekoe) {
         printf("MouseServer:INIT error\n");
     }
 
+    /* paint */
+    Screen::bitblt(&screen, posX , posY, 3, 3, &vscreen, 0, 0, Raster::XOR);
+
     /* Message loop */
     for (;;) {
 

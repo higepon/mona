@@ -170,12 +170,14 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::OnNCMouseUp(_P<MouseEventArgs> e)
 	{
+		bool destroy = this->NCHitTest(e->X, e->Y) == NCState_CloseButton && this->ncState == NCState_CloseButton;
+		
 		switch (this->ncState)
 		{
 			case NCState_CloseButton:
 			{
 				this->isCloseButtonPushed = false;
-				this->Hide();
+				if (destroy) this->Hide();
 				break;
 			}
 			case NCState_TitleBar:
@@ -194,10 +196,7 @@ namespace System { namespace Mona { namespace Forms
 		
 		BASE::OnNCMouseUp(e);
 		
-		if (this->NCHitTest(e->X, e->Y) == NCState_CloseButton && this->ncState == NCState_CloseButton)
-		{
-			this->Dispose();
-		}
+		if (destroy) this->Dispose();
 		this->ncState = NCState_None;
 	}
 }}}

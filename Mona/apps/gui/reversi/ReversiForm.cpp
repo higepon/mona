@@ -15,40 +15,20 @@ using namespace System::Mona::Forms;
 
 class ReversiForm : public Form, public MonAPI::Observer
 {
-public:
-    Pointer<Piece> pieces[8][8];
-    Pointer<Button> button1;
-    Pointer<Label> label1;
+private:
+    _P<Piece> pieces[8][8];
+    _P<Button> button1;
+    _P<Label> label1;
+    _P<ReversiBoard> board;
 
+public:
     ReversiForm()
     {
-        this->InitializeApplication();
         this->InitializeComponent();
-    }
 
-private:
-
-    Pointer<ReversiBoard> board;
-
-    int InitializeApplication()
-    {
         board.Set(new ReversiBoard(), true);
         board->addObserver(this);
-        return 0;
-    }
-
-    void refreshLables()
-    {
-        printf("here");
-        this->label1->set_Text(this->board->getCurrentHand() == ReversiBoard::BLACK ? " black" : " white");
-        this->label1->Refresh();
-    }
-
-    void InitializeComponent()
-    {
-        // Form
-        this->set_Location(::System::Drawing::Point(20, 64));
-        this->set_ClientSize(Size(BOARD_SIZE + 20, BOARD_SIZE + 20));
+        this->button1->add_Click(new EventHandler<ReversiForm>(this, &ReversiForm::button1_Click));
 
         // 描画用盤面初期化
         for (int x = 0; x < 8; x++)
@@ -62,19 +42,32 @@ private:
             }
         }
 
+        refreshLables();
+    }
+
+private:
+    void InitializeComponent()
+    {
+        // Form
+        this->set_Location(::System::Drawing::Point(20, 64));
+        this->set_ClientSize(Size(BOARD_SIZE + 20, BOARD_SIZE + 20));
+        this->set_Text("Reversi");
+
         // ボタン
         this->button1 = new Button();
         this->button1->set_Bounds(Rectangle(0, BOARD_SIZE, 50, 15));
         this->button1->set_Text("reset");
-        this->button1->add_Click(new EventHandler<ReversiForm>(this, &ReversiForm::button1_Click));
         this->get_Controls()->Add(this->button1.get());
 
         // ラベル
         this->label1 = new Label();
         this->label1->set_Bounds(Rectangle(50, BOARD_SIZE, 50, 15));
         this->get_Controls()->Add(this->label1.get());
+    }
 
-        refreshLables();
+    void refreshLables()
+    {
+        this->label1->set_Text(this->board->getCurrentHand() == ReversiBoard::BLACK ? " black" : " white");
     }
 
     void button1_Click(Pointer<Object> sender, Pointer<EventArgs> e)

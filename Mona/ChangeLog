@@ -1,3 +1,15 @@
+2004-04-21  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: 原点のゴミを除去
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp (OnTextChanged): 自動再描画
+
+        * src/lib/gui/System/Mona/Forms/Form.cpp: ウインドウの閉じるボタンをキャンセルできるようにした
+
+        * apps/gui/reversi/ReversiForm.cpp: label1の再描画処理を正常化
+
+        * apps/gui/reversi/ReversiForm.cpp (InitializeComponent): GUIビルダで自動生成できないコードを除去
+
 2004-04-19  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/reversi/ReversiForm.cpp (Observer): resetボタンつけたり
