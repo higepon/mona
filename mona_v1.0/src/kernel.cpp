@@ -148,7 +148,7 @@ void startKernel(void) {
     Process*     process7 = new Process("show_process ");
     Process*     process8 = new Process("MessageServer");
 
-            g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
+                g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
     //   g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
     //    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
      //     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
