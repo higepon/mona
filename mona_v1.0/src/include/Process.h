@@ -49,6 +49,8 @@ class Process {
     }
 
     int main();
+
+  protected:
     virtual void init();
     virtual int execute() = 0;
     virtual void destroy();
