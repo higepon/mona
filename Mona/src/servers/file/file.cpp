@@ -204,6 +204,8 @@ bool Close(dword id)
 
     if (file == NULL) return false;
 
+    fileTree.remove(id);
+
     return fs->Close(file);
 }
 

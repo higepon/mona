@@ -6,7 +6,38 @@
 
 using namespace MonAPI;
 
-#define MAIN_10
+#define MAIN_11
+
+#ifdef MAIN_11
+int MonaMain(List<char*>* pekoe)
+{
+    // ファイルオープン
+    dword id = monapi_call_file_open("MONAHERE.JPG");
+
+    if (id == 0)
+    {
+        printf("file not found\n");
+        return 1;
+    }
+
+    // 適当にSeek
+    monapi_call_file_seek(id, 2, SEEK_SET);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read(id, 5);
+
+    for (dword i = 0; i < mi->Size; i++)
+    {
+        printf("[%x]", mi->Data[i]);
+    }
+
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+
+    monapi_call_file_close(id);
+
+    return 0;
+}
+#endif
 
 #ifdef MAIN_10
 int MonaMain(List<char*>* pekoe)
