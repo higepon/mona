@@ -25,7 +25,7 @@ SOURCES    = cstart.cpp            \
              monaIhandler.cpp      \
              IA32MemoryManager.cpp \
              operator.cpp          \
-             monaPureVirtual.cpp   \
+             purevirtual.cpp       \
              KeyBoardManager.cpp   \
              tester.cpp            \
              ProcessManager.cpp    \

@@ -59,10 +59,6 @@ IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
 operator.o: operator.cpp include/IA32MemoryManager.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h \
   include/operator.h
-monaPureVirtual.o: monaPureVirtual.cpp include/monaKernel.h \
-  include/monaTypes.h include/string.h include/VirtualConsole.h \
-  include/global.h include/kthread.h include/MFDCDriver.h \
-  include/Semaphore.h
 KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   include/monaTypes.h include/string.h stlport/queue \
   stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \

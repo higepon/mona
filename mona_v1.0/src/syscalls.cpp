@@ -37,7 +37,7 @@ void syscall_entrance() {
 
 void syscall_kthread_yield() {
 
-    asm volatile("movw $0, %ebx \n"
+    asm volatile("mov $0, %ebx  \n"
                  "int $0x80       "
                  );
     return;
