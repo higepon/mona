@@ -71,10 +71,14 @@ public:
 			} else {
 				count++;
 			}
-			repaint();
+			// 描画高速化
+			//repaint();
+			onPaint(__g);
 		} else if (event->type  == MOUSE_RELEASED) {
 			pushed = false;
-			repaint();
+			// 描画高速化
+			//repaint();
+			onPaint(__g);
 		}
 	}
 };
