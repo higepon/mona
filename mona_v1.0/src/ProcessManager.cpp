@@ -41,13 +41,19 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 */
 void ProcessManager::printInfo() {
 
-    int from = 0x02;
-    int to   = 0xfe;
+    int from  = 0x02;
+    int to    = 0xfe;
+    int value = 0;
     _sys_printf("from = %d to = %d\n", from, to);
     asm volatile("mov %1, %%ax\n"
                  "mov %%ax, %0\n"
                  : "=m" (to): "m" (from));
     _sys_printf("from = %d to = %d\n", from, to);
+
+    asm volatile("mov $0xff, %%ax\n"
+                 "mov %%ax, %0\n"
+                 : "=m" (value));
+    _sys_printf("ax = %d\n", value);
     return;
 }
 
