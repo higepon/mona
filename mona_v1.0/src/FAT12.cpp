@@ -331,6 +331,8 @@ bool FAT12::changeDirectory(const char* path) {
 
         char* rpath = getPathAt(path, i);
 
+	printf("try to cdr to %s", rpath);
+
         if (!changeDirectoryRelative(path)) {
 
             errNum_ = NOT_DIR_ERROR;

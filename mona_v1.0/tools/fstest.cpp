@@ -24,12 +24,17 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
+    if (!fat->changeDirectory("SOMEDIR\\DIR1")) {
+        printf("changeDirectory failed");
+        return -1;
+    }
+
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         printf("some dir not found");
     }
 
     if (!fat->changeDirectoryRelative(".")) {
-	printf(". not found");
+        printf(". not found");
     }
 
     if (!fat->changeDirectoryRelative("DIR1")) {
@@ -37,21 +42,20 @@ int main(int argc, char *argv[]) {
     }
 
     if (!fat->changeDirectoryRelative("DIR2")) {
-	printf("dir2 not found");
+        printf("dir2 not found");
     }
 
     if (!fat->changeDirectoryRelative("DIR3")) {
-	printf("dir3 not found");
+        printf("dir3 not found");
     }
 
     if (!fat->changeDirectoryRelative("DIR4")) {
-	printf("dir4 not found");
+        printf("dir4 not found");
     }
 
     if (!fat->changeDirectoryRelative("..")) {
-	printf(".. not found");
+        printf(".. not found");
     }
-
 
     delete fat;
     delete driver;
