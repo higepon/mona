@@ -13,7 +13,6 @@
 #define _MONA_ELF_
 
 #include <types.h>
-#include <collection.h>
 
 typedef struct {
     byte  magic[4];      // 0x7F, 'E', 'L', 'F'

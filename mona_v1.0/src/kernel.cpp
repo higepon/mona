@@ -39,7 +39,7 @@
     \date   create:2002/07/21 update:$Date$
 */
 
-#define GLOBAL_VALUE_DEFINED
+#define GLOBAL_VALUE_DEFINED    printf("id2 = %d refcount = %d\n", id2, objects[0].getReferanceCount());
 
 #include <types.h>
 #include <global.h>
@@ -130,6 +130,9 @@ void startKernel(void)
 
     /* messenger */
     g_messenger = new Messenger(512);
+
+    /* IDManager */
+    g_id = new IDManager();
 
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);

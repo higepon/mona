@@ -17,9 +17,11 @@
 #include <types.h>
 #include <PageManager.h>
 #include <Segments.h>
-#include <collection.h>
+#include <List.h>
+#include <BinaryTree.h>
 #include <kernel.h>
 #include <Mutex.h>
+#include <KObject.h>
 
 #define DPL_KERNEL  0
 #define DPL_USER    3
@@ -175,7 +177,7 @@ public:
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-class Thread : public Node
+class Thread : public Node, public KObject
 {
   public:
     Thread();
@@ -190,6 +192,11 @@ class Thread : public Node
     inline dword getTick() const
     {
         return totalTick;
+    }
+
+    inline int getType() const
+    {
+        return THREAD;
     }
 
   public:

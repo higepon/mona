@@ -10,7 +10,7 @@
     \date   create:2004/03/12 update:$Date$
 */
 
-#ifndef _MONA_FS_OPERATION_
+#ifndef _MONA_FS_OPERATION__
 #define _MONA_FS_OPERATION__
 
 #include <fat.h>

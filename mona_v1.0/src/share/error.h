@@ -26,5 +26,11 @@ enum
     FS_FILE_IS_NOT_OPEN    = 0x07
 };
 
+enum
+{
+    IDM_OBJECT_NOT_FOUND = -1,
+    IDM_SECURITY_ERROR   = -2
+};
+
 
 #endif

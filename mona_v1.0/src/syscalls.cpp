@@ -16,11 +16,9 @@
 #include<tester.h>
 #include<io.h>
 #include<elf.h>
-#include<collection.h>
 
 void syscall_entrance() {
 
-    Thread* thread;
     Process* process;
 //    KMutex* mutex;
     ScreenInfo* screenInfo;
@@ -69,14 +67,32 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_MTHREAD_CREATE:
-        thread = ThreadOperation::create(g_currentThread->process, info->esi);
-        info->eax = (dword)thread;
-        break;
+
+        {
+            Thread* thread = ThreadOperation::create(g_currentThread->process, info->esi);
+            info->eax = g_id->allocateID(thread);
+            break;
+        }
 
     case SYSTEM_CALL_MTHREAD_JOIN:
 
-        g_scheduler->join((Thread*)(info->esi));
-        info->eax = 0;
+        {
+            KObject* object = (Thread*)(g_id->get(info->esi, g_currentThread->thread));
+
+            if (object == NULL)
+            {
+                info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::THREAD)
+            {
+                info->eax = (dword)-10;
+            }
+            else
+            {
+                g_scheduler->join((Thread*)object);
+            }
+
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_CREATE:

@@ -1,5 +1,32 @@
 #include <userlib.h>
 
+// マルチスレッドなやつ
+// void sub1() {for (;;) printf("sub1");}
+// void sub2() {for (;;) printf("sub2");}
+// void sub3() {for (;;) printf("sub3");}
+
+// int MonaMain(List<char*>* pekoe)
+// {
+//     int id;
+
+//     id = syscall_mthread_create((dword)sub1);
+//     printf("join result = %x", syscall_mthread_join(id));
+
+//     id = syscall_mthread_create((dword)sub2);
+//     printf("join result = %x", syscall_mthread_join(id));
+
+//     id = syscall_mthread_create((dword)sub3);
+//     printf("join result = %x", syscall_mthread_join(id));
+
+//     for (;;)
+//     {
+//         printf("main");
+//     }
+
+//     return 0;
+// }
+
+// 共有メモリなやつ
 int MonaMain(List<char*>* pekoe)
 {
     /* 共有したい相手 */
@@ -21,6 +48,7 @@ int MonaMain(List<char*>* pekoe)
 }
 
 
+// ファイルの中身をはくやつ
 // int MonaMain(List<char*>* pekoe)
 // {
 //     int result;

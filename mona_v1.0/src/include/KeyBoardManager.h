@@ -14,7 +14,7 @@
 #ifndef _MONA_KEYBOARDMANAGER_
 #define _MONA_KEYBOARDMANAGER_
 
-#include<collection.h>
+#include<List.h>
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0

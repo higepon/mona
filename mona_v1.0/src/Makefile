@@ -53,7 +53,9 @@ SOURCES      = cstart.cpp            \
                VesaConsole.cpp       \
                LogConsole.cpp        \
                fat.cpp               \
-               fs.cpp
+               fs.cpp                \
+               IDManager.cpp         \
+               KObject.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

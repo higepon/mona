@@ -15,6 +15,7 @@
 #include <Process.h>
 #include <PageManager.h>
 #include <string.h>
+#include <HList.h>
 
 #define FOREACH_N(top, type, element) \
 for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))

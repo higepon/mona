@@ -13,6 +13,7 @@
 
 #include <global.h>
 #include <Segments.h>
+#include <HList.h>
 
 /* Segment Faults */
 const byte Segment::FAULT_STACK_OVERFLOW;

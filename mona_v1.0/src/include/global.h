@@ -26,6 +26,7 @@
 #include <tester.h>
 #include <vbe.h>
 #include <FSOperation.h>
+#include <IDManager.h>
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
@@ -71,6 +72,7 @@ GLOBAL VesaInfoDetail* g_vesaDetail;
 GLOBAL Messenger* g_messenger;
 
 GLOBAL FSOperation* g_fs;
+GLOBAL IDManager*   g_id;
 
 GLOBAL dword gt[128];
 #define DEBUG_MODE
