@@ -214,7 +214,13 @@ ClassHook classHooks[] =
 /* static */ Var WindowCreate(Var stack[])
 	{
 	Var v;
+	WObject window;
 
+	window = stack[0].obj;
+	WOBJ_ControlX(window) = 0;
+	WOBJ_ControlY(window) = 0;
+	WOBJ_ControlWidth(window) = g_mainWinWidth;
+	WOBJ_ControlHeight(window) = g_mainWinHeight;
 	v.obj = 0;
 	return v;
 	}
@@ -226,9 +232,10 @@ ClassHook classHooks[] =
 /* static */ Var MainWinCreate(Var stack[])
 	{
 	Var v;
+
 	printf("MainWinCreate\n");
 	// óÃàÊÇîíÇ≈ìhÇËÇ¬Ç‘Ç∑
-	screen.fillRect16(g_mainWinOffX, g_mainWinOffY, g_mainWinWidth, g_mainWinHeight, getRGB16(192,192,192));
+	screen.fillRect16(g_mainWinOffX, g_mainWinOffY, g_mainWinWidth, g_mainWinHeight, getRGB16(200,200,200));
 	// ògê¸Çï`Ç≠
 	my_drawline0(-1, -1, g_mainWinWidth + 1, -1, getRGB16(0,0,0));
 	my_drawline0(-1, -1, -1, g_mainWinHeight + 1, getRGB16(0,0,0));
@@ -304,10 +311,21 @@ ClassHook classHooks[] =
 // FontMetrics
 //
 
+#define WOBJ_FontMetricsFont(o) (objectPtr(o))[1].obj
+#define WOBJ_FontMetricsSurface(o) (objectPtr(o))[2].obj
+#define WOBJ_FontMetricsAscent(o) (objectPtr(o))[3].intValue
+#define WOBJ_FontMetricsDescent(o) (objectPtr(o))[4].intValue
+#define WOBJ_FontMetricsLeading(o) (objectPtr(o))[5].intValue
+
 /* static */ Var FontMetricsCreate(Var stack[])
 	{
+	WObject fontMetrics;
 	Var v;
 
+	fontMetrics = stack[0].obj;
+	WOBJ_FontMetricsAscent(fontMetrics) = 16;
+	WOBJ_FontMetricsDescent(fontMetrics) = 0;
+	WOBJ_FontMetricsLeading(fontMetrics) = 0;
 	v.obj = 0;
 	return v;
 	}
@@ -319,8 +337,43 @@ ClassHook classHooks[] =
 /* static */ Var FontMetricsGetWidth(int type, Var stack[])
 	{
 	Var v;
+	int32 width;
 
-	v.obj = 0;
+	switch (type)
+	{
+	case FM_CHARWIDTH:
+		width = 8;
+		break;
+	case FM_STRINGWIDTH:
+	case FM_CHARARRAYWIDTH:
+		{
+		WObject string, charArray;
+		int32 start, count;
+
+		width = 0;
+		if (type == FM_STRINGWIDTH)
+			{
+			string = stack[1].obj;
+			if (string == 0)
+				break;
+			charArray = WOBJ_StringCharArrayObj(string);
+			if (charArray == 0)
+				break;
+			width = 8 * WOBJ_arrayLen(charArray);
+			}
+		else // FM_CHARARRAYWIDTH
+			{
+			charArray = stack[1].obj;
+			start = stack[2].intValue;
+			count = stack[3].intValue;
+			width = 8 * count;
+			}
+		break;
+		}
+	default:
+		width = 0;
+	}
+	v.intValue = width;
 	return v;
 	}
 
@@ -435,20 +488,31 @@ ClassHook classHooks[] =
 	{
 	Var v;
 	WObject gr, surface;
+
 	v.obj = 0;
 	gr = stack[0].obj;
+	printf("GraphicsCreate gr %d\n", gr);
 	surface = WOBJ_GraphicsSurface(gr);
 	WOBJ_GraphicsSurfType(gr) = SurfaceGetType(surface);
 	WOBJ_GraphicsRGB(gr) = 0;
-	WOBJ_GraphicsHasClip(gr) = 0;
-	WOBJ_GraphicsClipX(gr) = 0;
-	WOBJ_GraphicsClipY(gr) = 0;
-	WOBJ_GraphicsClipWidth(gr) = g_mainWinWidth;
-	WOBJ_GraphicsClipHeight(gr) = g_mainWinHeight;
-	WOBJ_GraphicsFontStyle(gr) = Font_PLAIN;
-	WOBJ_GraphicsDrawOp(gr) = DRAW_OVER;
-	WOBJ_GraphicsTransX(gr) = 0;
-	WOBJ_GraphicsTransY(gr) = 0;
+	//WOBJ_GraphicsHasClip(gr) = 0;
+	//WOBJ_GraphicsClipX(gr) = 0;
+	//WOBJ_GraphicsClipY(gr) = 0;
+	//WOBJ_GraphicsClipWidth(gr) = g_mainWinWidth;
+	//WOBJ_GraphicsClipHeight(gr) = g_mainWinHeight;
+	//WOBJ_GraphicsFontStyle(gr) = Font_PLAIN;
+	//WOBJ_GraphicsDrawOp(gr) = DRAW_OVER;
+	//WOBJ_GraphicsTransX(gr) = 0;
+	//WOBJ_GraphicsTransY(gr) = 0;
+	GraphicsTransX = 0;
+	GraphicsTransY = 0;
+
+	int32 surfaceType, rgb16, transX, transY;
+	surfaceType = WOBJ_GraphicsSurfType(gr);
+	rgb16 = WOBJ_GraphicsRGB(gr);
+	transX = WOBJ_GraphicsTransX(gr);
+	transY = WOBJ_GraphicsTransY(gr);
+	printf("GraphicsCreate %d,%d,%d,%d\n", surfaceType, rgb16, transX, transY);
 	return v;
 	}
 
@@ -470,6 +534,7 @@ ClassHook classHooks[] =
 	Var v;
 	WObject gr;
 	int32 r, g, b;
+
 	v.obj = 0;
 	gr = stack[0].obj;
 	r = stack[1].intValue;
@@ -489,7 +554,6 @@ ClassHook classHooks[] =
 	gr = stack[0].obj;
 	op = stack[1].intValue;
 	WOBJ_GraphicsDrawOp(gr) = op;
-
 	v.obj = 0;
 	return v;
 	}
@@ -498,19 +562,20 @@ ClassHook classHooks[] =
 	{
 	Var v;
 	WObject gr;
-	int32 transX, transY;
-
-	printf("GraphicsSetClip\n");
+	//int32 transX, transY;
 
 	gr = stack[0].obj;
-	transX = WOBJ_GraphicsTransX(gr);
-	transY = WOBJ_GraphicsTransY(gr);
+	//printf("GraphicsSetClip gr %d\n", gr);
+	//transX = WOBJ_GraphicsTransX(gr);
+	//transY = WOBJ_GraphicsTransY(gr);
+	//printf("%d,%d,%d,%d,%d,%d\n", 
+	//	transX, transY, stack[1].intValue, stack[2].intValue, stack[3].intValue, stack[4].intValue);
 	// clip X and Y are stored in absolute coordinates
-	WOBJ_GraphicsHasClip(gr) = 1;
+	/*WOBJ_GraphicsHasClip(gr) = 1;
 	WOBJ_GraphicsClipX(gr) = stack[1].intValue + transX;
 	WOBJ_GraphicsClipY(gr) = stack[2].intValue + transY;
 	WOBJ_GraphicsClipWidth(gr) = stack[3].intValue;
-	WOBJ_GraphicsClipHeight(gr) = stack[4].intValue;
+	WOBJ_GraphicsClipHeight(gr) = stack[4].intValue;*/
 
 	v.obj = 0;
 	return v;
@@ -519,19 +584,17 @@ ClassHook classHooks[] =
 /* static */ Var GraphicsGetClip(Var stack[])
 	{
 	Var v;
-	WObject gr, rect;
-
-	printf("GraphicsGetClip\n");
+	WObject gr;//, rect;
 
 	gr = stack[0].obj;
-	rect = stack[1].obj;
+	//printf("GraphicsGetClip gr %d\n", gr);
+	/*rect = stack[1].obj;
 	if (rect == 0 || WOBJ_GraphicsHasClip(gr) != 1)
 		return v;
 	WOBJ_RectX(rect) = WOBJ_GraphicsClipX(gr) - WOBJ_GraphicsTransX(gr);
 	WOBJ_RectY(rect) = WOBJ_GraphicsClipY(gr) - WOBJ_GraphicsTransY(gr);
 	WOBJ_RectWidth(rect) = WOBJ_GraphicsClipWidth(gr);
-	WOBJ_RectHeight(rect) = WOBJ_GraphicsClipHeight(gr);
-
+	WOBJ_RectHeight(rect) = WOBJ_GraphicsClipHeight(gr);*/
 	v.obj = 0;
 	return v;
 	}
@@ -540,19 +603,18 @@ ClassHook classHooks[] =
 	{
 	Var v;
 	WObject gr;
-	int32 transX, transY;
-
-	printf("GraphicsClearClip\n");
+	//int32 transX, transY;
 
 	gr = stack[0].obj;
-	transX = WOBJ_GraphicsTransX(gr);
-	transY = WOBJ_GraphicsTransY(gr);
+	//printf("GraphicsClearClip gr %d\n", gr);
+	//transX = WOBJ_GraphicsTransX(gr);
+	//transY = WOBJ_GraphicsTransY(gr);
 	// clip X and Y are stored in absolute coordinates
-	WOBJ_GraphicsHasClip(gr) = 0;
-	WOBJ_GraphicsClipX(gr) = transX;
-	WOBJ_GraphicsClipY(gr) = transY;
-	WOBJ_GraphicsClipWidth(gr) = g_mainWinWidth;
-	WOBJ_GraphicsClipHeight(gr) = g_mainWinHeight;
+	//WOBJ_GraphicsHasClip(gr) = 0;
+	//WOBJ_GraphicsClipX(gr) = transX;
+	//WOBJ_GraphicsClipY(gr) = transY;
+	//WOBJ_GraphicsClipWidth(gr) = g_mainWinWidth;
+	//WOBJ_GraphicsClipHeight(gr) = g_mainWinHeight;
 	v.obj = 0;
 	return v;
 	}
@@ -562,12 +624,12 @@ ClassHook classHooks[] =
 	WObject gr;
 	Var v;
 
-	printf("GraphicsTranslate\n");
-
 	gr = stack[0].obj;
-	WOBJ_GraphicsTransX(gr) += stack[1].intValue;
-	WOBJ_GraphicsTransY(gr) += stack[2].intValue;
-
+	//printf("GraphicsTranslate gr %d\n", gr);
+	/*WOBJ_GraphicsTransX(gr) += stack[1].intValue;
+	WOBJ_GraphicsTransY(gr) += stack[2].intValue;*/
+	GraphicsTransX += stack[1].intValue;
+	GraphicsTransY += stack[2].intValue;
 	v.obj = 0;
 	return v;
 	}
@@ -578,25 +640,28 @@ ClassHook classHooks[] =
 	WObject gr, surface;
 	int32 surfaceType, rgb16, transX, transY;
 	gr = stack[0].obj;
+	//printf("GraphicsDraw gr %d\n", gr);
 	surface = WOBJ_GraphicsSurface(gr);
 	surfaceType = WOBJ_GraphicsSurfType(gr);
+	if(surfaceType != SURF_WINDOW && surfaceType != SURF_IMAGE){
+		surfaceType = SURF_WINDOW;
+	}
 	rgb16 = WOBJ_GraphicsRGB(gr);
-	transX = WOBJ_GraphicsTransX(gr);
-	transY = WOBJ_GraphicsTransY(gr);
-	printf("debug transX = %x, transY = %x", transX, transY);
+	//transX = WOBJ_GraphicsTransX(gr);
+	//transY = WOBJ_GraphicsTransY(gr);
+	transX = GraphicsTransX;
+	transY = GraphicsTransY;
 	v.obj = 0;
+	//printf("GraphicsDraw %d,%d,%d,%d\n", surfaceType, rgb16, transX, transY);
 	switch(type) {
 		case GR_FILLRECT:
 			{
 			int x, y, w, h;
 			
-			x = stack[1].intValue;// + transX;
-			y = stack[2].intValue;// + transY;
+			x = stack[1].intValue + transX;
+			y = stack[2].intValue + transY;
 			w = stack[3].intValue;
 			h = stack[4].intValue;
-			if ( x < 0 || y < 0 || w < 0 || h < 0 ||
-				x > g_mainWinWidth || y > g_mainWinHeight || 
-				x + w > g_mainWinWidth || y + h > g_mainWinHeight ) return v;
 			screen.fillRect16(x + g_mainWinOffX, y + g_mainWinOffY, w, h, rgb16);
 			break;
 			}
@@ -605,14 +670,10 @@ ClassHook classHooks[] =
 			{
 			int x0, y0, x1, y1;
 			
-			x0 = stack[1].intValue;// + transX;
-			y0 = stack[2].intValue;// + transY;
-			x1 = stack[3].intValue;// + transX;
-			y1 = stack[4].intValue;// + transY;
-printf("%d,%d,%d,%d\n", x0, y0, x1, y1);
-			if ( x0 < 0 || y0 < 0 || x1 < 0 || y1 < 0 ||
-				x0 > g_mainWinWidth || y0 > g_mainWinHeight || 
-				x1 > g_mainWinWidth || y1 > g_mainWinHeight ) return v;
+			x0 = stack[1].intValue + transX;
+			y0 = stack[2].intValue + transY;
+			x1 = stack[3].intValue + transX;
+			y1 = stack[4].intValue + transY;
 			if (surfaceType == SURF_WINDOW) {
 				my_drawline0(x0, y0, x1, y1, rgb16);
 			} else if (surfaceType == SURF_IMAGE) {
@@ -636,17 +697,16 @@ printf("%d,%d,%d,%d\n", x0, y0, x1, y1);
 				break;
 			for (i = 0; i < count; i++) {
 				if(i == count - 1){
-					x0 = x[0];// + transX;
-					y0 = y[0];// + transY;
-					x1 = x[i];// + transX;
-					y1 = y[i];// + transY;
+					x0 = x[0] + transX;
+					y0 = y[0] + transY;
+					x1 = x[i] + transX;
+					y1 = y[i] + transY;
 				}else{
-					x0 = x[i];// + transX;
-					y0 = y[i];// + transY;
-					x1 = x[i+1];// + transX;
-					y1 = y[i+1];// + transY;
+					x0 = x[ i ] + transX;
+					y0 = y[ i ] + transY;
+					x1 = x[i+1] + transX;
+					y1 = y[i+1] + transY;
 				}
-printf("%d,%d,%d,%d\n", x0, y0, x1, y1);
 				if (surfaceType == SURF_WINDOW) {
 					my_drawline0(x0, y0, x1, y1, rgb16);
 				} else if (surfaceType == SURF_IMAGE) {
@@ -693,14 +753,13 @@ printf("%d,%d,%d,%d\n", x0, y0, x1, y1);
 			buf[j] = '\0';
 			x += transX;
 			y += transY;
-printf("%d,%d\n", x, y);
 			my_drawstr0(x, y, buf, rgb16);
 			break;
 			}
 		case GR_COPYRECT:
 			{
 			/*WObject surface0;
-			int surfaceType0, x, y, w, h, dx, dy, i, j;
+			int surfaceType0, x, y, w, h, dx, dy;
 			int32 *ibox_ptr0;
 
 			surface0 = stack[1].obj;
@@ -710,58 +769,17 @@ printf("%d,%d\n", x, y);
 			w = stack[4].intValue;
 			h = stack[5].intValue;
 			dx = stack[6].intValue + transX;
-			dy = stack[7].intValue + transY;
-			if (surface0 == 0 || surface == 0 || 
-				x < 0 || y < 0 || w < 0 || h < 0 || dx < 0 || dy < 0 || 
-				x > g_mainWinWidth || y > g_mainWinHeight || 
-				h > g_mainWinWidth || w > g_mainWinHeight || 
-				dx > g_mainWinWidth || dy > g_mainWinHeight) return v;
-			// Window -> Window
-			if (surfaceType0 == SURF_WINDOW && surfaceType == SURF_WINDOW) {
-				for(i = 0; i < w; i++)
-					for(j = 0; j < h; j++)
-						set_4bit_pixel(drawOp, &gbox_pixel(dx+i,dy+j), gbox_pixel(i+x,j+y));
-				lib_flushgraphbox(0x8001, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, gbox_ptr);
-				//lib_flushgraphbox(0x8001, window, dx, dx, w, h, 
-				//	g_mainWinWidth - w, gbox_ptr + dx + dy * g_mainWinWidth);
-			// Window -> Image
-			} else if (surfaceType0 == SURF_WINDOW && surfaceType == SURF_IMAGE) {
-				cprintf("Window -> Image\n");
-			// Image -> Window
-			} else if (surfaceType0 == SURF_IMAGE && surfaceType == SURF_WINDOW) {
-				ibox_ptr0 = (int32 *) WOBJ_ImageHBitmap(surface0) + 16; // KÉ^ÉìéwìE [OSASK IRC]
-				for(i = 0; i < w; i++)
-					for(j = 0; j < h; j++)
-						if((rgb4 = convert24to4(ibox0_pixel(i,j,w))) < 16)
-							set_4bit_pixel(drawOp, &gbox_pixel(dx+i,dy+j), rgb4);
-				lib_flushgraphbox(0x8001, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, gbox_ptr);
-				//lib_flushgraphbox(0x8001, window, dx, dx, w, h, 
-				//	g_mainWinWidth - w, gbox_ptr + dx + dy * g_mainWinWidth);
-			// Image -> Image
-			} else if (surfaceType0 == SURF_IMAGE && surfaceType == SURF_IMAGE) {
-				cprintf("Image -> Image\n");
-				ibox_ptr = (int32 *) WOBJ_ImageHBitmap(surface) + 16; // KÉ^ÉìéwìE [OSASK IRC] 
-				ibox_ptr0 = (int32 *) WOBJ_ImageHBitmap(surface0) + 16; // KÉ^ÉìéwìE [OSASK IRC]
-				for(i = 0; i < w; i++)
-					for(j = 0; j < h; j++)
-						set_24bit_pixel(drawOp, &ibox_pixel(dx+i,dy+j,w), ibox0_pixel(i,j,w));
-				lib_flushgraphbox(0x8001, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, gbox_ptr);
-				//lib_flushgraphbox(0x8001, window, dx, dx, w, h, 
-				//	g_mainWinWidth - w, gbox_ptr + dx + dy * g_mainWinWidth);
-			}*/
+			dy = stack[7].intValue + transY;*/
 			break;
 			}
 		case GR_DRAWCURSOR:
 			{
-			/*int x0, y0, x1, y1;
+			int x0, y0, x1, y1;
 			x0 = stack[1].intValue + transX;
 			y0 = stack[2].intValue + transY;
 			x1 = stack[3].intValue + x0 - 1;
 			y1 = stack[4].intValue + y0 - 1;
-			if( x0 < 0 || y0 < 0 || x1 < 0 || y1 < 0 ||
-				x0 > g_mainWinWidth || y0 > g_mainWinHeight || 
-				x1 > g_mainWinWidth || y1 > g_mainWinHeight) return v;
-			lib_drawline0(0x0000, gbox, 0, x0, y0, x1, y1);*/
+			my_drawline0(x0, y0, x1, y1, rgb16);
 			break;
 			}
 		}
@@ -1121,10 +1139,35 @@ printf("%d,%d\n", x, y);
 // Time
 //
 
+#define WOBJ_TimeYear(o) (objectPtr(o))[1].intValue
+#define WOBJ_TimeMonth(o) (objectPtr(o))[2].intValue
+#define WOBJ_TimeDay(o) (objectPtr(o))[3].intValue
+#define WOBJ_TimeHour(o) (objectPtr(o))[4].intValue
+#define WOBJ_TimeMinute(o) (objectPtr(o))[5].intValue
+#define WOBJ_TimeSecond(o) (objectPtr(o))[6].intValue
+#define WOBJ_TimeMillis(o) (objectPtr(o))[7].intValue
+
 /* static */ Var TimeCreate(Var stack[])
 	{
 	Var v;
+	WObject time;
+	int year, month, day, hour, min ,sec;
 
+	time = stack[0].obj;
+	// 2004/01/01 12:34:56
+	year = 2004;
+	month = 1;
+	day = 1;
+	hour = 12;
+	min = 34;
+	sec = 56;
+	WOBJ_TimeYear(time) = year;
+	WOBJ_TimeMonth(time) = month;
+	WOBJ_TimeDay(time) = day;
+	WOBJ_TimeHour(time) = hour;
+	WOBJ_TimeMinute(time) = min;
+	WOBJ_TimeSecond(time) = sec;
+	WOBJ_TimeMillis(time) = 0;
 	v.obj = 0;
 	return v;
 	}
@@ -1211,7 +1254,8 @@ printf("%d,%d\n", x, y);
 	{
 	Var v;
 
-	v.obj = 0;
+	//v.obj = 0;
+	v.intValue = 1;
 	return v;
 	}
 

@@ -130,7 +130,11 @@ bytecode that waba supports.
 /* static */ uint32 classRecordSize1[MAX_CLASS], classRecordSize2[MAX_CLASS];
 /* static */ int numClassRecords1, numClassRecords2;
 /* static */ uchar *classesMap1, *classesMap2;
+/* static */ WObject mainWinObj;
+/* static */ WClassMethod *method_event, *method_paint;
 /* static */ Screen screen;
+/* static */ int32 GraphicsTransX = 0;
+/* static */ int32 GraphicsTransY = 0;
 #ifdef QUICKBIND
 /* static */ int32 postPaintMethodMapNum = -1;
 /* static */ int32 postEventMethodMapNum = -1;

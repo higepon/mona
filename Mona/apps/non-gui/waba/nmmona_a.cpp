@@ -42,9 +42,6 @@ function files and the VM code itself contained in waba.c
 
 */
 
-#include <monapi.h>
-using namespace MonAPI;
-
 // WHEN PORTING: define FREE_ON_EXIT if you want all object destructors
 // to be called when the program exits. Under OS's that release system
 // resources automatically, you don't need to do this. On OS's that don't
@@ -78,12 +75,12 @@ using namespace MonAPI;
 #define int16 short
 #define uint16 unsigned short
 
-#define WABA_VERSION "0.0.6"
+#define WABA_VERSION "0.0.9"
 #define VM_OS        "MONA"
 #define VM_USER      "MONA"
 #define MAX_CLASS       64
 #define g_mainWinOffX   176
-#define g_mainWinOffY   128
+#define g_mainWinOffY   250
 #define g_mainWinWidth  200
 #define g_mainWinHeight 200
 #define DRAW_OVER 1
@@ -123,17 +120,17 @@ using namespace MonAPI;
     return f;
     }
 
-/* static */ void *calloc(int n) {
-	int i;
-	char *p = (char*)malloc(n);
-	if(p){
-		for (i = 0; i < n; i++) p[i] = 0;
-		//memset(p, 0, n);
-		return (void *)p; 
-	}else{
-		return NULL;
-	}
-}
+/* static */ void *calloc(int size) {
+char *p = (char*)malloc(size);
+    if(p){
+        memset(p, 0, size);
+        return (void *)p; 
+    }else{
+        //mallocŽ¸”s
+        exit(1);
+        return NULL;
+    }
+    }
 
 // WHEN PORTING: You need to define the following functions:
 //

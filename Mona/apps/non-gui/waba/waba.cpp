@@ -28,6 +28,7 @@ Cambridge, MA 02139, USA.
 //#define PALMOS 1
 //#define WINCE 1
 #define MONA 1
+#undef WIN32
 
 #if defined(NO_PLATFORM_DEFINED)
 To compile, you need to define one of the platforms above.
@@ -1148,14 +1149,14 @@ typedef struct
 	// out the following code since we don't have to NULL anything out, its
 	// already 0
 	//
-	// wclass->superClasses = NULL;
-	// wclass->numSuperClasses = 0;
-	// wclass->attrib2 = NULL;
-	// wclass->constantOffsets = NULL;
-	// wclass->fields = NULL;
-	// wclass->methods = NULL;
-	// wclass->nextClass = NULL;
-	// wclass->objDestroyFunc = NULL;
+	//wclass->superClasses = NULL;
+	//wclass->numSuperClasses = 0;
+	//wclass->attrib2 = NULL;
+	//wclass->constantOffsets = NULL;
+	//wclass->fields = NULL;
+	//wclass->methods = NULL;
+	//wclass->nextClass = NULL;
+	//wclass->objDestroyFunc = NULL;
 
 	// parse constants
 	p += 8;
@@ -4384,172 +4385,3 @@ methodreturn:
 	method = (WClassMethod *)vmStack[vmStackPtr - 2].refValue;
 	goto step;
 	}
-
-	int MonaMain(List<char*>* pekoe)
-	{
-	WObject mainWinObj;
-	WClass *vclass;
-	WClassMethod *method_event, *method_paint;
-	Var param5[5];//, param7[7];
-	//int i, type, key, x, y, mod;
-	//int32 timer_interval;
-
-	// アプリケーションスタート
-	printf("Waba for %s %s\n", VM_OS, WABA_VERSION);
-	screen = Screen();
-	mainWinObj = startApp();
-	if(!mainWinObj){
-		stopApp(mainWinObj);
-		return 0;
-	}else{
-		vclass = (WClass *)WOBJ_class(mainWinObj);
-	}
-
-	// メソッド呼び出し高速化
-#ifdef QUICKBIND
-	// cache method map numbers for commonly called methods
-	postPaintMethodMapNum = getMethodMapNum(vclass, createUtfString("_doPaint"),
-		createUtfString("(IIII)V"), SEARCH_ALL);
-	postEventMethodMapNum = getMethodMapNum(vclass, createUtfString("_postEvent"),
-		createUtfString("(IIIIII)V"), SEARCH_ALL);
-	method_paint = getMethodByMapNum(vclass, &vclass, (uint16)postPaintMethodMapNum);
-	method_event = getMethodByMapNum(vclass, &vclass, (uint16)postEventMethodMapNum);
-	if (postPaintMethodMapNum == -1 || postEventMethodMapNum == -1)
-		return 0;
-#else
-	method_paint = getMethod(vclass, createUtfString("_doPaint"), createUtfString("(IIII)V"), &vclass);
-	method_event = getMethod(vclass, createUtfString("_postEvent"), createUtfString("(IIIIII)V"), &vclass);
-#endif
-
-	// 描画開始
-	if (method_paint != NULL){
-		param5[0].obj = mainWinObj;
-		param5[1].intValue = 0;
-		param5[2].intValue = 0;
-		param5[3].intValue = g_mainWinWidth;
-		param5[4].intValue = g_mainWinHeight;
-		executeMethod(vclass, method_paint, param5, 1);
-		//printf("Main.doPaint()\n");
-	}
-
-	// ダミーイベント発生
-	/*if (method_event != NULL){
-		param7[0].obj = mainWinObj;
-		param7[1].intValue = 100; // KeyEvent.KEY_PRESS
-		param7[2].intValue = 0; // key
-		param7[3].intValue = 0; // x
-		param7[4].intValue = 0; // y
-		param7[5].intValue = 0; // modifiers
-		param7[6].intValue = 0; // timeStamp
-		executeMethod(vclass, method_event, param7, 7);
-	}
-
-	// イベントループ
-	for(;;){
-		i = getsignalw();
-		if(i == 0){
-			lib_waitsignal(0x0001, 0, 0);
-			continue;
-		// キーイベント
-		}else if(32 <= i && i <= 173){
-			// type
-			type = 100; // KeyEvent.KEY_PRESS
-			// key
-			switch(i){
-				case 32: key = 75012; break; // ESC
-				case 64: key = 75009; break; // ENTER
-				case 65: key = 75011; break; // BACKSPACE
-				case 66: key = 75010; break; // TAB
-				case 68: key = 75008; break; // INSERT
-				case 69: key = 75013; break; // DELETE
-				case 70: key = 75002; break; // HOME
-				case 71: key = 75003; break; // END
-				case 72: key = 75000; break; // PAGEUP
-				case 73: key = 75001; break; // PAGEDOWN
-				case 76: key = 75006; break; // LEFT
-				case 77: key = 75007; break; // RIGHT
-				case 78: key = 75004; break; // UP
-				case 79: key = 75005; break; // DOWN
-				default: key = 0;     break;
-			}
-			// ASCII character
-			if(80 <=i && i <= 173){
-				key = i - 48;
-			}
-			if (method_event != NULL){
-				param7[0].obj = mainWinObj;
-				param7[1].intValue = type; // type
-				param7[2].intValue = key; // key
-				param7[3].intValue = 0; // x
-				param7[4].intValue = 0; // y
-				param7[5].intValue = 0; // modifiers
-				param7[6].intValue = 0; // timeStamp
-				executeMethod(vclass, method_event, param7, 7);
-			}
-		// マウスイベント
-		}else if(COORDINATE <= i && i <= RIGHT_UP){
-			// type & mod
-			switch(i){
-			case LEFT_DOWN:
-				type = 200; // PenEvent.PEN_DOWN
-				mod = (1 << 2); // SHIFT
-				break;
-			case CENTER_DOWN:
-				type = 200; // PenEvent.PEN_DOWN
-				mod = (1 << 0); // ALT
-				break;
-			case RIGHT_DOWN:
-				type = 200; // PenEvent.PEN_DOWN
-				mod = (1 << 1); // CONTROL
-				break;
-			case COORDINATE:
-				type = 201; // PenEvent.PEN_MOVE
-				x = getparam(); // x
-				y = getparam(); // y
-				break;
-			case LEFT_UP:
-				type = 202; // PenEvent.PEN_UP
-				mod = (1 << 2); // SHIFT
-				break;
-			case CENTER_UP:
-				type = 202; // PenEvent.PEN_UP
-				mod = (1 << 0); // ALT
-				break;
-			case RIGHT_UP:
-				type = 202; // PenEvent.PEN_UP
-				mod = (1 << 1); // CONTROL
-				break;
-			default:
-				mod = 0;
-				break;
-			}
-			if (method_event != NULL){
-				param7[0].obj = mainWinObj;
-				param7[1].intValue = type; // type
-				param7[2].intValue = 0; // key
-				param7[3].intValue = x; // x
-				param7[4].intValue = y; // y
-				param7[5].intValue = mod; // modifiers
-				param7[6].intValue = 0; // timeStamp
-				executeMethod(vclass, method_event, param7, 7);
-			}
-		// タイマーイベント
-		}else if(i == TIMER_SIGNAL){
-			if (method_event != NULL){
-				param7[0].obj = mainWinObj;
-				param7[1].intValue = 303; // ContorolEvent.TIMER
-				param7[2].intValue = 0; // key
-				param7[3].intValue = 0; // x
-				param7[4].intValue = 0; // y
-				param7[5].intValue = 0; // modifiers
-				param7[6].intValue = 0; // timeStamp
-				executeMethod(vclass, method_event, param7, 7);
-			}
-			timer_interval = WOBJ_MainWinTimerId(mainWinObj);
-			if (timer_interval != 0){
-				setsystimer(timer_interval);
-			}
-		}
-	}*/
-	return 0;
-}
