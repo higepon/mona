@@ -106,9 +106,9 @@ dword ELFLoader::load(_A<byte> image)
 {
     FOREACH (ELFProgramHeader, phdr, this->pheaders)
     {
-#if 1   // yui this->pheaders[0]->virtualaddr != ORG‚Ìê‡‚Éƒ[ƒh‚ÉŽ¸”s‚·‚é
         if (phdr.type != PT_LOAD) continue;
 
+#if 1   // yui this->pheaders[0]->virtualaddr != ORG‚Ìê‡‚Éƒ[ƒh‚ÉŽ¸”s‚·‚é
         MONAGED_COPY(image, phdr.virtualaddr - ORG, this->elf, phdr.offset, phdr.filesize)
         if (phdr.memorysize > phdr.filesize)
         {
@@ -119,13 +119,13 @@ dword ELFLoader::load(_A<byte> image)
             printf("OK!\n");
         }
 #else
-        if (phdr.type == PT_LOAD && phdr.filesize == phdr.memorysize)
+        if (phdr.filesize == phdr.memorysize)
         {
-            MONAGED_COPY(image, phdr.virtualaddr - this->pheaders->virtualaddr, this->elf, phdr.offset, phdr.filesize)
+            MONAGED_COPY(image, phdr.virtualaddr - this->pheaders[0].virtualaddr, this->elf, phdr.offset, phdr.filesize)
         }
-        else if (phdr.type == PT_LOAD && phdr.filesize != phdr.memorysize)
+        else
         {
-            MONAGED_COPY(image, phdr.virtualaddr - this->pheaders->virtualaddr, this->elf, phdr.offset, phdr.memorysize)
+            MONAGED_COPY(image, phdr.virtualaddr - this->pheaders[0].virtualaddr, this->elf, phdr.offset, phdr.memorysize)
 
             /* zero clear*/
             //MONAGED_FILL(image, phdr.virtualaddr - this->header.entrypoint + phdr.filesize, phdr.memorysize - phdr.filesize, 0)

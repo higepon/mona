@@ -152,7 +152,7 @@ namespace System
 	
 		inline T& operator [](int index)
 		{
-	#ifdef DEBUG
+#ifdef DEBUG
 			if (this->pointer == 0 /*NULL*/)
 			{
 				::printf("ERROR: [Array] null reference exception\n");
@@ -163,13 +163,13 @@ namespace System
 				::printf("ERROR: [Array] out of range (%d/%d)\n", index, this->length);
 				::exit(1);
 			}
-	#endif
+#endif
 			return this->pointer[index];
 		}
 	
 		inline T GetValue(int index) const
 		{
-	#ifdef DEBUG
+#ifdef DEBUG
 			if (this->pointer == 0 /*NULL*/)
 			{
 				::printf("ERROR: [Array] null reference exception\n");
@@ -180,7 +180,7 @@ namespace System
 				::printf("ERROR: [Array] out of range (%d/%d)\n", index, this->length);
 				::exit(1);
 			}
-	#endif
+#endif
 			return this->pointer[index];
 		}
 	};
