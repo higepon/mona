@@ -14,6 +14,7 @@
 #include<X86MemoryManager.h>
 #include<higeIdt.h>
 #include<higeVga.h>
+#include<higeIo.h>
 /*!
     \brief get class Name
 
@@ -126,9 +127,12 @@ X86MemoryManager::~X86MemoryManager() {
     set up list of free memory,determin size and range of memory
 
     \author HigePon
-    \date   create:2002/08/10 update:2002/09/07
+    \date   create:2002/08/10 update:2002/11/11
 */
 X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) {
+
+    /* enable A20 */
+    enableA20();
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
@@ -329,5 +333,21 @@ void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry
         block->next = block->next->next;
         block->size = (block->size) + nextSize;
     }
+    return;
+}
+
+/*!
+    \brief enableA20
+
+    enabelA20
+
+    \author HigePon
+    \date   create:2002/11/11 update:
+*/
+void X86MemoryManager::enableA20() {
+
+    while (inportb(0x64) & 2); outportb(0x64, 0xd1);
+    while (inportb(0x64) & 2); outportb(0x60, 0xdf);
+    while (inportb(0x64) & 2); outportb(0x64, 0xff);
     return;
 }

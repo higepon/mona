@@ -1,5 +1,6 @@
 2002-11-11  higepon  <higepon@users.sourceforge.jp>
 
+        * X86MemoryManager.cpp: enableA20追加
         * higeTester.cpp: add
         * higeTester.h: add
         * テストコードを徐々にhigeTester.cppに移行します。
