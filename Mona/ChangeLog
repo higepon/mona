@@ -1,3 +1,7 @@
+2005-02-12  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/file.cpp : CD-ROMが見つからないときにファイルサーバが落ちてしまうバグを修正
+
 2005-02-11  csharp  <csharp@users.sourceforge.jp>
 
         * src/servers/gui/main.cpp, window.cpp: 標準出力ストップ, フォーカス管理サポート（プロトコル1）

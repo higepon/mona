@@ -107,7 +107,7 @@ int ChangeDrive(int drive)
     }
     else if (drive == DRIVE_CD0)
     {
-        initializeCD();
+        if (!initializeCD()) return MONA_FAILURE;
         currentDrive = DRIVE_CD0;
         return MONA_SUCCESS;
     }
@@ -198,7 +198,7 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
     CString filePath = path;
     if (filePath.startsWith("CD0:"))
     {
-        initializeCD();
+        if (!initializeCD()) return NULL;
         filePath = filePath.substring(4, filePath.getLength());
         drive = DRIVE_CD0;
     }
