@@ -32,7 +32,7 @@
 void keyStrokeHandler(dword scancode) {
 
     KeyInfo* info;
-    Message* message;
+    Message message;
     g_demo_step++;
 
     /* set key scan code */
@@ -41,13 +41,11 @@ void keyStrokeHandler(dword scancode) {
 
     info = km.getKeyInfo();
 
-    message = (Message*)malloc(sizeof(Message));
-    memset(message, 0, sizeof(Message));
-    message->arg1 = info->keycode;
-    message->arg2 = info->modifiers;
+    memset(&message, 0, sizeof(Message));
+    message.arg1 = info->keycode;
+    message.arg2 = info->modifiers;
 
-    send("USER.ELF", message);
-    free(message);
+    send("USER.ELF", &message);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
