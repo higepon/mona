@@ -1,3 +1,11 @@
+2004-04-30  tino  <tino@users.sourceforge.jp>
+
+        * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加
+
+        * env/*.env: INSTALL追加, MONAELF_LDS追加 (linux*のみ)
+
+        * 各Makefile: installでcp -uの代わりに$(INSTALL)を使用
+
 2004-04-30  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/main.cpp: KeyBoardManager.cpp,hが不要なので削除

@@ -30,7 +30,7 @@ $(BINS): $(OBJS)
 
 install: all
 	mkdir -p $(BINDIR)/root/APPS
-	cp -u $(BINS) $(BINDIR)/root/APPS
+	$(INSTALL) $(BINS) $(BINDIR)/root/APPS
 
 clean:
 	$(RM) $(OBJS) $(BINS)

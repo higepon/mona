@@ -56,8 +56,8 @@ $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(STRIP)  -O binary $@
 
 install : all
-	cp -u $(BOOT1) $(BINDIR)
-	cp -u $(KERNEL_IMG) $(BINDIR)/root
+	$(INSTALL) $(BOOT1) $(BINDIR)
+	$(INSTALL) $(KERNEL_IMG) $(BINDIR)/root
 
 .SUFFIXES: .cpp .o
 

@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
 
 install: all
 	mkdir -p $(BINDIR)/root/APPS
-	cp -u $(TARGET) WABA.LIB HELLO.WRP $(BINDIR)/root/APPS
+	$(INSTALL) $(TARGET) WABA.LIB HELLO.WRP $(BINDIR)/root/APPS
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)

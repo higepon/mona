@@ -20,7 +20,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmona
 
 install: all
 	mkdir -p $(BINDIR)/root/APPS
-	cp -u $(TARGET) $(BINDIR)/root/APPS
+	$(INSTALL) $(TARGET) $(BINDIR)/root/APPS
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)

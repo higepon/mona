@@ -22,7 +22,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
 
 install: all
 	mkdir -p $(BINDIR)/root/SERVERS
-	cp -u $(TARGET) $(BINDIR)/root/SERVERS
+	$(INSTALL) $(TARGET) $(BINDIR)/root/SERVERS
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)

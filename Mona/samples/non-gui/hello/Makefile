@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
 
 install: all
 	mkdir -p $(BINDIR)/root/APPS
-	cp -u $(TARGET) $(BINDIR)/root/APPS
+	$(INSTALL) $(TARGET) $(BINDIR)/root/APPS
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)

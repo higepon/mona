@@ -45,7 +45,6 @@ template <class T> class HList : public List<T> {
     \date   create:2002/10/22 update:
 */
 template <class T> HList<T>::HList() {
-
     init(5, 5);
     return;
 }

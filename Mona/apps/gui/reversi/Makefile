@@ -20,7 +20,7 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmona
 
 install: all
 	mkdir -p $(BUNDLE)
-	cp -u $(TARGET) RED.BMP WHITE.BMP $(BUNDLE)
+	$(INSTALL) $(TARGET) RED.BMP WHITE.BMP $(BUNDLE)
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
