@@ -1,9 +1,7 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 #include <monapi/io.h>
-#include <monapi/CString.h>
 #include "FileServer.h"
-//#include "CFile.h"
 #include "IDEDriver.h"
 #include "ISO9660FileSystem.h"
 
@@ -18,6 +16,7 @@ bool cdInitialized;
 static int irq;
 static IDEDriver* cd;
 static ISO9660FileSystem* fs;
+
 static void interrupt()
 {
     syscall_set_irq_receiver(irq);
@@ -36,12 +35,6 @@ static void interrupt()
             printf("default");
         }
     }
-}
-
-void initialize()
-{
-    currentDrive = FD0;
-    cdInitialized = false;
 }
 
 bool initializeCD()
@@ -98,13 +91,37 @@ bool initializeCD()
     return true;
 }
 
-monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
+
+int ChangeDrive(int drive)
 {
-    if (prompt) printf("%s: Reading %s....", SVR, file);
+    if (drive == FD0)
+    {
+        currentDrive = FD0;
+        return drive;
+    }
+    else if (drive == CD0)
+    {
+        initializeCD();
+        currentDrive = CD0;
+        return drive;
+    }
+    return 0;
+}
+
+
+void initialize()
+{
+    currentDrive = FD0;
+    cdInitialized = false;
+}
+
+monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
+{
+    if (prompt) printf("%s: Reading %s....", SVR, path);
 
     if (currentDrive == FD0)
     {
-        FileInputStream fis(file);
+        FileInputStream fis(path);
         if (fis.open() != 0)
         {
             if (prompt) printf("ERROR\n");
@@ -127,8 +144,29 @@ monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
     }
     else if (currentDrive == CD0)
     {
+        File* file = fs->Open(path, 0);
 
-        return NULL;
+        if (file == NULL)
+        {
+            if (prompt) printf("read:file not found\n");
+            return NULL;
+        }
+
+        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+        if (!monapi_cmemoryinfo_create(ret, file->GetSize() + 1, prompt))
+        {
+            monapi_cmemoryinfo_delete(ret);
+            return NULL;
+        }
+
+        file->Seek(0, SEEK_SET);
+        file->Read(ret->Data, ret->Size);
+
+        fs->Close(file);
+
+        ret->Data[ret->Size] = 0;
+        if (prompt) printf("OK\n");
+        return ret;
     }
     return NULL;
 }
@@ -179,7 +217,31 @@ monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
     }
     else if (currentDrive == CD0)
     {
-        return NULL;
+        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(path);
+
+        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+        int size = files.get_Length();
+        if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), prompt))
+        {
+            monapi_cmemoryinfo_delete(ret);
+            return NULL;
+        }
+
+        memcpy(ret->Data, &size, sizeof(int));
+        monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+
+        FOREACH (FileSystemEntry*, file, files)
+        {
+            monapi_directoryinfo di;
+
+            di.size = file->GetSize();
+            strcpy(di.name, (const char*)file->GetName());
+            di.attr = ATTRIBUTE_DIRECTORY;
+            *p = di;
+            p++;
+        }
+        END_FOREACH
+        return ret;
     }
     return NULL;
 }

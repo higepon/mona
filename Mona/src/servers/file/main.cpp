@@ -52,8 +52,8 @@ void MessageLoop()
             }
             case MSG_FILE_CHANGE_DRIVE:
             {
-                //ChangeDrive(msg.str);
-                Message::reply(&msg);
+                int result = ChangeDrive(msg.arg1);
+                Message::reply(&msg, result);
                 break;
             }
             case MSG_DISPOSE_HANDLE:

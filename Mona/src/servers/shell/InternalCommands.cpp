@@ -16,7 +16,8 @@ enum
     COMMAND_CLEAR,
     COMMAND_PS,
     COMMAND_KILL,
-    COMMAND_EXEC
+    COMMAND_EXEC,
+    COMMAND_CHANGE_DRIVE_CD0,
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -65,6 +66,10 @@ int Shell::isInternalCommand(const CString& command)
     else if (cmd == "exec")
     {
         return COMMAND_EXEC;
+    }
+    else if (cmd == "cd0:")
+    {
+        return COMMAND_CHANGE_DRIVE_CD0;
     }
 
     return COMMAND_NONE;
@@ -259,6 +264,12 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
         break;
 
+    case COMMAND_CHANGE_DRIVE_CD0:
+    {
+
+
+        break;
+    }
 
     default:
         break;

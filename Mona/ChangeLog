@@ -1,5 +1,7 @@
 2005-02-04  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/InternalCommands.cpp : ドライブ変更実装中。
+
         * src/servers/file/ : CFile.hを削除
 
         * src/servers/file/main.cpp (MessageLoop): fileサーバにISO9660コード追加中。

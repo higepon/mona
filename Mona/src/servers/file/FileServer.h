@@ -5,6 +5,7 @@
 
 #define SVR "File Server"
 
+int ChangeDrive(int drive);
 extern monapi_cmemoryinfo* ReadFile(const char* file, bool prompt = false);
 extern monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt = false);
 extern void initialize();
