@@ -84,7 +84,7 @@ _put_pixel:
 _scroll_down:
                 push    ebp
                 mov     ebp,esp
-                
+
                 pushad
                 mov     edi,0x000a0000
                 mov     esi,edi
@@ -95,7 +95,7 @@ _scroll_down:
                 mov     cl,0x50
                 mul     cx
                 add     edi,eax                 ; copy from
-                
+
                 mov     dx,0x03ce
                 mov     al,0x05
                 out     dx,al
@@ -108,19 +108,19 @@ _scroll_down:
                 or      ah,0x01                 ; write mode 1 (latch)
                 mov     al,0x05
                 out     dx,ax                   ; read mode is ignore
-.sl001          
+.sl001
                 mov     al,byte [edi]
                 inc     edi
                 mov     byte [esi],al
                 inc     esi
                 cmp     esi,0x000a9600
                 jb      .sl001
-                
+
                 pop     eax
                 mov     al,0x05
                 out     dx,ax                   ; previous write mode
                 popad
-                
+
                 leave
                 ret
 
@@ -133,6 +133,7 @@ _write_font:
                 mov     ebp,esp
 
                 pusha
+  		push    0x12345678
                 mov     edi,0x000a0000
                 xor     eax,eax
                 xor     edx,edx
@@ -217,11 +218,17 @@ _write_font:
                 mov     dx,0x03ce
                 mov     ax,0xff08
                 out     dx,ax                   ; bit unmask
+  		pop     eax
+.forever
+		cmp     eax, 0x12345678
+  	        jne     .forever
                 popa
 
                 mov     esp,ebp
                 pop     ebp
                 ret
+;  .forever
+;  	jmp forever
 
 _pos_x          db      0
 _pos_y          db      0

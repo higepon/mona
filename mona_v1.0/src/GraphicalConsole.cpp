@@ -293,7 +293,6 @@ void GraphicalConsole::putCharacter(char ch) {
         asm volatile("subl   $0x20, %esp \n");
         write_font(ch, chcolor_, bgcolor_);
         asm volatile("addl   $0x20, %esp \n");
-        vram_[pos_x][pos_y] = ch;
         forwardCursor();
     }
     return;

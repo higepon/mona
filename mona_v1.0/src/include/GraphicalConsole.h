@@ -69,7 +69,6 @@ class GraphicalConsole : public VirtualConsole {
     void clearScreen();
 
   private:
-    int vram_[GP_MAX_WIDTH][GP_MAX_HEIGHT];
     char bgcolor_;
     char chcolor_;
 };

@@ -37,7 +37,7 @@ _arch_fdchandler:
 ;;; timer handler
 ;;; save all context to Kthread* current
 _arch_timerhandler:
-        call _arch_set_stack_view
+;          call _arch_set_stack_view
         pushad
         call _save_registers
         call _timerHandler
@@ -47,29 +47,29 @@ _arch_timerhandler:
 ;;; this fuction saves all registers to current thread struct
 ;;; should be called by interrupt handlers
 _save_registers:
-        mov ebx, [_g_kthread_current]
+        mov ebx, dword[_g_kthread_current]
         mov eax, dword [esp + 36]; save eip
-        mov [ebx], eax
+        mov dword[ebx], eax
         mov eax, dword [esp + 40]; save cs
-        mov [ebx + 4], eax
+        mov dword[ebx + 4], eax
         mov eax, dword [esp + 44]; save eflags
-        mov [ebx + 8], eax
+        mov dword[ebx + 8], eax
         mov eax, dword [esp + 32]; save eax
-        mov [ebx + 12], eax
+        mov dword[ebx + 12], eax
         mov eax, dword [esp + 28]; save ecx
-        mov [ebx + 16], eax
+        mov dword[ebx + 16], eax
         mov eax, dword [esp + 24]; save edx
-        mov [ebx + 20], eax
+        mov dword[ebx + 20], eax
         mov eax, dword [esp + 20]; save ebx
-        mov [ebx + 24], eax
+        mov dword[ebx + 24], eax
         mov eax, dword [esp + 16]; save esp
-        mov [ebx + 28], eax
+        mov dword[ebx + 28], eax
         mov eax, dword [esp + 12]; save ebp
-        mov [ebx + 32], eax
+        mov dword[ebx + 32], eax
         mov eax, dword [esp +  8]; save esi
-        mov [ebx + 36], eax
+        mov dword[ebx + 36], eax
         mov eax, dword [esp +  4]; save edi
-        mov [ebx + 40], eax
+        mov dword[ebx + 40], eax
         ret
 
 ;;; keystroke handler
@@ -88,19 +88,19 @@ _arch_dummyhandler:
 
 ;;; kthread switch to next
 _arch_kthread_switch:
-        mov ebx, [_g_kthread_current]
-        mov eax, [ebx + 12]     ; restore eax
-        mov ecx, [ebx + 16]     ; restore ecx
-        mov edx, [ebx + 20]     ; restore edx
-        mov esp, [ebx + 28]     ; restore esp
-        mov ebp, [ebx + 32]     ; restore ebp
-        mov esi, [ebx + 36]     ; restore esi
-        mov edi, [ebx + 40]     ; restore edi
+        mov ebx, dword[_g_kthread_current]
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
         push 0x200    ; push eflags
 ;          push dword [ebx + 8]    ; push eflags
-        push dword [ebx + 4]    ; push cs
-        push dword [ebx + 0]    ; push eip
-        push dword [ebx + 24]
+        push dword[ebx + 4]    ; push cs
+        push dword[ebx + 0]    ; push eip
+        push dword[ebx + 24]
         pop  ebx                ; restore ebp
         call _arch_set_stack_view
         iretd                   ; switch to next
@@ -108,7 +108,7 @@ _arch_kthread_switch:
 
 ;;; fault0dHandler
 _arch_fault0dhandler:
-		;;         call _arch_set_stack_view
+        call _arch_set_stack_view
         pushad
         call _fault0dHandler
         popad

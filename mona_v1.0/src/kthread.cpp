@@ -45,26 +45,26 @@ void kthread_init() {
     kthread_add_to_prev_list(&runningList, disp1);
 
     /* thread2 */
-    dword stack2 = kthread_allocate_stack();
-    if (stack2 == NULL) {
-        panic("idle thread:stack allocate error");
-    }
-    Kthread* disp2 = kthread_create_thread(stack2, disp_name2);
-    if (disp2 == NULL) {
-        panic("idle thread:create thread error");
-    }
-    kthread_add_to_prev_list(&runningList, disp2);
+//      dword stack2 = kthread_allocate_stack();
+//      if (stack2 == NULL) {
+//          panic("idle thread:stack allocate error");
+//      }
+//      Kthread* disp2 = kthread_create_thread(stack2, disp_name2);
+//      if (disp2 == NULL) {
+//          panic("idle thread:create thread error");
+//      }
+//      kthread_add_to_prev_list(&runningList, disp2);
 
     /* thread3 */
-    dword stack3 = kthread_allocate_stack();
-    if (stack3 == NULL) {
-        panic("idle thread:stack allocate error");
-    }
-    Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
-    if (disp3 == NULL) {
-        panic("idle thread:create thread error");
-    }
-    kthread_add_to_prev_list(&runningList, disp3);
+//      dword stack3 = kthread_allocate_stack();
+//      if (stack3 == NULL) {
+//          panic("idle thread:stack allocate error");
+//      }
+//      Kthread* disp3 = kthread_create_thread(stack3, disp_name3);
+//      if (disp3 == NULL) {
+//          panic("idle thread:create thread error");
+//      }
+//      kthread_add_to_prev_list(&runningList, disp3);
 
 //      /* thread4 */
 //      dword stack4 = kthread_allocate_stack();
@@ -77,7 +77,7 @@ void kthread_init() {
 //      }
     //    kthread_add_to_prev_list(&runningList, disp4);
 
-    g_kthread_current = disp2;
+    g_kthread_current = disp1;
     kthread_schedule();
 }
 
@@ -197,7 +197,7 @@ void kthread_schedule() {
 */
 void kthread_switch() {
 
-//      g_console->printf("kthread_switch [%x][%x][%x]", (dword)(&runningList), (dword)((&runningList)->next), (dword)((&runningList)->next->next));
+    //      g_console->printf("kthread_switch [%x][%x][%x]", (dword)(&runningList), (dword)((&runningList)->next), (dword)((&runningList)->next->next));
 
 
 
@@ -208,18 +208,21 @@ void kthread_switch() {
 //                  , g_kthread_current->esp
 //  		     , g_kthread_current->ebp);
 
-//      g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]"
-//                        , g_stack_view.stack0
-//                        , g_stack_view.stack1
-//                        , g_stack_view.stack2
-//                        , g_stack_view.stack3
-//                        , g_stack_view.stack4
-//                        , g_stack_view.stack5
-//                        , g_stack_view.stack6
-//                        , g_stack_view.stack7
-//                        );
+//       g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]"
+//                         , g_stack_view.stack0
+//                         , g_stack_view.stack1
+//                         , g_stack_view.stack2
+//                         , g_stack_view.stack3
+//                         , g_stack_view.stack4
+//                         , g_stack_view.stack5
+//                         , g_stack_view.stack6
+//                         , g_stack_view.stack7
+//                         );
 
-    g_console->printf("demo1 = %d, demo2 = %d demo3 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2, g_kthreadInfo.demo2);
+      g_console->printf("kthread_switch");
+//      g_console->printf("esp=%x, ebp=%x\n"
+//                   , g_kthread_current->esp
+//  		      , g_kthread_current->ebp);
 
     arch_kthread_switch();
 }
