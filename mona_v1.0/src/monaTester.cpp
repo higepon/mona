@@ -29,7 +29,6 @@
 #include<vector>
 #include<algorithm>
 
-
 /*!
     \brief test code for HVector
 

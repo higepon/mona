@@ -27,7 +27,7 @@
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
 
-char* version = "Mona develop beta 0.03a $Date$";
+char* version = "Mona develop beta 0.03b $Date$";
 
 /*!
     \brief  mona kernel start at this point

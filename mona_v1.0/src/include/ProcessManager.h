@@ -86,6 +86,7 @@
                  );                          \
 }                                            \
 
+/*! \def dump process information */
 #define _sysDumpProcess(str, process) {           \
                                                   \
     _sys_printf("%s ", str);                      \
