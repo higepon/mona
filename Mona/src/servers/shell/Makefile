@@ -1,5 +1,5 @@
 TARGET  = SHELL.SVR
-SOURCES = main.cpp KeyboardManager.cpp
+SOURCES = main.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
