@@ -1,3 +1,13 @@
+2004-03-07  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gclock/gclock.cpp: 起動時に時刻が表示されるように修正。
+
+        * apps/baygui/gshell/gshell.cpp: リストから行を削除するときにdeleteしていなかった不具合修正。
+
+        * src/lib/baygui/FontMetrics.cpp: 固定フォント時の全角幅が見苦しいので12に変更。
+
+        * src/lib/baygui/LinkedList.cpp: getLength() がおかしい値を返していたのを修正。
+
 2005-03-07  higepon  <higepon@users.sourceforge.jp>
 
         * アプリビルド時にアプリ名.mapというファイルにアドレスマップを出力するように変更。eipと連動してデバッグが便利になるかも。
@@ -24,6 +34,34 @@
 
         * include/sys/types.h (SYSTEM_CALL_TIMER): タイマー追加。
 
+=======
+2005-03-07  higepon  <higepon@users.sourceforge.jp>
+
+        * アプリビルド時にアプリ名.mapというファイルにアドレスマップを出力するように変更。eipと連動してデバッグが便利になるかも。
+
+        * src/kernel/PageManager.cpp (pageFaultHandler): アクセス違反のときにeipを表示するようにする。
+
+        * src/kernel/syscalls.cpp: kill_timer(), set_timer()追加。timer()廃止。
+
+2005-03-06  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Scheduler.h (class Scheduler): SetTimer, KillTimer追加。
+
+2005-03-03  higepon  <higepon@users.sourceforge.jp>
+
+        * samples/non-gui/hello/hello.cpp (MAIN_10): タイマーサンプルを追加。MAIN_10を defineしてください。
+
+        * src/lib/monapi/syscall.cpp (syscall_timer): 追加。
+                                             (timer): 追加。
+
+        * src/kernel/Scheduler.cpp (Sleep): タイマー用に拡張。
+                             (WakeupTimer): タイマー用に拡張。
+
+        * src/kernel/syscalls.cpp: タイマーシステムコール追加。
+
+        * include/sys/types.h (SYSTEM_CALL_TIMER): タイマー追加。
+
+>>>>>>> 1.444
 2004-03-02  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/guitest1/guitest1.cpp: Scrollbar 追加
