@@ -1,3 +1,29 @@
+2004-11-15  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gbrowser/htmlpanel.cpp:  内部変数名変更（x -> _x 等）
+        * apps/baygui/glaunch/glaunch.cpp:     マウスのダブルクリックでも起動するように修正
+        * apps/baygui/gnoiz2bg/gnoiz2bg.cpp:   アイコン化時に描画しないように修正
+        * apps/baygui/gversion/gversion.cpp:   プロセス数を表示するように修正
+        * include/baygui.h:           内部関数名変更（copyString -> xstrncpy）
+        * include/baygui/Control.h:   内部変数名変更（x -> _x 等）
+        * include/baygui/Object.h:    内部関数名変更（copyString -> xstrncpy）
+        * include/baygui/resouces.h:  テキストの最大サイズ変更（64 -> 128）
+        * src/lib/baygui/Button.cpp:    内部変数名変更（x -> _x 等）
+        * src/lib/baygui/Container.cpp: 冗長な処理をまとめた
+        * src/lib/baygui/Control.cpp:   内部変数名変更（x -> _x 等）
+        * src/lib/baygui/Font.cpp:      内部関数名変更（copyString -> xstrncpy）
+        * src/lib/baygui/FontManager.cpp:  内部関数名変更（copyString -> xstrncpy）
+        * src/lib/baygui/ImeManager.cpp:   文字数境界チェック追加
+        * src/lib/baygui/Label.cpp:   内部変数名変更（x -> _x 等）
+        * src/lib/baygui/ListBox.cpp: 内部変数名変更（x -> _x 等）
+        * src/lib/baygui/main.cpp:    内部関数名変更（copyString -> xstrncpy）
+        * src/lib/baygui/Object.cpp:  内部関数名変更（copyString -> xstrncpy）
+        * src/lib/baygui/TextField.cpp:  内部変数名変更（x -> _x 等）
+        * src/lib/baygui/Thread.cpp:  threadAddress削除
+        * src/lib/baygui/Window.cpp:  内部変数名変更（x -> _x 等）
+        * src/server/baygui/WindowManager.cpp: 内部変数名変更（x -> _x 等）
+        * src/server/baygui/WindowManager.h:   内部関数追加
+
 2004-11-15  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/IDEDriver.cpp (identifyDetail): identifyコマンド発行まで
