@@ -129,10 +129,8 @@ void process1Tester() {
         _sys_printf("process1");
         _sysSetColor(BG_BLACK | CH_SILVER);
         ProcessManager& pm = ProcessManager::instance();
-	//        pm.switchProcess(0x28);
-        asm volatile("ljmp $0x28, $0\n");
-	//	word selector = 0x28;
-	//       asm volatile("ljmp %0, $0": "=g"(selector):"g"(selector));
+        pm.switchProcess(0x28);
+
     }
     return;
 }
@@ -143,7 +141,8 @@ void process2Tester() {
         _sysSetColor(BG_BLACK | CH_RED);
         _sys_printf("process2");
         _sysSetColor(BG_BLACK | CH_SILVER);
-        asm volatile("ljmp $0x20, $0\n");
+        ProcessManager& pm = ProcessManager::instance();
+        pm.switchProcess(0x20);
     }
     return;
 }

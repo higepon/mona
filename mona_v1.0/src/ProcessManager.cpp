@@ -200,9 +200,11 @@ void ProcessManager::switchProcess() {
 
 }
 
-void ProcessManager::switchProcess(word selector) {
+void ProcessManager::switchProcess(dword selector) {
 
-    //    asm volatile("jmp %0,$0\n": /* NO OUT PUT */ : "r"(selector));
-    //asm volatile("jmp $0x28, $0\n");
+    FARJMP far;
+    far.offset   = 0;
+    far.selector = selector;
+    asm volatile("ljmp %0\n":/* no output */ :"m"(far));
     return;
 }

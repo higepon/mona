@@ -28,7 +28,7 @@ class ProcessManager {
     void setTSS(TSS*, word, word, void (*f)(), dword, byte*, word, byte*, word);
     void setDT(GDT*, dword, dword, byte);
     void switchProcess();
-    void switchProcess(word);
+    void switchProcess(dword);
     void printInfo();
     static ProcessManager& instance() {
         static ProcessManager theInstance;

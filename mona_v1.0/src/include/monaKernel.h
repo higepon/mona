@@ -81,6 +81,13 @@ typedef struct {
     byte baseH;
 } GDT;
 
+/*! struct for far jmp */
+typedef struct {
+    dword offset;
+    word selector;
+} FARJMP;
+
+
 /*! Descriptor Type */
 #define TypeCode     0x9a
 #define TypeData     0x92
