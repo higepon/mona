@@ -4,6 +4,7 @@ all:
 	@cd ghebtn && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 
@@ -13,6 +14,7 @@ install:
 	@cd ghebtn && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 
@@ -22,6 +24,7 @@ clean: touchdepend
 	@cd ghebtn && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 
@@ -31,6 +34,7 @@ depend: touchdepend
 	@cd ghebtn && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd gnullpo && $(MAKE) $@
+	@cd grunner && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 
@@ -40,6 +44,7 @@ distclean:
 	rm -f ghebtn/dependencies
 	rm -f glaunch/dependencies
 	rm -f gnullpo/dependencies
+	rm -f grunner/dependencies
 	rm -f gversion/dependencies
 	rm -f mtorz/dependencies
 
@@ -49,5 +54,6 @@ touchdepend:
 	touch -f ghebtn/dependencies
 	touch -f glaunch/dependencies
 	touch -f gnullpo/dependencies
+	touch -f grunner/dependencies
 	touch -f gversion/dependencies
 	touch -f mtorz/dependencies
