@@ -26,7 +26,6 @@ FAT_TOOL   = $(BIN)/fat_write.exe
 TEMPLATE   = $(TOOLS)/fat_template.img
 SOURCES    = cstart.cpp            \
              kernel.cpp            \
-             idt.cpp               \
              ihandlers.cpp         \
              IA32MemoryManager.cpp \
              operator.cpp          \
@@ -53,7 +52,8 @@ SOURCES    = cstart.cpp            \
              sysresource.cpp       \
              ISADriver.cpp         \
              info.cpp              \
-             GDTUtil.cpp
+             GDTUtil.cpp           \
+             IDTUtil.cpp
 
 DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp driver/ISADevice/PCIC/pcic.cpp
 DRVROBJ = ps2kbc.o pcic.o

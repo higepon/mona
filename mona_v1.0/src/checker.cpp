@@ -16,6 +16,7 @@
 #include <kernel.h>
 #include <IA32MemoryManager.h>
 #include <GDTUtil.h>
+#include <IDTUtil.h>
 #include <kthread.h>
 
 /*!
@@ -24,18 +25,19 @@
     check size of byte,word,dword
 
     \author HigePon
-    \date   create:2002/12/02 update:2003/03/01
+    \date   create:2002/12/02 update:2003/06/08
 */
 void checkTypeSize() {
 
-    bool isByte    = sizeof(byte)    == 1;
-    bool isWord    = sizeof(word)    == 2;
-    bool isDword   = sizeof(dword)   == 4;
-    bool isTSS     = sizeof(TSS)     == 104;
-    bool isPTE     = sizeof(PTE)     == 4;
-    bool isGDTR    = sizeof(GDTR)    == 6;
-    bool isSegDesc = sizeof(SegDesc) == 8;
-    bool isKthread = sizeof(Kthread) == 56;
+    bool isByte     = sizeof(byte)     == 1;
+    bool isWord     = sizeof(word)     == 2;
+    bool isDword    = sizeof(dword)    == 4;
+    bool isTSS      = sizeof(TSS)      == 104;
+    bool isPTE      = sizeof(PTE)      == 4;
+    bool isGDTR     = sizeof(GDTR)     == 6;
+    bool isSegDesc  = sizeof(SegDesc)  == 8;
+    bool isGateDesc = sizeof(GateDesc) == 8;
+    bool isKthread  = sizeof(Kthread)  == 56;
 
     /* check size of some types */
     if (isByte && isWord && isDword && isTSS && isPTE && isGDTR && isSegDesc && isKthread) {

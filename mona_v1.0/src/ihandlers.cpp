@@ -12,7 +12,6 @@
     \date   create:2002/07/25 update:$Date$
 */
 
-#include<idt.h>
 #include<KeyBoardManager.h>
 #include<FDCDriver.h>
 #include<types.h>
@@ -347,7 +346,7 @@ void cpufaultHandler_11(void){
 
 
 /*! \def global handler list */
-handler_st handlers[HANDLER_NUM] = {
+InterruptHandlers handlers[IHANDLER_NUM] = {
      {0x00, &arch_cpufaulthandler_0}
    , {0x01, &arch_cpufaulthandler_1}
    , {0x02, &arch_dummyhandler}

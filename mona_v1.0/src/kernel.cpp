@@ -20,7 +20,6 @@
 #include<global.h>
 
 #include<kernel.h>
-#include<idt.h>
 #include<operator.h>
 #include<tester.h>
 #include<checker.h>
@@ -63,8 +62,8 @@ void startKernel(void) {
 
     printOK("Setting PIC        ");
 
-    /* set interrupt */
-    _sysSetIdt();
+    IDTUtil::setup();
+
     printOK("Setting IDT        ");
     printOK("Setting GDT        ");
 

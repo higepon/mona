@@ -13,7 +13,6 @@
 #include<kthread.h>
 #include<kernel.h>
 #include<ihandlers.h>
-#include<idt.h>
 #include<pic.h>
 #include<operator.h>
 #include<disp.h>

@@ -2,7 +2,7 @@
 #include <sysresource.h>
 #include <global.h>
 #include <pic.h>
-#include<idt.h> /* —v‚ç‚È‚¢? */
+//#include<idt.h> /* —v‚ç‚È‚¢? */
 
 /*
 class NullIRQHandler : public IRQHandler {

@@ -13,6 +13,7 @@
 #include<FDCDriver.h>
 #include<Semaphore.h>
 #include<GDTUtil.h>
+#include<IDTUtil.h>
 #include <sysresource.h> /* (expr) */
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
@@ -42,3 +43,6 @@ GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
 
 /* GLOBAL DESCRIPTOR TABLE */
 GLOBAL SegDesc* g_gdt;
+
+/* INTERRUPT DESCRIPTOR TABLE */
+GLOBAL GateDesc* g_idt;

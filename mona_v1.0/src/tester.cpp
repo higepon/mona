@@ -12,7 +12,6 @@
     \date   create:2002/11/11 update:$Date$
 */
 #include<global.h>
-#include<idt.h>
 #include<operator.h>
 #include<types.h>
 #include<HVector.h>
