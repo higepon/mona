@@ -18,10 +18,10 @@ int MonaMain(List<char*>* pekoe)
 
     /* Server start ok */
     dword targetID = Message::lookupMainThread("INIT");
-    if (targetID == 0xFFFFFFFF)
+    if (targetID == THREAD_UNKNOWN)
     {
         targetID = Message::lookupMainThread("1LINESH.SVR");
-        if (targetID == 0xFFFFFFFF)
+        if (targetID == THREAD_UNKNOWN)
         {
             printf("ShellServer:INIT not found\n");
             exit(1);
