@@ -165,44 +165,52 @@ public:
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-class Thread : public Node {
-
+class Thread : public Node
+{
   public:
     Thread();
     virtual ~Thread();
 
   public:
-    inline void tick() {
-        tick_++;
-        timeLeft_--;
+    inline void tick()
+    {
+        totalTick++;
+        partTick++;
     }
 
-    inline void tick(dword tick) {
+    inline void tick(dword tick)
+    {
         tick_     += tick;
         timeLeft_ -= tick;
     }
 
-    inline dword getTick() const {
+    inline dword getTick() const
+    {
         return tick_;
     }
 
-    inline bool hasTimeLeft() const {
+    inline bool hasTimeLeft() const
+    {
         return (timeLeft_ > 0);
     }
 
-    inline void setTimeLeft(long timeLeft) {
+    inline void setTimeLeft(long timeLeft)
+    {
         timeLeft_ = timeLeft;
     }
 
-    inline ThreadInfo* getThreadInfo() const {
+    inline ThreadInfo* getThreadInfo() const
+    {
         return threadInfo_;
     }
 
-    inline void setWaitReason(int reason) {
+    inline void setWaitReason(int reason)
+    {
         waitReason_ = reason;
     }
 
-    inline int getWaitReason() const {
+    inline int getWaitReason() const
+    {
         return waitReason_;
     }
 

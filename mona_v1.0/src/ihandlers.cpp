@@ -138,6 +138,7 @@ void timerHandler() {
     outportb(0x20, 0x20);
 
     g_scheduler->tick();
+    g_currentThread->thread->tick();
     dword tick = g_scheduler->getTick();
     bool isProcessChange = (tick % 10) ? g_scheduler->schedule2() : g_scheduler->schedule();
 

@@ -443,7 +443,7 @@ int ThreadOperation::switchThread(bool isProcessChanged)
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : tick_(0), timeLeft_(1) {
+Thread::Thread() : totalTick(0), partTick(0), tick_(0), timeLeft_(1) {
 
     /* thread information */
     threadInfo_ = new ThreadInfo;

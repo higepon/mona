@@ -1,3 +1,7 @@
+2004-02-26  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: Thread Tickするようにした。
+
 2004-02-25  higepon  <higepon@users.sourceforge.jp>
 
         * Segments.cpp: システムコール周りを徐々に再構成中
