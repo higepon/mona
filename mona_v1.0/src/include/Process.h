@@ -258,6 +258,10 @@ class Process {
         return tick_;
     }
 
+    inline virtual dword getPid() {
+        return pid_;
+    }
+
     inline virtual bool hasTimeLeft() const {
         return timeLeft_ > 0;
     }
@@ -328,6 +332,7 @@ class Process {
     virtual Thread* createThread(dword programCounter);
 
   protected:
+    static dword pid;
     class HeapSegment* heap_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
@@ -413,6 +418,8 @@ class ProcessManager {
     LinearAddress allocateKernelStack() const;
     void printProcess();
     Process* find(const char* name);
+    Process* find(dword pid);
+    dword lookup(const char* name);
     void wakeup();
 
 

@@ -490,6 +490,47 @@ Process* ProcessManager::find(const char* name) {
     return (Process*)NULL;
 }
 
+Process* ProcessManager::find(dword pid) {
+
+    for (int i = 0; i < dispatchList_->size(); i++) {
+
+        Process* process = dispatchList_->get(i);
+        if (pid == process->getPid()) {
+            return process;
+        }
+    }
+    for (int i = 0; i < waitList_->size(); i++) {
+
+        Process* process = waitList_->get(i);
+        if (pid == process->getPid()) {
+            return process;
+        }
+    }
+    return (Process*)NULL;
+}
+
+dword ProcessManager::lookup(const char* name) {
+
+    if (!name) return 0;
+
+    for (int i = 0; i < dispatchList_->size(); i++) {
+
+        Process* process = dispatchList_->get(i);
+        if (!strcmp(name, process->getName())) {
+            return process->getPid();
+        }
+    }
+    for (int i = 0; i < waitList_->size(); i++) {
+
+        Process* process = waitList_->get(i);
+        if (!strcmp(name, process->getName())) {
+            return process->getPid();
+        }
+    }
+    return 0;
+}
+
+
 int ProcessManager::sleep(Process* process, dword tick) {
 
     if (!dispatchList_->hasElement(process)) {
@@ -520,6 +561,7 @@ void ProcessManager::wakeup() {
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
+dword Process::pid = 0;
 Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer_(0xFFFFFFFF), timeLeft_(4) {
 
     /* name */
@@ -539,6 +581,10 @@ Process::Process(const char* name, PageEntry* directory) : tick_(0), wakeupTimer
 
     /* mutex tree */
     kmutexTree_ = new BinaryTree<KMutex*>();
+
+    /* pid */
+    pid++;
+    pid_ = pid;
 }
 
 Process::~Process() {

@@ -15,8 +15,8 @@
 #include <collection.h>
 #include <KeyBoardManager.h>
 
-int regist(List<char*>* destList, MessageInfo* info);
-int sendKeyInformation(KeyBoardManager* manager, List<char*>* destList, MessageInfo* info);
+int regist(List<dword>* destList, MessageInfo* info);
+int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info);
 
 int main() {
 
@@ -25,7 +25,7 @@ int main() {
     manager->init();
 
     /* initilize destination list */
-    List<char*>* destList = new HList<char*>();
+    List<dword>* destList = new HList<dword>();
 
     /* Message loop */
     for (;;) {
@@ -42,6 +42,7 @@ int main() {
                 break;
 
             case MSG_KEY_REGIST_TO_SERVER:
+
                 regist(destList, &info);
                 break;
 
@@ -53,7 +54,7 @@ int main() {
     }
 }
 
-int sendKeyInformation(KeyBoardManager* manager, List<char*>* destList, MessageInfo* info) {
+int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info) {
 
     MessageInfo message;
     KeyInfo keyinfo;
@@ -70,8 +71,9 @@ int sendKeyInformation(KeyBoardManager* manager, List<char*>* destList, MessageI
 
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--) {
+
         if (Message::send(destList->get(i), &message)) {
-            printf("send error to %s", destList->get(i));
+            printf("send error to pid = %x", destList->get(i));
             destList->removeAt(i);
         }
     }
@@ -79,12 +81,9 @@ int sendKeyInformation(KeyBoardManager* manager, List<char*>* destList, MessageI
     return 0;
 }
 
-int regist(List<char*>* destList, MessageInfo* info) {
+int regist(List<dword>* destList, MessageInfo* info) {
 
-    char* source = (char*)(info->arg1);
-    printf("message is %s", source);
-    char* target = new char[strlen(source) + 1];
-    strcpy(target, source);
-    destList->add(target);
+    dword pid = info->arg1;
+    destList->add(pid);
     return 0;
 }

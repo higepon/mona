@@ -328,7 +328,7 @@ void testFDWrite() {
 int send(const char* name, MessageInfo* message) {
 
     Process* process;
-    MessageInfo* kmessage;
+    MessageInfo* info;
 
     if (message == (MessageInfo*)NULL) {
         return -1;
@@ -338,12 +338,34 @@ int send(const char* name, MessageInfo* message) {
         return -1;
     }
 
-    if ((kmessage = new MessageInfo) == NULL) {
+    if ((info = new MessageInfo) == NULL) {
         return -1;
     }
 
-    memcpy(kmessage, message, sizeof(MessageInfo));
-    process->getMessageList()->add(kmessage);
+    memcpy(info, message, sizeof(MessageInfo));
+    process->getMessageList()->add(info);
+    return 0;
+}
+
+int send(dword pid, MessageInfo* message) {
+
+    Process* process;
+    MessageInfo* info;
+
+    if (message == (MessageInfo*)NULL) {
+        return -1;
+    }
+
+    if ((process = g_processManager->find(pid)) == (Process*)NULL) {
+        return -1;
+    }
+
+    if ((info = new MessageInfo) == NULL) {
+        return -1;
+    }
+
+    memcpy(info, message, sizeof(MessageInfo));
+    process->getMessageList()->add(info);
     return 0;
 }
 

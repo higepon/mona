@@ -6,8 +6,6 @@ int print(const char* msg) {return syscall_print(msg);}
 int _put_pixel(int x, int y, char color) {return syscall_put_pixel(x, y, color);}
 int kill() {return syscall_kill();}
 int exit(int error) {return syscall_kill();}
-int _send(const char* name, MessageInfo* message) {return syscall_send(name, message);}
-int _receive(MessageInfo* message) {return syscall_receive(message);}
 int mthread_create(dword f) {return syscall_mthread_create(f);}
 int mthread_join(dword id) {return syscall_mthread_join(id);}
 
@@ -124,7 +122,7 @@ int syscall_kill() {
     return result;
 }
 
-int syscall_send(const char* name, MessageInfo* message) {
+int syscall_send(dword pid, MessageInfo* message) {
 
     int result;
 
@@ -134,7 +132,7 @@ int syscall_send(const char* name, MessageInfo* message) {
                  "int  $0x80       \n"
                  "movl %%eax, %0   \n"
                  :"=m"(result)
-                 :"g"(SYSTEM_CALL_SEND), "m"(name), "m"(message)
+                 :"g"(SYSTEM_CALL_SEND), "m"(pid), "m"(message)
                  :"ebx", "esi", "ecx"
                  );
 
@@ -235,6 +233,22 @@ int syscall_mutex_destroy(int id) {
     return result;
 }
 
+dword syscall_lookup(const char* name) {
+
+    dword pid;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(pid)
+                 :"g"(SYSTEM_CALL_LOOKUP), "m"(name)
+                 : "ebx", "esi"
+                 );
+
+    return pid;
+}
+
 void* malloc(unsigned long size) {
     return um.allocate(size);
 }
@@ -321,12 +335,16 @@ int Mutex::destory() {
 /*----------------------------------------------------------------------
     Message
 ----------------------------------------------------------------------*/
-int Message::send(char* destination, MessageInfo* info) {
-    return syscall_send(destination, info);
+int Message::send(dword pid, MessageInfo* info) {
+    return syscall_send(pid, info);
 }
 
 int Message::receive(MessageInfo* info) {
     return syscall_receive(info);
+}
+
+dword Message::lookup(const char* name) {
+    return syscall_lookup(name);
 }
 
 void printf(const char *format, ...) {

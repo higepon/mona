@@ -1,3 +1,9 @@
+2004-01-26  higepon  <higepon@users.sourceforge.jp>
+
+        * メッセージの送信をpidベースでもできるように変更した。
+
+        * プロセス名からpid取得できる lookup機構を作成。
+
 2004-01-25  higepon  <higepon@users.sourceforge.jp>
 
         * elf.cpp: load時に memorysize と fileSizeが異なる場合に無条件に0埋めしていたのを修正

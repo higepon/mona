@@ -60,10 +60,11 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : copy_userapp
 
-copy_userapp : $(TARGET) $(USER_PROCESS2) $(USER_PROCESS) $(KEYBOARD_SERVER)
+copy_userapp : $(TARGET) $(USER_PROCESS2) $(USER_PROCESS) $(KEYBOARD_SERVER) $(VFS_SERVER)
 	(cd $(BIN); $(FAT_TOOL) mona.img USER.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img TEST.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR)
+	(cd $(BIN); $(FAT_TOOL) mona.img VFS.SVR)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
@@ -73,7 +74,7 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
 
-$(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
+$(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
 #	cp $@ $(BIN)/mona.dbg
 #	$(NDISASM) -u $@ > $(LIST)/third.list

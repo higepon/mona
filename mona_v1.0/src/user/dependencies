@@ -7,6 +7,13 @@ KeyBoardManager.o: KeyBoardManager.cpp include/userlib.h include/types.h \
   include/string.h include/KeyBoardManager.h include/collection.h
 string.o: string.cpp include/string.h include/types.h
 KeyBoardServer.o: KeyBoardServer.cpp include/userlib.h include/types.h \
-  include/string.h include/KeyBoardManager.h include/collection.h
+  include/string.h include/collection.h include/KeyBoardManager.h
 MemoryManager.o: MemoryManager.cpp include/MemoryManager.h \
   include/types.h include/string.h
+uFAT12.o: uFAT12.cpp include/uFAT12.h include/types.h \
+  include/DiskDriver.h include/BitMap.h include/string.h \
+  include/userlib.h
+BitMap.o: BitMap.cpp include/BitMap.h include/types.h include/string.h
+VirtualFileSystemServer.o: VirtualFileSystemServer.cpp include/userlib.h \
+  include/types.h include/string.h include/uFAT12.h include/DiskDriver.h \
+  include/BitMap.h

@@ -17,8 +17,7 @@
 #define SYSTEM_CALL_MUTEX_TRYLOCK  16
 #define SYSTEM_CALL_MUTEX_UNLOCK   17
 #define SYSTEM_CALL_MUTEX_DESTROY  18
-
-#define main() monamain()
+#define SYSTEM_CALL_LOOKUP         19
 
 #define main() monamain()
 
@@ -38,7 +37,7 @@ int syscall_heavy();
 int syscall_print(const char*);
 int syscall_kill();
 int syscall_put_pixel(int x, int y, char color);
-int syscall_send(const char* name, MessageInfo* message);
+int syscall_send(dword pid, MessageInfo* message);
 int syscall_receive(MessageInfo* message);
 int syscall_mthread_create(dword f);
 int syscall_mthread_join(dword id);
@@ -46,6 +45,7 @@ int syscall_mutex_create();
 int syscall_mutex_trylock();
 int syscall_mutex_lock();
 int syscall_mutex_unlock();
+dword syscall_lookup(const char* name);
 int syscall_mutex_destroy(int id);
 void* malloc(unsigned long size);
 void free(void * address);
@@ -86,8 +86,9 @@ class Message {
     virtual ~Message();
 
   public:
-    static int send(char* destination, MessageInfo* info);
+    static int send(dword pid, MessageInfo* info);
     static int receive(MessageInfo* info);
+    static dword lookup(const char* name);
 };
 
 

@@ -55,7 +55,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_SEND:
 
-        info->eax = send((char*)(info->esi), (MessageInfo*)(info->ecx));
+        info->eax = send((dword)(info->esi), (MessageInfo*)(info->ecx));
         break;
 
     case SYSTEM_CALL_RECEIVE:
@@ -115,6 +115,9 @@ void syscall_entrance() {
         }
         break;
 
+    case SYSTEM_CALL_LOOKUP:
+        info->eax = g_processManager->lookup((char*)(info->esi));
+        break;
     default:
         g_console->printf("syscall:default");
         break;
