@@ -50,7 +50,7 @@ class X86MemoryManager {
     char* getName();
     void* allocateMemory(H_SIZE_T);
     void freeMemory(void*);
-    void printInfo();
+    void printInfo(char*);
     static X86MemoryManager& instance() {
         static X86MemoryManager theInstance;
         return theInstance;

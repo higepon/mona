@@ -63,23 +63,20 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     struct memoryEntry* freeBlock = current + realSize;
     H_SIZE_T usedBlockSize = realSize;
     H_SIZE_T freeBlockSize = current->size - realSize;
-
-    this->printInfo();
+    this->printInfo("1");
 
     if (current->size != realSize) {
         this->addToEntry(&freeEntry_, freeBlock, freeBlockSize);
         this->concatBlock(freeEntry_, freeBlock);
-        this->printInfo();
+    this->printInfo("2");
     }
+    //    this->deleteFromEntry(&freeEntry_, current, current->size);
+    this->printInfo("3");
     this->deleteFromEntry(&freeEntry_, current, current->size);
-
-    this->printInfo();
-
     this->addToEntry(&usedEntry_, usedBlock, usedBlockSize);
 
-    this->printInfo();
-
     /* return address of allocated memory */
+    this->printInfo("4");
     return (void*)usedBlock->startAddress;
 }
 
@@ -160,19 +157,19 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
     \author HigePon
     \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::printInfo() {
+void X86MemoryManager::printInfo(char* str) {
 
     struct memoryEntry* entry;
     int i;
 
     for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-    _sys_printf("free block%d address=%d size=%d\n", i, entry, entry->size);
+    _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
     }
 
     for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-    _sys_printf("used block%d address=%d size=%d\n", i, entry, entry->size);
+    _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
     }
 }
@@ -202,6 +199,14 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
         block->next = (*entry);
         block->size = size;
         *entry = block;
+        return;
+    }
+
+    if ((*entry)->next == (struct memoryEntry*)NULL && block > (*entry)) {
+
+        block->next = (struct memoryEntry*)NULL;
+        block->size = size;
+        (*entry)->next = block;
         return;
     }
 
