@@ -7,6 +7,8 @@
 
         * include/gui/System/Drawing/Point.h (operator !=): 追加
 
+        * include/gui/System/Drawing/Graphics.h (DrawImage): 部分描画用オーバーロード追加
+
 2004-06-14  higepon  <higepon@users.sourceforge.jp>
 
         * tools/elf_tool/ : テスト用再配置可能ELFの作成など
