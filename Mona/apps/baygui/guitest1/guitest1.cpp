@@ -27,6 +27,66 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
+/** クラス定義部 */
+class GuiTest : public Window {
+private:
+	Button *button1;
+	Label *label1, *label2, *label3;
+	TextField *text1, *text2, *text3;
+	ListBox *list1;
+	Window *dialog;
+
+public:
+	/** コンストラクタ */
+	GuiTest::GuiTest()
+	{
+		setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
+		setTitle("(oAo) ﾅｶﾏ");
+		
+		// 部品を初期化
+		button1 = new Button("ｵﾏｴﾓﾅ orz");
+		button1->setRect(5,5,80,20);
+		label1 = new Label("Label<-");
+		label1->setFontStyle(Font::BOLD);
+		label1->setRect(5,26,100,20);
+		label2 = new Label("=Label=", Label::ALIGN_CENTER);
+		label2->setFontStyle(Font::ITALIC);
+		label2->setBackground(Color::BLACK);
+		label2->setForeground(Color::WHITE);
+		label2->setRect(5,46,100,20);
+		label3 = new Label("Label->", Label::ALIGN_RIGHT);
+		label3->setFontStyle(Font::BOLD | Font::ITALIC);
+		label3->setRect(5,66,100,20);
+		text1 = new TextField();
+		text1->setRect(5,86,100,20);
+		text1->setText("Hello,World");
+		text2 = new TextField();
+		text2->setRect(5,107,100,20);
+		text3 = new TextField();
+		text3->setRect(5,128,100,20);
+		list1 = new ListBox();
+		list1->setRect(110,35,100,100);
+		list1->add("ひげぽん");
+		list1->add("ｷﾀｰｰ!!");
+		list1->add("Mona is here");
+		
+		// 部品を追加
+		add(button1);
+		add(label1);
+		add(label2);
+		add(label3);
+		add(text1);
+		add(text2);
+		add(text3);
+		add(list1);
+	}
+	
+	/** デストラクタ */
+	GuiTest::~GuiTest()
+	{
+	}
+};
+
 /** メイン（テストプログラム） */
 #if defined(MONA)
 int MonaMain(List<char*>* pekoe)
@@ -34,45 +94,7 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char **argv)
 #endif
 {
-	// ウィンドウを作成
-	Window *window = new Window();
-	window->setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
-	window->setTitle("(oAo) ﾅｶﾏ");	
-	
-	// 部品を追加
-	Button *button1 = new Button("ｵﾏｴﾓﾅ orz");
-	button1->setRect(5,5,80,20);
-	Label *label1 = new Label("Label<-");
-	label1->setFontStyle(Font::BOLD);
-	label1->setRect(5,26,100,20);
-	Label *label2 = new Label("=Label=", Label::ALIGN_CENTER);
-	label2->setFontStyle(Font::ITALIC);
-	label2->setBackground(0x0);
-	label2->setForeground(0xFFFFFF);
-	label2->setRect(5,46,100,20);
-	Label *label3 = new Label("Label->", Label::ALIGN_RIGHT);
-	label3->setFontStyle(Font::BOLD | Font::ITALIC);
-	label3->setRect(5,66,100,20);
-	TextField *text1 = new TextField();
-	text1->setRect(5,86,100,20);
-	text1->setText("Hello,World");
-	TextField *text2 = new TextField();
-	text2->setRect(5,107,100,20);
-	TextField *text3 = new TextField();
-	text3->setRect(5,128,100,20);
-	ListBox *list1 = new ListBox();
-	list1->setRect(110,35,100,100);
-	list1->add("ひげぽん");
-	list1->add("ｷﾀｰｰ!!");
-	list1->add("Mona is here");
-	window->add(button1);
-	window->add(label1);
-	window->add(label2);
-	window->add(label3);
-	window->add(text1);
-	window->add(text2);
-	window->add(text3);
-	window->add(list1);
+	GuiTest *window = new GuiTest();
 	window->run();
 	delete(window);
 	
