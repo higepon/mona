@@ -480,9 +480,11 @@ p.PageLink
 
 p.Attention
 {
-	font-size:120%;
+	font-size:220%;
 	color:#FF0000;
 	text-align:center;
+	margin-top:1em;
+	margin-bottom:2em;
 }
 p.Attention a:link, p.Attention a:visited {
 	color:#FF0000;
