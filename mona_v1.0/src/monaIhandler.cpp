@@ -11,6 +11,7 @@
     \version $Revision$
     \date   create:2002/07/25 update:$Date$
 */
+
 #include<monaIdt.h>
 #include<monaVga.h>
 #include<monaIo.h>
@@ -28,6 +29,8 @@
 */
 void keyStrokeHandler() {
 
+    pusha();
+
     /* get scancode */
     unsigned char scancode = inportb(0x60);
 
@@ -37,6 +40,8 @@ void keyStrokeHandler() {
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
+
+    popa();
 
     /* iret */
     iret();
@@ -54,7 +59,9 @@ void keyStrokeHandler() {
 */
 void fault0dHandler() {
 
+    pusha();
     _sysPrintln("fault0d");
+    popa();
     return;
 
 }
@@ -72,9 +79,13 @@ void dummy() {
 
     //    _sysPrint("dummy");
 
+    pusha();
+
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
+
+    popa();
 
     iret();
     return;
@@ -107,7 +118,7 @@ void fdcHandler(){
 */
 void timerHandler() {
 
-    //_sysPrint("timer");
+    pusha();
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
@@ -115,6 +126,9 @@ void timerHandler() {
 
     ProcessManager& pm = ProcessManager::instance();
     pm.switchProcess();
+
+    popa();
+
     iret();
     return;
 }

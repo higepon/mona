@@ -16,8 +16,10 @@
 
 #include <monaTypes.h>
 
-#define _sysLock()   asm volatile("cli") /*!< \def disable interupts */
-#define _sysUnlock() asm volatile("sti") /*!< \def  enable  interupts */
+#define _sysLock()   asm volatile("cli")    /*!< \def disable interupts */
+#define _sysUnlock() asm volatile("sti")    /*!< \def enable  interupts */
+#define pusha()      asm volatile("pusha"); /*!< \def  pusha            */
+#define popa()       asm volatile("popa");  /*!< \def  popa             */
 
 /*!
     \struct TSS(Task State Segment)
