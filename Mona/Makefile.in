@@ -1,5 +1,5 @@
 all:
-	@cd tools; $(MAKE) $@
+	@cd tools; $(MAKE) CXX=g++ $@
 	@cd src; $(MAKE) $@
 	@cd apps; $(MAKE) $@
 	@cd samples; $(MAKE) $@

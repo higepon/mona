@@ -16,6 +16,13 @@ isOldVersion=`gcc --version|egrep '2\.9.*'`
 isMinGW32=`uname|egrep MINGW32`
 export OSTYPE="$(uname | cut -d _ -f 1 | tr [:upper:] [:lower:])"
 
+# check MINGWPREFIX
+if test -z $1 ; then
+   MINGWPREFIX=${MINGWPREFIX:-"/usr/local/mingw32/bin/i386-mingw32-"}
+elif test `echo $1 | grep -- --mingw-prefix= ` != "" ; then
+   MINGWPREFIX=`echo $1 | sed -e "s/--mingw-prefix=//g"`
+fi
+
 echo -n "OSTYPE: "
 # cygwin
 if test "$OSTYPE" = "cygwin" ; then
@@ -25,6 +32,11 @@ if test "$OSTYPE" = "cygwin" ; then
 elif test $isMinGW32; then
    cp  env/mingw.env env/Makefile.inc
    echo "MinGW32"
+# MinGW (Unix)
+elif test -x `printf "%s%s" $MINGWPREFIX "g++"` ; then
+   echo "MINGWPREFIX = $MINGWPREFIX" > env/Makefile.inc
+   cat env/uxmingw.env >> env/Makefile.inc
+   echo "MinGW32 (Unix)"
 else
    echo $OSTYPE
    echo ""

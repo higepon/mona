@@ -1,5 +1,7 @@
 2004-10-05  higepon  <higepon@users.sourceforge.jp>
 
+        * ななしさんによるLinux MinGwパッチ mona-uxmingw-2.diffの取り込み
+
         * src/kernel/syscalls.cpp: システムコール中の割込み許可時のバグ修正
 
         * apps/gui/shell/Form1.cpp (StdoutMessageLoop): MSG_STDOUTを受信できるように変更
