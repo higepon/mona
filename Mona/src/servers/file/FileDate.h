@@ -36,7 +36,7 @@ public:
     int GetMinute() const {return this->minute;}
     void SetMinute(int minute) {this->minute = minute;}
     int GetSecond() const {return this->second;}
-    void SetSecond(int seconde) {this->second = second;}
+    void SetSecond(int second) {this->second = second;}
 
 private:
     int year;
