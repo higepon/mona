@@ -16,5 +16,6 @@
 
 #define H_SIZE_T unsigned long
 #define H_BYTE   unsigned char
+#define NULL     0
 
 #endif

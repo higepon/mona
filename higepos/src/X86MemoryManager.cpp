@@ -36,14 +36,14 @@ char* X86MemoryManager::getName() {
     \return address to allocated memory
 
     \author HigePon
-    \date   create:2002/08/07 update:2002/08/24
+    \date   create:2002/08/07 update:2002/09/07
 */
-unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
+H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
     /* size 0 */
-    if (size == 0) return 0;
+    if (size == 0) return NULL;
 
-    unsigned long oldAddress = current_;
+    H_SIZE_T oldAddress = current_;
     current_ += size;
 
     /* check limit */
@@ -68,7 +68,7 @@ unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
     \author HigePon
     \date   create:2002/08/07 update:
 */
-unsigned long X86MemoryManager::freeMemory(unsigned long address) {
+H_SIZE_T X86MemoryManager::freeMemory(H_SIZE_T address) {
 
     return 0;
 }
@@ -94,4 +94,21 @@ X86MemoryManager::~X86MemoryManager() {
 */
 X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) {
     current_ = MEMORY_START;
+}
+
+/*!
+    \brief get real size
+
+    get real size of memory to allocate.
+    size of struct MemoryEntry should be added
+
+    \param size size of memory they want
+    \return real size of memory to allocate
+
+    \author HigePon
+    \date   create:2002/09/07 update:
+*/
+H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
+
+    return (size + sizeof(struct memoryEntry));
 }
