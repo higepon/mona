@@ -4,8 +4,14 @@ all:
 install:
 	@cd ne2k; $(MAKE) $@
 
-clean:
+clean: touchdepend
 	@cd ne2k; $(MAKE) $@
 
-depend:
+depend: touchdepend
 	@cd ne2k; $(MAKE) $@
+
+distclean:
+	rm -f ne2k/dependencies
+
+touchdepend:
+	touch ne2k/dependencies

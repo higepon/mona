@@ -13,13 +13,13 @@ clean: touchdepend
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 
-distclean:
-	rm -f kernel/dependencies
+depend: touchdepend
+	@cd kernel; $(MAKE) $@
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 
-depend: touchdepend
-	@cd kernel; $(MAKE) $@
+distclean:
+	rm -f kernel/dependencies
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 

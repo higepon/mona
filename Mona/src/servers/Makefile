@@ -19,19 +19,19 @@ clean: touchdepend
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
 
-distclean:
-	rm -f key/dependencies
-	rm -f mouse/dependencies
-	rm -f shell/dependencies
-	rm -f gui/dependencies
-	rm -f 1linesh/dependencies
-
 depend: touchdepend
 	@cd key; $(MAKE) $@
 	@cd mouse; $(MAKE) $@
 	@cd shell; $(MAKE) $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
+
+distclean:
+	rm -f key/dependencies
+	rm -f mouse/dependencies
+	rm -f shell/dependencies
+	rm -f gui/dependencies
+	rm -f 1linesh/dependencies
 
 touchdepend:
 	touch key/dependencies

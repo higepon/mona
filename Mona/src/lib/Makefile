@@ -17,17 +17,17 @@ clean: touchdepend
 	@cd jpegls; $(MAKE) $@
 	rm -f ../../lib/*.a
 
-distclean:
-	rm -f monapi/dependencies
-	rm -f monalibc/dependencies
-	rm -f gui/dependencies
-	rm -f jpegls/dependencies
-
 depend: touchdepend
 	@cd monapi; $(MAKE) $@
 	@cd monalibc; $(MAKE) $@
 	@cd gui; $(MAKE) $@
 	@cd jpegls; $(MAKE) $@
+
+distclean:
+	rm -f monapi/dependencies
+	rm -f monalibc/dependencies
+	rm -f gui/dependencies
+	rm -f jpegls/dependencies
 
 touchdepend:
 	touch monapi/dependencies
