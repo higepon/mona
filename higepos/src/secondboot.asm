@@ -6,6 +6,7 @@
 ; WITHOUT ANY WARRANTY
 ;-------------------------------------------------------------------------------
 [bits 16]
+
 RealToProtect:
         mov  ax, cs             ; we jump from firstboot
         mov  ds, ax             ; so ds is changed
@@ -69,10 +70,8 @@ set_cs_desc1:
         mov  es, ax             ; 0x10
         mov  ax, 0x18           ; ss selector
         mov  ss, ax             ; is 0x18
-        mov  sp, 0x1000         ; sp
+        mov  esp, 1024*1024*8   ; sp is 8MB
         jmp  0x200
-
-
 ;  hang:
 ;          jmp hang
 
