@@ -1,8 +1,8 @@
 #include<userlib.h>
-#include<OthelloBoard.h>
+#include "OthelloBoard.h"
 
 /*----------------------------------------------------------------------
-    MonaƒAƒvƒŠƒP[ƒVƒ‡ƒ“
+    Mona¥¢¥×¥ê¥±¡¼¥·¥ç¥ó
 ----------------------------------------------------------------------*/
 class myApplication : public MonaApplication, public Observer {
 
@@ -32,11 +32,11 @@ class myApplication : public MonaApplication, public Observer {
 };
 
 /*----------------------------------------------------------------------
-    MainŠÖ”
+    Main´Ø¿ô
 ----------------------------------------------------------------------*/
 int MonaMain(List<char*>* pekoe) {
 
-    monaApp = new myApplication("OTHELLO.ELF");
+    monaApp = new myApplication("OTHELLO");
     monaApp->main(pekoe);
     monaApp->onMouseClick(5, 5);
     return 0;
@@ -46,25 +46,25 @@ int MonaMain(List<char*>* pekoe) {
     myApplication
 ----------------------------------------------------------------------*/
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ¥³¥ó¥¹¥È¥é¥¯¥¿
 myApplication::myApplication(char* name) : MonaApplication(name) {
 }
 
 // main
 int myApplication::main(List<char*>* pekoe) {
 
-    // ‰Šúˆ—
+    // ½é´ü½èÍı
     init();
 
-    // ƒIƒZƒ”Â‚Ì‰Šúó‘Ô‚ğ•`‰æ
+    // ¥ª¥»¥íÈÄ¤Î½é´ü¾õÂÖ¤òÉÁ²è
     drawBoard();
 
-    // ƒCƒxƒ“ƒg‚ğ‘Ò‚Â
+    // ¥¤¥Ù¥ó¥È¤òÂÔ¤Ä
     for (;;);
     return 0;
 }
 
-// ƒIƒZƒ”Â‚ğ•`‰æ
+// ¥ª¥»¥íÈÄ¤òÉÁ²è
 void myApplication::drawBoard() {
 
     for (int x = 0; x < OthelloBoard::BOARDW; x++) {
@@ -74,13 +74,13 @@ void myApplication::drawBoard() {
     }
 }
 
-// (x, y)‚É‚Ğ‚Æ‚±‚Ü•`‰æ
+// (x, y)¤Ë¤Ò¤È¤³¤ŞÉÁ²è
 void myApplication::drawPieces(int x, int y) {
 
     int piece = this->board->getPiece(x, y);
     int s = PIECE_SIZE;
 
-    // — ƒoƒbƒtƒ@‚©‚çÀVRAM‚É“]‘—
+    // Î¢¥Ğ¥Ã¥Õ¥¡¤«¤é¼ÂVRAM¤ËÅ¾Á÷
     switch(piece) {
 
     case(OthelloBoard::BLACK):
@@ -97,36 +97,36 @@ void myApplication::drawPieces(int x, int y) {
     }
 }
 
-// ƒL[“ü—Í‚Í‚µ‚È‚¢
+// ¥­¡¼ÆşÎÏ¤Ï¤·¤Ê¤¤
 void myApplication::onKeyDown(int keycode, int modifiers) {
 }
 
-// ƒ}ƒEƒXƒNƒŠƒbƒNƒCƒxƒ“ƒg
+// ¥Ş¥¦¥¹¥¯¥ê¥Ã¥¯¥¤¥Ù¥ó¥È
 void myApplication::onMouseClick(int x, int y) {
 
-    // ƒIƒZƒ”Â‚Ì‚Ç‚±‚ªƒNƒŠƒbƒN‚³‚ê‚½
+    // ¥ª¥»¥íÈÄ¤Î¤É¤³¤¬¥¯¥ê¥Ã¥¯¤µ¤ì¤¿
     int bx = (x - x % PIECE_SIZE) / PIECE_SIZE;
     int by = (y - y % PIECE_SIZE) / PIECE_SIZE;
 
-    // ”ÍˆÍƒ`ƒFƒbƒN
+    // ÈÏ°Ï¥Á¥§¥Ã¥¯
     if (!board->checkRange(bx, by)) {
         return;
     }
 
-    // Œ»İ‚ÌƒvƒŒƒCƒ„[‚ª‚±‚Ü‚ğ‚¨‚­
+    // ¸½ºß¤Î¥×¥ì¥¤¥ä¡¼¤¬¤³¤Ş¤ò¤ª¤¯
     int current = board->getCurrentHand();
     if (!(board->setPiece(bx, by, current))) {
         return;
     }
 
-    // ‚Ğ‚Á‚­‚è•Ô‚³‚ê‚é‚±‚Ü‚ğˆê–‡‚¸‚Â•`‰æ
+    // ¤Ò¤Ã¤¯¤êÊÖ¤µ¤ì¤ë¤³¤Ş¤ò°ìËç¤º¤ÄÉÁ²è
     while (board->existNotReversedPieces()) {
 
         board->reverseNext();
     }
 }
 
-// ƒIƒZƒ”Â‚Ì“à—e‚É•ÏX‚ª‚ ‚Á‚½‚±‚Æ‚ª‚±‚ÌŠÖ”‚É’Ê’m‚³‚ê‚é
+// ¥ª¥»¥íÈÄ¤ÎÆâÍÆ¤ËÊÑ¹¹¤¬¤¢¤Ã¤¿¤³¤È¤¬¤³¤Î´Ø¿ô¤ËÄÌÃÎ¤µ¤ì¤ë
 void myApplication::update(Observable* o, void* arg) {
 
     if (arg == NULL) {
@@ -140,33 +140,33 @@ void myApplication::update(Observable* o, void* arg) {
 
 void myApplication::init() {
 
-    // ƒ}ƒEƒXƒT[ƒo[‚Æ©•ª©g‚ÌPID‚ğ“¾‚é
-    dword myPid   = Message::lookup("OTHELLO.ELF");
+    // ¥Ş¥¦¥¹¥µ¡¼¥Ğ¡¼¤È¼«Ê¬¼«¿È¤ÎPID¤òÆÀ¤ë
+    dword myPid   = System::getPID();
     dword destPid = Message::lookup("MOUSE.SVR");
 
-    // ƒ}ƒEƒXƒT[ƒo‚Í‹N“®‚µ‚Ä‚¢‚éH
+    // ¥Ş¥¦¥¹¥µ¡¼¥Ğ¤Ïµ¯Æ°¤·¤Æ¤¤¤ë¡©
     if (destPid == 0) {
         printf("process MOUSE.SVR not found\n");
         exit(-1);
     }
 
-    // ƒ}ƒEƒXƒT[ƒo[‚Éƒ}ƒEƒXî•ñ‚ğ‚­‚ê‚é‚æ‚¤‚É©•ª©g‚ğ“o˜^‚·‚éƒƒbƒZ[ƒW‚ğ‘—M 
+    // ¥Ş¥¦¥¹¥µ¡¼¥Ğ¡¼¤Ë¥Ş¥¦¥¹¾ğÊó¤ò¤¯¤ì¤ë¤è¤¦¤Ë¼«Ê¬¼«¿È¤òÅĞÏ¿¤¹¤ë¥á¥Ã¥»¡¼¥¸¤òÁ÷¿® 
     MessageInfo info;
     Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
     if (Message::send(destPid, &info)) {
         printf("regist error\n");
     }
 
-    // ƒIƒZƒ”Â‚ğ¶¬
+    // ¥ª¥»¥íÈÄ¤òÀ¸À®
     this->board = new OthelloBoard();
 
-    // ƒIƒZƒ”Â‚É•ÏX‚ª‚ ‚Á‚½‚ç’Ê’m‚µ‚Ä‚à‚ç‚¤
+    // ¥ª¥»¥íÈÄ¤ËÊÑ¹¹¤¬¤¢¤Ã¤¿¤éÄÌÃÎ¤·¤Æ¤â¤é¤¦
     this->board->addObserver(this);
 
-    // — ƒoƒbƒtƒ@—p‚É‰¼‘zƒXƒNƒŠ[ƒ“‚ğŠm•Û
+    // Î¢¥Ğ¥Ã¥Õ¥¡ÍÑ¤Ë²¾ÁÛ¥¹¥¯¥ê¡¼¥ó¤ò³ÎÊİ
     virtualScreen = new VirtualScreen(200 * 1024);
 
-    // •`‰æ•”•i‚Æ‚µ‚Ä”’ŠÛE•ŠÛE‹ó‚Ì•”•i‚ğ— ƒoƒbƒtƒ@‚É•`‰æ
+    // ÉÁ²èÉôÉÊ¤È¤·¤ÆÇò´İ¡¦¹õ´İ¡¦¶õ¤ÎÉôÉÊ¤òÎ¢¥Ğ¥Ã¥Õ¥¡¤ËÉÁ²è
     int s = PIECE_SIZE;
     int s1 = (int)(0.5 * s);
     virtualScreen->fillRect16(0, 0, s, s, Color::rgb(0x00, 0xFF, 0x00));

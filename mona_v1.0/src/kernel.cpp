@@ -63,7 +63,7 @@
 #include <vbe.h>
 #include <VesaConsole.h>
 
-char* version = "Mona version.0.1.4 $Date$";
+char* version = "Mona version.0.1.5 $Date$";
 
 void rdtsc(dword* timeL, dword* timeH) {
 
@@ -98,138 +98,13 @@ void rdtscsub(dword* timeL, dword* timeH) {
 
 void mainProcess() {
 
-    dword timeL = 0;
-    dword timeH = 0;
-
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    byte buf[512];
-
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(1, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(2, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(3, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(4, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(5, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(6, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(7, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(8, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(9, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-
-    rdtsc(&(gt[0]), &(gt[1]));
-    g_fdcdriver->read(10, buf);
-    rdtscsub(&(gt[0]), &(gt[1]));
-    g_console->printf("total[%x, %x]", gt[0], gt[1]);
-    g_console->printf("seek[%x, %x]", gt[2], gt[3]);
-    g_console->printf("dma[%x, %x]", gt[4], gt[5]);
-    g_console->printf("read com[%x, %x]", gt[6], gt[7]);
-    g_console->printf("wait[%x, %x]", gt[8], gt[9]);
-    g_console->printf("result[%x, %x]", gt[10], gt[11]);
-    g_console->printf("sdma[%x, %x]", gt[12], gt[13]);
-    g_console->printf("memcpy[%x, %x]", gt[14], gt[15]);
-
-
-    /* Keyboard Server */
-    g_console->printf("loading Keyboard Server....");
+    /* KEY Server */
+    g_console->printf("loading KeyBoard Server....");
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
 
     /* Mouse Server */
     g_console->printf("loading Mouse    Server....");
     g_console->printf("%s\n", loadProcess(".", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
-
 
     /* Shell Server */
     g_console->printf("loading Shell    Server....");

@@ -1,5 +1,5 @@
 #include <userlib.h>
-#include <OthelloBoard.h>
+#include "OthelloBoard.h"
 
 /**
  * コンストラクタ
@@ -421,3 +421,4 @@ bool OthelloBoard::isTherePlace(int piece) {
 
     return result > 0;
 }
+

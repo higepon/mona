@@ -483,22 +483,12 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , 0xFF//0x00
                    };
 
-    rdtsc(&(gt[2]), &(gt[3]));
-
     if (!seek(track)) {
         info(ERROR, "read#seek:error");
         return false;
     }
 
-    rdtscsub(&(gt[2]), &(gt[3]));
-
-    rdtsc(&(gt[4]), &(gt[5]));
-
     setupDMARead(512);
-
-    rdtscsub(&(gt[4]), &(gt[5]));
-
-    rdtsc(&(gt[6]), &(gt[7]));
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))) {
@@ -507,24 +497,16 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         return false;
     }
 
-    rdtscsub(&(gt[6]), &(gt[7]));
-
-    rdtsc(&(gt[8]), &(gt[9]));
     waitInterrupt();
-    rdtscsub(&(gt[8]), &(gt[9]));
 
     //    delay(30000);
 
-    rdtsc(&(gt[10]), &(gt[11]));
     for (int i = 0; i < 7; i++) {
 
         results_[i] = getResult();
     }
-    rdtscsub(&(gt[10]), &(gt[11]));
 
-    rdtsc(&(gt[12]), &(gt[13]));
     stopDMA();
-    rdtscsub(&(gt[12]), &(gt[13]));
     //  g_console->printf("status=%x", results_[0]);
     //    g_console->printf("%s", ((results_[0] & 0xC0) != 0x00) ? "true":"false");
 
