@@ -31,10 +31,10 @@ class Shell {
     inline bool getHasExited() { return this->hasExited; }
 
   protected:
+    void backspace();
     void commandChar(char c);
     void commandExecute(bool prompt);
     void commandTerminate();
-    void backspace();
     void putHistory(const MonAPI::CString& command);
     MonAPI::CString getHistory();
     int isInternalCommand(const MonAPI::CString& command);
@@ -45,6 +45,7 @@ class Shell {
     MonAPI::CString mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CString& dir2);
     void printFiles(const MonAPI::CString& dir);
     void executeMSH(const MonAPI::CString& msh);
+    void checkCaretPosition();
 
   protected:
     char commandLine[1024];
@@ -55,6 +56,7 @@ class Shell {
     bool hasExited, callAutoExec;
     dword waiting;
     MonAPI::Screen screen;
+    int prevX, prevY;
 };
 
 #endif

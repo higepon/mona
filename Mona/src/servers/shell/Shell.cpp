@@ -8,7 +8,9 @@ using namespace MonAPI;
 /*----------------------------------------------------------------------
     Shell
 ----------------------------------------------------------------------*/
-Shell::Shell(bool callAutoExec) : position(0), hasExited(false), callAutoExec(this->callAutoExec), waiting(THREAD_UNKNOWN)
+Shell::Shell(bool callAutoExec)
+    : position(0), hasExited(false), callAutoExec(this->callAutoExec),
+      waiting(THREAD_UNKNOWN), prevX(0), prevY(0)
 {
     this->current = STARTDIR;
     this->makeApplicationList();
@@ -54,17 +56,43 @@ void Shell::run()
     }
 }
 
+void Shell::backspace()
+{
+    if (this->position == 0)
+    {
+        /* donothing */
+        return;
+    }
+
+    this->checkCaretPosition();
+
+    monapi_call_mouse_set_cursor(0);
+    int x, y;
+    syscall_get_cursor(&x, &y);
+    syscall_set_cursor(x - 1, y);
+    printf("  ");
+    syscall_set_cursor(x - 1, y);
+    this->drawCaret();
+    monapi_call_mouse_set_cursor(1);
+
+    /* backspace */
+    this->position--;
+}
+
 void Shell::commandChar(char c)
 {
     if (c != '\0')
     {
+        this->checkCaretPosition();
         int x, y;
         syscall_get_cursor(&x, &y);
         x++;
         if ((x + 1) * FONT_WIDTH >= this->screen.getWidth()) return;
 
+        monapi_call_mouse_set_cursor(0);
         printf("%c", c);
         this->drawCaret();
+        monapi_call_mouse_set_cursor(1);
     }
     this->commandLine[this->position] = c;
     this->position++;
@@ -182,25 +210,6 @@ CString Shell::getHistory()
 {
     if (history.isEmpty()) return "";
     return history.get(0);
-}
-
-void Shell::backspace()
-{
-    if (this->position == 0)
-    {
-        /* donothing */
-        return;
-    }
-
-    int x, y;
-    syscall_get_cursor(&x, &y);
-    syscall_set_cursor(x - 1, y);
-    printf("  ");
-    syscall_set_cursor(x - 1, y);
-    this->drawCaret();
-
-    /* backspace */
-    this->position--;
 }
 
 void Shell::onKeyDown(int keycode, int modifiers)
@@ -482,5 +491,21 @@ void Shell::drawCaret(bool erase /*= false*/)
 {
     int x, y;
     syscall_get_cursor(&x, &y);
-    this->screen.fillRect16(x * FONT_WIDTH, y * FONT_HEIGHT + FONT_HEIGHT - 2, 8, 2, erase ? BACKGROUND : FOREGROUND);
+    this->screen.fillRect16(x * FONT_WIDTH, y * FONT_HEIGHT + FONT_HEIGHT - 2, 8, 2,
+        erase ? BACKGROUND : FOREGROUND);
+    this->prevX = x;
+    this->prevY = y;
+}
+
+void Shell::checkCaretPosition()
+{
+    int x, y;
+    syscall_get_cursor(&x, &y);
+    if (this->prevX == x && this->prevY == y) return;
+
+    monapi_call_mouse_set_cursor(0);
+    this->printPrompt(this->prevX == 0 ? NULL : "\n");
+    this->commandLine[this->position] = '\0';
+    printf(this->commandLine);
+    monapi_call_mouse_set_cursor(1);
 }
