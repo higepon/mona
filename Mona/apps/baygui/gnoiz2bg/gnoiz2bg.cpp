@@ -275,78 +275,100 @@ void drawBackground(unsigned char *pbuf) {
 /* ----------- these are written by bayside ------------ */
 
 class GNoiz2bg : public Window {
-private:
-	int i, j, k, k2;
-	unsigned char *pbuf;
-	int vesaBpp, vesaWidth;
-	byte* vesaVram;
-	int scene_count, scene;
-
 public:
-	GNoiz2bg(){
-		setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
-		setTitle("noiz2bg for GUI");
-		initBackground();
-		setStageBackground(1);
-		scene = 1;
-		scene_count = FPS * 10;
-		pbuf = (unsigned char *)malloc(SCREEN_W*SCREEN_H * 4);
-		MonAPI::Screen screen;
-		vesaBpp = screen.getBpp() / 8;
-		vesaWidth = screen.getWidth();
-		vesaVram = screen.getVRAM();
-	}
+	unsigned char *pbuf;
+	GNoiz2bg::GNoiz2bg();
+	GNoiz2bg::~GNoiz2bg();
+	void draw();
+	void onEvent(Event *e);
+	void onPaint(Graphics *g);
+};
+
+
+/** アプリケーションインスタンス */
+static GNoiz2bg *noiz = NULL;
+
+/** 描画スレッドID */
+static dword drawThreadID = THREAD_UNKNOWN;
+
+/** 描画スレッド */
+static void DrawThread()
+{
+	MonAPI::Message::send(drawThreadID, MSG_SERVER_START_OK);
+
+	int scene_count, scene;
 	
-	~GNoiz2bg(){
-		free(pbuf);
-		free(vesaVram);
-	}
+	initBackground();
+	setStageBackground(1);
+	scene = 1;
+	scene_count = FPS * 10;
 	
-	void onPaint(Graphics *g) {
+	while (1) {
 		moveBackground();
-		drawBackground(pbuf);
-		
-		if (vesaBpp == 2) {
-			for (j = 0; j < SCREEN_H; j++) {
-				for (i = 0; i < SCREEN_W; i++) {
-					k = (i + j * SCREEN_W) * 4;
-					k2= ((x + INSETS_LEFT + i) + (y + INSETS_TOP + j) * vesaWidth) * vesaBpp;
-					*(word*)&vesaVram[k2] = MonAPI::Color::bpp24to565(&pbuf[k]);
-				}
-			}
-		} else {
-			for (j = 0; j < SCREEN_H; j++) {
-				for (i = 0; i < SCREEN_W; i++) {
-					k = (i + j * SCREEN_W) * 4;
-					k2= ((x + INSETS_LEFT + i) + (y + INSETS_TOP + j) * vesaWidth) * vesaBpp;
-					vesaVram[k2  ] = pbuf[k  ];
-					vesaVram[k2+1] = pbuf[k+1];
-					vesaVram[k2+2] = pbuf[k+2];
-				}
-			}
-		}
-		
+		drawBackground(noiz->pbuf);
+		noiz->draw();
 		scene_count--;
-		
 		if(scene_count <= 0){
 			scene       = (scene + 1) % 6;
-			scene_count = FPS * 10;
+			scene_count = FPS * 20;
 			setStageBackground(scene);
 		}
 	}
-	
-	void onEvent(Event *event) {
-		if (event->type == TIMER) {
-			onPaint(__g);
-			setTimer(30);
-		} else if (event->type == FOCUS_IN) {
-			setTimer(10);
+}
+
+/** コンストラクタ */
+GNoiz2bg::GNoiz2bg() {
+	setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
+	setTitle("noiz2bg for GUI");
+	pbuf = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 4);
+}
+
+/** デストラクタ */
+GNoiz2bg::~GNoiz2bg() {
+	syscall_kill_thread(drawThreadID);
+	free(pbuf);
+}
+
+/** ウィンドウ内部領域のみの描画 */
+void GNoiz2bg::draw() {
+	for (int y = 0; y < SCREEN_H; y++) {
+		for (int x = 0; x < SCREEN_W; x++) {
+			int k = (x + y * SCREEN_W) * 4;
+			unsigned char b = pbuf[k];
+			unsigned char g = pbuf[k + 1];
+			unsigned char r = pbuf[k + 2];
+			__g->drawPixel(x, y, r << 16 | g << 8 | b);
 		}
 	}
-};
+}
+
+/** イベント処理 */
+void GNoiz2bg::onEvent(Event *e) {
+	if (e->type == FOCUS_IN) {
+		// 描画スレッド起動
+		if (drawThreadID == THREAD_UNKNOWN) {
+			drawThreadID = syscall_get_tid();
+			MessageInfo msg, src;
+			dword id = syscall_mthread_create((dword)DrawThread);
+			syscall_mthread_join(id);
+			src.header = MSG_SERVER_START_OK;
+			MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+			drawThreadID = msg.from;
+		}
+	} else if (e->type == FOCUS_OUT) {
+		// 描画スレッド停止
+		syscall_kill_thread(drawThreadID);
+		drawThreadID = THREAD_UNKNOWN;
+	}
+}
+
+/** 描画 */
+void GNoiz2bg::onPaint(Graphics *g) {
+	draw();
+}
 
 int MonaMain(List<char*>* pekoe) {
-	GNoiz2bg *noiz = new GNoiz2bg();
+	noiz = new GNoiz2bg();
 	noiz->run();
 	delete(noiz);
 	return 0;
