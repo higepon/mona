@@ -88,6 +88,7 @@ void disp_name3() {
 
     g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
 
+
 //     while (Semaphore::down(&g_semaphore_shared));
 //     bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
 //     bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);

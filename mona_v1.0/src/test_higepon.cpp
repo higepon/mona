@@ -43,29 +43,25 @@ struct read_info {
     int sz;
 } read_info;
 
-
-void mame() {
-
-    int result;
-    asm volatile("movl $%c1, %%ebx \n"
-                 "movl %2  , %%esi \n"
-                 "int  $0x80       \n"
-                 "movl %%eax, %0   \n"
-                 :"=m"(result)
-                 :"g"(SYSTEM_CALL_PRINT), "m"(&"hoge")
-                 );
-
-    while (true);
-}
+#define SHARED_MM_ERROR -1
+#define FAT_INIT_ERROR  -2
+#define FAT_OPEN_ERROR  -3
 
 int loadProcess(const char* path, const char* file) {
 
-    while (Semaphore::down(&g_semaphore_shared));
-    bool isOpen = SharedMemoryObject::open(0x1237, 4096 * 5);
-    bool isAttaced = SharedMemoryObject::attach(0x1237, g_current_process, 0x80000000);
+    int    fileSize;
+    int    readTimes;
+    byte*  buf;
+    bool   isOpen;
+    bool   isAttaced;
+    FAT12* fat;
 
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen = SharedMemoryObject::open(0x1237, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(0x1237, g_current_process, 0x80000000);
     Semaphore::up(&g_semaphore_shared);
-    if (!isOpen || !isAttaced) panic("loadProcess: not open");
+
+    if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
 
     g_fdcdriver = new FDCDriver();
     g_fdcdriver->motor(ON);
@@ -73,31 +69,13 @@ int loadProcess(const char* path, const char* file) {
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
-    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+    fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) return FAT_INIT_ERROR;
+    if (!fat->open(path, file, FAT12::READ_MODE)) return FAT_OPEN_ERROR;
 
-
-    if (!fat->initilize()) {
-
-        int errorNo = fat->getErrorNo();
-
-        if (errorNo == FAT12::BPB_ERROR) g_console->printf("BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12_ERROR) g_console->printf("NOT FAT12 error \n");
-        else if (errorNo == FAT12::FAT_READ_ERROR) g_console->printf("NOT FAT12 error \n");
-        else g_console->printf("unknown error \n");
-
-        g_console->printf("fat initilize faild\n");
-        while (true);
-    }
-
-    if (!fat->open(path, file, FAT12::READ_MODE)) {
-
-        info(ERROR, "open failed");
-    }
-
-    int fileSize  = fat->getFileSize();
-    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
-
-    byte* buf = (byte*)malloc(512 * readTimes);
+    fileSize  = fat->getFileSize();
+    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+    buf = (byte*)malloc(512 * readTimes);
     if (buf == NULL) return -1;
 
     for (int i = 0; i < readTimes; i++) {
@@ -118,11 +96,8 @@ int loadProcess(const char* path, const char* file) {
 
     dword entrypoint = loader->load((byte*)0x80000000);
 
-    //    g_console->printf("entry=%x", entrypoint);
-
     delete(loader);
     free(buf);
-
 
     Process*   process1 = new Process(file);
 
