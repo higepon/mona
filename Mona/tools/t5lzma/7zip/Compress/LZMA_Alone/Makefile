@@ -6,7 +6,7 @@ CXX = g++
 CC  = gcc
 LIB = -lstdc++ -lm
 RM=-rm
-CFLAGS = -c -O3
+CFLAGS = -c -O3 -UWIN32
 LDFLAGS = -Wl,-s
 
 OBJS = \
@@ -29,7 +29,6 @@ OBJS = \
   StringToInt.o \
   Vector.o
 # FileIO.o
-# FileIO.o ÇÕcygwinÇ≈ÇÕåÉÇµÇ≠ÉGÉâÅ[ÇãNÇ±Ç∑
 
 all: $(PROG)
 
