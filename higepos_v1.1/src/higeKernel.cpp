@@ -20,6 +20,7 @@
 #include<higeUtil.h>
 #include<higeTypes.h>
 #include<HVector.h>
+#include<FDCDriver.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -65,6 +66,16 @@ void startKernel(void) {
     _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);
+
+#if 0
+    /* FDCDriver test code */
+    unsigned char buff[512];
+    gFDCDriver1 = new FDCDriver();
+    gFDCDriver1->read_sector(1, 1, buff);
+    for(int i = 0; i < 512; i++){
+         _sys_printf("[%d]", buff[i]);
+    }
+#endif
 
     /* testing HVector */
     HVector<int>* v = new HVector<int>;
