@@ -107,7 +107,7 @@ class Thread {
 
     inline void tick(dword tick) {
         tick_     += tick;
-        timeLeft_ += tick;
+        timeLeft_ -= tick;
     }
 
     inline dword getTick() const {
@@ -133,24 +133,6 @@ class Thread {
 };
 
 /*----------------------------------------------------------------------
-    ThreadScheduler
-----------------------------------------------------------------------*/
-class ThreadScheduler {
-
-  public:
-    ThreadScheduler();
-    virtual ~ThreadScheduler();
-
-  public:
-    Thread* schedule(Thread* current);
-    int join(Thread* thread);
-    int kill(Thread* thread);
-
-  private:
-    List<Thread*>* list_;
-};
-
-/*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
 class ProcessManager_;
@@ -170,26 +152,26 @@ class ThreadManager {
         return current_;
     }
 
-    inline Thread* getIdleThread() const {
-        return &idle;
+    inline bool hasActiveThread() const {
+        return dispatchList_->size();
     }
 
-    static void createIdle(dword programCounter, PageEntry* pageDirectory);
+  private:
+    inline dword allocateStack() const {
+        return STACK_START - STACK_SIZE * threadCount;
+    }
+    void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
+    void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
 
   private:
-    static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory);
-    static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory);
-
-  private:
-    ThreadScheduler* scheduler_;
     Thread* current_;
+    List<Thread*>* dispatchList_;
     bool isUser_;
 
   private:
     static const LinearAddress STACK_START = 0xFFFFFF00;
     static const dword STACK_SIZE          = 4 * 1024;
-    static Thread idle;
-    static int threadCount;
+    int threadCount;
 };
 
 /*----------------------------------------------------------------------
@@ -203,18 +185,32 @@ class Process_ {
     virtual ~Process_();
 
   public:
-    inline const char* getName() const {return name_;}
+    inline const char* getName() const {
+        return name_;
+    }
+
     inline void tick() {
         tick_++;
         timeLeft_ --;
     }
+
     inline void tick(dword tick) {
         tick_     += tick;
         timeLeft_ -= tick;
     }
 
-    inline dword getTick() {return tick_;}
-    inline bool hasTimeLeft() const {return timeLeft_ > 0;}
+    inline dword getTick() {
+        return tick_;
+    }
+
+    inline bool hasTimeLeft() const {
+        return timeLeft_ > 0;
+    }
+
+    inline bool hasActiveThread() const {
+        return threadManager_->hasActiveThread();
+    }
+
     int join(Thread* thread);
     Thread* schedule();
     Thread* createThread(dword programCounter);
@@ -257,27 +253,6 @@ class KernelProcess_ : public Process_ {
 };
 
 /*----------------------------------------------------------------------
-    ProcessScheduler
-----------------------------------------------------------------------*/
-class ProcessScheduler {
-
-  public:
-    ProcessScheduler(Process_* idle);
-    virtual ~ProcessScheduler();
-
-  public:
-    Process_* schedule(Process_* current);
-    int add(Process_* process);
-    int kill(Process_* process);
-    bool hasProcess(Process_* process) const;
-
-  private:
-    List<Process_*>* list_;
-    Process_* idle_;
-
-};
-
-/*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
 class ProcessManager_ {
@@ -294,23 +269,21 @@ class ProcessManager_ {
     int kill(Process_* process);
     int switchProcess();
     bool schedule();
-    Process_* getCurrentProcess() const;
-    bool hasProcess(Process_* process) const;
+    inline Process_* getCurrentProcess() const {
+        return current_;
+    }
     LinearAddress allocateKernelStack() const;
-
-  private:
-    void setupThreadStack(Process_* process, Thread* thread) const;
 
   public:
     static const int USER_PROCESS   = 0;
     static const int KERNEL_PROCESS = 1;
 
   private:
-    ProcessScheduler* scheduler_;
+    List<Process_*>* dispatchList_;
+    List<Process_*>* waitList_;
     PageManager* pageManager_;
     Process_* current_;
     Process_* idle_;
-
 };
 
 /*!

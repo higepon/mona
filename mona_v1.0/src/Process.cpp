@@ -140,11 +140,11 @@ V86Process::V86Process(const char* name) {
 Thread::Thread() : tick_(0), timeLeft_(4) {
 
     /* thread information */
-    threadInfo_ = (ThreadInfo*)malloc(sizeof(ThreadInfo));
+    threadInfo_ = new ThreadInfo;
     checkMemoryAllocate(threadInfo_, "class Thread info allocate");
 
     /* thread information arch dependent */
-    threadInfo_->archinfo = (ArchThreadInfo*)malloc(sizeof(ArchThreadInfo));
+    threadInfo_->archinfo = new ArchThreadInfo;
     checkMemoryAllocate(threadInfo_->archinfo, "class Thread arch info allocate");
 }
 
@@ -155,26 +155,22 @@ Thread::~Thread() {
     free(threadInfo_);
 }
 
-Thread ThreadManager::idle;
-int ThreadManager::threadCount;
-
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-ThreadManager::ThreadManager(bool isUser) {
+ThreadManager::ThreadManager(bool isUser) : threadCount(0) {
 
     /* user or kernel */
     isUser_ = isUser;
 
-    /* scheduler */
-    scheduler_ = new ThreadScheduler();
-    checkMemoryAllocate(scheduler_, "ThreadManager scheduler memory allocate");
-
-    /*  count */
-    threadCount = 0;
+    /* list of thread */
+    dispatchList_ = new HList<Thread*>();
+    checkMemoryAllocate(dispatchList_, "ThreadManager memory allocate list");
 }
 
 ThreadManager::~ThreadManager() {
+
+    delete dispatchList_;
 }
 
 Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
@@ -191,13 +187,7 @@ Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
     return thread;
 }
 
-void ThreadManager::createIdle(dword programCounter, PageEntry* pageDirectory) {
-
-    threadCount++;
-    archCreateThread(&idle, programCounter, pageDirectory);
-}
-
-void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) {
+void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -214,13 +204,13 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageE
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_KERNEL;
-    ainfo->esp     = STACK_START - STACK_SIZE * threadCount;
-    ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
+    ainfo->esp     = allocateStack();
+    ainfo->ebp     = allocateStack();
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
-void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) {
+void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -237,19 +227,22 @@ void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, P
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_USER;
-    ainfo->esp     = STACK_START - STACK_SIZE * threadCount;
-    ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
+    ainfo->esp     = allocateStack();
+    ainfo->ebp     = allocateStack();
     ainfo->esp0    = g_processManager->allocateKernelStack();
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
 int ThreadManager::join(Thread* thread) {
-    return scheduler_->join(thread);
+    dispatchList_->add(thread);
+    return NORMAL;
 }
 
 int ThreadManager::kill(Thread* thread) {
-    return scheduler_->kill(thread);
+    dispatchList_->remove(thread);
+    delete thread; /* ? */
+    return NORMAL;
 }
 
 int ThreadManager::switchThread() {
@@ -263,112 +256,20 @@ int ThreadManager::switchThread() {
 }
 
 Thread* ThreadManager::schedule() {
-    return scheduler_->schedule(current_);
-}
-/*----------------------------------------------------------------------
-    ThreadScheduler
-----------------------------------------------------------------------*/
-ThreadScheduler::ThreadScheduler() {
-
-    /* list of thread */
-    list_ = new HList<Thread*>();
-    checkMemoryAllocate(list_, "ThreadScheduler memory allocate list");
-}
-
-ThreadScheduler::~ThreadScheduler() {
-    delete list_;
-}
-
-Thread* ThreadScheduler::schedule(Thread* current) {
-
-    /* tick */
-    current->tick();
-
-    /* thread has time yet */
-    if (current->hasTimeLeft()) {
-        return current;
-    }
-
-    /* check dispach list is empty */
-    if (list_->isEmpty()) {
-        return (Thread*)NULL;
-    }
-
-    /* round robin */
-    list_->add(current);
-    return (list_->removeAt(0));
-}
-
-int ThreadScheduler::join(Thread* thread) {
-
-    list_->add(thread);
-    return NORMAL;
-}
-
-int ThreadScheduler::kill(Thread* thread) {
-
-    list_->remove(thread);
-    return NORMAL;
+    //    return scheduler_->schedule(current_);
+    return (Thread*)NULL;
 }
 
 /*----------------------------------------------------------------------
-    ProcessScheduler
+    Idle Thread
 ----------------------------------------------------------------------*/
-ProcessScheduler::ProcessScheduler(Process_* idle) {
-
-    /* list of process */
-    list_ = new HList<Process_*>();
-    checkMemoryAllocate(list_, "ProcessScheduler memory allocate list");
-
-    /* idle process */
-    idle_ = idle;
+void idleThread() {
+    for (;;);
 }
-
-ProcessScheduler::~ProcessScheduler() {
-
-    delete list_;
-}
-
-Process_* ProcessScheduler::schedule(Process_* current) {
-
-    /* tick */
-    current->tick();
-
-    /* process has time yet */
-    if (current->hasTimeLeft()) return current;
-
-    /* check dispach list is empty */
-    if (list_->isEmpty()) return idle_;
-
-    /* round robin */
-    if (current != idle_) {
-        list_->add(current);
-    }
-    return (list_->removeAt(0));
-}
-
-int ProcessScheduler::add(Process_* process) {
-
-    list_->add(process);
-    return NORMAL;
-}
-
-int ProcessScheduler::kill(Process_* process) {
-
-    list_->remove(process);
-    return NORMAL;
-}
-
-bool ProcessScheduler::hasProcess(Process_* process) const {
-
-    /* check has process */
-    return list_->hasElement(process);
-}
-
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
-ProcessManager_::ProcessManager_(PageManager* pageManager) {
+ProcessManager_::ProcessManager_(PageManager* pageManager) : current_(NULL) {
 
     /* page manager */
     pageManager_ = pageManager;
@@ -376,40 +277,51 @@ ProcessManager_::ProcessManager_(PageManager* pageManager) {
     /* create idle process */
     idle_ = new KernelProcess_("Idle", pageManager_->createNewPageDirectory());
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
+    add(idle_);
 
-    /* scheduler */
-    scheduler_ = new ProcessScheduler(idle_);
-    checkMemoryAllocate(scheduler_, "ProcessManager memory allocate scheduler");
+    /* create thread for idle process */
+    join(idle_, createThread(idle_, (dword)idleThread));
+
+    /* dispach list */
+    dispatchList_ = new HList<Process_*>();
+    checkMemoryAllocate(dispatchList_, "ProcessManager dispatch list");
 }
 
 ProcessManager_::~ProcessManager_() {
 
     /* destroy */
-    delete scheduler_;
+    delete dispatchList_;
     delete idle_;
 }
 
 int ProcessManager_::join(Process_* process, Thread* thread) {
 
+    bool wait;
+
     /* check process */
-    if (!hasProcess(process)) {
+    if (!dispatchList_->hasElement(process)
+        && !(wait = waitList_->hasElement(process))
+        && process != idle_) {
         return ERROR;
     }
 
     /* join */
-    return process->join(thread);
+    process->join(thread);
+
+    /* regist to dispatchList */
+    if (wait) {
+        waitList_->remove(process);
+        dispatchList_->add(process);
+    }
+
+    return NORMAL;
 }
 
 int ProcessManager_::kill(Process_* process) {
 
-    int result;
-
-    /* remove from scheduler */
-    if (NORMAL != (result = scheduler_->kill(process))) {
-        return result;
-    }
-
-    /* destroy address space of proces */
+    /* remove from list */
+    dispatchList_->remove(process);
+    waitList_->remove(process);
 
     /* delete process */
     delete process;
@@ -425,7 +337,6 @@ int ProcessManager_::switchProcess() {
 }
 
 LinearAddress ProcessManager_::allocateKernelStack() const {
-
     static int i = 0;
     return 0x100000 + i * 4096;
 }
@@ -435,12 +346,30 @@ bool ProcessManager_::schedule() {
     bool      isProcessChanged;
     Process_* next;
 
-    /* schdule */
-    next = scheduler_->schedule(current_);
+    /* tick */
+    current_->tick();
 
-    /* next is current ? */
-    isProcessChanged = (next != current_);
-    current_         = next;
+    /* process has time yet */
+    if (current_->hasTimeLeft()) {
+
+        /* next is current */
+        return false;
+    }
+
+    /* only idle? */
+    if (current_ == idle_ && dispatchList_->isEmpty()) {
+
+        /* next is idle */
+        return false;
+    }
+
+    /* round robin */
+    if (current_ != idle_) {
+        dispatchList_->add(current_);
+    }
+    next = dispatchList_->removeAt(0);
+    isProcessChanged = next != current_;
+    current_ = next;
     return isProcessChanged;
 }
 
@@ -465,30 +394,36 @@ Process_* ProcessManager_::create(int type, const char* name) {
     return result;
 }
 
-Process_* ProcessManager_::getCurrentProcess() const {
-    return current_;
-}
-
 int ProcessManager_::add(Process_* process) {
 
-    /* is this first process */
-    if (current_ == NULL) current_ = process;
-    return (scheduler_->add(process));
+    /* process has Thread? */
+    if (process->hasActiveThread()) {
+
+        /* dispatch */
+        dispatchList_->add(process);
+
+        /* first process of kernel */
+        if (current_ == NULL) {
+            current_ = process;
+        }
+
+    /* process has not thread yet */
+    } else {
+        waitList_->add(process);
+    }
+
+    return NORMAL;
 }
 
 Thread* ProcessManager_::createThread(Process_* process, dword programCounter) {
 
     /* check process */
-    if (!hasProcess(process)) {
+    if (!dispatchList_->hasElement(process)) {
         return (Thread*)NULL;
     }
 
     /* create thread */
     return process->createThread(programCounter);
-}
-
-bool ProcessManager_::hasProcess(Process_* process) const {
-    return scheduler_->hasProcess(process);
 }
 
 /*----------------------------------------------------------------------
