@@ -103,8 +103,9 @@
     _sys_printf("eip=(%x)", process->eip);        \
 }                                                 \
 
-/*! \def struct for process */
-typedef struct Process {
+/*! process */
+class Process {
+  public:
     dword* esp;
     dword* ebp;
     dword  eip;
@@ -116,6 +117,8 @@ typedef struct Process {
     dword  ebx;
     dword  esi;
     dword  edi;
+    static const byte RUNNING = 0;
+    static const byte WAITING = 1;
 };
 
 /*!
