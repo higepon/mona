@@ -97,7 +97,7 @@ bool FontMetrics::decodeCharacter(wchar ucs4, int *offset, int *width, int *heig
 			if (ucs4 < 128 || 0xff60 < ucs4) {
 				*offset = 8;
 			} else {
-				*offset = 16;
+				*offset = 12;
 			}
 		} else {
 			*offset = fw;
@@ -131,7 +131,7 @@ int FontMetrics::getWidth(String str)
 				if (c < 128 || 0xff60 < c) {
 					w += 8;
 				} else {
-					w += 16;
+					w += 12;
 				}
 			} else {
 				w += defaultFontData[offsetList[c] + 4];
