@@ -3,6 +3,7 @@ all:
 	@cd gbrowser && $(MAKE) $@
 	@cd gchat && $(MAKE) $@
 	@cd gclock && $(MAKE) $@
+	@cd gfire && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
@@ -18,6 +19,7 @@ install:
 	@cd gbrowser && $(MAKE) $@
 	@cd gchat && $(MAKE) $@
 	@cd gclock && $(MAKE) $@
+	@cd gfire && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
@@ -33,6 +35,7 @@ clean: touchdepend
 	@cd gbrowser && $(MAKE) $@
 	@cd gchat && $(MAKE) $@
 	@cd gclock && $(MAKE) $@
+	@cd gfire && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
@@ -48,6 +51,7 @@ depend: touchdepend
 	@cd gbrowser && $(MAKE) $@
 	@cd gchat && $(MAKE) $@
 	@cd gclock && $(MAKE) $@
+	@cd gfire && $(MAKE) $@
 	@cd glaunch && $(MAKE) $@
 	@cd ghebtn && $(MAKE) $@
 	@cd gnoiz2bg && $(MAKE) $@
@@ -63,6 +67,7 @@ distclean:
 	rm -f gbrowser/dependencies
 	rm -f gchat/dependencies
 	rm -f gclock/dependencies
+	rm -f gfire/dependencies
 	rm -f glaunch/dependencies
 	rm -f ghebtn/dependencies
 	rm -f gnoiz2bg/dependencies
@@ -78,6 +83,7 @@ touchdepend:
 	touch gbrowser/dependencies
 	touch gchat/dependencies
 	touch gclock/dependencies
+	touch gfire/dependencies
 	touch glaunch/dependencies
 	touch ghebtn/dependencies
 	touch gnoiz2bg/dependencies
