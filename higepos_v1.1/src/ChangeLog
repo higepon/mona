@@ -1,0 +1,68 @@
+2002-10-19  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: _sys_printfに%c 機能追加
+
+        * KeyBoardManager.cpp:通常のキー取得を実験中
+
+        * firstboot.asm : Guripon rawwrite
+
+2002-10-12  higepon  <higepon@users.sourceforge.jp>
+
+        KeyBoardManager追加 中身はまだ空です。
+
+        * Makefile.linux: KeyBoardManager追加対応
+        * Makefile: KeyBoardManager追加対応
+        * KeyBoardManager.cpp: 新規追加キーボード入力管理クラス
+        * KeyBoardManager.h: 新規追加キーボード入力管理クラス
+2002-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        linux対応
+
+        * higeOperator.cpp: operator newの引数をsize_tに変更。
+          higepostypes.hをincludeするように変更
+
+        * higepostypes.h:size_tを定義。
+
+2002-10-06  syn <syn@users.sourceforge.jp>
+
+        * higeOperator.cpp: operator new とoperator deleteをコメントアウト
+          (gccが __builtin_new(delete)とぶつかるとエラーを出すため)
+        * higeOperator.cpp: operetor new の引数を unsigned intへ変更
+          (gccが 型が違うとエラーを出すため)
+        * higeOperator.h: operetor new の引数を unsigned intへ変更
+          (gccが 型が違うとエラーを出すため)
+
+2002-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: add scrollUp()function, but it seems bad.
+
+2002-09-08  higepon  <higepon@users.sourceforge.jp>
+
+        * vga.cpp: create _sys_printf().
+
+        * higeOperator.cpp: modify return value of allocateMemory, param value of freeMemory
+
+2002-09-07  higepon  <higepon@users.sourceforge.jp>
+
+        * X86MemoryManager.cpp: modify constructor
+
+2002-09-07  higepon  <higepon@users.sourceforge.jp>
+
+        * include/X86MemoryManager.h: add higepostypes.h
+          and define H_SIZE_T
+                     H_BYTE
+
+2002-09-06  higepon  <higepon@users.sourceforge.jp>
+
+        * メモリ管理 メモリ割り当て失敗時にfault0Handlerが呼ばれるようにした。
+
+        * add fault0Handler
+
+----------------------課題----------------------
+* A20問題
+* プロセス管理実装
+* キーボード入力
+* Pointのコンストラクタ(引数なし)の挙動が怪しい
+* allocateMemoryがNULLを返した時に割り込み処理を起動
+* 画面スクロールのデバッグ
+* 割り込みコントローラーの設定

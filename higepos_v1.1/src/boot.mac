@@ -1,0 +1,23 @@
+;-------------------------------------------------------------------------------
+; Name        : PRINTSTR
+; Description : print string
+; Author      : higepon(2002)
+; Update      : $Date$
+; version     : $Revision$
+; Param1      : string(db)
+;-------------------------------------------------------------------------------
+%macro PRINTSTR16 1
+[BITS 16]
+        push ax
+        mov  si, %1
+%%hige:
+        lodsb                   ; set al=current character at si
+        cmp al, 0               ; if al == 0 then
+        je  %%end               ; end this macro
+        mov ah, 0Eh             ; print
+        mov bh, 0               ; the charcter which is
+        int 10h                 ; at al
+        jmp %%hige              ; next character
+%%end:
+        pop ax
+%endmacro
