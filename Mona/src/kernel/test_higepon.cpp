@@ -249,6 +249,17 @@ int Messenger::send(dword id, MessageInfo* message)
 
     info = allocateMessageInfo();
 
+#if 0
+    logprintf("send:to=%x head=%x a1=%x a2=%x a3=%x from=%x\n"
+              , id
+              , message->header
+              , message->arg1
+              , message->arg2
+              , message->arg3
+              , message->from
+        );
+#endif
+
     *info = *message;
     info->from = g_currentThread->thread->id;
     thread->messageList->add(info);
@@ -265,6 +276,17 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
     {
         return -1;
     }
+
+#if 0
+    logprintf("recv:to=%x head=%x a1=%x a2=%x a3=%x from=%x\n"
+              , thread->id
+              , message->header
+              , message->arg1
+              , message->arg2
+              , message->arg3
+              , message->from
+        );
+#endif
 
     *message = *from;
     thread->messageList->removeAt(0);
