@@ -1,3 +1,13 @@
+2004-02-20  bayside  <bayside@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: マウスカーソルの形状を若干変更 :-)
+
+        * src/lib/baygui/Window.cpp: 非矩形ウィンドウ描画ロジック変更
+
+        * apps/baygui/glaunch/glaunch.cpp: 非矩形ウィンドウ描画ロジック変更
+
+        * apps/baygui/gshell/gshell.cpp: exit/quit コマンド追加
+
 2004-02-17  bayside  <bayside@users.sourceforge.jp>
 
         * src/servers/1linesh/Makefile: stk5化
