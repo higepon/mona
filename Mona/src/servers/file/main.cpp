@@ -210,15 +210,13 @@ static bool cdInitialize()
     if (controller == IDEDriver::PRIMARY)
     {
         irq = IRQ_PRIMARY;
-        outp8(0xa1, inp8(0xa1) & 0xbf);
+        monapi_set_irq(IRQ_PRIMARY, MONAPI_TRUE, MONAPI_TRUE);
     }
     else
     {
         irq = IRQ_SECONDARY;
-        outp8(0xa1, inp8(0xa1) & 0x7f);
+        monapi_set_irq(IRQ_SECONDARY, MONAPI_TRUE, MONAPI_TRUE);
     }
-
-    outp8(0x21, (inp8(0x21) & 0xFB)); /* IR2 cascade */
 
     /* interrupt thread */
     dword id = syscall_mthread_create((dword)interrupt);
@@ -255,10 +253,9 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* CD-ROM */
-//    hasCD = cdInitialize();
+    hasCD = cdInitialize();
 
     MessageLoop();
 
     return 0;
 }
-

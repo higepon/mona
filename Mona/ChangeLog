@@ -1,5 +1,9 @@
 2004-11-30  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/mouse/main.cpp (enableKeyboard): monapi_set_irqを使用するように変更
+
+        * src/servers/file/main.cpp (cdInitialize): monapi_set_irqを使用するように変更
+
         * src/lib/monapi/io.cpp (monapi_set_irq): I/O関連の関数を集約
 
 2004-11-28  bayside  <bayside@users.sourceforge.jp>

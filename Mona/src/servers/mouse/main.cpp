@@ -149,25 +149,23 @@ int Mouse::waitReadable() {
 
 void Mouse::enable()
 {
-
     /* enable mouse interrupt slave unmask */
-    outp8(0x21, (inp8(0x21) & 0xFB)); /* IR2 cascade */
-    outp8(0xA1, (inp8(0xA1) & 0xEF)); /* IR4         */
+    monapi_set_irq(12, MONAPI_TRUE, MONAPI_TRUE);
 }
 
 void Mouse::disable()
 {
-    outp8(0xA1, inp8(0xA1) | 0x10);
+    monapi_set_irq(12, MONAPI_FALSE, MONAPI_TRUE);
 }
 
 void Mouse::disableKeyboard()
 {
-    outp8(0x21, inp8(0x21) | 0x02);
+    monapi_set_irq(1, MONAPI_TRUE, MONAPI_TRUE);
 }
 
 void Mouse::enableKeyboard()
 {
-    outp8(0x21, inp8(0x21) & 0xFD);
+    monapi_set_irq(1, MONAPI_FALSE, MONAPI_TRUE);
 }
 
 /*----------------------------------------------------------------------
