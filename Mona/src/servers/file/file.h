@@ -4,5 +4,6 @@
 #include <monapi/cmemoryinfo.h>
 
 extern monapi_cmemoryinfo* ReadFile(const char* file, bool prompt = false);
+extern monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt = false);
 
 #endif  // __FILE_SERVER_FILE_H__

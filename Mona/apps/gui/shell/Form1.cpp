@@ -145,7 +145,7 @@ public:
 		InitThread();
 		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 		Application::Run(f);
-		MonAPI::Message::sendReceive(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
 		syscall_kill_thread(stdout_tid);
 	}
 };

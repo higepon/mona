@@ -28,6 +28,20 @@ void MessageLoop()
                 }
                 break;
             }
+            case MSG_FILE_READ_DIRECTORY:
+            {
+                monapi_cmemoryinfo* mi = ReadDirectory(msg.str, msg.arg1);
+                if (mi != NULL)
+                {
+                    Message::reply(&msg, mi->Handle, mi->Size);
+                    monapi_cmemoryinfo_delete(mi);
+                }
+                else
+                {
+                    Message::reply(&msg);
+                }
+                break;
+            }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
                 Message::reply(&msg);

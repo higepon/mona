@@ -289,7 +289,7 @@ int MonaMain(List<char*>* pekoe)
 	{
 		for (int i = 0; i < startup->size(); i++)
 		{
-			monapi_call_elf_execute_file(startup->get(i), 0);
+			monapi_call_elf_execute_file(startup->get(i), MONAPI_FALSE);
 		}
 	}
 

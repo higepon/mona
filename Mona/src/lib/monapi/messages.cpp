@@ -138,6 +138,25 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
     return ret;
 }
 
+monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt)
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, prompt, 0, 0, path) != 0)
+    {
+        return NULL;
+    }
+    if (msg.arg2 == 0) return NULL;
+
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = tid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return ret;
+}
+
 int monapi_call_elf_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
     return monapi_call_elf_execute_file_get_tid(command_line, prompt, NULL);

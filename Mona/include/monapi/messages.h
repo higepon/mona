@@ -28,6 +28,7 @@ enum
     MSG_FILE_READ_DATA = 0x0400,
     MSG_FILE_DECOMPRESS_BZ2,
     MSG_FILE_DECOMPRESS_BZ2_FILE,
+    MSG_FILE_READ_DIRECTORY = 0x0410,
 
     MSG_ELF_EXECUTE_FILE = 0x0500,
 
@@ -54,6 +55,12 @@ enum
 
 typedef struct
 {
+    char name[16];
+    int size, attr;
+} monapi_directoryinfo;
+
+typedef struct
+{
     struct
     {
         int x, y, buttons;
@@ -73,6 +80,7 @@ extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);
+extern monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt);
 extern int monapi_call_elf_execute_file(const char* command_line, MONAPI_BOOL prompt);
 extern int monapi_call_elf_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid);
 #ifdef __cplusplus

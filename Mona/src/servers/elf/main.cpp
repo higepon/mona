@@ -174,27 +174,26 @@ static void StdoutMessageLoop()
         {
             case MSG_PROCESS_STDOUT_DATA:
             {
-                int size = grabs.size();
-                if (size == 0)
-                {
-                    syscall_print(msg.str);
-                }
-                else
-                {
 #if 0  /// DEBUG for message
-                    char buf[128];
-                    sprintf(buf, "?%d?", msg.from);
-                    syscall_print(buf);
+                char buf[128];
+                sprintf(buf, "?%d?", msg.from);
+                syscall_print(buf);
 #endif
-                    if (Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) != 0)
+                int size;
+                bool ok = false;
+                while ((size = grabs.size()) > 0)
+                {
+                    if (Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) == 0)
                     {
-                        StdoutUngrab(grabs[size - 1]);
-                        syscall_print(msg.str);
+                        ok = true;
+                        break;
                     }
-#if 0  /// DEBUG for message
-                    syscall_print("?E?");
-#endif
+                    StdoutUngrab(grabs[size - 1]);
                 }
+                if (!ok) syscall_print(msg.str);
+#if 0  /// DEBUG for message
+                syscall_print("?E?");
+#endif
                 Message::reply(&msg);
                 break;
             }

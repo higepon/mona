@@ -8,5 +8,6 @@
 
 extern void CreationEffect(guiserver_window* w);
 extern void DestructionEffect(guiserver_window* w);
+extern void ExpansionEffect(int start_x, int start_y, int x, int y, int width, int height);
 
 #endif  // __GUISERVER_EFFECT_H__

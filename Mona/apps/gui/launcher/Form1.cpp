@@ -97,30 +97,23 @@ public:
 	{
 		if (ExistsProcess("LAUNCHER.EL2")) return;
 
-		if (syscall_cd("/APPS"))
-		{
-			printf("ERROR: directory /APPS not found\n");
-			return;
-		}
-		if (syscall_dir_open())
-		{
-			printf("ERROR: can not open directory\n");
-			return;
-		}
+		monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/APPS", MONAPI_TRUE);
+		if (mi == NULL) return;
+
 		Form1::elfs = new ArrayList<String>;
-		char name[16];
-		int size;
-		int attr;
-		while (syscall_dir_read(name, &size, &attr) == 0)
+		int size = *(int*)mi->Data;
+		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+		for (int i = 0; i < size; i++, p++)
 		{
-			String n = name;
+			String n = p->name;
 			if (n.EndsWith(".ELF") || n.EndsWith(".EL2") || n.EndsWith(".APP"))
 			{
-				Form1::elfs->Add(name);
+				Form1::elfs->Add(p->name);
 			}
 		}
-		syscall_dir_close();
-		syscall_cd("/");
+		
+		monapi_cmemoryinfo_dispose(mi);
+		monapi_cmemoryinfo_delete(mi);
 		
 		Application::Run(new Form1());
 	}

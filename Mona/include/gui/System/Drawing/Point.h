@@ -35,6 +35,11 @@ namespace System { namespace Drawing
 			return this->X == p.X && this->Y == p.Y;
 		}
 		
+		inline bool operator !=(const Point& p)
+		{
+			return this->X != p.X || this->Y != p.Y;
+		}
+		
 		static Point get_Empty() { return Point(); }
 	};
 }}

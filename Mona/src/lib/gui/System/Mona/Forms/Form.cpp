@@ -65,7 +65,6 @@ namespace System { namespace Mona { namespace Forms
 	{
 		BASE::Create();
 		Application::AddForm(this);
-		if ((this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0) this->offset = Point::get_Empty();
 		this->isCloseButtonPushed = false;
 		this->ncState = NCState_None;
 		this->formBuffer = new Bitmap(this->get_Width(), this->get_Height());

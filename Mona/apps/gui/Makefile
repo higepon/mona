@@ -11,6 +11,7 @@ all:
 	@cd cube; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
+	@cd monafile; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -25,6 +26,7 @@ install:
 	@cd cube; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
+	@cd monafile; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -39,6 +41,7 @@ clean: touchdepend
 	@cd cube; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
+	@cd monafile; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -53,6 +56,7 @@ depend: touchdepend
 	@cd cube; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
+	@cd monafile; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -67,6 +71,7 @@ distclean:
 	rm -f cube/dependencies
 	rm -f kukuri/dependencies
 	rm -f mtorz/dependencies
+	rm -f monafile/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -81,3 +86,4 @@ touchdepend:
 	touch cube/dependencies
 	touch kukuri/dependencies
 	touch mtorz/dependencies
+	touch monafile/dependencies

@@ -88,3 +88,19 @@ void DestructionEffect(guiserver_window* w)
 		}
 	}
 }
+
+void ExpansionEffect(int start_x, int start_y, int x, int y, int width, int height)
+{
+	int dx = x - start_x, dy = y - start_y;
+	Overlap* prev = NULL;
+	for (int i = 1; i <= we_step; i++)
+	{
+		int ox = start_x + dx * i / we_step, oy = start_y + dy * i / we_step;
+		int ow = width * i / we_step, oh = height * i / we_step;
+		Overlap* ov = new Overlap(ox, oy, ow, oh);
+		sleep(we_wait);
+		if (prev != NULL) delete prev;
+		prev = ov;
+	}
+	if (prev != NULL) delete prev;
+}

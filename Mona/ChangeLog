@@ -1,3 +1,12 @@
+2004-06-14  tino  <tino@users.sourceforge.jp>
+
+        * include/monapi/messages.h: MSG_FILE_READ_DIRECTORY, monapi_directoryinfo,
+                                     monapi_call_file_read_directory追加
+
+        * src/servers/file/file.cpp (ReadDirectory): 追加
+
+        * include/gui/System/Drawing/Point.h (operator !=): 追加
+
 2004-06-14  higepon  <higepon@users.sourceforge.jp>
 
         * tools/elf_tool/ : テスト用再配置可能ELFの作成など
