@@ -33,17 +33,16 @@ typedef struct memoryEntry {
     \struct page table entry
  */
 typedef struct  {
-    unsigned present:1;
-    unsigned readWrite:1;
-    unsigned user:1;
-    unsigned pageWriteThrough:1;
-    unsigned pageCacheDisable:1;
-    unsigned Accesse:1;
-    unsigned dirty:1;
-    unsigned intelReserved1:1;
-    unsigned intelReserved2:1;
-    unsigned monaAvailable:3;
-    unsigned pageBaseAddress:20;
+    unsigned present:1;          /*!< present bit            */
+    unsigned readWrite:1;        /*!< read/write bit         */
+    unsigned user:1;             /*!< user superviser bit    */
+    unsigned pageWriteThrough:1; /*!< page write through bit */
+    unsigned pageCacheDisable:1; /*!< page cache disable bit */
+    unsigned accesse:1;          /*!< access bit             */
+    unsigned dirty:1;            /*!< dirty bit              */
+    unsigned intelReserved:2;    /*!< reserved by intel      */
+    unsigned monaAvailable:3;    /*!< mona may use this      */
+    unsigned pageBaseAddress:20; /*!< base address of page   */
 } PTE;
 
 
