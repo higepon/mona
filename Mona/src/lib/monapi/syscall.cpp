@@ -357,28 +357,28 @@ int syscall_set_cursor(int x, int y)
     return result;
 }
 
-int syscall_file_open(char* path, int mode, volatile dword* size)
+int syscall_file_open(const char* path, int mode, volatile dword* size)
 {
     int result;
     SYSCALL_3(SYSTEM_CALL_FILE_OPEN, result, path, mode, size);
     return result;
 }
 
-int syscall_file_read(char* buf, dword size, dword* readSize)
+int syscall_file_read(const char* path, dword size, dword* readSize)
 {
     int result;
-    SYSCALL_3(SYSTEM_CALL_FILE_READ, result, buf, size, readSize);
+    SYSCALL_3(SYSTEM_CALL_FILE_READ, result, path, size, readSize);
     return result;
 }
 
-int syscall_file_write(char* buf, dword size, dword* writeSize)
+int syscall_file_write(const char* path, dword size, dword* writeSize)
 {
     int result;
-    SYSCALL_3(SYSTEM_CALL_FILE_WRITE, result, buf, size, writeSize);
+    SYSCALL_3(SYSTEM_CALL_FILE_WRITE, result, path, size, writeSize);
     return result;
 }
 
-int syscall_file_create(char* path)
+int syscall_file_create(const char* path)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_FILE_CREATE, result, path);
@@ -518,7 +518,7 @@ int syscall_dir_open()
     return result;
 }
 
-int syscall_dir_read(char* name, int* size)
+int syscall_dir_read(const char* name, int* size)
 {
     int result;
     SYSCALL_2(SYSTEM_CALL_DIR_READ, result, name, size);
@@ -532,7 +532,7 @@ int syscall_dir_close()
     return result;
 }
 
-int syscall_cd(char* path)
+int syscall_cd(const char* path)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_CD, result, path);
@@ -571,5 +571,12 @@ dword syscall_file_seek(dword pt, int flag)
 {
     dword result;
     SYSCALL_2(SYSTEM_CALL_FILE_SEEK, result, pt, flag);
+    return result;
+}
+
+int syscall_get_kernel_version(char* buf, dword size)
+{
+    dword result;
+    SYSCALL_2(SYSTEM_CALL_GET_KERNEL_VERSION, result, buf, size);
     return result;
 }

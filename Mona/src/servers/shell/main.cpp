@@ -140,7 +140,9 @@ enum
     COMMAND_LS,
     COMMAND_CD,
     COMMAND_CAT,
-    COMMAND_CHSH
+    COMMAND_CHSH,
+    COMMAND_UNAME,
+    COMMAND_HELP
 };
 
 int Shell::isInternalCommand(const char* command)
@@ -171,6 +173,14 @@ int Shell::isInternalCommand(const char* command)
     else if (strcmp(cmd, "CHSH") == 0)
     {
         return COMMAND_CHSH;
+    }
+    else if (strcmp(cmd, "UNAME") == 0 || strcmp(cmd, "VER") == 0)
+    {
+        return COMMAND_UNAME;
+    }
+    else if (strcmp(cmd, "HELP") == 0 || strcmp(cmd, "?") == 0)
+    {
+        return COMMAND_HELP;
     }
     return COMMAND_NONE;
 }
@@ -349,6 +359,18 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
             if (msg.header == MSG_SERVER_START_OK) break;
         }
         isExited = true;
+        break;
+    case COMMAND_UNAME:
+        {
+            char ver[128];
+            syscall_get_kernel_version(ver, 128);
+            ver[127] = '\0';
+            printf("%s\n", ver);
+            break;
+        }
+    case COMMAND_HELP:
+        printf("* Mona Shell Internal Commands\n");
+        printf("LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, HELP/?\n");
         break;
     default:
         break;

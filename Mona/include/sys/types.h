@@ -197,6 +197,7 @@ typedef struct {
 #define SYSTEM_CALL_GET_TICK                 0x0030
 #define SYSTEM_CALL_FILE_SEEK                0x0031
 #define SYSTEM_CALL_FILE_POSITION            0x0032
+#define SYSTEM_CALL_GET_KERNEL_VERSION       0x0033
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

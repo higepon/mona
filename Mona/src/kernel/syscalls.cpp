@@ -17,6 +17,8 @@
 #include "io.h"
 #include "elf.h"
 
+extern const char* version;
+
 void syscall_entrance() {
 
     ScreenInfo* screenInfo;
@@ -660,6 +662,12 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_SEEK:
 
         info->eax = g_fs->seek(info->esi, info->ecx);
+        break;
+
+    case SYSTEM_CALL_GET_KERNEL_VERSION:
+
+        strncpy((char*)info->esi, version, info->ecx);
+        info->eax = 0;
         break;
 
     default:

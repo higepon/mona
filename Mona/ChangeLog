@@ -1,8 +1,10 @@
 2004-05-01  tino  <tino@users.sourceforge.jp>
 
-        * src/servers/shell/main.cpp: 内部コマンドCHSHで1LINESH.SVRに切り替え
+        * src/servers/shell/main.cpp: 内部コマンド CHSH 追加 (1LINESH.SVRに切り替え)
+                                      内部コマンド UNAME/VER 追加 (カーネルバージョン情報)
+                                      内部コマンド HELP/? 追加 (内部コマンド一覧)
 
-        * src/servers/1linesh/OneLineShell.cpp: 内部コマンドCHSHでSHELL.SVRに切り替え
+        * src/servers/1linesh/OneLineShell.cpp: 内部コマンドCHSH追加 (SHELL.SVRに切り替え)
 
         * apps/non-gui/tube/tube.x86: 16bpp対応
 
@@ -14,6 +16,10 @@
                           FreeBSDでHELLO.ELFが正常にコンパイルできることを確認
 
         * src/kernel/kernel.cpp: 起動メッセージでどの環境でコンパイルされたかを表示
+
+        * include/sys/types.h (SYSTEM_CALL_GET_KERNEL_VERSION): 追加
+
+        * include/monapi/syscall.h (syscall_get_kernel_version): 追加
 
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
