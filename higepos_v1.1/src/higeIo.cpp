@@ -58,5 +58,5 @@ unsigned char inportb(unsigned int port) {
     \date   create:2002/07/29 update:
 */
 void outportb(unsigned int port,unsigned char value) {
-   asm volatile ("outb %%al,%%dx"::"d" (port), "a" (value));
+   asm volatile ("outb %%al,%%dx": :"d" (port), "a" (value));
 }
