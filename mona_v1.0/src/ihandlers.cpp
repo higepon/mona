@@ -34,7 +34,8 @@ void keyStrokeHandler(dword scancode) {
 
     memset(&message, 0, sizeof(MessageInfo));
 
-    message.arg1 = scancode;
+    message.header = MSG_KEY_SCANCODE;
+    message.arg1   = scancode;
 
     if (send("KEYBDMNG.SVR", &message)) {
         g_console->printf("send failed");

@@ -6,8 +6,8 @@ int print(const char* msg) {return syscall_print(msg);}
 int _put_pixel(int x, int y, char color) {return syscall_put_pixel(x, y, color);}
 int kill() {return syscall_kill();}
 int exit(int error) {return syscall_kill();}
-int _send(const char* name, KMessage* message) {return syscall_send(name, message);}
-int _receive(KMessage* message) {return syscall_receive(message);}
+int _send(const char* name, MessageInfo* message) {return syscall_send(name, message);}
+int _receive(MessageInfo* message) {return syscall_receive(message);}
 int mthread_create(dword f) {return syscall_mthread_create(f);}
 int mthread_join(dword id) {return syscall_mthread_join(id);}
 
@@ -124,7 +124,7 @@ int syscall_kill() {
     return result;
 }
 
-int syscall_send(const char* name, KMessage* message) {
+int syscall_send(const char* name, MessageInfo* message) {
 
     int result;
 
@@ -140,7 +140,7 @@ int syscall_send(const char* name, KMessage* message) {
 
     return result;
 }
-int syscall_receive(KMessage* message) {
+int syscall_receive(MessageInfo* message) {
 
     int result;
 
@@ -316,6 +316,17 @@ int Mutex::tryLock() {
 
 int Mutex::destory() {
     return syscall_mutex_destroy(mutexId_);
+}
+
+/*----------------------------------------------------------------------
+    Message
+----------------------------------------------------------------------*/
+int Message::send(char* destination, MessageInfo* info) {
+    return syscall_send(destination, info);
+}
+
+int Message::receive(MessageInfo* info) {
+    return syscall_receive(info);
 }
 
 void printf(const char *format, ...) {

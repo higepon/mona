@@ -30,6 +30,9 @@ typedef struct {
     dword arg1;
     dword arg2;
     dword arg3;
-} KMessage;
+} MessageInfo;
+
+#define MSG_KEY_SCANCODE         0x00
+#define MSG_KEY_REGIST_TO_SERVER 0x01
 
 #endif

@@ -29,8 +29,6 @@ int heavy();
 int print(const char*);
 int kill();
 int exit(int error);
-int _send(const char* name, KMessage* message);
-int _receive(KMessage* message);
 int _put_pixel(int x, int y, char color);
 int mthread_create(dword f);
 int mthread_join(dword id);
@@ -40,8 +38,8 @@ int syscall_heavy();
 int syscall_print(const char*);
 int syscall_kill();
 int syscall_put_pixel(int x, int y, char color);
-int syscall_send(const char* name, KMessage* message);
-int syscall_receive(KMessage* message);
+int syscall_send(const char* name, MessageInfo* message);
+int syscall_receive(MessageInfo* message);
 int syscall_mthread_create(dword f);
 int syscall_mthread_join(dword id);
 int syscall_mutex_create();
@@ -77,6 +75,21 @@ class Mutex {
   private:
     int mutexId_;
 };
+
+/*----------------------------------------------------------------------
+    Message
+----------------------------------------------------------------------*/
+class Message {
+
+  private:
+    Message();
+    virtual ~Message();
+
+  public:
+    static int send(char* destination, MessageInfo* info);
+    static int receive(MessageInfo* info);
+};
+
 
 void putCharacter(char ch);
 void putInt(size_t n, int base);

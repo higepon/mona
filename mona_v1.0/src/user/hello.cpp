@@ -12,6 +12,12 @@ int main() {
     dword id;
     mutex = new Mutex();
 
+    MessageInfo info;
+    char* dest = "USER.ELF";
+    info.header = MSG_KEY_REGIST_TO_SERVER;
+    info.arg1   = (dword)dest;
+
+    Message::send("KEYBDMNG.SVR", &info);
 
     if (mutex->init()) {
         print("mutex init errror\n");
@@ -47,10 +53,10 @@ int disp() {
 
 int listener() {
 
-    KMessage message;
+    MessageInfo message;
 
     for (;;) {
-        if (!_receive(&message)) {
+        if (!Message::receive(&message)) {
             mutex->lock();
             buf[0] = '<';
             buf[1] = (char)message.arg1;
