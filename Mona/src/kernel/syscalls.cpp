@@ -78,43 +78,36 @@ static dword systemcall_mutex_unlock2(dword id)
     return ((KMutex*)object)->unlock();
 }
 
-void syscall_entrance() {
-
+void syscall_entrance()
+{
     ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
 
+    /* result normal */
     info->eax = 0;
 
-    switch(info->ebx) {
-
+    switch(info->ebx)
+    {
     case SYSTEM_CALL_PRINT:
+
         //enableInterrupt();
-
         g_console->printf("%s", (char*)(info->esi));
-
-        info->eax = 0;
         break;
 
     case SYSTEM_CALL_SET_TIMER:
 
-        {
-            info->eax = g_scheduler->SetTimer(g_currentThread->thread, info->esi);
-            break;
-        }
+        info->eax = g_scheduler->SetTimer(g_currentThread->thread, info->esi);
+        break;
 
     case SYSTEM_CALL_KILL_TIMER:
 
-        {
-            info->eax = g_scheduler->KillTimer(info->esi, g_currentThread->thread);
-            break;
-        }
+        info->eax = g_scheduler->KillTimer(info->esi, g_currentThread->thread);
+        break;
 
     case SYSTEM_CALL_MTHREAD_SLEEP:
 
-        {
-            g_scheduler->Sleep(g_currentThread->thread, info->esi);
-            g_scheduler->SwitchToNext();
-        }
+        g_scheduler->Sleep(g_currentThread->thread, info->esi);
+        g_scheduler->SwitchToNext();
         break;
 
     case SYSTEM_CALL_KILL:
@@ -123,19 +116,18 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_KILL_THREAD:
-
-        {
-            dword tid = info->esi;
-            info->eax = ThreadOperation::kill(tid);
-            break;
-        }
+    {
+        dword tid = info->esi;
+        info->eax = ThreadOperation::kill(tid);
+        break;
+    }
 
     case SYSTEM_CALL_SEND:
 
         info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
         g_scheduler->SwitchToNext();
 
-        /* not reaced */
+        /* not reached */
 
         break;
 
@@ -145,41 +137,38 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_EXIST_MESSAGE:
-
-        {
-            bool existMessage = !(g_currentThread->thread->messageList->isEmpty());
-            info->eax = existMessage ? 1 : 0;
-        }
+    {
+        bool existMessage = !(g_currentThread->thread->messageList->isEmpty());
+        info->eax = existMessage ? 1 : 0;
         break;
+    }
 
     case SYSTEM_CALL_MTHREAD_CREATE:
-
-        {
-            Thread* thread = ThreadOperation::create(g_currentThread->process, info->esi);
-            info->eax = g_id->allocateID(thread);
-            break;
-        }
+    {
+        Thread* thread = ThreadOperation::create(g_currentThread->process, info->esi);
+        info->eax = g_id->allocateID(thread);
+        break;
+    }
 
     case SYSTEM_CALL_MTHREAD_JOIN:
+    {
+        KObject* object = g_id->get(info->esi, g_currentThread->thread);
 
+        if (object == NULL)
         {
-            KObject* object = g_id->get(info->esi, g_currentThread->thread);
-
-            if (object == NULL)
-                {
-                    info->eax = g_id->getLastError();
-                }
-            else if (object->getType() != KObject::THREAD)
-                {
-                    info->eax = (dword)-10;
-                }
-            else
-                {
-                    g_scheduler->Join((Thread*)object);
-                }
-
+            info->eax = g_id->getLastError();
         }
+        else if (object->getType() != KObject::THREAD)
+        {
+            info->eax = (dword)-10;
+        }
+        else
+        {
+            g_scheduler->Join((Thread*)object);
+        }
+
         break;
+    }
 
     case SYSTEM_CALL_MUTEX_CREATE:
 
@@ -192,24 +181,23 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_MUTEX_TRYLOCK:
+    {
+        KObject* object = g_id->get(info->esi, g_currentThread->thread);
 
+        if (object == NULL)
         {
-            KObject* object = g_id->get(info->esi, g_currentThread->thread);
-
-            if (object == NULL)
-                {
-                    info->eax = g_id->getLastError();
-                }
-            else if (object->getType() != KObject::KMUTEX)
-                {
-                    info->eax = (dword)-10;
-                }
-            else
-                {
-                    info->eax = ((KMutex*)object)->tryLock(g_currentThread->thread);
-                }
+            info->eax = g_id->getLastError();
+        }
+        else if (object->getType() != KObject::KMUTEX)
+        {
+            info->eax = (dword)-10;
+        }
+        else
+        {
+            info->eax = ((KMutex*)object)->tryLock(g_currentThread->thread);
         }
         break;
+    }
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
 
@@ -218,25 +206,26 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_MUTEX_DESTROY:
 
-        {
-            KObject* object = g_id->get(info->esi, g_currentThread->thread);
+    {
+        KObject* object = g_id->get(info->esi, g_currentThread->thread);
 
-            if (object == NULL)
-                {
-                    info->eax = g_id->getLastError();
-                }
-            else if (object->getType() != KObject::KMUTEX)
-                {
-                    info->eax = (dword)-10;
-                }
-            else
-                {
-                    KMutex* mutex = (KMutex*)object;
-                    delete mutex;
-                    info->eax = 0;
-                }
+        if (object == NULL)
+        {
+            info->eax = g_id->getLastError();
+        }
+        else if (object->getType() != KObject::KMUTEX)
+        {
+            info->eax = (dword)-10;
+        }
+        else
+        {
+            KMutex* mutex = (KMutex*)object;
+            delete mutex;
+            info->eax = 0;
         }
         break;
+    }
+
 
     case SYSTEM_CALL_LOOKUP:
         info->eax = g_scheduler->Lookup((char*)(info->esi));
@@ -248,37 +237,30 @@ void syscall_entrance() {
         screenInfo->bpp  = (dword)(g_vesaDetail->bitsPerPixel);
         screenInfo->x    = (dword)(g_vesaDetail->xResolution);
         screenInfo->y    = (dword)(g_vesaDetail->yResolution);
-        info->eax = 0;
         break;
+
     case SYSTEM_CALL_LOAD_PROCESS:
+    {
+        char* path = (char*)info->esi;
+        char* name = (char*)info->ecx;
+        CommandOption* option = (CommandOption*)(info->edi);
 
-        {
-            char* path = (char*)info->esi;
-            char* name = (char*)info->ecx;
-            CommandOption* option = (CommandOption*)(info->edi);
+        enableInterrupt();
+        dword result = Loader::Load(path, name, true, option);
 
-            enableInterrupt();
-            //            info->eax = loadProcess(path, name, true, option);
-
-            dword result = Loader::Load(path, name, true, option);
-
-            disableInterrupt();
-            info->eax = result;
-            break;
-        }
+        disableInterrupt();
+        info->eax = result;
+        break;
+    }
 
     case SYSTEM_CALL_SET_CURSOR:
 
-        //enableInterrupt();
         g_console->setCursor((int)(info->esi), (int)(info->ecx));
-        info->eax = 0;
         break;
 
     case SYSTEM_CALL_GET_CURSOR:
 
-        //enableInterrupt();
         g_console->getCursor((int*)(info->esi), (int*)(info->ecx));
-        info->eax = 0;
         break;
 
     case SYSTEM_CALL_FDC_OPEN:
@@ -311,165 +293,164 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_FDC_READ:
-
+    {
         enableInterrupt();
 
-        {
-            bool readResult = true;
-            dword lba      = info->esi;
-            byte* buffer   = (byte*)(info->ecx);
-            dword blocknum = info->edi;
+        bool readResult = true;
+        dword lba      = info->esi;
+        byte* buffer   = (byte*)(info->ecx);
+        dword blocknum = info->edi;
 
-            systemcall_mutex_lock(g_mutexFloppy);
-            for (dword i = 0; i < blocknum; i++) {
-                readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
-                if (!readResult)
-                {
-                    disableInterrupt();
-                    break;
-                }
+        systemcall_mutex_lock(g_mutexFloppy);
+
+        for (dword i = 0; i < blocknum; i++)
+        {
+            readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
+            if (!readResult)
+            {
+                disableInterrupt();
+                break;
             }
-            systemcall_mutex_unlock(g_mutexFloppy);
-            disableInterrupt();
-            info->eax = readResult ? 0 : 1;
         }
+        systemcall_mutex_unlock(g_mutexFloppy);
+        disableInterrupt();
+        info->eax = readResult ? 0 : 1;
         break;
+    }
 
     case SYSTEM_CALL_FDC_WRITE:
-
+    {
         enableInterrupt();
+        bool writeResult = true;
+        dword lba      = info->esi;
+        byte* buffer   = (byte*)(info->ecx);
+        dword blocknum = info->edi;
+
+        systemcall_mutex_lock(g_mutexFloppy);
+        for (dword i = 0; i < blocknum; i++)
         {
-            bool writeResult = true;
-            dword lba      = info->esi;
-            byte* buffer   = (byte*)(info->ecx);
-            dword blocknum = info->edi;
-
-            systemcall_mutex_lock(g_mutexFloppy);
-            for (dword i = 0; i < blocknum; i++) {
-                writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
-                if (!writeResult) {
-                    disableInterrupt();
-                    break;
-                }
+            writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
+            if (!writeResult)
+            {
+                disableInterrupt();
+                break;
             }
-            systemcall_mutex_unlock(g_mutexFloppy);
-
-            disableInterrupt();
-            info->eax = writeResult ? 0 : 1;
         }
+        systemcall_mutex_unlock(g_mutexFloppy);
+
+        disableInterrupt();
+        info->eax = writeResult ? 0 : 1;
         disableInterrupt();
         break;
+    }
 
     case SYSTEM_CALL_FILE_OPEN:
+    {
+        g_console->printf("syscall file open called\n");
+        char* path  = (char*)info->esi;
+        int mode    = (int)info->ecx;
+        dword* size = (dword*)info->edi;
+        enableInterrupt();
+        g_fdcdriver->motor(ON);
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
 
+        systemcall_mutex_lock(g_mutexFloppy);
+
+        if (!g_fs->open(path, mode))
         {
-            g_console->printf("syscall file open called\n");
-            char* path  = (char*)info->esi;
-            int mode    = (int)info->ecx;
-            dword* size = (dword*)info->edi;
-            enableInterrupt();
-            g_fdcdriver->motor(ON);
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-
-            systemcall_mutex_lock(g_mutexFloppy);
-
-            if (!g_fs->open(path, mode))
-                {
-                    g_fdcdriver->motorAutoOff();
-                    systemcall_mutex_unlock(g_mutexFloppy);
-
-                    disableInterrupt();
-                    info->eax = g_fs->getErrorNo();
-                    break;
-                }
-
+            g_fdcdriver->motorAutoOff();
             systemcall_mutex_unlock(g_mutexFloppy);
 
-            *size = g_fs->size();
-
             disableInterrupt();
-            info->eax = 0;
+            info->eax = g_fs->getErrorNo();
             break;
         }
+
+        systemcall_mutex_unlock(g_mutexFloppy);
+
+        *size = g_fs->size();
+
+        disableInterrupt();
+        info->eax = 0;
+        break;
+    }
 
     case SYSTEM_CALL_FILE_READ:
+    {
+        g_console->printf("syscall file read called\n");
+        byte* buf      = (byte*)(info->esi);
+        dword size     = (dword)(info->ecx);
 
+        enableInterrupt();
+        systemcall_mutex_lock(g_mutexFloppy);
+
+        if (!g_fs->read(buf, size))
         {
-            g_console->printf("syscall file read called\n");
-            byte* buf      = (byte*)(info->esi);
-            dword size     = (dword)(info->ecx);
-
-            enableInterrupt();
-            systemcall_mutex_lock(g_mutexFloppy);
-
-            if (!g_fs->read(buf, size))
-                {
-                    systemcall_mutex_unlock(g_mutexFloppy);
-                    disableInterrupt();
-                    info->eax = g_fs->getErrorNo();
-                    break;
-                }
-
             systemcall_mutex_unlock(g_mutexFloppy);
             disableInterrupt();
-            info->eax = 0;
+            info->eax = g_fs->getErrorNo();
             break;
         }
+
+        systemcall_mutex_unlock(g_mutexFloppy);
+        disableInterrupt();
+        info->eax = 0;
+        break;
+    }
 
     case SYSTEM_CALL_FILE_WRITE:
+    {
+        g_console->printf("syscall file write called\n");
+        byte* buf      = (byte*)(info->esi);
+        dword size     = (dword)(info->ecx);
 
+        enableInterrupt();
+        systemcall_mutex_lock(g_mutexFloppy);
+
+        if (!g_fs->write(buf, size))
         {
-            g_console->printf("syscall file write called\n");
-            byte* buf      = (byte*)(info->esi);
-            dword size     = (dword)(info->ecx);
-
-            enableInterrupt();
-            systemcall_mutex_lock(g_mutexFloppy);
-
-            if (!g_fs->write(buf, size))
-                {
-                    systemcall_mutex_unlock(g_mutexFloppy);
-                    disableInterrupt();
-                    info->eax = g_fs->getErrorNo();
-                    break;
-                }
-
             systemcall_mutex_unlock(g_mutexFloppy);
             disableInterrupt();
-            info->eax = 0;
+            info->eax = g_fs->getErrorNo();
             break;
         }
+
+        systemcall_mutex_unlock(g_mutexFloppy);
+        disableInterrupt();
+        info->eax = 0;
+        break;
+    }
 
     case SYSTEM_CALL_FILE_CREATE:
+    {
+        g_console->printf("syscall file create called\n");
+        char* path = (char*)(info->esi);
 
+        enableInterrupt();
+        g_fdcdriver->motor(ON);
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        systemcall_mutex_lock(g_mutexFloppy);
+
+        if (!g_fs->createFile(path))
         {
-            g_console->printf("syscall file create called\n");
-            char* path = (char*)(info->esi);
-
-            enableInterrupt();
-            g_fdcdriver->motor(ON);
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-            systemcall_mutex_lock(g_mutexFloppy);
-
-            if (!g_fs->createFile(path))
-                {
-                    info->eax = g_fs->getErrorNo();
-                    g_fdcdriver->motorAutoOff();
-                    systemcall_mutex_unlock(g_mutexFloppy);
-                    break;
-                }
-
+            info->eax = g_fs->getErrorNo();
+            g_fdcdriver->motorAutoOff();
             systemcall_mutex_unlock(g_mutexFloppy);
-            disableInterrupt();
-            info->eax = 0;
             break;
         }
 
+        systemcall_mutex_unlock(g_mutexFloppy);
+        disableInterrupt();
+        info->eax = 0;
+        break;
+    }
+
     case SYSTEM_CALL_FILE_CLOSE:
+
         g_console->printf("syscall file close called\n");
         enableInterrupt();
         systemcall_mutex_lock(g_mutexFloppy);
@@ -497,30 +478,29 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_GET_ARGUMENTS:
+    {
+        List<char*>* list = g_currentThread->process->getArguments();
+        char* buf = (char*)(info->esi);
+        int index = (int)(info->ecx);
 
+        if (index - 1 > list->size())
         {
-            List<char*>* list = g_currentThread->process->getArguments();
-            char* buf = (char*)(info->esi);
-            int index = (int)(info->ecx);
-
-            if (index - 1 > list->size()) {
-                info->eax = 1;
-                break;
-            }
-
-            strcpy(buf, list->get(index));
-            info->eax = 0;
+            info->eax = 1;
+            break;
         }
 
+        strcpy(buf, list->get(index));
+        info->eax = 0;
         break;
+    }
 
     case SYSTEM_CALL_MTHREAD_YIELD_MESSAGE:
 
         /* message has come. after your last peek or receive */
         if (g_currentThread->thread->flags & MEvent::MESSAGE)
-            {
-                break;
-            }
+        {
+            break;
+        }
 
         g_scheduler->WaitEvent(g_currentThread->thread, MEvent::MESSAGE);
         g_scheduler->SwitchToNext();
@@ -529,13 +509,13 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_DATE:
-
-        {
-            KDate* date = (KDate*)(info->esi);
-            RTC::getDate(date);
-            info->eax = 0;
-        }
+    {
+        KDate* date = (KDate*)(info->esi);
+        RTC::getDate(date);
+        info->eax = 0;
         break;
+    }
+
 
     case SYSTEM_CALL_GET_IO:
 
@@ -548,20 +528,19 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_WAIT_FDC:
-
+    {
+        if (!g_fdcdriver->interrupted())
         {
-            if (!g_fdcdriver->interrupted())
-                {
-                    g_scheduler->WaitEvent(g_currentThread->thread, MEvent::INTERRUPT_HIGH);
-                    g_scheduler->SwitchToNext();
+            g_scheduler->WaitEvent(g_currentThread->thread, MEvent::INTERRUPT_HIGH);
+            g_scheduler->SwitchToNext();
 
-                    /* not reached */
-                }
+            /* not reached */
         }
         break;
+    }
+
 
     case SYSTEM_CALL_FDC_DISK_CHANGED:
-
     {
         enableInterrupt();
 
@@ -575,164 +554,163 @@ void syscall_entrance() {
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 
         info->eax = g_scheduler->LookupMainThread((char*)(info->esi));
-
         break;
 
     case SYSTEM_CALL_MEMORY_MAP_CREATE:
+    {
+        static dword sharedId = 0x9000;
+        sharedId++;
 
+        dword size = info->esi;
+
+        while (Semaphore::down(&g_semaphore_shared));
+        bool isOpen = SharedMemoryObject::open(sharedId, size);
+        Semaphore::up(&g_semaphore_shared);
+
+        if (!isOpen)
         {
-            static dword sharedId = 0x9000;
-            sharedId++;
-
-            dword size = info->esi;
-
-            while (Semaphore::down(&g_semaphore_shared));
-            bool isOpen = SharedMemoryObject::open(sharedId, size);
-            Semaphore::up(&g_semaphore_shared);
-
-            if (!isOpen)
-                {
-                    info->eax = 0;
-                    break;
-                }
-            info->eax = sharedId;
+            info->eax = 0;
+            break;
         }
+        info->eax = sharedId;
         break;
+     }
+
 
     case SYSTEM_CALL_MEMORY_MAP_GET_SIZE:
+    {
+        dword id = info->esi;
 
+        SharedMemoryObject* object = SharedMemoryObject::find(id);
+
+        if (object == NULL)
         {
-            dword id = info->esi;
-
-            SharedMemoryObject* object = SharedMemoryObject::find(id);
-
-            if (object == NULL)
-                {
-                    break;
-                }
-
-            info->eax = object->getSize();
+            break;
         }
+
+        info->eax = object->getSize();
         break;
+    }
+
 
     case SYSTEM_CALL_MEMORY_MAP_MAP:
+    {
+        dword id      = info->esi;
+        dword address = info->ecx;
 
+        while (Semaphore::down(&g_semaphore_shared));
+        bool isAttaced = SharedMemoryObject::attach(id, g_currentThread->process, address);
+        Semaphore::up(&g_semaphore_shared);
+
+        if (!isAttaced)
         {
-            dword id      = info->esi;
-            dword address = info->ecx;
-
-            while (Semaphore::down(&g_semaphore_shared));
-            bool isAttaced = SharedMemoryObject::attach(id, g_currentThread->process, address);
-            Semaphore::up(&g_semaphore_shared);
-
-            if (!isAttaced)
-                {
-                    info->eax = 1;
-                    break;
-                }
+            info->eax = 1;
+            break;
         }
         break;
+    }
+
 
     case SYSTEM_CALL_MEMORY_MAP_UNMAP:
+    {
+        dword id = info->esi;
 
-        {
-            dword id = info->esi;
+        while (Semaphore::down(&g_semaphore_shared));
+        bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
+        Semaphore::up(&g_semaphore_shared);
 
-            while (Semaphore::down(&g_semaphore_shared));
-            bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
-            Semaphore::up(&g_semaphore_shared);
-
-            info->eax = isDetached ? 0 : 1;
-        }
+        info->eax = isDetached ? 0 : 1;
         break;
+    }
 
     case SYSTEM_CALL_CD:
-        {
-            g_console->printf("syscall cd called\n");
-            int result;
-            char* path = (char*)(info->esi);
-            enableInterrupt();
-            g_fdcdriver->motor(ON);
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
+    {
+        g_console->printf("syscall cd called\n");
+        int result;
+        char* path = (char*)(info->esi);
+        enableInterrupt();
+        g_fdcdriver->motor(ON);
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
 
-            systemcall_mutex_lock(g_mutexFloppy);
+        systemcall_mutex_lock(g_mutexFloppy);
 
-            result = g_fs->cd(path) ? 0 : 1;
-            g_fdcdriver->motorAutoOff();
+        result = g_fs->cd(path) ? 0 : 1;
+        g_fdcdriver->motorAutoOff();
 
-            systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
 
-            disableInterrupt();
-            info->eax = result;
-        }
+        disableInterrupt();
+        info->eax = result;
         break;
+    }
+
 
     case SYSTEM_CALL_DIR_OPEN:
+    {
+        g_console->printf("syscall dir open called\n");
+        enableInterrupt();
+        g_fdcdriver->motor(ON);
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
+        g_fdcdriver->recalibrate();
 
+        systemcall_mutex_lock(g_mutexFloppy);
+
+        if (!g_fs->openDir())
         {
-            g_console->printf("syscall dir open called\n");
-            enableInterrupt();
-            g_fdcdriver->motor(ON);
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-            g_fdcdriver->recalibrate();
-
-            systemcall_mutex_lock(g_mutexFloppy);
-
-            if (!g_fs->openDir())
-                {
-                    g_fdcdriver->motorAutoOff();
-                    systemcall_mutex_unlock(g_mutexFloppy);
-                    disableInterrupt();
-                    info->eax = 1;
-                    break;
-                }
-
+            g_fdcdriver->motorAutoOff();
             systemcall_mutex_unlock(g_mutexFloppy);
             disableInterrupt();
-            info->eax = 0;
+            info->eax = 1;
+            break;
         }
+
+        systemcall_mutex_unlock(g_mutexFloppy);
+        disableInterrupt();
+        info->eax = 0;
         break;
+    }
+
 
     case SYSTEM_CALL_DIR_CLOSE:
+    {
+        g_console->printf("syscall dir close called\n");
+        int result;
+        enableInterrupt();
+        systemcall_mutex_lock(g_mutexFloppy);
 
-        {
-            g_console->printf("syscall dir close called\n");
-            int result;
-            enableInterrupt();
-            systemcall_mutex_lock(g_mutexFloppy);
+        result = g_fs->closeDir() ? 0 : 1;
 
-            result = g_fs->closeDir() ? 0 : 1;
-
-            systemcall_mutex_unlock(g_mutexFloppy);
-            g_fdcdriver->motorAutoOff();
-            disableInterrupt();
-            info->eax = result;
-        }
+        systemcall_mutex_unlock(g_mutexFloppy);
+        g_fdcdriver->motorAutoOff();
+        disableInterrupt();
+        info->eax = result;
         break;
+    }
+
 
     case SYSTEM_CALL_DIR_READ:
+    {
+        g_console->printf("syscall dir read called\n");
+        int result;
+        char* name = (char*)info->esi;
+        int* size = (int*)info->ecx;
+        int* attr = (int*)info->edi;
+        enableInterrupt();
 
-        {
-            g_console->printf("syscall dir read called\n");
-            int result;
-            char* name = (char*)info->esi;
-            int* size = (int*)info->ecx;
-            int* attr = (int*)info->edi;
-            enableInterrupt();
+        systemcall_mutex_lock(g_mutexFloppy);
 
-            systemcall_mutex_lock(g_mutexFloppy);
+        result = g_fs->readDir(name, size, attr) ? 0 : 1;
 
-            result = g_fs->readDir(name, size, attr) ? 0 : 1;
-
-            systemcall_mutex_unlock(g_mutexFloppy);
-            g_fdcdriver->motorAutoOff();
-            disableInterrupt();
-            info->eax = result;
-        }
+        systemcall_mutex_unlock(g_mutexFloppy);
+        g_fdcdriver->motorAutoOff();
+        disableInterrupt();
+        info->eax = result;
         break;
+    }
+
 
     case SYSTEM_CALL_PS_DUMP_SET:
 
@@ -740,23 +718,21 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_PS_DUMP_READ:
+    {
+        PsInfo* p = (PsInfo*)(info->esi);
+        PsInfo* q = g_scheduler->ReadDump();
 
+        if (q == NULL)
         {
-            PsInfo* p = (PsInfo*)(info->esi);
-            PsInfo* q = g_scheduler->ReadDump();
-
-            if (q == NULL)
-                {
-                    info->eax = 1;
-                    break;
-                }
-
-            *p = *q;
-            delete q;
-            info->eax = 0;
+            info->eax = 1;
+            break;
         }
 
+        *p = *q;
+        delete q;
+        info->eax = 0;
         break;
+    }
 
     case SYSTEM_CALL_GET_TICK:
 
@@ -780,12 +756,11 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
-
-        {
-            LoadProcessInfo* p = (LoadProcessInfo*)(info->esi);
-            info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
-            break;
-        }
+    {
+        LoadProcessInfo* p = (LoadProcessInfo*)(info->esi);
+        info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
+        break;
+    }
 
     case SYSTEM_CALL_CLEAR_SCREEN:
 
@@ -804,83 +779,80 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_TEST:
+    {
+        dword laddress = (dword)(info->esi);
+        dword paddress;
 
-        {
-            dword laddress = (dword)(info->esi);
-            dword paddress;
+        g_console->printf("conver=%s\n", g_page_manager->getPhysicalAddress(g_currentThread->process->getPageDirectory(), laddress, &paddress) ? "true" : "false");
 
-            g_console->printf("conver=%s\n", g_page_manager->getPhysicalAddress(g_currentThread->process->getPageDirectory(), laddress, &paddress) ? "true" : "false");
+        dword* p = (dword*)paddress;
 
-            dword* p = (dword*)paddress;
+        g_console->printf("laddress=%x paddress=%x", laddress, paddress);
 
-            g_console->printf("laddress=%x paddress=%x", laddress, paddress);
-
-            g_page_manager->setPageDirectory((dword)g_page_manager->getKernelDirectory());
+        g_page_manager->setPageDirectory((dword)g_page_manager->getKernelDirectory());
 
 
-            g_console->printf("pvalue=%x\n", *p);
+        g_console->printf("pvalue=%x\n", *p);
 
-            g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
-            break;
-        }
+        g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
+        break;
+    }
 
     case SYSTEM_CALL_REMOVE_IRQ_RECEIVER:
+    {
+        int irq = (int)info->esi;
 
+        /* out of range */
+        if (irq > 15 || irq < 0)
         {
-            int irq = (int)info->esi;
-
-            /* out of range */
-            if (irq > 15 || irq < 0)
-                {
-                    info->eax = 1;
-                    break;
-                }
-
-            g_irqInfo[irq].hasReceiver = false;
-
+            info->eax = 1;
             break;
         }
+
+        g_irqInfo[irq].hasReceiver = false;
+
+        break;
+    }
 
     case SYSTEM_CALL_SET_IRQ_RECEIVER:
+    {
+        int irq  = (int)info->esi;
 
+        /* out of range */
+        if (irq > 15 || irq < 0)
         {
-            int   irq     = (int)info->esi;
-
-            /* out of range */
-            if (irq > 15 || irq < 0)
-                {
-                    break;
-                }
-
-            g_irqInfo[irq].hasReceiver = true;
-            g_irqInfo[irq].thread      = g_currentThread;
-
             break;
         }
+
+        g_irqInfo[irq].hasReceiver = true;
+        g_irqInfo[irq].thread      = g_currentThread;
+
+        break;
+    }
 
     case SYSTEM_CALL_FRRE_PAGES:
-        {
-            dword address = info->esi;
-            dword size    = info->ecx;
+    {
+        dword address = info->esi;
+        dword size    = info->ecx;
 
-            g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
-            break;
-        }
+        g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
+        break;
+    }
 
     case SYSTEM_CALL_GET_MEMORY_INFO:
-        {
-            MemoryInfo* i = (MemoryInfo*)(info->esi);
+    {
+        MemoryInfo* i = (MemoryInfo*)(info->esi);
 
-            i->totalMemoryL = g_total_system_memory;
-            g_page_manager->getPagePoolInfo(&(i->freePageNum), &(i->totalPageNum), &(i->pageSize));
-            break;
-        }
+        i->totalMemoryL = g_total_system_memory;
+        g_page_manager->getPagePoolInfo(&(i->freePageNum), &(i->totalPageNum), &(i->pageSize));
+        break;
+    }
 
     case SYSTEM_CALL_LOG_PRINT:
-        {
-            logprintf((const char*)(info->esi));
-            break;
-        }
+    {
+        logprintf((const char*)(info->esi));
+        break;
+    }
 
     case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
 
