@@ -149,14 +149,14 @@ void MFDCDriver::initilize() {
     outportb(0xd4, 0x00);
     delay();
 
-    /* specify */
-    sendCommand(specifyCommand, sizeof(specifyCommand));
-
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
     delay();
     outportb(FDC_CCR_PRIMARY, 0);
-    delay();
+    //    outportb(0x3f2, 0xc);
+
+    /* specify */
+    sendCommand(specifyCommand, sizeof(specifyCommand));
 
     /* test */
     interrupt_ = false;
@@ -171,6 +171,8 @@ void MFDCDriver::initilize() {
     //    write(0, 0, 1);
 
     printStatus("before read");
+    read(0, 0, 1);
+    read(0, 0, 1);
     read(0, 0, 1);
     motor(OFF);
     while (true);
@@ -579,7 +581,7 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
 
     stopDMA();
 
-    for (int i = 0; i < 10; i++) console_->printf("[%x]", (int)dmabuff_[i]);
+    for (int i = 0; i < 50; i++) console_->printf("[%x]", (int)dmabuff_[i]);
 
     readResults();
     return true;
