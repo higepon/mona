@@ -43,7 +43,7 @@ static void StdoutMessageLoop() {
 			switch (info.header) {
 			case MSG_PROCESS_STDOUT_DATA:
 		        case MSG_STDOUT:
-				info.str[127] = '\0';
+				//info.str[127] = '\0';
 				id = MonAPI::Message::lookupMainThread("GSHELL.EX5");
 				MonAPI::Message::send(id, CUSTOM_EVENT, 0, 0, 0, info.str);
 				MonAPI::Message::reply(&info);
@@ -70,25 +70,13 @@ private:
 	char currentPath[256];
 
 private:
-	/** 1行追加 */
-	inline void addLine(char *str) {
-		// 最下行まで表示されているときは最上行を削除する
-		// ここでremoveしなければ後々スクロールバーをつけたときには役に立つかも
-		if (strlen(lineBuffer) > 0 && lines->getLength() >= (GSHELL_HEIGHT / 12 - 2)) {
-			lines->remove(0);
-		} else if (strlen(lineBuffer) == 0 && lines->getLength() >= (GSHELL_HEIGHT / 12 - 1)) {
-			lines->remove(0);
-		}
-		lines->add(new String(str));
-	}
-	
 	/** ディレクトリ表示 */
 	inline void ls(char *str) {
 		// ディレクトリを開く
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(str, MONAPI_TRUE);
 		int size = *(int*)mi->Data;
 		if (mi == NULL || size == 0) {
-			this->addLine("ディレクトリが見つかりません。\n");
+			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return;
 		}
 		// ディレクトリを検索
@@ -101,6 +89,12 @@ private:
 				temp[strlen(temp)] = '\n';
 				this->addLine(temp);
 				memset(temp, 0, sizeof(temp));
+			}
+			// 大文字を小文字に変換する
+			for (int i = 0; i < (int)strlen(p->name); i++) {
+				if ('A' <= (p->name)[i] && (p->name)[i] <= 'Z') {
+					(p->name)[i] = (p->name)[i] + ('a' - 'A');
+				}
 			}
 			// ディレクトリ
 			if ((p->attr & ATTRIBUTE_DIRECTORY) != 0) {
@@ -125,6 +119,12 @@ private:
 					strcat(temp, " ");
 				}
 			}
+		}
+		// 残りの3項目以下のファイルを追加
+		if (strlen(temp) > 0) {
+			temp[strlen(temp)] = '\n';
+			this->addLine(temp);
+			memset(temp, 0, sizeof(temp));
 		}
 	}
 
@@ -157,8 +157,15 @@ private:
 	
 	/** ファイルの内容を表示 */
 	inline void cat(char *str) {
-		monapi_cmemoryinfo* mi = NULL;
+		// 絶対パスへ変換する
+		char temp[256];
+		memset(temp, 0, sizeof(temp));
+		strcpy(temp, currentPath);
+		strcat(temp, "/");
+		strcat(temp, str);
+		
 		// 圧縮されたファイルも表示する
+		monapi_cmemoryinfo* mi = NULL;
 		if (str[strlen(str) - 1] == '2') {
 			mi = monapi_call_file_decompress_bz2_file(str, MONAPI_FALSE);
 		} else if (str[strlen(str) - 1] == '5') {
@@ -173,7 +180,8 @@ private:
 		for (dword i = 0; i < mi->Size; i++) {
 			if (mi->Data[i] == '\r') {
 				// NOP
-			} else if (mi->Data[i] == '\n') {
+			} else if (strlen(lineBuffer) == (GSHELL_WIDTH / 8) - 1 || mi->Data[i] == '\n') {
+				lineBuffer[strlen(lineBuffer)] = mi->Data[i];
 				this->addLine(lineBuffer);
 				memset(lineBuffer, 0, sizeof(lineBuffer));
 			} else {
@@ -255,7 +263,43 @@ private:
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
 		}
 	}
-
+	
+	/** 1行追加 */
+	inline void addLine(char *str) {
+		// 最下行まで表示されているときは最上行を削除する
+		// ここでremoveしなければ後々スクロールバーをつけたときには役に立つかも
+		if (strlen(lineBuffer) > 0 && lines->getLength() >= (GSHELL_HEIGHT / 12 - 2)) {
+			lines->remove(0);
+		} else if (strlen(lineBuffer) == 0 && lines->getLength() >= (GSHELL_HEIGHT / 12 - 1)) {
+			lines->remove(0);
+		}
+		lines->add(new String(str));
+	}
+	
+	/** 指定したファイルがあるかどうか調べる */
+	inline bool existsFile(char *filename) {
+		// ディレクトリを開く
+		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_TRUE);
+		int size = *(int*)mi->Data;
+		if (mi == NULL || size == 0) {
+			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
+			return false;
+		}
+		// ディレクトリを検索
+		monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+		for (int i = 0; i < size; i++, p++) {
+			// 大文字を小文字に変換する
+			for (int i = 0; i < (int)strlen(p->name); i++) {
+				if ('A' <= (p->name)[i] && (p->name)[i] <= 'Z') {
+					(p->name)[i] = (p->name)[i] + ('a' - 'A');
+				}
+			}
+			if (strcmp(filename, p->name) == 0) return true;
+		}
+		this->addLine("ファイルまたはディレクトリが見つかりません。\n");
+		return false;
+	}
+	
 	/** コマンド解析 */
 	void parse(char *cmd) {
 		// NULLチェック
@@ -281,7 +325,7 @@ private:
 			char pathname[128];
 			sscanf(cmd, "cd %s", pathname);
 			// NULLチェック
-			if (pathname != NULL && strlen(pathname) > 0) {
+			if (pathname != NULL && strlen(pathname) > 0 && existsFile(pathname) == true) {
 				this->cd(pathname);
 			}
 		//
@@ -291,7 +335,7 @@ private:
 			char filename[128];
 			sscanf(cmd, "cat %s", filename);
 			// NULLチェック
-			if (filename != NULL && strlen(filename) > 0) {
+			if (filename != NULL && strlen(filename) > 0 && existsFile(filename) == true) {
 				this->cat(filename);
 			}
 		//
@@ -301,7 +345,7 @@ private:
 			char filename[128];
 			sscanf(cmd, "type %s", filename);
 			// NULLチェック
-			if (filename != NULL && strlen(filename) > 0) {
+			if (filename != NULL && strlen(filename) > 0 && existsFile(filename) == true) {
 				this->cat(filename);
 			}
 		//
@@ -349,7 +393,9 @@ private:
 				for (int i = 5; i < (int)strlen(cmd); i++) {
 					filename[i - 5] = cmd[i];
 				}
-				this->exec(filename);
+				if (filename[0] == '/' || existsFile(filename) == true) {
+					this->exec(filename);
+				}
 			}
 		//
 		// touch [filename]
@@ -379,7 +425,7 @@ public:
 		memset(lineBuffer, 0, sizeof(lineBuffer));
 		memset(commandBuffer, 0, sizeof(commandBuffer));
 		memset(currentPath, 0, sizeof(currentPath));
-		strcpy(currentPath, "/");
+		strcpy(currentPath, "/apps");
 	}
 	
 	/** デストラクタ */
@@ -392,6 +438,7 @@ public:
 	virtual void onEvent(Event *e) {
 		// printfをハンドリング
 		if (e->type == CUSTOM_EVENT) {
+			#if 0
 			char *temp = e->str;
 			if (strlen(lineBuffer) == 0) {
 				strcpy(lineBuffer, temp);
@@ -400,12 +447,28 @@ public:
 			}
 			if (temp[strlen(temp) - 1] == '\n') {
 				// リストに追加
-				this->addLine(temp);
+				this->addLine(lineBuffer);
 				memset(lineBuffer, 0, 256);
 				// 再描画
 				onPaint(getGraphics());
 				update();
 			}
+			#endif
+			#if 1
+			for (int i = 0; i < (int)strlen(e->str); i++) {
+				if (strlen(lineBuffer) == (GSHELL_WIDTH / 8) - 1 || e->str[i] == '\n') {
+					// リストに追加
+					lineBuffer[strlen(lineBuffer)] = e->str[i];
+					this->addLine(lineBuffer);
+					memset(lineBuffer, 0, sizeof(lineBuffer));
+					// 再描画
+					onPaint(getGraphics());
+					update();
+				} else {
+					lineBuffer[strlen(lineBuffer)] = e->str[i];
+				}
+			}
+			#endif
 		// キーイベント
 		} else if (e->type == KEY_PRESSED) {
 			KeyEvent *ke = (KeyEvent *)e;
@@ -467,8 +530,10 @@ public:
 	virtual void onPaint(Graphics *g) {
 		// 背景色で塗りつぶし
 		g->setColor(COLOR_WHITE);
+		//g->setColor(COLOR_BLACK);
 		g->fillRect(0, 0, this->width, this->height);
 		g->setColor(COLOR_BLACK);
+		//g->setColor(COLOR_WHITE);
 		g->setFontStyle(FONT_FIXED);
 		int i = 0;
 		// 確定ずみのprintfバッファー
