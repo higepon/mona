@@ -22,7 +22,7 @@
 #define PAGE_TABLE_NUM 1024
 
 typedef dword PageEntry;
-typedef dword LenearAddress;
+typedef dword LinearAddress;
 typedef dword PhysicalAddress;
 
 
@@ -46,11 +46,18 @@ class PageManager {
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
+    bool pageFaultHandler(LinearAddress address);
 
   private:
     PageDirectory* allocatePageDirectory();
     void makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const;
     PageEntry* allocatePageTable() const;
+
+    inline bool isPresent(PageEntry* entry) const {
+
+        return (*entry) & 0x1;
+    }
+
 
   private:
     BitMap*       memoryMap_;

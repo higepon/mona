@@ -387,17 +387,17 @@ void GraphicalConsole::putInt(size_t n, int base) {
         ch = n / _power(base, i);
         n %= _power(base, i);
 
-        if (ch == 0 && n >= 16) {
-            putCharacter('0');
-        }else if (ch == 0 && n <16 && n > 9) {
-            putCharacter('A' + n - 10);
-        } else if (ch == 0 && n > 0 && n < 10) {
+        if (i == 0 && n > 9) {
+
+            putCharacter('A' + n -10);
+        } else if (i == 0) {
+
             putCharacter('0' + n);
-        } else if (ch == 0 && n == 0) {
-            putCharacter('0');
         } else if (ch > 9) {
+
             putCharacter('A' + ch -10);
         } else {
+
             putCharacter('0' + ch);
         }
     }

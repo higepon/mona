@@ -309,10 +309,12 @@ void cpufaultHandler_c(void){
 
 void cpufaultHandler_e(dword address, dword error){
 
+    g_console->printf("$%x$", 0x101);
+
     g_console->printf("page fault address is %x error is %x pid,name=%d, %s\n", address, error
          , g_current_process->pid, g_current_process->name);
 
-    info(DUMP, "stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+    info(ERROR, "stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
          , g_stack_view.stack0
          , g_stack_view.stack1
          , g_stack_view.stack2

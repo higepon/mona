@@ -109,3 +109,9 @@ PageEntry* PageManager::allocatePageTable() const {
 
     return table;
 }
+
+bool PageManager::pageFaultHandler(LinearAddress address) {
+
+    dword directoryIndex = address / (4096 * 1024);
+
+}

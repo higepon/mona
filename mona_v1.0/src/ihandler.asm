@@ -127,7 +127,7 @@ _arch_cpufaulthandler_e:
         call _arch_set_stack_view
         pushad
         push dword[esp + 32]
-        mov  cr2, eax
+        mov  eax, cr2
         push eax
         call _cpufaultHandler_e
         popad

@@ -92,6 +92,7 @@ void startKernel(void) {
     //   PagingUtil::setup();
     //   dword* p = (dword*)0x3FFFFC;
     dword* p = (dword*)0x3FFFFE;
+    //    dword* p = (dword*)0x400003;
     *p = 5;
 
 //     SystemInfo::rdtscsub();
