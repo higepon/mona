@@ -2,7 +2,7 @@ TARGET  = IMESVR
 SOURCES = main.cpp ImeServer.cpp
 INSTDIR = $(BINDIR)/iso/SERVERS
 #INSTFILES  =
-#CLEANFILES = BASICDIC.TX5
+CLEANFILES = BASICDIC.TX5
 
 $(TARGET).EX5: $(CLEANFILES)
 
@@ -18,9 +18,9 @@ CXXFLAGS += -DDEBUG
 BASICDIC.TX5: BASICDIC.TXT
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
-#install-ime:
+install-ime:
 	$(INSTALL) BASICDIC.TX5 $(MONADIR)/bin/iso
 
-#install: install-ime
+install: install-ime
 
 include dependencies
