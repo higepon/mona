@@ -118,21 +118,9 @@ void FDCDriver::initilize() {
     }
 
     /* setup DMAC */
-  /* setup DMAC */
-    outportb(0xda, 0x00);
-    delay(1);
-    outportb(0x0d, 0x00);
-    delay(1);
-    outportb(0xd0, 0x00);
-    delay(1);
-    outportb(0x08, 0x00);
-    delay(1);
     outportb(0xd6, 0xc0);
-    delay(1);
-    outportb(0x0b, 0x46);
-    delay(1);
     outportb(0xd4, 0x00);
-    delay(1);
+    outportb(0x0a, 0x06);
 
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
@@ -397,12 +385,13 @@ void FDCDriver::setupDMARead(dword size) {
     stopDMA();
 
     /* direction write */
-    outportb(FDC_DMA_S_MR, 0x46);
+    outportb(0x0b, 0x06);
 
     enter_kernel_lock_mode();
 
     /* clear byte pointer */
-    outportb(FDC_DMA_S_CBP, 0);
+    outportb(0x05, 0xff);
+    outportb(0x05, 0x23);
     outportb(FDC_DMA_S_BASE,  byte(p & 0xff));
     outportb(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
     outportb(FDC_DMA_S_COUNT, byte(size & 0xff));
