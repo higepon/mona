@@ -19,9 +19,9 @@
 #include <monaTester.h>
 
 TSS tss[2];
-GDT ldt[1];
+GDT ldt[2];
 GDT sss[1];
-byte stack[1][512];
+byte stack[512];
 
 /*!
     \brief constructor
@@ -106,7 +106,7 @@ inline void ProcessManager::lldt(word address) const {
     \author HigePon
     \date   create:2002/12/02 update:
 */
-void ProcessManager::setGDT(GDT* gdt, dword base, dword limit, byte type) {
+void ProcessManager::setDT(GDT* gdt, dword base, dword limit, byte type) {
 
     gdt->type   = type;
     gdt->baseL  = base & 0xffff;
@@ -168,21 +168,19 @@ void ProcessManager::printInfo() {
     }
 
 
-    setTSS(tss    , 0x08, 0x10, process1Tester, 0x200, stack[0] + 512, 0x10, 0, 0);
-    setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack[1] + 512, 0x10, 0, 0);
-    setGDT(gdt_ + 4, (dword)tss    , sizeof(TSS), TypeTSS);
-    setGDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
-    memset(ldt, 0, sizeof(GDT));
-    setGDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
-    //    setGDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
-    //    setGDT(sss     , (dword)(sss), sizeof(GDT), TypeLDT);
-    //    lldt(0x30);
+    setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x10, 0, 0);
+    setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), TypeTSS);
+    setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
+    setDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
+    setDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
+    //    setDT(ldt  +1   , (dword)(sss), sizeof(GDT), TypeLDT);
+    setDT(sss     , (dword)(0), sizeof(GDT), TypeLDT);
+    lldt(0x30);
     _sys_printf("tss=%x", (dword)tss);
 
-
     ltr(0x20);
-    //process1Tester();
-    _sys_printf("cs=%d\n", (tss+1)->cs);
+    process1Tester();
+    //    _sys_printf("cs=%d\n", (tss+1)->cs);
     for (int i = 0; i < GDTNUM; i++) {
 
         _sys_printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
