@@ -113,14 +113,14 @@ int loadProcess(const char* path, const char* file) {
         info(ERROR, "close failed");
     }
 
-    //    ELFLoader* loader = new ELFLoader();
-    //    g_console->printf("elf size = %d", loader->prepare((dword)buf));
-    //    loader->load((byte*)0x80000000);
+    ELFLoader* loader = new ELFLoader();
+    g_console->printf("elf size = %d", loader->prepare((dword)buf));
+    loader->load((byte*)0x80000000);
 
-    //    delete(loader);
+    delete(loader);
     free(buf);
 
-    memcpy((void*)0x80000000, (void*)mame, 1024);
+    //    memcpy((void*)0x80000000, (void*)mame, 1024);
 
     PageEntry* entry    = g_process_manager->allocatePageDir();
     Process*   process1 = new Process(file);

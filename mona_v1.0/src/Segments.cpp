@@ -263,7 +263,7 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     int mapResult;
 
-    g_console->printf("[shared] address = %x", address);
+    //    g_console->printf("[shared] address = %x", address);
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 

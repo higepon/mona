@@ -14,6 +14,8 @@
 #include <elf.h>
 #include <string.h>
 #include <global.h>
+#include <io.h>
+#include <syscalls.h>
 
 ELFLoader::ELFLoader() {
 
@@ -50,12 +52,23 @@ bool ELFLoader::load(byte* toAddress) {
 
     for (int i = 0; i < header_->phdrcnt; i++) {
 
-        if (pheader_[i].type == PT_LOAD) {
+        if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize) {
+
+            enter_kernel_lock_mode();
+            g_console->printf("\n\n\n\n\n@%x@ $%x$", pheader_[i].virtualaddr, pheader_[i].filesize);
+            exit_kernel_lock_mode();
 
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
+
+        } else if (pheader_[i].type = PT_LOAD && pheader_[i].filesize != pheader_[i].memorysize) {
+
+            g_console->printf("+++++++++++\n");
+            memset((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), 0, pheader_[i].memorysize);
         }
+
     }
 
+    while (true);
     return true;
 }
 
