@@ -150,10 +150,6 @@ bool Scheduler::schedule2()
 {
     Thread* root = NULL;
 
-//    if (this->working) return true;
-
-    this->working = true;
-
     FOREACH(Thread*, queue, runq)
     {
         if (queue->isEmpty())
@@ -174,17 +170,11 @@ bool Scheduler::schedule2()
     g_prevThread    = g_currentThread;
     g_currentThread = PTR_THREAD(root->top());
 
-    this->working = false;
-
-    return true;//!(IN_SAME_SPACE(g_prevThread, g_currentThread));
+    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 bool Scheduler::schedule()
 {
-//    if (this->working) return true;
-
-    this->working = true;
-
     /* schedule for each run queue */
     FOREACH(Thread*, queue, runq)
     {
@@ -230,9 +220,7 @@ bool Scheduler::schedule()
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
 
-    this->working = false;
-
-    return true;//!(IN_SAME_SPACE(g_prevThread, g_currentThread));
+    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 void Scheduler::join(Thread* thread, int priority)
@@ -666,8 +654,8 @@ void monaIdle()
     {
 #if 1
         static dword count = 0;
-        if (count % 200) g_console->printf(".");
-        if (count % 2000000) g_scheduler->dump();
+//        if (count % 200) g_console->printf(".");
+//        if (count % 20000000) g_scheduler->dump();
         count++;
 #endif
         arch_idle();
