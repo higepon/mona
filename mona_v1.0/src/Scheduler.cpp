@@ -72,7 +72,7 @@ void Scheduler::schedule() {
 
     g_current_process = next;
 
-    if (next->pid == 1) g_console->printf("to PID cs=%x, ss=%x esp=%x, eip=%x \n", g_current_process->cs, g_current_process->ss, g_current_process->esp, g_current_process->eip);
+    if (next->pid == 1) g_console->printf("to PID name =%s cs=%x, ss=%x esp=%x, eip=%x \n", g_current_process->name,g_current_process->cs, g_current_process->ss, g_current_process->esp, g_current_process->eip);
 
     return;
 }

@@ -21,6 +21,14 @@ BITS 32
 
 _arch_save_process_registers:
         mov ebx, dword[_g_current_process]
+        mov eax, dword[esp + 52] ; get dpl
+        cmp eax, 0x03            ; check dpl is 3
+        jnz dpl0
+        mov eax, dword[esp + 48] ; save ss3
+        mov dword[ebx + 48], eax
+        mov eax, dword[esp + 52] ; save esp3
+        mov dword[ebx + 28], eax
+dpl0:
         mov eax, dword [esp + 36]; save eip
         mov dword[ebx], eax
         mov eax, dword [esp + 40]; save cs
@@ -35,9 +43,11 @@ _arch_save_process_registers:
         mov dword[ebx + 20], eax
         mov eax, dword [esp + 20]; save ebx
         mov dword[ebx + 24], eax
+        jz  dpl3
         mov eax, dword [esp + 16]; save esp
         add eax, 0xc
         mov dword[ebx + 28], eax
+dpl3:
         mov eax, dword [esp + 12]; save ebp
         mov dword[ebx + 32], eax
         mov eax, dword [esp +  8]; save esi
