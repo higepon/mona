@@ -101,8 +101,8 @@ int main() {
                 if (posY > screen.getYResolution()) posY = screen.getYResolution();
                 if (posY < 0) posY = 0;
 
-                 Screen::bitblt(&screen, prevX, prevY, 10, 10, &vscreen, 0, 0, Raster::XOR);
-                 Screen::bitblt(&screen, posX , posY, 10, 10, &vscreen, 0, 0, Raster::XOR);
+                 Screen::bitblt(&screen, prevX, prevY, 3, 3, &vscreen, 0, 0, Raster::XOR);
+                 Screen::bitblt(&screen, posX , posY, 3, 3, &vscreen, 0, 0, Raster::XOR);
                 //screen.fillRect16(posX, posX, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
 
                 prevX = posX;

@@ -398,7 +398,7 @@ bool ProcessManager::schedule() {
     }
 
     /* round robin */
-    current_->setTimeLeft(4);
+    current_->setTimeLeft(5);
     tmp = dispatchList_->removeAt(0);
     dispatchList_->add(tmp);
     next = dispatchList_->get(0);
