@@ -10,6 +10,12 @@ namespace MonAPI {
 ----------------------------------------------------------------------*/
 class Keys{
   public:
+
+    enum{
+        US102,
+        JP109,
+    };
+
     enum{
         Back    = 8 ,
         Tab     = 9,
@@ -76,6 +82,7 @@ class Keys{
         Z       = 90,
         LWin    = 91,
         RWin    = 92,
+        Apps    = 93,
         NumPad0 = 96,
         NumPad1 = 97,
         NumPad2 = 98,
@@ -88,6 +95,7 @@ class Keys{
         NumPad9 = 105,
         Multiply= 106,
         Add     = 107,
+        Separator= 108,
         Subtract= 109,
         Decimal = 110,
         Divide  = 111,
@@ -112,21 +120,24 @@ class Keys{
         LMenu       = 164,
         RMenu       = 165,
         OemSemicolon = 186,
-        OemPlus  = 187,
+        Oemplus  = 187,
         Oemcomma = 188,
         OemMinus = 189,
         OemPeriod= 190,
         OemQuestion= 191,
         Oemtilde = 192,
-        OemAt   = 200, /* Only Mona */
-        OemColon= 201, /* Only Mona */
         OemOpenBrackets= 219,
+        OemPipe  = 220,
         OemCloseBrackets= 221,
         OemQuotes= 222,
         OemBackslash= 226,
 
     };
-    
+    static const int mapUS102[128];
+    static const int mapUS102E0[128];
+    static const int mapJP109[128];
+    static const int mapJP109E0[128];
+
     static char ToChar(KeyInfo keyInfo);
     static bool IsToChar(KeyInfo keyInfo);
 };

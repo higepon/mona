@@ -16,6 +16,70 @@
 
 using namespace MonAPI;
 
+const int Keys::mapUS102[128] = {
+    0        , Escape  , D1             , D2              , D3       , D4         , D5       , D6          ,
+    D7       , D8      , D9             , D0              , OemMinus , Oemplus    , Back     , Tab         ,
+    Q        , W       , E              , R               , T        , Y          , U        , I           ,
+    O        , P       , OemOpenBrackets, OemCloseBrackets, Enter    , LControlKey, A        , S           ,
+    D        , F       , G              , H               , J        , K          , L        , OemSemicolon,
+    OemQuotes, Oemtilde, LShiftKey      , OemPipe         , Z        , X          , C        , V           ,
+    B        , N       , M              , Oemcomma        , OemPeriod, OemQuestion, RShiftKey, Multiply    ,
+    LMenu    , Space   , CapsLock       , F1              , F2       , F3         , F4       , F5          ,
+    F6       , F7      , F8             , F9              , F10      , NumLock    , Scroll   , NumPad7     ,
+    NumPad8  , NumPad9 , Subtract       , NumPad4         , NumPad5  , NumPad6    , Add      , NumPad1     ,
+    NumPad2  , NumPad3 , NumPad0        , Decimal         , 0        , 0          , 0        , F11         ,
+    F12      , 0       , 0              , 0               , 0        , 0          , 0        , 0
+};
+
+const int Keys::mapUS102E0[128] = {
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , Separator, RControlKey, 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , Divide     , 0, PrintScreen,
+    RMenu, 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, Home       ,
+    Up   , PageUp  , 0     , Left  , 0        , Right      , 0, End        ,
+    Down , PageDown, Insert, Delete, 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , LWin  , RWin     , Apps       , 0, 0
+};
+
+const int Keys::mapJP109[128] = {
+    0           , Escape    , D1       , D2              , D3       , D4         , D5       , D6      ,
+    D7          , D8        , D9       , D0              , OemMinus , OemQuotes  , Back     , Tab     ,
+    Q           , W         , E        , R               , T        , Y          , U        , I       ,
+    O           , P         , Oemtilde , OemOpenBrackets , Enter    , LControlKey, A        , S       ,
+    D           , F         , G        , H               , J        , K          , L        , Oemplus ,
+    OemSemicolon, KanjiMode , LShiftKey, OemCloseBrackets, Z        , X          , C        , V       ,
+    B           , N         , M        , Oemcomma        , OemPeriod, OemQuestion, RShiftKey, Multiply,
+    LMenu       , Space     , CapsLock , F1              , F2       , F3         , F4       , F5      ,
+    F6          , F7        , F8       , F9              , F10      , NumLock    , Scroll   , NumPad7 ,
+    NumPad8     , NumPad9   , Subtract , NumPad4         , NumPad5  , NumPad6    , Add      , NumPad1 ,
+    NumPad2     , NumPad3   , NumPad0  , Decimal         , 0        , 0          , 0        , F11     ,
+    F12         , 0         , 0        , 0               , 0        , 0          , 0        , 0       ,
+    0           , 0         , 0        , 0               , 0        , 0          , 0        , 0       ,
+    0           , 0         , 0        , 0               , 0        , 0          , 0        , 0       ,
+    KanaMode    , 0         , 0        , OemBackslash    , 0        , 0          , 0        , 0       ,
+    0           , IMEConvert, 0        , IMENonconvert   , 0        , OemPipe    , 0        , 0
+};
+
+const int Keys::mapJP109E0[128] = {
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , Separator, RControlKey, 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , Divide     , 0, PrintScreen,
+    RMenu, 0       , 0     , 0     , 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , 0     , 0        , 0          , 0, Home       ,
+    Up   , PageUp  , 0     , Left  , 0        , Right      , 0, End        ,
+    Down , PageDown, Insert, Delete, 0        , 0          , 0, 0          ,
+    0    , 0       , 0     , LWin  , RWin     , Apps       , 0, 0
+};
+
 char Keys::ToChar(KeyInfo keyInfo){
 
     char result;
@@ -184,13 +248,16 @@ char Keys::ToChar(KeyInfo keyInfo){
     case(Keys::Oemcomma):
         result = ',';
         break;
-    case(Keys::OemSemicolon):
+    case(Keys::Oemplus):
         result = ';';
         break;
-    case(Keys::OemColon):
+    case(Keys::OemMinus):
+        result = '-';
+        break;
+    case(Keys::OemSemicolon):
         result = ':';
         break;
-    case(Keys::OemAt):
+    case(Keys::Oemtilde):
         result = '@';
         break;
     case(Keys::OemOpenBrackets):
@@ -201,6 +268,15 @@ char Keys::ToChar(KeyInfo keyInfo){
         break;
     case(Keys::OemBackslash):
         result = '\\';
+        break;
+    case(Keys::OemPipe):
+        result = '\\';
+        break;
+    case(Keys::OemQuestion):
+        result = '/';
+        break;
+    case(Keys::OemQuotes):
+        result = '^';
         break;
     default:
         result = ' ';
@@ -219,9 +295,7 @@ bool Keys::IsToChar(KeyInfo keyInfo){
     || ((keycode >= NumPad0) && (keycode <= Divide))
     || ((keycode >= OemSemicolon) && (keycode <= Oemtilde))
     || ((keycode >= OemOpenBrackets) && (keycode <= OemQuotes))
-    || (keycode == OemBackslash)
-    || (keycode == OemAt)
-    || (keycode == OemColon) ) return true;
+    || (keycode == OemBackslash) ) return true;
 
   return false;
 }
