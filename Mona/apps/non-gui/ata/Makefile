@@ -1,5 +1,5 @@
 TARGET  = HDDANGER
-SOURCES = main.cpp IDEDriver.cpp
+SOURCES = main.cpp IDEDriver.cpp ISO9660.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR = ../../..

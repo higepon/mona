@@ -1,5 +1,6 @@
 #include <monapi.h>
 #include "IDEDriver.h"
+#include "ISO9660.h"
 
 using namespace MonAPI;
 
@@ -57,6 +58,88 @@ static void printError(const byte* error)
 
 int MonaMain(List<char*>* pekoe)
 {
+    syscall_get_io();
+
+
+    ide = new IDEDriver();
+    IStorageDevice* cd = ide;
+
+
+    /* find CD-ROM */
+    int controller, deviceNo;
+    if (!ide->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
+    {
+        printf("CD-ROM Not Found\n");
+        delete ide;
+        return 1;
+    }
+
+    /* set irq number */
+    if (controller == IDEDriver::PRIMARY)
+    {
+        irq = IRQ_PRIMARY;
+        outp8(0xa1, inp8(0xa1) & 0xbf);
+    }
+    else
+    {
+        irq = IRQ_SECONDARY;
+        outp8(0xa1, inp8(0xa1) & 0x7f);
+    }
+
+    /* interrupt thread */
+    dword id = syscall_mthread_create((dword)interrupt);
+    syscall_mthread_join(id);
+
+    if (!ide->selectDevice(controller, deviceNo))
+    {
+        printf("select device NG error code = %d\n", ide->getLastError());
+        delete ide;
+        return 1;
+    }
+
+    ISO9660* iso = new ISO9660(cd, "");
+
+    if (!iso->Initialize())
+    {
+        printf("Initialize Error = %d\n", iso->GetLastError());
+        delete iso;
+        delete cd;
+        return -1;
+    }
+
+    File* file = iso->GetFile("SRC/SERVERS/ELF/MAIN.CPP");
+    if (file == NULL)
+    {
+        printf("file not found\n");
+        delete iso;
+        delete cd;
+        return -1;
+    }
+
+    char* buffer = new char[file->GetSize()];
+    file->Seek(0, SEEK_SET);
+    file->Read(buffer, file->GetSize());
+
+    for (dword i = 0; i < file->GetSize(); i++)
+    {
+        printf("%c", buffer[i]);
+    }
+    printf("[%s] %d bytes %d/%d/%d %d:%d:%d\n", (const char*)file->GetName(), file->GetSize(), file->year, file->month, file->day, file->hour, file->min, file->sec);
+
+    _A<CString> files = iso->GetFileSystemEntries("SRC/SERVERS");
+
+    FOREACH (CString, file, files)
+    {
+        printf("%s\n", (const char*)file);
+    }
+    END_FOREACH
+
+    delete file;
+    delete buffer;
+    delete iso;
+    delete cd;
+
+#if 0
     syscall_get_io();
 
     ide = new IDEDriver();
@@ -130,6 +213,6 @@ int MonaMain(List<char*>* pekoe)
 
     free(buf);
     delete ide;
-
+#endif
     return 0;
 }

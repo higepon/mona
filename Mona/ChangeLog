@@ -1,5 +1,7 @@
 2004-11-20  higepon  <higepon@users.sourceforge.jp>
 
+        * apps/non-gui/ata/iso9660.cpp : ISO9660のコードの取り込み(atapi10)
+
         * apps/non-gui/ata/IDEDriver.h: IStorageDeviceを継承するように変更(atapi9)
 
         * apps/non-gui/ata/main.cpp (MonaMain): 4096byteはきちんと読めていることを検証。
