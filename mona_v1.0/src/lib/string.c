@@ -1,5 +1,30 @@
+/*!
+    \file   string.c
+    \brief  standard library
+
+    standard library
+
+    Copyright (c) 2002 HigePon
+    WITHOUT ANY WARRANTY
+
+    \author  HigePon
+    \version $Revision$
+    \date   create:2002/12/15 update:$Date$
+*/
 #include <string.h>
 
+/*!
+    \brief memset
+
+    function memset
+
+    \param buf   buffer to set
+    \param value value to set
+    \param size  size
+
+    \author HigePon
+    \date   create:2002/12/15 update:
+*/
 void *memset(void* buf, int value, size_t size) {
 
     char *p = (char*)buf;
@@ -12,6 +37,17 @@ void *memset(void* buf, int value, size_t size) {
     return buf;
 }
 
+/*!
+    \brief strlen
+
+    function strlen
+
+    \param  str target string
+    \return length of str
+
+    \author HigePon
+    \date   create:2002/12/15 update:
+*/
 size_t strlen(const char* str) {
 
     size_t length;
@@ -19,6 +55,18 @@ size_t strlen(const char* str) {
     return length;
 }
 
+/*!
+    \brief strcpy
+
+    function strcpy
+
+    \param  to   destination buffer
+    \param  from source string
+    \return copy of from
+
+    \author HigePon
+    \date   create:2002/12/15 update:
+*/
 char* strcpy(char* to, const char* from) {
 
     char* p = to;
@@ -31,6 +79,18 @@ char* strcpy(char* to, const char* from) {
     return to;
 }
 
+/*!
+    \brief strcmp
+
+    function strcmp
+
+    \param  str1 string to compare
+    \param  str2 string to compare
+    \return index of charcter
+
+    \author HigePon
+    \date   create:2002/12/15 update:
+*/
 int strcmp(const char* str1, const char* str2) {
 
     while (*str1 == *str2) {
