@@ -5608,7 +5608,7 @@ int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksi
 			q = p + 1;
 		p++;
 	} while (*argv0);
-	for (p = "t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
+	for (p = "./t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
 	fp = fopen(TEK5_TMPNAME "0", "wb");
 	if (fp == NULL)
 		return 0;
