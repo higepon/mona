@@ -3,6 +3,7 @@
 
 #include <monapi/messages.h>
 #include <monapi/cmemoryinfo.h>
+#include <monapi/CString.h>
 #include <gui/messages.h>
 #include "GUIServer.h"
 #include "image.h"
@@ -125,6 +126,25 @@ void ReadConfig()
     DrawWallPaper(src, wppos, wptp);
 }
 
+static void CheckGUIServer()
+{
+    syscall_set_ps_dump();
+    PsInfo info;
+
+    bool ok = true;
+    CString self = "GUI.SVR";
+    dword tid = MonAPI::System::getThreadID();
+
+    while (syscall_read_ps_dump(&info) == 0)
+    {
+        if (ok && self == info.name && tid != info.tid) ok = false;
+    }
+    if (ok) return;
+
+    printf("%s: already has executed!\n", SVR);
+    exit(1);
+}
+
 void MessageLoop()
 {
     for (MessageInfo msg;;)
@@ -168,6 +188,8 @@ void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
+    CheckGUIServer();
+
     ReadFont("/MONA-12.MF2");
     ReadConfig();
     if (default_font == NULL) exit(1);
