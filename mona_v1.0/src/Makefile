@@ -6,7 +6,7 @@ STRIP      = /usr/bin/strip
 CONTRIB_LIB= ./contrib/lib_cygwin
 LFLAGS     = -n -Ttext 0x1200 -static
 # for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -O3
+CXXFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -O3
 ENV             = env
 VERSION         = 0.1.1
 DOXYGEN         = doxygen
@@ -90,7 +90,7 @@ userapp :
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CXX) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
+	$(CXX) $(CXXFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
 	date;
@@ -112,7 +112,7 @@ doxygen :
 	$(DOXYGEN)
 
 depend:
-	gcc -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > $(ENV)/dependencies
+	gcc -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > $(ENV)/dependencies
 	(cd user/userlib/; make depend)
 
 clean :

@@ -15,12 +15,12 @@ $(LIB_USER) : userlib.o string.o MemoryManager.o monalibc.o
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CXX) $(CFLAGS) $(CFINCLUDE) -c $<
+	$(CXX) $(CXXFLAGS) $(CFINCLUDE) -c $<
 
 clean :
 	rm -f $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o
 
 depend:
-	$(CXX) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
+	$(CXX) -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 include dependencies

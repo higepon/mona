@@ -16,7 +16,7 @@ $(APP) : $(LIB_USER) $(OBJ)
 	$(STRIP) $(APP)
 
 $(OBJ) : MouseServer.cpp
-	$(CXX) $(CFLAGS) $(CFINCLUDE) -c MouseServer.cpp
+	$(CXX) $(CXXFLAGS) $(CFINCLUDE) -c MouseServer.cpp
 
 clean :
 	rm -f $(OBJ) $(APP)

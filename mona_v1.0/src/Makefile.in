@@ -81,7 +81,7 @@ userapp :
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CXX) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
+	$(CXX) $(CXXFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
 	date;
@@ -103,7 +103,7 @@ doxygen :
 	$(DOXYGEN)
 
 depend:
-	gcc -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > $(ENV)/dependencies
+	gcc -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > $(ENV)/dependencies
 	(cd user/userlib/; make depend)
 
 clean :
