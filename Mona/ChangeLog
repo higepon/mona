@@ -1,3 +1,11 @@
+2004-11-12  bayside  <bayside@users.sourceforge.jp>
+
+        * src/lib/baygui/ImeManager.cpp: IMEオン・オフのキーバインド追加と細かい修正
+
+        * include/baygui.h: CString.hをincludeするように修正
+
+        * include/baygui/ImeManager.h: 関数整理
+
 2004-11-12  Yamami  <yamamimail@users.sourceforge.jp>
 
         * /src/servers/gui/main.cpp: コメント記述
