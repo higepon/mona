@@ -139,7 +139,7 @@ IA32MemoryManager::~IA32MemoryManager() {
     \author HigePon
     \date   create:2002/08/10 update:2003/01/03
 */
-IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x200000), MEMORY_END(0x350000) {
+IA32MemoryManager::IA32MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) {
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
