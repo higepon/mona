@@ -100,3 +100,16 @@ void typeTester() {
     _sys_printf("size of word =%d\n", sizeof(word));
     _sys_printf("size of dword=%d\n", sizeof(dword));
 }
+
+/*!
+    \brief test code for process manager
+
+    test code for process manager
+
+    \author HigePon
+    \date   create:2002/11/20 update:$Date$
+*/
+void processTester() {
+
+    /* do nothing */
+}
