@@ -151,7 +151,13 @@ ProcessScheduler::~ProcessScheduler() {
 
 Process_* ProcessScheduler::schedule(Process_* current) {
 
-    /* check dispach is empty */
+    /* tick */
+    current->tick();
+
+    /* process has time yet */
+    if (current->hasTimeLeft()) return current;
+
+    /* check dispach list is empty */
     if (list_->isEmpty()) return idle_;
 
     /* round robin */
@@ -267,6 +273,10 @@ Process_::Process_(const char* name) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
+
+    /* init */
+    timeLeft_ = 4;
+    tick_     = 0;
 }
 
 Process_::~Process_() {

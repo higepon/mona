@@ -110,6 +110,17 @@ class Process_ {
 
   public:
     inline const char* getName() const {return name_;}
+    inline void tick() {
+        tick_++;
+        timeLeft_ --;
+    }
+    inline void tick(dword tick) {
+        tick_     += tick;
+        timeLeft_ -= tick;
+    }
+
+    inline dword getTick() {return tick_;}
+    inline bool hasTimeLeft() const {return timeLeft_ > 0;}
 
   protected:
     bool isKernelMode_;
