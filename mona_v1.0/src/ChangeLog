@@ -1,3 +1,7 @@
+2003-12-23  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: スレッド生成･スケジュールなどをじっくりと
+
 2003-12-21  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: hasProcess();など。いろいろ見直し

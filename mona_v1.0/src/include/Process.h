@@ -191,6 +191,7 @@ class Process_ {
     inline dword getTick() {return tick_;}
     inline bool hasTimeLeft() const {return timeLeft_ > 0;}
     int join(Thread* thread);
+    Thread* schedule();
     Thread* createThread(dword programCounter);
 
   protected:

@@ -319,7 +319,13 @@ ProcessManager_::~ProcessManager_() {
 
 int ProcessManager_::join(Process_* process, Thread* thread) {
 
-    return NORMAL;
+    /* check process */
+    if (!hasProcess(process)) {
+        return ERROR;
+    }
+
+    /* join */
+    return process->join(thread);
 }
 
 int ProcessManager_::kill(Process_* process) {
@@ -427,6 +433,10 @@ int Process_::join(Thread* thread) {
 
 Thread* Process_::createThread(dword programCounter) {
     return threadManager_->create(programCounter);
+}
+
+Thread* Process_::schedule() {
+    return threadManager_->schedule();
 }
 
 /*----------------------------------------------------------------------
