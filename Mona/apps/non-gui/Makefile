@@ -8,6 +8,7 @@ all:
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
+	@cd cdfsread && $(MAKE) $@
 
 install:
 	@cd noiz2bg && $(MAKE) $@
@@ -19,6 +20,7 @@ install:
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
+	@cd cdfsread && $(MAKE) $@
 
 clean: touchdepend
 	@cd noiz2bg && $(MAKE) $@
@@ -30,6 +32,7 @@ clean: touchdepend
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
+	@cd cdfsread && $(MAKE) $@
 
 depend: touchdepend
 	@cd noiz2bg && $(MAKE) $@
@@ -40,6 +43,7 @@ depend: touchdepend
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
+	@cd cdfsread && $(MAKE) $@
 
 distclean:
 	rm -f noiz2bg/dependencies
@@ -50,6 +54,7 @@ distclean:
 	rm -f pciinfo/dependencies
 	rm -f ata/dependencies
 	@cd nic && $(MAKE) $@
+	rm -f cdfsread/dependencies
 
 touchdepend:
 	touch noiz2bg/dependencies
@@ -59,3 +64,4 @@ touchdepend:
 	touch monamona/dependencies
 	touch pciinfo/dependencies
 	touch ata/dependencies
+	touch cdfsread/dependencies

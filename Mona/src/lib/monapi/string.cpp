@@ -142,7 +142,7 @@ int strcmp(const char* str1, const char* str2) {
     return (unsigned char)*str1 - (unsigned char)*str2;
 }
 
-void* memcpy(void* s1, void* s2, size_t size) {
+void* memcpy(void* s1, const void* s2, size_t size) {
 
 //     slow?
 //     char* p = (char*)s1;
@@ -275,7 +275,7 @@ char* ltona(long value, char* str, int n, int base) {
     return str;
 }
 
-char *strcat(char *s,char *t) {
+char *strcat(char *s,const char *t) {
 
     char* p = s + strlen(s);
     while ((*p++ = *t++) != 0);
