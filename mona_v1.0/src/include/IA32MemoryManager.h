@@ -35,7 +35,9 @@ class IA32MemoryManager {
 
   private:
     IA32MemoryManager();
+  public:
     ~IA32MemoryManager();
+  private:
     IA32MemoryManager(const IA32MemoryManager&);
     IA32MemoryManager& operator = (const IA32MemoryManager&);
     size_t getRealSize(size_t) const;

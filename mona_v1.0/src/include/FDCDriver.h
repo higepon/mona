@@ -23,7 +23,7 @@
 class FDCDriver : public DiskDriver {
   public:
     FDCDriver(VirtualConsole* console);
-    ~FDCDriver();
+    virtual ~FDCDriver();
 
   public:
     void printStatus(const char*) const;
