@@ -293,7 +293,7 @@ void Scheduler::dump()
     FOREACH_N(waitq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        logprintf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+        logprintf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x wreason=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0, thread->waitReason);
     }
 }
 
