@@ -35,9 +35,9 @@ int main(int argc, char **argv)
 #endif
 {
 	// ウィンドウを作成
-	Window *window1 = new Window();
-	window1->setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
-	window1->setTitle("(oAo) ﾅｶﾏ");	
+	Window *window = new Window();
+	window->setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
+	window->setTitle("(oAo) ﾅｶﾏ");	
 	
 	// 部品を追加
 	Button *button1 = new Button("ｵﾏｴﾓﾅ orz");
@@ -60,36 +60,15 @@ int main(int argc, char **argv)
 	list1->add("ひげぽん");
 	list1->add("ｷﾀｰｰ!!");
 	list1->add("Mona is here");
-	window1->add(button1);
-	window1->add(label1);
-	window1->add(label2);
-	window1->add(label3);
-	window1->add(text1);
-	window1->add(text2);
-	window1->add(text3);
-	window1->add(list1);
-	window1->run();
-	
-	// バージョン表記
-	//Version *version = new Version();
-	//version->run();
-	
-	//Window *window2 = new Window();
-	//window2->setTitle("window2");
-	//window2->setRect(220,140,200,200);
-	
-	//Window *window3 = new Window();
-	//window3->setTitle("window3");
-	//window3->setRect(220,140,200,200);
-	
-	// ウィンドウを追加
-	//manager->add(window1);
-	//manager->add(window2);
-	//manager->add(window3);
-	//manager->add(new Version());
-	
-	// スタート
-	//manager->start();
+	window->add(button1);
+	window->add(label1);
+	window->add(label2);
+	window->add(label3);
+	window->add(text1);
+	window->add(text2);
+	window->add(text3);
+	window->add(list1);
+	window->run();
 	
 	return 0;
 }
