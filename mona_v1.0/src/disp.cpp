@@ -42,7 +42,7 @@ void disp_name1() {
         disp_write_font(75, 0, 'M', color%13);
 
         //        Semaphore::up(&g_semaphore_console);
-
+        g_process_manager->sleep(g_current_process, 6);
         color++;
     }
 }
@@ -59,11 +59,13 @@ void disp_name2() {
 
     while (true) {
 
-        //        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(76, 0, 'o', color%14);
 
-        //        Semaphore::up(&g_semaphore_console);
+        Semaphore::up(&g_semaphore_console);
+
+        g_process_manager->sleep(g_current_process, 5);
         color++;
     }
 }
@@ -74,12 +76,13 @@ void disp_name3() {
 
     while (true) {
 
-        //      while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(77, 0, 'n', color%15);
 
-
-        //        Semaphore::up(&g_semaphore_console);
+        g_process_manager->sleep(g_current_process, 4);
+ 
+        Semaphore::up(&g_semaphore_console);
         color++;
     }
 }
@@ -90,11 +93,13 @@ void disp_name4() {
 
     while (true) {
 
-        //        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(78, 0, 'a', color%16);
 
-        //        Semaphore::up(&g_semaphore_console);
+        g_process_manager->sleep(g_current_process, 3);
+
+        Semaphore::up(&g_semaphore_console);
         color++;
     }
 }

@@ -19,18 +19,27 @@ class Scheduler {
 
   public:
     Scheduler();
-    void addToPrev(ProcessInfo* process);
-    void removeFrom(ProcessInfo* process);
-    bool isEmpty();
-    ProcessInfo* getNext();
     void schedule();
+    void sleep(ProcessInfo* process, dword tick);
     bool toUserMode() const;
+    void addProcess(ProcessInfo* process);
+    void tick();
+    dword getTick();
+
+  private:
+    void wakeup();
+    void removeFrom(ProcessInfo* process);
+    bool isEmpty(ProcessInfo* list);
+    ProcessInfo* getNext(ProcessInfo* list);
+    void addToPrev(ProcessInfo* list, ProcessInfo* process);
 
   public:
-    static ProcessInfo list_;
+    static ProcessInfo dispatchList_;
+    static ProcessInfo sleepList_;
 
   private:
     bool toUserMode_;
+    dword tick_;
 };
 
 #endif

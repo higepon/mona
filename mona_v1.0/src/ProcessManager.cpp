@@ -16,7 +16,6 @@ ProcessManager::ProcessManager() {
 
     pid_  = 0;
     pnum_ = 0;
-    tick_ = 0;
     scheduler_ = new Scheduler();
 }
 
@@ -73,7 +72,7 @@ dword ProcessManager::allocatePID() {
 bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
     process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
-    scheduler_->addToPrev(&(process->pinfo_));
+    scheduler_->addProcess(&(process->pinfo_));
 
     g_process[pnum_] = process;
     pnum_++;
@@ -97,10 +96,15 @@ void ProcessManager::printAllProcesses() const {
 
 void ProcessManager::tick() {
 
-    tick_++;
+    scheduler_->tick();
 }
 
 dword ProcessManager::getTick() const {
 
-    return tick_;
+    return scheduler_->getTick();
+}
+
+void ProcessManager::sleep(ProcessInfo* process, dword tick) {
+
+    scheduler_->sleep(process, tick);
 }
