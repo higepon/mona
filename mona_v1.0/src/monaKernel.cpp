@@ -29,7 +29,7 @@
 #include<ProcessManager.h>
 #include<monaIhandler.h>
 
-char* version = "Mona develop beta 0.04 $Date$";
+char* version = "Mona develop beta 0.04a $Date$";
 
 VirtualConsole* console;
 Process* current;
