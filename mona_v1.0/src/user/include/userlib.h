@@ -59,6 +59,8 @@ int syscall_mutex_destroy(int id);
 int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
 void* malloc(unsigned long size);
 void free(void * address);
+byte inportb(dword);
+void outportb(dword, byte);
 
 void* operator new(size_t size);
 void  operator delete(void* address);

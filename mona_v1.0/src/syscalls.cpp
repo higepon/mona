@@ -152,6 +152,8 @@ void syscall_entrance() {
             break;
         }
 
+        IOManager::grantPermission();
+
         info->eax = 0;
         break;
 

@@ -363,6 +363,19 @@ void __pure_virtual() {
     print("_pure_virtual called\n");
 }
 
+/*----------------------------------------------------------------------
+    I/O
+----------------------------------------------------------------------*/
+byte inportb(dword port) {
+
+    byte ret;
+    asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
+    return ret;
+}
+
+void outportb(dword port, byte value) {
+   asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
+}
 
 /*----------------------------------------------------------------------
     operator new/delete
