@@ -94,7 +94,7 @@ namespace baygui
 					c = Application::prevControl;
 				} else {
 					_P<Window> f = Application::findWindow(m->arg1, m->arg2);
-					if (f != NULL) c = f->findControl(m->arg1, m->arg2);
+					if (f != NULL) c = f->findChild(m->arg1, m->arg2);
 				}
 				
 				Point p;

@@ -79,8 +79,8 @@ namespace baygui
 		this->focused = false;
 		this->transColor = DEFAULT_TRANSCOLOR;
 		this->_object = NULL;
-		this->controls = new ControlCollection();
-		this->controls->target = this;
+		this->children = new ControlCollection();
+		this->children->target = this;
 	}
 	
 	Control::~Control()
@@ -141,7 +141,7 @@ namespace baygui
 			if (!this->backColorChanged) this->backColor = this->parent->backColor;
 		}
 		
-		FOREACH_AL(_P<Control>, ctrl, this->controls) {
+		FOREACH_AL(_P<Control>, ctrl, this->children) {
 			ctrl->onStart();
 		}
 		END_FOREACH_AL
@@ -156,12 +156,12 @@ namespace baygui
 		this->parent = NULL;
 		this->buffer = NULL;
 		
-		FOREACH_AL(_P<Control>, ctrl, this->controls) {
+		FOREACH_AL(_P<Control>, ctrl, this->children) {
 			ctrl->onExit();
 		}
 		END_FOREACH_AL
-		this->controls->Clear();
-		//this->controls->target = NULL;
+		this->children->Clear();
+		//this->children->target = NULL;
 	}
 	
 	void Control::repaint()
@@ -185,7 +185,7 @@ namespace baygui
 			if (c->parent != NULL) {
 				r.X += c->getX();
 				r.Y += c->getY();
-				r.Intersect(Rect(Point(), c->parent->getClientSize()));
+				r.Intersect(Rect(Point(), c->parent->getInnerSize()));
 				r.X += c->parent->offset.X;
 				r.Y += c->parent->offset.Y;
 				x += c->getX() + c->parent->offset.X;
@@ -201,7 +201,7 @@ namespace baygui
 		g->dispose();
 		
 		drawImage(((Window*)form.get())->formBuffer, this->buffer, r.X, r.Y, r.X - x, r.Y - y, r.Width, r.Height, this->parent == NULL);
-		FOREACH_AL(_P<Control>, ctrl, this->controls) {
+		FOREACH_AL(_P<Control>, ctrl, this->children) {
 			ctrl->repaintInternal();
 		}
 		END_FOREACH_AL
@@ -210,7 +210,7 @@ namespace baygui
 	_P<Graphics> Control::getGraphics()
 	{
 		_P<Graphics> ret = Graphics::getGraphics(this->buffer);
-		Dimention sz = this->getClientSize();
+		Dimention sz = this->getInnerSize();
 		ret->setClientRect(Rect(this->offset.X, this->offset.Y, sz.Width, sz.Height));
 		return ret;
 	}
@@ -232,7 +232,7 @@ namespace baygui
 		return this->parent == NULL ? this : this->parent->getTopLevelControl();
 	}
 	
-	_P<Control> Control::findControl(int x, int y)
+	_P<Control> Control::findChild(int x, int y)
 	{
 		if (!this->rect.Contains(x, y)) return NULL;
 		
@@ -242,11 +242,11 @@ namespace baygui
 		
 		x -= this->offset.X;
 		y -= this->offset.Y;
-		Dimention sz = this->getClientSize();
+		Dimention sz = this->getInnerSize();
 		if (x >= sz.Width || y >= sz.Height) return this;
 		
-		FOREACH_AL(_P<Control>, c, this->controls) {
-			_P<Control> fc = c->findControl(x, y);
+		FOREACH_AL(_P<Control>, c, this->children) {
+			_P<Control> fc = c->findChild(x, y);
 			if (fc != NULL) return fc;
 		}
 		END_FOREACH_AL
@@ -270,13 +270,13 @@ namespace baygui
 		}
 	}
 	
-	Dimention Control::getClientSize()
+	Dimention Control::getInnerSize()
 	{
 		int bw = this->offset.X;
 		return Dimention(this->getWidth() - bw * 2, this->getHeight() - this->offset.Y - bw);
 	}
 	
-	void Control::setClientSize(int width, int height)
+	void Control::setInnerSize(int width, int height)
 	{
 		int bw = this->offset.X;
 		this->setSize(width + bw * 2, height + this->offset.Y + bw);
@@ -333,7 +333,7 @@ namespace baygui
 	
 	Control::NCState Control::NCHitTest(int x, int y)
 	{
-		return Rect(Point::get_Empty(), this->getClientSize()).Contains(x, y)
+		return Rect(Point::get_Empty(), this->getInnerSize()).Contains(x, y)
 			? NCState_Client : NCState_None;
 	}
 	
@@ -362,7 +362,7 @@ namespace baygui
 	
 	void Control::add(_P<Control> control)
 	{
-		this->controls->Add(control);
+		this->children->Add(control);
 		control->parent = this;
 		control->visible = true;
 	}

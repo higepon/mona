@@ -94,54 +94,42 @@ namespace baygui
 		g->drawText(this->getText(), x, y);
 	}
 	
-	void Button::onEvent(Event *_e)
+	void Button::onEvent(Event *e)
 	{
-		switch (_e->type)
+		// マウスが動いたとき
+		if (e->type == MOUSE_MOVED)
 		{
-			// マウスが動いたとき
-			case MOUSE_MOVED:
-			{
-				MouseEvent *e = (MouseEvent *)_e;
-				
-				if (e->button != 0) {
-					bool pushed = Rect(Point::get_Empty(), this->getClientSize()).Contains(e->x, e->y);
-					if (this->isPushed != pushed) {
-						this->isPushed = pushed;
-						this->repaint();
-					}
-				}
-				
-				BASE::onEvent(e);
-				break;
-			}
-			// マウスが押されたとき
-			case MOUSE_PRESSED:
-			{
-				MouseEvent *e = (MouseEvent *)_e;
-				
-				this->setFocused(true);
-				this->isPushed = true;
-				this->repaint();
-				
-				BASE::onEvent(e);
-				break;
-			}
-			// マウスが離されたとき
-			case MOUSE_RELEASED:
-			{
-				MouseEvent *e = (MouseEvent *)_e;
-				
-				this->setFocused(false);
-				if (this->isPushed) {
-					this->isPushed = false;
+			MouseEvent *me = (MouseEvent *)e;
+			
+			if (me->button != 0) {
+				bool pushed = Rect(Point::get_Empty(), this->getInnerSize()).Contains(me->x, me->y);
+				if (this->isPushed != pushed) {
+					this->isPushed = pushed;
 					this->repaint();
 				}
-				
-				BASE::onEvent(e);
-				break;
 			}
-			default:
-				break;
+			
+			BASE::onEvent(e);
+		}
+		// マウスが押されたとき
+		else if (e->type == MOUSE_PRESSED)
+		{
+			this->setFocused(true);
+			this->isPushed = true;
+			this->repaint();
+			
+			BASE::onEvent(e);
+		}
+		// マウスが離されたとき
+		else if (e->type ==MOUSE_RELEASED)
+		{
+			this->setFocused(false);
+			if (this->isPushed) {
+				this->isPushed = false;
+				this->repaint();
+			}
+			
+			BASE::onEvent(e);
 		}
 	}
 }

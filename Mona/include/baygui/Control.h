@@ -62,9 +62,9 @@ namespace baygui
 		/** 親部品 */
 		_P<Control> parent;
 		/** 部品リスト */
-		_P<ControlCollection> controls;
+		_P<ControlCollection> children;
 		/** 内部領域のサイズ (ウィンドウ等では外側の縁を除いたサイズ)  */
-		Dimention clientSize;
+		Dimention innerSize;
 		/** 前景色が変えられたかどうか */
 		bool foreColorChanged;
 		/** 背景色が変えられたかどうか */
@@ -117,7 +117,7 @@ namespace baygui
 		_P<Control> getTopLevelControl();
 		
 		/** 自分の中におかれている部品を取得する (なければ自分を返す) */
-		_P<Control> findControl(int x, int y);
+		_P<Control> findChild(int x, int y);
 		
 		/** グラフィックオブジェクトを得る */
 		virtual _P<Graphics> getGraphics();
@@ -128,8 +128,8 @@ namespace baygui
 		}
 		
 		/** 部品リストを得る */
-		inline _P<ControlCollection> getControls() {
-			return this->controls;
+		inline _P<ControlCollection> getChildren() {
+			return this->children;
 		}
 		
 		/** 領域を得る */
@@ -164,7 +164,7 @@ namespace baygui
 			this->rect.Height = height;
 		}
 		
-		void setClientSize(int width, int height);
+		void setInnerSize(int width, int height);
 		
 		inline bool getVisible() { return this->visible; }
 		
@@ -174,7 +174,7 @@ namespace baygui
 		
 		void setFocused(bool v);
 		
-		Dimention getClientSize();
+		Dimention getInnerSize();
 		
 		/** 前景色を得る */
 		inline unsigned int getForeground() { return this->foreColor; }
