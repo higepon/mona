@@ -1,5 +1,5 @@
 /*!
-    \file MFDCDriver.h
+    \file FDCDriver.h
     \brief Floppy Disk Controller driver for Multi Task
 
     Copyright (c) 2003 HigePon
@@ -19,10 +19,10 @@
 /*!
     Floppy Disk Controller class
 */
-class MFDCDriver {
+class FDCDriver {
   public:
-    MFDCDriver(VirtualConsole* console);
-    ~MFDCDriver();
+    FDCDriver(VirtualConsole* console);
+    ~FDCDriver();
 
   public:
     void printStatus(const char*) const;
@@ -58,6 +58,6 @@ class MFDCDriver {
     static byte* dmabuff_;
 };
 
-extern MFDCDriver* gMFDCDriver;
+extern FDCDriver* gFDCDriver;
 
 #endif

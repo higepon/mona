@@ -33,7 +33,7 @@ SOURCES    = cstart.cpp            \
              string.cpp            \
              SystemInfo.cpp        \
              Semaphore.cpp         \
-             MFDCDriver.cpp        \
+             FDCDriver.cpp         \
              GraphicalConsole.cpp  \
              kthread.cpp           \
              pic.cpp               \

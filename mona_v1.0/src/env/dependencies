@@ -2,14 +2,14 @@ cstart.o: cstart.cpp include/kernel.h include/types.h include/string.h \
   include/VirtualConsole.h
 kernel.o: kernel.cpp include/global.h include/kthread.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
-  include/MFDCDriver.h include/Semaphore.h include/idt.h \
+  include/FDCDriver.h include/Semaphore.h include/idt.h \
   include/IA32MemoryManager.h include/operator.h include/tester.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/ProcessManager.h include/ihandlers.h \
   include/pic.h include/io.h include/rtc.h
 idt.o: idt.cpp include/idt.h
 ihandlers.o: ihandlers.cpp include/idt.h include/KeyBoardManager.h \
-  include/types.h include/string.h include/MFDCDriver.h \
+  include/types.h include/string.h include/FDCDriver.h \
   include/VirtualConsole.h include/ProcessManager.h include/kernel.h \
   include/IA32MemoryManager.h include/tester.h stlport/string \
   stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
@@ -36,28 +36,28 @@ ihandlers.o: ihandlers.cpp include/idt.h include/KeyBoardManager.h \
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/types.h include/string.h include/kernel.h \
   include/VirtualConsole.h include/idt.h include/operator.h \
-  include/global.h include/kthread.h include/MFDCDriver.h \
+  include/global.h include/kthread.h include/FDCDriver.h \
   include/Semaphore.h
 operator.o: operator.cpp include/IA32MemoryManager.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
   include/operator.h
 purevirtual.o: purevirtual.cpp include/kernel.h include/types.h \
   include/string.h include/VirtualConsole.h include/global.h \
-  include/kthread.h include/MFDCDriver.h include/Semaphore.h
+  include/kthread.h include/FDCDriver.h include/Semaphore.h
 KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   include/types.h include/string.h include/global.h include/kthread.h \
-  include/kernel.h include/VirtualConsole.h include/MFDCDriver.h \
+  include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
   include/Semaphore.h include/operator.h
 tester.o: tester.cpp include/global.h include/kthread.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
-  include/MFDCDriver.h include/Semaphore.h include/idt.h \
+  include/FDCDriver.h include/Semaphore.h include/idt.h \
   include/operator.h include/HVector.h include/tester.h \
   include/ProcessManager.h include/IA32MemoryManager.h \
   include/KeyBoardManager.h
 ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/kernel.h include/types.h include/string.h \
   include/VirtualConsole.h include/IA32MemoryManager.h include/global.h \
-  include/kthread.h include/MFDCDriver.h include/Semaphore.h \
+  include/kthread.h include/FDCDriver.h include/Semaphore.h \
   include/tester.h include/idt.h stlport/algorithm stlport/stl/_prolog.h \
   stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
@@ -78,9 +78,9 @@ SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/types.h \
   include/string.h include/VirtualConsole.h
 Semaphore.o: Semaphore.cpp include/semaphore.h include/kernel.h \
   include/types.h include/string.h include/VirtualConsole.h include/io.h \
-  include/global.h include/kthread.h include/MFDCDriver.h \
+  include/global.h include/kthread.h include/FDCDriver.h \
   include/Semaphore.h
-MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/types.h \
+FDCDriver.o: FDCDriver.cpp include/FDCDriver.h include/types.h \
   include/string.h include/VirtualConsole.h include/kernel.h \
   include/operator.h include/io.h include/global.h include/kthread.h \
   include/Semaphore.h
@@ -89,9 +89,8 @@ GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
 kthread.o: kthread.cpp include/kthread.h include/types.h include/string.h \
   include/kernel.h include/VirtualConsole.h include/ihandlers.h \
   include/idt.h include/pic.h include/io.h include/operator.h \
-  include/disp.h include/global.h include/MFDCDriver.h \
-  include/Semaphore.h include/ProcessManager.h \
-  include/IA32MemoryManager.h include/rtc.h
+  include/disp.h include/global.h include/FDCDriver.h include/Semaphore.h \
+  include/ProcessManager.h include/IA32MemoryManager.h include/rtc.h
 pic.o: pic.cpp include/pic.h include/io.h include/types.h \
   include/string.h
 io.o: io.cpp include/io.h include/types.h include/string.h
@@ -99,10 +98,10 @@ rtc.o: rtc.cpp include/rtc.h include/types.h include/string.h \
   include/io.h include/kernel.h include/VirtualConsole.h
 disp.o: disp.cpp include/kernel.h include/types.h include/string.h \
   include/VirtualConsole.h include/kthread.h include/disp.h include/io.h \
-  include/pic.h include/semaphore.h include/global.h include/MFDCDriver.h \
+  include/pic.h include/semaphore.h include/global.h include/FDCDriver.h \
   include/Semaphore.h include/syscalls.h include/rtc.h \
   include/GraphicalConsole.h
 syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/kthread.h include/types.h include/string.h include/kernel.h \
-  include/VirtualConsole.h include/MFDCDriver.h include/Semaphore.h \
+  include/VirtualConsole.h include/FDCDriver.h include/Semaphore.h \
   include/io.h

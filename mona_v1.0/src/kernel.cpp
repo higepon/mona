@@ -27,7 +27,7 @@
 #include<checker.h>
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
-#include<MFDCDriver.h>
+#include<FDCDriver.h>
 #include<GraphicalConsole.h>
 #include<ProcessManager.h>
 #include<kthread.h>
@@ -86,7 +86,7 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
     while (g_demo_step < 2);
-    g_fdcdriver = new MFDCDriver(g_console);
+    g_fdcdriver = new FDCDriver(g_console);
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     while (g_demo_step < 5);

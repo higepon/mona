@@ -1,5 +1,5 @@
 /*!
-    \file  MFDCDriver.cpp
+    \file  FDCDriver.cpp
     \brief class Floppy Disk Controller for MultiTask
 
     Copyright (c) 2003 HigePon
@@ -10,7 +10,7 @@
     \date   create:2003/02/07 update:$Date$
 */
 
-#include<MFDCDriver.h>
+#include<FDCDriver.h>
 #include<kernel.h>
 #include<operator.h>
 #include<io.h>
@@ -75,11 +75,11 @@
 
 #define FDC_DMA_BUFF_SIZE 512
 
-bool            MFDCDriver::interrupt_ ;
-byte*           MFDCDriver::dmabuff_;
-byte            MFDCDriver::results_[10];
-VirtualConsole* MFDCDriver::console_;
-int             MFDCDriver::resultsLength_;
+bool            FDCDriver::interrupt_ ;
+byte*           FDCDriver::dmabuff_;
+byte            FDCDriver::results_[10];
+VirtualConsole* FDCDriver::console_;
+int             FDCDriver::resultsLength_;
 
 /*!
     \brief Constructer
@@ -88,7 +88,7 @@ int             MFDCDriver::resultsLength_;
     \author HigePon
     \date   create:2003/02/03 update:
 */
-MFDCDriver::MFDCDriver(VirtualConsole* console) {
+FDCDriver::FDCDriver(VirtualConsole* console) {
 
     /* set console */
     console_ = console;
@@ -102,7 +102,7 @@ MFDCDriver::MFDCDriver(VirtualConsole* console) {
     \author HigePon
     \date   create:2003/02/03 update:
 */
-MFDCDriver::~MFDCDriver() {
+FDCDriver::~FDCDriver() {
 
     motor(OFF);
     return;
@@ -114,7 +114,7 @@ MFDCDriver::~MFDCDriver() {
     \author HigePon
     \date   create:2003/02/03 update:
 */
-void MFDCDriver::initilize() {
+void FDCDriver::initilize() {
 
     byte specifyCommand[] = {FDC_COMMAND_SPECIFY
                            , 0xC1 /* SRT = 4ms HUT = 16ms */
@@ -208,7 +208,7 @@ void MFDCDriver::initilize() {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-void MFDCDriver::printStatus(const char* str) const {
+void FDCDriver::printStatus(const char* str) const {
 
     byte msr = inportb(FDC_MSR_PRIMARY);
     printStatus(msr, str);
@@ -223,7 +223,7 @@ void MFDCDriver::printStatus(const char* str) const {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-void MFDCDriver::printStatus(const byte msr, const char* str) const {
+void FDCDriver::printStatus(const byte msr, const char* str) const {
 
     console_->printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
     console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
@@ -247,7 +247,7 @@ void MFDCDriver::printStatus(const byte msr, const char* str) const {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-void MFDCDriver::interrupt() {
+void FDCDriver::interrupt() {
 
 #ifdef DEBUG_FDC
     console_->printf("interrpt:");
@@ -262,7 +262,7 @@ void MFDCDriver::interrupt() {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-bool MFDCDriver::waitInterrupt() {
+bool FDCDriver::waitInterrupt() {
 
     return interrupt_;
 }
@@ -274,7 +274,7 @@ bool MFDCDriver::waitInterrupt() {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-void MFDCDriver::motor(bool on) {
+void FDCDriver::motor(bool on) {
 
     if (on) outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
     else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
@@ -289,7 +289,7 @@ void MFDCDriver::motor(bool on) {
     \author HigePon
     \date   create:2003/02/16 update:2003/02/19
 */
-bool MFDCDriver::sendCommand(const byte* command, const byte length) {
+bool FDCDriver::sendCommand(const byte* command, const byte length) {
 
     /* send command */
     for (int i = 0; i < length; i++) {
@@ -297,7 +297,7 @@ bool MFDCDriver::sendCommand(const byte* command, const byte length) {
         /* expected condition is ready & date I/O to Controller */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            console_->printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
+            console_->printf("FDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
         }
 
@@ -317,14 +317,14 @@ bool MFDCDriver::sendCommand(const byte* command, const byte length) {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-bool MFDCDriver::recalibrate() {
+bool FDCDriver::recalibrate() {
 
     byte command[] = {0x07, 0x00}; /* recalibrate */
 
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#recalibrate:command fail\n");
+        console_->printf("FDCDriver#recalibrate:command fail\n");
         return false;
     }
 
@@ -343,7 +343,7 @@ bool MFDCDriver::recalibrate() {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
+bool FDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
     bool isOK   = false;
     byte status = 0;
@@ -365,7 +365,7 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
 #ifdef DEBUG_FDC
     /* time out */
-    console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
+    console_->printf("FDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
                    , (int)expectedCondition, (int)inportb(FDC_MSR_PRIMARY), (int)(status & mask));
 #endif
 
@@ -380,7 +380,7 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
     \author HigePon
     \date   create:2003/02/10 update:
 */
-bool MFDCDriver::checkMSR(byte expectedCondition) {
+bool FDCDriver::checkMSR(byte expectedCondition) {
 
     return (checkMSR(expectedCondition, 0xffff));
 }
@@ -393,19 +393,19 @@ bool MFDCDriver::checkMSR(byte expectedCondition) {
     \author HigePon
     \date   create:2003/02/11 update:
 */
-bool MFDCDriver::seek(byte track) {
+bool FDCDriver::seek(byte track) {
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#seek:command fail\n");
+        console_->printf("FDCDriver#seek:command fail\n");
         return false;
     }
 
     if (!senseInterrupt()) {
 
-        console_->printf("MFDCDriver#seek:command fail\n");
+        console_->printf("FDCDriver#seek:command fail\n");
         return false;
     }
 
@@ -421,14 +421,14 @@ bool MFDCDriver::seek(byte track) {
     \author HigePon
     \date   create:2003/02/13 update:
 */
-bool MFDCDriver::senseInterrupt() {
+bool FDCDriver::senseInterrupt() {
 
     byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
 
 
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#senseInterrrupt:command fail\n");
+        console_->printf("FDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
 
@@ -442,7 +442,7 @@ bool MFDCDriver::senseInterrupt() {
     \author HigePon
     \date   create:2003/02/13 update:
 */
-void MFDCDriver::readResults() {
+void FDCDriver::readResults() {
 
     int i;
     byte msr = 0;
@@ -454,7 +454,7 @@ void MFDCDriver::readResults() {
         /* expected condition is ready & data I/O to CPU */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            console_->printf("MFDCDriver#readResults: timeout results_[%d]\n", i);
+            console_->printf("FDCDriver#readResults: timeout results_[%d]\n", i);
             break;
         }
 
@@ -487,7 +487,7 @@ void MFDCDriver::readResults() {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-void MFDCDriver::startDMA() {
+void FDCDriver::startDMA() {
 
     /* mask channel2 */
     outportb(FDC_DMA_S_SMR, 0x02);
@@ -500,7 +500,7 @@ void MFDCDriver::startDMA() {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-void MFDCDriver::stopDMA() {
+void FDCDriver::stopDMA() {
 
     /* unmask channel2 */
     outportb(FDC_DMA_S_SMR, 0x06);
@@ -513,7 +513,7 @@ void MFDCDriver::stopDMA() {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-void MFDCDriver::setupDMARead(dword size) {
+void FDCDriver::setupDMARead(dword size) {
 
     dword p = (dword)dmabuff_;
 
@@ -544,7 +544,7 @@ void MFDCDriver::setupDMARead(dword size) {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-void MFDCDriver::setupDMAWrite(dword size) {
+void FDCDriver::setupDMAWrite(dword size) {
 
     dword p = (dword)dmabuff_;
 
@@ -579,7 +579,7 @@ void MFDCDriver::setupDMAWrite(dword size) {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-bool MFDCDriver::read(byte track, byte head, byte sector) {
+bool FDCDriver::read(byte track, byte head, byte sector) {
 
     byte command[] = {FDC_COMMAND_READ
                    , (head & 1) << 2
@@ -615,7 +615,7 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-bool MFDCDriver::writeID(byte track, byte head, byte data) {
+bool FDCDriver::writeID(byte track, byte head, byte data) {
 
     seek(track);
 
@@ -629,7 +629,7 @@ bool MFDCDriver::writeID(byte track, byte head, byte data) {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
+void FDCDriver::printDMACStatus(const byte status, const char* str) const {
 
     console_->printf("ch3|ch2|ch1|ch0|ch3|ch2|ch1|ch0|\n");
     console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
@@ -655,7 +655,7 @@ void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
     \author HigePon
     \date   create:2003/02/15 update:
 */
-bool MFDCDriver::write(byte track, byte head, byte sector) {
+bool FDCDriver::write(byte track, byte head, byte sector) {
 
     byte command[] = {0xC5//FDC_COMMAND_WRITE
                    , (head & 1) << 2
