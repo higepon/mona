@@ -6,6 +6,8 @@
 
 2005-02-05  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/shell/InternalCommands.cpp (internalCommandExecute): fd0:, cd0:のコマンドをサポート。
+
         * src/servers/file/ISO9660FileSystem.cpp (FindDirectoryEntry): ルートディレクトリを取り扱えるように修整した。
 
 2005-02-04  higepon  <higepon@users.sourceforge.jp>
