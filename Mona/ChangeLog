@@ -12,8 +12,6 @@
 
         * include/monapi/Message.h (Message, ~Message): 無意味なので削除
 
-        * include/monapi/Message.h (initialize): MemoryMap::initialize()と同じような目的で追加 (実はぬるぽ対策)
-
         * include/monapi/Message.h (create): const char*化, デフォルト引数追加
 
         * include/monapi/Message.h (send): create()せず直接送信するオーバーロード追加
@@ -21,8 +19,6 @@
         * include/monapi/Message.h (receive): 特定のメッセージを待ち受けするオーバーロード追加
 
         * include/monapi/Message.h (sendReceive): メッセージの送受信を一度に行う (擬似RPC)
-
-        * src/lib/monapi/monapi.h (user_start): Message::initialize()を呼ぶ
 
         * include/gui/messages.h: GUIサーバーとの通信するメッセージを定義
 
