@@ -18,7 +18,6 @@
 #include<global.h>
 #include<string.h>
 #include<syscalls.h>
-#include<SystemInfo.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10

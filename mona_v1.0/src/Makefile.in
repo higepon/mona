@@ -29,23 +29,19 @@ SOURCES     = cstart.cpp            \
               GraphicalConsole.cpp  \
               pic.cpp               \
               io.cpp                \
-              rtc.cpp               \
-              disp.cpp              \
               syscalls.cpp          \
               BitMap.cpp            \
-              SystemInfo.cpp        \
               FAT12.cpp             \
               test_higepon.cpp      \
-              sysresource.cpp       \
               info.cpp              \
               GDTUtil.cpp           \
               IDTUtil.cpp           \
               Process.cpp           \
               PageManager.cpp       \
               elf.cpp               \
-              test_mjt.cpp          \
               z.cpp                 \
               MemoryManager.cpp     \
+              sysresource.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

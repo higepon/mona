@@ -10,7 +10,6 @@
 #include<KeyBoardManager.h>
 #include<elf.h>
 #include<userlib.h>
-#include<SystemInfo.h>
 
 /*!
 

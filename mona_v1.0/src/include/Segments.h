@@ -16,7 +16,6 @@
 #include <operator.h>
 #include <kernel.h>
 #include <string.h>
-#include <Queue.h>
 #include <Process.h>
 
 class SharedMemoryObject : public Queue {

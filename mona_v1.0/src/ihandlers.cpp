@@ -17,8 +17,6 @@
 #include <io.h>
 #include <ihandlers.h>
 #include <KeyBoardManager.h>
-#include <SystemInfo.h>
-#include <sysresource.h> /* (expr) */
 #include <tester.h>
 
 /*!
@@ -32,7 +30,7 @@
 void keyStrokeHandler(dword scancode) {
 
     KeyInfo info;
-    Message message;
+    //    Message message;
     g_demo_step++;
 
     /* set key scan code */

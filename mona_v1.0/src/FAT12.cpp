@@ -25,7 +25,6 @@
 // for Mona
 #else
 
-#include<SystemInfo.h>
 #include<global.h>
 #include<operator.h>
 

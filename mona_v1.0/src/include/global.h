@@ -19,11 +19,11 @@
 #include <Process.h>
 #include <string.h>
 #include <types.h>
-#include <sysresource.h> /* (expr) */
 #include <PageManager.h>
 #include <FAT12.h>
 #include <MemoryManager.h>
 #include <Segments.h>
+#include <sysresource.h>
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
@@ -37,11 +37,11 @@ GLOBAL dword g_demo_step GLOBAL_VAL(0);
 GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
 GLOBAL semaphore g_semaphore_shared  GLOBAL_VAL(1);
 
+GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
+
 /* expr:sysresource */
 GLOBAL BitMap *g_irqMap;
 GLOBAL IRQHandler g_irqHandlers[16];
-
-GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
 
 /* GLOBAL DESCRIPTOR TABLE */
 GLOBAL SegDesc* g_gdt;

@@ -47,17 +47,13 @@
 #include <tester.h>
 #include <checker.h>
 #include <KeyBoardManager.h>
-#include <SystemInfo.h>
 #include <FDCDriver.h>
 #include <GraphicalConsole.h>
 #include <ihandlers.h>
 #include <pic.h>
-#include <rtc.h>
-#include <disp.h>
 #include <BitMap.h>
 #include <FAT12.h>
 #include <string.h>
-#include <syscalls.h>
 #include <syscalls.h>
 #include <userlib.h>
 #include <PageManager.h>
