@@ -2,6 +2,9 @@
 
         * src/servers/mouse/main.cpp: 高負荷時のマウスの動きを改善 (thanks ひげぽんさん)
 
+        * src/servers/shell: プロンプトにカレントディレクトリを表示
+                             LS/DIRの引数でディレクトリを指定できるようにした
+
 2004-05-07  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell: 拡張子補完で.ELF, .EL2, .APPの全部に対応 (thanks ひげぽんさん)

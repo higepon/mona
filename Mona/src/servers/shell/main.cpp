@@ -4,13 +4,17 @@
 
 #include "Shell.h"
 
-#define PROMPT "Mona>"
+#define SVR "Shell Server"
+#define FONT_WIDTH 8
 
 using namespace MonAPI;
 
 static bool hasExited = false;
 static bool callAutoExec = true;
 static dword waiting = THREAD_UNKNOWN;
+static CString AppsDir  = "/APPS";
+static CString StartDir = "/APPS";
+static Screen screen;
 
 int MonaMain(List<char*>* pekoe)
 {
@@ -24,7 +28,7 @@ int MonaMain(List<char*>* pekoe)
         targetID = Message::lookupMainThread("1LINESH.SVR");
         if (targetID == THREAD_UNKNOWN)
         {
-            printf("Shell Server: INIT not found\n");
+            printf("%s: INIT not found\n", SVR);
             exit(1);
         }
         callAutoExec = false;
@@ -33,7 +37,7 @@ int MonaMain(List<char*>* pekoe)
     /* send */
     if (Message::send(targetID, MSG_SERVER_START_OK))
     {
-        printf("Shell Server: INIT error\n");
+        printf("%s: INIT error\n", SVR);
     }
 
     /* service loop */
@@ -54,7 +58,8 @@ int MonaMain(List<char*>* pekoe)
             case MSG_PROCESS_TERMINATED:
                 if (waiting == msg.arg1)
                 {
-                    printf("\n%s", PROMPT);
+                    printf("\n");
+                    shell.printPrompt();
                     waiting = THREAD_UNKNOWN;
                 }
                 break;
@@ -71,10 +76,11 @@ int MonaMain(List<char*>* pekoe)
 ----------------------------------------------------------------------*/
 Shell::Shell() : position_(0)
 {
-    applicationList();
+    this->current = StartDir;
+    this->makeApplicationList();
 
     if (!callAutoExec) printf("\n");
-    printf(PROMPT);
+    this->printPrompt();
     if (!callAutoExec) return;
 
     monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH", 0);
@@ -162,7 +168,7 @@ void Shell::commandExecute()
     if (args.get_Length() == 0)
     {
         /* command is empty */
-        printf(PROMPT);
+        this->printPrompt();
         position_ = 0;
         return;
     }
@@ -174,7 +180,11 @@ void Shell::commandExecute()
     if ((isInternal = isInternalCommand(args[0])))
     {
         internalCommandExecute(isInternal, args);
-        if (!hasExited) printf("\n%s", PROMPT);
+        if (!hasExited)
+        {
+            printf("\n");
+            this->printPrompt();
+        }
         position_ = 0;
         return;
     }
@@ -187,12 +197,12 @@ void Shell::commandExecute()
     }
     else if (command.endsWith(".ELF") || command.endsWith(".EL2"))
     {
-        cmdLine = "/APPS/" + command;
+        cmdLine = AppsDir + "/" + command;
     }
     else if (command.endsWith(".APP"))
     {
         CString name = command.substring(0, command.getLength() - 4);
-        cmdLine = "/APPS/" + name + ".APP/" + name + ".EL2";
+        cmdLine = AppsDir + "/" + name + ".APP/" + name + ".EL2";
     }
     else
     {
@@ -201,16 +211,16 @@ void Shell::commandExecute()
             CString file = apps.get(i);
             if (file == command + ".EL2")
             {
-                cmdLine = "/APPS/" + file;
+                cmdLine = AppsDir + "/" + file;
                 break;
             }
             else if (file == command + ".APP")
             {
-                cmdLine = "/APPS/" + file + "/" + command + ".EL2";
+                cmdLine = AppsDir + "/" + file + "/" + command + ".EL2";
                 break;
             }
         }
-        if (cmdLine == NULL) cmdLine = "/APPS/" + command + ".ELF";
+        if (cmdLine == NULL) cmdLine = AppsDir + "/" + command + ".ELF";
     }
 
     for (int i = 1; i < args.get_Length(); i++)
@@ -229,7 +239,8 @@ void Shell::commandExecute()
     }
     else
     {
-        printf("\n%s", PROMPT);
+        print("\n");
+        this->printPrompt();
     }
 }
 
@@ -241,31 +252,34 @@ void Shell::internalCommandExecute(int command, _A<CString> args)
         {
             if (args.get_Length() < 2)
             {
-                printf("usage: CD directory\n");
+                this->current = StartDir;
+                break;
             }
-            else if (syscall_cd(args[1]))
+            CString dir = this->mergeDirectory(this->current, args[1]);
+            if (syscall_cd(dir) != 0)
             {
-                printf("directory not found: %s\n", (const char*)args[1]);
+                printf("%s: directory not found: %s\n", SVR, (const char*)dir);
+                break;
             }
+            this->current = dir;
             break;
         }
     case COMMAND_LS:
         {
-            char name[15];
-            int  size;
-
-            if (syscall_dir_open())
+            if (args.get_Length() < 2)
             {
-                printf("dir open error\n");
-                break;
+                printFiles(this->current);
             }
-
-            while (syscall_dir_read(name, &size) == 0)
+            else
             {
-                printf("%s\n", name);
+                for (int i = 1; i < args.get_Length(); i++)
+                {
+                    if (i > 1) printf("\n");
+                    CString dir = this->mergeDirectory(this->current, args[i]);
+                    printf("%s:\n", (const char*)dir);
+                    printFiles(dir);
+                }
             }
-
-            syscall_dir_close();
             break;
         }
     case COMMAND_CAT:
@@ -372,7 +386,8 @@ void Shell::onKeyDown(int keycode, int modifiers)
 {
     if (waiting != THREAD_UNKNOWN)
     {
-        printf("\n%s", PROMPT);
+        printf("\n");
+        this->printPrompt();
         waiting = THREAD_UNKNOWN;
         if (keycode == Keys::Enter) return;
     }
@@ -482,20 +497,20 @@ _A<CString> Shell::parseCommandLine()
     return ret;
 }
 
-int Shell::applicationList()
+int Shell::makeApplicationList()
 {
     char name[15];
     int  size;
 
-    if (syscall_cd("/APPS"))
+    if (syscall_cd(AppsDir) != 0)
     {
-        printf("Shell Server: application list error\n");
+        printf("%s: application list error\n", SVR);
         return 1;
     }
 
-    if (syscall_dir_open())
+    if (syscall_dir_open() != 0)
     {
-        printf("Shell Server: application dir open error\n");
+        printf("%s: application dir open error\n", SVR);
         return 2;
     }
 
@@ -509,7 +524,91 @@ int Shell::applicationList()
     }
 
     syscall_dir_close();
-    syscall_cd("/");
+
+    if (AppsDir != this->current)
+    {
+        if (syscall_cd(this->current) != 0)
+        {
+            this->current = "/";
+            syscall_cd(this->current);
+        }
+    }
 
     return 0;
+}
+
+void Shell::printPrompt()
+{
+    printf("Mona:%s> ", (const char*)this->current);
+}
+
+CString Shell::getParentDirectory(const CString& dir)
+{
+    if (dir == NULL || dir == "/") return "/";
+
+    int p = dir.lastIndexOf('/');
+    if (p < 1) return "/";
+
+    return dir.substring(0, p);
+}
+
+CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
+{
+    if (dir2.startsWith("/")) return dir2.toUpper();
+
+    CString ret = dir1;
+    _A<CString> dirs = dir2.split('/');
+    FOREACH (CString, d, dirs)
+    {
+        if (d == NULL || d == ".") continue;
+
+        if (d == "..")
+        {
+            ret = this->getParentDirectory(ret);
+        }
+        else
+        {
+            if (ret != "/") ret += '/';
+            ret += d.toUpper();
+        }
+    }
+    return ret;
+}
+
+void Shell::printFiles(const CString& dir)
+{
+    char name[15];
+    int  size;
+
+    if (syscall_cd(dir) != 0)
+    {
+        printf("%s: directory not found: %s\n", SVR, (const char*)dir);
+        return;
+    }
+    if (syscall_dir_open())
+    {
+        printf("%s: can not open directory: %s\n", SVR, (const char*)dir);
+        return;
+    }
+
+    CString spc = "               ";
+    int w = 0, sw = screen.getWidth();
+    while (syscall_dir_read(name, &size) == 0)
+    {
+        CString file = name;
+        if (file == "." || file == "..") continue;
+
+        file = (file + spc).substring(0, 15);
+        int fw = FONT_WIDTH * file.getLength();
+        if (w + fw >= sw)
+        {
+            printf("\n");
+            w = 0;
+        }
+        printf("%s", (const char*)file);
+        w += fw;
+    }
+    printf("\n");
+
+    syscall_dir_close();
 }
