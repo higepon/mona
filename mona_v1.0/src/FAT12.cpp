@@ -23,8 +23,9 @@
 #define ATTR_DIRECTORY  0x10
 #define ATTR_ARCHIVE    0x20
 
-const int FAT12::BPB_ERROR = 1;
-const int FAT12::NOT_FAT12 = 2;
+const int FAT12::BPB_ERROR       = 1;
+const int FAT12::NOT_FAT12_ERROR = 2;
+const int FAT12::FAT_READ_ERROR  = 3;
 
 /*!
   \brief initilize
@@ -53,15 +54,31 @@ FAT12::~FAT12() {
 
 bool FAT12::initilize() {
 
+    /* read and set BPB */
     if (!setBPB()) {
         errNum_ = BPB_ERROR;
         return false;
     }
 
+    /* specify file system */
     if (!isFAT12()) {
-        errNum_ = NOT_FAT12;
+        errNum_ = NOT_FAT12_ERROR;
         return false;
     }
+
+    /* read fat */
+    fatStart_ = bpb_.reservedSectorCount;
+    if (!(driver_->read(fatStart_, fat_))) {
+        errNum_ = FAT_READ_ERROR;
+        return false;
+    }
+
+    for (int i = 0; i < 10; i++) getFATAt(i);
+
+    printf("fat[");
+    for (int k = 0; k < 20; k++) printf("%x", fat_[k]);
+
+
 
     int rootEntryStart = bpb_.reservedSectorCount
                        + bpb_.fatSize16 * bpb_.numberFats;
@@ -101,7 +118,7 @@ bool FAT12::initilize() {
 
     if (!(driver_->read(lbp, buf_))) return false;
 
-    for (int k = 0; k < 512; k++) printf("%c", (char)buf_[k]);
+    for (int k = 0; k < entry[2].filesize; k++) printf("%c", (char)buf_[k]);
 
 
     printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
@@ -200,3 +217,31 @@ bool FAT12::setBPB() {
 int FAT12::getErrorNo() {
     return errNum_;
 }
+
+word FAT12::getFATAt(int cluster) {
+
+    word result;
+    int index = cluster * 12 / 8 ;
+    //int index = cluster;
+
+    if (cluster % 2) {
+
+        result = ((fat_[index] & 0x0f) << 8) | fat_[index + 1];
+        printf("[%x][%x]", ((fat_[index] & 0x0f) << 8), fat_[index + 1]);
+    } else {
+        result = (fat_[index] << 4) | ((fat_[index + 1] & 0xf0) >> 4);
+        printf("[%x][%x]", (fat_[index] << 4), ((fat_[index + 1] & 0xf0) >> 4));
+    }
+    printf("result%d = %x\n", cluster, result);
+    return result;
+}
+
+
+bool FAT12::createFlie(const char* name) {return true;}
+bool FAT12::open(const char* name) {return true;}
+bool FAT12::read(const char* file, byte* buffer) {return true;}
+bool FAT12::write(const char* file, byte* buffer) {return true;}
+bool FAT12::rename(const char* from, const char* to) {return true;}
+bool FAT12::remove(const char* file) {return true;}
+bool FAT12::removeDirecotry(const char* name) {return true;}
+bool FAT12::makeDirectory(const char* name) {return true;}

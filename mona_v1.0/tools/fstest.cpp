@@ -14,12 +14,15 @@ int main(int argc, char *argv[]) {
         int errorNo = fat->getErrorNo();
 
         if (errorNo == FAT12::BPB_ERROR) printf("BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12) printf("NOT FAT12 error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) printf("NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) printf("NOT FAT12 error \n");
         else printf("unknown error \n");
 
         /* error */
         return -1;
     }
+
+    printf("fat initilize\n");
 
     delete fat;
     delete driver;

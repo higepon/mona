@@ -75,13 +75,22 @@ class FAT12 {
  public:
     FAT12(DiskDriver* driver);
     ~FAT12();
+    static const int BPB_ERROR;
+    static const int NOT_FAT12_ERROR;
+    static const int FAT_READ_ERROR;
 
  public:
 
-    static const int BPB_ERROR;
-    static const int NOT_FAT12;
-
     bool initilize();
+    bool createFlie(const char* name);
+    bool open(const char* name);
+    bool read(const char* file, byte* buffer);
+    bool write(const char* file, byte* buffer);
+    bool rename(const char* from, const char* to);
+    bool remove(const char* file);
+    bool removeDirecotry(const char* name);
+    bool makeDirectory(const char* name);
+
     int getErrorNo();
     BPB bpb_;
 
@@ -90,12 +99,16 @@ class FAT12 {
 
     bool setBPB();
     bool isFAT12();
+    word getFATAt(int cluster);
 
  private:
 
     byte buf_[512];             /* file buffer  */
+    byte fat_[512];             /* fat region   */
     DiskDriver* driver_;        /* disk driver  */
     byte errNum_;               /* error number */
+
+    int fatStart_;              /* fatStart     */
 
 };
 
