@@ -1,8 +1,8 @@
 2004-05-01  tino  <tino@users.sourceforge.jp>
 
-        * src/servers/shell/main.cpp: 内部コマンドCHSHで1lineshに切り替え
+        * src/servers/shell/main.cpp: 内部コマンドCHSHで1LINESH.SVRに切り替え
 
-        * src/servers/1linesh/OneLineShell.cpp: 内部コマンドCHSHで1lineshに切り替え
+        * src/servers/1linesh/OneLineShell.cpp: 内部コマンドCHSHでSHELL.SVRに切り替え
 
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
