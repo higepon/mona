@@ -34,6 +34,7 @@ void test_ide(){
     //kthread_init();
     enableInterrupt();
     enableTimer();
+    enableKeyboard();
     idet = g_kthreadInfo.tick;
     g_console->printf("Enable timer...(DISABLED THREAD SCHEDULER!)\n");/* ihandlers.cpp timer, kthread.cpp tick */
     g_console->printf("IDE init...\n");

@@ -50,6 +50,7 @@ class IDEDriver {
     bool waitready(unsigned long timeout);
     bool initilize();
     bool setLBA(dword lba,unsigned int device);
+    bool setCHS(dword lba,unsigned int device);
     void setCount(byte count);
   private:
     byte version_;

@@ -121,13 +121,13 @@ bool IDEDriver::waitready(unsigned long timeout){
 
 
 bool IDEDriver::sendcmd(int cmd,byte *bfr,int bfrsize/* must be 2n size */){
-  dword t;
+  int t;
   char c;
   waitready(TIMEOUT);
   outportb(status_,cmd);
   t = g_kthreadInfo.tick;
   for(;;){
-    if(g_kthreadInfo.tick > (t + TIMEOUT_CMD)){
+    if(g_kthreadInfo.tick > (dword)(t + TIMEOUT_CMD)){
       return false;
     }
     c = inportb(status_);
@@ -151,7 +151,7 @@ bool IDEDriver::sendcmd(int cmd,byte *bfr,int bfrsize/* must be 2n size */){
 }
 
 bool IDEDriver::cmdRead(byte *bfr,unsigned int count){
-  dword t;
+  int t;
   long bfrsize;
   char c;
   waitready(TIMEOUT);
@@ -160,7 +160,7 @@ bool IDEDriver::cmdRead(byte *bfr,unsigned int count){
   outportb(status_,IDE_CMD_READ); /* use PIO read */
   t = g_kthreadInfo.tick;
   for(;;){
-    if(g_kthreadInfo.tick > (t + TIMEOUT_CMD)){
+    if(g_kthreadInfo.tick > (dword)(t + TIMEOUT_CMD)){
       return false;
     }
     c = inportb(status_);
@@ -202,7 +202,6 @@ IDEDriver::~IDEDriver() {
 
 bool IDEDriver::initilize() {
     /* send software reset*/
-    char c;
     console_->printf("ide:init:");
 
     waithdc(TIMEOUT);
@@ -252,6 +251,7 @@ bool IDEDriver::initilize() {
 }
 
 bool IDEDriver::setLBA(dword lba,unsigned int device){
+/* ToDo:Length Check */
   IDEDevice *d;
   char c;
   if((device == 0) && HasMaster ){
@@ -279,8 +279,46 @@ bool IDEDriver::setLBA(dword lba,unsigned int device){
     c = lba & 0xff;
     outportb(sector_,c);
   }else{
+    return setCHS(lba,device);
+  }
+  return true;
+}
+
+bool IDEDriver::setCHS(dword lba,unsigned int device){
+  IDEDevice *d;
+  char c;
+  int T;
+  int H;
+  int S;
+  if((device == 0) && HasMaster ){
+    d = Master;
+  }else if((device == 1) && HasSlave){
+    d = Slave;
+  }else{
     return false;
   }
+
+/*
+    track = lba / (2 * 18);
+    head = (lba / 18) % 2;
+    sector = 1 + lba % 18;
+    return;
+*/
+  T = lba / (d->Heads * d->SectorsPerTrack );
+  H = ( lba / d->SectorsPerTrack ) % d->Heads;
+  S = 1 + ( lba % d->SectorsPerTrack );
+  
+  c = H;
+  outportb(head_,c);
+  
+  c = ( T >> 8 ) & 0xff;
+  outportb(cylinderH_,c);
+  
+  c = ( T & 0xff);
+  outportb(cylinderL_,c);
+  
+  c = S;
+  outportb(sector_,c);
   return true;
 }
 
@@ -440,7 +478,6 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
         Bus->console_->printf("read failed.\n");
       }
     }else{
-      
       Bus->console_->printf(" Not Found.\n");
       if(device == 0){
         Bus->HasMaster = false;
@@ -449,6 +486,29 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       }
       
     }
+    
+    if(IsSurpportLBA){
+      Bus->console_->printf("\nDevice read test...\n");
+      dword tests;
+      int cmpl;
+      byte buf1[512];
+      byte buf2[512];
+      for(tests = 0; ( tests != TotalSize ) && (g_demo_step < 3) ; tests++){
+        
+        read(tests,buf1);
+        IsSurpportLBA = false;
+        read(tests,buf2);
+        for(cmpl=0;cmpl!=512;cmpl++){
+          if(buf1[cmpl] != buf2[cmpl]){
+            Bus->console_->printf("READ ERROR IN %d @ %d !!",tests,cmpl);
+            for(;;);
+          }
+        }
+        IsSurpportLBA = true;
+      }
+      g_demo_step = 3;
+    }
+    
     Bus->console_->printf("\n");
 }
 
