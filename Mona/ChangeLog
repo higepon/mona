@@ -1,3 +1,7 @@
+2004-12-14  higepon  <higepon@users.sourceforge.jp>
+
+        * bin/Makefile: $(EXEEXT)対応
+
 2004-12-13  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/BootManager.cpp : MONA.CFG、RAMディスクなど。必須サーバはにくっつける様にした。

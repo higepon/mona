@@ -56,7 +56,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 all : $(BOOT1) $(KERNEL_IMG)
 
 $(KERNEL_IMG) : $(BOOT2) $(KERNEL)
-	$(BINDIR)/getFileSize.exe $(KERNEL) $(KERNEL) head.txt
+	$(BINDIR)/getFileSize$(EXEEXT) $(KERNEL) $(KERNEL) head.txt
 	cat $(BOOT2) head.txt $(KERNEL) > $@
 	rm -f head.txt
 
