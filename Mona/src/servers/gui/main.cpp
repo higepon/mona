@@ -179,15 +179,15 @@ void MessageLoop()
 		switch (msg.header)
 		{
 			case MSG_GUISERVER_GETFONT:
-				Message::reply(&msg, default_font->Handle, default_font->Size);
+				monapi_cmessage_reply_args(&msg, default_font->Handle, default_font->Size, NULL);
 				break;
 			case MSG_DISPOSE_HANDLE:
 				MemoryMap::unmap(msg.arg1);
-				Message::reply(&msg);
+				monapi_cmessage_reply(&msg);
 				break;
 			case MSG_GUISERVER_SETWALLPAPER:
 				DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
-				Message::reply(&msg);
+				monapi_cmessage_reply(&msg);
 				break;
 			case MSG_GUISERVER_DRAWWALLPAPER:
 				if (wallpaper != NULL)
@@ -195,7 +195,7 @@ void MessageLoop()
 					DrawImage(wallpaper, 0, 0, msg.arg1, msg.arg2,
 						GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
 				}
-				Message::reply(&msg);
+				monapi_cmessage_reply(&msg);
 				break;
 			default:
 				if (ImageHandler(&msg)) break;

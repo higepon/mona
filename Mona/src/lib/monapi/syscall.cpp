@@ -24,7 +24,7 @@ int print(const char* msg) {
     for (int len = strlen(msg); len > 0; msg += 127, len -= 127)
     {
         strncpy(buf, msg, 127);
-        if (MonAPI::Message::sendReceive(NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
+        if (monapi_cmessage_send_receive_args(NULL, NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
         {
             syscall_print(buf);
         }

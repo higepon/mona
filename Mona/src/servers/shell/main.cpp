@@ -5,6 +5,7 @@
 
 using namespace MonAPI;
 
+static monapi_clist msg_queue;
 static dword my_tid;
 
 static void StdoutMessageLoop()
@@ -13,17 +14,17 @@ static void StdoutMessageLoop()
 
     for (MessageInfo msg;;)
     {
-        if (Message::receive(&msg) != 0) continue;
+        if (monapi_cmessage_receive(&msg_queue, &msg) != 0) continue;
 
         switch (msg.header)
         {
             case MSG_PROCESS_STDOUT_DATA:
             {
-                monapi_call_mouse_set_cursor(0);
+                monapi_call_mouse_set_cursor(&msg_queue, 0);
                 msg.str[127] = '\0';
                 syscall_print(msg.str);
-                monapi_call_mouse_set_cursor(1);
-                Message::reply(&msg);
+                monapi_call_mouse_set_cursor(&msg_queue, 1);
+                monapi_cmessage_reply(&msg);
                 break;
             }
         }
@@ -39,10 +40,11 @@ int MonaMain(List<char*>* pekoe)
     my_tid = syscall_get_tid();
     dword id = syscall_mthread_create((dword)StdoutMessageLoop);
     syscall_mthread_join(id);
-    MessageInfo msg;
-    monapi_cmessage_receive_header_only(&msg, MSG_SERVER_START_OK);
+    MessageInfo msg, src;
+    src.header = MSG_SERVER_START_OK;
+    monapi_cmessage_receive_cond(NULL, &msg, &src, monapi_cmessage_cond_header);
     dword stdout_tid = msg.from;
-    Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+    monapi_cmessage_send_receive_args(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid, 0, 0, NULL);
 
     /* Server start ok */
     bool callAutoExec = true;
@@ -63,7 +65,7 @@ int MonaMain(List<char*>* pekoe)
     Shell shell(callAutoExec);
     shell.run();
 
-    Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+    monapi_cmessage_send_receive_args(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid, 0, 0, NULL);
     syscall_kill_thread(stdout_tid);
     monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
     monapi_register_to_server(ID_PROCESS_SERVER, 0);

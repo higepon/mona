@@ -19,7 +19,7 @@ namespace System { namespace Drawing
 		Color white = Color::get_White();
 #ifdef MONA
 		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEBITMAP, width, height, white.ToArgb()) != 0)
+		if (monapi_cmessage_send_receive_args(NULL, &msg, __gui_server, MSG_GUISERVER_CREATEBITMAP, width, height, white.ToArgb(), NULL) != 0)
 		{
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
@@ -58,7 +58,7 @@ namespace System { namespace Drawing
 		fn[fnlen] = '\0';
 		
 		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, fn.get()) != 0)
+		if (monapi_cmessage_send_receive_args(NULL, &msg, __gui_server, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, fn.get()) != 0)
 		{
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;

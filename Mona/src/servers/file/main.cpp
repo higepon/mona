@@ -19,18 +19,18 @@ void MessageLoop()
                 monapi_cmemoryinfo* mi = ReadFile(msg.str, msg.arg1);
                 if (mi != NULL)
                 {
-                    Message::reply(&msg, mi->Handle, mi->Size);
+                    monapi_cmessage_reply_args(&msg, mi->Handle, mi->Size, NULL);
                     monapi_cmemoryinfo_delete(mi);
                 }
                 else
                 {
-                    Message::reply(&msg);
+                    monapi_cmessage_reply(&msg);
                 }
                 break;
             }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
-                Message::reply(&msg);
+                monapi_cmessage_reply(&msg);
                 break;
             case MSG_FILE_DECOMPRESS_BZ2:
             {
@@ -45,12 +45,12 @@ void MessageLoop()
                 }
                 if (mi2 != NULL)
                 {
-                    Message::reply(&msg, mi2->Handle, mi2->Size);
+                    monapi_cmessage_reply_args(&msg, mi2->Handle, mi2->Size, NULL);
                     monapi_cmemoryinfo_delete(mi2);
                 }
                 else
                 {
-                    Message::reply(&msg);
+                    monapi_cmessage_reply(&msg);
                 }
                 monapi_cmemoryinfo_delete(mi1);
                 break;
@@ -60,12 +60,12 @@ void MessageLoop()
                 monapi_cmemoryinfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
                 if (mi != NULL)
                 {
-                    Message::reply(&msg, mi->Handle, mi->Size);
+                    monapi_cmessage_reply_args(&msg, mi->Handle, mi->Size, NULL);
                     delete mi;
                 }
                 else
                 {
-                    Message::reply(&msg);
+                    monapi_cmessage_reply(&msg);
                 }
                 break;
             }

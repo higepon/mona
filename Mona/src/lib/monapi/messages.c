@@ -1,6 +1,5 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
-#include <monapi/cmessage.h>
 
 static dword server_ids[] =
 {
@@ -32,17 +31,17 @@ dword monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
-int monapi_call_dispose_handle(int id, dword handle)
+MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle)
 {
     dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
     if (monapi_cmessage_send_args(tid, MSG_DISPOSE_HANDLE, handle, 0, 0, NULL) != 0)
     {
-        return 0;
+        return MONAPI_FALSE;
     }
-    return 1;
+    return MONAPI_TRUE;
 }
 
-int monapi_register_to_server(int id, int enabled)
+MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
 {
     dword tid = monapi_get_server_thread_id(id), header = MSG_NONE;
     switch (id)
@@ -57,34 +56,34 @@ int monapi_register_to_server(int id, int enabled)
             header = enabled ? MSG_REGISTER_TO_SERVER : MSG_UNREGISTER_FROM_SERVER;
             break;
     }
-    if (tid == THREAD_UNKNOWN) return 0;
+    if (tid == THREAD_UNKNOWN) return MONAPI_FALSE;
 
-    if (monapi_cmessage_send_receive_args(NULL, tid, header, syscall_get_tid(), 0, 0, NULL) != 0)
+    if (monapi_cmessage_send_receive_args(NULL, NULL, tid, header, syscall_get_tid(), 0, 0, NULL) != 0)
     {
         printf("%s:%d:ERROR: can not register to %s\n", __FILE__, __LINE__, server_names[id]);
-        return 0;
+        return MONAPI_FALSE;
     }
-    return 1;
+    return MONAPI_TRUE;
 }
 
-int monapi_call_mouse_set_cursor(int enabled)
+MONAPI_BOOL monapi_call_mouse_set_cursor(monapi_clist* queue, MONAPI_BOOL enabled)
 {
     dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
     dword header = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
     MessageInfo msg;
-    if (monapi_cmessage_send_receive_args(&msg, tid, header, 0, 0, 0, NULL) != 0)
+    if (monapi_cmessage_send_receive_args(queue, &msg, tid, header, 0, 0, 0, NULL) != 0)
     {
-        return 0;
+        return MONAPI_FALSE;
     }
-    return 1;
+    return MONAPI_TRUE;
 }
 
-monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prompt)
+monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_FILE_READ_DATA, prompt, 0, 0, file) != 0)
+    if (monapi_cmessage_send_receive_args(NULL, &msg, tid, MSG_FILE_READ_DATA, prompt, 0, 0, file) != 0)
     {
         return NULL;
     }
@@ -103,7 +102,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_FILE_DECOMPRESS_BZ2, mi->Handle, mi->Size, 0, NULL) != 0)
+    if (monapi_cmessage_send_receive_args(NULL, &msg, tid, MSG_FILE_DECOMPRESS_BZ2, mi->Handle, mi->Size, 0, NULL) != 0)
     {
         return NULL;
     }
@@ -117,12 +116,12 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     return ret;
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int prompt)
+monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_FILE_DECOMPRESS_BZ2_FILE, prompt, 0, 0, file) != 0)
+    if (monapi_cmessage_send_receive_args(NULL, &msg, tid, MSG_FILE_DECOMPRESS_BZ2_FILE, prompt, 0, 0, file) != 0)
     {
         return NULL;
     }
@@ -136,16 +135,16 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int p
     return ret;
 }
 
-int monapi_call_elf_execute_file(const char* command_line, int prompt)
+int monapi_call_elf_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
     return monapi_call_elf_execute_file_get_tid(command_line, prompt, NULL);
 }
 
-int monapi_call_elf_execute_file_get_tid(const char* command_line, int prompt, dword* tid)
+int monapi_call_elf_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid)
 {
     dword svr = monapi_get_server_thread_id(ID_ELF_SERVER);
     MessageInfo msg;
-    if (monapi_cmessage_send_receive_args(&msg, svr, MSG_ELF_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
+    if (monapi_cmessage_send_receive_args(NULL, &msg, svr, MSG_ELF_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;

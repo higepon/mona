@@ -3,13 +3,12 @@
 ----------------------------------------------------------------------*/
 
 #include <monapi/cmessage.h>
-#include <monapi/clist.h>
 #include <monapi/string.h>
 #include <monapi/syscall.h>
 
 #define ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
 
-static monapi_clist msg_queue;
+static monapi_clist msg_queue;  /* for main thread */
 
 int monapi_cmessage_send(dword tid, MessageInfo* info)
 {
@@ -24,37 +23,40 @@ int monapi_cmessage_send_args(dword tid, dword header, dword arg1, dword arg2, d
     return monapi_cmessage_send(tid, &info);
 }
 
-int monapi_cmessage_receive(MessageInfo* info)
+int monapi_cmessage_receive(monapi_clist* queue, MessageInfo* dst)
 {
     int result;
+    if (queue == NULL) queue = &msg_queue;
 
-    if (msg_queue.count > 0)
+    if (queue->count > 0)
     {
-        MessageInfo* msg = (MessageInfo*)monapi_clist_remove_at(&msg_queue, 0);
-        *info = *msg;
+        MessageInfo* msg = (MessageInfo*)monapi_clist_remove_at(queue, 0);
+        *dst = *msg;
         free(msg);
         return 0;
     }
 
-    result = syscall_receive(info);
+    result = syscall_receive(dst);
     if (result != 0)
     {
          syscall_mthread_yeild_message();
-         result = syscall_receive(info);
+         result = syscall_receive(dst);
     }
     return result;
 }
 
-int monapi_cmessage_receive_tid(MessageInfo* info, dword tid)
+int monapi_cmessage_receive_cond(monapi_clist* queue, MessageInfo* dst, MessageInfo* src, MONAPI_BOOL(*cond)(MessageInfo*, MessageInfo*))
 {
     int i;
-    for (i = 0; i < msg_queue.count; i++)
+    if (queue == NULL) queue = &msg_queue;
+
+    for (i = 0; i < queue->count; i++)
     {
-        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
-        if (msg->from == tid)
+        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(queue, i);
+        if ((*cond)(msg, src))
         {
-            *info = *msg;
-            monapi_clist_remove_at(&msg_queue, i);
+            *dst = *msg;
+            monapi_clist_remove_at(queue, i);
             free(msg);
             return 0;
         }
@@ -62,153 +64,62 @@ int monapi_cmessage_receive_tid(MessageInfo* info, dword tid)
 
     for (;;)
     {
-        MessageInfo* mi;
-        int result = syscall_receive(info);
+        MessageInfo* msg;
+        int result = syscall_receive(dst);
         if (result != 0)
         {
              syscall_mthread_yeild_message();
-             result = syscall_receive(info);
+             result = syscall_receive(dst);
         }
         if (result != 0) continue;
-        if (info->from == tid) break;
+        if ((*cond)(dst, src)) break;
 
-        mi = (MessageInfo*)malloc(sizeof(MessageInfo));
-        ASSERT(mi);
-        *mi = *info;
-        monapi_clist_add(&msg_queue, mi);
+        msg = (MessageInfo*)malloc(sizeof(MessageInfo));
+        ASSERT(msg);
+        *msg = *dst;
+        monapi_clist_add(queue, msg);
     }
     return 0;
 }
 
-int monapi_cmessage_receive_header(MessageInfo* info, dword tid, dword header)
+int monapi_cmessage_send_receive(monapi_clist* queue, MessageInfo* dst, dword tid, MessageInfo* info)
 {
-    int i;
-    for (i = 0; i < msg_queue.count; i++)
-    {
-        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
-        if (msg->from == tid && msg->header == header)
-        {
-            *info = *msg;
-            monapi_clist_remove_at(&msg_queue, i);
-            free(msg);
-            return 0;
-        }
-    }
-
-    for (;;)
-    {
-        MessageInfo* mi;
-        int result = syscall_receive(info);
-        if (result != 0)
-        {
-             syscall_mthread_yeild_message();
-             result = syscall_receive(info);
-        }
-        if (result != 0) continue;
-        if (info->from == tid && info->header == header) break;
-
-        mi = (MessageInfo*)malloc(sizeof(MessageInfo));
-        ASSERT(mi);
-        *mi = *info;
-        monapi_clist_add(&msg_queue, mi);
-    }
-    return 0;
-}
-
-int monapi_cmessage_receive_arg1(MessageInfo* info, dword tid, dword header, dword arg1)
-{
-    int i;
-    for (i = 0; i < msg_queue.count; i++)
-    {
-        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
-        if (msg->from == tid && msg->header == header && msg->arg1 == arg1)
-        {
-            *info = *msg;
-            monapi_clist_remove_at(&msg_queue, i);
-            free(msg);
-            return 0;
-        }
-    }
-
-    for (;;)
-    {
-        MessageInfo* mi;
-        int result = syscall_receive(info);
-        if (result != 0)
-        {
-             syscall_mthread_yeild_message();
-             result = syscall_receive(info);
-        }
-        if (result != 0) continue;
-        if (info->from == tid && info->header == header && info->arg1 == arg1) break;
-
-        mi = (MessageInfo*)malloc(sizeof(MessageInfo));
-        ASSERT(mi);
-        *mi = *info;
-        monapi_clist_add(&msg_queue, mi);
-    }
-    return 0;
-}
-
-int monapi_cmessage_receive_header_only(MessageInfo* info, dword header)
-{
-    int i;
-    for (i = 0; i < msg_queue.count; i++)
-    {
-        MessageInfo* msg = (MessageInfo*)monapi_clist_get_item(&msg_queue, i);
-        if (msg->header == header)
-        {
-            *info = *msg;
-            monapi_clist_remove_at(&msg_queue, i);
-            free(msg);
-            return 0;
-        }
-    }
-
-    for (;;)
-    {
-        MessageInfo* mi;
-        int result = syscall_receive(info);
-        if (result != 0)
-        {
-             syscall_mthread_yeild_message();
-             result = syscall_receive(info);
-        }
-        if (result != 0) continue;
-        if (info->header == header) break;
-
-        mi = (MessageInfo*)malloc(sizeof(MessageInfo));
-        ASSERT(mi);
-        *mi = *info;
-        monapi_clist_add(&msg_queue, mi);
-    }
-    return 0;
-}
-
-int monapi_cmessage_send_receive(MessageInfo* result, dword tid, MessageInfo* info)
-{
+    MessageInfo src;
     int ret = monapi_cmessage_send(tid, info);
     if (ret != 0) return ret;
 
-    if (result == NULL)
+    if (queue == NULL) queue = &msg_queue;
+
+    src.from = tid;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = info->header;
+
+    if (dst == NULL)
     {
         MessageInfo msg;
-        return monapi_cmessage_receive_arg1(&msg, tid, MSG_RESULT_OK, info->header);
+        return monapi_cmessage_receive_cond(queue, &msg, &src, monapi_cmessage_cond_from_header_arg1);
     }
-    return monapi_cmessage_receive_arg1(result, tid, MSG_RESULT_OK, info->header);
+    return monapi_cmessage_receive_cond(queue, dst, &src, monapi_cmessage_cond_from_header_arg1);
 }
 
-int monapi_cmessage_send_receive_args(MessageInfo* result, dword tid, dword header, dword arg1, dword arg2, dword arg3, const char* str)
+int monapi_cmessage_send_receive_args(monapi_clist* queue, MessageInfo* dst, dword tid, dword header, dword arg1, dword arg2, dword arg3, const char* str)
 {
+    MessageInfo src;
     int ret = monapi_cmessage_send_args(tid, header, arg1, arg2, arg3, str);
     if (ret != 0) return ret;
 
-    if (result == NULL)
+    if (queue == NULL) queue = &msg_queue;
+
+    src.from = tid;
+    src.header = MSG_RESULT_OK;
+    src.arg1 = header;
+
+    if (dst == NULL)
     {
         MessageInfo msg;
-        return monapi_cmessage_receive_arg1(&msg, tid, MSG_RESULT_OK, header);
+        return monapi_cmessage_receive_cond(queue, &msg, &src, monapi_cmessage_cond_from_header_arg1);
     }
-    return monapi_cmessage_receive_arg1(result, tid, MSG_RESULT_OK, header);
+    return monapi_cmessage_receive_cond(queue, dst, &src, monapi_cmessage_cond_from_header_arg1);
 }
 
 int monapi_cmessage_reply(MessageInfo* info)
@@ -235,9 +146,10 @@ void monapi_cmessage_create(MessageInfo* info, dword header, dword arg1, dword a
     return;
 }
 
-int monapi_cmessage_exist()
+int monapi_cmessage_exist(monapi_clist* queue)
 {
-    if (msg_queue.count > 0) return 1;
+    if (queue == NULL) queue = &msg_queue;
+    if (queue->count > 0) return 1;
     return (syscall_exist_message() == 1);
 }
 
@@ -249,4 +161,24 @@ dword monapi_cmessage_lookup(const char* name)
 dword monapi_cmessage_lookup_main_thread(const char* name)
 {
     return syscall_lookup_main_thread(name);
+}
+
+MONAPI_BOOL monapi_cmessage_cond_from(MessageInfo* msg1, MessageInfo* msg2)
+{
+    return msg1->from == msg2->from ? MONAPI_TRUE : MONAPI_FALSE;
+}
+
+MONAPI_BOOL monapi_cmessage_cond_from_header(MessageInfo* msg1, MessageInfo* msg2)
+{
+    return msg1->from == msg2->from && msg1->header == msg2->header ? MONAPI_TRUE : MONAPI_FALSE;
+}
+
+MONAPI_BOOL monapi_cmessage_cond_from_header_arg1(MessageInfo* msg1, MessageInfo* msg2)
+{
+    return msg1->from == msg2->from && msg1->header == msg2->header && msg1->arg1 == msg2->arg1 ? MONAPI_TRUE : MONAPI_FALSE;
+}
+
+MONAPI_BOOL monapi_cmessage_cond_header(MessageInfo* msg1, MessageInfo* msg2)
+{
+    return msg1->header == msg2->header ? MONAPI_TRUE : MONAPI_FALSE;
 }

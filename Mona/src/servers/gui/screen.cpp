@@ -17,7 +17,7 @@ Screen* GetDefaultScreen()
 
 void DrawImage(guiserver_bitmap* img, int spx /*= 0*/, int spy /*= 0*/, int ix /*= -1*/, int iy /*= -1*/, int iw /*= -1*/, int ih /*= -1*/, int transparent /*= -1*/)
 {
-	monapi_call_mouse_set_cursor(0);
+	monapi_call_mouse_set_cursor(NULL, 0);
 	unsigned char* vram = screen.getVRAM();
 	int bpp = screen.getBpp(), sw = screen.getWidth(), sh = screen.getHeight();
 	int bypp = bpp >> 3;
@@ -68,5 +68,5 @@ void DrawImage(guiserver_bitmap* img, int spx /*= 0*/, int spy /*= 0*/, int ix /
 			}
 		}
 	}
-	monapi_call_mouse_set_cursor(1);
+	monapi_call_mouse_set_cursor(NULL, 1);
 }

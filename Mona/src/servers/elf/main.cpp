@@ -1,5 +1,6 @@
 #include <monapi.h>
 #include <monapi/CString.h>
+#include <monapi/clist.h>
 #include <monapi/messages.h>
 #include <gui/System/Array.h>
 #include "ELFServer.h"
@@ -134,6 +135,7 @@ int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword* ti
 }
 
 #if 1  // temporary
+monapi_clist msg_queue;
 HList<dword> grabs;
 
 static void StdoutGrab(dword tid)
@@ -168,7 +170,7 @@ static void StdoutMessageLoop()
 {
     for (MessageInfo msg;;)
     {
-        if (Message::receive(&msg) != 0) continue;
+        if (monapi_cmessage_receive(&msg_queue, &msg) != 0) continue;
 
         switch (msg.header)
         {
@@ -181,22 +183,22 @@ static void StdoutMessageLoop()
                 }
                 else
                 {
-                    if (Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) != 0)
+                    if (monapi_cmessage_send_receive_args(&msg_queue, NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str) != 0)
                     {
                         StdoutUngrab(grabs[size - 1]);
                         syscall_print(msg.str);
                     }
                 }
-                Message::reply(&msg);
+                monapi_cmessage_reply(&msg);
                 break;
             }
             case MSG_PROCESS_GRAB_STDOUT:
                 StdoutGrab(msg.arg1);
-                Message::reply(&msg);
+                monapi_cmessage_reply(&msg);
                 break;
             case MSG_PROCESS_UNGRAB_STDOUT:
                 StdoutUngrab(msg.arg1);
-                Message::reply(&msg);
+                monapi_cmessage_reply(&msg);
                 break;
         }
     }
@@ -215,7 +217,7 @@ static void MessageLoop()
             {
                 dword tid;
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, &tid);
-                Message::reply(&msg, result, tid);
+                monapi_cmessage_reply_args(&msg, result, tid, NULL);
                 break;
             }
             default:

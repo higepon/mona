@@ -21,37 +21,7 @@ int Message::send(dword tid, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*
 
 int Message::receive(MessageInfo* info)
 {
-    return monapi_cmessage_receive(info);
-}
-
-int Message::receive(MessageInfo* info, dword tid)
-{
-    return monapi_cmessage_receive_tid(info, tid);
-}
-
-int Message::receive(MessageInfo* info, dword tid, dword header)
-{
-    return monapi_cmessage_receive_header(info, tid, header);
-}
-
-int Message::receive(MessageInfo* info, dword tid, dword header, dword arg1)
-{
-    return monapi_cmessage_receive_arg1(info, tid, header, arg1);
-}
-
-int Message::sendReceive(MessageInfo* result, dword tid, MessageInfo* info)
-{
-    return monapi_cmessage_send_receive(result, tid, info);
-}
-
-int Message::sendReceive(MessageInfo* result, dword tid, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
-{
-    return monapi_cmessage_send_receive_args(result, tid, header, arg1, arg2, arg3, str);
-}
-
-int Message::reply(MessageInfo* info, dword arg2 /* = 0*/, dword arg3 /*= 0*/, const char* str /*= NULL*/)
-{
-    return monapi_cmessage_reply_args(info, arg2, arg3, str);
+    return monapi_cmessage_receive(NULL, info);
 }
 
 void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
@@ -70,7 +40,7 @@ void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword 
 
 bool Message::exist()
 {
-    return monapi_cmessage_exist();
+    return monapi_cmessage_exist(NULL);
 }
 
 dword Message::lookup(const char* name)

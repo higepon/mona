@@ -5,26 +5,29 @@
 
 #ifdef MONA
 #include <monapi/syscall.h>
-#include <monapi/messages.h>
 #include <monapi/cmessage.h>
 
 #define MSG_GUI_TIMER 0x40f0
 
+static monapi_clist msg_queue;
 static dword my_tid = THREAD_UNKNOWN;
 
 static void SleepThread()
 {
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
+	monapi_cmessage_send_args(my_tid, MSG_SERVER_START_OK, 0, 0, 0, NULL);
 	
 	MessageInfo msg;
-	MonAPI::Message::receive(&msg, my_tid, MSG_GUI_TIMER);
+	for (;;)
+	{
+		if (monapi_cmessage_receive(&msg_queue, &msg) == 0 && msg.header == MSG_GUI_TIMER) break;
+	}
 	int interval = msg.arg1;
 	dword target = msg.arg2;
 	
 	for (;;)
 	{
 		sleep(interval);
-		MonAPI::Message::send(my_tid, MSG_GUI_TIMER, target);
+		monapi_cmessage_send_args(my_tid, MSG_GUI_TIMER, target, 0, 0, NULL);
 	}
 }
 #endif
@@ -59,10 +62,11 @@ namespace System { namespace Mona { namespace Forms
 		
 		dword id = syscall_mthread_create((dword)SleepThread);
 		syscall_mthread_join(id);
-		MessageInfo msg;
-		monapi_cmessage_receive_header_only(&msg, MSG_SERVER_START_OK);
+		MessageInfo msg, src;
+		src.header = MSG_SERVER_START_OK;
+		monapi_cmessage_receive_cond(NULL, &msg, &src, monapi_cmessage_cond_header);
 		this->sleep_tid = msg.from;
-		MonAPI::Message::send(this->sleep_tid, MSG_GUI_TIMER, this->interval, (dword)this);
+		monapi_cmessage_send_args(this->sleep_tid, MSG_GUI_TIMER, this->interval, (dword)this, 0, NULL);
 #endif
 	}
 	
