@@ -54,6 +54,25 @@ int main(int argc, char** argv)
     }
 
     /* Array  & Queue test */
+    Array<Queue> runq(10);
+
+    printf("\nArray and Queue Test\n");
+
+    FOREACH(Queue, value, runq)
+    {
+        Queue::initialize(&value);
+        Queue* q = new Queue();
+        printf("[%x]", q);
+        Queue::addToPrev(&top, q);
+    }
+
+    FOREACH(Queue, value, runq)
+    {
+        FOREACH_Q(value, Queue*, hoge)
+       {
+           printf("<%x>", hoge);
+       }
+    }
 
     return 0;
 }
