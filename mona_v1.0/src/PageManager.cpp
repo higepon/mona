@@ -12,16 +12,11 @@
 */
 
 #include <PageManager.h>
-#include <BitMap.h>
 #include <types.h>
 #include <string.h>
 #include <operator.h>
+#include <Segments.h>
 #include <global.h>
-
-/* Segment Faults */
-const byte Segment::FAULT_STACK_OVERFLOW;
-const byte Segment::FAULT_OUT_OF_RANGE;
-const byte Segment::FAULT_UNKNOWN;
 
 /* independent from architecture */
 const byte PageManager::FAULT_NOT_EXIST;
@@ -42,6 +37,13 @@ const byte PageManager::ARCH_PAGE_KERNEL;
 const int  PageManager::ARCH_PAGE_SIZE;
 const int  PageManager::ARCH_PAGE_TABLE_NUM;
 
+/*!
+    \brief page management initlize
+
+    \param totalMemorySize total system physical memory size
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 PageManager::PageManager(dword totalMemorySize) {
 
     dword pageNumber = totalMemorySize / ARCH_PAGE_SIZE + ((totalMemorySize % ARCH_PAGE_SIZE) ? 1 : 0);
@@ -50,6 +52,13 @@ PageManager::PageManager(dword totalMemorySize) {
     if (memoryMap_ == NULL) panic("PageManager initilize error\n");
 }
 
+/*!
+    \brief allocate physical page to page entry
+
+    \param pageEntry page entry
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
 
     int foundMemory = memoryMap_->find();
@@ -65,6 +74,12 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
     return true;
 }
 
+/*!
+    \brief initilize system pages
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 void PageManager::setup() {
 
     PageEntry* table = allocatePageTable();
@@ -84,6 +99,12 @@ void PageManager::setup() {
     startPaging();
 }
 
+/*!
+    \brief create new page directory for new process
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 PageEntry* PageManager::createNewPageDirectory() {
 
     PageEntry* table     = allocatePageTable();
@@ -110,12 +131,25 @@ PageEntry* PageManager::createNewPageDirectory() {
     return directory;
 }
 
+/*!
+    \brief change page directory
+
+    \param  address physical address of page directory
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 void PageManager::setPageDirectory(PhysicalAddress address) {
 
     asm volatile("movl %0   , %%eax \n"
                  "movl %%eax, %%cr3 \n" : /* no output */ : "m"(address) : "eax");
 }
 
+/*!
+    \brief start paging
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 void PageManager::startPaging() {
 
     asm volatile("mov %%cr0      , %%eax \n"
@@ -125,6 +159,12 @@ void PageManager::startPaging() {
                  : /* no input  */ : "ax");
 }
 
+/*!
+    \brief stop paging
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 void PageManager::stopPaging() {
 
     asm volatile("mov %%cr0      , %%eax \n"
@@ -134,6 +174,12 @@ void PageManager::stopPaging() {
                  : /* no input  */ : "ax");
 }
 
+/*!
+    \brief flush page cache
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 void PageManager::flushPageCache() const {
 
     asm volatile("mov %%cr3, %%eax\n"
@@ -142,11 +188,28 @@ void PageManager::flushPageCache() const {
                  : /* no input  */ : "ax");
 }
 
+/*!
+    \brief set up page entry
+
+    \param  entry    entry to set up
+    \param  address  physical address to set
+    \param  present  page present bit
+    \param  rw       read/write   bit
+    \param  user     user/kernel  bit
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 void PageManager::makePageEntry(PageEntry* entry, PhysicalAddress address, byte present, byte rw, byte user) const {
 
     *entry = present | rw | user | (address & 0xfffff000);
 }
 
+/*!
+    \brief allocate page table
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 PageEntry* PageManager::allocatePageTable() const {
 
     PageEntry* table;
@@ -159,6 +222,12 @@ PageEntry* PageManager::allocatePageTable() const {
     return table;
 }
 
+/*!
+    \brief allocate physical page
+
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user) {
 
     /* if already allocated, change attribute */
@@ -166,6 +235,14 @@ bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress addre
     return true;
 }
 
+/*!
+    \brief page fault handler
+
+    \param  address linear address of page fault point
+    \param  errror  fault type
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
 bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     PageEntry* table;
@@ -198,10 +275,19 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
         g_process_manager->kill(g_current_process);
         return true;
     }
-
 }
 
-inline bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool kernel) {
+/*!
+    \brief set page attribute
+
+    \param  entry    page entry
+    \param  present  true:page present
+    \param  writable true:writable
+    \param  kernel   true:kernel access mode
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
+bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool kernel) {
 
     if (!(*entry)) return false;
 
@@ -211,7 +297,18 @@ inline bool PageManager::setAttribute(PageEntry* entry, bool present, bool writa
     return true;
 }
 
-inline bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel) {
+/*!
+    \brief set page attribute
+
+    \param  entry    page directory
+    \param  address  Linear address
+    \param  present  true:page present
+    \param  writable true:writable
+    \param  kernel   true:kernel access mode
+    \author HigePon
+    \date   create:2003/10/15 update:2003/10/19
+*/
+bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel) {
 
     PageEntry* table;
     dword directoryIndex = address >> 22;
@@ -221,121 +318,4 @@ inline bool PageManager::setAttribute(PageEntry* directory, LinearAddress addres
 
      table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
      return setAttribute(table, present, writable, kernel);
-}
-
-StackSegment::StackSegment(LinearAddress start, dword size) {
-
-    start_        = start;
-    size_         = size + PageManager::ARCH_PAGE_SIZE;
-    isAutoExtend_ = false;
-
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
-}
-
-StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize) {
-
-    start_        = start;
-    size_         = initileSize + PageManager::ARCH_PAGE_SIZE;
-    maxSize_      = maxSize;
-    isAutoExtend_ = true;
-
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, start, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
-}
-
-StackSegment::~StackSegment() {
-
-}
-
-bool StackSegment::faultHandler(LinearAddress address, dword error) {
-
-    if (error == PageManager::FAULT_NOT_WRITABLE && !tryExtend(address)) {
-
-        return false;
-
-    } else if (error == PageManager::FAULT_NOT_EXIST && !allocatePage(address)) {
-
-        return false;
-    } else {
-
-        return false;
-    }
-
-    return true;
-}
-
-bool StackSegment::tryExtend(LinearAddress address) {
-
-    if (!isAutoExtend_) {
-
-        /* not auto extension mode */
-        errorNumber_ = FAULT_STACK_OVERFLOW;
-        return false;
-    }
-
-    if (address > start_ + PageManager::ARCH_PAGE_SIZE || address < start_) {
-
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-
-    if (size_ + PageManager::ARCH_PAGE_SIZE > maxSize_) {
-
-        errorNumber_ = FAULT_STACK_OVERFLOW;
-        return false;
-    }
-
-    /* page allocation */
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3
-                                 , address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3
-                                         , address - PageManager::ARCH_PAGE_SIZE, PageManager::ARCH_PAGE_READ_ONLY, g_current_process->dpl);
-
-    /* extention done */
-    size_ += PageManager::ARCH_PAGE_SIZE;
-
-    return true;
-}
-
-bool StackSegment::allocatePage(LinearAddress address) {
-
-    if (address < start_ || address > start_ + size_) {
-
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-
-    /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
-
-    return true;
-}
-
-HeapSegment::HeapSegment(LinearAddress start, dword size) {
-
-    start_ = start;
-    size_  = size;
-}
-
-HeapSegment::~HeapSegment() {
-
-}
-
-bool HeapSegment::faultHandler(LinearAddress address, dword error) {
-
-    if (error != PageManager::FAULT_NOT_EXIST) {
-
-        errorNumber_ = FAULT_UNKNOWN;
-        return false;
-    }
-
-    if (address < start_ || address > start_ + size_) {
-
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-
-    /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
-
-    return true;
 }

@@ -34,8 +34,8 @@ class PageManager {
     void flushPageCache() const;
     bool allocatePhysicalPage(PageEntry* pageEntry);
     bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
-    inline bool setAttribute(PageEntry* entry, bool present, bool writable, bool kernel);
-    inline bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel);
+    bool setAttribute(PageEntry* entry, bool present, bool writable, bool kernel);
+    bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool kernel);
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
@@ -73,55 +73,6 @@ class PageManager {
     static const byte ARCH_PAGE_KERNEL         = 0x00;
     static const int  ARCH_PAGE_SIZE           = 4096;
     static const int  ARCH_PAGE_TABLE_NUM      = 1024;
-};
-
-class Segment {
-
-  public:
-    virtual bool faultHandler(LinearAddress address, dword error) = 0;
-    virtual int getErrorNumber() {return errorNumber_;}
-    virtual LinearAddress getStart() {return start_;}
-    virtual dword getSize() {return size_;}
-
-  protected:
-    LinearAddress start_;
-    dword         size_;
-    byte errorNumber_;
-
-  public:
-    static const byte FAULT_STACK_OVERFLOW = 0x01;
-    static const byte FAULT_OUT_OF_RANGE   = 0x02;
-    static const byte FAULT_UNKNOWN        = 0x03;
-};
-
-class StackSegment : public Segment {
-
-  public:
-    StackSegment(LinearAddress start, dword size);
-    StackSegment(LinearAddress start, dword initileSize, dword maxSize);
-    virtual ~StackSegment();
-
-  public:
-    virtual bool faultHandler(LinearAddress address, dword error);
-
-  private:
-    bool tryExtend(LinearAddress address);
-    bool allocatePage(LinearAddress address);
-
-  protected:
-    bool isAutoExtend_;
-    dword maxSize_;
-
-};
-
-class HeapSegment : public Segment {
-
-  public:
-    HeapSegment(LinearAddress start, dword size);
-    virtual ~HeapSegment();
-
-  public:
-    virtual bool faultHandler(LinearAddress address, dword error);
 };
 
 #endif

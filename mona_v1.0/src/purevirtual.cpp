@@ -1,5 +1,5 @@
 /*!
-    \file   monaPureVirtual.cpp
+    \file   purevirtual.cpp
     \brief  purevirtual function
 
     using pure virtual function, we need this function

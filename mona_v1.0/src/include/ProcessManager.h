@@ -15,7 +15,7 @@
 #define _MONA_PROCESS_MANAGER_
 
 #include<types.h>
-#include<Process.h>
+#include<global.h>
 #include<ihandlers.h>
 #include<PageManager.h>
 #include<Scheduler.h>

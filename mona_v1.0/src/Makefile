@@ -59,7 +59,8 @@ SOURCES     = cstart.cpp            \
               elf.cpp               \
               test_mjt.cpp          \
               z.cpp                 \
-              MemoryManager.cpp
+              MemoryManager.cpp     \
+              Segments.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

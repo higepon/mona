@@ -10,6 +10,20 @@
 #include<MemoryManager.h>
 #include<KeyBoardManager.h>
 
+/*!
+
+  \brief  test code for higepon
+
+  Copyright (c) 2002,2003 Higepon
+  All rights reserved.
+  License=MIT/X Licnese
+
+  \author  HigePon
+  \version $Revision$
+  \date   create:2003/05/18 update:$Date$
+*/
+
+
 extern "C" void put_pixel(int x, int y, char color);
 
 typedef struct {
@@ -246,19 +260,6 @@ void FDCDriverTester() {
     g_fdcdriver->motor(false);
     delete(fat);
 }
-
-/*!
-  \file   tester_higepon.cpp
-  \brief  test code for higepon
-
-  Copyright (c) 2002,2003 Higepon
-  All rights reserved.
-  License=MIT/X Licnese
-
-  \author  HigePon
-  \version $Revision$
-  \date   create:2003/05/18 update:$Date$
-*/
 
 void ELFTester(byte* out) {
 

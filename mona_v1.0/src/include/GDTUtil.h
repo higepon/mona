@@ -31,7 +31,7 @@
 #define USER_SS   GDT_ENTRY_SELECTOR(7) | DPL_USER
 
 /*!
-    \struct  segment descripter
+    \struct SegDesc
 */
 typedef struct {
     word limitL;
