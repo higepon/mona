@@ -42,7 +42,7 @@ class FDCDriver : public DiskDriver {
     bool checkMSR(byte expectedCondition);
     bool seek(byte track);
     bool senseInterrupt();
-    void readResults();
+    bool readResults();
     void startDMA();
     void stopDMA();
     void setupDMARead(dword size);

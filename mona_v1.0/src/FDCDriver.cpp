@@ -446,7 +446,7 @@ bool FDCDriver::senseInterrupt() {
     \author HigePon
     \date   create:2003/02/13 update:
 */
-void FDCDriver::readResults() {
+bool FDCDriver::readResults() {
 
     int i;
     byte msr = 0;
@@ -482,10 +482,10 @@ void FDCDriver::readResults() {
         console_->printf("\n");
 #ifdef FDC_DEBUG
         console_->printf("result error");
-        if (resultsLength_ != 2) while (true);
 #endif
+        return false;
     }
-    return;
+    return true;;
 }
 
 /*!
@@ -619,8 +619,8 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 #ifdef FDC_DEBUG
     console_->printf("raed results");
 #endif
-    readResults();
-    return true;
+
+    return readResults();
 }
 
 /*!
@@ -691,13 +691,11 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     while (!waitInterrupt());
 #ifdef FDC_DEBUG
     console_->printf("write:after waitInterrupt\n");
-    if (sector == 2) while (true);
 #endif
 
     stopDMA();
 
-    readResults();
-    return true;
+    return readResults();
 }
 
 bool FDCDriver::read(dword lba, byte* buf) {
@@ -711,10 +709,15 @@ bool FDCDriver::read(dword lba, byte* buf) {
     g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 #endif
 
-    if (!read(track, head, sector)) return false;
-    memcpy(buf, dmabuff_, 512);
+    /* read. if error, retry 3 times */
+    for (int i = 0; i < 10; i++) {
+        if (read(track, head, sector)) {
+            memcpy(buf, dmabuff_, 512);
+            return true;
+        }
+    }
 
-    return true;
+    return false;
 }
 
 
@@ -730,9 +733,13 @@ bool FDCDriver::write(dword lba, byte* buf) {
 #endif
 
     memcpy(dmabuff_, buf,  512);
-    if (!write(track, head, sector)) return false;
 
-    return true;
+    /* write. if error, retry 3 times */
+    for (int i = 0; i < 10; i++) {
+        if (write(track, head, sector)) return true;
+    }
+
+    return false;
 }
 
 void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {

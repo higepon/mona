@@ -32,8 +32,8 @@ void FDCTester() {
         if (!g_fdcdriver->write(i, tbuf)) {
 
             g_console->printf("write failed %d", i);
-            g_fdcdriver->motor(false);
-            while (true);
+	    //            g_fdcdriver->motor(false);
+	    //            while (true);
         }
     }
 
@@ -56,9 +56,9 @@ void FDCTester() {
     for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
     while (true);
 
-//      g_fdcdriver->motor(false);
-//      g_console->printf("ok");
-//      while (true);
+    g_fdcdriver->motor(false);
+    g_console->printf("ok");
+    while (true);
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
