@@ -13,7 +13,35 @@
 #ifndef _MONA_FILE_
 #define _MONA_FILE_
 
-#include "sys/types.h"
+#include <sys/types.h>
+#include <monapi/CString.h>
+
+namespace FileServer {
+
+class FSEntry
+{
+public:
+    virtual bool IsDirectory() = 0;
+
+    virtual dword GetSize() const
+    {
+        return this->size;
+    }
+
+    virtual MonAPI::CString GetName()
+    {
+        return this->name;
+    }
+
+private:
+    dword size;
+    MonAPI::CString name;
+};
+
+
+
+}
+
 
 namespace ISO {
 

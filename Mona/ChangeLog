@@ -1,5 +1,7 @@
 2004-12-30  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/main.cpp (fdInitialize): テスト用に追加
+
         * src/servers/file/FDCDriver.h: 追加
 
         * src/servers/file/fs.cpp: 追加
@@ -7,7 +9,6 @@
         * src/servers/file/FDCDriver.cpp: 追加
 
         * src/servers/file/ISO9660.cpp: class Fileが名前が衝突したので適当なnamespaceをでっち上げた。
-
 
 2004-12-27  higepon  <higepon@users.sourceforge.jp>
 
