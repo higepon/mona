@@ -1,3 +1,8 @@
+2005-03-21  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/FatFileSystemManager.cpp (Open): 追加。ただし未実装状態。
+                                                    (Close): 追加。ただし未実装状態。
+
 2004-03-17  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gshell/gshell.cpp: exit で終了したときに例外が出る問題を修正

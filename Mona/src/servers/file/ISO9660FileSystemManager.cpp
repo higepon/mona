@@ -77,6 +77,18 @@ bool ISO9660FileSystemManager::Initialize()
     return true;
 }
 
+dword ISO9660FileSystemManager::Open(const MonAPI::CString& file)
+{
+    printf("ISO9660FileSystemManager::Open not implemented\n");
+    return 0;
+}
+
+bool ISO9660FileSystemManager::Close(const MonAPI::CString& file)
+{
+    printf("ISO9660FileSystemManager::Close not implemented\n");
+    return false;
+}
+
 bool ISO9660FileSystemManager::ChangeDirectory(const CString& directory)
 {
     return fs->IsExistDirectory(directory);

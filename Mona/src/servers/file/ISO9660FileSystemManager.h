@@ -35,6 +35,9 @@ public:
     monapi_cmemoryinfo* ReadFile(const char* path, bool prompt);
     monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt);
 
+    virtual dword Open(const MonAPI::CString& file);
+    virtual bool Close(const MonAPI::CString& file);
+
     void SetCurrentDirectory(const MonAPI::CString& directory) {this->currentDirectory = directory;}
     MonAPI::CString GetCurrentDirectory() const {return this->currentDirectory;}
 

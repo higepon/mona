@@ -72,6 +72,18 @@ void FatFileSystemManager::DeviceOff()
     return;
 }
 
+dword FatFileSystemManager::Open(const MonAPI::CString& file)
+{
+    printf("FatFileSystemManager::Open not implemented\n");
+    return 0;
+}
+
+bool FatFileSystemManager::Close(const MonAPI::CString& file)
+{
+    printf("FatFileSystemManager::Close not implemented\n");
+    return false;
+}
+
 monapi_cmemoryinfo* FatFileSystemManager::ReadFile(const char* path, bool prompt)
 {
     CString copyPath = path;
