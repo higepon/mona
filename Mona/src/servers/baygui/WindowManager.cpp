@@ -731,6 +731,15 @@ void WindowManager::restoreBackGround(Control *control)
 			_g->fillRect(rect->x, rect->y, rect->width + 1, rect->height + 1);
 		}
 	}
+	#else
+	if (control == NULL) {
+		_g->setColor(255,255,255);
+		_g->fillRect(0, 0, width, height);
+	} else {
+		Rect *rect = control->getRect();
+		_g->setColor(255,255,255);
+		_g->fillRect(rect->x, rect->y, rect->width + 1, rect->height + 1);
+	}
 	#endif
 }
 
