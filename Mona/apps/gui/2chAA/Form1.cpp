@@ -18,21 +18,22 @@ public:
     Form1()
     {
         this->InitializeComponent();
-        this->aa[14] = "⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡";
-        this->aa[13] = "  ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡";
-        this->aa[12] = "    ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡";
-        this->aa[11] = "        ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡";
-        this->aa[10] = "          ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡";
-        this->aa[9]  = "            ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡";
-        this->aa[8]  = "              ⊂(ﾟーﾟ*⊂⌒｀つ≡≡";
-        this->aa[7]  = "                ⊂(ﾟーﾟ*⊂⌒｀つ≡";
-        this->aa[6]  = "                  ⊂(ﾟーﾟ*⊂⌒｀つ";
-        this->aa[5]  = "                    ⊂(ﾟーﾟ*⊂⌒｀";
-        this->aa[4]  = "                      ⊂(ﾟーﾟ*⊂⌒";
-        this->aa[3]  = "                        ⊂(ﾟーﾟ*⊂";
-        this->aa[2]  = "                            ⊂(ﾟー";
-        this->aa[1]  = "                               ⊂*";
-        this->aa[0]  = "                                  ";
+        this->aa[14] = " ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡";
+        this->aa[14] = " ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡";
+        this->aa[13] = "   ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡";
+        this->aa[12] = "     ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡";
+        this->aa[11] = "         ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡";
+        this->aa[10] = "           ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡";
+        this->aa[9]  = "             ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡";
+        this->aa[8]  = "               ⊂(ﾟーﾟ*⊂⌒｀つ≡≡";
+        this->aa[7]  = "                 ⊂(ﾟーﾟ*⊂⌒｀つ≡";
+        this->aa[6]  = "                   ⊂(ﾟーﾟ*⊂⌒｀つ";
+        this->aa[5]  = "                     ⊂(ﾟーﾟ*⊂⌒｀";
+        this->aa[4]  = "                       ⊂(ﾟーﾟ*⊂⌒";
+        this->aa[3]  = "                         ⊂(ﾟーﾟ*⊂";
+        this->aa[2]  = "                             ⊂(ﾟー";
+        this->aa[1]  = "                                ⊂*";
+        this->aa[0]  = "                                   ";
     }
 
     void animation()
@@ -42,7 +43,7 @@ public:
         this->Show();
         for (; this->visible; Application::DoEvents())
         {
-            this->label1->set_Text(aa[(i++) & 0xE]);
+            this->label1->set_Text(aa[(i++) & 0xF]);
             this->OnPaint();
             sleep(300);
         }
