@@ -13,7 +13,7 @@
 */
 #include <monapi.h>
 #include <monalibc.h>
-#include <monapi/keys.h>
+#include <monapi/Keys.h>
 #include "OneLineShell.h"
 #include "DisplayWindow.h"
 #include "Charing.h"
