@@ -90,6 +90,7 @@ private:
     int judgeDevice(IDEController* controller, int device);
     bool waitBusyClear(IDEController* controller);
     bool waitDrdySet(IDEController* controller);
+    int readATA(IDEController* controller, int device, dword lba, byte blocknum, void* buff);
 
 private:
     IDEController controllers[2];
@@ -114,7 +115,7 @@ private:
         ATA_CMR        = 7,
         ATA_ASR        = 8,
         ATA_DCR        = 8,
-        ATA_TIMEOUT    = 100000,
+        ATA_TIMEOUT    = 1000000,
         BIT_BSY        = 0x80,
         BIT_DRDY       = 0x40,
         BIT_DRQ        = 8,

@@ -35,12 +35,18 @@ int MonaMain(List<char*>* pekoe)
         return 1;
     }
 
+#if 1
     ide.setDevice(controller, device);
+#endif
+
+#if 0
+    ide.setDevice(0, 0);
+#endif
 
     char buf[2048];
     memset(buf, 0, sizeof(buf));
 
-    printf("read result = %d\n", ide.read(16, buf, 1024));
+    printf("read result = %d\n", ide.read(1, buf, 1024));
 
     FileOutputStream fos("HDDUMP.TXT");
 

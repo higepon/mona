@@ -88,6 +88,10 @@ int IDEDriver::read(dword lba, void* buffer, int size)
     {
         return readATAPI(this->whichController, lba, buffer, size);
     }
+    else if (this->whichController->selectedDeviceType == DEVICE_ATA)
+    {
+        return readATA(whichController, whichController->selectedDevice, lba, (size + 512 - 1) / 512, buffer);
+    }
     else
     {
         return 0;
@@ -104,7 +108,7 @@ int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* comman
     }
     else
     {
-        outp8(controller, ATA_DHR, controller->selectedDevice << 4);
+        outp8(controller, ATA_DHR, 0x40 | 0xa0 | (controller->selectedDevice << 4));
     }
 
     /* send packet command */
@@ -121,7 +125,12 @@ int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* comman
         byte status = inp8(controller, ATA_ASR);
 
         if ((status & BIT_BSY) != 0) continue;
-        if ((status & BIT_CHK) != 0) return 2;
+        if ((status & BIT_CHK) != 0)
+	{
+            printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
+            printf("(inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);=%d\n", (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR));
+	    return 2;
+	}
 
         byte irr = inp8(controller, ATA_IRR);
 
@@ -141,6 +150,7 @@ int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* comman
 
         if ((status & BIT_CHK) != 0)
         {
+            printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
             return 4;
         }
 
@@ -187,7 +197,7 @@ bool IDEDriver::selectDevice(IDEController* controller, int device)
     if (i == ATA_TIMEOUT) return false;
 
     /* select device */
-    outp8(controller, ATA_DHR, device << 4);
+    outp8(controller, ATA_DHR, 0xa0 | 0x40 | (device << 4));
     sleep(1);
 
     for (i = 0; i < ATA_TIMEOUT; i++)
@@ -304,7 +314,7 @@ word IDEDriver::getSignature(IDEController* ide, int device)
     for (l = 0; l < RETRY_MAX; l++)
     {
         /* select device */
-        outp8(ide, ATA_DHR, device << 4);
+        outp8(ide, ATA_DHR, 0xa0 | 0x40 | (device << 4));
         sleep(10);
 
         c = inp8(ide, ATA_STR);
@@ -516,5 +526,28 @@ int IDEDriver::setDevice(int controller, int device)
     whichController->selectedDevice = device;
     whichController->selectedDeviceType = getDeviceType(controller, device);
 
+    selectDevice(whichController, device);
+
     return 0;
+}
+
+int IDEDriver::readATA(IDEController* controller, int device, dword lba, byte blocknum, void* buff)
+{
+    ATACommand com;
+    word cylinder;
+
+    /* feature, sector count, sector number, cylinder is 0 */
+    memset(&com, 0, sizeof(ATACommand));
+
+    com.sectorCount  = blocknum;
+    com.sectorNumber = lba & 0xff;
+    cylinder = (lba >> 8) & 0xffff;
+
+    com.cylinderLow = cylinder & 0xff;
+    com.cylinderHigh = (cylinder) >> 8 & 0xff;
+    com.device = DEV_HEAD_OBS | LBA_FLG | (device << 4) | ((lba >> 24) & 0xf);
+    com.command = 0x20;
+    com.drdyCheck = 1;
+
+    return sendPioDataInCommand(controller, &com, blocknum, buff);
 }
