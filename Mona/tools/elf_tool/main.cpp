@@ -53,36 +53,15 @@ _A<byte> loadFromFile(const char* path)
     return result;
 }
 
-void usage(const char* name)
-{
-    fprintf(stderr, "usage: %s [-o IMAGE] ELF\n", name);
-}
-
 int main(int argc, char* argv[])
 {
-    if (argc < 2)
+    if (argc != 2)
     {
-        usage(argv[0]);
+        printf("usage: %s dll\n", argv[0]);
         return 1;
     }
 
-    const char* target, * output = NULL;
-    if (strcmp(argv[1], "-o") == 0)
-    {
-        if (argc < 4)
-        {
-            usage(argv[0]);
-            return 1;
-        }
-        output = argv[2];
-        target = argv[3];
-    }
-    else
-    {
-        target = argv[1];
-    }
-
-    _A<byte> elf = loadFromFile(target);
+    _A<byte> elf = loadFromFile(argv[1]);
     if (elf.get() == NULL) return 1;
 
     /*

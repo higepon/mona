@@ -9,7 +9,6 @@ all:
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
-	@cd anaclock; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 
@@ -24,7 +23,6 @@ install:
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
-	@cd anaclock; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 
@@ -39,7 +37,6 @@ clean: touchdepend
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
-	@cd anaclock; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 
@@ -54,7 +51,6 @@ depend: touchdepend
 	@cd shell; $(MAKE) $@
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
-	@cd anaclock; $(MAKE) $@
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 
@@ -69,7 +65,6 @@ distclean:
 	rm -f shell/dependencies
 	rm -f clock/dependencies
 	rm -f cube/dependencies
-	rm -f anaclock/dependencies
 	rm -f kukuri/dependencies
 	rm -f mtorz/dependencies
 
@@ -84,6 +79,5 @@ touchdepend:
 	touch shell/dependencies
 	touch clock/dependencies
 	touch cube/dependencies
-	touch anaclock/dependencies
 	touch kukuri/dependencies
 	touch mtorz/dependencies
