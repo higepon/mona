@@ -1,3 +1,7 @@
+2004-02-08  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gshell/gshell.cpp: リファクタリング＆品質向上
+
 2005-02-07  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/Shell.cpp (hasDriveLetter): 追加。
