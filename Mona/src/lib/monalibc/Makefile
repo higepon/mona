@@ -15,6 +15,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 all : $(TARGET)
 
 $(TARGET) : $(OBJECTS)
+	rm -f $@
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 

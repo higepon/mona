@@ -25,6 +25,7 @@ INCLUDE = -I$(INCDIR)
 all : $(TARGET)
 
 $(TARGET): $(OBJECTS)
+	rm -f $@
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 

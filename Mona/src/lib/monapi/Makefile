@@ -31,6 +31,7 @@ $(TARGET1):
 	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDE) monapi.cpp
 
 $(TARGET2) : $(OBJECTS)
+	rm -f $@
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 

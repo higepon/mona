@@ -1557,17 +1557,6 @@ void BZ_API(BZ2_bzclose) (BZFILE* b)
 /*--
    return last error code 
 --*/
-const char * BZ_API(BZ2_bzerror) (BZFILE *b, int *errnum)
-{
-   int err = ((bzFile *)b)->lastErr;
-
-   if(err>0) err = 0;
-   *errnum = err;
-   return bzerrorstrings[err*-1];
-}
-#endif
-
-
 static char *bzerrorstrings[] = {
        "OK"
       ,"SEQUENCE_ERROR"
@@ -1588,10 +1577,21 @@ static char *bzerrorstrings[] = {
 };
 
 
+const char * BZ_API(BZ2_bzerror) (BZFILE *b, int *errnum)
+{
+   int err = ((bzFile *)b)->lastErr;
+
+   if(err>0) err = 0;
+   *errnum = err;
+   return bzerrorstrings[err*-1];
+}
+#endif
+
+
 #ifdef MONA
 void bz_internal_error ( int errcode )
 {
-    printf("libbz2: Assertion failed: %s\n", bzerrorstrings[errcode]);
+    printf("libbz2: Assertion failed [errcode: %d]\n", errcode);
 }
 #endif
 

@@ -112,9 +112,12 @@ void BZ2_hbMakeCodeLengths ( UChar *len,
    Int32 nNodes, nHeap, n1, n2, i, j, k;
    Bool  tooLong;
 
-   Int32 heap   [ BZ_MAX_ALPHA_SIZE + 2 ];
-   Int32 weight [ BZ_MAX_ALPHA_SIZE * 2 ];
-   Int32 parent [ BZ_MAX_ALPHA_SIZE * 2 ]; 
+   Int32 *heap   = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE + 2) * sizeof(Int32) );
+   AssertH ( heap, BZ_MEM_ERROR );
+   Int32 *weight = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE * 2) * sizeof(Int32) );
+   AssertH ( weight, BZ_MEM_ERROR );
+   Int32 *parent = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE * 2) * sizeof(Int32) ); 
+   AssertH ( parent, BZ_MEM_ERROR );
 
    for (i = 0; i < alphaSize; i++)
       weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;
@@ -168,6 +171,10 @@ void BZ2_hbMakeCodeLengths ( UChar *len,
          weight[i] = j << 8;
       }
    }
+
+   free ( heap );
+   free ( weight );
+   free ( parent );
 }
 
 
