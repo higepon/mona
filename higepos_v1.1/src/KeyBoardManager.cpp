@@ -50,7 +50,8 @@ KeyBoardManager::~KeyBoardManager() {
 */
 KeyBoardManager::KeyBoardManager() {
 
-    keyBufIndex_ = 0; /* index is 0 */
+    keyBufIndex_       = 0; /* index is 0 */
+    keyBufGottenIndex_ = 0; /* index is 0 */
     return;
 }
 
@@ -65,7 +66,15 @@ KeyBoardManager::KeyBoardManager() {
 */
 KeyInfo* KeyBoardManager::getKeyInfo() {
 
-    return (KeyInfo*)5;
+    KeyInfo* result = &(keyInfo_[keyBufGottenIndex_]);
+    keyBufGottenIndex_++;
+
+    /* check max */
+    if (keyBufGottenIndex_ >= MAX_KEY_BUF) {
+        keyBufGottenIndex_ = 0;
+    }
+
+    return result;
 }
 
 /*!
@@ -90,7 +99,9 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
 
     /* regular key */
-    if (keyBufIndex_ > MAX_KEY_BUF) return;
+    if (keyBufIndex_ >= MAX_KEY_BUF) {
+        keyBufIndex_++;
+    }
 
     scancode &= 0x7f;
     keyInfo_[keyBufIndex_].keycode = keyMap_[scancode];

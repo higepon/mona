@@ -60,6 +60,7 @@ void startKernel(void) {
     Point* point3 = new Point(7, -100);
     delete(point3);
 
+    _sys_printf("[Point() getY() = %d]\n", point1->getY());
     _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);

@@ -79,6 +79,7 @@ class KeyBoardManager {
     KeyBoardManager& operator = (const KeyBoardManager&);
     KeyInfo keyInfo_[MAX_KEY_BUF];
     int keyBufIndex_;
+    int keyBufGottenIndex_;
     const int test[1];
   public:
 
