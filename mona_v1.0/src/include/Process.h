@@ -128,6 +128,7 @@ public:
 public:
     bool schedule();
     bool schedule2();
+    bool schedule3();
     void tick();
     void dump();
     void join(Thread* thread, int priority = 30);

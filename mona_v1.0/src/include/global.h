@@ -73,6 +73,8 @@ GLOBAL Messenger* g_messenger;
 GLOBAL dword gt[128];
 
 GLOBAL int debug_faultpoint;
+GLOBAL int debug_waitorwake;
+GLOBAL int debug_empty;
 
 #define DEBUG_MODE
 

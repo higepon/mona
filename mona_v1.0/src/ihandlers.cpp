@@ -103,7 +103,18 @@ void keyStrokeHandler(dword scancode)
 void fault0dHandler(dword error)
 {
     dokodemoView();
-    g_console->printf("%s, error=%x\n fault=%d", g_currentThread->process->getName(), error, debug_faultpoint);
+    g_console->printf("%s, error=%x\n fault=%d wake=%d, emp=%d", g_currentThread->process->getName(), error, debug_faultpoint, debug_waitorwake, debug_empty);
+
+     dword realcr3;
+     asm volatile("mov %%cr3, %%eax  \n"
+                  "mov %%eax, %0     \n"
+                  : "=m"(realcr3):: "eax");
+
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
     g_scheduler->dump();
     panic("fault0d");
 }
@@ -165,8 +176,10 @@ void MFDCHandler(void)
     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
 
 //    g_console->printf("wake up result =%d\n", wakeupResult);
+       debug_waitorwake = -106;
     if (wakeupResult != 0)
      {
+       debug_waitorwake = -107;
           ThreadOperation::switchThread((wakeupResult == 1));
      }
 }

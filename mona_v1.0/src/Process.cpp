@@ -195,21 +195,32 @@ bool Scheduler::schedule()
             thread = prev;
         }
     }
+    return schedule3();
+}
 
-    FOREACH(Thread*, queue, runq)
+bool Scheduler::schedule3()
+{
+//    FOREACH(Thread*, queue, runq)
+
+    debug_empty = 555;
+
+    if ((runq).getLength() > 0) \
+        for ({int __i = 0; Thread* queue;} \
+            __i < (runq).getLength() && (&(queue= (runq)[__i]) || true); __i++)
     {
         if (queue->isEmpty())
         {
+    debug_empty = 556;
             continue;
         }
         else
         {
             g_prevThread    = g_currentThread;
             g_currentThread = PTR_THREAD(queue->top());
+    debug_empty = 557;
             break;
         }
     }
-
 #if 0
     g_console->printf("[%s]\n", g_currentThread->process->getName());
     ArchThreadInfo* i = g_currentThread->archinfo;
@@ -219,7 +230,6 @@ bool Scheduler::schedule()
     g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
-
     return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
@@ -256,7 +266,7 @@ int Scheduler::wakeup(Thread* thread, int waitReason)
     runq[0]->addToPrev(thread);
     thread->waitReason = WAIT_NONE;
 
-    return this->schedule() ? 1 : -1;
+    return this->schedule3() ? 1 : -1;
 }
 
 int Scheduler::wakeup(Process* process, int waitReason)

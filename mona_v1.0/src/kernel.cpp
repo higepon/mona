@@ -239,7 +239,9 @@ void mainProcess()
 
     g_fdcdriver->motorAutoOff();
 
-#if 0
+#if 1
+    for (;;)
+    {
     byte buf[512];
 
     KDate dt1;
@@ -268,10 +270,11 @@ void mainProcess()
         g_fdcdriver->read(9,buf);
         g_fdcdriver->read(10, buf);
     }
+    g_fdcdriver->motorAutoOff();
     RTC::getDate(&dt2);
-
     g_console->printf("\n%d/%d/%d %d:%d:%d\n", dt1.year, dt1.month, dt1.day, dt1.hour, dt1.min, dt1.sec);
     g_console->printf("%d/%d/%d %d:%d:%d\n", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
+    }
 
 #endif
 

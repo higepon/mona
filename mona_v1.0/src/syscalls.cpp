@@ -422,10 +422,15 @@ void syscall_entrance() {
 //     g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
 //     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 
+       debug_waitorwake = -104;
             if (!g_fdcdriver->interrupted())
             {
-                g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
-                bool isProcessChange = g_scheduler->schedule();
+       debug_waitorwake = -105;
+          g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
+       debug_waitorwake = -110;
+     bool isProcessChange = g_scheduler->schedule3();
+//bool isProcessChange = true;
+       debug_waitorwake = -111;
                 ThreadOperation::switchThread(isProcessChange);
             }
         }
