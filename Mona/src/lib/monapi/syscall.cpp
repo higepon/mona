@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <monapi/messages.h>
 
 /*----------------------------------------------------------------------
     system call wrappers
@@ -24,6 +25,8 @@ int kill() {
 }
 
 int exit(int error) {
+    MonAPI::Message::send(monapi_get_server_thread_id(ID_PROCESS_SERVER),
+        MSG_PROCESS_TERMINATED, MonAPI::System::getThreadID());
     return syscall_kill();
 }
 

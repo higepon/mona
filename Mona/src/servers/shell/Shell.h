@@ -16,7 +16,7 @@ class Shell {
     virtual ~Shell();
 
   public:
-    int onKeyDown(int keycode, int modifiers);
+    void onKeyDown(int keycode, int modifiers);
 
   protected:
     void commandChar(char c);

@@ -10,10 +10,12 @@ using namespace MonAPI;
 
 static bool hasExited = false;
 static bool callAutoExec = true;
+static bool waiting = false;
 
 int MonaMain(List<char*>* pekoe)
 {
     if (!monapi_register_to_server(ID_KEYBOARD_SERVER, 1)) exit(1);
+    if (!monapi_register_to_server(ID_PROCESS_SERVER, 1)) exit(1);
 
     /* Server start ok */
     dword targetID = Message::lookupMainThread("INIT");
@@ -36,16 +38,31 @@ int MonaMain(List<char*>* pekoe)
 
     /* service loop */
     Shell shell;
-    MessageInfo info;
+    MessageInfo msg;
     while (!hasExited)
     {
-        if (!Message::receive(&info) && info.arg2 & KEY_MODIFIER_DOWN)
+        if (Message::receive(&msg) != 0) continue;
+
+        switch (msg.header)
         {
-            shell.onKeyDown(info.arg1, info.arg2);
+            case MSG_KEY_VIRTUAL_CODE:
+                if (msg.arg2 & KEY_MODIFIER_DOWN)
+                {
+                    shell.onKeyDown(msg.arg1, msg.arg2);
+                }
+                break;
+            case MSG_PROCESS_TERMINATED:
+                if (waiting)
+                {
+                    printf("\n%s", PROMPT);
+                    waiting = false;
+                }
+                break;
         }
     }
 
     monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
+    monapi_register_to_server(ID_PROCESS_SERVER, 0);
     return 0;
 }
 
@@ -80,6 +97,7 @@ Shell::Shell() : position_(0)
 
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
+    callAutoExec = false;
 }
 
 Shell::~Shell()
@@ -185,10 +203,17 @@ void Shell::commandExecute()
         cmdLine += args[i];
     }
 
-    monapi_call_elf_execute_file(cmdLine, 1);
+    int result = monapi_call_elf_execute_file(cmdLine, 1);
 
-    printf("\n%s", PROMPT);
     position_ = 0;
+    if (!callAutoExec && result == 0)
+    {
+        waiting = true;
+    }
+    else
+    {
+        printf("\n%s", PROMPT);
+    }
 }
 
 void Shell::internalCommandExecute(int command, _A<CString> args)
@@ -326,7 +351,14 @@ void Shell::backspace() {
     position_--;
 }
 
-int Shell::onKeyDown(int keycode, int modifiers) {
+void Shell::onKeyDown(int keycode, int modifiers)
+{
+    if (waiting)
+    {
+        printf("\n%s", PROMPT);
+        waiting = false;
+        if (keycode == Keys::Enter) return;
+    }
 
     switch(keycode) {
     case(Keys::A):
@@ -409,9 +441,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
         break;
     default:
         break;
-
     }
-    return 0;
 }
 
 _A<CString> Shell::parseCommandLine()
