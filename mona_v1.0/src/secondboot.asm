@@ -37,7 +37,7 @@ gdt08:                          ; segment 08(code segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x9a                 ; Type Code
-        db 0xcf                 ; segment limitH
+        db 0xffff               ; segment limitH
         db 0                    ; segment baseH
 
 gdt10:                          ; segment 10(data segment)
@@ -45,7 +45,7 @@ gdt10:                          ; segment 10(data segment)
         dw 0                    ; segment baseL
         db 0                    ; segment baseM
         db 0x92                 ; Type Data
-        db 0xcf                 ; segment limitH
+        db 0xffff               ; segment limitH
         db 0                    ; segment baseH
 
 gdt18:                          ; segment 18(stack segment)
