@@ -1,3 +1,11 @@
+2004-05-24  tino  <tino@users.sourceforge.jp>
+
+        * src/lib/monapi/Screen.cpp (putPixel16, fillRect16): 24/32bppでの描画を修正
+
+        * apps/gui/clock/Form1.cpp: タイトルバーをなくした, どこでも持てるようにした, 二重起動防止
+
+        * apps/gui/launcher/Form1.cpp: 二重起動防止
+
 2004-05-23  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/clock/Form1.cpp (class Form1): dayofweekが0ではなく7で返ってきていて配列をオーバーしていたバグを修正
