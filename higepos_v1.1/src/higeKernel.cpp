@@ -67,11 +67,11 @@ void startKernel(void) {
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);
 
-#if 0
+#if 1
     /* FDCDriver test code */
     unsigned char buff[512];
-    gFDCDriver1 = new FDCDriver();
-    gFDCDriver1->read_sector(1, 1, buff);
+    gFDCDriver1 = new FDCDriver(0);
+    gFDCDriver1->readSector(1, 1, buff);
     for(int i = 0; i < 512; i++){
          _sys_printf("[%d]", buff[i]);
     }
