@@ -3,9 +3,12 @@
 *.list
 *.img
 *.exe
+*.BIN
+*.BN2
 *.ELF
 *.EL2
-*.BIN
+*.EXE
+*.EX2
 *.LIB
 *.WRP
 *.APP

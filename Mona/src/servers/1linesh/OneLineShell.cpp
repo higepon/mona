@@ -36,18 +36,9 @@ OneLineShell::~OneLineShell(){
 
 void OneLineShell::service() {
 
-  /* look up */
-  dword myID = MonAPI::System::getThreadID();
-
-  dword keysvrID = monapi_get_server_thread_id(ID_KEYBOARD_SERVER);
-  if(keysvrID == THREAD_UNKNOWN){
-    printf("Shell:KeyBoardServer not found\n");
+  if(!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)){
+    printf("Shell: key regist error\n");
     exit(1);
-  }
-
-  /* send message for KEYBDMNG.BIN */
-  if(Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, myID)){
-      printf("Shell: key regist error\n");
   }
 
   /* Server start ok */
@@ -85,8 +76,7 @@ void OneLineShell::service() {
     }
   }
 
-  /* send message for KEYBDMNG.BIN */
-  if(Message::send(keysvrID, MSG_KEY_UNREGIST_FROM_SERVER, myID)){
+  if(!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE)){
       printf("Shell: key unregist error\n");
   }
 
@@ -102,7 +92,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     cTmp = (CString *)this->cmd;
     if(cTmp->getLength() == 0) break;
     if(strcmp(*cTmp, "CHSH") == 0 || strcmp(*cTmp, "chsh") == 0){
-      int result = monapi_call_process_execute_file("/SERVERS/OLDSHELL.BN2", MONAPI_TRUE);
+      int result = monapi_call_process_execute_file("/SERVERS/OLDSHELL.EX2", MONAPI_TRUE);
       if(result != 0){
         this->SetMessage(result);
       } else {
@@ -111,7 +101,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
           if(msg.header == MSG_SERVER_START_OK) break;
         }
         hasExited = true;
-        this->SetMessage("Change shell to OLDSHELL.BN2");
+        this->SetMessage("Change shell to OLDSHELL.EX2");
       }
     } else {
       this->SetMessage(this->cmd.ExecuteCommand());

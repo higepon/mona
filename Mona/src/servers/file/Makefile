@@ -1,12 +1,10 @@
-TARGET  = FILE.BIN
+TARGET  = FILE
 SOURCES = main.cpp file.cpp bzip2.cpp
-
-MONADIR = ../../..
-include $(MONADIR)/env/monapi-bin.inc
-
 INSTDIR = $(BINDIR)/root/SERVERS
-LINK    = -lbz2 -lmonapi -lmonalibc
 
-$(TARGET): $(LIBDIR)/libbz2.a
+MONADIR    = ../../..
+ADDLINK    = -lbz2
+ADDLINKDEP = $(MONADIR)/lib/libbz2.a
+include $(MONADIR)/env/monapi-bin.inc
 
 include dependencies

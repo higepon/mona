@@ -112,7 +112,7 @@ static void DrawWallPaper(const char* src, int pos, unsigned int transparent, in
 
 static void ReadConfig()
 {
-	monapi_cmemoryinfo* cfg = monapi_call_file_read_data("/MONAGUI.INI", 1);
+	monapi_cmemoryinfo* cfg = monapi_call_file_read_data("/MONAGUI.INI", MONAPI_TRUE);
 	if (cfg == NULL) return;
 	
 	if (startup != NULL)
@@ -217,7 +217,7 @@ static void CheckGUIServer()
 	PsInfo info;
 
 	bool ok = true;
-	CString self = "GUI.ELF";
+	CString self = "GUI.EX2";
 	dword tid = MonAPI::System::getThreadID();
 
 	while (syscall_read_ps_dump(&info) == 0)

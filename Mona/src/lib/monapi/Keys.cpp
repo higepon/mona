@@ -207,3 +207,51 @@ bool Keys::IsToChar(KeyInfo keyInfo, char *map, char *maps){
 
     return false;
 }
+
+const int* Keys::GetKeyMap(Keys::KeyboardType kbdt)
+{
+    switch (kbdt)
+    {
+        case US102:
+            return mapUS102;
+        case JP109:
+            return mapJP109;
+    }
+    return NULL;
+}
+
+const int* Keys::GetKeyMapE0(Keys::KeyboardType kbdt)
+{
+    switch (kbdt)
+    {
+        case US102:
+            return mapUS102E0;
+        case JP109:
+            return mapJP109E0;
+    }
+    return NULL;
+}
+
+const char* Keys::GetKeyTopMap(Keys::KeyboardType kbdt)
+{
+    switch (kbdt)
+    {
+        case US102:
+            return keyTopMapUS102;
+        case JP109:
+            return keyTopMapJP109;
+    }
+    return NULL;
+}
+
+const char* Keys::GetKeyTopMapS(Keys::KeyboardType kbdt)
+{
+    switch (kbdt)
+    {
+        case US102:
+            return keyTopMapUS102S;
+        case JP109:
+            return keyTopMapJP109S;
+    }
+    return NULL;
+}

@@ -3,7 +3,11 @@
 *.list
 *.map
 *.local
-*.ELF
 *.BIN
+*.BN2
+*.ELF
+*.EL2
+*.EXE
+*.EX2
 TAGS
 dependencies

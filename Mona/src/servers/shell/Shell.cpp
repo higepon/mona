@@ -137,7 +137,9 @@ void Shell::commandExecute(bool prompt)
     {
         cmdLine = command;
     }
-    else if (command.endsWith(".BIN") || command.endsWith(".ELF") || command.endsWith(".EL2"))
+    else if (command.endsWith(".BIN") || command.endsWith(".BN2")
+        || command.endsWith(".ELF") || command.endsWith(".EL2")
+        || command.endsWith(".EXE") || command.endsWith(".EX2"))
     {
         cmdLine = APPSDIR"/" + command;
     }
@@ -148,10 +150,11 @@ void Shell::commandExecute(bool prompt)
     }
     else
     {
+        CString cmd2 = command + ".";
         for (int i = 0; i < this->apps.size(); i++)
         {
             CString file = apps.get(i);
-            if (file == command + ".BIN" || file == command + ".EL2" || file == command + ".MSH")
+            if (file.startsWith(cmd2))
             {
                 cmdLine = APPSDIR"/" + file;
                 break;
@@ -162,7 +165,12 @@ void Shell::commandExecute(bool prompt)
                 break;
             }
         }
-        if (cmdLine == NULL) cmdLine = APPSDIR"/" + command + ".ELF";
+        if (cmdLine == NULL)
+        {
+            printf("Can not find command.\n");
+            if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
+            return;
+        }
     }
 
     if (cmdLine.endsWith(".MSH"))
@@ -345,7 +353,10 @@ int Shell::makeApplicationList()
     while (syscall_dir_read(name, &size, &attr) == 0)
     {
         CString file = name;
-        if (file.endsWith(".BIN") || file.endsWith(".EL2") || file.endsWith(".APP") || file.endsWith(".MSH"))
+        if (file.endsWith(".BIN") || file.endsWith(".BN2")
+            || file.endsWith(".ELF") || file.endsWith(".EL2")
+            || file.endsWith(".EXE") || file.endsWith(".EX2")
+            || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
             apps.add(name);
         }

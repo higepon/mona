@@ -1,3 +1,4 @@
+IMPSFX = -imp
 include $(MONADIR)/env/monapi.inc
 
 .SUFFIXES: .cpp .o
@@ -12,22 +13,21 @@ include $(MONADIR)/env/monapi.inc
 .asm.o:
 	$(NASM) $(NFLAGS) -o $@ -felf $<
 
-all: $(TARGET).BN2
+all: $(TARGET).EX2
 
-
-$(TARGET).BN2: $(TARGET).BIN
+$(TARGET).EX2: $(TARGET).EXE
 	bzip2 -c $< > $@
 
-$(TARGET).BIN: $(OBJECTS) $(LINKDEP)
+$(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
-	$(STRIP) -O binary $@
+	$(STRIP) $@
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) $(TARGET).BN2 $(INSTFILES) $(INSTDIR)
+	$(INSTALL) $(TARGET).EX2 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN2 $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX2 $(CLEANFILES)
 
 depend:
 	rm -f dependencies

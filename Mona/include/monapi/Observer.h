@@ -10,7 +10,6 @@ namespace MonAPI {
     Observable/Observer
 ----------------------------------------------------------------------*/
 class Observable;
-interface Observer;
 interface Observer {
 
   public:

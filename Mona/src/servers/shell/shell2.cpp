@@ -10,8 +10,8 @@
 
 // ---- Ç≥Å[ÇŒÅ[ä‘í êM
 
-const char keybdmng_svr[] = "KEYBDMNG.BIN";
-const char elf_svr[] = "ELF.SVR";
+const char keybdmng_svr[] = "KEYBDMNG.EX2";
+const char elf_svr[] = "ELF.BN2";
 
 static void registserver(void) {
 

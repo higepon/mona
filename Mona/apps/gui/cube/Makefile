@@ -1,13 +1,20 @@
 TARGET  = GCUBE
 SOURCES = cube.cpp Form1.cpp geometry.cpp
-
-MONADIR = ../../..
-include $(MONADIR)/env/monapi-el2.inc
-
 INSTDIR = $(BINDIR)/root/APPS
-LINK    = -lgui -lmonapi -lmonalibc
-CXXFLAGS += -DDEBUG
 
-$(TARGET).ELF: $(LIBDIR)/libgui.a
+MONADIR    = ../../..
+ADDLINK    = -lmonalibc
+ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
+ifneq ($(BUILD_TARGET),ELF)
+ADDLINK    += -lgui-imp
+ADDLINKDEP += $(MONADIR)/lib/libgui-imp.a
+include $(MONADIR)/env/monapi-ex2.inc
+else
+ADDLINK    += -lgui
+ADDLINKDEP += $(MONADIR)/lib/libgui.a
+include $(MONADIR)/env/monapi-el2.inc
+endif
+
+CXXFLAGS += -DDEBUG
 
 include dependencies

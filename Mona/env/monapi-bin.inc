@@ -12,18 +12,18 @@ include $(MONADIR)/env/monapi.inc
 .asm.o:
 	$(NASM) $(NFLAGS) -o $@ -felf $<
 
-all: $(TARGET)
+all: $(TARGET).BIN
 
-$(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
-	$(LD) $(LFLAGS) $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
-	$(STRIP)  -O binary $@
+$(TARGET).BIN: $(OBJECTS) $(LINKDEP)
+	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
+	$(STRIP) -O binary $@
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) $(TARGET) $(INSTFILES) $(INSTDIR)
+	$(INSTALL) $(TARGET).BIN $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET).BIN $(CLEANFILES)
 
 depend:
 	rm -f dependencies

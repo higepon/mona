@@ -17,8 +17,8 @@ all: $(TARGET).EL2
 $(TARGET).EL2: $(TARGET).ELF
 	bzip2 -c $< > $@
 
-$(TARGET).ELF: $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
-	$(LD) $(LFLAGS) $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
+$(TARGET).ELF: $(OBJECTS) $(LINKDEP)
+	$(LD) $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@

@@ -4,10 +4,15 @@ SOURCES         = main.cpp          \
                   Command.cpp       \
                   DisplayWindow.cpp \
                   CommandHistory.cpp
-
-MONADIR = ../../..
-include $(MONADIR)/env/monapi-bn2.inc
-
 INSTDIR = $(BINDIR)/root/SERVERS
+
+MONADIR    = ../../..
+ADDLINK    = -lmonalibc
+ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
+ifneq ($(BUILD_TARGET),ELF)
+include $(MONADIR)/env/monapi-ex2.inc
+else
+include $(MONADIR)/env/monapi-bn2.inc
+endif
 
 include dependencies

@@ -1,3 +1,11 @@
+2004-07-10  tino  <tino@users.sourceforge.jp>
+
+        * env/monapi-exe.inc: 追加
+
+        * env/monapi-ex2.inc: 追加
+
+        * 各Makefile: EXEに移行できるものは移行
+
 2004-07-09  tino  <tino@users.sourceforge.jp>
 
         * configure: PE移行に伴ってELFシステムを非サポート

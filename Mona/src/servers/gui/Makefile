@@ -1,11 +1,15 @@
 TARGET  = GUI
 SOURCES = main.cpp image.cpp screen.cpp utils.cpp window.cpp effect.cpp Rectangle.cpp Overlap.cpp
-
-MONADIR = ../../..
-include $(MONADIR)/env/monapi-bn2.inc
-
 INSTDIR = $(BINDIR)/root/SERVERS
-LINK    = -lmonapi -lmonalibc -ljpegls
+
+MONADIR    = ../../..
+ADDLINK    = -lmonalibc -ljpegls
+ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a $(MONADIR)/lib/libjpegls.a
+ifneq ($(BUILD_TARGET),ELF)
+include $(MONADIR)/env/monapi-ex2.inc
+else
+include $(MONADIR)/env/monapi-bn2.inc
+endif
 
 install-startgui:
 	$(INSTALL) STARTGUI.MSH $(MONADIR)/bin/root/APPS

@@ -68,7 +68,7 @@ public:
 		terminal->set_Location(Point(0, 64));
 		terminal->set_Text("た～みなる");
 		terminal->set_Icon(Icons_Terminal);
-		terminal->set_Target("/APPS/GSHELL.EL2");
+		terminal->set_Target("/APPS/GSHELL.EX2");
 		terminal->Show();
 		
 		Application::Run();

@@ -1,14 +1,19 @@
 TARGET   = FIRE
 SOURCES  = Form1.cpp
 NASMSRCS = fire.asm
+INSTDIR  = $(BINDIR)/root/APPS
 
-MONADIR = ../../..
+MONADIR    = ../../..
+ifneq ($(BUILD_TARGET),ELF)
+ADDLINK    = -lgui-imp
+ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a
+include $(MONADIR)/env/monapi-ex2.inc
+else
+ADDLINK    = -lgui
+ADDLINKDEP = $(MONADIR)/lib/libgui.a
 include $(MONADIR)/env/monapi-el2.inc
+endif
 
-INSTDIR = $(BINDIR)/root/APPS
-LINK    = -lgui -lmonapi -lmonalibc
 CXXFLAGS += -DDEBUG
-
-$(TARGET).ELF: $(LIBDIR)/libgui.a
 
 include dependencies

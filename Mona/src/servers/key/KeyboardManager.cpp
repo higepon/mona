@@ -362,20 +362,9 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
     return;
 }
 
-bool KeyBoardManager::SetKeyMap(int basicKeyMap){
+bool KeyBoardManager::SetKeyMap(Keys::KeyboardType basicKeyMap){
 
-    bool result = false;
-
-    switch(basicKeyMap){
-    case Keys::US102:
-        result = SetKeyMap(Keys::mapUS102, Keys::mapUS102E0);
-        break;
-    case Keys::JP109:
-        result = SetKeyMap(Keys::mapJP109, Keys::mapJP109E0);
-        break;
-    }
-
-    return result;
+    return SetKeyMap(Keys::GetKeyMap(basicKeyMap), Keys::GetKeyMapE0(basicKeyMap));
 }
 
 bool KeyBoardManager::SetKeyMap(const int *customKeyMap, const int *customKeyMapE0){
@@ -393,20 +382,9 @@ bool KeyBoardManager::SetKeyMap(const int *customKeyMap, const int *customKeyMap
   return result;
 }
 
-bool KeyBoardManager::SetKeyTopMap(int basicKeyMap){
+bool KeyBoardManager::SetKeyTopMap(Keys::KeyboardType basicKeyMap){
 
-    bool result = false;
-
-    switch(basicKeyMap){
-    case Keys::US102:
-        result = SetKeyTopMap(Keys::keyTopMapUS102, Keys::keyTopMapUS102S);
-        break;
-    case Keys::JP109:
-        result = SetKeyTopMap(Keys::keyTopMapJP109, Keys::keyTopMapJP109S);
-        break;
-    }
-
-    return result;
+    return SetKeyTopMap(Keys::GetKeyTopMap(basicKeyMap), Keys::GetKeyTopMapS(basicKeyMap));
 }
 
 bool KeyBoardManager::SetKeyTopMap(const char *customKeyTopMap, const char *customKeyTopMapS){

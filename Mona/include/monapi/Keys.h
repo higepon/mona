@@ -20,7 +20,7 @@ namespace MonAPI {
 class Keys{
   public:
 
-    enum{
+    enum KeyboardType{
         US102,
         JP109,
     };
@@ -142,6 +142,18 @@ class Keys{
         OemBackslash= 226,
 
     };
+
+    static char ToChar(KeyInfo keyInfo);
+    static bool IsToChar(KeyInfo keyInfo);
+    static char ToChar(KeyInfo keyInfo, char *map, char *maps);
+    static bool IsToChar(KeyInfo keyInfo, char *map, char *maps);
+
+    static const int* GetKeyMap(KeyboardType kbdt);
+    static const int* GetKeyMapE0(KeyboardType kbdt);
+    static const char* GetKeyTopMap(KeyboardType kbdt);
+    static const char* GetKeyTopMapS(KeyboardType kbdt);
+
+private:
     static const int mapUS102[128];
     static const int mapUS102E0[128];
     static const int mapJP109[128];
@@ -150,11 +162,6 @@ class Keys{
     static const char keyTopMapUS102S[256];
     static const char keyTopMapJP109[256];
     static const char keyTopMapJP109S[256];
-
-    static char ToChar(KeyInfo keyInfo);
-    static bool IsToChar(KeyInfo keyInfo);
-    static char ToChar(KeyInfo keyInfo, char *map, char *maps);
-    static bool IsToChar(KeyInfo keyInfo, char *map, char *maps);
 };
 
 }

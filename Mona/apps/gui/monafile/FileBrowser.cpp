@@ -94,7 +94,9 @@ void FileBrowser::OnPaint()
 				this->skip = 1;
 				continue;
 			}
-			Icon::DrawIcon(g, name, Icon::GetIcon(di), x, y, false, i == this->target + this->skip);
+			Icons icon = Icon::GetIcon(di);
+			if (icon == Icons_Executable && this->path == "/SERVERS") icon = Icons_Server;
+			Icon::DrawIcon(g, name, icon, x, y, false, i == this->target + this->skip);
 			x += ARRANGE_WIDTH;
 			if (x + ARRANGE_WIDTH >= w)
 			{
@@ -158,6 +160,7 @@ void FileBrowser::Open(int target)
 	monapi_directoryinfo* di = (monapi_directoryinfo*)&this->files->Data[sizeof(int)] + this->skip + target;
 	String name = di->name;
 	Icons icon = Icon::GetIcon(di);
+	if (icon == Icons_Executable && this->path == "/SERVERS") icon = Icons_Server;
 	Size sz = this->get_ClientSize();
 	int nx = (sz.Width - VIEW_OFFSET_X) / ARRANGE_WIDTH;
 	int x = (target % nx) * ARRANGE_WIDTH + VIEW_OFFSET_X;

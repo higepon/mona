@@ -59,6 +59,8 @@ bool PEParser::ReadSections()
 	for (int i = 0; i < this->file->NumberOfSections; i++)
 	{
 		SectionHeaders* shdr = &this->sections[i];
+		if (shdr->PointerToRawData == 0) continue;
+		
 		if (this->size < shdr->PointerToRawData + shdr->VirtualSize) return false;
 		
 		uint32_t addr = shdr->VirtualAddress + shdr->SizeOfRawData;
@@ -224,6 +226,8 @@ bool PEParser::Load(uint8_t* image)
 	for (int i = 0; i < this->file->NumberOfSections; i++)
 	{
 		SectionHeaders* shdr = &this->sections[i];
+		if (shdr->PointerToRawData == 0) continue;
+		
 		memcpy(&image[shdr->VirtualAddress], &this->data[shdr->PointerToRawData], shdr->VirtualSize);
 	}
 	return true;

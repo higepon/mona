@@ -1,11 +1,12 @@
-CRT_OBJECT  = $(LIBDIR)/monapi.o
-LIB_STATIC  = $(LIBDIR)/libmonapi.a
-TARGET      = $(CRT_OBJECT) $(LIB_STATIC)
+CRT_OBJECT   = $(LIBDIR)/monapi.o
+LIB_STATIC   = $(LIBDIR)/libmonapi.a
+TARGET       = $(CRT_OBJECT) $(LIB_STATIC)
 
 ifneq ($(BUILD_TARGET),ELF)
-LIB_IMPORT  = $(LIBDIR)/libmonapi-imp.a
-LIB_DYNAMIC = MONAPI.DLL
-TARGET     += $(LIB_IMPORT) $(LIB_DYNAMIC)
+LIB_IMPORT   = $(LIBDIR)/libmonapi-imp.a
+LIB_DYNAMIC  = MONAPI.DLL
+LIB_DYNAMIC2 = MONAPI.DL2
+TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC2)
 endif
 
 SOURCES = monapi_impl.cpp \
@@ -50,8 +51,11 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	dllwrap -e dllmain --export-all --implib $(LIB_IMPORT) -o $@ $(OBJECTS)
+	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS)
 	$(STRIP) $@
+
+$(LIB_DYNAMIC2): $(LIB_DYNAMIC)
+	bzip2 -c $(LIB_DYNAMIC) > $@
 endif
 
 .SUFFIXES: .cpp .o
@@ -67,7 +71,7 @@ depend:
 install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
 	mkdir -p $(MONADIR)/bin/root/LIBS
-	$(INSTALL) $(LIB_DYNAMIC) $(MONADIR)/bin/root/LIBS
+	$(INSTALL) $(LIB_DYNAMIC2) $(MONADIR)/bin/root/LIBS
 endif
 
 include dependencies

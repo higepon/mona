@@ -2,7 +2,7 @@ TARGET = mona.img
 
 ROOT_FILES = `cd root; ls *.*`
 SVR_FILES  = `cd root; ls SERVERS/*.*`
-APP_FILES  = `cd root; ls APPS/*.EL* APPS/*.LIB APPS/*.WRP APPS/*.MSH`
+APP_FILES  = `cd root; ls APPS/*.E* APPS/*.LIB APPS/*.WRP APPS/*.MSH`
 LIB_FILES  = `cd root; ls LIBS/*.*`
 
 all:

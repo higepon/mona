@@ -6,8 +6,6 @@
 #ifdef __cplusplus
 #include <sys/List.h>
 
-#define MESSAGE_LOOP MonAPI::messageLoop
-
 typedef void (FuncVoid)();
 typedef int (FuncMonaMain)(List<char*>*);
 

@@ -39,9 +39,9 @@ class KeyBoardManager{
     inline bool isInit() const {
         return isInit_;
     }
-    bool SetKeyMap(int basicKeyMap);
+    bool SetKeyMap(MonAPI::Keys::KeyboardType basicKeyMap);
     bool SetKeyMap(const int *customKeyMap, const int *customKeyMapE0);
-    bool SetKeyTopMap(int basicKeyTopMap);
+    bool SetKeyTopMap(MonAPI::Keys::KeyboardType basicKeyTopMap);
     bool SetKeyTopMap(const char *customKeyTopMap, const char *customKeyTopMapS);
 
   private:

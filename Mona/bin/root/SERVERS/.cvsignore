@@ -3,7 +3,14 @@
 *.list
 *.img
 *.exe
-*.ELF
 *.BIN
 *.BN2
+*.ELF
+*.EL2
+*.EXE
+*.EX2
+*.LIB
+*.WRP
+*.APP
+*.MSH
 TAGS

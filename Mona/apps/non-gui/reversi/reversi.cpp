@@ -37,8 +37,7 @@ class myApplication : public MonaApplication, public Observer {
 ----------------------------------------------------------------------*/
 int MonaMain(List<char*>* pekoe) {
 
-    MonaApplication* app = new myApplication();
-    return app->main(pekoe);
+    return (new myApplication())->main(pekoe);
 }
 
 /*----------------------------------------------------------------------
@@ -48,22 +47,10 @@ int MonaMain(List<char*>* pekoe) {
 // コンストラクタ
 myApplication::myApplication() : MonaApplication() {
 
-    // 自分自身のスレッドIDを得る
-    dword myPid   = System::getThreadID();
-
-    // マウスサーバーを探す
-    dword targetID = Message::lookupMainThread("MOUSE.BN2");
-    if (targetID == 0xFFFFFFFF)
+    if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE))
     {
-        printf("Reversi:MouseServer not found\n");
-        exit(1);
-    }
-
-    // マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信
-    MessageInfo info;
-    Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
-    if (Message::send(targetID, &info)) {
         printf("Reversi:Mouse regist error\n");
+        exit(1);
     }
 }
 

@@ -180,17 +180,15 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 	{
 		return Icons_Archive;
 	}
-	else if (ext == ".ELF" || ext == ".EL2" || ext == ".APP")
+	else if (ext == ".BIN" || ext == ".BN2"
+		|| ext == ".ELF" || ext == ".EL2"
+		|| ext == ".EXE" || ext == ".EX2")
 	{
 		return Icons_Executable;
 	}
 	else if (ext == ".BMP" || ext == ".BM2" || ext == ".JPG")
 	{
 		return Icons_Picture;
-	}
-	else if (ext == ".BIN")
-	{
-		return Icons_Server;
 	}
 	else if (ext == ".TXT" || ext == ".MSH" || ext == ".CFG" || ext == ".INI")
 	{
