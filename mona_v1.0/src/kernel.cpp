@@ -85,17 +85,25 @@ void startKernel(void) {
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
     g_console->printf("\nSystem TotalL Memory %d[MB]\n", g_total_system_memory);
 
+    /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
     g_page_manager->setup();
 
-    /* now paging is off. */
-    //   PagingUtil::setup();
-    //   dword* p = (dword*)0x3FFFFC;
+    /* paging test */
     dword* p = (dword*)0x3FFFFE;
-    //    dword* p = (dword*)0x400003;
     *p = 5;
+    p = (dword*)0xffffffff5;
+    *p = 5;
+    p = (dword*)0x4FFFFF;
+    *p = 5;
+    for (dword k = 0x3FFFFE; k < 0xffffffff; k++) {
 
-//     SystemInfo::rdtscsub();
+        p = (dword*)k;
+        *p = 5;
+    }
+
+
+    //     SystemInfo::rdtscsub();
 //     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
 //     g_console->printf("userTestAddress=%x\n", (dword)userTest);
 

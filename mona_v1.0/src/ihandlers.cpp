@@ -314,10 +314,9 @@ void cpufaultHandler_e(dword address, dword error){
         panic("unhandled:fault0E - page fault");
     }
 
-    g_console->printf("page fault address is %x error is %x pid,name=%d, %s\n", address, error
+    g_console->printf("page fault(%x, %x, %d, %s)\n", address, error
                       , g_current_process->pid, g_current_process->name);
 
-    //    panic("unhandled:fault0E - page fault");
 }
 
 
