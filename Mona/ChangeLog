@@ -1,3 +1,9 @@
+2004-09-01  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/gui/hige3D/Canvas.h (class Canvas): 外部ファイルを読みこんでオブジェクト表示
+
+        * src/kernel/Scheduler.cpp (SetPriority): スケジューラのパラメータ設定ミスを修正(IDLEスレッドが不要に実行されていた。)
+
 2004-08-29  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/hige3D/Form1.cpp (class Canvas): 陰線消去

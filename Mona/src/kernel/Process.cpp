@@ -163,7 +163,7 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 
 #if 0
     ArchThreadInfo* i = g_currentThread->archinfo;
-    logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x eax=%x gss0=%d gesp0=%x %s %s p(%s) u(%s)\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, i->eax, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "", isProcessChanged ? "t" : "f", isUser ? "t": "f");
+    logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x eax=%x gss0=%d gesp0=%x %s(%d) %s(%d) p(%s) u(%s)\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, i->eax, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_currentThread->thread->priority, g_prevThread->process ? g_prevThread->process->getName() : "", g_prevThread->thread->priority, isProcessChanged ? "t" : "f", isUser ? "t": "f");
 #endif
 
 #if 0

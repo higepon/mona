@@ -68,3 +68,31 @@ double acos(double x)
 
   return result;
 }
+
+double fabs(double x)
+{
+    return x < 0 ? -x : x;
+}
+
+double modf(double x, double *buf)
+{
+    double a = fabs(x);
+    int i = (int)x;
+
+    double f = a - (double)i;
+
+    *buf = x < 0 ? -i : i;
+
+    return x < 0 ? -f : f;
+}
+
+double floor(double x)
+{
+    if (x < 0)
+    {
+        if (modf(-x, &x) != 0) x++;
+        return -x;
+    }
+    modf(x, &x);
+    return x;
+}

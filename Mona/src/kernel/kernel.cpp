@@ -166,8 +166,7 @@ void startKernel(void)
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
     g_idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
-    g_scheduler->ChangeBasePriority(g_idleThread, 63);
-    g_scheduler->Join(g_idleThread);
+    g_scheduler->Join(g_idleThread, ThreadPriority::Min);
 
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");

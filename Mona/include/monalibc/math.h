@@ -22,6 +22,8 @@ double sqrt(double num);
 double atan2(double x, double y);
 double atan(double x);
 double acos(double x);
+double modf(double x, double *buf);
+double floor(double x);
 
 #ifdef __cplusplus
 }

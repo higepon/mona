@@ -1,5 +1,5 @@
 TARGET  = GHIGE3D
-SOURCES = Form1.cpp
+SOURCES = Form1.cpp notmine.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..

@@ -85,6 +85,11 @@ void Scheduler::SetPriority(Thread* thread, unsigned char rate)
 
     dword priority = thread->basePriority + thread->lastCpuUsedTick;
 
+    if (priority >= maxPriority)
+    {
+        priority = maxPriority - 1;
+    }
+
     thread->priority = priority;
     thread->schedulerTotalTick = this->totalTick;
 }
