@@ -155,10 +155,13 @@ Thread::~Thread() {
     free(threadInfo_);
 }
 
+Thread ThreadManager::idle;
+int ThreadManager::threadCount;
+
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-ThreadManager::ThreadManager(bool isUser, ProcessManager_* processManager) : threadCount(0) {
+ThreadManager::ThreadManager(bool isUser) {
 
     /* user or kernel */
     isUser_ = isUser;
@@ -167,8 +170,8 @@ ThreadManager::ThreadManager(bool isUser, ProcessManager_* processManager) : thr
     scheduler_ = new ThreadScheduler();
     checkMemoryAllocate(scheduler_, "ThreadManager scheduler memory allocate");
 
-    /*  manager */
-    processManager_ = processManager;
+    /*  count */
+    threadCount = 0;
 }
 
 ThreadManager::~ThreadManager() {
@@ -188,7 +191,13 @@ Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
     return thread;
 }
 
-void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
+void ThreadManager::createIdle(dword programCounter, PageEntry* pageDirectory) {
+
+    threadCount++;
+    archCreateThread(&idle, programCounter, pageDirectory);
+}
+
+void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -211,7 +220,7 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageE
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
 
-void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
+void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) {
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
@@ -230,7 +239,7 @@ void ThreadManager::archCreateUserThread(Thread* thread, dword programCounter, P
     ainfo->dpl     = DPL_USER;
     ainfo->esp     = STACK_START - STACK_SIZE * threadCount;
     ainfo->ebp     = STACK_START - STACK_SIZE * threadCount;
-    ainfo->esp0    = processManager_->allocateKernelStack();
+    ainfo->esp0    = g_processManager->allocateKernelStack();
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 }
@@ -282,7 +291,7 @@ Thread* ThreadScheduler::schedule(Thread* current) {
 
     /* check dispach list is empty */
     if (list_->isEmpty()) {
-        return current;
+        return (Thread*)NULL;
     }
 
     /* round robin */
@@ -518,7 +527,7 @@ UserProcess_::UserProcess_(const char* name, PageEntry* directory) : Process_(na
     isUserMode_ = true;
 
     /* thread manager */
-    threadManager_ = new ThreadManager(isUserMode_, g_processManager);
+    threadManager_ = new ThreadManager(isUserMode_);
 }
 
 UserProcess_::~UserProcess_() {
@@ -533,7 +542,7 @@ KernelProcess_::KernelProcess_(const char* name, PageEntry* directory) : Process
     isUserMode_ = false;
 
     /* thread manager */
-    threadManager_ = new ThreadManager(isUserMode_, g_processManager);
+    threadManager_ = new ThreadManager(isUserMode_);
 }
 
 KernelProcess_::~KernelProcess_() {

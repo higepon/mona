@@ -157,7 +157,7 @@ class ProcessManager_;
 class ThreadManager {
 
   public:
-    ThreadManager(bool isUser, ProcessManager_* processmanager);
+    ThreadManager(bool isUser);
     virtual ~ThreadManager();
 
   public:
@@ -166,25 +166,30 @@ class ThreadManager {
     int kill(Thread* thread);
     int switchThread();
     Thread* schedule();
-    Thread* getCurrentThread() const {
+    inline Thread* getCurrentThread() const {
         return current_;
     }
 
+    inline Thread* getIdleThread() const {
+        return &idle;
+    }
+
+    static void createIdle(dword programCounter, PageEntry* pageDirectory);
+
   private:
-    void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
-    void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
+    static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory);
+    static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory);
 
   private:
     ThreadScheduler* scheduler_;
-    ProcessManager_* processManager_;
     Thread* current_;
-    Thread* idle_;
     bool isUser_;
-    int threadCount;
 
   private:
     static const LinearAddress STACK_START = 0xFFFFFF00;
     static const dword STACK_SIZE          = 4 * 1024;
+    static Thread idle;
+    static int threadCount;
 };
 
 /*----------------------------------------------------------------------

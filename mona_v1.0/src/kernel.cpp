@@ -121,6 +121,7 @@ void startKernel(void) {
     g_page_manager->setup();
 
     /* this is test code 2003/12/14 */
+    ThreadManager::createIdle((dword)idle_process, g_page_manager->createNewPageDirectory());
     g_processManager = new ProcessManager_(g_page_manager);
     Process_* testProcess1 = g_processManager->create(ProcessManager_::KERNEL_PROCESS, "TEST1");
     g_processManager->add(testProcess1);

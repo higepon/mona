@@ -1,6 +1,8 @@
 2004-01-02  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: thread周りの本格実装開始
+                       ThreadScheculer, ProcessScheculerを廃止xxxxManagerに統合
+          これよりしばらく大きな変更が続きます。
 
 2003-12-30  higepon  <higepon@users.sourceforge.jp>
 
