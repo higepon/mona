@@ -12,7 +12,6 @@
 #include <sys/types.h>
 #include "kernel.h"
 #include "VirtualConsole.h"
-#include "FDCDriver.h"
 #include "Semaphore.h"
 #include "GDTUtil.h"
 #include "IDTUtil.h"
@@ -24,7 +23,6 @@
 #include "sysresource.h"
 #include "tester.h"
 #include "vbe.h"
-#include "FSOperation.h"
 #include "IDManager.h"
 #include "Scheduler.h"
 
@@ -32,8 +30,6 @@ GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    *
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
 GLOBAL DokodemoView g_dokodemo_view;
-
-GLOBAL FDCDriver* g_fdcdriver;
 
 /* semaphore */
 GLOBAL semaphore g_semaphore_console  GLOBAL_VAL(1);
@@ -68,7 +64,6 @@ GLOBAL VesaInfo* g_vesaInfo;
 GLOBAL VesaInfoDetail* g_vesaDetail;
 GLOBAL Messenger* g_messenger;
 
-GLOBAL FSOperation* g_fs;
 GLOBAL IDManager*   g_id;
 
 GLOBAL dword gt[128];
@@ -79,7 +74,6 @@ GLOBAL IRQInfo g_irqInfo[16];
 
 GLOBAL Thread* g_idleThread;
 
-GLOBAL dword g_mutexFloppy;
 GLOBAL dword g_mutexShared;
 
 #ifdef USE_BOOTMGR

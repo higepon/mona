@@ -306,13 +306,6 @@ int syscall_print(const char* msg)
     return result;
 }
 
-int syscall_load_process(const char* path, const char* name, CommandOption* list)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_LOAD_PROCESS, result, path, name, list);
-    return result;
-}
-
 int syscall_kill()
 {
     int result;
@@ -406,69 +399,6 @@ int syscall_set_cursor(int x, int y)
     return result;
 }
 
-int syscall_file_open(const char* path, int mode, volatile dword* size)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_FILE_OPEN, result, path, mode, size);
-    return result;
-}
-
-int syscall_file_read(const char* path, dword size, dword* readSize)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_FILE_READ, result, path, size, readSize);
-    return result;
-}
-
-int syscall_file_write(const char* path, dword size, dword* writeSize)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_FILE_WRITE, result, path, size, writeSize);
-    return result;
-}
-
-int syscall_file_create(const char* path)
-{
-    int result;
-    SYSCALL_1(SYSTEM_CALL_FILE_CREATE, result, path);
-    return result;
-}
-
-int syscall_file_close()
-{
-    int result;
-    SYSCALL_0(SYSTEM_CALL_FILE_CLOSE, result);
-    return result;
-}
-
-int syscall_fdc_read(dword lba, byte* buffer, dword blocknum)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_FDC_READ, result, lba, buffer, blocknum);
-    return result;
-}
-
-int syscall_fdc_write(dword lba, byte* buffer, dword blocknum)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_FDC_WRITE, result, lba, buffer, blocknum);
-    return result;
-}
-
-int syscall_fdc_open()
-{
-    int result;
-    SYSCALL_0(SYSTEM_CALL_FDC_OPEN, result);
-    return result;
-}
-
-int syscall_fdc_close()
-{
-    int result;
-    SYSCALL_0(SYSTEM_CALL_FDC_CLOSE, result);
-    return result;
-}
-
 dword syscall_get_pid()
 {
     dword result;
@@ -525,13 +455,6 @@ int syscall_exist_message()
     return result;
 }
 
-int syscall_fdc_disk_changed()
-{
-    int result;
-    SYSCALL_0(SYSTEM_CALL_FDC_DISK_CHANGED, result);
-    return result;
-}
-
 dword syscall_memory_map_create(dword size)
 {
     dword result;
@@ -560,34 +483,6 @@ int syscall_memory_map_unmap(dword id)
     return result;
 }
 
-int syscall_dir_open()
-{
-    int result;
-    SYSCALL_0(SYSTEM_CALL_DIR_OPEN, result);
-    return result;
-}
-
-int syscall_dir_read(const char* name, int* size, int* attr)
-{
-    int result;
-    SYSCALL_3(SYSTEM_CALL_DIR_READ, result, name, size, attr);
-    return result;
-}
-
-int syscall_dir_close()
-{
-    int result;
-    SYSCALL_0(SYSTEM_CALL_DIR_CLOSE, result);
-    return result;
-}
-
-int syscall_cd(const char* path)
-{
-    int result;
-    SYSCALL_1(SYSTEM_CALL_CD, result, path);
-    return result;
-}
-
 int syscall_set_ps_dump()
 {
     int result;
@@ -606,20 +501,6 @@ dword syscall_get_tick()
 {
     dword result;
     SYSCALL_0(SYSTEM_CALL_GET_TICK, result);
-    return result;
-}
-
-dword syscall_file_position()
-{
-    dword result;
-    SYSCALL_0(SYSTEM_CALL_FILE_POSITION, result);
-    return result;
-}
-
-dword syscall_file_seek(dword pt, int flag)
-{
-    dword result;
-    SYSCALL_2(SYSTEM_CALL_FILE_SEEK, result, pt, flag);
     return result;
 }
 

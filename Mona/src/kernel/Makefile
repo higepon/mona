@@ -23,7 +23,6 @@ SOURCES      = cstart.cpp            \
                checker.cpp           \
                string.cpp            \
                Semaphore.cpp         \
-               FDCDriver.cpp         \
                GraphicalConsole.cpp  \
                pic.cpp               \
                io.cpp                \
@@ -40,8 +39,6 @@ SOURCES      = cstart.cpp            \
                Mutex.cpp             \
                VesaConsole.cpp       \
                LogConsole.cpp        \
-               fat.cpp               \
-               fs.cpp                \
                IDManager.cpp         \
                KObject.cpp           \
                Loader.cpp            \

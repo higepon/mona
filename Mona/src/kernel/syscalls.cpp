@@ -240,18 +240,9 @@ void syscall_entrance()
         break;
 
     case SYSTEM_CALL_LOAD_PROCESS:
-    {
-        char* path = (char*)info->esi;
-        char* name = (char*)info->ecx;
-        CommandOption* option = (CommandOption*)(info->edi);
 
-        enableInterrupt();
-        dword result = Loader::Load(path, name, true, option);
-
-        disableInterrupt();
-        info->eax = result;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_SET_CURSOR:
 
@@ -265,201 +256,40 @@ void syscall_entrance()
 
     case SYSTEM_CALL_FDC_OPEN:
 
-        enableInterrupt();
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        g_fdcdriver->motor(ON);
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
 
     case SYSTEM_CALL_FDC_CLOSE:
 
-        enableInterrupt();
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        g_fdcdriver->motorAutoOff();
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
 
     case SYSTEM_CALL_FDC_READ:
-    {
-        enableInterrupt();
-
-        bool readResult = true;
-        dword lba      = info->esi;
-        byte* buffer   = (byte*)(info->ecx);
-        dword blocknum = info->edi;
-
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        for (dword i = 0; i < blocknum; i++)
-        {
-            readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
-            if (!readResult)
-            {
-                disableInterrupt();
-                break;
-            }
-        }
-        systemcall_mutex_unlock(g_mutexFloppy);
-        disableInterrupt();
-        info->eax = readResult ? 0 : 1;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_FDC_WRITE:
-    {
-        enableInterrupt();
-        bool writeResult = true;
-        dword lba      = info->esi;
-        byte* buffer   = (byte*)(info->ecx);
-        dword blocknum = info->edi;
-
-        systemcall_mutex_lock(g_mutexFloppy);
-        for (dword i = 0; i < blocknum; i++)
-        {
-            writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
-            if (!writeResult)
-            {
-                disableInterrupt();
-                break;
-            }
-        }
-        systemcall_mutex_unlock(g_mutexFloppy);
-
-        disableInterrupt();
-        info->eax = writeResult ? 0 : 1;
-        disableInterrupt();
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_FILE_OPEN:
-    {
-        g_console->printf("syscall file open called\n");
-        char* path  = (char*)info->esi;
-        int mode    = (int)info->ecx;
-        dword* size = (dword*)info->edi;
-        enableInterrupt();
-        g_fdcdriver->motor(ON);
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        if (!g_fs->open(path, mode))
-        {
-            g_fdcdriver->motorAutoOff();
-            systemcall_mutex_unlock(g_mutexFloppy);
-
-            disableInterrupt();
-            info->eax = g_fs->getErrorNo();
-            break;
-        }
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-
-        *size = g_fs->size();
-
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_FILE_READ:
-    {
-        g_console->printf("syscall file read called\n");
-        byte* buf      = (byte*)(info->esi);
-        dword size     = (dword)(info->ecx);
-
-        enableInterrupt();
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        if (!g_fs->read(buf, size))
-        {
-            systemcall_mutex_unlock(g_mutexFloppy);
-            disableInterrupt();
-            info->eax = g_fs->getErrorNo();
-            break;
-        }
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_FILE_WRITE:
-    {
-        g_console->printf("syscall file write called\n");
-        byte* buf      = (byte*)(info->esi);
-        dword size     = (dword)(info->ecx);
-
-        enableInterrupt();
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        if (!g_fs->write(buf, size))
-        {
-            systemcall_mutex_unlock(g_mutexFloppy);
-            disableInterrupt();
-            info->eax = g_fs->getErrorNo();
-            break;
-        }
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_FILE_CREATE:
-    {
-        g_console->printf("syscall file create called\n");
-        char* path = (char*)(info->esi);
-
-        enableInterrupt();
-        g_fdcdriver->motor(ON);
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        if (!g_fs->createFile(path))
-        {
-            info->eax = g_fs->getErrorNo();
-            g_fdcdriver->motorAutoOff();
-            systemcall_mutex_unlock(g_mutexFloppy);
-            break;
-        }
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_FILE_CLOSE:
-
-        g_console->printf("syscall file close called\n");
-        enableInterrupt();
-        systemcall_mutex_lock(g_mutexFloppy);
-        g_fs->close();
-        g_fdcdriver->motorAutoOff();
-        systemcall_mutex_unlock(g_mutexFloppy);
-
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
 
     case SYSTEM_CALL_GET_PID:
@@ -527,29 +357,9 @@ void syscall_entrance()
         }
         break;
 
-    case SYSTEM_CALL_WAIT_FDC:
-    {
-        if (!g_fdcdriver->interrupted())
-        {
-            g_scheduler->WaitEvent(g_currentThread->thread, MEvent::INTERRUPT_HIGH);
-            g_scheduler->SwitchToNext();
-
-            /* not reached */
-        }
-        break;
-    }
-
-
     case SYSTEM_CALL_FDC_DISK_CHANGED:
-    {
-        enableInterrupt();
-
-        dword result = g_fdcdriver->checkDiskChange();
-
-        disableInterrupt();
-        info->eax = result;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
 
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 
@@ -624,93 +434,20 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_CD:
-    {
-        g_console->printf("syscall cd called\n");
-        int result;
-        char* path = (char*)(info->esi);
-        enableInterrupt();
-        g_fdcdriver->motor(ON);
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        result = g_fs->cd(path) ? 0 : 1;
-        g_fdcdriver->motorAutoOff();
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-
-        disableInterrupt();
-        info->eax = result;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
-
 
     case SYSTEM_CALL_DIR_OPEN:
-    {
-        g_console->printf("syscall dir open called\n");
-        enableInterrupt();
-        g_fdcdriver->motor(ON);
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-        g_fdcdriver->recalibrate();
-
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        if (!g_fs->openDir())
-        {
-            g_fdcdriver->motorAutoOff();
-            systemcall_mutex_unlock(g_mutexFloppy);
-            disableInterrupt();
-            info->eax = 1;
-            break;
-        }
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-        disableInterrupt();
-        info->eax = 0;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
-
 
     case SYSTEM_CALL_DIR_CLOSE:
-    {
-        g_console->printf("syscall dir close called\n");
-        int result;
-        enableInterrupt();
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        result = g_fs->closeDir() ? 0 : 1;
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-        g_fdcdriver->motorAutoOff();
-        disableInterrupt();
-        info->eax = result;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
-
 
     case SYSTEM_CALL_DIR_READ:
-    {
-        g_console->printf("syscall dir read called\n");
-        int result;
-        char* name = (char*)info->esi;
-        int* size = (int*)info->ecx;
-        int* attr = (int*)info->edi;
-        enableInterrupt();
-
-        systemcall_mutex_lock(g_mutexFloppy);
-
-        result = g_fs->readDir(name, size, attr) ? 0 : 1;
-
-        systemcall_mutex_unlock(g_mutexFloppy);
-        g_fdcdriver->motorAutoOff();
-        disableInterrupt();
-        info->eax = result;
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
-    }
-
 
     case SYSTEM_CALL_PS_DUMP_SET:
 
@@ -741,12 +478,12 @@ void syscall_entrance()
 
     case SYSTEM_CALL_FILE_POSITION:
 
-        info->eax = g_fs->position();
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
 
     case SYSTEM_CALL_FILE_SEEK:
 
-        info->eax = g_fs->seek(info->esi, info->ecx);
+        g_console->printf("this systemcall not supported %s:%d\n", __FILE__, __LINE__);
         break;
 
     case SYSTEM_CALL_GET_KERNEL_VERSION:

@@ -470,7 +470,7 @@ private:
 				} else {
 					strcpy(temp, pathname);
 				}
-				syscall_file_create(temp);
+				// syscall_file_create(temp); // sorry by higepon
 			} else {
 				this->addLine("使い方：touch [ファイル名]\n");
 			}

@@ -1,5 +1,34 @@
 2005-03-16  higepon  <higepon@users.sourceforge.jp>
 
+        * apps/baygui/gshell/gshell.cpp: touchのsyscall_file_createをコメントアウト。あとでサポートします。
+
+        * src/lib/monapi/FileOutputStream.cpp: 廃止。
+
+        * src/lib/monapi/FileInputStream.cpp : 廃止。
+
+        * src/lib/monapi/syscall.cpp
+        (syscall_load_process): 廃止。
+        (syscall_file_open): 廃止。
+        (syscall_file_read): 廃止。
+        (syscall_file_write): 廃止。
+        (syscall_file_create): 廃止。
+        (syscall_file_close): 廃止。
+        (syscall_fdc_read): 廃止。
+        (syscall_fdc_write): 廃止。
+        (syscall_fdc_open): 廃止。
+        (syscall_fdc_close): 廃止。
+        (syscall_fdc_disk_changed): 廃止。
+        (syscall_dir_open): 廃止。
+        (syscall_dir_read): 廃止。
+        (syscall_dir_close): 廃止。
+        (syscall_cd): 廃止。
+        (syscall_file_position): 廃止。
+        (syscall_file_seek): 廃止。
+
+        * src/kernel/syscalls.cpp : サポートしないシステムコールを呼ばれたら警告を表示。
+
+        * src/kernel/Loader.cpp (Load): FDを使用するLoadを廃止。
+
         * src/servers/file/FDCDriver.cpp (waitInterrupt): タイムアウトを2秒に設定。
 
         * src/servers/file/file.cpp (fdInitialize): fd->motorAutoOff()し忘れの不具合を修正。

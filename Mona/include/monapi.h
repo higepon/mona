@@ -15,8 +15,6 @@
 #include <monapi/string.h>
 #include <monapi/MemoryManager.h>
 #include <monapi/Floppy.h>
-#include <monapi/FileInputStream.h>
-#include <monapi/FileOutputStream.h>
 #include <monapi/Color.h>
 #include <monapi/Random.h>
 #include <monapi/syscall.h>

@@ -57,7 +57,6 @@
 #include "operator.h"
 #include "tester.h"
 #include "checker.h"
-#include "FDCDriver.h"
 #include "GraphicalConsole.h"
 #include "ihandlers.h"
 #include "pic.h"
@@ -208,10 +207,9 @@ void startKernel()
     g_id = new IDManager();
 
     /* Mutex */
-    g_mutexFloppy = systemcall_mutex_create();
     g_mutexShared = systemcall_mutex_create();
 
-    /* paging start */
+    /* Paging start */
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
 
@@ -376,24 +374,6 @@ int execSysConf()
 
 void mainProcess()
 {
-    /* FDC do not delete */
-    enableFDC();
-    g_fdcdriver = new FDCDriver();
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-
-    g_fdcdriver->recalibrate();
-
-    g_fs = new FSOperation();
-
-    if (g_fs == NULL || !(g_fs->initialize((IStorageDevice*)g_fdcdriver)))
-    {
-        g_console->printf("FSOperation::initialize error\n");
-        for (;;);
-    }
-
-    g_fdcdriver->motorAutoOff();
-
     if (execSysConf() != 0)
     {
         g_console->printf("/MONA.CFG does not exist\n");

@@ -122,15 +122,10 @@ void irqHandler_0()
 */
 void irqHandler_6()
 {
-    g_fdcdriver->interrupt();
-
     /* thx! K-tan */
     outp8(0x20, 0x66);
 
     SendInterrupt(6);
-
-    g_scheduler->EventComes(g_fdcdriver->getWaitThread(), MEvent::INTERRUPT_HIGH);
-    g_scheduler->SwitchToNext();
 
     /* not reached */
 }

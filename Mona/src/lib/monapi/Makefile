@@ -13,9 +13,6 @@ SOURCES = monapi_impl.cpp \
           string.cpp \
           syscall.cpp \
           CString.cpp \
-          FileInputStream.cpp \
-          FileOutputStream.cpp \
-          Floppy.cpp \
           MemoryManager.cpp \
           MemoryMap.cpp \
           Message.cpp \
