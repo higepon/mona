@@ -6,7 +6,7 @@
 
         * 各Makefile: installでcp -uの代わりに$(INSTALL)を使用
 
-        * FreeBSD 5.2.1-R(gcc-3.3.3, ld-2.13.2)でコンパイルできるようになった
+        * FreeBSD 5.2.1-R(gcc-3.3.3, ld-2.13.2)でコンパイルできるようになった (gmake使用)
 
 2004-04-30  higepon  <higepon@users.sourceforge.jp>
 
