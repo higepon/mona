@@ -15,7 +15,7 @@
 #define _MONA_IA32MEMORYMANAGER_
 
 #include<types.h>
-#include<monaKernel.h>
+#include<kernel.h>
 
 #define GD_NUM 8192 /*!< number of Descripter */
 

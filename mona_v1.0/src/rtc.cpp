@@ -1,5 +1,5 @@
 #include<rtc.h>
-#include<monaKernel.h>
+#include<kernel.h>
 
 #define RTC_ADRS  0x70
 #define RTC_DATA  0x71

@@ -7,7 +7,7 @@
 #endif
 
 #include<kthread.h>
-#include<monaKernel.h>
+#include<kernel.h>
 #include<VirtualConsole.h>
 #include<MFDCDriver.h>
 #include<Semaphore.h>

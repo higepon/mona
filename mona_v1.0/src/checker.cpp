@@ -13,7 +13,7 @@
 */
 #include <checker.h>
 #include <types.h>
-#include <monaKernel.h>
+#include <kernel.h>
 #include <IA32MemoryManager.h>
 #include <kthread.h>
 

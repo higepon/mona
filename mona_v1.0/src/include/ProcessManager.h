@@ -14,7 +14,7 @@
 #ifndef _MONA_PROCESSMANAGER_
 #define _MONA_PROCESSMANAGER_
 
-#include <monaKernel.h>
+#include <kernel.h>
 #include <IA32MemoryManager.h>
 
 #define GDTNUM 7                   /*!< \def number of entry gdt   */

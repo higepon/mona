@@ -1,5 +1,5 @@
 /*!
-    \file   monaIhandler.cpp
+    \file   ihandlers.cpp
     \brief  interrupt handlers
 
      interrupt handlers
@@ -18,9 +18,9 @@
 #include<ProcessManager.h>
 #include<types.h>
 #include<tester.h>
-#include<monaKernel.h>
+#include<kernel.h>
 #include<string>
-#include<monaIhandler.h>
+#include<ihandlers.h>
 #include<kthread.h>
 #include<io.h>
 #include<global.h>

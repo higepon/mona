@@ -11,8 +11,8 @@
 */
 
 #include<kthread.h>
-#include<monaKernel.h>
-#include<monaIhandler.h>
+#include<kernel.h>
+#include<ihandlers.h>
 #include<idt.h>
 #include<pic.h>
 #include<operator.h>

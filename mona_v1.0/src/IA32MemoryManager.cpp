@@ -13,7 +13,7 @@
 */
 #include<IA32MemoryManager.h>
 #include<idt.h>
-#include<monaKernel.h>
+#include<kernel.h>
 #include<operator.h>
 #include<global.h>
 

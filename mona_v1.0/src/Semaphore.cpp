@@ -13,7 +13,7 @@
 */
 
 #include<semaphore.h>
-#include<monaKernel.h>
+#include<kernel.h>
 #include<io.h>
 #include<global.h>
 

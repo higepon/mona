@@ -20,9 +20,9 @@ BOOT1      = $(BIN)/firstboot.bin
 BOOT2      = $(BIN)/secondboot.bin
 KERNEL     = $(BIN)/third.bin
 SOURCES    = cstart.cpp            \
-             monaKernel.cpp        \
+             kernel.cpp            \
              idt.cpp               \
-             monaIhandler.cpp      \
+             ihandlers.cpp         \
              IA32MemoryManager.cpp \
              operator.cpp          \
              purevirtual.cpp       \

@@ -10,7 +10,7 @@
     \date   create:2003/03/01 update:$Date$
 */
 
-#include<monaKernel.h>
+#include<kernel.h>
 #include<kthread.h>
 #include<disp.h>
 #include<io.h>

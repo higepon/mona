@@ -11,7 +11,7 @@
     \version $Revision$
     \date   create:2002/07/21 update:$Date$
 */
-#include <monaKernel.h>
+#include <kernel.h>
 
 /*!
     \brief  mona kernel start at this point

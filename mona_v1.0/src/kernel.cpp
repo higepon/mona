@@ -3,7 +3,7 @@
  */
 
 /*!
-    \file   monaKernel.cpp
+    \file   kernel.cpp
     \brief  mona kernel start at this point
 
     mona kernel start at this point.
@@ -19,7 +19,7 @@
 #define GLOBAL_VALUE_DEFINED
 #include<global.h>
 
-#include<monaKernel.h>
+#include<kernel.h>
 #include<idt.h>
 #include<IA32MemoryManager.h>
 #include<operator.h>
@@ -31,7 +31,7 @@
 #include<GraphicalConsole.h>
 #include<ProcessManager.h>
 #include<kthread.h>
-#include<monaIhandler.h>
+#include<ihandlers.h>
 #include<pic.h>
 #include<rtc.h>
 

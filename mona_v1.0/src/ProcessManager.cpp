@@ -107,7 +107,7 @@ inline void ProcessManager::lldt(word address) const {
     \param gdt   address of gdt to set
     \param base  address of segment start
     \param limit limit size of segment
-    \param type  type of segment, see monaKernel.h
+    \param type  type of segment, see kernel.h
     \author HigePon
     \date   create:2002/12/02 update:
 */
