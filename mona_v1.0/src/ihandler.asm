@@ -28,8 +28,6 @@ BITS 32
 [extern _fault0dHandler]
 [extern _syscall_handler]
 [extern _dummyHandler]
-[extern _g_kthread_current];; pointer to current thread
-[extern _g_stack_view];; pointer to current thread
 
 ;;; fdc handler
 _arch_fdchandler:
