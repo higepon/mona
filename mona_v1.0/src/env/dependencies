@@ -139,8 +139,7 @@ test_mjt.o: test_mjt.cpp include/IDEDriver.h include/types.h \
   include/global.h include/kthread.h include/kernel.h include/FDCDriver.h \
   include/Semaphore.h include/sysresource.h include/BitMap.h \
   include/test_mjt.h include/driver/ISADriver.h \
-  include/GraphicalConsole.h driver/ISADevice/Mouse/Mouse.h include/pic.h \
-  include/io.h
+  include/GraphicalConsole.h include/pic.h include/io.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   include/types.h include/string.h include/global.h include/kthread.h \
   include/kernel.h include/VirtualConsole.h include/FDCDriver.h \

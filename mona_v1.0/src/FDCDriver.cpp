@@ -130,6 +130,10 @@ void FDCDriver::initilize() {
         panic("dma buff allocate error");
     }
 
+#ifdef FDC_DEBUG
+    g_console->printf("dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
+#endif
+
     /* setup DMAC */
     outportb(0xda, 0x00);
     delay();
@@ -277,7 +281,12 @@ bool FDCDriver::waitInterrupt() {
 void FDCDriver::motor(bool on) {
 
     if (on) {
+        interrupt_ = false;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
+        while (waitInterrupt());
+#ifdef FDC_DEBUG
+    console_->printf("motor on:after waitInterrupt\n");
+#endif
     } else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
 }
@@ -327,6 +336,9 @@ bool FDCDriver::recalibrate() {
     }
 
     while (!waitInterrupt());
+#ifdef FDC_DEBUG
+    console_->printf("recalibrate:after waitInterrupt\n");
+#endif
 
     senseInterrupt();
     return true;
@@ -394,6 +406,9 @@ bool FDCDriver::seek(byte track) {
     /* seek, recalibreate should wait interrupt */
     /* and then senseInterrupt                  */
     while (!waitInterrupt());
+#ifdef FDC_DEBUG
+    console_->printf("seek:after waitInterrupt\n");
+#endif
 
     if (!senseInterrupt()) {
 
@@ -465,6 +480,10 @@ void FDCDriver::readResults() {
             console_->printf("result[%d] = %x ", j, (int)(results_[j]));
         }
         console_->printf("\n");
+#ifdef FDC_DEBUG
+        console_->printf("result error");
+        if (resultsLength_ != 2) while (true);
+#endif
     }
     return;
 }
@@ -670,9 +689,12 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     while (!waitInterrupt());
+#ifdef FDC_DEBUG
+    console_->printf("write:after waitInterrupt\n");
+    if (sector == 2) while (true);
+#endif
 
     stopDMA();
-    //    g_console->printf("before read results");
 
     readResults();
     return true;
