@@ -190,6 +190,9 @@ int Messenger::send(const char* name, MessageInfo* message) {
     info = allocateMessageInfo();
 
     *info = *message;
+
+    info->from = g_processManager->getCurrentProcess()->getPid();
+
     process->getMessageList()->add(info);
     return 0;
 }

@@ -1,3 +1,7 @@
+2004-02-09  higepon  <higepon@users.sourceforge.jp>
+
+        * send時にfromを自動セット。
+
 2004-02-08  higepon  <higepon@users.sourceforge.jp>
 
         * syscalls.cpp: System::getPID();
