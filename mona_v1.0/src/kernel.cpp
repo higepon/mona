@@ -126,7 +126,7 @@ void startKernel(void) {
 #ifdef HIGE
     g_info_level = ERROR;
 
-    ProcessManager* mp = new ProcessManager();
+    //    ProcessManager* mp = new ProcessManager();
 
 
     FDCTester();

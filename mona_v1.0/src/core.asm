@@ -48,7 +48,7 @@ _arch_save_process_registers:
         mov dword[ebx + 40], eax
         ret
 
-_arch_kthread_switch_process:
+_arch_switch_process:
         mov ebx, dword[_g_current_process]
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx

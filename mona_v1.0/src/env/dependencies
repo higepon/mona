@@ -8,7 +8,8 @@ kernel.o: kernel.cpp include/types.h include/global.h include/kthread.h \
   include/BitMap.h include/operator.h include/tester.h include/test_mjt.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/ihandlers.h include/pic.h \
-  include/io.h include/rtc.h include/FAT12.h include/IA32MemoryManager.h
+  include/io.h include/rtc.h include/FAT12.h include/IA32MemoryManager.h \
+  include/ProcessManager.h include/Scheduler.h
 ihandlers.o: ihandlers.cpp include/global.h include/kthread.h \
   include/types.h include/kernel.h include/VirtualConsole.h \
   include/string.h include/info.h include/FDCDriver.h \
@@ -166,11 +167,18 @@ Process.o: Process.cpp include/global.h include/kthread.h include/types.h \
   include/PagingUtil.h include/Process.h include/sysresource.h \
   include/BitMap.h
 Scheduler.o: Scheduler.cpp include/Scheduler.h include/Process.h \
-  include/types.h include/global.h include/kthread.h include/kernel.h \
-  include/VirtualConsole.h include/string.h include/info.h \
-  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/GDTUtil.h include/IDTUtil.h include/PagingUtil.h \
+  include/types.h include/PagingUtil.h include/global.h include/kthread.h \
+  include/kernel.h include/VirtualConsole.h include/string.h \
+  include/info.h include/FDCDriver.h include/DiskDriver.h \
+  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/sysresource.h include/BitMap.h
+ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
+  include/types.h include/Process.h include/PagingUtil.h \
+  include/ihandlers.h include/kthread.h include/kernel.h \
+  include/VirtualConsole.h include/string.h include/Scheduler.h \
+  include/global.h include/info.h include/FDCDriver.h \
+  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
+  include/IDTUtil.h include/sysresource.h include/BitMap.h
 ps2kbc.o: driver/ISADevice/PS2KBC/ps2kbc.cpp \
   driver/ISADevice/PS2KBC/ps2kbc.h include/Module.h \
   include/GraphicalConsole.h include/VirtualConsole.h include/types.h \

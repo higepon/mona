@@ -1,3 +1,6 @@
+#ifndef _MONA_GLOBAL_
+#define _MONA_GLOBAL_
+
 #ifdef GLOBAL_VALUE_DEFINED
 #define GLOBAL /* */
 #define GLOBAL_VAL(v) = (v)
@@ -60,3 +63,5 @@ GLOBAL PTE* g_page_tbl;
 /* Process */
 GLOBAL Process** g_process;
 GLOBAL ProcessInfo* g_current_process;
+
+#endif
