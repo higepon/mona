@@ -1,6 +1,6 @@
 @ECHO
 @ECHO Welcome to Mona!
-@ECHO To show internal commands, please input "HELP".
 @ECHO To show Mona's license, please input "BZCAT /LICENSE.BZ2".
+@ECHO To show internal commands, please input "HELP".
 @ECHO To start MonaGUI, please input "STARTGUI".
 @ECHO Thank you! -- Mona Project Team
