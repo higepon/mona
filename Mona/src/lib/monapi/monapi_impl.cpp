@@ -70,14 +70,20 @@ int user_start_impl(FuncMonaMain* monaMain)
 void setupArguments(List<char*>* arg) {
 
     char* str;
+    HList<char*> tmp;
     int num = syscall_get_arg_count();
 
     for (int i = 0; i < num; i++) {
 
         str = (char*)malloc(32);
         if (syscall_get_arg(str, i) == 1) break;
-        arg->add(str);
+        tmp.add(str);
     }
+
+    for (int i = num - 1; i >= 0; i--) {
+        arg->add(tmp[i]);
+    }
+
 }
 
 /*----------------------------------------------------------------------
