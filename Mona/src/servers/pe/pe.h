@@ -53,4 +53,12 @@ typedef struct
 	uint32_t ImportLookupTable, DateTimeStamp, ForwarderChain, Name, ImportAddressTable;
 } ImportTable;
 
+typedef struct
+{
+	uint32_t ExportFlags, DateTimeStamp;
+	uint16_t MajorVersion, MinorVersion;
+	uint32_t Name, OrdinalBase, AddressTableEntries, NumberOfNamePointers;
+	uint32_t ExportAddressTable, NamePointer, OrdinalTable;
+} ExportTable;
+
 #endif  // __PE_SERVER_PE_H__

@@ -1,3 +1,7 @@
+2004-07-02  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/pe: リロケートとダイナミックリンクを実装
+
 2004-07-02  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp (IDEDriver): IDEDriverクラスを追加。IStorageDeviceを継承(未完成)

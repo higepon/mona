@@ -6,68 +6,274 @@
 
 using namespace MonAPI;
 
-static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, monapi_cmemoryinfo* mi, bool prompt)
+typedef struct
 {
-	PEParser parser;
-	if (!parser.Parse(mi->Data, mi->Size))
+	CString Name;
+	monapi_cmemoryinfo* Data;
+	PEParser Parser;
+} PEData;
+
+static PEData* OpenPE(const CString& path, bool prompt)
+{
+	PEData* ret = new PEData();
+	int len = path.getLength();
+	int p1 = path.lastIndexOf('/');
+	int p2 = path.lastIndexOf('.');
+	if (p2 < p1) p2 = len;
+	ret->Name = p1 < 0 ? path : path.substring(p1 + 1, p2 - (p1 + 1));
+	
+	ret->Data = NULL;
+	if (path.endsWith(".EX2") || path.endsWith(".DL2"))
 	{
-		if (prompt) printf("%s: file is not valid PE!\n", SVR);
-		return 3;
+		ret->Data = monapi_call_file_decompress_bz2_file(path, prompt);
+	}
+	else
+	{
+		ret->Data = monapi_call_file_read_data(path, prompt);
+	}
+	if (ret->Data == NULL)
+	{
+		delete ret;
+		return NULL;
 	}
 	
-	bool ok = true;
-	int its = parser.get_ImportTableCount();
-	for (int i = 0; i < its; i++)
+	if (!ret->Parser.Parse(ret->Data->Data, ret->Data->Size))
 	{
-		const char* dllName = parser.GetImportTableName(i);
-		if (dllName == NULL)
+		if (prompt) printf("%s: file is not valid PE: %s\n", SVR, (const char*)path);
+		monapi_cmemoryinfo_dispose(ret->Data);
+		monapi_cmemoryinfo_delete(ret->Data);
+		ret->Data = NULL;
+	}
+	
+	return ret;
+}
+
+static int OpenDLLs(HList<PEData*>* list, HList<CString>* files, bool prompt)
+{
+	int len = files->size();
+	for (int i = 0; i < len; i++)
+	{
+		PEData* data = OpenPE(files->get(i), prompt);
+		if (data == NULL)
 		{
-			if (prompt) printf("%s: file is not valid PE!\n", SVR);
+			return 1;
+		}
+		else if (data->Data == NULL)
+		{
+			delete data;
 			return 3;
 		}
-		if (prompt) printf("%s: can not find: %s\n", SVR, dllName);
-		ok = false;
+		
+		list->add(data);
 	}
-	if (!ok) return 3;
+	return 0;
+}
+
+static CString SearchDLL(const CString& path, monapi_cmemoryinfo* files, const CString& dll)
+{
+	if (files == NULL) return NULL;
+	
+	int size = *(int*)files->Data;
+	monapi_directoryinfo* p = (monapi_directoryinfo*)&files->Data[sizeof(int)];
+	for (int i = 0; i < size; i++, p++)
+	{
+		CString n = CString(p->name).toUpper();
+		if (dll + ".DLL" == n || dll + ".DL2" == n)
+		{
+			return path == "/" ? "/" + n : path + "/" + n;
+		}
+	}
+	return NULL;
+}
+
+static bool SearchDLLs(HList<CString>* dllfiles, HList<CString>* dlls, const CString& path, bool prompt)
+{
+	monapi_cmemoryinfo* files1 = NULL;
+	monapi_cmemoryinfo* files2 = monapi_call_file_read_directory(DLLPATH, MONAPI_FALSE);
+	CString pathName;
+	int p = path.lastIndexOf('/');
+	if (p >= 0)
+	{
+		CString pn = p == 0 ? "/" : path.substring(0, p).toUpper();
+		if (pn != DLLPATH)
+		{
+			files1 = monapi_call_file_read_directory(pn, MONAPI_FALSE);
+			pathName = pn;
+		}
+	}
+	if (files1 == NULL && files2 == NULL)
+	{
+		if (prompt) printf("%s: can not find DLL path!\n", SVR);
+		return false;
+	}
+	
+	bool ret = true;
+	int len = dlls->size();
+	for (int i = 0; i < len; i++)
+	{
+		CString dll = dlls->get(i);
+		CString dllfile = SearchDLL(pathName, files1, dll);
+		if (dllfile == NULL) dllfile = SearchDLL(DLLPATH, files2, dll);
+		if (dllfile == NULL)
+		{
+			if (prompt) printf("%s: can not find: %s.DLL\n", SVR, (const char*)dll);
+			ret = false;
+		}
+		else
+		{
+			dllfiles->add(dllfile);
+		}
+	}
+	
+	if (files1 != NULL)
+	{
+		monapi_cmemoryinfo_dispose(files1);
+		monapi_cmemoryinfo_delete(files1);
+	}
+	if (files2 != NULL)
+	{
+		monapi_cmemoryinfo_dispose(files2);
+		monapi_cmemoryinfo_delete(files2);
+	}
+	return ret;
+}
+
+static bool ListUpDLL(HList<CString>* dlls, PEParser* parser, bool prompt)
+{
+	int its = parser->get_ImportTableCount();
+	for (int i = 0; i < its; i++)
+	{
+		CString dll = parser->GetImportTableName(i);
+		if (dll == NULL)
+		{
+			if (prompt) printf("%s: file is not valid PE!\n", SVR);
+			return false;
+		}
+		else if (!dll.toUpper().endsWith(".DLL"))
+		{
+			if (prompt) printf("%s: specified dll is not valid: %s\n", SVR, (const char*)dll);
+			return false;
+		}
+		CString name = dll.substring(0, dll.getLength() - 4).toUpper();
+		bool exists = false;
+		int len = dlls->size();
+		for (int i = 0; i < len; i++)
+		{
+			if (dlls->get(i) == name)
+			{
+				exists = true;
+				break;
+			}
+		}
+		if (!exists) dlls->add(name);
+	}
+	return true;
+}
+
+static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString& path, bool prompt)
+{
+	HList<CString> dlls, dllfiles;
+	if (!ListUpDLL(&dlls, &list->get(0)->Parser, prompt)
+		|| !SearchDLLs(&dllfiles, &dlls, path, prompt)
+		|| OpenDLLs(list, &dllfiles, prompt) != 0) return 3;
+	
+	int imageSize = 0;
+	int len = list->size();
+	for (int i = 0; i < len; i++)
+	{
+		PEData* data = list->get(i);
+		imageSize += data->Parser.get_ImageSize();
+	}
 	
 	monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
-	if (!monapi_cmemoryinfo_create(dst, parser.get_ImageSize(), prompt ? MONAPI_TRUE : MONAPI_FALSE))
+	if (!monapi_cmemoryinfo_create(dst, imageSize, prompt))
 	{
 		monapi_cmemoryinfo_delete(dst);
 		return 3;
 	}
-
-	if (!parser.Load(dst->Data))
+	
+	uint32_t addr = 0;
+	for (int i = 0; i < len; i++)
 	{
-		if (prompt) printf("%s: load failed!\n", SVR);
-		monapi_cmemoryinfo_delete(dst);
-		return 3;
+		PEData* data = list->get(i);
+		data->Name += i == 0 ? ".EXE" : ".DLL";
+		uint8_t* ptr = &dst->Data[addr];
+		if (!data->Parser.Load(ptr))
+		{
+			if (prompt) printf("%s: can not load: %s\n", SVR, (const char*)data->Name);
+			monapi_cmemoryinfo_dispose(dst);
+			monapi_cmemoryinfo_delete(dst);
+			return 3;
+		}
+		if (i > 0 && !data->Parser.Relocate(ptr, ORG + addr))
+		{
+			if (prompt) printf("%s: can not relocate: %s\n", SVR, (const char*)data->Name);
+			monapi_cmemoryinfo_dispose(dst);
+			monapi_cmemoryinfo_delete(dst);
+			return 3;
+		}
+		addr += data->Parser.get_ImageSize();
 	}
-
+	
+	addr = 0;
+	for (int i = 0; i < len; i++)
+	{
+		PEData* data = list->get(i);
+		int its = data->Parser.get_ImportTableCount();
+		for (int j = 0; j < its; j++)
+		{
+			CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
+			if (prompt) printf("%s: linking %s to %s...\n", SVR, (const char*)dll, (const char*)data->Name);
+			PEParser* target = NULL;
+			for (int k = 0; k < len; k++)
+			{
+				if (list->get(k)->Name == dll)
+				{
+					target = &list->get(k)->Parser;
+					break;
+				}
+			}
+			if (!data->Parser.Link(&dst->Data[addr], j, target))
+			{
+				if (prompt) printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
+				monapi_cmemoryinfo_dispose(dst);
+				monapi_cmemoryinfo_delete(dst);
+				return 3;
+			}
+		}
+		addr += data->Parser.get_ImageSize();
+	}
+	
 	*dest = dst;
-	*entryPoint = parser.get_EntryPoint();
 	return 0;
 }
 
 static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CString& path, bool prompt)
 {
-	monapi_cmemoryinfo* mi = NULL;
-	if (path.endsWith(".EX2"))
-	{
-		mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
-	}
-	else
-	{
-		mi = monapi_call_file_read_data(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
-	}
-	if (mi == NULL)
+	PEData* exe = OpenPE(path, prompt);
+	if (exe == NULL)
 	{
 		return 1;
 	}
+	else if (exe->Data == NULL)
+	{
+		delete exe;
+		return 3;
+	}
+	
+	*entryPoint = exe->Parser.get_EntryPoint();
+	HList<PEData*> list;
+	list.add(exe);
 	monapi_cmemoryinfo* img;
-	int result = CreateImage(&img, entryPoint, mi, prompt);
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
+	int result = LoadPE(&list, &img, path, prompt);
+	int len = list.size();
+	for (int i = 0; i < len; i++)
+	{
+		PEData* data = list.get(i);
+		monapi_cmemoryinfo_dispose(data->Data);
+		monapi_cmemoryinfo_delete(data->Data);
+		delete data;
+	}
 	if (result == 0) *dest = img;
 	return result;
 }

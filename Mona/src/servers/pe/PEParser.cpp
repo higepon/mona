@@ -1,9 +1,11 @@
+//#include <monapi/syscall.h>
 #include <monapi/string.h>
 #include "PEParser.h"
 
 PEParser::PEParser() :
 	data(NULL), size(0), file(NULL), standard(NULL), specific(NULL),
-	directories(NULL), sections(NULL), imports(NULL), importsCount(0), imageSize(0)
+	directories(NULL), sections(NULL), imports(NULL), importsCount(0), exp(NULL),
+	imageSize(0), address(0)
 {
 }
 
@@ -46,8 +48,7 @@ bool PEParser::Parse(uint8_t* data, uint32_t size)
 	this->data = data;
 	this->size = size;
 	
-	if (!this->ReadSections()) return false;
-	if (!this->ReadImportTables()) return false;
+	if (!this->ReadSections() || !this->ReadImportTables() || !this->ReadExportTable()) return false;
 	
 	return true;
 }
@@ -77,7 +78,7 @@ bool PEParser::ReadImportTables()
 	uint32_t size = (uint32_t)(this->directories->ImportTable >> 32);
 	if (addr == 0 || size == 0) return true;
 	
-	int paddr = this->ConvertToPhysical(addr);
+	uint32_t paddr = this->ConvertToPhysical(addr);
 	if (this->size < paddr + size) return false;
 	
 	this->imports = (ImportTable*)&this->data[paddr];
@@ -86,15 +87,25 @@ bool PEParser::ReadImportTables()
 	return true;
 }
 
-bool PEParser::Load(uint8_t* image)
+bool PEParser::ReadExportTable()
 {
-	if (this->data == NULL) return false;
+	this->exp = NULL;
+	uint32_t addr = (uint32_t)(this->directories->ExportTable & 0xffffffff);
+	uint32_t size = (uint32_t)(this->directories->ExportTable >> 32);
+	if (addr == 0 || size == 0) return true;
 	
-	memset(image, 0, this->imageSize);
-	for (int i = 0; i < this->file->NumberOfSections; i++)
+	uint32_t paddr = this->ConvertToPhysical(addr);
+	if (this->size < paddr + size) return false;
+	
+	this->exp = (ExportTable*)&this->data[paddr];
+	int len = (int)this->exp->AddressTableEntries;
+	for (int i = 0; i < len; i++)
 	{
-		SectionHeaders* shdr = &this->sections[i];
-		memcpy(&image[shdr->VirtualAddress], &this->data[shdr->PointerToRawData], shdr->VirtualSize);
+		int idx = this->exp->OrdinalBase + i;
+		uint32_t addr = this->GetExportAddress(idx);
+		const char* name = this->GetExportName(idx);
+		if (addr == 0 || name == NULL) return false;
+		//printf("- %x[%d] %s\n", addr, idx, name);
 	}
 	return true;
 }
@@ -125,4 +136,167 @@ const char* PEParser::GetImportTableName(int index)
 	if (this->size < paddr) return NULL;
 	
 	return (const char*)&this->data[paddr];
+}
+
+uint32_t PEParser::GetExportAddress(int index)
+{
+	if (this->exp == NULL) return 0;
+	
+	index -= this->exp->OrdinalBase;
+	int len = (int)this->exp->AddressTableEntries;
+	if (index < 0 || len <= index) return 0;
+	
+	uint32_t addr = this->exp->ExportAddressTable + index * 4;
+	uint32_t paddr = this->ConvertToPhysical(addr);
+	if (this->size < paddr + 4) return 0;
+	
+	return *(uint32_t*)&this->data[paddr];
+}
+
+const char* PEParser::GetExportName(int index)
+{
+	if (this->exp == NULL) return NULL;
+	
+	index -= this->exp->OrdinalBase;
+	uint32_t addr = this->exp->OrdinalTable;
+	uint32_t paddr = this->ConvertToPhysical(addr);
+	if (this->size < paddr + this->exp->NumberOfNamePointers * 2) return NULL;
+	
+	int len = this->exp->NumberOfNamePointers;
+	for (int i = 0; i < len; i++)
+	{
+		int v = *(uint16_t*)&this->data[paddr + i * 2];
+		if (v == index)
+		{
+			uint32_t name_addr = this->exp->NamePointer;
+			uint32_t name_paddr = this->ConvertToPhysical(name_addr);
+			name_paddr += i * 4;
+			if (this->size < name_paddr + 4) return NULL;
+			
+			uint32_t ret_addr = *(uint32_t*)&this->data[name_paddr];
+			uint32_t ret_paddr = this->ConvertToPhysical(ret_addr);
+			if (this->size < ret_paddr) return NULL;
+			
+			return (const char*)&this->data[ret_paddr];
+		}
+		else if (v > index)
+		{
+			break;
+		}
+	}
+	return NULL;
+}
+
+int PEParser::ConvertHintToOrdinal(int hint)
+{
+	if (this->exp == NULL || hint < 0 || (int)this->exp->NumberOfNamePointers <= hint) return -1;
+	
+	uint32_t addr = this->exp->OrdinalTable;
+	uint32_t paddr = this->ConvertToPhysical(addr) + hint * 2;
+	if (this->size < paddr + 2) return -1;
+	
+	return *(uint16_t*)&this->data[paddr] + this->exp->OrdinalBase;
+}
+
+bool PEParser::Load(uint8_t* image)
+{
+	if (this->data == NULL) return false;
+	
+	this->address = 0;
+	memset(image, 0, this->imageSize);
+	for (int i = 0; i < this->file->NumberOfSections; i++)
+	{
+		SectionHeaders* shdr = &this->sections[i];
+		memcpy(&image[shdr->VirtualAddress], &this->data[shdr->PointerToRawData], shdr->VirtualSize);
+	}
+	return true;
+}
+
+bool PEParser::Relocate(uint8_t* image, uint32_t address)
+{
+	if (image == NULL) return false;
+	
+	this->address = address;
+	uint32_t addr = (uint32_t)(this->directories->BaseRelocationTable & 0xffffffff);
+	uint32_t size = (uint32_t)(this->directories->BaseRelocationTable >> 32);
+	if (addr == 0 || size == 0) return true;
+	
+	uint32_t addr_end = addr + size;
+	if (this->imageSize < addr_end) return false;
+	
+	while (addr < addr_end)
+	{
+		uint32_t page_addr = *(uint32_t*)&image[addr];
+		uint32_t page_size = *(uint32_t*)&image[addr + 4];
+		uint32_t addr_page_end = addr + page_size;
+		addr += 8;
+		if (this->imageSize < addr_page_end) return false;
+		
+		//int fixups = (page_size - 8) / 2;
+		//printf("Virtual Address: %x Chunk size %d Number of fixups %d\n", page_addr, page_size, fixups);
+		while (addr < addr_page_end)
+		{
+			uint16_t fixup = *(uint16_t*)&image[addr];
+			addr += 2;
+			int type = (int)(fixup >> 12);
+			uint32_t offset = fixup & 0x0fff;
+			//printf("reloc offset %x [%x] %d\n", offset, page_addr + offset, type);
+			if (type == 3)  // HIGHLOW
+			{
+				uint32_t* target = (uint32_t*)&image[page_addr + offset];
+				*target -= this->specific->ImageBase;
+				*target += address;
+			}
+			else if (type != 0)  // not ABSOLUTE
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
+{
+	if (parser == NULL) return false;
+	
+	ImportTable* it = this->GetImportTable(index);
+	if (it == NULL) return false;
+	
+	uint32_t addr = it->ImportAddressTable;
+	if (addr == 0) return false;
+	
+	for (; addr < this->imageSize; addr += 4)
+	{
+		uint32_t* ptr = (uint32_t*)&image[addr];
+		if (*ptr == 0) break;
+		
+		int ordinal = -1;
+		const char* name = NULL;
+		if ((*ptr & 0x80000000) != 0)
+		{
+			// Ordinal Number
+			ordinal = (int)(*ptr & 0x7fffffff);
+			//printf("* [%d]\n", ordinal);
+		}
+		else
+		{
+			// Hint/Name Table RVA
+			int hint = *(uint16_t*)&image[*ptr];
+			ordinal = parser->ConvertHintToOrdinal(hint);
+			name = (const char*)&image[(*ptr) + 2];
+			//printf("* [%d]%s\n", ordinal, name);
+		}
+		if (ordinal == -1) return false;
+		
+		uint32_t exp_addr = parser->GetExportAddress(ordinal);
+		const char* exp_name = parser->GetExportName(ordinal);
+		if (name != NULL && strcmp(name, exp_name) != 0) return false;
+		if (exp_addr == 0) return false;
+		
+		*ptr = exp_addr + parser->address;
+		//printf("%x\n", *ptr);
+	}
+	
+	return true;
 }
