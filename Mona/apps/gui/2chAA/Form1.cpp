@@ -45,7 +45,7 @@ public:
         int i = 0;
 
         this->Show();
-        for (; this->visible; Application::DoEvents())
+        for (; this->get_Visible(); Application::DoEvents())
         {
             this->label1->set_Text(aa[(i++) % aa.get_Length()]);
             sleep(300);

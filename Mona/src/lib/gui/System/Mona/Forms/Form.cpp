@@ -29,9 +29,9 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::Hide()
 	{
-		if (!this->visible) return;
+		if (!this->get_Visible()) return;
 		
-		this->visible = false;
+		BASE::Hide();
 		this->Erase();
 	}
 	
@@ -67,7 +67,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	bool Form::CheckPoint(int x, int y)
 	{
-		return this->bounds.Contains(x, y)
+		return this->get_Bounds().Contains(x, y)
 			&& this->buffer->GetPixel(x - this->get_X(), y - this->get_Y()).get_A() != 0;
 	}
 	
@@ -113,7 +113,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::DrawReversibleRectangle()
 	{
-		Rectangle r = this->bounds;
+		Rectangle r = this->get_Bounds();
 		r.X += this->ptRevRect.X - this->clickPoint.X;
 		r.Y += this->ptRevRect.Y - this->clickPoint.Y;
 		//r.X--; r.Y--; r.Width += 2; r.Height += 2;
@@ -189,8 +189,7 @@ namespace System { namespace Mona { namespace Forms
 			{
 				this->DrawReversibleRectangle();
 				this->Erase();
-				this->bounds.X += e->X - this->clickPoint.X;
-				this->bounds.Y += e->Y - this->clickPoint.Y;
+				this->set_Location(Point(e->X - this->clickPoint.X, e->Y - this->clickPoint.Y));
 				this->Refresh();
 				break;
 			}

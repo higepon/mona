@@ -29,19 +29,21 @@ namespace System { namespace Mona { namespace Forms
 			virtual void Add(_P<Control> control);
 		};
 		
-	protected:
+	private:
 		System::Drawing::Rectangle bounds;
 		bool visible;
 		System::Drawing::Color foreColor;
 		System::Drawing::Color backColor;
-		_P<System::Drawing::Bitmap> buffer;
 		_P<Control> parent;
 		_P<ControlCollection> controls;
 		System::String text;
 		System::Drawing::Size clientSize;
+		bool foreColorChanged, backColorChanged;
+		
+	protected:
+		_P<System::Drawing::Bitmap> buffer;
 		System::Drawing::Point offset;
 		System::Drawing::Point clickPoint;
-		bool foreColorChanged, backColorChanged;
 	
 	public:
 		virtual String get_TypeName() { return "System.Mona.Forms.Control"; }

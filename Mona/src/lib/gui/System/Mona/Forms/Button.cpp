@@ -33,7 +33,7 @@ namespace System { namespace Mona { namespace Forms
 		int w = this->get_Width(), h = this->get_Height();
 		
 		// Erase
-		g->FillRectangle(this->backColor, 0, 0, w, h);
+		g->FillRectangle(this->get_BackColor(), 0, 0, w, h);
 		
 		// Text
 		_P<Font> f = Control::get_DefaultFont();

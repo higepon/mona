@@ -5,7 +5,7 @@
 
 typedef struct
 {
-    dword Handle, Size;
+    dword Handle, Owner, Size;
     byte* Data;
 } monapi_cmemoryinfo;
 

@@ -53,6 +53,7 @@ void MessageLoop()
             }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
+                Message::send(msg.from, MSG_RESULT_OK, msg.header);
                 break;
         }
     }

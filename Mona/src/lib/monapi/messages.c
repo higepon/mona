@@ -30,6 +30,16 @@ dword monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
+int monapi_call_dispose_handle(int id, dword handle)
+{
+    dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
+    if (monapi_cmessage_send_args(tid, MSG_DISPOSE_HANDLE, handle, 0, 0, NULL) != 0)
+    {
+        return 0;
+    }
+    return 1;
+}
+
 int monapi_register_to_server(int id, int enabled)
 {
     dword tid = THREAD_UNKNOWN, header = MSG_NONE;
@@ -78,6 +88,7 @@ monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prompt)
 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
+    ret->Owner  = tid;
     ret->Size   = msg.arg3;
     monapi_cmemoryinfo_map(ret);
     return ret;

@@ -84,7 +84,7 @@ namespace System { namespace Mona { namespace Forms
 		if (!this->visible) return;
 		
 		this->visible = false;
-		this->parent->Refresh();
+		if (this->parent != NULL) this->parent->Refresh();
 	}
 	
 	void Control::Create()
