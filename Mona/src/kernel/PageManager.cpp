@@ -220,8 +220,8 @@ void PageManager::setup(PhysicalAddress vram)
     /* find 4KB align */
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
 
-    /* MAP VRAM 2MB */
-    for (int i = 0; i < 512; i++, vram += 4096)
+    /* MAP VRAM 4MB */
+    for (int i = 0; i < 1024; i++, vram += 4096)
     {
         PageEntry* table;
         dword directoryIndex = getDirectoryIndex(vram);
@@ -275,8 +275,9 @@ PageEntry* PageManager::createNewPageDirectory() {
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
 
     dword directoryIndex = getDirectoryIndex(vram);
-    /* MAP VRAM 2MB */
-    for (int i = 0; i < 512; i++, vram += 4096) {
+
+    /* MAP VRAM 4MB */
+    for (int i = 0; i < 1024; i++, vram += 4096) {
 
         PageEntry* table;
         dword tableIndex     = getTableIndex(vram);

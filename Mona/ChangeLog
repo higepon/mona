@@ -1,3 +1,7 @@
+2004-04-29  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/PageManager.cpp: VRAMのマッピング幅を拡大 高解像度に対応
+
 2004-04-29  shadow  <shadowin@users.sourceforge.jp>
 
         * 1linesh: charcodeメッセージ対応
