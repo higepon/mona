@@ -39,6 +39,8 @@ class ProcessManager {
 
   public:
     void schedule();
+    void tick();
+    dword getTick() const;
     void printAllProcesses() const;
     bool addProcess(Process* process, virtual_addr entry);
 
@@ -46,6 +48,7 @@ class ProcessManager {
     dword pid_;
     dword pnum_;
     class Scheduler* scheduler_;
+    dword tick_;
 };
 
 #endif

@@ -38,7 +38,6 @@ SOURCES    = cstart.cpp            \
              Semaphore.cpp         \
              FDCDriver.cpp         \
              GraphicalConsole.cpp  \
-             kthread.cpp           \
              pic.cpp               \
              io.cpp                \
              rtc.cpp               \
@@ -46,9 +45,7 @@ SOURCES    = cstart.cpp            \
              syscalls.cpp          \
              BitMap.cpp            \
              FAT12.cpp             \
-             IDEDriver.cpp         \
              test_higepon.cpp      \
-             test_mjt.cpp          \
              sysresource.cpp       \
              ISADriver.cpp         \
              info.cpp              \
@@ -58,6 +55,9 @@ SOURCES    = cstart.cpp            \
              Process.cpp           \
              Scheduler.cpp         \
              ProcessManager.cpp    \
+
+#             test_mjt.cpp
+#             IDEDriver.cpp
 
 DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
 DRVROBJ = ps2kbc.o

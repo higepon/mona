@@ -17,12 +17,10 @@ BITS 32
 [global _arch_timerhandler]
 [global _arch_keystrokehandler]
 [global _arch_dummyhandler]
-[global _arch_kthread_switch]
 [global _arch_syscall_handler]
 [global _arch_cpufaulthandler_e]
 
 [extern _cpufaultHandler_e]
-[extern _arch_save_registers]
 [extern _arch_set_stack_view]
 [extern _MFDCHandler]
 [extern _timerHandler]
@@ -42,9 +40,7 @@ _arch_fdchandler:
 ;;; timer handler
 ;;; save all context to Kthread* current
 _arch_timerhandler:
-;          call _arch_set_stack_view
         pushad
-;        call _arch_save_registers  //for IDE Driver test
         call _arch_save_process_registers
         call _timerHandler
         popad
@@ -136,7 +132,7 @@ _arch_cpufaulthandler_e:
 ;;; entrance of syscall
 _arch_syscall_handler:
         pushad
-        call _arch_save_registers
+        call _arch_save_process_registers
         call _syscall_entrance
         popad
         iretd

@@ -12,19 +12,16 @@
 
 #include<syscalls.h>
 #include<global.h>
-#include<kthread.h>
 #include<io.h>
 
 void syscall_entrance() {
 
     outportb(0x20, 0x20);
 
-    switch(g_kthread_current->ebx) {
+    switch(g_current_process->ebx) {
 
 
-      case KTHREAD_YIELD:
-          //          g_console->printf("syscall:kthread_yield");
-          kthread_yield();
+      case 0:
           break;
 
       default:
@@ -32,13 +29,5 @@ void syscall_entrance() {
           break;
     }
 
-    return;
-}
-
-void syscall_kthread_yield() {
-
-    asm volatile("mov $0, %ebx  \n"
-                 "int $0x80       "
-                 );
     return;
 }

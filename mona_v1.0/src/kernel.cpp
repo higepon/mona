@@ -29,7 +29,6 @@
 #include<SystemInfo.h>
 #include<FDCDriver.h>
 #include<GraphicalConsole.h>
-#include<kthread.h>
 #include<ihandlers.h>
 #include<pic.h>
 #include<rtc.h>
@@ -91,25 +90,11 @@ void startKernel(void) {
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
     g_console->printf("System TotalL Memory %d[MB]\n", g_total_system_memory);
 
-    g_console->printf("BitMap:");
-    BitMap* map = new BitMap(10);
-    map->find();
-    map->mark(5);
-    map->mark(7);
-    map->mark(8);
-    for (int i = 0; i < 10; i++) {
-        g_console->printf("%c", map->marked(i) ? 'x' : 'o');
-    }
-    g_console->printf("\n");
-
-    /* set process name for info() */
-    g_info_level = ERROR;
-
-
+    /* now paging is off. */
     //   PagingUtil::setup();
-    //dword* p = (dword*)0x3FFFFC;
-    //    dword* p = (dword*)0x3FFFFE;
-    //    *p = 5;
+    //   dword* p = (dword*)0x3FFFFC;
+    //   dword* p = (dword*)0x3FFFFE;
+    //   *p = 5;
 
 #ifdef MJT
     test_mjt();
@@ -159,19 +144,7 @@ void startKernel(void) {
 #ifndef MJT
     disableInterrupt();
 #endif
-    kthread_init();
     while (true);
-
-    /* test code is here */
-#if 0
-    operatorTester();
-    hvectorTester();
-    typeTester();
-#endif
-    //    process2Tester();
-    processTester();
-    while (true) {
-    }
 }
 
 

@@ -18,7 +18,6 @@
 #include <GDTUtil.h>
 #include <IDTUtil.h>
 #include <PagingUtil.h>
-#include <kthread.h>
 
 /*!
     \brief check size of byte,word,dword
@@ -38,10 +37,9 @@ void checkTypeSize() {
     bool isGDTR     = sizeof(GDTR)     == 6;
     bool isSegDesc  = sizeof(SegDesc)  == 8;
     bool isGateDesc = sizeof(GateDesc) == 8;
-    bool isKthread  = sizeof(Kthread)  == 56;
 
     /* check size of some types */
-    if (isByte && isWord && isDword && isTSS && isPTE && isGDTR && isSegDesc && isKthread) {
+    if (isByte && isWord && isDword && isTSS && isPTE && isGDTR && isSegDesc) {
         return;
     } else {
         panic("checkTypeSize()");

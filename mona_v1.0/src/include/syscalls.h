@@ -14,8 +14,5 @@
 
 
 extern "C" void syscall_entrance(void);
-void syscall_kthread_yield();
-
-#define KTHREAD_YIELD 0
 
 #endif

@@ -13,13 +13,11 @@
 #ifndef _MONA_IHANDLER_
 #define _MONA_IHANDLER_
 
-#include <kthread.h>
 
 extern "C" void arch_fdchandler(void);
 extern "C" void arch_timerhandler(void);
 extern "C" void arch_keystrokehandler(void);
 extern "C" void arch_dummyhandler(void);
-extern "C" void arch_kthread_switch(void);
 extern "C" void arch_switch_process(void);
 extern "C" void arch_switch_process_to_user_mode(void);
 extern "C" void arch_fault0dhandler(void);

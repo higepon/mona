@@ -11,7 +11,6 @@
 */
 
 #include<kernel.h>
-#include<kthread.h>
 #include<disp.h>
 #include<io.h>
 #include<pic.h>
@@ -132,46 +131,4 @@ void disp_write_font(int x, int y, char ch, byte color) {
 
     pos_x = tempx;
     pos_y = tempy;
-}
-
-
-
-void disp_kthread_info() {
-
-
-    while (true) {
-
-        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
-
-        int x = pos_x;
-        int y = pos_y;
-
-         pos_x = 0, pos_y = 22;
-
-         g_console->printf("   *  __/\x18/\x18____   *    -----kernel thread Information -----\n");
-         g_console->printf("*    /_(*ß°ß)_ /\x18    *  thread total number : %d[threads]\n", g_kthreadInfo.threadNum);
-         g_console->printf("  * /___U__U_/|\x18/ *     System total tick   : %d[ticks]\n", g_kthreadInfo.tick);
-         g_console->printf(" *   |________|/    *   thread yield        : %d[times]\n", g_kthreadInfo.yield);
-         g_console->printf("                        [idle] %d%%          : [kernel] %d%% \n"
-                           , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
-                           , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
-
-//      Date date;
-//      rtc_get_date(&date);
-//      g_console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
-
-         pos_x = x;
-         pos_y = y;
-         Semaphore::up(&g_semaphore_console);
-
-         syscall_kthread_yield();
-    }
-}
-
-void kthread_idle() {
-
-    while (true) {
-
-        asm volatile("nop");
-    }
 }

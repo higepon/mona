@@ -16,6 +16,7 @@ ProcessManager::ProcessManager() {
 
     pid_  = 0;
     pnum_ = 0;
+    tick_ = 0;
     scheduler_ = new Scheduler();
 }
 
@@ -42,6 +43,7 @@ void ProcessManager::switchProcess() {
 void ProcessManager::schedule(){
 
     g_current_process->tick++;
+    g_process_manager->tick();
     scheduler_->schedule();
     this->switchProcess();
 
@@ -93,3 +95,12 @@ void ProcessManager::printAllProcesses() const {
     }
 }
 
+void ProcessManager::tick() {
+
+    tick_++;
+}
+
+dword ProcessManager::getTick() const {
+
+    return tick_;
+}
