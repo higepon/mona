@@ -36,7 +36,8 @@ private:
 	int tx, ty, cx, cy, cw, ch, width, height;
 	unsigned char r, g, b;
 	unsigned int rgb24;
-	bool xormode;
+	bool xormode, locked;
+	Font *font;
 #ifdef MONA
 	int bytesPerPixel;
 	byte *vram;
@@ -54,13 +55,18 @@ public:
 	virtual void drawLine(int x0, int y0, int x1, int y1);
 	virtual void drawRect(int x, int y, int width, int height);
 	virtual void drawText(char *s, int x, int y);
+	virtual void drawText(Font **list, int len, int x, int y);
 	virtual void fillRect(int x, int y, int width, int height);
 	virtual void translate(int x, int y);
 	virtual int getWidth();
 	virtual int getHeight();
+	virtual Font *getFont();
 	virtual void setClip(int cx, int cy, int cw, int ch);
+	virtual void setColor(unsigned int color);
 	virtual void setColor(unsigned char r, unsigned char g, unsigned char b);
 	virtual void setXORMode(bool mode);
+	virtual void setLocked(bool locked);
+	virtual void setFont(Font *font);
 };
 
 #endif // _GRAPHICS_H_INCLUDED_

@@ -55,6 +55,12 @@ void Font::setHeight(int height)
 	this->height = height;
 }
 
+/** 書体を設定する */
+void Font::setStyle(int style)
+{
+	this->style = style;
+}
+
 /** 名前を得る */
 char *Font::getName()
 {
@@ -71,6 +77,12 @@ int Font::getWidth()
 int Font::getHeight()
 {
 	return height;
+}
+
+/** 書体を得る */
+int Font::getStyle()
+{
+	return style;
 }
 
 /** 内部データを得る */

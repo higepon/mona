@@ -78,14 +78,15 @@ void Label::repaint()
 		firstpaint = true;
 
 	// 塗りつぶし
-	_g->setColor(200,200,200);
+	_g->setColor(backColor);
 	_g->fillRect(0,0,width,height);
 
 	// 文字
 	int fw = FontManager::getInstance()->getWidth(text);
 	int fh = FontManager::getInstance()->getHeight();
+	_g->setFont(this->font);
 	if (enabled == true) {
-		_g->setColor(0,0,0);
+		_g->setColor(foreColor);
 	} else {
 		_g->setColor(128,128,128);
 	}

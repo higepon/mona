@@ -30,7 +30,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** コンストラクタ */
 ListBox::ListBox()
 {
-	selectedIndex =  0;
+	selectedIndex =  -1;
 	_dataList = new LinkedList();
 	_itemEvent = new Event(ITEM_SELECTED, this);
 }
@@ -88,25 +88,26 @@ void ListBox::repaint()
 		_g->setColor(0,128,255);
 		_g->drawRect(0, 0, width, height);
 	} else {
-		_g->setColor(200,200,200);
+		_g->setColor(getParent()->getBackground());
 		_g->drawRect(0, 0, width, height);
 	}
-	_g->setColor(0,0,0);
+	_g->setColor(foreColor);
 	_g->drawRect(1, 1, width - 2, height - 2);
-	_g->setColor(255,255,255);
+	_g->setColor(~foreColor);
 	_g->fillRect(2, 2, width - 3, height - 3);
 
 	// 文字
 	int fh = FontManager::getInstance()->getHeight();
+	_g->setFont(this->font);
 	for (i = 0; i < _dataList->getLength(); i++) {
 		if (selectedIndex == i && enabled == true) {
 			_g->setColor(0,128,255);
 			_g->fillRect(3, 3 + (16 * i), width - 5, 17);
-			_g->setColor(255,255,255);
+			_g->setColor(~foreColor);
 			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);
 		} else {
-			_g->setColor(0,0,0);
+			_g->setColor(foreColor);
 			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);
 		}

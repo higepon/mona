@@ -59,7 +59,13 @@ protected:
 	Graphics *_g;
 	/** フォーカスイベント */
 	Event *_focusEvent;
-	
+	/** 背景色 */
+	unsigned int backColor;
+	/** 前景色 */
+	unsigned int foreColor;
+	/** フォント */
+	Font *font;
+
 public:
 	Control::Control();
 	virtual Control::~Control();
@@ -72,11 +78,17 @@ public:
 	virtual bool getIconified();
 	virtual Rect *getRect();
 	virtual Container *getParent();
+	virtual unsigned int getBackground();
+	virtual unsigned int getForeground();
+	virtual Font *getFont();
 	virtual void setEnabled(bool enabled);
 	virtual void setFocused(bool focused);
 	virtual void setIconified(bool iconified);
 	virtual void setRect(int x, int y, int width, int height);
 	virtual void setParent(Container *parent);
+	virtual void setBackground(unsigned int backColor);
+	virtual void setForeground(unsigned int foreColor);
+	virtual void setFont(Font *font);
 };
 
 #endif // _CONTROL_H_INCLUDED_

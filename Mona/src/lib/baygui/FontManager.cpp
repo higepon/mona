@@ -65,7 +65,7 @@ FontManager *FontManager::getInstance()
 	if (instance == NULL) {
 		instance = new FontManager();
 		// 全角フォント読み込み
-		instance->loadFont("/MONA-12.MF2");
+		instance->loadFont(FONTFILE_NAME);
 	}
 	return instance;
 }
@@ -109,7 +109,7 @@ void FontManager::loadFont(char *path)
 	}
 	
 	if (fp != NULL) {
-		copyString(name, "MONA-12");
+		copyString(name, FONT_NAME);
 		// 幅と高さ
 		width  = 6;
 		height = 12;

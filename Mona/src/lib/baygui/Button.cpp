@@ -67,11 +67,11 @@ void Button::repaint()
 		firstpaint = true;
 
 	// 領域
-	_g->setColor(200,200,200);
+	_g->setColor(backColor);
 	_g->fillRect(1, 1, width - 2, height - 2);
 	
 	// 枠線
-	_g->setColor(0,0,0);
+	_g->setColor(foreColor);
 	_g->drawLine(2, 0, width - 2, 0);
 	_g->drawLine(2, height, width - 2, height);
 	_g->drawLine(0, 2, 0, height - 2);
@@ -81,11 +81,11 @@ void Button::repaint()
 	_g->drawLine(width - 1 , 1, width - 1, 1);
 	_g->drawLine(width - 1 , height - 1, width - 1, height - 1);
 	if (pushed == true) {
-		_g->setColor(255,255,255);
+		_g->setColor(~foreColor);
 		_g->drawLine(2, height - 1, width - 2, height - 1);
 		_g->drawLine(width - 1, 2, width - 1, height - 2);
 		_g->drawLine(width - 2 , height - 2, width - 2, height - 2);
-		_g->setColor(0,0,0);
+		_g->setColor(foreColor);
 		_g->drawLine(1, 2, 1, height - 2);
 		_g->drawLine(2, 1, width - 2, 1);
 	} else {
@@ -93,19 +93,20 @@ void Button::repaint()
 		_g->drawLine(2, height - 1, width - 2, height - 1);
 		_g->drawLine(width - 1, 2, width - 1, height - 2);
 		_g->drawLine(width - 2 , height - 2, width - 2, height - 2);
-		_g->setColor(255,255,255);
+		_g->setColor(~foreColor);
 		_g->drawLine(1, 2, 1, height - 2);
 		_g->drawLine(2, 1, width - 2, 1);
 	}
 	
 	// 文字
 	if (enabled == true) {
-		_g->setColor(0,0,0);
+		_g->setColor(foreColor);
 	} else {
 		_g->setColor(128,128,128);
 	}
 	int fw = FontManager::getInstance()->getWidth(label);
 	int fh = FontManager::getInstance()->getHeight();
+	_g->setFont(this->font);
 	if (pushed == true) {
 		_g->drawText(label, (width - fw) / 2 + 1, (height - fh) / 2 + 1);
 	} else {

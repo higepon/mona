@@ -38,6 +38,11 @@ Graphics::Graphics()
 	height = screen->getHeight();
 	bytesPerPixel = screen->getBpp() / 8;
 	vram = screen->getVRAM();
+	font = new Font();
+	font->setName(FONT_NAME);
+	font->setWidth(6);
+	font->setHeight(12);
+	font->setStyle(FONT_PLAIN);
 #endif
 	xormode = false;
 }
@@ -46,6 +51,7 @@ Graphics::Graphics()
 Graphics::~Graphics()
 {
 	delete(screen);
+	delete(font);
 }
 
 /**
@@ -244,16 +250,28 @@ void Graphics::drawRect(int x, int y, int width, int height)
 }
 
 /**
- 文字列
+ 文字列描画
  @param str 文字列
  @param x 始点X
  @param y 始点Y
  */
 void Graphics::drawText(char *str, int x, int y)
 {
-	int i, j, k, len, pos, bit, w = 0;
+	int len = 0;
 	FontManager *manager = FontManager::getInstance();
 	Font **list = manager->decodeString(str, &len);
+	drawText(list, len, x, y);
+}
+
+/**
+ 文字列描画
+ @param list フォント列
+ @param len 文字数（フォント列の長さ）
+ @param x 始点X
+ @param y 始点Y
+ */
+void Graphics::drawText(Font **list, int len, int x, int y) {
+	int i, j, k, pos, bit, w = 0;
 
 	for (i = 0; i < len; i++) {
 		pos = 0;
@@ -265,10 +283,10 @@ void Graphics::drawText(char *str, int x, int y)
 			for (k = 0; k < list[i]->getWidth(); k++) {
 				// 行パディングなし
 				if ((fp[pos] & bit) != 0) {
-					if (xormode == true) {
-						drawPixelXOR(x + w + k, y + j, rgb24);
-					} else {
-						drawPixel(x + w + k, y + j, rgb24);
+					drawPixel(x + w + k, y + j, rgb24);
+					// 太字体
+					if ((font->getStyle() & FONT_BOLD) == FONT_BOLD) {
+						drawPixel(x + w + k + 1, y + j, rgb24);
 					}
 				}
 				bit <<= 1;
@@ -317,6 +335,12 @@ int Graphics::getHeight()
 	return height;
 }
 
+/** フォントを得る */
+Font *Graphics::getFont()
+{
+	return font;
+}
+
 /**
  クリッピング領域設定
  @param cx 始点X
@@ -347,10 +371,43 @@ void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
 }
 
 /**
+ 色設定
+ @param color (0x0-0xFFFFFF)
+ */
+void Graphics::setColor(unsigned int color)
+{
+	this->r = (color >> 16) & 0xFF;
+	this->g = (color >> 8) & 0xFF;
+	this->b = color & 0xFF;
+	rgb24 = color;
+}
+
+/**
  XOR描画モード設定.
- OSによってはXOR描画はサポートされない
+ 【注意】MONAでは直線描画と矩形描画のみ対応しています。
  */
 void Graphics::setXORMode(bool mode)
 {
 	this->xormode = mode;
+}
+
+/**
+ ロック、ロック解除.
+ 【注意】ロックされている間は描画を一切行ないません。
+ */
+void Graphics::setLocked(bool locked)
+{
+	this->locked = locked;
+}
+
+/**
+ フォントを設定する.
+ 【注意】現状は通常文字か太字かを指定できる程度です。
+ */
+void Graphics::setFont(Font *font)
+{
+	this->font->setName(font->getName());
+	this->font->setWidth(font->getWidth());
+	this->font->setHeight(font->getHeight());
+	this->font->setStyle(font->getStyle());
 }

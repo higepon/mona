@@ -35,6 +35,13 @@ Control::Control() {
 	_rect = new Rect(0,0,0,0);
 	_g = new Graphics();
 	_focusEvent = new Event(FOCUS_IN, this);
+	backColor = 0xC8C8C8;
+	foreColor = 0x000000;
+	font = new Font();
+	font->setName(FONT_NAME);
+	font->setWidth(6);
+	font->setHeight(12);
+	font->setStyle(FONT_PLAIN);
 }
 
 /** デストラクタ */
@@ -42,6 +49,7 @@ Control::~Control() {
 	delete(_rect);
 	delete(_g);
 	delete(_focusEvent);
+	delete(font);
 }
 
 /**
@@ -128,6 +136,24 @@ Container *Control::getParent()
 	return parent;
 }
 
+/** 背景色を設定する */
+unsigned int Control::getBackground()
+{
+	return backColor;
+}
+
+/** 前景色を設定する */
+unsigned int Control::getForeground()
+{
+	return foreColor;
+}
+
+/** フォントを得る */
+Font *Control::getFont()
+{
+	return font;
+}
+
 /**
  活性状態設定
  @param enabled 活性状態 (true / false)
@@ -193,4 +219,28 @@ void Control::setRect(int x, int y, int width, int height)
 void Control::setParent(Container *parent)
 {
 	this->parent = parent;
+}
+
+/** 背景色を設定する */
+void Control::setBackground(unsigned int backColor)
+{
+	this->backColor = backColor;
+}
+
+/** 前景色を設定する */
+void Control::setForeground(unsigned int foreColor)
+{
+	this->foreColor = foreColor;
+}
+
+/**
+ フォントを設定する.
+ 【注意】現状は通常文字か太字かを指定できる程度です。
+ */
+void Control::setFont(Font *font)
+{
+	this->font->setName(font->getName());
+	this->font->setWidth(font->getWidth());
+	this->font->setHeight(font->getHeight());
+	this->font->setStyle(font->getStyle());
 }

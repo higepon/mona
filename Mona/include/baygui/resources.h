@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_RESOURCES_H_INCLUDED_)
 #define _RESOURCES_H_INCLUDED_
 
-#define BAYGUI_VERSION   "BayGUI build 04.11.01"
+#define BAYGUI_VERSION   "BayGUI build 04.11.02"
 
 #define GUISERVER_NAME   "BAYGUI.EX5"
 #define LAUNCHER_NAME    "/APPS/GLAUNCH.EX5"
@@ -36,6 +36,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define KEYSERVER_NAME   "KEYBDMNG.EX2"
 #define MOUSESERVER_NAME "MOUSE.EX2"
 #define SHELLSERVER_NAME "OLDSHELL.EX2"
+#define FONTFILE_NAME    "/MONA-12.MF2"
+#define FONT_NAME        "MONA-12"
 
 #define WINDOWMANAGER_MENU_TITLE_JP "ファイル　編集　表示　特別　ヘルプ"
 #define WINDOWMANAGER_MENU_TITLE_EN "File Edit View Special Help"
@@ -62,6 +64,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define STATE_NORMAL      1
 /** ウィンドウ移動中 */
 #define STATE_MOVING      2
+
+/** 通常書体 */
+#define FONT_PLAIN        0
+/** 太字体 */
+#define FONT_BOLD         1
+/** 斜字体 */
+#define FONT_ITALIC       2
 
 /** 不明形式イメージ */
 #define UNKNOWN_IMAGE     0

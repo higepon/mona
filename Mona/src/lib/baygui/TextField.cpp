@@ -75,18 +75,19 @@ void TextField::repaint()
 		_g->setColor(0,128,255);
 		_g->drawRect(0, 0, width, height);
 	} else {
-		_g->setColor(200,200,200);
+		_g->setColor(getParent()->getBackground());
 		_g->drawRect(0, 0, width, height);
 	}
-	_g->setColor(0,0,0);
+	_g->setColor(foreColor);
 	_g->drawRect(1, 1, width - 2, height - 2);
-	_g->setColor(255,255,255);
+	_g->setColor(~foreColor);
 	_g->fillRect(2, 2, width - 3, height - 3);
 
 	// 文字
 	int fh = FontManager::getInstance()->getHeight();
+	_g->setFont(this->font);
 	if (enabled == true) {
-		_g->setColor(0,0,0);
+		_g->setColor(foreColor);
 	} else {
 		_g->setColor(128,128,128);
 	}
