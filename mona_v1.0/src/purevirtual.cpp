@@ -19,6 +19,7 @@
 
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);
+extern "C" void __pure_virtual(void);
 extern "C" int atexit( void (*func)(void));
 extern "C" int __cxa_atexit();
 extern "C" void* __dso_handle;
@@ -44,6 +45,11 @@ void __cxa_pure_virtual() {
     \date   create:2002/09/07 update: 2003/02/25
 */
 void _pure_virtual() {
+
+    g_console->printf("_pure_virtual called\n");
+}
+
+void __pure_virtual() {
 
     g_console->printf("_pure_virtual called\n");
 }
