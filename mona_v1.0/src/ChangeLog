@@ -1,5 +1,8 @@
 2004-01-19  higepon  <higepon@users.sourceforge.jp>
 
+        * secondboot.asm: mode105 bochs OK vmware OK 
+                                  twoOstwo VPC‚Í‰æ–Ê‚ÌF‚ª•Ï‚í‚ç‚È‚¢
+
         * kernel.cpp: VMWARE‚ÅVESA
 
         * configure ‰ü—Ç

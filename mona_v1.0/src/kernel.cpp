@@ -163,15 +163,15 @@ void startKernel(void) {
             }
         }
 
-        outportb(0x03C8, 0);
-        for (i = 0; i < 256; i++){
-            outportb(0x03C9, palette[i].r);
-            outportb(0x03C9, palette[i].g);
-            outportb(0x03C9, palette[i].b);
-        }
+      outportb(0x03C8, 0);
+      for (i = 0; i < 256; i++){
+          outportb(0x03C9, palette[i].r);
+          outportb(0x03C9, palette[i].g);
+          outportb(0x03C9, palette[i].b);
+      }
 
         byte* p = (byte*)(vesaDetail->physBasePtr);
-        memset(p, 0xCC, 640 * 488);
+        memset(p, 0x80, 1024 * 768 * vesaDetail->bitsPerPixel / 8);
      }
 
 
