@@ -131,44 +131,44 @@ void startKernel(void) {
     g_page_manager->setup();
 
     /* test for vesa */
-    VesaInfo* vesaInfo = new VesaInfo;
-    memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
-    if (vesaInfo->sign[0] == 'N') {
-        g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
-    } else {
+//     VesaInfo* vesaInfo = new VesaInfo;
+//     memcpy(vesaInfo, (VesaInfo*)0x800, sizeof(VesaInfo));
+//     if (vesaInfo->sign[0] == 'N') {
+//         g_console->printf("VESA not supported[%c]\n", vesaInfo->sign[1]);
+//     } else {
 
-        VesaInfoDetail* vesaDetail = new VesaInfoDetail;
-        memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
-        g_console->printf("VESA supported version=%d.%d [%x] \n", vesaInfo->versionH, vesaInfo->versionL, vesaInfo->oemStringPtr);
-        g_console->printf("(modeAttributes     =%x)", vesaDetail->modeAttributes     );
-        g_console->printf("(winAAttributes     =%x)", vesaDetail->winAAttributes     );
-        g_console->printf("(winBAttributes     =%x)", vesaDetail->winBAttributes     );
-        g_console->printf("(winGranularity     =%x)", vesaDetail->winGranularity     );
-        g_console->printf("(winSize            =%x)", vesaDetail->winSize            );
-        g_console->printf("(winASegment        =%x)", vesaDetail->winASegment        );
-        g_console->printf("(winBSegment        =%x)", vesaDetail->winBSegment        );
-        g_console->printf("(winFuncPtr         =%x)", vesaDetail->winFuncPtr         );
-        g_console->printf("(bytesPerScanLine   =%x)", vesaDetail->bytesPerScanLine   );
-        g_console->printf("(xResolution        =%x)", vesaDetail->xResolution        );
-        g_console->printf("(yResolution        =%x)", vesaDetail->yResolution        );
-        g_console->printf("(xCharSize          =%x)", vesaDetail->xCharSize          );
-        g_console->printf("(yCharSize          =%x)", vesaDetail->yCharSize          );
-        g_console->printf("(numberOfPlanes     =%x)", vesaDetail->numberOfPlanes     );
-        g_console->printf("(bitsPerPixel       =%x)", vesaDetail->bitsPerPixel       );
-        g_console->printf("(numberOfBanks      =%x)", vesaDetail->numberOfBanks      );
-        g_console->printf("(memoryModel        =%x)", vesaDetail->memoryModel        );
-        g_console->printf("(bankSize           =%x)", vesaDetail->bankSize           );
-        g_console->printf("(numberOfImagePages =%x)", vesaDetail->numberOfImagePages );
-        g_console->printf("(reserved           =%x)", vesaDetail->reserved           );
-        g_console->printf("(redMaskSize        =%x)", vesaDetail->redMaskSize        );
-        g_console->printf("(redFieldPosition   =%x)", vesaDetail->redFieldPosition   );
-        g_console->printf("(greenMaskSize      =%x)", vesaDetail->greenMaskSize      );
-        g_console->printf("(greenFieldPosition =%x)", vesaDetail->greenFieldPosition );
-        g_console->printf("(blueMaskSize       =%x)", vesaDetail->blueMaskSize       );
-        g_console->printf("(blueFieldPosition  =%x)", vesaDetail->blueFieldPosition  );
-        g_console->printf("(rsvdMaskSize       =%x)", vesaDetail->rsvdMaskSize       );
-        g_console->printf("(directColorModeInfo=%x)", vesaDetail->directColorModeInfo);
-    }
+//         VesaInfoDetail* vesaDetail = new VesaInfoDetail;
+//         memcpy(vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
+//         g_console->printf("VESA supported version=%d.%d [%x] \n", vesaInfo->versionH, vesaInfo->versionL, vesaInfo->oemStringPtr);
+//         g_console->printf("(modeAttributes     =%x)", vesaDetail->modeAttributes     );
+//         g_console->printf("(winAAttributes     =%x)", vesaDetail->winAAttributes     );
+//         g_console->printf("(winBAttributes     =%x)", vesaDetail->winBAttributes     );
+//         g_console->printf("(winGranularity     =%x)", vesaDetail->winGranularity     );
+//         g_console->printf("(winSize            =%x)", vesaDetail->winSize            );
+//         g_console->printf("(winASegment        =%x)", vesaDetail->winASegment        );
+//         g_console->printf("(winBSegment        =%x)", vesaDetail->winBSegment        );
+//         g_console->printf("(winFuncPtr         =%x)", vesaDetail->winFuncPtr         );
+//         g_console->printf("(bytesPerScanLine   =%x)", vesaDetail->bytesPerScanLine   );
+//         g_console->printf("(xResolution        =%x)", vesaDetail->xResolution        );
+//         g_console->printf("(yResolution        =%x)", vesaDetail->yResolution        );
+//         g_console->printf("(xCharSize          =%x)", vesaDetail->xCharSize          );
+//         g_console->printf("(yCharSize          =%x)", vesaDetail->yCharSize          );
+//         g_console->printf("(numberOfPlanes     =%x)", vesaDetail->numberOfPlanes     );
+//         g_console->printf("(bitsPerPixel       =%x)", vesaDetail->bitsPerPixel       );
+//         g_console->printf("(numberOfBanks      =%x)", vesaDetail->numberOfBanks      );
+//         g_console->printf("(memoryModel        =%x)", vesaDetail->memoryModel        );
+//         g_console->printf("(bankSize           =%x)", vesaDetail->bankSize           );
+//         g_console->printf("(numberOfImagePages =%x)", vesaDetail->numberOfImagePages );
+//         g_console->printf("(reserved           =%x)", vesaDetail->reserved           );
+//         g_console->printf("(redMaskSize        =%x)", vesaDetail->redMaskSize        );
+//         g_console->printf("(redFieldPosition   =%x)", vesaDetail->redFieldPosition   );
+//         g_console->printf("(greenMaskSize      =%x)", vesaDetail->greenMaskSize      );
+//         g_console->printf("(greenFieldPosition =%x)", vesaDetail->greenFieldPosition );
+//         g_console->printf("(blueMaskSize       =%x)", vesaDetail->blueMaskSize       );
+//         g_console->printf("(blueFieldPosition  =%x)", vesaDetail->blueFieldPosition  );
+//         g_console->printf("(rsvdMaskSize       =%x)", vesaDetail->rsvdMaskSize       );
+//         g_console->printf("(directColorModeInfo=%x)", vesaDetail->directColorModeInfo);
+//     }
 
     /* FDC do not delete */
     g_fdcdriver = new FDCDriver();
