@@ -158,8 +158,7 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 void ProcessManager::multiTaskTester() {
 
 
-    _sys_printf("address of GDT=%d\n", gdt_);
-
+    //_sys_printf("address of GDT=%d\n", gdt_);
     //    printInfo();
 
     setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x18, (byte*)0xfff, 0x18);

@@ -119,7 +119,7 @@ void IA32MemoryManager::freeMemory(void* address) {
     \date   create:2002/08/08 update:
 */
 IA32MemoryManager::~IA32MemoryManager() {
-    _sys_printf("KeyBoardManager:destructor\n");
+    _sys_printf("IA32MemoryManager:destructor\n");
 
 }
 
@@ -366,52 +366,6 @@ IA32MemoryManager& IA32MemoryManager::instance() {
     return theInstance;
 }
 
-/*!
-    \brief enable A20
-
-    enable A20 line
-    over 1MB memory access enabled
-
-    \author HigePon
-    \date   create:2002/09/06 update:2002/12/25
-*/
-void IA32MemoryManager::enableA20() {
-
-    _sysLock();
-    _sys_printf("1\n");
-    /* Wait until the keyboard buffer is empty */
-    /* disable keyboard                        */
-    while (inportb(0x64) & 2);
-    outportb(0x64, 0xAD);
-    _sys_printf("2\n");
-    /* read output port */
-    while (inportb(0x64) & 2);
-    outportb(0x64, 0xD0);
-    _sys_printf("3\n");
-    /* Save byte from input port */
-    while (!(inportb(0x64) & 1));
-    byte incode = inportb(0x60);
-    _sys_printf("4\n");
-    /*  Write output port  */
-    while (inportb(0x64) & 2);
-    outportb(0x64, 0xD1);
-    _sys_printf("5\n");
-    /*  GATE A20 to ON */
-    while (inportb(0x64) & 2);
-    _sys_printf("5.5\n");
-    outportb(0x60, 0xdf);
-    _sys_printf("6\n");
-    /* enable keyboard */
-    while (inportb(0x64) & 2);
-    outportb(0x64, 0xAE);
-    _sys_printf("7\n");
-    /* Wait until the keyboard buffer is empty */
-    while (inportb(0x64) & 2);
-    _sysUnlock();
-
-    _sys_printf("enable A20 done!\n");
-    return;
-}
 
 /*!
     \brief start paging
