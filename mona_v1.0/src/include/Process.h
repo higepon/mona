@@ -60,7 +60,31 @@ typedef struct ProcessInfo {
     List<Message*>* messageList;
 };
 
+typedef struct ArchThreadInfo {
+    dword  eip;       // 0
+    dword  cs;        // 4
+    dword  eflags;    // 8
+    dword  eax;       // 12
+    dword  ecx;       // 16
+    dword  edx;       // 20
+    dword  ebx;       // 24
+    dword  esp;       // 28
+    dword  ebp;       // 32
+    dword  esi;       // 36
+    dword  edi;       // 40
+    dword  ds;        // 44
+    dword  es;        // 48
+    dword  fs;        // 52
+    dword  gs;        // 56
+    dword  ss;        // 60
+    dword  dpl;       // 64
+    dword  esp0;      // 68
+    dword  ss0;       // 72
+    dword  cr3;       // 76
+};
+
 typedef struct ThreadInfo {
+    ArchThreadInfo* archinfo;
     dword dummy;
 };
 
@@ -76,6 +100,10 @@ typedef struct ProcessInfo_ {
     byte mode;
     byte priority;
     byte state;
+};
+
+class Thread {
+
 };
 
 class ProcessScheduler {
