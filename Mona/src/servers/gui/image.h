@@ -5,6 +5,7 @@
 #define __GUISERVER_IMAGE_H__
 
 #include <monapi/cmemoryinfo.h>
+#include <monapi/CString.h>
 
 class ImageInfo : public monapi_cmemoryinfo
 {
@@ -16,6 +17,6 @@ public:
 
 extern ImageInfo* ReadBitmap(monapi_cmemoryinfo* mi);
 extern ImageInfo* ReadJPEG(monapi_cmemoryinfo* mi);
-extern ImageInfo* ReadImage(const char* file, bool prompt = false);
+extern ImageInfo* ReadImage(const MonAPI::CString& file, bool prompt = false);
 
 #endif  // __GUISERVER_IMAGE_H__

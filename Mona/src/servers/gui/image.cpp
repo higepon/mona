@@ -9,6 +9,8 @@
 
 #define BYTE2INT(array, index) (*(int*)&array[index])
 
+using namespace MonAPI;
+
 ImageInfo::ImageInfo() : Width(0), Height(0)
 {
     this->Handle = 0;
@@ -88,40 +90,38 @@ ImageInfo* ReadJPEG(monapi_cmemoryinfo* mi)
 	return ret;
 }
 
-ImageInfo* ReadImage(const char* file, bool prompt /*= false*/)
+ImageInfo* ReadImage(const CString& file, bool prompt /*= false*/)
 {
-	monapi_cmemoryinfo* mi = monapi_call_file_read_data(file, prompt);
-    ImageInfo* ret = NULL;
+	CString fn = file.toUpper();
+	monapi_cmemoryinfo* mi = monapi_call_file_read_data(fn, prompt);
+	ImageInfo* ret = NULL;
 	if (mi == NULL) return ret;
 	
-	const char* p = &file[strlen(file)];
-	for (; *p != '.' && file < p; p--);
-	
-	if (strcmp(p, ".BMP") == 0)
+	if (fn.endsWith(".BMP"))
 	{
-		if (prompt) printf("%s: Decoding %s....", SVR, file);
+		if (prompt) printf("%s: Decoding %s....", SVR, (const char*)fn);
 		ret = ReadBitmap(mi);
 		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
-	else if (strcmp(p, ".JPG") == 0)
+	else if (fn.endsWith(".JPG"))
 	{
-		if (prompt) printf("%s: Decoding %s....", SVR, file);
+		if (prompt) printf("%s: Decoding %s....", SVR, (const char*)fn);
 		ret = ReadJPEG(mi);
 		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
-	else if (strcmp(p, ".BM2") == 0)
+	else if (fn.endsWith(".BM2"))
 	{
-		if (prompt) printf("%s: Decompressing %s....", SVR, file);
+		if (prompt) printf("%s: Decompressing %s....", SVR, (const char*)fn);
 		monapi_cmemoryinfo* mi2 = monapi_call_file_decompress_bz2(mi);
 		if (prompt) printf(mi2 != NULL ? "OK\n" : "ERROR\n");
 		
 		if (mi2 != NULL)
 		{
-			if (prompt) printf("%s: Decoding %s....", SVR, file);
+			if (prompt) printf("%s: Decoding %s....", SVR, (const char*)fn);
 			ret = ReadBitmap(mi2);
 			if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
-            monapi_cmemoryinfo_dispose(mi2);
-            monapi_cmemoryinfo_delete(mi2);
+			monapi_cmemoryinfo_dispose(mi2);
+			monapi_cmemoryinfo_delete(mi2);
 		}
 	}
 
