@@ -611,6 +611,8 @@ int ThreadOperation::kill()
     Thread* thread   = g_currentThread->thread;
     Process* process = thread->tinfo->process;
 
+    sendKilledMessage();
+
     g_scheduler->kill(thread);
     (process->threadNum)--;
 
@@ -648,6 +650,36 @@ int ThreadOperation::kill(dword tid)
     delete thread;
     ThreadOperation::switchThread(isProcessChange, 5);
     return NORMAL;
+}
+
+void ThreadOperation::sendKilledMessage()
+{
+    dword threadNum;
+    dword* list;
+    MessageInfo msg;
+
+    list = g_scheduler->getAllThreadID(&threadNum);
+
+    /* set message */
+    msg.header = MSG_THREAD_KILLED;
+    msg.arg1   = g_currentThread->thread->id;
+
+    g_console->printf("here");
+
+    if (list == NULL) return;
+
+    g_console->printf("here2");
+
+    for (dword i = 0; i < threadNum; i++)
+    {
+    g_console->printf("here3");
+        dword id = list[i];
+	if (id == msg.arg1) continue;
+        dword result;
+        SYSCALL_2(SYSTEM_CALL_SEND, result, id, (void*)(&msg));
+    }
+    g_console->printf("here4");
+    delete[] list;
 }
 
 /*----------------------------------------------------------------------

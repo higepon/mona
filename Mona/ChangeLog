@@ -1,3 +1,8 @@
+2004-07-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (sendKilledMessage): KILL時にメッセージを送るように変更したら動かなくなった。
+                                                      #if 0でコメントアウトしてとりあえずcommit
+
 2004-07-08  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (getAllThreadID): スレッドIDの全リストを得る

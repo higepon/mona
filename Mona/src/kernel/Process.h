@@ -116,6 +116,7 @@ class ThreadOperation
     static int kill(dword tid);
 
   private:
+    static void sendKilledMessage();
     static void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
     static void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory, LinearAddress stack);
     static dword id;

@@ -190,6 +190,7 @@ void MouseServer::MessageLoop()
         default:
 
             /* ignore */
+	    printf("mouse:header=%x", receive.header);
             break;
         }
 
