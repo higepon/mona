@@ -17,10 +17,10 @@
 class Queue {
 
   public:
-    inline Queue* getNext() {return next_;}
-    inline Queue* getPrevious() {return previous_;}
-    inline void setNext(Queue* next) {next_ = next;}
-    inline void setPrevious(Queue* previous) {previous_ = previous;}
+    inline virtual Queue* getNext() {return next_;}
+    inline virtual Queue* getPrevious() {return previous_;}
+    inline virtual void setNext(Queue* next) {next_ = next;}
+    inline virtual void setPrevious(Queue* previous) {previous_ = previous;}
 
   protected:
     Queue* next_;

@@ -209,3 +209,77 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
 
     return true;
 }
+
+/*----------------------------------------------------------------------
+    SharedMemoryObject
+----------------------------------------------------------------------*/
+SharedMemoryObject::SharedMemoryObject() {
+
+    /* dummy for g_sharedMemoryList */
+}
+
+SharedMemoryObject::SharedMemoryObject(dword id, dword size) {
+
+    if (size == 0) return;
+
+    /* check dup id */
+
+
+    physicalPageCount_ = size / 4096;
+    physicalPages_     = new int[physicalPageCount_];
+
+    if (physicalPages_ == NULL) panic("SharedMemoryObject: new failed");
+    memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
+
+    size_ = size;
+    id_   = id;
+    return;
+}
+
+SharedMemoryObject::~SharedMemoryObject() {
+
+    return;
+}
+
+void SharedMemoryObject::setup() {
+
+    QueueManager::init(&g_sharedMemoryList);
+}
+
+SharedMemoryObject* SharedMemoryObject::find(dword id) {
+
+    SharedMemoryObject* current;
+    SharedMemoryObject* result = NULL;
+
+    for (current = &g_sharedMemoryList; (SharedMemoryObject*)current->getNext() != &g_sharedMemoryList; current = (SharedMemoryObject*)current->getNext()) {
+
+        /* found */
+        if (id == current->getId()) {
+
+            result = current;
+            break;
+        }
+    }
+
+    return result;
+}
+
+bool SharedMemoryObject::open(dword id, dword size) {
+
+    SharedMemoryObject* target = find(id);
+
+    /* new SharedMemory */
+    if (target == NULL) {
+
+        target = new SharedMemoryObject(id, size);
+        if (target == NULL) panic("SharedMemory open: failed");
+
+        QueueManager::addToPrevious(&g_sharedMemoryList, target);
+
+    } else {
+
+        if (target->getSize() != size) return false;
+    }
+
+    return true;
+}

@@ -26,6 +26,7 @@
 #include <MessageServer.h>
 #include <FAT12.h>
 #include <MemoryManager.h>
+#include <Segments.h>
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
@@ -65,5 +66,7 @@ GLOBAL PageEntry* g_page_directory;
 GLOBAL PageManager* g_page_manager;
 
 GLOBAL MemoryManager km; /* Kernel Memory Management */
+
+GLOBAL SharedMemoryObject g_sharedMemoryList;
 
 #endif

@@ -16,6 +16,7 @@
 #include <operator.h>
 #include <kernel.h>
 #include <string.h>
+#include <Queue.h>
 
 class Segment {
 
@@ -66,31 +67,25 @@ class HeapSegment : public Segment {
     virtual bool faultHandler(LinearAddress address, dword error);
 };
 
-class SharedMemoryObject {
+class SharedMemoryObject : public Queue {
 
   public:
-    SharedMemoryObject(dword id, dword size) {
-
-        /* check dup */
-
-
-        physicalPageCount_ = size / 4096;
-        physicalPages_     = new int[physicalPageCount_];
-
-        if (physicalPages_ == NULL) panic("SharedMemoryObject: new failed");
-
-        memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
-
-
-    }
+    SharedMemoryObject();
+    SharedMemoryObject(dword id, dword size);
     virtual ~SharedMemoryObject();
 
+    inline virtual dword getId() const {return id_;}
+    inline virtual dword getSize() const {return size_;}
   public:
+    static void setup();
     static bool open(dword id, dword size);
     static bool attach(dword id, PageEntry* directory, LinearAddress address);
     static bool detach(dword id, PageEntry* directory);
 
     static const int UN_MAPPED = -1;
+
+  private:
+    static SharedMemoryObject* find(dword id);
 
   private:
     dword id_;
