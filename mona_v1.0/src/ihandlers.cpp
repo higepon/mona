@@ -158,7 +158,6 @@ void timerHandler()
 
     g_scheduler->tick();
     g_currentThread->thread->tick();
-    dword tick = g_scheduler->getTick();
 
     bool isProcessChange = g_scheduler->schedule();
 

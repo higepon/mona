@@ -410,7 +410,6 @@ void syscall_entrance() {
     case SYSTEM_CALL_WAIT_FDC:
 
         {
-            enter_kernel_lock_mode();
             if (!g_fdcdriver->interrupted())
             {
                 g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
