@@ -5,7 +5,6 @@
 #include <monapi/messages.h>
 #include <monapi/Assert.h>
 
-using namespace MonAPI;
 
 static monapi_cmemoryinfo* commonParams = NULL;
 static HList<ProcessInfo> infos;
@@ -28,7 +27,7 @@ ProcessInfo getProcessInfo(dword tid)
     return ProcessInfo();
 }
 
-void addProcessInfo(const CString& name)
+void addProcessInfo(const MonAPI::CString& name)
 {
     syscall_set_ps_dump();
     PsInfo info;
@@ -53,16 +52,16 @@ void registerStdout(dword tid, dword stdout)
 
     MessageInfo msg;
     MessageInfo reply;
-    Message::create(&msg, MSG_STDOUT_REGIST_TO_SERVER, tid, stdout);
+    MonAPI::Message::create(&msg, MSG_STDOUT_REGIST_TO_SERVER, tid, stdout);
 
-    if (Message::sendReceive(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
+    if (MonAPI::Message::sendReceive(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
     {
         /* error, but nothing to do */
         ASSERT(!"stdout Error");
     }
 }
 
-void addProcessInfo(dword tid, dword parent, const CString& path)
+void addProcessInfo(dword tid, dword parent, const MonAPI::CString& path)
 {
     ProcessInfo pi = getProcessInfo(tid);
     if (pi.tid != THREAD_UNKNOWN) return;
@@ -85,7 +84,7 @@ void addProcessInfo(dword tid, dword parent, const CString& path)
     notifyProcessChanged(MSG_PROCESS_CREATED, tid, parent, path);
 }
 
-dword addProcessInfo(dword parent, const CString& name, const CString& path)
+dword addProcessInfo(dword parent, const MonAPI::CString& name, const MonAPI::CString& path)
 {
     dword ret = THREAD_UNKNOWN;
     syscall_set_ps_dump();
@@ -108,7 +107,7 @@ dword addProcessInfo(dword parent, const CString& name, const CString& path)
     return ret;
 }
 
-void addProcessInfo(dword tid, dword parent, const CString& name, const CString& path)
+void addProcessInfo(dword tid, dword parent, const MonAPI::CString& name, const MonAPI::CString& path)
 {
     ProcessInfo pi(tid, parent, name, path);
     infos.add(pi);
@@ -149,12 +148,12 @@ static void unregisterReceiver(dword tid)
     }
 }
 
-void notifyProcessChanged(dword header, dword tid, dword parent /*= 0*/, const CString& path /*= NULL*/)
+void notifyProcessChanged(dword header, dword tid, dword parent /*= 0*/, const MonAPI::CString& path /*= NULL*/)
 {
     int i = 0;
     while (i < receivers.size())
     {
-        if (Message::send(receivers[i], header, tid, parent, 0, path) == 0)
+        if (MonAPI::Message::send(receivers[i], header, tid, parent, 0, path) == 0)
         {
             i++;
         }
@@ -173,16 +172,16 @@ bool processHandler(MessageInfo* msg)
     {
         case MSG_REGISTER_TO_SERVER:
             registerReceiver(msg->arg1);
-            Message::reply(msg);
+            MonAPI::Message::reply(msg);
             break;
         case MSG_UNREGISTER_FROM_SERVER:
             unregisterReceiver(msg->arg1);
-            Message::reply(msg);
+            MonAPI::Message::reply(msg);
             break;
         case MSG_PROCESS_GET_PROCESS_INFO:
         {
             ProcessInfo pi = getProcessInfo(msg->from);
-            Message::reply(msg, pi.parent, 0, pi.path);
+            MonAPI::Message::reply(msg, pi.parent, 0, pi.path);
             break;
         }
         case MSG_PROCESS_CREATED:
@@ -192,7 +191,7 @@ bool processHandler(MessageInfo* msg)
             removeProcessInfo(msg->arg1);
             break;
         case MSG_PROCESS_GET_COMMON_PARAMS:
-            Message::reply(msg, commonParams->Handle);
+            MonAPI::Message::reply(msg, commonParams->Handle);
             break;
         default:
             return false;

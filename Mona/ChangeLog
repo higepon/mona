@@ -1,3 +1,7 @@
+2004-10-11  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/shell/: moniter/process/shell‚ğ•ÏX
+
 2004-10-08  higepon  <higepon@users.sourceforge.jp>
 
         * include/gui/System/Collections/ArrayList.h (FOREACH_AL): gcc3.4.1‘Î‰

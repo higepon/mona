@@ -1,7 +1,6 @@
 #include "Shell.h"
 #include <monapi/messages.h>
 
-using namespace MonAPI;
 
 enum
 {
@@ -18,9 +17,9 @@ enum
     COMMAND_KILL
 };
 
-int Shell::isInternalCommand(const CString& command)
+int Shell::isInternalCommand(const MonAPI::CString& command)
 {
-    CString cmd = command.toLower();
+    MonAPI::CString cmd = command.toLower();
     if (cmd == "help" || cmd == "?")
     {
         return COMMAND_HELP;
@@ -65,7 +64,7 @@ int Shell::isInternalCommand(const CString& command)
     return COMMAND_NONE;
 }
 
-bool Shell::internalCommandExecute(int command, System::Array<CString> args)
+bool Shell::internalCommandExecute(int command, System::Array<MonAPI::CString> args)
 {
     switch (command)
     {
@@ -81,7 +80,7 @@ bool Shell::internalCommandExecute(int command, System::Array<CString> args)
                 this->current = STARTDIR;
                 break;
             }
-            CString dir = this->mergeDirectory(this->current, args[1]);
+            MonAPI::CString dir = this->mergeDirectory(this->current, args[1]);
             if (syscall_cd(dir) != 0)
             {
                 printf("%s: directory not found: %s\n", SVR, (const char*)dir);
@@ -102,7 +101,7 @@ bool Shell::internalCommandExecute(int command, System::Array<CString> args)
                 for (int i = 1; i < args.get_Length(); i++)
                 {
                     if (i > 1) printf("\n");
-                    CString dir = this->mergeDirectory(this->current, args[i]);
+                    MonAPI::CString dir = this->mergeDirectory(this->current, args[i]);
                     printf("%s:\n", (const char*)dir);
                     printFiles(dir);
                 }
@@ -158,7 +157,7 @@ bool Shell::internalCommandExecute(int command, System::Array<CString> args)
 #if 1
         for (MessageInfo msg;;)
         {
-            if (Message::receive(&msg) != 0) continue;
+            if (MonAPI::Message::receive(&msg) != 0) continue;
             if (msg.header == MSG_SERVER_START_OK) break;
         }
 #endif
