@@ -14,15 +14,16 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(LIB_USER)
 
-$(LIB_USER) : userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o MlcStdio.o MlcStdarg.o
-	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o MlcStdio.o MlcStdarg.o
+$(LIB_USER) : $(OBJECTS)
+	ar cvr $@ $(OBJECTS)
+	ranlib $@
 
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CFINCLUDE) -c $<
 
 clean :
-	rm -f $(LIB_USER) userlib.o string.o MemoryManager.o monalibc.o MlcCtype.o MlcStdlib.o MlcStdio.o MlcStdarg.o
+	rm -f $(LIB_USER) $(OBJECTS)
 
 depend:
 	$(CXX) -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies

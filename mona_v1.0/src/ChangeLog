@@ -1,3 +1,7 @@
+2004-03-14  higepon  <higepon@users.sourceforge.jp>
+
+        * user/userlib/Makefile ($(LIB_USER)): Tinoさんのpatch適用
+
 2004-03-13  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc関連ヘッダファイル : 関数宣言場所整理

@@ -9,12 +9,25 @@ userlib.o: userlib.cpp ../include/userlib.h ../../share/types.h \
   ../include/userlib/string.h ../include/userlib/MemoryManager.h \
   ../include/userlib/Floppy.h ../include/userlib/FileInputStream.h \
   ../include/userlib/InputStream.h ../include/userlib/monalibc.h \
-  ../include/userlib/Color.h
+  ../include/userlib/MlcCtype.h ../include/userlib/MlcLimits.h \
+  ../include/userlib/MlcStdarg.h ../include/userlib/MlcStdlib.h \
+  ../include/userlib/MlcStdio.h ../include/userlib/Color.h
 MemoryManager.o: MemoryManager.cpp ../include/userlib/MemoryManager.h \
   ../../share/types.h ../include/userlib/string.h
 monalibc.o: monalibc.cpp ../include/userlib/monalibc.h \
-  ../../share/types.h ../include/userlib/string.h
+  ../../share/types.h ../include/userlib/MlcCtype.h \
+  ../include/userlib/MlcLimits.h ../include/userlib/MlcStdarg.h \
+  ../include/userlib/MlcStdlib.h ../include/userlib/MlcStdio.h
 MlcCtype.o: MlcCtype.cpp ../include/userlib/MlcCtype.h
 MlcStdlib.o: MlcStdlib.cpp ../include/userlib/MlcLimits.h \
   ../include/userlib/MlcCtype.h ../include/userlib/MlcStdlib.h \
-  ../../share/types.h
+  ../../share/types.h ../include/userlib/monalibc.h \
+  ../include/userlib/MlcStdarg.h ../include/userlib/MlcStdio.h
+MlcStdio.o: MlcStdio.cpp ../include/userlib/MlcStdarg.h \
+  ../../share/types.h ../include/userlib/MlcStdlib.h \
+  ../include/userlib/MlcStdio.h
+MlcStdarg.o: MlcStdarg.cpp ../include/userlib/MlcStdarg.h \
+  ../../share/types.h ../include/userlib/MlcStdlib.h \
+  ../include/userlib/monalibc.h ../include/userlib/MlcCtype.h \
+  ../include/userlib/MlcLimits.h ../include/userlib/MlcStdio.h \
+  ../include/userlib/string.h
