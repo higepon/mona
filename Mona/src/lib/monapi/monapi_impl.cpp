@@ -29,12 +29,12 @@ static FuncVoid** ctor_list = NULL;
 
 void setConstructorList(FuncVoid** ctors)
 {
-	ctor_list = ctors;
+        ctor_list = ctors;
 }
 
 bool isInDLL(FuncVoid** ctors)
 {
-	return ctor_list != ctors;
+        return ctor_list != ctors;
 }
 
 /*----------------------------------------------------------------------
@@ -55,12 +55,13 @@ int user_start_impl(FuncMonaMain* monaMain)
 {
     bool dll = isInDLL(__CTOR_LIST__);
     if (dll) invokeFuncList(__CTOR_LIST__);
-    
+
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
+
     int result = (*monaMain)(arg);
+
     delete arg;
-    
     if (dll) invokeFuncList(__DTOR_LIST__);
     exit(result);
     return 0;

@@ -46,6 +46,8 @@ void syscall_entrance() {
         break;
     case SYSTEM_CALL_KILL:
 
+	g_console->printf("killed");
+
         ThreadOperation::kill();
         break;
 

@@ -5,24 +5,109 @@ using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
-    for (int i = 0; i < 500; i++)
+    int reti;
+
+    char buf[1024];
+    memset(buf, 0, sizeof(buf));
+
+    sprintf(buf , "protType:%04x \n",1234);
+
+    //FileOutputStream ÎÆ¹È
+    FileOutputStream fos("YTEST.TXT");
+
+    printf("fileout:open=%d\n", fos.open());
+
+    reti = fos.write((byte*)buf , 512);
+    printf("fileout:read=%d\n", reti);
+
+    printf("fos close pre\n");
+    fos.close();
+    printf("fos close after\n");
+
+    return 0;
+}
+
+
+#if 0
+typedef union
+{
+    dword command;
+    struct
     {
-    printf("Hello World!\n");
+        unsigned reserved1 : 2;
+        unsigned address   : 6;
+        unsigned function  : 3;
+        unsigned device    : 5;
+        unsigned bus       : 8;
+        unsigned reserved2 : 7;
+        unsigned enabled   : 1;
+    } p;
+} PciPacket;
+
+enum
+{
+    REG_CONFIG_ADDRESS = 0x0CF8,
+    REG_CONFIG_DATA    = 0x0CFC
+
+
+};
+
+int MonaMain(List<char*>* pekoe)
+{
+
+    syscall_get_io();
+
+
+    for (int i = 0; i < 32; i++)
+    {
+        PciPacket packet;
+        dword in;
+
+        packet.p.enabled = 1;
+        packet.p.bus = 0;
+        packet.p.device = i;
+        packet.p.function = 0;
+        packet.p.address = 0;
+        packet.p.reserved1 = 0;
+        packet.p.reserved2 = 0;
+
+        outp32(REG_CONFIG_ADDRESS, packet.command);
+
+        in = inp32(REG_CONFIG_DATA);
+
+        printf("[%x:%x]\n", in & 0x0000FFFF, in >> 16);
+
+        packet.p.enabled = 0;
+        outp32(REG_CONFIG_ADDRESS, packet.command);
     }
-    dword p;
-    dword* q;
+}
 
-    q = (dword*)malloc(sizeof(dword) * 2);
+#endif
 
-    p = 0x12345678;
-    q[0] = 0x87654321;
+#if 0
+int MonaMain(List<char*>* pekoe)
+{
+    syscall_get_io();
 
-    printf("p = %x address=%x\n", p, &p);
-    syscall_test((dword)(&p));
-    printf("p = %x address=%x\n", p, &p);
 
-    printf("q = %x address=%x\n", q[0], q);
-    syscall_test((dword)(q));
+//     for (int i = 0; i < 500; i++)
+//     {
+//     printf("Hello World!\n");
+//     }
+//     dword p;
+//     dword* q;
+
+//     q = (dword*)malloc(sizeof(dword) * 2);
+
+//     p = 0x12345678;
+//     q[0] = 0x87654321;
+
+//     printf("p = %x address=%x\n", p, &p);
+//     syscall_test((dword)(&p));
+//     printf("p = %x address=%x\n", p, &p);
+
+//     printf("q = %x address=%x\n", q[0], q);
+//     syscall_test((dword)(q));
 
 //     //HashMapÎÆ¹È
 //     HashMap<int>* testHash;
@@ -277,3 +362,5 @@ int MonaMain(List<char*>* pekoe)
 //     sleep(10000);
 //     printf("changed %s\n", fd.diskChanged() ? "true" : "false");
 //     fd.close();
+
+#endif

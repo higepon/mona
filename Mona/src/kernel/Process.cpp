@@ -217,11 +217,19 @@ int ThreadOperation::kill()
     Thread* thread   = g_currentThread->thread;
     Process* process = thread->tinfo->process;
 
+//    logprintf("kill:%s", process->getName());
+
     g_scheduler->Kill(thread);
 
-    sendKilledMessage();
+//    logprintf("%s:%d\n", __FILE__, __LINE__);
+
+//    sendKilledMessage();
+
+//    logprintf("%s:%d\n", __FILE__, __LINE__);
 
     (process->threadNum)--;
+
+//    logprintf("%s:%d\n", __FILE__, __LINE__);
 
     if (process->threadNum < 1)
     {
@@ -230,7 +238,11 @@ int ThreadOperation::kill()
         g_page_manager->returnPhysicalPages(directory);
     }
 
+//    logprintf("%s:%d\n", __FILE__, __LINE__);
+
     delete thread;
+
+//    logprintf("%s:%d\n", __FILE__, __LINE__);
 
     g_scheduler->SwitchToNext();
 

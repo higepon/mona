@@ -9,4 +9,6 @@ else
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
+ADDLINK = -lmonalibc
+
 include dependencies
