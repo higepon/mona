@@ -29,10 +29,10 @@ static void StdoutMessageLoop()
                 msg.str[127] = '\0';
                 syscall_print(msg.str);
                 monapi_call_mouse_set_cursor(&msg_queue, 1);
-                monapi_cmessage_reply(&msg);
 #if 1  /// temporary
                 syscall_print("!E!");
 #endif
+                monapi_cmessage_reply(&msg);
                 break;
             }
         }
