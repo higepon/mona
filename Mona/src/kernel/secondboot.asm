@@ -287,8 +287,8 @@ vesa_mode:
         jc      vesa_loop
         add     dx, 3
 vesa_loop:
-        mov     ah, byte[cs:vesabpp]
-        cmp     ah, 16+1
+        mov     ax, [cs:vesabpp]
+        cmp     ax, 16+1
         jc      vesa_16bpp
         call    try_vesa_mode
         cmp     ax, 0
@@ -403,7 +403,7 @@ strvbpp db      "VESA_BPP="
 lenvres dw      16              ; length of strvres
 lenvbpp dw      9               ; length of strvbpp
 vesares dw      800
-vesabpp db      32
+vesabpp dw      32
 
 rde     dw      0x00e0
 spf     dw      0x0009
