@@ -49,6 +49,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include "sys/gbc.h"
 #elif defined(MONA)
 	#include <monapi.h>
+	#include <monapi/CString.h>
 	#include <monapi/messages.h>
 	#include <monalibc.h>
 #endif
