@@ -24,6 +24,8 @@ MONAWALL.BM5: MONAWALL.BMP
 
 install-baygui:
 	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/iso/APPS
+	$(INSTALL) MONAWALL.BM5 $(MONADIR)/bin/iso
+
 
 install: install-baygui
 
