@@ -1,0 +1,3 @@
+main.o: main.cpp VirtualFloppy.h IStorageDevice.h
+VirtualFloppy.o: VirtualFloppy.cpp VirtualFloppy.h IStorageDevice.h
+fat.o: fat.cpp fat.h file.h IStorageDevice.h
