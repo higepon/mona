@@ -12,6 +12,7 @@ extern guiserver_window* GetWindowPointer(dword handle);
 extern bool DisposeWindow(dword handle);
 extern void DrawWindow(guiserver_window* w, bool draw_screen = true);
 extern void MoveWindow(guiserver_window* w, int x, int y);
+extern guiserver_window* GetTargetWindow(int x, int y);
 extern bool WindowHandler(MessageInfo* msg);
 
 #endif  // __GUISERVER_WINDOW_H__

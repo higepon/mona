@@ -139,6 +139,34 @@ void MoveWindow(guiserver_window* w, int x, int y)
 	monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
 
+guiserver_window* GetTargetWindow(int x, int y)
+{
+	int size = captures.size();
+	if (size > 0)
+	{
+		return captures[size - 1];
+	}
+	
+	for (int i = windows.size() - 1; i >= 0; i--)
+	{
+		guiserver_window* w = windows[i];
+		if (w->FormBufferHandle == 0) continue;
+		
+		_R r(w->X, w->Y, w->Width, w->Height);
+		if (!r.Contains(mouse_x, mouse_y)) continue;
+		
+		if (w->__reserved1 == NULL)
+		{
+			w->__reserved1 = GetBitmapPointer(w->FormBufferHandle);
+			if (w->__reserved1 == NULL) continue;
+		}
+		unsigned int c = w->__reserved1->Data[(x - w->X) + (y - w->Y) * w->Width];
+		if (c != 0 && c != w->TransparencyKey) return w;
+	}
+	
+	return NULL;
+}
+
 bool WindowHandler(MessageInfo* msg)
 {
 	switch (msg->header)
@@ -166,26 +194,7 @@ bool WindowHandler(MessageInfo* msg)
 		{
 			mouse_x = msg->arg1;
 			mouse_y = msg->arg2;
-			int size = captures.size();
-			guiserver_window* target = NULL;
-			if (size > 0)
-			{
-				target = captures[size - 1];
-			}
-			else
-			{
-				for (int i = windows.size() - 1; i >= 0; i--)
-				{
-					guiserver_window* w = windows[i];
-					if (w->FormBufferHandle == 0) continue;
-					
-					_R r(w->X, w->Y, w->Width, w->Height);
-					if (!r.Contains(mouse_x, mouse_y)) continue;
-					
-					target = w;
-					break;
-				}
-			}
+			guiserver_window* target = GetTargetWindow(mouse_x, mouse_y);
 			if (target != NULL)
 			{
 				if (Message::send(target->ThreadID, msg) != 0)
