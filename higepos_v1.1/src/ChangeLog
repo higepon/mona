@@ -4,6 +4,8 @@
         * KeyBoardManager.h:constキーワード等追加
         * MemoryManager.cpp:不要なデバッグメッセージをHIGEPOS_DEBUG_MMで抑制
 
+        synさんcommit後MakeFileに手直しを入れる。
+
 2002-10-20  higepon  <higepon@users.sourceforge.jp>
 
         * 開発環境をhigepos_v1.1に移行しました。
