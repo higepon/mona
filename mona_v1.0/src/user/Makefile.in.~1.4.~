@@ -1,12 +1,3 @@
-NASM       = nasm
-NDISASM    = ndisasm
-CC         = /usr/bin/g++
-LD         = /usr/bin/ld
-STRIP      = /usr/bin/strip
-CONTRIB_LIB= ./contrib/lib_cygwin
-LFLAGS     = -n -Ttext 0x1200 -static
-# for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall
 ENV             = env
 BIN             = ../../bin
 USERINCLUDE     = include
@@ -22,17 +13,16 @@ SOURCES         = hello.cpp                   \
                   string.cpp                  \
                   KeyBoardServer.cpp          \
                   MemoryManager.cpp           \
-                  UFAT12.cpp                  \
+                  uFAT12.cpp                  \
                   BitMap.cpp                  \
                   VirtualFileSystemServer.cpp \
-                  jpegls.cpp                  \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(USER_PROCESS) $(USER_PROCESS2) $(KEYBOARD_SERVER) $(VFS_SERVER)
 
-$(USER_PROCESS) : userlib.o KeyBoardManager.o hello.o MemoryManager.o string.o jpegls.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o string.o jpegls.o -o $(USER_PROCESS)
+$(USER_PROCESS) : userlib.o KeyBoardManager.o hello.o MemoryManager.o string.o
+	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o string.o -o $(USER_PROCESS)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS)
 
 $(USER_PROCESS2) : userlib.o KeyBoardManager.o test.o MemoryManager.o string.o
@@ -55,6 +45,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(USER_PROCESS) $(USER_PROCESS2) $(KEYBOARD_SERVER) $(VFS_SERVER)
+	rm -f $(OBJECTS) $(USER_PROCESS) $(USER_PROCESS2)
 
 include dependencies
