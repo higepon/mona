@@ -141,15 +141,23 @@ bool ISO9660::Initialize()
 
 File* ISO9660::GetFile(const CString& path)
 {
+    DirectoryEntry* directoryEntry;
+    CString fileName;
+
     int lastIndexOfSlash = path.lastIndexOf('/');
 
-    if (lastIndexOfSlash == -1) return NULL;
-
-    CString directoryPath = path.substring(0, lastIndexOfSlash);
-    CString fileName      = path.substring(lastIndexOfSlash + 1, path.getLength() - lastIndexOfSlash);
-
-    DirectoryEntry* directoryEntry = FindDirectoryEntry(this->rootDirectory, directoryPath);
-    if (directoryEntry == NULL) return NULL;
+    if (lastIndexOfSlash == -1)
+    {
+        directoryEntry = this->rootDirectory;
+        fileName = path;
+    }
+    else
+    {
+        CString directoryPath = path.substring(0, lastIndexOfSlash);
+        fileName  = path.substring(lastIndexOfSlash + 1, path.getLength() - lastIndexOfSlash);
+        directoryEntry = FindDirectoryEntry(this->rootDirectory, directoryPath);
+        if (directoryEntry == NULL) return NULL;
+    }
 
     DirectoryEntry* fileEntry = FindFileEntry(directoryEntry, fileName);
     if (fileEntry == NULL) return NULL;
@@ -384,8 +392,21 @@ void ISO9660::SetDetailInformation(DirectoryEntry* to, ISODirectoryEntry* from)
 
 CString ISO9660::GetProperName(const CString& name)
 {
-    if (name.indexOf(';') == -1) return name;
-    return name.split(';')[0];
+    CString result;
+    if (name.indexOf(';') == -1)
+    {
+        result = name;
+    }
+    else
+    {
+        result = name.split(';')[0];
+    }
+
+    if (result.endsWith(".") && result != "." && result != "..")
+    {
+        result = result.substring(0, result.getLength() - 1);
+    }
+    return result;
 }
 
 bool ISO9660::SetDetailInformation(DirectoryEntry* entry)

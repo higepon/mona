@@ -35,6 +35,7 @@ monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
         if (!monapi_cmemoryinfo_create(ret, cdfile->GetSize() + 1, prompt))
         {
             monapi_cmemoryinfo_delete(ret);
+            delete cdfile;
             return NULL;
         }
 
@@ -43,6 +44,7 @@ monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
         cdfile->Read(ret->Data, ret->Size);
         ret->Data[ret->Size] = 0;
         if (prompt) printf("OK\n");
+        delete cdfile;
         return ret;
     }
     else

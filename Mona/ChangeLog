@@ -1,3 +1,7 @@
+2004-11-28  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/ISO9660.cpp (GetFile): ルートディレクトリのファイルを認識しないバグを修正
+
 2004-11-27  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/: 記述ミス修正 Assert.h->monapi/Assert.h, ISO9660.h->iso9660.h
