@@ -1,3 +1,9 @@
+2004-03-23  higepon  <higepon@users.sourceforge.jp>
+
+        * FDのモーターOFFの制御をまじめに｡
+
+        * Process.cpp (Process): messageListのメッセージdeleteを無くした｡
+
 2004-03-22  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib/userlib.cpp: syscall_mthread_create, joinを生ポインタからID制にした｡

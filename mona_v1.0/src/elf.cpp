@@ -49,6 +49,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     /* file open */
     if (!(g_fs->open(filepath, 1)))
     {
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
         return 1;
     }
@@ -62,6 +63,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     memset(buf, 0, 512 * readTimes);
     if (buf == NULL)
     {
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
         return 2;
     }
@@ -70,6 +72,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     if (!g_fs->read(buf, fileSize))
     {
             free(buf);
+            g_fdcdriver->motorAutoOff();
             Semaphore::up(&g_semaphore_fd);
             return g_fs->getErrorNo();
     }
@@ -77,6 +80,7 @@ int loadProcess(const char* path, const char* name, bool isUser, CommandOption* 
     /* close */
     if (!g_fs->close())
     {
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
     }
 

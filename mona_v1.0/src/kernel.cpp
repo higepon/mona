@@ -39,7 +39,7 @@
     \date   create:2002/07/21 update:$Date$
 */
 
-#define GLOBAL_VALUE_DEFINED    printf("id2 = %d refcount = %d\n", id2, objects[0].getReferanceCount());
+#define GLOBAL_VALUE_DEFINED
 
 #include <types.h>
 #include <global.h>
@@ -334,7 +334,6 @@ void mainProcess()
 //     outportb(0x21, 0xff);
 //     outportb(0xA1, 0xff);
 //     outportb(0x21, inportb(0x21) & 0xBF);
-
     RTC::getDate(&dt1);
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();

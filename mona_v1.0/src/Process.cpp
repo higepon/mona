@@ -586,12 +586,6 @@ Process::~Process()
 
     delete(shared_);
 
-    /* message list */
-    for (int i = 0; i < messageList_->size(); i++)
-    {
-        delete messageList_->get(i);
-    }
-
     /* we need for each ! don't forget */
     delete kmutexTree_;
 
@@ -601,6 +595,7 @@ Process::~Process()
         delete[](arguments_->get(i));
     }
 
+    delete messageList_;
     delete arguments_;
     delete threadList_;
 }
