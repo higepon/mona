@@ -117,10 +117,6 @@ void fdcHandler(){
 */
 void timerHandler() {
 
-    //    asm volatile("pushl $0x87654321");
-    //    asm volatile("pushl $0x87654321");
-    //    asm volatile("pushl $0x87654321");
-    //    asm volatile("pushl $0x87654321");
     _sysdumpStack5();
 
     /* EOI is below for IRQ 8-15 */
@@ -129,9 +125,23 @@ void timerHandler() {
 
     /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
-    pm.schedule();
+    pm.schedule2();
 
-    iret();
+    /* do nothing */
+    if (pm.current == pm.next) iret();
+
+    asm volatile(
+                 "pushal           \n"
+                 "mov %%esp, %0    \n"
+                 "mov %1, %%esp    \n"
+                 "popal            \n"
+		 //                 "mov %%ebp, %%esp \n"
+                 "popl %%eax \n"
+                 "iretl            \n"
+                 : "=m" (pm.current->esp)
+                 : "m" (pm.next->esp)
+                 );
+
     return;
 }
 

@@ -61,7 +61,18 @@ monaTester.o: monaTester.cpp include/monaVga.h include/monaTypes.h \
 ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/monaKernel.h include/monaTypes.h include/string.h \
   include/IA32MemoryManager.h include/monaIo.h include/monaVga.h \
-  include/monaTester.h
+  include/monaTester.h include/monaIdt.h stlport/algorithm \
+  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
+  stlport/stl/_config_compat.h stlport/stl/_site_config.h \
+  stlport/config/stlcomp.h stlport/config/stl_gcc.h \
+  stlport/config/stl_confix.h stlport/stl/_algo.h stlport/stl/_algobase.h \
+  stlport/cstring stlport/stl/_range_errors.h stlport/stl/_pair.h \
+  stlport/stl/_iterator_base.h stlport/stl/type_traits.h \
+  stlport/stl/_algobase.c stlport/stl/_iterator.h stlport/stl/_tempbuf.h \
+  stlport/stl/_uninitialized.h stlport/stl/_construct.h stlport/new \
+  stlport/stl/_tempbuf.c stlport/stl/_heap.h stlport/stl/_heap.c \
+  stlport/stl/_function_base.h stlport/stl/_algo.c stlport/stl/_epilog.h \
+  stlport/stl/_config_compat_post.h
 monaChecker.o: monaChecker.cpp include/monaChecker.h include/monaVga.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
   include/IA32MemoryManager.h include/monaIo.h

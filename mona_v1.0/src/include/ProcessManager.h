@@ -19,6 +19,12 @@
 
 #define GDTNUM 7 /*!< \def number of entry gdt */
 
+#define FIRST_PROCESS_STACK 0x9884
+
+typedef struct Process {
+    dword* esp;
+};
+
 /*!
     process management
 */
@@ -32,12 +38,15 @@ class ProcessManager {
     void printInfo();
     void multiTaskTester();
     void schedule();
+    void schedule2();
     static ProcessManager& instance() {
         static ProcessManager theInstance;
         return theInstance;
     }
     byte stack[5120];
     TSS tss[2];
+    Process* current;
+    Process* next;
   private:
     void sgdt();
     inline void ltr(word) const;
@@ -48,6 +57,7 @@ class ProcessManager {
     inline void initProcess(void (*f)());
     GDT* gdt_;
     word taskidx_;
+    Process process_[2];
 };
 
 #endif

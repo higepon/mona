@@ -137,7 +137,7 @@
                                                      \
     static dword* stack;                             \
     dword value[20];                                  \
-    asm volatile("mov %%esp, %0 \n" : "=g"(stack));  \
+    asm volatile("mov %%ebp, %0 \n" : "=g"(stack));  \
         value[0] = *(stack + 0);\
        value[1] = *(stack + 1);\
 value[2] = *(stack + 2);\

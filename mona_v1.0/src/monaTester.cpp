@@ -127,7 +127,6 @@ void processTester() {
 void process1Tester() {
     enableTimer();
 
-    //    _sysdump("process1", true, true);
     while (true) {
          for (dword i = 0; i < 900000; i++) {
             i += 1;

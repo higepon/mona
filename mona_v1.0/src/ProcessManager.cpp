@@ -18,6 +18,7 @@
 #include <string.h>
 #include <monaTester.h>
 #include <monaIdt.h>
+#include <algorithm>
 
 /*!
     \brief constructor
@@ -35,6 +36,8 @@ ProcessManager::ProcessManager() {
     taskidx_ = 0;
 
     /* init first or second process */
+    current = &(process_[0]);
+    next    = &(process_[1]);
     initProcess(process2Tester);
 }
 
@@ -58,6 +61,7 @@ void ProcessManager::sgdt() {
 
     /* set start address of gdt */
     gdt_ = (GDT*)gdtr.base;
+
     return;
 }
 
@@ -282,6 +286,16 @@ void ProcessManager::schedule() {
     switchProcess2();
 }
 
+void ProcessManager::schedule2() {
+
+    if (taskidx_ == 0) {
+        taskidx_++;
+        return;
+    }
+
+    std::swap(current, next);
+}
+
 static dword* esp1;
 static dword* esp2 = (dword*)0x9884;
 static int prev = 2;
@@ -331,15 +345,20 @@ inline void ProcessManager::switchProcess2() {
 
 inline void ProcessManager::initProcess(void (*f)()) {
 
-    *(--esp2) = (dword)0x0200046; /* EFLAGS */
-    *(--esp2) = (dword)0x38;      /* CS     */
-    *(--esp2) = (dword)f;         /* EIP    */
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
-    *(--esp2) = (dword)0x00;
+    dword* firstStack = (dword*)FIRST_PROCESS_STACK;
+
+    *(--firstStack) = (dword)0x0200046; /* EFLAGS */
+    *(--firstStack) = (dword)0x38;      /* CS     */
+    *(--firstStack) = (dword)f;         /* EIP    */
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    *(--firstStack) = (dword)0x9884;
+    current->esp = firstStack;
+    next->esp    = firstStack;
 }
