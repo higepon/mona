@@ -429,6 +429,48 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword size)
 {
 #if 0
+    if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
+
+    LinearAddress start = address % 4096 ? ((address + 4095 + 4096) & 0xFFFFF000) : address;
+
+    for (LinearAddress target = start; target + 4095 <= address + size; target += 4096)
+    {
+        dword directoryIndex = getDirectoryIndex(target);
+        dword tableIndex     = getTableIndex(target);
+
+        if (!isPresent(&directory[directoryIndex])) continue;
+
+        PageEntry* table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+
+        if (isPresent(&table[tableIndex]))
+        {
+            PhysicalAddress paddress = ((dword)(table[tableIndex])) & 0xfffff00;
+            returnPhysicalPage(paddress);
+            table[tableIndex] = 0;
+
+//             /* the end of table */
+//             if ((target + ARCH_PAGE_SIZE) % (4 * 1024 * 1024)) continue;
+
+//             int counter = 0;
+//             for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
+//             {
+//                 if (!isPresent(&table[j])) continue;
+//                 counter++;
+//             }
+
+//             if (counter == 0)
+//             {
+//                 returnPageTable(table);
+//                 directory[directoryIndex] = 0;
+//             }
+        }
+
+    }
+
+
+#endif
+
+#if 0
     ASSERT(directory);
 
     /* out of user malloc region */

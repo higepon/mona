@@ -310,7 +310,6 @@ static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CStri
 
 static void MessageLoop()
 {
-    syscall_print("A");
 	for (MessageInfo msg;;)
 	{
 		if (Message::receive(&msg) != 0) continue;
@@ -318,13 +317,11 @@ static void MessageLoop()
 		switch (msg.header)
 		{
 			case MSG_DISPOSE_HANDLE:
-    syscall_print("B");
 				MemoryMap::unmap(msg.arg1);
 				Message::reply(&msg);
 				break;
 			case MSG_PROCESS_CREATE_IMAGE:
 			{
-    syscall_print("C");
 				monapi_cmemoryinfo* mi = NULL;
 				dword entryPoint = 0;
 				int result = CreateImage(&mi, &entryPoint, msg.str, msg.arg1 == MONAPI_TRUE);
