@@ -6,7 +6,7 @@ STRIP      = /usr/bin/strip
 CONTRIB_LIB= ./contrib/lib_cygwin
 LFLAGS     = -n -Ttext 0x1200 -static
 # for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -O2
+CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -O3
 ENV             = env
 BIN             = ../../bin
 USERINCLUDE     = include

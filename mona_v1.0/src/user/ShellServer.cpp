@@ -28,6 +28,7 @@ void ShellServer::service() {
     /* look up */
     dword myPid   = Message::lookup("SHELL.SVR");
     dword destPid = Message::lookup("KEYBDMNG.SVR");
+
     if (destPid == 0) {
         printf("process KEYBDMNG.SVR not found\n");
         for (;;);

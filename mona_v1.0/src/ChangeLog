@@ -1,5 +1,7 @@
 2004-02-11  higepon  <higepon@users.sourceforge.jp>
 
+        * kernel.cpp: 最適化オプション-O3
+
         * Process.cpp: Threadにwaitとwakeupを作った。でもまだ載せていない。
 
         * kernel.cpp: gccの最適化オプション-O2でビルドするようにした。

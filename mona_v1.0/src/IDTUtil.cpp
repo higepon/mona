@@ -24,7 +24,7 @@
 */
 void IDTUtil::lidt(IDTR* idtr) {
 
-    asm volatile("lidt (%0) ": :"p" (idtr));
+    asm volatile("lidt (%0) ": :"q" (idtr));
     return;
 }
 

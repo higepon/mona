@@ -23,7 +23,7 @@ int user_start() {
     result = MonaMain(arg);
     delete arg;
     exit(result);
-    for (;;);
+    return 0;
 }
 
 void setupArguments(List<char*>* arg) {
@@ -282,6 +282,8 @@ VirtualScreen::~VirtualScreen() {
     Screen
 ----------------------------------------------------------------------*/
 Screen::Screen() {
+
+    volatile ScreenInfo sinfo;
 
     /* get and set vram information */
     syscall_get_vram_info(&sinfo);
@@ -859,7 +861,7 @@ dword syscall_lookup(const char* name) {
     return pid;
 }
 
-int syscall_get_vram_info(ScreenInfo* info) {
+int syscall_get_vram_info(volatile ScreenInfo* info) {
 
     int result;
 

@@ -55,6 +55,7 @@ int MonaMain(List<char*>* pekoe) {
             }
         }
     }
+    return 0;
 }
 
 int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info) {

@@ -30,13 +30,13 @@ int MonaMain(List<char*>* pekoe) {
     List<dword>* destList = new HList<dword>();
 
     MouseInfo info;
-
     Screen screen;
     MessageInfo receive;
     MessageInfo send;
     byte result;
     int x, y;
     int posX, posY, prevX, prevY;
+
     int xResolution = screen.getWidth();
     int yResolution = screen.getHeight();
 

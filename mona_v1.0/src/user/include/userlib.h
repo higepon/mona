@@ -67,7 +67,7 @@ extern "C" int syscall_mutex_create();
 extern "C" int syscall_mutex_trylock(int id);
 extern "C" int syscall_mutex_lock (int id );
 extern "C" int syscall_mutex_unlock(int id);
-extern "C" int syscall_get_vram_info(ScreenInfo* info);
+extern "C" int syscall_get_vram_info(volatile ScreenInfo* info);
 extern "C" int syscall_load_process(const char* name, CommandOption* list);
 extern "C" int syscall_get_cursor(int* x, int* y);
 extern "C" int syscall_set_cursor(int x, int y);
@@ -353,7 +353,6 @@ class Screen {
     Screen();
     virtual ~Screen();
 
-
   public:
 
     void putPixel16(int x, int y, dword color);
@@ -437,9 +436,6 @@ class Screen {
     int bpp_;
     int xResolution_;
     int yResolution_;
-
-  private:
-    ScreenInfo sinfo;
 };
 
 class VirtualScreen : public Screen {

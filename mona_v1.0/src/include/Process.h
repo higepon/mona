@@ -335,6 +335,10 @@ class Process {
         return arguments_;
     }
 
+    inline virtual int wait(Thread* thread, int waitReason) {
+        return threadManager_->wait(thread, waitReason);
+    }
+
     virtual int join(Thread* thread);
     virtual Thread* schedule();
     virtual Thread* createThread(dword programCounter);
@@ -412,6 +416,7 @@ class ProcessManager {
     void killSelf();
     int sleep(Process* process, dword tick);
     int switchProcess();
+    int wait(Process* process, Thread* thread, int waitReason);
     bool schedule();
     inline Process* getCurrentProcess() const {
         return current_;

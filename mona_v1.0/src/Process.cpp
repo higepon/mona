@@ -596,6 +596,20 @@ void ProcessManager::wakeup() {
     }
 }
 
+int ProcessManager::wait(Process* process, Thread* thread, int waitReason) {
+
+    if (process->wait(thread, waitReason)) {
+        return 1;
+    }
+
+    if (!process->hasActiveThread()) {
+
+    }
+
+
+
+}
+
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
