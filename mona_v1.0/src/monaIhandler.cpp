@@ -107,7 +107,7 @@ void fdcHandler(){
 void timerHandler() {
 
     /* iret */
-    _sysPrint("timer");
+    //_sysPrint("timer");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
