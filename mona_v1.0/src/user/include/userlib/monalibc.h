@@ -45,6 +45,7 @@ int sprintf(char *s, const char *format, ...);
 int itos(char *s, int n, int width, int base, char flag);
 int atoi(const char *s);
 int ftos(char *s, double n, int width, int precision, char flag);
+int strcpy2(char *s1, const char *s2);
 
 #ifdef __cplusplus
 }
