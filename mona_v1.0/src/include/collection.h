@@ -42,7 +42,7 @@ template <class T> class HList : public List<T> {
     virtual bool isEmpty() const;
   private:
     T* data_;            /*! internal array     */
-    size_t size_;        /*! size of vector     */
+    size_t size_;        /*! size of liset      */
     size_t numElements_; /*! number of elements */
     size_t increase_;    /*! increase           */
 
@@ -70,7 +70,7 @@ template <class T> HList<T>::HList() {
 
     constructor
 
-    \param size size of initial size of vector
+    \param size size of initial size of list
 
     \author HigePon
     \date   create:2003/12/07 update:
@@ -196,9 +196,9 @@ template <class T> T HList<T>::operator[](size_t index) {
 /*!
     \brief size
 
-    return size of vector
+    return size of list
 
-    \return size of vector
+    \return size of list
 
     \author HigePon
     \date   create:2003/12/07 update:
@@ -240,7 +240,7 @@ template <class T> T HList<T>::remove(size_t index) {
 /*!
     \brief initilize
 
-    set size of vector & increase
+    set size of list & increase
 
     \author HigePon
     \date   create:2003/12/07 update:
