@@ -1,3 +1,13 @@
+2004-06-08  tino  <tino@users.sourceforge.jp>
+
+        * bin/Makefile: バンドルを自動認識してインストール
+
+        * env/monapi-elf.inc: CLEANFILESをサポート
+
+        * env/monapi-el2.inc: CLEANFILESをサポート
+
+        * src/lib/monapi/syscall.cpp (putInt): 0を表示
+
 2004-06-08  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/monamona/: monamona追加(thanks shadowさん)

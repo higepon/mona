@@ -208,6 +208,11 @@ void putInt(size_t n, int base) {
 
     if (base != 16) {
 
+        if (n == 0) {
+
+		putCharacter('0');
+		return;
+	}
         for (geta = 0; num; num /= 10, geta++);
         if ((int)n < 0) {
             geta++;
