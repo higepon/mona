@@ -5,9 +5,9 @@
 #include <monapi/messages.h>
 
 #ifdef DEBUG
-#define PROMPT 1
+#define PROMPT MONAPI_TRUE
 #else
-#define PROMPT 0
+#define PROMPT MONAPI_FALSE
 #endif
 
 using namespace MonAPI;
