@@ -99,12 +99,21 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
 
     /* regular key */
+    keyBufIndex_++;
     if (keyBufIndex_ >= MAX_KEY_BUF) {
-        keyBufIndex_++;
+        keyBufIndex_ = 0;
     }
 
     scancode &= 0x7f;
     keyInfo_[keyBufIndex_].keycode = keyMap_[scancode];
-    _sys_printf("scancode is %d keycode is %d char is \"%c\" ", scancode, (char)keyMap_[scancode], (char)keyMap_[scancode]);
+
+    _sys_printf("(bufIdx, bufGotIdx, scancd, keycd, \"char\")=(%d, %d, %d, %d, %c)"
+               , keyBufIndex_
+               , keyBufGottenIndex_
+               , scancode
+               , (char)keyMap_[scancode]
+               , (char)keyMap_[scancode]);
+
+
     return;
 }
