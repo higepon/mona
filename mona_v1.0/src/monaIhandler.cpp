@@ -109,16 +109,18 @@ void fdcHandler(){
     at this function task switch occurs.
 
     \author HigePon
-    \date   create:2002/11/21 update:2003/01/26
+    \date   create:2002/11/21 update:2003/02/24
 */
 void timerHandler() {
 
     static dword idx = 0;
-    idx++;
+    //    idx++;
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
+
+    return; /* todo */
 
     /* note: if you don't want to task switch */
     /* uncomment this iret()                  */
@@ -165,7 +167,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x05, &dummy}
    , {0x06, &dummy}
    , {0x07, &dummy}
-   , {0x08, &timerHandler}
+   , {0x08, &arch_timerhandler}
    , {0x09, &keyStrokeHandler}
    , {0x0A, &dummy}
    , {0x0B, &dummy}
