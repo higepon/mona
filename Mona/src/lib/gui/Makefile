@@ -1,5 +1,14 @@
-TARGET  = $(LIBDIR)/libgui.a
+LIB_STATIC  = $(LIBDIR)/libgui.a
+TARGET      = $(LIB_STATIC)
+
+ifeq ($(BUILD_TARGET),PE-DLL)
+LIB_IMPORT  = $(LIBDIR)/libgui-imp.a
+LIB_DYNAMIC = GUI.DLL
+TARGET     += $(LIB_STATIC) $(LIB_IMPORT) $(LIB_DYNAMIC)
+endif
+
 SOURCES = \
+	./stub.cpp \
 	System/Console.cpp \
 	System/String.cpp \
 	System/Drawing/Bitmap.cpp \
@@ -25,17 +34,24 @@ INCLUDE = -I$(INCDIR)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+$(LIB_STATIC): $(OBJECTS)
 	rm -f $@
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 
-clean:
-	rm -f $(OBJECTS) $(TARGET)
+ifeq ($(BUILD_TARGET),PE-DLL)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	dllwrap -e dllmain --export-all --implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
+	$(STRIP) $@
+endif
 
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
 
 depend:
 	rm -f dependencies
@@ -46,5 +62,9 @@ depend:
 	done
 
 install: $(TARGET)
+ifeq ($(BUILD_TARGET),PE-DLL)
+	mkdir -p $(MONADIR)/bin/root/LIBS
+	$(INSTALL) $(LIB_DYNAMIC) $(MONADIR)/bin/root/LIBS
+endif
 
 include dependencies

@@ -1,3 +1,15 @@
+2004-07-05  tino  <tino@users.sourceforge.jp>
+
+        * src/lib/monapi/Makefile: BUILD_TARGET=PE-DLLの場合にMONAPI.DLLを生成
+
+        * src/lib/gui/Makefile: BUILD_TARGET=PE-DLLの場合にGUI.DLLを生成
+
+        * include/monapi/syscall.h (invokeFuncList, setContrsuctorList, isInDLL): 追加
+
+        * src/lib/gui/System/Mona/Forms/Application.cpp: DLL使用時にinvokeFuncList()を使用
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp: DLL対策で関数内staticオブジェクトを関数外に出した
+
 2004-07-04  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp (MonaMain): IDEドライバ(読み込み専用)がなんとなく完成。IDEドライバの使用方法まとめ。

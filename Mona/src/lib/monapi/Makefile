@@ -1,5 +1,13 @@
-TARGET1 = $(LIBDIR)/monapi.o
-TARGET2 = $(LIBDIR)/libmonapi.a
+CRT_OBJECT  = $(LIBDIR)/monapi.o
+LIB_STATIC  = $(LIBDIR)/libmonapi.a
+TARGET      = $(CRT_OBJECT) $(LIB_STATIC)
+
+ifeq ($(BUILD_TARGET),PE-DLL)
+LIB_IMPORT  = $(LIBDIR)/libmonapi-imp.a
+LIB_DYNAMIC = MONAPI.DLL
+TARGET     += $(LIB_IMPORT) $(LIB_DYNAMIC)
+endif
+
 SOURCES = monapi_impl.cpp \
           string.cpp \
           syscall.cpp \
@@ -29,26 +37,37 @@ include $(MONADIR)/env/Makefile.inc
 INCLUDE = -I$(INCDIR)
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(TARGET1) $(TARGET2)
+all : $(TARGET)
 
-$(TARGET1): monapi.cpp
+$(CRT_OBJECT): monapi.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDE) monapi.cpp
 
-$(TARGET2) : $(OBJECTS)
+$(LIB_STATIC): $(OBJECTS)
 	rm -f $@
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
+
+ifeq ($(BUILD_TARGET),PE-DLL)
+$(LIB_IMPORT): $(LIB_DYNAMIC)
+$(LIB_DYNAMIC): $(OBJECTS)
+	dllwrap -e dllmain --export-all --implib $(LIB_IMPORT) -o $@ $(OBJECTS)
+	$(STRIP) $@
+endif
 
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
 
-clean :
-	rm -f $(TARGET1) $(TARGET2) $(OBJECTS)
+clean:
+	rm -f $(TARGET) $(OBJECTS)
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
 
-install: $(TARGET1) $(TARGET2)
+install: $(TARGET)
+ifeq ($(BUILD_TARGET),PE-DLL)
+	mkdir -p $(MONADIR)/bin/root/LIBS
+	$(INSTALL) $(LIB_DYNAMIC) $(MONADIR)/bin/root/LIBS
+endif
 
 include dependencies

@@ -3,5 +3,6 @@
 *.list
 *.map
 *.local
+*.DLL
 TAGS
 dependencies

@@ -8,8 +8,14 @@
 
 #define MESSAGE_LOOP MonAPI::messageLoop
 
+typedef void (FuncVoid)();
+typedef int (FuncMonaMain)(List<char*>*);
+
 extern int MonaMain(List<char*>* pekoe);
 extern void setupArguments(List<char*>* arg);
+extern void invokeFuncList(FuncVoid** list);
+extern void setConstructorList(FuncVoid** crots);
+extern bool isInDLL(FuncVoid** ctors);
 
 extern "C" {
 #endif

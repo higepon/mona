@@ -21,14 +21,15 @@ using namespace System::Drawing;
 #define DEFAULT_BACKCOLOR ControlPaint::get_Light()
 
 #ifdef MONA
+static _P<MonAPI::Screen> s_screen;
+
 _P<MonAPI::Screen> GetDefaultScreen()
 {
-	static _P<MonAPI::Screen> ret;
-	if (ret == NULL)
+	if (s_screen == NULL)
 	{
-		ret.Set(new MonAPI::Screen(), true);
+		s_screen.Set(new MonAPI::Screen(), true);
 	}
-	return ret;
+	return s_screen;
 }
 #else
 extern unsigned char* screen_buffer;
@@ -82,11 +83,12 @@ void DrawImage(_P<Bitmap> dst, _P<Bitmap> src, int x, int y, int sx, int sy, int
 
 namespace System { namespace Mona { namespace Forms
 {
+	static _P<Font> s_font;
+	
 	_P<Font> Control::get_DefaultFont()
 	{
-		static _P<Font> ret;
-		if (ret == NULL) ret = new Font(Application::defaultFontData);
-		return ret;
+		if (s_font == NULL) s_font = new Font(Application::defaultFontData);
+		return s_font;
 	}
 
 	Control::Control()

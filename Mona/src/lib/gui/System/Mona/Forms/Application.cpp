@@ -20,6 +20,9 @@ using namespace System::Collections;
 using namespace System::Drawing;
 
 #ifdef MONA
+extern "C" FuncVoid* __CTOR_LIST__[];
+extern "C" FuncVoid* __DTOR_LIST__[];
+
 CommonParameters* __commonParams;
 dword __gui_server;
 static dword commonParamsHandle;
@@ -39,6 +42,9 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Application::Initialize()
 	{
+#ifdef MONA
+		if (isInDLL(__CTOR_LIST__)) invokeFuncList(__CTOR_LIST__);
+#endif
 		Application::forms = new ArrayList<_P<Form> >;
 		Application::messageFilters = new ArrayList<IMessageFilter*>;
 		
@@ -82,6 +88,7 @@ namespace System { namespace Mona { namespace Forms
 #ifdef MONA
 		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
 		MonAPI::MemoryMap::unmap(commonParamsHandle);
+		if (isInDLL(__CTOR_LIST__)) invokeFuncList(__DTOR_LIST__);
 #endif
 	}
 	

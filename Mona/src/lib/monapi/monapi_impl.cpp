@@ -1,20 +1,20 @@
 #include <monapi.h>
 
+static int dllmain()
+{
+    return 1;
+}
+
 /*----------------------------------------------------------------------
     invoke constructors and destructors
 ----------------------------------------------------------------------*/
-typedef void (Func)();
+extern "C" FuncVoid* __CTOR_LIST__[];
+extern "C" FuncVoid* __DTOR_LIST__[];
 
-extern "C"
-{
-    extern Func* __CTOR_LIST__[];
-    extern Func* __DTOR_LIST__[];
-}
-
-static void invokeFuncList(Func** list)
+void invokeFuncList(FuncVoid** list)
 {
     int count = (int)*list++;
-    list = (Func**)((((dword)list) + 3) & ~3);
+    list = (FuncVoid**)((((dword)list) + 3) & ~3);
     if (count == -1)
     {
         for (; *list != NULL; list++) (**list)();
@@ -25,28 +25,43 @@ static void invokeFuncList(Func** list)
     }
 }
 
+static FuncVoid** ctor_list = NULL;
+
+void setConstructorList(FuncVoid** ctors)
+{
+	ctor_list = ctors;
+}
+
+bool isInDLL(FuncVoid** ctors)
+{
+	return ctor_list != ctors;
+}
+
 /*----------------------------------------------------------------------
-    Static
+    memory management
 ----------------------------------------------------------------------*/
 static MonAPI::MemoryManager um;
+
+void monapi_initialize_memory()
+{
+    um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
+    MonAPI::MemoryMap::initialize();
+}
 
 /*----------------------------------------------------------------------
     entry point implementation for application
 ----------------------------------------------------------------------*/
-int user_start_impl() {
-
-    int result;
-    um.initialize(0xC0000000, 0xC0000000 + 8 * 1024 * 1024);
-
+int user_start_impl(FuncMonaMain* monaMain)
+{
+    bool dll = isInDLL(__CTOR_LIST__);
+    if (dll) invokeFuncList(__CTOR_LIST__);
+    
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
-
-    MonAPI::MemoryMap::initialize();
-    invokeFuncList(__CTOR_LIST__);
-
-    result = MonaMain(arg);
-    invokeFuncList(__DTOR_LIST__);
+    int result = (*monaMain)(arg);
     delete arg;
+    
+    if (dll) invokeFuncList(__DTOR_LIST__);
     exit(result);
     return 0;
 }
