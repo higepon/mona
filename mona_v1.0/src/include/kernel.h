@@ -88,6 +88,7 @@ typedef struct {
 
 void startKernel(void);
 void panic(const char*);
+void checkMemoryAllocate(void* p, const char* msg);
 void idle_process();
 inline void printOK(const char*);
 inline void printBanner();

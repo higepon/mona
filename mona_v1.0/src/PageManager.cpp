@@ -49,7 +49,7 @@ PageManager::PageManager(dword totalMemorySize) {
     dword pageNumber = totalMemorySize / ARCH_PAGE_SIZE + ((totalMemorySize % ARCH_PAGE_SIZE) ? 1 : 0);
 
     memoryMap_ = new BitMap(pageNumber);
-    if (memoryMap_ == NULL) panic("PageManager initilize error\n");
+    checkMemoryAllocate(memoryMap_, "PageManager memoryMap");
 }
 
 /*!
@@ -291,8 +291,7 @@ PageEntry* PageManager::allocatePageTable() const {
     PageEntry* table;
 
     table = (PageEntry*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
-
-    if (table == NULL) panic("Page Table memory allocate error\n");
+    checkMemoryAllocate(table, "PageManager table memory allocate");
     for (; (dword)table % 4096; table++);
 
     return table;

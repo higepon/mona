@@ -226,9 +226,16 @@ void idle_process() {
 void panic(const char* msg) {
 
     g_console->setCHColor(GP_RED);
-    g_console->printf("kernel panic!!!!!\n%s", msg);
+    g_console->printf("kernel panic\nMessage:%s\n", msg);
     while (true) {
     }
+}
+
+void checkMemoryAllocate(void* p, const char* msg) {
+
+    if (p != NULL) return;
+
+    panic(msg);
 }
 
 /*!

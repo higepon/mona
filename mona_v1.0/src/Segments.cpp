@@ -373,8 +373,7 @@ SharedMemoryObject::SharedMemoryObject(dword id, dword size) {
 
     physicalPageCount_ = size / 4096;
     physicalPages_     = new int[physicalPageCount_];
-
-    if (physicalPages_ == NULL) panic("SharedMemoryObject: new failed");
+    checkMemoryAllocate(physicalPages_, "SharedMemoryObject memory allcate physicalPages");
     memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
 
     size_ = size;
@@ -458,7 +457,7 @@ bool SharedMemoryObject::open(dword id, dword size) {
     if (target == NULL) {
 
         target = new SharedMemoryObject(id, size);
-        if (target == NULL) panic("SharedMemory open: failed");
+        checkMemoryAllocate(target, "SharedMemoryObject memory allcate target");
 
         QueueManager::addToPrevious(g_sharedMemoryList, target);
 

@@ -1,5 +1,7 @@
 2003-12-09  higepon  <higepon@users.sourceforge.jp>
 
+        * kernel.cpp: メモリ割り当てに失敗したらpanic()に突入する関数を用意
+
         * include/Process.h: ProcessManagerとページ管理の関係を整理
 
 2003-12-07  higepon  <higepon@users.sourceforge.jp>

@@ -76,7 +76,7 @@ void GDTUtil::ltr(word selector) {
 void GDTUtil::setup() {
 
     g_gdt = (SegDesc*)malloc(sizeof(SegDesc) * GDT_ENTRY_NUM);
-    if (g_gdt == NULL) panic("GDT memory allcate error");
+    checkMemoryAllocate(g_gdt, "GDT Memory allocate");
 
     /* NULL */
     setSegDesc(&g_gdt[0], 0, 0, 0);

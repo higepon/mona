@@ -137,11 +137,7 @@ V86Process::V86Process(const char* name) {
 ProcessScheduler::ProcessScheduler() {
 
     list_ = new HList<ProcessInfo_*>();
-
-    if (list_ == NULL) {
-        panic("ProcessScheduler::memory allocate error");
-        for (;;);
-    }
+    checkMemoryAllocate(list_, "ProcessScheduler memory allocate list");
 }
 
 ProcessScheduler::~ProcessScheduler() {
@@ -175,10 +171,7 @@ ProcessManager_::ProcessManager_(PageManager* pageManager) {
 
     /* scheduler */
     scheduler_ = new ProcessScheduler();
-    if (scheduler_ == NULL) {
-        panic("ProcessManager_::allocateMemory error");
-        for (;;);
-    }
+    checkMemoryAllocate(scheduler_, "ProcessManager memory allocate scheduler");
 
     /* page manager */
     this->pageManager_ = pageManager;
@@ -224,4 +217,11 @@ ProcessInfo_* ProcessManager_::schedule() {
     // return g_current_process;
 
     return NULL;
+}
+
+int ProcessManager_::createProcess() {
+
+
+
+
 }
