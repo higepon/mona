@@ -101,6 +101,28 @@ void fdcHandler(){
     asm("iret");
 }
 
+/*!
+    \brief timer handler
+
+    timer handler
+
+    \author HigePon
+    \date   create:2002/11/21 update:
+*/
+void timerHandler() {
+
+    //_sysPrint("timer");
+
+    /* EOI is below for IRQ 8-15 */
+    outportb(0xA0, 0x20);
+    outportb(0x20, 0x20);
+
+    asm("mov %ebp,%esp");
+    asm("pop %ebp");
+    asm("iret");
+    return;
+}
+
 /*! global handler list */
 handler_st handlers[HANDLER_NUM] = {
      {0x00, &dummy}
@@ -111,7 +133,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x05, &dummy}
    , {0x06, &dummy}
    , {0x07, &dummy}
-   , {0x08, &dummy}
+   , {0x08, &timerHandler}
    , {0x09, &keyStrokeHandler}
    , {0x0A, &dummy}
    , {0x0B, &dummy}
