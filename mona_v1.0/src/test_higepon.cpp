@@ -47,6 +47,140 @@ struct read_info {
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
+bool readFile(IOStream* io) {
+
+    /* prepare */
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    /* Change Directory */
+    if (!g_fat12->changeDirectoryRelative(io->dir)) {
+        io->error = IO_ERROR_CD;
+        return false;
+    }
+
+    /* file open */
+    if (!g_fat12->open(io->dir, io->file, FAT12::READ_MODE)) {
+        io->error = IO_ERROR_OPEN;
+        return false;
+    }
+
+    /* get file size and allocate memory */
+    io->size = g_fat12->getFileSize();
+    int   readTimes = io->size / 512 + (io->size % 512 ? 1 : 0);
+    io->buffer      = new byte[512 * readTimes];
+    if (io->buffer == NULL) {
+        io->error = IO_ERROR_ALLOC;
+        return false;
+    }
+    memset(io->buffer, 0, 512 * readTimes);
+
+    /* read */
+    for (int i = 0; i < readTimes; i++) {
+        if (!g_fat12->read(io->buffer + 512 * i)) {
+            io->error = IO_ERROR_READ;
+            return false;
+        }
+    }
+
+    /* close */
+    if (!g_fat12->close()) {
+        io->error = IO_ERROR_CLOSE;
+        return false;
+    }
+    g_fdcdriver->motor(OFF);
+    return true;
+}
+
+bool writeFile(IOStream* io) {
+
+    char buf[32];
+    buf[0] = '\0';
+
+    /* prepare */
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    /* Change Directory */
+    if (!g_fat12->changeDirectoryRelative(io->dir)) {
+        io->error = IO_ERROR_CD;
+        return false;
+    }
+
+    /* try to create file */
+    strcpy(buf, io->file);
+    char* file = strtok(buf ,     ".");
+    char* ext  = strtok(NULL,     ".");
+    g_fat12->createFlie(file, ext);
+
+    /* file open */
+    if (!g_fat12->open(io->dir, io->file, FAT12::WRITE_MODE)) {
+        io->error = IO_ERROR_OPEN;
+        return false;
+    }
+
+    /* get file size and allocate memory */
+    int   writeTimes = io->size / 512 + (io->size % 512 ? 1 : 0);
+
+    /* write */
+    for (int i = 0; i < writeTimes; i++) {
+        if (!g_fat12->write(io->buffer + 512 * i)) {
+            io->error = IO_ERROR_WRITE;
+            return false;
+        }
+    }
+
+    /* close */
+    if (!g_fat12->close()) {
+        io->error = IO_ERROR_CLOSE;
+        return false;
+    }
+    g_fdcdriver->motor(OFF);
+    return true;
+}
+
+
+void testFDWrite() {
+
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    if (!g_fat12->changeDirectoryRelative(".")) {
+        g_console->printf("change dir error %d\n", g_fat12->getErrorNo());
+        return;
+    }
+
+    if (!g_fat12->createFlie("MONA", "LOG") && g_fat12->getErrorNo() != 6) {
+        g_console->printf("can not create file  %d\n", g_fat12->getErrorNo());
+        return;
+    }
+
+    if (!g_fat12->open(".", "MONA.LOG", FAT12::WRITE_MODE)) {
+        g_console->printf("can not open\n");
+        return;
+    }
+
+    byte text[512];
+    memset(text, 'M', 512);
+    if (!g_fat12->write(text)) {
+        g_console->printf("write error\n");
+        return;
+    }
+
+    if (!g_fat12->close()) {
+        g_console->printf("close errror\n");
+        return;
+    }
+    g_fdcdriver->motor(false);
+    return;
+}
+
 int send(const char* name, Message* message) {
 
     Process* process;
@@ -160,324 +294,4 @@ int getColorNumber(byte* rgba) {
     else result = 15;
 
     return result;
-}
-
-void mmChangeTester() {
-
-    g_info_level = MSG;
-
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
-    if (!fat->initilize()) {
-
-        int errorNo = fat->getErrorNo();
-
-        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else info(ERROR, "unknown error \n");
-
-        info(ERROR, "fat initilize faild\n");
-        while (true);
-    }
-
-    if (!fat->open(".", "OKU.LGO", FAT12::READ_MODE)) {
-
-        info(ERROR, "open failed");
-    }
-
-    int fileSize  = fat->getFileSize();
-    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
-
-    byte* buf = (byte*)malloc(512 * readTimes);
-
-    for (int i = 0; i < readTimes; i++) {
-
-        if (!fat->read(buf + 512 * i)) {
-
-            info(ERROR, "read failed %d", i);
-        }
-    }
-
-
-    drawARGB(buf, 0, 0, fileSize);
-
-    if (!fat->close()) {
-        info(ERROR, "close failed");
-    }
-
-    g_fdcdriver->motor(false);
-
-    delete(fat);
-    free(buf);
-
-}
-
-void FDCDriverTester() {
-
-    g_info_level = MSG;
-
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
-
-    if (!fat->initilize()) {
-        g_console->printf("error fat initialize\n");
-        g_fdcdriver->motor(false);
-        return;
-    }
-
-    if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
-        g_console->printf("error open mona.z\n");
-        g_fdcdriver->motor(false);
-        return;
-    }
-
-    read_info.fat = fat;
-    read_info.sz = fat->getFileSize();
-
-    unsigned char *bf = (unsigned char*)malloc(512);
-    if (NULL == bf) {
-        g_console->printf("not enough memory\n");
-        g_fdcdriver->motor(false);
-        return;
-    }
-
-    input_stream is;
-    is.bf = bf;
-    is.sz = 512;
-    is.read = read;
-
-    int bf_size = 1300000;
-    bf = (unsigned char*)malloc(bf_size);
-    if (NULL == bf) {
-        g_console->printf("not enough memory\n");
-        g_fdcdriver->motor(false);
-        return;
-    }
-
-    int image_size;
-    output_stream os;
-    os.bf = bf;
-    os.sz = bf_size;
-    os.write = write;
-    os.data = &image_size;
-
-    decode(&is, &os);
-    drawARGB(bf, 0, 0, image_size);
-
-    if (!fat->close()) {
-        g_console->printf("error close\n");
-    }
-
-    g_fdcdriver->motor(false);
-    delete(fat);
-}
-
-void ELFTester(byte* out) {
-
-    byte tbuf[512];
-    for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
-    for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
-
-    g_fdcdriver->motor(false);
-
-    for (int i = 0; i< 20; i++) {
-        delay(1);
-        delay(1);
-    }
-
-    g_fdcdriver->motor(true);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    for (int i = 1; i < 25; i++) {
-        memset(tbuf, 0x99, 512);
-        g_fdcdriver->read(i, tbuf);
-
-    }
-
-    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
-    if (!fat->initilize()) {
-
-        int errorNo = fat->getErrorNo();
-
-        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else info(ERROR, "unknown error \n");
-
-        info(ERROR, "fat initilize faild\n");
-        while (true);
-    }
-
-    if (!fat->open(".", "USER.ELF", FAT12::READ_MODE)) {
-
-        info(ERROR, "open failed");
-    }
-
-    for (int i = 0; i < 10; i++) {
-
-        if (!fat->read(out + 512 * i)) {
-
-            info(ERROR, "read failed %d", i);
-        }
-
-    }
-
-    if (!fat->close()) {
-        info(ERROR, "close failed");
-    }
-
-    g_console->printf("load done...USER.ELF\n");
-    g_fdcdriver->motor(false);
-
-}
-
-
-
-
-void FDCTester() {
-
-    info(DEV_NOTICE, "start1");
-
-    byte tbuf[512];
-    for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
-    for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
-
-    g_fdcdriver->motor(true);
-
-    info(DEV_NOTICE, "before recalibrate");
-
-    g_fdcdriver->recalibrate();
-
-    info(DEV_NOTICE, "before read");
-    for (int i = 0; i < 10; i++) {
-        memset(tbuf, 0x99, 512);
-        g_fdcdriver->read(1, tbuf);
-
-    }
-
-    info(DEV_NOTICE, "after read");
-
-    //      // write
-    //      for (int i = 0; i < 73; i++) {
-
-    //          g_console->printf("write");
-    //          memset(tbuf, i + 5, 512);
-    //          if (!g_fdcdriver->write(i, tbuf)) {
-
-    //              g_console->printf("write failed %d", i);
-    //              //            g_fdcdriver->motor(false);
-    //              //            while (true);
-    //          }
-    //      }
-
-    //      memset(tbuf, 0x99, 512);
-    //      if (!g_fdcdriver->read(0, tbuf)) {
-    //           g_console->printf("read failed %d", 50);
-    //           g_fdcdriver->motor(false);
-    //           while (true);
-    //      }
-    //      for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
-
-    //      while (g_demo_step < 8);
-
-    //      memset(tbuf, 0x99, 512);
-    //      if (!g_fdcdriver->read(1, tbuf)) {
-    //           g_console->printf("read failed %d", 50);
-    //           g_fdcdriver->motor(false);
-    //           while (true);
-    //      }
-    //      for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
-    //      while (true);
-
-    //      g_fdcdriver->motor(false);
-    //      g_console->printf("ok");
-    //      while (true);
-
-    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
-    if (!fat->initilize()) {
-
-        int errorNo = fat->getErrorNo();
-
-        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else info(ERROR, "unknown error \n");
-
-        info(ERROR, "fat initilize faild\n");
-        while (true);
-    }
-
-    info(MSG, "initilize OK\n");
-    info(MSG, "changeDirectory to SOMEDIR\n");
-
-    if (!fat->changeDirectoryRelative("SOMEDIR")) {
-        info(ERROR, "some dir not found");
-        while (true);
-    }
-
-    info(MSG, "changeDirectoryRelative OK\n");
-    info(MSG, "try to create file hige.cpp\n");
-
-    if (!fat->createFlie("HIGE", "CPP")) {
-
-        info(ERROR, "can not create file=%d", fat->getErrorNo());
-        while (true);
-    }
-
-    info(MSG, "try to open file hige.cpp\n");
-    if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
-
-        info(ERROR, "open failed");
-    }
-
-    info(MSG, "try to write to hige.cpp 'M' * 512\n");
-    byte text[512];
-    memset(text, 'M', 512);
-    if (!fat->write(text)) {
-
-        info(ERROR, "write failed");
-    }
-
-    info(MSG, "try to write to hige.cpp 'o' * 512\n");
-    memset(text, 'o', 512);
-    if (!fat->write(text)) {
-
-        info(ERROR, "write failed");
-    }
-
-    info(MSG, "try to write to hige.cpp 'n' * 512\n");
-    memset(text, 'n', 512);
-    if (!fat->write(text)) {
-
-        info(ERROR, "write failed");
-    }
-
-    info(MSG, "try to write to hige.cpp 'a' * 512\n");
-    memset(text, 'a', 512);
-    if (!fat->write(text)) {
-
-        info(ERROR, "write failed");
-    }
-
-    info(MSG, "try to close  hige.cpp\n");
-
-    if (!fat->close()) {
-        info(ERROR, "close failed");
-    }
-
-    g_console->printf("\nHit any key to start [kernel thread demo]\n");
-    g_fdcdriver->motor(false);
-
-    info(MSG, "test done!! Boot Windows & read floppy disk \\somedir\\hige.cpp\n");
 }

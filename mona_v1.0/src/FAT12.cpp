@@ -540,15 +540,7 @@ bool FAT12::read(byte* buffer) {
     /* read */
     int lba = clusterToLba(currentCluster_);
 
-#ifndef FS_TEST
-    //    SystemInfo::rdtsc();
-#endif
     if (!(driver_->read(lba, buf_))) return false;
-#ifndef FS_TEST
-    //    SystemInfo::rdtscsub();
-    //    printf("time=[%x]", SystemInfo::timeL);
-#endif
-
     memcpy(buffer, buf_, 512);
 
     readCounter_ -= 512;
@@ -587,9 +579,13 @@ bool FAT12::readHasNext() const {
 */
 bool FAT12::createFlie(const char* name, const char* ext) {
 
+
+    printf("[1]");
     /* read current directory */
     if (!readEntry()) return false;
 
+
+    printf("[2]");
     /* find free entry */
     int freeIndex = -1;
     for (int j = 0; j < 16; j++) {
@@ -614,9 +610,11 @@ bool FAT12::createFlie(const char* name, const char* ext) {
         }
     }
 
+    printf("[3]");
     /* no empty entry */
     if (freeIndex == -1)  return false;
 
+    printf("[4]");
     /* find cluster */
     int cluster = map_->find();
     if (cluster == -1) return false;
@@ -630,12 +628,14 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     entries_[freeIndex].cluster   = cluster;
     entries_[freeIndex].attribute = ATTR_ARCHIVE;
 
+    printf("[5]");
     if (!writeEntry()) return false;
 
     /* regist FAT */
     setFATAt(cluster, getFATAt(1));
     if (!writeFAT()) {
         readFAT(false);
+    printf("[6]");
         return false;
     }
     return true;

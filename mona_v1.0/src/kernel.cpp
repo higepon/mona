@@ -67,6 +67,35 @@ extern int pos_x;
 extern int pos_y;
 void printInfo() {
 
+    IOStream io;
+    io.dir  = ".";
+    io.file = "USER.ELF";
+
+    if (!readFile(&io)) {
+        g_console->printf("read:io error=%d\n", io.error);
+        for (;;);
+    }
+
+    io.file = "HIGE.ELF";
+        g_console->printf("write:io size=%d\n", io.size);
+    if (!writeFile(&io)) {
+        g_console->printf("write:io error=%d\n", io.error);
+        for (;;);
+    }
+
+    if (!writeFile(&io)) {
+        g_console->printf("write:io error=%d\n", io.error);
+        for (;;);
+    }
+
+
+    delete(io.buffer);
+
+
+    testFDWrite();
+    g_console->printf("done\n");
+    testFDWrite();
+    g_console->printf("done\n");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "TEST.ELF", true) ? "NG" : "OK");
@@ -180,9 +209,6 @@ void startKernel(void) {
 //         g_console->printf("(directColorModeInfo=%x)", vesaDetail->directColorModeInfo);
 //     }
 
-    /* FDC do not delete */
-    g_fdcdriver = new FDCDriver();
-
     /* this should be called, before timer enabled */
     ThreadManager::setup();
     g_processManager = new ProcessManager(g_page_manager);
@@ -202,6 +228,19 @@ void startKernel(void) {
     disableTimer();
     enableKeyboard();
     enableInterrupt();
+
+    /* FDC do not delete */
+    g_fdcdriver = new FDCDriver();
+    g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    if (!g_fat12->initilize()) {
+        g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
+        for (;;);
+    }
+    g_fdcdriver->motor(OFF);
 
     g_info_level = MSG;
     enableTimer();

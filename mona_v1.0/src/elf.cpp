@@ -21,86 +21,6 @@
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
-// int loadProcess(const char* path, const char* file, bool isUser) {
-
-
-//     static dword sharedId = 0x1000;
-//     sharedId++;
-
-//     int    fileSize;
-//     int    readTimes;
-//     byte*  buf;
-//     bool   isOpen;
-//     bool   isAttaced;
-//     FAT12* fat;
-
-//     while (Semaphore::down(&g_semaphore_shared));
-//     isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
-//     isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), 0x80000000);
-//     Semaphore::up(&g_semaphore_shared);
-
-//     if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
-
-//     g_fdcdriver->motor(ON);
-//     g_fdcdriver->recalibrate();
-//     g_fdcdriver->recalibrate();
-//     g_fdcdriver->recalibrate();
-
-//     fat = new FAT12((DiskDriver*)g_fdcdriver);
-//     if (!fat->initilize()) return FAT_INIT_ERROR;
-
-//     if (!fat->open(path, file, FAT12::READ_MODE)) return FAT_OPEN_ERROR;
-
-//     fileSize  = fat->getFileSize();
-
-//     readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
-
-//     buf = (byte*)malloc(512 * readTimes);
-
-//     if (buf == NULL) return -1;
-
-//     for (int i = 0; i < readTimes; i++) {
-//         if (!fat->read(buf + 512 * i)) {
-//             g_console->printf("read failed %d", i);
-//             while (true);
-//         }
-//     }
-
-//     if (!fat->close()) {
-//         info(ERROR, "close failed");
-//     }
-
-//     ELFLoader* loader = new ELFLoader();
-
-//     //    g_console->printf("elf size = %d", loader->prepare((dword)buf));
-//     loader->prepare((dword)buf);
-
-//     /* prod_ code */
-//     dword entrypoint = loader->load((byte*)0x80000000);
-
-//     //    g_console->printf("entrypoint=%x", entrypoint);
-//     delete(loader);
-//     free(buf);
-
-//     Process* process = g_processManager->create(isUser ? ProcessManager::USER_PROCESS : ProcessManager::KERNEL_PROCESS, file);
-
-//     while (Semaphore::down(&g_semaphore_shared));
-//     isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
-//     isAttaced = SharedMemoryObject::attach(sharedId, process, 0xA0000000);
-//     Semaphore::up(&g_semaphore_shared);
-//     if (!isOpen || !isAttaced) panic("loadProcess: not open");
-
-//     while (Semaphore::down(&g_semaphore_shared));
-//     SharedMemoryObject::detach(sharedId, g_processManager->getCurrentProcess());
-//     Semaphore::up(&g_semaphore_shared);
-
-//     g_processManager->add(process);
-//     Thread*  thread = g_processManager->createThread(process, entrypoint);
-//     g_processManager->join(process, thread);
-
-//     return 0;
-// }
-
 /*----------------------------------------------------------------------
     loadProcess
 ----------------------------------------------------------------------*/
@@ -115,7 +35,6 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     bool   isOpen;
     bool   isAttaced;
     dword entrypoint;
-    FAT12* fat;
     ELFLoader *loader;
     byte* buf;
 
@@ -127,34 +46,33 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_fdcdriver->recalibrate();
 
     /* read FAT */
-    fat = new FAT12((DiskDriver*)g_fdcdriver);
-    if (!fat->initilize()) {
+    if (!g_fat12->initilize()) {
         Semaphore::up(&g_semaphore_fd);
         return -1;
     }
 
     /* file open */
-    if (!fat->open(path, file, FAT12::READ_MODE)) {
-        delete fat;
+    if (!g_fat12->open(path, file, FAT12::READ_MODE)) {
+        delete g_fat12;
         Semaphore::up(&g_semaphore_fd);
         return -1;
     }
 
     /* get file size and allocate buffer */
-    fileSize  = fat->getFileSize();
+    fileSize  = g_fat12->getFileSize();
     readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
     buf       = (byte*)malloc(512 * readTimes);
     memset(buf, 0, 512 * readTimes);
     if (buf == NULL) {
-        delete fat;
+        delete g_fat12;
         Semaphore::up(&g_semaphore_fd);
         return -1;
     }
 
     /* read */
     for (int i = 0; i < readTimes; i++) {
-        if (!fat->read(buf + 512 * i)) {
-            delete fat;
+        if (!g_fat12->read(buf + 512 * i)) {
+            delete g_fat12;
             free(buf);
             Semaphore::up(&g_semaphore_fd);
             return -1;
@@ -162,12 +80,11 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     }
 
     /* close */
-    if (!fat->close()) {
-        delete fat;
+    if (!g_fat12->close()) {
+        delete g_fat12;
         Semaphore::up(&g_semaphore_fd);
     }
     g_fdcdriver->motor(false);
-    delete fat;
     Semaphore::up(&g_semaphore_fd);
 
     /* attach Shared to this process */

@@ -30,7 +30,28 @@ void FDCTester();
 void ELFTester(byte* out);
 void FDCDriverTester();
 void mmChangeTester();
+void testFDWrite();
 void keyStrokeTest();
 int send(const char* name, Message* message);
 int receive(Process* process, Message* message);
+
+typedef struct {
+    char* dir;
+    char* file;
+    byte* buffer;
+    dword size;
+    dword error;
+} IOStream;
+
+bool readFile(IOStream* io);
+bool writeFile(IOStream* io);
+bool writeFileAppend(IOStream* io);
+
+#define IO_ERROR_OPEN  1
+#define IO_ERROR_CD    2
+#define IO_ERROR_ALLOC 3
+#define IO_ERROR_READ  4
+#define IO_ERROR_CLOSE 5
+#define IO_ERROR_WRITE 6
+
 #endif
