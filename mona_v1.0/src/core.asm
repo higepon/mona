@@ -20,6 +20,103 @@ cglobal arch_switch_process_to_v86_mode
 cextern g_current_process ;; pointer to current process
 cextern g_stack_view      ;; for debug stack viewer
 cextern fault0dHandler
+cextern g_currentThread
+
+;;----------------------------------------------------------------------
+;; swtich thread to user without page change
+;;----------------------------------------------------------------------
+arch_switch_thread_to_user1:
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 60]         ; push ss  here dpl lowwer
+        push dword[ebx + 28]         ; push esp here dpl lowwer
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
+
+;;----------------------------------------------------------------------
+;; swtich thread to user and change page
+;;----------------------------------------------------------------------
+arch_switch_thread_to_user2:
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 60]         ; push ss  here dpl lowwer
+        push dword[ebx + 28]         ; push esp here dpl lowwer
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
+
+;;----------------------------------------------------------------------
+;; switch thread without page change
+;;----------------------------------------------------------------------
+arch_switch_thread1:
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
+
+;;----------------------------------------------------------------------
+;; switch thread and change page
+;;----------------------------------------------------------------------
+arch_switch_thread2:
+        mov eax, dword[g_currentThread]
+        mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov eax, dword[ebx + 76]     ; page directory
+        mov cr3, eax                 ; change page directory
+        mov eax, dword[ebx + 12]     ; restore eax
+        mov ecx, dword[ebx + 16]     ; restore ecx
+        mov edx, dword[ebx + 20]     ; restore edx
+        mov esp, dword[ebx + 28]     ; restore esp
+        mov ebp, dword[ebx + 32]     ; restore ebp
+        mov esi, dword[ebx + 36]     ; restore esi
+        mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 8]          ; push eflags
+        push dword[ebx + 4]          ; push cs
+        push dword[ebx + 0]          ; push eip
+        push dword[ebx + 24]
+        pop  ebx                     ; restore ebp
+        iretd                        ; switch to next
 
 ;; before call this, pushad should be called
 arch_save_process_registers:

@@ -65,7 +65,7 @@
 #include <elf.h>
 #include <MemoryManager.h>
 
-char* version = "Mona version.0.1.2 $Date$";
+char* version = "Mona version.0.1.3 $Date$";
 void userTest();
 void userTest2();
 void v86Test();
