@@ -62,15 +62,15 @@ typedef struct {
 } TSS;
 
 #pragma pack(2)
+
 /*! gdtr */
 typedef struct {
     word  limit;
-    //    word  dummy;
-    //    word  dummy2;
     dword base;
 } GDTR;
 
 #pragma pack()
+
 /*! gdt */
 typedef struct {
     word limitL;
