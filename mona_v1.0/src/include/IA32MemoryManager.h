@@ -72,12 +72,13 @@ class IA32MemoryManager {
     char* getName() const;
     void* allocateMemory(size_t);
     void freeMemory(void*);
-    dword getTotalMemory();
+    dword getTotalKernelMemory();
     dword getUsedMemory();
     void printInfo(char*) const;
     static IA32MemoryManager& instance();
     static void startPaging();
     static void stopPaging();
+    static dword getTotalMemory();
     /* memo setWriter(write);setReader(reader); */
 
 };

@@ -14,6 +14,7 @@
 #include<IA32MemoryManager.h>
 #include<kernel.h>
 #include<operator.h>
+#include<io.h>
 #include<global.h>
 
 /*!
@@ -421,7 +422,7 @@ inline void IA32MemoryManager::flushTLB() const {
                  : /* no input  */ : "ax");
 }
 
-dword IA32MemoryManager::getTotalMemory() {
+dword IA32MemoryManager::getTotalKernelMemory() {
 
     return (MEMORY_END - MEMORY_START);
 }
@@ -429,4 +430,16 @@ dword IA32MemoryManager::getTotalMemory() {
 dword IA32MemoryManager::getUsedMemory() {
 
     return usedMemorySize_;
+}
+
+dword IA32MemoryManager::getTotalMemory() {
+
+    /* you should disable interrupt */
+
+    dword result;
+    outportb(0x70, 0x31);
+    result = inportb(0x71);
+    result /= 4;
+    result += 1; /* +1MB */
+    return result;
 }

@@ -46,3 +46,5 @@ GLOBAL SegDesc* g_gdt;
 
 /* INTERRUPT DESCRIPTOR TABLE */
 GLOBAL GateDesc* g_idt;
+
+GLOBAL dword g_total_system_memory;

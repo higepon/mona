@@ -46,10 +46,11 @@ char* version = "Mona develop beta 0.08a $Date$";
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2003/06/07
+    \date   create:2002/07/21 update:2003/06/08
 */
 void startKernel(void) {
 
+    /* set segment */
     GDTUtil::setup();
 
     /* initialze console */
@@ -79,6 +80,9 @@ void startKernel(void) {
     } else {
         g_console->printf("CPUID NG  \n");
     }
+
+    g_total_system_memory = IA32MemoryManager::getTotalMemory();
+    g_console->printf("System TotalL Memory %d[MB]\n", g_total_system_memory);
 
     g_console->printf("BitMap:");
     BitMap* map = new BitMap(10);
@@ -111,7 +115,7 @@ void startKernel(void) {
     g_info_level = ERROR;
     FDCTester();
     IA32MemoryManager& mm = IA32MemoryManager::instance();
-    g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalMemory());
+    g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
 #endif
 
     while (g_demo_step < 5);
