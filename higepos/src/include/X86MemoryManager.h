@@ -23,7 +23,7 @@
 struct memoryEntry {
     struct memoryEntry* next;
     int size;
-    unsigned char startAddress[0];
+    H_BYTE startAddress[0];
 };
 
 /*!
@@ -38,14 +38,14 @@ class X86MemoryManager {
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
     const H_SIZE_T MEMORY_START;
-    const unsigned long MEMORY_END;
-    unsigned long current_;
+    const H_SIZE_T MEMORY_END;
+    H_SIZE_T current_;
     struct memoryEntry* entry_;
   public:
 
     char* getName();
-    unsigned long allocateMemory(unsigned long);
-    unsigned long freeMemory(unsigned long);
+    H_SIZE_T allocateMemory(H_SIZE_T);
+    H_SIZE_T freeMemory(H_SIZE_T);
     static X86MemoryManager& instance() {
         static X86MemoryManager theInstance;
         return theInstance;
