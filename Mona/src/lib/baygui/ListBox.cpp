@@ -128,6 +128,7 @@ void ListBox::postEvent(Event *event)
 				selectedIndex--;
 				if (firstpaint == true) {
 					repaint();
+					// 選択イベント発生
 					Control::postEvent(_itemEvent);
 				}
 			}
@@ -136,22 +137,30 @@ void ListBox::postEvent(Event *event)
 				selectedIndex++;
 				if (firstpaint == true) {
 					repaint();
+					// 選択イベント発生
 					Control::postEvent(_itemEvent);
 				}
 			}
 		} else if (keycode == VKEY_ENTER) {
+			// 選択イベント発生
 			Control::postEvent(_itemEvent);
 		}
+		// キーイベントを自分と親に投げる
+		Control::postEvent(event);
 	// マウス押下
 	} else if (event->type == MOUSE_PRESSED) {
 		int my = ((MouseEvent *)event)->y;
 		//printf("y = %d\n", my);
 		select((my - 7) / 16);
+		// 選択イベント発生
 		Control::postEvent(_itemEvent);
+		// マウスイベントを自分と親に投げる
+		Control::postEvent(event);
 	// フォーカス状態変更
 	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
 		if (firstpaint == true) {
 			repaint();
+			// フォーカスイベントを自分と親に投げる
 			Control::postEvent(_focusEvent);
 		}
 	}
