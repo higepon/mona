@@ -20,6 +20,7 @@ static semaphore sem = 1;
 */
 void disp_name1() {
 
+    static int counter = 0;
 
     while (true) {
 	//            g_console->printf("demo1 = %d, demo2 = %d demo3 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2, g_kthreadInfo.demo2);
@@ -29,9 +30,21 @@ void disp_name1() {
 //                        "mov $0x45678901, %edx \n"
 //                        );
 
-        (g_kthreadInfo.demo1)++;
-        (g_kthreadInfo.demo1)++;
-        (g_kthreadInfo.demo1)--;
+
+	if (counter == 0) {
+	    asm volatile("inc %ebx            \n"
+			 "mov $0x12345678, %eax \n"
+			 "mov $0x87654321, %edx \n"
+			 "mov $0x11111111, %ecx \n"
+			 "mov $0x45678910, %esi \n"
+			 "mov $0x36912150, %edi \n"
+			 );
+	}
+
+	//	asm volatile("inc %edx \n");
+
+        counter++;
+
     }
 }
 

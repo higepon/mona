@@ -249,13 +249,18 @@ void kthread_switch() {
 //                         , g_stack_view.stack7
 //                         );
 
-    g_console->printf("eip=%x demo1[%x]\n"
-                 , g_kthread_current->eip, g_kthreadInfo.demo1);
+    g_console->printf("eip=%x eax=%x ebx=%x ecx=%x edx=%x\nebp=%x esp=%x edi=%x esi=%x\n"
+                      , g_kthread_current->eip
+                      , g_kthread_current->eax
+                      , g_kthread_current->ebx
+                      , g_kthread_current->ecx
+                      , g_kthread_current->edx
+                      , g_kthread_current->ebp
+                      , g_kthread_current->esp
+                      , g_kthread_current->edi
+                      , g_kthread_current->esi
 
-      g_console->printf("kthread_switch@%d@", (int)debug_index);
-//      g_console->printf("esp=%x, ebp=%x\n"
-//                   , g_kthread_current->esp
-//  		      , g_kthread_current->ebp);
+                      );
 
     arch_kthread_switch();
 }

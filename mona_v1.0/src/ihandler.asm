@@ -63,6 +63,7 @@ _save_registers:
         mov eax, dword [esp + 20]; save ebx
         mov dword[ebx + 24], eax
         mov eax, dword [esp + 16]; save esp
+	add eax, 0xc
         mov dword[ebx + 28], eax
         mov eax, dword [esp + 12]; save ebp
         mov dword[ebx + 32], eax
