@@ -226,6 +226,34 @@ PageEntry* PageManager::createNewPageDirectory() {
     return directory;
 }
 
+PageEntry* PageManager::createNewPageDirectoryForV86() {
+
+    PageEntry* table1    = allocatePageTable();
+    PageEntry* table2    = allocatePageTable();
+    PageEntry* directory = allocatePageTable();
+
+    /* allocate page to physical address 0-4MB */
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
+
+        /* user access ok beyond 1MB */
+        if (i < 256) {
+            setAttribute(&(table1[i]), true, true, true, 4096 * i);
+        } else {
+            setAttribute(&(table1[i]), true, true, false, 4096 * i);
+        }
+    }
+
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
+
+        setAttribute(&(table2[i]), true, true, false, 4096 * 4096 + 4096 * i);
+    }
+
+    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+    setAttribute(&(directory[0]), true, true, true, (PhysicalAddress)table1);
+    setAttribute(&(directory[1]), true, true, false, (PhysicalAddress)table2);
+    return directory;
+}
+
 /*!
     \brief change page directory
 

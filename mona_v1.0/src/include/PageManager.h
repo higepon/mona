@@ -49,6 +49,7 @@ class PageManager {
     void startPaging();
     void stopPaging();
     PageEntry* createNewPageDirectory();
+    PageEntry* createNewPageDirectoryForV86();
     bool pageFaultHandler(LinearAddress address, dword error);
 
   public:

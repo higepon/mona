@@ -210,7 +210,6 @@ arch_switch_thread_to_v862:
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
         mov es , word[ebx + 48]      ; restore es
-        mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 56]         ; gs
         push dword[ebx + 52]         ; fs
         push dword[ebx + 44]         ; ds

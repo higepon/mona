@@ -388,7 +388,7 @@ Process* ProcessManager::create(int type, const char* name) {
           result = new KernelProcess(name, pageManager_->createNewPageDirectory());
           break;
       case V86_PROCESS:
-          result = new V86Process(name, pageManager_->createNewPageDirectory());
+          result = new V86Process(name, pageManager_->createNewPageDirectoryForV86());
           break;
       default:
           result = (Process*)NULL;
