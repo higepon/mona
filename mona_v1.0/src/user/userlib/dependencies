@@ -8,6 +8,9 @@ userlib.o: userlib.cpp ../include/userlib.h ../../share/types.h \
   ../include/userlib/Server.h ../include/userlib/Thread.h \
   ../include/userlib/string.h ../include/userlib/MemoryManager.h \
   ../include/userlib/Floppy.h ../include/userlib/FileInputStream.h \
-  ../include/userlib/InputStream.h ../include/userlib/Color.h
+  ../include/userlib/InputStream.h ../include/userlib/monalibc.h \
+  ../include/userlib/Color.h
 MemoryManager.o: MemoryManager.cpp ../include/userlib/MemoryManager.h \
   ../../share/types.h ../include/userlib/string.h
+monalibc.o: monalibc.cpp ../include/userlib/monalibc.h \
+  ../../share/types.h

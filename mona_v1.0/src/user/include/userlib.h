@@ -14,6 +14,7 @@
 #include <MemoryManager.h>
 #include <Floppy.h>
 #include <FileInputStream.h>
+#include <monalibc.h>
 #include <Color.h>
 
 #define MESSAGE_LOOP messageLoop
