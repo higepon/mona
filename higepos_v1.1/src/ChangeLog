@@ -1,3 +1,13 @@
+2002-10-23  syn <syn@users.sourceforge.jp>
+        
+        * FDCDriver.cpp 追加
+        * include/FDCDriver.h 追加
+        * higeKernel.cpp: FDCDriver用のテストコード追加(コメントアウト状態)
+        * higeIhandler.cpp: fdcHandler add
+        * higeIo.cpp: _sysInitIo: 割り込みマスクを変更し、FDCによる割り込みを許可
+        * Makefile*: FDCDriverの記述追加
+
+        
 2002-10-23  higepon  <higepon@users.sourceforge.jp>
 
         * higeKernel.cpp:test for HVector記述追加

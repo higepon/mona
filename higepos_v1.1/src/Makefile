@@ -21,7 +21,8 @@ SRC        = higeKernel.cpp       \
              higePureVirtual.cpp  \
              higeOperator.cpp     \
              higeUtil.cpp         \
-             KeyBoardManager.cpp
+             KeyBoardManager.cpp  \
+             FDCDriver.cpp
 
 HEADER     = ${INCLUDE}/higeKernel.h       \
              ${INCLUDE}/higeVga.h          \
@@ -31,7 +32,8 @@ HEADER     = ${INCLUDE}/higeKernel.h       \
              ${INCLUDE}/higeOperator.h     \
              ${INCLUDE}/higeUtil.h         \
              ${INCLUDE}/higeTypes.h        \
-             ${INCLUDE}/KeyBoardManager.h
+             ${INCLUDE}/KeyBoardManager.h  \
+             ${INCLUDE}/FDCDriver.h
 
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higeKernel.o       \
@@ -43,7 +45,8 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higeOperator.o     \
              ${BIN}/higePureVirtual.o  \
              ${BIN}/higeUtil.o         \
-             ${BIN}/KeyBoardManager.o
+             ${BIN}/KeyBoardManager.o  \
+             ${BIN}/FDCDriver.o  \
 
 
 # src to html & document
@@ -71,6 +74,7 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} higeOperator.cpp -o ${BIN}/higeOperator.o
 	${CC} -I $(INCLUDE) ${CFLAGS} higeUtil.cpp -o ${BIN}/higeUtil.o
 	${CC} -I $(INCLUDE) ${CFLAGS} KeyBoardManager.cpp  -o ${BIN}/KeyBoardManager.o
+	${CC} -I $(INCLUDE) ${CFLAGS} FDCDriver.cpp  -o ${BIN}/FDCDriver.o
 	${LD} ${LFLAGS} -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third.list
 #	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}
