@@ -125,16 +125,16 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     buf = (byte*)malloc(512 * readTimes);
     if (buf == NULL) return -1;
 
-    //    g_console->printf("load prcess 7[%d]", readTimes);
+    g_console->printf("load prcess 7[%d]", readTimes);
     for (int i = 0; i < readTimes; i++) {
         if (!fat->read(buf + 512 * i)) {
             g_console->printf("read failed %d", i);
             while (true);
         }
-	//    g_console->printf("load prcess 7.5");
     }
+    g_console->printf("load prcess 8");
 
-    //    g_console->printf("load prcess 8");
+
 
     if (!fat->close()) {
         info(ERROR, "close failed");

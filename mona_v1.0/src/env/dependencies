@@ -97,16 +97,18 @@ syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/GraphicalConsole.h include/BitMap.h include/Segments.h \
   include/operator.h include/HVector.h include/Scheduler.h \
   include/ProcessManager.h include/ihandlers.h include/sysresource.h \
-  include/FAT12.h include/MemoryManager.h user/userlib.h include/io.h
+  include/FAT12.h include/MemoryManager.h user/userlib.h include/tester.h \
+  include/test_mjt.h include/io.h
 BitMap.o: BitMap.cpp include/BitMap.h user/types.h
 FAT12.o: FAT12.cpp include/FAT12.h user/types.h include/DiskDriver.h \
-  include/BitMap.h include/string.h include/global.h include/info.h \
-  include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
-  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
-  include/Process.h include/PageManager.h include/Queue.h \
-  include/GraphicalConsole.h include/Segments.h include/operator.h \
-  include/HVector.h include/Scheduler.h include/ProcessManager.h \
-  include/ihandlers.h include/sysresource.h include/MemoryManager.h
+  include/BitMap.h include/string.h include/SystemInfo.h \
+  include/VirtualConsole.h include/global.h include/info.h \
+  include/kernel.h include/FDCDriver.h include/Semaphore.h \
+  include/GDTUtil.h include/IDTUtil.h include/Process.h \
+  include/PageManager.h include/Queue.h include/GraphicalConsole.h \
+  include/Segments.h include/operator.h include/HVector.h \
+  include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
+  include/sysresource.h include/MemoryManager.h
 test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/test_mjt.h include/FAT12.h include/DiskDriver.h \
   include/BitMap.h include/FDCDriver.h include/VirtualConsole.h \

@@ -104,15 +104,27 @@ int strcmp(const char* str1, const char* str2) {
 
 void* memcpy(void* s1, void* s2, size_t size) {
 
-    char* p = (char*)s1;
-    const char* s = (char*)s2;
+//     slow?
+//     char* p = (char*)s1;
+//     const char* s = (char*)s2;
 
-    while (size > 0) {
-        *p = *s;
-        p++;
-        s++;
-        size--;
-    }
+//     while (size > 0) {
+//         *p = *s;
+//         p++;
+//         s++;
+//         size--;
+//     }
+
+    asm volatile("movl %0, %%edi \n"
+                 "movl %1, %%esi \n"
+                 "movl %2, %%ecx \n"
+                 "cld            \n"
+                 "rep            \n"
+                 "movsb          \n"
+                 : /* no output */
+                 : "m"(s1), "m"(s2), "m"(size)
+                 : "edi", "esi", "ecx");
+
     return s1;
 }
 

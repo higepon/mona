@@ -25,6 +25,7 @@
 // for Mona
 #else
 
+#include<SystemInfo.h>
 #include<global.h>
 #include<operator.h>
 
@@ -523,7 +524,14 @@ bool FAT12::read(byte* buffer) {
     /* read */
     int lba = clusterToLba(currentCluster_);
 
+#ifndef FS_TEST
+    //    SystemInfo::rdtsc();
+#endif
     if (!(driver_->read(lba, buf_))) return false;
+#ifndef FS_TEST
+    //    SystemInfo::rdtscsub();
+    //    printf("time=[%x]", SystemInfo::timeL);
+#endif
 
     memcpy(buffer, buf_, 512);
 
@@ -533,6 +541,7 @@ bool FAT12::read(byte* buffer) {
     if ((currentCluster_ = getFATAt(currentCluster_)) > 0xff8 || readCounter_ <= 0) {
         readHasNext_ = false;
     }
+
     return true;
 }
 

@@ -98,7 +98,7 @@ void startKernel(void) {
     SharedMemoryObject::setup();
 
     /* show start message */
-    printBanner();
+    //    printBanner();
 
     pic_init();
 

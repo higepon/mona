@@ -33,7 +33,6 @@ SOURCES     = cstart.cpp            \
               KeyBoardManager.cpp   \
               checker.cpp           \
               string.cpp            \
-              SystemInfo.cpp        \
               Semaphore.cpp         \
               FDCDriver.cpp         \
               GraphicalConsole.cpp  \
@@ -43,6 +42,7 @@ SOURCES     = cstart.cpp            \
               disp.cpp              \
               syscalls.cpp          \
               BitMap.cpp            \
+              SystemInfo.cpp        \
               FAT12.cpp             \
               test_higepon.cpp      \
               sysresource.cpp       \
