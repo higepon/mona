@@ -86,7 +86,17 @@ Command CommandHistory::GetCommand(int numIndex){
         tmp = this->historyCurrent->prev;
       }
     } else if(numIndex == GETNEXT){
-      tmp = this->historyCurrent->next;
+      if(this->historyCurrent == this->history.prev){
+        tmp = this->historyCurrent;
+      } else {
+        tmp = this->historyCurrent->next;
+      }
+    } else if(numIndex == GETLAST){
+      tmp = this->history.prev;
+    } else if(numIndex == GETFIRST){
+      tmp = this->history.next;
+    } else {
+      tmp = this->SearchHistory(numIndex);
     }
   } else {
     tmp = this->SearchHistory(numIndex);
