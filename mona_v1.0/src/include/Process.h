@@ -146,6 +146,9 @@ class Thread : public Queue {
     /* this is public , because of getXXX */
     ThreadInfo* threadInfo_;
 
+  public:
+    int priority;
+
   protected:
     dword tick_;
     dword timeLeft_;

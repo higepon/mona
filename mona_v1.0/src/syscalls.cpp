@@ -165,8 +165,6 @@ void syscall_entrance() {
             break;
         }
 
-        IOManager::grantPermission();
-
         info->eax = 0;
         break;
 
@@ -414,6 +412,12 @@ void syscall_entrance() {
             info->eax = 0;
         }
         break;
+
+    case SYSTEM_CALL_GET_IO:
+        IOManager::grantPermission();
+        info->eax = 0;
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

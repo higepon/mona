@@ -1336,3 +1336,18 @@ int syscall_get_date(KDate* date) {
     return (int)result;
 
 }
+
+int syscall_get_io() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_GET_IO)
+                 : "ebx"
+                 );
+
+    return (int)result;
+}

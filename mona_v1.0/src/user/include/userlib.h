@@ -63,6 +63,7 @@ extern "C" int syscall_get_arg_count();
 extern "C" int syscall_get_arg(char* buf, int n);
 extern "C" int syscall_mthread_yeild_message();
 extern "C" int syscall_get_date(KDate* date);
+extern "C" int syscall_get_io();
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
 extern "C" void __cxa_pure_virtual();

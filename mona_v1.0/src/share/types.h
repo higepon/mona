@@ -133,6 +133,7 @@ typedef struct MappingInfo {
 #define SYSTEM_CALL_GET_ARGUMENTS   36
 #define SYSTEM_CALL_MTHREAD_YIELD_M 37
 #define SYSTEM_CALL_DATE            38
+#define SYSTEM_CALL_GET_IO          39
 #define SYSTEM_CALL_TEST            99
 
 #endif
