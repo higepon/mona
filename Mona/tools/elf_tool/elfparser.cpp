@@ -100,7 +100,7 @@ bool ELFParser::Relocate(Elf32_Shdr* relHeader, Elf32_Rel* relEntry)
 
     /* find sym table */
     Elf32_Shdr* symSect = &this->sheader[relHeader->sh_link];
-    int symMaxIndex = symSect->sh_size / sizeof(Elf32_Sym);
+    int symMaxIndex = symSect->sh_size / symSect->sh_entsize;
     Elf32_Sym* symTable = (Elf32_Sym*)((dword)this->header + symSect->sh_offset);
 
     int symIndex = ELF32_R_SYM(relEntry->r_info);
@@ -109,6 +109,15 @@ bool ELFParser::Relocate(Elf32_Shdr* relHeader, Elf32_Rel* relEntry)
         printf("symIndex:index out\n");
         return false;
     }
+
+    if (symTable[symIndex].st_shndx == 0)
+    {
+        printf("symTable: external symbol\n");
+        return false;
+    }
+
+    Elf32_Addr A = *target;
+    Elf32_Addr S = symTable[symIndex].st_value;
 
     switch(ELF32_R_TYPE(relEntry->r_info))
     {
@@ -119,6 +128,7 @@ bool ELFParser::Relocate(Elf32_Shdr* relHeader, Elf32_Rel* relEntry)
     case(R_386_32):
 
         /* S + A */
+        *target = S + A
         break;
     case(R_386_PC32):
 

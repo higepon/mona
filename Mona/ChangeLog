@@ -1,3 +1,7 @@
+2004-05-14  higepon  <higepon@users.sourceforge.jp>
+
+        * tools/elf_tool/elfparser.cpp (Relocate): SとAの計算
+
 2004-05-13  higepon  <higepon@users.sourceforge.jp>
 
         * tools/elf_tool/elfparser.cpp (Relocate): 再配置のシンボルテーブルあたりまで実装
