@@ -75,6 +75,35 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool 
 }
 
 /*!
+    \brief allocate physical page to page entry
+
+    \param directory process page directory
+    \param laddress  linear   address
+    \param present   physical address
+    \author HigePon
+    \date   create:2003/10/26 update:
+*/
+bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress) {
+
+    PageEntry* table;
+    dword directoryIndex = getDirectoryIndex(laddress);
+
+    if (isPresent(&(directory[directoryIndex]))) {
+
+        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    } else {
+
+        table = allocatePageTable();
+        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+    }
+
+    setAttribute(&(table[getTableIndex(laddress)]), true, true, true, paddress);
+
+    return true;
+}
+
+/*!
     \brief initilize system pages
 
     \author HigePon

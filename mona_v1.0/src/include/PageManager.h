@@ -32,6 +32,7 @@ class PageManager {
   public:
     void setup();
     void flushPageCache() const;
+    bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, PhysicalAddress address);
     bool allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser);
     bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser);
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const;
