@@ -27,11 +27,15 @@
 class Thread;
 class Process;
 
+extern VirtualConsole*g_console;
+
 /*----------------------------------------------------------------------
     Arch dependent functions
 ----------------------------------------------------------------------*/
 extern "C" void arch_switch_thread_to_user1();
 extern "C" void arch_switch_thread_to_user2();
+extern "C" void arch_switch_thread_to_v861();
+extern "C" void arch_switch_thread_to_v862();
 extern "C" void arch_switch_thread1();
 extern "C" void arch_switch_thread2();
 
@@ -152,7 +156,15 @@ class ThreadManager {
 
     inline int switchThread(bool isProcessChanged, bool isUser) const {
 
-        if (isProcessChanged && isUser) {
+        if (isProcessChanged && isV86_) {
+
+            g_console->printf("v862");
+            arch_switch_thread_to_v862();
+        } else if (!isProcessChanged && isV86_) {
+
+
+            arch_switch_thread_to_v861();
+        } else if (isProcessChanged && isUser) {
 
             /* address space & therad switch */
             arch_switch_thread_to_user2();

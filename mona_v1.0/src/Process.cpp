@@ -154,15 +154,20 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageE
 
 void ThreadManager::archCreateV86Thread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
-    dword stackAddress = allocateStack();
+    //    dword stackAddress = allocateStack();
+    dword stackAddress = 0x200;
     g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
 
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
-    ainfo->cs      = USER_CS;
-    ainfo->ds      = USER_DS;
-    ainfo->es      = USER_DS;
-    ainfo->ss      = USER_SS;
+//     ainfo->cs      = USER_CS;
+//     ainfo->ds      = USER_DS;
+//     ainfo->es      = USER_DS;
+//     ainfo->ss      = USER_SS;
+    ainfo->cs      = 0;
+    ainfo->ds      = 0;
+    ainfo->es      = 0;
+    ainfo->ss      = 0;
     ainfo->ss0     = KERNEL_SS;
     ainfo->eflags  = 0x20200;
     ainfo->eax     = 0;

@@ -139,6 +139,12 @@ void startKernel(void) {
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup();
 
+
+    /* v86_func */
+    byte* v86_func = (byte*)0x100;
+    (v86_func)[0] = 0xEB;
+    (v86_func)[1] = 0xFE;
+
     /* this should be called, before timer enabled */
     ThreadManager::setup();
     g_processManager = new ProcessManager(g_page_manager);
@@ -192,6 +198,12 @@ void startKernel(void) {
 
     Thread*   testThread15  = g_processManager->createThread(testProcess8, (dword)test85);
     g_processManager->join(testProcess8, testThread15);
+
+    /* add testProces9(testThread9) for V86 */
+    Process* testProcess9 = g_processManager->create(ProcessManager::V86_PROCESS, "V86");
+    g_processManager->add(testProcess9);
+    Thread*   testThread9  = g_processManager->createThread(testProcess9, (dword)(v86_func));
+    g_processManager->join(testProcess9, testThread9);
 
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();
