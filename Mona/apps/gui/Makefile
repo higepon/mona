@@ -7,6 +7,7 @@ all:
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
+	@cd clock; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -17,6 +18,7 @@ install:
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
+	@cd clock; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -27,6 +29,7 @@ clean: touchdepend
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
+	@cd clock; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -37,6 +40,7 @@ depend: touchdepend
 	@cd launcher; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd shell; $(MAKE) $@
+	@cd clock; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -47,6 +51,7 @@ distclean:
 	rm -f launcher/dependencies
 	rm -f waba/dependencies
 	rm -f shell/dependencies
+	@cd clock; $(MAKE) $@
 
 touchdepend:
 	touch reversi/dependencies
@@ -57,3 +62,4 @@ touchdepend:
 	touch launcher/dependencies
 	touch waba/dependencies
 	touch shell/dependencies
+	@cd clock; $(MAKE) $@
