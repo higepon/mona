@@ -11,7 +11,7 @@ OBJ             = jpegdemo.o
 all : $(APP)
 
 $(APP) : $(LIB_USER) $(OBJ) jpegls.o
-	$(LD) $(LFLAGS) $(OBJ) jpegls.o $(LIB) -o $(APP)
+	$(LD)  $(LIB)  $(OBJ) jpegls.o $(LFLAGS) -o $(APP)
 	objcopy $(OFLAGS) $(APP)
 	$(STRIP) $(APP)
 

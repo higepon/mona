@@ -11,7 +11,7 @@ OBJ             = waba.o
 all : $(APP)
 
 $(APP) : $(LIB_USER) $(OBJ)
-	$(LD) $(LFLAGS) $(OBJ) $(LIB) -o $(APP)
+	$(LD)  $(LIB)  $(OBJ) $(LFLAGS) -o $(APP)
 	objcopy $(OFLAGS) $(APP)
 	$(STRIP) $(APP)
 

@@ -11,7 +11,7 @@ OBJ             = reversi.o
 all : $(APP)
 
 $(APP) : $(LIB_USER) $(OBJ) ReversiBoard.o
-	$(LD) $(LFLAGS) $(OBJ) ReversiBoard.o $(LIB) -o $(APP)
+	$(LD)  $(LIB)  $(OBJ) ReversiBoard.o $(LFLAGS) -o $(APP)
 	objcopy $(OFLAGS) $(APP)
 	$(STRIP) $(APP)
 
