@@ -46,6 +46,11 @@ namespace MonAPI
 
         CString toLower() const;
         CString toUpper() const;
+
+        int reset();
+        int insert(int start, const CString& text);
+        int remove(int start, int length);
+
     };
 }
 

@@ -65,7 +65,7 @@ namespace MonAPI
 
     CString& CString::operator =(const char* text)
     {
-        if (this->buffer == NULL) delete [] this->buffer;
+        if (this->buffer != NULL) delete [] this->buffer;
         if (text == NULL)
         {
             this->buffer = NULL;
@@ -84,7 +84,7 @@ namespace MonAPI
 
     CString& CString::operator =(const CString& text)
     {
-        if (this->buffer == NULL) delete [] this->buffer;
+        if (this->buffer != NULL) delete [] this->buffer;
         if (text.buffer == NULL)
         {
             this->buffer = NULL;
@@ -118,7 +118,7 @@ namespace MonAPI
             if (text != NULL) strncpy(&buf[len1], text, len2);
             buf[this->length] = '\0';
         }
-        if (this->buffer == NULL) delete [] this->buffer;
+        if (this->buffer != NULL) delete [] this->buffer;
         this->buffer = buf;
     }
 
@@ -139,7 +139,7 @@ namespace MonAPI
             if (text .buffer != NULL) strncpy(&buf[len1], text.buffer, len2);
             buf[this->length] = '\0';
         }
-        if (this->buffer == NULL) delete [] this->buffer;
+        if (this->buffer != NULL) delete [] this->buffer;
         this->buffer = buf;
     }
 
@@ -150,7 +150,7 @@ namespace MonAPI
         strncpy(buf, this->buffer, this->length);
         buf[this->length++] = ch;
         buf[this->length] = '\0';
-        if (this->buffer == NULL) delete [] this->buffer;
+        if (this->buffer != NULL) delete [] this->buffer;
         this->buffer = buf;
     }
 
@@ -360,6 +360,118 @@ namespace MonAPI
         }
         return ret;
     }
+
+    /*!
+      \breif reset string in CString
+
+      \return >=0 : length of string resetted
+
+    */
+    int CString::reset()
+    {
+       int result = this->length;
+       if (this->buffer != NULL)
+       {
+           delete [] this->buffer;
+           this->buffer = NULL;
+           this->length = 0;
+       }
+       return result;
+    }
+
+    /*!
+      \breif insert string in CString
+
+      \param start  start point of string inserted
+      \param text   string inserted
+      \return >=0 : length of string inserted
+               -1 : start is bad value
+
+    */
+    int CString::insert(int start, const CString& text)
+    {
+       int result;
+
+       if ( (start < 0) || (start > this->length) ){
+           result = -1;
+       }
+       else if (this->length == 0)
+       {
+           *this = text;
+           result = text.length;
+       }
+       else if (text.length == 0)
+       {
+           result = 0;
+       }
+       else
+       {
+           char *buf1 = new char[start + 1];
+           ASSERT(buf1)
+           strncpy(buf1, this->buffer, start);
+           buf1[start] = '\0';
+           char *buf2 = new char[this->length - start + 1];
+           ASSERT(buf2)
+           strncpy(buf2, &(this->buffer[start]), this->length - start);
+           buf2[this->length - start] = '\0';
+           *this = buf1 + text + buf2;
+           result = text.length;
+       }
+       return result;
+    }
+
+    /*!
+      \breif remove string in CString
+
+      \param start  start point of string removed
+      \param length length of string removed
+      \return >=0 : length of string removed
+               -1 : start is bad value
+               -2 : length is bad value
+    */
+    int CString::remove(int start, int length)
+    {
+        int result = 0;
+        char *buf;
+
+        if ( (start < 0) || (start > this->length) )
+        {
+            result = -1; /* NEED? : modify message macro */
+        }
+        else if (length <= 0)
+        {
+            result = -2; /* NEED? : modify message macro */
+        }
+        else if ( (start == 0) && (length >= this->length) )
+        {
+            result = this->reset();
+        }
+        else if ( (start + length) >= this->length)
+        {
+            buf = new char[start + 1];
+            ASSERT(buf)
+            strncpy(buf, this->buffer, start);
+            delete [] this->buffer;
+            this->buffer = buf;
+            this->buffer[start] = '\0';
+            result = this->length - start;
+            this->length = start;
+        }
+        else
+        {
+            buf = new char[this->length - length + 1];
+            ASSERT(buf)
+            strncpy(buf, this->buffer, start);
+            strncpy(&buf[start], &(this->buffer[start + length]), this->length - start - length);
+            delete [] this->buffer;
+            this->buffer = buf;
+            this->buffer[this->length - length] = '\0';
+            this->length = this->length - length;
+            result = length;
+        }
+        return result;
+    }
+
 }
 
 MonAPI::CString operator +(const char* text1, const MonAPI::CString& text2)
