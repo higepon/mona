@@ -176,7 +176,7 @@ void Shell::commandExecute()
     }
     else
     {
-        cmdLine = "/APPS/" + command + ".ELF";
+        cmdLine = "/APPS/" + command + ".EL2";
     }
 
     for (int i = 1; i < args.get_Length(); i++)
