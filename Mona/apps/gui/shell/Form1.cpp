@@ -131,7 +131,7 @@ public:
 	{
 		this->InitializeComponent();
 		
-		this->shell = MonAPI::Message::lookupMainThread("OLDSHELL.EX2");
+		this->shell = MonAPI::Message::lookupMainThread("OLDSHELL.EX5");
 		
 		_P<MonAPI::Screen> scr = GetDefaultScreen();
 		this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));

@@ -137,7 +137,7 @@ void Monitor::CheckServers()
     for (int i = 0; i < servers.size(); i++)
     {
         if (alive[i]) continue;
-        if (!firstLoad && servers[i] == "OLDSHELL.EX2") continue;
+        if (!firstLoad && servers[i] == "OLDSHELL.EX5") continue;
 
         printf("loading %s....", (const char*)paths.get(i));
 

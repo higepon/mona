@@ -276,7 +276,7 @@ static void CheckGUIServer()
 	PsInfo info;
 
 	bool ok = true;
-	CString self = "GUI.EX2";
+	CString self = "GUI.EX5";
 	dword tid = MonAPI::System::getThreadID();
 
 	while (syscall_read_ps_dump(&info) == 0)
@@ -385,7 +385,7 @@ int MonaMain(List<char*>* pekoe)
 	// 引数チェック
 	if (pekoe->size() != 1)
 	{
-		printf("%s: usage GUI.EX2 [.INI FILE]");
+		printf("%s: usage GUI.EX5 [.INI FILE]");
 		exit(1);
 	}
 

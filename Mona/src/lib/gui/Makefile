@@ -4,8 +4,8 @@ TARGET       = $(LIB_STATIC)
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = $(LIBDIR)/libgui-imp.a
 LIB_DYNAMIC  = GUI.DLL
-LIB_DYNAMIC2 = GUI.DL2
-TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC2)
+LIB_DYNAMIC5 = GUI.DL5
+TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 endif
 
 SOURCES = \
@@ -46,8 +46,9 @@ $(LIB_DYNAMIC): $(OBJECTS)
 	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
 	$(STRIP) $@
 
-$(LIB_DYNAMIC2): $(LIB_DYNAMIC)
-	bzip2 -c $(LIB_DYNAMIC) > $@
+$(LIB_DYNAMIC5): $(LIB_DYNAMIC)
+#	bzip2 -c $(LIB_DYNAMIC) > $@
+	$(MONADIR)/bin/bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
 endif
 
 .SUFFIXES: .cpp .o
@@ -68,7 +69,7 @@ depend:
 install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
 	mkdir -p $(MONADIR)/bin/root/LIBS
-	$(INSTALL) $(LIB_DYNAMIC2) $(MONADIR)/bin/root/LIBS
+	$(INSTALL) $(LIB_DYNAMIC5) $(MONADIR)/bin/root/LIBS
 endif
 
 include dependencies
