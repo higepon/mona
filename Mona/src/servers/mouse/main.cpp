@@ -113,12 +113,14 @@ void MouseServer::MessageLoop()
 
                 /* arg1 = tid */
                 this->destList->add(receive.arg1);
+                Message::reply(&receive);
                 break;
 
             case MSG_MOUSE_UNREGIST_FROM_SERVER:
 
                 /* arg1 = tid */
                 this->destList->remove(receive.arg1);
+                Message::reply(&receive);
                 break;
 
            case MSG_MOUSE_ENABLE_CURSOR:

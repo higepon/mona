@@ -3,6 +3,7 @@
 
 #ifdef MONA
 #include <monapi.h>
+#include <monapi/messages.h>
 
 extern dword __gui_server;
 #endif
@@ -58,7 +59,7 @@ namespace System { namespace Drawing
 		::memcpy(this->buffer.get(), image, len * 4);
 		MonAPI::MemoryMap::unmap(msg.arg2);
 		
-		if (MonAPI::Message::send(__gui_server, MSG_GUISERVER_DISPOSEHANDLE, msg.arg2) != 0)
+		if (MonAPI::Message::send(__gui_server, MSG_DISPOSE_HANDLE, msg.arg2) != 0)
 		{
 			::printf("ERROR: Can't connect to GUI server!\n");
 			return;

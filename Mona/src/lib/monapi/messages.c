@@ -56,7 +56,7 @@ int monapi_register_to_server(int id, int enabled)
     }
     if (tid == THREAD_UNKNOWN) return 0;
 
-    if (monapi_cmessage_send_args(tid, header, syscall_get_tid(), 0, 0, NULL) != 0)
+    if (monapi_cmessage_send_receive_args(NULL, tid, header, syscall_get_tid(), 0, 0, NULL) != 0)
     {
         printf("ERROR: can not register to %s\n", server_names[id]);
         return 0;

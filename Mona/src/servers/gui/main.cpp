@@ -135,32 +135,33 @@ void MessageLoop()
         switch (msg.header)
         {
             case MSG_GUISERVER_GETFONT:
-                Message::send(msg.from, MSG_RESULT_OK, msg.header, default_font->Handle, default_font->Size);
+                Message::reply(&msg, default_font->Handle, default_font->Size);
                 break;
             case MSG_GUISERVER_DECODEIMAGE:
             {
                 ImageInfo* mi = ReadImage(msg.str);
                 if (mi != NULL)
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle, MAKE_DWORD(mi->Width, mi->Height));
+                    Message::reply(&msg, mi->Handle, MAKE_DWORD(mi->Width, mi->Height));
                     delete mi;
                 }
                 else
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                    Message::reply(&msg);
                 }
                 break;
             }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
+                Message::reply(&msg);
                 break;
             case MSG_GUISERVER_SETWALLPAPER:
                 DrawWallPaper(msg.str, msg.arg1, msg.arg2);
-                Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                Message::reply(&msg);
                 break;
             case MSG_GUISERVER_REFRESHWALLPAPER:
                 DrawWallPaper();
-                Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                Message::reply(&msg);
                 break;
             case MSG_GUISERVER_DECOMPRESSBZ2:
             {
@@ -175,12 +176,12 @@ void MessageLoop()
                 }
                 if (mi2 != NULL)
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header, mi2->Handle, mi2->Size);
+                    Message::reply(&msg, mi2->Handle, mi2->Size);
                     monapi_cmemoryinfo_delete(mi2);
                 }
                 else
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                    Message::reply(&msg);
                 }
                 monapi_cmemoryinfo_delete(mi1);
                 break;
@@ -190,12 +191,12 @@ void MessageLoop()
                 monapi_cmemoryinfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
                 if (mi != NULL)
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle, mi->Size);
+                    Message::reply(&msg, mi->Handle, mi->Size);
                     delete mi;
                 }
                 else
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                    Message::reply(&msg);
                 }
                 break;
             }

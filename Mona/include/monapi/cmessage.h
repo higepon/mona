@@ -19,6 +19,9 @@ extern int monapi_cmessage_receive_arg1(MessageInfo* info, dword tid, dword head
 extern int monapi_cmessage_send_receive(MessageInfo* result, dword tid, MessageInfo* info);
 extern int monapi_cmessage_send_receive_args(MessageInfo* result, dword tid, dword header, dword arg1, dword arg2, dword arg3, const char* str);
 
+extern int monapi_cmessage_reply(MessageInfo* info);
+extern int monapi_cmessage_reply_args(MessageInfo* info, dword arg2, dword arg3, const char* str);
+
 extern void monapi_cmessage_create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, const char* str);
 extern int monapi_cmessage_exist();
 

@@ -189,7 +189,10 @@ namespace System { namespace Mona { namespace Forms
 			{
 				this->DrawReversibleRectangle();
 				this->Erase();
-				this->set_Location(Point(e->X - this->clickPoint.X, e->Y - this->clickPoint.Y));
+				Point p = this->get_Location();
+				p.X += e->X - this->clickPoint.X;
+				p.Y += e->Y - this->clickPoint.Y;
+				this->set_Location(p);
 				this->Refresh();
 				break;
 			}

@@ -19,6 +19,7 @@ public:
     static int receive(MessageInfo* info, dword tid, dword header, dword arg1);
     static int sendReceive(MessageInfo* result, dword tid, MessageInfo* info);
     static int sendReceive(MessageInfo* result, dword tid, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
+    static int reply(MessageInfo* info, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
     static void create(MessageInfo* info, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
     static bool exist();
     static dword lookup(const char* name);

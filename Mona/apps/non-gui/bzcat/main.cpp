@@ -2,6 +2,7 @@
 // There are no restrictions on any sort of usage of this file.
 
 #include <monapi.h>
+#include <monapi/messages.h>
 #include <gui/messages.h>
 
 using namespace MonAPI;
@@ -26,6 +27,6 @@ int MonaMain(List<char*>* pekoe)
 	
 	printf(data);
 	MemoryMap::unmap(msg.arg2);
-	Message::send(guisvr, MSG_GUISERVER_DISPOSEHANDLE, msg.arg2);
+	Message::send(guisvr, MSG_DISPOSE_HANDLE, msg.arg2);
 	return 0;
 }

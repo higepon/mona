@@ -176,6 +176,16 @@ int monapi_cmessage_send_receive_args(MessageInfo* result, dword tid, dword head
     return monapi_cmessage_receive_arg1(result, tid, MSG_RESULT_OK, header);
 }
 
+int monapi_cmessage_reply(MessageInfo* info)
+{
+    return monapi_cmessage_send_args(info->from, MSG_RESULT_OK, info->header, 0, 0, NULL);
+}
+
+int monapi_cmessage_reply_args(MessageInfo* info, dword arg2, dword arg3, const char* str)
+{
+    return monapi_cmessage_send_args(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+}
+
 void monapi_cmessage_create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, const char* str)
 {
     info->header = header;

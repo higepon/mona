@@ -49,6 +49,11 @@ int Message::sendReceive(MessageInfo* result, dword tid, dword header, dword arg
     return monapi_cmessage_send_receive_args(result, tid, header, arg1, arg2, arg3, str);
 }
 
+int Message::reply(MessageInfo* info, dword arg2 /* = 0*/, dword arg3 /*= 0*/, const char* str /*= NULL*/)
+{
+    return monapi_cmessage_reply_args(info, arg2, arg3, str);
+}
+
 void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
 {
     info->header = header;

@@ -42,18 +42,18 @@ void MessageLoop()
                 monapi_cmemoryinfo* mi = ReadFile(msg.str, msg.arg1);
                 if (mi != NULL)
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header, mi->Handle, mi->Size);
+                    Message::reply(&msg, mi->Handle, mi->Size);
                     monapi_cmemoryinfo_delete(mi);
                 }
                 else
                 {
-                    Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                    Message::reply(&msg);
                 }
                 break;
             }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
-                Message::send(msg.from, MSG_RESULT_OK, msg.header);
+                Message::reply(&msg);
                 break;
         }
     }
