@@ -47,7 +47,7 @@
 /* summary */
 #define FDC_DOR_RESET   0
 #define FDC_START_MOTOR (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
-#define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_ENABLE | FDC_DR_SELECT_A)
+#define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_RESET | FDC_DR_SELECT_A)
 
 /* time out */
 #define FDC_RETRY_MAX 100000
@@ -100,8 +100,11 @@ void MFDCDriver::initilize() {
     while (!waitInterrupt());
 
     calibrate();
-
     printStatus("after");
+
+    motor(OFF);
+    while (!waitInterrupt());
+    printStatus("motor off");
     return;
 }
 
@@ -174,19 +177,13 @@ void MFDCDriver::motor(bool on) {
 
 bool MFDCDriver::sendCommand(const byte command[], const byte length) {
 
-    /* check fdc status ready */
-    if (!checkMSR(FDC_MRQ_READY)) {
-
-        _sys_printf("MFDCDriver#sendCommand: timeout\n");
-        return false;
-    }
-
     /* send command */
     for (int i = 0; i < length; i++) {
 
-        if (!checkMSR(FDC_MRQ_READY | FDC_DIO_TO_CPU)) {
-	    _sys_printf("pattern %x", FDC_MRQ_READY | FDC_DIO_TO_CPU);
-            _sys_printf("MFDCDriver#sendCommand: timeout[%d]\n", i);
+        /* check fdc status ready */
+        if (!checkMSR(FDC_MRQ_READY)) {
+
+            _sys_printf("MFDCDriver#sendCommand: timeout\n");
             return false;
         }
         outportb(FDC_DR_PRIMARY, command[i]);
@@ -212,8 +209,9 @@ bool MFDCDriver::calibrate() {
         _sys_printf("MFDCDriver#calibrate:command fail\n");
         return false;
     }
-
+    printStatus("before wait");
     while(!waitInterrupt());
+    printStatus("after wait");
 }
 
 /*!
