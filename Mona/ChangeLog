@@ -1,3 +1,7 @@
+2004-11-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/ISO9660.cpp : fileサーバにCDコードを投入。
+
 2004-11-24  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/main.cpp (cdInitialize): FileサーバにCD読み込みロジックを組み込んだけど落ちちゃうのでコメントアウト中

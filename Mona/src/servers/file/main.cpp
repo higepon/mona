@@ -217,6 +217,8 @@ static bool cdInitialize()
         outp8(0xa1, inp8(0xa1) & 0x7f);
     }
 
+    outp8(0x21, (inp8(0x21) & 0xFB)); /* IR2 cascade */
+
     /* interrupt thread */
     dword id = syscall_mthread_create((dword)interrupt);
     syscall_mthread_join(id);
@@ -252,7 +254,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* CD-ROM */
-//    hasCD = cdInitialize();
+    hasCD = cdInitialize();
 
     MessageLoop();
 
