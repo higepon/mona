@@ -1,3 +1,7 @@
+2004-10-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/moniter/main.cpp (CheckServers): chshでシェルが自動で起動されてしまう件に対処
+
 2004-10-25  bayside  <bayside@users.sourceforge.jp>
 
         * servers/baygui: ウィンドウ移動時に枠線を出すように修正

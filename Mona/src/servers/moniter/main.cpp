@@ -37,11 +37,12 @@ private:
 private:
     HList<CString> paths;
     HList<CString> servers;
+    bool firstLoad;
     bool* alive;
 
 };
 
-Monitor::Monitor()
+Monitor::Monitor() : firstLoad(true)
 {
 
 }
@@ -172,6 +173,7 @@ void Monitor::CheckServers()
     for (int i = 0; i < servers.size(); i++)
     {
         if (alive[i]) continue;
+        if (!firstLoad && servers[i] == "OLDSHELL.EX2") continue;
 
         printf("loading %s....", (const char*)paths.get(i));
 
@@ -184,6 +186,8 @@ void Monitor::CheckServers()
         }
 
     }
+
+    if (firstLoad) firstLoad = false;
 }
 
 int MonaMain(List<char*>* pekoe)
