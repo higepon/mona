@@ -263,23 +263,16 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
                 break;
             }
 
-            FileInputStream fis(option->str);
-            if (fis.open() != 0)
+            monapi_cmemoryinfo* mi = monapi_call_file_read_data(option->str, 1);
+            if (mi == NULL) break;
+
+            if (mi->Size > 0)
             {
-                printf("file open error: %s\n", option->str);
-                break;
-            }
-            int size = fis.getFileSize();
-            byte* buf = new byte[size + 1];
-            fis.read(buf, size);
-            fis.close();
-            if (size > 0)
-            {
-                byte* p = buf;
+                byte* p = mi->Data;
                 bool cr = false;
-                for (int i = 0; i < size; i++)
+                for (dword i = 0; i < mi->Size; i++)
                 {
-                    byte b = buf[i];
+                    byte b = mi->Data[i];
                     switch (b)
                     {
                         case '\r':
@@ -297,9 +290,10 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
                     }
                 }
                 *p = 0;
-                printf((const char*)buf);
+                printf((const char*)mi->Data);
             }
-            delete [] buf;
+            monapi_cmemoryinfo_dispose(mi);
+            monapi_cmemoryinfo_delete(mi);
             break;
         }
     case COMMAND_CHSH:

@@ -17,14 +17,16 @@ monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
     }
 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(ret, fis.getFileSize(), prompt))
+    if (!monapi_cmemoryinfo_create(ret, fis.getFileSize() + 1, prompt))
     {
         delete ret;
         return NULL;
     }
 
+    ret->Size--;
     fis.read(ret->Data, ret->Size);
     fis.close();
+    ret->Data[ret->Size] = 0;
     if (prompt) printf("OK\n");
     return ret;
 }
