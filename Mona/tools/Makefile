@@ -5,7 +5,6 @@ all:
 	@cd bit2mnf && $(MAKE) $@
 	@cd monaelf && $(MAKE) $@
 	@cd elf_tool && $(MAKE) $@
-	@cd fileheader && $(MAKE) $@
 
 install:
 	@cd fat_write && $(MAKE)
@@ -14,7 +13,6 @@ install:
 	@cd bit2mnf && $(MAKE) $@
 	@cd monaelf && $(MAKE)
 	@cd elf_tool && $(MAKE)
-	@cd fileheader && $(MAKE)
 
 clean: touchdepend
 	@cd fat_write && $(MAKE) $@
@@ -29,7 +27,6 @@ depend: touchdepend
 	@cd fat_write && $(MAKE) $@
 	@cd bim2bin && $(MAKE) $@
 	@cd elf_tool && $(MAKE) $@
-	@cd fileheader && $(MAKE) $@
 
 distclean:
 	rm -f fat_write/dependencies
