@@ -27,31 +27,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
 Control::Control()
 {
 	this->enabled = true;
 	this->focused = false;
-	this->x = this->y = this->height = this->width = this->offsetX = this->offsetY = 0;
-	this->fontStyle = FONT_PLAIN;
+	this->x = this->y = this->height = this->width = 0;
+	this->fontStyle = Font::PLAIN;
 	this->_buffer = NULL;
 	this->_g = NULL;
-	this->focusEvent.type = FOCUS_IN;
-	this->focusEvent.source = this;
-	this->backColor = DEFAULT_BACKCOLOR;
-	this->foreColor = DEFAULT_FORECOLOR;
+	this->_metrics = new FontMetrics();
+	this->focusEvent.setType(Event::FOCUS_IN);
+	this->focusEvent.setSource(this);
+	this->backColor = Color::DEFAULT_BACKCOLOR;
+	this->foreColor = Color::DEFAULT_FORECOLOR;
 }
 
-/** デストラクタ */
 Control::~Control()
 {
 	onExit();
 }
 
-/**
- 部品生成時に呼ばれる.
- onExit()後に呼ぶと再初期化できる。
-*/
 void Control::onStart()
 {
 	if (this->_buffer != NULL) return;
@@ -59,13 +54,8 @@ void Control::onStart()
 	// 内部バッファー、描画オブジェクトの生成
 	this->_buffer = new Image(width, height);
 	this->_g = new Graphics(this->_buffer);
-	this->_metrics = new FontMetrics();
 }
 
-/**
- 部品破棄時に呼ばれる.
- 後にonStart()を呼ぶと再初期化できる。
-*/
 void Control::onExit()
 {
 	delete(_buffer);
@@ -73,26 +63,14 @@ void Control::onExit()
 	delete(_metrics);
 }
 
-/**
- イベント処理
- @param  [in] event イベントオブジェクト
-*/
 void Control::onEvent(Event *event)
 {
 }
 
-/**
- 描画処理
- @param [in] g 描画オブジェクト
-*/
 void Control::onPaint(Graphics *g)
 {
 }
 
-/**
- イベント処理を依頼する
- @param [in] event イベントオブジェクト
-*/
 void Control::postEvent(Event *event)
 {
 	onEvent(event);
@@ -102,7 +80,6 @@ void Control::postEvent(Event *event)
 	}
 }
 
-/** 再描画 */
 void Control::repaint()
 {
 	if (this->_buffer == NULL) return;
@@ -111,7 +88,6 @@ void Control::repaint()
 	update();
 }
 
-/** 領域更新 */
 void Control::update()
 {
 	Control *c = getMainWindow();
@@ -119,7 +95,6 @@ void Control::update()
 	c->update();
 }
 
-/** メインウィンドウを得る */
 Control *Control::getMainWindow()
 {
 	if (this->parent == NULL) {
@@ -129,102 +104,65 @@ Control *Control::getMainWindow()
 	}
 }
 
-/**
- 活性状態設定
- @param enabled 活性状態 (true / false)
- */
 void Control::setEnabled(bool enabled)
 {
 	this->enabled = enabled;
 }
 
-/**
- フォーカス状態を設定する
- @param focused フォーカス状態 (true / false)
- */
 void Control::setFocused(bool focused)
 {
 	if (this->focused == true && focused == false) {
 		//syscall_print("FOCUS_OUT,");
 		this->focused = focused;
-		this->focusEvent.type = FOCUS_OUT;
+		this->focusEvent.setType(Event::FOCUS_OUT);
 		postEvent(&this->focusEvent);
 	} else if (this->focused == false && focused == true) {
 		//syscall_print("FOCUS_IN,");
 		this->focused = focused;
-		this->focusEvent.type = FOCUS_IN;
+		this->focusEvent.setType(Event::FOCUS_IN);
 		postEvent(&this->focusEvent);
 	}
 }
 
-/**
- 表示状態を設定する
- @param visible 表示状態 (true / false)
- */
 void Control::setVisible(bool visible)
 {
 	this->visible = visible;
 }
 
-/**
- 大きさを設定する
- @param x x座標
- @param y y座標
- @param width 幅
- @param height 高さ
-*/
 void Control::setRect(int x, int y, int width, int height)
 {
 	this->x = x;
 	this->y = y;
 	this->height = height;
 	this->width = width;
-	this->rect.x = x;
-	this->rect.y = y;
-	this->rect.width = width;
-	this->rect.height = height;
+	this->rect.setLocation(x, y);
+	this->rect.setSize(width, height);
 }
 
-/**
- 位置を変更する
- @param x X座標
- @param y Y座標
-*/
 void Control::setLocation(int x, int y)
 {
 	if (this->x == x && this->y == y) return;
 	
 	this->x = x;
 	this->y = y;
-	this->rect.x = x;
-	this->rect.y = y;
+	this->rect.setLocation(x, y);
 }
 
-/**
- 親コンポーネントを設定する
- @param parent 親コンポーネント
-*/
 void Control::setParent(Container *parent)
 {
 	this->parent = parent;
 }
 
-/** 背景色を設定する */
 void Control::setBackground(unsigned int backColor)
 {
 	this->backColor = backColor;
 }
 
-/** 前景色を設定する */
 void Control::setForeground(unsigned int foreColor)
 {
 	this->foreColor = foreColor;
 }
 
-/**
- フォントスタイル（通常、太字、斜字、太字＆斜字）を設定する
- @param style FONT_PLAIN、FONT_BOLD、FONT_ITALIC、FONT_BOLD | FONT_ITALIC
- */
 void Control::setFontStyle(int style)
 {
 	if (this->_metrics != NULL) {

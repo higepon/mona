@@ -477,7 +477,7 @@ private:
 		// exit / quit
 		//
 		} else if (s.equals("exit") || s.equals("quit")) {
-			this->isRunning = false;
+			onExit();
 			return;
 		//
 		// exec [pathname]
@@ -513,7 +513,7 @@ public:
 	/** イベントハンドラ */
 	virtual void onEvent(Event *e) {
 		// printfをハンドリング
-		if (e->type == CUSTOM_EVENT) {
+		if (e->getType() == Event::CUSTOM_EVENT) {
 			for (int i = 0; i < (int)strlen(e->str); i++) {
 				if (strlen(lineBuffer) == (GSHELL_WIDTH / 8) - 1 || e->str[i] == '\n') {
 					// リストに追加
@@ -527,10 +527,11 @@ public:
 				}
 			}
 		// キーイベント
-		} else if (e->type == KEY_PRESSED) {
+		} else if (e->getType() == KeyEvent::KEY_PRESSED) {
 			KeyEvent *ke = (KeyEvent *)e;
+			int keycode = ke->getKeycode();
 			// コマンド実行
-			if (ke->keycode == VKEY_ENTER) {
+			if (keycode == KeyEvent::VKEY_ENTER) {
 				char temp[256];
 				if (strlen(commandBuffer) == 0) {
 					sprintf(temp, "%s%% \n", currentPath);
@@ -550,21 +551,21 @@ public:
 				// 再描画
 				onPaint(getGraphics());
 			// １文字削除
-			} else if (ke->keycode == VKEY_BACKSPACE) {
+			} else if (keycode == KeyEvent::VKEY_BACKSPACE) {
 				if (strlen(commandBuffer) == 0) return;
 				memset(lineBuffer, 0, sizeof(lineBuffer));
 				commandBuffer[strlen(commandBuffer) - 1] = 0;
 				// 再描画
 				onPaint(getGraphics());
 			// １つ前の履歴
-			} else if (ke->keycode == VKEY_UP) {
+			} else if (keycode == KeyEvent::VKEY_UP) {
 				if (this->historyPtr == -1) return;
 				this->historyPtr--;
 				strcpy(commandBuffer, ((String *)history->get(this->historyPtr))->getBytes());
 				// 再描画
 				onPaint(getGraphics());
 			// １つ次の履歴
-			} else if (ke->keycode == VKEY_DOWN) {
+			} else if (keycode == KeyEvent::VKEY_DOWN) {
 				if (this->historyPtr < this->history->getLength() - 1) {
 					this->historyPtr++;
 					strcpy(commandBuffer, ((String *)history->get(this->historyPtr))->getBytes());
@@ -574,9 +575,9 @@ public:
 				// 再描画
 				onPaint(getGraphics());
 			// 1文字追加
-			} else if (0 < ke->keycode && ke->keycode < 128) {
+			} else if (0 < keycode && keycode < 128) {
 				memset(lineBuffer, 0, sizeof(lineBuffer));
-				commandBuffer[strlen(commandBuffer)] = ke->keycode;
+				commandBuffer[strlen(commandBuffer)] = keycode;
 				// 再描画
 				onPaint(getGraphics());
 			}
@@ -586,10 +587,10 @@ public:
 	/** 描画ハンドラ */
 	virtual void onPaint(Graphics *g) {
 		// 背景色で塗りつぶし
-		g->setColor(COLOR_WHITE);
-		g->fillRect(0, 0, this->width, this->height);
-		g->setColor(COLOR_BLACK);
-		g->setFontStyle(FONT_FIXED);
+		g->setColor(Color::WHITE);
+		g->fillRect(0, 0, getWidth(), getHeight());
+		g->setColor(Color::BLACK);
+		g->setFontStyle(Font::FIXED);
 		
 		// 確定ずみのprintfバッファー
 		int i = 0;

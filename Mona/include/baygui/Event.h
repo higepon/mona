@@ -35,11 +35,36 @@ class Control;
 */
 class Event : public Object {
 public:
+	//
+	// イベントタイプ一覧
+	//
+	enum {
+		/** フォーカスイン */
+		FOCUS_IN        = 300,
+		/** フォーカスアウト */
+		FOCUS_OUT       = 301,
+		/** タイマー */
+		TIMER           = 302,
+		/** テキスト確定 */
+		TEXT_CHANGED    = 303,
+		/** 項目選択 */
+		ITEM_SELECTED   = 304,
+		/** ブロック増加 */
+		BLOCK_INCLEMENT = 305,
+		/** ブロック減少 */
+		BLOCK_DECLEMENT = 306,
+		/** カスタムイベント */
+		CUSTOM_EVENT    = 400,
+	};
+
+private:
 	/** イベントタイプ */
 	int type;
 	/** イベント発生元 */
 	Control *source;
+
 #ifdef MONA
+public:
 	/** ヘッダー */
 	unsigned int header;
 	/** 引数(1) */
@@ -57,9 +82,36 @@ public:
 #endif
 
 public:
-	Event::Event() {}
-	Event::Event(int type, Control *source);
-	virtual Event::~Event();
+	/** デフォルトコンストラクタ */
+	Event::Event() {
+		this->type = CUSTOM_EVENT;
+		this->source = NULL;
+	}
+	
+	/**
+	 コンストラクタ
+	 @param type イベントタイプ
+	 @param source イベント発生元部品
+	 */
+	Event::Event(int type, Control *source) {
+		this->type = type;
+		this->source = source;
+	}
+	
+	/** デストラクタ */
+	virtual Event::~Event() {}
+	
+	/** イベントタイプを得る */
+	inline int getType() { return this->type; }
+	
+	/** イベントタイプを設定する */
+	inline void setType(int type) { this->type = type; }
+	
+	/** イベントの発生部品を得る */
+	inline Control* getSource() { return this->source; }
+	
+	/** イベントの発生部品を設定する */
+	inline void setSource(Control *c) { this->source = c; }
 };
 
 #endif // _EVENT_H_INCLUDED_

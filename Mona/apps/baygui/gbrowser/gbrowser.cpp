@@ -76,28 +76,34 @@ public:
 	}
 	
 	void onEvent(Event *event){
-		if (event->type == MOUSE_RELEASED) {
+		if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 			// 更新を押したとき
-			if (event->source == reload) {
+			if (event->getSource() == reload) {
 				// HtmlPanelクラスに処理をお願いする
 				panel->setUrl(address->getText());
 			// 中止を押したとき
-			} else if (event->source == stop) {
+			} else if (event->getSource() == stop) {
 				address->setText("");
 				// HtmlPanelクラスに処理をお願いする
 				panel->setUrl("about:stop");
 			// ホームを押したとき
-			} else if (event->source == home) {
+			} else if (event->getSource() == home) {
 				address->setText("about:home");
 				// HtmlPanelクラスに処理をお願いする
 				panel->setUrl("about:home");
 			// お気に入りを押したとき
-			} else if (event->source == favorites) {
+			} else if (event->getSource() == favorites) {
 				address->setText("about:favorites");
 				// HtmlPanelクラスに処理をお願いする
 				panel->setUrl("about:favorites");
 			// 移動を押したとき
-			} else if (event->source == go || event->type == TEXT_CHANGED) {
+			} else if (event->getSource() == go) {
+				// HtmlPanelクラスに処理をお願いする
+				panel->setUrl(address->getText());
+			}
+		} else if (event->getType() == Event::TEXT_CHANGED) {
+			// 確定したとき
+			if (event->getSource() == address) {
 				// HtmlPanelクラスに処理をお願いする
 				panel->setUrl(address->getText());
 			}

@@ -27,48 +27,33 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
 Graphics::Graphics()
 {
 	tx = ty = cx = cy = cw = ch = 0;
 	this->rgb24 = 0;
-	this->fontStyle = FONT_PLAIN;
+	this->fontStyle = Font::PLAIN;
 	this->image = NULL;
 }
 
-/** コンストラクタ */
 Graphics::Graphics(Image *image)
 {
 	tx = ty = cx = cy = 0;
 	this->rgb24 = 0;
-	this->fontStyle = FONT_PLAIN;
+	this->fontStyle = Font::PLAIN;
 	this->image = image;
 	this->cw = image->getWidth();
 	this->ch = image->getHeight();
 }
 
-/** デストラクタ */
 Graphics::~Graphics()
 {
 }
 
-/**
- 点描画
- @param x X座標
- @param y Y座標
- @param color 描画する色
- */
 void Graphics::drawPixel(int x, int y, unsigned int color)
 {
 	this->image->setPixel(tx + x, ty + y, color);
 }
 
-/**
- イメージ描画
- @param image イメージ
- @param x 描画開始X座標
- @param y 描画開始Y座標
- */
 void Graphics::drawImage(Image *image, int x, int y)
 {
 	for (int i = 0; i < image->getHeight(); i++) {
@@ -78,13 +63,6 @@ void Graphics::drawImage(Image *image, int x, int y)
 	}
 }
 
-/**
- 直線描画
- @param x1 始点X
- @param y1 始点Y
- @param x2 終点X
- @param y2 終点Y
- */
 void Graphics::drawLine(int x1, int y1, int x2, int y2)
 {
 	int dx = (x1 > x2) ? (x1 - x2) : (x2 - x1);
@@ -111,13 +89,6 @@ void Graphics::drawLine(int x1, int y1, int x2, int y2)
 	}
 }
 
-/**
- 矩形描画
- @param x 始点X
- @param y 始点Y
- @param width 幅
- @param height 高さ
- */
 void Graphics::drawRect(int x, int y, int width, int height)
 {
 	if (width < 0) {
@@ -139,12 +110,6 @@ void Graphics::drawRect(int x, int y, int width, int height)
 	}
 }
 
-/**
- 円描画
- @param x0 中心X
- @param y0 中心Y
- @param r  半径
- */
 void Graphics::drawCircle(int x0, int y0, int r){
 	int x, y, f;
 	x = r;
@@ -169,12 +134,6 @@ void Graphics::drawCircle(int x0, int y0, int r){
 	}
 }
 
-/**
- 文字列描画
- @param str 文字列
- @param x 始点X
- @param y 始点Y
- */
 void Graphics::drawText(char *str, int x, int y)
 {
 	int i, j, k, pos, bit, offset, width, height, w = 0, h = 0;
@@ -202,17 +161,17 @@ void Graphics::drawText(char *str, int x, int y)
 					// 行パディングなし
 					if ((fp[pos] & bit) != 0) {
 						// 通常書体
-						if ((getFontStyle() & 0x011) == FONT_PLAIN) {
+						if ((getFontStyle() & 0x011) == Font::PLAIN) {
 							drawPixel(x0, y + h + j, this->rgb24);
 						// 太字体
-						} else if ((getFontStyle() & 0x011) == FONT_BOLD) {
+						} else if ((getFontStyle() & 0x011) == Font::BOLD) {
 							drawPixel(x0, y + j, this->rgb24);
 							drawPixel(x0 + 1, y + j, this->rgb24);
 						// 斜字体
-						} else if ((getFontStyle() & 0x011) == FONT_ITALIC) {
+						} else if ((getFontStyle() & 0x011) == Font::ITALIC) {
 							drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
 						// 太字体＋斜字体
-						} else if ((getFontStyle() & 0x011) == FONT_BOLD | FONT_ITALIC) {
+						} else if ((getFontStyle() & 0x011) == Font::BOLD | Font::ITALIC) {
 							drawPixel(x0 + (height - j) / 4, y + j, this->rgb24);
 							drawPixel(x0 + (height - j) / 4 + 1, y + j, this->rgb24);
 						}
@@ -229,12 +188,6 @@ void Graphics::drawText(char *str, int x, int y)
 	}
 }
 
-/**
- 円塗りつぶし描画描画
- @param x0 中心X
- @param y0 中心Y
- @param r  半径
- */
 void Graphics::fillCircle(int x0, int y0, int r)
 {
 	int i;
@@ -261,13 +214,6 @@ void Graphics::fillCircle(int x0, int y0, int r)
 	}
 }
 
-/**
- 矩形ぬりつぶし描画
- @param x 始点X
- @param y 始点Y
- @param width 幅
- @param height 高さ
- */
 void Graphics::fillRect(int x, int y, int width, int height)
 {
 	if (width < 0) {
@@ -288,24 +234,12 @@ void Graphics::fillRect(int x, int y, int width, int height)
 	}
 }
 
-/**
- 座標設定
- @param x 始点X
- @param y 始点Y
- */
 void Graphics::translate(int x, int y)
 {
 	tx = x;
 	ty = y;
 }
 
-/**
- クリッピング領域設定
- @param cx 始点X
- @param cy 始点Y
- @param cw 終点X
- @param ch 終点Y
- */
 void Graphics::setClip(int cx, int cy, int cw, int ch)
 {
 	this->cx = cx;
@@ -314,30 +248,16 @@ void Graphics::setClip(int cx, int cy, int cw, int ch)
 	this->ch = ch;
 }
 
-/**
- 色設定
- @param r 赤(0-255)
- @param g 緑(0-255)
- @param b 青(0-255)
- */
 void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
 {
 	this->rgb24 = 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
-/**
- 色設定
- @param color (0x0-0xFFFFFF)
- */
 void Graphics::setColor(unsigned int color)
 {
-	this->rgb24 = 0xff000000 | color;
+	this->rgb24 = color;
 }
 
-/**
- フォントスタイル（通常、太字、斜字、太字＆斜字）を設定する
- @param style フォントスタイル (FONT_PLAIN/FONT_BOLD/FONT_ITALIC/FONT_BOLD|FONT_ITALIC)
- */
 void Graphics::setFontStyle(int style)
 {
 	this->fontStyle = style;

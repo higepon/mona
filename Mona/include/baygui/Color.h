@@ -25,20 +25,44 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "baygui.h"
+#if !defined(_COLOR_H_INCLUDED_)
+#define _COLOR_H_INCLUDED_
 
 /**
- コンストラクタ
- @param type イベントタイプ
- @param source イベント発生元部品
+ 色構造体
  */
-Event::Event(int type, Control *source)
-{
-	this->type = type;
-	this->source = source;
-}
+struct Color {
+public:
+	//
+	// 部品の初期色
+	//
+	enum {
+		DEFAULT_TRANSCOLOR = 0x00000000,
+		DEFAULT_FORECOLOR  = 0xff000000,
+		DEFAULT_BACKCOLOR  = 0xffc0c0c0,
+	};
+	
+	//
+	// システム標準16色に準拠
+	//
+	enum {
+		BLACK     = 0xff000000,
+		MAROON    = 0xff800000,
+		GREEN     = 0xff008000,
+		OLIVE     = 0xff808000,
+		NAVY      = 0xff000080,
+		PURPLE    = 0xff800080,
+		TEAL      = 0xff008080,
+		LIGHTGRAY = 0xffC0C0C0,
+		GRAY      = 0xff808080,
+		RED       = 0xffff0000,
+		LIME      = 0xff00ff00,
+		YELLOW    = 0xffffff00,
+		BLUE      = 0xff0000ff,
+		MAGENDA   = 0xffff00ff,
+		CYAN      = 0xff00ffff,
+		WHITE     = 0xffffffff,
+	};
+};
 
-/** デストラクタ */
-Event::~Event()
-{
-}
+#endif /* _COLOR_H_INCLUDED_ */

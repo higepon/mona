@@ -32,14 +32,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  基底クラス
 */
 class Object {
+#ifdef MONA
 protected:
 	/** スレッドID */
 	dword threadID;
+	/** GUIサーバーID */
+	dword guisvrID;
+#endif
 
 public:
+	/** コンストラクタ */
 	Object::Object();
+	
+	/** デストラクタ */
 	virtual Object::~Object();
-	//unsigned char *getByteArray(char *path);
 };
 
 #endif // _OBJECT_H_INCLUDED_

@@ -16,7 +16,7 @@ are met:
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO KEYEVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -25,30 +25,27 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "baygui.h"
+#if !defined(_FONT_H_INCLUDED_)
+#define _FONT_H_INCLUDED_
 
 /**
- コンストラクタ.
- x, y はメインウィンドウの内部領域の左上に対する相対座標である。
- 絶対座標(ax,ay)は以下のように取得する。
- <ul>
- <li> ax = x + getMainWindow()->getRect()->x + INSETS_LEFT;
- <li> ay = y + getMainWindow()->getRect()->y + INSETS_TOP;
- </ul>
- @param type type イベントタイプ
- @param source イベント発生元
- @param x X座標（絶対座標）
- @param y Y座標（絶対座標）
+ フォント構造体
  */
-MouseEvent::MouseEvent(int type, Control *source, int x, int y)
-{
-	this->type = type;
-	this->source = source;
-	this->x = x;
-	this->y = y;
-}
+struct Font {
+public:
+	//
+	// 書体
+	//
+	enum {
+		/** 通常書体 */
+		PLAIN       = 0x000,
+		/** 太字体 */
+		BOLD        = 0x001,
+		/** 斜字体 */
+		ITALIC      = 0x010,
+		/** 固定幅 */
+		FIXED       = 0x100,
+	};
+};
 
-/** デストラクタ */
-MouseEvent::~MouseEvent()
-{
-}
+#endif /* _FONT_H_INCLUDED_ */

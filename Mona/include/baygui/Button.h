@@ -33,16 +33,37 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class Button : public Control {
 private:
+	/** ボタンが押されたかどうか */
 	bool pushed;
+	/** ボタンのラベル */
 	String label;
 	
 public:
+	/**
+	 コンストラクタ
+	 @param label ラベル
+	 */
 	Button::Button(char *label);
+	
+	/** デストラクタ */
 	virtual Button::~Button();
+	
+	/**
+	 ラベルを設定する
+	 @param label ラベル
+	 */
 	virtual void setLabel(char *label);
+	
+	/** ボタンが押されたかどうかを得る */
+	inline bool getPushed() { return this->pushed; }
+	
 	/** ラベルを得る */
-	inline  char *getLabel() { return this->label.getBytes(); }
+	inline char *getLabel() { return this->label.getBytes(); }
+	
+	/** 描画ハンドラ */
 	virtual void onPaint(Graphics *g);
+	
+	/** イベントハンドラ */
 	virtual void onEvent(Event *event);
 };
 

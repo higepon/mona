@@ -52,7 +52,7 @@ public:
 	}
 
 	void onEvent(Event *e) {
-		if (e->type == TIMER) {
+		if (e->getType() == Event::TIMER) {
 			ChangeColor();
 		}
 	}

@@ -27,53 +27,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
 ListBox::ListBox()
 {
 	this->selectedIndex =  -1;
 	this->dataList = new LinkedList();
-	this->itemEvent.type = ITEM_SELECTED;
-	this->itemEvent.source = this;
+	this->itemEvent.setType(Event::ITEM_SELECTED);
+	this->itemEvent.setSource(this);
+	setBackground(Color::WHITE);
 }
 
-/** デストラクタ */
 ListBox::~ListBox()
 {
 	delete(this->dataList);
 }
 
-/** 選択項目を得る */
 char *ListBox::getSelectedItem()
 {
 	return ((String *)dataList->get(this->selectedIndex))->getBytes();
 }
 
-/** index 番目を選択する */
 void ListBox::select(int index)
 {
 	this->selectedIndex = index;
 	repaint();
 }
 
-/** 項目を追加する */
 void ListBox::add(char *item)
 {
 	dataList->add(new String(item));
 }
 
-/** index 番目の項目を削除する */
 void ListBox::remove(int index)
 {
 	dataList->remove(index);
 }
 
-/** 再描画 */
 void ListBox::onPaint(Graphics *g)
 {
-	int i, w = this->width, h = this->height;
+	int i, w = getWidth(), h = getHeight();
 	
 	// 外枠
-	if (focused == true && enabled == true) {
+	if (getFocused() == true && getEnabled() == true) {
 		g->setColor(0,128,255);
 		g->drawRect(0, 0, w, h);
 	} else {
@@ -82,57 +76,56 @@ void ListBox::onPaint(Graphics *g)
 	}
 	
 	// 内枠
-	g->setColor(~this->foreColor);
+	g->setColor(getBackground());
 	g->fillRect(1, 1, w - 2, h - 2);
-	g->setColor(this->foreColor);
+	g->setColor(getForeground());
 	g->drawRect(1, 1, w - 2, h - 2);
 
 	// 文字
 	for (i = 0; i < dataList->getLength(); i++) {
-		if (selectedIndex == i && enabled == true) {
+		if (selectedIndex == i && getEnabled() == true) {
 			g->setColor(0, 128, 255);
 			g->fillRect(3, (16 * i) + 3, w - 6, 16);
-			g->setColor(~this->foreColor);
+			g->setColor(getBackground());
 			g->drawText(((String *)dataList->get(i))->getBytes(), 4, (16 * i) + 6);
 		} else {
-			g->setColor(this->foreColor);
+			g->setColor(getForeground());
 			g->drawText(((String *)dataList->get(i))->getBytes(), 4, (16 * i) + 6);
 		}
 	} 
 }
 
-/** イベント処理 */
 void ListBox::onEvent(Event *event)
 {
 	// 非活性の時はイベントを受け付けない
-	if (this->enabled == false) return;
+	if (getEnabled() == false) return;
 
 	// キー押下
-	if (event->type == KEY_PRESSED) {
-		int keycode = ((KeyEvent *)event)->keycode;
-		if (keycode == VKEY_UP) {
+	if (event->getType() == KeyEvent::KEY_PRESSED) {
+		int keycode = ((KeyEvent *)event)->getKeycode();
+		if (keycode == KeyEvent::VKEY_UP) {
 			if (this->selectedIndex > 0) {
 				this->selectedIndex--;
 				repaint();
 				getParent()->onEvent(&this->itemEvent);
 			}
-		} else if (keycode == VKEY_DOWN) {
+		} else if (keycode == KeyEvent::VKEY_DOWN) {
 			if (this->selectedIndex < this->dataList->getLength() - 1) {
 				this->selectedIndex++;
 				repaint();
 				getParent()->onEvent(&this->itemEvent);
 			}
-		} else if (keycode == VKEY_ENTER) {
+		} else if (keycode == KeyEvent::VKEY_ENTER) {
 			getParent()->onEvent(&this->itemEvent);
 		}
 	// マウス押下
-	} else if (event->type == MOUSE_PRESSED) {
-		int my = ((MouseEvent *)event)->y;
+	} else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
+		int my = ((MouseEvent *)event)->getY();
 		//printf("y = %d,", my);
 		select((my - 3) / 16);
 		getParent()->onEvent(&this->itemEvent);
 	// フォーカス状態変更
-	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
+	} else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
 		repaint();
 		getParent()->onEvent(&this->itemEvent);
 	}

@@ -21,79 +21,62 @@ int FontMetrics::offsetListLength = 0;
 int *FontMetrics::offsetList = NULL;
 unsigned char *FontMetrics::defaultFontData = NULL;
 
-/** コンストラクタ */
 FontMetrics::FontMetrics()
 {
-	this->fontStyle = FONT_PLAIN;
+	this->fontStyle = Font::PLAIN;
 	if (defaultFontData != NULL) return;
 	
-	// GUIサーバーを探す
-	dword guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-	if (guisvrID == THREAD_UNKNOWN) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+	// フォント取得メッセージを投げる
+	MessageInfo info;
+	MonAPI::Message::sendReceive(&info, this->guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
+	byte* font_data = MonAPI::MemoryMap::map(info.arg2);
+	if (font_data == NULL) {
+		printf("%s:%d:ERROR: can not get font!\n", __FILE__, __LINE__);
 		exit(1);
 	} else {
-		// フォント取得メッセージを投げる
-		MessageInfo info;
-		MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
-		byte* font_data = MonAPI::MemoryMap::map(info.arg2);
-		if (font_data == NULL) {
-			printf("%s:%d:ERROR: can not get font!\n", __FILE__, __LINE__);
-			exit(1);
-		} else {
-			defaultFontData = (unsigned char *)malloc(info.arg3);
-			memcpy(defaultFontData, font_data, info.arg3);
-			MonAPI::MemoryMap::unmap(info.arg2);
-			
-			// モナーフォントの構造
-			// 3 - 0 フォント数
-			// ? - 3 フォント構造体 ( ? = フォント数 )
-			// 
-			// フォント構造体
-			// 3 - 0 UCS-4 (UTF-16)
-			//     4 幅 (fw)
-			//     5 高さ (fh)
-			// ? - 6 ビットパターン ( ? = (fw * fh + 7) / 8 )
-			
-			offsetListLength = inGetUInt16(&defaultFontData[0]);
-			
-			// 文字までのオフセット(byte)
-			offsetList = (int *)malloc(65536);
-			memset(offsetList, 0, 65536);
-			
-			// オフセットリストを作る
-			int pos = 4;
-			for (int i = 0; i < offsetListLength; i++) {
-				offsetList[inGetUInt16(&defaultFontData[pos])] = pos;
-				pos += 4;
-				int fw = defaultFontData[pos++];
-				int fh = defaultFontData[pos++];
-				pos += (int)((fw * fh + 7) / 8);
-			}
+		defaultFontData = (unsigned char *)malloc(info.arg3);
+		memcpy(defaultFontData, font_data, info.arg3);
+		MonAPI::MemoryMap::unmap(info.arg2);
+		
+		// モナーフォントの構造
+		// 3 - 0 フォント数
+		// ? - 3 フォント構造体 ( ? = フォント数 )
+		// 
+		// フォント構造体
+		// 3 - 0 UCS-4 (UTF-16)
+		//     4 幅 (fw)
+		//     5 高さ (fh)
+		// ? - 6 ビットパターン ( ? = (fw * fh + 7) / 8 )
+		
+		offsetListLength = inGetUInt16(&defaultFontData[0]);
+		
+		// 文字までのオフセット(byte)
+		offsetList = (int *)malloc(65536);
+		memset(offsetList, 0, 65536);
+		
+		// オフセットリストを作る
+		int pos = 4;
+		for (int i = 0; i < offsetListLength; i++) {
+			offsetList[inGetUInt16(&defaultFontData[pos])] = pos;
+			pos += 4;
+			int fw = defaultFontData[pos++];
+			int fh = defaultFontData[pos++];
+			pos += (int)((fw * fh + 7) / 8);
 		}
 	}
 }
 
-/** デストラクタ */
 FontMetrics::~FontMetrics()
 {
 }
 
-/**
- UCS-4コードを受け取って展開済み文字データを返す
- @param ucs4 UCS-4コード
- @param offset [out] 可変フォントでは offset = width、固定フォントでは offset > width
- @param width [out] 文字の幅
- @param height [out] 文字の高さ
- @param data [out] 展開済み文字データ
-*/
 bool FontMetrics::decodeCharacter(wchar ucs4, int *offset, int *width, int *height, char *data)
 {
 	if (ucs4 <= 0xFFFF && defaultFontData != NULL && offsetList[ucs4] != 0) {
 		int fw = defaultFontData[offsetList[ucs4] + 4];
 		int fh = defaultFontData[offsetList[ucs4] + 5];
 		//printf("fontStyle = %d,", this->fontStyle);
-		if ((this->fontStyle & 0x100) == FONT_FIXED) {
+		if ((this->fontStyle & 0x100) == Font::FIXED) {
 			if (ucs4 < 128 || 0xff60 < ucs4) {
 				*offset = 8;
 			} else {
@@ -111,10 +94,6 @@ bool FontMetrics::decodeCharacter(wchar ucs4, int *offset, int *width, int *heig
 	}
 }
 
-/**
- 文字列の幅を得る
- @param str 文字列（複数行対応）
- */
 int FontMetrics::getWidth(String str)
 {
 	// NULLチェック
@@ -127,7 +106,7 @@ int FontMetrics::getWidth(String str)
 			break;
 		}
 		if (c <= 0xFFFF) {
-			if ((this->fontStyle & 0x100) == FONT_FIXED) {
+			if ((this->fontStyle & 0x100) == Font::FIXED) {
 				if (c < 128 || 0xff60 < c) {
 					w += 8;
 				} else {
@@ -142,10 +121,6 @@ int FontMetrics::getWidth(String str)
 	return w;
 }
 
-/**
- 文字列の高さを得る
- @param str 文字列（複数行対応）
- */
 int FontMetrics::getHeight(String str)
 {
 	int h = 12;

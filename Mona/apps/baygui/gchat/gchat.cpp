@@ -111,7 +111,7 @@ GChat::~GChat()
 void GChat::onEvent(Event *event)
 {
 	// 実行
-	if (event->type == TEXT_CHANGED) {
+	if (event->getType() == Event::TEXT_CHANGED) {
 		// 履歴追加
 		history->add(new LinkedItem(new String(text->getText())));
 		historyPtr = history->getLength();
@@ -119,16 +119,16 @@ void GChat::onEvent(Event *event)
 		messageList->repaint();
 		text->setText("");
 	// キー押下
-	} else if (event->type == KEY_PRESSED) {
-		int keycode = ((KeyEvent *)event)->keycode;
+	} else if (event->getType() == KeyEvent::KEY_PRESSED) {
+		int keycode = ((KeyEvent *)event)->getKeycode();
 		// １つ前の履歴
-		if (keycode == VKEY_UP) {
+		if (keycode == KeyEvent::VKEY_UP) {
 			if (historyPtr > 0) {
 				historyPtr--;
 				text->setText(((String *)history->get(historyPtr))->getBytes());
 			}
 		// １つ次の履歴
-		} else if (keycode == VKEY_DOWN) {
+		} else if (keycode == KeyEvent::VKEY_DOWN) {
 			if (historyPtr < history->getLength() - 1) {
 				historyPtr++;
 				text->setText(((String *)history->get(historyPtr))->getBytes());

@@ -44,6 +44,13 @@ private:
 	/** ワイド文字列の長さ */
 	int wlen;
 	
+private:
+	/** 文字列を設定する */
+	String& set(const char* s);
+
+	/** 数値を設定する */
+	String& set(const int n);
+
 public:
 	/** コンストラクタ */
 	inline String() : charArray(0), wlen(0) {}
@@ -122,13 +129,6 @@ public:
 		}
 		return true;
 	}
-
-private:
-	/** 文字列を設定する */
-	String& set(const char* s);
-
-	/** 数値を設定する */
-	String& set(const int n);
 };
 
 #endif // _STRING_H_INCLUDED_

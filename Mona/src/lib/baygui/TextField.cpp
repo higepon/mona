@@ -27,7 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
 TextField::TextField()
 {
 	this->textPtr = -1;
@@ -35,71 +34,16 @@ TextField::TextField()
 	this->offx = 3;
 	this->offy = 3;
 	memset(text, 0, MAX_TEXT_LEN);
-	this->textEvent.type = TEXT_CHANGED;
-	this->textEvent.source = this;
+	this->textEvent.setType(Event::TEXT_CHANGED);
+	this->textEvent.setSource(this);
+	setBackground(Color::WHITE);
 }
 
-/** デストラクタ */
 TextField::~TextField()
 {
 }
 
-/**
- テキスト設定
- @param text
- */
-void TextField::setText(char *text)
-{
-	strcpy(this->text, text);
-	this->textLen = strlen(text);
-	this->textPtr = this->textLen - 1;
-	repaint();
-}
 
-/** 再描画 */
-void TextField::onPaint(Graphics *g)
-{
-	int w = this->width, h = this->height;
-
-	// 外枠
-	if (this->focused == true && this->enabled == true) {
-		g->setColor(0, 128, 255);
-		g->drawRect(0, 0, w, h);
-	} else {
-		g->setColor(getParent()->getBackground());
-		g->drawRect(0, 0, w, h);
-	}
-	
-	// 内枠
-	g->setColor(~this->foreColor);
-	g->fillRect(1, 1, w - 2, h - 2);
-	g->setColor(this->foreColor);
-	g->drawRect(1, 1, w - 2, h - 2);
-
-	// 文字
-	int fh = this->_metrics->getHeight(getText());
-	if (enabled == true) {
-		g->setColor(this->foreColor);
-	} else {
-		g->setColor(COLOR_GRAY);
-	}
-	g->drawText(text, this->offx, (h - fh) / 2);
-
-	// キャレット
-	if (this->focused == true && this->enabled == true) {
-		int i;
-		char temp[MAX_TEXT_LEN];
-		for (i = 0; i <= textPtr; i++) {
-			temp[i] = text[i];
-		}
-		temp[i] = '\0';
-		int fw = this->_metrics->getWidth(temp);
-		g->drawLine(offx + fw, offy, offx + fw, offy + 12);
-	}
-	//g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
-}
-
-/** 1文字挿入 */
 void TextField::insertCharacter(char c)
 {
 	int i;
@@ -112,7 +56,6 @@ void TextField::insertCharacter(char c)
 	textLen++;
 }
 
-/** 1文字削除 */
 void TextField::deleteCharacter()
 {
 	int i;
@@ -124,34 +67,83 @@ void TextField::deleteCharacter()
 	textLen--;
 }
 
-/** イベント処理 */
+void TextField::setText(char *text)
+{
+	strcpy(this->text, text);
+	this->textLen = strlen(text);
+	this->textPtr = this->textLen - 1;
+	repaint();
+}
+
+void TextField::onPaint(Graphics *g)
+{
+	int w = getWidth(), h = getHeight();
+
+	// 外枠
+	if (getFocused() == true && getEnabled() == true) {
+		g->setColor(0, 128, 255);
+		g->drawRect(0, 0, w, h);
+	} else {
+		g->setColor(getParent()->getBackground());
+		g->drawRect(0, 0, w, h);
+	}
+	
+	// 内枠
+	g->setColor(getBackground());
+	g->fillRect(1, 1, w - 2, h - 2);
+	g->setColor(getForeground());
+	g->drawRect(1, 1, w - 2, h - 2);
+
+	// 文字
+	int fh = getFontMetrics()->getHeight(getText());
+	if (getEnabled() == true) {
+		g->setColor(getForeground());
+	} else {
+		g->setColor(Color::GRAY);
+	}
+	g->drawText(text, this->offx, (h - fh) / 2);
+
+	// キャレット
+	if (getFocused() == true && getEnabled() == true) {
+		int i;
+		char temp[MAX_TEXT_LEN];
+		for (i = 0; i <= textPtr; i++) {
+			temp[i] = text[i];
+		}
+		temp[i] = '\0';
+		int fw = getFontMetrics()->getWidth(temp);
+		g->drawLine(offx + fw, offy, offx + fw, offy + 12);
+	}
+	//g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
+}
+
 void TextField::onEvent(Event *event)
 {
 	// 非活性の時はイベントを受け付けない
-	if (this->enabled == false) return;
+	if (getEnabled() == false) return;
 	
 	// キー押下
-	if (event->type == KEY_PRESSED) {
-		int keycode = ((KeyEvent *)event)->keycode;
-		if (keycode == VKEY_BACKSPACE) {
+	if (event->getType() == KeyEvent::KEY_PRESSED) {
+		int keycode = ((KeyEvent *)event)->getKeycode();
+		if (keycode == KeyEvent::VKEY_BACKSPACE) {
 			if (textPtr >= 0) {
 				// バックスペース
 				deleteCharacter();
 				repaint();
 			}
-		} else if (keycode == VKEY_LEFT) {
+		} else if (keycode == KeyEvent::VKEY_LEFT) {
 			// ←移動
 			if (textPtr >= 0) {
 				textPtr--;
 				repaint();
 			}
-		} else if (keycode == VKEY_RIGHT) {
+		} else if (keycode == KeyEvent::VKEY_RIGHT) {
 			// →移動
 			if (textPtr < textLen - 1) {
 				textPtr++;
 				repaint();
 			}
-		} else if (keycode == VKEY_ENTER) {
+		} else if (keycode == KeyEvent::VKEY_ENTER) {
 			// 確定
 			getParent()->onEvent(&this->textEvent);
 			return;
@@ -161,7 +153,7 @@ void TextField::onEvent(Event *event)
 			repaint();
 		}
 	// フォーカス状態変更
-	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
+	} else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
 		repaint();
 		getParent()->onEvent(&this->focusEvent);
 	}

@@ -27,7 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
 LinkedList::LinkedList()
 {
 	this->dataListLength = 0;
@@ -35,27 +34,12 @@ LinkedList::LinkedList()
 	this->endItem = NULL;
 }
 
-/** デストラクタ */
 LinkedList::~LinkedList()
 {
 	removeAll();
 }
 
-/** ObjectをLinkedItemに変換する */
-LinkedItem *LinkedList::getLinkedItem(Object *o)
-{
-	// NULLチェック
-	if (o == NULL || this->firstItem == NULL) return NULL;
-	
-	for (int i = 0; i < getLength(); i++) {
-		LinkedItem *item = _get(i);
-		if (item->data == o) return item;
-	}
-	return NULL;
-}
-
-/** 指定した順番の項目を得る */
-LinkedItem *LinkedList::_get(int index)
+LinkedItem *LinkedList::getLinkedItem(int index)
 {
 	// NULLチェック
 	if (index >= dataListLength) return NULL;
@@ -71,10 +55,21 @@ LinkedItem *LinkedList::_get(int index)
 	return item;
 }
 
-/** 指定した順番の項目を得る */
+LinkedItem *LinkedList::getLinkedItem(Object *o)
+{
+	// NULLチェック
+	if (o == NULL || this->firstItem == NULL) return NULL;
+	
+	for (int i = 0; i < getLength(); i++) {
+		LinkedItem *item = getLinkedItem(i);
+		if (item->data == o) return item;
+	}
+	return NULL;
+}
+
 Object *LinkedList::get(int index)
 {
-	LinkedItem *item = _get(index);
+	LinkedItem *item = getLinkedItem(index);
 	if (item != NULL) {
 		return item->data;
 	} else {
@@ -82,7 +77,6 @@ Object *LinkedList::get(int index)
 	}
 }
 
-/** 一番最初の項目を得る */
 Object *LinkedList::getFirst()
 {
 	if (this->firstItem != NULL) {
@@ -92,7 +86,6 @@ Object *LinkedList::getFirst()
 	}
 }
 
-/** 一番最後の項目を得る */
 Object *LinkedList::getLast()
 {
 	if (this->endItem != NULL) {
@@ -102,7 +95,6 @@ Object *LinkedList::getLast()
 	}
 }
 
-/** 追加 */
 void LinkedList::add(Object *o)
 {
 	LinkedItem *item = new LinkedItem(o);
@@ -123,13 +115,11 @@ void LinkedList::add(Object *o)
 	this->dataListLength++;
 }
 
-/** 削除 */
 void LinkedList::remove(int index)
 {
 	remove(get(index));
 }
 
-/** 削除 */
 void LinkedList::remove(Object *o)
 {
 	LinkedItem *item = getLinkedItem(o);
@@ -161,7 +151,6 @@ void LinkedList::remove(Object *o)
 	dataListLength--;
 }
 
-/** 全削除 */
 void LinkedList::removeAll()
 {
 	while (this->firstItem != NULL) {

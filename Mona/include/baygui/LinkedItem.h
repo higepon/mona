@@ -41,7 +41,13 @@ public:
 	LinkedItem *prev;
 	
 public:
+	/** コンストラクタ */
 	LinkedItem::LinkedItem(Object *o);
+	
+	/**
+	 デストラクタ.
+	 内部データもdeleteする。
+	 */
 	virtual LinkedItem::~LinkedItem();
 };
 

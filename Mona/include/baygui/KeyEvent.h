@@ -33,15 +33,99 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class KeyEvent : public Event {
 public:
+	//
+	// イベントタイプ一覧
+	//
+	enum {
+		/** キー押下 */
+		KEY_PRESSED     = 100,
+		/** キーリリース */
+		KEY_RELEASED    = 101,
+	};
+
+	//
+	// 特殊キーコード一覧
+	//
+	enum {
+		VKEY_ESC       =  0,
+		VKEY_BACKSPACE = 14,
+		VKEY_TAB       = 15,
+		VKEY_ENTER     = 28,
+
+		VKEY_PGUP      = 354,
+		VKEY_PGDOWN    = 355,
+		VKEY_INSERT    = 356,
+		VKEY_DELETE    = 357,
+		VKEY_UP        = 358,
+		VKEY_LEFT      = 359,
+		VKEY_RIGHT     = 360,
+		VKEY_DOWN      = 361,
+		VKEY_HOME      = 362,
+		VKEY_END       = 363,
+
+		VKEY_F11       = 382,
+		VKEY_F12       = 383,
+		VKEY_F1        = 398,
+		VKEY_F2        = 399,
+		VKEY_F3        = 400,
+		VKEY_F4        = 401,
+		VKEY_F5        = 402,
+		VKEY_F6        = 403,
+		VKEY_F7        = 404,
+		VKEY_F8        = 405,
+		VKEY_F9        = 406,
+		VKEY_F10       = 407,
+		VKEY_LSHIFT    = 412,
+		VKEY_ALT       = 415,
+		VKEY_CTRL      = 416,
+		VKEY_RMENU     = 424,
+		VKEY_LMENU     = 425,
+		VKEY_RSHIFT    = 427,
+	};
+
+private:
 	/** キーコード */
 	int keycode;
 	/** 修飾キー */
 	int modifiers;
 	
 public:
-	KeyEvent::KeyEvent() {}
-	KeyEvent::KeyEvent(int type, Control *target, int keycode, int modifiers);
-	virtual KeyEvent::~KeyEvent();
+	/** デフォルトコンストラクタ */
+	KeyEvent::KeyEvent() {
+		setType(KEY_PRESSED);
+		setSource(NULL);
+		this->keycode = 0;
+		this->modifiers = 0;
+	}
+	
+	/**
+	 コンストラクタ
+	 @param type type イベントタイプ
+	 @param source イベント発生元
+	 @param keycode キーコード
+	 @param modifiers 修飾キー
+	 */
+	KeyEvent::KeyEvent(int type, Control *source, int keycode, int modifiers) {
+		setType(type);
+		setSource(source);
+		this->keycode = keycode;
+		this->modifiers = modifiers;
+	}
+	
+	/** デストラクタ */
+	virtual KeyEvent::~KeyEvent() {}
+	
+	/** キーコードを得る */
+	inline int getKeycode() { return this->keycode; }
+	
+	/** キーコードを設定する */
+	inline void setKeycode(int keycode) { this->keycode = keycode; }
+	
+	/** 修飾キーを得る */
+	inline int getModifiers() { return this->modifiers; }
+	
+	/** 修飾キーを設定する */
+	inline void setModifiers(int modifiers) { this->modifiers = modifiers; }
 };
 
 #endif // _KEYEVENT_H_INCLUDED_

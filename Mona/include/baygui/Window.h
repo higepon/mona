@@ -32,7 +32,32 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ウィンドウクラス
 */
 class Window : public Container {
-protected:
+public:
+	//
+	// ウィンドウオフセット
+	//
+	enum {
+		/** ウィンドウ上端 */
+		INSETS_TOP       = 22,
+		/** ウィンドウ下端 */
+		INSETS_BOTTOM    = 6,
+		/** ウィンドウ左端 */
+		INSETS_LEFT      = 6,
+		/** ウィンドウ右端 */
+		INSETS_RIGHT     = 6,
+	};
+		
+	//
+	// ウィンドウの状態
+	//
+	enum {
+		/** 通常時 */
+		STATE_NORMAL     = 0,
+		/** ウィンドウ移動中 */
+		STATE_MOVING     = 1,
+	};
+
+private:
 	/** タイトル */
 	String title;
 	/** 修飾キー */
@@ -43,10 +68,12 @@ protected:
 	int preX;
 	/** 以前のマウスのY座標 */
 	int preY;
+	/** オフセットX */
+	int offsetX;
+	/** オフセットY */
+	int offsetY;
 	/** オーバーラップウィンドウの状態 */
 	unsigned int overlap;
-	/** 実行中フラグ */
-	bool isRunning;
 	/** キーイベント */
 	KeyEvent keyEvent;
 	/** マウスイベント */
@@ -55,32 +82,94 @@ protected:
 	Event timerEvent;
 	/** カスタムイベント */
 	Event customEvent;
+	/** 描画領域 */
+	Graphics *_g;
+	/** 描画バッファー */
+	Image *_buffer;
 	/** 内部描画領域 */
 	Graphics *__g;
 	/** 内部描画バッファー */
 	Image *__buffer;
+	/** 実行中フラグ */
+	bool isRunning;
+	
 #ifdef MONA
-	/** GUIサーバーID */
-	dword guisvrID;
+protected:
 	/** GUIサーバー上のウィンドウオブジェクト */
 	guiserver_window *_window;
 #endif
 
 public:
+	/** コンストラクタ */
 	Window::Window();
+	
+	/** デストラクタ */
 	virtual Window::~Window();
+
+	/**
+	 部品生成時ハンドラ.
+	 Window::run()で呼ばれる。
+	 独自の処理を付与したいときはWindow::onStart()を先に呼ぶこと。
+	*/
 	virtual void onStart();
+	
+	/**
+	 部品破棄ハンドラ.
+	 デストラクタ内で呼ばれる。
+	 独自の処理を付与したいときはWindow::onExit()を後で呼ぶこと。
+	 */
 	virtual void onExit();
+
+	/** ハンドルを得る */
 	unsigned int getHandle();
+	
+	/** 描画オブジェクトを得る */
+	virtual Graphics *getGraphics();
+	
+	/** 内部バッファーを得る */
+	virtual Image *getBuffer();
+	
 	/** タイトルを得る */
-	inline char  *getTitle() { return this->title.getBytes(); }
+	inline char *getTitle() { return this->title.getBytes(); }
+	
+	/**
+	 タイトル設定
+	 @param title タイトル
+	 */
 	virtual void setTitle(char *title);
+	
+	/**
+	 表示状態を設定する
+	 @param visible 表示状態 (true / false)
+	 */
 	virtual void setVisible(bool visible);
+	
+	/**
+	 位置を変更する
+	 @param x X座標
+	 @param y Y座標
+	*/
 	virtual void setLocation(int x, int y);
+	
+	/**
+	 タイマーをセットする
+	 @param duration タイマーイベントが発動するまでの時間[ms]
+	 */
 	virtual void setTimer(int duration);
-	virtual void postEvent(Event *event);
+	
+	/** 再描画 */
 	virtual void repaint();
+	
+	/** 部品更新 */
 	virtual void update();
+	
+	/** イベント処理 */
+	virtual void postEvent(Event *event);
+	
+	/** アプリケーションループを抜ける */
+	virtual void stop();
+	
+	/** アプリケーションループ */
 	virtual void run();
 };
 

@@ -27,26 +27,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/**
- コンストラクタ
- @param width 幅
- @param height 高さ
- */
 Image::Image(int width, int height)
 {
 	this->width = this->height = 0;
 	this->bitmap = NULL;
 	
-	// GUIサーバーを探す
-	dword guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-	if (guisvrID == THREAD_UNKNOWN) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-		return;
-	}
-
 	// GUIサーバー上にビットマップを生成する
 	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, guisvrID, MSG_GUISERVER_CREATEBITMAP, width, height, 0xffffffff)) {
+	if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEBITMAP, 
+		width, height, Color::DEFAULT_BACKCOLOR))
+	{
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		return;
 	}
@@ -64,25 +54,14 @@ Image::Image(int width, int height)
 	this->height = height;
 }
 
-/**
- コンストラクタ
- @param path ファイル名
- */
 Image::Image(char *path)
 {
 	this->width = this->height = 0;
 	this->bitmap = NULL;
 	
-	// GUIサーバーを探す
-	guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-	if (guisvrID == THREAD_UNKNOWN) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-		return;
-	}
-	
 	// GUIサーバー上でビットマップをデコードする
 	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
+	if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		return;
 	}
@@ -100,17 +79,14 @@ Image::Image(char *path)
 	this->height = this->bitmap->Height;
 }
 
-/** デストラクタ */
 Image::~Image()
 {
 	// ビットマップ破棄要求
-	dword handle = getHandle();
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, handle) == 0) {
+	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle()) == 0) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 }
 
-/** ハンドルを得る */
 unsigned int Image::getHandle()
 {
 	if (this->bitmap != NULL) {
@@ -120,7 +96,6 @@ unsigned int Image::getHandle()
 	}
 }
 
-/** 指定された点の色を得る */
 unsigned int Image::getPixel(int x, int y)
 {
 	if (x < 0 || this->width <= x || y < 0 || this->height <= y) {
@@ -130,12 +105,6 @@ unsigned int Image::getPixel(int x, int y)
 	}
 }
 
-/**
- 点を打つ
- @param x 
- @param y 
- @param color 
-*/
 void Image::setPixel(int x, int y, unsigned int color)
 {
 	if (0 <= x && x < this->width && 0 <= y && y < this->height) {

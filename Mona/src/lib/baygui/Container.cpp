@@ -27,22 +27,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
 Container::Container()
 {
 	_controlList = new LinkedList();
 }
 
-/** デストラクタ */
 Container::~Container() {
 	delete(_controlList);
 }
 
-
-/**
- 部品を得る
- @return 活性部品（なければNULL）
-*/
 Control *Container::findChild()
 {
 	// NULLチェック
@@ -56,11 +49,6 @@ Control *Container::findChild()
 	return NULL;
 }
 
-/**
- 部品を得る
- @param x 指定するX座標
- @param y 指定するY座標
- */
 Control *Container::findChild(int x, int y)
 {
 	// NULLチェック
@@ -71,8 +59,8 @@ Control *Container::findChild(int x, int y)
 		Control *c = (Control *)_controlList->get(i);
 		Rect *rect = c->getRect();
 		// マウスカーソルがある範囲に部品があるかどうかチェック
-		if (rect->x <= x && x <= rect->x + rect->width && 
-			rect->y <= y && y <= rect->y + rect->height)
+		if (rect->getX() <= x && x <= rect->getX() + rect->getWidth() && 
+			rect->getY() <= y && y <= rect->getY() + rect->getHeight())
 		{
 			return c;
 		}
@@ -80,10 +68,6 @@ Control *Container::findChild(int x, int y)
 	return NULL;
 }
 
-/**
- 指定した部品を追加する
- @param control 指定する部品
- */
 void Container::add(Control *control)
 {
 	control->setParent(this);
@@ -91,38 +75,31 @@ void Container::add(Control *control)
 	_controlList->add(control);
 }
 
-/**
- 指定した部品を削除する
- @param control 指定する部品
- @return 削除された部品（なければNULL）
- */
 void Container::remove(Control *control)
 {
 	_controlList->remove(control);
 }
 
-/** イベント処理 */
 void Container::postEvent(Event *event)
 {
 	// 非活性の時はイベントを受け付けない
-	if (this->enabled == false) return;
+	if (getEnabled() == false) return;
 
 	// 活性部品にキーイベントを投げる
-	if (event->type == KEY_PRESSED || event->type == KEY_RELEASED) {
+	if (event->getType() == KeyEvent::KEY_PRESSED || event->getType() == KeyEvent::KEY_RELEASED) {
 		Control *control = findChild();
 		// 部品でイベントが起こった
 		if (control != NULL) {
-			event->source = control;
+			event->setSource(control);
 			control->onEvent(event);
-		// 部品以外でイベントが起こった
-		} else {
-			onEvent(event);
 		}
+		// 部品以外でイベントが起こった
+		onEvent(event);
 	// マウスクリック
-	} else if (event->type == MOUSE_PRESSED) {
+	} else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 		MouseEvent *me = (MouseEvent *)event;
 		// マウスイベントが起こった部品を探す
-		Control *control = findChild(me->x, me->y);
+		Control *control = findChild(me->getX(), me->getY());
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			// イベントが起こった部品以外をフォーカスアウト状態にする
@@ -133,10 +110,10 @@ void Container::postEvent(Event *event)
 				}
 			}
 			control->setFocused(true);
-			event->source = control;
+			event->setSource(control);
 			Rect *rect = control->getRect();
-			me->x = me->x - rect->x;
-			me->y = me->y - rect->y;
+			me->setX(me->getX() - rect->getX());
+			me->setY(me->getY() - rect->getY());
 			//syscall_print("MOUSE_PRESSED,");
 			control->onEvent(event);
 		// 部品以外でイベントが起こった
@@ -150,16 +127,16 @@ void Container::postEvent(Event *event)
 			onEvent(event);
 		}
 	// マウスリリース
-	} else if (event->type == MOUSE_RELEASED) {
+	} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 		MouseEvent *me = (MouseEvent *)event;
 		// マウスイベントが起こった部品を探す
-		Control *control = findChild(me->x, me->y);
+		Control *control = findChild(me->getX(), me->getY());
 		// 部品でイベントが起こった
 		if (control != NULL) {
-			event->source = control;
+			event->setSource(control);
 			Rect *rect = control->getRect();
-			me->x = me->x - rect->x;
-			me->y = me->y - rect->y;
+			me->setX(me->getX() - rect->getX());
+			me->setY(me->getY() - rect->getY());
 			//syscall_print("MOUSE_RELEASED,");
 			control->onEvent(event);
 		// 部品以外でイベントが起こった
@@ -172,12 +149,11 @@ void Container::postEvent(Event *event)
 	}
 }
 
-/** 再描画 */
 void Container::repaint()
 {
-	if (this->_buffer == NULL) return;
+	if (getBuffer() == NULL) return;
 	
-	onPaint(this->_g);
+	onPaint(getGraphics());
 
 	// 自分の領域を更新する
 	update();

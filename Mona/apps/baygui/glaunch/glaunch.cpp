@@ -112,16 +112,16 @@ public:
 
 	/** イベントハンドラ */
 	virtual void onEvent(Event *event) {
-		if (event->type == ITEM_SELECTED) {
+		if (event->getType() == Event::ITEM_SELECTED) {
 			// 前の選択位置と同じ（ダブルクリック）
 			if (prevIndex == list->getSelectedIndex()) {
 				execute();
 			} else {
 				prevIndex = list->getSelectedIndex();
 			}
-		} else if (event->type == KEY_PRESSED) {
+		} else if (event->getType() == KeyEvent::KEY_PRESSED) {
 			// ENTERキー押下
-			if (((KeyEvent *)event)->keycode == VKEY_ENTER) {
+			if (((KeyEvent *)event)->getKeycode() == KeyEvent::VKEY_ENTER) {
 				execute();
 			}
 		}
@@ -351,18 +351,16 @@ public:
 	/** ウィンドウ生成時に呼ばれる */
 	virtual void onStart() {
 		Window::onStart();
-		this->_window->TransparencyKey = 0xfffcfcfc;
 		this->_window->Flags |= WINDOWFLAGS_BOTTOMMOST | WINDOWFLAGS_NOBORDER;
 	}
 
 	/** 再描画 */
 	virtual void onPaint(Graphics *g) {
-		if (this->_buffer == NULL) return;
+		int w = getWidth();
+		int h = getHeight();
 		
-		int w = this->width;
-		int h = this->height;
-		
-		g->setColor(0xfffcfcfc);
+		// 透明にする
+		g->setColor(0x00ffffff);
 		g->fillRect(0,0,w,h);
 		
 		for (int i = 0; i < 32; i++) {
@@ -381,28 +379,25 @@ public:
 		}
 		
 		// タイトル
-		int fw = this->_metrics->getWidth(getTitle());
+		int fw = getFontMetrics()->getWidth(getTitle());
 		//int fh = this->_metrics->getHeight(getTitle());
-		g->setColor(COLOR_WHITE);
+		g->setColor(Color::WHITE);
 		g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
-		g->setColor(COLOR_BLACK);
+		g->setColor(Color::BLACK);
 		g->drawText(getTitle(), (w - fw)/2, 36);
-		
-		// _gへの描画が反映されると困るので直接ウィンドウを更新
-		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle());
 	}
 
 	/** イベントハンドラ */
 	virtual void postEvent(Event *event) {
-		int w = this->width;
-		int h = this->height;
+		int w = getWidth();
+		int h = getHeight();
 		
-		if (event->type == MOUSE_RELEASED) {
+		if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 			// 視覚効果
 			if (this->type == DISKICON || this->type == TERMINALICON) {
 				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_EXPANSIONEFFECT,
-					MAKE_DWORD(this->x + w/2, this->y + h/2),
-					MAKE_DWORD(this->x, this->y),
+					MAKE_DWORD(getX() + w/2, getY() + h/2),
+					MAKE_DWORD(getX(), getY()),
 					MAKE_DWORD(64, 64)
 				);
 			}

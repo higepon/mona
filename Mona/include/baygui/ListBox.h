@@ -41,15 +41,31 @@ private:
 	Event itemEvent;
 
 public:
+	/** コンストラクタ */
 	ListBox::ListBox();
+	
+	/** デストラクタ */
 	virtual ListBox::~ListBox();
+	
 	/** 選択位置を得る */
 	inline  int getSelectedIndex() { return this->selectedIndex; }
+	
+	/** 選択項目を得る */
 	virtual char *getSelectedItem();
+	
+	/** index 番目を選択する */
 	virtual void select(int index);
+	
+	/** 項目を追加する */
 	virtual void add(char *item);
+	
+	/** index 番目の項目を削除する */
 	virtual void remove(int index);
+	
+	/** 描画ハンドラ */
 	virtual void onPaint(Graphics *g);
+	
+	/** イベントハンドラ */
 	virtual void onEvent(Event *event);
 };
 

@@ -32,14 +32,6 @@ Rect::Rect() {
 	this->x = this->y = this->width = this->height = 0;
 }
 
-/** コンストラクタ */
-Rect::Rect(int x, int y, int height, int width) {
-	this->x = x;
-	this->y = y;
-	this->height = height;
-	this->width = width;
-}
-
 /** デストラクタ */
 Rect::~Rect() {
 }

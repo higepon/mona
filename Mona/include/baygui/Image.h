@@ -37,22 +37,51 @@ private:
 	int width;
 	/** 高さ */
 	int height;
-	/** GUIサーバーID */
-	dword guisvrID;
+
+#ifdef MONA
+protected:
 	/** GUIサーバー上のビットマップオブジェクト */
 	guiserver_bitmap* bitmap;
+#endif
 
 public:
 	Image::Image();
+	
+	/**
+	 コンストラクタ
+	 @param width 幅
+	 @param height 高さ
+	 */
 	Image::Image(int width, int height);
+
+	/**
+	 コンストラクタ.
+	 デコードはサーバー側で行っている。
+	 @param path ファイル名
+	 */
 	Image::Image(char *path);
+	
+	/** デストラクタ */
 	virtual Image::~Image();
+	
+	/** ハンドルを得る */
 	unsigned int getHandle();
+	
 	/** 幅を得る */
 	inline int getWidth() { return this->width; }
+	
 	/** 高さを得る */
 	inline int getHeight() { return this->height; }
+	
+	/** 指定された点の色を得る */
 	unsigned int getPixel(int x, int y);
+	
+	/**
+	 点を打つ
+	 @param x X座標
+	 @param y Y座標
+	 @param color 色
+	*/
 	void setPixel(int x, int y, unsigned int color);
 };
 

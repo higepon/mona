@@ -41,22 +41,42 @@ private:
 	LinkedItem *endItem;
 	
 private:
-	LinkedItem *_get(int index);
+	/** ObjectをLinkedItemに変換する */
+	LinkedItem *getLinkedItem(Object *o);
+	
+	/** 指定した順番の項目を得る */
+	LinkedItem *getLinkedItem(int index);
 	
 public:
+	/** コンストラクタ */
 	LinkedList::LinkedList();
+	
+	/** デストラクタ */
 	virtual LinkedList::~LinkedList();
+	
 	/** リストの長さを得る */
 	inline int getLength() { return this->dataListLength; }
-	LinkedItem *getLinkedItem(Object *o);
+	
+	/** 指定した順番の項目を得る */
 	Object *get(int index);
+	
+	/** 一番最初の項目を得る */
 	Object *getFirst();
+	
+	/** 一番最後の項目を得る */
 	Object *getLast();
+	
+	/** 指定した項目を追加する */
 	void add(Object *o);
+	
+	/** 指定した順番の項目を削除する */
 	void remove(int index);
+	
+	/** 指定した項目を削除する */
 	void remove(Object *o);
+	
+	/** 全て削除する */
 	void removeAll();
-	//void sort(Object *item);
 };
 
 #endif // _LINKEDLIST_H_INCLUDED_

@@ -46,7 +46,7 @@ public:
 		delete(date);
 	}
 	void onEvent(Event *event) {
-		if (event->type == TIMER) {
+		if (event->getType() == Event::TIMER) {
 			const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
 			const char* ampm[] = { "午前", "午後" };
 			char time[128];
@@ -56,7 +56,7 @@ public:
 				ampm[date->hour() / 12], date->hour() % 12, date->min(), date->sec());
 			label->setText(time);
 			setTimer(1000);
-		} else if (event->type == FOCUS_IN) {
+		} else if (event->getType() == Event::FOCUS_IN) {
 			//setTimer(10);
 		}
 	}

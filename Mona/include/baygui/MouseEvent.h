@@ -33,6 +33,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class MouseEvent : public Event {
 public:
+	//
+	// イベントタイプ一覧
+	//
+	enum {
+		/** マウスクリック */
+		MOUSE_PRESSED   = 200,
+		/** マウスリリース */
+		MOUSE_RELEASED  = 201,
+		/** マウスドラッグ */
+		MOUSE_DRAGGED   = 202,
+		/** マウス移動 */
+		MOUSE_MOVED     = 203,
+	};
+
+private:
 	/** X座標 */
 	int x;
 	/** Y座標 */
@@ -41,9 +56,55 @@ public:
 	unsigned int button;
 	
 public:
-	MouseEvent::MouseEvent() {}
-	MouseEvent::MouseEvent(int type, Control *target, int x, int y);
-	virtual MouseEvent::~MouseEvent();
+	/** デフォルトコンストラクタ */
+	MouseEvent::MouseEvent() {
+		setType(MOUSE_PRESSED);
+		setSource(NULL);
+		this->x = this->y = 0;
+		this->button = 0;
+	}
+	
+	/**
+	 コンストラクタ.
+	 x, y はメインウィンドウの内部領域の左上に対する相対座標である。
+	 絶対座標(ax,ay)は以下のように取得する。
+	 <ul>
+	 <li> ax = x + getMainWindow()->getRect()->getX() + Window::INSETS_LEFT;
+	 <li> ay = y + getMainWindow()->getRect()->getY() + Window::INSETS_TOP;
+	 </ul>
+	 @param type type イベントタイプ
+	 @param source イベント発生元
+	 @param x X座標（絶対座標）
+	 @param y Y座標（絶対座標）
+	*/
+	MouseEvent::MouseEvent(int type, Control *source, int x, int y)
+	{
+		setType(type);
+		setSource(source);
+		this->x = x;
+		this->y = y;
+	}
+	
+	/** デストラクタ */
+	virtual MouseEvent::~MouseEvent() {}
+	
+	/** X座標を得る */
+	inline int getX() { return this->x; }
+	
+	/** X座標を設定する */
+	inline void setX(int x) { this->x = x; }
+	
+	/** Y座標を得る */
+	inline int getY() { return this->y; }
+	
+	/** Y座標を設定する */
+	inline void setY(int y) { this->y = y; }
+	
+	/** ボタン種別を得る */
+	inline unsigned int getButton() { return this->button; }
+	
+	/** ボタン種別を設定する */
+	inline void setButton(unsigned int button) { this->button = button; }
 };
 
 #endif // _MOUSEEVENT_H_INCLUDED_

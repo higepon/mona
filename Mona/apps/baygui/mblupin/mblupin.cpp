@@ -90,7 +90,7 @@ public:
         char OneBuf[5];
         int titleStrCount;      //現在表示中のタイトル文字数
         
-        if (event->type == TIMER) {
+        if (event->getType() == Event::TIMER) {
 
             //タイマーイベント処理
             if (geted == 0){
@@ -149,7 +149,7 @@ public:
             
             
         
-        } else if (event->type == FOCUS_IN) {
+        } else if (event->getType() == Event::FOCUS_IN) {
             //最初にフォーカスを得た時に、タイマー発動
             setTimer(10);
         }

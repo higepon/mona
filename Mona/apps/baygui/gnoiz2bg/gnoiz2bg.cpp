@@ -305,13 +305,13 @@ public:
 	virtual void onPaint(Graphics *g) {
 		if (firstPaint == false) {
 			firstPaint = true;
-			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(this->threadID, Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 
 	/** イベントハンドラ */
-	virtual void onEvent(Event *e) {
-		if (e->type == CUSTOM_EVENT) {
+	virtual void onEvent(Event *event) {
+		if (event->getType() == Event::CUSTOM_EVENT) {
 			moveBackground();
 			drawBackground(this->pbuf);
 			for (int y = 0; y < SCREEN_H; y++) {
@@ -321,7 +321,7 @@ public:
 					//unsigned char green = pbuf[k + 1];
 					//unsigned char red   = pbuf[k + 2];
 					unsigned char *p = &pbuf[(x + y * SCREEN_W) * 4];
-					this->_buffer->setPixel(x, y, *((int*)p));
+					getBuffer()->setPixel(x, y, *((int*)p));
 				}
 			}
 			update();
@@ -331,7 +331,7 @@ public:
 				scene_count = FPS * 20;
 				setStageBackground(scene);
 			}
-			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(this->threadID, Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 };

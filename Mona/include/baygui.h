@@ -61,10 +61,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define inGetUInt32(b) (unsigned int)( (unsigned int)((b)[3])<<24 | (unsigned int)((b)[2])<<16 | (unsigned int)((b)[1])<<8 | (unsigned int)((b)[0]) )
 #define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
 
+/** BayGUIバージョン */
+#define BAYGUI_VERSION   "BayGUI build "__DATE__
+//#define WINDOWMANAGER_MENU_TITLE_JP "ファイル　編集　表示　特別　ヘルプ"
+//#define WINDOWMANAGER_MENU_TITLE_EN "File Edit View Special Help"
+//#define WINDOWMANAGER_STARUP_MESSAGE "starting baygui ...\n"
+//#define WINDOWMANAGER_SHUTDOWN_MESSAGE "shutdown baygui ...\n"
+
+/** テキストフィールド文字列最大長 */
+#define MAX_TEXT_LEN      128
+
 // ==================================================
 // BayGUI ヘッダファイル
 // ==================================================
-#include "baygui/resources.h"
+#include "baygui/Font.h"
+#include "baygui/Color.h"
 #include "baygui/Object.h"
 #include "baygui/String.h"
 #include "baygui/LinkedItem.h"

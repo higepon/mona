@@ -33,21 +33,40 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class TextField : public Control {
 private:
-	int textPtr, textLen, offx, offy;
+	int textPtr;
+	int textLen;
+	int offx;
+	int offy;
 	char text[MAX_TEXT_LEN];
 	Event textEvent;
 	
-protected:
+private:
+	/** 1文字挿入する */
 	virtual void insertCharacter(char c);
+	
+	/** 一文字削除する */
 	virtual void deleteCharacter();
 
 public:
+	/** コンストラクタ */
 	TextField::TextField();
+	
+	/** デストラクタ */
 	virtual TextField::~TextField();
+	
+	/**
+	 テキストを設定する
+	 @param text
+	 */
 	virtual void setText(char *text);
+	
 	/** テキストを得る */
 	inline  char *getText() { return this->text; }
+	
+	/** 描画ハンドラ */
 	virtual void onPaint(Graphics *g);
+	
+	/** イベントハンドラ */
 	virtual void onEvent(Event *event);
 };
 

@@ -17,7 +17,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __FONTMETRICS_H__
 #define __FONTMETRICS_H__
 
-/** フォント情報 */
+/**
+ フォント情報クラス
+ */
 class FontMetrics : public Object
 {
 private:
@@ -31,13 +33,37 @@ private:
 	int fontStyle;
 
 public:
+	/** コンストラクタ */
 	FontMetrics::FontMetrics();
+	
+	/** デストラクタ */
 	virtual FontMetrics::~FontMetrics();
+	
+	/**
+	 UCS-4コードを受け取って展開済み文字データを返す
+	 @param ucs4 UCS-4コード（4バイト）
+	 @param offset [out] 可変フォントでは offset = width、固定フォントでは offset > width
+	 @param width [out] 文字の幅
+	 @param height [out] 文字の高さ
+	 @param data [out] 展開済み文字データ
+	*/
 	bool decodeCharacter(wchar ucs4, int *offset, int *width, int *height, char *data);
+	
+	/**
+	 文字列の幅を得る
+	 @param str 文字列（複数行対応）
+	 */
 	int getWidth(String str);
+	
+	/**
+	 文字列の高さを得る
+	 @param str 文字列（複数行対応）
+	 */
 	int getHeight(String str);
+	
 	/** フォントスタイルを得る */
 	inline int getFontStyle() { return this->fontStyle; }
+	
 	/** フォントスタイルを設定する */
 	inline void setFontStyle(int style) { this->fontStyle = style; }
 };

@@ -32,7 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  矩形クラス
 */
 class Rect : public Object {
-public:
+private:
 	/** x（絶対座標）*/
 	int x;
 	/** y（絶対座標）*/
@@ -43,9 +43,29 @@ public:
 	int width;
 	
 public:
-	Rect::Rect();
-	Rect::Rect(int x, int y, int height, int width);
-	virtual Rect::~Rect();
+	/** デフォルトコンストラクタ */
+	Rect::Rect() { this->x = this->y = this->width = this->height = 0; }
+	
+	/** デストラクタ */
+	virtual Rect::~Rect() {}
+	
+	/** X座標を得る */
+	inline int getX() { return this->x; }
+	
+	/** Y座標を得る */
+	inline int getY() { return this->y; }
+	
+	/** 幅を得る */
+	inline int getWidth() { return this->width; }
+	
+	/** 高さを得る */
+	inline int getHeight() { return this->height; }
+	
+	/** 位置を設定する */
+	inline void setLocation(int x, int y) { this->x = x; this->y = y; }
+	
+	/** 大きさを設定する */
+	inline void setSize(int w, int h) { this->width = w; this->height = h; }
 };
 
 #endif // _RECT_H_INCLUDED_

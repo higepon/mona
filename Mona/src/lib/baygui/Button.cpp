@@ -27,42 +27,32 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/**
- コンストラクタ
- @param label ラベル
- */
 Button::Button(char *label)
 {
 	this->pushed = false;
 	this->label  = label;
 }
 
-/** デストラクタ */
 Button::~Button()
 {
 }
 
-/**
- ラベルを設定する
- @param label ラベル
- */
 void Button::setLabel(char *label)
 {
 	this->label = label;
 	repaint();
 }
 
-/** 再描画 */
 void Button::onPaint(Graphics *g)
 {
-	int w = this->width, h = this->height;
+	int w = getWidth(), h = getHeight();
 	
 	// 一度背景色でクリア
-	g->setColor(this->backColor);
+	g->setColor(getBackground());
 	g->fillRect(0, 0, w, h);
 	
 	// 枠を描画
-	g->setColor(COLOR_BLACK);
+	g->setColor(Color::BLACK);
 	g->drawLine(2, 0, w - 3, 0);
 	g->drawLine(2, h - 1, w - 3, h - 1);
 	g->drawLine(0, 2, 0, h - 3);
@@ -73,50 +63,49 @@ void Button::onPaint(Graphics *g)
 	g->drawLine(w - 2 , h - 2, w - 2, h - 2);
 	
 	if (this->pushed) {
-		g->setColor(COLOR_WHITE);
+		g->setColor(Color::WHITE);
 		g->drawLine(2, h - 2, w - 3, h - 2);
 		g->drawLine(w - 2, 2, w - 2, h - 3);
 		g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-		g->setColor(COLOR_GRAY);
+		g->setColor(Color::GRAY);
 		g->drawLine(1, 2, 1, h - 3);
 		g->drawLine(2, 1, w - 3, 1);
 	} else {
-		g->setColor(COLOR_GRAY);
+		g->setColor(Color::GRAY);
 		g->drawLine(2, h - 2, w - 3, h - 2);
 		g->drawLine(w - 2, 2, w - 2, h - 3);
 		g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-		g->setColor(COLOR_WHITE);
+		g->setColor(Color::WHITE);
 		g->drawLine(1, 2, 1, h - 3);
 		g->drawLine(2, 1, w - 3, 1);
 	}
 	
 	// 文字
-	int fw = this->_metrics->getWidth(getLabel());
-	int fh = this->_metrics->getHeight(getLabel());
+	int fw = getFontMetrics()->getWidth(getLabel());
+	int fh = getFontMetrics()->getHeight(getLabel());
 	int x = (w - fw) / 2;
 	int y = (h - fh) / 2;
 	if (this->pushed) {
 		x++;
 		y++;
 	}
-	if (enabled == true) {
-		g->setColor(this->foreColor);
+	if (getEnabled() == true) {
+		g->setColor(getForeground());
 	} else {
-		g->setColor(COLOR_GRAY);
+		g->setColor(Color::GRAY);
 	}
 	g->drawText(getLabel(), x, y);
 }
 
-/** イベント処理 */
 void Button::onEvent(Event *event) {
 	// 非活性の時はイベントを受け付けない
-	if (this->enabled == false) return;
+	if (getEnabled() == false) return;
 
-	if (event->type == MOUSE_PRESSED) {
+	if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 		this->pushed = true;
 		repaint();
 		getParent()->onEvent(event);
-	} else if (event->type == MOUSE_RELEASED) {
+	} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 		this->pushed = false;
 		repaint();
 		getParent()->onEvent(event);

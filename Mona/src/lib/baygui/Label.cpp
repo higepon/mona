@@ -27,58 +27,43 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/**
- コンストラクタ
- @param text ラベル
- */
 Label::Label(char *text)
 {
 	this->align = ALIGN_LEFT;
 	this->text = text;
 }
 
-/**
- コンストラクタ
- @param text ラベル
- @param align 描画位置 (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
- */
 Label::Label(char *text, int align)
 {
 	this->align = align;
 	this->text = text;
 }
 
-/** デストラクタ */
 Label::~Label()
 {
 }
 
-/**
- テキスト設定
- @param text
- */
 void Label::setText(char *text)
 {
 	this->text = text;
 	repaint();
 }
 
-/** 再描画 */
 void Label::onPaint(Graphics *g)
 {
-	int w = this->width, h = this->height;
+	int w = getWidth(), h = getHeight();
 	
 	// 塗りつぶし
-	g->setColor(this->backColor);
+	g->setColor(getBackground());
 	g->fillRect(0, 0, w, h);
 
 	// 文字
-	int fw = this->_metrics->getWidth(getText());
-	int fh = this->_metrics->getHeight(getText());
-	if (enabled == true) {
-		g->setColor(this->foreColor);
+	int fw = getFontMetrics()->getWidth(getText());
+	int fh = getFontMetrics()->getHeight(getText());
+	if (getEnabled() == true) {
+		g->setColor(getForeground());
 	} else {
-		g->setColor(COLOR_GRAY);
+		g->setColor(Color::GRAY);
 	}
 	if (this->align == ALIGN_RIGHT) {
 		g->drawText(getText(), (w - fw), (h - fh) / 2);

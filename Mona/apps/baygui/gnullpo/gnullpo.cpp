@@ -55,16 +55,12 @@ public:
 	}
 	
 	void onEvent(Event *event) {
-		if (event->type == MOUSE_PRESSED) {
+		if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 			pushed = true;
-			// 描画高速化
 			repaint();
-			//onPaint(__g);
-		} else if (event->type  == MOUSE_RELEASED) {
+		} else if (event->getType()  == MouseEvent::MOUSE_RELEASED) {
 			pushed = false;
-			// 描画高速化
 			repaint();
-			//onPaint(__g);
 		}
 	}
 };

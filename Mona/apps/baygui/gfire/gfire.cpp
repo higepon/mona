@@ -61,13 +61,13 @@ public:
 	virtual void onPaint(Graphics *g) {
 		if (firstPaint == false) {
 			firstPaint = true;
-			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(this->threadID, Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 	
 	/** イベント処理 */
 	virtual void onEvent(Event *e) {
-		if (e->type == CUSTOM_EVENT) {
+		if (e->getType() == Event::CUSTOM_EVENT) {
 			if (DrawFire() != 0) {
 				for (int y = 0; y < SCREEN_H; y++) {
 					for (int x = 0; x < SCREEN_W; x++) {
@@ -76,12 +76,12 @@ public:
 						unsigned char g = pImage[k + 1];
 						unsigned char b = pImage[k + 2];
 						//this->_g->drawPixel(x, y, 0xff000000 | r << 16 | g << 8 | b);
-						this->_buffer->setPixel(x, y, 0xff000000 | r << 16 | g << 8 | b);
+						getBuffer()->setPixel(x, y, 0xff000000 | r << 16 | g << 8 | b);
 					}
 				}
 				update();
 			}
-			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(this->threadID, Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 };
