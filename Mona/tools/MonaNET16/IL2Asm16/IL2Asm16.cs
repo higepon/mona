@@ -144,7 +144,32 @@ class IL2Asm16
 			{
 				int ptr = (int)obj;
 				string str = this.hashUS[ptr] as string;
-				sw.WriteLine("US_{0:X8} db {1}, \"{2}\"", ptr, str.Length, str);
+				bool instr = false;
+				StringBuilder sb = new StringBuilder();
+				foreach (char ch in str)
+				{
+					if (ch < ' ')
+					{
+						if (instr)
+						{
+							sb.Append('\"');
+							instr = false;
+						}
+						if (sb.Length > 0) sb.Append(", ");
+						sb.AppendFormat("0x{0:x2}", (int)ch);
+					}
+					else
+					{
+						if (!instr)
+						{
+							sb.Append('\"');
+							instr = true;
+						}
+						sb.Append(ch);
+					}
+				}
+				if (instr) sb.Append('\"');
+				sw.WriteLine("US_{0:X8} db {1}, {2}, 0x00", ptr, str.Length, sb);
 			}
 		}
 		
