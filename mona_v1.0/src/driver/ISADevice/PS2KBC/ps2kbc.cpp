@@ -28,13 +28,11 @@ class KeyBoardIRQHandler : public IRQHandler {
 
 void keyboardirqhandler(void){
       g_console->printf("PS2:INT Key\n");
-      g_demo_step++;
       ps2->Recv();
 }
 
 void mouseirqhandler(void){
       g_console->printf("PS2:INT Mouse\n");
-      g_demo_step++;
       ps2->Recv();
 }
 
