@@ -1,6 +1,16 @@
+﻿2004-02-23  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/userlib/userlib.cpp: printf(if 0)書換え。
+
 2004-02-23  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp: これ以降は当分カーネルは動きません。
+
+2004-02-23  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/userlib/monalibc.c: vsprintf修正。strcpy2追加。
+
+        * user/include/userlib/monalibc.h: strcpy2追加。
 
 2004-02-20  higepon  <higepon@users.sourceforge.jp>
 
