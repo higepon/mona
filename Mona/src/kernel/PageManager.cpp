@@ -449,7 +449,11 @@ void PageManager::flushPageCache() const
 PageEntry* PageManager::allocatePageTable() const
 {
     int foundMemory = pageTablePool_->find();
-    if (foundMemory == BitMap::NOT_FOUND) return NULL;
+    if (foundMemory == BitMap::NOT_FOUND)
+    {
+        g_console->printf("not enough memory %s %d", __FILE__, __LINE__);
+        return NULL;
+    }
 
     byte* address = (byte*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
     return (PageEntry*)(address);

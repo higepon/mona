@@ -1,3 +1,9 @@
+2004-06-12  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/gui/mtorz/: 追加 (thanks あっきいさん)
+
+        * src/kernel/PageManager.cpp (allocatePageTable): メモリ不足のときにカーネル側で警告メッセージを出力
+
 2004-06-12  tino  <tino@users.sourceforge.jp>
 
         * apps/non-gui/pciinfo: 追加 (thanks Yamamiさん)
