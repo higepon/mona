@@ -89,6 +89,7 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
 <?php } ?>
 
 <p class="Attention"><strong>このWikiは <a href="http://wiki.monaos.org/">wiki.monaos.org</a> へ移転しました</strong></p>
+<p class="Attention"><strong>お探しのページは<a href="http://wiki.monaos.org/pukiwiki.php?<?php print(urlencode($page)); ?>">こちら</a>かと思われます</strong></p>
 <p class="Attention"><strong><small>以後このWiki（mona.sourceforge）を編集しても意味がありませんのでご注意願います。</small></strong></p>
 
 <hr class="Start" title="以下はこのページのメインコンテンツです">
