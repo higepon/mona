@@ -26,8 +26,8 @@ private:
 public:
 	GNullpo()
 	{
-		setLocation((800 - 180 - 12) / 2, (600 - 178 - 28) / 2);
-		setClientSize(180,178);
+		setRect((800 - 180 - 12) / 2, (600 - 178 - 28) / 2, 192, 206);
+		//setClientSize(180, 178);
 		setText("ぬるぽボタン");
 	}
 	
@@ -56,16 +56,13 @@ public:
 	
 	void onEvent(Event *e)
 	{
-		#if 1
-		if (e->type == WM_MOUSEDOWN) {
+		if (e->type == MOUSE_PRESSED) {
 			pushed = true;
-			update();
-		} else if (e->type  == WM_MOUSEUP) {
+			repaint();
+		} else if (e->type  == MOUSE_RELEASED) {
 			pushed = false;
-			update();
+			repaint();
 		}
-		#endif
-		Window::onEvent(e);
 	}
 };
 

@@ -2,17 +2,6 @@
 Copyright (c) 2004 bayside
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -27,16 +16,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-class HeButton : public Window {
+class HeButton : public Window
+{
 private:
 	int count;
 	bool pushed;
-	Bitmap *number[10], *image_normal, *image_pushed;
+	_P<Bitmap> number[10];
+	_P<Bitmap> image_normal;
+	_P<Bitmap> image_pushed;
 	
 public:
-	HeButton(){
-		setRect((800 - 191) / 2, (600 - 205) / 2, 191, 205);
+	HeButton()
+	{
+		setRect((800 - 180 - 12) / 2, (600 - 178 - 28) / 2, 192, 206);
+		//setClientSize(180, 178);
 		setTitle("へぇ～ボタン");
+	}
+	
+	~HeButton(){
+		//for (int i = 0; i < 10; i++) {
+		//	delete(number[i]);
+		//}
+		//delete(image_normal);
+		//delete(image_pushed);
+	}
+	
+	void onStart()
+	{
+		Window::onStart();
 		count = 0;
 		pushed = false;
 		number[0] = new Bitmap("/APPS/GHEBTN.APP/0.BM5");
@@ -53,15 +60,8 @@ public:
 		image_pushed = new Bitmap("/APPS/GHEBTN.APP/HEPUSHED.BM5");
 	}
 	
-	~HeButton(){
-		for (int i = 0; i < 10; i++) {
-			delete(number[i]);
-		}
-		delete(image_normal);
-		delete(image_pushed);
-	}
-
-	void onPaint(Graphics *g) {
+	void onPaint(_P<Graphics> g)
+	{
 		if (pushed == false) {
 			g->drawImage(image_normal, 0, 0);
 		} else {
@@ -71,22 +71,18 @@ public:
 		g->drawImage(number[count%10], 65, 112);
 	}
 	
-	void onEvent(Event *event) {
-		if (event->type == MOUSE_PRESSED) {
+	void onEvent(Event *e) {
+		if (e->type == MOUSE_PRESSED) {
 			pushed = true;
 			if (count == 20) {
 				count = 0;
 			} else {
 				count++;
 			}
-			// 描画高速化
-			//repaint();
-			onPaint(__g);
-		} else if (event->type  == MOUSE_RELEASED) {
+			repaint();
+		} else if (e->type  == MOUSE_RELEASED) {
 			pushed = false;
-			// 描画高速化
-			//repaint();
-			onPaint(__g);
+			repaint();
 		}
 	}
 };

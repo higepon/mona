@@ -89,7 +89,7 @@ namespace baygui
 		switch (_e->type)
 		{
 			// マウスが動いたとき
-			case WM_MOUSEMOVE:
+			case MOUSE_MOVED:
 			{
 				MouseEvent *e = (MouseEvent *)_e;
 				
@@ -97,7 +97,7 @@ namespace baygui
 					bool pushed = Rect(Point::get_Empty(), this->getClientSize()).Contains(e->x, e->y);
 					if (this->isPushed != pushed) {
 						this->isPushed = pushed;
-						this->update();
+						this->repaint();
 					}
 				}
 				
@@ -105,26 +105,26 @@ namespace baygui
 				break;
 			}
 			// マウスが押されたとき
-			case WM_MOUSEDOWN:
+			case MOUSE_PRESSED:
 			{
 				MouseEvent *e = (MouseEvent *)_e;
 				
 				this->setFocused(true);
 				this->isPushed = true;
-				this->update();
+				this->repaint();
 				
 				BASE::onEvent(e);
 				break;
 			}
 			// マウスが離されたとき
-			case WM_MOUSEUP:
+			case MOUSE_RELEASED:
 			{
 				MouseEvent *e = (MouseEvent *)_e;
 				
 				this->setFocused(false);
 				if (this->isPushed) {
 					this->isPushed = false;
-					this->update();
+					this->repaint();
 				}
 				
 				BASE::onEvent(e);

@@ -19,8 +19,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace baygui
 {
-	/** イベントメッセージ */
-	enum MessageType { WM_MOUSEMOVE, WM_MOUSEDOWN, WM_MOUSEUP, WM_KEYDOWN, WM_KEYUP };
+	///** イベントメッセージ */
+	//enum MessageType { WM_MOUSEMOVE, WM_MOUSEDOWN, WM_MOUSEUP, WM_KEYDOWN, WM_KEYUP };
+	/** イベントタイプ */
+	enum EventType {
+		KEY_PRESSED     = 100,
+		KEY_RELEASED    = 101,
+		MOUSE_PRESSED   = 200,
+		MOUSE_RELEASED  = 201,
+		MOUSE_DRAGGED   = 202,
+		MOUSE_MOVED     = 203,
+		FOCUS_IN        = 300,
+		FOCUS_OUT       = 301,
+		TIMER           = 302,
+		TEXT_CHANGED    = 303,
+		ITEM_SELECTED   = 304,
+		BLOCK_INCLEMENT = 305,
+		BLOCK_DECLEMENT = 306
+	};
 
 	/**
 	 イベントクラス.

@@ -66,8 +66,7 @@ public:
 
 	void onEvent(Event *e)
 	{
-		if (e->type == 0x40f0) {
-			//printf("onTimer");
+		if (e->type == TIMER) {
 			ChangeColor();
 		}
 		Window::onEvent(e);

@@ -17,8 +17,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BAYGUI_TIMER_H__
 #define __BAYGUI_TIMER_H__
 
-#define MSG_GUI_TIMER 0x40f0
-
 namespace baygui
 {
 	/** タイマークラス */

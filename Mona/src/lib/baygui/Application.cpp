@@ -111,19 +111,19 @@ namespace baygui
 						if (c != NULL)
 						{
 							me.button = Application::mouseButtons;
-							me.type = WM_MOUSEUP;
+							me.type = MOUSE_RELEASED;
 							c->postEvent(&me);
 						}
 					} else {
 						if (c != NULL) {
-							me.type = WM_MOUSEDOWN;
+							me.type = MOUSE_PRESSED;
 							c->postEvent(&me);
 						}
 						Application::prevControl = c;
 					}
 					Application::mouseButtons = m->arg3;
 				} else if (c != NULL) {
-					me.type = WM_MOUSEMOVE;
+					me.type = MOUSE_MOVED;
 					c->postEvent(&me);
 				}
 				
@@ -138,23 +138,23 @@ namespace baygui
 					ke.modifiers = m->arg2;
 					if (m->arg2 & KEY_MODIFIER_DOWN)
 					{
-						ke.type = WM_KEYDOWN;
+						ke.type = KEY_PRESSED;
 					}
 					else if (m->arg2 & KEY_MODIFIER_UP)
 					{
-						ke.type = WM_KEYUP;
+						ke.type = KEY_RELEASED;
 					}
 					mainWindow->postEvent(&ke);
 				}
 				break;
 			}
-			case MSG_GUI_TIMER:
+			case TIMER:
 			{
 				Event te;
 				
 				if (Application::mainWindow != NULL)
 				{
-					te.type = MSG_GUI_TIMER;
+					te.type = TIMER;
 					te.source = mainWindow.get();
 					mainWindow->postEvent(&te);
 				}

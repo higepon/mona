@@ -96,7 +96,7 @@ namespace baygui
 		if (this->buffer == NULL) this->onStart();
 		this->visible = true;
 		this->_object->Visible = this->visible;
-		this->update();
+		this->repaint();
 	}
 	
 	void Control::onHide()
@@ -104,7 +104,7 @@ namespace baygui
 		if (!this->visible) return;
 		
 		this->visible = false;
-		if (this->parent != NULL) this->parent->update();
+		if (this->parent != NULL) this->parent->repaint();
 	}
 	
 	void Control::onStart()
@@ -167,15 +167,15 @@ namespace baygui
 		//this->controls->target = NULL;
 	}
 	
-	void Control::update()
+	void Control::repaint()
 	{
 		if (this->buffer == NULL) return;
 		
-		this->updateInternal();
+		this->repaintInternal();
 		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, this->getTopLevelControl()->getHandle());
 	}
 	
-	void Control::updateInternal()
+	void Control::repaintInternal()
 	{
 		if (this->buffer == NULL) return;
 		
@@ -205,7 +205,7 @@ namespace baygui
 		
 		drawImage(((Window*)form.get())->formBuffer, this->buffer, r.X, r.Y, r.X - x, r.Y - y, r.Width, r.Height, this->parent == NULL);
 		FOREACH_AL(_P<Control>, ctrl, this->controls) {
-			ctrl->updateInternal();
+			ctrl->repaintInternal();
 		}
 		END_FOREACH_AL
 	}
@@ -269,7 +269,7 @@ namespace baygui
 		} else {
 			this->_object->X = x;
 			this->_object->Y = y;
-			this->parent->update();
+			this->parent->repaint();
 		}
 	}
 	
@@ -298,7 +298,7 @@ namespace baygui
 		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOUSECAPTURE, this->getHandle(), v ? 1 : 0);
 	}
 	
-	void Control::setText(char* text)
+	void Control::setText(const char* text)
 	{
 		if (this->text != NULL) delete[] this->text;
 		
@@ -308,7 +308,7 @@ namespace baygui
 		//this->OnTextChanged(EventArgs::get_Empty());
 		if (this->buffer == NULL) return;
 		
-		this->update();
+		this->repaint();
 	}
 	
 	void Control::setForeground(unsigned int c)
@@ -320,7 +320,7 @@ namespace baygui
 		//this->OnForeColorChanged(EventArgs::get_Empty());
 		if (this->buffer == NULL) return;
 		
-		this->update();
+		this->repaint();
 	}
 	
 	void Control::setBackground(unsigned int c)
@@ -332,7 +332,7 @@ namespace baygui
 		//this->OnBackColorChanged(EventArgs::get_Empty());
 		if (this->buffer == NULL) return;
 		
-		this->update();
+		this->repaint();
 	}
 	
 	void Control::setTransColor(unsigned int c)
@@ -344,7 +344,7 @@ namespace baygui
 		if (this->_object->TransparencyKey == c) return;
 		
 		this->_object->TransparencyKey = c;
-		this->update();
+		this->repaint();
 	}
 	
 	Control::NCState Control::NCHitTest(int x, int y)
@@ -355,46 +355,24 @@ namespace baygui
 	
 	void Control::postEvent(Event *e)
 	{
-		switch (e->type)
-		{
-			case WM_MOUSEMOVE:
-			{
-				MouseEvent *me = (MouseEvent *)e;
-				Point pt = me->button == 0 ? Point(me->x, me->y) : this->clickPoint;
-				if (this->NCHitTest(pt.X, pt.Y) == NCState_Client) {
-					this->onEvent(e);
-				} else {
-					this->onEvent(e);
-				}
-				break;
-			}
-			case WM_MOUSEDOWN:
-			{
-				MouseEvent *me = (MouseEvent *)e;
-				this->clickPoint = Point(me->x, me->y);
-				if (this->NCHitTest(me->x, me->y) == NCState_Client) {
-					this->onEvent(e);
-				} else {
-					this->onEvent(e);
-				}
-				break;
-			}
-			case WM_MOUSEUP:
-			case WM_KEYDOWN:
-			case WM_KEYUP:
-			{
-				if (this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client) {
-					this->onEvent(e);
-				} else {
-					this->onEvent(e);
-				}
-				break;
-			}
-			default:
-			{
+		if (e->type == MOUSE_MOVED) {
+			MouseEvent *me = (MouseEvent *)e;
+			Point pt = me->button == 0 ? Point(me->x, me->y) : this->clickPoint;
+			if (this->NCHitTest(pt.X, pt.Y) == NCState_Client) {
 				this->onEvent(e);
-				break;
 			}
+		} else if (e->type == MOUSE_PRESSED) {
+			MouseEvent *me = (MouseEvent *)e;
+			this->clickPoint = Point(me->x, me->y);
+			if (this->NCHitTest(me->x, me->y) == NCState_Client) {
+				this->onEvent(e);
+			}
+		} else if (e->type == MOUSE_RELEASED) {
+			if (this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client) {
+				this->onEvent(e);
+			}
+		} else {
+			this->onEvent(e);
 		}
 	}
 	

@@ -64,6 +64,11 @@ namespace baygui
 		this->onExit();
 	}
 	
+	void Window::setTitle(const char* title)
+	{
+		BASE::setText(title);
+	}
+	
 	void Window::onHide()
 	{
 		if (!this->getVisible()) return;
@@ -158,121 +163,103 @@ namespace baygui
 		g->dispose();
 	}
 	
-	void Window::onEvent(Event *_e)
+	void Window::postEvent(Event *e)
 	{
-		switch (_e->type)
-		{
-			case WM_MOUSEMOVE:
+		if (e->type == MOUSE_MOVED) {
+			MouseEvent *me = (MouseEvent *)e;
+			Point pt = (me->button == 0 ? Point(me->x, me->y) : this->clickPoint);
+			
+			// 閉じるボタンドラッグ
+			if (this->ncState == NCState_CloseButton)
 			{
-				MouseEvent *e = (MouseEvent *)_e;
-				
-				switch (this->ncState)
-				{
-					// 閉じるボタンドラッグ
-					case NCState_CloseButton:
-					{
-						bool pushed = this->NCHitTest(e->x, e->y) == NCState_CloseButton;
-						if (this->isCloseButtonPushed != pushed) {
-							this->isCloseButtonPushed = pushed;
-							this->update();
-						}
-						break;
-					}
-					// タイトルバードラッグ（移動中）
-					case NCState_TitleBar:
-					{
-						Point p = this->pointToClient(Point(__commonParams->mouse.x, __commonParams->mouse.y));
-						//Point p = this->pointToClient(Cursor::getPosition());
-						int ex = this->getX() + (p.X - this->clickPoint.X), ey = this->getY() + (p.Y - this->clickPoint.Y);
-						if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey) {
-							this->ptRevRect = Point(ex, ey);
-							MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
-								MAKE_DWORD(ex, ey), MAKE_DWORD(this->getWidth(), this->getHeight()));
-						}
-						break;
-					}
-					default:
-						break;
+				bool pushed = (this->NCHitTest(pt.X, pt.Y) == NCState_CloseButton);
+				if (this->isCloseButtonPushed != pushed) {
+					this->isCloseButtonPushed = pushed;
+					this->repaint();
 				}
-				
-				BASE::onEvent(e);
-				break;
 			}
-			case WM_MOUSEDOWN:
+			// タイトルバードラッグ（移動中）
+			else if (this->ncState == NCState_TitleBar)
 			{
-				MouseEvent *e = (MouseEvent *)_e;
-				
-				switch (this->ncState = this->NCHitTest(e->x, e->y))
-				{
-					// 閉じるボタン押下
-					case NCState_CloseButton:
-					{
-						this->setFocused(true);
-						this->isCloseButtonPushed = true;
-						this->update();
-						break;
-					}
-					// タイトルバー押下（移動開始）
-					case NCState_TitleBar:
-					{
-						this->setFocused(true);
-						this->ptRevRect = Point(e->x, e->y);
-						MessageInfo msg;
-						MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
-							this->getX(), this->getY(),
-							MAKE_DWORD(this->getWidth(), this->getHeight()));
-						this->overlap = msg.arg2;
-						break;
-					}
-					default:
-						break;
+				Point p = this->pointToClient(Point(__commonParams->mouse.x, __commonParams->mouse.y));
+				//Point p = this->pointToClient(Cursor::getPosition());
+				int ex = this->getX() + (p.X - this->clickPoint.X), ey = this->getY() + (p.Y - this->clickPoint.Y);
+				if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey) {
+					this->ptRevRect = Point(ex, ey);
+					MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+						MAKE_DWORD(ex, ey), MAKE_DWORD(this->getWidth(), this->getHeight()));
 				}
-				
-				BASE::onEvent(e);
-				break;
 			}
-			case WM_MOUSEUP:
+			// 内部領域ドラッグ
+			else if (this->NCHitTest(pt.X, pt.Y) == NCState_Client)
 			{
-				MouseEvent *e = (MouseEvent *)_e;
-				
-				bool destroy = this->NCHitTest(e->x, e->y) == NCState_CloseButton && this->ncState == NCState_CloseButton;
-				
-				switch (this->ncState)
-				{
-					// 閉じるボタンリリース
-					case NCState_CloseButton:
-					{
-						this->setFocused(false);
-						this->isCloseButtonPushed = false;
-						break;
-					}
-					// タイトルバーリリース（移動終了）
-					case NCState_TitleBar:
-					{
-						MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
-						this->overlap = 0;
-						this->setFocused(false);
-						Point p = this->getLocation();
-						p.X += e->x - this->clickPoint.X;
-						p.Y += e->y - this->clickPoint.Y;
-						this->setLocation(p.X, p.Y);
-						break;
-					}
-					default:
-						this->update();
-						break;
-				}
-				
-				BASE::onEvent(e);
-				
-				this->ncState = NCState_None;
-				if (destroy) this->onExit();
-				break;
+				this->onEvent(e);
 			}
-			default:
+		} else if (e->type == MOUSE_PRESSED) {
+			MouseEvent *me = (MouseEvent *)e;
+			this->clickPoint = Point(me->x, me->y);
+			this->ncState = this->NCHitTest(me->x, me->y);
+			
+			// 閉じるボタン押下
+			if (this->ncState == NCState_CloseButton)
 			{
-				break;
+				this->setFocused(true);
+				this->isCloseButtonPushed = true;
+				this->repaint();
 			}
+			// タイトルバー押下（移動開始）
+			else if (this->ncState == NCState_TitleBar)
+			{
+				this->setFocused(true);
+				this->ptRevRect = Point(me->x, me->y);
+				MessageInfo msg;
+				MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
+					this->getX(), this->getY(),
+					MAKE_DWORD(this->getWidth(), this->getHeight()));
+				this->overlap = msg.arg2;
+			}
+			// 内部領域押下
+			else if (this->ncState == NCState_Client)
+			{
+				this->onEvent(e);
+			}
+		} else if(e->type == MOUSE_RELEASED) {
+			MouseEvent *me = (MouseEvent *)e;
+			bool destroy = (this->NCHitTest(me->x, me->y) == NCState_CloseButton) &&
+								(this->ncState == NCState_CloseButton);
+			
+			// 閉じるボタンリリース
+			if (this->ncState == NCState_CloseButton)
+			{
+				this->setFocused(false);
+				this->isCloseButtonPushed = false;
+			}
+			// タイトルバーリリース（移動終了）
+			else if (this->ncState == NCState_TitleBar)
+			{
+				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+				this->overlap = 0;
+				this->setFocused(false);
+				Point p = this->getLocation();
+				p.X += me->x - this->clickPoint.X;
+				p.Y += me->y - this->clickPoint.Y;
+				this->setLocation(p.X, p.Y);
+			}
+			// 内部領域リリース
+			else if (this->ncState == NCState_Client)
+			{
+				this->onEvent(e);
+			}
+			// それ以外
+			else
+			{
+				this->repaint();
+			}
+			
+			this->ncState = NCState_None;
+			if (destroy) this->onExit();
+		} else {
+			this->onEvent(e);
 		}
 	}
 	
@@ -292,7 +279,7 @@ namespace baygui
 		}
 		
 		int oy = this->offset.Y, xx = x + this->offset.X, yy = y + oy;
-		if (Rect(4, 4, oy - 8, oy - 8).Contains(xx, yy)) return NCState_CloseButton;
+		if (Rect(4, 4, oy - 5, oy - 5).Contains(xx, yy)) return NCState_CloseButton;
 		if (yy < oy) return NCState_TitleBar;
 		return NCState_None;
 	}

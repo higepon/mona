@@ -104,7 +104,7 @@ namespace baygui
 		void add(_P<Control> control);
 		
 		/** 実際に再描画する */
-		void update();
+		void repaint();
 		
 		/** イベントを投げる */
 		virtual void postEvent(Event *e);
@@ -182,7 +182,7 @@ namespace baygui
 		inline char* getText() { return this->text; }
 		
 		/** 表示文字列を設定する */
-		void setText(char* text);
+		void setText(const char* text);
 		
 		/** 前景色を得る */
 		inline unsigned int getForeground() { return this->foreColor; }
@@ -204,7 +204,7 @@ namespace baygui
 	
 	protected:
 		/** 内部領域を実際に再描画する */
-		void updateInternal();
+		void repaintInternal();
 		
 		/** 内部領域を実際に再描画する前に呼ばれる */
 		virtual void drawInternal() {}

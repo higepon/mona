@@ -47,9 +47,8 @@ class GBBall : public Window
 public:
 	GBBall()
 	{
-		setLocation((800 - 200 - 12) / 2, (600 - 200 - 28) / 2);
-		setClientSize(200, 200);
-		setText("bball");
+		setRect((800 - 200 - 12) / 2, (600 - 200 - 28) / 2, 212, 228);
+		setTitle("bball");
 	}
 	
 	void onPaint(_P<Graphics> g)

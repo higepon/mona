@@ -56,6 +56,12 @@ namespace baygui
 		/** 部品が破棄されるときに呼ばれる */
 		virtual void onExit();
 		
+		/** イベントを投げる */
+		virtual void postEvent(Event *e);
+		
+		/** タイトルを設定する */
+		void setTitle(const char* title);
+		
 		/**
 		 アプリケーションを開始する.
 		 メインウィンドウのみに対して呼ぶことができる。
@@ -76,7 +82,7 @@ namespace baygui
 		virtual void drawInternal();
 		
 		/** イベント発生時に呼ばれる */
-		virtual void onEvent(Event *e);
+		virtual void onEvent(Event *e) {}
 	};
 }
 

@@ -24,7 +24,7 @@ static void SleepThread()
 	
 	MessageInfo msg;
 	for (;;) {
-		if (MonAPI::Message::receive(&msg) == 0 && msg.header == MSG_GUI_TIMER) break;
+		if (MonAPI::Message::receive(&msg) == 0 && msg.header == TIMER) break;
 	}
 	int interval = msg.arg1;
 	bool endless = msg.arg2;
@@ -32,7 +32,7 @@ static void SleepThread()
 	
 	for (;;) {
 		sleep(interval);
-		MonAPI::Message::send(my_tid, MSG_GUI_TIMER, target);
+		MonAPI::Message::send(my_tid, TIMER, target);
 		if (endless == false) break;
 	}
 }
@@ -65,7 +65,7 @@ namespace baygui
 		src.header = MSG_SERVER_START_OK;
 		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
 		this->sleep_tid = msg.from;
-		MonAPI::Message::send(this->sleep_tid, MSG_GUI_TIMER, this->interval, this->isEndless, (dword)this);
+		MonAPI::Message::send(this->sleep_tid, TIMER, this->interval, this->isEndless, (dword)this);
 	}
 	
 	void Timer::stop()

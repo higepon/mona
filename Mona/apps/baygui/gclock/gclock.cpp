@@ -26,17 +26,15 @@ private:
 public:
 	GClock(){
 		label1 = new Label();
-		//date = MonAPI::Date();
 		
-		setLocation((800 - 200 - 12) / 2, (600 - 20 - 28) / 2);
-		setClientSize(200, 20);
-		setText("とけい");
+		setRect((800 - 200 - 12) / 2, (600 - 20 - 28) / 2, 212, 48);
+		setTitle("とけい");
 		
 		label1->setRect(4, 4, 196, 16);
 		add(label1.get());
 		
 		timer1 = new Timer();
-		timer1->setInterval(500);
+		timer1->setInterval(1000);
 		timer1->start();
 	}
 	
@@ -45,7 +43,7 @@ public:
 	}
 	
 	void onEvent(Event *e) {
-		if (e->type == 0x40f0) {
+		if (e->type == TIMER) {
 			const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
 			const char* ampm[] = { "午前", "午後" };
 			char time[128];
@@ -55,7 +53,6 @@ public:
 				ampm[date.hour() / 12], date.hour() % 12, date.min(), date.sec());
 			label1->setText(time);
 		}
-		Window::onEvent(e);
 	}
 };
 
