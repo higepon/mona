@@ -1,3 +1,19 @@
+2004-02-22  bayside  <bayside@users.sourceforge.jp>
+
+        * src/lib/baygui/Control.cpp: create -> onStart, dispose -> onExit
+
+        * src/lib/baygui/Container.cpp: create -> onStart, dispose -> onExit
+
+        * src/lib/baygui/Window.cpp: create -> onStart, dispose -> onExit
+
+        * include/baygui/Control.h: create -> onStart, dispose -> onExit
+
+        * include/baygui/Window.h: create -> onStart, dispose -> onExit
+
+        * apps/baygui/glaunch/glaunch.cpp: create -> onStart, dispose -> onExit
+
+        * apps/baygui/gshell/gshell.cpp: create -> onStart, dispose -> onExit
+
 2004-02-20  bayside  <bayside@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: マウスカーソルの形状を若干変更 :-)
