@@ -73,6 +73,7 @@ class ReversiBoard : public MonAPI::Observable {
     int getPiece(int x, int y);
     int getPiece(Point2D* point);
     int getCurrentHand() const;
+    void setNextHand();
     bool setPieces(int x, int y, int piece);
     bool existNotReversedPieces();
     void reverseNext();
@@ -89,7 +90,6 @@ class ReversiBoard : public MonAPI::Observable {
     int countReversiblePieceToOneAngle(int x, int y, int toX,int toY, int piece, bool recordFlag);
     int turnColor(int piece);
     bool recordReversiblePieces(int x, int y, int piece);
-    void setNextHand();
     bool isTherePlace(int piece);
     void init();
   public:

@@ -94,9 +94,6 @@ bool ReversiBoard::setPiece(int x, int y, int piece) {
     // ターンを記憶
     allTurns->add(new Point3D(x, y, piece));
 
-    // 次手プレイヤーを判断
-    setNextHand();
-
     turn++;
 
     // 変更をObserverに通知

@@ -141,6 +141,9 @@ void myApplication::onMouseClick(int x, int y) {
 
         board->reverseNext();
     }
+
+    // 次手プレイヤーを判断
+    board->setNextHand();
 }
 
 // オセロ板の内容に変更があったことがこの関数に通知される

@@ -153,6 +153,9 @@ private:
         {
             board->reverseNext();
         }
+
+        board->setNextHand();
+
         refreshLables();
     }
 

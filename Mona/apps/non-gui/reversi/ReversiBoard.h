@@ -80,6 +80,7 @@ class ReversiBoard : public Observable {
     int countReversiblePieces(int x, int y, int piece);
     void resetBoard();
     bool setPiece(int x, int y, int piece);
+    void setNextHand();
     bool checkRange(int x, int y);
 
   private:
@@ -88,7 +89,6 @@ class ReversiBoard : public Observable {
     int countReversiblePieceToOneAngle(int x, int y, int toX,int toY, int piece, bool recordFlag);
     int turnColor(int piece);
     bool recordReversiblePieces(int x, int y, int piece);
-    void setNextHand();
     bool isTherePlace(int piece);
     void init();
   public:
