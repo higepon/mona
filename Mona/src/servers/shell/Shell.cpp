@@ -398,8 +398,7 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
 void Shell::printFiles(const CString& dir)
 {
     char name[15];
-    int  size;
-    int  attr;
+    int size, attr;
 
     if (syscall_cd(dir) != 0)
     {
@@ -417,7 +416,10 @@ void Shell::printFiles(const CString& dir)
     while (syscall_dir_read(name, &size, &attr) == 0)
     {
         CString file = name;
-        if (file == "." || file == "..") continue;
+        if ((attr & ATTRIBUTE_DIRECTORY) != 0)
+        {
+            file = "[" + file + "]";
+        }
 
         file = (file + spc).substring(0, 15);
         int fw = FONT_WIDTH * file.getLength();
@@ -426,7 +428,7 @@ void Shell::printFiles(const CString& dir)
             printf("\n");
             w = 0;
         }
-        printf("%s%s", attr & ATTRIBUTE_DIRECTORY ? "[D]" : "", (const char*)file);
+        printf("%s", (const char*)file);
         w += fw;
     }
     printf("\n");
