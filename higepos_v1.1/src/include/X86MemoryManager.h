@@ -15,6 +15,8 @@
 #define _HIGEPOS_X86MEMORYMANAGER_
 
 #include<higeTypes.h>
+#include<higeIo.h>
+#include<higeKernel.h>
 
 /*!
     struct for memory management
@@ -41,7 +43,6 @@ class X86MemoryManager {
     void addToEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
     void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
-    void enableA20() const;
     const H_SIZE_T MEMORY_START;
     const H_SIZE_T MEMORY_END;
     struct memoryEntry* freeEntry_;
@@ -52,6 +53,14 @@ class X86MemoryManager {
     void* allocateMemory(H_SIZE_T);
     void freeMemory(void*);
     void printInfo(char*) const;
+    static void enableA20() {
+        _sysLock();
+        while (inportb(0x64) & 2); outportb(0x64, 0xd1);
+        while (inportb(0x64) & 2); outportb(0x60, 0xdf);
+        while (inportb(0x64) & 2); outportb(0x64, 0xff);
+        _sysUnlock();
+        return;
+    }
     static X86MemoryManager& instance() {
         static X86MemoryManager theInstance;
         return theInstance;
