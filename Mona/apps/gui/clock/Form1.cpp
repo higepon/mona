@@ -152,6 +152,24 @@ protected:
         return NCState_TitleBar;
     }
 
+    virtual void OnNCMouseDown(_P<MouseEventArgs> e)
+    {
+        if (e->Button != 2) Form::OnNCMouseDown(e);
+    }
+
+    virtual void OnNCMouseUp(_P<MouseEventArgs> e)
+    {
+        int x = e->X + this->offset.X, y = e->Y + this->offset.Y;
+        if (e->Button == 2 && 0 <= x && x < this->get_Width() && 0 <= y && y < this->get_Height())
+        {
+            this->Dispose();
+        }
+        else
+        {
+            Form::OnNCMouseUp(e);
+        }
+    }
+
 public:
     static void Main(_A<String> args)
     {

@@ -2,7 +2,8 @@
 
         * src/lib/monapi/Screen.cpp (putPixel16, fillRect16): 24/32bppでの描画を修正
 
-        * apps/gui/clock/Form1.cpp: タイトルバーをなくした, どこでも持てるようにした, 二重起動防止
+        * apps/gui/clock/Form1.cpp: 二重起動防止, 右クリックで終了,
+                                    タイトルバーをなくしてどこでも持てるようにした
 
         * apps/gui/launcher/Form1.cpp: 二重起動防止
 
