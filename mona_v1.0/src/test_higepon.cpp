@@ -47,6 +47,22 @@ struct read_info {
 #define FAT_INIT_ERROR  -2
 #define FAT_OPEN_ERROR  -3
 
+bool writeFileAppend(IOStream* io) {
+
+    IOStream src;
+    src.dir  = io->dir;
+    src.file = io->file;
+
+    if (!readFile(&src)) {
+        io->error = src.error;
+        return false;
+    }
+
+
+
+
+}
+
 bool readFile(IOStream* io) {
 
     /* prepare */
