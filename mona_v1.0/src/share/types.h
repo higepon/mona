@@ -23,6 +23,12 @@ typedef unsigned short word;
 typedef unsigned int   dword;
 #define interface class
 
+#ifndef SEEK_SET
+#  define SEEK_SET        0       /* Seek from beginning of file.  */
+#  define SEEK_CUR        1       /* Seek from current position.  */
+#  define SEEK_END        2       /* Set file pointer to EOF plus "offset" */
+#endif
+
 typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */

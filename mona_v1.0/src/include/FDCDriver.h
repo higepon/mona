@@ -14,7 +14,6 @@
 #include<Process.h>
 #include<VirtualConsole.h>
 #include<IStorageDevice.h>
-#include<DiskDriver.h>
 
 #ifndef _MONA_MFDCDRIVER_
 #define _MONA_MFDCDRIVER_
@@ -22,7 +21,7 @@
 /*!
     Floppy Disk Controller class
 */
-class FDCDriver : public DiskDriver, public IStorageDevice {
+class FDCDriver : public IStorageDevice {
   public:
     FDCDriver();
     virtual ~FDCDriver();
@@ -32,6 +31,8 @@ class FDCDriver : public DiskDriver, public IStorageDevice {
     int close();
     int read(int lba, void* buf, int size);
     int write(int lba, void* buf, int size);
+    int ioctl(void* p);
+    bool checkDiskChange();
     void interrupt();
     bool read(dword lba, byte* buf);
     bool write(dword lba, byte* buf);

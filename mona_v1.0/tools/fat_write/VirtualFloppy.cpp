@@ -34,3 +34,8 @@ int VirtualFloppy::write(int lba, void* buf, int size)
         int result = fwrite(buf, size, 1, fp);
         return result;
 }
+
+int VirtualFloppy::ioctl(void* p)
+{
+    return 0;
+}

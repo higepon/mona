@@ -1,5 +1,4 @@
 #include<tester.h>
-#include<FAT12.h>
 #include<FDCDriver.h>
 #include<global.h>
 #include<io.h>

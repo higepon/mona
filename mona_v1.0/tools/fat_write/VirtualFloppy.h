@@ -15,6 +15,7 @@ public:
     int close();
     int read(int lba, void* buf, int size);
     int write(int lba, void* buf, int size);
+    int ioctl(void* p);
 
 private:
     FILE* fp;

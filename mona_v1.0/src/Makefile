@@ -38,7 +38,6 @@ SOURCES      = cstart.cpp            \
                io.cpp                \
                syscalls.cpp          \
                BitMap.cpp            \
-               FAT12.cpp             \
                Process.cpp           \
                info.cpp              \
                GDTUtil.cpp           \

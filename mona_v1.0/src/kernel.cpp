@@ -53,7 +53,6 @@
 #include <ihandlers.h>
 #include <pic.h>
 #include <BitMap.h>
-#include <FAT12.h>
 #include <string.h>
 #include <syscalls.h>
 #include <PageManager.h>
@@ -229,7 +228,6 @@ void mainProcess()
     /* FDC do not delete */
     enableFDC();
     g_fdcdriver = new FDCDriver();
-    g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -239,12 +237,6 @@ void mainProcess()
     if (g_fs == NULL || !(g_fs->initialize((IStorageDevice*)g_fdcdriver)))
     {
         g_console->printf("FSOperation::initialize error\n");
-        for (;;);
-    }
-
-    if (!g_fat12->initilize())
-    {
-        g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
         for (;;);
     }
 

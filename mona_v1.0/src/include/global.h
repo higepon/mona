@@ -20,7 +20,6 @@
 #include <string.h>
 #include <types.h>
 #include <PageManager.h>
-#include <FAT12.h>
 #include <MemoryManager.h>
 #include <Segments.h>
 #include <sysresource.h>
@@ -34,7 +33,6 @@ GLOBAL StackView g_stack_view;                       /*< struct for stack view *
 GLOBAL DokodemoView g_dokodemo_view;
 
 GLOBAL FDCDriver* g_fdcdriver;
-GLOBAL FAT12*     g_fat12;
 
 /* semaphore */
 GLOBAL semaphore g_semaphore_console  GLOBAL_VAL(1);

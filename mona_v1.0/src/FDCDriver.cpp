@@ -670,3 +670,12 @@ void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {
     sector = 1 + lba % 18;
     return;
 }
+
+int FDCDriver::ioctl(void* p) {
+    return checkDiskChange() ? 1: 0;
+}
+
+bool FDCDriver::checkDiskChange() {
+
+    return (inportb(0x3f7) & 0x80);
+}
