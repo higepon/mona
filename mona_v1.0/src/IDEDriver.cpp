@@ -257,7 +257,7 @@ unsigned int IDEDevice::TotalSize;
 bool IDEDevice::IsSurpportLBA;
 
 IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
-    byte buf[256];
+    byte buf[512];
     int i;
     device_ = device;
     Bus = bus;
@@ -304,7 +304,69 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       }else{
         Bus->console_->printf("\nC/H/S = %d/%d/%d sectorsize = %d size = %d MB (non-LBA Device)\n",Tracks,Heads,SectorsPerTrack,BytesPerSector,Heads*Tracks*SectorsPerTrack/1024*BytesPerSector/1024);
       }
-      
+      if(read(0,buf)){ /* test routine */
+        for(i=0;i!=4;i++){
+          dword d;
+          byte *mbr;
+          mbr = buf + 0x1be + i*16 + 1;
+          d = *(dword *)&mbr[8];
+          if(!d){
+            continue;
+          }
+          Bus->console_->printf("\n");
+          Bus->console_->printf("%d:",i);
+          if(mbr[0] == 0x80){
+            Bus->console_->printf("Boot ");
+          }else{
+            Bus->console_->printf("     ");
+          }
+          d = *(dword *)&mbr[8];
+          Bus->console_->printf("from:%x ",d);
+          d = *(dword *)&mbr[12];
+          Bus->console_->printf("size:%x (%d MB)",d,d/2/1024);
+          switch(mbr[4]){ /* see also:http://www37.tok2.com/home/nobusan/partition/partition.html */
+            case 0x01:
+              Bus->console_->printf("FAT12");
+              break;
+            case 0x04:
+              Bus->console_->printf("FAT16(<32MB)");
+              break;
+            case 0x06:
+              Bus->console_->printf("FAT16(>32MB)");
+              break;
+            case 0x0b:
+              Bus->console_->printf("FAT32");
+              break;
+            case 0x0c:
+              Bus->console_->printf("FAT32-LBA");
+              break;
+            case 0x0e:
+              Bus->console_->printf("FAT16-LBA");
+              break;
+            case 0x07:
+              Bus->console_->printf("NTFS/HPFS");
+              break;
+            case 0x05:
+              Bus->console_->printf("extend");
+              break;
+            case 0x0f:
+              Bus->console_->printf("extend-LBA");
+              break;
+            case 0x82:
+              Bus->console_->printf("Linux SWAP/Solaris");
+              break;
+            case 0x2c:
+              Bus->console_->printf("CLTN Filesystem(clfs1)");
+              break;
+            default:
+              Bus->console_->printf("(#%x)",mbr[4]);
+          }
+          
+        }
+        Bus->console_->printf("\n");
+      }else{
+        Bus->console_->printf("read failed.\n");
+      }
     }else{
       
       Bus->console_->printf(" Not Found.\n");
