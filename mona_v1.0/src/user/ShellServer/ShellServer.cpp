@@ -40,7 +40,7 @@ void ShellServer::service() {
 
     /* send */
     if (Message::send(destPid, &info)) {
-        printf("regist error\n");
+        printf("Shell: key regist error\n");
     }
 
     /* service loop */

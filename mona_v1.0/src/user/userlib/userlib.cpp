@@ -93,7 +93,7 @@ MonaApplication::MonaApplication() {
 
     /* send */
     if (Message::send(destPid, &info)) {
-        printf("regist error\n");
+        printf("MonaApp: key regist error\n");
     }
 }
 
@@ -112,7 +112,7 @@ MonaApplication::~MonaApplication() {
 
     /* send */
     if (Message::send(destPid, &info)) {
-        printf("regist error\n");
+        printf("MonaApp: key unregist error\n");
     }
 }
 

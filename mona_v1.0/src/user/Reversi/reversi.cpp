@@ -152,7 +152,7 @@ void myApplication::init() {
     MessageInfo info;
     Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
     if (Message::send(destPid, &info)) {
-        printf("regist error\n");
+        printf("Reversi:Mouse regist error\n");
     }
 
     // オセロ板を生成

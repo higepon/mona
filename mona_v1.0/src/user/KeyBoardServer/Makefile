@@ -11,7 +11,7 @@ OBJ             = KeyBoardServer.o
 all : $(APP)
 
 $(APP) : $(LIB_USER) $(OBJ) KeyBoardManager.o
-	$(LD) $(LFLAGS) $(OBJ) KeyBoardManager.o $(LIB) -o $(APP)
+	$(LD) --Map app.map $(LFLAGS) $(OBJ) KeyBoardManager.o $(LIB) -o $(APP)
 	objcopy $(OFLAGS) $(APP)
 	$(STRIP) $(APP)
 

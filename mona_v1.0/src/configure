@@ -28,11 +28,11 @@ elif test $isMinGW32; then
 # linux gcc2.9x
 elif test $isOldVersion ; then
    cat ./env/linux2.x.env Makefile.in >Makefile
-   cp  ./env/linux2.env user/Makefile.inc
+   cp  ./env/linux2.x.env user/Makefile.inc
    echo "linux gcc2.x"
 # linux gcc3.x
 else
    cat ./env/linux3.x.env Makefile.in >Makefile
-   cp  ./env/linux3.env user/Makefile.inc
+   cp  ./env/linux3.x.env user/Makefile.inc
    echo "linux gcc3.x"
 fi
