@@ -291,7 +291,6 @@ bool FAT12::changeDirectory(const char* path) {
 */
 bool FAT12::changeDirectoryRelative(const char* path) {
 
-    DirectoryEntry entries[16];
     int lbp = clusterToLbp(currentDirecotry_);
 
     /* root directory has no "." or "..", but they are necessary */
@@ -300,25 +299,25 @@ bool FAT12::changeDirectoryRelative(const char* path) {
 
     /* read */
     if (!(driver_->read(lbp, buf_))) return false;
-    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+    memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
 
     for (int j = 0; j < 16; j++) {
 
         /* free */
-        if (entries[j].filename[0] == 0xe5) continue;
+        if (entries_[j].filename[0] == 0xe5) continue;
 
-        /* no other entries */
-        if (entries[j].filename[0] == 0x00) break;
+        /* no other entries_ */
+        if (entries_[j].filename[0] == 0x00) break;
 
         /* not directory */
-        if (!(entries[j].attribute & ATTR_DIRECTORY)) continue;
+        if (!(entries_[j].attribute & ATTR_DIRECTORY)) continue;
 
-        for (int k = 0; k < 8; k++) printf("%c", (char)entries[j].filename[k]);
+        for (int k = 0; k < 8; k++) printf("%c", (char)entries_[j].filename[k]);
 
         /* change directory ok */
-        if (compareName((char*)(entries[j].filename), path)) {
+        if (compareName((char*)(entries_[j].filename), path)) {
 
-            currentDirecotry_ = entries[j].cluster;
+            currentDirecotry_ = entries_[j].cluster;
             strcpy(currentPath_, path);
             printf("\n--directory %s found\n", path);
             printf("\n--current cluster = %d\n", currentDirecotry_);
@@ -398,8 +397,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     /* change direcotory */
     if (!changeDirectory(path)) return false;
 
-    /* find file in entries */
-    DirectoryEntry entries[16];
+    /* find file in entries_ */
     int lbp = clusterToLbp(currentDirecotry_);
 
     /* read current directory */
@@ -407,28 +405,29 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
         currentDirecotry_ = currentDirecotry;
         return false;
     }
-    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+    memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
 
     for (int j = 0; j < 16; j++) {
 
         /* free */
-        if (entries[j].filename[0] == 0xe5) continue;
+        if (entries_[j].filename[0] == 0xe5) continue;
 
-        /* no other entries */
-        if (entries[j].filename[0] == 0x00) break;
+        /* no other entries_ */
+        if (entries_[j].filename[0] == 0x00) break;
 
         /* directory */
-        if (entries[j].attribute & ATTR_DIRECTORY) continue;
+        if (entries_[j].attribute & ATTR_DIRECTORY) continue;
 
         /* file found */
-        if (compareName((char*)(entries[j].filename), file)
-            && compareName((char*)(entries[j].extension), ext)) {
+        if (compareName((char*)(entries_[j].filename), file)
+            && compareName((char*)(entries_[j].extension), ext)) {
 
-            currentCluster_ = entries[j].cluster;
-            fileSize_       = entries[j].filesize;
+            currentCluster_ = entries_[j].cluster;
+            fileSize_       = entries_[j].filesize;
             isOpen_         = true;
             readHasNext_    = true;
             firstWrite_     = true;
+            currentEntry_ = &(entries_[j]);
             printf("flie %s found\n", filename);
             return true;
         }
@@ -466,7 +465,6 @@ bool FAT12::readHasNext() const {
 
 bool FAT12::createFlie(const char* name, const char* ext) {
 
-    DirectoryEntry entries[16];
     int lbp = clusterToLbp(currentDirecotry_);
 
     /* read current directory */
@@ -474,35 +472,35 @@ bool FAT12::createFlie(const char* name, const char* ext) {
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
-    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+    memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
 
     /* find free entry */
     int freeIndex = -1;
     for (int j = 0; j < 16; j++) {
 
         /* free */
-        if (entries[j].filename[0] == 0xe5) {
+        if (entries_[j].filename[0] == 0xe5) {
             freeIndex = j;
             continue;
         }
 
-        /* no other entries */
-        if (entries[j].filename[0] == 0x00) break;
+        /* no other entries_ */
+        if (entries_[j].filename[0] == 0x00) break;
 
-	/* debug */
+        /* debug */
         printf("\n");
-        for (int i = 0; i < 8; i++) printf("%c", (char)entries[j].filename[i]);
-	printf("\n attribute %d",entries[j].attribute);
-	printf("\n ftime[%d:%d:%d]", entries[j].ftime.sec, entries[j].ftime.min,  entries[j].ftime.hour);
-	printf("\n fdate[%d:%d:%d]", entries[j].fdate.day, entries[j].fdate.month,  entries[j].fdate.year);
+        for (int i = 0; i < 8; i++) printf("%c", (char)entries_[j].filename[i]);
+        printf("\n attribute %d",entries_[j].attribute);
+        printf("\n ftime[%d:%d:%d]", entries_[j].ftime.sec, entries_[j].ftime.min,  entries_[j].ftime.hour);
+        printf("\n fdate[%d:%d:%d]", entries_[j].fdate.day, entries_[j].fdate.month,  entries_[j].fdate.year);
 
 
         /* directory */
-        if (entries[j].attribute & ATTR_DIRECTORY) continue;
+        if (entries_[j].attribute & ATTR_DIRECTORY) continue;
 
         /* file found */
-        if (compareName((char*)(entries[j].filename), name)
-            && compareName((char*)(entries[j].extension), ext)) {
+        if (compareName((char*)(entries_[j].filename), name)
+            && compareName((char*)(entries_[j].extension), ext)) {
             errNum_ = FILE_EXIST_ERROR;
             return false;
         }
@@ -516,13 +514,13 @@ bool FAT12::createFlie(const char* name, const char* ext) {
 
     if (cluster == -1) return false;
 
-    for (int k = 0; k < 8; k++) entries[freeIndex].filename[k]  = ' ';
-    for (int k = 0; k < 3; k++) entries[freeIndex].extension[k] = ' ';
-    for (int k = 0; k < 8 && name[k] != '\0'; k++) entries[freeIndex].filename[k]  = name[k];
-    for (int k = 0; k < 3 && name[k] != '\0'; k++) entries[freeIndex].extension[k] = ext[k];
-    entries[freeIndex].filesize  = 512;
-    entries[freeIndex].cluster   = cluster;
-    entries[freeIndex].attribute = 0x20;
+    for (int k = 0; k < 8; k++) entries_[freeIndex].filename[k]  = ' ';
+    for (int k = 0; k < 3; k++) entries_[freeIndex].extension[k] = ' ';
+    for (int k = 0; k < 8 && name[k] != '\0'; k++) entries_[freeIndex].filename[k]  = name[k];
+    for (int k = 0; k < 3 && name[k] != '\0'; k++) entries_[freeIndex].extension[k] = ext[k];
+    entries_[freeIndex].filesize  = 0;
+    entries_[freeIndex].cluster   = cluster;
+    entries_[freeIndex].attribute = 0x20;
 
     printf("\n--createFile:cluster=%d", cluster);
 
@@ -530,7 +528,7 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     printf("\n--wrtten fat is %x", getFATAt(cluster));
 
     /* write current directory */
-    memcpy(buf_, entries, sizeof(DirectoryEntry) * 16);
+    memcpy(buf_, entries_, sizeof(DirectoryEntry) * 16);
     if (!(driver_->write(lbp, buf_))) {
         errNum_ = DRIVER_READ_ERROR;
         return -1;
@@ -542,31 +540,6 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     }
 
     return true;
-}
-
-int FAT12::getEmptyEntry(int cluster) {
-
-    DirectoryEntry entries[16];
-    int lbp = clusterToLbp(cluster);
-
-    /* read current directory */
-    if (!(driver_->read(lbp, buf_))) {
-        errNum_ = DRIVER_READ_ERROR;
-        return -1;
-    }
-    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
-
-    for (int j = 0; j < 16; j++) {
-
-        /* free */
-        if (entries[j].filename[0] == 0xe5) return j;
-
-        /* no other entries */
-        if (entries[j].filename[0] == 0x00) return -1;
-    }
-    return -1;
-
-
 }
 
 bool FAT12::writeFAT() {
@@ -629,19 +602,21 @@ bool FAT12::write(byte* buffer, int size) {
             cluster         = next;
             currentCluster_ = cluster;
         } else {
-
-
             currentCluster_= nextCluster;
         }
     }
 
     int lbp = clusterToLbp(cluster);
 
-    printf("write:cluster=%d", cluster);
-
     byte inbuf[512];
     memset(inbuf, 0, 512);
     memcpy(inbuf, buffer, size);
+
+    (currentEntry_->filesize) += size;
+    printf("@@write@@");
+    for (int k = 0; k < 8; k++) printf("%c", (char)(currentEntry_->filename[k]));
+
+    writeEntry();
 
     if (!(driver_->write(lbp, inbuf))) {
         errNum_ = DRIVER_READ_ERROR;
@@ -653,17 +628,28 @@ bool FAT12::write(byte* buffer, int size) {
         return false;
     }
 
-    printf("fat at 44 %d, fat at 45 %d", getFATAt(44), getFATAt(45));
     return true;
-
 }
 
 bool FAT12::write(byte* buffer) {
 
     return write(buffer, 512);
 }
+
+bool FAT12::writeEntry() {
+
+    byte buf[512];
+    int lbp = clusterToLbp(currentDirecotry_);
+
+    memcpy(buf, entries_, sizeof(DirectoryEntry) * 16);
+    if (!(driver_->write(lbp, buf))) {
+        errNum_ = DRIVER_READ_ERROR;
+        return false;
+    }
+    return true;
+}
+
 bool FAT12::rename(const char* from, const char* to) {return true;}
 bool FAT12::remove(const char* file) {return true;}
 bool FAT12::removeDirecotry(const char* name) {return true;}
 bool FAT12::makeDirectory(const char* name) {return true;}
-
