@@ -31,7 +31,7 @@ public:
 		this->Refresh();
 	}
 
-protected:	
+protected:
 	virtual void OnPaint()
 	{
 		::noiz2bgPaint((unsigned char*)this->buffer->get());
