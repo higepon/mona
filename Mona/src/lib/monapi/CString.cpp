@@ -26,6 +26,7 @@ namespace MonAPI
             ASSERT(this->buffer)
             strncpy(this->buffer, text, length);
             this->buffer[length] = '\0';
+            this->length = length;
         }
     }
 
@@ -72,11 +73,11 @@ namespace MonAPI
         }
         else
         {
-            int len = strlen(text);
-            this->buffer = new char[len + 1];
+            this->length = strlen(text);
+            this->buffer = new char[this->length + 1];
             ASSERT(this->buffer)
-            strncpy(this->buffer, text, len);
-            this->buffer[len] = '\0';
+            strncpy(this->buffer, text, this->length);
+            this->buffer[this->length] = '\0';
         }
         return *this;
     }
