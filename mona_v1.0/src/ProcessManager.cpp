@@ -15,6 +15,45 @@
 #include <ProcessManager.h>
 #include <monaVga.h>
 #include <monaTester.h>
+#include <monaLib.h>
+
+/*!
+    \brief constructor
+
+    initilize process manager
+
+    \author HigePon
+    \date   create:2002/12/02 update:
+*/
+ProcessManager::ProcessManager() {
+
+    /* get address of gdtr */
+    sgdt();
+
+}
+
+/*!
+    \brief do sgdt
+
+    do sgdt, get start address of gdt
+
+    \author HigePon
+    \date   create:2002/12/02 update:
+*/
+void ProcessManager::sgdt() {
+
+    GDTR gdtr;
+
+    /* set 0 */
+    memset(&gdtr, 0, sizeof(gdtr));
+
+    /* sgdt */
+    asm volatile("sgdt %0\n": /* no output */: "m" (gdtr));
+
+    /* set start address of gdt */
+    gdt_ = (GDT*)gdtr.base;
+    return;
+}
 
 /*!
     \brief set TSS
@@ -42,35 +81,18 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 */
 void ProcessManager::printInfo() {
 
-    int from  = 0x02;
-    int to    = 0xfe;
-    int value = 0;
-    GDTR gdtr;
-    gdtr.limit = 0;
-    gdtr.base  = 5;
+    _sys_printf("address of GDT=%d\n", gdt_);
 
-    _sys_printf("from = %d to = %d\n", from, to);
-    asm volatile("mov %1, %%ax\n"
-                 "mov %%ax, %0\n"
-                 : "=m" (to): "m" (from));
-    _sys_printf("from = %d to = %d\n", from, to);
+    for (int i = 0; i < GDTNUM; i++) {
 
-    asm volatile("mov $0xff, %%ax\n"
-                 "mov %%ax, %0\n"
-                 : "=m" (value));
-    _sys_printf("ax = %d\n", value);
-
-    asm volatile("sgdt %0\n"
-                 : /* no output */
-                 : "m" (gdtr)
-                );
-    _sys_printf("gdtr.limit = %d\n", gdtr.limit);
-    _sys_printf("gdtr.base  = %d\n", gdtr.base);
-
-    GDT* some = (GDT*)(gdtr.base);
-    _sys_printf("type =%x", some[1].type);
-
-
+        _sys_printf("(%x, %x, %x, %x, %x, %x)\n", gdt_[i].limitL
+                                                , gdt_[i].baseL
+                                                , gdt_[i].baseM
+                                                , gdt_[i].type
+                                                , gdt_[i].limitH
+                                                , gdt_[i].baseH
+                    );
+    }
     return;
 }
 

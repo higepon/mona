@@ -114,8 +114,7 @@ void processTester() {
 
     ProcessManager* pm = new ProcessManager();
     pm->printInfo();
-    //    pm->switchProcess(0x08);
-
+    return;
 }
 
 

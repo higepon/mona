@@ -16,16 +16,23 @@
 
 #include <monaKernel.h>
 
+#define GDTNUM 6 /*! number of entry gdt */
+
 /*!
     process management
 */
 class ProcessManager {
 
   public:
+    ProcessManager();
     void setTSS(TSS*, word, word, void (*f)(), dword, byte*, word, byte*, word);
     void switchProcess();
     void switchProcess(word);
     void printInfo();
+  private:
+    void sgdt();
+
+    GDT* gdt_;
 };
 
 #endif
