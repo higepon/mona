@@ -83,12 +83,12 @@ enum{
  *  \struct TRANS_BUF_INFO
  *  \brief IP送信バッファ構造体
  */
-typedef struct{
+struct TRANS_BUF_INFO{
     char  *data[3];     /* 送信フレームアドレス。 */
     int    size[3];     /* データフレームサイズ。 */
     word type;        /* フレームタイプ。 */
     dword  ipType;      /* IPプロトコルタイプ。 */
-}TRANS_BUF_INFO;
+};
 
 
 /*! 
@@ -102,5 +102,16 @@ struct MAC_REPLY_WAIT{
     char mac[6];      //MACアドレス格納
     TRANS_BUF_INFO* ipPacketBuf; //IPパケットバッファ
 };
+
+/*! 
+ *  \struct MONES_IP_REGIST
+ *  \brief Mones登録情報
+ */
+struct MONES_IP_REGIST{
+    dword ip;         //通信中IP
+    dword port;       //通信中PORT
+    dword tid;        //スレッドID
+};
+
 
 #endif

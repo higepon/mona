@@ -281,7 +281,7 @@ void Ne2000MoNic::frame_output( byte *pkt, byte *mac, dword size, word pid )
     while( ( inp8( NE_P0_COMMAND ) & 0x04 ) !=0 );
 
 //Yamami デバッグ
-printf("frame_output 01\n");
+//printf("frame_output 01\n");
     
     ptx_dest=mac;
     ptx_size=size;
@@ -291,10 +291,10 @@ printf("frame_output 01\n");
     ptx_type=(pid >> 8)+(pid << 8);
 
 //Yamami デバッグ
-int i;
-for(i=0 ; i<2 ; i++){
-    printf("ptx[1] = %x \n",(byte *)(&ptx_type + 1));
-}
+//int i;
+//for(i=0 ; i<2 ; i++){
+//    printf("ptx[1] = %x \n",(byte *)(&ptx_type + 1));
+//}
 
 
     // 割り込み禁止
@@ -335,14 +335,14 @@ for(i=0 ; i<2 ; i++){
     enableNetWork();
 
 //Yamami デバッグ
-printf("frame_output 02\n");
+//printf("frame_output 02\n");
 
     // 送信が完了しているかどうかチェックする
     // 2004/11/16 Yamami QEMU on Ne2000 だとこのチェックが永遠に通らないようなのでチェックしない
     //while( ( inp8( NE_P0_COMMAND ) & 0x04 ) !=0 );
 
 //Yamami デバッグ
-printf("frame_output 03\n");
+//printf("frame_output 03\n");
 
 }
 

@@ -43,4 +43,7 @@ GLOBAL MoArp* g_MoArp;
 GLOBAL MoIp* g_MoIp;
 GLOBAL MoIcmp* g_MoIcmp;
 
+//Mones“o˜^î•ñŠÇ——p HashMap
+GLOBAL HList<MONES_IP_REGIST*> *MonesRList;
+
 #endif

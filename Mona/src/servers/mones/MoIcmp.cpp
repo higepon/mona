@@ -70,8 +70,6 @@ MoIcmp::~MoIcmp()
 */
 int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
 {
-    //Yamami デバッグ
-    //printf("MoIcmp::receiveIcmp!!\n");
     
     int icmp_size;
     ICMP_HEADER *icmp;
@@ -92,7 +90,7 @@ int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
             transIcmp(ipHead->srcip,ICMP_TYPE_ECHOREP,0,icmp,icmp_size);
             break;
         case ICMP_TYPE_ECHOREP:
-            //return saveRecv(ipHead,icmp_size+sizeof(IP_HEADER));
+            saveRecv(ipHead,icmp_size+sizeof(IP_HEADER));
             break;
     }
 
@@ -105,17 +103,15 @@ int MoIcmp::receiveIcmp(IP_HEADER *ipHead)
          ICMP送信 処理
     \param  word dstip [in] 送信先IPアドレス
     \param  byte type [in] ICMPタイプ
-    \param  ICMP_HEADER *icmpHead [in] IPヘッダへのポインタ
+    \param  ICMP_HEADER *icmpHead [in] ICMPヘッダへのポインタ
     \param  int size [in] パケットサイズ
-    \return int 結果 
+    \return 無し
         
     \author Yamami
     \date   create:2004/09/20 update:2004/09/20
 */
 void MoIcmp::transIcmp(dword dstip, byte type, byte code, ICMP_HEADER *icmpHead, int size)
 {
-    //Yamami デバッグ
-    //printf("MoIcmp::transIcmp!!\n");
     
     TRANS_BUF_INFO tbi;
 
@@ -133,4 +129,37 @@ void MoIcmp::transIcmp(dword dstip, byte type, byte code, ICMP_HEADER *icmpHead,
     tbi.ipType=IPPROTO_ICMP;
 
     g_MoIp->transIp(&tbi,dstip,0,0);
+}
+
+
+/*!
+    \brief saveRecv
+         ICMP応答受信 処理
+    \param  IP_HEADER *ipHead [in] IPヘッダ
+    \param  int size [in] パケットサイズ
+    \return 無し
+    \author Yamami
+    \date   create:2004/09/20 update:2004/09/20
+*/
+void MoIcmp::saveRecv(IP_HEADER *ipHead, int size)
+{
+    MessageInfo info;
+    MONES_IP_REGIST *regist;
+
+    //登録しているプロセスに通知する。
+    for (int i = 0; i < MonesRList->size() -1; i++) {
+        regist = MonesRList->get(i);
+        
+        if(regist->ip == MoPacUtl::swapLong(ipHead->srcip) ){
+            //登録されているIPへのリプライならば、メッセージ通知
+            // create message
+            Message::create(&info, MSG_MONES_ICMP_NOTICE, 0, 0, 0, NULL);
+            // send
+            if (Message::send(regist->tid, &info)) {
+                //printf("MoIcmp::saveRecv error\n");
+            }
+            break;
+            
+        }
+    }
 }

@@ -332,17 +332,52 @@ int MonaMain(List<char*>* pekoe)
     dword targetID = Message::lookupMainThread("MONES.EX2");
     if (targetID == 0xFFFFFFFF)
     {
-        printf("local!!!! MONES:INIT not found\n");
+        printf("MONES.EX2 not found\n");
         exit(1);
     }
 
+    //Monesへ登録
+    // create message
+    Message::create(&info, MSG_MONES_REGIST, 0x0A000202, 0, 0, NULL);
+    // send
+    if (Message::send(targetID, &info)) {
+        printf("MSG_MONES_REGIST error\n");
+    }
+    
+    
+    //IP送信
     // create message
     Message::create(&info, MSG_MONES_IP_SEND, 0, 0, 0, NULL);
     // send
     if (Message::send(targetID, &info)) {
-        printf("local!!!! MONES:INIT error\n");
+        printf("MSG_MONES_IP_SEND error\n");
     }
     
+    
+    /* Message loop */
+    //ここでメッセージループして、応答を待ってみる。
+    for (;;)
+    {
+        /* receive */
+        if (!Message::receive(&info))
+        {
+            
+            switch(info.header)
+            {
+            case MSG_MONES_ICMP_NOTICE:
+                //IP要求が返ってきたら
+                printf("YAMAMI MSG_MONES_ICMP_NOTICE\n");
+                return 0;
+                
+                break;
+
+            default:
+                /* igonore this message */
+                break;
+            }
+
+        }
+    }
     
     return 0;
 

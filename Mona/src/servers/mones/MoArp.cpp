@@ -124,9 +124,6 @@ int MoArp::receiveArp(ARP_HEADER *arpHead)
 */
 int MoArp::receiveReply(dword srcip,byte *mac)
 {
-    //Yamami デバッグ
-    printf("MoArp::receiveReply \n");
-    printf("macWaitList->size() = %d \n",macWaitList->size());
     
     MAC_REPLY_WAIT* nowWait;
     int findFlag = 0;
@@ -141,16 +138,7 @@ int MoArp::receiveReply(dword srcip,byte *mac)
             //MACアドレスコピー
             memcpy(nowWait->mac ,mac ,6);
             nowWait->repFlg = 1;
-            
-            
-            //Yamami デバッグ!!!
-            printf("receiveReply srcip=%x" ,srcip);
-            for(int i = 0 ; i<6 ; i++){
-                printf("  mac[%d]=%x" , i,mac[i]);
-            }
-            printf("\n");
-            
-            
+
             //ARPキャッシュ登録
             addArpCache(srcip,mac); 
             
@@ -204,15 +192,6 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
         memcpy(head.dstMac,dstmac,6);
     }
     head.dstIp=dstip;  //ここは受け取ったまま返却するので、エンディアン変換は不要
-
-
-//Yamami デバッグ
-printf("MoArp::transArp dstip = %x opecode=%x \n",dstip,opecode);
-for(int i = 0 ; i<6 ; i++){
-    printf("  dstmac[%d]=%x" , i,dstmac[i]);
-}
-printf("\n");
-
 
     //送信処理 ここでは、直接ドライバをコール
     insAbstractNic->frame_output((byte *)&head , dstmac , sizeof(head) , ETHER_PROTO_ARP);

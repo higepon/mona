@@ -121,9 +121,6 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
     ret = ipRouting(dstip , &transip);
     //transip = dstip;
 
-//Yamami デバッグ
-printf("MoIp::transIp dstip = %x transip=%x \n",dstip,transip);
-
     // 送信先 MACアドレス取得(ARP解決)
     if((rest=g_MoArp->getMac(transip,dstmac)) != 0){
         //ARPキャッシュでは見つからず、IP送信はすぐにできないので、待ちへ
@@ -137,10 +134,6 @@ printf("MoIp::transIp dstip = %x transip=%x \n",dstip,transip);
         
         return rest;
     }
-
-//Yamami デバッグ
-printf("MoIp::transIp tuduki!!\n");
-
 
     //IPヘッダを作成する。
     ipHead.verhead=IP_HEAD_VERSION|(sizeof(IP_HEADER)/4);

@@ -19,8 +19,10 @@
 #include <monapi.h>
 #include "AbstractMonic.h"
 #include "MoEther.h"
+#include "MoIcmp.h"
 #include "MonesConfig.h"
 #include "MonesLoader.h"
+
 
 
 using namespace MonAPI;
@@ -37,6 +39,11 @@ using namespace MonAPI;
 */
 int MonaMain(List<char*>* pekoe)
 {
+    
+    //TO DO とりあえず、30プロセスまでOK 
+    MonesRList = new HList<MONES_IP_REGIST*>();
+    MONES_IP_REGIST *regist;
+    
     //syscall_get_io  
     //このプロセス動作中は、IOを特権レベル3まで許可する
     syscall_get_io();
@@ -105,7 +112,7 @@ int MonaMain(List<char*>* pekoe)
             {
             case MSG_INTERRUPTED:
                 
-                printf("MSG_INTERRUPTED\n");
+                //printf("MSG_INTERRUPTED\n");
                 
                 dword    i;
                 
@@ -119,6 +126,24 @@ int MonaMain(List<char*>* pekoe)
                 
                 break;
 
+
+            //Monesへ登録
+            case MSG_MONES_REGIST:
+            //case 5:
+                
+                printf("MSG_MONES_REGIST\n");
+                
+                //通信管理リストに登録
+                //TO DO TCPをサポートすれば、本来は、IPだけでは無く、ポート番号も
+                regist = new MONES_IP_REGIST();
+                regist->tid = info.from;
+                regist->ip = info.arg1;
+                
+                MonesRList->add(regist);
+                
+                break;
+
+
             //Yamami!! TO DO パケット送信処理、未実装
             //アプリからのパケット送信要求
             case MSG_MONES_IP_SEND:
@@ -129,24 +154,34 @@ int MonaMain(List<char*>* pekoe)
                 int ret;
                 dword ip;
                 TRANS_BUF_INFO tbi;
-                char* testPacket;
                 
-                testPacket = new char(100);
+                ICMP_HEADER *icmpHead;
+                icmpHead = new ICMP_HEADER();
+                
+                //testPacket = new char(100);
                 
                 //送信先 10.0.2.2(QEMU GW)
                 ip = 0x0A000202;
                 
-                sprintf(testPacket , "TEST_PACKET!!!!");
                 
-                
+                //ICMPヘッダーの設定
+                icmpHead->type=ICMP_TYPE_ECHOREQ;
+                icmpHead->code=0;
+                icmpHead->chksum=0;
+                //icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,size);
+                icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,0);
+
                 //送信バッファテーブルの設定
                 tbi.data[2]=NULL;
                 tbi.size[2]=0;
-                tbi.data[1]=(char*)testPacket;
-                tbi.size[1]=1024;
-                tbi.ipType=IPPROTO_IP;
-                
+                tbi.data[1]=(char*)icmpHead;
+                //tbi.size[1]=size;
+                tbi.size[1]=0;
+                tbi.ipType=IPPROTO_ICMP;
+    
                 ret = g_MoIp->transIp(&tbi , MoPacUtl::swapLong(ip) ,0, 0);
+
+                //delete icmpHead;
                 
                 break;
 
@@ -156,15 +191,8 @@ int MonaMain(List<char*>* pekoe)
                 printf("MSG_MONES_WAKEUP_ARP_WAIT\n");
                 
                 MAC_REPLY_WAIT* nowWait;
-                TRANS_BUF_INFO *ipsend;
-    
+                
                 //ARP要求待ちリストの検索
-                
-                //Yamami デバッグ
-                printf("Yamami!!!\n");
-                printf("g_MoArp->macWaitList->size() = %d \n",g_MoArp->macWaitList->size());
-                
-                
                 for (int i = 0; i < g_MoArp->macWaitList->size() ; i++) {
                     nowWait = g_MoArp->macWaitList->get(i);
                     
@@ -173,8 +201,7 @@ int MonaMain(List<char*>* pekoe)
                         ret = g_MoIp->transIp(nowWait->ipPacketBuf , nowWait->ip ,0, 0);
                         
                         //待避していたIPパケットバッファの解放
-                        //一旦コメント化
-                        //free(nowWait->ipPacketBuf);
+                        free(nowWait->ipPacketBuf);
                         
                         //待ちリストから削除
                         g_MoArp->macWaitList->removeAt(i);
