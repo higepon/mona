@@ -17,6 +17,9 @@ extern dword inp32(dword port);
 extern void outp32(dword port, dword value);
 
 extern void monapi_set_irq(int irq, MONAPI_BOOL enabled, MONAPI_BOOL auto_ir2);
+extern MONAPI_BOOL monapi_wait_interrupt(dword ms, byte irq, const char* file = "no file", int line = 0);
+
+#define MONAPI_WAIT_INTERRUPT(ms, irq) monapi_wait_interrupt(ms, irq, __FILE__, __LINE__)
 
 #ifdef __cplusplus
 }

@@ -17,11 +17,6 @@
 
 using namespace MonAPI;
 
-bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
-
-
-#define WAIT_INTERRUPT(ms, irq) WaitInterruptWithTimeout(ms, irq, __FILE__, __LINE__)
-
 
 //#define DEBUG_READ_TRACE
 
@@ -559,7 +554,7 @@ void IDEDriver::protocolInterrupt()
 {
     for (;;)
     {
-        if (!WAIT_INTERRUPT(1000, 15))
+        if (!MONAPI_WAIT_INTERRUPT(1000, 15))
         {
             /* time out ! */
             return;

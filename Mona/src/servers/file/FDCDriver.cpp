@@ -16,48 +16,6 @@
 
 using namespace MonAPI;
 
-bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
-
-
-#define WAIT_INTERRUPT(ms, irq) WaitInterruptWithTimeout(ms, irq, __FILE__, __LINE__)
-
-bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file, int line)
-{
-    MessageInfo msg;
-
-    dword timerId = set_timer(ms);
-
-    for (int i = 0; ; i++)
-    {
-        int result = Message::peek(&msg, i);
-
-        if (result != 0)
-        {
-            i--;
-            syscall_mthread_yield_message();
-        }
-        else if (msg.header == MSG_TIMER)
-        {
-            if (msg.arg1 != timerId) continue;
-            kill_timer(timerId);
-
-            Message::peek(&msg, i, PEEK_REMOVE);
-
-            printf("interrupt timeout %s:%d\n", file, line);
-            return false;
-        }
-        else if (msg.header == MSG_INTERRUPTED)
-        {
-            if (msg.arg1 != irq) continue;
-            kill_timer(timerId);
-
-            Message::peek(&msg, i, PEEK_REMOVE);
-            return true;
-        }
-    }
-    return false;
-}
-
 /*!
     \brief Constructer
 
@@ -166,7 +124,7 @@ int FDCDriver::write(dword lba, void* buf, int size)
 */
 void FDCDriver::waitInterrupt()
 {
-    WAIT_INTERRUPT(500, 6);
+    MONAPI_WAIT_INTERRUPT(500, 6);
 }
 
 /*!

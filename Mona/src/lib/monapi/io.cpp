@@ -6,6 +6,8 @@
     $Revision$
 */
 #include <monapi/io.h>
+#include <monapi/syscall.h>
+#include <monapi/Message.h>
 
 /*!
     control irq interrupt.
@@ -33,6 +35,53 @@ void monapi_set_irq(int irq, MONAPI_BOOL enabled, MONAPI_BOOL auto_ir2)
         }
     }
 }
+
+/*!
+    wait interrupt.
+
+    \param ms     [in] timeout ms
+    \param irq    [in] irq number
+    \param file   [in] file name for time out info.
+    \param line   [in] line number for time out info.
+    \return MONAPI_TRUE/MONAPI_FALSE OK/NG
+*/
+MONAPI_BOOL monapi_wait_interrupt(dword ms, byte irq, const char* file, int line)
+{
+    MessageInfo msg;
+
+    dword timerId = set_timer(ms);
+
+    for (int i = 0; ; i++)
+    {
+        int result = MonAPI::Message::peek(&msg, i);
+
+        if (result != 0)
+        {
+            i--;
+            syscall_mthread_yield_message();
+        }
+        else if (msg.header == MSG_TIMER)
+        {
+            if (msg.arg1 != timerId) continue;
+            kill_timer(timerId);
+
+            MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+
+            printf("interrupt timeout %s:%d\n", file, line);
+            return MONAPI_FALSE;
+        }
+        else if (msg.header == MSG_INTERRUPTED)
+        {
+            if (msg.arg1 != irq) continue;
+            kill_timer(timerId);
+
+            MonAPI::Message::peek(&msg, i, PEEK_REMOVE);
+            return MONAPI_TRUE;
+        }
+    }
+    return MONAPI_FALSE;
+}
+
 
 byte inp8(dword port) {
 
@@ -66,3 +115,4 @@ dword inp32(dword port) {
 void outp32(dword port, dword value) {
    asm volatile ("outl %%eax, %%dx": :"d" (port), "a" (value));
 }
+
