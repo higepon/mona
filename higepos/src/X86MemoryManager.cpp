@@ -13,7 +13,6 @@
 */
 #include<X86MemoryManager.h>
 
-
 /*!
     \brief get class Name
 

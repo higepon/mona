@@ -41,6 +41,21 @@ void keyStrokeHandler() {
 }
 
 /*!
+    \brief fault0d handler
+
+    fault0d handler
+
+    \author HigePon
+    \date   create:2002/09/06 update:2002/09/06
+*/
+void fault0dHandler() {
+
+    _sysPrintln("fault0d");
+    return;
+}
+
+
+/*!
     \brief dummy handler
 
     dummy handler
@@ -77,7 +92,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x0A, &dummy}
    , {0x0B, &dummy}
    , {0x0C, &dummy}
-   , {0x0D, &dummy}
+   , {0x0D, &fault0dHandler}
    , {0x0E, &dummy}
    , {0x0F, &dummy}
    , {0x10, &dummy}
