@@ -12,16 +12,16 @@ DiskDriver::~DiskDriver() {
 
 }
 
-bool DiskDriver::read(char* buf, int sector) {
+bool DiskDriver::read(int lba, char* buf) {
 
     file_.seekg(0);
-    file_.seekg(sector * 512);
+    file_.seekg((lba + 1) * 512);
     file_.read(buf, 512);
 
     return true;
 }
 
-bool DiskDriver::write(char* buf, int sector) {
+bool DiskDriver::write(int lba, char* buf) {
 
     return true;
 }

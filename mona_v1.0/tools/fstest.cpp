@@ -10,7 +10,7 @@ main(int argc, char *argv[]) {
     unsigned char buf[512];
     memset(buf, 0, 512);
 
-    driver->read((char*)buf, 0);
+    driver->read(1, (char*)buf);
 
     for (int i = 0; i < 512; i++) {
 	printf("%x", buf[i]);
