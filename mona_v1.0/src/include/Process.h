@@ -122,6 +122,9 @@ class ThreadManager {
         return dispatchList_->size();
     }
 
+  public:
+    static void setup();
+
   private:
     inline dword allocateStack() const {
         return STACK_START - STACK_SIZE * threadCount;

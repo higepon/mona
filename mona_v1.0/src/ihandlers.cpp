@@ -30,7 +30,7 @@
 void keyStrokeHandler(dword scancode) {
 
     KeyInfo info;
-    //    Message message;
+    //    static Message message;
     g_demo_step++;
 
     /* set key scan code */
@@ -38,6 +38,8 @@ void keyStrokeHandler(dword scancode) {
 
     km.setKeyScanCode((byte)scancode);
     km.getKeyInfo(&info);
+
+    g_console->printf("key");
 
 //     memset(&message, 0, sizeof(Message));
 //     message.arg1 = info.keycode;
@@ -122,7 +124,7 @@ void timerHandler() {
     outportb(0x20, 0x20);
 
     /* Process schedule */
-    //    bool isProcessChanged = g_processManager->schedule();
+    bool isProcessChanged = g_processManager->schedule();
 
     /* Thread schedule */
     //    Process* current = g_processManager->getCurrentProcess();

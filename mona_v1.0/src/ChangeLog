@@ -1,3 +1,8 @@
+2004-01-05  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: ThreadManager::setup()の呼び出し。dummyのカレントスレッドをセットする。
+                      タイマが有効になる前にこの処理を呼び出す必要がある。
+
 2004-01-03  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: thread周りの整理。dispatchList, waitListの作成

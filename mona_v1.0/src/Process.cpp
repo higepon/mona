@@ -55,6 +55,12 @@ ThreadManager::~ThreadManager() {
     delete waitList_;
 }
 
+void ThreadManager::setup() {
+
+    static Thread thread;
+    g_currentThread = thread.getThreadInfo();
+}
+
 Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
 
     Thread* thread = new Thread();

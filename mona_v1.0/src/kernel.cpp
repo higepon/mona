@@ -61,9 +61,6 @@
 #include <MemoryManager.h>
 
 char* version = "Mona version.0.1.3 $Date$";
-void userTest();
-void userTest2();
-void v86Test();
 void mainProcess();
 
 /*!
@@ -110,7 +107,11 @@ void startKernel(void) {
     g_page_manager->setup();
 
     /* this is test code 2003/12/14 */
-    //  g_processManager = new ProcessManager_(g_page_manager);
+
+    /* this should be called, before timer enabled */
+    ThreadManager::setup();
+
+    g_processManager = new ProcessManager(g_page_manager);
   //    Process_* testProcess1 = g_processManager->create(ProcessManager_::KERNEL_PROCESS, "TEST1");
     //    g_processManager->add(testProcess1);
 //     Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
@@ -145,7 +146,7 @@ void startKernel(void) {
     //    g_process_manager = new ProcessManager(idle);
 
     //    g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
-
+    g_console->printf("higege");
     enableTimer();
 #endif
 
