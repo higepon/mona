@@ -343,6 +343,41 @@ bool cp (char *src, char *dst)
     return true;
 }
 
+bool read(char* path, byte* buf, int size)
+{
+    int entry;
+    int cursor;
+
+    Directory *p = searchFile(path, &entry, &cursor);
+
+    if (p == NULL)
+    {
+        return false;
+    }
+
+    File *df = p->getFile(entry);
+
+    if (df == NULL)
+    {
+        printf("read: can not open file\n");
+        freeDirectory(p);
+        return false;
+    }
+
+    printf("size = %d bytes", df->size());
+
+    if (!df->read(buf, size))
+     {
+        printf("write error\n");
+        freeDirectory(p);
+        return false;
+    }
+
+    delete df;
+
+    return true;
+}
+
 /*!
     \brief
 
@@ -366,6 +401,11 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
+
+//     byte buf[512];
+//     memset(buf, 0, 512);
+//     read(argv[2], buf, 512);
+//     for (int i = 0; i < 512; i++) printf("%x", buf[i]);
 
     rm(destFile1);
 
