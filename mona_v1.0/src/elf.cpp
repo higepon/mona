@@ -106,6 +106,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     free(buf);
 
     /* create process */
+    enter_kernel_lock_mode();
     Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, file);
 
     /* attach binary image to process */
@@ -141,6 +142,7 @@ int loadProcess(const char* path, const char* file, bool isUser, CommandOption* 
     /* now process is loaded */
     Thread*  thread = ThreadOperation::create(process, entrypoint);
     g_scheduler->join(thread);
+    exit_kernel_lock_mode();
     return 0;
 }
 

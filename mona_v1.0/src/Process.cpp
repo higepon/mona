@@ -382,6 +382,15 @@ int ThreadOperation::switchThread(bool isProcessChanged)
 {
     bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
 
+#if 1
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    int x, y;
+    g_console->getCursor(&x, &y);
+    g_console->setCursor(3, 30);
+    g_console->printf("(cs=%x, esp=%x, eflags=%x, eip=%x)", i->cs, i->esp, i->eflags, i->eip);
+    g_console->setCursor(x, y);
+#endif
+
     if (isProcessChanged && isUser)
     {
         /* address space & therad switch */
