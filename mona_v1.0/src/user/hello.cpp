@@ -6,11 +6,11 @@ class myApplication : public MonaApplication {
 
   public:
     myApplication(char* name);
-    ~myApplication() {}
+    ~virtual myApplication() {}
 
   public:
-    int main();
-    void onKeyDown(int keycode, int modifiers);
+    virtual int main();
+    virtual void onKeyDown(int keycode, int modifiers);
 };
 
 myApplication::myApplication(char* name) : MonaApplication(name) {
