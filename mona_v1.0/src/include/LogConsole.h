@@ -46,8 +46,8 @@
 #define DLAB  0x80
 
 /* define 8250 I/O */
-#define out_uart(reg,dat) outportb(UART_BASE+(reg),(dat))
-#define in_uart(reg) inportb(UART_BASE+(reg))
+#define out_uart(reg,dat) outp8(UART_BASE+(reg),(dat))
+#define in_uart(reg) inp8(UART_BASE+(reg))
 
 /* define baudrate clock */
 #define BAUD_CLK ( 1843200 / 16 )

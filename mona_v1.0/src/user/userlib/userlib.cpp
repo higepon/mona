@@ -389,15 +389,37 @@ void __pure_virtual() {
 /*----------------------------------------------------------------------
     I/O
 ----------------------------------------------------------------------*/
-byte inportb(dword port) {
+byte inp8(dword port) {
 
     byte ret;
     asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
     return ret;
 }
 
-void outportb(dword port, byte value) {
+void outp8(dword port, byte value) {
    asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
+}
+
+word inp16(dword port) {
+
+    word ret;
+    asm volatile ("inw %%dx, %%ax": "=a"(ret): "d"(port));
+    return ret;
+}
+
+void outp16(dword port, word value) {
+   asm volatile ("outw %%ax, %%dx": :"d" (port), "a" (value));
+}
+
+dword inp32(dword port) {
+
+    dword ret;
+    asm volatile ("inl %%dx, %%eax": "=a"(ret): "d"(port));
+    return ret;
+}
+
+void outp32(dword port, dword value) {
+   asm volatile ("outl %%eax, %%dx": :"d" (port), "a" (value));
 }
 
 /*----------------------------------------------------------------------

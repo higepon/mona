@@ -27,25 +27,25 @@ void mouseirqhandler(void){
       ps2->Recv();
 }
 
-byte inportb_(dword port) {
+byte inp8_(dword port) {
 
     byte ret;
     asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
     return ret;
 }
 
-void outportb_(dword port, byte value) {
+void outp8_(dword port, byte value) {
    asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
 }
 
 bool PS2KBC::Recv(void){
     g->debug->printf("PS2:Recv...\n ");
-    if(!(inportb_(PS2_CMD) & 1)){
+    if(!(inp8_(PS2_CMD) & 1)){
       g->debug->printf("(no data)\n");
       return false;
     }
-    while(inportb_(PS2_CMD) & 1){
-      InBuf[InBufEndPtr] = inportb_(PS2_DATA);
+    while(inp8_(PS2_CMD) & 1){
+      InBuf[InBufEndPtr] = inp8_(PS2_DATA);
       g->debug->printf("%x ",InBuf[InBufEndPtr]);
       InBufEndPtr++;
     }
@@ -64,18 +64,18 @@ bool PS2KBC::Send(void){
     }
     g->debug->printf("\n");
     for(c=0;c!=OutBufEndPtr;c++){
-      while(inportb_(PS2_CMD) & 3);
-      if(inportb_(PS2_CMD) & 0xe0){
+      while(inp8_(PS2_CMD) & 3);
+      if(inp8_(PS2_CMD) & 0xe0){
         g->debug->printf("PS2:Write Error\n");
         return false;
       }
       if(c){
-        outportb_(PS2_DATA,OutBuf[c]);
+        outp8_(PS2_DATA,OutBuf[c]);
       }else{
-        outportb_(PS2_CMD,OutBuf[c]);
+        outp8_(PS2_CMD,OutBuf[c]);
       }
     }
-    while(inportb_(PS2_CMD) & 2);
+    while(inp8_(PS2_CMD) & 2);
     Recv();
   }
   return true;

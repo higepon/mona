@@ -16,8 +16,12 @@
 #include <types.h>
 #include <global.h>
 
-byte inportb(dword);
-void outportb(dword, byte);
+byte inp8(dword port);
+void outp8(dword port, byte value);
+word inp16(dword port);
+void outp16(dword port, word value);
+dword inp32(dword port);
+void outp32(dword port, dword value);
 dword get_eflags();
 void  set_eflags(dword eflags);
 

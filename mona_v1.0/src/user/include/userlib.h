@@ -84,8 +84,13 @@ void printf(const char *format, ...);
 void printInt(int num);
 size_t _power(size_t x, size_t y);
 
-byte inportb(dword);
-void outportb(dword, byte);
+byte inp8(dword port);
+void outp8(dword port, byte value);
+word inp16(dword port);
+void outp16(dword port, word value);
+dword inp32(dword port);
+void outp32(dword port, dword value);
+
 void* operator new(size_t size);
 void  operator delete(void* address);
 

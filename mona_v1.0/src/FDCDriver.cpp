@@ -123,26 +123,26 @@ void FDCDriver::initilize() {
     waitThread = g_currentThread->thread;
 
     /* setup DMAC */
-    outportb(0xda, 0x00);
+    outp8(0xda, 0x00);
     delay(1);
-    outportb(0x0d, 0x00);
+    outp8(0x0d, 0x00);
     delay(1);
-    outportb(0xd0, 0x00);
+    outp8(0xd0, 0x00);
     delay(1);
-    outportb(0x08, 0x00);
+    outp8(0x08, 0x00);
     delay(1);
-    outportb(0xd6, 0xc0);
+    outp8(0xd6, 0xc0);
     delay(1);
-    outportb(0x0b, 0x46);
+    outp8(0x0b, 0x46);
     delay(1);
-    outportb(0xd4, 0x00);
+    outp8(0xd4, 0x00);
     delay(1);
 
     /* reset drive */
-    outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
+    outp8(FDC_DOR_PRIMARY, FDC_DOR_RESET);
 
     delay(1);
-    outportb(FDC_CCR_PRIMARY, 0);
+    outp8(FDC_CCR_PRIMARY, 0);
 
     motor(ON);
 
@@ -219,11 +219,11 @@ void FDCDriver::motor(bool on) {
     if (on) {
         interrupt_ = false;
         motorCount_++;
-        outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
+        outp8(FDC_DOR_PRIMARY, FDC_START_MOTOR);
 
         delay(4);
 
-    } else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
+    } else outp8(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
 }
 
@@ -257,7 +257,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
         waitStatus(0x80 | 0x40, 0x80);
 
         /* send command */
-        outportb(FDC_DR_PRIMARY, command[i]);
+        outp8(FDC_DR_PRIMARY, command[i]);
     }
 
     return true;
@@ -306,7 +306,7 @@ void FDCDriver::waitStatus(byte expected) {
 
     do {
 
-        status = inportb(FDC_MSR_PRIMARY);
+        status = inp8(FDC_MSR_PRIMARY);
 
     } while (status != expected);
 }
@@ -325,7 +325,7 @@ void FDCDriver::waitStatus(byte mask, byte expected) {
 
     do {
 
-        status = inportb(FDC_MSR_PRIMARY);
+        status = inp8(FDC_MSR_PRIMARY);
 
     } while ((status & mask) != expected);
 }
@@ -340,7 +340,7 @@ void FDCDriver::waitStatus(byte mask, byte expected) {
 byte FDCDriver::getResult() {
 
     waitStatus(0xd0, 0xd0);
-    return inportb(FDC_DR_PRIMARY);
+    return inp8(FDC_DR_PRIMARY);
 }
 
 /*!
@@ -412,7 +412,7 @@ bool FDCDriver::senseInterrupt() {
 void FDCDriver::startDMA() {
 
     /* mask channel2 */
-    outportb(FDC_DMA_S_SMR, 0x02);
+    outp8(FDC_DMA_S_SMR, 0x02);
     return;
 }
 
@@ -425,7 +425,7 @@ void FDCDriver::startDMA() {
 void FDCDriver::stopDMA() {
 
     /* unmask channel2 */
-    outportb(FDC_DMA_S_SMR, 0x06);
+    outp8(FDC_DMA_S_SMR, 0x06);
     return;
 }
 
@@ -445,15 +445,15 @@ void FDCDriver::setupDMARead(dword size) {
     stopDMA();
 
     /* direction write */
-    outportb(FDC_DMA_S_MR, 0x46);
+    outp8(FDC_DMA_S_MR, 0x46);
 
     /* clear byte pointer */
-    outportb(FDC_DMA_S_CBP, 0);
-    outportb(FDC_DMA_S_BASE,  byte(p & 0xff));
-    outportb(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
-    outportb(FDC_DMA_S_COUNT, byte(size & 0xff));
-    outportb(FDC_DMA_S_COUNT, byte(size >>8));
-    outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
+    outp8(FDC_DMA_S_CBP, 0);
+    outp8(FDC_DMA_S_BASE,  byte(p & 0xff));
+    outp8(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
+    outp8(FDC_DMA_S_COUNT, byte(size & 0xff));
+    outp8(FDC_DMA_S_COUNT, byte(size >>8));
+    outp8(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
 
     startDMA();
     exit_kernel_lock_mode();
@@ -475,17 +475,17 @@ void FDCDriver::setupDMAWrite(dword size) {
     stopDMA();
 
     /* direction read */
-    outportb(FDC_DMA_S_MR, 0x4a);
+    outp8(FDC_DMA_S_MR, 0x4a);
 
     enter_kernel_lock_mode();
 
     /* clear byte pointer */
-    outportb(FDC_DMA_S_CBP, 0);
-    outportb(FDC_DMA_S_BASE,  byte(p & 0xff));
-    outportb(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
-    outportb(FDC_DMA_S_COUNT, byte(size & 0xff));
-    outportb(FDC_DMA_S_COUNT, byte(size >>8));
-    outportb(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
+    outp8(FDC_DMA_S_CBP, 0);
+    outp8(FDC_DMA_S_BASE,  byte(p & 0xff));
+    outp8(FDC_DMA_S_BASE,  byte((p >> 8) & 0xff));
+    outp8(FDC_DMA_S_COUNT, byte(size & 0xff));
+    outp8(FDC_DMA_S_COUNT, byte(size >>8));
+    outp8(FDC_DMA_PAGE2  , byte((p >>16)&0xFF));
 
     exit_kernel_lock_mode();
 
@@ -680,7 +680,7 @@ bool FDCDriver::checkDiskChange() {
     currentTrack_ = -1;
     motor(true);
     recalibrate();
-    bool changed = (inportb(0x3f7) & 0x80);
+    bool changed = (inp8(0x3f7) & 0x80);
     motorAutoOff();
     return changed;
 }

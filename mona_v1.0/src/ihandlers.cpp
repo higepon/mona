@@ -37,7 +37,7 @@ void mouseHandler()
         g_console->printf("mouse time out");
     }
 
-    byte data = inportb(0x60);
+    byte data = inp8(0x60);
     MessageInfo message;
     memset(&message, 0, sizeof(MessageInfo));
 
@@ -60,8 +60,8 @@ void mouseHandler()
     counter++;
 
     /* EOI */
-    outportb(0xA0, 0x20);
-    outportb(0x20, 0x20);
+    outp8(0xA0, 0x20);
+    outp8(0x20, 0x20);
     if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.SVR"), &message))
     {
         g_console->printf("mouse send failed");
@@ -84,7 +84,7 @@ void keyStrokeHandler(dword scancode)
     message.arg1   = scancode;
 
     /* EOI */
-    outportb(0x20, 0x20);
+    outp8(0x20, 0x20);
 
     if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.SVR"), &message))
     {
@@ -139,8 +139,8 @@ void dummyHandler()
     g_console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
-    //    outportb(0xA0, 0x20);
-    //    outportb(0x20, 0x20);
+    //    outp8(0xA0, 0x20);
+    //    outp8(0x20, 0x20);
 }
 
 /*!
@@ -155,7 +155,7 @@ void dummyHandler()
 void timerHandler()
 {
     /* EOI */
-    outportb(0x20, 0x20);
+    outp8(0x20, 0x20);
 
     g_scheduler->tick();
     g_currentThread->thread->tick();
@@ -178,7 +178,7 @@ void MFDCHandler(void)
     g_fdcdriver->interrupt();
 
     /* thx! K-tan */
-    outportb(0x20, 0x66);
+    outp8(0x20, 0x66);
 
     KEvent::set(g_fdcdriver->getWaitThread(), KEvent::FDC_INTERRUPT);
 
@@ -186,9 +186,9 @@ void MFDCHandler(void)
 }
 
 /* IRQ Handler (expr) */
-#define IRQHANDLERMaster(x) void irqHandler_##x(void) {  int i ; i = x ; g_console->printf("IRQMaster:%d\n",i); g_irqHandlers[x](); outportb(0x20, 0x20); }
+#define IRQHANDLERMaster(x) void irqHandler_##x(void) {  int i ; i = x ; g_console->printf("IRQMaster:%d\n",i); g_irqHandlers[x](); outp8(0x20, 0x20); }
 
-#define IRQHANDLERSlave(x) void irqHandler_##x(void) {  int i ; i = x ;  g_console->printf("IRQSlave:%d\n",i);  g_irqHandlers[x]();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
+#define IRQHANDLERSlave(x) void irqHandler_##x(void) {  int i ; i = x ;  g_console->printf("IRQSlave:%d\n",i);  g_irqHandlers[x]();outp8(0xA0, 0x20); outp8(0x20, 0x20); }
 
 IRQHANDLERMaster(0)
     IRQHANDLERMaster(1)

@@ -13,8 +13,8 @@ byte Read(byte device,byte offset){
   byte c;
   c = offset + ( device << 6);
   isa_->console->printf("PCIC:Read :off = %x device = %d  :: ",offset,device);
-  outportb(SELECT,c);
-  c = inportb(DATA);
+  outp8(SELECT,c);
+  c = inp8(DATA);
   isa_->console->printf("%x\n",c);
   return c;
 }
@@ -23,8 +23,8 @@ void Write(byte device,byte offset,byte data){
   byte c;
   c = offset + ( device << 6);
   isa_->console->printf("PCIC:Write:off = %x device = %d  :: ",offset,device);
-  outportb(SELECT,c);
-  outportb(DATA,data);
+  outp8(SELECT,c);
+  outp8(DATA,data);
   isa_->console->printf("%x\n",data);
   return;
 }

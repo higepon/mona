@@ -20,7 +20,7 @@ void irq_init(void){
   }
 
   /* enable slave int. */
-  outportb(0x21, inportb(0x21) & 0xfb); /* -> pic.cpp */
+  outp8(0x21, inp8(0x21) & 0xfb); /* -> pic.cpp */
 
   /* MapDefaultHandlers */
   g_irqMap->mark(0); /* Timer */
@@ -64,9 +64,9 @@ void irq_enable(sys_irq irq){
   i = i << (irq & 7);
   i = 0xff - i;
   if(irq & 0x08){/* slave */
-    outportb(0xA1, inportb(0xA1) & i); /* -> pic.cpp */
+    outp8(0xA1, inp8(0xA1) & i); /* -> pic.cpp */
   }else{         /* master */
-    outportb(0x21, inportb(0x21) & i); /* -> pic.cpp */
+    outp8(0x21, inp8(0x21) & i); /* -> pic.cpp */
   }
 }
 
@@ -75,8 +75,8 @@ void irq_disable(sys_irq irq){
   i = 1;
   i = i << (irq & 7);
   if(irq & 0x08){/* slave */
-    outportb(0xA1, inportb(0xA1) | i); /* -> pic.cpp */
+    outp8(0xA1, inp8(0xA1) | i); /* -> pic.cpp */
   }else{         /* master */
-    outportb(0x21, inportb(0x21) | i); /* -> pic.cpp */
+    outp8(0x21, inp8(0x21) | i); /* -> pic.cpp */
   }
 }

@@ -84,7 +84,7 @@ class FDCDriver : public IStorageDevice {
 extern FDCDriver* gFDCDriver;
 
 /* delay */
-#define delay(n) {for (int i = 0; i < n; i++) inportb(0x80);}
+#define delay(n) {for (int i = 0; i < n; i++) inp8(0x80);}
 
 /* definition on/off */
 #define ON  true

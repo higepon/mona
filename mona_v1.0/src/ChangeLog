@@ -1,5 +1,7 @@
 2004-03-27  higepon  <higepon@users.sourceforge.jp>
 
+        * user/userlib/userlib.cpp: inp/outp 8/16/32を実装
+
         * user/include/userlib/MemoryMap.h (class MemoryMap): MemoryMapクラスを位置から書き直しました。userlibに影響があります。
 
 2004-03-25  higepon  <higepon@users.sourceforge.jp>

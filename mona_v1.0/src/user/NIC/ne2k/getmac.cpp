@@ -1,6 +1,6 @@
 /*!
     \file   getmac.cpp
-    \brief  get and echo mac address for ne2k 
+    \brief  get and echo mac address for ne2k
 
     Copyright (c) 2004 gamix
     All rights reserved.
@@ -11,43 +11,43 @@
 #include <userlib.h>
 
 // NIC io address
-#define IO_ADDR 0x240 
+#define IO_ADDR 0x240
 
 // NE2K Register
 #define CR 0x00
 // page 0 Read
-#define CLD_A0 	0x01
-#define CLD_A1 	0x02
-#define BNRY	0x03
-#define TSR	0x04
-#define NCR	0x05
-#define FIFO	0x06
-#define ISR	0x07
+#define CLD_A0  0x01
+#define CLD_A1  0x02
+#define BNRY    0x03
+#define TSR     0x04
+#define NCR     0x05
+#define FIFO    0x06
+#define ISR     0x07
 #define CRDA_A0 0x08
 #define CRDA_A1 0x09
 #define _8019ID0 0x0A
 #define _8019ID1 0x0B
-#define RSR 	0x0C
-#define CNT_R0 	0x0D
-#define CNT_R1 	0x0E
-#define CNT_R2 	0x0F
+#define RSR     0x0C
+#define CNT_R0  0x0D
+#define CNT_R1  0x0E
+#define CNT_R2  0x0F
 #define RMT_DMA 0x10
 // page 0 Write
 #define PSTART  0x01
-#define PSTOP 	0x02
+#define PSTOP   0x02
 #define BNRY   0x03
 #define TPSR    0x04
 #define TBC_R0  0x05
 #define TBC_R1  0x06
 #define ISR     0x07
-#define RSA_R0	0x08
-#define RSA_R1 	0x09
-#define RBC_R0 	0x0A
-#define RBC_R1 	0x0B
+#define RSA_R0  0x08
+#define RSA_R1  0x09
+#define RBC_R0  0x0A
+#define RBC_R1  0x0B
 #define RCR     0x0C
-#define TCR  	0x0D
-#define DCR  	0x0E
-#define IMR  	0x0F
+#define TCR     0x0D
+#define DCR     0x0E
+#define IMR     0x0F
 
 // page 1 Read and Write
 #define PAR0   0x01
@@ -68,7 +68,7 @@
 
 // page 2 Read
 #define PSTART  0x01
-#define PSTOP  	0x02
+#define PSTOP   0x02
 #define TPSR    0x04
 #define RCR     0x0C
 #define TCR     0x0D
@@ -87,7 +87,7 @@
 #define NE2K_DMA_ABORT 0x20
 // TXP is Tx Pakcet
 #define NE2K_TXP 0x04
-//STA bit is non used in RTL8019.  
+//STA bit is non used in RTL8019.
 #define NE2K_STA 0x02
 // STP is STOP NIC
 #define NE2K_STP 0x01
@@ -124,7 +124,7 @@
 //Word Transfer Register
 #define WTS 0x01
 
-//TCR 
+//TCR
 #define TCR_P 0xE0
 #define OFST 0x10
 #define ATD 0x08
@@ -140,7 +140,7 @@
 unsigned char hextoa(int hex)
 {
    if ((hex >  16) || (hex < 0)) {
-      printf("input error :input is %x\n",hex);   
+      printf("input error :input is %x\n",hex);
    } else if (10 <= hex) {
       return (hex - 10 + 'A');
    } else  {
@@ -155,16 +155,16 @@ void char_to_MAC_string(unsigned char *from,unsigned char *to)
        int shita=0;
 
        shita = *from & 0xf;
-       ue = (*from & 0xf0) >> 4;        
+       ue = (*from & 0xf0) >> 4;
 
        *to=hextoa(ue);
        *(++to)=hextoa(shita);
-       if(i < 5) 
+       if(i < 5)
            *(++to)=':';
-       to++;  
+       to++;
        from=from+2;
    }
-}   
+}
 
 int MonaMain(List<char*>* pekoe) {
 
@@ -174,25 +174,25 @@ int MonaMain(List<char*>* pekoe) {
     unsigned char macstr[20]={0};
     unsigned char *buf=nicmem;
     syscall_get_io();
-    
+
     port = IO_ADDR;
 
 
-    outportb(port,NE2K_PAGE0 | NE2K_DMA_ABORT | NE2K_STP); 
-    outportb(port+DCR,FT10 | BOS86 | LS  );
-    outportb(port,NE2K_PAGE0 | NE2K_DMA_ABORT | NE2K_STA);
-    outportb(port+RBC_R0,16);
-    outportb(port+RBC_R1,0);
-    outportb(port+RSA_R0,0);
-    outportb(port+RSA_R1,0);
-    outportb(port,NE2K_PAGE0 | NE2K_DMA_READ | NE2K_STA);
+    outp8(port,NE2K_PAGE0 | NE2K_DMA_ABORT | NE2K_STP);
+    outp8(port+DCR,FT10 | BOS86 | LS  );
+    outp8(port,NE2K_PAGE0 | NE2K_DMA_ABORT | NE2K_STA);
+    outp8(port+RBC_R0,16);
+    outp8(port+RBC_R1,0);
+    outp8(port+RSA_R0,0);
+    outp8(port+RSA_R1,0);
+    outp8(port,NE2K_PAGE0 | NE2K_DMA_READ | NE2K_STA);
 
     for (i=0;i< 16 ;i=i++){
-	*buf++=inportb( port+RMT_DMA);
-    }   	
-     
-    char_to_MAC_string(nicmem,macstr); 
+        *buf++=inp8( port+RMT_DMA);
+    }
+
+    char_to_MAC_string(nicmem,macstr);
     printf("MAC ADDRESS = %s",macstr);
- 
+
     return 0;
 }
