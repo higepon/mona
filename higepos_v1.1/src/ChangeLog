@@ -1,9 +1,13 @@
+2002-11-04  higepon  <higepon@users.sourceforge.jp>
+
+        * KeyBoardManager.cpp:一部冗長なコードの見直し
+
 2002-11-02  syn <syn@users.sourceforge.jp>
-       
+
         * boot不能のため、前項目の巻き戻し
 
 2002-11-02  syn <syn@users.sourceforge.jp>
-        
+
         * FDCDriver.cpp, FDCDriver.h writeSectorの実装
           FDCDriver::write_dma 追加
         * FDCDriver.cpp 複数セクタ読み込みの実装
@@ -12,7 +16,7 @@
         * FDCDriver.cpp 各種エラー処理追加
 
 2002-10-31  syn <syn@users.sourceforge.jp>
-   
+
         * FDCDriver.cpp readSectorの実装
 
 2002-10-26  higepon  <higepon@users.sourceforge.jp>

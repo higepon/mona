@@ -100,7 +100,7 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
     \param scancode original key scan code
 
     \author HigePon
-    \date   create:2002/10/12 update:2002/10/26
+    \date   create:2002/10/12 update:2002/11/04
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
@@ -147,22 +147,22 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
       case KEY_LSHIFT:
       case KEY_RSHIFT:
-          isShift_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          isShift_ = !(modifiers & KEY_MODIFIER_UP);
           break;
       case KEY_LALT:
       case KEY_RALT:
-          isAlt_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          isAlt_   = !(modifiers & KEY_MODIFIER_UP);
           break;
       case KEY_LCTRL:
       case KEY_RCTRL:
-          isCtrl_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          isCtrl_  = !(modifiers & KEY_MODIFIER_UP);
           break;
       case KEY_LWIN:
       case KEY_RWIN:
-          isWin_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          isWin_   = !(modifiers & KEY_MODIFIER_UP);
           break;
       case KEY_MENU:
-          isMenu_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          isMenu_  = !(modifiers & KEY_MODIFIER_UP);
           break;
     }
 
