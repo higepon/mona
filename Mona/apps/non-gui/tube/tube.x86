@@ -20,17 +20,18 @@ SCREEN_H		equ		240
 %endif
 
 		struc	tube_t
-.fpuwork	resq	1
-.angle		resq	1
+.fpuwork	resd	1
+.angle		resd	1
 .step		resd	1
 .yalign		resd	1
 .vram		resd	1
 .bpp		resd	1
-.width		resd	1
-.height		resd	1
-.r240		resq	1
-.r128ppi	resq	1
-.anglestep	resq	1
+.vramw		resd	1
+.vramh		resd	1
+.targw		resd	1
+.r240		resd	1
+.r128ppi	resd	1
+.anglestep	resd	1
 .size
 		endstruc
 
@@ -103,7 +104,7 @@ maketexture:
 			;	mov		edi, texture
 .lp1:			mov		[edi + ecx], cl
 				inc		ecx
-				cmp		cx, byte 0
+				or		cx, cx
 				jne		short .lp1
 				mov		dl, 0xc9
 				xor		eax, eax
@@ -122,27 +123,29 @@ maketexture:
 				mov		[edi + ebx], dl
 				loop	.lp2
 
-				; yalign計算
 				mov		ebx, esp
-				shr		ebp, 3
-				mov		eax, [ebx + tube_t.width]
-				sub		eax, SCREEN_W
-				imul	ebp
-				mov		[ebx + tube_t.yalign], eax
 
 				; rdataコピー
 				mov		esi, const_tbl
-				lea		edi, [ebx + tube_t.r240]
-				mov		cl, 6
+				lea		edi, [ebx + tube_t.targw]
+				mov		cl, 4
 				rep movsd
+
+				; yalign計算
+				shr		ebp, 3
+				mov		eax, [ebx + tube_t.vramw]
+				sub		eax, [ebx + tube_t.targw]
+				imul	ebp
+				mov		[ebx + tube_t.yalign], eax
+
 
 				; 計算～
 updatescreen:	mov		esi, [ebx + tube_t.step]
 				add		byte [ebx + tube_t.step + 1], 8
 				mov		ecx, screen
-				fld		qword [ebx + tube_t.angle]
-				fadd	qword [ebx + tube_t.anglestep]
-				fst		qword [ebx + tube_t.angle]
+				fld		dword [ebx + tube_t.angle]
+				fadd	dword [ebx + tube_t.anglestep]
+				fst		dword [ebx + tube_t.angle]
 				fsincos
 				mov		edi, -(SCREEN_H / 2)
 .lp2:			mov		ebp, -(SCREEN_W / 2)
@@ -160,7 +163,7 @@ updatescreen:	mov		esi, [ebx + tube_t.step]
 				fxch	st0, st1
 				fmul	st0, st4
 				faddp	st1, st0
-				fld		qword [ebx + tube_t.r240]
+				fld		dword [ebx + tube_t.r240]
 %if 1
 				fld		st1				; y
 				fmul	st0, st4
@@ -182,10 +185,10 @@ updatescreen:	mov		esi, [ebx + tube_t.step]
 				fdivp	st1, st0
 				fxch	st0, st2
 				fpatan
-				fmul	qword [ebx + tube_t.r128ppi]
+				fmul	dword [ebx + tube_t.r128ppi]
 				fistp	dword [ebx]
 				mov		dl, [ebx]
-				fmul	qword [ebx + tube_t.r128ppi]
+				fmul	dword [ebx + tube_t.r128ppi]
 				fistp	dword [ebx]
 				mov		dh, [ebx]
 				lea		eax, [esi + edx]
@@ -222,6 +225,7 @@ updatescreen:	mov		esi, [ebx + tube_t.step]
 vramdraw:		mov		edx, [ebx + tube_t.vram]
 ;				mov		ecx, palettes
 				mov		esi, screen
+				push	dword updatescreen
 				mov		edi, SCREEN_H
 				cmp		[ebx + tube_t.bpp], byte 24
 				je		short vramdraw24
@@ -229,7 +233,7 @@ vramdraw:		mov		edx, [ebx + tube_t.vram]
 				je		short vramdraw16
 
 vramdraw32:
-.lp2:			mov		ebp, SCREEN_W
+.lp2:			mov		ebp, [ebx + tube_t.targw]
 .lp1:			movzx	eax, byte [esi]
 				inc		esi
 				mov		eax, [ecx + eax * 4]
@@ -240,26 +244,26 @@ vramdraw32:
 				add		edx, [ebx + tube_t.yalign]
 				dec		edi
 				jne		short .lp2
-_updatescreen	jmp		updatescreen
+				ret
 
 vramdraw24:
-.lp2:			mov		ebp, SCREEN_W
+.lp2:			mov		ebp, [ebx + tube_t.targw]
 .lp1:			movzx	eax, byte [esi]
 				inc		esi
 				mov		eax, [ecx + eax * 4]
 				mov		[edx], ax
 				shr		eax, 16
-				mov		[edx+2], al
 				add		edx, byte 3
+				mov		[edx-1], al
 				dec		ebp
 				jne		short .lp1
 				add		edx, [ebx + tube_t.yalign]
 				dec		edi
 				jne		short .lp2
-				jmp		short _updatescreen
+				ret
 
 vramdraw16:
-.lp2:			mov		ebp, SCREEN_W
+.lp2:			mov		ebp, [ebx + tube_t.targw]
 .lp1:			movzx	eax, byte [esi]
 				inc		esi
 				mov		eax, [ecx + eax * 4]
@@ -274,15 +278,16 @@ vramdraw16:
 				add		edx, [ebx + tube_t.yalign]
 				dec		edi
 				jne		short .lp2
-				jmp		short _updatescreen
+				ret
 
 errvrammsg		db	'Require 16/24/32bpp.', 10, 0
 errfpumsg		db	'Require FPU.', 10, 0
 
-				align	8
-const_tbl		dq		240.							; Zのデフォルト
-				dq		40.743665431525205956834		; 128 / PI
-				dq		0.05							; てきとー回転θ
+				align	4
+const_tbl		dd		SCREEN_W
+				dd		240.							; Zのデフォルト
+				dd		40.743665431525205956834		; 128 / PI
+				dd		0.05							; てきとー回転θ
 
 const_term:
 
