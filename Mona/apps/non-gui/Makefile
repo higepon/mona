@@ -7,6 +7,7 @@ all:
 	@cd waba; $(MAKE) $@
 	@cd tube; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
+	@cd monamona; $(MAKE) $@
 
 install:
 	@cd noiz2bg; $(MAKE) $@
@@ -17,6 +18,7 @@ install:
 	@cd waba; $(MAKE) $@
 	@cd tube; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
+	@cd monamona; $(MAKE) $@
 
 clean: touchdepend
 	@cd noiz2bg; $(MAKE) $@
@@ -27,6 +29,7 @@ clean: touchdepend
 	@cd waba; $(MAKE) $@
 	@cd tube; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
+	@cd monamona; $(MAKE) $@
 
 depend: touchdepend
 	@cd noiz2bg; $(MAKE) $@
@@ -36,6 +39,7 @@ depend: touchdepend
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
 	@cd bzcat; $(MAKE) $@
+	@cd monamona; $(MAKE) $@
 
 distclean:
 	rm -f noiz2bg/dependencies
@@ -44,6 +48,7 @@ distclean:
 #	rm -f clock/dependencies
 	rm -f waba/dependencies
 	rm -f bzcat/dependencies
+	rm -f monamona/dependencies
 	@cd nic; $(MAKE) $@
 
 touchdepend:
@@ -53,3 +58,4 @@ touchdepend:
 #	touch clock/dependencies
 	touch waba/dependencies
 	touch bzcat/dependencies
+	touch monamona/dependencies
