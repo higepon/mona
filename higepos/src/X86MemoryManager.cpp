@@ -69,7 +69,9 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     if (current->size != realSize) {
         this->addToEntry(0, freeBlock, freeBlockSize);
         this->addToEntry(0, freeBlock + 1, 1);
-        this->addToEntry(0, freeBlock + 2, 1);
+        this->printInfo();
+        this->addToEntry(0, freeBlock + 2, 2);
+        this->printInfo();
         this->concatBlock(freeEntry_, freeBlock);
         this->printInfo();
     }
@@ -219,8 +221,10 @@ void X86MemoryManager::addToEntry(H_BYTE type, struct memoryEntry* block, H_SIZE
         previous->next = block;
         block->next    = next;
         block->size    = size;
+        _sys_printf("#######################");
     } else {
         entry->size = size;
+        _sys_printf("$$$$$$$$$$$$$$$$$$$$$$$");
     }
 }
 
