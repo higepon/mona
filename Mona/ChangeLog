@@ -1,6 +1,10 @@
 2004-05-16  tino  <tino@users.sourceforge.jp>
 
-        * include/monapi/cmessages.h (monapi_cmessage_receive_header_only): 追加
+        * include/monapi/cmessage.h: マルチスレッド対策のためキュー指定をサポート
+
+        * src/lib/monapi/cmessage.cpp: マルチスレッド対策のためキュー指定をサポート
+
+        * include/monapi/Message.h: シングルスレッドのみ。危険な関数を除去。
 
         * include/gui/System/Mona/Forms/Timer.h: 追加
 

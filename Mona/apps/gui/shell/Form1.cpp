@@ -1,6 +1,6 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
-#include <monapi/cmessage.h>
+#include <monapi/clist.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Mona/Forms/Form.h>
@@ -82,16 +82,17 @@ private:
 	int x, y;
 };
 
+static monapi_clist msg_queue;
 static dword my_tid, stdout_tid;
 static _P<Terminal> terminal;
 
 static void StdoutMessageLoop()
 {
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
+	monapi_cmessage_send_args(my_tid, MSG_SERVER_START_OK, 0, 0, 0, NULL);
 
 	for (MessageInfo msg;;)
 	{
-		if (MonAPI::Message::receive(&msg) != 0) continue;
+		if (monapi_cmessage_receive(&msg_queue, &msg) != 0) continue;
 
 		switch (msg.header)
 		{
@@ -100,7 +101,7 @@ static void StdoutMessageLoop()
 				msg.str[127] = '\0';
 				terminal->Output(msg.str);
 				terminal->Refresh();
-				MonAPI::Message::reply(&msg);
+				monapi_cmessage_reply(&msg);
 				break;
 			}
 		}
@@ -112,8 +113,9 @@ static void InitThread()
 	my_tid = syscall_get_tid();
 	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
 	syscall_mthread_join(id);
-	MessageInfo msg;
-	monapi_cmessage_receive_header_only(&msg, MSG_SERVER_START_OK);
+	MessageInfo msg, src;
+	src.header = MSG_SERVER_START_OK;
+	monapi_cmessage_receive_cond(NULL, &msg, &src, monapi_cmessage_cond_header);
 	stdout_tid = msg.from;
 }
 
@@ -142,9 +144,9 @@ public:
 	{
 		_P<Form> f = new Form1();
 		InitThread();
-		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+		monapi_cmessage_send_receive_args(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid, 0, 0, NULL);
 		Application::Run(f);
-		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+		monapi_cmessage_send_receive_args(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid, 0, 0, NULL);
 		syscall_kill_thread(stdout_tid);
 	}
 };
