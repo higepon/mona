@@ -4,9 +4,7 @@ SOURCES         = main.cpp          \
                   Command.cpp       \
                   DisplayWindow.cpp \
                   Charing.cpp       \
-                  CommandHistory.cpp       \
-#                  KeyBoardManager.cpp \
-
+                  CommandHistory.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
