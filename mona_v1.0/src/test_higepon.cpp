@@ -43,8 +43,16 @@ void FDCTester() {
          g_fdcdriver->motor(false);
          while (true);
     }
-
     for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
+
+    memset(tbuf, 0x99, 512);
+    if (!g_fdcdriver->read(0, tbuf)) {
+         g_console->printf("read failed %d", 50);
+         g_fdcdriver->motor(false);
+         while (true);
+    }
+    for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
+
 
     g_fdcdriver->motor(false);
     g_console->printf("ok");
@@ -58,7 +66,7 @@ void FDCTester() {
     }
 
     g_console->printf("init ok");
-
+    while (true);
     g_console->printf("changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         g_console->printf("some dir not found");
@@ -66,8 +74,6 @@ void FDCTester() {
     }
 
     g_console->printf("cdr ok");
-
-    while (true);
 
     g_console->printf("create file hige.cpp\n");
     if (!fat->createFlie("HIGE", "CPP")) {
