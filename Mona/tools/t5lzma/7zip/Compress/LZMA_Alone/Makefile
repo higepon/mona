@@ -28,7 +28,8 @@ OBJS = \
   StringConvert.o \
   StringToInt.o \
   Vector.o
-# FileIO.o \
+# FileIO.o
+# FileIO.o ‚Ícygwin‚Å‚ÍŒƒ‚µ‚­ƒGƒ‰[‚ğ‹N‚±‚·
 
 all: $(PROG)
 
