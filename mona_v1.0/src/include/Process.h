@@ -139,7 +139,8 @@ class ThreadManager {
 
   private:
     inline dword allocateStack() const {
-        return STACK_START - STACK_SIZE * threadCount;
+        //        return STACK_START - STACK_SIZE * threadCount;
+        return 0xFFFFFFFF;
     }
     void archCreateUserThread(Thread* thread, dword programCounter, PageEntry* directory) const;
     void archCreateThread(Thread* thread, dword programCounter, PageEntry* directory) const;
@@ -151,7 +152,7 @@ class ThreadManager {
     bool isUser_;
 
   private:
-    static const LinearAddress STACK_START = 0xFFFFFF00;
+    static const LinearAddress STACK_START = 0xFFFFFFFF;
     static const dword STACK_SIZE          = 4 * 1024;
     int threadCount;
 };

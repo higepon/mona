@@ -1,5 +1,7 @@
 2004-01-06  higepon  <higepon@users.sourceforge.jp>
 
+        * ihandlers.cpp: スレッド切り替え(カーネルモード)実装中。
+
         * 現在カーネルは全く動きません。
 
         * スレッドスケジューラのバグを修正

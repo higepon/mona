@@ -124,39 +124,33 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-        g_console->printf("here-2[%d]", g_processManager);
-
     /* Process schedule */
     bool isProcessChanged = g_processManager->schedule();
-
-        g_console->printf("here-1");
 
     /* Thread schedule */
     Process* current = g_processManager->getCurrentProcess();
     bool isUser = current->isUserMode();
     g_currentThread = current->schedule()->getThreadInfo();
 
-        g_console->printf("here0");
-
     if (isProcessChanged && isUser) {
 
         /* address space & therad switch */
-        arch_switch_thread_to_user1();
+        //        arch_switch_thread_to_user1();
     } else if (!isProcessChanged && isUser) {
 
         /* only thread switch */
-        arch_switch_thread_to_user2();
+        //        arch_switch_thread_to_user2();
     } else if (isProcessChanged && !isUser) {
 
         /* address space & therad switch */
-        g_console->printf("here1");
-        arch_switch_thread1();
+    g_console->printf("****");
+    //        arch_switch_thread1();
     } else {
-        g_console->printf("here2");
-        arch_switch_thread2();
+    g_console->printf("arch");
+    //        arch_switch_thread2();
     }
 
-    g_console->printf("********%s[%x]\n", g_processManager->getCurrentProcess()->getName(), g_currentThread);
+    g_console->printf("(%s[%x, %x])\n", g_processManager->getCurrentProcess()->getName(), g_currentThread, g_currentThread->archinfo->esp);
 
     //    g_process_manager->schedule();
 }

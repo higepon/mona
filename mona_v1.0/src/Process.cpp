@@ -151,8 +151,6 @@ Thread* ThreadManager::schedule() {
 
     current_->tick();
 
-    g_console->printf("here 10");
-
     /* thread has time yet */
     if (current_->hasTimeLeft()) {
 
@@ -160,13 +158,10 @@ Thread* ThreadManager::schedule() {
         return current_;
     }
 
-    g_console->printf("here 11");
     /* round robin */
     current_->setTimeLeft(1);
     Thread* tmp = dispatchList_->removeAt(0);
-    g_console->printf("here 12");
     dispatchList_->add(tmp);
-    g_console->printf("here 13");
     current_ = dispatchList_->get(0);
     return current_;
 }
@@ -264,8 +259,6 @@ bool ProcessManager::schedule() {
     Process* next;
     Process* tmp;
 
-    g_console->printf("here 09[%d]", current_);
-
     /* tick */
     current_->tick();
 
@@ -276,14 +269,9 @@ bool ProcessManager::schedule() {
         return false;
     }
 
-    g_console->printf("here 10[%d]", current_);
-
     /* round robin */
     current_->setTimeLeft(4);
     tmp = dispatchList_->removeAt(0);
-
-    g_console->printf("here 11[%d]", current_);
-
     dispatchList_->add(tmp);
     next = dispatchList_->get(0);
     isProcessChanged = next != current_;
@@ -354,6 +342,8 @@ Process::Process(const char* name, PageEntry* directory) : tick_(0), timeLeft_(4
 
     /* address space */
     pageDirectory_ = directory;
+
+    g_page_manager->allocatePhysicalPage(directory, 0xFFFFFFFF, true, true, true);
 }
 
 Process::~Process() {
