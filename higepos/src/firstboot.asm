@@ -15,19 +15,27 @@
         jmp short start
         nop
 
-; for DEBUG fake FAT parameter added by Guripon
-        db      "Higepos "      ; os name & version
-        dw      512             ; length of sector(byte)
-        db      1               ; length of cluster(sector)
-        dw      1               ; length of boot sector(sector)
-        db      2               ; FAT number
-        dw      0x00E0          ; number of root entry
-        dw      2880            ; number of sectors
-        db      0xF0            ; media identifier
-        dw      9               ; length of 1FAT(sector)
-        dw      18              ; number of sectors per one track
-        dw      2               ; number of head
-        dw      0               ; number of invisible sector
+; fake boot parameter block (bpb) for RAWRITE added by Guripon
+; # Actually, fats and root dir entries are broken for trailing kernel
+        db      "Higepos "      ; OEM label (maker name and version number)
+        dw      512             ; bytes/sector
+        db      1               ; sectors/allocation unit
+        dw      1               ; # of reserved sectors
+        db      2               ; # of fats
+        dw      0x00E0          ; # of root dir entries
+        dw      2880            ; # of sectors total in image
+        db      0xF0            ; media descripter: 0xf0 = 2sides18sectors
+        dw      9               ; # of sectors in a fat
+        dw      18              ; # of sectors/track
+        dw      2               ; # of heads
+        dd      0               ; # of hidden sectors
+        dd      0               ; # of sectors if > 65536
+        dw      0               ; drive number
+        db      0x29            ; extended boot signature
+        dd      0x00000000      ; volume id
+        db      "NO NAME    "   ; volume label
+        db      "FAT12   "      ; file system
+
 ;
 start:
         cli                     ; disable interrupt
