@@ -23,6 +23,7 @@ cglobal arch_switch_thread2
 cextern g_stack_view      ;; for debug stack viewer
 cextern fault0dHandler
 cextern g_currentThread
+cextern g_tss
 
 ;;----------------------------------------------------------------------
 ;; save register to current thread
@@ -76,6 +77,9 @@ dpl03:
 arch_switch_thread_to_user1:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov ecx, dword[g_tss]        ; tss
+        mov eax, dword[ebx + 68]     ; get esp0
+        mov dword[ecx + 1], eax      ; restore esp0
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
@@ -100,6 +104,9 @@ arch_switch_thread_to_user1:
 arch_switch_thread_to_user2:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov ecx, dword[g_tss]        ; tss
+        mov eax, dword[ebx + 68]     ; get esp0
+        mov dword[ecx + 1], eax      ; restore esp0
         mov eax, dword[ebx + 76]     ; page directory
         mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax
@@ -170,6 +177,9 @@ arch_switch_thread2:
 arch_switch_thread_to_v861:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov ecx, dword[g_tss]        ; tss
+        mov eax, dword[ebx + 68]     ; get esp0
+        mov dword[ecx + 1], eax      ; restore esp0
         mov eax, dword[ebx + 76]     ; page directory
         mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax
@@ -200,6 +210,9 @@ arch_switch_thread_to_v861:
 arch_switch_thread_to_v862:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        mov ecx, dword[g_tss]        ; tss
+        mov eax, dword[ebx + 68]     ; get esp0
+        mov dword[ecx + 1], eax      ; restore esp0
         mov eax, dword[ebx + 76]     ; page directory
         mov cr3, eax                 ; change page directory
         mov eax, dword[ebx + 12]     ; restore eax

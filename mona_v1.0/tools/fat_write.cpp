@@ -18,6 +18,14 @@
 
 int main(int argc, char *argv[]) {
 
+//     if (1) {
+//         printf("usage: fat_write.exe image_file file_to_write\n");
+//         exit(-1);
+//     }
+
+
+//     exit(0);
+
     printf("making %s...\n", argv[1]);
 
     DiskDriver* driver = new HogeDriver(argv[1], 50);

@@ -1,5 +1,8 @@
 2004-01-14  higepon  <higepon@users.sourceforge.jp>
 
+        * core.asm (arch_save_thread_registers): 重大なバグ修正TSSのesp0にタスク固有の
+                                                 カーネルスタックを格納し忘れていた。
+
         * システムコール時のレジスタ破壊によるバグを修正
 
         * kernel.cpp: プロセスkill時にスケジュールしなおすようにした。

@@ -142,8 +142,9 @@ void startKernel(void) {
 
     /* v86_func */
     byte* v86_func = (byte*)0x100;
-    (v86_func)[0] = 0xEB;
-    (v86_func)[1] = 0xFE;
+    (v86_func)[0] = 0xFA;
+    (v86_func)[1] = 0xEB;
+    (v86_func)[2] = 0xFE;
 
     /* this should be called, before timer enabled */
     ThreadManager::setup();

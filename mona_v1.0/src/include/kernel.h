@@ -46,10 +46,10 @@ typedef struct {
     \struct TSS
 */
 typedef struct {
-    word  backlink;
+    word  backlink;//0
     word  pad0;
-    dword esp0;
-    word  ss0;
+    dword esp0;//1
+    word  ss0;//2
     word  pad1;
     dword esp1;
     word  ss1;
