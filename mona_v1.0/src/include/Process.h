@@ -25,6 +25,14 @@
 #define DPL_USER    3
 
 /*----------------------------------------------------------------------
+    Arch dependent functions
+----------------------------------------------------------------------*/
+extern "C" void arch_switch_thread_to_user1();
+extern "C" void arch_switch_thread_to_user2();
+extern "C" void arch_switch_thread1();
+extern "C" void arch_switch_thread2();
+
+/*----------------------------------------------------------------------
     ArchThreadInfo
 ----------------------------------------------------------------------*/
 typedef struct ArchThreadInfo {
@@ -83,6 +91,10 @@ class Thread {
 
     inline bool hasTimeLeft() const {
         return (timeLeft_ > 0);
+    }
+
+    inline void setTimeLeft(long timeLeft) {
+        timeLeft_ = timeLeft;
     }
 
     inline ThreadInfo* getThreadInfo() const {
@@ -155,35 +167,43 @@ class Process {
     virtual ~Process();
 
   public:
-    inline const char* getName() const {
+    inline virtual const char* getName() const {
         return name_;
     }
 
-    inline void tick() {
+    inline virtual void setTimeLeft(long timeLeft) {
+        timeLeft_ = timeLeft;
+    }
+
+    inline virtual void tick() {
         tick_++;
         timeLeft_ --;
     }
 
-    inline void tick(dword tick) {
+    inline virtual void tick(dword tick) {
         tick_     += tick;
         timeLeft_ -= tick;
     }
 
-    inline dword getTick() {
+    inline virtual dword getTick() {
         return tick_;
     }
 
-    inline bool hasTimeLeft() const {
+    inline virtual bool hasTimeLeft() const {
         return timeLeft_ > 0;
     }
 
-    inline bool hasActiveThread() const {
+    inline virtual bool hasActiveThread() const {
         return threadManager_->hasActiveThread();
     }
 
-    int join(Thread* thread);
-    Thread* schedule();
-    Thread* createThread(dword programCounter);
+    inline virtual bool isUserMode() const {
+        return isUserMode_;
+    }
+
+    virtual int join(Thread* thread);
+    virtual Thread* schedule();
+    virtual Thread* createThread(dword programCounter);
 
   protected:
     bool isUserMode_;

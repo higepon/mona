@@ -155,6 +155,119 @@ void testBinaryTree() {
 int main(int argc, char** argv) {
 
     /*----------------------------------------------------------------------
+        HList Test
+    ----------------------------------------------------------------------*/
+    int current = 0;
+    int tmp;
+    List<int>* list = new HList<int>();
+    list->add(0);
+    list->add(1);
+    list->add(2);
+    list->add(3);
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+    tmp = list->removeAt(0);
+    list->add(tmp);
+    current = list->get(0);
+
+    for (int i = 0; i < list->size(); i++) {
+        printf("[(%d):%d]:%d", i, list->get(i), current);
+    }
+    printf("\n");
+
+
+    exit(0);
+
+    /*----------------------------------------------------------------------
         Binary Tree test
     ----------------------------------------------------------------------*/
     testBinaryTree();

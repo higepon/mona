@@ -152,6 +152,33 @@ void startKernel(void) {
     Thread*   testThread7  = g_processManager->createThread(testProcess7, (dword)printBanner);
     g_processManager->join(testProcess7, testThread7);
 
+    Thread*   testThread8  = g_processManager->createThread(testProcess7, (dword)printBanner);
+    g_processManager->join(testProcess7, testThread8);
+
+    Thread*   testThread9  = g_processManager->createThread(testProcess7, (dword)printBanner);
+    g_processManager->join(testProcess7, testThread9);
+
+    Thread*   testThread10  = g_processManager->createThread(testProcess7, (dword)printBanner);
+    g_processManager->join(testProcess7, testThread10);
+
+    /* add testProces8(testThread8) */
+//     Process* testProcess8 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST8");
+//     g_processManager->add(testProcess8);
+//     Thread*   testThread11 = g_processManager->createThread(testProcess8, (dword)printBanner);
+//     g_processManager->join(testProcess8, testThread11);
+
+//     Thread*   testThread12  = g_processManager->createThread(testProcess8, (dword)printBanner);
+//     g_processManager->join(testProcess8, testThread12);
+
+//     Thread*   testThread13  = g_processManager->createThread(testProcess8, (dword)printBanner);
+//     g_processManager->join(testProcess8, testThread13);
+
+//     Thread*   testThread14  = g_processManager->createThread(testProcess8, (dword)printBanner);
+//     g_processManager->join(testProcess8, testThread14);
+
+//     Thread*   testThread15  = g_processManager->createThread(testProcess8, (dword)printBanner);
+//     g_processManager->join(testProcess8, testThread15);
+
 
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();
@@ -181,7 +208,6 @@ void startKernel(void) {
     //    g_process_manager = new ProcessManager(idle);
 
     //    g_process_manager->addProcess(mprocess, (virtual_addr)mainProcess);
-    g_console->printf("higege");
     enableTimer();
 #endif
 

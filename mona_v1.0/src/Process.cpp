@@ -12,12 +12,13 @@
 */
 
 #include <global.h>
+#include <Process.h>
 #include <PageManager.h>
 
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : tick_(0), timeLeft_(4) {
+Thread::Thread() : tick_(0), timeLeft_(1) {
 
     /* thread information */
     threadInfo_ = new ThreadInfo;
@@ -149,19 +150,25 @@ int ThreadManager::switchThread() {
 Thread* ThreadManager::schedule() {
 
     current_->tick();
-    g_console->printf("curret=%x, 0=%x\n", current_, dispatchList_->get(0));
 
-    /* process has time yet */
+    g_console->printf("here 10");
+
+    /* thread has time yet */
     if (current_->hasTimeLeft()) {
 
         /* next is current */
         return current_;
     }
 
-    g_console->printf("curret=%x, 0=%x\n", current_, dispatchList_->get(0));
-
-    dispatchList_->add(current_);
-    return dispatchList_->removeAt(0);
+    g_console->printf("here 11");
+    /* round robin */
+    current_->setTimeLeft(1);
+    Thread* tmp = dispatchList_->removeAt(0);
+    g_console->printf("here 12");
+    dispatchList_->add(tmp);
+    g_console->printf("here 13");
+    current_ = dispatchList_->get(0);
+    return current_;
 }
 
 /*----------------------------------------------------------------------
@@ -174,7 +181,7 @@ void idleThread() {
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
-ProcessManager::ProcessManager(PageManager* pageManager) : current_(NULL) {
+ProcessManager::ProcessManager(PageManager* pageManager) {
 
     /* page manager */
     pageManager_ = pageManager;
@@ -189,6 +196,7 @@ ProcessManager::ProcessManager(PageManager* pageManager) : current_(NULL) {
     idle_ = new KernelProcess("Idle", pageManager_->createNewPageDirectory());
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
     add(idle_);
+    current_ = idle_;
 
     /* create thread for idle process */
     Thread* thread = createThread(idle_, (dword)idleThread);
@@ -254,6 +262,9 @@ bool ProcessManager::schedule() {
 
     bool      isProcessChanged;
     Process* next;
+    Process* tmp;
+
+    g_console->printf("here 09[%d]", current_);
 
     /* tick */
     current_->tick();
@@ -265,20 +276,16 @@ bool ProcessManager::schedule() {
         return false;
     }
 
-    /* only idle? */
-    if (current_ == idle_ && dispatchList_->isEmpty()) {
-
-        /* next is idle */
-        return false;
-    }
+    g_console->printf("here 10[%d]", current_);
 
     /* round robin */
-    if (current_ != idle_ && current_ != NULL) {
-        current_->setTimeLeft(4);
-        dispatchList_->add(current_);
-    }
+    current_->setTimeLeft(4);
+    tmp = dispatchList_->removeAt(0);
 
-    next = dispatchList_->removeAt(0);
+    g_console->printf("here 11[%d]", current_);
+
+    dispatchList_->add(tmp);
+    next = dispatchList_->get(0);
     isProcessChanged = next != current_;
     current_ = next;
     return isProcessChanged;

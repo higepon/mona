@@ -1,5 +1,9 @@
 2004-01-06  higepon  <higepon@users.sourceforge.jp>
 
+        * 現在カーネルは全く動きません。
+
+        * スレッドスケジューラのバグを修正
+
         * kernel.cpp: プロセスのスケジューラがうまくいっていることを確認
 
 2004-01-05  higepon  <higepon@users.sourceforge.jp>
