@@ -108,7 +108,7 @@ class ThreadOperation
 {
   public:
     static Thread* create(Process* process, dword programCounter);
-    static int switchThread(bool isProcessChanged);
+    static int switchThread(bool isProcessChanged, int i);
     static int kill();
 
   private:

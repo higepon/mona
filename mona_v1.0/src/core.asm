@@ -147,6 +147,8 @@ arch_switch_thread1:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
@@ -273,26 +275,26 @@ arch_set_dokodemo_view:
         push  eax
         mov   eax, g_dokodemo_view
         mov   ebx, cs
-        mov   dword[eax + 8 ], ebx ; CS
+        mov   dword[eax + 32 ], ebx ; CS
         mov   ebx, ds
-        mov   dword[eax + 9 ], ebx ; DS
+        mov   dword[eax + 36 ], ebx ; DS
         mov   ebx, ss
-        mov   dword[eax + 10], ebx ; SS
+        mov   dword[eax + 40], ebx ; SS
         mov   ebx, cr3
-        mov   dword[eax + 11], ebx ; CR3
+        mov   dword[eax + 44], ebx ; CR3
         pushf
         mov   ebx, dword[esp + 0]
-        mov   dword[eax + 12], ebx ; EFLAGS
+        mov   dword[eax + 48], ebx ; EFLAGS
         popf
         pop   ebx
         mov   dword[eax + 0], ebx   ; EAX
         pop   ebx
-        mov   dword[eax + 1], ebx   ; EBX
-        mov   dword[eax + 2], ecx   ; ECX
-        mov   dword[eax + 3], edx   ; EDX
-        mov   dword[eax + 4], esp   ; ESP
-        mov   dword[eax + 5], ebp   ; EBP
-        mov   dword[eax + 6], esi   ; ESI
-        mov   dword[eax + 7], edi   ; EDI
+        mov   dword[eax + 4], ebx   ; EBX
+        mov   dword[eax + 8], ecx   ; ECX
+        mov   dword[eax + 12], edx   ; EDX
+        mov   dword[eax + 16], esp   ; ESP
+        mov   dword[eax + 20], ebp   ; EBP
+        mov   dword[eax + 24], esi   ; ESI
+        mov   dword[eax + 28], edi   ; EDI
         pop   eax
         ret

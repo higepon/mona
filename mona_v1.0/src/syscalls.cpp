@@ -158,14 +158,14 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_SET_CURSOR:
 
-        enableInterrupt();
+        //enableInterrupt();
         g_console->setCursor((int)(info->esi), (int)(info->ecx));
         info->eax = 0;
         break;
 
     case SYSTEM_CALL_GET_CURSOR:
 
-        enableInterrupt();
+        //enableInterrupt();
         g_console->getCursor((int*)(info->esi), (int*)(info->ecx));
         info->eax = 0;
         break;
@@ -390,7 +390,7 @@ void syscall_entrance() {
             g_scheduler->wait(g_currentThread->thread, WAIT_MESSAGE);
             bool isProcessChange = g_scheduler->schedule();
 //    bool isProcessChange = true;
-            ThreadOperation::switchThread(isProcessChange);
+            ThreadOperation::switchThread(isProcessChange, 3);
         }
 
     case SYSTEM_CALL_DATE:
@@ -415,7 +415,7 @@ void syscall_entrance() {
             {
                 g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
                 bool isProcessChange = g_scheduler->setCurrentThread();
-                ThreadOperation::switchThread(isProcessChange);
+                ThreadOperation::switchThread(isProcessChange, 4);
             }
         }
         break;

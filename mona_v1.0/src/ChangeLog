@@ -1,3 +1,7 @@
+2004-03-06  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: まずはkillがおかしい。未修正
+
 2004-03-04  higepon  <higepon@users.sourceforge.jp>
 
         * FDCDriver.cpp: スケジューラをrunq × 1, waitq × 1 の単純なラウンドロビンのスケジューラにした。

@@ -115,6 +115,10 @@ void fault0dHandler(dword error)
     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
     g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
+    logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
     g_scheduler->dump();
     panic("fault0d");
 }
@@ -156,7 +160,7 @@ void timerHandler()
 
     bool isProcessChange = g_scheduler->schedule();
 
-    ThreadOperation::switchThread(isProcessChange);
+    ThreadOperation::switchThread(isProcessChange, 1);
 
     /* does not come here */
 }
@@ -178,7 +182,7 @@ void MFDCHandler(void)
 
     if (wakeupResult != 0)
     {
-        ThreadOperation::switchThread((wakeupResult == 1));
+        ThreadOperation::switchThread((wakeupResult == 1), 2);
     }
 }
 

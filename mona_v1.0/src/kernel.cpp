@@ -61,6 +61,7 @@
 #include <MemoryManager.h>
 #include <vbe.h>
 #include <VesaConsole.h>
+#include <LogConsole.h>
 
 char* version = "Mona version.0.1.6 $Date$";
 void  mainProcess();
@@ -102,6 +103,8 @@ void startKernel(void)
         g_console->setBGColor(GP_WHITE);
         g_console->clearScreen();
     }
+
+    g_log = new LogConsole();
 
     pic_init();
     RTC::init();
@@ -293,6 +296,7 @@ void mainProcess()
     enableMouse();
 
     /* end */
+    for (;;);
     ThreadOperation::kill();
     for (;;);
 }

@@ -28,6 +28,7 @@
 #include <vbe.h>
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
+GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
 GLOBAL DokodemoView g_dokodemo_view;
 
@@ -72,5 +73,11 @@ GLOBAL Messenger* g_messenger;
 
 GLOBAL dword gt[128];
 #define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+#define logprintf g_log->printf
+#else
+#define logprintf //
+#endif
 
 #endif
