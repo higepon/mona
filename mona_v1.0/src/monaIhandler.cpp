@@ -13,7 +13,6 @@
 */
 
 #include<monaIdt.h>
-#include<monaVga.h>
 #include<monaIo.h>
 #include<KeyBoardManager.h>
 #include<FDCDriver.h>
@@ -142,7 +141,6 @@ void timerHandler() {
 void MFDCHandler(void) {
 
     gMFDCDriver->interrupt();
-    console->printf("\nfdc interrupt\n");
     outportb(0x20, 0x20);
 }
 

@@ -326,7 +326,7 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
 
        if (isOK) return true;
-       if (i == FDC_RETRY_MAX - 2)  _sys_printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
+       if (i == FDC_RETRY_MAX - 2)  console->printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
     }
 
     /* time out */
