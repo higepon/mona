@@ -34,7 +34,7 @@ public:
         this->pieces.Alloc(8);
         for (int x = 0; x < 8; x++)
         {
-        	this->pieces[x].Alloc(8);
+            this->pieces[x].Alloc(8);
             for (int y = 0; y < 8; y++)
             {
                 this->pieces[x][y] = new Piece(board->getPiece(x, y), x, y, white, black);
