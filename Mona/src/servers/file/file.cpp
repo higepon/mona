@@ -7,8 +7,9 @@
 
 using namespace MonAPI;
 
-int currentDrive;
-bool cdInitialized;
+static int currentDrive;
+static _A<CString> currentDirectory;
+static bool cdInitialized;
 
 #define IRQ_PRIMARY   14
 #define IRQ_SECONDARY 15
@@ -101,19 +102,91 @@ int ChangeDrive(int drive)
     if (drive == DRIVE_FD0)
     {
         currentDrive = DRIVE_FD0;
-        return drive;
+        return MONA_SUCCESS;
     }
     else if (drive == DRIVE_CD0)
     {
         initializeCD();
         currentDrive = DRIVE_CD0;
-        return drive;
+        return MONA_SUCCESS;
     }
-    return 0;
+    return MONA_FAILURE;
 }
+
+const char* GetCurrentDirectory()
+{
+    return (const char*)currentDirectory[currentDrive];
+}
+
+int ChangeDirectory(const CString& dir)
+{
+    CString fullPath = mergeDirectory(currentDirectory[currentDrive], dir);
+
+    if (currentDrive == DRIVE_FD0)
+    {
+        if (syscall_cd(dir) != 0)
+        {
+            return MONA_FAILURE;
+        }
+    }
+    else if (currentDrive == DRIVE_CD0)
+    {
+        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(fullPath);
+
+        if (files.get_Length() == 0)
+        {
+            return MONA_FAILURE;
+        }
+    }
+
+    currentDirectory[currentDrive] = fullPath;
+
+    return MONA_SUCCESS;
+}
+
+CString getParentDirectory(const CString& dir)
+{
+    if (dir == NULL || dir == "/") return "/";
+
+    int p = dir.lastIndexOf('/');
+    if (p < 1) return "/";
+
+    return dir.substring(0, p);
+}
+
+CString mergeDirectory(const CString& dir1, const CString& dir2)
+{
+    if (dir2.startsWith("/")) return dir2.toUpper();
+
+    CString ret = dir1;
+    _A<CString> dirs = dir2.split('/');
+    FOREACH (CString, d, dirs)
+    {
+        if (d == NULL || d == ".") continue;
+
+        if (d == "..")
+        {
+            ret = getParentDirectory(ret);
+        }
+        else
+        {
+            if (ret != "/") ret += '/';
+            ret += d.toUpper();
+        }
+    }
+    END_FOREACH
+    return ret;
+}
+
 
 void initialize()
 {
+    /* current directory */
+    currentDirectory.Alloc(2);
+
+    currentDirectory[DRIVE_FD0] = "/";
+    currentDirectory[DRIVE_CD0] = "/";
+
     currentDrive = DRIVE_FD0;
     cdInitialized = false;
 }
@@ -168,7 +241,6 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
             if (prompt) printf("read:file not found\n");
             return NULL;
         }
-        printf("%s:%d\n", __FILE__, __LINE__);
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
         if (!monapi_cmemoryinfo_create(ret, file->GetSize() + 1, prompt))
         {
@@ -223,7 +295,7 @@ monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
             files.add(new monapi_directoryinfo(di));
         }
         syscall_dir_close();
-        syscall_cd("/");
+        syscall_cd(currentDirectory[currentDrive]);
 
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
         int size = files.size();

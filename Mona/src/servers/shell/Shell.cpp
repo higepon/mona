@@ -10,10 +10,30 @@ using namespace MonAPI;
 ----------------------------------------------------------------------*/
 Shell::Shell(bool callAutoExec)
     : position(0), hasExited(false), callAutoExec(callAutoExec), doExec(false),
-      waiting(THREAD_UNKNOWN), prevX(0), prevY(0)
+     waiting(THREAD_UNKNOWN), prevX(0), prevY(0), firstTimeOfCD0(true)
 {
-    this->current = STARTDIR;
-    this->makeApplicationList();
+
+    this->driveLetter[DRIVE_FD0]    = "fd0:";
+    this->driveLetter[DRIVE_CD0]    = "cd0:";
+    this->startDirectory[DRIVE_FD0] = "/APPS";
+    this->startDirectory[DRIVE_CD0] = "/APPS";
+
+    this->currentDrive = monapi_call_get_current_drive();
+    if (this->currentDrive == DRIVE_NONE)
+    {
+        printf("Server can't get current drive!!\n");
+    }
+
+    /* current drive */
+    this->currentDirectory.Alloc(2);
+
+    this->currentDirectory[DRIVE_FD0] = "";
+    this->currentDirectory[DRIVE_CD0] = "";
+    setCurrentDirectory();
+
+    changeDirecotory(startDirectory[currentDrive]);
+
+//    this->current = this->startDirectory[this->currentDrive];
 
     if (this->callAutoExec)
     {
@@ -144,16 +164,16 @@ void Shell::commandExecute(bool prompt)
     this->commandExecute(args);
 }
 
-bool Shell::hasDriveLetter(const CString& drive)
+bool Shell::pathHasDriveLetter(const CString& path)
 {
-    return drive.startsWith("CD0:/") || drive.startsWith("FD0:/");
+    return path.startsWith("CD0:/") || path.startsWith("FD0:/");
 }
 
 bool Shell::commandExecute(_A<CString> args)
 {
     CString cmdLine;
     CString command = args[0].toUpper();
-    if (command[0] == '/' || hasDriveLetter(command))
+    if (command[0] == '/' || pathHasDriveLetter(command))
     {
         cmdLine = command;
     }
@@ -171,9 +191,9 @@ bool Shell::commandExecute(_A<CString> args)
     else
     {
         CString cmd2 = command + ".";
-        for (int i = 0; i < this->apps.size(); i++)
+        for (int i = 0; i < this->apps[currentDrive].size(); i++)
         {
-            CString file = apps.get(i);
+            CString file = apps[currentDrive].get(i);
             if (file == command + ".APP")
             {
                 cmdLine = APPSDIR"/" + file + "/" + command + ".EX2";
@@ -361,52 +381,40 @@ _A<CString> Shell::parseCommandLine()
 
 int Shell::makeApplicationList()
 {
-    char name[15];
-    int  size;
-    int  attr;
+    if (apps[currentDrive].size() > 0) return 0;
 
-    if (syscall_cd(APPSDIR) != 0)
+    monapi_cmemoryinfo* mi = monapi_call_file_read_directory(APPSDIR, MONAPI_TRUE);
+
+    int size = *(int*)mi->Data;
+    if (mi == NULL || size == 0)
     {
-        printf("%s: application list error\n", SVR);
         return 1;
     }
 
-    if (syscall_dir_open() != 0)
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    for (int i = 0; i < size; i++, p++)
     {
-        printf("%s: application dir open error\n", SVR);
-        return 2;
-    }
+        CString file = p->name;
 
-    while (syscall_dir_read(name, &size, &attr) == 0)
-    {
-        CString file = name;
         if (file.endsWith(".BIN") || file.endsWith(".BN2")
             || file.endsWith(".ELF") || file.endsWith(".EL2")
             || file.endsWith(".EXE") || file.endsWith(".EX2")
             || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
-            apps.add(name);
+            apps[currentDrive].add(file);
         }
     }
 
-    syscall_dir_close();
-
-    if (APPSDIR != this->current)
-    {
-        if (syscall_cd(this->current) != 0)
-        {
-            this->current = "/";
-            syscall_cd(this->current);
-        }
-    }
-
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
     return 0;
 }
 
 void Shell::printPrompt(const CString& prefix /*= NULL*/)
 {
     if (prefix != NULL) printf("%s", (const char*)prefix);
-    printf("[Mona]%s> ", (const char*)this->current);
+    CString drive = this->driveLetter[this->currentDrive];
+    printf("[Mona]%s%s> ", (const char*)drive.toUpper(), (const char*)this->currentDirectory[currentDrive]);
 }
 
 CString Shell::getParentDirectory(const CString& dir)
@@ -477,6 +485,9 @@ void Shell::printFiles(const CString& dir)
         w += fw;
     }
     printf("\n");
+
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 }
 
 void Shell::executeMSH(const CString& msh)
@@ -542,4 +553,12 @@ void Shell::checkCaretPosition()
     this->commandLine[this->position] = '\0';
     printf(this->commandLine);
     monapi_call_mouse_set_cursor(1);
+}
+
+void Shell::setCurrentDirectory()
+{
+    char buff[128];
+    monapi_call_get_current_directory(buff);
+
+    this->currentDirectory[this->currentDrive] = buff;
 }

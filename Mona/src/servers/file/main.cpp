@@ -62,6 +62,17 @@ void MessageLoop()
                 Message::reply(&msg, result);
                 break;
             }
+            case MSG_FILE_GET_CURRENT_DIRECTORY:
+            {
+                Message::reply(&msg, MONA_SUCCESS, 0, (const char*)GetCurrentDirectory());
+                break;
+            }
+            case MSG_FILE_CHANGE_DIRECTORY:
+            {
+                int result = ChangeDirectory(msg.str);
+                Message::reply(&msg, result);
+                break;
+            }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
                 Message::reply(&msg);

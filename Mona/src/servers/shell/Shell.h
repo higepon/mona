@@ -12,7 +12,6 @@
 #define FOREGROUND 0x000000
 #define BACKGROUND 0xffffff
 #define APPSDIR  "/APPS"
-#define STARTDIR "/APPS"
 
 /*----------------------------------------------------------------------
     Shell
@@ -47,19 +46,28 @@ class Shell {
     void printFiles(const MonAPI::CString& dir);
     void executeMSH(const MonAPI::CString& msh);
     void checkCaretPosition();
-    bool hasDriveLetter(const MonAPI::CString& drive);
+    bool pathHasDriveLetter(const MonAPI::CString& path);
+    void setCurrentDirectory();
+    bool changeDirecotory(const MonAPI::CString& path);
 
   protected:
     char commandLine[1024];
     int position;
     HList<MonAPI::CString> history;
-    HList<MonAPI::CString> apps;
-    MonAPI::CString current;
+    HList<MonAPI::CString> apps[2];
+//    MonAPI::CString current;
     bool hasExited, callAutoExec, doExec;
     dword waiting;
     dword self;
     MonAPI::Screen screen;
     int prevX, prevY;
+
+    /* drive letter */
+    const char* driveLetter[2];
+    const char* startDirectory[2];
+    _A<MonAPI::CString> currentDirectory;
+    int currentDrive;
+    bool firstTimeOfCD0;
 };
 
 #endif

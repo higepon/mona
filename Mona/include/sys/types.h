@@ -18,6 +18,12 @@
 #define NORMAL   0
 #define DEBUG_MODE
 
+enum
+{
+    MONA_SUCCESS,
+    MONA_FAILURE,
+};
+
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
 #endif
@@ -180,6 +186,13 @@ enum
 enum
 {
     PEEK_REMOVE = 0x01
+};
+
+enum
+{
+    DRIVE_NONE = -1,
+    DRIVE_FD0  = 0,
+    DRIVE_CD0  = 1,
 };
 
 #define SHARED_FDC_BUFFER 0x4000

@@ -3,6 +3,7 @@
 
 using namespace MonAPI;
 
+
 enum
 {
     COMMAND_NONE,
@@ -20,6 +21,17 @@ enum
     COMMAND_CHANGE_DRIVE_CD0,
     COMMAND_CHANGE_DRIVE_FD0,
 };
+
+bool Shell::changeDirecotory(const MonAPI::CString& path)
+{
+    if (monapi_call_change_directory(path) == MONA_FAILURE)
+    {
+        return false;
+    }
+    setCurrentDirectory();
+    makeApplicationList();
+    return true;
+}
 
 int Shell::isInternalCommand(const CString& command)
 {
@@ -68,11 +80,11 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_EXEC;
     }
-    else if (cmd == "cd0:")
+    else if (cmd == this->driveLetter[DRIVE_CD0])
     {
         return COMMAND_CHANGE_DRIVE_CD0;
     }
-    else if (cmd == "fd0:")
+    else if (cmd == this->driveLetter[DRIVE_FD0])
     {
         return COMMAND_CHANGE_DRIVE_FD0;
     }
@@ -86,23 +98,27 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
     {
     case COMMAND_HELP:
         printf("* Mona Shell Internal Commands\n");
-        printf("HELP/?, LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, PS, KILL, EXEC\n");
+        printf("HELP/?, LS/DIR, CD, CAT/TYPE, CHSH, UNAME/VER, ECHO, CLEAR/CLS, PS, KILL, EXEC, FD0:, CD0:\n");
         break;
 
     case COMMAND_CD:
         {
+            CString dir;
+
             if (args.get_Length() < 2)
             {
-                this->current = STARTDIR;
-                break;
+                dir = this->startDirectory[this->currentDrive];
             }
-            CString dir = this->mergeDirectory(this->current, args[1]);
-            if (syscall_cd(dir) != 0)
+            else
+            {
+                dir = this->mergeDirectory(this->currentDirectory[currentDrive], args[1]);
+            }
+
+            if (!changeDirecotory(dir))
             {
                 printf("%s: directory not found: %s\n", SVR, (const char*)dir);
-                break;
             }
-            this->current = dir;
+
             break;
         }
 
@@ -110,14 +126,14 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             if (args.get_Length() < 2)
             {
-                printFiles(this->current);
+                printFiles(this->currentDirectory[currentDrive]);
             }
             else
             {
                 for (int i = 1; i < args.get_Length(); i++)
                 {
                     if (i > 1) printf("\n");
-                    CString dir = this->mergeDirectory(this->current, args[i]);
+                    CString dir = this->mergeDirectory(this->currentDirectory[currentDrive], args[i]);
                     printf("%s:\n", (const char*)dir);
                     printFiles(dir);
                 }
@@ -271,29 +287,39 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
     case COMMAND_CHANGE_DRIVE_CD0:
     {
-        if (monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE) == 0)
+        if (monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE) == MONA_FAILURE)
         {
             printf("change drive error\n");
+            break;
         }
         else
         {
-            printf("change drive ok\n");
+            this->currentDrive = DRIVE_CD0;
         }
 
+        if (this->firstTimeOfCD0)
+        {
+            changeDirecotory(startDirectory[currentDrive]);
+            this->firstTimeOfCD0 = false;
+        }
+
+        setCurrentDirectory();
         break;
     }
 
     case COMMAND_CHANGE_DRIVE_FD0:
     {
-        if (monapi_call_change_drive(DRIVE_FD0, MONAPI_FALSE) == 0)
+        if (monapi_call_change_drive(DRIVE_FD0, MONAPI_FALSE) == MONA_FAILURE)
         {
             printf("change drive error\n");
+            break;
         }
         else
         {
-            printf("change drive ok\n");
+            this->currentDrive = DRIVE_FD0;
         }
 
+        setCurrentDirectory();
         break;
     }
 

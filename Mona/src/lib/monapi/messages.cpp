@@ -1,6 +1,7 @@
 #include <monapi/syscall.h>
 #include <monapi/messages.h>
 #include <monapi/Message.h>
+#include <monapi/string.h>
 
 using namespace MonAPI;
 
@@ -236,10 +237,10 @@ int monapi_call_change_drive(int drive, MONAPI_BOOL prompt)
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_CHANGE_DRIVE, drive, prompt) != 0)
     {
-        return 0;
+        return MONA_FAILURE;
     }
 
-    return msg.arg1;
+    return msg.arg2;
 }
 
 int monapi_call_get_current_drive()
@@ -249,8 +250,39 @@ int monapi_call_get_current_drive()
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_GET_CURRENT_DRIVE) != 0)
     {
-        return 0;
+        return MONA_FAILURE;
     }
 
-    return msg.arg1;
+    return msg.arg2;
+}
+
+int monapi_call_get_current_directory(char* dest)
+{
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_GET_CURRENT_DIRECTORY) != 0)
+    {
+        return MONA_FAILURE;
+    }
+
+    int result = msg.arg2;
+    if (result == MONA_SUCCESS)
+    {
+        strncpy(dest, msg.str, 128);
+    }
+
+    return result;
+}
+
+int monapi_call_change_directory(const char* dest)
+{
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_CHANGE_DIRECTORY, 0, 0, 0, dest) != 0)
+    {
+        return MONA_FAILURE;
+    }
+    return msg.arg2;
 }
