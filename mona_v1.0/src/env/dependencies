@@ -4,7 +4,7 @@ monaKernel.o: monaKernel.cpp include/global.h include/kthread.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
   include/VirtualConsole.h include/MFDCDriver.h include/Semaphore.h \
   include/monaIdt.h include/IA32MemoryManager.h include/operator.h \
-  include/monaTester.h include/checker.h include/KeyBoardManager.h \
+  include/tester.h include/checker.h include/KeyBoardManager.h \
   stlport/queue stlport/stl/_prolog.h stlport/stl/_config.h \
   stlport/stl_user_config.h stlport/stl/_config_compat.h \
   stlport/stl/_site_config.h stlport/config/stlcomp.h \
@@ -41,7 +41,7 @@ monaIhandler.o: monaIhandler.cpp include/monaIdt.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/MFDCDriver.h \
   include/VirtualConsole.h include/ProcessManager.h include/monaKernel.h \
-  include/IA32MemoryManager.h include/monaTester.h stlport/string \
+  include/IA32MemoryManager.h include/tester.h stlport/string \
   stlport/stl/_string.h stlport/memory stlport/stl/_tempbuf.h \
   stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
   stlport/stl/_auto_ptr.h stlport/stl/_string_fwd.h stlport/iosfwd \
@@ -56,6 +56,9 @@ IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/VirtualConsole.h include/monaIdt.h include/operator.h \
   include/global.h include/kthread.h include/MFDCDriver.h \
   include/Semaphore.h
+operator.o: operator.cpp include/IA32MemoryManager.h include/monaTypes.h \
+  include/string.h include/monaKernel.h include/VirtualConsole.h \
+  include/operator.h
 monaPureVirtual.o: monaPureVirtual.cpp include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h \
   include/global.h include/kthread.h include/MFDCDriver.h \
@@ -79,13 +82,13 @@ KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   stlport/stl/_config_compat_post.h include/global.h include/kthread.h \
   include/monaKernel.h include/VirtualConsole.h include/MFDCDriver.h \
   include/Semaphore.h include/operator.h
-monaTester.o: monaTester.cpp include/global.h include/kthread.h \
+tester.o: tester.cpp include/global.h include/kthread.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
   include/VirtualConsole.h include/MFDCDriver.h include/Semaphore.h \
-  include/monaIdt.h include/operator.h include/HVector.h \
-  include/monaTester.h include/ProcessManager.h \
-  include/IA32MemoryManager.h include/KeyBoardManager.h stlport/queue \
-  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
+  include/monaIdt.h include/operator.h include/HVector.h include/tester.h \
+  include/ProcessManager.h include/IA32MemoryManager.h \
+  include/KeyBoardManager.h stlport/queue stlport/stl/_prolog.h \
+  stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
   stlport/config/stlcomp.h stlport/config/stl_gcc.h \
   stlport/config/stl_confix.h stlport/stl/_queue.h stlport/stl/_deque.h \
@@ -104,7 +107,7 @@ ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/monaKernel.h include/monaTypes.h include/string.h \
   include/VirtualConsole.h include/IA32MemoryManager.h include/global.h \
   include/kthread.h include/MFDCDriver.h include/Semaphore.h \
-  include/monaTester.h include/monaIdt.h stlport/algorithm \
+  include/tester.h include/monaIdt.h stlport/algorithm \
   stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
   stlport/config/stlcomp.h stlport/config/stl_gcc.h \

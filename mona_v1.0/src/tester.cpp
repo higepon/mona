@@ -1,5 +1,5 @@
 /*!
-    \file   monaTester.cpp
+    \file   tester.cpp
     \brief  test code
 
     test code at kernel should be placed here.
@@ -16,7 +16,7 @@
 #include<operator.h>
 #include<monaTypes.h>
 #include<HVector.h>
-#include<monaTester.h>
+#include<tester.h>
 #include<monaTypes.h>
 #include<ProcessManager.h>
 #include<KeyBoardManager.h>

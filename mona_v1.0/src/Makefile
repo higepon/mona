@@ -27,7 +27,7 @@ SOURCES    = cstart.cpp            \
              operator.cpp          \
              monaPureVirtual.cpp   \
              KeyBoardManager.cpp   \
-             monaTester.cpp        \
+             tester.cpp            \
              ProcessManager.cpp    \
              checker.cpp           \
              string.cpp            \

@@ -1,5 +1,5 @@
 /*!
-    \file  monaTester.h
+    \file  tester.h
     \brief definition for tester
 
     definition for tester

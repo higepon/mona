@@ -17,7 +17,7 @@
 #include<MFDCDriver.h>
 #include<ProcessManager.h>
 #include<monaTypes.h>
-#include<monaTester.h>
+#include<tester.h>
 #include<monaKernel.h>
 #include<string>
 #include<monaIhandler.h>

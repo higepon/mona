@@ -14,9 +14,8 @@
 
 #include <ProcessManager.h>
 #include <global.h>
-#include <monaTester.h>
 #include <string.h>
-#include <monaTester.h>
+#include <tester.h>
 #include <monaIdt.h>
 #include <algorithm>
 
