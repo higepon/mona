@@ -275,6 +275,75 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
     case('z'):
         info->keycode = VK_Z;
         break;
+    case('1'):
+        info->keycode = VK_1;
+        break;
+    case('2'):
+        info->keycode = VK_2;
+        break;
+    case('3'):
+        info->keycode = VK_3;
+        break;
+    case('4'):
+        info->keycode = VK_4;
+        break;
+    case('5'):
+        info->keycode = VK_5;
+        break;
+    case('6'):
+        info->keycode = VK_6;
+        break;
+    case('7'):
+        info->keycode = VK_7;
+        break;
+    case('8'):
+        info->keycode = VK_8;
+        break;
+    case('9'):
+        info->keycode = VK_9;
+        break;
+    case('0'):
+        info->keycode = VK_0;
+        break;
+    case(0x15):
+        info->keycode = VK_TEN_7;
+        break;
+    case(0x16):
+        info->keycode = VK_TEN_8;
+        break;
+    case(0x17):
+        info->keycode = VK_TEN_9;
+        break;
+    case(0x18):
+        info->keycode = VK_TEN_MINUS;
+        break;
+    case(0x19):
+        info->keycode = VK_TEN_4;
+        break;
+    case(0x1A):
+        info->keycode = VK_TEN_5;
+        break;
+    case(0x1B):
+        info->keycode = VK_TEN_6;
+        break;
+    case(0x1C):
+        info->keycode = VK_TEN_PLUS;
+        break;
+    case(0x1D):
+        info->keycode = VK_TEN_1;
+        break;
+    case(0x1E):
+        info->keycode = VK_TEN_2;
+        break;
+    case(0x1F):
+        info->keycode = VK_TEN_3;
+        break;
+    case(0x20):
+        info->keycode = VK_TEN_0;
+        break;
+    case(0x21):
+        info->keycode = VK_TEN_PERIOD;
+        break;
     case(0x2E):
         info->keycode = VK_PERIOD;
         break;
@@ -376,8 +445,77 @@ char KeyBoardManager::toChar(int keycode) {
     case(VK_Z):
         result = 'Z';
         break;
+    case(VK_0):
+        result = '0';
+        break;
+    case(VK_1):
+        result = '1';
+        break;
+    case(VK_2):
+        result = '2';
+        break;
+    case(VK_3):
+        result = '3';
+        break;
+    case(VK_4):
+        result = '4';
+        break;
+    case(VK_5):
+        result = '5';
+        break;
+    case(VK_6):
+        result = '6';
+        break;
+    case(VK_7):
+        result = '7';
+        break;
+    case(VK_8):
+        result = '8';
+        break;
+    case(VK_9):
+        result = '9';
+        break;
     case(VK_PERIOD):
         result = '.';
+        break;
+    case(VK_TEN_0):
+        result = '0';
+        break;
+    case(VK_TEN_1):
+        result = '1';
+        break;
+    case(VK_TEN_2):
+        result = '2';
+        break;
+    case(VK_TEN_3):
+        result = '3';
+        break;
+    case(VK_TEN_4):
+        result = '4';
+        break;
+    case(VK_TEN_5):
+        result = '5';
+        break;
+    case(VK_TEN_6):
+        result = '6';
+        break;
+    case(VK_TEN_7):
+        result = '7';
+        break;
+    case(VK_TEN_8):
+        result = '8';
+        break;
+    case(VK_TEN_9):
+        result = '9';
+        break;
+    case(VK_TEN_PERIOD):
+        result = '.';
+        break;
+    case(VK_TEN_PLUS):
+        result = '+';
+        break;
+    case(VK_TEN_MINUS):
+        result = '-';
         break;
     default:
         result = ' ';

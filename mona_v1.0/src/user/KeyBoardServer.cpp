@@ -70,6 +70,8 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
     message.arg1 = keyinfo.keycode;
     message.arg2 = keyinfo.modifiers;
 
+    //    printf("%x", keyinfo.keycode);
+
     /* send message */
     for (int i = destList->size() - 1; i >= 0; i--) {
 

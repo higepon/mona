@@ -105,6 +105,30 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_Y):
     case(VK_Z):
     case(VK_PERIOD):
+    case(VK_0):
+    case(VK_1):
+    case(VK_2):
+    case(VK_3):
+    case(VK_4):
+    case(VK_5):
+    case(VK_6):
+    case(VK_7):
+    case(VK_8):
+    case(VK_9):
+    case(VK_TEN_0):
+    case(VK_TEN_1):
+    case(VK_TEN_2):
+    case(VK_TEN_3):
+    case(VK_TEN_4):
+    case(VK_TEN_5):
+    case(VK_TEN_6):
+    case(VK_TEN_7):
+    case(VK_TEN_8):
+    case(VK_TEN_9):
+    case(VK_TEN_MINUS):
+    case(VK_TEN_PLUS):
+    case(VK_TEN_PERIOD):
+
         commandChar(KeyBoardManager::toChar(keycode));
         break;
     case(VK_ENTER):
