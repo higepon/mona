@@ -15,8 +15,8 @@
 #define _HIGEPOS_IDT_
 
 #define HANDLER_NUM  256    /* number of handler     */
-#define IDT_BASE     0x6800 /* idt base address      */
-#define IDT_LOWBASE  0x6800 /* idt low base address  */
+#define IDT_BASE     0x0500 /* idt base address      */
+#define IDT_LOWBASE  0x0500 /* idt low base address  */
 #define IDT_HIGHBASE 0x0000 /* idt high base address */
 #define IDT_UNUSED   0x00   /* unused                */
 

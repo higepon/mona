@@ -2,7 +2,7 @@
 ; Name        : firstboot.asm
 ; Description : boot from floppy disk, echo String and read secondboot
 ; Revision    : $Revision$ $Date$
-; Copyright (c) 2002 HigePon
+; Copyright (c) 2002 HigePon, Guripon, syn
 ; WITHOUT ANY WARRANTY
 ;-------------------------------------------------------------------------------
 %ifndef BOOT_MACRO
@@ -10,7 +10,7 @@
     %include 'boot.mac'
 %endif
 
-[ORG 0x7C00]
+[ORG 0]
 
         jmp short start
         nop
@@ -36,16 +36,29 @@
         db      "NO NAME    "   ; volume label
         db      "FAT12   "      ; file system
 
-;
 start:
-        cli                     ; disable interrupt
-        mov ax, cs              ; code segment address is 0x07C0
-        mov ds, ax              ; when data access, use 0x07C0 segment
-        mov ss, ax              ; when use stack, user 0x07C0 segment
-        sti                     ; enable interrupt
-        mov al, 3               ; Clear display
-        mov ah, 0               ;
-        int 0x10                ;
+        cld
+        xor ax, ax
+        mov ds, ax
+        mov si, 0x7c00  ; src = 0000:7C00 (DS:SI)
+        mov ax, 0x9e00
+        mov es, ax
+        xor di, di      ; dst = 9E00:0000 (ES:DI)
+        mov ecx, 0x200
+
+        rep movsb
+
+        jmp 0x9e00:next
+
+next:   ; maybe 0x9E03A
+        mov ds, ax
+        mov es, ax
+        mov ax, 0x8e00
+        mov ss, ax
+        mov sp, 0xFFFE
+
+        mov ax, 0x0003          ; Clear display
+        int 0x10
         PRINTSTR16 MsgNextLine
         PRINTSTR16 MsgOsStart
 
@@ -57,23 +70,65 @@ reset:
         jc  reset               ; if failed try again
         PRINTSTR16 MsgDone
 
+        push ax
+
 read:
         PRINTSTR16 MsgReadStart
-        mov ax, 0x100
-        mov es, ax              ; es:bx is
-        mov bx, 0               ; data buffer
-
-        mov ah, 0x02            ; read sectors into memory
-        mov al, 32              ; number of sectors to read
-        mov ch, 0               ; low eight bits of cylinder number
-        mov cl, 2               ; sector number
-        mov dh, 0               ; head number
-        mov dl, 0               ; drive number
-        int 13h                 ; read!
-        jc  read
+        mov ax, 0x0100          ; 512 byte from 0040:0000 is BIOS work area
+        mov es, ax              ; ... but usually it wasn't use only 256 byte
+        xor bx, bx
+        mov ax, 0x0001          ; read kernel from next sector
+        mov di, 0x0040          ; 64 sectors
+        call readsector
         PRINTSTR16 MsgDone
 
-        jmp 0x100:0000          ; jump to the secondboot
+        jmp 0x100:0000          ; jump to the secondboot;
+
+
+; readsector:
+;   ax = logical sector number
+;   di = # of sectors to read
+;   es:bx = read-data transfer address
+
+readsector:
+        push    ax
+        xor     dx,dx
+        mov     si,0x0024       ; (sectors per track) * (number of heads)
+        div     si
+        mov     ch,al           ; ch = track number
+        xchg    ax,dx
+        xor     dx,dx
+        mov     si,0x0012       ; number of sectors per 1 track
+        div     si
+        mov     dh,al           ; dh = head number
+        mov     cl,dl
+        inc     cl              ; cl = sector number
+        mov     ax,si
+        sub     al,dl           ; # of sectors to read (in a track)
+        pop     si
+        cmp     di,ax
+        ja      .read
+        mov     ax,di           ; last read
+.read:  xor     dl,dl           ; dl = drive number
+        mov     ah,0x02
+        int     0x13
+        jc      $               ; *** put some error handler! ***
+        add     si,ax
+        push    si
+        mov     dx,ax
+        mov     cl,5
+        shl     dx,cl
+        mov     cx,ax
+        mov     ax,es
+        add     ax,dx
+        mov     es,ax
+        pop     ax
+        sub     di,cx           ; read multiple sectors
+        jnz     readsector
+        ret
+
+forever:
+        jmp forever
 
 higeposmsg:
         MsgNextLine   db  ''                  , 0x0d, 0x0a, 0x00
@@ -81,9 +136,6 @@ higeposmsg:
         MsgResetStart db  '  disk reset   ...', 0x00
         MsgReadStart  db  '  disk reading ...', 0x00
         MsgDone       db  'done'              , 0x0d, 0x0a, 0x00
-;
-;forever:
-;        jmp forever
-;
+
         times 510-($-$$) db 0
         dw 0x0AA55
