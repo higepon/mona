@@ -56,7 +56,7 @@ MonaApplication::MonaApplication(char* name) {
     syscall_mthread_join(id);
 
     //    dword myPid   = Message::lookup(name);
-    dword myPid = System::getPID();
+    mypid_ = System::getPID();
     dword destPid = Message::lookup("KEYBDMNG.SVR");
     if (destPid == 0) {
         printf("process KEYBDMNG.SVR not found\n");
@@ -66,7 +66,7 @@ MonaApplication::MonaApplication(char* name) {
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
     info.header = MSG_KEY_REGIST_TO_SERVER;
-    info.arg1   = myPid;
+    info.arg1   = mypid_;
 
     /* send */
     if (Message::send(destPid, &info)) {

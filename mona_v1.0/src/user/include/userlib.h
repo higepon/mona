@@ -177,6 +177,13 @@ class MonaApplication : public Receiver {
     /* default implementation */
     virtual void onKeyDown(int keycode, int modifiers) {
     }
+
+    virtual inline dword getMyPID() {
+        return mypid_;
+    }
+
+  protected:
+    dword mypid_;
 };
 
 /*----------------------------------------------------------------------
