@@ -139,7 +139,7 @@ void ProcessManager::printAllProcesses() const {
     g_console->printf("---------------------------------------------------------------------------\n");
 
     for (dword i = 0; i < pnum_; i++) {
-        printOneProcess(&(g_process[i]->pinfo_));
+        if (g_process[i]) printOneProcess(&(g_process[i]->pinfo_));
     }
 }
 
@@ -163,8 +163,20 @@ bool ProcessManager::kill(ProcessInfo* process) {
 
     g_console->printf("kill called");
 
-    scheduler_->kill(process);
-    scheduler_->schedule();
+    for (int i = 0; i < pnum_; i++) {
 
+        if (g_process[i] == process->process) {
+
+            g_process[i] = NULL;
+            break;
+        }
+    }
+
+    scheduler_->kill(process);
+
+    scheduler_->schedule();
+    g_current_process->state = Process::RUNNING;
+
+    this->switchProcess();
     return true;
 }
