@@ -1,3 +1,45 @@
+2004-02-17  bayside  <bayside@users.sourceforge.jp>
+
+        * src/servers/1linesh/Makefile: stk5‰»
+
+        * src/servers/1linesh/OneLineShell.cpp: stk5‰»
+
+        * src/servers/elf/Makefile: stk5‰»
+
+        * src/servers/gui/BAYGUI.MSH: stk5‰»
+
+        * src/servers/gui/main.cpp: stk5‰»
+
+        * src/servers/gui/Makefile: stk5‰»
+
+        * src/servers/gui/STARTMF.MSH: stk5‰»
+
+        * src/servers/key/Makefile: stk5‰»
+
+        * src/servers/monitor/main.cpp: stk5‰»
+
+        * src/servers/mouse/Makefile: stk5‰»
+
+        * src/servers/pe/Makefile: stk5‰»
+
+        * src/servers/shell/InternalCommans.cpp: stk5‰»
+
+        * src/servers/shell/Makefile.old: stk5‰»
+
+        * src/lib/gui/Makefile: stk5‰»
+
+        * src/lib/monalibc/Makefile: stk5‰»
+
+        * src/lib/monapi/Makefile: stk5‰»
+
+        * src/lib/monapi/messages.cpp: stk5‰»
+
+        * bin/root/MONITOR.CFG: stk5‰»
+
+        * apps/gui/shell/Form1.cpp: stk5‰»
+
+        * src/lib/baygui/FontMetrics.h: ‘SŠpŒÅ’èƒtƒHƒ“ƒg‚Ì•‚ğ”¼Šp‚Ì2”{(16)‚É•ÏX
+
 2005-02-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/pe/main.cpp: map -> HashMap
