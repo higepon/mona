@@ -188,7 +188,7 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 	{
 		return Icons_Picture;
 	}
-	else if (ext == ".SVR")
+	else if (ext == ".BIN")
 	{
 		return Icons_Server;
 	}

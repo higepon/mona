@@ -1,5 +1,7 @@
 2004-06-17  higepon  <higepon@users.sourceforge.jp>
 
+        * GUI.SVR以外はバイナリに対応
+
         * include/sys/HashMap.h: include修正 (thanks Yamamiさん)
 
         * KEYBDMNG.SVR->KEYBDMNG.BINに改名。バイナリ形式でロードするようにした。

@@ -1,8 +1,8 @@
-TARGET  = ELF.SVR
+TARGET  = ELF.BIN
 SOURCES = main.cpp elfparser.cpp ProcessManager.cpp ProcessInfo.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-elf.inc
+include $(MONADIR)/env/monapi-bin.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 

@@ -57,7 +57,7 @@ int MonaMain(List<char*>* pekoe)
     dword targetID = Message::lookupMainThread("INIT");
     if (targetID == THREAD_UNKNOWN)
     {
-        targetID = Message::lookupMainThread("1LINESH.SVR");
+        targetID = Message::lookupMainThread("1LINESH.BIN");
         callAutoExec = false;
     }
 

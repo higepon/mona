@@ -31,5 +31,5 @@ typedef char				BOOL;
 #include	"common.h"
 #include	"milstr.h"
 
-#define	USE_FILESVR		"FILE.SVR"
+#define	USE_FILESVR		"FILE.BIN"
 

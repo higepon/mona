@@ -1,8 +1,8 @@
-TARGET  = MOUSE.SVR
+TARGET  = MOUSE.BIN
 SOURCES = main.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-elf.inc
+include $(MONADIR)/env/monapi-bin.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 

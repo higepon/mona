@@ -52,7 +52,7 @@ myApplication::myApplication() : MonaApplication() {
     dword myPid   = System::getThreadID();
 
     // マウスサーバーを探す
-    dword targetID = Message::lookupMainThread("MOUSE.SVR");
+    dword targetID = Message::lookupMainThread("MOUSE.BIN");
     if (targetID == 0xFFFFFFFF)
     {
         printf("Reversi:MouseServer not found\n");

@@ -71,7 +71,7 @@ void mouseHandler()
         message.header = MSG_MOUSE;
         message.arg3 = data;
         counter = 0;
-        if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.SVR"), &message))
+        if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.BIN"), &message))
         {
             g_console->printf("mouse send failed");
         }
