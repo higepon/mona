@@ -20,10 +20,11 @@ class Shell {
     void commandExecute();
     void commandTerminate();
     void backspace();
-    void putHistory(char* command);
-    int isInternalCommand(char* command);
+    void putHistory(const char* command);
+    int isInternalCommand(const char* command);
     void internalCommandExecute(int command, CommandOption* option);
     char* getHistory();
+    int executeProcess(const char* path, const char* name ,CommandOption* option);
 
   protected:
     char commandLine_[1024];

@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------------
 #ifndef MONA
 #include <stdio.h>	
+#include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 #endif
 
 #include "fat.h"

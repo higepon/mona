@@ -3,7 +3,7 @@
 #include	<string.h>
 #if defined(__linux__)
 #include	<sys/io.h>
-#else
+#elif defined(WIN32)
 #include	<io.h>
 #endif
 #include	<sys/stat.h>

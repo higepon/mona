@@ -3,6 +3,8 @@
 #include <Shell.h>
 #include <monapi/Keys.h>
 
+static bool isExited = false;
+
 using namespace MonAPI;
 
 /*----------------------------------------------------------------------
@@ -68,7 +70,7 @@ void ShellServer::service()
 
     /* service loop */
     Shell shell;
-    for (;;)
+    while (!isExited)
     {
         if (!Message::receive(&info) && info.arg2 & KEY_MODIFIER_DOWN)
         {
@@ -130,10 +132,11 @@ enum
     COMMAND_NONE,
     COMMAND_LS,
     COMMAND_CD,
-    COMMAND_CAT
+    COMMAND_CAT,
+    COMMAND_CHSH
 };
 
-int Shell::isInternalCommand(char* command)
+int Shell::isInternalCommand(const char* command)
 {
     int len = strlen(command);
     if (len > 15) len = 15;
@@ -157,6 +160,10 @@ int Shell::isInternalCommand(char* command)
     else if (strcmp(cmd, "CAT") == 0 || strcmp(cmd, "TYPE") == 0)
     {
         return COMMAND_CAT;
+    }
+    else if (strcmp(cmd, "CHSH") == 0)
+    {
+        return COMMAND_CHSH;
     }
     return COMMAND_NONE;
 }
@@ -234,31 +241,7 @@ void Shell::commandExecute()
         sprintf(path, "/APPS/%s.ELF", command);
     }
 
-    int result = syscall_load_process(path, command, &list);
-
-    switch(result)
-    {
-
-      case(0):
-          break;
-      case(1):
-          printf("File not found");
-          break;
-      case(2):
-          printf("load Process memory allocate error");
-          break;
-      case(3):
-          printf("File read error");
-          break;
-      case(4):
-          printf("Shared Memory error1");
-          break;
-      case(5):
-          printf("Shared Memory error2");
-          break;
-      default:
-          break;
-    }
+    executeProcess(path, command, &list);
 
     for (option = list.next; option; option = option->next)
     {
@@ -286,26 +269,26 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
             break;
         }
     case COMMAND_LS:
-       {
-           char name[15];
-           int  size;
+        {
+            char name[15];
+            int  size;
 
-           if (syscall_dir_open())
-           {
-               printf("dir open error\n");
-               break;
-           }
+            if (syscall_dir_open())
+            {
+                printf("dir open error\n");
+                break;
+            }
 
-           while (syscall_dir_read(name, &size) == 0)
-           {
-               printf("%s\n", name);
-           }
+            while (syscall_dir_read(name, &size) == 0)
+            {
+                printf("%s\n", name);
+            }
 
-           syscall_dir_close();
-           break;
-       }
+            syscall_dir_close();
+            break;
+        }
     case COMMAND_CAT:
-       {
+        {
             if (option == NULL)
             {
                 printf("usage: CAT/TYPE file\n");
@@ -350,7 +333,11 @@ void Shell::internalCommandExecute(int command, CommandOption* option)
             }
             delete [] buf;
             break;
-       }
+        }
+    case COMMAND_CHSH:
+        if (executeProcess("/SERVERS/1LINESH.SVR", "1LINESH.SVR", NULL) != 0) break;
+        isExited = true;
+        break;
     default:
         break;
     }
@@ -360,7 +347,7 @@ void Shell::commandTerminate() {
     commandChar('\0');
 }
 
-void Shell::putHistory(char* command) {
+void Shell::putHistory(const char* command) {
 
     char* str = new char[strlen(command) + 1];
     strcpy(str, command);
@@ -479,4 +466,35 @@ int Shell::onKeyDown(int keycode, int modifiers) {
 
     }
     return 0;
+}
+
+int Shell::executeProcess(const char* path, const char* name ,CommandOption* option)
+{
+    int result = syscall_load_process(path, name, option);
+
+    switch(result)
+    {
+
+      case(0):
+          break;
+      case(1):
+          printf("File not found");
+          break;
+      case(2):
+          printf("load Process memory allocate error");
+          break;
+      case(3):
+          printf("File read error");
+          break;
+      case(4):
+          printf("Shared Memory error1");
+          break;
+      case(5):
+          printf("Shared Memory error2");
+          break;
+      default:
+          break;
+    }
+
+    return result;
 }
