@@ -50,12 +50,14 @@ int ELFLoader::prepare(dword elf) {
 
 bool ELFLoader::load(byte* toAddress) {
 
+    g_console->printf("header_ = %x", header_);
+
     for (int i = 0; i < header_->phdrcnt; i++) {
 
         if (pheader_[i].type == PT_LOAD && pheader_[i].filesize == pheader_[i].memorysize) {
 
             enter_kernel_lock_mode();
-            g_console->printf("\n\n\n\n\n@%x@ $%x$", pheader_[i].virtualaddr, pheader_[i].filesize);
+            g_console->printf("\n\n\n\n\n@%x@ $%x$", (void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_[i].offset));
             exit_kernel_lock_mode();
 
             memcpy((void*)(toAddress + pheader_[i].virtualaddr - header_->entrypoint), (void*)((dword)header_ + pheader_[i].offset), pheader_[i].filesize);
@@ -68,7 +70,6 @@ bool ELFLoader::load(byte* toAddress) {
 
     }
 
-    while (true);
     return true;
 }
 

@@ -61,8 +61,8 @@ void mame() {
 int loadProcess(const char* path, const char* file) {
 
     while (Semaphore::down(&g_semaphore_shared));
-    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 5);
-    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
+    bool isOpen = SharedMemoryObject::open(0x1237, 4096 * 5);
+    bool isAttaced = SharedMemoryObject::attach(0x1237, g_current_process, 0x80000000);
 
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
@@ -117,6 +117,7 @@ int loadProcess(const char* path, const char* file) {
     g_console->printf("elf size = %d", loader->prepare((dword)buf));
     loader->load((byte*)0x80000000);
 
+    while (true);
     delete(loader);
     free(buf);
 
@@ -126,8 +127,8 @@ int loadProcess(const char* path, const char* file) {
     Process*   process1 = new Process(file);
 
     while (Semaphore::down(&g_semaphore_shared));
-    isOpen = SharedMemoryObject::open(0x1234, 4096 * 5);
-    isAttaced = SharedMemoryObject::attach(0x1234, &(process1->pinfo_), 0xA0000000);
+    isOpen = SharedMemoryObject::open(0x1237, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(0x1237, &(process1->pinfo_), 0xA0000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
