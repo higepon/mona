@@ -122,14 +122,6 @@ void BZ2_hbMakeCodeLengths ( UChar *len,
    AssertH ( heap, BZ_MEM_ERROR );
    AssertH ( weight, BZ_MEM_ERROR );
    AssertH ( parent, BZ_MEM_ERROR );
-
-#else
-   Int32 *heap   = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE + 2) * sizeof(Int32) );
-   AssertH ( heap, BZ_MEM_ERROR );
-   Int32 *weight = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE * 2) * sizeof(Int32) );
-   AssertH ( weight, BZ_MEM_ERROR );
-   Int32 *parent = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE * 2) * sizeof(Int32) );
-   AssertH ( parent, BZ_MEM_ERROR );
 #endif
 
    for (i = 0; i < alphaSize; i++)
