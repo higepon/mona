@@ -23,6 +23,8 @@ void _sysWriteVram(int, int, char);
 void _sysPutCharcter(char);
 void _sysPrint(char*);
 void _sysPrintInt(int);
+void _sysPrintln(char*);
+void _sysPrintlnInt(int);
 void newLine(void);
 void forwardCursor(void);
 void forwardCursor(int);

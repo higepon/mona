@@ -83,6 +83,39 @@ void _sysPrint(char* str) {
 }
 
 /*!
+    \brief print string and \n
+
+    print string and \n
+    string terminator is '\0'
+
+    \param str string
+
+    \author  HigePon
+    \date    create:2002/08/17 update:
+*/
+void _sysPrintln(char* str) {
+
+    _sysPrint(str);
+    _sysPutCharcter('\n');
+}
+
+/*!
+    \brief print integer and \n
+
+    print integer and \n
+
+    \param num integer number
+
+    \author  HigePon
+    \date    create:2002/08/17 update:
+*/
+void _sysPrintlnInt(int num) {
+
+    _sysPrintInt(num);
+    _sysPutCharcter('\n');
+}
+
+/*!
     \brief print integer
 
     print integer
