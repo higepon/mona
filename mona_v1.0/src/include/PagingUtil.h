@@ -31,6 +31,8 @@ class PagingUtil {
     inline static word getDirEntry(linear_addr p);
     inline static word getPageEntry(linear_addr p);
     inline static PTE* linearToPTE(linear_addr p);
+    inline static phys_addr linearToPhys(linear_addr p);
+
 };
 
 inline word PagingUtil::getDirEntry(linear_addr p) {
@@ -43,10 +45,19 @@ inline word PagingUtil::getPageEntry(linear_addr p) {
     return ((p >> 12) & 0x3ff);
 }
 
-/*  inline PTE* PagingUtil::linearToPTE(linear_addr p) { */
+inline PTE* PagingUtil::linearToPTE(linear_addr p) {
 
-/*      return (PTE*)(g_page_dir[getDirEntry(p)]); */
-/*  } */
+    return (PTE*)((dword)(g_page_dir[getDirEntry(p)]) & 0xfffff000);
+}
 
+inline phys_addr PagingUtil::linearToPhys(linear_addr p) {
+
+    PTE* pte = linearToPTE(p);
+
+    dword ad = pte[getPageEntry(p)] & 0xfffff000;
+
+    return((phys_addr)(ad + (p & 0xfff)));
+
+}
 
 #endif
