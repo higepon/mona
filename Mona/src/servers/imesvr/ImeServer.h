@@ -39,12 +39,9 @@ private:
 	char *basicDic;
 	/** 辞書データサイズ */
 	int basicDicSize;
-	/** フォントデータ */
-	monapi_cmemoryinfo *fpMemory;
 
 protected:
 	virtual bool loadDictionary();
-	virtual bool loadFont();
 	virtual int  getKanji(char *yomi, HList<MonAPI::CString>* result);
 	virtual bool getYomi(char *kanji, char *result);
 	virtual bool getKana(char *inputString, char *result);

@@ -42,8 +42,6 @@ ImeServer::ImeServer()
 ImeServer::~ImeServer()
 {
 	free(basicDic);
-	monapi_cmemoryinfo_dispose(fpMemory);
-	monapi_cmemoryinfo_delete(fpMemory);
 }
 
 /** 辞書ロード */
@@ -64,18 +62,6 @@ bool ImeServer::loadDictionary()
 	} else {
 		printf("IME: Basic dictionary not found\n");
 		return false;
-	}
-}
-
-/** 辞書ロード */
-bool ImeServer::loadFont()
-{
-	// フォント初期化
-	fpMemory = monapi_call_file_decompress_bz2_file(FONTFILE_NAME, false);
-	if (fpMemory == NULL || fpMemory->Size == 0) {
-		return false;
-	} else {
-		return true;
 	}
 }
 
@@ -202,12 +188,8 @@ void ImeServer::service()
 	}
 	
 	// 辞書が読めなかったときはかな漢字変換はすべて失敗を返す
-	//bool dicLoaded = loadDictionary();
-	bool dicLoaded = false;
+	bool dicLoaded = loadDictionary();
 	
-	// フォントが読めなかったときは失敗を返す
-	bool fontLoaded = loadFont();
-
 	MessageInfo info;
 	while (1) {
 		if (!MonAPI::Message::receive(&info)) {
@@ -287,17 +269,6 @@ void ImeServer::service()
 					} else {
 						strcpy(info.str, "");
 						MonAPI::Message::reply(&info, 0, 0, "");
-					}
-				}
-				break;
-			case MSG_IMESERVER_GETFONT:
-				{
-					// MSG_IMESERVER_GETFONT
-					// arg2: 0-失敗 1-成功
-					if (fontLoaded == true) {
-						MonAPI::Message::reply(&info, fpMemory->Handle, fpMemory->Size);
-					} else {
-						MonAPI::Message::reply(&info, 0, 0);
 					}
 				}
 				break;
