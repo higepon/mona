@@ -20,6 +20,7 @@
 #define SYSTEM_CALL_LOOKUP         19
 #define SYSTEM_CALL_GET_VRAM_INFO  20
 #define SYSTEM_CALL_LOAD_PROCESS   21
+#define SYSTEM_CALL_MAP            22
 
 #define main() monamain()
 
@@ -51,11 +52,22 @@ int syscall_get_vram_info(ScreenInfo* info);
 int syscall_load_process(const char* name);
 dword syscall_lookup(const char* name);
 int syscall_mutex_destroy(int id);
+int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
 void* malloc(unsigned long size);
 void free(void * address);
 
 void* operator new(size_t size);
 void  operator delete(void* address);
+
+/*----------------------------------------------------------------------
+    Server
+----------------------------------------------------------------------*/
+class Server {
+
+  public:
+    virtual void service() = 0;
+
+};
 
 /*----------------------------------------------------------------------
     Mutex

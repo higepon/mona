@@ -216,7 +216,7 @@ dword VesaConsole::getColor (char c)
         if (GP_BLACK > c) c = GP_BLACK;
         if (GP_WHITE < c) c = GP_WHITE;
 
-        return palette[c];
+        return palette[(int)c];
 }
 
 void VesaConsole::nextCursor ()

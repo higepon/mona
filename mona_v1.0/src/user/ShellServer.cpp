@@ -7,6 +7,23 @@
 ----------------------------------------------------------------------*/
 int main() {
 
+    Server* server = new ShellServer();
+    server->service();
+
+    return 0;
+}
+
+/*----------------------------------------------------------------------
+    ShellServer
+----------------------------------------------------------------------*/
+ShellServer::ShellServer() {
+}
+
+ShellServer::~ShellServer() {
+}
+
+void ShellServer::service() {
+
     /* look up */
     dword myPid   = Message::lookup("SHELL.SVR");
     dword destPid = Message::lookup("KEYBDMNG.SVR");

@@ -281,6 +281,25 @@ int syscall_get_vram_info(ScreenInfo* info) {
     return result;
 }
 
+int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "movl %4  , %%edi \n"
+                 "movl %5  , %%edx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MAP), "m"(pid), "m"(sharedId), "m"(linearAddress), "m"(size)
+                 : "ebx", "esi", "ecx", "edi", "edx"
+                 );
+
+    return result;
+
+}
 
 void* malloc(unsigned long size) {
     return um.allocate(size);

@@ -27,6 +27,7 @@ extern "C" void put_pixel(int x, int y, char color);
 void syscall_entrance() {
 
     Thread* thread;
+    Process* process;
     KMutex* mutex;
     ScreenInfo* screenInfo;
     ArchThreadInfo* info = g_currentThread->archinfo;
@@ -134,6 +135,27 @@ void syscall_entrance() {
 
         enableInterrupt();
         info->eax = loadProcess(".", (char*)info->esi, false);
+        break;
+
+    case SYSTEM_CALL_MAP:
+
+        if (!SharedMemoryObject::open(info->ecx, info->edx)) {
+            info->eax = 1;
+            break;
+        }
+
+        process = g_processManager->find((dword)info->esi);
+        if (process == NULL) {
+            info->eax = 2;
+            break;
+        }
+
+        if (!SharedMemoryObject::attach(info->ecx, process, info->edi)) {
+            info->eax = 3;
+            break;
+        }
+
+        info->eax = 0;
         break;
 
     default:

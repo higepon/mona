@@ -1,5 +1,9 @@
 2004-01-30  higepon  <higepon@users.sourceforge.jp>
 
+        * user/hello.cpp: Mapサーバの準備を着々と進めてみた。
+
+        * user/ShellServer.cpp: Serverを継承するようにした。
+
         * kernel.cpp: 数字キーの入力も対応
 
 2004-01-29  higepon  <higepon@users.sourceforge.jp>

@@ -25,4 +25,17 @@ class Shell {
     int position_;
 };
 
+/*----------------------------------------------------------------------
+    ShellServer
+----------------------------------------------------------------------*/
+class ShellServer : public Server {
+
+  public:
+    ShellServer();
+    virtual ~ShellServer();
+
+  public:
+    void service();
+};
+
 #endif
