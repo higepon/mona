@@ -54,6 +54,8 @@ KeyBoardManager::KeyBoardManager() {
     keyBufIndex_       = 0; /* index is 0 */
     keyBufGottenIndex_ = 0; /* index is 0 */
 
+    /* set keyboard id */
+    outportb(0x60, 0xF2);
     return;
 }
 
@@ -93,15 +95,25 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
     _sys_printf("scancode=%d ", scancode);
 
-    if (scancode == 0xAB) {
-        isKeyboardId_ = true;
-        return;
+    if (isKeyboardId_) {
+	idHigh_ = scancode;
+	isKeyboardId_ = false;
+
+	return;
     }
 
-    /* check spceial key */
-    if (scancode == SPECIAL_KEY) {
-        isSpecialKey_ = true;
-        return;
+
+    switch(scancode) {
+
+      case KEYBOARD_ACK:
+	  return;
+      case SPECIAL_KEY:
+	  isSpecialKey_ = true;
+	  return;
+      case 0xAB:
+	  isKeyboardId_ = true;
+	  idLow_        = scancode;
+	  return;
     }
 
         /* if spceial key flg = true */
@@ -132,7 +144,18 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     \date   create:2002/10/25 update:2002/10/25
 */
 void KeyBoardManager::printInfo() const {
-    outportb(0x60, 0xF2);
 
     return;
+}
+
+/*!
+    \brief get Keyboard ID
+
+    get keyboard ID
+
+    \author HigePon
+    \date   create:2002/10/26 update:
+*/
+int KeyBoardManager::getId() const {
+    return  ((idHigh_ << 8) | idLow_);
 }
