@@ -99,15 +99,16 @@ typedef struct {
 
 /*!
     keyboard input management  class
-    single pattern  applyes the instance of this class
 */
 class KeyBoardManager {
 
-  private:
+  public:
     KeyBoardManager();
     ~KeyBoardManager();
     KeyBoardManager(const KeyBoardManager&);
     KeyBoardManager& operator = (const KeyBoardManager&);
+
+  private:
     bool isSpecialKey_;
     bool isKeyboardId_;
     bool isShift_;
@@ -121,11 +122,6 @@ class KeyBoardManager {
     byte idHigh_;
     byte idLow_;
     List<KeyInfo*>* keyInfoList_;
-  public:
-    static KeyBoardManager& instance() {
-        static KeyBoardManager theInstance;
-        return theInstance;
-    }
     void init();
 
     inline bool isInit() const {

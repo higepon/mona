@@ -71,6 +71,7 @@ void printInfo() {
 
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
     for (;;);
 }
 

@@ -191,23 +191,3 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
 
     return;
 }
-
-/*!
-    \brief print info about keyboard
-
-    print keyboard infomation ID
-
-    \author HigePon
-    \date   create:2002/10/25 update:2002/10/25
-*/
-void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
-
-//     g_console->printf("%s %s%s%s%s%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN )? "down" : "up  "
-//                                    , (modifiers & KEY_MODIFIER_SHIFT)? "shift": ""
-//                                    , (modifiers & KEY_MODIFIER_CTRL )? "ctrl" : ""
-//                                    , (modifiers & KEY_MODIFIER_ALT  )? "alt"  : ""
-//                                    , (modifiers & KEY_MODIFIER_WIN  )? "win"  : ""
-//                                    , (modifiers & KEY_MODIFIER_MENU )? "menu" : ""
-//                                    , keycode);
-    return;
-}
