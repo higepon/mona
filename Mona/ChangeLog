@@ -1,3 +1,7 @@
+2005-02-06  csharp  <csharp@users.sourceforge.jp>
+
+        * tools/MonaServer: 追加（デフォルトではビルドされません）
+
 2005-02-06  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/file.cpp (ReadFile): フルパスを受け付けるように修整。 
