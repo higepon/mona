@@ -590,9 +590,16 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 #endif
 
     sendCommand(command, sizeof(command));
+
+#ifdef FDC_DEBUG
+    console_->printf("wait loop");
+#endif
     while (!waitInterrupt());
     stopDMA();
 
+#ifdef FDC_DEBUG
+    console_->printf("raed results");
+#endif
     readResults();
     return true;
 }

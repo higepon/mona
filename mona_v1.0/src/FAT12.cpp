@@ -99,6 +99,8 @@ bool FAT12::initilize() {
         return false;
     }
 
+    printf("after is FAT12\n");
+
     /* read fat */
     if (!readFAT(true)) {
         errNum_ = FAT_READ_ERROR;
@@ -136,11 +138,19 @@ bool FAT12::isFAT12() {
     int dataSector;
     int countOfClusters;
 
+    if (!(bpb_.bytesPerSector) || bpb_.sectorPerCluster) {
+
+        printf("FAT12: 0 %d, %d", bpb_.bytesPerSector, bpb_.sectorPerCluster);
+        return false;
+    }
+
     rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1))
         / bpb_.bytesPerSector;
 
     totalSector = (bpb_.totalSector16 != 0) ? bpb_.totalSector16 : bpb_.totalSector32;
+
     dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFATs * bpb_.fatSize16) + rootDirSectors);
+
     countOfClusters = dataSector / bpb_.sectorPerCluster;
 
     /* FAT12 */
@@ -162,7 +172,12 @@ bool FAT12::readBPB() {
 
     byte* p = buf_;
 
-    if (!(driver_->read(0, buf_))) return false;
+    if (!(driver_->read(1, buf_))) return false;
+
+    for (int i = 0; i < 512; i++) {
+
+        printf("%x", buf_[i]);
+    }
 
     p += 3;
     memcpy(bpb_.oemName, p, 8);

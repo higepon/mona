@@ -28,7 +28,7 @@ void FDCTester() {
     // write
     for (int i = 0; i < 73; i++) {
 
-        memset(tbuf, i, 512);
+        memset(tbuf, i + 5, 512);
         if (!g_fdcdriver->write(i, tbuf)) {
 
             g_console->printf("write failed %d", i);
@@ -38,14 +38,6 @@ void FDCTester() {
     }
 
     memset(tbuf, 0x99, 512);
-    if (!g_fdcdriver->read(50, tbuf)) {
-         g_console->printf("read failed %d", 50);
-         g_fdcdriver->motor(false);
-         while (true);
-    }
-    for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
-
-    memset(tbuf, 0x99, 512);
     if (!g_fdcdriver->read(0, tbuf)) {
          g_console->printf("read failed %d", 50);
          g_fdcdriver->motor(false);
@@ -53,10 +45,20 @@ void FDCTester() {
     }
     for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
 
+    while (g_demo_step < 8);
 
-    g_fdcdriver->motor(false);
-    g_console->printf("ok");
+    memset(tbuf, 0x99, 512);
+    if (!g_fdcdriver->read(1, tbuf)) {
+         g_console->printf("read failed %d", 50);
+         g_fdcdriver->motor(false);
+         while (true);
+    }
+    for (int i = 0; i < 512; i++) g_console->printf("[%d]", tbuf[i]);
     while (true);
+
+//      g_fdcdriver->motor(false);
+//      g_console->printf("ok");
+//      while (true);
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
