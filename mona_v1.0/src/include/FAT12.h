@@ -19,24 +19,24 @@
 typedef struct BPB {
 
     byte  oemName[8];
-    word  sizeOfSector;
+    word  bytesPerSector;
     byte  sectorPerCluster;
-    word  reservedSector;
-    byte  numberOfFat;
-    word  rootEntries;
-    word  totalSector;
+    word  reservedSectorCount;
+    byte  numberFats;
+    word  rootEntryCount;
+    word  totalSector16;
     byte  media;
-    word  fatSize;
+    word  fatSize16;
     word  sectorPerTrack;
-    word  numberOfHeads;
+    word  numberOfHeaders;
     dword hiddenSector;
-    dword totalBigSector;
-    byte  driveId;
-    byte  dirtyFlag;
-    byte  extendBootSign;
-    dword serialNo;
-    byte  volume[11];
-    byte  type[8];
+    dword totalSector32;
+    byte  driveNumber;
+    byte  reserved1;
+    byte  bootSignature;
+    dword volumeId;
+    byte  volumeLabel[11];
+    byte  fileSysType[8];
 };
 #pragma pack(2)
 typedef struct FDATE {
@@ -85,6 +85,7 @@ class FAT12 {
  private:
 
     bool setBPB();
+    bool isFAT12();
 
  private:
 
