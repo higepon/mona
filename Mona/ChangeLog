@@ -1,6 +1,6 @@
 2004-12-13  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/BootManager.cpp : MONA.CFG、RAMディスクなど
+        * src/kernel/BootManager.cpp : MONA.CFG、RAMディスクなど。必須サーバはにくっつける様にした。
 
         * src/kernel/secondboot.asm (file_load): MONA_CFG_SIZEを使用
 
