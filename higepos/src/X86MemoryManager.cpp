@@ -56,7 +56,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
 
         if (current->size >= realSize) break;
 
-        if (current->next == freeEntry_) return NULL;
+        if (current->next == (struct memoryEntry*)NULL) return NULL;
     }
 
     struct memoryEntry* usedBlock = current;
@@ -67,15 +67,15 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     this->printInfo();
 
     if (current->size != realSize) {
-        this->addToEntry(0, freeBlock, freeBlockSize);
+        this->addToEntry(&freeEntry_, freeBlock, freeBlockSize);
         this->concatBlock(freeEntry_, freeBlock);
         this->printInfo();
     }
-    this->deleteFromEntry(freeEntry_, current, current->size);
+    this->deleteFromEntry(&freeEntry_, current, current->size);
 
     this->printInfo();
 
-    this->addToEntry(1, usedBlock, usedBlockSize);
+    this->addToEntry(&usedEntry_, usedBlock, usedBlockSize);
 
     this->printInfo();
 
@@ -98,7 +98,7 @@ void X86MemoryManager::freeMemory(void* address) {
 
     struct memoryEntry* targetAddress = (struct memoryEntry*)address;
 
-    this->deleteFromEntry(usedEntry_, targetAddress, targetAddress->size);
+    this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
     this->addToEntry(0, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
 }
@@ -129,7 +129,7 @@ X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;
     freeEntry_->size = MEMORY_END - MEMORY_START;
-    freeEntry_->next = freeEntry_;
+    freeEntry_->next = (struct memoryEntry*)NULL;
 
     /* there is no usedEntry */
     usedEntry_ = (struct memoryEntry*)NULL;
@@ -162,19 +162,18 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
 */
 void X86MemoryManager::printInfo() {
 
-    struct memoryEntry* temp = freeEntry_;
+    struct memoryEntry* entry;
+    int i;
 
-    for (int i = 0; freeEntry_; i++, temp = temp->next) {
+    for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-        _sys_printf("free block%d address=%d size=%d\n", i, temp, temp->size);
-        if (freeEntry_ == temp->next) break;
+    _sys_printf("free block%d address=%d size=%d\n", i, entry, entry->size);
     }
 
-    temp = usedEntry_;
-    for (int i = 0; usedEntry_; i++, temp = temp->next) {
+    for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-        _sys_printf("used block%d address=%d size=%d\n", i, temp, temp->size);
-        if (usedEntry_ == temp->next) break;
+    _sys_printf("used block%d address=%d size=%d\n", i, entry, entry->size);
+
     }
 }
 
@@ -183,46 +182,44 @@ void X86MemoryManager::printInfo() {
 
     add block to entries
 
-    \param type  0 FREE: 1 USED
     \param block block to entry
     \param size  size of block
 
     \author HigePon
     \date   create:2002/09/07 update:2002/09/08
 */
-void X86MemoryManager::addToEntry(H_BYTE type, struct memoryEntry* block, H_SIZE_T size) {
+void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry* block, H_SIZE_T size) {
 
-    struct memoryEntry* entry    = type? usedEntry_ : freeEntry_;
-    struct memoryEntry* previous = (struct memoryEntry*)NULL;
-    struct memoryEntry* current  = entry;
+    if (*entry == (struct memoryEntry*)NULL) {
 
-    if (type && usedEntry_ == (struct memoryEntry*)NULL) {
-
-        usedEntry_ = block;
-        usedEntry_->size = size;
+        *entry = block;
+        (*entry)->size = size;
+        (*entry)->next = (struct memoryEntry*)NULL;
+        return;
     }
 
-    for (; ; previous = current, current = previous->next) {
-
-        /* the add position */
-        if (block >= current) break;
-
-        /* block not found */
-        if (current->next == entry) return;
-
+    if ((*entry) > block) {
+        block->next = (*entry);
+        block->size = size;
+        *entry = block;
+        return;
     }
 
-    struct memoryEntry* next = current->next;
-    _sys_printf("here %d", previous);
-    if (previous) {
-        previous->next = block;
-        block->next    = next;
-        block->size    = size;
-        _sys_printf("#######################");
-    } else {
-        entry->size = size;
-        _sys_printf("$$$$$$$$$$$$$$$$$$$$$$$");
+    struct memoryEntry* current;
+    struct memoryEntry* next;
+    H_SIZE_T nextSize;
+    for (current = (*entry); current != (struct memoryEntry*)NULL; current = current->next) {
+
+        /* block to delete found */
+        if (current->next > block) {
+            next = current->next;
+            current->next = block;
+            block->size = size;
+            block->next = next;
+            break;
+        }
     }
+    return;
 }
 
 /*!
@@ -237,21 +234,33 @@ void X86MemoryManager::addToEntry(H_BYTE type, struct memoryEntry* block, H_SIZE
     \author HigePon
     \date   create:2002/09/07 update:
 */
-void X86MemoryManager::deleteFromEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
+void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memoryEntry* block, H_SIZE_T size) {
 
-    struct memoryEntry* previous = (struct memoryEntry*)NULL;
-    struct memoryEntry* current  = entry;
-    for (; ; previous = current, current = previous->next) {
+    /* delete block is top of the list */
+    if (*entry == block && (*entry)->next == *entry) {
+        *entry = (struct memoryEntry*)NULL;
+        return;
+    } else if (*entry == block && (*entry)->next != *entry) {
 
-        /* the add position */
-        if (block == current) break;
-
-        /* block not found */
-        if (current == entry) return;
+        struct memoryEntry* nextNextEntry = (*entry)->next->next;
+        H_SIZE_T nextSize = (*entry)->next->size;
+        *entry = (*entry)->next;
+        (*entry)->size = nextSize;
+        (*entry)->next = nextNextEntry;
+        return;
     }
 
-    struct memoryEntry* next  = current->next;
-    previous->next = next;
+    /* iterate list and find blockt to delete */
+    struct memoryEntry* current;
+    for (current = (*entry); current != (struct memoryEntry*)NULL; current = current->next) {
+
+        /* block to delete found */
+        if (current->next == block) {
+            current->next = current->next->next;
+            break;
+        }
+    }
+    return;
 }
 
 /*!
