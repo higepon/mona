@@ -1,5 +1,6 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
+// Higepon 2004
 
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
@@ -13,10 +14,11 @@ class Form1 : public Form
 {
 public:
     _P<Label> label1;
-    String aa[15];
+    _A<String> aa;
 
     Form1()
     {
+        aa.Alloc(16);
         this->InitializeComponent();
         this->aa[15] = "⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡ ";
         this->aa[14] = " ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡";
@@ -43,7 +45,7 @@ public:
         this->Show();
         for (; this->visible; Application::DoEvents())
         {
-            this->label1->set_Text(aa[(i++) & 0xF]);
+            this->label1->set_Text(aa[(i++) & (aa.get_Length() - 1)]);
             this->OnPaint();
             sleep(300);
         }
