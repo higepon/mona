@@ -49,8 +49,9 @@ void startKernel(void) {
     _sysSetIdt();
     _sysInitIo();
     _sysUnlock();
-    _sysPrintln("idt set done");
+    _sys_printf("idt set done\n");
 
+#if 0
     /* testing types */
     _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));
     _sys_printf("[sizeof(H_BYTE) is %d byte]\n", sizeof(H_BYTE));
@@ -61,11 +62,12 @@ void startKernel(void) {
     Point* point2 = new Point(6, -2);
     Point* point3 = new Point(7, -100);
     delete(point3);
-
     _sys_printf("[Point() getY() = %d]\n", point1->getY());
     _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);
+
+#endif
 
 #if 0
     /* FDCDriver test code */
@@ -78,10 +80,20 @@ void startKernel(void) {
 #endif
 
     /* testing HVector */
-    HVector<int>* v = new HVector<int>;
-    v->add(10);
-    v->add(11);
-    _sys_printf("vector element=%d size=%d\n", v->get(0), v->size());
+    _sys_printf("HVector test start\n");
+    HVector<char*>* v = new HVector<char*>(3, 5);
+    v->add("one");
+    v->add("two");
+    v->add("three");
+    v->add("four");
+    v->add("five");
+    v->add("six");
+    v->add("seven");
+    _sys_printf("element %s removed\n", v->remove(0));
+    _sys_printf("element %s removed\n", v->remove(4));
+    for (int j = 0; j < v->size(); j++) {
+        _sys_printf("(%d, %s) ", j, v->get(j));
+    }
     delete(v);
 
     while (true) {
