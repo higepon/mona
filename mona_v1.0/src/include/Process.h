@@ -35,10 +35,10 @@ typedef struct ProcessInfo {
     dword  edi;
     dword  ds;
     dword  ss;
+    dword  dpl;
     dword  cr3;
     dword  tick;
     dword  pid;
-    dword  dpl;
     dword  wakeupTimer;
     int    state;
     class  Process* process;

@@ -44,7 +44,7 @@ void IDTUtil::setGateDesc(GateDesc* descZero, word selector, InterruptHandlers* 
     desc->offsetL  = (dword)(handler->handler) & 0x0000FFFF;
     desc->offsetH  = ((dword)(handler->handler) & 0xFFFF0000) >> 16;
     desc->selector = selector;
-    desc->type     = 0x8E;
+    desc->type     = handler->number == 0x80 ? 0xEE : 0x8E; /* System call use 0x80 */
     desc->unused   = 0x00;
     return;
 }
@@ -63,7 +63,7 @@ void IDTUtil::setup() {
 
     for (int i = 0; i < IHANDLER_NUM; i++) {
 
-        setGateDesc(g_idt, 0x08, &handlers[i]);
+        setGateDesc(g_idt, KERNEL_CS, &handlers[i]);
     }
 
     /* lidt */
@@ -73,4 +73,3 @@ void IDTUtil::setup() {
     lidt(&idtr);
     return;
 }
-

@@ -18,12 +18,12 @@ void syscall_entrance() {
 
     outportb(0x20, 0x20);
 
-    g_console->printf("syscall entrance");
-
     switch(g_current_process->ebx) {
 
 
       case SYSTEM_CALL_PROCESS_SLEEP:
+
+          g_console->printf("syscall slepp param=%d", g_current_process->esi);
 
           g_process_manager->sleep(g_current_process, g_current_process->esi);
 
@@ -39,7 +39,7 @@ void syscall_entrance() {
 
 void syscall_sleep(dword tick) {
 
-    g_console->printf("syscall sleep");
+    //    g_console->printf("syscall sleep");
 
     asm volatile("movw $5, %%ebx \n"
                  "movw %0, %%esi \n"

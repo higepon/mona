@@ -43,6 +43,7 @@
 
 char* version = "Mona develop beta 0.08b $Date$";
 void userTest();
+void userTest2();
 /*!
     \brief  mona kernel start at this point
 
@@ -104,6 +105,8 @@ void startKernel(void) {
 
     SystemInfo::rdtscsub();
     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
+    g_console->printf("userTestAddress=%x\n", (dword)userTest);
+
 
 
 #ifdef MJT
@@ -143,7 +146,7 @@ void startKernel(void) {
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest);
+    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
 
     enableTimer();
@@ -162,7 +165,13 @@ void userTest() {
 
     // you can't use hlt here
     //    asm volatile("hlt");
+    while (true) {
 
+        syscall_sleep(50);
+    }
+}
+
+void userTest2() {
     while (true);
 }
 
