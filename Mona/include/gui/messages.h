@@ -38,9 +38,8 @@ typedef struct
 {
 	unsigned int Handle, Parent, Owner;
 	int X, Y, Width, Height, OffsetX, OffsetY, Opacity;
-	unsigned int Flags, TransparencyKey;
+	unsigned int Flags, TransparencyKey, BufferHandle;
 	void* __reserved1, * __reserved2, * __reserved3;
-	guiserver_bitmap Buffer;
 } guiserver_window;
 
 #define MAKE_DWORD(a, b) (((unsigned int)(unsigned short)(a)) + (((unsigned int)(unsigned short)(b)) << 16))

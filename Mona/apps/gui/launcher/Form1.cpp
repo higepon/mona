@@ -6,6 +6,7 @@
 #include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Collections/ArrayList.h>
+#include <monapi/CString.h>
 
 using namespace System;
 using namespace System::Collections;
@@ -13,6 +14,23 @@ using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
 extern _P<MonAPI::Screen> GetDefaultScreen();
+
+static bool ExistsProcess(const MonAPI::CString& self)
+{
+	syscall_set_ps_dump();
+	PsInfo info;
+
+	bool ret = false;
+	dword tid = syscall_get_tid();
+
+	while (syscall_read_ps_dump(&info) == 0)
+	{
+		if (!ret && self == info.name && tid != info.tid) ret = true;
+	}
+	if (ret) printf("%s: already has executed!\n", (const char*)self);
+
+	return ret;
+}
 
 static int ProcessStart(const String& file)
 {
@@ -76,6 +94,8 @@ private:
 public:
 	static void Main(_A<String> args)
 	{
+		if (ExistsProcess("LAUNCHER.EL2")) return;
+
 		if (syscall_cd("/APPS"))
 		{
 			printf("ERROR: directory /APPS not found\n");
