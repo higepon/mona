@@ -90,7 +90,9 @@ public:
     Elf32_Addr GetImageSize() const;
 
 private:
-    byte* elf;
+    void SetType();
+
+private:
     int type;
     Elf32_Addr  imageSize;
     Elf32_Ehdr* header;

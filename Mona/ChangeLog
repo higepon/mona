@@ -6,6 +6,8 @@
 
 2004-05-15  higepon  <higepon@users.sourceforge.jp>
 
+        * tools/elf_tool/elfparser.cpp (SetType): 再配置の簡単なテスト準備を始める
+
         * src/kernel/kernel.cpp: カーネルバージョン問い合わせのシステムコールの戻り値を整数で。
 
 2004-05-14  higepon  <higepon@users.sourceforge.jp>

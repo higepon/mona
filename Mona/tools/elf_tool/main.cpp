@@ -83,9 +83,14 @@ int main(int argc, char* argv[])
     }
 
     _A<byte> elf = loadFromFile(target);
-    if (elf == NULL) return 1;
+    if (elf.get() == NULL) return 1;
 
     ELFParser parser;
+
+    parser.Set(elf.get(), elf.get_Length());
+    printf("elf type=%d\n", parser.GetType());
+
+    parser.Relocate(NULL);
 
     return 0;
 }

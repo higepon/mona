@@ -25,7 +25,7 @@
 #define ASSERT(cond) if (!cond) { printf("%s:%d: null assert!!\n", __FILE__, __LINE__); exit(1); }
 
 
-ELFParser::ELFParser() : elf(NULL)
+ELFParser::ELFParser()
 {
 }
 
@@ -39,14 +39,19 @@ bool ELFParser::Set(byte* elf, dword size)
     if (size < sizeof(Elf32_Ehdr)) return false;
 
     this->header = (Elf32_Ehdr*)elf;
-    this->type   = this->GetType();
+    this->sheader = (Elf32_Shdr*)((dword)elf + header->e_shoff);
+    SetType();
 
     return true;
 }
 
-int ELFParser::GetType() const
+void ELFParser::SetType()
 {
-    if (this->elf == NULL) return ET_NONE;
+    if (this->header == NULL)
+    {
+        this->type =  ET_NONE;
+        return;
+    }
 
     /* check Magic Number */
     if (this->header->e_ident[EI_MAG0] != 0x7F
@@ -54,26 +59,50 @@ int ELFParser::GetType() const
         || this->header->e_ident[EI_MAG2] != 'L'
         || this->header->e_ident[EI_MAG3] != 'F')
     {
-        return ET_NONE;
+        this->type = ET_NONE;
+        return;
     }
 
     /* 32bits, Intel 80386 */
     if (this->header->e_ident[EI_CLASS] != ELFCLASS32 || this->header->e_machine != EM_386)
     {
-        return ET_NOT_SUPPORTED;
+        this->type = ET_NOT_SUPPORTED;
+        return;
     }
 
     /* type */
     if (this->header->e_type == ET_REL || this->header->e_type == ET_EXEC)
     {
-        return this->header->e_type;
+        this->type = this->header->e_type;
+        return;
     }
 
-    return ET_NOT_SUPPORTED;
+    this->type = ET_NOT_SUPPORTED;
+    return;
+}
+
+int ELFParser::GetType() const
+{
+    return this->type;
 }
 
 bool ELFParser::Relocate(byte* base)
 {
+    for (int i = 0; i < this->header->e_shnum; i++)
+    {
+        Elf32_Shdr s = this->sheader[i];
+
+        if (s.sh_type != SHT_REL) continue;
+
+        int entryNumber = s.sh_size / s.sh_entsize;
+        Elf32_Rel* entries = (Elf32_Rel*)((dword)this->header + s.sh_offset);
+        for (int j = 0; j < entryNumber; j++)
+        {
+            bool result = Relocate(&s, &entries[j]);
+
+            if (!result) return false;
+        }
+    }
 
     return true;
 }
@@ -130,10 +159,12 @@ bool ELFParser::Relocate(Elf32_Shdr* relHeader, Elf32_Rel* relEntry)
 
         /* S + A */
         *target = S + A;
+        printf("value=%x S=%x A=%x\n", *target, S, A);
         break;
     case(R_386_PC32):
 
         /* S + A - P */
+        *target = S + A - P;
         break;
     case(R_386_GOT32):
 
@@ -193,7 +224,7 @@ bool ELFParser::CreateImage(byte* to)
 
 Elf32_Addr ELFParser::GetEntry() const
 {
-    if (this->elf == NULL) return 0;
+    if (this->header == NULL) return 0;
     return this->header->e_entry;
 }
 
