@@ -247,9 +247,9 @@ void mainProcess()
     KDate dt1;
     KDate dt2;
 
-    outportb(0x21, 0xff);
-    outportb(0xA1, 0xff);
-    outportb(0x21, inportb(0x21) & 0xBF);
+//     outportb(0x21, 0xff);
+//     outportb(0xA1, 0xff);
+//     outportb(0x21, inportb(0x21) & 0xBF);
 
     RTC::getDate(&dt1);
     g_fdcdriver->motor(ON);

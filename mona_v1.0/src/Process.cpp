@@ -166,7 +166,7 @@ int Scheduler::wakeup(Thread* thread, int waitReason)
     }
 
     thread->remove();
-    runq->addToPrev(thread);
+    runq->addToNext(thread);
     thread->waitReason = WAIT_NONE;
 
     return this->setCurrentThread() ? 1 : -1;
@@ -207,13 +207,13 @@ void Scheduler::dump()
     FOREACH_N(runq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3);
+        g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 
     FOREACH_N(waitq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        g_console->printf("[w][%s,th=%x,eip=%x,cr3=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3);
+        g_console->printf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 }
 
