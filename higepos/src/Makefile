@@ -1,0 +1,60 @@
+HIGE_TOOLS = ${HIGE_HOME}/tools
+NASM       = ${HIGE_TOOLS}/nasm/nasmw.exe
+NDISASM    = ${HIGE_TOOLS}/nasm/ndisasmw.exe
+CC         = ${HIGE_TOOLS}/djgpp/bin/gcc.exe
+LD         = ${HIGE_TOOLS}/djgpp/bin/ld.exe
+STRIP      = ${HIGE_TOOLS}/djgpp/bin/strip.exe
+DOXYGEN    = doxygen.exe
+INCLUDE    = include
+LFLAGS     = -Ttext 0x200 --oformat binary
+CFLAGS     = -fno-exceptions -ffreestanding -Wall -c
+BIN        = ../../bin
+LIST       = ../../list
+SCRIPTS    = ${HIGE_TOOLS}/scripts
+FIRST      = ${BIN}/firstboot.bin
+SECOND     = ${BIN}/secondboot.bin
+THIRD      = ${BIN}/third.bin
+SRC        = higepos_kernel.cpp \
+             vga.cpp            \
+             idt.cpp            \
+             ihandler.cpp       \
+             io.cpp
+HEADER     = ${INCLUDE}/kernel.h \
+             ${INCLUDE}/vga.h    \
+             ${INCLUDE}/idt.h    \
+             ${INCLUDE}/io.h
+OBJ        = ${BIN}/cstart.o         \
+             ${BIN}/higepos_kernel.o \
+             ${BIN}/vga.o            \
+             ${BIN}/idt.o            \
+             ${BIN}/ihandler.o       \
+             ${BIN}/io.o
+
+# src to html & document
+WEB : ${BIN}/higeboot.bin
+	${DOXYGEN}
+#	cd ${SCRIPTS}; ${SCRIPTS}/web.rb
+
+${BIN}/higeboot.bin : ${FIRST} ${SECOND} ${THIRD}
+	cat  ${FIRST} ${SECOND} ${THIRD} >$@
+
+${FIRST} : firstboot.asm boot.mac
+	${NASM} firstboot.asm  -o $@ -l ${LIST}/first.list
+
+${SECOND} : secondboot.asm
+	${NASM} secondboot.asm  -o $@ -l ${LIST}/second.list
+
+${THIRD} : ${SRC} ${HEADER}
+	${CC} -I $(INCLUDE) ${CFLAGS} cstart.cpp -o ${BIN}/cstart.o
+	${CC} -I $(INCLUDE) ${CFLAGS} higepos_kernel.cpp -o ${BIN}/higepos_kernel.o
+	${CC} -I $(INCLUDE) ${CFLAGS} vga.cpp -o ${BIN}/vga.o
+	${CC} -I $(INCLUDE) ${CFLAGS} idt.cpp -o ${BIN}/idt.o
+	${CC} -I $(INCLUDE) ${CFLAGS} ihandler.cpp -o ${BIN}/ihandler.o
+	${CC} -I $(INCLUDE) ${CFLAGS} io.cpp -o ${BIN}/io.o
+	${LD} -n -Ttext 0x1200 -static --oformat binary -o${THIRD} ${OBJ}
+	${NDISASM} -u $@ > ${LIST}/third_dis.asm
+#	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}
+
+clean :
+	cd ${BIN}; rm *
+
