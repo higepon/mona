@@ -165,7 +165,7 @@ Process_* ProcessScheduler::schedule(Process_* current) {
     return (list_->removeAt(0));
 }
 
-int ProcessScheduler::addProcess(Process_* process) {
+int ProcessScheduler::add(Process_* process) {
 
     list_->add(process);
     return NORMAL;
@@ -242,7 +242,7 @@ bool ProcessManager_::schedule() {
     return isProcessChanged;
 }
 
-Process_* ProcessManager_::createProcess(int type, const char* name) {
+Process_* ProcessManager_::create(int type, const char* name) {
 
     Process_* result;
 
@@ -267,11 +267,11 @@ Process_* ProcessManager_::getCurrentProcess() const {
     return current_;
 }
 
-int ProcessManager_::addProcess(Process_* process) {
+int ProcessManager_::add(Process_* process) {
 
     /* is this first process */
     if (current_ == NULL) current_ = process;
-    return (scheduler_->addProcess(process));
+    return (scheduler_->add(process));
 }
 
 /*----------------------------------------------------------------------

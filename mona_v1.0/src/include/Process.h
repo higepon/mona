@@ -110,12 +110,36 @@ class ThreadScheduler {
 
   public:
     Thread* schedule(Thread* current);
-    int add(Thread* thread);
     int join(Thread* thread);
     int kill(Thread* thread);
 
   private:
     List<Thread*>* list_;
+};
+
+/*----------------------------------------------------------------------
+    ThreadManager
+----------------------------------------------------------------------*/
+class ThreadManager {
+
+  public:
+    ThreadManager(PageManager* pageManager);
+    virtual ~ThreadManager();
+
+  public:
+    Thread* create(int type, const char* name);
+    int join(Thread* thread);
+    int kill(Thread* thread);
+    int switchThraed();
+    bool schedule();
+    Thread* getCurrentThread() const;
+
+  private:
+    ThreadScheduler* scheduler_;
+    PageManager* pageManager_;
+    Thread* current_;
+    Thread* idle_;
+
 };
 
 /*----------------------------------------------------------------------
@@ -189,7 +213,7 @@ class ProcessScheduler {
 
   public:
     Process_* schedule(Process_* current);
-    int addProcess(Process_* process);
+    int add(Process_* process);
     int kill(Process_* process);
 
   private:
@@ -208,8 +232,8 @@ class ProcessManager_ {
     virtual ~ProcessManager_();
 
   public:
-    Process_* createProcess(int type, const char* name);
-    int addProcess(Process_* process);
+    Process_* create(int type, const char* name);
+    int add(Process_* process);
     int kill(Process_* process);
     int switchProcess();
     bool schedule();
