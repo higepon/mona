@@ -10,40 +10,51 @@ using namespace MonAPI;
 
 int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, const CString& path, const CString& name, CommandOption* option, bool prompt, dword* tid)
 {
-    ELFParser parser;
-    bool ok = parser.set(mi->Data, mi->Size);
-    if (!ok)
-    {
-        if (prompt) printf("%s: file type is not ELF!\n", SVR);
-        return 3;
-    }
-
-    int type = parser.getType();
-    if (type != ELFParser::TYPE_RELOCATABLE && type != ELFParser::TYPE_EXECUTABLE)
-    {
-        if (prompt) printf("%s: file type is not supported!\n", SVR);
-        return 3;
-    }
-
-    int result = parser.parse();
-    if (result != 0)
-    {
-        if (prompt) printf("%s: can not parse!\n", SVR);
-        return 3;
-    }
-
-    dword imageSize = parser.getImageSize();
-    _A<byte> image(imageSize);
-    if (!parser.load(image.get()))
-    {
-        if (prompt) printf("%s: load failed!\n", SVR);
-        return 3;
-    }
-
     LoadProcessInfo info;
-    info.image = image.get();
-    info.size = image.get_Length();
-    info.entrypoint = parser.getEntryPoint();
+    _A<byte> image;
+
+    if (path.endsWith(".ELF") || path.endsWith(".EL2"))
+    {
+        ELFParser parser;
+        bool ok = parser.set(mi->Data, mi->Size);
+        if (!ok)
+        {
+            if (prompt) printf("%s: file type is not ELF!\n", SVR);
+            return 3;
+        }
+
+        int type = parser.getType();
+        if (type != ELFParser::TYPE_RELOCATABLE && type != ELFParser::TYPE_EXECUTABLE)
+        {
+            if (prompt) printf("%s: file type is not supported!\n", SVR);
+            return 3;
+        }
+
+        int result = parser.parse();
+        if (result != 0)
+        {
+            if (prompt) printf("%s: can not parse!\n", SVR);
+            return 3;
+        }
+
+        image.Alloc(parser.getImageSize());
+        if (!parser.load(image.get()))
+        {
+            if (prompt) printf("%s: load failed!\n", SVR);
+            return 3;
+        }
+
+        info.image = image.get();
+        info.size  = image.get_Length();
+        info.entrypoint = parser.getEntryPoint();
+    }
+    else
+    {
+        info.image = mi->Data;
+        info.size  = mi->Size;
+        info.entrypoint = 0xa0000000;
+    }
+
     info.path = path;
     info.name = name;
     info.list = option;

@@ -1,3 +1,21 @@
+2004-06-28  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/gui/Makefile: 生バイナリに移行(GUI.BIN)
+
+        * src/lib/monapi/messages.cpp: GUI.BINに対応
+
+        * src/servers/Makefile: 生バイナリ対応までの措置としてSHELL.SVRを外した
+
+        * samples/gui/Makefile: 容量節約のためbutton, labelを外した
+
+        * src/servers/elf/main.cpp (ExecuteProcess): 生バイナリに対応
+
+        * src/servers/shell/Shell.cpp: 生バイナリ(.BIN)の実行に対応
+
+        * src/servers/shell/InternalCommands.cpp (internalCommandExecute): chshで1LINESH.BINを起動
+
+        * src/servers/1linesh/OneLineShell.cpp: INITとCHSHでOLDSHELL.BINに対応
+
 2004-06-27  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp : データ転送を伴うコマンド発行を実装(未テスト)
@@ -5,7 +23,6 @@
         * apps/non-gui/ata/main.cpp (getSignature): 接続デバイスのリセットとシグニチャ取得
 
         * apps/non-gui/ata/main.cpp : ATAテスト用のアプリを追加。実行しないでね。
-
 
         * src/kernel/IDEDriver.cpp : 削除;
 

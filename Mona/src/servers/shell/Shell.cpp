@@ -137,7 +137,7 @@ void Shell::commandExecute(bool prompt)
     {
         cmdLine = command;
     }
-    else if (command.endsWith(".ELF") || command.endsWith(".EL2"))
+    else if (command.endsWith(".BIN") || command.endsWith(".ELF") || command.endsWith(".EL2"))
     {
         cmdLine = APPSDIR"/" + command;
     }
@@ -151,7 +151,7 @@ void Shell::commandExecute(bool prompt)
         for (int i = 0; i < this->apps.size(); i++)
         {
             CString file = apps.get(i);
-            if (file == command + ".EL2" || file == command + ".MSH")
+            if (file == command + ".BIN" || file == command + ".EL2" || file == command + ".MSH")
             {
                 cmdLine = APPSDIR"/" + file;
                 break;
@@ -345,7 +345,7 @@ int Shell::makeApplicationList()
     while (syscall_dir_read(name, &size, &attr) == 0)
     {
         CString file = name;
-        if (file.endsWith(".EL2") || file.endsWith(".APP") || file.endsWith(".MSH"))
+        if (file.endsWith(".BIN") || file.endsWith(".EL2") || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
             apps.add(name);
         }

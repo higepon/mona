@@ -1,7 +1,7 @@
 all:
 	@cd key; $(MAKE) $@
 	@cd mouse; $(MAKE) $@
-	@cd shell; $(MAKE) $@
+#	@cd shell; $(MAKE) $@
 	@cd shell; $(MAKE) -f Makefile.old $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
@@ -12,7 +12,7 @@ all:
 install:
 	@cd key; $(MAKE) $@
 	@cd mouse; $(MAKE) $@
-	@cd shell; $(MAKE) $@
+#	@cd shell; $(MAKE) $@
 	@cd shell; $(MAKE) -f Makefile.old $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@
@@ -23,7 +23,7 @@ install:
 clean: touchdepend
 	@cd key; $(MAKE) $@
 	@cd mouse; $(MAKE) $@
-	@cd shell; $(MAKE) $@
+#	@cd shell; $(MAKE) $@
 	@cd shell; $(MAKE) -f Makefile.old $@
 	@cd gui; $(MAKE) $@
 	@cd 1linesh; $(MAKE) $@

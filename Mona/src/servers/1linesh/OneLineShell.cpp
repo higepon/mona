@@ -52,11 +52,14 @@ void OneLineShell::service() {
 
   /* Server start ok */
   dword targetID = Message::lookupMainThread("INIT");
-  if(targetID == 0xFFFFFFFF){
-    targetID = Message::lookupMainThread("SHELL.BIN");
-    if(targetID == 0xFFFFFFFF){
-      printf("ShellServer:INIT not found\n");
-      exit(1);
+  if(targetID == THREAD_UNKNOWN){
+    targetID = Message::lookupMainThread("OLDSHELL.BIN");
+    if(targetID == THREAD_UNKNOWN){
+      targetID = Message::lookupMainThread("SHELL.BIN");
+      if(targetID == THREAD_UNKNOWN){
+        printf("ShellServer:INIT not found\n");
+        exit(1);
+      }
     }
   }
 
@@ -102,7 +105,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     cTmp = (CString *)this->cmd;
     if(cTmp->getLength() == 0) break;
     if(strcmp(*cTmp, "CHSH") == 0 || strcmp(*cTmp, "chsh") == 0){
-      int result = syscall_load_process("/SERVERS/SHELL.BIN", "SHELL.BIN", NULL);
+      int result = monapi_call_elf_execute_file("/SERVERS/OLDSHELL.BIN", MONAPI_TRUE);
       if(result != 0){
         this->SetMessage(result);
       } else {
@@ -111,7 +114,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
           if(msg.header == MSG_SERVER_START_OK) break;
         }
         hasExited = true;
-        this->SetMessage("Change shell to SHELL.BIN");
+        this->SetMessage("Change shell to OLDSHELL.BIN");
       }
     } else {
       this->SetMessage(this->cmd.ExecuteCommand());

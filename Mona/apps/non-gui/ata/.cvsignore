@@ -1,0 +1,10 @@
+*.o
+*.bin
+*.list
+*.map
+*.local
+*.ELF
+*.EL2
+*.BIN
+TAGS
+dependencies
