@@ -79,7 +79,7 @@
 #define CC_VER  __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__
 #endif
 
-const char* version = "Mona version.0.3.0Alpha1 $Date$";
+const char* version = "Mona version.0.3.0Alpha3 $Date$";
 dword version_number  = 0x00000300;
 void  mainProcess();
 
@@ -125,7 +125,7 @@ void startKernel(void)
     g_console->printf("\n");
     g_console->printf("              %s\n", version);
     g_console->printf("              ["CC_NAME" @ %s]\n", CC_VER, OSTYPE);
-    g_console->printf("              Copyright (c) 2002-2004 higepon\n\n\n\n");
+    g_console->printf("              Copyright (c) 2002-2005 higepon\n\n\n\n");
 
 #if 1
     int w = g_vesaDetail->xResolution;

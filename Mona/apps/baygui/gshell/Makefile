@@ -1,6 +1,6 @@
 TARGET  = GSHELL
 SOURCES = gshell.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/root/APPS/BAYGUI
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)

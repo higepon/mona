@@ -1,6 +1,6 @@
 TARGET  = GNOIZ2BG
 SOURCES = noiz2bg.cpp Form1.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)

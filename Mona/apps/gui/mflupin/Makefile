@@ -1,6 +1,6 @@
 TARGET  = MFLUPIN
 SOURCES = mflupin.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ADDLINK    = -lmonalibc

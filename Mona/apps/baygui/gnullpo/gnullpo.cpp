@@ -37,8 +37,8 @@ public:
 		setRect((800 - 191) / 2, (600 - 205) / 2, 191, 205);
 		setTitle("ぬるぽボタン");
 		pushed = false;
-		image_normal = new Image("/APPS/GNULLPO.APP/NULLPO.BM5");
-		image_pushed = new Image("/APPS/GNULLPO.APP/GAT.BM5");
+		image_normal = new Image("/APPS/BAYGUI/GNULLPO.APP/NULLPO.BM5");
+		image_pushed = new Image("/APPS/BAYGUI/GNULLPO.APP/GAT.BM5");
 	}
 	
 	~GNullpo(){

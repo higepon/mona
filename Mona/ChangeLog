@@ -1,3 +1,9 @@
+2005-02-01  higepon  <higepon@users.sourceforge.jp>
+
+        * MonaForms, BayGUIアプリのディレクトリを分ける様に修正
+
+        * apps/gui/monafile/FileBrowser.cpp:ファイルブラウザバグ修正
+
 2005-02-01  csharp  <csharp@users.sourceforge.jp>
 
         * src/tools/MonaNET16/Makefile: 最適化レベルを1に変更

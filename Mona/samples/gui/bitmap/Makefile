@@ -1,6 +1,6 @@
 TARGET  = BITMAP
 SOURCES = Form1.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ADDLINK    = -lgui

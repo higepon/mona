@@ -1,7 +1,7 @@
 TARGET    = GREVERSI
 SOURCES   = ReversiForm.cpp ReversiBoard.cpp Piece.cpp
 
-INSTDIR   = $(BINDIR)/root/APPS/GREVERSI.APP
+INSTDIR   = $(BINDIR)/root/APPS/MONAFRMS/GREVERSI.APP
 INSTFILES = RED.BMP WHITE.BMP
 
 MONADIR = ../../..

@@ -39,18 +39,18 @@ public:
 		setTitle("へぇ～ボタン");
 		count = 0;
 		pushed = false;
-		number[0] = new Image("/APPS/GHEBTN.APP/0.BM5");
-		number[1] = new Image("/APPS/GHEBTN.APP/1.BM5");
-		number[2] = new Image("/APPS/GHEBTN.APP/2.BM5");
-		number[3] = new Image("/APPS/GHEBTN.APP/3.BM5");
-		number[4] = new Image("/APPS/GHEBTN.APP/4.BM5");
-		number[5] = new Image("/APPS/GHEBTN.APP/5.BM5");
-		number[6] = new Image("/APPS/GHEBTN.APP/6.BM5");
-		number[7] = new Image("/APPS/GHEBTN.APP/7.BM5");
-		number[8] = new Image("/APPS/GHEBTN.APP/8.BM5");
-		number[9] = new Image("/APPS/GHEBTN.APP/9.BM5");
-		image_normal = new Image("/APPS/GHEBTN.APP/HENORMAL.BM5");
-		image_pushed = new Image("/APPS/GHEBTN.APP/HEPUSHED.BM5");
+		number[0] = new Image("/APPS/BAYGUI/GHEBTN.APP/0.BM5");
+		number[1] = new Image("/APPS/BAYGUI/GHEBTN.APP/1.BM5");
+		number[2] = new Image("/APPS/BAYGUI/GHEBTN.APP/2.BM5");
+		number[3] = new Image("/APPS/BAYGUI/GHEBTN.APP/3.BM5");
+		number[4] = new Image("/APPS/BAYGUI/GHEBTN.APP/4.BM5");
+		number[5] = new Image("/APPS/BAYGUI/GHEBTN.APP/5.BM5");
+		number[6] = new Image("/APPS/BAYGUI/GHEBTN.APP/6.BM5");
+		number[7] = new Image("/APPS/BAYGUI/GHEBTN.APP/7.BM5");
+		number[8] = new Image("/APPS/BAYGUI/GHEBTN.APP/8.BM5");
+		number[9] = new Image("/APPS/BAYGUI/GHEBTN.APP/9.BM5");
+		image_normal = new Image("/APPS/BAYGUI/GHEBTN.APP/HENORMAL.BM5");
+		image_pushed = new Image("/APPS/BAYGUI/GHEBTN.APP/HEPUSHED.BM5");
 	}
 	
 	~HeButton(){

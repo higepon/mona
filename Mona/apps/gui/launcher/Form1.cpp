@@ -80,7 +80,7 @@ private:
 	void button_Click(_P<Object> sender, _P<EventArgs> e)
 	{
 		_P<Button> button = (Button*)sender.get();
-		String file = "/APPS/" + button->get_Text();
+		String file = "/APPS/MONAFRMS/" + button->get_Text();
 		if (file.EndsWith(".APP"))
 		{
 			file += '/';
@@ -97,7 +97,7 @@ public:
 	{
 		if (ExistsProcess("LAUNCHER.EL2")) return;
 
-		monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/APPS", MONAPI_TRUE);
+		monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/APPS/MONAFRMS", MONAPI_TRUE);
 		if (mi == NULL) return;
 
 		Form1::elfs = new ArrayList<String>;

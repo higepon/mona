@@ -1,6 +1,6 @@
 TARGET  = GHIGE3D
 SOURCES = Form1.cpp notmine.cpp
-INSTDIR = $(BINDIR)/root/APPS
+INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)

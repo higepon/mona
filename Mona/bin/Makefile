@@ -1,9 +1,11 @@
 TARGET = mona.img
 
-ROOT_FILES = `cd root; ls *.*`
-SVR_FILES  = `cd root; ls SERVERS/*.*`
-APP_FILES  = `cd root; ls APPS/*.E* APPS/*.MSH`
-LIB_FILES  = `cd root; ls LIBS/*.*`
+ROOT_FILES     = `cd root; ls *.*`
+SVR_FILES      = `cd root; ls SERVERS/*.*`
+APP_FILES      = `cd root; ls APPS/*.E* APPS/*.MSH`
+LIB_FILES      = `cd root; ls LIBS/*.*`
+BAYGUI_FILES   = `cd root; ls APPS/BAYGUI/*.E* APPS/BAYGUI/*.MSH`
+MONAFRMS_FILES = `cd root; ls APPS/MONAFRMS/*.E* APPS/MONAFRMS/*.MSH`
 
 all:
 	./getFileSize$(EXEEXT) ../src/servers/file/FILE.BIN FILE.BIN file.head
@@ -17,12 +19,14 @@ all:
 	./fat_write $(TARGET) --mbr firstboot.bin
 	./fat_write $(TARGET) --mkdir SERVERS
 	./fat_write $(TARGET) --mkdir APPS
+	./fat_write $(TARGET) --mkdir APPS/MONAFRMS
+	./fat_write $(TARGET) --mkdir APPS/BAYGUI
 	./fat_write $(TARGET) --mkdir LIBS
-	@for file in $(ROOT_FILES) $(SVR_FILES) $(APP_FILES) $(LIB_FILES); \
+	@for file in $(ROOT_FILES) $(SVR_FILES) $(APP_FILES) $(LIB_FILES) $(BAYGUI_FILES) $(MONAFRMS_FILES); \
 	do \
 	  echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; \
 	done
-	@cd root; for dir in APPS/*.APP; \
+	@cd root; for dir in APPS/*.APP APPS/BAYGUI/*.APP APPS/MONAFRMS/*.APP ; \
 	do \
 	  echo "Creating: "$$dir"..."; ../fat_write ../$(TARGET) --mkdir $$dir; \
 	  for file in $$dir/*.*; do echo "Writing: "$$file"..."; ../fat_write ../$(TARGET) $$file $$file; done; \

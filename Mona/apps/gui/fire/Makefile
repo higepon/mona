@@ -1,7 +1,7 @@
 TARGET   = FIRE
 SOURCES  = Form1.cpp
 NASMSRCS = fire.asm
-INSTDIR  = $(BINDIR)/root/APPS
+INSTDIR  = $(BINDIR)/root/APPS/MONAFRMS
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)

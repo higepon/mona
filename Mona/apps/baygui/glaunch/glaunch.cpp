@@ -59,7 +59,7 @@ GLaunch::GLaunch()
 	add(list);
 
 	// APPSに移動
-	if (syscall_cd("/APPS") != 0) {
+	if (syscall_cd("/APPS/BAYGUI") != 0) {
 		return;
 	}
 
@@ -99,7 +99,7 @@ void GLaunch::execute()
 	char name[24];
 	char *item = list->getSelectedItem();
 	if (prevIndex != -1 && item != NULL && strlen(item) > 0) {
-		strcpy(name, "/APPS/");
+		strcpy(name, "/APPS/BAYGUI/");
 		strcat(name, item);
 		// *.APP の場合
 		if (item[strlen(item) - 1] == 'P') {

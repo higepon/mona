@@ -49,7 +49,7 @@ GRunner::GRunner()
 	setRect((800 - 200) / 2, (600 - 48) / 2, 200, 48);
 	setTitle("ファイル名を指定して実行");
 	text = new TextField();
-	text->setText("/APPS/");
+	text->setText("/APPS/BAYGUI/");
 	text->setRect(0,0,188,20);
 	add(text);
 	history = new LinkedList();
@@ -70,7 +70,7 @@ void GRunner::onEvent(Event *event)
 		history->add(new LinkedItem(new String(text->getText())));
 		historyPtr = history->getLength();
 		monapi_call_process_execute_file(text->getText(), MONAPI_FALSE);
-		text->setText("/APPS/");
+		text->setText("/APPS/BAYGUI/");
 	// キー押下
 	} else if (event->type == KEY_PRESSED) {
 		int keycode = ((KeyEvent *)event)->keycode;
@@ -86,7 +86,7 @@ void GRunner::onEvent(Event *event)
 				historyPtr++;
 				text->setText(((String *)history->get(historyPtr))->getBytes());
 			} else {
-				text->setText("/APPS/");
+				text->setText("/APPS/BAYGUI/");
 			}
 		}
 	}
