@@ -1,3 +1,9 @@
+2004-04-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/syscall.cpp (syscall_read_ps_dump): スレッドダンプシステムコール作成
+
+        * apps/gui/ps/Form1.cpp (class Form1): PS作成
+
 2004-04-08  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/kernel.cpp (execSysConf):                     enableTimer(); // qemu need this why?を追加
