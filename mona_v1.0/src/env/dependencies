@@ -129,8 +129,7 @@ test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
   include/io.h include/GraphicalConsole.h include/operator.h \
   include/IA32MemoryManager.h include/z.h contrib/include/zlib.h \
-  contrib/include/zconf.h include/MemoryManager.h \
-  include/KeyBoardManager.h
+  contrib/include/zconf.h include/MemoryManager.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \

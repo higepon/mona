@@ -14,7 +14,7 @@ void test(MemoryManager* mm, dword start, dword end);
 /*
     main()
 */
-int main(int argc, char** argv) {
+int main(int argc, char* argv) {
 
     byte* memory = (byte*)malloc(MANAGE_SIZE);
 

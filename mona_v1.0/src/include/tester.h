@@ -29,5 +29,4 @@ void FDCTester();
 void ELFTester(byte* out);
 void FDCDriverTester();
 void mmChangeTester();
-void keyStrokeTest();
 #endif

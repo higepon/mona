@@ -121,6 +121,8 @@ void startKernel(void) {
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem TotalL Memory %d[MB]. Paging on\n", g_total_system_memory / 1024 / 1024);
 
+    while (true);
+
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
     g_page_manager->setup();
@@ -134,10 +136,6 @@ void startKernel(void) {
     disableTimer();
     enableKeyboard();
     enableInterrupt();
-
-    keyStrokeTest();
-
-    while (true);
 
     /* show Logo */
     FDCDriverTester();

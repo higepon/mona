@@ -69,8 +69,6 @@ KeyBoardManager::KeyBoardManager() {
 
     keyBufIndex_       = 0; /* index is 0 */
     keyBufGottenIndex_ = 0; /* index is 0 */
-
-    f_ = NULL;
     return;
 }
 
@@ -182,8 +180,6 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     keyInfo_[keyBufIndex_].keycode   = keycode;
     keyInfo_[keyBufIndex_].modifiers = modifiers;
 
-    if (f_) f_();
-
     //    printInfo(keycode, modifiers);
     return;
 }
@@ -208,7 +204,3 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
     return;
 }
 
-void KeyBoardManager::setHandler(void (*f)()) {
-
-    f_ = f;
-}
