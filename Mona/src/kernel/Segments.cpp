@@ -390,7 +390,7 @@ void SharedMemoryObject::initilize(dword id, dword size)
 
     physicalPageCount_ = size / 4096;
     physicalPages_     = new int[physicalPageCount_];
-    checkMemoryAllocate(physicalPages_, "SharedMemoryObject memory allcate physicalPages");
+    checkMemoryAllocate(physicalPages_, "SharedMemoryObject memory allocate physicalPages");
     memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
 
     size_ = size;
@@ -469,7 +469,7 @@ bool SharedMemoryObject::open(dword id, dword size)
     if (target == NULL)
     {
         target = new SharedMemoryObject(id, size);
-        checkMemoryAllocate(target, "SharedMemoryObject memory allcate target");
+        checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
         g_sharedMemoryObjectList->add(target);
 
     } else
@@ -488,7 +488,7 @@ bool SharedMemoryObject::open(dword id, dword size, dword pid, dword linearAddre
     if (target == NULL)
     {
         target = new SharedMemoryObject(id, size, pid, linearAddress);
-        checkMemoryAllocate(target, "SharedMemoryObject memory allcate target");
+        checkMemoryAllocate(target, "SharedMemoryObject memory allocate target");
         g_sharedMemoryObjectList->add(target);
     } else
     {
