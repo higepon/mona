@@ -11,7 +11,7 @@ else
 include $(MONADIR)/env/monapi-bn5.inc
 endif
 
-install-gui: MONAWALL.BM5
+install-gui: #MONAWALL.BM5
 	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/iso/APPS
 	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/iso/APPS
 #	$(INSTALL) MONAWALL.BM5 $(MONADIR)/bin/iso
