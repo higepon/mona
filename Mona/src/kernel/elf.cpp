@@ -25,6 +25,62 @@
 
 #define ORG 0xA0000000
 
+int loadProcess(byte* image, dword size, dword entrypoint, const char* path, const char* name, bool isUser, CommandOption* list)
+{
+    /* shared ID */
+    static dword sharedId = 0x2000;
+    sharedId++;
+
+    bool   isOpen;
+    bool   isAttaced;
+
+    /* attach Shared to this process */
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen    = SharedMemoryObject::open(sharedId, MAX_IMAGE_SIZE);
+    isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
+    Semaphore::up(&g_semaphore_shared);
+    if (!isOpen || !isAttaced) return 4;
+
+    /* create process */
+    enter_kernel_lock_mode();
+    Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, path, name);
+
+    /* attach binary image to process */
+    while (Semaphore::down(&g_semaphore_shared));
+    isOpen    = SharedMemoryObject::open(sharedId, MAX_IMAGE_SIZE);
+    isAttaced = SharedMemoryObject::attach(sharedId, process, ORG);
+    Semaphore::up(&g_semaphore_shared);
+    if (!isOpen || !isAttaced) return 5;
+
+    memcpy((byte*)0x8000000, image, size);
+
+    /* detach from this process */
+    while (Semaphore::down(&g_semaphore_shared));
+    SharedMemoryObject::detach(sharedId, g_currentThread->process);
+    Semaphore::up(&g_semaphore_shared);
+
+    /* set arguments */
+    if (list != NULL)
+    {
+        char* p;
+        CommandOption* option;
+        List<char*>* target = process->getArguments();
+
+        for (option = list->next; option; option = option->next)
+        {
+            p = new char[32];
+            strncpy(p, option->str, 32);
+            target->add(p);
+        }
+    }
+
+    /* now process is loaded */
+    Thread*  thread = ThreadOperation::create(process, entrypoint);
+    g_scheduler->join(thread);
+    exit_kernel_lock_mode();
+    return 0;
+}
+
 int loadProcess(const char* path, const char* name, bool isUser, CommandOption* list)
 {
     char filepath[128];

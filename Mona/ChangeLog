@@ -1,3 +1,7 @@
+2004-05-01  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/elf.cpp (loadProcess): elf.cppにバイナリイメージを受け取るloadProcessを作成
+
 2004-05-01  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell/main.cpp: 内部コマンド CHSH 追加 (1LINESH.SVRに切り替え)
