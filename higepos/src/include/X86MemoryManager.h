@@ -25,7 +25,9 @@ class X86MemoryManager {
     ~X86MemoryManager();
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
-    unsigned long start_;
+    const unsigned long MEMORY_START;
+    const unsigned long MEMORY_SIZE;
+    unsigned long current_;
   public:
 
     char* getName();

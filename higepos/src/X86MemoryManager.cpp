@@ -41,8 +41,8 @@ char* X86MemoryManager::getName() {
 */
 unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
 
-    unsigned long oldAddress = start_;
-    start_ += size;
+    unsigned long oldAddress = current_;
+    current_ += size;
     return oldAddress;
 }
 
@@ -79,7 +79,8 @@ X86MemoryManager::~X86MemoryManager() {
     constructor
 
     \author HigePon
-    \date   create:2002/08/10 update:
+    \date   create:2002/08/10 update:2002/08/24
 */
-X86MemoryManager::X86MemoryManager():start_(0x10000) {
+X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_SIZE(0x15000) {
+    current_ = MEMORY_START;
 }
