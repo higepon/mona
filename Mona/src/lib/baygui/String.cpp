@@ -27,45 +27,45 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
 String::String(char *s)
 {
 	c_str = (char *)malloc(strlen(s) + 1);
 	memcpy(c_str, s, strlen(s) + 1);
 }
 
-/** ƒfƒXƒgƒ‰ƒNƒ^ */
+/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
 String::~String()
 {
 	free(c_str);
 }
 
-/** •¶š—ñ‚Ì’·‚³‚ğ•Ô‚· */
+/** æ–‡å­—åˆ—ã®é•·ã•ã‚’è¿”ã™ */
 int String::length()
 {
 	return strlen(c_str);
 }
 
-/** •¶š—ñ‚ğ•Ô‚· */
+/** æ–‡å­—åˆ—ã‚’è¿”ã™ */
 char *String::toString()
 {
 	return c_str;
 }
 
 #if 0
-/** w’è‚µ‚½•¶š—ñ‚Ån‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©”»’è‚·‚é */
+/** æŒ‡å®šã—ãŸæ–‡å­—åˆ—ã§å§‹ã¾ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹åˆ¤å®šã™ã‚‹ */
 bool String::startsWith(String *s)
 {
 	return false;
 }
 
-/** w’è‚µ‚½•¶š—ñ‚ÅI‚í‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©”»’è‚·‚é */
+/** æŒ‡å®šã—ãŸæ–‡å­—åˆ—ã§çµ‚ã‚ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹åˆ¤å®šã™ã‚‹ */
 bool endsWidth(String *s)
 {
 	return false;
 }
 
-/** w’è‚µ‚½•¶š—ñ‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©”»’è‚·‚é */
+/** æŒ‡å®šã—ãŸæ–‡å­—åˆ—ã¨ç­‰ã—ã„ã‹ã©ã†ã‹åˆ¤å®šã™ã‚‹ */
 bool String::equals(String *s)
 {
 	return false;

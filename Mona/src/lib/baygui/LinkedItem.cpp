@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** コンストラクタ */
+/** 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ */
 LinkedItem::LinkedItem(Object *o)
 {
 	data = o;
@@ -35,7 +35,7 @@ LinkedItem::LinkedItem(Object *o)
 	prev = NULL;
 }
 
-/** デストラクタ */
+/** 繝�繧ｹ繝医Λ繧ｯ繧ｿ */
 LinkedItem::~LinkedItem()
 {
 	delete(data);

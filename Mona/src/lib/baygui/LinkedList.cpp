@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+/** ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
 LinkedList::LinkedList()
 {
 	dataListLength = 0;
@@ -35,28 +35,28 @@ LinkedList::LinkedList()
 	endItem = NULL;
 }
 
-/** ƒfƒXƒgƒ‰ƒNƒ^ */
+/** ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ */
 LinkedList::~LinkedList()
 {
 	removeAll();
 }
 
-/** ƒŠƒXƒg‚Ì’·‚³‚ğ“¾‚é */
+/** ãƒªã‚¹ãƒˆã®é•·ã•ã‚’å¾—ã‚‹ */
 int LinkedList::getLength()
 {
 	return dataListLength;
 }
 
-/** w’è‚µ‚½‡”Ô‚Ì€–Ú‚ğ“¾‚é */
+/** æŒ‡å®šã—ãŸé †ç•ªã®é …ç›®ã‚’å¾—ã‚‹ */
 LinkedItem *LinkedList::getItem(int index)
 {
-	// NULLƒ`ƒFƒbƒN
+	// NULLãƒã‚§ãƒƒã‚¯
 	if (index >= dataListLength) return NULL;
 	if (firstItem == NULL) return NULL;
-	// Å‰‚ÆÅŒãƒ`ƒFƒbƒN
+	// æœ€åˆã¨æœ€å¾Œãƒã‚§ãƒƒã‚¯
 	if (index == 0) return firstItem;
 	if (index == dataListLength - 1) return endItem;
-	// index‰ñƒ‹[ƒv
+	// indexå›ãƒ«ãƒ¼ãƒ—
 	LinkedItem *item = firstItem;
 	for (int i = 0; i < index; i++) {
 		item = item->next;
@@ -64,7 +64,7 @@ LinkedItem *LinkedList::getItem(int index)
 	return item;
 }
 
-/** ’Ç‰Á */
+/** è¿½åŠ  */
 void LinkedList::add(LinkedItem *item)
 {
 	if (item == NULL) {
@@ -84,7 +84,7 @@ void LinkedList::add(LinkedItem *item)
 	dataListLength++;
 }
 
-/** íœ */
+/** å‰Šé™¤ */
 void LinkedList::remove(LinkedItem *item)
 {
 	if (item == NULL) {
@@ -115,7 +115,7 @@ void LinkedList::remove(LinkedItem *item)
 	dataListLength--;
 }
 
-/** ‘Síœ */
+/** å…¨å‰Šé™¤ */
 void LinkedList::removeAll()
 {
 	while (firstItem != NULL) {
@@ -124,7 +124,7 @@ void LinkedList::removeAll()
 	dataListLength = 0;
 }
 
-/** w’è‚µ‚½€–Ú‚ğˆê”ÔÅŒã‚É‚Á‚Ä‚¢‚­ */
+/** æŒ‡å®šã—ãŸé …ç›®ã‚’ä¸€ç•ªæœ€å¾Œã«æŒã£ã¦ã„ã */
 void LinkedList::sort(LinkedItem *item)
 {
 	if (item == NULL) {
