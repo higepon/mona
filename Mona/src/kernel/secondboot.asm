@@ -2526,14 +2526,16 @@ RealToProtect:
         mov     eax, cr0        ; real
         or      eax, 1          ; to
         mov     cr0, eax        ; protect
-	jmp 0x0008:set_cs_desc1 - RealToProtect + KERNEL_SEG * 16
+        jmp     flush_q1
+flush_q1:
+	jmp     0x0008:(KERNEL_SEG * 16 + set_cs_desc1) - RealToProtect
 
 ;-------------------------------------------------------------------------------
 ; GDT definition: It is temporary.
 ;-------------------------------------------------------------------------------
 gdtr:
         dw gdt_end - gdt0 - 1   ; gdt limit
-        dd gdt0 - RealToProtect + 0x100 * 16  ; start adderess
+        dd (KERNEL_SEG * 16 + gdt0) - RealToProtect  ; start adderess
 
 gdt0:                           ; segment 00
         dw 0                    ; segment limitL
