@@ -58,8 +58,33 @@ void kthread_init() {
 
     kthread_add_to_prev_list(&runningList, idle2);
 
+
+    dword stack3 = kthread_allocate_stack();
+    if (stack3 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+
+    Kthread* idle3 = kthread_create_thread(stack3, kthread_idle3);
+    if ( idle3 == NULL) {
+        panic("idle thread:create thread error");
+    }
+
+    kthread_add_to_prev_list(&runningList, idle3);
+
+    dword stack4 = kthread_allocate_stack();
+    if (stack4 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+
+    Kthread* idle4 = kthread_create_thread(stack4, kthread_idle4);
+    if ( idle4 == NULL) {
+        panic("idle thread:create thread error");
+    }
+
+    kthread_add_to_prev_list(&runningList, idle4);
+
+
     current = idle2;
-    //    kthread_schedule();
 }
 
 void kthread_printInfo() {
@@ -119,6 +144,7 @@ dword kthread_allocate_stack() {
 void kthread_yield() {
 
     /* software interrupt yeild */
+    kthread_schedule();
 }
 
 
@@ -145,7 +171,7 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
     /* create thread */
     thread->eip    = (dword)f;
     thread->cs     = 0x08;
-    thread->eflags = 0x0200046;
+    thread->eflags = 0x0200;
     thread->esp    = stack;
     thread->ebp    = stack;
 
@@ -168,27 +194,23 @@ extern "C" char pos_y;
 */
 void kthread_idle() {
 
-    console->printf("kthread idle\n");
     while (true) {
-       console->printf("[1]");}
 
-//      dword color = 0;
+        dword color;
 
-//      while (true) {
+        if (current->tick % 500) continue;
+        disableInterrupt();
 
-//          if (current->tick % 50) continue;
-//          disableInterrupt();
+        int x = pos_x;
+        int y = pos_y;
 
-//          int x = pos_x;
-//          int y = pos_y;
-
-//          pos_x = 20, pos_y = 1;
-//          write_font('$', color%2 + 5, 0);
-//          color++;
-//          pos_x = x;
-//          pos_y = y;
-//          enableInterrupt();
-//      }
+        pos_x = 42, pos_y = 0;
+        write_font('M', color%2 + 5, 0);
+        color++;
+        pos_x = x;
+        pos_y = y;
+        enableInterrupt();
+    }
 }
 
 /*!
@@ -199,23 +221,65 @@ void kthread_idle() {
 */
 void kthread_idle2() {
 
-    while (true)    { enableInterrupt();console->printf("[2]");}
-//      dword color = 0;
+    while (true) {
 
-//      while (true) {
+        dword color;
 
-//          disableInterrupt();
+        if (current->tick % 500) continue;
+        disableInterrupt();
 
-//          int x = pos_x;
-//          int y = pos_y;
+        int x = pos_x;
+        int y = pos_y;
 
-//          pos_x = 22, pos_y = 1;
-//          write_font('$', color%15, 0);
-//          color++;
-//          pos_x = x;
-//          pos_y = y;
-//          enableInterrupt();
-//      }
+        pos_x = 43, pos_y = 0;
+        write_font('o', color%2 + 6, 0);
+        color++;
+        pos_x = x;
+        pos_y = y;
+        enableInterrupt();
+    }
+}
+
+void kthread_idle3() {
+
+    while (true) {
+
+        dword color;
+
+        if (current->tick % 500) continue;
+        disableInterrupt();
+
+        int x = pos_x;
+        int y = pos_y;
+
+        pos_x = 44, pos_y = 0;
+        write_font('n', color%2 + 6, 0);
+        color++;
+        pos_x = x;
+        pos_y = y;
+        enableInterrupt();
+    }
+}
+
+void kthread_idle4() {
+
+    while (true) {
+
+        dword color;
+
+        if (current->tick % 500) continue;
+        disableInterrupt();
+
+        int x = pos_x;
+        int y = pos_y;
+
+        pos_x = 45, pos_y = 0;
+        write_font('a', color%2 + 6, 0);
+        color++;
+        pos_x = x;
+        pos_y = y;
+        enableInterrupt();
+    }
 }
 
 /*!
@@ -231,7 +295,7 @@ void kthread_schedule() {
 
     kthread_add_to_prev_list(&runningList, temp);
 
-    //    current =  (&runningList)->next;
+    current =  (&runningList)->next;
 
     /* switch */
     kthread_switch();
@@ -245,7 +309,6 @@ void kthread_schedule() {
 */
 void kthread_switch() {
 
-    console->printf("switch\n");
     arch_kthread_switch();
 }
 

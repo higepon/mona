@@ -59,27 +59,13 @@ void startKernel(void) {
 
     pic_init();
     enableKeyboard();
+    printOK("Setting PIC        ");
 
     /* set interrupt */
     _sysSetIdt();
-
-    console->printf("IMR [%x]\n", (dword)inportb(0x21));
-
-    //    _sysInitIo();
     printOK("Setting IDT        ");
     printOK("Setting GDT        ");
 
-    console->printf("IMR [%x]\n", (dword)inportb(0x21));
-
-    disableTimer();
-
-    console->printf("IMR [%x]\n", (dword)inportb(0x21));
-
-    //    enableTimer();
-    /* enable interrupt */
-    enableInterrupt();
-
-    /* check some */
     checkTypeSize();
     printOK("Checking type size ");
 
@@ -93,11 +79,11 @@ void startKernel(void) {
         console->printf("CPUID NG  \n");
     }
 
-    /* set up KeyBoardManager before task start */
-    KeyBoardManager::instance();
+    /* enable interrupt */
+    enableInterrupt();
 
-    //    kthread_init();
-    //    enableTimer();
+    kthread_init();
+    enableTimer();
     while (true);
 
     /* test code is here */
