@@ -54,7 +54,6 @@ StackSegment::StackSegment(Process* process, LinearAddress start, dword initileS
     size_         = initileSize + PageManager::ARCH_PAGE_SIZE;
     maxSize_      = maxSize;
     isAutoExtend_ = true;
-    g_console->printf("%s %d", __FILE__, __LINE__);
     g_page_manager->setAttribute(process->getPageDirectory(), start, true, false, true);
 }
 

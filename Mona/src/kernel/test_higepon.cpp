@@ -30,7 +30,8 @@
 void KEvent::wait(Thread* thread, kevent e)
 {
     g_scheduler->WaitEvent(thread, e);
-    bool isProcessChange = g_scheduler->Schedule1();
+    bool isProcessChange = g_scheduler->Schedule3();
+
     ThreadOperation::switchThread(isProcessChange, 79);
 
     /* not reached */
@@ -40,11 +41,12 @@ void KEvent::set(Thread* thread, kevent e)
 {
     int wakeupResult = g_scheduler->EventComes(thread, e);
 
-    if (e == MEvent::MUTEX_UNLOCKED) g_console->printf("result=%x", wakeupResult);
+    if (e == MEvent::MUTEX_UNLOCKED) g_console->printf("result=%x:%d", wakeupResult, e);
 
     if (wakeupResult != 0)
     {
-        ThreadOperation::switchThread((wakeupResult == 1), 78);
+        bool isProcessChange = g_scheduler->Schedule3();
+        ThreadOperation::switchThread(isProcessChange, 78);
     }
 
     /* not reached */

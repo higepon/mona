@@ -65,7 +65,7 @@ Process* ProcessOperation::create(int type, const char* name)
 dword ThreadOperation::id = 56;
 Thread* ThreadOperation::create(Process* process, dword programCounter)
 {
-    Thread* thread = new Thread();
+    Thread* thread = new Thread(30);
 
     (process->threadNum)++;
     PageEntry* directory = process->getPageDirectory();
@@ -161,7 +161,7 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 {
     bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
 
-#if 1
+#if 0
     ArchThreadInfo* i = g_currentThread->archinfo;
     logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x eax=%x gss0=%d gesp0=%x %s %s p(%s) u(%s)\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, i->eax, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "", isProcessChanged ? "t" : "f", isUser ? "t": "f");
 #endif
@@ -229,7 +229,7 @@ int ThreadOperation::kill()
         g_page_manager->returnPhysicalPages(directory);
     }
 
-    bool isProcessChange = g_scheduler->Schedule1();
+    bool isProcessChange = g_scheduler->Schedule3();
     delete thread;
     ThreadOperation::switchThread(isProcessChange, 5);
     return NORMAL;
@@ -252,7 +252,7 @@ int ThreadOperation::kill(dword tid)
         g_page_manager->returnPhysicalPages(directory);
     }
 
-    bool isProcessChange = g_scheduler->Schedule1();
+    bool isProcessChange = g_scheduler->Schedule3();
     delete thread;
     ThreadOperation::switchThread(isProcessChange, 5);
     return NORMAL;

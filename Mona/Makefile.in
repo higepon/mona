@@ -33,3 +33,6 @@ distclean: clean
 	@cd samples; $(MAKE) $@
 	rm -f Makefile
 	rm -f env/Makefile.inc
+
+write: install
+	@cd bin; $(MAKE) $@

@@ -41,7 +41,7 @@ void syscall_entrance() {
 
         {
             g_scheduler->Sleep(g_currentThread->thread, info->esi);
-            bool isProcessChange = g_scheduler->Schedule1();
+            bool isProcessChange = g_scheduler->Schedule3();
             ThreadOperation::switchThread(isProcessChange, 3);
         }
         break;
@@ -210,7 +210,6 @@ void syscall_entrance() {
     case SYSTEM_CALL_LOAD_PROCESS:
 
         {
-    g_console->printf("%s : %d\n", __FILE__, __LINE__);
             char* path = (char*)info->esi;
             char* name = (char*)info->ecx;
             CommandOption* option = (CommandOption*)(info->edi);

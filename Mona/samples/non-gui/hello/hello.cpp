@@ -5,8 +5,10 @@ using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
+    for (int i = 0; i < 500; i++)
+    {
     printf("Hello World!\n");
-
+    }
     dword p;
     dword* q;
 

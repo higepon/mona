@@ -37,12 +37,12 @@ int Message::sendReceive(MessageInfo* dst, dword tid, MessageInfo* info)
     MessageInfo src;
 
     int result = Message::send(tid, info);
+
     if (result != 0) return result;
 
     src.from = tid;
     src.header = MSG_RESULT_OK;
     src.arg1 = info->header;
-
     return Message::receive(dst, &src, Message::equalsFromHeaderArg1);
 }
 

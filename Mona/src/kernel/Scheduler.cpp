@@ -1,13 +1,9 @@
 #include "Scheduler.h"
 #include "Process.h"
-#include "Global.h"
-
-//extern ThreadInfo* g_currentThread;
-//extern ThreadInfo* g_prevThread;
-//extern Thread* g_idleThread;
+#include "global.h"
 
 /*----------------------------------------------------------------------
-    Scheduler
+    Scheduler thanks Yaneurao.
 ----------------------------------------------------------------------*/
 Scheduler::Scheduler() : runq(64), waitq(3), totalTick(0)
 {
@@ -48,6 +44,12 @@ bool Scheduler::Schedule1()
     return SetNextThread();
 }
 
+bool Scheduler::Schedule3()
+{
+    return SetNextThread();
+}
+
+
 bool Scheduler::Schedule2()
 {
     FOREACH(Thread*, queue, runq)
@@ -60,23 +62,26 @@ bool Scheduler::Schedule2()
                 continue;
             }
 
-            SetPriority(thread, 0.5);
+            SetPriority(thread, 2);
 
             /* insert into runq[priority] */
             Thread* prev = (Thread*)(thread->prev);
+
             MoveToNewPosition(runq, thread);
             thread = prev;
         }
     }
 
     WakeupTimer();
+
     return SetNextThread();
 }
 
-void Scheduler::SetPriority(Thread* thread, double rate)
+void Scheduler::SetPriority(Thread* thread, unsigned char rate)
 {
-    thread->lastCpuUsedTick = (dword)(thread->lastCpuUsedTick * rate);
-    int priority = thread->basePriority + thread->lastCpuUsedTick;
+    thread->lastCpuUsedTick = (dword)(thread->lastCpuUsedTick / rate);
+
+    dword priority = thread->basePriority + thread->lastCpuUsedTick;
 
     thread->priority = priority;
     thread->schedulerTotalTick = this->totalTick;
@@ -84,7 +89,7 @@ void Scheduler::SetPriority(Thread* thread, double rate)
 
 void Scheduler::SetPriority(Thread* thread)
 {
-    int priority = thread->basePriority + thread->lastCpuUsedTick;
+    dword priority = thread->basePriority + thread->lastCpuUsedTick;
 
     if (priority >= maxPriority)
     {
@@ -144,12 +149,11 @@ bool Scheduler::SetNextThread()
     }
 
     g_prevThread = g_currentThread;
-    g_currentThread = (root == NULL) ? g_idleThread->tinfo : ((Thread*)(root->Top()))->tinfo;
 
-    if (g_currentThread == g_idleThread->tinfo)
-    {
-        g_console->printf("idle");
-    }
+    ASSERT(root);
+
+//    g_currentThread = (root == NULL) ? g_idleThread->tinfo : ((Thread*)(root->Top()))->tinfo;
+    g_currentThread = ((Thread*)(root->Top()))->tinfo;
 
     return !(IN_SAME_SPACE(g_prevThread,  g_currentThread));
 }
@@ -162,7 +166,17 @@ void Scheduler::Dump()
 
         FOREACH_N(queue, Thread*, thread)
         {
-            g_console->printf("dump:priority%d thread[%d]\n", thread->priority, thread->index);
+            logprintf("runq:%s(%d)\n", thread->tinfo->process->getName(), thread->priority);
+        }
+    }
+
+    FOREACH(Thread*, queue, waitq)
+    {
+        if (queue->IsEmpty()) continue;
+
+        FOREACH_N(queue, Thread*, thread)
+        {
+            logprintf("waitq:%s(%d)\n", thread->tinfo->process->getName(), thread->priority);
         }
     }
 }
@@ -191,7 +205,7 @@ int Scheduler::EventComes(Thread* thread, int waitEvent)
 {
     ASSERT(thread);
 
-    if (thread->waitEvent != waitEvent) return false;
+    if (thread->waitEvent != waitEvent) return 0;
 
     thread->waitEvent = MEvent::NONE;
     thread->priority = waitEvent; // umm
@@ -199,7 +213,7 @@ int Scheduler::EventComes(Thread* thread, int waitEvent)
 
     MoveToNewPosition(runq, thread);
 
-    return true;
+    return 1;
 }
 
 Process* Scheduler::FindProcess(dword pid)
@@ -325,7 +339,7 @@ void Scheduler::SetDump()
         }
     }
 
-    FOREACH(Thread*, queue, runq)
+    FOREACH(Thread*, queue, waitq)
     {
         FOREACH_N(queue, Thread*, thread)
         {

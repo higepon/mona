@@ -173,6 +173,7 @@ void Monitor::CheckServers()
         if (alive[i]) continue;
 
         printf("loading %s....", (const char*)paths.get(i));
+
         printf("%s\n", monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK" : "NG");
         MessageInfo msg;
         for (;;)

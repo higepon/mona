@@ -166,6 +166,8 @@ void startKernel(void)
     /* at first create idle process */
     Process* idleProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "IDLE");
     g_idleThread = ThreadOperation::create(idleProcess, (dword)monaIdle);
+    g_scheduler->ChangeBasePriority(g_idleThread, 63);
+    g_scheduler->Join(g_idleThread);
 
     /* start up Process */
     Process* initProcess = ProcessOperation::create(ProcessOperation::KERNEL_PROCESS, "INIT");
@@ -264,7 +266,6 @@ void loadServer(const char* server, const char* name)
 
 int execSysConf()
 {
-#if 1
     /* only one process can use fd */
     while (Semaphore::down(&g_semaphore_fd));
 
@@ -333,7 +334,9 @@ int execSysConf()
                         if (name == server) break;
                     }
                     enableTimer(); // qemu need this why?
+
                     loadServer(server, name);
+
                 }
                 linepos = 0;
             }
@@ -343,23 +346,6 @@ int execSysConf()
     }
 
     free(buf);
-#endif
-
-#if 0
-    char* server = "/SERVERS/MONITER.BIN";
-    char* name =  "MONITER.BIN";
-
-                    loadServer("/SERVERS/FILE.BIN", "FILE.BIN");
-                    loadServer("/SERVERS/ELF.BIN", "ELF.BIN");
-   loadServer("/SERVERS/MONITER.BIN", "MONITER.BIN");
-#endif
-
-//    g_console->printf("loading %s....", "/SERVERS/MONITER");
-//    g_console->printf("%s\n", Loader::Load(server, name, true, NULL) ? "NG" : "OK");
-    //  for(;;);
-//    g_console->printf("%s\n", Loader::Load("/SERVERS/MONITER.BIN", "MONITER.BIN", true, NULL) ? "NG" : "OK");
-//    loadServer("/SERVERS/MONITER.BIN", "MONITER.BIN");
-
 
     return 0;
 }
@@ -371,6 +357,7 @@ void mainProcess()
     g_fdcdriver = new FDCDriver();
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
+
     g_fdcdriver->recalibrate();
 
     g_fs = new FSOperation();
@@ -397,6 +384,8 @@ void mainProcess()
 
     /* end */
     int result;
+
     SYSCALL_0(SYSTEM_CALL_KILL, result);
+
     for (;;);
 }

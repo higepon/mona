@@ -125,13 +125,14 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_DECOMPRESS_BZ2_FILE, prompt, 0, 0, file) != 0)
     {
         return NULL;
     }
-    if (msg.arg2 == 0) return NULL;
 
+    if (msg.arg2 == 0) return NULL;
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
@@ -167,12 +168,14 @@ int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL promp
 int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid)
 {
     dword svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+
     MessageInfo msg;
     if (Message::sendReceive(&msg, svr, MSG_PROCESS_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
     {
         if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;
     }
+
     if (tid != NULL) *tid = msg.arg3;
     return msg.arg2;
 }

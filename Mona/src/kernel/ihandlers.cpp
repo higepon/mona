@@ -80,6 +80,7 @@ void doIrqHandler(int irq)
 */
 void irqHandler_0()
 {
+
     static dword i = 0;
     bool isProcessChange;
 
@@ -120,6 +121,8 @@ void irqHandler_1()
     memset(&message, 0, sizeof(MessageInfo));
     message.header = MSG_KEY_SCANCODE;
     message.arg1   = scancode;
+
+    g_scheduler->Dump();
 
     /* EOI */
     outp8(0x20, 0x20);

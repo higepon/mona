@@ -55,6 +55,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     CommandOption* option = NULL;
     CString path;
     _A<CString> args = commandLine.split(' ');
+
     FOREACH (CString, arg, args)
     {
         if (arg == NULL) continue;
@@ -86,6 +87,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     {
         MessageInfo msg;
         dword tid = monapi_get_server_thread_id(svr_id);
+
         if (tid != THREAD_UNKNOWN)
         {
             Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path);
@@ -129,7 +131,6 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     {
         delete option;
     }
-
     return result;
 }
 
@@ -230,7 +231,9 @@ static void MessageLoop()
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 dword tid;
+
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, &tid);
+
                 Message::reply(&msg, result, tid);
                 break;
             }

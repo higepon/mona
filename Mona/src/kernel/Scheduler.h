@@ -17,12 +17,25 @@ public:
 public:
     bool Schedule1();
     bool Schedule2();
+    bool Schedule3();
 
     void Join(Thread* thread)
     {
         ASSERT(thread->priority < maxPriority);
 
         runq[thread->priority]->AddToPrev(thread);
+    }
+
+    void ChangeBasePriority(Thread* thread, dword basePriority)
+    {
+        ASSERT(thread);
+
+        if(thread->basePriority >= maxPriority)
+        {
+            thread->basePriority = maxPriority - 1;
+        }
+
+        thread->priority = basePriority;
     }
 
     void Tick()
@@ -54,7 +67,7 @@ protected:
     void WakeupTimer();
     bool WakeupTimer(Thread* thread);
     void SetPriority(Thread* thread);
-    void SetPriority(Thread* thread, double rate);
+    void SetPriority(Thread* thread, unsigned char rate);
 
     void MoveToNewPosition(Array<Thread*>& queue, Thread* thread)
     {
