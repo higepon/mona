@@ -29,10 +29,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  コンストラクタ
- @param type type イベントタイプ
+ @param type イベントタイプ
  @param source イベント発生元
- @param key キーコード
- @param modifires 修飾キー
+ @param keycode キーコード
+ @param modifiers 修飾キー
  */
 KeyEvent::KeyEvent(int type, Control *source, int keycode, int modifiers)
 {

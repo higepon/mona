@@ -262,7 +262,7 @@ void Graphics::drawRect(int x, int y, int width, int height)
 
 /**
  文字列描画
- @param str 文字列
+@param str 文字列 (UTF-8)
  @param x 始点X
  @param y 始点Y
  */
