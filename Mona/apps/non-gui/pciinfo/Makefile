@@ -6,13 +6,13 @@ INSTFILES  = PCIINF.BZ2
 CLEANFILES = $(INSTFILES)
 
 MONADIR    = ../../..
-ADDLINK    = -lmonalibc -ljpegls
-ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a $(MONADIR)/lib/libjpegls.a
-ifneq ($(BUILD_TARGET),ELF)
-include $(MONADIR)/env/monapi-ex2.inc
-else
+ADDLINK    = -lmonalibc
+ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
+#ifneq ($(BUILD_TARGET),ELF)
+#include $(MONADIR)/env/monapi-ex2.inc
+#else
 include $(MONADIR)/env/monapi-el2.inc
-endif
+#endif
 
 all: $(INSTFILES)
 
