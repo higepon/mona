@@ -17,6 +17,7 @@ install:
 	@cd src; $(MAKE) $@
 	@cd apps; $(MAKE) $@
 	@cd samples; $(MAKE) $@
+	bzip2 -c COPYRIGHT > bin/root/LICENSE.BZ2
 	@cd bin; $(MAKE)
 
 clean:
@@ -24,6 +25,7 @@ clean:
 	@cd src; $(MAKE) $@
 	@cd apps; $(MAKE) $@
 	@cd samples; $(MAKE) $@
+	rm -f bin/root/LICENSE.BZ2
 	@cd bin; $(MAKE) $@
 
 depend:
