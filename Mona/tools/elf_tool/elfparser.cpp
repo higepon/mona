@@ -29,7 +29,7 @@ ELFParser::~ELFParser()
 {
 }
 
-bool ELFParser::set(byte* elf, dword size)
+bool ELFParser::set(byte* elf, dword size, dword toAddress /* = 0 */)
 {
     /* ELF Header */
     if (size < sizeof(ELFHeader)) return false;
@@ -46,6 +46,9 @@ bool ELFParser::set(byte* elf, dword size)
     dword shdrend = this->header->shdrpos + sizeof(ELFSectionHeader) * this->header->shdrcnt;
     if (size < shdrend) return false;
     this->sheader = (ELFSectionHeader*)&elf[this->header->shdrpos];
+
+    /* for relocation */
+    this->toAddress = toAddress;
 
     /* find min of start address, and max of end address */
     this->startAddr = 0xFFFFFFFF;
@@ -125,9 +128,9 @@ int ELFParser::parse()
     {
         ELFSectionHeader s = this->sheader[i];
 
-        if (s.type == SYMTAB) symbols = (ELFSymbolEntry*)&this->elf[s.offset];
+        if (s.type == SHT_SYMTAB) symbols = (ELFSymbolEntry*)&this->elf[s.offset];
 
-        if (s.type != STRTAB) continue;
+        if (s.type != SHT_STRTAB) continue;
 
         if (strTableIndex == 0)
         {
@@ -185,10 +188,14 @@ int ELFParser::parse()
     {
         ELFSectionHeader s = this->sheader[i];
 
-        if (s.type == REL)
+        if (s.type == SHT_REL)
         {
             int num = s.size / sizeof(ELFRelocationEntry);
             ELFRelocationEntry* rel = (ELFRelocationEntry*)((dword)(this->header) + s.offset);
+
+#ifdef _DEBUG_ELF
+            printf("* %s ********************************************\n", getSectionName(s.name));
+#endif
 
             for (int j = 0; j < num; j++)
             {
@@ -196,7 +203,7 @@ int ELFParser::parse()
 
 #ifdef _DEBUG_ELF
                 printf("[%8s] sec_start=%8x sec_end = %8x reloc offset=%5x"
-                       , getSectionName(sheader[entry.section].name)
+                       , getSectionName(sheader[i - 1].name) /* assume target section is [i - 1] */
                        , sheader[entry.section].offset
                        , sheader[entry.section].size
                        , rel[j].offset
@@ -215,6 +222,25 @@ int ELFParser::parse()
                     "R_386_GOTOFF",
                     "R_386_GOTPC"
                 };
+
+                dword* target = (dword*)((dword)(this->header) + sheader[i - 1].offset + rel[j].offset);
+
+                switch(rel[j].indexType & 0xff)
+                {
+                case R_386_PC32:
+                    *target = *target + entry.value - (dword)target;
+                    break;
+
+                case R_386_32:
+                    *target = *target + entry.value;
+                    break;
+
+                default:
+                    printf("none");
+                    break;
+                }
+
+                printf("target=%8x", *target);
 
                 if ((rel[j].indexType & 0xff) > 10) printf("relocation type=unknown");
                 else printf(" relocation type=[%10s]", reloctype[rel[j].indexType & 0xff]);
@@ -244,7 +270,18 @@ bool ELFParser::load(byte* image)
             }
             return true;
         case TYPE_RELOCATABLE:
-            break;
+
+            /* this action includes .bss zero clear */
+            memset(image, 0, this->imageSize);
+
+            for (int i = 0; i < this->header->shdrcnt; i++)
+            {
+                ELFSectionHeader s = this->sheader[i];
+                if (s.type != SHT_PROGBITS) continue;
+
+                memcpy(&image[s.address - this->startAddr], &this->elf[s.offset], s.size);
+            }
+            return true;
     }
 
     return false;

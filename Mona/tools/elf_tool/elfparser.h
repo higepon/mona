@@ -19,10 +19,10 @@ class ELFParser
 {
 public:
     ELFParser();
-    ~ELFParser();
+    virtual ~ELFParser();
 
 public:
-    bool set(byte* elf, dword size);
+    bool set(byte* elf, dword size, dword toAddress = 0);
     int getType();
     int parse();
     bool load(byte* image);
@@ -43,7 +43,9 @@ private:
     ELFSectionHeader* sheader;
     ELFSymbolEntry* symbols;
     dword sectionNames, symbolNames;
-    dword startAddr, endAddr, imageSize;
+    dword startAddr, endAddr;
+    dword imageSize;
+    dword toAddress;
 
 public:
     enum
@@ -68,18 +70,18 @@ public:
 
     enum
     {
-        NULLS    = 0,
-        PROGBITS = 1,
-        SYMTAB   = 2,
-        STRTAB   = 3,
-        RELA     = 4,
-        HASH     = 5,
-        DYNAMIC  = 6,
-        NOTE     = 7,  /* OS defined           */
-        NOBITS   = 8,  /* bss                  */
-        REL      = 9,
-        SHLIB    = 10, /* reserved. DO NOT USE */
-        DYNSYM   = 11
+        SHT_NULL     = 0,
+        SHT_PROGBITS = 1,
+        SHT_SYMTAB   = 2,
+        SHT_STRTAB   = 3,
+        SHT_RELA     = 4,
+        SHT_HASH     = 5,
+        SHT_DYNAMIC  = 6,
+        SHT_NOTE     = 7,  /* OS defined           */
+        SHT_NOBITS   = 8,  /* bss                  */
+        SHT_REL      = 9,
+        SHT_SHLIB    = 10, /* reserved. DO NOT USE */
+        SHT_DYNSYM   = 11
     } SectionType;
 
     enum

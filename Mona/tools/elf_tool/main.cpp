@@ -12,6 +12,7 @@
 
 #include "elfparser.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <gui/System/Array.h>
 
@@ -115,6 +116,23 @@ int main(int argc, char* argv[])
     printf("start address = %08x\n", parser.getStartAddr());
     printf("end address = %08x\n", parser.getEndAddr());
     printf("image size = %d\n", imageSize);
+
+    if (type == ELFParser::TYPE_RELOCATABLE)
+    {
+        int (*func)(char*);
+
+        byte* funcbuf = (byte*)malloc(imageSize);
+        parser.load(funcbuf);
+        *(dword*)&func = (dword)funcbuf;
+
+        char value = 99;
+        printf("function start\n");
+        fflush(stdout);
+        printf("result=%d",    func(&value));
+        fflush(stdout);
+
+    }
+
 
     if (output != NULL)
     {
