@@ -135,19 +135,38 @@ void startKernel(void)
     switch (bpp) {
         case 2:
             for (int y = 0; y < 105; y++) {
-                for (int x = 0; x < 110; x++) {
-                    byte *pixel = &vram[(x + y * w) * bpp];
-                    word rgb16 = (word)(((palette16[monaboot[y][x]] >> 8) & 0xF800) | 
-                        ((palette16[monaboot[y][x]] >> 5) & 0x07E0) | ((palette16[monaboot[y][x]] >> 3) & 0x001F));
+                for (int x = 0; x < 55; x++) {
+                    byte *pixel = NULL;
+                    word rgb16  = 0;
+                    // hi 4bit
+                    pixel = &vram[(x * 2 + y * w) * bpp];
+                    rgb16 = (word)(((palette16[(monaboot[y][x] >> 4) & 0xF] >> 8) & 0xF800) | 
+                        ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 5) & 0x07E0) | 
+                        ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 3) & 0x001F));
+                    *((word*)pixel) = rgb16;
+                    // low 4bit
+                    pixel = &vram[(x * 2 + 1 + y * w) * bpp];
+                    rgb16 = (word)(((palette16[monaboot[y][x] & 0xF] >> 8) & 0xF800) | 
+                        ((palette16[monaboot[y][x] & 0xF] >> 5) & 0x07E0) | 
+                        ((palette16[monaboot[y][x] & 0xF] >> 3) & 0x001F));
                     *((word*)pixel) = rgb16;
                 }
            }
             break;
         default:
             for (int y = 0; y < 105; y++) {
-                for (int x = 0; x < 110; x++) {
-                    byte *pixel = &vram[(x + y * w) * bpp];
-                    byte* p_color = (byte*)&palette16[monaboot[y][x]];
+                for (int x = 0; x < 55; x++) {
+                    byte *pixel   = NULL;
+                	byte *p_color = NULL;
+                    // hi 4bit
+                    pixel = &vram[(x * 2 + y * w) * bpp];
+                    p_color = (byte*)&palette16[(monaboot[y][x] >> 4) & 0xF];
+                    pixel[0] = p_color[0];
+                    pixel[1] = p_color[1];
+                    pixel[2] = p_color[2];
+                    // low 4bit
+                    pixel = &vram[(x * 2 + 1 + y * w) * bpp];
+                    p_color = (byte*)&palette16[monaboot[y][x] & 0xF];
                     pixel[0] = p_color[0];
                     pixel[1] = p_color[1];
                     pixel[2] = p_color[2];
