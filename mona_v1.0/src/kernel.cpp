@@ -304,6 +304,33 @@ void mainProcess()
     enableKeyboard();
     enableMouse();
 
+//    bool current = inportb(0x3f7) & 0x80;
+//    bool prev    = current;
+
+//    for (;;)
+//    {
+//        current = inportb(0x3f7) & 0x80;
+
+//        if (current != prev)
+//        {
+//            g_console->printf("removed");
+//        }
+//        prev = current;
+//    }
+
+
+   for (;;)
+   {
+       bool current = inportb(0x3f7) & 0x80;
+
+       if (current)
+       {
+           g_console->printf("removed");
+       }
+   }
+
+
+
     /* end */
     disableInterrupt();
     ThreadOperation::kill();

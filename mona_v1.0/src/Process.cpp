@@ -51,6 +51,13 @@ dword Scheduler::getTick() const
     return tickTotal;
 }
 
+int Scheduler::sleep(Thread* thread, dword tick)
+{
+    dword now = this->getTick();
+    thread->wakeupTimer = now + tick;
+    return wait(thread, WAIT_TIMER);
+}
+
 Process* Scheduler::findProcess(dword pid)
 {
     FOREACH_N(runq, Thread*, thread)
@@ -117,10 +124,36 @@ bool Scheduler::schedule()
     current->remove();
     runq->addToPrev(current);
 
+    wakeupTimer();
+
     g_prevThread    = g_currentThread;
     g_currentThread = PTR_THREAD(runq->top());
 
     return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
+}
+
+int Scheduler::wakeupTimer()
+{
+    FOREACH_N(waitq, Thread*, thread)
+    {
+        if (thread->waitReason != WAIT_TIMER)
+        {
+            continue;
+        }
+
+        if (thread->wakeupTimer > getTick())
+        {
+            continue;
+        }
+
+        Thread* target = thread;
+        thread = (Thread*)(thread->prev);
+
+        target->remove();
+        target->waitReason = WAIT_NONE;
+        runq->addToNext(target);
+    }
+    return 0;
 }
 
 bool Scheduler::setCurrentThread()
@@ -444,7 +477,7 @@ int ThreadOperation::kill()
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : totalTick(0), partTick(0), waitReason(WAIT_NONE)
+Thread::Thread() : totalTick(0), waitReason(WAIT_NONE)
 {
     /* thread information */
     tinfo = new ThreadInfo;
@@ -581,7 +614,7 @@ void monaIdle()
         if (count % 20000000) g_scheduler->dump();
         count++;
 #endif
-	asm volatile("hlt");
+        asm volatile("hlt");
 //        arch_idle();
     }
 }

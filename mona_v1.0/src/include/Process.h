@@ -132,6 +132,7 @@ public:
     void dump();
     void join(Thread* thread);
     int kill(Thread* thread);
+    int sleep(Thread* thread, dword tick);
     int wait(Thread* thread, int waitReason);
     int wakeup(Thread* thread, int waitReason);
     int wakeup(Process* process, int waitReason);
@@ -139,6 +140,9 @@ public:
     dword lookup(const char* name);
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);
+
+private:
+    int wakeupTimer();
 
 protected:
     Thread* runq;
@@ -179,7 +183,6 @@ class Thread : public Node
     inline void tick()
     {
         totalTick++;
-        partTick++;
     }
 
     inline dword getTick() const
@@ -188,10 +191,10 @@ class Thread : public Node
     }
 
   public:
-    int totalTick;
-    int partTick;
     int waitReason;
     dword scheduled;
+    dword totalTick;
+    dword wakeupTimer;
     ThreadInfo* tinfo;
 };
 

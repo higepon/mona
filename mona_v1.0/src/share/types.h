@@ -86,6 +86,7 @@ typedef struct MappingInfo {
 
 #define WAIT_MESSAGE 0x00
 #define WAIT_FDC     0x50
+#define WAIT_TIMER   0x60
 #define WAIT_NONE    0xFF
 
 

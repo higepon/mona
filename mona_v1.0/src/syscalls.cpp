@@ -42,7 +42,11 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_PROCESS_SLEEP:
 
-        //info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
+        {
+            g_scheduler->sleep(g_currentThread->thread, info->esi);
+            bool isProcessChange = g_scheduler->schedule();
+            ThreadOperation::switchThread(isProcessChange, 3);
+        }
         break;
     case SYSTEM_CALL_KILL:
 

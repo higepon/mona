@@ -394,8 +394,8 @@ int main(int argc, char *argv[])
         exit(-1);
     }
 
-    strcpy(destFile1, argv[3]);
-    strcpy(destFile2, argv[3]);
+    sprintf(destFile1, "/%s", argv[3]);
+    sprintf(destFile2, "/%s", argv[3]);
 
     if (!initialize(argv[1]))
     {

@@ -75,6 +75,8 @@ void messageLoop() {
 ----------------------------------------------------------------------*/
 MonaApplication::MonaApplication() {
 
+    monaApp = this;
+
     int id = syscall_mthread_create((dword)MESSAGE_LOOP);
     syscall_mthread_join(id);
 
@@ -119,7 +121,15 @@ MonaApplication::~MonaApplication() {
 /*----------------------------------------------------------------------
     system call wrappers
 ----------------------------------------------------------------------*/
-int sleep(dword tick) {
+int sleep(dword ms) {
+
+    dword tick = ms / 10;
+
+    if (tick <= 0)
+    {
+        tick = 1;
+    }
+
     return syscall_sleep(tick);
 }
 

@@ -21,7 +21,7 @@
 
 extern "C" int MonaMain(List<char*>* pekoe);
 extern "C" int user_start();
-extern "C" int sleep(dword tick);
+extern "C" int sleep(dword ms);
 extern "C" int heavy();
 extern "C" int print(const char*);
 extern "C" int kill();

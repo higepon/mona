@@ -36,8 +36,8 @@ class myApplication : public MonaApplication, public Observer {
 ----------------------------------------------------------------------*/
 int MonaMain(List<char*>* pekoe) {
 
-    monaApp = new myApplication();
-    return monaApp->main(pekoe);
+    MonaApplication* app = new myApplication();
+    return app->main(pekoe);
 }
 
 /*----------------------------------------------------------------------

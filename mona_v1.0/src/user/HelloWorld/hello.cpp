@@ -29,6 +29,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     printf("contents\n");
+    sleep(5000);
 
     for (int i = 0; i < 32; i++)
     {

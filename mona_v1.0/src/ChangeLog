@@ -1,3 +1,11 @@
+2004-03-11  higepon  <higepon@users.sourceforge.jp>
+
+        * fat_write.exe : Msysのshellが「/」から始まる引数に勝手にパス補完してしまうので仕様変更
+
+        * user/userlib/userlib.cpp: sleep実装
+
+        * monaAppへの代入をMonaApplicationコンストラクタで行なう｡
+
 2004-03-10  higepon  <higepon@users.sourceforge.jp>
 
         * syscalls.cpp : システムコールの引数のバグ(レジスタ破壊)を修正
