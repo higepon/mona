@@ -51,14 +51,19 @@ void startKernel(void) {
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
 
+    _sysSetColor(BG_BLACK | CH_ORANGE);
+    _sys_printf("\nMona devlop beta 0.01\n\n");
+    _sysSetColor(BG_BLACK | CH_SILVER);
+
     /* set interrept */
     _sysSetIdt();
     _sysInitIo();
     _sysUnlock();
-    _sys_printf("idt set done\n");
+    _sys_printf("Idt set done\n");
 
     /* check some */
     checkTypeSize();
+    _sys_printf("Check type size done\n");
 
     /* enable A20 */
     //    IA32MemoryManager::enableA20();
