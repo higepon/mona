@@ -73,12 +73,6 @@ bool drawARGB(byte* rgba, int x, int y, int size) {
 
         if (y >= starty + (int)(header->height)) break;
 
-        //color = (rgba[i * 4 + 0] || rgba[i * 4 + 1] || rgba[i * 4 + 2]) ? GP_WHITE : GP_BLACK;
-        //        if (rgba[i * 4 + 0] == 0xFF) color = GP_WHITE;
-        //        else if (rgba[i * 4 + 0] == 0xC0) color = GP_GRAY;
-        //        else color = GP_BLACK;
-
-
         put_pixel(x, y, getColorNumber(&(rgba[i * 4])));
         x++;
     }
