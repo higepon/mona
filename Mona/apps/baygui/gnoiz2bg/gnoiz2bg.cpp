@@ -344,7 +344,7 @@ void GNoiz2bg::draw() {
 
 /** イベント処理 */
 void GNoiz2bg::onEvent(Event *e) {
-	if (e->type == FOCUS_IN) {
+	if (e->type == FOCUS_IN || e->type == DEICONIFIED) {
 		// 描画スレッド起動
 		if (drawThreadID == THREAD_UNKNOWN) {
 			drawThreadID = syscall_get_tid();
@@ -355,7 +355,7 @@ void GNoiz2bg::onEvent(Event *e) {
 			MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
 			drawThreadID = msg.from;
 		}
-	} else if (e->type == FOCUS_OUT) {
+	} else if (e->type == FOCUS_OUT || e->type == ICONIFIED) {
 		// 描画スレッド停止
 		syscall_kill_thread(drawThreadID);
 		drawThreadID = THREAD_UNKNOWN;

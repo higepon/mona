@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_RESOURCES_H_INCLUDED_)
 #define _RESOURCES_H_INCLUDED_
 
-#define BAYGUI_VERSION   "BayGUI build 04.11.11"
+#define BAYGUI_VERSION   "BayGUI build 04.11.15"
 
 #define GUISERVER_NAME   "BAYGUI.EX5"
 #define IMESERVER_NAME   "IMESVR.EX5"
@@ -48,9 +48,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** ウィンドウタイトル最大長 */
 #define MAX_TITLE_LEN     64
 /** テキストフィールド文字列最大長 */
-#define MAX_TEXT_LEN      64
+#define MAX_TEXT_LEN      128
 /** フォント配列最大長 */
-#define MAX_FONTLIST_LEN  96
+#define MAX_FONTLIST_LEN  128
 
 /** ウィンドウ上端 */
 #define INSETS_TOP        22

@@ -123,6 +123,7 @@ void GVersion::onPaint(Graphics *g)
 #if defined(PEKOE)
 	char line[128];
 
+	// バージョンアイコン
 	gbc_blt_screen(32, x + INSETS_LEFT + 14, y + INSETS_TOP + 11, 24, 31, versionIcon);
 
 	g->setColor(0,0,0);
@@ -142,27 +143,38 @@ void GVersion::onPaint(Graphics *g)
 		(sys_get_memory_status(0x1001)>>10), (sys_get_memory_status(0x1000)>>10));
 	g->drawText(line, 15, 119);
 #elif defined(MONA)
-	int i, j;
+	int i, j, psNum = 0;
+	MemoryInfo meminfo;
+	PsInfo psinfo;
 	
+	// バージョンアイコン
 	for (i = 0; i < 30; i++) {
 		for (j = 0; j < 21; j++) {
 			g->drawPixel(16 + j, 11 + i, versionIcon[i][j]);
 		}
 	}
 
-	MemoryInfo info;
-	syscall_get_memory_info(&info);
+	// 全起動プロセス数
+	syscall_get_memory_info(&meminfo);
+	syscall_set_ps_dump();
+	while (syscall_read_ps_dump(&psinfo) == 0) {
+		psNum++;
+	}
 	
-	char mesg1[64], mesg2[64], mesg3[64];
-	toDecimalString(info.totalMemoryL / 1024, mesg1);
-	toDecimalString(info.freePageNum * info.pageSize / 1024, mesg2);
-	toDecimalString(info.totalPageNum * info.pageSize / 1024, mesg3);
+	char mesg1[64], mesg2[64], mesg3[64], mesg4[64];
+	//toDecimalString(meminfo.totalMemoryL / 1024, mesg1);
+	//toDecimalString(meminfo.freePageNum * info.pageSize / 1024, mesg2);
+	//toDecimalString(meminfo.totalPageNum * info.pageSize / 1024, mesg3);
 	//toDecimalString(32768, mesg1);
 	//toDecimalString(16384, mesg2);
 	//toDecimalString(32768, mesg3);
-	strcat(mesg1, "KB");
-	strcat(mesg2, "KB");
-	strcat(mesg3, "KB");
+	//strcat(mesg1, "KB");
+	//strcat(mesg2, "KB");
+	//strcat(mesg3, "KB");
+	sprintf(mesg1, "%dKB", meminfo.totalMemoryL / 1024, mesg1);
+	sprintf(mesg2, "%dKB", meminfo.freePageNum * meminfo.pageSize / 1024, mesg2);
+	sprintf(mesg3, "%dKB", meminfo.totalPageNum * meminfo.pageSize / 1024, mesg3);
+	sprintf(mesg4, "%d個", psNum);
 
 	g->setColor(0,0,0);
 	g->drawText(BAYGUI_VERSION, 50, 10);
@@ -173,11 +185,11 @@ void GVersion::onPaint(Graphics *g)
 	g->drawText("全物理メモリ", 15, 71);
 	g->drawText("有効ページプール", 15, 87);
 	g->drawText("全ページプール", 15, 103);
-	g->drawText("システムリソース残り", 15, 119);
+	g->drawText("全起動プロセス数", 15, 119);
 	g->drawText(mesg1, 156, 71);
 	g->drawText(mesg2, 156, 87);
 	g->drawText(mesg3, 156, 103);
-	g->drawText("0KB", 156, 119);
+	g->drawText(mesg4, 156, 119);
 #endif
 }
 

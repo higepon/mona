@@ -32,7 +32,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class GLaunch : public Window {
 private:
+	int prevIndex;
 	ListBox *list;
+	virtual void execute();
 
 public:
 	GLaunch::GLaunch();
@@ -47,6 +49,11 @@ GLaunch::GLaunch()
 
 	setRect(0, 22, 108 + 12, 250 + 28);
 	setTitle("mokon");
+	
+	// 前回の選択位置
+	prevIndex = -1;
+	
+	// アプリ一覧リスト
 	list = new ListBox();
 	list->setRect(0, 0, 108, 250);
 	add(list);
@@ -86,28 +93,43 @@ GLaunch::~GLaunch()
 	delete(list);
 }
 
+/** アプリ実行 */
+void GLaunch::execute()
+{
+	char name[24];
+	char *item = list->getSelectedItem();
+	if (item != NULL && strlen(item) > 0) {
+		strcpy(name, "/APPS/");
+		strcat(name, item);
+		// *.APP の場合
+		if (item[strlen(item) - 1] == 'P') {
+			strcat(name, "/");
+			strcat(name, item);
+			// 拡張子をAPPからEX5に変換
+			name[strlen(name) - 3] = 'E';
+			name[strlen(name) - 2] = 'X';
+			name[strlen(name) - 1] = '5';
+		}
+		// アプリ実行
+		monapi_call_process_execute_file(name, MONAPI_FALSE);
+	}
+}
+
+/** イベント処理 */
 void GLaunch::onEvent(Event *event)
 {
-	if (event->type == KEY_PRESSED) {
+	if (event->type == ITEM_SELECTED) {
+		// 前の選択位置と同じ（ダブルクリック）
+		if (prevIndex == list->getSelectedIndex()) {
+			prevIndex = -1;
+			execute();
+		} else {
+			prevIndex = list->getSelectedIndex();
+		}
+	} else if (event->type == KEY_PRESSED) {
 		// ENTERキー押下
 		if (((KeyEvent *)event)->keycode == VKEY_ENTER) {
-			char name[24];
-			char *item = list->getSelectedItem();
-			if (item != NULL && strlen(item) > 0) {
-				strcpy(name, "/APPS/");
-				strcat(name, item);
-				// *.APP の場合
-				if (item[strlen(item) - 1] == 'P') {
-					strcat(name, "/");
-					strcat(name, item);
-					// 拡張子をAPPからEX5に変換
-					name[strlen(name) - 3] = 'E';
-					name[strlen(name) - 2] = 'X';
-					name[strlen(name) - 1] = '5';
-				}
-				// アプリ実行
-				monapi_call_process_execute_file(name, MONAPI_FALSE);
-			}
+			execute();
 		}
 	}
 }

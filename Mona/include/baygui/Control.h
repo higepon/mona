@@ -46,13 +46,13 @@ protected:
 	/** 初回描画フラグ */
 	bool firstpaint;
 	/** x（絶対座標） */
-	int x;
+	int _x;
 	/** y（絶対座標） */
-	int y;
+	int _y;
 	/** 高さ */
-	int height;
+	int _height;
 	/** 幅 */
-	int width;
+	int _width;
 	/** 部品の大きさ */
 	Rect *_rect;
 	/** 描画領域 */

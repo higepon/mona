@@ -41,9 +41,6 @@ public:
 	virtual Object::~Object();
 	void setThreadID(dword threadID);
 	dword getThreadID();
-	unsigned char *getByteArray(char *path);
-	void copyString(char *dst, char *src);
-	void toDecimalString(int n, char *s);
 };
 
 #endif // _OBJECT_H_INCLUDED_
