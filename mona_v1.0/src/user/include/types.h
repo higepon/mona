@@ -47,6 +47,7 @@ typedef struct {
 #define MSG_MAP                  0x02
 #define MSG_RESULT_OK            0x03
 #define MSG_RESULT_ERROR         0x04
+#define MSG_KEY_VIRTUAL_CODE     0x05
 
 #define SHARED_FDC_BUFFER 0x4000
 

@@ -179,7 +179,7 @@ void syscall_entrance() {
         g_fdcdriver->recalibrate();
         g_fdcdriver->recalibrate();
         g_fdcdriver->recalibrate();
-        if (!g_fat12->open((char*)(info->ecx), (char*)(info->esi), FAT12::READ_MODE)) {
+        if (!g_fat12->open((char*)(info->esi), (char*)(info->ecx), FAT12::READ_MODE)) {
 
             info->eax = g_fat12->getErrorNo();
             break;
@@ -195,8 +195,8 @@ void syscall_entrance() {
         enableInterrupt();
         info->eax = 0;
         {
-            byte* buf      = (byte*)(info->ecx);
-            dword size     = (dword)(info->esi);
+            byte* buf      = (byte*)(info->esi);
+            dword size     = (dword)(info->ecx);
             int readTimes  = size / 512 + (size % 512 ? 1 : 0);
 
             for (int i = 0; i < readTimes; i++) {
@@ -215,6 +215,13 @@ void syscall_entrance() {
             }
         }
         *((dword*)(info->edi)) = readSize;
+        break;
+
+    case SYSTEM_CALL_FILE_CLOSE:
+
+        enableInterrupt();
+        g_fat12->close();
+        info->eax = 0;
         break;
 
     default:

@@ -21,12 +21,53 @@ void test3(int id, dword start, dword end);
 void test4(int id, dword start, dword end);
 void exitMessage(int id, const char* message);
 
+char* ltona(long value, char* str, int n, int base) {
+
+    static const char xdigit[] = {"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+    unsigned long ulvalue;
+    unsigned int ubase;
+    int sign = 0;
+    char* ps = str + n;
+
+    *ps = '\0';
+    if (base < 0) {
+        ubase = -base;
+        if (value < 0) {
+            value = -value;
+            sign  = -1;
+            --n;
+        }
+    } else {
+        ubase = base;
+    }
+
+    ulvalue  = value;
+    if (n > 0 && (2 <= ubase && ubase <  sizeof(xdigit))) {
+        do {
+            *--ps = xdigit[(unsigned)(ulvalue % ubase)];
+        } while (--n > 0 && (ulvalue /= ubase) != 0);
+    }
+    if (sign < 0)
+        *--ps = '-';
+    while (--n >= 0)
+        *--ps = '0';
+    return str;
+}
+
 using namespace std;
 
 /*
     main()
 */
 int main(int argc, char** argv) {
+
+    /* ltona */
+    char buf[512];
+    long d = 0xFa;
+    ltona(d, buf, 8, 16);
+    printf("%s", buf);
+    exit(0);
+
 
     int id = 0;
     byte* memory = new byte[MANAGE_SIZE];

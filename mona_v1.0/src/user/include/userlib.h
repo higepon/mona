@@ -25,8 +25,9 @@
 #define SYSTEM_CALL_GET_CURSOR     24
 #define SYSTEM_CALL_FILE_OPEN      25
 #define SYSTEM_CALL_FILE_READ      26
+#define SYSTEM_CALL_FILE_CLOSE     27
 
-#define main() monamain()
+#define main() monaMain()
 
 extern "C" int user_start();
 
@@ -61,6 +62,7 @@ int syscall_mutex_destroy(int id);
 int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
 int syscall_file_open(char* path, char* file, dword* size);
 int syscall_file_read(char* buf, dword size, dword* readSize);
+int syscall_file_close();
 void* malloc(unsigned long size);
 void free(void * address);
 byte inportb(dword);
@@ -68,6 +70,70 @@ void outportb(dword, byte);
 
 void* operator new(size_t size);
 void  operator delete(void* address);
+
+#define interface class
+
+#define MESSAGE_LOOP messageLoop
+
+class MonaApplication;
+extern MonaApplication* monaApp;
+
+/*----------------------------------------------------------------------
+    Receiver
+----------------------------------------------------------------------*/
+interface Receiver {
+  public:
+    virtual void onKeyDown(int keycode, int modifiers) = 0;
+};
+
+/*----------------------------------------------------------------------
+    MonaApplication
+----------------------------------------------------------------------*/
+class MonaApplication : public Receiver {
+
+  public:
+    MonaApplication(char* name);
+    virtual ~MonaApplication();
+
+  public:
+    virtual int main() = 0;
+
+    /* default implementation */
+    virtual void onKeyDown(int keycode, int modifiers) {
+    }
+};
+
+/*----------------------------------------------------------------------
+    InputStream
+----------------------------------------------------------------------*/
+interface InputStream {
+
+  public:
+    virtual int open()   = 0;
+    virtual void close() = 0;
+    virtual int read(byte* buf, int size) = 0;
+    virtual dword getReadSize() const = 0;
+};
+
+class FileInputStream : public InputStream {
+
+  public:
+    FileInputStream(char* file);
+    virtual ~FileInputStream();
+
+  public:
+    virtual int open();
+    virtual void close();
+    virtual int read(byte* buf, int size);
+    virtual dword getReadSize() const;
+    virtual dword getFileSize() const;
+
+  protected:
+    char* file_;
+    dword readSize_;
+    dword fileSize_;
+    bool isOpen_;
+};
 
 /*----------------------------------------------------------------------
     Server

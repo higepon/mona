@@ -1,3 +1,11 @@
+2004-02-02  higepon  <higepon@users.sourceforge.jp>
+
+        * MonaApplicationの作成
+
+        * FileInputStream作成
+
+        * syscalls.cpp : ファイル読み込みのためのシステムコールを追加
+
 2004-02-01  higepon  <higepon@users.sourceforge.jp>
 
         * include/tester.h: send/receive時のmalloc/freeをやめた。

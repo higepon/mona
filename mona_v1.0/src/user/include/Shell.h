@@ -25,7 +25,7 @@ class Shell {
     int position_;
 
   protected:
-    static char* const PROMPT = "Mona>";
+    static char* const PROMPT;
 };
 
 /*----------------------------------------------------------------------

@@ -67,8 +67,9 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
 
     /* create message */
     memset(&message, 0, sizeof(MessageInfo));
-    message.arg1 = keyinfo.keycode;
-    message.arg2 = keyinfo.modifiers;
+    message.header = MSG_KEY_VIRTUAL_CODE;
+    message.arg1   = keyinfo.keycode;
+    message.arg2   = keyinfo.modifiers;
 
     //    printf("%x", keyinfo.keycode);
 

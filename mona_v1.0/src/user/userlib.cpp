@@ -10,18 +10,69 @@ int mthread_create(dword f) {return syscall_mthread_create(f);}
 int mthread_join(dword id) {return syscall_mthread_join(id);}
 
 
-int monamain();
+int monaMain();
 
 static MemoryManager um;
+MonaApplication* monaApp;
 
 int user_start() {
 
     int result;
     um.initialize(0xC0000000, 0xC0000000 + 1024 * 1024);
-    result = monamain();
+    result = monaMain();
     //    exit(result);
     for (;;);
 }
+
+void messageLoop() {
+
+    MessageInfo message;
+
+    for (;;) {
+        if (!Message::receive(&message)) {
+
+            switch(message.header) {
+
+            case MSG_KEY_VIRTUAL_CODE:
+
+                monaApp->onKeyDown(message.arg1, message.arg2);
+                break;
+            default:
+
+                /* ignore this message */
+                break;
+            }
+        }
+    }
+}
+
+MonaApplication::MonaApplication(char* name) {
+
+    int id = syscall_mthread_create((dword)MESSAGE_LOOP);
+    syscall_mthread_join(id);
+
+    dword myPid   = Message::lookup(name);
+    dword destPid = Message::lookup("KEYBDMNG.SVR");
+    if (destPid == 0) {
+        printf("process KEYBDMNG.SVR not found\n");
+        for (;;);
+    }
+
+    /* create message for KEYBDMNG.SVR */
+    MessageInfo info;
+    info.header = MSG_KEY_REGIST_TO_SERVER;
+    info.arg1   = myPid;
+
+    /* send */
+    if (Message::send(destPid, &info)) {
+        printf("regist error\n");
+    }
+}
+
+MonaApplication::~MonaApplication() {
+}
+
+
 
 int syscall_mthread_create(dword f) {
 
@@ -36,7 +87,7 @@ int syscall_mthread_create(dword f) {
                  :"ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_mthread_join(dword id) {
@@ -52,7 +103,7 @@ int syscall_mthread_join(dword id) {
                  :"ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 
@@ -69,7 +120,7 @@ int syscall_sleep(dword tick) {
                  :"ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_print(const char* msg) {
@@ -85,7 +136,7 @@ int syscall_print(const char* msg) {
                  :"ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_load_process(const char* name) {
@@ -101,7 +152,7 @@ int syscall_load_process(const char* name) {
                  :"ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_put_pixel(int x, int y, char color) {
@@ -119,7 +170,7 @@ int syscall_put_pixel(int x, int y, char color) {
                  :"ebx", "esi", "ecx", "edi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_kill() {
@@ -135,7 +186,7 @@ int syscall_kill() {
                  );
 
     /* don't come here */
-    return result;
+    return (int)result;
 }
 
 int syscall_send(dword pid, MessageInfo* message) {
@@ -152,7 +203,7 @@ int syscall_send(dword pid, MessageInfo* message) {
                  :"ebx", "esi", "ecx"
                  );
 
-    return result;
+    return (int)result;
 }
 int syscall_receive(MessageInfo* message) {
 
@@ -167,7 +218,7 @@ int syscall_receive(MessageInfo* message) {
                  : "ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_mutex_create() {
@@ -182,7 +233,7 @@ int syscall_mutex_create() {
                  :"ebx"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_mutex_trylock(int id) {
@@ -198,7 +249,7 @@ int syscall_mutex_trylock(int id) {
                  : "ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_mutex_lock (int id ) {
@@ -214,7 +265,7 @@ int syscall_mutex_lock (int id ) {
                  : "ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_mutex_unlock(int id) {
@@ -230,7 +281,7 @@ int syscall_mutex_unlock(int id) {
                  : "ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_mutex_destroy(int id) {
@@ -246,7 +297,7 @@ int syscall_mutex_destroy(int id) {
                  : "ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 dword syscall_lookup(const char* name) {
@@ -278,7 +329,7 @@ int syscall_get_vram_info(ScreenInfo* info) {
                  : "ebx", "esi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size) {
@@ -297,7 +348,7 @@ int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size) {
                  : "ebx", "esi", "ecx", "edi", "edx"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_get_cursor(int* x, int* y) {
@@ -314,7 +365,7 @@ int syscall_get_cursor(int* x, int* y) {
                  : "ebx", "esi", "ecx"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_set_cursor(int x, int y) {
@@ -331,7 +382,7 @@ int syscall_set_cursor(int x, int y) {
                  : "ebx", "esi", "ecx"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_file_open(char* path, char* file, dword* size) {
@@ -349,7 +400,7 @@ int syscall_file_open(char* path, char* file, dword* size) {
                  : "ebx", "esi", "ecx", "edi"
                  );
 
-    return result;
+    return (int)result;
 }
 
 int syscall_file_read(char* buf, dword size, dword* readSize) {
@@ -367,7 +418,22 @@ int syscall_file_read(char* buf, dword size, dword* readSize) {
                  : "ebx", "esi", "ecx", "edi"
                  );
 
-    return result;
+    return (int)result;
+}
+
+int syscall_file_close() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_FILE_CLOSE)
+                 : "ebx"
+                 );
+
+    return (int)result;
 }
 
 
@@ -630,5 +696,63 @@ size_t _power(size_t x, size_t y) {
     for (size_t i = 1; i < y; i++) {
         result *= x;
     }
+    return (int)result;
+}
+
+/*----------------------------------------------------------------------
+    FileInputStream
+----------------------------------------------------------------------*/
+FileInputStream::FileInputStream(char* file) : file_(file), fileSize_(0), isOpen_(false) {
+}
+
+FileInputStream::~FileInputStream() {
+}
+
+int FileInputStream::open() {
+
+    static char file[128];
+    int result;
+
+    if (isOpen_) {
+        return 0;
+    }
+
+    strcpy(file, file_);
+    char* p1 = strtok(file, "/");
+    char* p2 = strtok(NULL, "/");
+
+    if (p2 == NULL) {
+        result = syscall_file_open(".", p1, &fileSize_);
+    } else {
+        result = syscall_file_open(p1, p2, &fileSize_);
+    }
+
+    if (result == 0) {
+        isOpen_ = true;
+    }
+
     return result;
+}
+
+dword FileInputStream::getFileSize() const {
+    return fileSize_;
+}
+
+dword FileInputStream::getReadSize() const {
+    return readSize_;
+}
+
+int FileInputStream::read(byte* buf, int size) {
+    return syscall_file_read((char*)buf, size, &readSize_);
+}
+
+void FileInputStream::close() {
+
+    if (!isOpen_) {
+        return;
+    }
+
+    syscall_file_close();
+    isOpen_ = false;
+    return;
 }
