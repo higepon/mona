@@ -38,8 +38,8 @@ public:
 
   virtual void Dispose()
   {
-    Form::Dispose();
     this->timer1->Dispose();
+    Form::Dispose();
   }
 
 private:
@@ -75,7 +75,7 @@ private:
   }
 
 
-  virtual void PaintClock(_P<Object> sender, _P<EventArgs> e)
+  void PaintClock(_P<Object> sender, _P<EventArgs> e)
   {
 
     this->Refresh();

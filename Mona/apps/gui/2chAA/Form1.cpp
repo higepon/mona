@@ -52,8 +52,8 @@ public:
 
     virtual void Dispose()
     {
-        Form::Dispose();
         this->timer1->Dispose();
+        Form::Dispose();
     }
 
     void animation(_P<Object> sender, _P<EventArgs> e)

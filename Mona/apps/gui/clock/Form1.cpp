@@ -126,8 +126,8 @@ public:
 
     virtual void Dispose()
     {
-        Form::Dispose();
         this->timer1->Dispose();
+        Form::Dispose();
     }
 
 protected:
