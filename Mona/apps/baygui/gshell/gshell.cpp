@@ -75,7 +75,7 @@ public:
 	/** コンストラクタ */
 	GShell() {
 		setRect((800-GSHELL_WIDTH-12)/2,(600-GSHELL_HEIGHT-28)/2,GSHELL_WIDTH+12,GSHELL_HEIGHT+28);
-		setTitle("GUIシェル");
+		setTitle("た～みなる");
 		historyPtr = -1;
 		this->argv = new LinkedList();
 		this->history = new LinkedList();
@@ -83,7 +83,7 @@ public:
 		memset(lineBuffer, 0, sizeof(lineBuffer));
 		memset(commandBuffer, 0, sizeof(commandBuffer));
 		memset(currentPath, 0, sizeof(currentPath));
-		strcpy(currentPath, "/apps");
+		strcpy(currentPath, "/apps/baygui");
 	}
 	
 	/** デストラクタ */
