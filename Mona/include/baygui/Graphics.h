@@ -55,7 +55,6 @@ public:
 	virtual void drawLine(int x0, int y0, int x1, int y1);
 	virtual void drawRect(int x, int y, int width, int height);
 	virtual void drawText(char *s, int x, int y);
-	virtual void drawText(Font **list, int len, int x, int y);
 	virtual void fillRect(int x, int y, int width, int height);
 	virtual void translate(int x, int y);
 	virtual int getWidth();

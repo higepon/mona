@@ -34,21 +34,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Font : public Object {
 private:
 	char name[8 + 1];
-	int width, height, style;
-	unsigned char data[16 * 16];
+	int style;
 	
 public:
 	Font::Font();
 	virtual Font::~Font();
 	virtual void setName(char *name);
-	virtual void setWidth(int width);
-	virtual void setHeight(int height);
 	virtual void setStyle(int style);
 	virtual char *getName();
-	virtual int getWidth();
-	virtual int getHeight();
 	virtual int getStyle();
-	virtual unsigned char *getData();
 };
 
 #endif // _FONT_H_INCLUDED_

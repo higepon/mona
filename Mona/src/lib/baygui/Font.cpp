@@ -43,18 +43,6 @@ void Font::setName(char *name)
 	xstrncpy(this->name, name, 8 + 1);
 }
 
-/** 幅を設定する */
-void Font::setWidth(int width)
-{
-	this->width = width;
-}
-
-/** 高さを設定する */
-void Font::setHeight(int height)
-{
-	this->height = height;
-}
-
 /** 書体を設定する */
 void Font::setStyle(int style)
 {
@@ -67,25 +55,8 @@ char *Font::getName()
 	return name;
 }
 
-/** 幅を得る */
-int Font::getWidth()
-{
-	return width;
-}
-
-/** 高さを得る */
-int Font::getHeight()
-{
-	return height;
-}
-
 /** 書体を得る */
 int Font::getStyle()
 {
 	return style;
-}
-
-/** 内部データを得る */
-unsigned char *Font::getData(){
-	return data;
 }

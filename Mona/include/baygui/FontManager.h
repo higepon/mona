@@ -38,7 +38,6 @@ private:
 	int width, height, offsetListLength;
 	int *offsetList;
 	unsigned char *fp;
-	Font *fontList[MAX_FONTLIST_LEN];
 	
 protected:
 	FontManager::FontManager();
@@ -48,7 +47,7 @@ public:
 	monapi_cmemoryinfo *fpMemory;
 	static FontManager *getInstance();
 	virtual FontManager::~FontManager();
-	virtual Font **decodeString(char *str, int *length);
+	virtual bool decodeCharacter(unsigned int utf16, int *width, int *height, char *data);
 	virtual int getWidth(char *str);
 	virtual int getHeight();
 };

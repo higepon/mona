@@ -37,9 +37,6 @@ FontManager::FontManager()
 	offsetList = NULL;
 	fp = NULL;
 	fpMemory = NULL;
-	for (int i = 0; i < MAX_FONTLIST_LEN; i++) {
-		fontList[i] = new Font();
-	}
 
 	// スレッドIDを得る
 	threadID = MonAPI::System::getThreadID();
@@ -51,10 +48,6 @@ FontManager::~FontManager()
 {
 	free(offsetList);
 	free(fp);
-	for (int i = 0; i < MAX_FONTLIST_LEN; i++) {
-		delete(fontList[i]);
-	}
-	free(fontList);
 	monapi_cmemoryinfo_dispose(fpMemory);
 	monapi_cmemoryinfo_delete(fpMemory);
 }
@@ -136,14 +129,34 @@ void FontManager::loadFont(char *path)
 }
 
 /**
- 展開済みフォント列を得る
- @param [in] str 文字列 (UTF-8)
- @param [out] length 文字数
- @return フォント列
+ フォントビットデータを得る
+ @param [in] utf16 文字コード (UTF-16)
+ @param [out] width 文字幅
+ @param [out] height 文字高さ
+ @param [out] data フォントビットデータ
+ @return 成功ならtrue、失敗ならfalse
 */
-Font **FontManager::decodeString(char *str, int *length)
+bool FontManager::decodeCharacter(unsigned int utf16, int *width, int *height, char *data)
 {
-	int i , j, n = 0, len = 0;
+	if (0 < utf16 && utf16 <= 0xFFFF && fp != NULL) {
+		int fw = fp[offsetList[utf16] + 4];
+		int fh = fp[offsetList[utf16] + 5];
+		*width  = fw;
+		*height = fh;
+		memcpy(data, &fp[offsetList[utf16] + 6], (int)((fw * fh + 7) / 8));
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
+ 文字列の幅を得る
+ @param str 文字列 (UTF-8)
+*/
+int FontManager::getWidth(char *str)
+{
+	int i , n = 0, w = 0;
 	unsigned char c1 = 0, c2 = 0, c3 = 0;
 
 	for (i = 0; i < (int)strlen(str); i++) {
@@ -157,52 +170,27 @@ Font **FontManager::decodeString(char *str, int *length)
 		// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
 		} else if (0xC2 <= c1 && c1 <= 0xDF) {
 			// 2 バイト目
-			if (str[i] == strlen(str) - 1) break;
+			if (str[i] == (int)strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
 			n = ((c1 & 0x1F) >> 6) | (c2 & 0x3F);
 		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
 		} else if (0xE0 <= c1 && c1 <= 0xEF) {
 			// 2 バイト目
-			if (str[i] == strlen(str) - 1) break;
+			if (str[i] == (int)strlen(str) - 1) break;
 			c2 = (unsigned char)str[++i];
 			// 3 バイト目
-			if (str[i] == strlen(str) - 1) break;
+			if (str[i] == (int)strlen(str) - 1) break;
 			c3 = (unsigned char)str[++i];
 			n = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
 		} else {
-			*length = 0;
-			return NULL;
+			n = 0;
 		}
 		// デコード開始
 		if (0 < n && n <= 0xFFFF && fp != NULL) {
 			int fw = fp[offsetList[n] + 4];
-			int fh = fp[offsetList[n] + 5];
-			fontList[len]->setName(this->name);
-			fontList[len]->setWidth(fw);
-			fontList[len]->setHeight(fh);
-			memcpy(fontList[len]->getData(), &fp[offsetList[n] + 6],
-				(int)((fw * fh + 7) / 8));
-			len++;
+			w += fw;
 		}
 	}
-	
-	*length = len;
-	return fontList;
-}
-
-/**
- 文字列の幅を得る
- @param str 文字列 (UTF-8)
-*/
-int FontManager::getWidth(char *str)
-{
-	int i, len, w = 0;
-	
-	decodeString(str, &len);
-	for (i = 0; i < len; i++) {
-		w += fontList[i]->getWidth();
-	}
-	
 	return w;
 }
 

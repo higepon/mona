@@ -40,8 +40,8 @@ Graphics::Graphics()
 	vram = screen->getVRAM();
 	font = new Font();
 	font->setName(FONT_NAME);
-	font->setWidth(6);
-	font->setHeight(12);
+	//font->setWidth(6);
+	//font->setHeight(12);
 	font->setStyle(FONT_PLAIN);
 #endif
 	xormode = locked = false;
@@ -154,8 +154,6 @@ void Graphics::drawPixelXOR(int x, int y, unsigned int color)
 
 	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
 	byte* colorPtr = (byte*)&color;
-
-	if (locked == true) return;
 
 	switch (bytesPerPixel) {
 	case 2: // 16bpp
@@ -270,67 +268,80 @@ void Graphics::drawRect(int x, int y, int width, int height)
 
 /**
  文字列描画
-@param str 文字列 (UTF-8)
+ @param str 文字列 (UTF-8)
  @param x 始点X
  @param y 始点Y
  */
 void Graphics::drawText(char *str, int x, int y)
 {
-	int len = 0;
-
-	if (locked == true) return;
-
+	int i , j, k, n = 0, pos, bit, width, height, w = 0;
+	unsigned char c1 = 0, c2 = 0, c3 = 0;
 	FontManager *manager = FontManager::getInstance();
-	Font **list = manager->decodeString(str, &len);
-	drawText(list, len, x, y);
-}
-
-/**
- 文字列描画
- @param list フォント列
- @param len 文字数（フォント列の長さ）
- @param x 始点X
- @param y 始点Y
- */
-void Graphics::drawText(Font **list, int len, int x, int y) {
-	int i, j, k, pos, bit, w = 0;
 
 	if (locked == true) return;
-
-	for (i = 0; i < len; i++) {
+	
+	for (i = 0; i < (int)strlen(str); i++) {
+		// 文字列の終端
+		if (str[i] == 0) break;
+		// 1 バイト目
+		c1 = (unsigned char)str[i];
+		// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
+		if (0x20 <= c1 && c1 <= 0x7F) {
+			n = c1;
+		// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
+		} else if (0xC2 <= c1 && c1 <= 0xDF) {
+			// 2 バイト目
+			if (str[i] == (int)strlen(str) - 1) break;
+			c2 = (unsigned char)str[++i];
+			n = ((c1 & 0x1F) >> 6) | (c2 & 0x3F);
+		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
+		} else if (0xE0 <= c1 && c1 <= 0xEF) {
+			// 2 バイト目
+			if (str[i] == (int)strlen(str) - 1) break;
+			c2 = (unsigned char)str[++i];
+			// 3 バイト目
+			if (str[i] == (int)strlen(str) - 1) break;
+			c3 = (unsigned char)str[++i];
+			n = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+		} else {
+			n = 0;
+		}
 		pos = 0;
 		bit = 1;
-		unsigned char *fp = list[i]->getData();
-		for (j = 0; j < list[i]->getHeight(); j++) {
-			// 領域チェック
-			if (tx + x + w + list[i]->getWidth() > cx + cw) return;
-			for (k = 0; k < list[i]->getWidth(); k++) {
-				// 行パディングなし
-				if ((fp[pos] & bit) != 0) {
-					// 通常書体
-					if (font->getStyle() == FONT_PLAIN) {
-						drawPixel(x + w + k, y + j, rgb24);
-					// 太字体
-					} else if (font->getStyle() == FONT_BOLD) {
-						drawPixel(x + w + k, y + j, rgb24);
-						drawPixel(x + w + k + 1, y + j, rgb24);
-					// 斜字体
-					} else if (font->getStyle() == FONT_ITALIC) {
-						drawPixel(x + w + k + (list[i]->getHeight() - j) / 4, y + j, rgb24);
-					// 太字体＋斜字体
-					} else if (font->getStyle() == FONT_BOLD | FONT_ITALIC) {
-						drawPixel(x + w + k + (list[i]->getHeight() - j) / 4, y + j, rgb24);
-						drawPixel(x + w + k + (list[i]->getHeight() - j) / 4 + 1, y + j, rgb24);
+		char fp[256];
+		if (manager->decodeCharacter(n, &width, &height, fp) == true) {
+			//unsigned char *fp = list[i]->getData();
+			for (j = 0; j < height; j++) {
+				// 領域チェック
+				if (tx + x + w + width > cx + cw) return;
+				for (k = 0; k < width; k++) {
+					// 行パディングなし
+					if ((fp[pos] & bit) != 0) {
+						// 通常書体
+						if (font->getStyle() == FONT_PLAIN) {
+							drawPixel(x + w + k, y + j, rgb24);
+						// 太字体
+						} else if (font->getStyle() == FONT_BOLD) {
+							drawPixel(x + w + k, y + j, rgb24);
+							drawPixel(x + w + k + 1, y + j, rgb24);
+						// 斜字体
+						} else if (font->getStyle() == FONT_ITALIC) {
+							drawPixel(x + w + k + (height - j) / 4, y + j, rgb24);
+						// 太字体＋斜字体
+						} else if (font->getStyle() == FONT_BOLD | FONT_ITALIC) {
+							drawPixel(x + w + k + (height - j) / 4, y + j, rgb24);
+							drawPixel(x + w + k + (height - j) / 4 + 1, y + j, rgb24);
+						}
+					}
+					bit <<= 1;
+					if (bit == 256) {
+						pos++;
+						bit = 1;
 					}
 				}
-				bit <<= 1;
-				if (bit == 256) {
-					pos++;
-					bit = 1;
-				}
 			}
+			w += width;
 		}
-		w += list[i]->getWidth();
 	}
 }
 
@@ -442,7 +453,5 @@ void Graphics::setLocked(bool locked)
 void Graphics::setFont(Font *font)
 {
 	this->font->setName(font->getName());
-	this->font->setWidth(font->getWidth());
-	this->font->setHeight(font->getHeight());
 	this->font->setStyle(font->getStyle());
 }

@@ -40,8 +40,6 @@ Control::Control() {
 	foreColor = 0x000000;
 	font = new Font();
 	font->setName(FONT_NAME);
-	font->setWidth(6);
-	font->setHeight(12);
 	font->setStyle(FONT_PLAIN);
 }
 
@@ -244,15 +242,10 @@ void Control::setForeground(unsigned int foreColor)
 	this->foreColor = foreColor;
 }
 
-/**
- フォントを設定する.
- 【注意】現状は通常文字か太字かを指定できる程度です。
- */
+/** フォントを設定する */
 void Control::setFont(Font *font)
 {
 	this->font->setName(font->getName());
-	this->font->setWidth(font->getWidth());
-	this->font->setHeight(font->getHeight());
 	this->font->setStyle(font->getStyle());
 	_g->setFont(this->font);
 }
