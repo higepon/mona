@@ -121,10 +121,13 @@ public:
 
 public:
     bool schedule();
+    bool schedule2();
     void join(Thread* thread, int priority = 30);
     int kill(Thread* thread);
     int wait(Thread* thread, int waitReason);
     int wakeup(Thread* thread, int waitReason);
+    void tick();
+    dword getTick() const;
 
 private:
     int calcPriority(Thread* thread);

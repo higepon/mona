@@ -32,7 +32,7 @@ typedef struct
 #define W_NORMAL   2
 #define WAITQ_IDX(waitReason) ((int)(waitReason & 0x03))
 
-Scheduler::Scheduler() : runq(64), waitq(3)
+Scheduler::Scheduler() : runq(64), waitq(3), tickTotal(0)
 {
     /* initialize run queue */
     for (int i = 0; i < runq.getLength(); i++)
@@ -55,6 +55,16 @@ Scheduler::~Scheduler()
 {
 }
 
+void Scheduler::tick()
+{
+    (this->tickTotal)++;
+}
+
+dword Scheduler::getTick() const
+{
+    return tickTotal;
+}
+
 int Scheduler::calcPriority(Thread* thread)
 {
     thread->partTick /= 2;
@@ -69,6 +79,15 @@ int Scheduler::calcPriority(Thread* thread)
     thread->scheduled = this->tickTotal;
 
     return NORMAL;
+}
+
+bool Scheduler::schedule2()
+{
+    Thread* root = runq[g_currentThread->thread->currPriority];
+    Thread* curr = (Thread*)(root->top());
+    curr->remove();
+    root->addToPrev(curr);
+    g_currentThread = PTR_THREAD(root->top());
 }
 
 bool Scheduler::schedule()
@@ -108,8 +127,9 @@ bool Scheduler::schedule()
             break;
         }
     }
-    g_console->printf("[%s]\n", g_currentThread->process->getName());
+
 #if 0
+    g_console->printf("[%s]\n", g_currentThread->process->getName());
     ArchThreadInfo* i = g_currentThread->archinfo;
     g_console->printf("\n");
     g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
