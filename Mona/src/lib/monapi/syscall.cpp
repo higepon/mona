@@ -379,7 +379,7 @@ int syscall_mutex_unlock(int id)
 {
     int result;
     SYSCALL_1(SYSTEM_CALL_MUTEX_UNLOCK, result, id);
-    return result;;
+    return result;
 }
 
 int syscall_mutex_destroy(int id)

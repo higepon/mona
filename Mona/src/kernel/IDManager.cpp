@@ -1,4 +1,5 @@
 #include "IDManager.h"
+#include "global.h"
 #include <sys/error.h>
 
 IDManager::IDManager() : id(1000)

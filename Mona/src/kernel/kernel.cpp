@@ -156,6 +156,10 @@ void startKernel(void)
     /* IDManager */
     g_id = new IDManager();
 
+    /* Mutex */
+    g_mutexFloppy = systemcall_mutex_create();
+    g_mutexShared = systemcall_mutex_create();
+
     /* paging start */
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
@@ -279,7 +283,7 @@ void loadServer(const char* server, const char* name)
 int execSysConf()
 {
     /* only one process can use fd */
-    while (Semaphore::down(&g_semaphore_fd));
+    systemcall_mutex_lock(g_mutexFloppy);
 
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
@@ -290,7 +294,7 @@ int execSysConf()
     if (!(g_fs->open("/MONA.CFG", 1)))
     {
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
         return 1;
     }
 
@@ -304,7 +308,7 @@ int execSysConf()
     if (buf == NULL)
     {
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
         return 2;
     }
 
@@ -313,7 +317,7 @@ int execSysConf()
     {
         free(buf);
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
         return g_fs->getErrorNo();
     }
 
@@ -321,11 +325,11 @@ int execSysConf()
     if (!g_fs->close())
     {
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
     }
 
     g_fdcdriver->motorAutoOff();
-    Semaphore::up(&g_semaphore_fd);
+    systemcall_mutex_unlock(g_mutexFloppy);
 
     /* execute */
     char line[256];

@@ -39,7 +39,6 @@ GLOBAL FDCDriver* g_fdcdriver;
 /* semaphore */
 GLOBAL semaphore g_semaphore_console  GLOBAL_VAL(1);
 GLOBAL semaphore g_semaphore_shared   GLOBAL_VAL(1);
-GLOBAL semaphore g_semaphore_fd       GLOBAL_VAL(1);
 
 GLOBAL int  g_info_level GLOBAL_VAL(DEV_ERROR);
 
@@ -82,6 +81,9 @@ GLOBAL PsInfo g_ps;
 GLOBAL IRQInfo g_irqInfo[16];
 
 GLOBAL Thread* g_idleThread;
+
+GLOBAL dword g_mutexFloppy;
+GLOBAL dword g_mutexShared;
 
 #define DEBUG_MODE
 

@@ -20,7 +20,7 @@
 /*----------------------------------------------------------------------
     KMutex
 ----------------------------------------------------------------------*/
-KMutex::KMutex(Process* process) : process_(process)
+KMutex::KMutex() : owner_(NULL)
 {
     waitList_ = new HList<Thread*>();
 }
@@ -101,6 +101,7 @@ int KMutex::unlock()
     }
     else
     {
+
         owner_ = waitList_->removeAt(0);
 
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
@@ -115,10 +116,5 @@ int KMutex::unlock()
 
 int KMutex::checkSecurity(Thread* thread)
 {
-    if (thread->tinfo->process != process_)
-    {
-        return -1;
-    }
-
     return 0;
 }

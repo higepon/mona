@@ -32,8 +32,8 @@ byte* Loader::ReadFile(const char* path, dword* size)
 
     strncpy(name, path, sizeof(name));
 
-    /* only one process can use fd */
-    while (Semaphore::down(&g_semaphore_fd));
+    systemcall_mutex_lock(g_mutexFloppy);
+
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -43,7 +43,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     if (!(g_fs->open(name, 1)))
     {
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
         return NULL;
     }
 
@@ -56,7 +56,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     if (buf == NULL)
     {
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
         return NULL;
     }
     memset(buf, 0, 512 * readTimes);
@@ -66,7 +66,7 @@ byte* Loader::ReadFile(const char* path, dword* size)
     {
             free(buf);
             g_fdcdriver->motorAutoOff();
-            Semaphore::up(&g_semaphore_fd);
+	    systemcall_mutex_unlock(g_mutexFloppy);
             return NULL;
     }
 
@@ -74,11 +74,11 @@ byte* Loader::ReadFile(const char* path, dword* size)
     if (!g_fs->close())
     {
         g_fdcdriver->motorAutoOff();
-        Semaphore::up(&g_semaphore_fd);
+	systemcall_mutex_unlock(g_mutexFloppy);
     }
 
     g_fdcdriver->motorAutoOff();
-    Semaphore::up(&g_semaphore_fd);
+    systemcall_mutex_unlock(g_mutexFloppy);
 
     return buf;
 }
@@ -93,10 +93,13 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
     bool   isAttaced;
 
     /* attach Shared to this process */
-    while (Semaphore::down(&g_semaphore_shared));
+    systemcall_mutex_lock(g_mutexShared);
+
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
     isAttaced = SharedMemoryObject::attach(sharedId, g_currentThread->process, 0x80000000);
-    Semaphore::up(&g_semaphore_shared);
+
+    systemcall_mutex_unlock(g_mutexShared);
+
     if (!isOpen || !isAttaced) return 4;
 
     /* create process */
@@ -104,18 +107,22 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
     Process* process = ProcessOperation::create(isUser ? ProcessOperation::USER_PROCESS : ProcessOperation::KERNEL_PROCESS, name);
 
     /* attach binary image to process */
-    while (Semaphore::down(&g_semaphore_shared));
+    systemcall_mutex_lock(g_mutexShared);
+
     isOpen    = SharedMemoryObject::open(sharedId, Loader::MAX_IMAGE_SIZE);
     isAttaced = SharedMemoryObject::attach(sharedId, process, Loader::ORG);
-    Semaphore::up(&g_semaphore_shared);
+
+    systemcall_mutex_unlock(g_mutexShared);
+
     if (!isOpen || !isAttaced) return 5;
 
     memcpy((byte*)0x80000000, image, size);
 
     /* detach from this process */
-    while (Semaphore::down(&g_semaphore_shared));
+    systemcall_mutex_lock(g_mutexShared);
+
     SharedMemoryObject::detach(sharedId, g_currentThread->process);
-    Semaphore::up(&g_semaphore_shared);
+    systemcall_mutex_unlock(g_mutexShared);
 
     /* set arguments */
     if (list != NULL)

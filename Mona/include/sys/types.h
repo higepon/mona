@@ -227,8 +227,6 @@ enum
 #define SYSTEM_CALL_SET_IRQ_RECEIVER         0x0039
 #define SYSTEM_CALL_REMOVE_IRQ_RECEIVER      0x003A
 
-
-
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \
                  "int  $0x80       \n"                                            \

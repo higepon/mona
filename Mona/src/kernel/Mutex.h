@@ -23,7 +23,7 @@ class Process;
 class KMutex : public KObject {
 
   public:
-    KMutex(Process* process);
+    KMutex();
     virtual ~KMutex();
 
   public:

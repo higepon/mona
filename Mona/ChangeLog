@@ -1,3 +1,12 @@
+2004-09-26  higepon  <higepon@users.sourceforge.jp>
+2004-09-25  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Mutex.h: Mutexのコンストラクタ変更。プロセスを受け取らないようにした。
+        *                   : カーネル内のセマフォを整理KMutexへ移行
+                              バイナリセマフォばかりなのでKMutexで効率化。スピンロックをとりあえずなくした。
+                              アダプティブロックへの布石ということで。
+                              Mutexをカーネル内でも使用できるようになった。
+
 2004-09-24  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/Mutex.cpp (Mutex): Mutexのコンストラクタ追加。mutexIDの共有によりグローバルMutexが使用できる。

@@ -3,7 +3,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_3
+#define MAIN_4
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -186,4 +186,26 @@ int MonaMain(List<char*>* pekoe)
    return 0;
 }
 
+#endif
+
+#ifdef MAIN_4
+
+#include "sys/BinaryTree.h"
+
+int MonaMain(List<char*>* pekoe)
+{
+    BinaryTree<int> tree;
+
+    tree.add(1000, 1);
+    printf("%d\n", tree.get(1000));
+    printf("%d\n", tree.get(1001));
+
+    tree.add(1001, 2);
+    printf("%d\n", tree.get(1000));
+    printf("%d\n", tree.get(1001));
+
+
+    printf("Hello World\n");
+    return 0;
+}
 #endif
