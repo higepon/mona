@@ -18,32 +18,30 @@
 #include<types.h>
 #include<global.h>
 
-
-
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
 
     MemoryManager& mm = MemoryManager::instance();
-    return (void*)mm.allocate((dword)size);
+    return mm.allocate(size);
 }
 
 void operator delete(void* address) {
 
     MemoryManager& mm = MemoryManager::instance();
-    mm.free((dword)address);
+    mm.free(address);
     return;
 }
 
 void* operator new[](size_t size) {
 
     MemoryManager& mm = MemoryManager::instance();
-    return (void*)mm.allocate((dword)size);
+    return mm.allocate(size);
 }
 
 void operator delete[](void* address) {
 
     MemoryManager& mm = MemoryManager::instance();
-    mm.free((dword)address);
+    mm.free(address);
     return;
 }
 
@@ -52,27 +50,27 @@ void operator delete[](void* address) {
 void* malloc(unsigned long size) {
 
     MemoryManager& mm = MemoryManager::instance();
-    return (void*)mm.allocate((dword)size);
+    return mm.allocate(size);
 }
 
 void free(void * address) {
 
     MemoryManager& mm = MemoryManager::instance();
-    mm.free((dword)address);
+    mm.free(address);
     return;
 }
 
 void __builtin_delete(void* address) {
 
     MemoryManager& mm = MemoryManager::instance();
-    mm.free((dword)address);
+    mm.free(address);
     return;
 }
 
 void* __builtin_new(unsigned long size) {
 
     MemoryManager& mm = MemoryManager::instance();
-    return (void*)mm.allocate((dword)size);
+    return mm.allocate(size);
 }
 
 void* __builtin_vec_new(unsigned long size) {
@@ -85,4 +83,3 @@ void __builtin_vec_delete(void* address) {
     __builtin_delete(address);
     return;
 }
-

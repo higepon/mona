@@ -92,7 +92,9 @@ int decode (input_stream *is, output_stream *os)
                                 flag = Z_FINISH;
                 }
     g_console->printf("[2.4]");
+    g_console->printf("[2.4.1]");
                 st = inflate(&zst, Z_NO_FLUSH);
+    g_console->printf("[2.4.2]");
                 if (st == Z_STREAM_END)
                         break;
 

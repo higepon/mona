@@ -128,7 +128,7 @@ void FDCDriverTester() {
     g_console->printf("[1.2]");
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
 
-        g_console->printf("fat=%d", (dword)fat);
+        g_console->printf("fat=[%x]", (dword)fat);
 
     if (!fat->initilize()) {
             g_console->printf("error fat initialize\n");
@@ -137,7 +137,7 @@ void FDCDriverTester() {
         }
     g_console->printf("[1.3]");
 
-        if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
+        if (!fat->open(".", "Z.Z", FAT12::READ_MODE)) {
                 g_console->printf("error open mona.z\n");
                 g_fdcdriver->motor(false);
                 return;
@@ -165,7 +165,7 @@ void FDCDriverTester() {
         is.read = read;
 
     g_console->printf("[1.6]************************************");
-        int bf_size = 1024 * 1024 * 2;
+        int bf_size = 1024 * 1024 * 1;
         bf = (unsigned char*)malloc(bf_size);
     g_console->printf("[1.7]malloc=%x", (dword)bf);
         if (NULL == bf) {
@@ -185,10 +185,10 @@ void FDCDriverTester() {
         decode(&is, &os);
     g_console->printf("[3.0]");
 
-        //        for (int i = 0; i < 25; i++) {
-        //            g_console->printf("%c", bf[i]);
-        //        }
-        drawARGB(bf, 0, 0, image_size);
+              for (int i = 0; i < 25; i++) {
+                  g_console->printf("%c", bf[i]);
+              }
+    //        drawARGB(bf, 0, 0, image_size);
 
 
         if (!fat->close()) {
@@ -217,12 +217,14 @@ void FDCDriverTester() {
 
 void ELFTester(byte* out) {
 
-    //    g_fdcdriver = new FDCDriver();
+    g_fdcdriver = new FDCDriver();
 
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
+
+    g_console->printf("hoge[1]");
     g_fdcdriver->motor(false);
 
     for (int i = 0; i< 20; i++) {
@@ -231,13 +233,13 @@ void ELFTester(byte* out) {
     }
 
     g_fdcdriver->motor(true);
-
+    g_console->printf("hoge[2]");
     info(DEV_NOTICE, "before recalibrate");
-
+    g_console->printf("hoge[3]");
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
-
+    g_console->printf("hoge[4]");
     info(DEV_NOTICE, "before read");
     for (int i = 1; i < 25; i++) {
         memset(tbuf, 0x99, 512);

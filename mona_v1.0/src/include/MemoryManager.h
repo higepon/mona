@@ -30,9 +30,9 @@ class MemoryManager {
     ~MemoryManager();
 
   public:
-    dword initialize(dword size, dword end);
-    dword allocate(dword size);
-    void free(dword address);
+    void initialize(dword size, dword end);
+    void free(void* address);
+    void* allocate(dword size);
     dword getFreeMemorySize() const;
     dword getUsedMemorySize() const;
     void debugPrint() const;

@@ -114,7 +114,7 @@ void timerHandler() {
     counter++;
 #endif
 
-    //    g_console->printf("Timer");
+    //    if (g_console) g_console->printf("Timer");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

@@ -35,7 +35,7 @@
 MemoryManager::MemoryManager() {
 }
 
-dword MemoryManager::initialize(dword start, dword end) {
+void MemoryManager::initialize(dword start, dword end) {
 
     /* create large free block */
     freeList_       = (MemoryEntry*)start;
@@ -131,7 +131,7 @@ dword MemoryManager::getRealSize(dword size) {
     return (size + SIZE_OF_HEADER);
 }
 
-dword MemoryManager::allocate(dword size) {
+void* MemoryManager::allocate(dword size) {
 
     if (size == 0) return (dword)NULL;
 
@@ -148,7 +148,8 @@ dword MemoryManager::allocate(dword size) {
 
         deleteFromList(&freeList_, current);
         addToList(&usedList_, current);
-        return (dword)(current->startAddress);
+
+        return (current->startAddress);
 
     } else if (current->size - realSize >= SIZE_OF_HEADER) {
 
@@ -160,7 +161,7 @@ dword MemoryManager::allocate(dword size) {
         addToList(&usedList_, current);
         addToList(&freeList_, freeBlock);
 
-        return (dword)(current->startAddress);
+        return (current->startAddress);
 
     } else {
 
@@ -170,11 +171,13 @@ dword MemoryManager::allocate(dword size) {
 
 }
 
-void MemoryManager::free(dword address) {
+void MemoryManager::free(void* address) {
 
-    if (address < 1) return;
+    dword target = (dword)address;
 
-    MemoryEntry* entry = (MemoryEntry*)(address - SIZE_OF_HEADER);
+    if (target < 1) return;
+
+    MemoryEntry* entry = (MemoryEntry*)(target - SIZE_OF_HEADER);
 
     deleteFromList(&usedList_, entry);
     addToList(&freeList_, entry);
