@@ -364,6 +364,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(Keys::NumPad7):
     case(Keys::NumPad8):
     case(Keys::NumPad9):
+    case(Keys::NumPad0):
     case(Keys::Subtract):
     case(Keys::Add):
     case(Keys::Space):
@@ -393,12 +394,6 @@ int Shell::onKeyDown(int keycode, int modifiers) {
         break;
     case(Keys::Back):
         backspace();
-        break;
-
-    case(Keys::NumPad0):
-
-        strcpy(commandLine_, getHistory());
-        printf("%s", commandLine_);
         break;
     default:
         break;
