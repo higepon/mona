@@ -51,24 +51,25 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     switch(bitsPerPixel) {
 
     case(16):
-        for (int w = 0; w < width; w++) {
-            for (int h = 0; h < height; h++) {
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+
                 copyPixel16(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
             }
         }
         break;
 
     case(32):
-        for (int w = 0; w < width; w++) {
-            for (int h = 0; h < height; h++) {
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
                 copyPixel32(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
             }
         }
         break;
 
     case(8):
-        for (int w = 0; w < width; w++) {
-            for (int h = 0; h < height; h++) {
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
                 copyPixel8(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
             }
         }
