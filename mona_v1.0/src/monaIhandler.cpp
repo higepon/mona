@@ -13,7 +13,6 @@
 */
 
 #include<monaIdt.h>
-#include<monaIo.h>
 #include<KeyBoardManager.h>
 #include<MFDCDriver.h>
 #include<ProcessManager.h>
@@ -23,6 +22,7 @@
 #include<string>
 #include<monaIhandler.h>
 #include<kthread.h>
+#include<io.h>
 
 /*!
     \brief key stroke handler

@@ -15,7 +15,6 @@
 #define _MONA_IA32MEMORYMANAGER_
 
 #include<monaTypes.h>
-#include<monaIo.h>
 #include<monaKernel.h>
 #include<monaVga.h>
 

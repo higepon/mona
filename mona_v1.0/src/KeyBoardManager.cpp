@@ -13,7 +13,6 @@
 */
 #include<KeyBoardManager.h>
 #include<monaVga.h>
-#include<monaIo.h>
 #include<monaOperator.h>
 
 const int KeyBoardManager::keyMap_[128] = {

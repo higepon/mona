@@ -12,7 +12,6 @@
     \date   create:2002/11/11 update:$Date$
 */
 #include<monaVga.h>
-#include<monaIo.h>
 #include<monaIdt.h>
 #include<monaOperator.h>
 #include<monaTypes.h>
@@ -73,7 +72,6 @@ void processTester() {
 
 
 void process1Tester() {
-    enableTimer();
 
     while (true) {
         for (dword i = 0; i < 9900000; i++) {

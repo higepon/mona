@@ -29,6 +29,7 @@
 #include<ProcessManager.h>
 #include<kthread.h>
 #include<monaIhandler.h>
+#include<pic.h>
 
 char* version = "Mona develop beta 0.04a $Date$";
 
@@ -56,19 +57,8 @@ void startKernel(void) {
     /* show start message */
     printBanner();
 
-
-
-    outportb(0x20, 0x11); /* ICW1 */
-    outportb(0x21, 0x00); /* ICW2 */
-    outportb(0x21, 0x04); /* ICW3 */
-    outportb(0x21, 0x01); /* ICW4 */
-    outportb(0xa0, 0x11);
-
-    outportb(0xa1, 0x28);
-
-    outportb(0xa1, 0x02);
-
-    outportb(0xa1, 0x01);
+    pic_init();
+    enableKeyboard();
 
     /* set interrupt */
     _sysSetIdt();

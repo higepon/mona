@@ -12,7 +12,6 @@
     \date   create:2002/07/23 update:$Date$
 */
 #include <monaIdt.h>
-#include <monaIo.h>
 
 /*!
     \brief set up idt
@@ -87,31 +86,4 @@ void _sysLoadIdtr(idtr_st* idtr) {
 
     asm volatile("lidt (%0) ": :"p" (idtr));
     return;
-}
-
-/*!
-    \brief disable timer
-
-    disable timer interrupt
-    mask IMR bit 0
-
-    \author HigePon
-    \date   create:2003/01/12 update:
-*/
-void disableTimer() {
-
-    outportb(0x21, inportb(0x21) | 0x01);
-}
-
-/*!
-    \brief enable timer
-
-    enable timer interrupt
-
-    \author HigePon
-    \date   create:2003/01/12 update:
-*/
-void enableTimer() {
-
-    outportb(0x21, inportb(0x21) & 0xFE);
 }

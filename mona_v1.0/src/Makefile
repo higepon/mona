@@ -24,7 +24,6 @@ SOURCES    = cstart.cpp            \
              monaVga.cpp           \
              monaIdt.cpp           \
              monaIhandler.cpp      \
-             monaIo.cpp            \
              IA32MemoryManager.cpp \
              monaOperator.cpp      \
              monaPureVirtual.cpp   \
@@ -37,7 +36,9 @@ SOURCES    = cstart.cpp            \
              Semaphore.cpp         \
              MFDCDriver.cpp        \
              GraphicalConsole.cpp  \
-             kthread.cpp
+             kthread.cpp           \
+             pic.cpp               \
+             io.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

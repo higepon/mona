@@ -1,14 +1,13 @@
 /*!
-    \file  monaIo.h
+    \file  io.h
     \brief io functions and difinitions
 
-    io functions and difinitions
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
     \version $Revision$
-    \date   create:2002/07/29 update:$Date$
+    \date   create:2003/03/08 update:$Date$
 */
 
 #ifndef _MONA_IO_
@@ -18,6 +17,5 @@
 
 byte inportb(dword);
 void outportb(dword, byte);
-void _sysInitIo();
 
 #endif

@@ -11,10 +11,10 @@
 */
 
 #include<MFDCDriver.h>
-#include<monaIo.h>
 #include<monaVga.h>
 #include<monaKernel.h>
 #include<monaOperator.h>
+#include<io.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10
