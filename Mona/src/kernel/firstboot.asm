@@ -8,14 +8,13 @@
 ; License=MIT/X Licnese
 ;-------------------------------------------------------------------------------
 %define KERNEL   0x1000
-%define TEMPSEG  0x9f00
 %define LDRSEG   0x8000
 %define FATSEG   0x9000
 %define FATADDR  0x6000
 
 ;%define DEBUG  1
 
-        org     0
+org     0x7c00
 
         jmp     short realstart
         nop
@@ -41,21 +40,8 @@ noh     dw      0x0002
         db      "FAT12   "
 
 realstart:
-        xor     si,si
-        mov     di,si
-        mov     ax,0x07c0
+        mov     ax,cs
         mov     ds,ax
-        mov     ax,TEMPSEG
-        mov     es,ax
-        mov     cx,0x0100
-        rep     movsw
-        jmp     TEMPSEG:realnext
-realnext:
-        mov     ds,ax
-        sub     ah,0x10
-        mov     ss,ax
-        xor     sp,sp
-        ;
         xor     ax,ax
         int     0x13
         jc      $
@@ -63,9 +49,9 @@ realnext:
         mov     si,boot
         call    putstring
         ;
+        xor     bx,bx
+        xor     cx,cx
         xor     dx,dx
-        mov     cx,dx
-        mov     bx,dx
         mov     ax,FATSEG
         mov     es,ax
         mov     ax,word [spf]
@@ -150,7 +136,7 @@ end_of_kernel:
         call    memory_dump
 %endif
 
-        jmp     LDRSEG:0x0000
+        jmp     LDRSEG:0
 
 get_fat:
         mov     si,bx
@@ -164,10 +150,10 @@ _get_fat:
 
 file_not_found:
 %ifdef DEBUG
-       call    register_dump
+        call    register_dump
 %endif
-;          mov     si,not_found
-;          call    putstring
+        mov     si,not_found
+        call    putstring
         jmp     $               ; loop forever
 
 ; readsector
@@ -313,7 +299,7 @@ register_dump:
 
 bname   db      "LOADER  BIN"
 boot    db      "Reading LOADER.BIN ", 0
-;  not_found db "KERNEL.IMG not found"
+not_found db    "not found"
 crlf    db      0x0d,0x0a,0
 
         times   0x01fe-($-$$) db 0
