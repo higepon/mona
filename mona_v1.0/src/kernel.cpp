@@ -81,17 +81,16 @@ void startKernel(void) {
         g_console->printf("CPUID NG  \n");
     }
 
-
+    g_console->printf("BitMap:");
     BitMap* map = new BitMap(10);
-
     map->find();
     map->mark(5);
     map->mark(7);
     map->mark(8);
     for (int i = 0; i < 10; i++) {
-
         g_console->printf("%c", map->marked(i) ? 'x' : 'o');
     }
+    g_console->printf("\n");
 
 
     g_console->printf("Hit any key to start [floppy read/write test]\n");
@@ -100,6 +99,7 @@ void startKernel(void) {
     enableInterrupt();
     while (g_demo_step < 2);
     g_fdcdriver = new FDCDriver(g_console);
+    g_fdcdriver->test();
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     while (g_demo_step < 5);

@@ -52,6 +52,7 @@ class FDCDriver {
     void printStatus(const byte msr, const char*) const;
     void printDMACStatus(const byte status, const char*) const;
     void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
+    void waitPrint(const char* msg);
 
   private:
     byte version_;

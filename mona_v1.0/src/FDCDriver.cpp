@@ -173,27 +173,35 @@ void FDCDriver::test() {
     console_->printf("FDCDriver::test() start\n");
 
     motor(ON);
+    recalibrate();
+    waitPrint("after recalibrate");
 
-    for (int i = 1; i < 50; i++) {
+    for (int i = 1; i < 2; i++) {
 
-        recalibrate();
-        recalibrate();
-        memset(dmabuff_, i, 512);
+        memset(dmabuff_, 0x98, 512);
         if (!write(i)) {
 
             g_console->printf("read failed\n");
             motor(OFF);
             return;
         }
-
     }
 
     motor(OFF);
-
     return;
 }
 
+void FDCDriver::waitPrint(const char* msg) {
 
+    static int counter = 0;
+    counter++;
+
+    for (int i = 0; i < 500000; i++) {
+        i++;
+        i--;
+    }
+    g_console->printf("%s:%d\n", msg, counter);
+}
 
 
 
@@ -266,7 +274,7 @@ bool FDCDriver::waitInterrupt() {
     static int counter = 0;
     counter++;
 
-    if (counter > 5000) interrupt_ = true;
+    //    if (counter > 5000) interrupt_ = true;
 
     return interrupt_;
 }
@@ -305,9 +313,6 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
             return false;
         }
 
-        /* debug show command */
-        //        console_->printf("command[%x] ", (int)command[i]);
-
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
     }
@@ -332,8 +337,8 @@ bool FDCDriver::recalibrate() {
         return false;
     }
 
-    // comment out for bochs x86 emulator
-    //    while(!waitInterrupt());
+    while(!waitInterrupt());
+
     senseInterrupt();
     return true;
 }
@@ -389,11 +394,17 @@ bool FDCDriver::seek(byte track) {
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
 
+    interrupt_ = false;
+
     if(!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#seek:command fail\n");
         return false;
     }
+
+    /* seek, recalibreate should wait interrupt */
+    /* and then senseInterrupt                  */
+    while(!waitInterrupt());
 
     if (!senseInterrupt()) {
 
@@ -401,9 +412,8 @@ bool FDCDriver::seek(byte track) {
         return false;
     }
 
-#ifdef DEBUG_FDC
-    printStatus("seek sense after");
-#endif
+
+
     return true;
 }
 
@@ -460,7 +470,7 @@ void FDCDriver::readResults() {
     }
     resultsLength_ = i;
 
-#ifdef DEBUG_FDC
+
     console_->printf("resultsLength_=%d\n", resultsLength_);
 
     /* debug show result */
@@ -469,7 +479,6 @@ void FDCDriver::readResults() {
          console_->printf("result[%d] = %x ", j, (int)(results_[j]));
     }
     console_->printf("\n");
-#endif
 
     return;
 }
@@ -662,16 +671,16 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
                    };
     setupDMAWrite(512);
 
-    interrupt_ = false;
     seek(track);
-    while(!waitInterrupt());
 
     interrupt_ = false;
     sendCommand(command, sizeof(command));
+    while(!waitInterrupt());
 
+    waitPrint("after sendCommand");
     stopDMA();
     readResults();
-
+    waitPrint("after read results");
     return true;
 }
 
@@ -684,6 +693,7 @@ bool FDCDriver::read(int lba) {
 
 
 bool FDCDriver::write(int lba) {
+
     byte track, head, sector;
     lbaToTHS(lba, track, head, sector);
 
