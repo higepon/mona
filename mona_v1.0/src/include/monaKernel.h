@@ -22,7 +22,7 @@
 #define popa()       asm volatile("popa");  /*!< \def  popa             */
 
 
-/*!< \def _sys_dumpReg() */
+/*!< \def _sysdumpReg() */
 #define _sysdumpReg(str, stopflag, unlockint) { \
     _sysLock();                                 \
     dword __eax, __ebx, __ecx, __edx;           \
@@ -78,106 +78,30 @@
      if (stopflag) while (true);                \
 }
 
-/*!< \def _sys_dumpStack() */
-#define _sysdumpStack() {                     \
-                                              \
-    dword stack0, stack1, stack2;             \
-                                              \
-    asm volatile(                             \
-                 "pusha                 \n"   \
-                 "mov  32(%%esp), %%eax \n"   \
-                 "mov  %%eax, %0        \n"   \
-                 "mov  36(%%esp), %%eax \n"   \
-                 "mov  %%eax, %1        \n"   \
-                 "mov  40(%%esp), %%eax \n"   \
-                 "mov  %%eax, %2        \n"   \
-                 "popa                  \n"   \
-                 : "=m"(stack0)               \
-                 , "=m"(stack1)               \
-                 , "=m"(stack2)               \
-                );                            \
-                                              \
-    _sys_printf("_sysdumpStack(): %x %x %x\n" \
-               , stack0, stack1, stack2);     \
-}                                             \
-
-#define _sysdumpStack2(str) {                          \
-                                                       \
-    dword* stack;                                      \
-    asm volatile("mov %%ebp, %0 \n" : "=m"(stack));    \
-    _sys_printf("_sysdumpStack2(%s:%x):%x %x %x\n"     \
-              , str, stack, *(stack + 1), *(stack + 2) \
-              , *(stack + 3));                         \
-}
-
-#define _sysdumpStack3(str) {                          \
-                                                       \
-    dword* stack;                                      \
-    asm volatile("mov %%esp, %0 \n" : "=m"(stack));    \
-    _sys_printf("_sysdumpStack3(%s:%x):%x %x %x\n"     \
-              , str, stack, *(stack + 1), *(stack + 2) \
-              , *(stack + 2));                         \
-}
-
-#define _sysdumpStack4()                             \
+/*!< \def _sysdumpStack() */
+#define _sysdumpStack()                              \
                                                      \
     static dword* stack;                             \
+    dword value[9];                                  \
     asm volatile("mov %%ebp, %0 \n" : "=g"(stack));  \
-    _sys_printf("%x  ", *(stack + 0));               \
-    _sys_printf("%x  ", *(stack + 1));               \
-    _sys_printf("%x  ", *(stack + 2));               \
-    _sys_printf("%x  ", *(stack + 3));               \
-    _sys_printf("%x  ", *(stack + 4));               \
-    _sys_printf("%x  ", *(stack + 5));               \
-    _sys_printf("%x  ", *(stack + 6));               \
-    _sys_printf("%x  ", *(stack + 7));               \
-    _sys_printf("%x  ", *(stack + 8));               \
-
-#define _sysdumpStack5()                             \
-                                                     \
-    static dword* stack;                             \
-    dword value[20];                                  \
-    asm volatile("mov %%ebp, %0 \n" : "=g"(stack));  \
-        value[0] = *(stack + 0);\
-       value[1] = *(stack + 1);\
-value[2] = *(stack + 2);\
-value[3] = *(stack + 3);\
-value[4] = *(stack + 4);\
-value[5] = *(stack + 5);\
-value[6] = *(stack + 6);\
-value[7] = *(stack + 7);\
-value[8] = *(stack + 8);\
-value[9] = *(stack + 9);\
-value[10] = *(stack + 10);\
-value[11] = *(stack + 11);\
-value[12] = *(stack + 12);\
-value[13] = *(stack + 13);\
-value[14] = *(stack + 14);\
-value[15] = *(stack + 15);\
-value[16] = *(stack + 16);\
-value[17] = *(stack + 17);\
-value[18] = *(stack + 18);\
-value[19] = *(stack + 19);\
-    _sys_printf("%x  ", value[0]);               \
-    _sys_printf("%x  ", value[1]);               \
-    _sys_printf("%x  ", value[2]);               \
-    _sys_printf("%x  ", value[3]);               \
-    _sys_printf("%x  ", value[4]);               \
-    _sys_printf("%x  ", value[5]);               \
-    _sys_printf("%x  ", value[6]);               \
-    _sys_printf("%x  ", value[7]);               \
-    _sys_printf("%x  ", value[8]);               \
-    _sys_printf("%x  ", value[9] );               \
-    _sys_printf("%x  ", value[10]);               \
-    _sys_printf("%x  ", value[11]);               \
-    _sys_printf("%x  ", value[12]);               \
-    _sys_printf("%x  ", value[13]);               \
-    _sys_printf("%x  ", value[14]);               \
-    _sys_printf("%x  ", value[15]);               \
-    _sys_printf("%x  ", value[16]);               \
-    _sys_printf("%x  ", value[17]);               \
-    _sys_printf("%x  ", value[18]);               \
-    _sys_printf("%x  ", value[19]);               \
+    value[0] = *(stack + 0);                         \
+    value[1] = *(stack + 1);                         \
+    value[2] = *(stack + 2);                         \
+    value[3] = *(stack + 3);                         \
+    value[4] = *(stack + 4);                         \
+    value[5] = *(stack + 5);                         \
+    value[6] = *(stack + 6);                         \
+    value[7] = *(stack + 7);                         \
+    value[8] = *(stack + 8);                         \
+    _sys_printf("%x  ", value[0]);                   \
+    _sys_printf("%x  ", value[1]);                   \
+    _sys_printf("%x  ", value[2]);                   \
+    _sys_printf("%x  ", value[3]);                   \
+    _sys_printf("%x  ", value[4]);                   \
+    _sys_printf("%x  ", value[5]);                   \
+    _sys_printf("%x  ", value[6]);                   \
+    _sys_printf("%x  ", value[7]);                   \
+    _sys_printf("%x  ", value[8]);                   \
 
 /*!
    \struct FARJMP

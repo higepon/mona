@@ -12,7 +12,26 @@ monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
 monaIhandler.o: monaIhandler.cpp include/monaIdt.h include/monaVga.h \
   include/monaTypes.h include/string.h include/monaIo.h \
   include/KeyBoardManager.h include/FDCDriver.h include/ProcessManager.h \
-  include/monaKernel.h include/IA32MemoryManager.h include/monaTester.h
+  include/monaKernel.h include/IA32MemoryManager.h include/monaTester.h \
+  stlport/string stlport/stl/_prolog.h stlport/stl/_config.h \
+  stlport/stl_user_config.h stlport/stl/_config_compat.h \
+  stlport/stl/_site_config.h stlport/config/stlcomp.h \
+  stlport/config/stl_gcc.h stlport/config/stl_confix.h \
+  stlport/stl/_string.h stlport/memory stlport/stl/_alloc.h \
+  stlport/cstring stlport/stl/_range_errors.h stlport/new \
+  stlport/stl/_threads.h stlport/pthread.h stlport/stl/_threads.c \
+  stlport/stl/_construct.h stlport/stl/_iterator_base.h \
+  stlport/stl/type_traits.h stlport/stl/_alloc.c stlport/stl/_tempbuf.h \
+  stlport/stl/_uninitialized.h stlport/stl/_algobase.h \
+  stlport/stl/_pair.h stlport/stl/_algobase.c stlport/stl/_iterator.h \
+  stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
+  stlport/stl/_auto_ptr.h stlport/stl/_string_fwd.h stlport/iosfwd \
+  stlport/stl/_iosfwd.h stlport/stl/char_traits.h stlport/stl/_function.h \
+  stlport/stl/_function_base.h stlport/stl/_ctraits_fns.h \
+  stlport/stl/_string.c stlport/stl/_string_fwd.c \
+  stlport/stl/_string_io.h stlport/stl/_string_io.c \
+  stlport/stl/_string_hash.h stlport/stl/_hash_fun.h \
+  stlport/stl/_epilog.h stlport/stl/_config_compat_post.h
 monaIo.o: monaIo.cpp include/monaIo.h include/monaTypes.h \
   include/string.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \

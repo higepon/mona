@@ -17,9 +17,10 @@
 #include <monaKernel.h>
 #include <IA32MemoryManager.h>
 
-#define GDTNUM 7                    /*!< \def number of entry gdt   */
-#define FIRST_PROCESS_STACK 0x9884  /*!< \def stack of firstprocess */
+#define GDTNUM 7                   /*!< \def number of entry gdt   */
+#define FIRST_PROCESS_STACK 0x9884 /*!< \def stack of firstprocess */
 
+/*!< \def switch process */
 #define _switchProcess(currentProcess, nextProcess) \
     asm volatile(                                  \
                  "mov %%ebp, %%esp \n"             \
@@ -33,10 +34,10 @@
                  : "m" (nextProcess->esp)          \
                  );                                \
 
+/*!< \def struct for process */
 typedef struct Process {
     dword* esp;
 };
-
 
 /*!
     process management

@@ -238,10 +238,27 @@ inline void ProcessManager::setNTflag1() const {
                 );
 }
 
+/*!
+    \brief schedule
+
+    scheduling next process
+
+    \author HigePon
+    \date   create:2003/01/25 update:
+*/
 void ProcessManager::schedule() {
     std::swap(current, next);
 }
 
+/*!
+    \brief initProcess
+
+    prepare stack of fisrt process
+    \param eip of first process
+
+    \author HigePon
+    \date   create:2003/01/25 update:
+*/
 inline void ProcessManager::initProcess(void (*f)()) {
 
     dword* firstStack = (dword*)FIRST_PROCESS_STACK;

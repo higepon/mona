@@ -21,6 +21,7 @@
 #include<monaTypes.h>
 #include<monaTester.h>
 #include<monaKernel.h>
+#include<string>
 
 /*!
     \brief key stroke handler
@@ -62,6 +63,8 @@ void keyStrokeHandler() {
 */
 void fault0dHandler() {
 
+    _sysdumpReg("fault0d", false, false);
+    _sysdumpStack();
     panic("fault0d");
 }
 
