@@ -41,7 +41,7 @@ _arch_fdchandler:
 _arch_timerhandler:
 ;          call _arch_set_stack_view
         pushad
-        call _arch_save_registers
+;        call _arch_save_registers  //for IDE Driver test
         call _timerHandler
         popad
         iretd

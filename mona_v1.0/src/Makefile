@@ -55,7 +55,7 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
 	mv $(BIN)/mona.tmp $@
 
 $(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
-	$(LD) $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
+	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
 

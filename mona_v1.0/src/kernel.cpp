@@ -95,8 +95,13 @@ void startKernel(void) {
     }
     g_console->printf("\n");
 
-#ifdef MJT
     /* IDE TEST routine */
+    dword idet;
+    //kthread_init();
+    enableInterrupt();
+    enableTimer();
+    idet = g_kthreadInfo.tick;
+    g_console->printf("Enable timer...(DISABLED THREAD SCHEDULER!)\n");/* ihandlers.cpp timer, kthread.cpp tick */
     g_console->printf("IDE init...\n");
     IDEDriver *d0;
     IDEDriver *d1;
@@ -104,9 +109,11 @@ void startKernel(void) {
     d0 = new IDEDriver(g_console,0x1f0);
     g_console->printf("Secondry...\n");
     d1 = new IDEDriver(g_console,0x170);
-
+    g_console->printf("Disable timer...\n");
+    disableTimer();
+    idet = g_kthreadInfo.tick - idet;
+    g_console->printf("IDE init done(%d ticks)\n",idet);
     /* ~IDE */
-#endif
 
     g_console->printf("Hit any key to start [floppy read/write test]\n");
     disableTimer();
@@ -115,7 +122,6 @@ void startKernel(void) {
 
     while (g_demo_step < 2);
 
-#ifdef HIGE
     g_fdcdriver = new FDCDriver(g_console);
 
     byte tbuf[512];
@@ -198,7 +204,6 @@ void startKernel(void) {
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     g_fdcdriver->motor(false);
-#endif
 
     while (g_demo_step < 5);
     disableInterrupt();

@@ -104,7 +104,7 @@ void kthread_init() {
     g_kthread_idle = disp6;
 
     enableTimer();
-    kthread_schedule();
+//    kthread_schedule(); //commented for test IDE Driver
 }
 
 /*!
@@ -118,7 +118,7 @@ void kthread_init() {
 void kthread_tick() {
 
     (g_kthreadInfo.tick)++;
-    (g_kthread_current->tick)++;
+//    (g_kthread_current->tick)++; //for test IDE Driver
     return;
 }
 

@@ -7,6 +7,9 @@
 #define _MONA_MIDEDRIVER_MJT
 
 
+#define IDE_DEVICETYPE_HDD 1
+#define IDE_DEVICETYPE_OTHER 99
+
 class IDEDevice : public DiskDriver {
   public:
     bool read(dword lba, byte* buf);
@@ -14,6 +17,13 @@ class IDEDevice : public DiskDriver {
     IDEDevice(class IDEDriver *bus,unsigned int device);
     ~IDEDevice();
     static class IDEDriver* Bus;
+    static unsigned int Heads;
+    static unsigned int Tracks;
+    static unsigned int SectorsPerTrack;
+    static unsigned int BytesPerSector;
+    static unsigned int TotalSize;
+    static unsigned int DeviceType;
+    static bool IsSurpportLBA;
   private:
     static unsigned int device_;
 };
@@ -29,16 +39,17 @@ class IDEDriver {
     static IDEDevice* Master;
     static IDEDevice* Slave;
     static bool HasMaster;
-    static bool HasSlave;
-  
+    static bool HasSlave;  
+    static VirtualConsole* console_;
   public:
-    bool sendcmd(int cmd,char *bfr,int bfrsize /* ignored */);
+    bool sendcmd(int cmd,byte *bfr,int bfrsize /* ignored */);
     bool senddevice(int drive);
     bool waithdc(unsigned long timeout);
     bool waitdata(unsigned long timeout);
     bool waitready(unsigned long timeout);
     bool initilize();
-    static VirtualConsole* console_;
+    bool setLBA(dword lba,unsigned int device);
+    void setCount(byte count);
   private:
     byte version_;
     static unsigned int control_;

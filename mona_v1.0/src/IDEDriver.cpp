@@ -7,6 +7,7 @@
 #include<global.h>
 
 /* IDE commands*/
+#define IDE_CMD_READ 0x20
 #define IDE_CMD_DIAG 0x90
 #define IDE_CMD_ID 0xec
 
@@ -25,6 +26,8 @@ unsigned int IDEDriver::head_;
 unsigned int IDEDriver::status2_;
 bool IDEDriver::HasMaster;
 bool IDEDriver::HasSlave;
+
+
 IDEDevice* IDEDriver::Master;
 IDEDevice* IDEDriver::Slave;
 
@@ -57,41 +60,53 @@ IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port) {
     }
 }
 
-#define TIMEOUT 0xffffffff
-#define TIMEOUTMULT 90
+#define TIMEOUT 36
+#define TIMEOUT_CMD 36
 bool IDEDriver::waithdc(unsigned long timeout){
-  long t,r;
+  dword t;
   char c;
-  for(t = timeout;t!=0;t--){
-    for(r = 0;r!=TIMEOUTMULT;r++);
-    c = inportb(status_);
-    if(!(c & 0x80)){
-      return true;
+  t = g_kthreadInfo.tick;
+  for(;;){
+    if(g_kthreadInfo.tick > (t+timeout)){
+      return false;
     }
+    c = inportb(status_);
+    if(c & 0x80){
+      continue;
+    }
+    if(c & 0x21){
+      return false;
+    }
+    return true;
   }
-  console_->printf("ide:waithdc:timeout.\n");
   return false;
 }
 
 bool IDEDriver::waitdata(unsigned long timeout){
-  long t,r;
+  dword t,k;
   char c;
-  for(t = timeout;t!=0;t--){
-    for(r = 0;r!=TIMEOUTMULT;r++);
+  t = g_kthreadInfo.tick;
+  for(;;){
+    k = g_kthreadInfo.tick;
+    if(k > (t+timeout)){
+      return false;
+    }
     c = inportb(status_);
     if(c & 0x80){
       return true;
     }
   }
-  console_->printf("ide:waithdc:timeout.\n");
   return false;
 }
 
 bool IDEDriver::waitready(unsigned long timeout){
-  long t,r;
+  dword t;
   char c;
-  for(t = timeout;t!=0;t--){
-    for(r = 0;r!=TIMEOUTMULT;r++);
+  t = g_kthreadInfo.tick;
+  for(;;){
+    if(g_kthreadInfo.tick > (t+timeout)){
+      return false;
+    }
     c = inportb(status_);
     if(c & 0x80){
       continue;
@@ -101,24 +116,26 @@ bool IDEDriver::waitready(unsigned long timeout){
       return true;
     }
   }
-  console_->printf("ide:waithdc:timeout.\n");
   return false;
 }
 
 
 
-bool IDEDriver::sendcmd(int cmd,char *bfr,int bfrsize/* must be 2n size */){
-  long t;
+bool IDEDriver::sendcmd(int cmd,byte *bfr,int bfrsize/* must be 2n size */){
+  dword t;
   char c;
   waitready(TIMEOUT);
   outportb(status_,cmd);
-  for(;;){ /* long wait */
+  t = g_kthreadInfo.tick;
+  for(;;){
+    if(g_kthreadInfo.tick > (t + TIMEOUT_CMD)){
+      return false;
+    }
     c = inportb(status_);
     if(c & 0x80){
       continue;
     }
     if(c & 0x21){
-      console_->printf("ide:sendcmd:device reports error..\n");
       return false;
     }
     if(c & 0x40){
@@ -166,59 +183,148 @@ bool IDEDriver::initilize() {
     if(c & 0x0e){
       console_->printf("error.");
       HasMaster = false;
+      HasSlave = false;
       return false;
     }else{
       console_->printf("ok.");
       HasMaster = true;
     }
+    
     if(c & 0x80){
-      console_->printf("and there is NO slave drive.\n");
+      console_->printf("(slave device)\n");
       HasSlave = false;
     }else{
-      console_->printf("and there is slave drive.\n");
-      HasSlave = true;
+      console_->printf("(slave device ok or not present)\n");
+      HasSlave = true;/* Maybe */
     }
+    
     if(HasMaster){
       Master = new IDEDevice(this,0);
     }
+    
     if(HasSlave){
       Slave = new IDEDevice(this,1);
     }
-
+    
     console_->printf("\n");
     return true;
 }
 
+bool IDEDriver::setLBA(dword lba,unsigned int device){
+  IDEDevice *d;
+  char c;
+  if((device == 0) && HasMaster ){
+    d = Master;
+  }else if((device == 1) && HasSlave){
+    d = Slave;
+  }else{
+    return false;
+  }
+  if(d->IsSurpportLBA){
+    c = ( lba >> 24 ) & 0xff;
+    c &= 0x0f;
+    c |= 0x40; /* LBA mode */
+    if(device != 0){
+      c |= 0x10;
+    }
+    outportb(head_,c);
+    
+    c = ( lba >> 16 ) & 0xff;
+    outportb(cylinderH_,c);
+    
+    c = ( lba >> 8 ) & 0xff;
+    outportb(cylinderL_,c);
+    
+    c = lba & 0xff;
+    outportb(sector_,c);
+  }else{
+    return false;
+  }
+  return true;
+}
+
+void IDEDriver::setCount(byte count){
+  outportb(count_,count);
+}
+
 unsigned int IDEDevice::device_;
+unsigned int IDEDevice::SectorsPerTrack;
+unsigned int IDEDevice::Tracks;
+unsigned int IDEDevice::Heads;
 IDEDriver* IDEDevice::Bus;
+unsigned int IDEDevice::BytesPerSector;
+unsigned int IDEDevice::TotalSize;
+bool IDEDevice::IsSurpportLBA;
+
 IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
-    char buf[256];
+    byte buf[256];
     int i;
     device_ = device;
     Bus = bus;
-    Bus->senddevice(device_);
-    bus->sendcmd(IDE_CMD_ID,buf,256);
+    Bus->console_->printf("detecting ");
+    if( !Bus->senddevice(device_)){
+      if(device == 0){
+        Bus->console_->printf("Master couldn't select\n");
+        Bus->HasMaster = false;
+        return;
+      }else if(device == 1){
+        Bus->console_->printf("Slave  couldn't select\n");
+        Bus->HasSlave = false;
+        return;
+      }
+    }   
     if(device == 0){
-      Bus->console_->printf("Master:\n");
+      Bus->console_->printf("Master:");
     }else if(device == 1){
-      Bus->console_->printf("Slave:\n");
+      Bus->console_->printf("Slave :");
     }
-    Bus->console_->printf("Name: ");
-    for(i=0;i!=40;i++){
-      Bus->console_->printf("%c",buf[0x1b*2+i]);
+    if(Bus->sendcmd(IDE_CMD_ID,buf,256)){
+      Bus->console_->printf(" Detected.\n");
+      if(device == 0){
+        Bus->HasMaster = true;
+      }else if(device == 1){
+        Bus->HasSlave = true;
+      }
+      Bus->console_->printf("Name   : ");
+      for(i=0;i!=40;i++){
+        Bus->console_->printf("%c",buf[0x1b*2+i]);
+      }
+      Bus->console_->printf("\nVersion: ");
+      for(i=0;i!=8;i++){
+        Bus->console_->printf("%c",buf[0x17*2+i]);
+      }
+      Heads = (buf[0x03*2] << 8) + buf[0x03*2+1];
+      Tracks = (buf[0x01*2] << 8) + buf[0x01*2+1];
+      SectorsPerTrack = (buf[0x06*2] << 8) + buf[0x06*2+1];
+      BytesPerSector = 512;
+      IsSurpportLBA = buf[49*2] & 2;
+      if(IsSurpportLBA){
+        TotalSize = ( ( buf[60*2] << 8 ) + buf[60*2+1] )+( ( ( buf[61*2] << 8 ) + buf[61*2+1] ) << 16);
+        Bus->console_->printf("\ntotalize = %d size = %d MB(LBA Device).\n",TotalSize,TotalSize/2/1024);
+      }else{
+        Bus->console_->printf("\nC/H/S = %d/%d/%d sectorsize = %d size = %d MB (non-LBA Device)\n",Tracks,Heads,SectorsPerTrack,BytesPerSector,Heads*Tracks*SectorsPerTrack/1024*BytesPerSector/1024);
+      }
+      
+    }else{
+      
+      Bus->console_->printf(" Not Found.\n");
+      if(device == 0){
+        Bus->HasMaster = false;
+      }else if(device == 1){
+        Bus->HasSlave = false;
+      }
+      
     }
-    Bus->console_->printf("\nVersion: ");
-    for(i=0;i!=8;i++){
-      Bus->console_->printf("%c",buf[0x17*2+i]);
-    }
-    Bus->console_->printf("\n\n");
+    Bus->console_->printf("\n");
 }
 
 IDEDevice::~IDEDevice(){
 }
 
 bool IDEDevice::read(dword lba, byte* buf) {
-    return true;
+    Bus->setLBA(lba,device_);
+    Bus->setCount(1);
+    return Bus->sendcmd(IDE_CMD_READ,buf,512);
 }
 
 
@@ -226,3 +332,8 @@ bool IDEDevice::write(dword lba, byte* buf) {
     return true;
 }
 
+
+/*
+LBA = ( (cylinder * heads_per_cylinder + heads )
+        * sectors_per_track ) + sector - 1
+*/
