@@ -484,7 +484,10 @@ InterruptHandlers handlers[IHANDLER_NUM] = {
     , {0x64, &arch_irqhandler_4}
     , {0x65, &arch_irqhandler_5}
     , {0x66, &arch_fdchandler}
+#if 0
     , {0x67, &arch_irqhandler_7}
+#endif
+    , {0x67, &arch_dummyhandler}
     , {0x68, &arch_dummyhandler}
     , {0x69, &arch_dummyhandler}
     , {0x6A, &arch_dummyhandler}

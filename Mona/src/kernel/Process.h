@@ -149,6 +149,7 @@ public:
     Process* findProcess(const char* name);
     void setDump();
     PsInfo* readDump();
+    dword* getAllThreadID(dword* threadNum);
 
 private:
     int wakeupEvents();

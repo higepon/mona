@@ -1,3 +1,7 @@
+2004-07-08  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (getAllThreadID): スレッドIDの全リストを得る
+
 2004-07-06  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/DiskDriver.h:[りファクタリング] ファイルを削除

@@ -342,6 +342,34 @@ PsInfo* Scheduler::readDump()
     return info;
 }
 
+dword* Scheduler::getAllThreadID(dword* threadNum)
+{
+    dword* result;
+    dword i     = 0;
+    dword count = 0;
+
+    FOREACH_N(runq, Thread*, thread)  count++;
+    FOREACH_N(waitq, Thread*, thread) count++;
+
+    result = new dword[count];
+    if (result == NULL) return NULL;
+
+    FOREACH_N(runq, Thread*, thread)
+    {
+        result[i] = thread->id;
+        i++;
+    }
+
+    FOREACH_N(waitq, Thread*, thread)
+    {
+        result[i] = thread->id;
+        i++;
+    }
+
+    *threadNum = count;
+    return result;
+}
+
 
 /*----------------------------------------------------------------------
     Node
@@ -516,7 +544,7 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
     ainfo->ebp     = stack;
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
- 
+
    /* fpu (=fninit) */
     ainfo->fpu[0] = 0xFFFF037F;
     ainfo->fpu[1] = 0xFFFF0000;
