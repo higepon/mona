@@ -60,10 +60,14 @@ bool MFDCDriver::interrupt_ = false;
 /*!
     \brief Constructer
 
+    \param  console message out console
     \author HigePon
     \date   create:2003/02/03 update:
 */
-MFDCDriver::MFDCDriver() {
+MFDCDriver::MFDCDriver(VirtualConsole* console) {
+
+    /* set console */
+    console_ = console;
 
     initilize();
     while (true);
@@ -133,8 +137,8 @@ void MFDCDriver::initilize() {
 void MFDCDriver::printStatus(const char* str) const {
 
     byte msr = inportb(FDC_MSR_PRIMARY);
-    _sys_printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
-    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
+    console_->printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
+    console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
               , msr & FDC_MRQ_READY    ? "  ready  ":"not ready"
               , msr & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
               , msr & FDC_NDMA_NOT_DMA ? " Y "      :" N "
@@ -198,7 +202,7 @@ bool MFDCDriver::sendCommand(const byte command[], const byte length) {
         /* check fdc status ready */
         if (!checkMSR(FDC_MRQ_READY)) {
 
-            _sys_printf("MFDCDriver#sendCommand: timeout\n");
+            console_->printf("MFDCDriver#sendCommand: timeout\n");
             return false;
         }
         outportb(FDC_DR_PRIMARY, command[i]);
@@ -221,7 +225,7 @@ bool MFDCDriver::recalibrate() {
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
 
-        _sys_printf("MFDCDriver#calibrate:command fail\n");
+        console_->printf("MFDCDriver#calibrate:command fail\n");
         return false;
     }
     printStatus("before wait");
@@ -266,7 +270,7 @@ bool MFDCDriver::seek(byte track) {
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
 
-        _sys_printf("MFDCDriver#seek:command fail\n");
+        console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
     return true;

@@ -11,6 +11,7 @@
 */
 
 #include<monaTypes.h>
+#include<VirtualConsole.h>
 
 #ifndef _MONA_MFDCDRIVER_
 #define _MONA_MFDCDRIVER_
@@ -20,7 +21,7 @@
 */
 class MFDCDriver {
   public:
-    MFDCDriver();
+    MFDCDriver(VirtualConsole* console);
     ~MFDCDriver();
 
   public:
@@ -39,6 +40,7 @@ class MFDCDriver {
   private:
     byte version_;
     static bool interrupt_;
+    VirtualConsole* console_;
 };
 
 extern MFDCDriver* gMFDCDriver;

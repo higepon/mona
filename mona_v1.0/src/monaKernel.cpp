@@ -83,7 +83,7 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
-    gMFDCDriver = new MFDCDriver();
+    gMFDCDriver = new MFDCDriver(console);
 
     /* test code is here */
 #if 0
