@@ -179,7 +179,7 @@ void moveBackground() {
 void clearBuffer(unsigned char *pbuf)
 {
     int i;
-    for(i=0;i<SCREEN_W*SCREEN_H*3;i++)
+    for(i=0;i<SCREEN_W*SCREEN_H*4;i++)
         pbuf[i]=0xFF;
 }
 

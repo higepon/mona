@@ -49,13 +49,13 @@ void syscall_entrance() {
         g_processManager->kill(g_processManager->getCurrentProcess());
 
         /* Process schedule */
-        g_processManager->schedule();
+        g_processManager->schedule(false);
 
         /* Thread schedule */
         {
             Process* current = g_processManager->getCurrentProcess();
             bool isUser = current->isUserMode();
-            g_currentThread = current->schedule()->getThreadInfo();
+            g_currentThread = current->schedule(true)->getThreadInfo();
 
             /* Thread switch */
             current->switchThread(true, isUser);
@@ -398,6 +398,14 @@ void syscall_entrance() {
          }
 
         break;
+
+    case SYSTEM_CALL_MTHREAD_YIELD_M:
+
+        {
+            Process* process = g_processManager->getCurrentProcess();
+            g_processManager->wait(process, g_currentThread->thread, 55);
+            schedule(false);
+        }
 
     default:
         g_console->printf("syscall:default");

@@ -1,4 +1,10 @@
+2004-02-12  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: メッセージ待ちyiledを追加。
+
 2004-02-11  higepon  <higepon@users.sourceforge.jp>
+
+        * Process.cpp: noiz2bgのバグ修正 thx nikqさん
 
         * kernel.cpp: 最適化オプション-O3
 

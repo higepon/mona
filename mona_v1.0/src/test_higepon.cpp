@@ -196,6 +196,7 @@ int Messenger::send(const char* name, MessageInfo* message) {
     info->from = g_processManager->getCurrentProcess()->getPid();
 
     process->getMessageList()->add(info);
+    g_processManager->wakeup(process, 55);
     return 0;
 }
 
@@ -217,6 +218,7 @@ int Messenger::send(dword pid, MessageInfo* message) {
     *info = *message;
     info->from = g_processManager->getCurrentProcess()->getPid();
     process->getMessageList()->add(info);
+    g_processManager->wakeup(process, 55);
     return 0;
 }
 
@@ -233,20 +235,20 @@ int Messenger::receive(Process* process, MessageInfo* message) {
     return 0;
 }
 
-int Messenger::receive(Process* process, Thread* thread, MessageInfo* message) {
+// int Messenger::receive(Process* process, Thread* thread, MessageInfo* message) {
 
-    MessageInfo* from = process->getMessageList()->get(0);
+//     MessageInfo* from = process->getMessageList()->get(0);
 
-    if (from == (MessageInfo*)NULL) {
+//     if (from == (MessageInfo*)NULL) {
 
-        process->wait(thread, 0x1234);
-        process->schedule();
-    }
+//         g_processManager->wait(process, thread, 55);
+//         process->schedule();
+//     }
 
-    *message = *from;
-    process->getMessageList()->removeAt(0);
-    return 0;
-}
+//     *message = *from;
+//     process->getMessageList()->removeAt(0);
+//     return 0;
+// }
 
 /*----------------------------------------------------------------------
     Screen

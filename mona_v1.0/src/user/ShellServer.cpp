@@ -205,7 +205,7 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_9):
 
         /* map test */
-        printf("message is %s", (char*)0x90000000);
+        //        printf("message is %s", (char*)0x90000000);
         break;
 
     case(VK_TEN_0):

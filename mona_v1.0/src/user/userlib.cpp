@@ -421,7 +421,16 @@ int Message::send(dword pid, MessageInfo* info) {
 }
 
 int Message::receive(MessageInfo* info) {
-    return syscall_receive(info);
+
+    int result = syscall_receive(info);
+
+//     if (result == 0) {
+
+//         syscall_mthread_yeild_message();
+//         result = syscall_receive(info);
+//     }
+
+    return result;
 }
 
 dword Message::lookup(const char* name) {
@@ -1136,6 +1145,21 @@ int syscall_get_arg(char* buf, int n) {
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_GET_ARGUMENTS), "m"(buf), "m"(n)
                  : "ebx", "esi", "ecx"
+                 );
+
+    return (int)result;
+}
+
+int syscall_mthread_yeild_message() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MTHREAD_YIELD_M)
+                 : "ebx"
                  );
 
     return (int)result;

@@ -31,7 +31,7 @@ extern VirtualConsole*g_console;
 /*----------------------------------------------------------------------
     schedule
 ----------------------------------------------------------------------*/
-void schedule();
+void schedule(bool tick);
 
 /*----------------------------------------------------------------------
     Arch dependent functions
@@ -148,8 +148,8 @@ class ThreadManager {
     int killAllThread();
     int kill(Thread* thread);
     int wait(Thread* thread, int waitReason);
-    int wakeup(Thread* thread, int waitReason);
-    Thread* schedule();
+    int wakeup(int waitReason);
+    Thread* schedule(bool tick);
     void printAllThread();
 
     inline Thread* getCurrentThread() const {
@@ -339,8 +339,12 @@ class Process {
         return threadManager_->wait(thread, waitReason);
     }
 
+    inline virtual int wakeup(int waitReason) {
+        return threadManager_->wakeup(waitReason);
+    }
+
     virtual int join(Thread* thread);
-    virtual Thread* schedule();
+    virtual Thread* schedule(bool tick);
     virtual Thread* createThread(dword programCounter);
 
   protected:
@@ -417,7 +421,7 @@ class ProcessManager {
     int sleep(Process* process, dword tick);
     int switchProcess();
     int wait(Process* process, Thread* thread, int waitReason);
-    bool schedule();
+    bool schedule(bool tick);
     inline Process* getCurrentProcess() const {
         return current_;
     }
@@ -436,7 +440,7 @@ class ProcessManager {
     Process* find(dword pid);
     dword lookup(const char* name);
     void wakeup();
-
+    int wakeup(Process* process, int waitReason);
 
   public:
     static const int USER_PROCESS   = 0;
@@ -450,6 +454,7 @@ class ProcessManager {
     PageManager* pageManager_;
     Process* current_;
     Process* idle_;
+    bool isProcessChanged_;
 };
 
 #endif

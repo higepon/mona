@@ -19,20 +19,15 @@
 /*----------------------------------------------------------------------
     schedule
 ----------------------------------------------------------------------*/
-void schedule() {
+void schedule(bool tick) {
 
     /* Process schedule */
-    bool isProcessChanged = g_processManager->schedule();
+    bool isProcessChanged = g_processManager->schedule(tick);
 
     /* Thread schedule */
     Process* current = g_processManager->getCurrentProcess();
     bool isUser = current->isUserMode();
-    g_currentThread = current->schedule()->getThreadInfo();
-
-    /* debug information */
-//     ArchThreadInfo* i = g_currentThread->archinfo;
-//     const char* name = g_processManager->getCurrentProcess()->getName();
-//     g_console->printf("%s eip=%x esp=%x:%x,%x cr3=%x cs=%x\n", name, i->eip, i->ss, i->esp, i->ebp, i->cr3, i->cs);
+    g_currentThread = current->schedule(tick)->getThreadInfo();
 
     /* Thread switch */
     current->switchThread(isProcessChanged, isUser);
@@ -231,21 +226,29 @@ int ThreadManager::wait(Thread* thread, int waitReason) {
 
     dispatchList_->remove(thread);
     waitList_->add(thread);
+    current_ = dispatchList_->get(0);
     return NORMAL;
 }
 
-int ThreadManager::wakeup(Thread* thread, int waitReason) {
+int ThreadManager::wakeup(int waitReason) {
 
-    if (!waitList_->hasElement(thread)) {
-        return 1;
+    Thread* thread;
+
+    for (int i = waitList_->size() - 1; i >=0; i--) {
+
+        thread = waitList_->get(i);
+        if (thread->getWaitReason() != waitReason) {
+            continue;
+        }
+
+        g_console->printf("here%d", waitReason);
+
+        dispatchList_->add(waitList_->removeAt(i));
+        if (dispatchList_->size() == 1) {
+            current_ = thread;
+        }
     }
 
-    if (thread->getWaitReason() != waitReason) {
-        return 2;
-    }
-
-    waitList_->remove(thread);
-    dispatchList_->add(thread);
     return NORMAL;
 }
 
@@ -266,9 +269,11 @@ int ThreadManager::killAllThread() {
     return NORMAL;
 }
 
-Thread* ThreadManager::schedule() {
+Thread* ThreadManager::schedule(bool tick) {
 
-    current_->tick();
+    if (tick) {
+        current_->tick();
+    }
 
     /* thread has time yet */
     if (current_->hasTimeLeft()) {
@@ -315,7 +320,7 @@ void idleThread() {
 ----------------------------------------------------------------------*/
 const int ProcessManager::USER_PROCESS;
 const int ProcessManager::KERNEL_PROCESS;
-ProcessManager::ProcessManager(PageManager* pageManager) : tick_(0) {
+ProcessManager::ProcessManager(PageManager* pageManager) : tick_(0), isProcessChanged_(false) {
 
     /* page manager */
     pageManager_ = pageManager;
@@ -404,15 +409,17 @@ LinearAddress ProcessManager::allocateKernelStack() const {
     return 0x100000 + i * 4096;
 }
 
-bool ProcessManager::schedule() {
+bool ProcessManager::schedule(bool tick) {
 
-    bool      isProcessChanged;
+    bool     isProcessChanged;
     Process* next;
     Process* tmp;
 
     /* tick */
-    this->tick();
-    current_->tick();
+    if (tick) {
+        this->tick();
+        current_->tick();
+    }
 
     /* wakeup */
     wakeup();
@@ -421,7 +428,9 @@ bool ProcessManager::schedule() {
     if (current_->hasTimeLeft()) {
 
         /* next is current */
-        return false;
+        isProcessChanged = isProcessChanged_;
+        isProcessChanged_ = false;
+        return isProcessChanged;
     }
 
     /* round robin */
@@ -429,7 +438,8 @@ bool ProcessManager::schedule() {
     tmp = dispatchList_->removeAt(0);
     dispatchList_->add(tmp);
     next = dispatchList_->get(0);
-    isProcessChanged = next != current_;
+    isProcessChanged = (bool)(next != current_) || (isProcessChanged_);
+    isProcessChanged_ = false;
     current_ = next;
     return isProcessChanged;
 }
@@ -603,11 +613,28 @@ int ProcessManager::wait(Process* process, Thread* thread, int waitReason) {
     }
 
     if (!process->hasActiveThread()) {
+        dispatchList_->remove(process);
+        waitList_->add(process);
+        current_ = dispatchList_->get(0);
+        isProcessChanged_ = true;
+    }
+    return 0;
+}
 
+int ProcessManager::wakeup(Process* process, int waitReason) {
+
+    bool inWait = false;
+
+    if (!dispatchList_->hasElement(process) && !(inWait = waitList_->hasElement(process))) {
+        return -1;
     }
 
+    process->wakeup(waitReason);
 
-
+    if (process->hasActiveThread() && inWait) {
+        waitList_->remove(process);
+        dispatchList_->add(process);
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -678,8 +705,8 @@ Thread* Process::createThread(dword programCounter) {
     return threadManager_->create(programCounter, pageDirectory_);
 }
 
-Thread* Process::schedule() {
-    return threadManager_->schedule();
+Thread* Process::schedule(bool tick) {
+    return threadManager_->schedule(tick);
 }
 
 /*----------------------------------------------------------------------
