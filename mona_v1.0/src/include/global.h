@@ -11,6 +11,7 @@
 #include<VirtualConsole.h>
 #include<FDCDriver.h>
 #include<Semaphore.h>
+#include <sysresource.h> /* (expr) */
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
 
@@ -28,3 +29,7 @@ GLOBAL dword g_demo_step GLOBAL_VAL(0);
 
 /* semaphore */
 GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
+
+/* expr:sysresource */
+GLOBAL BitMap *g_irqmap;
+GLOBAL IRQHandler* g_irqHandlers[16];

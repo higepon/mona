@@ -60,6 +60,32 @@ _arch_dummyhandler:
         popad
         iretd
 
+;;; IRQ handler(expr)
+%macro irqhandler 1
+[global _arch_irqhandler_%1]
+[extern _irqHandler_%1]
+_arch_irqhandler_%1:
+        pushad
+        call _irqHandler_%1
+        popad
+        iretd
+%endmacro
+        irqhandler 0
+        irqhandler 1
+        irqhandler 2
+        irqhandler 3
+        irqhandler 4
+        irqhandler 5
+        irqhandler 6
+        irqhandler 7
+        irqhandler 8
+        irqhandler 9
+        irqhandler 10
+        irqhandler 11
+        irqhandler 12
+        irqhandler 13
+        irqhandler 14
+        irqhandler 15
 
 ;;; fault0dHandler
 _arch_fault0dhandler:

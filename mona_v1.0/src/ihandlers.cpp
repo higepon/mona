@@ -24,6 +24,7 @@
 #include<kthread.h>
 #include<io.h>
 #include<global.h>
+#include <sysresource.h> /* (expr) */
 
 /*!
     \brief key stroke handler
@@ -121,16 +122,37 @@ void MFDCHandler(void) {
     outportb(0x20, 0x20);
 }
 
+/* IRQ Handler (expr) */
+#define IRQHANDLERMaster(x) void irqHandler_##x(void) { g_irqHandlers[x]->process(); outportb(0x20, 0x20); }
+#define IRQHANDLERSlave(x) void irqHandler_##x(void) { g_irqHandlers[x]->process();outportb(0xA0, 0x20); outportb(0x20, 0x20); }
+
+IRQHANDLERMaster(0)
+IRQHANDLERMaster(1)
+IRQHANDLERMaster(2)
+IRQHANDLERMaster(3)
+IRQHANDLERMaster(4)
+IRQHANDLERMaster(5)
+IRQHANDLERMaster(6)
+IRQHANDLERMaster(7)
+IRQHANDLERSlave(8)
+IRQHANDLERSlave(9)
+IRQHANDLERSlave(10)
+IRQHANDLERSlave(11)
+IRQHANDLERSlave(12)
+IRQHANDLERSlave(13)
+IRQHANDLERSlave(14)
+IRQHANDLERSlave(15)
+
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
-     {0x00, &arch_timerhandler}
+     {0x00, &arch_timerhandler} /* IRQ 0 and DIV 0 */
    , {0x01, &arch_keystrokehandler}
-   , {0x02, &arch_dummyhandler}
-   , {0x03, &arch_dummyhandler}
-   , {0x04, &arch_dummyhandler}
-   , {0x05, &arch_dummyhandler}
+   , {0x02, &arch_irqhandler_2}
+   , {0x03, &arch_irqhandler_3}
+   , {0x04, &arch_irqhandler_4}
+   , {0x05, &arch_irqhandler_5}
    , {0x06, &arch_fdchandler}
-   , {0x07, &arch_dummyhandler}
+   , {0x07, &arch_irqhandler_7}
    , {0x08, &arch_dummyhandler}
    , {0x09, &arch_dummyhandler}
    , {0x0A, &arch_dummyhandler}
@@ -163,14 +185,14 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x25, &arch_dummyhandler}
    , {0x26, &arch_dummyhandler}
    , {0x27, &arch_dummyhandler}
-   , {0x28, &arch_dummyhandler}
-   , {0x29, &arch_dummyhandler}
-   , {0x2A, &arch_dummyhandler}
-   , {0x2B, &arch_dummyhandler}
-   , {0x2C, &arch_dummyhandler}
-   , {0x2D, &arch_dummyhandler}
-   , {0x2E, &arch_dummyhandler}
-   , {0x2F, &arch_dummyhandler}
+   , {0x28, &arch_irqhandler_8}
+   , {0x29, &arch_irqhandler_9}
+   , {0x2A, &arch_irqhandler_10}
+   , {0x2B, &arch_irqhandler_11}
+   , {0x2C, &arch_irqhandler_12}
+   , {0x2D, &arch_irqhandler_13}
+   , {0x2E, &arch_irqhandler_14}
+   , {0x2F, &arch_irqhandler_15}
    , {0x30, &arch_dummyhandler}
    , {0x31, &arch_dummyhandler}
    , {0x32, &arch_dummyhandler}

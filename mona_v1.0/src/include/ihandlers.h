@@ -29,4 +29,25 @@ extern "C" void keyStrokeHandler(void);
 extern "C" void dummyHandler(void);
 extern "C" void fault0dHandler(void);
 
+/* expr:IRQ Handler */
+#define IRQHANDLERHEADER(x) extern "C" void irqHandler_##x(void); extern "C" void arch_irqhandler_##x(void)
+IRQHANDLERHEADER(0);
+IRQHANDLERHEADER(1);
+IRQHANDLERHEADER(2);
+IRQHANDLERHEADER(3);
+IRQHANDLERHEADER(4);
+IRQHANDLERHEADER(5);
+IRQHANDLERHEADER(6);
+IRQHANDLERHEADER(7);
+IRQHANDLERHEADER(8);
+IRQHANDLERHEADER(9);
+IRQHANDLERHEADER(10);
+IRQHANDLERHEADER(11);
+IRQHANDLERHEADER(12);
+IRQHANDLERHEADER(13);
+IRQHANDLERHEADER(14);
+IRQHANDLERHEADER(15);
+
+
+
 #endif

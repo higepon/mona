@@ -1,8 +1,15 @@
 #include <IDEDriver.h>
 #include <global.h>
+#include <BitMap.h>
 #include <test_mjt.h>
+#include <sysresource.h>
 #include<pic.h>
 //#include <expr_driver/module.h>
+void test_mjt_init(){
+  g_irqmap = new BitMap(16);
+}
+void test_sysresource(){
+}
 void test_ide(){
     /* IDE TEST routine */
     dword idet;
@@ -26,7 +33,9 @@ void test_ide(){
 }
 
 void test_mjt(void){
+  test_mjt_init();
   test_ide();
+  test_sysresource();
   //test_loadmodule(romfs,"dummy.mod");
 }
 
