@@ -132,31 +132,31 @@ void timerHandler() {
     bool isUser = current->isUserMode();
     g_currentThread = current->schedule()->getThreadInfo();
 
+    ArchThreadInfo* i = g_currentThread->archinfo;
+    const char* name = g_processManager->getCurrentProcess()->getName();
+
+    g_console->printf("%s eip=%x esp=%x:%x,%x cr3=%x cs=%x\n", name, i->eip, i->ss, i->esp, i->ebp, i->cr3, i->cs);
+
     if (isProcessChanged && isUser) {
 
         /* address space & therad switch */
-        //        arch_switch_thread_to_user1();
+        arch_switch_thread_to_user1();
     } else if (!isProcessChanged && isUser) {
 
         /* only thread switch */
-        //        arch_switch_thread_to_user2();
+        arch_switch_thread_to_user2();
     } else if (isProcessChanged && !isUser) {
 
         /* address space & therad switch */
-    g_console->printf("****");
-    //        arch_switch_thread1();
+        arch_switch_thread2();
     } else {
-    g_console->printf("arch");
-    //        arch_switch_thread2();
+        arch_switch_thread1();
     }
-
-    g_console->printf("(%s[%x, %x])\n", g_processManager->getCurrentProcess()->getName(), g_currentThread, g_currentThread->archinfo->esp);
-
-    //    g_process_manager->schedule();
+    /* does not come here */
 }
 
 /*!
-  \brief MFDC handler
+  \brief MFDC handlerp
 
   \author HigePon
   \date   create:2003/02/09 update:2003/09/19
@@ -327,7 +327,9 @@ void cpufaultHandler_b(void){
 }
 
 
-void cpufaultHandler_c(void){
+void cpufaultHandler_c(dword error){
+
+    g_console->printf("error=%x\n", error);
 
     g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
                       , g_stack_view.stack0

@@ -21,7 +21,9 @@ cglobal arch_keystrokehandler
 cglobal arch_dummyhandler
 cglobal arch_syscall_handler
 cglobal arch_cpufaulthandler_e
+cglobal arch_cpufaulthandler_c
 cextern arch_switch_process
+cextern cpufaultHandler_c
 cextern cpufaultHandler_e
 cextern arch_set_stack_view
 cextern MFDCHandler
@@ -135,6 +137,7 @@ cextern cpufaultHandler_%1
 arch_cpufaulthandler_%1:
         pushAll
         changeData
+        call arch_set_stack_view
         call cpufaultHandler_%1
         popAll
         iretd
@@ -148,10 +151,19 @@ arch_cpufaulthandler_%1:
         cpufaulthandler 8
         cpufaulthandler a
         cpufaulthandler b
-        cpufaulthandler c
+;          cpufaulthandler c;;;; removed by higepon
 ;          cpufaulthandler e;;;; removed by higepon
         cpufaulthandler 10
         cpufaulthandler 11
+
+arch_cpufaulthandler_c:
+        pushAll
+        changeData
+        push dword[esp + 48]
+        call cpufaultHandler_c
+        add  esp, 0x04          ; remove error_cd
+        popAll
+        iretd
 
 arch_cpufaulthandler_e:
         pushAll

@@ -131,8 +131,6 @@ arch_switch_thread1:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
-        mov es , word[ebx + 48]      ; restore es
-        mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip

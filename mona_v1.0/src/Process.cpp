@@ -188,14 +188,15 @@ ProcessManager::ProcessManager(PageManager* pageManager) {
     checkMemoryAllocate(waitList_    , "ProcessManager wait     list");
 
     /* create idle process */
-    idle_ = new KernelProcess("Idle", pageManager_->createNewPageDirectory());
+    PageEntry* directory = pageManager_->createNewPageDirectory();
+    pageManager_->setPageDirectory((dword)directory);
+    idle_ = new KernelProcess("Idle", directory);
     checkMemoryAllocate(idle_, "ProcessManager idle memory allcate");
     add(idle_);
     current_ = idle_;
 
     /* create thread for idle process */
     Thread* thread = createThread(idle_, (dword)idleThread);
-    g_console->printf("thread=%x", (Thread*)thread);
     join(idle_, thread);
 }
 

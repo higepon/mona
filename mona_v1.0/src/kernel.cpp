@@ -63,6 +63,12 @@
 char* version = "Mona version.0.1.3 $Date$";
 void mainProcess();
 
+void test81() {for(;;);}
+void test82() {for(;;);}
+void test83() {for(;;);}
+void test84() {for(;;);}
+void test85() {for(;;);}
+
 /*!
     \brief  mona kernel start at this point
 
@@ -116,11 +122,11 @@ void startKernel(void) {
      Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
      g_processManager->join(testProcess1, testThread1);
 
-//     /* add testProces2(testThread2) */
-//     Process* testProcess2 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST2");
-//     g_processManager->add(testProcess2);
-//     Thread*   testThread2  = g_processManager->createThread(testProcess2, (dword)printBanner);
-//     g_processManager->join(testProcess2, testThread2);
+     /* add testProces2(testThread2) */
+//      Process* testProcess2 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST2");
+//      g_processManager->add(testProcess2);
+//      Thread*   testThread2  = g_processManager->createThread(testProcess2, (dword)printBanner);
+//      g_processManager->join(testProcess2, testThread2);
 
 //     /* add testProces3(testThread3) */
 //     Process* testProcess3 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST3");
@@ -162,22 +168,22 @@ void startKernel(void) {
 //     g_processManager->join(testProcess7, testThread10);
 
     /* add testProces8(testThread8) */
-//     Process* testProcess8 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST8");
-//     g_processManager->add(testProcess8);
-//     Thread*   testThread11 = g_processManager->createThread(testProcess8, (dword)printBanner);
-//     g_processManager->join(testProcess8, testThread11);
+    Process* testProcess8 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST8");
+    g_processManager->add(testProcess8);
+    Thread*   testThread11 = g_processManager->createThread(testProcess8, (dword)test81);
+    g_processManager->join(testProcess8, testThread11);
 
-//     Thread*   testThread12  = g_processManager->createThread(testProcess8, (dword)printBanner);
-//     g_processManager->join(testProcess8, testThread12);
+    Thread*   testThread12  = g_processManager->createThread(testProcess8, (dword)test82);
+    g_processManager->join(testProcess8, testThread12);
 
-//     Thread*   testThread13  = g_processManager->createThread(testProcess8, (dword)printBanner);
-//     g_processManager->join(testProcess8, testThread13);
+    Thread*   testThread13  = g_processManager->createThread(testProcess8, (dword)test83);
+    g_processManager->join(testProcess8, testThread13);
 
-//     Thread*   testThread14  = g_processManager->createThread(testProcess8, (dword)printBanner);
-//     g_processManager->join(testProcess8, testThread14);
+    Thread*   testThread14  = g_processManager->createThread(testProcess8, (dword)test84);
+    g_processManager->join(testProcess8, testThread14);
 
-//     Thread*   testThread15  = g_processManager->createThread(testProcess8, (dword)printBanner);
-//     g_processManager->join(testProcess8, testThread15);
+    Thread*   testThread15  = g_processManager->createThread(testProcess8, (dword)test85);
+    g_processManager->join(testProcess8, testThread15);
 
 
     /* initilize keyboard */
