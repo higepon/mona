@@ -7,19 +7,19 @@
 /*----------------------------------------------------------------------
     Point (x, y)の座標管理
 ----------------------------------------------------------------------*/
-class Point {
+class Point2D {
   public:
-    Point(int x, int y) {
+    Point2D(int x, int y) {
         this->x = x;
         this->y = y;
     }
 
-    Point(Point* point) {
+    Point2D(Point2D* point) {
         this->x = point->x;
         this->y = point->y;
     }
 
-    virtual ~Point() {}
+    virtual ~Point2D() {}
 
   public:
     int x;
@@ -69,7 +69,7 @@ class ReversiBoard : public MonAPI::Observable {
   public:
     int countPieces(int piece);
     int getPiece(int x, int y);
-    int getPiece(Point* point);
+    int getPiece(Point2D* point);
     int getCurrentHand() const;
     bool setPieces(int x, int y, int piece);
     bool existNotReversedPieces();
@@ -101,7 +101,7 @@ class ReversiBoard : public MonAPI::Observable {
     int board[8][8];
     int turn;
     int currentHand;
-    List<Point*>* allNotReversedPieces;
+    List<Point2D*>* allNotReversedPieces;
     List<Point3D*>* allTurns;
 
 };

@@ -10,7 +10,7 @@ using namespace System;
 using namespace System::Drawing;
 using namespace System::Mona::Forms;
 
-#define PIECE_SIZE 15
+#define PIECE_SIZE 25
 #define BOARD_SIZE (PIECE_SIZE * 8)
 
 class ReversiForm : public Form, public MonAPI::Observer
@@ -22,7 +22,7 @@ private:
     _P<ReversiBoard> board;
 
 public:
-    ReversiForm()
+    ReversiForm(_P<Bitmap> white, _P<Bitmap> black)
     {
         this->InitializeComponent();
 
@@ -35,7 +35,7 @@ public:
         {
             for (int y = 0; y < 8; y++)
             {
-                this->pieces[x][y] = new Piece(board->getPiece(x, y), x, y);
+                this->pieces[x][y] = new Piece(board->getPiece(x, y), x, y, white, black);
                 this->pieces[x][y]->set_Bounds(Rectangle(x * PIECE_SIZE, y * PIECE_SIZE, PIECE_SIZE, PIECE_SIZE));
                 this->pieces[x][y]->add_Click(new EventHandler<ReversiForm>(this, &ReversiForm::piece_Click));
                 this->get_Controls()->Add(this->pieces[x][y].get());
@@ -118,7 +118,7 @@ private:
         }
         else
         {
-            ::Point* point = (::Point*)e;
+            Point2D* point = (::Point2D*)e;
             int x = point->x;
             int y = point->y;
             this->pieces[x][y]->SetState(this->board->getPiece(x, y));
@@ -131,7 +131,16 @@ private:
 public:
     static void Main(Array<String> args)
     {
-        Application::Run(new ReversiForm());
+        _P<Bitmap> bitmapWhite = new Bitmap("/WHITE.BMP");
+        _P<Bitmap> bitmapBlack = new Bitmap("/BLACK.BMP");
+
+        if (bitmapBlack.get() == NULL || bitmapWhite.get() == NULL)
+        {
+            Console::WriteLine("Can not open resource file!");
+            return;
+        }
+
+        Application::Run(new ReversiForm(bitmapWhite, bitmapBlack));
     }
 };
 

@@ -12,7 +12,7 @@ Piece::Piece() : state(ReversiBoard::EMPTY)
 {
 }
 
-Piece::Piece(int state, int x, int y) : state(state), x(x), y(y)
+Piece::Piece(int state, int x, int y, _P<Bitmap> white, _P<Bitmap> black) : state(state), x(x), y(y), white(white), black(black)
 {
 }
 
@@ -22,7 +22,9 @@ Piece::~Piece()
 
 void Piece::OnPaint()
 {
+    Control::OnPaint();
     _P<Graphics> g = this->CreateGraphics();
+
     int w = this->get_Width();
     int h = this->get_Height();
 
@@ -30,21 +32,19 @@ void Piece::OnPaint()
 
     if (this->state == ReversiBoard::BLACK)
     {
-        c = ::System::Drawing::Color::get_Black();
+        g->DrawImage(this->black, 0, 0);
     }
     else if (this->state == ReversiBoard::WHITE)
     {
-        c = ::System::Drawing::Color::get_White();
+        g->DrawImage(this->white, 0, 0);
     }
     else
     {
-        c = ::System::Drawing::Color::FromArgb(120, 2, 2);
-//        c = ::System::Drawing::Color::FromArgb(50, 120, 2, 2);
+        c = ::System::Drawing::Color::get_Black();
+        g->FillRectangle(c, 0, 0, w, h);
     }
 
-    g->FillRectangle(c, 0, 0, w, h);
-    g->DrawRectangle(::System::Drawing::Color::get_Black(), 0, 0, w, h);
-
+    g->DrawRectangle(::System::Drawing::Color::get_White(), 0, 0, w, h);
     g->Dispose();
 }
 

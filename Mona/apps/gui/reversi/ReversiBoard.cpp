@@ -47,7 +47,7 @@ int ReversiBoard::getPiece(int x, int y) {
  * @param  point 駒の位置
  * @return 駒 盤面の範囲外の場合は<code>ReversiBoard.EMPTY</code>
  */
-int ReversiBoard::getPiece(Point* point) {
+int ReversiBoard::getPiece(Point2D* point) {
     return getPiece(point->x, point->y);
 }
 
@@ -62,7 +62,7 @@ int ReversiBoard::getCurrentHand() const {
 /**
  * 指定された位置に駒を置く。<BR>
  * 駒が置けた場合、置いた場所を示す。<BR>
- * <code>Point</code>がnotifyObserversで<BR>
+ * <code>Point2D</code>がnotifyObserversで<BR>
  * 監視元に通知される
  * @param x (x, y) 駒の位置
  * @param y (x, y) 駒の位置
@@ -99,7 +99,7 @@ bool ReversiBoard::setPiece(int x, int y, int piece) {
 
     // 変更をObserverに通知
     this->setChanged();
-    Point* p = new Point(x, y);
+    Point2D* p = new Point2D(x, y);
     this->notifyObservers(p);
     delete p;
     this->clearChanged();
@@ -125,20 +125,20 @@ bool ReversiBoard::existNotReversedPieces() {
 
 /**
  * 次の駒を裏返す<BR>
- * 裏返した場所を示す<code>Point</code>がnotifyObserversで監視元に通知される
+ * 裏返した場所を示す<code>Point2D</code>がnotifyObserversで監視元に通知される
  * existNotReversedPieces()の使用方法を参照
  */
 void ReversiBoard::reverseNext() {
 
     // 裏返す位置を取得
-    Point* point = allNotReversedPieces->get(0);
+    Point2D* point = allNotReversedPieces->get(0);
 
     // 裏返す
     reversePiece(point->x, point->y);
 
     // 変更を通知
     this->setChanged();
-    notifyObservers(new Point(point));
+    notifyObservers(new Point2D(point));
     this->clearChanged();
 
     // 裏返したので位置を消去
@@ -266,7 +266,7 @@ void ReversiBoard::initBoard() {
     board[3][4] = WHITE;
 
     // 裏返すべき駒のすべて位置を記憶するList初期化
-    allNotReversedPieces = new HList<Point*>();
+    allNotReversedPieces = new HList<Point2D*>();
 
     return;
 }
@@ -320,7 +320,7 @@ int ReversiBoard::countReversiblePieceToOneAngle(int x, int y, int toX,int toY
         if (board[x][y] == turnColor(piece)) {
 
             // 裏返せる駒の位置を記憶
-            if (recordFlag) allNotReversedPieces->add(new Point(x, y));
+            if (recordFlag) allNotReversedPieces->add(new Point2D(x, y));
 
             // 駒数インクリメント
             result++;
@@ -379,7 +379,7 @@ bool ReversiBoard::recordReversiblePieces(int x, int y, int piece) {
 
     // 駒位置記憶オブジェクトを初期化
     delete allNotReversedPieces;
-    allNotReversedPieces = new HList<Point*>();
+    allNotReversedPieces = new HList<Point2D*>();
 
     // 裏返せる位置を記憶
     countReversiblePieceToOneAngle(x, y,  1,  0, piece, true);

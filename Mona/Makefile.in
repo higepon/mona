@@ -22,6 +22,8 @@ install:
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/AUTOEXEC.MSH AUTOEXEC.MSH
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA.CFG MONA.CFG
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/NEKO.JPG NEKO.JPG
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/BLACK.BMP BLACK.BMP
+	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/WHITE.BMP WHITE.BMP
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(BINDIR)/root/MONA-12.MNF MONA-12.MNF
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/WABA.LIB  APPS/WABA.LIB
 	$(BINDIR)/fat_write.exe $(BINDIR)/mona.img $(APPSDIR)/non-gui/waba/HELLO.WRP APPS/HELLO.WRP
