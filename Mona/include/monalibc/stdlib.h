@@ -41,7 +41,8 @@ long int strtol(const char *s, char **endptr, int base);
 unsigned long int strtoul(const char *s, char **endptr, int base);
 size_t strtoi(const char *s, char **endptr, int base, int width, char flag);
 int atoi(const char *s);
-int itos(char *s, int n, int width, int base, char flag);
+int itos(char *s, int n, int width, unsigned int base, char flag);
+int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag);
 int ftos(char *s, double n, int width, int precision, char flag);
 
 #ifdef __cplusplus
