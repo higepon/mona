@@ -1,4 +1,4 @@
-2004-05-20  tino  <tino@users.sourceforge.jp>
+2004-05-21  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell/Shell.cpp: 混信チェックコード追加 (/// temporary)
 
