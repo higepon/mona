@@ -1,3 +1,9 @@
+2004-04-23  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: マウスカーソルの初期位置を画面中央.
+
+        * apps/gui/2chAA/Form1.cpp (class Form1): DoEvents()の実装例として追加してみた。
+
 2004-04-23  tino  <tino@users.sourceforge.jp>
 
         * env/*.env: EXEEXT追加

@@ -1,0 +1,6 @@
+*.o
+*.bin
+*.list
+*.map
+*.local
+TAGS
