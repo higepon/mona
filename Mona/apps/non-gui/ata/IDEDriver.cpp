@@ -16,6 +16,8 @@
 
 using namespace MonAPI;
 
+//#define DEBUG_READ_TRACE
+
 /*----------------------------------------------------------------------
     IDEDRIVER
 ----------------------------------------------------------------------*/
@@ -92,6 +94,11 @@ bool IDEDriver::findDevice(int type, int detail, int* controller, int* deviceNo)
 
 int IDEDriver::read(dword lba, void* buffer, int size)
 {
+#ifdef DEBUG_READ_TRACE
+    void* buffer2 = buffer;
+    logprintf("read lba=%d size=%x start\n", lba, size);
+#endif
+
     if (this->whichController == NULL) return 1;
 
     if (this->whichController->selectedDevice->type == DEVICE_ATAPI)
@@ -121,6 +128,16 @@ int IDEDriver::read(dword lba, void* buffer, int size)
 
             if (!readResult) return getLastError();
         }
+
+#ifdef DEBUG_READ_TRACE
+        byte* p = (byte*)buffer2;
+        for (int k= 0; k < size; k++)
+        {
+            logprintf("[%d:%x]", k, p[k]);
+        }
+        logprintf("\n\n");
+#endif
+
         return 0;
     }
     else if (this->whichController->selectedDevice->type == DEVICE_ATA)
@@ -204,8 +221,10 @@ void IDEDriver::outp16(IDEController* controller, word* data, int length)
     }
 }
 
-void IDEDriver::inp16(IDEController* controller, word* data, int length)
+void IDEDriver::inp16(IDEController* controller, word* data, int size)
 {
+    int length = size / 2;
+
     if (data == NULL)
     {
         for (int i = 0; i < length; i++)
@@ -272,7 +291,6 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
     atapiReadDone      = false;
     atapiTotalReadSize = command->limit;
 
-
     if (!selectDevice(controller, command->deviceNo))
     {
         this->lastError = SELECTION_ERROR;
@@ -313,8 +331,16 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
         return false;
     }
 
+#if 1
+	    dword *p = (dword*)((byte*)atapiBuffer + 2048);
+	    logprintf("%s:%d ", __FILE__, __LINE__);
+            logprintf("*p=%x\n", *p);
+#endif
+
+
+
     outp16(controller, (word*)command->packet, 6);
-    for (i = 0; i <= ATA_TIMEOUT; i++)
+    for (i = 0; i < ATA_TIMEOUT; i++)
     {
         byte status = inp8(controller, ATA_ASR);
 
@@ -338,6 +364,7 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
         this->lastError = BUSY_TIMEOUT_ERROR;
         return false;
     }
+
     return true;
 }
 
@@ -465,26 +492,56 @@ void IDEDriver::protocolInterrupt()
     byte status = inp8(whichController, ATA_STR);
     byte reason = inp8(whichController, ATA_IRR);
 
+
+#if 1
+    Log("atapiBuffer=%x\n", atapiBuffer);
+#endif
+
     /* read */
     if (((reason & BIT_IO) != 0) && ((reason & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
     {
         word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
         atapiTransferSize += transferSize;
 
+#if 1
+        Log("transferSize=%d\n", transferSize);
+        Log("atapiTransferSize=%d\n", atapiTransferSize);
+        Log("atapiBuffer=%x\n", atapiBuffer);
+#endif
+
+
         if (atapiTransferSize > atapiTotalReadSize)
         {
+#if 1
+            Log("null read\n");
+#endif
             inp16(whichController, NULL, transferSize);
         }
         else
         {
+#if 1
+	    dword *p = (dword*)((byte*)atapiBuffer + 2048);
+            Log("*p=%x\n", *p);
+            Log("not null read");
+
+#endif
             inp16(whichController, (word*)atapiBuffer, transferSize);
+
+#if 1
+            Log("*p=%x\n", *p);
+
+#endif
             atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
+#if 1
+        Log("atapiBuffer=%x\n", atapiBuffer);
+#endif
         }
     }
 
     /* read / write done */
     if (((reason & BIT_IO)!=0) && ((reason & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
     {
+        Log("read end");
         atapiReadDone = true;
     }
 }

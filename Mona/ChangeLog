@@ -1,3 +1,7 @@
+2004-11-23  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/ISO9660.cpp : CDからファイルが読めた。
+
 2004-11-21  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/MemoryManager.cpp : ユーザー側malloc時に情報ブロック破壊検出ロジックを追加
