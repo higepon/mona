@@ -8,9 +8,9 @@ int MonaMain(List<char*>* pekoe)
 {
     if (!monapi_register_to_server(ID_KEYBOARD_SERVER, 1)) exit(1);
     if (!monapi_register_to_server(ID_PROCESS_SERVER, 1)) exit(1);
-    bool callAutoExec = true;
 
     /* Server start ok */
+    bool callAutoExec = true;
     dword targetID = Message::lookupMainThread("INIT");
     if (targetID == THREAD_UNKNOWN)
     {
