@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         printf("can not create file");
     }
 
-    if (!fat->open(".", "HIGE.CPP", FAT12::READ_MODE)) {
+    if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
 
         printf("open failed");
     }
@@ -68,6 +68,11 @@ int main(int argc, char *argv[]) {
     if (!fat->write(text, 50)) {
 
         printf("write failed");
+    }
+
+
+    if (!fat->close()) {
+        printf("close failed");
     }
 
     //      memset(text, 0x44, 512);

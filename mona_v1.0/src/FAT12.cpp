@@ -35,7 +35,8 @@ const int FAT12::DRIVER_WRITE_ERROR = 7;
 const int FAT12::PATH_LENGTH        = 512;
 const char FAT12::PATH_SEP          = '\\';
 
-const int FAT12::READ_MODE = 0;
+const int FAT12::READ_MODE  = 0;
+const int FAT12::WRITE_MODE = 1;
 
 /*!
   \brief initilize
@@ -443,6 +444,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
             isOpen_         = true;
             readHasNext_    = true;
             firstWrite_     = true;
+	    openMode_       = mode;
             currentEntry_ = &(entries_[j]);
             printf("flie %s found\n", filename);
             return true;
@@ -453,7 +455,18 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 }
 
 bool FAT12::close() {
+
     isOpen_ = false;
+
+    if (openMode_ == WRITE_MODE) {
+
+	writeEntry();
+
+	if (!writeFAT()) {
+	    readFAT(false);
+	    return false;
+	}
+    }
     return true;
 }
 
@@ -636,24 +649,16 @@ bool FAT12::write(byte* buffer, int size) {
         currentCluster_ = nextCluster;
     }
 
-    int lbp = clusterToLbp(currentCluster_);
-
+    /* size check */
     memset(buffer + size, 0, 512 - size);
-
     (currentEntry_->filesize) += size;
 
-    writeEntry();
-
+    /* write buffer to Disk */
+    int lbp = clusterToLbp(currentCluster_);
     if (!(driver_->write(lbp, buffer))) {
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
-
-    if (!writeFAT()) {
-        readFAT(false);
-        return false;
-    }
-
     return true;
 }
 
