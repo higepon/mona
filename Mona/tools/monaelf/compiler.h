@@ -1,7 +1,7 @@
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
-#if defined(HOST_LINUX2) || defined(HOST_LINUX3)
+#if defined(__linux__)
 #include	<sys/io.h>
 #else
 #include	<io.h>
