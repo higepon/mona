@@ -92,7 +92,7 @@ bool FAT12::initilize() {
 
 
     int rootEntryStart = bpb_.reservedSectorCount
-                       + bpb_.fatSize16 * bpb_.numberFats;
+        + bpb_.fatSize16 * bpb_.numberFats;
 
     if (!(driver_->read(rootEntryStart, buf_))) return false;
 
@@ -131,20 +131,20 @@ bool FAT12::initilize() {
 
     printf("size of entry[10]=%d", entry[10].filesize);
 
-    do {
+//      do {
 
-        int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
+//          int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
 
-        if (!(driver_->read(lbp, buf_))) return false;
+//          if (!(driver_->read(lbp, buf_))) return false;
 
-        for (int k = 0; k < 512 && size > 0; k++, size--) {
-            printf("%c", (char)buf_[k]);
-        }
+//          for (int k = 0; k < 512 && size > 0; k++, size--) {
+//              printf("%c", (char)buf_[k]);
+//          }
 
-        cluster = getFATAt(cluster);
-        printf("cluster = %d \n", cluster);
+//          cluster = getFATAt(cluster);
+//          printf("cluster = %d \n", cluster);
 
-   } while (0xff8 > cluster);
+//      } while (0xff8 > cluster);
 
     printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
 
@@ -182,20 +182,22 @@ bool FAT12::initilize() {
 
     printf("size of entry[2]=%d", entry[2].filesize);
 
-    do {
+//      do {
 
-        int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
+//          int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
 
-        if (!(driver_->read(lbp, buf_))) return false;
+//          if (!(driver_->read(lbp, buf_))) return false;
 
-        for (int k = 0; k < 512 && size > 0; k++, size--) {
-            printf("%c", (char)buf_[k]);
-        }
+//          for (int k = 0; k < 512 && size > 0; k++, size--) {
+//              printf("%c", (char)buf_[k]);
+//          }
 
-        cluster = getFATAt(cluster);
-        printf("cluster = %d \n", cluster);
+//          cluster = getFATAt(cluster);
+//          printf("cluster = %d \n", cluster);
 
-   } while (0xff8 > cluster);
+//      } while (0xff8 > cluster);
+
+    printf("%s", strtok("yyyy/mm/dd", "/"));
 
     return true;
 }
@@ -214,7 +216,7 @@ bool FAT12::isFAT12() {
     int countOfClusters;
 
     rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1))
-                   / bpb_.bytesPerSector;
+        / bpb_.bytesPerSector;
 
     totalSector = (bpb_.totalSector16 != 0) ? bpb_.totalSector16 : bpb_.totalSector32;
     dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFats * bpb_.fatSize16) + rootDirSectors);
@@ -331,9 +333,9 @@ bool FAT12::changeDirectory(const char* path) {
 
         char* rpath = getPathAt(path, i);
 
-	printf("try to cdr to %s", rpath);
+        printf("try to cdr to %s", rpath);
 
-        if (!changeDirectoryRelative(path)) {
+        if (!changeDirectoryRelative(rpath)) {
 
             errNum_ = NOT_DIR_ERROR;
             currentCluster_ = currentCluster;
@@ -395,8 +397,8 @@ char* FAT12::getPathAt(const char* path, int index) const {
         }
     }
 
-    path += start;
-    strncpy(buff, path, end - start);
+    path += (start - 1);
+    strncpy(buff, path, end - start + 1);
 
     return buff;
 }

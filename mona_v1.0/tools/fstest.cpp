@@ -24,10 +24,10 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
-    if (!fat->changeDirectory("SOMEDIR\\DIR1")) {
-        printf("changeDirectory failed");
-        return -1;
-    }
+//      if (!fat->changeDirectory("SOMEDIR\\DIR1")) {
+//          printf("changeDirectory failed");
+//          return -1;
+//      }
 
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         printf("some dir not found");
@@ -62,3 +62,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+

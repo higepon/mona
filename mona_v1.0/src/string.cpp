@@ -117,7 +117,7 @@ void* memcpy(void* s1, const void* s2, size_t size) {
 
 char* strncpy(char* s1, const char* s2, size_t n) {
 
-    char* p = s;
+    char* p = s1;
 
     for (; n > 0; n--) {
 
@@ -127,9 +127,63 @@ char* strncpy(char* s1, const char* s2, size_t n) {
         s2++;
     }
 
-    whlie (n > 1) {
+    while (n > 1) {
         n--;
         *p = '\0';
     }
     return s1;
+}
+
+char* strtok(char* str, const char* delim) {
+
+    static char* place;
+    char* token;
+    int   length;
+
+    if (str != NULL) {
+
+        token = str + strspn(str, delim);
+    } else {
+
+        if (place[0] == '\0') return NULL;
+        token = place + strspn(place, delim);
+
+    }
+
+    length = strcspn(token, delim);
+
+    if (token[length] == '\0') {
+
+        place = token + length;
+    } else {
+
+        token[length] = '\0';
+        place = token + length + 1;
+    }
+}
+
+size_t strspn(const char* str1, const char* str2) {
+
+    const char* const head = str1;
+
+    for (; *str1; str1++) {
+
+        const char* t;
+        for (t = str2; *t != *str1; t++) {
+
+            if (*t == '\0') return str1 - head;
+        }
+    }
+    return str1 - head;
+}
+
+size_t strcspn(const char* str1, const char* str2) {
+
+    const char* const head = str1;
+    const char* t;
+    for (; *str1; str1++) {
+
+        for (t = str2; *t; t++) if (*t == *str1) return str1 - head;
+    }
+        return str1 - head;
 }
