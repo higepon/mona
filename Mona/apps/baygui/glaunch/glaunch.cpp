@@ -27,6 +27,107 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
+/**
+ アプリケーションランチャー
+*/
+class Glaunch : public Window {
+private:
+	int prevIndex;
+	ListBox *list;
+
+public:
+	Glaunch() {
+		char name[15];
+		int size, attr;
+
+		setRect(0, 22, 108 + INSETS_LEFT + INSETS_RIGHT, 250 + INSETS_TOP + INSETS_BOTTOM);
+		setTitle("mokon");
+		
+		// 前回の選択位置
+		prevIndex = -1;
+		
+		// アプリ一覧リスト
+		list = new ListBox();
+		list->setRect(0, 0, 108, 250);
+		add(list);
+
+		// APPSに移動
+		if (syscall_cd("/APPS/BAYGUI") != 0) {
+			return;
+		}
+
+		// ディレクトリを開く
+		if (syscall_dir_open()) {
+			return;
+		}
+
+		// ディレクトリ内のファイル検索
+		while (syscall_dir_read(name, &size, &attr) == 0) {
+			if ((attr & ATTRIBUTE_DIRECTORY) != 0) {
+				// . と .. は除外する
+				if (strcmp(name,".") != 0 &&
+					strcmp(name,"..") != 0)
+				{
+					list->add(name);
+				}
+			} else {
+				// BayGUIアプリのみをピックアップ (*.EX5)
+				// GLAUNCHとGSHELLは対象からはずす
+				if (name[strlen(name) - 1] == '5' && 
+					strcmp(name,"GLAUNCH.EX5") != 0 &&
+					strcmp(name,"GSHELL.EX5") != 0)
+				{
+					list->add(name);
+				}
+			}
+		}
+		syscall_dir_close();
+	}
+
+	virtual ~Glaunch() {
+		delete(list);
+	}
+
+	/** アプリ実行 */
+	void execute() {
+		char name[24];
+		char *item = list->getSelectedItem();
+		if (prevIndex != -1 && item != NULL && strlen(item) > 0) {
+			strcpy(name, "/APPS/BAYGUI/");
+			strcat(name, item);
+			// *.APP の場合
+			if (item[strlen(item) - 1] == 'P') {
+				strcat(name, "/");
+				strcat(name, item);
+				// 拡張子をAPPからEX5に変換
+				name[strlen(name) - 3] = 'E';
+				name[strlen(name) - 2] = 'X';
+				name[strlen(name) - 1] = '5';
+			}
+			// アプリ実行
+			prevIndex = -1;
+			monapi_call_process_execute_file(name, MONAPI_FALSE);
+		}
+	}
+
+	/** イベントハンドラ */
+	virtual void onEvent(Event *event) {
+		if (event->type == ITEM_SELECTED) {
+			// 前の選択位置と同じ（ダブルクリック）
+			if (prevIndex == list->getSelectedIndex()) {
+				execute();
+			} else {
+				prevIndex = list->getSelectedIndex();
+			}
+		} else if (event->type == KEY_PRESSED) {
+			// ENTERキー押下
+			if (((KeyEvent *)event)->keycode == VKEY_ENTER) {
+				execute();
+			}
+		}
+	}
+};
+
 /** モナーアイコン（パレット） */
 static unsigned int monaIconPalette [4] = {
 	0xffc0c0c0,
@@ -222,118 +323,27 @@ static unsigned char trashboxIconData [32][32] = {
 	{0x4,0x4,0x4,0x4,0x4,0x4,0x4,0x8,0x0,0x0,0x0,0x0,0x0,0x8,0x8,0x8,0x8,0x0,0x0,0x0,0x0,0x0,0x8,0x8,0x4,0x4,0x4,0x4,0x4,0x4,0x4,0x4},
 };
 
-/**
- アプリケーションランチャー
-*/
-class Mokon : public Window {
+#define DISKICON      0
+#define TERMINALICON  1
+#define TRASHBOXICON  2
+
+class ShortCut : public Window {
 private:
-	int prevIndex;
-	ListBox *list;
+	int type;
 
 public:
-	Mokon() {
-		char name[15];
-		int size, attr;
-
-		setRect(0, 22, 108 + INSETS_LEFT + INSETS_RIGHT, 250 + INSETS_TOP + INSETS_BOTTOM);
-		setTitle("mokon");
-		
-		// 前回の選択位置
-		prevIndex = -1;
-		
-		// アプリ一覧リスト
-		list = new ListBox();
-		list->setRect(0, 0, 108, 250);
-		add(list);
-
-		// APPSに移動
-		if (syscall_cd("/APPS/BAYGUI") != 0) {
-			return;
+	ShortCut(int type) {
+		this->type = type;
+		if (this->type == DISKICON) {
+			setRect(720, 22, 64, 64);
+			setTitle("Mona HD");
+		} else if (this->type == TERMINALICON) {
+			setRect(720, 86, 64, 64);
+			setTitle("た～みなる");
+		} else if (this->type == TRASHBOXICON) {
+			setRect(720, 510, 64, 64);
+			setTitle("ゴミ箱");
 		}
-
-		// ディレクトリを開く
-		if (syscall_dir_open()) {
-			return;
-		}
-
-		// ディレクトリ内のファイル検索
-		while (syscall_dir_read(name, &size, &attr) == 0) {
-			if ((attr & ATTRIBUTE_DIRECTORY) != 0) {
-				// . と .. は除外する
-				if (strcmp(name,".") != 0 &&
-					strcmp(name,"..") != 0)
-				{
-					list->add(name);
-				}
-			} else {
-				// BayGUIアプリのみをピックアップ (*.EX5)
-				// GLAUNCHとGSHELLは対象からはずす
-				if (name[strlen(name) - 1] == '5' && 
-					strcmp(name,"GLAUNCH.EX5") != 0 &&
-					strcmp(name,"GSHELL.EX5") != 0)
-				{
-					list->add(name);
-				}
-			}
-		}
-		syscall_dir_close();
-	}
-
-	virtual ~Mokon() {
-		delete(list);
-	}
-
-	/** アプリ実行 */
-	virtual void Mokon::execute() {
-		char name[24];
-		char *item = list->getSelectedItem();
-		if (prevIndex != -1 && item != NULL && strlen(item) > 0) {
-			strcpy(name, "/APPS/BAYGUI/");
-			strcat(name, item);
-			// *.APP の場合
-			if (item[strlen(item) - 1] == 'P') {
-				strcat(name, "/");
-				strcat(name, item);
-				// 拡張子をAPPからEX5に変換
-				name[strlen(name) - 3] = 'E';
-				name[strlen(name) - 2] = 'X';
-				name[strlen(name) - 1] = '5';
-			}
-			// アプリ実行
-			prevIndex = -1;
-			monapi_call_process_execute_file(name, MONAPI_FALSE);
-		}
-	}
-
-	/** イベントハンドラ */
-	virtual void onEvent(Event *event) {
-		if (event->type == ITEM_SELECTED) {
-			// 前の選択位置と同じ（ダブルクリック）
-			if (prevIndex == list->getSelectedIndex()) {
-				execute();
-			} else {
-				prevIndex = list->getSelectedIndex();
-			}
-		} else if (event->type == KEY_PRESSED) {
-			// ENTERキー押下
-			if (((KeyEvent *)event)->keycode == VKEY_ENTER) {
-				execute();
-			}
-		}
-	}
-};
-
-/**
- アプリケーションランチャー
-*/
-class GLaunch : public Window {
-public:
-	GLaunch() {
-		setRect(0, 0, 800, 600);
-		setTitle("window");
-	}
-
-	virtual ~GLaunch() {
 	}
 
 	/** ウィンドウ生成時に呼ばれる */
@@ -345,166 +355,90 @@ public:
 
 	/** 再描画 */
 	virtual void repaint() {
-		int w, h;
-		
 		if (this->_buffer == NULL) return;
 		
-		w = this->width;
-		h = this->height;
+		int w = this->width;
+		int h = this->height;
 		
-		// 背景塗りつぶし
-		_g->setColor(0xfffcfcfc);
-		_g->fillRect(0,0,w,h);
 		__g->setColor(0xfffcfcfc);
 		__g->fillRect(0,0,w,h);
 		
-		// メニューバー
-		__g->setColor(COLOR_LIGHTGRAY);
-		__g->fillRect(0,0,w,20);
-		__g->setColor(COLOR_GRAY);
-		__g->drawLine(0,20,w-1,20);
+		for (int i = 0; i < 32; i++) {
+			for (int j = 0; j < 32; j++) {
+				// ディスクアイコン
+				if (this->type == DISKICON) {
+					__g->drawPixel(16 + j, i, diskIconPalette[(int)(diskIconData[i][j])]);
+				// 端末アイコン
+				} else if (this->type == TERMINALICON) {
+					__g->drawPixel(16 + j, i, terminalIconPalette[(int)(terminalIconData[i][j])]);
+				// ゴミ箱アイコン
+				} else if (this->type == TRASHBOXICON) {
+					__g->drawPixel(16 + j, i, trashboxIconPalette[(int)(trashboxIconData[i][j])]);
+				}
+			}
+		}
+		
+		// タイトル
+		int fw = this->_metrics->getWidth(getTitle());
+		int fh = this->_metrics->getHeight(getTitle());
+		__g->setColor(COLOR_WHITE);
+		__g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
 		__g->setColor(COLOR_BLACK);
-		__g->drawLine(0,21,w-1,21);
-
-		// 左上
-		__g->drawLine(0,0,4,0);
-		__g->drawLine(0,1,2,1);
-		__g->drawLine(0,2,1,2);
-		__g->drawLine(0,3,0,3);
-		__g->drawLine(0,4,0,4);
+		__g->drawText(getTitle(), (w - fw)/2, 36);
 		
-		// 右上
-		__g->drawLine(w-5,0,w-1,0);
-		__g->drawLine(w-3,1,w-1,1);
-		__g->drawLine(w-2,2,w-1,2);
-		__g->drawLine(w-1,3,w-1,3);
-		__g->drawLine(w-1,4,w-1,4);
-
-		// 左下
-		__g->drawLine(0,h-5,0,h-5);
-		__g->drawLine(0,h-4,0,h-4);
-		__g->drawLine(0,h-3,1,h-3);
-		__g->drawLine(0,h-2,2,h-2);
-		__g->drawLine(0,h-1,4,h-1);
-
-		// 右下
-		__g->drawLine(w-5,h-1,w-1,h-1);
-		__g->drawLine(w-3,h-2,w-1,h-2);
-		__g->drawLine(w-2,h-3,w-1,h-3);
-		__g->drawLine(w-1,h-4,w-1,h-4);
-		__g->drawLine(w-1,h-5,w-1,h-5);
-
-		// モナーアイコン
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 16; j++) {
-				__g->drawPixel(18 + j, 4 + i, monaIconPalette[(int)(monaIconData[i][j])]);
-			}
-		}
-
-		// メニュー
-		__g->setColor(COLOR_GRAY);
-		__g->drawText("ファイル　編集　表示　特別　ヘルプ", 45, 6);
-
-		// ディスクアイコン
-		for (int i = 0; i < 32; i++) {
-			for (int j = 0; j < 32; j++) {
-				_g->drawPixel(w - 70 + j, 0 + i, diskIconPalette[(int)(diskIconData[i][j])]);
-			}
-		}
-		_g->setColor(COLOR_WHITE);
-		_g->fillRect(w - 86, 36, 64, 12);
-		_g->setColor(COLOR_BLACK);
-		_g->drawText("Mona HDD", w - 82, 36);
-		
-		// 端末アイコン
-		for (int i = 0; i < 32; i++) {
-			for (int j = 0; j < 32; j++) {
-				_g->drawPixel(w - 70 + j, 54 + i, terminalIconPalette[(int)(terminalIconData[i][j])]);
-			}
-		}
-		_g->setColor(COLOR_WHITE);
-		_g->fillRect(w - 86, 90, 64, 12);
-		_g->setColor(COLOR_BLACK);
-		_g->drawText("た～みなる", w - 82, 90);
-		
-		// ゴミ箱アイコン
-		for (int i = 0; i < 32; i++) {
-			for (int j = 0; j < 32; j++) {
-				_g->drawPixel(w - 70 + j, h - 90 + i, trashboxIconPalette[(int)(trashboxIconData[i][j])]);
-			}
-		}
-		_g->setColor(COLOR_WHITE);
-		_g->fillRect(w - 76, h - 54, 40, 12);
-		_g->setColor(COLOR_BLACK);
-		_g->drawText("ゴミ箱", w- 72, h - 54);
-
-		update();
+		// _gへの描画が反映されると困るので直接ウィンドウを更新
+		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle());
 	}
 
 	/** イベントハンドラ */
 	virtual void postEvent(Event *event) {
 		int w = this->width;
-		//int h = this->height;
+		int h = this->height;
 		
 		if (event->type == MOUSE_RELEASED) {
-			MouseEvent *me = (MouseEvent*)event;
-			int px = me->x;
-			int py = me->y;
-			int w0 = w - 70 + INSETS_LEFT;
-			int h0 = 0 + INSETS_TOP;
-			int h1 = 54 + INSETS_TOP;
-			//int h2 = h - 90 + INSETS_TOP;
-			
-			// ディスクアイコン
-			if (w0 <= px && px <= w0 + 32 &&
-				h0 <= py && py <= h0 + 32)
-			{
+			// 視覚効果
+			if (this->type == DISKICON || this->type == TERMINALICON) {
 				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_EXPANSIONEFFECT,
-					MAKE_DWORD(w0 + 16, h0 + 16),
-					MAKE_DWORD(w0, h0),
-					MAKE_DWORD(32, 32)
+					MAKE_DWORD(this->x + w/2, this->y + h/2),
+					MAKE_DWORD(this->x, this->y),
+					MAKE_DWORD(64, 64)
 				);
-				monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 FILE", MONAPI_FALSE);
 			}
-			
-			// 端末アイコン
-			if (w0 <= px && px <= w0 + 32 &&
-				h1 <= py && py <= h1 + 32)
-			{
-				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_EXPANSIONEFFECT,
-					MAKE_DWORD(w0 + 16, h1 + 16),
-					MAKE_DWORD(w0, h1),
-					MAKE_DWORD(32, 32)
-				);
+			// アプリケーション実行
+			if (this->type == DISKICON) {
+				monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 FILE", MONAPI_FALSE);
+			} else if (this->type == TERMINALICON) {
 				monapi_call_process_execute_file("/APPS/BAYGUI/GSHELL.EX5", MONAPI_FALSE);
 			}
-			
-			/*
-			// ゴミ箱
-			if (w0 <= px && px <= w0 + 32 &&
-				h2 <= py && py <= h2 + 32)
-			{
-				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_EXPANSIONEFFECT,
-					MAKE_DWORD(w0 + 16, h2 + 16),
-					MAKE_DWORD(w0, h2),
-					MAKE_DWORD(32, 32)
-				);
-			}
-			*/
 		}
 	}
 };
 
 /** メイン */
 int MonaMain(List<char*>* pekoe) {
-	if (pekoe->size() > 0) {
-		Mokon *mokon = new Mokon();
-		mokon->run();
-		delete(mokon);
+	if (pekoe->size() == 0) {
+		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISK", MONAPI_FALSE);
+		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERM", MONAPI_FALSE);
+		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASH", MONAPI_FALSE);
 	} else {
-		GLaunch *launch = new GLaunch();
-		launch->run();
-		delete(launch);
+		char *arg0 = pekoe->get(0);
+		if (strcmp(arg0, "DISK") == 0) {
+			ShortCut *shortcut = new ShortCut(0);
+			shortcut->run();
+			delete(shortcut);
+		} else if (strcmp(arg0, "TERM") == 0) {
+			ShortCut *shortcut = new ShortCut(1);
+			shortcut->run();
+			delete(shortcut);
+		} else if (strcmp(arg0, "TRASH") == 0) {
+			ShortCut *shortcut = new ShortCut(2);
+			shortcut->run();
+			delete(shortcut);
+		} else if (strcmp(arg0, "FILE") == 0) {
+			Glaunch *launch = new Glaunch();
+			launch->run();
+			delete(launch);
+		}
 	}
 	return 0;
 }
