@@ -26,7 +26,7 @@
 void keyStrokeHandler() {
 
     /* get scancode */
-    char scancode = inportb(0x60);
+    unsigned char scancode = inportb(0x60);
 
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();

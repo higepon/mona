@@ -64,7 +64,7 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
     \author HigePon
     \date   create:2002/10/12 update:2002/10/14
 */
-void KeyBoardManager::setKeyScanCode(char scancode) {
+void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
     return;
 }

@@ -10,12 +10,25 @@
     %include 'boot.mac'
 %endif
 
-[ORG 0]
+[ORG 0x7C00]
 
-; use segment 0x07C0 and offset is address of start
-; cs = 0x07C0
-jmp 0x07C0:start
+        jmp short start
+        nop
 
+; for DEBUG fake FAT parameter added by Guripon
+        db      "Higepos "      ; os name & version
+        dw      512             ; length of sector(byte)
+        db      1               ; length of cluster(sector)
+        dw      1               ; length of boot sector(sector)
+        db      2               ; FAT number
+        dw      0x00E0          ; number of root entry
+        dw      2880            ; number of sectors
+        db      0xF0            ; media identifier
+        dw      9               ; length of 1FAT(sector)
+        dw      18              ; number of sectors per one track
+        dw      2               ; number of head
+        dw      0               ; number of invisible sector
+;
 start:
         cli                     ; disable interrupt
         mov ax, cs              ; code segment address is 0x07C0
@@ -60,9 +73,9 @@ higeposmsg:
         MsgResetStart db  '  disk reset   ...', 0x00
         MsgReadStart  db  '  disk reading ...', 0x00
         MsgDone       db  'done'              , 0x0d, 0x0a, 0x00
-
-forever:
-        jmp forever
-
+;
+;forever:
+;        jmp forever
+;
         times 510-($-$$) db 0
         dw 0x0AA55
