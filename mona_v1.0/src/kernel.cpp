@@ -67,13 +67,19 @@ char* version = "Mona version.0.1.4 $Date$";
 
 extern int pos_x;
 extern int pos_y;
-void printInfo() {
 
+void mainProcess() {
+
+    /* Keyboard Server */
     g_console->printf("loading KEYBOARD SERVER....");
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
+    enableKeyboard();
+
+    /* user process for test */
     g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
 
-    for (;;);
+    /* end */
+    g_processManager->killSelf();
 }
 
 /*!
@@ -101,7 +107,7 @@ void startKernel(void) {
     if (g_vesaInfo->sign[0] == 'N') {
 
         g_console = new GraphicalConsole();
-        g_console->printf("VESA not supported[%c]\n", g_vesaInfo->sign[0]);
+        g_console->printf("VESA not supported. sorry kernel stop.\n");
         for (;;);
     } else {
         g_vesaDetail = new VesaInfoDetail;
@@ -121,7 +127,7 @@ void startKernel(void) {
 
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
-    g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%xPaging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
+    g_console->printf("\nSystem TotalL Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
 
     /* shared memory object */
     SharedMemoryObject::setup();
@@ -135,17 +141,12 @@ void startKernel(void) {
     g_processManager = new ProcessManager(g_page_manager);
 
     /* add testProces1(testThread1) */
-    Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST1");
+    Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "INIT");
     g_processManager->add(testProcess1);
-    Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printInfo);
+    Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)mainProcess);
     g_processManager->join(testProcess1, testThread1);
 
-    /* initilize keyboard */
-//     KeyBoardManager& km = KeyBoardManager::instance();
-//     km.init();
-
     disableTimer();
-    enableKeyboard();
     enableInterrupt();
 
     /* FDC do not delete */

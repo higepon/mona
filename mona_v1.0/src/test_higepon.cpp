@@ -99,7 +99,7 @@ typedef struct {
     dword height;
 } ARGBHeader;
 
-static bool drawARGB(byte* rgba, int x, int y, int size);
+//static bool drawARGB(byte* rgba, int x, int y, int size);
 static int getColorNumber(byte* rgba);
 
 struct read_info {

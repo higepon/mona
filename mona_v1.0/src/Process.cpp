@@ -13,6 +13,7 @@
 
 #include <global.h>
 #include <Process.h>
+#include <userlib.h>
 #include <PageManager.h>
 
 /*----------------------------------------------------------------------
@@ -347,11 +348,20 @@ int ProcessManager::kill(Process* process) {
     dispatchList_->remove(process);
     waitList_->remove(process);
 
-    current_ =  dispatchList_->removeAt(dispatchList_->size() -1);
+    current_ = dispatchList_->get(0);
 
     /* delete process */
     delete process;
     return NORMAL;
+}
+
+void ProcessManager::killSelf() {
+    asm volatile("movl $%c0, %%ebx \n"
+                 "int  $0x80       \n"
+                 :
+                 :"g"(SYSTEM_CALL_KILL)
+                 :"ebx"
+                 );
 }
 
 int ProcessManager::switchProcess() {
@@ -377,7 +387,7 @@ bool ProcessManager::schedule() {
     current_->tick();
 
     /* wakeup */
-     wakeup();
+    wakeup();
 
     /* process has time yet */
     if (current_->hasTimeLeft()) {

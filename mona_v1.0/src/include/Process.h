@@ -400,6 +400,7 @@ class ProcessManager {
     int join(Process* process, Thread* thread);
     int add(Process* process);
     int kill(Process* process);
+    void killSelf();
     int sleep(Process* process, dword tick);
     int switchProcess();
     bool schedule();

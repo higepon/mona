@@ -44,6 +44,7 @@ void syscall_entrance() {
         info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
         break;
     case SYSTEM_CALL_KILL:
+
         g_processManager->kill(g_processManager->getCurrentProcess());
         schedule();
         break;

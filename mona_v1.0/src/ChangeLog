@@ -1,5 +1,9 @@
 2004-01-28  higepon  <higepon@users.sourceforge.jp>
 
+        * Makefile.in (write): 記述間違い修正
+
+        * kernel.cpp: Process Killの改善
+
         * ユーザーモードからの描画・Vram取得・fillRect・putPixel
 
 2004-01-27  higepon  <higepon@users.sourceforge.jp>
