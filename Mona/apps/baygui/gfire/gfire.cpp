@@ -38,25 +38,36 @@ unsigned char calc, *fireScreen, *pImage;
 /** クラス宣言 */
 class GFire : public Window
 {
+private:
+	bool firstPaint;
+
 public:
 	/** コンストラクタ */
-	GFire::GFire() {
+	GFire() {
 		setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
 		setTitle("FIRE EFFECT");
 		fireScreen = (unsigned char *)malloc(0x2300);
 		pImage = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 3);
-		setTimer(500);
+		this->firstPaint = false;
 	}
 
 	/** デストラクタ */
-	GFire::~GFire() {
+	~GFire() {
 		free(fireScreen);
 		free(pImage);
 	}
 
+	/** 描画ハンドラ */
+	virtual void onPaint(Graphics *g) {
+		if (firstPaint == false) {
+			firstPaint = true;
+			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
+		}
+	}
+	
 	/** イベント処理 */
-	void GFire::onEvent(Event *e) {
-		if (e->type == TIMER) {
+	virtual void onEvent(Event *e) {
+		if (e->type == CUSTOM_EVENT) {
 			if (DrawFire() != 0) {
 				for (int y = 0; y < SCREEN_H; y++) {
 					for (int x = 0; x < SCREEN_W; x++) {
@@ -70,7 +81,7 @@ public:
 				}
 				update();
 			}
-			MonAPI::Message::send(this->threadID, TIMER, 0, 0, 0);
+			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 };

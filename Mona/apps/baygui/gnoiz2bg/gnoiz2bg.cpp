@@ -281,10 +281,11 @@ class GNoiz2bg : public Window
 private:
 	int scene_count, scene;
 	unsigned char *pbuf;
+	bool firstPaint;
 
 public:
 	/** コンストラクタ */
-	GNoiz2bg::GNoiz2bg() {
+	GNoiz2bg() {
 		setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
 		setTitle("noiz2bg for GUI");
 		this->pbuf = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 4);
@@ -292,17 +293,25 @@ public:
 		setStageBackground(1);
 		this->scene = 1;
 		this->scene_count = FPS * 10;
-		setTimer(500);
+		this->firstPaint = false;
 	}
 
 	/** デストラクタ */
-	GNoiz2bg::~GNoiz2bg() {
+	virtual ~GNoiz2bg() {
 		free(pbuf);
 	}
 
-	/** イベント処理 */
-	void GNoiz2bg::onEvent(Event *e) {
-		if (e->type == TIMER) {
+	/** 描画ハンドラ */
+	virtual void onPaint(Graphics *g) {
+		if (firstPaint == false) {
+			firstPaint = true;
+			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
+		}
+	}
+
+	/** イベントハンドラ */
+	virtual void onEvent(Event *e) {
+		if (e->type == CUSTOM_EVENT) {
 			moveBackground();
 			drawBackground(this->pbuf);
 			for (int y = 0; y < SCREEN_H; y++) {
@@ -322,7 +331,7 @@ public:
 				scene_count = FPS * 20;
 				setStageBackground(scene);
 			}
-			MonAPI::Message::send(this->threadID, TIMER, 0, 0, 0);
+			MonAPI::Message::send(this->threadID, CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 };
