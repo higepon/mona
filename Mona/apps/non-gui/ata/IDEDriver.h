@@ -76,20 +76,20 @@ private:
 private:
     int readATAPI(IDEController* controller, dword lba, void* buffer, int size);
     int sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer);
-    int sendPioDataInCommand(IDEController* ide, ATACommand* command, word count, void* buf);
-    bool selectDevice(IDEController* ide, int device);
+    int sendPioDataInCommand(IDEController* controller, ATACommand* command, word count, void* buf);
+    bool selectDevice(IDEController* controller, int device);
     void outp8(IDEController* controller, int reg, byte value);
     void outp16(IDEController* controller, int reg, word value);
     void outp16(IDEController* controller, word* data, int length);
     void inp16(IDEController* controller, word* data, int length);
     word inp16(IDEController* controller, int reg);
     byte inp8(IDEController* controller, int reg);
-    word getSignature(IDEController* ide, int device);
-    void read(IDEController* ide, word length, void* buf);
-    int identify(IDEController* ide, int device, int type, void* buf);
-    int judgeDevice(IDEController* ide, int device);
-    bool waitBusyClear(IDEController* ide);
-    bool waitDrdySet(IDEController* ide);
+    word getSignature(IDEController* controller, int device);
+    void read(IDEController* controller, word length, void* buf);
+    int identify(IDEController controller, int device, int type, void* buf);
+    int judgeDevice(IDEController* controller, int device);
+    bool waitBusyClear(IDEController* controller);
+    bool waitDrdySet(IDEController* controller);
 
 private:
     IDEController controllers[2];
