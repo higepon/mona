@@ -20,6 +20,7 @@
 #define PAGE_USER    0x04
 #define PAGE_KERNEL  0x00
 
+#define PAGE_SIZE      4096
 #define PAGE_TABLE_NUM 1024
 
 typedef dword PageEntry;
@@ -70,24 +71,32 @@ class PageManager {
 class Segment {
 
   public:
-    virtual Segment(LinearAddress start, dword size);
-
-  public:
     virtual bool faultHandler(LinearAddress address, dword error) = 0;
+    virtual int getErrorNumber() {return errorNumber_;}
+
+  protected:
+    LinearAddress start_;
+    dword         size_;
+    byte errorNumber_;
 };
 
 class Stack : public Segment {
 
   public:
     Stack(LinearAddress start, dword size);
+    Stack(LinearAddress start, dword initileSize, dword maxSize);
     virtual ~Stack();
 
   public:
-    bool faultHandler(LinearAddress address, dword error);
+    virtual bool faultHandler(LinearAddress address, dword error);
 
   private:
-    LinearAddress start_;
-    dword         size_;
+    bool isVallidAddress() const;
+
+  protected:
+    bool isAutoExtend_;
+    dword maxSize_;
+
 };
 
 

@@ -184,10 +184,24 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
 }
 
+#define PAGE_FAULT_NOT_EXIST 0x01
+
+#define STACK_OVERFLOW 0x01
+
+
 Stack::Stack(LinearAddress start, dword size) {
 
-    start_ = start;
-    size_  = size;
+    start_        = start;
+    size_         = size;
+    isAutoExtend_ = false;
+}
+
+Stack::Stack(LinearAddress start, dword initileSize, dword maxSize) {
+
+    start_        = start;
+    size_         = initileSize;
+    maxSize_      = maxSize;
+    isAutoExtend_ = true;
 }
 
 Stack::~Stack() {
@@ -196,6 +210,23 @@ Stack::~Stack() {
 
 bool Stack::faultHandler(LinearAddress address, dword error) {
 
+    if (error != PAGE_FAULT_NOT_EXIST) {
+
+        /* unknown page fault */
+        return false;
+    }
+
+    if (!isAutoExtend_) {
+
+        /* not auto extension mode */
+        errorNumber_ = STACK_OVERFLOW;
+        return false;
+    }
+
     return true;
 }
 
+bool Stack::isVallidAddress() {
+
+
+}
