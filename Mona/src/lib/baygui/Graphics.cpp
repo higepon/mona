@@ -80,7 +80,6 @@ void Graphics::drawImage(Image *image, int x, int y)
 	for (int j = 0; j < J; j++) {
 		for (int i = 0; i < I; i++) {
 			if (data[width * j + i] < 0xff000000) {
-				drawPixel(x + i ,y + j, data[width * j + i]);
 #if defined(MONA)
 				screen->putPixel16(tx + x + i, ty + y + j, data[width * j + i]);
 #else
