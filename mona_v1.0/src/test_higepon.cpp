@@ -213,6 +213,7 @@ int Messenger::send(dword pid, MessageInfo* message) {
     info = allocateMessageInfo();
 
     *info = *message;
+    info->from = g_processManager->getCurrentProcess()->getPid();
     process->getMessageList()->add(info);
     return 0;
 }
