@@ -387,6 +387,9 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
     ArchThreadInfo* i = g_currentThread->archinfo;
     logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x gss0=%d gesp0=%x %s %s\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "");
 
+#endif
+
+#if 0
     ArchThreadInfo* i = g_currentThread->archinfo;
     int x, y;
     g_console->getCursor(&x, &y);
