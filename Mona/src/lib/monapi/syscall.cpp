@@ -675,3 +675,10 @@ int syscall_peek(MessageInfo* message, int index, int flags)
     SYSCALL_3(SYSTEM_CALL_PEEK, result, message, index, flags);
     return result;
 }
+
+int syscall_test(dword laddress)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_TEST, result, laddress);
+    return result;
+}

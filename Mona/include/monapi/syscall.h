@@ -25,7 +25,7 @@ extern int kill();
 extern int exit(int error);
 extern int mthread_create(dword f);
 extern int mthread_join(dword id);
-extern int syscall_test();
+extern int syscall_test(dword laddress);
 extern int syscall_sleep(dword tick);
 extern int syscall_print(const char*);
 extern int syscall_kill();

@@ -244,7 +244,65 @@ void PageManager::setup(PhysicalAddress vram)
     }
 
     setPageDirectory((PhysicalAddress)g_page_directory);
+
+    /*
+     * create kernel page directory
+     * paddress == laddress
+     */
+    kernelDirectory_ = createKernelPageDirectory();
+
     startPaging();
+}
+
+
+PageEntry* PageManager::createKernelPageDirectory()
+{
+    PageEntry* directory = allocatePageTable();
+    PageEntry* table;
+
+    /* fill zero */
+    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+
+    /* 0 to 64MB */
+    for (int i = 0; i < 64 / 4; i++)
+    {
+        table = allocatePageTable();
+
+        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
+        {
+            setAttribute(&(table[j]), true, true, false, i * 4 * 1024 * 1024 + 4096 * j);
+        }
+
+        setAttribute(&(directory[i]), true, true, false, (PhysicalAddress)table);
+    }
+
+    /* find 4KB align for VRAM */
+    dword vram = vram_;
+    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
+
+    /* max vram size. 1600 * 1200 * 32bpp = 7.3MB */
+    int vramSizeByte = (g_vesaDetail->xResolution * g_vesaDetail->yResolution * g_vesaDetail->bitsPerPixel / 8);
+    int vramMaxIndex = ((vramSizeByte + 4096 - 1) & 0xFFFFF000) / 4096;
+
+    /* Map VRAM */
+    for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
+
+        dword directoryIndex = getDirectoryIndex(vram);
+        dword tableIndex     = getTableIndex(vram);
+
+        if (isPresent(&(directory[directoryIndex]))) {
+
+            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+        } else {
+
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+        }
+        setAttribute(&(table[tableIndex]), true, true, true, vram);
+    }
+
+    return directory;
 }
 
 /*!
@@ -255,6 +313,27 @@ void PageManager::setup(PhysicalAddress vram)
 */
 PageEntry* PageManager::createNewPageDirectory() {
 
+    PageEntry* directory = allocatePageTable();
+    PageEntry* table;
+
+    /* fill zero */
+    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+
+    /* 0 to 8MB */
+    for (int i = 0; i < 8 / 4; i++)
+    {
+        table = allocatePageTable();
+
+        for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
+        {
+            setAttribute(&(table[j]), true, true, false, i * 4 * 1024 * 1024 + 4096 * j);
+        }
+
+        setAttribute(&(directory[i]), true, true, false, (PhysicalAddress)table);
+    }
+
+
+#if 0
     PageEntry* table1    = allocatePageTable();
     PageEntry* table2    = allocatePageTable();
     PageEntry* directory = allocatePageTable();
@@ -274,6 +353,7 @@ PageEntry* PageManager::createNewPageDirectory() {
     setAttribute(&(directory[0]), true, true, false, (PhysicalAddress)table1);
     setAttribute(&(directory[1]), true, true, false, (PhysicalAddress)table2);
 
+#endif
     /* find 4KB align for VRAM */
     dword vram = vram_;
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
@@ -285,7 +365,6 @@ PageEntry* PageManager::createNewPageDirectory() {
     /* Map VRAM */
     for (int i = 0; i < vramMaxIndex; i++, vram += 4096) {
 
-        PageEntry* table;
         dword directoryIndex = getDirectoryIndex(vram);
         dword tableIndex     = getTableIndex(vram);
 
@@ -650,4 +729,20 @@ void PageManager::setAbsent(PageEntry* directory, LinearAddress start, dword siz
 void PageManager::returnPhysicalPage(PhysicalAddress address)
 {
     memoryMap_->clear(address / ARCH_PAGE_SIZE);
+}
+
+bool PageManager::getPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress* paddress)
+{
+    PageEntry* table;
+    dword directoryIndex = getDirectoryIndex(laddress);
+    dword tableIndex     = getTableIndex(laddress);
+
+    /* not present */
+    if (!isPresent(&(directory[directoryIndex]))) return false;
+
+    table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+
+    *paddress = ((dword)(table[tableIndex]) & 0xfffff800) + (laddress % 4096);
+
+    return true;
 }

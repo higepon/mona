@@ -18,11 +18,6 @@ typedef dword PageEntry;
 typedef dword LinearAddress;
 typedef dword PhysicalAddress;
 
-class PageDirectory {
-
-    PageEntry* pageEntry_;
-};
-
 class PageManager {
 
   public:
@@ -45,17 +40,25 @@ class PageManager {
     bool setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const;
     bool setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const;
 
+    bool getPhysicalAddress(PageEntry* directory, LinearAddress laddress, PhysicalAddress* paddress);
+
     void setAbsent(PageEntry* directory, LinearAddress start, dword size) const;
 
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
     PageEntry* createNewPageDirectory();
+    PageEntry* createKernelPageDirectory();
     PageEntry* createNewPageDirectoryForV86();
     bool pageFaultHandler(LinearAddress address, dword error);
     inline static bool isPresent(PageEntry* entry) {
 
         return (*entry) & ARCH_PAGE_PRESENT;
+    }
+
+    inline PageEntry* getKernelDirectory() const
+    {
+        return kernelDirectory_;
     }
 
   public:
@@ -70,15 +73,14 @@ class PageManager {
     }
 
   private:
-    PageDirectory* allocatePageDirectory();
     PageEntry* allocatePageTable() const;
 
   private:
     BitMap* memoryMap_;
     BitMap* pageTablePool_;
     PhysicalAddress pageTablePoolAddress_;
-    PageDirectory pageDirectory_;
     PhysicalAddress vram_;
+    PageEntry* kernelDirectory_;
 
   public:
     static const byte FAULT_NOT_EXIST          = 0x01;

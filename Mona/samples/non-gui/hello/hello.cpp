@@ -7,6 +7,21 @@ int MonaMain(List<char*>* pekoe)
 {
     printf("Hello World!\n");
 
+    dword p;
+    dword* q;
+
+    q = (dword*)malloc(sizeof(dword) * 2);
+
+    p = 0x12345678;
+    q[0] = 0x87654321;
+
+    printf("p = %x address=%x\n", p, &p);
+    syscall_test((dword)(&p));
+    printf("p = %x address=%x\n", p, &p);
+
+    printf("q = %x address=%x\n", q[0], q);
+    syscall_test((dword)(q));
+
 //     //HashMapÎÆ¹È
 //     HashMap<int>* testHash;
 //     testHash = new HashMap<int>(20);

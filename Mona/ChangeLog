@@ -1,3 +1,11 @@
+2004-07-27  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/PageManager.cpp (createKernelPageDirectory): リニアドレス=物理アドレスなメモリ空間
+
+2004-07-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/PageManager.cpp (getPhysicalAddress): リニアアドレス⇒物理アドレス変換
+
 2004-07-22  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/global.h: IRQフック用の配列を追加
