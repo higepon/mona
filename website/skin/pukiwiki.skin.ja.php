@@ -43,6 +43,7 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
 <div id="Menu">
 <?php if ($is_page) { ?>
 <a href="<?php echo "$script?$r_page" ?>">リロード</a> | 
+<?php if(0) { ?>
 <a href="<?php echo "$script?plugin=newpage&amp;refer=$r_page" ?>">新規</a> | 
 <a href="<?php echo $link_edit ?>">編集</a> | 
 <?php   if ($is_read and $function_freeze) { ?>
@@ -52,6 +53,7 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
 <a href="<?php echo $link_freeze ?>">凍結</a> | 
 <?php     } ?>
 <?php   } ?>
+<?php } ?>
 <a href="<?php echo $link_diff ?>">差分</a> | 
 <?php   if ((bool)ini_get('file_uploads')) { ?>
 <a href="<?php echo $link_upload ?>">添付</a> | 
@@ -90,7 +92,7 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
 
 <p class="Attention"><strong>このWikiは <a href="http://wiki.monaos.org/">wiki.monaos.org</a> へ移転しました</strong></p>
 <p class="Attention"><strong>お探しのページは<a href="http://wiki.monaos.org/pukiwiki.php?<?php print(urlencode($title)); ?>">こちら</a>かと思われます</strong></p>
-<p class="Attention"><strong><small>以後このWiki（mona.sourceforge）を編集しても意味がありませんのでご注意願います。</small></strong></p>
+<p class="Attention"><strong><small>以後このWiki（mona.sourceforge.jp）を編集しても意味がありませんのでご注意願います。</small></strong></p>
 
 <hr class="Start" title="以下はこのページのメインコンテンツです">
 
@@ -124,13 +126,15 @@ echo '<?xml version="1.0" encoding="EUC-JP"? >';
 <?php if ($is_page) { ?>
  <a href="<?php echo "$script?$r_page" ?>"><img src="./image/reload.png" width="20" height="20" alt="リロード" title="リロード" /></a>
  &nbsp;
+ <a href="<?php echo $link_diff ?>"><img src="./image/diff.png" width="20" height="20" alt="差分" title="差分" /></a>
+<?php if(0) { ?>
  <a href="<?php echo $script ?>?plugin=newpage"><img src="./image/new.png" width="20" height="20" alt="新規" title="新規" /></a>
  <a href="<?php echo $link_edit ?>"><img src="./image/edit.png" width="20" height="20" alt="編集" title="編集" /></a>
- <a href="<?php echo $link_diff ?>"><img src="./image/diff.png" width="20" height="20" alt="差分" title="差分" /></a>
 <?php   if ((bool)ini_get('file_uploads')) { ?>
  <a href="<?php echo $link_upload ?>"><img src="./image/file.png" width="20" height="20" alt="添付" title="添付" /></a>
 <?php   } ?>
  &nbsp;
+<?php } ?>
 <?php } ?>
  <a href="<?php echo $link_top ?>"><img src="./image/top.png" width="20" height="20" alt="トップ" title="トップ" /></a>
  <a href="<?php echo $link_list ?>"><img src="./image/list.png" width="20" height="20" alt="一覧" title="一覧" /></a>
