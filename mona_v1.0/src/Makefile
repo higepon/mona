@@ -69,7 +69,8 @@ copy_userapp : $(TARGET) $(USER_APP)
 	(cd $(BIN); $(FAT_TOOL) mona.img NOIZ2BG.ELF  APP/NOIZ2BG.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img CLOCK.ELF    APP/CLOCK.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img REVERSI.ELF  APP/REVERSI.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img FDC.DRV      DRIVER/FDC.DRV)
+	(cd $(BIN); $(FAT_TOOL) mona.img AUTOEXEC.TXT AUTOEXEC.TXT)
+	(cd $(BIN); $(FAT_TOOL) mona.img SYSCONF.TXT  SYSCONF.TXT)
 
 $(USER_APP) :
 	(cd user; make)

@@ -1,3 +1,13 @@
+2004-03-18  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp (execSysConf): サーバーを外部ファイルを読み込んで起動(by Tinoさん)
+
+        * string.cpp : strstrの追加(by Tinoさん)
+
+        * user/ShellServer/ShellServer.cpp: Tinoさんのパッチ適用(空行無視・AUTOEXEC.BAT)
+
+        * mona_v1.0/tools/fat_write/main.cpp : サイズ0のファイルの書き込みに対応
+
 2004-03-17  higepon  <higepon@users.sourceforge.jp>
 
         * syscalls.cpp : syscall_get_io()のバグ修正

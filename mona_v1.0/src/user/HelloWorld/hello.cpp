@@ -2,41 +2,62 @@
 
 int MonaMain(List<char*>* pekoe)
 {
-    int result;
-    byte buf[32];
+    /* 共有したい相手 */
+    dword pid = Message::lookup("SHELL.SVR");
 
-    if (pekoe->isEmpty())
-    {
-        printf("usage: HELLO.ELF pathToFile\n");
-        return -1;
-    }
+    /* メモリマップオブジェクト取得 */
+    MemoryMap* mm = MemoryMap::create();
 
-    FileInputStream fis(pekoe->get(0));
+    /* 自分の0x90005000にpidの0x90000000を1Mバイトマッピングする */
+    dword sharedid = mm->map(pid, 0x90000000, 0x90005000, 1 * 1024 * 1024);
 
-    if (0 != (result = fis.open()))
-    {
-        printf("can not open %s\n", pekoe->get(0));
-        return -1;
-    }
+    /* 共有エリアに書き込み */
+    strcpy((char*)0x90005000, "data share top");
+    strcpy((char*)0x90095000, "data share bottom");
 
-    printf("file size = %d\n", fis.getFileSize());
+    //    mm->unmap(sharedid);
 
-    if (fis.read(buf, 32))
-    {
-        printf("can not read %s\n", pekoe->get(0));
-        fis.close();
-        return -1;
-    }
-
-    printf("contents\n");
-    sleep(5000);
-
-    for (int i = 0; i < 32; i++)
-    {
-        printf("[%x]", buf[i]);
-    }
-
-    fis.close();
-
-    return 0;
+    for (;;);
 }
+
+
+// int MonaMain(List<char*>* pekoe)
+// {
+//     int result;
+//     byte buf[32];
+
+//     if (pekoe->isEmpty())
+//     {
+//         printf("usage: HELLO.ELF pathToFile\n");
+//         return -1;
+//     }
+
+//     FileInputStream fis(pekoe->get(0));
+
+//     if (0 != (result = fis.open()))
+//     {
+//         printf("can not open %s\n", pekoe->get(0));
+//         return -1;
+//     }
+
+//     printf("file size = %d\n", fis.getFileSize());
+
+//     if (fis.read(buf, 32))
+//     {
+//         printf("can not read %s\n", pekoe->get(0));
+//         fis.close();
+//         return -1;
+//     }
+
+//     printf("contents\n");
+//     sleep(5000);
+
+//     for (int i = 0; i < 32; i++)
+//     {
+//         printf("[%x]", buf[i]);
+//     }
+
+//     fis.close();
+
+//     return 0;
+// }

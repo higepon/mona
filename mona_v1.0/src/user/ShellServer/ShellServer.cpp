@@ -53,6 +53,27 @@ Shell::Shell() : position_(0) {
 
     history_ = new HList<char*>();
     printf("%s", PROMPT);
+
+    FileInputStream* fis = new FileInputStream("/AUTOEXEC.TXT");
+    if (fis->open() == 0) {
+        int len = fis->getFileSize();
+        byte* data = new byte[len];
+        fis->read(data, len);
+        fis->close();
+        for (int pos = 0; pos <= len; pos++) {
+            char ch = pos < len ? (char)data[pos] : '\n';
+            if (ch == '\r' || ch == '\n') {
+                if (position_ > 0) {
+                    commandTerminate();
+                    commandExecute();
+                }
+            } else {
+                commandChar(ch);
+            }
+        }
+        delete [] data;
+    }
+    delete fis;
 }
 
 Shell::~Shell() {
@@ -68,6 +89,14 @@ void Shell::commandChar(char c) {
 void Shell::commandExecute() {
 
     printf("\n");
+
+    if (position_ < 2) {
+        /* command is empty */
+        printf("%s", PROMPT);
+        position_ = 0;
+        return;
+    }
+
     putHistory(commandLine_);
 
     /* list initilize */
@@ -226,7 +255,8 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_9):
 
         /* map test */
-        //        printf("message is %s", (char*)0x90000000);
+        printf("top    message is %s\n", (char*)0x90000000);
+        printf("bottom message is %s\n", (char*)0x90090000);
         break;
 
     case(VK_TEN_0):

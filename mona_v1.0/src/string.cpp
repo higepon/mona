@@ -274,3 +274,21 @@ char* ltona(long value, char* str, int n, int base) {
         *--ps = '0';
     return str;
 }
+
+/*!
+    \brief strstr
+
+    \author Tino
+    \date   create:2004/03/18 update:
+*/
+char* strstr(const char* str1, const char* str2)
+{
+    if (str1 == NULL || str2 == NULL) return NULL;
+    for (const char* p1 = str1; *p1 != '\0'; p1++) {
+        for (const char* p1a = p1, * p2 = str2;; p1a++, p2++) {
+            if (*p2 == '\0') return (char*)p1;
+            if (*p2 != *p1a) break;
+        }
+    }
+    return NULL;
+}

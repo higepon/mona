@@ -223,6 +223,84 @@ inline void printOK(const char* msg)
     i++;
 }
 
+int execSysConf()
+{
+    /* only one process can use fd */
+    while (Semaphore::down(&g_semaphore_fd));
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    /* file open */
+    if (!(g_fs->open("/SYSCONF.TXT", 1)))
+    {
+        Semaphore::up(&g_semaphore_fd);
+        return 1;
+    }
+
+    /* get file size and allocate buffer */
+    int fileSize  = g_fs->size();
+
+    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+    byte* buf     = (byte*)malloc(512 * readTimes);
+
+    memset(buf, 0, 512 * readTimes);
+    if (buf == NULL)
+    {
+        Semaphore::up(&g_semaphore_fd);
+        return 2;
+    }
+
+    /* read */
+    if (!g_fs->read(buf, fileSize))
+    {
+        free(buf);
+        Semaphore::up(&g_semaphore_fd);
+        return g_fs->getErrorNo();
+    }
+
+    /* close */
+    if (!g_fs->close())
+    {
+        Semaphore::up(&g_semaphore_fd);
+    }
+
+    g_fdcdriver->motorAutoOff();
+    Semaphore::up(&g_semaphore_fd);
+
+    /* execute */
+    char line[256];
+    int linepos = 0;
+    for (int pos = 0; pos <= fileSize; pos++) {
+        char ch = pos < fileSize ? (char)buf[pos] : '\n';
+        if (ch == '\r' || ch == '\n') {
+            if (linepos > 0) {
+                line[linepos] = '\0';
+                if (strstr(line, "SERVER=") == line) {
+                    const char* server = &line[7];
+                    const char* name = &line[linepos - 1];
+                    for (;; name--) {
+                        if (*name == '/') {
+                            name++;
+                            break;
+                        }
+                        if (name == server) break;
+                    }
+                    g_console->printf("loading %s....", server);
+                    g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
+                }
+                linepos = 0;
+            }
+        } else if (linepos < 255) {
+            line[linepos++] = ch;
+        }
+    }
+
+    free(buf);
+    return 0;
+}
+
 void mainProcess()
 {
     /* FDC do not delete */
@@ -281,51 +359,16 @@ void mainProcess()
 
 #endif
 
-    /* KEY Server */
-    g_console->printf("loading KeyBoard Server....");
-    g_console->printf("%s\n", loadProcess("/SERVER/KEYBDMNG.SVR", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
-
-    /* Mouse Server */
-    g_console->printf("loading Mouse    Server....");
-    g_console->printf("%s\n", loadProcess("/SERVER/MOUSE.SVR", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
-
-    /* Shell Server */
-    g_console->printf("loading Shell    Server....");
-    g_console->printf("%s\n", loadProcess("/SERVER/SHELL.SVR", "SHELL.SVR", true, NULL) ? "NG" : "OK");
+    if (execSysConf() != 0)
+    {
+        g_console->printf("/SYSCONF.TXT does not exist\n");
+        for (;;);
+    }
 
     enableKeyboard();
     enableMouse();
 
-//    bool current = inportb(0x3f7) & 0x80;
-//    bool prev    = current;
-
-//    for (;;)
-//    {
-//        current = inportb(0x3f7) & 0x80;
-
-//        if (current != prev)
-//        {
-//            g_console->printf("removed");
-//        }
-//        prev = current;
-//    }
-
-
-//    for (;;)
-//    {
-//        bool current = inportb(0x3f7) & 0x80;
-
-//        if (current)
-//        {
-//            g_console->printf("removed");
-//        }
-//    }
-
-
-
     /* end */
-//     disableInterrupt();
-//     ThreadOperation::kill();
     int result;
     SYSCALL_0(SYSTEM_CALL_KILL, result);
     for (;;);

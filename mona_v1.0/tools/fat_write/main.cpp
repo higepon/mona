@@ -280,6 +280,13 @@ byte* loadFromFile(char* path, dword* size)
 
     fseek(fp, 0, SEEK_END);
     *size = ftell(fp);
+
+    if (size == 0)
+    {
+        fclose(fp);
+        return NULL;
+    }
+
     fseek(fp, 0, SEEK_SET);
 
     buf = new byte [*size];
@@ -294,6 +301,36 @@ byte* loadFromFile(char* path, dword* size)
 
     fclose(fp);
     return buf;
+}
+
+/*!
+    \brief
+
+    \author Gaku
+    \date   create: update:
+*/
+void touch (char *path)
+{
+    int entry, cursor = 0;
+
+    Directory *p = searchFile(path, &entry, &cursor);
+    if (NULL == p)
+        return;
+
+    if (-1 != entry) {
+        printf("touch:file already exist!\n");
+        freeDirectory(p);
+        return;
+    }
+
+    entry = p->newFile((byte*)path+cursor, 0);
+    if (-1 == entry) {
+        printf("touch: can not create file\n");
+        freeDirectory(p);
+        return;
+    }
+
+    freeDirectory(p);
 }
 
 /*!
@@ -328,6 +365,13 @@ bool cp (char *src, char *dst)
 {
     dword size = 0;
     byte *buf = loadFromFile(src, &size);
+
+    if (size == 0)
+    {
+        touch(dst);
+        return true;
+    }
+
     if (buf == NULL)
     {
         return false;
@@ -416,5 +460,6 @@ int main(int argc, char *argv[])
     }
 
     finalize();
+
     return 0;
 }
