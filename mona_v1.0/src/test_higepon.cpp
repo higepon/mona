@@ -60,7 +60,7 @@ int send(const char* name, Message* message) {
         return -1;
     }
 
-    if ((kmessage = (Message*)malloc(sizeof(Message))) == NULL) {
+    if ((kmessage = new Message) == NULL) {
         return -1;
     }
 
@@ -72,7 +72,7 @@ int send(const char* name, Message* message) {
 int receive(Process* process, Message* message) {
 
     Message* from = process->getMessageList()->get(0);
-
+    g_console->printf("message = %x\n", from);
     if (from == (Message*)NULL) {
         return -1;
     }

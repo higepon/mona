@@ -186,13 +186,16 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
     /* allocate keyinfo */
-    KeyInfo* info = (KeyInfo*)malloc(sizeof(KeyInfo));
-    checkMemoryAllocate(info, "KeyInfo allocate");
+    static int i = 1;
+    g_console->printf("key = %d", i);
+    i++;
+    KeyInfo* kinfo = (KeyInfo*)malloc(sizeof(KeyInfo));
+    checkMemoryAllocate(kinfo, "KeyInfo allocate");
 
     /* set keyinfo */
-    info->keycode   = keycode;
-    info->modifiers = modifiers;
-    keyInfoList_->add(info);
+    kinfo->keycode   = keycode;
+    kinfo->modifiers = modifiers;
+    keyInfoList_->add(kinfo);
 
     if (f_) f_();
 

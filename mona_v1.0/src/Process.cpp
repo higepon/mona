@@ -86,6 +86,7 @@ Thread* ThreadManager::create(dword programCounter, PageEntry* pageDirectory) {
 void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageEntry* pageDirectory) const {
 
     dword stackAddress = allocateStack();
+    g_console->printf("%x stack=%x\n", thread, stackAddress);
     g_page_manager->allocatePhysicalPage(pageDirectory, stackAddress, true, true, true);
 
     ThreadInfo* info      = thread->getThreadInfo();
