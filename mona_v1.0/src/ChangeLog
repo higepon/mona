@@ -1,3 +1,7 @@
+2004-03-02  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : スケジューラが激しく不安定だが他のことをやることにする。
+
 2004-02-29  higepon  <higepon@users.sourceforge.jp>
 
         * FDCDriver.cpp: FDCの割り込みが割込み待ちWAIT処理中の隙間を縫ってくることがあるのに対応

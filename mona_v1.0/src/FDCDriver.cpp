@@ -180,8 +180,6 @@ void FDCDriver::waitInterrupt(bool yield) {
 
    if (yield)
    {
-
-       debug_waitorwake = -101;
        asm volatile("movl $%c0, %%ebx \n"
                     "int  $0x80       \n"
                     :

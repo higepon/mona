@@ -33,7 +33,6 @@ Scheduler::Scheduler() : working(false), runq(64), waitq(3), tickTotal(0)
     for (int i = 0; i < runq.getLength(); i++)
     {
         runq[i] = new Thread();
-	g_console->printf("run[%d]=%x", i, runq[i]);
         runq[i]->initialize();
     }
 
@@ -41,7 +40,6 @@ Scheduler::Scheduler() : working(false), runq(64), waitq(3), tickTotal(0)
     for (int i = 0; i < waitq.getLength(); i++)
     {
         waitq[i] = new Thread();
-	g_console->printf("wait[%d]=%x", i, waitq[i]);
         waitq[i]->initialize();
     }
 
@@ -202,19 +200,16 @@ bool Scheduler::schedule()
 
 bool Scheduler::schedule3()
 {
-    debug_empty = 555;
     FOREACH(Thread*, queue, runq)
     {
         if (queue->isEmpty())
         {
-    debug_empty = 556;
             continue;
         }
         else
         {
             g_prevThread    = g_currentThread;
             g_currentThread = PTR_THREAD(queue->top());
-    debug_empty = 557;
             break;
         }
     }
@@ -485,24 +480,20 @@ int ThreadOperation::switchThread(bool isProcessChanged)
     if (isProcessChanged && isUser)
     {
         /* address space & therad switch */
-	debug_faultpoint = -2;
         arch_switch_thread_to_user2();
     }
     else if (!isProcessChanged && isUser)
     {
         /* only thread switch */
-	debug_faultpoint = -3;
         arch_switch_thread_to_user1();
     }
     else if (isProcessChanged && !isUser)
     {
         /* address space & therad switch */
-	debug_faultpoint = -4;
         arch_switch_thread2();
     }
     else
     {
-	debug_faultpoint = -5;
         arch_switch_thread1();
     }
 

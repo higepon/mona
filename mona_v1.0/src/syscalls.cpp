@@ -410,29 +410,12 @@ void syscall_entrance() {
     case SYSTEM_CALL_WAIT_FDC:
 
         {
-//     dword realcr3;
-//     asm volatile("mov %%cr3, %%eax  \n"
-//                  "mov %%eax, %0     \n"
-//                  : "=m"(realcr3):: "eax");
-
-//     g_console->printf("[%s]\n", g_currentThread->process->getName());
-//     ArchThreadInfo* i = g_currentThread->archinfo;
-//     g_console->printf("\n");
-//     g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
-//     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
-//     g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
-//     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
-
-       debug_waitorwake = -104;
             if (!g_fdcdriver->interrupted())
             {
-       debug_waitorwake = -105;
-          g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
-       debug_waitorwake = -110;
-       ThreadInfo* info = g_currentThread;
-  bool isProcessChange = g_scheduler->schedule3();
-//  bool isProcessChange = true;
-       debug_waitorwake = -111;
+                g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
+                ThreadInfo* info = g_currentThread;
+                bool isProcessChange = g_scheduler->schedule3();
+            //  bool isProcessChange = true;
                 ThreadOperation::switchThread(isProcessChange);
             }
         }

@@ -239,7 +239,7 @@ void mainProcess()
 
     g_fdcdriver->motorAutoOff();
 
-#if 1
+#if 0
     for (;;)
     {
     byte buf[512];

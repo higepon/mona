@@ -103,7 +103,7 @@ void keyStrokeHandler(dword scancode)
 void fault0dHandler(dword error)
 {
     dokodemoView();
-    g_console->printf("%s, error=%x\n fault=%d wake=%d, emp=%d, sch=%d", g_currentThread->process->getName(), error, debug_faultpoint, debug_waitorwake, debug_empty, debug_which_sche);
+    g_console->printf("%s, error=%x\n fault=%d\n", g_currentThread->process->getName(), error);
 
      dword realcr3;
      asm volatile("mov %%cr3, %%eax  \n"
@@ -154,8 +154,6 @@ void timerHandler()
     g_currentThread->thread->tick();
     dword tick = g_scheduler->getTick();
 
-    debug_which_sche = (tick % 5) ? 123 : 456;
-
     bool isProcessChange = (tick % 5) ? g_scheduler->schedule2() : g_scheduler->schedule();
 
     ThreadOperation::switchThread(isProcessChange);
@@ -178,11 +176,8 @@ void MFDCHandler(void)
 
     int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
 
-//    g_console->printf("wake up result =%d\n", wakeupResult);
-       debug_waitorwake = -106;
     if (wakeupResult != 0)
      {
-       debug_waitorwake = -107;
           ThreadOperation::switchThread((wakeupResult == 1));
      }
 }
