@@ -859,22 +859,27 @@ int BZ_API(BZ2_bzDecompress) ( bz_stream *strm )
             return BZ_OK;
          }
       }
+
       if (s->state >= BZ_X_MAGIC_1) {
+
          Int32 r = BZ2_decompress ( s );
+
          if (r == BZ_STREAM_END) {
+
             if (s->verbosity >= 3)
+
                VPrintf2 ( "\n    combined CRCs: stored = 0x%x, computed = 0x%x", 
                           s->storedCombinedCRC, s->calculatedCombinedCRC );
             if (s->calculatedCombinedCRC != s->storedCombinedCRC)
                return BZ_DATA_ERROR;
             return r;
          }
-         if (s->state != BZ_X_OUTPUT) return r;
+
+    if (s->state != BZ_X_OUTPUT) {   return r;}
       }
    }
 
    AssertH ( 0, 6001 );
-
    return 0;  /*NOTREACHED*/
 }
 

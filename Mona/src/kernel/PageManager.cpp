@@ -431,10 +431,13 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
 #if 0
     if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
 
-    LinearAddress start = address % 4096 ? ((address + 4095 + 4096) & 0xFFFFF000) : address;
+    LinearAddress start = address % 4096 ? ((address + 4095) & 0xFFFFF000) : address;
+
+	logprintf("start=%x size=%x\n", start, size);
 
     for (LinearAddress target = start; target + 4095 <= address + size; target += 4096)
     {
+	logprintf("target=%x\n", target);
         dword directoryIndex = getDirectoryIndex(target);
         dword tableIndex     = getTableIndex(target);
 

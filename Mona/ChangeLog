@@ -1,3 +1,7 @@
+2004-10-21  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (kill): Kill時にカーネルがハングするバグを修正
+
 2004-10-20  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/glaunch: アプリケーションランチャー追加

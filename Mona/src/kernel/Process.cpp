@@ -266,7 +266,7 @@ int ThreadOperation::kill(dword tid)
 
     g_scheduler->Kill(thread);
 
-    sendKilledMessage();
+//    sendKilledMessage();
 
     (process->threadNum)--;
 

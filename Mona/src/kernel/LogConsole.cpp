@@ -71,6 +71,8 @@ void LogConsole::setCHColor(const char color)
 */
 void LogConsole::printf(const char *format, ...)
 {
+    print((char*)g_currentThread->process->getName());
+
     void** list = (void **)&format;
 
     list++;

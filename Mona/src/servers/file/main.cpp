@@ -56,14 +56,17 @@ void MessageLoop()
             case MSG_FILE_DECOMPRESS_BZ2:
             {
                 monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
+
                 mi1->Handle = msg.arg1;
                 mi1->Size   = msg.arg2;
                 monapi_cmemoryinfo* mi2 = NULL;
+
                 if (monapi_cmemoryinfo_map(mi1))
                 {
                     mi2 = BZ2Decompress(mi1);
                     monapi_cmemoryinfo_dispose(mi1);
                 }
+
                 if (mi2 != NULL)
                 {
                     Message::reply(&msg, mi2->Handle, mi2->Size);
@@ -79,6 +82,7 @@ void MessageLoop()
             case MSG_FILE_DECOMPRESS_BZ2_FILE:
             {
                 monapi_cmemoryinfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
+
                 if (mi != NULL)
                 {
                     Message::reply(&msg, mi->Handle, mi->Size);
@@ -92,6 +96,7 @@ void MessageLoop()
             }
             case MSG_FILE_DECOMPRESS_ST5:
             {
+
                 monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
                 mi1->Handle = msg.arg1;
                 mi1->Size   = msg.arg2;

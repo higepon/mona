@@ -855,7 +855,6 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_LOG_PRINT:
         {
-
             logprintf((const char*)(info->esi));
             break;
         }

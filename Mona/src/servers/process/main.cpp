@@ -50,17 +50,14 @@ static CString GetFileName(const CString& path)
 
 static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword stdout_id, dword* tid)
 {
-    Log("Execute=%s\n", (const char*)commandLine);
-
     /* list initilize */
     CommandOption list;
     list.next = NULL;
-    Log("\n");
+
     CommandOption* option = NULL;
     CString path;
     _A<CString> args = commandLine.split(' ');
 
-    Log("\n");
     FOREACH (CString, arg, args)
     {
         if (arg == NULL) continue;
@@ -77,32 +74,26 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
         list.next = option;
     }
     END_FOREACH
-    Log("\n");
+
     monapi_cmemoryinfo* mi = NULL;
     dword entryPoint = 0xa0000000;
     int result = 1, svr_id = -1;
 
-    Log("\n");
-
     if (path.endsWith(".ELF") || path.endsWith(".EL2") || path.endsWith(".EL5"))
     {
-    Log("\n");
         svr_id = ID_ELF_SERVER;
     }
     else if (path.endsWith(".EXE") || path.endsWith(".EX2") || path.endsWith(".EX5"))
     {
-    Log("\n");
         svr_id = ID_PE_SERVER;
     }
     if (svr_id != -1)
     {
-    Log("\n");
         MessageInfo msg;
         dword tid = monapi_get_server_thread_id(svr_id);
 
         if (tid != THREAD_UNKNOWN)
         {
-    Log("\n");
             Message::sendReceive(&msg, tid, MSG_PROCESS_CREATE_IMAGE, prompt ? MONAPI_TRUE : MONAPI_FALSE, 0, 0, path);
             if (msg.arg2 != 0)
             {
@@ -116,7 +107,6 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
             }
             else
             {
-    Log("\n");
                 result = msg.arg3;
             }
         }
@@ -140,7 +130,6 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     }
     else
     {
-    Log("\n");
         result = ExecuteProcess(parent, mi, entryPoint, path, GetFileName(path), &list, prompt, stdout_id, tid);
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
@@ -249,7 +238,6 @@ static void MessageLoop()
         {
             case MSG_PROCESS_EXECUTE_FILE:
             {
-    Log("\n");
                 dword tid;
 
 #if 1 // exp
@@ -260,9 +248,8 @@ static void MessageLoop()
 		    msg.arg2 = grabs[grabs.size() - 1];
 		}
 #endif
-    Log("\n");
+
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, &tid);
-    Log("\n");
                 Message::reply(&msg, result, tid);
                 break;
             }
