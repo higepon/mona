@@ -99,7 +99,7 @@ void timerHandler() {
 
     outportb(0x20, 0x20);
 
-    g_console->printf("timerHandler");
+    info(DUMP, "timer, esp=%x pid=%x", g_current_process->esp, g_current_process->pid);
     g_process_manager->schedule();
 
     //    kthread_schedule(); // for test IDE Driver

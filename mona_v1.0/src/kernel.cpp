@@ -126,16 +126,18 @@ void startKernel(void) {
 
     info(DEV_NOTICE, "0");
 #ifdef HIGE
-    g_info_level = DUMP;
+    g_info_level = ERROR;
 
     info(DEV_NOTICE, "1");
     g_process_manager = new ProcessManager();
     info(DEV_NOTICE, "2");
     Process* process = new Process("test");
-    g_current_process = &(process->pinfo_);
+    Process* process2 = new Process("test2");
+    g_current_process = &(process2->pinfo_);
     info(DEV_NOTICE, "3");
     g_process_manager->addProcess(process, (dword)disp_name3);
     info(DEV_NOTICE, "4");
+    info(DUMP, "before esp=%x pid=%x", g_current_process->esp, g_current_process->pid);
     enableTimer();
 
     FDCTester();
