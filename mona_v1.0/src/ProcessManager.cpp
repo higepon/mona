@@ -224,6 +224,8 @@ void ProcessManager::switchProcess() {
 
     taskidx_ ++;
 
+    if (taskidx_ >= 50000) taskidx_ = 0;
+
     /* set NT flag 1 */
     setNTflag1();
 
