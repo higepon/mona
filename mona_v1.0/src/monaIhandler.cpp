@@ -18,6 +18,9 @@
 #include<KeyBoardManager.h>
 #include<FDCDriver.h>
 #include<ProcessManager.h>
+#include<monaTypes.h>
+#include<monaTester.h>
+#include<monaKernel.h>
 
 /*!
     \brief key stroke handler
@@ -59,13 +62,7 @@ void keyStrokeHandler() {
 */
 void fault0dHandler() {
 
-    _sysPrintln("fault0d");
-
-    while (true) {
-
-    }
-    return;
-
+    panic("fault0d");
 }
 
 

@@ -25,6 +25,7 @@
 #include<monaTester.h>
 #include<monaChecker.h>
 #include<KeyBoardManager.h>
+#include<SystemInfo.h>
 
 /*!
     \brief  mona kernel start at this point
@@ -64,6 +65,15 @@ void startKernel(void) {
     mm.resetGDT();
     _sysUnlock();
     _sys_printf("IDT,GDT set done\n");
+
+    /* get System Information */
+    SystemInfo& si = SystemInfo::instance();
+    if (si.hasCpuid()) {
+
+        si.cpuid();
+    } else {
+        _sys_printf("CPUID NG  \n");
+    }
 
     /* check some */
     checkTypeSize();
