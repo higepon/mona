@@ -4,3 +4,4 @@
 @ECHO To show internal commands, please input "HELP".
 @ECHO To start MonaGUI, please input "STARTGUI".
 @ECHO Thank you! -- Mona Project Team
+startgui

@@ -1,3 +1,7 @@
+2004-08-28  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/gui/hige3D/Form1.cpp (class Form1): Ç±ÇÍÇ©ÇÁÇ±Ç±Ç≈3DÇÃé¿å±ÇçsÇ§ÅB
+
 2004-08-26  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/syscall.cpp: int syscall_set_irq_receiver(int irq); í«â¡

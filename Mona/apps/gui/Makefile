@@ -12,6 +12,7 @@ all:
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 	@cd monafile; $(MAKE) $@
+	@cd hige3D; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -27,6 +28,7 @@ install:
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 	@cd monafile; $(MAKE) $@
+	@cd hige3D; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -42,6 +44,7 @@ clean: touchdepend
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 	@cd monafile; $(MAKE) $@
+	@cd hige3D; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -57,6 +60,7 @@ depend: touchdepend
 	@cd kukuri; $(MAKE) $@
 	@cd mtorz; $(MAKE) $@
 	@cd monafile; $(MAKE) $@
+	@cd hige3D; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -72,6 +76,7 @@ distclean:
 	rm -f kukuri/dependencies
 	rm -f mtorz/dependencies
 	rm -f monafile/dependencies
+	rm -f hige3D/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -87,3 +92,4 @@ touchdepend:
 	touch kukuri/dependencies
 	touch mtorz/dependencies
 	touch monafile/dependencies
+	touch hige3D/dependencies
