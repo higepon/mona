@@ -17,10 +17,15 @@
 class Queue {
 
   public:
-    virtual Queue* getNext() = 0;
-    virtual Queue* getPrevious() = 0;
-    virtual void setNext(Queue* next) = 0;
-    virtual void setPrevious(Queue* previous) = 0;
+    inline Queue* getNext() {return next_;}
+    inline Queue* getPrevious() {return previous_;}
+    inline void setNext(Queue* next) {next_ = next;}
+    inline void setPrevious(Queue* previous) {previous_ = previous;}
+
+  protected:
+    Queue* next_;
+    Queue* previous_;
+
 };
 
 class QueueManager {
