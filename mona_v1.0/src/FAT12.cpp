@@ -66,7 +66,7 @@ FAT12::~FAT12() {
 bool FAT12::initilize() {
 
     /* read and set BPB */
-    if (!setBPB()) {
+    if (!readBPB()) {
         errNum_ = BPB_ERROR;
         return false;
     }
@@ -81,19 +81,9 @@ bool FAT12::initilize() {
     }
 
     /* read fat */
-    fatStart_ = bpb_.reservedSectorCount;
-    if (!(fat_ = (byte*)malloc(512 * bpb_.fatSize16))) {
-
+    if (!readFAT(true)) {
         errNum_ = FAT_READ_ERROR;
         return false;
-    }
-
-    for (int i = 0; i < bpb_.fatSize16; i++) {
-
-        if (!(driver_->read(fatStart_ + i, fat_ + i * 512))) {
-            errNum_ = FAT_READ_ERROR;
-            return false;
-        }
     }
 
     /* cluster map */
@@ -106,8 +96,8 @@ bool FAT12::initilize() {
 
     /* set parameters depend on bpb */
     rootDirSectors_  = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
-    firstDataSector_ = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors_;
-    rootEntryStart_  = bpb_.reservedSectorCount + bpb_.fatSize16 * bpb_.numberFats;
+    firstDataSector_ = bpb_.reservedSectorCount + bpb_.numberFATs * bpb_.fatSize16 + rootDirSectors_;
+    rootEntryStart_  = bpb_.reservedSectorCount + bpb_.fatSize16 * bpb_.numberFATs;
 
     return true;
 }
@@ -131,7 +121,7 @@ bool FAT12::isFAT12() {
         / bpb_.bytesPerSector;
 
     totalSector = (bpb_.totalSector16 != 0) ? bpb_.totalSector16 : bpb_.totalSector32;
-    dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFats * bpb_.fatSize16) + rootDirSectors);
+    dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFATs * bpb_.fatSize16) + rootDirSectors);
     countOfClusters = dataSector / bpb_.sectorPerCluster;
 
     /* FAT12 */
@@ -142,14 +132,14 @@ bool FAT12::isFAT12() {
 }
 
 /*!
-  \brief reade BPB and parse
+  \brief read BPB and parse
 
   \return true/false OK/NG
 
   \author HigePon
   \Date   create:2003/04/17 update:
 */
-bool FAT12::setBPB() {
+bool FAT12::readBPB() {
 
     byte* p = buf_;
 
@@ -164,7 +154,7 @@ bool FAT12::setBPB() {
     p += 1;
     memcpy(&(bpb_.reservedSectorCount), p, 2);
     p += 2;
-    bpb_.numberFats = *p;
+    bpb_.numberFATs = *p;
     p += 1;
     memcpy(&(bpb_.rootEntryCount), p, 2);
     p += 2;
@@ -509,13 +499,26 @@ bool FAT12::createFlie(const char* name, const char* ext) {
     entries[freeIndex].filesize = 0;
     entries[freeIndex].cluster  = cluster;
 
-    setFatAt(cluster, getFATAt(1));
+    setFATAt(cluster, getFATAt(1));
 
     return true;
 
 }
 
-bool FAT12::setFatAt(int cluster, word fat) {
+bool FAT12::setFATAt(int cluster, word fat) {
+
+    int index = cluster * 12 / 8;
+
+    if (cluster % 2) {
+
+fat_[index] = 
+
+        result = ((fat_[index] & 0xf0) >> 4) | (fat_[index + 1] << 4);
+    } else {
+
+        result = (fat_[index]) | ((fat_[index + 1] & 0xf) << 8);
+    }
+
 
     return true;
 
@@ -544,6 +547,28 @@ int FAT12::getEmptyEntry(int cluster) {
     return -1;
 
 
+}
+
+/*!
+  \brief read FAT
+
+  \param allocate true:allocate memory/false:don't allocate memory
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:
+*/
+bool FAT12::readFAT(bool allocate) {
+
+    fatStart_ = bpb_.reservedSectorCount;
+
+    if (allocate && !(fat_ = (byte*)malloc(512 * bpb_.fatSize16))) return false;
+
+    for (int i = 0; i < bpb_.fatSize16; i++) {
+
+        if (!(driver_->read(fatStart_ + i, fat_ + i * 512))) return false;
+    }
+    return true;
 }
 
 bool FAT12::write(const char* file, byte* buffer) {return true;}

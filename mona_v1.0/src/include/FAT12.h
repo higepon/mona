@@ -109,8 +109,9 @@ class FAT12 {
 
  private:
 
-    bool setBPB();
+    bool readBPB();
     bool isFAT12();
+    bool readFAT(bool allocate);
     word getFATAt(int cluster) const;
     bool setFatAt(int cluster, word fat);
     char* getPathAt(const char* path, int index) const;
