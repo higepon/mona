@@ -81,6 +81,7 @@ void startKernel(void) {
 */
 void panic(const char* msg) {
 
+    _sysSetColor(BG_BLACK | CH_RED);
     _sys_printf("kernel panic!!!!!\n%s", msg);
     while (true) {
     }

@@ -16,8 +16,8 @@
 
 #include <monaTypes.h>
 
-#define _sysLock()   asm("cli") /*! disable interupts */
-#define _sysUnlock() asm("sti") /*! enable  interupts */
+#define _sysLock()   asm volatile("cli") /*! disable interupts */
+#define _sysUnlock() asm volatile("sti") /*! enable  interupts */
 
 /*! TSS */
 typedef struct {

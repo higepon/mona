@@ -20,6 +20,8 @@
 
 TSS tss[2];
 GDT ldt[1];
+GDT sss[1];
+byte stack[1][512];
 
 /*!
     \brief constructor
@@ -138,6 +140,7 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
     tss->ss     = ss;
     tss->esp0   = (byte)esp0;
     tss->ss0    = ss0;
+    tss->ldt    = 0x30;
     return;
 }
 
@@ -165,19 +168,20 @@ void ProcessManager::printInfo() {
     }
 
 
-    byte stack[1][512];
     setTSS(tss    , 0x08, 0x10, process1Tester, 0x200, stack[0] + 512, 0x10, 0, 0);
     setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack[1] + 512, 0x10, 0, 0);
     setGDT(gdt_ + 4, (dword)tss    , sizeof(TSS), TypeTSS);
     setGDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSS);
     memset(ldt, 0, sizeof(GDT));
     setGDT(gdt_ + 6, (dword)(ldt), sizeof(GDT), TypeLDT);
-    //    lldt((word)ldt);
+    //    setGDT(ldt     , (dword)(sss), sizeof(GDT), TypeLDT);
+    //    setGDT(sss     , (dword)(sss), sizeof(GDT), TypeLDT);
+    //    lldt(0x30);
     _sys_printf("tss=%x", (dword)tss);
 
 
     ltr(0x20);
-    //    process1Tester();
+    //process1Tester();
     _sys_printf("cs=%d\n", (tss+1)->cs);
     for (int i = 0; i < GDTNUM; i++) {
 

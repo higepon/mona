@@ -16,7 +16,7 @@
 
 #include <monaKernel.h>
 
-#define GDTNUM 6 /*! number of entry gdt */
+#define GDTNUM 7 /*! number of entry gdt */
 
 /*!
     process management
