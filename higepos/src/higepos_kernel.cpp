@@ -28,7 +28,7 @@
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2002/08/23
+    \date   create:2002/07/21 update:$Date$
 */
 void startKernel(void) {
     _sysInitVga();
@@ -46,10 +46,8 @@ void startKernel(void) {
     /* testing operator new */
     //    Point* point1 = new Point();?????????
     //    _sysPrintlnInt(point1->getX());
-    Point* point2 = new Point(5, 5);
-    Point* point3 = new Point(6, 4);
-    _sys_printf("[Point(5, 5) getX() = %d]  ", point2->getX());
-    _sys_printf("[Point(6, 4) getY() = %d]\n", point3->getY());
+    Point* point2 = new Point(5, -1);
+    _sys_printf("[Point(5, -1) getY() = %d]\n", point2->getY());
 
     /* testing types */
     _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));

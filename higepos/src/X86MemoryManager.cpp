@@ -51,17 +51,15 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     H_SIZE_T realSize = this->getRealSize(size);
 
     /* search block in free list that has enough size for needed */
-    struct memoryEntry* previous = (struct memoryEntry*)NULL;
     struct memoryEntry* current  = freeEntry_;
-    for (; ; previous = current, current = previous->next) {
+    for (; ; current = current->next) {
 
-        /* first fit found */
         if (current->size >= realSize) break;
 
-        /* block not found */
-        if (current == freeEntry_) return NULL;
+        if(current->next == freeEntry_) return NULL;
     }
 
+    _sys_printf("size=%d realSize=%d current= %d\n", size, realSize, current);
     struct memoryEntry* usedBlock = current;
     struct memoryEntry* freeBlock = current + realSize;
     H_SIZE_T usedBlockSize = realSize;
@@ -75,6 +73,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     this->addToEntry(usedEntry_, usedBlock, usedBlockSize);
 
     /* address of allocated memory */
+    this->printInfo();
     return (void*)usedBlock->startAddress;
 }
 
@@ -153,10 +152,19 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
     print memory information for debug
 
     \author HigePon
-    \date   create:2002/09/07 update:
+    \date   create:2002/09/07 update:2002/09/08
 */
 void X86MemoryManager::printInfo() {
 
+    struct memoryEntry* temp = freeEntry_;
+
+    _sys_printf("info about free block\n");
+
+    for (int i = 0; freeEntry_; i++, temp = temp->next) {
+
+        _sys_printf("block%d address=%d size=%d\n", i, temp, temp->size);
+        if (freeEntry_ == temp->next) break;
+    }
 }
 
 /*!
