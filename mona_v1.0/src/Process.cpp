@@ -85,9 +85,13 @@ bool Scheduler::schedule2()
 {
     Thread* root = runq[g_currentThread->thread->currPriority];
     Thread* curr = (Thread*)(root->top());
+
     curr->remove();
     root->addToPrev(curr);
+
+    g_prevThread    = g_currentThread;
     g_currentThread = PTR_THREAD(root->top());
+    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 bool Scheduler::schedule()
@@ -137,7 +141,7 @@ bool Scheduler::schedule()
     g_console->printf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
 #endif
-    return true;//IN_SAME_SPACE(g_prevThread, g_currentThread);
+    return !(IN_SAME_SPACE(g_prevThread, g_currentThread));
 }
 
 void Scheduler::join(Thread* thread, int priority)

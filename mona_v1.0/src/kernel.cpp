@@ -238,6 +238,10 @@ void startKernel(void) {
 
     disableTimer();
 
+    g_console->printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    for (;;);
+
+
     enableInterrupt();
 
     /* FDC do not delete */
@@ -255,7 +259,12 @@ void startKernel(void) {
     g_fdcdriver->motorAutoOff();
     g_info_level = MSG;
 
+
+    g_prevThread    = (new Thread())->getThreadInfo();
     g_currentThread = (new Thread())->getThreadInfo();
+    g_prevThread->archinfo->cr3    = 1;
+    g_currentThread->archinfo->cr3 = 2;
+
     enableTimer();
 
 #ifdef HIGE

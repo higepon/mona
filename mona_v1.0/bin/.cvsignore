@@ -2,4 +2,7 @@
 *.bin
 *.list
 *.img
+*.exe
+*.ELF
+*.SVR
 TAGS
