@@ -43,7 +43,6 @@ SOURCES      = cstart.cpp            \
                IDManager.cpp         \
                KObject.cpp           \
                Loader.cpp            \
-               IDEDriver.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

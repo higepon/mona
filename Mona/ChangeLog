@@ -1,3 +1,14 @@
+2004-06-27  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/main.cpp : データ転送を伴うコマンド発行を実装(未テスト)
+
+        * apps/non-gui/ata/main.cpp (getSignature): 接続デバイスのリセットとシグニチャ取得
+
+        * apps/non-gui/ata/main.cpp : ATAテスト用のアプリを追加。実行しないでね。
+
+
+        * src/kernel/IDEDriver.cpp : 削除;
+
 2004-06-26  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/IDEDriver.cpp (hddTest): IDEDriverの実験コード追加。環境変数MONA_DEVELOPER=-DHIGEのときだけ有効になる。
