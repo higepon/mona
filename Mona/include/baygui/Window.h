@@ -35,13 +35,16 @@ class Window : public Container {
 private:
 	char title[MAX_TITLE_LEN + 1];
 	dword threadID, guisvrID;
+	Graphics *__g;
 
 public:
 	Window::Window();
 	virtual Window::~Window();
+	virtual char *getTitle();
 	virtual void setTitle(char *title);
 	virtual void setRect(int x, int y, int width, int height);
-	virtual char *getTitle();
+	virtual void add(Control *control);
+	virtual Control *remove(Control *control);
 	virtual void postEvent(Event *event);
 	virtual void repaint();
 	virtual void run();

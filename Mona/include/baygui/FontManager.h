@@ -34,24 +34,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class FontManager : public Object {
 private:
 	static FontManager *instance;
-	char halfName[9], fullName[9];
-	int halfWidth, halfHeight, fullWidth, fullHeight, fullBlockNum, codepage;
-	int *blockStartList, *blockEndList, *fullOffsetList;
-	unsigned char *halfFp, *fullFp;
+	char name[9];
+	int width, height, offsetListLength;
+	int *offsetList;
+	unsigned char *fp;
 	Font *fontList[MAX_FONTLIST_LEN];
 	
 protected:
 	FontManager::FontManager();
-	virtual void loadHalfByteFont(char *path);
-	virtual void loadFullByteFont(char *path);
+	virtual void loadFont(char *path);
 
 public:
-	monapi_cmemoryinfo *fullFpMemory;
+	monapi_cmemoryinfo *fpMemory;
 	static FontManager *getInstance();
 	virtual FontManager::~FontManager();
 	virtual Font **decodeString(char *str, int *length);
-	virtual void setCodePage(int codepage);
-	virtual int getCodePage();
 	virtual int getWidth(char *str);
 	virtual int getHeight();
 };

@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  文字列クラス
 */
-class String : Object {
+class String : public Object {
 private:
 	char *c_str;
 
@@ -40,9 +40,6 @@ public:
 	virtual String::~String();
 	int length();
 	char *toString();
-	bool startsWith(String *s);
-	bool endsWidth(String *s);
-	bool equals(String *s);
 };
 
 #endif // _STRING_H_INCLUDED_

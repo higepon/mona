@@ -34,8 +34,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Font : public Object {
 private:
 	char name[8 + 1];
-	int width, height, type;
-	unsigned char halfData[8 * 16], fullData[16 * 16];
+	int width, height;
+	unsigned char data[16 * 16];
 	
 public:
 	Font::Font();
@@ -43,11 +43,9 @@ public:
 	virtual void setName(char *name);
 	virtual void setWidth(int width);
 	virtual void setHeight(int height);
-	virtual void setType(int type);
 	virtual char *getName();
 	virtual int getWidth();
 	virtual int getHeight();
-	virtual int getType();
 	virtual unsigned char *getData();
 };
 

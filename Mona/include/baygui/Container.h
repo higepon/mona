@@ -33,22 +33,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class Container : public Control {
 protected:
-	/** 内部描画領域 */
-	Graphics *__g;
-	/** 部品ポインター */
-	int controlListPtr;
 	/** 部品一覧 */
-	Control *controlList[MAX_CONTROLLIST_LEN];
+	LinkedList *_controlList;
 
-	virtual void setActiveControl(Control *control);
-	virtual Control *getActiveControl();
-	virtual Control *getActiveControl(int x, int y);
+	virtual Control *getControl();
+	virtual Control *getControl(int x, int y);
 
 public:
 	Container::Container();
 	virtual Container::~Container();
-	virtual void add(Control *control);
-	virtual Control *remove(Control *control);
+	virtual void add(Control *control) = 0;
+	virtual Control *remove(Control *control) = 0;
 };
 
 #endif // _CONTAINER_H_INCLUDED_

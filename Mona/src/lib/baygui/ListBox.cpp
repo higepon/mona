@@ -30,13 +30,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** コンストラクタ */
 ListBox::ListBox()
 {
-	selectedIndex = dataListPtr = 0;
+	selectedIndex =  0;
+	_dataList = new LinkedList();
 	_itemEvent = new Event(ITEM_SELECTED, this);
 }
 
 /** デストラクタ */
 ListBox::~ListBox()
 {
+	delete(_dataList);
 	delete(_itemEvent);
 }
 
@@ -49,7 +51,7 @@ int ListBox::getSelectedIndex()
 /** 選択項目を得る */
 char *ListBox::getSelectedItem()
 {
-	return dataList[selectedIndex];
+	return ((String *)_dataList->getItem(selectedIndex)->data)->toString();
 }
 
 /** index 番目を選択する */
@@ -64,12 +66,13 @@ void ListBox::select(int index)
 /** 項目を追加する */
 void ListBox::add(char *item)
 {
-	copyString(dataList[dataListPtr++], item);
+	_dataList->add(new LinkedItem(new String(item)));
 }
 
 /** index 番目の項目を削除する */
 void ListBox::remove(int index)
 {
+	_dataList->remove(_dataList->getItem(index));
 }
 
 /** 再描画 */
@@ -95,17 +98,19 @@ void ListBox::repaint()
 
 	// 文字
 	int fh = FontManager::getInstance()->getHeight();
-	for (i = 0; i < dataListPtr; i++) {
-		if (i == selectedIndex) {
+	for (i = 0; i < _dataList->getLength(); i++) {
+		if (selectedIndex == i) {
 			_g->setColor(0,128,255);
 			_g->fillRect(3, 3 + (16 * i), width - 5, 17);
 			_g->setColor(255,255,255);
-			_g->drawText(dataList[i], 4, 4 + (16 * i) + (16 - fh) / 2);
+			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
+				4, 4 + (16 * i) + (16 - fh) / 2);
 		} else {
 			_g->setColor(0,0,0);
-			_g->drawText(dataList[i], 4, 4 + (16 * i) + (16 - fh) / 2);
+			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
+				4, 4 + (16 * i) + (16 - fh) / 2);
 		}
-	}
+	} 
 }
 
 /** イベント処理 */
@@ -124,7 +129,7 @@ void ListBox::postEvent(Event *event)
 				}
 			}
 		} else if (keycode == VKEY_DOWN || keycode == VKEY_DOWN_QEMU) {
-			if (selectedIndex < dataListPtr - 1) {
+			if (selectedIndex < _dataList->getLength() - 1) {
 				selectedIndex++;
 				if (firstpaint == true) {
 					repaint();
@@ -136,6 +141,7 @@ void ListBox::postEvent(Event *event)
 			Control::postEvent(_itemEvent);
 			return;
 		}
+	// マウス押下
 	} else if (event->type == MOUSE_PRESSED) {
 		int my = ((MouseEvent *)event)->y;
 		//printf("y = %d\n", my);

@@ -35,9 +35,11 @@ class WindowManager : public MonAPI::Server, public Container {
 private:
 	bool isRunning;
 	dword threadID, keysvrID, mousesvrID, stdoutID, procsvrID;
-	int preX, preY, state;
+	int preX, preY, state, controlListPtr;
 	Bitmap *wallpaper;
 	static WindowManager *instance;
+	Control *controlList[50];
+	
 	virtual void setActiveControl(Control *control);
 	virtual bool setActiveControl(int x, int y);
 	virtual Control *getActiveControl();

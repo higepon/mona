@@ -77,12 +77,16 @@ Window::Window()
 		//printf("Window: GuiServer found %d\n", threadID);
 	}
 
+	// ウィンドウ内部描画領域
+	__g = new Graphics();
+	
 	// フォントロード
 	FontManager::getInstance();
 }
 
 /** デストラクタ */
 Window::~Window() {
+	delete(__g);
 	// draw mouse_cursor
 	monapi_call_mouse_set_cursor(1);
 }
@@ -121,15 +125,17 @@ void Window::setRect(int x, int y, int width, int height)
 	this->height = height;
 	_g->translate(x, y);
 	_g->setClip(x, y, width, height);
-	// 子領域
+
+	// ウィンドウ内部描画領域領域
 	__g->translate(x + INSETS_LEFT, y + INSETS_TOP);
 	__g->setClip(x + INSETS_LEFT, y + INSETS_TOP, 
 		width - INSETS_LEFT - INSETS_RIGHT, height - INSETS_TOP - INSETS_BOTTOM);
 
 	// 子部品の位置も更新
-	for (i = 0; i < controlListPtr; i++) {
-		Rect *rect = controlList[i]->getRect();
-		controlList[i]->setRect(
+	for(i = 0; i < _controlList->getLength(); i++) {
+		Control *control = (Control *)_controlList->getItem(i)->data;
+		Rect *rect = control->getRect();
+		control->setRect(
 			rect->x + mx, 
 			rect->y + my, 
 			rect->width, 
@@ -138,24 +144,53 @@ void Window::setRect(int x, int y, int width, int height)
 	}
 }
 
+/**
+ 指定した部品を追加する
+ @param control 指定する部品
+ */
+void Window::add(Control *control)
+{
+	// 最後に追加する
+	control->setParent(this);
+	Rect *rect = control->getRect();
+	// 部品をコンテナーの中に配置する
+	control->setRect
+		(x + INSETS_LEFT + rect->x, y + INSETS_TOP + rect->y, rect->width, rect->height);
+	// 部品を再描画
+	if (firstpaint == true) {
+		control->repaint();
+	}
+	_controlList->add(new LinkedItem(control));
+}
+
+/**
+ 指定した部品を削除する
+ @param control 指定する部品
+ @return 削除された部品（なければNULL）
+ */
+Control *Window::remove(Control *control)
+{
+	for(int i = 0; i < _controlList->getLength(); i++) {
+		LinkedItem *item = _controlList->getItem(i);
+		if (item->data == control) {
+			_controlList->remove(item);
+		}
+	}
+	return NULL;
+}
+
 /** イベント処理 */
 void Window::postEvent(Event *event)
 {
 	// 活性部品にキーイベントを投げる
 	if (KEY_PRESSED <= event->type && event->type <= KEY_RELEASED) {
-		Control *control = getActiveControl();
+		Control *control = getControl();
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->source = control;
-			// debug
-			//WindowManager::getInstance()->//printf("Control::postEvent %x,%d,%d,%d\n", 
-			//	event->source, event->type, ((KeyEvent *)event)->key, ((KeyEvent *)event)->modifires);
-			control->postEvent(event);
+			((Control *)_controlList->endItem->data)->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
-			// debug
-			//WindowManager::getInstance()->//printf("Window::onEvent %x,%d,%d,%d\n", 
-			//	event->source, event->type, ((KeyEvent *)event)->key, ((KeyEvent *)event)->modifires);
 			onEvent(event);
 		}
 	// マウスクリック、マウスリリース
@@ -163,46 +198,35 @@ void Window::postEvent(Event *event)
 		// マウスイベントが起こった部品を探す
 		int ex = ((MouseEvent *)event)->x;
 		int ey = ((MouseEvent *)event)->y;
-		Control *control = getActiveControl(ex, ey);
+		Control *control = getControl(ex, ey);
 		// 部品でイベントが起こった
 		if (control != NULL) {
-			setActiveControl(control);
+			control->setEnabled(true);
 			event->source = control;
 			// 座標変換
 			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
 			((MouseEvent *)event)->y -= (y + INSETS_TOP);
-			// debug
-			//WindowManager::getInstance()->//printf("Control::postEvent %x,%d,%d,%d\n", 
-			//	event->source, event->type, ((MouseEvent *)event)->x, ((MouseEvent *)event)->x);
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
-			setActiveControl(NULL);
-			// debug
-			//WindowManager::getInstance()->//printf("Window::onEvent %x,%d,%d,%d\n", 
-			//	event->source, event->type, ((MouseEvent *)event)->x, ((MouseEvent *)event)->x);
+			// 部品を非活性にする
+			for (int i = 0; i < _controlList->getLength(); i++) {
+				Control *control = (Control *)_controlList->getItem(i)->data;
+				control->setEnabled(false);
+			}
 			onEvent(event);
 		}
 	// マウスドラッグ
 	} else if (event->type == MOUSE_DRAGGED) {
-		Control *control = getActiveControl();
+		Control *control = getControl();
 		// 部品でイベントが起こった
 		if (control != NULL) {
-			// debug
-			//WindowManager::getInstance()->//printf("Control::postEvent %x,%d,%d,%d\n", 
-			//	event->source, event->type, ((MouseEvent *)event)->x, ((MouseEvent *)event)->x);
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
-			// debug
-			//WindowManager::getInstance()->//printf("Window::onEvent %x,%d,%d,%d\n", 
-			//	event->source, event->type, ((MouseEvent *)event)->x, ((MouseEvent *)event)->x);
 			onEvent(event);
 		}
 	} else {
-		// debug
-		//WindowManager::getInstance()->//printf("Window::onEvent %x,%d\n", 
-		//	event->source, event->type);
 		onEvent(event);
 	}
 }
@@ -280,12 +304,13 @@ void Window::repaint()
 		_g->setColor(128, 128, 128);
 	}
 	_g->drawText(title, ((width - fw) / 2), ((INSETS_TOP - fh) / 2));
-	//_g->drawText(title, ((width - fw) / 2) + 1, ((INSETS_TOP - fh) / 2));
+	//_g->drawText(title, ((width - fw) / 2) + 1, ((INSETS_TOP - fh) / 2));//太字
 
 	if (iconified == false) {
 		// 子部品も更新
-		for (i = 0; i < controlListPtr; i++) {
-			controlList[i]->repaint();
+		for(i = 0; i < _controlList->getLength(); i++) {
+			Control *control = (Control *)_controlList->getItem(i)->data;
+			control->repaint();
 		}
 		onPaint(__g);
 	}

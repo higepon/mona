@@ -51,6 +51,7 @@ char *String::toString()
 	return c_str;
 }
 
+#if 0
 /** Žw’è‚µ‚½•¶Žš—ñ‚ÅŽn‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©”»’è‚·‚é */
 bool String::startsWith(String *s)
 {
@@ -68,3 +69,4 @@ bool String::equals(String *s)
 {
 	return false;
 }
+#endif

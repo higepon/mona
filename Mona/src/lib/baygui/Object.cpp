@@ -66,8 +66,14 @@ unsigned char *Object::getByteArray(char *path)
 		return NULL;
 	}
 #elif defined(MONA)
-	if (path[strlen(path) - 1] == '2') {
-		monapi_cmemoryinfo* mi = monapi_call_file_decompress_bz2_file(path, false);
+	// bzip2 または tek5
+	if (path[strlen(path) - 1] == '2' || path[strlen(path) - 1] == '5') {
+		monapi_cmemoryinfo* mi = NULL;
+		if (path[strlen(path) - 1] == '2') {
+			mi = monapi_call_file_decompress_bz2_file(path, false);
+		} else {
+			mi = monapi_call_file_decompress_st5_file(path, false);
+		}
 		if (mi != NULL && mi->Size > 0) {
 			unsigned char *data = (unsigned char *)malloc(mi->Size);
 			memcpy(data, mi->Data, mi->Size);
@@ -98,12 +104,12 @@ unsigned char *Object::getByteArray(char *path)
 /** 文字列をコピーする */
 void Object::copyString(char *dst, char *src)
 {
-	//strcpy(dst, src);
-	int i;
-	for (i = 0; i < (int)strlen(src); i++) {
-		dst[i] = src[i];
-	}
-	dst[i] = '\0';
+	strcpy(dst, src);
+	//int i;
+	//for (i = 0; i < (int)strlen(src); i++) {
+	//	dst[i] = src[i];
+	//}
+	//dst[i] = '\0';
 }
 
 /** 10進数を文字列に変換する */

@@ -878,8 +878,8 @@ void WindowManager::service()
 			case MSG_GUISERVER_GETFONT:
 				//printf("FontManager->WindowManager MSG_GUISERVER_GETFONT received\n");
 				{
-					monapi_cmemoryinfo *fullFpMemory = FontManager::getInstance()->fullFpMemory;
-					MonAPI::Message::reply(&info, fullFpMemory->Handle, fullFpMemory->Size);
+					monapi_cmemoryinfo *fpMemory = FontManager::getInstance()->fpMemory;
+					MonAPI::Message::reply(&info, fpMemory->Handle, fpMemory->Size);
 				}
 				break;
 			case MSG_GUISERVER_SETTIMER:

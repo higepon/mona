@@ -51,6 +51,7 @@ Label::Label(char *text, int align)
 /** デストラクタ */
 Label::~Label()
 {
+	free(text);
 }
 
 /**

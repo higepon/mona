@@ -32,116 +32,59 @@ Container::Container()
 {
 	enabled = true;
 	firstpaint = false;
-	__g = new Graphics();
-	controlListPtr = 0;
+	_controlList = new LinkedList();
 }
 
 /** デストラクタ */
 Container::~Container() {
-	delete(__g);
+	delete(_controlList);
 }
 
+
 /**
- 活性部品を得る
+ 部品を得る
  @return 活性部品（なければNULL）
 */
-Control *Container::getActiveControl()
+Control *Container::getControl()
 {
-	int i;
-	
-	for (i = 0; i < controlListPtr; i++) {
-		if (controlList[i]->getEnabled() == true) {
-			return controlList[i];
-		}
+	// NULLチェック
+	if (_controlList->endItem == NULL) return NULL;
+
+	// 後ろからチェックしていく
+	LinkedItem *item = _controlList->endItem;
+	Control *c = (Control *)item->data;
+	if (c->getEnabled() == true) return c;
+	while (item->prev != NULL) {
+		item = item->prev;
+		c = (Control *)item->data;
+		if (c->getEnabled() == true) return c;
 	}
 	return NULL;
 }
 
 /**
- 活性部品を得る
+ 部品を得る
  @param x 指定するX座標
  @param y 指定するY座標
  */
-Control *Container::getActiveControl(int x, int y)
+Control *Container::getControl(int x, int y)
 {
-	int i;
-	
-	for (i = 0; i < controlListPtr; i++) {
-		Rect *rect = controlList[i]->getRect();
-		// マウスカーソルがある範囲にウィンドウがあるかどうかチェック
+	// NULLチェック
+	if (_controlList->endItem == NULL) return NULL;
+	// 後ろからチェックしていく
+	LinkedItem *item = _controlList->endItem;
+	Control *c = (Control *)item->data;
+	Rect *rect = c->getRect();
+	// マウスカーソルがある範囲に部品があるかどうかチェック
+	if (rect->x <= x && x <= rect->x + rect->width && 
+		rect->y <= y && y <= rect->y + rect->height) { return c; }
+	while (item->prev != NULL) {
+		item = item->prev;
+		c = (Control *)item->data;
+		rect = c->getRect();
+		// マウスカーソルがある範囲に部品があるかどうかチェック
 		if (rect->x <= x && x <= rect->x + rect->width && 
-			rect->y <= y && y <= rect->y + rect->height)
-		{
-			return controlList[i];
-		}
+			rect->y <= y && y <= rect->y + rect->height) { return c; }
 	}
-	return NULL;
-}
-
-/**
- 指定した部品を活性にする
- @param control 指定する部品
-*/
-void Container::setActiveControl(Control *control)
-{
-	int i;
-	
-	for (i = 0; i < controlListPtr; i++) {
-		if (controlList[i] == control) {
-			controlList[i]->setEnabled(true);
-		} else {
-			controlList[i]->setEnabled(false);
-		}
-	}
-}
-
-/**
- 指定した部品を追加する
- @param control 指定する部品
- */
-void Container::add(Control *control)
-{
-	// 最後に追加する
-	if (controlListPtr < MAX_CONTROLLIST_LEN - 1) {
-		// 部品追加
-		controlList[controlListPtr] = control;
-		controlList[controlListPtr]->setParent(this);
-		// 部品をウィンドウの中に配置する
-		Rect *rect = controlList[controlListPtr]->getRect();
-		controlList[controlListPtr]->setRect
-			(x + INSETS_LEFT + rect->x, y + INSETS_TOP + rect->y, rect->width, rect->height);
-		// 部品を再描画
-		if (firstpaint == true) {
-			controlList[controlListPtr]->repaint();
-		}
-		controlListPtr++;
-	}
-}
-
-/**
- 指定した部品を削除する.
- 用がすんだら、返ってきたインスタンスを必ずdeleteすること。
- @param control 指定する部品
- @return 削除された部品（なければNULL）
- */
-Control *Container::remove(Control *control)
-{
-	int i, j;
-	
-	for (i = 0; i < controlListPtr; i++) {
-		if (controlList[i] == control) {
-			// 後ろから詰める
-			for (j = i; j < controlListPtr - 1; j++) {
-				controlList[j] = controlList[j + 1];
-			}
-			controlListPtr--;
-			// 親を再描画
-			if (firstpaint == true) {
-				repaint();
-			}
-			return control;
-		}
-	}
-	
 	return NULL;
 }

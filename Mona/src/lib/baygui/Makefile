@@ -11,7 +11,7 @@ endif
 SOURCES = main.cpp Bitmap.cpp Button.cpp Control.cpp Container.cpp Event.cpp Font.cpp \
 FontManager.cpp Graphics.cpp Icon.cpp Image.cpp KeyEvent.cpp Label.cpp \
 ListBox.cpp MouseEvent.cpp Object.cpp Rect.cpp String.cpp TextField.cpp TimerEvent.cpp \
-TwoWayItem.cpp TwoWayList.cpp Window.cpp
+LinkedItem.cpp LinkedList.cpp Window.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc

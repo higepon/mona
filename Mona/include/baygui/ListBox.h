@@ -33,8 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class ListBox : public Control {
 private:
-	int selectedIndex, dataListPtr;
-	char dataList[MAX_DATALIST_LEN][128];
+	int selectedIndex;
+	LinkedList *_dataList;
 	Event *_itemEvent;
 
 public:

@@ -55,12 +55,6 @@ void Font::setHeight(int height)
 	this->height = height;
 }
 
-/** タイプを設定する */
-void Font::setType(int type)
-{
-	this->type = type;
-}
-
 /** 名前を得る */
 char *Font::getName()
 {
@@ -79,17 +73,7 @@ int Font::getHeight()
 	return height;
 }
 
-/** タイプを得る */
-int Font::getType()
-{
-	return type;
-}
-
 /** 内部データを得る */
 unsigned char *Font::getData(){
-	if (type == FULL_BYTE_FONT) {
-		return fullData;
-	} else {
-		return halfData;
-	}
+	return data;
 }
