@@ -14,6 +14,7 @@
 #include <iostream>
 #include "HogeDriver.h"
 #include "FAT12.h"
+#include "string.h"
 
 int main(int argc, char *argv[]) {
 
