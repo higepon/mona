@@ -10,6 +10,7 @@
 #include<monaKernel.h>
 #include<VirtualConsole.h>
 #include<MFDCDriver.h>
+#include<Semaphore.h>
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
 
@@ -23,3 +24,6 @@ GLOBAL StackView g_stack_view;                       /*< struct for stack view  
 GLOBAL MFDCDriver* g_fdcdriver;
 
 GLOBAL dword g_demo_step GLOBAL_VAL(0);
+
+/* semaphore */
+GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);

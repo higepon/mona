@@ -26,8 +26,6 @@ extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
 extern "C" char pos_x;
 extern "C" char pos_y;
 
-static semaphore sem = 1;
-
 /*!
     \brief idle thread
 
@@ -40,11 +38,11 @@ void disp_name1() {
 
     while (true) {
 
-        while (semaphore_down(&sem)) syscall_kthread_yield();
+        while (semaphore_down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(75, 0, 'M', color%13);
 
-        semaphore_up(&sem);
+        semaphore_up(&g_semaphore_console);
 
         color++;
         syscall_kthread_yield();
@@ -62,11 +60,11 @@ void disp_name2() {
     dword color = 0;
 
     while (true) {
-        while (semaphore_down(&sem)) syscall_kthread_yield();
+        while (semaphore_down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(76, 0, 'o', color%14);
 
-        semaphore_up(&sem);
+        semaphore_up(&g_semaphore_console);
         color++;
         syscall_kthread_yield();
     }
@@ -78,12 +76,12 @@ void disp_name3() {
 
     while (true) {
 
-        while (semaphore_down(&sem)) syscall_kthread_yield();
+        while (semaphore_down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(77, 0, 'n', color%15);
 
 
-        semaphore_up(&sem);
+        semaphore_up(&g_semaphore_console);
         color++;
         syscall_kthread_yield();
     }
@@ -95,11 +93,11 @@ void disp_name4() {
 
     while (true) {
 
-        while (semaphore_down(&sem)) syscall_kthread_yield();
+        while (semaphore_down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(78, 0, 'a', color%16);
 
-        semaphore_up(&sem);
+        semaphore_up(&g_semaphore_console);
         color++;
 
         syscall_kthread_yield();
@@ -128,7 +126,7 @@ void disp_kthread_info() {
 
     while (true) {
 
-        while (semaphore_down(&sem)) syscall_kthread_yield();
+        while (semaphore_down(&g_semaphore_console)) syscall_kthread_yield();
 
         int x = pos_x;
         int y = pos_y;
@@ -153,7 +151,7 @@ void disp_kthread_info() {
 
          pos_x = x;
          pos_y = y;
-         semaphore_up(&sem);
+         semaphore_up(&g_semaphore_console);
 
          syscall_kthread_yield();
     }
