@@ -62,7 +62,12 @@
 #ifndef _BZLIB_PRIVATE_H
 #define _BZLIB_PRIVATE_H
 
+#ifdef MONA
+extern void* malloc(unsigned long size);
+extern void free(void * address);
+#else
 #include <stdlib.h>
+#endif
 
 #ifndef BZ_NO_STDIO
 #include <stdio.h>
@@ -70,7 +75,7 @@
 #include <string.h>
 #endif
 
-#include "bzlib.h"
+#include <bzlib.h>
 
 
 

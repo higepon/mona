@@ -14,7 +14,7 @@ include $(MONADIR)/env/dirnames.inc
 BIGFILES = -D_FILE_OFFSET_BITS=64
 CFLAGS  += -Winline -ffreestanding -fomit-frame-pointer -fno-strength-reduce $(BIGFILES) -DBZ_NO_STDIO
 OBJECTS  = $(SOURCES:.c=.o)
-INCLUDE  = 
+INCLUDE  = -I$(INCDIR)
 
 all : $(TARGET)
 
