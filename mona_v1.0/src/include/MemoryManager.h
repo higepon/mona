@@ -25,15 +25,18 @@ typedef struct memoryentry {
 class MemoryManager {
 
   public:
-    MemoryManager(dword start, dword end);
+    MemoryManager();
+    MemoryManager(const MemoryManager&);
     ~MemoryManager();
 
   public:
+    dword initialize(dword size, dword end);
     dword allocate(dword size);
     void free(dword address);
     dword getFreeMemorySize() const;
     dword getUsedMemorySize() const;
     void debugPrint() const;
+    static MemoryManager& instance();
 
   private:
     bool hasNoEntry(MemoryEntry* list) const;
@@ -47,6 +50,8 @@ class MemoryManager {
   private:
     MemoryEntry* freeList_;
     MemoryEntry* usedList_;
+    dword start_;
+    dword end_;
 
 };
 

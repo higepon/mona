@@ -24,7 +24,8 @@ int main(int argc, char* argv) {
         exit(-1);
     }
 
-    static MemoryManager mm((dword)memory, (dword)memory + MANAGE_SIZE);
+    MemoryManager& mm = MemoryManager::instance();
+    mm.initilize((dword)memory, (dword)memory + MANAGE_SIZE);
 
     test(&mm);
 

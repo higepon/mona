@@ -13,33 +13,37 @@
     \date   create:2002/08/08 update:$Date$
 */
 #include<IA32MemoryManager.h>
+#include<MemoryManager.h>
 #include<operator.h>
 #include<types.h>
+#include<global.h>
+
+
 
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    return mm.allocateMemory(size);
+    MemoryManager& mm = MemoryManager::instance();
+    return (void*)mm.allocate((dword)size);
 }
 
 void operator delete(void* address) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.freeMemory(address);
+    MemoryManager& mm = MemoryManager::instance();
+    mm.free((dword)address);
     return;
 }
 
 void* operator new[](size_t size) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    return mm.allocateMemory(size);
+    MemoryManager& mm = MemoryManager::instance();
+    return (void*)mm.allocate((dword)size);
 }
 
 void operator delete[](void* address) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.freeMemory(address);
+    MemoryManager& mm = MemoryManager::instance();
+    mm.free((dword)address);
     return;
 }
 
@@ -47,27 +51,28 @@ void operator delete[](void* address) {
 
 void* malloc(unsigned long size) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    return mm.allocateMemory(size);
+    MemoryManager& mm = MemoryManager::instance();
+    return (void*)mm.allocate((dword)size);
 }
 
 void free(void * address) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    return mm.freeMemory(address);
+    MemoryManager& mm = MemoryManager::instance();
+    mm.free((dword)address);
+    return;
 }
 
 void __builtin_delete(void* address) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    mm.freeMemory(address);
+    MemoryManager& mm = MemoryManager::instance();
+    mm.free((dword)address);
     return;
 }
 
 void* __builtin_new(unsigned long size) {
 
-    IA32MemoryManager& mm = IA32MemoryManager::instance();
-    return mm.allocateMemory(size);
+    MemoryManager& mm = MemoryManager::instance();
+    return (void*)mm.allocate((dword)size);
 }
 
 void* __builtin_vec_new(unsigned long size) {

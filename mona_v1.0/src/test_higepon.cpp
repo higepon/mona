@@ -7,6 +7,7 @@
 #include<operator.h>
 #include<IA32MemoryManager.h>
 #include<z.h>
+#include<MemoryManager.h>
 
 extern "C" void put_pixel(int x, int y, char color);
 
@@ -112,7 +113,6 @@ int getColorNumber(byte* rgba) {
     return result;
 }
 
-
 void FDCDriverTester() {
 
     g_info_level = MSG;
@@ -127,19 +127,27 @@ void FDCDriverTester() {
 
     g_console->printf("[1.2]");
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+
+        g_console->printf("fat=%d", (dword)fat);
+
     if (!fat->initilize()) {
             g_console->printf("error fat initialize\n");
                 g_fdcdriver->motor(false);
                 return;
         }
     g_console->printf("[1.3]");
+
         if (!fat->open(".", "LOGO.Z", FAT12::READ_MODE)) {
                 g_console->printf("error open mona.z\n");
                 g_fdcdriver->motor(false);
                 return;
         }
+
     g_console->printf("[1.4]");
+
         read_info.fat = fat;
+
+
         read_info.sz = fat->getFileSize();
 
         unsigned char *bf = (unsigned char*)malloc(512);
@@ -148,6 +156,8 @@ void FDCDriverTester() {
                 g_fdcdriver->motor(false);
                 return;
         }
+
+
     g_console->printf("[1.5]");
         input_stream is;
         is.bf = bf;

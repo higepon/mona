@@ -32,7 +32,10 @@
 
 #define SIZE_OF_HEADER sizeof(MemoryEntry)
 
-MemoryManager::MemoryManager(dword start, dword end) {
+MemoryManager::MemoryManager() {
+}
+
+dword MemoryManager::initialize(dword start, dword end) {
 
     /* create large free block */
     freeList_       = (MemoryEntry*)start;
@@ -41,6 +44,10 @@ MemoryManager::MemoryManager(dword start, dword end) {
 
     /* memory not used yet */
     usedList_ = (MemoryEntry*)NULL;
+
+    /* start end */
+    start_ = start;
+    end_   = end;
 }
 
 MemoryManager::~MemoryManager() {
@@ -225,18 +232,23 @@ dword MemoryManager::getUsedMemorySize() const {
 
 void MemoryManager::debugPrint() const {
 
-    printf("FreeMemorySize=%d\n", getFreeMemorySize());
+    printf("Rage[%x-%x]\n", start_, end_);
+    printf("FreeMemorySize=%x\n", getFreeMemorySize());
 
     for (MemoryEntry* current = freeList_; current != (MemoryEntry*)NULL; current = current->next) {
 
-        printf("F[%d][%d]\n", current, current->size);
+        printf("F[%x][%x]\n", current, current->size);
     }
 
-    printf("UsedMemorySize=%d\n", getUsedMemorySize());
+    printf("UsedMemorySize=%x\n", getUsedMemorySize());
 
     for (MemoryEntry* current = usedList_; current != (MemoryEntry*)NULL; current = current->next) {
 
-        printf("U[%d][%d]\n", current, current->size);
+        printf("U[%x][%x]\n", current, current->size);
     }
 }
 
+MemoryManager& MemoryManager::instance() {
+    static MemoryManager theInstance;
+    return theInstance;
+}

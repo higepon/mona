@@ -67,6 +67,7 @@
 #include <userlib.h>
 #include <PageManager.h>
 #include <elf.h>
+#include <MemoryManager.h>
 
 char* version = "Mona version 0.1.1 $Date$";
 void userTest();
@@ -95,6 +96,10 @@ void startKernel(void) {
     /* Process setup */
     Process::setup();
 
+    /* kernel memory range */
+    MemoryManager& mm = MemoryManager::instance();
+    mm.initialize(0x200000, 0x9fffff);
+
     /* initialze console */
     g_console = new GraphicalConsole();
 
@@ -120,7 +125,6 @@ void startKernel(void) {
     g_page_manager = new PageManager(g_total_system_memory * 1024 * 1024);
     g_page_manager->setup();
 
-
 #ifdef MJT
     test_mjt();
 #endif
@@ -132,13 +136,9 @@ void startKernel(void) {
     enableInterrupt();
 
     g_console->printf("Hit any key to start loading Mona logo \n");
-    //    while (g_demo_step < 2);
-    g_console->printf("[1]");
-    FDCDriverTester();
+    while (g_demo_step < 2);
 
-    while (true);
-
-
+    //    FDCDriverTester();
 
     g_console->printf("Hit any key to start Main Process and Load ELF\n");
     //    while (g_demo_step < 5);
@@ -166,13 +166,13 @@ void mainProcess() {
 
     rectangle(0, 0, 640, 480, GP_BLACK);
 
-    ELFTester(user_func_from);
+    //    ELFTester(user_func_from);
 
     byte* user_func = (byte*)0xA00000;
-    ELFLoader* loader = new ELFLoader();
+    //    ELFLoader* loader = new ELFLoader();
 
-    loader->prepare((dword)user_func_from);
-    loader->load(user_func);
+    //    loader->prepare((dword)user_func_from);
+    //    loader->load(user_func);
 
     UserProcess* process1 = new UserProcess("user_process ");
     Process*     process2 = new Process("krnl_o       ");
@@ -185,7 +185,7 @@ void mainProcess() {
     V86Process*  process9 = new V86Process("V86_process");
 
     //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));
-    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
+    //    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
     g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
