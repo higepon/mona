@@ -38,8 +38,6 @@ void disp_name1() {
 
     dword color = 0;
 
-    disp_name1();
-
     while (true) {
 
 

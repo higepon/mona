@@ -14,6 +14,7 @@
 #include <ProcessManager.h>
 #include <io.h>
 #include <SystemInfo.h>
+#include <syscalls.h>
 
 ProcessManager::ProcessManager(Process* idle) {
 
@@ -117,7 +118,9 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
     g_process[pnum_] = process;
     pnum_++;
 
+    enter_kernel_lock_mode();
     scheduler_->addProcess(&(process->pinfo_));
+    exit_kernel_lock_mode();
     return true;
 }
 
