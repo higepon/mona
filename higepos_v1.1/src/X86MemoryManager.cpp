@@ -344,7 +344,7 @@ void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry
     \author HigePon
     \date   create:2002/11/11 update:
 */
-void X86MemoryManager::enableA20() {
+void X86MemoryManager::enableA20() const {
 
     while (inportb(0x64) & 2); outportb(0x64, 0xd1);
     while (inportb(0x64) & 2); outportb(0x60, 0xdf);

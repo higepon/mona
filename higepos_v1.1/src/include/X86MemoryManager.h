@@ -41,7 +41,7 @@ class X86MemoryManager {
     void addToEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
     void deleteFromEntry(struct memoryEntry**, struct memoryEntry*, H_SIZE_T);
     void concatBlock(struct memoryEntry*, struct memoryEntry*);
-    void enableA20();
+    void enableA20() const;
     const H_SIZE_T MEMORY_START;
     const H_SIZE_T MEMORY_END;
     struct memoryEntry* freeEntry_;
