@@ -77,14 +77,13 @@ void TextField::repaint()
 	}
 	_g->setColor(foreColor);
 	_g->drawRect(1, 1, width - 2, height - 2);
-	//_g->setColor(~foreColor);
-	//_g->fillRect(2, 2, width - 3, height - 3);
 
 	// IME入力部再描画
 	_imeManager->setRect(x + offx, y + offy, width - offx * 2, height - offy * 2);
 	_imeManager->setForeground(foreColor);
 	_imeManager->setBackground(~foreColor);
 	_imeManager->setFocused(focused);
+	_imeManager->setFont(this->font);
 	_imeManager->repaint();
 }
 
@@ -96,14 +95,10 @@ void TextField::postEvent(Event *event)
 	
 	// IME通知イベント
 	if (event->type == IME_NOTIFY) {
-		syscall_print("1,");
 		int message = ((ImeEvent *)event)->message;
-		syscall_print("2,");
 		// 確定イベント
 		if (message == TEXT_CHANGED) {
-			syscall_print("3,");
 			Control::postEvent(_textEvent);
-			syscall_print("4,");
 		}
 	// キー押下
 	} else if (event->type == KEY_PRESSED) {

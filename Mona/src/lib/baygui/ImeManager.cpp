@@ -207,16 +207,14 @@ void ImeManager::postEvent(Event *event)
 		// 変換
 		} else if (keycode == ' ' && strlen(translateBuffer) > 0) {
 			clearBuffer(translateBuffer);
-			insertString(translateBuffer, "オマエモナ");
+			insertString(translateBuffer, "該当なし");
 		// 確定
 		} else if (keycode == VKEY_ENTER) {
 			if (strlen(translateBuffer) == 0) {
 				// 確定イベント送信
 				_imeEvent->type = IME_NOTIFY;
 				_imeEvent->message = TEXT_CHANGED;
-		syscall_print("0,");
 				parent->postEvent(_imeEvent);
-		syscall_print("9,");
 			} else {
 				insertString(decideBuffer, translateBuffer);
 				clearBuffer(inputBuffer);

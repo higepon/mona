@@ -254,5 +254,5 @@ void Control::setFont(Font *font)
 	this->font->setWidth(font->getWidth());
 	this->font->setHeight(font->getHeight());
 	this->font->setStyle(font->getStyle());
-	_g->setFont(font);
+	_g->setFont(this->font);
 }
