@@ -1,3 +1,11 @@
+2004-03-22  bayside  <bayside@users.sourceforge.jp>
+
+        * bin/iso/MONITOR.CFG: imesvr復活
+
+        * src/servers/Makefile: imesvr復活
+
+        * src/servers/imesvr/Makefile: imesvr復活
+
 2005-03-21  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/messages.cpp (monapi_call_file_open): 追加。
@@ -15,7 +23,7 @@
         * src/servers/file/FatFileSystemManager.cpp (Open): 追加。ただし未実装状態。
                                                     (Close): 追加。ただし未実装状態。
 
-2004-03-17  bayside  <bayside@users.sourceforge.jp>
+2004-03-20  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gshell/gshell.cpp: exit で終了したときに例外が出る問題を修正
 
