@@ -575,11 +575,10 @@ bool FDCDriver::read(dword lba, byte* buf) {
 
         info(DEV_WARNING, "read %d times \n", i);
 
+
         if (read(track, head, sector)) {
-            //    SystemInfo::rdtsc();//
+
             memcpy(buf, dmabuff_, 512);
-            //    SystemInfo::rdtscsub();
-            //    g_console->printf("time=[%x]", SystemInfo::timeL);
             return true;
         }
     }

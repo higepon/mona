@@ -10,6 +10,7 @@
 #include<KeyBoardManager.h>
 #include<elf.h>
 #include<userlib.h>
+#include<SystemInfo.h>
 
 /*!
 
@@ -110,15 +111,15 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
-    //    g_console->printf("load prcess 4");
+    g_console->printf("load prcess 4");
 
     fat = new FAT12((DiskDriver*)g_fdcdriver);
-    //    g_console->printf("load prcess 4.5");
+    g_console->printf("load prcess 4.5");
     if (!fat->initilize()) return FAT_INIT_ERROR;
-    //    g_console->printf("load prcess 5");
+    g_console->printf("load prcess 5");
     if (!fat->open(path, file, FAT12::READ_MODE)) return FAT_OPEN_ERROR;
 
-    //    g_console->printf("load prcess 6");
+    g_console->printf("load prcess 6");
 
     fileSize  = fat->getFileSize();
     readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
@@ -127,10 +128,13 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
     g_console->printf("load prcess 7[%d]", readTimes);
     for (int i = 0; i < readTimes; i++) {
+	//    SystemInfo::rdtsc();//
         if (!fat->read(buf + 512 * i)) {
             g_console->printf("read failed %d", i);
             while (true);
         }
+	//    SystemInfo::rdtscsub();
+	//    if (!(SystemInfo::timeH)) g_console->printf("time=[%x]", SystemInfo::timeL);
     }
     g_console->printf("load prcess 8");
 
