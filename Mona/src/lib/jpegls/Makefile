@@ -3,7 +3,6 @@ SOURCES = jpegls.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
-include $(MONADIR)/env/dirnames.inc
 
 INCLUDE = -I$(INCDIR)
 

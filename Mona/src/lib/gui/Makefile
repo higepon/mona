@@ -16,7 +16,6 @@ SOURCES = \
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
-include $(MONADIR)/env/dirnames.inc
 
 CXXFLAGS += -DDEBUG
 

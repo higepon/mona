@@ -13,8 +13,8 @@
     \date   create:2002/10/12 update:$Date$
 */
 #include <monapi.h>
-#include <KeyboardManager.h>
 #include <monapi/Keys.h>
+#include "KeyboardManager.h"
 
 using namespace MonAPI;
 

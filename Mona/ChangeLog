@@ -1,3 +1,9 @@
+2004-05-04  tino  <tino@users.sourceforge.jp>
+
+        * env/app-elf.inc: アプリケーションのMakefileを単純化するために追加
+
+        * 各Makefile: app-elf.incを利用できるものは単純化
+
 2004-05-02  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: カーネルで使わないメッセージを削除

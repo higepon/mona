@@ -2,33 +2,11 @@ TARGET  = 2CHAA.ELF
 SOURCES = Form1.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi.inc
+include $(MONADIR)/env/app-elf.inc
 
-INCLUDE = -I$(INCDIR)
+INSTDIR = $(BINDIR)/root/APPS
 LINK    = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
 
-CXXFLAGS += -DDEBUG
-
-all: $(TARGET)
-
-$(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonapi.a $(LIBDIR)/libmonalibc.a
-	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
-	objcopy $(OFLAGS) $@
-	$(STRIP) $@
-	$(BINDIR)/monaelf $@
-
-install: all
-	mkdir -p $(BINDIR)/root/APPS
-	$(INSTALL) $(TARGET) $(BINDIR)/root/APPS
-
-clean:
-	rm -f $(OBJECTS) $(TARGET)
-
-.SUFFIXES: .cpp .o
-.cpp.o:
-	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
-
-depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+$(TARGET): $(LIBDIR)/libgui.a
 
 include dependencies

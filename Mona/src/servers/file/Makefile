@@ -2,31 +2,8 @@ TARGET  = FILE.SVR
 SOURCES = main.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi.inc
+include $(MONADIR)/env/app-elf.inc
 
-INCLUDE = -I$(INCDIR) -I.
-LINK    = $(LIBDIR)/monapi.o -lmonapi
-
-all: $(TARGET)
-
-$(TARGET): $(OBJECTS) $(LIBMONAPI)
-	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
-	objcopy $(OFLAGS) $@
-	$(STRIP) $@
-	$(BINDIR)/monaelf $@
-
-install: all
-	mkdir -p $(BINDIR)/root/SERVERS
-	$(INSTALL) $(TARGET) $(BINDIR)/root/SERVERS
-
-clean:
-	rm -f $(OBJECTS) $(TARGET)
-
-.SUFFIXES: .cpp .o
-.cpp.o:
-	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
-
-depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+INSTDIR = $(BINDIR)/root/SERVERS
 
 include dependencies
