@@ -1,0 +1,201 @@
+/*!
+    \file   MoEther.cpp
+    \brief  イーサネット処理クラス
+
+    Copyright (c) 2004 Yamami
+    All rights reserved.
+    License=MIT/X License
+
+    \author  Yamami
+    \version $Revision$
+    \date   create:2004/08/12 update:$Date$
+*/
+
+/*! \class MoEther
+ *  \brief イーサネット処理クラス
+ */
+
+
+
+#include "MonesGlobal.h"
+#include "MoEther.h"
+
+
+/*!
+    \brief initialize
+         MoEther コンストラクタ
+    \author Yamami
+    \date   create:2004/08/12 update:
+*/
+MoEther::MoEther()
+{
+    //printf("MoEther Constructor\n");
+}
+
+/*!
+    \brief initialize
+         MoEther etherInit
+    \author Yamami
+    \param  AbstractMonic *pminsNic [in] ドライバクラスへのポインタ(本来は、抽象クラス)
+    \date   create:2004/08/12 update:
+*/
+void MoEther::etherInit(AbstractMonic *pminsNic) 
+{
+
+    //printf("MoEther init\n");
+    
+    //イーサネットフレーム保持リスト 生成
+    /* keyinfo list */
+    Ether_FrameList_ = new HList<ETHER_FRAME*>();
+
+    //内部保持のNICドライバへ格納
+    insAbstractNic = pminsNic;
+
+    //ARPクラスをインスタンス化  Yamami?? ここでARPとIPクラスはインスタンス化すべきか？
+    //2004/09/04 ARPクラスは、mones.cpp(メイン)でインスタンス化し、グローバルポインタで保持する。
+    //g_MoArp = new MoArp();
+    //g_MoArp->initArp(insAbstractNic);
+
+    return;
+}
+
+
+/*!
+    \brief initialize
+         MoEther デスクトラクタ
+    \author Yamami
+    \date   create:2004/08/12 update:
+*/
+MoEther::~MoEther() 
+{
+    delete Ether_FrameList_;
+}
+
+
+/*!
+    \brief setEtherFrame
+         イーサネットフレームセット
+    \param  byte* frameBuf [in] イーサネットフレームバッファへのポインタ
+    \param  byte *mac [in] イーサネットフレームサイズ
+    \return int 結果 
+        
+    \author Yamami
+    \date   create:2004/08/12 update:
+*/
+int MoEther::setEtherFrame(byte *frameBuf, int size)
+{
+    
+    // allocate ETHER_FRAME
+    ETHER_FRAME* frame = (ETHER_FRAME*)malloc(sizeof(ETHER_FRAME));
+    // フレームのコピー
+    memcpy(frame , frameBuf , size);
+
+    //ここで、パケットユーティリティクラスを使って、エンディアン変換
+    //フレームタイプ
+    frame->type = MoPacUtl::packet_get_2byte(frameBuf , 12);
+    
+    //リストに追加
+    Ether_FrameList_->add(frame);
+
+    return 0;
+
+}
+
+
+/*!
+    \brief getEtherFrame
+         イーサネットフレーム取得 
+    \param  byte* frameBuf [in] イーサネットフレームバッファへのポインタ
+    \return int 結果 
+        
+    \author Yamami
+    \date   create:2004/08/12 update:
+*/
+int MoEther::getEtherFrame(ETHER_FRAME *frameBuf)
+//int MoEther::getEtherFrame()
+{
+    
+
+    ETHER_FRAME* tempEther = Ether_FrameList_->removeAt(Ether_FrameList_->size() - 1);
+
+    if (tempEther == NULL) {
+        printf("tmp Null!!\n");
+        return 0;
+    }
+
+    /* copy to keyinfo */
+    memcpy(frameBuf, tempEther, sizeof(ETHER_FRAME));
+    
+    free(tempEther);
+    
+    return 1;
+
+}
+
+
+/*!
+    \brief receiveEther
+         イーサネットフレーム受信処理 
+    \return int 結果 
+        
+    \author Yamami
+    \date   create:2004/08/22 update:
+*/
+int MoEther::receiveEther()
+{
+    int reti;
+    
+    // allocate ETHER_FRAME
+    ETHER_FRAME* frame = (ETHER_FRAME*)malloc(sizeof(ETHER_FRAME));
+    
+    reti = getEtherFrame(frame);
+
+    //Yamamiデバッグ
+    //int i;
+    //for(i=0;i<60;i++){
+    //    printf("%d:%x ",i,frame->data[i]);
+    //}
+    //printf("\n");
+
+    // フレームを各プロトコルに渡す
+    switch(frame->type)
+    {
+        case DIX_TYPE_IP:
+            //return receiveIp((IP_HEADER*)frame->data);
+            reti = 999; //dumy
+            break;
+        case DIX_TYPE_ARP:
+            g_MoArp->receiveArp((ARP_HEADER*)frame->data);
+            break;
+            
+            //return receiveArp(num,(ARP_HEADER*)frame->data);
+    }
+    
+    return 0;
+}
+
+
+/*!
+    \brief sendEther
+         イーサネットフレーム送信処理 
+    \param  byte *pkt [in] 送信パケットへのポインタ
+    \param  dword dest_ip [in] 送信先IPアドレス
+    \param  dword size [in] 送信サイズ
+    \return int 結果 
+        
+    \author Yamami
+    \date   create:2004/08/28 update:
+*/
+void MoEther::sendEther(byte *pkt , dword dest_ip , dword size)
+{
+
+    //Yamami?? 未実装 送信は、アプリ側からコールされるはず 送受信でクラスは分けるべきか？
+    //byte   *mac;
+
+    /* ARP テーブル検索 */
+    //mac=arp_lookup(dest_ip);
+    
+    //送信
+    //frame_output( pkt, mac, size, ETHER_PROTO_IP );
+}
+

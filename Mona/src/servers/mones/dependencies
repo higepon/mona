@@ -1,0 +1,110 @@
+mones.o: mones.cpp MonesGlobal.h ../../../include/sys/types.h \
+  MonesConfig.h MoEther.h ../../../include/monapi.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  MoPacUtl.h MonesDefine.h AbstractMonic.h MoArp.h Ne2000MoNic.h
+AbstractMonic.o: AbstractMonic.cpp AbstractMonic.h \
+  ../../../include/sys/types.h
+Ne2000MoNic.o: Ne2000MoNic.cpp Ne2000MoNic.h ../../../include/sys/types.h \
+  ../../../include/monapi.h ../../../include/sys/error.h \
+  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
+  ../../../include/sys/List.h ../../../include/monapi/Date.h \
+  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
+  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  AbstractMonic.h
+MoEther.o: MoEther.cpp MonesGlobal.h ../../../include/sys/types.h \
+  MonesConfig.h MoEther.h ../../../include/monapi.h \
+  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
+  ../../../include/sys/HList.h ../../../include/sys/List.h \
+  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
+  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
+  ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  MoPacUtl.h MonesDefine.h AbstractMonic.h MoArp.h
+MoArp.o: MoArp.cpp MoArp.h ../../../include/sys/types.h \
+  ../../../include/monapi.h ../../../include/sys/error.h \
+  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
+  ../../../include/sys/List.h ../../../include/monapi/Date.h \
+  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
+  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h \
+  MoPacUtl.h MonesDefine.h AbstractMonic.h MonesConfig.h MonesGlobal.h \
+  MoEther.h
+MonesConfig.o: MonesConfig.cpp MonesConfig.h ../../../include/sys/types.h
+MoPacUtl.o: MoPacUtl.cpp MoPacUtl.h ../../../include/sys/types.h \
+  ../../../include/monapi.h ../../../include/sys/error.h \
+  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
+  ../../../include/sys/List.h ../../../include/monapi/Date.h \
+  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
+  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
+  ../../../include/monapi/MonaApplication.h \
+  ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
+  ../../../include/monapi/string.h \
+  ../../../include/monapi/MemoryManager.h \
+  ../../../include/monapi/Floppy.h \
+  ../../../include/monapi/FileInputStream.h \
+  ../../../include/monapi/InputStream.h \
+  ../../../include/monapi/FileOutputStream.h \
+  ../../../include/monapi/OutputStream.h ../../../include/monapi/Color.h \
+  ../../../include/monapi/Random.h ../../../include/monapi/syscall.h \
+  ../../../include/monapi/Keys.h ../../../include/monalibc.h \
+  ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
+  ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
+  ../../../include/monalibc/stdio.h ../../../include/monalibc/math.h
