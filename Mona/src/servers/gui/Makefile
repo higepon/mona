@@ -11,7 +11,7 @@ else
 include $(MONADIR)/env/monapi-bn5.inc
 endif
 
-install-tinogui: MONAWALL.BM5
+install-gui: MONAWALL.BM5
 	$(INSTALL) STARTMF.MSH $(MONADIR)/bin/iso/APPS
 	$(INSTALL) BAYGUI.MSH $(MONADIR)/bin/iso/APPS
 	$(INSTALL) MONAWALL.BM5 $(MONADIR)/bin/iso
@@ -19,6 +19,6 @@ install-tinogui: MONAWALL.BM5
 MONAWALL.BM5: MONAWALL.BMP
 	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
-install: install-tinogui
+install: install-tino
 
 include dependencies
