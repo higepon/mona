@@ -120,10 +120,14 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
-    /* set process name for info() */
     while (g_demo_step < 2);
 
 #ifdef HIGE
+
+//     FDCTester();
+//     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
+//     while (g_demo_step < 5);
+
     g_info_level = ERROR;
 
     g_process_manager = new ProcessManager();
@@ -146,7 +150,6 @@ void startKernel(void) {
 
     enableTimer();
 
-    FDCTester();
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
 #endif
