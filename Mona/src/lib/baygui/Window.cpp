@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,14 +25,9 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <baygui.h>
+#include "baygui.h"
 
-extern dword __gui_server;
-extern CommonParameters* __commonParams;
-
-#define BASE Control
-
-/** closeIcon (palette) */
+/** 閉じるボタン (パレット) */
 static unsigned int close_palette[] = {
 	0xff1c1a1c,
 	0xff8c8e8c,
@@ -34,7 +40,7 @@ static unsigned int close_palette[] = {
 	0xfffcfefc,
 };
 
-/** closeIcon (data) */
+/** 閉じるボタン (データ) */
 static unsigned char close_data[] = {
 	0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x2,
 	0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,
@@ -51,242 +57,461 @@ static unsigned char close_data[] = {
 	0x2,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,
 };
 
-namespace baygui
+/** 共通パラメータ */
+CommonParameters *__commonParams;
+/** 共通パラメータのハンドル */
+static dword commonParamsHandle;
+/** タイマースレッドID */
+static dword timerID = THREAD_UNKNOWN;
+
+/** タイマースレッド */
+static void TimerThread()
 {
-	Window::Window() : isCloseButtonPushed(false), ncState(NCState_None), opacity(1.0)
-	{
-		this->offset = Point(6, 22);
-		this->overlap = 0;
-	}
+	MonAPI::Message::send(timerID, MSG_SERVER_START_OK);
+	//printf("TimerThread created\n");
 	
-	Window::~Window()
-	{
-		this->onExit();
-	}
-	
-	void Window::setTitle(const char* title)
-	{
-		//if (this->text != NULL) delete[] this->text;
-		//this->text = new char[strlen(text) + 1];
-		//strcpy(this->text, text);
-		this->title = title;
-		if (this->buffer == NULL) return;
-		this->repaint();
-	}
-	
-	void Window::onHide()
-	{
-		if (!this->getVisible()) return;
-		
-		BASE::onHide();
-		this->onErase();
-	}
-	
-	void Window::onStart()
-	{
-		BASE::onStart();
-		Application::addWindow(this);
-		this->isCloseButtonPushed = false;
-		this->ncState = NCState_None;
-		this->formBuffer = new Bitmap(this->getWidth(), this->getHeight());
-		this->_object->FormBufferHandle = this->formBuffer->getHandle();
-		this->_object->Opacity = (int)(this->opacity * 255.0);
-	}
-	
-	void Window::onExit()
-	{
-		BASE::onExit();
-		Application::removeWindow(this);
-		this->formBuffer = NULL;
-	}
-	
-	void Window::onErase()
-	{
-		if (this->buffer == NULL) return;
-		
-		this->_object->Visible = false;
-		::monapi_call_mouse_set_cursor(MONAPI_FALSE);
-		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, this->getHandle());
-		::monapi_call_mouse_set_cursor(MONAPI_TRUE);
-		this->_object->Visible = this->getVisible();
-	}
-	
-	void Window::drawInternal()
-	{
-		if (this->buffer == NULL || (this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0) return;
-		
-		_P<Graphics> g = new Graphics(this->buffer);
-		int w = this->getWidth(), h = this->getHeight();
-		
-		// �O�g
-		g->setColor(COLOR_LIGHTGRAY);
-		g->fillRect(0, 0, w, h);
-		g->setColor(COLOR_BLACK);
-		g->drawRect(0, 0, w, h);
-		
-		// ���g
-		g->setColor(COLOR_BLACK);
-		g->drawRect(5, 21, w - 10, h - 26);
-		
-		// �g
-		g->setColor(COLOR_WHITE);
-		g->drawLine(1, 1, w - 2, 1);
-		g->drawLine(1, 1, 1, h - 2);
-		g->drawLine(w - 5, 21, w - 5, h - 5);
-		g->drawLine(5, h - 5, w - 5, h - 5);
-		g->setColor(COLOR_GRAY);
-		g->drawLine(w - 2, 2, w - 2, h - 2);
-		g->drawLine(2, h - 2, w - 2, h - 2);
-		g->drawLine(4, 20, w - 6, 20);
-		g->drawLine(4, 20, 4, h - 6);
-		
-		// �^�C�g���o�[
-		for (int i = 4; i <= 14; i = i + 2) {
-			g->setColor(COLOR_GRAY);
-			g->drawLine(20, i, w - 7, i);
-			g->setColor(COLOR_WHITE);
-			g->drawLine(21, i + 1, w - 6, i + 1);
-		}
-		
-		// ����{�^��
-		for (int i = 0; i < 13; i++) {
-			for (int j = 0; j < 13; j++) {
-				g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
+	MessageInfo info;
+	while (1) {
+		if (!MonAPI::Message::receive(&info)) {
+			if (info.header == TIMER && info.arg2 > 0) {
+				int duration = (info.arg2 < 10) ? 1 : (info.arg2 / 10);
+				syscall_sleep(duration);
+				MonAPI::Message::send(info.arg1, TIMER, 0, 0, 0, NULL);
 			}
 		}
-		
-		// �^�C�g��
-		_P<FontMetrics> metrics = new FontMetrics();
-		int fw = metrics->getWidth(this->getTitle());
-		int fh = metrics->getHeight(this->getTitle());
-		g->setColor(COLOR_LIGHTGRAY);
-		g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, 22 - 4);
-		g->setColor(COLOR_BLACK);
-		g->drawText(this->getTitle(), ((w - fw) / 2), ((22 - fh) / 2));
-		//g->drawText(this->getTitle(), ((w - fw) / 2) + 1, ((22 - fh) / 2));
-		
-		g->dispose();
+	}
+}
+
+/** コンストラクタ */
+Window::Window()
+{
+	// 共通パラメータを得る
+	MessageInfo info;
+	if (MonAPI::Message::sendReceive(&info, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0) {
+		printf("%s:%d:ERROR: can not get common parameter!\n", __FILE__, __LINE__);
+		exit(1);
+	} else {
+		commonParamsHandle = info.arg2;
+		__commonParams = (CommonParameters*)MonAPI::MemoryMap::map(commonParamsHandle);
+	}
+
+	// GUIサーバーに自分を登録する
+	if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
+		printf("%s:%d:ERROR: can not register to GUI server!\n", __FILE__, __LINE__);
+		exit(1);
+	}
+
+	this->title = "window";
+	this->threadID = MonAPI::System::getThreadID();
+	this->modifiers = this->state = this->preX = this->preY = 0;
+	this->overlap = 0;
+	this->isRunning = false;
+	
+	// キーイベント
+	this->keyEvent.type      = KEY_PRESSED;
+	this->keyEvent.source    = this;
+	this->keyEvent.keycode   = 0;
+	this->keyEvent.modifiers = 0;
+	
+	// マウスイベント
+	this->mouseEvent.type   = MOUSE_PRESSED;
+	this->mouseEvent.source = this;
+	this->mouseEvent.x      = 0;
+	this->mouseEvent.y      = 0;
+	this->mouseEvent.button = 0;
+	
+	// タイマーイベント
+	this->timerEvent.type = TIMER;
+	this->timerEvent.source = this;
+	
+	// カスタムイベント
+	this->customEvent.type = CUSTOME_EVENT;
+	this->customEvent.source = this;
+	
+	// タイマー起動
+	if (timerID == THREAD_UNKNOWN) timerID = syscall_get_tid();
+	MessageInfo msg, src;
+	dword id = syscall_mthread_create((dword)TimerThread);
+	syscall_mthread_join(id);
+	src.header = MSG_SERVER_START_OK;
+	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+	timerID = msg.from;
+}
+
+/** デストラクタ */
+Window::~Window() {
+	// タイマースレッド停止
+	syscall_kill_thread(timerID);
+	
+	// GUIサーバーから自分を抹消する
+	monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
+	MonAPI::MemoryMap::unmap(commonParamsHandle);
+}
+
+/**
+ 部品生成時に呼ばれる.
+ dispose()後に呼ぶと再初期化できる。
+*/
+void Window::create()
+{
+	if (this->_buffer != NULL) return;
+
+	// 描画バッファー、描画オブジェクトの生成
+	this->_buffer = new Image
+		(this->width - INSETS_LEFT - INSETS_RIGHT, this->height - INSETS_TOP - INSETS_BOTTOM);
+	for (int i = 0; i < this->height; i++) {
+		for (int j = 0; j < this->width; j++) {
+			_buffer->setPixel(j, i, DEFAULT_BACKCOLOR);
+		}
+	}
+	this->_g = new Graphics(this->_buffer);
+	this->__buffer = new Image(this->width, this->height);
+	this->__g = new Graphics(this->__buffer);
+
+	// ウィンドウを生成する
+	MessageInfo msg;
+	if (MonAPI::Message::sendReceive(&msg, guisvrID, MSG_GUISERVER_CREATEWINDOW) != 0) {
+		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+		return;
+	}
+
+	// GUIサーバー上のウィンドウオブジェクトを生成する
+	this->_window = (guiserver_window*)MonAPI::MemoryMap::map(msg.arg2);
+	if (this->_window == NULL) {
+		printf("%s:%d:ERROR: can not create window!\n", __FILE__, __LINE__);
+		return;
+	}
+
+	// 初期設定
+	this->_window->X = this->x;
+	this->_window->Y = this->y;
+	this->_window->Width  = this->width;
+	this->_window->Height = this->height;
+	this->_window->OffsetX = this->offsetX;
+	this->_window->OffsetY = this->offsetY;
+	this->_window->BufferHandle = this->_buffer->getHandle();
+	this->_window->FormBufferHandle = this->__buffer->getHandle();
+	this->_window->TransparencyKey = 0x00000000;
+	this->_window->Visible = true;
+	this->_window->Opacity = 0xff; // 不透明
+	if (this->parent != NULL) {
+		this->foreColor = this->parent->getForeground();
+		this->backColor = this->parent->getBackground();
+	}
+	this->_window->__internal2 = true;
+}
+
+/**
+ 部品破棄時に呼ばれる.
+ 後にcreate()を呼ぶと再初期化できる。
+*/
+void Window::dispose()
+{
+	// ウィンドウ破棄要求
+	setVisible(false);
+	dword handle = getHandle();
+	delete(_buffer);
+	delete(_g);
+	delete(__buffer);
+	delete(__g);
+	if (MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DISPOSEWINDOW, handle)) {
+		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+	}
+}
+
+/**
+ タイトル設定
+ @param title タイトル
+ */
+void Window::setTitle(char *title)
+{
+	this->title = title;
+}
+
+/**
+ タイマーをセットする
+ @param duration 発動するまでの時間[ms]
+ */
+void Window::setTimer(int duration)
+{
+	// 非活性のときはタイマーを発生させない
+	if (this->enabled == false) return;
+	
+	// タイマー設定メッセージを投げる
+	if (MonAPI::Message::send(timerID, TIMER, this->threadID, duration, 0, NULL)) {
+		printf("%s:%d:ERROR: can not send TIMER\n", __FILE__, __LINE__);
+	}
+}
+
+/** 再描画 */
+void Window::repaint()
+{
+	int i, j, w, h;
+	
+	if (this->_buffer == NULL) return;
+	
+	w = this->width;
+	h = this->height;
+	
+	// 外枠
+	__g->setColor(COLOR_LIGHTGRAY);
+	__g->fillRect(0, 0, w, h);
+	__g->setColor(COLOR_BLACK);
+	__g->drawRect(0, 0, w, h);
+	
+	// 内枠
+	__g->setColor(COLOR_BLACK);
+	__g->drawRect(5, 21, w - 10, h - 26);
+	
+	// 枠
+	__g->setColor(COLOR_WHITE);
+	__g->drawLine(1, 1, w - 2, 1);
+	__g->drawLine(1, 1, 1, h - 2);
+	__g->drawLine(w - 5, 21, w - 5, h - 5);
+	__g->drawLine(5, h - 5, w - 5, h - 5);
+	__g->setColor(COLOR_GRAY);
+	__g->drawLine(w - 2, 2, w - 2, h - 2);
+	__g->drawLine(2, h - 2, w - 2, h - 2);
+	__g->drawLine(4, 20, w - 6, 20);
+	__g->drawLine(4, 20, 4, h - 6);
+	
+	// タイトルバー
+	for (i = 4; i <= 14; i = i + 2) {
+		__g->setColor(COLOR_GRAY);
+		__g->drawLine(20, i, w - 7, i);
+		__g->setColor(COLOR_WHITE);
+		__g->drawLine(21, i + 1, w - 6, i + 1);
 	}
 	
-	void Window::postEvent(Event *e)
-	{
-		if (e->type == MOUSE_MOVED) {
-			MouseEvent *me = (MouseEvent *)e;
-			Point pt = (me->button == 0 ? Point(me->x, me->y) : this->clickPoint);
-			
-			// ����{�^���h���b�O
-			if (this->ncState == NCState_CloseButton)
-			{
-				bool pushed = (this->NCHitTest(pt.X, pt.Y) == NCState_CloseButton);
-				if (this->isCloseButtonPushed != pushed) {
-					this->isCloseButtonPushed = pushed;
-					this->repaint();
+	// 閉じるボタン
+	for (i = 0; i < 13; i++) {
+		for (j = 0; j < 13; j++) {
+			__g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
+		}
+	}
+
+	// タイトル
+	FontMetrics metrics;
+	int fw = metrics.getWidth(getTitle());
+	int fh = metrics.getHeight(getTitle());
+	__g->setColor(COLOR_LIGHTGRAY);
+	__g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
+	__g->setColor(COLOR_BLACK);
+	__g->drawText(getTitle(), ((w - fw) / 2), ((INSETS_TOP - fh) / 2));
+
+	Container::repaint();
+}
+
+/** 領域更新 */
+void Window::update()
+{
+	__g->drawImage(this->_buffer, INSETS_LEFT, INSETS_TOP);
+	MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle());
+}
+
+/** イベント処理 */
+void Window::postEvent(Event *event)
+{
+	if (event->type >= MOUSE_PRESSED && event->type <= MOUSE_MOVED) {
+		MouseEvent *me = (MouseEvent*)event;
+		int px = me->x - this->x;
+		int py = me->y - this->y;
+		if (event->type == MOUSE_PRESSED) {
+			// 閉じるボタンクリック
+			if (4 <= px && px < 17 && 4 <= py && py < 17) {
+				if (this->threadID != MonAPI::Message::lookupMainThread("GLAUNCH.EX5")) {
+					isRunning = false;
+					dispose();
+					return;
 				}
+			// タイトルバークリック
+			} else if (0 <= px && px < this->width && 0 <= py && py < INSETS_TOP) {
+				this->state = STATE_MOVING;
+				//MessageInfo info;
+				//MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_CREATEOVERLAP,
+				//	this->x, this->y, MAKE_DWORD(this->width, this->height));
+				//this->overlap = info.arg2;
+				this->preX = px;
+				this->preY = py;
+			// ウィンドウ内クリック
+			} else {
+				// 絶対座標→相対座標
+				me->x = px - INSETS_LEFT;
+				me->y = py - INSETS_TOP;
+				Container::postEvent(me);
 			}
-			// �^�C�g���o�[�h���b�O�i�ړ����j
-			else if (this->ncState == NCState_TitleBar)
+		} else if (event->type == MOUSE_RELEASED) {
+			// タイトルバーリリース
+			if (this->state == STATE_MOVING) {
+				this->state = STATE_NORMAL;
+				//MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+				//this->overlap = 0;
+				// はじめに元のウィンドウを非表示にする
+				//this->_window->X = this->x;
+				//this->_window->Y = this->y;
+				//this->_window->Visible = false;
+				//update();
+				// ウィンドウを実際に移動させる
+				//this->_window->Visible = true;
+				setLocation(me->x - this->preX, me->y - this->preY);
+			// ウィンドウ内リリース
+			} else {
+				// 絶対座標→相対座標
+				me->x = px - INSETS_LEFT;
+				me->y = py - INSETS_TOP;
+				Container::postEvent(me);
+			}
+		} else if (event->type == MOUSE_DRAGGED) {
+			// ウィンドウ移動
+			if (this->state == STATE_MOVING) {
+				//MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+				//	MAKE_DWORD(me->x - this->preX, me->y - this->preY), 
+				//	MAKE_DWORD(this->width, this->height));
+				// ウィンドウ位置を擬似的に移動してGUIサーバーをだます
+				//this->_window->X = me->x - this->width / 2;
+				//this->_window->Y = me->y - this->height / 2;
+				setLocation(me->x - this->preX, me->y - this->preY);
+			// ウィンドウ内移動
+			} else {
+				// 絶対座標→相対座標
+				me->x = px - INSETS_LEFT;
+				me->y = py - INSETS_TOP;
+				Container::postEvent(me);
+			}
+		}
+	} else {
+		Container::postEvent(event);
+	}
+}
+
+/** スレッド開始 */
+void Window::run()
+{
+	create();
+	setFocused(true);
+	repaint();
+
+	MessageInfo info;
+	this->isRunning = true;
+	while (this->isRunning) {
+		if (!MonAPI::Message::receive(&info)) {
+		//if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) {
+			switch(info.header){
+			case MSG_KEY_VIRTUAL_CODE:
 			{
-				Point p = this->pointToClient(Point(__commonParams->mouse.x, __commonParams->mouse.y));
-				//Point p = this->pointToClient(Cursor::getPosition());
-				int ex = this->getX() + (p.X - this->clickPoint.X), ey = this->getY() + (p.Y - this->clickPoint.Y);
-				if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey) {
-					this->ptRevRect = Point(ex, ey);
-					MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
-						MAKE_DWORD(ex, ey), MAKE_DWORD(this->getWidth(), this->getHeight()));
+				int key = 0;
+				int keycode  = info.arg1;
+				int modcode  = info.arg2;
+				int charcode = info.arg3;
+				
+				// 修飾キーの判別
+				if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+					if ((modcode & KEY_MODIFIER_SHIFT) == KEY_MODIFIER_SHIFT) {
+						this->modifiers = VKEY_LSHIFT;
+					} else if ((modcode & KEY_MODIFIER_ALT) == KEY_MODIFIER_ALT) {
+						this->modifiers = VKEY_ALT;
+					} else if ((modcode & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) {
+						this->modifiers = VKEY_CTRL;
+					}
+				} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
+					this->modifiers = 0;
 				}
+				
+				// 一般キーの判定
+				if (keycode == 33 || keycode == 105) {
+					key = VKEY_PGUP;
+				} else if (keycode == 34 || keycode == 99) {
+					key = VKEY_PGDOWN;
+				} else if (keycode == 36 || keycode == 103) {
+					key = VKEY_HOME;
+				} else if (keycode == 35 || keycode == 97) {
+					key = VKEY_END;
+				} else if (keycode == 38 || keycode == 104) {
+					key = VKEY_UP;
+				} else if (keycode == 40 || keycode == 98) {
+					key = VKEY_DOWN;
+				} else if (keycode == 37 || keycode == 100) {
+					key = VKEY_LEFT;
+				} else if (keycode == 39 || keycode == 102) {
+					key = VKEY_RIGHT;
+				} else if (keycode == 45 || keycode == 96) {
+					key = VKEY_INSERT;
+				} else if (keycode == 13) {
+					key = VKEY_ENTER;
+				} else if (keycode == 9) {
+					key = VKEY_TAB;
+				} else if (keycode == 8) {
+					key = VKEY_BACKSPACE;
+				} else if (keycode == 46 || keycode == 110) {
+					key = VKEY_DELETE;
+				} else {
+					key = charcode;
+				}
+				
+				this->keyEvent.keycode = key;
+				this->keyEvent.modifiers = this->modifiers;
+				if (info.arg2 & KEY_MODIFIER_DOWN) {
+					this->keyEvent.type = KEY_PRESSED;
+				} else if (info.arg2 & KEY_MODIFIER_UP) {
+					this->keyEvent.type = KEY_RELEASED;
+				}
+				postEvent(&this->keyEvent);
+				
+				break;
 			}
-			// �����̈�h���b�O
-			else if (this->NCHitTest(pt.X, pt.Y) == NCState_Client)
+			case MSG_MOUSE_INFO:
 			{
-				this->onEvent(e);
+				monapi_call_mouse_set_cursor(0);
+				
+				this->mouseEvent.x = info.arg1;
+				this->mouseEvent.y = info.arg2;
+				
+				if (info.arg3 != 0){
+					// マウスドラッグ
+					if (this->mouseEvent.button != 0) {
+						this->mouseEvent.type = MOUSE_DRAGGED;
+						//syscall_print("D");
+					// マウスプレス
+					} else {
+						this->mouseEvent.type = MOUSE_PRESSED;
+						this->mouseEvent.button = info.arg3;
+						//syscall_print("P");
+					}
+				} else {
+					// マウスリリース
+					if (this->mouseEvent.button != 0) {
+						this->mouseEvent.type = MOUSE_RELEASED;
+						this->mouseEvent.button = 0;
+						//syscall_print("R");
+					// マウス移動
+					} else {
+						this->mouseEvent.type = MOUSE_MOVED;
+						//syscall_print("M");
+					}
+				}
+				postEvent(&this->mouseEvent);
+				//this->mouseEvent.x = info.arg1 - this->x - INSETS_LEFT;
+				//this->mouseEvent.y = info.arg2 - this->y - INSETS_TOP;
+				//Container::postEvent(&this->mouseEvent);
+				
+				monapi_call_mouse_set_cursor(1);
+				
+				break;
 			}
-		} else if (e->type == MOUSE_PRESSED) {
-			MouseEvent *me = (MouseEvent *)e;
-			this->clickPoint = Point(me->x, me->y);
-			this->ncState = this->NCHitTest(me->x, me->y);
-			
-			// ����{�^������
-			if (this->ncState == NCState_CloseButton)
-			{
-				this->setFocused(true);
-				this->isCloseButtonPushed = true;
-				this->repaint();
+			case TIMER:
+				postEvent(&this->timerEvent);
+				break;
+			default:
+				this->customEvent.header = info.header;
+				this->customEvent.arg1   = info.arg1;
+				this->customEvent.arg2   = info.arg2;
+				this->customEvent.arg3   = info.arg3;
+				this->customEvent.from   = info.from;
+				strcpy(this->customEvent.str, info.str);
+				this->customEvent.length = info.length;
+				postEvent(&this->customEvent);
+				break;
 			}
-			// �^�C�g���o�[�����i�ړ��J�n�j
-			else if (this->ncState == NCState_TitleBar)
-			{
-				this->setFocused(true);
-				this->ptRevRect = Point(me->x, me->y);
-				MessageInfo msg;
-				MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
-					this->getX(), this->getY(),
-					MAKE_DWORD(this->getWidth(), this->getHeight()));
-				this->overlap = msg.arg2;
-			}
-			// �����̈扟��
-			else if (this->ncState == NCState_Client)
-			{
-				this->onEvent(e);
-			}
-		} else if(e->type == MOUSE_RELEASED) {
-			MouseEvent *me = (MouseEvent *)e;
-			bool destroy = (this->NCHitTest(me->x, me->y) == NCState_CloseButton) &&
-								(this->ncState == NCState_CloseButton);
-			
-			// ����{�^�������[�X
-			if (this->ncState == NCState_CloseButton)
-			{
-				this->setFocused(false);
-				this->isCloseButtonPushed = false;
-			}
-			// �^�C�g���o�[�����[�X�i�ړ��I���j
-			else if (this->ncState == NCState_TitleBar)
-			{
-				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
-				this->overlap = 0;
-				this->setFocused(false);
-				Point p = this->getLocation();
-				p.X += me->x - this->clickPoint.X;
-				p.Y += me->y - this->clickPoint.Y;
-				this->setLocation(p.X, p.Y);
-			}
-			// �����̈惊���[�X
-			else if (this->ncState == NCState_Client)
-			{
-				this->onEvent(e);
-			}
-			// ����ȊO
-			else
-			{
-				this->repaint();
-			}
-			
-			this->onEvent(e);
-			this->ncState = NCState_None;
-			if (destroy) this->onExit();
-		} else {
-			this->onEvent(e);
 		}
-	}
-	
-	void Window::run()
-	{
-		Application::initialize();
-		Application::run(this);
-		Application::dispose();
-	}
-	
-	Control::NCState Window::NCHitTest(int x, int y)
-	{
-		if ((this->_object->Flags & WINDOWFLAGS_NOBORDER) != 0 ||
-			BASE::NCHitTest(x, y) == NCState_Client)
-		{
-			return NCState_Client;
-		}
-		
-		int oy = this->offset.Y, xx = x + this->offset.X, yy = y + oy;
-		if (Rect(4, 4, oy - 5, oy - 5).Contains(xx, yy)) return NCState_CloseButton;
-		if (yy < oy) return NCState_TitleBar;
-		return NCState_None;
 	}
 }

@@ -16,7 +16,7 @@ are met:
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+IN NO KEYEVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -25,41 +25,23 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_EVENT_H_INCLUDED_)
-#define _EVENT_H_INCLUDED_
-
-class Control;
+#if !defined(_KEYEVENT_H_INCLUDED_)
+#define _KEYEVENT_H_INCLUDED_
 
 /**
- イベント基底クラス
+ キーイベントクラス
 */
-class Event : public Object {
+class KeyEvent : public Event {
 public:
-	/** イベントタイプ */
-	int type;
-	/** イベント発生元 */
-	Control *source;
-#ifdef MONA
-	/** ヘッダー */
-	unsigned int header;
-	/** 引数(1) */
-	unsigned int arg1;
-	/** 引数(2) */
-	unsigned int arg2;
-	/** 引数(3) */
-	unsigned int arg3;
-	/** メッセージ発生元 */
-	unsigned int from;
-	/** 文字列 */
-	char str[128];
-	/** 文字列の長さ */
-	int length;
-#endif
-
+	/** キーコード */
+	int keycode;
+	/** 修飾キー */
+	int modifiers;
+	
 public:
-	Event::Event() {}
-	Event::Event(int type, Control *source);
-	virtual Event::~Event();
+	KeyEvent::KeyEvent() {}
+	KeyEvent::KeyEvent(int type, Control *target, int keycode, int modifiers);
+	virtual KeyEvent::~KeyEvent();
 };
 
-#endif // _EVENT_H_INCLUDED_
+#endif // _KEYEVENT_H_INCLUDED_

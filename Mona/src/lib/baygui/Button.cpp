@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,122 +25,101 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <baygui.h>
+#include "baygui.h"
 
-#define BASE Control
-
-namespace baygui
+/**
+ コンストラクタ
+ @param label ラベル
+ */
+Button::Button(char *label)
 {
-	Button::Button() : isPushed(false)
-	{
+	this->pushed = false;
+	this->label  = label;
+}
+
+/** デストラクタ */
+Button::~Button()
+{
+}
+
+/**
+ ラベルを設定する
+ @param label ラベル
+ */
+void Button::setLabel(char *label)
+{
+	this->label = label;
+	repaint();
+}
+
+/** 再描画 */
+void Button::onPaint(Graphics *g)
+{
+	int w = this->width, h = this->height;
+	
+	// 一度背景色でクリア
+	g->setColor(this->backColor);
+	g->fillRect(0, 0, w, h);
+	
+	// 枠を描画
+	g->setColor(COLOR_BLACK);
+	g->drawLine(2, 0, w - 3, 0);
+	g->drawLine(2, h - 1, w - 3, h - 1);
+	g->drawLine(0, 2, 0, h - 3);
+	g->drawLine(w - 1, 2, w - 1, h - 3);
+	g->drawLine(1, 1, 1, 1);
+	g->drawLine(1, h - 2 , 1, h - 2);
+	g->drawLine(w - 2 , 1, w - 2, 1);
+	g->drawLine(w - 2 , h - 2, w - 2, h - 2);
+	
+	if (this->pushed) {
+		g->setColor(COLOR_WHITE);
+		g->drawLine(2, h - 2, w - 3, h - 2);
+		g->drawLine(w - 2, 2, w - 2, h - 3);
+		g->drawLine(w - 3 , h - 3, w - 3, h - 3);
+		g->setColor(COLOR_GRAY);
+		g->drawLine(1, 2, 1, h - 3);
+		g->drawLine(2, 1, w - 3, 1);
+	} else {
+		g->setColor(COLOR_GRAY);
+		g->drawLine(2, h - 2, w - 3, h - 2);
+		g->drawLine(w - 2, 2, w - 2, h - 3);
+		g->drawLine(w - 3 , h - 3, w - 3, h - 3);
+		g->setColor(COLOR_WHITE);
+		g->drawLine(1, 2, 1, h - 3);
+		g->drawLine(2, 1, w - 3, 1);
 	}
 	
-	Button::~Button()
-	{
+	// 文字
+	FontMetrics metrics;
+	int fw = metrics.getWidth(getLabel());
+	int fh = metrics.getHeight(getLabel());
+	int x = (w - fw) / 2;
+	int y = (h - fh) / 2;
+	if (this->pushed) {
+		x++;
+		y++;
 	}
-	
-	void Button::setText(const char* text)
-	{
-		//if (this->text != NULL) delete[] this->text;
-		//this->text = new char[strlen(text) + 1];
-		//strcpy(this->text, text);
-		this->text = text;
-		if (this->buffer == NULL) return;
-		this->repaint();
+	if (enabled == true) {
+		g->setColor(this->foreColor);
+	} else {
+		g->setColor(COLOR_GRAY);
 	}
-	
-	void Button::onStart()
-	{
-		BASE::onStart();
-		this->isPushed = false;
-	}
-	
-	void Button::onPaint(_P<Graphics> g)
-	{
-		int w = this->getWidth(), h = this->getHeight();
-		
-		// 一度背景色でクリア
-		g->setColor(this->getBackground());
-		g->fillRect(0, 0, w, h);
-		
-		// 枠を描画
-		g->setColor(COLOR_BLACK);
-		g->drawLine(2, 0, w - 3, 0);
-		g->drawLine(2, h - 1, w - 3, h - 1);
-		g->drawLine(0, 2, 0, h - 3);
-		g->drawLine(w - 1, 2, w - 1, h - 3);
-		g->drawLine(1, 1, 1, 1);
-		g->drawLine(1, h - 2 , 1, h - 2);
-		g->drawLine(w - 2 , 1, w - 2, 1);
-		g->drawLine(w - 2 , h - 2, w - 2, h - 2);
-		if (this->isPushed) {
-			g->setColor(COLOR_WHITE);
-			g->drawLine(2, h - 2, w - 3, h - 2);
-			g->drawLine(w - 2, 2, w - 2, h - 3);
-			g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-			g->setColor(COLOR_GRAY);
-			g->drawLine(1, 2, 1, h - 3);
-			g->drawLine(2, 1, w - 3, 1);
-		} else {
-			g->setColor(COLOR_GRAY);
-			g->drawLine(2, h - 2, w - 3, h - 2);
-			g->drawLine(w - 2, 2, w - 2, h - 3);
-			g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-			g->setColor(COLOR_WHITE);
-			g->drawLine(1, 2, 1, h - 3);
-			g->drawLine(2, 1, w - 3, 1);
-		}
-		
-		// テキストを描画
-		_P<FontMetrics> manager = new FontMetrics();
-		int fw = manager->getWidth(this->getText());
-		int fh = manager->getHeight(this->getText());
-		int x = (w - fw) / 2;
-		int y = (h - fh) / 2;
-		if (this->isPushed) {
-			x++;
-			y++;
-		}
-		g->setColor(this->getForeground());
-		g->drawText(this->getText(), x, y);
-	}
-	
-	void Button::onEvent(Event *e)
-	{
-		// マウスが動いたとき
-		if (e->type == MOUSE_MOVED)
-		{
-			MouseEvent *me = (MouseEvent *)e;
-			
-			if (me->button != 0) {
-				bool pushed = Rect(Point::get_Empty(), this->getInnerSize()).Contains(me->x, me->y);
-				if (this->isPushed != pushed) {
-					this->isPushed = pushed;
-					this->repaint();
-				}
-			}
-			
-			BASE::onEvent(e);
-		}
-		// マウスが押されたとき
-		else if (e->type == MOUSE_PRESSED)
-		{
-			this->setFocused(true);
-			this->isPushed = true;
-			this->repaint();
-			
-			BASE::onEvent(e);
-		}
-		// マウスが離されたとき
-		else if (e->type ==MOUSE_RELEASED)
-		{
-			this->setFocused(false);
-			if (this->isPushed) {
-				this->isPushed = false;
-				this->repaint();
-			}
-			
-			BASE::onEvent(e);
-		}
+	g->drawText(getLabel(), x, y);
+}
+
+/** イベント処理 */
+void Button::onEvent(Event *event) {
+	// 非活性の時はイベントを受け付けない
+	if (this->enabled == false) return;
+
+	if (event->type == MOUSE_PRESSED) {
+		this->pushed = true;
+		repaint();
+		getParent()->onEvent(event);
+	} else if (event->type == MOUSE_RELEASED) {
+		this->pushed = false;
+		repaint();
+		getParent()->onEvent(event);
 	}
 }

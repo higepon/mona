@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,35 +25,24 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef __BAYGUI_BUTTON_H__
-#define __BAYGUI_BUTTON_H__
+#if !defined(_BUTTON_H_INCLUDED_)
+#define _BUTTON_H_INCLUDED_
 
-namespace baygui
-{
-	/**
-	 ボタン部品.
-	 マウスを押すことで引っ込む。
-	 */
-	class Button : public Control
-	{
-	protected:
-		/** ボタンが押されたかどうか */
-		bool isPushed;
-		/** ラベル */
-		String text;
-		
-	public:
-		virtual char* className() { return "baygui.ui.Button"; }
-		Button();
-		virtual ~Button();
-		void setText(const char* text);
-		inline char* getText() { return this->text.getBytes(); }
-		virtual void onStart();
-		
-	protected:
-		virtual void onPaint(_P<Graphics> g);
-		virtual void onEvent(Event *e);
-	};
-}
+/**
+ ボタンクラス
+*/
+class Button : public Control {
+private:
+	bool pushed;
+	String label;
+	
+public:
+	Button::Button(char *label);
+	virtual Button::~Button();
+	virtual void setLabel(char *label);
+	inline  char *getLabel() { return this->label.getBytes(); }
+	virtual void onPaint(Graphics *g);
+	virtual void onEvent(Event *event);
+};
 
-#endif  // __BAYGUI_BUTTON_H__
+#endif // _BUTTON_H_INCLUDED_

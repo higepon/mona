@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,33 +25,68 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <baygui.h>
+#include "baygui.h"
 
-namespace baygui
+/**
+ コンストラクタ
+ @param text ラベル
+ */
+Label::Label(char *text)
 {
-	Label::Label()
-	{
-	}
+	this->align = ALIGN_LEFT;
+	this->text = text;
+}
+
+/**
+ コンストラクタ
+ @param text ラベル
+ @param align 描画位置 (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
+ */
+Label::Label(char *text, int align)
+{
+	this->align = align;
+	this->text = text;
+}
+
+/** デストラクタ */
+Label::~Label()
+{
+}
+
+/**
+ テキスト設定
+ @param text
+ */
+void Label::setText(char *text)
+{
+	this->text = text;
+	repaint();
+}
+
+/** 再描画 */
+void Label::onPaint(Graphics *g)
+{
+	int w = this->width, h = this->height;
 	
-	Label::~Label()
-	{
+	// 塗りつぶし
+	g->setColor(this->backColor);
+	g->fillRect(0, 0, w, h);
+
+	// 文字
+	FontMetrics metrics;
+	int fw = metrics.getWidth(getText());
+	int fh = metrics.getHeight(getText());
+	g->setFontStyle(this->fontStyle);
+	if (enabled == true) {
+		g->setColor(this->foreColor);
+	} else {
+		g->setColor(COLOR_GRAY);
 	}
-	
-	void Label::setText(const char* text)
-	{
-		//if (this->text != NULL) delete[] this->text;
-		//this->text = new char[strlen(text) + 1];
-		//strcpy(this->text, text);
-		this->text = text;
-		if (this->buffer == NULL) return;
-		this->repaint();
-	}
-	
-	void Label::onPaint(_P<Graphics> g)
-	{
-		g->setColor(this->getBackground());
-		g->fillRect(0, 0, this->getWidth(), this->getHeight());
-		g->setColor(this->getForeground());
-		g->drawText(this->getText(), 0, 0);
+	if (this->align == ALIGN_RIGHT) {
+		g->drawText(getText(), (w - fw), (h - fh) / 2);
+	} else if (this->align == ALIGN_CENTER) {
+		g->drawText(getText(), (w - fw) / 2, (h - fh) / 2);
+	} else {
+		g->drawText(getText(), 0, (h - fh) / 2);
 	}
 }

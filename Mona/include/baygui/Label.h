@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,31 +25,26 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef __BAYGUI_LABEL_H__
-#define __BAYGUI_LABEL_H__
+#if !defined(_LABEL_H_INCLUDED_)
+#define _LABEL_H_INCLUDED_
 
-namespace baygui
-{
-	/**
-	 ラベル部品.
-	 複数行の描画に対応している。
-	*/
-	class Label : public Control
-	{
-	protected:
-		/** ラベル */
-		String text;
-		
-	public:
-		virtual char* className() { return "baygui.ui.Label"; }
-		Label();
-		virtual ~Label();
-		void setText(const char* text);
-		inline char* getText() { return this->text.getBytes(); }
-		
-	protected:
-		virtual void onPaint(_P<Graphics> g);
-	};
-}
+/**
+ ラベルクラス
+*/
+class Label : public Control {
+private:
+	/** 表示位置（左寄せ、中央寄せ、右寄せ）*/
+	int align;
+	/** 表示文字列 */
+	String text;
+	
+public:
+	Label::Label(char *text);
+	Label::Label(char *text, int align);
+	virtual Label::~Label();
+	virtual void setText(char *text);
+	inline  char *getText() { return this->text.getBytes(); }
+	virtual void onPaint(Graphics *g);
+};
 
-#endif  // __BAYGUI_LABEL_H__
+#endif // _LABEL_H_INCLUDED_

@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,227 +25,89 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef __BAYGUI_CONTROL_H__
-#define __BAYGUI_CONTROL_H__
+#if !defined(_CONTROL_H_INCLUDED_)
+#define _CONTROL_H_INCLUDED_
 
-namespace baygui
-{
-	/**
-	 部品親クラス.
-	 すべての画面部品はこのクラスを継承して作成する。
-	 GUIサーバー上のウィンドウオブジェクトとの仲立ちも行う。
-	 */
-	class Control : public Object
-	{
-		/**
-		 部品リスト.
-		 本当はContainerクラスが管理すべきものだが、TinoGUIでは部品が持っている。
-		 */
-		class ControlCollection : public ArrayList<_P<Control> >
-		{
-			friend class Control;
-			
-			private:
-				_P<Control> target;
-			
-			public:
-				ControlCollection() {}
-				virtual ~ControlCollection() {}
-		};
-		
-	public:
-		/** 画面中のどこをクリックしたかで変わる値 */
-		enum NCState {
-			NCState_Client,
-			NCState_None,
-			NCState_TitleBar,
-			NCState_CloseButton
-		} ncState;
-		
-	private:
-		/** 領域 */
-		Rect rect;
-		/** 表示可能かどうか */
-		bool visible;
-		/** フォーカスがあるかどうか */
-		bool focused;
-		/** 前景色 */
-		unsigned int foreColor;
-		/** 背景色 */
-		unsigned int backColor;
-		/** 透過色 */
-		unsigned int transColor;
-		/** 親部品 */
-		_P<Control> parent;
-		/** 部品リスト */
-		_P<ControlCollection> children;
-		/** 内部領域のサイズ (ウィンドウ等では外側の縁を除いたサイズ)  */
-		Dimention innerSize;
-		/** 前景色が変えられたかどうか */
-		bool foreColorChanged;
-		/** 背景色が変えられたかどうか */
-		bool backColorChanged;
-		
-	protected:
-		/** 内部データ */
-		_P<Bitmap> buffer;
-		/** オフセット */
-		Point offset;
-		/** マウスをクリックした座標 */
-		Point clickPoint;
-		/** GUIサーバー上のウィンドウオブジェクト */
-		guiserver_window* _object;
-	
-	public:
-		virtual char* className() { return "baygui.ui.Control"; }
-		
-		Control();
-		
-		virtual ~Control();
-		
-		/** ハンドルを得る */
-		inline unsigned int getHandle() {
-			return this->_object != NULL ? this->_object->Handle : 0;
-		}
-		
-		/** 部品を作成したあとに呼ぶ */
-		virtual void onStart();
-		
-		/** 部品が破棄されるときに呼ばれる */
-		virtual void onExit();
-		
-		/** 部品を追加する */
-		void add(_P<Control> control);
-		
-		/** 実際に再描画する */
-		void repaint();
-		
-		/** イベントを投げる */
-		virtual void postEvent(Event *e);
-		
-		/** 指定した座標を相対座標に変換する */
-		Point pointToClient(Point p);
-		
-		/** 指定した座標を絶対座標に変換する */
-		Point pointToScreen(Point p);
-		
-		/** 一番親の部品を取得する */
-		_P<Control> getTopLevelControl();
-		
-		/** 自分の中におかれている部品を取得する (なければ自分を返す) */
-		_P<Control> findChild(int x, int y);
-		
-		/** グラフィックオブジェクトを得る */
-		virtual _P<Graphics> getGraphics();
-		
-		/** 親部品を得る */
-		inline _P<Control> getParent() {
-			return this->parent;
-		}
-		
-		/** 部品リストを得る */
-		inline _P<ControlCollection> getChildren() {
-			return this->children;
-		}
-		
-		/** 領域を得る */
-		inline Rect getRect() {
-			return this->rect;
-		}
-		
-		/** 領域を設定する */
-		inline void setRect(int x, int y, int width, int height) {
-			this->rect.X = x;
-			this->rect.Y = y;
-			this->rect.Width = width;
-			this->rect.Height = height;
-		}
-		
-		/** X座標を得る */
-		inline int getX() { return this->rect.X; }
-		
-		/** Y座標を得る */
-		inline int getY() { return this->rect.Y; }
-		
-		/** 幅を得る */
-		inline int getWidth() { return this->rect.Width; }
-		
-		/** 高さを得る */
-		inline int getHeight() { return this->rect.Height; }
-		
-		/** 位置を得る */
-		inline Point getLocation() { return this->rect.get_Location(); }
-		
-		/** 位置を設定する */
-		void setLocation(int x, int y);
-		
-		/** 大きさを得る */
-		inline Dimention getSize() { return this->rect.get_Size(); }
-		
-		/** 大きさを設定する */
-		inline void setSize(int width, int height) {
-			this->rect.Width = width;
-			this->rect.Height = height;
-		}
-		
-		/** 内部領域の大きさを得る */
-		Dimention getInnerSize();
-		
-		/** 内部領域の大きさを設定する */
-		void setInnerSize(int width, int height);
-		
-		/** 表示・非表示を得る */
-		inline bool getVisible() { return this->visible; }
-		
-		/** 表示・非表示を設定する */
-		void setVisible(bool v);
-		
-		/** フォーカスがあるかどうかを得る */
-		inline bool getFocused() { return this->focused; }
-		
-		/** フォーカスを設定する */
-		void setFocused(bool v);
-		
-		/** 前景色を得る */
-		inline unsigned int getForeground() { return this->foreColor; }
-		
-		/** 前景色を設定する */
-		void setForeground(unsigned int c);
-		
-		/** 背景色を得る */
-		inline unsigned int getBackground() { return this->backColor; }
-		
-		/** 背景色を設定する */
-		void setBackground(unsigned int c);
-		
-		/** 透過色を得る */
-		inline unsigned int getTransColor() { return this->transColor; }
-		
-		/** 透過色を設定する */
-		void setTransColor(unsigned int c);
-	
-	protected:
-		/** 内部領域を実際に再描画する */
-		void repaintInternal();
-		
-		/** 内部領域を実際に再描画する前に呼ばれる */
-		virtual void drawInternal() {}
-		
-		/** 表示時に呼ばれる */
-		virtual void onShow();
-		
-		/** 非表示時に呼ばれる */
-		virtual void onHide();
-		
-		/** 部品のどこをクリックしたのか調べる */
-		virtual NCState NCHitTest(int x, int y);
-		
-		/** 描画時に呼ばれる */
-		virtual void onPaint(_P<Graphics> g) {}
-		
-		/** イベント発生時に呼ばれる */
-		virtual void onEvent(Event *e) {}
-	};
-}
+class Container;
 
-#endif  // __BAYGUI_CONTROL_H__
+/**
+ コントロールクラス
+*/
+class Control : public Object {
+private:
+	
+protected:
+	/** 親部品 */
+	Container *parent;
+	/** 活性・非活性 */
+	bool enabled;
+	/** フォーカス有無 */
+	bool focused;
+	/** 表示・非表示 */
+	bool visible;
+	/** x（絶対座標） */
+	int x;
+	/** y（絶対座標） */
+	int y;
+	/** 高さ */
+	int height;
+	/** 幅 */
+	int width;
+	/** オフセットX */
+	int offsetX;
+	/** オフセットY */
+	int offsetY;
+	/** 部品の大きさ */
+	Rect rect;
+	/** フォーカスイベント */
+	Event focusEvent;
+	/** 背景色 */
+	unsigned int backColor;
+	/** 前景色 */
+	unsigned int foreColor;
+	/** フォントスタイル */
+	int fontStyle;
+#ifdef MONA
+	/** GUIサーバーID */
+	dword guisvrID;
+	/** GUIサーバー上のウィンドウオブジェクト */
+	guiserver_window *_window;
+#endif
+	/** 描画領域 */
+	Graphics *_g;
+	/** 描画バッファー */
+	Image *_buffer;
+
+public:
+	Control::Control();
+	virtual Control::~Control();
+	virtual void create();
+	virtual void dispose();
+	virtual void onEvent(Event *event);
+	virtual void onPaint(Graphics *g);
+	virtual void postEvent(Event *event);
+	virtual void repaint();
+	virtual void update();
+	virtual unsigned int getHandle();
+	inline bool getEnabled() { return this->enabled; }
+	inline bool getFocused() { return this->focused; }
+	inline bool getVisible() { return this->visible; }
+	inline Rect *getRect() { return &this->rect; }
+	inline unsigned int getBackground() { return this->backColor; }
+	inline unsigned int getForeground() { return this->foreColor; }
+	inline int getFontStyle() { return this->fontStyle; }
+	virtual Container *getParent() { return this->parent; }
+	virtual Graphics *getGraphics();
+	virtual Control *getMainWindow();
+	virtual void setEnabled(bool enabled);
+	virtual void setFocused(bool focused);
+	virtual void setVisible(bool visible);
+	virtual void setRect(int x, int y, int width, int height);
+	virtual void setLocation(int x, int y);
+	virtual void setParent(Container *parent);
+	virtual void setBackground(unsigned int backColor);
+	virtual void setForeground(unsigned int foreColor);
+	virtual void setFontStyle(int style);
+};
+
+#endif // _CONTROL_H_INCLUDED_

@@ -25,41 +25,33 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_EVENT_H_INCLUDED_)
-#define _EVENT_H_INCLUDED_
-
-class Control;
+#if !defined(_IMAGE_H_INCLUDED_)
+#define _IMAGE_H_INCLUDED_
 
 /**
- イベント基底クラス
+ イメージクラス
 */
-class Event : public Object {
-public:
-	/** イベントタイプ */
-	int type;
-	/** イベント発生元 */
-	Control *source;
-#ifdef MONA
-	/** ヘッダー */
-	unsigned int header;
-	/** 引数(1) */
-	unsigned int arg1;
-	/** 引数(2) */
-	unsigned int arg2;
-	/** 引数(3) */
-	unsigned int arg3;
-	/** メッセージ発生元 */
-	unsigned int from;
-	/** 文字列 */
-	char str[128];
-	/** 文字列の長さ */
-	int length;
-#endif
+class Image : public Object {
+private:
+	/** 幅 */
+	int width;
+	/** 高さ */
+	int height;
+	/** GUIサーバーID */
+	dword guisvrID;
+	/** GUIサーバー上のビットマップオブジェクト */
+	guiserver_bitmap* bitmap;
 
 public:
-	Event::Event() {}
-	Event::Event(int type, Control *source);
-	virtual Event::~Event();
+	Image::Image();
+	Image::Image(int width, int height);
+	Image::Image(char *path);
+	virtual Image::~Image();
+	unsigned int getHandle();
+	inline int getWidth() { return this->width; }
+	inline int getHeight() { return this->height; }
+	unsigned int getPixel(int x, int y);
+	void setPixel(int x, int y, unsigned int color);
 };
 
-#endif // _EVENT_H_INCLUDED_
+#endif // _IMAGE_H_INCLUDED_

@@ -6,9 +6,9 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
 1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
+   notice, this history of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
+   notice, this history of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
 3. The name of the author may not be used to endorse or promote products
    derived from this software without specific prior written permission.
@@ -28,27 +28,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <baygui.h>
 
 /**
- チャットクラス.
- <pre>
- [画面構成]
- 
- +---------------------------+
- +     #name - IRCもどき     |
- +-------------+-------------+
- +             +             +
- + messageList + memberList  +
- +             +             +
- +-------------+-------------+
- + text        + channelList +
- +-------------+             +
- + consoleList +             +
- +-------------+-------------+
- </pre>
+ 名前を指定して実行（コマンド履歴つき）
 */
-class GChat : public Window {
+class GRunner : public Window {
 private:
-	ListBox *messageList, *memberList, *channelList, *consoleList;
-	/** コマンド */
 	TextField *text;
 	/** コマンド履歴 */
 	LinkedList *history;
@@ -56,68 +39,38 @@ private:
 	int historyPtr;
 
 public:
-	GChat::GChat();
-	virtual GChat::~GChat();
-	virtual void onEvent(Event *e);
+	GRunner::GRunner();
+	virtual GRunner::~GRunner();
+	virtual void onEvent(Event *event);
 };
 
-GChat::GChat()
+GRunner::GRunner()
 {
-	setRect((800 - 312) / 2, (600 - 328) /2, 312, 328);
-	setTitle("#osdev-j - IRCもどき");
-	messageList = new ListBox();
-	memberList  = new ListBox();
-	channelList = new ListBox();
-	consoleList = new ListBox();
+	setRect((800 - 200) / 2, (600 - 48) / 2, 200, 48);
+	setTitle("ファイル名を指定して実行");
 	text = new TextField();
-	// メッセージとコンソールは選択枠を出さないようにする
-	messageList->setEnabled(false);
-	consoleList->setEnabled(false);
-	// 部品位置設定
-	messageList->setRect(0,0,220,220);
-	memberList->setRect(220,0,80,220);
-	consoleList->setRect(0,240,220,60);
-	channelList->setRect(220,220,80,80);
-	text->setRect(0,220,220,20);
-	// テストデータ挿入
-	memberList->add("@mona");
-	memberList->add("@pekoe");
-	memberList->add("osask");
-	memberList->add("nwsos");
-	consoleList->add("12:34 irc.hoge.jp:6667 に接続しました.");
-	channelList->add("0 *Console*");
-	channelList->add("1 #osdev-j");
-	text->setText("");
-	// 部品貼り付け
-	add(messageList);
-	add(memberList);
-	add(channelList);
-	add(consoleList);
+	text->setText("/APPS/");
+	text->setRect(0,0,188,20);
 	add(text);
 	history = new LinkedList();
 	historyPtr = 0;
 }
 
-GChat::~GChat()
+GRunner::~GRunner()
 {
-	delete(messageList);
-	delete(memberList);
-	delete(channelList);
-	delete(consoleList);
 	delete(text);
 	delete(history);
 }
 
-void GChat::onEvent(Event *event)
+void GRunner::onEvent(Event *event)
 {
 	// 実行
 	if (event->type == TEXT_CHANGED) {
 		// 履歴追加
 		history->add(new LinkedItem(new String(text->getText())));
 		historyPtr = history->getLength();
-		messageList->add(text->getText());
-		messageList->repaint();
-		text->setText("");
+		monapi_call_process_execute_file(text->getText(), MONAPI_FALSE);
+		text->setText("/APPS/");
 	// キー押下
 	} else if (event->type == KEY_PRESSED) {
 		int keycode = ((KeyEvent *)event)->keycode;
@@ -133,7 +86,7 @@ void GChat::onEvent(Event *event)
 				historyPtr++;
 				text->setText(((String *)history->get(historyPtr))->getBytes());
 			} else {
-				text->setText("");
+				text->setText("/APPS/");
 			}
 		}
 	}
@@ -146,8 +99,8 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char **argv)
 #endif
 {
-	GChat *chat = new GChat();
-	chat->run();
-	delete(chat);
+	GRunner *runner = new GRunner();
+	runner->run();
+	delete(runner);
 	return 0;
 }

@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,81 +25,55 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef __BAYGUI_FORM_H__
-#define __BAYGUI_FORM_H__
+#if !defined(_WINDOW_H_INCLUDED_)
+#define _WINDOW_H_INCLUDED_
 
-namespace baygui
-{
-	/**
-	 ウィンドウ部品.
-	 1プロセスで複数のウィンドウを持つことができる。
-	 */
-	class Window : public Control
-	{
-		friend class Control;
+/**
+ ウィンドウクラス
+*/
+class Window : public Container {
+private:
+	/** 内部描画領域 */
+	Graphics *__g;
+	/** 内部描画バッファー */
+	Image *__buffer;
 	
-	protected:
-		/** 閉じるボタンが押されたかどうか */
-		bool isCloseButtonPushed;
-		/** マウスボタンが押されたときの状態 */
-		NCState ncState;
-	
-	private:
-		/** 透過率 */
-		double opacity;
-		/** 移動領域のハンドル */
-		dword overlap;
-		/** マウス移動中の座標 */
-		Point ptRevRect;
-		/** 内部バッファー */
-		_P<Bitmap> formBuffer;
-		/** タイトル */
-		String title;
-	
-	public:
-		virtual char* className() { return "baygui.Window"; }
-		
-		Window();
-		
-		virtual ~Window();
-		
-		/** 初めて表示開始されたときに呼ばれる */
-		virtual void onStart();
-		
-		/** 部品が破棄されるときに呼ばれる */
-		virtual void onExit();
-		
-		/** イベントを投げる */
-		virtual void postEvent(Event *e);
-		
-		/** タイトルを設定する */
-		void setTitle(const char* title);
-		
-		/** タイトルを得る */
-		inline char* getTitle() { return this->title.getBytes(); }
-		
-		/**
-		 アプリケーションを開始する.
-		 メインウィンドウのみに対して呼ぶことができる。
-		*/
-		void run();
-	
-	protected:
-		/** 非表示時に呼ばれる */
-		virtual void onHide();
-		
-		/** 削除時に呼ばれる */
-		virtual void onErase();
-		
-		/** 部品のどこをクリックしたのか調べる */
-		virtual NCState NCHitTest(int x, int y);
-		
-		/** 内部領域を実際に再描画する前に呼ばれる */
-		virtual void drawInternal();
-		
-		/** イベント発生時に呼ばれる */
-		virtual void onEvent(Event *e) {}
-	};
-}
+protected:
+	/** タイトル */
+	String title;
+	/** 修飾キー */
+	int modifiers;
+	/** ウィンドウの状態 */
+	int state;
+	/** 以前のマウスのX座標 */
+	int preX;
+	/** 以前のマウスのY座標 */
+	int preY;
+	/** オーバーラップウィンドウの状態 */
+	unsigned int overlap;
+	/** 実行中フラグ */
+	bool isRunning;
+	/** キーイベント */
+	KeyEvent keyEvent;
+	/** マウスイベント */
+	MouseEvent mouseEvent;
+	/** タイマーイベント */
+	Event timerEvent;
+	/** カスタムイベント */
+	Event customEvent;
 
-#endif  // __BAYGUI_FORM_H__
+public:
+	Window::Window();
+	virtual Window::~Window();
+	virtual void create();
+	virtual void dispose();
+	inline char  *getTitle() { return this->title.getBytes(); }
+	virtual void setTitle(char *title);
+	virtual void setTimer(int duration);
+	virtual void postEvent(Event *event);
+	virtual void repaint();
+	virtual void update();
+	virtual void run();
+};
+
+#endif // _WINDOW_H_INCLUDED_

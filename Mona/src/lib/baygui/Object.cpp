@@ -27,19 +27,64 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "baygui.h"
 
-/** デフォルトコンストラクタ */
-Rect::Rect() {
-	this->x = this->y = this->width = this->height = 0;
-}
-
 /** コンストラクタ */
-Rect::Rect(int x, int y, int height, int width) {
-	this->x = x;
-	this->y = y;
-	this->height = height;
-	this->width = width;
+Object::Object() {
+	threadID = THREAD_UNKNOWN;
 }
 
 /** デストラクタ */
-Rect::~Rect() {
+Object::~Object() {
+}
+
+/** ファイルを開きバイト列を得る */
+unsigned char *Object::getByteArray(char *path)
+{
+#if defined(PEKOE)
+	int file1, filesize1, readsize1;
+	unsigned char *fp1;
+	
+	if ((file1 = open(path, O_RDONLY, 0)) >= 0) {
+		filesize1 = lseek(file1, 0, 2);
+		lseek(file1, 0, 0); // 先頭に戻す
+		fp1 = (unsigned char *)malloc(filesize1);
+		readsize1 = read(file1, (char *)fp1, filesize1);
+		close(file1);
+		return fp1;
+	} else {
+		return NULL;
+	}
+#elif defined(MONA)
+	// bzip2 または tek5
+	if (path[strlen(path) - 1] == '2' || path[strlen(path) - 1] == '5') {
+		monapi_cmemoryinfo* mi = NULL;
+		if (path[strlen(path) - 1] == '2') {
+			mi = monapi_call_file_decompress_bz2_file(path, false);
+		} else {
+			mi = monapi_call_file_decompress_st5_file(path, false);
+		}
+		if (mi != NULL && mi->Size > 0) {
+			unsigned char *data = (unsigned char *)malloc(mi->Size);
+			memcpy(data, mi->Data, mi->Size);
+			monapi_cmemoryinfo_dispose(mi);
+			monapi_cmemoryinfo_delete(mi);
+			return data;
+		} else {
+			return NULL;
+		}
+	} else {
+		dword filesize1 = 0, readsize1 = 0;
+		unsigned char *fp1;
+		if (syscall_file_open(path, 0, &filesize1) == 0 && filesize1 > 0) {
+			fp1 = (unsigned char *)malloc(filesize1);
+			if (syscall_file_read((char*)fp1, filesize1, &readsize1) == 0) {
+				syscall_file_close();
+				return fp1;
+			} else {
+				return NULL;
+			}
+		} else {
+			return NULL;
+		}
+	}
+#endif
 }

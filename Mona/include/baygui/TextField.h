@@ -25,41 +25,29 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_EVENT_H_INCLUDED_)
-#define _EVENT_H_INCLUDED_
-
-class Control;
+#if !defined(_TEXTFIELD_H_INCLUDED_)
+#define _TEXTFIELD_H_INCLUDED_
 
 /**
- イベント基底クラス
+ テキストボックスクラス
 */
-class Event : public Object {
-public:
-	/** イベントタイプ */
-	int type;
-	/** イベント発生元 */
-	Control *source;
-#ifdef MONA
-	/** ヘッダー */
-	unsigned int header;
-	/** 引数(1) */
-	unsigned int arg1;
-	/** 引数(2) */
-	unsigned int arg2;
-	/** 引数(3) */
-	unsigned int arg3;
-	/** メッセージ発生元 */
-	unsigned int from;
-	/** 文字列 */
-	char str[128];
-	/** 文字列の長さ */
-	int length;
-#endif
+class TextField : public Control {
+private:
+	int textPtr, textLen, offx, offy;
+	char text[MAX_TEXT_LEN];
+	Event textEvent;
+	
+protected:
+	virtual void insertCharacter(char c);
+	virtual void deleteCharacter();
 
 public:
-	Event::Event() {}
-	Event::Event(int type, Control *source);
-	virtual Event::~Event();
+	TextField::TextField();
+	virtual TextField::~TextField();
+	virtual void setText(char *text);
+	inline  char *getText() { return this->text; }
+	virtual void onPaint(Graphics *g);
+	virtual void onEvent(Event *event);
 };
 
-#endif // _EVENT_H_INCLUDED_
+#endif // _TEXTFIELD_H_INCLUDED_

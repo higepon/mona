@@ -1,14 +1,5 @@
 TARGET  = GLAUNCH
-
-SOURCES = \
-	BitmapViewer.cpp \
-	FileManager.cpp \
-	Icons.cpp \
-	IconData.cpp \
-	ShortCut.cpp \
-	TextViewer.cpp \
-	WindowManager.cpp
-
+SOURCES = glaunch.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..

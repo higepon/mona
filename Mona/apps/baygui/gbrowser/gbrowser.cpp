@@ -37,7 +37,7 @@ private:
 
 public:
 	GBrowser(){
-		setRect((800 - 213) / 2, (600 - 229) /2, 213, 229);
+		setRect((800 - 212) / 2, (600 - 228) /2, 212, 228);
 		setTitle("ブラウザもどき");
 		// いろいろな部品の作成
 		reload = new Button("更新");
@@ -52,9 +52,9 @@ public:
 		stop->setRect(40,0,40,20);
 		home->setRect(80,0,50,20);
 		favorites->setRect(130,0,70,20);
-		go->setRect(160,21,40,20);
-		address->setRect(0,21,159,20);
-		panel->setRect(1,44,200,140);
+		go->setRect(160,20,40,20);
+		address->setRect(0,20,160,20);
+		panel->setRect(0,40,200,160);
 		// いろいろな部品をウィンドウに貼り付ける
 		add(address);
 		add(reload);
@@ -76,29 +76,31 @@ public:
 	}
 	
 	void onEvent(Event *event){
-		// 更新を押したとき
-		if (event->source == reload) {
-			// HtmlPanelクラスに処理をお願いする
-			panel->setUrl(address->getText());
-		// 中止を押したとき
-		} else if (event->source == stop) {
-			address->setText("");
-			// HtmlPanelクラスに処理をお願いする
-			panel->setUrl("about:stop");
-		// ホームを押したとき
-		} else if (event->source == home) {
-			address->setText("about:home");
-			// HtmlPanelクラスに処理をお願いする
-			panel->setUrl("about:home");
-		// お気に入りを押したとき
-		} else if (event->source == favorites) {
-			address->setText("about:favorites");
-			// HtmlPanelクラスに処理をお願いする
-			panel->setUrl("about:favorites");
-		// 移動を押したとき
-		} else if (event->source == go || event->type == TEXT_CHANGED) {
-			// HtmlPanelクラスに処理をお願いする
-			panel->setUrl(address->getText());
+		if (event->type == MOUSE_RELEASED) {
+			// 更新を押したとき
+			if (event->source == reload) {
+				// HtmlPanelクラスに処理をお願いする
+				panel->setUrl(address->getText());
+			// 中止を押したとき
+			} else if (event->source == stop) {
+				address->setText("");
+				// HtmlPanelクラスに処理をお願いする
+				panel->setUrl("about:stop");
+			// ホームを押したとき
+			} else if (event->source == home) {
+				address->setText("about:home");
+				// HtmlPanelクラスに処理をお願いする
+				panel->setUrl("about:home");
+			// お気に入りを押したとき
+			} else if (event->source == favorites) {
+				address->setText("about:favorites");
+				// HtmlPanelクラスに処理をお願いする
+				panel->setUrl("about:favorites");
+			// 移動を押したとき
+			} else if (event->source == go || event->type == TEXT_CHANGED) {
+				// HtmlPanelクラスに処理をお願いする
+				panel->setUrl(address->getText());
+			}
 		}
 	}
 };

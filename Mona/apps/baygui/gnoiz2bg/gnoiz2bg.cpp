@@ -239,6 +239,7 @@ void drawBoxAlpha(unsigned char *pbuf,int x1,int y1,int w,int h,int color,int al
             p[0] = (p[0] * alpha >> 16) + col_b;
             p[1] = (p[1] * alpha >> 16) + col_g;
             p[2] = (p[2] * alpha >> 16) + col_r;
+            p[3] = 0xff;
             p += 4;
         }
     }
@@ -280,10 +281,8 @@ public:
 	GNoiz2bg::GNoiz2bg();
 	GNoiz2bg::~GNoiz2bg();
 	void draw();
-	void onEvent(Event *e);
 	void onPaint(Graphics *g);
 };
-
 
 /** アプリケーションインスタンス */
 static GNoiz2bg *noiz = NULL;
@@ -325,46 +324,40 @@ GNoiz2bg::GNoiz2bg() {
 
 /** デストラクタ */
 GNoiz2bg::~GNoiz2bg() {
+	// 描画スレッド停止
 	syscall_kill_thread(drawThreadID);
+	drawThreadID = THREAD_UNKNOWN;
 	free(pbuf);
 }
 
-/** ウィンドウ内部領域のみの描画 */
+/** 内部描画 */
 void GNoiz2bg::draw() {
+	// 描画
 	for (int y = 0; y < SCREEN_H; y++) {
 		for (int x = 0; x < SCREEN_W; x++) {
-			int k = (x + y * SCREEN_W) * 4;
-			unsigned char b = pbuf[k];
-			unsigned char g = pbuf[k + 1];
-			unsigned char r = pbuf[k + 2];
-			__g->drawPixel(x, y, r << 16 | g << 8 | b);
+			//int k = (x + y * SCREEN_W) * 4;
+			//unsigned char blue  = pbuf[k];
+			//unsigned char green = pbuf[k + 1];
+			//unsigned char red   = pbuf[k + 2];
+			unsigned char *p = &pbuf[(x + y * SCREEN_W) * 4];
+			this->_buffer->setPixel(x, y, *((int*)p));
 		}
 	}
-}
-
-/** イベント処理 */
-void GNoiz2bg::onEvent(Event *e) {
-	if (e->type == FOCUS_IN || e->type == DEICONIFIED) {
-		// 描画スレッド起動
-		if (drawThreadID == THREAD_UNKNOWN) {
-			drawThreadID = syscall_get_tid();
-			MessageInfo msg, src;
-			dword id = syscall_mthread_create((dword)DrawThread);
-			syscall_mthread_join(id);
-			src.header = MSG_SERVER_START_OK;
-			MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-			drawThreadID = msg.from;
-		}
-	} else if (e->type == FOCUS_OUT || e->type == ICONIFIED) {
-		// 描画スレッド停止
-		syscall_kill_thread(drawThreadID);
-		drawThreadID = THREAD_UNKNOWN;
-	}
+	update();
 }
 
 /** 描画 */
 void GNoiz2bg::onPaint(Graphics *g) {
-	draw();
+	// 描画スレッド起動
+	if (drawThreadID == THREAD_UNKNOWN) {
+		drawThreadID = syscall_get_tid();
+		MessageInfo msg, src;
+		dword id = syscall_mthread_create((dword)DrawThread);
+		syscall_mthread_join(id);
+		src.header = MSG_SERVER_START_OK;
+		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+		drawThreadID = msg.from;
+	}
 }
 
 int MonaMain(List<char*>* pekoe) {

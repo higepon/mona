@@ -25,41 +25,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_EVENT_H_INCLUDED_)
-#define _EVENT_H_INCLUDED_
+#include "baygui.h"
 
-class Control;
+/** コンストラクタ */
+LinkedItem::LinkedItem(Object *o)
+{
+	data = o;
+	next = NULL;
+	prev = NULL;
+}
 
-/**
- イベント基底クラス
-*/
-class Event : public Object {
-public:
-	/** イベントタイプ */
-	int type;
-	/** イベント発生元 */
-	Control *source;
-#ifdef MONA
-	/** ヘッダー */
-	unsigned int header;
-	/** 引数(1) */
-	unsigned int arg1;
-	/** 引数(2) */
-	unsigned int arg2;
-	/** 引数(3) */
-	unsigned int arg3;
-	/** メッセージ発生元 */
-	unsigned int from;
-	/** 文字列 */
-	char str[128];
-	/** 文字列の長さ */
-	int length;
-#endif
-
-public:
-	Event::Event() {}
-	Event::Event(int type, Control *source);
-	virtual Event::~Event();
-};
-
-#endif // _EVENT_H_INCLUDED_
+/** デストラクタ */
+LinkedItem::~LinkedItem()
+{
+	delete(data);
+}

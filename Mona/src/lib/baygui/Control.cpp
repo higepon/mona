@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,356 +25,278 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <baygui.h>
+#include "baygui.h"
 
-extern dword __gui_server;
-
-static _P<MonAPI::Screen> s_screen;
-
-_P<MonAPI::Screen> getDefaultScreen()
-{
-	if (s_screen == NULL) {
-		s_screen.Set(new MonAPI::Screen(), true);
-	}
-	return s_screen;
-}
-
-#if 0
-static Rect getScreenRect()
-{
-	_P<MonAPI::Screen> scr = getDefaultScreen();
-	return Rect(0, 0, scr->getWidth(), scr->getHeight());
-}
-#endif
-
-void drawImage(_P<Bitmap> dst, _P<Bitmap> src, int x, int y, int sx, int sy, int sw, int sh, bool srccopy)
-{
-	int dw = dst->getWidth(), dh = dst->getHeight();
-	int x1 = x, y1 = y, x2 = x + sw, y2 = y + sh;
-	if (x1 < 0) x1 = 0;
-	if (y1 < 0) y1 = 0;
-	if (x2 > dw) x2 = dw;
-	if (y2 > dh) y2 = dh;
-	x1 += sx - x;
-	y1 += sy - y;
-	x2 += sx - x;
-	y2 += sy - y;
-	if (x1 < 0) x1 = 0;
-	if (y1 < 0) y1 = 0;
-	if (x2 > src->getWidth ()) x2 = src->getWidth ();
-	if (y2 > src->getHeight()) y2 = src->getHeight();
-	x1 -= sx;
-	y1 -= sy;
-	x2 -= sx;
-	y2 -= sy;
-	for (int yy = y1; yy < y2; yy++) {
-		unsigned int* pDst = &dst->get()[( x + x1) + ( y + yy) * dw];
-		unsigned int* pSrc = &src->get()[(sx + x1) + (sy + yy) * src->getWidth()];
-		for (int xx = x1; xx < x2; xx++, pDst++, pSrc++) {
-			// 透過色は描画しない
-			if (srccopy || getAlpha(*pSrc) != 0) *pDst = *pSrc;
-		}
-	}
-}
-
-namespace baygui
-{
-	Control::Control()
-	{
-		this->rect = Rect(0, 0, 32, 32);
-		this->foreColor = DEFAULT_FORECOLOR;
-		this->backColor = DEFAULT_BACKCOLOR;
-		this->foreColorChanged = false;
-		this->backColorChanged = false;
-		this->visible = false;
+/** コンストラクタ */
+Control::Control() {
+	// GUIサーバーを探す
+	guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+	if (guisvrID == THREAD_UNKNOWN) {
+		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+		exit(1);
+	} else {
+		this->enabled = true;
 		this->focused = false;
-		this->transColor = DEFAULT_TRANSCOLOR;
-		this->_object = NULL;
-		this->children = new ControlCollection();
-		this->children->target = this;
+		this->x = this->y = this->height = this->width = this->offsetX = this->offsetY = 0;
+		this->_buffer = NULL;
+		this->_window = NULL;
+		this->_g = NULL;
+		this->focusEvent.type = FOCUS_IN;
+		this->focusEvent.source = this;
+		this->backColor = DEFAULT_BACKCOLOR;
+		this->foreColor = DEFAULT_FORECOLOR;
+		this->fontStyle = FONT_PLAIN;
 	}
-	
-	Control::~Control()
-	{
-		this->onExit();
+}
+
+/** デストラクタ */
+Control::~Control() {
+	dispose();
+}
+
+/**
+ 部品生成時に呼ばれる.
+ dispose()後に呼ぶと再初期化できる。
+*/
+void Control::create()
+{
+	if (this->_buffer != NULL) return;
+
+	// 内部バッファー、描画オブジェクトの生成
+	this->_buffer = new Image(width, height);
+	this->_g = new Graphics(this->_buffer);
+
+	// ウィンドウを生成する
+	MessageInfo msg;
+	if (MonAPI::Message::sendReceive(&msg, guisvrID, MSG_GUISERVER_CREATEWINDOW)) {
+		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+		return;
 	}
-	
-	void Control::onShow()
-	{
-		if (this->visible) return;
-		
-		if (this->buffer == NULL) this->onStart();
-		this->visible = true;
-		this->_object->Visible = this->visible;
-		this->repaint();
+
+	// GUIサーバー上のウィンドウオブジェクトを生成する
+	this->_window = (guiserver_window*)MonAPI::MemoryMap::map(msg.arg2);
+	if (this->_window == NULL) {
+		printf("%s:%d:ERROR: can not create window!\n", __FILE__, __LINE__);
+		return;
 	}
-	
-	void Control::onHide()
-	{
-		if (!this->visible) return;
-		
-		this->visible = false;
-		if (this->parent != NULL) this->parent->repaint();
+
+	// 初期設定
+	if (this->parent != NULL) this->_window->Parent = this->parent->getHandle();
+	this->_window->X = this->x;
+	this->_window->Y = this->y;
+	this->_window->Width  = this->width;
+	this->_window->Height = this->height;
+	this->_window->OffsetX = this->offsetX;
+	this->_window->OffsetY = this->offsetY;
+	this->_window->BufferHandle = this->_buffer->getHandle();
+	this->_window->TransparencyKey = 0x00000000;
+	this->_window->Visible = true;
+	this->_window->Opacity = 0xff;
+	if (this->parent != NULL) {
+		this->foreColor = this->parent->getForeground();
+		this->backColor = this->parent->getBackground();
 	}
-	
-	void Control::onStart()
-	{
-		if (this->buffer != NULL) return;
-		
-		this->buffer = new Bitmap(this->getWidth(), this->getHeight());
-		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEWINDOW) != 0) {
-			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-			this->onExit();
-			return;
-		}
-		this->_object = (guiserver_window*)MonAPI::MemoryMap::map(msg.arg2);
-		if (this->_object == NULL) {
-			::printf("%s:%d:ERROR: can not create window!\n", __FILE__, __LINE__);
-			this->onExit();
-			return;
-		}
-		if (this->parent != NULL) this->_object->Parent = this->parent->getHandle();
-		this->_object->X = this->getX();
-		this->_object->Y = this->getY();
-		this->_object->Width  = this->getWidth();
-		this->_object->Height = this->getHeight();
-		this->_object->OffsetX = this->offset.X;
-		this->_object->OffsetY = this->offset.Y;
-		this->_object->BufferHandle = this->buffer->getHandle();
-		this->_object->TransparencyKey = this->transColor;
-		//int len = this->getWidth() * this->getHeight();
-		//for (int i = 0; i < len; i++) {
-		//	(*this->buffer)[i] = this->backColor;
-		//}
-		if (this->parent != NULL) {
-			if (!this->foreColorChanged) this->foreColor = this->parent->foreColor;
-			if (!this->backColorChanged) this->backColor = this->parent->backColor;
-		}
-		
-		FOREACH_AL(_P<Control>, ctrl, this->children) {
-			ctrl->onStart();
-		}
-		END_FOREACH_AL
+	this->_window->__internal2 = false;
+}
+
+/**
+ 部品破棄時に呼ばれる.
+ 後にcreate()を呼ぶと再初期化できる。
+*/
+void Control::dispose()
+{
+	// ウィンドウ破棄要求
+	dword handle = getHandle();
+	delete(_buffer);
+	delete(_g);
+	if (MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_DISPOSEWINDOW, handle)) {
+		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
-	
-	void Control::onExit()
-	{
-		this->onHide();
-		
-		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEWINDOW, this->getHandle());
-		this->_object = NULL;
-		this->parent = NULL;
-		this->buffer = NULL;
-		
-		FOREACH_AL(_P<Control>, ctrl, this->children) {
-			ctrl->onExit();
-		}
-		END_FOREACH_AL
-		this->children->Clear();
-		//this->children->target = NULL;
+}
+
+/**
+ イベント処理
+ @param  [in] event イベントオブジェクト
+*/
+void Control::onEvent(Event *event)
+{
+}
+
+/**
+ 描画処理
+ @param [in] g 描画オブジェクト
+*/
+void Control::onPaint(Graphics *g)
+{
+}
+
+/**
+ イベント処理を依頼する
+ @param [in] event イベントオブジェクト
+*/
+void Control::postEvent(Event *event)
+{
+	onEvent(event);
+	// 親部品にイベントを投げる
+	if (getParent() != NULL) {
+		getParent()->onEvent(event);
 	}
+}
+
+/** 再描画 */
+void Control::repaint()
+{
+	if (this->_buffer == NULL) return;
 	
-	void Control::repaint()
-	{
-		if (this->buffer == NULL) return;
-		
-		this->repaintInternal();
-		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, this->getTopLevelControl()->getHandle());
+	onPaint(this->_g);
+	
+	// 領域更新要求
+	update();
+}
+
+/** 領域更新 */
+void Control::update()
+{
+	Control *c = getMainWindow();
+	c->getGraphics()->drawImage(this->_buffer, this->x, this->y);
+	c->update();
+}
+
+/** ハンドルを得る */
+unsigned int Control::getHandle()
+{
+	if (this->_window != NULL) {
+		return this->_window->Handle;
+	} else {
+		return 0;
 	}
-	
-	void Control::repaintInternal()
-	{
-		if (this->buffer == NULL) return;
-		
-		Rect r(0, 0, this->getWidth(), this->getHeight());
-		int x = 0, y = 0;
-		_P<Control> form;
-		for (_P<Control> c = this; c != NULL; c = c->parent) {
-			if (!c->visible) return;
-			
-			if (c->parent != NULL) {
-				r.X += c->getX();
-				r.Y += c->getY();
-				r.Intersect(Rect(Point(), c->parent->getInnerSize()));
-				r.X += c->parent->offset.X;
-				r.Y += c->parent->offset.Y;
-				x += c->getX() + c->parent->offset.X;
-				y += c->getY() + c->parent->offset.Y;
-			}
-			form = c;
-		}
-		
-		drawInternal();
-		
-		_P<Graphics> g = getGraphics();
-		this->onPaint(g);
-		g->dispose();
-		
-		drawImage(((Window*)form.get())->formBuffer, this->buffer, r.X, r.Y, r.X - x, r.Y - y, r.Width, r.Height, this->parent == NULL);
-		FOREACH_AL(_P<Control>, ctrl, this->children) {
-			ctrl->repaintInternal();
-		}
-		END_FOREACH_AL
-	}
-	
-	_P<Graphics> Control::getGraphics()
-	{
-		_P<Graphics> ret = new Graphics(this->buffer);
-		Dimention sz = this->getInnerSize();
-		ret->setClientRect(Rect(this->offset.X, this->offset.Y, sz.Width, sz.Height));
-		return ret;
-	}
-	
-	Point Control::pointToClient(Point p)
-	{
-		p -= this->getLocation() + this->offset;
-		return this->parent == NULL ? p : this->parent->pointToClient(p);
-	}
-	
-	Point Control::pointToScreen(Point p)
-	{
-		p += this->getLocation() + this->offset;
-		return this->parent == NULL ? p : this->parent->pointToScreen(p);
-	}
-	
-	_P<Control> Control::getTopLevelControl()
-	{
-		return this->parent == NULL ? this : this->parent->getTopLevelControl();
-	}
-	
-	_P<Control> Control::findChild(int x, int y)
-	{
-		if (!this->rect.Contains(x, y)) return NULL;
-		
-		x -= this->getX();
-		y -= this->getY();
-		if (getAlpha(this->buffer->getPixel(x, y)) == 0) return NULL;
-		
-		x -= this->offset.X;
-		y -= this->offset.Y;
-		Dimention sz = this->getInnerSize();
-		if (x >= sz.Width || y >= sz.Height) return this;
-		
-		FOREACH_AL(_P<Control>, c, this->children) {
-			_P<Control> fc = c->findChild(x, y);
-			if (fc != NULL) return fc;
-		}
-		END_FOREACH_AL
+}
+
+/** 描画オブジェクトを得る */
+Graphics *Control::getGraphics()
+{
+	return this->_g;
+}
+
+/** メインウィンドウを得る */
+Control *Control::getMainWindow()
+{
+	if (this->parent == NULL) {
 		return this;
+	} else {
+		return this->parent->getMainWindow();
 	}
+}
+
+/**
+ 活性状態設定
+ @param enabled 活性状態 (true / false)
+ */
+void Control::setEnabled(bool enabled)
+{
+	this->enabled = enabled;
+}
+
+/**
+ フォーカス状態を設定する
+ @param focused フォーカス状態 (true / false)
+ */
+void Control::setFocused(bool focused)
+{
+	if (this->focused == true && focused == false) {
+		//syscall_print("FOCUS_OUT,");
+		this->focused = focused;
+		this->focusEvent.type = FOCUS_OUT;
+		postEvent(&this->focusEvent);
+	} else if (this->focused == false && focused == true) {
+		//syscall_print("FOCUS_IN,");
+		this->focused = focused;
+		this->focusEvent.type = FOCUS_IN;
+		postEvent(&this->focusEvent);
+	}
+}
+
+/**
+ 表示状態を設定する
+ @param visible 表示状態 (true / false)
+ */
+void Control::setVisible(bool visible)
+{
+	this->visible = visible;
+	this->_window->Visible = visible;
+	update();
+}
+
+/**
+ 大きさを設定する
+ @param x x座標
+ @param y y座標
+ @param width 幅
+ @param height 高さ
+*/
+void Control::setRect(int x, int y, int width, int height)
+{
+	this->x = x;
+	this->y = y;
+	this->height = height;
+	this->width = width;
+	this->rect.x = x;
+	this->rect.y = y;
+	this->rect.width = width;
+	this->rect.height = height;
+}
+
+/**
+ 位置を変更する
+ @param x X座標
+ @param y Y座標
+*/
+void Control::setLocation(int x, int y)
+{
+	if (this->x == x && this->y == y) return;
 	
-	void Control::setLocation(int x, int y)
-	{
-		if (this->getX() == x && this->getY() == y) return;
-		
-		this->rect.X = x;
-		this->rect.Y = y;
-		if (this->_object == NULL) return;
-		
-		if (this->parent == NULL) {
-			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEWINDOW, this->getHandle(), (dword)x, (dword)y);
-		} else {
-			this->_object->X = x;
-			this->_object->Y = y;
-			this->parent->repaint();
-		}
-	}
+	this->x = x;
+	this->y = y;
+	this->rect.x = x;
+	this->rect.y = y;
 	
-	Dimention Control::getInnerSize()
-	{
-		int bw = this->offset.X;
-		return Dimention(this->getWidth() - bw * 2, this->getHeight() - this->offset.Y - bw);
+	if (this->_window == NULL) return;
+	if (this->parent == NULL) {
+		MonAPI::Message::sendReceive(NULL, guisvrID, MSG_GUISERVER_MOVEWINDOW, 
+			getHandle(), (unsigned int)x, (unsigned int)y);
+	} else {
+		this->_window->X = x;
+		this->_window->Y = y;
 	}
-	
-	void Control::setInnerSize(int width, int height)
-	{
-		int bw = this->offset.X;
-		this->setSize(width + bw * 2, height + this->offset.Y + bw);
-	}
-	
-	void Control::setVisible(bool v)
-	{
-		if (v) this->onShow(); else this->onHide();
-	}
-	
-	void Control::setFocused(bool v)
-	{
-		if (v == this->focused) return;
-		
-		this->focused = v;
-		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOUSECAPTURE, this->getHandle(), v ? 1 : 0);
-	}
-	
-	void Control::setForeground(unsigned int c)
-	{
-		if (this->foreColor == c) return;
-		
-		this->foreColor = c;
-		this->foreColorChanged = true;
-		//this->OnForeColorChanged(EventArgs::get_Empty());
-		if (this->buffer == NULL) return;
-		
-		this->repaint();
-	}
-	
-	void Control::setBackground(unsigned int c)
-	{
-		if (this->backColor == c) return;
-		
-		this->backColor = c;
-		this->backColorChanged = true;
-		//this->OnBackColorChanged(EventArgs::get_Empty());
-		if (this->buffer == NULL) return;
-		
-		this->repaint();
-	}
-	
-	void Control::setTransColor(unsigned int c)
-	{
-		this->transColor = c;
-		if (this->_object == NULL) return;
-		
-		//unsigned int v = c.getArgb();
-		if (this->_object->TransparencyKey == c) return;
-		
-		this->_object->TransparencyKey = c;
-		this->repaint();
-	}
-	
-	Control::NCState Control::NCHitTest(int x, int y)
-	{
-		return Rect(Point::get_Empty(), this->getInnerSize()).Contains(x, y)
-			? NCState_Client : NCState_None;
-	}
-	
-	void Control::postEvent(Event *e)
-	{
-		if (e->type == MOUSE_MOVED) {
-			MouseEvent *me = (MouseEvent *)e;
-			Point pt = me->button == 0 ? Point(me->x, me->y) : this->clickPoint;
-			if (this->NCHitTest(pt.X, pt.Y) == NCState_Client) {
-				this->onEvent(e);
-			}
-		} else if (e->type == MOUSE_PRESSED) {
-			MouseEvent *me = (MouseEvent *)e;
-			this->clickPoint = Point(me->x, me->y);
-			if (this->NCHitTest(me->x, me->y) == NCState_Client) {
-				this->onEvent(e);
-			}
-		} else if (e->type == MOUSE_RELEASED) {
-			if (this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client) {
-				this->onEvent(e);
-			}
-		} else {
-			this->onEvent(e);
-		}
-	}
-	
-	void Control::add(_P<Control> control)
-	{
-		this->children->Add(control);
-		control->parent = this;
-		control->visible = true;
-	}
+	update();
+}
+
+/**
+ 親コンポーネントを設定する
+ @param parent 親コンポーネント
+*/
+void Control::setParent(Container *parent)
+{
+	this->parent = parent;
+}
+
+/** 背景色を設定する */
+void Control::setBackground(unsigned int backColor)
+{
+	this->backColor = backColor;
+}
+
+/** 前景色を設定する */
+void Control::setForeground(unsigned int foreColor)
+{
+	this->foreColor = foreColor;
+}
+
+/**
+ フォントスタイル（通常、太字、斜字、太字＆斜字）を設定する
+ @param style FONT_PLAIN、FONT_BOLD、FONT_ITALIC、FONT_BOLD | FONT_ITALIC
+ */
+void Control::setFontStyle(int style)
+{
+	this->fontStyle = style;
 }

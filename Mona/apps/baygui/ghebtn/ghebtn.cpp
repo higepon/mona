@@ -2,6 +2,17 @@
 Copyright (c) 2004 bayside
 All rights reserved.
 
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -16,51 +27,41 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-class HeButton : public Window
-{
+class HeButton : public Window {
 private:
 	int count;
 	bool pushed;
-	_P<Bitmap> number[10];
-	_P<Bitmap> image_normal;
-	_P<Bitmap> image_pushed;
+	Image *number[10], *image_normal, *image_pushed;
 	
 public:
-	HeButton()
-	{
-		setRect((800 - 180 - 12) / 2, (600 - 178 - 28) / 2, 192, 206);
+	HeButton(){
+		setRect((800 - 191) / 2, (600 - 205) / 2, 191, 205);
 		setTitle("へぇ～ボタン");
+		count = 0;
+		pushed = false;
+		number[0] = new Image("/APPS/GHEBTN.APP/0.BM5");
+		number[1] = new Image("/APPS/GHEBTN.APP/1.BM5");
+		number[2] = new Image("/APPS/GHEBTN.APP/2.BM5");
+		number[3] = new Image("/APPS/GHEBTN.APP/3.BM5");
+		number[4] = new Image("/APPS/GHEBTN.APP/4.BM5");
+		number[5] = new Image("/APPS/GHEBTN.APP/5.BM5");
+		number[6] = new Image("/APPS/GHEBTN.APP/6.BM5");
+		number[7] = new Image("/APPS/GHEBTN.APP/7.BM5");
+		number[8] = new Image("/APPS/GHEBTN.APP/8.BM5");
+		number[9] = new Image("/APPS/GHEBTN.APP/9.BM5");
+		image_normal = new Image("/APPS/GHEBTN.APP/HENORMAL.BM5");
+		image_pushed = new Image("/APPS/GHEBTN.APP/HEPUSHED.BM5");
 	}
 	
 	~HeButton(){
-		//for (int i = 0; i < 10; i++) {
-		//	delete(number[i]);
-		//}
-		//delete(image_normal);
-		//delete(image_pushed);
+		for (int i = 0; i < 10; i++) {
+			delete(number[i]);
+		}
+		delete(image_normal);
+		delete(image_pushed);
 	}
-	
-	void onStart()
-	{
-		Window::onStart();
-		count = 0;
-		pushed = false;
-		number[0] = new Bitmap("/APPS/GHEBTN.APP/0.BM5");
-		number[1] = new Bitmap("/APPS/GHEBTN.APP/1.BM5");
-		number[2] = new Bitmap("/APPS/GHEBTN.APP/2.BM5");
-		number[3] = new Bitmap("/APPS/GHEBTN.APP/3.BM5");
-		number[4] = new Bitmap("/APPS/GHEBTN.APP/4.BM5");
-		number[5] = new Bitmap("/APPS/GHEBTN.APP/5.BM5");
-		number[6] = new Bitmap("/APPS/GHEBTN.APP/6.BM5");
-		number[7] = new Bitmap("/APPS/GHEBTN.APP/7.BM5");
-		number[8] = new Bitmap("/APPS/GHEBTN.APP/8.BM5");
-		number[9] = new Bitmap("/APPS/GHEBTN.APP/9.BM5");
-		image_normal = new Bitmap("/APPS/GHEBTN.APP/HENORMAL.BM5");
-		image_pushed = new Bitmap("/APPS/GHEBTN.APP/HEPUSHED.BM5");
-	}
-	
-	void onPaint(_P<Graphics> g)
-	{
+
+	void onPaint(Graphics *g) {
 		if (pushed == false) {
 			g->drawImage(image_normal, 0, 0);
 		} else {
@@ -70,18 +71,22 @@ public:
 		g->drawImage(number[count%10], 65, 112);
 	}
 	
-	void onEvent(Event *e) {
-		if (e->type == MOUSE_PRESSED) {
+	void onEvent(Event *event) {
+		if (event->type == MOUSE_PRESSED) {
 			pushed = true;
 			if (count == 20) {
 				count = 0;
 			} else {
 				count++;
 			}
+			// 描画高速化
 			repaint();
-		} else if (e->type  == MOUSE_RELEASED) {
+			//onPaint(__g);
+		} else if (event->type  == MOUSE_RELEASED) {
 			pushed = false;
+			// 描画高速化
 			repaint();
+			//onPaint(__g);
 		}
 	}
 };

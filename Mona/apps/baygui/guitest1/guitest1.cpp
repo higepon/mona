@@ -39,55 +39,32 @@ int main(int argc, char **argv)
 	window->setRect((800 - 300) / 2,(600 - 200) / 2,300,200);
 	window->setTitle("(oAo) ﾅｶﾏ");	
 	
-	// ボタン１
+	// 部品を追加
 	Button *button1 = new Button("ｵﾏｴﾓﾅ orz");
 	button1->setRect(5,5,80,20);
-	
-	// ラベル１（左寄せ）
-	Label *label1 = new Label("Label");
-	Font *font;
-	font = label1->getFont();
-	font->setStyle(FONT_BOLD);
-	label1->setFont(font);
+	Label *label1 = new Label("Label<-");
+	label1->setFontStyle(FONT_BOLD);
 	label1->setRect(5,26,100,20);
-	
-	// ラベル２（中央寄せ）
-	Label *label2 = new Label("Label", ALIGN_CENTER);
-	font = label2->getFont();
-	font->setStyle(FONT_BOLD | FONT_ITALIC);
-	label2->setFont(font);
+	Label *label2 = new Label("=Label=", ALIGN_CENTER);
+	label2->setFontStyle(FONT_ITALIC);
 	label2->setBackground(0x0);
 	label2->setForeground(0xFFFFFF);
 	label2->setRect(5,46,100,20);
-	
-	// ラベル３（右寄せ）
-	Label *label3 = new Label("Label", ALIGN_RIGHT);
-	font = label3->getFont();
-	font->setStyle(FONT_ITALIC);
-	label3->setFont(font);
+	Label *label3 = new Label("Label->", ALIGN_RIGHT);
+	label3->setFontStyle(FONT_BOLD | FONT_ITALIC);
 	label3->setRect(5,66,100,20);
-	
-	// テキスト１
 	TextField *text1 = new TextField();
 	text1->setRect(5,86,100,20);
 	text1->setText("Hello,World");
-	
-	// テキスト２
 	TextField *text2 = new TextField();
 	text2->setRect(5,107,100,20);
-	
-	// テキスト３
 	TextField *text3 = new TextField();
 	text3->setRect(5,128,100,20);
-	
-	// リスト１
 	ListBox *list1 = new ListBox();
-	list1->setRect(110,5,100,100);
+	list1->setRect(110,35,100,100);
 	list1->add("ひげぽん");
 	list1->add("ｷﾀｰｰ!!");
 	list1->add("Mona is here");
-	
-	// 部品追加
 	window->add(button1);
 	window->add(label1);
 	window->add(label2);

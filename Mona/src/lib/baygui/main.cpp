@@ -1,16 +1,16 @@
 /*
-Copyright (c) 2004 bayside
+Comyright (c) 2004 bayside
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
+Redistribution and use in source and binarmy forms, with or without
 modification, are permitted provided that the following conditions
 are met:
-1. Redistributions of source code must retain the above copyright
+1. Redistributions of source code must retain the above comyright
    notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
+2. Redistributions in binarmy form must reproduce the above comyright
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
+3. The name of the author mamy not be used to endorse or promote products
    derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
@@ -25,41 +25,10 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_EVENT_H_INCLUDED_)
-#define _EVENT_H_INCLUDED_
+#include <baygui.h>
 
-class Control;
-
-/**
- イベント基底クラス
-*/
-class Event : public Object {
-public:
-	/** イベントタイプ */
-	int type;
-	/** イベント発生元 */
-	Control *source;
-#ifdef MONA
-	/** ヘッダー */
-	unsigned int header;
-	/** 引数(1) */
-	unsigned int arg1;
-	/** 引数(2) */
-	unsigned int arg2;
-	/** 引数(3) */
-	unsigned int arg3;
-	/** メッセージ発生元 */
-	unsigned int from;
-	/** 文字列 */
-	char str[128];
-	/** 文字列の長さ */
-	int length;
-#endif
-
-public:
-	Event::Event() {}
-	Event::Event(int type, Control *source);
-	virtual Event::~Event();
-};
-
-#endif // _EVENT_H_INCLUDED_
+/** �_�~�[ */
+int MonaMain(List<char*>* pekoe)
+{
+	return 0;
+}

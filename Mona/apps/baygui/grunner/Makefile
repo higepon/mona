@@ -1,5 +1,5 @@
-TARGET  = GSHELL
-SOURCES = gshell.cpp
+TARGET  = GRUNNER
+SOURCES = grunner.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..

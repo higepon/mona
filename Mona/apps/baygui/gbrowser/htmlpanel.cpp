@@ -42,8 +42,8 @@ void HtmlPanel::setUrl(char *url){
 /** 再描画（repaintを呼ぶとここにくる）*/
 void HtmlPanel::onPaint(Graphics *g){
 	// 背景を灰色で塗りつぶす
-	g->setColor(200, 200, 200);
-	g->fillRect(0, 0, _width, _height);
+	g->setColor(this->backColor);
+	g->fillRect(0, 0, width, height);
 	
 	// 遷移先を振り分ける
 	if (strcmp(this->url, "about:home") == 0) {

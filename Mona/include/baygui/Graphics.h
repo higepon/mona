@@ -1,6 +1,17 @@
 /*
-Copyright (c) 2004 Tino, bayside
+Copyright (c) 2004 bayside
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -14,69 +25,41 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef __BAYGUI_GRAPHICS_H__
-#define __BAYGUI_GRAPHICS_H__
+#if !defined(_GRAPHICS_H_INCLUDED_)
+#define _GRAPHICS_H_INCLUDED_
 
-namespace baygui
-{
-	/**
-	 描画クラス.
-	 描画はバッファーに対して行われ、画面には反映されない。
-	*/
-	class Graphics : public Object
-	{
-	private:
-		/** 内部バッファー */
-		_P<Bitmap> image;
-		/** 色 */
-		unsigned int color;
-		/** 内部描画領域 */
-		Rect clientRect;
-	
-	public:
-		virtual char* className() { return "baygui.Graphics"; }
-		
-		Graphics(_P<Bitmap> image);
-		
-		virtual ~Graphics();
-		
-		void dispose();
-		
-		/** 点を打つ */
-		void drawPixel(int x, int y, unsigned int c);
-		
-		/** 直線を引く */
-		void drawLine(int x1, int y1, int x2, int y2);
-		
-		/** 矩形を描画する */
-		void drawRect(int x, int y, int width, int height);
-		
-		/** 矩形を塗りつぶす */
-		void fillRect(int x, int y, int width, int height);
-		
-		/** 文字列を描画する */
-		void drawText(char* str, int x, int y);
-		
-		/** イメージを描画する */
-		void drawImage(_P<Bitmap> image, int x, int y);
-		
-		/** イメージを描画する */
-		void drawImage(_P<Bitmap> image, int x, int y, Rect r);
-		
-		/** 色を設定する */
-		inline void setColor(unsigned int c) { this->color = c; }
-		
-		/** 色を設定する */
-		inline void setColor(unsigned char r, unsigned char g, unsigned char b) {
-			this->color = (0xff000000 | r << 16 | g << 8 | b);
-		}
-		
-		/** オフセットを得る */
-		inline Point getOffset() { return this->clientRect.get_Location(); }
-		
-		/** 内部領域を得る */
-		inline void setClientRect(Rect r) { this->clientRect = r; }
-	};
-}
+/**
+ 描画クラス
+*/
+class Graphics : public Object {
+private:
+	int tx, ty, cx, cy, cw, ch, width, height;
+	unsigned int rgb24;
+	int fontStyle;
+	Image *image;
 
-#endif  // __BAYGUI_GRAPHICS_H__
+public:
+	Graphics::Graphics();
+	Graphics::Graphics(Image *image);
+	virtual Graphics::~Graphics();
+	void drawImage(Image *image, int x, int y);
+	void drawPixel(int x, int y, unsigned int color);
+	void drawLine(int x0, int y0, int x1, int y1);
+	void drawRect(int x, int y, int width, int height);
+	void drawCircle(int x0, int y0, int r);
+	void drawText(char *s, int x, int y);
+	void fillCircle(int x0, int y0, int r);
+	void fillRect(int x, int y, int width, int height);
+	void translate(int x, int y);
+	inline int getTransX() { return this->tx; }
+	inline int getTransY() { return this->ty; }
+	inline int getWidth() { return this->width; }
+	inline int getHeight() { return this->height; }
+	inline int getFontStyle() { return this->fontStyle; }
+	void setClip(int cx, int cy, int cw, int ch);
+	void setColor(unsigned int color);
+	void setColor(unsigned char r, unsigned char g, unsigned char b);
+	void setFontStyle(int style);
+};
+
+#endif // _GRAPHICS_H_INCLUDED_

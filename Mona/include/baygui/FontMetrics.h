@@ -14,38 +14,26 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef __BAYGUI_FONTMETRICS_H__
-#define __BAYGUI_FONTMETRICS_H__
+#ifndef __FONTMETRICS_H__
+#define __FONTMETRICS_H__
 
-namespace baygui
+/** フォント情報 */
+class FontMetrics : public Object
 {
-	/** フォント情報 */
-	class FontMetrics : public Object
-	{
-	private:
-		/** シングルトンインスタンス */
-		static FontMetrics *instance;
-		/** フォントオフセットリスト長さ */
-		int offsetListLength;
-		/** フォントオフセットリスト */
-		int *offsetList;
+private:
+	/** フォントオフセットリスト長さ */
+	static int offsetListLength;
+	/** フォントオフセットリスト */
+	static int *offsetList;
+	/** フォントデータ */
+	static unsigned char *defaultFontData;
 
-	public:
-		virtual char* className() { return "baygui.FontMetrics"; }
-		
-		FontMetrics::FontMetrics();
-		
-		virtual FontMetrics::~FontMetrics();
-		
-		/** ucs4コードからフォントのビットデータを得る */
-		bool decodeCharacter(wchar ucs4, int *width, int *height, char *data);
-		
-		/** 文字列の幅を得る */
-		int getWidth(String str);
-		
-		/** 文字列の高さを得る (複数行対応) */
-		int getHeight(String str);
-	};
-}
+public:
+	FontMetrics::FontMetrics();
+	virtual FontMetrics::~FontMetrics();
+	bool decodeCharacter(wchar ucs4, int *width, int *height, char *data);
+	int getWidth(String str);
+	int getHeight(String str);
+};
 
-#endif // __BAYGUI_FONTMETRICS_H__
+#endif // __FONTMETRICS_H__
