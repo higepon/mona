@@ -1,3 +1,11 @@
+2004-04-29  shadow  <shadowin@users.sourceforge.jp>
+
+        * include/monapi/syscall.h: KEY_MODIFIER_xxx削除
+
+        * include/monapi/Keys.h: KEY_MODIFIER_xxx追加、keytopmap追加
+
+        * src/lib/monapi/Keys.cpp: keytopmap追加、ToChar　IsToChar対応文字追加、設計変更
+
 2004-04-28  shadow  <shadowin@users.sourceforge.jp>
 
         * include/monapi/Keys.h: keymap追加
