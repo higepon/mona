@@ -63,6 +63,14 @@ typedef struct Pixel16 {
     byte dummy[2];
 };
 
+typedef struct Pixel32 {
+    dword dummy;
+};
+
+typedef struct Pixel8 {
+    byte dummy;
+};
+
 
 class Screen {
 
@@ -99,8 +107,20 @@ class Screen {
         dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
     }
 
+    static inline void copyPixel32(byte* dvram, int destX, int destY, byte* svram, int sourceX, int sourceY, int xResolution, int raster) {
+        Pixel32* dpixel = (Pixel32*)dvram;
+        Pixel32* spixel = (Pixel32*)svram;
+        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
+    }
+
+    static inline void copyPixel8(byte* dvram, int destX, int destY, byte* svram, int sourceX, int sourceY, int xResolution, int raster) {
+        Pixel8* dpixel = (Pixel8*)dvram;
+        Pixel8* spixel = (Pixel8*)svram;
+        dpixel[destX + destY * xResolution] = spixel[sourceX + sourceY * xResolution];
+    }
+
   public:
-    static bool bitblt16(Screen* destScreen, int destX, int destY, int width, int height
+    static bool bitblt(Screen* destScreen, int destX, int destY, int width, int height
                        , Screen* sourceScreen, int sourceX, int sourceY, dword raster);
 
   private:

@@ -135,7 +135,7 @@ void startKernel(void) {
                 memset(virtualVram, y % 0xFE, xResolution* bitsPerPixel / 8);
 
                 /* BitBlt */
-                Screen::bitblt16(realScreen, 0, y, 800, 1, virtualScreen, 0, 0, NULL);
+                Screen::bitblt(realScreen, 0, y, 800, 1, virtualScreen, 0, 0, NULL);
             }
 
             /* fill virtual vram */
@@ -145,7 +145,7 @@ void startKernel(void) {
             for (int x = 0, y = 0; y < yResolution; x += 50, y += 50) {
 
                 /* BitBlt */
-                Screen::bitblt16(realScreen, x, y, 50, 50, virtualScreen, 50, 50, NULL);
+                Screen::bitblt(realScreen, x, y, 50, 50, virtualScreen, 50, 50, NULL);
             }
 
         }

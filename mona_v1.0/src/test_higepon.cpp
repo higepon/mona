@@ -37,22 +37,46 @@ Screen::Screen(int x, int y, byte bpp, byte* vram) : xResolution_(x), yResolutio
 Screen::~Screen() {
 }
 
-bool Screen::bitblt16(Screen* destScreen, int destX, int destY, int width, int height
+bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int height
                     , Screen* sourceScreen, int sourceX, int sourceY, dword raster) {
 
     /* check range */
     /* not yet     */
 
-    byte* dvram = destScreen->getVram();
-    byte* svram = sourceScreen->getVram();
-    int xResolution = destScreen->getXResolution();
+    byte* dvram      = destScreen->getVram();
+    byte* svram      = sourceScreen->getVram();
+    int xResolution  = destScreen->getXResolution();
+    int bitsPerPixel = destScreen->getBitsPerPixel();
 
-    for (int w = 0; w < width; w++) {
-        for (int h = 0; h < height; h++) {
-            copyPixel16(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
+    switch(bitsPerPixel) {
+
+    case(16):
+        for (int w = 0; w < width; w++) {
+            for (int h = 0; h < height; h++) {
+                copyPixel16(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
+            }
         }
-    }
+        break;
 
+    case(32):
+        for (int w = 0; w < width; w++) {
+            for (int h = 0; h < height; h++) {
+                copyPixel32(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
+            }
+        }
+        break;
+
+    case(8):
+        for (int w = 0; w < width; w++) {
+            for (int h = 0; h < height; h++) {
+                copyPixel8(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
+            }
+        }
+        break;
+
+    default:
+        return false;
+    }
     return true;
 }
 
