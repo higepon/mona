@@ -276,6 +276,9 @@ static void ProcessMouseInfo(MessageInfo* msg)
 
 static void ProcessKeyInfo(MessageInfo* msg)
 {
+	if (windows.size() > 0)
+		activeWindow = windows[windows.size() - 1];
+	
 	if (activeWindow == NULL) return;
 	
 	if (Message::send(activeWindow->ThreadID, msg) != 0)
@@ -294,7 +297,6 @@ bool WindowHandler(MessageInfo* msg)
 			guiserver_window* w = CreateWindow();
 			w->ThreadID = msg->from;
 			Message::reply(msg, w->Handle);
-			activeWindow = w;
 			break;
 		}
 		// ウィンドウ破棄要求
@@ -343,7 +345,6 @@ bool WindowHandler(MessageInfo* msg)
 				else
 				{
 					captures.add(w);
-					activeWindow = w;
 				}
 			}
 			Message::reply(msg);
