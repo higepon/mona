@@ -478,6 +478,25 @@ p.PageLink
 	margin-bottom:0em;
 }
 
+p.Attention
+{
+	font-size:120%;
+	color:#FF0000;
+	text-align:center;
+}
+p.Attention a:link, p.Attention a:visited {
+	color:#FF0000;
+	text-decoration:underline;
+}
+p.Attention a:active, p.Attention a:hover {
+	color:#336699;
+	text-decoration:underline;
+}
+p.Attention small
+{
+	font-size:70%;
+}
+
 div#Contents, div#related, div#modify, div#versioninfo, div#converttime
 {
 	width:80%;
