@@ -162,6 +162,8 @@ info.o: info.cpp include/global.h include/kthread.h include/types.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
   include/Semaphore.h include/sysresource.h include/BitMap.h \
   include/GraphicalConsole.h
+nullconsole.o: nullconsole.cpp include/VirtualConsole.h include/types.h \
+  include/string.h
 ps2kbc.o: driver/ISADevice/PS2KBC/ps2kbc.cpp \
   driver/ISADevice/PS2KBC/ps2kbc.h include/Module.h \
   include/GraphicalConsole.h include/VirtualConsole.h include/types.h \

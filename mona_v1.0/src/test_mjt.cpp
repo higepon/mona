@@ -35,7 +35,6 @@ void test_sysresource(){
 void test_cmos(){
   dword b; /* byte */
   disableInterrupt();
-  
   outportb(0x70,0x31);
   b = inportb(0x71);
   b = b /4 ;

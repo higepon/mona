@@ -6,17 +6,33 @@
 ; WITHOUT ANY WARRANTY
 ;-------------------------------------------------------------------------------
 [bits 16]
-
+        cli
 a20enable:
         in      al,0x64
         test    al,0x02
         jnz     a20enable
-        cli
+        
         mov     al,0xD1
         out     0x64,al
+a20enable_1:
+        in      al,0x64
+        test    al,0x02
+        jnz     a20enable_1    ;wait every KBC cmd.
+
         mov     al,0xDF
         out     0x60,al
-        sti
+a20enable_2:
+        in      al,0x64
+        test    al,0x02
+        jnz     a20enable_2
+
+        mov     al,0xFF
+        out     0x64,al
+a20enable_3:
+        in      al,0x64
+        test    al,0x02
+        jnz     a20enable_3
+        ;sti                   ;keep DI
         ;
 graphicalmode:
         mov ax, 0x0012
