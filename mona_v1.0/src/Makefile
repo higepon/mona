@@ -17,7 +17,8 @@ TOOLS      = ../tools
 INCLUDE    = include
 STLINCLUDE = stlport
 USERINCLUDE= user
-CFINCLUDE  = -I$(INCLUDE) -I$(STLINCLUDE) -I$(USERINCLUDE)
+CNTRINCLUDE= contrib/include
+CFINCLUDE  = -I$(INCLUDE) -I$(STLINCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
 TARGET     = $(BIN)/mona.img
 KERNEL_IMG = $(BIN)/KERNEL.IMG
 BOOT1      = $(BIN)/firstboot.bin
@@ -57,7 +58,8 @@ SOURCES    = cstart.cpp            \
              MessageServer.cpp     \
              PageManager.cpp       \
              elf.cpp               \
-             test_mjt.cpp
+             test_mjt.cpp          \
+             z.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -72,7 +74,7 @@ $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
-	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o userlib.o
+	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o userlib.o -L./contrib -lz
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
 

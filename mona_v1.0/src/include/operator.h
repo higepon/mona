@@ -19,8 +19,18 @@
 
 void* operator new(size_t size);
 void  operator delete(void* address);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void* malloc(unsigned long size);
 void free(void * address);
+
+#ifdef __cplusplus
+}
+#endif
+
 void __builtin_delete(void* address);
 void* __builtin_new(unsigned long size);
 void* __builtin_vec_new(unsigned long size);

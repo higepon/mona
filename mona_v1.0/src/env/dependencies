@@ -204,3 +204,4 @@ elf.o: elf.cpp include/elf.h user/types.h include/string.h \
   include/ihandlers.h include/sysresource.h include/MessageServer.h \
   include/Message.h include/FAT12.h
 test_mjt.o: test_mjt.cpp
+z.o: z.cpp include/z.h contrib/include/zlib.h contrib/include/zconf.h

@@ -6,6 +6,7 @@
 #include<GraphicalConsole.h>
 #include<operator.h>
 #include<IA32MemoryManager.h>
+#include<z.h>
 
 extern "C" void put_pixel(int x, int y, char color);
 
@@ -18,6 +19,37 @@ typedef struct {
 
 static bool drawARGB(byte* rgba, int x, int y, int size);
 static int getColorNumber(byte* rgba);
+
+struct read_info {
+        FAT12 *fat;
+        int sz;
+} read_info;
+
+int read(input_stream *p, int sz)
+{
+        if (0 >= read_info.sz)
+                return 0;
+
+        if (!read_info.fat->read(p->bf)) {
+                g_console->printf("error read\n");
+                return 0;
+        }
+
+        if (512 > read_info.sz)
+                return read_info.sz;
+
+        read_info.sz -= 512;
+
+        return 512;
+}
+
+int write(output_stream *p, int sz)
+{
+        *((int*)(p)->data) = sz;
+
+        return sz;
+}
+
 
 bool drawARGB(byte* rgba, int x, int y, int size) {
 
@@ -85,7 +117,6 @@ void FDCDriverTester() {
 
     g_info_level = MSG;
 
-    /* test1 FD read */
     g_fdcdriver = new FDCDriver();
 
     g_fdcdriver->motor(ON);
@@ -96,60 +127,59 @@ void FDCDriverTester() {
 
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
     if (!fat->initilize()) {
-
-        int errorNo = fat->getErrorNo();
-
-        if (errorNo == FAT12::BPB_ERROR) info(ERROR, "BPB read  error \n");
-        else if (errorNo == FAT12::NOT_FAT12_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else if (errorNo == FAT12::FAT_READ_ERROR) info(ERROR, "NOT FAT12 error \n");
-        else info(ERROR, "unknown error \n");
-
-        info(ERROR, "fat initilize faild\n");
-        while (true);
-    }
-
-    //    if (!fat->open(".", "NIKQ.LGO", FAT12::READ_MODE)) {
-    if (!fat->open(".", "LOGO.LGO", FAT12::READ_MODE)) {
-
-        info(ERROR, "open failed");
-    }
-
-    int fileSize  = fat->getFileSize();
-    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
-
-    byte* buf = (byte*)malloc(512 * readTimes);
-
-    for (int i = 0; i < readTimes; i++) {
-
-        if (!fat->read(buf + 512 * i)) {
-
-            info(ERROR, "read failed %d", i);
+            g_console->printf("error fat initialize\n");
+                g_fdcdriver->motor(false);
+                return;
         }
-    }
 
+        if (!fat->open(".", "LOGO.ZZZ", FAT12::READ_MODE)) {
+                g_console->printf("error open mona.z\n");
+                g_fdcdriver->motor(false);
+                return;
+        }
 
-    drawARGB(buf, 0, 0, fileSize);
+        read_info.fat = fat;
+        read_info.sz = fat->getFileSize();
 
-    //    for (int i = 0; i < 11; i++) {
-        drawARGB(buf, 0, 0, fileSize);
-	//    }
+        unsigned char *bf = (unsigned char*)malloc(512);
+        if (NULL == bf) {
+                g_console->printf("not enough memory\n");
+                g_fdcdriver->motor(false);
+                return;
+        }
 
-    if (!fat->close()) {
-       info(ERROR, "close failed");
-    }
+        input_stream is;
+        is.bf = bf;
+        is.sz = 512;
+        is.read = read;
 
-    g_fdcdriver->motor(false);
-    while (true);
-    rectangle(0, 0, 640, 480, GP_SKYBLUE);
-    rectangle(100, 100, 400, 300, GP_GRAY);
-    rectangle(102, 102, 398, 112, GP_BLUE);
-    rectangle(102, 122, 398, 297, GP_WHITE);
-    rectangle(388, 103, 397, 111, GP_GRAY);
-    rectangle(0, 460, 640, 480, GP_GRAY);
-    while (true);
+        int bf_size = 0x14d000;
+        bf = (unsigned char*)malloc(bf_size);
+        if (NULL == bf) {
+                g_console->printf("not enough memory\n");
+                g_fdcdriver->motor(false);
+                return;
+        }
 
-    delete(fat);
-    //    free(buf);
+        int image_size;
+        output_stream os;
+        os.bf = bf;
+        os.sz = bf_size;
+        os.write = write;
+        os.data = &image_size;
+
+        decode(&is, &os);
+
+        drawARGB(bf, 0, 0, image_size);
+
+        if (!fat->close()) {
+                g_console->printf("error close\n");
+        }
+
+        g_console->printf("ok go on\n");
+
+        g_fdcdriver->motor(false);
+        delete(fat);
 
 }
 

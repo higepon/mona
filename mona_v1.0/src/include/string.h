@@ -23,6 +23,10 @@
 
 typedef __SIZE_TYPE__ size_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void* memset(void*, int, size_t);
 size_t strlen(const char*);
 char* strcpy(char*, const char*);
@@ -34,5 +38,9 @@ char* strncpy(char* s1, const char* s2, size_t n);
 size_t strcspn(const char* str1, const char* str2);
 size_t strspn(const char* str1, const char* str2);
 char* strtok(char* str, const char* delim);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
