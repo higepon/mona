@@ -138,4 +138,3 @@ int unregist(List<dword>* destList, MessageInfo* info) {
     destList->remove(id);
     return 0;
 }
-

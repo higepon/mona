@@ -46,6 +46,16 @@ int MonaMain(List<char*>* pekoe) {
 
 // コンストラクタ
 myApplication::myApplication() : MonaApplication() {
+
+    // 自分自身のスレッドIDを得る
+    dword myPid   = System::getThreadID();
+
+    // マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信
+    MessageInfo info;
+    Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
+    if (Message::send(MOUSE_SERVER, &info)) {
+        printf("Reversi:Mouse regist error\n");
+    }
 }
 
 // main
@@ -58,7 +68,7 @@ int myApplication::main(List<char*>* pekoe) {
     drawBoard();
 
     // イベントを待つ
-    for (;;);
+    run();
     return 0;
 }
 
@@ -132,21 +142,12 @@ void myApplication::update(Observable* o, void* arg) {
     } else {
 
         Point* point = (Point*)arg;
+        sleep(100);
         drawPieces(point->x, point->y);
     }
 }
 
 void myApplication::init() {
-
-    // マウスサーバーと自分自身のスレッドIDを得る
-    dword myPid   = System::getThreadID();
-
-    // マウスサーバーにマウス情報をくれるように自分自身を登録するメッセージを送信 
-    MessageInfo info;
-    Message::create(&info, MSG_MOUSE_REGIST_TO_SERVER, myPid, 0, 0, NULL);
-    if (Message::send(MOUSE_SERVER, &info)) {
-        printf("Reversi:Mouse regist error\n");
-    }
 
     // オセロ板を生成
     this->board = new ReversiBoard();
@@ -180,4 +181,3 @@ void myApplication::init() {
         }
     }
 }
-

@@ -44,3 +44,4 @@ clean :
 	(cd Reversi; make clean)
 	(cd ShellServer; make clean)
 
+

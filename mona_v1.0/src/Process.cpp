@@ -384,7 +384,6 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     }
     else if (!strcmp(process->getName(), "KEYBDMNG.SVR"))
     {
-        g_console->printf("hererere");
         thread->id = KEYBOARD_SERVER;
     }
     else

@@ -18,9 +18,6 @@
 #include<elf.h>
 #include<collection.h>
 
-extern "C" void arch_set_stack_view();
-extern "C" void put_pixel(int x, int y, char color);
-
 void syscall_entrance() {
 
     Thread* thread;
@@ -416,8 +413,13 @@ void syscall_entrance() {
         break;
 
     case SYSTEM_CALL_GET_IO:
-        IOManager::grantPermission();
+
+        info->eflags = info->eflags |  0x3000;
         info->eax = 0;
+        {
+            bool isProcessChange = g_scheduler->setCurrentThread();
+            ThreadOperation::switchThread(isProcessChange, 17);
+        }
         break;
 
     case SYSTEM_CALL_WAIT_FDC:

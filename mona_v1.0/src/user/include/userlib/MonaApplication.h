@@ -35,6 +35,8 @@ class MonaApplication : public Receiver {
         return mypid_;
     }
 
+    virtual void run();
+
   protected:
     dword mypid_;
 };

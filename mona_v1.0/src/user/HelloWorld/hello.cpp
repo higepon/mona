@@ -2,7 +2,6 @@
 
 int MonaMain(List<char*>* pekoe)
 {
-    Screen screen;
     int result;
     byte buf[32];
 

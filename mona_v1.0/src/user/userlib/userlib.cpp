@@ -106,6 +106,35 @@ MonaApplication::~MonaApplication() {
     }
 }
 
+void MonaApplication::run() {
+
+    volatile MessageInfo message;
+
+    for (;;) {
+        if (!Message::receive((MessageInfo*)(&message))) {
+
+            switch(message.header) {
+
+            case MSG_KEY_VIRTUAL_CODE:
+
+                this->onKeyDown(message.arg1, message.arg2);
+                break;
+
+            case MSG_MOUSE_INFO:
+
+                if (message.arg3 & 0x01) {
+                    this->onMouseClick((int)(message.arg1), (int)(message.arg2));
+                }
+                break;
+            default:
+
+                /* ignore this message */
+                break;
+            }
+        }
+    }
+}
+
 /*----------------------------------------------------------------------
     system call wrappers
 ----------------------------------------------------------------------*/
