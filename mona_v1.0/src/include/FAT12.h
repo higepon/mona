@@ -14,6 +14,30 @@
 
 #include<types.h>
 
+/*! Bios Parameter Block */
+typedef struct BPB {
+
+    byte oemName[8];
+    word sizeOfSector;
+    byte sectorPerCluster;
+    word reservedSector;
+    byte NumberOfFat;
+    word rootEntries;
+    word totalSector;
+    byte media;
+    word fatSize;
+    word sectorPerTrack;
+    word numberOfHeads;
+    word hiddenSector;
+    word totalBigSector;
+    byte driveId;
+    byte dirtyFlag;
+    byte extendBootSign;
+    dword serialNo;
+    byte volume[11];
+    byte type[8];
+};
+
 /*!
     FAT12 File System claass
 */

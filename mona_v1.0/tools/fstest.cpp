@@ -12,16 +12,16 @@ int main(int argc, char *argv[]) {
     byte buf[512];
     memset(buf, 0, 512);
 
-    driver->read(1, (char*)buf);
+    driver->read(0, (char*)buf);
 
     for (int i = 0; i < 512; i++) {
-        printf("%x", buf[i]);
+        printf("%x", (byte)(buf[i]));
     }
 
     FAT12* fat = new FAT12();
 
     delete driver;
-    printf("test");
+    printf("test sizeof BPB=%d. should be 59", sizeof(BPB));
 
     return 0;
 

@@ -16,7 +16,7 @@ DiskDriver::~DiskDriver() {
 bool DiskDriver::read(int lba, char* buf) {
 
     file_.seekg(0);
-    file_.seekg((lba + 1) * 512);
+    file_.seekg((lba) * 512);
     file_.read(buf, 512);
 
     return true;
