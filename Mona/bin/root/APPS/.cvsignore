@@ -11,5 +11,7 @@
 *.EXE
 *.EX2
 *.EX5
+*.MSH
+*.APP
 TAGS
 dependencies

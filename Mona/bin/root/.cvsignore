@@ -14,5 +14,6 @@
 *.MF2
 *.BZ2
 *.IMG
+LIBS
 TAGS
 dependencies
