@@ -137,7 +137,7 @@ void timerHandler() {
     \brief MFDC handler
 
     \author HigePon
-    \date   create:2003/02/09 update:
+    \date   create:2003/02/09 update:2003/02/24
 */
 void MFDCHandler(void) {
 

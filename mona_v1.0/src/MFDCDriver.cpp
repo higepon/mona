@@ -162,10 +162,11 @@ void MFDCDriver::initilize() {
 
     printStatus("before read");
     read(0, 0, 1);
+    motor(OFF);
     while (true);
     read(0, 0, 1);
 
-    motor(OFF);
+
 
     return;
 }
