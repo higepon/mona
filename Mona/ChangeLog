@@ -1,3 +1,27 @@
+2004-05-23  tino  <tino@users.sourceforge.jp>
+
+        * src/kernel/Process.h (Scheduler::wakeupEvents): Scheduler::wakeupTimer()から名称変更
+
+        * src/kernel/Process.cpp (Scheduler::wakeupEvents): WAIT_TIMERとMESSAGE_COMEをチェック
+
+        * src/kernel/ihandlers.cpp: デバッグコードを外した (DEBUG for message)
+
+        * src/kernel/test_higepon.cpp: デバッグコードを外した (DEBUG for message)
+
+        * src/kernel/test_higepon.cpp (Messenger::send): KEvent::set()を外した
+
+        * src/servers/shell/main.cpp, Shell.cpp: デバッグコードを外した (DEBUG for message)
+
+        * src/servers/elf/main.cpp: デバッグコードを外した (DEBUG for message)
+
+        * src/lib/monapi/syscall.cpp (print): デバッグコードを外した (DEBUG for message)
+
+        * include/monapi/syscall.h (syscall_mthread_yield_message): スペルを修正
+
+        * src/lib/monapi/syscall.cpp (syscall_mthread_yield_message): スペルを修正
+
+        * bin/root/AUTOEXEC.MSH: psとstartguiを削除
+
 2004-05-21  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/test_higepon.cpp: デバッグメッセージの修正
