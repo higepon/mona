@@ -72,9 +72,62 @@ void test85() {for(;;);}
 extern int pos_x;
 extern int pos_y;
 
+
+int testFD(char* file) {
+
+    int    fileSize;
+    int    readTimes;
+    byte*  buf;
+    FAT12* fat;
+
+    g_fdcdriver->motor(ON);
+
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) return -1;
+
+    if (!fat->open(".", file, FAT12::READ_MODE)) return -2;
+
+    fileSize  = fat->getFileSize();
+
+    readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+
+    buf = (byte*)malloc(512 * readTimes);
+    memset(buf, 0, 512 * readTimes);
+
+    if (buf == NULL) return -1;
+
+    for (int i = 0; i < readTimes; i++) {
+        if (!fat->read(buf + 512 * i)) {
+            g_console->printf("read failed %d", i);
+            while (true);
+        }
+    }
+
+    if (!fat->close()) {
+        info(ERROR, "close failed");
+    }
+
+    g_console->printf("[%d][%d][%d]", buf[1], buf[2], buf[3]);
+
+    free(buf);
+    return 0;
+}
+
 void printInfo() {
 
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    //    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    //    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER2.ELF", true) ? "NG" : "OK");
+
+    for (int i = 0; i < 15; i++) {
+        testFD("USER.ELF");
+        testFD("KERNEL.IMG");
+    }
+
+    delete(g_fdcdriver);
 
     for (;;) {
 
@@ -226,6 +279,9 @@ void startKernel(void) {
     (v86_func)[0] = 0xFA;
     (v86_func)[1] = 0xEB;
     (v86_func)[2] = 0xFE;
+
+    /* FDC do not delete */
+    g_fdcdriver = new FDCDriver();
 
     /* this should be called, before timer enabled */
     ThreadManager::setup();

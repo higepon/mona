@@ -63,6 +63,7 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) $(USER_PROCESS)
 	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
 	(cd $(BIN); $(FAT_TOOL) mona.img USER.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img USER2.ELF)
 
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
