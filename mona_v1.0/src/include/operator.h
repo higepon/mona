@@ -20,6 +20,7 @@
 void* operator new(size_t size);
 void  operator delete(void* address);
 void* malloc(unsigned long size);
+void free(void * address);
 void __builtin_delete(void* address);
 void* __builtin_new(unsigned long size);
 void* __builtin_vec_new(unsigned long size);

@@ -110,6 +110,9 @@ syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/Semaphore.h include/io.h
 BitMap.o: BitMap.cpp include/BitMap.h include/types.h include/string.h
 FAT12.o: FAT12.cpp include/FAT12.h include/types.h include/string.h \
-  include/DiskDriver.h include/global.h include/kthread.h \
-  include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
-  include/Semaphore.h
+  include/DiskDriver.h include/BitMap.h stlport/stdio.h \
+  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
+  stlport/stl/_config_compat.h stlport/stl/_site_config.h \
+  stlport/config/stlcomp.h stlport/config/stl_gcc.h \
+  stlport/config/stl_confix.h stlport/stl/_epilog.h \
+  stlport/stl/_config_compat_post.h stlport/stdlib.h

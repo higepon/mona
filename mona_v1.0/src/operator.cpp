@@ -50,6 +50,12 @@ void* malloc(unsigned long size) {
     return mm.allocateMemory(size);
 }
 
+void free(void * address) {
+
+    IA32MemoryManager& mm = IA32MemoryManager::instance();
+    return mm.freeMemory(address);
+}
+
 void __builtin_delete(void* address) {
 
     IA32MemoryManager& mm = IA32MemoryManager::instance();

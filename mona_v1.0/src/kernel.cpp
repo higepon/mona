@@ -37,7 +37,7 @@
 #include<BitMap.h>
 #include<FAT12.h>
 
-char* version = "Mona develop beta 0.06a $Date$";
+char* version = "Mona develop beta 0.07a $Date$";
 
 /*!
     \brief  mona kernel start at this point
@@ -101,11 +101,20 @@ void startKernel(void) {
 
     while (g_demo_step < 2);
     g_fdcdriver = new FDCDriver(g_console);
-    //g_fdcdriver->test();
+    //    g_fdcdriver->test();
 
     g_fdcdriver->motor(true);
     FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
-    fat->initilize();
+    if (!fat->initilize()) {
+
+        g_console->printf("fat initilize faild\n");
+    }
+
+    if (!fat->changeDirectoryRelative("SOMEDIR")) {
+        g_console->printf("some dir not found");
+        while(true);
+    }
+    g_console->printf("change directory");
     g_fdcdriver->motor(false);
 
 
