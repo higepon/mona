@@ -118,6 +118,7 @@ void FDCDriver::initilize() {
     }
 
     /* setup DMAC */
+  /* setup DMAC */
     outportb(0xda, 0x00);
     delay(1);
     outportb(0x0d, 0x00);

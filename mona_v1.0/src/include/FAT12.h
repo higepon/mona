@@ -137,7 +137,8 @@ class FAT12 {
     bool firstWrite_;          /* write state     */
     int  currentCluster_;      /* r/w  state      */
     int  fileSize_;            /* read state      */
-    int  currentDirecotry_;    /* current cluster */
+    int  readCounter_;         /* read counter    */
+    int  currentDirectory_;    /* current cluster */
     int  fatStart_;            /* fatStart        */
     int  openMode_;            /* open mode       */
     char currentPath_[512];    /* current path    */

@@ -63,7 +63,7 @@ FAT12::FAT12(DiskDriver* driver) {
     driver_ = driver;
     errNum_ = NORMAL_STATE;
     fat_    = (byte*)0;
-    currentDirecotry_ = 0;
+    currentDirectory_ = 0;
     return;
 }
 
@@ -308,7 +308,7 @@ bool FAT12::changeDirectory(const char* path) {
     strcpy(buf, path);
 
     /* save current */
-    currentDirectory = currentDirecotry_;
+    currentDirectory = currentDirectory_;
 
     for (int i = 0; i < 512; i++) {
 
@@ -319,7 +319,7 @@ bool FAT12::changeDirectory(const char* path) {
         if (!changeDirectoryRelative(rpath)) {
 
             errNum_           = NOT_DIR_ERROR;
-            currentDirecotry_ = currentDirectory;
+            currentDirectory_ = currentDirectory;
             return false;
         }
     }
@@ -339,11 +339,11 @@ bool FAT12::changeDirectory(const char* path) {
 */
 bool FAT12::changeDirectoryRelative(const char* path) {
 
-    int lba = clusterToLba(currentDirecotry_);
+    int lba = clusterToLba(currentDirectory_);
 
     /* root directory has no "." or "..", but they are necessary */
-    if (currentDirecotry_ == 0 && !strcmp(path, ".")) return true;
-    if (currentDirecotry_ == 0 && !strcmp(path, "..")) return true;
+    if (currentDirectory_ == 0 && !strcmp(path, ".")) return true;
+    if (currentDirectory_ == 0 && !strcmp(path, "..")) return true;
 
     /* read */
     if (!(driver_->read(lba, buf_))) return false;
@@ -357,7 +357,7 @@ bool FAT12::changeDirectoryRelative(const char* path) {
         /* no other entries_ */
         if (entries_[j].filename[0] == 0x00) break;
 
-        info(DEV_NOTICE, "currentDirecotry_ = %d cdr entry %s:", currentDirecotry_, path);
+        info(DEV_NOTICE, "currentDirecotry_ = %d cdr entry %s:", currentDirectory_, path);
 
         /* not directory */
         if (!(entries_[j].attribute & ATTR_DIRECTORY)) continue;
@@ -365,7 +365,7 @@ bool FAT12::changeDirectoryRelative(const char* path) {
         /* change directory ok */
         if (compareName((char*)(entries_[j].filename), path)) {
 
-            currentDirecotry_ = entries_[j].cluster;
+            currentDirectory_ = entries_[j].cluster;
             strcpy(currentPath_, path);
             return true;
         }
@@ -433,7 +433,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     char* ext;
 
     /* save current directory */
-    int currentDirecotry = currentDirecotry;
+    int currentDirectory = currentDirectory_;
 
     /* tokenize */
     strcpy(buf, filename);
@@ -462,6 +462,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
             currentEntry_   = &(entries_[j]);
             currentCluster_ = currentEntry_->cluster;
+            readCounter_    = currentEntry_->filesize;
             fileSize_       = currentEntry_->filesize;
             isOpen_         = true;
             readHasNext_    = true;
@@ -473,7 +474,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     }
 
     /* file not found */
-    currentDirecotry_ = currentDirecotry;
+    currentDirectory_ = currentDirectory;
     return false;
 }
 
@@ -522,10 +523,10 @@ bool FAT12::read(byte* buffer) {
     int lba = clusterToLba(currentCluster_);
     if (!(driver_->read(lba, buf_))) return false;
     memcpy(buffer, buf_, 512);
-    fileSize_ -= 512;
+    readCounter_ -= 512;
 
     /* check fat & size */
-    if ((currentCluster_ = getFATAt(currentCluster_)) > 0xff8 || fileSize_ <= 0) {
+    if ((currentCluster_ = getFATAt(currentCluster_)) > 0xff8 || readCounter_ <= 0) {
         readHasNext_ = false;
     }
     return true;
@@ -731,7 +732,7 @@ bool FAT12::write(byte* buffer) {
 bool FAT12::writeEntry() {
 
     byte buf[512];
-    int lba = clusterToLba(currentDirecotry_);
+    int lba = clusterToLba(currentDirectory_);
 
     memcpy(buf, entries_, sizeof(DirectoryEntry) * 16);
     if (!(driver_->write(lba, buf))) {
@@ -752,7 +753,7 @@ bool FAT12::writeEntry() {
 bool FAT12::readEntry() {
 
     byte buf[512];
-    int lba = clusterToLba(currentDirecotry_);
+    int lba = clusterToLba(currentDirectory_);
 
     if (!(driver_->read(lba, buf))) {
         errNum_ = DRIVER_READ_ERROR;
@@ -773,7 +774,7 @@ bool FAT12::readEntry() {
 */
 bool FAT12::releaseCluster() {
 
-    int clusterNumOrg = fileSize_ / 512 + 1;
+    int clusterNumOrg = readCounter_ / 512 + 1;
     int clusterNum    = (currentEntry_->filesize) / 512 + 1;
 
     dword  cluster = currentEntry_->cluster;
@@ -803,7 +804,7 @@ int FAT12::getFileSize() const {
     /* file is not open */
     if (!isOpen_) return -1;
 
-    return currentEntry_->filesize;
+    return fileSize_;
 }
 
 

@@ -119,16 +119,16 @@ void FDCDriverTester() {
         }
     }
 
+    drawARGB(buf, 45, 350, fileSize);
+    drawARGB(buf, 100, 350, fileSize);
+    drawARGB(buf, 155, 350, fileSize);
+    drawARGB(buf, 210, 350, fat->getFileSize());
+
     if (!fat->close()) {
        info(ERROR, "close failed");
     }
 
     g_fdcdriver->motor(false);
-
-    drawARGB(buf, 45, 350, fileSize);
-    drawARGB(buf, 100, 350, fileSize);
-    drawARGB(buf, 155, 350, fileSize);
-    drawARGB(buf, 210, 350, fileSize);
     free(buf);
 }
 
