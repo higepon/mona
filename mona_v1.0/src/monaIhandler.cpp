@@ -24,6 +24,11 @@
 #include<string>
 #include<monaIhandler.h>
 
+dword eip;
+dword cs;
+dword eflags;
+
+
 /*!
     \brief key stroke handler
 
@@ -40,6 +45,8 @@ void keyStrokeHandler() {
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
+
+    console->printf("eip=%x cs=%x eip=%x, esp=%x, ebp=%x", eip, cs, current->eip, current->esp, current->ebp);
 
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
@@ -70,7 +77,7 @@ void fault0dHandler() {
 */
 void dummyHandler() {
 
-    console->printf("dummy Handler\n");
+    //    console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

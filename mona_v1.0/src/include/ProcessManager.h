@@ -104,11 +104,11 @@
 }                                                 \
 
 /*! process */
-class Process {
+typedef struct Process {
   public:
     dword* esp;
-    dword* ebp;
     dword  eip;
+    dword* ebp;
     dword  cs;
     dword  eflags;
     dword  eax;
@@ -117,8 +117,6 @@ class Process {
     dword  ebx;
     dword  esi;
     dword  edi;
-    static const byte RUNNING = 0;
-    static const byte WAITING = 1;
 };
 
 /*!

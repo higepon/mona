@@ -21,6 +21,9 @@ BITS 32
 [extern _timerHandler]
 [extern _keyStrokeHandler]
 [extern _dummyHandler]
+[extern _eip]
+[extern _cs]
+[extern _current]
 
 ;;; fdc handler
 _arch_fdchandler:
@@ -32,7 +35,13 @@ _arch_fdchandler:
 ;;; timer handler
 _arch_timerhandler:
         pushad
-        call _timerHandler
+        mov eax, dword[esp + 32]
+        mov [_eip], eax
+        mov eax, dword[esp + 36]
+        mov [_cs], eax
+	mov ebx, [_current]
+        mov [ebx + 4], eax
+        call _dummyHandler
         popad
         iretd
 

@@ -23,4 +23,9 @@ extern "C" void timerHandler(void);
 extern "C" void keyStrokeHandler(void);
 extern "C" void dummyHandler(void);
 
+extern "C" dword eip;
+extern "C" dword cs;
+extern "C" dword eflags;
+extern "C" Process* current;
+
 #endif

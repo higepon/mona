@@ -26,10 +26,13 @@
 #include<SystemInfo.h>
 #include<MFDCDriver.h>
 #include<GraphicalConsole.h>
+#include<ProcessManager.h>
+#include<monaIhandler.h>
 
 char* version = "Mona develop beta 0.04 $Date$";
 
 VirtualConsole* console;
+Process* current;
 
 /*!
     \brief  mona kernel start at this point
@@ -60,6 +63,11 @@ void startKernel(void) {
 
     /* enable interrupt */
     enableInterrupt();
+
+    Process process;
+    current = &process;
+
+    enableTimer();
     printOK("Setting GDT        ");
 
     /* check some */
