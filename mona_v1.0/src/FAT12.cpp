@@ -24,6 +24,7 @@
 #define ATTR_DIRECTORY  0x10
 #define ATTR_ARCHIVE    0x20
 
+const int FAT12::NORMAL_STATE       = 0;
 const int FAT12::BPB_ERROR          = 1;
 const int FAT12::NOT_FAT12_ERROR    = 2;
 const int FAT12::FAT_READ_ERROR     = 3;
@@ -45,9 +46,9 @@ const int FAT12::READ_MODE = 0;
 FAT12::FAT12(DiskDriver* driver) {
 
     driver_ = driver;
-    errNum_ = 0;
+    errNum_ = NORMAL_STATE;
+    fat_    = (byte*)0;
     currentDirecotry_ = 0;
-    fat_ = (byte*)0;
     return;
 }
 
@@ -64,6 +65,12 @@ FAT12::~FAT12() {
     return;
 }
 
+/*!
+  \brief initilize FAT12Driver
+
+  \author HigePon
+  \Date   create:2003/04/10 update:
+*/
 bool FAT12::initilize() {
 
     /* read and set BPB */
@@ -221,6 +228,16 @@ word FAT12::getFATAt(int cluster) const {
     return result;
 }
 
+/*!
+  \brief set fat at cluster
+
+  \param cluster cluster
+  \param fat fat
+  \return true
+
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
 bool FAT12::setFATAt(int cluster, word fat) {
 
     int index = cluster * 12 / 8;
@@ -236,7 +253,6 @@ bool FAT12::setFATAt(int cluster, word fat) {
     }
     return true;
 }
-
 
 /*!
   \brief change directory
@@ -389,7 +405,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     /* save current directory */
     int currentDirecotry = currentDirecotry;
 
-    /* toknize */
+    /* tokenize */
     strcpy(buf, filename);
     file = strtok(buf, ".");
     ext  = strtok(NULL, ".");
