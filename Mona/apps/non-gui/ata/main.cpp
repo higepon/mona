@@ -110,9 +110,22 @@ int MonaMain(List<char*>* pekoe)
     }
 
     printf("[read start]\n");
-    for (int i = 0; i < 2048; i++)
+    char buf[8];
+    for (int i = 0; i < 128; i++)
     {
-        printf("%c", buffer[i]);
+        for (int j = 0; j < 16; j++)
+        {
+            sprintf(buf, "%02x ", buffer[i * 16 + j]);
+            printf(buf);
+        }
+
+        printf(" | ");
+        for (int j = 0; j < 16; j++)
+        {
+            sprintf(buf, "%c", buffer[i * 16 + j]);
+            printf(buf);
+        }
+        printf("\n");
     }
     printf("\n[read end]\n");
 
