@@ -167,8 +167,6 @@ void* MemoryManager::allocate(dword size) {
 
         return (dword)NULL;
     }
-
-
 }
 
 void MemoryManager::free(void* address) {

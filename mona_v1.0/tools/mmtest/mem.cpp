@@ -9,7 +9,7 @@
 typedef unsigned int dword;
 typedef unsigned char byte;
 
-void test(MemoryManager* mm);
+void test(MemoryManager* mm, dword start, dword end);
 
 /*
     main()
@@ -27,13 +27,13 @@ int main(int argc, char* argv) {
     MemoryManager& mm = MemoryManager::instance();
     mm.initialize((dword)memory, (dword)memory + MANAGE_SIZE);
 
-    test(&mm);
+    test(&mm, (dword)memory, (dword)memory + MANAGE_SIZE);
 
     free(memory);
     return 0;
 }
 
-void test(MemoryManager* mm) {
+void test(MemoryManager* mm, dword start, dword end) {
 
     /* this test code expects 10mb of memory is availble */
     dword testNumber = 1;
@@ -44,6 +44,12 @@ void test(MemoryManager* mm) {
         dword usedMememorySize = mm->getUsedMemorySize();
 
         dword p = (dword)mm->allocate(8* 1024);
+
+        if (p > end || p < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
         mm->free((void*)p);
 
         if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
@@ -61,6 +67,12 @@ void test(MemoryManager* mm) {
         dword usedMememorySize = mm->getUsedMemorySize();
 
         dword p = (dword)mm->allocate(513);
+
+        if (p > end || p < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
         mm->free((void*)p);
 
         if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
@@ -78,6 +90,12 @@ void test(MemoryManager* mm) {
         dword usedMememorySize = mm->getUsedMemorySize();
 
         dword p = (dword)mm->allocate(5);
+
+        if (p > end || p < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
         mm->free((void*)p);
 
         if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
@@ -96,6 +114,16 @@ void test(MemoryManager* mm) {
 
         dword p1 = (dword)mm->allocate(5);
         dword p2 = (dword)mm->allocate(512);
+
+        if (p1 > end || p1 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+        if (p2 > end || p2 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
         mm->free((void*)p2);
         mm->free((void*)p1);
 
@@ -115,6 +143,16 @@ void test(MemoryManager* mm) {
 
         dword p1 = (dword)mm->allocate(2 * 1024 * 1024);
         dword p2 = (dword)mm->allocate(512);
+
+        if (p1 > end || p1 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+        if (p2 > end || p2 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
         mm->free((void*)p2);
         mm->free((void*)p1);
 
@@ -134,6 +172,16 @@ void test(MemoryManager* mm) {
 
         dword p1 = (dword)mm->allocate(2 * 1024 * 1024);
         dword p2 = (dword)mm->allocate(512);
+
+        if (p1 > end || p1 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+        if (p2 > end || p2 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
         mm->free((void*)p1);
         mm->free((void*)p2);
 
@@ -158,6 +206,11 @@ void test(MemoryManager* mm) {
             p[i] = (dword)mm->allocate(100 * 1024);
             if (p[i] == (dword)NULL) {
                 printf("test%d failed allocate error\n", testNumber);
+                exit(-1);
+            }
+
+            if (p[i] > end || p[i] < start) {
+                printf("test%d failed range\n", testNumber);
                 exit(-1);
             }
         }
@@ -190,6 +243,11 @@ void test(MemoryManager* mm) {
                 printf("test%d failed allocate error\n", testNumber);
                 exit(-1);
             }
+            if (p[i] > end || p[i] < start) {
+                printf("test%d failed range\n", testNumber);
+                exit(-1);
+            }
+
         }
 
         for (int i = 29; i >= 0 ; i--) {
@@ -220,6 +278,10 @@ void test(MemoryManager* mm) {
                 printf("test%d failed allocate error\n", testNumber);
                 exit(-1);
             }
+            if (p[i] > end || p[i] < start) {
+                printf("test%d failed range\n", testNumber);
+                exit(-1);
+            }
         }
 
         for (int i = 99; i >= 0 ; i--) {
@@ -246,6 +308,12 @@ void test(MemoryManager* mm) {
         for (int i = 0; i < 500; i++) {
 
             p = (dword)mm->allocate(i + 1);
+
+            if (p > end || p < start) {
+                printf("test%d failed range\n", testNumber);
+                exit(-1);
+            }
+
             mm->free((void*)p);
         }
 
