@@ -23,3 +23,5 @@ ShellServer.o: ShellServer.cpp include/userlib.h include/types.h \
   include/Shell.h
 jpegdemo.o: jpegdemo.cpp include/userlib.h include/types.h \
   include/string.h include/jpegls.h text.hex
+MapServer.o: MapServer.cpp include/userlib.h include/types.h \
+  include/string.h include/collection.h include/Map.h

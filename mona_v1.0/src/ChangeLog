@@ -1,3 +1,7 @@
+2004-02-01  higepon  <higepon@users.sourceforge.jp>
+
+        * user/hello.cpp (main): Mapサーバーを介してのマッピングに成功
+
 2004-01-31  higepon  <higepon@users.sourceforge.jp>
 
         * user/ShellServer.cpp: BackSpaceキーに対応

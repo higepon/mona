@@ -30,6 +30,9 @@ typedef struct {
     dword arg1;
     dword arg2;
     dword arg3;
+    dword from;
+    char str[128];
+    int length;
 } MessageInfo;
 
 typedef struct {
@@ -41,6 +44,9 @@ typedef struct {
 
 #define MSG_KEY_SCANCODE         0x00
 #define MSG_KEY_REGIST_TO_SERVER 0x01
+#define MSG_MAP                  0x02
+#define MSG_RESULT_OK            0x03
+#define MSG_RESULT_ERROR         0x04
 
 #define SHARED_FDC_BUFFER 0x4000
 
