@@ -14,9 +14,15 @@
 #include<global.h>
 #include<io.h>
 
+extern "C" char pos_x;
+extern "C" char pos_y;
+
 void syscall_entrance() {
 
     outportb(0x20, 0x20);
+
+    int x,y;
+    dword eflags;
 
     switch(g_current_process->ebx) {
 
@@ -29,8 +35,23 @@ void syscall_entrance() {
 
       case SYSTEM_CALL_HEAVEY:
 
-          g_console->printf("heavy start");
-          for (dword i = 0; i < 0xfffffff; i++) {
+        eflags = get_eflags();
+        disableInterrupt();
+
+        x = pos_x;
+        y = pos_y;
+
+        pos_x = 1, pos_y = 2;
+
+          g_console->printf("heavy start\n");
+
+        pos_x = x;
+        pos_y = y;
+        set_eflags(eflags);
+
+          enableInterrupt();
+
+          for (dword i = 0; i < 0xffffff; i++) {
 
               i++;
               i--;
@@ -38,7 +59,19 @@ void syscall_entrance() {
               i--;
           }
 
-          g_console->printf("heavy done\n");
+        eflags = get_eflags();
+        disableInterrupt();
+
+        x = pos_x;
+        y = pos_y;
+
+        pos_x = 2, pos_y = 4;
+
+          g_console->printf("heavy end\n");
+
+        pos_x = x;
+        pos_y = y;
+        set_eflags(eflags);
 
       default:
           g_console->printf("syscall:default");
