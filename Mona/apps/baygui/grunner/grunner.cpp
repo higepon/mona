@@ -42,7 +42,7 @@ public:
 
 GRunner::GRunner()
 {
-	setRect(300, 350, 200, 48);
+	setRect(300, 300, 200, 48);
 	setTitle("ファイル名を指定して実行");
 	text = new TextField();
 	text->setRect(0,0,188,20);
@@ -56,6 +56,9 @@ GRunner::~GRunner()
 
 void GRunner::onEvent(Event *event)
 {
+	if (event->type == TEXT_CHANGED) {
+		monapi_call_process_execute_file(text->getText(), MONAPI_FALSE);
+	}
 }
 
 /** メイン */
