@@ -142,7 +142,7 @@ static void ReadConfig()
 				}
 				else if (ln.indexOf('=') > 0)
 				{
-					_A<CString> data = CString(line, linepos).split('=');
+					System::Array<CString> data = CString(line, linepos).split('=');
 					if (data.get_Length() == 2 && data[0] != NULL && data[1] != NULL)
 					{
 						CString name = data[0].toUpper();
@@ -151,8 +151,8 @@ static void ReadConfig()
 							if (name == "RUN")
 							{
 								if (startup == NULL) startup = new HList<CString>();
-								_A<CString> runs = data[1].split(',');
-								FOREACH (CString, r, runs) startup->add(r);
+								System::Array<CString> runs = data[1].split(',');
+								FOREACH (CString, r, runs) startup->add(r); END_FOREACH
 							}
 						}
 						else if (section == "WALLPAPER")

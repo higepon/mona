@@ -2,7 +2,7 @@
 // There are no restrictions on any sort of usage of this software.
 
 #include <gui/System/Drawing/Rectangle.h>
-#define _R ::System::Drawing::Rectangle
+#define _R System::Drawing::Rectangle
 
 #include <monapi/messages.h>
 #include "GUIServer.h"

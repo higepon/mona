@@ -428,50 +428,52 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 
 void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword size)
 {
+#if 0
     ASSERT(directory);
-    dword tmp;
 
-    /* do nothing */
+    /* out of user malloc region */
     if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
 
-    /* get start index of directory */
-    tmp = ((int)address + 4096 - 1) & 0xFFFFF000;
-    int dirStart = getDirectoryIndex(tmp);
+    logprintf("****** [%s]address = %x size = %d\n", g_currentThread->process->getName(), address, size);
 
-    /* get end index of directory */
-    tmp = ((int)(address + size) + 4096 - 1) & 0xFFFFF000;
-    int dirEnd = getDirectoryIndex(tmp);
+    dword orgAddress = address;
 
-    /* get start index of table */
-    int tabStart = getTableIndex(address);
+    address = ((address + ARCH_PAGE_SIZE - 1) & 0xFFFFF000);
 
-    int tabEnd = getTableIndex(address + size) - 1;
-    if (tabEnd < 0) tabEnd = 0;
-
-    if (dirStart == dirEnd)
+    for (int i = 0; (address + i * ARCH_PAGE_SIZE + ARCH_PAGE_SIZE) < (orgAddress + size); i++)
     {
-        PageEntry* table = (PageEntry*)(directory[dirStart] & 0xfffff000);
+        dword targetAddress  = address + i * ARCH_PAGE_SIZE;
+        dword directoryIndex = getDirectoryIndex(targetAddress);
+        dword tableIndex     = getTableIndex(targetAddress);
+        PageEntry* table     = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
 
-        for (int j = tabStart; j <= tabEnd; j++)
+        logprintf("targetAddress = %x \n", targetAddress);
+
+        if (isPresent(&table[tableIndex]))
         {
-            if (!isPresent(&(table[j]))) continue;
 
-            PhysicalAddress paddress = ((dword)(table[j])) & 0xfffff000;
+            PhysicalAddress paddress = ((dword)(table[tableIndex])) & 0xfffff000;
             returnPhysicalPage(paddress);
-        }
-    }
-    else
-    {
-        for (int i = dirStart; i <= dirEnd; i++)
-        {
-            PageEntry* table = (PageEntry*)(directory[i] & 0xfffff000);
-            for (int j = i == dirStart ? tabStart : 0; j < (i == dirEnd) ? tabEnd : ARCH_PAGE_TABLE_NUM; j++)
+            table[tableIndex] = 0;
+
+            /* the end of table */
+            if ((targetAddress + ARCH_PAGE_SIZE) % (4 * 1024 * 1024)) continue;
+
+            int counter = 0;
+            for (int j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
             {
-                PhysicalAddress paddress = ((dword)(table[j])) & 0xfffff000;
-                returnPhysicalPage(paddress);
+                if (!isPresent(&table[j])) continue;
+                counter++;
+            }
+
+            if (counter == 0)
+            {
+                returnPageTable(table);
+                directory[directoryIndex] = 0;
             }
         }
     }
+#endif
 }
 
 void PageManager::returnPageTable(PageEntry* table)
@@ -615,7 +617,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error)
     dword realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
                  "mov %%eax, %0     \n"
-                 : "=m"(realcr3):: "eax");
+                 : "=m"(realcr3): : "eax");
 
 //    if (realcr3 != (dword)current->getPageDirectory()) {
     if (realcr3 != g_currentThread->archinfo->cr3)

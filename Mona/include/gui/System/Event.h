@@ -41,7 +41,7 @@
 	protected: \
 		void raise_##name(_P<System::Object> sender, argtype e) { \
 			if (this->name == 0 /*NULL*/) return; \
-			FOREACH_AL(_P<handler>, h, this->name) h->Invoke(sender, e); }
+			FOREACH_AL(_P<handler>, h, this->name) h->Invoke(sender, e); } END_FOREACH_AL
 
 namespace System
 {

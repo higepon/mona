@@ -150,7 +150,7 @@ void fault0dHandler(dword error)
      dword realcr3;
      asm volatile("mov %%cr3, %%eax  \n"
                   "mov %%eax, %0     \n"
-                  : "=m"(realcr3):: "eax");
+                  : "=m"(realcr3): : "eax");
 
     ArchThreadInfo* i = g_currentThread->archinfo;
     g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
@@ -211,7 +211,7 @@ void cpufaultHandler_6(void)
     dword realcr3;
     asm volatile("mov %%cr3, %%eax  \n"
                   "mov %%eax, %0     \n"
-                  : "=m"(realcr3):: "eax");
+                  : "=m"(realcr3): : "eax");
 
     ArchThreadInfo* i = g_currentThread->archinfo;
     g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);

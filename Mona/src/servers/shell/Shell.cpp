@@ -1,6 +1,6 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
-
+#include <monapi.h>
 #include "Shell.h"
 
 using namespace MonAPI;
@@ -116,7 +116,7 @@ void Shell::commandExecute(bool prompt)
 {
     if (prompt) printf("\n");
 
-    _A<CString> args = this->parseCommandLine();
+    System::Array<CString> args = this->parseCommandLine();
     this->position = 0;
     if (args.get_Length() == 0)
     {
@@ -318,23 +318,25 @@ void Shell::onKeyDown(int keycode, int modifiers)
     }
 }
 
-_A<CString> Shell::parseCommandLine()
+System::Array<CString> Shell::parseCommandLine()
 {
-    _A<CString> args = CString(this->commandLine).split(' ');
+    System::Array<CString> args = CString(this->commandLine).split(' ');
     int size = 0;
-    FOREACH (CString, arg, args)
+    FOREACH(CString, arg, args)
     {
         if (arg != NULL) size++;
     }
+    END_FOREACH
 
-    _A<CString> ret(size);
+    System::Array<CString> ret(size);
     int i = 0;
-    FOREACH (CString, arg, args)
+    FOREACH(CString, arg, args)
     {
         if (arg == NULL) continue;
 
         ret[i++] = arg;
     }
+    END_FOREACH
 
     return ret;
 }
@@ -404,8 +406,8 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
     if (dir2.startsWith("/")) return dir2.toUpper();
 
     CString ret = dir1;
-    _A<CString> dirs = dir2.split('/');
-    FOREACH (CString, d, dirs)
+    System::Array<CString> dirs = dir2.split('/');
+    FOREACH(CString, d, dirs)
     {
         if (d == NULL || d == ".") continue;
 
@@ -419,6 +421,7 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
             ret += d.toUpper();
         }
     }
+    END_FOREACH
     return ret;
 }
 

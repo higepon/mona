@@ -38,7 +38,7 @@ class Shell {
     void putHistory(const MonAPI::CString& command);
     MonAPI::CString getHistory();
     int isInternalCommand(const MonAPI::CString& command);
-    bool internalCommandExecute(int command, _A<MonAPI::CString> args);
+    bool internalCommandExecute(int command, System::Array<MonAPI::CString> args);
     _A<MonAPI::CString> parseCommandLine();
     int makeApplicationList();
     MonAPI::CString getParentDirectory(const MonAPI::CString& dir);

@@ -16,9 +16,12 @@
 #include <gui/System/Object.h>
 
 #define FOREACH_AL(type, iterator, arrayList) \
-	if ((arrayList)->get_Count() > 0) \
-		for ({int __##iterator = 0; type iterator;} \
+	if ((arrayList)->get_Count() > 0) {type iterator;\
+		for (int __##iterator = 0; \
 			__##iterator < (arrayList)->get_Count() && (&(iterator = (arrayList)->get_Item(__##iterator)) || true); __##iterator++)
+#ifndef END_FOREACH_AL
+#define END_FOREACH_AL }
+#endif
 
 namespace System { namespace Collections
 {

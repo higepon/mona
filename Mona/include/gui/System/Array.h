@@ -19,9 +19,12 @@
 #endif
 
 #define FOREACH(type, iterator, array) \
-	if ((array).get_Length() > 0) \
-		for ({int __##iterator = 0; type iterator;} \
+	if ((array).get_Length() > 0) { type iterator; \
+		for (int __##iterator = 0; \
 			__##iterator < (array).get_Length() && (&(iterator = (array)[__##iterator]) || true); __##iterator++)
+#ifndef END_FOREACH
+#define END_FOREACH }
+#endif
 
 namespace System
 {
@@ -31,7 +34,7 @@ namespace System
 		T* pointer;
 		int length;
 		int* refCount;
-	
+
 	private:
 		inline void Initialize()
 		{
@@ -39,46 +42,46 @@ namespace System
 			this->length   = 0;
 			this->refCount = 0 /*NULL*/;
 		}
-	
+
 	public:
 		Array()
 		{
 			this->Initialize();
 		}
-	
+
 		Array(int length)
 		{
 			this->Initialize();
 			this->Alloc(length);
 		}
-	
+
 		Array(T* pointer, int length, bool isManaged = true)
 		{
 			this->Initialize();
 			this->Set(pointer, length, isManaged);
 		}
-	
+
 		Array(const Array<T>& array)
 		{
 			this->Initialize();
 			this->Set(array);
 		}
-	
+
 		virtual ~Array()
 		{
 			this->Unset();
 		}
-		
+
 		void Alloc(int length)
 		{
 			this->Unset();
 			this->Set(new T[length], length);
 		}
-	
+
 		void Set(T* pointer, int length, bool isManaged = true)
 		{
 			this->Unset();
-	
+
 			this->pointer = pointer;
 			this->length = length;
 #ifdef DEBUG
@@ -88,14 +91,14 @@ namespace System
 				::exit(1);
 			}
 #endif
-			
+
 			if (this->pointer != 0 /*NULL*/ && isManaged) this->refCount = new int(1);
 		}
-	
+
 		void Set(const Array<T>& array)
 		{
 			this->Unset();
-	
+
 			this->pointer = array.pointer;
 			this->length = array.length;
 #ifdef DEBUG
@@ -105,16 +108,16 @@ namespace System
 				::exit(1);
 			}
 #endif
-			
+
 			this->refCount  = array.refCount;
 			if (this->refCount != 0 /*NULL*/) (*this->refCount)++;
 		}
-	
+
 		void Clear()
 		{
 			this->Initialize();
 		}
-	
+
 		void Unset()
 		{
 			if (this->refCount != 0 /*NULL*/)
@@ -134,22 +137,22 @@ namespace System
 				this->length = 0;
 			}
 		}
-	
+
 		inline T* get() { return this->pointer; }
 		inline int get_Length() const { return this->length; }
 		inline int get_RefCount() const { return this->refCount != 0 /*NULL*/ ? *this->refCount : -1; }
-	
+
 		inline bool operator ==(T* arg) const { return this->pointer == arg; }
 		inline bool operator !=(T* arg) const { return this->pointer != arg; }
 		inline bool operator ==(const Array<T>& arg) const { return this->pointer == arg.pointer; }
 		inline bool operator !=(const Array<T>& arg) const { return this->pointer != arg.pointer; }
-	
+
 		inline Array<T>& operator =(const Array<T>& pointer)
 		{
 			this->Set(pointer);
 			return *this;
 		}
-	
+
 		inline T& operator [](int index)
 		{
 #ifdef DEBUG
@@ -166,7 +169,7 @@ namespace System
 #endif
 			return this->pointer[index];
 		}
-	
+
 		inline T GetValue(int index) const
 		{
 #ifdef DEBUG

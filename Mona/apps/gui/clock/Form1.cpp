@@ -115,6 +115,7 @@ private:
                 x += sw2;
             }
         }
+        END_FOREACH
     }
 
 public:

@@ -794,6 +794,13 @@ void mainQSort3 ( UInt32* ptr,
 #define SETMASK (1 << 21)
 #define CLEARMASK (~(SETMASK))
 
+#if 1 // higepon
+static Int32  runningOrder[256];
+static Bool   bigDone[256];
+static Int32  copyStart[256];
+static Int32  copyEnd  [256];
+#endif
+
 static
 void mainSort ( UInt32* ptr, 
                 UChar*  block,
@@ -804,10 +811,12 @@ void mainSort ( UInt32* ptr,
                 Int32*  budget )
 {
    Int32  i, j, k, ss, sb;
+#if 0
    Int32  runningOrder[256];
    Bool   bigDone[256];
    Int32  copyStart[256];
    Int32  copyEnd  [256];
+#endif
    UChar  c1;
    Int32  numQSorted;
    UInt16 s;

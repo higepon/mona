@@ -1,3 +1,13 @@
+2004-10-08  higepon  <higepon@users.sourceforge.jp>
+
+        * include/gui/System/Collections/ArrayList.h (FOREACH_AL): gcc3.4.1対応
+
+        * include/monalibc/stdarg.h (va_arg): gcc3.4.1対応
+
+        * src/kernel/Array.h (Array): gcc3.4.1対応 END_FOREACHを追加
+
+        * src/kernel/LogConsole.cpp (printf): gcc3.4.1対応
+
 2004-10-07  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/syscall.cpp (syscall_get_memory_info): メモリ･ページ情報取得システムコール追加

@@ -328,6 +328,7 @@ protected:
                 }
             }
         }
+        END_FOREACH
 
         this->vertexNum = vlist.size();
         this->faceNum   = flist.size();

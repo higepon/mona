@@ -4,10 +4,12 @@
 #include "sys/types.h"
 
 #define FOREACH(type, iterator, array) \
-        if ((array).GetLength() > 0) \
-                for ({int __##iterator = 0; type iterator;} \
+        if ((array).GetLength() > 0) {type iterator;\
+                for (int __##iterator = 0;\
                         __##iterator < (array).GetLength() && (&(iterator = (array)[__##iterator]) || true); __##iterator++)
-
+#ifndef END_FOREACH
+#define END_FOREACH }
+#endif
 /*----------------------------------------------------------------------
     Array
 ----------------------------------------------------------------------*/

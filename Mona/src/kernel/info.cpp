@@ -30,7 +30,7 @@ void info(int level, const char *format, ...) {
 
     void** list = (void **)&format;
 
-    ((char**)list) += 1;
+    list++;
     for (i = 0; format[i] != '\0'; i++) {
 
         if (format[i] == '%') {
@@ -39,19 +39,19 @@ void info(int level, const char *format, ...) {
             switch (format[i]) {
               case 's':
                   g_console->printf("%s", (char *)*list);
-                  ((char**)list) += 1;
+                  list++;
                   break;
               case 'd':
                   g_console->printf("%d", (int)*list);
-                  ((int*)list) += 1;
+                  list++;
                   break;
               case 'x':
                   g_console->printf("%x", (int)*list, 16);
-                  ((int*)list) += 1;
+                  list++;
                   break;
               case 'c':
                   g_console->printf("%c", ((char)(int)(*list)));
-                  ((char*)list) += 1;
+                  list++;
                   break;
               case '%':
                   g_console->printf("%%");

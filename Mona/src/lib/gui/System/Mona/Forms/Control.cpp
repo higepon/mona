@@ -174,6 +174,7 @@ namespace System { namespace Mona { namespace Forms
 		{
 			ctrl->Create();
 		}
+		END_FOREACH_AL
 	}
 	
 	void Control::Close()
@@ -203,6 +204,7 @@ namespace System { namespace Mona { namespace Forms
 		{
 			ctrl->Dispose();
 		}
+		END_FOREACH_AL
 		this->controls->Clear();
 		//this->controls->target = NULL;
 	}
@@ -247,6 +249,7 @@ namespace System { namespace Mona { namespace Forms
 		{
 			ctrl->RefreshInternal();
 		}
+		END_FOREACH_AL
 	}
 	
 	_P<Graphics> Control::CreateGraphics()
@@ -292,6 +295,7 @@ namespace System { namespace Mona { namespace Forms
 			_P<Control> fc = c->FindControl(x, y);
 			if (fc != NULL) return fc;
 		}
+		END_FOREACH_AL
 		return this;
 	}
 	

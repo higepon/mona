@@ -65,7 +65,7 @@ int Shell::isInternalCommand(const CString& command)
     return COMMAND_NONE;
 }
 
-bool Shell::internalCommandExecute(int command, _A<CString> args)
+bool Shell::internalCommandExecute(int command, System::Array<CString> args)
 {
     switch (command)
     {

@@ -115,6 +115,7 @@ namespace System { namespace Mona { namespace Forms
 		{
 			if (mf->PreFilterMessage(m)) return;
 		}
+		END_FOREACH_AL
 		
 		switch (m->header)
 		{
@@ -231,6 +232,7 @@ namespace System { namespace Mona { namespace Forms
 		{
 			if (f->get_Visible() && f->CheckPoint(x, y)) return f;
 		}
+		END_FOREACH_AL
 		return NULL;
 	}
 }}}

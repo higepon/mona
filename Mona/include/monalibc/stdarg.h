@@ -22,7 +22,7 @@ extern "C" {
 
 typedef char *va_list;
 #define va_start(ap,last) (void)((ap)=(va_list)&(last)+sizeof(last))
-#define va_arg(ap,type) (*((type*)(ap))++)
+#define va_arg(ap,type) (*(type*)(ap++))
 #define va_end(ap) (void)((ap)=NULL)
 
 int vsprintf(char *s, const char *format, va_list arg);

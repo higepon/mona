@@ -130,6 +130,7 @@ void outp32(dword port, dword value) {
 /*----------------------------------------------------------------------
     printf
 ----------------------------------------------------------------------*/
+#if 1
 void printf(const char *format, ...) {
 
     char buf[128];
@@ -137,7 +138,7 @@ void printf(const char *format, ...) {
 
     void** list = (void **)&format;
 
-    ((char**)list) += 1;
+    list++;
     for (int i = 0; format[i] != '\0'; i++) {
 
         if (format[i] == '%') {
@@ -151,20 +152,20 @@ void printf(const char *format, ...) {
             switch (format[i]) {
               case 's':
                   print((char *)*list);
-                  ((char**)list) += 1;
+                  list++;
                   break;
               case 'd':
-                  putInt((int)*list, 10);
-                  ((int*)list) += 1;
+                  putInt(*(int*)list, 10);
+                  list++;
                   break;
               case 'x':
                   print("0x");
-                  putInt((int)*list, 16);
-                  ((int*)list) += 1;
+                  putInt(*(int*)list, 16);
+                  list++;
                   break;
               case 'c':
-                  putCharacter((char)(int)(*list));
-                  ((char*)list) += 1;
+                  putCharacter((char)*(int*)(list));
+                  list++;
                   break;
               case '%':
                   putCharacter('%');
@@ -189,6 +190,7 @@ void printf(const char *format, ...) {
         print(buf);
     }
 }
+#endif
 
 #if 0
 void printf(const char *format, ...) {

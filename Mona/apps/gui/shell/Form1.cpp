@@ -67,7 +67,7 @@ public:
 			}
 			else
 			{
-				_A<wchar> buf(1);
+				System::Array<wchar> buf(1);
 				buf[0] = ch;
 				int sw = g->MeasureString(buf, Control::get_DefaultFont()).Width;
 				int sw2 = ch < 256 ? FONT_WIDTH : FONT_WIDTH * 2;
@@ -76,6 +76,7 @@ public:
 			}
 			prev = ch;
 		}
+		END_FOREACH
 		g->Dispose();
 	}
 

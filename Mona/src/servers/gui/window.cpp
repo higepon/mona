@@ -2,7 +2,7 @@
 // There are no restrictions on any sort of usage of this software.
 
 #include <gui/System/Drawing/Rectangle.h>
-#define _R ::System::Drawing::Rectangle
+#define _R System::Drawing::Rectangle
 
 #include <monapi/messages.h>
 #include "window.h"
@@ -128,7 +128,7 @@ void DisposeWindowFromThreadID(dword tid)
 	}
 }
 
-static void DrawWindowInternal(guiserver_window* w, const _R& r)
+static void DrawWindowInternal(guiserver_window* w, const System::Drawing::Rectangle& r)
 {
 	if (!w->Visible || w->FormBufferHandle == 0) return;
 	

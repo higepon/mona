@@ -73,6 +73,7 @@ bool Scheduler::Schedule2()
             thread = prev;
         }
     }
+    END_FOREACH
 
     WakeupTimer();
 
@@ -119,6 +120,7 @@ void Scheduler::WakeupTimer()
             thread = prev;
         }
     }
+    END_FOREACH
 }
 
 bool Scheduler::WakeupTimer(Thread* thread)
@@ -154,6 +156,7 @@ bool Scheduler::SetNextThread()
             break;
         }
     }
+    END_FOREACH
 
     g_prevThread = g_currentThread;
 
@@ -176,6 +179,7 @@ void Scheduler::Dump()
             logprintf("runq:%s(%d)\n", thread->tinfo->process->getName(), thread->priority);
         }
     }
+    END_FOREACH
 
     FOREACH(Thread*, queue, waitq)
     {
@@ -186,6 +190,7 @@ void Scheduler::Dump()
             logprintf("waitq:%s(%d)\n", thread->tinfo->process->getName(), thread->priority);
         }
     }
+    END_FOREACH
 }
 
 void Scheduler::Sleep(Thread* thread, dword tick)
@@ -237,6 +242,7 @@ Process* Scheduler::FindProcess(dword pid)
             }
         }
     }
+    END_FOREACH
 
     FOREACH(Thread*, queue, waitq)
     {
@@ -250,6 +256,7 @@ Process* Scheduler::FindProcess(dword pid)
             }
         }
     }
+    END_FOREACH
 
     return (Process*)NULL;
 }
@@ -288,6 +295,7 @@ Thread* Scheduler::Find(dword id)
             if (id == thread->id) return thread;
         }
     }
+    END_FOREACH
 
     FOREACH(Thread*, queue, waitq)
     {
@@ -296,6 +304,7 @@ Thread* Scheduler::Find(dword id)
             if (id == thread->id) return thread;
         }
     }
+    END_FOREACH
 
     return (Thread*)NULL;
 }
@@ -345,6 +354,7 @@ void Scheduler::SetDump()
             current->state = 1;
         }
     }
+    END_FOREACH
 
     FOREACH(Thread*, queue, waitq)
     {
@@ -363,6 +373,7 @@ void Scheduler::SetDump()
             current->state = 0;
         }
     }
+    END_FOREACH
 
     dumpCurrent = g_ps.next;
     current->next = NULL;
@@ -393,6 +404,8 @@ dword* Scheduler::GetAllThreadID(dword* threadNum)
             count++;
         }
     }
+    END_FOREACH
+
     FOREACH(Thread*, queue, waitq)
     {
         FOREACH_N(queue, Thread*, thread)
@@ -400,6 +413,7 @@ dword* Scheduler::GetAllThreadID(dword* threadNum)
             count++;
         }
     }
+    END_FOREACH
 
     result = new dword[count];
     if (result == NULL) return NULL;
@@ -412,6 +426,7 @@ dword* Scheduler::GetAllThreadID(dword* threadNum)
             i++;
         }
     }
+    END_FOREACH
 
     FOREACH(Thread*, queue, waitq)
     {
@@ -421,6 +436,7 @@ dword* Scheduler::GetAllThreadID(dword* threadNum)
             i++;
         }
     }
+    END_FOREACH
 
     *threadNum = count;
     return result;
@@ -440,6 +456,7 @@ Process* Scheduler::FindProcess(const char* name)
             }
         }
     }
+    END_FOREACH
 
     FOREACH(Thread*, queue, waitq)
     {
@@ -453,6 +470,7 @@ Process* Scheduler::FindProcess(const char* name)
             }
         }
     }
+    END_FOREACH
 
     return (Process*)NULL;
 }

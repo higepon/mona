@@ -56,7 +56,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
 
     CommandOption* option = NULL;
     CString path;
-    _A<CString> args = commandLine.split(' ');
+    System::Array<CString> args = commandLine.split(' ');
 
     FOREACH (CString, arg, args)
     {
@@ -73,6 +73,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
         option->next = list.next;
         list.next = option;
     }
+    END_FOREACH
 
     monapi_cmemoryinfo* mi = NULL;
     dword entryPoint = 0xa0000000;
@@ -235,12 +236,12 @@ static void MessageLoop()
                 dword tid;
 
 #if 1 // exp
-		// override stdout_id here by higepon
-		// because Tino GUI's GUI SHELL does not call execute process by himself but shell svr
-		if (grabs.size() != 0)
-		{
-		    msg.arg2 = grabs[grabs.size() - 1];
-		}
+                // override stdout_id here by higepon
+                // because Tino GUI's GUI SHELL does not call execute process by himself but shell svr
+                if (grabs.size() != 0)
+                {
+                    msg.arg2 = grabs[grabs.size() - 1];
+                }
 #endif
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, &tid);
 

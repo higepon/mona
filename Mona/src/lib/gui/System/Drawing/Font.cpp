@@ -67,6 +67,7 @@ namespace System { namespace Drawing
 				}
 			}
 		}
+		END_FOREACH
 	}
 	
 	void Font::Draw(_P<Graphics> g, wchar ch, Color c, int x, int y)
@@ -97,6 +98,7 @@ namespace System { namespace Drawing
 			if (ret.Width  < x ) ret.Width  = x;
 			if (ret.Height < by) ret.Height = by;
 		}
+		END_FOREACH
 		return ret;
 	}
 	

@@ -87,24 +87,25 @@ bool Monitor::Initialize()
 
 void Monitor::ParseConfig(CString content)
 {
-    _A<CString> lines = content.split("\r\n");
+    System::Array<CString> lines = content.split("\r\n");
 
     FOREACH(CString, line, lines)
     {
         if (!line.startsWith("SERVER=")) continue;
 
-        _A<CString> p = line.split("=");
+        System::Array<CString> p = line.split("=");
         if (p.get_Length() < 2) continue;
 
         CString path = p[p.get_Length() - 1];
 
-        _A<CString> q = path.split("/");
+        System::Array<CString> q = path.split("/");
 
         CString name = q[q.get_Length() - 1];
 
         this->paths.add(path);
         this->servers.add(name);
     }
+    END_FOREACH
 
     alive = new bool[servers.size()];
 
