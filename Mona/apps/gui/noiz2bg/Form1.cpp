@@ -64,8 +64,7 @@ public:
     static void Main(_A<String> args)
     {
     	_P<Form1> f = new Form1();
-    	f->Show();
-    	for (; f->get_Visible(); Application::DoEvents())
+    	for (f->Show(); f->get_Visible(); Application::DoEvents())
     	{
     		f->noiz2bgBox->Next();
     	}
