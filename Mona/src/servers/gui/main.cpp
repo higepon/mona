@@ -19,6 +19,7 @@ extern guiserver_bitmap* screen_buffer;
 
 CommonParameters* commonParams;
 guiserver_bitmap* wallpaper = NULL;
+int we_creation = 0, we_destruction = 0;
 
 static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
@@ -171,6 +172,17 @@ static void ReadConfig()
 							else if (name == "BACKCOLOR")
 							{
 								bgcol = ((unsigned int)xtoui(data[1])) | 0xff000000;
+							}
+						}
+						else if (section == "WINDOW EFFECT")
+						{
+							if (name == "CREATION")
+							{
+								we_creation = atoi(data[1]);
+							}
+							else if (name == "DESTRUCTION")
+							{
+								we_destruction = atoi(data[1]);
 							}
 						}
 					}

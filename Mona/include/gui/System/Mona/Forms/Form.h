@@ -20,9 +20,8 @@ namespace System { namespace Mona { namespace Forms
 		double opacity;
 #ifdef MONA
 		dword overlap;
-#else
-		System::Drawing::Point ptRevRect;
 #endif
+		System::Drawing::Point ptRevRect;
 		_P<System::Drawing::Bitmap> formBuffer;
 	
 	public:

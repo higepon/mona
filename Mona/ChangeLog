@@ -13,10 +13,11 @@
         * include/gui/messages.h: MSG_GUISERVER_CREATEOVERLAP, MSG_GUISERVER_DISPOSEOVERLAP,
                                   MSG_GUISERVER_MOVEOVERLAP, MSG_GUISERVER_WINDOWTOFRONTMOSTを追加
 
-        * src/servers/gui/Overlap.h, Overlap.cpp: 枠線描画クラスOverlapを追加
+        * src/servers/gui/Overlap.h, .cpp: 枠線描画クラスOverlapを追加
 
         * src/servers/gui/window.cpp: Overlapと新規関連メッセージに対応
                                       クリックしたウインドウを最前面に移動
+                                      ウインドウ生成・破棄のイフェクト
 
         * src/lib/gui/System/Mona/Forms/Form.cpp: 移動中の枠線にOverlapを使用
 

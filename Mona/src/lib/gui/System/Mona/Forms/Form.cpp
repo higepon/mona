@@ -201,9 +201,13 @@ namespace System { namespace Mona { namespace Forms
 			{
 #ifdef MONA
 				Point p = this->PointToClient(Point(__commonParams->mouse.x, __commonParams->mouse.y));
-				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
-					MAKE_DWORD(this->get_X() + (p.X - this->clickPoint.X), this->get_Y() + (p.Y - this->clickPoint.Y)),
-					MAKE_DWORD(this->get_Width(), this->get_Height()));
+				int ex = this->get_X() + (p.X - this->clickPoint.X), ey = this->get_Y() + (p.Y - this->clickPoint.Y);
+				if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey)
+				{
+					this->ptRevRect = Point(ex, ey);
+					MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+						MAKE_DWORD(ex, ey), MAKE_DWORD(this->get_Width(), this->get_Height()));
+				}
 #else
 				this->DrawReversibleRectangle();
 				this->ptRevRect = Point(e->X, e->Y);
@@ -230,6 +234,7 @@ namespace System { namespace Mona { namespace Forms
 			case NCState_TitleBar:
 			{
 				this->set_Capture(true);
+				this->ptRevRect = Point(e->X, e->Y);
 #ifdef MONA
 				MessageInfo msg;
 				MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
@@ -237,7 +242,6 @@ namespace System { namespace Mona { namespace Forms
 					MAKE_DWORD(this->get_Width(), this->get_Height()));
 				this->overlap = msg.arg2;
 #else
-				this->ptRevRect = Point(e->X, e->Y);
 				this->DrawReversibleRectangle();
 #endif
 				break;

@@ -17,12 +17,98 @@ using namespace MonAPI;
 
 extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;
+extern int we_creation, we_destruction;
 
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
 static HList<guiserver_window*> captures;
 static HList<Overlap*> overlaps;
 static int prevButton = 0;
+
+#define EFFECT_STEP 6
+#define EFFECT_WAIT 30
+
+static void CreationEffect(guiserver_window* w)
+{
+	if (!w->Visible) return;
+
+	w->Visible = false;
+	switch (we_creation)
+	{
+		case 1:  // simple expansion
+		{
+			int cx = w->X + w->Width / 2, cy = w->Y + w->Height / 2;
+			int dx = cx - w->X, dy = cy - w->Y;
+			Overlap* prev = NULL;
+			for (int i = 1; i <= EFFECT_STEP; i++)
+			{
+				int ow = dx * i / EFFECT_STEP, oh = dy * i / EFFECT_STEP;
+				Overlap* ov = new Overlap(cx - ow, cy - oh, ow * 2, oh * 2);
+				sleep(EFFECT_WAIT);
+				if (prev != NULL) delete prev;
+				prev = ov;
+			}
+			if (prev != NULL) delete prev;
+			break;
+		}
+	}
+	w->Visible = true;
+	w->__reserved2 = true;
+}
+
+static void DestructionEffect(guiserver_window* w)
+{
+	if (w->Parent != 0) return;
+	
+	switch (we_destruction)
+	{
+		case 1:  // simple reduction
+		{
+			int cx = w->X + w->Width / 2, cy = w->Y + w->Height / 2;
+			int dx = cx - w->X, dy = cy - w->Y;
+			Overlap* prev = NULL;
+			for (int i = EFFECT_STEP; i > 0; i--)
+			{
+				int ow = dx * i / EFFECT_STEP, oh = dy * i / EFFECT_STEP;
+				Overlap* ov = new Overlap(cx - ow, cy - oh, ow * 2, oh * 2);
+				sleep(EFFECT_WAIT);
+				if (prev != NULL) delete prev;
+				prev = ov;
+			}
+			if (prev != NULL) delete prev;
+			break;
+		}
+		case 2:  // explosion
+		{
+			int cx = w->X + w->Width / 2, cy = w->Y + w->Height / 2;
+			int dx = cx - w->X, dy = cy - w->Y;
+			Overlap* prev[] = { NULL, NULL, NULL, NULL };
+			for (int i = EFFECT_STEP; i > 0; i--)
+			{
+				int ow = dx * i / EFFECT_STEP, oh = dy * i / EFFECT_STEP;
+				int sx = (EFFECT_STEP - i) * 8, sy = (EFFECT_STEP - i) * 8;
+				Overlap* ov[] =
+					{
+						new Overlap(w->X - sx, w->Y - sy, ow, oh),
+						new Overlap(w->X + w->Width + sx - ow, w->Y - sy, ow, oh),
+						new Overlap(w->X - sx, w->Y + w->Height + sy - oh, ow, oh),
+						new Overlap(w->X + w->Width + sx - ow, w->Y + w->Height + sy - oh, ow, oh)
+					};
+				sleep(EFFECT_WAIT);
+				for (int i = 0; i < 4; i++)
+				{
+					if (prev[i] != NULL) delete prev[i];
+					prev[i] = ov[i];
+				}
+			}
+			for (int i = 0; i < 4; i++)
+			{
+				if (prev[i] != NULL) delete prev[i];
+			}
+			break;
+		}
+	}
+}
 
 guiserver_window* CreateWindow()
 {
@@ -86,8 +172,10 @@ bool DisposeWindow(dword handle)
 	int size_w = windows.size();
 	for (int i = 0; i < size_w; i++)
 	{
-		if (windows[i]->Handle == handle)
+		guiserver_window* w = windows[i];
+		if (w->Handle == handle)
 		{
+			DestructionEffect(w);
 			windows.removeAt(i);
 			MemoryMap::unmap(handle);
 			return true;
@@ -127,6 +215,8 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 {
 	if (w == NULL || w->FormBufferHandle == 0) return;
 	
+	if (!w->__reserved2) CreationEffect(w);
+	
 	DrawImage(screen_buffer, wallpaper, w->X, w->Y, w->X, w->Y, w->Width, w->Height);
 	_R r(w->X, w->Y, w->Width, w->Height);
 	int size_w = windows.size();
@@ -151,8 +241,9 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 	{
 		overlaps[i]->Draw(w->X, w->Y, w->Width, w->Height);
 	}
+	if (!draw_screen) return;
 	
-	if (draw_screen) DrawScreen(w->X, w->Y, w->Width, w->Height);
+	DrawScreen(w->X, w->Y, w->Width, w->Height);
 }
 
 void MoveWindow(guiserver_window* w, int x, int y)
@@ -234,13 +325,13 @@ bool WindowHandler(MessageInfo* msg)
 			guiserver_window* target = GetTargetWindow(msg->arg1, msg->arg2);
 			if (target != NULL)
 			{
-				if (prevButton != msg->arg3 && windows[windows.size() - 1] != target)
+				if (prevButton != (int)msg->arg3 && windows[windows.size() - 1] != target)
 				{
 					windows.remove(target);
 					windows.add(target);
 					DrawWindow(target);
 				}
-				prevButton = msg->arg3;
+				prevButton = (int)msg->arg3;
 				if (Message::send(target->ThreadID, msg) != 0)
 				{
 					DisposeWindowFromThreadID(target->ThreadID);
