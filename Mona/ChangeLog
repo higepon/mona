@@ -4,6 +4,8 @@
 
         * 各Makefile: app-elf.incを利用できるものは単純化
 
+        * tools/elf_tool: ELFのテストツール
+
 2004-05-02  tino  <tino@users.sourceforge.jp>
 
         * include/sys/types.h: カーネルで使わないメッセージを削除

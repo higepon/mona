@@ -22,5 +22,5 @@ $(BIT2MNF): bit2mnf.cpp ../code_table/cp932.h
 clean:
 	rm -f $(TARGET) $(BIT2MNF)
 
-install:
+install: $(TARGET)
 	bzip2 -c MONA-12.MNF > $(MONADIR)/bin/root/MONA-12.MF2
