@@ -22,7 +22,7 @@ SOURCES         = hello.cpp                   \
                   string.cpp                  \
                   KeyBoardServer.cpp          \
                   MemoryManager.cpp           \
-                  uFAT12.cpp                  \
+                  UFAT12.cpp                  \
                   BitMap.cpp                  \
                   VirtualFileSystemServer.cpp \
 
