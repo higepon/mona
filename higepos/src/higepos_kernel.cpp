@@ -31,8 +31,12 @@
     \date   create:2002/07/21 update:$Date$
 */
 void startKernel(void) {
+
+    /* initialize screen */
     _sysInitVga();
     _sysClearScreen();
+
+    /* show message */
     _sysPrintln("------------------------------------------------------");
     _sysPrintln("      Higepos Kernel starting                         ");
     _sysPrintln("        ________ A A                                  ");
@@ -40,12 +44,12 @@ void startKernel(void) {
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
 
+    /* set interrept */
     _sysSetIdt();
     _sysInitIo();
     _sysUnlock();
     _sysPrintln("idt set done");
 
-    
 
     /* testing operator new */
     //    Point* point1 = new Point();?????????
@@ -64,7 +68,7 @@ void startKernel(void) {
     _sys_printf("[sizeof(H_BYTE) is %d byte]\n", sizeof(H_BYTE));
 
     /* testing malloc */
-    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
+    //_sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
     //    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
 
 

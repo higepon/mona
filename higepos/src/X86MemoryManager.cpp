@@ -310,6 +310,22 @@ void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry
     if (block == (struct memoryEntry*)NULL) return;
     if (block->next == (struct memoryEntry*)NULL) return;
 
+    struct memoryEntry* canConcatAddress = block + (block->size);     /* address of block we can concat */
+    struct memoryEntry* nextNext         = (struct memoryEntry*)NULL; /* next address of next block     */
 
+    /* we can concat two block into one block */
+    if (block->next == canConcatAddress) {
+
+        _sys_printf("\ndone\n");
+        _sys_printf("block->size = %d, getRealSize(block->next->size) = %d\n", (H_SIZE_T)(block->size), getRealSize(block->next->size));
+        block->next = block->next->next;
+	//        block->size = (block->size) + getRealSize(block->next->size);
+        _sys_printf("block->size = %d, getRealSize(block->next->size) = %d\n", block->size, getRealSize(block->next->size));
+    /* catn't concat */
+    } else {
+
+        _sys_printf("block->next = %d, canConcatAddress = %d\n", block->next, canConcatAddress);
+
+    }
 
 }
