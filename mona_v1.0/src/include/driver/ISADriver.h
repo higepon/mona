@@ -9,14 +9,14 @@ class ISADriver : public SysresourceHandler{
   public:
     ISADriver(VirtualConsole *con);
     ~ISADriver();
-    sys_irq MapIRQ(BitMap *irqm);
-    bool AcquireIRQ(sys_irq irq,IRQHandler irqh);
-    void EnableIRQ(sys_irq irq);
-    void DisableIRQ(sys_irq irq);
+    virtual sys_irq MapIRQ(BitMap *irqm);
+    virtual bool AcquireIRQ(sys_irq irq,IRQHandler irqh);
+    virtual void EnableIRQ(sys_irq irq);
+    virtual void DisableIRQ(sys_irq irq);
     
     //bool PrepareWaitForIRQ(sys_irq irq);
     //bool WaitForIRQWithTimeout(dword timeout);
-    bool AcquireIO(word start,word end);
+    virtual bool AcquireIO(word start,word end);
 
     byte InPort8(word port);
     void OutPort8(word port,byte b);

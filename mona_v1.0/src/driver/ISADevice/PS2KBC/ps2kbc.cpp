@@ -2,8 +2,7 @@
 #include "ps2kbc.h" //That's all you need
 #include <io.h>
 
-#include <global.h>
-
+//#include <global.h>
 #define PS2_CMD 0x64
 #define PS2_DATA 0x60
 
@@ -15,76 +14,82 @@ byte PS2KBC::OutBufEndPtr;
 ISADriver* PS2KBC::isa_;
 
 PS2KBC *ps2;
-/*
-class KeyBoardIRQHandler : public IRQHandler {
-  public:
-    virtual void process(void){
-      g_console->printf("PS2:INT\n");
-      g_demo_step++;
-      ps2->Recv();
-    }
-};
-*/
+
+Globals *g;
 
 void keyboardirqhandler(void){
-      g_console->printf("PS2:INT Key\n");
+      g->debug->printf("PS2:INT Key\n");
       ps2->Recv();
 }
 
 void mouseirqhandler(void){
-      g_console->printf("PS2:INT Mouse\n");
+      g->debug->printf("PS2:INT Mouse\n");
       ps2->Recv();
 }
 
+byte inportb_(dword port) {
+
+    byte ret;
+    asm volatile ("inb %%dx, %%al": "=a"(ret): "d"(port));
+    return ret;
+}
+
+void outportb_(dword port, byte value) {
+   asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
+}
+
 bool PS2KBC::Recv(void){
-    isa_->console->printf("PS2:Recv...\n ");
-    if(!(inportb(PS2_CMD) & 1)){
-      isa_->console->printf("(no data)\n");
+    g->debug->printf("PS2:Recv...\n ");
+    if(!(inportb_(PS2_CMD) & 1)){
+      g->debug->printf("(no data)\n");
       return false;
     }
-    while(inportb(PS2_CMD) & 1){
-      InBuf[InBufEndPtr] = inportb(PS2_DATA);
-      isa_->console->printf("%x ",InBuf[InBufEndPtr]);
+    while(inportb_(PS2_CMD) & 1){
+      InBuf[InBufEndPtr] = inportb_(PS2_DATA);
+      g->debug->printf("%x ",InBuf[InBufEndPtr]);
       InBufEndPtr++;
     }
-    isa_->console->printf("\n");
+    g->debug->printf("\n");
     return true;
 }
 
 
 bool PS2KBC::Send(void){
   byte c;
-  isa_->console->printf("PS2:Send:Size = %d\n ",OutBufEndPtr);
+  g->debug->printf("PS2:Send:Size = %d\n ",OutBufEndPtr);
   if(OutBufEndPtr){
     
     for(c=0;c!=OutBufEndPtr;c++){
-      isa_->console->printf("%x ",OutBuf[c]);
+      g->debug->printf("%x ",OutBuf[c]);
     }
-    isa_->console->printf("\n");
+    g->debug->printf("\n");
     for(c=0;c!=OutBufEndPtr;c++){
-      while(inportb(PS2_CMD) & 3);
-      if(inportb(PS2_CMD) & 0xe0){
-        isa_->console->printf("PS2:Write Error\n");
+      while(inportb_(PS2_CMD) & 3);
+      if(inportb_(PS2_CMD) & 0xe0){
+        g->debug->printf("PS2:Write Error\n");
         return false;
       }
       if(c){
-        outportb(PS2_DATA,OutBuf[c]);
+        outportb_(PS2_DATA,OutBuf[c]);
       }else{
-        outportb(PS2_CMD,OutBuf[c]);
+        outportb_(PS2_CMD,OutBuf[c]);
       }
     }
-    while(inportb(PS2_CMD) & 2);
+    while(inportb_(PS2_CMD) & 2);
     Recv();
   }
   return true;
 }
 
-PS2KBC::PS2KBC(ISADriver *isa){
+PS2KBC::PS2KBC(ISADriver *isa,Globals* G){
   char c;
-  isa_->console->printf("PS2:init...\n");
+  
+	g = G;
+	isa_ = isa;
+  
+	g->debug->printf("PS2:init...\n");
   isa_->AcquireIO(PS2_CMD,1);
   isa_->AcquireIO(PS2_DATA,1);
-  isa_ = isa;
   
   ps2 = this; /* temp */
   
@@ -94,7 +99,7 @@ PS2KBC::PS2KBC(ISADriver *isa){
   OutBufEndPtr = 1;
   if(!Send()) return;
   if(InBufEndPtr != 1){
-    isa_->console->printf("PS2:init: cmd register value error.\n");
+    g->debug->printf("PS2:init: cmd register value error.\n");
   }
   InBufEndPtr = 0;
   c = InBuf[0];
@@ -105,16 +110,16 @@ PS2KBC::PS2KBC(ISADriver *isa){
   Send();
   
   /* KB init */
-  g_console->printf("ps2:installing Keyboard IRQ Handler(%x).\n",(dword)keyboardirqhandler);
+  g->debug->printf("ps2:installing Keyboard IRQ Handler(%x).\n",(dword)keyboardirqhandler);
   
   if(!isa_->AcquireIRQ(1, keyboardirqhandler)){
-    isa_->console->printf("PS2:init:can't acquire IRQ.\n");
+    g->debug->printf("PS2:init:can't acquire IRQ.\n");
     return;
   }
   isa_->EnableIRQ(1);
   
   /* MOUSE init */
-  g_console->printf("ps2:checking Mouse...");
+  g->debug->printf("ps2:checking Mouse...");
   
   OutBuf[0] = 0xa9;
   OutBuf[1] = 0xff;
@@ -122,10 +127,10 @@ PS2KBC::PS2KBC(ISADriver *isa){
   Send();
   InBufEndPtr = 0;
   if(InBuf[0] != 0){
-    g_console->printf("error(%x).\n",InBuf[0]);
+    g->debug->printf("error(%x).\n",InBuf[0]);
     return;
   }
-  g_console->printf("ok.\n");
+  g->debug->printf("ok.\n");
   OutBuf[0] = 0xa8;
   OutBufEndPtr = 1;
   Send();
@@ -135,9 +140,9 @@ PS2KBC::PS2KBC(ISADriver *isa){
   OutBufEndPtr = 2;
   Send();
   
-  g_console->printf("ps2:installing Mouse IRQ Handler(%x).\n",(dword)mouseirqhandler);
+  g->debug->printf("ps2:installing Mouse IRQ Handler(%x).\n",(dword)mouseirqhandler);
   if(!isa_->AcquireIRQ(12, keyboardirqhandler)){
-    isa_->console->printf("PS2:init:can't acquire IRQ.\n");
+    g->debug->printf("PS2:init:can't acquire IRQ.\n");
     return;
   }
   isa_->EnableIRQ(12);

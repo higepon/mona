@@ -4,21 +4,27 @@
 #include <test_mjt.h>
 #include <sysresource.h>
 #include <driver/ISADriver.h>
-
+#include <Module.h>
 #include "driver/ISADevice/PS2KBC/ps2kbc.h"
 #include "driver/ISADevice/PCIC/PCIC.h"
 #include<pic.h>
-//#include <expr_driver/module.h>
+
 void test_mjt_init(){
   g_irqMap = new BitMap(16);
 }
-void test_sysresource(){
 
+Globals globals;
+
+void test_sysresource(){
+	
   ISADriver *isa;
   PS2KBC *m;
   PCIC *p;
+	globals.debug = g_console;
+	globals.info = g_console;
+	globals.error = g_console;
   isa = new ISADriver(g_console);
-  m = new PS2KBC(isa);
+  m = new PS2KBC(isa,&globals);
   p = new PCIC(isa);
 }
 void test_cmos(){
