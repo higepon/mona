@@ -15,21 +15,21 @@ int ExecuteProcess(monapi_cmemoryinfo* mi, const CString& path, const CString& n
     if (!ok)
     {
         if (prompt) printf("%s: file type is not ELF!\n", SVR);
-        return -1;
+        return 3;
     }
 
     int type = parser.getType();
     if (type != ELFParser::TYPE_RELOCATABLE && type != ELFParser::TYPE_EXECUTABLE)
     {
         if (prompt) printf("%s: file type is not supported!\n", SVR);
-        return -1;
+        return 3;
     }
 
     int result = parser.parse();
     if (result != 0)
     {
         if (prompt) printf("%s: can not parse!\n", SVR);
-        return -1;
+        return 3;
     }
 
     dword imageSize = parser.getImageSize();
@@ -37,7 +37,7 @@ int ExecuteProcess(monapi_cmemoryinfo* mi, const CString& path, const CString& n
     if (!parser.load(image.get()))
     {
         if (prompt) printf("%s: load failed!\n", SVR);
-        return -1;
+        return 3;
     }
 
     LoadProcessInfo info;
@@ -52,7 +52,7 @@ int ExecuteProcess(monapi_cmemoryinfo* mi, const CString& path, const CString& n
 
     if (prompt)
     {
-        switch(result)
+        switch(ret)
         {
             case 4:
                   printf("%s: Shared Memory error1", SVR);
@@ -110,7 +110,7 @@ int ExecuteFile(const CString& commandLine, bool prompt)
         mi = monapi_call_file_read_data(path, prompt ? 1 : 0);
     }
 
-    int result = -1;
+    int result = 1;
     if (mi == NULL)
     {
         if (prompt) printf("%s: can not find command\n", SVR);
