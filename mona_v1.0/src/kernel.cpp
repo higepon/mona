@@ -222,6 +222,12 @@ void startKernel(void) {
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup((PhysicalAddress)(g_vesaDetail->physBasePtr));
 
+    /* dummy thread struct */
+    Thread* dummy1 = new Thread();
+    Thread* dummy2 = new Thread();
+    g_prevThread    = dummy1->getThreadInfo();
+    g_currentThread = dummy2->getThreadInfo();
+
     /* this should be called, before timer enabled */
     ProcessOperation::initialize(g_page_manager);
     g_scheduler = new Scheduler();
@@ -237,10 +243,6 @@ void startKernel(void) {
     g_scheduler->join(initThread);
 
     disableTimer();
-
-    g_console->printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    for (;;);
-
 
     enableInterrupt();
 
@@ -259,9 +261,9 @@ void startKernel(void) {
     g_fdcdriver->motorAutoOff();
     g_info_level = MSG;
 
-
-    g_prevThread    = (new Thread())->getThreadInfo();
-    g_currentThread = (new Thread())->getThreadInfo();
+    /* dummy thread struct */
+    g_prevThread    = dummy1->getThreadInfo();
+    g_currentThread = dummy2->getThreadInfo();
     g_prevThread->archinfo->cr3    = 1;
     g_currentThread->archinfo->cr3 = 2;
 

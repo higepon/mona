@@ -277,8 +277,6 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
     PageEntry* directory = process->getPageDirectory();
     LinearAddress stack  = process->allocateStack();
 
-    g_console->printf("stack=%x", stack);
-
     thread->getThreadInfo()->process = process;
 
     if (process->isUserMode())

@@ -141,8 +141,6 @@ void timerHandler() {
     dword tick = g_scheduler->getTick();
     bool isProcessChange = (tick % 10) ? g_scheduler->schedule2() : g_scheduler->schedule();
 
-    g_console->printf("%s", isProcessChange ? "[change]" : "[not change]");
-
     ThreadOperation::switchThread(isProcessChange);
 
     /* does not come here */
