@@ -5,9 +5,17 @@
 
 class FileBrowser : public System::Mona::Forms::Control
 {
+private:
+	String path;
+	monapi_cmemoryinfo* files;
+	
 public:
 	FileBrowser();
 	virtual ~FileBrowser() {}
+	
+	void Dispose();
+	void ReadDirectory(String path);
+	int GetIcon(String fileName);
 	
 protected:
 	virtual void OnPaint();

@@ -15,6 +15,7 @@ enum Icons
 	Icons_Floppy,
 	Icons_Folder,
 	Icons_Kernel,
+	Icons_Picture,
 	Icons_Server,
 	Icons_Terminal,
 	Icons_Text
