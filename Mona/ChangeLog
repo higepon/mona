@@ -1,3 +1,9 @@
+2004-11-17  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/kernel.cpp: カーネルバージョン番号変更
+
+        * apps/non-gui/ata/IDEDriver.cpp (requestSense): リファクタリング(関数名変更・idleImmediateコマンド追加)
+
 2004-11-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/ihandlers.cpp (SendInterrupt):irq番号をarg1で通知する仕様を追加

@@ -12,13 +12,12 @@ static IDEDriver* ide;
 /*
     課題
     Vmwareでデバイス認識がうまくいかない
+    エラーの詳細を配列コピーで渡す
     上位階層へのエラー通知方法
     セクタサイズの取得
     bufferへの大量読み込みをチェック
     idle位いれようよ。
     busy loopがうっとぉしぃ。
-
-
 */
 
 static void interrupt()
@@ -33,7 +32,7 @@ static void interrupt()
         {
         case MSG_INTERRUPTED:
 //            printf("interrupt irq=%d\n", msg.arg1);
-	    ide->interrupt();
+            ide->interrupt();
             break;
         default:
             printf("default");
@@ -54,7 +53,7 @@ int MonaMain(List<char*>* pekoe)
     if (!ide->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
     {
         printf("CD-ROM Not Found\n");
-	delete ide;
+        delete ide;
         return 1;
     }
 
@@ -77,7 +76,7 @@ int MonaMain(List<char*>* pekoe)
     if (!ide->selectDevice(controller, deviceNo))
     {
         printf("select device NG\n");
-	delete ide;
+        delete ide;
         return 1;
     }
 
@@ -96,6 +95,8 @@ int MonaMain(List<char*>* pekoe)
     printf("fileout:read=%d\n", fos.write((byte*)(buf +1536), 512));
 
     fos.close();
+
+    free(buf);
     delete ide;
 
     return 0;

@@ -45,12 +45,22 @@ public:
         DEVICE_ATAPI
     };
 
+    enum
+    {
+        SELECTION_ERROR,
+        DATA_READY_CHECK_ERROR,
+        BUSY_TIMEOUT_ERROR,
+        STATUS_ERROR
+    };
+
+
 private:
     typedef struct IDEDevice
     {
         int type;
         int typeDetail;
         int deviceNo;
+        word sectorSize;
         MonAPI::CString name;
     };
 
@@ -69,19 +79,27 @@ private:
         byte sectorNumber;
         byte cylinderLow;
         byte cylinderHigh;
-        byte device;
+        byte deviceNo;
         byte command;
-        byte drdyCheck;
+        bool drdyCheck;
     } ATACommand;
 
     typedef struct ATAPICommand
     {
         byte feature;
-        byte device;
+        byte deviceNo;
         byte packet[12];
+        word limit;
+        void* buffer;
     };
 
 private:
+
+    /* protocol: param IDEController */
+    bool protocolAtaNoneData(IDEController* controller, ATACommand* command);
+    bool protocolPacket(IDEController* controller, ATAPICommand* command);
+
+    bool commandIdleImmediate(IDEController* controller, int deviceNo);
     void resetAndIdentify(IDEController* controller);
     void identify(IDEController* controller, int deviceNo);
     void identifyDetail(IDEController* controller, int deviceNo);
@@ -91,7 +109,7 @@ private:
     bool waitBusyAndDataRequestBothClear(IDEController* controller);
     bool waitDrdySet(IDEController* controller);
     int sendPioDataInCommand(IDEController* controller, ATACommand* command, word count, void* buf);
-    int sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer);
+
     bool selectDevice(IDEController* controller, int deviceNo);
     int readATAPI(IDEController* controller, dword lba, void* buffer, int size);
     dword requestSense(IDEController* controller);
@@ -111,6 +129,8 @@ private:
     volatile void* atapiBuffer;
     volatile int atapiReadDone;
     volatile dword atapiTransferSize;
+    word sense[1024];
+    int lastError;
 
 private:
     enum

@@ -52,6 +52,83 @@ IDEDriver::~IDEDriver()
 {
 }
 
+/*----------------------------------------------------------------------
+    IDEDRIVER : protocol
+----------------------------------------------------------------------*/
+bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
+{
+    outp8(controller, ATA_DCR, 0x8);  /* use interrupt */
+
+    atapiBuffer   = command->buffer;
+    atapiReadDone = false;
+
+    if (!selectDevice(controller, command->deviceNo)) 
+    {
+	this->lastError = SELECTION_ERROR;
+	return false;
+    }
+
+    /* packet command */
+    outp8(controller, ATA_FTR, command->feature);
+    outp8(controller, ATA_SCR, 0);
+    outp8(controller, ATA_BLR, (byte)(command->limit & 0xff));
+    outp8(controller, ATA_BHR, (byte)(command->limit >> 8));
+    outp8(controller, ATA_CMR, 0xa0);
+    sleep(1);
+
+    /* Ç±Ç±Ç‹Ç≈Å[Å[Å[åÉÇµÇ≠ìríÜ */
+
+    dword i;
+    for (i = 0; i < ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(controller, ATA_ASR);
+
+        if ((status & BIT_BSY) != 0) continue;
+        if ((status & BIT_CHK) != 0)
+        {
+            printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
+            printf("(inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);=%d\n", (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR));
+            atapiBuffer = NULL;
+            return false;
+        }
+
+        byte irr = inp8(controller, ATA_IRR);
+
+        if (((status & BIT_DRQ) != 0) && ((irr & BIT_IO) == 0) && ((irr & BIT_CD) != 0)) break;
+    }
+
+    if (i == ATA_TIMEOUT)
+    {
+        atapiBuffer = NULL;
+        return false;
+    }
+
+    outp16(controller, (word*)command->packet, 6);
+
+    for (i = 0; i <= ATA_TIMEOUT; i++)
+    {
+        byte status = inp8(controller, ATA_ASR);
+
+        if ((status & BIT_BSY) != 0) continue;
+
+        if ((status & BIT_CHK) != 0)
+        {
+            printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
+            requestSense(controller);
+            atapiBuffer = NULL;
+            return false;
+        }
+        if (atapiReadDone) break;
+    }
+
+    inp8(controller, ATA_STR);
+
+    if (i == ATA_TIMEOUT) return false;
+    return true;
+}
+
+
+
 void IDEDriver::interrupt()
 {
     byte status = inp8(whichController, ATA_STR);
@@ -90,112 +167,6 @@ bool IDEDriver::findDevice(int type, int detail, int* controller, int* deviceNo)
     return false;
 }
 
-int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* command, word limit, void* buffer)
-{
-#ifdef USE_INTERRUPT
-    outp8(controller, ATA_DCR, 0x8);  /* use interrupt */
-    atapiBuffer = buffer;
-    atapiReadDone = false;
-#else
-    outp8(controller, ATA_DCR, 0xa);  /* no interrupt */
-#endif
-
-    if (!selectDevice(controller, command->device)) return 1;
-
-    /* send packet command */
-    outp8(controller, ATA_FTR, command->feature);
-    outp8(controller, ATA_SCR, 0);
-    outp8(controller, ATA_BLR, (byte)(limit & 0xff));
-    outp8(controller, ATA_BHR, (byte)(limit >> 8));
-    outp8(controller, ATA_CMR, 0xa0);
-    sleep(1);
-
-    dword i;
-    for (i = 0; i < ATA_TIMEOUT; i++)
-    {
-        byte status = inp8(controller, ATA_ASR);
-
-        if ((status & BIT_BSY) != 0) continue;
-        if ((status & BIT_CHK) != 0)
-        {
-            printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
-            printf("(inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);=%d\n", (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR));
-#ifdef USE_INTERRUPT
-            atapiBuffer = NULL;
-#endif
-            return 2;
-        }
-
-        byte irr = inp8(controller, ATA_IRR);
-
-        if (((status & BIT_DRQ) != 0) && ((irr & BIT_IO) == 0) && ((irr & BIT_CD) != 0)) break;
-    }
-
-    if (i == ATA_TIMEOUT)
-    {
-#ifdef USE_INTERRUPT
-        atapiBuffer = NULL;
-#endif
-        return 3;
-    }
-
-    outp16(controller, (word*)command->packet, 6);
-
-    for (i = 0; i <= ATA_TIMEOUT; i++)
-    {
-#ifdef USE_INTERRUPT
-        byte status = inp8(controller, ATA_ASR);
-#else
-        byte status = inp8(controller, ATA_STR);
-        byte irr    = inp8(controller, ATA_IRR);
-#endif
-
-
-        if ((status & BIT_BSY) != 0) continue;
-
-        if ((status & BIT_CHK) != 0)
-        {
-            printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
-            requestSense(controller);
-#ifdef USE_INTERRUPT
-            atapiBuffer = NULL;
-#endif
-            return 4;
-        }
-
-#ifdef USE_INTERRUPT
-        if (atapiReadDone) break;
-#else
-
-        if (((irr & BIT_IO) != 0) && ((irr & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
-        {
-            /* read */
-            atapiTransferSize = (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);
-            inp16(controller, (word*)buffer, (atapiTransferSize + 1) / 2);
-
-        }
-
-        if (((irr & BIT_IO) == 0) && ((irr & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
-        {
-            /* write */
-            atapiTransferSize = (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);
-            outp16(controller, (word*)buffer, (atapiTransferSize + 1) / 2);
-        }
-
-        if (((irr & BIT_IO) != 0) && ((irr & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
-        {
-            break;
-        }
-#endif
-    }
-
-
-
-    inp8(controller, ATA_STR);
-
-    if (i == ATA_TIMEOUT) return 5;
-    return 0;
-}
 
 int IDEDriver::readATAPI(IDEController* controller, dword lba, void* buffer, int size)
 {
@@ -206,7 +177,7 @@ int IDEDriver::readATAPI(IDEController* controller, dword lba, void* buffer, int
     int count = (size + 2048 - 1) / 2048; // Mm...
 
     command.feature   = 0;
-    command.device    = controller->selectedDevice->deviceNo;
+    command.deviceNo  = controller->selectedDevice->deviceNo;
     command.packet[0] = 0x28;
     command.packet[2] = (lba >>  24) & 0xff;
     command.packet[3] = (lba >>  16) & 0xff;
@@ -214,9 +185,11 @@ int IDEDriver::readATAPI(IDEController* controller, dword lba, void* buffer, int
     command.packet[5] = (lba       ) & 0xff;
     command.packet[7] = (count >> 8) & 0xff;
     command.packet[8] = (count     ) & 0xff;
+    command.limit     = 2048; // Mm...
+    command.buffer    = buffer;
     atapiTransferSize = 0;
 
-    return sendPacketCommand(controller, &command, 2048, buffer);
+    return protocolPacket(controller, &command);
 }
 
 dword IDEDriver::requestSense(IDEController* controller)
@@ -227,13 +200,14 @@ dword IDEDriver::requestSense(IDEController* controller)
     memset(&command, 0, sizeof(command));
 
     command.feature   = 0;
-    command.device    = controller->selectedDevice->deviceNo;
+    command.deviceNo  = controller->selectedDevice->deviceNo;
     command.packet[0] = 0x03;
     command.packet[4] = 18;
-
+    command.limit     = 2048; // Mm. wrong
+    command.buffer    = buffer;
     atapiTransferSize = 0;
 
-    sendPacketCommand(controller, &command, 2048, buffer);
+    protocolPacket(controller, &command);
 
     printf("buffer[0]=%d\n", buffer[0]);
     printf("buffer[1]=%d\n", buffer[1]);
@@ -288,6 +262,60 @@ void IDEDriver::printDebug(IDEController* controller, int deviceNo)
     printf("device type=%d,%x %s\n", device->type, device->typeDetail, (const char*)device->name);
 }
 
+bool IDEDriver::protocolAtaNoneData(IDEController* controller, ATACommand* command)
+{
+    /* select device */
+    if (!selectDevice(controller, command->deviceNo))
+    {
+        this->lastError = SELECTION_ERROR;
+        return false;
+    }
+
+    outp8(controllers, ATA_DCR, 0x2); /* no interrupt */
+    outp8(controllers, ATA_FTR, command->feature);
+    outp8(controllers, ATA_SCR, command->sectorCount);
+    outp8(controllers, ATA_SNR, command->sectorNumber);
+    outp8(controllers, ATA_CLR, command->cylinderLow);
+    outp8(controllers, ATA_CHR, command->cylinderHigh);
+
+    /* data ready check */
+    if (!waitDrdySet(controller))
+    {
+        this->lastError = DATA_READY_CHECK_ERROR;
+        return false;
+    }
+
+    outp8(controllers, ATA_CMR, command->command);
+    sleep(1);
+
+    /* wait busy clear */
+    if (!waitBusyClear(controller))
+    {
+        this->lastError = BUSY_TIMEOUT_ERROR;
+        return false;
+    }
+
+    inp8(controllers, ATA_ASR); /* read once */
+
+    /* check error */
+    byte status = inp8(controllers, ATA_STR);
+    if (status & BIT_ERR)
+    {
+        inp8(controllers, ATA_ERR); /* must read ? */
+        this->lastError = STATUS_ERROR;
+        return false;
+    }
+
+    return true;
+}
+
+bool IDEDriver::commandIdleImmediate(IDEController* controller, int deviceNo)
+{
+
+
+    return true;
+};
+
 void IDEDriver::resetAndIdentify(IDEController* controller)
 {
     /* software reset */
@@ -318,16 +346,16 @@ void IDEDriver::identifyDetail(IDEController* controller, int deviceNo)
 
     /* feature, sector count, sector number, cylinder is 0 */
     memset(&com, 0, sizeof(ATACommand));
-    com.device = DEV_HEAD_OBS | (deviceNo << 4);
+    com.deviceNo = DEV_HEAD_OBS | (deviceNo << 4);
 
     if (device->type == DEVICE_ATA)
     {
-        com.drdyCheck = 1;
+        com.drdyCheck = true;
         com.command = 0xec; /* Identify device */
     }
     else
     {
-        com.drdyCheck = 0;
+        com.drdyCheck = false;
         com.command = 0xa1; /* Identify Packet device */
     }
 
@@ -352,6 +380,8 @@ void IDEDriver::identifyDetail(IDEController* controller, int deviceNo)
         {
             device->name = CString((const char*)((byte*)buffer + 54), 40);
             device->typeDetail = buffer[0] & 0x1f;
+            device->sectorSize = buffer[126];
+            printf("device->sectorSize=%d\n", device->sectorSize);
         }
         else
         {
@@ -401,7 +431,7 @@ int IDEDriver::sendPioDataInCommand(IDEController* controller, ATACommand* comma
 {
     word* p = (word*)buf;
 
-    if (!selectDevice(controller, command->device)) return 1;
+    if (!selectDevice(controller, command->deviceNo)) return 1;
 
     outp8(controller, ATA_DCR, 0x02);                  /* not use interrupt */
     outp8(controller, ATA_FTR, command->feature);      /* feature           */
