@@ -65,7 +65,7 @@ SECTIONS
   .eh_frame_hdr : { *(.eh_frame_hdr) }
   /* Adjust the address for the data segment.  We want to adjust up to
      the same address within the page on the next page up.  */
-  . = DATA_SEGMENT_ALIGN(0x1000, 0x1000);
+  . = ALIGN(0x1000) + (. & (0x1000 - 1));
   .data           :
   {
     *(.data .data.* .gnu.linkonce.d.*)
@@ -109,7 +109,6 @@ SECTIONS
   . = ALIGN(32 / 8);
   _end = .;
   PROVIDE (end = .);
-  . = DATA_SEGMENT_END (.);
   /* Stabs debugging sections.  */
   .stab          0 : { *(.stab) }
   .stabstr       0 : { *(.stabstr) }
