@@ -440,26 +440,23 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
 
 void Shell::printFiles(const CString& dir)
 {
-    char name[15];
-    int size, attr;
-
-    if (syscall_cd(dir) != 0)
+    monapi_cmemoryinfo* mi = monapi_call_file_read_directory(dir, MONAPI_TRUE);
+    int size = *(int*)mi->Data;
+    if (mi == NULL || size == 0)
     {
         printf("%s: directory not found: %s\n", SVR, (const char*)dir);
-        return;
-    }
-    if (syscall_dir_open())
-    {
-        printf("%s: can not open directory: %s\n", SVR, (const char*)dir);
         return;
     }
 
     CString spc = "               ";
     int w = 0, sw = this->screen.getWidth();
-    while (syscall_dir_read(name, &size, &attr) == 0)
+
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    for (int i = 0; i < size; i++, p++)
     {
-        CString file = name;
-        if ((attr & ATTRIBUTE_DIRECTORY) != 0)
+        CString file = p->name;
+
+        if ((p->attr & ATTRIBUTE_DIRECTORY) != 0)
         {
             file = "[" + file + "]";
         }
@@ -475,9 +472,6 @@ void Shell::printFiles(const CString& dir)
         w += fw;
     }
     printf("\n");
-
-    syscall_dir_close();
-    syscall_cd(this->current);
 }
 
 void Shell::executeMSH(const CString& msh)

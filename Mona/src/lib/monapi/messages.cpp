@@ -229,13 +229,25 @@ void monapi_deallocate_dma_memory(void* address)
     syscall_deallocate_dma_memory(address);
 }
 
-int monapi_call_change_dirctory(int drive, MONAPI_BOOL prompt)
+int monapi_call_change_drive(int drive, MONAPI_BOOL prompt)
 {
-    monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_FILE_CHANGE_DRIVE, drive, prompt) != 0)
+    {
+        return 0;
+    }
+
+    return msg.arg1;
+}
+
+int monapi_call_get_current_drive()
+{
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_FILE_GET_CURRENT_DRIVE) != 0)
     {
         return 0;
     }

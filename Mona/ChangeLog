@@ -1,3 +1,13 @@
+2005-02-06  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/file.cpp (ReadFile): フルパスを受け付けるように修整。 
+
+        * src/lib/monapi/messages.cpp (monapi_call_get_current_drive): カレントドライブ取得関数追加。
+
+2005-02-05  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/shell/Shell.cpp (printFiles): lsコマンドをsyscall_dir_openではなくmonapi_call_file_read_directoryで書き直し。
+
 2005-02-05  csharp  <csharp@users.sourceforge.jp>
 
         * env/*.env: SYMPREFIX追加

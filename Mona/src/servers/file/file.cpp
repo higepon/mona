@@ -91,27 +91,30 @@ bool initializeCD()
     return true;
 }
 
+int GetCurrentDrive()
+{
+    return currentDrive;
+}
 
 int ChangeDrive(int drive)
 {
-    if (drive == FD0)
+    if (drive == DRIVE_FD0)
     {
-        currentDrive = FD0;
+        currentDrive = DRIVE_FD0;
         return drive;
     }
-    else if (drive == CD0)
+    else if (drive == DRIVE_CD0)
     {
         initializeCD();
-        currentDrive = CD0;
+        currentDrive = DRIVE_CD0;
         return drive;
     }
     return 0;
 }
 
-
 void initialize()
 {
-    currentDrive = FD0;
+    currentDrive = DRIVE_FD0;
     cdInitialized = false;
 }
 
@@ -119,9 +122,22 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
 {
     if (prompt) printf("%s: Reading %s....", SVR, path);
 
-    if (currentDrive == FD0)
+    int drive        = currentDrive;
+    CString filePath = path;
+    if (filePath.startsWith("CD0:"))
     {
-        FileInputStream fis(path);
+        filePath = filePath.substring(4, filePath.getLength());
+        drive = DRIVE_CD0;
+    }
+    else if (filePath.startsWith("FD0:"))
+    {
+        filePath = filePath.substring(4, filePath.getLength());
+        drive = DRIVE_FD0;
+    }
+
+    if (drive == DRIVE_FD0)
+    {
+        FileInputStream fis(filePath);
         if (fis.open() != 0)
         {
             if (prompt) printf("ERROR\n");
@@ -142,9 +158,9 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
         if (prompt) printf("OK\n");
         return ret;
     }
-    else if (currentDrive == CD0)
+    else if (drive == DRIVE_CD0)
     {
-        File* file = fs->Open(path, 0);
+        File* file = fs->Open(filePath, 0);
 
         if (file == NULL)
         {
@@ -173,9 +189,22 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
 
 monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
 {
-    if (currentDrive == FD0)
+    int drive        = currentDrive;
+    CString filePath = path;
+    if (filePath.startsWith("CD0:"))
     {
-        if (syscall_cd(path))
+        filePath = filePath.substring(4, filePath.getLength());
+        drive = DRIVE_CD0;
+    }
+    else if (filePath.startsWith("FD0:"))
+    {
+        filePath = filePath.substring(4, filePath.getLength());
+        drive = DRIVE_FD0;
+    }
+
+    if (drive == DRIVE_FD0)
+    {
+        if (syscall_cd(filePath))
         {
             if (prompt) printf("%s: ERROR: directory not found: %s\n", SVR, path);
             return NULL;
@@ -215,9 +244,9 @@ monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
         }
         return ret;
     }
-    else if (currentDrive == CD0)
+    else if (drive == DRIVE_CD0)
     {
-        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(path);
+        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(filePath);
 
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
         int size = files.get_Length();
@@ -236,7 +265,7 @@ monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
 
             di.size = file->GetSize();
             strcpy(di.name, (const char*)file->GetName());
-            di.attr = ATTRIBUTE_DIRECTORY;
+            di.attr = file->IsDirectory() ? ATTRIBUTE_DIRECTORY : 0;
             *p = di;
             p++;
         }

@@ -56,6 +56,12 @@ void MessageLoop()
                 Message::reply(&msg, result);
                 break;
             }
+            case MSG_FILE_GET_CURRENT_DRIVE:
+            {
+                int result = GetCurrentDrive();
+                Message::reply(&msg, result);
+                break;
+            }
             case MSG_DISPOSE_HANDLE:
                 MemoryMap::unmap(msg.arg1);
                 Message::reply(&msg);

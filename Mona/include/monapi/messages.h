@@ -27,6 +27,7 @@ enum
 
     MSG_FILE_READ_DATA = 0x0400,
     MSG_FILE_CHANGE_DRIVE,
+    MSG_FILE_GET_CURRENT_DRIVE,
     MSG_FILE_DECOMPRESS_BZ2,
     MSG_FILE_DECOMPRESS_BZ2_FILE,
     MSG_FILE_DECOMPRESS_ST5,
@@ -60,6 +61,13 @@ enum
     ID_NUMBER_OF_SERVERS
 };
 
+enum
+{
+    DRIVE_FD0 = 1,
+    DRIVE_CD0,
+};
+
+
 typedef struct
 {
     char name[16];
@@ -90,7 +98,8 @@ extern monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file
 extern monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id = NULL);
-extern int monapi_call_change_dirctory(int drive, MONAPI_BOOL prompt);
+extern int monapi_call_change_drive(int drive, MONAPI_BOOL prompt);
+extern int monapi_call_get_current_drive();
 
 extern byte* monapi_allocate_dma_memory();
 extern void monapi_deallocate_dma_memory(void* address);
