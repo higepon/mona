@@ -13,6 +13,15 @@
 #include<FAT12.h>
 #include<string.h>
 
+#include<stdio.h>
+
+#define ATTR_READ_ONLY  0x01
+#define ATTR_HIDDEN     0x02
+#define ATTR_SYSTEM     0x04
+#define ATTR_VOLUME_ID  0x08
+#define ATTR_DIRECTORY  0x10
+#define ATTR_ARCHIVE    0x20
+
 /*!
     \brief initilize
 
@@ -41,6 +50,39 @@ bool FAT12::initilize() {
 
     if (!setBPB()) return false;
 
+    int rootEntryStart = bpb_.reservedSector
+                       + bpb_.fatSize * bpb_.numberOfFat;
+
+   if (!(driver_->read(rootEntryStart, buf_))) return false;
+
+   printf("rootEntryStart = %d\n", rootEntryStart);
+
+    DirectoryEntry entry[20];
+
+    memcpy(entry, buf_, sizeof(DirectoryEntry) * 20);
+
+    for (int j = 0; j < 15; j++) {
+
+        if (entry[j].filename[0] == 0xe5 || entry[j].filename[0] == 0x00) continue;
+
+        printf("[");
+        for (int i = 0; i < 8; i++) printf("%c", (char)(entry[j].filename[i]));
+        printf("]");
+        printf("[");
+
+        if (entry[j].attribute & ATTR_DIRECTORY) printf("DIR");
+        else {
+            for (int i = 0; i < 3; i++) printf("%c", (char)(entry[j].extension[i]));
+        }
+        printf("]");
+        printf("size=%d ", entry[j].filesize);
+        printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
+        printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
+        printf("cluster = %d\n", entry[j].cluster);
+    }
+
+    printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
+
     return true;
 }
 
@@ -59,7 +101,7 @@ bool FAT12::setBPB() {
     p += 1;
     memcpy(&(bpb_.reservedSector), p, 2);
     p += 2;
-    bpb_.NumberOfFat = *p;
+    bpb_.numberOfFat = *p;
     p += 1;
     memcpy(&(bpb_.rootEntries), p, 2);
     p += 2;

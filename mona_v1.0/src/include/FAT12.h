@@ -22,7 +22,7 @@ typedef struct BPB {
     word  sizeOfSector;
     byte  sectorPerCluster;
     word  reservedSector;
-    byte  NumberOfFat;
+    byte  numberOfFat;
     word  rootEntries;
     word  totalSector;
     byte  media;
@@ -38,29 +38,34 @@ typedef struct BPB {
     byte  volume[11];
     byte  type[8];
 };
-
-typedef struct FTIME {
+#pragma pack(2)
+typedef struct FDATE {
     unsigned day   : 5;
     unsigned month : 4;
     unsigned year  : 7;
 };
+#pragma pack(0)
 
-typedef struct FDATE {
+#pragma pack(2)
+typedef struct FTIME {
     unsigned sec : 5;
     unsigned min : 6;
     unsigned hour: 5;
 };
+#pragma pack()
 
+#pragma pack(2)
 typedef struct DirectoryEntry {
     byte  filename[8];
     byte  extension[3];
-    byte  cattribute;
+    byte  attribute;
     byte  reserved[10];
-    FTIME fttime;
-    FDATE fddate;
-    word  wcluster;
-    dword dwfilesize;
+    FTIME ftime;
+    FDATE fdate;
+    word  cluster;
+    dword filesize;
 };
+#pragma pack()
 
 /*!
     FAT12 File System claass
