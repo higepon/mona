@@ -1,3 +1,7 @@
+2002-10-20  higepon  <higepon@users.sourceforge.jp>
+
+        * 開発環境をhigepos_v1.1に移行しました。
+
 2002-10-19  higepon  <higepon@users.sourceforge.jp>
 
         * vga.cpp: _sys_printfに%c 機能追加
