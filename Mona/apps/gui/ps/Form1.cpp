@@ -2,6 +2,7 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Label.h>
+#include <gui/System/Mona/Forms/Button.h>
 
 /* higepon */
 
@@ -13,17 +14,18 @@ class Form1 : public Form
 {
 public:
     _P<Label> label0, label1, label2, label3, label4, label5, label6;
+	_P<Button> button1;
 
     Form1()
     {
         this->InitializeComponent();
-        this->SetLabels();
+        this->SetLabels(this, EventArgs::get_Empty());
     }
 
 private:
     char format[256];
 
-	void SetLabels()
+	void SetLabels(_P<Object> sender, _P<EventArgs> e)
 	{
         syscall_set_ps_dump();
         PsInfo info;
@@ -67,14 +69,16 @@ private:
         this->label4 = new Label();
         this->label5 = new Label();
         this->label6 = new Label();
+        this->button1 = new Button();
 
-        this->label0->set_Bounds(Rectangle(10,  10, 60, 180));
+        this->label0->set_Bounds(Rectangle(10,  10, 60, 150));
         this->label1->set_Bounds(Rectangle(70,  10, 30, 180));
         this->label2->set_Bounds(Rectangle(100, 10, 45, 180));
         this->label3->set_Bounds(Rectangle(145, 10, 60, 180));
         this->label4->set_Bounds(Rectangle(205, 10, 60, 180));
         this->label5->set_Bounds(Rectangle(265, 10, 60, 180));
         this->label6->set_Bounds(Rectangle(325, 10, 95, 180));
+        this->button1->set_Bounds(Rectangle(10, 170, 40, 20));
 
     	this->set_ForeColor(Color::FromArgb(100, 112, 76));
     	this->set_BackColor(Color::FromArgb(168, 189, 128));
@@ -91,6 +95,9 @@ private:
             "　　　ﾉ つつ　   \n"
             "　〜（＿OO　     \n"
             );
+        this->button1->set_Text("更新");
+
+        this->button1->add_Click(new EventHandler<Form1>(this, &Form1::SetLabels));
 
         this->get_Controls()->Add(this->label0.get());
         this->get_Controls()->Add(this->label1.get());
@@ -99,6 +106,7 @@ private:
         this->get_Controls()->Add(this->label4.get());
         this->get_Controls()->Add(this->label5.get());
         this->get_Controls()->Add(this->label6.get());
+        this->get_Controls()->Add(this->button1.get());
     }
 
 public:

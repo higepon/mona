@@ -36,4 +36,5 @@ Form1.o: Form1.cpp ../../../include/monapi.h ../../../include/sys/types.h \
   ../../../include/gui/System/Drawing/Graphics.h \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h \
-  ../../../include/gui/System/Mona/Forms/Label.h
+  ../../../include/gui/System/Mona/Forms/Label.h \
+  ../../../include/gui/System/Mona/Forms/Button.h
