@@ -15,10 +15,11 @@
 #include <Queue.h>
 #include <BitMap.h>
 
-#define PAGE_PRESENT 0x01
-#define PAGE_RW      0x02
-#define PAGE_USER    0x04
-#define PAGE_KERNEL  0x00
+#define PAGE_PRESENT   0x01
+#define PAGE_RW        0x02
+#define PAGE_READ_ONLY 0x00
+#define PAGE_USER      0x04
+#define PAGE_KERNEL    0x00
 
 #define PAGE_SIZE      4096
 #define PAGE_TABLE_NUM 1024
@@ -44,6 +45,7 @@ class PageManager {
     void flushPageCache() const;
 
     bool allocatePhysicalPage(PageEntry* pageEntry);
+    bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
 
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
@@ -91,7 +93,8 @@ class Stack : public Segment {
     virtual bool faultHandler(LinearAddress address, dword error);
 
   private:
-    bool isVallidAddress() const;
+    bool tryExtend(LinearAddress address);
+    bool allocatePage(LinearAddress address);
 
   protected:
     bool isAutoExtend_;

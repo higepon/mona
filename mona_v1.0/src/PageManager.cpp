@@ -142,6 +142,13 @@ PageEntry* PageManager::allocatePageTable() const {
     return table;
 }
 
+bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user) {
+
+    /* if already allocated, change attribute */
+
+    return true;
+}
+
 #define PAGE_NOT_EXIST         0x00
 #define PAGE_ACCESS_DENIED     0x01
 #define PAGE_FAULT_READ        0x00
@@ -184,22 +191,25 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
 }
 
-#define PAGE_FAULT_NOT_EXIST 0x01
+#define SEGMENT_FAULT_STACK_OVERFLOW 0x01
+#define SEGMENT_FAULT_OUT_OF_RANGE   0x02
 
-#define STACK_OVERFLOW 0x01
+#define PAGE_FAULT_NOT_EXIST     0x01
+#define PAGE_FAULT_NOT_WRITABLE  0x02
+
 
 
 Stack::Stack(LinearAddress start, dword size) {
 
     start_        = start;
-    size_         = size;
+    size_         = size + PAGE_SIZE;
     isAutoExtend_ = false;
 }
 
 Stack::Stack(LinearAddress start, dword initileSize, dword maxSize) {
 
     start_        = start;
-    size_         = initileSize;
+    size_         = initileSize + PAGE_SIZE;
     maxSize_      = maxSize;
     isAutoExtend_ = true;
 }
@@ -210,23 +220,62 @@ Stack::~Stack() {
 
 bool Stack::faultHandler(LinearAddress address, dword error) {
 
-    if (error != PAGE_FAULT_NOT_EXIST) {
+    if (error == PAGE_FAULT_NOT_WRITABLE && !tryExtend(address)) {
 
-        /* unknown page fault */
         return false;
-    }
 
-    if (!isAutoExtend_) {
+    } else if (error == PAGE_FAULT_NOT_EXIST && !allocatePage(address)) {
 
-        /* not auto extension mode */
-        errorNumber_ = STACK_OVERFLOW;
+        return false;
+    } else {
+
         return false;
     }
 
     return true;
 }
 
-bool Stack::isVallidAddress() {
+bool Stack::tryExtend(LinearAddress address) {
 
+    if (!isAutoExtend_) {
 
+        /* not auto extension mode */
+        errorNumber_ = SEGMENT_FAULT_STACK_OVERFLOW;
+        return false;
+    }
+
+    if (address > start_ + PAGE_SIZE || address < start_) {
+
+        errorNumber_ = SEGMENT_FAULT_OUT_OF_RANGE;
+        return false;
+    }
+
+    if (size_ + PAGE_SIZE > maxSize_) {
+
+        errorNumber_ = SEGMENT_FAULT_STACK_OVERFLOW;
+        return false;
+    }
+
+    /* page allocation */
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address - PAGE_SIZE, PAGE_READ_ONLY, g_current_process->dpl);
+
+    /* extention done */
+    size_ += PAGE_SIZE;
+
+    return true;
+}
+
+bool Stack::allocatePage(LinearAddress address) {
+
+    if (address < start_ || address > start_ + size_) {
+
+        errorNumber_ = SEGMENT_FAULT_OUT_OF_RANGE;
+        return false;
+    }
+
+    /* page allocation */
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PAGE_RW, g_current_process->dpl);
+
+    return true;
 }
