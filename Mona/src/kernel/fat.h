@@ -62,13 +62,16 @@ public:
     dword getNumberOfClusters ();
     dword getRootDirectoryEntry ();
 
+    byte* readSectors (dword c, dword s, dword d, dword *sects, dword *last);
     dword allocateCluster (dword cluster, dword count);
     void freeCluster (dword cluster);
+    void setEndOfCluster(dword cluster);
 
     bool read (dword lba, byte *bf);
     bool write (dword lba, byte *bf);
 
     dword getLbaFromCluster (dword cluster);
+    dword getClusterFromLba (dword lba);
     dword getNextCluster (dword cluster);
 
 private:
@@ -119,6 +122,8 @@ public:
     dword size ();
 
 private:
+    bool expandClusters (dword sz);
+    void reduceClusters (dword sz);
     void clearFlag ();
 };
 
@@ -150,15 +155,18 @@ protected:
         SIZE_EXTENTION = 3,
         END_OF_CLUSTER = 0xfff,
         MARK_DELETE = 0xe5,
-        MARK_UNUSED = 0x00
+        MARK_UNUSED = 0x00,
+        RESIZE_DELTA = 1
     };
 
     dword start;
+    dword last;
+    FAT *fat;
     byte *entrys;
     byte *unused;
     byte *end;
     dword *lba;
-    FAT *fat;
+    dword sectors;
 
 public:
     FatDirectory ();
@@ -191,9 +199,10 @@ private:
     bool isValid (byte *ent);
     void expandFileName (byte *name, byte *bf);
     bool clearDirectory (int entry);
-    int searchFreeEntry ();
     int newEntry (byte *bf, dword sz, byte attr, dword fsize);
     void setEntry (byte *ent, byte *n, byte a, word c, dword s);
+    int searchFreeEntry ();
+    bool expandEntry ();
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -206,7 +215,7 @@ public:
     FatRootDirectory () : FatDirectory() {}
     ~FatRootDirectory () {}
 
-    bool initialize (FAT *p, dword cluster);
+    bool initialize (FAT *p, dword c);
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -219,7 +228,7 @@ public:
     FatSubDirectory () : FatDirectory() {}
     ~FatSubDirectory () {}
 
-    bool initialize (FAT *p, dword cluster);
+    bool initialize (FAT *p, dword c);
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
