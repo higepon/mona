@@ -16,6 +16,8 @@
 
 #include<types.h>
 
+#define MAX_PROCESS 512
+
 typedef struct {
     dword  eip;
     dword  cs;
@@ -45,12 +47,13 @@ class Process {
     }
     virtual ~Process() {
     }
-    virtual int main();
+    virtual int  main();
     virtual void init();
-    virtual void  destroy();
+    virtual void destroy();
 
   public:
     ProcessInfo pinfo_;
+    static void setup();
 };
 
 #endif

@@ -53,6 +53,9 @@ void startKernel(void) {
     /* set segment */
     GDTUtil::setup();
 
+    /* Process setup */
+    Process::setup();
+
     /* initialze console */
     g_console = new GraphicalConsole();
 

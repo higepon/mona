@@ -15,6 +15,7 @@
 #include<GDTUtil.h>
 #include<IDTUtil.h>
 #include<PagingUtil.h>
+#include<Process.h>
 #include <sysresource.h> /* (expr) */
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */
@@ -53,3 +54,6 @@ GLOBAL dword g_total_system_memory;
 /* Paging */
 GLOBAL PTE* g_page_dir;
 GLOBAL PTE* g_page_tbl;
+
+/* Process */
+GLOBAL Process* g_process;
