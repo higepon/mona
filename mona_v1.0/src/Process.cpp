@@ -156,7 +156,6 @@ void ThreadManager::archCreateThread(Thread* thread, dword programCounter, PageE
     ThreadInfo* info      = thread->getThreadInfo();
     ArchThreadInfo* ainfo = info->archinfo;
     ainfo->cs      = KERNEL_CS;
-    ainfo->cs      = KERNEL_CS;
     ainfo->ds      = KERNEL_DS;
     ainfo->es      = KERNEL_DS;
     ainfo->ss      = KERNEL_SS;

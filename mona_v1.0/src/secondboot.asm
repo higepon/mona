@@ -47,24 +47,27 @@ get_vesa_info:
         mov ax, 0x4F00            ; function 00h
         mov di, vesa_info         ; 0x0000:vesa_info
         int 0x10
-        cmp ah, 0x4F
-        je vesa_not_supported
+        cmp ax, 0x004F
+        jne vesa_not_supported
 get_vesa_info_detail
         mov ax, 0x4F01            ; function 01h
         mov cx, vesa_mode
         mov di, vesa_info_detail  ; 0x0000:vesa_info_detail
         int 0x10
-        cmp ah, 0x4F
-        je vesa_not_supported
+        cmp ax, 0x004F
+        jne vesa_not_supported
 vesa_supported:
         mov ax, 0x4F02
         mov bx, vesa_mode
         int 0x10
+        cmp ax, 0x004F
+        jne vesa_not_supported
         popa
         jmp RealToProtect
 vesa_not_supported:
-          mov byte[di], 'N'
-          popa
+        mov di, vesa_info
+        mov byte[di], 'N'
+        popa
 graphicalmode:
         mov ax, 0x0012
         int 0x10
