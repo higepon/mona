@@ -79,60 +79,60 @@ int main(int argc, char *argv[]) {
 
     delete fat;
 
-//     fat    = new FAT12(driver);
+   fat    = new FAT12(driver);
 
-//     target2.open("../bin/USER.ELF", std::ios::out|std::ios::in|std::ios::binary);
+   target2.open("../bin/USER.ELF", std::ios::out|std::ios::in|std::ios::binary);
 
-//     if (!fat->initilize()) {
+   if (!fat->initilize()) {
 
-//         int errorNo = fat->getErrorNo();
+       int errorNo = fat->getErrorNo();
 
-//         if (errorNo == FAT12::BPB_ERROR) printf("BPB read  error \n");
-//         else if (errorNo == FAT12::NOT_FAT12_ERROR) printf("NOT FAT12 error \n");
-//         else if (errorNo == FAT12::FAT_READ_ERROR) printf("NOT FAT12 error \n");
-//         else printf("unknown error \n");
+       if (errorNo == FAT12::BPB_ERROR) printf("BPB read  error \n");
+       else if (errorNo == FAT12::NOT_FAT12_ERROR) printf("NOT FAT12 error \n");
+       else if (errorNo == FAT12::FAT_READ_ERROR) printf("NOT FAT12 error \n");
+       else printf("unknown error \n");
 
-//         target2.close();
-//         return -1;
-//     }
+       target2.close();
+       return -1;
+   }
 
-//     printf("fat initilize OK\n");
+   printf("fat initilize OK\n");
 
-//     printf("create file start \n");
-//     if (!fat->createFlie("USER", "ELF")) {
+   printf("create file start \n");
+   if (!fat->createFlie("USER", "ELF")) {
 
-//         printf("can not create file=%d", fat->getErrorNo());
-//         return -1;
-//     }
+       printf("can not create file=%d", fat->getErrorNo());
+       return -1;
+   }
 
-//     printf("open file start\n");
-//     if (!fat->open(".", "USER.ELF", FAT12::WRITE_MODE)) {
+   printf("open file start\n");
+   if (!fat->open(".", "USER.ELF", FAT12::WRITE_MODE)) {
 
-//         printf("open failed");
-//         return -1;
-//     }
+       printf("open failed");
+       return -1;
+   }
 
-//     target2.seekg(0);
-//     while (true) {
+   target2.seekg(0);
+   while (true) {
 
-//         if (!target2.read((char*)text, 512)) break;
+       if (!target2.read((char*)text, 512)) break;
 
-//         if (!fat->write(text)) {
-//             printf("write failed");
-//             target2.close();
-//             return -1;
-//         }
-//         memset(text, 0, 512);
-//     }
+       if (!fat->write(text)) {
+           printf("write failed");
+           target2.close();
+           return -1;
+       }
+       memset(text, 0, 512);
+   }
 
-//     if (!fat->close()) {
-//         printf("close failed");
-//         target2.close();
-//     }
+   if (!fat->close()) {
+       printf("close failed");
+       target2.close();
+   }
 
-//     target2.close();
+   target2.close();
 
-//     delete fat;
+   delete fat;
     delete driver;
 
     return 0;
