@@ -28,18 +28,16 @@
 */
 void keyStrokeHandler() {
 
-    _sys_printf("debug\n");
-
     /* get scancode */
     unsigned char scancode = inportb(0x60);
-    _sys_printf("debug2\n");
+
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
-    _sys_printf("debug3\n");
+
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
-    _sys_printf("debug4\n");
+
     /* iret */
     iret();
 
@@ -102,13 +100,13 @@ void fdcHandler(){
     \brief timer handler
 
     timer handler
+    at this function task switch occurs.
 
     \author HigePon
-    \date   create:2002/11/21 update:
+    \date   create:2002/11/21 update:2002/12/19
 */
 void timerHandler() {
 
-    /* iret */
     //_sysPrint("timer");
 
     /* EOI is below for IRQ 8-15 */

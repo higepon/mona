@@ -116,6 +116,8 @@ void X86MemoryManager::freeMemory(void* address) {
     \date   create:2002/08/08 update:
 */
 X86MemoryManager::~X86MemoryManager() {
+    _sys_printf("KeyBoardManager:destructor\n");
+
 }
 
 /*!

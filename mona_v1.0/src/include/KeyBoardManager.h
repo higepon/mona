@@ -124,10 +124,7 @@ class KeyBoardManager {
     byte idLow_;
   public:
     static KeyBoardManager& instance() {
-    _sys_printf("debug2.2\n");
-
         static KeyBoardManager theInstance;
-    _sys_printf("debug2.4\n");
         return theInstance;
     }
 

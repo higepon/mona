@@ -52,9 +52,4 @@ void _pure_virtual() {
     \author HigePon
     \date   create:2002/08/08 update:2002/12/15
 */
-int atexit( void (*func)(void)) {
-
-    func();
-    _sysPrintln("atexit()");
-    return -1;
-}
+int atexit( void (*func)(void)) {}

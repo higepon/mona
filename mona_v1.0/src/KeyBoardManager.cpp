@@ -54,7 +54,6 @@ const int KeyBoardManager::keyMapE0_[128] = {
     \date   create:2002/10/12 update:
 */
 KeyBoardManager::~KeyBoardManager() {
-    _sys_printf("KeyBoardManager:destructor\n");
 }
 
 /*!
@@ -67,10 +66,8 @@ KeyBoardManager::~KeyBoardManager() {
 */
 KeyBoardManager::KeyBoardManager() {
 
-    _sys_printf("debug2.31\n");
     keyBufIndex_       = 0; /* index is 0 */
     keyBufGottenIndex_ = 0; /* index is 0 */
-    _sys_printf("debug2.32\n");
     return;
 }
 

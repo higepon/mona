@@ -63,8 +63,8 @@ void startKernel(void) {
     /* enable A20 */
     X86MemoryManager::enableA20();
 
-    /* temporary soon remove */
-    KeyBoardManager& km = KeyBoardManager::instance();
+    /* set up KeyBoardManager before task start */
+    KeyBoardManager::instance();
 
     /* test code is here */
 #if 0
