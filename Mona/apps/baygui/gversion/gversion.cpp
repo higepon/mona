@@ -146,7 +146,7 @@ void GVersion::onPaint(Graphics *g)
 	
 	for (i = 0; i < 30; i++) {
 		for (j = 0; j < 21; j++) {
-			_g->screen->putPixel16(x + INSETS_LEFT + 16 + j, y + INSETS_TOP + 11 + i, versionIcon[i][j]);
+			g->drawPixel(16 + j, 11 + i, versionIcon[i][j]);
 		}
 	}
 
