@@ -27,7 +27,7 @@ public:
     Canvas()
     {
         mi = NULL;
-        mi = monapi_call_file_read_data("/KUMA.OBJ", MONAPI_FALSE);
+        mi = monapi_call_file_decompress_st5_file("/KUMA.OBJ", MONAPI_FALSE);
 
         if (mi == NULL)
         {
