@@ -796,11 +796,7 @@ void WindowManager::service()
 #endif
 
 	// テストアプリ
-	//monapi_call_process_execute_file("/APPS/GUITEST1.EX2", MONAPI_FALSE);
-	monapi_call_process_execute_file("/APPS/GVERSION.EX2", MONAPI_FALSE);
-	monapi_call_process_execute_file("/APPS/GVERSION.EX2", MONAPI_FALSE);
-	monapi_call_process_execute_file("/APPS/GVERSION.EX2", MONAPI_FALSE);
-	//monapi_call_process_execute_file("/APPS/BBALL.EX2", MONAPI_FALSE);
+	monapi_call_process_execute_file("/APPS/GRUNNER.EX2", MONAPI_FALSE);
 
 	// 再描画
 	repaint();
