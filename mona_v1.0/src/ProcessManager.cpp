@@ -15,7 +15,6 @@
 #include <ProcessManager.h>
 #include <monaVga.h>
 #include <monaTester.h>
-//#include <monaLib.h>
 #include <string.h>
 #include <monaTester.h>
 
@@ -198,6 +197,16 @@ void ProcessManager::switchProcess() {
 
 }
 
+/*!
+    \brief switch process
+
+    switch process to another
+
+    \param selector selector value
+
+    \author HigePon
+    \date   create:2002/12/02 update:
+*/
 void ProcessManager::switchProcess(dword selector) {
 
     FARJMP far;
