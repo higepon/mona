@@ -50,15 +50,15 @@ OBJECTS = $(SOURCES:.cpp=.o)
 all : copy_userapp
 
 copy_userapp : $(TARGET) $(USER_APP)
-	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/SHELL.SVR)
-	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/KEYBDMNG.SVR)
-	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/MAP.SVR)
-	(cd $(BIN); $(FAT_TOOL) mona.img SERVER/MOUSE.SVR)
-	(cd $(BIN); $(FAT_TOOL) mona.img APP/HELLO.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img APP/JPEGDEMO.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img APP/NOIZ2BG.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img APP/CLOCK.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img APP/REVERSI.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img SHELL.SVR    \\SERVER\\SHELL.SVR)
+	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR \\SERVER\\KEYBDMNG.SVR)
+	(cd $(BIN); $(FAT_TOOL) mona.img MAP.SVR      \\SERVER\\MAP.SVR)
+	(cd $(BIN); $(FAT_TOOL) mona.img MOUSE.SVR    \\SERVER\\MOUSE.SVR)
+	(cd $(BIN); $(FAT_TOOL) mona.img HELLO.ELF    \\APP\\HELLO.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img JPEGDEMO.ELF \\APP\\JPEGDEMO.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img NOIZ2BG.ELF  \\APP\\NOIZ2BG.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img CLOCK.ELF    \\APP\\CLOCK.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img REVERSI.ELF  \\APP\\REVERSI.ELF)
 
 $(USER_APP) :
 	(cd user; make)
@@ -66,10 +66,10 @@ $(USER_APP) :
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
 	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
-	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
+	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG \\KERNEL.IMG)
 
-$(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
-	$(CXX) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(SHAREINCLUDE) -idirafter $(TOOLS)
+$(FAT_TOOL) :
+	(cd ../tools/fat_write; make)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
@@ -106,10 +106,12 @@ doxygen :
 depend:
 	gcc -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > $(ENV)/dependencies
 	(cd user/userlib/; make depend)
+	(cd ../tools/fat_write; make depend)
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) $(BIN)/mona.dbg mode12h.o ihandler.o core.o ../list/*.list
 	(cd user; make clean)
+	(cd ../tools/fat_write; make clean)
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img

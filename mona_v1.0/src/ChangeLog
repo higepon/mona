@@ -1,3 +1,7 @@
+2004-03-09  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp : fat_write.exeを改装中のためまともに動きません。
+
 2004-03-08  higepon  <higepon@users.sourceforge.jp>
 
         * core.asm (from_kernel): レジスタセーブロジックを書換
