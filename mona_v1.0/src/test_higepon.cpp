@@ -85,6 +85,19 @@ void FDCDriverTester() {
 
     /* test3 image read */
     g_fdcdriver->motor(ON);
+
+    for (dword i = 0; i < 0xffffffff; i++) {
+	i++;
+	i--;
+	i++;
+	i--;
+	i++;
+	i--;
+	i++;
+	i--;
+	i++;
+	i--;
+    }
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
