@@ -1,3 +1,7 @@
+2004-09-08  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (switchThread): FileOutputStreamでハングする件デバッグ中。
+
 2004-09-05  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones Code:Mones Ver0.11 ソースツリーに追加。ただしデフォルトではmake非対象

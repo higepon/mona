@@ -25,20 +25,19 @@ class Canvas : public Control
 public:
     Canvas()
     {
-/*         char* file = ReadData("/KUMA.OBJ"); */
-/*         if (file == NULL) */
-/*         { */
-/*             printf("File Read Error\n"); */
-/*             return; */
-/*         } */
+        char* file = ReadData("/KUMA.OBJ");
+        if (file == NULL)
+        {
+            printf("File Read Error\n");
+            return;
+        }
 
         v0 = new Vertex(0, 0, 0);
         v1 = new Vertex(0, 0, 0);
         v2 = new Vertex(0, 0, 0);
         tempFace = new Face(v0, v1, v2);
 
-//        this->CreateModel(file);
-        this->CreateModel();
+        this->CreateModel(file);
         this->Rotate(0, 3.14 / 4);
     }
 
@@ -434,25 +433,23 @@ protected:
             tempFace->vertex[2]->x = px[2];
             tempFace->vertex[2]->y = py[2];
 
-/*             int x0 = (int)( face[i]->vertex[0]->x * scale + CENTER_X); */
-/*             int x1 = (int)( face[i]->vertex[1]->x * scale + CENTER_X); */
-/*             int x2 = (int)( face[i]->vertex[2]->x * sc]ale + CENTER_X); */
-/*             int y0 = (int)(face[i]->vertex[0]->y * scale + CENTER_Y); */
-/*             int y1 = (int)(face[i]->vertex[1]->y * scale + CENTER_Y); */
-/*             int y2 = (int)(face[i]->vertex[2]->y * scale + CENTER_Y); */
+            int x0 = (int)( face[i]->vertex[0]->x * scale + CENTER_X);
+            int x1 = (int)( face[i]->vertex[1]->x * scale + CENTER_X);
+            int x2 = (int)( face[i]->vertex[2]->x * scale + CENTER_X);
+            int y0 = (int)(face[i]->vertex[0]->y * scale + CENTER_Y);
+            int y1 = (int)(face[i]->vertex[1]->y * scale + CENTER_Y);
+            int y2 = (int)(face[i]->vertex[2]->y * scale + CENTER_Y);
 
-            FillFace(graphics, tempFace, color);
+//            FillFace(graphics, tempFace, color);
 
-//            graphics->DrawLine(color, x0, y0, x1, y1);
-//            graphics->DrawLine(color, x1, y1, x2, y2);
-//            graphics->DrawLine(color, x2, y2, x0, y0);
+           graphics->DrawLine(color, x0, y0, x1, y1);
+           graphics->DrawLine(color, x1, y1, x2, y2);
+           graphics->DrawLine(color, x2, y2, x0, y0);
         }
 
         delete[] tmp;
         delete[] tmp_depth;
     }
-
-    void CreateModel();
 
 protected:
     bool drag;
