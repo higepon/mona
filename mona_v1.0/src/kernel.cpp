@@ -150,6 +150,8 @@ void startKernel(void) {
 
 void userTest() {
 
+    // you can't use hlt here
+    //    asm volatile("hlt");
     while (true);
 }
 

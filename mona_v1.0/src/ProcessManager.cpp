@@ -11,6 +11,7 @@
 */
 
 #include <ProcessManager.h>
+#include <io.h>
 
 ProcessManager::ProcessManager() {
 
@@ -94,6 +95,7 @@ void ProcessManager::printOneProcess(ProcessInfo* info) const {
 
 void ProcessManager::printAllProcesses() const {
 
+    g_console->printf("total tick=%d                                \n", g_process_manager->getTick());
     g_console->printf("|    name     | pid | dpl |    cs    |    ss    |    esp   |   state  |tick\n");
     g_console->printf("---------------------------------------------------------------------------\n");
 
@@ -114,6 +116,11 @@ dword ProcessManager::getTick() const {
 
 void ProcessManager::sleep(ProcessInfo* process, dword tick) {
 
+    dword eflags = get_eflags();         // should be removed
+    disableInterrupt();                  // should be removed
+
     process->state = Process::SLEEPING;
     scheduler_->sleep(process, tick);
+
+    set_eflags(eflags);                  // should be removed
 }
