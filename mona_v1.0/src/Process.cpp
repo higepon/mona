@@ -39,9 +39,9 @@ Process::Process(const char* name) {
     pinfo_.process = this;
     strncpy(pinfo_.name, name, sizeof(pinfo_.name));
 
-    pinfo_.cs      = 0x08;
-    pinfo_.ds      = 0x10;
-    pinfo_.ss      = 0x18;
+    pinfo_.cs      = KERNEL_CS;
+    pinfo_.ds      = KERNEL_DS;
+    pinfo_.ss      = KERNEL_SS;
     pinfo_.eflags  = 0x200;
     pinfo_.eax     = 0;
     pinfo_.ecx     = 0;
@@ -68,10 +68,10 @@ UserProcess::UserProcess(const char* name) {
     pinfo_.process = this;
     strncpy(pinfo_.name, name, sizeof(pinfo_.name));
 
-    pinfo_.cs      = 0x2b;
-    pinfo_.ds      = 0x33;
-    pinfo_.ss      = 0x3b;
-    pinfo_.eflags  = 0x3200;
+    pinfo_.cs      = USER_CS;
+    pinfo_.ds      = USER_DS;
+    pinfo_.ss      = USER_SS;
+    pinfo_.eflags  = 0x200;
     pinfo_.eax     = 0;
     pinfo_.ecx     = 0;
     pinfo_.edx     = 0;

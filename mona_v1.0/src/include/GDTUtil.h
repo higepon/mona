@@ -22,6 +22,14 @@
 #define SEGMENT_DPL2    0x40
 #define SEGMENT_DPL3    0x60
 
+#define GDT_ENTRY_SELECTOR(n) (n * sizeof(SegDesc))
+#define KERNEL_CS GDT_ENTRY_SELECTOR(1)
+#define KERNEL_DS GDT_ENTRY_SELECTOR(2)
+#define KERNEL_SS GDT_ENTRY_SELECTOR(3)
+#define USER_CS   GDT_ENTRY_SELECTOR(5) | DPL_USER
+#define USER_DS   GDT_ENTRY_SELECTOR(6) | DPL_USER
+#define USER_SS   GDT_ENTRY_SELECTOR(7) | DPL_USER
+
 /*!
     \struct  segment descripter
 */

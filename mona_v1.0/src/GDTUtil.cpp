@@ -125,7 +125,7 @@ void GDTUtil::setupTSS(word selector) {
     /* prepare dpl0 stack */
     memset(&g_tss, 0, sizeof(TSS));
     g_tss.esp0 = 0x90000;
-    g_tss.ss0  = 0x18;
+    g_tss.ss0  = KERNEL_SS;
 
     /* load TSS */
     ltr(selector);

@@ -37,11 +37,11 @@ void disp_name1() {
 
     while (true) {
 
-        //        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console));
 
         disp_write_font(75, 0, 'M', color%13);
 
-        //        Semaphore::up(&g_semaphore_console);
+        Semaphore::up(&g_semaphore_console);
         g_process_manager->sleep(g_current_process, 6);
         color++;
     }
@@ -78,10 +78,10 @@ void disp_name3() {
 
         while (Semaphore::down(&g_semaphore_console));
 
-        disp_write_font(77, 0, 'n', color%15);
+        disp_write_font(77, 0, 'n', color%13);
 
-        g_process_manager->sleep(g_current_process, 4);
- 
+        g_process_manager->sleep(g_current_process, 2);
+
         Semaphore::up(&g_semaphore_console);
         color++;
     }

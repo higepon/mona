@@ -29,7 +29,6 @@ void ProcessManager::switchProcess() {
     if (scheduler_->toUserMode()) {
 
         info(DEV_NOTICE, "to user mode\n");
-        g_current_process->ss = 0x3b;
         arch_switch_process_to_user_mode();
 
     } else {
