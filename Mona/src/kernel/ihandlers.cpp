@@ -37,6 +37,7 @@ void doIrqHandler(int irq)
     g_page_manager->setPageDirectory((dword)thread->process->getPageDirectory());
     handler();
     g_page_manager->setPageDirectory((dword)g_currentThread->process->getPageDirectory());
+    KEvent::set(thread->thread, KEvent::MESSAGE_COME);
 }
 
 /*!
@@ -45,75 +46,15 @@ void doIrqHandler(int irq)
   mouse handler IRQ 12
 
   \author HigePon
-  \date   create:2004/02/05 update:
+  \date   create:2004/02/05 update:2004/08/9
 */
 void mouseHandler()
 {
-    static int counter = 0;
-    static MessageInfo message;
-    static MessageInfo prev;
-
-    if (Mouse::waitReadable())
-    {
-        g_console->printf("mouse time out");
-    }
-
-    byte data = inp8(0x60);
-
     /* EOI */
     outp8(0xA0, 0x20);
     outp8(0x20, 0x20);
 
     doIrqHandler(12);
-
-#if 0  // DEBUG for message
-    g_scheduler->dump();
-#endif
-
-    /* modified 2004/04/09 by nikq
-     *
-     * - counter -> state machine
-     * - head detection and state reset.
-     *   -> works in qemu correctly.
-     */
-
-    if(counter == 0 && !(data & 0x08))
-        return;
-
-    switch(counter&3)
-    {
-    case 0:
-        message.arg1 = data;
-        counter = 1;
-        break;
-    case 1:
-        message.arg2 = data;
-        counter = 2;
-        break;
-    case 2:
-        message.header = MSG_MOUSE;
-        message.arg3 = data;
-        counter = 0;
-
-#if 1
-        /*
-        ||
-        || for debug
-        || if (mouseState == prevMouseState) don't send
-        ||
-        */
-        if (message.arg2 == 0 && message.arg3 == 0 && message.arg1 == prev.arg1)
-        {
-            return;
-        }
-        prev = message;
-#endif
-        if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.EX2"), &message))
-        {
-            g_console->printf("mouse send failed");
-        }
-        break;
-    }
 }
 
 /*!

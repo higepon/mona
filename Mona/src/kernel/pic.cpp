@@ -127,30 +127,6 @@ void enableKeyboard() {
 }
 
 /*!
-    \brief enable mouse interrupt
-
-    \author HigePon
-    \date   create:2004/02/08 update:
-*/
-void enableMouse() {
-
-    /* enable mouse interrupt slave unmask */
-    outp8(0x21, (inp8(0x21) & 0xFB)); /* IR2 cascade */
-    outp8(0xA1, (inp8(0xA1) & 0xEF)); /* IR4         */
-}
-
-/*!
-    \brief disable mouse interrupt
-
-    \author HigePon
-    \date   create:2004/02/08 update:
-*/
-void disableMouse() {
-
-    outp8(0xA1, inp8(0xA1) | 0x10);
-}
-
-/*!
     \brief enable FDC interrupt
 
     \author HigePon

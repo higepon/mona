@@ -1,3 +1,7 @@
+2004-08-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp (SetData): マウス割り込みハンドラをカーネルから追い出した。
+
 2004-08-08  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/ihandlers.cpp (doIrqHandler): ユーザー登録のirqハンドラを実行

@@ -134,11 +134,6 @@ void startKernel(void)
     checkTypeSize();
     printOK("Checking type size ");
 
-    /* mouse init */
-    int mouse = Mouse::init();
-    if (!mouse) printOK("Setting Mouse      ");
-    else g_console->printf("Mouse init error=%d\n", mouse);
-
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
@@ -396,7 +391,6 @@ void mainProcess()
     }
 
     enableKeyboard();
-    enableMouse();
 
 #ifdef HIGE
 
