@@ -53,7 +53,8 @@ SOURCES    = cstart.cpp            \
              ISADriver.cpp         \
              info.cpp              \
              GDTUtil.cpp           \
-             IDTUtil.cpp
+             IDTUtil.cpp           \
+             PagingUtil.cpp
 
 DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
 DRVROBJ = ps2kbc.o
@@ -64,11 +65,8 @@ all : $(TARGET)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL)
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
-#	cp  -f $(TEMPLATE) $(TARGET).tmp
 	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
 	$(FAT_TOOL) $(TARGET)
-#	(cat $(BOOT1);dd if=$(TARGET).tmp bs=512 skip=1 ) > $(TARGET)
-#	rm -f $(TARGET).tmp
 
 $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap.cpp
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(TOOLS)
