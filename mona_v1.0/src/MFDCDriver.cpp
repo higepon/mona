@@ -43,11 +43,13 @@
 #define FDC_DR_PRIMARY    0x3f5
 #define FDC_DR_SECONDARY  0x375
 
-
 /* summary */
 #define FDC_DOR_RESET   0
 #define FDC_START_MOTOR (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
 #define FDC_STOP_MOTOR  (FDC_DMA_ENABLE | FDC_REST_RESET | FDC_DR_SELECT_A)
+
+/* FDC Commands */
+#define FDC_COMMAND_SEEK 0x0f
 
 /* time out */
 #define FDC_RETRY_MAX 100000
@@ -87,24 +89,37 @@ MFDCDriver::~MFDCDriver() {
 */
 void MFDCDriver::initilize() {
 
-    printStatus("before");
+    printStatus("reset start");
 
     /* reset drive */
     outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
 
-    printStatus("reset");
+    printStatus("reset ok");
 
     /* start driveA */
     interrupt_ = false;
     motor(ON);
     while (!waitInterrupt());
 
-    calibrate();
-    printStatus("after");
+    recalibrate();
+    printStatus("calibrate ok");
 
+    interrupt_ = false;
     motor(OFF);
-    while (!waitInterrupt());
+    //    while (!waitInterrupt());
     printStatus("motor off");
+
+    interrupt_ = false;
+    byte command[] = {0x02
+                    , 0x00
+                    , 0x00/* cylinder */
+    };
+
+    motor(ON);
+    seek(3);
+    printStatus("after seek");
+    motor(OFF);
+
     return;
 }
 
@@ -193,15 +208,15 @@ bool MFDCDriver::sendCommand(const byte command[], const byte length) {
 }
 
 /*!
-    \brief calibrate
+    \brief recalibrate
 
     \return true OK/false command fail
     \author HigePon
     \date   create:2003/02/10 update:
 */
-bool MFDCDriver::calibrate() {
+bool MFDCDriver::recalibrate() {
 
-    byte command[] = {0x07, 0x00}; /* calibrate */
+    byte command[] = {0x07, 0x00}; /* recalibrate */
 
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
@@ -234,3 +249,26 @@ bool MFDCDriver::checkMSR(byte expectedCondition) {
     /* time out */
     return false;
 }
+
+
+/*!
+    \brief seek
+
+    \param  track
+    \return true OK/false time out
+    \author HigePon
+    \date   create:2003/02/11 update:
+*/
+bool MFDCDriver::seek(byte track) {
+
+    byte command[] = {FDC_COMMAND_SEEK, 0, track};
+
+    interrupt_ = false;
+    if(!sendCommand(command, sizeof(command))){
+
+        _sys_printf("MFDCDriver#seek:command fail\n");
+        return false;
+    }
+    return true;
+}
+

@@ -32,8 +32,9 @@ class MFDCDriver {
     void motor(const bool on);
     bool sendCommand(const byte command[], const byte length);
     bool waitInterrupt();
-    bool calibrate();
+    bool recalibrate();
     bool checkMSR(byte expectedCondition);
+    bool seek(byte track);
 
   private:
     byte version_;
