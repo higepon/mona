@@ -80,11 +80,11 @@ _arch_switch_process_to_user_mode:
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
         mov ds , word[ebx + 44]      ; restore ds
+        push dword[ebx + 48]         ; push ss  here dpl lowwer
+        push dword[ebx + 28]         ; push esp here dpl lowwer
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
-        push dword[ebx + 28]         ; push esp here dpl lowwer
-        push dword[ebx + 48]         ; push ss  here dpl lowwer
         push dword[ebx + 24]
         pop  ebx                     ; restore ebp
         iretd                        ; switch to next

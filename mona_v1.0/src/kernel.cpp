@@ -144,6 +144,8 @@ void startKernel(void) {
     Process* process3 = new Process("test");
     //    g_process_manager->addProcess(process3, (dword)disp_name2);
 
+    info(DEV_NOTICE, "address %x\n", userTest);
+
     info(DUMP, "before esp=%x pid=%x", g_current_process->esp, g_current_process->pid);
     enableTimer();
 
@@ -173,7 +175,6 @@ void startKernel(void) {
 
 
 void userTest() {
-
 
     while (true);
 }

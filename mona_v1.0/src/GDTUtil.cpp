@@ -102,7 +102,6 @@ void GDTUtil::setup() {
     /* USER SS 0-4GB */
     setSegDesc(&g_gdt[7], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
 
-
     /* lgdt */
     GDTR gdtr;
     gdtr.base  = (dword)g_gdt;
@@ -125,7 +124,7 @@ void GDTUtil::setupTSS(word selector) {
 
     /* prepare dpl0 stack */
     memset(&g_tss, 0, sizeof(TSS));
-    g_tss.esp0 = 0x80000;
+    g_tss.esp0 = 0x90000;
     g_tss.ss0  = 0x18;
 
     /* load TSS */

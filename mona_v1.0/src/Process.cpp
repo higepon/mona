@@ -61,7 +61,7 @@ UserProcess::UserProcess(const char* name) {
     pinfo_.cs      = 0x28;
     pinfo_.ds      = 0x30;
     pinfo_.ss      = 0x38;
-    pinfo_.eflags  = 0x200;
+    pinfo_.eflags  = 0x3200;
     pinfo_.eax     = 0;
     pinfo_.ecx     = 0;
     pinfo_.edx     = 0;
