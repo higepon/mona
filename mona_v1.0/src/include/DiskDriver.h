@@ -22,8 +22,8 @@
 class DiskDriver {
 
   public:
-    virtual bool read(int lba, byte* buf) = 0;
-    virtual bool write(int lba, byte* buf) = 0;
+    virtual bool read(dword lba, byte* buf) = 0;
+    virtual bool write(dword lba, byte* buf) = 0;
 };
 
 #endif

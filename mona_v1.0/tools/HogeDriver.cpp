@@ -14,7 +14,7 @@ HogeDriver::~HogeDriver() {
 
 }
 
-bool HogeDriver::read(int lba, byte* buf) {
+bool HogeDriver::read(dword lba, byte* buf) {
 
     file_.seekg(0);
     file_.seekg((lba - 1) * 512);
@@ -23,7 +23,7 @@ bool HogeDriver::read(int lba, byte* buf) {
     return true;
 }
 
-bool HogeDriver::write(int lba, byte* buf) {
+bool HogeDriver::write(dword lba, byte* buf) {
 
     file_.seekg(0);
     file_.seekg((lba - 1) * 512);

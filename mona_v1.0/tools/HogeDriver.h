@@ -26,8 +26,8 @@ class HogeDriver : public DiskDriver {
     ~HogeDriver();
 
   public:
-    bool read(int lba, byte* buf);
-    bool write(int lba, byte* buf);
+    bool read(dword lba, byte* buf);
+    bool write(dword lba, byte* buf);
 
   private:
 

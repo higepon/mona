@@ -671,7 +671,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     return true;
 }
 
-bool FDCDriver::read(int lba, byte* buf) {
+bool FDCDriver::read(dword lba, byte* buf) {
 
     byte track, head, sector;
 
@@ -689,7 +689,7 @@ bool FDCDriver::read(int lba, byte* buf) {
 }
 
 
-bool FDCDriver::write(int lba, byte* buf) {
+bool FDCDriver::write(dword lba, byte* buf) {
 
     byte track, head, sector;
 

@@ -28,8 +28,8 @@ class FDCDriver : public DiskDriver {
   public:
     void printStatus(const char*) const;
     void interrupt();
-    bool read(int lba, byte* buf);
-    bool write(int lba, byte* buf);
+    bool read(dword lba, byte* buf);
+    bool write(dword lba, byte* buf);
     void motor(const bool on);
     void test();
     bool recalibrate();
