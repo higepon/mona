@@ -803,7 +803,7 @@ int syscall_mthread_join(dword id)
 int syscall_sleep(dword tick)
 {
     int result;
-    SYSCALL_1(SYSTEM_CALL_PROCESS_SLEEP, result, tick);
+    SYSCALL_1(SYSTEM_CALL_THREAD_SLEEP, result, tick);
     return result;
 }
 
@@ -1008,7 +1008,7 @@ int syscall_get_arg(char* buf, int n)
 int syscall_mthread_yeild_message()
 {
     int result;
-    SYSCALL_0(SYSTEM_CALL_MTHREAD_YIELD_M, result);
+    SYSCALL_0(SYSTEM_CALL_MTHREAD_YIELD_MESSAGE, result);
     return result;
 }
 

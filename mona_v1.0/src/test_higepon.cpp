@@ -26,6 +26,36 @@
     \date   create:2003/05/18 update:$Date$
 */
 
+/*----------------------------------------------------------------------
+    KEvent
+----------------------------------------------------------------------*/
+void KEvent::wait(Thread* thread, kevent e)
+{
+    g_scheduler->wait(thread, e);
+    bool isProcessChange = g_scheduler->schedule();
+    ThreadOperation::switchThread(isProcessChange, 79);
+
+    /* not reached */
+}
+
+void KEvent::set(Thread* thread, kevent e)
+{
+    int wakeupResult = g_scheduler->wakeup(thread, e);
+
+    if (wakeupResult != 0)
+    {
+        ThreadOperation::switchThread((wakeupResult == 1), 78);
+    }
+
+    /* not reached */
+}
+
+const kevent KEvent::MESSAGE_COME  = 0x0001;
+const kevent KEvent::FDC_INTERRUPT = 0x0002;
+
+/*----------------------------------------------------------------------
+    RTC
+----------------------------------------------------------------------*/
 void RTC::init() {
 
     /* 24h */
@@ -277,11 +307,7 @@ int Messenger::send(dword id, MessageInfo* message)
     info->from = g_currentThread->thread->id;
     thread->messageList->add(info);
 
-    int wakeupResult = g_scheduler->wakeup(thread, WAIT_MESSAGE);
-    if (wakeupResult)
-    {
-        ThreadOperation::switchThread((wakeupResult == 1), 7);
-    }
+    KEvent::set(thread, KEvent::MESSAGE_COME);
     return 0;
 }
 

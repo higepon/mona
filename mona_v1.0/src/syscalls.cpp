@@ -37,7 +37,7 @@ void syscall_entrance() {
         info->eax = 0;
         break;
 
-    case SYSTEM_CALL_PROCESS_SLEEP:
+    case SYSTEM_CALL_THREAD_SLEEP:
 
         {
             g_scheduler->sleep(g_currentThread->thread, info->esi);
@@ -395,13 +395,12 @@ void syscall_entrance() {
 
         break;
 
-    case SYSTEM_CALL_MTHREAD_YIELD_M:
+    case SYSTEM_CALL_MTHREAD_YIELD_MESSAGE:
 
-        {
-            g_scheduler->wait(g_currentThread->thread, WAIT_MESSAGE);
-            bool isProcessChange = g_scheduler->schedule();
-            ThreadOperation::switchThread(isProcessChange, 3);
-        }
+        KEvent::wait(g_currentThread->thread, KEvent::MESSAGE_COME);
+
+        /* not reached */
+        break;
 
     case SYSTEM_CALL_DATE:
 
@@ -427,9 +426,9 @@ void syscall_entrance() {
         {
             if (!g_fdcdriver->interrupted())
             {
-                g_scheduler->wait(g_currentThread->thread, WAIT_FDC);
-                bool isProcessChange = g_scheduler->setCurrentThread();
-                ThreadOperation::switchThread(isProcessChange, 4);
+                KEvent::wait(g_currentThread->thread, KEvent::FDC_INTERRUPT);
+
+                /* not reached */
             }
         }
         break;

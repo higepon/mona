@@ -22,12 +22,6 @@ for (type element = (type )((top)->next); element != (top); element = (type )((e
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
 
-#define W_CRITICAL 0
-#define W_HUMAN    1
-#define W_NORMAL   2
-#define WAITQ_IDX(waitReason) ((int)(waitReason & 0x03))
-
-
 Scheduler::Scheduler() : tickTotal(0)
 {
     runq  = new Thread();

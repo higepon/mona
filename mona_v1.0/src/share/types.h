@@ -27,6 +27,7 @@
 typedef unsigned char  byte;
 typedef unsigned short word;
 typedef unsigned int   dword;
+typedef dword          kevent;
 #define interface class
 
 #ifndef SEEK_SET
@@ -96,8 +97,6 @@ typedef struct MappingInfo {
     dword errorCd;
 };
 
-#define WAIT_MESSAGE 0x00
-#define WAIT_FDC     0x50
 #define WAIT_TIMER   0x60
 #define WAIT_NONE    0xFF
 
@@ -118,46 +117,46 @@ typedef struct MappingInfo {
 
 #define SHARED_FDC_BUFFER 0x4000
 
-#define SYSTEM_CALL_PROCESS_SLEEP    5
-#define SYSTEM_CALL_HEAVEY           6
-#define SYSTEM_CALL_PRINT            7
-#define SYSTEM_CALL_KILL             8
-#define SYSTEM_CALL_PUT_PIXEL        9
-#define SYSTEM_CALL_SEND             10
-#define SYSTEM_CALL_RECEIVE          11
-#define SYSTEM_CALL_MTHREAD_CREATE   12
-#define SYSTEM_CALL_MTHREAD_JOIN     13
-#define SYSTEM_CALL_MUTEX_CREATE     14
-#define SYSTEM_CALL_MUTEX_LOCK       15
-#define SYSTEM_CALL_MUTEX_TRYLOCK    16
-#define SYSTEM_CALL_MUTEX_UNLOCK     17
-#define SYSTEM_CALL_MUTEX_DESTROY    18
-#define SYSTEM_CALL_LOOKUP           19
-#define SYSTEM_CALL_GET_VRAM_INFO    20
-#define SYSTEM_CALL_LOAD_PROCESS     21
-#define SYSTEM_CALL_MAP              22
-#define SYSTEM_CALL_SET_CURSOR       23
-#define SYSTEM_CALL_GET_CURSOR       24
-#define SYSTEM_CALL_FILE_OPEN        25
-#define SYSTEM_CALL_FILE_READ        26
-#define SYSTEM_CALL_FILE_CLOSE       27
-#define SYSTEM_CALL_MAP_TWO          28
-#define SYSTEM_CALL_FDC_OPEN         29
-#define SYSTEM_CALL_FDC_CLOSE        30
-#define SYSTEM_CALL_FDC_READ         31
-#define SYSTEM_CALL_FDC_WRITE        32
-#define SYSTEM_CALL_UNMAP_TWO        33
-#define SYSTEM_CALL_GET_PID          34
-#define SYSTEM_CALL_ARGUMENTS_NUM    35
-#define SYSTEM_CALL_GET_ARGUMENTS    36
-#define SYSTEM_CALL_MTHREAD_YIELD_M  37
-#define SYSTEM_CALL_DATE             38
-#define SYSTEM_CALL_GET_IO           39
-#define SYSTEM_CALL_WAIT_FDC         40
-#define SYSTEM_CALL_EXIST_MESSAGE    41
-#define SYSTEM_CALL_FDC_DISK_CHANGED 42
-#define SYSTEM_CALL_GET_TID          43
-#define SYSTEM_CALL_TEST             99
+#define SYSTEM_CALL_THREAD_SLEEP          5
+#define SYSTEM_CALL_HEAVEY                6
+#define SYSTEM_CALL_PRINT                 7
+#define SYSTEM_CALL_KILL                  8
+#define SYSTEM_CALL_PUT_PIXEL             9
+#define SYSTEM_CALL_SEND                  10
+#define SYSTEM_CALL_RECEIVE               11
+#define SYSTEM_CALL_MTHREAD_CREATE        12
+#define SYSTEM_CALL_MTHREAD_JOIN          13
+#define SYSTEM_CALL_MUTEX_CREATE          14
+#define SYSTEM_CALL_MUTEX_LOCK            15
+#define SYSTEM_CALL_MUTEX_TRYLOCK         16
+#define SYSTEM_CALL_MUTEX_UNLOCK          17
+#define SYSTEM_CALL_MUTEX_DESTROY         18
+#define SYSTEM_CALL_LOOKUP                19
+#define SYSTEM_CALL_GET_VRAM_INFO         20
+#define SYSTEM_CALL_LOAD_PROCESS          21
+#define SYSTEM_CALL_MAP                   22
+#define SYSTEM_CALL_SET_CURSOR            23
+#define SYSTEM_CALL_GET_CURSOR            24
+#define SYSTEM_CALL_FILE_OPEN             25
+#define SYSTEM_CALL_FILE_READ             26
+#define SYSTEM_CALL_FILE_CLOSE            27
+#define SYSTEM_CALL_MAP_TWO               28
+#define SYSTEM_CALL_FDC_OPEN              29
+#define SYSTEM_CALL_FDC_CLOSE             30
+#define SYSTEM_CALL_FDC_READ              31
+#define SYSTEM_CALL_FDC_WRITE             32
+#define SYSTEM_CALL_UNMAP_TWO             33
+#define SYSTEM_CALL_GET_PID               34
+#define SYSTEM_CALL_ARGUMENTS_NUM         35
+#define SYSTEM_CALL_GET_ARGUMENTS         36
+#define SYSTEM_CALL_MTHREAD_YIELD_MESSAGE 37
+#define SYSTEM_CALL_DATE                  38
+#define SYSTEM_CALL_GET_IO                39
+#define SYSTEM_CALL_WAIT_FDC              40
+#define SYSTEM_CALL_EXIST_MESSAGE         41
+#define SYSTEM_CALL_FDC_DISK_CHANGED      42
+#define SYSTEM_CALL_GET_TID               43
+#define SYSTEM_CALL_TEST                  99
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

@@ -171,7 +171,7 @@ void timerHandler()
   \brief MFDC handlerp
 
   \author HigePon
-  \date   create:2003/02/09 update:2003/09/19
+  \date   create:2003/02/09 update:2004/03/19
 */
 void MFDCHandler(void)
 {
@@ -180,12 +180,9 @@ void MFDCHandler(void)
     /* thx! K-tan */
     outportb(0x20, 0x66);
 
-    int wakeupResult = g_scheduler->wakeup(g_fdcdriver->getWaitThread(), WAIT_FDC);
+    KEvent::set(g_fdcdriver->getWaitThread(), KEvent::FDC_INTERRUPT);
 
-    if (wakeupResult != 0)
-    {
-        ThreadOperation::switchThread((wakeupResult == 1), 2);
-    }
+    /* not reached */
 }
 
 /* IRQ Handler (expr) */
