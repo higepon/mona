@@ -98,6 +98,7 @@ namespace System { namespace Mona { namespace Forms
 		this->backColorChanged = false;
 		this->visible = false;
 		this->capture = false;
+		this->transparencyKey = Color::get_Empty();
 		this->_object = NULL;
 		this->controls = new ControlCollection();
 		this->controls->target = this;
@@ -154,6 +155,7 @@ namespace System { namespace Mona { namespace Forms
 		this->_object->OffsetX = this->offset.X;
 		this->_object->OffsetY = this->offset.Y;
 		this->_object->BufferHandle = this->buffer->get_Handle();
+		this->_object->TransparencyKey = this->transparencyKey.ToArgb();
 #endif
 		int len = this->get_Width() * this->get_Height();
 		for (int i = 0; i < len; i++)
@@ -384,6 +386,24 @@ namespace System { namespace Mona { namespace Forms
 		this->Refresh();
 	}
 	
+	void Control::set_TransparencyKey(Color c)
+	{
+		this->transparencyKey = c;
+		if (this->_object == NULL) return;
+		
+		unsigned int v = c.ToArgb();
+		if (this->_object->TransparencyKey == v) return;
+		
+		this->_object->TransparencyKey = v;
+		this->Refresh();
+	}
+	
+	Control::NCState Control::NCHitTest(int x, int y)
+	{
+		return Rectangle(Point::get_Empty(), this->get_ClientSize()).Contains(x, y)
+			? NCState_Client : NCState_None;
+	}
+	
 	void Control::WndProc(MessageType type, _P<EventArgs> e)
 	{
 		switch (type)
@@ -392,7 +412,7 @@ namespace System { namespace Mona { namespace Forms
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
 				Point pt = arg->Button == 0 ? Point(arg->X, arg->Y) : this->clickPoint;
-				(Rectangle(Point::get_Empty(), this->get_ClientSize()).Contains(pt))
+				this->NCHitTest(pt.X, pt.Y) == NCState_Client
 					? this->OnMouseMove(arg) : this->OnNCMouseMove(arg);
 				break;
 			}
@@ -400,14 +420,14 @@ namespace System { namespace Mona { namespace Forms
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
 				this->clickPoint = Point(arg->X, arg->Y);
-				(Rectangle(Point::get_Empty(), this->get_ClientSize()).Contains(arg->X, arg->Y))
+				this->NCHitTest(arg->X, arg->Y) == NCState_Client
 					? this->OnMouseDown(arg) : this->OnNCMouseDown(arg);
 				break;
 			}
 			case WM_MOUSEUP:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
-				(Rectangle(Point::get_Empty(), this->get_ClientSize()).Contains(this->clickPoint))
+				this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client
 					? this->OnMouseUp(arg) : this->OnNCMouseUp(arg);
 				break;
 			}

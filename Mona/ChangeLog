@@ -1,3 +1,13 @@
+2004-06-04  tino  <tino@users.sourceforge.jp>
+
+        * include/gui/System/Drawing/Mona/Control.h (get_TransparencyKey, set_TransparencyKey): 追加
+
+        * incldue/gui/System/Drawing/Mona/Control.h (NCState): Form.hから移動, NCState_Client追加
+
+        * include/gui/System/Drawing/Mona/Control.h (NCHitTest): 追加
+
+        * apps/gui/clock/Form1.cpp (Form1): offsetを原点にしてNCStateの新仕様を活用
+
 2004-06-03  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/KeyBoardManager.h: 不要なので削除(thanks Yamamiさん)

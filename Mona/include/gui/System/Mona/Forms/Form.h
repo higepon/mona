@@ -14,7 +14,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	protected:
 		bool isCloseButtonPushed;
-		enum NCState { NCState_None, NCState_TitleBar, NCState_CloseButton } ncState;
+		NCState ncState;
 	
 	private:
 		double opacity;

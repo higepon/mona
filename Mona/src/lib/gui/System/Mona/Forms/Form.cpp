@@ -160,8 +160,10 @@ namespace System { namespace Mona { namespace Forms
 		g->Dispose();
 	}
 	
-	Form::NCState Form::NCHitTest(int x, int y)
+	Control::NCState Form::NCHitTest(int x, int y)
 	{
+		if (BASE::NCHitTest(x, y) == NCState_Client) return NCState_Client;
+		
 		int oy = this->offset.Y, xx = x + this->offset.X, yy = y + oy;
 		if (Rectangle(4, 4, oy - 8, oy - 8).Contains(xx, yy)) return NCState_CloseButton;
 		if (yy < oy) return NCState_TitleBar;

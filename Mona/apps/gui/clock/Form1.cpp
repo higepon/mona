@@ -51,7 +51,7 @@ public:
         this->InitializeComponent();
 
         this->set_Size(Size(TEXT_LENGTH * FONT_WIDTH + 10, FONT_HEIGHT + 10));
-        this->offset = Point(this->get_Width(), this->get_Height());
+        this->offset = Point::get_Empty();
         _P<MonAPI::Screen> scr = GetDefaultScreen();
         this->set_Location(Point(
             scr->getWidth () - this->get_Width(),
@@ -133,7 +133,7 @@ public:
 protected:
     virtual void OnPaint()
     {
-        _P<Graphics> g = Graphics::FromImage(this->buffer);
+        _P<Graphics> g = this->CreateGraphics();
         int w = this->get_Width(), h = this->get_Height();
 
         // Clear

@@ -31,6 +31,9 @@ namespace System { namespace Mona { namespace Forms
 			virtual void Add(_P<Control> control);
 		};
 		
+	public:
+		enum NCState { NCState_Client, NCState_None, NCState_TitleBar, NCState_CloseButton } ncState;
+		
 	private:
 		System::Drawing::Rectangle bounds;
 		bool visible, capture;
@@ -41,6 +44,7 @@ namespace System { namespace Mona { namespace Forms
 		System::String text;
 		System::Drawing::Size clientSize;
 		bool foreColorChanged, backColorChanged;
+		System::Drawing::Color transparencyKey;
 		
 	protected:
 		_P<System::Drawing::Bitmap> buffer;
@@ -101,10 +105,14 @@ namespace System { namespace Mona { namespace Forms
 		inline System::Drawing::Color get_BackColor() { return this->backColor; }
 		void set_BackColor(System::Drawing::Color c);
 		
+		inline System::Drawing::Color get_TransparencyKey() { return this->transparencyKey; }
+		void set_TransparencyKey(System::Drawing::Color c);
+		
 		static _P<System::Drawing::Font> get_DefaultFont();
 	
 	protected:
 		void RefreshInternal();
+		virtual NCState NCHitTest(int x, int y);
 		
 		virtual void OnPaint() {}
 		virtual void OnTextChanged(_P<EventArgs> e);
