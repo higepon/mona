@@ -47,13 +47,36 @@ char* ltona(long value, char* str, int n, int base) {
             *--ps = xdigit[(unsigned)(ulvalue % ubase)];
         } while (--n > 0 && (ulvalue /= ubase) != 0);
     }
-    if (sign < 0)
+    if (sign < 0) {
         *--ps = '-';
+    }
     while (--n >= 0)
         *--ps = '0';
     return str;
 }
 
+void putInt(size_t n, int base) {
+
+    static char buf[256];
+    int geta;
+    int num = n;
+
+    if (base != 16) {
+
+        for (geta = 0; num; num /= 10, geta++);
+        if ((int)n < 0) {
+            geta++;
+            base *= -1;
+        }
+    } else {
+        geta = 8;
+    }
+
+    printf("n=%d, geta=%d, base=%d\n", n, geta, base);
+
+    char* p = ltona(n, buf, geta, base);
+    printf("%s\n", p);
+}
 using namespace std;
 
 /*
@@ -62,9 +85,12 @@ using namespace std;
 int main(int argc, char** argv) {
 
     /* ltona */
-    char buf[512];
-    ltona((long)(-5), buf, 10, 10);
-    printf("%s\n", buf);
+    putInt(-5, 10);
+    putInt(5, 10);
+    putInt(-55, 10);
+    putInt(0x00001234, 16);
+    putInt(0x12340000, 16);
+    putInt(0x87654321, 16);
     exit(0);
 
 

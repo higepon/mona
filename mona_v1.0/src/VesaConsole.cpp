@@ -100,13 +100,18 @@ void VesaConsole::printf(const char *format, ...)
 void VesaConsole::putInt(size_t n, int base) {
 
     static char buf[256];
+    int geta;
+    int num = n;
 
-    int geta = 8;
-    int num  = n;
-    if (base == 10 && num != 0) {
+    if (base != 16) {
+
         for (geta = 0; num; num /= 10, geta++);
-    } else if (base == 10 && num == 0) {
-        geta = 1;
+        if ((int)n < 0) {
+            geta++;
+            base *= -1;
+        }
+    } else {
+        geta = 8;
     }
 
     char* p = ltona(n, buf, geta, base);
