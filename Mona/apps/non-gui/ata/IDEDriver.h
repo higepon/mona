@@ -26,7 +26,7 @@ public:
     virtual ~IDEDriver();
 
 public:
-    void interrupt();
+    void protocolInterrupt();
     bool selectDevice(int controller, int deviceNo);
     int read(dword lba, void* buffer, int size);
     bool findDevice(int type, int detail, int* controller, int* deviceNo);
@@ -124,21 +124,7 @@ private:
     void initialize(IDEController* controller);
     void setDeviceTypeFirst(IDEController* controller, int deviceNo);
     void setDeviceTypeSecond(IDEController* controller, int deviceNo);
-
-    void resetAndIdentify(IDEController* controller);
-    void identify(IDEController* controller, int deviceNo);
-    void identifyDetail(IDEController* controller, int deviceNo);
-
-    int judgeDeviceType(byte high, byte low);
-
-
-
     bool selectDevice(IDEController* controller, int deviceNo);
-
-
-
-private:
-
 
 private:
     enum
@@ -158,7 +144,7 @@ private:
         ATA_CMR        = 7,
         ATA_ASR        = 8,
         ATA_DCR        = 8,
-        ATA_TIMEOUT    = 1000000,
+        ATA_TIMEOUT    = 100000,
         BIT_BSY        = 0x80,
         BIT_DRDY       = 0x40,
         BIT_DRQ        = 8,
@@ -183,6 +169,7 @@ private:
     volatile void* atapiBuffer;
     volatile int atapiReadDone;
     volatile dword atapiTransferSize;
+    volatile dword atapiTotalReadSize;
     byte requestSenseBuffer[REQUEST_SENSE_BUFFER_SIZE];
     int lastError;
 

@@ -19,6 +19,7 @@ static IDEDriver* ide;
     idle位いれようよ。
     busy loopがうっとぉしぃ。
     atapi packet のlimitの意味。2048じゃなくて全体サイズ？
+    wordサイズの限界を
 */
 
 static void interrupt()
@@ -35,7 +36,7 @@ static void interrupt()
 #if 0
             printf("interrupt irq=%d\n", msg.arg1);
 #endif
-            ide->interrupt();
+            ide->protocolInterrupt();
             break;
         default:
             printf("default");
@@ -95,7 +96,7 @@ int MonaMain(List<char*>* pekoe)
     char* buf = (char*)malloc(6 * 1024 * 1024);
     memset(buf, 0, sizeof(buf));
 
-    int readResult = ide->read(16, buf, 6 * 1024 * 1024);
+    int readResult = ide->read(16, buf, 4096);
 
     if (readResult != 0)
     {
@@ -112,9 +113,6 @@ int MonaMain(List<char*>* pekoe)
     printf("fileout:open=%d\n", fos.open());
 
     printf("fileout:write=%d\n", fos.write((byte*)buf        , 512));
-    printf("fileout:write=%d\n", fos.write((byte*)(buf + 512), 512));
-    printf("fileout:write=%d\n", fos.write((byte*)buf  +1024      , 512));
-    printf("fileout:write=%d\n", fos.write((byte*)(buf +1536), 512));
 
     fos.close();
 
