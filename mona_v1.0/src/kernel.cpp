@@ -40,7 +40,7 @@
 #include <PagingUtil.h>
 #include <syscalls.h>
 #include <ProcessManager.h>
-#include <Queue.h>
+#include <Message.h>
 
 char* version = "Mona develop beta 0.08b $Date$";
 void userTest();
@@ -108,7 +108,8 @@ void startKernel(void) {
     g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
     g_console->printf("userTestAddress=%x\n", (dword)userTest);
 
-
+    Message* msg = new Message();
+    msg->getNext();
 
 #ifdef MJT
     test_mjt();

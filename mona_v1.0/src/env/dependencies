@@ -10,7 +10,7 @@ kernel.o: kernel.cpp include/types.h include/global.h include/info.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/pic.h include/io.h include/rtc.h \
   include/disp.h include/FAT12.h include/IA32MemoryManager.h \
-  include/syscalls.h include/Queue.h
+  include/syscalls.h include/Message.h include/Queue.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h include/types.h include/VirtualConsole.h \
   include/string.h include/FDCDriver.h include/DiskDriver.h \
@@ -170,6 +170,8 @@ ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
   include/GDTUtil.h include/IDTUtil.h include/sysresource.h \
   include/BitMap.h include/io.h include/SystemInfo.h
+MessageServer.o: MessageServer.cpp include/MessageServer.h \
+  include/Message.h include/Queue.h
 ps2kbc.o: driver/ISADevice/PS2KBC/ps2kbc.cpp \
   driver/ISADevice/PS2KBC/ps2kbc.h include/Module.h \
   include/GraphicalConsole.h include/VirtualConsole.h include/types.h \

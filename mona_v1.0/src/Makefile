@@ -55,6 +55,7 @@ SOURCES    = cstart.cpp            \
              Process.cpp           \
              Scheduler.cpp         \
              ProcessManager.cpp    \
+             MessageServer.cpp     \
 
 #             test_mjt.cpp
 #             IDEDriver.cpp
