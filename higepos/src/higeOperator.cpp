@@ -45,3 +45,8 @@ void* __builtin_new(unsigned long size) {
     X86MemoryManager& mm = X86MemoryManager::instance();
     return (void*)mm.allocateMemory(size);
 }
+
+void* __builtin_vec_new(unsigned long size) {
+
+    return __builtin_new(size);
+}
