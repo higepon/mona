@@ -4,7 +4,18 @@ using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
-    printf("hello");
+    double seed = 0.31415926535897931;
+    for (int i = 0; i < 10000000; i++)
+    {
+        seed *= 17.0;
+        seed -= (int)seed;
+    }
+
+    char hoge[64];
+    sprintf(hoge, "answer = %x", seed);
+
+    printf("%s", hoge);
+
     return 0;
 }
 

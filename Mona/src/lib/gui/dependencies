@@ -177,7 +177,15 @@ Application.o: System/Mona/Forms/Application.cpp \
   ../../../include/gui/System/Drawing/Graphics.h \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h
-Button.o: System/Mona/Forms/Button.cpp ../../../include/monapi.h \
+Button.o: System/Mona/Forms/Button.cpp \
+  ../../../include/gui/System/Mona/Forms/Button.h \
+  ../../../include/gui/System/Mona/Forms/Control.h \
+  ../../../include/gui/System/Mona/Forms/Events.h \
+  ../../../include/gui/System/Event.h \
+  ../../../include/gui/System/Object.h \
+  ../../../include/gui/System/String.h \
+  ../../../include/gui/System/Text/Encoding.h \
+  ../../../include/gui/System/Array.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -196,16 +204,7 @@ Button.o: System/Mona/Forms/Button.cpp ../../../include/monapi.h \
   ../../../include/monapi/Keys.h ../../../include/monalibc.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Mona/Forms/Button.h \
-  ../../../include/gui/System/Mona/Forms/Control.h \
-  ../../../include/gui/System/Mona/Forms/Events.h \
-  ../../../include/gui/System/Event.h \
-  ../../../include/gui/System/Object.h \
-  ../../../include/gui/System/String.h \
-  ../../../include/gui/System/Text/Encoding.h \
-  ../../../include/gui/System/Array.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Collections/ArrayList.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
   ../../../include/gui/System/Drawing/Color.h \
@@ -286,7 +285,15 @@ ControlPaint.o: System/Mona/Forms/ControlPaint.cpp \
   ../../../include/gui/System/Drawing/Size.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
   ../../../include/gui/System/Math.h
-Form.o: System/Mona/Forms/Form.cpp ../../../include/monapi.h \
+Form.o: System/Mona/Forms/Form.cpp \
+  ../../../include/gui/System/Mona/Forms/Form.h \
+  ../../../include/gui/System/Mona/Forms/Control.h \
+  ../../../include/gui/System/Mona/Forms/Events.h \
+  ../../../include/gui/System/Event.h \
+  ../../../include/gui/System/Object.h \
+  ../../../include/gui/System/String.h \
+  ../../../include/gui/System/Text/Encoding.h \
+  ../../../include/gui/System/Array.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -305,16 +312,7 @@ Form.o: System/Mona/Forms/Form.cpp ../../../include/monapi.h \
   ../../../include/monapi/Keys.h ../../../include/monalibc.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Mona/Forms/Form.h \
-  ../../../include/gui/System/Mona/Forms/Control.h \
-  ../../../include/gui/System/Mona/Forms/Events.h \
-  ../../../include/gui/System/Event.h \
-  ../../../include/gui/System/Object.h \
-  ../../../include/gui/System/String.h \
-  ../../../include/gui/System/Text/Encoding.h \
-  ../../../include/gui/System/Array.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Collections/ArrayList.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
   ../../../include/gui/System/Drawing/Color.h \
@@ -326,7 +324,15 @@ Form.o: System/Mona/Forms/Form.cpp ../../../include/monapi.h \
   ../../../include/gui/System/Mona/Forms/Application.h \
   ../../../include/gui/System/Mona/Forms/ControlPaint.h \
   ../../../include/gui/System/Math.h
-Label.o: System/Mona/Forms/Label.cpp ../../../include/monapi.h \
+Label.o: System/Mona/Forms/Label.cpp \
+  ../../../include/gui/System/Mona/Forms/Label.h \
+  ../../../include/gui/System/Mona/Forms/Control.h \
+  ../../../include/gui/System/Mona/Forms/Events.h \
+  ../../../include/gui/System/Event.h \
+  ../../../include/gui/System/Object.h \
+  ../../../include/gui/System/String.h \
+  ../../../include/gui/System/Text/Encoding.h \
+  ../../../include/gui/System/Array.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -345,16 +351,7 @@ Label.o: System/Mona/Forms/Label.cpp ../../../include/monapi.h \
   ../../../include/monapi/Keys.h ../../../include/monalibc.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h \
-  ../../../include/gui/System/Mona/Forms/Label.h \
-  ../../../include/gui/System/Mona/Forms/Control.h \
-  ../../../include/gui/System/Mona/Forms/Events.h \
-  ../../../include/gui/System/Event.h \
-  ../../../include/gui/System/Object.h \
-  ../../../include/gui/System/String.h \
-  ../../../include/gui/System/Text/Encoding.h \
-  ../../../include/gui/System/Array.h \
-  ../../../include/gui/System/Pointer.h \
+  ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Collections/ArrayList.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
   ../../../include/gui/System/Drawing/Color.h \

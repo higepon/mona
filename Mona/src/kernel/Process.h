@@ -71,6 +71,7 @@ typedef struct ArchThreadInfo
     dword  esp0;      // 68
     dword  ss0;       // 72
     dword  cr3;       // 76
+    dword  fpu[27];   // 80
 };
 
 /*----------------------------------------------------------------------

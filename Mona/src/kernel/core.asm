@@ -38,6 +38,7 @@ arch_idle:
 arch_save_thread_registers:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]  ; ArchThreadInfo
+        fnsave [ebx + 80]
         mov eax, dword[esp + 48]  ; get cs
         and eax, 0x03             ; check cpl is 3
         cmp eax, 0x03
@@ -108,6 +109,7 @@ from_user:
 arch_switch_thread_to_user1:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        frstor [ebx + 80]
         mov ecx, dword[g_tss]        ; tss
         mov eax, dword[ebx + 68]     ; get esp0
         mov dword[ecx + 4], eax      ; restore esp0
@@ -135,6 +137,7 @@ arch_switch_thread_to_user1:
 arch_switch_thread_to_user2:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        frstor [ebx + 80]
         mov ecx, dword[g_tss]        ; tss
         mov eax, dword[ebx + 68]     ; get esp0
         mov dword[ecx + 4], eax      ; restore esp0
@@ -164,6 +167,7 @@ arch_switch_thread_to_user2:
 arch_switch_thread1:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        frstor [ebx + 80]
         mov ecx, dword[g_tss]        ; tss
         mov eax, dword[ebx + 68]     ; get esp0
         mov dword[ecx + 4], eax      ; restore esp0
@@ -189,6 +193,7 @@ arch_switch_thread1:
 arch_switch_thread2:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        frstor [ebx + 80]
         mov ecx, dword[g_tss]        ; tss
         mov eax, dword[ebx + 68]     ; get esp0
         mov dword[ecx + 4], eax      ; restore esp0
@@ -216,6 +221,7 @@ arch_switch_thread2:
 arch_switch_thread_to_v861:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        frstor [ebx + 80]
         mov ecx, dword[g_tss]        ; tss
         mov eax, dword[ebx + 68]     ; get esp0
         mov dword[ecx + 1], eax      ; restore esp0
@@ -249,6 +255,7 @@ arch_switch_thread_to_v861:
 arch_switch_thread_to_v862:
         mov eax, dword[g_currentThread]
         mov ebx, dword[eax + 0 ]     ; ArchThreadInfo
+        frstor [ebx + 80]
         mov ecx, dword[g_tss]        ; tss
         mov eax, dword[ebx + 68]     ; get esp0
         mov dword[ecx + 1], eax      ; restore esp0
