@@ -2,9 +2,7 @@
 // There are no restrictions on any sort of usage of this software.
 
 #include <monapi/messages.h>
-#include <monapi/cmemoryinfo.h>
 #include <monapi/CString.h>
-#include <gui/messages.h>
 #include "GUIServer.h"
 #include "image.h"
 #include "screen.h"
@@ -13,8 +11,8 @@
 using namespace MonAPI;
 
 static monapi_cmemoryinfo* default_font = NULL;
-static ImageInfo* wallpaper = NULL;
-static int wallpaper_pos = 0, wallpaper_transparent = -1, background_color = 0xffffff;
+static guiserver_bitmap* wallpaper = NULL;
+static unsigned int background_color = 0;
 static bool wallpaper_prompt = false;
 static HList<CString>* startup = NULL;
 
@@ -26,63 +24,70 @@ static void ReadFont(const char* file)
 	default_font = mi;
 }
 
-void DrawWallPaper()
+void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent)
 {
-	if (wallpaper == NULL) return;
+	if (wallpaper == NULL || bmp == NULL) return;
 	
-	Screen* scr = GetDefaultScreen();
-	int x = 0, y = 0, sw = scr->getWidth(), sh = scr->getHeight();
-	switch (wallpaper_pos)
+	int x = 0, y = 0, sw = wallpaper->Width, sh = wallpaper->Height;
+	switch (pos)
 	{
 		case 1: // Top Left
 			break;
 		case 2: // Top Center
-			x = (sw - wallpaper->Width) / 2;
+			x = (sw - bmp->Width) / 2;
 			break;
 		case 3: // Top Right
-			x = sw - wallpaper->Width;
+			x = sw - bmp->Width;
 			break;
 		case 4: // Center Left
-			y = (sh - wallpaper->Height) / 2;
+			y = (sh - bmp->Height) / 2;
 			break;
 		case 5: // Center Center
-			x = (sw - wallpaper->Width) / 2;
-			y = (sh - wallpaper->Height) / 2;
+			x = (sw - bmp->Width) / 2;
+			y = (sh - bmp->Height) / 2;
 			break;
 		case 6: // Center Right
-			x = sw - wallpaper->Width;
-			y = (sh - wallpaper->Height) / 2;
+			x = sw - bmp->Width;
+			y = (sh - bmp->Height) / 2;
 			break;
 		case 7: // Bottom Left
-			y = sh - wallpaper->Height;
+			y = sh - bmp->Height;
 			break;
 		case 8: // Bottom Center
-			x = (sw - wallpaper->Width) / 2;
-			y = sh - wallpaper->Height;
+			x = (sw - bmp->Width) / 2;
+			y = sh - bmp->Height;
 			break;
 		case 9: // Bottom Right
-			x = sw - wallpaper->Width;
-			y = sh - wallpaper->Height;
+			x = sw - bmp->Width;
+			y = sh - bmp->Height;
 			break;
 	}
-	DrawImage(wallpaper, x, y, -1, -1, -1, -1, wallpaper_transparent);
+	DrawImage(wallpaper, bmp, x, y, -1, -1, -1, -1, transparent);
 }
 
 void DrawWallPaper(const char* src, int pos, int transparent, int background)
 {
-	if (wallpaper != NULL)
-	{
-		monapi_cmemoryinfo_dispose(wallpaper);
-		monapi_cmemoryinfo_delete(wallpaper);
-	}
-	wallpaper = ReadImage(src, wallpaper_prompt);
+	bool prompt = wallpaper_prompt;
 	wallpaper_prompt = false;
-	if (wallpaper == NULL) return;
+	background_color = background;
 	
-	wallpaper_pos = pos;
-	wallpaper_transparent = transparent;
-	if (background != -1) background_color = background;
-	DrawWallPaper();
+	Screen* scr = GetDefaultScreen();
+	if (wallpaper == NULL)
+	{
+		wallpaper = CreateBitmap(scr->getWidth(), scr->getHeight(), background_color);
+		if (wallpaper == NULL) return;
+	}
+	else
+	{
+		FillColor(wallpaper, background_color);
+	}
+	
+	guiserver_bitmap* bmp = ReadImage(src, prompt);
+	if (bmp == NULL) return;
+	
+	DrawWallPaper(bmp, pos, transparent);
+	MemoryMap::unmap(bmp->Handle);
+	DrawImage(wallpaper);
 }
 
 void ReadConfig()
@@ -96,7 +101,7 @@ void ReadConfig()
 		startup = NULL;
 	}
 	char line[256], src[256] = "";
-	int linepos = 0, wppos = 5, wptp = -1, bgcol = -1;
+	int linepos = 0, wppos = 5, wptp = -1, bgcol = background_color;
 	for (dword pos = 0; pos <= cfg->Size; pos++)
 	{
 		char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
@@ -122,7 +127,7 @@ void ReadConfig()
 					}
 					else if (data[0] == "WALLPAPER_BACKGROUND")
 					{
-						bgcol = xtoi(data[1]);
+						bgcol = ((unsigned int)xtoi(data[1])) | 0xff000000;
 					}
 					else if (data[0] == "GUISERVER_STARTUP")
 					{
@@ -176,20 +181,6 @@ void MessageLoop()
 			case MSG_GUISERVER_GETFONT:
 				Message::reply(&msg, default_font->Handle, default_font->Size);
 				break;
-			case MSG_GUISERVER_DECODEIMAGE:
-			{
-				ImageInfo* mi = ReadImage(msg.str);
-				if (mi != NULL)
-				{
-					Message::reply(&msg, mi->Handle, MAKE_DWORD(mi->Width, mi->Height));
-					delete mi;
-				}
-				else
-				{
-					Message::reply(&msg);
-				}
-				break;
-			}
 			case MSG_DISPOSE_HANDLE:
 				MemoryMap::unmap(msg.arg1);
 				Message::reply(&msg);
@@ -198,9 +189,16 @@ void MessageLoop()
 				DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
 				Message::reply(&msg);
 				break;
-			case MSG_GUISERVER_REFRESHWALLPAPER:
-				DrawWallPaper();
+			case MSG_GUISERVER_DRAWWALLPAPER:
+				if (wallpaper != NULL)
+				{
+					DrawImage(wallpaper, 0, 0, msg.arg1, msg.arg2,
+						GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
+				}
 				Message::reply(&msg);
+				break;
+			default:
+				if (ImageHandler(&msg)) break;
 				break;
 		}
 	}
@@ -228,10 +226,6 @@ int MonaMain(List<char*>* pekoe)
 
 	monapi_cmemoryinfo_dispose(default_font);
 	monapi_cmemoryinfo_delete(default_font);
-	if (wallpaper != NULL)
-	{
-		monapi_cmemoryinfo_dispose(wallpaper);
-		monapi_cmemoryinfo_delete(wallpaper);
-	}
+	if (wallpaper != NULL) MemoryMap::unmap(wallpaper->Handle);
 	return 0;
 }

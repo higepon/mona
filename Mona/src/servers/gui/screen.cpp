@@ -3,7 +3,9 @@
 
 #include <monapi/messages.h>
 #include "GUIServer.h"
+#include "image.h"
 #include "screen.h"
+
 using namespace MonAPI;
 
 static Screen screen;
@@ -13,7 +15,7 @@ Screen* GetDefaultScreen()
 	return &screen;
 }
 
-void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
+void DrawImage(guiserver_bitmap* img, int spx /*= 0*/, int spy /*= 0*/, int ix /*= -1*/, int iy /*= -1*/, int iw /*= -1*/, int ih /*= -1*/, int transparent /*= -1*/)
 {
 	monapi_call_mouse_set_cursor(0);
 	unsigned char* vram = screen.getVRAM();
@@ -32,7 +34,7 @@ void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih,
 		if (sy >= sh) break;
 		if (sy < 0) continue;
 		
-		byte* pBuf = &img->Data[(x1 + y * img->Width) * 4];
+		byte* pBuf = (byte*)&img->Data[(x1 + y * img->Width)];
 		unsigned char* pVram = &vram[(spx + x1 + sy * sw) * bypp];
 		for (int x = x1; x < x2; x++, pVram += bypp, pBuf += 4)
 		{

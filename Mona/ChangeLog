@@ -1,3 +1,7 @@
+2004-05-09  tino  <tino@users.sourceforge.jp>
+
+        * src/lib/gui: •Ç†‚ÌÄ•`‰æ
+
 2004-05-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/Screen.cpp (MonAPI): bitblt‚ÅVRAM”ÍˆÍŠO‚É•`‰æ‚µ‚È‚¢‚æ‚¤‚ÉC³

@@ -134,6 +134,8 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::Refresh()
 	{
+		if (this->buffer == NULL) return;
+		
 #ifdef MONA
 		::monapi_call_mouse_set_cursor(0);
 #endif
@@ -145,6 +147,8 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::RefreshInternal()
 	{
+		if (this->buffer == NULL) return;
+		
 		for (_P<Control> c = this; c != NULL; c = c->parent)
 		{
 			if (!c->visible) return;

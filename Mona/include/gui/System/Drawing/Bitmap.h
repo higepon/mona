@@ -4,6 +4,7 @@
 #ifndef __SYSTEM_DRAWING_BITMAP_H__
 #define __SYSTEM_DRAWING_BITMAP_H__
 
+#include <gui/messages.h>
 #include <gui/System/Object.h>
 #include <gui/System/Array.h>
 #include <gui/System/Drawing/Color.h>
@@ -15,6 +16,7 @@ namespace System { namespace Drawing
 	protected:
 		int width, height;
 		_A<Color> buffer;
+		guiserver_bitmap* _buffer;
 	
 	public:
 		virtual String get_TypeName() { return "System.Drawing.Bitmap"; }
@@ -22,6 +24,7 @@ namespace System { namespace Drawing
 		Bitmap(String fileName);
 		virtual ~Bitmap();
 		
+		virtual void Dispose();
 		inline int get_Width() { return this->width; }
 		inline int get_Height() { return this->height; }
 		inline Color& operator [](int index) { return this->buffer[index]; }

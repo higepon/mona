@@ -5,10 +5,9 @@
 #define __GUISERVER_SCREEN_H__
 
 #include <monapi.h>
-#include "image.h"
 
 extern MonAPI::Screen* GetDefaultScreen();
 extern void SetMouseCursor(bool enabled);
-extern void DrawImage(ImageInfo* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent);
+extern void DrawImage(guiserver_bitmap* img, int spx = 0, int spy = 0, int ix = -1, int iy = -1, int iw = -1, int ih = -1, int transparent = -1);
 
 #endif  // __GUISERVER_SCREEN_H__

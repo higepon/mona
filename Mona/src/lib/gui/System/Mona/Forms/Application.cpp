@@ -66,7 +66,7 @@ namespace System { namespace Mona { namespace Forms
 	void Application::Dispose()
 	{
 #ifdef MONA
-		monapi_register_to_server(ID_MOUSE_SERVER, 1);
+		monapi_register_to_server(ID_MOUSE_SERVER, 0);
 #endif
 	}
 	

@@ -2,8 +2,12 @@
 // There are no restrictions on any sort of usage of this file.
 
 #ifdef MONA
+#include <monapi.h>
 #include <monapi/messages.h>
+
+extern dword __gui_server;
 #endif
+#include <gui/messages.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/ControlPaint.h>
@@ -51,6 +55,12 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::Erase()
 	{
+		if (this->buffer == NULL) return;
+		
+#ifdef MONA
+		Rectangle r = this->get_Bounds();
+		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWALLPAPER, r.X, r.Y, MAKE_DWORD(r.Width, r.Height));
+#else
 		Size sz = this->get_Size();
 		_P<Bitmap> bmp = new Bitmap(sz.Width, sz.Height);
 		int len = sz.Width * sz.Height;
@@ -60,9 +70,8 @@ namespace System { namespace Mona { namespace Forms
 		{
 			(*bmp.get())[i] = (*this->buffer.get())[i].get_A() != 0 ? white : empty;
 		}
-		monapi_call_mouse_set_cursor(0);
 		this->DrawImage(bmp);
-		monapi_call_mouse_set_cursor(1);
+#endif
 	}
 	
 	bool Form::CheckPoint(int x, int y)
@@ -73,6 +82,8 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::OnPaint()
 	{
+		if (this->buffer == NULL) return;
+		
 		_P<Graphics> g = Graphics::FromImage(this->buffer);
 		int w = this->get_Width(), h = this->get_Height(), oy = this->offset.Y;
 		_P<Font> f = Control::get_DefaultFont();

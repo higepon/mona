@@ -8,7 +8,6 @@
 extern dword __gui_server;
 #endif
 
-#include <gui/messages.h>
 #include <gui/System/Pointer.h>
 #include <gui/System/Drawing/Bitmap.h>
 
@@ -16,16 +15,37 @@ namespace System { namespace Drawing
 {
 	Bitmap::Bitmap(int width, int height)
 	{
+		int len = width * height;
+		Color white = Color::get_White();
+#ifdef MONA
+		MessageInfo msg;
+		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEBITMAP, width, height, white.ToArgb()) != 0)
+		{
+			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			return;
+		}
+		if (msg.arg2 == 0) return;
+		
+		this->_buffer = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
+		if (this->_buffer == NULL)
+		{
+			::printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
+			return;
+		}
+		
+		this->buffer.Set((Color*)this->_buffer->Data, len, false);
+#else
+		this->buffer.Alloc(len);
+		this->_buffer = NULL;
+		for (int i = 0; i < len; i++) this->buffer[i] = white;
+#endif
 		this->width  = width;
 		this->height = height;
-		int len = width * height;
-		this->buffer.Alloc(len);
-		Color white = Color::get_White();
-		for (int i = 0; i < len; i++) this->buffer[i] = white;
 	}
 	
 	Bitmap::Bitmap(String fileName)
 	{
+		this->_buffer = NULL;
 #ifdef MONA
 		int fnlen = fileName.get_Length();
 		if (fnlen > 127) fnlen = 127;
@@ -45,30 +65,39 @@ namespace System { namespace Drawing
 		}
 		if (msg.arg2 == 0) return;
 		
-		byte* image = MonAPI::MemoryMap::map(msg.arg2);
-		if (image == NULL)
+		this->_buffer = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
+		if (this->_buffer == NULL)
 		{
 			::printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
 			return;
 		}
 		
-		this->width  = GET_X_DWORD(msg.arg3);
-		this->height = GET_Y_DWORD(msg.arg3);
+		this->width  = this->_buffer->Width;
+		this->height = this->_buffer->Height;
 		int len = this->width * this->height;
-		this->buffer.Alloc(len);
-		::memcpy(this->buffer.get(), image, len * 4);
-		MonAPI::MemoryMap::unmap(msg.arg2);
-		
-		if (MonAPI::Message::send(__gui_server, MSG_DISPOSE_HANDLE, msg.arg2) != 0)
-		{
-			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-			return;
-		}
+		this->buffer.Set((Color*)this->_buffer->Data, len, false);
 #endif
 	}
 	
 	Bitmap::~Bitmap()
 	{
+		this->Dispose();
+	}
+	
+	void Bitmap::Dispose()
+	{
+		if (this->_buffer == NULL) return;
+		
+#ifdef MONA
+		this->buffer.Unset();
+		dword handle = this->_buffer->Handle;
+		MonAPI::MemoryMap::unmap(handle);
+		if (MonAPI::Message::send(__gui_server, MSG_DISPOSE_HANDLE, handle) != 0)
+		{
+			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+		}
+		this->_buffer = NULL;
+#endif
 	}
 	
 	void Bitmap::SetPixel(int x, int y, Color c)

@@ -143,29 +143,29 @@ void notifyProcessChanged(dword header, dword tid, dword parent /*= 0*/, const C
     }
 }
 
-bool handleMessage(MessageInfo msg)
+bool processHandler(MessageInfo* msg)
 {
-    switch (msg.header)
+    switch (msg->header)
     {
         case MSG_REGISTER_TO_SERVER:
-            registerReceiver(msg.arg1);
-            Message::reply(&msg);
+            registerReceiver(msg->arg1);
+            Message::reply(msg);
             break;
         case MSG_UNREGISTER_FROM_SERVER:
-            unregisterReceiver(msg.arg1);
-            Message::reply(&msg);
+            unregisterReceiver(msg->arg1);
+            Message::reply(msg);
             break;
         case MSG_PROCESS_GET_PROCESS_INFO:
         {
-            ProcessInfo pi = getProcessInfo(msg.from);
-            Message::reply(&msg, pi.parent, 0, pi.path);
+            ProcessInfo pi = getProcessInfo(msg->from);
+            Message::reply(msg, pi.parent, 0, pi.path);
             break;
         }
         case MSG_PROCESS_CREATED:
-            addProcessInfo(msg.arg1, msg.arg2, msg.str);
+            addProcessInfo(msg->arg1, msg->arg2, msg->str);
             break;
         case MSG_PROCESS_TERMINATED:
-            removeProcessInfo(msg.arg1);
+            removeProcessInfo(msg->arg1);
             break;
         default:
             return false;

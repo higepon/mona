@@ -149,7 +149,7 @@ void MessageLoop()
                 break;
             }
             default:
-                if (handleMessage(msg)) break;
+                if (processHandler(&msg)) break;
                 break;
         }
     }
