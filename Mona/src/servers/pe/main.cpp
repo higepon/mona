@@ -11,9 +11,24 @@ static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, monapi_cmem
 	PEParser parser;
 	if (!parser.Parse(mi->Data, mi->Size))
 	{
-		if (prompt) printf("%s: file type is not valid PE!\n", SVR);
+		if (prompt) printf("%s: file is not valid PE!\n", SVR);
 		return 3;
 	}
+	
+	bool ok = true;
+	int its = parser.get_ImportTableCount();
+	for (int i = 0; i < its; i++)
+	{
+		const char* dllName = parser.GetImportTableName(i);
+		if (dllName == NULL)
+		{
+			if (prompt) printf("%s: file is not valid PE!\n", SVR);
+			return 3;
+		}
+		if (prompt) printf("%s: can not find: %s\n", SVR, dllName);
+		ok = false;
+	}
+	if (!ok) return 3;
 	
 	monapi_cmemoryinfo* dst = monapi_cmemoryinfo_new();
 	if (!monapi_cmemoryinfo_create(dst, parser.get_ImageSize(), prompt ? MONAPI_TRUE : MONAPI_FALSE))
