@@ -45,17 +45,7 @@ void startKernel(void) {
     _sysClearScreen();
 
     /* show message */
-    _sysPrintln("------------------------------------------------------");
-    _sysSetColor(SYS_BG_COLOR | CH_AQUA);
-    _sysPrintln("      Mona Kernel starting                            ");
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    _sysPrintln("        ________ A A                                  ");
-    _sysPrintln("      ~/ ______( `D`) < thanks ProgrammingBoard@2ch   ");
-    _sysPrintln("        UU       U U                                  ");
-    _sysPrintln("------------------------------------------------------");
-    _sysSetColor(SYS_BG_COLOR | CH_MAROON);
-    _sys_printf("%s\n", version);
-    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    printBanner();
 
     /* set interrept */
     _sysSetIdt();
@@ -74,7 +64,6 @@ void startKernel(void) {
     /* check some */
     checkTypeSize();
     printOK("Checking type size ");
-
 
     /* get System Information */
     SystemInfo& si = SystemInfo::instance();
@@ -128,7 +117,7 @@ void panic(const char* msg) {
     \author HigePon
     \date   create:2003/01/26 update:2003/01/25
 */
-void printOK(const char* msg) {
+inline void printOK(const char* msg) {
 
     _sys_printf((char*)msg);
     _sys_printf("[");
@@ -136,4 +125,35 @@ void printOK(const char* msg) {
     _sys_printf("OK");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
     _sys_printf("]\n");
+}
+
+/*!
+    \brief print Banner
+
+    print Banner
+
+    \author HigePon
+    \date   create:2003/01/26 update:2003/01/25
+*/
+inline void printBanner() {
+
+    _sys_printf("------------------------------------------------------\n");
+    _sysSetColor(SYS_BG_COLOR | CH_AQUA);
+    _sys_printf("      Mona Kernel starting                            \n");
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    _sys_printf("        ________ A A                                  \n");
+    _sys_printf("      ~/ ______( ");
+    _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
+    _sys_printf("`");
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    _sys_printf("D");
+    _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
+    _sys_printf("`");
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    _sys_printf(") < thanks ProgrammingBoard@2ch   \n");
+    _sys_printf("        UU       U U                                  \n");
+    _sys_printf("------------------------------------------------------\n");
+    _sysSetColor(SYS_BG_COLOR | CH_MAROON);
+    _sys_printf("%s\n", version);
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
 }

@@ -158,5 +158,6 @@ typedef struct {
 
 void startKernel(void);
 void panic(const char*);
-void printOK(const char*);
+inline void printOK(const char*);
+inline void printBanner();
 #endif
