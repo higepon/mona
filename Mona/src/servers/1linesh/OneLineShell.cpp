@@ -15,10 +15,10 @@
 #include <monalibc.h>
 #include <monapi/keys.h>
 #include "OneLineShell.h"
-//#include "KeyBoardManager.h"
 #include "DisplayWindow.h"
 #include "Charing.h"
 #include "Command.h"
+#include "CommandHistory.h"
 
 using namespace MonAPI;
 
@@ -69,6 +69,7 @@ void OneLineShell::service() {
     
   DisplayWindow ds;
   ds.DrawCommandWindow();
+  this->cmdHst.AddCommand(this->cmd);
   /* service loop */
   while(1){
     if(!Message::receive(&info)){
@@ -85,12 +86,23 @@ void OneLineShell::service() {
 int OneLineShell::OnKeyDown(int keycode, int modifiers){
   
   KeyInfo keys;
+  Charing *cTmp;
 
   keys.keycode = keycode;
   keys.modifiers = modifiers;
   switch(keycode){
   case Keys::Enter:
+    cTmp = (Charing *)this->cmd;
+    if(cTmp->GetLength() == 0) break;
     this->cmd.ExecuteCommand();
+    cTmp = (Charing *)(this->cmdHst.GetCommand(GETLAST));
+    if(cTmp->GetLength() == 0){
+      this->cmdHst.UpdateHistory(this->cmd);
+    } else {
+      this->cmdHst.AddCommand(this->cmd);
+    }
+    this->cmd.InitializeCommandLine();
+    this->cmdHst.AddCommand(this->cmd);
     break;
   case Keys::Back:
     this->cmd.RemoveCommandLine();
@@ -102,10 +114,12 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
     this->cmd.SetCurrentPos(POSITION_LEFT);
     break;
   case Keys::Up:
-    //this->cmdHst.
+    this->cmdHst.UpdateHistory(this->cmd);
+    this->cmd = this->cmdHst.GetCommand(GETPREV);
     break;
   case Keys::Down:
-    //printf("DOWN");//this->cmd.;??
+    this->cmdHst.UpdateHistory(this->cmd);
+    this->cmd = this->cmdHst.GetCommand(GETNEXT);
     break;
   default:
     if(Keys::IsToChar(keys) == true){
