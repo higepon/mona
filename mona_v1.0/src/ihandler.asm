@@ -35,7 +35,7 @@ _arch_fdchandler:
 ;;; save all context to Kthread* current
 _arch_timerhandler:
         pushad
-;;;        call _save_registers
+        call _save_registers
         call _timerHandler
         popad
         iretd
@@ -94,7 +94,7 @@ _arch_kthread_switch:
         mov edi, [ebx + 40]     ; restore edi
         push dword [ebx + 8]    ; push eflags
         push dword [ebx + 4]    ; push cs
-        push dword [ebx + 0]    ; pusc eip
+        push dword [ebx + 0]    ; push eip
         push dword [ebx + 24]
         pop  ebx                ; restore ebp
         iretd                   ; switch to next

@@ -42,6 +42,27 @@ void kthread_init() {
     }
 
     kthread_add_to_run(idle);
+
+    dword stack2 = kthread_allocate_stack();
+
+    if (stack2 == NULL) {
+        panic("idle thread:stack allocate error");
+    }
+
+    /* create idle thread */
+    Kthread* idle2 = kthread_create_thread(stack2, kthread_idle2);
+    if ( idle == NULL) {
+        panic("idle thread:create thread error");
+    }
+
+    kthread_add_to_run(idle2);
+    kthread_printInfo();
+}
+
+void kthread_printInfo() {
+
+    console->printf("kthread:runlist[%x][%x][x]\n", runlist, runlist->next, runlist->next->next);
+
 }
 
 /*!
@@ -103,18 +124,8 @@ void kthread_remove_from_run(Kthread* thread) {
     if (runlist == NULL) return;
 
     /* remove */
-    Kthread* temp = runlist;
-    Kthread* prev = NULL;
-    while (temp->next != NULL) {
+    //    runlist = current->next;
 
-        prev = temp;
-        temp = temp->next;
-
-        if (temp == thread) {
-            prev->next = temp->next;
-            return;
-        }
-    }
     return;
 }
 
@@ -187,6 +198,11 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
     return thread;
 }
 
+
+extern "C" void write_font(int a, char b, char c);
+extern "C" char pos_x;
+extern "C" char pos_y;
+
 /*!
     \brief idle thread
 
@@ -195,8 +211,48 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
 */
 void kthread_idle() {
 
+    dword color = 0;
+
     while (true) {
-	console->printf("[idle]");
+
+        if (current->tick % 50) continue;
+        disableInterrupt();
+
+        int x = pos_x;
+        int y = pos_y;
+
+        pos_x = 20, pos_y = 20;
+        write_font('$', color%2 + 5, 0);
+        color++;
+        pos_x = x;
+        pos_y = y;
+        enableInterrupt();
+    }
+}
+
+/*!
+    \brief idle thread
+
+    \author HigePon
+    \date   create:2003/03/02 update:
+*/
+void kthread_idle2() {
+
+    dword color = 0;
+
+    while (true) {
+
+        disableInterrupt();
+
+        int x = pos_x;
+        int y = pos_y;
+
+        pos_x = 22, pos_y = 20;
+        write_font('$', color%15, 0);
+        color++;
+        pos_x = x;
+        pos_y = y;
+        enableInterrupt();
     }
 }
 
@@ -209,6 +265,10 @@ void kthread_idle() {
 void kthread_schedule() {
 
     /* change runlist */
+    Kthread* temp = current;
+
+    kthread_remove_from_run(temp);
+    kthread_add_to_run(temp);
 
     /* change current */
     current = runlist;
@@ -225,10 +285,6 @@ void kthread_schedule() {
 */
 void kthread_switch() {
 
-    console->printf("switch");
-    console->printf("higepon eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
-                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
-                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
     arch_kthread_switch();
 }
 

@@ -145,4 +145,5 @@ MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
 GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h include/monaTypes.h include/string.h
 kthread.o: kthread.cpp include/kthread.h include/monaTypes.h \
-  include/string.h
+  include/string.h include/monaKernel.h include/VirtualConsole.h \
+  include/monaOperator.h include/monaIhandler.h

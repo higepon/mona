@@ -50,6 +50,8 @@ void kthread_yield();
 Kthread* kthread_create_thread(dword stack, void (*f)());
 dword kthread_allocate_stack();
 void kthread_idle();
+void kthread_idle2();
 void kthread_schedule();
 void kthread_switch();
+void kthread_printInfo();
 #endif
