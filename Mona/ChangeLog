@@ -1,3 +1,11 @@
+2004-02-07  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/Makefile: gshell対応
+
+        * apps/baygui/gshell/gshell.cpp: gshell対応
+
+        * bin/root/BAYGUI.INI: gshell対応
+
 2004-02-06  bayside  <bayside@users.sourceforge.jp>
 
         * tools/guibuilder: 追加（デフォルトではビルドされません）
