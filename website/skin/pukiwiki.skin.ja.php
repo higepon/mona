@@ -186,6 +186,9 @@
  <br />
  Powered by PHP <?php echo PHP_VERSION ?>
  <br /><br />
+ Powered by <a href="http://sourceforge.jp/" target="_blank">SourceForge.jp<br><IMG SRC="http://sourceforge.jp/sflogo.php?group_id=320" WIDTH="96" HEIGHT="31" BORDER="0" ALT="SourceForge.jp"></a>
+ <br />
+ 
  HTML convert time to <?php echo $taketime ?> sec.
 </div>
 
