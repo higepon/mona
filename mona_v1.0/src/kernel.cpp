@@ -51,6 +51,7 @@ char* version = "Mona develop beta 0.07a $Date$";
     \date   create:2002/07/21 update:2003/02/22
 */
 void startKernel(void) {
+
     /* re-set up GDT */
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
@@ -94,6 +95,10 @@ void startKernel(void) {
     }
     g_console->printf("\n");
 
+    /* set process name for info() */
+    strcpy(g_process_name, "KERNEL");
+
+
 #ifdef MJT
     test_mjt();
 #endif
@@ -103,6 +108,8 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
+    /* set process name for info() */
+    strcpy(g_process_name, "FDCDriver");
     while (g_demo_step < 2);
 
 #ifdef HIGE

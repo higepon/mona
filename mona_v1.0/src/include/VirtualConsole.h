@@ -14,6 +14,8 @@
 #ifndef _MONA_VIRTUAL_CONSOLE_
 #define _MONA_VIRTUAL_CONSOLE_
 
+#include<types.h>
+
 /*!
     abstract class VirtualConsole
 */
@@ -23,6 +25,10 @@ class VirtualConsole {
     virtual void printf(const char *, ...) = 0;
     virtual void setBGColor(const char color) = 0;
     virtual void setCHColor(const char color) = 0;
+    virtual void putCharacter(char ch) = 0;
+    virtual void print(char* str)  = 0;
+    virtual void printInt(int num) = 0;
+    virtual void putInt(size_t n, int base) = 0;
 };
 
 

@@ -48,7 +48,8 @@ SOURCES    = cstart.cpp            \
              test_higepon.cpp      \
              test_mjt.cpp          \
              sysresource.cpp       \
-             ISADriver.cpp         
+             ISADriver.cpp         \
+             info.cpp
 
 DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp driver/ISADevice/PCIC/pcic.cpp
 DRVROBJ = ps2kbc.o pcic.o
