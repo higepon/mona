@@ -1,5 +1,5 @@
 /*!
-    \file  semaphore.h
+    \file  Semaphore.h
     \brief semaphore
 
     Copyright (c) 2003 HigePon
@@ -14,7 +14,11 @@
 
 typedef int semaphore;
 
-int semaphore_up(semaphore*);
-int semaphore_down(semaphore*);
+class Semaphore {
+
+  public:
+    static void up(semaphore* sem);
+    static int down(semaphore* sem);
+};
 
 #endif

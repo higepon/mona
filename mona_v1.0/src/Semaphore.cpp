@@ -24,10 +24,10 @@
     \author HigePon
     \date   create:2003/01/31 update:2003/02/01
 */
-int semaphore_up(semaphore* sem) {
+void Semaphore::up(semaphore* sem) {
 
     (*sem)++;
-    return 0;
+    return;
 }
 
 /*!
@@ -37,7 +37,7 @@ int semaphore_up(semaphore* sem) {
     \author HigePon
     \date   create:2003/01/31 update:2003/03/21
 */
-int semaphore_down(semaphore* sem) {
+int Semaphore::down(semaphore* sem) {
 
     dword eflags = get_eflags();
     disableInterrupt();
