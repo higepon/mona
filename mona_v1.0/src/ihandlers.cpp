@@ -296,6 +296,14 @@ void cpufaultHandler_c(void){
 
 void cpufaultHandler_e(void){
 
+    dword address;
+
+    asm volatile ("mov %%cr2, %%eax \n"
+                  "mov %%eax, %0    \n" :  "=m"(address));
+
+    g_console->printf("page fault address is %x\n", address);
+
+
     g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
                       , g_stack_view.stack0
                       , g_stack_view.stack1

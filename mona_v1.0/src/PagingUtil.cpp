@@ -29,7 +29,7 @@ void PagingUtil::setup() {
     if (g_page_tbl == NULL) panic("Page Table memory allocate error\n");
     for (; (dword)g_page_tbl % 4096; g_page_tbl++);
 
-    makePTE(&(g_page_dir[0]), (dword)g_page_tbl, 0, 0);
+    makePTE(&(g_page_dir[0]), ((dword)g_page_tbl) >> 12, 0, 0);
 
 
     for (int i = 1; i < PAGE_DIR_NUM; i++) {
@@ -40,7 +40,7 @@ void PagingUtil::setup() {
 
     for (int i = 0; i < PAGE_TBL_NUM; i++) {
 
-        makePTE(&(g_page_tbl[i]), i* 1024, 1, 1);
+        makePTE(&(g_page_tbl[i]), i, 1, 1);
 
     }
 
@@ -76,7 +76,8 @@ void PagingUtil::makePTE(PTE* pte, dword physaddr, byte readWrite, byte user) {
     pte->dirty            = 0;
     pte->intelReserved    = 0;
     pte->monaAvailable    = 0;
-    pte->pageBaseAddress  = physaddr >> 12;
+    //    pte->pageBaseAddress  = physaddr >> 12;
+    pte->pageBaseAddress  = physaddr;
     return;
 }
 
