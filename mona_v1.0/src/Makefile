@@ -28,11 +28,9 @@ TEMPLATE    = $(TOOLS)/fat_template.img
 SOURCES     = cstart.cpp            \
               kernel.cpp            \
               ihandlers.cpp         \
-              IA32MemoryManager.cpp \
               operator.cpp          \
               purevirtual.cpp       \
               KeyBoardManager.cpp   \
-              tester.cpp            \
               checker.cpp           \
               string.cpp            \
               SystemInfo.cpp        \
@@ -54,7 +52,6 @@ SOURCES     = cstart.cpp            \
               Process.cpp           \
               Scheduler.cpp         \
               ProcessManager.cpp    \
-              MessageServer.cpp     \
               PageManager.cpp       \
               elf.cpp               \
               test_mjt.cpp          \

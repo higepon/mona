@@ -22,7 +22,6 @@
 #define IDE_CMD_DIAG 0x90
 #define IDE_CMD_ID 0xec
 
-
 unsigned int IDEDriver::driveaddr_;
 unsigned int IDEDriver::control_;
 unsigned int IDEDriver::data_;

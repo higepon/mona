@@ -56,12 +56,9 @@
 #include <disp.h>
 #include <BitMap.h>
 #include <FAT12.h>
-#include <IA32MemoryManager.h>
 #include <string.h>
 #include <syscalls.h>
 #include <ProcessManager.h>
-#include <Message.h>
-#include <MessageServer.h>
 #include <syscalls.h>
 #include <userlib.h>
 #include <PageManager.h>
@@ -171,7 +168,6 @@ void mainProcess() {
     Process*     process5 = new Process("krnl_o2      ");
     UserProcess* process6 = new UserProcess("user_process2");
     Process*     process7 = new Process("show_process ");
-    Process*     process8 = new Process("MessageServer");
     V86Process*  process9 = new V86Process("V86_process");
 
     //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));S
@@ -182,7 +178,6 @@ void mainProcess() {
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-    g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
     //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
     //    process9->pinfo_.esp = 0x1000;
 

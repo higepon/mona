@@ -23,7 +23,6 @@
 #include <ProcessManager.h>
 #include <sysresource.h> /* (expr) */
 #include <PageManager.h>
-#include <MessageServer.h>
 #include <FAT12.h>
 #include <MemoryManager.h>
 #include <Segments.h>
@@ -59,9 +58,6 @@ GLOBAL TSS* g_tss;
 GLOBAL Process** g_process;
 GLOBAL ProcessInfo* g_current_process;
 GLOBAL class ProcessManager* g_process_manager;
-
-/* MessageServer */
-GLOBAL MessageServer* g_message_server;
 
 GLOBAL PageEntry* g_page_directory;
 GLOBAL PageManager* g_page_manager;

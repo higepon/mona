@@ -5,7 +5,6 @@
 #include<io.h>
 #include<GraphicalConsole.h>
 #include<operator.h>
-#include<IA32MemoryManager.h>
 #include<z.h>
 #include<MemoryManager.h>
 #include<KeyBoardManager.h>
@@ -49,6 +48,9 @@ struct read_info {
 
 int loadProcess(const char* path, const char* file) {
 
+    static dword sharedId = 0x1000;
+    sharedId++;
+
     int    fileSize;
     int    readTimes;
     byte*  buf;
@@ -57,8 +59,8 @@ int loadProcess(const char* path, const char* file) {
     FAT12* fat;
 
     while (Semaphore::down(&g_semaphore_shared));
-    isOpen = SharedMemoryObject::open(0x1237, 4096 * 5);
-    isAttaced = SharedMemoryObject::attach(0x1237, g_current_process, 0x80000000);
+    isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(sharedId, g_current_process, 0x80000000);
     Semaphore::up(&g_semaphore_shared);
 
     if (!isOpen || !isAttaced) return SHARED_MM_ERROR;
@@ -79,9 +81,7 @@ int loadProcess(const char* path, const char* file) {
     if (buf == NULL) return -1;
 
     for (int i = 0; i < readTimes; i++) {
-
         if (!fat->read(buf + 512 * i)) {
-
             g_console->printf("read failed %d", i);
             while (true);
         }
@@ -102,12 +102,17 @@ int loadProcess(const char* path, const char* file) {
     Process*   process1 = new Process(file);
 
     while (Semaphore::down(&g_semaphore_shared));
-    isOpen = SharedMemoryObject::open(0x1237, 4096 * 5);
-    isAttaced = SharedMemoryObject::attach(0x1237, &(process1->pinfo_), 0xA0000000);
+    isOpen = SharedMemoryObject::open(sharedId, 4096 * 5);
+    isAttaced = SharedMemoryObject::attach(sharedId, &(process1->pinfo_), 0xA0000000);
     Semaphore::up(&g_semaphore_shared);
     if (!isOpen || !isAttaced) panic("loadProcess: not open");
 
     g_process_manager->addProcess(process1, entrypoint);
+
+    //    while (Semaphore::down(&g_semaphore_shared));
+    //    SharedMemoryObject::detach(sharedId, g_current_process);
+    //    Semaphore::up(&g_semaphore_shared);
+
 
     return 0;
 }

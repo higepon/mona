@@ -12,7 +12,6 @@
     \version $Revision$
     \date   create:2002/08/08 update:$Date$
 */
-#include<IA32MemoryManager.h>
 #include<MemoryManager.h>
 #include<operator.h>
 #include<types.h>

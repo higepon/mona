@@ -15,7 +15,6 @@
 #include <checker.h>
 #include <types.h>
 #include <kernel.h>
-#include <IA32MemoryManager.h>
 #include <GDTUtil.h>
 #include <IDTUtil.h>
 

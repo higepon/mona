@@ -21,7 +21,6 @@
 #include <userlib.h>
 #include <rtc.h>
 #include <GraphicalConsole.h>
-#include <Message.h>
 #include <tester.h>
 
 extern "C" void write_font(int a, char b, char c);
@@ -86,6 +85,8 @@ void disp_name2() {
 
 void disp_name3() {
 
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
     g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF"));
 
 
@@ -160,7 +161,7 @@ void disp_process() {
 
         pos_x = 0, pos_y = 15;
 
-        //        g_process_manager->printAllProcesses();
+        g_process_manager->printAllProcesses();
 
         pos_x = x;
         pos_y = y;
