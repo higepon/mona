@@ -144,9 +144,7 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
     break;
   default:
     if(keyInfo.modifiers & KEY_MODIFIER_CHAR){
-      CString tmp;
-      tmp += keyInfo.charcode;
-      this->cmd.InsertCommandLine(tmp);
+      this->cmd.InsertCommandLine(CString((char *)&keyInfo.charcode, 1));
     }
     break;
   }
