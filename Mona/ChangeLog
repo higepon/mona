@@ -1,3 +1,7 @@
+2004-11-27  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/IDEDriver.cpp : identifyのデータ引き取りサイズバグ修正。これでセカンダリのデバイスも認識。
+
 2004-11-26  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/kernel.cpp : 不要コードの削除
