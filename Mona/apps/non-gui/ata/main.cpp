@@ -100,34 +100,37 @@ int MonaMain(List<char*>* pekoe)
 
     dword lba = atoi(pekoe->get(0));
     byte buffer[2048];
+    printf("[read start]\n");
     int readResult = ide->read(lba, buffer, 2048);
-
     if (readResult != 0)
     {
         printf("Read Error = %d\n", readResult);
         delete ide;
         return 1;
     }
+    printf("\n[read end]\n");
 
-    printf("[read start]\n");
-    char buf[8];
+    char buf[128];
+    dword addr = lba * 2048;
     for (int i = 0; i < 128; i++)
     {
+        sprintf(buf, "%08X:", addr + i * 16);
         for (int j = 0; j < 16; j++)
         {
-            sprintf(buf, "%02x ", buffer[i * 16 + j]);
-            printf(buf);
+            sprintf(buf + 9 + j * 3, "%02X ", buffer[i * 16 + j]);
         }
 
-        printf(" | ");
+        sprintf(buf + 9 + 3 * 16, "| ");
+        
         for (int j = 0; j < 16; j++)
         {
-            sprintf(buf, "%c", buffer[i * 16 + j]);
-            printf(buf);
+            char ch = buffer[i * 16 + j];
+            if (ch < ' ') ch = '.';
+            buf[9 + 3 * 16 + 2 + j] = ch;
         }
-        printf("\n");
+        sprintf(buf + 9 + 3 * 16 + 2 + 16, "\n");
+        printf(buf);
     }
-    printf("\n[read end]\n");
 
     delete ide;
     return 0;
