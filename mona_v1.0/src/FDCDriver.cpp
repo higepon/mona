@@ -486,7 +486,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     waitInterrupt();
 
-    //    delay(50000);
+    //    delay(30000);
     stopDMA();
 
     for (int i = 0; i < 7; i++) {

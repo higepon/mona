@@ -432,6 +432,8 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     char* file;
     char* ext;
 
+    if (isOpen_) return false;
+
     /* save current directory */
     int currentDirectory = currentDirectory_;
 
