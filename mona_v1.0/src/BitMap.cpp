@@ -10,7 +10,6 @@
     \date   create:2003/03/30 update:$Date$
 */
 
-#include<syscalls.h>
 #include<BitMap.h>
 
 
@@ -23,6 +22,8 @@ BitMap::BitMap(int number) {
                  + ((bitsNumber_ % DWORD_BITS) ? 1 : 0);
 
     map_ = new dword[dwordNumber_];
+
+    for (int i = 0; i < bitsNumber_; i++) clear(i);
 
     return;
 }
@@ -59,7 +60,14 @@ int BitMap::find() {
 
 int BitMap::countClear() {
 
-    return 0;
+    int count = 0;
+
+    for (int i = 0; i < bitsNumber_; i++) {
+
+        if (!marked(i)) count++;
+    }
+
+    return count;
 }
 
 bool BitMap::marked(int index) {
