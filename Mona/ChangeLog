@@ -2,7 +2,7 @@
 
         * Makefile.in: イメージ作成を分離
 
-        * bin/Makefile: イメージ作成, fat_writeで--mbr, --mkdirを使用
+        * bin/Makefile: イメージ作成, fat_writeで--mbr, --mkdirを使用, GREVERSI.APP対応
 
         * その他Makefile: stripの後にmonaelfを適用, install前にディレクトリ作成
 
