@@ -1,3 +1,17 @@
+2004-12-19  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/gui/monafile/Icon.cpp : 対応拡張子追加（EL5, EX5, BM5）
+
+        * src/servers/gui/Makefile : BAYGUI.MSH もインストール対象にした
+
+        * src/servers/gui/main.cpp : コマンドライン引数対応（.INI ファイル名）
+
+        * src/servers/gui/BAYGUI.MSH : BAYGUI 起動用スクリプト
+
+        * src/servers/gui/STARTMF.MSH : コマンドライン引数追加
+
+        * bin/root/BAYGUI.INI : BayGUI 用設定ファイル追加
+
 2004-12-14  higepon  <higepon@users.sourceforge.jp>
 
         * bin/Makefile: $(EXEEXT)対応
