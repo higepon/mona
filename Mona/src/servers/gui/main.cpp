@@ -16,13 +16,14 @@ enum
 	MSG_GUISERVER_DECODEIMAGE,
 	MSG_GUISERVER_RETURNIMAGE,
 	MSG_GUISERVER_DISPOSEIMAGE,
-	MSG_GUISERVER_SETWALLPAPER
+	MSG_GUISERVER_SETWALLPAPER,
+	MSG_GUISERVER_REFRESHWALLPAPER
 };
 
-static int SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3)
+static int SendMessage(dword to, dword header, dword arg1, dword arg2, dword arg3, const char* str = NULL)
 {
 	MessageInfo msg;
-	Message::create(&msg, header, arg1, arg2, arg3, NULL);
+	Message::create(&msg, header, arg1, arg2, arg3, (char*)str);
 	return Message::send(to, &msg);
 }
 
@@ -58,9 +59,17 @@ public:
 		this->Size = size;
 		return true;
 	}
+	
+	void Dispose()
+	{
+		MemoryMap::unmap(this->Handle);
+	}
 };
 
 static MemoryInfo* default_font = NULL;
+static MemoryInfo* wallpaper = NULL;
+static int wallpaper_pos = 0;
+static bool wallpaper_prompt = false;
 
 static MemoryInfo* ReadFile(const char* file, bool prompt = false)
 {
@@ -187,8 +196,44 @@ static MemoryInfo* ReadImage(const char* file)
 	return ret;
 }
 
+void ReadConfig()
+{
+	MemoryInfo* cfg = ReadFile("/MONA.CFG");
+	if (cfg == NULL) return;
+	
+    char line[256], src[256] = "";
+    int linepos = 0, wppos = 5;
+    for (int pos = 0; pos <= cfg->Size; pos++)
+    {
+        char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
+        if (ch == '\r' || ch == '\n') {
+            if (linepos > 0) {
+                line[linepos] = '\0';
+                if (strstr(line, "WALLPAPER_SOURCE=") == line)
+                {
+                	strcpy(src, &line[17]);
+                }
+                if (strstr(line, "WALLPAPER_POSITION=") == line)
+                {
+                	wppos = atoi(&line[19]);
+                }
+                linepos = 0;
+            }
+        } else if (linepos < 255) {
+            line[linepos++] = ch;
+        }
+    }
+    cfg->Dispose();
+    delete cfg;
+    if (src[0] == '\0') return;
+    
+    wallpaper_prompt = true;
+    SendMessage(System::getThreadID(), MSG_GUISERVER_SETWALLPAPER, wppos, 0, 0, src);
+}
+
 int MonaMain(List<char*>* pekoe)
 {
+	ReadConfig();
 	ReadFont("/MONA-12.MNF");
 	if (default_font == NULL) exit(1);
 	
@@ -231,7 +276,7 @@ int MonaMain(List<char*>* pekoe)
 		}
 	}
 	
-	MemoryMap::unmap(default_font->Handle);
+	default_font->Dispose();
 	delete default_font;
 	return 0;
 }

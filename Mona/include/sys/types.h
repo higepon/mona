@@ -141,6 +141,8 @@ typedef struct {
 #define MSG_KEY_UNREGIST_FROM_SERVER   0x0C
 #define MSG_SERVER_START_OK            0x0D
 #define MSG_MEMORY_MAP_ID              0x0E
+#define MSG_MOUSE_ENABLE_CURSOR        0x20
+#define MSG_MOUSE_DISABLE_CURSOR       0x21
 
 #define SHARED_FDC_BUFFER 0x4000
 

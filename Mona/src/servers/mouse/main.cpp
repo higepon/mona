@@ -22,9 +22,12 @@ typedef struct {
     bool rightClickd;
 } MouseInfo;
 
+static int disable_count = 0;
+
 int regist(List<dword>* destList, MessageInfo* info);
 int unregist(List<dword>* destList, MessageInfo* info);
 int sendMouseInformation(List<dword>* destList, MessageInfo* info);
+void paintCursor(Screen* scr, int x, int y, VirtualScreen* vscr);
 
 int MonaMain(List<char*>* pekoe) {
 
@@ -65,7 +68,7 @@ int MonaMain(List<char*>* pekoe) {
     }
 
     /* paint */
-    Screen::bitblt(&screen, posX , posY, 3, 3, &vscreen, 0, 0, Raster::XOR);
+    paintCursor(&screen, posX , posY, &vscreen);
 
     /* Message loop */
     for (;;) {
@@ -104,8 +107,8 @@ int MonaMain(List<char*>* pekoe) {
                 if (posY > yResolution) posY = yResolution;
                 if (posY < 0) posY = 0;
 
-                Screen::bitblt(&screen, prevX, prevY, 3, 3, &vscreen, 0, 0, Raster::XOR);
-                Screen::bitblt(&screen, posX , posY, 3, 3, &vscreen, 0, 0, Raster::XOR);
+                paintCursor(&screen, prevX, prevY, &vscreen);
+                paintCursor(&screen, posX , posY , &vscreen);
 
                 prevX = posX;
                 prevY = posY;
@@ -114,6 +117,21 @@ int MonaMain(List<char*>* pekoe) {
                                 , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
                 sendMouseInformation(destList, &send);
 
+                break;
+
+            case MSG_MOUSE_ENABLE_CURSOR:
+
+                if (disable_count > 0) {
+
+                    disable_count--;
+                    paintCursor(&screen, posX, posY, &vscreen);
+                }
+                break;
+
+            case MSG_MOUSE_DISABLE_CURSOR:
+
+                paintCursor(&screen, posX, posY, &vscreen);
+                disable_count++;
                 break;
 
             default:
@@ -152,4 +170,11 @@ int unregist(List<dword>* destList, MessageInfo* info) {
     dword id = info->arg1;
     destList->remove(id);
     return 0;
+}
+
+void paintCursor(Screen* scr, int x, int y, VirtualScreen* vscr) {
+
+    if (disable_count > 0) return;
+    
+    Screen::bitblt(scr, x, y, 3, 3, vscr, 0, 0, Raster::XOR);
 }

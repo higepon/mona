@@ -1,3 +1,7 @@
+2004-04-25  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: マウスポインタを描画するかどうかを制御
+
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
         * *.asmでsection .text指定。 NFLAGS= -f elf, -f win32の振り分け
