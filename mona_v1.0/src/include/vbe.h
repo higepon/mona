@@ -76,11 +76,11 @@ typedef struct Pixel8 {
 };
 
 
-class Screen {
+class kScreen {
 
   public:
-    Screen(int x, int y, byte bpp, byte* vram);
-    virtual ~Screen();
+    kScreen(int x, int y, byte bpp, byte* vram);
+    virtual ~kScreen();
 
   public:
     inline int getXResolution() const {
@@ -130,8 +130,8 @@ class Screen {
     }
 
   public:
-    static bool bitblt(Screen* destScreen, int destX, int destY, int width, int height
-                       , Screen* sourceScreen, int sourceX, int sourceY, dword raster);
+    static bool bitblt(kScreen* destScreen, int destX, int destY, int width, int height
+                       , kScreen* sourceScreen, int sourceX, int sourceY, dword raster);
 
   private:
     int   xResolution_;

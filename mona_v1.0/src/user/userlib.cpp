@@ -350,6 +350,48 @@ int Mutex::destory() {
 }
 
 /*----------------------------------------------------------------------
+    Screen
+----------------------------------------------------------------------*/
+Screen::Screen() {
+
+    /* get and set vram information */
+    syscall_get_vram_info(&sinfo);
+    vram_        = (byte*)sinfo.vram;
+    bpp_         = sinfo.bpp;
+    xResolution_ = sinfo.x;
+    yResolution_ = sinfo.y;
+}
+
+Screen::~Screen() {
+}
+
+void Screen::putPixel16(int x, int y, dword color) {
+
+    int bytesPerPixel = bpp_ / 8;
+    byte* vram       = vram_;
+
+    vram += (x + y * xResolution_) * bytesPerPixel;
+    *((word*)vram) = (word)color;
+}
+
+void Screen::fillRect16(int x, int y, int w, int h, dword color) {
+
+        dword bytesPerPixel = bpp_ / 8;
+
+        byte* position = vram_ + (x + y * xResolution_) * bytesPerPixel;
+        byte* temp     = position;
+
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                *((word*)temp) = color;
+                temp += bytesPerPixel;
+            }
+            position += xResolution_ * bytesPerPixel;
+            temp = position;
+        }
+}
+
+/*----------------------------------------------------------------------
     Message
 ----------------------------------------------------------------------*/
 int Message::send(dword pid, MessageInfo* info) {

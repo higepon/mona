@@ -300,7 +300,7 @@ void VesaConsole::VesaScreen::fill (int x, int y, int w, int h, dword c)
 
         for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
-                        *((word*)temp) = color;
+                        *((word*)temp) = (word)color;
                         temp += bytesPerPixel;
                 }
                 bits += bytesPerScanLine;

@@ -31,14 +31,14 @@ License=MIT/X Licnese
 /*----------------------------------------------------------------------
     Screen
 ----------------------------------------------------------------------*/
-Screen::Screen(int x, int y, byte bpp, byte* vram) : xResolution_(x), yResolution_(y), bitsPerPixel_(bpp), vramSize_(x * y * bpp), vram_(vram) {
+kScreen::kScreen(int x, int y, byte bpp, byte* vram) : xResolution_(x), yResolution_(y), bitsPerPixel_(bpp), vramSize_(x * y * bpp), vram_(vram) {
 }
 
-Screen::~Screen() {
+kScreen::~kScreen() {
 }
 
-bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int height
-                    , Screen* sourceScreen, int sourceX, int sourceY, dword raster) {
+bool kScreen::bitblt(kScreen* destScreen, int destX, int destY, int width, int height
+                    , kScreen* sourceScreen, int sourceX, int sourceY, dword raster) {
 
     /* check range */
     /* not yet     */
@@ -53,7 +53,6 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     case(16):
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
-
                 copyPixel16(dvram, destX + w, destY + h, svram, sourceX + w, sourceY + h, xResolution, raster);
             }
         }

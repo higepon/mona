@@ -1,4 +1,10 @@
+2004-01-28  higepon  <higepon@users.sourceforge.jp>
+
+        * ユーザーモードからの描画・Vram取得・fillRect・putPixel
+
 2004-01-27  higepon  <higepon@users.sourceforge.jp>
+
+        * user/include/userlib.h: putPixel16
 
         * secondboot.asm (get_vesa_info): VESAモードをトライする関数を追加。
 

@@ -93,10 +93,71 @@ class Message {
     static dword lookup(const char* name);
 };
 
+/*----------------------------------------------------------------------
+    Color
+----------------------------------------------------------------------*/
+class Color {
+
+  public:
+
+    inline static word bpp24to565(dword color) {
+        word result = (word)(((color >> 8) & 0xF800) | ((color >> 5) & 0x07E0) | ((color >> 3) & 0x001F));
+        return result;
+    }
+
+    inline static dword rgb(byte r, byte g, byte b) {
+        return b | g  <<  8 | r  << 16;
+    }
+};
+
+/*----------------------------------------------------------------------
+    Screen
+----------------------------------------------------------------------*/
+class Screen {
+
+  public:
+    Screen();
+    virtual ~Screen();
+
+
+  public:
+
+    void putPixel16(int x, int y, dword color);
+    void fillRect16(int x, int y, int w, int h, dword color);
+
+    inline byte* getVRAM() const {
+        return vram_;
+    }
+
+    inline int getBpp() const {
+        return bpp_;
+    }
+
+    inline int getXResolution() const {
+        return xResolution_;
+    }
+
+    inline int getYResolution() const {
+        return yResolution_;
+    }
+
+  public:
+
+  protected:
+    byte* vram_;
+    int bpp_;
+    int xResolution_;
+    int yResolution_;
+
+  private:
+    ScreenInfo sinfo;
+};
+
 
 void putCharacter(char ch);
 void putInt(size_t n, int base);
 void printf(const char *format, ...);
 void printInt(int num);
 size_t _power(size_t x, size_t y);
+
 #endif

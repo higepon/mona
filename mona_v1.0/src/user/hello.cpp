@@ -3,87 +3,15 @@
 
 int listener();
 int disp();
+int draw();
 static char buf[32];
 static bool come;
 static Mutex* mutex;
-
-class Color {
-
-  public:
-
-    inline static byte bpp24to8(dword color) {
-        return color;
-    }
-
-    inline static word bpp24to1555(dword color) {
-        return color;
-    }
-};
-
-class Screen {
-
-  public:
-    Screen();
-    virtual ~Screen();
-
-
-  public:
-
-    bool fillRect(int x, int y, int width, int height, dword color);
-
-    inline byte* getVRAM() const {
-        return vram_;
-    }
-
-    inline int getBpp() const {
-        return bpp_;
-    }
-
-    inline int getXResolution() const {
-        return xResolution_;
-    }
-
-    inline int getYResolution() const {
-        return yResolution_;
-    }
-
-  public:
-
-  protected:
-    byte* vram_;
-    int bpp_;
-    int xResolution_;
-    int yResolution_;
-
-  private:
-    ScreenInfo sinfo;
-};
-
-Screen::Screen() {
-
-    /* get and set vram information */
-    syscall_get_vram_info(&sinfo);
-    vram_        = (byte*)sinfo.vram;
-    bpp_         = sinfo.bpp;
-    xResolution_ = sinfo.x;
-    yResolution_ = sinfo.y;
-}
-
-Screen::~Screen() {
-}
-
-bool Screen::fillRect(int x, int y, int width, int height, dword color) {
-    return false;
-}
 
 int main() {
 
     dword id;
     mutex = new Mutex();
-
-    Screen screen;
-
-    printf("get x = %x", screen.getXResolution());
 
     /* look up */
     dword myPid   = Message::lookup("USER.ELF");
@@ -109,6 +37,16 @@ int main() {
     }
 
     if (!(id = mthread_create((dword)listener))) {
+        print("mthread create error\n");
+        exit(-1);
+    }
+
+    if (mthread_join(id)) {
+        print("mthread join error\n");
+        exit(-1);
+    }
+
+    if (!(id = mthread_create((dword)draw))) {
         print("mthread create error\n");
         exit(-1);
     }
@@ -150,4 +88,23 @@ int listener() {
             mutex->unlock();
         }
     }
+}
+
+int draw() {
+
+    Screen screen;
+    printf("user mode screen (x, y) = (%x, %x)\n", screen.getXResolution(), screen.getYResolution());
+    printf("you can draw from user mode!! and also use multi thread \n");
+
+    word color = Color::bpp24to565(Color::rgb(0x7A, 0x7A, 0xC4));
+
+    screen.fillRect16(0, 200, 800, 400, color);
+
+    color = Color::bpp24to565(Color::rgb(0x63, 0x63, 0x9F));
+
+    for (int x = 0; x < screen.getXResolution(); x++) {
+        screen.putPixel16(x, 0.5 * x + 300, color);
+    }
+
+    for (;;);
 }
