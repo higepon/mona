@@ -1,3 +1,21 @@
+2005-03-16  higepon  <higepon@users.sourceforge.jp>
+
+
+        * ↓結構修正したので#if 0でオリジナルを残してあります。baysideさんに確認してもらわないと。
+
+        * apps/baygui/glaunch/glaunch.cpp: syscall_cd -> monapi_call_change_directory
+                                           syscall_dir_open -> monapi_call_file_read_directory
+
+        * src/servers/file/file.cpp (ReadDirectory): システムコールを呼ばずユーザー側でFATを読むように変更。
+                                    (ReadFile): システムコールを呼ばずユーザー側でFATを読むように変更。
+                                    (fatChangeDirectory): 追加。
+
+        * tools/fat_write/fat.h: 名前衝突のため、名前空間FatFS導入。
+
+        * src/kernel/fs.cpp (initialize): 名前衝突のため、名前空間FatFS導入。
+
+        * src/kernel/FSOperation.h (class FSOperation): 名前衝突のため、名前空間FatFS導入。
+
 2005-03-15  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/IDEDriver.h (class IDEDriver): irq埋め込みを修正。

@@ -4,6 +4,8 @@
 #include "FileServer.h"
 #include "IDEDriver.h"
 #include "ISO9660FileSystem.h"
+#include "FDCDriver.h"
+#include "FSOperation.h"
 
 using namespace MonAPI;
 
@@ -16,7 +18,9 @@ static bool cdInitialized;
 
 static int irq;
 static IDEDriver* cd;
+static FDCDriver* fd;
 static ISO9660FileSystem* fs;
+static FSOperation* fso;
 
 #if 0
 static void interrupt()
@@ -39,6 +43,30 @@ static void interrupt()
     }
 }
 #endif
+
+bool fdInitialize()
+{
+    syscall_get_io();
+
+    monapi_set_irq(6, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(6);
+
+    fd = new FDCDriver();
+
+    fd->motor(true);
+    fd->recalibrate();
+    fd->recalibrate();
+
+    fso = new FSOperation();
+
+    if (fso == NULL || !(fso->initialize((IStorageDevice*)fd)))
+    {
+        printf("FSOperation::initialize error\n");
+        for (;;);
+    }
+
+    return true;
+}
 
 bool initializeCD()
 {
@@ -125,13 +153,27 @@ const char* GetCurrentDirectory()
     return (const char*)currentDirectory[currentDrive];
 }
 
+bool fatChangeDirectory(char* dir)
+{
+    fd->motor(ON);
+    fd->recalibrate();
+    fd->recalibrate();
+    fd->recalibrate();
+
+    bool result = fso->cd(dir);
+
+    fd->motorAutoOff();
+    return result;
+}
+
 int ChangeDirectory(const CString& dir)
 {
     CString fullPath = mergeDirectory(currentDirectory[currentDrive], dir);
 
     if (currentDrive == DRIVE_FD0)
     {
-        if (syscall_cd(dir) != 0)
+        CString tmp = dir;
+        if (!fatChangeDirectory((char*)(const char*)tmp))
         {
             return MONA_FAILURE;
         }
@@ -216,23 +258,43 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
 
     if (drive == DRIVE_FD0)
     {
-        FileInputStream fis(filePath);
-        if (fis.open() != 0)
+        fd->motor(ON);
+        fd->recalibrate();
+        fd->recalibrate();
+        fd->recalibrate();
+
+        CString copyPath = path;
+
+        if (!fso->open((char*)(const char*)copyPath, FILE_OPEN_READ))
         {
-            if (prompt) printf("ERROR\n");
+            fd->motorAutoOff();
+
+            if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
             return NULL;
         }
 
+        dword size = fso->size();
+
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-        if (!monapi_cmemoryinfo_create(ret, fis.getFileSize() + 1, prompt))
+        if (!monapi_cmemoryinfo_create(ret, size + 1, prompt))
         {
             monapi_cmemoryinfo_delete(ret);
+            fd->motorAutoOff();
             return NULL;
         }
 
         ret->Size--;
-        fis.read(ret->Data, ret->Size);
-        fis.close();
+
+        if (!fso->read(ret->Data, ret->Size))
+        {
+            fd->motorAutoOff();
+            monapi_cmemoryinfo_delete(ret);
+            if (prompt) printf("ERROR=%d\n", fso->getErrorNo());
+            return NULL;
+        }
+
+        fso->close();
+        fd->motorAutoOff();
         ret->Data[ret->Size] = 0;
         if (prompt) printf("OK\n");
         return ret;
@@ -308,25 +370,35 @@ monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
 
     if (drive == DRIVE_FD0)
     {
-        if (syscall_cd(filePath))
+        CString tmp = filePath;
+        if (!fatChangeDirectory((char*)(const char*)tmp))
         {
             if (prompt) printf("%s: ERROR: directory not found: %s\n", SVR, path);
             return NULL;
         }
-        if (syscall_dir_open())
+
+        fd->motor(ON);
+        fd->recalibrate();
+        fd->recalibrate();
+        fd->recalibrate();
+
+        if (!fso->openDir())
         {
             if (prompt) printf("%s: ERROR: can not open directory: %s\n", SVR, path);
+            fd->motorAutoOff();
             return NULL;
         }
 
         HList<monapi_directoryinfo*> files;
         monapi_directoryinfo di;
-        while (syscall_dir_read(di.name, &di.size, &di.attr) == 0)
+        while (fso->readDir(di.name, &di.size, &di.attr))
         {
             files.add(new monapi_directoryinfo(di));
         }
-        syscall_dir_close();
-        syscall_cd(currentDirectory[currentDrive]);
+        fso->closeDir();
+        fd->motorAutoOff();
+        tmp = currentDirectory[currentDrive];
+        fatChangeDirectory((char*)(const char*)tmp);
 
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
         int size = files.size();

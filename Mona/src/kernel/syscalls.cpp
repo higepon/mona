@@ -363,6 +363,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_OPEN:
 
         {
+            g_console->printf("syscall file open called\n");
             char* path  = (char*)info->esi;
             int mode    = (int)info->ecx;
             dword* size = (dword*)info->edi;
@@ -396,6 +397,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_READ:
 
         {
+            g_console->printf("syscall file read called\n");
             byte* buf      = (byte*)(info->esi);
             dword size     = (dword)(info->ecx);
 
@@ -419,6 +421,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_WRITE:
 
         {
+            g_console->printf("syscall file write called\n");
             byte* buf      = (byte*)(info->esi);
             dword size     = (dword)(info->ecx);
 
@@ -442,6 +445,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_FILE_CREATE:
 
         {
+            g_console->printf("syscall file create called\n");
             char* path = (char*)(info->esi);
 
             enableInterrupt();
@@ -466,7 +470,7 @@ void syscall_entrance() {
         }
 
     case SYSTEM_CALL_FILE_CLOSE:
-
+        g_console->printf("syscall file close called\n");
         enableInterrupt();
         systemcall_mutex_lock(g_mutexFloppy);
         g_fs->close();
@@ -644,6 +648,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_CD:
         {
+            g_console->printf("syscall cd called\n");
             int result;
             char* path = (char*)(info->esi);
             enableInterrupt();
@@ -667,6 +672,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_DIR_OPEN:
 
         {
+            g_console->printf("syscall dir open called\n");
             enableInterrupt();
             g_fdcdriver->motor(ON);
             g_fdcdriver->recalibrate();
@@ -693,6 +699,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_DIR_CLOSE:
 
         {
+            g_console->printf("syscall dir close called\n");
             int result;
             enableInterrupt();
             systemcall_mutex_lock(g_mutexFloppy);
@@ -709,6 +716,7 @@ void syscall_entrance() {
     case SYSTEM_CALL_DIR_READ:
 
         {
+            g_console->printf("syscall dir read called\n");
             int result;
             char* name = (char*)info->esi;
             int* size = (int*)info->ecx;

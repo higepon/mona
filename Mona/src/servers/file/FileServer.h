@@ -16,5 +16,6 @@ MonAPI::CString mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CStrin
 extern monapi_cmemoryinfo* ReadFile(const char* file, bool prompt = false);
 extern monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt = false);
 extern void initialize();
+extern bool fdInitialize();
 
 #endif  // __FILE_SERVER_H__

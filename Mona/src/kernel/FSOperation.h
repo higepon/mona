@@ -21,7 +21,7 @@
 typedef struct LsInfo
 {
     int entry;
-    Directory* p;
+    FatFS::Directory* p;
 };
 
 class FSOperation
@@ -48,15 +48,15 @@ class FSOperation
     int size();
 
   private:
-    void freeDirectory(Directory *p);
-    Directory* trackingDirectory(char *path, int *cursor);
-    Directory* searchFile(char *path, int *entry, int *cursor);
+    void freeDirectory(FatFS::Directory *p);
+    FatFS::Directory* trackingDirectory(char *path, int *cursor);
+    FatFS::Directory* searchFile(char *path, int *entry, int *cursor);
 
   private:
-    File* file;
-    Directory* dir;
-    Directory* current;
-    FatStorage* fat;
+    FatFS::File* file;
+    FatFS::Directory* dir;
+    FatFS::Directory* current;
+    FatFS::FatStorage* fat;
     IStorageDevice* device;
     int errorNo;
     int mode;

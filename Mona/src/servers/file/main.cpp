@@ -7,8 +7,6 @@
 #include "bzip2.h"
 #include "dtk5s.h"
 #include "IDEDriver.h"
-#include "FDCDriver.h"
-#include "FSOperation.h"
 
 using namespace MonAPI;
 
@@ -120,7 +118,6 @@ void MessageLoop()
             }
             case MSG_FILE_DECOMPRESS_ST5:
             {
-
                 monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
                 mi1->Handle = msg.arg1;
                 mi1->Size   = msg.arg2;
@@ -185,32 +182,6 @@ void MessageLoop()
     }
 }
 
-static bool fdInitialize()
-{
-    syscall_get_io();
-
-    monapi_set_irq(6, MONAPI_TRUE, MONAPI_TRUE);
-    syscall_set_irq_receiver(6);
-
-    FDCDriver* fdc = new FDCDriver();
-
-    fdc->motor(true);
-    fdc->recalibrate();
-    fdc->recalibrate();
-
-    FSOperation* fs = new FSOperation();
-
-    if (fs == NULL || !(fs->initialize((IStorageDevice*)fdc)))
-    {
-        printf("FSOperation::initialize error\n");
-        for (;;);
-    }
-
-    printf("fdc initialize ok");
-
-    return true;
-}
-
 int MonaMain(List<char*>* pekoe)
 {
     if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
@@ -219,7 +190,7 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
 
-//    fdInitialize();
+    fdInitialize();
 
     initialize();
 

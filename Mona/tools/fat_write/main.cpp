@@ -17,6 +17,8 @@
 #include "fat.h"
 #include "VirtualFloppy.h"
 
+using namespace FatFS;
+
 struct WriteInf
 {
     FILE* fp;
