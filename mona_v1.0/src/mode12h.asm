@@ -227,7 +227,7 @@ _pos_x          db      0
 _pos_y          db      0
 
 font_main       dw      font+0x0011
-font            incbin  "paw16a.fnt"
+font            incbin  "Jpnhn16x.cur"
 
 ;   (32-bits call procedure)
 ; higher   :             :

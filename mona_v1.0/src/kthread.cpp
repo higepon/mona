@@ -225,12 +225,8 @@ void kthread_idle2() {
 */
 void kthread_schedule() {
 
-    console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
-                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
-                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
-
     /* change runlist */
-    Kthread* temp = current;
+    //    Kthread* temp = current;
 
     //    current = kthread_get_next_from_list(&runningList);
 
