@@ -165,7 +165,7 @@ void startKernel(void) {
 
 void mainProcess() {
 
-
+    disableInterrupt();
     //    ELFTester(user_func_from);
     //    byte* user_func = (byte*)0xA00000;
     //    ELFLoader* loader = new ELFLoader();

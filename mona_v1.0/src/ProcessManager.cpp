@@ -37,18 +37,18 @@ void ProcessManager::switchProcess() {
          , g_current_process->ss0
          );
 
-    /* switch page */
+    /* switch page directory */
     g_page_manager->setPageDirectory(g_current_process->cr3);
     g_page_manager->flushPageCache();
 
     /* switch to user process */
     if ((g_current_process->cs & DPL_USER) == DPL_USER) {
 
+        /* user mode need kernel stack */
         g_tss->esp0 = g_current_process->esp0;
         g_tss->ss0  = g_current_process->ss0;
 
-        info(DEBUG, "TO USER\n");
-
+        /* V86 mode. not completed */
         if ((g_current_process->eflags & 0x20000) == 0x20000) {
 
             g_console->printf("to v86\n");
@@ -61,19 +61,24 @@ void ProcessManager::switchProcess() {
         info(DEBUG, "TO KERNEL\n");
         arch_switch_process();
     }
+
+    /* does't come here */
 }
 
 void ProcessManager::schedule(){
 
+    /* process tick */
     g_current_process->tick += 10;
 
+    /* kernel tick */
     g_process_manager->tick();
+
     scheduler_->schedule();
 
     g_current_process->state = Process::RUNNING;
 
+    /* switch to next */
     this->switchProcess();
-
 }
 
 virtual_addr ProcessManager::allocateStack() {
@@ -82,13 +87,16 @@ virtual_addr ProcessManager::allocateStack() {
 
     i++;
 
-    return 0x70000 + i * 4096;
+    //    return 0x70000 + i * 4096;
+    g_console->printf("stack=%d", i);
+    return 0x400300;
 }
 
 virtual_addr ProcessManager::allocateKernelStack(dword dpl) {
 
     static int i = 0;
 
+    /* kernel mode process doesn't need kernel stack */
     if (dpl == DPL_KERNEL) return 0;
 
     i++;

@@ -89,6 +89,16 @@ PageEntry* PageManager::createNewPageDirectory() {
     memset(directory, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
     makePageEntry(directory, (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_KERNEL);
 
+    dword directoryIndex = 0x400000 >> 22;
+    dword tableIndex     = (0x400000 >> 12) & 0x3FF;
+
+    /* test code. stack is always 0x400000-0x4003FF */
+    //    table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    table = allocatePageTable();
+    memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
+    makePageEntry(&(directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+    allocatePhysicalPage(&(table[tableIndex]));
+
     return directory;
 }
 
@@ -149,7 +159,6 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     /* physical page not exist */
     if (error & 0x01 == PAGE_NOT_EXIST) {
-
 
         if (isPresent(&(g_page_directory[directoryIndex]))) {
 
