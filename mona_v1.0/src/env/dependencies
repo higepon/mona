@@ -8,7 +8,7 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h
 monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
-  include/monaTypes.h include/string.h
+  include/monaTypes.h include/string.h include/monaIo.h
 monaIhandler.o: monaIhandler.cpp include/monaIdt.h include/monaVga.h \
   include/monaTypes.h include/string.h include/monaIo.h \
   include/KeyBoardManager.h include/FDCDriver.h include/ProcessManager.h \
@@ -31,11 +31,11 @@ FDCDriver.o: FDCDriver.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaIo.h include/monaOperator.h \
   include/FDCDriver.h
 monaTester.o: monaTester.cpp include/monaVga.h include/monaTypes.h \
-  include/string.h include/monaIo.h include/monaOperator.h \
-  include/monaUtil.h include/HVector.h include/monaTester.h \
-  include/FDCDriver.h include/ProcessManager.h include/monaKernel.h \
-  include/IA32MemoryManager.h stlport/string stlport/stl/_prolog.h \
-  stlport/stl/_config.h stlport/stl_user_config.h \
+  include/string.h include/monaIo.h include/monaIdt.h \
+  include/monaOperator.h include/monaUtil.h include/HVector.h \
+  include/monaTester.h include/FDCDriver.h include/ProcessManager.h \
+  include/monaKernel.h include/IA32MemoryManager.h stlport/string \
+  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
   stlport/config/stlcomp.h stlport/config/stl_gcc.h \
   stlport/config/stl_confix.h stlport/stl/_string.h stlport/memory \

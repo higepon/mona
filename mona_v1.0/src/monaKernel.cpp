@@ -64,6 +64,10 @@ void startKernel(void) {
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
     _sysUnlock();
+
+    disableTimer();
+    enableTimer();
+
     _sys_printf("IDT,GDT set done\n");
 
     /* get System Information */

@@ -13,6 +13,7 @@
 */
 #include<monaVga.h>
 #include<monaIo.h>
+#include<monaIdt.h>
 #include<monaOperator.h>
 #include<monaUtil.h>
 #include<monaTypes.h>
@@ -167,24 +168,24 @@ void STLTester() {
     _sys_printf("string: str.substr(3, 11): %s\n", str.substr(3, 11).data());
 
     // list
-    std::list<char*> li;
+    std::list<const char*> li;
     li.push_back("micoro kernel ");
     li.push_back("operating system with ");
     li.push_back("network suit architecture ");
     li.push_back("\n");
-    std::list<char*>::iterator it;
+    std::list<const char*>::iterator it;
     _sys_printf("list  : iterate->");
     for (it = li.begin(); it != li.end(); it++) {
         _sys_printf("%s", *it);
     }
 
     // vector
-    std::vector<char*> ve;
+    std::vector<const char*> ve;
     ve.push_back("1");
     ve.push_back("2");
     ve.push_back("3");
     ve.push_back("4");
-    std::vector<char*>::iterator it2;
+    std::vector<const char*>::iterator it2;
     _sys_printf("vector : iterate->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
         _sys_printf("%s ", *it2);

@@ -44,6 +44,7 @@ class ProcessManager {
     inline void lldt(word) const;
     inline void setNTflag1() const;
     inline void switchProcess();
+    inline void switchProcess2();
     GDT* gdt_;
     word taskidx_;
 };

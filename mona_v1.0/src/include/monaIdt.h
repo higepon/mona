@@ -53,4 +53,6 @@ void _sysLoadIdtr(idtr_st*);
 void setIdt(handler_st*, int selector);
 void fault0dHandler();
 unsigned char inportb(unsigned int);
+void enableTimer();
+void disableTimer();
 #endif

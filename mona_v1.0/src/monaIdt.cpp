@@ -13,7 +13,7 @@
 */
 #include <monaIdt.h>
 #include <monaVga.h>
-
+#include <monaIo.h>
 /*!
     \brief set up idt
 
@@ -81,3 +81,15 @@ void _sysLoadIdtr(idtr_st* idtr) {
     return;
 }
 
+
+void disableTimer() {
+
+    byte in = inportb(0x21);
+    outportb(0x21, in | 0x01);
+}
+
+void enableTimer() {
+
+    byte in = inportb(0x21);
+    outportb(0x21, in & 0xFE);
+}
