@@ -233,24 +233,30 @@ void GraphicalConsole::scrollUp() {
     int curx = pos_x;
     int cury = pos_y;
 
-//      for (int x = 0; x < GP_MAX_WIDTH; x++) {
+    for (int x = 0; x < GP_MAX_WIDTH; x++) {
 
-//          for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
-//              pos_x = x;
-//              pos_y = y;
-//              write_font(vram_[x][y + 1], chcolor_, bgcolor_);
-//          }
-//      }
+        for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
 
-//      for (int x = 0; x < GP_MAX_WIDTH; x++) {
+            vram_[x][y] = vram_[x][y + 1];
+        }
+    }
 
-//          for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
+    for (int x = 0; x < GP_MAX_WIDTH; x++) {
 
-//              vram_[x][y] = vram_[x][y + 1];
-//          }
-//      }
+        vram_[x][GP_MAX_HEIGHT - 1] = ' ';
+    }
 
-    scroll_down(16);
+    for (int y = 0; y < GP_MAX_HEIGHT; y++) {
+
+        for (int x = 0; x < GP_MAX_WIDTH; x++) {
+
+            pos_x = x;
+            pos_y = y;
+            write_font(vram_[x][y], chcolor_, bgcolor_);
+        }
+    }
+
+    //    scroll_down(16);
 
     pos_x = curx;
     pos_y = cury;
