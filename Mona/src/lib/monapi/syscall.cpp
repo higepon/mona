@@ -560,14 +560,14 @@ dword syscall_get_tick()
     return result;
 }
 
-dword syscall_position()
+dword syscall_file_position()
 {
     dword result;
     SYSCALL_0(SYSTEM_CALL_FILE_POSITION, result);
     return result;
 }
 
-dword syscall_seek(dword pt, int flag)
+dword syscall_file_seek(dword pt, int flag)
 {
     dword result;
     SYSCALL_2(SYSTEM_CALL_FILE_SEEK, result, pt, flag);

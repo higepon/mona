@@ -57,8 +57,8 @@ extern "C" int syscall_dir_close();
 extern "C" int syscall_cd(char* path);
 extern "C" int syscall_set_ps_dump();
 extern "C" int syscall_read_ps_dump(PsInfo* info);
-extern "C" dword syscall_position();
-extern "C" dword syscall_seek(dword pt, int flag);
+extern "C" dword syscall_file_position();
+extern "C" dword syscall_file_seek(dword pt, int flag);
 
 extern "C" dword syscall_memory_map_create(dword size);
 extern "C" dword syscall_memory_map_get_size(dword id);
