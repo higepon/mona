@@ -74,7 +74,7 @@ void v86Test();
 
 //static byte user_func[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x4D, 0x6F, 0x6E, 0x61, 0x21, 0x21, 0x21, 0x00, 0x55, 0x89, 0xE5, 0x83, 0xEC, 0x08, 0xC7, 0x04, 0x24, 0x00, 0x12, 0x00, 0x00, 0xE8, 0x3E, 0x00, 0x00, 0x00, 0xEB, 0xFE, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x55, 0x89, 0xE5, 0x83, 0xEC, 0x04, 0xBB, 0x05, 0x00, 0x00, 0x00, 0x8B, 0x75, 0x08, 0xCD, 0x80, 0x89, 0x45, 0xFC, 0x8B, 0x45, 0xFC, 0xC9, 0xC3, 0x55, 0x89, 0xE5, 0x83, 0xEC, 0x04, 0xBB, 0x06, 0x00, 0x00, 0x00, 0xCD, 0x80, 0x89, 0x45, 0xFC, 0x8B, 0x45, 0xFC, 0xC9, 0xC3, 0x90, 0x55, 0x89, 0xE5, 0x83, 0xEC, 0x04, 0xBB, 0x07, 0x00, 0x00, 0x00, 0x8B, 0x75, 0x08, 0xCD, 0x80, 0x89, 0x45, 0xFC, 0x8B, 0x45, 0xFC, 0xC9, 0xC3, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
-static byte user_func_from[] = {77,111,110,97,33,33,33,95,40,32,59,39,91,93,96,41,95,0,77,111,110,97,33,33,33,124,40,32,59,39,60,62,96,41,47,0,85,137,229,131,236,8,144,199,4,36,0,0,32,0,232,87,0,0,0,199,4,36,50,0,0,0,232,29,0,0,0,199,4,36,18,0,32,0,232,63,0,0,0,235,218,144,144,144,144,144,144,144,144,144,144,144,144,144,144,144,85,137,229,131,236,4,187,5,0,0,0,139,117,8,205,128,137,69,252,139,69,252,201,195,85,137,229,131,236,4,187,6,0,0,0,205,128,137,69,252,139,69,252,201,195,144,85,137,229,131,236,4,187,7,0,0,0,139,117,8,205,128,137,69,252,139,69,252,201,195,144,144,144,144,144,144,144,144,144,144,255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+static byte user_func_from[] = {77,111,110,97,33,33,33,95,40,32,59,39,91,93,96,41,95,0,77,111,110,97,33,33,33,124,40,32,59,39,60,62,96,41,47,0,85,137,229,131,236,8,144,199,4,36,0,0,37,0,232,87,0,0,0,199,4,36,50,0,0,0,232,29,0,0,0,199,4,36,18,0,37,0,232,63,0,0,0,235,218,144,144,144,144,144,144,144,144,144,144,144,144,144,144,144,85,137,229,131,236,4,187,5,0,0,0,139,117,8,205,128,137,69,252,139,69,252,201,195,85,137,229,131,236,4,187,6,0,0,0,205,128,137,69,252,139,69,252,201,195,144,85,137,229,131,236,4,187,7,0,0,0,139,117,8,205,128,137,69,252,139,69,252,201,195,144,144,144,144,144,144,144,144,144,144,255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 static byte v86_func[] = {0xEB, 0xFE}; //loop forever
 
@@ -162,7 +162,7 @@ void startKernel(void) {
 //     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
 //     while (g_demo_step < 5);
 
-    byte* user_func = (byte*)0x200000;
+    byte* user_func = (byte*)0x250000;
 
     g_console->printf("sizeof user_func_from %d" ,sizeof(user_func_from));
 
@@ -185,8 +185,8 @@ void startKernel(void) {
     Process*     process8 = new Process("MessageServer");
     V86Process*  process9 = new V86Process("V86_process");
 
-    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));
-    g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
+    //    g_process_manager->addProcess((Process*)process1, (virtual_addr)(user_func));
+    g_process_manager->addProcess(process2          , (virtual_addr)user_func);
     g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
     g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);

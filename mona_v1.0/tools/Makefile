@@ -9,7 +9,7 @@ all: ./elfview.exe ./sample.elf
 
 ./sample.elf: ../src/user/hello.cpp
 	gcc -nostdlib -fno-exceptions  -fno-rtti -ffreestanding -Wall  -I . -I ../src/user  -c ../src/user/hello.cpp -o ./hello.o
-	ld -n -Ttext 0x200000 -static ./hello.o ../src/userlib.o -o sample.elf
+	ld -n -Ttext 0x250000 -static ./hello.o ../src/userlib.o -o sample.elf
 	objcopy --output-target=elf32-i386 sample.elf
 clean:
 	rm -f test.exe elfview.exe hello.o sample.elf
