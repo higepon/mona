@@ -228,7 +228,7 @@ MessageInfo* Messenger::allocateMessageInfo() {
     allocated_++;
     if (allocated_ > size_ - 1) {
 
-        g_console->printf("message buffer over flow***********************************");
+        g_console->printf("***** msg buf index set to zero again ****");
         allocated_ = 0;
     }
     return result;
@@ -249,7 +249,10 @@ int Messenger::send(dword id, MessageInfo* message)
         return -1;
     }
 
+    dword eflags = get_eflags();
+    disableInterrupt();
     info = allocateMessageInfo();
+    set_eflags(eflags);
 
 #if 0
     logprintf("send:to=%x head=%x a1=%x a2=%x a3=%x from=%x\n"
@@ -269,7 +272,9 @@ int Messenger::send(dword id, MessageInfo* message)
     if (id == 60 || id == 63) g_console->printf("@%d->%d@", info->from, id);
 #endif
 
+    enter_kernel_lock_mode();
     thread->messageList->add(info);
+    exit_kernel_lock_mode();
 
     KEvent::set(thread, KEvent::MESSAGE_COME);
     return 0;
@@ -296,6 +301,10 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
 #endif
 
     *message = *from;
+
+    enter_kernel_lock_mode();
     thread->messageList->removeAt(0);
+    exit_kernel_lock_mode();
+
     return 0;
 }

@@ -1,3 +1,7 @@
+2004-05-21  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/test_higepon.cpp: デバッグメッセージの修正
+
 2004-05-21  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell/Shell.cpp: 混信チェックコード追加 (/// temporary)
