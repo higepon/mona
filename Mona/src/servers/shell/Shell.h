@@ -47,6 +47,7 @@ class Shell {
     void printFiles(const MonAPI::CString& dir);
     void executeMSH(const MonAPI::CString& msh);
     void checkCaretPosition();
+    bool hasDriveLetter(const MonAPI::CString& drive);
 
   protected:
     char commandLine[1024];

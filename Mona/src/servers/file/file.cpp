@@ -126,6 +126,7 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
     CString filePath = path;
     if (filePath.startsWith("CD0:"))
     {
+        initializeCD();
         filePath = filePath.substring(4, filePath.getLength());
         drive = DRIVE_CD0;
     }
@@ -167,7 +168,7 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
             if (prompt) printf("read:file not found\n");
             return NULL;
         }
-
+        printf("%s:%d\n", __FILE__, __LINE__);
         monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
         if (!monapi_cmemoryinfo_create(ret, file->GetSize() + 1, prompt))
         {

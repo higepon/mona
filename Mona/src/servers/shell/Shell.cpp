@@ -144,11 +144,16 @@ void Shell::commandExecute(bool prompt)
     this->commandExecute(args);
 }
 
+bool Shell::hasDriveLetter(const CString& drive)
+{
+    return drive.startsWith("CD0:/") || drive.startsWith("FD0:/");
+}
+
 bool Shell::commandExecute(_A<CString> args)
 {
     CString cmdLine;
     CString command = args[0].toUpper();
-    if (command[0] == '/')
+    if (command[0] == '/' || hasDriveLetter(command))
     {
         cmdLine = command;
     }
