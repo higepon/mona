@@ -1,6 +1,7 @@
 #ifndef _MONA_USERLIB_
-#define _MONA_USERLIBL_
+#define _MONA_USERLIB_
 #include <types.h>
+#include <string.h>
 
 #define SYSTEM_CALL_PROCESS_SLEEP  5
 #define SYSTEM_CALL_HEAVEY         6
@@ -36,8 +37,33 @@ int syscall_send(const char* name, Message* message);
 int syscall_receive(Message* message);
 int syscall_mthread_create(dword f);
 int syscall_mthread_join(dword id);
+void* malloc(unsigned long size);
+void free(void * address);
 
-void* umalloc(unsigned long size);
-void ufree(void * address);
+void* operator new(size_t size);
+void  operator delete(void* address);
+
+/*----------------------------------------------------------------------
+    Mutex
+----------------------------------------------------------------------*/
+typedef struct StMutex {
+    dword dummy;
+};
+
+class Mutex {
+
+  public:
+    Mutex();
+    ~Mutex();
+
+  public:
+    inline StMutex* getStMutex() const {
+        return mutex;
+    }
+
+  private:
+    StMutex* mutex;
+};
+
 
 #endif

@@ -51,7 +51,6 @@ void syscall_entrance() {
     case SYSTEM_CALL_PROCESS_SLEEP:
 
         info->eax = g_processManager->sleep(g_processManager->getCurrentProcess(), info->esi);
-
         break;
     case SYSTEM_CALL_KILL:
 

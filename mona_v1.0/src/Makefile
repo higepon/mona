@@ -66,7 +66,7 @@ $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(USERINCLUDE) -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
-	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o userlib.o -L$(CONTRIB_LIB) -lz
+	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
 	cp $@ $(BIN)/mona.dbg
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@

@@ -19,18 +19,15 @@
 
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size) {
-
     return km.allocate(size);
 }
 
 void operator delete(void* address) {
-
     km.free(address);
     return;
 }
 
 void* operator new[](size_t size) {
-
     return km.allocate(size);
 }
 

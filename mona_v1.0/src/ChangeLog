@@ -1,5 +1,7 @@
 2004-01-11  higepon  <higepon@users.sourceforge.jp>
 
+        * user/userlib.cpp: userlib.oをカーネルにリンクしないようにした。
+
         * Process.cpp: killの実装
 
         * userlib.cpp: mthread_create, mthread_join作成

@@ -147,12 +147,26 @@ int syscall_receive(Message* message) {
     return result;
 }
 
-void* umalloc(unsigned long size) {
+void* malloc(unsigned long size) {
 
     return um.allocate(size);
 }
 
-void ufree(void * address) {
+void free(void * address) {
+
+    um.free(address);
+    return;
+}
+
+
+/*----------------------------------------------------------------------
+    operator new/delete
+----------------------------------------------------------------------*/
+void* operator new(size_t size) {
+    return um.allocate(size);
+}
+
+void operator delete(void* address) {
 
     um.free(address);
     return;
