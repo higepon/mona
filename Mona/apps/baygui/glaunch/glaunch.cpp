@@ -76,8 +76,10 @@ public:
     // ディレクトリ内のファイル検索
     for (int i = 0; i < dsize; i++, p++)
     {
-        bool isDirectory = p->attr & ATTRIBUTE_DIRECTORY != 0;
+        bool isDirectory = (p->attr & ATTRIBUTE_DIRECTORY) != 0;
         MonAPI::CString file = p->name;
+
+//      Log("[%s]%s\n", (const char*)file, isDirectory ? "dir" : "file");
 
         if (isDirectory)
         {

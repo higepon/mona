@@ -139,7 +139,7 @@ monapi_cmemoryinfo* ReadFile(const char* path, bool prompt /*= false*/)
     CString pathWithoutDriveLetter = ChangeDriveAuto(path);
 
     /* read */
-    result = fs->ReadFile(pathWithoutDriveLetter, prompt);
+    result = fs->ReadFile(pathWithoutDriveLetter.toUpper(), prompt);
 
     /* restore current drive */
     currentDrive = saveDrive;
@@ -158,7 +158,7 @@ monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)
     CString pathWithoutDriveLetter = ChangeDriveAuto(path);
 
     /* read */
-    result = fs->ReadDirectory(pathWithoutDriveLetter, prompt);
+    result = fs->ReadDirectory(pathWithoutDriveLetter.toUpper(), prompt);
 
     /* restore current drive */
     currentDrive = saveDrive;

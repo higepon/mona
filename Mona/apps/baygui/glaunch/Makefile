@@ -5,6 +5,8 @@ INSTDIR = $(BINDIR)/root/APPS/BAYGUI
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lbaygui-imp
+ADDLINK    += -lmonalibc
+ADDLINKDEP += $(MONADIR)/lib/libmonalibc.a
 ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
 include $(MONADIR)/env/monapi-ex5.inc
 else
