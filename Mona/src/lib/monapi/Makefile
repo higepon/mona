@@ -2,6 +2,7 @@ TARGET1 = $(LIBDIR)/monapi.o
 TARGET2 = $(LIBDIR)/libmonapi.a
 SOURCES = string.cpp \
           syscall.cpp \
+          CString.cpp \
           FileInputStream.cpp \
           FileOutputStream.cpp \
           Floppy.cpp \
