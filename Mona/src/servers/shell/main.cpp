@@ -211,7 +211,7 @@ void Shell::commandExecute(bool prompt)
     if (cmdLine.endsWith(".MSH"))
     {
         this->executeMSH(cmdLine);
-        if (waiting != THREAD_UNKNOWN) this->printPrompt("\n");
+        if (waiting == THREAD_UNKNOWN) this->printPrompt("\n");
         return;
     }
 
