@@ -11,6 +11,7 @@ all:
 	@cd process && $(MAKE) $@
 	@cd pe && $(MAKE) $@
 #	@cd mones && $(MAKE) $@
+#	@cd imesvr && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 
 install:
@@ -26,6 +27,7 @@ install:
 	@cd process && $(MAKE) $@
 	@cd pe && $(MAKE) $@
 #	@cd mones && $(MAKE) $@
+#	@cd imesvr && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 
 clean: touchdepend
@@ -41,6 +43,7 @@ clean: touchdepend
 	@cd process && $(MAKE) $@
 	@cd pe && $(MAKE) $@
 #	@cd mones && $(MAKE) $@
+#	@cd imesvr && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 
 depend: touchdepend
@@ -55,6 +58,7 @@ depend: touchdepend
 	@cd process && $(MAKE) $@
 	@cd pe && $(MAKE) $@
 #	@cd mones && $(MAKE) $@
+#	@cd imesvr && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 
 distclean:
@@ -69,6 +73,7 @@ distclean:
 	rm -f process/dependencies
 	rm -f pe/dependencies
 #	rm -f mones/dependencies
+#	rm -f imesvr/dependencies
 	rm -f baygui/dependencies
 
 touchdepend:
@@ -83,4 +88,5 @@ touchdepend:
 	touch process/dependencies
 	touch pe/dependencies
 #	touch mones/dependencies
+#	touch imesvr/dependencies
 	touch baygui/dependencies
