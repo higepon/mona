@@ -1,5 +1,7 @@
 2004-01-17  higepon  <higepon@users.sourceforge.jp>
 
+        * MemoryManager.cpp: 0埋めしてメモリを割り当てるように変更
+
         * loadProcessのロジック見直し修正・整形
 
         * include/FAT12.h: isOpenのバグ修正
