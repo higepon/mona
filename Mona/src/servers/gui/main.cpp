@@ -340,6 +340,39 @@ static void MessageLoop()
 	}
 }
 
+static dword my_tid, stdout_tid;
+
+/** 標準出力を握りつぶすスレッド */
+static void StdoutMessageLoop()
+{
+	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
+
+	for (MessageInfo msg;;)
+	{
+		if (MonAPI::Message::receive(&msg) != 0) continue;
+
+		switch (msg.header)
+		{
+			case MSG_PROCESS_STDOUT_DATA:
+			case MSG_STDOUT: /* higepon exp */
+				MonAPI::Message::reply(&msg);
+				break;
+		}
+	}
+}
+
+/** 標準出力用のスレッドを作成 */
+static void InitThread()
+{
+	my_tid = syscall_get_tid();
+	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
+	syscall_mthread_join(id);
+	MessageInfo msg, src;
+	src.header = MSG_SERVER_START_OK;
+	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+	stdout_tid = msg.from;
+}
+
 /*!
 \brief MonaMain
 	MonaFormsサーバ メイン
@@ -387,8 +420,21 @@ int MonaMain(List<char*>* pekoe)
 	// MONITORサーバへの正常起動通知
 	Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK);
 
+	InitThread();
+	dword process = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+	if (process != THREAD_UNKNOWN)
+	{
+		MonAPI::Message::sendReceive(NULL, process + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+	}
+
 	// メッセージループ
 	MessageLoop();
+
+	if (process != THREAD_UNKNOWN)
+	{
+		MonAPI::Message::sendReceive(NULL, process + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+	}
+	syscall_kill_thread(stdout_tid);
 
 	// 共有メモリにロードしているフォントの解放
 	monapi_cmemoryinfo_dispose(default_font);

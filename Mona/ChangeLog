@@ -1,6 +1,6 @@
 2005-02-11  csharp  <csharp@users.sourceforge.jp>
 
-        * src/servers/gui/window.cpp: フォーカス管理サポート（プロトコル1）
+        * src/servers/gui/main.cpp, window.cpp: 標準出力ストップ, フォーカス管理サポート（プロトコル1）
 
         * include/gui/System/Mona/Forms/Events.h: KeyEventArgs追加
 
