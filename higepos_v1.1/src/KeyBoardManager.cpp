@@ -132,7 +132,7 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     keyInfo_[keyBufIndex_].keycode   = keyMap_[scancode];
     keyInfo_[keyBufIndex_].modifiers = modifiers;
     _sys_printf("%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN)? "down":"up  "
-                                  , (char)keyMap_[scancode]);
+                                   , (char)keyMap_[scancode]);
     return;
 }
 
