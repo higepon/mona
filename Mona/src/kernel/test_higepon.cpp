@@ -278,9 +278,8 @@ int Messenger::send(dword id, MessageInfo* message)
     thread->messageList->add(info);
     exit_kernel_lock_mode();
 
-#if 0  // Tino: do at Schedule::wakeupEvents()
     KEvent::set(thread, KEvent::MESSAGE_COME);
-#endif
+
     return 0;
 }
 
