@@ -268,8 +268,6 @@ int MonaMain(List<char*>* pekoe)
 {
     MemoryInfo info;
 
-    log("hoge%s", "hige");
-
     syscall_get_memory_info(&info);
     printf("System Total Memory = %d (MB)\n", info.totalMemoryL / 1024 / 1024);
 
