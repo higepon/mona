@@ -26,6 +26,7 @@ extern "C" void put_pixel(int x, int y, char color);
 void syscall_entrance() {
 
     int x, y;
+    Thread* thread;
     ArchThreadInfo* info = g_currentThread->archinfo;
 
     switch(info->ebx) {
@@ -76,6 +77,16 @@ void syscall_entrance() {
     case SYSTEM_CALL_RECEIVE:
 
         info->eax = receive(g_processManager->getCurrentProcess(), (Message*)(info->esi));
+        break;
+
+    case SYSTEM_CALL_MTHREAD_CREATE:
+        thread  = g_processManager->createThread(g_processManager->getCurrentProcess(), info->esi);
+        info->eax = (dword)thread;
+        break;
+
+    case SYSTEM_CALL_MTHREAD_JOIN:
+        g_processManager->join(g_processManager->getCurrentProcess(), (Thread*)info->esi);
+        info->eax = 0;
         break;
 
     default:

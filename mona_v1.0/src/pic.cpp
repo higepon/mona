@@ -58,7 +58,7 @@ void pic_init() {
     \date   create:2004/01/11 update:
 */
 void setTimerInterval(dword ms) {
-    dword timerCounter = ms * 1193.18;
+    dword timerCounter = (dword)(ms * 1193.18);
     outportb(PIT_MODE, 0x34);
     outportb(PIT_COUNT0, timerCounter & 0xff);
     outportb(PIT_COUNT0, timerCounter >> 8);

@@ -8,6 +8,8 @@ int kill() {return syscall_kill();}
 int exit(int error) {return syscall_kill();}
 int _send(const char* name, Message* message) {return syscall_send(name, message);}
 int _receive(Message* message) {return syscall_receive(message);}
+int mthread_create(dword f) {return syscall_mthread_create(f);}
+int mthread_join(dword id) {return syscall_mthread_join(id);}
 
 
 int monamain();
@@ -21,6 +23,37 @@ int user_start() {
     exit(result);
     for (;;);
 }
+
+int syscall_mthread_create(dword f) {
+
+    int result;
+
+    asm volatile("movl $%c2, %%ebx \n"
+                 "movl %1  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"m"(f), "g"(SYSTEM_CALL_MTHREAD_CREATE)
+                 );
+
+    return result;
+}
+
+int syscall_mthread_join(dword id) {
+
+    int result;
+
+    asm volatile("movl $%c2, %%ebx \n"
+                 "movl %1  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"m"(id), "g"(SYSTEM_CALL_MTHREAD_JOIN)
+                 );
+
+    return result;
+}
+
 
 int syscall_sleep(dword tick) {
 
