@@ -54,6 +54,7 @@ void Shell::commandChar(char c) {
 
 void Shell::commandExecute() {
 
+    printf("\n");
     syscall_load_process(commandLine_);
     printf("\nMona>");
     position_ = 0;
