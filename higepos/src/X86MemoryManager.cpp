@@ -13,6 +13,7 @@
 */
 #include<X86MemoryManager.h>
 #include<idt.h>
+#include<vga.h>
 /*!
     \brief get class Name
 
@@ -89,11 +90,19 @@ X86MemoryManager::~X86MemoryManager() {
 
     constructor
 
+    set up list of free memory,determin size and range of memory
+
     \author HigePon
-    \date   create:2002/08/10 update:2002/08/24
+    \date   create:2002/08/10 update:2002/09/07
 */
 X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) {
     current_ = MEMORY_START;
+
+    /* first time, the number of free memory list is one. */
+    entry_ = (struct memoryEntry*)MEMORY_START;
+    entry_->size = MEMORY_END - MEMORY_START;
+    entry_->next = entry_;
+    _sysPrintlnInt((int)entry_->startAddress);
 }
 
 /*!

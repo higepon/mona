@@ -44,10 +44,12 @@ void startKernel(void) {
     _sysPrintln("idt set done");
 
     /* testing operator new */
-    Point* point1 = new Point();
-    _sysPrintlnInt(point1->getX());
+    //    Point* point1 = new Point();
+    //    _sysPrintlnInt(point1->getX());
     Point* point2 = new Point(5, 5);
     _sysPrintlnInt(point2->getX());
+    Point* point3 = new Point(6, 6);
+    _sysPrintlnInt(point3->getX());
 
     /* testing types */
     _sysPrintlnInt(sizeof(H_SIZE_T));

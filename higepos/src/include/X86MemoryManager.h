@@ -20,7 +20,7 @@
     struct for memory management
     startAdress is the adress of allocated memory
  */
-struct memoryEntry {
+typedef struct memoryEntry {
     struct memoryEntry* next;
     int size;
     H_BYTE startAddress[0];
