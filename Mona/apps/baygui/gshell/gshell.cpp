@@ -45,7 +45,7 @@ static void StdoutMessageLoop() {
 		        case MSG_STDOUT:
 				//info.str[127] = '\0';
 				id = MonAPI::Message::lookupMainThread("GSHELL.EX5");
-				MonAPI::Message::send(id, CUSTOM_EVENT, 0, 0, 0, info.str);
+				MonAPI::Message::sendReceive(NULL, id, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, info.str);
 				MonAPI::Message::reply(&info);
 				break;
 			}
@@ -231,22 +231,22 @@ private:
 			// 引数を後ろにくっつける
 			char temp[128];
 			memset(temp, 0, sizeof(temp));
-			if (this->argv->getLength() == 2) {
+			if (this->argv->getLength() == 1) {
 				strcpy(temp, pathname);
-			} else if (this->argv->getLength() == 3) {
+			} else if (this->argv->getLength() == 2) {
 				sprintf(temp, "%s %s", pathname, 
+					((String *)this->argv->get(1))->getBytes()
+				);
+			} else if (this->argv->getLength() == 3) {
+				sprintf(temp, "%s %s %s", pathname, 
+					((String *)this->argv->get(1))->getBytes(), 
 					((String *)this->argv->get(2))->getBytes()
 				);
 			} else if (this->argv->getLength() == 4) {
-				sprintf(temp, "%s %s %s", pathname, 
+				sprintf(temp, "%s %s %s %s", pathname, 
+					((String *)this->argv->get(1))->getBytes(), 
 					((String *)this->argv->get(2))->getBytes(), 
 					((String *)this->argv->get(3))->getBytes()
-				);
-			} else if (this->argv->getLength() == 5) {
-				sprintf(temp, "%s %s %s %s", pathname, 
-					((String *)this->argv->get(2))->getBytes(), 
-					((String *)this->argv->get(3))->getBytes(), 
-					((String *)this->argv->get(4))->getBytes()
 				);
 			}
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
@@ -350,7 +350,7 @@ private:
 		if (s.equals("help") || s.equals("?")) {
 			this->addLine("GUIシェル 内部コマンド一覧\n");
 			this->addLine(" help/?, ls/dir, cd, cat/type, date/time, uname/ver, \n");
-			this->addLine(" clear/cls, ps, kill, touch, exec\n");
+			this->addLine(" clear/cls, ps, kill, touch, exit/quit\n");
 		//
 		// ls/dir
 		//
@@ -369,9 +369,9 @@ private:
 				this->addLine("使い方：cd [パス名]\n");
 			}
 		//
-		// cat [pathname] / type [pathname] / exec [args]
+		// cat [pathname] / type [pathname]
 		//
-		} else if (s.equals("cat") || s.equals("type") || s.equals("exec")) {
+		} else if (s.equals("cat") || s.equals("type")) {
 			if (this->argv->getLength() >= 2) {
 				char *pathname = ((String *)this->argv->get(1))->getBytes();
 				if (pathname[0] == '/' || existsFile(pathname) == true) {
@@ -388,19 +388,13 @@ private:
 					} else {
 						strcpy(temp, pathname);
 					}
-					if (s.equals("cat") || s.equals("type")) {
-						this->cat(temp);
-					} else if(s.equals("exec")) {
-						this->exec(temp);
-					}
+					this->cat(temp);
 				}
 			} else {
 				if (s.equals("cat")) {
 					this->addLine("使い方：cat [ファイル名]\n");
 				} else if(s.equals("type")) {
 					this->addLine("使い方：type [ファイル名]\n");
-				} else if(s.equals("exec")) {
-					this->addLine("使い方：exec [ファイル名]{[引数1][引数2]...}\n");
 				}
 			}
 		//
@@ -479,6 +473,34 @@ private:
 			} else {
 				this->addLine("使い方：touch [ファイル名]\n");
 			}
+		//
+		// exit / quit
+		//
+		} else if (s.equals("exit") || s.equals("quit")) {
+			this->isRunning = false;
+			return;
+		//
+		// exec [pathname]
+		//
+		} else if (s.endsWith(".elf") || s.endsWith(".el2") || s.endsWith(".el5") ||
+			s.endsWith(".exe") || s.endsWith(".ex2") || s.endsWith(".ex5") ||
+			s.endsWith(".app"))
+		{
+			char *pathname = s.getBytes();
+			memset(temp, 0, sizeof(temp));
+			// 相対パスから絶対パスへ変換する
+			if (pathname[0] != '/') {
+				strcpy(temp, currentPath);
+				// 現在ルートにいるときは'/'を付与しない
+				if (strcmp(currentPath, "/") != 0) {
+					strcat(temp, "/");
+				}
+				strcat(temp, pathname);
+			// 絶対パスのままにする
+			} else {
+				strcpy(temp, pathname);
+			}
+			this->exec(temp);
 		} else {
 			memset(temp, 0, sizeof(temp));
 			sprintf(temp, "'%s'ｺﾏﾝﾄﾞｴﾗｰｷﾀｰｰｰ(ﾟ∀ﾟ)ｰｰｰ!!!\n", cmd);
@@ -500,7 +522,7 @@ public:
 					memset(lineBuffer, 0, sizeof(lineBuffer));
 					// 再描画
 					onPaint(getGraphics());
-				} else {
+				} else if (e->str[i] != '\r') {
 					lineBuffer[strlen(lineBuffer)] = e->str[i];
 				}
 			}
