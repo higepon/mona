@@ -148,6 +148,8 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
 
     multi task test. preemptive
 
+    \sa
+    \note
     \author HigePon
     \date   create:2002/12/22 update:
 */

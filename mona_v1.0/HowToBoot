@@ -1,0 +1,13 @@
+# How To Boot
+# require
+# native machine or bochs
+# dd or rawwrite.exe
+#
+
+# how to make boot disk(native machine)
+
+# Linux
+use dd command
+
+# Windows
+use rawwrite.exe
