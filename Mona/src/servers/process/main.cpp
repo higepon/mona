@@ -116,7 +116,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
 
     if (mi == NULL)
     {
-        if (prompt) printf("%s: can not find command!\n", SVR);
+        if (prompt) printf("%s: can not execute!\n", SVR);
     }
     else
     {
