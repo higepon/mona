@@ -73,10 +73,11 @@
 
 #define FDC_DMA_BUFF_SIZE 512
 
-MFDCDriver* gMFDCDriver = 0;
-bool MFDCDriver::interrupt_ = false;
+MFDCDriver* gMFDCDriver;
+
+bool            MFDCDriver::interrupt_ ;
+byte*           MFDCDriver::dmabuff_;
 VirtualConsole* MFDCDriver::console_;
-byte* MFDCDriver::dmabuff_;
 
 /*!
     \brief Constructer
@@ -121,9 +122,9 @@ void MFDCDriver::initilize() {
 
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
-    _sys_printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
+    console_->printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
 
-    /* dma buff should be 64kb < dma buff < 16Mb
+    /* dma buff should be 64kb < dma buff < 16Mb */
     if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
         panic("dma buff allocate error");
     }
@@ -195,8 +196,8 @@ void MFDCDriver::printStatus(const char* str) const {
 */
 void MFDCDriver::printStatus(const byte msr, const char* str) const {
 
-    _sys_printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
-    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
+    console_->printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
+    console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
               , msr & FDC_MRQ_READY    ? "  ready  ":"not ready"
               , msr & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
               , msr & FDC_NDMA_NOT_DMA ? " Y "      :" N "
@@ -248,10 +249,15 @@ void MFDCDriver::motor(bool on) {
     return;
 }
 
-bool MFDCDriver::sendCommand(const byte* command, const byte length) {
+/*!
+    \brief send command to FDC
 
-    //    _sys_printf("length=[%d]\n", length);
-    //    for (int j = 0; j < length; j++) _sys_printf("command[%d]=%x\n", j, command[j]);
+    \param  command array of command
+    \param  length  length of command
+    \author HigePon
+    \date   create:2003/02/16 update:2003/02/19
+*/
+bool MFDCDriver::sendCommand(const byte* command, const byte length) {
 
     /* send command */
     for (int i = 0; i < length; i++) {
@@ -259,10 +265,14 @@ bool MFDCDriver::sendCommand(const byte* command, const byte length) {
         /* expected condition is ready & date I/O to Controller */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            _sys_printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
+            console_->printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
         }
-        _sys_printf("command[%x] ", command[i]);
+
+        /* debug show command */
+        //        console_->printf("command[%x] ", (int)command[i]);
+
+        /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
     }
 
@@ -283,11 +293,11 @@ bool MFDCDriver::recalibrate() {
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
 
-        _sys_printf("MFDCDriver#recalibrate:command fail\n");
+        console_->printf("MFDCDriver#recalibrate:command fail\n");
         return false;
     }
 
-    // comment out for bochs
+    // comment out for bochs x86 emulator
     //    while(!waitInterrupt());
 
     senseInterrupt();
@@ -317,11 +327,10 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
     }
 
     /* time out */
-    _sys_printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
-                   , expectedCondition, inportb(FDC_MSR_PRIMARY), status);
+    console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
+                   , (int)expectedCondition, (int)inportb(FDC_MSR_PRIMARY), (int)status);
     return false;
 }
-
 
 /*!
     \brief wait until FDC is ready.
@@ -350,13 +359,13 @@ bool MFDCDriver::seek(byte track) {
 
     if(!sendCommand(command, sizeof(command))){
 
-        _sys_printf("MFDCDriver#seek:command fail\n");
+        console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
 
     if (!senseInterrupt()) {
 
-        _sys_printf("MFDCDriver#seek:command fail\n");
+        console_->printf("MFDCDriver#seek:command fail\n");
         return false;
     }
     return true;
@@ -374,7 +383,7 @@ bool MFDCDriver::senseInterrupt() {
 
     if(!sendCommand(command, sizeof(command))){
 
-        _sys_printf("MFDCDriver#senseInterrrupt:command fail\n");
+        console_->printf("MFDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
 
@@ -394,16 +403,17 @@ void MFDCDriver::readResults() {
     byte msr = 0;
     resultsLength_ = 0;
 
+    /* result phase */
     for (i = 0; i < 10; i++) {
 
         /* expected condition is ready & data I/O to CPU */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            _sys_printf("MFDCDriver#readResults: timeout results_[%d]\n", i);
+            console_->printf("MFDCDriver#readResults: timeout results_[%d]\n", i);
             break;
         }
 
-        /* no result */
+        /* no result left */
         if (!(msr = inportb(FDC_MSR_PRIMARY) & FDC_DIO_TO_CPU)) break;
 
         /* get result */
@@ -411,11 +421,27 @@ void MFDCDriver::readResults() {
 
     }
     resultsLength_ = i;
+    console_->printf("resultsLength_=%d\n", resultsLength_);
 
-    //    for (int j = 0; j < resultsLength_; j++) {
-    for (int j = 0; j < 10; j++) {
+//      for (int k = 0; k < 500000000; k++) {
+//      k++;
+//      k--;
+//      }
 
-         _sys_printf("result[%d] = %x ", j, results_[j]);
+//      resultsLength_ = i;
+//      console_->printf("resultsLength_=%d\n", resultsLength_);
+
+//      for (int k = 0; k < 500000000; k++) {
+//      k++;
+//      k--;
+//      }
+
+
+
+    /* debug show result */
+    for (int j = 0; j < resultsLength_; j++) {
+
+         console_->printf("result[%d] = %x ", j, (int)(results_[j]));
     }
     return;
 }
@@ -493,7 +519,7 @@ void MFDCDriver::setupDMAWrite(dword size) {
 
 bool MFDCDriver::read(byte track, byte head, byte sector) {
 
-    byte command[] = {0x46//FDC_COMMAND_READ
+    byte command[] = {FDC_COMMAND_READ
                    , (head & 1) << 2
                    , track
                    , head
@@ -505,22 +531,22 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
                    };
 
     seek(track);
-    printStatus("seek:track");
-
-    printDMACStatus(inportb(0x0008), "before dma read");
     setupDMARead(512);
-    printDMACStatus(inportb(0x0008), "before dma read");
-
     memset(dmabuff_, 0xfffe, 512);
+
     interrupt_ = false;
+
+
+printDMACStatus(inportb(0x0008), " before read send\n");
     sendCommand(command, sizeof(command));
     //while(!waitInterrupt());
 
-    printDMACStatus(inportb(0x0008), "after dmaC ");
+printDMACStatus(inportb(0x0008), " after read send\n");
+
 
     stopDMA();
-
-    for (int i = 0; i < 30; i++) _sys_printf("[%x]", dmabuff_[i]);
+printDMACStatus(inportb(0x0008), " after stop DMA\n");
+    for (int i = 0; i < 30; i++) console_->printf("[%x]", (int)dmabuff_[i]);
 
     readResults();
     motor(OFF);
@@ -539,8 +565,8 @@ bool MFDCDriver::writeID(byte track, byte head, byte data) {
 
 void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
 
-    _sys_printf("ch3|ch2|ch1|ch0|ch3|ch2|ch1|ch0|\n");
-    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
+    console_->printf("ch3|ch2|ch1|ch0|ch3|ch2|ch1|ch0|\n");
+    console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
               , status & 0x80 ? " Y ":" N "
               , status & 0x40 ? " Y ":" N "
               , status & 0x20 ? " Y ":" N "
