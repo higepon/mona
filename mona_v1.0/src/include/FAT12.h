@@ -39,6 +39,29 @@ typedef struct BPB {
     byte  type[8];
 };
 
+typedef struct FTIME {
+    unsigned day   : 5;
+    unsigned month : 4;
+    unsigned year  : 7;
+};
+
+typedef struct FDATE {
+    unsigned sec : 5;
+    unsigned min : 6;
+    unsigned hour: 5;
+};
+
+typedef struct DirectoryEntry {
+    byte  filename[8];
+    byte  extension[3];
+    byte  cattribute;
+    byte  reserved[10];
+    FTIME fttime;
+    FDATE fddate;
+    word  wcluster;
+    dword dwfilesize;
+};
+
 /*!
     FAT12 File System claass
 */

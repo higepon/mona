@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 
     if (!fat->initilize()) printf("\nfat initilze error\n");
 
-    /* bpb */
+    /* FAT12#bpp_ should be private, but this is test */
     for (int i = 0; i < 8; i++) printf("%c", (char)(fat->bpb_.oemName[i]));
     printf("\n");
     printf("sizeOfSector=%d\n", fat->bpb_.sizeOfSector);
@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
     printf("\n");
     delete fat;
     delete driver;
+
+    printf("size of FTIME = %d FDATE = %d", sizeof(FTIME), sizeof(FDATE));
 
     return 0;
 }
