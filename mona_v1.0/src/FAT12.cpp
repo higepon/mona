@@ -29,6 +29,7 @@ const int FAT12::NOT_FAT12_ERROR   = 2;
 const int FAT12::FAT_READ_ERROR    = 3;
 const int FAT12::NOT_DIR_ERROR     = 4;
 const int FAT12::DRIVER_READ_ERROR = 5;
+const int FAT12::FILE_EXIST_ERROR  = 6;
 const int FAT12::PATH_LENGTH       = 512;
 const char FAT12::PATH_SEP         = '\\';
 
@@ -457,12 +458,64 @@ bool FAT12::readHasNext() const {
     return readHasNext_;
 }
 
-bool FAT12::createFlie(const char* name) {
+bool FAT12::createFlie(const char* name, const char* ext) {
 
-    /* check current directory */
+    DirectoryEntry entries[16];
+    int lbp = clusterToLbp(currentDirecotry_);
 
-    /* has empty entry? */
+    /* read current directory */
+    if (!(driver_->read(lbp, buf_))) {
+        errNum_ = DRIVER_READ_ERROR;
+        return -1;
+    }
+    memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
 
+    /* find free entry */
+    int freeIndex = -1;
+    for (int j = 0; j < 16; j++) {
+
+        /* free */
+        if (entries[j].filename[0] == 0xe5) {
+            freeIndex = j;
+            continue;
+        }
+
+        /* no other entries */
+        if (entries[j].filename[0] == 0x00) break;
+
+        /* directory */
+        if (entries[j].attribute & ATTR_DIRECTORY) continue;
+
+        /* file found */
+        if (compareName((char*)(entries[j].filename), name)
+            && compareName((char*)(entries[j].extension), ext)) {
+            errNum_ = FILE_EXIST_ERROR;
+            return false;
+        }
+    }
+
+    if (freeIndex == -1) {
+        return false;
+    }
+
+    int cluster = map_->find();
+
+    if (cluster == -1) return false;
+
+    for (int k = 0; k < 8; k++) entries[freeIndex].filename[k]  = ' ';
+    for (int k = 0; k < 3; k++) entries[freeIndex].extension[k] = ' ';
+    for (int k = 0; k < 8 && name[k] != '\0'; k++) entries[freeIndex].filename[k]  = name[k];
+    for (int k = 0; k < 3 && name[k] != '\0'; k++) entries[freeIndex].extension[k] = ext[k];
+    entries[freeIndex].filesize = 0;
+    entries[freeIndex].cluster  = cluster;
+
+    setFatAt(cluster, getFATAt(1));
+
+    return true;
+
+}
+
+bool FAT12::setFatAt(int cluster, word fat) {
 
     return true;
 

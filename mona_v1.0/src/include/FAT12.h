@@ -82,6 +82,7 @@ class FAT12 {
     static const int NOT_DIR_ERROR;
     static const int PATH_LENGTH;
     static const int DRIVER_READ_ERROR;
+    static const int FILE_EXIST_ERROR;
     static const char PATH_SEP;
 
     static const int READ_MODE;
@@ -89,7 +90,7 @@ class FAT12 {
  public:
 
     bool initilize();
-    bool createFlie(const char* name);
+    bool createFlie(const char* name, const char* ext);
     bool open(const char* path, const char* filename, int mode);
     bool close();
     bool read(byte* buffer);
@@ -111,6 +112,7 @@ class FAT12 {
     bool setBPB();
     bool isFAT12();
     word getFATAt(int cluster) const;
+    bool setFatAt(int cluster, word fat);
     char* getPathAt(const char* path, int index) const;
     int getEmptyEntry(int cluster);
     bool compareName(const char* name1, const char* name2) const;
