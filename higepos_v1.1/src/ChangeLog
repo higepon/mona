@@ -1,3 +1,9 @@
+2002-10-22  higepon  <higepon@users.sourceforge.jp>
+
+        * KeyBoardManager.cpp:constキーワード等追加
+        * KeyBoardManager.h:constキーワード等追加
+        * MemoryManager.cpp:不要なデバッグメッセージをHIGEPOS_DEBUG_MMで抑制
+
 2002-10-20  higepon  <higepon@users.sourceforge.jp>
 
         * 開発環境をhigepos_v1.1に移行しました。
