@@ -76,6 +76,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Button::OnMouseDown(_P<MouseEventArgs> e)
 	{
+		this->set_Capture(true);
 		this->isPushed = true;
 		this->Refresh();
 		
@@ -84,6 +85,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Button::OnMouseUp(_P<MouseEventArgs> e)
 	{
+		this->set_Capture(false);
 		if (this->isPushed)
 		{
 			if (e->Button == 1) this->OnClick(EventArgs::get_Empty());
