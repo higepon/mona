@@ -8,6 +8,7 @@ SHELL_SERVER    = $(BIN)/SHELL.SVR
 JPEG_DEMO       = $(BIN)/JPEGDEMO.ELF
 MAP_SERVER      = $(BIN)/MAP.SVR
 MOUSE_SERVER    = $(BIN)/MOUSE.SVR
+NOIZ2BG         = $(BIN)/NOIZ2BG.ELF
 LIB             = -L./lib
 LIB_USER        = lib/libuser.a
 LFLAGS          = -n -Ttext 0xA0000000 -e _user_start -static -luser
@@ -27,10 +28,11 @@ SOURCES         = hello.cpp                   \
                   jpegdemo.cpp                \
                   MapServer.cpp               \
                   MouseServer.cpp             \
+                  noiz2bg.cpp                 \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)
+all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)  $(NOIZ2BG)
 
 $(LIB_USER) : userlib.o string.o MemoryManager.o
 	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o
@@ -59,6 +61,10 @@ $(MAP_SERVER) : MapServer.o $(LIB_USER)
 	$(LD) $(LFLAGS) MapServer.o $(LIB) -o $(MAP_SERVER)
 	objcopy $(OFLAGS) $(MAP_SERVER)
 
+$(NOIZ2BG) : noiz2bg.o $(LIB_USER)
+	$(LD) $(LFLAGS) noiz2bg.o $(LIB) -o $(NOIZ2BG)
+	objcopy $(OFLAGS) $(NOIZ2BG)
+
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c $<
@@ -67,6 +73,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER)
+	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER) $(NOIZ2BG)
 
 include dependencies

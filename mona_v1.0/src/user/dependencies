@@ -33,3 +33,5 @@ MapServer.o: MapServer.cpp include/userlib.h include/types.h \
   include/Map.h
 MouseServer.o: MouseServer.cpp include/userlib.h include/types.h \
   include/string.h include/collection.h include/MemoryManager.h
+noiz2bg.o: noiz2bg.cpp include/userlib.h include/types.h include/string.h \
+  include/collection.h include/MemoryManager.h

@@ -28,6 +28,7 @@ SHELL_SERVER    = $(BIN)/SHELL.SVR
 JPEG_DEMO       = $(BIN)/JPEGDEMO.ELF
 MAP_SERVER      = $(BIN)/MAP.SVR
 MOUSE_SERVER    = $(BIN)/MOUSE.SVR
+NOIZ2BG         = $(BIN)/NOIZ2BG.ELF
 FAT_TOOL        = $(BIN)/fat_write.exe
 TEMPLATE        = $(TOOLS)/fat_template.img
 SOURCES      = cstart.cpp            \
@@ -63,13 +64,14 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : copy_userapp
 
-copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)
+copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER) $(NOIZ2BG)
 	(cd $(BIN); $(FAT_TOOL) mona.img HELLO.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img SHELL.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img JPEGDEMO.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img MAP.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img MOUSE.SVR)
+	(cd $(BIN); $(FAT_TOOL) mona.img NOIZ2BG.ELF)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
