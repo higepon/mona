@@ -18,7 +18,7 @@
 class Scheduler {
 
   public:
-    Scheduler();
+    Scheduler(Process* idle);
     void schedule();
     void sleep(ProcessInfo* process, dword tick);
     bool toUserMode() const;
@@ -40,6 +40,7 @@ class Scheduler {
   private:
     bool toUserMode_;
     dword tick_;
+    Process* idle_;
 };
 
 #endif

@@ -86,6 +86,7 @@ typedef struct {
 
 void startKernel(void);
 void panic(const char*);
+void idle_process();
 inline void printOK(const char*);
 inline void printBanner();
 #endif

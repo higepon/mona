@@ -133,7 +133,7 @@ _arch_cpufaulthandler_e:
 ;;; entrance of syscall
 _arch_syscall_handler:
         pushad
-        call _arch_save_process_registers
+;         call _arch_save_process_registers
         call _syscall_entrance
         popad
         iretd

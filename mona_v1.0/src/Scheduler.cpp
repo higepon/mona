@@ -15,13 +15,15 @@
 ProcessInfo Scheduler::dispatchList_;
 ProcessInfo Scheduler::sleepList_;
 
-Scheduler::Scheduler() {
+Scheduler::Scheduler(Process* idle) {
 
     dispatchList_.prev = &dispatchList_;
     dispatchList_.next = &dispatchList_;
 
     sleepList_.prev = &sleepList_;
     sleepList_.next = &sleepList_;
+
+    idle_ = idle;
 
     tick_ = 0;
 }
@@ -64,11 +66,18 @@ void Scheduler::schedule() {
         g_current_process->state = Process::READY;
     }
 
+    if (isEmpty(&dispatchList_)) {
+        g_current_process = &(idle_->pinfo_);
+        return;
+    }
+
     ProcessInfo* next = getNext(&dispatchList_);
 
     toUserMode_ = next->dpl > 0;
 
     addToPrev(&dispatchList_, next);
+
+    g_console->printf("schedule [%s] to [%s] \n", g_current_process->name, next->name);
 
     g_current_process = next;
 
@@ -99,6 +108,7 @@ void Scheduler::wakeup() {
             ProcessInfo* prev = start->prev;
 
             removeFrom(start);
+            g_console->printf("wakeup [%s]\n", start->name);
             addToPrev(&dispatchList_, start);
             start = prev;
         }

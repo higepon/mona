@@ -51,7 +51,7 @@ void syscall_entrance() {
 
         enableInterrupt();
 
-          for (dword i = 0; i < 0xffffff; i++) {
+          for (dword i = 0; i < 0xf; i++) {
 
               i++;
               i--;

@@ -132,9 +132,12 @@ void startKernel(void) {
 //     g_console->printf("Hit any key to start [User/Kernel Process test]\n");
 //     while (g_demo_step < 5);
 
-    g_info_level = ERROR;
+    g_info_level = WARNING;
 
-    g_process_manager = new ProcessManager();
+    Process* idle = new Process("idle     ");
+
+    g_process_manager = new ProcessManager(idle);
+
 
     UserProcess* process1 = new UserProcess("user_process ");
     Process*     process2 = new Process("krnl_o       ");
@@ -145,14 +148,14 @@ void startKernel(void) {
     Process*     process7 = new Process("show_process ");
     Process*     process8 = new Process("MessageServer");
 
-    g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
-    g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
-    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
-    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
-    g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
-    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
-    g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
-    g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
+            g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
+    //   g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
+    //    g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);
+     //     g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
+     //     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
+//     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
+//     g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
+//     g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
 
     enableTimer();
 
@@ -172,7 +175,7 @@ void userTest() {
     //    asm volatile("hlt");
     while (true) {
 
-        syscall_sleep(15);
+        syscall_sleep(9);
     }
 }
 
@@ -180,6 +183,14 @@ void userTest2() {
     while (true) {
         syscall_heavy();
         syscall_sleep(36);
+    }
+}
+
+void idle_process() {
+
+    while (true) {
+
+        /* do nothing */
     }
 }
 

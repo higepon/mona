@@ -14,32 +14,36 @@
 #include <io.h>
 #include <SystemInfo.h>
 
-ProcessManager::ProcessManager() {
+ProcessManager::ProcessManager(Process* idle) {
 
     pid_  = 0;
     pnum_ = 0;
-    scheduler_ = new Scheduler();
+    idle->setup((dword)idle_process, allocateStack(), allocateKernelStack(idle->pinfo_.dpl), allocatePageDir(), allocatePID());
+    scheduler_ = new Scheduler(idle);
 }
 
 void ProcessManager::switchProcess() {
 
 
-    info(DUMP, "esp=%x pid=%x eip=%x eflags=%x cs=%x ss=%x\n", g_current_process->esp, g_current_process->pid
+    info(WARNING, "esp=%x pid=%x eip=%x eflags=%x cs=%x ss=%x\n", g_current_process->esp, g_current_process->pid
              , g_current_process->eip, g_current_process->eflags, g_current_process->cs, g_current_process->ss);
 
 
-    if (scheduler_->toUserMode()) {
+    //    if (scheduler_->toUserMode()) {
 
-        info(DEV_NOTICE, "to user mode\n");
+
+    if ((g_current_process->cs & 0x03) == 0x03) {
 
         g_tss->esp0 = g_current_process->esp0;
         g_tss->ss0  = g_current_process->ss0;
+
+        info(ERROR, "TO USER");
 
         arch_switch_process_to_user_mode();
 
     } else {
 
-        info(DEV_NOTICE, "to same mode");
+        info(ERROR, "TO KERNEL");
         arch_switch_process();
     }
 }

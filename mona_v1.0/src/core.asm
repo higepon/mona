@@ -23,8 +23,9 @@ BITS 32
 
 _arch_save_process_registers:
         mov ebx, dword[_g_current_process]
-        mov eax, dword[ebx + 52] ; get dpl
-        cmp eax, 0x03            ; check dpl is 3
+        mov eax, dword[ebx + 40] ; get dpl
+        and  eax, 0x03            ; check dpl is 3
+        cmp eax, 0x03
         jnz dpl0
         mov eax, dword[esp + 52] ; save ss3
         mov dword[ebx + 48], eax
@@ -99,7 +100,6 @@ _arch_switch_process_to_user_mode:
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
         pop  ebx                     ; restore ebp
-call _arch_set_stack_view
         iretd                        ; switch to next
 
 _arch_set_stack_view:

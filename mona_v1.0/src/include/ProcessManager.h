@@ -25,7 +25,7 @@
 class ProcessManager {
 
   public:
-    ProcessManager();
+    ProcessManager(Process* idle);
 
     virtual ~ProcessManager() {
     }
