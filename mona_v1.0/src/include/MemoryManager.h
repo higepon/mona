@@ -54,4 +54,32 @@ class MemoryManager {
 
 };
 
+typedef struct MemoryHeader {
+    struct MemoryHeader* next;
+    dword size;
+};
+
+class MemoryManager2 {
+
+  public:
+    MemoryManager2();
+    ~MemoryManager2();
+
+  public:
+    void initialize(dword size, dword end);
+    void free(void* address);
+    void* allocate(dword size);
+    dword getFreeMemorySize() const;
+    dword getUsedMemorySize() const;
+    static dword getPhysicalMemorySize();
+
+  private:
+    MemoryHeader* freeList_;
+    dword start_;
+    dword end_;
+
+};
+
+
+
 #endif

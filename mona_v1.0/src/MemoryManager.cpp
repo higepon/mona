@@ -271,3 +271,98 @@ dword MemoryManager::getPhysicalMemorySize() {
 
     return totalMemorySize;
 }
+
+MemoryManager2::MemoryManager2() {
+}
+
+void MemoryManager2::initialize(dword start, dword end) {
+
+    freeList_ = (MemoryHeader*)start;
+    freeList_->next = freeList_;
+    freeList_->size = (end - start + 1) / sizeof(MemoryHeader);
+}
+
+MemoryManager2::~MemoryManager2() {
+}
+
+void* MemoryManager2::allocate(dword size) {
+
+    if (size == 0) return (dword)NULL;
+
+    dword nunits = (size + sizeof(MemoryHeader) - 1) / sizeof(MemoryHeader) + 1;
+    MemoryHeader *prevp = freeList_;
+
+    MemoryHeader *p;
+    for (p = prevp->next; ;prevp = p, p = p->next) {
+        if (p->size >= nunits) break;
+        if (p == freeList_)          return 0;
+    }
+    if (p->size == nunits) {
+        prevp->next = p->next;
+    } else {
+        p->size -= nunits;
+        p         += p->size;
+        p->size  = nunits;
+    }
+    freeList_ = prevp;
+    return (void *)(p + 1);
+}
+
+void MemoryManager2::free(void* address) {
+
+    MemoryHeader *bp = (MemoryHeader *)address - 1;
+    MemoryHeader *p;
+    for (p = freeList_; !(p < bp && bp < p->next); p = p->next) {
+        if (p >= p->next && (bp > p || bp < p->next)) break;
+    }
+    if (bp + bp->size == p->next) {
+        bp->size += p->next->size;
+        bp->next  =  p->next->next;
+    } else {
+        bp->next  =  p->next;
+    }
+    if (p + p->size == bp) {
+        p->size += bp->size;
+        p->next =  bp->next;
+    } else {
+        p->next  =  bp;
+    }
+    freeList_ = p;
+}
+
+dword MemoryManager2::getPhysicalMemorySize() {
+
+    /* assume there is at least 1MB memory */
+    dword totalMemorySize  = 1024 * 1024;
+
+    /* 1MB unit loop */
+    for (dword i = 1024 * 1024; i < 0xFFFFFFFF; i += 1024 * 1024) {
+
+        dword* p = (dword*)i;
+        dword value = *p;
+
+        *p = 0x12345678;
+        if (*p != 0x12345678) break;
+
+        *p = value;
+        totalMemorySize += 1024 * 1024;
+    }
+
+    return totalMemorySize;
+}
+
+dword MemoryManager2::getFreeMemorySize() const {
+
+    dword result = 0;
+
+    for (MemoryHeader* current = freeList_; current->next != freeList_; current = current->next) {
+
+        result += (current->size);
+    }
+    return result * sizeof(MemoryHeader);
+}
+
+dword MemoryManager2::getUsedMemorySize() const {
+
+    return (end_ - start_ + 1) / sizeof(MemoryHeader) - getFreeMemorySize();
+}
