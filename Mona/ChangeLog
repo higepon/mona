@@ -1,3 +1,7 @@
+2004-04-08  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/gui/reversi/Piece.cpp (OnMouseUp): 無駄なオーバーライドをなくす
+
 2004-04-07  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/shell/main.cpp : 内部コマンド CD, LS, DIRを実装

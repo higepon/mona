@@ -20,11 +20,6 @@ Piece::~Piece()
 {
 }
 
-void Piece::Create()
-{
-    BASE::Create();
-}
-
 void Piece::OnPaint()
 {
     _P<Graphics> g = this->CreateGraphics();
@@ -50,18 +45,6 @@ void Piece::OnPaint()
     g->DrawRectangle(::System::Drawing::Color::get_Black(), 0, 0, w, h);
 
     g->Dispose();
-}
-
-void Piece::OnMouseMove(_P<MouseEventArgs> e)
-{
-    BASE::OnMouseMove(e);
-}
-
-void Piece::OnMouseDown(_P<MouseEventArgs> e)
-{
-    this->OnPaint();
-    this->Refresh();
-    BASE::OnMouseDown(e);
 }
 
 void Piece::OnMouseUp(_P<MouseEventArgs> e)
