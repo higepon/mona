@@ -196,6 +196,7 @@ void ProcessManager::printInfo() {
 void ProcessManager::switchProcess() {
 
     tss[0].backlink = 0x28;
+    setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), TypeTSSBusy);
 
     /* eflags NTビットを立てる */
     asm volatile("pushf              \n"
