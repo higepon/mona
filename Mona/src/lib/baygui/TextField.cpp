@@ -35,7 +35,10 @@ TextField::TextField()
 	offx = 3;
 	offy = 3;
 	memset(text, 0, MAX_TEXT_LEN);
+	imemode = false;
 	_textEvent = new Event(TEXT_CHANGED, this);
+	imeManager = new ImeManager();
+	imeManager->setParent(this);
 }
 
 /** デストラクタ */
@@ -95,14 +98,12 @@ void TextField::repaint()
 
 	// キャレット
 	if (focused == true && enabled == true) {
-		int i;
-		char temp[MAX_TEXT_LEN];
-		for (i = 0; i <= textPtr; i++) {
-			temp[i] = text[i];
+		int fw = getCaretWidth();
+		if (imemode == false) {
+			_g->drawLine(offx + fw, offy, offx + fw, offy + 14);
+		} else {
+			imeManager->repaint();
 		}
-		temp[i] = '\0';
-		int fw = FontManager::getInstance()->getWidth(temp);
-		_g->drawLine(offx + fw, offy, offx + fw, offy + 14);
 	}
 }
 
@@ -131,51 +132,88 @@ void TextField::deleteCharacter()
 	textLen--;
 }
 
+int TextField::getCaretWidth()
+{
+	int i;
+	char temp[MAX_TEXT_LEN];
+	for (i = 0; i <= textPtr; i++) {
+		temp[i] = text[i];
+	}
+	temp[i] = '\0';
+	return FontManager::getInstance()->getWidth(temp);
+}
+
 /** イベント処理 */
 void TextField::postEvent(Event *event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (enabled == false) return;
 	
-	// キー押下
-	if (event->type == KEY_PRESSED) {
-		int keycode = ((KeyEvent *)event)->keycode;
-		if (keycode == VKEY_BACKSPACE) {
-			if (textPtr >= 0) {
-				// バックスペース
-				deleteCharacter();
-				if (firstpaint == true) {
-					repaint();
-				}
+	// IME確定
+	if (event->type == IME_ENDCOMPOSITION) {
+		// 確定済みバッファーを得る
+		char *buffer = imeManager->getBuffer();
+		if (strlen(buffer) > 0) {
+			for (int i = 0; i < (int)strlen(buffer); i++) {
+				insertCharacter(buffer[i]);
 			}
-		} else if (keycode == VKEY_LEFT) {
-			// ←移動
-			if (textPtr >= 0) {
-				textPtr--;
-				if (firstpaint == true) {
-					repaint();
-				}
-			}
-		} else if (keycode == VKEY_RIGHT) {
-			// →移動
-			if (textPtr < textLen - 1) {
-				textPtr++;
-				if (firstpaint == true) {
-					repaint();
-				}
-			}
-		} else if (keycode == VKEY_ENTER) {
-			// 確定
-			Control::postEvent(_textEvent);
-			return;
-		} else if (keycode < 128) {
-			// 1文字挿入
-			insertCharacter(keycode);
-			if (firstpaint == true) {
-				repaint();
-			}
+			imeManager->clearBuffer();
+			repaint();
 		}
-		Control::postEvent(event);
+	// キー押下
+	} else if (event->type == KEY_PRESSED) {
+		int keycode = ((KeyEvent *)event)->keycode;
+		int modifiers = ((KeyEvent *)event)->modifiers;
+		if (imemode == true) {
+			if (modifiers == VKEY_CTRL && keycode == '\\') {
+				// IMEオフ
+				imemode = false;
+			} else {
+				// IMEマネージャに丸投げ
+				imeManager->postEvent(event);
+			}
+		} else {
+			if (modifiers == VKEY_CTRL && keycode == '\\') {
+				// IMEオン
+				imemode = true;
+				imeManager->setRect(x + offx + getCaretWidth(), y + offy, width, height);
+			} else if (keycode == VKEY_BACKSPACE) {
+				// バックスペース
+				if (textPtr >= 0) {
+					// 2バイト文字
+					if (textPtr >= 1 && 0xC2 <= (0xFF & text[textPtr - 1]) && (0xFF & text[textPtr - 2]) <= 0xDF) {
+						deleteCharacter();
+						deleteCharacter();
+					// 3バイト文字
+					} else if (textPtr >= 2 && 0xE0 <= (0xFF & text[textPtr - 2]) && (0xFF & text[textPtr - 2]) <= 0xEF) {
+						deleteCharacter();
+						deleteCharacter();
+						deleteCharacter();
+					// 1バイト文字
+					} else {
+						deleteCharacter();
+					}
+				}
+			} else if (keycode == VKEY_LEFT) {
+				// ←移動
+				if (textPtr >= 0) {
+					textPtr--;
+				}
+			} else if (keycode == VKEY_RIGHT) {
+				// →移動
+				if (textPtr < textLen - 1) {
+					textPtr++;
+				}
+			} else if (keycode == VKEY_ENTER) {
+				// 確定
+				Control::postEvent(_textEvent);
+			} else if (keycode < 128) {
+				// 1文字挿入
+				insertCharacter(keycode);
+			}
+			if (firstpaint == true) repaint();
+			Control::postEvent(event);
+		}
 	// フォーカス状態変更
 	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
 		if (firstpaint == true) {
