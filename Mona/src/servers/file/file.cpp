@@ -14,14 +14,19 @@ extern ISO9660* iso;
 monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
 {
     CString path = file;
+
+    // upper
+    path = path.toUpper();
+
     if (prompt) printf("%s: Reading %s....", SVR, file);
 
     if (path.startsWith("/CD0"))
     {
         if (!hasCD) return NULL;
 
+        // CD0 and upper
         CString cdpath = path.substring(5, path.getLength());
-        printf("cdpath %s\n", (const char*) cdpath);
+
         File* cdfile = iso->GetFile(cdpath);
 
         if (cdfile == NULL) return NULL;

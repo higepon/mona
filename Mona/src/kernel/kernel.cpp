@@ -89,14 +89,8 @@ void  mainProcess();
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2003/06/08
+    \date   create:2002/07/21 update:$Date$
 */
-
-//#define CR3_TEST
-#ifdef CR3_TEST
-static dword cr31, cr32;
-#endif
-
 
 void startKernel(void)
 {
@@ -140,14 +134,14 @@ void startKernel(void)
                     word rgb16  = 0;
                     // hi 4bit
                     pixel = &vram[(x * 2 + y * w) * bpp];
-                    rgb16 = (word)(((palette16[(monaboot[y][x] >> 4) & 0xF] >> 8) & 0xF800) | 
-                        ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 5) & 0x07E0) | 
+                    rgb16 = (word)(((palette16[(monaboot[y][x] >> 4) & 0xF] >> 8) & 0xF800) |
+                        ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 5) & 0x07E0) |
                         ((palette16[(monaboot[y][x] >> 4) & 0xF] >> 3) & 0x001F));
                     *((word*)pixel) = rgb16;
                     // low 4bit
                     pixel = &vram[(x * 2 + 1 + y * w) * bpp];
-                    rgb16 = (word)(((palette16[monaboot[y][x] & 0xF] >> 8) & 0xF800) | 
-                        ((palette16[monaboot[y][x] & 0xF] >> 5) & 0x07E0) | 
+                    rgb16 = (word)(((palette16[monaboot[y][x] & 0xF] >> 8) & 0xF800) |
+                        ((palette16[monaboot[y][x] & 0xF] >> 5) & 0x07E0) |
                         ((palette16[monaboot[y][x] & 0xF] >> 3) & 0x001F));
                     *((word*)pixel) = rgb16;
                 }
@@ -157,7 +151,7 @@ void startKernel(void)
             for (int y = 0; y < 105; y++) {
                 for (int x = 0; x < 55; x++) {
                     byte *pixel   = NULL;
-                	byte *p_color = NULL;
+                    byte *p_color = NULL;
                     // hi 4bit
                     pixel = &vram[(x * 2 + y * w) * bpp];
                     p_color = (byte*)&palette16[(monaboot[y][x] >> 4) & 0xF];
@@ -236,15 +230,8 @@ void startKernel(void)
     g_scheduler->Join(initThread);
 
 
-#ifdef CR3_TEST
-    cr31 = g_idleThread->tinfo->archinfo->cr3;
-    cr32 = initThread->tinfo->archinfo->cr3;
-
-#endif
     disableTimer();
-
     enableInterrupt();
-
 
     /* dummy thread struct */
     g_prevThread    = dummy1->tinfo;
@@ -344,7 +331,7 @@ int execSysConf()
     if (!(g_fs->open("/MONA.CFG", 1)))
     {
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
         return 1;
     }
 
@@ -358,7 +345,7 @@ int execSysConf()
     if (buf == NULL)
     {
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
         return 2;
     }
 
@@ -367,7 +354,7 @@ int execSysConf()
     {
         free(buf);
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
         return g_fs->getErrorNo();
     }
 
@@ -375,7 +362,7 @@ int execSysConf()
     if (!g_fs->close())
     {
         g_fdcdriver->motorAutoOff();
-	systemcall_mutex_unlock(g_mutexFloppy);
+        systemcall_mutex_unlock(g_mutexFloppy);
     }
 
     g_fdcdriver->motorAutoOff();
@@ -418,146 +405,6 @@ int execSysConf()
 
 void mainProcess()
 {
-
-#ifdef CR3_TEST
-
-    disableInterrupt();
-
-    dword total;
-    int count;
-
-    total = 0;
-    count = 0;
-
-    for (int i = 0; i < 500; i++)
-    {
-        /* at first flush all */
-        g_page_manager->setPageDirectory(cr31);
-        g_page_manager->setPageDirectory(cr32);
-
-        dword l1, l2, h1, h2;
-
-        dword* p = (dword*)0x600000;
-
-        /* read and create cache */
-        volatile dword test1 = *p;
-
-        rdtsc(&l1, &h1);
-
-        /* read once using cache */
-        volatile dword test2 = *p;
-
-        rdtsc(&l2, &h2);
-
-        if (h1 != h2) continue;
-
-        count++;
-        total += (l2 - l1);
-    }
-
-    g_console->printf("read using cache: %d\n", total / count);
-
-    total = 0;
-    count = 0;
-
-    for (int i = 0; i < 500; i++)
-    {
-        /* at first flush all */
-        g_page_manager->setPageDirectory(cr31);
-        g_page_manager->setPageDirectory(cr32);
-
-        dword l1, l2, h1, h2;
-
-        dword* p = (dword*)0x600000;
-
-        /* read and create cache */
-        volatile dword test1 = *p;
-
-        rdtsc(&l1, &h1);
-
-        asm volatile ("invlpg %0\n": "=m"(p));
-
-        rdtsc(&l2, &h2);
-
-        if (h1 != h2) continue;
-
-        count++;
-        total += (l2 - l1);
-    }
-
-    g_console->printf("invlpg: %d\n", total / count);
-
-    total = 0;
-    count = 0;
-
-    for (int i = 0; i < 500; i++)
-    {
-        /* at first flush all */
-        g_page_manager->setPageDirectory(cr31);
-        g_page_manager->setPageDirectory(cr32);
-
-        dword l1, l2, h1, h2;
-
-        dword* p = (dword*)0x600000;
-
-        /* read and create cache */
-        volatile dword test1 = *p;
-
-        asm volatile ("invlpg %0\n": "=m"(p));
-
-        rdtsc(&l1, &h1);
-
-        /* read once */
-        volatile dword test2 = *p;
-
-        rdtsc(&l2, &h2);
-
-        if (h1 != h2) continue;
-
-        count++;
-        total += (l2 - l1);
-    }
-
-    g_console->printf("create cache and read: %d\n", total / count);
-
-    total = 0;
-    count = 0;
-
-    for (int i = 0; i < 500; i++)
-    {
-        /* at first flush all */
-        g_page_manager->setPageDirectory(cr31);
-        g_page_manager->setPageDirectory(cr32);
-
-        dword l1, l2, h1, h2;
-
-        dword* p = (dword*)0x600000;
-
-        /* read and create cache */
-        volatile dword test1 = *p;
-
-        rdtsc(&l1, &h1);
-
-        for (int j = 0; j < 10000; j++)
-        {
-            j++;
-            j--;
-        }
-
-        rdtsc(&l2, &h2);
-
-        if (h1 != h2) continue;
-
-        count++;
-        total += (l2 - l1);
-    }
-
-    g_console->printf("loop: %d\n", total / count);
-
-    g_page_manager->setPageDirectory(cr32);
-    enableInterrupt();
-#endif
-
     /* FDC do not delete */
     enableFDC();
     g_fdcdriver = new FDCDriver();
