@@ -1,3 +1,7 @@
+2004-08-29  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/gui/hige3D/Form1.cpp (class Canvas): ‰AüÁ‹
+
 2004-08-28  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/hige3D/Form1.cpp (class Form1): ‚±‚ê‚©‚ç‚±‚±‚Å3D‚ÌÀŒ±‚ğs‚¤B
