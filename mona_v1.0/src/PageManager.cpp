@@ -199,14 +199,14 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
 
 
-Stack::Stack(LinearAddress start, dword size) {
+StackSegment::StackSegment(LinearAddress start, dword size) {
 
     start_        = start;
     size_         = size + PAGE_SIZE;
     isAutoExtend_ = false;
 }
 
-Stack::Stack(LinearAddress start, dword initileSize, dword maxSize) {
+StackSegment::StackSegment(LinearAddress start, dword initileSize, dword maxSize) {
 
     start_        = start;
     size_         = initileSize + PAGE_SIZE;
@@ -214,11 +214,11 @@ Stack::Stack(LinearAddress start, dword initileSize, dword maxSize) {
     isAutoExtend_ = true;
 }
 
-Stack::~Stack() {
+StackSegment::~StackSegment() {
 
 }
 
-bool Stack::faultHandler(LinearAddress address, dword error) {
+bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
     if (error == PAGE_FAULT_NOT_WRITABLE && !tryExtend(address)) {
 
@@ -235,7 +235,7 @@ bool Stack::faultHandler(LinearAddress address, dword error) {
     return true;
 }
 
-bool Stack::tryExtend(LinearAddress address) {
+bool StackSegment::tryExtend(LinearAddress address) {
 
     if (!isAutoExtend_) {
 
@@ -266,7 +266,7 @@ bool Stack::tryExtend(LinearAddress address) {
     return true;
 }
 
-bool Stack::allocatePage(LinearAddress address) {
+bool StackSegment::allocatePage(LinearAddress address) {
 
     if (address < start_ || address > start_ + size_) {
 

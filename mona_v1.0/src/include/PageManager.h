@@ -47,6 +47,9 @@ class PageManager {
     bool allocatePhysicalPage(PageEntry* pageEntry);
     bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
 
+    void setAttribute(PageEntry* entry, byte presnt, byte rw, byte user) {return;}
+    void setAttribute(PageEntry* directory, LinearAddress address, byte presen, byte rw, byte user) {return;}
+
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
@@ -75,6 +78,8 @@ class Segment {
   public:
     virtual bool faultHandler(LinearAddress address, dword error) = 0;
     virtual int getErrorNumber() {return errorNumber_;}
+    virtual LinearAddress getStart() {return start_;}
+    virtual dword getSize() {return size_;}
 
   protected:
     LinearAddress start_;
@@ -82,12 +87,12 @@ class Segment {
     byte errorNumber_;
 };
 
-class Stack : public Segment {
+class StackSegment : public Segment {
 
   public:
-    Stack(LinearAddress start, dword size);
-    Stack(LinearAddress start, dword initileSize, dword maxSize);
-    virtual ~Stack();
+    StackSegment(LinearAddress start, dword size);
+    StackSegment(LinearAddress start, dword initileSize, dword maxSize);
+    virtual ~StackSegment();
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
@@ -101,7 +106,5 @@ class Stack : public Segment {
     dword maxSize_;
 
 };
-
-
 
 #endif
