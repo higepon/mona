@@ -1,3 +1,7 @@
+2004-11-05  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * include/gui/System/Event.h: コメント記述
+
 2004-11-06  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/gfire: FIRE追加
