@@ -25,7 +25,7 @@ const int KeyBoardManager::keyMapJP109[128] = {
         Keys::O, Keys::P, Keys::OemAt, Keys::OemOpenBrackets, Keys::Enter, Keys::LControlKey, Keys::A, Keys::S,
         Keys::D, Keys::F, Keys::G, Keys::H, Keys::J, Keys::K, Keys::L, Keys::OemSemicolon,
         Keys::OemColon, Keys::KanjiMode, Keys::LShiftKey, Keys::OemCloseBrackets, Keys::Z, Keys::X, Keys::C, Keys::V,
-        Keys::B, Keys::N, Keys::M, Keys::Oemcomma, Keys::OemPeriod, '/', Keys::RShiftKey, Keys::Multiply,
+        Keys::B, Keys::N, Keys::M, Keys::Oemcomma, Keys::OemPeriod, Keys::Divide, Keys::RShiftKey, Keys::Multiply,
         Keys::LMenu, Keys::Space, Keys::CapsLock, Keys::F1, Keys::F2, Keys::F3, Keys::F4       , Keys::F5   ,
         Keys::F6, Keys::F7, Keys::F8, Keys::F9, Keys::F10, Keys::NumLock, Keys::Scroll, Keys::NumPad7,
         Keys::NumPad8, Keys::NumPad9, Keys::Subtract, Keys::NumPad4, Keys::NumPad5, Keys::NumPad6 , Keys::Add, Keys::NumPad1,
