@@ -200,6 +200,9 @@ void Kukuri::Create()
   this->normal();
   this->timerHandler = new EventHandler<Kukuri>(this, &Kukuri::timer_Tick);
   kukuriTimer->add_Tick(this->timerHandler.get());
+  
+  // 最前面に表示
+  this->_object->Flags |= WINDOWFLAGS_TOPMOST | WINDOWFLAGS_NOACTIVATE;
 }
 
 
@@ -224,7 +227,7 @@ void Kukuri::OnPaint()
   g->Dispose();
   
   // 最前面に移動
-  MonAPI::Message::send(__gui_server, MSG_GUISERVER_WINDOWTOFRONTMOST, this->get_Handle());
+  //MonAPI::Message::send(__gui_server, MSG_GUISERVER_WINDOWTOFRONTMOST, this->get_Handle());
 }
 
 
@@ -328,8 +331,10 @@ void Kukuri::normal()
   // 距離が70以上の時だけ動かす
   if(distance > 70){
     if(w_num == 3) w_num = 0; else w_num++;
+    this->RefreshInternal();
     this->set_Location(Point((int)(this->get_X() + px), (int)(this->get_Y() + py)));
     s_interval = 0;
+    return;
   }
   this->Refresh();
 }
@@ -430,8 +435,10 @@ void Kukuri::turn()
       return;
     }
     nowPix = kuPix[t + a_t_dir2 * 4];
+    this->RefreshInternal();
     this->set_Location(Point(this->get_X() + (a_t_dir * 4), this->get_Y()));
     a_t_num++;
+    return;
   }
   this->Refresh();
 }

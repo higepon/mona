@@ -128,6 +128,22 @@ void DisposeWindowFromThreadID(dword tid)
 	}
 }
 
+static void DrawWindowInternal(guiserver_window* w, const _R& r)
+{
+	if (!w->Visible || w->FormBufferHandle == 0) return;
+	
+	_R rr(w->X, w->Y, w->Width, w->Height);
+	rr.Intersect(r);
+	if (r.Width == 0 || rr.Height == 0) return;
+	
+	if (w->__internal1 == NULL)
+	{
+		w->__internal1 = GetBitmapPointer(w->FormBufferHandle);
+		if (w->__internal1 == NULL) return;
+	}
+	DrawImage(screen_buffer, w->__internal1, rr.X, rr.Y, rr.X - w->X, rr.Y - w->Y, rr.Width, rr.Height, w->TransparencyKey, w->Opacity);
+}
+
 void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 {
 	if (w == NULL || w->FormBufferHandle == 0) return;
@@ -139,19 +155,13 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 	int size_w = windows.size();
 	for (int i = 0; i < size_w; i++)
 	{
-		guiserver_window* ww = windows[i];
-		if (!ww->Visible || ww->FormBufferHandle == 0) continue;
-		
-		_R rr(ww->X, ww->Y, ww->Width, ww->Height);
-		rr.Intersect(r);
-		if (r.Width == 0 || rr.Height == 0) continue;
-		
-		if (ww->__internal1 == NULL)
-		{
-			ww->__internal1 = GetBitmapPointer(ww->FormBufferHandle);
-			if (ww->__internal1 == NULL) return;
-		}
-		DrawImage(screen_buffer, ww->__internal1, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
+		guiserver_window* w = windows[i];
+		if ((w->Flags & WINDOWFLAGS_TOPMOST) == 0) DrawWindowInternal(w, r);
+	}
+	for (int i = 0; i < size_w; i++)
+	{
+		guiserver_window* w = windows[i];
+		if ((w->Flags & WINDOWFLAGS_TOPMOST) != 0) DrawWindowInternal(w, r);
 	}
 	int size_ov = overlaps.size();
 	for (int i = 0; i < size_ov; i++)
@@ -177,6 +187,24 @@ void MoveWindow(guiserver_window* w, int x, int y)
 	DrawScreen(xx, yy, w->Width, w->Height);
 }
 
+static guiserver_window* GetTargetWindowInternal(guiserver_window* w, int x, int y)
+{
+	if (w->FormBufferHandle == 0) return NULL;
+	
+	_R r(w->X, w->Y, w->Width, w->Height);
+	if (!r.Contains(x, y)) return NULL;
+	
+	if (w->__internal1 == NULL)
+	{
+		w->__internal1 = GetBitmapPointer(w->FormBufferHandle);
+		if (w->__internal1 == NULL) return NULL;
+	}
+	unsigned int c = w->__internal1->Data[(x - w->X) + (y - w->Y) * w->Width];
+	if (c == 0 || c == w->TransparencyKey) return NULL;
+	
+	return w;
+}
+
 guiserver_window* GetTargetWindow(int x, int y)
 {
 	int size = captures.size();
@@ -188,18 +216,18 @@ guiserver_window* GetTargetWindow(int x, int y)
 	for (int i = windows.size() - 1; i >= 0; i--)
 	{
 		guiserver_window* w = windows[i];
-		if (w->FormBufferHandle == 0) continue;
+		if ((w->Flags & WINDOWFLAGS_TOPMOST) == 0) continue;
 		
-		_R r(w->X, w->Y, w->Width, w->Height);
-		if (!r.Contains(x, y)) continue;
+		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
+		if (ww != NULL) return ww;
+	}
+	for (int i = windows.size() - 1; i >= 0; i--)
+	{
+		guiserver_window* w = windows[i];
+		if ((w->Flags & WINDOWFLAGS_TOPMOST) != 0) continue;
 		
-		if (w->__internal1 == NULL)
-		{
-			w->__internal1 = GetBitmapPointer(w->FormBufferHandle);
-			if (w->__internal1 == NULL) continue;
-		}
-		unsigned int c = w->__internal1->Data[(x - w->X) + (y - w->Y) * w->Width];
-		if (c != 0 && c != w->TransparencyKey) return w;
+		guiserver_window* ww = GetTargetWindowInternal(w, x, y);
+		if (ww != NULL) return ww;
 	}
 	
 	return NULL;
