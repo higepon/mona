@@ -45,6 +45,8 @@ class MFDCDriver {
     void stopDMA();
     void setupDMARead(dword size);
     void setupDMAWrite(dword size);
+    void printStatus(const byte msr, const char*) const;
+    void printDMACStatus(const byte status, const char*) const;
 
   private:
     byte version_;

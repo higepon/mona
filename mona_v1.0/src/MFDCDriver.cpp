@@ -121,7 +121,7 @@ void MFDCDriver::initilize() {
 
     /* allocate dma buffer */
     dmabuff_ = (byte*)malloc(FDC_DMA_BUFF_SIZE);
-    console_->printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
+    _sys_printf("dma buff_=[%dkb]\n", ((dword)dmabuff_/1024));
 
     /* dma buff should be 64kb < dma buff < 16Mb
     if (!dmabuff_ || (dword)dmabuff_ < 64 * 1024 || (dword)dmabuff_  + FDC_DMA_BUFF_SIZE > 16 * 1024 * 1024) {
@@ -134,6 +134,8 @@ void MFDCDriver::initilize() {
     outportb(0xd6, 0xc0);
     outportb(0xd4, 0);
 
+    printDMACStatus(inportb(0x0008), "dmac");
+
     /* specify */
     sendCommand(specifyCommand, sizeof(specifyCommand));
 
@@ -145,12 +147,12 @@ void MFDCDriver::initilize() {
 
     /* start driveA */
     interrupt_ = false;
-    motor(ON);
-    while (!waitInterrupt());
+    //    motor(ON);
+    //    while (!waitInterrupt());
 
     /* recalibrate */
-    recalibrate();
-    motor(OFF);
+    //    recalibrate();
+    //    motor(OFF);
 
     /* test */
     interrupt_ = false;
@@ -179,8 +181,22 @@ void MFDCDriver::initilize() {
 void MFDCDriver::printStatus(const char* str) const {
 
     byte msr = inportb(FDC_MSR_PRIMARY);
-    console_->printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
-    console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
+    printStatus(msr, str);
+    return;
+}
+
+/*!
+    \brief print status of FDC(MSR)
+
+    \param  main status register
+    \param  str message
+    \author HigePon
+    \date   create:2003/02/10 update:
+*/
+void MFDCDriver::printStatus(const byte msr, const char* str) const {
+
+    _sys_printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
+    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
               , msr & FDC_MRQ_READY    ? "  ready  ":"not ready"
               , msr & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
               , msr & FDC_NDMA_NOT_DMA ? " Y "      :" N "
@@ -234,8 +250,8 @@ void MFDCDriver::motor(bool on) {
 
 bool MFDCDriver::sendCommand(const byte* command, const byte length) {
 
-    //    console_->printf("length=[%d]\n", length);
-    //    for (int j = 0; j < length; j++) console_->printf("command[%d]=%x\n", j, command[j]);
+    //    _sys_printf("length=[%d]\n", length);
+    //    for (int j = 0; j < length; j++) _sys_printf("command[%d]=%x\n", j, command[j]);
 
     /* send command */
     for (int i = 0; i < length; i++) {
@@ -243,10 +259,10 @@ bool MFDCDriver::sendCommand(const byte* command, const byte length) {
         /* expected condition is ready & date I/O to Controller */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            console_->printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
+            _sys_printf("MFDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
         }
-        console_->printf("command[%x] ", command[i]);
+        _sys_printf("command[%x] ", command[i]);
         outportb(FDC_DR_PRIMARY, command[i]);
     }
 
@@ -267,7 +283,7 @@ bool MFDCDriver::recalibrate() {
     interrupt_ = false;
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#recalibrate:command fail\n");
+        _sys_printf("MFDCDriver#recalibrate:command fail\n");
         return false;
     }
 
@@ -301,7 +317,7 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
     }
 
     /* time out */
-    console_->printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
+    _sys_printf("MFDCDriver#checkMSR expectedCondition=[%x] result=[%x] masked=[%x]\n"
                    , expectedCondition, inportb(FDC_MSR_PRIMARY), status);
     return false;
 }
@@ -334,13 +350,13 @@ bool MFDCDriver::seek(byte track) {
 
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#seek:command fail\n");
+        _sys_printf("MFDCDriver#seek:command fail\n");
         return false;
     }
 
     if (!senseInterrupt()) {
 
-        console_->printf("MFDCDriver#seek:command fail\n");
+        _sys_printf("MFDCDriver#seek:command fail\n");
         return false;
     }
     return true;
@@ -358,7 +374,7 @@ bool MFDCDriver::senseInterrupt() {
 
     if(!sendCommand(command, sizeof(command))){
 
-        console_->printf("MFDCDriver#senseInterrrupt:command fail\n");
+        _sys_printf("MFDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
 
@@ -383,7 +399,7 @@ void MFDCDriver::readResults() {
         /* expected condition is ready & data I/O to CPU */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            console_->printf("MFDCDriver#readResults: timeout results_[%d]\n", i);
+            _sys_printf("MFDCDriver#readResults: timeout results_[%d]\n", i);
             break;
         }
 
@@ -392,10 +408,12 @@ void MFDCDriver::readResults() {
 
         /* get result */
         results_[i] = inportb(FDC_DR_PRIMARY);
+
     }
     resultsLength_ = i;
 
-    for (int j = 0; j < resultsLength_; j++) {
+    //    for (int j = 0; j < resultsLength_; j++) {
+    for (int j = 0; j < 10; j++) {
 
          _sys_printf("result[%d] = %x ", j, results_[j]);
     }
@@ -488,18 +506,21 @@ bool MFDCDriver::read(byte track, byte head, byte sector) {
 
     seek(track);
     printStatus("seek:track");
+
+    printDMACStatus(inportb(0x0008), "before dma read");
     setupDMARead(512);
+    printDMACStatus(inportb(0x0008), "before dma read");
 
     memset(dmabuff_, 0xfffe, 512);
     interrupt_ = false;
     sendCommand(command, sizeof(command));
     //while(!waitInterrupt());
 
-    printStatus("after readcommand");
+    printDMACStatus(inportb(0x0008), "after dmaC ");
 
     stopDMA();
 
-    for (int i = 0; i < 10; i++) _sys_printf("dmabuff%d", dmabuff_[i]);
+    for (int i = 0; i < 30; i++) _sys_printf("[%x]", dmabuff_[i]);
 
     readResults();
     motor(OFF);
@@ -514,4 +535,20 @@ bool MFDCDriver::writeID(byte track, byte head, byte data) {
 
 
     return false;
+}
+
+void MFDCDriver::printDMACStatus(const byte status, const char* str) const {
+
+    _sys_printf("ch3|ch2|ch1|ch0|ch3|ch2|ch1|ch0|\n");
+    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
+              , status & 0x80 ? " Y ":" N "
+              , status & 0x40 ? " Y ":" N "
+              , status & 0x20 ? " Y ":" N "
+              , status & 0x10 ? " Y ":" N "
+              , status & 0x08 ? " Y ":" N "
+              , status & 0x04 ? " Y ":" N "
+              , status & 0x02 ? " Y ":" N "
+              , status & 0x01 ? " Y ":" N "
+              , str
+    );
 }
