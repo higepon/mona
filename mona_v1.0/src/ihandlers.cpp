@@ -4,7 +4,7 @@
 
   interrupt handlers
 
-  Copyright (c) 2002,2003,2004 Higepon
+  Copyright (c) 2002, 2003 and 2004 Higepon
   All rights reserved.
   License=MIT/X Licnese
 
@@ -20,8 +20,19 @@
 #include <tester.h>
 #include <Process.h>
 
+/*!
+  \brief mouse handler
+
+  mouse handler IRQ 12
+
+  \author HigePon
+  \date   create:2004/02/05 update:
+*/
 void mouseHandler() {
-    g_console->printf("mouse");
+
+    byte data;
+    g_console->printf("mouse wait2 = %s\n", Mouse::waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
@@ -38,7 +49,6 @@ void mouseHandler() {
 */
 void keyStrokeHandler(dword scancode) {
 
-    g_console->printf("key");
     MessageInfo message;
 
     memset(&message, 0, sizeof(MessageInfo));
@@ -98,7 +108,7 @@ void dummyHandler() {
 void timerHandler() {
 
     /* EOI is below for IRQ 8-15 */
-    outportb(0xA0, 0x20);
+    //    outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
     schedule();

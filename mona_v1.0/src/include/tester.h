@@ -32,7 +32,17 @@ void FDCDriverTester();
 void mmChangeTester();
 void testFDWrite();
 void keyStrokeTest();
-void tryMouse();
+
+class Mouse {
+
+  public:
+    static int init();
+    static int waitWritable();
+    static int waitReadable();
+
+  public:
+    static const int MOUSE_TIMEOUT = 50000;
+};
 
 typedef struct {
     char* dir;

@@ -171,7 +171,6 @@ void startKernel(void) {
         for (;;);
     }
     g_fdcdriver->motor(OFF);
-
     g_info_level = MSG;
     enableTimer();
 

@@ -13,6 +13,7 @@
 #include<syscalls.h>
 #include<Process.h>
 #include<vbe.h>
+#include<pic.h>
 
 /*!
 
@@ -28,41 +29,99 @@ License=MIT/X Licnese
 */
 
 /*----------------------------------------------------------------------
-    try Mouse Driver now coding
+    Mouse
 ----------------------------------------------------------------------*/
-void tryMouse() {
+int Mouse::init() {
 
-    //    outportb(0x64, 0xa9);
-    //    g_console->printf("aux test result = %x\n", !inportb(0x60) ? "OK" : "NG");
+    /*
+       status = inportb(0x64);
 
-    /* self test kbc */
-    outportb(0x64, 0xAA);
+       bit0: out buffer full 1
+       bit1: in  buffer full 1
 
-    /* enable mouse (AUX enable) */
+       KBC writable<outportb(0x60,)> when bit0 and bit1 = 0
+       KBC readable<inportb(0x60)>   when bit0 = 1
+
+    */
+
+    /* aux interface test */
+    outportb(0x64, 0xa9);
+    g_console->printf("read wait = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("aux interface test result = %s\n", !inportb(0x60) ? "OK" : "NG");
+
+    /* enable aux */
     outportb(0x64, 0xa8);
+
+    /* get command written before */
+    byte data;
+    outportb(0x64, 0x20);
+    g_console->printf("read wait2 = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
+
+    /* kbc command write keyboard & enable mouse intterupt */
+    outportb(0x64, 0x60);
+    g_console->printf("write wait1 = %s\n", waitWritable() ? "NG" : "OK");
+    outportb(0x60, data | 0x03);
+
+    /* after kbc command write, read one data */
+    g_console->printf("read wait3 = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
 
     /* mouse reset */
     outportb(0x64, 0xd4);
+    g_console->printf("read write2 = %s\n", waitWritable() ? "NG" : "OK");
     outportb(0x60, 0xff);
 
-    // set default parameter
-    outportb(0x64, 0xd4);
-    outportb(0x60, 0xf6);
-
-    // mouse enable
-    outportb(0x64, 0xd4);
-    outportb(0x60, 0xf4);
-
+    /* after kbc command write, read 3 times */
+    g_console->printf("read wait3 = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
+    g_console->printf("read wait2 = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
+    g_console->printf("read wait2 = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
 
     /* enable mouse */
-    //    outportb(0x64, 0xd4);
-    //    outportb(0x60, 0xf4);
+    outportb(0x64, 0xd4);
+    g_console->printf("read write3 = %s\n", waitWritable() ? "NG" : "OK");
+    outportb(0x60, 0xf4);
 
-    /* enable mouse interrupt */
-    //    outportb(0xA1, inportb(0xA1) & 0xF7);
-       outportb(0xA1, inportb(0xA1) & 0x00);
+    /* after enable mouse read one data */
+    g_console->printf("@read wait3 = %s\n", waitReadable() ? "NG" : "OK");
+    g_console->printf("%x\n", (data = inportb(0x60)));
 
+    /* enable mouse interrupt slave unmask */
+    outportb(0x21, (inportb(0x21) & 0xFB)); /* IR2 cascade */
+    outportb(0xA1, (inportb(0xA1) & 0xEF)); /* IR4         */
+}
 
+int Mouse::waitWritable() {
+
+    byte status;
+    int i;
+
+    for (i = 0; i < MOUSE_TIMEOUT; i++, status = inportb(0x64)) {
+
+        /* writable */
+        if ((status & 0x03) == 0x00) {
+            break;
+        }
+    }
+    return (i == MOUSE_TIMEOUT) ? -1 : 0;
+}
+
+int Mouse::waitReadable() {
+    byte status;
+    int i;
+
+    for (i = 0; i < MOUSE_TIMEOUT; i++, status = inportb(0x64)) {
+
+        /* readable */
+        if ((status & 0x01) == 0x01) {
+            break;
+        }
+    }
+
+    return (i == MOUSE_TIMEOUT) ? -1 : 0;
 }
 
 /*----------------------------------------------------------------------
