@@ -1,8 +1,9 @@
 /* ps2kbc */
 #include <driver/ISADriver.h>
+/*
 #include <driver/interface/HID/Mouse.h>
 #include <driver/interface/HID/IBMKeyboard.h>
-
+*/
 class PS2KBC {
   public:
 //    Mouse *mouse;
