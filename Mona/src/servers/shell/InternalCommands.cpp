@@ -234,7 +234,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             }
             else
             {
-                printf("thread %d killed", atoi(args[1]));
+                printf("thread %d killed\n", atoi(args[1]));
             }
 
             break;
