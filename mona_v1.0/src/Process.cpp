@@ -135,6 +135,14 @@ V86Process::V86Process(const char* name) {
 }
 
 /*----------------------------------------------------------------------
+    Thread
+----------------------------------------------------------------------*/
+Thread::Thread() : tick_(0), timeLeft_(4) {
+}
+
+Thread::~Thread() {
+}
+/*----------------------------------------------------------------------
     ThreadScheduler
 ----------------------------------------------------------------------*/
 ThreadScheduler::ThreadScheduler() {
@@ -313,14 +321,10 @@ int ProcessManager_::add(Process_* process) {
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
-Process_::Process_(const char* name) {
+Process_::Process_(const char* name) : tick_(0), timeLeft_(4) {
 
     /* name */
     strncpy(name_, name, sizeof(name_));
-
-    /* init */
-    timeLeft_ = 4;
-    tick_     = 0;
 }
 
 Process_::~Process_() {
