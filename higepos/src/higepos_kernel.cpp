@@ -50,22 +50,26 @@ void startKernel(void) {
     _sysUnlock();
     _sysPrintln("idt set done");
 
+    /* testing types */
+    _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));
+    _sys_printf("[sizeof(H_BYTE) is %d byte]\n", sizeof(H_BYTE));
+
 
     /* testing operator new */
-    //    Point* point1 = new Point();?????????
-    //    _sysPrintlnInt(point1->getX());
-    Point* point2 = new Point(5, -1);
-    _sys_printf("[Point(5, -1) getY() = %d]\n", point2->getY());
+    Point* point1 = new Point();
+    Point* point2 = new Point(6, -2);
+    Point* point3 = new Point(7, -100);
+    delete(point3);
 
-    Point* point3 = new Point(5, -1);
+    _sys_printf("%s\n", point1->getName());
+    _sys_printf("%d\n", point1->getY());
+    _sys_printf("[Point(5, -1) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(5, -1) getY() = %d]\n", point3->getY());
 
     //    delete(point2);
 
 
-    /* testing types */
-    _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));
-    _sys_printf("[sizeof(H_BYTE) is %d byte]\n", sizeof(H_BYTE));
+
 
     /* testing malloc */
     //_sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
@@ -77,7 +81,7 @@ void startKernel(void) {
 //      list.add(10);
 //      list.add(10);
 //      _sysPrintlnInt(list.get(0));
-    delete(point3);
+
     while (true) {
     }
 }

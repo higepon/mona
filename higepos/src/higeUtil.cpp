@@ -1,7 +1,9 @@
 #include<higeUtil.h>
 
 Point::Point() {
-    Point(-5, -1);
+    x_ = 10;
+    y_ = -777;
+    this::Point(0,-999);
 }
 
 Point::Point(int x, int y) {
