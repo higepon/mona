@@ -639,3 +639,10 @@ int syscall_kill_thread(dword tid)
     SYSCALL_1(SYSTEM_CALL_KILL_THREAD, result, tid);
     return result;
 }
+
+int syscall_clear_screen()
+{
+    int result;
+    SYSCALL_0(SYSTEM_CALL_CLEAR_SCREEN, result);
+    return result;
+}

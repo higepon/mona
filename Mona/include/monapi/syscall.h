@@ -79,6 +79,7 @@ extern int syscall_memory_map_unmap(dword id);
 extern dword syscall_lookup(const char* name);
 extern dword syscall_get_tick();
 extern int syscall_get_kernel_version(char* buf, dword size);
+extern int syscall_clear_screen();
 
 extern void* malloc(unsigned long size);
 extern void free(void * address);

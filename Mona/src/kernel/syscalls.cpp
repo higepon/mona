@@ -688,6 +688,12 @@ void syscall_entrance() {
         break;
     }
 
+    case SYSTEM_CALL_CLEAR_SCREEN:
+
+        g_console->clearScreen();
+        info->eax = 0;
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

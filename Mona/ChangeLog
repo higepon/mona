@@ -22,6 +22,18 @@
 
         * src/servers/gui: 壁紙のリサイズをサポート
 
+        * src/kernel/VesaConsole.cpp: スクロールを高速化
+
+        * include/sys/types.h: SYSTEM_CALL_CLEAR_SCREENを追加
+
+        * src/kernel/syscall.cpp: SYSTEM_CALL_CLEAR_SCREENをサポート
+
+        * include/monapi/syscall.h (syscall_clear_screen): 追加
+
+        * src/lib/monapi/syscall.cpp (syscall_clear_screen): 実装
+
+        * src/servers/shell/InternalCommands.cpp: 内部コマンドCLEAR/CLSでsyscall_clear_screen()を使用
+
 2004-05-21  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/test_higepon.cpp: デバッグメッセージの修正
