@@ -305,4 +305,11 @@ void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memory
     \date   create:2002/09/07 update:
 */
 void X86MemoryManager::concatBlock(struct memoryEntry* entry, struct memoryEntry* block) {
+
+    /* do nothing */
+    if (block == (struct memoryEntry*)NULL) return;
+    if (block->next == (struct memoryEntry*)NULL) return;
+
+
+
 }
