@@ -20,7 +20,7 @@
 void _sysInitVga(void);
 void _sysClearScreen();
 void _sysWriteVram(int, int, char);
-void _sysPutCharcter(char);
+void _sysPutCharacter(char);
 void _sysPrint(char*);
 void _sysPrintInt(int);
 void _sysPrintln(char*);

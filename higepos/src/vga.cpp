@@ -76,14 +76,14 @@ void _sys_printf (char* format, ...) {
                   ((int*)list) += 1;
                   break;
               case '%':
-                  _sysPutCharcter('%');
+                  _sysPutCharacter('%');
                   break;
              case '\0':
                  i--;
                  break;
             }
         } else {
-            _sysPutCharcter(format[i]);
+            _sysPutCharacter(format[i]);
         }
     }
 }
@@ -119,7 +119,7 @@ void _sysWriteVram(int x, int y , char ch) {
 */
 void _sysPrint(char* str) {
      for (; *str != '\0'; str++) {
-         _sysPutCharcter(*str);
+         _sysPutCharacter(*str);
      }
      return;
 }
@@ -138,7 +138,7 @@ void _sysPrint(char* str) {
 void _sysPrintln(char* str) {
 
     _sysPrint(str);
-    _sysPutCharcter('\n');
+    _sysPutCharacter('\n');
 }
 
 /*!
@@ -154,7 +154,7 @@ void _sysPrintln(char* str) {
 void _sysPrintlnInt(int num) {
 
     _sysPrintInt(num);
-    _sysPutCharcter('\n');
+    _sysPutCharacter('\n');
 }
 
 /*!
@@ -209,7 +209,7 @@ void _sysPrintInt(int num) {
     \author  HigePon
     \date    create:2002/07/22 update:
 */
-void _sysPutCharcter(char ch) {
+void _sysPutCharacter(char ch) {
 
     /* character */
     switch(ch) {
