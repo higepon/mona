@@ -1,3 +1,21 @@
+2004-12-20  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gbball : 新BayGUI対応
+
+        * apps/baygui/gclock : 新BayGUI対応
+
+        * apps/baygui/glaunch : 新BayGUI対応
+
+        * apps/baygui/mtorz : 新BayGUI対応
+
+        * apps/baygui/Makefile : 新BayGUI対応
+
+        * include/baygui.h : 新BayGUI対応
+
+        * include/baygui : 新BayGUI対応
+
+        * src/lib/baygui : 新BayGUI対応
+
 2004-12-19  bayside  <bayside@users.sourceforge.jp>
 
         * apps/gui/monafile/Icon.cpp : 対応拡張子追加（EL5, EX5, BM5）
