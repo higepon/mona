@@ -230,8 +230,6 @@ template <class T> T HList<T>::removeAt(size_t index) {
         return (T)NULL;
     }
 
-        g_console->printf("here");
-
     /* save element to remove */
     T toRemove = data_[index];
 

@@ -1,3 +1,10 @@
+2003-12-25  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: 分かったこと umi.initilizeが呼ばれるとダメ。receiveも怪しい
+
+        * test_higepon.cpp: バグの症状 hello.cppでum.initilize以降でエラーとなる。
+                            ありえないメモリ領域にアクセス違反でKILLされる。
+
 2003-12-24  higepon  <higepon@users.sourceforge.jp>
 
         * include/collection.h: removeAt()のバグ修正 Gakuさん感謝

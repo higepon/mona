@@ -17,7 +17,8 @@ static MemoryManager um;
 
 int user_start() {
     int result;
-    um.initialize(0xC0000000,0xC0000000 + 1024 * 1024);
+    //    um.initialize(0xC0000000,0xC0000000 + 1024 * 1024);
+
     result = monamain();
     exit(result);
     for (;;);
