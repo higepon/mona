@@ -186,7 +186,7 @@ bool FSOperation::createFile(char* path)
         return false;
     }
 
-    entry = p->newFile((byte*)path+cursor, 1);
+    entry = p->newFile((byte*)path+cursor, 0);
     if (-1 == entry)
     {
         this->errorNo = FS_FILE_CREATE_ERROR;
@@ -256,7 +256,6 @@ bool FSOperation::open(char* path, int mode)
         return false;
     }
 
-    g_console->printf("entry = %d", entry);
     dir = searchFile(path, &entry, &cursor);
 
     if (dir == NULL)

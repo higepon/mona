@@ -78,6 +78,8 @@ copy_userapp : $(TARGET) $(USER_APP)
 	(cd $(BIN); $(FAT_TOOL) mona.img MONA.CFG     MONA.CFG)
 	(cd $(BIN); $(FAT_TOOL) mona.img ../src/user/waba/WABA.LIB  APP/WABA.LIB)
 	(cd $(BIN); $(FAT_TOOL) mona.img ../src/user/waba/HELLO.WRP APP/HELLO.WRP)
+	(cd $(BIN); $(FAT_TOOL) mona.img NEKO.JPG NEKO.JPG)
+
 
 $(USER_APP) :
 	(cd user; $(MAKE))
