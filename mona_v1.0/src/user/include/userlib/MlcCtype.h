@@ -1,3 +1,16 @@
+/*!
+  \file   MlcCtype.h
+  \brief  mona c character type
+
+  Copyright (c) 2002-2004 shadow
+  All rights reserved.<BR>
+  \b License NYSL<BR>
+  \b Create 2004/02/25
+  \author  shadow
+
+  $Revision$
+  $Date$
+*/
 #ifndef _MONA_LIB_CTYPE_
 #define _MONA_LIB_CTYPE_
 
