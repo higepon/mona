@@ -17,6 +17,7 @@
 #include <Semaphore.h>
 #include <global.h>
 #include <syscalls.h>
+#include <userlib.h>
 #include <rtc.h>
 #include <GraphicalConsole.h>
 #include <Message.h>

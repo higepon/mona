@@ -42,6 +42,7 @@
 #include <Message.h>
 #include <MessageServer.h>
 #include <syscalls.h>
+#include <userlib.h>
 #include <PageManager.h>
 
 char* version = "Mona version 0.1.0 $Date$";
