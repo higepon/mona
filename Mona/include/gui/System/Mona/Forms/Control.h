@@ -61,7 +61,7 @@ namespace System { namespace Mona { namespace Forms
 		void Refresh();
 		virtual _P<System::Drawing::Graphics> CreateGraphics();
 		virtual void WndProc(MessageType type, _P<EventArgs> e);
-		inline unsigned int get_Handle() { return this->_object->Handle; }
+		inline unsigned int get_Handle() { return this->_object != NULL ? this->_object->Handle : 0; }
 		
 		System::Drawing::Point PointToClient(System::Drawing::Point p);
 		System::Drawing::Point PointToScreen(System::Drawing::Point p);
@@ -76,7 +76,7 @@ namespace System { namespace Mona { namespace Forms
 		inline System::Drawing::Rectangle get_Bounds() { return this->bounds; }
 		inline void set_Bounds(System::Drawing::Rectangle r) { this->bounds = r; }
 		inline System::Drawing::Point get_Location() { return this->bounds.get_Location(); }
-		inline void set_Location(System::Drawing::Point p) { this->bounds.X = p.X; this->bounds.Y = p.Y; }
+		void set_Location(System::Drawing::Point p);
 		inline System::Drawing::Size get_Size() { return this->bounds.get_Size(); }
 		inline void set_Size(System::Drawing::Size sz) { this->bounds.Width = sz.Width; this->bounds.Height = sz.Height; }
 		inline int get_Width() { return this->bounds.Width; }

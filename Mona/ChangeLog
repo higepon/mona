@@ -17,6 +17,8 @@
 
         * src/lib/gui/System/Mona/Forms/Control.cpp (get_Capture, set_Capture): マウスイベントを独占
 
+        * src/lib/gui/System/Mona/Forms/Control.cpp (set_Location): 実際に移動するように修正
+
 2004-05-31  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/anaclock/Form1.cpp (class Form1): 駄目人間さん提供のAnaClock追加

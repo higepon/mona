@@ -291,6 +291,24 @@ namespace System { namespace Mona { namespace Forms
 		return this;
 	}
 	
+	void Control::set_Location(Point p)
+	{
+		this->bounds.X = p.X;
+		this->bounds.Y = p.Y;
+		if (this->_object == NULL) return;
+		
+		if (this->parent == NULL)
+		{
+			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEWINDOW, this->get_Handle(), (dword)p.X, (dword)p.Y);
+		}
+		else
+		{
+			this->_object->X = p.X;
+			this->_object->Y = p.Y;
+			this->parent->Refresh();
+		}
+	}
+	
 	Size Control::get_ClientSize()
 	{
 		int bw = this->offset.X;

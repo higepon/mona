@@ -230,9 +230,7 @@ namespace System { namespace Mona { namespace Forms
 				Point p = this->get_Location();
 				p.X += e->X - this->clickPoint.X;
 				p.Y += e->Y - this->clickPoint.Y;
-				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEWINDOW, this->get_Handle(), (dword)p.X, (dword)p.Y);
 				this->set_Location(p);
-				this->Refresh();
 				break;
 			}
 			default:
