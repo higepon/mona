@@ -17,7 +17,7 @@
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
-extern "C" void scroll_down(unsigned int y);
+extern "C" void scroll_down();
 extern "C" char pos_x;
 extern "C" char pos_y;
 
@@ -257,7 +257,7 @@ void GraphicalConsole::newLine() {
 */
 void GraphicalConsole::scrollUp() {
 
-    scroll_down(16);
+    scroll_down();
     return;
 }
 

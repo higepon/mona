@@ -163,6 +163,8 @@ void FDCDriver::initilize() {
 */
 void FDCDriver::interrupt() {
 
+
+
     info(DEV_WARNING, "\ninterrupt:");
     interrupt_ = true;
 }
@@ -212,11 +214,13 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
     /* send command */
     for (int i = 0; i < length; i++) {
 
+    g_console->printf("2");
         waitStatus(0x80 | 0x40, 0x80);
 
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
     }
+    g_console->printf("3");
     return true;
 }
 
@@ -298,7 +302,6 @@ void FDCDriver::waitStatus(byte mask, byte expected) {
 byte FDCDriver::getResult() {
 
     waitStatus(0xd0, 0xd0);
-
     return inportb(FDC_DR_PRIMARY);
 }
 
@@ -312,10 +315,9 @@ byte FDCDriver::getResult() {
 */
 bool FDCDriver::seek(byte track) {
 
-    info(DEV_WARNING, "seek start \n");
+    //    info(DEV_WARNING, "seek start \n");
 
     byte command[] = {FDC_COMMAND_SEEK, 0, track};
-
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
@@ -324,10 +326,10 @@ bool FDCDriver::seek(byte track) {
         return false;
     }
 
-    info(DEV_WARNING, "seek start2 \n");
+    //    info(DEV_WARNING, "seek start2 \n");
     while (true) {
 
-    info(DEV_WARNING, "seek start3 \n");
+	//    info(DEV_WARNING, "seek start3 \n");
         waitInterrupt();
 
         waitStatus(0x10, 0x00);
@@ -336,7 +338,7 @@ bool FDCDriver::seek(byte track) {
         interrupt_ = false;
     }
 
-    info(DEV_WARNING, "seek start4 \n");
+    //    info(DEV_WARNING, "seek start4 \n");
     return true;
 }
 
@@ -477,16 +479,17 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
                    , 0x00
                    };
 
-    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
+    //    info(DEBUG, "[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!seek(track)) {
         info(ERROR, "read#seek:error");
         return false;
     }
 
+    g_console->printf("1");
     setupDMARead(512);
 
-    info(DEV_WARNING, "before read command");
+    //    info(DEV_WARNING, "before read command");
 
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))) {
@@ -494,18 +497,22 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         info(ERROR, "read#send command:error\n");
         return false;
     }
-
-    info(DEV_WARNING, "wait loop");
+    g_console->printf("5");
+    //    info(DEV_WARNING, "wait loop");
 
     waitInterrupt();
 
     stopDMA();
 
-    info(DEV_NOTICE, "read results");
+    //    info(DEV_NOTICE, "read results");
 
     for (int i = 0; i < 7; i++) {
+
         results_[i] = getResult();
     }
+
+    g_console->printf("status=%x", results_[0]);
+    g_console->printf("%s", ((results_[0] & 0xC0) != 0x00) ? "true":"false");
 
     if ((results_[0] & 0xC0) != 0x00) return false;
 

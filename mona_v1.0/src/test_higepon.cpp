@@ -6,7 +6,7 @@
 
 void FDCDriverTester() {
 
-    g_info_level = MSG;
+    g_info_level = DEV_NOTICE;
 
     byte readbuf[512];
 
@@ -18,6 +18,8 @@ void FDCDriverTester() {
     g_fdcdriver->seek(7);
     g_fdcdriver->read(0, readbuf);
     g_fdcdriver->motor(OFF);
+
+    for (int i = 500; i < 512; i++) g_console->printf("[%d]", readbuf[i]);
 
     info(MSG, "FDCDriverTester(); done\n");
 }
