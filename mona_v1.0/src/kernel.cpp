@@ -41,6 +41,7 @@
 #include <syscalls.h>
 #include <ProcessManager.h>
 #include <Message.h>
+#include <MessageServer.h>
 
 char* version = "Mona develop beta 0.08b $Date$";
 void userTest();
@@ -142,6 +143,7 @@ void startKernel(void) {
     Process*     process5 = new Process("krnl_o2      ");
     UserProcess* process6 = new UserProcess("user_process2");
     Process*     process7 = new Process("show_process ");
+    Process*     process8 = new Process("MessageServer");
 
     g_process_manager->addProcess((Process*)process1, (virtual_addr)userTest);
     g_process_manager->addProcess(process2          , (virtual_addr)disp_name2);
@@ -150,6 +152,7 @@ void startKernel(void) {
     g_process_manager->addProcess(process5          , (virtual_addr)disp_name4);
     g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
     g_process_manager->addProcess((Process*)process6, (virtual_addr)userTest2);
+    g_process_manager->addProcess(process8          , (virtual_addr)servermanager);
 
     enableTimer();
 

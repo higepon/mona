@@ -10,15 +10,16 @@
     \date   create:2003/03/01 update:$Date$
 */
 
-#include<kernel.h>
-#include<disp.h>
-#include<io.h>
-#include<pic.h>
-#include<Semaphore.h>
-#include<global.h>
-#include<syscalls.h>
-#include<rtc.h>
-#include<GraphicalConsole.h>
+#include <kernel.h>
+#include <disp.h>
+#include <io.h>
+#include <pic.h>
+#include <Semaphore.h>
+#include <global.h>
+#include <syscalls.h>
+#include <rtc.h>
+#include <GraphicalConsole.h>
+#include <Message.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
@@ -80,7 +81,11 @@ void disp_name3() {
         disp_write_font(77, 0, 'n', color%13);
 
         Semaphore::up(&g_semaphore_console);
-        int result = syscall_sleep(30);
+
+        Message msg;
+        g_message_server->send(&msg);
+        int result = syscall_sleep(300);
+
         color++;
     }
 }

@@ -11,7 +11,7 @@
 */
 
 #include<MessageServer.h>
-
+#include<global.h>
 
 MessageServer::MessageServer() {
 
@@ -27,7 +27,7 @@ bool MessageServer::hasMessage() {
     return !(QueueManager::isEmpty(&queue_));
 }
 
-Message* MessageServer::getMesasge() {
+Message* MessageServer::getMessasge() {
 
     return (Message*)QueueManager::getNext(&queue_);
 }
@@ -45,9 +45,17 @@ void MessageServer::Main() {
         while (hasMessage()) {
 
 
-
+            g_console->printf("message come\n");
+            getMessasge();
         }
 
         // sleep
     }
+}
+
+void servermanager() {
+
+    g_message_server = new MessageServer();
+
+    g_message_server->Main();
 }

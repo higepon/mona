@@ -26,10 +26,11 @@ class MessageServer {
     bool hasMessage();
 
   private:
-    Message* getMesasge();
+    Message* getMessasge();
 
   private:
     Message queue_;
 };
 
+void servermanager();
 #endif

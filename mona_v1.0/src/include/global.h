@@ -23,6 +23,7 @@
 #include<Scheduler.h>
 #include<ProcessManager.h>
 #include <sysresource.h> /* (expr) */
+#include <MessageServer.h>
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console    */
 GLOBAL StackView g_stack_view;                       /*< struct for stack view */
@@ -57,5 +58,8 @@ GLOBAL TSS g_tss;
 GLOBAL Process** g_process;
 GLOBAL ProcessInfo* g_current_process;
 GLOBAL class ProcessManager* g_process_manager;
+
+/* MessageServer */
+GLOBAL MessageServer* g_message_server;
 
 #endif
