@@ -8,13 +8,13 @@ install:
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 
-clean:
+clean: touchdepend
 	@cd kernel; $(MAKE) $@
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 
 distclean:
-	@cd kernel; $(MAKE) $@
+	rm -f kernel/dependencies
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
 
@@ -22,3 +22,6 @@ depend:
 	@cd kernel; $(MAKE) $@
 	@cd lib; $(MAKE) $@
 	@cd servers; $(MAKE) $@
+
+touchdepend:
+	touch kernel/dependencies
