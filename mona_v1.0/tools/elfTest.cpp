@@ -125,6 +125,22 @@ int main(int argc, char *argv[]) {
     ELFLoader* loader = new ELFLoader();
     printf("loader: size = %d \n", loader->prepare((dword)buf));
 
+    memset(out, 0, FILE_BUF);
+
+    loader->load(out);
+
+    if ((fout = fopen("user2.img", "wb")) == NULL) {
+        printf("can't open user2.img \n");
+        exit (2);
+    }
+
+    for (int l = 0; l < FILE_BUF; l++) {
+
+        fprintf(fout, "%d,", out[l]);
+    }
+
+    fclose(fout);
+
     delete(loader);
 
 }
