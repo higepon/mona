@@ -26,7 +26,7 @@ void info(int level, const char *format, ...) {
     else if (level == WARNING) g_console->setCHColor(GP_YELLOW);
 
     /* out */
-    if (msg_complete && *g_current_process->name) g_console->printf("[%s]:", g_current_process->name);
+    //    if (msg_complete && *g_current_process->name) g_console->printf("[%s]:", g_current_process->name);
 
     void** list = (void **)&format;
 

@@ -148,25 +148,6 @@ void disp_name4() {
     }
 }
 
-void disp_process() {
-
-    while (true) {
-        dword eflags = get_eflags();
-        disableInterrupt();
-
-        int x = pos_x;
-        int y = pos_y;
-
-        pos_x = 0, pos_y = 15;
-
-        g_process_manager->printAllProcesses();
-
-        pos_x = x;
-        pos_y = y;
-        set_eflags(eflags);
-    }
-}
-
 void disp_write_font(int x, int y, char ch, byte color) {
 
 

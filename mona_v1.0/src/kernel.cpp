@@ -58,7 +58,6 @@
 #include <FAT12.h>
 #include <string.h>
 #include <syscalls.h>
-#include <ProcessManager.h>
 #include <syscalls.h>
 #include <userlib.h>
 #include <PageManager.h>
@@ -87,9 +86,6 @@ void startKernel(void) {
 
     /* set segment */
     GDTUtil::setup();
-
-    /* Process setup */
-    Process::setup();
 
     /* initialze console */
     g_console = new GraphicalConsole();
@@ -175,9 +171,9 @@ void mainProcess() {
     //Process*     process5 = new Process("krnl_o2      ");
     //Process*     process3 = new Process("krnl_n       ");
     //    Process*     process4 = new Process("krnl_m       ");
-    Process*     process7 = new Process("show_process ");
+    //    Process*     process7 = new Process("show_process ");
 
-    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
+    //    g_process_manager->addProcess(process7          , (virtual_addr)disp_process);
     //    g_process_manager->addProcess(process4          , (virtual_addr)disp_name1);
 
     //  g_process_manager->addProcess(process3          , (virtual_addr)disp_name3);

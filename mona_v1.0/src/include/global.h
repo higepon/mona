@@ -20,7 +20,6 @@
 #include <string.h>
 #include <types.h>
 #include <Scheduler.h>
-#include <ProcessManager.h>
 #include <sysresource.h> /* (expr) */
 #include <PageManager.h>
 #include <FAT12.h>

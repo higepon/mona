@@ -51,7 +51,6 @@ SOURCES     = cstart.cpp            \
               IDTUtil.cpp           \
               Process.cpp           \
               Scheduler.cpp         \
-              ProcessManager.cpp    \
               PageManager.cpp       \
               elf.cpp               \
               test_mjt.cpp          \

@@ -61,8 +61,6 @@ void keyStrokeHandler(dword scancode) {
 */
 void fault0dHandler() {
 
-    info(ERROR, "name = %s ss3 = %x esp3 = %x \n", g_current_process->name, g_current_process->ss, g_current_process->esp);
-
     info(ERROR, "stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
          , g_stack_view.stack0
          , g_stack_view.stack1
@@ -126,11 +124,11 @@ void timerHandler() {
     outportb(0x20, 0x20);
 
     /* Process schedule */
-    bool isProcessChanged = g_processManager->schedule();
+    //    bool isProcessChanged = g_processManager->schedule();
 
     /* Thread schedule */
-    Process_* current = g_processManager->getCurrentProcess();
-    g_currentThread = current->schedule()->getThreadInfo();
+    //    Process* current = g_processManager->getCurrentProcess();
+    //    g_currentThread = current->schedule()->getThreadInfo();
 
 //     /* Process is changed, so address space switch */
 //     if (isProcessChanged) {

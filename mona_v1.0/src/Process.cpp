@@ -14,10 +14,6 @@
 #include <global.h>
 #include <PageManager.h>
 
-const int Process::RUNNING  = 0;
-const int Process::READY    = 1;
-const int Process::SLEEPING = 2;
-
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
