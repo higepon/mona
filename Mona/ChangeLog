@@ -1,6 +1,8 @@
 2004-07-06  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/z.h, z.cpp:[リファクタリング] ファイルを削除 
+        * src/kernel/DiskDriver.h:[りファクタリング] ファイルを削除
+
+        * src/kernel/z.h, z.cpp:[リファクタリング] ファイルを削除
 
         * src/kernel/BitMap.cpp: [リファクタリング] static const int を enumに変更
 
