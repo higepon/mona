@@ -9,6 +9,7 @@
 #include<z.h>
 #include<MemoryManager.h>
 #include<KeyBoardManager.h>
+#include<elf.h>
 
 /*!
 
@@ -41,6 +42,70 @@ struct read_info {
     int sz;
 } read_info;
 
+
+int loadProcess(const char* path, const char* file) {
+
+    while (Semaphore::down(&g_semaphore_shared));
+    bool isOpen = SharedMemoryObject::open(0x1234, 4096 * 2);
+    bool isAttaced = SharedMemoryObject::attach(0x1234, g_current_process, 0x80000000);
+    if (!isOpen || !isAttaced) panic("loadProcess: not open");
+
+    g_fdcdriver = new FDCDriver();
+    g_fdcdriver->motor(ON);
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+
+    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+    if (!fat->initilize()) {
+
+        int errorNo = fat->getErrorNo();
+
+        if (errorNo == FAT12::BPB_ERROR) g_console->printf("BPB read  error \n");
+        else if (errorNo == FAT12::NOT_FAT12_ERROR) g_console->printf("NOT FAT12 error \n");
+        else if (errorNo == FAT12::FAT_READ_ERROR) g_console->printf("NOT FAT12 error \n");
+        else g_console->printf("unknown error \n");
+
+        g_console->printf("fat initilize faild\n");
+        while (true);
+    }
+
+    if (!fat->open(path, file, FAT12::READ_MODE)) {
+
+        info(ERROR, "open failed");
+    }
+
+    int fileSize  = fat->getFileSize();
+    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
+
+    byte* buf = (byte*)malloc(512 * readTimes);
+    if (buf == NULL) return -1;
+
+    for (int i = 0; i < readTimes; i++) {
+
+        if (!fat->read(buf + 512 * i)) {
+
+            g_console->printf("read failed %d", i);
+            while (true);
+        }
+    }
+
+    if (!fat->close()) {
+        info(ERROR, "close failed");
+    }
+
+    ELFLoader* loader = new ELFLoader();
+    loader->prepare((dword)buf);
+    loader->load((byte*)0x80000000);
+
+
+
+
+
+
+
+
+}
 
 void userKeyStrokeHandler() {
 

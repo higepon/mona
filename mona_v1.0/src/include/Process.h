@@ -71,7 +71,7 @@ class Process {
   public:
     ProcessInfo pinfo_;
 
-    void setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid);
+    virtual void setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid);
 
     static void setup();
 

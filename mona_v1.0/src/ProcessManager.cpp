@@ -108,7 +108,12 @@ dword ProcessManager::allocatePID() {
 
 bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
 
-    process->setup(entry, allocateStack(), allocateKernelStack(process->pinfo_.dpl), allocatePageDir(), allocatePID());
+    return addProcess(process, allocatePageDir(), entry);
+}
+
+bool ProcessManager::addProcess(Process* process, PageEntry* directory, virtual_addr entry) {
+
+    process->setup(entry, allocateStack(), allocateKernelStack(process->pinfo_.dpl), directory, allocatePID());
 
     process->pinfo_.state = Process::READY;
 

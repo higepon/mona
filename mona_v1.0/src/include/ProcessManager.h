@@ -47,6 +47,7 @@ class ProcessManager {
     dword getTick() const;
     void printAllProcesses() const;
     bool addProcess(Process* process, virtual_addr entry);
+    bool addProcess(Process* process, PageEntry* directory, virtual_addr entry);
 
   private:
     dword pid_;

@@ -30,4 +30,5 @@ void ELFTester(byte* out);
 void FDCDriverTester();
 void mmChangeTester();
 void keyStrokeTest();
+int loadProcess(const char* path, const char* file);
 #endif
