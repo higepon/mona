@@ -1,6 +1,6 @@
 NASM       = nasm
 NDISASM    = ndisasm
-CC         = /usr/bin/g++
+CC         = /usr/bin/g++ -O0
 LD         = /usr/bin/ld
 STRIP      = /usr/bin/strip
 CONTRIB_LIB= ./contrib/lib_cygwin
