@@ -349,3 +349,99 @@ inline void IA32MemoryManager::setCR3(dword pageDirAddress) const {
     asm volatile("movd %0, %%cr3" : /* no output */
                                   : "m" (pageDirAddress) : "ax");
 }
+
+/*!
+    \brief get the instance of this class
+
+    get the instance of this class
+    this class has no public constructor.
+
+    \author HigePon
+    \date   create:2002/09/06 update:2002/12/25
+*/
+IA32MemoryManager& IA32MemoryManager::instance() {
+    static IA32MemoryManager theInstance;
+    return theInstance;
+}
+
+/*!
+    \brief enable A20
+
+    enable A20 line
+    over 1MB memory access enabled
+
+    \author HigePon
+    \date   create:2002/09/06 update:2002/12/25
+*/
+void IA32MemoryManager::enableA20() {
+
+    _sysLock();
+
+    /* Wait until the keyboard buffer is empty */
+    /* disable keyboard                        */
+    while (inportb(0x64) & 2);
+    outportb(0x64, 0xAD);
+
+    /* read output port */
+    while (inportb(0x64) & 2);
+    outportb(0x64, 0xD0);
+
+    /* Save byte from input port */
+    while (!(inportb(0x64) & 1));
+    byte incode = inportb(0x60);
+
+    /*  Write output port  */
+    while (inportb(0x64) & 2);
+    outportb(0x64, 0xD1);
+
+    /*  GATE A20 to ON */
+    while (inportb(0x64) & 2);
+    outportb(0x60, (incode | 2));
+
+    /* enable keyboard */
+    while (inportb(0x64) & 2);
+    outportb(0x64, 0xAE);
+
+    /* Wait until the keyboard buffer is empty */
+    while (inportb(0x64) & 2);
+    _sysUnlock();
+
+    _sys_printf("enable A20 done!\n");
+    return;
+}
+
+/*!
+    \brief start paging
+
+    start paging on
+
+    \author HigePon
+    \date   create:2002/12/25 update:
+*/
+void IA32MemoryManager::startPaging() {
+
+    asm volatile("mov %%cr0      , %%eax \n"
+                 "or  $0x80000000, %%eax \n"
+                 "mov %%eax      , %%cr0 \n"
+                 : /* no output */
+                 : /* no input  */ : "ax");
+}
+
+/*!
+    \brief stop paging
+
+    set paging off
+
+    \author HigePon
+    \date   create:2002/12/25 update:
+*/
+void IA32MemoryManager::stopPaging() {
+
+    asm volatile("mov %%cr0      , %%eax \n"
+                 "or  $0x7fffffff, %%eax \n"
+                 "mov %%eax      , %%cr0 \n"
+                 : /* no output */
+                 : /* no input  */ : "ax");
+}
+
+

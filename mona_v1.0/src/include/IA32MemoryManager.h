@@ -45,7 +45,6 @@ typedef struct  {
     unsigned pageBaseAddress:20; /*!< base address of page   */
 } PTE;
 
-
 /*!
     memory management class
     single pattern  applyes the instance of this class
@@ -72,99 +71,12 @@ class IA32MemoryManager {
     void* allocateMemory(size_t);
     void freeMemory(void*);
     inline void printInfo(char*) const;
+    static void enableA20();
+    static IA32MemoryManager& instance();
+    static void startPaging();
+    static void stopPaging();
+    /* memo setWriter(write);setReader(reader); */
 
-    /*!
-        \brief start paging
-
-        start paging on
-
-        \author HigePon
-        \date   create:2002/12/25 update:
-    */
-    static void startPaging() {
-
-        asm volatile("movd %%cr0, %%eax       \n"
-                     "or   %%eax, $0x80000000 \n"
-                     "movd %%eax, %%cr0       \n"
-                     : /* no output */
-                     : /* no input  */ : "ax");
-    }
-
-    /*!
-        \brief stop paging
-
-        set paging off
-
-        \author HigePon
-        \date   create:2002/12/25 update:
-    */
-    static void stopPaging() {
-
-        asm volatile("movd %%cr0, %%eax       \n"
-                     "or   %%eax, $0x7fffffff \n"
-                     "movd %%eax, %%cr0       \n"
-                     : /* no output */
-                     : /* no input  */ : "ax");
-    }
-
-    /*!
-        \brief enable A20
-
-        enable A20 line
-        over 1MB memory access enabled
-
-        \author HigePon
-        \date   create:2002/09/06 update:2002/12/25
-    */
-    static void enableA20() {
-        _sysLock();
-
-        /* Wait until the keyboard buffer is empty */
-        /* disable keyboard                        */
-        while (inportb(0x64) & 2);
-        outportb(0x64, 0xAD);
-
-        /* read output port */
-        while (inportb(0x64) & 2);
-        outportb(0x64, 0xD0);
-
-        /* Save byte from input port */
-        while (!(inportb(0x64) & 1));
-        byte incode = inportb(0x60);
-
-        /*  Write output port  */
-        while (inportb(0x64) & 2);
-        outportb(0x64, 0xD1);
-
-        /*  GATE A20 to ON */
-        while (inportb(0x64) & 2);
-        outportb(0x60, (incode | 2));
-
-        /* enable keyboard */
-        while (inportb(0x64) & 2);
-        outportb(0x64, 0xAE);
-
-        /* Wait until the keyboard buffer is empty */
-        while (inportb(0x64) & 2);
-        _sysUnlock();
-
-        _sys_printf("enable A20 done!\n");
-        return;
-    }
-
-    /*!
-        \brief get the instance of this class
-
-        get the instance of this class
-        this class has no public constructor.
-
-        \author HigePon
-        \date   create:2002/09/06 update:2002/12/25
-    */
-    static IA32MemoryManager& instance() {
-        static IA32MemoryManager theInstance;
-        return theInstance;
-    }
 };
 
 
