@@ -29,7 +29,24 @@ const int KeyBoardManager::keyMap_[128] = {
         KEY_PAD_8, KEY_PAD_9, KEY_PAD_MINUS, KEY_PAD_4     , KEY_PAD_5 , KEY_PAD_6      , KEY_PAD_PLUS , KEY_PAD_1,
         KEY_PAD_2, KEY_PAD_3, KEY_PAD_0    , KEY_PAD_PERIOD, 0         , 0              , 0            , KEY_F11  ,
         KEY_F12  , 0        , 0            , 0             , 0         , 0              , 0            , 0
-    };
+};
+
+const int KeyBoardManager::keyMapE0_[128] = {
+       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , 0             , KEY_PAD_ENTER, KEY_RCTRL      , 0, 0          ,
+       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , 0             , 0            , KEY_PAD_DIVIDE , 0, KEY_PRTSCRN,
+       KEY_RALT      , 0       , 0      , 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , 0             , 0            , 0              , 0, KEY_HOME   ,
+       KEY_ARROW_UP  , KEY_PGUP, 0      , KEY_ARROW_LEFT, 0            , KEY_ARROW_RIGHT, 0, KEY_END    ,
+       KEY_ARROW_DOWN, KEY_PGDN, KEY_INS, 0             , 0            , 0              , 0, 0          ,
+       0             , 0       , 0      , KEY_LWIN      , KEY_RWIN     , KEY_MENU       , 0, 0
+};
+
+
 /*!
     \brief destructor
 
@@ -90,6 +107,7 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
+    H_BYTE keycode   = 0; /* keycode       */
     H_BYTE modifiers = 0; /* key modifiers */
 
     _sys_printf("scancode=%x ", scancode);
@@ -104,12 +122,6 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
           return;
     }
 
-        /* if spceial key flg = true */
-
-    /* if not spceial key and flg = true */
-        /* do something */
-
-
     /* regular key */
     if (scancode & 0x80) {
 
@@ -122,17 +134,55 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
         modifiers |= KEY_MODIFIER_DOWN;
     }
 
+    /* scancode to keycode */
+    if (isSpecialKey_) {
+        keycode       = keyMapE0_[scancode];
+        isSpecialKey_ = false;
+    } else {
+        keycode = keyMap_[scancode];
+    }
+
+    switch(keycode) {
+
+      /* invalid keycode */
+      case 0:
+          return;
+
+      case KEY_LSHIFT:
+      case KEY_RSHIFT:
+          isShift_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          break;
+      case KEY_LALT:
+      case KEY_RALT:
+          isAlt_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          break;
+      case KEY_LCTRL:
+      case KEY_RCTRL:
+          isCtrl_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          break;
+      case KEY_LWIN:
+      case KEY_RWIN:
+          isWin_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          break;
+      case KEY_MENU:
+          isMenu_ = (modifiers & KEY_MODIFIER_UP) ? false : true;
+          break;
+    }
+
+    if (isShift_) modifiers |= KEY_MODIFIER_SHIFT;
+    if (isCtrl_)  modifiers |= KEY_MODIFIER_CTRL;
+    if (isAlt_)   modifiers |= KEY_MODIFIER_ALT;
+    if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
+    if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
 
     keyBufIndex_++;
     if (keyBufIndex_ >= MAX_KEY_BUF) {
         keyBufIndex_ = 0;
     }
-
-
-    keyInfo_[keyBufIndex_].keycode   = keyMap_[scancode];
+    keyInfo_[keyBufIndex_].keycode   = keycode;
     keyInfo_[keyBufIndex_].modifiers = modifiers;
-    _sys_printf("%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN)? "down":"up  "
-                                   , (char)keyMap_[scancode]);
+
+    printInfo(keycode, modifiers);
     return;
 }
 
@@ -144,7 +194,14 @@ void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
     \author HigePon
     \date   create:2002/10/25 update:2002/10/25
 */
-void KeyBoardManager::printInfo() const {
+void KeyBoardManager::printInfo(H_BYTE keycode, H_BYTE modifiers) const {
 
+    _sys_printf("%s %s%s%s%s%s char=\"%c\" \n", (modifiers & KEY_MODIFIER_DOWN )? "down" : "up  "
+                                   , (modifiers & KEY_MODIFIER_SHIFT)? "shift": ""
+                                   , (modifiers & KEY_MODIFIER_CTRL )? "ctrl" : ""
+                                   , (modifiers & KEY_MODIFIER_ALT  )? "alt"  : ""
+                                   , (modifiers & KEY_MODIFIER_WIN  )? "win"  : ""
+                                   , (modifiers & KEY_MODIFIER_MENU )? "menu" : ""
+                                   , keycode);
     return;
 }

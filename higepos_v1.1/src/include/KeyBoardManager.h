@@ -65,6 +65,26 @@ typedef enum {
   , KEY_PAD_PERIOD
   , KEY_F11
   , KEY_F12
+  , KEY_PAD_ENTERKEY_RCTRL
+  , KEY_PAD_DIVIDE
+  , KEY_PRTSCRN
+  , KEY_RALT
+  , KEY_HOME
+  , KEY_ARROW_UP
+  , KEY_PGUP
+  , KEY_ARROW_LEFT
+  , KEY_ARROW_RIGHTKEY_END
+  , KEY_ARROW_DOWNKEY_PGDNKEY_INS
+  , KEY_LWIN
+  , KEY_RWIN
+  , KEY_MENU
+  , KEY_RCTRL
+  , KEY_ARROW_RIGHT
+  , KEY_END
+  , KEY_ARROW_DOWN
+  , KEY_PGDN
+  , KEY_INS
+  , KEY_PAD_ENTER
 } keyType;
 
 
@@ -92,7 +112,13 @@ class KeyBoardManager {
     int keyBufGottenIndex_;
     bool isSpecialKey_;
     bool isKeyboardId_;
+    bool isShift_;
+    bool isAlt_;
+    bool isCtrl_;
+    bool isWin_;
+    bool isMenu_;
     static const int keyMap_[128];
+    static const int keyMapE0_[128];
     H_BYTE idHigh_;
     H_BYTE idLow_;
   public:
@@ -104,7 +130,7 @@ class KeyBoardManager {
 
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
-    void printInfo() const;
+    void printInfo(H_BYTE, H_BYTE) const;
 };
 
 
