@@ -15,6 +15,7 @@
 #define _MONA_KEYBOARDMANAGER_
 
 #include <monapi.h>
+#include <monapi/Keys.h>
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
@@ -79,17 +80,9 @@ typedef enum {
 
 
 /*!
-    struct for key information
-*/
-typedef struct {
-    unsigned int keycode;
-    unsigned int modifiers;
-} KeyInfo;
-
-/*!
     keyboard input management  class
 */
-class KeyBoardManager {
+class KeyBoardManager{
 
   public:
     KeyBoardManager();
@@ -104,8 +97,6 @@ class KeyBoardManager {
         return isInit_;
     }
 
-    static char toChar(int keycode);
-
   private:
     bool isSpecialKey_;
     bool isKeyboardId_;
@@ -115,13 +106,13 @@ class KeyBoardManager {
     bool isWin_;
     bool isMenu_;
     bool isInit_;
+    static const int keyMapJP109[128];
     static const int keyMap_[128];
+    static const int keyMapJP109E0[128];
     static const int keyMapE0_[128];
     byte idHigh_;
     byte idLow_;
     List<KeyInfo*>* keyInfoList_;
 
 };
-
-
 #endif
