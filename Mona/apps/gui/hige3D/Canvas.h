@@ -25,19 +25,20 @@ class Canvas : public Control
 public:
     Canvas()
     {
-        char* file = ReadData("/KUMA.OBJ");
-        if (file == NULL)
-        {
-            printf("File Read Error\n");
-            return;
-        }
+/*         char* file = ReadData("/KUMA.OBJ"); */
+/*         if (file == NULL) */
+/*         { */
+/*             printf("File Read Error\n"); */
+/*             return; */
+/*         } */
 
         v0 = new Vertex(0, 0, 0);
         v1 = new Vertex(0, 0, 0);
         v2 = new Vertex(0, 0, 0);
         tempFace = new Face(v0, v1, v2);
 
-        this->CreateModel(file);
+//        this->CreateModel(file);
+        this->CreateModel();
         this->Rotate(0, 3.14 / 4);
     }
 
@@ -150,7 +151,7 @@ protected:
             a1 = (y2 - y1) / dx1;
             a2 = (y3 - y1) / dx2;
 
-            for (int x = (int)x1 + 1; x < (int)x2; x++)
+            for (int x = (int)x1; x < (int)x2; x++)
             {
                 int yy1 = (int)(a1 * (x - x1) + y1);
                 int yy2 = (int)(a2 * (x - x1) + y1);
@@ -164,7 +165,7 @@ protected:
             a2 = (y3 - y1) / dx2;
             a3 = (y3 - y2) / dx3;
 
-            for (int x = (int)x2 + 1; x < (int)x3; x++)
+            for (int x = (int)x2; x < (int)x3; x++)
             {
                 int yy1 = (int)(a2 * (x - x3) + y3);
                 int yy2 = (int)(a3 * (x - x3) + y3);
@@ -450,6 +451,8 @@ protected:
         delete[] tmp;
         delete[] tmp_depth;
     }
+
+    void CreateModel();
 
 protected:
     bool drag;
