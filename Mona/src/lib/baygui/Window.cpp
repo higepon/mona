@@ -66,7 +66,12 @@ namespace baygui
 	
 	void Window::setTitle(const char* title)
 	{
-		BASE::setText(title);
+		//if (this->text != NULL) delete[] this->text;
+		//this->text = new char[strlen(text) + 1];
+		//strcpy(this->text, text);
+		this->title = title;
+		if (this->buffer == NULL) return;
+		this->repaint();
 	}
 	
 	void Window::onHide()
@@ -152,13 +157,13 @@ namespace baygui
 		
 		// ƒ^ƒCƒgƒ‹
 		FontMetrics* metrics = FontMetrics::getFontMetrics();
-		int fw = metrics->getWidth(this->getText());
-		int fh = metrics->getHeight(this->getText());
+		int fw = metrics->getWidth(this->getTitle());
+		int fh = metrics->getHeight(this->getTitle());
 		g->setColor(COLOR_LIGHTGRAY);
 		g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, 22 - 4);
 		g->setColor(COLOR_BLACK);
-		g->drawText(this->getText(), ((w - fw) / 2), ((22 - fh) / 2));
-		//g->drawText(this->getText(), ((w - fw) / 2) + 1, ((22 - fh) / 2));
+		g->drawText(this->getTitle(), ((w - fw) / 2), ((22 - fh) / 2));
+		//g->drawText(this->getTitle(), ((w - fw) / 2) + 1, ((22 - fh) / 2));
 		
 		g->dispose();
 	}

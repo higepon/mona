@@ -66,6 +66,19 @@ namespace baygui {
 		inline const String& operator=(const char* s){ set(s); return *this; }
 		
 		/**
+		 指定された文字列と等しいかどうかチェックする
+		 */
+		inline bool equals(const char *s)
+		{
+			if (s == NULL) return false;
+			if (strcmp(charArray, s) == 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		/**
 		 指定された文字列で始まるかどうかチェックする
 		 @param s 文字列
 		 @return 始まっていればtrue、そうでなければfalse

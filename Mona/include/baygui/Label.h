@@ -25,10 +25,16 @@ namespace baygui
 	*/
 	class Label : public Control
 	{
+	protected:
+		/** ラベル */
+		String text;
+		
 	public:
 		virtual char* className() { return "baygui.ui.Label"; }
 		Label();
 		virtual ~Label();
+		void setText(const char* text);
+		inline char* getText() { return this->text.getBytes(); }
 		
 	protected:
 		virtual void onPaint(_P<Graphics> g);

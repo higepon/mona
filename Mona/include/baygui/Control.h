@@ -63,8 +63,6 @@ namespace baygui
 		_P<Control> parent;
 		/** 部品リスト */
 		_P<ControlCollection> controls;
-		/** 表示文字列 */
-		char* text;
 		/** 内部領域のサイズ (ウィンドウ等では外側の縁を除いたサイズ)  */
 		Dimention clientSize;
 		/** 前景色が変えられたかどうか */
@@ -177,12 +175,6 @@ namespace baygui
 		void setFocused(bool v);
 		
 		Dimention getClientSize();
-		
-		/** 表示文字列を得る (ウィンドウならタイトル等) */
-		inline char* getText() { return this->text; }
-		
-		/** 表示文字列を設定する */
-		void setText(const char* text);
 		
 		/** 前景色を得る */
 		inline unsigned int getForeground() { return this->foreColor; }

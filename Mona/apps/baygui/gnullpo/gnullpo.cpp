@@ -27,8 +27,7 @@ public:
 	GNullpo()
 	{
 		setRect((800 - 180 - 12) / 2, (600 - 178 - 28) / 2, 192, 206);
-		//setClientSize(180, 178);
-		setText("ぬるぽボタン");
+		setTitle("ぬるぽボタン");
 	}
 	
 	~GNullpo()

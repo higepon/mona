@@ -42,13 +42,10 @@ public:
 		label1 = new Label();
 
 		setBackground(osapal[8]);
-		/* ウィンドウの位置＜Point(Xpos, Ypos)＞ */
-		setLocation(200, 64);
-		/* ウィンドウのサイズ。＜Size(Xsize, Ysize)＞ */
-		setClientSize(14 * 8, 4 * 16);
-		setText("M t . o r z 0");
+		setRect(200, 64, 14 * 8 + 12, 4 * 16 + 28);
+		setTitle("M t . o r z 0");
 
-		/* ＜Rect(Xpos, Ypos, Xsize, Ysize)＞ */
+		/* ＜Xpos, Ypos, Xsize, Ysize＞ */
 		label1->setRect(20, 8, 12 * 8, 3 * 16);
 		label1->setBackground(osapal[8]);
 		label1->setText(

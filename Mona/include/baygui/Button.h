@@ -28,11 +28,15 @@ namespace baygui
 	protected:
 		/** ボタンが押されたかどうか */
 		bool isPushed;
+		/** ラベル */
+		String text;
 		
 	public:
 		virtual char* className() { return "baygui.ui.Button"; }
 		Button();
 		virtual ~Button();
+		void setText(const char* text);
+		inline char* getText() { return this->text.getBytes(); }
 		virtual void onStart();
 		
 	protected:

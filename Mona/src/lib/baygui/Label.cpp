@@ -26,6 +26,16 @@ namespace baygui
 	{
 	}
 	
+	void Label::setText(const char* text)
+	{
+		//if (this->text != NULL) delete[] this->text;
+		//this->text = new char[strlen(text) + 1];
+		//strcpy(this->text, text);
+		this->text = text;
+		if (this->buffer == NULL) return;
+		this->repaint();
+	}
+	
 	void Label::onPaint(_P<Graphics> g)
 	{
 		g->setColor(this->getBackground());

@@ -78,7 +78,6 @@ namespace baygui
 		this->visible = false;
 		this->focused = false;
 		this->transColor = DEFAULT_TRANSCOLOR;
-		this->text = NULL;
 		this->_object = NULL;
 		this->controls = new ControlCollection();
 		this->controls->target = this;
@@ -156,8 +155,6 @@ namespace baygui
 		this->_object = NULL;
 		this->parent = NULL;
 		this->buffer = NULL;
-		
-		delete[] this->text;
 		
 		FOREACH_AL(_P<Control>, ctrl, this->controls) {
 			ctrl->onExit();
@@ -296,19 +293,6 @@ namespace baygui
 		
 		this->focused = v;
 		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOUSECAPTURE, this->getHandle(), v ? 1 : 0);
-	}
-	
-	void Control::setText(const char* text)
-	{
-		if (this->text != NULL) delete[] this->text;
-		
-		//this->text = (char *)malloc(strlen(text) + 1);
-		this->text = new char[strlen(text) + 1];
-		strcpy(this->text, text);
-		//this->OnTextChanged(EventArgs::get_Empty());
-		if (this->buffer == NULL) return;
-		
-		this->repaint();
 	}
 	
 	void Control::setForeground(unsigned int c)

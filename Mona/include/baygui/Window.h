@@ -42,6 +42,8 @@ namespace baygui
 		Point ptRevRect;
 		/** 内部バッファー */
 		_P<Bitmap> formBuffer;
+		/** タイトル */
+		String title;
 	
 	public:
 		virtual char* className() { return "System.Mona.Windows.Window"; }
@@ -61,6 +63,9 @@ namespace baygui
 		
 		/** タイトルを設定する */
 		void setTitle(const char* title);
+		
+		/** タイトルを得る */
+		inline char* getTitle() { return this->title.getBytes(); }
 		
 		/**
 		 アプリケーションを開始する.

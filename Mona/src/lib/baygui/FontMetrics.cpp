@@ -16,10 +16,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-FontMetrics *FontMetrics::instance = NULL;
-
 namespace baygui
 {
+	FontMetrics *FontMetrics::instance = NULL;
+
 	FontMetrics::FontMetrics()
 	{
 		offsetListLength = 0;

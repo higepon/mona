@@ -29,7 +29,6 @@ public:
 	HeButton()
 	{
 		setRect((800 - 180 - 12) / 2, (600 - 178 - 28) / 2, 192, 206);
-		//setClientSize(180, 178);
 		setTitle("へぇ～ボタン");
 	}
 	
