@@ -34,8 +34,8 @@ $(KEYBOARD_SERVER) : userlib.o KeyBoardManager.o MemoryManager.o string.o KeyBoa
 	ld -n -Ttext 0xA0000000 -e _user_start -static KeyBoardServer.o userlib.o MemoryManager.o KeyBoardManager.o string.o -o $(KEYBOARD_SERVER)
 	objcopy --output-target=elf32-i386 $(KEYBOARD_SERVER)
 
-$(VFS_SERVER) : userlib.o MemoryManager.o string.o VirtualFileSystemServer.o BitMap.o uFAT12.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static VirtualFileSystemServer.o userlib.o MemoryManager.o string.o BitMap.o uFAT12.o -o $(VFS_SERVER)
+$(VFS_SERVER) : userlib.o MemoryManager.o string.o VirtualFileSystemServer.o BitMap.o UFAT12.o
+	ld -n -Ttext 0xA0000000 -e _user_start -static VirtualFileSystemServer.o userlib.o MemoryManager.o string.o BitMap.o UFAT12.o -o $(VFS_SERVER)
 	objcopy --output-target=elf32-i386 $(VFS_SERVER)
 
 .SUFFIXES: .cpp .o
