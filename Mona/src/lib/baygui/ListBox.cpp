@@ -48,18 +48,20 @@ char *ListBox::getSelectedItem()
 
 void ListBox::select(int index)
 {
-	this->selectedIndex = index;
-	repaint();
+	if (0 <= index && index < this->dataList->getLength()) {
+		this->selectedIndex = index;
+		repaint();
+	}
 }
 
 void ListBox::add(char *item)
 {
-	dataList->add(new String(item));
+	this->dataList->add(new String(item));
 }
 
 void ListBox::remove(int index)
 {
-	dataList->remove(index);
+	this->dataList->remove(index);
 }
 
 void ListBox::onPaint(Graphics *g)
@@ -71,7 +73,7 @@ void ListBox::onPaint(Graphics *g)
 		g->setColor(0,128,255);
 		g->drawRect(0, 0, w, h);
 	} else {
-		g->setColor(getBackground());
+		g->setColor(getParent()->getBackground());
 		g->drawRect(0, 0, w, h);
 	}
 	
@@ -82,7 +84,7 @@ void ListBox::onPaint(Graphics *g)
 	g->drawRect(1, 1, w - 2, h - 2);
 
 	// 文字
-	for (i = 0; i < dataList->getLength(); i++) {
+	for (i = 0; i < this->dataList->getLength(); i++) {
 		if (selectedIndex == i && getEnabled() == true) {
 			g->setColor(0, 128, 255);
 			g->fillRect(3, (16 * i) + 3, w - 6, 16);
@@ -110,7 +112,9 @@ void ListBox::onEvent(Event *event)
 				getParent()->onEvent(&this->itemEvent);
 			}
 		} else if (keycode == KeyEvent::VKEY_DOWN) {
-			if (this->selectedIndex < this->dataList->getLength() - 1) {
+			if (this->selectedIndex < this->dataList->getLength() - 1 && 
+				this->selectedIndex < ((getHeight() - 22) / 16))
+			{
 				this->selectedIndex++;
 				repaint();
 				getParent()->onEvent(&this->itemEvent);
