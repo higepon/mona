@@ -117,7 +117,7 @@ bool ProcessManager::addProcess(Process* process, PageEntry* directory, virtual_
 
     process->pinfo_.state = Process::READY;
 
-    process->pinfo_.stack = new StackSegment(0xFFFFF400, 0xBFF);
+    process->pinfo_.stack  = new StackSegment(0xFFFFEFFF, 0x1000, 0x3000);
     g_page_manager->allocatePhysicalPage((PageEntry*)(process->pinfo_.cr3), 0xFFFFFFFF, true, true, true);
 
     g_process[pnum_] = process;

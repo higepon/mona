@@ -73,19 +73,28 @@ StackSegment::~StackSegment() {
     \param  address LinearAddress of fault point
     \param  error   fault type
     \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
+    \date   create:2003/10/15 update:2003/11/06
 */
 bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
-    if (error == PageManager::FAULT_NOT_WRITABLE && !tryExtend(address)) {
+    g_console->printf("auto?");
 
-        return false;
+    switch(error) {
 
-    } else if (error == PageManager::FAULT_NOT_EXIST && !allocatePage(address)) {
+    case PageManager::FAULT_NOT_WRITABLE:
 
-        return false;
-    } else {
+        if (!tryExtend(address)) {
+            return false;
+        }
+        break;
 
+    case PageManager::FAULT_NOT_EXIST:
+
+        if (!allocatePage(address)) {
+            return false;
+        }
+        break;
+    default:
         return false;
     }
 
@@ -97,7 +106,7 @@ bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
     \param  address fault point
     \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
+    \date   create:2003/10/15 update:2003/11/06
 */
 bool StackSegment::tryExtend(LinearAddress address) {
 
@@ -110,12 +119,6 @@ bool StackSegment::tryExtend(LinearAddress address) {
         return false;
     }
 
-    if (address > start_ + PageManager::ARCH_PAGE_SIZE || address < start_) {
-
-        errorNumber_ = FAULT_OUT_OF_RANGE;
-        return false;
-    }
-
     if (size_ + PageManager::ARCH_PAGE_SIZE > maxSize_) {
 
         errorNumber_ = FAULT_STACK_OVERFLOW;
@@ -123,14 +126,19 @@ bool StackSegment::tryExtend(LinearAddress address) {
     }
 
     /* page allocation */
-    g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, address, true, true, true);
+    if (!(g_page_manager->setAttribute((PageEntry*)g_current_process->cr3, address, true, true, true))) {
+
+	panic("wan");
+
+    }
 
     /* read only */
     g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3
                                          , address - PageManager::ARCH_PAGE_SIZE, true, false, (bool)g_current_process->dpl);
 
     /* extention done */
-    size_ += PageManager::ARCH_PAGE_SIZE;
+    size_  += PageManager::ARCH_PAGE_SIZE;
+    start_ -= PageManager::ARCH_PAGE_SIZE;
 
     g_console->printf("extend OK");
 

@@ -98,7 +98,7 @@ class StackSegment : public Segment {
     virtual bool faultHandler(LinearAddress address, dword error);
     virtual bool inRange(LinearAddress address) {
 
-        return (address >= start_ + PageManager::ARCH_PAGE_SIZE && address <= start_ + size_);
+        return (address >= start_ - PageManager::ARCH_PAGE_SIZE && address <= start_);
     }
 
   private:

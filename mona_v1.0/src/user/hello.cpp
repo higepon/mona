@@ -10,10 +10,13 @@ int main() {
     *p = 0xFF;
     ufree(p);
 
-    for (int x = 10;  x < 150; x++) {
-        for (char color = 0; color < 16; color++) {
-            _put_pixel(x, 5 + color, color);
-        }
-    }
+//     for (int x = 10;  x < 150; x++) {
+//         for (char color = 0; color < 16; color++) {
+//             _put_pixel(x, 5 + color, color);
+//         }
+//     }
+
+    for (;;) asm volatile("push $1");
+
     return 0;
 }

@@ -1,3 +1,7 @@
+2003-11-05  higepon  <higepon@users.sourceforge.jp>
+
+        * Segments.cpp: スタック自動伸張バグつぶし中。検証中のコード多数のため注意
+
 2003-11-03  higepon  <higepon@users.sourceforge.jp>
 
         * ユーザー用にヒープ領域を確保 umalloc, ufreeの提供

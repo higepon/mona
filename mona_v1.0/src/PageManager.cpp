@@ -336,7 +336,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
 
     if (g_current_process->stack->inRange(address)) {
 
-        return g_current_process->stack->faultHandler(address, FAULT_NOT_EXIST);
+        return g_current_process->stack->faultHandler(address, (error & ARCH_FAULT_NOT_EXIST)  ? FAULT_NOT_EXIST : FAULT_NOT_WRITABLE);
     }
 
     /* physical page not exist */
