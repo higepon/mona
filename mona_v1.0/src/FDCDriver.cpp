@@ -324,13 +324,13 @@ bool FDCDriver::recalibrate() {
     byte command[] = {0x07, 0x00}; /* recalibrate */
 
     interrupt_ = false;
-    if(!sendCommand(command, sizeof(command))){
+    if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#recalibrate:command fail\n");
         return false;
     }
 
-    while(!waitInterrupt());
+    while (!waitInterrupt());
 
     senseInterrupt();
     return true;
@@ -397,7 +397,7 @@ bool FDCDriver::seek(byte track) {
 
     /* seek, recalibreate should wait interrupt */
     /* and then senseInterrupt                  */
-    while(!waitInterrupt());
+    while (!waitInterrupt());
 
     if (!senseInterrupt()) {
 
@@ -419,7 +419,7 @@ bool FDCDriver::senseInterrupt() {
     byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
 
 
-    if(!sendCommand(command, sizeof(command))){
+    if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#senseInterrrupt:command fail\n");
         return false;
@@ -666,7 +666,7 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
 
     interrupt_ = false;
     sendCommand(command, sizeof(command));
-    while(!waitInterrupt());
+    while (!waitInterrupt());
 
     stopDMA();
     //    g_console->printf("before read results");
@@ -683,7 +683,7 @@ bool FDCDriver::read(int lba, byte* buf) {
 
     lbaToTHS(lba, track, head, sector);
 
-    //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!read(track, head, sector)) return false;
     memcpy(buf, dmabuff_, 512);
@@ -706,7 +706,7 @@ bool FDCDriver::write(int lba, byte* buf) {
 
     if (lba == 8 || lba == 7) for (int i = 0; i < 512; i++) if (buf[i] != 0) g_console->printf("%x", buf[i]);
 
-    //    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
     if (!write(track, head, sector)) return false;
 
@@ -718,6 +718,6 @@ void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {
     track   = lba / (80 * 18);
     head    = lba - track;
     head   /= 18;
-    sector  = lba % 18;
+    sector  = lba % 18 + 1;
     return;
 }

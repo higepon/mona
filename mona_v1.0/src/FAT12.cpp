@@ -172,7 +172,7 @@ bool FAT12::readBPB() {
 
     byte* p = buf_;
     printf("read start");
-    if (!(driver_->read(1, buf_))) return false;
+    if (!(driver_->read(0, buf_))) return false;
     printf("read end");
 
     p += 3;
@@ -405,9 +405,9 @@ bool FAT12::compareName(const char* name1, const char* name2) const {
 */
 int FAT12::clusterToLba(int cluster) {
 
-    if (cluster < 2) return rootEntryStart_ + 1;
+    if (cluster < 2) return rootEntryStart_;
 
-    int lba = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector_ + 1;
+    int lba = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector_;
     return lba;
 }
 
@@ -625,11 +625,14 @@ bool FAT12::createFlie(const char* name, const char* ext) {
 */
 bool FAT12::writeFAT() {
 
-    for (int k = 0; k < 512; k++) printf("%d", getFATAt(k));
+    //    for (int k = 0; k < 512; k++) printf("%d", getFATAt(k));
 
     for (int i = 0; i < bpb_.fatSize16; i++) {
 
-        if (!(driver_->write(fatStart_ + i + 1, fat_ + i * 512))) return false;
+    while (g_demo_step < 2 + i * 2);
+
+        if (!(driver_->write(fatStart_ + i, fat_ + i * 512))) return false;
+	//        if (!(driver_->write(fatStart_ + i + 1, fat_ + i * 512))) return false;
     }
     return true;
 }
@@ -645,7 +648,7 @@ bool FAT12::writeFAT() {
 */
 bool FAT12::readFAT(bool allocate) {
 
-    fatStart_ = bpb_.reservedSectorCount + 1;
+    fatStart_ = bpb_.reservedSectorCount;
 
     if (allocate && !(fat_ = (byte*)malloc(512 * bpb_.fatSize16))) return false;
 
@@ -697,10 +700,14 @@ bool FAT12::write(byte* buffer, int size) {
 
     /* size check */
     memset(buffer + size, 0, 512 - size);
+    for (int i = 0; i < 512; i++) printf("[%d]", buffer[i]);
     (currentEntry_->filesize) += size;
 
     /* write buffer to Disk */
     int lba = clusterToLba(currentCluster_);
+
+    printf("FAT12::write called lba=%d", lba);
+
     if (!(driver_->write(lba, buffer))) {
         currentCluster_ = cluster;
         errNum_ = DRIVER_READ_ERROR;

@@ -38,7 +38,7 @@
 #include<FAT12.h>
 #include<string.h>
 
-char* version = "Mona develop beta 0.07a $Date$";
+char* version = "Mona develop alpha 0.07b $Date$";
 
 /*!
     \brief  mona kernel start at this point
@@ -110,7 +110,16 @@ void startKernel(void) {
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
     g_fdcdriver->motor(true);
-    //    g_fdcdriver->write(1, tbuf);
+
+    for (int i = 0; i < 73; i++) {
+
+        memset(tbuf, i, 512);
+        g_fdcdriver->write(i, tbuf);
+    }
+
+    while (true);
+
+//    g_fdcdriver->write(1, tbuf);
 //      g_fdcdriver->recalibrate();
 //      g_fdcdriver->recalibrate();
 //      g_fdcdriver->write(3, tbuf);
@@ -144,9 +153,23 @@ void startKernel(void) {
         while (true);
     }
 
-    if (!fat->open(".", "HIGE.CPP", FAT12::READ_MODE)) {
-         g_console->printf("open failed");
-    }
+   g_console->printf("¢£open file hige.cpp\n");
+   if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
+
+       g_console->printf("open failed");
+   }
+
+   g_console->printf("¢£write to hige.cpp\n");
+   static byte text[512];
+   memset(text, 0x41, 512);
+   if (!fat->write(text)) {
+
+       g_console->printf("write failed");
+   }
+
+   if (!fat->close()) {
+       g_console->printf("close failed");
+   }
 
     g_console->printf("open ok");
 
