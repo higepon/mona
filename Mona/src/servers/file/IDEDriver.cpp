@@ -610,9 +610,9 @@ void IDEDriver::initialize(IDEController* controller)
     sleep(5);
 
     setDeviceTypeFirst(controller, MASTER);
-    setDeviceTypeFirst(controller, SLAVE);
-
     setDeviceTypeSecond(controller, MASTER);
+
+    setDeviceTypeFirst(controller, SLAVE);
     setDeviceTypeSecond(controller, SLAVE);
 
 }
@@ -682,7 +682,7 @@ void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
 void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
 {
     word buffer[256]; /* identify buffer */
-    IDEDevice* device = &controller->devices[deviceNo];
+    IDEDevice* device = &(controller->devices[deviceNo]);
 
     if (!waitBusyClear(controller))
     {
@@ -723,23 +723,27 @@ void IDEDriver::setDeviceTypeSecond(IDEController* controller, int deviceNo)
     switch(device->type)
     {
     case DEVICE_ATA:
+
         device->name = CString((const char*)((byte*)buffer + 54), 40);
         device->typeDetail = -1;
         device->sectorSize = ATA_SECTOR_SIZE;
         break;
 
     case DEVICE_ATAPI:
+
         device->name       = CString((const char*)((byte*)buffer + 54), 40);
         device->typeDetail = buffer[0] & 0x1f;
         device->sectorSize = ATAPI_SECTOR_SIZE;
         break;
 
     case DEVICE_NONE:
+
         device->name       = "none";
         device->typeDetail = -1;
         break;
 
     case DEVICE_UNKNOWN:
+
         device->name       = "unknown";
         device->typeDetail = -1;
         break;
@@ -769,6 +773,7 @@ bool IDEDriver::selectDevice(IDEController* controller, int deviceNo)
 
     whichController = controller;
     whichController->selectedDevice = &controller->devices[deviceNo];
+    whichController->selectedDevice->deviceNo = deviceNo;
 
     return true;
 }

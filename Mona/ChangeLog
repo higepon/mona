@@ -1,5 +1,7 @@
 2005-02-12  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/IDEDriver.cpp (initialize): setDeviceTypeFirst, setDeviceTypeSecondの呼び出し順序を変更。これによりVmwareでデバイスの認識が正常化。
+
         * src/servers/file/IDEDriver.cpp (protocolPioDataIn): セカンダリの認識不良バグを修正。
 
 2004-02-12  bayside  <bayside@users.sourceforge.jp>
@@ -80,7 +82,7 @@
 
 2005-02-06  higepon  <higepon@users.sourceforge.jp>
 
-        * src/servers/file/file.cpp (ReadFile): フルパスを受け付けるように修整。 
+        * src/servers/file/file.cpp (ReadFile): フルパスを受け付けるように修整。
 
         * src/lib/monapi/messages.cpp (monapi_call_get_current_drive): カレントドライブ取得関数追加。
 
