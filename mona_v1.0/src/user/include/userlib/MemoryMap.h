@@ -18,7 +18,11 @@ private:
     virtual ~MemoryMap();
 
 public:
-    static MemoryMap* getInstance();
+    static MemoryMap& getInstance()
+    {
+        static MemoryMap instance;
+        return instance;
+    }
     dword create(dword size);
     byte* map(dword id);
     bool unmap(dword id);

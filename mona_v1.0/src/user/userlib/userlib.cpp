@@ -192,16 +192,11 @@ const dword MemoryMap::MAX_SIZE      = 0x10000000;
 
 MemoryMap::MemoryMap() : lastError(0), nextAddress(START_ADDRESS)
 {
+    printf("constructer");
 }
 
 MemoryMap::~MemoryMap()
 {
-}
-
-MemoryMap* MemoryMap::getInstance()
-{
-    static MemoryMap instance;
-    return &instance;
 }
 
 dword MemoryMap::create(dword size)

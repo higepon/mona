@@ -70,11 +70,11 @@ int MonaMain(List<char*>* pekoe)
             case MSG_MEMORY_MAP_ID:
 
                 {
-                    MemoryMap* mm = MemoryMap::getInstance();
+                    MemoryMap& mm = MemoryMap::getInstance();
                     dword id = info.arg1;
-                    char* p = (char*)(mm->map(id));
+                    char* p = (char*)(mm.map(id));
                     printf("[share!]%s\n", p);
-                    mm->unmap(id);
+                    mm.unmap(id);
 
                 }
                 break;

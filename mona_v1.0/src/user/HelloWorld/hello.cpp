@@ -46,26 +46,28 @@
 int MonaMain(List<char*>* pekoe)
 {
     /* インスタンス取得 */
-    MemoryMap* mm = MemoryMap::getInstance();
+    MemoryMap& mm = MemoryMap::getInstance();
 
     /* 5000byteの共有メモリ(グローバル)を作成 実際のサイズは8192byteになる */
-    dword id1 = mm->create(5000);
+    dword id1 = mm.create(5000);
 
     if (id1 == 0)
     {
-        printf("map create error = %x", mm->getLastError());
+        printf("map create error = %x", mm.getLastError());
         exit(1);
     }
 
-    printf("shared size = %d", mm->getSize(id1));
+    printf("shared size = %d", mm.getSize(id1));
 
     /* 作成した共有メモリを自分の空間に貼り付ける */
-    byte* p = mm->map(id1);
+    byte* p = mm.map(id1);
     if (p == NULL)
     {
         printf("map error\n");
         exit(1);
     }
+
+    printf("map=[%x]", p);
 
     /* 共有エリアに書き込み */
     strcpy((char*)p, "data share top hello!!\n");
@@ -87,7 +89,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* 共有メモリを自分の空間からはずす */
-    //mm->unmap(id1);
+    //mm.unmap(id1);
 
     /* ついでにファイルでも作るか */
     FileOutputStream fos("HELLO.LOG", true);
