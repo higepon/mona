@@ -1,4 +1,3 @@
-//#define FAT12_DEBUG
 /*!
   \file  FAT12.cpp
   \brief class FAT12 File System
@@ -94,21 +93,23 @@ bool FAT12::initilize() {
         return false;
     }
 
+    info(DEV_NOTICE, "after readBPB\n");
+
     /* specify file system */
     if (!isFAT12()) {
         errNum_ = NOT_FAT12_ERROR;
         return false;
     }
 
-#ifdef FAT12_DEBUG
-    printf("after is FAT12\n");
-#endif
+    info(DEV_NOTICE, "after isFAT12\n");
 
     /* read fat */
     if (!readFAT(true)) {
         errNum_ = FAT_READ_ERROR;
         return false;
     }
+
+    info(DEV_NOTICE, "after raedFAT\n");
 
     /* cluster map */
     int mapSize = 512 * bpb_.fatSize16 / 3 + 1;
@@ -122,6 +123,8 @@ bool FAT12::initilize() {
     rootDirSectors_  = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
     firstDataSector_ = bpb_.reservedSectorCount + bpb_.numberFATs * bpb_.fatSize16 + rootDirSectors_;
     rootEntryStart_  = bpb_.reservedSectorCount + bpb_.fatSize16 * bpb_.numberFATs;
+
+    info(DEV_NOTICE, "end of initilize\n");
 
     return true;
 }
@@ -143,7 +146,7 @@ bool FAT12::isFAT12() {
 
     if (!(bpb_.bytesPerSector) || !(bpb_.sectorPerCluster)) {
 
-        printf("FAT12: 0 %d, %d", bpb_.bytesPerSector, bpb_.sectorPerCluster);
+        info(ERROR, "0 %d, %d", bpb_.bytesPerSector, bpb_.sectorPerCluster);
         return false;
     }
 
@@ -176,11 +179,6 @@ bool FAT12::readBPB() {
     byte* p = buf_;
 
     if (!(driver_->read(0, buf_))) return false;
-
-    for (int i = 0; i < 512; i++) {
-
-        printf("%d", buf_[i]);
-    }
 
     p += 3;
     memcpy(bpb_.oemName, p, 8);
