@@ -42,7 +42,7 @@ const char* errorNames[] =
 #define MONAGED_COPY2(dst, dp, dsz, array, ap, size) { \
     _A<byte> _dst((byte*)dst.get(), dsz, false); \
     for (dword i = 0; i < size; i++) _dst[dp + i] = array[ap + i]; }
-#define MONAGED_FILL(dst, pos, val, size) { \
+#define MONAGED_FILL(dst, pos, size, val) { \
     for (dword i = 0; i < size; i++) dst[pos + i] = val; }
 
 #define ORG 0xA0000000
@@ -111,10 +111,10 @@ dword ELFLoader::load(_A<byte> image)
         MONAGED_COPY(image, phdr.virtualaddr - ORG, this->elf, phdr.offset, phdr.filesize)
         if (phdr.memorysize > phdr.filesize)
         {
-            int pos = phdr.virtualaddr + phdr.filesize - ORG;
-            int len = phdr.memorysize - phdr.filesize;
+            dword pos = phdr.virtualaddr + phdr.filesize - ORG;
+            dword len = phdr.memorysize - phdr.filesize;
             printf("%s:%d:[%x+%x(%x)/%x]", __FILE__, __LINE__, pos, len, pos + len, image.get_Length());
-            MONAGED_FILL(image, phdr.virtualaddr + phdr.filesize - ORG, 0, phdr.memorysize - phdr.filesize)
+            MONAGED_FILL(image, pos, len, 0)
             printf("OK!\n");
         }
 #else
@@ -127,7 +127,7 @@ dword ELFLoader::load(_A<byte> image)
             MONAGED_COPY(image, phdr.virtualaddr - this->pheaders->virtualaddr, this->elf, phdr.offset, phdr.memorysize)
 
             /* zero clear*/
-            //MONAGED_FILL(image, phdr.virtualaddr - this->header.entrypoint + phdr.filesize, 0, phdr.memorysize - phdr.filesize)
+            //MONAGED_FILL(image, phdr.virtualaddr - this->header.entrypoint + phdr.filesize, phdr.memorysize - phdr.filesize, 0)
         }
 #endif
     }
@@ -137,7 +137,7 @@ dword ELFLoader::load(_A<byte> image)
         /* .bss */
         if (shdr.type != SH_NOBITS) continue;
 
-        MONAGED_FILL(image, shdr.address - ORG, 0, shdr.size)
+        MONAGED_FILL(image, shdr.address - ORG, shdr.size, 0)
     }
 
     return this->header.entrypoint;
