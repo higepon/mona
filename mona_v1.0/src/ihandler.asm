@@ -127,7 +127,10 @@ arch_irqhandler_%1:
 arch_fault0dhandler:
         pushAll
         changeData
+        push dword[esp + 40]
+        call arch_set_stack_view
         call fault0dHandler
+        add  esp, 0x04          ; remove error_cd
         popAll
         iretd
 

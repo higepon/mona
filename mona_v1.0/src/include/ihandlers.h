@@ -28,7 +28,7 @@ extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
 extern "C" void keyStrokeHandler(dword scancode);
 extern "C" void dummyHandler(void);
-extern "C" void fault0dHandler(void);
+extern "C" void fault0dHandler(dword error);
 
 /* expr:IRQ Handler */
 #define IRQHANDLERHEADER(x) extern "C" void irqHandler_##x(void); extern "C" void arch_irqhandler_##x(void)

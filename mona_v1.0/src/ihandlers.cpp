@@ -60,9 +60,9 @@ void keyStrokeHandler(dword scancode) {
   \author HigePon
   \date   create:2002/09/06 update:2003/01/26
 */
-void fault0dHandler() {
+void fault0dHandler(dword error) {
 
-    info(ERROR, "stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]\n"
          , g_stack_view.stack0
          , g_stack_view.stack1
          , g_stack_view.stack2
@@ -72,6 +72,8 @@ void fault0dHandler() {
          , g_stack_view.stack6
          , g_stack_view.stack7
          );
+
+    g_console->printf("error=%x\n", error);
     panic("fault0d");
 }
 
