@@ -79,7 +79,7 @@ void startKernel(void) {
     if (si.hasCpuid()) {
 
         printOK("Checking CPUID     ");
-        si.printCpuid(g_x
+        si.printCpuid(g_console);
     } else {
         g_console->printf("CPUID NG  \n");
     }

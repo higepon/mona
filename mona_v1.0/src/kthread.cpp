@@ -176,12 +176,16 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
 */
 void kthread_schedule() {
 
+    g_console->printf("schedule1");
     /* change runlist */
     Kthread* temp = kthread_get_next_from_list(&runningList);
 
+    g_console->printf("schedule2");
+
     kthread_add_to_prev_list(&runningList, temp);
 
-    g_kthread_current =  (&runningList)->next;
+    g_console->printf("schedule3");
+    //    g_kthread_current =  (&runningList)->next;
 
     /* switch */
     kthread_switch();
@@ -195,6 +199,19 @@ void kthread_schedule() {
 */
 void kthread_switch() {
 
+    g_console->printf("kthread_switch");
+//      g_console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+//                   , g_kthread_current->eip
+//                   , g_kthread_current->cs
+//                   , g_kthread_current->eflags
+//                   , g_kthread_current->eax
+//                   , g_kthread_current->ecx
+//                   , g_kthread_current->edx
+//                   , g_kthread_current->ebx
+//                   , g_kthread_current->esp
+//                   , g_kthread_current->ebp
+//                   , g_kthread_current->esi
+//                   , g_kthread_current->edi);
     arch_kthread_switch();
 }
 
