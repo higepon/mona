@@ -125,12 +125,14 @@ int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* comman
         byte status = inp8(controller, ATA_ASR);
 
         if ((status & BIT_BSY) != 0) continue;
+#if 0
         if ((status & BIT_CHK) != 0)
 	{
             printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
             printf("(inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR);=%d\n", (inp8(controller, ATA_BHR) << 8) | inp8(controller, ATA_BLR));
 	    return 2;
 	}
+#endif
 
         byte irr = inp8(controller, ATA_IRR);
 
@@ -148,11 +150,13 @@ int IDEDriver::sendPacketCommand(IDEController* controller, ATAPICommand* comman
 
         if ((status & BIT_BSY) != 0) continue;
 
+#if 0
         if ((status & BIT_CHK) != 0)
         {
             printf("%s:%d error=%x\n", __FILE__, __LINE__, inp8(controller, ATA_ERR));
             return 4;
         }
+#endif
 
         if (((irr & BIT_IO) != 0) && ((irr & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
         {
