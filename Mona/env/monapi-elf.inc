@@ -25,7 +25,7 @@ install: all
 	$(INSTALL) $(TARGET) $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) $(CLEANFILES)
 
 depend:
 	rm -f dependencies
