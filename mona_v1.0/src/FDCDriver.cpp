@@ -278,6 +278,13 @@ void FDCDriver::waitStatus(byte mask, byte expected) {
     } while ((status & mask) != expected);
 }
 
+byte FDCDriver::getResult() {
+
+    waitStatus(0xd0, 0xd0);
+
+    return inportb(FDC_DR_PRIMARY);
+}
+
 /*!
     \brief seek
 
@@ -324,7 +331,7 @@ bool FDCDriver::seek(byte track) {
     \brief Sense Interrrupt Command
 
     \author HigePon
-    \date   create:2003/02/13 update:
+    \date   create:2003/02/13 update:2003/09/19
 */
 bool FDCDriver::senseInterrupt() {
 
@@ -336,18 +343,11 @@ bool FDCDriver::senseInterrupt() {
         return false;
     }
 
-    info(DEV_WARNING, "senseInterrrupt:before result\n");
+    results_[0] = getResult(); /* ST0 */
+    results_[1] = getResult(); /* PCN */
 
-    delay();
-    delay();
-    delay();
-    delay();
+    if ((results_[0] & 0xC0) != 0x00) return false;
 
-    if (!readResults()) {
-        info(ERROR, "FDCDriver#senseInterrrupt:resultError\n");
-        return false;
-    }
-    info(DEV_WARNING, "senseInterrrupt after result\n");
     return true;
 }
 

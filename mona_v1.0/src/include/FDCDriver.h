@@ -37,6 +37,7 @@ class FDCDriver : public DiskDriver {
     void waitStatus(byte expected);
     void waitStatus(byte mask, byte expected);
     bool sendCommand(const byte command[], const byte length);
+    byte getResult();
     bool seek(byte track);
     bool senseInterrupt();
     bool readResults();
