@@ -62,10 +62,11 @@ void Shell::run()
                     this->drawCaret();
                     this->waiting = THREAD_UNKNOWN;
                 }
+
+                break;
             case MSG_STDOUT:
 
                 msg.str[127] = '\0';
-                syscall_print("Shell");
                 syscall_print(msg.str);
                 Message::reply(&msg);
                 break;

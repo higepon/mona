@@ -103,6 +103,7 @@ void MessageLoop()
                 }
 
                 Message::reply(&msg);
+		break;
             }
             case MSG_STDOUT_REGIST_TO_SERVER:
             {
@@ -110,6 +111,7 @@ void MessageLoop()
                 dword stdout_id = msg.arg2;
                 stdoutTree.add(tid, stdout_id);
                 Message::reply(&msg);
+		break;
             }
         }
     }

@@ -231,7 +231,6 @@ void write(const char* buf, int size)
         ASSERT(!"stdout Error");
 
     }
-
 }
 
 int MonaMain(List<char*>* pekoe)
