@@ -1,3 +1,10 @@
+2004-09-27  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/Assert.h: ファイル追加 ASSERTマクロ追加
+
+        * samples/non-gui/hello/hello.cpp (write): 標準出力実装テスト開始
+        * src/servers/file/main.cpp (MessageLoop): 標準出力実装テスト開始
+
 2004-09-26  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Mutex.cpp (lock): Adaptive Lockを実装した。

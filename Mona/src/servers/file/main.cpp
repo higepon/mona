@@ -83,6 +83,12 @@ void MessageLoop()
                 }
                 break;
             }
+            case MSG_STDOUT:
+            {
+                Message::reply(&msg);
+                printf("%s", msg.str);
+
+            }
         }
     }
 }

@@ -1,9 +1,12 @@
 #include <monapi.h>
+#include <monapi/CString.h>
 #include <sys/HashMap.h>
+#include <monapi/Assert.h>
+#include <monapi/messages.h>
 
 using namespace MonAPI;
 
-#define MAIN_4
+#define MAIN_5
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -208,4 +211,38 @@ int MonaMain(List<char*>* pekoe)
     printf("Hello World\n");
     return 0;
 }
+#endif
+
+#ifdef MAIN_5
+
+#define DEBUG_MODE
+
+void write(const char* buf, int size)
+{
+    ASSERT(size < 512);
+
+    MessageInfo msg;
+    MessageInfo reply;
+    Message::create(&msg, MSG_STDOUT, size, 0, 0, buf);
+
+    if (Message::sendReceive(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
+    {
+        /* error, but nothing to do */
+        ASSERT(!"stdout Error");
+
+    }
+
+}
+
+int MonaMain(List<char*>* pekoe)
+{
+
+    CString msg = "this is test";
+
+    write(msg, msg.getLength());
+
+    return 0;
+}
+
+
 #endif
