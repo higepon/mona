@@ -5,7 +5,7 @@ MONADIR = ../../..
 include $(MONADIR)/env/monapi-el2.inc
 
 INSTDIR = $(BINDIR)/root/APPS
-LINK    = $(LIBDIR)/monapi.o -lmonapi -lmonalibc -ljpegls
+LINK    = -lmonapi -lmonalibc -ljpegls
 
 $(TARGET).ELF: $(LIBDIR)/libjpegls.a
 

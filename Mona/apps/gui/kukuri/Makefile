@@ -8,7 +8,7 @@ CLEANFILES = $(INSTFILES)
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-el2.inc
 
-LINK    = -lgui $(LIBDIR)/monapi.o -lmonapi -lmonalibc
+LINK    = -lgui -lmonapi -lmonalibc
 CXXFLAGS += -DDEBUG
 
 $(TARGET).ELF: $(LIBDIR)/libgui.a $(INSTFILES)

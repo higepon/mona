@@ -5,5 +5,5 @@ LFLAGS    = $(MONAELF_LDS) -n -Ttext 0xA0000000 -e $(USER_START_FUNCTION) -Bstat
 OFLAGS    = --output-target=elf32-i386
 OBJECTS   = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o) $(NASMSRCS:.asm=.o)
 INCLUDE   = -I$(INCDIR)
-LINK      = $(LIBDIR)/monapi.o -lmonapi -lmonalibc
+LINK      = -lmonapi -lmonalibc
 LIBMONAPI = $(LIBDIR)/monapi.o $(LIBDIR)/libmonapi.a

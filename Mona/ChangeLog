@@ -1,3 +1,17 @@
+2004-06-13  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/shell/Makefile: FreeBSD対応
+
+        * apps/gui/mtorz/Form1.cpp: Timerを使用
+
+        * src/lib/monapi/monapi.cpp: エントリポイントを独立
+
+        * src/lib/monapi/monapi_impl.cpp: エントリポイントの実装
+
+        * env/monapi-elf.inc: エントリポイントがバイナリの最初に来るように修正
+
+        * env/monapi-el2.inc: エントリポイントがバイナリの最初に来るように修正
+
 2004-06-12  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/mtorz/: 追加 (thanks あっきいさん)

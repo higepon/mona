@@ -5,12 +5,12 @@ MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
-LINK    = $(LIBDIR)/monapi.o -lmonapi -lmonalibc -ljpegls
+LINK    = -lmonapi -lmonalibc -ljpegls
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a $(LIBDIR)/libjpegls.a
-	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
+	$(LD) $(LFLAGS) $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@

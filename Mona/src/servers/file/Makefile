@@ -5,7 +5,7 @@ MONADIR = ../../..
 include $(MONADIR)/env/monapi-elf.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
-LINK    = $(LIBDIR)/monapi.o -lbz2 -lmonapi -lmonalibc
+LINK    = -lbz2 -lmonapi -lmonalibc
 
 $(TARGET): $(LIBDIR)/libbz2.a
 

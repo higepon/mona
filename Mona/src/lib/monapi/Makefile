@@ -1,6 +1,7 @@
 TARGET1 = $(LIBDIR)/monapi.o
 TARGET2 = $(LIBDIR)/libmonapi.a
-SOURCES = string.cpp \
+SOURCES = monapi_impl.cpp \
+          string.cpp \
           syscall.cpp \
           CString.cpp \
           FileInputStream.cpp \

@@ -32,7 +32,7 @@ void CreationEffect(guiserver_window* w)
 		}
 	}
 	w->Visible = true;
-	w->__reserved2 = true;
+	w->__internal2 = true;
 }
 
 void DestructionEffect(guiserver_window* w)

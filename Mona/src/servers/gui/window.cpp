@@ -19,6 +19,7 @@ using namespace MonAPI;
 extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;
 
+static guiserver_window* activeWindow = NULL;
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
 static HList<guiserver_window*> captures;
@@ -45,11 +46,12 @@ guiserver_window* CreateWindow()
 	ret->OffsetY  = 0;
 	ret->Opacity  = 255;
 	ret->Visible  = false;
+	ret->Focused  = false;
 	ret->Flags    = 0;
 	ret->TransparencyKey = 0;
 	ret->BufferHandle = ret->FormBufferHandle = 0;
-	ret->__reserved1 = NULL;
-	ret->__reserved2 = false;
+	ret->__internal1 = NULL;
+	ret->__internal2 = false;
 	windows.add(ret);
 	
 	start_pos += 32;
@@ -90,7 +92,7 @@ bool DisposeWindow(dword handle)
 		guiserver_window* w = windows[i];
 		if (w->Handle == handle)
 		{
-			if (w->__reserved2) DestructionEffect(w);
+			if (w->__internal2) DestructionEffect(w);
 			windows.removeAt(i);
 			MemoryMap::unmap(handle);
 			return true;
@@ -130,7 +132,7 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 {
 	if (w == NULL || w->FormBufferHandle == 0) return;
 	
-	if (!w->__reserved2) CreationEffect(w);
+	if (!w->__internal2) CreationEffect(w);
 	
 	DrawImage(screen_buffer, wallpaper, w->X, w->Y, w->X, w->Y, w->Width, w->Height);
 	_R r(w->X, w->Y, w->Width, w->Height);
@@ -144,12 +146,12 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 		rr.Intersect(r);
 		if (r.Width == 0 || rr.Height == 0) continue;
 		
-		if (ww->__reserved1 == NULL)
+		if (ww->__internal1 == NULL)
 		{
-			ww->__reserved1 = GetBitmapPointer(ww->FormBufferHandle);
-			if (ww->__reserved1 == NULL) return;
+			ww->__internal1 = GetBitmapPointer(ww->FormBufferHandle);
+			if (ww->__internal1 == NULL) return;
 		}
-		DrawImage(screen_buffer, ww->__reserved1, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
+		DrawImage(screen_buffer, ww->__internal1, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
 	}
 	int size_ov = overlaps.size();
 	for (int i = 0; i < size_ov; i++)
@@ -191,12 +193,12 @@ guiserver_window* GetTargetWindow(int x, int y)
 		_R r(w->X, w->Y, w->Width, w->Height);
 		if (!r.Contains(x, y)) continue;
 		
-		if (w->__reserved1 == NULL)
+		if (w->__internal1 == NULL)
 		{
-			w->__reserved1 = GetBitmapPointer(w->FormBufferHandle);
-			if (w->__reserved1 == NULL) continue;
+			w->__internal1 = GetBitmapPointer(w->FormBufferHandle);
+			if (w->__internal1 == NULL) continue;
 		}
-		unsigned int c = w->__reserved1->Data[(x - w->X) + (y - w->Y) * w->Width];
+		unsigned int c = w->__internal1->Data[(x - w->X) + (y - w->Y) * w->Width];
 		if (c != 0 && c != w->TransparencyKey) return w;
 	}
 	

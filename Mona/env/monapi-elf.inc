@@ -15,7 +15,7 @@ include $(MONADIR)/env/monapi.inc
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
-	$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
+	$(LD) $(LFLAGS) $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
 	objcopy $(OFLAGS) $@
 	$(STRIP) $@
 	$(BINDIR)/monaelf $@
