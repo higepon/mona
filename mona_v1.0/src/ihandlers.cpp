@@ -64,7 +64,7 @@ void fault0dHandler() {
                       , g_stack_view.stack6
                       , g_stack_view.stack7
                       );
-    panic("fault0d");
+//     panic("fault0d");
 }
 
 /*!
@@ -111,6 +111,8 @@ void timerHandler() {
     }
     counter++;
 #endif
+
+    g_console->printf("Timer");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

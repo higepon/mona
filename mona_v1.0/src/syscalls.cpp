@@ -17,69 +17,76 @@
 extern "C" char pos_x;
 extern "C" char pos_y;
 
+extern "C"     void arch_set_stack_view();
+
 void syscall_entrance() {
 
-    outportb(0x20, 0x20);
+    g_console->printf("Syscall\n");
 
-    int x,y;
-    dword eflags;
+    //   outportb(0x20, 0x20);
 
-    switch(g_current_process->ebx) {
+//     int x,y;
+//     dword eflags;
+
+//     switch(g_current_process->ebx) {
 
 
-      case SYSTEM_CALL_PROCESS_SLEEP:
+//       case SYSTEM_CALL_PROCESS_SLEEP:
 
-          g_process_manager->sleep(g_current_process, g_current_process->esi);
+//           g_process_manager->sleep(g_current_process, g_current_process->esi);
 
-          break;
+//           break;
 
-      case SYSTEM_CALL_HEAVEY:
+//       case SYSTEM_CALL_HEAVEY:
 
-        eflags = get_eflags();
-        disableInterrupt();
+//         eflags = get_eflags();
+//         disableInterrupt();
 
-        x = pos_x;
-        y = pos_y;
+//         x = pos_x;
+//         y = pos_y;
 
-        pos_x = 1, pos_y = 2;
+//         pos_x = 1, pos_y = 2;
 
-          g_console->printf("heavy start\n");
+//           g_console->printf("heavy start\n");
 
-        pos_x = x;
-        pos_y = y;
-        set_eflags(eflags);
+//         pos_x = x;
+//         pos_y = y;
+//         set_eflags(eflags);
 
-        enableInterrupt();
+//         enableInterrupt();
 
-          for (dword i = 0; i < 0xf; i++) {
+//           for (dword i = 0; i < 0xf; i++) {
 
-              i++;
-              i--;
-              i++;
-              i--;
-          }
+//               i++;
+//               i--;
+//               i++;
+//               i--;
+//           }
 
-        eflags = get_eflags();
-        disableInterrupt();
+//         eflags = get_eflags();
+//         disableInterrupt();
 
-        x = pos_x;
-        y = pos_y;
+//         x = pos_x;
+//         y = pos_y;
 
-        pos_x = 2, pos_y = 4;
+//         pos_x = 2, pos_y = 4;
 
-          g_console->printf("heavy end\n");
+//           g_console->printf("heavy end\n");
 
-        pos_x = x;
-        pos_y = y;
-        set_eflags(eflags);
+//         pos_x = x;
+//         pos_y = y;
+//         set_eflags(eflags);
 
-        break;
+//         break;
 
-      default:
-          g_console->printf("syscall:default");
-          break;
-    }
+//       default:
+//           g_console->printf("syscall:default");
+//           break;
+//     }
 
+    g_console->printf("Syscall end\n");
+    arch_set_stack_view();
+    fault0dHandler();
     return;
 }
 
