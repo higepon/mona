@@ -45,14 +45,14 @@ Control::Control()
 /** デストラクタ */
 Control::~Control()
 {
-	dispose();
+	onExit();
 }
 
 /**
  部品生成時に呼ばれる.
- dispose()後に呼ぶと再初期化できる。
+ onExit()後に呼ぶと再初期化できる。
 */
-void Control::create()
+void Control::onStart()
 {
 	if (this->_buffer != NULL) return;
 
@@ -64,9 +64,9 @@ void Control::create()
 
 /**
  部品破棄時に呼ばれる.
- 後にcreate()を呼ぶと再初期化できる。
+ 後にonStart()を呼ぶと再初期化できる。
 */
-void Control::dispose()
+void Control::onExit()
 {
 	delete(_buffer);
 	delete(_g);

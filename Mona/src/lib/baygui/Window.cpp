@@ -59,8 +59,6 @@ static unsigned char close_data[] = {
 
 /** 共通パラメータ */
 CommonParameters *__commonParams;
-/** 共通パラメータのハンドル */
-static dword commonParamsHandle;
 /** タイマースレッドID */
 static dword timerID = THREAD_UNKNOWN;
 
@@ -85,16 +83,6 @@ static void TimerThread()
 /** コンストラクタ */
 Window::Window()
 {
-	// 共通パラメータを得る
-	MessageInfo info;
-	if (MonAPI::Message::sendReceive(&info, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0) {
-		printf("%s:%d:ERROR: can not get common parameter!\n", __FILE__, __LINE__);
-		exit(1);
-	} else {
-		commonParamsHandle = info.arg2;
-		__commonParams = (CommonParameters*)MonAPI::MemoryMap::map(commonParamsHandle);
-	}
-
 	// GUIサーバーを探す
 	this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
 	if (this->guisvrID == THREAD_UNKNOWN) {
@@ -152,14 +140,13 @@ Window::~Window() {
 	
 	// GUIサーバーから自分を抹消する
 	monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
-	MonAPI::MemoryMap::unmap(commonParamsHandle);
 }
 
 /**
  部品生成時に呼ばれる.
- dispose()後に呼ぶと再初期化できる。
+ onExit()後に呼ぶと再初期化できる。
 */
-void Window::create()
+void Window::onStart()
 {
 	if (this->_buffer != NULL) return;
 
@@ -202,10 +189,6 @@ void Window::create()
 	this->_window->TransparencyKey = 0x00000000;
 	this->_window->Visible = true;
 	this->_window->Opacity = 0xff; // 不透明
-	//if (this->parent != NULL) {
-	//	this->foreColor = this->parent->getForeground();
-	//	this->backColor = this->parent->getBackground();
-	//}
 	this->_window->__internal2 = true;
 	this->focused = true;
 
@@ -217,9 +200,9 @@ void Window::create()
 
 /**
  部品破棄時に呼ばれる.
- 後にcreate()を呼ぶと再初期化できる。
+ 後にonStart()を呼ぶと再初期化できる。
 */
-void Window::dispose()
+void Window::onExit()
 {
 	// ウィンドウ破棄要求
 	setVisible(false);
@@ -389,7 +372,7 @@ void Window::postEvent(Event *event)
 			// 閉じるボタンクリック
 			if (4 <= px && px < 17 && 4 <= py && py < 17) {
 				isRunning = false;
-				dispose();
+				onExit();
 				return;
 			// タイトルバークリック
 			} else if (0 <= px && px < this->width && 0 <= py && py < INSETS_TOP) {
@@ -452,7 +435,7 @@ void Window::postEvent(Event *event)
 /** スレッド開始 */
 void Window::run()
 {
-	create();
+	onStart();
 	setFocused(true);
 	repaint();
 

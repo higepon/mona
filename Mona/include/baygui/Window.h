@@ -33,16 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class Window : public Container {
 protected:
-	/** 内部描画領域 */
-	Graphics *__g;
-	/** 内部描画バッファー */
-	Image *__buffer;
-	/** GUIサーバーID */
-	dword guisvrID;
-	/** GUIサーバー上のウィンドウオブジェクト */
-	guiserver_window *_window;
-	
-protected:
 	/** タイトル */
 	String title;
 	/** 修飾キー */
@@ -65,12 +55,22 @@ protected:
 	Event timerEvent;
 	/** カスタムイベント */
 	Event customEvent;
+	/** 内部描画領域 */
+	Graphics *__g;
+	/** 内部描画バッファー */
+	Image *__buffer;
+#ifdef MONA
+	/** GUIサーバーID */
+	dword guisvrID;
+	/** GUIサーバー上のウィンドウオブジェクト */
+	guiserver_window *_window;
+#endif
 
 public:
 	Window::Window();
 	virtual Window::~Window();
-	virtual void create();
-	virtual void dispose();
+	virtual void onStart();
+	virtual void onExit();
 	unsigned int getHandle();
 	/** タイトルを得る */
 	inline char  *getTitle() { return this->title.getBytes(); }

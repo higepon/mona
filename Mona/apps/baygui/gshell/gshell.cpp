@@ -612,8 +612,8 @@ public:
 	}
 	
 	/** ウィンドウ生成時に呼ばれる */
-	virtual void create() {
-		Window::create();
+	virtual void onStart() {
+		Window::onStart();
 		
 		// 標準出力監視スレッド起動
 		my_tid = syscall_get_tid();
@@ -631,8 +631,8 @@ public:
 	}
 	
 	/** ウィンドウ破棄時に呼ばれる */
-	virtual void dispose() {
-		Window::dispose();
+	virtual void onExit() {
+		Window::onExit();
 		
 		// 標準出力を開放する
 		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);

@@ -75,8 +75,8 @@ protected:
 public:
 	Control::Control();
 	virtual Control::~Control();
-	virtual void create();
-	virtual void dispose();
+	virtual void onStart();
+	virtual void onExit();
 	virtual void onEvent(Event *event);
 	virtual void onPaint(Graphics *g);
 	virtual void postEvent(Event *event);

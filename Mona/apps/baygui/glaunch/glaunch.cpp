@@ -128,6 +128,7 @@ public:
 	}
 };
 
+#if 0
 /** モナーアイコン（パレット） */
 static unsigned int monaIconPalette [4] = {
 	0xffc0c0c0,
@@ -154,6 +155,7 @@ static char monaIconData [15][16] = {
 	{0x0,0x0,0x2,0x2,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x2,0x0,0x0},
 	{0x0,0x0,0x0,0x0,0x2,0x2,0x2,0x2,0x2,0x2,0x2,0x2,0x2,0x0,0x0,0x0},
 };
+#endif
 
 /** ディスクアイコン（パレット）*/
 static unsigned int diskIconPalette [16] = {
@@ -347,8 +349,8 @@ public:
 	}
 
 	/** ウィンドウ生成時に呼ばれる */
-	virtual void create() {
-		Window::create();
+	virtual void onStart() {
+		Window::onStart();
 		this->_window->TransparencyKey = 0xfffcfcfc;
 		this->_window->Flags |= WINDOWFLAGS_BOTTOMMOST | WINDOWFLAGS_NOBORDER;
 	}
@@ -380,7 +382,7 @@ public:
 		
 		// タイトル
 		int fw = this->_metrics->getWidth(getTitle());
-		int fh = this->_metrics->getHeight(getTitle());
+		//int fh = this->_metrics->getHeight(getTitle());
 		g->setColor(COLOR_WHITE);
 		g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
 		g->setColor(COLOR_BLACK);

@@ -87,7 +87,7 @@ Control *Container::findChild(int x, int y)
 void Container::add(Control *control)
 {
 	control->setParent(this);
-	control->create();
+	control->onStart();
 	_controlList->add(control);
 }
 
