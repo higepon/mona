@@ -185,7 +185,7 @@ bool MFDCDriver::sendCommand(const byte command[], const byte length) {
     for (int i = 0; i < length; i++) {
 
         if (!checkMSR(FDC_MRQ_READY | FDC_DIO_TO_CPU)) {
-
+	    _sys_printf("pattern %x", FDC_MRQ_READY | FDC_DIO_TO_CPU);
             _sys_printf("MFDCDriver#sendCommand: timeout[%d]\n", i);
             return false;
         }
