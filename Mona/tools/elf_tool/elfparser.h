@@ -13,8 +13,6 @@
 #ifndef __MONA_ELF_PARSER_H__
 #define __MONA_ELF_PARSER_H__
 
-#include "elf32.h"
-
 #include "types.h"
 
 typedef dword Elf32_Addr;
@@ -72,6 +70,9 @@ typedef struct
     byte       st_other;
     Elf32_Half st_shndx;
 } Elf32_Sym;
+
+#define ELF32_R_SYM(i) ((i) >> 8)
+#define ELF32_R_TYPE(i) ((byte)(i))
 
 class ELFParser
 {

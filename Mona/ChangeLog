@@ -1,3 +1,7 @@
+2004-05-13  higepon  <higepon@users.sourceforge.jp>
+
+        * tools/elf_tool/elfparser.cpp (Relocate): 再配置のシンボルテーブルあたりまで実装
+
 2004-05-11  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/reversi/ReversiForm.cpp (Observer): 手詰まりのバグ修正(thanks 名無しさん@2ch)
