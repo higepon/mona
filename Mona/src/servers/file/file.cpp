@@ -4,73 +4,34 @@
 #include "FileServer.h"
 #include "file.h"
 #include "CFile.h"
-#include "ISO9660.h"
 
 using namespace MonAPI;
 using namespace ISO;
 
-extern bool hasCD;
-extern ISO9660* iso;
-
 monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
 {
-    CString path = file;
-
-    // upper
-    path = path.toUpper();
-
     if (prompt) printf("%s: Reading %s....", SVR, file);
 
-    if (path.startsWith("/CD0"))
+    FileInputStream fis(file);
+    if (fis.open() != 0)
     {
-        if (!hasCD) return NULL;
-
-        // CD0 and upper
-        CString cdpath = path.substring(5, path.getLength());
-
-        File* cdfile = iso->GetFile(cdpath);
-
-        if (cdfile == NULL) return NULL;
-
-        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-        if (!monapi_cmemoryinfo_create(ret, cdfile->GetSize() + 1, prompt))
-        {
-            monapi_cmemoryinfo_delete(ret);
-            delete cdfile;
-            return NULL;
-        }
-
-        cdfile->Seek(0, SEEK_SET);
-        ret->Size--;
-        cdfile->Read(ret->Data, ret->Size);
-        ret->Data[ret->Size] = 0;
-        if (prompt) printf("OK\n");
-        delete cdfile;
-        return ret;
+        if (prompt) printf("ERROR\n");
+        return NULL;
     }
-    else
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(ret, fis.getFileSize() + 1, prompt))
     {
-        FileInputStream fis(file);
-        if (fis.open() != 0)
-        {
-            if (prompt) printf("ERROR\n");
-            return NULL;
-        }
-
-        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-        if (!monapi_cmemoryinfo_create(ret, fis.getFileSize() + 1, prompt))
-        {
-            monapi_cmemoryinfo_delete(ret);
-            return NULL;
-        }
-
-        ret->Size--;
-        fis.read(ret->Data, ret->Size);
-        fis.close();
-        ret->Data[ret->Size] = 0;
-        if (prompt) printf("OK\n");
-        return ret;
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
     }
+
+    ret->Size--;
+    fis.read(ret->Data, ret->Size);
+    fis.close();
+    ret->Data[ret->Size] = 0;
+    if (prompt) printf("OK\n");
+    return ret;
 }
 
 monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt /*= false*/)

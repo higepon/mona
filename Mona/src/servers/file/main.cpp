@@ -8,37 +8,10 @@
 #include "bzip2.h"
 #include "dtk5s.h"
 #include "IDEDriver.h"
-#include "ISO9660.h"
 #include "FDCDriver.h"
 #include "FSOperation.h"
 
 using namespace MonAPI;
-
-bool hasCD;               /* public  */
-ISO9660* iso;             /* public  */
-static IDEDriver* ide;    /* private */
-static int irq;           /* private */
-#define IRQ_PRIMARY   14
-#define IRQ_SECONDARY 15
-
-static void interrupt()
-{
-    syscall_set_irq_receiver(irq);
-
-    for (MessageInfo msg;;)
-    {
-        if (MonAPI::Message::receive(&msg) != 0) continue;
-
-        switch (msg.header)
-        {
-        case MSG_INTERRUPTED:
-            ide->protocolInterrupt();
-            break;
-        default:
-            printf("default");
-        }
-    }
-}
 
 void MessageLoop()
 {
@@ -190,60 +163,6 @@ void MessageLoop()
     }
 }
 
-static bool cdInitialize()
-{
-    syscall_get_io();
-
-    ide = new IDEDriver();
-    IStorageDevice* cd = ide;
-
-    /* find CD-ROM */
-    int controller, deviceNo;
-    if (!ide->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
-    {
-        delete ide;
-        return false;
-    }
-
-    printf("mounting CD-ROM\n");
-
-    /* set irq number */
-    if (controller == IDEDriver::PRIMARY)
-    {
-        irq = IRQ_PRIMARY;
-        monapi_set_irq(IRQ_PRIMARY, MONAPI_TRUE, MONAPI_TRUE);
-    }
-    else
-    {
-        irq = IRQ_SECONDARY;
-        monapi_set_irq(IRQ_SECONDARY, MONAPI_TRUE, MONAPI_TRUE);
-    }
-
-    /* interrupt thread */
-    dword id = syscall_mthread_create((dword)interrupt);
-    syscall_mthread_join(id);
-
-    if (!ide->selectDevice(controller, deviceNo))
-    {
-        printf("select device NG error code = %d\n", ide->getLastError());
-        delete ide;
-        return false;
-    }
-
-    iso = new ISO9660(cd, "");
-
-    printf("creating directory cache\n");
-
-    if (!iso->Initialize())
-    {
-        printf("CD-ROM:initialize Error = %d\n", iso->GetLastError());
-        delete iso;
-        delete cd;
-        return false;
-    }
-
-    return true;
-}
 
 static bool fdInitialize()
 {
@@ -278,9 +197,6 @@ int MonaMain(List<char*>* pekoe)
         printf("%s: INIT error\n", SVR);
         exit(1);
     }
-
-    /* CD-ROM */
-    //hasCD = cdInitialize();
 
 //    fdInitialize();
 
