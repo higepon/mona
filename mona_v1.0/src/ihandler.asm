@@ -13,6 +13,7 @@
 BITS 32
 
 [global _arch_fdchandler]
+[global _arch_fault0dhandler]
 [global _arch_timerhandler]
 [global _arch_keystrokehandler]
 [global _arch_dummyhandler]
@@ -21,8 +22,10 @@ BITS 32
 [extern _MFDCHandler]
 [extern _timerHandler]
 [extern _keyStrokeHandler]
+[extern _fault0dHandler]
 [extern _dummyHandler]
 [extern _g_kthread_current];; pointer to current thread
+[extern _g_stack_view];; pointer to current thread
 
 ;;; fdc handler
 _arch_fdchandler:
@@ -34,6 +37,7 @@ _arch_fdchandler:
 ;;; timer handler
 ;;; save all context to Kthread* current
 _arch_timerhandler:
+        call _arch_set_stack_view
         pushad
         call _save_registers
         call _timerHandler
@@ -98,3 +102,36 @@ _arch_kthread_switch:
         push dword [ebx + 24]
         pop  ebx                ; restore ebp
         iretd                   ; switch to next
+
+
+;;; fault0dHandler
+_arch_fault0dhandler:
+        call _arch_set_stack_view
+        pushad
+        call _fault0dHandler
+        popad
+        iretd
+
+_arch_set_stack_view:
+        push eax
+        push ebx
+        mov ebx, _g_stack_view
+        mov eax, dword [esp + 12]
+        mov [ebx], eax
+        mov eax, dword [esp + 16]
+        mov [ebx + 4], eax
+        mov eax, dword [esp + 20]
+        mov [ebx + 8], eax
+        mov eax, dword [esp + 24]
+        mov [ebx + 12], eax
+        mov eax, dword [esp + 28]
+        mov [ebx + 16], eax
+        mov eax, dword [esp + 32]
+        mov [ebx + 20], eax
+        mov eax, dword [esp + 36]
+        mov [ebx + 24], eax
+        mov eax, dword [esp + 40]
+        mov [ebx + 28], eax
+        pop ebx
+        pop eax
+        ret

@@ -22,7 +22,8 @@ void disp_name1() {
 
     enableTimer();
     while (true) {
-	g_console->printf("[1]");
+	//	g_console->printf("[1]");
+	(g_kthreadInfo.demo1)++;
     }
 }
 
@@ -36,7 +37,8 @@ void disp_name2() {
 
     enableTimer();
     while (true) {
-	g_console->printf("[2]");
+	//	g_console->printf("[2]");
+	(g_kthreadInfo.demo2)++;
     }
 }
 

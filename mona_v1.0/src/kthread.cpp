@@ -158,7 +158,7 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
     /* create thread */
     thread->eip    = (dword)f;
     thread->cs     = 0x08;
-    thread->eflags = 0x0200;
+    thread->eflags = 0x0200246;
     thread->esp    = stack;
     thread->ebp    = stack;
 
@@ -176,16 +176,12 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
 */
 void kthread_schedule() {
 
-    g_console->printf("schedule1");
     /* change runlist */
     Kthread* temp = kthread_get_next_from_list(&runningList);
 
-    g_console->printf("schedule2");
-
     kthread_add_to_prev_list(&runningList, temp);
 
-    g_console->printf("schedule3");
-    //    g_kthread_current =  (&runningList)->next;
+    g_kthread_current =  (&runningList)->next;
 
     /* switch */
     kthread_switch();
@@ -212,6 +208,9 @@ void kthread_switch() {
 //                   , g_kthread_current->ebp
 //                   , g_kthread_current->esi
 //                   , g_kthread_current->edi);
+
+    g_console->printf("demo1 = %d, demo2 = %d\n", g_kthreadInfo.demo1, g_kthreadInfo.demo2);
+
     arch_kthread_switch();
 }
 

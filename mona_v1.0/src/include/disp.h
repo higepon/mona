@@ -17,7 +17,7 @@
 
 void disp_name1();
 void disp_name2();
-void disp_name3();
-void disp_name4();
+//static void disp_name3();
+//static void disp_name4();
 
 #endif

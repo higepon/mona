@@ -71,6 +71,17 @@ void keyStrokeHandler() {
 */
 void fault0dHandler() {
 
+    g_console->printf("stack [%x] [%x] [%x] [%x] [%x] [%x] [%x] [%x]"
+                      , g_stack_view.stack0
+                      , g_stack_view.stack1
+                      , g_stack_view.stack2
+                      , g_stack_view.stack3
+                      , g_stack_view.stack4
+                      , g_stack_view.stack5
+                      , g_stack_view.stack6
+                      , g_stack_view.stack7
+                      );
+
     _sysdumpReg("fault0d", false, false);
     _sysdumpStack();
     panic("fault0d");
@@ -139,7 +150,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x0A, &arch_dummyhandler}
    , {0x0B, &arch_dummyhandler}
    , {0x0C, &arch_dummyhandler}
-   , {0x0D, &fault0dHandler}
+   , {0x0D, &arch_fault0dhandler}
    , {0x0E, &arch_fdchandler}
    , {0x0F, &arch_dummyhandler}
    , {0x10, &arch_dummyhandler}

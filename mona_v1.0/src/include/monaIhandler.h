@@ -20,11 +20,13 @@ extern "C" void arch_timerhandler(void);
 extern "C" void arch_keystrokehandler(void);
 extern "C" void arch_dummyhandler(void);
 extern "C" void arch_kthread_switch(void);
+extern "C" void arch_fault0dhandler(void);
 
 extern "C" void MFDCHandler(void);
 extern "C" void timerHandler(void);
 extern "C" void keyStrokeHandler(void);
 extern "C" void dummyHandler(void);
+extern "C" void fault0dHandler(void);
 
 extern "C" dword eip;
 extern "C" dword cs;
