@@ -11,7 +11,7 @@ monapi_cmemoryinfo* ReadFile(const char* file, bool prompt /*= false*/)
     FileInputStream fis(file);
     if (fis.open() != 0)
     {
-        if (prompt) printf("ERROR\n");
+        if (prompt) printf("ERROR\N");
         return NULL;
     }
 

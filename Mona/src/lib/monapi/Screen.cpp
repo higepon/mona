@@ -51,7 +51,11 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
                     , Screen* sourceScreen, int sourceX, int sourceY) {
 
     /* check range */
-    /* not yet     */
+    int maxX = destScreen->getWidth();
+    int maxY = destScreen->getHeight();
+
+    if (destX + width  > maxX) width  = maxX - destX;
+    if (destY + height > maxY) height = maxY - destY;
 
     byte* dvram      = destScreen->getVRAM();
     byte* svram      = sourceScreen->getVRAM();
@@ -97,7 +101,11 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
                     , Screen* sourceScreen, int sourceX, int sourceY, int raster) {
 
     /* check range */
-    /* not yet     */
+    int maxX = destScreen->getWidth();
+    int maxY = destScreen->getHeight();
+
+    if (destX + width  > maxX) width  = maxX - destX;
+    if (destY + height > maxY) height = maxY - destY;
 
     byte* dvram      = destScreen->getVRAM();
     byte* svram      = sourceScreen->getVRAM();

@@ -1,3 +1,7 @@
+2004-05-09  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/Screen.cpp (MonAPI): bitbltでVRAM範囲外に描画しないように修正
+
 2004-05-08  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell: 内部コマンドECHO追加

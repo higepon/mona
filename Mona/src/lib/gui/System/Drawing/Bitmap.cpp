@@ -43,7 +43,9 @@ namespace System { namespace Drawing
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
 		}
+		printf("Bitmap::1");
 		if (msg.arg2 == 0) return;
+		printf("Bitmap::2");
 		
 		byte* image = MonAPI::MemoryMap::map(msg.arg2);
 		if (image == NULL)
