@@ -16,6 +16,7 @@
 #include<io.h>
 
 void pic_init();
+void setTimerInterval(dword ms);
 void enableTimer();
 void disableTimer();
 void enableKeyboard();

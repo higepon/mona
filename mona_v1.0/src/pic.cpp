@@ -37,11 +37,7 @@ void pic_init() {
     outportb(0xa1, 0x01); /* ICW4 */
 
     /* timer settings 10ms */
-    dword timer_count = 10 * 1193181 / 1000;
-    outportb(PIT_MODE, 0x36);
-    outportb(PIT_COUNT0, timer_count & 0xff);
-    outportb(PIT_COUNT0, timer_count >> 8);
-
+    setTimerInterval(10);
 
     /* mask all interrupt */
     outportb(0x21, 0xff);
@@ -51,6 +47,21 @@ void pic_init() {
     outportb(0x21, inportb(0x21) & 0x3f);
 
     return;
+}
+
+/*!
+    \brief setTimerInterval
+
+    \param ms interval ms
+
+    \author HigePon
+    \date   create:2004/01/11 update:
+*/
+void setTimerInterval(dword ms) {
+    dword timerCounter = ms * 1193.18;
+    outportb(PIT_MODE, 0x34);
+    outportb(PIT_COUNT0, timerCounter & 0xff);
+    outportb(PIT_COUNT0, timerCounter >> 8);
 }
 
 /*!

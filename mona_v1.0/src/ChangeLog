@@ -1,5 +1,7 @@
 2004-01-11  higepon  <higepon@users.sourceforge.jp>
 
+        * pic.cpp: setTimerInterval()作成 OSASK Kさんに感謝
+
         * Process.cpp: loadProcess(ユーザーモード)のスレッド対応終了
 
 2004-01-10  higepon  <higepon@users.sourceforge.jp>
