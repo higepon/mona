@@ -30,7 +30,6 @@ SOURCES    = cstart.cpp            \
              monaPureVirtual.cpp   \
              monaUtil.cpp          \
              KeyBoardManager.cpp   \
-             FDCDriver.cpp         \
              monaTester.cpp        \
              ProcessManager.cpp    \
              monaChecker.cpp       \
@@ -65,7 +64,7 @@ memmove.o : ./FreeBSD/memmove.c
 .cpp.o:
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c $<
 
-$(BOOT1) : firstboot.asm boot.mac
+$(BOOT1) : firstboot.asm
 	$(NASM) firstboot.asm -o $@ -l $(LIST)/first.list
 
 $(BOOT2) : secondboot.asm

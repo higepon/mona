@@ -15,7 +15,6 @@
 #include<monaIdt.h>
 #include<monaIo.h>
 #include<KeyBoardManager.h>
-#include<FDCDriver.h>
 #include<MFDCDriver.h>
 #include<ProcessManager.h>
 #include<monaTypes.h>
@@ -82,22 +81,6 @@ void dummyHandler() {
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
-}
-
-/*!
-    \brief floppy disk controller's interrupt handler
-
-    floppy disk controller's interrupt handler
-
-    \author syn
-    \date create:2002/10/14 update:2002/10/14
-*/
-void fdcHandler(){
-    gFDCDriver1->interruptHandler();
-    outportb(0x20, 0x20);
-
-    /* iret */
-    iret();
 }
 
 /*!

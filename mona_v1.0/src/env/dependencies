@@ -20,7 +20,8 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
   stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/SystemInfo.h \
-  include/MFDCDriver.h include/GraphicalConsole.h
+  include/MFDCDriver.h include/GraphicalConsole.h \
+  include/ProcessManager.h include/monaIhandler.h
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h
 monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
@@ -42,18 +43,17 @@ monaIhandler.o: monaIhandler.cpp include/monaIdt.h include/monaIo.h \
   stlport/stl/_relops_cont.h stlport/stl/_vector.c stlport/stl/_bvector.h \
   stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
-  stlport/stl/_config_compat_post.h include/FDCDriver.h \
-  include/MFDCDriver.h include/VirtualConsole.h include/ProcessManager.h \
-  include/monaKernel.h include/IA32MemoryManager.h include/monaTester.h \
-  stlport/string stlport/stl/_string.h stlport/memory \
-  stlport/stl/_tempbuf.h stlport/stl/_tempbuf.c \
-  stlport/stl/_raw_storage_iter.h stlport/stl/_auto_ptr.h \
-  stlport/stl/_string_fwd.h stlport/iosfwd stlport/stl/_iosfwd.h \
-  stlport/stl/char_traits.h stlport/stl/_ctraits_fns.h \
-  stlport/stl/_string.c stlport/stl/_string_fwd.c \
-  stlport/stl/_string_io.h stlport/stl/_string_io.c \
-  stlport/stl/_string_hash.h stlport/stl/_hash_fun.h \
-  include/monaIhandler.h
+  stlport/stl/_config_compat_post.h include/MFDCDriver.h \
+  include/VirtualConsole.h include/ProcessManager.h include/monaKernel.h \
+  include/IA32MemoryManager.h include/monaTester.h stlport/string \
+  stlport/stl/_string.h stlport/memory stlport/stl/_tempbuf.h \
+  stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
+  stlport/stl/_auto_ptr.h stlport/stl/_string_fwd.h stlport/iosfwd \
+  stlport/stl/_iosfwd.h stlport/stl/char_traits.h \
+  stlport/stl/_ctraits_fns.h stlport/stl/_string.c \
+  stlport/stl/_string_fwd.c stlport/stl/_string_io.h \
+  stlport/stl/_string_io.c stlport/stl/_string_hash.h \
+  stlport/stl/_hash_fun.h include/monaIhandler.h
 monaIo.o: monaIo.cpp include/monaIo.h include/monaTypes.h \
   include/string.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
@@ -85,16 +85,13 @@ KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/monaIo.h \
   include/monaOperator.h
-FDCDriver.o: FDCDriver.cpp include/monaVga.h include/monaTypes.h \
-  include/string.h include/monaIo.h include/monaOperator.h \
-  include/FDCDriver.h
 monaTester.o: monaTester.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaIo.h include/monaIdt.h \
   include/monaOperator.h include/monaUtil.h include/HVector.h \
-  include/monaTester.h include/FDCDriver.h include/ProcessManager.h \
-  include/monaKernel.h include/VirtualConsole.h \
-  include/IA32MemoryManager.h include/KeyBoardManager.h stlport/queue \
-  stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
+  include/monaTester.h include/ProcessManager.h include/monaKernel.h \
+  include/VirtualConsole.h include/IA32MemoryManager.h \
+  include/KeyBoardManager.h stlport/queue stlport/stl/_prolog.h \
+  stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
   stlport/config/stlcomp.h stlport/config/stl_gcc.h \
   stlport/config/stl_confix.h stlport/stl/_queue.h stlport/stl/_deque.h \

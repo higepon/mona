@@ -19,7 +19,6 @@
 #include<monaTypes.h>
 #include<HVector.h>
 #include<monaTester.h>
-#include<FDCDriver.h>
 #include<monaTypes.h>
 #include<ProcessManager.h>
 #include<KeyBoardManager.h>
@@ -75,24 +74,6 @@ void operatorTester() {
     console->printf("[Point() getY() = %d]\n", point1->getY());
     console->printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     console->printf("[Point(7, -100) getY() = %d]\n", point3->getY());
-}
-
-/*!
-    \brief test code for floppy disk (class FDCDriver)
-
-    test code for floppy disk (class FDCDriver)
-
-    \author syn
-    \date create:2002/11/14 update:2002/11/14
-*/
-void floppyTester(){
-    unsigned char buff[512];
-    gFDCDriver1 = new FDCDriver(0);
-    while(true);
-    gFDCDriver1->readSector(1, 1, buff);
-    for(int i = 0; i < 512; i++){
-         console->printf("[%d]", buff[i]);
-    }
 }
 
 /*!
