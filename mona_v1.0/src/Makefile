@@ -14,6 +14,7 @@ BIN        = ../bin
 LIST       = ../list
 INCLUDE    = include
 STLINCLUDE = stlport
+DEVELOPER  = -DHIGE
 CFINCLUDE  = -I$(INCLUDE) -I$(STLINCLUDE)
 TARGET     = $(BIN)/mona.img
 BOOT1      = $(BIN)/firstboot.bin
@@ -43,7 +44,9 @@ SOURCES    = cstart.cpp            \
              syscalls.cpp          \
              BitMap.cpp            \
              FAT12.cpp             \
-             IDEDriver.cpp
+             IDEDriver.cpp         \
+             test_higepon.cpp      \
+             test_mjt.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -67,7 +70,7 @@ memmove.o : ./FreeBSD/memmove.c
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c $<
+	$(CC) $(CFLAGS) $(DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
 	$(NASM) firstboot.asm -o $@ -l $(LIST)/first.list
