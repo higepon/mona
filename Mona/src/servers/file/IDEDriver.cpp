@@ -17,13 +17,12 @@
 
 using namespace MonAPI;
 
-
 //#define DEBUG_READ_TRACE
 
 /*----------------------------------------------------------------------
     IDEDRIVER
 ----------------------------------------------------------------------*/
-IDEDriver::IDEDriver()
+IDEDriver::IDEDriver(int irq_primary, int irq_secondary)
 {
     this->controllers[PRIMARY].registers[ATA_DTR] = 0x1f0;
     this->controllers[PRIMARY].registers[ATA_ERR] = 0x1f1;
@@ -34,6 +33,7 @@ IDEDriver::IDEDriver()
     this->controllers[PRIMARY].registers[ATA_DHR] = 0x1f6;
     this->controllers[PRIMARY].registers[ATA_STR] = 0x1f7;
     this->controllers[PRIMARY].registers[ATA_ASR] = 0x3f6;
+    this->controllers[PRIMARY].irq = irq_primary;
 
     this->controllers[SECONDARY].registers[ATA_DTR] = 0x170;
     this->controllers[SECONDARY].registers[ATA_ERR] = 0x171;
@@ -44,6 +44,7 @@ IDEDriver::IDEDriver()
     this->controllers[SECONDARY].registers[ATA_DHR] = 0x176;
     this->controllers[SECONDARY].registers[ATA_STR] = 0x177;
     this->controllers[SECONDARY].registers[ATA_ASR] = 0x376;
+    this->controllers[SECONDARY].irq = irq_secondary;
 
     /* initialize controllers */
     initialize(&controllers[PRIMARY]);
@@ -554,7 +555,7 @@ void IDEDriver::protocolInterrupt()
 {
     for (;;)
     {
-        if (!MONAPI_WAIT_INTERRUPT(1000, 15))
+        if (!MONAPI_WAIT_INTERRUPT(1000, whichController->irq))
         {
             /* time out ! */
             return;

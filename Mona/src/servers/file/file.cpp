@@ -46,7 +46,7 @@ bool initializeCD()
 
     syscall_get_io();
 
-    cd = new IDEDriver();
+    cd = new IDEDriver(IRQ_PRIMARY, IRQ_SECONDARY);
 
     /* find CD-ROM */
 

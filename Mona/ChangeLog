@@ -1,5 +1,7 @@
 2005-03-15  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/IDEDriver.h (class IDEDriver): irq埋め込みを修正。
+
         * src/servers/file/IDEDriver.cpp (protocolInterrupt): マクロ MONAPI_WAIT_INTERRUPTを使用するように変更。
 
         * src/servers/file/FDCDriver.cpp (waitInterrupt): マクロ MONAPI_WAIT_INTERRUPTを使用するように変更。

@@ -22,7 +22,7 @@
 class IDEDriver : public IStorageDevice
 {
 public:
-    IDEDriver();
+    IDEDriver(int irq_primary, int irq_secondary);
     virtual ~IDEDriver();
 
 public:
@@ -75,6 +75,7 @@ private:
     typedef struct IDEController
     {
         IDEController() : selectedDevice(NULL) {}
+        byte irq;
         int registers[10];
         IDEDevice devices[2];
         IDEDevice* selectedDevice;
