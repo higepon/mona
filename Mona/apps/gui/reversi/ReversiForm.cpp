@@ -87,7 +87,7 @@ private:
         switch (this->board->getCurrentHand())
         {
             case ReversiBoard::BLACK:
-            	this->label1->set_ForeColor(Color::get_White());
+                this->label1->set_ForeColor(Color::get_White());
                 this->label1->set_BackColor(Color::get_Blue());
                 this->label3->set_ForeColor(this->get_ForeColor());
                 this->label3->set_BackColor(this->get_BackColor());
@@ -184,10 +184,12 @@ private:
 public:
     static void Main(Array<String> args)
     {
-        _P<Bitmap> bitmapWhite = new Bitmap("/WHITE.BMP");
-        _P<Bitmap> bitmapBlack = new Bitmap("/BLACK.BMP");
+        String bundlePath = MonAPI::System::getBundlePath();
+        
+        _P<Bitmap> bitmapWhite = new Bitmap(bundlePath + "/WHITE.BMP");
+        _P<Bitmap> bitmapBlack = new Bitmap(bundlePath + "/RED.BMP");
 
-        if (bitmapBlack.get() == NULL || bitmapWhite.get() == NULL)
+        if (bitmapBlack->get() == NULL || bitmapWhite->get() == NULL)
         {
             Console::WriteLine("Can not open resource file!");
             return;

@@ -1,8 +1,8 @@
 TARGET = mona.img
 
 ROOT_FILES = `cd root; ls *.*`
-SVR_FILES  = `cd root; ls SERVERS/*.*`
-APP_FILES  = `cd root; ls APPS/*.*`
+SVR_FILES  = `cd root; ls SERVERS/*.SVR`
+APP_FILES  = `cd root; ls APPS/*.ELF APPS/*.LIB APPS/*.WRP`
 
 all:
 	cp fat_template.img $(TARGET)
@@ -12,6 +12,8 @@ all:
 	@for file in $(ROOT_FILES); do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@for file in $(SVR_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@for file in $(APP_FILES) ; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
+	./fat_write --mkdir $(TARGET) APPS/GREVERSI.APP
+	@for file in `cd root; ls APPS/GREVERSI.APP/*.*`; do echo "Writing: "$$file"..."; ./fat_write $(TARGET) root/$$file $$file; done
 	@echo "Done."
 
 write:

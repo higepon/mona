@@ -22,10 +22,16 @@ namespace System
 		String& operator =(const String& text);
 		String& operator =(const char* text);
 		void operator +=(const String& text);
+		void operator +=(wchar ch);
+		String operator +(const String& text);
 		
 		bool StartsWith(const String& value);
 		bool EndsWith(const String& value);
+		
+		String Substring(int start, int length);
 	};
 }
+
+extern System::String operator +(const char* text1, const System::String& text2);
 
 #endif  // __SYSTEM_STRING_H__

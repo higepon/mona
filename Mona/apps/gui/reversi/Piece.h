@@ -10,11 +10,11 @@ using namespace System::Mona::Forms;
 class Piece : public Control
 {
 protected:
-    _P<Bitmap> white;
-    _P<Bitmap> black;
     int state;
     int x;
     int y;
+    _P<Bitmap> white;
+    _P<Bitmap> black;
 
 public:
     Piece();

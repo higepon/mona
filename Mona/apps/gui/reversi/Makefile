@@ -1,4 +1,5 @@
 TARGET  = GREVERSI.ELF
+BUNDLE  = $(BINDIR)/root/APPS/GREVERSI.APP
 SOURCES = ReversiForm.cpp ReversiBoard.cpp Piece.cpp
 
 MONADIR = ../../..
@@ -18,8 +19,8 @@ $(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a $(LIBDIR)/libmona
 	$(BINDIR)/monaelf $@
 
 install: all
-	mkdir -p $(BINDIR)/root/APPS
-	cp -u $(TARGET) $(BINDIR)/root/APPS
+	mkdir -p $(BUNDLE)
+	cp -u $(TARGET) RED.BMP WHITE.BMP $(BUNDLE)
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)

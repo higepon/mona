@@ -189,11 +189,29 @@ void Shell::commandExecute()
         return;
     }
 
-    char path[128];
+    char path[128], * bundle;
 
-    if (strstr(command, ".ELF"))
+    if (command[0] == '/')
+    {
+        strncpy(path, command, sizeof(path));
+        char* p = &command[strlen(command)];
+        for (; *p != '/' && command < p; p--);
+        p++;
+        for (int i = 0;; i++, p++)
+    	{
+    		command[i] = *p;
+    		if (*p == '\0') break;
+    	}
+    }
+    else if (strstr(command, ".ELF") != NULL)
     {
         sprintf(path, "/APPS/%s", command);
+    }
+    else if ((bundle = strstr(command, ".APP")) != NULL)
+    {
+        *bundle = '\0';
+        sprintf(path, "/APPS/%s.APP/%s.ELF", command, command);
+    	strcpy(bundle, ".ELF");
     }
     else
     {

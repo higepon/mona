@@ -15,7 +15,14 @@ namespace System
 	
 	String::String(const char* text, int length /*= -1*/)
 	{
-		this->Set(Encoding::ToWCharArray(text, length));
+		if (text == NULL)
+		{
+			this->Set(_A<wchar>(0));
+		}
+		else
+		{
+			this->Set(Encoding::ToWCharArray(text, length));
+		}
 	}
 	
 	String::String(_A<wchar> text)
@@ -61,6 +68,23 @@ namespace System
 		this->Set(s);
 	}
 	
+	void String::operator +=(wchar ch)
+	{
+		int len = this->get_Length();
+		_A<wchar> s(len + 1);
+		int p = 0;
+		for (int i = 0; i < len; i++) s[p++] = (*this)[i];
+		s[p] = ch;
+		this->Set(s);
+	}
+	
+	String String::operator +(const String& text)
+	{
+		String ret = *this;
+		ret += text;
+		return ret;
+	}
+	
 	bool String::StartsWith(const String& value)
 	{
 		int len = value.get_Length();
@@ -83,4 +107,23 @@ namespace System
 		}
 		return true;
 	}
+	
+	String String::Substring(int start, int length)
+	{
+		int len = this->get_Length() - start;
+		if (length > len) length = len;
+		
+		_A<wchar> s(length);
+		int p = 0;
+		for (int i = 0; i < length; i++) s[p++] = (*this)[start + i];
+		return s;
+	}
+	
+}
+
+String operator +(const char* text1, const String& text2)
+{
+	String ret = text1;
+	ret += text2;
+	return ret;
 }

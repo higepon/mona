@@ -166,8 +166,8 @@ static MemoryInfo* ReadImage(const char* file, bool prompt = false)
 	MemoryInfo* mi = ReadFile(file, prompt), * ret = NULL;
 	if (mi == NULL) return ret;
 	
-	const char* p = file;
-	for (; *p != '.' && *p != '\0'; p++);
+	const char* p = &file[strlen(file)];
+	for (; *p != '.' && file < p; p--);
 	
 	if (strcmp(p, ".BMP") == 0)
 	{

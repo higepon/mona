@@ -26,6 +26,16 @@
 
         * bin/fat_template.img: フォーマット直後のものに差し替え (fat_writeの--mkdirを使用するため)
 
+        * include/gui/System/String.h (operator +, Substring): 追加
+
+        * src/servers/gui/main.cpp: 拡張子判定ミスを修正
+
+        * src/servers/shell/main.cpp: バンドル対応
+
+        * apps/gui/launcher/Form1.cpp: バンドル対応
+
+        * apps/gui/reversi: バンドル化
+
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 
         * Gakuさんの修正分: fat.cpp, fat.h

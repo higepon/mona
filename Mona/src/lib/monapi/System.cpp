@@ -27,7 +27,7 @@ namespace MonAPI
         char* app = strstr(path, ".APP/");
         if (app == NULL) return NULL;
 
-        int len = app - path + 3;
+        int len = app - path + 4;
         strncpy(bundlePath, path, len);
         bundlePath[len] = '\0';
         return bundlePath;

@@ -14,6 +14,24 @@ using namespace System::Mona::Forms;
 
 extern _P<MonAPI::Screen> GetDefaultScreen();
 
+static int ProcessStart(const String& file)
+{
+	int len = file.get_Length();
+	_A<char> elf(len + 1);
+	for (int i = 0; i < len; i++)
+	{
+		wchar ch = file[i];
+		elf[i] = ch < 128 ? ch : '?';
+	}
+	elf[len] = '\0';
+	CommandOption list;
+	list.next = NULL;
+	char* e = elf.get(), * p = &e[len];
+	for (; *p != '/' && e < p; p--);
+	p++;
+	return syscall_load_process(e, p, &list);
+}
+
 class Form1 : public Form
 {
 private:
@@ -48,19 +66,15 @@ private:
 	void button_Click(_P<Object> sender, _P<EventArgs> e)
 	{
 		_P<Button> button = (Button*)sender.get();
-		String text = "/APPS/";
-		text += button->get_Text();
-		int len = text.get_Length();
-		_A<char> elf(len + 1);
-		for (int i = 0; i < len; i++)
+		String file = "/APPS/" + button->get_Text();
+		if (file.EndsWith(".APP"))
 		{
-			wchar ch = text[i];
-			elf[i] = ch < 128 ? ch : '?';
+			file += '/';
+			int len = button->get_Text().get_Length();
+			file += button->get_Text().Substring(0, len - 4);
+			file += ".ELF";
 		}
-		elf[len] = '\0';
-		CommandOption list;
-		list.next = NULL;
-		syscall_load_process(elf.get(), &elf.get()[6], &list);
+		::ProcessStart(file);
 	}
 	
 
@@ -83,7 +97,7 @@ public:
 		while (syscall_dir_read(name, &size) == 0)
 		{
 			String n = name;
-			if (n.EndsWith(".ELF")) Form1::elfs->Add(name);
+			if (n.EndsWith(".ELF") || n.EndsWith(".APP")) Form1::elfs->Add(name);
 		}
 		syscall_dir_close();
 		syscall_cd("/");
