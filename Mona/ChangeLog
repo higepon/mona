@@ -1,5 +1,9 @@
 2005-03-15  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/IDEDriver.cpp (protocolInterrupt): 別スレッドで割り込みメッセージを取得する方法を廃止し。
+                                                              タイムアウトつきの割り込み待ちを行うようにした。
+                                                              まだ動作が不安定なのでCD0:の使用はしないでください。
+
         * src/servers/file/FDCDriver.cpp (read): 割り込み待ちの仕組みを導入。
 
         * src/servers/file/file.cpp (ReadFile): CDのREAD時にファイルサイズが1大きくなってしまうバグを修正。

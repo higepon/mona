@@ -17,6 +17,12 @@
 
 using namespace MonAPI;
 
+bool WaitInterruptWithTimeout(dword ms, byte irq, const char* file = "no file", int line = 0);
+
+
+#define WAIT_INTERRUPT(ms, irq) WaitInterruptWithTimeout(ms, irq, __FILE__, __LINE__)
+
+
 //#define DEBUG_READ_TRACE
 
 /*----------------------------------------------------------------------
@@ -394,6 +400,9 @@ Log("\n");
     outp16(controller, (word*)command->packet, 6);
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
+
+        protocolInterrupt();
+
         byte status = inp8(controller, ATA_ASR);
 
         if ((status & BIT_BSY) != 0) continue;
@@ -548,53 +557,63 @@ bool IDEDriver::protocolPioDataIn(IDEController* controller, ATACommand* command
 
 void IDEDriver::protocolInterrupt()
 {
-    byte status = inp8(whichController, ATA_STR);
-    byte reason = inp8(whichController, ATA_IRR);
-
-#ifdef DEBUG_READ_TRACE
-Log("\n");
-#endif
-
-    /* read */
-    if (((reason & BIT_IO) != 0) && ((reason & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
+    for (;;)
     {
-#ifdef DEBUG_READ_TRACE
-Log("\n");
-#endif
-        word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
-        atapiTransferSize += transferSize;
-
-        if (atapiTransferSize > atapiTotalReadSize)
+        if (!WAIT_INTERRUPT(1000, 15))
         {
-#ifdef DEBUG_READ_TRACE
-Log("\n");
-#endif
-
-            inp16(whichController, NULL, transferSize);
+            /* time out ! */
+            return;
         }
-        else
+
+        byte status = inp8(whichController, ATA_STR);
+        byte reason = inp8(whichController, ATA_IRR);
+
+#ifdef DEBUG_READ_TRACE
+        Log("\n");
+#endif
+
+        /* read */
+        if (((reason & BIT_IO) != 0) && ((reason & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
         {
 #ifdef DEBUG_READ_TRACE
-Log("\n");
+            Log("\n");
 #endif
-            inp16(whichController, (word*)atapiBuffer, transferSize);
-            atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
+            word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
+            atapiTransferSize += transferSize;
+
+            if (atapiTransferSize > atapiTotalReadSize)
+            {
+#ifdef DEBUG_READ_TRACE
+                Log("\n");
+#endif
+
+                inp16(whichController, NULL, transferSize);
+            }
+            else
+            {
+#ifdef DEBUG_READ_TRACE
+                Log("\n");
+#endif
+                inp16(whichController, (word*)atapiBuffer, transferSize);
+                atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
+            }
+        }
+
+        /* read / write done */
+        if (((reason & BIT_IO)!=0) && ((reason & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
+        {
+#ifdef DEBUG_READ_TRACE
+            Log("\n");
+#endif
+
+            atapiReadDone = true;
+            return;
         }
     }
 
-    /* read / write done */
-    if (((reason & BIT_IO)!=0) && ((reason & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
-    {
 #ifdef DEBUG_READ_TRACE
-Log("\n");
+    Log("\n");
 #endif
-
-        atapiReadDone = true;
-    }
-#ifdef DEBUG_READ_TRACE
-Log("\n");
-#endif
-
 }
 
 /*----------------------------------------------------------------------

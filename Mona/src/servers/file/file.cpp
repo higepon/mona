@@ -18,6 +18,7 @@ static int irq;
 static IDEDriver* cd;
 static ISO9660FileSystem* fs;
 
+#if 0
 static void interrupt()
 {
     syscall_set_irq_receiver(irq);
@@ -37,6 +38,7 @@ static void interrupt()
         }
     }
 }
+#endif
 
 bool initializeCD()
 {
@@ -68,9 +70,13 @@ bool initializeCD()
         outp8(0xa1, inp8(0xa1) & 0x7f);
     }
 
+#if 0
     /* interrupt thread */
     dword id = syscall_mthread_create((dword)interrupt);
     syscall_mthread_join(id);
+#endif
+
+    syscall_set_irq_receiver(irq);
 
     if (!cd->selectDevice(controller, deviceNo))
     {
