@@ -24,7 +24,7 @@ class Scheduler {
     bool isEmpty();
     ProcessInfo* getNext();
     void schedule();
-    bool isDplDown();
+    bool isDplDown() const;
 
   public:
     static ProcessInfo list_;

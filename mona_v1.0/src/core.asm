@@ -46,6 +46,8 @@ _arch_save_process_registers:
         mov dword[ebx + 36], eax
         mov eax, dword [esp +  4]; save edi
         mov dword[ebx + 40], eax
+        mov eax, ds              ; save ds
+        mov dword[ebx + 44], eax
         ret
 
 _arch_switch_process:
@@ -57,6 +59,7 @@ _arch_switch_process:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
+        mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
