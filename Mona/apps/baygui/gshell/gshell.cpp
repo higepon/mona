@@ -30,27 +30,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GSHELL_WIDTH  480 /* 8dot X 60chars */
 #define GSHELL_HEIGHT 300 /* 12dot X 25 chars */
 
-#undef syscall_print
-int syscall_print(const char *str)
-{
-	dword id = MonAPI::Message::lookupMainThread("TEST.EX5");
-	MonAPI::Message::send(id, CUSTOM_EVENT, 0, 0, 0, str);
-	return 0;
-}
+static dword my_tid, stdout_tid;
 
-#undef printf
-void printf(const char *format, ...)
-{
-	char str[128];
-	va_list args;
-	int result;
+/** 標準出力監視スレッド */
+static void StdoutMessageLoop() {
+	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
 
-	memset(str, 0, 128);
-	va_start(args, format);
-	result = vsprintf(str, format, args);
-	va_end(args);
-	dword id = MonAPI::Message::lookupMainThread("TEST.EX5");
-	MonAPI::Message::send(id, CUSTOM_EVENT, 0, 0, 0, str);
+	while(1) {
+		MessageInfo info;
+		dword id = THREAD_UNKNOWN;
+		if (!MonAPI::Message::receive(&info)) {
+			switch (info.header) {
+			case MSG_PROCESS_STDOUT_DATA:
+		        case MSG_STDOUT:
+				info.str[127] = '\0';
+				id = MonAPI::Message::lookupMainThread("GSHELL.EX5");
+				MonAPI::Message::send(id, CUSTOM_EVENT, 0, 0, 0, info.str);
+				MonAPI::Message::reply(&info);
+				break;
+			}
+		}
+	}
 }
 
 /** GUIコンソールクラス */
@@ -194,7 +194,7 @@ public:
 		if (s.equals("help")) {
 			add("GUIシェル 内部コマンド一覧\n");
 			add(" help, ls, cd, cat, date, uname, clear, ps, kill, exec\n");
-		} else if (s.equals("ls")) {
+		} else if (s.equals("ls") || s.equals("dir")) {
 			ls("/");
 		} else if (s.startWith("cd ")) {
 			char pathname[128];
@@ -204,14 +204,18 @@ public:
 			char filename[128];
 			sscanf(cmd, "cat %s", filename);
 			cat(filename);
+		} else if (s.startWith("type ")) {
+			char filename[128];
+			sscanf(cmd, "type %s", filename);
+			cat(filename);
 		} else if (s.equals("date")) {
 			date();
-		} else if (s.equals("uname")) {
+		} else if (s.equals("uname") || s.equals("ver")) {
 			char uname[128];
 			syscall_get_kernel_version(uname, 128);
 			uname[strlen(uname)] = '\n';
 			add(uname);
-		} else if (s.equals("clear")) {
+		} else if (s.equals("clear") || s.equals("cls")) {
 			int I = lines->getLength();
 			for (int i = 0; i < I; i++) {
 				lines->remove(0);
@@ -251,32 +255,44 @@ public:
 				// リストに追加
 				add(temp);
 				memset(lineBuffer, 0, 256);
+				onPaint(getGraphics());
+				update();
 			}
 		// キーイベント
 		} else if (e->type == KEY_PRESSED) {
 			KeyEvent *ke = (KeyEvent *)e;
 			if (ke->keycode == VKEY_ENTER) {
-				// MONA>....
-				char temp[5 + 256 + 1];
-				strcpy(temp, "MONA>");
-				strcat(temp, commandBuffer);
-				// リストに追加
-				add(temp);
-				// 入力したコマンドを解析
-				parseCommand(commandBuffer);
-				memset(lineBuffer, 0, 256);
-				memset(commandBuffer, 0, 256);
-			} else if (ke->keycode == VKEY_BACKSPACE && strlen(commandBuffer) > 0) {
-				// 1文字削除
-				memset(lineBuffer, 0, 256);
-				commandBuffer[strlen(commandBuffer) - 1] = 0;
+				if (strlen(commandBuffer) > 0) {
+					// MONA>....
+					char temp[5 + 1+ 256];
+					sprintf(temp, "MONA>%s", commandBuffer);
+					// リストに追加
+					add(temp);
+					// 入力したコマンドを解析
+					parseCommand(commandBuffer);
+					memset(lineBuffer, 0, 256);
+					memset(commandBuffer, 0, 256);
+					// 再描画
+					onPaint(getGraphics());
+					update();
+				}
+			} else if (ke->keycode == VKEY_BACKSPACE) {
+				if (strlen(commandBuffer) > 0) {
+					// 1文字削除
+					memset(lineBuffer, 0, 256);
+					commandBuffer[strlen(commandBuffer) - 1] = 0;
+					// 再描画
+					onPaint(getGraphics());
+					update();
+				}
 			} else {
 				// 1文字追加
 				memset(lineBuffer, 0, 256);
 				commandBuffer[strlen(commandBuffer)] = ke->keycode;
+				// 再描画
+				onPaint(getGraphics());
+				update();
 			}
-			onPaint(getGraphics());
-			update();
 		}
 	}
 
@@ -301,11 +317,48 @@ public:
 		// コマンドライン
 		g->drawText("MONA>", 0, i * 12);
 		g->drawText(commandBuffer, 8 * 5, i * 12);
+		// キャレット
+		int x0 = 8 * 5 + 8 * strlen(commandBuffer);
+		int y0 = i * 12 + 10;
+		g->drawLine(x0, y0, x0 + 8, y0);
+		g->drawLine(x0, y0 + 1, x0 + 8, y0 + 1);
+	}
+	
+	/** ウィンドウ生成時に呼ばれる */
+	virtual void create() {
+		Window::create();
+		
+		// 標準出力監視スレッド起動
+		my_tid = syscall_get_tid();
+		syscall_mthread_join(syscall_mthread_create((dword)StdoutMessageLoop));
+		MessageInfo msg, src;
+		src.header = MSG_SERVER_START_OK;
+		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+		stdout_tid = msg.from;
+
+		// 標準出力を得る
+		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+		if (tid != THREAD_UNKNOWN) {
+			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+		}
+	}
+	
+	/** ウィンドウ破棄時に呼ばれる */
+	virtual void dispose() {
+		Window::dispose();
+		
+		// 標準出力を開放する
+		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+		if (tid != THREAD_UNKNOWN) {
+			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+		}
+		syscall_kill_thread(stdout_tid);
 	}
 };
 
 /** メイン */
 int MonaMain(List<char*>* pekoe) {
+	// アプリケーションを初期化する
 	GShell *shell = new GShell();
 	shell->run();
 	delete(shell);
