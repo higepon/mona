@@ -258,7 +258,9 @@ void ProcessManager::schedule() {
 
     /* now there are only two process */
     std::swap(current, next);
-    //_switchProcess(current, next);
+
+    /* switch to next */
+    //    _switchProcess(current, next);
 }
 
 /*!

@@ -113,11 +113,7 @@ void fdcHandler(){
 */
 void timerHandler() {
 
-    ProcessManager& pm = ProcessManager::instance();
     static dword idx = 0;
-
-    _saveRegisters(ProcessManager::next);
-
     idx++;
 
     /* EOI is below for IRQ 8-15 */
@@ -135,7 +131,9 @@ void timerHandler() {
     } else if (idx % 50 != 0) iret();
 
     /* determine next process or thread and run it */
+    ProcessManager& pm = ProcessManager::instance();
     pm.schedule();
+    _saveRegisters(ProcessManager::current);
 
     /* switch to next */
     _switchProcess(ProcessManager::current, ProcessManager::next);
