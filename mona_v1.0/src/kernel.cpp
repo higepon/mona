@@ -75,11 +75,11 @@ extern int pos_y;
 void printInfo() {
 
     g_console->printf("free[%d]kb used[%d]kb", km.getFreeMemorySize() / 1024, km.getUsedMemorySize() / 1024);
-    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", false));
+    g_console->printf("loadPloadProcess=%d", loadProcess(".", "USER.ELF", true));
 
     for (;;) {
 
-	//        while (Semaphore::down(&g_semaphore_console));
+        //        while (Semaphore::down(&g_semaphore_console));
         int tempx = pos_x;
         int tempy = pos_y;
 
@@ -90,7 +90,7 @@ void printInfo() {
 
         pos_x = tempx;
         pos_y = tempy;
-	//        Semaphore::up(&g_semaphore_console);
+        //        Semaphore::up(&g_semaphore_console);
 
     }
 }

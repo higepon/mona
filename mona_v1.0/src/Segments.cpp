@@ -275,7 +275,9 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     int mapResult;
 
-    g_console->printf("[shared] address = %x", address);
+    g_console->printf("[shared] address = %x %s\n", address, g_processManager->getCurrentProcess()->getName());
+
+    g_console->printf("[1]");
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 
@@ -283,19 +285,27 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
         return false;
     }
 
+    g_console->printf("[2]");
+
     if (address < start_ || address > start_ + size_) {
 
         errorNumber_ = FAULT_OUT_OF_RANGE;
         return false;
     }
 
+    g_console->printf("[3]");
+
     /* page fault point */
     dword tableIndex1     = PageManager::getTableIndex(address);
     dword directoryIndex1 = PageManager::getDirectoryIndex(address);
 
+    g_console->printf("[4]");
+
     /* segment start point */
     dword tableIndex2     = PageManager::getTableIndex(start_);
     dword directoryIndex2 = PageManager::getDirectoryIndex(start_);
+
+    g_console->printf("[5]");
 
     /* check already allocated physical page? */
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
@@ -303,12 +313,19 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
     Process* current = g_processManager->getCurrentProcess();
 
+    g_console->printf("[6]");
+
     if (mappedAddress == SharedMemoryObject::UN_MAPPED) {
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
+    g_console->printf("[7]");
+
     } else {
+
+    g_console->printf("[8]");
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, true, true);
     }
+    g_console->printf("[9]");
     return (mapResult != -1);
 }
 
