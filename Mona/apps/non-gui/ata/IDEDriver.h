@@ -19,16 +19,23 @@
 /*----------------------------------------------------------------------
     IDEDriver
 ----------------------------------------------------------------------*/
-class IDEDriver
+class IDEDriver : public IStorageDevice
 {
 public:
     IDEDriver();
     virtual ~IDEDriver();
 
 public:
+    int open();
+    int close();
+    int read(dword lba, void* buf, int size);
+    int write(dword lba, void* buf, int size);
+    int ioctl(void* p);
+    int getLogicalBlockSize();
+
+public:
     void protocolInterrupt();
     bool selectDevice(int controller, int deviceNo);
-    int read(dword lba, void* buffer, int size);
     bool findDevice(int type, int detail, int* controller, int* deviceNo);
     int getLastError() const;
     void getLastErrorDetail(byte* buffer);

@@ -133,6 +133,30 @@ int IDEDriver::read(dword lba, void* buffer, int size)
     }
 }
 
+int IDEDriver::open()
+{
+    return 0;
+}
+
+int IDEDriver::close()
+{
+    return 0;
+}
+
+int IDEDriver::write(dword lba, void* buf, int size)
+{
+    return 0;
+}
+
+int IDEDriver::ioctl(void* p)
+{
+    return 0;
+}
+
+int IDEDriver::getLogicalBlockSize()
+{
+    return whichController->selectedDevice->sectorSize;
+}
 /*----------------------------------------------------------------------
     IDEDRIVER : error information
 ----------------------------------------------------------------------*/
