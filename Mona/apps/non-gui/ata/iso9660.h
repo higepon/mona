@@ -198,6 +198,7 @@ private:
     MonAPI::CString mountPath;
     DirectoryEntry* rootDirectory;
     ISOPrimaryVolumeDescriptor pdescriptor;
+    bool primaryVolumeDescriptorFound;
 
     int lastError;
 };

@@ -15,7 +15,7 @@
 #include <monapi/string.h>
 #include <monapi/syscall.h>
 
-
+#define MM_MAGIC  0x46495963
 #define SIZE_OF_HEADER sizeof(MemoryEntry)
 
 namespace MonAPI {
@@ -26,9 +26,10 @@ MemoryManager::MemoryManager() {
 void MemoryManager::initialize(dword start, dword end) {
 
     /* create large free block */
-    freeList_       = (MemoryEntry*)start;
-    freeList_->next = (MemoryEntry*)NULL;
-    freeList_->size = end - start - SIZE_OF_HEADER;
+    freeList_        = (MemoryEntry*)start;
+    freeList_->next  = (MemoryEntry*)NULL;
+    freeList_->size  = end - start - SIZE_OF_HEADER;
+    freeList_->magic = MM_MAGIC;
 
     /* memory not used yet */
     usedList_ = (MemoryEntry*)NULL;
@@ -121,6 +122,7 @@ dword MemoryManager::getRealSize(dword size) {
 
 void* MemoryManager::allocate(dword size) {
 
+
     if (size == 0) return (dword)NULL;
 
     /* align16 */
@@ -129,12 +131,22 @@ void* MemoryManager::allocate(dword size) {
     MemoryEntry* current;
     dword realSize = getRealSize(size);
 
+    if (freeList_->magic != MM_MAGIC)
+    {
+        syscall_print("warning:memory may be destroyed\n");
+    }
+
     for (current = freeList_; ; current = current->next) {
 
         if (current->size >= realSize) break;
         if (current->next == (MemoryEntry*)NULL) {
             return (dword)NULL;
         }
+    }
+
+    if (current->magic != MM_MAGIC)
+    {
+        syscall_print("warning:memory may be destroyed\n");
     }
 
     if (current->size == realSize) {
@@ -148,6 +160,7 @@ void* MemoryManager::allocate(dword size) {
 
         MemoryEntry* freeBlock = (MemoryEntry*)((dword)current + realSize);
         freeBlock->size  = getRealSize(current->size) - realSize - SIZE_OF_HEADER;
+        freeBlock->magic = MM_MAGIC;
         current->size = size;
 
         deleteFromList(&freeList_, current);
@@ -168,6 +181,11 @@ void MemoryManager::free(void* address) {
     if (target < 1) return;
 
     MemoryEntry* entry = (MemoryEntry*)(target - SIZE_OF_HEADER);
+
+    if (entry->magic != MM_MAGIC)
+    {
+        syscall_print("warning:memory may be destroyed\n");
+    }
 
     dword size = entry->size;
 

@@ -60,7 +60,6 @@ int MonaMain(List<char*>* pekoe)
 {
     syscall_get_io();
 
-
     ide = new IDEDriver();
     IStorageDevice* cd = ide;
 
@@ -124,7 +123,7 @@ int MonaMain(List<char*>* pekoe)
     {
         printf("%c", buffer[i]);
     }
-    printf("[%s] %d bytes %d/%d/%d %d:%d:%d\n", (const char*)file->GetName(), file->GetSize(), file->year, file->month, file->day, file->hour, file->min, file->sec);
+//    printf("[%s] %d bytes %d/%d/%d %d:%d:%d\n", (const char*)file->GetName(), file->GetSize(), file->year, file->month, file->day, file->hour, file->min, file->sec);
 
     _A<CString> files = iso->GetFileSystemEntries("SRC/SERVERS");
 

@@ -21,6 +21,7 @@ namespace MonAPI {
 typedef struct memoryentry {
     struct memoryentry* next;
     dword size;
+    dword magic;
     char startAddress[0];
 } MemoryEntry;
 

@@ -42,6 +42,7 @@ dword ISO9660File::Read(void* buffer, dword size)
     dword readSize = sectorCount * ISO9660::SECTOR_SIZE;
 
     byte* temp = new byte[readSize];
+    printf("%s:%d size=%d\n", __FILE__, __LINE__, readSize);
     if (temp == NULL) return 0;
 
     bool readResult = iso->Read(lba, temp, readSize);
@@ -106,6 +107,7 @@ ISO9660::ISO9660(IStorageDevice* device, const CString& mountPath)
     this->device    = device;
     this->mountPath = mountPath;
     this->lastError = 0;
+    this->primaryVolumeDescriptorFound = false;
 }
 
 ISO9660::~ISO9660()
@@ -174,15 +176,19 @@ bool ISO9660::ReadVolumeDescriptor()
 {
     printf("%s:%d\n", __FILE__, __LINE__);
     int i;
+
     ISOBaseVolumeDescriptor* descriptor = new ISOBaseVolumeDescriptor;
-    printf("%s:%d\n", __FILE__, __LINE__);
+
+    printf("%s:%d desc=%x\n", __FILE__, __LINE__, descriptor);
     if (descriptor == NULL)
     {
         this->lastError = MEMORY_ALLOCATE_ERROR;
         return false;
     }
+
+
     printf("%s:%d\n", __FILE__, __LINE__);
-    for (i = 16; i <= 100; i++)
+    for (i = 16; i < 100; i++)
     {
         /* read */
         bool readResult = this->device->read(i, descriptor, SECTOR_SIZE) == 0;
@@ -193,6 +199,7 @@ bool ISO9660::ReadVolumeDescriptor()
             delete descriptor;
             return false;
         }
+
     printf("%s:%d\n", __FILE__, __LINE__);
         /* read primary descriptor */
         if (descriptor->type == ISO_PRIMARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
@@ -201,6 +208,7 @@ bool ISO9660::ReadVolumeDescriptor()
     printf("%s:%d\n", __FILE__, __LINE__);
             /* keep primary descriptor */
             this->pdescriptor = *p;
+            this->primaryVolumeDescriptorFound = true;
         }
     printf("%s:%d\n", __FILE__, __LINE__);
         /* end */
@@ -211,12 +219,11 @@ bool ISO9660::ReadVolumeDescriptor()
     }
     printf("%s:%d\n", __FILE__, __LINE__);
     /* invalid */
-    if (i == 100)
+    if (i == 100 || !primaryVolumeDescriptorFound)
     {
         this->lastError = VOLUME_DESCRIPTOR_NOT_FOUND;
         delete descriptor;
         return false;
-    printf("%s:%d\n", __FILE__, __LINE__);
     }
     printf("%s:%d\n", __FILE__, __LINE__);
     delete descriptor;
@@ -282,13 +289,12 @@ void ISO9660::SetDirectoryRelation(HList<DirectoryEntry*>* list, DirectoryEntry*
 
 void ISO9660::CreateDirectoryListFromPathTable(HList<DirectoryEntry*>* list, byte* buffer)
 {
-printf("id=%s\n", (const char*)CString(pdescriptor.system_id, 32));
+//printf("id=%s\n", (const char*)CString(pdescriptor.system_id, 32));
 
 
     printf("%s:%d\n", __FILE__, __LINE__);
     for (dword id = 1, position = 0; position < this->pdescriptor.path_table_size_l; id++)
     {
-    printf("%s:%d\n", __FILE__, __LINE__);
         DirectoryEntry* entry = new DirectoryEntry;
     printf("%s:%d\n", __FILE__, __LINE__);
 
@@ -308,8 +314,6 @@ printf("id=%s\n", (const char*)CString(pdescriptor.system_id, 32));
         else
         {
             entry->name = CString(pathEntry->name, pathEntry->length);
-    printf("%s:%d %s\n", __FILE__, __LINE__, (const char*)entry->name);
-
         }
 
         list->add(entry);
@@ -322,6 +326,7 @@ printf("id=%s\n", (const char*)CString(pdescriptor.system_id, 32));
 byte* ISO9660::ReadPathTableIntoBuffer()
 {
     dword readSize = ((dword)((this->pdescriptor.path_table_size_l + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    printf("%s:%d size=%d\n", __FILE__, __LINE__, readSize);
     byte* buffer = new byte[readSize];
 
     if (buffer == NULL)

@@ -24,7 +24,7 @@ public:
     virtual dword Read(void* buffer, dword size) = 0;
     virtual bool Seek(int position, int flag)    = 0;
     virtual dword GetSize() const                = 0;
-    virtual const char* GetName()                = 0;
+//    virtual const char* GetName()                = 0;
 
 public:
     int year;
