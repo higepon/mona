@@ -18,6 +18,7 @@ static IDEDriver* ide;
     bufferへの大量読み込みをチェック
     idle位いれようよ。
     busy loopがうっとぉしぃ。
+    atapi packet のlimitの意味。2048じゃなくて全体サイズ？
 */
 
 static void interrupt()
@@ -31,7 +32,9 @@ static void interrupt()
         switch (msg.header)
         {
         case MSG_INTERRUPTED:
-//            printf("interrupt irq=%d\n", msg.arg1);
+#if 0
+            printf("interrupt irq=%d\n", msg.arg1);
+#endif
             ide->interrupt();
             break;
         default:
@@ -40,13 +43,22 @@ static void interrupt()
     }
 }
 
+/*
+  エラー詳細を表示する。
+*/
+static void printError(const byte* error)
+{
+    for (int i = 0; i < 18; i++)
+    {
+        printf("erorr[%d]=%x\n", i, error[i]);
+    }
+}
 
 int MonaMain(List<char*>* pekoe)
 {
     syscall_get_io();
 
     ide = new IDEDriver();
-    ide->printDebug();
 
     /* find CD-ROM */
     int controller, deviceNo;
@@ -75,7 +87,7 @@ int MonaMain(List<char*>* pekoe)
 
     if (!ide->selectDevice(controller, deviceNo))
     {
-        printf("select device NG\n");
+        printf("select device NG error code = %d\n", ide->getLastError());
         delete ide;
         return 1;
     }
@@ -83,16 +95,26 @@ int MonaMain(List<char*>* pekoe)
     char* buf = (char*)malloc(6 * 1024 * 1024);
     memset(buf, 0, sizeof(buf));
 
-    printf("read result = %d\n", ide->read(16, buf, 6 * 1024 * 1024));
+    int readResult = ide->read(16, buf, 6 * 1024 * 1024);
+
+    if (readResult != 0)
+    {
+        byte buffer[18];
+        printf("read error result=%d error code = %d\n", ide->getLastError());
+        ide->getLastErrorDetail(buffer);
+        printError(buffer);
+        delete ide;
+        return 1;
+    }
 
     FileOutputStream fos("HDDUMP.TXT");
 
     printf("fileout:open=%d\n", fos.open());
 
-    printf("fileout:read=%d\n", fos.write((byte*)buf        , 512));
-    printf("fileout:read=%d\n", fos.write((byte*)(buf + 512), 512));
-    printf("fileout:read=%d\n", fos.write((byte*)buf  +1024      , 512));
-    printf("fileout:read=%d\n", fos.write((byte*)(buf +1536), 512));
+    printf("fileout:write=%d\n", fos.write((byte*)buf        , 512));
+    printf("fileout:write=%d\n", fos.write((byte*)(buf + 512), 512));
+    printf("fileout:write=%d\n", fos.write((byte*)buf  +1024      , 512));
+    printf("fileout:write=%d\n", fos.write((byte*)(buf +1536), 512));
 
     fos.close();
 

@@ -14,7 +14,7 @@
 
 #include <fat_write/IStorageDevice.h>
 #include <sys/types.h>
-#include <monapi/Cstring.h>
+#include <monapi/CString.h>
 
 /*----------------------------------------------------------------------
     IDEDriver
@@ -26,11 +26,12 @@ public:
     virtual ~IDEDriver();
 
 public:
-    void printDebug();
     void interrupt();
     bool selectDevice(int controller, int deviceNo);
     int read(dword lba, void* buffer, int size);
     bool findDevice(int type, int detail, int* controller, int* deviceNo);
+    int getLastError() const;
+    void getLastErrorDetail(byte* buffer);
 
 public:
     enum
@@ -95,26 +96,7 @@ private:
 
 private:
 
-    /* protocol: param IDEController */
-    bool protocolAtaNoneData(IDEController* controller, ATACommand* command);
-    bool protocolPacket(IDEController* controller, ATAPICommand* command);
-
-    bool commandIdleImmediate(IDEController* controller, int deviceNo);
-    void resetAndIdentify(IDEController* controller);
-    void identify(IDEController* controller, int deviceNo);
-    void identifyDetail(IDEController* controller, int deviceNo);
-    bool waitBusyClear(IDEController* controller);
-    int judgeDeviceType(byte high, byte low);
-    void printDebug(IDEController* controller, int deviceNo);
-    bool waitBusyAndDataRequestBothClear(IDEController* controller);
-    bool waitDrdySet(IDEController* controller);
-    int sendPioDataInCommand(IDEController* controller, ATACommand* command, word count, void* buf);
-
-    bool selectDevice(IDEController* controller, int deviceNo);
-    int readATAPI(IDEController* controller, dword lba, void* buffer, int size);
-    dword requestSense(IDEController* controller);
-
-private:
+    /* I/O */
     void outp8(IDEController* controller, int reg, byte value);
     byte inp8(IDEController* controller, int reg);
     void inp16(IDEController* controller, word* data, int length);
@@ -122,15 +104,39 @@ private:
     void outp16(IDEController* controller, int reg, word value);
     void outp16(IDEController* controller, word* data, int length);
 
+    /* flag utilities */
+    bool waitBusyClear(IDEController* controller);
+    bool waitBusyAndDataRequestBothClear(IDEController* controller);
+    bool waitDrdySet(IDEController* controller);
+
+    /* protocol: param IDEController. this layer returns error code */
+    bool protocolAtaNoneData(IDEController* controller, ATACommand* command);
+    bool protocolPacket(IDEController* controller, ATAPICommand* command);
+    bool protocolPioDataIn(IDEController* controller, ATACommand* command, word count, void* buf);
+
+    /* command : execute command using protocol function */
+    bool commandIdleImmediate(IDEController* controller, int deviceNo);
+    bool commandRequestSense(IDEController* controller);
+    bool commandRead10(IDEController* controller, dword lba, void* buffer, int size);
+    bool commandIdentify(IDEController* controller, int deviceNo, word* buffer);
+
+    /* private : functions */
+    void initialize(IDEController* controller);
+
+    void resetAndIdentify(IDEController* controller);
+    void identify(IDEController* controller, int deviceNo);
+    void identifyDetail(IDEController* controller, int deviceNo);
+
+    int judgeDeviceType(byte high, byte low);
+
+
+
+    bool selectDevice(IDEController* controller, int deviceNo);
+
+
 
 private:
-    IDEController controllers[2];
-    IDEController* whichController;
-    volatile void* atapiBuffer;
-    volatile int atapiReadDone;
-    volatile dword atapiTransferSize;
-    word sense[1024];
-    int lastError;
+
 
 private:
     enum
@@ -162,7 +168,20 @@ private:
         RETRY_MAX      = 2,
         DEV_HEAD_OBS   = 0xa0,
         LBA_FLG        = 0x40,
+        REQUEST_SENSE_BUFFER_SIZE = 18,
+        ATAPI_SECTOR_SIZE = 2048,
+        ATA_SECTOR_SIZE   = 512
     };
+
+
+private:
+    IDEController controllers[2];
+    IDEController* whichController;
+    volatile void* atapiBuffer;
+    volatile int atapiReadDone;
+    volatile dword atapiTransferSize;
+    byte requestSenseBuffer[REQUEST_SENSE_BUFFER_SIZE];
+    int lastError;
 
 };
 

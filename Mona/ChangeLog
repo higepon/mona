@@ -1,5 +1,9 @@
 2004-11-17  higepon  <higepon@users.sourceforge.jp>
 
+        * apps/non-gui/ata/IDEDriver.h: CString.hの記述ミス修正
+
+        * apps/non-gui/ata/IDEDriver.h: プロトコル･コマンド毎に分類
+
         * src/kernel/kernel.cpp: カーネルバージョン番号変更
 
         * apps/non-gui/ata/IDEDriver.cpp (requestSense): リファクタリング(関数名変更・idleImmediateコマンド追加)
