@@ -1,3 +1,9 @@
+2004-10-18  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gbrowser: ブラウザもどき追加
+
+        * apps/baygui/ghebtn: へぇ～ボタン追加
+
 2004-10-18  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monalibc/stdio.cpp: logprintf追加。
