@@ -181,12 +181,12 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 		return Icons_Archive;
 	}
 	else if (ext == ".BIN" || ext == ".BN2"
-		|| ext == ".ELF" || ext == ".EL2"
-		|| ext == ".EXE" || ext == ".EX2")
+		|| ext == ".ELF" || ext == ".EL2" || ext == ".EL5"
+		|| ext == ".EXE" || ext == ".EX2" || ext == ".EX5")
 	{
 		return Icons_Executable;
 	}
-	else if (ext == ".BMP" || ext == ".BM2" || ext == ".JPG")
+	else if (ext == ".BMP" || ext == ".BM2" || ext == ".BM5" || ext == ".JPG")
 	{
 		return Icons_Picture;
 	}
