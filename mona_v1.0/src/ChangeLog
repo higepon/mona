@@ -1,3 +1,7 @@
+2004-03-13  higepon  <higepon@users.sourceforge.jp>
+
+        * FDCDriver.cpp : checkDiskChange()実装
+
 2004-03-12  higepon  <higepon@users.sourceforge.jp>
 
         * システムコールの整理
