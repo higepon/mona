@@ -86,6 +86,8 @@ void keyStrokeHandler(dword scancode)
     /* EOI */
     outportb(0x20, 0x20);
 
+    logprintf("[key:%x:%s]\n", scancode, g_currentThread->process->getName());
+
     if (g_messenger->send("KEYBDMNG.SVR", &message))
     {
         g_console->printf("send failed");
@@ -115,7 +117,8 @@ void fault0dHandler(dword error)
     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
     g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
-#if 0
+#if 1
+    logprintf("name=%s\n", g_currentThread->process->getName());
     logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
     logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
     logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
@@ -242,6 +245,13 @@ void cpufaultHandler_6(void)
     g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
     g_console->printf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
     g_console->printf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#if 1
+    logprintf("name=%s\n", g_currentThread->process->getName());
+    logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    logprintf("cs =%x ds =%x ss =%x cr3=%x, %x\n", i->cs , i->ds , i->ss , i->cr3, realcr3);
+    logprintf("eflags=%x eip=%x\n", i->eflags, i->eip);
+#endif
     g_scheduler->dump();
     panic("unhandled:fault06 - invalid op code");
 
@@ -327,6 +337,16 @@ void dokodemoView() {
     g_console->printf("eflags=%x\n", i->eflags);
     g_console->printf("stack 0(%x) 1(%x) 2(%x) 3(%x)\n", j->stack0, j->stack1, j->stack2, j->stack3);
     g_console->printf("stack 4(%x) 6(%x) 5(%x) 7(%x)\n", j->stack4, j->stack5, j->stack6, j->stack7);
+
+#if 1
+    logprintf("\n");
+    logprintf("eax=%x ebx=%x ecx=%x edx=%x\n", i->eax, i->ebx, i->ecx, i->edx);
+    logprintf("esp=%x ebp=%x esi=%x edi=%x\n", i->esp, i->ebp, i->esi, i->edi);
+    logprintf("cs =%x ds =%x ss =%x cr3=%x\n", i->cs , i->ds , i->ss , i->cr3);
+    logprintf("eflags=%x\n", i->eflags);
+    logprintf("stack 0(%x) 1(%x) 2(%x) 3(%x)\n", j->stack0, j->stack1, j->stack2, j->stack3);
+    logprintf("stack 4(%x) 6(%x) 5(%x) 7(%x)\n", j->stack4, j->stack5, j->stack6, j->stack7);
+#endif
 }
 
 /*! \def global handler list */

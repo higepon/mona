@@ -242,12 +242,13 @@ void Scheduler::dump()
     {
         ThreadInfo* i = PTR_THREAD(thread);
         g_console->printf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+        logprintf("[r][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 
     FOREACH_N(waitq, Thread*, thread)
     {
         ThreadInfo* i = PTR_THREAD(thread);
-        g_console->printf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
+        logprintf("[w][%s,th=%x,eip=%x,cr3=%x esp0=%x\n", i->process->getName(), thread, i->archinfo->eip, i->archinfo->cr3, i->archinfo->esp0);
     }
 }
 
@@ -416,7 +417,7 @@ int ThreadOperation::switchThread(bool isProcessChanged, int num)
 {
     bool isUser = g_currentThread->process->isUserMode() && (g_currentThread->archinfo->cs & 0x03);
 
-#if 0
+#if 1
     ArchThreadInfo* i = g_currentThread->archinfo;
     logprintf("[%d]esp=%x ebp=%x cs =%d ds =%d ss =%d cr3=%x eflags=%x eip=%x ss0=%d esp0=%x gss0=%d gesp0=%x %s %s\n", num, i->esp, i->ebp, i->cs, i->ds, i->ss, i->cr3, i->eflags, i->eip, i->ss0, i->esp0, g_tss->ss0, g_tss->esp0,  g_currentThread->process->getName(), g_prevThread->process ? g_prevThread->process->getName() : "");
 
