@@ -4,7 +4,7 @@
 
     set up idt for interrupts
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002,2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -75,19 +75,43 @@ void setIdt(handler_st* p, int selector) {
     return;
 }
 
+/*!
+    \brief lidt
+
+    lidt
+
+    \author HigePon
+    \date   create:2002/07/25 update:
+*/
 void _sysLoadIdtr(idtr_st* idtr) {
 
     asm volatile("lidt (%0) ": :"p" (idtr));
     return;
 }
 
+/*!
+    \brief disable timer
 
+    disable timer interrupt
+    mask IMR bit 0
+
+    \author HigePon
+    \date   create:2003/01/12 update:
+*/
 void disableTimer() {
 
     byte in = inportb(0x21);
     outportb(0x21, in | 0x01);
 }
 
+/*!
+    \brief enable timer
+
+    enable timer interrupt
+
+    \author HigePon
+    \date   create:2003/01/12 update:
+*/
 void enableTimer() {
 
     byte in = inportb(0x21);

@@ -63,10 +63,10 @@ void startKernel(void) {
     /* re-set up GDT */
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
-    _sysUnlock();
 
+    /* disable timer */
     disableTimer();
-    enableTimer();
+    _sysUnlock();
 
     _sys_printf("IDT,GDT set done\n");
 
@@ -82,9 +82,6 @@ void startKernel(void) {
     /* check some */
     checkTypeSize();
     _sys_printf("Check type size done\n");
-
-    /* enable A20 */
-    //    IA32MemoryManager::enableA20();
 
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();

@@ -206,7 +206,7 @@ inline void ProcessManager::switchProcess() {
     bool next = taskidx_ %2 == 0;
 
     /* wait for */
-    if (taskidx_ <20) {
+    if (taskidx_ <2) {
         taskidx_++;
         return;
     }

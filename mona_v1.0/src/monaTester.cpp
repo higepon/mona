@@ -9,7 +9,7 @@
 
     \author  HigePon
     \version $Revision$
-    \date   create:2002/11/11 update:$$
+    \date   create:2002/11/11 update:$Date$
 */
 #include<monaVga.h>
 #include<monaIo.h>
@@ -126,6 +126,7 @@ void processTester() {
 
 
 void process1Tester() {
+    enableTimer();
 
     while (true) {
         for (dword i = 0; i < 900000; i++) {
@@ -153,7 +154,14 @@ void process2Tester() {
     return;
 }
 
+/*!
+    \brief test code for STLport
 
+    test code for STLport
+
+    \author HigePon
+    \date   create:2003/01/09 update:$Date$
+*/
 void STLTester() {
 
     _sys_printf("--------STL Test--------------------------------------------------------\n");
