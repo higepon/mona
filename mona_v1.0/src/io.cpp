@@ -1,3 +1,14 @@
+/*!
+    \file  io.cpp
+    \brief io functions
+
+    Copyright (c) 2003 HigePon
+    WITHOUT ANY WARRANTY
+
+    \author  HigePon
+    \version $Revision$
+    \date   create:2003/03/01 update:$Date$
+*/
 
 #include<io.h>
 
@@ -30,6 +41,13 @@ void outportb(dword port, byte value) {
    asm volatile ("outb %%al, %%dx": :"d" (port), "a" (value));
 }
 
+/*!
+    \brief get eflags
+
+    \return eflags
+    \author HigePon
+    \date   create:2002/03/21 update:
+*/
 dword get_eflags() {
 
     dword result;
@@ -41,6 +59,13 @@ dword get_eflags() {
     return result;
 }
 
+/*!
+    \brief set eflags
+
+    \param eflags eflags to set
+    \author HigePon
+    \date   create:2002/03/21 update:
+*/
 void  set_eflags(dword eflags) {
 
     asm volatile("movl   %0, %%eax \n"

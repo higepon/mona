@@ -15,6 +15,7 @@
 #include<semaphore.h>
 #include<monaKernel.h>
 #include<io.h>
+#include<global.h>
 
 /*!
     \brief up
@@ -34,7 +35,7 @@ int semaphore_up(semaphore* sem) {
 
     \param  sem target semaphore
     \author HigePon
-    \date   create:2003/01/31 update:
+    \date   create:2003/01/31 update:2003/03/21
 */
 int semaphore_down(semaphore* sem) {
 

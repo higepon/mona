@@ -1,3 +1,15 @@
+/*!
+    \file  disp.cpp
+    \brief disp function
+
+    Copyright (c) 2003 HigePon
+    WITHOUT ANY WARRANTY
+
+    \author  HigePon
+    \version $Revision$
+    \date   create:2003/03/01 update:$Date$
+*/
+
 #include<monaKernel.h>
 #include<kthread.h>
 #include<disp.h>
@@ -5,10 +17,6 @@
 #include<pic.h>
 #include<semaphore.h>
 #include<global.h>
-
-extern "C" void write_font(int a, char b, char c);
-extern "C" char pos_x;
-extern "C" char pos_y;
 
 static semaphore sem = 1;
 
@@ -39,7 +47,7 @@ void disp_name2() {
         disableTimer();
         g_console->printf("b");
         enableTimer();
-    }
+   }
 }
 
 void disp_name3() {

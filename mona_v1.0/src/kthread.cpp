@@ -102,6 +102,7 @@ void kthread_tick() {
 #define KTHREAD_STACK_START 0x800000
 #define KTHREAD_STACK_END   0x700000
 #define KTHREAD_STACK_SIZE  0x2000
+
 /*!
     \brief allcate stack for new thread
 
@@ -134,7 +135,6 @@ void kthread_yield() {
     /* software interrupt yeild */
     kthread_schedule();
 }
-
 
 /*!
     \brief thread yeild
@@ -182,11 +182,7 @@ void kthread_schedule() {
 
     kthread_add_to_prev_list(&runningList, temp);
 
-    //    g_kthread_current =  (&runningList)->next;
-
     g_kthread_current = temp;
-
-    debug_index++;
 
     /* switch */
     kthread_switch();
@@ -203,7 +199,13 @@ void kthread_switch() {
     arch_kthread_switch();
 }
 
+/*!
+    \brief initilize list
 
+    \param list list to initilize
+    \author HigePon
+    \date   create:2003/03/02 update:
+*/
 void kthread_init_list(Kthread* list) {
 
     list->prev = list;
@@ -211,6 +213,13 @@ void kthread_init_list(Kthread* list) {
     return;
 }
 
+/*!
+    \brief check is empty_
+
+    \param list list to check empty
+    \author HigePon
+    \date   create:2003/03/02 update:
+*/
 bool kthread_is_list_empty(Kthread* list) {
 
     if (list->next == list) return true;
@@ -251,7 +260,16 @@ void kthread_remove_from_list(Kthread* list, Kthread* thread) {
     return;
 }
 
+/*!
+    \brief get next from list
 
+    get next and remove it from list
+
+    \param list   thread list
+
+    \author HigePon
+    \date   create:2003/03/01 update:2003/03/06
+*/
 Kthread* kthread_get_next_from_list(Kthread* list) {
 
     Kthread* result;

@@ -15,13 +15,13 @@ byte rtc_read(byte reg) {
 
     byte result;
 
-    pushf();
+    dword eflags = get_eflags();
     disableInterrupt();
 
     outportb(RTC_ADRS, (byte)(reg & 0xff));
     result = inportb(RTC_DATA);
 
-    popf();
+    set_eflags(eflags);
     return result;
 }
 

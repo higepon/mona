@@ -36,7 +36,7 @@
 #include<rtc.h>
 
 
-char* version = "Mona develop beta 0.04a $Date$";
+char* version = "Mona develop beta 0.05a $Date$";
 
 
 dword demoStep;

@@ -136,7 +136,7 @@ SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h
 Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h \
-  include/io.h
+  include/io.h include/global.h include/kthread.h
 MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h include/monaVga.h \
   include/monaKernel.h include/monaOperator.h include/io.h \
@@ -146,7 +146,9 @@ GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
 kthread.o: kthread.cpp include/kthread.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h \
   include/monaIhandler.h include/monaIdt.h include/pic.h include/io.h \
-  include/monaOperator.h include/disp.h include/global.h
+  include/monaOperator.h include/disp.h include/global.h \
+  include/ProcessManager.h include/IA32MemoryManager.h include/monaVga.h \
+  include/rtc.h
 pic.o: pic.cpp include/pic.h include/io.h include/monaTypes.h \
   include/string.h
 io.o: io.cpp include/io.h include/monaTypes.h include/string.h
