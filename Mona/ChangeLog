@@ -4,6 +4,8 @@
 
 2005-03-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/ISO9660FileSystem.cpp (ISO9660FileSystem): デストラクタでのぬるぽを修正。
+
         * bin/root/SERVERS/.cvsignore: BN5追加。
 
         * src/lib/gui/.cvsignore: DL5追加。

@@ -24,6 +24,7 @@ int ChangeDrive(int drive)
     else if (drive == DRIVE_CD0)
     {
         if (!isofs->Initialize()) return MONA_FAILURE;
+
         currentDrive = DRIVE_CD0;
         fs = isofs;
         return MONA_SUCCESS;

@@ -49,6 +49,7 @@ void MessageLoop()
             case MSG_FILE_CHANGE_DRIVE:
             {
                 int result = ChangeDrive(msg.arg1);
+
                 Message::reply(&msg, result);
                 break;
             }

@@ -20,8 +20,9 @@ using namespace MonAPI;
 ----------------------------------------------------------------------*/
 ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* cd)
 {
-    this->cd        = cd;
-    this->lastError = NO_ERROR;
+    this->cd            = cd;
+    this->lastError     = NO_ERROR;
+    this->rootDirectory = NULL;
 }
 
 ISO9660FileSystem::~ISO9660FileSystem()
@@ -40,6 +41,7 @@ bool ISO9660FileSystem::Initialize()
     {
         return false;
     }
+
     return true;
 }
 
@@ -581,6 +583,8 @@ bool ISO9660FileSystem::SetDetailInformation(ISO9660File* entry)
 
 void ISO9660FileSystem::DeleteEntry(FileSystemEntry* entry)
 {
+    if (entry == NULL) return;
+
     if (!entry->IsDirectory())
     {
         delete entry;
