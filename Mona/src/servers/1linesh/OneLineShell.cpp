@@ -22,6 +22,8 @@
 
 using namespace MonAPI;
 
+bool isExited = false;
+
 OneLineShell::OneLineShell(){
 
   return;
@@ -37,23 +39,19 @@ void OneLineShell::service() {
   /* look up */
   dword myID = System::getThreadID();
 
-  dword targetID = Message::lookupMainThread("KEYBDMNG.SVR");
-  if(targetID == 0xFFFFFFFF){
+  dword keysvrID = Message::lookupMainThread("KEYBDMNG.SVR");
+  if(keysvrID == 0xFFFFFFFF){
     printf("Shell:KeyBoardServer not found\n");
     exit(1);
   }
 
-  /* create message for KEYBDMNG.SVR */
-  MessageInfo info;
-  Message::create(&info, MSG_KEY_REGIST_TO_SERVER, myID, 0, 0, NULL);
-
-  /* send */
-  if(Message::send(targetID, &info)){
+  /* send message for KEYBDMNG.SVR */
+  if(Message::send(keysvrID, MSG_KEY_REGIST_TO_SERVER, myID)){
       printf("Shell: key regist error\n");
   }
 
   /* Server start ok */
-  targetID = Message::lookupMainThread("INIT");
+  dword targetID = Message::lookupMainThread("INIT");
   if(targetID == 0xFFFFFFFF){
     targetID = Message::lookupMainThread("SHELL.SVR");
     if(targetID == 0xFFFFFFFF){
@@ -62,11 +60,8 @@ void OneLineShell::service() {
     }
   }
 
-  /* create message */
-  Message::create(&info, MSG_SERVER_START_OK, 0, 0, 0, NULL);
-
   /* send */
-  if(Message::send(targetID, &info)){
+  if(Message::send(targetID, MSG_SERVER_START_OK)){
     printf("ShellServer:INIT error\n");
   }
 
@@ -74,7 +69,8 @@ void OneLineShell::service() {
   ds.DrawCommandWindow();
   this->cmdHst.AddCommand(this->cmd);
   /* service loop */
-  while(1){
+  MessageInfo info;
+  while(!isExited){
     if(!Message::receive(&info)){
       if((info.arg2 & KEY_MODIFIER_DOWN)){
         KeyInfo keyInfo;
@@ -88,6 +84,12 @@ void OneLineShell::service() {
       }
     }
   }
+
+  /* send message for KEYBDMNG.SVR */
+  if(Message::send(keysvrID, MSG_KEY_UNREGIST_FROM_SERVER, myID)){
+      printf("Shell: key unregist error\n");
+  }
+
   return;
 }
 
@@ -99,7 +101,21 @@ int OneLineShell::OnKeyDown(KeyInfo keyInfo){
   case Keys::Enter:
     cTmp = (Charing *)this->cmd;
     if(cTmp->GetLength() == 0) break;
-    this->SetMessage(this->cmd.ExecuteCommand());
+    if(strcmp(*cTmp, "CHSH") == 0 || strcmp(*cTmp, "chsh") == 0){
+      int result = syscall_load_process("/SERVERS/SHELL.SVR", "SHELL.SVR", NULL);
+      if(result != 0){
+        this->SetMessage(result);
+      } else {
+        for(MessageInfo msg;;){
+          if(Message::receive(&msg) != 0) continue;
+          if(msg.header == MSG_SERVER_START_OK) break;
+        }
+        isExited = true;
+        this->SetMessage("Change shell to SHELL.SVR");
+      }
+    } else {
+      this->SetMessage(this->cmd.ExecuteCommand());
+    }
     cTmp = (Charing *)(this->cmdHst.GetCommand(GETLAST));
     if(cTmp->GetLength() == 0){
       this->cmdHst.UpdateHistory(this->cmd);

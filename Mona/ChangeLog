@@ -2,6 +2,8 @@
 
         * src/servers/shell/main.cpp: 内部コマンドCHSHで1lineshに切り替え
 
+        * src/servers/1linesh/OneLineShell.cpp: 内部コマンドCHSHで1lineshに切り替え
+
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
         * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)
