@@ -173,19 +173,24 @@ void FDCDriver::test() {
     console_->printf("FDCDriver::test() start\n");
 
     motor(ON);
+
+    recalibrate();
     recalibrate();
     waitPrint("after recalibrate");
 
     for (int i = 1; i < 2; i++) {
 
         memset(dmabuff_, 0x98, 512);
-        if (!write(i)) {
+        if (!write(i, dmabuff_)) {
 
             g_console->printf("read failed\n");
             motor(OFF);
             return;
         }
     }
+
+    //    for (int i = 0; i < 512; i++) g_console->printf("%x", dmabuff_[i]);
+
 
     motor(OFF);
     return;
@@ -412,8 +417,6 @@ bool FDCDriver::seek(byte track) {
         return false;
     }
 
-
-
     return true;
 }
 
@@ -470,16 +473,15 @@ void FDCDriver::readResults() {
     }
     resultsLength_ = i;
 
+    /* if not normal end show result */
+    if (resultsLength_ > 0 && (results_[0] & 0xC0)) {
 
-    console_->printf("resultsLength_=%d\n", resultsLength_);
+        for (int j = 0; j < resultsLength_; j++) {
 
-    /* debug show result */
-    for (int j = 0; j < resultsLength_; j++) {
-
-         console_->printf("result[%d] = %x ", j, (int)(results_[j]));
+            console_->printf("result[%d] = %x ", j, (int)(results_[j]));
+        }
+        console_->printf("\n");
     }
-    console_->printf("\n");
-
     return;
 }
 
@@ -678,28 +680,42 @@ bool FDCDriver::write(byte track, byte head, byte sector) {
     while(!waitInterrupt());
 
     waitPrint("after sendCommand");
+
     stopDMA();
     readResults();
     waitPrint("after read results");
     return true;
 }
 
-bool FDCDriver::read(int lba) {
+bool FDCDriver::read(int lba, byte* buf) {
 
     byte track, head, sector;
-    lbaToTHS(lba, track, head, sector);
-    return read(track, head, sector);
-}
 
-
-bool FDCDriver::write(int lba) {
-
-    byte track, head, sector;
     lbaToTHS(lba, track, head, sector);
 
     g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 
-    return write(track, head, sector);
+    if (!read(track, head, sector)) return false;
+
+    memcpy(buf, dmabuff_, 512);
+
+    return true;
+}
+
+
+bool FDCDriver::write(int lba, byte* buf) {
+
+    byte track, head, sector;
+
+    lbaToTHS(lba, track, head, sector);
+
+    memcpy(dmabuff_, buf,  512);
+
+    g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+
+    if (!write(track, head, sector)) return false;
+
+    return true;
 }
 
 void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {

@@ -27,11 +27,8 @@ class FDCDriver {
   public:
     void printStatus(const char*) const;
     void interrupt();
-    bool read(byte track, byte head, byte sector);
-    bool write(byte track, byte head, byte sector);
-    bool read(int lba);
-    bool write(int lba);
-    bool writeID(byte track, byte head, byte data);
+    bool read(int lba, byte* buf);
+    bool write(int lba, byte* buf);
     void test();
   private:
     void initilize();
@@ -53,7 +50,9 @@ class FDCDriver {
     void printDMACStatus(const byte status, const char*) const;
     void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
     void waitPrint(const char* msg);
-
+    bool read(byte track, byte head, byte sector);
+    bool write(byte track, byte head, byte sector);
+    bool writeID(byte track, byte head, byte data);
   private:
     byte version_;
     static byte results_[10];

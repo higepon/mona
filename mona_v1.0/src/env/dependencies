@@ -6,7 +6,7 @@ kernel.o: kernel.cpp include/global.h include/kthread.h include/types.h \
   include/IA32MemoryManager.h include/operator.h include/tester.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/ProcessManager.h include/ihandlers.h \
-  include/pic.h include/io.h include/rtc.h
+  include/pic.h include/io.h include/rtc.h include/BitMap.h
 idt.o: idt.cpp include/idt.h
 ihandlers.o: ihandlers.cpp include/idt.h include/KeyBoardManager.h \
   include/types.h include/string.h include/FDCDriver.h \

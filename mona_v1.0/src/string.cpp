@@ -100,3 +100,17 @@ int strcmp(const char* str1, const char* str2) {
     }
     return (unsigned char)*str1 - (unsigned char)*str2;
 }
+
+void* memcpy(void* s1, const void* s2, size_t size) {
+
+    char* p = (char*)s1;
+    const char* s = (char*)s2;
+
+    while (size > 0) {
+        *p = *s;
+        p++;
+        s++;
+        size--;
+    }
+    return s1;
+}

@@ -26,3 +26,4 @@ char* strcpy(char*, const char*);
 int strcmp(const char*, const char*);
 void* memmove(void*, const void*, size_t);
 int memcmp(const void*, const void*, size_t);
+void* memcpy(void* s1, const void* s2, size_t size);
