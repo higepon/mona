@@ -24,33 +24,30 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
+    printf("¢£changeDirectory to SOMEDIR\n");
     if (!fat->changeDirectoryRelative("SOMEDIR")) {
         printf("some dir not found");
     }
 
+    printf("¢£create file hige.cpp\n");
     if (!fat->createFlie("HIGE", "CPP")) {
 
-        printf("can not create file");
+        printf("can not create file=%d", fat->getErrorNo());
     }
 
+    printf("¢£open file hige.cpp\n");
     if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
 
         printf("open failed");
     }
 
+    printf("¢£write to hige.cpp\n");
     byte text[512];
-
     memset(text, 0x41, 512);
     if (!fat->write(text)) {
 
         printf("write failed");
     }
-
-    if (!fat->createFlie("HIGE", "h")) {
-
-        printf("can not create file");
-    }
-
 
     memset(text, 0x42, 512);
     if (!fat->write(text)) {

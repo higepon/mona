@@ -422,6 +422,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
         currentDirecotry_ = currentDirecotry;
         return false;
     }
+
     memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
 
     for (int j = 0; j < 16; j++) {
@@ -444,7 +445,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
             isOpen_         = true;
             readHasNext_    = true;
             firstWrite_     = true;
-	    openMode_       = mode;
+            openMode_       = mode;
             currentEntry_ = &(entries_[j]);
             printf("flie %s found\n", filename);
             return true;
@@ -460,12 +461,12 @@ bool FAT12::close() {
 
     if (openMode_ == WRITE_MODE) {
 
-	writeEntry();
+        writeEntry();
 
-	if (!writeFAT()) {
-	    readFAT(false);
-	    return false;
-	}
+        if (!writeFAT()) {
+            readFAT(false);
+            return false;
+        }
     }
     return true;
 }
@@ -492,16 +493,21 @@ bool FAT12::readHasNext() const {
     return readHasNext_;
 }
 
+/*!
+  \brief create file at current directory
+
+  \param name filename
+  \param ext  fileextension
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/03 update:2003/05/102
+*/
 bool FAT12::createFlie(const char* name, const char* ext) {
 
-    int lbp = clusterToLbp(currentDirecotry_);
-
     /* read current directory */
-    if (!(driver_->read(lbp, buf_))) {
-        errNum_ = DRIVER_READ_ERROR;
-        return false;
-    }
-    memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
+    if (!readEntry()) return false;
 
     /* find free entry */
     int freeIndex = -1;
@@ -516,14 +522,6 @@ bool FAT12::createFlie(const char* name, const char* ext) {
         /* no other entries_ */
         if (entries_[j].filename[0] == 0x00) break;
 
-        /* debug */
-        printf("\n");
-        for (int i = 0; i < 8; i++) printf("%c", (char)entries_[j].filename[i]);
-        printf("\n attribute %d",entries_[j].attribute);
-        printf("\n ftime[%d:%d:%d]", entries_[j].ftime.sec, entries_[j].ftime.min,  entries_[j].ftime.hour);
-        printf("\n fdate[%d:%d:%d]", entries_[j].fdate.day, entries_[j].fdate.month,  entries_[j].fdate.year);
-
-
         /* directory */
         if (entries_[j].attribute & ATTR_DIRECTORY) continue;
 
@@ -535,39 +533,30 @@ bool FAT12::createFlie(const char* name, const char* ext) {
         }
     }
 
-    if (freeIndex == -1) {
-        return false;
-    }
+    /* no empty entry */
+    if (freeIndex == -1)  return false;
 
+    /* find cluster */
     int cluster = map_->find();
-
     if (cluster == -1) return false;
 
+    /* file attribute */
     for (int k = 0; k < 8; k++) entries_[freeIndex].filename[k]  = ' ';
     for (int k = 0; k < 3; k++) entries_[freeIndex].extension[k] = ' ';
     for (int k = 0; k < 8 && name[k] != '\0'; k++) entries_[freeIndex].filename[k]  = name[k];
     for (int k = 0; k < 3 && name[k] != '\0'; k++) entries_[freeIndex].extension[k] = ext[k];
     entries_[freeIndex].filesize  = 0;
     entries_[freeIndex].cluster   = cluster;
-    entries_[freeIndex].attribute = 0x20;
+    entries_[freeIndex].attribute = ATTR_ARCHIVE;
 
-    printf("\n--createFile:cluster=%d", cluster);
+    if (!writeEntry()) return false;
 
+    /* regist FAT */
     setFATAt(cluster, getFATAt(1));
-    printf("\n--wrtten fat is %x", getFATAt(cluster));
-
-    /* write current directory */
-    memcpy(buf_, entries_, sizeof(DirectoryEntry) * 16);
-    if (!(driver_->write(lbp, buf_))) {
-        errNum_ = DRIVER_READ_ERROR;
-        return -1;
-    }
-
     if (!writeFAT()) {
         readFAT(false);
         return false;
     }
-
     return true;
 }
 
@@ -656,6 +645,7 @@ bool FAT12::write(byte* buffer, int size) {
     /* write buffer to Disk */
     int lbp = clusterToLbp(currentCluster_);
     if (!(driver_->write(lbp, buffer))) {
+        currentCluster_ = cluster;
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
@@ -690,9 +680,31 @@ bool FAT12::writeEntry() {
 
     memcpy(buf, entries_, sizeof(DirectoryEntry) * 16);
     if (!(driver_->write(lbp, buf))) {
+        errNum_ = DRIVER_WRITE_ERROR;
+        return false;
+    }
+    return true;
+}
+
+/*!
+  \brief read directory entry
+
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/05/10 update:
+*/
+bool FAT12::readEntry() {
+
+    byte buf[512];
+    int lbp = clusterToLbp(currentDirecotry_);
+
+    if (!(driver_->read(lbp, buf))) {
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
+
+    memcpy(entries_, buf, sizeof(DirectoryEntry) * 16);
     return true;
 }
 
