@@ -8,7 +8,7 @@ clean: touchdepend
 	@cd bit2mnf; $(MAKE) $@
 	@cd monaelf; $(MAKE) $@
 
-distclean: clean
+distclean:
 	rm -f fat_write/dependencies
 
 install:
