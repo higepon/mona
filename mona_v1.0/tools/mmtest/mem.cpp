@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
         exit(-1);
     }
 
-    MemoryManager& mm = MemoryManager::instance();
+    MemoryManager mm;
     mm.initialize((dword)memory, (dword)memory + MANAGE_SIZE);
 
     test(&mm, (dword)memory, (dword)memory + MANAGE_SIZE);
@@ -37,6 +37,38 @@ void test(MemoryManager* mm, dword start, dword end) {
 
     /* this test code expects 10mb of memory is availble */
     dword testNumber = 1;
+
+    /* test for message */
+    {
+        dword freeMememorySize = mm->getFreeMemorySize();
+        dword usedMememorySize = mm->getUsedMemorySize();
+
+        Message* message = (Message*)mm->allocate(sizeof(Message));
+        Message* message2 = (Message*)mm->allocate(sizeof(Message));
+        Message* message3 = (Message*)mm->allocate(sizeof(Message));
+
+        if ((dword)message > end || (dword)message < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
+        if ((dword)message2 > end || (dword)message2 < start) {
+            printf("test%d failed range\n", testNumber);
+            exit(-1);
+        }
+
+        mm->free((void*)message3);
+        mm->free((void*)message2);
+        mm->free((void*)message);
+
+        if (freeMememorySize != mm->getFreeMemorySize() || usedMememorySize != mm->getUsedMemorySize()) {
+
+            printf("test%d failed\n", testNumber);
+            exit(-1);
+        }
+        printf("test%d OK\n", testNumber);
+        testNumber++;
+    }
 
     /* test normal */
     {

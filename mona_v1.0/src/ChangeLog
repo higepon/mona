@@ -1,3 +1,7 @@
+2004-01-09  higepon  <higepon@users.sourceforge.jp>
+
+        * MemoryManager.cpp: メモリ割り当て時のバグを発見･修正
+
 2004-01-08  higepon  <higepon@users.sourceforge.jp>
 
         * loadProcessデバッグ中

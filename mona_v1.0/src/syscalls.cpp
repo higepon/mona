@@ -25,8 +25,6 @@ extern "C" void put_pixel(int x, int y, char color);
 
 void syscall_entrance() {
 
-    g_console->printf("system call");
-
     int x, y;
     ArchThreadInfo* info = g_currentThread->archinfo;
 

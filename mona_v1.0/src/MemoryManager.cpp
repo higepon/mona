@@ -143,15 +143,16 @@ void* MemoryManager::allocate(dword size) {
 
     for (current = freeList_; ; current = current->next) {
 
-        if (current->size >= realSize) break;
-        if (current->next == (MemoryEntry*)NULL) return (dword)NULL;
+        if (current->size >= realSize + SIZE_OF_HEADER) break;
+        if (current->next == (MemoryEntry*)NULL) {
+            return (dword)NULL;
+        }
     }
 
     if (current->size == realSize) {
 
         deleteFromList(&freeList_, current);
         addToList(&usedList_, current);
-
         return (current->startAddress);
 
     } else if (current->size - realSize >= SIZE_OF_HEADER) {
@@ -163,11 +164,9 @@ void* MemoryManager::allocate(dword size) {
         deleteFromList(&freeList_, current);
         addToList(&usedList_, current);
         addToList(&freeList_, freeBlock);
-
         return (current->startAddress);
 
     } else {
-
         return (dword)NULL;
     }
 }

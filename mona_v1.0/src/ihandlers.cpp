@@ -39,8 +39,6 @@ void keyStrokeHandler(dword scancode) {
     km.setKeyScanCode((byte)scancode);
     km.getKeyInfo(&info);
 
-    g_console->printf("key");
-
     memset(&message, 0, sizeof(Message));
     message.arg1 = info.keycode;
     message.arg2 = info.modifiers;
