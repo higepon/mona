@@ -397,6 +397,10 @@ ISO9660Directory* ISO9660FileSystem::FindDirectoryEntry(ISO9660Directory* root, 
             root = root->parent;
             continue;
         }
+        else if (element == "" || element == NULL)
+        {
+            continue;
+        }
 
         found = false;
         for (int i = 0; i < root->children.size(); i++)
