@@ -21,21 +21,221 @@ using namespace MonAPI;
 #define INIT_PROCESS "MONITOR.BIN"
 
 /*----------------------------------------------------------------------
+    Private variables
+----------------------------------------------------------------------*/
+static CommonParameters* commonParams;
+static Screen screen;
+static const char* cursor[] =
+{
+    "1",
+    "11",
+    "121",
+    "1221",
+    "12221",
+    "122221",
+    "1222221",
+    "12222221",
+    "122222221",
+    "1222222221",
+    "12222211111",
+    "1221221",
+    "121 1221",
+    "11  1221",
+    "1    1221",
+    "     1221",
+    "      1221",
+    "      1221",
+    "       11",
+    NULL
+};
+
+/*----------------------------------------------------------------------
+    Cursor
+----------------------------------------------------------------------*/
+class Cursor
+{
+private:
+    int width, height, sw, sh, bypp, bx, by;
+    byte* buffer;
+
+public:
+    Cursor() : width(0), height(0), bx(0), by(0), buffer(NULL)
+    {
+        for (int i = 0; cursor[i] != NULL; i++)
+        {
+            int len = strlen(cursor[i]);
+            if (this->width < len) this->width = len;
+            this->height = i + 1;
+        }
+        this->sw = screen.getWidth();
+        this->sh = screen.getHeight();
+        this->bypp = screen.getBpp() / 8;
+    }
+
+    virtual ~Cursor()
+    {
+        if (this->buffer != NULL) delete [] this->buffer;
+    }
+
+    void Erase()
+    {
+        if (this->buffer == NULL) return;
+
+        byte* p1 = this->buffer;
+        byte* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
+        for (int y = 0; y < this->height; y++)
+        {
+            const char* data = cursor[y];
+            int yy = this->by + y, len = strlen(data);
+            for (int x = 0; x < this->width; x++)
+            {
+                int xx = this->bx + x;
+                if (x < len && data[x] != ' ' && 0 <= xx && xx < this->sw && 0 <= yy && yy < this->sh)
+                {
+                    memcpy(p2, p1, this->bypp);
+                }
+                p1 += this->bypp;
+                p2 += this->bypp;
+            }
+            p2 += (this->sw - this->width) * this->bypp;
+        }
+    }
+
+public:
+    void Paint(int pos_x, int pos_y)
+    {
+        this->bx = pos_x;
+        this->by = pos_y;
+        if (this->buffer == NULL) this->buffer = new byte[this->width * this->height * this->bypp];
+        byte* p1 = this->buffer;
+        byte* p2 = screen.getVRAM() + (this->bx + this->sw * this->by) * this->bypp;
+        for (int y = 0; y < this->height; y++)
+        {
+            const char* data = cursor[y];
+            int yy = this->by + y, len = strlen(data);
+            for (int x = 0; x < this->width; x++)
+            {
+                int xx = this->bx + x;
+                if (x < len && data[x] != ' ' && 0 <= xx && xx < this->sw && 0 <= yy && yy < this->sh)
+                {
+                    memcpy(p1, p2, this->bypp);
+                    switch (data[x])
+                    {
+                        case '1':
+                            memset(p2, 0xff, this->bypp);
+                            break;
+                        case '2':
+                            memset(p2, 0, this->bypp);
+                            break;
+                    }
+                }
+                else
+                {
+                    memset(p1, 0, this->bypp);
+                }
+                p1 += this->bypp;
+                p2 += this->bypp;
+            }
+            p2 += (this->sw - this->width) * this->bypp;
+        }
+    }
+};
+
+/*----------------------------------------------------------------------
     Mouse Server
 ----------------------------------------------------------------------*/
 class Mouse
 {
-  public:
-    static int init();
-    static int waitWritable();
-    static int waitReadable();
-    static void enable();
-    static void disable();
-    static void enableKeyboard();
-    static void disableKeyboard();
-
-  public:
+public:
     static const int MOUSE_TIMEOUT = 50000;
+
+    static int init()
+    {
+        byte data;
+        outp8(0x64, 0x20);
+        if (waitReadable())
+        {
+            return 1;
+        }
+        data = inp8(0x60);
+
+        outp8(0x64, 0x60);
+        if (waitWritable())
+        {
+            return 2;
+        }
+
+        outp8(0x60, data & (~0x30) | 0x3);
+        if (!waitReadable())
+        {
+            inp8(0x60);
+        }
+
+        outp8(0x64, 0xd4);
+        if (waitWritable())
+        {
+            return 4;
+        }
+        outp8(0x60, 0xf4);
+        if (waitReadable())
+        {
+            return 5;
+        }
+        inp8(0x60);
+        return 0;
+    }
+
+    static int waitWritable()
+    {
+        byte status;
+        int i;
+
+        for (i = 0, status = inp8(0x64); i < MOUSE_TIMEOUT; i++, status = inp8(0x64)) {
+
+            /* writable */
+            if ((status & 0x03) == 0x00) {
+                break;
+            }
+        }
+        return (i == MOUSE_TIMEOUT) ? -1 : 0;
+    }
+
+    static int waitReadable()
+    {
+        byte status;
+        int i;
+
+        for (i = 0, status = inp8(0x64); i < MOUSE_TIMEOUT; i++, status = inp8(0x64)) {
+
+            /* readable */
+            if ((status & 0x01) == 0x01) {
+                break;
+            }
+        }
+
+        return (i == MOUSE_TIMEOUT) ? -1 : 0;
+    }
+
+    static void enable()
+    {
+        /* enable mouse interrupt slave unmask */
+        monapi_set_irq(12, MONAPI_TRUE, MONAPI_TRUE);
+    }
+
+    static void disable()
+    {
+        monapi_set_irq(12, MONAPI_FALSE, MONAPI_TRUE);
+    }
+
+    static void enableKeyboard()
+    {
+        monapi_set_irq(1, MONAPI_TRUE, MONAPI_TRUE);
+    }
+
+    static void disableKeyboard()
+    {
+        monapi_set_irq(1, MONAPI_FALSE, MONAPI_TRUE);
+    }
 };
 
 /*----------------------------------------------------------------------
@@ -43,22 +243,6 @@ class Mouse
 ----------------------------------------------------------------------*/
 class MouseServer
 {
-public:
-    MouseServer();
-    virtual ~MouseServer();
-
-public:
-    bool Initialize();
-    void MessageLoop();
-
-protected:
-    void Paint();
-    bool SendServerOK();
-    void SendMouseInformation();
-    void PaintCursor(int x, int y);
-    int GetMouseData();
-    bool SetCurosor();
-
 private:
     bool needPaint;
     int disableCount;
@@ -66,344 +250,206 @@ private:
     char dx, dy;
     byte button, prevButton;
     int w, h;
-    Screen* screen;
     Screen* vscreen;
     List<dword>* destList;
-};
+    Cursor cursor;
 
-/*----------------------------------------------------------------------
-    Private variables
-----------------------------------------------------------------------*/
-static CommonParameters* commonParams;
-static MouseServer* server;
-
-/*----------------------------------------------------------------------
-    Mouse
-----------------------------------------------------------------------*/
-int Mouse::init()
-{
-    byte data;
-    outp8(0x64, 0x20);
-    if (waitReadable())
+public:
+    MouseServer() : needPaint(false), disableCount(0)
     {
-        return 1;
     }
-    data = inp8(0x60);
 
-    outp8(0x64, 0x60);
-    if (waitWritable())
+    virtual ~MouseServer()
     {
-        return 2;
+        delete this->vscreen;
     }
 
-    outp8(0x60, data & (~0x30) | 0x3);
-    if (!waitReadable())
+public:
+    bool Initialize()
     {
-        inp8(0x60);
-    }
-
-    outp8(0x64, 0xd4);
-    if (waitWritable())
-    {
-        return 4;
-    }
-    outp8(0x60, 0xf4);
-    if (waitReadable())
-    {
-        return 5;
-    }
-    inp8(0x60);
-    return 0;
-}
-
-int Mouse::waitWritable() {
-
-    byte status;
-    int i;
-
-    for (i = 0, status = inp8(0x64); i < MOUSE_TIMEOUT; i++, status = inp8(0x64)) {
-
-        /* writable */
-        if ((status & 0x03) == 0x00) {
-            break;
-        }
-    }
-    return (i == MOUSE_TIMEOUT) ? -1 : 0;
-}
-
-int Mouse::waitReadable() {
-
-    byte status;
-    int i;
-
-    for (i = 0, status = inp8(0x64); i < MOUSE_TIMEOUT; i++, status = inp8(0x64)) {
-
-        /* readable */
-        if ((status & 0x01) == 0x01) {
-            break;
-        }
-    }
-
-    return (i == MOUSE_TIMEOUT) ? -1 : 0;
-}
-
-void Mouse::enable()
-{
-    /* enable mouse interrupt slave unmask */
-    monapi_set_irq(12, MONAPI_TRUE, MONAPI_TRUE);
-}
-
-void Mouse::disable()
-{
-    monapi_set_irq(12, MONAPI_FALSE, MONAPI_TRUE);
-}
-
-void Mouse::disableKeyboard()
-{
-    monapi_set_irq(1, MONAPI_FALSE, MONAPI_TRUE);
-}
-
-void Mouse::enableKeyboard()
-{
-    monapi_set_irq(1, MONAPI_TRUE, MONAPI_TRUE);
-}
-
-/*----------------------------------------------------------------------
-    MouseServer
-----------------------------------------------------------------------*/
-MouseServer::MouseServer() : needPaint(false), disableCount(0)
-{
-}
-
-MouseServer::~MouseServer()
-{
-    delete this->screen;
-    delete this->vscreen;
-}
-
-bool MouseServer::Initialize()
-{
-    MessageInfo msg;
-
-    if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
-    {
-        syscall_print("MouseServer: can not get common parameters\n");
-        return false;
-    }
-
-    commonParams = (CommonParameters*)MemoryMap::map(msg.arg2);
-
-    /* mouse information destination list */
-    this->destList = new HList<dword>();
-
-    if (this->destList == NULL)
-    {
-        syscall_print("MouseServer: destList error\n");
-        return false;
-    }
-
-    /* create screen */
-    this->screen  = new Screen();
-    this->vscreen = new VirtualScreen(40 * 1024);
-
-    if (this->screen == NULL || this->vscreen == NULL)
-    {
-        printf("MouseServer: screen error\n");
-        return false;
-    }
-
-    /* screen size */
-    this->w = screen->getWidth();
-    this->h = screen->getHeight();
-
-    /* draw mouse cursor to virtual screen */
-    for (int i = 0; i < 5; i++)
-    {
-        this->vscreen->fillRect16(0, i, i + 1, 1, Color::rgb(0x00, 0xCC, 0x56));
-    }
-
-    for (int i = 0; i < 2; i++)
-    {
-        this->vscreen->fillRect16(0, i + 5, 2 - i, 1, Color::rgb(0x00, 0xCC, 0x56));
-    }
-
-    /* cursor to center */
-    commonParams->mouse.x = this->posX = this->prevX = this->w / 2;
-    commonParams->mouse.y = this->posY = this->prevY = this->h / 2;
-    commonParams->mouse.buttons = this->button = this->prevButton = 0;
-
-    /* server start ok */
-    if (!SendServerOK()) return false;
-
-    PaintCursor(this->posX, this->posY);
-
-    return true;
-}
-
-void MouseServer::MessageLoop()
-{
-    MessageInfo receive;
-
-    for (;;)
-    {
-        if (Message::receive(&receive)) continue;
-
-        switch(receive.header)
+        MessageInfo msg;
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
         {
-        case MSG_MOUSE_REGIST_TO_SERVER:
+            syscall_print("Mouse Server: can not get common parameters\n");
+            return false;
+        }
+        commonParams = (CommonParameters*)MemoryMap::map(msg.arg2);
 
-            /* arg1 = tid */
-            this->destList->add(receive.arg1);
-            Message::reply(&receive);
-            break;
+        /* mouse information destination list */
+        this->destList = new HList<dword>();
+        if (this->destList == NULL)
+        {
+            syscall_print("Mouse Server: destList error\n");
+            return false;
+        }
 
-        case MSG_MOUSE_UNREGIST_FROM_SERVER:
+        /* screen size */
+        this->w = screen.getWidth();
+        this->h = screen.getHeight();
 
-            /* arg1 = tid */
-            this->destList->remove(receive.arg1);
-            Message::reply(&receive);
-            break;
+        /* cursor to center */
+        commonParams->mouse.x = this->posX = this->prevX = this->w / 2;
+        commonParams->mouse.y = this->posY = this->prevY = this->h / 2;
+        commonParams->mouse.buttons = this->button = this->prevButton = 0;
 
-       case MSG_MOUSE_ENABLE_CURSOR:
+        /* server start ok */
+        if (!SendServerOK()) return false;
 
-            if (this->disableCount > 0)
+        cursor.Paint(this->posX, this->posY);
+
+        return true;
+    }
+
+    void MessageLoop()
+    {
+        for (MessageInfo receive;;)
+        {
+            if (Message::receive(&receive)) continue;
+
+            switch(receive.header)
             {
-                disableCount--;
-                PaintCursor(this->prevX, this->prevY);
+            case MSG_MOUSE_REGIST_TO_SERVER:
+                /* arg1 = tid */
+                this->destList->add(receive.arg1);
+                Message::reply(&receive);
+                break;
+
+            case MSG_MOUSE_UNREGIST_FROM_SERVER:
+                /* arg1 = tid */
+                this->destList->remove(receive.arg1);
+                Message::reply(&receive);
+                break;
+
+           case MSG_MOUSE_ENABLE_CURSOR:
+                if (this->disableCount > 0)
+                {
+                    this->disableCount--;
+                    if (this->disableCount == 0) cursor.Paint(this->prevX, this->prevY);
+                }
+                Message::reply(&receive);
+                break;
+
+            case MSG_MOUSE_DISABLE_CURSOR:
+                if (this->disableCount == 0) cursor.Erase();
+                this->disableCount++;
+                Message::reply(&receive);
+                break;
+
+            case MSG_MOUSE_GET_CURSOR_POSITION:
+                Message::reply(&receive, this->prevX, this->prevY);
+                break;
+
+            case MSG_INTERRUPTED:
+                /* we get not all data */
+                if (GetMouseData() != 2) break;
+
+                /* state not changed. */
+                if (!SetCurosor()) break;
+
+                Paint();
+                SendMouseInformation();
+
+                break;
+
+            default:
+                /* ignore */
+                printf("mouse:header=%x", receive.header);
+                break;
             }
-
-            Message::reply(&receive);
-
-            break;
-
-        case MSG_MOUSE_DISABLE_CURSOR:
-
-            PaintCursor(this->prevX, this->prevY);
-            disableCount++;
-
-            Message::reply(&receive);
-
-            break;
-
-        case MSG_MOUSE_GET_CURSOR_POSITION:
-
-            Message::reply(&receive, this->prevX, this->prevY);
-            break;
-
-        case MSG_INTERRUPTED:
-
-            /* we get not all data */
-            if (GetMouseData() != 2) break;
-
-            /* state not changed. */
-            if (!SetCurosor()) break;
-
-            Paint();
-            SendMouseInformation();
-
-            break;
-
-        default:
-
-            /* ignore */
-            printf("mouse:header=%x", receive.header);
-            break;
         }
     }
-}
 
-bool MouseServer::SetCurosor()
-{
-    /* mouse info */
-    this->posX += (int)(((double)dx) * 1.5);
-    this->posY += (int)(((double)dy) * 1.5);
-
-    /* mouse cursor size */
-    if (this->posX >= this->w) this->posX = this->w - 1;
-    if (this->posY >= this->h) this->posY = this->h - 1;
-    if (this->posX < 0) this->posX = 0;
-    if (this->posY < 0) this->posY = 0;
-
-    /* mouse state changed? */
-    return ((this->prevButton != this->button) || ((this->prevX != this->posX || this->prevY != this->posY)));
-}
-
-int MouseServer::GetMouseData()
-{
-    static int state = 0;
-
-    byte data = inp8(0x60);
-
-    if(state == 0 && !(data & 0x08)) return -1;
-
-    switch(state & 3)
+protected:
+    void Paint()
     {
-    case 0:
-        this->button = (data & 0x01) | (data & 0x02);
-        state = 1;
-        this->needPaint = false;
-        break;
-    case 1:
-        this->dx = data;
-        state = 2;
-        break;
-    case 2:
-        this->dy = -1 * data;
-        state = 0;
-        this->needPaint = true;
-        break;
-    }
-
-    return state & 3;
-}
-
-void MouseServer::Paint()
-{
-    PaintCursor(this->prevX, this->prevY);
-    PaintCursor(this->posX , this->posY);
-    commonParams->mouse.x = this->prevX = this->posX;
-    commonParams->mouse.y = this->prevY = this->posY;
-    commonParams->mouse.buttons = this->prevButton = this->button;
-}
-
-void MouseServer::SendMouseInformation()
-{
-    MessageInfo info;
-    Message::create(&info, MSG_MOUSE_INFO, this->posX, this->posY, this->button);
-
-    for (int i = this->destList->size() - 1; i >= 0; i--)
-    {
-        if (Message::send(this->destList->get(i), &info))
+        if (this->disableCount == 0)
         {
-            printf("Mouse:send error to thread id = %x", this->destList->get(i));
-            this->destList->removeAt(i);
+            cursor.Erase();
+            cursor.Paint(this->posX, this->posY);
+        }
+        commonParams->mouse.x = this->prevX = this->posX;
+        commonParams->mouse.y = this->prevY = this->posY;
+        commonParams->mouse.buttons = this->prevButton = this->button;
+    }
+
+    bool SendServerOK()
+    {
+        dword targetID = Message::lookupMainThread(INIT_PROCESS);
+        if (targetID == THREAD_UNKNOWN)
+        {
+            printf("Mouse Server: MONITER not found\n");
+            return false;
+        }
+
+        if (Message::send(targetID, MSG_SERVER_START_OK))
+        {
+            printf("Mouse Server: server start send error\n");
+            return false;
+        }
+
+        return true;
+    }
+
+    void SendMouseInformation()
+    {
+        MessageInfo info;
+        Message::create(&info, MSG_MOUSE_INFO, this->posX, this->posY, this->button);
+
+        for (int i = this->destList->size() - 1; i >= 0; i--)
+        {
+            if (Message::send(this->destList->get(i), &info))
+            {
+                printf("Mouse Server: send error to thread id = %x", this->destList->get(i));
+                this->destList->removeAt(i);
+            }
         }
     }
-}
 
-bool MouseServer::SendServerOK()
-{
-    dword targetID = Message::lookupMainThread(INIT_PROCESS);
-    if (targetID == THREAD_UNKNOWN)
+    int GetMouseData()
     {
-        printf("MouseServer:MONITER not found\n");
-        return false;
+        static int state = 0;
+
+        byte data = inp8(0x60);
+
+        if(state == 0 && !(data & 0x08)) return -1;
+
+        switch (state & 3)
+        {
+        case 0:
+            this->button = (data & 0x01) | (data & 0x02);
+            state = 1;
+            this->needPaint = false;
+            break;
+        case 1:
+            this->dx = data;
+            state = 2;
+            break;
+        case 2:
+            this->dy = -1 * data;
+            state = 0;
+            this->needPaint = true;
+            break;
+        }
+
+        return state & 3;
     }
 
-    if (Message::send(targetID, MSG_SERVER_START_OK))
+    bool SetCurosor()
     {
-        printf("MouseServer:server start send error\n");
-        return false;
+        /* mouse info */
+        this->posX += (int)(((double)dx) * 1.5);
+        this->posY += (int)(((double)dy) * 1.5);
+
+        /* mouse cursor size */
+        if (this->posX >= this->w) this->posX = this->w - 1;
+        if (this->posY >= this->h) this->posY = this->h - 1;
+        if (this->posX < 0) this->posX = 0;
+        if (this->posY < 0) this->posY = 0;
+
+        /* mouse state changed? */
+        return ((this->prevButton != this->button) || ((this->prevX != this->posX || this->prevY != this->posY)));
     }
-
-    return true;
-}
-
-void MouseServer::PaintCursor(int x, int y)
-{
-    if (this->disableCount > 0) return;
-    Screen::bitblt(screen, x, y, 5, 7, vscreen, 0, 0, Raster::XOR);
-}
+};
 
 /*----------------------------------------------------------------------
     Main
@@ -425,10 +471,10 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* Mouse server initialize */
-    server = new MouseServer();
-    if (!server->Initialize())
+    MouseServer server;
+    if (!server.Initialize())
     {
-        syscall_print("MouseServer: initialize error\n");
+        syscall_print("Mouse Server: initialize error\n");
         return -1;
     }
 
@@ -438,9 +484,8 @@ int MonaMain(List<char*>* pekoe)
     /* we receive MSG_INTERRUPTED from IRQ12 Handler */
     syscall_set_irq_receiver(12);
 
-
-
     /* service start */
-    server->MessageLoop();
+    server.MessageLoop();
+
     return 0;
 }

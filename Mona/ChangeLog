@@ -1,3 +1,7 @@
+2005-02-12  csharp  <csharp@users.sourceforge.jp>
+
+        * src/servers/mouse/main.cpp: カーソルの形状を変更
+
 2005-02-12  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/IDEDriver.cpp (initialize): setDeviceTypeFirst, setDeviceTypeSecondの呼び出し順序を変更。これによりVmwareでデバイスの認識が正常化。
