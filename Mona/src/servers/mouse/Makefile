@@ -2,7 +2,7 @@ TARGET  = MOUSE.SVR
 SOURCES = main.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/app-elf.inc
+include $(MONADIR)/env/monapi-elf.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 
