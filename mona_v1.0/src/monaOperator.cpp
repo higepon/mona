@@ -28,6 +28,19 @@ void operator delete(void* address) {
     mm.freeMemory(address);
     return;
 }
+
+void* new[](size_t size) {
+
+    X86MemoryManager& mm = X86MemoryManager::instance();
+    return mm.allocateMemory(size);
+}
+
+void delete[](void* address) {
+
+    X86MemoryManager& mm = X86MemoryManager::instance();
+    mm.freeMemory(address);
+    return;
+}
 #endif
 
 void* malloc(unsigned long size) {
