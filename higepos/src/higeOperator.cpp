@@ -13,6 +13,7 @@
 */
 #include<X86MemoryManager.h>
 #include<higeOperator.h>
+#include<Sub.h>
 
 void* operator new(unsigned long size) {
 
@@ -25,4 +26,14 @@ void operator delete(void* address) {
     X86MemoryManager& mm = X86MemoryManager::instance();
     mm.freeMemory((unsigned long)address);
     return;
+}
+
+int getNumber() {
+    Sub& sub = Sub::instance();
+    return sub.getNumber();
+}
+
+char* getName() {
+    Sub& sub = Sub::instance();
+    return sub.getName();
 }

@@ -23,7 +23,9 @@ SRC        = higepos_kernel.cpp   \
              x86MemoryManager.cpp \
              purevirtual.cpp      \
              higeOperator.cpp     \
-             higeUtil.cpp
+             higeUtil.cpp         \
+             Sub.cpp              \
+             Base.cpp
 
 HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/vga.h              \
@@ -33,7 +35,9 @@ HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/MemoryManager.h    \
              ${INCLUDE}/X86MemoryManager.h \
              ${INCLUDE}/higeOperator.h     \
-             ${INCLUDE}/higeUtil.h
+             ${INCLUDE}/higeUtil.h         \
+             ${INCLUDE}/Base.h             \
+             ${INCLUDE}/Sub.h
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higepos_kernel.o   \
              ${BIN}/vga.o              \
@@ -44,7 +48,10 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/X86MemoryManager.o \
              ${BIN}/higeOperator.o     \
              ${BIN}/purevirtual.o      \
-             ${BIN}/higeUtil.o
+             ${BIN}/higeUtil.o         \
+             ${BIN}/Base.o             \
+             ${BIN}/Sub.o
+
 
 # src to html & document
 WEB : ${BIN}/higeboot.bin
@@ -72,6 +79,8 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} purevirtual.cpp -o ${BIN}/purevirtual.o
 	${CC} -I $(INCLUDE) ${CFLAGS} higeOperator.cpp -o ${BIN}/higeOperator.o
 	${CC} -I $(INCLUDE) ${CFLAGS} higeUtil.cpp -o ${BIN}/higeUtil.o
+	${CC} -I $(INCLUDE) ${CFLAGS} Base.cpp -o ${BIN}/Base.o
+	${CC} -I $(INCLUDE) ${CFLAGS} Sub.cpp  -o ${BIN}/Sub.o
 	${LD} -n -Ttext 0x1200 -static --oformat binary -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third_dis.asm
 #	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}

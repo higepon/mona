@@ -16,6 +16,8 @@
 #include<idt.h>
 #include<io.h>
 #include<X86MemoryManager.h>
+#include<Sub.h>
+#include<higeOperator.h>
 //#include<higeUtil.h>
 
 /*!
@@ -34,16 +36,22 @@ void startKernel(void) {
     _sysPrint("Higepos Kernel start!!\nPowered by 2ch\n");
     _sysPrint("**************************************\n");
 
-    X86MemoryManager& mm = X86MemoryManager::instance();
-    _sysPrint(mm.getMessage());
-    _sysPrint("\n");
-    _sysPrint(mm.getName());
-    _sysPrint("\n");
+//      X86MemoryManager& mm = X86MemoryManager::instance();
+//      _sysPrint(mm.getMessage());
+//      _sysPrint("\n");
+//      _sysPrint(mm.getName());
+//      _sysPrint("\n");
 
     _sysSetIdt();
     _sysInitIo();
     _sysUnlock();
-    _sysPrint("idt set done!");
+    _sysPrint("idt set done!\n");
+
+    Sub& sub = Sub::instance();
+    _sysPrintInt(sub.getNumber());
+    _sysPrint(sub.getName());
+    //    _sysPrint(getName());
+    //    _sysPrintInt(getNumber());
 
     //    Point* point = new Point(-5, -10);
     //    _sysPrintInt(point->getX());
