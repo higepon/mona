@@ -30,7 +30,7 @@ using namespace System::Mona::Forms;
 #undef WIN32
 #endif
 
-#define  WABA_VERSION    "0.1.5"
+#define  WABA_VERSION    "0.1.7"
 #define  VM_OS           "MONA"
 #define  VM_USER         "MONA"
 #define  g_mainWinOffX   0
@@ -76,7 +76,7 @@ protected:
 	/* マウスクリック */
 		int vlist[6];
 
-		printf("x, y %d,%d\n", e->X, e->Y);
+		//printf("x, y %d,%d\n", e->X, e->Y);
 		vlist[0] = 200; // type
 		vlist[1] = 0; // key
 		vlist[2] = e->X; // x

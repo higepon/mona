@@ -83,11 +83,7 @@ public:
 public:
     bool Set(byte* elf, dword size);
     int GetType() const;
-    bool Relocate(byte* base);
-    bool Relocate(Elf32_Shdr* relSection, Elf32_Rel* relEntry);
     bool CreateImage(byte* to);
-    Elf32_Addr GetEntry() const;
-    Elf32_Addr GetImageSize() const;
 
 private:
     void SetType();

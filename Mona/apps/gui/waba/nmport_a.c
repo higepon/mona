@@ -69,13 +69,14 @@ function files and the VM code itself contained in waba.c
 #define UNLOCK_CLASS_HEAP
 
 #define uchar unsigned char
-#define int32 long
-#define uint32 unsigned long
+#define int32 int
+#define uint32 unsigned int
 #define float32 float
 #define int16 short
 #define uint16 unsigned short
 
 #define MAX_CLASS    64
+#define HASHTABLE_SIZE 100
 #define AUTO_MALLOC  0
 #define REWIND_CODE  1
 #define COORDINATE   180
@@ -95,6 +96,8 @@ function files and the VM code itself contained in waba.c
 #define DRAW_AND     2
 #define DRAW_OR      3
 #define DRAW_XOR     4
+#define Font_PLAIN   0
+#define Font_BOLD    1
 
 // WHEN PORTING: You need to define functions that convert a string
 // of 2 or 4 bytes in network byte order to a 16 or 32 bit value as follows:
@@ -111,6 +114,8 @@ function files and the VM code itself contained in waba.c
 #define getUInt16(b) (uint16)(((b)[0]<<8)|(b)[1])
 #define getInt32(b) (int32)( (uint32)((b)[0])<<24 | (uint32)((b)[1])<<16 | (uint32)((b)[2])<<8 | (uint32)((b)[3]) )
 #define getInt16(b) (int16)(((b)[0]<<8)|(b)[1])
+#define inGetUInt32(b) (uint32)( (uint32)((b)[3])<<24 | (uint32)((b)[2])<<16 | (uint32)((b)[1])<<8 | (uint32)((b)[0]) )
+#define inGetUInt16(b) (uint16)( (uint16)((b)[1])<<8 | (uint16)((b)[0]) )
 
 // WHEN PORTING: You need to define a function that converts 4 bytes in
 // network byte order to a 32 bit floating point value
@@ -128,11 +133,7 @@ function files and the VM code itself contained in waba.c
     return f;
     }
 
-#if defined(MONAGUI) || defined(YAWIN32)
 /* static */ void *waba_calloc(int size) {
-#else
-/* static */ void *calloc(int size) {
-#endif
     char *p = (char*)malloc(size);
     if(p){
         memset(p, 0, size);
@@ -141,7 +142,7 @@ function files and the VM code itself contained in waba.c
         //mallocŽ¸”s
 #if defined(OSASK)
         lib_close(1);
-#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
+#elif defined(MONA)
         exit(1);
 #endif
         return NULL;
@@ -238,11 +239,7 @@ function files and the VM code itself contained in waba.c
 // On platforms that have malloc() and free, we can simply use them as
 // follows:
 
-#if defined(MONAGUI) || defined(YAWIN32)
 #define xmalloc(size) waba_calloc(size);
-#else
-#define xmalloc(size) calloc(size);
-#endif
 
 #define xfree(ptr) free(ptr)
 

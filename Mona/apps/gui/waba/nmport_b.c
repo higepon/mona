@@ -132,18 +132,24 @@ bytecode that waba supports.
 /* static */ struct LIB_TEXTBOX *wintitle;
 /* static */ int *signalbox0;
 /* static */ int *sig_ptr;
-#elif defined(MONA) || defined(MONAGUI)
+#elif defined(MONA)
 /* static */ //Screen screen;
-_P<System::Drawing::Bitmap> image;
+/* static */ _P<System::Drawing::Bitmap> image;
+/* static */ //uchar *image;
+/* static */ WObject mainWinObj;
+/* static */ WClassMethod *method_event, *method_paint;
 #endif
 /* static */ int g_mainWinTimerId = 0;
+/* static */ int g_mainWinCX0 = g_mainWinOffX;
+/* static */ int g_mainWinCY0 = g_mainWinOffY;
+/* static */ int g_mainWinCX1 = g_mainWinWidth;
+/* static */ int g_mainWinCY1 = g_mainWinHeight;
 /* static */ int numClassRecords1, numClassRecords2;
+/* static */ WObject Hashtable_keys[HASHTABLE_SIZE];
+/* static */ uint32 Hashtable_elements[HASHTABLE_SIZE];
 /* static */ uint32 classRecordOfs1[MAX_CLASS], classRecordOfs2[MAX_CLASS];
 /* static */ uint32 classRecordSize1[MAX_CLASS], classRecordSize2[MAX_CLASS];
 /* static */ uchar *classesMap1, *classesMap2;
-/* static */ WObject mainWinObj;
-/* static */ WClassMethod *method_event, *method_paint;
-/* static */ int32 GraphicsRGB16, GraphicsDrawOP, GraphicsTransX, GraphicsTransY;
 #ifdef QUICKBIND
 /* static */ int32 postPaintMethodMapNum, postEventMethodMapNum;
 #endif
@@ -300,6 +306,54 @@ _P<System::Drawing::Bitmap> image;
 }
 #endif
 
+/* static */ int Hashtable_put(WObject key, uint32 *object){
+/* Hashtableにキーを設定する */
+	int i;
+	for (i = 0; i < HASHTABLE_SIZE; i++) {
+		if (Hashtable_keys[i] == 0) {
+			Hashtable_keys[i] = key;
+			Hashtable_elements[i] = (int)(&object[0]);
+			printf("Hashtable_put(%d)\n", key);
+			return 1;
+		}
+	}
+	printf("Hashtable_put fault\n");
+	return 0;
+}
+
+/* static */ int Hashtable_remove(WObject key){
+/* Hashtableからオブジェクトを削除する */
+	int i;
+	uint32 *list;
+	for (i = 0; i < HASHTABLE_SIZE; i++) {
+		if (Hashtable_keys[i] == key) {
+			Hashtable_keys[i] = 0;
+			list = (uint32 *)Hashtable_elements[i];
+			xfree(list);
+			Hashtable_elements[i] = 0;
+			printf("Hashtable_remove(%d)\n", key);
+			return 1;
+		}
+	}
+	printf("Hashtable_remove fault\n");
+	return 0;
+}
+
+/* static */ int Hashtable_get(WObject key, uint32 **object){
+/* Hashtableからオブジェクトを得る */
+	int i;
+	for (i = 0; i < HASHTABLE_SIZE; i++) {
+		if (Hashtable_keys[i] == key) {
+			*object = (uint32 *)Hashtable_elements[i];
+			//printf("Hashtable_get(%d)\n", key);
+			return 1;
+		}
+	}
+	*object = NULL;
+	printf("Hashtable_get fault\n");
+	return 0;
+}
+
 /* static */ void setsystimer(int32 duration){
 /* システムタイマーを設定する */
 #if defined(OSASK)
@@ -326,76 +380,100 @@ _P<System::Drawing::Bitmap> image;
 #endif
 }
 
+/* static */ void my_exit(int code)
 /* アプリケーション終了 */
+{
 #if defined(OSASK)
-#define my_exit(code) lib_close(code)
-#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
-#define my_exit(code) exit(code)
+	lib_close(code);
+#elif defined(MONA)
+	exit(code);
 #endif
+}
 
+/* 24bit -> 24bit */
+#define getRGB24(r, g, b) ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF))
 /* 24bit -> 16bit */
-#if defined(OSASK)
-#define getRGB16(r, g, b) ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF))
-#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
-//#define getRGB16(r, g, b) ((r & 0xF8) << 8 | (g & 0xFC) << 3 | (b & 0xF8) >> 3)
-#define getRGB16(r, g, b) ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF))
-#endif
+#define getRGB16(r, g, b) ((r & 0xF8) << 8 | (g & 0xFC) << 3 | (b & 0xF8) >> 3)
 
-int calc_seq_code(int x, int y)
+#define getAlpha(c) (0x100 - ((c >> 24) & 0xFF))
+#define getRed(c)   ((c >> 16) & 0xFF)
+#define getGreen(c) ((c >> 8) & 0xFF)
+#define getBlue(c)  (c & 0xFF)
+
+/* static */ uint32 calc_alpha(uint32 src, uint32 dst, uchar a)
+{
+	int16 r1, g1, b1, r2, g2, b2, r3, g3, b3;
+
+	r1 = getRed(src)   + 1;
+	g1 = getGreen(src) + 1;
+	b1 = getBlue(src)  + 1;
+	r2 = getRed(dst)   + 1;
+	g2 = getGreen(dst) + 1;
+	b2 = getBlue(dst)  + 1;
+	//r3 = (r2 * a + r1 * (256 - a))/256 - 1;
+	//g3 = (g2 * a + g1 * (256 - a))/256 - 1;
+	//b3 = (b2 * a + b1 * (256 - a))/256 - 1;
+	r3 = ((r2 * a) >> 8) + r1  - ((a * r1) >> 8) - 1;
+	g3 = ((g2 * a) >> 8) + g1  - ((a * g1) >> 8) - 1;
+	b3 = ((b2 * a) >> 8) + b1  - ((a * b1) >> 8) - 1;
+	return getRGB24(r3, g3, b3);
+}
+
+/* static */ int calc_seq_code(int x, int y)
 /* 端点分類コードを求める */
 {
 	int code = 0;
-	if (x < 0) code += CLIP_LEFT;
-	if (x > g_mainWinWidth) code += CLIP_RIGHT;
-	if (y < 0) code += CLIP_TOP;
-	if (y > g_mainWinHeight) code += CLIP_BOTTOM;
+	if (x < g_mainWinCX0) code += CLIP_LEFT;
+	if (x > g_mainWinCX1) code += CLIP_RIGHT;
+	if (y < g_mainWinCY0) code += CLIP_TOP;
+	if (y > g_mainWinCY1) code += CLIP_BOTTOM;
 	return code;
 }
 
-int calc_clipped_point(int code, int x0, int y0, int x1, int y1, int *x, int *y)
+/* static */ int calc_clipped_point(int code, int x0, int y0, int x1, int y1, int *x, int *y)
 /* クリッピング後の座標を求める */
 {
 	int cx, cy;
 	/* ウィンドウの左端より外側にある */
 	if ((code & CLIP_LEFT) != 0) {
-		cy = ( y1 - y0 ) * ( g_mainWinOffX - x0 ) / ( x1 - x0 ) + y0;
-		if(( cy >= g_mainWinOffY ) && ( cy <= g_mainWinHeight )) {
-			*x = g_mainWinOffX;
+		cy = ( y1 - y0 ) * ( g_mainWinCX0 - x0 ) / ( x1 - x0 ) + y0;
+		if(( cy >= g_mainWinCY0 ) && ( cy <= g_mainWinCY1 )) {
+			*x = g_mainWinCX0;
 			*y = cy;
 			return 1;  /* エリア内に収まったら終了 */
 		}
 	}
 	/* ウィンドウの右端より外側にある */
 	if ( ( code & CLIP_RIGHT ) != 0 ) {
-		cy = ( y1 - y0 ) * ( g_mainWinWidth - x0 ) / ( x1 - x0 ) + y0;
-		if ( ( cy >= g_mainWinOffY ) && ( cy <= g_mainWinHeight ) ) {
-			*x = g_mainWinWidth;
+		cy = ( y1 - y0 ) * ( g_mainWinCX1 - x0 ) / ( x1 - x0 ) + y0;
+		if ( ( cy >= g_mainWinCY0 ) && ( cy <= g_mainWinCY1 ) ) {
+			*x = g_mainWinCX1;
 			*y = cy;
 			return 1;  /* エリア内に収まったら終了 */
 		}
 	}
 	/* ウィンドウの上端より外側にある */
 	if ( ( code & CLIP_TOP ) != 0) {
-		cx = ( x1 - x0 ) * ( g_mainWinOffY - y0 ) / ( y1 - y0 ) + x0;
-		if ( ( cx >= g_mainWinOffX ) && ( cx <= g_mainWinWidth ) ) {
+		cx = ( x1 - x0 ) * ( g_mainWinCY0 - y0 ) / ( y1 - y0 ) + x0;
+		if ( ( cx >= g_mainWinCX0 ) && ( cx <= g_mainWinCX1 ) ) {
 			*x = cx;
-			*y = g_mainWinOffY;	
+			*y = g_mainWinCY0;	
 			return 1;  /* エリア内に収まったら終了 */
 		}
 	}
 	/* ウィンドウの下端より外側にある */
 	if ( ( code & CLIP_BOTTOM ) != 0 ) {
-		cx = ( x1 - x0 ) * ( g_mainWinHeight - y0 ) / ( y1 - y0 ) + x0;
-		if( ( cx >= g_mainWinOffX ) && ( cx <= g_mainWinWidth ) ) {
+		cx = ( x1 - x0 ) * ( g_mainWinCY1 - y0 ) / ( y1 - y0 ) + x0;
+		if( ( cx >= g_mainWinCX0 ) && ( cx <= g_mainWinCX1 ) ) {
 			*x = cx;
-			*y = g_mainWinHeight;
+			*y = g_mainWinCY1;
 			return 1;  /* エリア内に収まったら終了 */
 		}
 	}
 	return -1;  /* クリッピングされなかった場合、線分は完全に不可視 */
 }
 
-int clipping(int *x0, int *y0, int *x1, int *y1)
+/* static */ int clipping(int *x0, int *y0, int *x1, int *y1)
 /* クリッピングメインルーチン
  >0 ... クリッピングされた
  0  ... クリッピングの必要なし
@@ -426,38 +504,168 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	#define LIB_GBOX_BUF16(gbox) ((unsigned short *) LIB_GBOX_BUF(gbox))
 	#define LIB_GBOX_BUF32(gbox) ((unsigned int *) LIB_GBOX_BUF(gbox))
 #endif
-
-/* static */ void my_flushgbox0(int x0, int x1, int y0, int y1){
-	int x  = (x0 < x1) ? x0 : x1;
-	int y  = (y0 < y1) ? y0 : y1;
-	int w  = (x0 < x1) ? x1 - x0 : (x0 == x1) ? 1 : x0 - x1;
-	int h  = (y0 < y1) ? y1 - y0 : (y0 == y1) ? 1 : y0 - y1;
-
-	lib_flushgraphbox(0x8004, window, x, y, w, h, 
-		(g_mainWinWidth - w) * 4, LIB_GBOX_BUF32(gbox) + y * g_mainWinWidth + x);
-}
 #endif
 
-/* static */ void my_putpixel(int x0, int y0, int32 rgb16){
+/* static */ void my_flushgbox0(int x0, int y0, int x1, int y1){
 #if defined(OSASK)
-	*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) = rgb16;
-#elif defined(MONA) || defined(MONAGUI)
-	//screen.putPixel16(x0 + g_mainWinOffX, y0 + g_mainWinOffY, rgb16);
-	image->SetPixel(x0, y0, System::Drawing::Color::FromArgb((rgb16 >>16) & 0xFF, (rgb16 >> 8) & 0xFF, rgb16 & 0xFF));
-#elif defined(YAWIN32)
-	unsigned char* p;
-	if (x0 < 0 || x0 >= g_mainWinWidth || y0 < 0 || y0 >= g_mainWinHeight) return;
-	p = &g_mainWinBuffer[(x0 + y0 * g_mainWinWidth) * 3];
-	p[0] = rgb16 & 0xFF;
-	p[1] = (rgb16 >> 8) & 0xFF;
-	p[2] = (rgb16 >>16) & 0xFF;
+	int x, y, w, h;
+
+	if (x0 == 0 && y0 == 0 && x1 == g_mainWinWidth && y1 == g_mainWinHeight) {
+		lib_flushgraphbox(0x8004, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, LIB_GBOX_BUF32(gbox));
+	} else {
+		if (x0 < 0) x0 = 0;
+		if (y0 < 0) y0 = 0;
+		if (x1 >= g_mainWinWidth)  x1 = g_mainWinWidth  - 1;
+		if (y1 >= g_mainWinHeight) y1 = g_mainWinHeight - 1;
+		x  = (x0 < x1) ? x0 : x1;
+		y  = (y0 < y1) ? y0 : y1;
+		w  = (x0 < x1) ? x1 - x0 + 1 : x0 - x1 + 1;
+		h  = (y0 < y1) ? y1 - y0 + 1 : y0 - y1 + 1;
+		lib_flushgraphbox(0x8004, window, x, y, w, h, 
+			(g_mainWinWidth - w) * 4, LIB_GBOX_BUF32(gbox) + y * g_mainWinWidth + x);
+	}
 #endif
 }
 
-/* static */ void my_drawstr0(int x0, int y0, char* str, int32 rgb16) {
+#define WOBJ_ImageWidth(o) (objectPtr(o))[1].intValue
+#define WOBJ_ImageHeight(o) (objectPtr(o))[2].intValue
+
+/* static */ int32 my_getpixel0(int x0, int y0){
+#if defined(OSASK)
+	return *(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX));
+#elif defined(MONA)
+	return 0;
+#endif
+}
+
+/* static */ void my_putpixel0(int x0, int y0, uint32 rgb24, int32 dop, int width, int height, uint32 *ibuff){
+#if defined(OSASK)
+	if (x0 >= g_mainWinCX1 || y0 >= g_mainWinCY1) return;
+	if (width == 0 && height == 0) {
+		uint32 src;
+		
+		if (rgb24 >= 0xFF000000) {
+			// 透過色（描画しない）
+		} else if (0x1000000 <= rgb24 && rgb24 < 0xFF000000) {
+			src = (uint32)(*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)));
+			*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) = 
+				calc_alpha(src, (uint32)rgb24, getAlpha(rgb24)); // アルファブレンディング
+		} else if (dop == DRAW_AND) {
+			*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) &= rgb24;
+		} else if (dop == DRAW_OR) {
+			*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) |= rgb24;
+		} else if (dop == DRAW_XOR) {
+			*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) ^= rgb24;
+		} else {
+			*(LIB_GBOX_BUF32(gbox) + (y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) = rgb24;
+		}
+	} else {
+		//width  = WOBJ_ImageWidth(image);
+		//height = WOBJ_ImageHeight(image);
+		//if (!Hashtable_get(image, &ibuff)) return;
+		if (dop == DRAW_AND) {
+			ibuff[width * y0 + x0] &= rgb24;
+		} else if (dop == DRAW_OR) {
+			ibuff[width * y0 + x0] |= rgb24;
+		} else if (dop == DRAW_XOR) {
+			ibuff[width * y0 + x0] ^= rgb24;
+		} else {
+			ibuff[width * y0 + x0] = rgb24;
+		}
+	}
+#elif defined(MONA)
+	//screen.putPixel16(x0 + g_mainWinOffX, y0 + g_mainWinOffY, rgb24);
+	image->SetPixel(x0, y0, System::Drawing::Color::FromArgb((rgb24 >>16) & 0xFF, (rgb24 >> 8) & 0xFF, rgb24 & 0xFF));
+	//int i = ((y0 + g_mainWinOffY) * g_mainWinWidth + (x0 + g_mainWinOffX)) * 3;
+	//image[i] = ((rgb24 >>16) & 0xFF);
+	//image[i + 1] = ((rgb24 >> 8) & 0xFF);
+	//image[i + 2] = (rgb24 & 0xFF);
+	//image[i] = 0xFF;
+#endif
+}
+
+/* static */ void my_drawstr0(int x0, int y0, char* str, int32 fstyle, uint32 rgb24, int32 dop, int iw, int ih, uint32 *ibuff) {
 /* グラフィックボックスに文字を描く */
+#if defined(OSASK)
+	int i = 0, j = 0, k = 0, l = 0, n = 0, cnt = 0, x1 = 0, y1 = 0;
+	uchar c1 = 0, c2 = 0, c3 = 0;
+	uchar adder[4][3] = {
+		{0,0,0},{8,0,8},{16,8,0},{24,8,8}
+	};
+
 	//printf("%s\n", str);
+	//while (str[i] != 0 && i < xstrlen(str)){
+	for (i = 0; i < xstrlen(str); i++) {
+		// 文字列の終端
+		if (str[i] == 0) break;
+		// 1 バイト目
+		c1 = (uchar)str[i];
+		// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
+		if (0x20 <= c1 && c1 <= 0x7F) {
+			//printf("n = %d\n", c1);
+			n = c1;
+		// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
+		} else if (0xC2 <= c1 && c1 <= 0xDF) {
+			c2 = (uchar)str[++i];
+			n = ((c1 & 0x1F) >> 6) | (c2 & 0x3F);
+		// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
+		} else if (0xE0 <= c1 && c1 <= 0xEF) {
+			c2 = (uchar)str[++i];
+			c3 = (uchar)str[++i];
+			n = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+		} else {
+			n = 0;
+		}
+		n = getFontIndex(n);
+		//printf("n = %d\n", n);
+		// 半角フォント描画
+		if (n >= 0x49C00){
+			for (j = 0; j < 16; j++){
+				for (k = 7; k >= 0; k--){
+					x1 = cnt * 8 + (7 - k) + x0;
+					y1 = j + y0;
+					if (((jisx0208[n + j] >> k) & 0x1) == 1 && 
+						x1 < g_mainWinCX1 && y1 < g_mainWinCY1)
+					{
+						my_putpixel0(x1, y1, rgb24, dop, iw, ih, ibuff);
+						// 太字
+						if (fstyle == Font_BOLD && x1 + 1 < g_mainWinCX1) {
+							my_putpixel0(x1 + 1, y1, rgb24, dop, iw, ih, ibuff);
+						}
+					}
+				}
+			}
+			cnt++;
+		// 全角フォント描画
+		} else {
+			for (l = 0; l < 4; l++){
+				for (j = 0; j < 8; j++){
+					for (k = 7; k >= 0; k--){
+						x1 = cnt * 8 + (7 - k) + x0 + adder[l][1];
+						y1 = j + y0 + adder[l][2];
+						if (((jisx0208[n + j + adder[l][0]] >> k) & 0x1) == 1 && 
+							x1 < g_mainWinCX1 && y1 < g_mainWinCY1)
+						{
+							my_putpixel0(x1, y1, rgb24, dop, iw, ih, ibuff);
+							// 太字
+							if (fstyle == Font_BOLD && x1 + 1 < g_mainWinCX1) {
+								my_putpixel0(x1 + 1, y1, rgb24, dop, iw, ih, ibuff);
+							}
+						}
+					}
+				}
+			}
+			cnt += 2;
+		}
+	}
+
+	if (iw == 0 && ih == 0)
+		//my_flushgbox0(0, 0, g_mainWinWidth, g_mainWinHeight);
+		my_flushgbox0(x0, y0, x1, y0 + 16);
+#elif defined(MONA)
 	int i = 0, j, k, c, x1, y1;
+
+	//printf("%s\n", str);
 	while (str[i] != 0 && i <= 25){
 		for (j = 0; j < 16; j++){
 			for (k = 7; k >= 0; k--){
@@ -469,20 +677,17 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 					x1 < g_mainWinWidth && 
 					y1 < g_mainWinHeight)
 				{
-					my_putpixel(x1, y1, rgb16);
+					my_putpixel0(x1, y1, rgb24, dop, 0, 0, NULL);
 				}
 			}
 		}
 		i++;
 	}
-#if defined(OSASK)
-	lib_flushgraphbox(0x8004, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, LIB_GBOX_BUF32(gbox));
-	//my_flushgbox0(0, y0, g_mainWinWidth, y0 + 16);
 #endif
 }
 
-/* static */ void my_fillrect0(int x0, int y0, int w, int h, int32 rgb16) {
-/* グラフィックボックスに直線を引く */
+/* static */ void my_fillrect0(int x0, int y0, int w, int h, uint32 rgb24, int32 dop, int iw, int ih, uint32 *ibuff) {
+/* 矩形を塗りつぶす */
 	int i, j;
 	int x1 = x0 + w;
 	int y1 = y0 + h;
@@ -492,17 +697,16 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 
 	for (i = x0; i <= x1; i++) {
 		for (j = y0; j <= y1; j++) {
-			my_putpixel(i, j, rgb16);
+			my_putpixel0(i, j, rgb24, dop, iw, ih, ibuff);
 		}
 	}
 
-#if defined(OSASK)
-	lib_flushgraphbox(0x8004, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, LIB_GBOX_BUF32(gbox));
-	//my_flushgbox0(x0, y0, x1, y1);
-#endif
+	if (iw == 0 && ih == 0)
+		//my_flushgbox0(0, 0, g_mainWinWidth, g_mainWinHeight);
+		my_flushgbox0(x0, y0, x1, y1);
 }
 
-/* static */ void my_drawline0(int x0, int y0, int x1, int y1, int32 rgb16) {
+/* static */ void my_drawline0(int x0, int y0, int x1, int y1, uint32 rgb24, int32 dop, int iw, int ih, uint32* ibuff) {
 /* グラフィックボックスに直線を引く */
 	int E,x,y,dx,dy,sx,sy,i;
 
@@ -520,7 +724,7 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	if( dx >= dy ) {
 		E = -dx;
 		for( i = 0; i <= dx; i++ ) {
-			my_putpixel(x, y, rgb16);
+			my_putpixel0(x, y, rgb24, dop, iw, ih, ibuff);
 			x += sx;
 			E += 2 * dy;
 			if( E >= 0 ) {
@@ -532,7 +736,7 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	} else {
 		E = -dy;
 		for( i = 0; i <= dy; i++ ) {
-			my_putpixel(x, y, rgb16);
+			my_putpixel0(x, y, rgb24, dop, iw, ih, ibuff);
 			y += sy;
 			E += 2 * dx;
 			if( E >= 0 ) {
@@ -542,10 +746,9 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		}
 	}
 
-#if defined(OSASK)
-	//lib_flushgraphbox(0x8004, window, 0, 0, g_mainWinWidth, g_mainWinHeight, 0, LIB_GBOX_BUF32(gbox));
-	my_flushgbox0(x0, x1, y0, y1);
-#endif
+	if (iw == 0 && ih == 0)
+		//my_flushgbox0(0, 0, g_mainWinWidth, g_mainWinHeight);
+		my_flushgbox0(x0, y0, x1, y1);
 }
 
 //static void dumpStackTrace(){
@@ -568,58 +771,41 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		i = getsignalw();
 	} while (i < 16 || 31 < i);
 	if (i != 16){
-		printf("base class read error(%d)\n");
+		printf("base class read error(%d)\n", i);
 		return;
 	}else{
-		printf("base class open succeed\n");
+		//printf("base class open succeed\n");
 		filesize1 = lib_readmodulesize(0x0220);
 		printf("filesize=%d\n", filesize1);
 	}
+
+	// クラスマップ用領域確保
+	//classesMap1 = xmalloc(filesize1); // メモリ確保
 
 	// ファイル読み込み
 	fp1 = (char *) lib_readCSd(0x0010 /* mapping領域の始まり */);
 	lib_mapmodule(0x0000 /* opt */, 0x0220 /* slot */, 0x5 /* R-mode */, filesize1 /* map-window size */, fp1, 0);
 	classesMap1 = fp1;
 	numClassRecords1 = getUInt32(classesMap1+4);
-	for (i = 0 ; i< numClassRecords1; i++) {
+	//printf("numClassRecords=%d\n", numClassRecords1);
+	for ( i=0 ; i<numClassRecords1 ; i++ ) {
 		classRecordOfs1[i] = getUInt32(classesMap1+8+4*i);
 		classRecordSize1[i] = getUInt32(classesMap1+12+4*i)-classRecordOfs1[i];
+		//printf("classRedordOfs=%d,Size=%d\n", classRecordOfs1[i], classRecordSize1[i]);
 	}
 	printf("base class read complete\n");
-
-	//
-	// Image DLL Load
-	//
-
-	// ファイルオープン
-	lib_initmodulehandle0(0x000c, 0x0230); /* machine-dirに初期化 */
-	lib_steppath0(0, 0x0230 /* slot */, "PICTURE0.BIN", 16 /* sig */);
-	do {
-		i = getsignalw();
-	} while (i < 16 || 31 < i);
-	if (i != 16){
-		printf("picture0.bin read error(%d)\n");
-		return;
-	}else{
-		printf("picture0.bin open succeed\n");
-		filesize2 = lib_readmodulesize(0x0230);
-		printf("filesize=%d\n", filesize2);
-	}
-
-	// ファイル読み込み
-	fp2 = fp1 + ((filesize1 + 0xfff) & ~0xfff); // Kタン指摘 [OSASK 6479]
-	lib_mapmodule(0x0000 /* opt */, 0x0230 /* slot */, 0x5 /* R-mode */, filesize2 /* map-window size */, fp2, 0);
-	lib_execcmd0(0x00f0, 0, 0x0200 /* sel */, 0x40fa /* AR */, 64 * 1024 - 1 /* limit */, fp2 /* ofs */, 0x0008 /* base_sel */, 0);
-	printf("picture0.bin read complete\n");
 
 	//
 	// User Class Load
 	//
 
+	// クラスマップ用領域確保
+	//classesMap2 = xmalloc(filesize2); // メモリ確保
+
 	// ファイルオープン
-	lib_initmodulehandle1(0x0240 /* slot */, 1 /* num */, 16 /* sig */);
-	//lib_initmodulehandle0(0x0008, 0x0240); /* user-dirに初期化 */
-	//lib_steppath0(0, 0x0240 /* slot */, "HELLO   .WRP", 16 /* sig */);
+	lib_initmodulehandle1(0x0230 /* slot */, 1 /* num */, 16 /* sig */);
+	//lib_initmodulehandle0(0x0008, 0x0230); /* user-dirに初期化 */
+	//lib_steppath0(0, 0x0230 /* slot */, "HELLO   .WRP", 16 /* sig */);
 	do {
 		i = getsignalw();
 	} while (i < 16 || 31 < i);
@@ -627,22 +813,51 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		printf("main class read error(%d)\n", i);
 		return;
 	}else{
-		printf("main class open succeed\n");
+		//printf("main class open succeed\n");
+		filesize2 = lib_readmodulesize(0x0230);
+		printf("filesize=%d\n", filesize2);
+	}
+
+	// ファイル読み込み
+	//fp2 = (char *) lib_readCSd(0x0010 + filesize /* mapping領域の始まり */);
+	fp2 = fp1 + ((filesize1 + 0xfff) & ~0xfff); // Kタン指摘 [OSASK 6479]
+	lib_mapmodule(0x0000 /* opt */, 0x0230 /* slot */, 0x5 /* R-mode */, filesize2 /* map-window size */, fp2, 0);
+	classesMap2 = fp2;
+	numClassRecords2 = getUInt32(classesMap2+4);
+	//printf("numClassRecords2=%d\n", numClassRecords2);
+	for ( i=0 ; i<numClassRecords2 ; i++ ) {
+		classRecordOfs2[i] = getUInt32(classesMap2+8+4*i);
+		classRecordSize2[i] = getUInt32(classesMap2+12+4*i)-classRecordOfs2[i];
+		//printf("classRedordOfs2=%d,Size=%d\n", classRecordOfs2[i], classRecordSize2[i]);
+	}
+	printf("main class read complete\n");
+
+	//
+	// JIS Font Load
+	//
+
+	// ファイルオープン
+	lib_initmodulehandle0(0x0008, 0x0240); /* user-dirに初期化 */
+	lib_steppath0(0, 0x0240 /* slot */, "JISX0208.FNT", 16 /* sig */);
+	//lib_steppath0(0, 0x0240 /* slot */, "JPN16V00.FNT", 16 /* sig */);
+	do {
+		i = getsignalw();
+	} while (i < 16 || 31 < i);
+	if (i != 16){
+		printf("font file read error(%d)\n", i);
+		return;
+	}else{
+		//printf("font file open succeed\n");
 		filesize3 = lib_readmodulesize(0x0240);
 		printf("filesize=%d\n", filesize3);
 	}
 
 	// ファイル読み込み
-	//fp3 = (char *) lib_readCSd(0x0010 + filesize2 /* mapping領域の始まり */);
+	//fp3 = (char *) lib_readCSd(0x0010 + filesize /* mapping領域の始まり */);
 	fp3 = fp2 + ((filesize2 + 0xfff) & ~0xfff); // Kタン指摘 [OSASK 6479]
 	lib_mapmodule(0x0000 /* opt */, 0x0240 /* slot */, 0x5 /* R-mode */, filesize3 /* map-window size */, fp3, 0);
-	classesMap2 = fp3;
-	numClassRecords2 = getUInt32(classesMap2+4);
-	for (i = 0; i < numClassRecords2; i++) {
-		classRecordOfs2[i] = getUInt32(classesMap2+8+4*i);
-		classRecordSize2[i] = getUInt32(classesMap2+12+4*i)-classRecordOfs2[i];
-	}
-	printf("main class read complete\n");
+	jisx0208 = fp3;
+	printf("font file read complete\n");
 #elif defined(MONA)
 	int i;
 	/*volatile*/ dword filesize1 = 0, filesize2 = 0;
@@ -656,12 +871,12 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	if(syscall_file_open("/APPS/WABA.LIB", 0, &filesize1) != 0){
 		printf("%s\n", errorMessages[2]);
 	}else{
-		printf("filesize=%dbyte.\n", filesize1);
+		//printf("filesize=%dbyte.\n", filesize1);
 		classesMap1 = (uchar*)xmalloc(filesize1);
 		if(syscall_file_read((char*)classesMap1, filesize1, &readsize1) == 0){
 			fp1 = classesMap1;
 			numClassRecords1 = getUInt32(fp1+4);
-			printf("numClassRecords=%d\n", numClassRecords1);
+			//printf("numClassRecords=%d\n", numClassRecords1);
 			for (i = 0 ; i < numClassRecords1 ; i++) {
 				classRecordOfs1[i] = getUInt32(fp1+8+4*i);
 				classRecordSize1[i] = getUInt32(fp1+12+4*i)-classRecordOfs1[i];
@@ -678,12 +893,12 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	if(syscall_file_open(filename, 0, &filesize2) != 0){
 		printf("%s\n", errorMessages[3]);
 	}else{
-		printf("filesize=%dbyte.\n", filesize2);
+		//printf("filesize=%dbyte.\n", filesize2);
 		classesMap2 = (uchar*)xmalloc(filesize2);
 		if(syscall_file_read((char*)classesMap2, filesize2, &readsize2) == 0){
 			fp2 = classesMap2;
 			numClassRecords2 = getUInt32(fp2+4);
-			printf("numClassRecords=%d\n", numClassRecords2);
+			//printf("numClassRecords=%d\n", numClassRecords2);
 			for (i = 0 ; i < numClassRecords2 ; i++) {
 				classRecordOfs2[i] = getUInt32(fp2+8+4*i);
 				classRecordSize2[i] = getUInt32(fp2+12+4*i)-classRecordOfs2[i];
@@ -691,64 +906,6 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 			printf("%s opened.\n", filename);
 		}
 		syscall_file_close();
-	}
-#elif defined(MONAGUI) || defined(YAWIN32)
-	int i;
-	/*volatile*/ unsigned int filesize1 = 0, filesize2 = 0;
-	uchar *fp1, *fp2;
-
-	//
-	// Waba Class Load
-	//
-
-	FILE* f1 = fopen("WABA.LIB", "rb");
-	if(f1 == NULL){
-		printf("%s\n", errorMessages[2]);
-	}else{
-		fseek(f1, 0, SEEK_END);
-		filesize1 = ftell(f1);
-		printf("filesize=%dbyte.\n", filesize1);
-		classesMap1 = (uchar*)xmalloc(filesize1);
-		if(classesMap1 != NULL){
-			fseek(f1, 0, SEEK_SET);
-			fread(classesMap1, 1, filesize1, f1);
-			fp1 = classesMap1;
-			numClassRecords1 = getUInt32(fp1+4);
-			printf("numClassRecords=%d\n", numClassRecords1);
-			for (i = 0 ; i < numClassRecords1 ; i++) {
-				classRecordOfs1[i] = getUInt32(fp1+8+4*i);
-				classRecordSize1[i] = getUInt32(fp1+12+4*i)-classRecordOfs1[i];
-			}
-			printf("/APPS/WABA.LIB opened.\n");
-		}
-		fclose(f1);
-	}
-
-	//
-	// User Class Load
-	//
-
-	FILE* f2 = fopen(filename, "rb");
-	if(f2 == NULL){
-		printf("%s\n", errorMessages[3]);
-	}else{
-		fseek(f2, 0, SEEK_END);
-		filesize2 = ftell(f2);
-		printf("filesize=%dbyte.\n", filesize2);
-		classesMap2 = (uchar*)xmalloc(filesize2);
-		if(classesMap2 != NULL){
-			fseek(f2, 0, SEEK_SET);
-			fread(classesMap2, 1, filesize2, f2);
-			fp2 = classesMap2;
-			numClassRecords2 = getUInt32(fp2+4);
-			printf("numClassRecords=%d\n", numClassRecords2);
-			for (i = 0 ; i < numClassRecords2 ; i++) {
-				classRecordOfs2[i] = getUInt32(fp2+8+4*i);
-				classRecordSize2[i] = getUInt32(fp2+12+4*i)-classRecordOfs2[i];
-			}
-			printf("%s opened.\n", filename);
-		}
-		fclose(f2);
 	}
 #endif
 }
@@ -781,10 +938,19 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	return NULL;
 }
 
+#if defined(MONA)
 /* static */ void processEvent(int* vlist){
 	WClass *vclass;
 	Var param7[7];
 
+	// 範囲チェック
+	if((vlist[0] == 200 || vlist[0] == 201 || vlist[0] == 202) && 
+		(vlist[2] <= 0 || g_mainWinWidth <= vlist[2] || vlist[3] <= 0 || g_mainWinHeight <= vlist[3]))
+	{
+		printf("position is out of bouds! %d,%d,%d\n", vlist[0], vlist[2], vlist[3]);
+		return;
+	}
+	
 	if(mainWinObj && method_event != NULL){
 		vclass = (WClass *)WOBJ_class(mainWinObj);
 		param7[0].obj = mainWinObj;
@@ -806,6 +972,7 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		executeMethod(vclass, method_event, param7, 7);
 	}
 }
+#endif
 
 /* static */ void stopApp(WObject mainWinObj) {
 /* VM 実行停止 */
@@ -817,23 +984,20 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 /* VM 実行開始 */
 	unsigned long vmStackSize, nmStackSize, classHeapSize, objectHeapSize;
 	char *className = "Main";
-	WClass *vclass;
-	Var param5[5];
-	Var param7[7];
 
 	// 変数初期化
-	GraphicsRGB16  = 0;
-	GraphicsDrawOP = DRAW_OVER;
-	GraphicsTransX = 0;
-	GraphicsTransY = 0;
 #ifdef QUICKBIND
 	postPaintMethodMapNum = -1;
 	postEventMethodMapNum = -1;
 #endif
-	vmStackSize = 1500;
-	nmStackSize = 300;
-	classHeapSize = 14000;
-	objectHeapSize = 8000;
+	//vmStackSize = 1500;
+	//nmStackSize = 300;
+	//classHeapSize = 14000;
+	//objectHeapSize = 8000;
+	vmStackSize = 15000;
+	nmStackSize = 3000;
+	classHeapSize = 140000;
+	objectHeapSize = 80000;
 
 	// 起動メッセージ
 	printf("Waba for %s %s\n", VM_OS, WABA_VERSION);
@@ -852,10 +1016,16 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	VmInit(vmStackSize, nmStackSize, classHeapSize, objectHeapSize);
 
 	// VM実行開始
+#if defined(OSASK)
+	return VmStartApp(className);
+#elif defined(MONA)
+	WClass *vclass;
+	Var param5[5];
+	Var param7[7];
 	mainWinObj =  VmStartApp(className);
 	if(!mainWinObj){
 		stopApp(mainWinObj);
-		return NULL;
+		return (WObject)NULL;
 	}else{
 		vclass = (WClass *)WOBJ_class(mainWinObj);
 	}
@@ -890,7 +1060,7 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 	// ダミーイベント発生
 	if (method_event != NULL){
 		param7[0].obj = mainWinObj;
-		param7[1].intValue = 100; // event_type
+		param7[1].intValue = 301; // ControlEvent.FOCUS_IN
 		param7[2].intValue = 0; // key
 		param7[3].intValue = 0; // x
 		param7[4].intValue = 0; // y
@@ -898,6 +1068,6 @@ int clipping(int *x0, int *y0, int *x1, int *y1)
 		param7[6].intValue = 0; // timeStamp
 		executeMethod(vclass, method_event, param7, 7);
 	}
-
 	return mainWinObj;
+#endif
 }

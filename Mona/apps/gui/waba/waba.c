@@ -77,7 +77,9 @@ Rick Wild
 #include "nmwin32_a.c"
 #elif defined(OSASK)
 #include "nmport_a.c"
-#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
+#elif defined(MONA)
+#include "nmport_a.c"
+#elif defined(SDL)
 #include "nmport_a.c"
 #endif
 
@@ -735,10 +737,13 @@ typedef struct
 #elif defined(WIN32)
 #include "nmwin32_b.c"
 #elif defined(OSASK)
-#include "mona8x16.fnt"
+#include "jisx0208.c"
 #include "nmport_b.c"
-#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
-#include "mona8x16.fnt"
+#elif defined(MONA)
+#include "font8x16.c"
+#include "nmport_b.c"
+#elif defined(SDL)
+#include "jisx0208.c"
 #include "nmport_b.c"
 #endif
 
@@ -2708,7 +2713,9 @@ typedef struct
 #include "nmwin32_c.c"
 #elif defined(OSASK)
 #include "nmport_c.c"
-#elif defined(MONA) || defined(MONAGUI) || defined(YAWIN32)
+#elif defined(MONA)
+#include "nmport_c.c"
+#elif defined(SDL)
 #include "nmport_c.c"
 #endif
 
@@ -4368,7 +4375,8 @@ methodreturn:
 	if ((METH_accessFlags(method) & ACCESS_NATIVE) > 0)
 		{
 		vmStackPtr -= 2;
-		vmStackPtr -= vmStack[--vmStackPtr].intValue;
+		vmStackPtr -= vmStack[vmStackPtr - 1].intValue;
+		vmStackPtr--;
 		}
 	else
 		vmStackPtr -= METH_maxLocals(method) + METH_maxStack(method) + 2;

@@ -90,7 +90,6 @@ int main(int argc, char* argv[])
     parser.Set(elf.get(), elf.get_Length());
     printf("elf type=%d\n", parser.GetType());
 
-    parser.Relocate(NULL);
 
     return 0;
 }

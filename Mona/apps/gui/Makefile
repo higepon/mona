@@ -10,6 +10,7 @@ all:
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
 	@cd anaclock; $(MAKE) $@
+	@cd kukuri; $(MAKE) $@
 
 install:
 	@cd reversi; $(MAKE) $@
@@ -23,6 +24,7 @@ install:
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
 	@cd anaclock; $(MAKE) $@
+	@cd kukuri; $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -36,6 +38,7 @@ clean: touchdepend
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
 	@cd anaclock; $(MAKE) $@
+	@cd kukuri; $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi; $(MAKE) $@
@@ -49,6 +52,7 @@ depend: touchdepend
 	@cd clock; $(MAKE) $@
 	@cd cube; $(MAKE) $@
 	@cd anaclock; $(MAKE) $@
+	@cd kukuri; $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -62,6 +66,7 @@ distclean:
 	rm -f clock/dependencies
 	rm -f cube/dependencies
 	rm -f anaclock/dependencies
+	rm -f kukuri/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -75,3 +80,4 @@ touchdepend:
 	touch clock/dependencies
 	touch cube/dependencies
 	touch anaclock/dependencies
+	touch kukuri/dependencies

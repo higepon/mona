@@ -6,6 +6,8 @@
 extern "C" dword syscall_get_pid();
 extern "C" dword syscall_get_tid();
 extern "C" dword syscall_get_tick();
+extern "C" int syscall_kill_thread(dword tid);
+extern "C" int syscall_kill();
 
 namespace MonAPI {
 
@@ -28,6 +30,16 @@ class System
     inline static dword getTick()
     {
         return syscall_get_tick();
+    }
+
+    inline static int kill(dword tid)
+    {
+        return syscall_kill_thread(tid);
+    }
+
+    inline static int kill()
+    {
+        return syscall_kill();
     }
 
     static PsInfo* getProcessInfo();
