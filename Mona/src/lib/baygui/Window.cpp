@@ -243,19 +243,22 @@ void Window::postEvent(Event *event)
 		if (control != NULL) {
 			// イベントが起こった部品以外をフォーカスアウト状態にする
 			LinkedItem *item = _controlList->firstItem;
-			Control *c = (Control *)item->data;
-			if (c == control) {
-				c->setFocused(true);
-			} else {
-				c->setFocused(false);
-			}
-			while (item->next != NULL) {
-				item = item->next;
-				c = (Control *)item->data;
+			// NULLチェック
+			if (item != NULL) {
+				Control *c = (Control *)item->data;
 				if (c == control) {
 					c->setFocused(true);
 				} else {
 					c->setFocused(false);
+				}
+				while (item->next != NULL) {
+					item = item->next;
+					c = (Control *)item->data;
+					if (c == control) {
+						c->setFocused(true);
+					} else {
+						c->setFocused(false);
+					}
 				}
 			}
 			event->source = control;
@@ -267,12 +270,15 @@ void Window::postEvent(Event *event)
 		} else {
 			// 部品をフォーカスアウト状態にする
 			LinkedItem *item = _controlList->firstItem;
-			Control *c = (Control *)item->data;
-			c->setFocused(false);
-			while (item->next != NULL) {
-				item = item->next;
-				c = (Control *)item->data;
+			// NULLチェック
+			if (item != NULL) {
+				Control *c = (Control *)item->data;
 				c->setFocused(false);
+				while (item->next != NULL) {
+					item = item->next;
+					c = (Control *)item->data;
+					c->setFocused(false);
+				}
 			}
 			onEvent(event);
 		}
