@@ -193,8 +193,6 @@ void startKernel(void) {
 //     KeyBoardManager& km = KeyBoardManager::instance();
 //     km.init();
 
-#ifdef HIGE
-
     disableTimer();
     enableKeyboard();
     enableInterrupt();
@@ -215,6 +213,10 @@ void startKernel(void) {
     g_info_level = MSG;
 
     enableTimer();
+
+#ifdef HIGE
+
+
 #endif
 
     for (;;);
