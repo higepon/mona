@@ -32,7 +32,13 @@ Graphics::Graphics()
 {
 	tx = ty = cx = cy = cw = ch = 0;
 	r = g = b = rgb24 = 0;
+#ifdef MONA
 	screen = new MonAPI::Screen();
+	width = screen->getWidth();
+	height = screen->getHeight();
+	bytesPerPixel = screen->getBpp() / 8;
+	vram = screen->getVRAM();
+#endif
 	xormode = false;
 }
 
@@ -110,7 +116,23 @@ void Graphics::drawPixel(int x, int y, unsigned int color)
 #if defined(PEKOE)
 	sys_gs_set_pixel_RGB(tx + i, ty + j, color);
 #elif defined(MONA)
-	screen->putPixel16(tx + x, ty + y, color);
+	// 
+	// 性能向上のためMonAPI::Screen::putPixel16 をそのまま持ってきている
+	//
+	
+	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
+	byte* colorPtr = (byte*)&color;
+
+	switch (bytesPerPixel) {
+	case 2: // 16bpp
+		*((word*)vramPtr) = MonAPI::Color::bpp24to565(color);
+		break;
+	default: // 24bpp
+		vramPtr[0] = colorPtr[0];
+		vramPtr[1] = colorPtr[1];
+		vramPtr[2] = colorPtr[2];
+		break;
+	}
 #endif
 }
 
@@ -122,7 +144,25 @@ void Graphics::drawPixel(int x, int y, unsigned int color)
  */
 void Graphics::drawPixelXOR(int x, int y, unsigned int color)
 {
-	screen->putPixel16(tx + x, ty + y, color);
+#if defined(MONA)
+	// 
+	// 性能向上のためMonAPI::Screen::putPixel16 をそのまま持ってきている
+	//
+
+	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
+	byte* colorPtr = (byte*)&color;
+
+	switch (bytesPerPixel) {
+	case 2: // 16bpp
+		*((word*)vramPtr) = *((word*)vramPtr) ^ MonAPI::Color::bpp24to565(color); // XOR演算
+		break;
+	default: // 24bpp
+		vramPtr[0] = vramPtr[0] ^ colorPtr[0]; // XOR演算
+		vramPtr[1] = vramPtr[0] ^ colorPtr[1]; // XOR演算
+		vramPtr[2] = vramPtr[0] ^ colorPtr[2]; // XOR演算
+		break;
+	}
+#endif
 }
 
 /**
@@ -279,6 +319,18 @@ void Graphics::translate(int x, int y)
 {
 	tx = x;
 	ty = y;
+}
+
+/** 画面の幅を得る */
+int Graphics::getWidth()
+{
+	return width;
+}
+
+/** 画面の高さを得る */
+int Graphics::getHeight()
+{
+	return height;
 }
 
 /**
