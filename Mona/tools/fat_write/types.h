@@ -11,7 +11,7 @@
 //=============================================================================
 typedef unsigned char  byte;
 typedef unsigned short word;
-typedef unsigned long dword;
+typedef unsigned int dword;
 
 //-----------------------------------------------------------------------------
 #endif // _TYPES_H_ //

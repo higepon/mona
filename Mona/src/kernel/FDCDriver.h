@@ -29,8 +29,8 @@ class FDCDriver : public IStorageDevice {
   public:
     int open();
     int close();
-    int read(int lba, void* buf, int size);
-    int write(int lba, void* buf, int size);
+    int read(dword lba, void* buf, int size);
+    int write(dword lba, void* buf, int size);
     int ioctl(void* p);
     bool checkDiskChange();
     void interrupt();

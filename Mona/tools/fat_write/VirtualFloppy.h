@@ -3,6 +3,12 @@
 
 #include <stdio.h>
 #include "IStorageDevice.h"
+#ifdef Mona
+#include "sys/types.h"
+#else
+#include "types.h"
+#endif
+
 
 class VirtualFloppy : public IStorageDevice
 {
@@ -13,8 +19,8 @@ public:
 public:
     int open();
     int close();
-    int read(int lba, void* buf, int size);
-    int write(int lba, void* buf, int size);
+    int read(dword lba, void* buf, int size);
+    int write(dword lba, void* buf, int size);
     int ioctl(void* p);
 
 private:

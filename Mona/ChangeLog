@@ -1,3 +1,7 @@
+2004-07-04  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/non-gui/ata/main.cpp (MonaMain): IDEドライバ(読み込み専用)がなんとなく完成。IDEドライバの使用方法まとめ。
+
 2004-07-02  tino  <tino@users.sourceforge.jp>
 
         * src/servers/pe: リロケートとダイナミックリンクを実装

@@ -1,5 +1,5 @@
 TARGET  = HDDANGER
-SOURCES = main.cpp
+SOURCES = main.cpp IDEDriver.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi-el2.inc
