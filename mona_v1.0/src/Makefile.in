@@ -21,6 +21,7 @@ MAP_SERVER      = $(BIN)/MAP.SVR
 MOUSE_SERVER    = $(BIN)/MOUSE.SVR
 NOIZ2BG         = $(BIN)/NOIZ2BG.ELF
 CLOCK           = $(BIN)/CLOCK.ELF
+OTHELLO         = $(BIN)/OTHELLO.ELF
 FAT_TOOL        = $(BIN)/fat_write.exe
 TEMPLATE        = $(TOOLS)/fat_template.img
 SOURCES      = cstart.cpp            \
@@ -56,7 +57,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : copy_userapp
 
-copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER) $(NOIZ2BG) $(CLOCK)
+copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER) $(NOIZ2BG) $(CLOCK) $(OTHELLO)
 	(cd $(BIN); $(FAT_TOOL) mona.img HELLO.ELF)
 	(cd $(BIN); $(FAT_TOOL) mona.img SHELL.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR)

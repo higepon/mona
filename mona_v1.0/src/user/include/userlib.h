@@ -98,6 +98,12 @@ extern "C" int atexit( void (*func)(void));
 extern "C" dword syscall_lookup(const char* name);
 extern "C" void setupArguments(List<char*>* arg);
 
+void putCharacter(char ch);
+void putInt(size_t n, int base);
+void printf(const char *format, ...);
+void printInt(int num);
+size_t _power(size_t x, size_t y);
+
 byte inportb(dword);
 void outportb(dword, byte);
 void* operator new(size_t size);
@@ -251,6 +257,7 @@ class Floppy : public StorageDevice {
 interface Receiver {
   public:
     virtual void onKeyDown(int keycode, int modifiers) = 0;
+    virtual void onMouseClick(int x, int y) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -267,6 +274,10 @@ class MonaApplication : public Receiver {
 
     /* default implementation */
     virtual void onKeyDown(int keycode, int modifiers) {
+    }
+
+    virtual void onMouseClick(int x, int y) {
+        printf("here");
     }
 
     virtual inline dword getMyPID() {
@@ -441,6 +452,8 @@ class Screen {
 
   public:
 
+    void circle16(int x, int y, int r, dword color);
+    void fillCircle16(int x, int y, int r, dword color);
     void putPixel16(int x, int y, dword color);
     void fillRect16(int x, int y, int w, int h, dword color);
     static bool bitblt(Screen* destScreen, int destX, int destY, int width, int height
@@ -533,12 +546,6 @@ class VirtualScreen : public Screen {
 
   protected:
 };
-
-void putCharacter(char ch);
-void putInt(size_t n, int base);
-void printf(const char *format, ...);
-void printInt(int num);
-size_t _power(size_t x, size_t y);
 
 /* key info */
 #define VK_SPACE      0x20

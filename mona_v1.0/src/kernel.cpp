@@ -75,10 +75,6 @@ void mainProcess() {
     g_console->printf("loading Mouse    Server....");
     g_console->printf("%s\n", loadProcess(".", "MOUSE.SVR", true, NULL) ? "NG" : "OK");
 
-    /* Map Server */
-//     g_console->printf("loading Map SERVER....");
-//     g_console->printf("%s\n", loadProcess(".", "MAP.SVR", true) ? "NG" : "OK");
-
     /* Shell Server */
     g_console->printf("loading Shell    Server....");
     g_console->printf("%s\n", loadProcess(".", "SHELL.SVR", true, NULL) ? "NG" : "OK");

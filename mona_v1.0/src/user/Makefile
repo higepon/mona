@@ -19,6 +19,7 @@ MAP_SERVER      = $(BIN)/MAP.SVR
 MOUSE_SERVER    = $(BIN)/MOUSE.SVR
 NOIZ2BG         = $(BIN)/NOIZ2BG.ELF
 CLOCK           = $(BIN)/CLOCK.ELF
+OTHELLO         = $(BIN)/OTHELLO.ELF
 LIB             = -L./lib
 LIB_USER        = lib/libuser.a
 LFLAGS          = -n -Ttext 0xA0000000 -e _user_start -static -luser
@@ -39,11 +40,12 @@ SOURCES         = hello.cpp                   \
                   MapServer.cpp               \
                   MouseServer.cpp             \
                   noiz2bg.cpp                 \
-                  clock.cpp
+                  clock.cpp                   \
+                  othello.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)  $(NOIZ2BG) $(CLOCK)
+all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(MOUSE_SERVER)  $(NOIZ2BG) $(CLOCK)  $(OTHELLO)
 
 $(LIB_USER) : userlib.o string.o MemoryManager.o
 	ar cvr $(LIB_USER) userlib.o string.o MemoryManager.o
@@ -51,6 +53,10 @@ $(LIB_USER) : userlib.o string.o MemoryManager.o
 $(HELLO) : hello.o $(LIB_USER)
 	$(LD) $(LFLAGS) hello.o $(LIB) -o $(HELLO)
 	objcopy $(OFLAGS) $(HELLO)
+
+$(OTHELLO) : othello.o $(LIB_USER)
+	$(LD) $(LFLAGS) othello.o $(LIB) -o $(OTHELLO)
+	objcopy $(OFLAGS) $(OTHELLO)
 
 $(CLOCK) : clock.o $(LIB_USER)
 	$(LD) $(LFLAGS) clock.o $(LIB) -o $(CLOCK)
@@ -88,6 +94,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER) $(NOIZ2BG) $(CLOCK)
+	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER) $(JPEG_DEMO) $(MAP_SERVER) $(LIB_USER) $(MOUSE_SERVER) $(NOIZ2BG) $(CLOCK) $(OTHELLO)
 
 include dependencies

@@ -46,6 +46,8 @@ void messageLoop() {
 
     MessageInfo message;
 
+    printf("here");
+
     for (;;) {
         if (!Message::receive(&message)) {
 
@@ -54,6 +56,13 @@ void messageLoop() {
             case MSG_KEY_VIRTUAL_CODE:
 
                 monaApp->onKeyDown(message.arg1, message.arg2);
+                break;
+
+            case MSG_MOUSE_INFO:
+
+                //                if (message.arg3 & 0x01) {
+                    monaApp->onMouseClick((int)(message.arg1), (int)(message.arg2));
+                    //                }
                 break;
             default:
 
@@ -456,6 +465,60 @@ bool Screen::bitblt(Screen* destScreen, int destX, int destY, int width, int hei
     return true;
 }
 
+/* from orange pekoe */
+void Screen::circle16(int x, int y, int r, dword color) {
+
+    int w, h, f;
+    w = r;
+    h = 0;
+    f = -2 * r + 3;
+
+    while (w >= h) {
+        putPixel16(x + w, y + h, color);
+        putPixel16(x - w, y + h, color);
+        putPixel16(x + h, y + w, color);
+        putPixel16(x - h, y + w, color);
+        putPixel16(x - w, y - h, color);
+        putPixel16(x - h, y - w, color);
+        putPixel16(x + h, y - w, color);
+        putPixel16(x + w, y - h, color);
+
+        if (f >= 0) {
+            w--;
+            f -= 4 * w;
+        }
+        h ++;
+        f += 4 * h + 2;
+    }
+}
+
+void Screen::fillCircle16(int x, int y, int r, dword color) {
+
+    int i;
+    int w, h;
+    w = r;
+    h = 0;
+    int f = -2 * r + 3;
+
+    while(w >= h) {
+        for (i = x - w; i <= x + w; i ++) {
+            putPixel16(i, y + h, color);
+            putPixel16(i, y - h, color);
+        }
+        for (i = x - h; i <= x + h; i ++) {
+            putPixel16(i, y - w, color);
+            putPixel16(i, y + w, color);
+        }
+        if (f >= 0) {
+
+            w--;
+            f -= 4 * w;
+        }
+        h ++;
+        f += 4 * h + 2;
+    }
+}
+
 /*----------------------------------------------------------------------
     Message
 ----------------------------------------------------------------------*/
@@ -468,7 +531,6 @@ int Message::receive(MessageInfo* info) {
     int result = syscall_receive(info);
 
     if (result != 0) {
-
         syscall_mthread_yeild_message();
         result = syscall_receive(info);
     }

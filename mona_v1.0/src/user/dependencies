@@ -37,3 +37,5 @@ noiz2bg.o: noiz2bg.cpp include/userlib.h include/types.h include/string.h \
   include/collection.h include/MemoryManager.h
 clock.o: clock.cpp include/userlib.h include/types.h include/string.h \
   include/collection.h include/MemoryManager.h
+othello.o: othello.cpp include/userlib.h include/types.h include/string.h \
+  include/collection.h include/MemoryManager.h

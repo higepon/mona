@@ -41,6 +41,11 @@ int myApplication::main(List<char*>* pekoe) {
     strcpy((char*)0x90005000, "data share Mona");
     mm->unmap(sharedId);
 
+
+    screen.circle16(50, 50, 20, Color::rgb(0x89, 0x67, 0x81));
+
+    screen.fillCircle16(100, 100, 20, Color::rgb(0x10, 0x67, 0x81));
+
     /* unmap? */
     //printf("%s", (char*)0x90005000);
 

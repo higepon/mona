@@ -75,10 +75,6 @@ int MonaMain(List<char*>* pekoe) {
                 result = (byte)(receive.arg1);
                 info.y = -1 * (char)result;
 
-                Message::create(&send, MSG_MOUSE_INFO, info.x, info.y
-                                , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
-                sendMouseInformation(destList, &send);
-
                 posX += info.x;
                 if (posX > xResolution) posX = xResolution;
                 if (posX < 0) posX = 0;
@@ -91,6 +87,13 @@ int MonaMain(List<char*>* pekoe) {
 
                 prevX = posX;
                 prevY = posY;
+
+                Message::create(&send, MSG_MOUSE_INFO, posX, posY
+                                , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
+//                 Message::create(&send, MSG_MOUSE_INFO, info.x, info.y
+//                                 , (info.leftClickd ? 0x01 : 0x00) | (info.rightClickd ? 0x02 : 0x00), NULL);
+                sendMouseInformation(destList, &send);
+
 
                 break;
 
