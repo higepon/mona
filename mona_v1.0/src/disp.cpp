@@ -76,14 +76,14 @@ void disp_name3() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
+        //while (Semaphore::down(&g_semaphore_console)) syscall_kthread_yield();
 
         disp_write_font(77, 0, 'n', color%15);
 
 
-        Semaphore::up(&g_semaphore_console);
+        //Semaphore::up(&g_semaphore_console);
         color++;
-        syscall_kthread_yield();
+        //syscall_kthread_yield();
     }
 }
 

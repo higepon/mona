@@ -20,6 +20,7 @@ ProcessManager::ProcessManager() {
 
 void ProcessManager::switchProcess() {
 
+    info(DUMP, "switch Process");
     arch_switch_process();
 }
 

@@ -30,6 +30,7 @@ BITS 32
 [extern _fault0dHandler]
 [extern _syscall_entrance]
 [extern _dummyHandler]
+[extern _arch_save_process_registers]
 
 ;;; fdc handler
 _arch_fdchandler:
@@ -44,6 +45,7 @@ _arch_timerhandler:
 ;          call _arch_set_stack_view
         pushad
 ;        call _arch_save_registers  //for IDE Driver test
+        call _arch_save_process_registers
         call _timerHandler
         popad
         iretd

@@ -124,12 +124,17 @@ void startKernel(void) {
     strcpy(g_process_name, "FAT12");
     while (g_demo_step < 2);
 
+    //    info(DEV_NOTICE, "0");
 #ifdef HIGE
     g_info_level = ERROR;
 
+    info(DEV_NOTICE, "1");
     g_process_manager = new ProcessManager();
+    info(DEV_NOTICE, "2");
     Process* process = new Process("test");
+    info(DEV_NOTICE, "3");
     g_process_manager->addProcess(process, (dword)disp_name3);
+    info(DEV_NOTICE, "4");
     enableTimer();
 
     FDCTester();

@@ -65,6 +65,6 @@ GLOBAL PTE* g_page_tbl;
 /* Process */
 GLOBAL Process** g_process;
 GLOBAL ProcessInfo* g_current_process;
-GLOBAL ProcessManager* g_process_manager;
+GLOBAL class ProcessManager* g_process_manager;
 
 #endif
