@@ -55,7 +55,6 @@ int MonaMain(List<char*>* pekoe)
 ----------------------------------------------------------------------*/
 Shell::Shell() : position_(0)
 {
-    history_ = new HList<char*>();
     if (!callAutoExec) printf("\n");
     printf("%s", PROMPT);
     if (!callAutoExec) return;
@@ -110,40 +109,30 @@ enum
     COMMAND_HELP
 };
 
-int Shell::isInternalCommand(const char* command)
+int Shell::isInternalCommand(const CString& command)
 {
-    int len = strlen(command);
-    if (len > 15) len = 15;
-    char cmd[16];
-    for (int i = 0; i < len; i++)
-    {
-        char ch = command[i];
-        if ('a' <= ch && ch <= 'z') ch -= 'a' - 'A';
-        cmd[i] = ch;
-    }
-    cmd[len] = '\0';
-
-    if (strcmp(cmd, "LS") == 0 || strcmp(cmd, "DIR") == 0)
+    CString cmd = command.toLower();
+    if (cmd == "ls" || cmd == "dir")
     {
         return COMMAND_LS;
     }
-    else if (strcmp(cmd, "CD") == 0)
+    else if (cmd == "cd")
     {
         return COMMAND_CD;
     }
-    else if (strcmp(cmd, "CAT") == 0 || strcmp(cmd, "TYPE") == 0)
+    else if (cmd == "cat" || cmd == "type")
     {
         return COMMAND_CAT;
     }
-    else if (strcmp(cmd, "CHSH") == 0)
+    else if (cmd == "chsh")
     {
         return COMMAND_CHSH;
     }
-    else if (strcmp(cmd, "UNAME") == 0 || strcmp(cmd, "VER") == 0)
+    else if (cmd == "uname" || cmd == "ver")
     {
         return COMMAND_UNAME;
     }
-    else if (strcmp(cmd, "HELP") == 0 || strcmp(cmd, "?") == 0)
+    else if (cmd == "help" || cmd == "?")
     {
         return COMMAND_HELP;
     }
@@ -168,14 +157,16 @@ void Shell::commandExecute()
     CommandOption list;
     list.next = NULL;
 
-    char* command = strtok(commandLine_, " ");
-    char* arg;
     CommandOption* option = NULL;
-
-    while ((arg = strtok(NULL, " ")) != NULL)
+    CString command;
+    _A<CString> args = CString(commandLine_).split(' ');
+    FOREACH (CString, arg, args)
     {
+        if (arg == NULL) continue;
+
+        if (command == NULL) command = arg.toUpper();
         option = new CommandOption;
-        strncpy(option->str, arg, 32);
+        strncpy(option->str, arg, sizeof(option->str));
         option->next = list.next;
         list.next = option;
     }
@@ -194,33 +185,28 @@ void Shell::commandExecute()
         return;
     }
 
-    char path[128], * bundle;
+    CString path;
 
     if (command[0] == '/')
     {
-        strncpy(path, command, sizeof(path));
-        char* p = &command[strlen(command)];
-        for (; *p != '/' && command < p; p--);
-        p++;
-        for (int i = 0;; i++, p++)
-        {
-            command[i] = *p;
-            if (*p == '\0') break;
-        }
+        path = command;
+        int p = path.lastIndexOf('/') + 1;
+        command = path.substring(p, path.getLength() - p);
     }
-    else if (strstr(command, ".ELF") != NULL)
+    else if (command.endsWith(".ELF"))
     {
-        sprintf(path, "/APPS/%s", command);
+        path = "/APPS/" + command;
     }
-    else if ((bundle = strstr(command, ".APP")) != NULL)
+    else if (command.endsWith(".APP"))
     {
-        *bundle = '\0';
-        sprintf(path, "/APPS/%s.APP/%s.ELF", command, command);
-        strcpy(bundle, ".ELF");
+        CString name = command.substring(0, command.getLength() - 4);
+        command = name + ".ELF";
+        path = "/APPS/" + name + ".APP/" + command;
     }
     else
     {
-        sprintf(path, "/APPS/%s.ELF", command);
+        command += ".ELF";
+        path = "/APPS/" + command;
     }
 
     executeProcess(path, command, &list);
@@ -346,20 +332,15 @@ void Shell::commandTerminate() {
     commandChar('\0');
 }
 
-void Shell::putHistory(const char* command) {
-
-    char* str = new char[strlen(command) + 1];
-    strcpy(str, command);
-
-    history_->add(str);
+void Shell::putHistory(const CString& command)
+{
+    history.add(command);
 }
 
-char* Shell::getHistory() {
-
-    if (history_->isEmpty()) {
-        return "";
-    }
-    return history_->get(0);
+CString Shell::getHistory()
+{
+    if (history.isEmpty()) return "";
+    return history.get(0);
 }
 
 void Shell::backspace() {

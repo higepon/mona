@@ -266,7 +266,7 @@ namespace MonAPI
 
     CString CString::substring(int start, int length) const
     {
-        if (start < 0 || this->length <= start) return NULL;
+        if (start < 0 || this->length <= start || length < 1) return NULL;
         int len = this->length - start;
         if (length > len) length = len;
 

@@ -2,6 +2,7 @@
 #define _MONA_SHELL_
 #include <sys/types.h>
 #include <monapi.h>
+#include <monapi/CString.h>
 
 /*----------------------------------------------------------------------
     Shell
@@ -20,19 +21,16 @@ class Shell {
     void commandExecute();
     void commandTerminate();
     void backspace();
-    void putHistory(const char* command);
-    int isInternalCommand(const char* command);
+    void putHistory(const MonAPI::CString& command);
+    MonAPI::CString getHistory();
+    int isInternalCommand(const MonAPI::CString& command);
     void internalCommandExecute(int command, CommandOption* option);
-    char* getHistory();
     int executeProcess(const char* path, const char* name ,CommandOption* option);
 
   protected:
     char commandLine_[1024];
     int position_;
-    List<char*>* history_;
-
-  protected:
-    static char* const PROMPT;
+    HList<MonAPI::CString> history;
 };
 
 #endif
