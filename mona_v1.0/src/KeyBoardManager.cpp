@@ -104,8 +104,6 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
 
-    _sys_printf("debug2.5\n");
-
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
 
