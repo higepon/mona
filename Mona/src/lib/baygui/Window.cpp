@@ -57,27 +57,6 @@ static unsigned char close_data[] = {
 	0x2,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,
 };
 
-/** タイマースレッドID */
-static dword timerID = THREAD_UNKNOWN;
-
-/** タイマースレッド */
-static void TimerThread()
-{
-	MonAPI::Message::send(timerID, MSG_SERVER_START_OK);
-	//printf("TimerThread created\n");
-	
-	MessageInfo info;
-	while (1) {
-		if (!MonAPI::Message::receive(&info)) {
-			if (info.header == (unsigned int)Event::TIMER) {
-				int duration = (info.arg2 < 10) ? 1 : (info.arg2 / 10);
-				syscall_sleep(duration);
-				MonAPI::Message::send(info.arg1, Event::TIMER, 0, 0, 0, NULL);
-			}
-		}
-	}
-}
-
 Window::Window()
 {
 	// GUIサーバーに自分を登録する
@@ -90,6 +69,7 @@ Window::Window()
 	this->modifiers = this->state = this->preX = this->preY = this->offsetX = this->offsetY = 0;
 	this->overlap = 0;
 	this->isRunning = false;
+	this->timerID = 0;
 	
 	// キーイベント
 	this->keyEvent.setType(KeyEvent::KEY_PRESSED);
@@ -106,15 +86,6 @@ Window::Window()
 	// カスタムイベント
 	this->customEvent.setType(Event::CUSTOM_EVENT);
 	this->customEvent.setSource(this);
-	
-	// タイマー起動
-	if (timerID == THREAD_UNKNOWN) timerID = syscall_get_tid();
-	MessageInfo msg, src;
-	dword id = syscall_mthread_create((dword)TimerThread);
-	syscall_mthread_join(id);
-	src.header = MSG_SERVER_START_OK;
-	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-	timerID = msg.from;
 }
 
 Window::~Window() {
@@ -181,8 +152,8 @@ void Window::onExit()
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 	
-	// タイマースレッド停止
-	syscall_kill_thread(timerID);
+	// タイマー停止
+	kill_timer(timerID);
 	
 	// GUIサーバーから自分を抹消する
 	monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
@@ -244,10 +215,10 @@ void Window::setTimer(int duration)
 	// 非活性のときはタイマーを発生させない
 	if (getEnabled() == false) return;
 	
-	// タイマー設定メッセージを投げる
-	if (MonAPI::Message::send(timerID, Event::TIMER, this->threadID, duration, 0, NULL)) {
-		printf("%s:%d:ERROR: can not send TIMER\n", __FILE__, __LINE__);
-	}
+#ifdef MONA
+	if (duration < 10) duration = 10;
+	timerID = set_timer(duration);
+#endif
 }
 
 void Window::repaint()
@@ -518,11 +489,11 @@ void Window::run()
 				setFocused(false);
 				repaint();
 				break;
-			case Event::TIMER:
+			case MSG_TIMER:
+				kill_timer(info.arg1);
 				postEvent(&this->timerEvent);
 				break;
 			default:
-				#ifdef MONA
 				this->customEvent.header = info.header;
 				this->customEvent.arg1   = info.arg1;
 				this->customEvent.arg2   = info.arg2;
@@ -535,7 +506,6 @@ void Window::run()
 				if (info.header == MSG_PROCESS_STDOUT_DATA) {
 					MonAPI::Message::reply(&info);
 				}
-				#endif
 				break;
 			}
 		}
