@@ -50,7 +50,6 @@ void Piece::OnPaint()
 
 void Piece::OnMouseUp(_P<MouseEventArgs> e)
 {
-    printf("on mouse up");
     if (e->Button == 1) this->OnClick(EventArgs::get_Empty());
     BASE::OnMouseUp(e);
 }

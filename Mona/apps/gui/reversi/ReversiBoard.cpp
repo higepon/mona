@@ -36,7 +36,7 @@ int ReversiBoard::countPieces(int piece) {
 int ReversiBoard::getPiece(int x, int y) {
 
     // x, yの範囲をチェック
-    if (!checkRange(x, y)) return EMPTY;
+   if (!checkRange(x, y)) return EMPTY;
 
     // 駒を返す
     return board[x][y];
@@ -94,6 +94,8 @@ bool ReversiBoard::setPiece(int x, int y, int piece) {
 
     // 次手プレイヤーを判断
     setNextHand();
+
+    turn++;
 
     // 変更をObserverに通知
     this->setChanged();
@@ -178,7 +180,6 @@ void ReversiBoard::undo() {
 
     // 最後のターンを消去
     allTurns->removeAt(allTurns->size() -1);
-
     return;
 }
 
@@ -236,7 +237,7 @@ void ReversiBoard::init() {
     // 盤面初期化
     initBoard();
 
-    // すべてのターンを記憶するVector初期化
+    // すべてのターンを記憶するHList初期化
     allTurns = new HList<Point3D*>();
 
     return;
