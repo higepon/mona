@@ -47,7 +47,8 @@ SOURCES    = cstart.cpp            \
              IDEDriver.cpp         \
              test_higepon.cpp      \
              test_mjt.cpp          \
-             sysresource.cpp
+             sysresource.cpp       \
+             ISADriver.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

@@ -6,9 +6,19 @@
 #include<pic.h>
 //#include <expr_driver/module.h>
 void test_mjt_init(){
-  g_irqmap = new BitMap(16);
+  g_irqMap = new BitMap(16);
 }
 void test_sysresource(){
+}
+void test_cmos(){
+  dword b; /* byte */
+  disableInterrupt();
+  
+  outportb(0x70,0x31);
+  b = inportb(0x71);
+  b = b /4 ;
+  g_console->printf("reported EX.mem size = %d MB\n",b);
+  enableInterrupt();
 }
 void test_ide(){
     /* IDE TEST routine */
@@ -36,6 +46,6 @@ void test_mjt(void){
   test_mjt_init();
   test_ide();
   test_sysresource();
-  //test_loadmodule(romfs,"dummy.mod");
+  test_cmos();
 }
 

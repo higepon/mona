@@ -3,25 +3,27 @@ cstart.o: cstart.cpp include/kernel.h include/types.h include/string.h \
 kernel.o: kernel.cpp include/global.h include/kthread.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/idt.h include/IA32MemoryManager.h include/operator.h \
-  include/tester.h include/checker.h include/KeyBoardManager.h \
+  include/sysresource.h include/BitMap.h include/idt.h \
+  include/IA32MemoryManager.h include/operator.h include/tester.h \
+  include/test_mjt.h include/checker.h include/KeyBoardManager.h \
   include/SystemInfo.h include/GraphicalConsole.h \
   include/ProcessManager.h include/ihandlers.h include/pic.h include/io.h \
-  include/rtc.h include/BitMap.h include/FAT12.h include/IDEDriver.h
+  include/rtc.h include/FAT12.h include/IDEDriver.h
 idt.o: idt.cpp include/idt.h
 ihandlers.o: ihandlers.cpp include/idt.h include/KeyBoardManager.h \
   include/types.h include/string.h include/FDCDriver.h \
   include/VirtualConsole.h include/DiskDriver.h include/ProcessManager.h \
   include/kernel.h include/IA32MemoryManager.h include/tester.h \
-  stlport/string stlport/stl/_prolog.h stlport/stl/_config.h \
-  stlport/stl_user_config.h stlport/stl/_config_compat.h \
-  stlport/stl/_site_config.h stlport/config/stlcomp.h \
-  stlport/config/stl_gcc.h stlport/config/stl_confix.h \
-  stlport/stl/_string.h stlport/memory stlport/stl/_alloc.h \
-  stlport/cstring stlport/stl/_range_errors.h stlport/new \
-  stlport/stl/_threads.h stlport/pthread.h stlport/stl/_threads.c \
-  stlport/stl/_construct.h stlport/stl/_iterator_base.h \
-  stlport/stl/type_traits.h stlport/stl/_alloc.c stlport/stl/_tempbuf.h \
+  include/test_mjt.h stlport/string stlport/stl/_prolog.h \
+  stlport/stl/_config.h stlport/stl_user_config.h \
+  stlport/stl/_config_compat.h stlport/stl/_site_config.h \
+  stlport/config/stlcomp.h stlport/config/stl_gcc.h \
+  stlport/config/stl_confix.h stlport/stl/_string.h stlport/memory \
+  stlport/stl/_alloc.h stlport/cstring stlport/stl/_range_errors.h \
+  stlport/new stlport/stl/_threads.h stlport/pthread.h \
+  stlport/stl/_threads.c stlport/stl/_construct.h \
+  stlport/stl/_iterator_base.h stlport/stl/type_traits.h \
+  stlport/stl/_alloc.c stlport/stl/_tempbuf.h \
   stlport/stl/_uninitialized.h stlport/stl/_algobase.h \
   stlport/stl/_pair.h stlport/stl/_algobase.c stlport/stl/_iterator.h \
   stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
@@ -33,34 +35,38 @@ ihandlers.o: ihandlers.cpp include/idt.h include/KeyBoardManager.h \
   stlport/stl/_string_hash.h stlport/stl/_hash_fun.h \
   stlport/stl/_epilog.h stlport/stl/_config_compat_post.h \
   include/ihandlers.h include/kthread.h include/io.h include/global.h \
-  include/Semaphore.h
+  include/Semaphore.h include/sysresource.h include/BitMap.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/types.h include/string.h include/kernel.h \
   include/VirtualConsole.h include/idt.h include/operator.h \
   include/global.h include/kthread.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h
+  include/DiskDriver.h include/Semaphore.h include/sysresource.h \
+  include/BitMap.h
 operator.o: operator.cpp include/IA32MemoryManager.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
   include/operator.h
 purevirtual.o: purevirtual.cpp include/kernel.h include/types.h \
   include/string.h include/VirtualConsole.h include/global.h \
   include/kthread.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h
+  include/Semaphore.h include/sysresource.h include/BitMap.h
 KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   include/types.h include/string.h include/global.h include/kthread.h \
   include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/operator.h
+  include/DiskDriver.h include/Semaphore.h include/sysresource.h \
+  include/BitMap.h include/operator.h
 tester.o: tester.cpp include/global.h include/kthread.h include/types.h \
   include/string.h include/kernel.h include/VirtualConsole.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/idt.h include/operator.h include/HVector.h include/tester.h \
+  include/sysresource.h include/BitMap.h include/idt.h include/operator.h \
+  include/HVector.h include/tester.h include/test_mjt.h \
   include/ProcessManager.h include/IA32MemoryManager.h \
   include/KeyBoardManager.h
 ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/kernel.h include/types.h include/string.h \
   include/VirtualConsole.h include/IA32MemoryManager.h include/global.h \
   include/kthread.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h include/tester.h include/idt.h stlport/algorithm \
+  include/Semaphore.h include/sysresource.h include/BitMap.h \
+  include/tester.h include/test_mjt.h include/idt.h stlport/algorithm \
   stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
   stlport/stl/_config_compat.h stlport/stl/_site_config.h \
   stlport/config/stlcomp.h stlport/config/stl_gcc.h \
@@ -81,19 +87,22 @@ SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/types.h \
 Semaphore.o: Semaphore.cpp include/semaphore.h include/kernel.h \
   include/types.h include/string.h include/VirtualConsole.h include/io.h \
   include/global.h include/kthread.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h
+  include/DiskDriver.h include/Semaphore.h include/sysresource.h \
+  include/BitMap.h
 FDCDriver.o: FDCDriver.cpp include/FDCDriver.h include/types.h \
   include/string.h include/VirtualConsole.h include/DiskDriver.h \
   include/kernel.h include/operator.h include/io.h include/global.h \
-  include/kthread.h include/Semaphore.h
+  include/kthread.h include/Semaphore.h include/sysresource.h \
+  include/BitMap.h
 GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h include/types.h include/string.h
 kthread.o: kthread.cpp include/kthread.h include/types.h include/string.h \
   include/kernel.h include/VirtualConsole.h include/ihandlers.h \
   include/idt.h include/pic.h include/io.h include/operator.h \
   include/disp.h include/global.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/ProcessManager.h \
-  include/IA32MemoryManager.h include/rtc.h
+  include/DiskDriver.h include/Semaphore.h include/sysresource.h \
+  include/BitMap.h include/ProcessManager.h include/IA32MemoryManager.h \
+  include/rtc.h
 pic.o: pic.cpp include/pic.h include/io.h include/types.h \
   include/string.h
 io.o: io.cpp include/io.h include/types.h include/string.h
@@ -102,23 +111,39 @@ rtc.o: rtc.cpp include/rtc.h include/types.h include/string.h \
 disp.o: disp.cpp include/kernel.h include/types.h include/string.h \
   include/VirtualConsole.h include/kthread.h include/disp.h include/io.h \
   include/pic.h include/semaphore.h include/global.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/syscalls.h \
-  include/rtc.h include/GraphicalConsole.h
+  include/DiskDriver.h include/Semaphore.h include/sysresource.h \
+  include/BitMap.h include/syscalls.h include/rtc.h \
+  include/GraphicalConsole.h
 syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/kthread.h include/types.h include/string.h include/kernel.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h include/io.h
+  include/Semaphore.h include/sysresource.h include/BitMap.h include/io.h
 BitMap.o: BitMap.cpp include/BitMap.h include/types.h include/string.h
 FAT12.o: FAT12.cpp include/FAT12.h include/types.h include/string.h \
   include/DiskDriver.h include/BitMap.h include/global.h \
   include/kthread.h include/kernel.h include/VirtualConsole.h \
-  include/FDCDriver.h include/Semaphore.h include/operator.h
+  include/FDCDriver.h include/Semaphore.h include/sysresource.h \
+  include/operator.h
 IDEDriver.o: IDEDriver.cpp include/IDEDriver.h include/types.h \
   include/string.h include/VirtualConsole.h include/DiskDriver.h \
   include/kernel.h include/operator.h include/io.h include/global.h \
-  include/kthread.h include/FDCDriver.h include/Semaphore.h
-test_higepon.o: test_higepon.cpp include/tester.h include/global.h \
-  include/kthread.h include/types.h include/string.h include/kernel.h \
+  include/kthread.h include/FDCDriver.h include/Semaphore.h \
+  include/sysresource.h include/BitMap.h
+test_higepon.o: test_higepon.cpp include/tester.h include/test_mjt.h \
+  include/FAT12.h include/types.h include/string.h include/DiskDriver.h \
+  include/BitMap.h include/FDCDriver.h include/VirtualConsole.h \
+  include/global.h include/kthread.h include/kernel.h include/Semaphore.h \
+  include/sysresource.h
+test_mjt.o: test_mjt.cpp include/IDEDriver.h include/types.h \
+  include/string.h include/VirtualConsole.h include/DiskDriver.h \
+  include/global.h include/kthread.h include/kernel.h include/FDCDriver.h \
+  include/Semaphore.h include/sysresource.h include/BitMap.h \
+  include/test_mjt.h include/pic.h include/io.h
+sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
+  include/types.h include/string.h include/global.h include/kthread.h \
+  include/kernel.h include/VirtualConsole.h include/FDCDriver.h \
+  include/DiskDriver.h include/Semaphore.h include/pic.h include/io.h
+ISADriver.o: ISADriver.cpp include/BitMap.h include/types.h \
+  include/string.h include/global.h include/kthread.h include/kernel.h \
   include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h
-test_mjt.o: test_mjt.cpp
+  include/Semaphore.h include/sysresource.h include/driver/ISADriver.h

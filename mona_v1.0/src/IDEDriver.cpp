@@ -206,30 +206,38 @@ bool IDEDriver::initilize() {
     console_->printf("ide:init:");
 
     waithdc(TIMEOUT);
-    console_->printf("diag...");
-    if(!sendcmd(IDE_CMD_DIAG,0,0)){
-      console_->printf("\naborting...\n");
-      HasMaster = false;
-      return false;
-    }
-    c = inportb(error_);
-    if(c & 0x0e){
-      console_->printf("error.");
-      HasMaster = false;
-      HasSlave = false;
-      return false;
-    }else{
-      console_->printf("ok.");
-      HasMaster = true;
-    }
     
-    if(c & 0x80){
-      console_->printf("(slave device)\n");
-      HasSlave = false;
+    HasMaster = true;
+    HasSlave = true;
+    console_->printf("diag skipped.\n");
+    
+    /*
+    console_->printf("diag...");
+    if(sendcmd(IDE_CMD_DIAG,0,0)){
+      c = inportb(error_);
+      if(c & 0x0e){
+        console_->printf("error.");
+        HasMaster = false;
+        HasSlave = false;
+        return false;
+      }else{
+        console_->printf("ok.");
+        HasMaster = true;
+      }
+      
+      if(c & 0x80){
+        console_->printf("(slave device)\n");
+        HasSlave = false;
+      }else{
+        console_->printf("(slave device ok or not present)\n");
+        HasSlave = true;
+      }
     }else{
-      console_->printf("(slave device ok or not present)\n");
-      HasSlave = true;/* Maybe */
+      console_->printf("no responce...(emulator?)\n");
+      HasMaster = true;
+      HasSlave = true;
     }
+    */
     
     if(HasMaster){
       Master = new IDEDevice(this,0);
@@ -334,6 +342,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       if(IsSurpportLBA){
         TotalSize = ( ( buf[60*2] << 8 ) + buf[60*2+1] )+( ( ( buf[61*2] << 8 ) + buf[61*2+1] ) << 16);
         Bus->console_->printf("\ntotalize = %d size = %d MB(LBA Device).\n",TotalSize,TotalSize/2/1024);
+        Bus->console_->printf("C/H/S = %d/%d/%d (Mona won't use this info.)\n",Tracks,Heads,SectorsPerTrack);
       }else{
         Bus->console_->printf("\nC/H/S = %d/%d/%d sectorsize = %d size = %d MB (non-LBA Device)\n",Tracks,Heads,SectorsPerTrack,BytesPerSector,Heads*Tracks*SectorsPerTrack/1024*BytesPerSector/1024);
       }
@@ -369,11 +378,12 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
           byte *mbr;
           mbr = buf + 0x1be + i*16;
           d = *(dword *)(mbr +8);
+          Bus->console_->printf("\n");
+          Bus->console_->printf("%d: ",i);
           if(!d){
+            Bus->console_->printf("(Not found)");
             continue;
           }
-          Bus->console_->printf("\n");
-          Bus->console_->printf("%d:",i);
           if(mbr[0] == 0x80){
             Bus->console_->printf("Boot ");
           }else{
@@ -382,7 +392,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
           d = *(dword *)(mbr +8);
           Bus->console_->printf("from:%x ",d);
           d = *(dword *)&mbr[12];
-          Bus->console_->printf("size:%x (%d MB)",d,d/2/1024);
+          Bus->console_->printf("size:%x (%d MB) fs:",d,d/2/1024);
           switch(mbr[4]){ /* see also:http://www37.tok2.com/home/nobusan/partition/partition.html */
             case 0x01:
               Bus->console_->printf("FAT12");
@@ -418,7 +428,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
               Bus->console_->printf("extend-Linux");
               break;
             case 0x2c:
-              Bus->console_->printf("CLTN Filesystem(clfs1)");
+              Bus->console_->printf("clfs-one");
               break;
             default:
               Bus->console_->printf("(#%x)",mbr[4]);

@@ -31,5 +31,5 @@ GLOBAL dword g_demo_step GLOBAL_VAL(0);
 GLOBAL semaphore g_semaphore_console GLOBAL_VAL(1);
 
 /* expr:sysresource */
-GLOBAL BitMap *g_irqmap;
+GLOBAL BitMap *g_irqMap;
 GLOBAL IRQHandler* g_irqHandlers[16];
