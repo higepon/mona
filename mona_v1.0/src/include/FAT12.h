@@ -90,6 +90,7 @@ class FAT12 {
     bool remove(const char* file);
     bool removeDirecotry(const char* name);
     bool makeDirectory(const char* name);
+    bool readHasNext();
 
     int getErrorNo();
     BPB bpb_;
@@ -107,6 +108,9 @@ class FAT12 {
     byte fat_[512];             /* fat region   */
     DiskDriver* driver_;        /* disk driver  */
     byte errNum_;               /* error number */
+
+    bool readHasNext_;          /* read state   */
+    int  currentCluster_;       /* read state   */
 
     int fatStart_;              /* fatStart     */
 

@@ -114,12 +114,20 @@ bool FAT12::initilize() {
 
     int rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
     int firstDataSector = bpb_.reservedSectorCount + bpb_.numberFats * bpb_.fatSize16 + rootDirSectors;
-    int lbp = ((5 - 2) * bpb_.sectorPerCluster) + firstDataSector;
 
-    if (!(driver_->read(lbp, buf_))) return false;
+    int cluster = 5;
 
-    for (int k = 0; k < entry[2].filesize; k++) printf("%c", (char)buf_[k]);
+    do {
 
+        int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector;
+
+        if (!(driver_->read(lbp, buf_))) return false;
+
+        for (int k = 0; k < 512; k++) printf("%c", (char)buf_[k]);
+
+        cluster = getFATAt(cluster);
+
+   } while (0xff8 < getFATAt(cluster));
 
     printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
 
