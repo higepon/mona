@@ -47,7 +47,7 @@ void ProcessManager::printInfo() {
     int value = 0;
     GDTR gdtr;
     gdtr.limit = 0;
-    gdtr.base  = 0;
+    gdtr.base  = 5;
 
     _sys_printf("from = %d to = %d\n", from, to);
     asm volatile("mov %1, %%ax\n"
@@ -65,11 +65,12 @@ void ProcessManager::printInfo() {
                  : "m" (gdtr)
                 );
     _sys_printf("gdtr.limit = %d\n", gdtr.limit);
+    _sys_printf("gdtr.base  = %d\n", gdtr.dummy);
+    _sys_printf("gdtr.base  = %d\n", gdtr.dummy2);
+    _sys_printf("gdtr.base  = %d\n", gdtr.base);
 
-    _sys_printf("gdtr.base  = %d\n", (gdtr.base) >> 16);
-
-    GDT* some = (GDT*)(gdtr.base);
-    _sys_printf("type =%x", some[4].type);
+    GDT* some = (GDT*)(gdtr.dummy);
+    _sys_printf("type =%x", some[1].type);
 
 
     return;

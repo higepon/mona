@@ -64,6 +64,8 @@ typedef struct {
 /*! gdtr */
 typedef struct {
     word  limit;
+    word  dummy;
+    word  dummy2;
     dword base;
 } GDTR;
 
