@@ -20,8 +20,6 @@
 
         * src/servers/process: ELFサーバーから分離した部分を独立
 
-        * src/servers/Makefile: 容量節約のためmonitorサーバーを外した
-
         * apps/gui/Makefile: 容量節約のためlauncherを外した
 
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
