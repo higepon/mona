@@ -1,5 +1,9 @@
-PROG=t5lzma.exe
+PROG=t5lzma$(EXEEXT)
+
+include ../../../../../env/Makefile.inc
+
 CXX = g++
+CC  = gcc
 LIB = -lstdc++ -lm
 RM=-rm
 CFLAGS = -c -O3
@@ -31,7 +35,7 @@ all: $(PROG)
 $(PROG): $(OBJS)
 	$(CXX) -o $(PROG) $(LDFLAGS) $(OBJS) $(LIB)
 	strip $(PROG)
-	cp t5lzma.exe ../../../../../bin/t5lzma.exe
+	cp $(PROG) ../../../../../bin/$(PROG)
 
 LzmaAlone.o: LzmaAlone.cpp
 	$(CXX) $(CFLAGS) LzmaAlone.cpp
