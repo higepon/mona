@@ -8,13 +8,14 @@ namespace MonAPI {
 /*----------------------------------------------------------------------
     Keys
 ----------------------------------------------------------------------*/
-class Keys
-{
-public:
-    enum
-    {
+class Keys{
+  public:
+    enum{
         Back    = 8 ,
+        Tab     = 9,
         Enter   = 13,
+        CapsLock= 20,
+        Escape  = 27,
         Space   = 32,
         Left    = 37,
         Up      = 38,
@@ -56,6 +57,7 @@ public:
         X       = 88,
         Y       = 89,
         Z       = 90,
+        RWin    = 92,
         NumPad0 = 96,
         NumPad1 = 97,
         NumPad2 = 98,
@@ -71,9 +73,23 @@ public:
         Subtract= 109,
         Decimal = 110,
         Divide  = 111,
-        OemPlus = 187,
-        OemMinus= 189
+        NumLock = 144,
+        LShiftKey = 160,
+        RShiftKey = 161,
+        LControlKey = 162,
+        LMenu       = 164,
+        RMenu       = 165,
+        OemSemicolon = 186,
+        OemPlus  = 187,
+        Oemcomma = 188,
+        OemMinus = 189,
+        OemPeriod= 190,
+
+        OemAt   = 200,
+        Colon   = 201,
     };
+    
+    static char ToChar(KeyInfo keyInfo);
 };
 
 }
