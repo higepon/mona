@@ -274,10 +274,21 @@ static void ProcessMouseInfo(MessageInfo* msg)
 	}
 }
 
+static void ProcessKeyInfo(MessageInfo* msg)
+{
+	if (activeWindow == NULL) return;
+	
+	if (Message::send(activeWindow->ThreadID, msg) != 0)
+	{
+		DisposeWindowFromThreadID(activeWindow->ThreadID);
+	}
+}
+
 bool WindowHandler(MessageInfo* msg)
 {
 	switch (msg->header)
 	{
+		// ウィンドウ生成要求
 		case MSG_GUISERVER_CREATEWINDOW:
 		{
 			guiserver_window* w = CreateWindow();
@@ -285,18 +296,22 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg, w->Handle);
 			break;
 		}
+		// ウィンドウ破棄要求
 		case MSG_GUISERVER_DISPOSEWINDOW:
 			DisposeWindow(msg->arg1);
 			Message::reply(msg);
 			break;
+		// ウィンドウ描画要求
 		case MSG_GUISERVER_DRAWWINDOW:
 			DrawWindow(GetWindowPointer(msg->arg1));
 			Message::reply(msg);
 			break;
+		// ウィンドウ移動要求
 		case MSG_GUISERVER_MOVEWINDOW:
 			MoveWindow(GetWindowPointer(msg->arg1), (int)msg->arg2, (int)msg->arg3);
 			Message::reply(msg);
 			break;
+		// ウィンドウ最前面移動要求
 		case MSG_GUISERVER_WINDOWTOFRONTMOST:
 		{
 			guiserver_window* w = GetWindowPointer(msg->arg1);
@@ -306,8 +321,13 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg);
 			break;
 		}
+		// マウス情報
 		case MSG_MOUSE_INFO:
 			ProcessMouseInfo(msg);
+			break;
+		// キー情報
+		case MSG_KEY_VIRTUAL_CODE:
+			ProcessKeyInfo(msg);
 			break;
 		case MSG_GUISERVER_MOUSECAPTURE:
 		{
@@ -321,6 +341,7 @@ bool WindowHandler(MessageInfo* msg)
 				else
 				{
 					captures.add(w);
+					activeWindow = w;
 				}
 			}
 			Message::reply(msg);
@@ -349,6 +370,7 @@ bool WindowHandler(MessageInfo* msg)
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
 			Message::reply(msg);
 			break;
+		// 拡張効果要求
 		case MSG_GUISERVER_EXPANSIONEFFECT:
 			ExpansionEffect(
 				GET_X_DWORD(msg->arg1), GET_Y_DWORD(msg->arg1),
@@ -356,6 +378,7 @@ bool WindowHandler(MessageInfo* msg)
 				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
 			Message::reply(msg);
 			break;
+		// 縮小効果要求
 		case MSG_GUISERVER_REDUCTIONEFFECT:
 			ReductionEffect(
 				GET_X_DWORD(msg->arg1), GET_Y_DWORD(msg->arg1),
