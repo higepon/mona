@@ -31,6 +31,8 @@
 
         * src/lib/bzip2: 追加
 
+        * apps/non-gui/bzcat: 追加
+
 2004-04-30  tino  <tino@users.sourceforge.jp>
 
         * env/monaelf.lds: Monaアプリケーション用のリンカスクリプトを追加 (thanks Yuiさん)
