@@ -488,9 +488,11 @@ bool writeMBR(const char *src)
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
-        printf("usage: fat_write [--mkdir/--mbr] image [source] [path]\n");
+        printf("usage: fat_write image source/--mkdir/--mbr path\n");
         return 0;
     }
+
+    if (!initialize(argv[1])) return 1;
 
 //     byte buf[512];
 //     memset(buf, 0, 512);
@@ -498,19 +500,16 @@ int main(int argc, char *argv[])
 //     for (int i = 0; i < 512; i++) printf("%x", buf[i]);
 
     int ret = 0;
-    if (strcmp(argv[1], "--mkdir") == 0)
+    if (strcmp(argv[2], "--mkdir") == 0)
     {
-        if (!initialize(argv[2])) return 1;
         if (!mkdir(argv[3])) ret = 1;
     }
-    else if (strcmp(argv[1], "--mbr") == 0)
+    else if (strcmp(argv[2], "--mbr") == 0)
     {
-        if (!initialize(argv[2])) return 1;
         if (!writeMBR(argv[3])) ret = 1;
     }
     else
     {
-        if (!initialize(argv[1])) return 1;
         rm(argv[3]);
         if (!cp(argv[2], argv[3])) ret = 1;
     }
