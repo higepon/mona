@@ -147,6 +147,81 @@ int syscall_receive(Message* message) {
     return result;
 }
 
+int syscall_mutex_create() {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MUTEX_CREATE)
+                 );
+
+    return result;
+}
+
+int syscall_mutex_trylock(int id) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MUTEX_TRYLOCK), "m"(id)
+                 );
+
+    return result;
+}
+
+int syscall_mutex_lock (int id ) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MUTEX_LOCK), "m"(id)
+                 );
+
+    return result;
+}
+
+int syscall_mutex_unlock(int id) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MUTEX_UNLOCK), "m"(id)
+                 );
+
+    return result;
+}
+
+int syscall_mutex_destroy(int id) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_MUTEX_DESTROY), "m"(id)
+                 );
+
+    return result;
+}
+
+
 void* malloc(unsigned long size) {
     return um.allocate(size);
 }
@@ -173,21 +248,28 @@ void operator delete(void* address) {
     Mutex
 ----------------------------------------------------------------------*/
 Mutex::Mutex() {
-    mutex = new StMutex;
 }
 
 Mutex::~Mutex() {
-    delete mutex;
+}
+
+int Mutex::init() {
+    mutexId_ = syscall_mutex_create();
+    return mutexId_;
 }
 
 int Mutex::lock() {
-
+    return syscall_mutex_lock(mutexId_);
 }
 
 int Mutex::unlock() {
-
+    return syscall_mutex_unlock(mutexId_);
 }
 
 int Mutex::tryLock() {
+    return syscall_mutex_trylock(mutexId_);
+}
 
+int Mutex::destory() {
+    return syscall_mutex_destroy(mutexId_);
 }

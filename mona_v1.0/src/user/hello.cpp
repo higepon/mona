@@ -4,12 +4,20 @@ int listener();
 int disp();
 static char buf[32];
 static bool come;
+static Mutex* mutex;
 
 int main() {
 
     dword id;
 
-    Mutex* mutex = new Mutex();
+    mutex = new Mutex();
+
+    if (!mutex->init()) {
+        print("mutex init  error\n");
+        exit(-1);
+    }
+
+    mutex->lock();
 
     if (!(id = mthread_create((dword)listener))) {
         print("mthread create error\n");
@@ -33,7 +41,6 @@ int disp() {
             come = false;
         }
     }
-
 }
 
 int listener() {

@@ -12,6 +12,13 @@
 #define SYSTEM_CALL_RECEIVE        11
 #define SYSTEM_CALL_MTHREAD_CREATE 12
 #define SYSTEM_CALL_MTHREAD_JOIN   13
+#define SYSTEM_CALL_MUTEX_CREATE   13
+#define SYSTEM_CALL_MUTEX_LOCK     14
+#define SYSTEM_CALL_MUTEX_TRYLOCK  15
+#define SYSTEM_CALL_MUTEX_UNLOCK   16
+#define SYSTEM_CALL_MUTEX_DESTROY  17
+
+#define main() monamain()
 
 #define main() monamain()
 
@@ -37,6 +44,11 @@ int syscall_send(const char* name, Message* message);
 int syscall_receive(Message* message);
 int syscall_mthread_create(dword f);
 int syscall_mthread_join(dword id);
+int syscall_mutex_create();
+int syscall_mutex_trylock();
+int syscall_mutex_lock();
+int syscall_mutex_unlock();
+int syscall_mutex_destroy(int id);
 void* malloc(unsigned long size);
 void free(void * address);
 
@@ -46,26 +58,24 @@ void  operator delete(void* address);
 /*----------------------------------------------------------------------
     Mutex
 ----------------------------------------------------------------------*/
-typedef struct StMutex {
-    dword dummy;
-};
-
 class Mutex {
 
   public:
     Mutex();
     ~Mutex();
+    int init();
     int lock();
     int unlock();
     int tryLock();
+    int destory();
 
   public:
-    inline StMutex* getStMutex() const {
-        return mutex;
+    inline int getId() const {
+        return mutexId_;
     }
 
   private:
-    StMutex* mutex;
+    int mutexId_;
 };
 
 

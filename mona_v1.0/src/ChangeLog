@@ -1,3 +1,7 @@
+2004-01-12  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: ユーザー側にMutexクラスを用意。
+
 2004-01-11  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib.cpp: userlib.oをカーネルにリンクしないようにした。
