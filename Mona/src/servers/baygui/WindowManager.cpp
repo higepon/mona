@@ -705,16 +705,15 @@ void WindowManager::repaint()
 #if defined(PEKOE)
 	for (i = 0; i < 15; i++) {
 		for (j = 0; j < 15; j++) {
-			_g->screen->putPixel16(19 + j, 4 + i, orangeIcon[i][j]);
+			_g->drawPixel(19 + j, 4 + i, orangeIcon[i][j]);
 		}
 	}
 #elif defined(MONA)
 	for (i = 0; i < 15; i++) {
 		for (j = 0; j < 16; j++) {
-			_g->screen->putPixel16(18 + j, 4 + i, monaIcon[i][j]);
+			_g->drawPixel(18 + j, 4 + i, monaIcon[i][j]);
 		}
 	}
-#else
 #endif
 
 	// メニュー
