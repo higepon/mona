@@ -1,7 +1,9 @@
 *.bin
+*.exe
 mona.img
+mona.iso
 fat_write
-fat_write.exe
 monaelf
-monaelf.exe
+t5lzma
+bim2bin
 TAGS

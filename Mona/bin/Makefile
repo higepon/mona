@@ -30,11 +30,16 @@ all:
 	done
 	@echo "Done."
 
+mona.iso: $(TARGET)
+	cp $< root
+	mkisofs -v -iso-level 1 -b $< -o $@ root
+	rm -f root/$<
+
 write:
 	dd if=$(TARGET) of=/dev/fd0
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) mona.iso
 	rm -f root/*.BIN
 	rm -f root/MONA-12.M*
 	rm -rf root/APPS/*.*
