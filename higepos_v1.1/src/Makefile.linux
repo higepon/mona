@@ -17,7 +17,7 @@ SRC        = higeKernel.cpp       \
              higeIdt.cpp          \
              higeIhandler.cpp     \
              higeIo.cpp           \
-             x86MemoryManager.cpp \
+             X86MemoryManager.cpp \
              higePureVirtual.cpp  \
              higeOperator.cpp     \
              higeUtil.cpp         \
