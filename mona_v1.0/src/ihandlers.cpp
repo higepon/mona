@@ -35,6 +35,8 @@ void keyStrokeHandler(dword scancode) {
     Message* message;
     g_demo_step++;
 
+    g_console->printf("hoge");
+
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode((byte)scancode);
@@ -46,7 +48,7 @@ void keyStrokeHandler(dword scancode) {
     message->arg1 = info->keycode;
     message->arg2 = info->modifiers;
 
-    send("mainProc     ", message);
+    send("USER.ELF", message);
     free(message);
 
     /* EOI is below for IRQ 0-7 */

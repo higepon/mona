@@ -50,23 +50,19 @@ int send(const char* name, Message* message) {
 
     ProcessInfo* pinfo;
     Message* kmessage;
-
+    g_console->printf("1");
     if (message == (Message*)NULL) {
         return -1;
     }
-
+    g_console->printf("1");
     if ((pinfo = g_process_manager->findProcess(name)) == (ProcessInfo*)NULL) {
         return -1;
     }
-
-    if (pinfo->message != (Message*)NULL) {
-        return -1;
-    }
-
+    g_console->printf("1");
     if ((kmessage = (Message*)malloc(sizeof(Message))) == NULL) {
         return -1;
     }
-
+    g_console->printf("1");
     memcpy(kmessage, message, sizeof(Message));
     pinfo->vec->add(kmessage);
     return 0;
@@ -79,7 +75,7 @@ int receive(Message* message) {
     if (from == (Message*)NULL) {
         return -1;
     }
-
+    g_console->printf("2");
     memcpy(message, from, sizeof(Message));
     free(from);
     g_current_process->vec->remove(0);

@@ -14,6 +14,7 @@
 #include<syscalls.h>
 #include<userlib.h>
 #include<global.h>
+#include<tester.h>
 #include<io.h>
 
 extern "C" char pos_x;
@@ -109,6 +110,15 @@ void syscall_entrance() {
 
         put_pixel((int)(g_current_process->esi), (int)(g_current_process->ecx), (char)(g_current_process->edi));
         g_current_process->eax = 0;
+        break;
+
+    case SYSTEM_CALL_SEND:
+
+        g_current_process->eax = send((char*)(g_current_process->esi), (Message*)(g_current_process->ecx));
+        break;
+
+    case SYSTEM_CALL_RECEIVE:
+        g_current_process->eax = receive((Message*)(g_current_process->esi));
         break;
 
     default:

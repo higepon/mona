@@ -17,19 +17,21 @@ int main() {
 //     }
 
 
+    print("");
     Message message;
     char buf[32];
-//     for (;;) {
-//         memset(&message, 0, sizeof(Message));
+    for (;;) {
 
-//         if (!receive(&message)) {
+        if (!_receive(&message)) {
 
-//             buf[0] = (char)message.arg1;
-//             buf[1] = '\0';
-//             printf(buf);
-//         }
+        }
+            buf[1] = '[';
+            buf[0] = (char)message.arg1;
+            buf[0] = ']';
+            buf[1] = '\0';
+            print(buf);
 
-//     }
+    }
 
     return 0;
 }

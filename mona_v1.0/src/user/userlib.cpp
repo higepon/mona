@@ -7,6 +7,10 @@ int print(const char* msg) {return syscall_print(msg);}
 int _put_pixel(int x, int y, char color) {return syscall_put_pixel(x, y, color);}
 int kill() {return syscall_kill();}
 int exit(int error) {return syscall_kill();}
+int _send(const char* name, Message* message) {return syscall_send(name, message);}
+int _receive(Message* message) {return syscall_receive(message);}
+
+
 int monamain();
 
 static MemoryManager um;
@@ -78,7 +82,6 @@ int syscall_put_pixel(int x, int y, char color) {
                  );
 
     return result;
-
 }
 
 int syscall_kill() {
@@ -96,6 +99,35 @@ int syscall_kill() {
     return result;
 }
 
+int syscall_send(const char* name, Message* message) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "movl %3  , %%ecx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_SEND), "m"(name), "m"(message)
+                 );
+
+    return result;
+}
+int syscall_receive(Message* message) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_RECEIVE), "m"(message)
+                 );
+
+    return result;
+}
 
 void* umalloc(unsigned long size) {
 

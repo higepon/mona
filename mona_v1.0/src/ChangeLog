@@ -1,5 +1,8 @@
 2003-11-12  higepon  <higepon@users.sourceforge.jp>
 
+        * syscalls.cpp システムコールの戻り値が取れていない?
+                       loadProcess遅すぎ
+
         * test_higepon.cpp: Message格納先をHVector(テンプレート)で実装することにより複数のメッセージにも対応
 
         * ihandlers.cpp: send/receiveをキーボード割り込みで実験してみた。
