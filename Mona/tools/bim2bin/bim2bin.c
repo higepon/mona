@@ -2126,10 +2126,10 @@ static UCHAR tek1_ucprm_ds1[] = { 0x2c, 0x44, 0x52, 0xd5 };
 static UCHAR tek1_ucprm_s41[] = { 0x2c, 0x44, 0x44, 0xc4 };
 //	/* 0_0111011 10111011 10111011 110_0_1011			24, 4444440 */
 	/* 1_1000100 01000100 01000100 001_0_1100			24, 4444440 */
-static UCHAR tek2_ucprm_tr8[] = { 0x03, 0x18 };
+//static UCHAR tek2_ucprm_tr8[] = { 0x03, 0x18 };
 //	/* 000_0_0111 11111_0_10							8, 8 */
 	/* 000_1_1000 00000_0_11							8, 8 */
-static UCHAR tek1_ucprm_ds0[] = { 0x0c, 0x22, 0xa9, 0x6a };
+//static UCHAR tek1_ucprm_ds0[] = { 0x0c, 0x22, 0xa9, 0x6a };
 //	/* 0_1_101010 10101010 10101010 000_0_1100 			24, 222222 2244 */
 	/* 0_1_101010 10101001 00100010 000_0_1100 			24, 222222 3344 */
 
@@ -4758,7 +4758,8 @@ void tek1_btseek(struct TEK1_STR_BTBUF *btbuf, UCHAR *p)
 /* いずれもアクセスしうるというだけで、データが意味あるものである必要はない */
 {
 	int bit = (((int) p) & 0x03) << 3;
-	((int) p) &= ~0x03;
+	//((int) p) &= ~0x03;
+	p = (UCHAR *)(((int) p) & ~0x03);
 	btbuf->rest = 32 - bit;
 	btbuf->buf0 = (*(unsigned int *) &p[0]) >> bit;
 	btbuf->buf1 &= 0;
@@ -6006,7 +6007,7 @@ void tek_conv_tek5_setbm(struct STR_RCBITMODEL *bm, int t, int m)
 
 int tek_conv_tek5(int csiz, UCHAR *src, int osiz, UCHAR *tmp, UCHAR *dst, UCHAR *str_eprm)
 {
-	UCHAR *mclp0 = malloc(osiz * 8), *p, *src1 = src + csiz, pmch, mcby, lastbyte, *mclp;
+	UCHAR *mclp0 = malloc(osiz * 8), *p, /* *src1 = src + csiz ,*/ pmch, mcby, lastbyte, *mclp;
 	struct STR_PRB *prb = malloc(sizeof (struct STR_PRB));
 	int i, j, k, m, *ip, l, d, r, rep[MAX_REP], bylz;
 	int lc, lp, pb, s, pos, s_pos, m_pos, m_lp, nst;
@@ -6599,7 +6600,7 @@ unsigned int rc_revbit(unsigned int data, int len)
 
 void tek_conv_tek5_len(struct RC *rc, struct STR_PRB *prb, int mode, int s_pos, int len, int t)
 {
-	int l0, l1, i, j, k;
+	int l0, l1/*, i, j, k */;
 	len -= 2;
 	if (len < 8) {
 		rc_encode1(rc, &prb->lensel[mode], 0^t);
