@@ -61,11 +61,24 @@ const int FAT12::WRITE_MODE = 1;
 */
 FAT12::FAT12(DiskDriver* driver) {
 
-    driver_ = driver;
-    errNum_ = NORMAL_STATE;
-    fat_    = (byte*)0;
+    buf_[0]           = '\0';
+    fat_              = NULL;
+    driver_           = driver;
+    map_              = NULL;
+    errNum_           = NORMAL_STATE;
+    readHasNext_      = false;
+    isOpen_           = false;
+    firstWrite_       = false;
+    currentCluster_   = 0;
+    fileSize_         = 0;
+    readCounter_      = 0;
     currentDirectory_ = 0;
-    isOpen_ = false;
+    fatStart_         = 0;
+    openMode_         = 0;
+    currentPath_[0]   = '\0';
+    rootDirSectors_   = 0;
+    firstDataSector_  = 0;
+    rootEntryStart_   = 0;
     return;
 }
 

@@ -144,6 +144,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     fileSize  = fat->getFileSize();
     readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
     buf       = (byte*)malloc(512 * readTimes);
+    memset(buf, 0, 512 * readTimes);
     if (buf == NULL) {
         delete fat;
         Semaphore::up(&g_semaphore_fd);
@@ -210,8 +211,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     return 0;
 }
 
-ELFLoader::ELFLoader() {
-
+ELFLoader::ELFLoader() : errorCode_(0), header_(NULL), pheader_(NULL) {
 }
 
 ELFLoader::~ELFLoader() {
