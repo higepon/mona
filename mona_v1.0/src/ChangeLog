@@ -1,3 +1,7 @@
+2004-03-31  higepon  <higepon@users.sourceforge.jp>
+
+        * user/jpegls/jpegdemo.cpp (MonaMain): FileOutputStreamを使用して外部jpg読み込み対応
+
 2004-03-30  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib/userlib.cpp: Mutexをユーザーライブラリに追加(テスト済み)
