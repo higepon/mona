@@ -1,3 +1,7 @@
+2005-02-13  higepon  <higepon@users.sourceforge.jp>
+
+        * include/sys/types.h (DEBUG_READ_TRACE): これを有効にするとATAPIのログをシリアルポートに吐く。
+
 2005-02-12  csharp  <csharp@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: カーソルの形状を変更

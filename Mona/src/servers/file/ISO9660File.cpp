@@ -38,6 +38,10 @@ ISO9660File::~ISO9660File()
 
 dword ISO9660File::Read(void* buffer, dword size)
 {
+#ifdef DEBUG_READ_TRACE
+    Log("Read %s to %x size = %d\n", (const char*)name, buffer, size);
+#endif
+
     dword rest = this->attribute.size - this->pointer;
 
     if (rest < size)

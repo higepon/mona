@@ -17,8 +17,6 @@
 
 using namespace MonAPI;
 
-//#define DEBUG_READ_TRACE
-
 /*----------------------------------------------------------------------
     IDEDRIVER
 ----------------------------------------------------------------------*/
@@ -96,10 +94,14 @@ int IDEDriver::read(dword lba, void* buffer, int size)
 {
 #ifdef DEBUG_READ_TRACE
     void* buffer2 = buffer;
-    logprintf("read lba=%d size=%x start\n", lba, size);
+    Log("read lba=%d size=%x start\n", lba, size);
 #endif
 
     if (this->whichController == NULL) return 1;
+
+#ifdef DEBUG_READ_TRACE
+    Log("\n");
+#endif
 
     if (this->whichController->selectedDevice->type == DEVICE_ATAPI)
     {
@@ -111,29 +113,65 @@ int IDEDriver::read(dword lba, void* buffer, int size)
             bool readResult;
             if (i == count - 1)
             {
+#ifdef DEBUG_READ_TRACE
+    Log("\n");
+#endif
                 readSize = size - 0xf800 * i;
             }
             else
             {
+#ifdef DEBUG_READ_TRACE
+    Log("\n");
+#endif
+
                 readSize = 0xf800;
             }
 
             for (int j = 0; j < 20; j++)
             {
+#ifdef DEBUG_READ_TRACE
+    Log("\n");
+#endif
                 readResult = commandRead10(this->whichController, lba + 0xf800 * i / 2048, buffer, readSize);
                 if (readResult) break;
             }
 
             buffer = (void*)((byte*)buffer + readSize);
 
-            if (!readResult) return getLastError();
+            if (!readResult)
+            {
+#ifdef DEBUG_READ_TRACE
+    Log("last Error = %d\n", getLastError());
+#endif
+                 return getLastError();
+            }
         }
 
 #ifdef DEBUG_READ_TRACE
+
         byte* p = (byte*)buffer2;
-        for (int k= 0; k < size; k++)
+        dword s = size / 16;
+
+        for (int k= 0; k < s; k++)
         {
-            logprintf("[%d:%x]", k, p[k]);
+            {
+                char buf[32];
+                sprintf(buf, "%08X |", k * 16);
+                logprintf(buf);
+            }
+
+            for (int l = 0; l < 16; l++)
+            {
+                char buf[32];
+                sprintf(buf, "%02X ", p[k * 16 + l]);
+                logprintf(buf);
+            }
+
+            for (int l = 0; l < 16; l++)
+            {
+                logprintf("%c", p[k * 16 + l] >= ' ' ? p[k * 16 + l] : '.');
+            }
+            logprintf("\n");
         }
         logprintf("\n\n");
 #endif
@@ -142,10 +180,16 @@ int IDEDriver::read(dword lba, void* buffer, int size)
     }
     else if (this->whichController->selectedDevice->type == DEVICE_ATA)
     {
+#ifdef DEBUG_READ_TRACE
+    Log("\n");
+#endif
         return 4;
     }
     else
     {
+#ifdef DEBUG_READ_TRACE
+    Log("\n");
+#endif
         return 5;
     }
 }
