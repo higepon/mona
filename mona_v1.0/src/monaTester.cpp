@@ -13,7 +13,7 @@
 */
 #include<global.h>
 #include<monaIdt.h>
-#include<monaOperator.h>
+#include<operator.h>
 #include<monaTypes.h>
 #include<HVector.h>
 #include<monaTester.h>

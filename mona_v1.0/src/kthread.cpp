@@ -15,7 +15,7 @@
 #include<monaIhandler.h>
 #include<monaIdt.h>
 #include<pic.h>
-#include<monaOperator.h>
+#include<operator.h>
 #include<disp.h>
 #include<global.h>
 #include<ProcessManager.h>

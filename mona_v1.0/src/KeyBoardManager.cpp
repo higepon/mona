@@ -13,7 +13,7 @@
 */
 #include<KeyBoardManager.h>
 #include<global.h>
-#include<monaOperator.h>
+#include<operator.h>
 
 const int KeyBoardManager::keyMap_[128] = {
         0        , KEY_ESC  , '1'          , '2'           , '3'       , '4'            , '5'          , '6'      ,

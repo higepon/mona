@@ -14,7 +14,7 @@
 #include<IA32MemoryManager.h>
 #include<monaIdt.h>
 #include<monaKernel.h>
-#include<monaOperator.h>
+#include<operator.h>
 #include<global.h>
 
 /*!

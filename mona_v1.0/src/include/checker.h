@@ -1,5 +1,5 @@
 /*!
-    \file  monaChecker.h
+    \file  checker.h
     \brief some checkers
 
     some checkers

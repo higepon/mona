@@ -1,5 +1,5 @@
 /*!
-    \file   monaChecker.cpp
+    \file   checker.cpp
     \brief  checker function
 
     checkers for OS

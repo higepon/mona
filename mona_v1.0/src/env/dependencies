@@ -3,7 +3,7 @@ cstart.o: cstart.cpp include/monaKernel.h include/monaTypes.h \
 monaKernel.o: monaKernel.cpp include/global.h include/kthread.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
   include/VirtualConsole.h include/MFDCDriver.h include/Semaphore.h \
-  include/monaIdt.h include/IA32MemoryManager.h include/monaOperator.h \
+  include/monaIdt.h include/IA32MemoryManager.h include/operator.h \
   include/monaTester.h include/checker.h include/KeyBoardManager.h \
   stlport/queue stlport/stl/_prolog.h stlport/stl/_config.h \
   stlport/stl_user_config.h stlport/stl/_config_compat.h \
@@ -53,12 +53,9 @@ monaIhandler.o: monaIhandler.cpp include/monaIdt.h \
   include/io.h include/global.h include/Semaphore.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
-  include/VirtualConsole.h include/monaIdt.h include/monaOperator.h \
+  include/VirtualConsole.h include/monaIdt.h include/operator.h \
   include/global.h include/kthread.h include/MFDCDriver.h \
   include/Semaphore.h
-monaOperator.o: monaOperator.cpp include/IA32MemoryManager.h \
-  include/monaTypes.h include/string.h include/monaKernel.h \
-  include/VirtualConsole.h include/monaOperator.h
 monaPureVirtual.o: monaPureVirtual.cpp include/monaKernel.h \
   include/monaTypes.h include/string.h include/VirtualConsole.h \
   include/global.h include/kthread.h include/MFDCDriver.h \
@@ -81,11 +78,11 @@ KeyBoardManager.o: KeyBoardManager.cpp include/KeyBoardManager.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/global.h include/kthread.h \
   include/monaKernel.h include/VirtualConsole.h include/MFDCDriver.h \
-  include/Semaphore.h include/monaOperator.h
+  include/Semaphore.h include/operator.h
 monaTester.o: monaTester.cpp include/global.h include/kthread.h \
   include/monaTypes.h include/string.h include/monaKernel.h \
   include/VirtualConsole.h include/MFDCDriver.h include/Semaphore.h \
-  include/monaIdt.h include/monaOperator.h include/HVector.h \
+  include/monaIdt.h include/operator.h include/HVector.h \
   include/monaTester.h include/ProcessManager.h \
   include/IA32MemoryManager.h include/KeyBoardManager.h stlport/queue \
   stlport/stl/_prolog.h stlport/stl/_config.h stlport/stl_user_config.h \
@@ -119,8 +116,8 @@ ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   stlport/stl/_tempbuf.c stlport/stl/_heap.h stlport/stl/_heap.c \
   stlport/stl/_function_base.h stlport/stl/_algo.c stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h
-checker.o: checker.cpp include/monaTypes.h include/string.h \
-  include/monaKernel.h include/VirtualConsole.h \
+checker.o: checker.cpp include/checker.h include/monaTypes.h \
+  include/string.h include/monaKernel.h include/VirtualConsole.h \
   include/IA32MemoryManager.h include/kthread.h
 string.o: string.cpp include/string.h include/monaTypes.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
@@ -131,15 +128,15 @@ Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
   include/Semaphore.h
 MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h include/monaKernel.h \
-  include/monaOperator.h include/io.h include/global.h include/kthread.h \
+  include/operator.h include/io.h include/global.h include/kthread.h \
   include/Semaphore.h
 GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
   include/VirtualConsole.h include/monaTypes.h include/string.h
 kthread.o: kthread.cpp include/kthread.h include/monaTypes.h \
   include/string.h include/monaKernel.h include/VirtualConsole.h \
   include/monaIhandler.h include/monaIdt.h include/pic.h include/io.h \
-  include/monaOperator.h include/disp.h include/global.h \
-  include/MFDCDriver.h include/Semaphore.h include/ProcessManager.h \
+  include/operator.h include/disp.h include/global.h include/MFDCDriver.h \
+  include/Semaphore.h include/ProcessManager.h \
   include/IA32MemoryManager.h include/rtc.h
 pic.o: pic.cpp include/pic.h include/io.h include/monaTypes.h \
   include/string.h

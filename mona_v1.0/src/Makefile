@@ -24,7 +24,7 @@ SOURCES    = cstart.cpp            \
              monaIdt.cpp           \
              monaIhandler.cpp      \
              IA32MemoryManager.cpp \
-             monaOperator.cpp      \
+             operator.cpp          \
              monaPureVirtual.cpp   \
              KeyBoardManager.cpp   \
              monaTester.cpp        \

@@ -1,5 +1,5 @@
 /*!
-    \file   monaOperator.cpp
+    \file   operator.cpp
     \brief  define operator new & delete
 
     define operator new & delete
@@ -12,7 +12,7 @@
     \date   create:2002/08/08 update:$Date$
 */
 #include<IA32MemoryManager.h>
-#include<monaOperator.h>
+#include<operator.h>
 #include<monaTypes.h>
 
 #ifndef BUILD_ON_LINUX

@@ -22,7 +22,7 @@
 #include<monaKernel.h>
 #include<monaIdt.h>
 #include<IA32MemoryManager.h>
-#include<monaOperator.h>
+#include<operator.h>
 #include<monaTester.h>
 #include<checker.h>
 #include<KeyBoardManager.h>
