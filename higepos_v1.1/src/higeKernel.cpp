@@ -98,10 +98,6 @@ void startKernel(void) {
     _sys_printf("\n");
     delete(v);
 
-    /* testing keyboardmanager */
-    KeyBoardManager& km = KeyBoardManager::instance();
-    _sys_printf("keyboard id = %x \n", km.getId());
-
     while (true) {
     }
 }

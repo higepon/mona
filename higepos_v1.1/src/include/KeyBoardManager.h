@@ -20,6 +20,14 @@
 #define SPECIAL_KEY  0xE0
 #define KEYBOARD_ACK 0xFA
 
+#define KEY_MODIFIER_DOWN  0x1
+#define KEY_MODIFIER_UP    0x2
+#define KEY_MODIFIER_SHIFT 0x4
+#define KEY_MODIFIER_ALT   0x8
+#define KEY_MODIFIER_CTRL  0x10
+#define KEY_MODIFIER_WIN   0x20
+#define KEY_MODIFIER_MENU  0x40
+
 typedef enum {
     KEY_ESC
   , KEY_BACKSPACE
@@ -65,7 +73,7 @@ typedef enum {
 */
 typedef struct {
     unsigned int keycode;
-    unsigned int addcode;
+    unsigned int modifiers;
 } KeyInfo;
 
 /*!
@@ -96,7 +104,6 @@ class KeyBoardManager {
 
     KeyInfo* getKeyInfo();
     void setKeyScanCode(unsigned char);
-    int getId() const;
     void printInfo() const;
 };
 
