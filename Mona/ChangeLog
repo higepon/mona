@@ -1,3 +1,7 @@
+2004-11-12  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * /src/servers/gui/main.cpp: コメント記述
+
 2004-11-12  higepon  <higepon@users.sourceforge.jp>
 
         * include/baygui/ImeManager.h: CString.hをinclude(ビルドエラー解消のため)
