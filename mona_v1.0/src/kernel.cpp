@@ -116,6 +116,14 @@ void startKernel(void) {
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
     g_fdcdriver->motor(true);
+
+//      for (int i = 0; i < 73; i++) {
+
+//          memset(tbuf, i, 512);
+//          g_fdcdriver->write(i, tbuf);
+//      }
+
+//      while (true);
     //    g_fdcdriver->write(1, tbuf);
 //      g_fdcdriver->recalibrate();
 //      g_fdcdriver->recalibrate();
@@ -150,11 +158,41 @@ void startKernel(void) {
         while (true);
     }
 
-    if (!fat->open(".", "HIGE.CPP", FAT12::READ_MODE)) {
-         g_console->printf("open failed");
+    g_console->printf("open file hige.cpp\n");
+    if (!fat->open(".", "HIGE.CPP", FAT12::WRITE_MODE)) {
+
+        g_console->printf("open failed");
     }
 
-    g_console->printf("open ok");
+    g_console->printf("write to hige.cpp\n");
+    byte text[512];
+    memset(text, 'M', 512);
+    if (!fat->write(text)) {
+
+        g_console->printf("write failed");
+    }
+
+    memset(text, 'o', 512);
+    if (!fat->write(text)) {
+
+        g_console->printf("write failed");
+    }
+
+    memset(text, 'n', 512);
+    if (!fat->write(text)) {
+
+        g_console->printf("write failed");
+    }
+
+    memset(text, 'a', 512);
+    if (!fat->write(text)) {
+
+        g_console->printf("write failed");
+    }
+
+    if (!fat->close()) {
+        g_console->printf("close failed");
+    }
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     g_fdcdriver->motor(false);

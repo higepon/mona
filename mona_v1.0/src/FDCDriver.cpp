@@ -169,10 +169,7 @@ void FDCDriver::initilize() {
 
 void FDCDriver::test() {
 
-    console_->printf("FDCDriver::test() start\n");
-
     motor(ON);
-
     recalibrate();
     recalibrate();
 
@@ -251,8 +248,9 @@ void FDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void FDCDriver::interrupt() {
 
+#ifdef FDC_DEBUG
     console_->printf("\ninterrupt:");
-
+#endif
     interrupt_ = true;
 }
 
@@ -265,10 +263,6 @@ void FDCDriver::interrupt() {
 */
 bool FDCDriver::waitInterrupt() {
 
-//      static int counter = 0;
-//      counter++;
-
-//      if (counter > 5000) interrupt_ = true;
     return interrupt_;
 }
 
@@ -589,7 +583,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     setupDMARead(512);
 
     interrupt_ = false;
-#ifdef DEBUG_FDC
+#ifdef FDC_DEBUG
     printStatus("before read command");
 #endif
 
@@ -679,11 +673,12 @@ bool FDCDriver::read(int lba, byte* buf) {
 
     byte track, head, sector;
 
-    g_console->printf("read lba=%d", lba);
-
     lbaToTHS(lba, track, head, sector);
 
+#ifdef FDC_DEBUG
+    g_console->printf("read lba=%d", lba);
     g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+#endif
 
     if (!read(track, head, sector)) return false;
     memcpy(buf, dmabuff_, 512);
@@ -696,18 +691,14 @@ bool FDCDriver::write(int lba, byte* buf) {
 
     byte track, head, sector;
 
-    g_console->printf("write lba=%d", lba);
-
-    //    g_console->printf("**** write called ****\n");
-
     lbaToTHS(lba, track, head, sector);
 
-    memcpy(dmabuff_, buf,  512);
-
-    if (lba == 8 || lba == 7) for (int i = 0; i < 512; i++) if (buf[i] != 0) g_console->printf("%x", buf[i]);
-
+#ifdef FDC_DEBUG
+    g_console->printf("write lba=%d", lba);
     g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
+#endif
 
+    memcpy(dmabuff_, buf,  512);
     if (!write(track, head, sector)) return false;
 
     return true;
@@ -715,9 +706,8 @@ bool FDCDriver::write(int lba, byte* buf) {
 
 void FDCDriver::lbaToTHS(int lba, byte& track, byte& head, byte& sector) {
 
-    track   = lba / (80 * 18);
-    head    = lba - track;
-    head   /= 18;
-    sector  = lba % 18 + 1;
+    track = lba / (2 * 18);
+    head = (lba / 18) % 2;
+    sector = 1 + lba % 18;
     return;
 }

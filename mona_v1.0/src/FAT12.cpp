@@ -93,9 +93,6 @@ bool FAT12::initilize() {
         return false;
     }
 
-    for (int k = 0; k < 8; k++) printf("%c", bpb_.fileSysType[k]);
-    printf("is FAT12");
-
     /* specify file system */
     if (!isFAT12()) {
         errNum_ = NOT_FAT12_ERROR;
@@ -108,9 +105,6 @@ bool FAT12::initilize() {
         return false;
     }
 
-    printf("read fat ok");
-
-    printf("bitmap");
     /* cluster map */
     int mapSize = 512 * bpb_.fatSize16 / 3 + 1;
     map_ = new BitMap(mapSize);
@@ -118,7 +112,6 @@ bool FAT12::initilize() {
 
         if (getFATAt(j)) map_->mark(j);
     }
-
 
     /* set parameters depend on bpb */
     rootDirSectors_  = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1)) / bpb_.bytesPerSector;
@@ -143,16 +136,13 @@ bool FAT12::isFAT12() {
     int dataSector;
     int countOfClusters;
 
-    printf("1");
     rootDirSectors = ((bpb_.rootEntryCount * 32) + (bpb_.bytesPerSector - 1))
         / bpb_.bytesPerSector;
 
-    printf("2");
     totalSector = (bpb_.totalSector16 != 0) ? bpb_.totalSector16 : bpb_.totalSector32;
     dataSector = totalSector - (bpb_.reservedSectorCount + (bpb_.numberFATs * bpb_.fatSize16) + rootDirSectors);
     countOfClusters = dataSector / bpb_.sectorPerCluster;
 
-    printf("3");
     /* FAT12 */
     if (countOfClusters < 4085) return true;
 
@@ -171,9 +161,8 @@ bool FAT12::isFAT12() {
 bool FAT12::readBPB() {
 
     byte* p = buf_;
-    printf("read start");
+
     if (!(driver_->read(0, buf_))) return false;
-    printf("read end");
 
     p += 3;
     memcpy(bpb_.oemName, p, 8);
@@ -336,7 +325,6 @@ bool FAT12::changeDirectoryRelative(const char* path) {
     if (currentDirecotry_ == 0 && !strcmp(path, ".")) return true;
     if (currentDirecotry_ == 0 && !strcmp(path, "..")) return true;
 
-    printf("1");
     /* read */
     if (!(driver_->read(lba, buf_))) return false;
     memcpy(entries_, buf_, sizeof(DirectoryEntry) * 16);
@@ -349,11 +337,12 @@ bool FAT12::changeDirectoryRelative(const char* path) {
         /* no other entries_ */
         if (entries_[j].filename[0] == 0x00) break;
 
+#ifdef FAT12_DEBUG
         printf("currentDirecotry_ = %d cdr entry %s:", currentDirecotry_, path);
         printf("&&[");
         for (int k = 0; k < 8; k++) printf("%c", entries_[j].filename[k]);
         printf("]&&");
-
+#endif
 
         /* not directory */
         if (!(entries_[j].attribute & ATTR_DIRECTORY)) continue;
@@ -436,20 +425,12 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     file = strtok(buf, ".");
     ext  = strtok(NULL, ".");
 
-    printf("[open1]");
-
     if (!changeDirectory(path)) return false;
-
-    printf("[open2]");
 
     if (!readEntry()) return false;
 
-    printf("[open3]");
-
     /* find file to open */
     for (int j = 0; j < 16; j++) {
-
-    printf("[open4]");
 
         /* free */
         if (entries_[j].filename[0] == 0xe5) continue;
@@ -478,7 +459,6 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
     /* file not found */
     currentDirecotry_ = currentDirecotry;
-    printf("[open5]");
     return false;
 }
 
@@ -625,15 +605,11 @@ bool FAT12::createFlie(const char* name, const char* ext) {
 */
 bool FAT12::writeFAT() {
 
-    //    for (int k = 0; k < 512; k++) printf("%d", getFATAt(k));
-
     for (int i = 0; i < bpb_.fatSize16; i++) {
 
-    while (g_demo_step < 2 + i * 2);
-
         if (!(driver_->write(fatStart_ + i, fat_ + i * 512))) return false;
-	//        if (!(driver_->write(fatStart_ + i + 1, fat_ + i * 512))) return false;
     }
+
     return true;
 }
 
@@ -700,13 +676,14 @@ bool FAT12::write(byte* buffer, int size) {
 
     /* size check */
     memset(buffer + size, 0, 512 - size);
-    for (int i = 0; i < 512; i++) printf("[%d]", buffer[i]);
     (currentEntry_->filesize) += size;
 
     /* write buffer to Disk */
     int lba = clusterToLba(currentCluster_);
 
+#ifdef FAT12_DEBUG
     printf("FAT12::write called lba=%d", lba);
+#endif
 
     if (!(driver_->write(lba, buffer))) {
         currentCluster_ = cluster;
