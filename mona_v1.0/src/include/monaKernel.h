@@ -16,16 +16,16 @@
 
 #include <monaTypes.h>
 
-#define _sysLock()   asm volatile("cli")    /*!< \def disable interupts */
-#define _sysUnlock() asm volatile("sti")    /*!< \def enable  interupts */
-#define pusha()      asm volatile("pusha"); /*!< \def  pusha            */
-#define popa()       asm volatile("popa");  /*!< \def  popa             */
+#define disableInterrupt() asm volatile("cli")    /*!< \def disable interupts */
+#define enableInterrupt()  asm volatile("sti")    /*!< \def enable  interupts */
+#define pusha()            asm volatile("pusha"); /*!< \def  pusha            */
+#define popa()             asm volatile("popa");  /*!< \def  popa             */
 #define SYS_BG_COLOR BG_TEAL
 #define SYS_CH_COLOR CH_WHITE
 
 /*!< \def _sysdumpReg() */
 #define _sysdumpReg(str, stopflag, unlockint) { \
-    _sysLock();                                 \
+    disableInterrupt();                                 \
     dword __eax, __ebx, __ecx, __edx;           \
     dword __esp, __ebp, __esi, __edi;           \
     dword __cs , __ds , __fs , __es;            \
@@ -75,7 +75,7 @@
                 , __cs , __ds , __es , __fs);   \
     _sys_printf("gs =%x ss =%x eflags=%x\n"     \
                 , __gs , __ss , __eflags);      \
-     if (unlockint)_sysUnlock();                \
+     if (unlockint)enableInterrupt();                \
      if (stopflag) while (true);                \
 }
 

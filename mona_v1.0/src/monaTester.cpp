@@ -141,7 +141,7 @@ void process1Tester() {
 }
 
 void process2Tester() {
-    _sysUnlock();
+    enableInterrupt();
 
     KeyBoardManager& km = KeyBoardManager::instance();
     char ch;

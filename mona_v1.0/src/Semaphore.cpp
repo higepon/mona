@@ -13,6 +13,7 @@
 */
 
 #include<semaphore.h>
+#include<monaKernel.h>
 
 /*!
     \brief up
@@ -35,6 +36,15 @@ int Semaphore::up(semaphore* sem) {
 */
 int Semaphore::down(semaphore* sem) {
 
-    return 0;
+    disableInterrupt();
+
+    if (*sem) {
+        (*sem)--;
+        enableInterrupt();
+        return 0;
+    } else {
+        enableInterrupt();
+        return -1;
+    }
 }
 

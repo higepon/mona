@@ -58,7 +58,7 @@ void startKernel(void) {
     mm.resetGDT();
 
     /* enable interrupt */
-    _sysUnlock();
+    enableInterrupt();
     printOK("Setting GDT        ");
 
     /* check some */

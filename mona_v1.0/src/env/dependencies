@@ -135,3 +135,4 @@ monaChecker.o: monaChecker.cpp include/monaChecker.h include/monaVga.h \
 string.o: string.cpp include/string.h include/monaTypes.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
   include/string.h include/monaVga.h
+Semaphore.o: Semaphore.cpp include/semaphore.h
