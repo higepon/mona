@@ -26,7 +26,8 @@ SRC        = higepos_kernel.cpp   \
              higeUtil.cpp         \
              Sub.cpp              \
              Base.cpp             \
-             Vector.cpp
+             Vector.cpp           \
+             KeyBoardManager.cpp
 
 HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/vga.h              \
@@ -40,7 +41,8 @@ HEADER     = ${INCLUDE}/kernel.h           \
              ${INCLUDE}/Base.h             \
              ${INCLUDE}/Sub.h              \
              ${INCLUDE}/Vector.h           \
-             ${INCLUDE}/higepostypes.h
+             ${INCLUDE}/higepostypes.h     \
+             ${INCLUDE}/KeyBoardManager.h
 
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higepos_kernel.o   \
@@ -55,7 +57,8 @@ OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higeUtil.o         \
              ${BIN}/Base.o             \
              ${BIN}/Sub.o              \
-             ${BIN}/Vector.o
+             ${BIN}/Vector.o           \
+             ${BIN}/KeyBoardManager.o
 
 
 # src to html & document
@@ -86,6 +89,7 @@ ${THIRD} : ${SRC} ${HEADER}
 	${CC} -I $(INCLUDE) ${CFLAGS} Base.cpp -o ${BIN}/Base.o
 	${CC} -I $(INCLUDE) ${CFLAGS} Sub.cpp  -o ${BIN}/Sub.o
 	${CC} -I $(INCLUDE) ${CFLAGS} Vector.cpp  -o ${BIN}/Vector.o
+	${CC} -I $(INCLUDE) ${CFLAGS} KeyBoardManager.cpp  -o ${BIN}/KeyBoardManager.o
 	${LD} -n -Ttext 0x1200 -static --oformat binary -o${THIRD} ${OBJ}
 	${NDISASM} -u $@ > ${LIST}/third_dis.asm
 #	${STRIP} --output-target=binary ${OBJ} -o ${THIRD}

@@ -1,3 +1,11 @@
+2002-10-12  higepon  <higepon@users.sourceforge.jp>
+
+        KeyBoardManager追加 中身はまだ空です。
+
+        * Makefile.linux: KeyBoardManager追加対応
+        * Makefile: KeyBoardManager追加対応
+        * KeyBoardManager.cpp: 新規追加キーボード入力管理クラス
+        * KeyBoardManager.h: 新規追加キーボード入力管理クラス
 2002-10-06  higepon  <higepon@users.sourceforge.jp>
 
         linux対応
