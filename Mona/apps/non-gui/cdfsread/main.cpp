@@ -1,4 +1,4 @@
-#include <monapi.h>
+#include "ISO9660FileSystem.h"
 #include "IDEDriver.h"
 #include <monapi/io.h>
 
@@ -8,19 +8,7 @@ using namespace MonAPI;
 #define IRQ_SECONDARY 15
 
 static int irq;
-static IDEDriver* ide;
-
-/*
-    課題
-    Vmwareでデバイス認識がうまくいかない
-    エラーの詳細を配列コピーで渡す
-    セクタサイズの取得
-    bufferへの大量読み込みをチェック
-    idle位いれようよ。
-    busy loopがうっとぉしぃ。
-    atapi packet のlimitの意味。2048じゃなくて全体サイズ？
-    wordサイズの限界を
-*/
+static IDEDriver* cd;
 
 static void interrupt()
 {
@@ -33,10 +21,8 @@ static void interrupt()
         switch (msg.header)
         {
         case MSG_INTERRUPTED:
-#if 1
-            printf("interrupt irq=%d\n", msg.arg1);
-#endif
-            ide->protocolInterrupt();
+
+            cd->protocolInterrupt();
             break;
         default:
             printf("default");
@@ -44,34 +30,57 @@ static void interrupt()
     }
 }
 
-/*
-  エラー詳細を表示する。
-*/
-static void printError(const byte* error)
+
+bool read(FileSystem* iso, const char* filePath)
 {
-    for (int i = 0; i < 18; i++)
+    File* file = iso->Open(filePath, 0);
+
+    if (file == NULL)
     {
-        printf("erorr[%d]=%x\n", i, error[i]);
+        printf("read:file not found\n");
+        return false;
     }
+
+    char* buffer = new char[file->GetSize()];
+    file->Seek(0, SEEK_SET);
+    file->Read(buffer, file->GetSize());
+
+    for (dword i = 0; i < file->GetSize(); i++)
+    {
+        printf("%c", buffer[i]);
+    }
+
+    delete [] buffer;
+
+    iso->Close(file);
+
+    return true;
 }
 
 int MonaMain(List<char*>* pekoe)
 {
-    if (pekoe->size() != 1)
-    {
-        return 0;
-    }
-
     syscall_get_io();
 
-    ide = new IDEDriver();
+    if (pekoe->size() < 2)
+    {
+        printf("usage: CDFSREAD comand [option|file|directory|\n");
+        printf("command: read, ls, cp\n");
+        return 1;
+    }
+
+    const char* isoImage = pekoe->get(0);
+    const char* command  = pekoe->get(1);
+    const char* arg1     = pekoe->get(2);
+    const char* arg2     = pekoe->size() >= 4 ? pekoe->get(3) : NULL;
+
+    cd = new IDEDriver();
 
     /* find CD-ROM */
     int controller, deviceNo;
-    if (!ide->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
+    if (!cd->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
     {
         printf("CD-ROM Not Found\n");
-        delete ide;
+        delete cd;
         return 1;
     }
 
@@ -91,44 +100,64 @@ int MonaMain(List<char*>* pekoe)
     dword id = syscall_mthread_create((dword)interrupt);
     syscall_mthread_join(id);
 
-    if (!ide->selectDevice(controller, deviceNo))
+    if (!cd->selectDevice(controller, deviceNo))
     {
-        printf("select device NG error code = %d\n", ide->getLastError());
-        delete ide;
+        printf("select device NG error code = %d\n", cd->getLastError());
+        delete cd;
         return 1;
     }
 
-    dword lba = atoi(pekoe->get(0));
-    byte buffer[2048];
-    int readResult = ide->read(lba, buffer, 2048);
+    ISO9660FileSystem* fs = new ISO9660FileSystem(cd);
 
-    if (readResult != 0)
+    if (!fs->Initialize())
     {
-        printf("Read Error = %d\n", readResult);
-        delete ide;
+        printf("Initialize Error = %d\n", fs->GetLastError());
+        delete fs;
+        delete cd;
         return 1;
     }
 
-    printf("[read start]\n");
-    char buf[8];
-    for (int i = 0; i < 128; i++)
+    if (strcmp(command, "read") == 0)
     {
-        for (int j = 0; j < 16; j++)
-        {
-            sprintf(buf, "%02x ", buffer[i * 16 + j]);
-            printf(buf);
-        }
-
-        printf(" | ");
-        for (int j = 0; j < 16; j++)
-        {
-            sprintf(buf, "%c", buffer[i * 16 + j]);
-            printf(buf);
-        }
-        printf("\n");
+        read(fs, arg1);
     }
-    printf("\n[read end]\n");
+    else if (strcmp(command, "ls") == 0 && strcmp(arg1, "-l") == 0)
+    {
+        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(arg2);
 
-    delete ide;
+        char* month[] = {"", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+        FOREACH (FileSystemEntry*, file, files)
+        {
+            FileDate* date = file->GetCreateDate();
+
+            printf("%d %s %d %d %s%s\n"
+                   , file->IsDirectory() ? 0 : file->GetSize()
+                   , month[date->GetMonth()]
+                   , date->GetDay()
+                   , date->GetYear()
+                   , (const char*)file->GetName()
+                   , file->IsDirectory() ? "/" : "");
+        }
+        END_FOREACH
+    }
+    else if (strcmp(command, "ls") == 0)
+    {
+        _A<FileSystemEntry*> files = fs->GetFileSystemEntries(arg1);
+
+        FOREACH (FileSystemEntry*, file, files)
+        {
+            printf("%s\n", (const char*)file->GetName());
+        }
+        END_FOREACH
+    }
+    else
+    {
+        printf("command %s not supported\n", command);
+    }
+
+    delete fs;
+    delete cd;
+
     return 0;
 }

@@ -1,6 +1,6 @@
 2005-01-31  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/non-gui/cdfsread/main.cpp (MonaMain): CDFSREADツールの開発ディレクトリを作成
+        * apps/non-gui/cdfsread/main.cpp (MonaMain): CDFSREADツールの開発ディレクトリを作成。まだバグバグなので触らないでね。
 
 2005-01-30  higepon  <higepon@users.sourceforge.jp>
 
