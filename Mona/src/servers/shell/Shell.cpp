@@ -161,7 +161,7 @@ bool Shell::commandExecute(_A<CString> args)
     else if (command.endsWith(".APP"))
     {
         CString name = command.substring(0, command.getLength() - 4);
-        cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EL2";
+        cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EX2";
     }
     else
     {
@@ -171,7 +171,7 @@ bool Shell::commandExecute(_A<CString> args)
             CString file = apps.get(i);
             if (file == command + ".APP")
             {
-                cmdLine = APPSDIR"/" + file + "/" + command + ".EL2";
+                cmdLine = APPSDIR"/" + file + "/" + command + ".EX2";
                 break;
             }
             else if (file.startsWith(cmd2))

@@ -47,7 +47,7 @@ class FileManager
 public:
 	static void FileManager::Main(_A<String> args)
 	{
-		if (ExistsProcess("MONAFILE.EL2")) return;
+		if (ExistsProcess("MONAFILE.EX2")) return;
 		
 		String bundlePath = MonAPI::System::getBundlePath();
 		icons = new Bitmap(bundlePath + "/ICONS.BM2");

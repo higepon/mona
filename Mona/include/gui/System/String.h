@@ -21,7 +21,8 @@ namespace System
     {
         String();
         String(const char* text, int length = -1);
-        String(_A<wchar> text);
+        String(const String& text);
+        String(const _A<wchar>& text);
         virtual ~String();
         
         wchar operator [](int index) const { return this->GetValue(index); }

@@ -50,14 +50,19 @@ namespace System
     }
     
 
+    String::String(const String& text)
+    {
+        this->Set(text);
+    }
+
     /*!
     \brief String
          String コンストラクタ _A<wchar>指定
-    \param  _A<wchar> text [in] 文字列 wcharのArray
+    \param  const _A<wchar>& text [in] 文字列 wcharのArray
     \author 
     \date   create: update:$Date$
     */      
-    String::String(_A<wchar> text)
+    String::String(const _A<wchar>& text)
     {
         this->Set(text);
     }

@@ -168,11 +168,11 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 		return ext == ".APP" ? Icons_Executable : Icons_Folder;
 	}
 	
-	if (fn == "KERNEL.IMG")
+	if (fn == "KERNEL.BIN" || fn == "LOADER.BIN")
 	{
 		return Icons_Kernel;
 	}
-	else if (fn == "GSHELL.EL2")
+	else if (fn == "GSHELL.EX2")
 	{
 		return Icons_Terminal;
 	}

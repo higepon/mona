@@ -25,7 +25,6 @@ public:
     Form1() : count(0)
     {
         aa.Alloc(16);
-        this->InitializeComponent();
         this->aa[15] = "⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡ ";
         this->aa[14] = " ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡≡";
         this->aa[13] = "   ⊂(ﾟーﾟ*⊂⌒｀つ≡≡≡≡≡≡≡≡";
@@ -42,6 +41,8 @@ public:
         this->aa[2]  = "                             ⊂(ﾟー";
         this->aa[1]  = "                                ⊂*";
         this->aa[0]  = "                                   ";
+
+        this->InitializeComponent();
     }
 
     virtual void Create()

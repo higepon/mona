@@ -35,8 +35,10 @@ write:
 
 clean:
 	rm -f $(TARGET)
-	rm -f root/KERNEL.IMG
+	rm -f root/*.BIN
 	rm -f root/MONA-12.M*
 	rm -rf root/APPS/*.*
+	rm -rf root/APPS/MONAFRMS
+	rm -rf root/APPS/BAYGUI
 	rm -rf root/SERVERS/*.*
 	rm -rf root/LIBS

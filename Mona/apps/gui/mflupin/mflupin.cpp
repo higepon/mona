@@ -237,6 +237,8 @@ void Mflupin::Dispose()
 
 void Mflupin::OnPaint()
 {
+    Form::OnPaint();
+
     _P<Graphics> g = this->CreateGraphics();
     int w = this->get_Width(), h = this->get_Height();
 
