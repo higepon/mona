@@ -52,7 +52,7 @@ static HList<CString>* startup = NULL;
 */
 static void ReadFont(const char* file)
 {
-	monapi_cmemoryinfo* mi = monapi_call_file_decompress_bz2_file(file, true);
+	monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(file, true);
 	if (mi == NULL) return;
 	
 	default_font = mi;
@@ -158,13 +158,13 @@ static void DrawWallPaper(const char* src, int pos, unsigned int transparent, in
 
 /*!
 \brief ReadConfig
-	 設定ファイル MONAGUI.INI よりMonaFormsの設定を得る
+	 設定ファイル *.INI よりMonaFormsの設定を得る
 \author 
 \date   create: update:$Date$
 */
-static void ReadConfig()
+static void ReadConfig(List<char*>* pekoe)
 {
-	monapi_cmemoryinfo* cfg = monapi_call_file_read_data("/MONAGUI.INI", MONAPI_TRUE);
+	monapi_cmemoryinfo* cfg = monapi_call_file_read_data(pekoe->get(0), MONAPI_TRUE);
 	if (cfg == NULL) return;
 	
 	if (startup != NULL)
@@ -349,6 +349,13 @@ static void MessageLoop()
 */
 int MonaMain(List<char*>* pekoe)
 {
+	// 引数チェック
+	if (pekoe->size() != 1)
+	{
+		printf("%s: usage GUI.EX2 [.INI FILE]");
+		exit(1);
+	}
+
 	// 2重起動チェック
 	CheckGUIServer();
 	if (!InitScreen()) exit(1);
@@ -365,11 +372,11 @@ int MonaMain(List<char*>* pekoe)
 	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
 
 	// フォントのロード
-	ReadFont("/MONA-12.MF2");
+	ReadFont("/MONA-12.MF5");
 	if (default_font == NULL) exit(1);
 	
 	// 設定ファイルのロード
-	ReadConfig();
+	ReadConfig(pekoe);
 	if (startup != NULL)
 	{
 		for (int i = 0; i < startup->size(); i++) {
