@@ -11,7 +11,7 @@ using namespace MonAPI;
 #ifdef MAIN_11
 int MonaMain(List<char*>* pekoe)
 {
-    // ファイルオープン
+    // ファイル1オープン
     dword id = monapi_call_file_open("MONAHERE.JPG");
 
     if (id == 0)
@@ -20,8 +20,16 @@ int MonaMain(List<char*>* pekoe)
         return 1;
     }
 
-    // 適当にSeek
-    monapi_call_file_seek(id, 2, SEEK_SET);
+    // ファイル2オープン
+    dword id2 = monapi_call_file_open("MONA.CFG");
+    if (id2 == 0)
+    {
+        printf("file not found\n");
+        return 1;
+    }
+
+    // ファイル1適当にSeek&Read
+    monapi_call_file_seek(id, 4097, SEEK_SET);
 
     monapi_cmemoryinfo* mi = monapi_call_file_read(id, 5);
 
@@ -33,7 +41,30 @@ int MonaMain(List<char*>* pekoe)
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
 
+    // ファイル2 Read]
+    printf("file size=%d\n", monapi_call_file_get_file_size(id2));
+    mi = monapi_call_file_read(id2, 16);
+    for (dword i = 0; i < mi->Size; i++)
+    {
+        printf("%c", mi->Data[i]);
+    }
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+
+    // ファイル1を更に Read
+    mi = monapi_call_file_read(id, 5);
+
+    for (dword i = 0; i < mi->Size; i++)
+    {
+        printf("[%x]", mi->Data[i]);
+    }
+
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+
+    // 後始末
     monapi_call_file_close(id);
+    monapi_call_file_close(id2);
 
     return 0;
 }

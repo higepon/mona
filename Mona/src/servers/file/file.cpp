@@ -178,6 +178,12 @@ monapi_cmemoryinfo* Read(dword id, dword size)
 
     ret->Size--;
     dword readSize = file->Read(ret->Data, ret->Size);
+
+    for (dword i = 0; i < ret->Size; i++)
+    {
+        printf("[%x]", ret->Data[i]);
+    }
+
     if (readSize == 0)
     {
         monapi_cmemoryinfo_delete(ret);

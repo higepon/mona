@@ -49,7 +49,7 @@ dword ISO9660File::Read(void* buffer, dword size)
         size = rest;
     }
 
-    int lba = this->attribute.extent + (this->pointer + ISO9660FileSystem::SECTOR_SIZE - 1) / ISO9660FileSystem::SECTOR_SIZE;
+    int lba = this->attribute.extent + this->pointer / ISO9660FileSystem::SECTOR_SIZE;
     int sectorCount = (this->pointer + size + ISO9660FileSystem::SECTOR_SIZE - 1) / ISO9660FileSystem::SECTOR_SIZE - this->pointer / ISO9660FileSystem::SECTOR_SIZE;
     dword readSize = sectorCount * ISO9660FileSystem::SECTOR_SIZE;
 
@@ -63,7 +63,7 @@ dword ISO9660File::Read(void* buffer, dword size)
         return 0;
     }
 
-    memcpy(buffer, temp + (this->pointer - ((int)this->pointer / ISO9660FileSystem::SECTOR_SIZE)) * ISO9660FileSystem::SECTOR_SIZE, size);
+    memcpy(buffer, temp + this->pointer -(lba - this->attribute.extent) * ISO9660FileSystem::SECTOR_SIZE, size);
 
     delete[] temp;
     return size;
