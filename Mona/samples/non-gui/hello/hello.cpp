@@ -225,7 +225,7 @@ void write(const char* buf, int size)
     MessageInfo reply;
     Message::create(&msg, MSG_STDOUT, size, 0, 0, buf);
 
-    if (Message::sendReceive(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
+    if (Message::sendReceiveA(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
     {
         /* error, but nothing to do */
         ASSERT(!"stdout Error");

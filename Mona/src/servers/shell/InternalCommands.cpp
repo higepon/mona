@@ -167,10 +167,10 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
     case COMMAND_UNAME:
         {
-            char ver[128];
-            syscall_get_kernel_version(ver, 128);
-            ver[127] = '\0';
-            printf("%s\n", ver);
+             char ver[128];
+             syscall_get_kernel_version(ver, 128);
+             ver[127] = '\0';
+             printf("%s\n", ver);
             break;
         }
 

@@ -134,7 +134,7 @@ void MessageLoop()
 
                 MessageInfo reply;
 
-                if (Message::sendReceive(&reply, stdout, &msg))
+                if (Message::sendReceiveA(&reply, stdout, &msg))
                 {
                     /* error, but nothing to do */
                     ASSERT(!"stdout Error");

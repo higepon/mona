@@ -1,5 +1,7 @@
 2004-10-16  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/Process.cpp (archCreateUserThread): Shellが落ちたので調べたらスタックオーバーしていた。スタック4K->8Kに拡大
+
         * src/kernel/info.cpp, info.h: 削除
 
         * include/monalibc/stdarg.h (va_arg): バグ修正

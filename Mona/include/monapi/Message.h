@@ -21,7 +21,7 @@ public:
     static dword lookup(const char* name);
     static dword lookupMainThread(const char* name);
 
-    static int sendReceive(MessageInfo* dst, dword tid, MessageInfo* info);
+    static int sendReceiveA(MessageInfo* dst, dword tid, MessageInfo* info);
 
     static int sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 = 0, dword arg2 = 0, dword arg3 = 0, const char* str = NULL);
 

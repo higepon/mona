@@ -55,7 +55,7 @@ void registerStdout(dword tid, dword stdout)
     MessageInfo reply;
     Message::create(&msg, MSG_STDOUT_REGIST_TO_SERVER, tid, stdout);
 
-    if (Message::sendReceive(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
+    if (Message::sendReceiveA(&reply, monapi_get_server_thread_id(ID_FILE_SERVER), &msg))
     {
         /* error, but nothing to do */
         ASSERT(!"stdout Error");

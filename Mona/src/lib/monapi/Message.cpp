@@ -32,7 +32,7 @@ int Message::receive(MessageInfo* info)
     return result;
 }
 
-int Message::sendReceive(MessageInfo* dst, dword tid, MessageInfo* info)
+int Message::sendReceiveA(MessageInfo* dst, dword tid, MessageInfo* info)
 {
     MessageInfo src;
 
