@@ -1,7 +1,6 @@
 #include <userlib.h>
 
 int main() {
-
     sleep(100);
     print("Mona!!!_( ;'[]`)_");
     sleep(100);
@@ -16,4 +15,5 @@ int main() {
             _put_pixel(x, 5 + color, color);
         }
     }
+    return 0;
 }
