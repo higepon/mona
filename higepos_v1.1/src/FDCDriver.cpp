@@ -1,5 +1,5 @@
 /*!
-    \file FDCDriver.cpp
+    \file floppy.cpp
     \brief Floppy Disk Controller driver (class FDCDriver)
 
     \author syn
@@ -12,7 +12,7 @@
 #include<higeOperator.h>
 #include<FDCDriver.h>
 
-#define MAX_COUNT               (1000000)
+#define MAX_COUNT               (100000)
 #define DMA_BUFF_SIZE           (4096)
 
 /* ==== FDC ports ==== */
@@ -28,7 +28,7 @@
 #define PORT_CCR_1              (PORT_BASE_1 +7)
 
 /* ==== DMA ports ==== */
-#define PORT_SDMA_BASE_C2   (0x04) /* Slave DMA BaseAddress (Channel 2) */
+#define PORT_SDMA_BASE_C2       (0x04) /* Slave DMA BaseAddress (Channel 2) */
 #define PORT_SDMA_COUNT_C2	(0x05) /* Slave DMA Count (Channel 2) */
 #define PORT_SDMA_CMD	(0x08)
 #define PORT_SDMA_SINGLE_MASK	(0x0A)
@@ -89,14 +89,10 @@ int FDCDriver::initialize()
     inportb(0x80);
     outportb(PORT_SDMA_CLEAR, 0);  /* reset slave DMAC */
     inportb(0x80);
-    outportb(PORT_MDMA_CMD, 0x00);
-    inportb(0x80);
-    outportb(PORT_SDMA_CMD, 0x00);
-    inportb(0x80);
+    outportb(PORT_MDMA_CMD, 0);
+    outportb(PORT_SDMA_CMD, 0);
     outportb(PORT_MDMA_MODE, 0xC0);
-    inportb(0x80);
     outportb(PORT_SDMA_MODE, 0x46);
-    inportb(0x80);
     outportb(PORT_MDMA_SINGLE_MASK, 0);
 
     /* Reset FDC */
@@ -118,9 +114,8 @@ int FDCDriver::initialize()
         return 0;
     }
 
-	motor(1);
+    motor(1);
     recalibrate(); 
-    motor(0);
 
     return 0;
 }
@@ -136,11 +131,8 @@ int FDCDriver::initialize()
 */
 int FDCDriver::motor(int on)
 {
-    if(on){
-        outportb(PORT_DOR_1, 0x1C);    /* Drive0 Enable DMA, Motor on */
-    }else{
-        outportb(PORT_DOR_1, 0x0C);    /* Drive0 Enable DMA, Motor off */
-    } 
+    /* Drive0 Enable DMA, Motor on */
+    outportb(PORT_DOR_1, 0x1C);
     
     return 0;
 }
@@ -157,6 +149,7 @@ int FDCDriver::recalibrate()
 {
     unsigned char cmd[2];
 
+    _sys_printf("recalibrate\n");
     cmd[0] = 0x07;
     cmd[1] = 0x00; /* Head1, drive 0*/
  
@@ -223,23 +216,14 @@ int FDCDriver::seek(const unsigned int head, const unsigned int track)
 int FDCDriver::readSector(const unsigned long start_sector, const unsigned long num_sector, unsigned char buff[])
 {
     int h, c, r;
-    unsigned long sector;
-    unsigned long i;
-    int result;
 
-    motor(1);
-    sector = start_sector;
-    for(i = 0; i < num_sector; i++){
-        sector_to_hcr(sector, h, c, r); 
-        result = readSector(h, c, r, &buff[i*512]);
-        if(result != 0){
-            return result;
-        }
-        sector++;
-    }
-    motor(0);
+    /* calculate Head, Cylinder, Sector */
+    h = start_sector/(80*18);   /* head */
+    c = start_sector -h;
+    c /= 18;                    /* cylinder */
+    r = start_sector%18;        /* sector */
 
-    return result;
+    return readSector(h, c, r, num_sector, buff);
 }
 
 /*!
@@ -257,33 +241,16 @@ int FDCDriver::readSector(const unsigned long start_sector, const unsigned long 
 */
 int FDCDriver::readSector(const int h, const int c, const int r, const int num_sector, unsigned char buff[])
 {
-    _sys_printf("FDCDriver::readSector:sorry, not implemented yet\n");
-    return 0;
-}
-
-/*!
-    \brief read from a sector
-
-    \param h head (normally, 0 or 1)
-    \param c cylinder in head
-    \param r sector in cylinder
-    \param buff read buffer
-    \return if succeed, return 0  
-   
-    \author syn
-    \date create:2002/10/20 update:2002/10/31
-*/
-int FDCDriver::readSector(const int h, const int c, const int r, unsigned char buff[])
-{
     unsigned char cmd[9];
     unsigned char result[7];
-    unsigned long i;
+    int i;
 
     _sys_printf("FDCDriver::read_sector:h=%d,c=%d,r=%d\n", h, c, r);
     if(seek(h, c) != 0){
          _sys_printf("FDCDriver::read_sector:seek fail\n");
-         goto err;
+         return 0;
     }
+    _sys_printf("FDCDriver::read_sector:seek_end\n");
 
     /* build command */
     cmd[0] = 0xE6;     /* Single sector read */
@@ -306,31 +273,28 @@ int FDCDriver::readSector(const int h, const int c, const int r, unsigned char b
     /* send command */
     interrupt = false;
     if(command(cmd, 9) != 0){
-        _sys_printf("FDCDriver::readSector:command fail\n");
-        goto err;
+        _sys_printf("FDCDriver::read_sector:command fail\n");
+        return 0;
     }
 
+    _sys_printf("waiting interrupt ...");
     while(!wait_interrupt()){
+        inportb(0x80);
     }
-    _sys_printf("-\n");
-    if(get_result(result, sizeof(result)) != 0){
-        _sys_printf("FDCDriver::readSector:failed get_result\n");
-        goto err;
-    }
-    _sys_printf("FDCDrive::readSector:result = ");
+    _sys_printf("done\n");
+    get_result(result, sizeof(result));
+    _sys_printf("FDCDrive::sense_interrupt:result = ");
     for(i = 0; i < sizeof(result); i++){
-        _sys_printf("[%x] ", result[i]);
+        _sys_printf("[%d] ", result[i]);
     }
     _sys_printf("\n");
+
     
-    for(i = 0; i < 512; i++){
+    for(int i = 0; i < 512; i++){
         buff[i] = dma_buff[i];
     }
 
     return 0;
-
-err:
-   return 1;
 }
 
 /*!
@@ -346,92 +310,8 @@ err:
 */
 int FDCDriver::writeSector(const unsigned long start_sector, const unsigned long num_sector, unsigned char buff[])
 {
-    unsigned int i;
-    int h, c, r;
-    int result;
-    unsigned long sector;
-  
-    motor(1); 
-    sector = start_sector;
-    for(i = 0; i < num_sector; i++){
-        sector_to_hcr(sector, h, c, r); 
-        result = writeSector(h, c, r, &buff[i*512]);
-        if(result != 0){
-            motor(0);
-            return result;
-        }
-        sector++;
-    }
-
-    motor(1); 
+    _sys_printf("FDCDriver::WriteSector: Sorry, not implemented yet.\n");
     return 0;
-}
-
-/*!
-    \brief write to sector
-
-    \param h head (normally, 0 or 1)
-    \param c cylinder in head
-    \param r sector in cylinder
-    \param buff read buffer
-    \return if succeed, return 0  
-
-    \author syn
-    \date create:2002/11/02 update:2002/11/02
-*/
-int FDCDriver::writeSector(const int h, const int c, const int r, unsigned char buff[])
-{
-    unsigned char cmd[9];
-    unsigned char result[7];
-
-    _sys_printf("FDCDriver::writeSector:h=%d,c=%d,r=%d\n", h, c, r);
-    if(seek(h, c) != 0){
-        _sys_printf("FDCDriver::writeSector:seek failed\n");
-        goto err;
-    }
-
-    /* build command */
-    cmd[0] = 0xC5;    /* single sector write */
-    if(h){
-        cmd[1] = 0x04; /* Drive 0, head 1 */
-    }else{
-        cmd[1] = 0x00; /* Drive 0, head 0 */
-    }
-    cmd[2] = c&0xFF;
-    cmd[3] = h&0xFF;
-    cmd[4] = r&0xFF;
-    cmd[5] = 2;        /* 512byte (= 128*(2^2) byte) */
-    cmd[6] = 0x12;       /* end track */
-    cmd[7] = 0x1B;     /* For 1.44M discket */
-    cmd[8] = 0xFF;     /* DTL */
-
-    /* copy data to DMA buffer */
-    for(int i = 0; i < 512; i++){
-        dma_buff[i] = buff[i];
-    }
-
-    /* prepare dma */
-    dma_write(512);
-
-    /* send command */
-    interrupt = false;
-    if(command(cmd, 9) != 0){
-        _sys_printf("FDCDriver::writeSector:command fail\n");
-        goto err;
-    }
-
-    while(!wait_interrupt()){
-    }
-    _sys_printf("-\n");
-    if(get_result(result, sizeof(result)) != 0){
-        _sys_printf("FDCDriver::writeSector:failed get_result\n");
-        goto err;
-    }
-
-    return 0;
-
-err:
-    return 1;
 }
 
 /*!
@@ -497,7 +377,7 @@ int FDCDriver::sense_interrupt()
     }
 
     get_result(result, 2);
-    _sys_printf("FDCDrive::sense_interrupt:result = [%x] [%x]\n", result[0], result[1]);
+    _sys_printf("FDCDrive::sense_interrupt:result = [%d] [%d]\n", result[0], result[1]);
     
     /* decode result */
     /* ============================= */
@@ -550,6 +430,7 @@ int FDCDriver::command(const unsigned char cmd[], const int len)
 int FDCDriver::get_result(unsigned char r[], int n)
 {
     int index = 0;
+    bool done = false;
     unsigned char msr;
     unsigned char result;
     long count;
@@ -563,11 +444,10 @@ int FDCDriver::get_result(unsigned char r[], int n)
     }
     if(count == MAX_COUNT){
         _sys_printf("FDCDriver::get_result:timeout(msr=%d)\n", msr);
-        return 1;
+        return 0;
     }
 
     do{
-        inportb(0x80); /* delay */ 
         result = inportb(PORT_FIFO_1);
         if(index < n){
             r[index++] = result;
@@ -580,11 +460,10 @@ int FDCDriver::get_result(unsigned char r[], int n)
         }
         if(count == MAX_COUNT){
             _sys_printf("FDCDriver::get_result:timeout2(msr=%d)\n", msr);
-            return 0;
+            return index;
         }
     }while(msr &0x40);
-
-    return 0;
+    return index;
 }
 
 /*!
@@ -598,25 +477,6 @@ int FDCDriver::get_result(unsigned char r[], int n)
 bool FDCDriver::wait_interrupt()
 {
     return interrupt;
-}
-
-/*!
-    \brief convert sector to head, cylinder, sector format
-
-    \param s input sector
-    \param h outout head
-    \param c outout cylinder
-    \param r output sector
-
-    \author syn
-    \date create:2002/11/02 update:2002/11/02
-*/
-void FDCDriver::sector_to_hcr(const unsigned long s, int& h, int& c, int& r)
-{
-    h = s/(80*18);   /* head */
-    c = s -h;
-    c /= 18;         /* cylinder */
-    r = s%18;        /* sector */
 }
 
 /*!
@@ -642,41 +502,10 @@ int FDCDriver::dma_read(const unsigned long len)
     outportb(PORT_SDMA_COUNT_C2, len &0xFF);
     outportb(PORT_SDMA_COUNT_C2, (len >>8)&0xFF);
     outportb(PORT_DMA_PAGE_C2, (p >>16)&0xFF);
-    asm("sti");
 
     /* and, go! */
     outportb(PORT_SDMA_SINGLE_MASK, 0x02);
-
-    return 0;
-}
-
-/*!
-    \brief set DMA to write mode
-
-    \param len read length [byte]
-    \return constant 0
-
-    \autor syn
-    \date create:2002/10/20 update:2002/10/31
-*/
-int FDCDriver::dma_write(const unsigned long len)
-{
-    unsigned long p = (unsigned long)dma_buff;
-
-    /* setup DMA registor */
-    asm("cli");
-    outportb(PORT_SDMA_SINGLE_MASK, 0x06); /* mask channel #2 */
-    outportb(PORT_SDMA_MODE, 0x4A);        /* memory -> fdc */
-    outportb(PORT_SDMA_CLEAR_BYTE, 0);     /* clear flip-flop */
-    outportb(PORT_SDMA_BASE_C2, p&0xFF);
-    outportb(PORT_SDMA_BASE_C2, (p>>8)&0xFF);
-    outportb(PORT_SDMA_COUNT_C2, len &0xFF);
-    outportb(PORT_SDMA_COUNT_C2, (len >>8)&0xFF);
-    outportb(PORT_DMA_PAGE_C2, (p >>16)&0xFF);
     asm("sti");
-
-    /* and, go! */
-    outportb(PORT_SDMA_SINGLE_MASK, 0x02);
 
     return 0;
 }
