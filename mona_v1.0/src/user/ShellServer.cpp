@@ -35,8 +35,7 @@ void ShellServer::service() {
 
     /* create message for KEYBDMNG.SVR */
     MessageInfo info;
-    info.header = MSG_KEY_REGIST_TO_SERVER;
-    info.arg1   = myPid;
+    Message::create(&info, MSG_KEY_REGIST_TO_SERVER, myPid, 0, 0, NULL);
 
     /* send */
     if (Message::send(destPid, &info)) {
@@ -138,7 +137,6 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_6):
     case(VK_7):
     case(VK_8):
-    case(VK_9):
     case(VK_TEN_0):
     case(VK_TEN_1):
     case(VK_TEN_2):
@@ -162,6 +160,13 @@ int Shell::onKeyDown(int keycode, int modifiers) {
     case(VK_BACKSPACE):
         backspace();
         break;
+
+    case(VK_9):
+
+        /* map test */
+        printf("message is %s", (char*)0x90000000);
+        break;
+
     default:
         break;
 

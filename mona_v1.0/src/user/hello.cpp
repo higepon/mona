@@ -22,6 +22,14 @@ int myApplication::main() {
     Screen screen;
     screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));
 
+    dword pid = Message::lookup("SHELL.SVR");
+
+    MemoryMap* mm = MemoryMap::create();
+
+    mm->map(pid, 0x90000000, 0x90005000, 4096);
+
+    strcpy((char*)0x90005000, "data share Mona");
+
     return 0;
 }
 

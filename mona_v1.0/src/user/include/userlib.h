@@ -138,6 +138,35 @@ class FileInputStream : public InputStream {
 };
 
 /*----------------------------------------------------------------------
+    MemoryMap
+----------------------------------------------------------------------*/
+class MemoryMap {
+
+  private:
+    MemoryMap(){};
+    virtual ~MemoryMap(){};
+
+    public:
+    inline static MemoryMap* create() {
+        static MemoryMap map;
+        return &map;
+    }
+
+    inline int map(dword pid, dword linearAddress, dword linearAddress2, dword size) {
+
+        if (linearAddress < 0x90000000 || linearAddress >=0xA0000000) {
+            return 4;
+        }
+
+        if (linearAddress2 < 0x90000000 || linearAddress2 >=0xA0000000) {
+            return 4;
+        }
+
+        return syscall_map2(pid, linearAddress, linearAddress2, size);
+    }
+};
+
+/*----------------------------------------------------------------------
     Server
 ----------------------------------------------------------------------*/
 class Server {
@@ -182,6 +211,7 @@ class Message {
   public:
     static int send(dword pid, MessageInfo* info);
     static int receive(MessageInfo* info);
+    static void create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, char* str);
     static dword lookup(const char* name);
 };
 
@@ -302,7 +332,7 @@ size_t _power(size_t x, size_t y);
 #define VK_TEN_6      0x8B
 #define VK_TEN_7      0x8C
 #define VK_TEN_8      0x8D
-#define VK_TEN_9      0x8E 
+#define VK_TEN_9      0x8E
 #define VK_TEN_MINUS  0x8F
 #define VK_TEN_PLUS   0x90
 #define VK_TEN_PERIOD 0x91

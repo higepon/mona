@@ -340,7 +340,7 @@ int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size) {
                  "movl %2  , %%esi \n"
                  "movl %3  , %%ecx \n"
                  "movl %4  , %%edi \n"
-                 "movl %5  , %%edx \n"
+                 "movl %5 , %%edx \n"
                  "int  $0x80       \n"
                  "movl %%eax, %0   \n"
                  :"=m"(result)
@@ -444,11 +444,12 @@ int syscall_map2(dword pid, dword linearAddress, dword linearAddress2, dword siz
                  "movl %2  , %%esi \n"
                  "movl %3  , %%ecx \n"
                  "movl %4  , %%edi \n"
+                 "movl %5  , %%edx \n"
                  "int  $0x80       \n"
                  "movl %%eax, %0   \n"
                  :"=m"(result)
                  :"g"(SYSTEM_CALL_MAP_TWO), "m"(pid), "m"(linearAddress), "m"(linearAddress2), "m"(size)
-                 : "ebx", "esi", "ecx", "edi"
+                 : "ebx", "esi", "ecx", "edi", "edx"
                  );
 
     return (int)result;
@@ -466,8 +467,9 @@ void free(void * address) {
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);
 extern "C" void __pure_virtual(void);
+extern "C" int atexit( void (*func)(void));
 
-
+int atexit( void (*func)(void)) {return -1;}
 void __cxa_pure_virtual() {
 
     print("__cxa_pure_virtual called\n");
@@ -605,6 +607,19 @@ int Message::receive(MessageInfo* info) {
 
 dword Message::lookup(const char* name) {
     return syscall_lookup(name);
+}
+
+void Message::create(MessageInfo* info, dword header, dword arg1, dword arg2, dword arg3, char* str) {
+
+    info->header = header;
+    info->arg1 = arg1;
+    info->arg2 = arg2;
+    info->arg3 = arg3;
+
+    if (str) {
+        strncpy(info->str, str, sizeof(info->str));
+    }
+    return;
 }
 
 void printf(const char *format, ...) {

@@ -221,11 +221,52 @@ void syscall_entrance() {
 
         enableInterrupt();
         g_fat12->close();
+        g_fdcdriver->motor(OFF);
         info->eax = 0;
         break;
 
     case SYSTEM_CALL_MAP_TWO:
 
+        {
+            static dword sharedId = 0x9000;
+            sharedId++;
+
+            dword attachPid      = info->esi;
+            dword linearAddress1 = info->ecx;
+            dword linearAddress2 = info->edi;
+            dword size           = info->edx;
+
+            enableInterrupt();
+
+            /* process exist? */
+            Process* attachProcess = g_processManager->find(attachPid);
+            if (attachProcess == NULL) {
+                info->eax = 1;
+                break;
+            }
+
+            while (Semaphore::down(&g_semaphore_shared));
+            bool isOpen    = SharedMemoryObject::open(sharedId, size);
+            bool isAttaced = SharedMemoryObject::attach(sharedId, g_processManager->getCurrentProcess(), linearAddress2);
+            Semaphore::up(&g_semaphore_shared);
+
+            if (!isOpen || !isAttaced) {
+                info->eax = 2;
+                break;
+            }
+
+            while (Semaphore::down(&g_semaphore_shared));
+            isOpen    = SharedMemoryObject::open(sharedId, size);
+            isAttaced = SharedMemoryObject::attach(sharedId, attachProcess, linearAddress1);
+            Semaphore::up(&g_semaphore_shared);
+
+            if (!isOpen || !isAttaced) {
+                info->eax = 3;
+                break;
+            }
+        }
+        info->eax = 0;
+        break;
 
     default:
         g_console->printf("syscall:default");
