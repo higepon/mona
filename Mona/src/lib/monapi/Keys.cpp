@@ -178,6 +178,15 @@ char Keys::ToChar(KeyInfo keyInfo){
     case(Keys::Space):
         result = ' ';
         break;
+    case(Keys::OemPeriod):
+        result = '.';
+        break;
+    case(Keys::Oemcomma):
+        result = ',';
+        break;
+    case(Keys::OemSemicolon):
+        result = ';';
+        break;
     default:
         result = ' ';
         break;

@@ -4,8 +4,8 @@ SOURCES         = main.cpp          \
                   Command.cpp       \
                   DisplayWindow.cpp \
                   Charing.cpp       \
-                  KeyBoardManager.cpp \
                   CommandHistory.cpp       \
+#                  KeyBoardManager.cpp \
 
 
 MONADIR = ../../..
