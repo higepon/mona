@@ -14,7 +14,8 @@
 
 ProcessManager::ProcessManager() {
 
-    pid_ = 0;
+    pid_  = 0;
+    pnum_ = 0;
     scheduler_ = new Scheduler();
 }
 
@@ -71,6 +72,8 @@ bool ProcessManager::addProcess(Process* process, virtual_addr entry) {
     process->setup(entry, allocateStack(), allocatePageDir(), allocatePID());
     scheduler_->addToPrev(&(process->pinfo_));
 
+    g_process[pnum_] = process;
+    pnum_++;
 }
 
 void ProcessManager::printOneProcess(ProcessInfo* info) const {
@@ -81,10 +84,7 @@ void ProcessManager::printOneProcess(ProcessInfo* info) const {
 
 void ProcessManager::printAllProcesses() const {
 
-    ProcessInfo* start = g_current_process;
-
-    for (start = g_current_process; start != start->next; start = start->next) {
-
-        printOneProcess(start);
+    for (dword i = 0; i < pnum_; i++) {
+        printOneProcess(&(g_process[i]->pinfo_));
     }
 }

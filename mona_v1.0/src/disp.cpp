@@ -103,16 +103,19 @@ void disp_name4() {
 void disp_process() {
 
     while (true) {
+        dword eflags = get_eflags();
+        disableInterrupt();
 
         int x = pos_x;
         int y = pos_y;
 
-         pos_x = 0, pos_y = 22;
+        pos_x = 0, pos_y = 19;
 
-         g_process_manager->printAllProcesses();
+        g_process_manager->printAllProcesses();
 
-         pos_x = x;
-         pos_y = y;
+        pos_x = x;
+        pos_y = y;
+        set_eflags(eflags);
     }
 }
 

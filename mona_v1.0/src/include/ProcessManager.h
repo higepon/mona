@@ -44,6 +44,7 @@ class ProcessManager {
 
   private:
     dword pid_;
+    dword pnum_;
     class Scheduler* scheduler_;
 };
 
