@@ -1,3 +1,11 @@
+2004-10-16  bayside  <bayside@users.sourceforge.jp>
+
+        * stk5 (OSASK圧縮形式) 対応開始
+
+2004-10-15  bayside  <bayside@users.sourceforge.jp>
+
+        * BayGUIをソースツリーに追加（アプリ、ライブラリ、サーバー）
+
 2004-10-14  higepon  <higepon@users.sourceforge.jp>
 
         * gcc3.4.1対応完了?
