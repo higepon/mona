@@ -179,7 +179,11 @@ PagingUtil.o: PagingUtil.cpp include/global.h include/kthread.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/PagingUtil.h include/Process.h include/sysresource.h \
   include/BitMap.h include/operator.h
-Process.o: Process.cpp include/Process.h include/types.h include/string.h
+Process.o: Process.cpp include/Process.h include/types.h include/string.h \
+  include/global.h include/kthread.h include/info.h include/kernel.h \
+  include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
+  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
+  include/PagingUtil.h include/sysresource.h include/BitMap.h
 Scheduler.o: Scheduler.cpp include/Scheduler.h include/Process.h \
   include/types.h include/string.h include/global.h include/kthread.h \
   include/info.h include/kernel.h include/VirtualConsole.h \

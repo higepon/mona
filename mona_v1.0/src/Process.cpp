@@ -67,34 +67,13 @@ void Process::setup() {
     return;
 }
 
+int Process::execute() {
 
-void KernelProcess::init() {
-
-    g_console->printf("KernelProcess:init()\n");
-    pinfo_.cs     = 0x08;
-    pinfo_.eflags = 0x0200;
-    pinfo_.esp    = 0x800000;
-    pinfo_.ebp    = 0x800000;
-    //    pinfo_.eip    = (dword)(&(KernelProcess::main));
-
-}
-
-void KernelProcess::destroy() {
-
-    g_console->printf("KernelProcess:destroy()\n");
-    while (true);
-
-}
-
-int KernelProcess::execute() {
-
-    g_console->printf("KernelProcess:execute()\n");
     return 0;
 }
 
+void Process::setEntryPoint(virtual_addr point) {
 
-//  void Kernel::Main(ProcessInfo* process) {
-
-//      process = new KernelProcess();
-//      process->main();
-//  }
+    pinfo_.eip = (dword)point;
+    return;
+}

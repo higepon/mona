@@ -12,9 +12,6 @@
 #ifndef _MONA_PAGINGUTIL_
 #define _MONA_PAGINGUTIL_
 
-typedef dword linear_addr;  /* 32bit */
-typedef dword vurtual_addr; /* 32bit */
-typedef dword phys_addr;    /* 32bit */
 typedef dword PTE;
 
 extern "C" PTE* g_page_dir;

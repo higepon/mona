@@ -22,4 +22,8 @@ typedef unsigned char  byte;
 typedef unsigned short word;
 typedef unsigned int   dword;
 
+typedef dword linear_addr;  /* 32bit */
+typedef dword virtual_addr; /* 32bit */
+typedef dword phys_addr;    /* 32bit */
+
 #endif

@@ -45,9 +45,11 @@ typedef struct ProcessInfo {
 class Process {
 
   public:
-    Process() {
+    Process(const char* name) {
 
         pinfo_.process = this;
+
+        strncpy(name_, name, sizeof(name_));
     }
     virtual ~Process() {
     }
@@ -56,36 +58,14 @@ class Process {
 
   protected:
     virtual void init();
-    virtual int execute() = 0;
+    virtual int execute();
     virtual void destroy();
+    void setEntryPoint(virtual_addr point);
 
   public:
     ProcessInfo pinfo_;
+    char name_[16];
     static void setup();
-};
-
-/*!
-    class Process
-*/
-class KernelProcess : Process {
-
-  public:
-    KernelProcess() {
-
-        pinfo_.process = this;
-        pinfo_.dpl     = DPL_KERNEL;
-    }
-    virtual ~KernelProcess() {
-    }
-
-    int main();
-    //    static void Main();
-  protected:
-    virtual void init();
-    virtual int execute();
-    virtual void destroy();
-
-    // i think UserProcess class need setFunction(*)
 };
 
 #endif
