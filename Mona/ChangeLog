@@ -26,10 +26,6 @@
 
         * bin/fat_template.img: フォーマット直後のものに差し替え (fat_writeの--mkdirを使用するため)
 
-        * bin/root/APPS: インストール時に作成するため削除
-
-        * bin/root/SERVERS: インストール時に作成するため削除
-
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 
         * Gakuさんの修正分: fat.cpp, fat.h

@@ -21,5 +21,5 @@ clean:
 	rm -f $(TARGET)
 	rm -f root/KERNEL.IMG
 	rm -f root/MONA-12.MNF
-	rm -rf root/APPS
-	rm -rf root/SERVERS
+	rm -rf root/APPS/*.*
+	rm -rf root/SERVERS/*.*
