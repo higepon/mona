@@ -1,3 +1,11 @@
+2004-03-28  shadow  <shadowin@users.sourceforge.jp>
+
+        * src/lib/monapi/Keys.cpp ToChar追加
+
+        * include/monapi/Keys.h Key追加。ToChar追加。
+
+        * include/sys/types.h KeyInfo追加。KeyBoardManager.hからKeyInfo削除。
+
 2004-04-15  higepon  <higepon@users.sourceforge.jp>
 
         * include/sys/Map.h: デストラクタ作成
