@@ -1,5 +1,7 @@
 2004-11-28  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/file.cpp (ReadFile): メモリ開放忘れのバグ修正
+
         * src/servers/file/ISO9660.cpp (GetFile): ルートディレクトリのファイルを認識しないバグを修正
 
 2004-11-27  higepon  <higepon@users.sourceforge.jp>
