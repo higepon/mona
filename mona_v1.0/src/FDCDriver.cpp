@@ -161,7 +161,7 @@ void FDCDriver::initilize() {
 */
 void FDCDriver::interrupt() {
 
-    info(DEV_WARNING, "\ninterrupt:"); // here is point
+    //    info(DEV_WARNING, "\ninterrupt:"); // here is point
     interrupt_ = true;
 }
 
@@ -318,7 +318,7 @@ bool FDCDriver::seek(byte track) {
 
     while (true) {
 
-       info(DEV_WARNING, "seek start3 \n");// here is point
+	//   info(DEV_WARNING, "seek start3 \n");// here is point
 
         waitInterrupt();
 
@@ -328,7 +328,7 @@ bool FDCDriver::seek(byte track) {
         interrupt_ = false;
     }
 
-    info(DEV_WARNING, "seek start4 \n"); // here is point
+    //    info(DEV_WARNING, "seek start4 \n"); // here is point
     return true;
 }
 
@@ -485,6 +485,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     waitInterrupt();
 
+    delay(50000);
     stopDMA();
 
     for (int i = 0; i < 7; i++) {

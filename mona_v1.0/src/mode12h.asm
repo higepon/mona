@@ -1,30 +1,85 @@
 bits 32
 
-global _wait_vsync
-global _scroll_down
+global _rectangle
+global _put_pixel
+global _scroll_up
 global _write_font
 
 global _pos_x
 global _pos_y
 
-; wait_vsync();
-;  wait for virtical sync. no argument.
-_wait_vsync:
+; rectangle(int,x, int y,int xx, int yy, char color)
+_rectangle:
+	push	ebp
+	mov	ebp,esp
 	pushad
-	mov	dx,0x03da
-.wait0:	in	al,dx
-	test	al,0x08
-	jnz	.wait0
-.wait1:	in	al,dx
-	test	al,0x08
-	jz	.wait1
+	mov	ax,word [ebp+0x08]
+	mov	bx,word [ebp+0x0c]
+	mov	cl,byte [ebp+0x18]
+	sub	esp,0x20
+.rect0:	mov	word [esp+0x00],ax
+	mov	word [esp+0x04],bx
+	mov	byte [esp+0x08],cl
+	call	_put_pixel
+	inc	ax
+	cmp	ax,word [ebp+0x10]
+	jb	.rect0
+	mov	ax,word [ebp+0x08]
+	inc	bx
+	cmp	bx,word [ebp+0x14]
+	jb	.rect0
+	add	esp,0x20
 	popad
+	mov	esp,ebp
+	pop	ebp
 	ret
 
-; scroll_down()
-;  scroll down for 16 dot font. no argument.
+; put_pixel(int x, int y, char color)
+_put_pixel:
+	push	ebp
+	mov	ebp,esp
+	pushad
+	mov	edi,0x000a0000
+	xor	eax,eax
+	mov	ecx,eax
+	mov	edx,eax
+	mov	ax,word [ebp+0x0c]
+	mov	cx,0x0050
+	mul	cx
+	add	edi,eax
+	mov	ax,word [ebp+0x08]
+	mov	cl,0x08
+	div	cl
+	mov	cl,al
+	add	edi,ecx
+	mov	cl,ah
+	mov	dx,0x03c4
+	mov	ax,0x0f02
+	out	dx,ax
+	mov	dx,0x03ce
+	mov	al,0x05
+	out	dx,al
+	inc	edx
+	rol	ax,8
+	in	al,dx
+	ror	ax,8
+	dec	edx
+	and	ah,0xfc
+	or	ah,0x02
+	out	dx,ax
+	mov	ax,0x8008
+	shr	ah,cl
+	out	dx,ax
+	mov	al,byte [edi]
+	mov	al,byte [ebp+0x10]
+	mov	byte [edi],al
+	popad
+	mov	esp,ebp
+	pop	ebp
+	ret
 
-_scroll_down:
+; scroll_up() --- scroll up only for 16 dot font.
+_scroll_up:
 	pushad
 	mov	edi,0x000a0000
 	mov	esi,0x000a0500
@@ -39,6 +94,13 @@ _scroll_down:
 	and	ah,0xfd
 	or	ah,0x01
 	out	dx,ax
+	mov	dx,0x03da
+.wait0:	in	al,dx
+	test	al,0x08
+	jnz	.wait0
+.wait1:	in	al,dx
+	test	al,0x08
+	jz	.wait1
 .scro0:	mov	al,byte [esi]
 	inc	esi
 	mov	byte [edi],al
@@ -48,13 +110,11 @@ _scroll_down:
 	popad
 	ret
 
-; write_font(char character, char fgcolor, char bgcolor)
-;  write character with color. upgrade version.
+; write_font(char character, char fontcolor, char backcolor)
 _write_font:
 	push	ebp
 	mov	ebp,esp
 	pushad
-	;
 	xor	eax,eax
 	mov	edx,eax
 	mov	edi,0x000a0000
@@ -63,10 +123,10 @@ _write_font:
 	mul	cx
 	add	edi,eax
 	mov	dl,byte [_pos_x]
-	add	edi,edx			; write position
+	add	edi,edx
 	mov	dx,0x03c4
 	mov	ax,0x0f02
-	out	dx,ax			; unmask all map
+	out	dx,ax
 	mov	dx,0x03ce
 	mov	al,0x05
 	out	dx,al
@@ -76,16 +136,16 @@ _write_font:
 	dec	edx
 	ror	ax,8
 	and	ah,0xfc
-	or	ah,0x02			; change to write mode 2
+	or	ah,0x02
 	out	dx,ax
 	xor	eax,eax
 	mov	al,byte [ebp+0x08]
-	mov	esi,dword [font_m]
+	mov	esi,font+0x11
 	shl	eax,4
-	add	esi,eax			; target font data
+	add	esi,eax
 	mov	cl,0x10
 .font0:	mov	ax,0xff08
-	out	dx,ax			; fill background
+	out	dx,ax
 	mov	bl,byte [edi]
 	mov	bl,byte [ebp+0x10]
 	mov	byte [edi],bl
@@ -98,7 +158,6 @@ _write_font:
 	inc	esi
 	dec	cl
 	jnz	.font0
-	;
 	popad
 	mov	esp,ebp
 	pop	ebp
@@ -107,6 +166,4 @@ _write_font:
 _pos_x	db	0
 _pos_y	db	0
 
-font_m	dd	font+0x11
 font	incbin	"font/paw16a.fnt"
-

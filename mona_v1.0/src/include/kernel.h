@@ -17,6 +17,8 @@
 #include <types.h>
 #include <VirtualConsole.h>
 
+extern "C" void rectangle(int x, int y, int xx, int yy, char color);
+
 #define disableInterrupt() asm volatile("cli")      /*!< \def disable interupts */
 #define enableInterrupt()  asm volatile("sti")      /*!< \def enable  interupts */
 

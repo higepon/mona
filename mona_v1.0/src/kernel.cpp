@@ -131,6 +131,11 @@ void startKernel(void) {
     enableKeyboard();
     enableInterrupt();
 
+    asm volatile("subl   $0x20, %esp \n");
+    rectangle(320,240,400,300,15);
+    rectangle(43,321,577,429,1);
+    asm volatile("addl   $0x20, %esp \n");
+
     FDCDriverTester();
     while (true);
 

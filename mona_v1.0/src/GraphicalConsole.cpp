@@ -15,9 +15,8 @@
 
 #include<GraphicalConsole.h>
 
-extern "C" void write_font(int a, char b, char c);
-extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
-extern "C" void scroll_down();
+extern "C" void write_font(char ch, char fc, char bc);
+extern "C" void scroll_up();
 extern "C" char pos_x;
 extern "C" char pos_y;
 
@@ -257,7 +256,7 @@ void GraphicalConsole::newLine() {
 */
 void GraphicalConsole::scrollUp() {
 
-    scroll_down();
+    scroll_up();
     return;
 }
 
