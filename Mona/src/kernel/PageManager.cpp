@@ -36,6 +36,7 @@ const byte PageManager::ARCH_PAGE_USER;
 const byte PageManager::ARCH_PAGE_KERNEL;
 const int  PageManager::ARCH_PAGE_SIZE;
 const int  PageManager::ARCH_PAGE_TABLE_NUM;
+const int  PageManager::PAGE_TABLE_POOL_SIZE;
 
 /*!
     \brief page management initlize
@@ -50,6 +51,22 @@ PageManager::PageManager(dword totalMemorySize)
 
     memoryMap_ = new BitMap(pageNumber);
     checkMemoryAllocate(memoryMap_, "PageManager memoryMap");
+
+    /*
+     * page table pool
+     *
+     * page table should be at 0-8MB. so use kernel memory allocation.
+     */
+    byte* temp = (byte*)malloc(PAGE_TABLE_POOL_SIZE);
+    checkMemoryAllocate(temp, "PageManager page table pool");
+
+    /* 4KB align */
+    pageTablePoolAddress_ = (PhysicalAddress)(((int)temp + 4095) & 0xFFFFF000);
+
+    /* page table pool bitmap */
+    int poolNum = ((int)temp + PAGE_TABLE_POOL_SIZE - pageTablePoolAddress_) / ARCH_PAGE_SIZE;
+    pageTablePool_ = new BitMap(poolNum);
+    checkMemoryAllocate(pageTablePool_, "PageManger page table pool bitmap");
 }
 
 /*!
@@ -122,7 +139,8 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     if (isPresent(&(directory[directoryIndex])))
     {
         table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    } else
+    }
+    else
     {
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
@@ -200,7 +218,7 @@ void PageManager::setup(PhysicalAddress vram)
     vram_ = vram;
 
     /* find 4KB align */
-    for (; vram % 4096; vram--);
+    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
 
     /* MAP VRAM 2MB */
     for (int i = 0; i < 512; i++, vram += 4096)
@@ -254,7 +272,7 @@ PageEntry* PageManager::createNewPageDirectory() {
 
     /* find 4KB align for VRAM */
     dword vram = vram_;
-    for (; vram % 4096; vram--);
+    vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
 
     dword directoryIndex = getDirectoryIndex(vram);
     /* MAP VRAM 2MB */
@@ -287,7 +305,6 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
     /* 0-8MB don't return */
     for (int i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
     {
-
         /* not allocated */
         if (i == vramIndex || !isPresent(&(directory[i])))
         {
@@ -406,12 +423,22 @@ void PageManager::flushPageCache() const
 */
 PageEntry* PageManager::allocatePageTable() const
 {
-    byte* table;
-    table = (byte*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
-    checkMemoryAllocate(table, "PageManager table memory allocate");
-    table = (byte*)(((int)table + 4096) & 0xFFFFF000);
-    return (PageEntry*)table;
+    int foundMemory = pageTablePool_->find();
+    if (foundMemory == BitMap::NOT_FOUND) return NULL;
+
+    byte* address = (byte*)(pageTablePoolAddress_ + foundMemory * ARCH_PAGE_SIZE);
+    return (PageEntry*)(address);
 }
+
+// PageEntry* PageManager::allocatePageTable() const
+// {
+//     byte* table;
+//     table = (byte*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
+//     checkMemoryAllocate(table, "PageManager table memory allocate");
+//     table = (byte*)(((int)table + 4095) & 0xFFFFF000);
+//     g_console->printf("address%x", table);
+//     return (PageEntry*)table;
+// }
 
 /*!
     \brief page fault handler

@@ -73,7 +73,9 @@ class PageManager {
     PageEntry* allocatePageTable() const;
 
   private:
-    BitMap*       memoryMap_;
+    BitMap* memoryMap_;
+    BitMap* pageTablePool_;
+    PhysicalAddress pageTablePoolAddress_;
     PageDirectory pageDirectory_;
     PhysicalAddress vram_;
 
@@ -94,6 +96,7 @@ class PageManager {
     static const byte ARCH_PAGE_KERNEL         = 0x00;
     static const int  ARCH_PAGE_SIZE           = 4096;
     static const int  ARCH_PAGE_TABLE_NUM      = 1024;
+    static const int  PAGE_TABLE_POOL_SIZE     = 1 * 1024 * 1024; // 1MB
 };
 
 #endif
