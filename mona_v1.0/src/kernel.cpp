@@ -236,7 +236,7 @@ int execSysConf()
     g_fdcdriver->recalibrate();
 
     /* file open */
-    if (!(g_fs->open("/SYSCONF.TXT", 1)))
+    if (!(g_fs->open("/MONA.CFG", 1)))
     {
         Semaphore::up(&g_semaphore_fd);
         return 1;
@@ -363,7 +363,7 @@ void mainProcess()
 
     if (execSysConf() != 0)
     {
-        g_console->printf("/SYSCONF.TXT does not exist\n");
+        g_console->printf("/MONA.CFG does not exist\n");
         for (;;);
     }
 

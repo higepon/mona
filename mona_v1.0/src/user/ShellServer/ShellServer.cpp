@@ -54,7 +54,7 @@ Shell::Shell() : position_(0) {
     history_ = new HList<char*>();
     printf("%s", PROMPT);
 
-    FileInputStream* fis = new FileInputStream("/AUTOEXEC.TXT");
+    FileInputStream* fis = new FileInputStream("/AUTOEXEC.MSH");
     if (fis->open() == 0) {
         int len = fis->getFileSize();
         byte* data = new byte[len];
