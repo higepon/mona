@@ -218,14 +218,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
     /* send command */
     for (int i = 0; i < length; i++) {
 
-        /* check FDC status. to be(time out) */
-        while (true) {
-
-            byte status = inportb(FDC_MSR_PRIMARY);
-
-            /* status fdc ready & data to FDC */
-            if ((status & (0x80 | 0x40)) == 0x80) break;
-        }
+        waitStatus(0x80 | 0x40, 0x80);
 
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
@@ -252,58 +245,37 @@ bool FDCDriver::recalibrate() {
     }
 
     while (true) {
-	waitInterrupt();
 
-        while (true) {
+        waitInterrupt();
 
-            byte status = inportb(FDC_MSR_PRIMARY);
+        waitStatus(0x10, 0x00);
 
-            /* status */
-            if (!(status & 0x10)) break;
-
-        }
         if (senseInterrupt()) break;
     }
 
     return true;
 }
 
-/*!
-    \brief wait until FDC is ready.
+void FDCDriver::waitStatus(byte expected) {
 
-    \param  expectedcondition
-    \return true ready/false time out
-    \author HigePon
-    \date   create:2003/02/10 update:
-*/
-bool FDCDriver::checkMSR(byte expectedCondition, byte mask) {
+    byte status;
 
-    bool isOK   = false;
-    byte status = 0;
+    do {
 
-    /* check whether FDC is expected condition */
-    for (dword i = 0; i < FDC_RETRY_MAX; i++) {
+        status = inportb(FDC_MSR_PRIMARY);
 
-       status = inportb(FDC_MSR_PRIMARY);
-       isOK = (status & mask) == expectedCondition;
-
-       if (isOK) return true;
-    }
-
-    return false;
+    } while (status != expected);
 }
 
-/*!
-    \brief wait until FDC is ready.
+void FDCDriver::waitStatus(byte mask, byte expected) {
 
-    \param  expectedcondition
-    \return true ready/false time out
-    \author HigePon
-    \date   create:2003/02/10 update:
-*/
-bool FDCDriver::checkMSR(byte expectedCondition) {
+    byte status;
 
-    return (checkMSR(expectedCondition, 0xffff));
+    do {
+
+        status = inportb(FDC_MSR_PRIMARY);
+
+    } while ((status & mask) != expected);
 }
 
 /*!
@@ -567,21 +539,6 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     info(DEV_NOTICE, "raed results");
 
     return readResults();
-}
-
-/*!
-    \brief writeID
-
-    \author HigePon
-    \date   create:2003/02/15 update:
-*/
-bool FDCDriver::writeID(byte track, byte head, byte data) {
-
-    seek(track);
-
-    /* not imlemented */
-
-    return false;
 }
 
 /*!
