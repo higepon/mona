@@ -64,7 +64,7 @@ void ProcessManager::printInfo() {
                  : "m" (gdtr)
                 );
     _sys_printf("gdtr.limit = %d\n", gdtr.limit);
-    _sys_printf("gdtr.base  = %d\n", gdtr.base);
+    _sys_printf("gdtr.base  = %d\n", (gdtr.base) << 8);
 
     return;
 }
