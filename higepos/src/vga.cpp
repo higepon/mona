@@ -354,3 +354,22 @@ void newLine() {
     curX = 0;
     curY++;
 }
+
+/*!
+    \brief scroll up
+
+    scroll up
+
+    \author  HigePon
+    \date    create:2002/10/05 update:
+*/
+void scrollUp() {
+
+    // copy current buffer
+    for (int i = MAX_WIDTH * 2,j = 0; i <= VRAMSIZE; i++, j++) {
+
+        VRAM[j] = VRAM[i];
+    }
+    // scrollup
+
+}

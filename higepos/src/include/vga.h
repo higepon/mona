@@ -13,9 +13,10 @@
 #ifndef _HIGEPOS_VGA_
 #define _HIGEPOS_VGA_
 
-#define VRAM ((char*)0xB8000) /*! VRAM Address */
-#define MAX_HEIGHT 25         /*! MAX_HEIGHT   */
-#define MAX_WIDTH  80         /*! MAX_WIDTH    */
+#define VRAM ((char*)0xB8000)                 /*! VRAM Address */
+#define MAX_HEIGHT 25                         /*! MAX_HEIGHT   */
+#define MAX_WIDTH  80                         /*! MAX_WIDTH    */
+#define VRAMSIZE (MAX_HEIGHT * MAX_WIDTH * 2) /*! VRAMSIZE     */
 
 void _sysInitVga(void);
 void _sysClearScreen();
@@ -32,5 +33,6 @@ void forwardCursor(int);
 void backwardCursor(void);
 void backwardCursor(int);
 void setCursor(int, int);
+void scrollUp();
 
 #endif

@@ -71,6 +71,10 @@ void startKernel(void) {
 //      list.add(10);
 //      _sysPrintlnInt(list.get(0));
 
+    scrollUp();
+    scrollUp();
+    scrollUp();
+
     while (true) {
     }
 }
