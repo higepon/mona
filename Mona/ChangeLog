@@ -1,5 +1,7 @@
 2004-04-08  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/kernel.cpp (execSysConf):                     enableTimer(); // qemu need this why?を追加
+
         * apps/gui/reversi/Piece.cpp (OnMouseUp): 無駄なオーバーライドをなくす
 
 2004-04-07  higepon  <higepon@users.sourceforge.jp>

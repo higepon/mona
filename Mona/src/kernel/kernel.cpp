@@ -234,7 +234,6 @@ void loadServer(const char* server, const char* name)
     g_console->printf("%s\n", loadProcess(server, name, true, NULL) ? "NG" : "OK");
 
     MessageInfo msg;
-
     for (;;)
     {
         if (g_messenger->receive(g_currentThread->thread, &msg)) continue;
@@ -313,6 +312,7 @@ int execSysConf()
                         }
                         if (name == server) break;
                     }
+                    enableTimer(); // qemu need this why?
                     loadServer(server, name);
                 }
                 linepos = 0;
