@@ -97,6 +97,7 @@ static void StdoutMessageLoop()
 		{
 			case MSG_PROCESS_STDOUT_DATA:
 			{
+				msg.str[127] = '\0';
 				terminal->Output(msg.str);
 				terminal->Refresh();
 				MonAPI::Message::reply(&msg);

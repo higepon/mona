@@ -20,6 +20,7 @@ static void StdoutMessageLoop()
             case MSG_PROCESS_STDOUT_DATA:
             {
                 monapi_call_mouse_set_cursor(0);
+                msg.str[127] = '\0';
                 syscall_print(msg.str);
                 monapi_call_mouse_set_cursor(1);
                 Message::reply(&msg);
