@@ -50,8 +50,9 @@ class InputStream {
 
   public:
     virtual int  read(byte* buf, int size) = 0;
-    virtual byte read() = 0;
+    virtual byte read()  = 0;
     virtual void close() = 0;
+    virtual bool isEndOfStream() = 0;
 };
 
 class DRMNInputStream : public InputStream {
@@ -63,6 +64,7 @@ class DRMNInputStream : public InputStream {
     virtual int  read(byte* buf, int size);
     virtual byte read();
     virtual void close();
+    virtual bool isEndOfStream();
 
   private:
     byte* start_;
@@ -82,15 +84,34 @@ DRMNInputStream::DRMNInputStream(byte* start, int size) {
 byte DRMNInputStream::read() {
 
     byte result = start_[offset_];
-
-
-
-
+    if (offset_ < end_) offset_++;
+    return result;
 }
 
 int DRMNInputStream::read(byte* buf, int size) {
 
+    int bufferSize = offset_ - (dword)start + 1;
+    int readSize;
+
+    /* check size */
+    if (size <= 0 || bufferSize <= 0) return 0;
+
+    /* read size */
+    if (size > bufferSize) readSize = bufferSize;
+    else readSize = size;
+
+    /* read */
+    memcpy(buf, (byte*)((dword)start_ + offset_), readSize);
+    offset_ += readSize;
+
+    return readSize;
 }
+
+bool DRMNInputStream::isEndOfStream() {
+
+    return (offset_ == end_);
+}
+
 
 void DRMNInputStream::close() {
 
