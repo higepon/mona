@@ -41,7 +41,7 @@ arch_save_thread_registers:
         mov eax, dword[esp + 48]  ; get cs
         and eax, 0x03             ; check cpl is 3
         cmp eax, 0x03
-        jz from_user
+        je from_user
 from_kernel:
         mov eax, dword [esp + 44]; save eip
         mov dword[ebx], eax
