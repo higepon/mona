@@ -104,6 +104,7 @@ unsigned char *Object::getByteArray(char *path)
 /** 文字列をコピーする */
 void Object::copyString(char *dst, char *src)
 {
+	memset(dst, 0, strlen(dst));
 	strcpy(dst, src);
 	//int i;
 	//for (i = 0; i < (int)strlen(src); i++) {

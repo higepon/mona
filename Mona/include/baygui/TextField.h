@@ -33,7 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class TextField : public Control {
 private:
-	int offx, offy;
+	char text[MAX_TEXT_LEN];
 	Event *_textEvent;
 	ImeManager *_imeManager;
 

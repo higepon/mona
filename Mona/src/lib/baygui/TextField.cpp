@@ -30,8 +30,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** コンストラクタ */
 TextField::TextField()
 {
-	offx = 3;
-	offy = 3;
+	memset(text, 0, MAX_TEXT_LEN);
 	_textEvent = new Event(TEXT_CHANGED, this);
 	_imeManager = new ImeManager();
 	_imeManager->setParent(this);
@@ -49,7 +48,7 @@ TextField::~TextField()
  */
 void TextField::setText(char *text)
 {
-	_imeManager->setText(text);
+	copyString(this->text, text);
 	if (firstpaint == true) {
 		repaint();
 	}
@@ -58,12 +57,14 @@ void TextField::setText(char *text)
 /** テキスト取得 */
 char *TextField::getText()
 {
-	return _imeManager->getText();
+	return this->text;
 }
 
 /** 再描画 */
 void TextField::repaint()
 {
+	int offx = 3, offy = 3;
+
 	if (firstpaint == false)
 		firstpaint = true;
 
@@ -78,8 +79,18 @@ void TextField::repaint()
 	_g->setColor(foreColor);
 	_g->drawRect(1, 1, width - 2, height - 2);
 
-	// IME入力部再描画
-	_imeManager->setRect(x + offx, y + offy, width - offx * 2, height - offy * 2);
+	// 塗りつぶし
+	_g->setColor(~foreColor);
+	_g->fillRect(2, 2, width - 3, height - 3);
+
+	// 文字
+	int fw = FontManager::getInstance()->getWidth(text);
+	int fh = FontManager::getInstance()->getHeight();
+	_g->setColor(foreColor);
+	_g->drawText(text, offx, (height - fh) / 2);
+
+	// IME再描画
+	_imeManager->setRect(x + offx + fw, y + offy, width - offx * 2 - fw, height - offy * 2);
 	_imeManager->setForeground(foreColor);
 	_imeManager->setBackground(~foreColor);
 	_imeManager->setFocused(focused);
@@ -93,13 +104,25 @@ void TextField::postEvent(Event *event)
 	// 非活性の時はイベントを受け付けない
 	if (enabled == false) return;
 	
-	// IME通知イベント
-	if (event->type == IME_NOTIFY) {
-		int message = ((ImeEvent *)event)->message;
+	// １文字イベント
+	if ((event->type & 0xFFFF) == IME_CHAR) {
+		int keycode = (event->type >> 16) & 0xFFFF;
 		// 確定イベント
-		if (message == TEXT_CHANGED) {
+		if (keycode == VKEY_ENTER) {
 			Control::postEvent(_textEvent);
+		// １文字削除
+		} else if (keycode == VKEY_BACKSPACE) {
+			//text[strlen(text) - 1] = 0;
+			_imeManager->deleteCharacter(text);
+			repaint();
+		// １文字挿入
+		} else {
+			//text[strlen(text)] = (char)(keycode & 0xFF);
+			_imeManager->insertCharacter(text, (char)(keycode & 0xFF));
 		}
+	// 確定イベント
+	} else if (event->type == IME_ENDCOMPOSITION) {
+		repaint();
 	// キー押下
 	} else if (event->type == KEY_PRESSED) {
 		// IMEマネージャに丸投げ

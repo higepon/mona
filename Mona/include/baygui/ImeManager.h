@@ -33,6 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class ImeManager : public Control {
 private:
+	/** IMEサーバーID */
+	dword imesvrID;
 	/** 入力文字列バッファー */
 	char inputBuffer[MAX_TEXT_LEN];
 	/** 変換対象文字列バッファー */
@@ -42,7 +44,7 @@ private:
 	/** IMEモード（オンなら日本語入力中）*/
 	bool imemode;
 	/** IMEイベント */
-	ImeEvent *_imeEvent;
+	Event *_imeEvent;
 	/** 親部品 */
 	Control *parent;
 	
@@ -56,8 +58,6 @@ public:
 	ImeManager::ImeManager();
 	virtual ImeManager::~ImeManager();
 	virtual void setParent(Control *parent);
-	virtual char *getText();
-	virtual void setText(char *text);
 	virtual void clearBuffer();
 	virtual void repaint();
 	virtual void postEvent(Event *event);

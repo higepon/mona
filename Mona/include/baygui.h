@@ -71,7 +71,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/LinkedList.h"
 #include "baygui/Thread.h"
 #include "baygui/Event.h"
-#include "baygui/ImeEvent.h"
 #include "baygui/KeyEvent.h"
 #include "baygui/MouseEvent.h"
 #include "baygui/Rect.h"

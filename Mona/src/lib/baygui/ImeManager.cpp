@@ -26,16 +26,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "baygui.h"
-#include "te_roma0.h"
 
 /** コンストラクタ */
 ImeManager::ImeManager()
 {
 	clearBuffer(inputBuffer);
 	clearBuffer(translateBuffer);
-	clearBuffer(decideBuffer);
 	imemode = false;
-	_imeEvent = new ImeEvent(IME_SETCONTEXT, this);
+	_imeEvent = new Event(IME_SETCONTEXT, this);
+	imesvrID = MonAPI::Message::lookupMainThread(IMESERVER_NAME);
 }
 
 /** デストラクタ */
@@ -67,12 +66,15 @@ void ImeManager::insertString(char *buffer, char *str)
 
 /**
  指定したバッファーの文字を1文字削除する
- @return 削除した文字のバイト数(1-3)
+ @return 削除した文字のバイト数(0-3)
  */
 int ImeManager::deleteCharacter(char *buffer)
 {
 	int len = strlen(buffer);
 
+	// NULLチェック
+	if (len <= 0) return 0;
+	
 	// 3バイト文字
 	if (len >= 3 && 0xE0 <= (0xFF & buffer[len - 3]) && (0xFF & buffer[len - 3]) <= 0xEF) {
 		buffer[strlen(buffer) - 1] = 0;
@@ -93,11 +95,14 @@ int ImeManager::deleteCharacter(char *buffer)
 
 /**
  入力文字→かな変換
- @return マッチしたら「かな」、マッチしなかったら「NULL」
+ @param [in] str 入力文字
+ @param [out] result かな
+ @return マッチしたらtrue、マッチしなかったらfalse
  */
-char *ImeManager::getKana()
+bool ImeManager::getKana(char *str, char *result)
 {
 	// デフォルトはローマ字入力
+	#if 0
 	for (int i = 0; i < HENKAN0LENGTH; i++) {
 		if (strcmp(henkan00[i], inputBuffer) == 0) {
 			clearBuffer(inputBuffer);
@@ -105,6 +110,18 @@ char *ImeManager::getKana()
 		}
 	}
 	return NULL;
+	#endif
+	if (imesvrID != THREAD_UNKNOWN) {
+		MessageInfo info;
+		//printf("IMETEST: connected %s\n", IMESERVER_NAME);
+		MonAPI::Message::sendReceive(&info, imesvrID, MSG_IMESERVER_GETKANA, 0, 0, 0, str);
+		if (info.arg2 > 0) {
+			//printf("MSG_IMESERVER_GETKANA: %s -> %s\n", str, info.str);
+			copyString(result, info.str);
+			return true;
+		}
+	}
+	return false;
 }
 
 /** 親部品登録 */
@@ -112,57 +129,45 @@ void ImeManager::setParent(Control *parent) {
 	this->parent = parent;
 }
 
-/** 確定済みバッファーを得る */
-char *ImeManager::getText()
-{
-	return decideBuffer;
-}
-
-/** 確定済みバッファーを設定する */
-void ImeManager::setText(char *text)
-{
-	copyString(decideBuffer, text);
-}
-
 /** すべての内部バッファーをクリアする */
 void ImeManager::clearBuffer()
 {
 	clearBuffer(inputBuffer);
 	clearBuffer(translateBuffer);
-	clearBuffer(decideBuffer);
 }
 
 /** 再描画 */
 void ImeManager::repaint()
 {
-	int fw1 = 0, fw2 = 0, fw3 = 0, fh = 0;
+	int fw1 = 0, fw2 = 0;
+	int fh  = FontManager::getInstance()->getHeight();
 	
 	// 塗りつぶし
 	_g->setColor(~foreColor);
-	_g->fillRect(0, 0, width, height);
-	fh  = FontManager::getInstance()->getHeight();
+	//_g->setColor(255,255,128);
+	_g->fillRect(0, 0, width + 1, height + 1);
 
 	// 確定文字列
-	if (strlen(decideBuffer) > 0) {
-		fw1 = FontManager::getInstance()->getWidth(decideBuffer);
-		_g->setColor(foreColor);
-		_g->drawText(decideBuffer, 0, (height - fh) / 2);
-	}
+	//if (strlen(decideBuffer) > 0) {
+	//	fw1 = FontManager::getInstance()->getWidth(decideBuffer);
+	//	_g->setColor(foreColor);
+	//	_g->drawText(decideBuffer, 0, (height - fh) / 2);
+	//}
 	
 	// 変換対象文字列
 	if (strlen(translateBuffer) > 0) {
-		fw2 = FontManager::getInstance()->getWidth(translateBuffer);
-		fw3 = FontManager::getInstance()->getWidth(inputBuffer);
+		fw1 = FontManager::getInstance()->getWidth(translateBuffer);
+		fw2 = FontManager::getInstance()->getWidth(inputBuffer);
 		_g->setColor(0, 0, 255);
-		_g->drawText(translateBuffer, fw1, (height - fh) / 2);
-		_g->drawText(inputBuffer, fw1 + fw2, (height - fh) / 2);
-		_g->drawLine(fw1, 13, fw1 + fw2 + fw3, 13);
+		_g->drawText(translateBuffer, 0, (height - fh) / 2);
+		_g->drawText(inputBuffer, fw1, (height - fh) / 2);
+		_g->drawLine(0, 13, fw1 + fw2, 13);
 	}
 	
 	// キャレット
 	if (focused == true && enabled == true) {
 		_g->setColor(0, 0, 0);
-		_g->drawLine(fw1 + fw2 + fw3, 0, fw1 + fw2 + fw3, 13);
+		_g->drawLine(fw1 + fw2, 0, fw1 + fw2, 13);
 	}
 }
 
@@ -190,46 +195,41 @@ void ImeManager::postEvent(Event *event)
 			// 入力文字列を削除
 			if (strlen(inputBuffer) > 0) {
 				len = deleteCharacter(inputBuffer);
+				repaint();
 			// 変換対象文字列を削除
 			} else if (strlen(translateBuffer) > 0) {
 				len = deleteCharacter(translateBuffer);
-			// 確定済み文字列を削除
-			} else if (strlen(decideBuffer) > 0) {
-				len = deleteCharacter(decideBuffer);
-			}
-			
-			// バックスペース送信
-			for (int i = 0; i < len; i++) {
-				_imeEvent->type = IME_CHAR;
-				_imeEvent->charcode = VKEY_BACKSPACE;
+				repaint();
+			// 親部品の確定文字列を削除
+			} else {
+				// バックスペース送信
+				_imeEvent->type = IME_CHAR | (VKEY_BACKSPACE << 16);
 				parent->postEvent(_imeEvent);
 			}
 		// 変換
 		} else if (keycode == ' ' && strlen(translateBuffer) > 0) {
 			clearBuffer(translateBuffer);
 			insertString(translateBuffer, "該当なし");
+			repaint();
 		// 確定
 		} else if (keycode == VKEY_ENTER) {
 			if (strlen(translateBuffer) == 0) {
-				// 確定イベント送信
-				_imeEvent->type = IME_NOTIFY;
-				_imeEvent->message = TEXT_CHANGED;
+				// ENTER送信
+				_imeEvent->type = IME_CHAR | (VKEY_ENTER << 16);
 				parent->postEvent(_imeEvent);
 			} else {
-				insertString(decideBuffer, translateBuffer);
 				clearBuffer(inputBuffer);
+				
+				// １文字送信
+				for (int i = 0; i < (int)strlen(translateBuffer); i++) {
+					_imeEvent->type = IME_CHAR | (translateBuffer[i] << 16);
+					parent->postEvent(_imeEvent);
+				}
+				clearBuffer(translateBuffer);
 				
 				// 確定イベント送信
 				_imeEvent->type = IME_ENDCOMPOSITION;
 				parent->postEvent(_imeEvent);
-				
-				// １文字イベント送信
-				for (int i = 0; i < (int)strlen(translateBuffer); i++) {
-					_imeEvent->type = IME_CHAR;
-					_imeEvent->charcode = translateBuffer[i];
-					parent->postEvent(_imeEvent);
-				}
-				clearBuffer(translateBuffer);
 			}
 		// 一般文字
 		} else if (keycode < 128) {
@@ -240,19 +240,24 @@ void ImeManager::postEvent(Event *event)
 					clearBuffer(inputBuffer);
 				// 入力文字列を変換して変換文字列バッファーに移す
 				} else {
-					char *kana = getKana();
-					if (kana != NULL) {
+					char kana[MAX_TEXT_LEN];
+					if (getKana(inputBuffer, kana) == true) {
 						insertString(translateBuffer, kana);
+						clearBuffer(inputBuffer);
 					}
 				}
+				// 再描画
+				repaint();
 			// 直接入力
 			} else {
-				insertCharacter(decideBuffer, keycode);
-				_imeEvent->type = IME_CHAR;
-				_imeEvent->charcode = keycode;
+				// １文字送信
+				_imeEvent->type = IME_CHAR | (keycode << 16);
+				parent->postEvent(_imeEvent);
+				
+				// 確定イベント送信
+				_imeEvent->type = IME_ENDCOMPOSITION;
 				parent->postEvent(_imeEvent);
 			}
 		}
-		repaint();
 	}
 }

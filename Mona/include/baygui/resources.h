@@ -28,9 +28,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_RESOURCES_H_INCLUDED_)
 #define _RESOURCES_H_INCLUDED_
 
-#define BAYGUI_VERSION   "BayGUI build 04.11.08"
+#define BAYGUI_VERSION   "BayGUI build 04.11.10"
 
 #define GUISERVER_NAME   "BAYGUI.EX5"
+#define IMESERVER_NAME   "IMESVR.EX5"
 #define LAUNCHER_NAME    "/APPS/GLAUNCH.EX5"
 #define WALLPAPER_NAME   "/SERVERS/MONAWALL.BM5"
 #define KEYSERVER_NAME   "KEYBDMNG.EX2"
@@ -122,12 +123,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IME_CHAR             401
 /** 文字を確定した */
 #define IME_ENDCOMPOSITION   402
-/** キーを押した */
-#define IME_KEYDOWN          403
-/** キーを離した */
-#define IME_KEYUP            404
-/* IMEの変化をアプリケーションに知らせる */
-#define IME_NOTIFY           405
 
 //
 // ↓特殊キーコード一覧
