@@ -40,6 +40,17 @@ typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
 typedef dword phys_addr;    /* 32bit */
 
+struct PsInfo {
+    char name[16];
+    dword state;
+    dword cr3;
+    dword eip;
+    dword esp;
+    dword tid;
+    struct PsInfo* next;
+};
+typedef struct PsInfo PsInfo;
+
 typedef struct {
     int year;
     int month;
@@ -172,7 +183,8 @@ typedef struct SysArg
 #define SYSTEM_CALL_DIR_CLOSE                0x002B
 #define SYSTEM_CALL_DIR_READ                 0x002C
 #define SYSTEM_CALL_CD                       0x002D
-
+#define SYSTEM_CALL_PS_DUMP_SET              0x002E
+#define SYSTEM_CALL_PS_DUMP_READ             0x002F
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

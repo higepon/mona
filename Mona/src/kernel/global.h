@@ -75,6 +75,9 @@ GLOBAL FSOperation* g_fs;
 GLOBAL IDManager*   g_id;
 
 GLOBAL dword gt[128];
+
+GLOBAL PsInfo g_ps;
+
 #define DEBUG_MODE
 
 #ifdef DEBUG_MODE

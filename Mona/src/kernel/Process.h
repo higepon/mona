@@ -145,6 +145,8 @@ public:
     Thread* find(dword id);
     Process* findProcess(dword pid);
     Process* findProcess(const char* name);
+    void setDump();
+    PsInfo* readDump();
 
 private:
     int wakeupTimer();
@@ -152,6 +154,7 @@ private:
 protected:
     Thread* runq;
     Thread* waitq;
+    PsInfo* dumpCurrent;
     dword tickTotal;
     int monaMin;
 };

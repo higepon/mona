@@ -623,6 +623,30 @@ void syscall_entrance() {
        }
        break;
 
+    case SYSTEM_CALL_PS_DUMP_SET:
+
+        g_scheduler->setDump();
+        break;
+
+    case SYSTEM_CALL_PS_DUMP_READ:
+
+        {
+            PsInfo* p = (PsInfo*)(info->esi);
+            PsInfo* q = g_scheduler->readDump();
+
+            if (q == NULL)
+            {
+                info->eax = 1;
+                break;
+            }
+
+            *p = *q;
+            delete q;
+            info->eax = 0;
+        }
+
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -538,3 +538,17 @@ int syscall_cd(char* path)
     SYSCALL_1(SYSTEM_CALL_CD, result, path);
     return result;
 }
+
+int syscall_set_ps_dump()
+{
+    int result;
+    SYSCALL_0(SYSTEM_CALL_PS_DUMP_SET, result);
+    return result;
+}
+
+int syscall_read_ps_dump(PsInfo* info)
+{
+    int result;
+    SYSCALL_1(SYSTEM_CALL_PS_DUMP_READ, result, info);
+    return result;
+}

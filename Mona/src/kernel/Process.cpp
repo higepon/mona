@@ -297,6 +297,59 @@ void Scheduler::dump()
     }
 }
 
+void Scheduler::setDump()
+{
+    g_ps.next = NULL;
+
+    PsInfo* current = &g_ps;
+
+    FOREACH_N(runq, Thread*, thread)
+    {
+        ThreadInfo* i = PTR_THREAD(thread);
+
+        current->next = new PsInfo;
+        current  = current->next;
+
+        strcpy(current->name, i->process->getName());
+        current->cr3   = i->archinfo->cr3;
+        current->eip   = i->archinfo->eip;
+        current->esp   = i->archinfo->esp;
+        current->tid   = thread->id;
+        current->state = 1;
+    }
+
+    FOREACH_N(waitq, Thread*, thread)
+    {
+        ThreadInfo* i = PTR_THREAD(thread);
+
+        current->next = new PsInfo;
+        current  = current->next;
+
+        strcpy(current->name, i->process->getName());
+        current->cr3   = i->archinfo->cr3;
+        current->eip   = i->archinfo->eip;
+        current->esp   = i->archinfo->esp;
+        current->tid   = thread->id;
+        current->state = 0;
+    }
+
+    dumpCurrent = g_ps.next;
+    current->next = NULL;
+}
+
+PsInfo* Scheduler::readDump()
+{
+    if (dumpCurrent == NULL)
+    {
+        return NULL;
+    }
+
+    PsInfo* info = dumpCurrent;
+    dumpCurrent = dumpCurrent->next;
+    return info;
+}
+
+
 /*----------------------------------------------------------------------
     Node
 ----------------------------------------------------------------------*/
