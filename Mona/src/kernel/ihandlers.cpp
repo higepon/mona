@@ -13,12 +13,12 @@
   \date   create:2002/07/25 update:$Date$
 */
 
-#include <global.h>
-#include <io.h>
-#include <ihandlers.h>
-#include <KeyBoardManager.h>
-#include <tester.h>
-#include <Process.h>
+#include "global.h"
+#include "io.h"
+#include "ihandlers.h"
+#include "KeyBoardManager.h"
+#include "tester.h"
+#include "Process.h"
 
 /*!
   \brief mouse handler

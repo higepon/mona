@@ -11,11 +11,11 @@
     \date   create:2004/01/12 update:$Date$
 */
 
-#include <Mutex.h>
-#include <io.h>
-#include <syscalls.h>
 #include <sys/HList.h>
-#include <tester.h>
+#include "Mutex.h"
+#include "io.h"
+#include "syscalls.h"
+#include "tester.h"
 
 /*----------------------------------------------------------------------
     KMutex

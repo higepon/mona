@@ -12,11 +12,11 @@
     \version $Revision$
     \date   create:2002/12/02 update:$Date$
 */
-#include <checker.h>
 #include <sys/types.h>
-#include <kernel.h>
-#include <GDTUtil.h>
-#include <IDTUtil.h>
+#include "checker.h"
+#include "kernel.h"
+#include "GDTUtil.h"
+#include "IDTUtil.h"
 
 /*!
     \brief check size of byte,word,dword

@@ -11,7 +11,7 @@
     \version $Revision$
     \date   create:2002/12/15 update:$Date$
 */
-#include<sys/types.h>
+#include <sys/types.h>
 
 #ifndef _MONA_STRING_
 #define _MONA_STRING_

@@ -13,10 +13,10 @@
     \date   create:2003/01/30 update:$Date$
 */
 
-#include<Semaphore.h>
-#include<kernel.h>
-#include<io.h>
-#include<global.h>
+#include "Semaphore.h"
+#include "kernel.h"
+#include "io.h"
+#include "global.h"
 
 /*!
     \brief up

@@ -43,10 +43,10 @@ a20enable_3:
 ;         call try_vesa_mode
 ;         cmp  ax, 0x00
 ;         je   RealToProtect
-        mov  dx, 0x0115
-        call try_vesa_mode
-        cmp  ax, 0x00
-        je   RealToProtect
+;         mov  dx, 0x0115
+;         call try_vesa_mode
+;         cmp  ax, 0x00
+;         je   RealToProtect
         mov  dx, 0x0114
         call try_vesa_mode
         cmp  ax, 0x00

@@ -4,8 +4,8 @@ include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 include $(MONADIR)/env/kernel.inc
 
-KERNELDIR       = $(MONADIR)/src/kernel
-INCLUDE         = -I$(INCDIR) -I$(KERNELDIR)
+TOOLSDIR        = $(MONADIR)/tools
+INCLUDE         = -I$(INCDIR) -I$(TOOLSDIR)
 KERNEL_IMG      = KERNEL.IMG
 BOOT1           = firstboot.bin
 BOOT2           = secondboot.bin

@@ -18,7 +18,7 @@ MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
 include $(MONADIR)/env/dirnames.inc
 
-CXXFLAGS += -DDEBUG -DMONA
+CXXFLAGS += -DDEBUG
 
 INCLUDE = -I$(INCDIR)
 

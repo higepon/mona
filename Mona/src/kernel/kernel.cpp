@@ -42,25 +42,25 @@
 #define GLOBAL_VALUE_DEFINED
 
 #include <sys/types.h>
-#include <global.h>
-#include <kernel.h>
-#include <operator.h>
-#include <tester.h>
-#include <checker.h>
-#include <KeyBoardManager.h>
-#include <FDCDriver.h>
-#include <GraphicalConsole.h>
-#include <ihandlers.h>
-#include <pic.h>
-#include <BitMap.h>
-#include <string.h>
-#include <syscalls.h>
-#include <PageManager.h>
-#include <elf.h>
-#include <MemoryManager.h>
-#include <vbe.h>
-#include <VesaConsole.h>
-#include <LogConsole.h>
+#include "global.h"
+#include "kernel.h"
+#include "operator.h"
+#include "tester.h"
+#include "checker.h"
+#include "KeyBoardManager.h"
+#include "FDCDriver.h"
+#include "GraphicalConsole.h"
+#include "ihandlers.h"
+#include "pic.h"
+#include "BitMap.h"
+#include "string.h"
+#include "syscalls.h"
+#include "PageManager.h"
+#include "elf.h"
+#include "MemoryManager.h"
+#include "vbe.h"
+#include "VesaConsole.h"
+#include "LogConsole.h"
 
 char* version = "Mona version.0.2.0 $Date$";
 void  mainProcess();
@@ -126,6 +126,7 @@ void startKernel(void)
     /* get total system memory */
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
+    g_console->printf("VESA: %dx%d %dbpp\n", g_vesaDetail->xResolution, g_vesaDetail->yResolution, g_vesaDetail->bitsPerPixel);
 
     /* shared memory object */
     SharedMemoryObject::setup();

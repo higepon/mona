@@ -13,7 +13,7 @@
     \date   create:2004/01/22 update:$Date$
 */
 
-#include <VesaConsole.h>
+#include "VesaConsole.h"
 
 extern "C" dword get_font_address();
 

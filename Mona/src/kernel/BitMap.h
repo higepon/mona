@@ -12,7 +12,7 @@
 #ifndef _MONA_BITMAP_
 #define _MONA_BITMAP_
 
-#include<sys/types.h>
+#include <sys/types.h>
 
 /*!
     BitMap claass

@@ -7,7 +7,7 @@ include $(MONADIR)/env/monapi.inc
 INCLUDE = -I$(INCDIR)
 LINK    = -lgui -lmonapi -lmonalibc
 
-CXXFLAGS += -DDEBUG -DMONA
+CXXFLAGS += -DDEBUG
 
 all: $(TARGET)
 

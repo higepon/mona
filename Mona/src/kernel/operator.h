@@ -15,8 +15,8 @@
 #ifndef _MONA_POS_OPERATOR
 #define _MONA_POS_OPERATOR
 
-#include<sys/types.h>
-#include<string.h>
+#include <sys/types.h>
+#include "string.h"
 
 void* operator new(size_t size);
 void  operator delete(void* address);

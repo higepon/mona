@@ -14,8 +14,8 @@
 #ifndef _MONA_VIRTUAL_CONSOLE_
 #define _MONA_VIRTUAL_CONSOLE_
 
-#include<sys/types.h>
-#include<string.h>
+#include <sys/types.h>
+#include "string.h"
 /*!
     abstract class VirtualConsole
 */

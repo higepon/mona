@@ -11,10 +11,10 @@
     \date   create:2003/06/06 update:$Date$
 */
 
-#include<global.h>
-#include<operator.h>
-#include<kernel.h>
-#include<GDTUtil.h>
+#include "global.h"
+#include "operator.h"
+#include "kernel.h"
+#include "GDTUtil.h"
 
 /*!
     \brief set segment descriptor

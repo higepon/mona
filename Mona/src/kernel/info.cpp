@@ -10,9 +10,9 @@
     \version $Revision$
     \date   create:2003/05/25 update:$Date$
 */
-#include<global.h>
-#include<GraphicalConsole.h>
-#include<info.h>
+#include "global.h"
+#include "GraphicalConsole.h"
+#include "info.h"
 
 void info(int level, const char *format, ...) {
 

@@ -288,8 +288,8 @@ int MonaMain(List<char*> *pekoe)
 
     printf("user mode screen (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
     /* check bpp */
-    if (screen.getBpp() < 24) {
-        printf("sorry, this demo needs 24 or 32bpp Video mode\n");
+    if (screen.getBpp() < 16) {
+        printf("sorry, this demo needs 16bpp or higher Video mode\n");
         return -1;
     }
 
@@ -315,9 +315,16 @@ int MonaMain(List<char*> *pekoe)
                 k = (x + y * SCREEN_W) * 4;
                 k2= (x + y * vesaWidth)* vesaBpp;
 
-                vesaVram[k2  ] = pbuf[k  ];
-                vesaVram[k2+1] = pbuf[k+1];
-                vesaVram[k2+2] = pbuf[k+2];
+                if (vesaBpp == 2)
+                {
+                    *(word*)&vesaVram[k2] = Color::bpp24to565(&pbuf[k]);
+                }
+                else
+                {
+                    vesaVram[k2  ] = pbuf[k  ];
+                    vesaVram[k2+1] = pbuf[k+1];
+                    vesaVram[k2+2] = pbuf[k+2];
+                }
             }
         }
         scene_count--;

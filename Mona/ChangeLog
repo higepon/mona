@@ -1,3 +1,29 @@
+2004-04-28  tino  <tino@users.sourceforge.jp>
+
+        * env/*.env: CXXFLAGSに-DMONAを追加
+
+        * include/monapi/Color.h (bpp24to565): オーバーロード追加
+
+        * src/kernel/kernel.cpp: VESA情報を表示
+
+        * src/servers/gui/main.cpp (DrawImage): 16bppで565に対応
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp (DrawImage): 16bppで565に対応
+
+        * apps/non-gui/jpegdemo/jpegdemo.cpp: 16bppで565に対応
+
+        * apps/non-gui/noiz2bg/noiz2bg.cpp: 16bppで565に対応
+
+        * tools/fat_write/fat.h, file.h, fat.cpp: Gakuさんの最新版に差し替え
+
+        * tools/fat_write/types.h: 追加
+
+        * src/kernel/fat.h, file.h, IStorageDevice.h: 削除
+
+        * src/kernel/fat.cpp: 重複は無駄なので外部参照のみ
+
+        * src/kernel/*: ディレクトリ内のヘッダに対する参照をダブルクォート化
+
 2004-04-27  tino  <tino@users.sourceforge.jp>
 
         * Makefile.in: イメージ作成を分離

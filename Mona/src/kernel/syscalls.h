@@ -12,7 +12,7 @@
 #ifndef _MONA_SYSCALL_
 #define _MONA_SYSCALL_
 
-#include <global.h>
+#include "global.h"
 
 extern "C" void syscall_entrance(void);
 

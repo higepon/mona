@@ -19,8 +19,8 @@
 #ifndef _MONA_GRAPHICAL_CONSOLE_
 #define _MONA_GRAPHICAL_CONSOLE_
 
-#include<VirtualConsole.h>
-#include<sys/types.h>
+#include <sys/types.h>
+#include "VirtualConsole.h"
 
 #define GP_MAX_WIDTH  80
 #define GP_MAX_HEIGHT 28

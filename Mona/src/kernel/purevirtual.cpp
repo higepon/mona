@@ -14,8 +14,8 @@
     \date   create:2002/08/04 update:$Date$
 */
 
-#include <kernel.h>
-#include <global.h>
+#include "kernel.h"
+#include "global.h"
 
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);

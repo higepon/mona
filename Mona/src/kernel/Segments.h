@@ -12,11 +12,11 @@
 #ifndef _MONA_SEGMENTS_
 #define _MONA_SEGMENTS_
 
-#include <PageManager.h>
-#include <operator.h>
-#include <kernel.h>
-#include <string.h>
-#include <Process.h>
+#include "PageManager.h"
+#include "operator.h"
+#include "kernel.h"
+#include "string.h"
+#include "Process.h"
 
 class SharedMemoryObject {
 

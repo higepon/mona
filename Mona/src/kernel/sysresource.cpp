@@ -5,9 +5,9 @@
     License=MIT/X Licnese
 
 */
-#include <sysresource.h>
-#include <global.h>
-#include <pic.h>
+#include "sysresource.h"
+#include "global.h"
+#include "pic.h"
 
 void nullirqhandler(void){
 }

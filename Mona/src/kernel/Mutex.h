@@ -12,8 +12,8 @@
 #ifndef _MONA_MUTEX_
 #define _MONA_MUTEX_
 
-#include <KObject.h>
-#include <Process.h>
+#include "KObject.h"
+#include "Process.h"
 
 class Thread;
 class Process;

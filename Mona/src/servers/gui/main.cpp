@@ -243,9 +243,9 @@ void DrawImage(MemoryInfo* img, int spx, int spy, int ix, int iy, int iw, int ih
 					if (*pVram != c) *pVram = c;
 					break;
 				}
-				case 16: // broken
+				case 16: // 565
 				{
-					unsigned short c = pBuf[0] + (pBuf[1] << 8);
+					unsigned short c = Color::bpp24to565(pBuf);
 					if (*(unsigned short*)pVram != c) *(unsigned short*)pVram = c;
 					break;
 				}

@@ -11,8 +11,8 @@
     \date   create:2003/09/28 update:$Date$
 */
 
-#include <MemoryManager.h>
-#include <global.h>
+#include "MemoryManager.h"
+#include "global.h"
 
 #define SIZE_OF_HEADER sizeof(MemoryEntry)
 

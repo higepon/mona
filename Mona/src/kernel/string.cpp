@@ -12,7 +12,7 @@
     \version $Revision$
     \date   create:2002/12/15 update:$Date$
 */
-#include <string.h>
+#include "string.h"
 
 /*!
     \brief memmove

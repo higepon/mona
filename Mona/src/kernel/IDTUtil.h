@@ -12,7 +12,7 @@
 #ifndef _MONA_IDTUTIL_
 #define _MONA_IDTUTIL_
 
-#include<GDTUtil.h>
+#include "GDTUtil.h"
 
 #define IHANDLER_NUM  256
 

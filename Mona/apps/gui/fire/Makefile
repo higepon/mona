@@ -8,7 +8,7 @@ OBJECTS += fire.o
 INCLUDE = -I$(INCDIR)
 LINK    = -lgui -lmonapi -lmonalibc
 
-CXXFLAGS += -DMONA -DDEBUG
+CXXFLAGS += -DDEBUG
 
 all: $(TARGET)
 

@@ -13,8 +13,8 @@
     \date   create:2003/02/22 update:$Date$
 */
 
-#include<GraphicalConsole.h>
-#include<global.h>
+#include "GraphicalConsole.h"
+#include "global.h"
 
 extern "C" void write_font(char ch, char fc, char bc);
 extern "C" void scroll_up();

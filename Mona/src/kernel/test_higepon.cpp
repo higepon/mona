@@ -1,16 +1,16 @@
-#include<tester.h>
-#include<FDCDriver.h>
-#include<global.h>
-#include<io.h>
-#include<GraphicalConsole.h>
-#include<operator.h>
-#include<MemoryManager.h>
-#include<KeyBoardManager.h>
-#include<elf.h>
-#include<syscalls.h>
-#include<Process.h>
-#include<vbe.h>
-#include<pic.h>
+#include "tester.h"
+#include "FDCDriver.h"
+#include "global.h"
+#include "io.h"
+#include "GraphicalConsole.h"
+#include "operator.h"
+#include "MemoryManager.h"
+#include "KeyBoardManager.h"
+#include "elf.h"
+#include "syscalls.h"
+#include "Process.h"
+#include "vbe.h"
+#include "pic.h"
 
 /*!
 

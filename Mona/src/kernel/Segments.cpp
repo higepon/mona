@@ -11,9 +11,9 @@
   \date   create:2003/10/19 update:$Date$
 */
 
-#include <global.h>
-#include <Segments.h>
 #include <sys/HList.h>
+#include "global.h"
+#include "Segments.h"
 
 /* Segment Faults */
 const byte Segment::FAULT_STACK_OVERFLOW;

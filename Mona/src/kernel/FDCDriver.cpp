@@ -11,13 +11,13 @@
     \date   create:2003/02/07 update:$Date$
 */
 
-#include<FDCDriver.h>
-#include<kernel.h>
-#include<operator.h>
-#include<io.h>
-#include<global.h>
-#include<string.h>
-#include<syscalls.h>
+#include "FDCDriver.h"
+#include "kernel.h"
+#include "operator.h"
+#include "io.h"
+#include "global.h"
+#include "string.h"
+#include "syscalls.h"
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10

@@ -11,12 +11,12 @@
   \date   create:2003/08/23 update:$Date$
 */
 
-#include <PageManager.h>
 #include <sys/types.h>
-#include <string.h>
-#include <operator.h>
-#include <Segments.h>
-#include <global.h>
+#include "PageManager.h"
+#include "string.h"
+#include "operator.h"
+#include "Segments.h"
+#include "global.h"
 
 /* independent from architecture */
 const byte PageManager::FAULT_NOT_EXIST;

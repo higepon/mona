@@ -15,8 +15,8 @@
     \date   create:2004/03/05 update:$Date$
 */
 
-#include<LogConsole.h>
-#include<global.h>
+#include "LogConsole.h"
+#include "global.h"
 
 
 /*!

@@ -5,10 +5,10 @@
 #ifndef _VESA_CONSOLE_
 #define _VESA_CONSOLE_
 
-#include <VirtualConsole.h>
-#include <GraphicalConsole.h>
-#include <vbe.h>
 #include <sys/types.h>
+#include "VirtualConsole.h"
+#include "GraphicalConsole.h"
+#include "vbe.h"
 
 class VesaConsole : public VirtualConsole
 {

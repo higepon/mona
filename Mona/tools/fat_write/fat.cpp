@@ -1,12 +1,15 @@
 //*****************************************************************************
 // fat.cpp :
-// Licence : see http://gaku.s12.xrea.com/wiki/main.cgi?c=g&p=Gaku%2FLicence
 // 2004/02/02 by Gaku :
+// Licence : see http://gaku.s12.xrea.com/wiki/main.cgi?c=g&p=Gaku%2FLicence
 //*****************************************************************************
 //-----------------------------------------------------------------------------
-#include <malloc.h>
+//-----------------------------------------------------------------------------
+#ifndef MONA
+#include <stdio.h>	
 #include <string.h>
-#include <stdio.h>
+#include <malloc.h>
+#endif
 
 #include "fat.h"
 
@@ -1210,8 +1213,10 @@ int FatDirectory::searchFreeEntry ()
         }
 
         // ‚È‚¯‚ê‚ÎƒGƒ“ƒgƒŠ‚ðŠg’£‚·‚é
-        if (true == expandEntry())
-                return searchFreeEntry();
+        if (true == expandEntry()) {
+                unused += 0x20;
+                return ( tmp - entrys ) / 0x20;
+        }
 
         return -1;
 }
@@ -1267,7 +1272,6 @@ bool FatDirectory::expandEntry ()
         end = ptr + size;
         lba = (dword*)( ptr + size );
         sectors = sects;
-        unused = searchUnusedEntry();
 
         return true;
 }

@@ -14,7 +14,7 @@
 #define _MONA_IO_
 
 #include <sys/types.h>
-#include <global.h>
+#include "global.h"
 
 byte inp8(dword port);
 void outp8(dword port, byte value);

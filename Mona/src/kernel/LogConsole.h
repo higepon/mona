@@ -14,9 +14,9 @@
 #ifndef _MONA_LOG_CONSOLE_
 #define _MONA_LOG_CONSOLE_
 
-#include <VirtualConsole.h>
 #include <sys/types.h>
-#include <io.h>
+#include "VirtualConsole.h"
+#include "io.h"
 
 
 /* define 8250 regs */

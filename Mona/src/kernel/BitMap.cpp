@@ -11,8 +11,8 @@
     \date   create:2003/03/30 update:$Date$
 */
 
-#include<BitMap.h>
-#include<string.h>
+#include "BitMap.h"
+#include "string.h"
 
 const int BitMap::DWORD_BITS;
 const int BitMap::NOT_FOUND;

@@ -11,9 +11,9 @@
     \date   create:2003/06/08 update:$Date$
 */
 
-#include<global.h>
-#include<operator.h>
-#include<IDTUtil.h>
+#include "global.h"
+#include "operator.h"
+#include "IDTUtil.h"
 
 /*!
     \brief call lidt

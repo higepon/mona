@@ -1,5 +1,5 @@
 #include "z.h"
-#include <global.h>
+#include "global.h"
 
 void *calloc(size_t nmemb, size_t size)
 {

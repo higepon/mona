@@ -11,8 +11,8 @@
     \date   create:2004/03/12 update:$Date$
 */
 
-#include <FSOperation.h>
-#include <VirtualConsole.h>
+#include "FSOperation.h"
+#include "VirtualConsole.h"
 
 extern VirtualConsole* g_console;
 

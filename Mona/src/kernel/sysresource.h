@@ -1,5 +1,5 @@
 /* sysresource.h */
-#include <BitMap.h>
+#include "BitMap.h"
 #ifndef __EXPR__SYS_RESOURCE_H
 #define __EXPR__SYS_RESOURCE_H
 typedef int sys_irq;

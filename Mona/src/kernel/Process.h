@@ -15,13 +15,13 @@
 #define _MONA_PROCESS_
 
 #include <sys/types.h>
-#include <PageManager.h>
-#include <Segments.h>
 #include <sys/List.h>
 #include <sys/BinaryTree.h>
-#include <kernel.h>
-#include <Mutex.h>
-#include <KObject.h>
+#include "PageManager.h"
+#include "Segments.h"
+#include "kernel.h"
+#include "Mutex.h"
+#include "KObject.h"
 
 #define DPL_KERNEL  0
 #define DPL_USER    3

@@ -2,8 +2,8 @@
 #define _Z_H_
 
 #include "zlib.h"
-#include <string.h>
-#include <operator.h>
+#include "string.h"
+#include "operator.h"
 
 typedef struct input_stream input_stream;
 

@@ -5,6 +5,7 @@ all:
 #	@cd clock; $(MAKE) $@
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
+	@cd tube; $(MAKE) $@
 
 install:
 	@cd noiz2bg; $(MAKE) $@

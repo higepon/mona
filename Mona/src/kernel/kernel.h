@@ -15,7 +15,7 @@
 #define _MONA_KERNEL_
 
 #include <sys/types.h>
-#include <VirtualConsole.h>
+#include "VirtualConsole.h"
 
 extern "C" void rectangle(int x, int y, int xx, int yy, char color);
 

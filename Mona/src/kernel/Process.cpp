@@ -11,12 +11,12 @@
     \date   create:2003/06/27 update:$Date$
 */
 
-#include <global.h>
-#include <Process.h>
-#include <PageManager.h>
-#include <string.h>
 #include <sys/List.h>
 #include <sys/HList.h>
+#include "global.h"
+#include "Process.h"
+#include "PageManager.h"
+#include "string.h"
 
 #define FOREACH_N(top, type, element) \
 for (type element = (type )((top)->next); element != (top); element = (type )((element)->next))

@@ -11,7 +11,7 @@
     \date   create:2003/03/08 update:$Date$
 */
 
-#include<pic.h>
+#include "pic.h"
 
 /*!
     \brief PIC initilaize

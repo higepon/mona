@@ -11,11 +11,11 @@
   \date   create:2003/03/22 update:$Date$
 */
 
-#include<syscalls.h>
-#include<global.h>
-#include<tester.h>
-#include<io.h>
-#include<elf.h>
+#include "syscalls.h"
+#include "global.h"
+#include "tester.h"
+#include "io.h"
+#include "elf.h"
 
 void syscall_entrance() {
 

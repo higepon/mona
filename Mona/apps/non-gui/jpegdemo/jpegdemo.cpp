@@ -15,12 +15,12 @@ int MonaMain(List<char*>* pekoe)
     }
 
     Screen screen;
-    printf("screen information (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
+    //printf("screen information (x, y) = (%d, %d) %dbpp\n", screen.getWidth(), screen.getHeight(), screen.getBpp());
 
     /* check bpp */
-    if (screen.getBpp() < 24)
+    if (screen.getBpp() < 16)
     {
-        printf("sorry, this demo needs 24 or 32bpp Video mode\n");
+        printf("sorry, this demo needs 16bpp or higher Video mode\n");
         return -1;
     }
 
@@ -71,18 +71,25 @@ int MonaMain(List<char*>* pekoe)
 
     int x, y;
     int vesaWidth  = screen.getWidth();
-    int vesaBpp    = screen.getBpp();
+    int vesaBpp    = screen.getBpp() / 8;
     byte* vesaVram = screen.getVRAM();
 
     for(y = 0; y < h; y++)
     {
         for(x = 0; x < w; x++)
         {
-            int k  = (x + (y * vesaWidth)) * vesaBpp / 8;
+            int k  = (x + (y * vesaWidth)) * vesaBpp;
             int k2 = (x + (y * w)) * 3;
-            vesaVram[k]   = picture[k2 + 2];
-            vesaVram[k+1] = picture[k2 + 1];
-            vesaVram[k+2] = picture[k2 + 0];
+            if (vesaBpp == 2)
+            {
+                *(word*)&vesaVram[k] = Color::bpp24to565(picture[k2], picture[k2 + 1], picture[k2 + 2]);
+            }
+            else
+            {
+                vesaVram[k]   = picture[k2 + 2];
+                vesaVram[k+1] = picture[k2 + 1];
+                vesaVram[k+2] = picture[k2 + 0];
+            }
         }
     }
 

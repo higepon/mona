@@ -17,6 +17,16 @@ class Color {
         return result;
     }
 
+    inline static word bpp24to565(byte r, byte g, byte b) {
+        word result = (word)(((r << 8) & 0xF800) | ((g << 3) & 0x07E0) | (b >> 3));
+        return result;
+    }
+
+    inline static word bpp24to565(byte* rgb) {
+        word result = (word)(((rgb[2] << 8) & 0xF800) | ((rgb[1] << 3) & 0x07E0) | (rgb[0] >> 3));
+        return result;
+    }
+
     inline static dword rgb(byte r, byte g, byte b) {
         return b | g  <<  8 | r  << 16;
     }

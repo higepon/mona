@@ -15,10 +15,10 @@
 #define _MONA_TESTER_
 
 #include <sys/types.h>
-#include <test_mjt.h>
-#include <Process.h>
-#include <IStorageDevice.h>
 #include <sys/error.h>
+#include "test_mjt.h"
+#include "Process.h"
+#include <fat_write/IStorageDevice.h>
 
 void hvectorTester();
 void operatorTester();

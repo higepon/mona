@@ -11,11 +11,11 @@
     \date   create:2003/09/06 update:$Date$
 */
 
-#include <elf.h>
-#include <string.h>
-#include <global.h>
-#include <io.h>
-#include <syscalls.h>
+#include "elf.h"
+#include "string.h"
+#include "global.h"
+#include "io.h"
+#include "syscalls.h"
 
 #define SHARED_MM_ERROR -1
 #define FAT_INIT_ERROR  -2

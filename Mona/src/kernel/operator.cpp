@@ -12,12 +12,12 @@
     \version $Revision$
     \date   create:2002/08/08 update:$Date$
 */
-#include<MemoryManager.h>
-#include<operator.h>
-#include<io.h>
-#include<syscalls.h>
-#include<sys/types.h>
-#include<global.h>
+#include <sys/types.h>
+#include "MemoryManager.h"
+#include "operator.h"
+#include "io.h"
+#include "syscalls.h"
+#include "global.h"
 
 #ifndef BUILD_ON_LINUX
 void* operator new(size_t size)
