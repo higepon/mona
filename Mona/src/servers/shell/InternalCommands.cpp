@@ -67,8 +67,6 @@ int Shell::isInternalCommand(const CString& command)
 
 bool Shell::internalCommandExecute(int command, _A<CString> args)
 {
-    bool ret = true;
-    monapi_call_mouse_set_cursor(0);
     switch (command)
     {
     case COMMAND_HELP:
@@ -185,8 +183,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
     case COMMAND_CLEAR:
         screen.fillRect16(0, 0, screen.getWidth(), screen.getHeight(), BACKGROUND);
         syscall_set_cursor(0, 0);
-        ret = false;
-        break;
+        return false;
 
     case COMMAND_PS:
         {
@@ -231,6 +228,5 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         break;
     }
 
-    monapi_call_mouse_set_cursor(1);
-    return ret;
+    return true;
 }

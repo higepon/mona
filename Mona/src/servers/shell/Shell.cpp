@@ -72,14 +72,15 @@ void Shell::commandChar(char c)
 
 void Shell::commandExecute(bool prompt)
 {
-    if (prompt) printf("\n");
     _A<CString> args = this->parseCommandLine();
 
     if (args.get_Length() == 0)
     {
         /* command is empty */
-        this->printPrompt();
+        monapi_call_mouse_set_cursor(0);
+        this->printPrompt("\n");
         this->position = 0;
+        monapi_call_mouse_set_cursor(1);
         return;
     }
 
@@ -89,14 +90,20 @@ void Shell::commandExecute(bool prompt)
     int isInternal = isInternalCommand(args[0]);
     if (isInternal != 0)
     {
+        monapi_call_mouse_set_cursor(0);
+        if (prompt) printf("\n");
         bool newline = internalCommandExecute(isInternal, args);
         if (!this->hasExited && prompt)
         {
             this->printPrompt(newline ? "\n" : NULL);
         }
         this->position = 0;
+        monapi_call_mouse_set_cursor(1);
         return;
     }
+
+    monapi_call_mouse_set_cursor(0);
+    if (prompt) printf("\n");
 
     CString cmdLine;
     CString command = args[0].toUpper();
@@ -157,6 +164,7 @@ void Shell::commandExecute(bool prompt)
     {
         this->printPrompt("\n");
     }
+    monapi_call_mouse_set_cursor(1);
 }
 
 void Shell::commandTerminate()
