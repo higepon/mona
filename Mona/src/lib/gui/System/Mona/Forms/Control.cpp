@@ -13,6 +13,9 @@ using namespace System;
 using namespace System::Collections;
 using namespace System::Drawing;
 
+#define DEFAULT_FORECOLOR Color::get_Black()
+#define DEFAULT_BACKCOLOR ControlPaint::get_Light()
+
 #ifdef MONA
 _P<MonAPI::Screen> GetDefaultScreen()
 {
@@ -53,8 +56,10 @@ namespace System { namespace Mona { namespace Forms
 	Control::Control()
 	{
 		this->bounds = Rectangle(0, 0, 32, 32);
-		this->foreColor = Color::get_Black();
-		this->backColor = ControlPaint::get_Light();
+		this->foreColor = DEFAULT_FORECOLOR;
+		this->backColor = DEFAULT_BACKCOLOR;
+		this->foreColorChanged = false;
+		this->backColorChanged = false;
 		this->visible = false;
 		this->controls = new ControlCollection(this);
 	}
@@ -93,8 +98,8 @@ namespace System { namespace Mona { namespace Forms
 		}
 		if (this->parent != NULL)
 		{
-			this->foreColor = this->parent->foreColor;
-			this->backColor = this->parent->backColor;
+			if (!this->foreColorChanged) this->foreColor = this->parent->foreColor;
+			if (!this->backColorChanged) this->backColor = this->parent->backColor;
 		}
 		this->OnPaint();
 		
@@ -299,6 +304,7 @@ namespace System { namespace Mona { namespace Forms
 		if (this->foreColor == c) return;
 		
 		this->foreColor = c;
+		this->foreColorChanged = true;
 		this->OnForeColorChanged(EventArgs::get_Empty());
 	}
 	
@@ -316,6 +322,7 @@ namespace System { namespace Mona { namespace Forms
 		if (this->backColor == c) return;
 		
 		this->backColor = c;
+		this->backColorChanged = true;
 		this->OnBackColorChanged(EventArgs::get_Empty());
 	}
 	

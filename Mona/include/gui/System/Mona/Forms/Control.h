@@ -41,6 +41,7 @@ namespace System { namespace Mona { namespace Forms
 		System::Drawing::Size clientSize;
 		System::Drawing::Point offset;
 		System::Drawing::Point clickPoint;
+		bool foreColorChanged, backColorChanged;
 	
 	public:
 		virtual String get_TypeName() { return "System.Mona.Forms.Control"; }
