@@ -122,7 +122,7 @@ void process1Tester() {
 
     while (true) {
         _sys_printf("process1");
-        asm volatile("ljmp $0x28, $0\n");
+        asm volatile("jmp $0x28, $0\n");
     }
     return;
 }
