@@ -66,6 +66,10 @@ void startKernel(void) {
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     mm.resetGDT();
 
+    void (*f)();
+    f = process1Tester;
+    _sys_printf("address of process1Tester() = %x\n", f);
+
     /* enable interrupt */
     _sysUnlock();
     _sys_printf("IDT,GDT set done\n");
@@ -98,7 +102,6 @@ void startKernel(void) {
 
     while (true) {
     }
-
 }
 
 /*!

@@ -528,6 +528,9 @@ void IA32MemoryManager::resetGDT() {
     setGDT(4, 0, 0x00000067, SYS_TSS  , 0);
     setGDT(5, 0, 0x00000067, SYS_TSS  , 0);
     setGDT(6, 0, 0x00000067, SYS_LDT  , 0);
+
+    /* system code segment for task switch */
+    setGDT(7, 0, 0xFFFFFFFF, SYS_CODE , 0);
     lgdt();
     return;
 }

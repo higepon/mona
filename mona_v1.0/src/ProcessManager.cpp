@@ -17,6 +17,7 @@
 #include <monaTester.h>
 #include <string.h>
 #include <monaTester.h>
+#include <monaIdt.h>
 
 /*!
     \brief constructor
@@ -277,6 +278,7 @@ inline void ProcessManager::setNTflag1() const {
     \date   create:2003/01/10 update:
 */
 void ProcessManager::schedule() {
+    _sysdumpStack3("schedule");
     switchProcess2();
 }
 
@@ -301,34 +303,46 @@ inline void ProcessManager::switchProcess2() {
 
     if (prev == 2) {
         prev = 1;
-        asm volatile("pusha         \n"
-                     "pushf         \n"
+	//	_sysdumpStack2("prev");
+    _sysdumpReg("process2", true, false);
+        asm volatile(
+                     "pusha         \n"
                      "mov %%esp, %0 \n"
                      "mov %1, %%esp \n"
-                     "popf          \n"
                      "popa          \n"
+		     //                     "iretl         \n"
                      : "=m" (esp1)
                      : "m" (esp2)
                     );
     } else {
 
         prev = 2;
-        asm volatile("pusha         \n"
-                     "pushf         \n"
+        _sys_printf("go");
+        asm volatile(
+                     "pusha         \n"
                      "mov %%esp, %0 \n"
                      "mov %1, %%esp \n"
-                     "popf          \n"
                      "popa          \n"
+		     //                     "iretl          \n"
                      : "=m" (esp2)
                      : "m" (esp1)
                     );
+
+        //  _sysdump("process2", true, false);
     }
 }
 
 inline void ProcessManager::initProcess(void (*f)()) {
 
-    *(--esp2) = (dword)f;
-    *(--esp2) = (dword)0x08;
-    *(--esp2) = (dword)0x00000046; /* for popf */
-    esp2 -= 8;                     /* for popa */
+    *(--esp2) = (dword)0x0200046; /* EFLAGS */
+    *(--esp2) = (dword)0x38;      /* CS     */
+    *(--esp2) = (dword)f;         /* EIP    */
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
+    *(--esp2) = (dword)0x00;
 }

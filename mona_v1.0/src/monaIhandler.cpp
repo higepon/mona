@@ -76,7 +76,7 @@ void fault0dHandler() {
 */
 void dummy() {
 
-    //    _sysPrint("dummy");
+    _sysPrint("dummy");
 
     pusha();
 
@@ -116,6 +116,8 @@ void fdcHandler(){
     \date   create:2002/11/21 update:2003/01/15
 */
 void timerHandler() {
+
+    //    _sysdumpStack3("timer");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

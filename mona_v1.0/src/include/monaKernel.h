@@ -22,8 +22,8 @@
 #define popa()       asm volatile("popa");  /*!< \def  popa             */
 
 
-/*!< \def _sys_dump() */
-#define _sysdump(str, stopflag, unlockint) {    \
+/*!< \def _sys_dumpReg() */
+#define _sysdumpReg(str, stopflag, unlockint) { \
     _sysLock();                                 \
     dword __eax, __ebx, __ecx, __edx;           \
     dword __esp, __ebp, __esi, __edi;           \
@@ -64,7 +64,6 @@
                  , "=m" (__ss)                  \
                  , "=m" (__eflags)              \
                  : /* no input */               \
-                 : "ax"                         \
                 );                              \
     _sys_printf("%s _sysdump()\n", str);        \
     _sys_printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
@@ -77,6 +76,47 @@
                 , __gs , __ss , __eflags);      \
      if (unlockint)_sysUnlock();                \
      if (stopflag) while (true);                \
+}
+
+/*!< \def _sys_dumpStack() */
+#define _sysdumpStack() {                     \
+                                              \
+    dword stack0, stack1, stack2;             \
+                                              \
+    asm volatile(                             \
+                 "pusha                 \n"   \
+                 "mov  32(%%esp), %%eax \n"   \
+                 "mov  %%eax, %0        \n"   \
+                 "mov  36(%%esp), %%eax \n"   \
+                 "mov  %%eax, %1        \n"   \
+                 "mov  40(%%esp), %%eax \n"   \
+                 "mov  %%eax, %2        \n"   \
+                 "popa                  \n"   \
+                 : "=m"(stack0)               \
+                 , "=m"(stack1)               \
+                 , "=m"(stack2)               \
+                );                            \
+                                              \
+    _sys_printf("_sysdumpStack(): %x %x %x\n" \
+               , stack0, stack1, stack2);     \
+}                                             \
+
+#define _sysdumpStack2(str) {                        \
+                                                     \
+    dword* stack;                                    \
+    asm volatile("mov %%ebp, %0 \n" : "=m"(stack));  \
+    _sys_printf("_sysdumpStack2(%s):%x %x %x\n"      \
+              , str, *(stack + 0), *(stack + 1)      \
+              , *(stack + 2));                       \
+}
+
+#define _sysdumpStack3(str) {                        \
+                                                     \
+    dword* stack;                                    \
+    asm volatile("mov %%esp, %0 \n" : "=m"(stack));  \
+    _sys_printf("_sysdumpStack2(%s):%x %x %x\n"      \
+              , str, *(stack + 0), *(stack + 1)      \
+              , *(stack + 2));                       \
 }
 
 /*!
