@@ -562,16 +562,16 @@ void WindowManager::postActivatedToWindow(bool activated, Control *control)
 	control->setEnabled(activated);
 	control->setFocused(activated);
 	if (activated == true) {
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_FOCUSED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED failed %d\n", control->getThreadID());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_FOCUSED sended %d\n", control->getThreadID());
 		}
 	} else {
-		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", control->getThreadID());
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DEFOCUSED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DEFOCUSED failed %d\n", control->getThreadID());
 		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", control->getThreadID());
+			//printf("WindowManager->Window: MSG_GUISERVER_DEFOCUSED sended %d\n", control->getThreadID());
 		}
 	}
 }
