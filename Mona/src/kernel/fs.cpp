@@ -365,6 +365,7 @@ bool FSOperation::close()
         this->file->flush();
     }
     delete this->file;
+    freeDirectory(dir);
     this->file = NULL;
     this->isOpenFlag = false;
     return true;
