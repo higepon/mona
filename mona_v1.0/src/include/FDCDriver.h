@@ -27,7 +27,7 @@ class FDCDriver : public DiskDriver {
 
   public:
     void printStatus(const char*) const;
-    void interrupt();
+    static void interrupt();
     bool read(dword lba, byte* buf);
     bool write(dword lba, byte* buf);
     void motor(const bool on);
@@ -38,6 +38,7 @@ class FDCDriver : public DiskDriver {
     void setFDCVersion();
     bool sendCommand(const byte command[], const byte length);
     bool waitInterrupt();
+    bool waitSeekEnd();
     bool checkMSR(byte expectedCondition, byte mask);
     bool checkMSR(byte expectedCondition);
     bool seek(byte track);
@@ -56,11 +57,11 @@ class FDCDriver : public DiskDriver {
     bool writeID(byte track, byte head, byte data);
   private:
     byte version_;
-    static byte results_[10];
-    static int resultsLength_;
+    byte results_[10];
+    int resultsLength_;
     static bool interrupt_;
-    static VirtualConsole* console_;
-    static byte* dmabuff_;
+    VirtualConsole* console_;
+    byte* dmabuff_;
 };
 
 extern FDCDriver* gFDCDriver;

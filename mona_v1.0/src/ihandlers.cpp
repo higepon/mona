@@ -126,11 +126,12 @@ void timerHandler() {
   \brief MFDC handler
 
   \author HigePon
-  \date   create:2003/02/09 update:2003/02/24
+  \date   create:2003/02/09 update:2003/09/19
 */
 void MFDCHandler(void) {
 
-    g_fdcdriver->interrupt();
+    /* even if FDCDriver has no instance, it works */
+    FDCDriver::interrupt();
 
     /* thx! K-tan */
     outportb(0x20, 0x66);

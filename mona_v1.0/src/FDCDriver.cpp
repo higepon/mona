@@ -74,11 +74,7 @@
 
 #define FDC_DMA_BUFF_SIZE 512
 
-bool            FDCDriver::interrupt_ ;
-byte*           FDCDriver::dmabuff_;
-byte            FDCDriver::results_[10];
-VirtualConsole* FDCDriver::console_;
-int             FDCDriver::resultsLength_;
+bool FDCDriver::interrupt_ ;
 
 /*!
     \brief Constructer
@@ -280,32 +276,24 @@ void FDCDriver::motor(bool on) {
     \param  command array of command
     \param  length  length of command
     \author HigePon
-    \date   create:2003/02/16 update:2003/02/19
+    \date   create:2003/02/16 update:2003/09/18
 */
 bool FDCDriver::sendCommand(const byte* command, const byte length) {
-
-    while (true) {
-
-        byte status = inportb(FDC_MSR_PRIMARY);
-        if (!(status & 0x10)) break;
-    }
 
     /* send command */
     for (int i = 0; i < length; i++) {
 
+        /* check FDC status. to be(time out) */
         while (true) {
 
             byte status = inportb(FDC_MSR_PRIMARY);
+
+            /* status fdc ready & data to FDC */
             if ((status & (0x80 | 0x40)) == 0x80) break;
         }
 
         /* send command */
         outportb(FDC_DR_PRIMARY, command[i]);
-
-        delay();
-        delay();
-        delay();
-        delay();
     }
     return true;
 }
@@ -315,7 +303,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
 
     \return true OK/false command fail
     \author HigePon
-    \date   create:2003/02/10 update:
+    \date   create:2003/02/10 update:2003/09/18
 */
 bool FDCDriver::recalibrate() {
 
@@ -332,17 +320,44 @@ bool FDCDriver::recalibrate() {
 
     info(DEV_NOTICE, "recalibrate:before waitInterrupt\n");
 
-#ifndef BOCHS
+    while (true) {
+
+        byte status = inportb(FDC_MSR_PRIMARY);
+
+        /* status fdc ready & data to FDC */
+        if (!(status & 0x10)) break;
+    }
+
     while (!waitInterrupt());
-#endif
 
     info(DEV_NOTICE, "recalibrate:after waitInterrupt\n");
 
-    delay();
-    delay();
-    delay();
-    delay();
+//     while (true) {
+
+//         byte status = inportb(FDC_MSR_PRIMARY);
+
+//         /* status fdc ready & data to FDC */
+//         if (status == 0x81) break;
+//     }
+
     senseInterrupt();
+    return true;
+}
+
+bool FDCDriver::waitSeekEnd() {
+
+    retry_seek_end:
+
+    while (!waitInterrupt());
+
+    readResults();
+
+    if (results_[0] & 0xC0) {
+
+        interrupt_ = false;
+        goto retry_seek_end;
+    }
+
     return true;
 }
 
