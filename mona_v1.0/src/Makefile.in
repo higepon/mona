@@ -86,6 +86,7 @@ userapp :
 	$(CC) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
+	date;
 	$(NASM) firstboot.asm -o $@ -l $(LIST)/first.list
 
 $(BOOT2) : secondboot.asm

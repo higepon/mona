@@ -262,7 +262,7 @@ dword MemoryManager::getPhysicalMemorySize() {
     /* 1MB unit loop */
     for (dword i = 1024 * 1024; i < 0xFFFFFFFF; i += 1024 * 1024) {
 
-        dword* p = (dword*)i;
+        volatile dword* p = (dword*)i;
         dword value = *p;
 
         *p = 0x12345678;

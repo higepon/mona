@@ -85,10 +85,10 @@ void mainProcess() {
     enableKeyboard();
     enableMouse();
 
-    char* test = (char*)malloc(4096);
-    for (; (dword)test % 4096; test++);
-    strcpy(test, "mona");
-    SharedMemoryObject::open(SHARED_FDC_BUFFER, 4096, g_processManager->lookup("INIT"), (dword)test);
+//     char* test = (char*)malloc(4096);
+//     for (; (dword)test % 4096; test++);
+//     strcpy(test, "mona");
+//     SharedMemoryObject::open(SHARED_FDC_BUFFER, 4096, g_processManager->lookup("INIT"), (dword)test);
 
     /* end */
     g_processManager->killSelf();

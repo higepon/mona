@@ -6,7 +6,7 @@ STRIP      = /usr/bin/strip
 CONTRIB_LIB= ./contrib/lib_cygwin
 LFLAGS     = -n -Ttext 0x1200 -static
 # for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall
+CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -O2
 ENV             = env
 VERSION         = 0.1.1
 DOXYGEN         = doxygen
@@ -95,6 +95,7 @@ userapp :
 	$(CC) $(CFLAGS) $(MONA_DEVELOPER) $(CFINCLUDE) -c $<
 
 $(BOOT1) : firstboot.asm
+	date;
 	$(NASM) firstboot.asm -o $@ -l $(LIST)/first.list
 
 $(BOOT2) : secondboot.asm

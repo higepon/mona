@@ -70,7 +70,7 @@
 
 #define FDC_DMA_BUFF_SIZE 512
 
-bool FDCDriver::interrupt_ ;
+volatile bool FDCDriver::interrupt_ ;
 
 /*!
     \brief Constructer

@@ -79,10 +79,11 @@ int Mouse::init() {
     outportb(0x60, data | 0x03);
 
     /* after kbc command write, read one data */
-    if (waitReadable()) {
-        return 5;
-    }
-    data = inportb(0x60);
+//     if (waitReadable()) {
+//         return 5;
+//     }
+//     data = inportb(0x60);
+//     not necesarry? above?
 
     /* mouse reset */
     outportb(0x64, 0xd4);
@@ -128,7 +129,7 @@ int Mouse::waitWritable() {
     byte status;
     int i;
 
-    for (i = 0; i < MOUSE_TIMEOUT; i++, status = inportb(0x64)) {
+    for (i = 0, status = inportb(0x64); i < MOUSE_TIMEOUT; i++, status = inportb(0x64)) {
 
         /* writable */
         if ((status & 0x03) == 0x00) {
@@ -139,10 +140,11 @@ int Mouse::waitWritable() {
 }
 
 int Mouse::waitReadable() {
+
     byte status;
     int i;
 
-    for (i = 0; i < MOUSE_TIMEOUT; i++, status = inportb(0x64)) {
+    for (i = 0, status = inportb(0x64); i < MOUSE_TIMEOUT; i++, status = inportb(0x64)) {
 
         /* readable */
         if ((status & 0x01) == 0x01) {

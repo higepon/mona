@@ -352,7 +352,6 @@ void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
         info->keycode = VK_BACKSPACE;
         break;
     default:
-        printf("default%d", keycode);
         info->keycode = keycode;
         info->modifiers = modifiers;
         break;

@@ -1,3 +1,7 @@
+2004-02-11  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: gccの最適化オプション-O2でビルドするようにした。
+
 2004-02-10  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: Shellが引数をもてるようになった。
