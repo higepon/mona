@@ -8,7 +8,7 @@
 
 using namespace MonAPI;
 
-int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, const CString& path, const CString& name, CommandOption* option, bool prompt)
+int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, const CString& path, const CString& name, CommandOption* option, bool prompt, dword* tid)
 {
     ELFParser parser;
     bool ok = parser.set(mi->Data, mi->Size);
@@ -50,7 +50,7 @@ int ExecuteProcess(dword parent, monapi_cmemoryinfo* mi, const CString& path, co
 
     addProcessInfo(name);
     int ret = syscall_load_process_image(&info);
-    addProcessInfo(parent, name, path);
+    *tid = addProcessInfo(parent, name, path);
 
     if (prompt)
     {
@@ -77,7 +77,7 @@ static CString GetFileName(const CString& path)
     return path.substring(p, path.getLength() - p);
 }
 
-int ExecuteFile(dword parent, const CString& commandLine, bool prompt)
+int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword* tid)
 {
     /* list initilize */
     CommandOption list;
@@ -119,7 +119,7 @@ int ExecuteFile(dword parent, const CString& commandLine, bool prompt)
     }
     else
     {
-        result = ExecuteProcess(parent, mi, path, GetFileName(path), &list, prompt);
+        result = ExecuteProcess(parent, mi, path, GetFileName(path), &list, prompt, tid);
 
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
@@ -143,8 +143,9 @@ void MessageLoop()
         {
             case MSG_ELF_EXECUTE_FILE:
             {
-                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0);
-                Message::reply(&msg, result);
+                dword tid;
+                int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, &tid);
+                Message::reply(&msg, result, tid);
                 break;
             }
             default:

@@ -54,6 +54,7 @@ extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prom
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int prompt);
 extern int monapi_call_elf_execute_file(const char* command_line, int prompt);
+extern int monapi_call_elf_execute_file_get_tid(const char* command_line, int prompt, dword* tid);
 #ifdef __cplusplus
 }
 #endif

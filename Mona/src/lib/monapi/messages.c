@@ -138,11 +138,18 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int p
 
 int monapi_call_elf_execute_file(const char* command_line, int prompt)
 {
-    dword tid = monapi_get_server_thread_id(ID_ELF_SERVER);
+    return monapi_call_elf_execute_file_get_tid(command_line, prompt, NULL);
+}
+
+int monapi_call_elf_execute_file_get_tid(const char* command_line, int prompt, dword* tid)
+{
+    dword svr = monapi_get_server_thread_id(ID_ELF_SERVER);
     MessageInfo msg;
-    if (monapi_cmessage_send_receive_args(&msg, tid, MSG_ELF_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
+    if (monapi_cmessage_send_receive_args(&msg, svr, MSG_ELF_EXECUTE_FILE, prompt, 0, 0, command_line) != 0)
     {
+        if (tid != NULL) *tid = THREAD_UNKNOWN;
         return -1;
     }
+    if (tid != NULL) *tid = msg.arg3;
     return msg.arg2;
 }
