@@ -22,17 +22,17 @@
 
 /*! \def switch process */
 #define _switchProcess(currentProcess, nextProcess) \
-    asm volatile(                                  \
-                 "mov %%ebp, %%esp \n"             \
-                 "pushal           \n"             \
-                 "mov %%esp, %0    \n"             \
-                 "mov %1, %%esp    \n"             \
-                 "popal            \n"             \
-                 "popl %%eax       \n"             \
-                 "iretl            \n"             \
-                 : "=m" (currentProcess->esp)      \
-                 : "m" (nextProcess->esp)          \
-                 );                                \
+    asm volatile(                                   \
+                 "movl %%ebp, %%esp\n  "            \
+                 "pushal           \n"              \
+                 "mov %%esp, %0    \n"              \
+                 "mov %1, %%esp    \n"              \
+                 "popal            \n"              \
+                 "addl $4, %%esp   \n"              \
+                 "iretl            \n"              \
+                 : "=m" (currentProcess->esp)       \
+                 : "m" (nextProcess->esp)           \
+                 );                                 \
 
 /*! \def struct for process */
 typedef struct Process {
