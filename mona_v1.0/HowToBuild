@@ -1,3 +1,11 @@
+#
+# require
+# g++, ld, strip, nasm
+# doxygen http://www.doxygen.org/
+# dot     http://www.research.att.com/sw/tools/graphviz/
+#
+
+
 # with DJGPP on Win32
 make DJGPP="djgpp"
 
