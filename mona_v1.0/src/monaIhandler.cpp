@@ -121,16 +121,16 @@ void fdcHandler(){
 void timerHandler() {
 
     static dword idx = 0;
+    idx++;
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-    if (idx ==0) {
+    if (idx == 1) {
         if (idx > 0xff00000) idx = 0;
-        idx ++;
         iret();
-    }
+    } else if (idx % 20 != 0) iret();
 
     /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
