@@ -23,6 +23,9 @@ $(TARGET): $(OBJECTS) $(LIBMONAPI) $(LIBDIR)/libmonalibc.a
 install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) $(TARGET) $(INSTDIR)
+ifneq ($(INSTFILES),)
+	for file in $(INSTFILES); do $(INSTALL) $$file $(INSTDIR); done
+endif
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
