@@ -255,24 +255,8 @@ VesaConsole::VesaScreen::VesaScreen (VesaInfoDetail *info)
         vramAddress = info->physBasePtr;
         bytesPerScanLine = info->bytesPerScanLine;
         bitsPerPixel = info->bitsPerPixel;
-}
 
-word VesaConsole::VesaScreen::pack15bppColor (dword c)
-{
-        // 1-5-5-5
-        word w = ((c>>9) & 0x7c00)
-               | ((c>>6) & 0x03e0)
-               | ((c>>3) & 0x001f);
-        return w;
-}
-
-word VesaConsole::VesaScreen::pack16bppColor (dword c)
-{
-        // 5-6-5
-        word w = ((c>>8) & 0xf800)
-               | ((c>>5) & 0x07e0)
-               | ((c>>3) & 0x001f);
-        return w;
+                selectMethod(info);
 }
 
 void VesaConsole::VesaScreen::scrollUp (int y, int h)
@@ -296,11 +280,9 @@ void VesaConsole::VesaScreen::fill (int x, int y, int w, int h, dword c)
                 + bytesPerScanLine * y + bytesPerPixel * x;
         byte *temp = bits;
 
-        word color = pack16bppColor(c);
-
         for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
-                        *((word*)temp) = (word)color;
+                                                (this->*packColor)(temp, c);
                         temp += bytesPerPixel;
                 }
                 bits += bytesPerScanLine;
@@ -316,9 +298,6 @@ void VesaConsole::VesaScreen::fillPat
                 + bytesPerScanLine * y + bytesPerPixel * x;
         byte *temp = bits;
 
-        word ch = pack16bppColor(c);
-        word bg = pack16bppColor(b);
-
         int index = 0;
         int k = 0x80;
 
@@ -326,9 +305,9 @@ void VesaConsole::VesaScreen::fillPat
 
                 for (int j = 0; j < w; j++) {
                         if (k & p[index]) {
-                                *((word*)temp) = ch;
+                                                                (this->*packColor)(temp, c);
                         } else {
-                                *((word*)temp) = bg;
+                                                                (this->*packColor)(temp, b);
                         }
                         temp += bytesPerPixel;
 
@@ -346,4 +325,42 @@ void VesaConsole::VesaScreen::fillPat
                         index++;
                 }
         }
+}
+
+void VesaConsole::VesaScreen::selectMethod (VesaInfoDetail *info)
+{
+        if (8 == info->redMaskSize && 8 == info->greenMaskSize && 8 == info->blueMaskSize)
+                packColor = &VesaConsole::VesaScreen::packColor24;
+        else
+        if (5 == info->redMaskSize && 6 == info->greenMaskSize && 5 == info->blueMaskSize)
+                packColor = &VesaConsole::VesaScreen::packColor16;
+        else
+        if (5 == info->redMaskSize && 5 == info->greenMaskSize && 5 == info->blueMaskSize)
+                packColor = &VesaConsole::VesaScreen::packColor15;
+        else
+                packColor = &VesaConsole::VesaScreen::packColor8;
+}
+
+void VesaConsole::VesaScreen::packColor8 (byte *bits, dword c)
+{
+        *bits = ((c>>16) & 0xe0) | ((c>>8) & 0x18) | (c & 0x3);
+}
+
+void VesaConsole::VesaScreen::packColor15 (byte *bits, dword c)
+{
+    *((word*)bits) = ((c>>9) & 0x7c00)
+                   | ((c>>6) & 0x03e0)
+                   | ((c>>3) & 0x001f);
+}
+
+void VesaConsole::VesaScreen::packColor16 (byte *bits, dword c)
+{
+    *((word*)bits) = ((c>>8) & 0xf800)
+                   | ((c>>5) & 0x07e0)
+                   | ((c>>3) & 0x001f);
+}
+
+void VesaConsole::VesaScreen::packColor24 (byte *bits, dword c)
+{
+    *((dword*)bits) = c;
 }

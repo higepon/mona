@@ -1,3 +1,7 @@
+2004-01-30  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: 数字キーの入力も対応
+
 2004-01-29  higepon  <higepon@users.sourceforge.jp>
 
         * ユーザーモードからのシステムコール時に割り込みを許可をしたときに発生していたバグを修正

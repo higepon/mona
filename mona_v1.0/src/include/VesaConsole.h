@@ -51,14 +51,21 @@ private:
     public:
         VesaScreen (VesaInfoDetail *info);
 
-        word pack15bppColor (dword c);
-        word pack16bppColor (dword c);
-
         void scrollUp (int y, int h);
+
         void fill (int x, int y, int w, int h, dword c);
         void fillPat (int x, int y, int w, int h, dword c, dword b, byte* p);
 
     private:
+        void selectMethod (VesaInfoDetail *info);
+
+        void packColor8 (byte *bits, dword c);
+        void packColor15 (byte *bits, dword c);
+        void packColor16 (byte *bits, dword c);
+        void packColor24 (byte *bits, dword c);
+
+        void (VesaConsole::VesaScreen::* packColor) (byte *bits, dword c);
+
         dword vramAddress;
         word bytesPerScanLine;
         word bitsPerPixel;
