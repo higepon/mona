@@ -718,7 +718,7 @@ void WindowManager::service()
 #endif
 
 	// テストアプリ
-	monapi_call_process_execute_file("/APPS/GRUNNER.EX5", MONAPI_FALSE);
+	monapi_call_process_execute_file("/APPS/GLAUNCH.EX5", MONAPI_FALSE);
 
 	// 再描画
 	repaint();
