@@ -526,10 +526,10 @@ int Message::send(dword pid, MessageInfo* info) {
 int Message::receive(MessageInfo* info) {
 
     int result = syscall_receive(info);
-    if (result != 0) {
-         syscall_mthread_yeild_message();
-         result = syscall_receive(info);
-    }
+//     if (result != 0) {
+//          syscall_mthread_yeild_message();
+//          result = syscall_receive(info);
+//     }
     return result;
 }
 

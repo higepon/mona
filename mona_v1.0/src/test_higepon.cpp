@@ -278,12 +278,11 @@ int Messenger::send(const char* name, MessageInfo* message)
     info->from = g_currentThread->process->getPid();
 
     process->getMessageList()->add(info);
-    int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
-    if (wakeupResult)
-    {
-        ThreadOperation::switchThread((wakeupResult == 1));
-    }
-
+//     int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
+//     if (wakeupResult)
+//     {
+//         ThreadOperation::switchThread((wakeupResult == 1));
+//     }
     return 0;
 }
 
@@ -308,11 +307,11 @@ int Messenger::send(dword pid, MessageInfo* message) {
     info->from = g_currentThread->process->getPid();
     process->getMessageList()->add(info);
 
-    int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
-    if (wakeupResult)
-    {
-        ThreadOperation::switchThread((wakeupResult == 1));
-    }
+//     int wakeupResult = g_scheduler->wakeup(process, WAIT_MESSAGE);
+//     if (wakeupResult)
+//     {
+//         ThreadOperation::switchThread((wakeupResult == 1));
+//     }
     return 0;
 }
 
