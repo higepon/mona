@@ -156,6 +156,18 @@ void _sysPutInt(size_t n, int base) {
     }
 }
 
+/*!
+    \brief x^y
+
+    x^y
+
+    \param x  x^y
+    \param y  x^y
+    \return x^y
+
+    \author  HigePon
+    \date    create:2003/01/15 update:
+*/
 inline size_t _power(size_t x, size_t y) {
 
     size_t result = x;

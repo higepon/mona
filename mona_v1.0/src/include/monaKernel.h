@@ -29,24 +29,25 @@
     dword __esp, __ebp, __esi, __edi;           \
     dword __cs , __ds , __fs , __es;            \
     dword __gs, __ss  , __eflags;               \
-    asm volatile("xor %%eax, %%eax\n"\
-                 "mov %%eax, %0  \n"            \
-                 "mov %%ebx, %1  \n"            \
-                 "mov %%ecx, %2  \n"            \
-                 "mov %%edx, %3  \n"            \
-                 "mov %%esp, %4  \n"            \
-                 "mov %%ebp, %5  \n"            \
-                 "mov %%esi, %6  \n"            \
-                 "mov %%edi, %7  \n"            \
-                 "mov %%cs , %8  \n"            \
-                 "mov %%ds , %9  \n"            \
-                 "mov %%es , %10 \n"            \
-                 "mov %%fs , %11 \n"            \
-                 "mov %%gs , %12 \n"            \
-                 "mov %%ss , %13 \n"            \
-                 "pushf          \n"            \
-                 "pop %%eax      \n"            \
-                 "mov %%eax, %14 \n"            \
+    asm volatile("xor %%eax, %%eax \n"          \
+                 "mov %%eax, %0    \n"          \
+                 "mov %%ebx, %1    \n"          \
+                 "mov %%ecx, %2    \n"          \
+                 "mov %%edx, %3    \n"          \
+                 "mov %%esp, %4    \n"          \
+                 "mov %%ebp, %5    \n"          \
+                 "mov %%esi, %6    \n"          \
+                 "mov %%edi, %7    \n"          \
+                 "mov %%cs , %8    \n"          \
+                 "mov %%ds , %9    \n"          \
+                 "mov %%es , %10   \n"          \
+                 "mov %%fs , %11   \n"          \
+                 "mov %%gs , %12   \n"          \
+                 "mov %%ss , %13   \n"          \
+                 "xor %%eax, %%eax \n"          \
+                 "pushf            \n"          \
+                 "pop %%eax        \n"          \
+                 "mov %%eax, %14   \n"          \
                  : "=m" (__eax)                 \
                  , "=m" (__ebx)                 \
                  , "=m" (__ecx)                 \

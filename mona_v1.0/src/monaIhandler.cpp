@@ -113,11 +113,9 @@ void fdcHandler(){
     at this function task switch occurs.
 
     \author HigePon
-    \date   create:2002/11/21 update:2003/01/10
+    \date   create:2002/11/21 update:2003/01/15
 */
 void timerHandler() {
-
-    pusha();
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
@@ -126,8 +124,6 @@ void timerHandler() {
     /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
     pm.schedule();
-
-    popa();
 
     iret();
     return;

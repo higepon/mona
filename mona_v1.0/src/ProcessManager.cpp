@@ -32,6 +32,9 @@ ProcessManager::ProcessManager() {
     sgdt();
 
     taskidx_ = 0;
+
+    /* init first or second process */
+    initProcess(process2Tester);
 }
 
 /*!
@@ -274,26 +277,58 @@ inline void ProcessManager::setNTflag1() const {
     \date   create:2003/01/10 update:
 */
 void ProcessManager::schedule() {
-
-    switchProcess();
+    switchProcess2();
 }
 
-dword esp1;
-dword esp2;
+static dword* esp1;
+static dword* esp2 = (dword*)0x9884;
+static int prev = 2;
 
+/*!
+    \brief switch process2 with out TSS
 
+    switch process to next process(without TSS)
+
+    \author HigePon
+    \date   create:2002/12/02 update:2003/01/14
+*/
 inline void ProcessManager::switchProcess2() {
 
-    dword from;
-    dword to;
+    if (taskidx_ == 0) {
+        taskidx_++;
+        return;
+    }
 
-    asm volatile("pusha   \n"
-                 "pushf   \n"
-                 "mov %%esp, %0  \n"
-                 "mov %1, %%esp  \n"
-                 "popf   \n"
-                 "popa   \n"
-                : "=m" (to)
-                : "m" (from)
-                );
+    if (prev == 2) {
+        prev = 1;
+        asm volatile("pusha         \n"
+                     "pushf         \n"
+                     "mov %%esp, %0 \n"
+                     "mov %1, %%esp \n"
+                     "popf          \n"
+                     "popa          \n"
+                     : "=m" (esp1)
+                     : "m" (esp2)
+                    );
+    } else {
+
+        prev = 2;
+        asm volatile("pusha         \n"
+                     "pushf         \n"
+                     "mov %%esp, %0 \n"
+                     "mov %1, %%esp \n"
+                     "popf          \n"
+                     "popa          \n"
+                     : "=m" (esp2)
+                     : "m" (esp1)
+                    );
+    }
+}
+
+inline void ProcessManager::initProcess(void (*f)()) {
+
+    *(--esp2) = (dword)f;
+    *(--esp2) = (dword)0x08;
+    *(--esp2) = (dword)0x00000046; /* for popf */
+    esp2 -= 8;                     /* for popa */
 }

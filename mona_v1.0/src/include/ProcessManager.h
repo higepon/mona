@@ -45,7 +45,7 @@ class ProcessManager {
     inline void setNTflag1() const;
     inline void switchProcess();
     inline void switchProcess2();
-    //    inline void initProcess(void (*f)());
+    inline void initProcess(void (*f)());
     GDT* gdt_;
     word taskidx_;
 };
