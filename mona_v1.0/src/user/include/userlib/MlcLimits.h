@@ -27,11 +27,11 @@ extern "C" {
 
 #define M_INT_MIN -2147483647
 #define M_INT_MAX 2147483647
-#define M_UINT_MAX 4294967295
+#define M_UINT_MAX 4294967295U
 
 #define M_LONG_MIN -2147483647
 #define M_LONG_MAX 2147483647
-#define M_ULONG_MAX 4294967295
+#define M_ULONG_MAX 4294967295U
 
 #ifdef __cplusplus
 }
