@@ -1,3 +1,7 @@
+2004-06-14  higepon  <higepon@users.sourceforge.jp>
+
+        * tools/elf_tool/ : テスト用再配置可能ELFの作成など
+
 2004-06-13  tino  <tino@users.sourceforge.jp>
 
         * src/servers/shell/Makefile: FreeBSD対応

@@ -1,0 +1,4 @@
+all:
+	gcc -nostdlib -Wall -fno-builtin -c testdll.c -o test.dll # -fPIC‚Í•s—v
+	objcopy --output-target=elf32-i386 test.dll
+	readelf -r test.dll
