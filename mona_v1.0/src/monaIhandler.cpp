@@ -4,7 +4,7 @@
 
      interrupt handlers
 
-    Copyright (c) 2002 HigePon
+    Copyright (c) 2002, 2003 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
@@ -29,14 +29,14 @@
     key storoke handler IRQ 1
 
     \author HigePon
-    \date   create:2002/07/25 update:2002/10/12
+    \date   create:2002/07/25 update:2002/01/26
 */
 void keyStrokeHandler() {
 
     pusha();
 
     /* get scancode */
-    unsigned char scancode = inportb(0x60);
+    byte scancode = inportb(0x60);
 
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
@@ -46,11 +46,7 @@ void keyStrokeHandler() {
     outportb(0x20, 0x20);
 
     popa();
-
-    /* iret */
     iret();
-
-    return;
 }
 
 /*!
@@ -59,7 +55,7 @@ void keyStrokeHandler() {
     fault0d handler
 
     \author HigePon
-    \date   create:2002/09/06 update:2002/12/28
+    \date   create:2002/09/06 update:2003/01/26
 */
 void fault0dHandler() {
 
@@ -88,9 +84,7 @@ void dummy() {
     outportb(0x20, 0x20);
 
     popa();
-
     iret();
-    return;
 }
 
 /*!
@@ -116,7 +110,7 @@ void fdcHandler(){
     at this function task switch occurs.
 
     \author HigePon
-    \date   create:2002/11/21 update:2003/01/15
+    \date   create:2002/11/21 update:2003/01/26
 */
 void timerHandler() {
 
@@ -126,6 +120,9 @@ void timerHandler() {
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
+
+    /* note: if you don't want to task switch */
+    /* uncomment this iret()                  */
     //    iret();
 
     if (idx < 200) {
@@ -138,15 +135,14 @@ void timerHandler() {
     ProcessManager& pm = ProcessManager::instance();
     pm.schedule();
 
-    /* do nothing */
+    /* if current = next, do nothing */
     if (pm.current == pm.next) iret();
 
+    /* switch to next */
     _switchProcess(pm.current, pm.next);
-
-    return;
 }
 
-/*! global handler list */
+/*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
      {0x00, &dummy}
    , {0x01, &dummy}

@@ -36,7 +36,7 @@
     test code for HVector
 
     \author HigePon
-    \date   create:2002/11/11 update:$Date$
+    \date   create:2002/11/11 update:2003/01/26
 */
 void hvectorTester() {
 
@@ -64,7 +64,7 @@ void hvectorTester() {
     test code for operator new
 
     \author HigePon
-    \date   create:2002/11/11 update:$2003/01/11$
+    \date   create:2002/11/11 update:2003/01/11
 */
 void operatorTester() {
 
@@ -100,7 +100,7 @@ void floppyTester(){
     test code for monaTypes
 
     \author HigePon
-    \date   create:2002/11/20 update:$2003/01/11$
+    \date   create:2002/11/20 update:2003/01/11
 */
 void typeTester() {
 
@@ -146,8 +146,8 @@ void process2Tester() {
     KeyBoardManager& km = KeyBoardManager::instance();
     char ch;
     while (true) {
-        //        while ((ch = km.getCharacter()) == -1) {}
-        //        _sys_printf("%c", ch);
+        //               while ((ch = km.getCharacter()) == -1) {}
+        //               _sys_printf("%c", ch);
         _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
         _sys_printf("  ( '  v ')  ");
         _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);

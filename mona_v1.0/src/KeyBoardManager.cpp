@@ -103,7 +103,7 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
     \author HigePon
     \date   create:2002/10/12 update:2002/11/04
 */
-void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
+void KeyBoardManager::setKeyScanCode(byte scancode) {
 
     byte keycode   = 0; /* keycode       */
     byte modifiers = 0; /* key modifiers */
@@ -208,7 +208,6 @@ void KeyBoardManager::printInfo(byte keycode, byte modifiers) const {
 
 /*!
     \brief get Character in key buffer
-
 
     \author HigePon
     \date   create:2003/01/23 update:2002/10/25

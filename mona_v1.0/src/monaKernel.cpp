@@ -36,7 +36,7 @@ char* version = "Mona develop beta 0.03a $Date$";
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:$Date$
+    \date   create:2002/07/21 update:2003/01/26
 */
 void startKernel(void) {
 
@@ -44,7 +44,7 @@ void startKernel(void) {
     _sysInitVga();
     _sysClearScreen();
 
-    /* show message */
+    /* show start message */
     printBanner();
 
     /* set interrept */
