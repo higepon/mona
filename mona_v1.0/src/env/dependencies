@@ -64,7 +64,8 @@ tester.o: tester.cpp include/global.h include/kthread.h include/types.h \
   include/KeyBoardManager.h
 checker.o: checker.cpp include/checker.h include/types.h include/string.h \
   include/kernel.h include/VirtualConsole.h include/IA32MemoryManager.h \
-  include/GDTUtil.h include/IDTUtil.h include/kthread.h
+  include/GDTUtil.h include/IDTUtil.h include/PagingUtil.h \
+  include/kthread.h
 string.o: string.cpp include/string.h include/types.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/types.h \
   include/string.h include/VirtualConsole.h

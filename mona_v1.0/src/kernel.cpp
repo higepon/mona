@@ -35,6 +35,7 @@
 #include<FAT12.h>
 #include<IA32MemoryManager.h>
 #include<string.h>
+#include<PagingUtil.h>
 
 char* version = "Mona develop beta 0.08a $Date$";
 
@@ -93,6 +94,8 @@ void startKernel(void) {
         g_console->printf("%c", map->marked(i) ? 'x' : 'o');
     }
     g_console->printf("\n");
+
+    PagingUtil::setup();
 
     /* set process name for info() */
     strcpy(g_process_name, "KERNEL");
