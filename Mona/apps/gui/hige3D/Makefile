@@ -1,4 +1,4 @@
-TARGET  = GHIGE3D
+TARGET  = HIGE3D
 SOURCES = Form1.cpp notmine.cpp
 INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
 

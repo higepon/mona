@@ -1,4 +1,4 @@
-TARGET  = GCUBE
+TARGET  = CUBE
 SOURCES = cube.cpp Form1.cpp geometry.cpp
 INSTDIR = $(BINDIR)/root/APPS/MONAFRMS
 
