@@ -147,9 +147,16 @@ public:
 	{
 		_P<Form> f = new Form1();
 		InitThread();
-		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+		if (tid != THREAD_UNKNOWN)
+		{
+			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+		}
 		Application::Run(f);
-		MonAPI::Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+		if (tid != THREAD_UNKNOWN)
+		{
+			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+		}
 		syscall_kill_thread(stdout_tid);
 	}
 };

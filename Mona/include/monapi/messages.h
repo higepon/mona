@@ -67,8 +67,6 @@ typedef struct
     } mouse;
 } CommonParameters;
 
-#define PROCESS_STDOUT_THREAD (monapi_get_server_thread_id(ID_PROCESS_SERVER) + 1)  // temporary
-
 #ifdef __cplusplus
 extern "C"
 {

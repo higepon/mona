@@ -22,7 +22,8 @@ int print(const char* msg) {
 
 #if 1  // temporary
 
-    static dword tid = PROCESS_STDOUT_THREAD;
+    static dword tid = THREAD_UNKNOWN;
+    if (tid == THREAD_UNKNOWN) tid = Message::lookupMainThread("ELF.BIN");
 
     char buf[128];
 
@@ -38,7 +39,7 @@ int print(const char* msg) {
         syscall_print(buf2);
 #endif
 
-        if (Message::sendReceive(NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
+        if (tid == THREAD_UNKNOWN || Message::sendReceive(NULL, tid + 1, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
         {
             syscall_print(buf);
         }

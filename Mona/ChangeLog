@@ -1,3 +1,9 @@
+2004-06-29  tino  <tino@users.sourceforge.jp>
+
+        * include/monapi/messages.h: PROCESS_STDOUT_THREAD削除
+
+        * src/lib/monapi/syscall.cpp (print): ELF.BINがなくても無限ループにならないように修正
+
 2004-06-29  higepon  <higepon@users.sourceforge.jp>
 
         * apps/non-gui/ata/main.cpp (IDE_Identifye): identifyコマンド送信(挙動がおかしい)

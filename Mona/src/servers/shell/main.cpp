@@ -50,7 +50,11 @@ int MonaMain(List<char*>* pekoe)
     src.header = MSG_SERVER_START_OK;
     Message::receive(&msg, &src, Message::equalsHeader);
     dword stdout_tid = msg.from;
-    Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+    dword svr_tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
+    if (svr_tid != THREAD_UNKNOWN)
+    {
+        Message::sendReceive(NULL, svr_tid + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
+    }
 
     /* Server start ok */
     bool callAutoExec = true;
@@ -71,7 +75,10 @@ int MonaMain(List<char*>* pekoe)
     Shell shell(callAutoExec);
     shell.run();
 
-    Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+    if (svr_tid != THREAD_UNKNOWN)
+    {
+        Message::sendReceive(NULL, svr_tid + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
+    }
     syscall_kill_thread(stdout_tid);
     monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
     monapi_register_to_server(ID_PROCESS_SERVER, 0);
