@@ -14,11 +14,11 @@
 
 #define ERROR       10
 #define WARNING     20
-#define NOTICE      25
 #define DEV_ERROR   30
 #define DEV_WARNING 40
-#drine  DEBUG       45
-#define DUMP        50
+#define DEV_NOTICE  50
+#drine  DEBUG       60
+#define DUMP        70
 
 void info(int level, const char *format, ...);
 

@@ -302,7 +302,7 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
         /* expected condition is ready & date I/O to Controller */
         if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
 
-            console_->printf("FDCDriver#sendCommand: timeout command[%d]\n", i);
+            info(ERROR, "FDCDriver#sendCommand: timeout command[%d]\n", i);
             return false;
         }
 
@@ -326,14 +326,13 @@ bool FDCDriver::recalibrate() {
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
 
-        console_->printf("FDCDriver#recalibrate:command fail\n");
+        info(ERROR, "FDCDriver#recalibrate:command fail\n");
         return false;
     }
 
     while (!waitInterrupt());
-#ifdef FDC_DEBUG
-    console_->printf("recalibrate:after waitInterrupt\n");
-#endif
+
+    info(NOTICE, "recalibrate:after waitInterrupt\n");
 
     senseInterrupt();
     return true;
@@ -357,7 +356,6 @@ bool FDCDriver::checkMSR(byte expectedCondition, byte mask) {
 
        status = inportb(FDC_MSR_PRIMARY);
        isOK = (status & mask) == expectedCondition;
-
 
        if (isOK) return true;
     }
@@ -394,20 +392,19 @@ bool FDCDriver::seek(byte track) {
 
     if (!sendCommand(command, sizeof(command))){
 
-        console_->printf("FDCDriver#seek:command fail\n");
+        info(ERROR, "FDCDriver#seek:command fail\n");
         return false;
     }
 
     /* seek, recalibreate should wait interrupt */
     /* and then senseInterrupt                  */
     while (!waitInterrupt());
-#ifdef FDC_DEBUG
-    console_->printf("seek:after waitInterrupt\n");
-#endif
+
+    info(NOTICE, "seek:after waitInterrupt\n");
 
     if (!senseInterrupt()) {
 
-        console_->printf("FDCDriver#seek:command fail\n");
+        info(ERROR, "FDCDriver#seek:command fail\n");
         return false;
     }
 
