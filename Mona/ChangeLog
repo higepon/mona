@@ -1,3 +1,15 @@
+2004-11-06  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/gfire: FIRE追加
+
+        * apps/baygui/Makefile: FIRE追加
+
+        * src/lib/baygui/Window.cpp: フォーカスイベント周り修正、右下のリストで項目を選択できない不具合修正
+
+        * src/lib/baygui/Control.cpp: フォーカスイベント周り修正
+
+        * src/servers/baygui/WindowManager.cpp: Alt, Shift, Control とキーの同時押しを検出可能に
+
 2004-11-05  Yamami  <yamamimail@users.sourceforge.jp>
 
         * apps/baygui/mblupin/mblupin.cpp: ランダムにシード値を与えるように変更
