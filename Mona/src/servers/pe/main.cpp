@@ -82,7 +82,7 @@ static CString SearchDLL(const CString& path, monapi_cmemoryinfo* files, const C
 	for (int i = 0; i < size; i++, p++)
 	{
 		CString n = CString(p->name).toUpper();
-		if (dll + ".DLL" == n || dll + ".DL2" == n || dll + ".DL5")
+		if (dll + ".DLL" == n || dll + ".DL2" == n || dll + ".DL5" == n)
 		{
 			return path == "/" ? "/" + n : path + "/" + n;
 		}
