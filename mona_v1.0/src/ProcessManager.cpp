@@ -33,8 +33,6 @@ ProcessManager::ProcessManager() {
     /* get address of gdtr */
     sgdt();
 
-    taskidx_ = 0;
-
     /* init first or second process */
     current = &(process_[0]);
     next    = &(process_[1]);
@@ -205,39 +203,6 @@ void ProcessManager::printInfo() {
 /*!
     \brief switch process
 
-    switch process to next process
-
-    \author HigePon
-    \date   create:2002/12/02 update:2003/01/14
-*/
-inline void ProcessManager::switchProcess() {
-
-    static dword current = 0x20;
-
-    if (taskidx_ == 0) {
-        taskidx_++;
-        return;
-    }
-
-    if (current == 0x20) {
-        tss[0].backlink = 0x28;
-        setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), SYS_TSS_BUSY);
-        current = 0x28;
-    } else {
-        tss[1].backlink = 0x20;
-        setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS_BUSY);
-        current = 0x20;
-    }
-
-    /* set NT flag 1 */
-    setNTflag1();
-
-    asm volatile("iret");
-}
-
-/*!
-    \brief switch process
-
     switch process to another
 
     \param selector selector value
@@ -273,74 +238,8 @@ inline void ProcessManager::setNTflag1() const {
                 );
 }
 
-/*!
-    \brief scheduling function
-
-    this function re-scheduling running process
-
-    \author HigePon
-    \date   create:2003/01/10 update:
-*/
 void ProcessManager::schedule() {
-
-    switchProcess2();
-}
-
-void ProcessManager::schedule2() {
-
-    if (taskidx_ == 0) {
-        taskidx_++;
-        return;
-    }
-
     std::swap(current, next);
-}
-
-static dword* esp1;
-static dword* esp2 = (dword*)0x9884;
-static int prev = 2;
-
-/*!
-    \brief switch process2 with out TSS
-
-    switch process to next process(without TSS)
-
-    \author HigePon
-    \date   create:2002/12/02 update:2003/01/14
-*/
-inline void ProcessManager::switchProcess2() {
-
-    if (taskidx_ == 0) {
-        taskidx_++;
-        return;
-    }
-
-    if (prev == 2) {
-        prev = 1;
-	_sysdumpReg("prev==2 \n", true, false);
-        _sys_printf("prev == 2\n");
-        asm volatile("pushal        \n"
-                     "mov %%esp, %0 \n"
-                     "mov %1, %%esp \n"
-                     "popal         \n"
-                     "iretl \n"
-                     : "=m" (esp1)
-                     : "m" (esp2)
-                    );
-    } else {
-
-         prev = 2;
-	 _sys_printf("prev == 1\n");
-         asm volatile(
-                      "pushal        \n"
-                      "mov %%esp, %0 \n"
-                      "mov %1, %%esp \n"
-                      "popal         \n"
-                      "iretl \n"
-                      : "=m" (esp2)
-                      : "m" (esp1)
-                     );
-    }
 }
 
 inline void ProcessManager::initProcess(void (*f)()) {

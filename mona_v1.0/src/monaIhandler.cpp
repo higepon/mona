@@ -124,29 +124,19 @@ void timerHandler() {
     outportb(0x20, 0x20);
 
     if (idx ==0) {
-	idx ++;
-	iret();
+        if (idx > 0xff00000) idx = 0;
+        idx ++;
+        iret();
     }
 
     /* determine next process or thread and run it */
     ProcessManager& pm = ProcessManager::instance();
-    pm.schedule2();
+    pm.schedule();
 
     /* do nothing */
     if (pm.current == pm.next) iret();
 
-    asm volatile(
-                 "mov %%ebp, %%esp \n"
-                 "pushal           \n"
-                 "mov %%esp, %0    \n"
-                 "mov %1, %%esp    \n"
-                 "popal            \n"
-		 //                 "mov %%ebp, %%esp \n"
-                 "popl %%eax \n"
-                 "iretl            \n"
-                 : "=m" (pm.current->esp)
-                 : "m" (pm.next->esp)
-                 );
+    _switchProcess(pm.current, pm.next);
 
     return;
 }

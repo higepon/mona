@@ -17,13 +17,26 @@
 #include <monaKernel.h>
 #include <IA32MemoryManager.h>
 
-#define GDTNUM 7 /*!< \def number of entry gdt */
+#define GDTNUM 7                    /*!< \def number of entry gdt   */
+#define FIRST_PROCESS_STACK 0x9884  /*!< \def stack of firstprocess */
 
-#define FIRST_PROCESS_STACK 0x9884
+#define _switchProcess(currentProcess, nextProcess) \
+    asm volatile(                                  \
+                 "mov %%ebp, %%esp \n"             \
+                 "pushal           \n"             \
+                 "mov %%esp, %0    \n"             \
+                 "mov %1, %%esp    \n"             \
+                 "popal            \n"             \
+                 "popl %%eax       \n"             \
+                 "iretl            \n"             \
+                 : "=m" (currentProcess->esp)      \
+                 : "m" (nextProcess->esp)          \
+                 );                                \
 
 typedef struct Process {
     dword* esp;
 };
+
 
 /*!
     process management
@@ -34,11 +47,9 @@ class ProcessManager {
     ProcessManager();
     void setTSS(TSS*, word, word, void (*f)(), dword, byte*, word, byte*, word);
     void setDT(GDT*, dword, dword, byte);
-    inline void switchProcess(dword) const;
     void printInfo();
     void multiTaskTester();
     void schedule();
-    void schedule2();
     static ProcessManager& instance() {
         static ProcessManager theInstance;
         return theInstance;
@@ -52,11 +63,9 @@ class ProcessManager {
     inline void ltr(word) const;
     inline void lldt(word) const;
     inline void setNTflag1() const;
-    inline void switchProcess();
-    inline void switchProcess2();
     inline void initProcess(void (*f)());
+    inline void switchProcess(dword) const;
     GDT* gdt_;
-    word taskidx_;
     Process process_[2];
 };
 
