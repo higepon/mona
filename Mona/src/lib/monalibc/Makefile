@@ -3,7 +3,8 @@ SOURCES = ctype.cpp    \
           monalibc.cpp \
           stdarg.cpp   \
           stdio.cpp    \
-          stdlib.cpp
+          stdlib.cpp   \
+          math.cpp
 
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc

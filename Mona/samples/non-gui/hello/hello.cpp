@@ -5,6 +5,15 @@ using namespace MonAPI;
 int MonaMain(List<char*>* pekoe)
 {
     printf("Hello World!\n");
+
+    char buf[32];
+    sprintf(buf, "sin(3.14 / 2) = %0.8f\n", sin(3.14 / 2));
+    printf("%s", buf);
+    sprintf(buf, "cos(3.14 / 2) = %0.8f\n", cos(3.14 / 2));
+    printf("%s", buf);
+    sprintf(buf, "sqrt(1.44) = %0.8f\n", sqrt(1.44));
+    printf("%s", buf);
+
 //     double seed = 0.31415926535897931;
 //     for (int i = 0; i < 10000000; i++)
 //     {
