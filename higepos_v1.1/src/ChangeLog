@@ -1,3 +1,7 @@
+2002-10-31  syn <syn@users.sourceforge.jp>
+   
+        * FDCDriver.cpp readSectorの実装
+
 2002-10-26  higepon  <higepon@users.sourceforge.jp>
 
         * higeVga.cpp: _sys_printf() %x対応
