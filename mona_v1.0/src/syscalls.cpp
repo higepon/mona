@@ -27,6 +27,7 @@ void syscall_entrance() {
 
     int x, y;
     Thread* thread;
+    KMutex* mutex;
     ArchThreadInfo* info = g_currentThread->archinfo;
 
     switch(info->ebx) {
@@ -81,6 +82,48 @@ void syscall_entrance() {
     case SYSTEM_CALL_MTHREAD_JOIN:
         g_processManager->join(g_processManager->getCurrentProcess(), (Thread*)info->esi);
         info->eax = 0;
+        break;
+
+    case SYSTEM_CALL_MUTEX_CREATE:
+        mutex = new KMutex(g_processManager->getCurrentProcess());
+        info->eax = mutex->init();
+        break;
+
+    case SYSTEM_CALL_MUTEX_LOCK:
+        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+        if (mutex == NULL) {
+            info->eax = 1;
+        } else {
+            info->eax = mutex->lock(g_currentThread->thread);
+        }
+        break;
+
+    case SYSTEM_CALL_MUTEX_TRYLOCK:
+        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+        if (mutex == NULL) {
+            info->eax = 1;
+        } else {
+            info->eax = mutex->tryLock(g_currentThread->thread);
+        }
+        break;
+
+    case SYSTEM_CALL_MUTEX_UNLOCK:
+        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+        if (mutex == NULL) {
+            info->eax = 1;
+        } else {
+            info->eax = mutex->unlock();
+        }
+        break;
+
+    case SYSTEM_CALL_MUTEX_DESTROY:
+        mutex = g_processManager->getCurrentProcess()->getKMutex((int)info->esi);
+        if (mutex == NULL) {
+            info->eax = 1;
+        } else {
+            delete mutex;
+            info->eax = 0;
+        }
         break;
 
     default:

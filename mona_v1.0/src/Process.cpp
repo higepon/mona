@@ -23,6 +23,7 @@ Thread::Thread() : tick_(0), timeLeft_(1) {
     /* thread information */
     threadInfo_ = new ThreadInfo;
     checkMemoryAllocate(threadInfo_, "class Thread info allocate");
+    threadInfo_->thread = this;
 
     /* thread information arch dependent */
     threadInfo_->archinfo = new ArchThreadInfo;

@@ -221,7 +221,6 @@ int syscall_mutex_destroy(int id) {
     return result;
 }
 
-
 void* malloc(unsigned long size) {
     return um.allocate(size);
 }

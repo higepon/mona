@@ -24,6 +24,9 @@
 #define DPL_KERNEL  0
 #define DPL_USER    3
 
+class Thread;
+class Process;
+
 /*----------------------------------------------------------------------
     Arch dependent functions
 ----------------------------------------------------------------------*/
@@ -63,6 +66,7 @@ typedef struct ArchThreadInfo {
 ----------------------------------------------------------------------*/
 typedef struct ThreadInfo {
     ArchThreadInfo* archinfo;
+    Thread* thread;
 };
 
 /*----------------------------------------------------------------------
@@ -296,6 +300,10 @@ class Process {
 
     inline virtual void activateMutex(Thread* thread) {
         threadManager_->activateMutex(thread);
+    }
+
+    inline virtual KMutex* getKMutex(int id) {
+        return kmutexTree_->get(id);
     }
 
     virtual int join(Thread* thread);

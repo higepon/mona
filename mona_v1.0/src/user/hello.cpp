@@ -12,10 +12,10 @@ int main() {
 
     mutex = new Mutex();
 
-//     if (!mutex->init()) {
-//         print("mutex init  error\n");
-//         exit(-1);
-//     }
+//      if (!mutex->init()) {
+//          print("mutex init  error\n");
+//          exit(-1);
+//      }
 
 //     mutex->lock();
 

@@ -1,3 +1,7 @@
+2004-01-13  higepon  <higepon@users.sourceforge.jp>
+
+        * include/Process.h: KMutexの作成。ただし未テスト
+
 2004-01-12  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: wakeupTimer()のバグを修正 名無しさんに感謝
