@@ -18,6 +18,6 @@
 
 extern "C" void syscall_entrance(void);
 
-void syscall_sleep(dword tick);
+int syscall_sleep(dword tick);
 
 #endif

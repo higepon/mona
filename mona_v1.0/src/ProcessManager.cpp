@@ -118,11 +118,6 @@ dword ProcessManager::getTick() const {
 
 void ProcessManager::sleep(ProcessInfo* process, dword tick) {
 
-    dword eflags = get_eflags();         // should be removed
-    disableInterrupt();                  // should be removed
-
     process->state = Process::SLEEPING;
     scheduler_->sleep(process, tick);
-
-    set_eflags(eflags);                  // should be removed
 }

@@ -167,12 +167,14 @@ void userTest() {
     //    asm volatile("hlt");
     while (true) {
 
-        syscall_sleep(50);
+        syscall_sleep(15);
     }
 }
 
 void userTest2() {
-    while (true);
+    while (true) {
+        syscall_sleep(36);
+    }
 }
 
 /*!

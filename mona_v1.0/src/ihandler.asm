@@ -20,6 +20,7 @@ BITS 32
 [global _arch_syscall_handler]
 [global _arch_cpufaulthandler_e]
 
+[extern _arch_switch_process]
 [extern _cpufaultHandler_e]
 [extern _arch_set_stack_view]
 [extern _MFDCHandler]

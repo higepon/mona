@@ -35,13 +35,17 @@ void syscall_entrance() {
     return;
 }
 
-void syscall_sleep(dword tick) {
+int syscall_sleep(dword tick) {
 
-    asm volatile("movw $5, %%ebx \n"
-                 "movw %0, %%esi \n"
-                 "int $0x80        "
-                 :/* no output */
-                 :"m"(tick)
+    int result;
+
+    asm volatile("movl $%c2, %%ebx \n"
+                 "movl %1  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"m"(tick), "g"(SYSTEM_CALL_PROCESS_SLEEP)
                  );
-    return;
+
+    return result;
 }

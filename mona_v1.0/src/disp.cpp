@@ -37,12 +37,12 @@ void disp_name1() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console)) syscall_sleep(8);
 
         disp_write_font(75, 0, 'M', color%13);
 
         Semaphore::up(&g_semaphore_console);
-        g_process_manager->sleep(g_current_process, 20);
+        int result = syscall_sleep(40);
         color++;
     }
 }
@@ -59,13 +59,12 @@ void disp_name2() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console)) syscall_sleep(2);
 
         disp_write_font(76, 0, 'o', color%14);
 
         Semaphore::up(&g_semaphore_console);
-
-        g_process_manager->sleep(g_current_process, 30);
+        int result = syscall_sleep(50);
         color++;
     }
 }
@@ -76,13 +75,12 @@ void disp_name3() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console)) syscall_sleep(3);
 
         disp_write_font(77, 0, 'n', color%13);
 
-        g_process_manager->sleep(g_current_process, 7);
-
         Semaphore::up(&g_semaphore_console);
+        int result = syscall_sleep(30);
         color++;
     }
 }
@@ -93,13 +91,12 @@ void disp_name4() {
 
     while (true) {
 
-        while (Semaphore::down(&g_semaphore_console));
+        while (Semaphore::down(&g_semaphore_console)) syscall_sleep(6);
 
         disp_write_font(78, 0, 'a', color%16);
 
-    syscall_sleep(15);
-
         Semaphore::up(&g_semaphore_console);
+        syscall_sleep(20);
         color++;
     }
 }
