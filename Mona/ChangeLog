@@ -1,3 +1,7 @@
+2004-06-29  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/moniter/main.cpp (ReadConfig): Moniter->Monitor (thanks Tinoさん)
+
 2004-06-28  tino  <tino@users.sourceforge.jp>
 
         * src/servers/gui/Makefile: 生バイナリに移行(GUI.BIN)

@@ -1,6 +1,6 @@
 /*!
-  \file  Moniter
-  \brief class Moniter
+  \file  Monitor
+  \brief class Monitor
 
   Copyright (c) 2004 Higepon
   All rights reserved.
@@ -18,11 +18,11 @@ using namespace MonAPI;
 
 #define CHECK_INTERVAL 5000
 
-class Moniter
+class Monitor
 {
 public:
-    Moniter();
-    virtual ~Moniter();
+    Monitor();
+    virtual ~Monitor();
 
 public:
     bool Initialize();
@@ -40,18 +40,18 @@ private:
 
 };
 
-Moniter::Moniter()
+Monitor::Monitor()
 {
 
 }
 
-Moniter::~Moniter()
+Monitor::~Monitor()
 {
 
     delete alive;
 }
 
-void Moniter::Service()
+void Monitor::Service()
 {
   for (;;)
   {
@@ -60,7 +60,7 @@ void Moniter::Service()
   }
 }
 
-bool Moniter::Initialize()
+bool Monitor::Initialize()
 {
     char* config;
 
@@ -84,7 +84,7 @@ bool Moniter::Initialize()
     return true;
 }
 
-void Moniter::ParseConfig(CString content)
+void Monitor::ParseConfig(CString content)
 {
     _A<CString> lines = content.split("\r\n");
 
@@ -101,7 +101,7 @@ void Moniter::ParseConfig(CString content)
 
         CString name = q[q.get_Length() - 1];
 
-        if (name == "MONITER.BIN") continue;
+        if (name == "MONITOR.BIN") continue;
 
         this->paths.add(path);
         this->servers.add(name);
@@ -113,7 +113,7 @@ void Moniter::ParseConfig(CString content)
     return;
 }
 
-byte* Moniter::ReadConfig(CString file)
+byte* Monitor::ReadConfig(CString file)
 {
     int result;
     int fileSize;
@@ -143,7 +143,7 @@ byte* Moniter::ReadConfig(CString file)
     return buf;
 }
 
-void Moniter::CheckServers()
+void Monitor::CheckServers()
 {
     char buf[256];
     PsInfo info;
@@ -180,9 +180,9 @@ void Moniter::CheckServers()
 
 int MonaMain(List<char*>* pekoe)
 {
-    Moniter moniter;
+    Monitor monitor;
 
-    moniter.Initialize();
+    monitor.Initialize();
 
     /* Server start ok */
     dword targetID = Message::lookupMainThread("INIT");
@@ -199,7 +199,7 @@ int MonaMain(List<char*>* pekoe)
         printf("ShellServer:INIT error\n");
     }
 
-    moniter.Service();
+    monitor.Service();
 
     return 0;
 }

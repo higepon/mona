@@ -1,4 +1,4 @@
-TARGET  = MONITER.BIN
+TARGET  = MONITOR.BIN
 SOURCES = main.cpp
 
 MONADIR = ../../..
