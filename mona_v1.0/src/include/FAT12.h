@@ -78,6 +78,7 @@ class FAT12 {
     static const int BPB_ERROR;
     static const int NOT_FAT12_ERROR;
     static const int FAT_READ_ERROR;
+    static const int PATH_LENGTH;
     static const char PATH_SEP;
 
  public:

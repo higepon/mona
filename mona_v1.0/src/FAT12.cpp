@@ -26,7 +26,9 @@
 const int FAT12::BPB_ERROR       = 1;
 const int FAT12::NOT_FAT12_ERROR = 2;
 const int FAT12::FAT_READ_ERROR  = 3;
+const int FAT12::PATH_LENGTH     = 512;
 const char FAT12::PATH_SEP       = '\\';
+
 /*!
   \brief initilize
 
@@ -299,6 +301,7 @@ word FAT12::getFATAt(int cluster) {
 
 bool FAT12::changeDirectory(const char* path) {
 
+    char buf[PATH_LENGTH];
 
 }
 
