@@ -51,17 +51,19 @@ void Graphics::drawImage(Image *image, int x, int y)
 {
 	int width  = image->getWidth();
 	int height = image->getHeight();
+	int I = width;
+	int J = height;
 	
 	// 透過イメージのためにα値が必要なのでbitbltは使えない
 	unsigned int *data = ((Bitmap *)image)->getData();
 	// NULL チェック
 	if (data == NULL) return;
 	// 範囲チェック
-	if (tx + x + width > cx + cw) width = cw;
-	if (ty + y + height > cy + ch) height = ch;
+	if (tx + x + width > cx + cw) I = cw;
+	if (ty + y + height > cy + ch) J = ch;
 	// 1ドットずつ描画
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
+	for (int j = 0; j < J; j++) {
+		for (int i = 0; i < I; i++) {
 			if (data[width * j + i] < 0xff000000) {
 				//sys_gs_set_pixel_RGB(tx + x + i, ty + y + j, data[width * j + i]);
 				screen->putPixel16(tx + x + i, ty + y + j, data[width * j + i]);
