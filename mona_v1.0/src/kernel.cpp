@@ -319,15 +319,15 @@ void mainProcess()
 //    }
 
 
-   for (;;)
-   {
-       bool current = inportb(0x3f7) & 0x80;
+//    for (;;)
+//    {
+//        bool current = inportb(0x3f7) & 0x80;
 
-       if (current)
-       {
-           g_console->printf("removed");
-       }
-   }
+//        if (current)
+//        {
+//            g_console->printf("removed");
+//        }
+//    }
 
 
 

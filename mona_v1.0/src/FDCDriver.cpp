@@ -200,12 +200,14 @@ void FDCDriver::waitInterrupt(bool yield) {
 
    if (yield)
    {
-       asm volatile("movl $%c0, %%ebx \n"
-                    "int  $0x80       \n"
-                    :
-                    :"g"(SYSTEM_CALL_WAIT_FDC)
-                    :"ebx"
-           );
+//        asm volatile("movl $%c0, %%ebx \n"
+//                     "int  $0x80       \n"
+//                     :
+//                     :"g"(SYSTEM_CALL_WAIT_FDC)
+//                     :"ebx"
+//            );
+       int result;
+       SYSCALL_0(SYSTEM_CALL_WAIT_FDC, result);
    }
 
     while (!interrupt_);
