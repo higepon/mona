@@ -214,7 +214,7 @@ void FileBrowser::Open(int target)
 		}
 		case Icons_Picture:
 			Icon::ExpansionEffect(pc.X, pc.Y);
-			ProcessStart("/APPS/BITMAP.EL2 " + PathCombine(this->path, name));
+			ProcessStart("/APPS/BITMAP.EX2 " + PathCombine(this->path, name));
 			break;
 		default:
 			break;
