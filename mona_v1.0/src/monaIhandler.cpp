@@ -144,7 +144,7 @@ void timerHandler() {
     \author HigePon
     \date   create:2003/02/09 update:
 */
-void MFDCHandler() {
+void MFDCHandler(void) {
 
     pusha();
     gMFDCDriver->interrupt();

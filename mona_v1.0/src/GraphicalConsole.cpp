@@ -134,7 +134,7 @@ void GraphicalConsole::setCursor(int x, int y) {
     forward cursor
 
     \author  HigePon
-    \date    create:2003/02/22 update:2002/10/06
+    \date    create:2003/02/22 update:2003/2/23
 */
 void GraphicalConsole::forwardCursor() {
 
@@ -144,11 +144,11 @@ void GraphicalConsole::forwardCursor() {
     /* to the next line */
     if (pos_x >= GP_MAX_WIDTH) {
         pos_x = 0;
-        pos_x++;
+        pos_y++;
     }
 
     /* scroll up */
-    if (pos_x >= GP_MAX_WIDTH) {
+    if (pos_y >= GP_MAX_HEIGHT) {
         scrollUp();
         pos_y--;
     }
