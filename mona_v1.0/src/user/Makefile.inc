@@ -1,0 +1,9 @@
+NASM       = nasm
+NDISASM    = ndisasm
+CC         = /usr/bin/g++
+LD         = /usr/bin/ld
+STRIP      = /usr/bin/strip
+CONTRIB_LIB= ./contrib/lib_cygwin
+LFLAGS     = -n -Ttext 0x1200 -static
+# for gcc3.x@cygwin
+CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -Wall -O3
