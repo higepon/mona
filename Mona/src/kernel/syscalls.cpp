@@ -647,6 +647,11 @@ void syscall_entrance() {
 
         break;
 
+    case SYSTEM_CALL_GET_TICK:
+
+        info->eax = g_scheduler->getTick();
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

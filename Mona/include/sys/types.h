@@ -185,6 +185,7 @@ typedef struct SysArg
 #define SYSTEM_CALL_CD                       0x002D
 #define SYSTEM_CALL_PS_DUMP_SET              0x002E
 #define SYSTEM_CALL_PS_DUMP_READ             0x002F
+#define SYSTEM_CALL_GET_TICK                 0x0030
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

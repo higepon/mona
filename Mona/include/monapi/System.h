@@ -5,6 +5,7 @@
 
 extern "C" dword syscall_get_pid();
 extern "C" dword syscall_get_tid();
+extern "C" dword syscall_get_tick();
 
 namespace MonAPI {
 
@@ -22,6 +23,11 @@ class System
     static inline dword getThreadID()
     {
         return syscall_get_tid();
+    }
+
+    static inline dword getTick()
+    {
+        return syscall_get_tick();
     }
 };
 

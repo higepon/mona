@@ -552,3 +552,10 @@ int syscall_read_ps_dump(PsInfo* info)
     SYSCALL_1(SYSTEM_CALL_PS_DUMP_READ, result, info);
     return result;
 }
+
+dword syscall_get_tick()
+{
+    dword result;
+    SYSCALL_0(SYSTEM_CALL_GET_TICK, result);
+    return result;
+}

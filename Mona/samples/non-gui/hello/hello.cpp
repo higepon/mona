@@ -5,6 +5,19 @@ using namespace MonAPI;
 int MonaMain(List<char*>* pekoe)
 {
     printf("Hello World\n");
+
+    for (int i = 0; i < 10; i++)
+    {
+        printf("tick=%x\n", System::getTick());
+    }
+
+    sleep(100);
+
+    for (int i = 0; i < 10; i++)
+    {
+        printf("tick=%x\n", System::getTick());
+    }
+
     return 0;
 }
 

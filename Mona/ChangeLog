@@ -1,3 +1,7 @@
+2004-04-11  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/System.h (class System): TICK取得API追加。
+
 2004-04-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/VesaConsole.cpp (scrollUp): スクロール高速化

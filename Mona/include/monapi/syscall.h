@@ -70,6 +70,7 @@ extern "C" void __pure_virtual(void);
 extern "C" int atexit( void (*func)(void));
 extern "C" dword syscall_lookup(const char* name);
 extern "C" void setupArguments(List<char*>* arg);
+extern "C" dword syscall_get_tick();
 
 void putCharacter(char ch);
 void putInt(size_t n, int base);
