@@ -1,5 +1,6 @@
 #include <IDEDriver.h>
 #include <global.h>
+#include <string.h>
 #include <BitMap.h>
 #include <test_mjt.h>
 #include <sysresource.h>
@@ -7,7 +8,11 @@
 #include <Module.h>
 #include "driver/ISADevice/PS2KBC/ps2kbc.h"
 #include "driver/ISADevice/PCIC/PCIC.h"
-#include<pic.h>
+#include <pic.h>
+
+void pn(char *p){
+	strcpy(g_process_name,p);
+}
 
 void test_mjt_init(){
   g_irqMap = new BitMap(16);
@@ -45,14 +50,19 @@ void test_ide(){
     enableTimer();
     enableKeyboard();
     idet = g_kthreadInfo.tick;
+		
     g_console->printf("Enable timer...(DISABLED THREAD SCHEDULER!)\n");/* ihandlers.cpp timer, kthread.cpp tick */
     g_console->printf("IDE init...\n");
     IDEDriver *d0;
     IDEDriver *d1;
     g_console->printf("Primary...\n");
+		pn("IDE");
     d0 = new IDEDriver(g_console,0x1f0);
+    pn("(test_mjt)");
     g_console->printf("Secondry...\n");
+    pn("IDE");
     d1 = new IDEDriver(g_console,0x170);
+    pn("(test_mjt)");
     g_console->printf("Disable timer...\n");
     disableTimer();
     idet = g_kthreadInfo.tick - idet;
@@ -61,9 +71,16 @@ void test_ide(){
 }
 
 void test_mjt(void){
+	int d;
+	d = g_info_level;
+	g_info_level = 9999;
+  pn("(test_mjt)");
   test_mjt_init();
   test_ide();
   test_cmos();
-  test_sysresource();
+ // test_sysresource();
+	pn("KERNEL");
+	g_info_level = d;
+  
 }
 

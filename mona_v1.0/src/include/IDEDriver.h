@@ -6,7 +6,6 @@
 #ifndef _MONA_MIDEDRIVER_MJT
 #define _MONA_MIDEDRIVER_MJT
 
-
 #define IDE_DEVICETYPE_HDD 1
 #define IDE_DEVICETYPE_OTHER 99
 
@@ -39,8 +38,7 @@ class IDEDriver {
     static IDEDevice* Master;
     static IDEDevice* Slave;
     static bool HasMaster;
-    static bool HasSlave;  
-    static VirtualConsole* console_;
+    static bool HasSlave;
   public:
     bool sendcmd(int cmd,byte *bfr,int bfrsize /* must be 2n */);
     bool cmdRead(byte *bfr,unsigned int count);

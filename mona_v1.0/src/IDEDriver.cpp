@@ -5,6 +5,11 @@
 #include<operator.h>
 #include<io.h>
 #include<global.h>
+#include<info.h>
+
+#ifndef NOTICE
+#define NOTICE (DEV_ERROR +1)
+#endif
 
 /* IDE commands*/
 #define IDE_CMD_READ 0x20
@@ -12,7 +17,6 @@
 #define IDE_CMD_ID 0xec
 
 
-VirtualConsole* IDEDriver::console_;
 unsigned int IDEDriver::driveaddr_;
 unsigned int IDEDriver::control_;
 unsigned int IDEDriver::data_;
@@ -33,9 +37,6 @@ IDEDevice* IDEDriver::Slave;
 
 IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port) {
 
-    /* set console */
-    console_ = console;
-    
     /* set ports */
 
     data_ = port;
@@ -50,7 +51,7 @@ IDEDriver::IDEDriver(VirtualConsole* console,unsigned int port) {
     status2_ = port+0x206;
     
     if(inportb(status_) == 0xff){
-      console_->printf("ide:constructor:can't find IDE Drive in Port:%x\n",port);
+      info(NOTICE,"constructor:can't find IDE Drive in Port:%x\n",port);
       HasMaster = false;
       return;
     }
@@ -202,37 +203,37 @@ IDEDriver::~IDEDriver() {
 
 bool IDEDriver::initilize() {
     /* send software reset*/
-    console_->printf("ide:init:");
+    info(NOTICE,"init...");
 
     waithdc(TIMEOUT);
     
     HasMaster = true;
     HasSlave = true;
-    console_->printf("diag skipped.\n");
+    info(WARNING,"diag skipped.\n");
     
     /*
-    console_->printf("diag...");
+    info(DUMP,"diag...");
     if(sendcmd(IDE_CMD_DIAG,0,0)){
       c = inportb(error_);
       if(c & 0x0e){
-        console_->printf("error.");
+        info(DUMP,"error.");
         HasMaster = false;
         HasSlave = false;
         return false;
       }else{
-        console_->printf("ok.");
+        info(DUMP,"ok.");
         HasMaster = true;
       }
       
       if(c & 0x80){
-        console_->printf("(slave device)\n");
+        info(DUMP,"(slave device)\n");
         HasSlave = false;
       }else{
-        console_->printf("(slave device ok or not present)\n");
+        info(DUMP,"(slave device ok or not present)\n");
         HasSlave = true;
       }
     }else{
-      console_->printf("no responce...(emulator?)\n");
+      info(DUMP,"no responce...(emulator?)\n");
       HasMaster = true;
       HasSlave = true;
     }
@@ -246,7 +247,7 @@ bool IDEDriver::initilize() {
       Slave = new IDEDevice(this,1);
     }
     
-    console_->printf("\n");
+    info(NOTICE,"\n");
     return true;
 }
 
@@ -342,49 +343,51 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
     int i;
     device_ = device;
     Bus = bus;
-    Bus->console_->printf("detecting ");
+    info(NOTICE,"detecting ");
     if( !Bus->senddevice(device_)){
       if(device == 0){
-        Bus->console_->printf("Master couldn't select\n");
+        info(WARNING,"Master couldn't select\n");
         Bus->HasMaster = false;
         return;
       }else if(device == 1){
-        Bus->console_->printf("Slave  couldn't select\n");
+        info(WARNING,"Slave  couldn't select\n");
         Bus->HasSlave = false;
         return;
       }
     }   
     if(device == 0){
-      Bus->console_->printf("Master:");
+      info(NOTICE,"Master:");
     }else if(device == 1){
-      Bus->console_->printf("Slave :");
+      info(NOTICE,"Slave :");
     }
     if(Bus->sendcmd(IDE_CMD_ID,buf,256)){
-      Bus->console_->printf(" Detected.\n");
+      info(NOTICE," Detected.\n");
       if(device == 0){
         Bus->HasMaster = true;
       }else if(device == 1){
         Bus->HasSlave = true;
       }
-      Bus->console_->printf("Name   : ");
+      info(NOTICE,"Name   : ");
       for(i=0;i!=40;i++){
-        Bus->console_->printf("%c",buf[0x1b*2+i]);
+        info(NOTICE,"%c",buf[0x1b*2+i]);
       }
-      Bus->console_->printf("\nVersion: ");
+      info(NOTICE,"\n");
+			info(NOTICE,"Version: ");
       for(i=0;i!=8;i++){
-        Bus->console_->printf("%c",buf[0x17*2+i]);
+        info(NOTICE,"%c",buf[0x17*2+i]);
       }
       Heads = (buf[0x03*2] << 8) + buf[0x03*2+1];
       Tracks = (buf[0x01*2] << 8) + buf[0x01*2+1];
       SectorsPerTrack = (buf[0x06*2] << 8) + buf[0x06*2+1];
       BytesPerSector = 512;
       IsSurpportLBA = buf[49*2] & 2;
-      if(IsSurpportLBA){
+      info(NOTICE,"\n");
+			if(IsSurpportLBA){
         TotalSize = ( ( buf[60*2] << 8 ) + buf[60*2+1] )+( ( ( buf[61*2] << 8 ) + buf[61*2+1] ) << 16);
-        Bus->console_->printf("\ntotalize = %d size = %d MB(LBA Device).\n",TotalSize,TotalSize/2/1024);
-        Bus->console_->printf("C/H/S = %d/%d/%d (Mona won't use this info.)\n",Tracks,Heads,SectorsPerTrack);
+        info(NOTICE,"totalize = %d size = %d MB(LBA Device).\n",TotalSize,TotalSize/2/1024);
+        info(NOTICE,"C/H/S = %d/%d/%d (Mona won't use this info.)\n",Tracks,Heads,SectorsPerTrack);
       }else{
-        Bus->console_->printf("\nC/H/S = %d/%d/%d sectorsize = %d size = %d MB (non-LBA Device)\n",Tracks,Heads,SectorsPerTrack,BytesPerSector,Heads*Tracks*SectorsPerTrack/1024*BytesPerSector/1024);
+        info(NOTICE,"\nC/H/S = %d/%d/%d sectorsize = %d size = %d MB (non-LBA Device)\n",Tracks,Heads,SectorsPerTrack,BytesPerSector,Heads*Tracks*SectorsPerTrack/1024*BytesPerSector/1024);
       }
       if(read(0,buf)){ /* test routine */
         /* dump */
@@ -392,8 +395,8 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
         int j;
         char c;
         for(i=0;i!=512;i+=16){
-          Bus->console_->printf("\n");
-          Bus->console_->printf("%x : ",i);
+          info(DUMP,"\n");
+          info(DUMP,"%x : ",i);
           for(j=0;j!=16;j++){
             c = buf[i + j] >> 4;
             if(c > 9){
@@ -401,14 +404,14 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
             }else{
               c += '0';
             }
-            Bus->console_->printf("%c",c);
+            info(DUMP,"%c",c);
             c = buf[i + j] & 0x0f;
             if(c > 9){
               c += ('A' - 10);
             }else{
               c += '0';
             }
-            Bus->console_->printf("%c ",c);
+            info(DUMP,"%c ",c);
             
           }
         }
@@ -418,69 +421,69 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
           byte *mbr;
           mbr = buf + 0x1be + i*16;
           d = *(dword *)(mbr +8);
-          Bus->console_->printf("\n");
-          Bus->console_->printf("%d: ",i);
+          info(NOTICE,"\n");
+          info(NOTICE,"%d: ",i);
           if(!d){
-            Bus->console_->printf("(Not found)");
+            info(NOTICE,"(Not found)");
             continue;
           }
           if(mbr[0] == 0x80){
-            Bus->console_->printf("Boot ");
+            info(NOTICE,"Boot ");
           }else{
-            Bus->console_->printf("     ");
+            info(NOTICE,"     ");
           }
           d = *(dword *)(mbr +8);
-          Bus->console_->printf("from:%x ",d);
+          info(NOTICE,"from:%x ",d);
           d = *(dword *)&mbr[12];
-          Bus->console_->printf("size:%x (%d MB) fs:",d,d/2/1024);
+          info(NOTICE,"size:%x (%d MB) fs:",d,d/2/1024);
           switch(mbr[4]){ /* see also:http://www37.tok2.com/home/nobusan/partition/partition.html */
             case 0x01:
-              Bus->console_->printf("FAT12");
+              info(NOTICE,"FAT12");
               break;
             case 0x04:
-              Bus->console_->printf("FAT16(<32MB)");
+              info(NOTICE,"FAT16(<32MB)");
               break;
             case 0x06:
-              Bus->console_->printf("FAT16(>32MB)");
+              info(NOTICE,"FAT16(>32MB)");
               break;
             case 0x0b:
-              Bus->console_->printf("FAT32");
+              info(NOTICE,"FAT32");
               break;
             case 0x0c:
-              Bus->console_->printf("FAT32-LBA");
+              info(NOTICE,"FAT32-LBA");
               break;
             case 0x0e:
-              Bus->console_->printf("FAT16-LBA");
+              info(NOTICE,"FAT16-LBA");
               break;
             case 0x07:
-              Bus->console_->printf("NTFS/HPFS");
+              info(NOTICE,"NTFS/HPFS");
               break;
             case 0x05:
-              Bus->console_->printf("extend");
+              info(NOTICE,"extend");
               break;
             case 0x0f:
-              Bus->console_->printf("extend-LBA");
+              info(NOTICE,"extend-LBA");
               break;
             case 0x82:
-              Bus->console_->printf("Linux SWAP/Solaris");
+              info(NOTICE,"Linux SWAP/Solaris");
               break;
             case 0x83:
-              Bus->console_->printf("extend-Linux");
+              info(NOTICE,"extend-Linux");
               break;
             case 0x2c:
-              Bus->console_->printf("clfs-one");
+              info(NOTICE,"clfs-one");
               break;
             default:
-              Bus->console_->printf("(#%x)",mbr[4]);
+              info(NOTICE,"(#%x)",mbr[4]);
           }
           
         }
-        Bus->console_->printf("\n");
+        info(NOTICE,"\n");
       }else{
-        Bus->console_->printf("read failed.\n");
+        info(ERROR,"read failed.\n");
       }
     }else{
-      Bus->console_->printf(" Not Found.\n");
+      info(WARNING," Not Found.\n");
       if(device == 0){
         Bus->HasMaster = false;
       }else if(device == 1){
@@ -490,7 +493,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
     }
     /* READ TEST */ /*
     if(IsSurpportLBA){
-      Bus->console_->printf("\nDevice read test...\n");
+      info(DUMP,"\nDevice read test...\n");
       dword tests;
       int cmpl;
       byte buf1[512];
@@ -502,7 +505,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
         read(tests,buf2);
         for(cmpl=0;cmpl!=512;cmpl++){
           if(buf1[cmpl] != buf2[cmpl]){
-            Bus->console_->printf("READ ERROR IN %d @ %d !!",tests,cmpl);
+            info(DUMP,"READ ERROR IN %d @ %d !!",tests,cmpl);
             for(;;);
           }
         }
@@ -511,7 +514,7 @@ IDEDevice::IDEDevice(IDEDriver *bus,unsigned int device){
       g_demo_step = 3;
     }
     */ /* ~READ TEST */
-    Bus->console_->printf("\n");
+    info(NOTICE,"\n");
 }
 
 IDEDevice::~IDEDevice(){

@@ -3,6 +3,7 @@
 #include <global.h>
 #include <sysresource.h>
 #include <driver/ISADriver.h>
+#include <info.h>
 VirtualConsole* ISADriver::console;
 ISADriver::ISADriver(VirtualConsole *con){
   console = con;
@@ -17,7 +18,7 @@ sys_irq ISADriver::MapIRQ(BitMap *irqmap){
 }
 
 bool ISADriver::AcquireIRQ(sys_irq irq,IRQHandler ih){
-  console->printf("ISA:AcqureIRQ(%d)\n",irq);
+  info(DEV_NOTICE,"ISA:AcqureIRQ(%d)\n",irq);
   return irq_acquire(irq,ih);
 }
 
@@ -31,7 +32,7 @@ void ISADriver::DisableIRQ(sys_irq irq){
   return;
 }
 
-bool ISADriver::AcquireIO(word start,word end){return true;};
+bool ISADriver::AcquireIO(word start,word len){return true;};
 byte ISADriver::InPort8(word port){
   byte r;
   asm volatile ("inb %%dx, %%al": "=a"(r): "d"(port));
