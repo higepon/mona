@@ -18,17 +18,21 @@ export OSTYPE="$(uname | cut -d _ -f 1 | tr [:upper:] [:lower:])"
 # cygwin
 if test "$OSTYPE" = "cygwin" ; then
    cat ./env/cygwin.env Makefile.in >Makefile
+   cat ./env/cygwin.env user/Makefile.in > user/Makefile
    echo "cygwin"
 # MinGW (MSys)
 elif test $isMinGW32; then
    cat ./env/mingw.env Makefile.in >Makefile
+   cat ./env/mingw.env user/Makefile.in >user/Makefile
    echo "MinGW32"
 # linux gcc2.9x
 elif test $isOldVersion ; then
    cat ./env/linux2.x.env Makefile.in >Makefile
+   cat ./env/linux2.x.env user/Makefile.in >user/Makefile
    echo "linux gcc2.x"
 # linux gcc3.x
 else
    cat ./env/linux3.x.env Makefile.in >Makefile
+   cat ./env/linux3.x.env user/Makefile.in >user/Makefile
    echo "linux gcc3.x"
 fi

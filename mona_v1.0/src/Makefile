@@ -14,7 +14,7 @@ BIN          = ../bin
 LIST         = ../list
 TOOLS        = ../tools
 INCLUDE      = include
-USERINCLUDE  = user
+USERINCLUDE  = user/include
 CNTRINCLUDE  = contrib/include
 CFINCLUDE    = -I$(INCLUDE) -I$(USERINCLUDE) -I$(CNTRINCLUDE)
 TARGET       = $(BIN)/mona.img
@@ -60,7 +60,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(TARGET)
 
-$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) $(USER_PROCESS) $(USER_PROCESS2)
+$(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
 	(cat $(BOOT1);dd if=$(TEMPLATE) bs=512 skip=1 ) > $(TARGET)
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG)
@@ -79,16 +79,8 @@ $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
 userlib.o : ./user/userlib.cpp
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./user/userlib.cpp -o userlib.o
 
-$(USER_PROCESS) : userlib.o ./user/hello.cpp ./user/KeyBoardManager.cpp ./user/KeyBoardManager.h
-	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/hello.cpp -o hello.o
-	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/KeyBoardManager.cpp -o uKeyBoardManager.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o uKeyBoardManager.o string.o -o $(USER_PROCESS)
-	objcopy --output-target=elf32-i386 $(USER_PROCESS)
-
-$(USER_PROCESS2) : userlib.o ./user/test.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -DUSER_LIB -c ./user/test.cpp -o test.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static test.o userlib.o MemoryManager.o string.o -o $(USER_PROCESS2)
-	objcopy --output-target=elf32-i386 $(USER_PROCESS2)
+userapp :
+	(cd user; make)
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -113,10 +105,12 @@ doxygen :
 	$(DOXYGEN)
 
 depend:
-	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) > $(ENV)/dependencies
+	gcc -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > $(ENV)/dependencies
+	(cd user; make depend)
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) $(USER_PROCESS) $(BIN)/mona.dbg mode12h.o ihandler.o core.o hello.o userlib.o ../list/*.list
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) $(BIN)/mona.dbg mode12h.o ihandler.o core.o ../list/*.list
+	(cd user; make clean)
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img

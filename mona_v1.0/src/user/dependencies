@@ -1,0 +1,8 @@
+hello.o: hello.cpp include/userlib.h include/types.h include/string.h \
+  include/KeyBoardManager.h include/collection.h
+test.o: test.cpp include/userlib.h include/types.h include/string.h
+userlib.o: userlib.cpp include/userlib.h include/types.h include/string.h \
+  include/MemoryManager.h
+KeyBoardManager.o: KeyBoardManager.cpp include/userlib.h include/types.h \
+  include/string.h include/KeyBoardManager.h include/collection.h
+string.o: string.cpp include/string.h include/types.h
