@@ -320,5 +320,8 @@ void VesaConsole::VesaScreen::packColor16 (byte *bits, dword c)
 
 void VesaConsole::VesaScreen::packColor24 (byte *bits, dword c)
 {
-    *((dword*)bits) = c;
+    //    *((dword*)bits) = c;
+    bits[0] = (  c      & 0xff );
+    bits[1] = ( (c>> 8) & 0xff );
+    bits[2] = ( (c>>16) & 0xff );
 }

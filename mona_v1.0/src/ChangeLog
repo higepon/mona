@@ -1,5 +1,7 @@
 2004-02-15  higepon  <higepon@users.sourceforge.jp>
 
+        * VesaConsole.cpp: VesaConsole 黄色い線が出る件修正(Gakuさん)
+
         * syscalls.cpp : ディスクイメージ構成を大幅に変えた。
 
 2004-02-14  higepon  <higepon@users.sourceforge.jp>
