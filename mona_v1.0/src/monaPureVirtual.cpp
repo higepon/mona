@@ -54,6 +54,7 @@ void _pure_virtual() {
 */
 int atexit( void (*func)(void)) {
 
+    func();
     _sysPrintln("atexit()");
     return -1;
 }

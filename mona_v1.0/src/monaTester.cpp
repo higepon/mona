@@ -121,7 +121,7 @@ void processTester() {
 void process1Tester() {
 
     while (true) {
-        for (dword i = 0; i < 5000; i++) {
+        for (dword i = 0; i < 50000; i++) {
             i += 1;
             i -= 1;
         }
@@ -135,7 +135,7 @@ void process1Tester() {
 void process2Tester() {
 
     while (true) {
-        for (dword i = 0; i < 5000; i++) {
+        for (dword i = 0; i < 50000; i++) {
             i += 1;
             i -= 1;
         }

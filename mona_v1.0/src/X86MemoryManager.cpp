@@ -128,7 +128,7 @@ X86MemoryManager::~X86MemoryManager() {
     \author HigePon
     \date   create:2002/08/10 update:2002/11/11
 */
-X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) {
+X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x25000) {
 
     /* first time, the number of free memory list is one. */
     freeEntry_ = (struct memoryEntry*)MEMORY_START;

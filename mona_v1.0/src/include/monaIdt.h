@@ -22,30 +22,30 @@
 
 #define iret() asm volatile("mov %ebp,%esp\n" \
                             "pop %ebp\n iret" \
-                           ); /*! iret */
+                           ); /*!< \def iret */
 
 
-/*! struct for idtr */
+/*! \struct idtr */
 typedef struct idtr_st {
-    unsigned short limit;    /*! idtr limit           */
-    unsigned short lowbase;  /*! base address of idtr */
-    unsigned short highbase; /*! base address of idtr */
+    unsigned short limit;    /*!< idtr limit           */
+    unsigned short lowbase;  /*!< base address of idtr */
+    unsigned short highbase; /*!< base address of idtr */
 };
 
-/*! struct for idt */
+/*! \struct idt */
 typedef struct idt_st {
-    unsigned short offsetL;  /*! 0-15bit of offset address */
-    unsigned short selector; /*! selector address          */
-    unsigned char  unused;   /*! unused                    */
-    unsigned char  type;     /*! type                      */
-    unsigned short offsetH;  /*!16-32bit of offset address */
+    unsigned short offsetL;  /*!< 0-15bit of offset address */
+    unsigned short selector; /*!< selector address          */
+    unsigned char  unused;   /*!< unused                    */
+    unsigned char  type;     /*!< type                      */
+    unsigned short offsetH;  /*!< 16-32bit of offset address */
 };
 
 
-/*! struct for interrupt handler */
+/*! \struct interrupt handler */
 typedef struct handler_st {
-    int  number;       /* handler number              */
-    void (*handler)(); /* pointer to handler function */
+    int  number;       /*< handler number              */
+    void (*handler)(); /*< pointer to handler function */
 };
 
 void _sysSetIdt(void);

@@ -17,6 +17,7 @@
 #include<monaTypes.h>
 #include<monaIo.h>
 #include<monaKernel.h>
+#include<monaVga.h>
 
 /*!
     struct for memory management
@@ -55,10 +56,37 @@ class X86MemoryManager {
     void printInfo(char*) const;
     static void enableA20() {
         _sysLock();
-        while (inportb(0x64) & 2); outportb(0x64, 0xd1);
-        while (inportb(0x64) & 2); outportb(0x60, 0xdf);
-        while (inportb(0x64) & 2); outportb(0x64, 0xff);
+
+        /* Wait until the keyboard buffer is empty */
+        /* disable keyboard                        */
+        while (inportb(0x64) & 2);
+        outportb(0x64, 0xAD);
+
+        /* read output port */
+        while (inportb(0x64) & 2);
+        outportb(0x64, 0xD0);
+
+        /* Save byte from input port */
+        while (!(inportb(0x64) & 1));
+        byte incode = inportb(0x60);
+
+        /*  Write output port  */
+        while (inportb(0x64) & 2);
+        outportb(0x64, 0xD1);
+
+        /*  GATE A20 to ON */
+        while (inportb(0x64) & 2);
+        outportb(0x60, (incode | 2));
+
+        /* enable keyboard */
+        while (inportb(0x64) & 2);
+        outportb(0x64, 0xAE);
+
+        /* Wait until the keyboard buffer is empty */
+        while (inportb(0x64) & 2);
         _sysUnlock();
+
+        _sys_printf("enable A20 done!\n");
         return;
     }
     static X86MemoryManager& instance() {

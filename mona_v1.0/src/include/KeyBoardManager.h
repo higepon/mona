@@ -15,6 +15,7 @@
 #define _MONA_KEYBOARDMANAGER_
 
 #include<monaTypes.h>
+#include<monaVga.h>
 
 #define MAX_KEY_BUF  255
 #define SPECIAL_KEY  0xE0
@@ -122,9 +123,11 @@ class KeyBoardManager {
     byte idHigh_;
     byte idLow_;
   public:
-
     static KeyBoardManager& instance() {
+    _sys_printf("debug2.2\n");
+
         static KeyBoardManager theInstance;
+    _sys_printf("debug2.4\n");
         return theInstance;
     }
 

@@ -28,16 +28,18 @@
 */
 void keyStrokeHandler() {
 
+    _sys_printf("debug\n");
+
     /* get scancode */
     unsigned char scancode = inportb(0x60);
-
+    _sys_printf("debug2\n");
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
-
+    _sys_printf("debug3\n");
     /* EOI is below for IRQ 0-7 */
     outportb(0x20, 0x20);
-
+    _sys_printf("debug4\n");
     /* iret */
     iret();
 

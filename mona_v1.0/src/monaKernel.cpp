@@ -24,6 +24,7 @@
 #include<FDCDriver.h>
 #include<monaTester.h>
 #include<monaChecker.h>
+#include<KeyBoardManager.h>
 
 /*!
     \brief  mona kernel start at this point
@@ -60,7 +61,10 @@ void startKernel(void) {
     checkTypeSize();
 
     /* enable A20 */
-    //    X86MemoryManager::enableA20();
+    X86MemoryManager::enableA20();
+
+    /* temporary soon remove */
+    KeyBoardManager& km = KeyBoardManager::instance();
 
     /* test code is here */
 #if 0
@@ -71,10 +75,9 @@ void startKernel(void) {
 #endif
     processTester();
 
-
-
     while (true) {
     }
+
 }
 
 /*!
