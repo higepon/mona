@@ -244,7 +244,7 @@ inline void ProcessManager::switchProcess(dword selector) const {
     FARJMP far;
     far.offset   = 0;
     far.selector = selector;
-    asm volatile("ljmp *(%0)\n":/* no output */ :"m"(far));
+    asm volatile("ljmp %0\n":/* no output */ :"m"(far));
     return;
 }
 
@@ -280,39 +280,22 @@ void ProcessManager::schedule() {
     switchProcess();
 }
 
-static TSS prev, next;
+dword esp1;
+dword esp2;
+
 
 inline void ProcessManager::switchProcess2() {
 
-    asm volatile("mov %%eax,  %1  \n"
-                 "mov %%ebx,  %2  \n"
-                 "mov %%ecx,  %3  \n"
-                 "mov %%edx,  %4  \n"
-                 "mov %%esi,  %5  \n"
-                 "mov %%edi,  %6  \n"
-                 "mov %%ebp,  %7  \n"
-                 "mov %%esp,  %8  \n"
-                 "mov %%eax,  %9  \n"
-                 "mov %%eax,  %10 \n"
-                 "mov %%ds ,  %11 \n"
-                 "mov %%es ,  %12 \n"
-                 "mov %%fs ,  %13 \n"
-                 "mov %%gs ,  %14 \n"
-                 : "=m" (prev.eax)
-                 , "=m" (prev.ebx)
-                 , "=m" (prev.ecx)
-                 , "=m" (prev.edx)
-                 , "=m" (prev.esi)
-                 , "=m" (prev.edi)
-                 , "=m" (prev.ebp)
-                 , "=m" (prev.esp)
-                 , "=m" (prev.eax)
-                 , "=m" (prev.eax)
-                 , "=m" (prev.ds )
-                 , "=m" (prev.es )
-                 , "=m" (prev.fs )
-                 , "=m" (prev.gs )
-                 );
+    dword from;
+    dword to;
 
-
+    asm volatile("pusha   \n"
+                 "pushf   \n"
+                 "mov %%esp, %0  \n"
+                 "mov %1, %%esp  \n"
+                 "popf   \n"
+                 "popa   \n"
+                : "=m" (to)
+                : "m" (from)
+                );
 }
