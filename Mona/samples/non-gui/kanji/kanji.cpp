@@ -44,5 +44,5 @@ int MonaMain(List<char*>* pekoe)
 	{
 		MonaDrawString(&scr, i, i, 0xff0000, 0xffffff, kan);
 	}
-    return 0;
+	return 0;
 }
