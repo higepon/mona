@@ -32,4 +32,4 @@ depend:
 #	@cd clock; $(MAKE) $@
 	@cd nic; $(MAKE) $@
 	@cd waba; $(MAKE) $@
-	@cd tube; $(MAKE) $@
+#	@cd tube; $(MAKE) $@

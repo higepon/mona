@@ -17,7 +17,7 @@ main.o: main.cpp ../../../include/monapi.h ../../../include/sys/types.h \
   ../../../include/monapi/Keys.h ../../../include/monalibc.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h KeyBoardManager.h ShellServer.h \
+  ../../../include/monalibc/stdio.h KeyboardManager.h ShellServer.h \
   Shell.h
 KeyboardManager.o: KeyboardManager.cpp ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
