@@ -17,6 +17,7 @@
 #include<pic.h>
 #include<semaphore.h>
 #include<global.h>
+#include<syscalls.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
@@ -36,25 +37,15 @@ void disp_name1() {
     dword color = 0;
 
     while (true) {
-        //        if (g_kthread_current->tick % 50) continue;
 
+        while (semaphore_down(&sem)) syscall_kthread_yield();
 
-
-        while (semaphore_down(&sem)) {
-
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
-        }
-
-        disp_write_font(76, 0, 'M', color%16);
+        disp_write_font(75, 0, 'M', color%13);
 
         semaphore_up(&sem);
 
         color++;
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
+        syscall_kthread_yield();
     }
 }
 
@@ -69,21 +60,13 @@ void disp_name2() {
     dword color = 0;
 
     while (true) {
-        //        if (g_kthread_current->tick % 50) continue;
-        while (semaphore_down(&sem)) {
+        while (semaphore_down(&sem)) syscall_kthread_yield();
 
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
-        }
-
-        disp_write_font(77, 0, 'o', color%16);
+        disp_write_font(76, 0, 'o', color%14);
 
         semaphore_up(&sem);
         color++;
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
+        syscall_kthread_yield();
     }
 }
 
@@ -92,22 +75,15 @@ void disp_name3() {
     dword color = 0;
 
     while (true) {
-        //        if (g_kthread_current->tick % 50) continue;
-        while (semaphore_down(&sem)) {
 
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
-        }
+        while (semaphore_down(&sem)) syscall_kthread_yield();
 
-        disp_write_font(78, 0, 'n', color%16);
+        disp_write_font(77, 0, 'n', color%15);
 
 
         semaphore_up(&sem);
         color++;
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
+        syscall_kthread_yield();
     }
 }
 
@@ -116,23 +92,15 @@ void disp_name4() {
     dword color = 0;
 
     while (true) {
-        //        if (g_kthread_current->tick % 50) continue;
-        //        disableTimer();
 
-        while (semaphore_down(&sem)) {
+        while (semaphore_down(&sem)) syscall_kthread_yield();
 
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
-        }
-        disp_write_font(79, 0, 'a', color%16);
+        disp_write_font(78, 0, 'a', color%16);
 
-        //        enableTimer();
         semaphore_up(&sem);
         color++;
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
+
+        syscall_kthread_yield();
     }
 }
 
@@ -158,12 +126,7 @@ void disp_kthread_info() {
 
     while (true) {
 
-        while (semaphore_down(&sem)) {
-
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
-        }
+        while (semaphore_down(&sem)) syscall_kthread_yield();
 
         int x = pos_x;
         int y = pos_y;
@@ -173,17 +136,16 @@ void disp_kthread_info() {
          g_console->printf("kernel thread Information \n");
          g_console->printf("thread total number %d \n" , g_kthreadInfo.threadNum);
          g_console->printf("kernel total %d[tick] \n", g_kthreadInfo.tick);
-         g_console->printf("kernel yield %d[times] \n", g_kthreadInfo.yield);
-         g_console->printf("[idle] %d%% [kernel] %d%%"
+         g_console->printf("thread yield %d[times] \n", g_kthreadInfo.yield);
+         g_console->printf("[idle] %d%% [kernel] %d%% "
                            , (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick)
                            , 100 - (g_kthread_idle->tick) * 100 / (g_kthreadInfo.tick));
 
          pos_x = x;
          pos_y = y;
-        semaphore_up(&sem);
-            asm volatile("movw $0, %ebx \n"
-                         "int $0x80       "
-                         );
+         semaphore_up(&sem);
+
+        syscall_kthread_yield();
     }
 }
 

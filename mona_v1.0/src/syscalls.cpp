@@ -23,7 +23,7 @@ void syscall_entrance() {
 
 
       case KTHREAD_YIELD:
-	  //          g_console->printf("syscall:kthread_yield");
+          //          g_console->printf("syscall:kthread_yield");
           kthread_yield();
           break;
 
@@ -32,5 +32,13 @@ void syscall_entrance() {
           break;
     }
 
+    return;
+}
+
+void syscall_kthread_yield() {
+
+    asm volatile("movw $0, %ebx \n"
+                 "int $0x80       "
+                 );
     return;
 }

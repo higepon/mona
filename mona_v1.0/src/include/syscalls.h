@@ -9,7 +9,13 @@
     \version $Revision$
     \date   create:2003/03/22 update:$Date$
 */
+#ifndef _MONA_SYSCALL_
+#define _MONA_SYSCALL_
+
 
 extern "C" void syscall_entrance(void);
+void syscall_kthread_yield();
 
 #define KTHREAD_YIELD 0
+
+#endif
