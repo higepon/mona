@@ -193,6 +193,7 @@ int MonaMain(List<char*>* pekoe)
     fdInitialize();
 
     initialize();
+//    ChangeDrive(DRIVE_CD0);
 
     MessageLoop();
 

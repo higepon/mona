@@ -22,28 +22,6 @@ static FDCDriver* fd;
 static ISO9660FileSystem* fs;
 static FSOperation* fso;
 
-#if 0
-static void interrupt()
-{
-    syscall_set_irq_receiver(irq);
-
-    for (MessageInfo msg;;)
-    {
-        if (MonAPI::Message::receive(&msg) != 0) continue;
-
-        switch (msg.header)
-        {
-        case MSG_INTERRUPTED:
-
-            cd->protocolInterrupt();
-            break;
-        default:
-            printf("default");
-        }
-    }
-}
-#endif
-
 bool fdInitialize()
 {
     syscall_get_io();
@@ -92,20 +70,13 @@ bool initializeCD()
     if (controller == IDEDriver::PRIMARY)
     {
         irq = IRQ_PRIMARY;
-        outp8(0xa1, inp8(0xa1) & 0xbf);
     }
     else
     {
         irq = IRQ_SECONDARY;
-        outp8(0xa1, inp8(0xa1) & 0x7f);
     }
 
-#if 0
-    /* interrupt thread */
-    dword id = syscall_mthread_create((dword)interrupt);
-    syscall_mthread_join(id);
-#endif
-
+    monapi_set_irq(irq, MONAPI_TRUE, MONAPI_TRUE);
     syscall_set_irq_receiver(irq);
 
     if (!cd->selectDevice(controller, deviceNo))
