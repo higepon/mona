@@ -73,5 +73,8 @@ int atexit( void (*func)(void)) {return -1;}
     \date   create:2003/10/13 update:
 */
 int __cxa_atexit() {return -1;}
+
+#ifndef GCC29
 void*   __dso_handle = (void*) &__dso_handle;
+#endif
 
