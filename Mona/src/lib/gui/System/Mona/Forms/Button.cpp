@@ -88,11 +88,11 @@ namespace System { namespace Mona { namespace Forms
 	{
 		if (this->isPushed)
 		{
+			if (e->Button == 1) this->OnClick(EventArgs::get_Empty());
+			
 			this->isPushed = false;
 			this->OnPaint();
 			this->Refresh();
-			
-			if (e->Button == 1) this->OnClick(EventArgs::get_Empty());
 		}
 		
 		BASE::OnMouseUp(e);
