@@ -28,7 +28,11 @@ enum
 
     MSG_PROCESS_GET_PROCESS_INFO = 0x1000,
     MSG_PROCESS_CREATED,
-    MSG_PROCESS_TERMINATED
+    MSG_PROCESS_TERMINATED,
+
+    MSG_PROCESS_GRAB_STDOUT = 0x10f0,  // temporary
+    MSG_PROCESS_UNGRAB_STDOUT,         // temporary
+    MSG_PROCESS_STDOUT_DATA            // temporary
 };
 
 enum
@@ -41,6 +45,8 @@ enum
     ID_PROCESS_SERVER,
     ID_NUMBER_OF_SERVERS
 };
+
+#define PROCESS_STDOUT_THREAD (monapi_get_server_thread_id(ID_PROCESS_SERVER) + 1)  // temporary
 
 #ifdef __cplusplus
 extern "C"

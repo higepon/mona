@@ -1,8 +1,16 @@
+2004-05-09  tino  <tino@users.sourceforge.jp>
+
+        * src/servers/shell/Makefile.old: 以前のSHELL.SVRをOLDSHELL.SVRとしてmake
+
+        * include/monapi/messages.h: printf独占関連メッセージ追加 (temporary)
+
+        * src/servers/elf/main.cpp: printf独占関連処理 (temporary)
+
+        * src/servers/shell/main.cpp: printf独占, 文字出力時のマウスカーソルの残像に対処
 
 2004-05-09  yui  <yuinejp@users.sourceforge.jp>
 
         * src/servers/shell/ 全て書き直し
-
 
 2004-05-09  tino  <tino@users.sourceforge.jp>
 

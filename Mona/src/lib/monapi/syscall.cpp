@@ -17,7 +17,22 @@ int sleep(dword ms) {
 }
 
 int print(const char* msg) {
+#if 1  // temporary
+    static dword tid = PROCESS_STDOUT_THREAD;
+    char buf[128];
+    buf[127] = '\0';
+    for (int len = strlen(msg); len > 0; msg += 127, len -= 127)
+    {
+        strncpy(buf, msg, 127);
+        if (MonAPI::Message::sendReceive(NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
+        {
+            syscall_print(buf);
+        }
+    }
+    return 0;
+#else
     return syscall_print(msg);
+#endif
 }
 
 int kill() {
@@ -98,12 +113,20 @@ void outp32(dword port, dword value) {
 ----------------------------------------------------------------------*/
 void printf(const char *format, ...) {
 
+    char buf[128];
+    int bufpos = 0;
+
     void** list = (void **)&format;
 
     ((char**)list) += 1;
     for (int i = 0; format[i] != '\0'; i++) {
 
         if (format[i] == '%') {
+            if (bufpos > 0) {
+                buf[bufpos] = '\0';
+                print(buf);
+                bufpos = 0;
+            }
             i++;
 
             switch (format[i]) {
@@ -132,8 +155,19 @@ void printf(const char *format, ...) {
                   break;
             }
         } else {
-            putCharacter(format[i]);
+            buf[bufpos] = format[i];
+            bufpos++;
+            if (bufpos == 127) {
+                buf[bufpos] = '\0';
+                print(buf);
+                bufpos = 0;
+            }
         }
+    }
+
+    if (bufpos > 0) {
+        buf[bufpos] = '\0';
+        print(buf);
     }
 }
 

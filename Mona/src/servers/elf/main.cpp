@@ -133,11 +133,71 @@ int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dword* ti
     return result;
 }
 
-void MessageLoop()
+#if 1  // temporary
+HList<dword> grabs;
+
+static void StdoutMessageLoop()
 {
     for (MessageInfo msg;;)
     {
-        if (Message::receive(&msg)) continue;
+        if (Message::receive(&msg) != 0) continue;
+
+        switch (msg.header)
+        {
+            case MSG_PROCESS_STDOUT_DATA:
+            {
+                int size = grabs.size();
+                if (size == 0)
+                {
+                    syscall_print(msg.str);
+                }
+                else
+                {
+                    Message::sendReceive(NULL, grabs[size - 1], MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str);
+                }
+                Message::reply(&msg);
+                break;
+            }
+            case MSG_PROCESS_GRAB_STDOUT:
+            {
+                int size = grabs.size();
+                bool ok = true;
+                for (int i = 0; i < size; i++)
+                {
+                    if (grabs[i] == msg.arg1)
+                    {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (ok) grabs.add(msg.arg1);
+                Message::reply(&msg);
+                break;
+            }
+            case MSG_PROCESS_UNGRAB_STDOUT:
+            {
+                int size = grabs.size();
+                for (int i = 0; i < size; i++)
+                {
+                    if (grabs[i] == msg.arg1)
+                    {
+                        grabs.removeAt(i);
+                        break;
+                    }
+                }
+                Message::reply(&msg);
+                break;
+            }
+        }
+    }
+}
+#endif
+
+static void MessageLoop()
+{
+    for (MessageInfo msg;;)
+    {
+        if (Message::receive(&msg) != 0) continue;
 
         switch (msg.header)
         {
@@ -157,6 +217,12 @@ void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
+#if 1  // temporary
+    char buf[128];
+    dword id = syscall_mthread_create((dword)StdoutMessageLoop);
+    syscall_mthread_join(id);
+#endif
+
     if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
     {
         printf("%s: INIT error\n", SVR);

@@ -154,11 +154,13 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
     case COMMAND_CHSH:
         if (monapi_call_elf_execute_file("/SERVERS/SHELL.SVR", 1) != 0) break;
+#if 0
         for (MessageInfo msg;;)
         {
             if (Message::receive(&msg) != 0) continue;
             if (msg.header == MSG_SERVER_START_OK) break;
         }
+#endif
         hasExited = true;
         break;
 
@@ -172,13 +174,25 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
 
     case COMMAND_ECHO:
-        for (int i = 1; i < args.get_Length(); i++)
         {
-            if (i > 1) printf(" ");
-            printf("%s", (const char*)args[i]);
+            int len = 0;
+            for (int i = 1; i < args.get_Length(); i++)
+            {
+                if (i > 1) len++;
+                len += args[i].getLength();
+            }
+            char* buf = new char[len + 1], * p = buf;
+            for (int i = 1; i < args.get_Length(); i++)
+            {
+                if (i > 1) *p++ = ' ';
+                sprintf(p, args[i]);
+                p += args[i].getLength();
+            }
+            *p = '\0';
+            printf("%s\n", buf);
+            delete [] buf;
+            break;
         }
-        printf("\n");
-        break;
 
     case COMMAND_CLEAR:
         screen.fillRect16(0, 0, screen.getWidth(), screen.getHeight(), BACKGROUND);

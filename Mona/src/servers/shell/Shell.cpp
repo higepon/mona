@@ -9,7 +9,7 @@ using namespace MonAPI;
     Shell
 ----------------------------------------------------------------------*/
 Shell::Shell(bool callAutoExec)
-    : position(0), hasExited(false), callAutoExec(this->callAutoExec),
+    : position(0), hasExited(false), callAutoExec(callAutoExec),
       waiting(THREAD_UNKNOWN), prevX(0), prevY(0)
 {
     this->current = STARTDIR;
@@ -66,14 +66,12 @@ void Shell::backspace()
 
     this->checkCaretPosition();
 
-    monapi_call_mouse_set_cursor(0);
     int x, y;
     syscall_get_cursor(&x, &y);
     syscall_set_cursor(x - 1, y);
     printf("  ");
     syscall_set_cursor(x - 1, y);
     this->drawCaret();
-    monapi_call_mouse_set_cursor(1);
 
     /* backspace */
     this->position--;
@@ -89,10 +87,8 @@ void Shell::commandChar(char c)
         x++;
         if ((x + 1) * FONT_WIDTH >= this->screen.getWidth()) return;
 
-        monapi_call_mouse_set_cursor(0);
         printf("%c", c);
         this->drawCaret();
-        monapi_call_mouse_set_cursor(1);
     }
     this->commandLine[this->position] = c;
     this->position++;
@@ -100,15 +96,14 @@ void Shell::commandChar(char c)
 
 void Shell::commandExecute(bool prompt)
 {
-    _A<CString> args = this->parseCommandLine();
+    if (prompt) printf("\n");
 
+    _A<CString> args = this->parseCommandLine();
     if (args.get_Length() == 0)
     {
         /* command is empty */
-        monapi_call_mouse_set_cursor(0);
-        this->printPrompt("\n");
+        this->printPrompt();
         this->position = 0;
-        monapi_call_mouse_set_cursor(1);
         return;
     }
 
@@ -118,20 +113,14 @@ void Shell::commandExecute(bool prompt)
     int isInternal = isInternalCommand(args[0]);
     if (isInternal != 0)
     {
-        monapi_call_mouse_set_cursor(0);
-        if (prompt) printf("\n");
         bool newline = internalCommandExecute(isInternal, args);
         if (!this->hasExited && prompt)
         {
             this->printPrompt(newline ? "\n" : NULL);
         }
         this->position = 0;
-        monapi_call_mouse_set_cursor(1);
         return;
     }
-
-    monapi_call_mouse_set_cursor(0);
-    if (prompt) printf("\n");
 
     CString cmdLine;
     CString command = args[0].toUpper();
@@ -171,7 +160,6 @@ void Shell::commandExecute(bool prompt)
     {
         this->executeMSH(cmdLine);
         if (this->waiting == THREAD_UNKNOWN) this->printPrompt("\n");
-        monapi_call_mouse_set_cursor(1);
         return;
     }
 
@@ -193,7 +181,6 @@ void Shell::commandExecute(bool prompt)
     {
         this->printPrompt("\n");
     }
-    monapi_call_mouse_set_cursor(1);
 }
 
 void Shell::commandTerminate()
@@ -284,7 +271,7 @@ void Shell::onKeyDown(int keycode, int modifiers)
         this->drawCaret(true);
         this->commandTerminate();
         this->commandExecute(true);
-        if (this->waiting == THREAD_UNKNOWN) this->drawCaret();
+        if (this->waiting == THREAD_UNKNOWN && !this->hasExited) this->drawCaret();
         break;
 
     case(Keys::Up):
