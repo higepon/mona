@@ -9,6 +9,7 @@ using namespace MonAPI;
 
 static int irq;
 static IDEDriver* ide;
+volatile static bool stop = false;
 
 /*
     ‰Û‘è
@@ -34,12 +35,12 @@ static void interrupt()
         {
         case MSG_INTERRUPTED:
 #if 1
-            printf("interrupt irq=%d\n", msg.arg1);
+            if (!stop) printf("interrupt irq=%d\n", msg.arg1);
 #endif
             ide->protocolInterrupt();
             break;
         default:
-            printf("default");
+            if (!stop) printf("default");
         }
     }
 }
@@ -108,6 +109,7 @@ int MonaMain(List<char*>* pekoe)
         delete ide;
         return 1;
     }
+    stop = true;
     printf("\n[read end]\n");
 
     char buf[128];

@@ -1,5 +1,5 @@
 TARGET  = CDREAD
-SOURCES = main.cpp IDEDriver.cpp# ISO9660.cpp
+SOURCES = main.cpp IDEDriver.cpp
 INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR = ../../..
