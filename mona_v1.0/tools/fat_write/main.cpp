@@ -114,14 +114,14 @@ Directory* trackingDirectory (char *path, int *cursor)
     int i = *cursor;
     int j;
 
-    if ('\\' == path[i]) {
+    if ('/' == path[i]) {
         p = inf.fat->getRootDirectory();
         i++;
     }
 
     while ('\0' != path[i]) {
         for (j = i; '\0' != path[j]; j++)
-            if ('\\' == path[j])
+            if ('/' == path[j])
                 break;
         int next = j + 1;
         if ('\0' == path[j])
@@ -138,7 +138,7 @@ Directory* trackingDirectory (char *path, int *cursor)
         int entry = p->searchEntry((byte*)name);
 
         if (j != next)
-            path[j] = '\\';
+            path[j] = '/';
 
         if (-1 == entry)
             break;
@@ -173,7 +173,7 @@ Directory* searchFile (char *path, int *entry, int *cursor)
     int index = -1;
 
     for (int i = 0; '\0' != path[i]; i++) {
-        if ('\\' == path[i])
+        if ('/' == path[i])
             index = i;
     }
 
@@ -184,7 +184,7 @@ Directory* searchFile (char *path, int *entry, int *cursor)
 
         char *dir = path;
         if (0 == index)
-            dir = "\\";
+            dir = "/";
 
         int tmp = 0;
 
