@@ -4,7 +4,7 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
   include/string.h include/monaVga.h include/monaIdt.h include/monaIo.h \
   include/IA32MemoryManager.h include/monaOperator.h include/FDCDriver.h \
   include/monaTester.h include/monaChecker.h include/KeyBoardManager.h \
-  include/SystemInfo.h include/ProcessManager.h
+  include/SystemInfo.h
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h
 monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \

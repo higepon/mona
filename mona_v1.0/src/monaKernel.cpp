@@ -27,6 +27,8 @@
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
 
+char* version = "Mona develop beta 0.02a $Date$";
+
 /*!
     \brief  mona kernel start at this point
 
@@ -52,7 +54,7 @@ void startKernel(void) {
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
     _sysSetColor(BG_MAROON | CH_BLUE);
-    _sys_printf("\nMona develop beta 0.02\n\n");
+    _sys_printf("%s\n", version);
     _sysSetColor(BG_BLACK | CH_SILVER);
 
     /* set interrept */
