@@ -161,12 +161,15 @@ Thread::~Thread() {
 /*----------------------------------------------------------------------
     ThreadManager
 ----------------------------------------------------------------------*/
-ThreadManager::ThreadManager(PageManager* pageManager) {
+ThreadManager::ThreadManager(bool isUser, PageManager* pageManager) {
 
     /* how? idle       */
     /*                 */
     /* not implemented */
     /*                 */
+
+    /* user or kernel */
+    isUser_ = isUser;
 
     /* scheduler */
     scheduler_ = new ThreadScheduler();
@@ -180,6 +183,11 @@ ThreadManager::~ThreadManager() {
 }
 
 Thread* ThreadManager::create(dword programCounter) {
+
+    Thread* thread = new Thread(programCounter);
+
+    //    archCreateUserThread(thread);
+
 
     /*                 */
     /* not implemented */

@@ -160,7 +160,7 @@ class ThreadScheduler {
 class ThreadManager {
 
   public:
-    ThreadManager(PageManager* pageManager);
+    ThreadManager(bool isUser, PageManager* pageManager);
     virtual ~ThreadManager();
 
   public:
@@ -178,6 +178,7 @@ class ThreadManager {
     PageManager* pageManager_;
     Thread* current_;
     Thread* idle_;
+    bool isUser_;
 };
 
 /*----------------------------------------------------------------------
