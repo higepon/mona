@@ -1,3 +1,7 @@
+2004-02-06  bayside  <bayside@users.sourceforge.jp>
+
+        * tools/guibuilder: 追加（デフォルトではビルドされません）
+
 2005-02-06  csharp  <csharp@users.sourceforge.jp>
 
         * tools/MonaServer: 追加（デフォルトではビルドされません）
