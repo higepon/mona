@@ -51,7 +51,6 @@ _user_start:
 				sub		esp, byte (tube_t.size)
 
 				; FPUチェック
-				xor		eax, eax
 				fninit
 				fnstcw	word [esp]
 				cmp		word [esp], 0x37f
@@ -186,7 +185,7 @@ updatescreen:	mov		esi, [esp + tube_t.step]
 				lea		eax, [esi + edx]
 				add		al, ah
 				and		al, 64
-				mov		ah, 10
+				mov		ah, 8
 				je		short .store
 				shl		edx, 2
 				lea		eax, [esi + edx]

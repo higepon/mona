@@ -2,9 +2,6 @@
 MONADIR	= ../../..
 include $(MONADIR)/env/monapi.inc
 
-#NFLAGS	+=	-f win32
-#NFLAGS	+=	-f elf
-
 RM		=	rm -f
 
 #object dir
