@@ -27,14 +27,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-#define MAX_APP_LEN 11
-
 /**
  アプリケーションランチャー
 */
 class GLaunch : public Window {
 private:
-	Button *buttonList[MAX_APP_LEN];
+	ListBox *list;
 
 public:
 	GLaunch::GLaunch();
@@ -42,59 +40,73 @@ public:
 	virtual void onEvent(Event *event);
 };
 
-/** ボタンラベル一覧 */
-static char *buttonLabelList[MAX_APP_LEN] = {
-	"GBBALL",
-	"GBROWSER",
-	"GCHAT",
-	"GCLOCK",
-	"GHEBTN",
-	"GNOIZ2BG",
-	"GNULLPO",
-	"GRUNNER",
-	"GUITEST1",
-	"GVERSION",
-	"MBLUPIN"
-};
-
-/** コマンド名一覧 */
-static char *buttonCommandList[MAX_APP_LEN] = {
-	"/APPS/GBBALL.EX5",
-	"/APPS/GBROWSER.EX5",
-	"/APPS/GCHAT.EX5",
-	"/APPS/GCLOCK.EX5",
-	"/APPS/GHEBTN.APP/GHEBTN.EX5",
-	"/APPS/GNOIZ2BG.EX5",
-	"/APPS/GNULLPO.APP/GNULLPO.EX5",
-	"/APPS/GRUNNER.EX5",
-	"/APPS/GUITEST1.EX5",
-	"/APPS/GVERSION.EX5",
-	"/APPS/MBLUPIN.EX5"
-};
-
 GLaunch::GLaunch()
 {
-	setRect(0, 22, 100, 260);
+	char name[15];
+	int size, attr;
+
+	setRect(0, 22, 108 + 12, 250 + 28);
 	setTitle("mokon");
-	for (int i = 0; i < MAX_APP_LEN; i++) {
-		buttonList[i] = new Button(buttonLabelList[i]);
-		buttonList[i]->setRect(0,i*20,88,20);
-		add(buttonList[i]);
+	list = new ListBox();
+	list->setRect(0, 0, 108, 250);
+	add(list);
+
+	// APPSに移動
+	if (syscall_cd("/APPS") != 0) {
+		return;
 	}
+
+	// ディレクトリを開く
+	if (syscall_dir_open()) {
+		return;
+	}
+
+	// ディレクトリ内のファイル検索
+	while (syscall_dir_read(name, &size, &attr) == 0) {
+		if ((attr & ATTRIBUTE_DIRECTORY) != 0) {
+			// BayGUIアプリのみをピックアップ (*.APP)
+			// GREVERSIは対象からはずす
+			if (name[0] == 'G' && name[1] != 'R') {
+				list->add(name);
+			}
+		} else {
+			// BayGUIアプリのみをピックアップ (*.EX5)
+			// GLAUNCHは対象からはずす
+			if (name[strlen(name) - 1] == '5' && name[1] != 'L') {
+				list->add(name);
+			}
+		}
+	}
+
+    syscall_dir_close();
 }
 
 GLaunch::~GLaunch()
 {
+	delete(list);
 }
 
 void GLaunch::onEvent(Event *event)
 {
-	if (event->type == MOUSE_PRESSED) {
-		for (int i = 0; i < MAX_APP_LEN; i++) {
-			if (event->source == buttonList[i]) {
+	if (event->type == KEY_PRESSED) {
+		// ENTERキー押下
+		if (((KeyEvent *)event)->keycode == VKEY_ENTER) {
+			char name[24];
+			char *item = list->getSelectedItem();
+			if (item != NULL && strlen(item) > 0) {
+				strcpy(name, "/APPS/");
+				strcat(name, item);
+				// *.APP の場合
+				if (item[strlen(item) - 1] == 'P') {
+					strcat(name, "/");
+					strcat(name, item);
+					// 拡張子をAPPからEX5に変換
+					name[strlen(name) - 3] = 'E';
+					name[strlen(name) - 2] = 'X';
+					name[strlen(name) - 1] = '5';
+				}
 				// アプリ実行
-				monapi_call_process_execute_file(buttonCommandList[i], MONAPI_FALSE);
-				break;
+				monapi_call_process_execute_file(name, MONAPI_FALSE);
 			}
 		}
 	}
