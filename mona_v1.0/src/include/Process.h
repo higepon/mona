@@ -60,8 +60,12 @@ typedef struct ProcessInfo {
     List<Message*>* messageList;
 };
 
+typedef struct ThreadInfo {
+    dword dummy;
+};
+
 typedef struct ProcessInfo_ {
-    //    ThreadInfo_ threadList;
+    List<ThreadInfo*>* treadList;
     char name[16];
     //    OutputStream* stdout;
     //    OutputStream* stderr;
@@ -99,8 +103,8 @@ class ProcessManager_ {
   public:
     int createProcess();
     int kill(ProcessInfo_* process);
-    int switchProcess(ProcessInfo_* process);
-    int schedule();
+    int switchProcess();
+    ProcessInfo_* schedule();
 
   private:
     ProcessScheduler* scheduler_;

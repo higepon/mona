@@ -170,3 +170,54 @@ int ProcessScheduler::kill(ProcessInfo_* pinfo) {
     list_->remove(pinfo);
     return NORMAL;
 }
+
+ProcessManager_::ProcessManager_() {
+
+    scheduler_ = new ProcessScheduler();
+    if (scheduler_ == NULL) {
+        panic("ProcessManager_::allocateMemory error");
+        for (;;);
+    }
+}
+
+ProcessManager_::~ProcessManager_() {
+
+    delete scheduler_;
+}
+
+/*********************************************************
+
+    not yet
+
+********************************************************/
+int ProcessManager_::kill(ProcessInfo_* process) {
+
+    int result;
+
+    /* remove from scheduler */
+    if (NORMAL == (result = scheduler_->kill(process))) {
+        return result;
+    }
+
+    /* destroy address space of proces */
+
+    /* delete process */
+
+
+    return NORMAL;
+}
+
+int ProcessManager_::switchProcess() {
+
+    /* do nothing ??? */
+
+    return NORMAL;
+}
+
+ProcessInfo_* ProcessManager_::schedule() {
+
+    // g_current_process =  scheduler_->schedule(g_current_process);
+    // return g_current_process;
+
+    return NULL;
+}
