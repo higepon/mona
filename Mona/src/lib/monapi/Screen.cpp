@@ -27,7 +27,7 @@ void Screen::putPixel16(int x, int y, dword color) {
     byte* vram       = vram_;
 
     vram += (x + y * xResolution_) * bytesPerPixel;
-    *((word*)vram) = (word)color;
+    *((word*)vram) = bytesPerPixel == 2 ? Color::bpp24to565(color) : (word)color;
 }
 
 void Screen::fillRect16(int x, int y, int w, int h, dword color) {
@@ -39,7 +39,7 @@ void Screen::fillRect16(int x, int y, int w, int h, dword color) {
 
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                *((word*)temp) = color;
+                *((word*)temp) = bytesPerPixel == 2 ? Color::bpp24to565(color) : (word)color;
                 temp += bytesPerPixel;
             }
             position += xResolution_ * bytesPerPixel;
