@@ -106,6 +106,7 @@ class FAT12 {
     bool changeDirectory(const char* path);
     bool changeDirectoryRelative(const char* path);
     bool readHasNext() const;
+    int getFileSize() const;
     int getErrorNo() const;
 
  private:

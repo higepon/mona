@@ -118,7 +118,7 @@ test_higepon.o: test_higepon.cpp include/tester.h user/types.h \
   include/Process.h include/PageManager.h include/Queue.h \
   include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
   include/sysresource.h include/MessageServer.h include/Message.h \
-  include/io.h
+  include/io.h include/GraphicalConsole.h include/operator.h
 sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   user/types.h include/global.h include/info.h include/kernel.h \
   include/VirtualConsole.h include/string.h include/FDCDriver.h \

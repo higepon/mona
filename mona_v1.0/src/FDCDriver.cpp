@@ -485,7 +485,7 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 
     waitInterrupt();
 
-    delay(50000);
+    //    delay(50000);
     stopDMA();
 
     for (int i = 0; i < 7; i++) {
@@ -493,8 +493,8 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
         results_[i] = getResult();
     }
 
-    g_console->printf("status=%x", results_[0]);
-    g_console->printf("%s", ((results_[0] & 0xC0) != 0x00) ? "true":"false");
+    //  g_console->printf("status=%x", results_[0]);
+    //    g_console->printf("%s", ((results_[0] & 0xC0) != 0x00) ? "true":"false");
 
     if ((results_[0] & 0xC0) != 0x00) return false;
 

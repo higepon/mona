@@ -798,6 +798,14 @@ bool FAT12::releaseCluster() {
     return true;
 }
 
+int FAT12::getFileSize() const {
+
+    /* file is not open */
+    if (!isOpen_) return -1;
+
+    return currentEntry_->filesize;
+}
+
 
 bool FAT12::rename(const char* from, const char* to) {return true;}
 bool FAT12::remove(const char* file) {return true;}

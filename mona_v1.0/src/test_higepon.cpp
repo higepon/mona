@@ -4,6 +4,9 @@
 #include<global.h>
 #include<io.h>
 #include<GraphicalConsole.h>
+#include<operator.h>
+
+extern "C" void put_pixel(int x, int y, char color);
 
 typedef struct {
     dword a;
@@ -12,14 +15,45 @@ typedef struct {
     dword height;
 } ARGBHeader;
 
-extern "C" void put_pixel(int x, int y, char color);
+static bool drawARGB(byte* rgba, int x, int y, int size);
+
+bool drawARGB(byte* rgba, int x, int y, int size) {
+
+    int color;
+    int startx = x;
+    int starty = y;
+    ARGBHeader* header = (ARGBHeader*)rgba;
+
+    /* check identifier */
+    if (header->a != 0x41524742) return false;
+
+    /* draw loop */
+    for (int i = sizeof(ARGBHeader) / 4; i < size / 4; i++) {
+
+        if (x >= startx + header->width) {
+
+            y++;
+            x = startx;
+        }
+
+        if (y >= starty + header->height) break;
+
+        color = (rgba[i * 4 + 0] || rgba[i * 4 + 1] || rgba[i * 4 + 2]) ? GP_WHITE : GP_BLACK;
+
+        put_pixel(x, y, color);
+        x++;
+    }
+
+    return true;
+}
 
 void FDCDriverTester() {
 
-    g_info_level = DEBUG;
+    g_info_level = MSG;
 
     byte readbuf[512];
 
+    /* test1 FD read */
     g_console->printf("test1:read once\n");
     g_fdcdriver = new FDCDriver();
     g_fdcdriver->motor(ON);
@@ -32,6 +66,7 @@ void FDCDriverTester() {
     for (int i = 500; i < 512; i++) g_console->printf("[%d]", readbuf[i]);
     g_console->printf("\ntest1:done\n");
 
+    /* test2 FD read */
     g_console->printf("test2:read once\n");
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
@@ -44,7 +79,7 @@ void FDCDriverTester() {
     g_fdcdriver->motor(OFF);
     g_console->printf("\ntest2:done\n");
 
-
+    /* test3 image read */
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -69,36 +104,18 @@ void FDCDriverTester() {
         info(ERROR, "open failed");
     }
 
-    ARGBHeader* head;
-    byte buf[512];
-    byte color;
-    dword width;
-    dword height;
-    dword x = 0;
-    dword y = 0;
+    int fileSize  = fat->getFileSize();
+    int readTimes = fileSize / 512 + (fileSize % 512 ? 1 : 0);
 
-    for (int i = 0; i < 100; i++) {
+    g_console->printf("readTimes=%d", readTimes);
 
-        if (!fat->read(buf)) {
+    byte* buf = (byte*)malloc(512 * readTimes);
+
+    for (int i = 0; i < readTimes; i++) {
+
+        if (!fat->read(buf + 512 * i)) {
 
             info(ERROR, "read failed %d", i);
-        }
-
-        if (i == 0) {
-
-            head = (ARGBHeader*)buf;
-            g_console->printf("width = %d height= %d\n", head->width, head->height);
-            width = head->width;
-            height = head->height;
-        }
-
-        for (int j = 0; j < 128; j++) {
-
-            if (x > width) y++;
-            color = (buf[j * 4 + 0] || buf[j * 4 + 1] || buf[j * 4 + 2]) ? GP_WHITE : GP_BLACK;
-
-            put_pixel(x, y, color);
-            x++;
         }
     }
 
@@ -106,13 +123,13 @@ void FDCDriverTester() {
        info(ERROR, "close failed");
     }
 
-    g_console->printf("load done...USER.ELF\n");
     g_fdcdriver->motor(false);
 
-    for (int i = 0; i < 12; i++) {
-        g_console->printf("[%x]", buf[i]);
-    }
-
+    drawARGB(buf, 45, 350, fileSize);
+    drawARGB(buf, 100, 350, fileSize);
+    drawARGB(buf, 155, 350, fileSize);
+    drawARGB(buf, 210, 350, fileSize);
+    free(buf);
 }
 
 /*!
