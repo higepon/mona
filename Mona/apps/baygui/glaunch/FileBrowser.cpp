@@ -207,12 +207,14 @@ void FileBrowser::Open(int target)
 			String exe = PathCombine(this->path, name);
 			if (exe.EndsWith(".APP"))
 			{
-				exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EL2");
-				if (ProcessStart(exe) < 0)
+				String exe1 = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EL2");
+				if (ProcessStart(exe1) > 0)
 				{
-					exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX5");
+					String exe2 = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX5");
+					ProcessStart(exe2);
 				}
 			}
+			ProcessStart(exe);
 			break;
 		}
 		case Icons_Picture:
