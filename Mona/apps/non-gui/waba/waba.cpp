@@ -28,7 +28,6 @@ Cambridge, MA 02139, USA.
 //#define PALMOS 1
 //#define WINCE 1
 #define MONA 1
-#undef WIN32
 
 #if defined(NO_PLATFORM_DEFINED)
 To compile, you need to define one of the platforms above.
