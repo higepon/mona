@@ -125,6 +125,9 @@ void startKernel(void) {
     //    g_processManager->addProcess(g_processManager->createProcess(ProcessManager_::USER_PROCESS, "TEST1"));
     //    g_processManager->addProcess(g_processManager->createProcess(ProcessManager_::KERNEL_PROCESS, "TEST2"));
 
+    /* initilize keyboard */
+    KeyBoardManager& km = KeyBoardManager::instance();
+    km.init();
 
 #ifdef HIGE
 
