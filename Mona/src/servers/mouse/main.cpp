@@ -118,14 +118,14 @@ void MouseServer::MessageLoop()
 
             /* arg1 = tid */
             this->destList->add(receive.arg1);
-            monapi_cmessage_reply(&receive);
+            Message::reply(&receive);
             break;
 
         case MSG_MOUSE_UNREGIST_FROM_SERVER:
 
             /* arg1 = tid */
             this->destList->remove(receive.arg1);
-            monapi_cmessage_reply(&receive);
+            Message::reply(&receive);
             break;
 
        case MSG_MOUSE_ENABLE_CURSOR:
@@ -136,7 +136,7 @@ void MouseServer::MessageLoop()
                 PaintCursor(this->prevX, this->prevY);
             }
 
-            monapi_cmessage_reply(&receive);
+            Message::reply(&receive);
 
             break;
 
@@ -145,7 +145,7 @@ void MouseServer::MessageLoop()
             PaintCursor(this->prevX, this->prevY);
             disableCount++;
 
-            monapi_cmessage_reply(&receive);
+            Message::reply(&receive);
 
             break;
 

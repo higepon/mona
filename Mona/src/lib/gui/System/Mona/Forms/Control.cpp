@@ -143,11 +143,11 @@ namespace System { namespace Mona { namespace Forms
 		if (this->buffer == NULL) return;
 		
 #ifdef MONA
-		::monapi_call_mouse_set_cursor(NULL, 0);
+		::monapi_call_mouse_set_cursor(0);
 #endif
 		this->RefreshInternal();
 #ifdef MONA
-		::monapi_call_mouse_set_cursor(NULL, 1);
+		::monapi_call_mouse_set_cursor(1);
 #endif
 	}
 	

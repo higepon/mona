@@ -192,15 +192,15 @@ static void MessageLoop()
 		switch (msg.header)
 		{
 			case MSG_GUISERVER_GETFONT:
-				monapi_cmessage_reply_args(&msg, default_font->Handle, default_font->Size, NULL);
+				Message::reply(&msg, default_font->Handle, default_font->Size);
 				break;
 			case MSG_DISPOSE_HANDLE:
 				MemoryMap::unmap(msg.arg1);
-				monapi_cmessage_reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_GUISERVER_SETWALLPAPER:
 				DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
-				monapi_cmessage_reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_GUISERVER_DRAWWALLPAPER:
 				if (wallpaper != NULL)
@@ -211,21 +211,21 @@ static void MessageLoop()
 				/// temporary
 				for (int i = 0; i < clients.size(); i++)
 				{
-					if (monapi_cmessage_send_args(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3, msg.str) != 0)
+					if (Message::send(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3) != 0)
 					{
 						clients.removeAt(i);
 						i--;
 					}
 				}
-				monapi_cmessage_reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_REGISTER_TO_SERVER:
 				clients.add(msg.arg1);
-				monapi_cmessage_reply(&msg);
+				Message::reply(&msg);
 				break;
 			case MSG_UNREGISTER_FROM_SERVER:
 				clients.remove(msg.arg1);
-				monapi_cmessage_reply(&msg);
+				Message::reply(&msg);
 				break;
 #if 0
 			case MSG_MOUSE_INFO:

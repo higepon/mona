@@ -1,6 +1,8 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 
+using namespace MonAPI;
+
 /*----------------------------------------------------------------------
     system call wrappers
 ----------------------------------------------------------------------*/
@@ -29,7 +31,7 @@ int print(const char* msg) {
         sprintf(buf2, "{%d", syscall_get_tid());
         syscall_print(buf2);
 #endif
-        if (monapi_cmessage_send_receive_args(NULL, NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
+        if (Message::sendReceive(NULL, tid, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, buf) != 0)
         {
             syscall_print(buf);
         }

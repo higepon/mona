@@ -199,11 +199,11 @@ bool ImageHandler(MessageInfo* msg)
 			guiserver_bitmap* bmp = ReadImage(msg->str);
 			if (bmp != NULL)
 			{
-				monapi_cmessage_reply_args(msg, bmp->Handle, 0, NULL);
+				Message::reply(msg, bmp->Handle);
 			}
 			else
 			{
-				monapi_cmessage_reply(msg);
+				Message::reply(msg);
 			}
 			break;
 		}
@@ -212,11 +212,11 @@ bool ImageHandler(MessageInfo* msg)
 			guiserver_bitmap* bmp = CreateBitmap(msg->arg1, msg->arg2, msg->arg3);
 			if (bmp != NULL)
 			{
-				monapi_cmessage_reply_args(msg, bmp->Handle, 0, NULL);
+				Message::reply(msg, bmp->Handle);
 			}
 			else
 			{
-				monapi_cmessage_reply(msg);
+				Message::reply(msg);
 			}
 			break;
 		}

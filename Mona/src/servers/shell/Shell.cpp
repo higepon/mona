@@ -504,9 +504,9 @@ void Shell::checkCaretPosition()
     syscall_get_cursor(&x, &y);
     if (this->prevX == x && this->prevY == y) return;
 
-    monapi_call_mouse_set_cursor(NULL, 0);
+    monapi_call_mouse_set_cursor(0);
     this->printPrompt(this->prevX == 0 ? NULL : "\n");
     this->commandLine[this->position] = '\0';
     printf(this->commandLine);
-    monapi_call_mouse_set_cursor(NULL, 1);
+    monapi_call_mouse_set_cursor(1);
 }

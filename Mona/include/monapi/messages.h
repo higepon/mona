@@ -1,9 +1,11 @@
 #ifndef __MONAPI_MESSAGES_H__
 #define __MONAPI_MESSAGES_H__
 
-#include <monapi/clist.h>
-#include <monapi/cmessage.h>
 #include <monapi/cmemoryinfo.h>
+
+#define MONAPI_BOOL int
+#define MONAPI_TRUE   1
+#define MONAPI_FALSE  0
 
 enum
 {
@@ -57,7 +59,7 @@ extern "C"
 extern dword monapi_get_server_thread_id(int id);
 extern MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle);
 extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
-extern MONAPI_BOOL monapi_call_mouse_set_cursor(monapi_clist* queue, MONAPI_BOOL enabled);
+extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt);

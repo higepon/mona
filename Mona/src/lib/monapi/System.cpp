@@ -20,7 +20,7 @@ namespace MonAPI
     dword System::getParentThreadID()
     {
         MessageInfo msg;
-        if (monapi_cmessage_send_receive_args(NULL, &msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO, 0, 0, 0, NULL) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
         {
             return NULL;
         }
@@ -30,7 +30,7 @@ namespace MonAPI
     const char* System::getProcessPath()
     {
         MessageInfo msg;
-        if (monapi_cmessage_send_receive_args(NULL, &msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO, 0, 0, 0, NULL) != 0)
+        if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_PROCESS_INFO) != 0)
         {
             return NULL;
         }

@@ -149,16 +149,16 @@ bool processHandler(MessageInfo* msg)
     {
         case MSG_REGISTER_TO_SERVER:
             registerReceiver(msg->arg1);
-            monapi_cmessage_reply(msg);
+            Message::reply(msg);
             break;
         case MSG_UNREGISTER_FROM_SERVER:
             unregisterReceiver(msg->arg1);
-            monapi_cmessage_reply(msg);
+            Message::reply(msg);
             break;
         case MSG_PROCESS_GET_PROCESS_INFO:
         {
             ProcessInfo pi = getProcessInfo(msg->from);
-            monapi_cmessage_reply_args(msg, pi.parent, 0, pi.path);
+            Message::reply(msg, pi.parent, 0, pi.path);
             break;
         }
         case MSG_PROCESS_CREATED:

@@ -1,3 +1,19 @@
+2004-05-29  tino  <tino@users.sourceforge.jp>
+
+        * include/monapi/Message.h (sendReceive, reply, equals*): 追加 (thanks ひげぽんさん)
+
+        * src/lib/monapi/Message.cpp (sendReceive, reply): 追加 (thanks ひげぽんさん)
+
+        * include/monapi/clist.h, cmessage.h: 削除
+
+        * src/lib/monapi/clist.c, cmessage.c: 削除
+
+        * src/lib/monapi/messages.cpp: Cで処理し切れないのでmessages.cを一部C++化
+                                       ※extern "C"のままなので、依然Cからのアクセスは可能
+
+        * src/lib/monapi/cmemoryinfo.cpp: Cで処理し切れないのでcmemoryinfo.cを一部C++化
+                                          ※extern "C"のままなので、依然Cからのアクセスは可能
+
 2004-05-27  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monalibc/math.cpp (atan): atan2()追加

@@ -17,8 +17,9 @@ SOURCES = string.cpp \
           System.cpp \
           VirtualScreen.cpp \
           mt19937ar.cpp \
-          Keys.cpp
-CSOURCES = clist.c cmessage.c cmemoryinfo.c messages.c
+          Keys.cpp \
+          messages.cpp \
+          cmemoryinfo.cpp
 
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc
@@ -41,16 +42,11 @@ $(TARGET2) : $(OBJECTS)
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
 
-.SUFFIXES: .c .o
-.c.o:
-	$(CC) -c $(CFLAGS) $(INCLUDE) $<
-
 clean :
 	rm -f $(TARGET1) $(TARGET2) $(OBJECTS)
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
-	$(CC) -MM $(INCLUDE) $(CFLAGS) $(CSOURCES) >> dependencies
 
 install: $(TARGET1) $(TARGET2)
 

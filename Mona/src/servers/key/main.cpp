@@ -63,13 +63,13 @@ int MonaMain(List<char*>* pekoe)
             case MSG_KEY_REGIST_TO_SERVER:
 
                 regist(destList, &info);
-                monapi_cmessage_reply(&info);
+                Message::reply(&info);
                 break;
 
             case MSG_KEY_UNREGIST_FROM_SERVER:
 
                 unregist(destList, &info);
-                monapi_cmessage_reply(&info);
+                Message::reply(&info);
                 break;
 
             case MSG_MEMORY_MAP_ID:

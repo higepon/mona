@@ -59,7 +59,7 @@ namespace System { namespace Mona { namespace Forms
 		
 #ifdef MONA
 		Rectangle r = this->get_Bounds();
-		monapi_cmessage_send_receive_args(NULL, NULL, __gui_server, MSG_GUISERVER_DRAWWALLPAPER, r.X, r.Y, MAKE_DWORD(r.Width, r.Height), NULL);
+		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWALLPAPER, r.X, r.Y, MAKE_DWORD(r.Width, r.Height));
 #else
 		Size sz = this->get_Size();
 		_P<Bitmap> bmp = new Bitmap(sz.Width, sz.Height);

@@ -45,7 +45,7 @@ namespace System { namespace Mona { namespace Forms
 		__gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		if (__gui_server == THREAD_UNKNOWN) ::exit(1);
 		MessageInfo msg;
-		if (monapi_cmessage_send_receive_args(NULL, &msg, __gui_server, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL) != 0)
+		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_GETFONT) != 0)
 		{
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			::exit(1);

@@ -1,11 +1,9 @@
 #include <monapi/messages.h>
-#include <monapi/cmessage.h>
 
 #include "Shell.h"
 
 using namespace MonAPI;
 
-static monapi_clist msg_queue;
 static dword my_tid;
 
 static void StdoutMessageLoop()
@@ -14,7 +12,7 @@ static void StdoutMessageLoop()
 
     for (MessageInfo msg;;)
     {
-        if (monapi_cmessage_receive(&msg_queue, &msg) != 0) continue;
+        if (Message::receive(&msg) != 0) continue;
 
         switch (msg.header)
         {
@@ -25,14 +23,14 @@ static void StdoutMessageLoop()
                 sprintf(buf, "!%d!", msg.from);
                 syscall_print(buf);
 #endif
-                monapi_call_mouse_set_cursor(&msg_queue, 0);
+                monapi_call_mouse_set_cursor(0);
                 msg.str[127] = '\0';
                 syscall_print(msg.str);
-                monapi_call_mouse_set_cursor(&msg_queue, 1);
+                monapi_call_mouse_set_cursor(1);
 #if 0  /// DEBUG for message
                 syscall_print("!E!");
 #endif
-                monapi_cmessage_reply(&msg);
+                Message::reply(&msg);
                 break;
             }
         }
@@ -50,9 +48,9 @@ int MonaMain(List<char*>* pekoe)
     syscall_mthread_join(id);
     MessageInfo msg, src;
     src.header = MSG_SERVER_START_OK;
-    monapi_cmessage_receive_cond(NULL, &msg, &src, monapi_cmessage_cond_header);
+    Message::receive(&msg, &src, Message::equalsHeader);
     dword stdout_tid = msg.from;
-    monapi_cmessage_send_receive_args(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid, 0, 0, NULL);
+    Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
 
     /* Server start ok */
     bool callAutoExec = true;
@@ -73,7 +71,7 @@ int MonaMain(List<char*>* pekoe)
     Shell shell(callAutoExec);
     shell.run();
 
-    monapi_cmessage_send_receive_args(NULL, NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid, 0, 0, NULL);
+    Message::sendReceive(NULL, PROCESS_STDOUT_THREAD, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
     syscall_kill_thread(stdout_tid);
     monapi_register_to_server(ID_KEYBOARD_SERVER, 0);
     monapi_register_to_server(ID_PROCESS_SERVER, 0);
