@@ -1,3 +1,13 @@
+
+2005-04-06  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (allocateKernelStack): 空きスタックを管理するように改造。thanks TAKAさん。
+                                     (freeKernelStack): 解放。
+
+2005-04-05  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.h (class ProcessOperation): カーネルスタックを0x100000-0x200000で定義した。
+
 2004-04-03  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/Makefile: gtimer追加

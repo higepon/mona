@@ -17,7 +17,7 @@
 #include "Process.h"
 #include "PageManager.h"
 #include "string.h"
-
+#include "BitMap.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
@@ -28,16 +28,38 @@ PageManager* ProcessOperation::pageManager;
 const int ProcessOperation::USER_PROCESS;
 const int ProcessOperation::KERNEL_PROCESS;
 
+static BitMap* kernelStackMap;
+
 void ProcessOperation::initialize(PageManager* manager)
 {
     ProcessOperation::pageManager = manager;
+
+    kernelStackMap = new BitMap(KERNEL_STACK_SIZE / KERNEL_STACK_UNIT_SIZE);
 }
 
 LinearAddress ProcessOperation::allocateKernelStack()
 {
-    static int i = 0;
-    i++;
-    return KERNEL_STACK_START + i * KERNEL_STACK_UNIT_SIZE;
+    int stackIndex = kernelStackMap->find();
+
+    if (stackIndex == BitMap::NOT_FOUND)
+    {
+        panic("sorry no kernel stack\n");
+        for (;;);
+    }
+
+    return KERNEL_STACK_START + stackIndex * KERNEL_STACK_UNIT_SIZE;
+}
+
+void ProcessOperation::freeKernelStack(LinearAddress address)
+{
+    if (address < KERNEL_STACK_START || address > KERNEL_STACK_SIZE)
+    {
+        return;
+    }
+
+    int index = (address - KERNEL_STACK_START) / KERNEL_STACK_UNIT_SIZE;
+
+    kernelStackMap->clear(index);
 }
 
 Process* ProcessOperation::create(int type, const char* name)
@@ -237,6 +259,8 @@ int ThreadOperation::kill()
 
 //    logprintf("%s:%d\n", __FILE__, __LINE__);
 
+    ProcessOperation::freeKernelStack(process->getStackBottom(thread));
+
     if (process->threadNum < 1)
     {
         PageEntry* directory = process->getPageDirectory();
@@ -267,6 +291,8 @@ int ThreadOperation::kill(dword tid)
     g_scheduler->Kill(thread);
 
 //    sendKilledMessage();
+
+    ProcessOperation::freeKernelStack(process->getStackBottom(thread));
 
     (process->threadNum)--;
 
