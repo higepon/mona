@@ -19,13 +19,15 @@ void monapi_set_irq(int irq, MONAPI_BOOL enabled, MONAPI_BOOL auto_ir2)
 {
     if (irq >= 0 && irq <= 7)
     {
-        outp8(0x21, (inp8(0x21) & ~(1 << irq)));
+        if (enabled == MONAPI_TRUE) outp8(0x21, (inp8(0x21) & ~(1 << irq)));
+        else outp8(0x21, (inp8(0x21) | (1 << irq)));
     }
     else if (irq >= 8 && irq <= 15)
     {
-        outp8(0xa1, inp8(0xa1) & ~(1 << (irq - 8)));
+        if (enabled == MONAPI_TRUE) outp8(0xa1, inp8(0xa1) & ~(1 << (irq - 8)));
+        else outp8(0xa1, inp8(0xa1) | (1 << (irq - 8)));
 
-        if (auto_ir2 == MONAPI_TRUE)
+        if (enabled == MONAPI_TRUE && auto_ir2 == MONAPI_TRUE)
         {
             outp8(0x21, (inp8(0x21) & ~(1 << 2)));
         }
