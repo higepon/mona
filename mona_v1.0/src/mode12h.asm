@@ -1,12 +1,26 @@
 bits 32
 
-global _rectangle
-global _put_pixel
-global _scroll_up
-global _write_font
-
-global _pos_x
-global _pos_y
+%ifdef BUILD_ON_LINUX
+    global rectangle
+    global put_pixel
+    global scroll_up
+    global write_font
+    global pos_x
+    global pos_y
+    %define _rectangle  rectangle
+    %define _put_pixel  put_pixcel
+    %define _scroll_up  scroll_up
+    %define _write_font write_font
+    %define _pos_x      pos_x
+    %define _pos_y      pos_y
+%else
+    global _rectangle
+    global _put_pixel
+    global _scroll_up
+    global _write_font
+    global _pos_x
+    global _pos_y
+%endif
 
 ; rectangle(int,x, int y,int xx, int yy, char color)
 _rectangle:

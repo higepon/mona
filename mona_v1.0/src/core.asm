@@ -12,16 +12,33 @@
 ;;;
 BITS 32
 
-[global _arch_set_stack_view]
-[global _arch_save_process_registers]
-[global _arch_switch_process]
-[global _arch_switch_process_to_user_mode]
-[global _arch_switch_process_to_v86_mode]
-
-[extern _g_current_process] ;; pointer to current process
-[extern _g_stack_view]      ;; for debug stack viewer
-
-[extern _fault0dHandler]
+%ifdef BUILD_ON_LINUX
+    [global arch_set_stack_view]
+    [global arch_save_process_registers]
+    [global arch_switch_process]
+    [global arch_switch_process_to_user_mode]
+    [global arch_switch_process_to_v86_mode]
+    [extern g_current_process] ;; pointer to current process
+    [extern g_stack_view]      ;; for debug stack viewer
+    [extern fault0dHandler]
+    %define _arch_set_stack_view              arch_set_stack_view
+    %define _arch_save_process_registers      arch_save_process_registers
+    %define _arch_switch_process              arch_switch_process
+    %define _arch_switch_process_to_user_mode arch_switch_process_to_user_mode
+    %define _arch_switch_process_to_v86_mode  arch_switch_process_to_v86_mode
+    %define _g_current_process                g_current_process
+    %define _g_stack_view                     g_stack_view
+    %define _fault0dHandler                   fault0dHandler
+%else
+   [global _arch_set_stack_view]
+   [global _arch_save_process_registers]
+   [global _arch_switch_process]
+   [global _arch_switch_process_to_user_mode]
+   [global _arch_switch_process_to_v86_mode]
+   [extern _g_current_process] ;; pointer to current process
+   [extern _g_stack_view]      ;; for debug stack viewer
+   [extern _fault0dHandler]
+%endif
 
 ;; before call this, pushad should be called
 _arch_save_process_registers:
@@ -138,8 +155,8 @@ _arch_switch_process_to_v86_mode:
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
         pop  ebx                     ; restore ebp
-;  	call _arch_set_stack_view
-;  	call _fault0dHandler
+;       call _arch_set_stack_view
+;       call _fault0dHandler
         iretd                        ; switch to next
 
 _arch_set_stack_view:

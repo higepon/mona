@@ -13,27 +13,65 @@
 ;;;
 BITS 32
 
-[global _arch_fdchandler]
-[global _arch_fault0dhandler]
-[global _arch_timerhandler]
-[global _arch_keystrokehandler]
-[global _arch_dummyhandler]
-[global _arch_syscall_handler]
-[global _arch_cpufaulthandler_e]
-
-[extern _arch_switch_process]
-[extern _cpufaultHandler_e]
-[extern _arch_set_stack_view]
-[extern _MFDCHandler]
-[extern _timerHandler]
-[extern _keyStrokeHandler]
-[extern _fault0dHandler]
-[extern _syscall_entrance]
-[extern _dummyHandler]
-[extern _arch_save_process_registers]
-[extern _timerHandler]
-
-[extern _g_current_process] ;; pointer to current process
+%ifdef BUILD_ON_LINUX
+    [global arch_fdchandler]
+    [global arch_fault0dhandler]
+    [global arch_timerhandler]
+    [global arch_keystrokehandler]
+    [global arch_dummyhandler]
+    [global arch_syscall_handler]
+    [global arch_cpufaulthandler_e]
+    [extern arch_switch_process]
+    [extern cpufaultHandler_e]
+    [extern arch_set_stack_view]
+    [extern MFDCHandler]
+    [extern timerHandler]
+    [extern keyStrokeHandler]
+    [extern fault0dHandler]
+    [extern syscall_entrance]
+    [extern dummyHandler]
+    [extern arch_save_process_registers]
+    [extern timerHandler]
+    [extern g_current_process]
+    %define _arch_fdchandler              arch_fdchandler
+    %define _arch_fault0dhandler          arch_fault0dhandler
+    %define _arch_timerhandler            arch_timerhandler
+    %define _arch_keystrokehandler        arch_keystrokehandler
+    %define _arch_dummyhandler            arch_dummyhandler
+    %define _arch_syscall_handler         arch_syscall_handler
+    %define _arch_cpufaulthandler_e       arch_cpufaulthandler_e
+    %define _arch_switch_process          arch_switch_process
+    %define _cpufaultHandler_e            cpufaultHandler_e
+    %define _arch_set_stack_view          arch_set_stack_view
+    %define _MFDCHandler                  MFDCHandler
+    %define _timerHandler                 timerHandler
+    %define _keyStrokeHandler             keyStrokeHandler
+    %define _fault0dHandler               fault0dHandler
+    %define _syscall_entrance             syscall_entrance
+    %define _dummyHandler                 dummyHandler
+    %define _arch_save_process_registers  arch_save_process_registers
+    %define _timerHandler                 timerHandler
+%else
+    [global _arch_fdchandler]
+    [global _arch_fault0dhandler]
+    [global _arch_timerhandler]
+    [global _arch_keystrokehandler]
+    [global _arch_dummyhandler]
+    [global _arch_syscall_handler]
+    [global _arch_cpufaulthandler_e]
+    [extern _arch_switch_process]
+    [extern _cpufaultHandler_e]
+    [extern _arch_set_stack_view]
+    [extern _MFDCHandler]
+    [extern _timerHandler]
+    [extern _keyStrokeHandler]
+    [extern _fault0dHandler]
+    [extern _syscall_entrance]
+    [extern _dummyHandler]
+    [extern _arch_save_process_registers]
+    [extern _timerHandler]
+    [extern _g_current_process]
+%endif
 
 %define KERNEL_DS 0x10
 
