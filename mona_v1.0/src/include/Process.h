@@ -89,7 +89,7 @@ typedef struct ThreadInfo {
 };
 
 typedef struct ProcessInfo_ {
-    List<ThreadInfo*>* treadList;
+    List<ThreadInfo*>* threadList;
     char name[16];
     //    OutputStream* stdout;
     //    OutputStream* stderr;
@@ -125,7 +125,7 @@ class ProcessScheduler {
 class ProcessManager_ {
 
   public:
-    ProcessManager_();
+    ProcessManager_(PageManager* pageManager);
     ~ProcessManager_();
 
   public:
@@ -136,6 +136,7 @@ class ProcessManager_ {
 
   private:
     ProcessScheduler* scheduler_;
+    PageManager* pageManager_;
 };
 
 /*!

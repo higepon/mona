@@ -171,13 +171,17 @@ int ProcessScheduler::kill(ProcessInfo_* pinfo) {
     return NORMAL;
 }
 
-ProcessManager_::ProcessManager_() {
+ProcessManager_::ProcessManager_(PageManager* pageManager) {
 
+    /* scheduler */
     scheduler_ = new ProcessScheduler();
     if (scheduler_ == NULL) {
         panic("ProcessManager_::allocateMemory error");
         for (;;);
     }
+
+    /* page manager */
+    this->pageManager_ = pageManager;
 }
 
 ProcessManager_::~ProcessManager_() {
