@@ -16,6 +16,7 @@
 #include<global.h>
 #include<tester.h>
 #include<io.h>
+#include<elf.h>
 
 extern "C" char pos_x;
 extern "C" char pos_y;
@@ -129,6 +130,12 @@ void syscall_entrance() {
         screenInfo->y    = (dword)(g_vesaDetail->yResolution);
         info->eax = 0;
         break;
+    case SYSTEM_CALL_LOAD_PROCESS:
+        g_console->printf("here(%s)", (char*)info->esi);
+        enableInterrupt();
+        info->eax = loadProcess(".", (char*)info->esi, true);
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -23,7 +23,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 all : $(USER_PROCESS) $(USER_PROCESS2) $(KEYBOARD_SERVER) $(VFS_SERVER)
 
 $(USER_PROCESS) : userlib.o KeyBoardManager.o hello.o MemoryManager.o string.o jpegls.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o string.o jpegls.o -o $(USER_PROCESS)
+	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o KeyBoardManager.o string.o jpegls.o -o $(USER_PROCESS)
 	objcopy --output-target=elf32-i386 $(USER_PROCESS)
 
 $(USER_PROCESS2) : userlib.o KeyBoardManager.o test.o MemoryManager.o string.o

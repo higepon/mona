@@ -88,6 +88,22 @@ int syscall_print(const char* msg) {
     return result;
 }
 
+int syscall_load_process(const char* name) {
+
+    int result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "movl %2  , %%esi \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_LOAD_PROCESS), "m"(name)
+                 :"ebx", "esi"
+                 );
+
+    return result;
+}
+
 int syscall_put_pixel(int x, int y, char color) {
 
     int result;

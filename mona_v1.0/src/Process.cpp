@@ -373,6 +373,7 @@ int ProcessManager::switchProcess() {
 
 LinearAddress ProcessManager::allocateKernelStack() const {
     static int i = 0;
+    i++;
     return 0x100000 + i * 4096;
 }
 

@@ -5,9 +5,113 @@
 int listener();
 int disp();
 int draw();
-static char buf[32];
 static bool come;
 static Mutex* mutex;
+
+
+class Shell {
+
+  public:
+    Shell();
+    virtual ~Shell();
+
+  public:
+    int onKeyDown(int keycode, int modifiers);
+
+  protected:
+    void commandChar(char c);
+    void commandExecute();
+    void commandTerminate();
+    void backspace();
+
+  protected:
+    char commandLine_[1024];
+    int position_;
+};
+
+Shell::Shell() : position_(0) {
+
+    printf("Mona>");
+}
+
+Shell::~Shell() {
+}
+
+void Shell::commandChar(char c) {
+
+    printf("%c", c);
+    commandLine_[position_] = c;
+    position_++;
+}
+
+void Shell::commandExecute() {
+
+    syscall_load_process(commandLine_);
+    printf("\nMona>");
+    position_ = 0;
+}
+
+void Shell::commandTerminate() {
+    commandChar('\0');
+}
+
+void Shell::backspace() {
+
+    if (position_ == 0) {
+        /* donothing */
+        return;
+    }
+
+    /* backspace */
+    position_--;
+}
+
+int Shell::onKeyDown(int keycode, int modifiers) {
+
+    switch(keycode) {
+    case(VK_A):
+    case(VK_B):
+    case(VK_C):
+    case(VK_D):
+    case(VK_E):
+    case(VK_F):
+    case(VK_G):
+    case(VK_H):
+    case(VK_I):
+    case(VK_J):
+    case(VK_K):
+    case(VK_L):
+    case(VK_M):
+    case(VK_N):
+    case(VK_O):
+    case(VK_P):
+    case(VK_Q):
+    case(VK_R):
+    case(VK_S):
+    case(VK_T):
+    case(VK_U):
+    case(VK_V):
+    case(VK_W):
+    case(VK_X):
+    case(VK_Y):
+    case(VK_Z):
+    case(VK_PERIOD):
+        //        printf("[%c]", KeyBoardManager::toChar(keycode));
+        commandChar(KeyBoardManager::toChar(keycode));
+        break;
+    case(VK_ENTER):
+        commandTerminate();
+        commandExecute();
+        break;
+    case(VK_BACKSPACE):
+        backspace();
+        break;
+    default:
+        break;
+
+    }
+    return 0;
+}
 
 int main() {
 
@@ -32,6 +136,20 @@ int main() {
         printf("regist error\n");
     }
 
+    MessageInfo message;
+    Shell shell;
+
+    for (;;) {
+        if (!Message::receive(&message)) {
+            mutex->lock();
+            if (message.arg2 & KEY_MODIFIER_DOWN) {
+                shell.onKeyDown(message.arg1, message.arg2);
+            }
+            come = true;
+            mutex->unlock();
+        }
+    }
+
     if (mutex->init()) {
         print("mutex init errror\n");
         exit(-1);
@@ -43,19 +161,19 @@ int main() {
     }
 
     if (mthread_join(id)) {
-        print("mthread join error\n");
-        exit(-1);
+         print("mthread join error\n");
+         exit(-1);
     }
 
-    if (!(id = mthread_create((dword)draw))) {
-        print("mthread create error\n");
-        exit(-1);
-    }
+//     if (!(id = mthread_create((dword)draw))) {
+//         print("mthread create error\n");
+//         exit(-1);
+//     }
 
-    if (mthread_join(id)) {
-        print("mthread join error\n");
-        exit(-1);
-    }
+//     if (mthread_join(id)) {
+//         print("mthread join error\n");
+//         exit(-1);
+//     }
 
     disp();
     return 0;
@@ -66,8 +184,6 @@ int disp() {
     for (;;) {
         if (come) {
             mutex->lock();
-            print(buf);
-            buf[0] = '0';
             come = false;
             mutex->unlock();
         }
@@ -77,14 +193,14 @@ int disp() {
 int listener() {
 
     MessageInfo message;
+    Shell shell;
 
     for (;;) {
         if (!Message::receive(&message)) {
             mutex->lock();
-            buf[0] = '<';
-            buf[1] = (char)message.arg1;
-            buf[2] = '>';
-            buf[3] = '\0';
+            if (message.arg2 & KEY_MODIFIER_DOWN) {
+                shell.onKeyDown(message.arg1, message.arg2);
+            }
             come = true;
             mutex->unlock();
         }

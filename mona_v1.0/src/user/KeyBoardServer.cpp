@@ -59,7 +59,7 @@ int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageI
     MessageInfo message;
     KeyInfo keyinfo;
 
-    /* scan code to key information */
+    /* scan code to virtual key information */
     byte scancode = info->arg1;
     manager->setKeyScanCode(scancode);
     manager->getKeyInfo(&keyinfo);

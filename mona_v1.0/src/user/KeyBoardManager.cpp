@@ -182,10 +182,206 @@ void KeyBoardManager::setKeyScanCode(byte scancode) {
     /* allocate keyinfo */
     KeyInfo* kinfo = (KeyInfo*)malloc(sizeof(KeyInfo));
 
-    /* set keyinfo */
-    kinfo->keycode   = keycode;
-    kinfo->modifiers = modifiers;
+    /* set virtual keyinfo */
+    toVirtual(keycode, modifiers, kinfo);
     keyInfoList_->add(kinfo);
 
     return;
+}
+
+void KeyBoardManager::toVirtual(byte keycode, byte modifiers, KeyInfo* info) {
+
+    info->modifiers = modifiers;
+
+    //    printf("%x", keycode);
+
+    switch(keycode) {
+
+    case('a'):
+        info->keycode = VK_A;
+        break;
+    case('b'):
+        info->keycode = VK_B;
+        break;
+    case('c'):
+        info->keycode = VK_C;
+        break;
+    case('d'):
+        info->keycode = VK_D;
+        break;
+    case('e'):
+        info->keycode = VK_E;
+        break;
+    case('f'):
+        info->keycode = VK_F;
+        break;
+    case('g'):
+        info->keycode = VK_G;
+        break;
+    case('h'):
+        info->keycode = VK_H;
+        break;
+    case('i'):
+        info->keycode = VK_I;
+        break;
+    case('j'):
+        info->keycode = VK_J;
+        break;
+    case('k'):
+        info->keycode = VK_K;
+        break;
+    case('l'):
+        info->keycode = VK_L;
+        break;
+    case('m'):
+        info->keycode = VK_M;
+        break;
+    case('n'):
+        info->keycode = VK_N;
+        break;
+    case('o'):
+        info->keycode = VK_O;
+        break;
+    case('p'):
+        info->keycode = VK_P;
+        break;
+    case('q'):
+        info->keycode = VK_Q;
+        break;
+    case('r'):
+        info->keycode = VK_R;
+        break;
+    case('s'):
+        info->keycode = VK_S;
+        break;
+    case('t'):
+        info->keycode = VK_T;
+        break;
+    case('u'):
+        info->keycode = VK_U;
+        break;
+    case('v'):
+        info->keycode = VK_V;
+        break;
+    case('w'):
+        info->keycode = VK_W;
+        break;
+    case('x'):
+        info->keycode = VK_X;
+        break;
+    case('y'):
+        info->keycode = VK_Y;
+        break;
+    case('z'):
+        info->keycode = VK_Z;
+        break;
+    case(0x2E):
+        info->keycode = VK_PERIOD;
+        break;
+    case(0x03):
+        info->keycode = VK_ENTER;
+        break;
+    case(0x01):
+        info->keycode = VK_BACKSPACE;
+        break;
+    default:
+        info->keycode = keycode;
+        info->modifiers = modifiers;
+        break;
+    }
+    return;
+}
+
+char KeyBoardManager::toChar(int keycode) {
+
+    char result;
+
+    switch(keycode) {
+
+    case(VK_A):
+        result = 'A';
+        break;
+    case(VK_B):
+        result = 'B';
+        break;
+    case(VK_C):
+        result = 'C';
+        break;
+    case(VK_D):
+        result = 'D';
+        break;
+    case(VK_E):
+        result = 'E';
+        break;
+    case(VK_F):
+        result = 'F';
+        break;
+    case(VK_G):
+        result = 'G';
+        break;
+    case(VK_H):
+        result = 'H';
+        break;
+    case(VK_I):
+        result = 'I';
+        break;
+    case(VK_J):
+        result = 'J';
+        break;
+    case(VK_K):
+        result = 'K';
+        break;
+    case(VK_L):
+        result = 'L';
+        break;
+    case(VK_M):
+        result = 'M';
+        break;
+    case(VK_N):
+        result = 'N';
+        break;
+    case(VK_O):
+        result = 'O';
+        break;
+    case(VK_P):
+        result = 'P';
+        break;
+    case(VK_Q):
+        result = 'Q';
+        break;
+    case(VK_R):
+        result = 'R';
+        break;
+    case(VK_S):
+        result = 'S';
+        break;
+    case(VK_T):
+        result = 'T';
+        break;
+    case(VK_U):
+        result = 'U';
+        break;
+    case(VK_V):
+        result = 'V';
+        break;
+    case(VK_W):
+        result = 'W';
+        break;
+    case(VK_X):
+        result = 'X';
+        break;
+    case(VK_Y):
+        result = 'Y';
+        break;
+    case(VK_Z):
+        result = 'Z';
+        break;
+    case(VK_PERIOD):
+        result = '.';
+        break;
+    default:
+        result = ' ';
+        break;
+    }
+    return result;
 }
