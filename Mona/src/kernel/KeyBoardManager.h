@@ -82,12 +82,12 @@ typedef enum {
 
 /*!
     struct for key information
-*/
+*//*
 typedef struct {
     unsigned int keycode;
     unsigned int modifiers;
 } KeyInfo;
-
+*/
 /*!
     keyboard input management  class
 */
