@@ -269,6 +269,7 @@ void loadServer(const char* server, const char* name)
 
 int execSysConf()
 {
+#if 1
     /* only one process can use fd */
     while (Semaphore::down(&g_semaphore_fd));
 
@@ -347,6 +348,24 @@ int execSysConf()
     }
 
     free(buf);
+#endif
+
+#if 0
+    char* server = "/SERVERS/MONITER.BIN";
+    char* name =  "MONITER.BIN";
+
+                    loadServer("/SERVERS/FILE.BIN", "FILE.BIN");
+                    loadServer("/SERVERS/ELF.BIN", "ELF.BIN");
+   loadServer("/SERVERS/MONITER.BIN", "MONITER.BIN");
+#endif
+
+//    g_console->printf("loading %s....", "/SERVERS/MONITER");
+//    g_console->printf("%s\n", Loader::Load(server, name, true, NULL) ? "NG" : "OK");
+    //  for(;;);
+//    g_console->printf("%s\n", Loader::Load("/SERVERS/MONITER.BIN", "MONITER.BIN", true, NULL) ? "NG" : "OK");
+//    loadServer("/SERVERS/MONITER.BIN", "MONITER.BIN");
+
+
     return 0;
 }
 

@@ -1,6 +1,12 @@
+2004-06-23  higepon  <higepon@users.sourceforge.jp>
+
+        * sys/HashMap.h: 修正
+
+        * src/server: moniter追加
+
 2004-06-17  higepon  <higepon@users.sourceforge.jp>
 
-        * src/kernel/: elf.cpp, elf.hを削除 
+        * src/kernel/: elf.cpp, elf.hを削除
 
         * src/servers/shell/InternalCommands.cpp (internalCommandExecute): syscall_load_processを利用(Tinoさん確認をお願いします。)
 

@@ -7,6 +7,7 @@ all:
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 
 install:
 	@cd key; $(MAKE) $@
@@ -17,6 +18,7 @@ install:
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 
 clean: touchdepend
 	@cd key; $(MAKE) $@
@@ -27,6 +29,7 @@ clean: touchdepend
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 
 depend: touchdepend
 	@cd key; $(MAKE) $@
@@ -36,6 +39,7 @@ depend: touchdepend
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 
 distclean:
 	rm -f key/dependencies
@@ -45,6 +49,7 @@ distclean:
 	rm -f 1linesh/dependencies
 	rm -f file/dependencies
 	rm -f elf/dependencies
+	rm -f moniter/dependencies
 
 touchdepend:
 	touch key/dependencies
@@ -54,3 +59,4 @@ touchdepend:
 	touch 1linesh/dependencies
 	touch file/dependencies
 	touch elf/dependencies
+	touch moniter/dependencies
