@@ -56,6 +56,22 @@ gdt18:                          ; segment 18(stack segment)
         db 0xc0                 ; segment limitH
         db 0                    ; segment baseH
 
+gdt20:                          ; segment 20(task state segment)
+        dw 0                    ; segment limitL
+        dw 0                    ; segment baseL
+        db 0                    ; segment baseM
+        db 0x89                 ; Type TSS
+        db 0xc0                 ; segment limitH
+        db 0                    ; segment baseH
+
+gdt28:                          ; segment 20(task state segment)
+        dw 0                    ; segment limitL
+        dw 0                    ; segment baseL
+        db 0                    ; segment baseM
+        db 0x89                 ; Type TSS
+        db 0xc0                 ; segment limitH
+        db 0                    ; segment baseH
+
 gdt_end:                        ; end of gdt
 
 [bits 32]
