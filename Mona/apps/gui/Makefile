@@ -51,7 +51,8 @@ distclean:
 	rm -f launcher/dependencies
 	rm -f waba/dependencies
 	rm -f shell/dependencies
-	@cd clock; $(MAKE) $@
+	rm -f clock/dependencies
+#	@cd clock; $(MAKE) $@
 
 touchdepend:
 	touch reversi/dependencies
@@ -62,4 +63,5 @@ touchdepend:
 	touch launcher/dependencies
 	touch waba/dependencies
 	touch shell/dependencies
-	@cd clock; $(MAKE) $@
+	touch clock/dependencies
+#	@cd clock; $(MAKE) $@
