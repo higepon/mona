@@ -160,10 +160,10 @@ int MoEther::receiveEther()
     // フレームを各プロトコルに渡す
     switch(frame->type)
     {
-        case DIX_TYPE_IP:
+        case ETHER_PROTO_IP:
             return g_MoIp->receiveIp((IP_HEADER*)frame->data);
             break;
-        case DIX_TYPE_ARP:
+        case ETHER_PROTO_ARP:
             return g_MoArp->receiveArp((ARP_HEADER*)frame->data);
             break;
             

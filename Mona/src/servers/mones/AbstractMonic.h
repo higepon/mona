@@ -27,7 +27,7 @@ class AbstractMonic {
   public:
   
     //Publicメンバ
-    /*! \brief NE2000 テンポラリ受信バッファ */ 
+    /*! \brief AbstractMonic テンポラリ受信バッファ */ 
     byte   frame_buf[1500];
     
     /*! \brief MACアドレス */ 
@@ -38,13 +38,19 @@ class AbstractMonic {
     AbstractMonic();
     virtual ~AbstractMonic();
     
+    //各種インターフェースメソッド サブクラス(具象クラス(NIC)で実装を期待)
     virtual void frame_input(void) = 0;
     virtual void frame_output( byte *, byte *, dword, word ) = 0;
+    virtual int init(void) = 0;
     virtual int nic_probe(void) = 0;
-    virtual void nic_init(void) = 0;
+    //virtual void nic_init(void) = 0;
     virtual void enableNetWork(void) = 0;
     virtual void disableNetWork(void) = 0;
     virtual int getNicIRQ() = 0;
+    virtual void setNicIRQ(int) = 0;
+    virtual int getNicIOBASE() = 0;
+    virtual void setNicIOBASE(int) = 0;
+
 };
 
 #endif

@@ -143,7 +143,7 @@ void MoArp::transArp(dword dstip, byte *dstmac, word opecode)
     head.dstIp=dstip;  //ここは受け取ったまま返却するので、エンディアン変換は不要
 
     //送信処理 ここでは、直接ドライバをコール
-    insAbstractNic->frame_output((byte *)&head , dstmac , sizeof(head) , DIX_TYPE_ARP);
+    insAbstractNic->frame_output((byte *)&head , dstmac , sizeof(head) , ETHER_PROTO_ARP);
 
 }
 

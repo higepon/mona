@@ -139,7 +139,7 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
     ipHead.chksum=0;
 
     //送信TBL
-    tbi->type=DIX_TYPE_IP;
+    tbi->type=ETHER_PROTO_IP;
     tbi->data[0]=(char*)&ipHead;
     tbi->size[0]=sizeof(IP_HEADER);         // IP header size.
     //max=ethDev[num].mtu-sizeof(IP_HEADER);  // データ最大送信サイズ。
@@ -167,7 +167,7 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
         memcpy(transPacket,(byte *)&ipHead,sizeof(ipHead));
         memcpy(transPacket + sizeof(ipHead),tbi->data[1],tbi->size[1]);
         
-        insAbstractNic->frame_output(transPacket , (byte *)dstmac , sizeof(IP_HEADER) + total , DIX_TYPE_IP);
+        insAbstractNic->frame_output(transPacket , (byte *)dstmac , sizeof(IP_HEADER) + total , ETHER_PROTO_IP);
         
         //パケットバッファ解放
         free(transPacket);
@@ -221,3 +221,29 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
 }
 
 
+ 
+/*!
+    \brief ipRouting
+         IPルーティング 処理
+    \param  word ip [in] 送信先IPアドレス
+    \param  dword dstip [in] 転送先IPアドレス(他のサブネットならルータとなる)
+    \return int 結果 
+
+    \author Yamami
+    \date   create:2004/10/30 update:2004/10/30
+*/
+int MoIp::ipRouting(dword ip,dword *transip)
+{
+    //int i;
+
+    //同一サブネット内かチェックする。
+    if((ip & G_MonesCon.getGl_mySubnet()) == (G_MonesCon.getGl_myIpAdr() & G_MonesCon.getGl_mySubnet()))
+    {
+        *transip=ip;
+        return 0;
+    }
+
+    /* デフォルトゲートウェイへ。 */
+    *transip=G_MonesCon.getGl_myGw();
+    return 0;
+}

@@ -15,9 +15,18 @@
 #define _MONA_MONESDEFINE_
 
 
+/* Ethernet MAC層ヘッダ構成 */
+#define SIZEOF_ETHERADDR    6
+
 //DIX仕様フレームのフレームタイプ
-#define     DIX_TYPE_IP     0x0800    // IPプロトコルフレーム
-#define     DIX_TYPE_ARP    0x0806    // ARPプロトコルフレーム
+#define ETHER_PROTO_IP      0x0800      // IPプロトコルフレーム
+#define ETHER_PROTO_ARP     0x0806      // ARPプロトコルフレーム
+
+#define etherhdr_dest_addr  0
+#define etherhdr_src_addr   (etherhdr_dest_addr+SIZEOF_ETHERADDR)
+#define etherhdr_type       (etherhdr_src_addr+SIZEOF_ETHERADDR)
+#define SIZEOF_ETHERHDR     (etherhdr_type+2)
+
 
 //IPヘッダプロトコルNo
 enum{
@@ -33,6 +42,21 @@ enum{
     INADDR_BROADCAST=0xffffffff,    /* IPv4 broadcast address. */
 };
 
+
+/* IPヘッダ構成 */
+#define     SIZEOF_IPADDR       4
+
+#define     iphdr_version   0               /* 1 */
+#define     iphdr_service   (iphdr_version+1)       /* 1 */
+#define     iphdr_len   (iphdr_service+1)       /* 2 */
+#define     iphdr_ident (iphdr_len+2)           /* 2 */
+#define     iphdr_frags (iphdr_ident+2)         /* 2 */
+#define     iphdr_ttl   (iphdr_frags+2)         /* 1 */
+#define     iphdr_protocol  (iphdr_ttl+1)           /* 1 */
+#define     iphdr_chksum    (iphdr_protocol+1)      /* 2 */
+#define     iphdr_src_addr  (iphdr_chksum+2)        /* 4 */
+#define     iphdr_dest_addr (iphdr_src_addr+4)      /* 4 */
+#define     SIZEOF_IPHDR    (iphdr_dest_addr+4)
 
 
 //ICMP タイプ

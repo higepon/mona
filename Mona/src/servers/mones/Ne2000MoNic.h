@@ -28,9 +28,10 @@
 
 // NE2000 定数定義
 
-//#define       NE_BASE             0xe0
+
 //BOCHS ISA NE2000
-#define     NE_BASE             0x240
+//#define     NE_BASE             0x240
+#define     NE_BASE             nicIo_Base
 // QEMU PCI NE2000
 //#define     NE_BASE             0xC100
 #define     NE_ASIC             NE_BASE + 0x10
@@ -160,24 +161,35 @@ class Ne2000MoNic : public AbstractMonic
     
     //コンストラクタ
     Ne2000MoNic();
-    void init();
+    
+    //NIC初期化処理 
+    int init();
     
     void frame_input(void);
     void frame_output( byte *, byte *, dword, word );
     int nic_probe(void);
-    void nic_init(void);
+    
     
     void enableNetWork(void);
     void disableNetWork(void);
     
-    //Yamami?? ドライバ情報もMonesConfigの方がいいかな？ いや、あくまでドライバ情報なのでここ？
-    //このNICのIRQ番号 Booch対応
-    static const int nicIRQ = 3;
 
-    //NIC IRQ ゲッター
+    //NIC IRQ ゲッター、セッター
     int getNicIRQ();
+    void setNicIRQ(int);
+    
+    //NIC IOBASE ゲッター、セッター
+    int getNicIOBASE();
+    void setNicIOBASE(int);
 
   private:
+    //このNICのIRQ番号
+    int nicIRQ;
+    //このNICのI/O BASE
+    int nicIo_Base;
+    
+    //NE2000 特有初期化処理
+    void nic_init(void);
     
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );

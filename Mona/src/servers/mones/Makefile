@@ -5,14 +5,16 @@ SOURCES = mones.cpp            \
           MoEther.cpp          \
           MoArp.cpp            \
           MoIp.cpp             \
+          MoTcp.cpp            \
           MoIcmp.cpp           \
           MonesConfig.cpp      \
+          MonesLoader.cpp      \
           MoPacUtl.cpp
 
 INSTDIR = $(BINDIR)/root/SERVERS
 
 MONADIR = ../../..
-ADDLINK    = -lmonalibc
+ADDLINK    = -lPci -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 
 ifneq ($(BUILD_TARGET),ELF)

@@ -36,9 +36,10 @@ Ne2000MoNic::Ne2000MoNic()
     \brief initialize
          Ne2000MoNic init
     \author Yamami
+    \return int 結果 0:正常 、 0以外:異常
     \date   create:2004/08/12 update:
 */
-void Ne2000MoNic::init() 
+int Ne2000MoNic::init() 
 {
 
     int reti;
@@ -62,6 +63,7 @@ void Ne2000MoNic::init()
     reti = nic_probe();
     if(reti != 0 ){
         printf("Does Not Exist Ne2K!!!\n");
+        return -1;
     }
 
     //ここでMACアドレスを表示してみる
@@ -75,7 +77,7 @@ void Ne2000MoNic::init()
     //Ne2000 初期化
     nic_init();
 
-    return;
+    return 0;
 }
 
 
@@ -657,7 +659,8 @@ int Ne2000MoNic::ne_bcompare( byte *src, byte *dest, dword size )
     \author Yamami
     \date   create:2004/08/08 update:
 */
-void Ne2000MoNic::disableNetWork() {
+void Ne2000MoNic::disableNetWork() 
+{
 
     byte IrqMask;
     
@@ -672,7 +675,8 @@ void Ne2000MoNic::disableNetWork() {
     \author Yamami
     \date   create:2004/08/08 update:
 */
-void Ne2000MoNic::enableNetWork() {
+void Ne2000MoNic::enableNetWork() 
+{
 
     byte IrqMask;
     IrqMask = 0;
@@ -689,8 +693,47 @@ void Ne2000MoNic::enableNetWork() {
     \author Yamami
     \date   create:2004/08/30 update:
 */
-int Ne2000MoNic::getNicIRQ() {
+int Ne2000MoNic::getNicIRQ() 
+{
 
-    //Yamami!! 本来は、設定ファイル等からIRQ情報を得る
+    //TODO Yamami!! 本来は、設定ファイル等からIRQ情報を得る
     return nicIRQ;
+}
+
+/*!
+    \brief setNicIRQ
+       NIC IRQ セッター
+    \author Yamami
+    \date   create:2004/10/31 update:2004/10/31
+*/
+void Ne2000MoNic::setNicIRQ(int value) 
+{
+    nicIRQ = value;
+
+}
+
+
+/*!
+    \brief getNicIOBASE
+       NIC IO_BASE ゲッター
+    \author Yamami
+    \date   create:2004/10/31 update:2004/10/31
+*/
+int Ne2000MoNic::getNicIOBASE() 
+{
+
+    //TODO Yamami!! 本来は、設定ファイル等からIRQ情報を得る
+    return nicIo_Base;
+}
+
+/*!
+    \brief setNicIOBASE
+       NIC IO_BASE  セッター
+    \author Yamami
+    \date   create:2004/10/31 update:2004/10/31
+*/
+void Ne2000MoNic::setNicIOBASE(int value) 
+{
+    nicIo_Base = value;
+
 }

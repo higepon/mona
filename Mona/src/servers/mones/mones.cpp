@@ -18,10 +18,9 @@
 
 #include <monapi.h>
 #include "AbstractMonic.h"
-#include "Ne2000MoNic.h"
 #include "MoEther.h"
 #include "MonesConfig.h"
-
+#include "MonesLoader.h"
 
 
 using namespace MonAPI;
@@ -34,20 +33,31 @@ using namespace MonAPI;
     \param List<char*>* pekoe
 
     \author  Yamami
-    \date    create:2004/08/08 update:2004/08/28
+    \date    create:2004/08/08 update:2004/10/31
 */
 int MonaMain(List<char*>* pekoe)
 {
+    int ret;
     //syscall_get_io  
     //このプロセス動作中は、IOを特権レベル3まで許可する
     syscall_get_io();
     
     // NICのインスタンス化
-    // Yamami!! 本来ならばここで、は環境(設定)に応じたNICドライバをロードする。
-    // initilize Mona Network
-    Ne2000MoNic* insAbstractNic = new Ne2000MoNic();
-    insAbstractNic->init();
-
+    // MonesLoaderクラス経由でインスタンス化する。
+    AbstractMonic* insAbstractNic;
+    
+    MonesLoader* insNicLoader = new MonesLoader();
+    insNicLoader->setup();
+    insAbstractNic = insNicLoader->getNicInstance();
+    //NICのロードに失敗した場合は、Mones終了
+    if(insAbstractNic == 0){
+        printf("NIC Error Mones Quit \n");
+        return 0;
+    }
+    
+    //Ne2000MoNic* insAbstractNic = new Ne2000MoNic();
+    
+    
     //Etherクラスのインスタンス化
     g_MoEther = new MoEther();
     g_MoEther->etherInit(insAbstractNic);

@@ -78,7 +78,8 @@ class MoIp
     int transIp(TRANS_BUF_INFO*, dword , byte , int );
 
   private:
-
+    int ipRouting(dword ,dword*);
+    
     //NICƒhƒ‰ƒCƒo
     AbstractMonic* insAbstractNic;
 
