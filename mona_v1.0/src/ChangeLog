@@ -1,3 +1,7 @@
+2004-02-04  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: user/lib/libuser.a‚ğì¬
+
 2004-02-03  higepon  <higepon@users.sourceforge.jp>
 
         * user/include/userlib.h: MemoryMapƒNƒ‰ƒXì¬
