@@ -1,6 +1,7 @@
 2004-11-20  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/non-gui/ata/main.cpp (MonaMain): この時点でのatapiコードはVmware, VPC, QEMUで動いた。
+        * apps/non-gui/ata/main.cpp (MonaMain): この時点でのatapiコードはVmware, VPC, QEMUで動いた。とりあえずこの状態を取っておきたいので
+                                                0_3_0alpha1のタグをつけた。
 
         * apps/non-gui/ata/IDEDriver.cpp: 不要関数削除
                                           (selectDevice): デバイスセレクションプロトコル修正
