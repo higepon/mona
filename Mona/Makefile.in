@@ -46,6 +46,10 @@ depend:
 	@cd samples; $(MAKE) $@
 
 distclean: clean
+	@cd tools; $(MAKE) $@
+	@cd src; $(MAKE) $@
+	@cd apps; $(MAKE) $@
+	@cd samples; $(MAKE) $@
 	rm -f Makefile
 	rm -f env/Makefile.inc
 
