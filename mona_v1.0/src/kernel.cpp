@@ -105,7 +105,7 @@ void printInfo() {
 void startKernel(void) {
 
     /* kernel memory range */
-    km.initialize(0x200000, 0xAfffff);
+    km.initialize(0x200000, 0x7fffff);
 
     /* set segment */
     GDTUtil::setup();
