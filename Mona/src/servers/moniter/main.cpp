@@ -13,6 +13,7 @@
 
 #include <monapi.h>
 #include <monapi/CString.h>
+#include <monapi/messages.h>
 
 using namespace MonAPI;
 
@@ -53,18 +54,18 @@ Monitor::~Monitor()
 
 void Monitor::Service()
 {
-  for (;;)
-  {
-      sleep(CHECK_INTERVAL);
-      CheckServers();
-  }
+    for (;;)
+    {
+        CheckServers();
+        sleep(CHECK_INTERVAL);
+    }
 }
 
 bool Monitor::Initialize()
 {
     char* config;
 
-    config = (char*)ReadConfig("/MONA.CFG");
+    config = (char*)ReadConfig("/MONITOR.INI");
     if (config == NULL)
     {
         printf("Config file read error\n");
@@ -101,12 +102,9 @@ void Monitor::ParseConfig(CString content)
 
         CString name = q[q.get_Length() - 1];
 
-        if (name == "MONITOR.BIN") continue;
-
         this->paths.add(path);
         this->servers.add(name);
     }
-
 
     alive = new bool[servers.size()];
 
@@ -122,6 +120,7 @@ byte* Monitor::ReadConfig(CString file)
     FileInputStream fis(file);
 
     result = fis.open();
+
     if (result != 0) return NULL;
 
     fileSize = fis.getFileSize();
@@ -172,11 +171,18 @@ void Monitor::CheckServers()
     for (int i = 0; i < servers.size(); i++)
     {
         if (alive[i]) continue;
-        printf("Server: %s is dead\n", (const char*)servers.get(i));
-        syscall_load_process((const char*)paths.get(i), (const char*)servers.get(i), NULL);
+
+        printf("loading %s....", (const char*)paths.get(i));
+        printf("%s\n", monapi_call_process_execute_file((const char*)paths.get(i), MONAPI_FALSE) == 0? "OK" : "NG");
+        MessageInfo msg;
+        for (;;)
+        {
+            if (Message::receive(&msg)) continue;
+            if (msg.header == MSG_SERVER_START_OK) break;
+        }
+
     }
 }
-
 
 int MonaMain(List<char*>* pekoe)
 {

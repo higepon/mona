@@ -1,8 +1,8 @@
-TARGET  = KEYBDMNG.BIN
+TARGET  = KEYBDMNG
 SOURCES = main.cpp KeyboardManager.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-bin.inc
+include $(MONADIR)/env/monapi-bn2.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 

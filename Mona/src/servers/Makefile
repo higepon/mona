@@ -7,7 +7,7 @@ all:
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
-#	@cd moniter; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
 
@@ -20,7 +20,7 @@ install:
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
-#	@cd moniter; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
 
@@ -33,7 +33,7 @@ clean: touchdepend
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
-#	@cd moniter; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
 
@@ -45,7 +45,7 @@ depend: touchdepend
 	@cd 1linesh; $(MAKE) $@
 	@cd file; $(MAKE) $@
 	@cd elf; $(MAKE) $@
-#	@cd moniter; $(MAKE) $@
+	@cd moniter; $(MAKE) $@
 	@cd process; $(MAKE) $@
 	@cd pe; $(MAKE) $@
 
@@ -57,7 +57,7 @@ distclean:
 	rm -f 1linesh/dependencies
 	rm -f file/dependencies
 	rm -f elf/dependencies
-#	rm -f moniter/dependencies
+	rm -f moniter/dependencies
 	rm -f process/dependencies
 	rm -f pe/dependencies
 
@@ -69,6 +69,6 @@ touchdepend:
 	touch 1linesh/dependencies
 	touch file/dependencies
 	touch elf/dependencies
-#	touch moniter/dependencies
+	touch moniter/dependencies
 	touch process/dependencies
 	touch pe/dependencies

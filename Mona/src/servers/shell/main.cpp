@@ -58,7 +58,7 @@ int MonaMain(List<char*>* pekoe)
 
     /* Server start ok */
     bool callAutoExec = true;
-    dword targetID = Message::lookupMainThread("INIT");
+    dword targetID = Message::lookupMainThread("MONITOR.BIN");
     if (targetID == THREAD_UNKNOWN)
     {
         targetID = MonAPI::System::getParentThreadID();
@@ -68,7 +68,7 @@ int MonaMain(List<char*>* pekoe)
     /* send */
     if (targetID != THREAD_UNKNOWN && Message::send(targetID, MSG_SERVER_START_OK))
     {
-        printf("%s: INIT error\n", SVR);
+        printf("%s: MONITOR error\n", SVR);
     }
 
     /* service loop */

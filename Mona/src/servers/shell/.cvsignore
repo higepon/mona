@@ -5,6 +5,7 @@
 *.local
 *.ELF
 *.BIN
+*.BN2
 bin
 obj
 TAGS

@@ -71,7 +71,7 @@ void mouseHandler()
         message.header = MSG_MOUSE;
         message.arg3 = data;
         counter = 0;
-        if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.BIN"), &message))
+        if (g_messenger->send(g_scheduler->lookupMainThread("MOUSE.BN2"), &message))
         {
             g_console->printf("mouse send failed");
         }
@@ -101,7 +101,7 @@ void keyStrokeHandler(dword scancode)
     /* EOI */
     outp8(0x20, 0x20);
 
-    if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.BIN"), &message))
+    if (g_messenger->send(g_scheduler->lookupMainThread("KEYBDMNG.BN2"), &message))
     {
         g_console->printf("send failed");
     }

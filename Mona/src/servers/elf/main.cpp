@@ -110,9 +110,9 @@ static void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
-    if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
+    if (Message::send(Message::lookupMainThread("MONITOR.BIN"), MSG_SERVER_START_OK) != 0)
     {
-        printf("%s: INIT error\n", SVR);
+        printf("%s: MONITOR error\n", SVR);
         exit(1);
     }
 

@@ -32,10 +32,10 @@ int MonaMain(List<char*>* pekoe)
     MessageInfo info;
 
     /* Server start ok */
-    dword targetID = Message::lookupMainThread("INIT");
+    dword targetID = Message::lookupMainThread("MONITOR.BIN");
     if (targetID == 0xFFFFFFFF)
     {
-        printf("KeyBoardServer:INIT not found\n");
+        printf("KeyBoardServer:MONITOR not found\n");
         exit(1);
     }
 

@@ -1,8 +1,8 @@
-TARGET  = OLDSHELL.BIN
+TARGET  = OLDSHELL
 SOURCES = main.cpp Shell.cpp InternalCommands.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/monapi-bin.inc
+include $(MONADIR)/env/monapi-bn2.inc
 
 INSTDIR = $(BINDIR)/root/SERVERS
 

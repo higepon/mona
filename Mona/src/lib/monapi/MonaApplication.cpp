@@ -52,7 +52,7 @@ MonaApplication::MonaApplication() {
 
     mypid_ = System::getThreadID();
 
-    dword targetID = Message::lookupMainThread("KEYBDMNG.BIN");
+    dword targetID = Message::lookupMainThread("KEYBDMNG.BN2");
     if (targetID == 0xFFFFFFFF)
     {
         printf("MonaApplication:KeyBoardServer not found\n");

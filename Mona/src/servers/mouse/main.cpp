@@ -14,7 +14,7 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 
-#define INIT_PROCESS "INIT"
+#define INIT_PROCESS "MONITOR.BIN"
 
 static CommonParameters* commonParams;
 
@@ -231,7 +231,7 @@ bool MouseServer::SendServerOK()
     dword targetID = Message::lookupMainThread(INIT_PROCESS);
     if (targetID == THREAD_UNKNOWN)
     {
-        printf("MouseServer:INIT not found\n");
+        printf("MouseServer:MONITER not found\n");
         return false;
     }
 

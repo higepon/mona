@@ -1,3 +1,9 @@
+2004-06-29  higepon  <higepon@users.sourceforge.jp>
+
+        * env/monapi-bn2.inc: BN2形式でサーバーバイナリを作成する。
+
+        * src/servers/moniter/main.cpp: MONITOR.INIに指定されたサーバーをロードする。
+
 2004-06-29  tino  <tino@users.sourceforge.jp>
 
         * include/monapi/messages.h: PROCESS_STDOUT_THREAD削除
