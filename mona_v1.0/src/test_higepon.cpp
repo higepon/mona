@@ -145,99 +145,39 @@ void rdtscsub(dword* timeL, dword* timeH) {
 /*----------------------------------------------------------------------
     Mouse
 ----------------------------------------------------------------------*/
-int Mouse::init() {
+int Mouse::init()
+{
+    byte data;
+    outp8(0x64, 0x20);
+    if (waitReadable())
+    {
+        return 1;
+    }
+    data = inp8(0x60);
 
+    outp8(0x64, 0x60);
+    if (waitWritable())
+    {
+        return 2;
+    }
 
-/* back up */
-    /*
-       status = inp8(0x64);
+    outp8(0x60, data & (~0x30) | 0x3);
+    if (!waitReadable())
+    {
+        inp8(0x60);
+    }
 
-       bit0: out buffer full 1
-       bit1: in  buffer full 1
-
-       KBC writable<outp8(0x60,)> when bit0 and bit1 = 0
-       KBC readable<inp8(0x60)>   when bit0 = 1
-
-    */
-
-// bochs hate this interface test */
-
-    /* aux interface test */
-//     outp8(0x64, 0xa9);
-//     if (waitReadable()) {
-//         return 1;
-//     }
-
-//     if (inp8(0x60)) {
-
-//         /* aux interface test error */
-//         return 2;
-//     }
-
-// bochs comment out
-
-//     /* enable aux */
-//     outp8(0x64, 0xa8);
-
-//     /* get command written before */
-//     byte data;
-//     outp8(0x64, 0x20);
-//     if (waitReadable()) {
-//         return 3;
-//     }
-//     data = inp8(0x60);
-
-//     /* kbc command write keyboard & enable mouse intterupt */
-//     outp8(0x64, 0x60);
-//     if (waitWritable()) {
-//         return 4;
-//     }
-//     outp8(0x60, data | 0x03);
-
-//     /* after kbc command write, read one data */
-// //     if (waitReadable()) {
-// //         return 5;
-// //     }
-// //     data = inp8(0x60);
-// //     not necesarry? above?
-
-//     /* mouse reset */
-//     outp8(0x64, 0xd4);
-//     if (waitWritable()) {
-//         return 6;
-//     }
-//     outp8(0x60, 0xff);
-
-//     /* after kbc command write, read 3 times */
-//     if (waitReadable()) {
-//         return 7;
-//     }
-//     data = inp8(0x60);
-
-// /* no need below two block ? */
-//     if (waitReadable()) {
-//         return 8;
-//     }
-//     data = inp8(0x60);
-
-//     if (waitReadable()) {
-//         return 9;
-//     }
-//     data = inp8(0x60);
-
-//     /* enable mouse */
-//     outp8(0x64, 0xd4);
-//     if (waitWritable()) {
-//         return 10;
-//     }
-//     outp8(0x60, 0xf4);
-
-//     /* after enable mouse read one data */
-//     if (waitReadable()) {
-//         return 11;
-//     }
-//     data = inp8(0x60);
-
+    outp8(0x64, 0xd4);
+    if (waitWritable())
+    {
+        return 4;
+    }
+    outp8(0x60, 0xf4);
+    if (waitReadable())
+    {
+        return 5;
+    }
+    inp8(0x60);
     return 0;
 }
 
@@ -331,4 +271,3 @@ int Messenger::receive(Thread* thread, MessageInfo* message)
     thread->messageList->removeAt(0);
     return 0;
 }
-

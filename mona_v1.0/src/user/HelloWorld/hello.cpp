@@ -5,7 +5,6 @@ int MonaMain(List<char*>* pekoe)
     printf("Hello World\n");
 
     Random r;
-
     for (int i = 0; i < 10; i++)
     {
         printf("[%d]", r.nextInt());

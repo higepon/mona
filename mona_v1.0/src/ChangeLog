@@ -1,5 +1,7 @@
 2004-04-04  higepon  <higepon@users.sourceforge.jp>
 
+        * test_higepon.cpp (init): マウス初期化処理変更 thx! 893(2ch)
+
         * user/include/userlib/Random.h (class Random): 乱数生成 http://www.math.keio.ac.jp/home2/matumoto/public_html/MT2002/mt19937ar.html
 
 2004-04-02  higepon  <higepon@users.sourceforge.jp>

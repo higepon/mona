@@ -62,7 +62,7 @@
 #include <VesaConsole.h>
 #include <LogConsole.h>
 
-char* version = "Mona version.0.2.0alpha10p $Date$";
+char* version = "Mona version.0.2.0alpha11 $Date$";
 void  mainProcess();
 
 /*!
