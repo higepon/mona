@@ -1,5 +1,7 @@
 2005-03-15  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/FDCDriver.cpp (read): 割り込み待ちの仕組みを導入。
+
         * src/servers/file/file.cpp (ReadFile): CDのREAD時にファイルサイズが1大きくなってしまうバグを修正。
 
 2005-03-09  higepon  <higepon@users.sourceforge.jp>

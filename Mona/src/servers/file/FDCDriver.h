@@ -1,4 +1,4 @@
-/*!
+/*
     \file FDCDriver.h
     \brief Floppy Disk Controller driver for Multi Task
 
@@ -16,8 +16,8 @@
 #include <monapi/messages.h>
 #include <fat_write/IStorageDevice.h>
 
-#ifndef _MONA_FDCDRIVER_
-#define _MONA_FDCDRIVER_
+#ifndef _FDCDRIVER_
+#define _FDCDRIVER_
 
 /*!
     Floppy Disk Controller class
