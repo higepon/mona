@@ -835,6 +835,15 @@ void syscall_entrance() {
             break;
         }
 
+    case SYSTEM_CALL_FRRE_PAGES:
+        {
+            dword address = info->esi;
+            dword size    = info->ecx;
+
+            g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
+            break;
+        }
+
     default:
         g_console->printf("syscall:default");
         break;

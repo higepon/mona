@@ -6,7 +6,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_5
+#define MAIN_6
 
 #ifdef MAIN_1
 int MonaMain(List<char*>* pekoe)
@@ -246,4 +246,18 @@ int MonaMain(List<char*>* pekoe)
 }
 
 
+#endif
+
+#ifdef MAIN_6
+
+
+int MonaMain(List<char*>* pekoe)
+{
+    char* p = (char*)malloc(4096 * 10);
+    free(p);
+
+    printf("free ok");
+
+    return 0;
+}
 #endif

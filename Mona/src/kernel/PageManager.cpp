@@ -397,7 +397,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
     for (int i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
     {
         /* not allocated */
-        if (i == vramIndex)
+        if (i == vramIndex || i == vramIndex + 1)
         {
             returnPageTable((PageEntry*)(directory[i] & 0xfffff000));
             continue;
@@ -424,6 +424,54 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
     }
     returnPageTable(directory);
     return;
+}
+
+void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword size)
+{
+    ASSERT(directory);
+    dword tmp;
+
+    /* do nothing */
+    if (address < 0xC0000000 ||  0xC0000000 + 8 * 1024 * 1024 > address) return;
+
+    /* get start index of directory */
+    tmp = ((int)address + 4096 - 1) & 0xFFFFF000;
+    int dirStart = getDirectoryIndex(tmp);
+
+    /* get end index of directory */
+    tmp = ((int)(address + size) + 4096 - 1) & 0xFFFFF000;
+    int dirEnd = getDirectoryIndex(tmp);
+
+    /* get start index of table */
+    int tabStart = getTableIndex(address);
+
+    int tabEnd = getTableIndex(address + size) - 1;
+    if (tabEnd < 0) tabEnd = 0;
+
+    if (dirStart == dirEnd)
+    {
+        PageEntry* table = (PageEntry*)(directory[dirStart] & 0xfffff000);
+
+        for (int j = tabStart; j <= tabEnd; j++)
+        {
+            if (!isPresent(&(table[j]))) continue;
+
+            PhysicalAddress paddress = ((dword)(table[j])) & 0xfffff000;
+            returnPhysicalPage(paddress);
+        }
+    }
+    else
+    {
+        for (int i = dirStart; i <= dirEnd; i++)
+        {
+            PageEntry* table = (PageEntry*)(directory[i] & 0xfffff000);
+            for (int j = i == dirStart ? tabStart : 0; j < (i == dirEnd) ? tabEnd : ARCH_PAGE_TABLE_NUM; j++)
+            {
+                PhysicalAddress paddress = ((dword)(table[j])) & 0xfffff000;
+                returnPhysicalPage(paddress);
+            }
+        }
+    }
 }
 
 void PageManager::returnPageTable(PageEntry* table)

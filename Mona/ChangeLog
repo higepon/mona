@@ -1,3 +1,16 @@
+2004-10-07  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/MemoryManager.cpp (free): syscall_free_pagesの組み込み
+
+        * src/lib/monapi/syscall.cpp (syscall_free_pages): 追加
+
+2004-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/syscalls.cpp: SYSTEM_CALL_FRRE_PAGES追加
+
+        * src/kernel/PageManager.cpp (returnPhysicalPages): VRAM用ページディレクトリ返却のバグ修正
+                                     (returnPages): 物理ページ用ロジック
+
 2004-10-05  higepon  <higepon@users.sourceforge.jp>
 
         * ななしさんによるLinux MinGwパッチ mona-uxmingw-2.diffの取り込み

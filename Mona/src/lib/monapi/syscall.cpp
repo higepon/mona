@@ -696,3 +696,10 @@ int syscall_remove_irq_receiver(int irq)
     SYSCALL_1(SYSTEM_CALL_REMOVE_IRQ_RECEIVER, result, irq);
     return result;
 }
+
+int syscall_free_pages(dword address, dword size)
+{
+    dword result;
+    SYSCALL_2(SYSTEM_CALL_FRRE_PAGES, result, address, size);
+    return result;
+}
