@@ -60,8 +60,9 @@ void startKernel(void) {
     hvectorTester();
     floppyTester();
     typeTester();
-    processTester();
 #endif
+    processTester();
+
 
     while (true) {
     }

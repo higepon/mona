@@ -61,6 +61,12 @@ typedef struct {
     word  iobase;
 } TSS;
 
+/*! gdtr */
+typedef struct {
+    word  limit;
+    dword base;
+} GDTR;
+
 void startKernel(void);
 
 #endif

@@ -44,6 +44,10 @@ void ProcessManager::printInfo() {
     int from  = 0x02;
     int to    = 0xfe;
     int value = 0;
+    GDTR gdtr;
+    gdtr.limit = 0;
+    gdtr.base  = 0;
+
     _sys_printf("from = %d to = %d\n", from, to);
     asm volatile("mov %1, %%ax\n"
                  "mov %%ax, %0\n"
@@ -54,6 +58,14 @@ void ProcessManager::printInfo() {
                  "mov %%ax, %0\n"
                  : "=m" (value));
     _sys_printf("ax = %d\n", value);
+
+    asm volatile("sgdt %0\n"
+                 : /* no output */
+                 : "m" (gdtr)
+                );
+    _sys_printf("gdtr.limit = %d\n", gdtr.limit);
+    _sys_printf("gdtr.base  = %d\n", gdtr.base);
+
     return;
 }
 
@@ -63,4 +75,6 @@ void ProcessManager::switchProcess() {
 
 void ProcessManager::switchProcess(word selector) {
 
+    //    asm volatile("jmp %0" : /* NO OUT PUT */ : "m" (selector));
+    return;
 }
