@@ -40,9 +40,9 @@ int user_start() {
     List<char*>* arg = new HList<char*>();
     setupArguments(arg);
     MonAPI::MemoryMap::initialize();
-        invokeFuncList(__CTOR_LIST__);
+    invokeFuncList(__CTOR_LIST__);
     result = MonaMain(arg);
-        invokeFuncList(__DTOR_LIST__);
+    invokeFuncList(__DTOR_LIST__);
     delete arg;
     exit(result);
     return 0;
