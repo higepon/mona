@@ -19,7 +19,7 @@
 
 PageManager::PageManager(dword totalMemorySize) {
 
-    dword pageNumber = totalMemorySize / 4096 + totalMemorySize % 4096 ? 1 : 0;
+    dword pageNumber = totalMemorySize / 4096 + ((totalMemorySize % 4096) ? 1 : 0);
 
     memoryMap_ = new BitMap(pageNumber);
     if (memoryMap_ == NULL) panic("PageManager initilize error\n");
@@ -42,9 +42,13 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
     if (foundMemory == -1) return false;
 
     /* set physical page */
-    (*pageEntry) &= 0xFFF;
-    (*pageEntry) |= (foundMemory * 4096);
-    (*pageEntry) |= PAGE_PRESENT;
+    //    (*pageEntry) &= 0xFFF;
+    //    (*pageEntry) |= (foundMemory * 4096);
+    //    (*pageEntry) |= PAGE_PRESENT;
+
+    makePageEntry(pageEntry, foundMemory*4096, PAGE_PRESENT, PAGE_RW, PAGE_USER);
+
+    g_console->printf("found=%x", (dword)(*pageEntry));
 
     return true;
 }
@@ -57,6 +61,7 @@ void PageManager::setup() {
     /* allocate page to physical address 0-4MB */
     for (dword i = 0; i < PAGE_TABLE_NUM; i++) {
 
+        memoryMap_->mark(i);
         makePageEntry(&(table[i]), 4096 * i, PAGE_PRESENT, PAGE_RW, PAGE_USER);
     }
 
@@ -135,6 +140,11 @@ bool PageManager::pageFaultHandler(LinearAddress address) {
         memset(table, 0, sizeof(PageEntry) * PAGE_TABLE_NUM);
 
         makePageEntry(&(g_page_directory[directoryIndex]), (PhysicalAddress)table, PAGE_PRESENT, PAGE_RW, PAGE_USER);
-        return true;
+
+        dword tableIndex = (address >> 12) & 0x3FF;
+
+        g_console->printf("tableindex=%x\n", tableIndex);
+
+        return allocatePhysicalPage(&(table[tableIndex]));
     }
 }
