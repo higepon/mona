@@ -44,8 +44,8 @@ const int  PageManager::ARCH_PAGE_TABLE_NUM;
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-PageManager::PageManager(dword totalMemorySize) {
-
+PageManager::PageManager(dword totalMemorySize)
+{
     dword pageNumber = totalMemorySize / ARCH_PAGE_SIZE + ((totalMemorySize % ARCH_PAGE_SIZE) ? 1 : 0);
 
     memoryMap_ = new BitMap(pageNumber);
@@ -67,8 +67,8 @@ PageManager::PageManager(dword totalMemorySize) {
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* pageEntry
-                                      , bool present, bool writable, bool isUser, PhysicalAddress address) const {
-
+                                      , bool present, bool writable, bool isUser, PhysicalAddress address) const
+{
     setAttribute(pageEntry, present, writable, isUser, address);
     return address;
 }
@@ -86,8 +86,8 @@ int PageManager::allocatePhysicalPage(PageEntry* pageEntry
     \author HigePon
     \date   create:2003/10/25 update:
 */
-int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const {
-
+int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const
+{
     int foundMemory = memoryMap_->find();
     if (foundMemory == BitMap::NOT_FOUND) return -1;
 
@@ -113,15 +113,17 @@ int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool w
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress
-                                       , bool present, bool writable, bool isUser) const {
-
+                                       , bool present, bool writable, bool isUser) const
+{
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(laddress);
     dword tableIndex     = getTableIndex(laddress);
 
-    if (isPresent(&(directory[directoryIndex]))) {
+    if (isPresent(&(directory[directoryIndex])))
+    {
         table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    } else {
+    } else
+    {
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
@@ -144,17 +146,17 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     \date   create:2003/10/25 update:
 */
 int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress
-                                       , bool present, bool writable, bool isUser) const {
-
+                                       , bool present, bool writable, bool isUser) const
+{
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(laddress);
     dword tableIndex     = getTableIndex(laddress);
 
-    if (isPresent(&(directory[directoryIndex]))) {
-
+    if (isPresent(&(directory[directoryIndex])))
+    {
         table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    } else {
-
+    } else
+    {
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
         setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
@@ -169,22 +171,22 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::setup(PhysicalAddress vram) {
-
+void PageManager::setup(PhysicalAddress vram)
+{
     PageEntry* table1 = allocatePageTable();
     PageEntry* table2 = allocatePageTable();
     g_page_directory  = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
-
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
+    {
         memoryMap_->mark(i);
         setAttribute(&(table1[i]), true, true, true, 4096 * i);
     }
 
     /* allocate page to physical address 4-8MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
-
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
+    {
         memoryMap_->mark(i + 4096);
         setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
     }
@@ -201,17 +203,17 @@ void PageManager::setup(PhysicalAddress vram) {
     for (; vram % 4096; vram--);
 
     /* MAP VRAM 2MB */
-    for (int i = 0; i < 512; i++, vram += 4096) {
-
+    for (int i = 0; i < 512; i++, vram += 4096)
+    {
         PageEntry* table;
         dword directoryIndex = getDirectoryIndex(vram);
         dword tableIndex     = getTableIndex(vram);
 
-        if (isPresent(&(g_page_directory[directoryIndex]))) {
-
+        if (isPresent(&(g_page_directory[directoryIndex])))
+        {
             table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-        } else {
-
+        } else
+        {
             table = allocatePageTable();
             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
@@ -254,11 +256,11 @@ PageEntry* PageManager::createNewPageDirectory() {
     dword vram = vram_;
     for (; vram % 4096; vram--);
 
+    dword directoryIndex = getDirectoryIndex(vram);
     /* MAP VRAM 2MB */
     for (int i = 0; i < 512; i++, vram += 4096) {
 
         PageEntry* table;
-        dword directoryIndex = getDirectoryIndex(vram);
         dword tableIndex     = getTableIndex(vram);
 
         if (isPresent(&(directory[directoryIndex]))) {
@@ -276,24 +278,59 @@ PageEntry* PageManager::createNewPageDirectory() {
     return directory;
 }
 
-PageEntry* PageManager::createNewPageDirectoryForV86() {
+void PageManager::returnPhysicalPages(PageEntry* directory)
+{
+    dword vram = vram_;
+    for (; vram % 4096; vram--);
+    dword vramIndex = getDirectoryIndex(vram);
 
+    /* 0-8MB don't return */
+    for (dword i = 2; i < ARCH_PAGE_TABLE_NUM; i++)
+    {
+
+        /* not allocated */
+        if (i == vramIndex || !isPresent(&(directory[i])))
+        {
+            continue;
+        }
+
+        PageEntry* table = (PageEntry*)(directory[i] & 0xfffff000);
+
+        for (dword j = 0; j < ARCH_PAGE_TABLE_NUM; j++)
+        {
+            if (!isPresent(&(table[j])))
+            {
+                continue;
+            }
+
+            PhysicalAddress address = ((dword)(table[j])) & 0xfffff000;
+            returnPhysicalPage(address);
+        }
+    }
+    return;
+}
+
+PageEntry* PageManager::createNewPageDirectoryForV86()
+{
     PageEntry* table1    = allocatePageTable();
     PageEntry* table2    = allocatePageTable();
     PageEntry* directory = allocatePageTable();
 
     /* allocate page to physical address 0-4MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
-
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
+    {
         /* user access ok beyond 1MB */
-        if (i < 256) {
+        if (i < 256)
+        {
             setAttribute(&(table1[i]), true, true, true, 4096 * i);
-        } else {
+        } else
+        {
             setAttribute(&(table1[i]), true, true, false, 4096 * i);
         }
     }
 
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
+    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++)
+    {
 
         setAttribute(&(table2[i]), true, true, false, 4096 * 1024 + 4096 * i);
     }
@@ -311,8 +348,8 @@ PageEntry* PageManager::createNewPageDirectoryForV86() {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::setPageDirectory(PhysicalAddress address) {
-
+void PageManager::setPageDirectory(PhysicalAddress address)
+{
     asm volatile("movl %0   , %%eax \n"
                  "movl %%eax, %%cr3 \n" : /* no output */ : "m"(address) : "eax");
 }
@@ -323,8 +360,8 @@ void PageManager::setPageDirectory(PhysicalAddress address) {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::startPaging() {
-
+void PageManager::startPaging()
+{
     asm volatile("mov %%cr0      , %%eax \n"
                  "or  $0x80000000, %%eax \n"
                  "mov %%eax      , %%cr0 \n"
@@ -338,8 +375,8 @@ void PageManager::startPaging() {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::stopPaging() {
-
+void PageManager::stopPaging()
+{
     asm volatile("mov %%cr0      , %%eax \n"
                  "or  $0x7fffffff, %%eax \n"
                  "mov %%eax      , %%cr0 \n"
@@ -353,8 +390,8 @@ void PageManager::stopPaging() {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-void PageManager::flushPageCache() const {
-
+void PageManager::flushPageCache() const
+{
     asm volatile("mov %%cr3, %%eax\n"
                  "mov %%eax, %%cr3\n"
                  : /* no output */
@@ -367,8 +404,8 @@ void PageManager::flushPageCache() const {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-PageEntry* PageManager::allocatePageTable() const {
-
+PageEntry* PageManager::allocatePageTable() const
+{
     byte* table;
     table = (byte*)malloc(sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM * 2);
     checkMemoryAllocate(table, "PageManager table memory allocate");
@@ -384,8 +421,8 @@ PageEntry* PageManager::allocatePageTable() const {
     \author HigePon
     \date   create:2003/10/15 update:2004/01/08
 */
-bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
-
+bool PageManager::pageFaultHandler(LinearAddress address, dword error)
+{
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
     dword tableIndex     = getTableIndex(address);
@@ -397,35 +434,39 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
                  : "=m"(realcr3):: "eax");
 
 //    if (realcr3 != (dword)current->getPageDirectory()) {
-    if (realcr3 != g_currentThread->archinfo->cr3) {
+    if (realcr3 != g_currentThread->archinfo->cr3)
+    {
         g_console->printf("PageFault[%s] addr=%x, error=%x\n", current->getName(), address, error);
         g_console->printf("realCR3=%x processCR3=%x\n", realcr3, current->getPageDirectory());
     }
 
     /* search shared memory segment */
     List<SharedMemorySegment*>* list = current->getSharedList();
-    for (int i = 0; i < list->size(); i++) {
+    for (int i = 0; i < list->size(); i++)
+    {
         SharedMemorySegment* segment = list->get(i);
 
-        if (segment->inRange(address)) {
+        if (segment->inRange(address))
+        {
             return segment->faultHandler(address, FAULT_NOT_EXIST);
         }
     }
 
     /* heap */
     HeapSegment* heap = current->getHeapSegment();
-    if (heap->inRange(address)) {
+    if (heap->inRange(address))
+    {
         return heap->faultHandler(address, FAULT_NOT_EXIST);
     }
 
     /* physical page not exist */
-    if (error & ARCH_FAULT_NOT_EXIST) {
-
-        if (isPresent(&(g_page_directory[directoryIndex]))) {
-
+    if (error & ARCH_FAULT_NOT_EXIST)
+    {
+        if (isPresent(&(g_page_directory[directoryIndex])))
+        {
             table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-        } else {
-
+        } else
+        {
             table = allocatePageTable();
             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
@@ -437,7 +478,9 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
         return allocateResult;
 
     /* access falut */
-    } else {
+    }
+    else
+    {
 #if 1
     ArchThreadInfo* i = g_currentThread->archinfo;
     logprintf("name=%s\n", g_currentThread->process->getName());
@@ -463,9 +506,8 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const {
-
-
+bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser) const
+{
     (*entry) = ((*entry) & (0xFFFFFFF8)) | (present ? ARCH_PAGE_PRESENT : 0x00)
              | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
 
@@ -483,8 +525,8 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const {
-
+bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bool isUser, PhysicalAddress address) const
+{
     (*entry) = (address & 0xfffff000) | (present ? ARCH_PAGE_PRESENT : 0x00)
              | (writable ? ARCH_PAGE_RW : 0x00) | (isUser ? ARCH_PAGE_USER : 0x00);
 
@@ -502,8 +544,8 @@ bool PageManager::setAttribute(PageEntry* entry, bool present, bool writable, bo
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const {
-
+bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) const
+{
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(address);
 
@@ -523,17 +565,16 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     \author HigePon
     \date   create:2003/10/27 update:
 */
-void PageManager::setAbsent(PageEntry* directory, LinearAddress start, dword size) const {
-
+void PageManager::setAbsent(PageEntry* directory, LinearAddress start, dword size) const
+{
     LinearAddress address;
     dword directoryIndex;
     PageEntry* table;
 
-    for (address = start; address < start + size; address += ARCH_PAGE_SIZE) {
-
+    for (address = start; address < start + size; address += ARCH_PAGE_SIZE)
+    {
         directoryIndex= getDirectoryIndex(address);
         table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-
         setAttribute(&(table[getTableIndex(address)]), false, true, true);
     }
 
@@ -549,7 +590,7 @@ void PageManager::setAbsent(PageEntry* directory, LinearAddress start, dword siz
     \author HigePon
     \date   create:2003/10/27 update:
 */
-void PageManager::returnPhysicalPage(PhysicalAddress address) {
-
+void PageManager::returnPhysicalPage(PhysicalAddress address)
+{
     memoryMap_->clear(address / ARCH_PAGE_SIZE);
 }

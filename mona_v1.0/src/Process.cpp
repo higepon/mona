@@ -504,7 +504,9 @@ int ThreadOperation::kill()
 
     if (process->threadNum < 1)
     {
+        PageEntry* directory = process->getPageDirectory();
         delete process;
+        g_page_manager->returnPhysicalPages(directory);
     }
 
     bool isProcessChange = g_scheduler->schedule();
