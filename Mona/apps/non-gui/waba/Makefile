@@ -1,5 +1,5 @@
 TARGET  = WABA.ELF
-SOURCES = wabaform.cpp
+SOURCES = wabamona.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc

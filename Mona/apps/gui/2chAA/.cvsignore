@@ -3,4 +3,5 @@
 *.list
 *.map
 *.local
+*.ELF
 TAGS

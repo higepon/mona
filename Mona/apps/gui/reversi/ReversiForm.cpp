@@ -69,7 +69,7 @@ private:
 
     void refreshLables()
     {
-        this->label1->set_Text(this->board->getCurrentHand() == ReversiBoard::BLACK ? " black" : " white");
+        this->label1->set_Text(this->board->getCurrentHand() == ReversiBoard::BLACK ? " red" : " white");
     }
 
     void button1_Click(Pointer<Object> sender, Pointer<EventArgs> e)
