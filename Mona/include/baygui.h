@@ -48,11 +48,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define GUILIB_VERSION "BayGUI build 04.10.19"
+#define GUISERVER_NAME "BAYGUI.EX5"
 
 #define MAX_TITLE_LEN     64
 #define MAX_TEXT_LEN      64
 #define MAX_FONTLIST_LEN  96
-#define MAX_CONTROLLIST_LEN 50
 
 #define INSETS_TOP        22
 #define INSETS_BOTTOM     6
@@ -174,7 +174,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/Event.h"
 #include "baygui/KeyEvent.h"
 #include "baygui/MouseEvent.h"
-#include "baygui/TimerEvent.h"
 #include "baygui/Rect.h"
 #include "baygui/Font.h"
 #include "baygui/FontManager.h"

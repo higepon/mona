@@ -29,8 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  コンストラクタ.
- 内部にwidth*heightバイトのバッファーを作る。
- 書き換えるときは gbc_rgb_to_index(int rgb32) を使うこと。
+ 内部にwidth*height*4バイトのバッファーを作る。
  @param width 幅
  @param height 高さ
  */

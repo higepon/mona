@@ -123,3 +123,25 @@ void LinkedList::removeAll()
 	}
 	dataListLength = 0;
 }
+
+/** Žw’è‚µ‚½€–Ú‚ðˆê”ÔÅŒã‚ÉŽ‚Á‚Ä‚¢‚­ */
+void LinkedList::sort(LinkedItem *item)
+{
+	if (item == NULL) {
+		return;
+	} else if (item->next == NULL) {
+		return;
+	} else {
+		if (item->prev != NULL) {
+			item->prev->next = item->next;
+			item->next->prev = item->prev;
+		} else {
+			firstItem = item->next;
+			firstItem->prev = NULL;
+		}
+		item->prev = endItem;
+		endItem->next = item;
+		item->next = NULL;
+		endItem = item;
+	}
+}

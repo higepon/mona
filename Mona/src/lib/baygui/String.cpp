@@ -30,7 +30,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** コンストラクタ */
 String::String(char *s)
 {
-	c_str = s;
+	c_str = (char *)malloc(strlen(s) + 1);
+	memcpy(c_str, s, strlen(s) + 1);
 }
 
 /** デストラクタ */

@@ -85,7 +85,11 @@ void Label::repaint()
 	// 文字
 	int fw = FontManager::getInstance()->getWidth(text);
 	int fh = FontManager::getInstance()->getHeight();
-	_g->setColor(0,0,0);
+	if (enabled == true) {
+		_g->setColor(0,0,0);
+	} else {
+		_g->setColor(128,128,128);
+	}
 	if (align == ALIGN_RIGHT) {
 		_g->drawText(text, (width - fw), (height - fh) / 2);
 	} else if (align == ALIGN_CENTER) {

@@ -53,11 +53,11 @@ Control *Container::getControl()
 	// 後ろからチェックしていく
 	LinkedItem *item = _controlList->endItem;
 	Control *c = (Control *)item->data;
-	if (c->getEnabled() == true) return c;
+	if (c->getFocused() == true) return c;
 	while (item->prev != NULL) {
 		item = item->prev;
 		c = (Control *)item->data;
-		if (c->getEnabled() == true) return c;
+		if (c->getFocused() == true) return c;
 	}
 	return NULL;
 }
@@ -76,15 +76,55 @@ Control *Container::getControl(int x, int y)
 	Control *c = (Control *)item->data;
 	Rect *rect = c->getRect();
 	// マウスカーソルがある範囲に部品があるかどうかチェック
-	if (rect->x <= x && x <= rect->x + rect->width && 
-		rect->y <= y && y <= rect->y + rect->height) { return c; }
+	if (c->getIconified() == false &&
+		rect->x <= x && x <= rect->x + rect->width && 
+		rect->y <= y && y <= rect->y + rect->height)
+	{
+		return c;
+	} else if (c->getIconified() == true &&
+		rect->x <= x && x <= rect->x + rect->width && 
+		rect->y <= y && y <= rect->y + INSETS_TOP)
+	{
+		return c;
+	}
 	while (item->prev != NULL) {
 		item = item->prev;
 		c = (Control *)item->data;
 		rect = c->getRect();
 		// マウスカーソルがある範囲に部品があるかどうかチェック
-		if (rect->x <= x && x <= rect->x + rect->width && 
-			rect->y <= y && y <= rect->y + rect->height) { return c; }
+		if (c->getIconified() == false &&
+			rect->x <= x && x <= rect->x + rect->width && 
+			rect->y <= y && y <= rect->y + rect->height)
+		{
+			return c;
+		} else if (c->getIconified() == true &&
+			rect->x <= x && x <= rect->x + rect->width && 
+			rect->y <= y && y <= rect->y + INSETS_TOP)
+		{
+			return c;
+		}
+	}
+	return NULL;
+}
+
+/**
+ 部品をLinkedItemに変換する
+ @param control 指定する部品
+ @return 変換できなければNULL
+ */
+LinkedItem *Container::search(Control *control)
+{
+	// NULLチェック
+	if (_controlList->endItem == NULL) return NULL;
+
+	// 後ろからチェックしていく
+	LinkedItem *item = _controlList->endItem;
+	Control *c = (Control *)item->data;
+	if (control == c) return item;
+	while (item->prev != NULL) {
+		item = item->prev;
+		c = (Control *)item->data;
+		if (control == c) return item;
 	}
 	return NULL;
 }

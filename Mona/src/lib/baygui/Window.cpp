@@ -70,7 +70,7 @@ Window::Window()
 	threadID = MonAPI::System::getThreadID();
 
 	// GUIサーバーを探す
-	guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX5");
+	guisvrID = MonAPI::Message::lookupMainThread(GUISERVER_NAME);
 	if (guisvrID == 0xFFFFFFFF) {
 		//printf("Window: GuiServer not found %d\n", threadID);
 	} else {
@@ -80,6 +80,9 @@ Window::Window()
 	// ウィンドウ内部描画領域
 	__g = new Graphics();
 	
+	// タイマーイベント
+	_timerEvent = new Event(TIMER, this);
+
 	// フォントロード
 	FontManager::getInstance();
 }
@@ -87,6 +90,7 @@ Window::Window()
 /** デストラクタ */
 Window::~Window() {
 	delete(__g);
+	delete(_timerEvent);
 	// draw mouse_cursor
 	monapi_call_mouse_set_cursor(1);
 }
@@ -145,6 +149,43 @@ void Window::setRect(int x, int y, int width, int height)
 }
 
 /**
+ タイマーをセットする
+ @param duration 発動するまでの時間[ms]
+ */
+void Window::setTimer(int duration)
+{
+	// 非活性のときはタイマーを発生させない
+	if (focused == false || iconified == true) return;
+	
+	// タイマー設定メッセージを投げる
+	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_SETTIMER, threadID, duration, 0, NULL)) {
+		//printf("Control->WindowManager: MSG_GUISERVER_SETTIMER failed %d\n", threadID);
+	} else {
+		//printf("Control->WindowManager: MSG_GUISERVER_SETTIMER sended %d\n", threadID);
+	}
+}
+
+/**
+ ウィンドウの背景を復元する
+ <ul>
+ <li>壁紙があるときは壁紙を描画し、なおときは背景色で塗りつぶす
+ <li>Window::repaint() をオーバーライドした矩形ウィンドウでないとおそらく使い道なし
+ </ul>
+ */
+void Window::restoreBackGround()
+{
+	// 非活性のときは復元しない
+	if (focused == false || iconified == true) return;
+
+	// 背景復元メッセージを投げる
+	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_RESTORE, threadID, 0, 0, NULL)) {
+		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE failed %d\n", threadID);
+	} else {
+		//printf("Control->WindowManager: MSG_GUISERVER_RESTORE sended %d\n", threadID);
+	}
+}
+
+/**
  指定した部品を追加する
  @param control 指定する部品
  */
@@ -168,7 +209,7 @@ void Window::add(Control *control)
  @param control 指定する部品
  @return 削除された部品（なければNULL）
  */
-Control *Window::remove(Control *control)
+void Window::remove(Control *control)
 {
 	for(int i = 0; i < _controlList->getLength(); i++) {
 		LinkedItem *item = _controlList->getItem(i);
@@ -176,7 +217,6 @@ Control *Window::remove(Control *control)
 			_controlList->remove(item);
 		}
 	}
-	return NULL;
 }
 
 /** イベント処理 */
@@ -188,20 +228,36 @@ void Window::postEvent(Event *event)
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->source = control;
-			((Control *)_controlList->endItem->data)->postEvent(event);
+			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
 			onEvent(event);
 		}
-	// マウスクリック、マウスリリース
-	} else if (event->type == MOUSE_PRESSED || event->type == MOUSE_RELEASED) {
+	// マウスクリック
+	} else if (event->type == MOUSE_PRESSED) {
 		// マウスイベントが起こった部品を探す
 		int ex = ((MouseEvent *)event)->x;
 		int ey = ((MouseEvent *)event)->y;
 		Control *control = getControl(ex, ey);
 		// 部品でイベントが起こった
 		if (control != NULL) {
-			control->setEnabled(true);
+			// イベントが起こった部品以外をフォーカスアウト状態にする
+			LinkedItem *item = _controlList->firstItem;
+			Control *c = (Control *)item->data;
+			if (c == control) {
+				c->setFocused(true);
+			} else {
+				c->setFocused(false);
+			}
+			while (item->next != NULL) {
+				item = item->next;
+				c = (Control *)item->data;
+				if (c == control) {
+					c->setFocused(true);
+				} else {
+					c->setFocused(false);
+				}
+			}
 			event->source = control;
 			// 座標変換
 			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
@@ -209,11 +265,32 @@ void Window::postEvent(Event *event)
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
-			// 部品を非活性にする
-			for (int i = 0; i < _controlList->getLength(); i++) {
-				Control *control = (Control *)_controlList->getItem(i)->data;
-				control->setEnabled(false);
+			// 部品をフォーカスアウト状態にする
+			LinkedItem *item = _controlList->firstItem;
+			Control *c = (Control *)item->data;
+			c->setFocused(false);
+			while (item->next != NULL) {
+				item = item->next;
+				c = (Control *)item->data;
+				c->setFocused(false);
 			}
+			onEvent(event);
+		}
+	// マウスリリース
+	} else if (event->type == MOUSE_RELEASED) {
+		// マウスイベントが起こった部品を探す
+		int ex = ((MouseEvent *)event)->x;
+		int ey = ((MouseEvent *)event)->y;
+		Control *control = getControl(ex, ey);
+		// 部品でイベントが起こった
+		if (control != NULL) {
+			event->source = control;
+			// 座標変換
+			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
+			((MouseEvent *)event)->y -= (y + INSETS_TOP);
+			control->postEvent(event);
+		// 部品以外でイベントが起こった
+		} else {
 			onEvent(event);
 		}
 	// マウスドラッグ
@@ -221,6 +298,10 @@ void Window::postEvent(Event *event)
 		Control *control = getControl();
 		// 部品でイベントが起こった
 		if (control != NULL) {
+			event->source = control;
+			// 座標変換
+			((MouseEvent *)event)->x -= (x + INSETS_LEFT);
+			((MouseEvent *)event)->y -= (y + INSETS_TOP);
 			control->postEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
@@ -241,33 +322,33 @@ void Window::repaint()
 	
 	if (iconified == true) {
 		// 外枠
-		_g->setColor(0, 0, 0);
-		_g->drawRect(0, 0, width, INSETS_TOP);
-		_g->setColor(200, 200, 200);
+		_g->setColor(0,0,0);
+		_g->drawRect(0, 0, width, INSETS_TOP - 1);
+		_g->setColor(200,200,200);
 		_g->fillRect(1, 1, width - 2, INSETS_TOP - 2);
 		// 輪郭線
-		_g->setColor(255, 255, 255);
+		_g->setColor(255,255,255);
 		_g->drawLine(1, 1, width - 1, 1);
-		_g->drawLine(1, 1, 1, INSETS_TOP - 1);
-		_g->setColor(128, 128, 128);
-		_g->drawLine(width - 1, 2, width - 1, INSETS_TOP - 1);
-		_g->drawLine(2, INSETS_TOP - 1, width - 1, INSETS_TOP - 1);
+		_g->drawLine(1, 1, 1, INSETS_TOP - 2);
+		_g->setColor(128,128,128);
+		_g->drawLine(width - 1, 2, width - 1, INSETS_TOP - 2);
+		_g->drawLine(2, INSETS_TOP - 2, width - 1, INSETS_TOP - 2);
 	} else {
 		// 外枠
-		_g->setColor(0, 0, 0);
+		_g->setColor(0,0,0);
 		_g->drawRect(0, 0, width, height);
-		_g->setColor(200, 200, 200);
+		_g->setColor(200,200,200);
 		_g->fillRect(1, 1, width - 2, height - 2);
 		// 内枠
 		_g->setColor(0,0,0);
 		_g->drawRect(5, 21, width - 10, height - 26);
 		// 輪郭線
-		_g->setColor(255, 255, 255);
+		_g->setColor(255,255,255);
 		_g->drawLine(1, 1, width - 1, 1);
 		_g->drawLine(1, 1, 1, height - 1);
 		_g->drawLine(width - 4, 21, width - 4, height - 4);
 		_g->drawLine(5, height - 4, width - 4, height - 4);
-		_g->setColor(128, 128, 128);
+		_g->setColor(128,128,128);
 		_g->drawLine(width - 1, 2, width - 1, height - 1);
 		_g->drawLine(2, height - 1, width - 1, height - 1);
 		_g->drawLine(4, 20, width - 5, 20);
@@ -277,9 +358,9 @@ void Window::repaint()
 	if (enabled == true) {
 		// タイトルライン
 		for (i = 5; i <= 15; i = i + 2) {
-			_g->setColor(128, 128, 128);
+			_g->setColor(128,128,128);
 			_g->drawLine(20, i, width - 21, i);
-			_g->setColor(255, 255, 255);
+			_g->setColor(255,255,255);
 			_g->drawLine(21, i + 1, width - 22, i + 1);
 		}
 		// 閉じるアイコン
@@ -296,12 +377,12 @@ void Window::repaint()
 	// タイトル
 	int fw = FontManager::getInstance()->getWidth(title);
 	int fh = FontManager::getInstance()->getHeight();
-	_g->setColor(200, 200, 200);
+	_g->setColor(200,200,200);
 	_g->fillRect(((width - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
 	if (enabled == true) {
-		_g->setColor(0, 0, 0);
+		_g->setColor(0,0,0);
 	} else {
-		_g->setColor(128, 128, 128);
+		_g->setColor(128,128,128);
 	}
 	_g->drawText(title, ((width - fw) / 2), ((INSETS_TOP - fh) / 2));
 	//_g->drawText(title, ((width - fw) / 2) + 1, ((INSETS_TOP - fh) / 2));//太字
@@ -329,8 +410,8 @@ void Window::run()
 	}
 
 	while (1) {
-		if(!MonAPI::Message::receive(&info)){
-		//if(!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)){
+		if (!MonAPI::Message::receive(&info)) {
+		//if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) {
 			// draw mouse_cursor
 			monapi_call_mouse_set_cursor(0);
 			
@@ -384,9 +465,8 @@ void Window::run()
 				}
 				break;
 			case MSG_GUISERVER_ONTIMER:
-				//printf("WindowManager->Window MSG_GUISERVER_ONTIMER received\n");
+				//printf("TimerThread->Window MSG_GUISERVER_ONTIMER received\n");
 				postEvent(_timerEvent);
-				_timerEvent->setDuration(-1);
 				break;
 			case MSG_GUISERVER_SETRECT:
 				{
@@ -407,11 +487,28 @@ void Window::run()
 			case MSG_GUISERVER_ENABLED:
 				//printf("WindowManager->Window MSG_GUISERVER_ENABLED received %d\n", threadID);
 				setEnabled(true);
+				setFocused(true);
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DISABLED:
 				//printf("WindowManager->Window MSG_GUISERVER_DISABLED received %d\n", threadID);
 				setEnabled(false);
+				setFocused(false);
+				{
+					// 部品をフォーカスアウト状態にする
+					// NULLチェック
+					if (_controlList->firstItem == NULL) break;
+
+					// 前からチェックしていく
+					LinkedItem *item = _controlList->firstItem;
+					Control *c = (Control *)item->data;
+					c->setFocused(false);
+					while (item->next != NULL) {
+						item = item->next;
+						c = (Control *)item->data;
+						c->setFocused(false);
+					}
+				}
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_ICONIFIED:
@@ -426,7 +523,7 @@ void Window::run()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", threadID);
-				delete(this);
+				//delete(this);
 				exit(0);
 				break;
 			default:

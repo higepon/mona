@@ -71,7 +71,7 @@ void TextField::repaint()
 		firstpaint = true;
 
 	// 枠線
-	if (enabled == true) {
+	if (focused == true) {
 		_g->setColor(0,128,255);
 		_g->drawRect(0, 0, width, height);
 	} else {
@@ -85,18 +85,22 @@ void TextField::repaint()
 
 	// 文字
 	int fh = FontManager::getInstance()->getHeight();
-	_g->setColor(0,0,0);
+	if (enabled == true) {
+		_g->setColor(0,0,0);
+	} else {
+		_g->setColor(128,128,128);
+	}
 	_g->drawText(text, offx, (height - fh) / 2);
 
 	// キャレット
-	int i;
-	char temp[MAX_TEXT_LEN];
-	for (i = 0; i <= textPtr; i++) {
-		temp[i] = text[i];
-	}
-	temp[i] = '\0';
-	int fw = FontManager::getInstance()->getWidth(temp);
-	if (enabled == true) {
+	if (focused == true && enabled == true) {
+		int i;
+		char temp[MAX_TEXT_LEN];
+		for (i = 0; i <= textPtr; i++) {
+			temp[i] = text[i];
+		}
+		temp[i] = '\0';
+		int fw = FontManager::getInstance()->getWidth(temp);
 		_g->drawLine(offx + fw, offy, offx + fw, offy + 14);
 	}
 }
@@ -130,7 +134,7 @@ void TextField::deleteCharacter()
 void TextField::postEvent(Event *event)
 {
 	// キー押下
-	if (event->type == KEY_PRESSED) {
+	if (event->type == KEY_PRESSED && enabled == true) {
 		int keycode = ((KeyEvent *)event)->key;
 		if (keycode == VKEY_BACKSPACE) {
 			if (textPtr >= 0) {
@@ -167,12 +171,14 @@ void TextField::postEvent(Event *event)
 				repaint();
 			}
 		}
+		Control::postEvent(event);
+	// フォーカス状態変更
 	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
 		if (firstpaint == true) {
 			repaint();
 			Control::postEvent(_focusEvent);
-			return;
 		}
+	} else {
+		Control::postEvent(event);
 	}
-	Control::postEvent(event);
 }

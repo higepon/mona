@@ -47,7 +47,29 @@ static int orangeIcon [15][15] = {
 	{0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0x40204,0x40204,0x40204,0x40204,0x40204,0xcccecc,0xcccecc,0xcccecc,0xcccecc,0xcccecc},
 };
 
-/** STDOUTを横取りする */
+/** タイマースレッドID */
+static dword timerID = THREAD_UNKNOWN;
+
+/** タイマースレッド */
+static void TimerThread()
+{
+	MonAPI::Message::send(timerID, MSG_SERVER_START_OK);
+	//printf("TimerThread created\n");
+	
+	MessageInfo info;
+	while (1) {
+		if (!MonAPI::Message::receive(&info)) {
+			if (info.header == MSG_GUISERVER_SETTIMER) {
+				//printf("WindowManager->TimerThread MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);
+				syscall_sleep(info.arg2 / 10);
+				MonAPI::Message::send(info.arg1, MSG_GUISERVER_ONTIMER, 0, 0, 0, NULL);
+			}
+		}
+	}
+}
+
+#if 0
+/** STDOUTを横取りするスレッド */
 static void StdoutMessageLoop() {
 	MonAPI::Message::send(WindowManager::getInstance()->getThreadID(), MSG_SERVER_START_OK);
 	for (MessageInfo info;;) {
@@ -61,6 +83,7 @@ static void StdoutMessageLoop() {
 		}
 	}
 }
+#endif
 
 /** インスタンス */
 WindowManager *WindowManager::instance = NULL;
@@ -71,10 +94,11 @@ WindowManager::WindowManager()
 	MessageInfo info;
 
 	isRunning = false;
-	controlListPtr = x = y = 0;
 	MonAPI::Screen screen;
+	x = y = 0;
 	width = screen.getWidth();
 	height = screen.getHeight();
+	_g->translate(0,0);
 	_g->setClip(0,0,width,height);
 
 	// 壁紙読み込み
@@ -120,10 +144,10 @@ WindowManager::WindowManager()
 WindowManager::~WindowManager()
 {
 	// 全てのウィンドウを殺す
-	int i;
-	for (i = 0; i < controlListPtr; i++) {
+	for (int i = 0; i < _controlList->getLength(); i++) {
+		Control *control = (Control *)_controlList->getItem(i)->data;
 		// 削除メッセージを投げる
-		if (MonAPI::Message::send(controlList[i]->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
 			//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", controlList[i]->getThreadID());
 		} else {
 			//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", controlList[i]->getThreadID());
@@ -144,6 +168,9 @@ WindowManager::~WindowManager()
 		//printf("baygui: MouseServer unregistered %d\n", threadID);
 	}
 
+	// タイマースレッド停止
+	syscall_kill_thread(timerID);
+	
 	// シェル出力を元に戻す
 	#if 0
 	if (procsvrID == THREAD_UNKNOWN) {
@@ -213,9 +240,9 @@ void WindowManager::onKeyPress(int keycode, int mod, int charcode)
 	
 	// イベント発生
 	if (keycode != 0) {
-		Control *control = (Control *)getActiveControl();
+		Control *control = (Control *)_controlList->endItem->data;
 		//KeyEvent *event = new KeyEvent(KEY_PRESSED, control, keycode, 0);
-		//getActiveControl()->postEvent(event);
+		//control->postEvent(event);
 		//delete(event);
 		// キーイベントを投げる
 		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ONKEYPRESS, keycode, 0, 0, NULL)) {
@@ -240,34 +267,26 @@ void WindowManager::onKeyRelease(int keycode, int mod, int charcode)
  */
 void WindowManager::onMousePress(int mx, int my)
 {
-	MessageInfo info;
-	
 	// モード設定
 	state = STATE_NORMAL;
-	// ウィンドウを切り替える
-	if (setActiveControl(mx, my) == false) {
-		Control *control = getActiveControl(mx, my);
-		// ウィンドウが一つもないときはイベントを送らない
-		if (control != NULL) {
+	Control *control = getControl(mx, my);
+	// ウィンドウが一つもないときはイベントを送らない
+	if (control != NULL) {
+		if (control->getEnabled() == true) {
 			Rect *rect = control->getRect();
 			// ウィンドウを閉じる
 			if (rect->x + 4 <= mx && mx <= rect->x + 4 + 13 && 
 				rect->y + 5 <= my && my <= rect->y + 5 + 13)
 			{
-				remove(getActiveControl());
-				//printf("close window: %x\n", getActiveControl());
+				remove(control);
+				//printf("close window: %x\n", control);
 			// アイコン化
 			} else if (rect->x + rect->width - 16 <= mx && 
 				mx <= rect->x + rect->width - 16 + 13 && 
 				rect->y + 5 <= my && my <= rect->y + 5 + 13)
 			{
 				// 背景を塗りつぶす
-				if (wallpaper->getData() != NULL) {
-					_g->drawImage(wallpaper, rect->x, rect->y, rect->width + 1, rect->height + 1);
-				} else {
-					_g->setColor(128,128,255);
-					_g->fillRect(rect->x, rect->y, rect->width + 1, rect->height + 1);
-				}
+				restoreBackGround(control);
 				// ウィンドウをアイコン化
 				if (control->getIconified() == true) {
 					control->setIconified(false);
@@ -287,15 +306,7 @@ void WindowManager::onMousePress(int mx, int my)
 					}
 				}
 				// ウィンドウ再描画
-				for (int i = 0; i < controlListPtr; i++) {
-					//controlList[i]->repaint();
-					// 再描画メッセージを投げる
-					if (MonAPI::Message::sendReceive(&info, controlList[i]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-						//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[i]->getThreadID());
-					} else {
-						//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[i]->getThreadID());
-					}
-				}
+				postRepaintToWindows(_controlList->getLength());
 			// クリックイベント発生
 			} else if (control->getIconified() == false) {
 				//MouseEvent *event = new MouseEvent(MOUSE_PRESSED, control, mx, my);
@@ -309,9 +320,23 @@ void WindowManager::onMousePress(int mx, int my)
 				}
 				//printf("throw mouse_press event\n");
 			}
+		// アクティブウィンドウを切り替える
+		} else {
+			// ウィンドウ並び替え
+			_controlList->sort(search(control));
+			
+			// 非活性メッセージを投げる
+			postActivatedToWindows(false, _controlList->getLength() - 1);
+			
+			// 活性メッセージを投げる
+			Control *c = (Control *)_controlList->endItem->data;
+			postActivatedToWindow(true, c);
+			
+			// 再描画メッセージを投げる
+			postRepaintToWindows(_controlList->getLength());
 		}
 	} else {
-		//printf("switch window\n");
+		// NOP
 	}
 }
 
@@ -324,7 +349,9 @@ void WindowManager::onMouseDrag(int mx, int my)
 	if (mx >= width) mx = width;
 	if (my <= 0) my = 0;
 	if (my >= height) my = height;
-	Control *control = getActiveControl(mx, my);
+	
+	Control *control = getControl(mx, my);
+
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control != NULL) {
 		Rect *rect = control->getRect();
@@ -361,9 +388,8 @@ void WindowManager::onMouseDrag(int mx, int my)
  */
 void WindowManager::onMouseRelease(int mx, int my)
 {
-	MessageInfo info;
-
-	Control *control = getActiveControl();
+	Control *control = (Control *)_controlList->endItem->data;
+	
 	// ウィンドウが一つもないときはイベントを送らない
 	if (control != NULL) {
 		Rect *rect = control->getRect();
@@ -372,12 +398,7 @@ void WindowManager::onMouseRelease(int mx, int my)
 			// debug
 			//printf("moved: %d, %d\n", (rect->x + mx + preX), (rect->y + my + preY));
 			// 背景を塗りつぶす
-			if (wallpaper->getData() != NULL) {
-				_g->drawImage(wallpaper, rect->x, rect->y, rect->width + 1, rect->height + 1);
-			} else {
-				_g->setColor(128,128,255);
-				_g->fillRect(rect->x, rect->y, rect->width + 1, rect->height + 1);
-			}
+			restoreBackGround(control);
 			// 画面からはみだしていないかチェック
 			int wx = rect->x + mx - preX;
 			int wy = rect->y + my - preY;
@@ -386,29 +407,21 @@ void WindowManager::onMouseRelease(int mx, int my)
 			if (rect->x + mx - preX + rect->width + 1 >= width) wx = width - rect->width - 1;
 			if (rect->y + my - preY + rect->height + 1 >= height) wy = height - rect->height - 1;
 			// ウィンドウ移動
-			getActiveControl()->setRect(
+			control->setRect(
 				wx,
 				wy,
 				rect->width,
 				rect->height
 			);
 			// 領域変更メッセージを投げる
-			if (MonAPI::Message::send(getActiveControl()->getThreadID(), MSG_GUISERVER_SETRECT, 
+			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_SETRECT, 
 				(wx << 16 | wy), (rect->width << 16 | rect->height), 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", getActiveControl()->getThreadID());
+				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT failed %d\n", control->getThreadID());
 			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", getActiveControl()->getThreadID());
+				//printf("WindowManager->Window: MSG_GUISERVER_SETRECT sended %d\n", control->getThreadID());
 			}
 			// ウィンドウ再描画
-			for (int i = 0; i < controlListPtr; i++) {
-				//controlList[i]->repaint();
-				// 再描画メッセージを投げる
-				if (MonAPI::Message::sendReceive(&info, controlList[i]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[i]->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[i]->getThreadID());
-				}
-			}
+			postRepaintToWindows(_controlList->getLength());
 			// モード設定
 			state = STATE_NORMAL;
 			//printf("move window end: %d,%d\n", preX, preY);
@@ -433,51 +446,24 @@ void WindowManager::onMouseRelease(int mx, int my)
  */
 void WindowManager::add(Control *control)
 {
-	int i;
-	MessageInfo info;
+	// ウィンドウ追加
+	_controlList->add(new LinkedItem(control));
 	
-	// 最後に追加する
-	if (controlListPtr < MAX_CONTROLLIST_LEN - 1) {
-		// ウィンドウ追加
-		controlList[controlListPtr] = control;
-		// 活性・非活性の設定
-		for (i = 0; i < controlListPtr; i++) {
-			controlList[i]->setEnabled(false);
-			// 非活性メッセージを投げる
-			if (MonAPI::Message::send(controlList[i]->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", controlList[i]->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", controlList[i]->getThreadID());
-			}
-		}
-		controlList[i]->setEnabled(true);
-		// 活性メッセージを投げる
-		if (MonAPI::Message::send(controlList[i]->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
-			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", controlList[i]->getThreadID());
-		} else {
-			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", controlList[i]->getThreadID());
-		}
-		// ウィンドウ再描画
-		if (firstpaint == true) {
-			if (i > 0) {
-				//controlList[i - 1]->repaint();
-				// 再描画メッセージを投げる
-				if (MonAPI::Message::sendReceive(&info, controlList[i - 1]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[i - 1]->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[i - 1]->getThreadID());
-				}
-			}
-			//controlList[i]->repaint();
-			// 再描画メッセージを投げる
-			if (MonAPI::Message::sendReceive(&info, controlList[i]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[i]->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[i]->getThreadID());
-			}
-		}
-		controlListPtr++;
+	// 非活性メッセージを投げる
+	postActivatedToWindows(false, _controlList->getLength());
+
+	// 活性メッセージを投げる
+	Control *c = (Control *)_controlList->endItem->data;
+	postActivatedToWindow(true, c);
+
+	// 再描画メッセージを投げる
+	if (_controlList->endItem->prev != NULL) {
+		c = (Control *)_controlList->endItem->prev->data;
+		postRepaintToWindow(c);
 	}
+	
+	// 再描画メッセージを投げる
+	postRepaintToWindow(control);
 }
 
 /**
@@ -486,205 +472,136 @@ void WindowManager::add(Control *control)
  @param control 指定するウィンドウ
  @return 削除されたウィンドウ（なければNULL）
  */
-Control *WindowManager::remove(Control *control)
+void WindowManager::remove(Control *control)
 {
-	int i, j;
-	MessageInfo info;
+	// 背景を塗りつぶす
+	restoreBackGround(control);
+
+	// ウィンドウ削除
+	_controlList->remove(_controlList->endItem);
 	
-	for (i = controlListPtr - 1; i >= 0; i--) {
-		if (controlList[i] == control) {
-			// 後ろから詰める
-			for (j = i; j < controlListPtr - 1; j++) {
-				controlList[j] = controlList[j + 1];
-			}
-			// 活性・非活性
-			for (j = 0; j < controlListPtr - 2; j++) {
-				controlList[j]->setEnabled(false);
-				// 非活性メッセージを投げる
-				if (MonAPI::Message::send(controlList[j]->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", controlList[j]->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", controlList[j]->getThreadID());
-				}
-			}
-			controlList[j]->setEnabled(true);
-			// 活性メッセージを投げる
-			if (MonAPI::Message::send(controlList[j]->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", controlList[j]->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", controlList[j]->getThreadID());
-			}
-			controlListPtr--;
-			// 背景を塗りつぶす
-			Rect *rect = control->getRect();
-			if (wallpaper->getData() != NULL) {
-				_g->drawImage(wallpaper, rect->x, rect->y, rect->width + 1, rect->height + 1);
-			} else {
-				_g->setColor(128,128,255);
-				_g->fillRect(rect->x, rect->y, rect->width + 1, rect->height + 1);
-			}
-			// ウィンドウ再描画
-			for (j = 0; j < controlListPtr; j++) {
-				//controlList[j]->repaint();
-				// 再描画メッセージを投げる
-				if (MonAPI::Message::sendReceive(&info, controlList[j]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[j]->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[j]->getThreadID());
-				}
-			}
-			// 削除メッセージを投げる
-			if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_REMOVE sended %d\n", control->getThreadID());
-			}
-			return control;
-		}
-	}
+	// 非活性メッセージを投げる
+	postActivatedToWindows(false,  _controlList->getLength());
 	
-	return NULL;
+	// 活性メッセージを投げる
+	Control *c = (Control *)_controlList->endItem->data;
+	postActivatedToWindow(true, c);
+
+	// 再描画メッセージを投げる
+	postRepaintToWindows(_controlList->getLength());
 }
 
 /**
- 指定したウィンドウを活性にするする.
- @param control 指定するウィンドウ
+ 指定したウィンドウを非活性/活性化する.
+ <ul>
+ <li>enabledがかわる
+ <li>focusedがかわる
+ <li>非活性/活性化メッセージをウィンドウに投げる
+ </ul>
+ @param activated true/false
  */
-void WindowManager::setActiveControl(Control *control)
+void WindowManager::postActivatedToWindow(bool activated, Control *control)
 {
-	int i, j;
-	MessageInfo info;
-	
-	for (i = controlListPtr - 1; i >= 0; i--) {
-		if (controlList[i] == control) {
-			// 後ろから詰める
-			for (j = i; j < controlListPtr - 1; j++) {
-				controlList[j] = controlList[j + 1];
-				//controlList[j]->setEnabled(false);
-				//controlList[j]->repaint();
-				// 非活性メッセージを投げる
-				if (MonAPI::Message::send(controlList[i]->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", controlList[i]->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", controlList[i]->getThreadID());
-				}
-				// 再描画メッセージを投げる
-				if (MonAPI::Message::sendReceive(&info, controlList[i]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[i]->getThreadID());
-				} else {
-					//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[i]->getThreadID());
-				}
-			}
-			controlList[j] = control;
-			controlList[j]->setEnabled(true);
-			//controlList[j]->repaint();
-			// 活性メッセージを投げる
-			if (MonAPI::Message::send(controlList[j]->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", controlList[j]->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", controlList[j]->getThreadID());
-			}
-			// 再描画メッセージを投げる
-			if (MonAPI::Message::sendReceive(&info, controlList[j]->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
-				//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", controlList[j]->getThreadID());
-			} else {
-				//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", controlList[j]->getThreadID());
-			}
-			return;
-		}
-	}
-}
+	// NULLチェック
+	if (control == NULL) return;
 
-/**
- 指定したウィンドウを活性にするする.
- @param mx 指定するX座標
- @param my 指定するY座標
- */
-bool WindowManager::setActiveControl(int mx, int my)
-{
-	int i;
-	Rect *rect;
-	
-	if (controlListPtr <= 1) return false;
-	
-	// アクティブウィンドウ内をクリックしたときは無視
-	rect = getActiveControl()->getRect();
-	if (rect->x <= mx && mx <= rect->x + rect->width && 
-		rect->y <= my && my <= rect->y + rect->height &&
-		getActiveControl()->getIconified() == false)
-	{
-		return false;
-	}
-	if (rect->x <= mx && mx <= rect->x + rect->width && 
-		rect->y <= my && my <= rect->y + INSETS_TOP &&
-		getActiveControl()->getIconified() == true)
-	{
-		return false;
-	}
-	
-	// 上から順にチェック
-	for (i = controlListPtr - 2; i >= 0; i--) {
-		rect = controlList[i]->getRect();
-		if (rect->x <= mx && mx <= rect->x + rect->width && 
-			rect->y <= my && my <= rect->y + rect->height)
-		{
-			setActiveControl(controlList[i]);
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-/** 活性ウィンドウを得る */
-Control *WindowManager::getActiveControl()
-{
-	if (controlListPtr <= 0) {
-		return NULL;
-	} else {
-		return controlList[controlListPtr - 1];
-	}
-}
-
-/**
- 活性ウィンドウを得る
- @param mx 指定するX座標
- @param my 指定するY座標
- */
-Control *WindowManager::getActiveControl(int mx, int my)
-{
-	if (controlListPtr <= 0) {
-		return NULL;
-	} else {
-		Control *control = controlList[controlListPtr - 1];
-		Rect *rect = control->getRect();
-		// マウスカーソルがある範囲にウィンドウがあるかどうかチェック
-		if (rect->x <= mx && mx <= rect->x + rect->width && 
-			rect->y <= my && my <= rect->y + rect->height)
-		{
-			return control;
+	control->setEnabled(activated);
+	control->setFocused(activated);
+	if (activated == true) {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_ENABLED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED failed %d\n", control->getThreadID());
 		} else {
-			return NULL;
+			//printf("WindowManager->Window: MSG_GUISERVER_ENABLED sended %d\n", control->getThreadID());
+		}
+	} else {
+		if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_DISABLED, 0, 0, 0, NULL)) {
+			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED failed %d\n", control->getThreadID());
+		} else {
+			//printf("WindowManager->Window: MSG_GUISERVER_DISABLED sended %d\n", control->getThreadID());
 		}
 	}
 }
 
 /**
- 活性ウィンドウを得る
- @param threadID スレッドID
+ 指定したウィンドウを非活性/活性化する.
+ <ul>
+ <li>enabledがかわる
+ <li>focusedがかわる
+ <li>非活性/活性化メッセージをウィンドウに投げる
+ </ul>
+ @param activated true/false
+ @param length 0番目からlength番目までのウィンドウを対象にする
  */
-Control *WindowManager::getActiveControl(dword threadID)
+void WindowManager::postActivatedToWindows(bool activated, int length)
 {
-	if (controlListPtr <= 0) {
-		return NULL;
+	for (int i = 0; i < length; i++) {
+		Control *control = (Control *)_controlList->getItem(i)->data;
+		postActivatedToWindow(activated, control);
+	}
+}
+
+/**
+ 指定したウィンドウを再描画する.
+ <ul>
+ <li>再描画メッセージをウィンドウに投げる
+ </ul>
+ */
+void WindowManager::postRepaintToWindow(Control *control)
+{
+	// NULLチェック
+	if (control == NULL) return;
+
+	// 再描画メッセージを投げる
+	MessageInfo info;
+	if (MonAPI::Message::sendReceive(&info, control->getThreadID(), MSG_GUISERVER_REPAINT, 0, 0, 0, NULL)) {
+		//printf("WindowManager->Window: MSG_GUISERVER_REPAINT failed %d\n", control->getThreadID());
 	} else {
-		for (int i = 0; i < controlListPtr; i++) {
-			if (controlList[i]->getThreadID() == threadID) {
-				return controlList[i];
-			}
+		//printf("WindowManager->Window: MSG_GUISERVER_REPAINT sended %d\n", control->getThreadID());
+	}
+}
+
+/**
+ 指定したウィンドウを再描画する.
+ <ul>
+ <li>再描画メッセージをウィンドウに投げる
+ </ul>
+ @param length 0番目からlength番目までのウィンドウを対象にする
+ */
+void WindowManager::postRepaintToWindows(int length)
+{
+	// 再描画メッセージを投げる
+	for (int i = 0; i < length; i++) {
+		Control *control = (Control *)_controlList->getItem(i)->data;
+		postRepaintToWindow(control);
+	}
+}
+
+/**
+ 指定したウィンドウの背景を復元する
+ @param control NULLのときは画面全体を更新する
+ */
+void WindowManager::restoreBackGround(Control *control)
+{
+	#if 1
+	if (control == NULL) {
+		// 背景を塗りつぶす
+		if (wallpaper->getData() != NULL) {
+			_g->drawImage(wallpaper, 0, 0);
+		} else {
+			_g->setColor(128,128,255);
+			_g->fillRect(0, 0, width, height);
+		}
+	} else {
+		Rect *rect = control->getRect();
+		// 背景を塗りつぶす
+		if (wallpaper->getData() != NULL) {
+			_g->drawImage(wallpaper, rect->x, rect->y, rect->width + 1, rect->height + 1);
+		} else {
+			_g->setColor(128,128,255);
+			_g->fillRect(rect->x, rect->y, rect->width + 1, rect->height + 1);
 		}
 	}
-	return NULL;
+	#endif
 }
 
 /** 再描画 */
@@ -698,12 +615,7 @@ void WindowManager::repaint()
 		firstpaint = true;
 
 	// 背景を塗りつぶす
-	if (wallpaper->getData() != NULL) {
-		_g->drawImage(wallpaper, 0, 0);
-	} else {
-		_g->setColor(128,128,255);
-		_g->fillRect(0, 0, width, height);
-	}
+	restoreBackGround(NULL);
 	
 	// メニューバー
 	_g->setColor(200,200,200);
@@ -779,6 +691,15 @@ void WindowManager::service()
 	syscall_set_cursor(0, 0);
 	printf("starting baygui ...\n");
 
+	// タイマー起動
+	if (timerID == THREAD_UNKNOWN) timerID = syscall_get_tid();
+	MessageInfo msg, src;
+	dword id = syscall_mthread_create((dword)TimerThread);
+	syscall_mthread_join(id);
+	src.header = MSG_SERVER_START_OK;
+	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+	dword timerID = msg.from;
+
 #if 0
 	// シェル出力を黙らせる
 	MessageInfo msg, src;
@@ -816,16 +737,9 @@ void WindowManager::service()
 						isRunning = false;
 						break;
 					}
-					// ウィンドウリスト
-					if (info.arg3 == 'l') {
-						int i;
-						for (i = 0; i < controlListPtr; i++) {
-							//printf("controlList[%d] = %d\n", i, controlList[i]->getThreadID());
-						}
-					}
 				}
 				// ウィンドウが一つもないときはイベントを送らない
-				if (controlListPtr > 0) {
+				if (_controlList->getLength() > 0) {
 					if (info.arg2 & KEY_MODIFIER_DOWN) {
 						onKeyPress(info.arg1, info.arg2, info.arg3);
 					} else if (info.arg2 & KEY_MODIFIER_UP) {
@@ -869,7 +783,7 @@ void WindowManager::service()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("Window->WindowManager MSG_GUISERVER_REMOVE received %d\n", info.arg1);
-				remove(getActiveControl());
+				remove(getControl());
 				break;
 			case MSG_GUISERVER_STOP:
 				//printf("Window->WindowManager MSG_GUISERVER_STOP received %d\n", info.arg1);
@@ -882,34 +796,15 @@ void WindowManager::service()
 					MonAPI::Message::reply(&info, fpMemory->Handle, fpMemory->Size);
 				}
 				break;
-			case MSG_GUISERVER_SETTIMER:
-				//printf("Control->WindowManager MSG_GUISERVER_SETTIMER received %d, %d, %d\n", info.arg1, info.arg2, info.arg3);
-				{
-					Control *control = getActiveControl(info.arg1);
-					if (control != NULL) {
-						TimerEvent *timerEvent = control->getTimer();
-						timerEvent->duration = info.arg2;
-						timerEvent->end = info.arg3;
-					}
-				}
+			case MSG_GUISERVER_RESTORE:
+				// KUKURIを移植するのに必要
+				//printf("Window->WindowManager MSG_GUISERVER_RESTORE received %d\n", info.arg1);
+				restoreBackGround(getControl());
 				break;
-			}
-		} else {
-			// タイマーイベント
-			int i;
-			for (i = 0; i < controlListPtr; i++) {
-				if (controlList[i]->getTimer()->duration > 0 && 
-					controlList[i]->getTimer()->end <= syscall_get_tick() * 10)
-				{
-					controlList[i]->getTimer()->setDuration(-1);
-					// タイマー設定メッセージを投げる
-					if (MonAPI::Message::send(controlList[i]->getThreadID(), MSG_GUISERVER_ONTIMER, 0, 0, 0, NULL)) {
-						//printf("WindowManager->Control: MSG_GUISERVER_ONTIMER failed %d\n", threadID);
-						return;
-					} else {
-						//printf("WindowManager->Control: MSG_GUISERVER_ONTIMER sended %d\n", threadID);
-					}
-				}
+			case MSG_GUISERVER_SETTIMER:
+				//printf("Window->WindowManager MSG_GUISERVER_SETTIMER received %d, %d\n", info.arg1, info.arg2);
+				MonAPI::Message::send(timerID, MSG_GUISERVER_SETTIMER, info.arg1, info.arg2, 0, NULL);
+				break;
 			}
 		}
 	}

@@ -29,12 +29,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** コンストラクタ */
 Control::Control() {
-	enabled = iconified = firstpaint = false;
+	enabled = true;
+	focused = iconified = firstpaint = false;
 	x = y = height = width = 0;
 	_rect = new Rect(0,0,0,0);
 	_g = new Graphics();
 	_focusEvent = new Event(FOCUS_IN, this);
-	_timerEvent = new TimerEvent(TIMER, this);
 }
 
 /** デストラクタ */
@@ -42,7 +42,6 @@ Control::~Control() {
 	delete(_rect);
 	delete(_g);
 	delete(_focusEvent);
-	delete(_timerEvent);
 }
 
 /**
@@ -90,8 +89,17 @@ bool Control::getEnabled()
 }
 
 /**
- アイコン化フラグを得る
- @return アイコン化フラグ (true / false)
+ フォーカス状態を得る
+ @return フォーカス状態 (true / false)
+ */
+bool Control::getFocused()
+{
+	return focused;
+}
+
+/**
+ アイコン状態を得る
+ @return アイコン状態 (true / false)
  */
 bool Control::getIconified()
 {
@@ -120,36 +128,41 @@ Container *Control::getParent()
 	return parent;
 }
 
-/** タイマーを得る */
-TimerEvent *Control::getTimer()
-{
-	return _timerEvent;
-}
-
 /**
  活性状態設定
  @param enabled 活性状態 (true / false)
  */
 void Control::setEnabled(bool enabled)
 {
-	if (this->enabled == true &&
-		enabled == false)
+	this->enabled = enabled;
+}
+
+/**
+ フォーカス状態を設定する
+ @param focused フォーカス状態 (true / false)
+ */
+void Control::setFocused(bool focused)
+{
+	if (this->focused == true &&
+		focused == false)
 	{
-		this->enabled = enabled;
+		//printf("FOCUS_OUT %d\n", threadID);
+		this->focused = focused;
 		_focusEvent->type = FOCUS_OUT;
 		postEvent(_focusEvent);
-	} else if (this->enabled == false &&
-		enabled == true)
+	} else if (this->focused == false &&
+		focused == true)
 	{
-		this->enabled = enabled;
+		//printf("FOCUS_IN %d\n", threadID);
+		this->focused = focused;
 		_focusEvent->type = FOCUS_IN;
 		postEvent(_focusEvent);
 	}
 }
 
 /**
- アイコン化フラグを設定する
- @param iconified アイコン化フラグ (true / false)
+ アイコン状態を設定する
+ @param iconified アイコン状態 (true / false)
  */
 void Control::setIconified(bool iconified)
 {
@@ -180,28 +193,4 @@ void Control::setRect(int x, int y, int width, int height)
 void Control::setParent(Container *parent)
 {
 	this->parent = parent;
-}
-
-/**
- タイマーをセットする
- @param duration 発動するまでの時間[ms]
- */
-void Control::setTimer(int duration)
-{
-	_timerEvent->setDuration(duration);
-	// GUIサーバーIDを得る
-	dword guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX5");
-	if (guisvrID == 0xFFFFFFFF) {
-		//printf("Control: GuiServer not found %d\n", threadID);
-		return;
-	} else {
-		//printf("Control: GuiServer found %d\n", threadID);
-	}
-	// タイマー設定メッセージを投げる
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_SETTIMER, threadID, _timerEvent->duration, _timerEvent->end, NULL)) {
-		//printf("Control->WindowManager: MSG_GUISERVER_SETTIMER failed %d\n", threadID);
-		return;
-	} else {
-		//printf("Control->WindowManager: MSG_GUISERVER_SETTIMER sended %d\n", threadID);
-	}
 }

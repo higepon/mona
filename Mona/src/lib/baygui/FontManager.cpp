@@ -77,7 +77,7 @@ void FontManager::loadFont(char *path)
 	MessageInfo info;
 
 	// GUIサーバーを探す
-	dword guisvrID = MonAPI::Message::lookupMainThread("BAYGUI.EX5");
+	dword guisvrID = MonAPI::Message::lookupMainThread(GUISERVER_NAME);
 	if (guisvrID == 0xFFFFFFFF) {
 		//printf("FontManager: GuiServer not found %d\n", guisvrID);
 		fp = NULL;
@@ -137,7 +137,7 @@ void FontManager::loadFont(char *path)
 
 /**
  展開済みフォント列を得る
- @param [in] str 文字列 (UTF-8 / SJIS)
+ @param [in] str 文字列 (UTF-8)
  @param [out] length 文字数
  @return フォント列
 */
@@ -191,7 +191,7 @@ Font **FontManager::decodeString(char *str, int *length)
 
 /**
  文字列の幅を得る
- @param str 文字列 (UTF-8 / SJIS)
+ @param str 文字列 (UTF-8)
 */
 int FontManager::getWidth(char *str)
 {
@@ -207,7 +207,6 @@ int FontManager::getWidth(char *str)
 
 /**
  文字列の高さを得る
- @return 半角フォント、全角フォントのうち高いほうの高さ
 */
 int FontManager::getHeight()
 {

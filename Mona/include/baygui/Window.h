@@ -32,10 +32,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ウィンドウクラス
 */
 class Window : public Container {
-private:
+protected:
+	/** タイトル */
 	char title[MAX_TITLE_LEN + 1];
-	dword threadID, guisvrID;
+	/** GUIサーバーID */
+	dword guisvrID;
+	/** 内部描画領域 */
 	Graphics *__g;
+	/** タイマーイベント */
+	Event *_timerEvent;
 
 public:
 	Window::Window();
@@ -43,8 +48,9 @@ public:
 	virtual char *getTitle();
 	virtual void setTitle(char *title);
 	virtual void setRect(int x, int y, int width, int height);
+	virtual void setTimer(int duration);
 	virtual void add(Control *control);
-	virtual Control *remove(Control *control);
+	virtual void remove(Control *control);
 	virtual void postEvent(Event *event);
 	virtual void repaint();
 	virtual void run();

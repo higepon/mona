@@ -84,7 +84,7 @@ void ListBox::repaint()
 		firstpaint = true;
 
 	// 枠線
-	if (enabled == true) {
+	if (focused == true) {
 		_g->setColor(0,128,255);
 		_g->drawRect(0, 0, width, height);
 	} else {
@@ -106,7 +106,11 @@ void ListBox::repaint()
 			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);
 		} else {
-			_g->setColor(0,0,0);
+			if (enabled == true) {
+				_g->setColor(0,0,0);
+			} else {
+				_g->setColor(128,128,128);
+			}
 			_g->drawText(((String *)_dataList->getItem(i)->data)->toString(), 
 				4, 4 + (16 * i) + (16 - fh) / 2);
 		}
@@ -117,7 +121,7 @@ void ListBox::repaint()
 void ListBox::postEvent(Event *event)
 {
 	// キー押下
-	if (event->type == KEY_PRESSED) {
+	if (event->type == KEY_PRESSED && enabled == true) {
 		int keycode = ((KeyEvent *)event)->key;
 		if (keycode == VKEY_UP || keycode == VKEY_UP_QEMU) {
 			if (selectedIndex > 0) {
@@ -125,7 +129,6 @@ void ListBox::postEvent(Event *event)
 				if (firstpaint == true) {
 					repaint();
 					Control::postEvent(_itemEvent);
-					return;
 				}
 			}
 		} else if (keycode == VKEY_DOWN || keycode == VKEY_DOWN_QEMU) {
@@ -134,26 +137,24 @@ void ListBox::postEvent(Event *event)
 				if (firstpaint == true) {
 					repaint();
 					Control::postEvent(_itemEvent);
-					return;
 				}
 			}
 		} else if (keycode == VKEY_ENTER) {
 			Control::postEvent(_itemEvent);
-			return;
 		}
 	// マウス押下
-	} else if (event->type == MOUSE_PRESSED) {
+	} else if (event->type == MOUSE_PRESSED && enabled == true) {
 		int my = ((MouseEvent *)event)->y;
 		//printf("y = %d\n", my);
 		select((my - 7) / 16);
 		Control::postEvent(_itemEvent);
-		return;
+	// フォーカス状態変更
 	} else if (event->type == FOCUS_IN || event->type == FOCUS_OUT) {
 		if (firstpaint == true) {
 			repaint();
 			Control::postEvent(_focusEvent);
-			return;
 		}
+	} else {
+		Control::postEvent(event);
 	}
-	Control::postEvent(event);
 }

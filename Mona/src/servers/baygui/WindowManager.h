@@ -35,28 +35,27 @@ class WindowManager : public MonAPI::Server, public Container {
 private:
 	bool isRunning;
 	dword threadID, keysvrID, mousesvrID, stdoutID, procsvrID;
-	int preX, preY, state, controlListPtr;
+	int preX, preY, state;
 	Bitmap *wallpaper;
 	static WindowManager *instance;
-	Control *controlList[50];
 	
-	virtual void setActiveControl(Control *control);
-	virtual bool setActiveControl(int x, int y);
-	virtual Control *getActiveControl();
-	virtual Control *getActiveControl(int x, int y);
-	virtual Control *getActiveControl(dword threadID);
 	virtual void onKeyPress(int keycode, int mod, int charcode);
 	virtual void onKeyRelease(int keycode, int mod, int charcode);
 	virtual void onMousePress(int x, int y);
 	virtual void onMouseDrag(int x, int y);
 	virtual void onMouseRelease(int x, int y);
+	virtual void postActivatedToWindow(bool activated, Control *control);
+	virtual void postActivatedToWindows(bool activated, int length);
+	virtual void postRepaintToWindow(Control *control);
+	virtual void postRepaintToWindows(int length);
+	virtual void restoreBackGround(Control *control);
 
 public:
 	WindowManager::WindowManager();
 	virtual WindowManager::~WindowManager();
 	static WindowManager *getInstance();
 	virtual void add(Control *control);
-	virtual Control *remove(Control *control);
+	virtual void remove(Control *control);
 	virtual void repaint();
 	virtual void service();
 };

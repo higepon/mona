@@ -48,6 +48,7 @@ public:
 	virtual void add(LinkedItem *item);
 	virtual void remove(LinkedItem *item);
 	virtual void removeAll();
+	virtual void sort(LinkedItem *item);
 };
 
 #endif // _LINKEDLIST_H_INCLUDED_

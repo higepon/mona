@@ -39,6 +39,8 @@ protected:
 	Container *parent;
 	/** 活性・非活性 */
 	bool enabled;
+	/** フォーカス有無 */
+	bool focused;
 	/** アイコン化フラグ */
 	bool iconified;
 	/** 初回描画フラグ */
@@ -57,8 +59,6 @@ protected:
 	Graphics *_g;
 	/** フォーカスイベント */
 	Event *_focusEvent;
-	/** タイマーイベント */
-	TimerEvent *_timerEvent;
 	
 public:
 	Control::Control();
@@ -68,15 +68,15 @@ public:
 	virtual void postEvent(Event *event);
 	virtual void repaint();
 	virtual bool getEnabled();
+	virtual bool getFocused();
 	virtual bool getIconified();
 	virtual Rect *getRect();
 	virtual Container *getParent();
-	virtual TimerEvent *getTimer();
 	virtual void setEnabled(bool enabled);
+	virtual void setFocused(bool focused);
 	virtual void setIconified(bool iconified);
 	virtual void setRect(int x, int y, int width, int height);
 	virtual void setParent(Container *parent);
-	virtual void setTimer(int duration);
 };
 
 #endif // _CONTROL_H_INCLUDED_

@@ -38,12 +38,13 @@ protected:
 
 	virtual Control *getControl();
 	virtual Control *getControl(int x, int y);
+	LinkedItem *search(Control *control);
 
 public:
 	Container::Container();
 	virtual Container::~Container();
 	virtual void add(Control *control) = 0;
-	virtual Control *remove(Control *control) = 0;
+	virtual void remove(Control *control) = 0;
 };
 
 #endif // _CONTAINER_H_INCLUDED_

@@ -99,7 +99,11 @@ void Button::repaint()
 	}
 	
 	// 文字
-	_g->setColor(0,0,0);
+	if (enabled == true) {
+		_g->setColor(0,0,0);
+	} else {
+		_g->setColor(128,128,128);
+	}
 	int fw = FontManager::getInstance()->getWidth(label);
 	int fh = FontManager::getInstance()->getHeight();
 	if (pushed == true) {
@@ -111,16 +115,17 @@ void Button::repaint()
 
 /** イベント処理 */
 void Button::postEvent(Event *event) {
-	if (event->type == MOUSE_PRESSED) {
+	if (event->type == MOUSE_PRESSED && enabled == true) {
 		pushed = true;
 		if (firstpaint == true) {
 			repaint();
 		}
-	} else if (event->type == MOUSE_RELEASED) {
+	} else if (event->type == MOUSE_RELEASED && enabled == true) {
 		pushed = false;
 		if (firstpaint == true) {
 			repaint();
 		}
+	} else {
+		Control::postEvent(event);
 	}
-	Control::postEvent(event);
 }
