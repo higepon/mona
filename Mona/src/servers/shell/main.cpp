@@ -136,29 +136,30 @@ enum
 
 int Shell::isInternalCommand(char* command)
 {
-    int ret = COMMAND_NONE;
     int len = strlen(command);
-    char* cmd = new char[len + 1];
-    for (int i = 0; i <= len; i++)
+    if (len > 15) len = 15;
+    char cmd[16];
+    for (int i = 0; i < len; i++)
     {
         char ch = command[i];
         if ('a' <= ch && ch <= 'z') ch -= 'a' - 'A';
         cmd[i] = ch;
     }
+    cmd[len] = '\0';
+
     if (strcmp(cmd, "LS") == 0 || strcmp(cmd, "DIR") == 0)
     {
-        ret = COMMAND_LS;
+        return COMMAND_LS;
     }
     else if (strcmp(cmd, "CD") == 0)
     {
-        ret = COMMAND_CD;
+        return COMMAND_CD;
     }
     else if (strcmp(cmd, "CAT") == 0 || strcmp(cmd, "TYPE") == 0)
     {
-        ret = COMMAND_CAT;
+        return COMMAND_CAT;
     }
-    delete cmd;
-    return ret;
+    return COMMAND_NONE;
 }
 
 void Shell::commandExecute()
