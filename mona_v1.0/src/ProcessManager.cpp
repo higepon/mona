@@ -128,6 +128,7 @@ void ProcessManager::setTSS(TSS* tss, word cs, word ds, void (*f)(), dword eflag
     memset(tss, 0, sizeof(TSS));
     tss->cs     = cs;
     tss->ds     = ds;
+    tss->es     = ds;
     tss->eip    = (dword)f;
     tss->eflags = eflags;
     tss->esp    = (dword)esp;
@@ -155,7 +156,7 @@ void ProcessManager::multiTaskTester() {
 
     //    printInfo();
 
-    setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x10, 0, 0);
+    setTSS(tss + 1, 0x08, 0x10, process2Tester, 0x200, stack, 0x18, (byte*)0xfff, 0x18);
     setDT(gdt_ + 4, (dword)tss      , sizeof(TSS), SYS_TSS);
     setDT(gdt_ + 5, (dword)(tss + 1), sizeof(TSS), SYS_TSS);
     //    setDT(gdt_ + 6, (dword)(ldt)    , sizeof(GDT), TypeLDT);

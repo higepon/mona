@@ -23,12 +23,12 @@
 
 
 /*!< \def _sys_dump() */
-#define _sysdump(str, stopflag) {               \
+#define _sysdump(str, stopflag, unlockint) {    \
     _sysLock();                                 \
     dword __eax, __ebx, __ecx, __edx;           \
     dword __esp, __ebp, __esi, __edi;           \
     dword __cs , __ds , __fs , __es;            \
-    dword __gs, __ss;                           \
+    dword __gs, __ss  , __eflags;               \
     asm volatile("mov %%eax, %0  \n"            \
                  "mov %%ebx, %1  \n"            \
                  "mov %%ecx, %2  \n"            \
@@ -43,6 +43,9 @@
                  "mov %%fs , %11 \n"            \
                  "mov %%gs , %12 \n"            \
                  "mov %%ss , %13 \n"            \
+                 "pushf          \n"            \
+                 "pop %%eax      \n"            \
+                 "mov %%eax, %14 \n"            \
                  : "=m" (__eax)                 \
                  , "=m" (__ebx)                 \
                  , "=m" (__ecx)                 \
@@ -57,6 +60,9 @@
                  , "=m" (__fs)                  \
                  , "=m" (__gs)                  \
                  , "=m" (__ss)                  \
+                 , "=m" (__eflags)              \
+                 : /* no input */               \
+                 : "ax"                         \
                 );                              \
     _sys_printf("%s _sysdump()\n", str);        \
     _sys_printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
@@ -65,9 +71,9 @@
                 , __esp, __ebp, __esi, __edi);  \
     _sys_printf("cs =%x ds =%x es =%x fs =%x\n" \
                 , __cs , __ds , __es , __fs);   \
-    _sys_printf("gs =%x ss =%x \n"              \
-                , __gs , __ss);                 \
-     _sysUnlock();                              \
+    _sys_printf("gs =%x ss =%x eflags=%x\n"     \
+                , __gs , __ss , __eflags);      \
+     if (unlockint)_sysUnlock();                \
      if (stopflag) while (true);                \
 }
 
