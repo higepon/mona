@@ -79,7 +79,7 @@ int receive(Message* message) {
 
     memcpy(message, from, sizeof(Message));
     free(from);
-    g_current_process->messageList->remove(0);
+    g_current_process->messageList->removeAt(0);
     return 0;
 }
 

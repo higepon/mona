@@ -71,9 +71,16 @@ KeyBoardManager::KeyBoardManager() {
     /* set Handler */
     f_ = NULL;
 
+    isInit_ = false;
+    return;
+}
+
+void KeyBoardManager::init() {
+
     /* keyinfo list */
     keyInfoList_ = new HList<KeyInfo*>();
-    return;
+
+    isInit_ = true;
 }
 
 /*!

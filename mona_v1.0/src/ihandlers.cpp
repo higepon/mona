@@ -37,6 +37,10 @@ void keyStrokeHandler(dword scancode) {
 
     /* set key scan code */
     KeyBoardManager& km = KeyBoardManager::instance();
+    if (km.isInit()) {
+        km.init();
+    }
+
     km.setKeyScanCode((byte)scancode);
 
     km.getKeyInfo(&info);

@@ -114,6 +114,7 @@ class KeyBoardManager {
     bool isCtrl_;
     bool isWin_;
     bool isMenu_;
+    bool isInit_;
     static const int keyMap_[128];
     static const int keyMapE0_[128];
     byte idHigh_;
@@ -125,6 +126,12 @@ class KeyBoardManager {
         static KeyBoardManager theInstance;
         return theInstance;
     }
+    void init();
+
+    inline bool isInit() const {
+        return isInit_;
+    }
+
     KeyInfo* getKeyInfo(KeyInfo* keyinfo);
     void setKeyScanCode(unsigned char);
     void setHandler(void (*f)());
