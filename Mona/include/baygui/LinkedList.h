@@ -51,6 +51,8 @@ private:
 	LinkedItem *firstItem;
 	/** 終わり */
 	LinkedItem *endItem;
+	/** remove時にdeleteを行うかどうか */
+	bool autoDelete;
 	
 private:
 	/** ObjectをLinkedItemに変換する */
@@ -60,8 +62,16 @@ private:
 	LinkedItem *getLinkedItem(int index);
 	
 public:
-	/** コンストラクタ */
+	/** デフォルトコンストラクタ */
 	LinkedList();
+	
+	/**
+	 コンストラクタ.
+	 デフォルトで項目はremove時にdeleteされる。
+	 deleteされることを望まない場合はautoDeleteにfalseを設定する。
+	 @param autoDelete remove時にdeleteを行うかどうか（true / false）
+	*/
+	LinkedList(bool autoDelete);
 	
 	/** デストラクタ */
 	virtual ~LinkedList();
@@ -87,11 +97,7 @@ public:
 	/** 指定した項目を削除する */
 	Object *remove(Object *o);
 	
-	/**
-	 全て削除する.
-	 データそのものもdeleteしてほしいときはデストラクタを呼ぶ前にこのメソッドを呼ぶ。
-	 デストラクタはデータそのものはdeleteしない。
-	*/
+	/** 全て削除する */
 	void removeAll();
 };
 

@@ -28,6 +28,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_SCROLLBAR_H_INCLUDED_)
 #define _SCROLLBAR_H_INCLUDED_
 
+/**
+ 水平・垂直スクロールバークラス
+*/
 class Scrollbar : public Control {
 public:
 	/** 水平スクロールバー */
@@ -59,13 +62,13 @@ public:
 	/** デストラクタ */
 	virtual ~Scrollbar();
 
-	/** 最小値を得る */
+	/** 最小値を得る（初期値は0） */
 	inline int getMinimum() { return this->minimum; }
 
-	/** 最大値を得る */
+	/** 最大値を得る（初期値は100） */
 	inline int getMaximum() { return this->maximum; }
 
-	/** 一度に増減する量を得る */
+	/** 一度に増減する量を得る（初期値は10） */
 	inline int getBlocksize() { return this->blocksize; }
 
 	/** 値を得る */

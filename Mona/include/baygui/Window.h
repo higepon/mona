@@ -70,6 +70,10 @@ private:
 	int offsetY;
 	/** オーバーラップウィンドウの状態 */
 	unsigned int overlap;
+	/** 実行中フラグ */
+	bool isRunning;
+	/** タイマーID */
+	unsigned int timerID;
 	/** キーイベント */
 	KeyEvent keyEvent;
 	/** マウスイベント */
@@ -86,8 +90,6 @@ private:
 	Graphics *__g;
 	/** 内部描画バッファー */
 	Image *__buffer;
-	/** 実行中フラグ */
-	bool isRunning;
 	
 #ifdef MONA
 protected:
