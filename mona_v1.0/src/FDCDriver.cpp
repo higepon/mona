@@ -72,9 +72,6 @@
 /* time out */
 #define FDC_RETRY_MAX 600000
 
-/* delay */
-#define delay() inportb(0x80);
-
 #define FDC_DMA_BUFF_SIZE 512
 
 bool            FDCDriver::interrupt_ ;

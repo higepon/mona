@@ -11,7 +11,7 @@ kernel.o: kernel.cpp user/types.h include/global.h include/info.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/pic.h include/io.h include/rtc.h \
   include/disp.h include/FAT12.h include/IA32MemoryManager.h \
-  include/syscalls.h user/userlib.h
+  include/syscalls.h user/userlib.h include/elf.h
 ihandlers.o: ihandlers.cpp include/global.h include/info.h \
   include/kernel.h user/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \

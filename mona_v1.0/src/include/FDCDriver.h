@@ -65,4 +65,6 @@ class FDCDriver : public DiskDriver {
 
 extern FDCDriver* gFDCDriver;
 
+/* delay */
+#define delay() inportb(0x80);
 #endif

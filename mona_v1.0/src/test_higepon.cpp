@@ -2,6 +2,7 @@
 #include<FAT12.h>
 #include<FDCDriver.h>
 #include<global.h>
+#include<io.h>
 
 /*!
     \file   tester_higepon.cpp
@@ -24,6 +25,12 @@ void ELFTester(byte* out) {
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
+    g_fdcdriver->motor(false);
+
+    for (int i = 0; i< 20; i++) {
+        delay();
+        delay();
+    }
     g_fdcdriver->motor(true);
 
     info(DEV_NOTICE, "before recalibrate");
@@ -55,7 +62,7 @@ void ELFTester(byte* out) {
 
     info(MSG, "initilize OK\n");
 
-    info(MSG, "try to open file hige.cpp\n");
+    info(MSG, "try to open file USER.ELF\n");
     if (!fat->open(".", "USER.ELF", FAT12::READ_MODE)) {
 
         info(ERROR, "open failed");
@@ -74,7 +81,7 @@ void ELFTester(byte* out) {
        info(ERROR, "close failed");
     }
 
-    g_console->printf("\nUSER.ELF\n");
+    g_console->printf("load done...USER.ELF\n");
     g_fdcdriver->motor(false);
 
 }

@@ -131,11 +131,13 @@ void startKernel(void) {
 
     g_info_level = MSG;
 
-    g_console->printf("Hit any key to start [Process]\n");
-
     disableTimer();
     enableKeyboard();
     enableInterrupt();
+
+    g_console->printf("Hit any key to start loading USER.ELF from FAT12!!\n");
+    while (g_demo_step < 2);
+    g_console->printf("loading..\n");
 
     //    FDCTester();
 
@@ -146,8 +148,6 @@ void startKernel(void) {
 
     g_console->printf("loader result = %d\n", loader->prepare((dword)user_func_from));
     loader->load(user_func);
-
-    while (g_demo_step < 2);
 
     IA32MemoryManager& mm = IA32MemoryManager::instance();
     g_console->printf("used %d / total %d \n", mm.getUsedMemory(), mm.getTotalKernelMemory());
@@ -177,11 +177,13 @@ void startKernel(void) {
     //    g_process_manager->addProcess((Process*)process9, (virtual_addr)v86_func);
     //    process9->pinfo_.esp = 0x1000;
 
+    g_console->printf("Hit any key to start all process\n");
+    while (g_demo_step < 5);
+
     enableTimer();
 
 #endif
 
-    while (g_demo_step < 5);
 #ifndef MJT
     disableInterrupt();
 #endif
