@@ -18,7 +18,7 @@
 
 #define MAX_PROCESS 512
 
-typedef struct {
+typedef struct ProcessInfo {
     dword  eip;
     dword  cs;
     dword  eflags;
@@ -33,7 +33,9 @@ typedef struct {
     dword  tick;
     dword  pid;
     class  Process* process;
-} ProcessInfo;
+    ProcessInfo* prev;
+    ProcessInfo* next;
+};
 
 /*!
     class Process
@@ -58,6 +60,27 @@ class Process {
   public:
     ProcessInfo pinfo_;
     static void setup();
+};
+
+/*!
+    class Process
+*/
+class KernelProcess : Process {
+
+  public:
+    KernelProcess() {
+
+        pinfo_.process = this;
+    }
+    virtual ~KernelProcess() {
+    }
+
+    int main();
+
+  protected:
+    virtual void init();
+    virtual int execute();
+    virtual void destroy();
 };
 
 #endif
