@@ -439,6 +439,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     } else {
 
         g_console->printf("access denied.address = %x Process %s killed", address, current->getName());
+        for (;;);
 //        g_processManager->kill(current);
 //        schedule(false);
         return true;

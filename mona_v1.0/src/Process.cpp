@@ -443,8 +443,8 @@ int ThreadOperation::switchThread(bool isProcessChanged)
 /*----------------------------------------------------------------------
     Thread
 ----------------------------------------------------------------------*/
-Thread::Thread() : totalTick(0), partTick(0), tick_(0), timeLeft_(1) {
-
+Thread::Thread() : totalTick(0), partTick(0), tick_(0), timeLeft_(1)
+{
     /* thread information */
     threadInfo_ = new ThreadInfo;
     checkMemoryAllocate(threadInfo_, "class Thread info allocate");
@@ -455,8 +455,8 @@ Thread::Thread() : totalTick(0), partTick(0), tick_(0), timeLeft_(1) {
     checkMemoryAllocate(threadInfo_->archinfo, "class Thread arch info allocate");
 }
 
-Thread::~Thread() {
-
+Thread::~Thread()
+{
     /* free memory */
     delete threadInfo_->archinfo;
     delete threadInfo_;

@@ -131,17 +131,16 @@ void dummyHandler() {
   \author HigePon
   \date   create:2002/11/21 update:2003/02/24
 */
-void timerHandler() {
-
-    /* EOI is below for IRQ 8-15 */
-    //    outportb(0xA0, 0x20);
+void timerHandler()
+{
+    /* EOI */
     outportb(0x20, 0x20);
 
     g_scheduler->tick();
-    g_currentThread->thread->tick();
     dword tick = g_scheduler->getTick();
     bool isProcessChange = (tick % 10) ? g_scheduler->schedule2() : g_scheduler->schedule();
 
+    g_currentThread->thread->tick();
     ThreadOperation::switchThread(isProcessChange);
 
     /* does not come here */
