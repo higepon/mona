@@ -68,7 +68,7 @@ void startKernel(void) {
     Kthread thread;
     current = &thread;
 
-    enableTimer();
+    //    enableTimer();
     printOK("Setting GDT        ");
 
     /* check some */
@@ -99,6 +99,7 @@ void startKernel(void) {
     gMFDCDriver = new MFDCDriver(console);
 
     kthread_init();
+    enableTimer();
     while (true);
 
     /* test code is here */

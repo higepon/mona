@@ -22,6 +22,7 @@
 #include<monaKernel.h>
 #include<string>
 #include<monaIhandler.h>
+#include<kthread.h>
 
 /*!
     \brief key stroke handler
@@ -94,10 +95,13 @@ void dummyHandler() {
 void timerHandler() {
 
     static dword idx = 0;
-    //    idx++;
+    idx++;
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
+
+    if (idx == 1) return;
+    kthread_schedule();
 
     return; /* todo */
 

@@ -42,8 +42,6 @@ void kthread_init() {
     }
 
     kthread_add_to_run(idle);
-
-    kthread_schedule();
 }
 
 /*!
@@ -179,7 +177,7 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
     /* create thread */
     thread->eip    = (dword)f;
     thread->cs     = 0x08;
-    thread->eflags = 0x20046;
+    thread->eflags = 0x200046;
     thread->esp    = stack;
     thread->ebp    = stack;
 
@@ -197,7 +195,9 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
 */
 void kthread_idle() {
 
-    console->printf("[idle]");
+    while (true) {
+	console->printf("[idle]");
+    }
 }
 
 /*!
@@ -226,6 +226,9 @@ void kthread_schedule() {
 void kthread_switch() {
 
     console->printf("switch");
+    console->printf("higepon eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
+                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
     arch_kthread_switch();
 }
 
