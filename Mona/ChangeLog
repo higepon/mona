@@ -10,7 +10,7 @@
 
         * include/macro.asm: src/kernel/macro.asmから移動
 
-        * env/*.env: NFLAGSでインクルードパスを指定
+        * env/*.env: NFLAGSでインクルードパスを指定, CCとCFLAGSを追加
 
         * src/lib/monapi: リンク問題に対処するためmonapi.oをlibmonapi.aから外して個別リンク (thanks Yuiさん)
                           FreeBSDでHELLO.ELFが正常にコンパイルできることを確認
@@ -20,6 +20,8 @@
         * include/sys/types.h (SYSTEM_CALL_GET_KERNEL_VERSION): 追加
 
         * include/monapi/syscall.h (syscall_get_kernel_version): 追加
+
+        * src/lib/bzip2: 追加
 
 2004-04-30  tino  <tino@users.sourceforge.jp>
 

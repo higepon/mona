@@ -1,0 +1,7 @@
+blocksort.o: blocksort.c bzlib_private.h bzlib.h
+huffman.o: huffman.c bzlib_private.h bzlib.h
+crctable.o: crctable.c bzlib_private.h bzlib.h
+randtable.o: randtable.c bzlib_private.h bzlib.h
+compress.o: compress.c bzlib_private.h bzlib.h
+decompress.o: decompress.c bzlib_private.h bzlib.h
+bzlib.o: bzlib.c bzlib_private.h bzlib.h
