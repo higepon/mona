@@ -70,3 +70,4 @@
 * allocateMemoryがNULLを返した時に割り込み処理を起動
 * 画面スクロールのデバッグ
 * 割り込みコントローラーの設定
+* MakeFile統合 include対応
