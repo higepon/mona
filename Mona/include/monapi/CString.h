@@ -1,6 +1,8 @@
 #ifndef __MONAPI_CSTRING_H__
 #define __MONAPI_CSTRING_H__
 
+#include <gui/System/Array.h>
+
 namespace MonAPI
 {
     struct CString
@@ -33,8 +35,14 @@ namespace MonAPI
 
         bool startsWith(const CString& value) const;
         bool endsWith(const CString& value) const;
+        int indexOf(char ch, int from = 0) const;
+        int indexOf(const CString& value, int from = 0) const;
+        int lastIndexOf(char ch, int from = -1) const;
+        int lastIndexOf(const CString& value, int from = -1) const;
 
         CString substring(int start, int length) const;
+        _A<CString> split(char ch) const;
+        _A<CString> split(const CString& value) const;
 
         CString toLower() const;
         CString toUpper() const;

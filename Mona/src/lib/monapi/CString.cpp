@@ -1,6 +1,7 @@
 #include <monapi/string.h>
 #include <monapi/CString.h>
 #include <monapi/syscall.h>
+#include <gui/System/Collections/ArrayList.h>
 
 #define ASSERT(cond) if (!cond) { printf("%s:%d: null pointer exception!\n", __FILE__, __LINE__); exit(1); }
 
@@ -190,6 +191,79 @@ namespace MonAPI
         return true;
     }
 
+    int CString::indexOf(char ch, int from /*= 0*/) const
+    {
+        if (this->buffer == NULL || this->length == 0) return -1;
+
+        if (from < 0) from = 0;
+        for (int i = from; i < this->length; i++)
+        {
+            if (this->buffer[i] == ch) return i;
+        }
+        return -1;
+    }
+
+    int CString::indexOf(const CString& value, int from /*= 0*/) const
+    {
+        if (this->buffer == NULL) return value.buffer == NULL;
+        if (this->length == 0) return -1;
+
+        if (from < 0) from = 0;
+        int last = this->length - value.length;
+        if (value.buffer == NULL || value.length == 0) return from < this->length ? from : -1;
+        for (int i = from; i <= last; i++)
+        {
+            bool ok = true;
+            for (int j = 0; j < value.length; j++)
+            {
+                if (this->buffer[i + j] != value.buffer[j])
+                {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) return i;
+        }
+        return -1;
+    }
+
+    int CString::lastIndexOf(char ch, int from /*= -1*/) const
+    {
+        if (this->buffer == NULL || this->length == 0) return -1;
+
+        if (from == -1) from = this->length;
+        if (from > this->length) from = this->length;
+        for (int i = from; i > 0; i--)
+        {
+            if (this->buffer[i - 1] == ch) return i - 1;
+        }
+        return -1;
+    }
+
+    int CString::lastIndexOf(const CString& value, int from /*= -1*/) const
+    {
+        if (this->buffer == NULL) return value.buffer == NULL;
+        if (this->length == 0) return -1;
+
+        if (from == -1) from = this->length;
+        if (from > this->length) from = this->length;
+        if (value.buffer == NULL || value.length == 0) return from - 1;
+        for (int i = from; i >= value.length; i--)
+        {
+            bool ok = true;
+            for (int j = 0; j < value.length; j++)
+            {
+                if (this->buffer[i - j - 1] != value.buffer[value.length - j - 1])
+                {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) return i - value.length;
+        }
+        return -1;
+    }
+
     CString CString::substring(int start, int length) const
     {
         if (start < 0 || this->length <= start) return NULL;
@@ -197,6 +271,52 @@ namespace MonAPI
         if (length > len) length = len;
 
         return CString(&this->buffer[start], length);
+    }
+
+    _A<CString> CString::split(char ch) const
+    {
+        System::Collections::ArrayList<CString> list;
+        int p = 0, pp = 0;
+        for (;;)
+        {
+            pp = p;
+            p = this->indexOf(ch, p);
+            if (p < 0)
+            {
+                list.Add(this->substring(pp, this->length - pp));
+                break;
+            }
+            list.Add(this->substring(pp, p - pp));
+            p++;
+        }
+
+        int len = list.get_Count();
+        _A<CString> ret(len);
+        for (int i = 0; i < len; i++) ret[i] = list.get_Item(i);
+        return ret;
+    }
+
+    _A<CString> CString::split(const CString& value) const
+    {
+        System::Collections::ArrayList<CString> list;
+        int p = 0, pp = 0;
+        for (;;)
+        {
+            pp = p;
+            p = this->indexOf(value, p);
+            if (p < 0)
+            {
+                list.Add(this->substring(pp, this->length - pp));
+                break;
+            }
+            list.Add(this->substring(pp, p - pp));
+            p += value.length;
+        }
+
+        int len = list.get_Count();
+        _A<CString> ret(len);
+        for (int i = 0; i < len; i++) ret[i] = list.get_Item(i);
+        return ret;
     }
 
     CString CString::toLower() const
