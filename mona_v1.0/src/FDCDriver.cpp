@@ -131,8 +131,13 @@ void FDCDriver::initilize() {
     }
 
 #ifdef FDC_DEBUG
-    g_console->printf("dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
+  #define DEBUG_OUT g_console->printf
+#else
+  #define DEBUG_OUT //
 #endif
+
+    DEBUG_OUT("dmabuff=[%d]kb", ((dword)dmabuff_ / 1024));
+
 
     /* setup DMAC */
     outportb(0xda, 0x00);
@@ -200,7 +205,10 @@ void FDCDriver::waitPrint(const char* msg) {
         i++;
         i--;
     }
+
+#ifdef FDC_DEBUG
     g_console->printf("%s:%d\n", msg, counter);
+#endif
 }
 
 /*!
@@ -327,15 +335,12 @@ bool FDCDriver::recalibrate() {
 
     byte command[] = {0x07, 0x00}; /* recalibrate */
 
-    g_console->printf("recalibrate1");
-
     interrupt_ = false;
     if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#recalibrate:command fail\n");
         return false;
     }
-
 
     while (!waitInterrupt());
 #ifdef FDC_DEBUG
@@ -431,16 +436,16 @@ bool FDCDriver::senseInterrupt() {
 
     byte command[] = {FDC_COMMAND_SENSE_INTERRUPT};
 
-    g_console->printf("recalibrate-sen3");
     if (!sendCommand(command, sizeof(command))){
 
         console_->printf("FDCDriver#senseInterrrupt:command fail\n");
         return false;
     }
 
-    g_console->printf("recalibrate-sen4");
-
-    readResults();
+    if (!readResults()) {
+        console_->printf("FDCDriver#senseInterrrupt:resultError\n");
+        return false;
+    }
     return true;
 }
 
@@ -478,6 +483,8 @@ bool FDCDriver::readResults() {
 
     /* if not normal end show result */
     if (resultsLength_ > 0 && (results_[0] & 0xC0)) {
+
+        console_->printf("FDC ERROR:");
 
         for (int j = 0; j < resultsLength_; j++) {
 
@@ -609,7 +616,11 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
     g_console->printf("[t h s]=[%d, %d, %d]\n", track, head, sector);
 #endif
 
-    seek(track);
+
+    if (!seek(track)) {
+        g_console->printf("FDCDriver#read#seek:error");
+        return false;
+    }
 
     setupDMARead(512);
 
@@ -617,12 +628,12 @@ bool FDCDriver::read(byte track, byte head, byte sector) {
 #ifdef FDC_DEBUG
     printStatus("before read command");
 #endif
-
     sendCommand(command, sizeof(command));
 
 #ifdef FDC_DEBUG
     console_->printf("wait loop");
 #endif
+
     while (!waitInterrupt());
     stopDMA();
 

@@ -1,4 +1,4 @@
-#define FAT12_DEBUG
+//#define FAT12_DEBUG
 /*!
   \file  FAT12.cpp
   \brief class FAT12 File System

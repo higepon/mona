@@ -23,13 +23,16 @@ void FDCTester() {
     for (int i = 0xff; i < 512; i++){ tbuf[i] = 512 - i;}
 
     g_fdcdriver->motor(true);
+    g_console->printf("before recalibrate");
     g_fdcdriver->recalibrate();
 
+    g_console->printf("before read");
     for (int i = 0; i < 10; i++) {
         memset(tbuf, 0x99, 512);
         g_fdcdriver->read(1, tbuf);
 
     }
+    g_console->printf("after read");
 
 //      // write
 //      for (int i = 0; i < 73; i++) {
