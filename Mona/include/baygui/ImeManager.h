@@ -28,6 +28,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_IMEMANAGER_H_INCLUDED_)
 #define _IMEMANAGER_H_INCLUDED_
 
+#include "monapi/CString.h"
+
 /**
  IMEマネージャクラス
 */

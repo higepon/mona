@@ -1,3 +1,7 @@
+2004-11-12  higepon  <higepon@users.sourceforge.jp>
+
+        * include/baygui/ImeManager.h: CString.hをinclude(ビルドエラー解消のため)
+
 2004-11-08  bayside  <bayside@users.sourceforge.jp>
 
         * src/lib/baygui: IME系大幅修正
@@ -11,13 +15,13 @@
 2004-11-07  Yamami  <yamamimail@users.sourceforge.jp>
 
         * include/gui/System/Text/Encoding.h: コメント記述
-        
+
         * src/lib/gui/System/Text/Encoding.cpp: コメント記述
 
 2004-11-06  Yamami  <yamamimail@users.sourceforge.jp>
 
         * include/gui/System/Event.h: コメント記述
-        
+
         * include/gui/System/Array.h: コメント記述
 
         * include/gui/System/Object.h: コメント記述
