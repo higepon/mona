@@ -106,17 +106,52 @@ void startKernel(void) {
     g_page_manager = new PageManager(g_total_system_memory);
     g_page_manager->setup();
 
-    /* this is test code 2003/12/14 */
-
     /* this should be called, before timer enabled */
     ThreadManager::setup();
-
     g_processManager = new ProcessManager(g_page_manager);
-  //    Process_* testProcess1 = g_processManager->create(ProcessManager_::KERNEL_PROCESS, "TEST1");
-    //    g_processManager->add(testProcess1);
-//     Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
-//     g_console->printf("testThread1=%x", testThread1);
-//     g_processManager->join(testProcess1, testThread1);
+
+    /* add testProces1(testThread1) */
+    Process* testProcess1 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST1");
+    g_processManager->add(testProcess1);
+    Thread*   testThread1  = g_processManager->createThread(testProcess1, (dword)printBanner);
+    g_processManager->join(testProcess1, testThread1);
+
+    /* add testProces2(testThread2) */
+    Process* testProcess2 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST2");
+    g_processManager->add(testProcess2);
+    Thread*   testThread2  = g_processManager->createThread(testProcess2, (dword)printBanner);
+    g_processManager->join(testProcess2, testThread2);
+
+    /* add testProces3(testThread3) */
+    Process* testProcess3 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST3");
+    g_processManager->add(testProcess3);
+    Thread*   testThread3  = g_processManager->createThread(testProcess3, (dword)printBanner);
+    g_processManager->join(testProcess3, testThread3);
+
+    /* add testProces4(testThread4) */
+    Process* testProcess4 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST4");
+    g_processManager->add(testProcess4);
+    Thread*   testThread4  = g_processManager->createThread(testProcess4, (dword)printBanner);
+    g_processManager->join(testProcess4, testThread4);
+
+    /* add testProces5(testThread5) */
+    Process* testProcess5 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST5");
+    g_processManager->add(testProcess5);
+    Thread*   testThread5  = g_processManager->createThread(testProcess5, (dword)printBanner);
+    g_processManager->join(testProcess5, testThread5);
+
+    /* add testProces6(testThread6) */
+    Process* testProcess6 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST6");
+    g_processManager->add(testProcess6);
+    Thread*   testThread6  = g_processManager->createThread(testProcess6, (dword)printBanner);
+    g_processManager->join(testProcess6, testThread6);
+
+    /* add testProces7(testThread7) */
+    Process* testProcess7 = g_processManager->create(ProcessManager::KERNEL_PROCESS, "TEST7");
+    g_processManager->add(testProcess7);
+    Thread*   testThread7  = g_processManager->createThread(testProcess7, (dword)printBanner);
+    g_processManager->join(testProcess7, testThread7);
+
 
     /* initilize keyboard */
     KeyBoardManager& km = KeyBoardManager::instance();

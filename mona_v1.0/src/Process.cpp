@@ -274,6 +274,7 @@ bool ProcessManager::schedule() {
 
     /* round robin */
     if (current_ != idle_ && current_ != NULL) {
+        current_->setTimeLeft(4);
         dispatchList_->add(current_);
     }
 
