@@ -1,6 +1,6 @@
 2004-05-27  higepon  <higepon@users.sourceforge.jp>
 
-        * src/lib/monalibc/math.cpp (atan): atan()追加
+        * src/lib/monalibc/math.cpp (atan): atan2()追加
 
         * src/kernel/Process.cpp (wakeupEvents): メッセージ到着をタイマ割り込み時のスケジューリングでチェックしないように変更
 
