@@ -604,7 +604,7 @@ public:
 
 void Kukuri::Main(_A<String> args)
 {
-	dword tid = CheckProcess("KUKURI.EL2");
+	dword tid = CheckProcess("KUKURI.EX2");
 	if (tid != THREAD_UNKNOWN)
 	{
 		MonAPI::Message::send(tid, KUKURI_NEW);

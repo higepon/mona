@@ -174,7 +174,7 @@ protected:
 public:
     static void Main(_A<String> args)
     {
-        if (ExistsProcess("CLOCK.EL2")) return;
+        if (ExistsProcess("CLOCK.EX2")) return;
 
         Application::Run(new Form1());
     }

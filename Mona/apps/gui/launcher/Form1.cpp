@@ -86,7 +86,7 @@ private:
 			file += '/';
 			int len = button->get_Text().get_Length();
 			file += button->get_Text().Substring(0, len - 4);
-			file += ".EL2";
+			file += ".EX2";
 		}
 		::ProcessStart(file);
 	}
@@ -95,7 +95,7 @@ private:
 public:
 	static void Main(_A<String> args)
 	{
-		if (ExistsProcess("LAUNCHER.EL2")) return;
+		if (ExistsProcess("LAUNCHER.EX2")) return;
 
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/APPS/MONAFRMS", MONAPI_TRUE);
 		if (mi == NULL) return;
@@ -106,7 +106,7 @@ public:
 		for (int i = 0; i < size; i++, p++)
 		{
 			String n = p->name;
-			if (n.EndsWith(".ELF") || n.EndsWith(".EL2") || n.EndsWith(".APP"))
+			if (n.EndsWith(".ELF") || n.EndsWith(".EL2") || n.EndsWith(".EXE") || n.EndsWith(".EX2") || n.EndsWith(".APP"))
 			{
 				Form1::elfs->Add(p->name);
 			}
