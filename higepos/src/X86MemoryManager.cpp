@@ -69,6 +69,7 @@ H_SIZE_T X86MemoryManager::allocateMemory(H_SIZE_T size) {
     H_SIZE_T usedBlockSize = realSize;
     H_SIZE_T freeBlockSize = current->size + realSize;
 
+    this->deleteFromEntry(freeEntry_, current, current->size);
     this->addToEntry(usedEntry_, usedBlock, usedBlockSize);
     this->addToEntry(freeEntry_, freeBlock, freeBlockSize);
 
@@ -191,6 +192,22 @@ void X86MemoryManager::printInfo() {
     \date   create:2002/09/07 update:
 */
 void X86MemoryManager::addToEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
+    _sysPrintln("X86MemoryManager Information");
+}
+
+/*!
+    \brief delete from entry
+
+    delete from entry
+
+    \param entry freeEntry of usedEntry
+    \param block block to delete
+    \param size  size of block
+
+    \author HigePon
+    \date   create:2002/09/07 update:
+*/
+void X86MemoryManager::deleteFromEntry(struct memoryEntry* entry, struct memoryEntry* block, H_SIZE_T size) {
     _sysPrintln("X86MemoryManager Information");
 }
 
