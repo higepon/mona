@@ -16,7 +16,7 @@ using namespace System::Mona::Forms;
 class ReversiForm : public Form, public MonAPI::Observer
 {
 private:
-    _P<Piece> pieces[8][8];
+    _A<_A<_P<Piece> > > pieces;
     _P<Button> button1;
     _P<Label> label1;
     _P<ReversiBoard> board;
@@ -31,8 +31,10 @@ public:
         this->button1->add_Click(new EventHandler<ReversiForm>(this, &ReversiForm::button1_Click));
 
         // 描画用盤面初期化
+        this->pieces.Alloc(8);
         for (int x = 0; x < 8; x++)
         {
+        	this->pieces[x].Alloc(8);
             for (int y = 0; y < 8; y++)
             {
                 this->pieces[x][y] = new Piece(board->getPiece(x, y), x, y, white, black);
