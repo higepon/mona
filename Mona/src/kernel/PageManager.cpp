@@ -725,28 +725,28 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error)
         return heap->faultHandler(address, FAULT_NOT_EXIST);
     }
 
-    /* physical page not exist */
-    if (error & ARCH_FAULT_NOT_EXIST)
-    {
-        if (isPresent(&(g_page_directory[directoryIndex])))
-        {
-            table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
-        } else
-        {
-            table = allocatePageTable();
-            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-            setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-        }
+//     /* physical page not exist */
+//     if (error & ARCH_FAULT_NOT_EXIST)
+//     {
+//         if (isPresent(&(g_page_directory[directoryIndex])))
+//         {
+//             table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+//         } else
+//         {
+//             table = allocatePageTable();
+//             memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+//             setAttribute(&(g_page_directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+//         }
 
-        bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
-        if (allocateResult) flushPageCache();
+//         bool allocateResult = allocatePhysicalPage(&(table[tableIndex]), true, true, true);
+//         if (allocateResult) flushPageCache();
 
-        return allocateResult;
+//         return allocateResult;
 
-    /* access falut */
-    }
-    else
-    {
+//     /* access falut */
+//     }
+//     else
+//     {
 #if 1
         ArchThreadInfo* i = g_currentThread->archinfo;
         logprintf("name=%s\n", g_currentThread->process->getName());
@@ -764,7 +764,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error)
 
         ThreadOperation::kill();
         return true;
-    }
+//    }
     return true;
 }
 
