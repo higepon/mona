@@ -1,7 +1,3 @@
-2004-04-17  shadow  <shadowin@users.sourceforge.jp>
-
-        * 1linesh: コマンド履歴機能追加
-
 2004-04-17  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/elf.cpp (load): セクションヘッダを参照して.bssをゼロクリア
@@ -12,7 +8,7 @@
 
         * include/monapi/Keys.h: Key追加。IsToChar追加
 
-        * 1linesh: bug fix
+        * 1linesh: bug fix、コマンド履歴機能追加、メッセージ表示追加
 
 2004-04-16  higepon  <higepon@users.sourceforge.jp>
 
