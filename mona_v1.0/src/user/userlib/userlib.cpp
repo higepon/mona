@@ -83,7 +83,7 @@ MonaApplication::MonaApplication() {
     dword destPid = Message::lookup("KEYBDMNG.SVR");
     if (destPid == 0) {
         printf("process KEYBDMNG.SVR not found\n");
-        for (;;);
+        exit(-1);
     }
 
     /* create message for KEYBDMNG.SVR */
@@ -98,6 +98,22 @@ MonaApplication::MonaApplication() {
 }
 
 MonaApplication::~MonaApplication() {
+
+    dword destPid = Message::lookup("KEYBDMNG.SVR");
+    if (destPid == 0) {
+        printf("process KEYBDMNG.SVR not found\n");
+        exit(-1);
+    }
+
+    /* create message for KEYBDMNG.SVR */
+    MessageInfo info;
+    info.header = MSG_KEY_UNREGIST_FROM_SERVER;
+    info.arg1   = mypid_;
+
+    /* send */
+    if (Message::send(destPid, &info)) {
+        printf("regist error\n");
+    }
 }
 
 /*----------------------------------------------------------------------

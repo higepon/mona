@@ -21,6 +21,7 @@ typedef struct {
 } MouseInfo;
 
 int regist(List<dword>* destList, MessageInfo* info);
+int unregist(List<dword>* destList, MessageInfo* info);
 int sendMouseInformation(List<dword>* destList, MessageInfo* info);
 
 int MonaMain(List<char*>* pekoe) {
@@ -54,6 +55,11 @@ int MonaMain(List<char*>* pekoe) {
             case MSG_MOUSE_REGIST_TO_SERVER:
 
                 regist(destList, &receive);
+                break;
+
+            case MSG_MOUSE_UNREGIST_FROM_SERVER:
+
+                unregist(destList, &receive);
                 break;
 
             case MSG_MOUSE_1:
@@ -125,3 +131,11 @@ int regist(List<dword>* destList, MessageInfo* info) {
     destList->add(pid);
     return 0;
 }
+
+int unregist(List<dword>* destList, MessageInfo* info) {
+
+    dword pid = info->arg1;
+    destList->remove(pid);
+    return 0;
+}
+

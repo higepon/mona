@@ -1,5 +1,11 @@
 2004-03-07  higepon  <higepon@users.sourceforge.jp>
 
+        * user/userlib/userlib.cpp: ~MonaApplicationのデストラクタでキー送信登録解除
+
+        * user/KeyBoardServer/KeyBoardServer.cpp : キー送信登録解除を出来るようにした。
+
+        * user/MouseServer/MouseServer.cpp: マウス送信先登録解除を出来るようにした。
+
         * MonaApplicationの名前引数をやめた。
 
 2004-03-06  higepon  <higepon@users.sourceforge.jp>

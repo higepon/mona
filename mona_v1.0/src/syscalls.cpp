@@ -56,6 +56,7 @@ void syscall_entrance() {
 
     case SYSTEM_CALL_SEND:
 
+        info->eax = 0;
         info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
         break;
 

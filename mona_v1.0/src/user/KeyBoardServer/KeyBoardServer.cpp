@@ -15,6 +15,7 @@
 #include <KeyBoardManager.h>
 
 int regist(List<dword>* destList, MessageInfo* info);
+int unregist(List<dword>* destList, MessageInfo* info);
 int sendKeyInformation(KeyBoardManager* manager, List<dword>* destList, MessageInfo* info);
 
 int MonaMain(List<char*>* pekoe)
@@ -44,6 +45,11 @@ int MonaMain(List<char*>* pekoe)
             case MSG_KEY_REGIST_TO_SERVER:
 
                 regist(destList, &info);
+                break;
+
+            case MSG_KEY_UNREGIST_FROM_SERVER:
+
+                unregist(destList, &info);
                 break;
 
             default:
@@ -85,5 +91,12 @@ int regist(List<dword>* destList, MessageInfo* info)
 {
     dword pid = info->arg1;
     destList->add(pid);
+    return 0;
+}
+
+int unregist(List<dword>* destList, MessageInfo* info)
+{
+    dword pid = info->arg1;
+    destList->remove(pid);
     return 0;
 }
