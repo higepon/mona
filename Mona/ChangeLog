@@ -6,6 +6,10 @@
 
         * apps/gui/fire: NWSOSから移植
 
+        * bin/root/STARTING.JPG: jpegdemoのtext.hexをファイル化
+
+        * src/lib/jpegls: jpegdemoのデコードエンジンをライブラリ化
+
 2004-04-23  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/mouse/main.cpp: マウスカーソルの初期位置を画面中央.

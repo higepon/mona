@@ -1,3 +1,4 @@
+TARGET  = $(LIBDIR)/libmonapi.a
 SOURCES = string.cpp \
           monapi.cpp \
           syscall.cpp \
@@ -20,8 +21,6 @@ MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 
-TARGET  = $(LIBDIR)/libmonapi.a
-
 INCLUDE = -I$(INCDIR)
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -40,5 +39,7 @@ clean :
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+install: $(TARGET)
 
 include dependencies

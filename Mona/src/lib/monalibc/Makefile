@@ -1,3 +1,4 @@
+TARGET  = $(LIBDIR)/libmonalibc.a
 SOURCES = ctype.cpp    \
           monalibc.cpp \
           stdarg.cpp   \
@@ -7,8 +8,6 @@ SOURCES = ctype.cpp    \
 MONADIR  = ../../..
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
-
-TARGET  = $(LIBDIR)/libmonalibc.a
 
 INCLUDE = -I$(INCDIR)
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -28,5 +27,7 @@ clean :
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+install: $(TARGET)
 
 include dependencies

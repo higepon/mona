@@ -5,7 +5,7 @@
  */
 
 
-#include "jpegls.h"
+#include <jpegls.h>
 
 
 // コンストラクタ

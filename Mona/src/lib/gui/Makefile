@@ -1,3 +1,4 @@
+TARGET  = $(LIBDIR)/libgui.a
 SOURCES = \
 	System/Console.cpp \
 	System/String.cpp \
@@ -16,8 +17,6 @@ SOURCES = \
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
 include $(MONADIR)/env/dirnames.inc
-
-TARGET  = $(LIBDIR)/libgui.a
 
 CXXFLAGS += -DDEBUG -DMONA
 
@@ -38,5 +37,7 @@ clean:
 
 depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+install: $(TARGET)
 
 include dependencies

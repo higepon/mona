@@ -1,3 +1,10 @@
+/*
+ * JPEG decoding engine for DCT-baseline
+ *
+ *      copyrights 2003 by nikq | nikq::club.
+ */
+
+
 #ifndef __JPEGLS_H_
 #define __JPEGLS_H_
 

@@ -1,4 +1,3 @@
-jpegls.o: jpegls.cpp jpegls.h dct_tab
 jpegdemo.o: jpegdemo.cpp ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
@@ -18,4 +17,4 @@ jpegdemo.o: jpegdemo.cpp ../../../include/monapi.h \
   ../../../include/monapi/Keys.h ../../../include/monalibc.h \
   ../../../include/monalibc/ctype.h ../../../include/monalibc/limits.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
-  ../../../include/monalibc/stdio.h jpegls.h
+  ../../../include/monalibc/stdio.h ../../../include/jpegls.h

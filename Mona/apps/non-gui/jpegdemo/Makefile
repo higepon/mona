@@ -1,11 +1,11 @@
 TARGET  = JPEGDEMO.ELF
-SOURCES = jpegls.cpp jpegdemo.cpp
+SOURCES = jpegdemo.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
 
 INCLUDE = -I$(INCDIR) -I.
-LINK    = -lmonapi -lmonalibc
+LINK    = -lmonapi -lmonalibc -ljpegls
 
 all: $(TARGET)
 
