@@ -39,6 +39,7 @@ class QueueManager {
     static void remove(Queue* that);
     static bool isEmpty(Queue* queue);
     static Queue* getNext(Queue* queue);
+    static Queue* iterate(Queue* queue);
 };
 
 inline void QueueManager::init(Queue* queue) {
@@ -79,6 +80,23 @@ inline Queue* QueueManager::getNext(Queue* queue) {
     queue->getNext()->setPrevious(queue);
 
     return result;
+}
+
+inline Queue* QueueManager::iterate(Queue* queue) {
+
+    static Queue* current = NULL;
+
+    if (current == NULL) current = queue;
+
+    current = current->getNext();
+
+    /* end of queue */
+    if (current == queue) {
+
+        current = NULL;
+    }
+
+    return current;
 }
 
 #endif

@@ -121,14 +121,19 @@ class HeapSegment : public Segment {
     virtual bool faultHandler(LinearAddress address, dword error);
 };
 
-class SharedMemorySegment : public Segment {
+class SharedMemorySegment : public Segment, public Queue {
 
   public:
+    SharedMemorySegment();
     SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject);
     virtual ~SharedMemorySegment();
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
+    virtual dword getId() const {return sharedMemoryObject_->getId();}
+
+  public:
+    static SharedMemorySegment* find(SharedMemorySegment* head, dword id);
 
   protected:
     SharedMemoryObject* sharedMemoryObject_;

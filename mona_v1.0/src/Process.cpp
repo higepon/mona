@@ -54,6 +54,14 @@ Process::Process(const char* name) {
     pinfo_.edi     = 0;
     pinfo_.tick    = 0;
     pinfo_.dpl     = DPL_KERNEL;
+
+    pinfo_.shared = new SharedMemorySegment();
+    QueueManager::init(pinfo_.shared);
+}
+
+Process::~Process() {
+
+    if (pinfo_.shared) delete(pinfo_.shared);
 }
 
 void Process::setup(virtual_addr entryPoint, virtual_addr stack, virtual_addr kernel_stack, PageEntry* pagedir, dword pid) {

@@ -64,9 +64,7 @@ class Process {
     Process(const char*);
 
     Process() {}
-
-    virtual ~Process() {
-    }
+    virtual ~Process();
 
   protected:
 

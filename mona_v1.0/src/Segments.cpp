@@ -231,6 +231,17 @@ SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, Shared
 }
 
 /*!
+    \brief construct segment
+
+    \author HigePon
+    \date   create:2003/10/28 update:
+*/
+SharedMemorySegment::SharedMemorySegment() {
+
+    /* dummy */
+}
+
+/*!
     \brief destruct segment
 
     \author HigePon
@@ -251,6 +262,8 @@ SharedMemorySegment::~SharedMemorySegment() {
 bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
 
     int mapResult;
+
+    g_console->printf("[shared] address = %x", address);
 
     if (error != PageManager::FAULT_NOT_EXIST) {
 
@@ -288,6 +301,32 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error) {
     }
 
     return (mapResult != -1);
+}
+
+/*!
+    \brief find SharedMemorySegment that has the ID
+
+    \param  id ID for SharedMemorySegment
+    \author HigePon
+    \date   create:2003/10/29 update:
+*/
+SharedMemorySegment* SharedMemorySegment::find(SharedMemorySegment* head, dword id) {
+
+    SharedMemorySegment* current;
+    SharedMemorySegment* result = NULL;
+
+    for (current = head; ; current = (SharedMemorySegment*)current->getNext()) {
+
+        /* found */
+        if (id == current->getId()) {
+
+            result = current;
+            break;
+        }
+
+        if ((SharedMemorySegment*)current->getNext() == head) break;
+    }
+    return result;
 }
 
 /*----------------------------------------------------------------------
@@ -432,13 +471,14 @@ bool SharedMemoryObject::open(dword id, dword size) {
 */
 bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAddress address) {
 
+    SharedMemorySegment* segment;
     SharedMemoryObject* target = find(id);
     if (target == NULL) return false;
 
-    if (process->shared != NULL) return false;
+    segment = new SharedMemorySegment(address, target->getSize(), target);
+    if (segment == NULL) return false;
 
-    process->shared = new SharedMemorySegment(address, target->getSize(), target);
-
+    QueueManager::addToPrevious(process->shared, segment);
     target->setAttachedCount(target->getAttachedCount() + 1);
 
     return true;
@@ -451,17 +491,20 @@ bool SharedMemoryObject::attach(dword id, struct ProcessInfo* process, LinearAdd
     \param process process
 
     \author HigePon
-    \date   create:2003/10/25 update:
+    \date   create:2003/10/25 update:2003/10/29
 */
 bool SharedMemoryObject::detach(dword id, struct ProcessInfo* process) {
 
     SharedMemoryObject* target = find(id);
     if (target == NULL) return false;
 
+    SharedMemorySegment* segment = SharedMemorySegment::find(process->shared, id);
+    if (segment == NULL) return false;
+
     g_page_manager->setAbsent((PageEntry*)process->cr3, process->shared->getStart(), process->shared->getSize());
 
-    delete(process->shared);
-    process->shared = NULL;
+    QueueManager::remove(segment);
+    delete(segment);
 
     target->setAttachedCount(target->getAttachedCount() - 1);
 

@@ -313,11 +313,23 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error) {
     dword tableIndex     = getTableIndex(address);
     byte  user           = address >= 0x4000000 ? ARCH_PAGE_USER : ARCH_PAGE_KERNEL;
 
-    if (g_current_process->shared->inRange(address)) {
+    SharedMemorySegment* shared;
 
-        return g_current_process->shared->faultHandler(address, FAULT_NOT_EXIST);
+    g_console->printf("address = %x", address);
 
-    } else if (g_current_process->stack->inRange(address)) {
+    /* for each shared segment */
+    for (shared = g_current_process->shared; ; shared = (SharedMemorySegment*)shared->getNext()) {
+
+        /* found */
+        if (shared->inRange(address)) {
+
+            return shared->faultHandler(address, FAULT_NOT_EXIST);
+        }
+
+        if ((SharedMemorySegment*)shared->getNext() == g_current_process->shared) break;
+    }
+
+    if (g_current_process->stack->inRange(address)) {
 
         return g_current_process->stack->faultHandler(address, FAULT_NOT_EXIST);
     }
