@@ -32,6 +32,15 @@ int main() {
 
     int i  = 0;
 
+    int posX = 0;
+    int posY = 0;
+    int x, y;
+    bool yPlus;
+    bool xPlus;
+    bool leftClickd;
+    bool rightClickd;
+    Screen screen;
+
     /* Message loop */
     for (;;) {
 
@@ -52,9 +61,46 @@ int main() {
                 regist(destList, &info);
                 break;
 
-            case MSG_MOUSE_2:
-		printf("x = (%d, %d)", (int)(info.arg1), i++);
+            case MSG_MOUSE_1:
 
+                {
+                    byte result = (byte)(info.arg1);
+                    xPlus = !(result & 0x10);
+                    yPlus = !(result & 0x20);
+                    leftClickd = (result & 0x01);
+                    rightClickd = (result & 0x02);
+                }
+
+            case MSG_MOUSE_2:
+
+                {
+                    byte result = (byte)(info.arg1);
+                    //                    x = xPlus ? (int)result : (int)(-1 * ~(result - 1));
+                    x = (char)result;
+                }
+
+                break;
+
+            case MSG_MOUSE_3:
+
+                {
+                    byte result = (byte)(info.arg1);
+                    //                    y = yPlus ? (int)result : (int)(-1 * ~(result - 1));
+                    y = -1 * (char)result;
+                }
+
+                posX += x;
+                if (posX > screen.getXResolution()) posX = screen.getXResolution();
+                if (posX < 0) posX = 0;
+                posY += y;
+                if (posY > screen.getYResolution()) posY = screen.getYResolution();
+                if (posY < 0) posY = 0;
+
+                if (leftClickd) {
+                    screen.fillRect16(posX , posY, 10, 10, Color::rgb(0x00, 0x00, 0xFF));
+                } else {
+                    screen.fillRect16(posX , posY, 1, 1, Color::rgb(0xFF, 0xFF, 0xFF));
+                }
 
                 break;
 

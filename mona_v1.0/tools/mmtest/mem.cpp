@@ -63,9 +63,8 @@ int main(int argc, char** argv) {
 
     /* ltona */
     char buf[512];
-    long d = 0xFa;
-    ltona(d, buf, 8, 16);
-    printf("%s", buf);
+    ltona((long)(-5), buf, 10, 10);
+    printf("%s\n", buf);
     exit(0);
 
 

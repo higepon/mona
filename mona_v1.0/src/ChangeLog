@@ -1,3 +1,7 @@
+2004-02-07  higepon  <higepon@users.sourceforge.jp>
+
+        * kernel.cpp: ユーザーモードでのマウス描画完了。
+
 2004-02-06  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp: Floppy, Device, StorageDevice追加
