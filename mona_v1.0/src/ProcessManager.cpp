@@ -16,7 +16,7 @@
 #include <global.h>
 #include <string.h>
 #include <tester.h>
-#include <monaIdt.h>
+#include <idt.h>
 #include <algorithm>
 
 Process* ProcessManager::current;

@@ -12,7 +12,7 @@
     \date   create:2002/08/04 update:$Date$
 */
 #include<IA32MemoryManager.h>
-#include<monaIdt.h>
+#include<idt.h>
 #include<monaKernel.h>
 #include<operator.h>
 #include<global.h>

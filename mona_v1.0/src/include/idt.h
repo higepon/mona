@@ -1,5 +1,5 @@
 /*!
-    \file  monaIdt.h
+    \file  idt.h
     \brief definition for IDT
 
     definition for IDT

@@ -13,7 +13,7 @@
 #include<kthread.h>
 #include<monaKernel.h>
 #include<monaIhandler.h>
-#include<monaIdt.h>
+#include<idt.h>
 #include<pic.h>
 #include<operator.h>
 #include<disp.h>

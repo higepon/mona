@@ -1,5 +1,5 @@
 /*!
-    \file   monaIdt.cpp
+    \file   idt.cpp
     \brief  set up idt
 
     set up idt for interrupts
@@ -11,7 +11,7 @@
     \version $Revision$
     \date   create:2002/07/23 update:$Date$
 */
-#include <monaIdt.h>
+#include <idt.h>
 
 /*!
     \brief set up idt

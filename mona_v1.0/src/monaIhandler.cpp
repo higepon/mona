@@ -12,7 +12,7 @@
     \date   create:2002/07/25 update:$Date$
 */
 
-#include<monaIdt.h>
+#include<idt.h>
 #include<KeyBoardManager.h>
 #include<MFDCDriver.h>
 #include<ProcessManager.h>

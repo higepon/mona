@@ -21,7 +21,7 @@ BOOT2      = $(BIN)/secondboot.bin
 KERNEL     = $(BIN)/third.bin
 SOURCES    = cstart.cpp            \
              monaKernel.cpp        \
-             monaIdt.cpp           \
+             idt.cpp               \
              monaIhandler.cpp      \
              IA32MemoryManager.cpp \
              operator.cpp          \

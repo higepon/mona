@@ -20,7 +20,7 @@
 #include<global.h>
 
 #include<monaKernel.h>
-#include<monaIdt.h>
+#include<idt.h>
 #include<IA32MemoryManager.h>
 #include<operator.h>
 #include<tester.h>
