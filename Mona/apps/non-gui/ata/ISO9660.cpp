@@ -42,7 +42,6 @@ dword ISO9660File::Read(void* buffer, dword size)
     dword readSize = sectorCount * ISO9660::SECTOR_SIZE;
 
     byte* temp = new byte[readSize];
-    printf("%s:%d size=%d\n", __FILE__, __LINE__, readSize);
     if (temp == NULL) return 0;
 
     bool readResult = iso->Read(lba, temp, readSize);

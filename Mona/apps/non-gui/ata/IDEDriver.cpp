@@ -313,7 +313,6 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
         if ((status & BIT_BSY) != 0) continue;
         if ((status & BIT_CHK) != 0)
         {
-    printf("%s:%d\n", __FILE__, __LINE__);
             atapiBuffer = NULL;
             inp8(controller, ATA_ERR); /* must? */
             this->lastError = STATUS_ERROR;
@@ -331,14 +330,6 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
         return false;
     }
 
-#if 1
-	    dword *p = (dword*)((byte*)atapiBuffer + 2048);
-	    logprintf("%s:%d ", __FILE__, __LINE__);
-            logprintf("*p=%x\n", *p);
-#endif
-
-
-
     outp16(controller, (word*)command->packet, 6);
     for (i = 0; i < ATA_TIMEOUT; i++)
     {
@@ -349,7 +340,6 @@ bool IDEDriver::protocolPacket(IDEController* controller, ATAPICommand* command)
         if ((status & BIT_CHK) != 0)
         {
             atapiBuffer = NULL;
-    printf("%s:%d\n", __FILE__, __LINE__);
             this->lastError = STATUS_ERROR;
             return false;
         }
@@ -492,56 +482,26 @@ void IDEDriver::protocolInterrupt()
     byte status = inp8(whichController, ATA_STR);
     byte reason = inp8(whichController, ATA_IRR);
 
-
-#if 1
-    Log("atapiBuffer=%x\n", atapiBuffer);
-#endif
-
     /* read */
     if (((reason & BIT_IO) != 0) && ((reason & BIT_CD) == 0) && ((status & BIT_DRQ) != 0))
     {
         word transferSize = (inp8(whichController, ATA_BHR) << 8) | inp8(whichController, ATA_BLR);
         atapiTransferSize += transferSize;
 
-#if 1
-        Log("transferSize=%d\n", transferSize);
-        Log("atapiTransferSize=%d\n", atapiTransferSize);
-        Log("atapiBuffer=%x\n", atapiBuffer);
-#endif
-
-
         if (atapiTransferSize > atapiTotalReadSize)
         {
-#if 1
-            Log("null read\n");
-#endif
             inp16(whichController, NULL, transferSize);
         }
         else
         {
-#if 1
-	    dword *p = (dword*)((byte*)atapiBuffer + 2048);
-            Log("*p=%x\n", *p);
-            Log("not null read");
-
-#endif
             inp16(whichController, (word*)atapiBuffer, transferSize);
-
-#if 1
-            Log("*p=%x\n", *p);
-
-#endif
             atapiBuffer = (void*)((byte*)atapiBuffer + transferSize);
-#if 1
-        Log("atapiBuffer=%x\n", atapiBuffer);
-#endif
         }
     }
 
     /* read / write done */
     if (((reason & BIT_IO)!=0) && ((reason & BIT_CD) != 0) && ((status & BIT_DRQ) == 0))
     {
-        Log("read end");
         atapiReadDone = true;
     }
 }

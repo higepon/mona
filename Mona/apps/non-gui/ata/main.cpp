@@ -14,7 +14,6 @@ static IDEDriver* ide;
     課題
     Vmwareでデバイス認識がうまくいかない
     エラーの詳細を配列コピーで渡す
-    上位階層へのエラー通知方法
     セクタサイズの取得
     bufferへの大量読み込みをチェック
     idle位いれようよ。
@@ -58,6 +57,8 @@ static void printError(const byte* error)
 
 int MonaMain(List<char*>* pekoe)
 {
+    if (pekoe->size() != 1) return 0;
+
     syscall_get_io();
 
     ide = new IDEDriver();
@@ -106,7 +107,10 @@ int MonaMain(List<char*>* pekoe)
         return -1;
     }
 
-    File* file = iso->GetFile("SRC/SERVERS/ELF/MAIN.CPP");
+
+//    File* file = iso->GetFile("SRC/SERVERS/ELF/MAIN.CPP");
+    File* file = iso->GetFile(pekoe->get(0));
+
     if (file == NULL)
     {
         printf("file not found\n");
@@ -123,7 +127,6 @@ int MonaMain(List<char*>* pekoe)
     {
         printf("%c", buffer[i]);
     }
-//    printf("[%s] %d bytes %d/%d/%d %d:%d:%d\n", (const char*)file->GetName(), file->GetSize(), file->year, file->month, file->day, file->hour, file->min, file->sec);
 
     _A<CString> files = iso->GetFileSystemEntries("SRC/SERVERS");
 
@@ -137,81 +140,6 @@ int MonaMain(List<char*>* pekoe)
     delete buffer;
     delete iso;
     delete cd;
-
-#if 0
-    syscall_get_io();
-
-    ide = new IDEDriver();
-
-    /* find CD-ROM */
-    int controller, deviceNo;
-    if (!ide->findDevice(IDEDriver::DEVICE_ATAPI, 0x05, &controller, &deviceNo))
-    {
-        printf("CD-ROM Not Found\n");
-        delete ide;
-        return 1;
-    }
-
-    /* set irq number */
-    if (controller == IDEDriver::PRIMARY)
-    {
-        irq = IRQ_PRIMARY;
-        outp8(0xa1, inp8(0xa1) & 0xbf);
-    }
-    else
-    {
-        irq = IRQ_SECONDARY;
-        outp8(0xa1, inp8(0xa1) & 0x7f);
-    }
-
-    /* interrupt thread */
-    dword id = syscall_mthread_create((dword)interrupt);
-    syscall_mthread_join(id);
-
-    if (!ide->selectDevice(controller, deviceNo))
-    {
-        printf("select device NG error code = %d\n", ide->getLastError());
-        delete ide;
-        return 1;
-    }
-
-    char* buf = (char*)malloc(6 * 1024 * 1024);
-    memset(buf, 0, sizeof(buf));
-
-    int readResult = ide->read(18, buf, 4096);
-
-    if (readResult != 0)
-    {
-        byte buffer[18];
-        printf("read error result=%d error code = %d\n", ide->getLastError());
-        ide->getLastErrorDetail(buffer);
-        printError(buffer);
-        delete ide;
-        return 1;
-    }
-
-    for (int i = 0; i < 5; i++)
-    {
-	printf("[%x]", buf[i]);
-    }
-    printf("\n");
-
-    for (int i = 2048; i < 2048 +5; i++)
-    {
-	printf("[%x]", buf[i]);
-    }
-    printf("\n");
-
-    FileOutputStream fos("HDDUMP.TXT");
-
-    printf("fileout:open=%d\n", fos.open());
-
-    printf("fileout:write=%d\n", fos.write((byte*)buf        , 800 * 1024));
-
-    fos.close();
-
-    free(buf);
     delete ide;
-#endif
     return 0;
 }

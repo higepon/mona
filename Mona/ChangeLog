@@ -1,6 +1,6 @@
 2004-11-23  higepon  <higepon@users.sourceforge.jp>
 
-        * apps/non-gui/ata/ISO9660.cpp : CDからファイルが読めた。
+        * apps/non-gui/ata/ISO9660.cpp : CDからファイルが読めた。(ver_0_3_0alpha2のタグをつけた。)
 
 2004-11-21  higepon  <higepon@users.sourceforge.jp>
 
