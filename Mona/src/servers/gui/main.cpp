@@ -17,8 +17,8 @@ using namespace MonAPI;
 
 extern guiserver_bitmap* screen_buffer;
 
+CommonParameters* commonParams;
 guiserver_bitmap* wallpaper = NULL;
-int mouse_x = 0, mouse_y = 0;
 
 static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
@@ -106,14 +106,12 @@ static void DrawWallPaper(const char* src, int pos, unsigned int transparent, in
 	guiserver_bitmap* bmp = ReadImage(src, prompt);
 	if (bmp != NULL) DrawWallPaper(bmp, pos, transparent, src, prompt);
 	DrawImage(screen_buffer, wallpaper);
-	monapi_call_mouse_set_cursor(MONAPI_FALSE);
 	DrawScreen();
-	monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
 
 static void ReadConfig()
 {
-	monapi_cmemoryinfo* cfg = monapi_call_file_read_data("/MONA.CFG", 0);
+	monapi_cmemoryinfo* cfg = monapi_call_file_read_data("/MONAGUI.INI", 1);
 	if (cfg == NULL) return;
 	
 	if (startup != NULL)
@@ -121,9 +119,10 @@ static void ReadConfig()
 		delete startup;
 		startup = NULL;
 	}
-	char line[256], src[256] = "";
+	char line[256];
 	int linepos = 0, wppos = 5;
 	unsigned int wptp = 0, bgcol = 0;
+	CString section, src;
 	for (dword pos = 0; pos <= cfg->Size; pos++)
 	{
 		char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
@@ -131,30 +130,49 @@ static void ReadConfig()
 		{
 			if (linepos > 0)
 			{
-				_A<CString> data = CString(line, linepos).split('=');
-				if (data.get_Length() == 2 && data[0] != NULL && data[1] != NULL)
+				CString ln(line, linepos);
+				if (ln.toUpper().startsWith("REM "))
 				{
-					if (data[0] == "WALLPAPER_SOURCE")
+					// ignore remark
+				}
+				else if (ln.startsWith("[") && ln.endsWith("]"))
+				{
+					section = ln.substring(1, ln.getLength() - 2).toUpper();
+				}
+				else if (ln.indexOf('=') > 0)
+				{
+					_A<CString> data = CString(line, linepos).split('=');
+					if (data.get_Length() == 2 && data[0] != NULL && data[1] != NULL)
 					{
-						strncpy(src, data[1], sizeof(src));
-						src[sizeof(src) - 1] = '\0';
-					}
-					else if (data[0] == "WALLPAPER_POSITION")
-					{
-						wppos = atoi(data[1]);
-					}
-					else if (data[0] == "WALLPAPER_TRANSPARENT")
-					{
-						wptp = xtoui(data[1]);
-					}
-					else if (data[0] == "WALLPAPER_BACKGROUND")
-					{
-						bgcol = ((unsigned int)xtoui(data[1])) | 0xff000000;
-					}
-					else if (data[0] == "GUISERVER_STARTUP")
-					{
-						if (startup == NULL) startup = new HList<CString>();
-						startup->add(data[1]);
+						CString name = data[0].toUpper();
+						if (section == "GENERAL")
+						{
+							if (name == "RUN")
+							{
+								if (startup == NULL) startup = new HList<CString>();
+								_A<CString> runs = data[1].split(',');
+								FOREACH (CString, r, runs) startup->add(r);
+							}
+						}
+						else if (section == "WALLPAPER")
+						{
+							if (name == "SOURCE")
+							{
+								src = data[1];
+							}
+							else if (name == "POSITION")
+							{
+								wppos = atoi(data[1]);
+							}
+							else if (name == "TRANSPARENCYKEY")
+							{
+								wptp = xtoui(data[1]);
+							}
+							else if (name == "BACKCOLOR")
+							{
+								bgcol = ((unsigned int)xtoui(data[1])) | 0xff000000;
+							}
+						}
 					}
 				}
 				linepos = 0;
@@ -231,13 +249,16 @@ int MonaMain(List<char*>* pekoe)
 {
 	CheckGUIServer();
 	if (!InitScreen()) exit(1);
+
+	MessageInfo msg_cp;
+	if (Message::sendReceive(&msg_cp, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+	{
+		printf("%s: can not get common parameters!\n", SVR);
+		exit(1);
+	}
+	commonParams = (CommonParameters*)MemoryMap::map(msg_cp.arg2);
 	
 	if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
-	MessageInfo msg;
-	Message::sendReceive(&msg, monapi_get_server_thread_id(ID_MOUSE_SERVER), MSG_MOUSE_GET_CURSOR_POSITION);
-	mouse_x = msg.arg2;
-	mouse_y = msg.arg3;
-
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE);
 
 	ReadFont("/MONA-12.MF2");
@@ -263,6 +284,7 @@ int MonaMain(List<char*>* pekoe)
 	
 	monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+	MemoryMap::unmap(msg_cp.arg2);
 	
 	return 0;
 }

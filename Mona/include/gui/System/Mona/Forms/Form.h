@@ -15,11 +15,15 @@ namespace System { namespace Mona { namespace Forms
 	protected:
 		bool isCloseButtonPushed;
 		enum NCState { NCState_None, NCState_TitleBar, NCState_CloseButton } ncState;
-		System::Drawing::Point ptRevRect;
-		_P<System::Drawing::Bitmap> formBuffer;
 	
 	private:
 		double opacity;
+#ifdef MONA
+		dword overlap;
+#else
+		System::Drawing::Point ptRevRect;
+#endif
+		_P<System::Drawing::Bitmap> formBuffer;
 	
 	public:
 		virtual String get_TypeName() { return "System.Mona.Forms.Form"; }
@@ -37,7 +41,9 @@ namespace System { namespace Mona { namespace Forms
 	protected:
 		virtual void Erase();
 		virtual NCState NCHitTest(int x, int y);
+#ifndef MONA
 		void DrawReversibleRectangle();
+#endif
 		virtual void OnPaint();
 		virtual void OnNCMouseMove(_P<MouseEventArgs> e);
 		virtual void OnNCMouseDown(_P<MouseEventArgs> e);

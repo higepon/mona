@@ -1,6 +1,9 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
+#include <gui/System/Drawing/Rectangle.h>
+#define _R ::System::Drawing::Rectangle
+
 #include <monapi/messages.h>
 #include "GUIServer.h"
 #include "image.h"
@@ -8,8 +11,10 @@
 
 using namespace MonAPI;
 
-static Screen screen;
+extern CommonParameters* commonParams;
+
 guiserver_bitmap* screen_buffer, * vram_buffer;
+static Screen screen;
 
 Screen* GetDefaultScreen()
 {
@@ -53,6 +58,12 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 	if (y1 < 0) y1 = 0;
 	if (x2 > sw) x2 = sw;
 	if (y2 > sh) y2 = sh;
+	
+	_R r1(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	_R r2(commonParams->mouse.x - 4, commonParams->mouse.y - 4, 16, 16);
+	bool mouse = r1.IntersectsWith(r2);
+	if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
+	
 	for (int yy = y1; yy < y2; yy++)
 	{
 		int pos = x1 + yy * sw;
@@ -84,4 +95,6 @@ void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
 			}
 		}
 	}
+	
+	if (mouse) monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }

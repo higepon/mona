@@ -6,8 +6,15 @@
 
 using namespace MonAPI;
 
+static monapi_cmemoryinfo* commonParams = NULL;
 static HList<ProcessInfo> infos;
 static HList<dword> receivers;
+
+void initCommonParameters()
+{
+    commonParams = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(commonParams, sizeof(CommonParameters), 1)) exit(1);
+}
 
 ProcessInfo getProcessInfo(dword tid)
 {
@@ -166,6 +173,9 @@ bool processHandler(MessageInfo* msg)
             break;
         case MSG_PROCESS_TERMINATED:
             removeProcessInfo(msg->arg1);
+            break;
+        case MSG_PROCESS_GET_COMMON_PARAMS:
+            Message::reply(msg, commonParams->Handle);
             break;
         default:
             return false;

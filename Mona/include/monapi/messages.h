@@ -34,6 +34,7 @@ enum
     MSG_PROCESS_GET_PROCESS_INFO = 0x1000,
     MSG_PROCESS_CREATED,
     MSG_PROCESS_TERMINATED,
+    MSG_PROCESS_GET_COMMON_PARAMS,
 
     MSG_PROCESS_GRAB_STDOUT = 0x10f0,  // temporary
     MSG_PROCESS_UNGRAB_STDOUT,         // temporary
@@ -50,6 +51,14 @@ enum
     ID_PROCESS_SERVER,
     ID_NUMBER_OF_SERVERS
 };
+
+typedef struct
+{
+    struct
+    {
+        int x, y, buttons;
+    } mouse;
+} CommonParameters;
 
 #define PROCESS_STDOUT_THREAD (monapi_get_server_thread_id(ID_PROCESS_SERVER) + 1)  // temporary
 

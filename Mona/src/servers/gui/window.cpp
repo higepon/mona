@@ -8,18 +8,21 @@
 #include "window.h"
 #include "screen.h"
 #include "image.h"
+#include "Overlap.h"
 
 #define DEFAULT_WIDTH  240
 #define DEFAULT_HEIGHT 160
 
 using namespace MonAPI;
 
+extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;
-extern int mouse_x, mouse_y;
 
 static HList<guiserver_window*> windows;
 static int start_pos = 0;
 static HList<guiserver_window*> captures;
+static HList<Overlap*> overlaps;
+static int prevButton = 0;
 
 guiserver_window* CreateWindow()
 {
@@ -45,6 +48,7 @@ guiserver_window* CreateWindow()
 	ret->TransparencyKey = 0;
 	ret->BufferHandle = ret->FormBufferHandle = 0;
 	ret->__reserved1 = NULL;
+	ret->__reserved2 = false;
 	windows.add(ret);
 	
 	start_pos += 32;
@@ -125,8 +129,8 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 	
 	DrawImage(screen_buffer, wallpaper, w->X, w->Y, w->X, w->Y, w->Width, w->Height);
 	_R r(w->X, w->Y, w->Width, w->Height);
-	int size = windows.size();
-	for (int i = 0; i < size; i++)
+	int size_w = windows.size();
+	for (int i = 0; i < size_w; i++)
 	{
 		guiserver_window* ww = windows[i];
 		if (!ww->Visible || ww->FormBufferHandle == 0) continue;
@@ -142,12 +146,13 @@ void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 		}
 		DrawImage(screen_buffer, ww->__reserved1, rr.X, rr.Y, rr.X - ww->X, rr.Y - ww->Y, rr.Width, rr.Height, ww->TransparencyKey, ww->Opacity);
 	}
-	if (!draw_screen) return;
+	int size_ov = overlaps.size();
+	for (int i = 0; i < size_ov; i++)
+	{
+		overlaps[i]->Draw(w->X, w->Y, w->Width, w->Height);
+	}
 	
-	bool mouse = _R(mouse_x - 4, mouse_y - 4, 16, 16).IntersectsWith(r);
-	if (mouse) monapi_call_mouse_set_cursor(MONAPI_FALSE);
-	DrawScreen(w->X, w->Y, w->Width, w->Height);
-	if (mouse) monapi_call_mouse_set_cursor(MONAPI_TRUE);
+	if (draw_screen) DrawScreen(w->X, w->Y, w->Width, w->Height);
 }
 
 void MoveWindow(guiserver_window* w, int x, int y)
@@ -160,10 +165,8 @@ void MoveWindow(guiserver_window* w, int x, int y)
 	w->Visible = true;
 	w->X = x;
 	w->Y = y;
-	monapi_call_mouse_set_cursor(MONAPI_FALSE);
 	DrawWindow(w);
 	DrawScreen(xx, yy, w->Width, w->Height);
-	monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
 
 guiserver_window* GetTargetWindow(int x, int y)
@@ -217,13 +220,27 @@ bool WindowHandler(MessageInfo* msg)
 			MoveWindow(GetWindowPointer(msg->arg1), (int)msg->arg2, (int)msg->arg3);
 			Message::reply(msg);
 			break;
+		case MSG_GUISERVER_WINDOWTOFRONTMOST:
+		{
+			guiserver_window* w = GetWindowPointer(msg->arg1);
+			windows.remove(w);
+			windows.add(w);
+			if (msg->arg2 != 0) DrawWindow(w);
+			Message::reply(msg);
+			break;
+		}
 		case MSG_MOUSE_INFO:
 		{
-			mouse_x = msg->arg1;
-			mouse_y = msg->arg2;
-			guiserver_window* target = GetTargetWindow(mouse_x, mouse_y);
+			guiserver_window* target = GetTargetWindow(msg->arg1, msg->arg2);
 			if (target != NULL)
 			{
+				if (prevButton != msg->arg3 && windows[windows.size() - 1] != target)
+				{
+					windows.remove(target);
+					windows.add(target);
+					DrawWindow(target);
+				}
+				prevButton = msg->arg3;
 				if (Message::send(target->ThreadID, msg) != 0)
 				{
 					DisposeWindowFromThreadID(target->ThreadID);
@@ -248,6 +265,29 @@ bool WindowHandler(MessageInfo* msg)
 			Message::reply(msg);
 			break;
 		}
+		case MSG_GUISERVER_CREATEOVERLAP:
+		{
+			Overlap* ov = new Overlap(
+				(int)msg->arg1, (int)msg->arg2,
+				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
+			overlaps.add(ov);
+			Message::reply(msg, (dword)ov);
+			break;
+		}
+		case MSG_GUISERVER_DISPOSEOVERLAP:
+		{
+			Overlap* ov = (Overlap*)msg->arg1;
+			overlaps.remove(ov);
+			delete ov;
+			Message::reply(msg);
+			break;
+		}
+		case MSG_GUISERVER_MOVEOVERLAP:
+			((Overlap*)msg->arg1)->Move(
+				GET_X_DWORD(msg->arg2), GET_Y_DWORD(msg->arg2),
+				GET_X_DWORD(msg->arg3), GET_Y_DWORD(msg->arg3));
+			Message::reply(msg);
+			break;
 		default:
 			return false;
 	}

@@ -87,7 +87,6 @@ private:
         this->set_Location(Point(150, 50));
         this->set_ClientSize(Size(430, 200));
         this->set_Text("こんなスレッドが動いているらしい");
-        this->set_Opacity(0.8);
 
         this->label0->set_Text(
             "   ｽﾚｯﾄﾞ         \n"

@@ -5,6 +5,7 @@
 #include <monapi.h>
 #include <monapi/messages.h>
 
+extern CommonParameters* __commonParams;
 extern dword __gui_server;
 #endif
 #include <gui/System/Mona/Forms/Form.h>
@@ -42,6 +43,9 @@ namespace System { namespace Mona { namespace Forms
 	Form::Form() : isCloseButtonPushed(false), ncState(NCState_None), opacity(1.0)
 	{
 		this->offset = Point(2, Control::get_DefaultFont()->get_Height() + 8);
+#ifdef MONA
+		this->overlap = 0;
+#endif
 	}
 	
 	Form::~Form()
@@ -105,6 +109,20 @@ namespace System { namespace Mona { namespace Forms
 			&& this->buffer->GetPixel(x - this->get_X(), y - this->get_Y()).get_A() != 0;
 	}
 	
+	void Form::set_Opacity(double op)
+	{
+		if (op < 0.0) op = 0.0;
+		if (op > 1.0) op = 1.0;
+		this->opacity = op;
+		if (this->_object == NULL) return;
+		
+		int v = (int)(op * 255.0);
+		if (this->_object->Opacity == v) return;
+		
+		this->_object->Opacity = v;
+		this->Refresh();
+	}
+	
 	void Form::OnPaint()
 	{
 		if (this->buffer == NULL) return;
@@ -150,6 +168,7 @@ namespace System { namespace Mona { namespace Forms
 		return NCState_None;
 	}
 	
+#ifndef MONA
 	void Form::DrawReversibleRectangle()
 	{
 		Rectangle r = this->get_Bounds();
@@ -162,6 +181,7 @@ namespace System { namespace Mona { namespace Forms
 			r.X++; r.Y++; r.Width -= 2; r.Height -= 2;
 		}
 	}
+#endif
 	
 	void Form::OnNCMouseMove(_P<MouseEventArgs> e)
 	{
@@ -179,9 +199,16 @@ namespace System { namespace Mona { namespace Forms
 			}
 			case NCState_TitleBar:
 			{
+#ifdef MONA
+				Point p = this->PointToClient(Point(__commonParams->mouse.x, __commonParams->mouse.y));
+				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+					MAKE_DWORD(this->get_X() + (p.X - this->clickPoint.X), this->get_Y() + (p.Y - this->clickPoint.Y)),
+					MAKE_DWORD(this->get_Width(), this->get_Height()));
+#else
 				this->DrawReversibleRectangle();
 				this->ptRevRect = Point(e->X, e->Y);
 				this->DrawReversibleRectangle();
+#endif
 				break;
 			}
 			default:
@@ -196,14 +223,25 @@ namespace System { namespace Mona { namespace Forms
 		switch (this->ncState = this->NCHitTest(e->X, e->Y))
 		{
 			case NCState_CloseButton:
+				this->set_Capture(true);
 				this->isCloseButtonPushed = true;
 				this->Refresh();
 				break;
 			case NCState_TitleBar:
-				this->ptRevRect = Point(e->X, e->Y);
+			{
 				this->set_Capture(true);
+#ifdef MONA
+				MessageInfo msg;
+				MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
+					this->get_X(), this->get_Y(),
+					MAKE_DWORD(this->get_Width(), this->get_Height()));
+				this->overlap = msg.arg2;
+#else
+				this->ptRevRect = Point(e->X, e->Y);
 				this->DrawReversibleRectangle();
+#endif
 				break;
+			}
 			default:
 				break;
 		}
@@ -219,12 +257,18 @@ namespace System { namespace Mona { namespace Forms
 		{
 			case NCState_CloseButton:
 			{
+				this->set_Capture(false);
 				this->isCloseButtonPushed = false;
 				break;
 			}
 			case NCState_TitleBar:
 			{
+#ifdef MONA
+				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+				this->overlap = 0;
+#else
 				this->DrawReversibleRectangle();
+#endif
 				this->set_Capture(false);
 				Point p = this->get_Location();
 				p.X += e->X - this->clickPoint.X;
@@ -241,19 +285,5 @@ namespace System { namespace Mona { namespace Forms
 		
 		this->ncState = NCState_None;
 		if (destroy) this->Dispose();
-	}
-	
-	void Form::set_Opacity(double op)
-	{
-		if (op < 0.0) op = 0.0;
-		if (op > 1.0) op = 1.0;
-		this->opacity = op;
-		if (this->_object == NULL) return;
-		
-		int v = (int)(op * 255.0);
-		if (this->_object->Opacity == v) return;
-		
-		this->_object->Opacity = v;
-		this->Refresh();
 	}
 }}}

@@ -3,6 +3,7 @@
 
 #include "ProcessInfo.h"
 
+extern void initCommonParameters();
 extern ProcessInfo getProcessInfo(dword tid);
 extern void addProcessInfo(const MonAPI::CString& name);
 extern void addProcessInfo(dword tid, dword parent, const MonAPI::CString& path);

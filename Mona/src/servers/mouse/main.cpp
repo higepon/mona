@@ -16,6 +16,8 @@
 
 #define INIT_PROCESS "INIT"
 
+static CommonParameters* commonParams;
+
 using namespace MonAPI;
 
 class MouseServer
@@ -57,12 +59,20 @@ MouseServer::~MouseServer()
 
 bool MouseServer::Initialize()
 {
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+    {
+        printf("MouseServer: can not get common parameters\n");
+        return false;
+    }
+    commonParams = (CommonParameters*)MemoryMap::map(msg.arg2);
+
     /* mouse information destination list */
     this->destList = new HList<dword>();
 
     if (this->destList == NULL)
     {
-        printf("MouseServer:destList error\n");
+        printf("MouseServer: destList error\n");
         return false;
     }
 
@@ -92,9 +102,9 @@ bool MouseServer::Initialize()
     }
 
     /* cursor to center */
-    this->posX = this->prevX = this->w / 2;
-    this->posY = this->prevY = this->h / 2;
-    this->button = this->prevButton = 0;
+    commonParams->mouse.x = this->posX = this->prevX = this->w / 2;
+    commonParams->mouse.y = this->posY = this->prevY = this->h / 2;
+    commonParams->mouse.buttons = this->button = this->prevButton = 0;
 
     /* server start ok */
     if (!SendServerOK()) return false;
@@ -194,9 +204,9 @@ void MouseServer::Paint()
 {
     PaintCursor(this->prevX, this->prevY);
     PaintCursor(this->posX , this->posY);
-    this->prevX = this->posX;
-    this->prevY = this->posY;
-    this->prevButton = this->button;
+    commonParams->mouse.x = this->prevX = this->posX;
+    commonParams->mouse.y = this->prevY = this->posY;
+    commonParams->mouse.buttons = this->prevButton = this->button;
 }
 
 void MouseServer::SendMouseInformation()
@@ -247,7 +257,7 @@ int MonaMain(List<char*>* pekoe)
 
     if (!server->Initialize())
     {
-        printf("MouseServer:initialize error\n");
+        printf("MouseServer: initialize error\n");
         return -1;
     }
 

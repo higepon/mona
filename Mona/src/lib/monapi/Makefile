@@ -26,7 +26,7 @@ include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 
 INCLUDE = -I$(INCDIR)
-OBJECTS = $(SOURCES:.cpp=.o) $(CSOURCES:.c=.o)
+OBJECTS = $(SOURCES:.cpp=.o)
 
 all : $(TARGET1) $(TARGET2)
 

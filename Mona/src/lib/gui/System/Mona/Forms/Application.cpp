@@ -20,7 +20,9 @@ using namespace System::Collections;
 using namespace System::Drawing;
 
 #ifdef MONA
+CommonParameters* __commonParams;
 dword __gui_server;
+static dword commonParamsHandle;
 #else
 #include "MONA-12.h"
 #endif
@@ -39,10 +41,18 @@ namespace System { namespace Mona { namespace Forms
 		Application::forms = new ArrayList<_P<Form> >;
 		
 #ifdef MONA
+		MessageInfo msg;
+		if (MonAPI::Message::sendReceive(&msg, monapi_get_server_thread_id(ID_PROCESS_SERVER), MSG_PROCESS_GET_COMMON_PARAMS) != 0)
+		{
+			printf("MouseServer: can not get common parameters\n");
+			::exit(1);
+		}
+		commonParamsHandle = msg.arg2;
+		__commonParams = (CommonParameters*)MonAPI::MemoryMap::map(commonParamsHandle);
+		
 		if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) ::exit(1);
 		__gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		if (__gui_server == THREAD_UNKNOWN) ::exit(1);
-		MessageInfo msg;
 		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_GETFONT) != 0)
 		{
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
@@ -69,6 +79,7 @@ namespace System { namespace Mona { namespace Forms
 	{
 #ifdef MONA
 		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
+		MonAPI::MemoryMap::unmap(commonParamsHandle);
 #endif
 	}
 	

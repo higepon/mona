@@ -20,6 +20,11 @@ enum
 	MSG_GUISERVER_DISPOSEWINDOW,
 	MSG_GUISERVER_DRAWWINDOW,
 	MSG_GUISERVER_MOVEWINDOW,
+	MSG_GUISERVER_WINDOWTOFRONTMOST,
+	
+	MSG_GUISERVER_CREATEOVERLAP = 0x41e0,
+	MSG_GUISERVER_DISPOSEOVERLAP,
+	MSG_GUISERVER_MOVEOVERLAP,
 	
 	MSG_GUISERVER_MOUSEMOVE = 0x4200,
 	MSG_GUISERVER_MOUSEDOWN,
@@ -46,6 +51,7 @@ typedef struct
 	unsigned int Flags, TransparencyKey;
 	unsigned int BufferHandle, FormBufferHandle;
 	guiserver_bitmap* __reserved1;
+	bool __reserved2;
 } guiserver_window;
 
 #define MAKE_DWORD(a, b) (((unsigned int)(unsigned short)(a)) + (((unsigned int)(unsigned short)(b)) << 16))

@@ -244,6 +244,7 @@ static void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
+    initCommonParameters();
 #if 1  // temporary
     dword id = syscall_mthread_create((dword)StdoutMessageLoop);
     syscall_mthread_join(id);

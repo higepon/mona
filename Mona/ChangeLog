@@ -1,3 +1,25 @@
+2004-06-01  tino  <tino@users.sourceforge.jp>
+
+        * include/monapi/messages.h: MSG_PROCESS_GET_COMMON_PARAMS, CommonParametersを追加
+
+        * src/servers/elf/ProcessManager.h, .cpp: CommonParametersに対応
+
+        * src/servers/mouse/main.cpp: CommonParametersに対応
+
+        * bin/root/MONAGUI.INI: MONA.CFGからMonaGUIに関する部分を分離してINI形式化
+
+        * src/servers/gui/main.cpp: MONAGUI.INIに対応
+
+        * include/gui/messages.h: MSG_GUISERVER_CREATEOVERLAP, MSG_GUISERVER_DISPOSEOVERLAP,
+                                  MSG_GUISERVER_MOVEOVERLAP, MSG_GUISERVER_WINDOWTOFRONTMOSTを追加
+
+        * src/servers/gui/Overlap.h, Overlap.cpp: 枠線描画クラスOverlapを追加
+
+        * src/servers/gui/window.cpp: Overlapと新規関連メッセージに対応
+                                      クリックしたウインドウを最前面に移動
+
+        * src/lib/gui/System/Mona/Forms/Form.cpp: 移動中の枠線にOverlapを使用
+
 2004-05-31  tino  <tino@users.sourceforge.jp>
 
         * include/monapi/messages.h: MSG_MOUSE_GET_CURSOR_POSITIONを追加
