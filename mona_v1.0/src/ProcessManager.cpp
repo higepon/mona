@@ -247,6 +247,8 @@ inline void ProcessManager::setNTflag1() const {
     \date   create:2003/01/25 update:
 */
 void ProcessManager::schedule() {
+
+    /* now there are only two process */
     std::swap(current, next);
 }
 
@@ -254,7 +256,7 @@ void ProcessManager::schedule() {
     \brief initProcess
 
     prepare stack of fisrt process
-    \param eip of first process
+    \param f eip of first process
 
     \author HigePon
     \date   create:2003/01/25 update:

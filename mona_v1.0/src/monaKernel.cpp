@@ -27,7 +27,7 @@
 #include<KeyBoardManager.h>
 #include<SystemInfo.h>
 
-char* version = "Mona develop beta 0.02b $Date$";
+char* version = "Mona develop beta 0.03a $Date$";
 
 /*!
     \brief  mona kernel start at this point
@@ -60,6 +60,7 @@ void startKernel(void) {
     /* set interrept */
     _sysSetIdt();
     _sysInitIo();
+    printOK("Setting IDT        ");
     disableTimer();
 
     /* re-set up GDT */
@@ -68,20 +69,22 @@ void startKernel(void) {
 
     /* enable interrupt */
     _sysUnlock();
-    _sys_printf("IDT,GDT set done\n");
+    printOK("Setting GDT        ");
+
+    /* check some */
+    checkTypeSize();
+    printOK("Checking type size ");
+
 
     /* get System Information */
     SystemInfo& si = SystemInfo::instance();
     if (si.hasCpuid()) {
 
+        printOK("Checking CPUID     ");
         si.cpuid();
     } else {
         _sys_printf("CPUID NG  \n");
     }
-
-    /* check some */
-    checkTypeSize();
-    _sys_printf("Check type size done\n");
 
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
@@ -106,7 +109,7 @@ void startKernel(void) {
     kernel panic
 
     \author HigePon
-    \date   create:2002/12/02 update:$Date$
+    \date   create:2002/12/02 update:2003/01/25
 */
 void panic(const char* msg) {
 
@@ -114,4 +117,23 @@ void panic(const char* msg) {
     _sys_printf("kernel panic!!!!!\n%s", msg);
     while (true) {
     }
+}
+
+/*!
+    \brief print OK
+
+    print "msg             [OK]"
+
+    \param msg message
+    \author HigePon
+    \date   create:2003/01/26 update:2003/01/25
+*/
+void printOK(const char* msg) {
+
+    _sys_printf((char*)msg);
+    _sys_printf("[");
+    _sysSetColor(SYS_BG_COLOR | CH_RED);
+    _sys_printf("OK");
+    _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    _sys_printf("]\n");
 }
