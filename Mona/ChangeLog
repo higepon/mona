@@ -2,6 +2,8 @@
 
         * src/lib/monapi/string.cpp (memmove): バグ修正
 
+        * include/stlport: STLport-4.6.2を移植
+
 2004-07-09  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (sendKilledMessage): KILL時にメッセージを送るように変更したら動かなくなった。
