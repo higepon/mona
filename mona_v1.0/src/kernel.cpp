@@ -332,7 +332,9 @@ void mainProcess()
 
 
     /* end */
-    disableInterrupt();
-    ThreadOperation::kill();
+//     disableInterrupt();
+//     ThreadOperation::kill();
+    int result;
+    SYSCALL_0(SYSTEM_CALL_KILL, result);
     for (;;);
 }

@@ -1,5 +1,7 @@
 2004-03-12  higepon  <higepon@users.sourceforge.jp>
 
+        * システムコールの整理
+
         * fs.cpp (FSOperation): fs.cppに移動
 
 2004-03-11  higepon  <higepon@users.sourceforge.jp>
