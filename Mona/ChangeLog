@@ -1,3 +1,7 @@
+2004-06-03  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/KeyBoardManager.h: •s—v‚È‚Ì‚Åíœ(thanks Yamami‚³‚ñ)
+
 2004-06-01  tino  <tino@users.sourceforge.jp>
 
         * include/monapi/messages.h: MSG_PROCESS_GET_COMMON_PARAMS, CommonParameters‚ğ’Ç‰Á

@@ -57,7 +57,6 @@
 #include "operator.h"
 #include "tester.h"
 #include "checker.h"
-#include "KeyBoardManager.h"
 #include "FDCDriver.h"
 #include "GraphicalConsole.h"
 #include "ihandlers.h"
