@@ -18,4 +18,9 @@
 #define H_BYTE   unsigned char
 #define NULL     0
 
+#ifndef __SIZE_TYPE__
+#define __SIZE_TYPE__ unsigned long
+#endif
+typedef  __SIZE_TYPE__ size_t;
+
 #endif

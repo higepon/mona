@@ -13,9 +13,10 @@
 */
 #include<X86MemoryManager.h>
 #include<higeOperator.h>
+#include<higepostypes.h>
 
 #ifndef BUILD_ON_LINUX
-void* operator new(unsigned int size) {
+void* operator new(size_t size) {
 
     X86MemoryManager& mm = X86MemoryManager::instance();
     return mm.allocateMemory(size);

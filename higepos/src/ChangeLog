@@ -1,3 +1,12 @@
+2002-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        linux対応
+
+        * higeOperator.cpp: operator newの引数をsize_tに変更。
+          higepostypes.hをincludeするように変更
+
+        * higepostypes.h:size_tを定義。
+
 2002-10-06  syn <syn@users.sourceforge.jp>
 
         * higeOperator.cpp: operator new とoperator deleteをコメントアウト
