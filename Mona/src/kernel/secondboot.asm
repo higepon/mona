@@ -95,6 +95,42 @@ graphicalmode:
 ; To Protect mode
 ;-------------------------------------------------------------------------------
 RealToProtect:
+; set_vesa_palette:
+;         push bp
+;         mov bp, sp
+;         sub sp, 6               ; word i; byte r, g, b, a
+;         mov word[bp - 1], 0     ; i
+;         mov byte[bp - 3], 7     ; r
+;         mov byte[bp - 4], 7     ; g
+;         mov byte[bp - 5], 7     ; b
+;         mov byte[bp - 6], 0xff  ; alpha
+;         mov ax, 0x4f09          ; function settings
+;         xor bx, bx              ;     set palette
+;         mov cx, 1               ;     number of entries to change
+;         lea di, [bp - 3]        ;     r, g, b, a array
+; r_loop:
+; g_loop:
+; b_loop:
+;         mov dx, [bp - 1]
+;         int 0x10
+;         add byte[bp - 5], 8
+;         cmp byte[bp - 5], 255
+;         inc word[bp - 1]
+;         jne b_loop
+;         mov byte[bp - 5], 7
+;         add byte[bp - 4], 8
+;         cmp byte[bp - 4], 255
+;         inc word[bp - 1]
+;         jne g_loop
+;         mov byte[bp - 4], 7
+;         add byte[bp - 3], 8
+;         cmp byte[bp - 3], 255
+;         inc word[bp - 1]
+;         jne r_loop
+; palette_loop_end:
+;         add sp, 6
+;         pop bp
+;;; Real to Protect
         mov  ax, cs             ; we jump from firstboot
         mov  ds, ax             ; so ds is changed
         lgdt [gdtr]             ; load gdtr
