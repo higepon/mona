@@ -17,6 +17,23 @@
     \date   create:2003/12/07 update:$Date$
 */
 
+/*----------------------------------------------------------------------
+    Map Interface
+----------------------------------------------------------------------*/
+template <class T> class Map {
+
+  public:
+    bool containsKey(const char* key) const = 0;
+    bool containsValue(T value)       const = 0;
+    T get(const char* key)                  = 0;
+    T put(const char* key, T value)         = 0;
+    T remove(const char* key)               = 0;
+    dword size()                      const = 0;
+};
+
+/*----------------------------------------------------------------------
+    List Interface
+----------------------------------------------------------------------*/
 template <class T> class List {
 
   public:
@@ -29,6 +46,9 @@ template <class T> class List {
     virtual bool hasElement(T element) const = 0;
 };
 
+/*----------------------------------------------------------------------
+    HList Class
+----------------------------------------------------------------------*/
 template <class T> class HList : public List<T> {
 
   public:
