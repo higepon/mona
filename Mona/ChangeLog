@@ -1,5 +1,11 @@
 2004-05-20  tino  <tino@users.sourceforge.jp>
 
+        * src/servers/shell/Shell.cpp: 混信チェックコード追加 (/// temporary)
+
+        * src/servers/elf/main.cpp: 混信チェックコード追加 (/// temporary)
+
+2004-05-20  tino  <tino@users.sourceforge.jp>
+
         * bin/root/AUTOEXEC.MSH: デバッグ用にpsとstartguiを追加
 
         * src/lib/monapi/syscall.cpp: デバッグコード追加 (/// temporary)

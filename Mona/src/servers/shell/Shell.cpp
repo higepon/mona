@@ -36,6 +36,15 @@ void Shell::run()
     {
         if (Message::receive(&msg) != 0) continue;
 
+#if 1 /// temporary
+        if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
+        {
+            char buf[128];
+            sprintf(buf, "**** INVALID MESSAGE!! ****[%d: %d, %d]\n", syscall_get_tid(), msg.header, msg.arg1);
+            syscall_print(buf);
+            for (;;);
+        }
+#endif
         switch (msg.header)
         {
             case MSG_KEY_VIRTUAL_CODE:
