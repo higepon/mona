@@ -66,6 +66,7 @@ $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o userlib.o -L./contrib -lz
+	cp $@ $(BIN)/mona.dbg
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
 
@@ -83,13 +84,13 @@ $(BOOT2) : secondboot.asm
 	$(NASM) secondboot.asm -o $@ -l $(LIST)/second.list
 
 mode12h.o : mode12h.asm
-	$(NASM) mode12h.asm -felf -o $@ -l $(LIST)/mode12h.list
+	$(NASM) $(NFLAGS) mode12h.asm -felf -o $@ -l $(LIST)/mode12h.list
 
 ihandler.o : ihandler.asm
-	$(NASM) ihandler.asm -felf -o $@ -l $(LIST)/ihandler.list
+	$(NASM) $(NFLAGS) ihandler.asm -felf -o $@ -l $(LIST)/ihandler.list
 
 core.o : core.asm
-	$(NASM) core.asm -felf -o $@ -l $(LIST)/core.list
+	$(NASM) $(NFLAGS) core.asm -felf -o $@ -l $(LIST)/core.list
 
 doxygen :
 	$(DOXYGEN)

@@ -19,7 +19,7 @@ if test "$OSTYPE" = "cygwin" ; then
    cat ./env/cygwin.env Makefile.in >Makefile
    echo "cygwin"
 # linux gcc2.9x
-elif test "$isOldVersion" gt "3"; then
+elif test $isOldVersion ; then
    cat ./env/linux2.x.env Makefile.in >Makefile
    echo "linux gcc2.x"
 # linux gcc3.x

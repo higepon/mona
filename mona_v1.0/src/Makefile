@@ -1,11 +1,11 @@
 NASM       = nasm
 NDISASM    = ndisasm
-CC         = /usr/bin/g++
-LD         = /usr/bin/ld
-STRIP      = /usr/bin/strip
-LFLAGS     = -n -Ttext 0x1200 -static
-# for gcc3.x@cygwin
-CFLAGS     = -nostdlib -fno-exceptions  -fno-rtti -ffreestanding -Wall
+CC         = g++
+LD         = ld
+STRIP      = strip
+LFLAGS     = -n -Ttext 0x1200 -static --oformat binary
+CFLAGS     = -nostdlib -fno-exceptions -fno-rtti -ffreestanding -fno-builtin -Wall -c
+NFLAGS     = -D BUILD_ON_LINUX
 ENV        = env
 VERSION    = 0.1.1
 DOXYGEN    = doxygen
@@ -74,6 +74,7 @@ $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o userlib.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o userlib.o -L./contrib -lz
+	cp $@ $(BIN)/mona.dbg
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
 
