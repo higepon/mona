@@ -38,6 +38,7 @@ void mouseHandler() {
 */
 void keyStrokeHandler(dword scancode) {
 
+    g_console->printf("key");
     MessageInfo message;
 
     memset(&message, 0, sizeof(MessageInfo));

@@ -36,15 +36,16 @@ void tryMouse() {
     outportb(0x64, 0xa8);
 
     /* mouse reset */
-    outportb(0x64, 0xd4);
-    outportb(0x60, 0xff);
+    //    outportb(0x64, 0xd4);
+    //    outportb(0x60, 0xff);
 
     /* enable mouse */
     outportb(0x64, 0xd4);
     outportb(0x60, 0xf4);
 
     /* enable mouse interrupt */
-    //    outportb(0x21, inportb(0x21) & 0xF7);
+    outportb(0xA1, inportb(0xA1) & 0xF7);
+    //    outportb(0xA1, inportb(0xA1) & 0x00);
 
 }
 
