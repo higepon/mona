@@ -22,11 +22,10 @@
 */
 class FDCDriver : public DiskDriver {
   public:
-    FDCDriver(VirtualConsole* console);
+    FDCDriver();
     virtual ~FDCDriver();
 
   public:
-    void printStatus(const char*) const;
     static void interrupt();
     bool read(dword lba, byte* buf);
     bool write(dword lba, byte* buf);
@@ -48,10 +47,7 @@ class FDCDriver : public DiskDriver {
     void stopDMA();
     void setupDMARead(dword size);
     void setupDMAWrite(dword size);
-    void printStatus(const byte msr, const char*) const;
-    void printDMACStatus(const byte status, const char*) const;
     void lbaToTHS(int lba, byte& track, byte& head, byte& sector);
-    void waitPrint(const char* msg);
     bool read(byte track, byte head, byte sector);
     bool write(byte track, byte head, byte sector);
     bool writeID(byte track, byte head, byte data);

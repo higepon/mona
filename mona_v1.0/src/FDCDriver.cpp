@@ -79,14 +79,10 @@ bool FDCDriver::interrupt_ ;
 /*!
     \brief Constructer
 
-    \param  console message out console
     \author HigePon
     \date   create:2003/02/03 update:
 */
-FDCDriver::FDCDriver(VirtualConsole* console) {
-
-    /* set console */
-    console_ = console;
+FDCDriver::FDCDriver() {
 
     initilize();
 }
@@ -159,66 +155,6 @@ void FDCDriver::initilize() {
     }
 
     motor(OFF);
-    return;
-}
-
-/*!
-    \brief wait Print
-
-    \param  str message
-    \author HigePon
-    \date   create:2003/02/10 update:
-*/
-void FDCDriver::waitPrint(const char* msg) {
-
-    static int counter = 0;
-    counter++;
-
-    for (int i = 0; i < 500000; i++) {
-        i++;
-        i--;
-    }
-
-    g_console->printf("%s:%d\n", msg, counter);
-}
-
-/*!
-    \brief print status of FDC(MSR)
-
-    \param  str message
-    \author HigePon
-    \date   create:2003/02/10 update:
-*/
-void FDCDriver::printStatus(const char* str) const {
-
-    byte msr = inportb(FDC_MSR_PRIMARY);
-    printStatus(msr, str);
-    return;
-}
-
-/*!
-    \brief print status of FDC(MSR)
-
-    \param  main status register
-    \param  str message
-    \author HigePon
-    \date   create:2003/02/10 update:
-*/
-void FDCDriver::printStatus(const byte msr, const char* str) const {
-
-    console_->printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
-    console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n"
-              , msr & FDC_MRQ_READY    ? "  ready  ":"not ready"
-              , msr & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
-              , msr & FDC_NDMA_NOT_DMA ? " Y "      :" N "
-              , msr & FDC_BUSY_ACTIVE  ? "  Y "     :"  N "
-              , msr & FDC_ACTD_ACTIVE  ? " Y "      :" N "
-              , msr & FDC_ACTC_ACTIVE  ? " Y "      :" N "
-              , msr & FDC_ACTB_ACTIVE  ? " Y "      :" N "
-              , msr & FDC_ACTA_ACTIVE  ? " Y "      :" N "
-              , interrupt_ ? " T " : " F "
-              , str
-    );
     return;
 }
 
@@ -307,8 +243,6 @@ bool FDCDriver::sendCommand(const byte* command, const byte length) {
 */
 bool FDCDriver::recalibrate() {
 
-    info(DEV_WARNING, "racalibrate start \n");
-
     byte command[] = {0x07, 0x00}; /* recalibrate */
 
     interrupt_ = false;
@@ -318,29 +252,20 @@ bool FDCDriver::recalibrate() {
         return false;
     }
 
-    info(DEV_NOTICE, "recalibrate:before waitInterrupt\n");
-
     while (true) {
+        while (!waitInterrupt());
 
-        byte status = inportb(FDC_MSR_PRIMARY);
+        while (true) {
 
-        /* status fdc ready & data to FDC */
-        if (!(status & 0x10)) break;
+            byte status = inportb(FDC_MSR_PRIMARY);
+
+            /* status */
+            if (!(status & 0x10)) break;
+
+        }
+        if (senseInterrupt()) break;
     }
 
-    while (!waitInterrupt());
-
-    info(DEV_NOTICE, "recalibrate:after waitInterrupt\n");
-
-//     while (true) {
-
-//         byte status = inportb(FDC_MSR_PRIMARY);
-
-//         /* status fdc ready & data to FDC */
-//         if (status == 0x81) break;
-//     }
-
-    senseInterrupt();
     return true;
 }
 
@@ -476,11 +401,9 @@ bool FDCDriver::senseInterrupt() {
     \brief result phase
 
     \author HigePon
-    \date   create:2003/02/13 update:
+    \date   create:2003/02/13 update:2003/09/19
 */
 bool FDCDriver::readResults() {
-
-    //    info(DEV_WARNING, "read results start \n");
 
     int i;
     byte msr = 0;
@@ -489,34 +412,25 @@ bool FDCDriver::readResults() {
     /* result phase */
     for (i = 0; i < 10; i++) {
 
-        /* expected condition is ready & data I/O to CPU */
-        if (!checkMSR(FDC_MRQ_READY, FDC_MRQ_READY)) {
+        /* wait for fdc status */
+        while (true) {
 
-            info(ERROR, "FDCDriver#readResults: timeout results_[%d]\n", i);
-            printStatus("status");
-            break;
+            msr = inportb(FDC_MSR_PRIMARY);
+            if ((msr & 0xd0) == 0xd0) break;
         }
-
-        /* no result left */
-        if (!(msr = inportb(FDC_MSR_PRIMARY) & FDC_DIO_TO_CPU)) break;
 
         /* get result */
         results_[i] = inportb(FDC_DR_PRIMARY);
 
+        /* no result left */
+        if (!(msr = inportb(FDC_MSR_PRIMARY) & FDC_DIO_TO_CPU)) break;
     }
+
     resultsLength_ = i;
 
-    /* if not normal end show result */
-    if (resultsLength_ > 0 && (results_[0] & 0xC0)) {
+    /* abnormal end */
+    if (resultsLength_ > 0 && (results_[0] & 0xC0)) return false;
 
-        info(WARNING, "result error");
-
-        for (int j = 0; j < resultsLength_; j++) {
-
-            info(ERROR, "result[%d] = %x ", j, (int)(results_[j]));
-        }
-        return false;
-    }
     return true;;
 }
 
@@ -686,28 +600,6 @@ bool FDCDriver::writeID(byte track, byte head, byte data) {
     /* not imlemented */
 
     return false;
-}
-
-/*!
-    \brief print dma controler status
-
-    \author HigePon
-    \date   create:2003/02/15 update:
-*/
-void FDCDriver::printDMACStatus(const byte status, const char* str) const {
-
-    console_->printf("ch3|ch2|ch1|ch0|ch3|ch2|ch1|ch0|\n");
-    console_->printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
-              , status & 0x80 ? " Y ":" N "
-              , status & 0x40 ? " Y ":" N "
-              , status & 0x20 ? " Y ":" N "
-              , status & 0x10 ? " Y ":" N "
-              , status & 0x08 ? " Y ":" N "
-              , status & 0x04 ? " Y ":" N "
-              , status & 0x02 ? " Y ":" N "
-              , status & 0x01 ? " Y ":" N "
-              , str
-    );
 }
 
 /*!

@@ -19,7 +19,7 @@
 
 void ELFTester(byte* out) {
 
-    g_fdcdriver = new FDCDriver(g_console);
+    g_fdcdriver = new FDCDriver();
 
     byte tbuf[512];
     for (int i = 0; i < 0xff; i++) {tbuf[i] = i;}
@@ -94,7 +94,7 @@ void FDCTester() {
 
     info(DEV_NOTICE, "start1");
 
-    g_fdcdriver = new FDCDriver(g_console);
+    g_fdcdriver = new FDCDriver();
 
     info(DEV_NOTICE, "start2");
 
