@@ -32,6 +32,7 @@ class FDCDriver : public DiskDriver {
     bool recalibrate();
     bool seek(byte track);//private
     void motor(const bool on);
+    void motorAutoOff();
 
   private:
     void initilize();
@@ -51,6 +52,7 @@ class FDCDriver : public DiskDriver {
     bool write(byte track, byte head, byte sector);
   private:
     byte results_[10];
+    int motorCount_;
     int resultsLength_;
     static bool interrupt_;
     byte* dmabuff_;

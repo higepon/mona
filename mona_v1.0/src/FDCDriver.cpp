@@ -78,7 +78,7 @@ bool FDCDriver::interrupt_ ;
     \author HigePon
     \date   create:2003/02/03 update:2003/09/20
 */
-FDCDriver::FDCDriver() {
+FDCDriver::FDCDriver() : motorCount_(0) {
 
     initilize();
     return;
@@ -146,11 +146,11 @@ void FDCDriver::initilize() {
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
 
         info(ERROR, "Specify command failed\n");
-        motor(OFF);
+        motorAutoOff();
         return;
     }
 
-    motor(OFF);
+    motorAutoOff();
     return;
 }
 
@@ -190,12 +190,27 @@ void FDCDriver::motor(bool on) {
 
     if (on) {
         interrupt_ = false;
+        motorCount_++;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
 
         delay(4);
 
     } else outportb(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
     return;
+}
+
+/*!
+    \brief print status of FDC
+
+    \author HigePon
+    \date   create:2004/02/10 update:
+*/
+void FDCDriver::motorAutoOff() {
+
+    motorCount_--;
+    if (motorCount_ <= 0) {
+        motor(OFF);
+    }
 }
 
 /*!

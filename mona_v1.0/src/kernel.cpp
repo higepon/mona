@@ -182,7 +182,7 @@ void startKernel(void) {
         g_console->printf("FAT INIT ERROR %d\n", g_fat12->getErrorNo());
         for (;;);
     }
-    g_fdcdriver->motor(OFF);
+    g_fdcdriver->motorAutoOff();
     g_info_level = MSG;
 
     g_console->printf("[%d]", -5);

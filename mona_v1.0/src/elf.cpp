@@ -45,19 +45,11 @@ int loadProcess(const char* path, const char* file, bool isUser) {
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
 
-    /* read FAT */
-//     if (!g_fat12->initilize()) {
-//     g_console->printf("[2.4]");
-//         Semaphore::up(&g_semaphore_fd);
-//         g_console->printf("fat initilize error\n");
-//         return -1;
-//     }
-
     /* file open */
     if (!g_fat12->open(path, file, FAT12::READ_MODE)) {
 
         Semaphore::up(&g_semaphore_fd);
-        g_console->printf("fat open error\n %x", g_fat12->getErrorNo());
+        g_console->printf("can not open error\n %x", g_fat12->getErrorNo());
         return -1;
     }
 
@@ -90,7 +82,7 @@ int loadProcess(const char* path, const char* file, bool isUser) {
 
         Semaphore::up(&g_semaphore_fd);
     }
-    g_fdcdriver->motor(false);
+    g_fdcdriver->motorAutoOff();
     Semaphore::up(&g_semaphore_fd);
 
     /* attach Shared to this process */

@@ -1,3 +1,9 @@
+2004-02-10  higepon  <higepon@users.sourceforge.jp>
+
+        * syscalls.cpp : FDアクセス箇所にセマフォでロックを追加。
+
+        * FDCDriver.cpp: モーターの制御を追加。
+
 2004-02-09  higepon  <higepon@users.sourceforge.jp>
 
         * user/userlib.cpp: printfのバグ修正

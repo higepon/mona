@@ -187,34 +187,44 @@ void syscall_entrance() {
     case SYSTEM_CALL_FDC_OPEN:
 
         enableInterrupt();
+        while (Semaphore::down(&g_semaphore_fd));
+
         g_fdcdriver->motor(ON);
         g_fdcdriver->recalibrate();
         g_fdcdriver->recalibrate();
         g_fdcdriver->recalibrate();
+
+        Semaphore::up(&g_semaphore_fd);
         info->eax = 0;
         break;
 
     case SYSTEM_CALL_FDC_CLOSE:
 
         enableInterrupt();
-        g_fdcdriver->motor(OFF);
+        while (Semaphore::down(&g_semaphore_fd));
+
+        g_fdcdriver->motorAutoOff();
+
+        Semaphore::up(&g_semaphore_fd);
         info->eax = 0;
         break;
 
     case SYSTEM_CALL_FDC_READ:
 
         enableInterrupt();
+
         {
             bool readResult = true;
             dword lba      = info->esi;
             byte* buffer   = (byte*)(info->ecx);
             dword blocknum = info->edi;
 
+            while (Semaphore::down(&g_semaphore_fd));
             for (dword i = 0; i < blocknum; i++) {
                 readResult = g_fdcdriver->read(lba + i, buffer + i * 512);
                 if (!readResult) break;
             }
-
+            Semaphore::up(&g_semaphore_fd);
             info->eax = readResult ? 0 : 1;
         }
         break;
@@ -228,10 +238,14 @@ void syscall_entrance() {
             byte* buffer   = (byte*)(info->ecx);
             dword blocknum = info->edi;
 
+            while (Semaphore::down(&g_semaphore_fd));
             for (dword i = 0; i < blocknum; i++) {
                 writeResult = g_fdcdriver->write(lba + i, buffer + i * 512);
-                if (!writeResult) break;
+                if (!writeResult) {
+                    break;
+                }
             }
+            Semaphore::up(&g_semaphore_fd);
 
             info->eax = writeResult ? 0 : 1;
         }
@@ -244,11 +258,17 @@ void syscall_entrance() {
         g_fdcdriver->recalibrate();
         g_fdcdriver->recalibrate();
         g_fdcdriver->recalibrate();
+
+        while (Semaphore::down(&g_semaphore_fd));
+
         if (!g_fat12->open((char*)(info->esi), (char*)(info->ecx), FAT12::READ_MODE)) {
 
             info->eax = g_fat12->getErrorNo();
+            Semaphore::up(&g_semaphore_fd);
             break;
         }
+
+        Semaphore::up(&g_semaphore_fd);
 
         *((dword*)(info->edi)) = g_fat12->getFileSize();
         info->eax = 0;
@@ -264,6 +284,7 @@ void syscall_entrance() {
             dword size     = (dword)(info->ecx);
             int readTimes  = size / 512 + (size % 512 ? 1 : 0);
 
+            while (Semaphore::down(&g_semaphore_fd));
             for (int i = 0; i < readTimes; i++) {
 
                 bool readOk = g_fat12->read(buf + 512 * i);
@@ -279,14 +300,17 @@ void syscall_entrance() {
                 readSize += 512;
             }
         }
+        Semaphore::up(&g_semaphore_fd);
         *((dword*)(info->edi)) = readSize;
         break;
 
     case SYSTEM_CALL_FILE_CLOSE:
 
         enableInterrupt();
+        while (Semaphore::down(&g_semaphore_fd));
         g_fat12->close();
-        g_fdcdriver->motor(OFF);
+        g_fdcdriver->motorAutoOff();
+        Semaphore::up(&g_semaphore_fd);
         info->eax = 0;
         break;
 

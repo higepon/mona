@@ -443,7 +443,7 @@ bool readFile(IOStream* io) {
         io->error = IO_ERROR_CLOSE;
         return false;
     }
-    g_fdcdriver->motor(OFF);
+    g_fdcdriver->motorAutoOff();
     //    Semaphore::up(&g_semaphore_fd);
     return true;
 }
@@ -494,7 +494,7 @@ bool writeFile(IOStream* io) {
         io->error = IO_ERROR_CLOSE;
         return false;
     }
-    g_fdcdriver->motor(OFF);
+    g_fdcdriver->motorAutoOff();
     //    Semaphore::up(&g_semaphore_fd);
     return true;
 }
@@ -533,7 +533,7 @@ void testFDWrite() {
         g_console->printf("close errror\n");
         return;
     }
-    g_fdcdriver->motor(false);
+    g_fdcdriver->motorAutoOff();
     return;
 }
 
