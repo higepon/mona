@@ -1,19 +1,27 @@
 TARGET  = GLAUNCH
-SOURCES = FileManager.cpp FileWindow.cpp FileBrowser.cpp Icon.cpp
-INSTDIR = $(BINDIR)/root/APPS/GLAUNCH.APP
-INSTFILES = ICONS.BM5
-CLEANFILES = $(INSTFILES)
 
-$(TARGET).EL5: $(INSTFILES)
+SOURCES = \
+	BitmapViewer.cpp \
+	FileManager.cpp \
+	Icons.cpp \
+	IconData.cpp \
+	ShortCut.cpp \
+	TextViewer.cpp \
+	WindowManager.cpp
+
+INSTDIR = $(BINDIR)/root/APPS
 
 MONADIR    = ../../..
-ADDLINK    = -lgui
-ADDLINKDEP = $(MONADIR)/lib/libgui.a
+ifneq ($(BUILD_TARGET),ELF)
+ADDLINK    = -lbaygui-imp
+ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a
+include $(MONADIR)/env/monapi-ex5.inc
+else
+ADDLINK    = -lbaygui
+ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
 include $(MONADIR)/env/monapi-el5.inc
+endif
 
 CXXFLAGS += -DDEBUG
-
-ICONS.BM5: icons.bmp
-	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 include dependencies
