@@ -270,10 +270,10 @@ void X86MemoryManager::addToEntry(struct memoryEntry** entry, struct memoryEntry
 void X86MemoryManager::deleteFromEntry(struct memoryEntry** entry, struct memoryEntry* block, H_SIZE_T size) {
 
     /* delete block is top of the list */
-    if (*entry == block && (*entry)->next == *entry) {
+    if (*entry == block && (*entry)->next == (struct memoryEntry*)NULL) {
         *entry = (struct memoryEntry*)NULL;
         return;
-    } else if (*entry == block && (*entry)->next != *entry) {
+    } else if (*entry == block && (*entry)->next != (struct memoryEntry*)NULL) {
 
         struct memoryEntry* nextNextEntry = (*entry)->next->next;
         H_SIZE_T nextSize = (*entry)->next->size;
