@@ -55,6 +55,10 @@ static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CStri
     {
         mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }
+    else if (path.endsWith(".EL5"))
+    {
+        mi = monapi_call_file_decompress_st5_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+    }
     else
     {
         mi = monapi_call_file_read_data(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
