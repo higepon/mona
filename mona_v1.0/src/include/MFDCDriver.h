@@ -24,9 +24,18 @@ class MFDCDriver {
     ~MFDCDriver();
 
   public:
-    void printStatus();
+    void printStatus() const;
+    void interrupt();
   private:
     void initilize();
+    void setFDCVersion();
+    bool waitInterrupt();
+
+  private:
+    byte version_;
+    static bool interrupt_;
 };
+
+extern MFDCDriver* gMFDCDriver;
 
 #endif

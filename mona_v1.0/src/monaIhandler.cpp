@@ -17,6 +17,7 @@
 #include<monaIo.h>
 #include<KeyBoardManager.h>
 #include<FDCDriver.h>
+#include<MFDCDriver.h>
 #include<ProcessManager.h>
 #include<monaTypes.h>
 #include<monaTester.h>
@@ -73,10 +74,8 @@ void fault0dHandler() {
     \date   create:2002/07/25 update:2002/07/27
 */
 void dummy() {
-
-    _sysPrint("dummy");
-
     pusha();
+    _sysPrint("dummy");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
@@ -139,6 +138,22 @@ void timerHandler() {
     _switchProcess(ProcessManager::current, ProcessManager::next);
 }
 
+/*!
+    \brief MFDC handler
+
+    \author HigePon
+    \date   create:2003/02/09 update:
+*/
+void MFDCHandler() {
+
+    pusha();
+    gMFDCDriver->interrupt();
+    outportb(0x20, 0x20);
+
+    popa();
+    iret();
+}
+
 /*! \def global handler list */
 handler_st handlers[HANDLER_NUM] = {
      {0x00, &dummy}
@@ -155,7 +170,7 @@ handler_st handlers[HANDLER_NUM] = {
    , {0x0B, &dummy}
    , {0x0C, &dummy}
    , {0x0D, &fault0dHandler}
-   , {0x0E, &dummy}
+   , {0x0E, &MFDCHandler}
    , {0x0F, &dummy}
    , {0x10, &dummy}
    , {0x11, &dummy}

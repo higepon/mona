@@ -17,8 +17,8 @@
 /* definition DOR */
 #define FDC_MOTA_START  0x10
 #define FDC_DMA_ENABLE  0x08
-#define FDC_REST_RESET  0x04
-#define FDC_REST_ENABLE 0x00
+#define FDC_REST_RESET  0x00
+#define FDC_REST_ENABLE 0x04
 #define FDC_DR_SELECT_A 0x00
 
 /* definition MSR */
@@ -38,7 +38,11 @@
 #define FDC_MSR_SECONDARY 0x374
 
 /* summary */
-#define FDC_START_MOTOR (FDC_MOTA_START | FDC_DMA_ENABLE | FDC_REST_ENABLE | FDC_DR_SELECT_A)
+#define FDC_DOR_RESET   0
+#define FDC_START_DRIVE (FDC_DMA_ENABLE | FDC_MOTA_START | FDC_REST_ENABLE | FDC_DR_SELECT_A)
+
+MFDCDriver* gMFDCDriver = 0;
+bool MFDCDriver::interrupt_ = false;
 
 /*!
     \brief Constructer
@@ -47,12 +51,9 @@
     \date   create:2003/02/03 update:
 */
 MFDCDriver::MFDCDriver() {
-    printStatus();
+
     initilize();
-
-    while (!(inportb(FDC_MSR_PRIMARY) & FDC_MRQ_READY));
-
-    printStatus();
+    while (true);
 }
 
 /*!
@@ -73,23 +74,55 @@ MFDCDriver::~MFDCDriver() {
 */
 void MFDCDriver::initilize() {
 
-    /* start driveA */
-    outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
+    printStatus();
 
+    /* reset drive */
+    _sys_printf("FDC_DOR_RESET=%x\n", FDC_DOR_RESET);
+    outportb(FDC_DOR_PRIMARY, FDC_DOR_RESET);
+
+    printStatus();
+
+    /* start driveA */
+    interrupt_ = false;
+    outportb(FDC_DOR_PRIMARY, FDC_START_DRIVE);
+    while (!waitInterrupt()) {
+        _sys_printf("wait");
+    }
+    printStatus();
     return;
 }
 
-void MFDCDriver::printStatus() {
+void MFDCDriver::printStatus() const {
 
     byte mrq = inportb(FDC_MSR_PRIMARY);
-    _sys_printf("[%s][%s][%s][%s][%s][%s][%s][%s]\n"
-              , mrq & FDC_MRQ_READY    ? "data register ready"        :"data register not ready"
-              , mrq & FDC_DIO_TO_CPU   ? "to CPU"                     :"to Controler"
-              , mrq & FDC_NDMA_NOT_DMA ? "not in DMA"                 :"DMA"
-              , mrq & FDC_BUSY_ACTIVE  ? "BUSY"                       :"not BUSY"
-              , mrq & FDC_ACTD_ACTIVE  ? "drive D in positioning mode":"driveD not active"
-              , mrq & FDC_ACTC_ACTIVE  ? "drive C in positioning mode":"driveC not active"
-              , mrq & FDC_ACTB_ACTIVE  ? "drive B in positioning mode":"driveB not active"
-              , mrq & FDC_ACTA_ACTIVE  ? "drive A in positioning mode":"driveA not active"
+    _sys_printf("data reg |data flow|DMA|BUSY| D | C | B | A |int|\n");
+    _sys_printf("%s|%s|%s|%s|%s|%s|%s|%s|%s|\n"
+              , mrq & FDC_MRQ_READY    ? "  ready  ":"not ready"
+              , mrq & FDC_DIO_TO_CPU   ? " to CPU  ":" to Cont "
+              , mrq & FDC_NDMA_NOT_DMA ? " Y ":" N "
+              , mrq & FDC_BUSY_ACTIVE  ? "  Y ":"  N "
+              , mrq & FDC_ACTD_ACTIVE  ? " Y ":" N "
+              , mrq & FDC_ACTC_ACTIVE  ? " Y ":" N "
+              , mrq & FDC_ACTB_ACTIVE  ? " Y ":" N "
+              , mrq & FDC_ACTA_ACTIVE  ? " Y ":" N "
+              , interrupt_ ? " T " : " F "
     );
 }
+
+void MFDCDriver::setFDCVersion() {
+
+
+}
+
+void MFDCDriver::interrupt() {
+
+    _sys_printf("interrupt\n");
+    interrupt_ = true;
+    _sys_printf("interrupt_ = %s\n", interrupt_ ? " True " : " False ");
+}
+
+bool MFDCDriver::waitInterrupt() {
+
+    return interrupt_;
+}
+

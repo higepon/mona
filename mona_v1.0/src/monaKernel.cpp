@@ -31,7 +31,7 @@
 
 char* version = "Mona develop beta 0.03b $Date$";
 
-//VirtualConsole* console = new SystemConsole();
+VirtualConsole* console;
 
 /*!
     \brief  mona kernel start at this point
@@ -47,6 +47,7 @@ void startKernel(void) {
     /* initialize screen */
     _sysInitVga();
     _sysClearScreen();
+    console = new SystemConsole();
 
     /* show start message */
     printBanner();
@@ -76,14 +77,13 @@ void startKernel(void) {
         printOK("Checking CPUID     ");
         si.cpuid();
     } else {
-        _sys_printf("CPUID NG  \n");
+        console->printf("CPUID NG  \n");
     }
 
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
-    //    console->printf("this is test %x", 0x12345678);
-    MFDCDriver* f = new MFDCDriver();
+    gMFDCDriver = new MFDCDriver();
 
     /* test code is here */
 #if 0
@@ -116,7 +116,7 @@ void testtest(int i) {
 void panic(const char* msg) {
 
     _sysSetColor(SYS_BG_COLOR | CH_RED);
-    _sys_printf("kernel panic!!!!!\n%s", msg);
+    console->printf("kernel panic!!!!!\n%s", msg);
     while (true) {
     }
 }
@@ -132,12 +132,12 @@ void panic(const char* msg) {
 */
 inline void printOK(const char* msg) {
 
-    _sys_printf((char*)msg);
-    _sys_printf("[");
+    console->printf((char*)msg);
+    console->printf("[");
     _sysSetColor(SYS_BG_COLOR | CH_RED);
-    _sys_printf("OK");
+    console->printf("OK");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    _sys_printf("]\n");
+    console->printf("]\n");
 }
 
 /*!
@@ -150,23 +150,23 @@ inline void printOK(const char* msg) {
 */
 inline void printBanner() {
 
-    _sys_printf("------------------------------------------------------\n");
+    console->printf("------------------------------------------------------\n");
     _sysSetColor(SYS_BG_COLOR | CH_AQUA);
-    _sys_printf("      Mona Kernel starting                            \n");
+    console->printf("      Mona Kernel starting                            \n");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    _sys_printf("        ________ A A                                  \n");
-    _sys_printf("      ~/ ______( ");
+    console->printf("        ________ A A                                  \n");
+    console->printf("      ~/ ______( ");
     _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
-    _sys_printf("`");
+    console->printf("`");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    _sys_printf("D");
+    console->printf("D");
     _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
-    _sys_printf("`");
+    console->printf("`");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    _sys_printf(") < thanks ProgrammingBoard@2ch   \n");
-    _sys_printf("        UU       U U                                  \n");
-    _sys_printf("------------------------------------------------------\n");
+    console->printf(") < thanks ProgrammingBoard@2ch   \n");
+    console->printf("        UU       U U                                  \n");
+    console->printf("------------------------------------------------------\n");
     _sysSetColor(SYS_BG_COLOR | CH_MAROON);
-    _sys_printf("%s\n", version);
+    console->printf("%s\n", version);
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
 }
