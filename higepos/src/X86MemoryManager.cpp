@@ -72,7 +72,8 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     this->deleteFromEntry(freeEntry_, current, current->size);
     _sysPrintln("**************");
     _sysPrintlnInt((int)usedBlock);
-    _sysPrintlnInt((int)usedBlockSize);
+    _sysPrintlnInt(usedBlockSize);
+    _sysPrintlnInt(realSize);
     this->addToEntry(1, usedBlock, usedBlockSize);
 
     /* address of allocated memory */
