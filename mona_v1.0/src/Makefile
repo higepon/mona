@@ -36,7 +36,8 @@ SOURCES    = cstart.cpp            \
              monaChecker.cpp       \
              string.cpp            \
              SystemInfo.cpp        \
-             Semaphore.cpp
+             Semaphore.cpp         \
+             SystemConsole.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

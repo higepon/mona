@@ -104,16 +104,17 @@ monaTester.o: monaTester.cpp include/monaVga.h include/monaTypes.h \
   stlport/stl/_relops_cont.h stlport/stl/_vector.c stlport/stl/_bvector.h \
   stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
-  stlport/stl/_config_compat_post.h stlport/string stlport/stl/_string.h \
-  stlport/memory stlport/stl/_tempbuf.h stlport/stl/_tempbuf.c \
-  stlport/stl/_raw_storage_iter.h stlport/stl/_auto_ptr.h \
-  stlport/stl/_string_fwd.h stlport/iosfwd stlport/stl/_iosfwd.h \
-  stlport/stl/char_traits.h stlport/stl/_ctraits_fns.h \
-  stlport/stl/_string.c stlport/stl/_string_fwd.c \
-  stlport/stl/_string_io.h stlport/stl/_string_io.c \
-  stlport/stl/_string_hash.h stlport/stl/_hash_fun.h stlport/list \
-  stlport/stl/_list.h stlport/stl/_list.c stlport/vector \
-  stlport/algorithm stlport/stl/_algo.h stlport/stl/_algo.c
+  stlport/stl/_config_compat_post.h include/Semaphore.h stlport/string \
+  stlport/stl/_string.h stlport/memory stlport/stl/_tempbuf.h \
+  stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
+  stlport/stl/_auto_ptr.h stlport/stl/_string_fwd.h stlport/iosfwd \
+  stlport/stl/_iosfwd.h stlport/stl/char_traits.h \
+  stlport/stl/_ctraits_fns.h stlport/stl/_string.c \
+  stlport/stl/_string_fwd.c stlport/stl/_string_io.h \
+  stlport/stl/_string_io.c stlport/stl/_string_hash.h \
+  stlport/stl/_hash_fun.h stlport/list stlport/stl/_list.h \
+  stlport/stl/_list.c stlport/vector stlport/algorithm \
+  stlport/stl/_algo.h stlport/stl/_algo.c
 ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
   include/monaKernel.h include/monaTypes.h include/string.h \
   include/IA32MemoryManager.h include/monaIo.h include/monaVga.h \
@@ -135,4 +136,7 @@ monaChecker.o: monaChecker.cpp include/monaChecker.h include/monaVga.h \
 string.o: string.cpp include/string.h include/monaTypes.h
 SystemInfo.o: SystemInfo.cpp include/SystemInfo.h include/monaTypes.h \
   include/string.h include/monaVga.h
-Semaphore.o: Semaphore.cpp include/semaphore.h
+Semaphore.o: Semaphore.cpp include/semaphore.h include/monaKernel.h \
+  include/monaTypes.h include/string.h
+SystemConsole.o: SystemConsole.cpp include/semaphore.h \
+  include/monaKernel.h include/monaTypes.h include/string.h
