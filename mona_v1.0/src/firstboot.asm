@@ -86,6 +86,10 @@ a20enable:
         out     0x60,al
         sti
         ;
+graphicalmode:
+        mov ax, 0x0012
+        int 0x10
+        ;
         jmp     KERNEL:0000     ; jump to secondboot
 
 
@@ -241,4 +245,3 @@ crlf    db      0x0d,0x0a,0
 
         times   0x01fe-($-$$) db 0
         dw      0xaa55
-

@@ -19,7 +19,8 @@ monaKernel.o: monaKernel.cpp include/monaKernel.h include/monaTypes.h \
   stlport/stl/_heap.h stlport/stl/_heap.c stlport/stl/_function.h \
   stlport/stl/_function_base.h stlport/stl/_epilog.h \
   stlport/stl/_config_compat_post.h include/SystemInfo.h \
-  include/SystemConsole.h include/VirtualConsole.h include/MFDCDriver.h
+  include/SystemConsole.h include/VirtualConsole.h include/MFDCDriver.h \
+  include/GraphicalConsole.h
 monaVga.o: monaVga.cpp include/monaVga.h include/monaTypes.h \
   include/string.h include/monaKernel.h
 monaIdt.o: monaIdt.cpp include/monaIdt.h include/monaVga.h \
@@ -144,4 +145,6 @@ SystemConsole.o: SystemConsole.cpp include/SystemConsole.h \
   include/string.h
 MFDCDriver.o: MFDCDriver.cpp include/MFDCDriver.h include/monaTypes.h \
   include/string.h include/VirtualConsole.h include/monaIo.h \
-  include/monaVga.h
+  include/monaVga.h include/monaKernel.h include/monaOperator.h
+GraphicalConsole.o: GraphicalConsole.cpp include/GraphicalConsole.h \
+  include/VirtualConsole.h include/monaTypes.h include/string.h

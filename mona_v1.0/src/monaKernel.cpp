@@ -28,6 +28,7 @@
 #include<SystemInfo.h>
 #include<SystemConsole.h>
 #include<MFDCDriver.h>
+#include<GraphicalConsole.h>
 
 char* version = "Mona develop beta 0.03b $Date$";
 
@@ -44,13 +45,13 @@ VirtualConsole* console;
 */
 void startKernel(void) {
 
-    /* initialize screen */
-    _sysInitVga();
-    _sysClearScreen();
-    console = new SystemConsole();
+    /* initialze console */
+    console = new GraphicalConsole();
 
     /* show start message */
     printBanner();
+
+    console->printf("\nŽÓŽÅŽÊŽÛŽ°ŽÜŽ°ŽÙŽÄŽÞ ŽÒŽ¸ŽÞŽÈŽ°ŽÁŽ¬ŽÝ ŽºŽºŽÏŽÃŽÞŽ·ŽÀŽÖ\n\n");
 
     /* set interrept */
     _sysSetIdt();
@@ -83,6 +84,7 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
+    while (true);
     gMFDCDriver = new MFDCDriver(console);
 
     /* test code is here */
@@ -97,12 +99,6 @@ void startKernel(void) {
     processTester();
     while (true) {
     }
-}
-
-void testtest(int i) {
-
-    i++;
-    return;
 }
 
 /*!
@@ -163,7 +159,7 @@ inline void printBanner() {
     _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
     console->printf("`");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    console->printf(") < thanks ProgrammingBoard@2ch   \n");
+    console->printf(") < thanks ProgrammingBoard@2ŽÁŽ¬ŽÝ  \n");
     console->printf("        UU       U U                                  \n");
     console->printf("------------------------------------------------------\n");
     _sysSetColor(SYS_BG_COLOR | CH_MAROON);

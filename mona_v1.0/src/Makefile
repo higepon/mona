@@ -39,6 +39,7 @@ SOURCES    = cstart.cpp            \
              Semaphore.cpp         \
              SystemConsole.cpp     \
              MFDCDriver.cpp        \
+             GraphicalConsole.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -49,8 +50,8 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL)
 	cat $@ /dev/zero|dd of=$(BIN)/mona.tmp bs=1k count=1440
 	mv $(BIN)/mona.tmp $@
 
-$(KERNEL) : $(OBJECTS) memcmp.o memmove.o
-	$(LD) $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o
+$(KERNEL) : $(OBJECTS) memcmp.o memmove.o mode12h.o
+	$(LD) $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
 
@@ -70,6 +71,9 @@ $(BOOT1) : firstboot.asm boot.mac
 $(BOOT2) : secondboot.asm
 	$(NASM) secondboot.asm -o $@ -l $(LIST)/second.list
 
+mode12h.o : mode12h.asm
+	$(NASM) mode12h.asm -felf -o $@ -l $(LIST)/mode12h.list
+
 doxygen :
 	$(DOXYGEN)
 
@@ -77,7 +81,7 @@ depend:
 	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) > $(ENV)/dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) memmove.o memcmp.o mode12h.o
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img
