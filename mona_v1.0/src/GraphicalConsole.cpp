@@ -16,11 +16,9 @@
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" void put_pixel(int pixel_x, int pixel_y, char color);
+extern "C" void scroll_down(unsigned int y);
 extern "C" char pos_x;
 extern "C" char pos_y;
-
-//char GraphicalConsole::bgcolor_;
-//char GraphicalConsole::chcolor_;
 
 /*!
     \brief initilize
@@ -33,7 +31,7 @@ GraphicalConsole::GraphicalConsole() {
     pos_x    = 0;
     pos_y    = 0;
     bgcolor_ = 0;
-    chcolor_ = 5;
+    chcolor_ = 3;
     clearScreen();
 }
 
@@ -236,9 +234,7 @@ void GraphicalConsole::scrollUp() {
     int cury = pos_y;
 
     for (int x = 0; x < GP_MAX_WIDTH; x++) {
-
         for (int y = 0; y < GP_MAX_HEIGHT - 1; y++) {
-
             pos_x = x;
             pos_y = y;
             write_font(vram_[x][y + 1], chcolor_, bgcolor_);
@@ -252,6 +248,8 @@ void GraphicalConsole::scrollUp() {
             vram_[x][y] = vram_[x][y + 1];
         }
     }
+
+    //    scroll_down(16);
 
     pos_x = curx;
     pos_y = cury;

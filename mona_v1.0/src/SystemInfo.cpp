@@ -14,6 +14,7 @@
 #include<SystemInfo.h>
 #include<monaVga.h>
 #include<string.h>
+#include<VirtualConsole.h>
 
 /*!
     \brief destructor
@@ -97,14 +98,14 @@ void SystemInfo::cpuid(dword id) {
 }
 
 /*!
-    \brief cpuid
+    \brief print cpuid
 
     cpuid get cpu information
 
     \author HigePon
     \date   create:2002/12/31 update:
 */
-void SystemInfo::cpuid() {
+void SystemInfo::printCpuid(VirtualConsole* console) {
 
     cpuid(0);
 
@@ -130,7 +131,7 @@ void SystemInfo::cpuid() {
     else if (!strcmp(vendorId_, "GenuineTMx86")) vendor_ = TRANSMETA;
     else                                         vendor_ = UNKNOWN_VENDOR;
 
-    _sys_printf("vendor id = %s\n", vendorId_);
+    console->printf("vendor id = %s\n", vendorId_);
 }
 
 /*!

@@ -30,7 +30,7 @@
 #include<MFDCDriver.h>
 #include<GraphicalConsole.h>
 
-char* version = "Mona develop beta 0.03b $Date$";
+char* version = "Mona develop beta 0.04 $Date$";
 
 VirtualConsole* console;
 
@@ -41,7 +41,7 @@ VirtualConsole* console;
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2003/01/26
+    \date   create:2002/07/21 update:2003/02/22
 */
 void startKernel(void) {
 
@@ -51,13 +51,6 @@ void startKernel(void) {
     /* show start message */
     printBanner();
 
-    console->printf("\nŽÓŽÅŽÊŽÛŽ°ŽÜŽ°ŽÙŽÄŽÞ ŽÒŽ¸ŽÞŽÈŽ°ŽÁŽ¬ŽÝ ŽºŽºŽÏŽÃŽÞŽ·ŽÀŽÖ\n\n");
-
-    for (int i = 0; i < 30; i++) {
-    console->printf("Ž½Ž¸ŽÛŽ°ŽÙŽÃŽ½ŽÄ%d\n", i);
-    }
-
-    while (true);
     /* set interrept */
     _sysSetIdt();
     _sysInitIo();
@@ -81,7 +74,7 @@ void startKernel(void) {
     if (si.hasCpuid()) {
 
         printOK("Checking CPUID     ");
-        si.cpuid();
+        //        si.printCpuid(console);
     } else {
         console->printf("CPUID NG  \n");
     }
@@ -89,8 +82,8 @@ void startKernel(void) {
     /* set up KeyBoardManager before task start */
     KeyBoardManager::instance();
 
-    while (true);
     gMFDCDriver = new MFDCDriver(console);
+    while (true);
 
     /* test code is here */
 #if 0
@@ -164,10 +157,11 @@ inline void printBanner() {
     _sysSetColor(SYS_BG_COLOR | CH_FUCHSIA);
     console->printf("`");
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
-    console->printf(") < thanks ProgrammingBoard@2ŽÁŽ¬ŽÝ  \n");
+    console->printf(") < thanks ProgrammingBoard@2Á¬Ý  \n");
     console->printf("        UU       U U                                  \n");
     console->printf("------------------------------------------------------\n");
     _sysSetColor(SYS_BG_COLOR | CH_MAROON);
     console->printf("%s\n", version);
     _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
+    console->printf("\nÓÅ Ä Ò¸Þ Ê ·®³ÀÞ²ÃÞ½\n\n");
 }

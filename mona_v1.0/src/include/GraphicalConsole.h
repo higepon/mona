@@ -23,7 +23,7 @@
 #include<monaTypes.h>
 
 #define GP_MAX_WIDTH  80
-#define GP_MAX_HEIGHT 35
+#define GP_MAX_HEIGHT 25
 
 /*!
     Graphical console class

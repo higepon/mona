@@ -79,7 +79,6 @@ bool            MFDCDriver::interrupt_ ;
 byte*           MFDCDriver::dmabuff_;
 byte            MFDCDriver::results_[10];
 VirtualConsole* MFDCDriver::console_;
-
 int             MFDCDriver::resultsLength_;
 
 /*!
@@ -213,6 +212,7 @@ void MFDCDriver::printStatus(const byte msr, const char* str) const {
 */
 void MFDCDriver::interrupt() {
 
+    console_->printf("\n interrupet\n");
     interrupt_ = true;
 }
 

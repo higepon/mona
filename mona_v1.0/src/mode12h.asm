@@ -3,6 +3,7 @@ BITS 32
 global _wait_vsync
 global _put_pixel
 global _write_font
+global _scroll_down
 
 global _pos_x
 global _pos_y
@@ -74,6 +75,53 @@ _put_pixel:
 		
 		leave
 		ret
+
+; scroll_down(unsigned int y)
+;   do scroll down (y = number of pixels down at one time)
+
+_scroll_down:
+		push	ebp
+		mov	ebp,esp
+		pusha
+		
+		mov	edi,0x000a0000
+		mov	esi,edi
+		xor	edx,edx
+		xor	eax,eax
+		mov	ax,word [ebp+0x08]
+		mov	cx,0x0050
+		mul	cx
+		add	esi,eax
+		
+		mov	ecx,0x000a9600
+		mov	dx,0x03c4		; map mask reg
+		mov	ax,0x0802
+.wl002		
+		out	dx,ax
+		push	edi
+		push	esi
+.wl003		
+		mov	ebx,dword [esi]
+		mov	dword [edi],ebx
+		add	edi,byte 0x04
+		add	esi,byte 0x04
+		cmp	esi,ecx
+		jne	.wl003
+		
+		pop	esi
+		pop	edi
+		shr	ah,1
+		or	ah,ah
+		jnz	.wl002
+		
+		mov	ah,0x0f
+		out	dx,ax			; unmask all planes
+		
+		popa
+		mov	esp,ebp
+		pop	ebp
+		ret
+
 
 
 ; write_font(int character,char ch_color,char bg_color)

@@ -15,6 +15,7 @@
 #define _MONA_SYSTEMINFO_
 
 #include<monaTypes.h>
+#include<VirtualConsole.h>
 
 #define INTEL          0
 #define AMD            1
@@ -45,7 +46,7 @@ class SystemInfo {
   public:
     static SystemInfo& instance();
     bool hasCpuid() const;
-    void cpuid();
+    void printCpuid(VirtualConsole* console);
 };
 
 
