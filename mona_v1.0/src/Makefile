@@ -41,7 +41,8 @@ SOURCES    = cstart.cpp            \
              rtc.cpp               \
              disp.cpp              \
              syscalls.cpp          \
-             BitMap.cpp
+             BitMap.cpp            \
+             FAT12.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

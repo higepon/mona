@@ -13,7 +13,8 @@
 #include<FAT12.h>
 #include<string.h>
 
-#include<stdio.h>
+//#include<stdio.h>
+#include<global.h>
 
 #define ATTR_READ_ONLY  0x01
 #define ATTR_HIDDEN     0x02
@@ -55,7 +56,7 @@ bool FAT12::initilize() {
 
    if (!(driver_->read(rootEntryStart, buf_))) return false;
 
-   printf("rootEntryStart = %d\n", rootEntryStart);
+   g_console->printf("rootEntryStart = %d\n", rootEntryStart);
 
     DirectoryEntry entry[20];
 
@@ -65,20 +66,20 @@ bool FAT12::initilize() {
 
         if (entry[j].filename[0] == 0xe5 || entry[j].filename[0] == 0x00) continue;
 
-        printf("[");
-        for (int i = 0; i < 8; i++) printf("%c", (char)(entry[j].filename[i]));
-        printf("]");
-        printf("[");
+        g_console->printf("[");
+        for (int i = 0; i < 8; i++) g_console->printf("%c", (char)(entry[j].filename[i]));
+        g_console->printf("]");
+        g_console->printf("[");
 
-        if (entry[j].attribute & ATTR_DIRECTORY) printf("DIR");
+        if (entry[j].attribute & ATTR_DIRECTORY) g_console->printf("DIR");
         else {
-            for (int i = 0; i < 3; i++) printf("%c", (char)(entry[j].extension[i]));
+            for (int i = 0; i < 3; i++) g_console->printf("%c", (char)(entry[j].extension[i]));
         }
-        printf("]");
-        printf("size=%d ", entry[j].filesize);
-        printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
-        printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
-        printf("cluster = %d\n", entry[j].cluster);
+        g_console->printf("]");
+        g_console->printf("size=%d ", entry[j].filesize);
+        g_console->printf("%d/%d/%d ", entry[j].fdate.year + 1980, entry[j].fdate.month, entry[j].fdate.day);
+        g_console->printf("%d:%d:%d ", entry[j].ftime.hour, entry[j].ftime.min, (entry[j].ftime.sec) * 2);
+        g_console->printf("cluster = %d\n", entry[j].cluster);
     }
 
     int rootDirSectors = ((bpb_.rootEntries * 32) + (bpb_.sizeOfSector - 1)) / bpb_.sizeOfSector;
@@ -87,10 +88,10 @@ bool FAT12::initilize() {
 
    if (!(driver_->read(lbp, buf_))) return false;
 
-   for (int k = 0; k < 512; k++) printf("%c", (char)buf_[k]);
+   for (int k = 0; k < 512; k++) g_console->printf("%c", (char)buf_[k]);
 
 
-    printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
+    g_console->printf("sizeof directryentry 32 = %d", sizeof(DirectoryEntry));
 
     return true;
 }

@@ -35,6 +35,7 @@
 #include<pic.h>
 #include<rtc.h>
 #include<BitMap.h>
+#include<FAT12.h>
 
 char* version = "Mona develop beta 0.06a $Date$";
 
@@ -97,9 +98,16 @@ void startKernel(void) {
     disableTimer();
     enableKeyboard();
     enableInterrupt();
+
     while (g_demo_step < 2);
     g_fdcdriver = new FDCDriver(g_console);
-    g_fdcdriver->test();
+    //g_fdcdriver->test();
+
+    g_fdcdriver->motor(true);
+    FAT12* fat = new FAT12((DiskDriver*)g_fdcdriver);
+    fat->initilize();
+    g_fdcdriver->motor(false);
+
 
     g_console->printf("\nHit any key to start [kernel thread demo]\n");
     while (g_demo_step < 5);

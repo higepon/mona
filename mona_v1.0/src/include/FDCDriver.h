@@ -12,6 +12,7 @@
 
 #include<types.h>
 #include<VirtualConsole.h>
+#include<DiskDriver.h>
 
 #ifndef _MONA_MFDCDRIVER_
 #define _MONA_MFDCDRIVER_
@@ -19,7 +20,7 @@
 /*!
     Floppy Disk Controller class
 */
-class FDCDriver {
+class FDCDriver : public DiskDriver {
   public:
     FDCDriver(VirtualConsole* console);
     ~FDCDriver();
@@ -29,11 +30,11 @@ class FDCDriver {
     void interrupt();
     bool read(int lba, byte* buf);
     bool write(int lba, byte* buf);
+    void motor(const bool on);
     void test();
   private:
     void initilize();
     void setFDCVersion();
-    void motor(const bool on);
     bool sendCommand(const byte command[], const byte length);
     bool waitInterrupt();
     bool recalibrate();
