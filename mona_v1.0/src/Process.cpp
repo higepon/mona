@@ -155,8 +155,8 @@ Process_* ProcessScheduler::schedule(Process_* current) {
     if (list_->isEmpty()) return idle_;
 
     /* round robin */
-    list_->add(current);
-    return (list_->remove(0));
+    if(current != idle_) list_->add(current);
+    return (list_->removeAt(0));
 }
 
 int ProcessScheduler::addProcess(Process_* process) {
@@ -172,11 +172,6 @@ int ProcessScheduler::kill(Process_* process) {
 }
 
 
-/*********************************************************
-
-    not yet
-
-********************************************************/
 /*----------------------------------------------------------------------
     ProcessManager
 ----------------------------------------------------------------------*/
@@ -226,7 +221,11 @@ int ProcessManager_::switchProcess() {
 }
 
 Process_* ProcessManager_::schedule() {
-    return scheduler_->schedule(current_);
+
+    current_ = scheduler_->schedule(current_);
+
+    g_console->printf("[%x]", current_);
+    return current_;
 }
 
 Process_* ProcessManager_::createProcess(int type, const char* name) {
@@ -255,6 +254,9 @@ Process_* ProcessManager_::getCurrentProcess() const {
 }
 
 int ProcessManager_::addProcess(Process_* process) {
+
+    /* is this first process */
+    if (current_ == NULL) current_ = process;
     return (scheduler_->addProcess(process));
 }
 

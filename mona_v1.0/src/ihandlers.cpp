@@ -127,6 +127,9 @@ void timerHandler() {
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
+   g_processManager->schedule();
+   g_console->printf("********%s\n", g_processManager->getCurrentProcess()->getName());
+
    g_process_manager->schedule();
 }
 

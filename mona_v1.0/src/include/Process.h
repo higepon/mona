@@ -108,6 +108,9 @@ class Process_ {
     Process_(const char* name);
     virtual ~Process_();
 
+  public:
+    inline const char* getName() const {return name_;}
+
   protected:
     bool isKernelMode_;
     List<ThreadInfo*>* threadList_;
