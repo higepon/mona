@@ -125,7 +125,7 @@ bool StackSegment::tryExtend(LinearAddress address) {
 
     /* read only */
     g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3
-                                         , address - PageManager::ARCH_PAGE_SIZE, true, false, g_current_process->dpl);
+                                         , address - PageManager::ARCH_PAGE_SIZE, true, false, (bool)g_current_process->dpl);
 
     /* extention done */
     size_ += PageManager::ARCH_PAGE_SIZE;
@@ -149,7 +149,7 @@ bool StackSegment::allocatePage(LinearAddress address) {
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, true, true, g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, true, true, (bool)(g_current_process->dpl));
 
     return true;
 }
@@ -205,7 +205,7 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, true, true, g_current_process->dpl);
+    g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, true, true, (bool)(g_current_process->dpl));
 
     return true;
 }

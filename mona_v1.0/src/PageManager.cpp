@@ -53,40 +53,70 @@ PageManager::PageManager(dword totalMemorySize) {
 }
 
 /*!
-    \brief allocate physical page to page entry
+    \brief allocate physical page
 
     \param pageEntry page entry
-    \param present   true:page present
-    \param writable  true:page writable
-    \param isUser    true:user access mode
+    \param present   page present
+    \param writable  page writable
+    \param isUser    page access mode user
+    \param address   physical address
+
+    \return allocated physical address
+
     \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
+    \date   create:2003/10/25 update:
 */
-bool PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) {
+int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const {
 
-    int foundMemory = memoryMap_->find();
-
-    /* no free memory found */
-    if (foundMemory == -1) return false;
-
-    setAttribute(pageEntry, present, writable, isUser, 4096 * foundMemory);
-
-    return true;
+    setAttribute(pageEntry, present, writable, isUser, address);
+    return address;
 }
 
 /*!
-    \brief allocate physical page to page entry
+    \brief allocate physical page
 
-    \param directory process page directory
-    \param laddress  linear   address
-    \param present   physical address
+    \param pageEntry page entry
+    \param present   page present
+    \param writable  page writable
+    \param isUser    page access mode user
+
+    \return allocated physical address
+
     \author HigePon
-    \date   create:2003/10/26 update:
+    \date   create:2003/10/25 update:
 */
-bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress) {
+int PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const {
+
+    int foundMemory = memoryMap_->find();
+    if (foundMemory == BitMap::NOT_FOUND) return -1;
+
+    PhysicalAddress address = foundMemory * ARCH_PAGE_SIZE;
+    setAttribute(pageEntry, present, writable, isUser, address);
+
+    return address;
+}
+
+/*!
+    \brief allocate physical page
+
+    \param pageEntry page entry
+    \param laddress  Linear   address
+    \param paddress  Physical address
+    \param present   page present
+    \param writable  page writable
+    \param isUser    page access mode user
+
+    \return allocated physical address
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
+int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress, PhysicalAddress paddress
+                                       , bool present, bool writable, bool isUser) const {
 
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(laddress);
+    dword tableIndex     = getTableIndex(laddress);
 
     if (isPresent(&(directory[directoryIndex]))) {
 
@@ -95,12 +125,44 @@ bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddr
 
         table = allocatePageTable();
         memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-        setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+        setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
     }
 
-    setAttribute(&(table[getTableIndex(laddress)]), true, true, true, paddress);
+    return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser, paddress);
+}
 
-    return true;
+/*!
+    \brief allocate physical page
+
+    \param pageEntry page entry
+    \param laddress  Linear   address
+    \param present   page present
+    \param writable  page writable
+    \param isUser    page access mode user
+
+    \return allocated physical address
+
+    \author HigePon
+    \date   create:2003/10/25 update:
+*/
+int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress
+                                       , bool present, bool writable, bool isUser) const {
+
+    PageEntry* table;
+    dword directoryIndex = getDirectoryIndex(laddress);
+    dword tableIndex     = getTableIndex(laddress);
+
+    if (isPresent(&(directory[directoryIndex]))) {
+
+        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    } else {
+
+        table = allocatePageTable();
+        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
+    }
+
+    return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser);
 }
 
 /*!
@@ -233,33 +295,6 @@ PageEntry* PageManager::allocatePageTable() const {
     for (; (dword)table % 4096; table++);
 
     return table;
-}
-
-/*!
-    \brief allocate physical page
-
-    \author HigePon
-    \date   create:2003/10/15 update:2003/10/19
-*/
-bool PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress address, bool present, bool writable, bool isUser) {
-
-    PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(address);
-
-    if (isPresent(&(directory[directoryIndex]))) {
-
-        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    } else {
-
-        table = allocatePageTable();
-        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-        setAttribute(&(directory[directoryIndex]), present, writable, isUser, (PhysicalAddress)table);
-    }
-
-    bool allocateResult = allocatePhysicalPage(&(table[getTableIndex(address)]), present, writable, isUser);
-    if (allocateResult) flushPageCache();
-
-    return allocateResult;
 }
 
 /*!

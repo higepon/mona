@@ -13,8 +13,8 @@
 
 #include<BitMap.h>
 
-const int BitMap::DWORD_BITS = sizeof(dword) * 8;
-
+const int BitMap::DWORD_BITS;
+const int BitMap::NOT_FOUND;
 /*!
     \brief initilize BitMap
 
@@ -59,7 +59,7 @@ int BitMap::getBitsNumber() const {
 
 /*!
     \brief mark bitmap
-
+inc
     \param index index to mark
     \author HigePon
     \date   create:2003/03/30 update:
@@ -86,9 +86,9 @@ void BitMap::clear(int index) {
 /*!
     \brief find empty and marked
 
-    \return index marked. -1 when not found
+    \return index marked. BitMap::NOT_FOUND when not found
     \author HigePon
-    \date   create:2003/03/30 update:
+    \date   create:2003/03/30 update:2003/10/26
 */
 int BitMap::find() {
 
@@ -99,7 +99,7 @@ int BitMap::find() {
             return i;
         }
     }
-    return -1;
+    return NOT_FOUND;
 }
 
 /*!
