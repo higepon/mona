@@ -1,4 +1,5 @@
 #include <monapi.h>
+#include <sys/HashMap.h>
 
 using namespace MonAPI;
 
@@ -6,13 +7,26 @@ int MonaMain(List<char*>* pekoe)
 {
     printf("Hello World!\n");
 
-    char buf[32];
-    sprintf(buf, "sin(3.14 / 2) = %0.8f\n", sin(3.14 / 2));
-    printf("%s", buf);
-    sprintf(buf, "cos(3.14 / 2) = %0.8f\n", cos(3.14 / 2));
-    printf("%s", buf);
-    sprintf(buf, "sqrt(1.44) = %0.8f\n", sqrt(1.44));
-    printf("%s", buf);
+//     //HashMapÎÆ¹È
+//     HashMap<int>* testHash;
+//     testHash = new HashMap<int>(20);
+
+//     testHash->put("AAA" , 10);
+//     //testHash->put("BBB" , 55);
+//     //testHash->put("ZZZ" , 88);
+
+//     int aaaVal = testHash->get("AAA");
+//     int bbbVal = testHash->get("BBB");
+
+//     printf("aaaVal = %d : bbbVal = %d \n" ,aaaVal,bbbVal);
+
+//     char buf[32];
+//     sprintf(buf, "sin(3.14 / 2) = %0.8f\n", sin(3.14 / 2));
+//     printf("%s", buf);
+//     sprintf(buf, "cos(3.14 / 2) = %0.8f\n", cos(3.14 / 2));
+//     printf("%s", buf);
+//     sprintf(buf, "sqrt(1.44) = %0.8f\n", sqrt(1.44));
+//     printf("%s", buf);
 
 //     double seed = 0.31415926535897931;
 //     for (int i = 0; i < 10000000; i++)

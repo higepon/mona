@@ -16,18 +16,6 @@ inline char rol(char c) {
     return c;
 }
 
-inline int xor2(int x, int y) {
-
-    asm volatile ("mov %0   , %%eax  \n"
-                 "xor %%eax, %1     \n"
-                 : /* no output */
-                 : "m"(y), "m"(x)
-                 : "ax"
-                 );
-
-    return x;
-}
-
 /*----------------------------------------------------------------------
     HashMap
 ----------------------------------------------------------------------*/
@@ -69,7 +57,7 @@ template <class T> int HashMap<T>::hash(char* str) {
     /* get hash */
     for (; *str; str++) {
         value = rol(value);
-        value = xor2(value, *str);
+        value = value ^ *str;
     }
     return value % hashsize_;
 }
