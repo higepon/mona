@@ -56,20 +56,15 @@ int MonaMain(List<char*>* pekoe)
 Shell::Shell() : position_(0)
 {
     if (!callAutoExec) printf("\n");
-    printf("%s", PROMPT);
+    printf(PROMPT);
     if (!callAutoExec) return;
 
-    FileInputStream fis("/AUTOEXEC.MSH");
-    if (fis.open() != 0) return;
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/AUTOEXEC.MSH");
+    if (mi == NULL) return;
 
-    int len = fis.getFileSize();
-    byte* data = new byte[len];
-    fis.read(data, len);
-    fis.close();
-
-    for (int pos = 0; pos <= len; pos++)
+    for (dword pos = 0; pos <= mi->Size; pos++)
     {
-        char ch = pos < len ? (char)data[pos] : '\n';
+        char ch = pos < len ? (char)mi->Data[pos] : '\n';
         if (ch == '\r' || ch == '\n')
         {
             if (position_ > 0)
@@ -84,7 +79,8 @@ Shell::Shell() : position_(0)
         }
     }
 
-    delete [] data;
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 }
 
 Shell::~Shell()
