@@ -65,6 +65,8 @@ bool fdInitialize()
         for (;;);
     }
 
+    fd->motorAutoOff();
+
     return true;
 }
 

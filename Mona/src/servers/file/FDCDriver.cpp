@@ -124,7 +124,7 @@ int FDCDriver::write(dword lba, void* buf, int size)
 */
 void FDCDriver::waitInterrupt()
 {
-    MONAPI_WAIT_INTERRUPT(500, 6);
+    MONAPI_WAIT_INTERRUPT(2000, 6);
 }
 
 /*!
