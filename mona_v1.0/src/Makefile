@@ -22,9 +22,9 @@ KERNEL_IMG      = $(BIN)/KERNEL.IMG
 BOOT1           = $(BIN)/firstboot.bin
 BOOT2           = $(BIN)/secondboot.bin
 KERNEL          = $(BIN)/third.bin
-USER_PROCESS    = $(BIN)/USER.ELF
-USER_PROCESS2   = $(BIN)/TEST.ELF
+HELLO           = $(BIN)/HELLO.ELF
 KEYBOARD_SERVER = $(BIN)/KEYBDMNG.SVR
+SHELL_SERVER    = $(BIN)/SHELL.SVR
 FAT_TOOL        = $(BIN)/fat_write.exe
 TEMPLATE        = $(TOOLS)/fat_template.img
 SOURCES      = cstart.cpp            \
@@ -60,11 +60,10 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all : copy_userapp
 
-copy_userapp : $(TARGET) $(USER_PROCESS2) $(USER_PROCESS) $(KEYBOARD_SERVER) $(VFS_SERVER)
-	(cd $(BIN); $(FAT_TOOL) mona.img USER.ELF)
-	(cd $(BIN); $(FAT_TOOL) mona.img TEST.ELF)
+copy_userapp : $(TARGET) $(HELLO) $(SHELL_SERVER) $(KEYBOARD_SERVER)
+	(cd $(BIN); $(FAT_TOOL) mona.img HELLO.ELF)
+	(cd $(BIN); $(FAT_TOOL) mona.img SHELL.SVR)
 	(cd $(BIN); $(FAT_TOOL) mona.img KEYBDMNG.SVR)
-	(cd $(BIN); $(FAT_TOOL) mona.img VFS.SVR)
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)

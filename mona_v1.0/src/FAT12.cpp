@@ -453,11 +453,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     char* file;
     char* ext;
 
-    printf("[8.1]");
-
     if (isOpen_) return false;
-
-    printf("[8.2]");
 
     /* save current directory */
     int currentDirectory = currentDirectory_;
@@ -469,11 +465,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
     if (!changeDirectory(path)) return false;
 
-    printf("[8.3]");
-
     if (!readEntry()) return false;
-
-    printf("[8.4]");
 
     /* find file to open */
     for (int j = 0; j < 16; j++) {
@@ -505,7 +497,6 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
     /* file not found */
     currentDirectory_ = currentDirectory;
-    printf("[8.5]");
     return false;
 }
 

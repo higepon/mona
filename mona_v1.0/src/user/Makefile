@@ -11,10 +11,9 @@ ENV             = env
 BIN             = ../../bin
 USERINCLUDE     = include
 CFINCLUDE       = -I$(USERINCLUDE)
-USER_PROCESS    = $(BIN)/USER.ELF
-USER_PROCESS2   = $(BIN)/TEST.ELF
+HELLO           = $(BIN)/HELLO.ELF
 KEYBOARD_SERVER = $(BIN)/KEYBDMNG.SVR
-VFS_SERVER      = $(BIN)/VFS.SVR
+SHELL_SERVER    = $(BIN)/SHELL.SVR
 SOURCES         = hello.cpp                   \
                   test.cpp                    \
                   userlib.cpp                 \
@@ -26,26 +25,23 @@ SOURCES         = hello.cpp                   \
                   BitMap.cpp                  \
                   VirtualFileSystemServer.cpp \
                   jpegls.cpp                  \
+                  ShellServer.cpp             \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all : $(USER_PROCESS) $(USER_PROCESS2) $(KEYBOARD_SERVER) $(VFS_SERVER)
+all : $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER)
 
-$(USER_PROCESS) : userlib.o KeyBoardManager.o hello.o MemoryManager.o string.o jpegls.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o KeyBoardManager.o string.o jpegls.o -o $(USER_PROCESS)
-	objcopy --output-target=elf32-i386 $(USER_PROCESS)
-
-$(USER_PROCESS2) : userlib.o KeyBoardManager.o test.o MemoryManager.o string.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static test.o userlib.o MemoryManager.o string.o -o $(USER_PROCESS2)
-	objcopy --output-target=elf32-i386 $(USER_PROCESS2)
+$(HELLO) : userlib.o hello.o MemoryManager.o string.o
+	ld -n -Ttext 0xA0000000 -e _user_start -static hello.o userlib.o MemoryManager.o string.o -o $(HELLO)
+	objcopy --output-target=elf32-i386 $(HELLO)
 
 $(KEYBOARD_SERVER) : userlib.o KeyBoardManager.o MemoryManager.o string.o KeyBoardServer.o
 	ld -n -Ttext 0xA0000000 -e _user_start -static KeyBoardServer.o userlib.o MemoryManager.o KeyBoardManager.o string.o -o $(KEYBOARD_SERVER)
 	objcopy --output-target=elf32-i386 $(KEYBOARD_SERVER)
 
-$(VFS_SERVER) : userlib.o MemoryManager.o string.o VirtualFileSystemServer.o BitMap.o UFAT12.o
-	ld -n -Ttext 0xA0000000 -e _user_start -static VirtualFileSystemServer.o userlib.o MemoryManager.o string.o BitMap.o UFAT12.o -o $(VFS_SERVER)
-	objcopy --output-target=elf32-i386 $(VFS_SERVER)
+$(SHELL_SERVER) : userlib.o MemoryManager.o string.o ShellServer.o KeyBoardManager.o
+	ld -n -Ttext 0xA0000000 -e _user_start -static ShellServer.o userlib.o KeyBoardManager.o MemoryManager.o string.o  -o $(SHELL_SERVER)
+	objcopy --output-target=elf32-i386 $(SHELL_SERVER)
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -55,6 +51,6 @@ depend:
 	$(CC) -MM $(CFINCLUDE) $(CFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(USER_PROCESS) $(USER_PROCESS2) $(KEYBOARD_SERVER) $(VFS_SERVER)
+	rm -f $(OBJECTS) $(HELLO) $(KEYBOARD_SERVER) $(SHELL_SERVER)
 
 include dependencies

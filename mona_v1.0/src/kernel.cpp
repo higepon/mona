@@ -73,10 +73,11 @@ void mainProcess() {
     /* Keyboard Server */
     g_console->printf("loading KEYBOARD SERVER....");
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true) ? "NG" : "OK");
-    enableKeyboard();
 
-    /* user process for test */
-    g_console->printf("loadPloadProcess=%s\n", loadProcess(".", "USER.ELF", true) ? "NG" : "OK");
+    /* Shell Server */
+    g_console->printf("loading Shell SERVER....");
+    g_console->printf("%s\n", loadProcess(".", "SHELL.SVR", true) ? "NG" : "OK");
+    enableKeyboard();
 
     /* end */
     g_processManager->killSelf();

@@ -131,11 +131,10 @@ void syscall_entrance() {
         info->eax = 0;
         break;
     case SYSTEM_CALL_LOAD_PROCESS:
-        g_console->printf("here(%s)", (char*)info->esi);
+
         enableInterrupt();
         info->eax = loadProcess(".", (char*)info->esi, false);
         break;
-
 
     default:
         g_console->printf("syscall:default");

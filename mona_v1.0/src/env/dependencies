@@ -78,7 +78,8 @@ syscalls.o: syscalls.cpp include/syscalls.h include/global.h \
   include/BitMap.h include/Segments.h include/operator.h \
   include/collection.h include/Mutex.h include/FAT12.h \
   include/MemoryManager.h include/sysresource.h include/tester.h \
-  include/test_mjt.h include/vbe.h user/include/userlib.h include/io.h
+  include/test_mjt.h include/vbe.h user/include/userlib.h include/io.h \
+  include/elf.h
 BitMap.o: BitMap.cpp include/BitMap.h user/include/types.h \
   include/string.h
 FAT12.o: FAT12.cpp include/FAT12.h user/include/types.h \
@@ -96,7 +97,7 @@ Process.o: Process.cpp include/global.h include/info.h include/kernel.h \
   include/PageManager.h include/BitMap.h include/Segments.h \
   include/operator.h include/collection.h include/Mutex.h include/FAT12.h \
   include/MemoryManager.h include/sysresource.h include/tester.h \
-  include/test_mjt.h include/vbe.h
+  include/test_mjt.h include/vbe.h user/include/userlib.h
 info.o: info.cpp include/global.h include/info.h include/kernel.h \
   user/include/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \

@@ -1,6 +1,4 @@
-hello.o: hello.cpp include/userlib.h include/types.h include/string.h \
-  include/KeyBoardManager.h include/collection.h include/jpegls.h \
-  text.hex
+hello.o: hello.cpp include/userlib.h include/types.h include/string.h
 test.o: test.cpp include/userlib.h include/types.h include/string.h
 userlib.o: userlib.cpp include/userlib.h include/types.h include/string.h \
   include/MemoryManager.h
@@ -19,3 +17,6 @@ VirtualFileSystemServer.o: VirtualFileSystemServer.cpp include/userlib.h \
   include/types.h include/string.h include/UFAT12.h include/DiskDriver.h \
   include/BitMap.h
 jpegls.o: jpegls.cpp include/jpegls.h dct_tab
+ShellServer.o: ShellServer.cpp include/userlib.h include/types.h \
+  include/string.h include/KeyBoardManager.h include/collection.h \
+  include/Shell.h
