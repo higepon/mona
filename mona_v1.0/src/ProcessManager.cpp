@@ -202,6 +202,7 @@ void ProcessManager::switchProcess() {
 
 void ProcessManager::switchProcess(word selector) {
 
-    asm volatile("ljmp %0\n": /* NO OUT PUT */ : "m" (selector));
+    //    asm volatile("jmp %0,$0\n": /* NO OUT PUT */ : "r"(selector));
+    //asm volatile("jmp $0x28, $0\n");
     return;
 }
