@@ -1,5 +1,9 @@
 2004-11-27  higepon  <higepon@users.sourceforge.jp>
 
+        * include/monapi/Array.h : monapi/Array.hに移動
+
+        * src/servers/file/main.cpp : CDコードをコメントアウト(CDが挿入されていないとエラーになるので)
+
         * samples/non-gui/hello/hello.cpp (MonaMain) :monapi_cmemoryinfo_dispose()を呼び出す。
 
         * apps/non-gui/Makefile : ataをビルド対象外にした。

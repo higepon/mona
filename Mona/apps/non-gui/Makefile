@@ -7,7 +7,7 @@ all:
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
-	@cd ata && $(MAKE) $@
+#	@cd ata && $(MAKE) $@
 
 install:
 	@cd noiz2bg && $(MAKE) $@
@@ -18,7 +18,7 @@ install:
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
-	@cd ata && $(MAKE) $@
+#	@cd ata && $(MAKE) $@
 
 clean: touchdepend
 	@cd noiz2bg && $(MAKE) $@
@@ -29,7 +29,7 @@ clean: touchdepend
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
-	@cd ata && $(MAKE) $@
+#	@cd ata && $(MAKE) $@
 
 depend: touchdepend
 	@cd noiz2bg && $(MAKE) $@
@@ -39,7 +39,7 @@ depend: touchdepend
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
-	@cd ata && $(MAKE) $@
+#	@cd ata && $(MAKE) $@
 
 distclean:
 	rm -f noiz2bg/dependencies
@@ -48,7 +48,7 @@ distclean:
 	rm -f bzcat/dependencies
 	rm -f monamona/dependencies
 	rm -f pciinfo/dependencies
-	rm -f ata/dependencies
+#	rm -f ata/dependencies
 	@cd nic && $(MAKE) $@
 
 touchdepend:
@@ -58,4 +58,4 @@ touchdepend:
 	touch bzcat/dependencies
 	touch monamona/dependencies
 	touch pciinfo/dependencies
-	touch ata/dependencies
+#	touch ata/dependencies

@@ -13,7 +13,7 @@
 #ifndef __SYSTEM_TEXT_ENCODING_H__
 #define __SYSTEM_TEXT_ENCODING_H__
 
-#include <gui/System/Array.h>
+#include <monapi/Array.h>
 
 typedef unsigned int wchar;
 

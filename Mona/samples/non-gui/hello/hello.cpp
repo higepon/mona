@@ -33,6 +33,7 @@ int MonaMain(List<char*>* pekoe)
 
     }
 
+    monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
     return 0;
 }

@@ -254,7 +254,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* CD-ROM */
-    hasCD = cdInitialize();
+//    hasCD = cdInitialize();
 
     MessageLoop();
 

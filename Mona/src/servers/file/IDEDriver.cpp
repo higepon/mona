@@ -614,15 +614,16 @@ void IDEDriver::initialize(IDEController* controller)
     setDeviceTypeSecond(controller, MASTER);
     setDeviceTypeSecond(controller, SLAVE);
 
-#if 0
+#if 0 // error@Vpc why?
     for (int i = 0; i < 2; i++)
     {
-        for (int j = 0; j < 2; j++)
+        int type = controller->devices[i].type;
+
+        if (type == DEVICE_ATAPI && !commandIdleImmediate(controller, i))
         {
-            printf("type=%d\n", controllers[i].devices[j].type);
+            printf("idle immediate error %d\n", getLastError());
         }
     }
-
 #endif
 }
 

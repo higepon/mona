@@ -1,7 +1,7 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monapi/messages.h>
-#include <gui/System/Array.h>
+#include <monapi/Array.h>
 #include "ProcessServer.h"
 #include "ProcessManager.h"
 

@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <monapi.h>
 #include <monapi/CString.h>
-#include <gui/System/Array.h>
+#include <monapi/Array.h>
 
 #define SVR "Shell Server"
 #define FONT_WIDTH   8

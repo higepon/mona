@@ -6,7 +6,7 @@
 
 #include <gui/messages.h>
 #include <gui/System/Object.h>
-#include <gui/System/Array.h>
+#include <monapi/Array.h>
 #include <gui/System/Drawing/Color.h>
 
 namespace System { namespace Drawing

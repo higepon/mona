@@ -624,7 +624,7 @@ void IDEDriver::setDeviceTypeFirst(IDEController* controller, int deviceNo)
     byte c;
     byte c1 = 0xff; /* unknown signature */
     byte c2 = 0xff; /* unknown signature */
-    bool timeout;
+   bool timeout;
 
     IDEDevice* device = &controller->devices[deviceNo];
     device->deviceNo = deviceNo;

@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gui/System/Array.h>
+#include <monapi/Array.h>
 
 _A<byte> loadFromFile(const char* path)
 {
