@@ -34,7 +34,6 @@
 
         * include/sys/types.h (SYSTEM_CALL_TIMER): タイマー追加。
 
-=======
 2005-03-07  higepon  <higepon@users.sourceforge.jp>
 
         * アプリビルド時にアプリ名.mapというファイルにアドレスマップを出力するように変更。eipと連動してデバッグが便利になるかも。
@@ -61,7 +60,6 @@
 
         * include/sys/types.h (SYSTEM_CALL_TIMER): タイマー追加。
 
->>>>>>> 1.444
 2004-03-02  bayside  <bayside@users.sourceforge.jp>
 
         * apps/baygui/guitest1/guitest1.cpp: Scrollbar 追加
