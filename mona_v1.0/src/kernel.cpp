@@ -67,126 +67,6 @@ char* version = "Mona version.0.1.4 $Date$";
 
 void mainProcess() {
 
-    byte buf[512];
-
-    KDate dt1;
-    KDate dt2;
-
-    g_fdcdriver->motor(ON);
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-    g_fdcdriver->recalibrate();
-
-    g_console->printf("start");
-    RTC::getDate(&dt1);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-    g_fdcdriver->read(1, buf);
-    g_fdcdriver->read(2, buf);
-    g_fdcdriver->read(3, buf);
-    g_fdcdriver->read(4, buf);
-    g_fdcdriver->read(5, buf);
-    g_fdcdriver->read(6, buf);
-    g_fdcdriver->read(7, buf);
-    g_fdcdriver->read(8, buf);
-    g_fdcdriver->read(9, buf);
-    g_fdcdriver->read(10, buf);
-
-    RTC::getDate(&dt2);
-    g_console->printf("%d/%d/%d %d:%d:%d   ", dt1.year, dt1.month, dt1.day, dt1.hour, dt1.min, dt1.sec);
-    g_console->printf("%d/%d/%d %d:%d:%d   ", dt2.year, dt2.month, dt2.day, dt2.hour, dt2.min, dt2.sec);
-    g_console->printf("end");
-
-    g_fdcdriver->motorAutoOff();
-
     /* Keyboard Server */
     g_console->printf("loading Keyboard Server....");
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");
@@ -240,6 +120,9 @@ void startKernel(void) {
         g_vesaDetail = new VesaInfoDetail;
         memcpy(g_vesaDetail, (VesaInfoDetail*)0x830, sizeof(VesaInfoDetail));
         g_console = new VesaConsole(g_vesaDetail);
+        g_console->setCHColor(GP_LIGHTGREEN);
+        g_console->setBGColor(GP_WHITE);
+        g_console->clearScreen();
     }
 
     pic_init();
@@ -350,9 +233,9 @@ inline void printOK(const char* msg) {
 
     g_console->printf((char*)msg);
     g_console->printf("[");
-    g_console->setCHColor(GP_RED);
+    g_console->setCHColor(GP_LIGHTBLUE);
     g_console->printf("OK");
-    g_console->setCHColor(GP_WHITE);
+    g_console->setCHColor(GP_LIGHTGREEN);
     g_console->printf("]");
 
     if (i % 2) g_console->printf("\n");

@@ -29,7 +29,8 @@ dword VesaConsole::palette[] = {
                         0x00808080, // darkgray
                         0x00000080, // lightblue
                         0x00008080, // lightbue
-                        0x00008000, // lightgreen
+                        //                        0x00008000, // lightgreen
+                        0x0096A48E, // lightgreen
                         0x00800000, // lightred
                         0x00800080, // darkpink
                         0x00ffff00, // yellow
@@ -174,7 +175,7 @@ void VesaConsole::getCursor(int* x, int* y)
 
 void VesaConsole::clearScreen()
 {
-        screen.fill(0, 0, xResolution_, yResolution_, getColor(bg_));
+        screen.fill(0, 0, xResolution_, yResolution_, bg_);
 }
 
 dword VesaConsole::getColor (char c)
