@@ -34,13 +34,14 @@ ImeManager::ImeManager()
 	clearBuffer(inputBuffer);
 	clearBuffer(translateBuffer);
 	clearBuffer(decideBuffer);
-	imeEvent = new Event(IME_SETCONTEXT, this);
+	imemode = false;
+	_imeEvent = new ImeEvent(IME_SETCONTEXT, this);
 }
 
 /** デストラクタ */
 ImeManager::~ImeManager()
 {
-	delete(imeEvent);
+	delete(_imeEvent);
 }
 
 /** バッファーをクリアする */
@@ -64,25 +65,46 @@ void ImeManager::insertString(char *buffer, char *str)
 	}
 }
 
-/** バッファーの文字を1文字削除する */
-void ImeManager::deleteCharacter(char *buffer)
+/**
+ バッファーの文字を1文字削除する
+ @return 削除した文字のバイト数(1-3)
+ */
+int ImeManager::deleteCharacter(char *buffer)
 {
-	buffer[strlen(buffer) - 1] = 0;
+	int len = strlen(buffer);
+
+	// 3バイト文字
+	if (len >= 3 && 0xE0 <= (0xFF & buffer[len - 3]) && (0xFF & buffer[len - 3]) <= 0xEF) {
+		buffer[strlen(buffer) - 1] = 0;
+		buffer[strlen(buffer) - 1] = 0;
+		buffer[strlen(buffer) - 1] = 0;
+		return 3;
+	// 2バイト文字
+	} else if (len >= 2 && 0xC2 <= (0xFF & buffer[len - 2]) && (0xFF & buffer[len - 2]) <= 0xDF) {
+		buffer[strlen(buffer) - 1] = 0;
+		buffer[strlen(buffer) - 1] = 0;
+		return 2;
+	// 1バイト文字
+	} else {
+		buffer[strlen(buffer) - 1] = 0;
+		return 1;
+	}
 }
 
 /**
- hanken0[i]と入力文字列の比較
- @return マッチしたらhenkan1の添え字番号、マッチしなかったら-1
+ 入力文字→かな変換
+ @return マッチしたら「かな」、マッチしなかったら「NULL」
  */
-int ImeManager::checkHenkanX()
+char *ImeManager::getKana()
 {
+	// デフォルトは
 	for (int i = 0; i < HENKAN0LENGTH; i++) {
-		if (strcmp(henkan0[i], inputBuffer) == 0) {
+		if (strcmp(henkan00[i], inputBuffer) == 0) {
 			clearBuffer(inputBuffer);
-			return i;
+			return henkan01[i];
 		}
 	}
-	return -1;
+	return NULL;
 }
 
 /** 親部品登録 */
@@ -91,51 +113,57 @@ void ImeManager::setParent(Control *parent) {
 }
 
 /** 確定済みバッファーを得る */
-char *ImeManager::getBuffer()
+char *ImeManager::getText()
 {
 	return decideBuffer;
+}
+
+/** 確定済みバッファーを設定する */
+void ImeManager::setText(char *text)
+{
+	copyString(decideBuffer, text);
 }
 
 /** 確定済みバッファーを得る */
 void ImeManager::clearBuffer()
 {
-	int fw = FontManager::getInstance()->getWidth(decideBuffer);
-	setRect(x + fw, y, width, height);
+	clearBuffer(inputBuffer);
+	clearBuffer(translateBuffer);
 	clearBuffer(decideBuffer);
 }
 
 /** 再描画 */
 void ImeManager::repaint()
 {
-	int fw1 = 0, fw2 = 0;
+	int fw1 = 0, fw2 = 0, fw3 = 0, fh = 0;
 	
+	// 塗りつぶし
+	_g->setColor(~foreColor);
+	_g->fillRect(0, 0, width, height);
+	fh  = FontManager::getInstance()->getHeight();
+
 	// 確定文字列
 	if (strlen(decideBuffer) > 0) {
 		fw1 = FontManager::getInstance()->getWidth(decideBuffer);
-		_g->setColor(255, 255, 255);
-		_g->fillRect(0, 0, fw1 + 13, 14);
-		_g->setColor(0, 0, 0);
-		_g->drawText(decideBuffer, 0, 0);
+		_g->setColor(foreColor);
+		_g->drawText(decideBuffer, 0, (height - fh) / 2);
 	}
 	
 	// 変換対象文字列
 	if (strlen(translateBuffer) > 0) {
 		fw2 = FontManager::getInstance()->getWidth(translateBuffer);
-		_g->setColor(255, 255, 255);
-		_g->fillRect(fw1, 0, fw2 + 13, 14);
+		fw3 = FontManager::getInstance()->getWidth(inputBuffer);
 		_g->setColor(0, 0, 255);
-		_g->drawText(translateBuffer, fw1, 0);
-		_g->drawLine(fw1, 13, fw1 + fw2, 13);
-	}
-	
-	// 1文字残る場合があるのでそれを消す
-	if (strlen(decideBuffer) == 0 && strlen(translateBuffer) == 0) {
-		_g->setColor(255, 255, 255);
-		_g->fillRect(0, 0, 13, 14);
+		_g->drawText(translateBuffer, fw1, (height - fh) / 2);
+		_g->drawText(inputBuffer, fw1 + fw2, (height - fh) / 2);
+		_g->drawLine(fw1, 13, fw1 + fw2 + fw3, 13);
 	}
 	
 	// キャレット
-	_g->drawLine(fw1 + fw2, 0, fw1 + fw2, 13);
+	if (focused == true && enabled == true) {
+		_g->setColor(0, 0, 0);
+		_g->drawLine(fw1 + fw2 + fw3, 0, fw1 + fw2 + fw3, 13);
+	}
 }
 
 /** イベント処理 */
@@ -144,39 +172,87 @@ void ImeManager::postEvent(Event *event)
 	// キー押下
 	if (event->type == KEY_PRESSED) {
 		int keycode = ((KeyEvent *)event)->keycode;
-		//int modifiers = ((KeyEvent *)event)->modifiers;
+		int modifiers = ((KeyEvent *)event)->modifiers;
+		
+		// IMEオン・オフ切り替え
+		if (modifiers == VKEY_CTRL && keycode == '\\') {
+			clearBuffer(inputBuffer);
+			clearBuffer(translateBuffer);
+			if (imemode == true) {
+				imemode = false;
+			} else {
+				imemode = true;
+			}
 		// バックスペース
-		if (keycode == VKEY_BACKSPACE) {
+		} else if (keycode == VKEY_BACKSPACE) {
+			int len = 0;
+			
+			// 入力文字列を削除
+			if (strlen(inputBuffer) > 0) {
+				len = deleteCharacter(inputBuffer);
 			// 変換対象文字列を削除
-			if (strlen(translateBuffer) > 0) {
-				deleteCharacter(translateBuffer);
-				deleteCharacter(translateBuffer);
-				deleteCharacter(translateBuffer);
+			} else if (strlen(translateBuffer) > 0) {
+				len = deleteCharacter(translateBuffer);
 			// 確定済み文字列を削除
 			} else if (strlen(decideBuffer) > 0) {
-				deleteCharacter(decideBuffer);
-				deleteCharacter(decideBuffer);
-				deleteCharacter(decideBuffer);
+				len = deleteCharacter(decideBuffer);
 			}
-		// 確定
-		} else if (keycode == VKEY_ENTER && strlen(translateBuffer) > 0) {
-			insertString(decideBuffer, translateBuffer);
+			
+			// バックスペース送信
+			for (int i = 0; i < len; i++) {
+				_imeEvent->type = IME_CHAR;
+				_imeEvent->charcode = VKEY_BACKSPACE;
+				parent->postEvent(_imeEvent);
+			}
+		// 変換
+		} else if (keycode == ' ' && strlen(translateBuffer) > 0) {
 			clearBuffer(translateBuffer);
-			imeEvent->type = IME_ENDCOMPOSITION;
-			parent->postEvent(imeEvent);
-			return;
+			insertString(translateBuffer, "オマエモナ");
+		// 確定
+		} else if (keycode == VKEY_ENTER) {
+			if (strlen(translateBuffer) == 0) {
+				// 確定イベント送信
+				_imeEvent->type = IME_NOTIFY;
+				_imeEvent->message = TEXT_CHANGED;
+		syscall_print("0,");
+				parent->postEvent(_imeEvent);
+		syscall_print("9,");
+			} else {
+				insertString(decideBuffer, translateBuffer);
+				clearBuffer(inputBuffer);
+				
+				// 確定イベント送信
+				_imeEvent->type = IME_ENDCOMPOSITION;
+				parent->postEvent(_imeEvent);
+				
+				// １文字イベント送信
+				for (int i = 0; i < (int)strlen(translateBuffer); i++) {
+					_imeEvent->type = IME_CHAR;
+					_imeEvent->charcode = translateBuffer[i];
+					parent->postEvent(_imeEvent);
+				}
+				clearBuffer(translateBuffer);
+			}
 		// 一般文字
 		} else if (keycode < 128) {
-			insertCharacter(inputBuffer, keycode);
-			// まちがっていっぱい入力してしまったとき（xjrakjra等）
-			if (strlen(inputBuffer) > 4) {
-				clearBuffer(inputBuffer);
-			// 入力文字列をバッファーの内容を変換文字列バッファーに移す
-			} else {
-				int ret = checkHenkanX();
-				if (ret >= 0) {
-					insertString(translateBuffer, henkan1[ret]);
+			if (imemode == true) {
+				insertCharacter(inputBuffer, keycode);
+				// まちがっていっぱい入力してしまったとき（xjrakjra等）
+				if (strlen(inputBuffer) > 4) {
+					clearBuffer(inputBuffer);
+				// 入力文字列を変換して変換文字列バッファーに移す
+				} else {
+					char *kana = getKana();
+					if (kana != NULL) {
+						insertString(translateBuffer, kana);
+					}
 				}
+			// 直接入力
+			} else {
+				insertCharacter(decideBuffer, keycode);
+				_imeEvent->type = IME_CHAR;
+				_imeEvent->charcode = keycode;
+				parent->postEvent(_imeEvent);
 			}
 		}
 		repaint();

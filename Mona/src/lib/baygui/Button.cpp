@@ -106,7 +106,6 @@ void Button::repaint()
 	}
 	int fw = FontManager::getInstance()->getWidth(label);
 	int fh = FontManager::getInstance()->getHeight();
-	_g->setFont(this->font);
 	if (pushed == true) {
 		_g->drawText(label, (width - fw) / 2 + 1, (height - fh) / 2 + 1);
 	} else {

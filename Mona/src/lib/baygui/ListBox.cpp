@@ -98,7 +98,6 @@ void ListBox::repaint()
 
 	// 文字
 	int fh = FontManager::getInstance()->getHeight();
-	_g->setFont(this->font);
 	for (i = 0; i < _dataList->getLength(); i++) {
 		if (selectedIndex == i && enabled == true) {
 			_g->setColor(0,128,255);

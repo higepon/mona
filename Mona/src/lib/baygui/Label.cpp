@@ -84,7 +84,6 @@ void Label::repaint()
 	// 文字
 	int fw = FontManager::getInstance()->getWidth(text);
 	int fh = FontManager::getInstance()->getHeight();
-	_g->setFont(this->font);
 	if (enabled == true) {
 		_g->setColor(foreColor);
 	} else {

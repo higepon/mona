@@ -16,7 +16,7 @@ are met:
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+IN NO ImeEvent SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -25,42 +25,20 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_IMEMANAGER_H_INCLUDED_)
-#define _IMEMANAGER_H_INCLUDED_
+#include "baygui.h"
 
 /**
- IMEマネージャクラス
-*/
-class ImeManager : public Control {
-private:
-	/** 入力文字列バッファー */
-	char inputBuffer[MAX_TEXT_LEN];
-	/** 変換対象文字列バッファー */
-	char translateBuffer[MAX_TEXT_LEN];
-	/** 確定文字列バッファー */
-	char decideBuffer[MAX_TEXT_LEN];
-	/** IMEモード（オンなら日本語入力中）*/
-	bool imemode;
-	/** IMEイベント */
-	ImeEvent *_imeEvent;
-	/** 親部品 */
-	Control *parent;
-	
-	virtual void clearBuffer(char *buffer);
-	virtual void insertCharacter(char *buffer, char c);
-	virtual void insertString(char *buffer, char *str);
-	virtual int  deleteCharacter(char *buffer);
-	virtual char *getKana();
+ コンストラクタ
+ @param type イベントタイプ
+ @param source イベント発生元
+ */
+ImeEvent::ImeEvent(int type, Control *source)
+{
+	this->type = type;
+	this->source = source;
+}
 
-public:
-	ImeManager::ImeManager();
-	virtual ImeManager::~ImeManager();
-	virtual void setParent(Control *parent);
-	virtual char *getText();
-	virtual void setText(char *text);
-	virtual void clearBuffer();
-	virtual void repaint();
-	virtual void postEvent(Event *event);
-};
-
-#endif // _IMEMANAGER_H_INCLUDED_
+/** デストラクタ */
+ImeEvent::~ImeEvent()
+{
+}

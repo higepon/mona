@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HENKAN0LENGTH 738
 
 /** 変換前の文字列 */
-static char *henkan0[HENKAN0LENGTH] = {
+static char *henkan00[HENKAN0LENGTH] = {
 "-",
 "!",
 "#",
@@ -773,7 +773,7 @@ static char *henkan0[HENKAN0LENGTH] = {
 };
 
 /** 変換後の文字列 */
-static char *henkan1[HENKAN0LENGTH] = {
+static char *henkan01[HENKAN0LENGTH] = {
 "ー",
 "！",
 "＃",

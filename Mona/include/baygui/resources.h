@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_RESOURCES_H_INCLUDED_)
 #define _RESOURCES_H_INCLUDED_
 
-#define BAYGUI_VERSION   "BayGUI build 04.11.07"
+#define BAYGUI_VERSION   "BayGUI build 04.11.08"
 
 #define GUISERVER_NAME   "BAYGUI.EX5"
 #define LAUNCHER_NAME    "/APPS/GLAUNCH.EX5"
@@ -116,22 +116,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ICONIFIED       307
 /** 非アイコン化 */
 #define DEICONIFIED     308
-/** キー入力によってIMEが確定後の状態を変更した */
-#define IME_COMPOSITION      400
-/** 確定後の文字を表示するウインドウにスペースがない */
-#define IME_COMPOSITIONFULL  401
+/* IMEがアクティブになった時アプリケーションに通知する */
+#define IME_SETCONTEXT       400
+/** IMEが変換後の文字を受取った */
+#define IME_CHAR             401
 /** 文字を確定した */
 #define IME_ENDCOMPOSITION   402
 /** キーを押した */
 #define IME_KEYDOWN          403
 /** キーを離した */
 #define IME_KEYUP            404
-/** IMEウインドウの変化をアプリケーションに知らせる */
+/* IMEの変化をアプリケーションに知らせる */
 #define IME_NOTIFY           405
-/** IMEの入力ウインドウがアクティブになった時アプリケーションに通知する */
-#define IME_SETCONTEXT       406
-/** 確定する前に通知する*/
-#define IME_STARTCOMPOSITION 407
 
 //
 // ↓特殊キーコード一覧
