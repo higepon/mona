@@ -28,8 +28,6 @@
                                                     \
     /* switch to next */                            \
     asm volatile(                                   \
-                 "movl  %%esp, %0    \n"            \
-                 "movl  %1, %%eax    \n"            \
                  "movl  %2, %%ebx    \n"            \
                  "movl  %3, %%ecx    \n"            \
                  "movl  %4, %%edx    \n"            \
@@ -40,6 +38,7 @@
                  "pushl %9           \n"            \
                  "pushl %10          \n"            \
                  "pushl %11          \n"            \
+                 "movl  %1, %%eax    \n"            \
                  "iretl              \n"            \
                  : "=m"(currentProcess->esp)        \
                  : "m"(nextProcess->eax)            \
@@ -54,10 +53,6 @@
                  , "m"(nextProcess->cs)             \
                  , "m"(nextProcess->eip)            \
                  );                                 \
-
-//_sysdumpStack(); \
-//_sysdumpReg("reg", true, false);\
-
 
 /*! \def save registers */
 #define _saveRegisters(process) {            \
