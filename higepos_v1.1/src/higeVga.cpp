@@ -423,13 +423,13 @@ void newLine() {
     scroll up
 
     \author  HigePon
-    \date    create:2002/10/05 update:2002/10/06
+    \date    create:2002/10/05 update:2002/11/16
 */
 void scrollUp() {
 
     /* copy current buffer */
-    for (int i = MAX_WIDTH, j = 0; i < VRAM_SIZE; i++, j++) {
-        VRAM[j * 2] = VRAM[i * 2];
+    for (int i = MAX_WIDTH * 2, j = 0; i < VRAM_SIZE * 2; i++, j++) {
+        VRAM[j] = VRAM[i];
     }
     return;
 }
