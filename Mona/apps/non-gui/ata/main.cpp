@@ -38,7 +38,7 @@ typedef struct
 } ATACommand;
 
 
-#define ATA_TIMEOUT             10000000L
+#define ATA_TIMEOUT             100000
 
 #define BIT_BSY         0x80    /* Status reg. bit7 */
 #define BIT_DRDY        0x40    /* Status reg. bit6 */
@@ -49,7 +49,7 @@ typedef struct
 #define BIT_IO          2               /* Interrup Reason reg. bit1 */
 #define BIT_CD          1               /* Interrup Reason reg. bit0 */
 
-#define RETRY_MAX               8
+#define RETRY_MAX               2
 
 IDEController ide[2];
 
@@ -267,7 +267,6 @@ int IDE_Identify(IDEController* ide, int device, DeviceType type, void* buf)
 
     /* feature, sector count, sector number, cylinder is 0 */
     memset(&com, 0, sizeof(ATACommand));
-
     com.device = DEV_HEAD_OBS | (device << 4);
 
     if (type == DEVICE_ATA)
@@ -376,6 +375,31 @@ void PrintDevice(DeviceType type, IDEController* ide, int device)
     }
 }
 
+#define DEV_HEAD_obs    0xa0    /* Device/Head’¥ì’¥¸’¥¹’¥¿’¤Îobs’¥Ó’¥Ã’¥È’¤Î’ÃÍ(bit8/bit6) */
+#define LBA_flg                 0x40    /* LBA or CHS’Áª’Âò’¥Ó’¥Ã’¥È */
+
+int Read(IDEController* ide, int device, dword lba, byte blocknum, void* buff)
+{
+    ATACommand com;
+    word cylinder;
+    int result;
+
+    /* feature, sector count, sector number, cylinder is 0 */
+    memset(&com, 0, sizeof(ATACommand));
+
+    com.sectorCount  = blocknum;
+    com.sectorNumber = lba & 0xff;
+    cylinder = (lba >> 8) & 0xffff;
+
+    com.cylinderLow = cylinder & 0xff;
+    com.cylinderHigh = (cylinder) >> 8 & 0xff;
+    com.device = DEV_HEAD_obs | LBA_flg | (device << 4) | ((lba >> 24) & 0xf);
+    com.command = 0x20;
+    com.drdyCheck = 1;
+
+    return SendPioDataCommand(ide, &com, blocknum, buff);
+}
+
 int MonaMain(List<char*>* pekoe)
 {
     /* use io */
@@ -414,6 +438,7 @@ int MonaMain(List<char*>* pekoe)
     DeviceType type;
 
     type = JudgeDevice(&ide[0], 0);
+
     PrintDevice(type, &ide[0], 0);
     type = JudgeDevice(&ide[0], 1);
     PrintDevice(type, &ide[0], 1);
@@ -421,6 +446,16 @@ int MonaMain(List<char*>* pekoe)
     PrintDevice(type, &ide[1], 0);
     type = JudgeDevice(&ide[1], 1);
     PrintDevice(type, &ide[1], 1);
+
+    char buf[512];
+    memset(buf, 0, sizeof(buf));
+
+    printf("read result = %d", Read(&ide[0], 0, 1, 1, buf));
+
+    for (int i = 0; i < 100; i++)
+    {
+        printf("[%x]", buf[i]);
+    }
 
     return 0;
 }
