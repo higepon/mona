@@ -4,17 +4,17 @@ using namespace MonAPI;
 
 int MonaMain(List<char*>* pekoe)
 {
+    printf("Hello World!\n");
+//     double seed = 0.31415926535897931;
+//     for (int i = 0; i < 10000000; i++)
+//     {
+//         seed *= 17.0;
+//         seed -= (int)seed;
+//     }
 
-    double seed = 0.31415926535897931;
-    for (int i = 0; i < 10000000; i++)
-    {
-        seed *= 17.0;
-        seed -= (int)seed;
-    }
-
-    char buf[64];
-    sprintf(buf, "%1.8f", seed);
-    printf("answer=%s", buf);
+//     char buf[64];
+//     sprintf(buf, "%1.8f", seed);
+//     printf("answer=%s", buf);
 
     return 0;
 }

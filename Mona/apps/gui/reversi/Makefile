@@ -1,4 +1,4 @@
-TARGET  = REVERSI2.ELF
+TARGET  = GREVERSI.ELF
 SOURCES = ReversiForm.cpp ReversiBoard.cpp Piece.cpp
 
 MONADIR = ../../..
