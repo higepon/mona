@@ -1,5 +1,7 @@
 2005-03-16  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/FDCDriver.cpp (waitInterrupt): タイムアウトを2秒に設定。
+
         * src/servers/file/file.cpp (fdInitialize): fd->motorAutoOff()し忘れの不具合を修正。
 
         * src/kernel/syscalls.cpp : indent調整。
