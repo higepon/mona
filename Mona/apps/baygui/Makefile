@@ -10,6 +10,7 @@ all:
 	@cd gnullpo && $(MAKE) $@
 #	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
+	@cd gtimer && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
@@ -27,6 +28,7 @@ install:
 	@cd gnullpo && $(MAKE) $@
 #	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
+	@cd gtimer && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
@@ -44,6 +46,7 @@ clean: touchdepend
 	@cd gnullpo && $(MAKE) $@
 #	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
+	@cd gtimer && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
@@ -61,6 +64,7 @@ depend: touchdepend
 	@cd gnullpo && $(MAKE) $@
 #	@cd grunner && $(MAKE) $@
 	@cd gshell && $(MAKE) $@
+	@cd gtimer && $(MAKE) $@
 	@cd guitest1 && $(MAKE) $@
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
@@ -78,6 +82,7 @@ distclean:
 	rm -f gnullpo/dependencies
 #	rm -f grunner/dependencies
 	rm -f gshell/dependencies
+	rm -f gtimer/dependencies
 	rm -f guitest1/dependencies
 	rm -f gversion/dependencies
 	rm -f mblupin/dependencies
@@ -95,6 +100,7 @@ touchdepend:
 	touch gnullpo/dependencies
 #	touch grunner/dependencies
 	touch gshell/dependencies
+	touch gtimer/dependencies
 	touch guitest1/dependencies
 	touch gversion/dependencies
 	touch mblupin/dependencies
