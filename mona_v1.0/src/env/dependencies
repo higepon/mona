@@ -9,33 +9,8 @@ kernel.o: kernel.cpp include/global.h include/kthread.h include/types.h \
   include/checker.h include/KeyBoardManager.h include/SystemInfo.h \
   include/GraphicalConsole.h include/ihandlers.h include/pic.h \
   include/io.h include/rtc.h include/FAT12.h include/IA32MemoryManager.h
-ihandlers.o: ihandlers.cpp include/KeyBoardManager.h include/types.h \
-  include/string.h include/FDCDriver.h include/VirtualConsole.h \
-  include/DiskDriver.h include/tester.h include/test_mjt.h \
-  include/kernel.h stlport/string stlport/stl/_prolog.h \
-  stlport/stl/_config.h stlport/stl_user_config.h \
-  stlport/stl/_config_compat.h stlport/stl/_site_config.h \
-  stlport/config/stlcomp.h stlport/config/stl_gcc.h \
-  stlport/config/stl_confix.h stlport/stl/_string.h stlport/memory \
-  stlport/stl/_alloc.h stlport/cstring stlport/stl/_range_errors.h \
-  stlport/new stlport/stl/_threads.h stlport/pthread.h \
-  stlport/stl/_threads.c stlport/stl/_construct.h \
-  stlport/stl/_iterator_base.h stlport/stl/type_traits.h \
-  stlport/stl/_alloc.c stlport/stl/_tempbuf.h \
-  stlport/stl/_uninitialized.h stlport/stl/_algobase.h \
-  stlport/stl/_pair.h stlport/stl/_algobase.c stlport/stl/_iterator.h \
-  stlport/stl/_tempbuf.c stlport/stl/_raw_storage_iter.h \
-  stlport/stl/_auto_ptr.h stlport/stl/_string_fwd.h stlport/iosfwd \
-  stlport/stl/_iosfwd.h stlport/stl/char_traits.h stlport/stl/_function.h \
-  stlport/stl/_function_base.h stlport/stl/_ctraits_fns.h \
-  stlport/stl/_string.c stlport/stl/_string_fwd.c \
-  stlport/stl/_string_io.h stlport/stl/_string_io.c \
-  stlport/stl/_string_hash.h stlport/stl/_hash_fun.h \
-  stlport/stl/_epilog.h stlport/stl/_config_compat_post.h \
-  include/ihandlers.h include/kthread.h include/io.h include/global.h \
-  include/info.h include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
-  include/PagingUtil.h include/Process.h include/sysresource.h \
-  include/BitMap.h
+ihandlers.o: ihandlers.cpp include/sysresource.h include/BitMap.h \
+  include/types.h include/string.h
 IA32MemoryManager.o: IA32MemoryManager.cpp include/IA32MemoryManager.h \
   include/types.h include/string.h include/kernel.h \
   include/VirtualConsole.h include/operator.h include/io.h \
@@ -179,17 +154,10 @@ PagingUtil.o: PagingUtil.cpp include/global.h include/kthread.h \
   include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
   include/PagingUtil.h include/Process.h include/sysresource.h \
   include/BitMap.h include/operator.h
-Process.o: Process.cpp include/Process.h include/types.h include/string.h \
-  include/global.h include/kthread.h include/info.h include/kernel.h \
-  include/VirtualConsole.h include/FDCDriver.h include/DiskDriver.h \
-  include/Semaphore.h include/GDTUtil.h include/IDTUtil.h \
-  include/PagingUtil.h include/sysresource.h include/BitMap.h
-Scheduler.o: Scheduler.cpp include/Scheduler.h include/Process.h \
-  include/types.h include/string.h include/global.h include/kthread.h \
-  include/info.h include/kernel.h include/VirtualConsole.h \
-  include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
-  include/GDTUtil.h include/IDTUtil.h include/PagingUtil.h \
-  include/sysresource.h include/BitMap.h
+Process.o: Process.cpp
+Scheduler.o: Scheduler.cpp
+ProcessManager.o: ProcessManager.cpp include/ProcessManager.h \
+  include/types.h include/string.h
 ps2kbc.o: driver/ISADevice/PS2KBC/ps2kbc.cpp \
   driver/ISADevice/PS2KBC/ps2kbc.h include/Module.h \
   include/GraphicalConsole.h include/VirtualConsole.h include/types.h \

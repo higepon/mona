@@ -17,6 +17,8 @@
 */
 
 #define GLOBAL_VALUE_DEFINED
+
+#include<types.h>
 #include<global.h>
 
 #include<kernel.h>

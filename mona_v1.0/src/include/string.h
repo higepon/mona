@@ -13,6 +13,9 @@
 */
 #include<types.h>
 
+#ifndef _MONA_STRING_
+#define _MONA_STRING_
+
 #ifndef __SIZE_TYPE__
 #define __SIZE_TYPE__ unsigned long
 #endif
@@ -31,3 +34,5 @@ char* strncpy(char* s1, const char* s2, size_t n);
 size_t strcspn(const char* str1, const char* str2);
 size_t strspn(const char* str1, const char* str2);
 char* strtok(char* str, const char* delim);
+
+#endif

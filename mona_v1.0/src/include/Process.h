@@ -52,8 +52,7 @@ class Process {
     }
 
   protected:
-    void setEntryPoint(virtual_addr point);
-    void setup(dword statck, dword pid);
+    void setup(virtual_addr entryPoint, virtual_addr stack, dword pid);
 
   public:
     ProcessInfo pinfo_;

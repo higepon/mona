@@ -10,8 +10,7 @@
     \date   create:2003/06/27 update:$Date$
 */
 
-#include<Process.h>
-#include<global.h>
+#include <global.h>
 
 extern "C" Process** g_process;
 /*!
@@ -23,12 +22,6 @@ extern "C" Process** g_process;
 void Process::setup() {
 
     g_process = new Process*[MAX_PROCESS];
-    return;
-}
-
-void Process::setEntryPoint(virtual_addr point) {
-
-    pinfo_.eip = (dword)point;
     return;
 }
 
@@ -49,10 +42,11 @@ Process::Process(const char* name) {
     pinfo_.dpl     = DPL_KERNEL;
 }
 
-void Process::setup(dword stack, dword pid) {
+void Process::setup(virtual_addr entryPoint, virtual_addr stack, dword pid) {
 
-    pinfo_.esp = stack;
-    pinfo_.ebp = stack;
+    pinfo_.eip = (dword)entryPoint;
+    pinfo_.esp = (dword)stack;
+    pinfo_.ebp = (dword)stack;
     pinfo_.pid = pid;
     return;
 }

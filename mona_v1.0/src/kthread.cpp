@@ -18,6 +18,8 @@
 #include<disp.h>
 #include<global.h>
 #include<rtc.h>
+#include<string.h>
+
 static Kthread runningList;
 
 /*!

@@ -13,11 +13,12 @@
 #define _MONA_SCHEDULER_
 
 #include <Process.h>
+#include<global.h>
 
 class Scheduler {
 
   public:
-    void setup();
+    Scheduler();
     void addToPrev(ProcessInfo* process);
     void removeFrom(ProcessInfo* process);
     bool isEmpty();

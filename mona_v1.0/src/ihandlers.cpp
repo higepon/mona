@@ -12,16 +12,10 @@
     \date   create:2002/07/25 update:$Date$
 */
 
-#include<KeyBoardManager.h>
-#include<FDCDriver.h>
-#include<types.h>
-#include<tester.h>
-#include<kernel.h>
-#include<string>
-#include<ihandlers.h>
-#include<kthread.h>
-#include<io.h>
-#include<global.h>
+#include <global.h>
+#include <io.h>
+#include <ihandlers.h>
+#include <KeyBoardManager.h>
 #include <sysresource.h> /* (expr) */
 
 /*!

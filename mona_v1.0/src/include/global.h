@@ -16,6 +16,8 @@
 #include<IDTUtil.h>
 #include<PagingUtil.h>
 #include<Process.h>
+#include<string.h>
+#include<types.h>
 #include <sysresource.h> /* (expr) */
 
 GLOBAL VirtualConsole* g_console;                    /*< pointer to console                  */

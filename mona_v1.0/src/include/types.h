@@ -1,5 +1,5 @@
 /*!
-    \file  monaTypes.h
+    \file  types.h
     \brief types defineition
 
     types defintion
@@ -13,8 +13,6 @@
 
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
-
-#include <string.h>
 
 #define NULL     0
 

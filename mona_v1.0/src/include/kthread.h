@@ -14,6 +14,7 @@
 #define _MONA_KTHREAD_
 
 #include<types.h>
+#include<kernel.h>
 
 /*! struct for kernel thread */
 typedef struct Kthread {

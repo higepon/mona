@@ -15,6 +15,7 @@
 #include<operator.h>
 #include<io.h>
 #include<global.h>
+#include<string.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10

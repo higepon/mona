@@ -11,11 +11,10 @@
 */
 
 #include <Scheduler.h>
-#include <global.h>
 
 ProcessInfo Scheduler::list_;
 
-void Scheduler::setup() {
+Scheduler::Scheduler() {
 
     list_.prev = &list_;
     list_.next = &list_;
@@ -58,8 +57,6 @@ void Scheduler::schedule() {
     addToPrev(temp);
 
     g_current_process = temp;
-
-    /* switch */
 
     return;
 }
