@@ -1,5 +1,7 @@
 2004-02-08  higepon  <higepon@users.sourceforge.jp>
 
+        * syscalls.cpp: System::getPID();
+
         * user/MouseServer.cpp: マウスサーバ追加
 
         * user/string.cpp: strcmpのバグ修正 thx Gakuさん

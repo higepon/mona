@@ -34,6 +34,7 @@
 #define SYSTEM_CALL_FDC_READ       31
 #define SYSTEM_CALL_FDC_WRITE      32
 #define SYSTEM_CALL_UNMAP_TWO      33
+#define SYSTEM_CALL_GET_PID        34
 #define SYSTEM_CALL_TEST           99
 
 #define main() monaMain()
@@ -79,6 +80,7 @@ extern "C" int syscall_fdc_read(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_fdc_write(dword lba, byte* buffer, dword blocknum);
 extern "C" int syscall_map2(MappingInfo* info);
 extern "C" int syscall_unmap2(dword sharedId);
+extern "C" int syscall_get_pid();
 extern "C" void* malloc(unsigned long size);
 extern "C" void free(void * address);
 extern "C" void __cxa_pure_virtual();
@@ -94,6 +96,16 @@ void  operator delete(void* address);
 
 class MonaApplication;
 extern MonaApplication* monaApp;
+
+/*----------------------------------------------------------------------
+    System
+----------------------------------------------------------------------*/
+class System {
+  public:
+    static inline dword getPID() {
+        return syscall_get_pid();
+    }
+};
 
 /*----------------------------------------------------------------------
     Device

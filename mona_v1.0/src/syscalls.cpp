@@ -334,6 +334,11 @@ void syscall_entrance() {
         }
         break;
 
+    case SYSTEM_CALL_GET_PID:
+
+        info->eax = g_processManager->getCurrentProcess()->getPid();
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -55,7 +55,8 @@ MonaApplication::MonaApplication(char* name) {
     int id = syscall_mthread_create((dword)MESSAGE_LOOP);
     syscall_mthread_join(id);
 
-    dword myPid   = Message::lookup(name);
+    //    dword myPid   = Message::lookup(name);
+    dword myPid = System::getPID();
     dword destPid = Message::lookup("KEYBDMNG.SVR");
     if (destPid == 0) {
         printf("process KEYBDMNG.SVR not found\n");
@@ -1066,4 +1067,19 @@ int syscall_unmap2(dword sharedId) {
                  );
 
     return (int)result;
+}
+
+int syscall_get_pid() {
+
+    dword  result;
+
+    asm volatile("movl $%c1, %%ebx \n"
+                 "int  $0x80       \n"
+                 "movl %%eax, %0   \n"
+                 :"=m"(result)
+                 :"g"(SYSTEM_CALL_GET_PID)
+                 : "ebx"
+                 );
+
+    return result;
 }
