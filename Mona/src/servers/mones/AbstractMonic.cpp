@@ -63,14 +63,14 @@ void AbstractMonic::disableNetWork()
         //IRQの範囲が、0～7であれば
         //PIC-0マスタのIMR(0x21)へ割り込みマスク
         IrqMask = 1 << (nicIrqNo - 0);
-        outp8(0x21, inp8(0x21) | IrqMask);
+        outp8(0x21, (inp8(0x21) | IrqMask));
     }
     else if(8 <= nicIrqNo && nicIrqNo <= 15){
     
         //IRQの範囲が、8～15であれば
         //PIC-1スレーブのIMR(0xA1)へ割り込みマスク
         IrqMask = 1 << (nicIrqNo - 8);
-        outp8(0xA1, inp8(0x21) | IrqMask);
+        outp8(0xA1, (inp8(0xA1) | IrqMask));
     
     }
     
@@ -94,12 +94,14 @@ void AbstractMonic::enableNetWork()
     //子クラスのゲッターで、IRQ取得
     nicIrqNo = getNicIRQ();
 
+printf("nicIrqNo = %d \n",nicIrqNo);
+
     if(0 <= nicIrqNo && nicIrqNo <= 7){
         //IRQの範囲が、0～7であれば
         //PIC-0マスタのIMR(0x21)へ割り込みマスク
          IrqMask = IrqMask ^ (1 << (nicIrqNo - 0));  //XOR 当該ビットのみ0とする。
 printf("IrqMask = %x \n",IrqMask);
-        outp8(0x21, inp8(0x21) & IrqMask);
+        outp8(0x21, (inp8(0x21) & IrqMask));
     }
     else if(8 <= nicIrqNo && nicIrqNo <= 15){
     
@@ -110,14 +112,11 @@ printf("IrqMask = %x \n",IrqMask);
         //PIC-1スレーブのIMR(0xA1)へ割り込みマスク
         IrqMask = IrqMask ^ (1 << (nicIrqNo - 8));  //XOR 当該ビットのみ0とする。
 printf("IrqMask Set = %x \n",IrqMask);
-        outp8(0xA1, inp8(0xA1) & IrqMask);
+        outp8(0xA1, (inp8(0xA1) & IrqMask));
     }
     
-    IrqMask=inp8( 0xA1 );
+IrqMask=inp8( 0xA1 );
     
-//Yamami!!! わざとバグ    
-//outp8(0x21, inp8(0x21) | 0x04);
-
 printf("0xA1 IN After = %x \n",IrqMask);
     
 }
