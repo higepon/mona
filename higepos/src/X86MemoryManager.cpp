@@ -59,7 +59,6 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
         if(current->next == freeEntry_) return NULL;
     }
 
-    _sys_printf("size=%d realSize=%d current= %d\n", size, realSize, current);
     struct memoryEntry* usedBlock = current;
     struct memoryEntry* freeBlock = current + realSize;
     H_SIZE_T usedBlockSize = realSize;
@@ -70,14 +69,11 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
         this->concatBlock(freeEntry_, freeBlock);
     }
     this->deleteFromEntry(freeEntry_, current, current->size);
-    _sysPrintln("**************");
-    _sysPrintlnInt((int)usedBlock);
-    _sysPrintlnInt(usedBlockSize);
-    _sysPrintlnInt(realSize);
     this->addToEntry(1, usedBlock, usedBlockSize);
 
     /* address of allocated memory */
     this->printInfo();
+
     return (void*)usedBlock->startAddress;
 }
 
