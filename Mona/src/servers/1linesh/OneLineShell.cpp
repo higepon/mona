@@ -77,6 +77,7 @@ void OneLineShell::service() {
         this->OnKeyDown(info.arg1, info.arg2);
         ds.DrawCommandLine((char *)this->cmd);
         ds.DrawCursor(this->cmd.GetCurrentPos());
+        ds.DrawMessageLine(this->msg);
       }
     }
   }
@@ -94,7 +95,7 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
   case Keys::Enter:
     cTmp = (Charing *)this->cmd;
     if(cTmp->GetLength() == 0) break;
-    this->cmd.ExecuteCommand();
+    this->SetMessage(this->cmd.ExecuteCommand());
     cTmp = (Charing *)(this->cmdHst.GetCommand(GETLAST));
     if(cTmp->GetLength() == 0){
       this->cmdHst.UpdateHistory(this->cmd);
@@ -132,4 +133,40 @@ int OneLineShell::OnKeyDown(int keycode, int modifiers){
   return 0;
 }
 
+void OneLineShell::SetMessage(Charing message){
 
+  this->msg = message;
+  return;
+}
+
+void OneLineShell::SetMessage(int nMsg){
+
+  Charing tmpMsg;
+
+  switch(nMsg){
+    case Excute:
+      tmpMsg = "Command excute";
+      break;
+    case NothingFile:
+      tmpMsg = "File not found";
+      break;
+    case MemErr:
+      tmpMsg = "load Process memory allocate error";
+      break;
+    case FileReadErr:
+      tmpMsg = "File read error";
+      break;
+    case SMemErr1:
+      tmpMsg = "Shared Memory error1";
+      break;
+    case SMemErr2:
+      tmpMsg = "Shared Memory error2";
+      break;
+    default:
+      break;
+  }
+
+  this->msg = tmpMsg;;
+
+  return;
+}
