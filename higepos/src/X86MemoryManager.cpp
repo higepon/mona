@@ -73,3 +73,7 @@ unsigned long X86MemoryManager::freeMemory(unsigned long size) {
     return 0;
 }
 
+
+X86MemoryManager::~X86MemoryManager() {
+
+}

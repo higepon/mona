@@ -24,7 +24,7 @@
     actually, kernel starts at this point
 
     \author HigePon
-    \date   create:2002/07/21 update:2002/08/04
+    \date   create:2002/07/21 update:2002/08/07
 */
 void startKernel(void) {
     _sysInitVga();
@@ -33,7 +33,7 @@ void startKernel(void) {
     _sysPrint("Higepos Kernel start!!\nPowered by 2ch\n");
     _sysPrint("**************************************\n");
 
-    X86MemoryManager mm;
+    X86MemoryManager& mm = X86MemoryManager::instance();
     _sysPrint(mm.getMessage());
     _sysPrint("\n");
     _sysPrint(mm.getName());
@@ -46,4 +46,3 @@ void startKernel(void) {
     while (true) {
     }
 }
-

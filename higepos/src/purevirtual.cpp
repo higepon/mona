@@ -13,7 +13,7 @@
     \date   create:2002/08/04 update:$Date$
 */
 extern "C" void __cxa_pure_virtual();
-
+extern "C" int atexit( void (*func)(void));
 /*!
     \brief dummy
 
@@ -23,3 +23,4 @@ extern "C" void __cxa_pure_virtual();
     \date   create:2002/08/04 update:
 */
 void __cxa_pure_virtual() {}
+int atexit( void (*func)(void)) {}
