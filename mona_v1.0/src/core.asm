@@ -80,6 +80,9 @@ _arch_switch_process_to_user_mode:
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
         mov ds , word[ebx + 44]      ; restore ds
+        mov es , word[ebx + 44]      ; restore es
+        mov fs , word[ebx + 44]      ; restore fs
+        mov gs , word[ebx + 44]      ; restore gs
         push dword[ebx + 48]         ; push ss  here dpl lowwer
         push dword[ebx + 28]         ; push esp here dpl lowwer
         push dword[ebx + 8]          ; push eflags

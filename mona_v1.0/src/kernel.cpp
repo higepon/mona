@@ -126,7 +126,7 @@ void startKernel(void) {
 
     info(DEV_NOTICE, "0");
 #ifdef HIGE
-    g_info_level = DEV_NOTICE;
+    g_info_level = DUMP;
 
     info(DEV_NOTICE, "1");
     g_process_manager = new ProcessManager();
