@@ -374,6 +374,19 @@ int Shell::onKeyDown(int keycode, int modifiers) {
         commandTerminate();
         commandExecute();
         break;
+
+    case(Keys::Up):
+        printf("up");
+        break;
+    case(Keys::Down):
+        printf("down");
+        break;
+    case(Keys::Left):
+        printf("left");
+        break;
+    case(Keys::Right):
+        printf("right");
+        break;
     case(Keys::Back):
         backspace();
         break;
