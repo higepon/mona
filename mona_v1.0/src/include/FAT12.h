@@ -83,11 +83,14 @@ class FAT12 {
     static const int DRIVER_READ_ERROR;
     static const char PATH_SEP;
 
+    static const int READ_MODE;
+
  public:
 
     bool initilize();
     bool createFlie(const char* name);
-    bool open(const char* name);
+    bool open(const char* path, const char* filename, int mode);
+    bool close();
     bool read(const char* file, byte* buffer);
     bool write(const char* file, byte* buffer);
     bool rename(const char* from, const char* to);

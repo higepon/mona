@@ -24,6 +24,23 @@ int main(int argc, char *argv[]) {
 
     printf("fat initilize\n");
 
+    if (!fat->open(".", "HELLO.TXT", FAT12::READ_MODE)) {
+
+	printf("open failed");
+    }
+
+    return 0;
+
+    if (!fat->changeDirectoryRelative("SOMEDIR")) {
+        printf("some dir not found");
+    }
+
+    if (!fat->open("..", "HELLO.TXT", FAT12::READ_MODE)) {
+
+	printf("open failed");
+    }
+
+
     if (!fat->changeDirectory("SOMEDIR\\DIR1\\DIR2\\DIR3\\DIR4")) {
         printf("changeDirectory failed");
         return -1;
@@ -56,6 +73,7 @@ int main(int argc, char *argv[]) {
     if (!fat->changeDirectoryRelative("..")) {
         printf(".. not found");
     }
+
 
     delete fat;
     delete driver;

@@ -31,6 +31,8 @@ const int FAT12::DRIVER_READ_ERROR = 5;
 const int FAT12::PATH_LENGTH       = 512;
 const char FAT12::PATH_SEP         = '\\';
 
+const int FAT12::READ_MODE = 0;
+
 /*!
   \brief initilize
 
@@ -52,7 +54,6 @@ FAT12::FAT12(DiskDriver* driver) {
   \Date   create:2003/04/10 update:
 */
 FAT12::~FAT12() {
-
 
     return;
 }
@@ -207,6 +208,8 @@ bool FAT12::initilize() {
 /*!
   \brief specify file system.
 
+  \return true/false FAT12/other
+
   \author HigePon
   \Date   create:2003/04/17 update:
 */
@@ -233,6 +236,8 @@ bool FAT12::isFAT12() {
 
 /*!
   \brief reade BPB and parse
+
+  \return true/false OK/NG
 
   \author HigePon
   \Date   create:2003/04/17 update:
@@ -299,6 +304,9 @@ int FAT12::getErrorNo() const {
 /*!
   \brief get fat at cluster
 
+  \param cluster cluster
+  \return fat
+
   \author HigePon
   \date   create:2003/04/10 update:
 */
@@ -321,43 +329,50 @@ word FAT12::getFATAt(int cluster) const {
 /*!
   \brief change directory
 
+  \param path absolutepath
+  \return true/false OK/NG
+
   \author HigePon
   \date   create:2003/04/10 update:
 */
 bool FAT12::changeDirectory(const char* path) {
 
-    int  currentCluster;
+    int  currentDirectory;
     char buf[PATH_LENGTH];
     char sep[] = {PATH_SEP, '\0'};
     char* rpath;
 
+    /* for strtok */
     strcpy(buf, path);
 
-    /* save current cluster */
-    currentCluster = currentCluster_;
+    /* save current */
+    currentDirectory = currentDirecotry_;
 
     for (int i = 0; i < 512; i++) {
 
-        char* p = (i == 0) ? buf : NULL;
-
         /* get token */
+        char* p = (i == 0) ? buf : NULL;
         if (!(rpath = strtok(p, sep))) break;
 
         printf("try to cdr to %s", rpath);
 
         if (!changeDirectoryRelative(rpath)) {
 
-            errNum_ = NOT_DIR_ERROR;
-            currentCluster_ = currentCluster;
+            errNum_           = NOT_DIR_ERROR;
+            currentDirecotry_ = currentDirectory;
             return false;
         }
     }
 
+    /* done changedirectory */
     return true;
 }
 
 /*!
   \brief change directory relative
+
+  \param path realative path
+  \return true/false OK/NG
 
   \author HigePon
   \date   create:2003/04/10 update:
@@ -367,8 +382,12 @@ bool FAT12::changeDirectoryRelative(const char* path) {
     DirectoryEntry entries[16];
     int lbp = clusterToLbp(currentDirecotry_);
 
-    if (!(driver_->read(lbp, buf_))) return false;
+    /* root directory has no "." or "..", but they are necesary */
+    if (currentDirecotry_ == 0 && !strcmp(path, ".")) return true;
+    if (currentDirecotry_ == 0 && !strcmp(path, "..")) return true;
 
+    /* read */
+    if (!(driver_->read(lbp, buf_))) return false;
     memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
 
     for (int j = 0; j < 16; j++) {
@@ -382,6 +401,8 @@ bool FAT12::changeDirectoryRelative(const char* path) {
         /* not directory */
         if (!(entries[j].attribute & ATTR_DIRECTORY)) continue;
 
+	for (int k = 0; k < 8; k++) printf("%c", (char)entries[j].filename[k]);
+
         /* change directory ok */
         if (compareName((char*)(entries[j].filename), path)) {
 
@@ -394,7 +415,6 @@ bool FAT12::changeDirectoryRelative(const char* path) {
     }
     return false;
 }
-
 
 /*!
   \brief compare file name
@@ -420,17 +440,101 @@ bool FAT12::compareName(const char* name1, const char* name2) const {
     return false;
 }
 
+/*!
+  \brief convert cluster to LBP
+
+  \param cluster cluster
+
+  \return LBP
+
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
 int FAT12::clusterToLbp(int cluster) {
 
     if (cluster < 2) return rootEntryStart_;
 
     int lbp = ((cluster - 2) * bpb_.sectorPerCluster) + firstDataSector_;
-
     return lbp;
 }
 
+/*!
+  \brief open file
+
+  \param path path
+  \param filename file name
+  \param mode read/write see FAT12#READ_MODE
+  \return true/false OK/NG
+
+  \author HigePon
+  \date   create:2003/04/10 update:
+*/
+bool FAT12::open(const char* path, const char* filename, int mode) {
+
+    char  buf[16];
+    char* file;
+    char* ext;
+
+    /* save current directory */
+    int currentDirecotry = currentDirecotry;
+
+    /* toknize */
+    strcpy(buf, filename);
+    file = strtok(buf, ".");
+    ext  = strtok(NULL, ".");
+
+    printf("++file name is %s.%s++\n", file, ext);
+
+    if (mode == READ_MODE) {
+
+        /* change direcotory */
+        if (!changeDirectory(path)) return false;
+
+        printf("change");
+
+        /* find file in entries */
+        DirectoryEntry entries[16];
+        int lbp = clusterToLbp(currentDirecotry_);
+
+        if (!(driver_->read(lbp, buf_))) {
+            currentDirecotry_ = currentDirecotry;
+            return false;
+        }
+        printf("change2");
+        memcpy(entries, buf_, sizeof(DirectoryEntry) * 16);
+
+        for (int j = 0; j < 16; j++) {
+
+            /* free */
+            if (entries[j].filename[0] == 0xe5) continue;
+
+            /* no other entries */
+            if (entries[j].filename[0] == 0x00) break;
+
+            /* directory */
+            if (entries[j].attribute & ATTR_DIRECTORY) continue;
+
+            /* file found */
+            if (compareName((char*)(entries[j].filename), file)
+             && compareName((char*)(entries[j].extension), ext)) {
+
+                currentCluster_ = entries[j].cluster;
+                printf("flie %s found\n", filename);
+                return true;
+            }
+        }
+        currentDirecotry_ = currentDirecotry;
+        return false;
+    }
+    return true;
+}
+
+bool FAT12::close() {
+    return true;
+}
+
 bool FAT12::createFlie(const char* name) {return true;}
-bool FAT12::open(const char* name) {return true;}
+
 bool FAT12::read(const char* file, byte* buffer) {return true;}
 bool FAT12::write(const char* file, byte* buffer) {return true;}
 bool FAT12::rename(const char* from, const char* to) {return true;}
