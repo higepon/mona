@@ -128,14 +128,6 @@ sysresource.o: sysresource.cpp include/sysresource.h include/BitMap.h \
   include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
   include/MessageServer.h include/Message.h include/Queue.h include/pic.h \
   include/io.h
-ISADriver.o: ISADriver.cpp include/BitMap.h include/types.h \
-  include/global.h include/info.h include/kernel.h \
-  include/VirtualConsole.h include/string.h include/FDCDriver.h \
-  include/DiskDriver.h include/Semaphore.h include/GDTUtil.h \
-  include/IDTUtil.h include/PagingUtil.h include/Process.h \
-  include/Scheduler.h include/ProcessManager.h include/ihandlers.h \
-  include/sysresource.h include/MessageServer.h include/Message.h \
-  include/Queue.h include/driver/ISADriver.h include/GraphicalConsole.h
 info.o: info.cpp include/global.h include/info.h include/kernel.h \
   include/types.h include/VirtualConsole.h include/string.h \
   include/FDCDriver.h include/DiskDriver.h include/Semaphore.h \
@@ -198,8 +190,4 @@ MessageServer.o: MessageServer.cpp include/MessageServer.h \
   include/PagingUtil.h include/Process.h include/Scheduler.h \
   include/ProcessManager.h include/ihandlers.h include/sysresource.h \
   include/BitMap.h
-ps2kbc.o: driver/ISADevice/PS2KBC/ps2kbc.cpp \
-  driver/ISADevice/PS2KBC/ps2kbc.h include/Module.h \
-  include/GraphicalConsole.h include/VirtualConsole.h include/types.h \
-  include/string.h include/driver/ISADriver.h include/BitMap.h \
-  include/sysresource.h include/io.h
+test_mjt.o: test_mjt.cpp

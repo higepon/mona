@@ -47,7 +47,6 @@ SOURCES    = cstart.cpp            \
              FAT12.cpp             \
              test_higepon.cpp      \
              sysresource.cpp       \
-             ISADriver.cpp         \
              info.cpp              \
              GDTUtil.cpp           \
              IDTUtil.cpp           \
@@ -56,12 +55,7 @@ SOURCES    = cstart.cpp            \
              Scheduler.cpp         \
              ProcessManager.cpp    \
              MessageServer.cpp     \
-
-#             test_mjt.cpp
-#             IDEDriver.cpp
-
-DRVRSRC =    driver/ISADevice/PS2KBC/ps2kbc.cpp
-DRVROBJ = ps2kbc.o
+             test_mjt.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -76,16 +70,9 @@ $(FAT_TOOL) : $(TOOLS)/fat_write.cpp FAT12.cpp include/FAT12.h string.cpp BitMap
 	$(CC) -DFS_TEST -o $(FAT_TOOL) $(TOOLS)/fat_write.cpp $(TOOLS)/HogeDriver.cpp FAT12.cpp string.cpp BitMap.cpp -idirafter include -idirafter $(TOOLS)
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) memcmp.o memmove.o mode12h.o ihandler.o core.o
-	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o $(DRVROBJ)
+	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) memcmp.o memmove.o mode12h.o ihandler.o core.o
 	$(NDISASM) -u $@ > $(LIST)/third.list
 	$(STRIP)  -O binary $@
-
-ps2kbc.o : driver/ISADevice/PS2KBC/ps2kbc.cpp
-	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PS2KBC/ps2kbc.cpp -o ps2kbc.o
-
-
-# pcic.o : driver/ISADevice/PCIC/pcic.cpp
-# 	$(CC) $(CFLAGS) $(CFINCLUDE) -c driver/ISADevice/PCIC/pcic.cpp -o pcic.o
 
 memcmp.o : ./FreeBSD/memcmp.c
 	$(CC) $(CFLAGS) $(CFINCLUDE) -c ./FreeBSD/memcmp.c -o memcmp.o
@@ -116,10 +103,10 @@ doxygen :
 	$(DOXYGEN)
 
 depend:
-	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) $(DRVRSRC) > $(ENV)/dependencies
+	gcc -MM $(CFINCLUDE) $(CFLAGS) -- $(SOURCES) > $(ENV)/dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) memmove.o memcmp.o mode12h.o ihandler.o core.o $(DRVROBJ)
+	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) memmove.o memcmp.o mode12h.o ihandler.o core.o
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img
