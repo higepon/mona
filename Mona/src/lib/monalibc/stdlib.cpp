@@ -169,10 +169,32 @@ int atoi(const char *s){
   return result*mflag;
 }
 
+/*!
+  \brief int to string
+
+  \param s     string buffer printed characters
+  \param n     number converted
+  \param width minimum field width of number to be converted
+  \param base  radix of number to be converted
+  \param flag  conversion using flag
+  \return size of characters printed to buffer
+*/
 int itos(char *s, int n, int width, unsigned int base, char flag){
   return itosn(s, -1, n, width, base, flag);
 }
 
+/*!
+  \brief unsigned int to string
+
+  \param s         string buffer printed characters
+  \param max_width maximum field width of number to be converted
+                   (nearly equal string buffer size), 0< : infinity
+  \param n         number converted
+  \param width     minimum field width of number to be converted
+  \param base      radix of number to be converted
+  \param flag      conversion using flag
+  \return size of characters printed to buffer
+*/
 int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag){
   int num;
   int real_width;
@@ -268,7 +290,7 @@ int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag
   \param real_width width of number to be converted
   \param base       radix of number to be converted
   \param flag       conversion using flag
-  \return  result of the conversion
+  \return size of characters printed to buffer
 */
 int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag){
   return uitosn(s, -1, n, real_width, base, flag);
@@ -278,12 +300,13 @@ int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag)
   \brief unsigned int to string with max size n
 
   \param s          string buffer printed characters
-  \param max_width  string buffer size, 0< : infinity
+  \param max_width  maximum field width of number to be converted
+                    (nearly equal string buffer size), 0< : infinity
   \param n          number converted
   \param real_width width of number to be converted
   \param base       radix of number to be converted
   \param flag       conversion using flag
-  \return  result of the conversion
+  \return size of characters printed to buffer
 */
 int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int base, char flag){
   int j = 0;
@@ -314,6 +337,16 @@ int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int 
   return j;
 }
 
+/*!
+  \brief double to string
+
+  \param s          string buffer printed characters
+  \param n          number converted
+  \param real_width width of number to be converted before decimal-point
+  \param precision  width of number to be converted after decimal-point
+  \param flag       conversion using flag
+  \return size of characters printed to buffer
+*/
 int ftos(char *s, double n, int width, int precision, char flag){
   int num, fraction;
   int j = 0;
