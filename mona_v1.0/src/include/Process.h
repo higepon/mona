@@ -129,7 +129,7 @@ class Process_ {
     //    OutputStream* stdout;
     //    OutputStream* stderr;
     //    InputStream*  stdin;
-    dword timeLeft_;
+    long  timeLeft_;
     dword tick_;
     dword pid_;
     byte priority_;
@@ -192,7 +192,7 @@ class ProcessManager_ {
     int addProcess(Process_* process);
     int kill(Process_* process);
     int switchProcess();
-    Process_* schedule();
+    bool schedule();
     Process_* getCurrentProcess() const;
 
   public:

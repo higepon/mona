@@ -1,3 +1,8 @@
+2003-12-16  higepon  <higepon@users.sourceforge.jp>
+
+        * ihandlers.cpp: タイマハンドラでスケジューラたちがどのように呼ばれるかの部分を
+                         設計.
+
 2003-12-14  higepon  <higepon@users.sourceforge.jp>
 
         * Process.cpp: ProcessManager_::createProcessの骨格を作成

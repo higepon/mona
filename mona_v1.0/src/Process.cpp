@@ -226,12 +226,20 @@ int ProcessManager_::switchProcess() {
     return NORMAL;
 }
 
-Process_* ProcessManager_::schedule() {
+bool ProcessManager_::schedule() {
 
-    current_ = scheduler_->schedule(current_);
+    bool      isProcessChanged;
+    Process_* next;
+
+    /* schdule */
+    next = scheduler_->schedule(current_);
+
+    /* next is current ? */
+    isProcessChanged = (next != current_);
+    current_         = next;
 
     g_console->printf("[%x]", current_);
-    return current_;
+    return isProcessChanged;
 }
 
 Process_* ProcessManager_::createProcess(int type, const char* name) {

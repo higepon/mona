@@ -121,13 +121,24 @@ void timerHandler() {
     counter++;
 #endif
 
-    //if (g_console) g_console->printf("Timer");
-
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);
     outportb(0x20, 0x20);
 
-   g_processManager->schedule();
+    /* Process schedule */
+    bool isProcessChanged = g_processManager->schedule();
+
+    /* Thread schedule */
+
+    /* Process is changed, so address space switch */
+    if (isProcessChanged) {
+
+        /* address space & therad switch */
+    } else {
+
+        /* only thread switch */
+    }
+
    g_console->printf("********%s\n", g_processManager->getCurrentProcess()->getName());
 
    g_process_manager->schedule();
