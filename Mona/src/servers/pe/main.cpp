@@ -223,7 +223,7 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
 		for (int j = 0; j < its; j++)
 		{
 			CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
-			if (prompt) printf("%s: linking %s to %s...\n", SVR, (const char*)dll, (const char*)data->Name);
+			if (prompt) printf("%s: linking %s to %s....", SVR, (const char*)dll, (const char*)data->Name);
 			PEParser* target = NULL;
 			for (int k = 0; k < len; k++)
 			{
@@ -233,9 +233,17 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
 					break;
 				}
 			}
-			if (!data->Parser.Link(&dst->Data[addr], j, target))
+			if (data->Parser.Link(&dst->Data[addr], j, target))
 			{
-				if (prompt) printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
+				if (prompt) printf("OK\n");
+			}
+			else
+			{
+				if (prompt)
+				{
+					printf("NG\n");
+					printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
+				}
 				monapi_cmemoryinfo_dispose(dst);
 				monapi_cmemoryinfo_delete(dst);
 				return 3;
