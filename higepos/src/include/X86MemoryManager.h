@@ -13,6 +13,9 @@
 */
 #include<MemoryManager.h>
 
+#ifndef _HIGEPOS_X86MEMORYMANAGER_
+#define _HIGEPOS_X86MEMORYMANAGER_
+
 /*!
     memory mangement class
     the instance of this class is single pattern
@@ -36,3 +39,5 @@ class X86MemoryManager:virtual MemoryManager {
         return theInstance;
     }
 };
+
+#endif

@@ -11,8 +11,14 @@
     \version $Revision$
     \date   create:2002/08/04 update:$Date$
 */
+
+#ifndef _HIGEPOS_OBJECT_
+#define _HIGEPOS_OBJECT_
+
 class Object {
 
   public:
     virtual char* getName() = 0;
 };
+
+#endif

@@ -1,5 +1,8 @@
 #include<Object.h>
 
+#ifndef _HIGEPOS_UTIL_
+#define _HIGEPOS_UTIL_
+
 class Point:public Object {
 
   public:
@@ -13,3 +16,5 @@ class Point:public Object {
     int x_;
     int y_;
 };
+
+#endif

@@ -11,6 +11,9 @@
     \date   create:2002/07/23 update:$Date$
 */
 
+#ifndef _HIGEPOS_IDT_
+#define _HIGEPOS_IDT_
+
 #define HANDLER_NUM  256    /* number of handler     */
 #define IDT_BASE     0x6800 /* idt base address      */
 #define IDT_LOWBASE  0x6800 /* idt low base address  */
@@ -44,3 +47,5 @@ void _sysSetIdt(void);
 void _sysLoadIdtr(idtr_st*);
 void setIdt(handler_st*, int selector);
 unsigned char inportb(unsigned int);
+
+#endif

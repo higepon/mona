@@ -16,6 +16,7 @@
 #include<idt.h>
 #include<io.h>
 #include<X86MemoryManager.h>
+//#include<higeUtil.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -43,6 +44,10 @@ void startKernel(void) {
     _sysInitIo();
     _sysUnlock();
     _sysPrint("idt set done!");
+
+    //    Point* point = new Point(-5, -10);
+    //    _sysPrintInt(point->getX());
+    //    _sysPrint(point->getName());
     while (true) {
     }
 }

@@ -13,6 +13,9 @@
 */
 #include<Object.h>
 
+#ifndef _HIGEPOS_MEMORYMANAGER_
+#define _HIGEPOS_MEMORYMANAGER_
+
 /*!
     abstract class MemoryManager
 */
@@ -23,3 +26,5 @@ class MemoryManager:virtual Object {
     virtual unsigned long allocateMemory(unsigned long) = 0;
     virtual unsigned long freeMemory(unsigned long) = 0;
 };
+
+#endif

@@ -10,6 +10,9 @@
     \version $Revision$
     \date   create:2002/07/20 update:$Date$
 */
+#ifndef _HIGEPOS_VGA_
+#define _HIGEPOS_VGA_
+
 #define VRAM ((char*)0xB8000) /*! VRAM Address */
 #define MAX_HEIGHT 25         /*! MAX_HEIGHT   */
 #define MAX_WIDTH  80         /*! MAX_WIDTH    */
@@ -26,3 +29,5 @@ void forwardCursor(int);
 void backwardCursor(void);
 void backwardCursor(int);
 void setCursor(int, int);
+
+#endif
