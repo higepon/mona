@@ -443,17 +443,19 @@ void Window::repaint()
 /** スレッド開始 */
 void Window::run()
 {
-	MessageInfo info;
+	// 実行中フラグ
+	bool isRunning = false;
 
 	// ウィンドウ追加メッセージを投げる
+	MessageInfo info;
 	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_ADD, threadID, (x << 16 | y), (width << 16 | height), NULL)) {
 		//printf("Window->WindowManager: MSG_GUISERVER_ADD failed %d\n", threadID);
 	} else {
 		//printf("Window->WindowManager: MSG_GUISERVER_ADD sended %d\n", threadID);
+		setFocused(true);
+		repaint();
+		isRunning = true;
 	}
-
-	// 実行中フラグ
-	bool isRunning = true;
 
 	while (isRunning) {
 		if (!MonAPI::Message::receive(&info)) {
@@ -527,22 +529,25 @@ void Window::run()
 			case MSG_GUISERVER_ENABLED:
 				//printf("WindowManager->Window MSG_GUISERVER_ENABLED received %d\n", threadID);
 				setEnabled(true);
+				MonAPI::Message::reply(&info);
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DISABLED:
 				//printf("WindowManager->Window MSG_GUISERVER_DISABLED received %d\n", threadID);
 				setEnabled(false);
+				MonAPI::Message::reply(&info);
 				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_FOCUSED:
 				//printf("WindowManager->Window MSG_GUISERVER_FOCUSED received %d\n", threadID);
 				setFocused(true);
 				repaint();
-				//MonAPI::Message::reply(&info);
+				MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_DEFOCUSED:
 				//printf("WindowManager->Window MSG_GUISERVER_DEFOCUSED received %d\n", threadID);
 				setFocused(false);
+				MonAPI::Message::reply(&info);
 				{
 					// 部品をフォーカスアウト状態にする
 					// NULLチェック
@@ -558,7 +563,6 @@ void Window::run()
 						c->setFocused(false);
 					}
 				}
-				//MonAPI::Message::reply(&info);
 				break;
 			case MSG_GUISERVER_ICONIFIED:
 				//printf("WindowManager->Window MSG_GUISERVER_ICONIFIED received %d\n", threadID);
@@ -572,11 +576,11 @@ void Window::run()
 				break;
 			case MSG_GUISERVER_REMOVE:
 				//printf("WindowManager->Window MSG_GUISERVER_REMOVE received %d\n", threadID);
+				MonAPI::Message::reply(&info);
 				// タイマースレッド停止
 				syscall_kill_thread(timerID);
 				// フラグ変更
 				isRunning = false;
-				MonAPI::Message::reply(&info);
 				break;
 			default:
 				break;
