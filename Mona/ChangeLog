@@ -1,5 +1,13 @@
 2005-01-31  higepon  <higepon@users.sourceforge.jp>
 
+        * src/lib/monapi/Keys.cpp: keyTopMapJP109Sの '|' -> '_'に変更。
+
+        * src/servers/shell/Shell.cpp (onKeyDown): -(マイナス)を入力できない不具合を修整。
+
+        * apps/non-gui/cdfsread/main.cpp (MonaMain): CDFSREADで ls, ls -l, read
+
+        * src/lib/monapi/monapi_impl.cpp: 引数の順序のバグを修整
+
         * apps/non-gui/cdfsread/main.cpp (MonaMain): CDFSREADツールの開発ディレクトリを作成。まだバグバグなので触らないでね。
 
 2005-01-30  higepon  <higepon@users.sourceforge.jp>

@@ -30,7 +30,6 @@ static void interrupt()
     }
 }
 
-
 bool read(FileSystem* iso, const char* filePath)
 {
     File* file = iso->Open(filePath, 0);
@@ -68,10 +67,9 @@ int MonaMain(List<char*>* pekoe)
         return 1;
     }
 
-    const char* isoImage = pekoe->get(0);
-    const char* command  = pekoe->get(1);
-    const char* arg1     = pekoe->get(2);
-    const char* arg2     = pekoe->size() >= 4 ? pekoe->get(3) : NULL;
+    const char* command  = pekoe->get(0);
+    const char* arg1     = pekoe->get(1);
+    const char* arg2     = pekoe->size() >= 2 ? pekoe->get(2) : NULL;
 
     cd = new IDEDriver();
 
@@ -143,6 +141,7 @@ int MonaMain(List<char*>* pekoe)
     }
     else if (strcmp(command, "ls") == 0)
     {
+
         _A<FileSystemEntry*> files = fs->GetFileSystemEntries(arg1);
 
         FOREACH (FileSystemEntry*, file, files)
