@@ -233,6 +233,7 @@ static ELF elfcollect(ELF elf) {
 		phdrcnt--;
 		prg1++;
 	}
+	hdr32 = elf->hdr32;
 	hdr32.phdrcnt = phdr;
 	ret = elfcre32(&elf->hdr, &hdr32);
 	if (ret == NULL) {
@@ -346,7 +347,7 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 		*sct2 = *sct1;
 		if (sct1->type == 0) {
 		}
-		else if ((sct1->type == 1) || (sct1->type == 3)) {
+		else if ((sct1->type == 1) || (sct1->type == 3) || (sct1->type == 7)) {
 			sct2->offset = fpos;
 			if (fseek(fp, sct1->offset, SEEK_SET) != 0) {
 				printf("ELF relocate: seek error\n");
@@ -369,7 +370,7 @@ static int elfrelocate(FILE *fp, ELF elf, const char *dstname) {
 			sct2->offset = fpos;
 		}
 		else {
-			printf("ELF relocate: unknown type\n");
+			printf("ELF relocate: unknown type(%d)\n", sct1->type);
 			sct2->offset = fpos;
 			sct2->size = 0;
 		}
