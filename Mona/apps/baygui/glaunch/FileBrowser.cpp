@@ -208,8 +208,11 @@ void FileBrowser::Open(int target)
 			if (exe.EndsWith(".APP"))
 			{
 				exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EL2");
+				if (ProcessStart(exe) < 0)
+				{
+					exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX5");
+				}
 			}
-			ProcessStart(exe);
 			break;
 		}
 		case Icons_Picture:

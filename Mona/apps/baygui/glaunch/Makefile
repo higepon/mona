@@ -4,12 +4,12 @@ INSTDIR = $(BINDIR)/root/APPS/GLAUNCH.APP
 INSTFILES = ICONS.BM5
 CLEANFILES = $(INSTFILES)
 
-$(TARGET).EL2: $(INSTFILES)
+$(TARGET).EL5: $(INSTFILES)
 
 MONADIR    = ../../..
 ADDLINK    = -lgui
 ADDLINKDEP = $(MONADIR)/lib/libgui.a
-include $(MONADIR)/env/monapi-el2.inc
+include $(MONADIR)/env/monapi-el5.inc
 
 CXXFLAGS += -DDEBUG
 
