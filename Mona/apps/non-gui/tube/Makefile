@@ -35,5 +35,5 @@ clean:
 	$(RM) $(OBJS) $(BINS)
 
 $(OBJ)/tube.oa:		tube.x86
-	$(NASM) $(NFLAGS) $< -o $@
+	$(NASM) $(NFLAGS) $< -o $@ -l LIST
 
