@@ -64,6 +64,12 @@ int main(int argc, char *argv[]) {
         printf("write failed");
     }
 
+    memset(text, 0x44, 512);
+    if (!fat->write(text, 50)) {
+
+        printf("write failed");
+    }
+
     //      memset(text, 0x44, 512);
     //      if (!fat->write(text)) {
 

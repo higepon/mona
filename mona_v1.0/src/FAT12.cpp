@@ -600,7 +600,9 @@ bool FAT12::readFAT(bool allocate) {
     return true;
 }
 
-bool FAT12::write(byte* buffer) {
+bool FAT12::write(byte* buffer, int size) {
+
+    if (size <= 0 || size > 512) return false;
 
     int cluster = currentCluster_;
 
@@ -637,7 +639,11 @@ bool FAT12::write(byte* buffer) {
 
     printf("write:cluster=%d", cluster);
 
-    if (!(driver_->write(lbp, buffer))) {
+    byte inbuf[512];
+    memset(inbuf, 0, 512);
+    memcpy(inbuf, buffer, size);
+
+    if (!(driver_->write(lbp, inbuf))) {
         errNum_ = DRIVER_READ_ERROR;
         return false;
     }
@@ -649,6 +655,12 @@ bool FAT12::write(byte* buffer) {
 
     printf("fat at 44 %d, fat at 45 %d", getFATAt(44), getFATAt(45));
     return true;
+
+}
+
+bool FAT12::write(byte* buffer) {
+
+    return write(buffer, 512);
 }
 bool FAT12::rename(const char* from, const char* to) {return true;}
 bool FAT12::remove(const char* file) {return true;}
