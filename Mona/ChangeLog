@@ -1,5 +1,7 @@
 2004-11-27  higepon  <higepon@users.sourceforge.jp>
 
+        * src/servers/file/: 記述ミス修正 Assert.h->monapi/Assert.h, ISO9660.h->iso9660.h
+
         * include/monapi/Array.h : monapi/Array.hに移動
 
         * src/servers/file/main.cpp : CDコードをコメントアウト(CDが挿入されていないとエラーになるので)
