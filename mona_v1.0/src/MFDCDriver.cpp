@@ -15,6 +15,7 @@
 #include<monaKernel.h>
 #include<monaOperator.h>
 #include<io.h>
+#include<global.h>
 
 /* definition DOR */
 #define FDC_MOTA_START  0x10
@@ -159,13 +160,13 @@ void MFDCDriver::initilize() {
     while(!waitInterrupt());
 
 #ifdef FDC_DEBUG
-    console->printf("motor on catch\n");
+    g_console->printf("motor on catch\n");
 #endif
 
     /* specify */
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
 
-        console->printf("Specify command failed\n");
+        g_console->printf("Specify command failed\n");
         motor(OFF);
         return;
     }
@@ -173,7 +174,7 @@ void MFDCDriver::initilize() {
     recalibrate();
     recalibrate();
 
-    console->printf("recalibrate done\n");
+    g_console->printf("recalibrate done\n");
 
     memset(dmabuff_, 0x10, 512);
     dmabuff_[0] = 'M';
@@ -182,10 +183,10 @@ void MFDCDriver::initilize() {
     dmabuff_[3] = 'a';
     dmabuff_[4] = '\0';
 
-    console->printf("Writing [%s]\n", dmabuff_);
+    g_console->printf("Writing [%s]\n", dmabuff_);
     if (!write(0, 0, 150)) {
 
-        console->printf("write failed\n");
+        g_console->printf("write failed\n");
         motor(OFF);
         return;
     }
@@ -195,12 +196,12 @@ void MFDCDriver::initilize() {
     recalibrate();
     if (!read(0, 0, 150)) {
 
-        console->printf("read failed\n");
+        g_console->printf("read failed\n");
         motor(OFF);
         return;
     }
 
-    console->printf("reading result is %s\n", dmabuff_);
+    g_console->printf("reading result is %s\n", dmabuff_);
     motor(OFF);
     return;
 }
@@ -362,7 +363,7 @@ bool MFDCDriver::checkMSR(byte expectedCondition, byte mask) {
        if (isOK) return true;
        if (i == FDC_RETRY_MAX - 2)  {
 #ifdef DEBUG_FDC
-           console->printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
+           g_console->printf("is oK=[%d] status=[%x] masked=[%x]", (int)isOK, (int)status, (int)(status&mask));
 #endif
        }
     }

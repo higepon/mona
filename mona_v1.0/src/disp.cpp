@@ -4,6 +4,7 @@
 #include<io.h>
 #include<pic.h>
 #include<semaphore.h>
+#include<global.h>
 
 extern "C" void write_font(int a, char b, char c);
 extern "C" char pos_x;
@@ -21,7 +22,7 @@ void disp_name1() {
 
     enableTimer();
     while (true) {
-	console->printf("[1]");
+	g_console->printf("[1]");
     }
 }
 
@@ -35,7 +36,7 @@ void disp_name2() {
 
     enableTimer();
     while (true) {
-	console->printf("[2]");
+	g_console->printf("[2]");
     }
 }
 

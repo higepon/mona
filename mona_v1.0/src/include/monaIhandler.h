@@ -29,6 +29,4 @@ extern "C" void dummyHandler(void);
 extern "C" dword eip;
 extern "C" dword cs;
 extern "C" dword eflags;
-extern "C" Kthread* current;
-
 #endif

@@ -26,7 +26,6 @@
 #define SYS_BG_COLOR BG_TEAL
 #define SYS_CH_COLOR CH_WHITE
 
-extern VirtualConsole* console;
 extern dword demoStep;
 
 /*!< \def _sysdumpReg() */
@@ -72,14 +71,14 @@ extern dword demoStep;
                  , "=m" (__eflags)              \
                  : /* no input */               \
                 );                              \
-    console->printf("%s _sysdump()\n", str);        \
-    console->printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
+    g_console->printf("%s _sysdump()\n", str);        \
+    g_console->printf("eax=%x ebx=%x ecx=%x edx=%x\n" \
                 , __eax, __ebx, __ecx, __edx);  \
-    console->printf("esp=%x ebp=%x esi=%x edi=%x\n" \
+    g_console->printf("esp=%x ebp=%x esi=%x edi=%x\n" \
                 , __esp, __ebp, __esi, __edi);  \
-    console->printf("cs =%x ds =%x es =%x fs =%x\n" \
+    g_console->printf("cs =%x ds =%x es =%x fs =%x\n" \
                 , __cs , __ds , __es , __fs);   \
-    console->printf("gs =%x ss =%x eflags=%x\n"     \
+    g_console->printf("gs =%x ss =%x eflags=%x\n"     \
                 , __gs , __ss , __eflags);      \
      if (unlockint)enableInterrupt();                \
      if (stopflag) while (true);                \
@@ -100,15 +99,15 @@ extern dword demoStep;
     value[6] = *(stack + 6);                         \
     value[7] = *(stack + 7);                         \
     value[8] = *(stack + 8);                         \
-    console->printf("%x  ", value[0]);               \
-    console->printf("%x  ", value[1]);               \
-    console->printf("%x  ", value[2]);               \
-    console->printf("%x  ", value[3]);               \
-    console->printf("%x  ", value[4]);               \
-    console->printf("%x  ", value[5]);               \
-    console->printf("%x  ", value[6]);               \
-    console->printf("%x  ", value[7]);               \
-    console->printf("%x  ", value[8]);               \
+    g_console->printf("%x  ", value[0]);               \
+    g_console->printf("%x  ", value[1]);               \
+    g_console->printf("%x  ", value[2]);               \
+    g_console->printf("%x  ", value[3]);               \
+    g_console->printf("%x  ", value[4]);               \
+    g_console->printf("%x  ", value[5]);               \
+    g_console->printf("%x  ", value[6]);               \
+    g_console->printf("%x  ", value[7]);               \
+    g_console->printf("%x  ", value[8]);               \
 
 /*!
    \struct FARJMP

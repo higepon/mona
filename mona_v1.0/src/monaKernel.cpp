@@ -16,6 +16,9 @@
     \date   create:2002/07/21 update:$Date$
 */
 
+#define GLOBAL_VALUE_DEFINED
+#include<global.h>
+
 #include<monaKernel.h>
 #include<monaIdt.h>
 #include<IA32MemoryManager.h>
@@ -32,9 +35,10 @@
 #include<pic.h>
 #include<rtc.h>
 
+
 char* version = "Mona develop beta 0.04a $Date$";
 
-VirtualConsole* console;
+
 dword demoStep;
 
 /*!
@@ -53,7 +57,7 @@ void startKernel(void) {
     mm.resetGDT();
 
     /* initialze console */
-    console = new GraphicalConsole();
+    g_console = new GraphicalConsole();
 
     /* show start message */
     printBanner();
@@ -75,14 +79,14 @@ void startKernel(void) {
     if (si.hasCpuid()) {
 
         printOK("Checking CPUID     ");
-        si.printCpuid(console);
+        si.printCpuid(g_x
     } else {
-        console->printf("CPUID NG  \n");
+        g_console->printf("CPUID NG  \n");
     }
 
 //      Date date;
 //      rtc_get_date(&date);
-//      console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
+//      g_console->printf("%d %d/%d %d:%d %d\n", (dword)(date.year), (dword)(date.month), (dword)(date.day), (dword)(date.hour), (dword)(date.min), (dword)(date.sec));
 
     /* enable interrupt */
     enableInterrupt();
@@ -114,8 +118,8 @@ void startKernel(void) {
 */
 void panic(const char* msg) {
 
-    console->setCHColor(GP_RED);
-    console->printf("kernel panic!!!!!\n%s", msg);
+    g_console->setCHColor(GP_RED);
+    g_console->printf("kernel panic!!!!!\n%s", msg);
     while (true) {
     }
 }
@@ -131,12 +135,12 @@ void panic(const char* msg) {
 */
 inline void printOK(const char* msg) {
 
-    console->printf((char*)msg);
-    console->printf("[");
-    console->setCHColor(GP_RED);
-    console->printf("OK");
-    console->setCHColor(GP_GRAY);
-    console->printf("]\n");
+    g_console->printf((char*)msg);
+    g_console->printf("[");
+    g_console->setCHColor(GP_RED);
+    g_console->printf("OK");
+    g_console->setCHColor(GP_GRAY);
+    g_console->printf("]\n");
 }
 
 /*!
@@ -149,26 +153,26 @@ inline void printOK(const char* msg) {
 */
 inline void printBanner() {
 
-    console->printf("------------------------------------------------------\n");
-    console->setCHColor(GP_SKYBLUE);
-    console->printf("      Mona Kernel starting                            \n");
-    console->setCHColor(GP_GRAY);
-    console->printf("        ________ A A                                  \n");
-    console->printf("      ~/ ______( ");
-    console->setCHColor(GP_RED);
-    console->printf("`");
-    console->setCHColor(GP_GRAY);
-    console->printf("D");
-    console->setCHColor(GP_RED);
-    console->printf("`");
-    console->setCHColor(GP_GRAY);
-    console->printf(") < ");
-    console->setCHColor(GP_SKYBLUE);
-    console->printf("ŽÓŽÅ\n");
-    console->setCHColor(GP_GRAY);
-    console->printf("        UU       U U                                  \n");
-    console->printf("------------------------------------------------------\n");
-    console->setCHColor(GP_LIGHTGREEN);
-    console->printf("%s\n\n", version);
-    console->setCHColor(GP_GRAY);
+    g_console->printf("------------------------------------------------------\n");
+    g_console->setCHColor(GP_SKYBLUE);
+    g_console->printf("      Mona Kernel starting                            \n");
+    g_console->setCHColor(GP_GRAY);
+    g_console->printf("        ________ A A                                  \n");
+    g_console->printf("      ~/ ______( ");
+    g_console->setCHColor(GP_RED);
+    g_console->printf("`");
+    g_console->setCHColor(GP_GRAY);
+    g_console->printf("D");
+    g_console->setCHColor(GP_RED);
+    g_console->printf("`");
+    g_console->setCHColor(GP_GRAY);
+    g_console->printf(") < ");
+    g_console->setCHColor(GP_SKYBLUE);
+    g_console->printf("ŽÓŽÅ\n");
+    g_console->setCHColor(GP_GRAY);
+    g_console->printf("        UU       U U                                  \n");
+    g_console->printf("------------------------------------------------------\n");
+    g_console->setCHColor(GP_LIGHTGREEN);
+    g_console->printf("%s\n\n", version);
+    g_console->setCHColor(GP_GRAY);
 }

@@ -22,7 +22,7 @@ BITS 32
 [extern _timerHandler]
 [extern _keyStrokeHandler]
 [extern _dummyHandler]
-[extern _current];; pointer to current thread
+[extern _g_kthread_current];; pointer to current thread
 
 ;;; fdc handler
 _arch_fdchandler:
@@ -43,7 +43,7 @@ _arch_timerhandler:
 ;;; this fuction saves all registers to current thread struct
 ;;; should be called by interrupt handlers
 _save_registers:
-        mov ebx, [_current]
+        mov ebx, [_g_kthread_current]
         mov eax, dword [esp + 36]; save eip
         mov [ebx], eax
         mov eax, dword [esp + 40]; save cs
@@ -84,7 +84,7 @@ _arch_dummyhandler:
 
 ;;; kthread switch to next
 _arch_kthread_switch:
-        mov ebx, [_current]
+        mov ebx, [_g_kthread_current]
         mov eax, [ebx + 12]     ; restore eax
         mov ecx, [ebx + 16]     ; restore ecx
         mov edx, [ebx + 20]     ; restore edx

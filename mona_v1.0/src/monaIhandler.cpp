@@ -23,6 +23,7 @@
 #include<monaIhandler.h>
 #include<kthread.h>
 #include<io.h>
+#include<global.h>
 
 /*!
     \brief key stroke handler
@@ -41,9 +42,9 @@ void keyStrokeHandler() {
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
 
-    console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
-                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
-                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
+    g_console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+                 , g_kthread_current->eip, g_kthread_current->cs, g_kthread_current->eflags, g_kthread_current->eax, g_kthread_current->ecx, g_kthread_current->edx
+                 , g_kthread_current->ebx, g_kthread_current->esp, g_kthread_current->ebp, g_kthread_current->esi, g_kthread_current->edi);
 
     demoStep++;
 
@@ -76,7 +77,7 @@ void fault0dHandler() {
 */
 void dummyHandler() {
 
-    console->printf("dummy Handler\n");
+    g_console->printf("dummy Handler\n");
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

@@ -39,9 +39,6 @@ typedef struct KthreadInfo {
     dword tick;
 };
 
-extern Kthread* current;
-
-
 void kthread_init();
 void kthread_tick();
 void kthread_init_list(Kthread* list);

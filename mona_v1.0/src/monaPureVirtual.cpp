@@ -14,6 +14,7 @@
 */
 
 #include <monaKernel.h>
+#include <global.h>
 
 extern "C" void __cxa_pure_virtual();
 extern "C" void _pure_virtual(void);
@@ -28,7 +29,7 @@ extern "C" int atexit( void (*func)(void));
 */
 void __cxa_pure_virtual() {
 
-    console->printf("__cxa_pure_virtual called\n");
+    g_console->printf("__cxa_pure_virtual called\n");
 }
 
 /*!
@@ -41,7 +42,7 @@ void __cxa_pure_virtual() {
 */
 void _pure_virtual() {
 
-    console->printf("_pure_virtual called\n");
+    g_console->printf("_pure_virtual called\n");
 }
 
 /*!

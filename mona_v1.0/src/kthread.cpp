@@ -17,10 +17,9 @@
 #include<pic.h>
 #include<monaOperator.h>
 #include<disp.h>
+#include<global.h>
 
-Kthread*    current = NULL; /*< pointer to current kernel thread    */
-Kthread    runningList;
-KthreadInfo kthreadInfo;    /*< common thread Information           */
+static Kthread runningList;
 
 /*!
     \brief init kernel thread
@@ -30,7 +29,7 @@ KthreadInfo kthreadInfo;    /*< common thread Information           */
 */
 void kthread_init() {
 
-    console->printf("kthread init");
+    g_console->printf("kthread init");
 
     kthread_init_list(&runningList);
 
@@ -78,7 +77,7 @@ void kthread_init() {
 //      }
     //    kthread_add_to_prev_list(&runningList, disp4);
 
-    current = disp2;
+    g_kthread_current = disp2;
     kthread_schedule();
 }
 
@@ -92,8 +91,8 @@ void kthread_init() {
 */
 void kthread_tick() {
 
-    (kthreadInfo.tick)++;
-    (current->tick)++;
+    (g_kthreadInfo.tick)++;
+    (g_kthread_current->tick)++;
     return;
 }
 
@@ -164,7 +163,7 @@ Kthread* kthread_create_thread(dword stack, void (*f)()) {
     thread->ebp    = stack;
 
     /* increment thread number */
-    (kthreadInfo.threadNum)++;
+    (g_kthreadInfo.threadNum)++;
 
     return thread;
 }
@@ -182,7 +181,7 @@ void kthread_schedule() {
 
     kthread_add_to_prev_list(&runningList, temp);
 
-    current =  (&runningList)->next;
+    g_kthread_current =  (&runningList)->next;
 
     /* switch */
     kthread_switch();

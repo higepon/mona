@@ -26,6 +26,7 @@
 #include<list>
 #include<vector>
 #include<algorithm>
+#include<global.h>
 
 /*!
     \brief test code for HVector
@@ -37,7 +38,7 @@
 */
 void hvectorTester() {
 
-    console->printf("HVector test start\n");
+    g_console->printf("HVector test start\n");
     HVector<char*>* v = new HVector<char*>(3, 5);
     v->add("one");
     v->add("two");
@@ -46,12 +47,12 @@ void hvectorTester() {
     v->add("five");
     v->add("six");
     v->add("seven");
-    console->printf("element %s removed\n", v->remove(0));
-    console->printf("element %s removed\n", v->remove(4));
+    g_console->printf("element %s removed\n", v->remove(0));
+    g_console->printf("element %s removed\n", v->remove(4));
     for (size_t j = 0; j < v->size(); j++) {
-        console->printf("(%d, %s) ", j, v->get(j));
+        g_console->printf("(%d, %s) ", j, v->get(j));
     }
-    console->printf("\n");
+    g_console->printf("\n");
     delete(v);
 }
 
@@ -79,7 +80,7 @@ void process1Tester() {
             i -= 1;
         }
         _sysSetColor(SYS_BG_COLOR | CH_RED);
-        console->printf("  (.o'v'o)  ");
+        g_console->printf("  (.o'v'o)  ");
         _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
     }
     return;
@@ -97,12 +98,12 @@ void process2Tester() {
 //          if (Semaphore::down(&sm) == 0) {
 
 //              ch = km.getCharacter();
-//              if (ch != -1) console->printf("%c\n", ch);
+//              if (ch != -1) g_console->printf("%c\n", ch);
 //              Semaphore::up(&sm);
 //          }
 
       _sysSetColor(SYS_BG_COLOR | CH_YELLOW);
-      console->printf("  ( '  v ')  ");
+      g_console->printf("  ( '  v ')  ");
       _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
       for (dword i = 0; i < 99000000; i++) {
           i += 1;
@@ -118,7 +119,7 @@ void process3Tester() {
     while (true) {
 
           _sysSetColor(SYS_BG_COLOR | CH_ORANGE);
-          console->printf("  ( \"  A \")  ");
+          g_console->printf("  ( \"  A \")  ");
           _sysSetColor(SYS_BG_COLOR | SYS_CH_COLOR);
           for (dword i = 0; i < 99000000; i++) {
               i += 1;
@@ -139,7 +140,7 @@ void process3Tester() {
 */
 void STLTester() {
 
-    console->printf("--------STL Test--------------------------------------------------------\n");
+    g_console->printf("--------STL Test--------------------------------------------------------\n");
 
     // string
     std::string str = "---";
@@ -147,8 +148,8 @@ void STLTester() {
     str += "@mona ";
     str += "is OK";
     str += "---";
-    console->printf("string: %s\n", str.data());
-    console->printf("string: str.substr(3, 11): %s\n", str.substr(3, 11).data());
+    g_console->printf("string: %s\n", str.data());
+    g_console->printf("string: str.substr(3, 11): %s\n", str.substr(3, 11).data());
 
     // list
     std::list<const char*> li;
@@ -157,9 +158,9 @@ void STLTester() {
     li.push_back("network suit architecture ");
     li.push_back("\n");
     std::list<const char*>::iterator it;
-    console->printf("list  : iterate->");
+    g_console->printf("list  : iterate->");
     for (it = li.begin(); it != li.end(); it++) {
-        console->printf("%s", *it);
+        g_console->printf("%s", *it);
     }
 
     // vector
@@ -169,22 +170,22 @@ void STLTester() {
     ve.push_back("3");
     ve.push_back("4");
     std::vector<const char*>::iterator it2;
-    console->printf("vector : iterate->");
+    g_console->printf("vector : iterate->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
-        console->printf("%s ", *it2);
+        g_console->printf("%s ", *it2);
     }
 
     // argorithm
     std::reverse(ve.begin(), ve.end());
-    console->printf("\nargorithm : reverse->");
+    g_console->printf("\nargorithm : reverse->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
-        console->printf("%s ", *it2);
+        g_console->printf("%s ", *it2);
     }
 
     std::fill(ve.begin(), ve.end(), (char*)"7");
-    console->printf("\nargorithm : fill with \"7\"->");
+    g_console->printf("\nargorithm : fill with \"7\"->");
     for (it2 = ve.begin(); it2 != ve.end(); it2++) {
-        console->printf("%s ", *it2);
+        g_console->printf("%s ", *it2);
     }
-    console->printf("\n--------STL Test END---------------------------------------------------\n");
+    g_console->printf("\n--------STL Test END---------------------------------------------------\n");
 }
