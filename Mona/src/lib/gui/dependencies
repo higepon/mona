@@ -1,4 +1,4 @@
-Console.o: System/Console.cpp ../../../include/monapi.h \
+System/Console.o: System/Console.cpp ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -21,7 +21,7 @@ Console.o: System/Console.cpp ../../../include/monapi.h \
   ../../../include/gui/System/String.h \
   ../../../include/gui/System/Text/Encoding.h \
   ../../../include/gui/System/Array.h
-String.o: System/String.cpp ../../../include/gui/System/String.h \
+System/String.o: System/String.cpp ../../../include/gui/System/String.h \
   ../../../include/gui/System/Text/Encoding.h \
   ../../../include/gui/System/Array.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
@@ -44,7 +44,7 @@ String.o: System/String.cpp ../../../include/gui/System/String.h \
   ../../../include/monalibc/stdarg.h ../../../include/monalibc/stdlib.h \
   ../../../include/monalibc/stdio.h ../../../include/gui/System/Pointer.h \
   ../../../include/gui/System/Object.h
-Bitmap.o: System/Drawing/Bitmap.cpp ../../../include/monapi.h \
+System/Drawing/Bitmap.o: System/Drawing/Bitmap.cpp ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -70,7 +70,7 @@ Bitmap.o: System/Drawing/Bitmap.cpp ../../../include/monapi.h \
   ../../../include/gui/System/Array.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
   ../../../include/gui/System/Drawing/Color.h
-Font.o: System/Drawing/Font.cpp \
+System/Drawing/Font.o: System/Drawing/Font.cpp \
   ../../../include/gui/System/Drawing/Font.h \
   ../../../include/gui/System/Drawing/Color.h \
   ../../../include/gui/System/String.h \
@@ -101,7 +101,7 @@ Font.o: System/Drawing/Font.cpp \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h \
   ../../../include/gui/System/Drawing/Bitmap.h
-Graphics.o: System/Drawing/Graphics.cpp ../../../include/monapi.h \
+System/Drawing/Graphics.o: System/Drawing/Graphics.cpp ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -134,12 +134,12 @@ Graphics.o: System/Drawing/Graphics.cpp ../../../include/monapi.h \
   ../../../include/gui/System/Drawing/Color.h \
   ../../../include/gui/System/Drawing/Font.h \
   ../../../include/gui/System/Math.h
-Rectangle.o: System/Drawing/Rectangle.cpp \
+System/Drawing/Rectangle.o: System/Drawing/Rectangle.cpp \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h \
   ../../../include/gui/System/Drawing/Size.h \
   ../../../include/gui/System/Math.h
-Application.o: System/Mona/Forms/Application.cpp \
+System/Mona/Forms/Application.o: System/Mona/Forms/Application.cpp \
   ../../../include/gui/System/Mona/Forms/Application.h \
   ../../../include/monapi.h ../../../include/sys/types.h \
   ../../../include/sys/error.h ../../../include/monapi/Observer.h \
@@ -177,7 +177,7 @@ Application.o: System/Mona/Forms/Application.cpp \
   ../../../include/gui/System/Drawing/Graphics.h \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h
-Button.o: System/Mona/Forms/Button.cpp \
+System/Mona/Forms/Button.o: System/Mona/Forms/Button.cpp \
   ../../../include/gui/System/Mona/Forms/Button.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
@@ -215,7 +215,7 @@ Button.o: System/Mona/Forms/Button.cpp \
   ../../../include/gui/System/Drawing/Point.h \
   ../../../include/gui/System/Math.h \
   ../../../include/gui/System/Mona/Forms/ControlPaint.h
-Control.o: System/Mona/Forms/Control.cpp ../../../include/monapi.h \
+System/Mona/Forms/Control.o: System/Mona/Forms/Control.cpp ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
   ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
   ../../../include/sys/List.h ../../../include/monapi/Date.h \
@@ -253,7 +253,7 @@ Control.o: System/Mona/Forms/Control.cpp ../../../include/monapi.h \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h \
   ../../../include/gui/System/Mona/Forms/ControlPaint.h
-ControlPaint.o: System/Mona/Forms/ControlPaint.cpp \
+System/Mona/Forms/ControlPaint.o: System/Mona/Forms/ControlPaint.cpp \
   ../../../include/gui/System/Mona/Forms/ControlPaint.h \
   ../../../include/gui/System/Pointer.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \
@@ -285,7 +285,7 @@ ControlPaint.o: System/Mona/Forms/ControlPaint.cpp \
   ../../../include/gui/System/Drawing/Size.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
   ../../../include/gui/System/Math.h
-Form.o: System/Mona/Forms/Form.cpp \
+System/Mona/Forms/Form.o: System/Mona/Forms/Form.cpp \
   ../../../include/gui/System/Mona/Forms/Form.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
@@ -324,7 +324,7 @@ Form.o: System/Mona/Forms/Form.cpp \
   ../../../include/gui/System/Mona/Forms/Application.h \
   ../../../include/gui/System/Mona/Forms/ControlPaint.h \
   ../../../include/gui/System/Math.h
-Label.o: System/Mona/Forms/Label.cpp \
+System/Mona/Forms/Label.o: System/Mona/Forms/Label.cpp \
   ../../../include/gui/System/Mona/Forms/Label.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
@@ -360,7 +360,7 @@ Label.o: System/Mona/Forms/Label.cpp \
   ../../../include/gui/System/Drawing/Graphics.h \
   ../../../include/gui/System/Drawing/Rectangle.h \
   ../../../include/gui/System/Drawing/Point.h
-Encoding.o: System/Text/Encoding.cpp \
+System/Text/Encoding.o: System/Text/Encoding.cpp \
   ../../../include/gui/System/Text/Encoding.h \
   ../../../include/gui/System/Array.h ../../../include/monapi.h \
   ../../../include/sys/types.h ../../../include/sys/error.h \

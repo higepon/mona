@@ -36,7 +36,12 @@ clean:
 	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
 
 depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+	rm -f dependencies
+	for src in $(SOURCES); \
+	do \
+		echo -n `echo $$src | sed "s/\(.*\)\/.*$$/\1\//"` >> dependencies; \
+		$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $$src >> dependencies; \
+	done
 
 install: $(TARGET)
 
