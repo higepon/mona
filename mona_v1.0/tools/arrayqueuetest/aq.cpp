@@ -68,9 +68,11 @@ int main(int argc, char** argv)
 
     FOREACH(Queue, value, runq)
     {
-        FOREACH_Q(value, Queue*, hoge)
+//        FOREACH_Q(value, Queue*, hoge)
+       for (Queue* hoge = (Queue* )((value).next); hoge != &(value); hoge = (Queue* )((hoge)->next))
        {
            printf("<%x>", hoge);
+           fflush(stdout);
        }
     }
 
