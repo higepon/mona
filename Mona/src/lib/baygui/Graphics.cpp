@@ -114,25 +114,9 @@ void Graphics::drawImage(Image *image, int x, int y, int w, int h)
 void Graphics::drawPixel(int x, int y, unsigned int color)
 {
 #if defined(PEKOE)
-	sys_gs_set_pixel_RGB(tx + i, ty + j, color);
+	sys_gs_set_pixel_RGB(tx + x, ty + y, color);
 #elif defined(MONA)
-	// 
-	// 性能向上のためMonAPI::Screen::putPixel16 をそのまま持ってきている
-	//
-	
-	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
-	byte* colorPtr = (byte*)&color;
-
-	switch (bytesPerPixel) {
-	case 2: // 16bpp
-		*((word*)vramPtr) = MonAPI::Color::bpp24to565(color);
-		break;
-	default: // 24bpp
-		vramPtr[0] = colorPtr[0];
-		vramPtr[1] = colorPtr[1];
-		vramPtr[2] = colorPtr[2];
-		break;
-	}
+	screen->putPixel16(tx + x, ty + y, color);
 #endif
 }
 
@@ -146,7 +130,7 @@ void Graphics::drawPixelXOR(int x, int y, unsigned int color)
 {
 #if defined(MONA)
 	// 
-	// 性能向上のためMonAPI::Screen::putPixel16 をそのまま持ってきている
+	// MonAPI::Screen::putPixel16 をそのまま持ってきている
 	//
 
 	byte* vramPtr = &vram[((tx + x) + (ty + y) * width) * bytesPerPixel];
