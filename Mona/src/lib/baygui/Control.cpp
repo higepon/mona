@@ -180,6 +180,13 @@ void Control::setEnabled(bool enabled)
 void Control::setFocused(bool focused)
 {
 	this->focused = focused;
+	if (focused == false) {
+		_focusEvent->type = FOCUS_OUT;
+		postEvent(_focusEvent);
+	} else {
+		_focusEvent->type = FOCUS_IN;
+		postEvent(_focusEvent);
+	}
 }
 
 /**
@@ -188,7 +195,15 @@ void Control::setFocused(bool focused)
  */
 void Control::setIconified(bool iconified)
 {
-	this->iconified = iconified;
+	if (iconified == false) {
+		this->iconified = iconified;
+		_iconEvent->type = DEICONIFIED;
+		postEvent(_iconEvent);
+	} else {
+		this->iconified = iconified;
+		_iconEvent->type = ICONIFIED;
+		postEvent(_iconEvent);
+	}
 }
 
 /**
