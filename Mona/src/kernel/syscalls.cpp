@@ -859,6 +859,16 @@ void syscall_entrance() {
             break;
         }
 
+    case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
+
+        info->eax = (dword)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), true);
+        break;
+
+    case SYSTEM_CALL_DEALLOCATE_DMA_MEMORY:
+
+        g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), info->esi);
+        break;
+
     default:
         g_console->printf("syscall:default");
         break;

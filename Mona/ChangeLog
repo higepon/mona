@@ -1,3 +1,17 @@
+2004-12-27  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/messages.cpp (monapi_allocate_dma_memory): 追加
+                                    (monapi_deallocate_dma_memory): 追加
+
+        * src/kernel/syscalls.cpp: システムコール追加
+
+        * include/sys/types.h (SYSTEM_CALL_ALLOCATE_DMA_MEMORY)  : 追加
+                              (SYSTEM_CALL_DEALLOCATE_DMA_MEMORY): 追加
+
+        * src/kernel/PageManager.cpp (setup): DMA用のメモリを予約
+                         (allocateDMAMemory): DMA用メモリの割り当ての関数追加
+                       (deallocateDMAMemory): DMA用メモリの開放の関数追加
+
 2004-12-25  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/hige3D/Canvas.h : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data) 

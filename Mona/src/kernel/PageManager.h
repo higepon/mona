@@ -32,6 +32,8 @@ class PageManager {
     void returnPhysicalPages(PageEntry* directory);
     void returnPageTable(PageEntry* table);
     void returnPages(PageEntry* directory, LinearAddress address, dword size);
+    byte* allocateDMAMemory(PageEntry* directory, bool isUser);
+    void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address);
 
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const;
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const;
@@ -83,6 +85,7 @@ class PageManager {
     PhysicalAddress pageTablePoolAddress_;
     PhysicalAddress vram_;
     PageEntry* kernelDirectory_;
+    BitMap* reservedDMAMap_;
 
   public:
     static const byte FAULT_NOT_EXIST          = 0x01;

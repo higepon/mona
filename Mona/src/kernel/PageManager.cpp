@@ -165,6 +165,7 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
 */
 int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddress
                                        , bool present, bool writable, bool isUser) const
+
 {
     PageEntry* table;
     dword directoryIndex = getDirectoryIndex(laddress);
@@ -181,6 +182,55 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     }
 
     return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser);
+}
+
+byte* PageManager::allocateDMAMemory(PageEntry* directory, bool isUser)
+{
+    int foundMemory = reservedDMAMap_->find();
+    if (foundMemory == BitMap::NOT_FOUND) return NULL;
+
+    PhysicalAddress address = foundMemory * ARCH_PAGE_SIZE + 0x800000;
+
+    PageEntry* table;
+    dword directoryIndex = getDirectoryIndex(address);
+    dword tableIndex     = getTableIndex(address);
+
+    if (isPresent(&(directory[directoryIndex])))
+    {
+        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    }
+    else
+    {
+        table = allocatePageTable();
+        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        setAttribute(&(directory[directoryIndex]), true, true, isUser, (PhysicalAddress)table);
+    }
+
+    setAttribute(&(table[tableIndex]), true, true, isUser, address);
+    return (byte*)(address);
+}
+
+void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress address)
+{
+    int index = (address - 0x800000) / ARCH_PAGE_SIZE;
+
+    if (index < 0 || index >= reservedDMAMap_->getBitsNumber()) return;
+
+    reservedDMAMap_->clear(index);
+
+    dword target         = index * ARCH_PAGE_SIZE + 0x800000;
+    dword directoryIndex = getDirectoryIndex(target);
+    dword tableIndex     = getTableIndex(target);
+
+    if (!isPresent(&directory[directoryIndex])) return;
+
+    PageEntry* table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+
+    if (isPresent(&table[tableIndex]))
+    {
+        table[tableIndex] = 0;
+    }
+    return;
 }
 
 /*!
@@ -207,6 +257,14 @@ void PageManager::setup(PhysicalAddress vram)
     {
         memoryMap_->mark(i + 1024);
         setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
+    }
+
+    /* 8MB + 32KB is reserved for DMA */
+    reservedDMAMap_ = new BitMap(8);
+    for (int i = 0; i < 8; i++)
+    {
+        int index = (8 * 1024 * 1024 + i * ARCH_PAGE_SIZE) / ARCH_PAGE_SIZE;
+        memoryMap_->mark(index);
     }
 
     /* Map 0-8MB */
@@ -313,7 +371,6 @@ PageEntry* PageManager::createKernelPageDirectory()
 */
 PageEntry* PageManager::createNewPageDirectory() {
 
-#if 1
     PageEntry* directory = allocatePageTable();
     PageEntry* table;
 
@@ -332,29 +389,7 @@ PageEntry* PageManager::createNewPageDirectory() {
 
         setAttribute(&(directory[i]), true, true, false, (PhysicalAddress)table);
     }
-#endif
 
-#if 0
-    PageEntry* table1    = allocatePageTable();
-    PageEntry* table2    = allocatePageTable();
-    PageEntry* directory = allocatePageTable();
-
-    /* allocate page to physical address 0-4MB */
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
-
-        setAttribute(&(table1[i]), true, true, false, 4096 * i);
-    }
-
-    for (int i = 0; i < ARCH_PAGE_TABLE_NUM; i++) {
-
-        setAttribute(&(table2[i]), true, true, false, 4096 * 1024 + 4096 * i);
-    }
-
-    memset(directory, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-    setAttribute(&(directory[0]), true, true, false, (PhysicalAddress)table1);
-    setAttribute(&(directory[1]), true, true, false, (PhysicalAddress)table2);
-
-#endif
     /* find 4KB align for VRAM */
     dword vram = vram_;
     vram = ((int)vram + 4096 - 1) & 0xFFFFF000;
@@ -433,11 +468,11 @@ void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword
 
     LinearAddress start = address % 4096 ? ((address + 4095) & 0xFFFFF000) : address;
 
-	logprintf("start=%x size=%x\n", start, size);
+        logprintf("start=%x size=%x\n", start, size);
 
     for (LinearAddress target = start; target + 4095 <= address + size; target += 4096)
     {
-	logprintf("target=%x\n", target);
+        logprintf("target=%x\n", target);
         dword directoryIndex = getDirectoryIndex(target);
         dword tableIndex     = getTableIndex(target);
 

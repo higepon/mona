@@ -6,7 +6,29 @@
 
 using namespace MonAPI;
 
-#define MAIN_7
+#define MAIN_1
+
+#ifdef MAIN_8
+
+int MonaMain(List<char*>* pekoe)
+{
+    byte* dma = monapi_allocate_dma_memory();
+
+    printf("dma = %x\n", dma);
+
+    dma[3] = 0xff;
+
+    printf("after\n");
+    monapi_deallocate_dma_memory(dma);
+
+    dma[3] = 0xff;
+
+
+    return 0;
+}
+
+#endif
+
 
 #ifdef MAIN_7
 
