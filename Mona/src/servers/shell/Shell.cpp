@@ -145,9 +145,9 @@ void Shell::commandExecute(bool prompt)
     {
         cmdLine = command;
     }
-    else if (command.endsWith(".BIN") || command.endsWith(".BN2")
-        || command.endsWith(".ELF") || command.endsWith(".EL2")
-        || command.endsWith(".EXE") || command.endsWith(".EX2"))
+    else if (command.endsWith(".BIN") || command.endsWith(".BN2") || command.endsWith(".BN5")
+        || command.endsWith(".ELF") || command.endsWith(".EL2") || command.endsWith(".EL5")
+        || command.endsWith(".EXE") || command.endsWith(".EX2") || command.endsWith(".EX5"))
     {
         cmdLine = APPSDIR"/" + command;
     }

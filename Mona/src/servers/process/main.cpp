@@ -78,11 +78,11 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     monapi_cmemoryinfo* mi = NULL;
     dword entryPoint = 0xa0000000;
     int result = 1, svr_id = -1;
-    if (path.endsWith(".ELF") || path.endsWith(".EL2"))
+    if (path.endsWith(".ELF") || path.endsWith(".EL2") || path.endsWith(".EL5"))
     {
         svr_id = ID_ELF_SERVER;
     }
-    else if (path.endsWith(".EXE") || path.endsWith(".EX2"))
+    else if (path.endsWith(".EXE") || path.endsWith(".EX2") || path.endsWith(".EX5"))
     {
         svr_id = ID_PE_SERVER;
     }
@@ -113,6 +113,10 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     else if (path.endsWith(".BN2"))
     {
         mi = monapi_call_file_decompress_bz2_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+    }
+    else if (path.endsWith(".BN5"))
+    {
+        mi = monapi_call_file_decompress_st5_file(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
     }
     else
     {
