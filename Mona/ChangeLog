@@ -1,3 +1,19 @@
+2004-02-28  bayside  <bayside@users.sourceforge.jp>
+
+        * apps/baygui/guitest1/guitest1.cpp: Checkbox í«â¡
+
+        * src/lib/baygui/Control.cpp: ALING_?? Ç"enum"Ç©ÇÁ"static const int"Ç÷ïœçX
+
+        * src/lib/baygui/Makefile: Checkbox í«â¡
+
+        * src/lib/baygui/main.cpp: int main() í«â¡
+
+        * src/lib/baygui/FontMetrics.cpp: #include <baygui.h> -> #include "baygui.h"
+
+        * src/lib/baygui/Checkbox.cpp: Checkbox í«â¡
+
+        * include/baygui.h: Checkbox í«â¡
+
 2004-02-22  bayside  <bayside@users.sourceforge.jp>
 
         * src/lib/baygui/Control.cpp: create -> onStart, dispose -> onExit
