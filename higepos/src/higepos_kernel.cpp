@@ -36,7 +36,7 @@ void startKernel(void) {
     _sysPrintln("------------------------------------------------------");
     _sysPrintln("      Higepos Kernel starting                         ");
     _sysPrintln("        ________ A A                                  ");
-    _sysPrintln("      ~/ ______( `D`) < thanks ProgramingBoard@2ch    ");
+    _sysPrintln("      ~/ ______( `D`) < thanks ProgrammingBoard@2ch   ");
     _sysPrintln("        UU       U U                                  ");
     _sysPrintln("------------------------------------------------------");
 
@@ -45,13 +45,19 @@ void startKernel(void) {
     _sysUnlock();
     _sysPrintln("idt set done");
 
+    
+
     /* testing operator new */
     //    Point* point1 = new Point();?????????
     //    _sysPrintlnInt(point1->getX());
     Point* point2 = new Point(5, -1);
     _sys_printf("[Point(5, -1) getY() = %d]\n", point2->getY());
+
     Point* point3 = new Point(5, -1);
     _sys_printf("[Point(5, -1) getY() = %d]\n", point3->getY());
+
+    //    delete(point2);
+
 
     /* testing types */
     _sys_printf("[sizeof(H_SIZE_T) is %d byte]  ", sizeof(H_SIZE_T));
@@ -60,6 +66,7 @@ void startKernel(void) {
     /* testing malloc */
     _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
     //    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
+
 
     /* testing vector */
 //      Vector<int> list;

@@ -73,7 +73,7 @@ void* X86MemoryManager::allocateMemory(H_SIZE_T size) {
     this->addToEntry(&usedEntry_, usedBlock, usedBlockSize);
 
     /* return address of allocated memory */
-    this->printInfo("4");
+    this->printInfo("allocate memory");
     return (void*)usedBlock->startAddress;
 }
 
@@ -93,8 +93,9 @@ void X86MemoryManager::freeMemory(void* address) {
     struct memoryEntry* targetAddress = (struct memoryEntry*)address;
 
     this->deleteFromEntry(&usedEntry_, targetAddress, targetAddress->size);
-    this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
+    //    this->addToEntry(&freeEntry_, targetAddress, targetAddress->size);
     this->concatBlock(freeEntry_, targetAddress);
+    this->printInfo("free memory");
 }
 
 /*!
@@ -156,38 +157,38 @@ H_SIZE_T X86MemoryManager::getRealSize(H_SIZE_T size) {
 */
 void X86MemoryManager::printInfo(char* str) {
 
-    struct memoryEntry* entry;
-    int i;
+//      struct memoryEntry* entry;
+//      int i;
 
-    for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
+//      for (entry = freeEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-        _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
-    }
+//          _sys_printf("%sfree block%d address=%d size=%d\n", str, i, entry, entry->size);
+//      }
 
-    for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
+//      for (entry = usedEntry_, i = 0; entry != (struct memoryEntry*)NULL; entry = entry->next, i++) {
 
-        _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
+//          _sys_printf("%sused block%d address=%d size=%d\n", str, i, entry, entry->size);
 
-    }
+//      }
 
     struct memoryEntry* fentry = freeEntry_;
     struct memoryEntry* uentry = usedEntry_;
-    _sys_printf("memory codition ");
+    _sys_printf("memory codition @@@@@@@@@ ");
     while (fentry || uentry) {
 
         if ((uentry && fentry > uentry) || (!fentry && uentry)) {
-            _sys_printf("U");
+            _sys_printf("U%d", uentry->size);
             uentry = uentry->next;
             continue;
         }
 
         if ((fentry && uentry > fentry) || (!uentry && fentry)) {
-            _sys_printf("F");
+            _sys_printf("F%d", fentry->size);
             fentry = fentry->next;
             continue;
         }
     }
-    _sys_printf("\n");
+    _sys_printf(" %s \n", str);
 }
 
 /*!
