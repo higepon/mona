@@ -32,12 +32,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  文字列クラス
 */
 class String : public Object {
-private:
+protected:
+	/** 内部文字列 */
 	char *c_str;
 
 public:
 	String::String(char *s);
 	virtual String::~String();
+	virtual const char *className() {return "baygui.String";}
 	int length();
 	char *toString();
 };

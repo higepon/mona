@@ -49,6 +49,7 @@ protected:
 public:
 	Window::Window();
 	virtual Window::~Window();
+	virtual const char *className() {return "baygui.Window";}
 	virtual char *getTitle();
 	virtual void setTitle(char *title);
 	virtual void setRect(int x, int y, int width, int height);

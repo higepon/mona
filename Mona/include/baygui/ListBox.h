@@ -32,14 +32,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  リストボックスクラス
 */
 class ListBox : public Control {
-private:
+protected:
+	/** 選択位置 */
 	int selectedIndex;
+	/** データリスト */
 	LinkedList *_dataList;
+	/** 項目イベント */
 	Event *_itemEvent;
 
 public:
 	ListBox::ListBox();
 	virtual ListBox::~ListBox();
+	virtual const char *className() {return "baygui.ListBox";}
 	virtual int getSelectedIndex();
 	virtual char *getSelectedItem();
 	virtual void select(int index);

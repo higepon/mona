@@ -32,7 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  IMEマネージャクラス
 */
 class ImeManager : public Control {
-private:
+protected:
 	/** IMEサーバーID */
 	dword imesvrID;
 	/** 漢字リスト */
@@ -58,6 +58,7 @@ private:
 public:
 	ImeManager::ImeManager();
 	virtual ImeManager::~ImeManager();
+	virtual const char *className() {return "baygui.ImeManager";}
 	virtual void clearBuffer(char *buffer);
 	virtual void insertCharacter(char *buffer, char c);
 	virtual void insertString(char *buffer, const char *str);

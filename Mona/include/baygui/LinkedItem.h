@@ -42,6 +42,7 @@ public:
 	
 	LinkedItem::LinkedItem(Object *o);
 	virtual LinkedItem::~LinkedItem();
+	virtual const char *className() {return "baygui.LinkedItem";}
 };
 
 #endif // _LINKEDITEM_H_INCLUDED_

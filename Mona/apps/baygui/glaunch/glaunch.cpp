@@ -98,7 +98,7 @@ void GLaunch::execute()
 {
 	char name[24];
 	char *item = list->getSelectedItem();
-	if (item != NULL && strlen(item) > 0) {
+	if (prevIndex != -1 && item != NULL && strlen(item) > 0) {
 		strcpy(name, "/APPS/");
 		strcat(name, item);
 		// *.APP の場合
@@ -111,6 +111,7 @@ void GLaunch::execute()
 			name[strlen(name) - 1] = '5';
 		}
 		// アプリ実行
+		prevIndex = -1;
 		monapi_call_process_execute_file(name, MONAPI_FALSE);
 	}
 }
@@ -121,7 +122,6 @@ void GLaunch::onEvent(Event *event)
 	if (event->type == ITEM_SELECTED) {
 		// 前の選択位置と同じ（ダブルクリック）
 		if (prevIndex == list->getSelectedIndex()) {
-			prevIndex = -1;
 			execute();
 		} else {
 			prevIndex = list->getSelectedIndex();

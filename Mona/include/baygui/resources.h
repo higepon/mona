@@ -28,9 +28,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(_RESOURCES_H_INCLUDED_)
 #define _RESOURCES_H_INCLUDED_
 
-#define BAYGUI_VERSION   "BayGUI build 04.11.15"
+#define BAYGUI_VERSION   "BayGUI build 04.11.28"
 
 #define GUISERVER_NAME   "BAYGUI.EX5"
+#define FONTSERVER_NAME  "FONTSVR.EX5"
 #define IMESERVER_NAME   "IMESVR.EX5"
 #define LAUNCHER_NAME    "/APPS/GLAUNCH.EX5"
 #define WALLPAPER_NAME   "/SERVERS/MONAWALL.BM5"
@@ -72,13 +73,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FONT_BOLD         1
 /** 斜字体 */
 #define FONT_ITALIC       2
-
-/** 不明形式イメージ */
-#define UNKNOWN_IMAGE     0
-/** ビットマップ形式イメージ */
-#define BITMAP_IMAGE      1
-/** アイコン形式イメージ */
-#define ICON_IMAGE        2
 
 /** 左寄せ */
 #define ALIGN_LEFT        1

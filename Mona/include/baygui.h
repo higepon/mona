@@ -83,7 +83,7 @@ unsigned char *getByteArray(char *path);
 #include "baygui/MouseEvent.h"
 #include "baygui/Rect.h"
 #include "baygui/Font.h"
-#include "baygui/FontManager.h"
+#include "baygui/FontMetrics.h"
 #include "baygui/Image.h"
 #include "baygui/Bitmap.h"
 #include "baygui/Icon.h"

@@ -38,12 +38,12 @@ protected:
 
 	virtual Control *findChild();
 	virtual Control *findChild(int x, int y);
-	virtual LinkedItem *getLinkedItem(Control *control);
 	virtual bool checkNeedsPaint(Rect *srect, Rect *drect);
 
 public:
 	Container::Container();
 	virtual Container::~Container();
+	virtual const char *className() {return "baygui.Container";}
 	virtual void add(Control *control) = 0;
 	virtual void remove(Control *control) = 0;
 };

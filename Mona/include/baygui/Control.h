@@ -71,6 +71,7 @@ protected:
 public:
 	Control::Control();
 	virtual Control::~Control();
+	virtual const char *className() {return "baygui.Control";}
 	virtual void onEvent(Event *event);
 	virtual void onPaint(Graphics *g);
 	virtual void postEvent(Event *event);

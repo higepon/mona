@@ -25,29 +25,35 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if !defined(_IMAGE_H_INCLUDED_)
-#define _IMAGE_H_INCLUDED_
+#if !defined(_FONTMETRICS_H_INCLUDED_)
+#define _FONTMETRICS_H_INCLUDED_
 
 /**
- イメージクラス
+ フォントマネージャクラス
 */
-class Image : public Object {
+class FontMetrics : public Object {
 protected:
-	/** 幅 */
+	/** シングルトンインスタンス */
+	static FontMetrics *instance;
+	/** フォント名 */
+	char name[9];
 	int width;
-	/** 高さ */
 	int height;
-	/** 内部データ */
-	unsigned int *data;
-	
+	int offsetListLength;
+	int *offsetList;
+	unsigned char *fp;
+	FontMetrics::FontMetrics();
+	virtual void loadFont(char *path);
+	dword fontsvrID;
+
 public:
-	Image::Image();
-	Image::Image(int width, int height);
-	virtual Image::~Image();
-	virtual const char *className() {return "baygui.Image";}
+	//monapi_cmemoryinfo *fpMemory;
+	static FontMetrics *getInstance();
+	virtual FontMetrics::~FontMetrics();
+	virtual const char *className() {return "baygui.FontMetrics";}
+	virtual bool decodeCharacter(unsigned int utf16, int *width, int *height, char *data);
+	virtual int getWidth(char *str);
 	virtual int getHeight();
-	virtual int getWidth();
-	virtual unsigned int *getData();
 };
 
-#endif // _IMAGE_H_INCLUDED_
+#endif // _FONTMETRICS_H_INCLUDED_

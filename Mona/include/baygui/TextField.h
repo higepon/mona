@@ -32,14 +32,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  テキストボックスクラス
 */
 class TextField : public Control {
-private:
+protected:
+	/** 文字 */
 	char text[MAX_TEXT_LEN];
+	/** テキストイベント */
 	Event *_textEvent;
+	/** IME処理委譲クラス */
 	ImeManager *_imeManager;
 
 public:
 	TextField::TextField();
 	virtual TextField::~TextField();
+	virtual const char *className() {return "baygui.TextField";}
 	virtual void setText(char *text);
 	virtual char *getText();
 	virtual void repaint();

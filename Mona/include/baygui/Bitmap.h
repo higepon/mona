@@ -32,18 +32,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  イメージクラス
 */
 class Bitmap : public Image {
-private:
-	unsigned int *data;
-	
 protected:
 	virtual bool decode(unsigned char *fp);
 	
 public:
+	Bitmap::Bitmap();
 	Bitmap::Bitmap(int width, int height);
 	Bitmap::Bitmap(char *path);
 	virtual Bitmap::~Bitmap();
-	virtual int getType();
-	virtual unsigned int *getData();
+	virtual const char *className() {return "baygui.Bitmap";}
 };
 
 #endif // _BITMAP_H_INCLUDED_

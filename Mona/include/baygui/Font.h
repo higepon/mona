@@ -32,13 +32,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  フォントクラス
 */
 class Font : public Object {
-private:
+protected:
+	/** フォント名 */
 	char name[8 + 1];
-	int style;
+	/** フォントスタイル */
+	int _style;
 	
 public:
 	Font::Font();
 	virtual Font::~Font();
+	virtual const char *className() {return "baygui.Font";}
 	virtual void setName(char *name);
 	virtual void setStyle(int style);
 	virtual char *getName();

@@ -45,6 +45,7 @@ public:
 	Rect::Rect();
 	Rect::Rect(int x, int y, int height, int width);
 	virtual Rect::~Rect();
+	virtual const char *className() {return "baygui.Rect";}
 };
 
 #endif // _RECT_H_INCLUDED_

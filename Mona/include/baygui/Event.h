@@ -43,6 +43,7 @@ public:
 	Event::Event();
 	Event::Event(int type, Control *source);
 	virtual Event::~Event();
+	virtual const char *className() {return "baygui.Event";}
 };
 
 #endif // _EVENT_H_INCLUDED_

@@ -40,6 +40,7 @@ public:
 	
 	MouseEvent::MouseEvent(int type, Control *target, int x, int y);
 	virtual MouseEvent::~MouseEvent();
+	virtual const char *className() {return "baygui.MouseEvent";}
 };
 
 #endif // _MOUSEEVENT_H_INCLUDED_

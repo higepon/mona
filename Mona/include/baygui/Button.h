@@ -32,13 +32,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ボタンクラス
 */
 class Button : public Control {
-private:
+protected:
+	/** ボタンを押したかどうか */
 	bool pushed;
+	/** ボタンのラベル */
 	char label[MAX_TEXT_LEN];
 	
 public:
+	Button::Button();
 	Button::Button(char *label);
 	virtual Button::~Button();
+	virtual const char *className() {return "baygui.Button";}
 	virtual void setLabel(char *label);
 	virtual char *getLabel();
 	virtual void repaint();

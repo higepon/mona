@@ -32,9 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  イメージクラス
 */
 class Icon : public Image {
-private:
-	unsigned int *data;
-
 protected:
 	virtual bool decode(unsigned char *fp);
 	
@@ -42,8 +39,7 @@ public:
 	Icon::Icon(int width, int height);
 	Icon::Icon(char *path);
 	virtual Icon::~Icon();
-	virtual int getType();
-	virtual unsigned int *getData();
+	virtual const char *className() {return "baygui.Icon";}
 };
 
 #endif // _ICON_H_INCLUDED_

@@ -40,6 +40,7 @@ public:
 	
 	KeyEvent::KeyEvent(int type, Control *target, int keycode, int modifiers);
 	virtual KeyEvent::~KeyEvent();
+	virtual const char *className() {return "baygui.KeyEvent";}
 };
 
 #endif // _KEYEVENT_H_INCLUDED_

@@ -32,7 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  描画クラス
 */
 class Graphics : public Object {
-private:
+protected:
 	int tx, ty, cx, cy, cw, ch, width, height;
 	unsigned char r, g, b;
 	unsigned int rgb24;
@@ -49,6 +49,7 @@ private:
 public:
 	Graphics::Graphics();
 	virtual Graphics::~Graphics();
+	virtual const char *className() {return "baygui.Graphics";}
 	virtual void drawImage(Image *image, int x, int y);
 	virtual void drawImage(Image *image, int x, int y, int w, int h);
 	virtual void drawPixel(int x, int y, unsigned int color);

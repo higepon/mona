@@ -33,14 +33,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class Object {
 protected:
-	/** スレッドID */
-	dword threadID;
+	/** ハンドル */
+	unsigned int _handle;
 
 public:
 	Object::Object();
 	virtual Object::~Object();
-	void setThreadID(dword threadID);
-	dword getThreadID();
+	virtual const char *className() {return "baygui.Object";}
+	virtual void setHandle(unsigned int handle);
+	virtual unsigned int getHandle();
 };
 
 #endif // _OBJECT_H_INCLUDED_

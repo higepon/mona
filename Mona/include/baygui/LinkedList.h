@@ -32,8 +32,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  双方向リスト
 */
 class LinkedList : public Object {
-private:
+protected:
+	/** リストの長さ */
 	int dataListLength;
+	
+	virtual LinkedItem *_get(int index);
+	virtual LinkedItem *getLinkedItem(Object *o);
+	virtual void _add(LinkedItem *item);
+	virtual void _remove(LinkedItem *item);
+	virtual void _sort(LinkedItem *item);
 	
 public:
 	/** 最初 */
@@ -43,12 +50,16 @@ public:
 	
 	LinkedList::LinkedList();
 	virtual LinkedList::~LinkedList();
+	virtual const char *className() {return "baygui.LinkedList";}
 	virtual int getLength();
-	virtual LinkedItem *getItem(int index);
-	virtual void add(LinkedItem *item);
-	virtual void remove(LinkedItem *item);
+	virtual Object *get(int index);
+	virtual Object *getFirst();
+	virtual Object *getLast();
+	virtual void add(Object *o);
+	virtual void remove(int index);
+	virtual void remove(Object *o);
 	virtual void removeAll();
-	virtual void sort(LinkedItem *item);
+	virtual void sort(Object *o);
 };
 
 #endif // _LINKEDLIST_H_INCLUDED_

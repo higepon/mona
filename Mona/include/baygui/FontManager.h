@@ -34,12 +34,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class FontManager : public Object {
 private:
 	static FontManager *instance;
-	char name[9];
-	int width, height, offsetListLength;
-	int *offsetList;
-	unsigned char *fp;
 	
 protected:
+	/** フォント名 */
+	char name[9];
+	/** フォント幅 */
+	int width;
+	/** フォント高さ */
+	int height;
+	/** オフセットリスト長さ */
+	int offsetListLength;
+	/** オフセットリスト */
+	int *offsetList;
+	/** フォントファイルポインター */
+	unsigned char *fp;
+	
 	FontManager::FontManager();
 	virtual void loadFont(char *path);
 

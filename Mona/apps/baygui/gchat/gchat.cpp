@@ -113,7 +113,7 @@ void GChat::onEvent(Event *event)
 	// 実行
 	if (event->type == TEXT_CHANGED) {
 		// 履歴追加
-		history->add(new LinkedItem(new String(text->getText())));
+		history->add(new String(text->getText()));
 		historyPtr = history->getLength();
 		messageList->add(text->getText());
 		messageList->repaint();
@@ -125,13 +125,13 @@ void GChat::onEvent(Event *event)
 		if (keycode == VKEY_UP) {
 			if (historyPtr > 0) {
 				historyPtr--;
-				text->setText(((String *)history->getItem(historyPtr)->data)->toString());
+				text->setText(((String *)history->get(historyPtr))->toString());
 			}
 		// １つ次の履歴
 		} else if (keycode == VKEY_DOWN) {
 			if (historyPtr < history->getLength() - 1) {
 				historyPtr++;
-				text->setText(((String *)history->getItem(historyPtr)->data)->toString());
+				text->setText(((String *)history->get(historyPtr))->toString());
 			} else {
 				text->setText("");
 			}

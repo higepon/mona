@@ -32,14 +32,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ラベルクラス
 */
 class Label : public Control {
-private:
+protected:
+	/** 文字表示位置 */
 	int align;
+	/** 文字 */
 	char text[MAX_TEXT_LEN];
 	
 public:
 	Label::Label(char *text);
 	Label::Label(char *text, int align);
 	virtual Label::~Label();
+	virtual const char *className() {return "baygui.Label";}
 	virtual void setText(char *text);
 	virtual char *getText();
 	virtual void repaint();
