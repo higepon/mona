@@ -62,9 +62,20 @@ KeyInfo* KeyBoardManager::getKeyInfo() {
     \param scancode original key scan code
 
     \author HigePon
-    \date   create:2002/10/12 update:2002/10/14
+    \date   create:2002/10/12 update:2002/10/19
 */
 void KeyBoardManager::setKeyScanCode(unsigned char scancode) {
+
+
+    /* check spceial key */
+
+        /* if spceial key flg = true */
+
+    /* if not spceial key and flg = true */
+        /* do something */
+
+
+    /* regular key */
 
     return;
 }
