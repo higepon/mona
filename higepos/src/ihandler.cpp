@@ -14,18 +14,20 @@
 #include<idt.h>
 #include<vga.h>
 #include<io.h>
-
+#include<KeyBoardManager.h>
 /*!
     \brief key stroke handler
 
     key storoke handler IRQ 1
 
     \author HigePon
-    \date   create:2002/07/25 update:2002/07/27
+    \date   create:2002/07/25 update:2002/10/12
 */
 void keyStrokeHandler() {
 
     _sysPrint("key stroke\n");
+
+    KeyBoardManager& km = KeyBoardManager::instance();
 
     char key = inportb(0x60);
 
@@ -52,6 +54,7 @@ void fault0dHandler() {
 
     _sysPrintln("fault0d");
     return;
+
 }
 
 

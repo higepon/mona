@@ -15,6 +15,33 @@
 #include<vga.h>
 
 /*!
+    \brief destructor
+
+    destructor
+
+    \author HigePon
+    \date   create:2002/10/12 update:
+*/
+KeyBoardManager::~KeyBoardManager() {
+}
+
+/*!
+    \brief private constructor
+
+    constructor
+
+    do nothing
+
+    \author HigePon
+    \date   create:2002/10/12 update:
+*/
+KeyBoardManager::KeyBoardManager() {
+    /* do nothing */
+    return;
+}
+
+
+/*!
     \brief getKeyInfo
 
     get key information
@@ -24,7 +51,7 @@
 */
 KeyInfo* KeyBoardManager::getKeyInfo() {
 
-    return (KeyInfo*)0;
+    return (KeyInfo*)5;
 }
 
 /*!
