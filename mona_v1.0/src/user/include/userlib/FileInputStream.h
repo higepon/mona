@@ -23,7 +23,7 @@ class FileInputStream : public InputStream {
   protected:
     char* file_;
     dword readSize_;
-    dword fileSize_;
+    volatile dword fileSize_;
     bool isOpen_;
 };
 #endif

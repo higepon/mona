@@ -53,6 +53,9 @@ const int FAT12::DRIVER_READ_ERROR  = 5;
 const int FAT12::FILE_EXIST_ERROR   = 6;
 const int FAT12::DRIVER_WRITE_ERROR = 7;
 const int FAT12::END_OF_FILE        = 8;
+const int FAT12::IS_OPEN_ERROR      = 9;
+const int FAT12::INVALID_FILE_NAME  = 10;
+const int FAT12::FILE_NOT_FOUND     = 11;
 const int FAT12::PATH_LENGTH        = 512;
 const char FAT12::PATH_SEP          = '\\';
 
@@ -460,10 +463,16 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
     char* file;
     char* ext;
 
-    if (isOpen_) return false;
+    if (isOpen_) {
+        errNum_ = IS_OPEN_ERROR;
+        return false;
+    }
 
     int length = strlen(filename);
-    if (length > 16 || length < 1) return false;
+    if (length > 16 || length < 1) {
+        errNum_ = INVALID_FILE_NAME;
+        return false;
+    }
 
     /* save current directory */
     int currentDirectory = currentDirectory_;
@@ -477,7 +486,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
     if (!readEntry()) return false;
 
-    /* find file to open */
+    /* find file to open*/
     for (int j = 0; j < 16; j++) {
 
         /* free */
@@ -507,6 +516,7 @@ bool FAT12::open(const char* path, const char* filename, int mode) {
 
     /* file not found */
     currentDirectory_ = currentDirectory;
+    errNum_ = FILE_NOT_FOUND;
     return false;
 }
 

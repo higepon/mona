@@ -730,6 +730,7 @@ int FileInputStream::open() {
         result = syscall_file_open(p1, p2, &fileSize_);
     }
 
+
     if (result == 0) {
         isOpen_ = true;
     }
@@ -1075,7 +1076,7 @@ int syscall_set_cursor(int x, int y) {
     return (int)result;
 }
 
-int syscall_file_open(char* path, char* file, dword* size) {
+int syscall_file_open(char* path, char* file, volatile dword* size) {
 
     int result;
 

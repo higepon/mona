@@ -49,7 +49,7 @@ extern "C" int syscall_get_cursor(int* x, int* y);
 extern "C" int syscall_set_cursor(int x, int y);
 extern "C" int syscall_mutex_destroy(int id);
 extern "C" int syscall_map(dword pid, dword sharedId, dword linearAddress, dword size);
-extern "C" int syscall_file_open(char* path, char* file, dword* size);
+extern "C" int syscall_file_open(char* path, char* file, volatile dword* size);
 extern "C" int syscall_file_read(char* buf, dword size, dword* readSize);
 extern "C" int syscall_file_close();
 extern "C" int syscall_fdc_open();

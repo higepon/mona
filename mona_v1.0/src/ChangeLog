@@ -1,5 +1,7 @@
 2004-03-07  higepon  <higepon@users.sourceforge.jp>
 
+        * FAT12.cpp: ファイルオープン時のエラーコードを取得
+
         * user/userlib/userlib.cpp: ~MonaApplicationのデストラクタでキー送信登録解除
 
         * user/KeyBoardServer/KeyBoardServer.cpp : キー送信登録解除を出来るようにした。
