@@ -40,6 +40,9 @@
 #define FDC_DOR_SECONDARY 0x372
 #define FDC_MSR_PRIMARY   0x3f4
 #define FDC_MSR_SECONDARY 0x374
+#define FDC_DR_PRIMARY    0x3f5
+#define FDC_DR_SECONDARY  0x375
+
 
 /* summary */
 #define FDC_DOR_RESET   0
@@ -172,13 +175,13 @@ bool MFDCDriver::sendCommand(const byte command[], const byte length) {
     /* check fdc status ready */
     if (!waitMSRReady()) {
 
-	_sys_printf("MFDCDriver#sendCommand: timeout\n");
-	return false;
+        _sys_printf("MFDCDriver#sendCommand: timeout\n");
+        return false;
     }
 
-
+    /* send command */
     for (int i = 0; i < length; i++) {
-        //outprotb
+        outportb(FDC_DR_PRIMARY, command[i]);
     }
 
     return true;
