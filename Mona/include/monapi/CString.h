@@ -23,8 +23,8 @@ namespace MonAPI
 
         bool operator ==(const char* text) const;
         bool operator ==(const CString& text) const;
-        inline bool operator !=(const char* text) const { return *this != text; }
-        inline bool operator !=(const CString& text) const { return *this != text; }
+        inline bool operator !=(const char* text) const { return !this->operator ==(text); }
+        inline bool operator !=(const CString& text) const { return !this->operator ==(text); }
         CString& operator =(const char* text);
         CString& operator =(const CString& text);
         void operator +=(const char* text);

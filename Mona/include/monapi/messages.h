@@ -19,7 +19,9 @@ enum
 
     MSG_FILE_READ_DATA = 0x0400,
     MSG_FILE_DECOMPRESS_BZ2,
-    MSG_FILE_DECOMPRESS_BZ2_FILE
+    MSG_FILE_DECOMPRESS_BZ2_FILE,
+
+    MSG_ELF_EXECUTE_FILE = 0x0500
 };
 
 enum
@@ -28,6 +30,7 @@ enum
     ID_KEYBOARD_SERVER,
     ID_FILE_SERVER,
     ID_GUI_SERVER,
+    ID_ELF_SERVER,
     ID_NUMBER_OF_SERVERS
 };
 
@@ -42,6 +45,7 @@ extern int monapi_call_mouse_set_cursor(int enabled);
 extern monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, int prompt);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi);
 extern monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, int prompt);
+extern int monapi_call_elf_execute_file(const char* command_line, int prompt);
 #ifdef __cplusplus
 }
 #endif
