@@ -248,6 +248,7 @@ int execSysConf()
 {
     /* only one process can use fd */
     while (Semaphore::down(&g_semaphore_fd));
+
     g_fdcdriver->motor(ON);
     g_fdcdriver->recalibrate();
     g_fdcdriver->recalibrate();
@@ -256,6 +257,7 @@ int execSysConf()
     /* file open */
     if (!(g_fs->open("/MONA.CFG", 1)))
     {
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
         return 1;
     }
@@ -269,6 +271,7 @@ int execSysConf()
     memset(buf, 0, 512 * readTimes);
     if (buf == NULL)
     {
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
         return 2;
     }
@@ -277,6 +280,7 @@ int execSysConf()
     if (!g_fs->read(buf, fileSize))
     {
         free(buf);
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
         return g_fs->getErrorNo();
     }
@@ -284,6 +288,7 @@ int execSysConf()
     /* close */
     if (!g_fs->close())
     {
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
     }
 

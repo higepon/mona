@@ -1,3 +1,11 @@
+2004-04-01  higepon  <higepon@users.sourceforge.jp>
+
+        * Makefile : make->$(MAKE)
+
+        * FDCDriver.cpp: FDCのモーターのOFF忘れを無くした｡
+
+        * user/jpegls/jpegdemo.cpp (MonaMain): メモリ解放をまじめに
+
 2004-03-31  higepon  <higepon@users.sourceforge.jp>
 
         * user/ShellServer/ShellServer.cpp: シェル入力時に .ELFを補う

@@ -220,10 +220,9 @@ void FDCDriver::motor(bool on) {
         interrupt_ = false;
         motorCount_++;
         outp8(FDC_DOR_PRIMARY, FDC_START_MOTOR);
-
         delay(4);
 
-    } else outp8(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);
+    } else {outp8(FDC_DOR_PRIMARY, FDC_STOP_MOTOR);}
     return;
 }
 

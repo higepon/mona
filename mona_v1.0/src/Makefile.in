@@ -70,7 +70,7 @@ copy_userapp : $(TARGET) $(USER_APP)
 	(cd $(BIN); $(FAT_TOOL) mona.img ../src/user/waba/HELLO.WRP APP/HELLO.WRP)
 
 $(USER_APP) :
-	(cd user; make)
+	(cd user; $(MAKE))
 
 $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	cat $(BOOT2) $(KERNEL) > $(KERNEL_IMG)
@@ -78,7 +78,7 @@ $(TARGET) : $(BOOT1) $(BOOT2) $(KERNEL) $(FAT_TOOL) userapp
 	(cd $(BIN); $(FAT_TOOL) mona.img KERNEL.IMG KERNEL.IMG)
 
 $(FAT_TOOL) :
-	(cd ../tools/fat_write; make)
+	(cd ../tools/fat_write; $(MAKE))
 
 $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(LD) --Map kernel.map $(LFLAGS) -o$@ $(OBJECTS) mode12h.o ihandler.o core.o -L$(CONTRIB_LIB) -lz
@@ -87,7 +87,7 @@ $(KERNEL) : $(OBJECTS) $(DRVROBJ) mode12h.o ihandler.o core.o
 	$(STRIP)  -O binary $@
 
 userapp :
-	(cd user; make)
+	(cd user; $(MAKE))
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -114,13 +114,13 @@ doxygen :
 
 depend:
 	gcc -MM $(CFINCLUDE) $(CXXFLAGS) $(SOURCES) > $(ENV)/dependencies
-	(cd user/userlib/; make depend)
-	(cd ../tools/fat_write; make depend)
+	(cd user/userlib/; $(MAKE) depend)
+	(cd ../tools/fat_write; $(MAKE) depend)
 
 clean :
 	rm -f $(OBJECTS) $(TARGET) $(BOOT1) $(BOOT2) $(KERNEL) $(KERNEL_IMG) $(FAT_TOOL) $(BIN)/mona.dbg mode12h.o ihandler.o core.o ../list/*.list
-	(cd user; make clean)
-	(cd ../tools/fat_write; make clean)
+	(cd user; $(MAKE) clean)
+	(cd ../tools/fat_write; $(MAKE) clean)
 
 dist :
 	cd ../bin; zip  -9 ../../mona-$(VERSION)-image.zip  mona.img

@@ -96,6 +96,7 @@ Shell::Shell() : position_(0) {
         }
         delete [] data;
     }
+
     delete fis;
 }
 

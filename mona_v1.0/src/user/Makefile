@@ -1,55 +1,55 @@
 include Makefile.inc
 
-all : lib_user hello clockdemo jpegdemo key map mouse noizbg reversidemo shellsvr network wabas
+all : userlib_mona HelloWorld_mona clock_mona jpegls_mona KeyBoardServer_mona map_mona MouseServer_mona noiz2bg_mona Reversi_mona ShellServer_mona NIC_mona waba_mona
 
-lib_user :
-	cd userlib; make
+userlib_mona :
+	cd userlib; $(MAKE)
 
-hello :
-	cd HelloWorld; make
+HelloWorld_mona :
+	cd HelloWorld; $(MAKE)
 
-clockdemo :
-	cd clock; make
+clock_mona :
+	cd clock; $(MAKE)
 
-jpegdemo :
-	cd jpegls; make
+jpegls_mona :
+	cd jpegls; $(MAKE)
 
-key :
-	cd KeyBoardServer; make
+KeyBoardServer_mona :
+	cd KeyBoardServer; $(MAKE)
 
-map :
-	cd MapServer; make
+map_mona :
+	cd MapServer; $(MAKE)
 
-mouse :
-	cd MouseServer; make
+MouseServer_mona :
+	cd MouseServer; $(MAKE)
 
-noizbg :
-	cd noiz2bg; make
+noiz2bg_mona :
+	cd noiz2bg; $(MAKE)
 
-reversidemo :
-	cd Reversi; make
+Reversi_mona :
+	cd Reversi; $(MAKE)
 
-shellsvr :
-	cd ShellServer; make
+ShellServer_mona :
+	cd ShellServer; $(MAKE)
 
-network:
-	cd NIC; make
+NIC_mona :
+	cd NIC; $(MAKE)
 
-wabas:
-	cd waba; make
+waba_mona :
+	cd waba; $(MAKE)
 
 clean :
-	(cd userlib; make clean)
-	(cd HelloWorld; make clean)
-	(cd clock; make clean)
-	(cd jpegls; make clean)
-	(cd KeyBoardServer; make clean)
-	(cd MapServer; make clean)
-	(cd MouseServer; make clean)
-	(cd noiz2bg; make clean)
-	(cd Reversi; make clean)
-	(cd ShellServer; make clean)
-	(cd NIC; make clean)
-	(cd waba; make clean)
+	(cd userlib;        $(MAKE) clean)
+	(cd HelloWorld;     $(MAKE) clean)
+	(cd clock;          $(MAKE) clean)
+	(cd jpegls;         $(MAKE) clean)
+	(cd KeyBoardServer; $(MAKE) clean)
+	(cd MapServer;      $(MAKE) clean)
+	(cd MouseServer;    $(MAKE) clean)
+	(cd noiz2bg;        $(MAKE) clean)
+	(cd Reversi;        $(MAKE) clean)
+	(cd ShellServer;    $(MAKE) clean)
+	(cd NIC;            $(MAKE) clean)
+	(cd waba;           $(MAKE) clean)
 
 

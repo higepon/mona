@@ -98,7 +98,6 @@ void syscall_entrance() {
         {
             KMutex* mutex = new KMutex(g_currentThread->process);
             info->eax = g_id->allocateID(mutex);
-	    g_console->printf("[0]%x", info->eax);
         }
         break;
 
@@ -393,8 +392,8 @@ void syscall_entrance() {
         enableInterrupt();
         while (Semaphore::down(&g_semaphore_fd));
         g_fs->close();
+        g_fdcdriver->motorAutoOff();
         Semaphore::up(&g_semaphore_fd);
-
         break;
 
     case SYSTEM_CALL_GET_PID:

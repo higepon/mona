@@ -83,7 +83,7 @@ class FatFile : public File
 {
 private:
     enum {
-        RESIZE_DELTA = 8
+        RESIZE_DELTA = 1
     };
 
 private:
