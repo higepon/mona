@@ -20,14 +20,32 @@
 #include<monaVga.h>
 
 /*!
-    struct for memory management
-    startAdress is the adress of allocated memory
+    \struct memory entry struct
+    \brief  startAdress is the adress of allocated memory
  */
 typedef struct memoryEntry {
     struct memoryEntry* next;
     size_t size;
     byte startAddress[0];
 };
+
+/*!
+    \struct page table entry
+ */
+typedef struct  {
+    unsigned present:1;
+    unsigned readWrite:1;
+    unsigned user:1;
+    unsigned pageWriteThrough:1;
+    unsigned pageCacheDisable:1;
+    unsigned Accesse:1;
+    unsigned dirty:1;
+    unsigned intelReserved1:1;
+    unsigned intelReserved2:1;
+    unsigned monaAvailable:3;
+    unsigned pageBaseAddress:20;
+} PTE;
+
 
 /*!
     memory management class
@@ -54,6 +72,16 @@ class IA32MemoryManager {
     void* allocateMemory(size_t);
     void freeMemory(void*);
     void printInfo(char*) const;
+
+    /*!
+        \brief enable A20
+
+        enable A20 line
+        over 1MB memory access enabled
+
+        \author HigePon
+        \date   create:2002/09/06 update:2002/12/25
+    */
     static void enableA20() {
         _sysLock();
 
@@ -89,6 +117,16 @@ class IA32MemoryManager {
         _sys_printf("enable A20 done!\n");
         return;
     }
+
+    /*!
+        \brief get the instance of this class
+
+        get the instance of this class
+        this class has no public constructor.
+
+        \author HigePon
+        \date   create:2002/09/06 update:2002/12/25
+    */
     static IA32MemoryManager& instance() {
         static IA32MemoryManager theInstance;
         return theInstance;
