@@ -157,7 +157,7 @@ void cpufaultHandler_0(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault00 - devied by 0");
-  
+
 }
 
 void cpufaultHandler_1(void){
@@ -173,7 +173,7 @@ void cpufaultHandler_1(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault01 - debug");
-  
+
 }
 
 
@@ -190,7 +190,7 @@ void cpufaultHandler_5(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault05 - BOUND");
-  
+
 }
 
 
@@ -207,7 +207,7 @@ void cpufaultHandler_6(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault06 - invalid op code");
-  
+
 }
 
 
@@ -224,7 +224,7 @@ void cpufaultHandler_7(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault07 no co-processor presents");
-  
+
 }
 
 
@@ -241,7 +241,7 @@ void cpufaultHandler_8(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:abort08 - double fault");
-  
+
 }
 
 
@@ -258,7 +258,7 @@ void cpufaultHandler_a(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault0A - invalid TSS");
-  
+
 }
 
 
@@ -275,7 +275,7 @@ void cpufaultHandler_b(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault0B - segment not presents");
-  
+
 }
 
 
@@ -292,7 +292,7 @@ void cpufaultHandler_c(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault0C - stack fault");
-  
+
 }
 
 
@@ -309,7 +309,7 @@ void cpufaultHandler_e(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault0E - page fault");
-  
+
 }
 
 
@@ -326,7 +326,7 @@ void cpufaultHandler_10(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault10 - co-processor error");
-  
+
 }
 
 
@@ -343,7 +343,7 @@ void cpufaultHandler_11(void){
                       , g_stack_view.stack7
                       );
     panic("unhandled:fault11 - arign check");
-  
+
 }
 
 

@@ -156,9 +156,7 @@ void FDCDriver::initilize() {
     delay();
     outportb(FDC_CCR_PRIMARY, 0);
 
-    interrupt_ = false;
     motor(ON);
-    while (!waitInterrupt());
 
     /* specify */
     if (!sendCommand(specifyCommand, sizeof(specifyCommand))) {
@@ -283,7 +281,8 @@ void FDCDriver::motor(bool on) {
     if (on) {
         interrupt_ = false;
         outportb(FDC_DOR_PRIMARY, FDC_START_MOTOR);
-        while (waitInterrupt());
+        while (!waitInterrupt());
+
 #ifdef FDC_DEBUG
     console_->printf("motor on:after waitInterrupt\n");
 #endif
