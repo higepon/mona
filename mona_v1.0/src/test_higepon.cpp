@@ -29,11 +29,13 @@ void ELFTester(byte* out) {
     info(DEV_NOTICE, "before recalibrate");
 
     g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
+    g_fdcdriver->recalibrate();
 
     info(DEV_NOTICE, "before read");
-    for (int i = 0; i < 10; i++) {
+    for (int i = 1; i < 25; i++) {
         memset(tbuf, 0x99, 512);
-        g_fdcdriver->read(1, tbuf);
+        g_fdcdriver->read(i, tbuf);
 
     }
 
