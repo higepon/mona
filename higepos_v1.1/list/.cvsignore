@@ -1,0 +1,4 @@
+*.o
+*.bin
+*.list
+TAGS

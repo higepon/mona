@@ -12,36 +12,36 @@ LIST       = ../list
 FIRST      = ${BIN}/firstboot.bin
 SECOND     = ${BIN}/secondboot.bin
 THIRD      = ${BIN}/third.bin
-SRC        = higeKernel.cpp   \
-             higeVga.cpp              \
-             higeIdt.cpp              \
-             higeIhandler.cpp         \
-             higeIo.cpp               \
+SRC        = higeKernel.cpp       \
+             higeVga.cpp          \
+             higeIdt.cpp          \
+             higeIhandler.cpp     \
+             higeIo.cpp           \
              x86MemoryManager.cpp \
-             higePureVirtual.cpp      \
+             higePureVirtual.cpp  \
              higeOperator.cpp     \
              higeUtil.cpp         \
              KeyBoardManager.cpp
 
-HEADER     = ${INCLUDE}/higeKernel.h           \
-             ${INCLUDE}/higeVga.h              \
-             ${INCLUDE}/higeIdt.h              \
-             ${INCLUDE}/higeIo.h               \
+HEADER     = ${INCLUDE}/higeKernel.h       \
+             ${INCLUDE}/higeVga.h          \
+             ${INCLUDE}/higeIdt.h          \
+             ${INCLUDE}/higeIo.h           \
              ${INCLUDE}/X86MemoryManager.h \
              ${INCLUDE}/higeOperator.h     \
              ${INCLUDE}/higeUtil.h         \
-             ${INCLUDE}/higeTypes.h     \
+             ${INCLUDE}/higeTypes.h        \
              ${INCLUDE}/KeyBoardManager.h
 
 OBJ        = ${BIN}/cstart.o           \
-             ${BIN}/higeKernel.o   \
-             ${BIN}/higeVga.o              \
-             ${BIN}/higeIdt.o              \
-             ${BIN}/higeIhandler.o         \
-             ${BIN}/higeIo.o               \
+             ${BIN}/higeKernel.o       \
+             ${BIN}/higeVga.o          \
+             ${BIN}/higeIdt.o          \
+             ${BIN}/higeIhandler.o     \
+             ${BIN}/higeIo.o           \
              ${BIN}/X86MemoryManager.o \
              ${BIN}/higeOperator.o     \
-             ${BIN}/higePureVirtual.o      \
+             ${BIN}/higePureVirtual.o  \
              ${BIN}/higeUtil.o         \
              ${BIN}/KeyBoardManager.o
 
