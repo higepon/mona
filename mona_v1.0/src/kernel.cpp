@@ -87,6 +87,9 @@ void startKernel(void) {
         g_console->printf("CPUID NG  \n");
     }
 
+    SystemInfo::rdtsc();
+    g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
+
     g_total_system_memory = IA32MemoryManager::getTotalMemory();
     g_console->printf("System TotalL Memory %d[MB]\n", g_total_system_memory);
 
@@ -95,6 +98,12 @@ void startKernel(void) {
     //   dword* p = (dword*)0x3FFFFC;
     //   dword* p = (dword*)0x3FFFFE;
     //   *p = 5;
+
+
+
+    SystemInfo::rdtscsub();
+    g_console->printf("time=%x %x\n", SystemInfo::timeH, SystemInfo::timeL);
+
 
 #ifdef MJT
     test_mjt();

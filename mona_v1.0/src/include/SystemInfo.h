@@ -43,10 +43,15 @@ class SystemInfo {
     dword ecx_;
     dword edx_;
     dword supportedId_;
+
   public:
     static SystemInfo& instance();
     bool hasCpuid() const;
+    static void rdtsc();
+    static void rdtscsub();
     void printCpuid(VirtualConsole* console);
+    static dword timeL;
+    static dword timeH;
 };
 
 

@@ -14,6 +14,9 @@
 #include<SystemInfo.h>
 #include<string.h>
 
+dword SystemInfo::timeL;
+dword SystemInfo::timeH;
+
 /*!
     \brief destructor
 
@@ -144,4 +147,26 @@ void SystemInfo::printCpuid(VirtualConsole* console) {
 SystemInfo& SystemInfo::instance() {
     static SystemInfo theInstance;
     return theInstance;
+}
+
+void SystemInfo::rdtsc() {
+
+    asm volatile("rdtsc           \n"
+                 "mov   %%eax, %0 \n"
+                 "mov   %%edx, %1 \n"
+                 : "=m"(timeL), "=m"(timeH)
+                 : /* no */
+                 : "eax", "edx");
+}
+
+void SystemInfo::rdtscsub() {
+
+    asm volatile("rdtsc           \n"
+                 "sub   %2, %%eax \n"
+                 "sub   %3, %%edx \n"
+                 "mov   %%eax, %0 \n"
+                 "mov   %%edx, %1 \n"
+                 : "=m"(timeL), "=m"(timeH)
+                 : "m"(timeL), "m"(timeH)
+                 : "eax", "edx");
 }

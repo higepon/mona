@@ -42,7 +42,7 @@ void disp_name1() {
         disp_write_font(75, 0, 'M', color%13);
 
         Semaphore::up(&g_semaphore_console);
-        g_process_manager->sleep(g_current_process, 6);
+        g_process_manager->sleep(g_current_process, 20);
         color++;
     }
 }
@@ -65,7 +65,7 @@ void disp_name2() {
 
         Semaphore::up(&g_semaphore_console);
 
-        g_process_manager->sleep(g_current_process, 5);
+        g_process_manager->sleep(g_current_process, 30);
         color++;
     }
 }
@@ -80,7 +80,7 @@ void disp_name3() {
 
         disp_write_font(77, 0, 'n', color%13);
 
-        g_process_manager->sleep(g_current_process, 2);
+        g_process_manager->sleep(g_current_process, 7);
 
         Semaphore::up(&g_semaphore_console);
         color++;
@@ -97,7 +97,7 @@ void disp_name4() {
 
         disp_write_font(78, 0, 'a', color%16);
 
-        g_process_manager->sleep(g_current_process, 3);
+        g_process_manager->sleep(g_current_process, 15);
 
         Semaphore::up(&g_semaphore_console);
         color++;

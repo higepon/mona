@@ -16,6 +16,7 @@
 #include <io.h>
 #include <ihandlers.h>
 #include <KeyBoardManager.h>
+#include <SystemInfo.h>
 #include <sysresource.h> /* (expr) */
 
 /*!
@@ -91,6 +92,23 @@ void dummyHandler() {
     \date   create:2002/11/21 update:2003/02/24
 */
 void timerHandler() {
+
+#if 0
+    SystemInfo::rdtsc();
+
+    static dword counter = 0;
+    static dword l = 0;
+    static dword h = 0;
+
+    if (counter %2) {
+        l = SystemInfo::timeL;
+        h = SystemInfo::timeH;
+    } else {
+
+        g_console->printf("time=%x %x\n", SystemInfo::timeH - h, SystemInfo::timeL - l);
+    }
+    counter++;
+#endif
 
     /* EOI is below for IRQ 8-15 */
     outportb(0xA0, 0x20);

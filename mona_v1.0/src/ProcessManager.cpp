@@ -12,6 +12,7 @@
 
 #include <ProcessManager.h>
 #include <io.h>
+#include <SystemInfo.h>
 
 ProcessManager::ProcessManager() {
 
@@ -45,6 +46,7 @@ void ProcessManager::schedule(){
     g_process_manager->tick();
     scheduler_->schedule();
     g_current_process->state = Process::RUNNING;
+
     this->switchProcess();
 
 }
