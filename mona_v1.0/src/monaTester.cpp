@@ -131,6 +131,8 @@ void process1Tester() {
         ProcessManager& pm = ProcessManager::instance();
 	//        pm.switchProcess(0x28);
         asm volatile("ljmp $0x28, $0\n");
+	//	word selector = 0x28;
+	//       asm volatile("ljmp %0, $0": "=g"(selector):"g"(selector));
     }
     return;
 }
