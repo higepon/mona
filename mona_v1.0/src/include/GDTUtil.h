@@ -51,7 +51,9 @@ class GDTUtil {
   public:
     static void setSegDesc(SegDesc* desc, dword base, dword limit, byte type);
     static void lgdt(GDTR* gdtr);
+    static void ltr(word selector);
     static void setup();
+    static void setupTSS(word selector);
 };
 
 #endif

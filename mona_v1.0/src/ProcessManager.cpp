@@ -16,8 +16,6 @@ ProcessManager::ProcessManager() {
 
     pid_ = 0;
     scheduler_ = new Scheduler();
-    //    Process* tmp = new Process("first");
-    //    g_current_process = &(tmp->pinfo_);
 }
 
 void ProcessManager::switchProcess() {

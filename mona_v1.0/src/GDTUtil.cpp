@@ -50,6 +50,23 @@ void GDTUtil::lgdt(GDTR* gdtr) {
 }
 
 /*!
+    \brief do ltr
+
+    do ltr, load selector value into tr register
+
+    \param selector selector value
+
+    \author HigePon
+    \date   create:2002/12/02 update:
+*/
+void GDTUtil::ltr(word selector) {
+
+    /* ltr */
+    asm volatile("ltr %0\n": "=m" (selector));
+    return;
+}
+
+/*!
     \brief set up GDT
 
     \author HigePon
@@ -65,19 +82,44 @@ void GDTUtil::setup() {
     g_gdt[0].limitH = 0;
 
     /* SYS CS 0-4GB */
-    setSegDesc(&g_gdt[1], 0, 0xFFFFF, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
+    setSegDesc(&g_gdt[1], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
 
     /* SYS DS 0-4GB */
-    setSegDesc(&g_gdt[2], 0, 0xFFFFF, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
+    setSegDesc(&g_gdt[2], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
 
     /* SYS SS 0-4GB */
-    setSegDesc(&g_gdt[3], 0, 0xFFFFF, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
+    setSegDesc(&g_gdt[3], 0, 0xFFFFF               , SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
+
+    /* TSS. Mona has only one TSS */
+    setSegDesc(&g_gdt[4], (dword)&g_tss, 0x00000067, SEGMENT_PRESENT | SEGMENT_DPL0 | 0x00 | 0x09);
 
     /* lgdt */
     GDTR gdtr;
     gdtr.base  = (dword)g_gdt;
     gdtr.limit = sizeof(SegDesc) * GDT_ENTRY_NUM - 1;
     lgdt(&gdtr);
+
+    /* setup TSS */
+    setupTSS(0x20);
+
     return;
 }
 
+/*!
+    \brief set up TSS
+
+    \author HigePon
+    \date   create:2003/07/17 update:
+*/
+void GDTUtil::setupTSS(word selector) {
+
+    /* prepare dpl0 stack */
+    memset(&g_tss, 0, sizeof(TSS));
+    g_tss.esp0 = 0x80000;
+    g_tss.ss0  = 0x18;
+
+    /* load TSS */
+    ltr(selector);
+
+    return;
+}
