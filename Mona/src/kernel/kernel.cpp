@@ -176,6 +176,10 @@ void startKernel(void)
     g_console->printf("%s ["CC_NAME" @ %s]\n", version, CC_VER, OSTYPE);
     g_console->printf("Copyright (c) 2002-2004 higepon\n\n");
 
+    // temporary for Eltorito 2004/12/12 higepon
+    dword* p = (dword*)(REL_KERNEL_ADDR + KERNEL_BASE_ADDR);
+    g_console->printf("kernel size = %x\n" , *p);
+
     pic_init();
     RTC::init();
     printOK("Setting PIC        ");

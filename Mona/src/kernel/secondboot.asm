@@ -422,8 +422,8 @@ set_cs_desc1:
         mov     ss, ax          ; is 0x18
         mov     esp, 0x80000    ; sp is 3MB
         push    eax
-        jmp     KERNEL_ADDR
+        jmp     REL_KERNEL_ADDR + MONA_HEADER_SIZE
 ;  hang:
 ;          jmp hang
 
-        times KERNEL_ADDR-($-$$) db 0
+        times (REL_KERNEL_ADDR)-($-$$) db 0
