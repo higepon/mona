@@ -26,7 +26,7 @@ class X86MemoryManager {
     X86MemoryManager(const X86MemoryManager&);
     X86MemoryManager& operator = (const X86MemoryManager&);
     const unsigned long MEMORY_START;
-    const unsigned long MEMORY_SIZE;
+    const unsigned long MEMORY_END;
     unsigned long current_;
   public:
 

@@ -37,12 +37,19 @@ char* X86MemoryManager::getName() {
     \return address to allocated memory
 
     \author HigePon
-    \date   create:2002/08/07 update:
+    \date   create:2002/08/07 update:2002/08/24
 */
 unsigned long X86MemoryManager::allocateMemory(unsigned long size) {
 
     unsigned long oldAddress = current_;
     current_ += size;
+
+    /* check limit */
+    if (current_ > MEMORY_END) {
+        oldAddress = MEMORY_START;
+        current_   = MEMORY_START;
+    }
+
     return oldAddress;
 }
 
@@ -81,6 +88,6 @@ X86MemoryManager::~X86MemoryManager() {
     \author HigePon
     \date   create:2002/08/10 update:2002/08/24
 */
-X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_SIZE(0x15000) {
+X86MemoryManager::X86MemoryManager():MEMORY_START(0x10000), MEMORY_END(0x15000) {
     current_ = MEMORY_START;
 }
