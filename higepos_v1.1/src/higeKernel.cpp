@@ -19,6 +19,7 @@
 #include<higeOperator.h>
 #include<higeUtil.h>
 #include<higeTypes.h>
+#include<HVector.h>
 
 /*!
     \brief  higepos kernel start at this point
@@ -64,6 +65,13 @@ void startKernel(void) {
     _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
     _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
     Point* point4 = new Point(7, -100);
+
+    /* testing HVector */
+    HVector<int>* v = new HVector<int>;
+    v->add(10);
+    v->add(11);
+    _sys_printf("vector = %d\n", v->get(0));
+
 
     while (true) {
     }

@@ -31,7 +31,8 @@ HEADER     = ${INCLUDE}/higeKernel.h       \
              ${INCLUDE}/higeOperator.h     \
              ${INCLUDE}/higeUtil.h         \
              ${INCLUDE}/higeTypes.h        \
-             ${INCLUDE}/KeyBoardManager.h
+             ${INCLUDE}/KeyBoardManager.h  \
+             ${INCLUDE}/HVector.h
 
 OBJ        = ${BIN}/cstart.o           \
              ${BIN}/higeKernel.o       \
