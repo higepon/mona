@@ -1,3 +1,13 @@
+2004-02-29  shadow  <shadowin@users.sourceforge.jp>
+
+        * user/userlib/MlcCtype.cpp & .h コメント付け
+
+        * user/userlib/MlcStdlib.cpp & .h 追加
+
+        * user/userlib/Makefile 上記ファイルを対象に追加
+
+        * user/include/userlib/MlcLimits.h 追加
+
 2004-02-28  higepon  <higepon@users.sourceforge.jp>
 
         * kernel.cpp (mainProcess): 新スケジューラのFDでの速度の実験
