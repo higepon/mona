@@ -22,6 +22,7 @@ SOURCES = \
 	LinkedList.cpp \
 	ListBox.cpp \
 	Object.cpp \
+	Scrollbar.cpp \
 	String.cpp \
 	TextField.cpp \
 	Window.cpp

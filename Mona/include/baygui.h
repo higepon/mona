@@ -100,6 +100,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/Button.h"
 #include "baygui/Label.h"
 #include "baygui/ListBox.h"
+#include "baygui/Scrollbar.h"
 #include "baygui/TextField.h"
 #include "baygui/Container.h"
 #include "baygui/Window.h"
