@@ -12,7 +12,11 @@
     \version $Revision$
     \date   create:2002/08/04 update:$Date$
 */
+
+#include<vga.h>
+
 extern "C" void __cxa_pure_virtual();
+extern "C" void _pure_virtual(void);
 extern "C" int atexit( void (*func)(void));
 /*!
     \brief dummy
@@ -22,7 +26,23 @@ extern "C" int atexit( void (*func)(void));
     \author HigePon
     \date   create:2002/08/04 update:
 */
-void __cxa_pure_virtual() {}
+void __cxa_pure_virtual() {
+
+    _sysPrintln("__cxa_pure_virtual called");
+}
+
+/*!
+    \brief dummy
+
+    dummy
+
+    \author HigePon
+    \date   create:2002/09/07 update:
+*/
+void _pure_virtual() {
+
+    _sysPrintln("_pure_virtual called");
+}
 
 /*!
     \brief dummy
