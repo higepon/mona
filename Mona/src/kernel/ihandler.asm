@@ -148,9 +148,7 @@ arch_cpufaulthandler_c:
 arch_cpufaulthandler_e:
         pushAll
         changeData
-                ;;         add esp, 0x04
         call arch_save_thread_registers2
-                ;;         sub esp, 0x04
         push ebp
         mov  ebp, esp
         sub  esp, 8
