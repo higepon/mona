@@ -1,3 +1,11 @@
+2004-04-27  Yui  <yuinejp@users.sourceforge.jp>
+
+        * monaelf - .data .rdatatが同じロード領域になっていた場合の不都合を修正
+
+        * monaelf - .bss エラーになっていたのを修正
+
+        * tube - Makefile NFLAGSを修正
+
 2004-04-27  higepon  <higepon@users.sourceforge.jp>
 
         * 間引くのをやめた。
