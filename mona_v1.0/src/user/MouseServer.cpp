@@ -34,8 +34,8 @@ int MonaMain(List<char*>* pekoe) {
     MessageInfo receive;
     MessageInfo send;
     byte result;
-    int x, y;
     int posX, posY, prevX, prevY;
+    posX = posY = prevX = prevY = 0;
 
     int xResolution = screen.getWidth();
     int yResolution = screen.getHeight();
@@ -100,6 +100,7 @@ int MonaMain(List<char*>* pekoe) {
             }
         }
     }
+    return 0;
 }
 
 int sendMouseInformation(List<dword>* destList, MessageInfo* info) {

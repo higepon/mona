@@ -67,7 +67,6 @@ char* version = "Mona version.0.1.4 $Date$";
 
 void mainProcess() {
 
-    KDate date;
     /* Keyboard Server */
     g_console->printf("loading Keyboard Server....");
     g_console->printf("%s\n", loadProcess(".", "KEYBDMNG.SVR", true, NULL) ? "NG" : "OK");

@@ -355,7 +355,7 @@ ProcessManager::~ProcessManager() {
 
 int ProcessManager::join(Process* process, Thread* thread) {
 
-    bool wait;
+    bool wait = false;
 
     /* check process */
     if (!dispatchList_->hasElement(process)
@@ -637,6 +637,7 @@ int ProcessManager::wakeup(Process* process, int waitReason) {
         waitList_->remove(process);
         dispatchList_->add(process);
     }
+    return 0;
 }
 
 /*----------------------------------------------------------------------
