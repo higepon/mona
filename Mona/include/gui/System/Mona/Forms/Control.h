@@ -4,6 +4,7 @@
 #ifndef __SYSTEM_MONA_FORMS_CONTROL_H__
 #define __SYSTEM_MONA_FORMS_CONTROL_H__
 
+#include <gui/messages.h>
 #include <gui/System/Mona/Forms/Events.h>
 #include <gui/System/Drawing/Bitmap.h>
 #include <gui/System/Drawing/Color.h>
@@ -45,6 +46,7 @@ namespace System { namespace Mona { namespace Forms
 		_P<System::Drawing::Bitmap> buffer;
 		System::Drawing::Point offset;
 		System::Drawing::Point clickPoint;
+		guiserver_window* _object;
 	
 	public:
 		virtual String get_TypeName() { return "System.Mona.Forms.Control"; }
@@ -59,6 +61,7 @@ namespace System { namespace Mona { namespace Forms
 		void Refresh();
 		virtual _P<System::Drawing::Graphics> CreateGraphics();
 		virtual void WndProc(MessageType type, _P<EventArgs> e);
+		inline unsigned int get_Handle() { return this->_object->Handle; }
 		
 		System::Drawing::Point PointToClient(System::Drawing::Point p);
 		System::Drawing::Point PointToScreen(System::Drawing::Point p);
@@ -98,9 +101,7 @@ namespace System { namespace Mona { namespace Forms
 		static _P<System::Drawing::Font> get_DefaultFont();
 	
 	protected:
-		void RefreshInternal();
-		System::Drawing::Rectangle get_VisibleRectangle();
-		void DrawImage(_P<System::Drawing::Bitmap> image);
+		void RefreshInternal(bool draw = true);
 		
 		virtual void OnPaint() {}
 		virtual void OnTextChanged(_P<EventArgs> e);

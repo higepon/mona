@@ -63,6 +63,7 @@ private:
     void InitializeComponent()
     {
         this->set_Text("とけい");
+        this->set_Opacity(0.8);
 
         this->set_ForeColor(Color::FromArgb( 76, 100, 112));
         this->set_BackColor(Color::FromArgb(128, 168, 189));

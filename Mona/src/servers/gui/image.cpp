@@ -11,6 +11,8 @@
 
 using namespace MonAPI;
 
+static HList<guiserver_bitmap*> bitmaps;
+
 guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background)
 {
 	dword handle = MemoryMap::create(sizeof(guiserver_bitmap) + width * height * 4);
@@ -22,10 +24,36 @@ guiserver_bitmap* CreateBitmap(int width, int height, unsigned int background)
 	ret->Handle = handle;
 	ret->Width  = width;
 	ret->Height = height;
+	bitmaps.add(ret);
 	
 	FillColor(ret, (unsigned int)background);
 	
 	return ret;
+}
+
+guiserver_bitmap* GetBitmapPointer(dword handle)
+{
+	int size = bitmaps.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (bitmaps[i]->Handle == handle) return bitmaps[i];
+	}
+	return NULL;
+}
+
+bool DisposeBitmap(dword handle)
+{
+	int size = bitmaps.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (bitmaps[i]->Handle == handle)
+		{
+			bitmaps.removeAt(i);
+			MemoryMap::unmap(handle);
+			return true;
+		}
+	}
+	return false;
 }
 
 guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
@@ -190,6 +218,63 @@ guiserver_bitmap* ResizeBitmap(guiserver_bitmap* bmp, int width, int height)
 	return ret;
 }
 
+void FillColor(guiserver_bitmap* bmp, unsigned int color)
+{
+	int len = bmp->Width * bmp->Height;
+	for (int i = 0; i < len; i++)
+	{
+		bmp->Data[i] = color;
+	}
+}
+
+void DrawImage(guiserver_bitmap* dst, guiserver_bitmap* src, int x /*= 0*/, int y /*= 0*/, int sx /*= 0*/, int sy /*= 0*/, int sw /*= -1*/, int sh /*= -1*/, unsigned int transparencyKey /*= 0*/, int opacity /*= 255*/)
+{
+	if (opacity == 0) return;
+	
+	int dw = dst->Width, dh = dst->Height;
+	if (sw < 0) sw = src->Width;
+	if (sh < 0) sh = src->Height;
+	int x1 = x, y1 = y, x2 = x + sw, y2 = y + sh;
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > dw) x2 = dw;
+	if (y2 > dh) y2 = dh;
+	x1 += sx - x;
+	y1 += sy - y;
+	x2 += sx - x;
+	y2 += sy - y;
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > src->Width ) x2 = src->Width;
+	if (y2 > src->Height) y2 = src->Height;
+	x1 -= sx;
+	y1 -= sy;
+	x2 -= sx;
+	y2 -= sy;
+	for (int yy = y1; yy < y2; yy++)
+	{
+		unsigned int* pDst = &dst->Data[( x + x1) + ( y + yy) * dw];
+		unsigned int* pSrc = &src->Data[(sx + x1) + (sy + yy) * src->Width];
+		for (int xx = x1; xx < x2; xx++, pDst++, pSrc++)
+		{
+			if (((*pSrc) & 0xff000000) == 0 || *pSrc == transparencyKey) continue;
+			
+			if (opacity == 255)
+			{
+				*pDst = *pSrc;
+			}
+			else
+			{
+				byte* p1 = (byte*)pDst, * p2 = (byte*)pSrc;
+				p1[0] = (byte)((((int)p1[0]) * (255 - opacity) + ((int)p2[0]) * opacity) / 255);
+				p1[1] = (byte)((((int)p1[1]) * (255 - opacity) + ((int)p2[1]) * opacity) / 255);
+				p1[2] = (byte)((((int)p1[2]) * (255 - opacity) + ((int)p2[2]) * opacity) / 255);
+				p1[3] = 0xff;
+			}
+		}
+	}
+}
+
 bool ImageHandler(MessageInfo* msg)
 {
 	switch (msg->header)
@@ -220,46 +305,12 @@ bool ImageHandler(MessageInfo* msg)
 			}
 			break;
 		}
+		case MSG_GUISERVER_DISPOSEBITMAP:
+			DisposeBitmap(msg->arg1);
+			Message::reply(msg);
+			break;
 		default:
 			return false;
 	}
 	return true;
-}
-
-void FillColor(guiserver_bitmap* bmp, unsigned int color)
-{
-	int len = bmp->Width * bmp->Height;
-	for (int i = 0; i < len; i++)
-	{
-		bmp->Data[i] = color;
-	}
-}
-
-void DrawImage(guiserver_bitmap* dst, guiserver_bitmap* img, int spx, int spy, int ix, int iy, int iw, int ih, int transparent)
-{
-	int sw = dst->Width, sh = dst->Height;
-	if (ix < 0) ix = 0;
-	if (iy < 0) iy = 0;
-	if (iw < 0) iw = img->Width;
-	if (ih < 0) ih = img->Height;
-	int x1 = ix, y1 = iy, x2 = ix + iw, y2 = iy + ih;
-	if (x2 > img->Width ) x2 = img->Width;
-	if (y2 > img->Height) y2 = img->Height;
-	for (int y = y1; y < y2; y++)
-	{
-		int sy = spy + y;
-		if (sy >= sh) break;
-		if (sy < 0) continue;
-		
-		unsigned int* pDst = &dst->Data[(spx + x1 + sy * sw)];
-		unsigned int* pImg = &img->Data[(x1 + y * img->Width)];
-		for (int x = x1; x < x2; x++, pDst++, pImg++)
-		{
-			int sx = spx + x;
-			if (sx >= sw) break;
-			if (sx < 0 || ((*pImg) & 0xff000000) == 0 || transparent == (int)((*pImg) & 0xffffff)) continue;
-			
-			*pDst = *pImg;
-		}
-	}
 }

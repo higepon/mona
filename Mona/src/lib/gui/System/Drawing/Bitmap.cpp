@@ -26,17 +26,17 @@ namespace System { namespace Drawing
 		}
 		if (msg.arg2 == 0) return;
 		
-		this->_buffer = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
-		if (this->_buffer == NULL)
+		this->_object = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
+		if (this->_object == NULL)
 		{
 			::printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
 			return;
 		}
 		
-		this->buffer.Set((Color*)this->_buffer->Data, len, false);
+		this->buffer.Set((Color*)this->_object->Data, len, false);
 #else
 		this->buffer.Alloc(len);
-		this->_buffer = NULL;
+		this->_object = NULL;
 		for (int i = 0; i < len; i++) this->buffer[i] = white;
 #endif
 		this->width  = width;
@@ -45,7 +45,7 @@ namespace System { namespace Drawing
 	
 	Bitmap::Bitmap(String fileName)
 	{
-		this->_buffer = NULL;
+		this->_object = NULL;
 #ifdef MONA
 		int fnlen = fileName.get_Length();
 		if (fnlen > 127) fnlen = 127;
@@ -65,17 +65,17 @@ namespace System { namespace Drawing
 		}
 		if (msg.arg2 == 0) return;
 		
-		this->_buffer = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
-		if (this->_buffer == NULL)
+		this->_object = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
+		if (this->_object == NULL)
 		{
 			::printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
 			return;
 		}
 		
-		this->width  = this->_buffer->Width;
-		this->height = this->_buffer->Height;
+		this->width  = this->_object->Width;
+		this->height = this->_object->Height;
 		int len = this->width * this->height;
-		this->buffer.Set((Color*)this->_buffer->Data, len, false);
+		this->buffer.Set((Color*)this->_object->Data, len, false);
 #endif
 	}
 	
@@ -86,34 +86,39 @@ namespace System { namespace Drawing
 	
 	void Bitmap::Dispose()
 	{
-		if (this->_buffer == NULL) return;
+		if (this->_object == NULL) return;
 		
 #ifdef MONA
 		this->buffer.Unset();
-		dword handle = this->_buffer->Handle;
+		dword handle = this->get_Handle();
 		MonAPI::MemoryMap::unmap(handle);
-		if (MonAPI::Message::send(__gui_server, MSG_DISPOSE_HANDLE, handle) != 0)
+		if (MonAPI::Message::send(__gui_server, MSG_GUISERVER_DISPOSEBITMAP, handle) != 0)
 		{
 			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		}
-		this->_buffer = NULL;
+		this->_object = NULL;
 #endif
 	}
 	
 	void Bitmap::SetPixel(int x, int y, Color c)
 	{
 		if (x < 0 || this->width <= x || y < 0 || this->height <= y) return;
+		
+		int a = c.get_A();
+		if (a == 0) return;
+		
 		int index = x + y * this->width;
-		Color v1 = this->buffer[index];
-		Color v2 = c;
-		if (c.get_A() != 0xff && c.ToArgb() != 0)
+		if (a == 0xff)
 		{
-			int a = c.get_A();
-			int r = (v1.get_R() * (255 - a) + c.get_R() * a) / 255;
-			int g = (v1.get_G() * (255 - a) + c.get_G() * a) / 255;
-			int b = (v1.get_B() * (255 - a) + c.get_B() * a) / 255;
-			v2 = Color::FromArgb(0xff, r, g, b);
+			this->buffer[index] = c;
 		}
-		this->buffer[index] = v2;
+		else
+		{
+			Color cc = this->buffer[index];
+			int r = (cc.get_R() * (255 - a) + c.get_R() * a) / 255;
+			int g = (cc.get_G() * (255 - a) + c.get_G() * a) / 255;
+			int b = (cc.get_B() * (255 - a) + c.get_B() * a) / 255;
+			this->buffer[index] = Color::FromArgb(0xff, r, g, b);
+		}
 	}
 }}

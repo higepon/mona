@@ -74,6 +74,7 @@ private:
 	void InitializeComponent()
 	{
 		this->set_Text("Mona Launcher");
+		this->set_Opacity(0.8);
 	}
 	
 	void button_Click(_P<Object> sender, _P<EventArgs> e)

@@ -135,6 +135,7 @@ private:
 		this->set_Location(Point(64, 64));
 		this->set_ClientSize(Size(SHELL_WIDTH * FONT_WIDTH + 4, SHELL_HEIGHT * FONT_HEIGHT + 4));
 		this->set_Text("GUI Shell");
+		this->set_Opacity(0.8);
 	}
 	
 public:

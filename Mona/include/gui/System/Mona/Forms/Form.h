@@ -10,10 +10,16 @@ namespace System { namespace Mona { namespace Forms
 {
 	class Form : public Control
 	{
+		friend class Control;
+	
 	protected:
 		bool isCloseButtonPushed;
 		enum NCState { NCState_None, NCState_TitleBar, NCState_CloseButton } ncState;
 		System::Drawing::Point ptRevRect;
+		_P<System::Drawing::Bitmap> formBuffer;
+	
+	private:
+		double opacity;
 	
 	public:
 		virtual String get_TypeName() { return "System.Mona.Forms.Form"; }
@@ -25,6 +31,8 @@ namespace System { namespace Mona { namespace Forms
 		virtual void Dispose();
 		
 		bool CheckPoint(int x, int y);
+		inline double get_Opacity() { return this->opacity; }
+		void set_Opacity(double op);
 	
 	protected:
 		virtual void Erase();

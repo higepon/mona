@@ -7,7 +7,6 @@
 
 extern dword __gui_server;
 #endif
-#include <gui/messages.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/ControlPaint.h>
@@ -19,9 +18,28 @@ extern dword __gui_server;
 using namespace System;
 using namespace System::Drawing;
 
+static void EraseRectangle(_P<Bitmap> bmp, int x, int y, int w, int h)
+{
+	int x1 = x, y1 = y, x2 = x + w, y2 = y + h;
+	int bw = bmp->get_Width(), bh = bmp->get_Height();
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > bw) x2 = bw;
+	if (y2 > bh) y2 = bh;
+	Color empty = Color::get_Empty();
+	for (int yy = y1; yy < y2; yy++)
+	{
+		Color* buf = &bmp->get()[x1 + yy * bw];
+		for (int xx = x1; xx < x2; xx++, buf++)
+		{
+			*buf = empty;
+		}
+	}
+}
+
 namespace System { namespace Mona { namespace Forms
 {
-	Form::Form() : isCloseButtonPushed(false), ncState(NCState_None)
+	Form::Form() : isCloseButtonPushed(false), ncState(NCState_None), opacity(1.0)
 	{
 		this->offset = Point(2, Control::get_DefaultFont()->get_Height() + 8);
 	}
@@ -45,12 +63,16 @@ namespace System { namespace Mona { namespace Forms
 		Application::AddForm(this);
 		this->isCloseButtonPushed = false;
 		this->ncState = NCState_None;
+		this->formBuffer = new Bitmap(this->get_Width(), this->get_Height());
+		this->_object->FormBufferHandle = this->formBuffer->get_Handle();
+		this->set_Opacity(this->opacity);
 	}
 	
 	void Form::Dispose()
 	{
 		BASE::Dispose();
 		Application::RemoveForm(this);
+		this->formBuffer = NULL;
 	}
 	
 	void Form::Erase()
@@ -58,8 +80,11 @@ namespace System { namespace Mona { namespace Forms
 		if (this->buffer == NULL) return;
 		
 #ifdef MONA
-		Rectangle r = this->get_Bounds();
-		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWALLPAPER, r.X, r.Y, MAKE_DWORD(r.Width, r.Height));
+		this->_object->Visible = false;
+		::monapi_call_mouse_set_cursor(MONAPI_FALSE);
+		MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, this->get_Handle());
+		::monapi_call_mouse_set_cursor(MONAPI_TRUE);
+		this->_object->Visible = this->get_Visible();
 #else
 		Size sz = this->get_Size();
 		_P<Bitmap> bmp = new Bitmap(sz.Width, sz.Height);
@@ -93,7 +118,7 @@ namespace System { namespace Mona { namespace Forms
 		
 		// Title Bar
 		ControlPaint::DrawEngraved(g, 0, 0, tw, oy - 2);
-		if (tw < w) g->FillRectangle(Color::get_Empty(), tw, 0, w - tw, oy - 2);
+		if (tw < w) EraseRectangle(this->buffer, tw, 0, w - tw, oy - 2);
 		g->FillRectangle(tb, 2, 2, tw - 4, oy - 4);
 		
 		// Close Button
@@ -199,10 +224,10 @@ namespace System { namespace Mona { namespace Forms
 			case NCState_TitleBar:
 			{
 				this->DrawReversibleRectangle();
-				this->Erase();
 				Point p = this->get_Location();
 				p.X += e->X - this->clickPoint.X;
 				p.Y += e->Y - this->clickPoint.Y;
+				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEWINDOW, this->get_Handle(), (dword)p.X, (dword)p.Y);
 				this->set_Location(p);
 				this->Refresh();
 				break;
@@ -216,5 +241,19 @@ namespace System { namespace Mona { namespace Forms
 		
 		if (destroy) this->Dispose();
 		this->ncState = NCState_None;
+	}
+	
+	void Form::set_Opacity(double op)
+	{
+		if (op < 0.0) op = 0.0;
+		if (op > 1.0) op = 1.0;
+		this->opacity = op;
+		if (this->_object == NULL) return;
+		
+		int v = (int)(op * 255.0);
+		if (this->_object->Opacity == v) return;
+		
+		this->_object->Opacity = v;
+		this->Refresh();
 	}
 }}}

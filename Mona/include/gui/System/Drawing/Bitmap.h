@@ -16,7 +16,7 @@ namespace System { namespace Drawing
 	protected:
 		int width, height;
 		_A<Color> buffer;
-		guiserver_bitmap* _buffer;
+		guiserver_bitmap* _object;
 	
 	public:
 		virtual String get_TypeName() { return "System.Drawing.Bitmap"; }
@@ -24,6 +24,7 @@ namespace System { namespace Drawing
 		Bitmap(String fileName);
 		virtual ~Bitmap();
 		
+		inline unsigned int get_Handle() { return this->_object->Handle; }
 		virtual void Dispose();
 		inline int get_Width() { return this->width; }
 		inline int get_Height() { return this->height; }

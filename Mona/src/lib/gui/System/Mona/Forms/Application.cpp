@@ -1,7 +1,6 @@
 // This software is in the public domain.
 // There are no restrictions on any sort of usage of this software.
 
-#include <gui/messages.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Timer.h>
@@ -142,17 +141,6 @@ namespace System { namespace Mona { namespace Forms
 			case MSG_GUI_TIMER:
 				((Timer*)arg1)->OnTick(EventArgs::get_Empty());
 				break;
-#ifdef MONA
-			case MSG_GUISERVER_DRAWWALLPAPER:  /// temporary
-			{
-				Rectangle r(arg1, arg2, GET_X_DWORD(arg3), GET_Y_DWORD(arg3));
-				FOREACH_AL (_P<Form>, f, Application::forms)
-				{
-					if (r.IntersectsWith(f->get_Bounds())) f->Refresh();
-				}
-				break;
-			}
-#endif
 		}
 	}
 	

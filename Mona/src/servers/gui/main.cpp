@@ -7,13 +7,16 @@
 #include "image.h"
 #include "screen.h"
 #include "utils.h"
+#include "window.h"
 
 using namespace MonAPI;
 
+extern guiserver_bitmap* screen_buffer;
+
+guiserver_bitmap* wallpaper = NULL;
+
 static HList<dword> clients;
 static monapi_cmemoryinfo* default_font = NULL;
-static guiserver_bitmap* wallpaper = NULL;
-static unsigned int background_color = 0;
 static bool wallpaper_prompt = false;
 static HList<CString>* startup = NULL;
 
@@ -25,7 +28,7 @@ static void ReadFont(const char* file)
 	default_font = mi;
 }
 
-static void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent, const char* src, bool prompt)
+static void DrawWallPaper(guiserver_bitmap* bmp, int pos, unsigned int transparent, const char* src, bool prompt)
 {
 	if (wallpaper == NULL || bmp == NULL) return;
 	
@@ -38,7 +41,7 @@ static void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent, const
 			{
 				if (prompt) printf("%s: Resizing %s....", SVR, (const char*)src);
 				guiserver_bitmap* bmp2 = ResizeBitmap(bmp, ww, wh);
-				MemoryMap::unmap(bmp->Handle);
+				DisposeBitmap(bmp->Handle);
 				bmp = bmp2;
 				if (prompt) printf("Done\n");
 			}
@@ -75,32 +78,32 @@ static void DrawWallPaper(guiserver_bitmap* bmp, int pos, int transparent, const
 			y = wh - bmp->Height;
 			break;
 	}
-	DrawImage(wallpaper, bmp, x, y, -1, -1, -1, -1, transparent);
-	MemoryMap::unmap(bmp->Handle);
+	DrawImage(wallpaper, bmp, x, y, 0, 0, -1, -1, transparent);
+	DisposeBitmap(bmp->Handle);
 }
 
-static void DrawWallPaper(const char* src, int pos, int transparent, int background)
+static void DrawWallPaper(const char* src, int pos, unsigned int transparent, int background)
 {
 	bool prompt = wallpaper_prompt;
 	wallpaper_prompt = false;
-	background_color = background;
 	
 	Screen* scr = GetDefaultScreen();
 	if (wallpaper == NULL)
 	{
-		wallpaper = CreateBitmap(scr->getWidth(), scr->getHeight(), background_color);
+		wallpaper = CreateBitmap(scr->getWidth(), scr->getHeight(), background);
 		if (wallpaper == NULL) return;
 	}
 	else
 	{
-		FillColor(wallpaper, background_color);
+		FillColor(wallpaper, background);
 	}
 	
 	guiserver_bitmap* bmp = ReadImage(src, prompt);
-	if (bmp == NULL) return;
-	
-	DrawWallPaper(bmp, pos, transparent, src, prompt);
-	DrawImage(wallpaper);
+	if (bmp != NULL) DrawWallPaper(bmp, pos, transparent, src, prompt);
+	DrawImage(screen_buffer, wallpaper);
+	monapi_call_mouse_set_cursor(MONAPI_FALSE);
+	DrawScreen();
+	monapi_call_mouse_set_cursor(MONAPI_TRUE);
 }
 
 static void ReadConfig()
@@ -114,7 +117,8 @@ static void ReadConfig()
 		startup = NULL;
 	}
 	char line[256], src[256] = "";
-	int linepos = 0, wppos = 5, wptp = -1, bgcol = background_color;
+	int linepos = 0, wppos = 5;
+	unsigned int wptp = 0, bgcol = 0;
 	for (dword pos = 0; pos <= cfg->Size; pos++)
 	{
 		char ch = pos < cfg->Size ? (char)cfg->Data[pos] : '\n';
@@ -136,11 +140,11 @@ static void ReadConfig()
 					}
 					else if (data[0] == "WALLPAPER_TRANSPARENT")
 					{
-						wptp = xtoi(data[1]);
+						wptp = xtoui(data[1]);
 					}
 					else if (data[0] == "WALLPAPER_BACKGROUND")
 					{
-						bgcol = ((unsigned int)xtoi(data[1])) | 0xff000000;
+						bgcol = ((unsigned int)xtoui(data[1])) | 0xff000000;
 					}
 					else if (data[0] == "GUISERVER_STARTUP")
 					{
@@ -194,29 +198,12 @@ static void MessageLoop()
 			case MSG_GUISERVER_GETFONT:
 				Message::reply(&msg, default_font->Handle, default_font->Size);
 				break;
-			case MSG_DISPOSE_HANDLE:
-				MemoryMap::unmap(msg.arg1);
-				Message::reply(&msg);
-				break;
 			case MSG_GUISERVER_SETWALLPAPER:
 				DrawWallPaper(msg.str, msg.arg1, msg.arg2, msg.arg3);
 				Message::reply(&msg);
 				break;
-			case MSG_GUISERVER_DRAWWALLPAPER:
-				if (wallpaper != NULL)
-				{
-					DrawImage(wallpaper, 0, 0, msg.arg1, msg.arg2,
-						GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
-				}
-				/// temporary
-				for (int i = 0; i < clients.size(); i++)
-				{
-					if (Message::send(clients[i], msg.header, msg.arg1, msg.arg2, msg.arg3) != 0)
-					{
-						clients.removeAt(i);
-						i--;
-					}
-				}
+			case MSG_GUISERVER_DRAWSCREEN:
+				DrawScreen(msg.arg1, msg.arg2, GET_X_DWORD(msg.arg3), GET_Y_DWORD(msg.arg3));
 				Message::reply(&msg);
 				break;
 			case MSG_REGISTER_TO_SERVER:
@@ -241,6 +228,7 @@ static void MessageLoop()
 #endif
 			default:
 				if (ImageHandler(&msg)) break;
+				if (WindowHandler(&msg)) break;
 				break;
 		}
 	}
@@ -249,6 +237,8 @@ static void MessageLoop()
 int MonaMain(List<char*>* pekoe)
 {
 	CheckGUIServer();
+	if (!InitScreen()) exit(1);
+	
 	///if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE);
 
@@ -270,7 +260,8 @@ int MonaMain(List<char*>* pekoe)
 
 	monapi_cmemoryinfo_dispose(default_font);
 	monapi_cmemoryinfo_delete(default_font);
-	if (wallpaper != NULL) MemoryMap::unmap(wallpaper->Handle);
+	if (wallpaper != NULL) DisposeBitmap(wallpaper->Handle);
+	DisposeScreen();
 	
 	///monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 	///monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);

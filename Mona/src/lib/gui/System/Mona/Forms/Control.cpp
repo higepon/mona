@@ -4,11 +4,14 @@
 #ifdef MONA
 #include <monapi.h>
 #include <monapi/messages.h>
+
+extern dword __gui_server;
 #endif
 
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Control.h>
 #include <gui/System/Mona/Forms/ControlPaint.h>
+#include <gui/System/Mona/Forms/Form.h>
 
 using namespace System;
 using namespace System::Collections;
@@ -45,6 +48,38 @@ static Rectangle GetScreenRectangle()
 #endif
 }
 
+
+void DrawImage(_P<Bitmap> dst, _P<Bitmap> src, int x, int y, int sx, int sy, int sw, int sh, bool srccopy)
+{
+	int dw = dst->get_Width(), dh = dst->get_Height();
+	int x1 = x, y1 = y, x2 = x + sw, y2 = y + sh;
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > dw) x2 = dw;
+	if (y2 > dh) y2 = dh;
+	x1 += sx - x;
+	y1 += sy - y;
+	x2 += sx - x;
+	y2 += sy - y;
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > src->get_Width ()) x2 = src->get_Width ();
+	if (y2 > src->get_Height()) y2 = src->get_Height();
+	x1 -= sx;
+	y1 -= sy;
+	x2 -= sx;
+	y2 -= sy;
+	for (int yy = y1; yy < y2; yy++)
+	{
+		Color* pDst = &dst->get()[( x + x1) + ( y + yy) * dw];
+		Color* pSrc = &src->get()[(sx + x1) + (sy + yy) * src->get_Width()];
+		for (int xx = x1; xx < x2; xx++, pDst++, pSrc++)
+		{
+			if (srccopy || pSrc->get_A() != 0) *pDst = *pSrc;
+		}
+	}
+}
+
 namespace System { namespace Mona { namespace Forms
 {
 	_P<Font> Control::get_DefaultFont()
@@ -62,6 +97,7 @@ namespace System { namespace Mona { namespace Forms
 		this->foreColorChanged = false;
 		this->backColorChanged = false;
 		this->visible = false;
+		this->_object = NULL;
 		this->controls = new ControlCollection();
 		this->controls->target = this;
 	}
@@ -77,6 +113,7 @@ namespace System { namespace Mona { namespace Forms
 		
 		if (this->buffer == NULL) this->Create();
 		this->visible = true;
+		this->_object->Visible = this->visible;
 		this->Refresh();
 	}
 	
@@ -93,6 +130,30 @@ namespace System { namespace Mona { namespace Forms
 		if (this->buffer != NULL) return;
 		
 		this->buffer = new Bitmap(this->get_Width(), this->get_Height());
+#ifdef MONA
+		MessageInfo msg;
+		if (MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEWINDOW) != 0)
+		{
+			::printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			this->Dispose();
+			return;
+		}
+		this->_object = (guiserver_window*)MonAPI::MemoryMap::map(msg.arg2);
+		if (this->_object == NULL)
+		{
+			::printf("%s:%d:ERROR: can not create window!\n", __FILE__, __LINE__);
+			this->Dispose();
+			return;
+		}
+		if (this->parent != NULL) this->_object->Parent = this->parent->get_Handle();
+		this->_object->X = this->get_X();
+		this->_object->Y = this->get_Y();
+		this->_object->Width  = this->get_Width();
+		this->_object->Height = this->get_Height();
+		this->_object->OffsetX = this->offset.X;
+		this->_object->OffsetY = this->offset.Y;
+		this->_object->BufferHandle = this->buffer->get_Handle();
+#endif
 		int len = this->get_Width() * this->get_Height();
 		for (int i = 0; i < len; i++)
 		{
@@ -136,6 +197,8 @@ namespace System { namespace Mona { namespace Forms
 		this->controls->Clear();
 		//this->controls->target = NULL;
 		this->parent = NULL;
+		MonAPI::Message::sendReceive(NULL, MSG_GUISERVER_DISPOSEWINDOW, this->get_Handle());
+		this->_object = NULL;
 	}
 	
 	void Control::Refresh()
@@ -143,27 +206,46 @@ namespace System { namespace Mona { namespace Forms
 		if (this->buffer == NULL) return;
 		
 #ifdef MONA
-		::monapi_call_mouse_set_cursor(0);
+		::monapi_call_mouse_set_cursor(MONAPI_FALSE);
 #endif
 		this->RefreshInternal();
 #ifdef MONA
-		::monapi_call_mouse_set_cursor(1);
+		::monapi_call_mouse_set_cursor(MONAPI_TRUE);
 #endif
 	}
 	
-	void Control::RefreshInternal()
+	void Control::RefreshInternal(bool draw /*= true*/)
 	{
 		if (this->buffer == NULL) return;
 		
+		Rectangle r(0, 0, this->get_Width(), this->get_Height());
+		int x = 0, y = 0;
+		_P<Control> form;
 		for (_P<Control> c = this; c != NULL; c = c->parent)
 		{
 			if (!c->visible) return;
+			
+			if (c->parent != NULL)
+			{
+				r.X += c->get_X();
+				r.Y += c->get_Y();
+				r.Intersect(Rectangle(Point(), c->parent->get_ClientSize()));
+				r.X += c->parent->offset.X;
+				r.Y += c->parent->offset.Y;
+				x += c->get_X() + c->parent->offset.X;
+				y += c->get_Y() + c->parent->offset.Y;
+			}
+			form = c;
 		}
 		
-		this->DrawImage(this->buffer);
+		DrawImage(((Form*)form.get())->formBuffer, this->buffer, r.X, r.Y, r.X - x, r.Y - y, r.Width, r.Height, this->parent == NULL);
 		FOREACH_AL(_P<Control>, ctrl, this->controls)
 		{
-			ctrl->RefreshInternal();
+			ctrl->RefreshInternal(false);
+		}
+		if (draw)
+		{
+			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DRAWWINDOW, form->get_Handle());
 		}
 	}
 	
@@ -211,88 +293,6 @@ namespace System { namespace Mona { namespace Forms
 			if (fc != NULL) return fc;
 		}
 		return this;
-	}
-	
-	Rectangle Control::get_VisibleRectangle()
-	{
-		Rectangle par = this->parent == NULL ? ::GetScreenRectangle() : this->parent->get_VisibleRectangle();
-		par.Offset(-(this->get_X() + this->offset.X), -(this->get_Y() + this->offset.Y));
-		Rectangle ret(Point::get_Empty(), this->get_ClientSize());
-		ret.Intersect(par);
-		return ret;
-	}
-	
-	void Control::DrawImage(_P<Bitmap> image)
-	{
-#ifdef MONA
-		_P<MonAPI::Screen> scr = ::GetDefaultScreen();
-		unsigned char* vram = scr->getVRAM();
-		int bpp = scr->getBpp(), sw = scr->getWidth(), sh = scr->getHeight();
-#else
-		unsigned char* vram = screen_buffer;
-		int bpp = 32, sw = screen_width, sh = screen_height;
-#endif
-		int bypp = bpp >> 3;
-		Point sp = this->PointToScreen(Point::get_Empty());
-		sp -= this->offset;
-		Rectangle r;
-		if (this->parent == NULL)
-		{
-			r = Rectangle(-this->get_X(), -this->get_Y(), sw, sh);
-		}
-		else
-		{
-			r = this->parent->get_VisibleRectangle();
-			r.Offset(-this->get_X(), -this->get_Y());
-			Rectangle rr = Rectangle(0, 0, this->get_Width(), this->get_Height());
-			r.Intersect(rr);
-		}
-		int rr = r.get_Right(), rb = r.get_Bottom();
-		Color* pBuf = image->get();
-		for (int y = 0; y < this->get_Height(); y++)
-		{
-			if (y < r.Y || rb <= y)
-			{
-				pBuf += this->get_Width();
-				continue;
-			}
-			
-			int sy = sp.Y + y;
-			unsigned char* pVram = &vram[(sp.X + sy * sw) * bypp];
-			for (int x = 0; x < this->get_Width(); x++, pVram += bypp, pBuf++)
-			{
-				if (x < r.X || rr <= x || pBuf->get_A() == 0) continue;
-				
-				switch (bpp)
-				{
-					case 8: // broken
-					{
-						*pVram = (pBuf->get_R() + pBuf->get_G() + pBuf->get_B()) / 3;
-						break;
-					}
-					case 16: // 565
-					{
-						unsigned short c = MonAPI::Color::bpp24to565(pBuf->ToArgb());
-						/*if (*(unsigned short*)pVram != c)*/ *(unsigned short*)pVram = c;
-						break;
-					}
-					case 24:
-						/*if (pVram[0] != pBuf->get_B())*/ pVram[0] = pBuf->get_B();
-						/*if (pVram[1] != pBuf->get_G())*/ pVram[1] = pBuf->get_G();
-						/*if (pVram[2] != pBuf->get_R())*/ pVram[2] = pBuf->get_R();
-						break;
-					case 32:
-					{
-						unsigned int c = pBuf->ToArgb() & 0xffffff;
-						/*if (*(unsigned int*)pVram != c)*/ *(unsigned int*)pVram = c;
-						break;
-					}
-				}
-			}
-		}
-#if !defined(MONA) && defined(WIN32)
-		MonaGUI_Invalidate();
-#endif
 	}
 	
 	Size Control::get_ClientSize()

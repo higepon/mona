@@ -7,7 +7,8 @@
 #include <monapi.h>
 
 extern MonAPI::Screen* GetDefaultScreen();
-extern void SetMouseCursor(bool enabled);
-extern void DrawImage(guiserver_bitmap* img, int spx = 0, int spy = 0, int ix = -1, int iy = -1, int iw = -1, int ih = -1, int transparent = -1);
+extern bool InitScreen();
+extern void DisposeScreen();
+extern void DrawScreen(int x = 0, int y = 0, int w = -1, int h = -1);
 
 #endif  // __GUISERVER_SCREEN_H__

@@ -82,11 +82,12 @@ private:
         this->label6->set_Bounds(Rectangle(325, 10, 95, 180));
         this->button1->set_Bounds(Rectangle(10, 170, 40, 20));
 
-    	this->set_ForeColor(Color::FromArgb(100, 112, 76));
-    	this->set_BackColor(Color::FromArgb(168, 189, 128));
+        this->set_ForeColor(Color::FromArgb(100, 112, 76));
+        this->set_BackColor(Color::FromArgb(168, 189, 128));
         this->set_Location(Point(150, 50));
         this->set_ClientSize(Size(430, 200));
         this->set_Text("こんなスレッドが動いているらしい");
+        this->set_Opacity(0.8);
 
         this->label0->set_Text(
             "   ｽﾚｯﾄﾞ         \n"

@@ -4,16 +4,16 @@
 #include <monapi/string.h>
 #include "utils.h"
 
-int xtoi(const char* str)
+unsigned int xtoui(const char* str)
 {
 	if (str == NULL) return 0;
 	
-	int ret = 0;
+	unsigned int ret = 0;
 	int len = strlen(str);
 	for (int i = len - 1, sh = 0; i >= 0; i--, sh += 4)
 	{
 		char ch = str[i];
-		int v = 0;
+		unsigned int v = 0;
 		if ('0' <= ch && ch <= '9')
 		{
 			v = ch - '0';

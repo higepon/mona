@@ -9,64 +9,79 @@
 using namespace MonAPI;
 
 static Screen screen;
+guiserver_bitmap* screen_buffer, * vram_buffer;
 
 Screen* GetDefaultScreen()
 {
 	return &screen;
 }
 
-void DrawImage(guiserver_bitmap* img, int spx /*= 0*/, int spy /*= 0*/, int ix /*= -1*/, int iy /*= -1*/, int iw /*= -1*/, int ih /*= -1*/, int transparent /*= -1*/)
+bool InitScreen()
 {
-	monapi_call_mouse_set_cursor(0);
-	unsigned char* vram = screen.getVRAM();
+	screen_buffer = CreateBitmap(screen.getWidth(), screen.getHeight(), 0);
+	if (screen_buffer == NULL)
+	{
+		printf("%s: can not allocate buffer!\n", SVR);
+		return false;
+	}
+	
+	vram_buffer = CreateBitmap(screen.getWidth(), screen.getHeight(), 0);
+	if (vram_buffer == NULL)
+	{
+		printf("%s: can not allocate VRAM buffer!\n", SVR);
+		return false;
+	}
+	
+	return true;
+}
+
+void DisposeScreen()
+{
+	DisposeBitmap(screen_buffer->Handle);
+	DisposeBitmap(vram_buffer->Handle);
+}
+
+void DrawScreen(int x /*= 0*/, int y /*= 0*/, int w /*= -1*/, int h /*= -1*/)
+{
+	byte* vram = screen.getVRAM();
 	int bpp = screen.getBpp(), sw = screen.getWidth(), sh = screen.getHeight();
 	int bypp = bpp >> 3;
-	if (ix < 0) ix = 0;
-	if (iy < 0) iy = 0;
-	if (iw < 0) iw = img->Width;
-	if (ih < 0) ih = img->Height;
-	int x1 = ix, y1 = iy, x2 = ix + iw, y2 = iy + ih;
-	if (x2 > img->Width ) x2 = img->Width;
-	if (y2 > img->Height) y2 = img->Height;
-	for (int y = y1; y < y2; y++)
+	if (w < 0) w = sw;
+	if (h < 0) h = sh;
+	int x1 = x, y1 = y, x2 = x + w, y2 = y + h;
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > sw) x2 = sw;
+	if (y2 > sh) y2 = sh;
+	for (int yy = y1; yy < y2; yy++)
 	{
-		int sy = spy + y;
-		if (sy >= sh) break;
-		if (sy < 0) continue;
-		
-		byte* pBuf = (byte*)&img->Data[(x1 + y * img->Width)];
-		unsigned char* pVram = &vram[(spx + x1 + sy * sw) * bypp];
-		for (int x = x1; x < x2; x++, pVram += bypp, pBuf += 4)
+		int pos = x1 + yy * sw;
+		unsigned int* pSBuf = &screen_buffer->Data[pos];
+		unsigned int* pVBuf = &vram_buffer->Data[pos];
+		byte* pVram = &vram[pos * bypp];
+		for (int xx = x1; xx < x2; xx++, pSBuf++, pVBuf++, pVram += bypp)
 		{
-			int sx = spx + x;
-			if (sx >= sw) break;
-			int c32 = (int)((*(unsigned int*)pBuf) & 0xffffff);
-			if (sx < 0 || pBuf[3] == 0 || c32 == transparent) continue;
+			if (*pVBuf == *pSBuf) continue;
 			
+			*pVBuf = *pSBuf;
+			byte* p = (byte*)pSBuf;
 			switch (bpp)
 			{
 				case 8: // broken
-				{
-					byte c = (pBuf[0] + pBuf[1] + pBuf[2]) / 3;
-					/*if (*pVram != c)*/ *pVram = c;
+					*pVram = (p[0] + p[1] + p[2]) / 3;
 					break;
-				}
 				case 16: // 565
-				{
-					unsigned short c = Color::bpp24to565(pBuf);
-					/*if (*(unsigned short*)pVram != c)*/ *(unsigned short*)pVram = c;
+					*(unsigned short*)pVram = Color::bpp24to565(p);
 					break;
-				}
 				case 24:
-					/*if (pVram[0] != pBuf[0])*/ pVram[0] = pBuf[0];
-					/*if (pVram[1] != pBuf[1])*/ pVram[1] = pBuf[1];
-					/*if (pVram[2] != pBuf[2])*/ pVram[2] = pBuf[2];
+					pVram[0] = p[0];
+					pVram[1] = p[1];
+					pVram[2] = p[2];
 					break;
 				case 32:
-					/*if (*(int*)pVram != c32)*/ *(int*)pVram = c32;
+					*(unsigned int*)pVram = *pSBuf;
 					break;
 			}
 		}
 	}
-	monapi_call_mouse_set_cursor(1);
 }

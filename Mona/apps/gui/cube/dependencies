@@ -47,10 +47,10 @@ Form1.o: Form1.cpp ../../../include/gui/System/Mona/Forms/Application.h \
   ../../../include/gui/System/Collections/ArrayList.h \
   ../../../include/gui/System/Mona/Forms/Form.h \
   ../../../include/gui/System/Mona/Forms/Control.h \
+  ../../../include/gui/messages.h \
   ../../../include/gui/System/Mona/Forms/Events.h \
   ../../../include/gui/System/Event.h \
   ../../../include/gui/System/Drawing/Bitmap.h \
-  ../../../include/gui/messages.h \
   ../../../include/gui/System/Drawing/Color.h \
   ../../../include/gui/System/Drawing/Font.h \
   ../../../include/gui/System/Drawing/Size.h \

@@ -4,6 +4,6 @@
 #ifndef __GUISERVER_UTILS_H__
 #define __GUISERVER_UTILS_H__
 
-extern int xtoi(const char* str);
+extern unsigned int xtoui(const char* str);
 
 #endif  // __GUISERVER_UTILS_H__
