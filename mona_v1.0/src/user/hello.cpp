@@ -33,48 +33,8 @@ int myApplication::main(List<char*>* pekoe) {
     Screen screen;
     //    screen.fillRect16(10, 10, 40, 50, Color::rgb(105, 141, 148));
     screen.fillRect16(10, 10, 40, 50, Color::rgb(0x89, 0x67, 0x81));
-
-    /* memory share between this process and SHELL.SVR */
-    dword pid = Message::lookup("SHELL.SVR");
-    MemoryMap* mm = MemoryMap::create();
-    dword sharedId = mm->map(pid, 0x90000000, 0x90005000, 4096);
-    strcpy((char*)0x90005000, "data share Mona");
-    mm->unmap(sharedId);
-
-
     screen.circle16(50, 50, 20, Color::rgb(0x89, 0x67, 0x81));
-
     screen.fillCircle16(100, 100, 20, Color::rgb(0x10, 0x67, 0x81));
-
-    /* unmap? */
-    //printf("%s", (char*)0x90005000);
-
-    /* floppy read/write test */
-    char buf[1024];
-    memset(buf      , (byte)0x12, 512);
-    memset(buf + 512, (byte)0x34, 512);
-
-    StorageDevice* device = new Floppy(Floppy::FLOPPY_1);
-
-    printf("device block size=%d\n", device->getBlockSize());
-
-    device->open();
-    device->write(5, (byte*)buf, 2);
-
-    memset(buf, (byte)0x00, 1024);
-
-    device->read(5, (byte*)buf, 2);
-    device->close();
-    delete device;
-
-    for (int i = 0; i < 10; i++) {
-        printf("[%x]", buf[i]);
-    }
-    printf("\n--------------------------\n");
-
-    for (int i = 0; i < 10; i++) {
-        printf("[%x]", buf[512 + i]);
-    }
 
     Screen* virtualScreen = new VirtualScreen();
     virtualScreen->fillRect16(50, 50, 40, 40, Color::rgb(0x12, 0x34, 0x56));
@@ -84,7 +44,6 @@ int myApplication::main(List<char*>* pekoe) {
 }
 
 void myApplication::onKeyDown(int keycode, int modifiers) {
-    printf("down\n");
 }
 
 int MonaMain(List<char*>* pekoe) {
