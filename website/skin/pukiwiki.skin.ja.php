@@ -18,8 +18,8 @@
 <?php } ?>
 
  <title><?php echo "$title - $page_title" ?></title>
- <link rel="stylesheet" href="skin/default.ja.css" type="text/css" media="screen" charset="Shift_JIS" />
- <link rel="stylesheet" href="skin/print.ja.css" type="text/css" media="print" charset="Shift_JIS" />
+ <link rel="stylesheet" href="default.ja.css" type="text/css" media="screen" charset="Shift_JIS" />
+ <link rel="stylesheet" href="print.ja.css" type="text/css" media="print" charset="Shift_JIS" />
 <?php
   global $trackback, $referer;
   if ($trackback) {
@@ -186,6 +186,8 @@
  <br />
  Powered by PHP <?php echo PHP_VERSION ?>
  <br /><br />
+   Powered by <a href="http://sourceforge.jp/" target="_blank">SourceForge.jp<br><IMG SRC="http://sourceforge.jp/sflogo.php?group_id=320" WIDTH="96" HEIGHT="31" BORDER="0" ALT="SourceForge.jp"></a>
+    <br />
  HTML convert time to <?php echo $taketime ?> sec.
 </div>
 
