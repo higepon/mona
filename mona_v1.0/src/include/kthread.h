@@ -29,6 +29,8 @@ typedef struct Kthread {
     dword  esi;
     dword  edi;
     dword  tick;
+    Kthread* prev;
+    Kthread* next;
 };
 
 extern Kthread* current;
@@ -36,7 +38,7 @@ extern Kthread* current;
 
 void kthread_init();
 void kthread_tick();
-void kethread_add_to_runqueue(Kthread* thread);
+void kethread_add_to_run(Kthread* thread);
 
 
 #endif

@@ -40,9 +40,9 @@ void keyStrokeHandler() {
     KeyBoardManager& km = KeyBoardManager::instance();
     km.setKeyScanCode(scancode);
 
-    //    console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
-    //                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
-    //                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
+    console->printf("eip=%x cs=%x eflags=%x eax=%x ecx=%x edx=%x ebx=%x esp=%x, ebp=%x, esi=%x, edi=%x\n"
+                 , current->eip, current->cs, current->eflags, current->eax, current->ecx, current->edx
+                 , current->ebx, current->esp, current->ebp, current->esi, current->edi);
 
     demoStep++;
 

@@ -35,7 +35,7 @@ void checkTypeSize() {
     bool isPTE     = sizeof(PTE)     == 4;
     bool isGDTR    = sizeof(GDTR)    == 6;
     bool isGDT     = sizeof(GDT)     == 8;
-    bool isKthread = sizeof(Kthread) == 48;
+    bool isKthread = sizeof(Kthread) == 56;
 
     /* check size of some types */
     if (isByte && isWord && isDword && isTSS && isPTE && isGDTR && isGDT && isKthread) {

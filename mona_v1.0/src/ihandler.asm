@@ -34,32 +34,38 @@ _arch_fdchandler:
 ;;; save all context to Kthread* current
 _arch_timerhandler:
         pushad
-        mov ebx, [_current]
-        mov eax, dword [esp + 32]; save eip
-        mov [ebx], eax
-        mov eax, dword [esp + 36]; save cs
-        mov [ebx + 4], eax
-        mov eax, dword [esp + 40]; save eflags
-        mov [ebx + 8], eax
-        mov eax, dword [esp + 28]; save eax
-        mov [ebx + 12], eax
-        mov eax, dword [esp + 24]; save ecx
-        mov [ebx + 16], eax
-        mov eax, dword [esp + 20]; save edx
-        mov [ebx + 20], eax
-        mov eax, dword [esp + 16]; save ebx
-        mov [ebx + 24], eax
-        mov eax, dword [esp + 12]; save esp
-        mov [ebx + 28], eax
-        mov eax, dword [esp +  8]; save ebp
-        mov [ebx + 32], eax
-        mov eax, dword [esp +  4]; save esi
-        mov [ebx + 36], eax
-        mov eax, dword [esp +  0]; save edi
-        mov [ebx + 40], eax
+        call _save_registers
         call _dummyHandler
         popad
         iretd
+
+;;; this fuction saves all registers to current thread struct
+;;; should be called by interrupt handlers
+_save_registers:
+        mov ebx, [_current]
+        mov eax, dword [esp + 36]; save eip
+        mov [ebx], eax
+        mov eax, dword [esp + 40]; save cs
+        mov [ebx + 4], eax
+        mov eax, dword [esp + 44]; save eflags
+        mov [ebx + 8], eax
+        mov eax, dword [esp + 32]; save eax
+        mov [ebx + 12], eax
+        mov eax, dword [esp + 28]; save ecx
+        mov [ebx + 16], eax
+        mov eax, dword [esp + 24]; save edx
+        mov [ebx + 20], eax
+        mov eax, dword [esp + 20]; save ebx
+        mov [ebx + 24], eax
+        mov eax, dword [esp + 16]; save esp
+        mov [ebx + 28], eax
+        mov eax, dword [esp + 12]; save ebp
+        mov [ebx + 32], eax
+        mov eax, dword [esp +  8]; save esi
+        mov [ebx + 36], eax
+        mov eax, dword [esp +  4]; save edi
+        mov [ebx + 40], eax
+        ret
 
 ;;; keystroke handler
 _arch_keystrokehandler:
