@@ -56,24 +56,12 @@ PageManager::PageManager(dword totalMemorySize) {
     \brief allocate physical page to page entry
 
     \param pageEntry page entry
+    \param present   true:page present
+    \param writable  true:page writable
+    \param isUser    true:user access mode
     \author HigePon
     \date   create:2003/10/15 update:2003/10/19
 */
-bool PageManager::allocatePhysicalPage(PageEntry* pageEntry) {
-
-    int foundMemory = memoryMap_->find();
-
-    /* no free memory found */
-    if (foundMemory == -1) return false;
-
-    /* set physical page */
-    (*pageEntry) &= 0xFFF;
-    (*pageEntry) |= (foundMemory * 4096);
-    (*pageEntry) |= ARCH_PAGE_PRESENT;
-
-    return true;
-}
-
 bool PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) {
 
     int foundMemory = memoryMap_->find();
@@ -81,7 +69,7 @@ bool PageManager::allocatePhysicalPage(PageEntry* pageEntry, bool present, bool 
     /* no free memory found */
     if (foundMemory == -1) return false;
 
-    setAttribute(pageEntry, present, writable, isUser, 4096 * 1);
+    setAttribute(pageEntry, present, writable, isUser, 4096 * foundMemory);
 
     return true;
 }
@@ -138,7 +126,7 @@ PageEntry* PageManager::createNewPageDirectory() {
     table = allocatePageTable();
     memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
     setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
-    allocatePhysicalPage(&(table[tableIndex]));
+    allocatePhysicalPage(&(table[tableIndex]), true, true, true);
 
     return directory;
 }
