@@ -7,6 +7,7 @@
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
 #include <gui/System/Mona/Forms/Timer.h>
+#include <gui/System/Mona/Forms/ControlPaint.h>
 #include <monapi/CString.h>
 
 using namespace System;
@@ -36,14 +37,66 @@ static bool ExistsProcess(const MonAPI::CString& self)
     return ret;
 }
 
-class FixedLabel : public Control
+class Form1 : public Form
 {
-public:
-    FixedLabel() {}
-    virtual ~FixedLabel() {}
+private:
+    _P<Timer> timer1;
+    char time[64];
+    String clock;
+    MonAPI::Date date;
 
-    static void DrawString(_P<Graphics> g, String s, _P<Font> f, Color c, int pos_x, int pos_y)
+public:
+    Form1()
     {
+        this->InitializeComponent();
+
+        this->set_Size(Size(TEXT_LENGTH * FONT_WIDTH + 10, FONT_HEIGHT + 10));
+        this->offset = Point(this->get_Width(), this->get_Height());
+        _P<MonAPI::Screen> scr = GetDefaultScreen();
+        this->set_Location(Point(
+            scr->getWidth () - this->get_Width(),
+            scr->getHeight() - this->get_Height()));
+        this->clock = this->getDateTime();
+    }
+
+private:
+    void InitializeComponent()
+    {
+        this->set_Text("とけい");
+
+        this->set_ForeColor(Color::FromArgb( 76, 100, 112));
+        this->set_BackColor(Color::FromArgb(128, 168, 189));
+
+        this->timer1 = new Timer();
+        this->timer1->set_Interval(300);
+        this->timer1->add_Tick(new EventHandler<Form1>(this, &Form1::refresh));
+    }
+
+    void refresh(_P<Object> sender, _P<EventArgs> e)
+    {
+        String s = this->getDateTime();
+        if (s == this->clock) return;
+
+        this->clock = s;
+        this->OnPaint();
+        this->Refresh();
+    }
+
+    String getDateTime()
+    {
+        const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
+        const char* ampm[] = { "午前", "午後" };
+
+        this->date.refresh();
+        sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d",
+            date.year(), date.month(), date.day(), day[date.dayofweek() % 7],
+            ampm[date.hour() / 12], date.hour() % 12, date.min(), date.sec());
+        return time;
+    }
+
+    void DrawString(_P<Graphics> g, String s, Color c, int pos_x, int pos_y)
+    {
+        _P<Font> f = Control::get_DefaultFont();
         int x = pos_x, y = pos_y;
         FOREACH (wchar, ch, s)
         {
@@ -64,34 +117,7 @@ public:
         }
     }
 
-protected:
-    virtual void OnPaint()
-    {
-        _P<Graphics> g = this->CreateGraphics();
-        g->FillRectangle(this->get_BackColor(), 0, 0, this->get_Width(), this->get_Height());
-        FixedLabel::DrawString(g, this->get_Text(), Control::get_DefaultFont(), this->get_ForeColor(), 0, 0);
-        g->Dispose();
-    }
-};
-
-class Form1 : public Form
-{
-private:
-    _P<FixedLabel> label1;
-    _P<Timer> timer1;
-    MonAPI::Date date;
-
 public:
-    Form1()
-    {
-        this->InitializeComponent();
-
-        _P<MonAPI::Screen> scr = GetDefaultScreen();
-        this->set_Location(Point(
-            scr->getWidth () - this->get_Width(),
-            scr->getHeight() - this->get_Height()));
-    }
-
     virtual void Create()
     {
         Form::Create();
@@ -104,36 +130,26 @@ public:
         this->timer1->Dispose();
     }
 
-    void refresh(_P<Object> sender, _P<EventArgs> e)
+protected:
+    virtual void OnPaint()
     {
-        const char* day[] = { "日", "月", "火", "水", "木", "金", "土" };
-        const char* ampm[] = { "午前", "午後" };
+        _P<Graphics> g = Graphics::FromImage(this->buffer);
+        int w = this->get_Width(), h = this->get_Height();
 
-        this->date.refresh();
-        char time[64];
-        sprintf(time, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d",
-            date.year(), date.month(), date.day(), day[date.dayofweek() % 7],
-            ampm[date.hour() / 12], date.hour() % 12, date.min(), date.sec());
-        this->label1->set_Text(time);
+        // Clear
+        g->FillRectangle(this->get_BackColor(), 0, 0, w, h);
+
+        // Border
+        ControlPaint::DrawEngraved(g, 0, 0, w, h);
+
+        // Date
+        this->DrawString(g, this->clock, this->get_ForeColor(), 5, 5);
+        g->Dispose();
     }
 
-private:
-    void InitializeComponent()
+    virtual NCState NCHitTest(int x, int y)
     {
-        this->label1 = new FixedLabel();
-
-        this->set_ClientSize(Size(TEXT_LENGTH * FONT_WIDTH + 10, 30));
-        this->set_Text("とけい");
-
-        this->label1->set_Bounds(Rectangle(5, 10, TEXT_LENGTH * FONT_WIDTH, 25));
-        this->get_Controls()->Add(this->label1.get());
-
-        this->set_ForeColor(Color::FromArgb(100, 112, 76));
-        this->set_BackColor(Color::FromArgb(168, 189, 128));
-
-        this->timer1 = new Timer();
-        this->timer1->set_Interval(300);
-        this->timer1->add_Tick(new EventHandler<Form1>(this, &Form1::refresh));
+        return NCState_TitleBar;
     }
 
 public:
