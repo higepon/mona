@@ -300,6 +300,13 @@ void WindowManager::onMousePress(int mx, int my)
 			// 背景を塗りつぶす
 			restoreBackGround(control);
 			
+			// 描画が必要かどうかチェックする領域
+			Rect srect;
+			srect.x = rect->x;
+			srect.y = rect->y;
+			srect.width = rect->width;
+			srect.height = rect->height;
+			
 			// ウィンドウを非アイコン化
 			if (control->getIconified() == true) {
 				postIconifiedToWindow(false, control);
@@ -309,7 +316,7 @@ void WindowManager::onMousePress(int mx, int my)
 			}
 			
 			// ウィンドウ再描画
-			postRepaintToWindows(_controlList->getLength() - 1);
+			postRepaintToWindows(_controlList->getLength() - 1, &srect);
 			
 			// 活性化メッセージを投げる
 			postEnabledToWindow(true, control);
@@ -334,11 +341,16 @@ void WindowManager::onMousePress(int mx, int my)
 		// ウィンドウ並び替え
 		_controlList->sort(getLinkedItem(control));
 		
-		// フォーカスアウトメッセージを投げる
-		postFocusedToWindows(false, _controlList->getLength() - 1);
-		
-		// 再描画メッセージを投げる
-		postRepaintToWindows(_controlList->getLength() - 1);
+		LinkedItem *item = _controlList->endItem->prev;
+		if (item != NULL) {
+			Control *prevControl = (Control *)item->data;
+			
+			// フォーカスアウトメッセージを投げる
+			postFocusedToWindow(false, prevControl);
+			
+			// 再描画メッセージを投げる
+			postRepaintToWindow(prevControl);
+		}
 		
 		// フォーカスインメッセージを投げる
 		Control *c = (Control *)_controlList->endItem->data;
@@ -452,6 +464,13 @@ void WindowManager::onMouseRelease(int mx, int my)
 		// 背景を塗りつぶす
 		restoreBackGround(control);
 		
+		// 描画が必要かどうかチェックする領域
+		Rect srect;
+		srect.x = rect->x;
+		srect.y = rect->y;
+		srect.width = rect->width;
+		srect.height = rect->height;
+		
 		// ウィンドウ移動
 		control->setRect(
 			preX,
@@ -469,7 +488,7 @@ void WindowManager::onMouseRelease(int mx, int my)
 		}
 		
 		// ウィンドウ再描画
-		postRepaintToWindows(_controlList->getLength() - 1);
+		postRepaintToWindows(_controlList->getLength() - 1, &srect);
 		
 		// 活性化メッセージを投げる
 		postEnabledToWindow(true, control);
@@ -531,6 +550,14 @@ void WindowManager::remove(Control *control)
 	// 背景を塗りつぶす
 	restoreBackGround(control);
 	
+	// 描画が必要かどうかチェックする領域
+	Rect *rect = control->getRect();
+	Rect srect;
+	srect.x = rect->x;
+	srect.y = rect->y;
+	srect.width = rect->width;
+	srect.height = rect->height;
+	
 	// 削除メッセージを投げる
 	if (MonAPI::Message::send(control->getThreadID(), MSG_GUISERVER_REMOVE, 0, 0, 0, NULL)) {
 		//printf("WindowManager->Window: MSG_GUISERVER_REMOVE failed %d\n", control->getThreadID());
@@ -548,7 +575,7 @@ void WindowManager::remove(Control *control)
 	postFocusedToWindows(false, _controlList->getLength());
 	
 	// 再描画メッセージを投げる
-	postRepaintToWindows(_controlList->getLength() - 1);
+	postRepaintToWindows(_controlList->getLength() - 1, &srect);
 	
 	// フォーカスインメッセージを投げる
 	Control *c = (Control *)_controlList->endItem->data;
@@ -683,15 +710,19 @@ void WindowManager::postRepaintToWindow(Control *control)
  指定したウィンドウを再描画する.
  <ul>
  <li>再描画メッセージをウィンドウに投げる
+ <li>drectに重なっていないウィンドウは描画対象外にする
  </ul>
  @param length 0番目からlength番目までのウィンドウを対象にする
+ @param drect 描画が必要かチェックする領域
  */
-void WindowManager::postRepaintToWindows(int length)
+void WindowManager::postRepaintToWindows(int length, Rect *drect)
 {
 	// 再描画メッセージを投げる
 	for (int i = 0; i < length; i++) {
 		Control *control = (Control *)_controlList->getItem(i)->data;
-		postRepaintToWindow(control);
+		if (checkNeedsPaint(control->getRect(), drect) == true) {
+			postRepaintToWindow(control);
+		}
 	}
 }
 

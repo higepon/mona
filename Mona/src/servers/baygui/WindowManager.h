@@ -49,7 +49,7 @@ private:
 	virtual void postFocusedToWindows(bool focused, int length);
 	virtual void postIconifiedToWindow(bool iconified, Control *control);
 	virtual void postRepaintToWindow(Control *control);
-	virtual void postRepaintToWindows(int length);
+	virtual void postRepaintToWindows(int length, Rect *drect);
 	virtual void restoreBackGround(Control *control);
 	virtual int getKeycode(int keycode, int mod, int charcode);
 
