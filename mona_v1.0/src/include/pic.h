@@ -21,5 +21,8 @@ void enableTimer();
 void disableTimer();
 void enableKeyboard();
 void disableKeyboard();
+void enableMouse();
+void disableMouse();
+void enableFDC();
 
 #endif

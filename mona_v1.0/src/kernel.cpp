@@ -79,6 +79,7 @@ void mainProcess() {
     g_console->printf("loading Shell SERVER....");
     g_console->printf("%s\n", loadProcess(".", "SHELL.SVR", true) ? "NG" : "OK");
     enableKeyboard();
+    enableMouse();
 
     char* test = (char*)malloc(4096);
     for (; (dword)test % 4096; test++);
@@ -157,9 +158,15 @@ void startKernel(void) {
     g_processManager->join(testProcess1, testThread1);
 
     disableTimer();
+
+    /* mouse init */
+    int mouse = Mouse::init();
+    g_console->printf("Setting Mouse %s[%d]", !mouse ? "OK" : "NG", mouse);
+
     enableInterrupt();
 
     /* FDC do not delete */
+    enableFDC();
     g_fdcdriver = new FDCDriver();
     g_fat12     = new FAT12((DiskDriver*)g_fdcdriver);
     g_fdcdriver->motor(ON);
@@ -172,6 +179,7 @@ void startKernel(void) {
     }
     g_fdcdriver->motor(OFF);
     g_info_level = MSG;
+    g_console->printf("here");
     enableTimer();
 
 #ifdef HIGE

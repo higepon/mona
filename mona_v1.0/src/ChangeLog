@@ -2,6 +2,10 @@
 
         * kernel.cpp: ユーザーモードでのマウス描画完了。
 
+        * Mouse初期化をまとめた
+
+        * picのありえないバグをつぶした。
+
         * userlib.cpp, userlib.h : きれいに整形読まれることを前提としてみた。
 
 2004-02-06  higepon  <higepon@users.sourceforge.jp>

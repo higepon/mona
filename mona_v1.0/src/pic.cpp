@@ -48,12 +48,6 @@ void pic_init() {
     outportb(0x21, 0xff);
     outportb(0xA1, 0xff);
 
-    Mouse::init();
-
-    /* enable key board */
-    outportb(0x21, inportb(0x21) & 0x3f);
-
-
     return;
 }
 
@@ -120,3 +114,39 @@ void enableKeyboard() {
 
     outportb(0x21, inportb(0x21) & 0xFD);
 }
+
+/*!
+    \brief enable mouse interrupt
+
+    \author HigePon
+    \date   create:2004/02/08 update:
+*/
+void enableMouse() {
+
+    /* enable mouse interrupt slave unmask */
+    outportb(0x21, (inportb(0x21) & 0xFB)); /* IR2 cascade */
+    outportb(0xA1, (inportb(0xA1) & 0xEF)); /* IR4         */
+}
+
+/*!
+    \brief disable mouse interrupt
+
+    \author HigePon
+    \date   create:2004/02/08 update:
+*/
+void disableMouse() {
+
+    outportb(0xA1, inportb(0xA1) | 0x10);
+}
+
+/*!
+    \brief enable FDC interrupt
+
+    \author HigePon
+    \date   create:2004/02/08 update:
+*/
+void enableFDC() {
+
+    outportb(0x21, inportb(0x21) & 0xBF);
+}
+
