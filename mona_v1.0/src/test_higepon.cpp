@@ -132,7 +132,7 @@ void FDCDriverTester() {
                 return;
         }
 
-        if (!fat->open(".", "LOGO.ZZZ", FAT12::READ_MODE)) {
+        if (!fat->open(".", "Z.Z", FAT12::READ_MODE)) {
                 g_console->printf("error open mona.z\n");
                 g_fdcdriver->motor(false);
                 return;
@@ -153,7 +153,7 @@ void FDCDriverTester() {
         is.sz = 512;
         is.read = read;
 
-        int bf_size = 0x14d000;
+        int bf_size = 1024 * 10;
         bf = (unsigned char*)malloc(bf_size);
         if (NULL == bf) {
                 g_console->printf("not enough memory\n");
@@ -170,7 +170,9 @@ void FDCDriverTester() {
 
         decode(&is, &os);
 
-        drawARGB(bf, 0, 0, image_size);
+        for (int i = 0; i < 25; i++) {
+            g_console->printf("%c", bf[i]);
+        }
 
         if (!fat->close()) {
                 g_console->printf("error close\n");
