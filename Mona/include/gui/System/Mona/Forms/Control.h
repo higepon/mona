@@ -95,6 +95,7 @@ namespace System { namespace Mona { namespace Forms
 		static _P<System::Drawing::Font> get_DefaultFont();
 	
 	protected:
+		void RefreshInternal();
 		System::Drawing::Rectangle get_VisibleRectangle();
 		void DrawImage(_P<System::Drawing::Bitmap> image);
 		

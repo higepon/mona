@@ -2,9 +2,11 @@
 
         * include/sys/types.h: MSG_MOUSE_ENABLE_CURSOR, MSG_MOUSE_DISABLE_CURSOR
 
-        * src/servers/mouse/main.cpp: マウスポインタを描画するかどうかを制御
+        * src/servers/mouse/main.cpp: マウスカーソルを描画するかどうかを制御
 
         * src/servers/gui/main.cpp: 壁紙をサポート (MONA.CFGで指定可能)
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp: マウスカーソルの残像が残らないように対策
 
 2004-04-25  higepon  <higepon@users.sourceforge.jp>
 
