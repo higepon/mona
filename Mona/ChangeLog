@@ -4,6 +4,16 @@
 
         * apps/non-gui/ata/IDEDriver.cpp (requestSense): リファクタリング(関数名変更・idleImmediateコマンド追加)
 
+2004-11-16  bayside  <bayside@users.sourceforge.jp>
+
+        * include/baygui/Font.h:        サイズ削減（不要メソッド削除）
+        * include/baygui/FontManager.h: サイズ削減（不要メソッド削除）
+        * include/baygui/Graphics.h:    サイズ削減（不要メソッド削除）
+        * src/lib/baygui/Contorl.cpp:   サイズ削減（不要メソッド削除）
+        * src/lib/baygui/Font.cpp:      サイズ削減（不要メソッド削除）
+        * src/lib/baygui/FontManager.cpp:  サイズ削減（ロジック変更）
+        * src/lib/baygui/Graphics.cpp:  サイズ削減（ロジック変更）
+
 2004-11-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/ihandlers.cpp (SendInterrupt):irq番号をarg1で通知する仕様を追加
