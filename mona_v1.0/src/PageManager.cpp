@@ -315,6 +315,5 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
     /* page allocation */
     g_page_manager->allocatePhysicalPage((PageEntry*)g_current_process->cr3, address, PageManager::ARCH_PAGE_RW, g_current_process->dpl);
 
-
     return true;
 }

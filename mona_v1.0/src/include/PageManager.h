@@ -19,7 +19,6 @@ typedef dword PageEntry;
 typedef dword LinearAddress;
 typedef dword PhysicalAddress;
 
-
 class PageDirectory : public Queue {
 
     PageEntry* pageEntry_;
@@ -28,19 +27,15 @@ class PageDirectory : public Queue {
 class PageManager {
 
   public:
-
     PageManager(dword totalMemorySize);
 
   public:
     void setup();
     void flushPageCache() const;
-
     bool allocatePhysicalPage(PageEntry* pageEntry);
     bool allocatePhysicalPage(PageEntry* directory, LinearAddress address, byte rw, byte user);
-
     void setAttribute(PageEntry* entry, byte presnt, byte rw, byte user) {return;}
     bool setAttribute(PageEntry* directory, LinearAddress address, byte presen, byte rw, byte user) {return true;}
-
     void setPageDirectory(PhysicalAddress address);
     void startPaging();
     void stopPaging();
@@ -56,7 +51,6 @@ class PageManager {
 
         return (*entry) & ARCH_PAGE_PRESENT;
     }
-
 
   private:
     BitMap*       memoryMap_;
@@ -128,8 +122,6 @@ class HeapSegment : public Segment {
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
-
-
 };
 
 #endif
