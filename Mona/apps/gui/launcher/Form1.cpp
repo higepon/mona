@@ -1,7 +1,7 @@
 // This file is in the public domain.
 // There are no restrictions on any sort of usage of this file.
 
-#include <monapi.h>
+#include <monapi/messages.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Button.h>
 #include <gui/System/Mona/Forms/Form.h>
@@ -24,12 +24,7 @@ static int ProcessStart(const String& file)
 		elf[i] = ch < 128 ? ch : '?';
 	}
 	elf[len] = '\0';
-	CommandOption list;
-	list.next = NULL;
-	char* e = elf.get(), * p = &e[len];
-	for (; *p != '/' && e < p; p--);
-	p++;
-	return syscall_load_process(e, p, &list);
+	return monapi_call_elf_execute_file(elf.get(), 0);
 }
 
 class Form1 : public Form
@@ -97,7 +92,10 @@ public:
 		while (syscall_dir_read(name, &size) == 0)
 		{
 			String n = name;
-			if (n.EndsWith(".ELF") || n.EndsWith(".APP")) Form1::elfs->Add(name);
+			if (n.EndsWith(".ELF") || n.EndsWith(".EL2") || n.EndsWith(".APP"))
+			{
+				Form1::elfs->Add(name);
+			}
 		}
 		syscall_dir_close();
 		syscall_cd("/");

@@ -1,8 +1,8 @@
-TARGET  = BZCAT.ELF
+TARGET  = BZCAT
 SOURCES = main.cpp
 
 MONADIR = ../../..
-include $(MONADIR)/env/app-elf.inc
+include $(MONADIR)/env/monapi-el2.inc
 
 INSTDIR = $(BINDIR)/root/APPS
 CXXFLAGS += -DDEBUG
