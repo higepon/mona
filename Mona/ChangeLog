@@ -2,6 +2,8 @@
 
         * src/servers/pe/main.cpp: ななしさんのPE Serverキャッシュパッチを取り込み
 
+        * bim2bin, t5lzma を tools に追加
+
 2004-10-16  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (archCreateUserThread): Shellが落ちたので調べたらスタックオーバーしていた。スタック4K->8Kに拡大
