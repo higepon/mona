@@ -39,8 +39,8 @@ void OneLineShell::service() {
   /* look up */
   dword myID = MonAPI::System::getThreadID();
 
-  dword keysvrID = Message::lookupMainThread("KEYBDMNG.BIN");
-  if(keysvrID == 0xFFFFFFFF){
+  dword keysvrID = monapi_get_server_thread_id(ID_KEYBOARD_SERVER);
+  if(keysvrID == THREAD_UNKNOWN){
     printf("Shell:KeyBoardServer not found\n");
     exit(1);
   }
