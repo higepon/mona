@@ -61,20 +61,9 @@ void startKernel(void) {
     Point* point3 = new Point(7, -100);
     delete(point3);
 
-    _sys_printf("%s\n", point1->getName());
-    _sys_printf("%d\n", point1->getY());
-    _sys_printf("[Point(5, -1) getY() = %d]\n", point2->getY());
-    _sys_printf("[Point(5, -1) getY() = %d]\n", point3->getY());
-
-    //    delete(point2);
-
-
-
-
-    /* testing malloc */
-    //_sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
-    //    _sys_printf("address of (int)malloc(sizeof(int)) is %d \n", (int)malloc(sizeof(int)));
-
+    _sys_printf("[Point(6, -2) getY() = %d]\n", point2->getY());
+    _sys_printf("[Point(7, -100) getY() = %d]\n", point3->getY());
+    Point* point4 = new Point(7, -100);
 
     /* testing vector */
 //      Vector<int> list;
