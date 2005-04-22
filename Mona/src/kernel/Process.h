@@ -94,16 +94,10 @@ class ProcessOperation
     static void initialize(PageManager* manager);
     static Process* create(int type, const char* name);
     static LinearAddress allocateKernelStack();
-    static void freeKernelStack(LinearAddress address);
 
   private:
-    enum
-    {
-        KERNEL_STACK_START     = 0x100000,
-        KERNEL_STACK_END       = 0x200000,
-        KERNEL_STACK_SIZE      = KERNEL_STACK_END - KERNEL_STACK_START,
-        KERNEL_STACK_UNIT_SIZE = 0x1000,
-    };
+    static const LinearAddress KERNEL_STACK_START     = 0x100000;
+    static const LinearAddress KERNEL_STACK_UNIT_SIZE = 0x1000;
 
   public:
     static PageManager* pageManager;

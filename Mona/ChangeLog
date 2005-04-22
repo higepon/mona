@@ -1,3 +1,8 @@
+2005-04-23  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp: 空きスタック管理コードを一時的に戻す(バグがあったため)
+          Revision 1.34
+          Revision 1.19
 
 2005-04-06  higepon  <higepon@users.sourceforge.jp>
 
