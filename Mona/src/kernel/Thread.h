@@ -43,6 +43,9 @@ public:
     dword schedulerTotalTick;
     dword flags;
     dword wakeupSleep;
+    
+    //add by TAKA
+    dword kernelStackBottom;
 };
 
 #endif

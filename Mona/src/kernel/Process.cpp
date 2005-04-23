@@ -17,7 +17,7 @@
 #include "Process.h"
 #include "PageManager.h"
 #include "string.h"
-
+#include "BitMap.h"
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
@@ -28,16 +28,38 @@ PageManager* ProcessOperation::pageManager;
 const int ProcessOperation::USER_PROCESS;
 const int ProcessOperation::KERNEL_PROCESS;
 
+static BitMap* kernelStackMap;
+
 void ProcessOperation::initialize(PageManager* manager)
 {
     ProcessOperation::pageManager = manager;
+
+    kernelStackMap = new BitMap(KERNEL_STACK_SIZE / KERNEL_STACK_UNIT_SIZE);
 }
 
 LinearAddress ProcessOperation::allocateKernelStack()
 {
-    static int i = 0;
-    i++;
-    return KERNEL_STACK_START + i * KERNEL_STACK_UNIT_SIZE;
+    int stackIndex = kernelStackMap->find();
+
+    if (stackIndex == BitMap::NOT_FOUND)
+    {
+        panic("sorry no kernel stack\n");
+        for (;;);
+    }
+
+    return KERNEL_STACK_START + stackIndex * KERNEL_STACK_UNIT_SIZE;
+}
+
+void ProcessOperation::freeKernelStack(LinearAddress address)
+{
+    if (address < KERNEL_STACK_START || address > KERNEL_STACK_SIZE)
+    {
+        return;
+    }
+
+    int index = (address - KERNEL_STACK_START) / KERNEL_STACK_UNIT_SIZE;
+
+    kernelStackMap->clear(index);
 }
 
 Process* ProcessOperation::create(int type, const char* name)
@@ -113,7 +135,7 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
     ainfo->dpl     = DPL_USER;
     ainfo->esp     = stack;
     ainfo->ebp     = stack;
-    ainfo->esp0    = ProcessOperation::allocateKernelStack();
+    ainfo->esp0    = ProcessOperation::allocateKernelStack() + 0x1000;  //added by TAKA
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 
@@ -125,6 +147,9 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
     ainfo->fpu[4] = 0x00000000;
     ainfo->fpu[5] = 0x00000000;
     ainfo->fpu[6] = 0xFFFF0000;
+    
+    /* add by TAKA */
+    thread->kernelStackBottom = ainfo->esp0;
 }
 
 void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
@@ -144,8 +169,8 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
     ainfo->esi     = 0;
     ainfo->edi     = 0;
     ainfo->dpl     = DPL_KERNEL;
-    ainfo->esp     = stack;
-    ainfo->ebp     = stack;
+    ainfo->esp     = stack + 0x1000;    //added by TAKA
+    ainfo->ebp     = stack + 0x1000;    //added by TAKA
     ainfo->eip     = programCounter;
     ainfo->cr3     = (PhysicalAddress)pageDirectory;
 
@@ -157,6 +182,9 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
     ainfo->fpu[4] = 0x00000000;
     ainfo->fpu[5] = 0x00000000;
     ainfo->fpu[6] = 0xFFFF0000;
+    
+    /* add by TAKA */
+    thread->kernelStackBottom = stack;
 }
 
 int ThreadOperation::switchThread(bool isProcessChanged, int num)
@@ -237,6 +265,10 @@ int ThreadOperation::kill()
 
 //    logprintf("%s:%d\n", __FILE__, __LINE__);
 
+    //modified by TAKA
+    //ProcessOperation::freeKernelStack(process->getStackBottom(thread));
+    ProcessOperation::freeKernelStack(thread->kernelStackBottom);
+
     if (process->threadNum < 1)
     {
         PageEntry* directory = process->getPageDirectory();
@@ -267,6 +299,9 @@ int ThreadOperation::kill(dword tid)
     g_scheduler->Kill(thread);
 
 //    sendKilledMessage();
+
+    //ProcessOperation::freeKernelStack(process->getStackBottom(thread));
+    ProcessOperation::freeKernelStack(thread->kernelStackBottom);
 
     (process->threadNum)--;
 
