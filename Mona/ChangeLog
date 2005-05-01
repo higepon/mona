@@ -1,3 +1,7 @@
+2005-05-01  higepon  <higepon@users.sourceforge.jp>
+
+        * src/servers/file/main.cpp (MonaMain): Initialize(false)とするとFDイメージができる。
+
 2005-04-23  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp: 空きスタック管理コードを一時的に戻す(バグがあったため)

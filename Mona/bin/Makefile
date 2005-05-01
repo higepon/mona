@@ -16,6 +16,12 @@ all:
 	./fat_write $(FD_IMG) ../src/servers/file/FILE.BIN FILE.BIN
 	./fat_write $(FD_IMG) ../src/servers/process/PROCESS.BIN PROCESS.BIN
 	./fat_write $(FD_IMG) ../src/servers/moniter/MONITOR.BIN MONITOR.BIN
+	./fat_write $(FD_IMG) ../src/servers/moniter/MONITOR.BIN SERVERS/MONITOR.BIN
+	./fat_write $(FD_IMG) ../src/servers/elf/ELF.BN5 SERVERS/ELF.BN5
+	./fat_write $(FD_IMG) ../src/servers/pe/PE.BN5 SERVERS/PE.BN5
+	./fat_write $(FD_IMG) ../src/servers/key/KEYBDMNG.EX5 SERVERS/KEYBDMNG.EX5
+	./fat_write $(FD_IMG) ../src/servers/mouse/MOUSE.EX5 SERVERS/MOUSE.EX5
+	./fat_write $(FD_IMG) ../src/servers/shell/OLDSHELL.EX5 SERVERS/OLDSHELL.EX5
 	@echo $(ROOT_FILES)
 	@echo $(LIB_FILES)
 	@for file in $(ROOT_FILES) $(LIB_FILES); \

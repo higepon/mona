@@ -196,8 +196,6 @@ void MessageLoop()
 
 int MonaMain(List<char*>* pekoe)
 {
-    Log("\n");
-
     if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
     {
         printf("%s: INIT error\n", SVR);
