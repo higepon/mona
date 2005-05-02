@@ -20,4 +20,4 @@ enum
     MSG_FILE_GET_SIZE,
 };
 
-#endif;_
+#endif

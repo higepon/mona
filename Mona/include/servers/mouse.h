@@ -11,4 +11,4 @@ enum
     MSG_MOUSE_GET_CURSOR_POSITION,
 };
 
-#endif;_
+#endif

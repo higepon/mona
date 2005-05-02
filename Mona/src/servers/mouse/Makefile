@@ -3,6 +3,7 @@ SOURCES = main.cpp
 INSTDIR = $(BINDIR)/iso/SERVERS
 
 MONADIR = ../../..
+
 ifneq ($(BUILD_TARGET),ELF)
 include $(MONADIR)/env/monapi-ex5.inc
 else
