@@ -2,19 +2,16 @@
 #define __MONAPI_MESSAGES_H__
 
 #include <monapi/cmemoryinfo.h>
-#include <monapi/mouse.h>
+#include <servers/keyboard.h>
+#include <servers/mouse.h>
+#include <servers/process.h>
+#include <servers/file.h>
+#include <servers/servers.h>
 
 #define MONAPI_BOOL int
 #define MONAPI_TRUE   1
 #define MONAPI_FALSE  0
 
-enum
-{
-
-    MSG_KEY_REGIST_TO_SERVER = 0x0200,
-    MSG_KEY_UNREGIST_FROM_SERVER,
-    MSG_KEY_VIRTUAL_CODE,
-};
 
 enum
 {
