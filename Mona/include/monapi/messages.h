@@ -12,7 +12,6 @@
 #define MONAPI_TRUE   1
 #define MONAPI_FALSE  0
 
-
 enum
 {
     ID_MOUSE_SERVER,

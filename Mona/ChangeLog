@@ -1,3 +1,7 @@
+2005-05-03  higepon  <higepon@users.sourceforge.jp>
+
+        * include/servers/を作成して、monapi/messages.hに格納すべきでないものを移動した。
+
 2005-05-01  higepon  <higepon@users.sourceforge.jp>
 
         * src/servers/file/main.cpp (MonaMain): Initialize(false)とするとFDイメージができる。

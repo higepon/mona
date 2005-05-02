@@ -1,5 +1,5 @@
-#ifndef _SERVER_MOUSE_
-#define _SERVER_MOUSE_
+#ifndef _SERVERS_MOUSE_
+#define _SERVERS_MOUSE_
 
 enum
 {
