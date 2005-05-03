@@ -1,3 +1,9 @@
+2005-05-04  shadow  <shadowin@users.sourceforge.jp>
+
+        * monalibc/math.cpp: log exp pow’Ç‰Á
+
+        * include/monalibc/math.cpp: log exp pow’Ç‰Á
+
 2005-05-03  higepon  <higepon@users.sourceforge.jp>
 
         * include/servers/‚ğì¬‚µ‚ÄAmonapi/messages.h‚ÉŠi”[‚·‚×‚«‚Å‚È‚¢‚à‚Ì‚ğˆÚ“®‚µ‚½B
