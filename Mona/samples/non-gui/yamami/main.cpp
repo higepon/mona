@@ -1,6 +1,8 @@
 /*!
     \file   main.cpp
     \brief  Yamami Code:Mones リリース前 各種テストロジック cvsadd
+    
+    cvs test
 
     Copyright (c) 2004 Yamami
     All rights reserved.
