@@ -37,6 +37,16 @@ extern "C" {
 #define S_FORMAT_LONGLONG 0x04
 #define S_FORMAT_UNSIGNED 0x08
 
+typedef struct{
+  int quot; /* quotient */
+  int rem;  /* remainder */
+} div_t;
+
+typedef struct{
+  long int quot; /* quotient */
+  long int rem;  /* remainder */
+} ldiv_t;
+
 long int strtol(const char *s, char **endptr, int base);
 unsigned long int strtoul(const char *s, char **endptr, int base);
 size_t strtoi(const char *s, char **endptr, int base, int width, char flag);
@@ -44,6 +54,10 @@ int atoi(const char *s);
 int itos(char *s, int n, int width, unsigned int base, char flag);
 int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag);
 int ftos(char *s, double n, int width, int precision, char flag);
+int abs(int i);
+long int labs(long int i);
+div_t div(long int numer, long int denom);
+ldiv_t ldiv(long int numer, long int denom);
 
 #ifdef __cplusplus
 }

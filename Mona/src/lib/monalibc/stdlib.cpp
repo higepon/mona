@@ -12,6 +12,7 @@
   $Date$
 */
 #include <monalibc.h>
+#include <monalibc/stdlib.h>
 #include <monapi/string.h>
 
 int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag);
@@ -394,3 +395,68 @@ int ftos(char *s, double n, int width, int precision, char flag){
   return j;
 }
 
+/*!
+  \brief absolute
+
+  \param i int
+
+  \return absolute value of i
+*/
+int abs(int i){
+
+  return i >= 0 ? i :-i;
+}
+
+/*!
+  \brief long absolute
+
+  \param i long int
+
+  \return absolute value of i
+*/
+long int labs(long int i){
+
+  return i >= 0 ? i :-i;
+}
+
+/*!
+  \brief integer division
+
+  \param numer dividend
+  \param denom divisor
+
+  \return quotient and remainder
+*/
+div_t div(long int numer, long int denom){
+
+  div_t result;
+  ldiv_t tmp = ldiv(numer, denom);
+
+  result.quot = tmp.quot;
+  result.rem  = tmp.rem;
+
+  return result;
+}
+
+/*!
+  \brief long integer division
+
+  \param numer dividend
+  \param denom divisor
+
+  \return quotient and remainder
+*/
+ldiv_t ldiv(long int numer, long int denom){
+
+  ldiv_t result;
+  long int anumer = labs(numer);
+  long int adenom = labs(denom);
+
+  result.quot = anumer / adenom;
+  result.rem  = anumer % adenom;
+
+  if((numer < 0 && denom > 0) || (numer > 0 && denom < 0)) result.quot = -result.quot;
+  if(numer < 0) result.rem = -result.rem;
+
+  return result;
+}
