@@ -4,12 +4,15 @@
 
         * include/monalibc/math.h: log exp pow log10 ceil’Ç‰Á
 
-        * monalibc/stdlib.cpp: abs labs div ldiv’Ç‰Á
+        * monalibc/stdlib.cpp: abs labs div ldiv qsort’Ç‰Á
 
-        * include/monalibc/stdlib.h: abs labs div ldiv’Ç‰Á
+        * include/monalibc/stdlib.h: abs labs div ldiv qsort’Ç‰Á
 
         * include/monalibc/stddef.h: ‰”Åì¬
 
+        * monalibc/monalibc.cpp: memswap’Ç‰Á
+
+        * include/monalibc.h: memswap’Ç‰Á
 
 2005-05-03  higepon  <higepon@users.sourceforge.jp>
 
