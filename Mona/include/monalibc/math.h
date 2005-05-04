@@ -33,8 +33,10 @@ double acos(double x);
 double modf(double x, double *buf);
 double floor(double x);
 double log(double x);
+double log10(double x);
 double exp(double x);
 double pow(double x, double y);
+double ceil(double x);
 
 #ifdef __cplusplus
 }

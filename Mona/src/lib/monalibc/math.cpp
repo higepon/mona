@@ -126,6 +126,12 @@ double log(double x){
   return result;
 }
 
+double log10(double x){
+
+  return log(x)/2.30258092994057; /* log10(x) = ln(x)/ln(10) */
+}
+
+
 double exp(double x){
 
   int ix, n = 1;
@@ -190,4 +196,15 @@ double pow(double x, double y){
   if(x < 0) return 0; /* error: result is imaginary */
 
   return exp(y*log(x));
+}
+
+/*!
+  \brief ceiling
+
+  \param x double
+  \return smallest integral value not less than argument
+*/
+double ceil(double x){
+
+  return -floor(-x); /* -[-x] */
 }
