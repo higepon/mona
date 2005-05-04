@@ -28,6 +28,7 @@ extern "C" {
 size_t __power(size_t x, size_t y);
 int strcpy2(char *s1, const char *s2);
 int strncpy2(char *s1, const char *s2, int n);
+void memswap(char *a, char *b, size_t size);
 
 #ifdef __cplusplus
 }

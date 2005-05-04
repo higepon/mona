@@ -41,3 +41,17 @@ int strncpy2(char *s1, const char *s2, int n){
 
   return result;
 }
+
+void memswap(char *a, char *b, size_t size){
+
+  size_t i;
+  char tmp;
+
+  for(i = 0; i < size; i++){
+    tmp = a[i];
+    a[i] = b[i];
+    b[i] = tmp;
+  }
+
+  return;
+}
