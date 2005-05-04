@@ -58,6 +58,7 @@ int abs(int i);
 long int labs(long int i);
 div_t div(long int numer, long int denom);
 ldiv_t ldiv(long int numer, long int denom);
+void qsort(void *base, size_t n, size_t size, int (*fnc)(const void*, const void*));
 
 #ifdef __cplusplus
 }
