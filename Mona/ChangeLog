@@ -2,11 +2,14 @@
 
         * monalibc/math.cpp: log exp pow log10 ceil’Ç‰Á
 
-        * include/monalibc/math.cpp: log exp pow log10 ceil’Ç‰Á
+        * include/monalibc/math.h: log exp pow log10 ceil’Ç‰Á
 
         * monalibc/stdlib.cpp: abs labs div ldiv’Ç‰Á
 
-        * include/monalibc/stdlib.cpp: abs labs div ldiv’Ç‰Á
+        * include/monalibc/stdlib.h: abs labs div ldiv’Ç‰Á
+
+        * include/monalibc/stddef.h: ‰”Åì¬
+
 
 2005-05-03  higepon  <higepon@users.sourceforge.jp>
 
