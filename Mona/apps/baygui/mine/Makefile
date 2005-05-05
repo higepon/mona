@@ -1,6 +1,6 @@
 TARGET = MINE
 SOURCES = mine.cpp tile.cpp
-INSTDIR = $(BINDIR)/iso/APPS/MIZYO
+INSTDIR = $(BINDIR)/iso/APPS/BAYGUI
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)
