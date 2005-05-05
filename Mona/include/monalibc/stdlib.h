@@ -59,6 +59,7 @@ long int labs(long int i);
 div_t div(long int numer, long int denom);
 ldiv_t ldiv(long int numer, long int denom);
 void qsort(void *base, size_t n, size_t size, int (*fnc)(const void*, const void*));
+void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*fnc)(const void *, const void *));
 
 #ifdef __cplusplus
 }
