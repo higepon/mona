@@ -15,6 +15,7 @@ all:
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
+	@cd mine && $(MAKE) $@
 
 install:
 	@cd gbball && $(MAKE) $@
@@ -33,6 +34,7 @@ install:
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
+	@cd mine && $(MAKE) $@
 
 clean: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -51,6 +53,7 @@ clean: touchdepend
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
+	@cd mine && $(MAKE) $@
 
 depend: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -69,6 +72,7 @@ depend: touchdepend
 	@cd gversion && $(MAKE) $@
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
+	@cd mine && $(MAKE) $@
 
 distclean:
 	rm -f gbball/dependencies
@@ -87,6 +91,7 @@ distclean:
 	rm -f gversion/dependencies
 	rm -f mblupin/dependencies
 	rm -f mtorz/dependencies
+	rm -f mine/dependencies
 
 touchdepend:
 	touch gbball/dependencies
@@ -105,3 +110,4 @@ touchdepend:
 	touch gversion/dependencies
 	touch mblupin/dependencies
 	touch mtorz/dependencies
+	touch mine/dependencies
