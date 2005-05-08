@@ -1,3 +1,16 @@
+2005-05-08  Yamami  <yamamimail@users.sourceforge.jp>
+     * src/servers/mones/Makefile : ex2→ex5へ変更
+     
+     * src/servers/mones/MoIp.h : IPヘッダ構造体 MoDefine.hへ移動
+     
+     * src/servers/mones/MoIcmp.h : ICMPヘッダ構造体 MoDefine.hへ移動
+     
+     * src/servers/mones/MoDefine.h : 各種ヘッダ宣言移動
+     
+     * src/servers/mones/mones.cpp : メッセージからのIP送信処理実装
+     
+     * samples/non-gui/yamami/main.cpp: テストコード(PINGもどき)追加
+
 2005-05-05  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc/stdlib.cpp: bsearch追加

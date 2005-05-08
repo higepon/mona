@@ -150,7 +150,7 @@ int MoArp::receiveReply(dword srcip,byte *mac)
     if(findFlag == 1){
         //Mones自身へメッセージ通知
         MessageInfo info;
-        dword targetID = Message::lookupMainThread("MONES.EX2");  //TO DO この探し方良くないよなー
+        dword targetID = Message::lookupMainThread("MONES.EX5");  //TO DO この探し方良くないよなー
         // create message
         Message::create(&info, MSG_MONES_WAKEUP_ARP_WAIT, 0, 0, 0, NULL);
         Message::send(targetID, &info);

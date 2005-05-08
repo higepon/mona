@@ -40,6 +40,8 @@ using namespace MonAPI;
 int MonaMain(List<char*>* pekoe)
 {
     
+    int ret;
+    
     //TO DO とりあえず、30プロセスまでOK 
     MonesRList = new HList<MONES_IP_REGIST*>();
     MONES_IP_REGIST *regist;
@@ -129,9 +131,8 @@ int MonaMain(List<char*>* pekoe)
 
             //Monesへ登録
             case MSG_MONES_REGIST:
-            //case 5:
                 
-                printf("MSG_MONES_REGIST\n");
+                //printf("MSG_MONES_REGIST\n");
                 
                 //通信管理リストに登録
                 //TO DO TCPをサポートすれば、本来は、IPだけでは無く、ポート番号も
@@ -144,54 +145,50 @@ int MonaMain(List<char*>* pekoe)
                 break;
 
 
-            //Yamami!! TO DO パケット送信処理、未実装
             //アプリからのパケット送信要求
             case MSG_MONES_IP_SEND:
                 //パケット送信
-                //TO DO 単純に、ここでテスト用のIPパケットを作成し送信要求
-                printf("MSG_MONES_IP_SEND\n");
-                
-                int ret;
-                dword ip;
-                TRANS_BUF_INFO *tbi;
-                tbi = new TRANS_BUF_INFO();
-                
-                ICMP_HEADER *icmpHead;
-                icmpHead = new ICMP_HEADER();
-                
-                //testPacket = new char(100);
-                
-                //送信先 10.0.2.2(QEMU GW)
-                ip = 0x0A000202;
-                
-                
-                //ICMPヘッダーの設定
-                icmpHead->type=ICMP_TYPE_ECHOREQ;
-                icmpHead->code=0;
-                icmpHead->chksum=0;
-                //icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,size);
-                icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,0);
+                //とりあえずは、MessageInfo のstr 128バイトまでサポート
+                //それ以上のサイズは、共有メモリを用いる
+                if(info.arg1 == 0){
 
-                //送信バッファテーブルの設定
-                tbi->data[2]=NULL;
-                tbi->size[2]=0;
-                tbi->data[1]=(char*)icmpHead;
-                //tbi->size[1]=size;
-                tbi->size[1]=0;
-                tbi->ipType=IPPROTO_ICMP;
-    
-                ret = g_MoIp->transIp(tbi , MoPacUtl::swapLong(ip) ,0, 0);
+                    int icmp_size;
+                    icmp_size=info.length;
 
-                //TODO メモリ解放のタイミングを考えないとメモリリーク !!
-                //delete icmpHead;
-                //delete tbi;
+                    dword ip;
+                    TRANS_BUF_INFO *tbi;
+                    tbi = new TRANS_BUF_INFO();
+                    
+                    ICMP_HEADER *volatile icmpHead;
+                    //icmpHead = new ICMP_HEADER();
+                    icmpHead=(ICMP_HEADER*)info.str;
+
+                    
+                    //送信先 引数2の値
+                    ip = info.arg2;
+                    
+                    //ICMP チェックサム計算
+                    icmpHead->chksum=0;
+                    icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,icmp_size);
+
+                    //送信バッファテーブルの設定
+                    tbi->data[2]=NULL;
+                    tbi->size[2]=0;
+                    tbi->data[1]=(char*)icmpHead;
+                    tbi->size[1]=icmp_size;
+                    tbi->ipType=IPPROTO_ICMP;
+        
+                    ret = g_MoIp->transIp(tbi , MoPacUtl::swapLong(ip) ,0, 0);
+                    
+                    //printf("MoPacUtl::swapLong(ip)=%x\n",MoPacUtl::swapLong(ip));
+                }
                 
                 break;
 
             //ARP待ちからのWake Up
             case MSG_MONES_WAKEUP_ARP_WAIT:
                 
-                printf("MSG_MONES_WAKEUP_ARP_WAIT\n");
+                //printf("MSG_MONES_WAKEUP_ARP_WAIT\n");
                 
                 MAC_REPLY_WAIT* nowWait;
                 
@@ -202,6 +199,8 @@ int MonaMain(List<char*>* pekoe)
                     if(nowWait->repFlg == 1){
                         //ARP解決済みなら、待ちパケットを送信する。
                         ret = g_MoIp->transIp(nowWait->ipPacketBuf , nowWait->ip ,0, 0);
+                        
+                        printf("nowWait->ip=%x\n",nowWait->ip);
                         
                         //待避していたIPパケットバッファの解放
                         free(nowWait->ipPacketBuf);

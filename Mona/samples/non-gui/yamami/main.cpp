@@ -323,24 +323,56 @@ int MonaMain(List<char*>* pekoe)
 
 #ifdef MAIN_7
 
+//IP関連のヘッダはどこに定義すべきか？
+//とりあえず、Mones内のMoDefineを強引にinclude
+#include "../../../src/servers/mones/MonesDefine.h"
+
 
 //Code:Mones IP送信テスト
 int MonaMain(List<char*>* pekoe)
 {
 
+    if(pekoe->size() < 1){
+        printf("Arguments is few!\n");
+        printf("usage: ping host\n");
+        return 0;
+    }
+    
+    
+    //printf("pekoe->get(0)=%s\n",pekoe->get(0));
+    
+    int a,b,c,d;
+    
+    sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
+    
+    //printf("a=%d\n",a);
+    //printf("b=%d\n",b);
+    //printf("c=%d\n",c);
+    //printf("d=%d\n",d);
+
+    //IPアドレス組み立て
+    dword ipaddr;
+    ipaddr = 0;
+    ipaddr = (byte)a;
+    ipaddr = (ipaddr << 8) + (byte)b;
+    ipaddr = (ipaddr << 8) + (byte)c;
+    ipaddr = (ipaddr << 8) + (byte)d;
+    
+    printf("Pinding %s\n",pekoe->get(0));
+
     //ここで、Monesにメッセージを送る
     MessageInfo info;
 
-    dword targetID = Message::lookupMainThread("MONES.EX2");
+    dword targetID = Message::lookupMainThread("MONES.EX5");
     if (targetID == 0xFFFFFFFF)
     {
-        printf("MONES.EX2 not found\n");
+        printf("MONES.EX5 not found\n");
         exit(1);
     }
 
     //Monesへ登録
     // create message
-    Message::create(&info, MSG_MONES_REGIST, 0x0A000202, 0, 0, NULL);
+    Message::create(&info, MSG_MONES_REGIST, ipaddr, 0, 0, NULL);
     // send
     if (Message::send(targetID, &info)) {
         printf("MSG_MONES_REGIST error\n");
@@ -350,6 +382,34 @@ int MonaMain(List<char*>* pekoe)
     //IP送信
     // create message
     Message::create(&info, MSG_MONES_IP_SEND, 0, 0, 0, NULL);
+
+    //ICMPパケットの作成
+    int icmp_size;
+    icmp_size=40;
+    
+    char icmp_buf[40];
+    
+    ICMP_HEADER *volatile icmpHead;
+    icmpHead=(ICMP_HEADER*)icmp_buf;
+    
+    
+    //dataの部分をつくる
+    memcpy(icmpHead->data , "abcdefghijklmnopqrstuvwabcdefghi",32);
+    
+    //ICMPヘッダーの設定
+    icmpHead->type=ICMP_TYPE_ECHOREQ;
+    icmpHead->code=0;
+    //チェックサムはここでは計算しない。Monesに任せる
+    //icmpHead->chksum=0;
+    //icmpHead->chksum=MoPacUtl::calcCheckSum((dword*)icmpHead,icmp_size);
+
+    info.arg1 = 0;  //共有メモリを使用しない
+    info.arg2 = ipaddr;
+    
+    memcpy(info.str , icmp_buf,icmp_size);
+    info.length = icmp_size;
+
+
     // send
     if (Message::send(targetID, &info)) {
         printf("MSG_MONES_IP_SEND error\n");
@@ -368,7 +428,7 @@ int MonaMain(List<char*>* pekoe)
             {
             case MSG_MONES_ICMP_NOTICE:
                 //IP要求が返ってきたら
-                printf("YAMAMI MSG_MONES_ICMP_NOTICE\n");
+                printf("Reply from %s\n",pekoe->get(0));
                 return 0;
                 
                 break;

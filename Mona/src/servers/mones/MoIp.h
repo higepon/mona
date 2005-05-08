@@ -22,35 +22,6 @@
 #include "AbstractMonic.h"
 
 
-// Yamami ??この宣言ここでいい？
-/*! 
- *  \struct IP_HEADER
- *  \brief IPヘッダ構造体
- */
-typedef struct{
-    byte  verhead;  /* バージョン、ヘッダ長。 */
-    byte  tos;      /* TOS. */
-    word len;       /* トータル長。 */
-    word id;        /* 識別番号。 */
-    word frag;      /* フラグ、フラグメントオフセット。 */
-    byte  ttl;      /* Time to Live. */
-    byte  prot;     /* プロトコル番号。 */
-    word chksum;    /* ヘッダチェックサム。 */
-    dword srcip;        /* 送り元IP。 */
-    dword dstip;        /* 宛先IP。 */
-    char     data[0];
-}IP_HEADER;
-
-
-enum{
-    IP_HEAD_VERSION=4<<4,
-
-    IP_HEAD_FRAG_ON= 0x2000,    /* フラグメントデータありフラグ。 */
-    IP_HEAD_FRAG_NOT=0x4000,    /* フラグメント不可フラグ。 */
-};
-
-
-
 /*!
     MoIp class
 */

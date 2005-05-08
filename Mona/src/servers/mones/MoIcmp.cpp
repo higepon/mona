@@ -147,11 +147,15 @@ void MoIcmp::saveRecv(IP_HEADER *ipHead, int size)
     MONES_IP_REGIST *regist;
 
 //Yamamiデバッグ
-printf("MoIcmp::saveRecv Call!!\n");
+//printf("MoIcmp::saveRecv Call!!\n");
+//printf("MonesRList->size() = %d \n",MonesRList->size());
 
     //登録しているプロセスに通知する。
-    for (int i = 0; i < MonesRList->size() -1; i++) {
+    for (int i = 0; i < MonesRList->size() ; i++) {
         regist = MonesRList->get(i);
+        
+        //printf("regist->ip = %x \n",regist->ip);
+        //printf("MoPacUtl::swapLong(ipHead->srcip) = %x \n",MoPacUtl::swapLong(ipHead->srcip));
         
         if(regist->ip == MoPacUtl::swapLong(ipHead->srcip) ){
             //登録されているIPへのリプライならば、メッセージ通知

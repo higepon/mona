@@ -88,6 +88,9 @@ int MoEther::setEtherFrame(byte *frameBuf, int size)
     //ここで、パケットユーティリティクラスを使って、エンディアン変換
     //フレームタイプ
     frame->type = MoPacUtl::packet_get_2byte(frameBuf , 12);
+
+//2005/05/06 フレームタイプを表示
+//printf("frame->type:%x \n",frame->type);
     
     //リストに追加
     Ether_FrameList_->add(frame);

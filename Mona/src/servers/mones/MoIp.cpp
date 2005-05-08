@@ -76,6 +76,10 @@ int MoIp::receiveIp(IP_HEADER *ipHead)
         return 0;
     }
 
+
+//2005/05/06 プロトコルタイプを表示
+//printf("ipHead->prot:%x \n",ipHead->prot);
+
     /* 上位プロトコルへ渡す。 */
     switch(ipHead->prot)
     {
