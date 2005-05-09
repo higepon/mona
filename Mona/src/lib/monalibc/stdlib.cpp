@@ -1,4 +1,4 @@
-/*!
+/*!aa
   \file   MlcStdlib.cpp
   \brief  mona c standard library
 
@@ -71,14 +71,17 @@ size_t strtoi(const char *s, char **endptr, int base, int width, char flag){
     mflag = -1;
     s++;
   }
-  if(*s == '0'){ /* modify base using s */
-    s++;
-    if(*s == 'X' || *s == 'x'){
-      if((base == 0) || (base == 16)){
+
+  head = s;
+  if(*head == '0'){ /* modify base using s */
+    head++;
+    if( ((*head == 'X') || (*head == 'x')) && ((base == 0) || (base == 16)) ){
+      head++;
+      if(isxdigit(*head) != 0){
         base = 16;
-        s++;
+        s = head; /* skip 0X or 0x */
       }
-    } else if(*s >= '1' && *s <= '7'){
+    } else if(*head >= '1' && *head <= '7'){
       if(base == 0) base = 8;
     } else {
       if(base == 0) base = 10;
@@ -87,6 +90,7 @@ size_t strtoi(const char *s, char **endptr, int base, int width, char flag){
     base = 10;
   }
   head = s;
+
   if(width == 0) width = INT_MAX;
   width -= (int)(head - tmp);
   if(flag & S_FORMAT_UNSIGNED){
