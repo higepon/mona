@@ -1,3 +1,10 @@
+2005-05-09  Yamami  <yamamimail@users.sourceforge.jp>
+     * apps/non-gui/ping : 追加
+     
+     * src/servers/mones : 
+      MACアドレス未解決時に、Arp要求～応答～IP送信 とするが、この場合のIP送信のパケットが壊れている問題を修正
+      共有メモリを使用
+
 2005-05-08  Yamami  <yamamimail@users.sourceforge.jp>
      * src/servers/mones/Makefile : ex2→ex5へ変更
      

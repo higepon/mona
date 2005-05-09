@@ -446,3 +446,33 @@ int MonaMain(List<char*>* pekoe)
 }
 
 #endif
+
+
+#ifdef MAIN_8
+
+//sscanfƒeƒXƒg
+int MonaMain(List<char*>* pekoe)
+{
+       int ai;
+       int bi;
+       int ci;
+       int di;
+
+       sscanf("192.168.0.1","%d.%d.%d.%d",&ai,&bi,&ci,&di);
+        
+       printf("1's time\n");
+       printf("a=%d\n",ai);
+       printf("b=%d\n",bi);
+       printf("c=%d\n",ci);
+       printf("d=%d\n",di);
+
+       sscanf("192.168.000.001","%d.%d.%d.%d",&ai,&bi,&ci,&di);
+       
+       printf("2's time\n");
+       printf("a=%d\n",ai);
+       printf("b=%d\n",bi);
+       printf("c=%d\n",ci);
+       printf("d=%d\n",di); 
+}
+
+#endif

@@ -11,9 +11,10 @@
     \date   create:2004/08/28 update:$Date$
 */
 
+#include <monapi/cmemoryinfo.h>
+
 #ifndef _MONA_MONESDEFINE_
 #define _MONA_MONESDEFINE_
-
 
 /* Ethernet MAC層ヘッダ構成 */
 #define SIZEOF_ETHERADDR    6
@@ -141,7 +142,10 @@ struct MAC_REPLY_WAIT{
     int repFlg;       //Reply flag 0:待ち 1:完了
     int wait;         //ウェイト数 
     char mac[6];      //MACアドレス格納
-    TRANS_BUF_INFO* ipPacketBuf; //IPパケットバッファ
+    dword  ipType;    /* IPプロトコルタイプ。 */
+    //TRANS_BUF_INFO* ipPacketBuf; //IPパケットバッファ
+    monapi_cmemoryinfo* ipPacketBuf01;  //IPパケットバッファ01
+    monapi_cmemoryinfo* ipPacketBuf02;  //IPパケットバッファ02
 };
 
 /*! 

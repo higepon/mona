@@ -67,12 +67,12 @@ int Ne2000MoNic::init()
     }
 
     //ここでMACアドレスを表示してみる
-    int i;
-    printf("MAC ADR:");
-    for(i=0 ;i < 6 ; i++){
-        printf("%x ",ether_mac_addr[i]);
-    }
-    printf("\n");
+    //int i;
+    //printf("MAC ADR:");
+    //for(i=0 ;i < 6 ; i++){
+    //    printf("%x ",ether_mac_addr[i]);
+    //}
+    //printf("\n");
 
     //Ne2000 初期化
     nic_init();

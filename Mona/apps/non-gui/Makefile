@@ -9,6 +9,7 @@ all:
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
+#	@cd ping && $(MAKE) $@
 
 install:
 	@cd noiz2bg && $(MAKE) $@
@@ -21,6 +22,7 @@ install:
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
+#	@cd ping && $(MAKE) $@
 
 clean: touchdepend
 	@cd noiz2bg && $(MAKE) $@
@@ -33,6 +35,7 @@ clean: touchdepend
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
+#	@cd ping && $(MAKE) $@
 
 depend: touchdepend
 	@cd noiz2bg && $(MAKE) $@
@@ -44,6 +47,7 @@ depend: touchdepend
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
+#	@cd ping && $(MAKE) $@
 
 distclean:
 	rm -f noiz2bg/dependencies
@@ -55,6 +59,7 @@ distclean:
 	rm -f ata/dependencies
 	@cd nic && $(MAKE) $@
 	rm -f cdfsread/dependencies
+#	rm -f ping/dependencies
 
 touchdepend:
 	touch noiz2bg/dependencies
@@ -65,3 +70,4 @@ touchdepend:
 	touch pciinfo/dependencies
 	touch ata/dependencies
 	touch cdfsread/dependencies
+#	touch ping/dependencies

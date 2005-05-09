@@ -161,6 +161,8 @@ void MoIcmp::saveRecv(IP_HEADER *ipHead, int size)
             //登録されているIPへのリプライならば、メッセージ通知
             // create message
             Message::create(&info, MSG_MONES_ICMP_NOTICE, 0, 0, 0, NULL);
+            memcpy(info.str , ipHead,size);
+            info.length = size;
             // send
             if (Message::send(regist->tid, &info)) {
                 //printf("MoIcmp::saveRecv error\n");

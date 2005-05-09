@@ -127,14 +127,26 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
 
     // 送信先 MACアドレス取得(ARP解決)
     if((rest=g_MoArp->getMac(transip,dstmac)) != 0){
+        //Yamami デバッグ
+        //printf("MoIp::transIp rest = %d!!\n",rest);
+
         //ARPキャッシュでは見つからず、IP送信はすぐにできないので、待ちへ
         //パケット内容を待ちリストへ追加
         MAC_REPLY_WAIT* nowWait;
         nowWait = g_MoArp->macWaitList->get(rest-1);
-        nowWait->ipPacketBuf = tbi;
         
-        //Yamami デバッグ
-        printf("MoIp::transIp rest = %d!!\n",rest);
+        //パケットは共有メモリへ格納
+        monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+        if (!monapi_cmemoryinfo_create(ret, tbi->size[1], false))
+        {
+            monapi_cmemoryinfo_delete(ret);
+            return rest;
+        }
+        
+        memcpy(ret->Data,tbi->data[1],tbi->size[1]);
+        nowWait->ipPacketBuf01 = ret;
+        
+        nowWait->ipType = tbi->ipType;
         
         return rest;
     }
@@ -163,7 +175,6 @@ int MoIp::transIp(TRANS_BUF_INFO *tbi, dword dstip, byte tos, int flag)
 
     if(total<=max)
     {
-        
         
         //送信要求パケットサイズがMTU以下ならば
         //IPサイズ

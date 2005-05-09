@@ -60,7 +60,7 @@ int MonaMain(List<char*>* pekoe)
     //NICのロードに失敗した場合は、Mones終了
     if(insAbstractNic == 0){
         printf("NIC Error Mones Quit \n");
-        return 0;
+        exit(1);
     }
     
     //Etherクラスのインスタンス化
@@ -74,6 +74,11 @@ int MonaMain(List<char*>* pekoe)
     //IPクラスのインスタンス化
     g_MoIp = new MoIp();
     g_MoIp->initIp(insAbstractNic);
+
+    //グローバルバッファ初期化
+    //g_buff = new byte(100);
+    //g_buffT01 = new byte(100);
+    //g_buffT02 = new byte(100);
 
 
     // initilize destination list
@@ -147,6 +152,9 @@ int MonaMain(List<char*>* pekoe)
 
             //アプリからのパケット送信要求
             case MSG_MONES_IP_SEND:
+                
+                //printf("MSG_MONES_IP_SEND\n");
+                
                 //パケット送信
                 //とりあえずは、MessageInfo のstr 128バイトまでサポート
                 //それ以上のサイズは、共有メモリを用いる
@@ -162,7 +170,7 @@ int MonaMain(List<char*>* pekoe)
                     ICMP_HEADER *volatile icmpHead;
                     //icmpHead = new ICMP_HEADER();
                     icmpHead=(ICMP_HEADER*)info.str;
-
+                    
                     
                     //送信先 引数2の値
                     ip = info.arg2;
@@ -198,12 +206,24 @@ int MonaMain(List<char*>* pekoe)
                     
                     if(nowWait->repFlg == 1){
                         //ARP解決済みなら、待ちパケットを送信する。
-                        ret = g_MoIp->transIp(nowWait->ipPacketBuf , nowWait->ip ,0, 0);
+                        TRANS_BUF_INFO *tbi;
+                        tbi = new TRANS_BUF_INFO();
                         
-                        printf("nowWait->ip=%x\n",nowWait->ip);
+                        //送信バッファテーブルの設定
+                        tbi->data[2]=NULL;
+                        tbi->size[2]=0;
+                        tbi->data[1]=(char*)MonAPI::MemoryMap::map(nowWait->ipPacketBuf01->Handle);
+                        tbi->size[1]=nowWait->ipPacketBuf01->Size;
+                        tbi->ipType=nowWait->ipType;
+                        
+                        ret = g_MoIp->transIp(tbi , nowWait->ip ,0, 0);
+                        
                         
                         //待避していたIPパケットバッファの解放
-                        free(nowWait->ipPacketBuf);
+                        //free(nowWait->ipPacketBuf);
+                        monapi_cmemoryinfo_dispose(nowWait->ipPacketBuf01);
+                        monapi_cmemoryinfo_delete(nowWait->ipPacketBuf01);
+                        
                         
                         //待ちリストから削除
                         g_MoArp->macWaitList->removeAt(i);
@@ -212,7 +232,6 @@ int MonaMain(List<char*>* pekoe)
                     }
                 }
                 
-
                 
                 break;
 
