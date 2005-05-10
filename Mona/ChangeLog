@@ -1,3 +1,9 @@
+2004-05-10  bayside
+
+        * apps/baygui/Makefile: gbrowserとgchatをビルド対象外にした（アプリが増えてきたので）
+
+        * src/lib/baygui/Window.cpp: 一般イベントでstrが正しくコピーされない不具合を修正
+
 2005-05-10  Yamami  <yamamimail@users.sourceforge.jp>
      * apps/baygui/pingui : 追加
 
@@ -70,7 +76,7 @@
 
         * src/kernel/Process.h (class ProcessOperation): カーネルスタックを0x100000-0x200000で定義した。
 
-2004-04-03  bayside  <bayside@users.sourceforge.jp>
+2004-04-03  bayside
 
         * apps/baygui/Makefile: gtimer追加
 
@@ -87,7 +93,7 @@
 
         * src/kernel/PageManager.cpp (stopPaging): Takaさん指摘のバグ修正。
 
-2004-03-22  bayside  <bayside@users.sourceforge.jp>
+2004-03-22  bayside
 
         * bin/iso/MONITOR.CFG: imesvr復活
 
@@ -112,7 +118,7 @@
         * src/servers/file/FatFileSystemManager.cpp (Open): 追加。ただし未実装状態。
                                                     (Close): 追加。ただし未実装状態。
 
-2004-03-20  bayside  <bayside@users.sourceforge.jp>
+2004-03-20  bayside
 
         * apps/baygui/gshell/gshell.cpp: exit で終了したときに例外が出る問題を修正
 
@@ -129,7 +135,7 @@
 
         * src/servers/file/file.cpp : 大文字小文字を区別しないように変更。
 
-2004-03-17  bayside  <bayside@users.sourceforge.jp>
+2004-03-17  bayside
 
         * apps/baygui/mblupin/mblupin.cpp: 差し替え
 
@@ -262,7 +268,7 @@
         * src/servers/key/main.cpp (WaitInterrruptWithTimeout): タイムアウトつき割り込み待ち関数を追加。ここでテストした。
                                               (WAIT_INTERRUPT): WaitInterrruptWithTimeoutをラップしたものタイムアウトの__FILE__, __LINE__が分かる。
 
-2004-03-08  bayside  <bayside@users.sourceforge.jp>
+2004-03-08  bayside
 
         * apps/baygui/gchat/gchat.cpp: LinkedList修正に対応
 
@@ -286,7 +292,7 @@
 
         * src/kernel/core.asm (from_user): eipのバグ修正
 
-2004-03-07  bayside  <bayside@users.sourceforge.jp>
+2004-03-07  bayside
 
         * apps/baygui/gclock/gclock.cpp: 起動時に時刻が表示されるように修正。
 
@@ -350,7 +356,7 @@
 
         * include/sys/types.h (SYSTEM_CALL_TIMER): タイマー追加。
 
-2004-03-02  bayside  <bayside@users.sourceforge.jp>
+2004-03-02  bayside
 
         * apps/baygui/guitest1/guitest1.cpp: Scrollbar 追加
 
@@ -366,7 +372,7 @@
 
         * src/kernel/PageManager.cpp: vram alignバグの修正 thanks Takaさん
 
-2004-03-01  bayside  <bayside@users.sourceforge.jp>
+2004-03-01  bayside
 
         * apps/baygui/guitest1/guitest1.cpp: CheckboxGroup 追加
 
@@ -382,7 +388,7 @@
 
         * src/lib/baygui/Makefile: CheckboxGroup 追加
 
-2004-02-28  bayside  <bayside@users.sourceforge.jp>
+2004-02-28  bayside
 
         * apps/baygui/guitest1/guitest1.cpp: Checkbox 追加
 
@@ -398,7 +404,7 @@
 
         * include/baygui.h: Checkbox 追加
 
-2004-02-22  bayside  <bayside@users.sourceforge.jp>
+2004-02-22  bayside
 
         * src/lib/baygui/Control.cpp: create -> onStart, dispose -> onExit
 
@@ -414,7 +420,7 @@
 
         * apps/baygui/gshell/gshell.cpp: create -> onStart, dispose -> onExit
 
-2004-02-20  bayside  <bayside@users.sourceforge.jp>
+2004-02-20  bayside
 
         * src/servers/mouse/main.cpp: マウスカーソルの形状を若干変更 :-)
 
@@ -424,7 +430,7 @@
 
         * apps/baygui/gshell/gshell.cpp: exit/quit コマンド追加
 
-2004-02-17  bayside  <bayside@users.sourceforge.jp>
+2004-02-17  bayside
 
         * src/servers/1linesh/Makefile: stk5化
 
@@ -472,7 +478,7 @@
 
         * sys/HashMap.h Map.h: char* -> const char*
 
-2004-02-13  bayside  <bayside@users.sourceforge.jp>
+2004-02-13  bayside
 
         * apps/baygui/glaunch/glaunch.cpp: メニューやアイコンを描画するように書き直し
 
@@ -500,7 +506,7 @@
 
         * src/servers/file/IDEDriver.cpp (protocolPioDataIn): セカンダリの認識不良バグを修正。
 
-2004-02-12  bayside  <bayside@users.sourceforge.jp>
+2004-02-12  bayside
 
         * apps/baygui/gshell/gshell.cpp: 存在しないディレクトリでlsすると落ちる不具合修正＆各種修正
 
@@ -532,7 +538,7 @@
 
         * src/servers/file/IDEDriver.cpp (read): lbaのバグを修正
 
-2004-02-09  bayside  <bayside@users.sourceforge.jp>
+2004-02-09  bayside
 
         * apps/baygui/gshell/gshell.cpp: リファクタリング＆品質向上
 
@@ -552,7 +558,7 @@
 
         * src/servers/file/file.cpp (ChangeDirectory): FileSystem::IsExistDirectory()を使用するように変更。
 
-2004-02-08  bayside  <bayside@users.sourceforge.jp>
+2004-02-08  bayside
 
         * apps/baygui/gshell/gshell.cpp: リファクタリング＆品質向上
 
@@ -560,7 +566,7 @@
 
         * src/servers/shell/Shell.cpp (hasDriveLetter): 追加。
 
-2004-02-07  bayside  <bayside@users.sourceforge.jp>
+2004-02-07  bayside
 
         * apps/baygui/Makefile: gshell対応
 
@@ -568,7 +574,7 @@
 
         * bin/root/BAYGUI.INI: gshell対応
 
-2004-02-06  bayside  <bayside@users.sourceforge.jp>
+2004-02-06  bayside
 
         * tools/guibuilder: 追加（デフォルトではビルドされません）
 
@@ -648,7 +654,7 @@
 
         * apps/non-gui/ata/main.cpp (MonaMain): CDREADをバイナリエディタ風に
 
-2004-01-29  bayside  <bayside@users.sourceforge.jp>
+2004-01-29  bayside
 
         * apps/baygui/Makefile: FIRE 復活
 
@@ -668,7 +674,7 @@
 
         * apps/non-gui/ata/main.cpp : CDセクタリードツールをリリース
 
-2004-01-21  bayside  <bayside@users.sourceforge.jp>
+2004-01-21  bayside
 
         * apps/baygui/*: 新しいBayGUIに差し替え
 
@@ -678,7 +684,7 @@
 
         * src/lib/baygui/*: 新しいBayGUIに差し替え
 
-2004-01-10  bayside  <bayside@users.sourceforge.jp>
+2004-01-10  bayside
 
         * apps/baygui/Makefile: grunner 追加
 
@@ -737,7 +743,7 @@
 
         * apps/non-gui/jpegdemo/jpegdemo.cpp : 非推奨APIの使用をやめた(FileInputStream -> monapi_call_file_read_data)
 
-2004-12-20  bayside  <bayside@users.sourceforge.jp>
+2004-12-20  bayside
 
         * apps/baygui/gbball : 新BayGUI対応
 
@@ -755,7 +761,7 @@
 
         * src/lib/baygui : 新BayGUI対応
 
-2004-12-19  bayside  <bayside@users.sourceforge.jp>
+2004-12-19  bayside
 
         * apps/gui/monafile/Icon.cpp : 対応拡張子追加（EL5, EX5, BM5）
 
@@ -808,7 +814,7 @@
 
         * src/servers/mouse/main.cpp (enableKeyboard): バグ修正
 
-2004-11-28  bayside  <bayside@users.sourceforge.jp>
+2004-11-28  bayside
 
         * src/servers/gui/window.cpp: コメント追加
 
@@ -824,7 +830,7 @@
 
         * src/lib/monapi/io.cpp (monapi_set_irq): I/O関連の関数を集約
 
-2004-11-28  bayside  <bayside@users.sourceforge.jp>
+2004-11-28  bayside
 
         * apps/baygui: リファクタリング
 
@@ -912,7 +918,7 @@
 
         * apps/non-gui/ata/IDEDriver.cpp (requestSense): リファクタリング(関数名変更・idleImmediateコマンド追加)
 
-2004-11-16  bayside  <bayside@users.sourceforge.jp>
+2004-11-16  bayside
 
         * include/baygui/Font.h:        サイズ削減（不要メソッド削除）
         * include/baygui/FontManager.h: サイズ削減（不要メソッド削除）
@@ -942,7 +948,7 @@
 
         * apps/non-gui/ata/IDEDriver.cpp (sendPacketCommand): atapi read(10)がうまくいかない
 
-2004-11-15  bayside  <bayside@users.sourceforge.jp>
+2004-11-15  bayside
 
         * apps/baygui/gbrowser/htmlpanel.cpp:  内部変数名変更（x -> _x 等）
         * apps/baygui/glaunch/glaunch.cpp:     マウスのダブルクリックでも起動するように修正
@@ -980,7 +986,7 @@
 
         * include/sys/types.h: Mones用のメッセージ追加
 
-2004-11-12  bayside  <bayside@users.sourceforge.jp>
+2004-11-12  bayside
 
         * src/lib/baygui/ImeManager.cpp: IMEオン・オフのキーバインド追加と細かい修正
 
@@ -1000,7 +1006,7 @@
 
         * include/baygui/ImeManager.h: CString.hをinclude(ビルドエラー解消のため)
 
-2004-11-08  bayside  <bayside@users.sourceforge.jp>
+2004-11-08  bayside
 
         * src/lib/baygui: IME系大幅修正
 
@@ -1030,7 +1036,7 @@
 
         * src/lib/gui/System/String.cpp: コメント記述
 
-2004-11-06  bayside  <bayside@users.sourceforge.jp>
+2004-11-06  bayside
 
         * apps/baygui/gfire: FIRE追加
 
@@ -1046,7 +1052,7 @@
 
         * apps/baygui/mblupin/mblupin.cpp: ランダムにシード値を与えるように変更
 
-2004-11-02  bayside  <bayside@users.sourceforge.jp>
+2004-11-02  bayside
 
         * apps/baygui/gnullpo: nullpo.bmp と gat.bmp に名称変更
 
@@ -1056,7 +1062,7 @@
 
         * apps/baygui/mblupin/mblupin.cpp: mblupin追加
 
-2004-11-01  bayside  <bayside@users.sourceforge.jp>
+2004-11-01  bayside
 
         * apps/baygui/gnullpo/Makefile (CLEANFILES): BM5の削除を追加
 
@@ -1068,13 +1074,13 @@
 
         * src/servers/mones Code:Mones Ver0.14 MoTcp,MonesLoaderクラス追加 QEMU NIC認識
 
-2004-10-31  bayside  <bayside@users.sourceforge.jp>
+2004-10-31  bayside
 
         * servers/baygui: ウィンドウ移動時に余計なウィンドウ描画が走らないように修正
 
         * apps/baygui/gnullpo: ぬるぽボタン追加
 
-2004-10-30  bayside  <bayside@users.sourceforge.jp>
+2004-10-30  bayside
 
         * apps/baygui/gchat: IRCもどき追加
 
@@ -1086,7 +1092,7 @@
 
         * TinoGUI->MonaFormsに改名
 
-2004-10-26  bayside  <bayside@users.sourceforge.jp>
+2004-10-26  bayside
 
         * apps/baygui: 品質向上
 
@@ -1098,7 +1104,7 @@
 
         * src/servers/moniter/main.cpp (CheckServers): chshでシェルが自動で起動されてしまう件に対処
 
-2004-10-25  bayside  <bayside@users.sourceforge.jp>
+2004-10-25  bayside
 
         * servers/baygui: ウィンドウ移動時に枠線を出すように修正
 
@@ -1114,13 +1120,13 @@
 
         * src/servers/gui/STARTGUI.MSH : 削除
 
-2004-10-24  bayside  <bayside@users.sourceforge.jp>
+2004-10-24  bayside
 
         * tools/t5lzma/Compress/LZMA_Alone/Makefile: msysでもcygwinでもビルドが通るように修正
 
         * servers/baygui: ランチャーは殺せないように修正。アイコンをモナーに修正
 
-2004-10-23  bayside  <bayside@users.sourceforge.jp>
+2004-10-23  bayside
 
         * tools/t5lzma/Common/Vector.h: shadowさんのパッチ適用
 
@@ -1140,7 +1146,7 @@
 
         * src/kernel/Process.cpp (kill): Kill時にカーネルがハングするバグを修正
 
-2004-10-20  bayside  <bayside@users.sourceforge.jp>
+2004-10-20  bayside
 
         * apps/baygui/glaunch: アプリケーションランチャー追加
 
@@ -1152,7 +1158,7 @@
 
         * include/monapi/syscall.h (log): logprintf + __FILE_ + __LINE__
 
-2004-10-18  bayside  <bayside@users.sourceforge.jp>
+2004-10-18  bayside
 
         * apps/baygui/gbrowser: ブラウザもどき追加
 
@@ -1176,7 +1182,7 @@
 
         * include/monapi/syscall.h: syscall_get_memory_infoの追加
 
-2004-10-17  bayside  <bayside@users.sourceforge.jp>
+2004-10-17  bayside
 
         * bim2bin, t5lzma を tools に追加
 
@@ -1202,11 +1208,11 @@
 
         * include/monalibc/stdarg.h (va_arg): バグ修正
 
-2004-10-16  bayside  <bayside@users.sourceforge.jp>
+2004-10-16  bayside
 
         * stk5 (OSASK圧縮形式) 対応開始
 
-2004-10-15  bayside  <bayside@users.sourceforge.jp>
+2004-10-15  bayside
 
         * BayGUIをソースツリーに追加（アプリ、ライブラリ、サーバー）
 
