@@ -1,3 +1,9 @@
+2005-05-09  shadow  <shadowin@users.sourceforge.jp>
+
+        * monalibc/ctype.cpp: isodigit追加
+
+        * include/monalibc/ctype.h: isodigit追加
+
 2004-05-10  bayside
 
         * apps/baygui/Makefile: gbrowserとgchatをビルド対象外にした（アプリが増えてきたので）
