@@ -16,6 +16,7 @@ all:
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd mine && $(MAKE) $@
+#	@cd pingui && $(MAKE) $@
 
 install:
 	@cd gbball && $(MAKE) $@
@@ -35,6 +36,7 @@ install:
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd mine && $(MAKE) $@
+#	@cd pingui && $(MAKE) $@
 
 clean: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -54,6 +56,7 @@ clean: touchdepend
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd mine && $(MAKE) $@
+#	@cd pingui && $(MAKE) $@
 
 depend: touchdepend
 	@cd gbball && $(MAKE) $@
@@ -73,6 +76,7 @@ depend: touchdepend
 	@cd mblupin && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd mine && $(MAKE) $@
+#	@cd pingui && $(MAKE) $@
 
 distclean:
 	rm -f gbball/dependencies
@@ -92,6 +96,7 @@ distclean:
 	rm -f mblupin/dependencies
 	rm -f mtorz/dependencies
 	rm -f mine/dependencies
+#	rm -f pingui/dependencies
 
 touchdepend:
 	touch gbball/dependencies
@@ -111,3 +116,4 @@ touchdepend:
 	touch mblupin/dependencies
 	touch mtorz/dependencies
 	touch mine/dependencies
+#	touch pingui/dependencies
