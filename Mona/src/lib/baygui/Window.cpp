@@ -499,7 +499,8 @@ void Window::run()
 				this->customEvent.arg2   = info.arg2;
 				this->customEvent.arg3   = info.arg3;
 				this->customEvent.from   = info.from;
-				strcpy(this->customEvent.str, info.str);
+				//strcpy(this->customEvent.str, info.str);
+				memcpy(this->customEvent.str, info.str, sizeof(this->customEvent.str));
 				this->customEvent.length = info.length;
 				postEvent(&this->customEvent);
 				// MSG_PROCESS_STDOUT_DATA は SendReceive で送るので必要
