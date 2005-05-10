@@ -122,6 +122,20 @@ int islower(int c){
 }
 
 /*!
+  \brief checks for a octo digit
+
+  \param c character to be checked
+  \return  nonzero if c is octo digit, and zero if not
+*/
+int isodigit(int c){
+  if(isascii(c)){
+    return ((c >= '0') && (c <= '7'));
+  }
+
+  return 0;
+}
+
+/*!
   \brief checks for any printable character
 
   \param c character to be checked

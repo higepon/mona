@@ -26,6 +26,7 @@ int iscntrl(int c);
 int isdigit(int c);
 int isgraph(int c);
 int islower(int c);
+int isodigit(int c);
 int isprint(int c);
 int ispunct(int c);
 int isspace(int c);
