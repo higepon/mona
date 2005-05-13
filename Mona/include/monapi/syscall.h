@@ -77,6 +77,7 @@ extern int syscall_clear_screen();
 extern int syscall_peek(MessageInfo* message, int index, int flags);
 
 extern int syscall_set_irq_receiver(int irq);
+extern int syscall_has_irq_receiver(int irq);
 extern int syscall_remove_irq_receiver(int irq);
 extern int syscall_get_memory_info(MemoryInfo* INFO);
 extern int syscall_free_pages(dword address, dword size);

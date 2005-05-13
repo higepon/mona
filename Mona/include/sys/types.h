@@ -258,13 +258,15 @@ enum
 #define SYSTEM_CALL_TEST                     0x0038
 #define SYSTEM_CALL_SET_IRQ_RECEIVER         0x0039
 #define SYSTEM_CALL_REMOVE_IRQ_RECEIVER      0x003A
-#define SYSTEM_CALL_FRRE_PAGES               0x003B
+#define SYSTEM_CALL_FREE_PAGES               0x003B
 #define SYSTEM_CALL_GET_MEMORY_INFO          0x003C
 #define SYSTEM_CALL_LOG_PRINT                0x003D
 #define SYSTEM_CALL_ALLOCATE_DMA_MEMORY      0x003E
 #define SYSTEM_CALL_DEALLOCATE_DMA_MEMORY    0x003F
 #define SYSTEM_CALL_SET_TIMER                0x0040
 #define SYSTEM_CALL_KILL_TIMER               0x0041
+#define SYSTEM_CALL_HAS_IRQ_RECEIVER         0x0042
+
 
 #define SYSCALL_0(syscall_number, result)                                         \
     asm volatile("movl $%c1, %%ebx \n"                                            \

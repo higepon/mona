@@ -546,8 +546,20 @@ void syscall_entrance()
 
         break;
     }
+    case SYSTEM_CALL_HAS_IRQ_RECEIVER:
+    {
+        int irq  = (int)info->esi;
 
-    case SYSTEM_CALL_FRRE_PAGES:
+        /* out of range */
+        if (irq > 15 || irq < 0)
+        {
+            break;
+        }
+        info->eax = g_irqInfo[irq].hasReceiver ? 1 : 0;
+        break;
+    }
+
+    case SYSTEM_CALL_FREE_PAGES:
     {
         dword address = info->esi;
         dword size    = info->ecx;
