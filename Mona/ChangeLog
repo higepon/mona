@@ -1,3 +1,8 @@
+2005-05-13  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/syscall.cpp (syscall_free_pages): SYSTEM_CALL_FREE_PAGESのつづり間違い修正
+                                     (syscall_has_irq_receiver): API追加
+
 2005-05-09  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc/ctype.cpp: isodigit追加
@@ -19,22 +24,22 @@
 
 2005-05-09  Yamami  <yamamimail@users.sourceforge.jp>
      * apps/non-gui/ping : 追加
-     
-     * src/servers/mones : 
+
+     * src/servers/mones :
       MACアドレス未解決時に、Arp要求～応答～IP送信 とするが、この場合のIP送信のパケットが壊れている問題を修正
       共有メモリを使用
 
 2005-05-08  Yamami  <yamamimail@users.sourceforge.jp>
      * src/servers/mones/Makefile : ex2→ex5へ変更
-     
+
      * src/servers/mones/MoIp.h : IPヘッダ構造体 MoDefine.hへ移動
-     
+
      * src/servers/mones/MoIcmp.h : ICMPヘッダ構造体 MoDefine.hへ移動
-     
+
      * src/servers/mones/MoDefine.h : 各種ヘッダ宣言移動
-     
+
      * src/servers/mones/mones.cpp : メッセージからのIP送信処理実装
-     
+
      * samples/non-gui/yamami/main.cpp: テストコード(PINGもどき)追加
 
 2005-05-05  shadow  <shadowin@users.sourceforge.jp>

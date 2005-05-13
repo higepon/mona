@@ -553,6 +553,13 @@ int syscall_set_irq_receiver(int irq)
     return result;
 }
 
+int syscall_has_irq_receiver(int irq)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_HAS_IRQ_RECEIVER, result, irq);
+    return result;
+}
+
 int syscall_remove_irq_receiver(int irq)
 {
     dword result;
@@ -563,7 +570,7 @@ int syscall_remove_irq_receiver(int irq)
 int syscall_free_pages(dword address, dword size)
 {
     dword result;
-    SYSCALL_2(SYSTEM_CALL_FRRE_PAGES, result, address, size);
+    SYSCALL_2(SYSTEM_CALL_FREE_PAGES, result, address, size);
     return result;
 }
 
