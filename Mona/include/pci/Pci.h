@@ -6,7 +6,7 @@
 
     Copyright (c) 2004 Yamami
     All rights reserved.
-    License=MIT/X Licnese
+    License=MIT/X License
 
     \author  Yamami 
     \version $Revision$

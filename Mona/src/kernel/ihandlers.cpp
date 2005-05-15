@@ -6,7 +6,7 @@
 
   Copyright (c) 2002, 2003 and 2004 Higepon
   All rights reserved.
-  License=MIT/X Licnese
+  License=MIT/X License
 
   \author  HigePon
   \version $Revision$

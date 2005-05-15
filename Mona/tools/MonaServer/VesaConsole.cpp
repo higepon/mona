@@ -6,7 +6,7 @@
 
     Copyright (c) 2004 Gaku
     All rights reserved.
-    License=MIT/X Licnese
+    License=MIT/X License
 
     \author  Gaku
     \version $Revision$

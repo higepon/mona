@@ -8,7 +8,7 @@
 
     Copyright (c) 2004 Higepon
     All rights reserved.
-    License=MIT/X Licnese
+    License=MIT/X License
 
     \author  HigePon
     \version $Revision$

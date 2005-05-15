@@ -1,3 +1,7 @@
+2005-05-15  higepon  <higepon@users.sourceforge.jp>
+
+        * ƒ‰ƒCƒZƒ“ƒX‚Ì‚Â‚Ã‚èŠÔˆá‚¢‚ğC³
+
 2005-05-13  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/syscall.cpp (syscall_free_pages): SYSTEM_CALL_FREE_PAGES‚Ì‚Â‚Ã‚èŠÔˆá‚¢C³

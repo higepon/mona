@@ -5,7 +5,7 @@
 ; Revision    : $Revision$ $Date$
 ; Copyright (c) 2002,2003 Higepon
 ; All rights reserved.
-; License=MIT/X Licnese
+; License=MIT/X License
 ;-------------------------------------------------------------------------------
 %define KERNEL   0x1000
 %define TEMPSEG  0x9f00

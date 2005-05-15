@@ -2,7 +2,7 @@
 
     Copyright (c) 2003 .mjt
     All rights reserved.
-    License=MIT/X Licnese
+    License=MIT/X License
 
 */
 #include "sysresource.h"

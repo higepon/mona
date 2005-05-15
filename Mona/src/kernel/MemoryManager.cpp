@@ -4,7 +4,7 @@
 
     Copyright (c) 2002,2003, 2004 Higepon and the individuals listed on the ChangeLog entries.
     Al rights reserved.
-    License=MIT/X Licnese
+    License=MIT/X License
 
     \author  HigePon
     \version $Revision$
