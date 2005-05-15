@@ -121,6 +121,22 @@ typedef struct{
 }ICMP_HEADER;
 
 
+
+/*! 
+ *  \struct UDP_HEADER
+ *  \brief UDPヘッダ構造体
+ */
+ typedef struct{
+    word srcport;
+    word dstport;
+    short len;
+    word chksum;
+    char   data[0];
+}UDP_HEADER;
+
+
+
+
 /*! 
  *  \struct TRANS_BUF_INFO
  *  \brief IP送信バッファ構造体
@@ -154,7 +170,7 @@ struct MAC_REPLY_WAIT{
  */
 struct MONES_IP_REGIST{
     dword ip;         //通信中IP
-    dword port;       //通信中PORT
+    word port;       //通信中PORT
     dword tid;        //スレッドID
 };
 

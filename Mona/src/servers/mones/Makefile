@@ -6,6 +6,7 @@ SOURCES = mones.cpp            \
           MoArp.cpp            \
           MoIp.cpp             \
           MoTcp.cpp            \
+          MoUdp.cpp            \
           MoIcmp.cpp           \
           MonesConfig.cpp      \
           MonesLoader.cpp      \

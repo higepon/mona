@@ -31,6 +31,7 @@
 #include "MoEther.h"
 #include "MoArp.h"
 #include "MoIp.h"
+#include "MoUdp.h"
 #include "MoIcmp.h"
 
 //GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
@@ -41,6 +42,7 @@ GLOBAL MonesConfig G_MonesCon;
 GLOBAL MoEther* g_MoEther;
 GLOBAL MoArp* g_MoArp;
 GLOBAL MoIp* g_MoIp;
+GLOBAL MoUdp* g_MoUdp;
 GLOBAL MoIcmp* g_MoIcmp;
 
 //Mones“o˜^î•ñŠÇ——p HashMap

@@ -1,3 +1,10 @@
+2005-05-15  Yamami  <yamamimail@users.sourceforge.jp>
+     * apps\baygui\baymomsg :追加 簡易メッセージ
+     
+     * src/servers/mones/MoUdp.h : 追加
+     
+     * src/servers/mones/MoUdp.cpp : 追加
+
 2005-05-15  higepon  <higepon@users.sourceforge.jp>
 
         * ライセンスのつづり間違いを修正

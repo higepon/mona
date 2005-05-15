@@ -75,10 +75,9 @@ int MonaMain(List<char*>* pekoe)
     g_MoIp = new MoIp();
     g_MoIp->initIp(insAbstractNic);
 
-    //グローバルバッファ初期化
-    //g_buff = new byte(100);
-    //g_buffT01 = new byte(100);
-    //g_buffT02 = new byte(100);
+    //UDPクラスのインスタンス化
+    g_MoUdp = new MoUdp();
+    g_MoUdp->initUdp(insAbstractNic);
 
 
     // initilize destination list
@@ -107,6 +106,9 @@ int MonaMain(List<char*>* pekoe)
     //IRQレシーバとして登録 (IRQは、NICドライバクラスより得る)
     syscall_set_irq_receiver(insAbstractNic->getNicIRQ());
 
+
+    logprintf("Mones Start!!!!!\n");
+
     /* Message loop */
     //ここでメッセージループ
     for (;;)
@@ -119,7 +121,7 @@ int MonaMain(List<char*>* pekoe)
             {
             case MSG_INTERRUPTED:
                 
-                //printf("MSG_INTERRUPTED\n");
+                //logprintf("MSG_INTERRUPTED\n");
                 
                 dword    i;
                 
@@ -144,6 +146,7 @@ int MonaMain(List<char*>* pekoe)
                 regist = new MONES_IP_REGIST();
                 regist->tid = info.from;
                 regist->ip = info.arg1;
+                regist->port = (word)info.arg2;
                 
                 MonesRList->add(regist);
                 

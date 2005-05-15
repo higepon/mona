@@ -85,8 +85,8 @@ int MoIp::receiveIp(IP_HEADER *ipHead)
     {
         //case IPPROTO_TCP:
         //  return g_MoIcmp->receiveTcp(ipHead);
-        //case IPPROTO_UDP:
-        //  return g_MoIcmp->receiveUdp(ipHead);
+        case IPPROTO_UDP:
+          return g_MoUdp->receiveUdp(ipHead);
         case IPPROTO_ICMP:
           return g_MoIcmp->receiveIcmp(ipHead);
     }
