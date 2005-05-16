@@ -337,6 +337,14 @@ public:
                 Message::reply(&receive, this->prevX, this->prevY);
                 break;
 
+            case MSG_MOUSE_SET_CURSOR_POSITION:
+                this->posX = receive.arg1;
+                this->posY = receive.arg2;
+                Paint();
+                Message::reply(&receive);
+                SendMouseInformation();
+                break;
+
             case MSG_INTERRUPTED:
                 /* we get not all data */
                 if (GetMouseData() != 2) break;
