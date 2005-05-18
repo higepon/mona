@@ -81,7 +81,7 @@ extern int syscall_has_irq_receiver(int irq);
 extern int syscall_remove_irq_receiver(int irq);
 extern int syscall_get_memory_info(MemoryInfo* INFO);
 extern int syscall_free_pages(dword address, dword size);
-
+extern int syscall_change_base_priority(dword priority);
 extern void* malloc(unsigned long size);
 extern void free(void * address);
 extern void __cxa_pure_virtual();

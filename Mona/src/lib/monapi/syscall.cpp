@@ -608,3 +608,10 @@ int syscall_kill_timer(dword id)
     SYSCALL_1(SYSTEM_CALL_KILL_TIMER, result, id);
     return result;
 }
+
+int syscall_change_base_priority(dword priority)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_CHANGE_BASE_PRIORITY, result, priority);
+    return result;
+}
