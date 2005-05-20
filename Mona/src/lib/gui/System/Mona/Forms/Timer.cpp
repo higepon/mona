@@ -4,30 +4,8 @@
 #include <gui/System/Mona/Forms/Timer.h>
 
 #ifdef MONA
-#include <monapi/syscall.h>
-
-#define MSG_GUI_TIMER 0x40f0
-
-static dword my_tid = THREAD_UNKNOWN;
-
-static void SleepThread()
-{
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
-	
-	MessageInfo msg;
-	for (;;)
-	{
-		if (MonAPI::Message::receive(&msg) == 0 && msg.header == MSG_GUI_TIMER) break;
-	}
-	int interval = msg.arg1;
-	dword target = msg.arg2;
-	
-	for (;;)
-	{
-		sleep(interval);
-		MonAPI::Message::send(my_tid, MSG_GUI_TIMER, target);
-	}
-}
+#include <map>
+std::map<dword, System::Mona::Forms::Timer*> mapTimers;
 #endif
 
 using namespace System;
@@ -37,7 +15,7 @@ namespace System { namespace Mona { namespace Forms
 	Timer::Timer() : interval(100)
 	{
 #ifdef MONA
-		this->sleep_tid = THREAD_UNKNOWN;
+		this->sleep_tid = 0;
 #endif
 	}
 	
@@ -55,26 +33,21 @@ namespace System { namespace Mona { namespace Forms
 	void Timer::Start()
 	{
 #ifdef MONA
-		if (this->sleep_tid != THREAD_UNKNOWN) return;
-		if (my_tid == THREAD_UNKNOWN) my_tid = syscall_get_tid();
+		if (this->sleep_tid != 0) return;
 		
-		dword id = syscall_mthread_create((dword)SleepThread);
-		syscall_mthread_join(id);
-		MessageInfo msg, src;
-		src.header = MSG_SERVER_START_OK;
-		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-		this->sleep_tid = msg.from;
-		MonAPI::Message::send(this->sleep_tid, MSG_GUI_TIMER, this->interval, (dword)this);
+		this->sleep_tid = set_timer(this->interval);
+		mapTimers[this->sleep_tid] = this;
 #endif
 	}
 	
 	void Timer::Stop()
 	{
 #ifdef MONA
-		if (this->sleep_tid != THREAD_UNKNOWN)
+		if (this->sleep_tid != 0)
 		{
-			syscall_kill_thread(this->sleep_tid);
-			this->sleep_tid = THREAD_UNKNOWN;
+			mapTimers.erase(this->sleep_tid);
+			kill_timer(this->sleep_tid);
+			this->sleep_tid = 0;
 		}
 #endif
 	}

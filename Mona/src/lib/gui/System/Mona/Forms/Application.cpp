@@ -6,12 +6,11 @@
 #include <gui/System/Mona/Forms/Timer.h>
 #include <gui/System/Mona/Forms/Cursor.h>
 
-#define MSG_GUI_TIMER 0x40f0
-
 #ifdef MONA
 #include <monapi/messages.h>
 #include <map>
 extern std::map<dword, System::Mona::Forms::Control*> mapControls;
+extern std::map<dword, System::Mona::Forms::Timer*> mapTimers;
 #elif defined(WIN32)
 extern void MonaGUI_Initialize();
 extern void MonaGUI_Run();
@@ -155,8 +154,11 @@ namespace System { namespace Mona { namespace Forms
 				}
 				break;
 			}
-			case MSG_GUI_TIMER:
-				((Timer*)m->arg1)->OnTick(EventArgs::get_Empty());
+			case MSG_TIMER:
+				if (mapTimers.find(m->arg1) != mapTimers.end())
+				{
+					mapTimers[m->arg1]->OnTick(EventArgs::get_Empty());
+				}
 				break;
 		}
 	}
