@@ -1,5 +1,9 @@
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
+     * include/sys/types.h : メッセージ MSG_MONES_FRAME_REQ 追加
+     
+2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
+
      * src/servers/mones/mones.cpp : syscall_change_base_priorityをコールしてプライオリティ設定
      
      * src/servers/mones/MoPacUtl.cpp : createPacMsg(パケット格納メッセージの作成)メソッドを追加
