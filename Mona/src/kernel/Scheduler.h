@@ -45,9 +45,10 @@ public:
         if(thread->basePriority >= maxPriority)
         {
             thread->basePriority = maxPriority - 1;
+            return;
         }
 
-        thread->priority = basePriority;
+        thread->basePriority = basePriority;
     }
 
     void Tick()
