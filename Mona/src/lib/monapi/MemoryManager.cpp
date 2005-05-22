@@ -164,8 +164,9 @@ void* MemoryManager::allocate(dword size) {
         current->size = size;
 
         deleteFromList(&freeList_, current);
-        addToList(&usedList_, current);
+//        addToList(&usedList_, current);
         addToList(&freeList_, freeBlock);
+
         memset(current->startAddress, 0, size);
         return (current->startAddress);
 
@@ -313,9 +314,18 @@ void* MemoryManager2::allocate(dword size) {
     if (p->size == nunits) {
         prevp->next = p->next;
     } else {
+#if 1
         p->size -= nunits;
         p         += p->size;
         p->size  = nunits;
+#else
+        MemoryHeader* next = p + nunits;
+        next->next = p->next;
+        next->size = p->size - nunits;
+        p->size = nunits;
+        prevp->next = next;
+
+#endif
     }
     freeList_ = prevp;
     return (void *)(p + 1);
