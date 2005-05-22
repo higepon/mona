@@ -14,7 +14,7 @@
 #include <baygui.h>
 
 
-#define MAX_MSG_LINE 15
+#define MAX_MSG_LINE 20
 
 /** 一般部品であるControlクラスを継承 */
 class MsgPanel : public Control {
@@ -23,7 +23,7 @@ private:
     /** IPアドレス(またはホスト名) */
     char ipaddr[128];
     bool replayflag;
-    char pacbuf[128];
+    char pacbuf[1530];
     int  paclen;
     HList<char*> *msglist;
 

@@ -179,3 +179,56 @@ word MoPacUtl::calcCheckSum(dword *data,int size)
 
     return ~sum.u16[0];
 }
+
+
+
+/*!
+    \brief createPacMsg
+         パケット格納メッセージ作成
+    \param  MessageInfo *info [OUT] 作成メッセージ
+    \param  char *pac [in] パケット
+    \param  int pacsize [in] パケットサイズ
+    
+    \return int 結果 
+    
+    \author Yamami
+    \date   create:2005/05/22 update:
+*/
+int MoPacUtl::createPacMsg(MessageInfo *info, char *pac , int pacsize)
+{
+
+        //メッセージサイズ超え
+        if(pacsize > sizeof(info->str)){
+            logprintf("pacsize overflow %d\n",pacsize);
+            //共有メモリへパケット格納
+            //まず、monapi_cmemoryinfo構造体をnew
+            monapi_cmemoryinfo* cmInfo = new monapi_cmemoryinfo();
+            
+            if (!monapi_cmemoryinfo_create(cmInfo, (dword)pacsize + 1, 0))
+            {
+                monapi_cmemoryinfo_delete(cmInfo);
+                return 1;
+            }
+            
+            //共有メモリをマップ、Data要素に確保したバイト列がセットされる。
+            monapi_cmemoryinfo_map(cmInfo);
+            
+            //共有メモリへ、パケットセット
+            memcpy(cmInfo->Data , pac, pacsize);
+            
+            info->length = pacsize;
+            info->arg1 = 1;
+            info->arg2 = cmInfo->Handle;
+            info->arg3 = cmInfo->Size;
+            
+            
+            return 0;
+        }
+        
+        memcpy(info->str , pac, pacsize);
+        info->length = pacsize;
+        info->arg1 = 0;
+        
+        return 0;
+
+}

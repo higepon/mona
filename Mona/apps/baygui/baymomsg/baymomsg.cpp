@@ -102,7 +102,28 @@ public:
             // Monesから、
             panel->setReplayflag(true);
             panel->setPaclen(event->length);
-            panel->setPacbuf(event->str);
+            
+            logprintf("event->arg1 = %d \n",event->arg1);
+            
+            if(event->arg1 == 1){
+                //共有メモリ
+                logprintf("use commonMem Handle = %d : Size = %d \n",event->arg2 , event->arg3);
+                monapi_cmemoryinfo* cmPac;
+
+                cmPac = monapi_cmemoryinfo_new();
+                cmPac->Handle = event->arg2;
+                //cmPac->Owner  = tid;
+                cmPac->Size   = event->arg3;
+                monapi_cmemoryinfo_map(cmPac);
+                panel->setPacbuf((char*)cmPac->Data);
+                
+                monapi_cmemoryinfo_dispose(cmPac);
+                monapi_cmemoryinfo_delete(cmPac);
+                
+            }else{
+                panel->setPacbuf(event->str);
+            }
+            
         }
         
         

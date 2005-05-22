@@ -16,6 +16,8 @@
 #include <sys/types.h>
 #include <monapi.h>
 
+//‹¤—Lƒƒ‚ƒŠg—p
+#include <monapi/cmemoryinfo.h>
 
 
 /*!
@@ -36,6 +38,7 @@ class MoPacUtl
     static void packet_put_4byte(byte* buf, int offset, dword val);
     static void packet_put_2byte(byte* buf, int offset, word val);
     static word calcCheckSum(dword* ,int );
+    static int createPacMsg(MessageInfo *info, char *pac , int pacsize);
 
     inline static word swapShort(word value)
     {

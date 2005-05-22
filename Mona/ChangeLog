@@ -1,3 +1,13 @@
+2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
+
+     * src/servers/mones/mones.cpp : syscall_change_base_priorityをコールしてプライオリティ設定
+     
+     * src/servers/mones/MoPacUtl.cpp : createPacMsg(パケット格納メッセージの作成)メソッドを追加
+     
+     * src/servers/mones/MoUdp.cpp : 共有メモリ経由でパケットを送信するように変更
+     
+     * apps/baygui/baymomsg : 共有メモリ経由でパケットを受信するように変更
+
 2004-05-20  bayside
 
         * src/lib/gui/System/Mona/Forms/Application.cpp: 新しいタイマーを使うように修正
@@ -15,7 +25,8 @@
         * src/servers/mouse/main.cpp: MSG_MOUSE_SET_CURSOR_POSITION実装
 
 2005-05-15  Yamami  <yamamimail@users.sourceforge.jp>
-     * apps\baygui\baymomsg :追加 簡易メッセージ
+
+     * apps/baygui/baymomsg :追加 簡易メッセージ
 
      * src/servers/mones/MoUdp.h : 追加
 
@@ -43,6 +54,7 @@
         * src/lib/baygui/Window.cpp: 一般イベントでstrが正しくコピーされない不具合を修正
 
 2005-05-10  Yamami  <yamamimail@users.sourceforge.jp>
+
      * apps/baygui/pingui : 追加
 
 2005-05-09  shadow  <shadowin@users.sourceforge.jp>
@@ -50,6 +62,7 @@
         * monalibc/stdlib.cpp: strtoi修正
 
 2005-05-09  Yamami  <yamamimail@users.sourceforge.jp>
+
      * apps/non-gui/ping : 追加
 
      * src/servers/mones :
@@ -57,6 +70,7 @@
       共有メモリを使用
 
 2005-05-08  Yamami  <yamamimail@users.sourceforge.jp>
+
      * src/servers/mones/Makefile : ex2→ex5へ変更
 
      * src/servers/mones/MoIp.h : IPヘッダ構造体 MoDefine.hへ移動

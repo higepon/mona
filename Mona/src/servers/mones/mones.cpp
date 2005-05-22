@@ -106,6 +106,8 @@ int MonaMain(List<char*>* pekoe)
     //IRQレシーバとして登録 (IRQは、NICドライバクラスより得る)
     syscall_set_irq_receiver(insAbstractNic->getNicIRQ());
 
+    //Monesのプライオリティを高く
+    syscall_change_base_priority(1);
 
     logprintf("Mones Start!!!!!\n");
 
