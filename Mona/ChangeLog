@@ -1,5 +1,9 @@
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
+        * src/lib/monapi/syscall.cpp (SYSTEM_CALL_LOG_PRINT): logprintfコール修正('%' が出力できない件対応)  mizyoさん
+
+2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
+
      * include/sys/types.h : メッセージ MSG_MONES_FRAME_REQ 追加
      
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
