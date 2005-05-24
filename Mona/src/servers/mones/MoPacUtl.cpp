@@ -159,7 +159,7 @@ word MoPacUtl::calcCheckSum(dword *data,int size)
 
 
     sum.u64=0;
-    for(;size>=sizeof(dword);size-=sizeof(dword))
+    for(;(dword)size>=sizeof(dword);(dword)size-=sizeof(dword))
         sum.u64+=*data++;
     if(size>0)sum.u64+=*data&((1<<(size*8))-1);
 
@@ -198,8 +198,7 @@ int MoPacUtl::createPacMsg(MessageInfo *info, char *pac , int pacsize)
 {
 
         //メッセージサイズ超え
-        if(pacsize > sizeof(info->str)){
-            logprintf("pacsize overflow %d\n",pacsize);
+        if(pacsize > (int)sizeof(info->str)){
             //共有メモリへパケット格納
             //まず、monapi_cmemoryinfo構造体をnew
             monapi_cmemoryinfo* cmInfo = new monapi_cmemoryinfo();

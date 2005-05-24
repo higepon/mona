@@ -23,7 +23,7 @@
 
 using namespace MonAPI;
 
-#define MAIN_7
+#define MAIN_3
 
 
 #ifdef MAIN_1
@@ -121,7 +121,7 @@ int MonaMain(List<char*>* pekoe)
     testList = new HList<REPLY_WAIT*>();
     
     
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1000; i++) {
         addWork = new REPLY_WAIT();
         addWork->ip = i;
         addWork->wait = i;
@@ -131,18 +131,44 @@ int MonaMain(List<char*>* pekoe)
         testList->add(addWork);
     }
     
-    for (int i = 0; i < testList->size() ; i++) {
-
-        REPLY_WAIT* p = testList->get(i);
-        
-        printf("ip=%d wait=%d mac=%s \n", p->ip , p->wait , p->mac);
-        
-        //この後、ここでリストから削除するとどうなる？
-        testList->removeAt(i);
-        //カウンタデクリメントがいる。
-        i--;
-        
+//    for (int i = 0; i < testList->size() ; i++) {
+//
+//        REPLY_WAIT* p = testList->get(i);
+//        
+//        printf("ip=%d wait=%d mac=%s \n", p->ip , p->wait , p->mac);
+//        
+//        //この後、ここでリストから削除するとどうなる？
+//        testList->removeAt(i);
+//        //カウンタデクリメントがいる。
+//        i--;
+//        
+//    }
+    
+    REPLY_WAIT* getWork;
+    
+    //2個だけとりだしてみる。
+    for (int i = 0; i < 2 ; i++) {
+        getWork = testList->removeAt(0);
+        printf("ip=%d wait=%d mac=%s \n", getWork->ip , getWork->wait , getWork->mac);
     }
+    
+    //途中追加
+    addWork = new REPLY_WAIT();
+    addWork->ip = 5;
+    addWork->wait = 5;
+    sprintf(addWork->mac , "%d",5*2);
+    
+    //ここで、HListへ追加
+    testList->add(addWork);
+    
+    
+    //先頭要素を、とり続ける限り取り出す。
+    while(testList->isEmpty() == false){
+        getWork = testList->removeAt(0);
+        logprintf("ip=%d wait=%d mac=%s \n", getWork->ip , getWork->wait , getWork->mac);
+        logprintf("count=%d\n",testList->size());
+    }
+    
     
     printf("testList->size() = %d\n",testList->size());
     
@@ -450,29 +476,35 @@ int MonaMain(List<char*>* pekoe)
 
 #ifdef MAIN_8
 
-//sscanfテスト
+//logprintf の'%' 出力テスト
 int MonaMain(List<char*>* pekoe)
 {
-       int ai;
-       int bi;
-       int ci;
-       int di;
 
-       sscanf("192.168.0.1","%d.%d.%d.%d",&ai,&bi,&ci,&di);
-        
-       printf("1's time\n");
-       printf("a=%d\n",ai);
-       printf("b=%d\n",bi);
-       printf("c=%d\n",ci);
-       printf("d=%d\n",di);
+    printf("%c",'%');  //正常
+    printf("%c",'?');  //正常
+    printf("%c",'\\'); //正常
+    printf("%");       //これは出ないけど、それで正常。
+    printf("\n");
 
-       sscanf("192.168.000.001","%d.%d.%d.%d",&ai,&bi,&ci,&di);
-       
-       printf("2's time\n");
-       printf("a=%d\n",ai);
-       printf("b=%d\n",bi);
-       printf("c=%d\n",ci);
-       printf("d=%d\n",di); 
+    logprintf("%c",'%');  //×出力されない!!!
+    logprintf("%c",'?');  //正常
+    logprintf("%c",'\\'); //正常
+    logprintf("%");       //これは出ないけど、それで正常。
+    logprintf("\n");
+
+    char pacbuf[128];
+    char drawBuff[128];
+    
+    pacbuf[0] = 0x7d;
+    pacbuf[1] = 0x8d;
+    
+    
+    for(int i = 0 ; i < 2 ; i++){
+        sprintf(drawBuff , "%2x",(byte)pacbuf[i]);
+        printf("%s\n",drawBuff);
+    }
+    
+    return 0;
 }
 
 #endif

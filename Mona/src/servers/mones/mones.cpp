@@ -109,8 +109,6 @@ int MonaMain(List<char*>* pekoe)
     //Monesのプライオリティを高く
     syscall_change_base_priority(1);
 
-    logprintf("Mones Start!!!!!\n");
-
     /* Message loop */
     //ここでメッセージループ
     for (;;)
@@ -121,24 +119,57 @@ int MonaMain(List<char*>* pekoe)
             
             switch(info.header)
             {
+            
+            //NICハードウェアからの割り込み要求
             case MSG_INTERRUPTED:
                 
                 //logprintf("MSG_INTERRUPTED\n");
-                
-                dword    i;
-                
-                //パケット受信
-                insAbstractNic->frame_input();
-                
-                //Etherクラスに登録
-                i = g_MoEther->setEtherFrame(insAbstractNic->frame_buf ,insAbstractNic->frame_len);
-                //イーサネットフレーム受信処理
-                i = g_MoEther->receiveEther();
+                                
+                //パケット受信し待ちリストへ登録
+                insAbstractNic->frame_input_public();
                 
                 break;
 
+            //Monesからのパケット処理要求
+            //TODO 本来は、プロトコル層の仕事
+            case MSG_MONES_FRAME_REQ: {
+                
+                //logprintf("MSG_MONES_FRAME_REQ\n");
+                
+                //待ちはあるか？
+                if(insAbstractNic->waitFrameBufList->isEmpty()){
+                    break;
+                }
+                
+                //共有メモリから待ちパケット取得                
+                WAIT_FRAME_BUF* bgetWork = insAbstractNic->waitFrameBufList->removeAt(0);
+                
+                monapi_cmemoryinfo* cmPac;
 
-            //Monesへ登録
+                cmPac = monapi_cmemoryinfo_new();
+                cmPac->Handle = bgetWork->cmHandle;
+                //cmPac->Owner  = tid;
+                cmPac->Size   = bgetWork->cmSize;
+                monapi_cmemoryinfo_map(cmPac);
+
+                dword    i;
+                //Etherクラスに登録
+                i = g_MoEther->setEtherFrame(cmPac->Data ,cmPac->Size);
+                //イーサネットフレーム受信処理
+                i = g_MoEther->receiveEther();                
+                
+                //共有メモリ解放
+                monapi_cmemoryinfo_dispose(cmPac);
+                monapi_cmemoryinfo_delete(cmPac);
+                
+                //リストメモリ解放
+                delete bgetWork;
+
+                break;
+            }
+
+
+            //アプリからのMonesへ登録
             case MSG_MONES_REGIST:
                 
                 //printf("MSG_MONES_REGIST\n");

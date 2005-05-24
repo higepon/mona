@@ -50,7 +50,6 @@ class MoEther
     ~MoEther();
     void etherInit(AbstractMonic*);
     int setEtherFrame(byte* , int);
-    int getEtherFrame(ETHER_FRAME* );
     int receiveEther();
     
 //    int receiveEther(ETHER_FRAME*); //試験的に多重定義 直接受信(バッファリング無し)
@@ -61,7 +60,9 @@ class MoEther
 
   private:
     //イーサネットフレーム保持リスト
-    List<ETHER_FRAME*>* Ether_FrameList_;
+    //List<ETHER_FRAME*>* Ether_FrameList_;
+    
+    ETHER_FRAME Ether_FrameBuf_;
     
     //NICドライバ
     AbstractMonic* insAbstractNic;

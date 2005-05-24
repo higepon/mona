@@ -149,18 +149,17 @@ void MoUdp::saveRecv(IP_HEADER *ipHead, int size)
     udp_size=MoPacUtl::swapShort(ipHead->len)-sizeof(IP_HEADER);
 
     //ここで到着UDPパケットをデバッグ
-//    if (MoPacUtl::swapShort(udp->dstport) == 2600){
-//        char buf[1530];
-//        memset(buf,0,sizeof(buf));
+    if (MoPacUtl::swapShort(udp->dstport) == 2600){
+        char buf[1530];
+        memset(buf,0,sizeof(buf));
 //        logprintf("srcip = %x\n",MoPacUtl::swapLong(ipHead->srcip));
 //        logprintf("dstport = %x\n",MoPacUtl::swapShort(udp->dstport));
 //        logprintf("size = %x\n",udp_size);
-//        memcpy(buf, udp->data , udp_size);
-//        for(int i = 0; i < udp_size ; i++){
-//            logprintf("%c",buf[i]);
-//        }
-//        logprintf("\n");
-//    }
+        memcpy(buf, udp->data , udp_size);
+        for(int i = 0; i < udp_size ; i++){
+            logprintf("%c",buf[i]);
+        }
+    }
 
     //登録しているプロセスに通知する。
     for (int i = 0; i < MonesRList->size() ; i++) {
@@ -170,8 +169,6 @@ void MoUdp::saveRecv(IP_HEADER *ipHead, int size)
         if(regist->port == MoPacUtl::swapShort(udp->dstport)){
             //登録されているIPおよびポートへのUDPパケットならば、メッセージ通知
             // create message
-            //logprintf("Mones:MSG_MONES_UDP_NOTICE send!!\n");
-            
             Message::create(&info, MSG_MONES_ICMP_NOTICE, 0, 0, 0, NULL);
             
             //MoPacUtlでメッセージにパケットをセット

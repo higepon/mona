@@ -29,7 +29,7 @@
 */
 MoEther::MoEther()
 {
-    //printf("MoEther Constructor\n");
+    
 }
 
 /*!
@@ -45,7 +45,7 @@ void MoEther::etherInit(AbstractMonic *pminsNic)
     
     //イーサネットフレーム保持リスト 生成
     /* keyinfo list */
-    Ether_FrameList_ = new HList<ETHER_FRAME*>();
+    //Ether_FrameList_ = new HList<ETHER_FRAME*>();
 
     //内部保持のNICドライバへ格納
     insAbstractNic = pminsNic;
@@ -62,7 +62,7 @@ void MoEther::etherInit(AbstractMonic *pminsNic)
 */
 MoEther::~MoEther() 
 {
-    delete Ether_FrameList_;
+    //delete Ether_FrameList_;
 }
 
 
@@ -81,53 +81,28 @@ int MoEther::setEtherFrame(byte *frameBuf, int size)
 {
     
     // allocate ETHER_FRAME
-    ETHER_FRAME* frame = (ETHER_FRAME*)malloc(sizeof(ETHER_FRAME));
+    //ETHER_FRAME* frame = (ETHER_FRAME*)malloc(sizeof(ETHER_FRAME));
+    
+    //フレームバッファのクリア
+    memset(&Ether_FrameBuf_ , 0 ,sizeof(Ether_FrameBuf_));
+    
     // フレームのコピー
-    memcpy(frame , frameBuf , size);
+    memcpy(&Ether_FrameBuf_ , frameBuf , size);
 
     //ここで、パケットユーティリティクラスを使って、エンディアン変換
     //フレームタイプ
-    frame->type = MoPacUtl::packet_get_2byte(frameBuf , 12);
+    Ether_FrameBuf_.type = MoPacUtl::packet_get_2byte(frameBuf , 12);
 
 //2005/05/06 フレームタイプを表示
-//printf("frame->type:%x \n",frame->type);
+//printf("Ether_FrameBuf_.type:%x \n",Ether_FrameBuf_.type);
     
     //リストに追加
-    Ether_FrameList_->add(frame);
+    //Ether_FrameList_->add(frame);
 
     return 0;
 
 }
 
-
-/*!
-    \brief getEtherFrame
-         イーサネットフレーム取得 
-    \param  byte* frameBuf [in] イーサネットフレームバッファへのポインタ
-    \return int 結果 
-        
-    \author Yamami
-    \date   create:2004/08/12 update:
-*/
-int MoEther::getEtherFrame(ETHER_FRAME *frameBuf)
-{
-    
-
-    ETHER_FRAME* tempEther = Ether_FrameList_->removeAt(Ether_FrameList_->size() - 1);
-
-    if (tempEther == NULL) {
-        printf("tmp Null!!\n");
-        return 0;
-    }
-
-    /* copy to keyinfo */
-    memcpy(frameBuf, tempEther, sizeof(ETHER_FRAME));
-    
-    free(tempEther);
-    
-    return 1;
-
-}
 
 
 /*!
@@ -140,64 +115,21 @@ int MoEther::getEtherFrame(ETHER_FRAME *frameBuf)
 */
 int MoEther::receiveEther()
 {
-    int reti;
-    
-    // allocate ETHER_FRAME
-    ETHER_FRAME* frame = (ETHER_FRAME*)malloc(sizeof(ETHER_FRAME));
-    
-    reti = getEtherFrame(frame);
-
-    //Yamamiデバッグ
-    //int i;
-    //for(i=0;i<60;i++){
-    //    printf("%d:%x ",i,frame->data[i]);
-    //}
-    //printf("\n");
 
     // フレームを各プロトコルに渡す
-    switch(frame->type)
+    switch(Ether_FrameBuf_.type)
     {
         case ETHER_PROTO_IP:
-            return g_MoIp->receiveIp((IP_HEADER*)frame->data);
+            return g_MoIp->receiveIp((IP_HEADER*)Ether_FrameBuf_.data);
             break;
         case ETHER_PROTO_ARP:
-            return g_MoArp->receiveArp((ARP_HEADER*)frame->data);
+            return g_MoArp->receiveArp((ARP_HEADER*)Ether_FrameBuf_.data);
             break;
             
     }
     
     return 0;
 }
-
-
-
-
-/*!
-    \brief receiveEther
-         イーサネットフレーム受信処理 
-         バッファリングせず、直接処理版
-    \param  byte* frameBuf [in] イーサネットフレームバッファへのポインタ
-    \return int 結果 
-    \author Yamami
-    \date   create:2004/11/15 update:$Date$
-*/
-//int MoEther::receiveEther(ETHER_FRAME *frameBuf)
-//{
-//    
-//    // フレームを各プロトコルに渡す
-//    switch(frameBuf->type)
-//    {
-//        case ETHER_PROTO_IP:
-//            return g_MoIp->receiveIp((IP_HEADER*)frameBuf->data);
-//            break;
-//        case ETHER_PROTO_ARP:
-//            return g_MoArp->receiveArp((ARP_HEADER*)frameBuf->data);
-//            break;
-//            
-//    }
-//    
-//    return 0;
-//}
 
 
 

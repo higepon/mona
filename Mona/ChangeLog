@@ -1,3 +1,11 @@
+2005-05-24  Yamami  <yamamimail@users.sourceforge.jp>
+
+     * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
+     
+     * src/servers/mones/AbstractMonic.cpp : フレーム処理待ちリスト
+     
+     * src/servers/mones/MoEther.cpp : 無駄なメモリー確保およびコピーを排除(処理待ちバッファは、AbstractMonicの責務へ)
+
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/lib/monapi/syscall.cpp (SYSTEM_CALL_LOG_PRINT): logprintfコール修正('%' が出力できない件対応)  mizyoさん

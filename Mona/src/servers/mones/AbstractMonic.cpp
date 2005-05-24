@@ -18,6 +18,8 @@
 
 #include "AbstractMonic.h"
 
+using namespace MonAPI;
+
 /*!
     \brief AbstractMonic コンストラクタ
 
@@ -26,7 +28,7 @@
 */
 AbstractMonic::AbstractMonic()
 {
-    //実装無し
+    waitFrameBufList = new HList<WAIT_FRAME_BUF*>();
 }
 
 
@@ -111,4 +113,59 @@ void AbstractMonic::enableNetWork()
         outp8(0xA1, (inp8(0xA1) & IrqMask));
     }
     
+}
+
+/*!
+    \brief フレーム受信処理 
+
+    \author Yamami
+    \date   create:2005/05/22 update:
+*/
+void AbstractMonic::frame_input_public() 
+{
+
+    //フレーム受信処理 H/W 子クラスへ委譲
+    //frame_buf[1500] へ格納される事を期待
+    frame_input();
+    
+    
+    //処理待ちリストへ登録
+    //サイズ分の共有メモリを確保し、保存。ハンドルをリストへ登録
+    //まず、monapi_cmemoryinfo構造体をnew
+    monapi_cmemoryinfo* cmInfo = new monapi_cmemoryinfo();
+    
+    if (!monapi_cmemoryinfo_create(cmInfo, frame_len , 0)){
+        monapi_cmemoryinfo_delete(cmInfo);
+        //TODO 確保できなかったらどうする？
+        return;
+    }
+    
+    //共有メモリをマップ、Data要素に確保したバイト列がセットされる。
+    monapi_cmemoryinfo_map(cmInfo);
+    
+    //共有メモリへ、パケットセット
+    memcpy(cmInfo->Data , frame_buf, frame_len);
+    
+    //リストへ登録
+    WAIT_FRAME_BUF *addWork = new WAIT_FRAME_BUF();
+    addWork->cmHandle = cmInfo->Handle;
+    addWork->cmSize = cmInfo->Size;
+    
+    waitFrameBufList->add(addWork);
+    
+    //プロトコル層へ処理要求メッセージ送信
+    dword targetID = Message::lookupMainThread("MONES.EX5");
+    if (targetID == 0xFFFFFFFF){
+        //TODO できなかったらどうする？
+    }
+
+    MessageInfo info;
+    Message::create(&info, MSG_MONES_FRAME_REQ, 0, 0, 0, NULL);
+
+    // send
+    if (Message::send(targetID, &info)) {
+        //TODO できなかったらどうする？
+    }
+    
+
 }

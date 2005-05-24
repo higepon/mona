@@ -111,18 +111,18 @@ void Ne2000MoNic::frame_input(void)
 //printf("sts : %x\n",sts);
 
     if( ( sts & NE_RSTAT_OVER ) !=0 ){
-        //printf("FIFO OverFlow\n");
+        printf("FIFO OverFlow\n");
         return; // 受信FIFOオーバーフローした
     }
 
     if( ( inp8( NE_P0_ISR ) & NE_ISR_OVW ) !=0 ){
-        //printf("RING OverFlow\n");
+        printf("RING OverFlow\n");
         return; // 受信リングバッファオーバーフロー
     }
 
     //  受信成功
     if( ( sts & NE_RSTAT_PRX ) ==0 ){
-        //printf("Not Exist Packet \n");
+        printf("Not Exist Packet \n");
         return; //  受信パケットなし
     }
 
@@ -242,9 +242,6 @@ void Ne2000MoNic::frame_input(void)
     }
     bnd--;
     outp8( NE_P0_BNRY, bnd );    // 境界レジスタ = 次のバッファ - 1
-
-//Yamami デバッグ
-//printf("UpdateAfter bnd : %x\n",bnd);
 
     //  割り込みステータスレジスタクリア
     outp8( NE_P0_ISR, 0xff );
