@@ -432,7 +432,7 @@ namespace System { namespace Mona { namespace Forms
 				Point pt = arg->Button == 0 ? pt_arg : this->clickPoint;
 				if (this->NCHitTest(pt.X, pt.Y) == NCState_Client)
 				{
-					if (arg->Button != 0 || this->get_Bounds().Contains(pt_arg)) this->OnMouseMove(arg);
+					if (arg->Button != 0 || Rectangle(Point(), this->get_Size()).Contains(pt_arg)) this->OnMouseMove(arg);
 				}
 				else
 				{

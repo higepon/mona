@@ -1,3 +1,7 @@
+2004-05-28  bayside
+
+        * src/lib/gui/System/Mona/Forms/Control.cpp: MonaDatのパッチを当てた
+
 2005-05-24  Yamami  <yamamimail@users.sourceforge.jp>
 
      * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
