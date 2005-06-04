@@ -214,7 +214,7 @@ int isxdigit(int c){
 int toupper(int c){
   if(islower(c)) return (c + 'A' - 'a');
 
-  return 0;
+  return c;
 }
 
 /*!
@@ -226,5 +226,5 @@ int toupper(int c){
 int tolower(int c){
   if(isupper(c)) return (c + 'a' - 'A');
 
-  return 0;
+  return c;
 }
