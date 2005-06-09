@@ -13,6 +13,7 @@ all:
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
 	@cd mflupin && $(MAKE) $@
+	@cd MonaDat && $(MAKE) $@
 
 install:
 	@cd reversi && $(MAKE) $@
@@ -29,6 +30,7 @@ install:
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
 	@cd mflupin && $(MAKE) $@
+	@cd MonaDat && $(MAKE) $@
 
 clean: touchdepend
 	@cd reversi && $(MAKE) $@
@@ -45,6 +47,7 @@ clean: touchdepend
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
 	@cd mflupin && $(MAKE) $@
+	@cd MonaDat && $(MAKE) $@
 
 depend: touchdepend
 	@cd reversi && $(MAKE) $@
@@ -61,6 +64,7 @@ depend: touchdepend
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
 	@cd mflupin && $(MAKE) $@
+	@cd MonaDat && $(MAKE) $@
 
 distclean:
 	rm -f reversi/dependencies
@@ -77,6 +81,7 @@ distclean:
 	rm -f monafile/dependencies
 	rm -f hige3D/dependencies
 	rm -f mflupin/dependencies
+	rm -f MonaDat/dependencies
 
 touchdepend:
 	touch reversi/dependencies
@@ -93,3 +98,4 @@ touchdepend:
 	touch monafile/dependencies
 	touch hige3D/dependencies
 	touch mflupin/dependencies
+	touch MonaDat/dependencies

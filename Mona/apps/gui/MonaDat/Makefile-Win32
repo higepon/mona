@@ -1,0 +1,42 @@
+TARGET  = MonaDat.exe
+SOURCES = \
+	./Form1.cpp \
+	./CodeConv.cpp \
+	./SheetTab.cpp \
+	MonaForms/ScrollBar.cpp \
+	MonaForms/ScrollableControl.cpp
+OBJECTS = $(SOURCES:.cpp=.o)
+
+MONADIR = ../../..
+include $(MONADIR)/env/monapi.inc
+
+INCLUDE = -I$(INCDIR)
+LINK    = -lgui -lmonapi# -lmonalibc
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS) $(LIBDIR)/libgui.a $(LIBDIR)/libmonapi.a# $(LIBDIR)/libmonalibc.a
+	$(CXX) -o $@ $(CXXFLAGS) $(OBJECTS) -L$(LIBDIR) $(LINK) -lgdi32 -luser32 -lkernel32
+	#$(LD) $(LFLAGS) $(OBJECTS) -L$(LIBDIR) -o $@ $(LINK)
+	#objcopy $(OFLAGS) $@
+	#$(STRIP) $@
+
+install: all
+	cp -u $(TARGET) $(BINDIR)/root/APPS
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
+
+depend:
+	rm -f dependencies
+	for src in $(SOURCES); \
+	do \
+		echo -n `echo $$src | sed "s/\(.*\)\/.*$$/\1\//"` >> dependencies; \
+		$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $$src >> dependencies; \
+	done
+
+include dependencies
