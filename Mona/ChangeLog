@@ -1,3 +1,7 @@
+2005-06-09  higepon  <higepon@users.sourceforge.jp>
+
+        * apps/gui/MonaDat/Form1.cpp:MonaDatをツリーに取り込み。Makefile-Mona を Makefileにリネーム。
+
 2004-05-28  bayside
 
         * src/lib/gui/System/Mona/Forms/Control.cpp: MonaDatのパッチを当てた
@@ -5,9 +9,9 @@
 2005-05-24  Yamami  <yamamimail@users.sourceforge.jp>
 
      * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
-     
+
      * src/servers/mones/AbstractMonic.cpp : フレーム処理待ちリスト
-     
+
      * src/servers/mones/MoEther.cpp : 無駄なメモリー確保およびコピーを排除(処理待ちバッファは、AbstractMonicの責務へ)
 
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
@@ -17,15 +21,15 @@
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
      * include/sys/types.h : メッセージ MSG_MONES_FRAME_REQ 追加
-     
+
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
      * src/servers/mones/mones.cpp : syscall_change_base_priorityをコールしてプライオリティ設定
-     
+
      * src/servers/mones/MoPacUtl.cpp : createPacMsg(パケット格納メッセージの作成)メソッドを追加
-     
+
      * src/servers/mones/MoUdp.cpp : 共有メモリ経由でパケットを送信するように変更
-     
+
      * apps/baygui/baymomsg : 共有メモリ経由でパケットを受信するように変更
 
 2004-05-20  bayside
