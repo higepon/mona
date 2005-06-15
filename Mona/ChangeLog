@@ -8,7 +8,7 @@
 
 2005-05-24  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
+     * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更aa
 
      * src/servers/mones/AbstractMonic.cpp : フレーム処理待ちリスト
 
