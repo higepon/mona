@@ -1,3 +1,7 @@
+2005-06-17  higepon  <higepon@users.sourceforge.jp>
+
+        * include/monapi/MemoryManager.h (class MemoryManager): 1から書き直し。
+
 2005-06-09  higepon  <higepon@users.sourceforge.jp>
 
         * apps/gui/MonaDat/Form1.cpp:MonaDatをツリーに取り込み。Makefile-Mona を Makefileにリネーム。
