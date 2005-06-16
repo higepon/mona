@@ -1,5 +1,7 @@
 2005-06-17  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/MemoryManager.cpp : どさくさにまぎれてカーネル内も入れ替え。
+
         * include/monapi/MemoryManager.h (class MemoryManager): 1から書き直し。
 
 2005-06-09  higepon  <higepon@users.sourceforge.jp>

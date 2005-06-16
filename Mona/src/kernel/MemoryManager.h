@@ -16,44 +16,35 @@
 
 #include <sys/types.h>
 
-typedef struct memoryentry
-{
-    struct memoryentry* next;
-    dword size;
-    dword pad1;
-    dword pad2;
-    char startAddress[0];
-} MemoryEntry;
-
 class MemoryManager
 {
-public:
+  public:
     MemoryManager();
     ~MemoryManager();
 
-public:
+  public:
     void initialize(dword size, dword end);
     void free(void* address);
     void* allocate(dword size);
     dword getFreeMemorySize() const;
     dword getUsedMemorySize() const;
-    void debugPrint() const;
     static dword getPhysicalMemorySize();
+    void debugprint();
 
-private:
-    bool hasNoEntry(MemoryEntry* list) const;
-    void addToList(MemoryEntry** list, MemoryEntry* entry);
-    void deleteFromList(MemoryEntry** list, MemoryEntry* entry);
-    void addToNext(MemoryEntry* current, MemoryEntry* next);
-    void concatFreeList();
-    bool tryConcat(MemoryEntry* entry);
-    dword getRealSize(dword size);
+  private:
+    typedef struct Header
+    {
+        struct Header* next;
+        dword size;
+        dword magic;
+        dword padding;
+    };
 
-private:
-    MemoryEntry* freeList_;
-    MemoryEntry* usedList_;
-    dword start_;
-    dword end_;
+    void setNext(Header* p, Header* next);
+
+    Header* freeList;
+    dword start;
+    dword end;
 };
 
 #endif
