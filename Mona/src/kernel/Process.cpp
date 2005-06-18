@@ -114,9 +114,8 @@ Thread* ThreadOperation::create(Process* process, dword programCounter)
 void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
                                            , PageEntry* pageDirectory, LinearAddress stack)
 {
-    /* stack size = 8K */
-    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - Process::STACK_SIZE / 2, true, true, true);
-    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - Process::STACK_SIZE, true, true, true);
+    /* stack size from 4KB to 4MB */
+    ProcessOperation::pageManager->allocatePhysicalPage(pageDirectory, stack - 4096, true, true, true);
 
     ThreadInfo* info      = thread->tinfo;
     ArchThreadInfo* ainfo = info->archinfo;
@@ -147,9 +146,11 @@ void ThreadOperation::archCreateUserThread(Thread* thread, dword programCounter
     ainfo->fpu[4] = 0x00000000;
     ainfo->fpu[5] = 0x00000000;
     ainfo->fpu[6] = 0xFFFF0000;
-    
+
     /* add by TAKA */
     thread->kernelStackBottom = ainfo->esp0;
+
+    thread->stackSegment = new StackSegment(stack, 4 * 1024 * 1024);
 }
 
 void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
@@ -182,7 +183,7 @@ void ThreadOperation::archCreateThread(Thread* thread, dword programCounter
     ainfo->fpu[4] = 0x00000000;
     ainfo->fpu[5] = 0x00000000;
     ainfo->fpu[6] = 0xFFFF0000;
-    
+
     /* add by TAKA */
     thread->kernelStackBottom = stack;
 }

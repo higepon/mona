@@ -660,6 +660,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
 {
     Process* current     = g_currentThread->process;
 
+//    logprintf("%s:%s:%d : address=%x\n", __func__, __FILE__, __LINE__, address);
 
     /* search shared memory segment */
     List<SharedMemorySegment*>* list = current->getSharedList();
@@ -678,6 +679,13 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
     if (heap->inRange(address))
     {
         return heap->faultHandler(address, FAULT_NOT_EXIST);
+    }
+
+    /* stack */
+    StackSegment* stack = g_currentThread->thread->stackSegment;
+    if (stack->inRange(address))
+    {
+	return stack->faultHandler(address, FAULT_NOT_EXIST);
     }
 
 #if 1
@@ -753,8 +761,15 @@ bool PageManager::setAttribute(PageEntry* directory, LinearAddress address, bool
     dword directoryIndex = getDirectoryIndex(address);
 
     //if (!isPresent(&(directory[directoryIndex]))) return false;
-
-     table = (PageEntry*)(g_page_directory[directoryIndex] & 0xfffff000);
+    if (isPresent(&(directory[directoryIndex])))
+    {
+        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+    } else
+    {
+        table = allocatePageTable();
+        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+        setAttribute(&(directory[directoryIndex]), true, writable, isUser, (PhysicalAddress)table);
+    }
      return setAttribute(&(table[getTableIndex(address)]), present, writable, isUser);
 }
 

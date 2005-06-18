@@ -25,7 +25,7 @@ const byte Segment::FAULT_UNKNOWN;
 ----------------------------------------------------------------------*/
 
 /*!
-    \brief initilize stack segment
+    \brief initilize heap segment
 
     \param  start LinearAddress of start
     \param  size  segment size
@@ -34,27 +34,8 @@ const byte Segment::FAULT_UNKNOWN;
 */
 StackSegment::StackSegment(LinearAddress start, dword size) {
 
-    start_        = start;
-    size_         = size + PageManager::ARCH_PAGE_SIZE;
-    isAutoExtend_ = false;
-}
-
-/*!
-    \brief initilize stack segment. Auto extention mode
-
-    \param  start        LinearAddress of start
-    \param  initilieSize segment size
-    \param  maxSize      segment max size
-    \author HigePon
-    \date   create:2003/10/15 update:2004/01/08
-*/
-StackSegment::StackSegment(Process* process, LinearAddress start, dword initileSize, dword maxSize) {
-
-    start_        = start;
-    size_         = initileSize + PageManager::ARCH_PAGE_SIZE;
-    maxSize_      = maxSize;
-    isAutoExtend_ = true;
-    g_page_manager->setAttribute(process->getPageDirectory(), start, true, false, true);
+    start_ = start;
+    size_  = size;
 }
 
 /*!
@@ -72,97 +53,29 @@ StackSegment::~StackSegment() {
     \param  address LinearAddress of fault point
     \param  error   fault type
     \author HigePon
-    \date   create:2003/10/15 update:2003/11/06
+    \date   create:2003/10/15 update:2003/10/19
 */
 bool StackSegment::faultHandler(LinearAddress address, dword error) {
 
-    g_console->printf("auto?");
+    if (error != PageManager::FAULT_NOT_EXIST) {
 
-    switch(error) {
-
-    case PageManager::FAULT_NOT_WRITABLE:
-
-        if (!tryExtend(g_currentThread->process, address)) {
-            return false;
-        }
-        break;
-
-    case PageManager::FAULT_NOT_EXIST:
-
-        if (!allocatePage(g_currentThread->process, address)) {
-            return false;
-        }
-        break;
-    default:
+        errorNumber_ = FAULT_UNKNOWN;
         return false;
     }
 
-    return true;
-}
-
-/*!
-    \brief try to extend stack, when auto extention mode
-
-    \param  address fault point
-    \author HigePon
-    \date   create:2003/10/15 update:2004/01/08
-*/
-bool StackSegment::tryExtend(Process* process, LinearAddress address) {
-
-    g_console->printf("extend start");
-
-    if (!isAutoExtend_) {
-
-        /* not auto extension mode */
-        errorNumber_ = FAULT_STACK_OVERFLOW;
-        return false;
-    }
-
-    if (size_ + PageManager::ARCH_PAGE_SIZE > maxSize_) {
-
-        errorNumber_ = FAULT_STACK_OVERFLOW;
-        return false;
-    }
-
-    /* page allocation */
-    if (!(g_page_manager->setAttribute(process->getPageDirectory(), address, true, true, true))) {
-
-         panic("wan");
-    }
-
-    /* read only */
-    g_page_manager->allocatePhysicalPage(process->getPageDirectory()
-                                         , address - PageManager::ARCH_PAGE_SIZE, true, false, process->isUserMode());
-
-    /* extention done */
-    size_  += PageManager::ARCH_PAGE_SIZE;
-    start_ -= PageManager::ARCH_PAGE_SIZE;
-
-    g_console->printf("extend OK");
-
-    return true;
-}
-
-/*!
-    \brief allocate physical page
-
-    \param  address LinearAddress
-    \author HigePon
-    \date   create:2003/10/15 update:2004/01/08
-*/
-bool StackSegment::allocatePage(Process* process, LinearAddress address) {
-
-    if (address < start_ || address > start_ + size_) {
+    if (start_ - size_ > address || start_ < address) {
 
         errorNumber_ = FAULT_OUT_OF_RANGE;
         return false;
     }
 
     /* page allocation */
-    g_page_manager->allocatePhysicalPage(process->getPageDirectory(), address, true, true, process->isUserMode());
+    Process* current = g_currentThread->process;
+    g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, current->isUserMode());
 
     return true;
 }
+
 
 /*----------------------------------------------------------------------
     HeapSegment

@@ -6,7 +6,22 @@
 
 using namespace MonAPI;
 
-#define MAIN_11
+#define MAIN_12
+
+#ifdef MAIN_12
+
+int sub()
+{
+    char hoge[2048];
+    sub();
+    return hoge[2047];
+}
+int MonaMain(List<char*>* pekoe)
+{
+    sub();
+    return 0;
+}
+#endif
 
 #ifdef MAIN_11
 int MonaMain(List<char*>* pekoe)

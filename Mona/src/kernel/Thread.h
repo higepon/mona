@@ -6,6 +6,7 @@
 #include "sys/List.h"
 #include "sys/types.h"
 #include "sys/MEvent.h"
+#include "Segments.h"
 
 #define IN_SAME_SPACE(a, b) ((a->archinfo->cr3) == (b->archinfo->cr3))
 
@@ -43,7 +44,7 @@ public:
     dword schedulerTotalTick;
     dword flags;
     dword wakeupSleep;
-    
+    class StackSegment* stackSegment;
     //add by TAKA
     dword kernelStackBottom;
 };

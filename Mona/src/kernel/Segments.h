@@ -110,22 +110,13 @@ class StackSegment : public Segment {
 
   public:
     StackSegment(LinearAddress start, dword size);
-    StackSegment(Process* process, LinearAddress start, dword initileSize, dword maxSize);
     virtual ~StackSegment();
+    virtual bool inRange(LinearAddress address) {
+        return (start_ - size_ <= address && address <= start_);
+    }
 
   public:
     virtual bool faultHandler(LinearAddress address, dword error);
-    virtual bool inRange(LinearAddress address) {
-        return (address >= start_ - PageManager::ARCH_PAGE_SIZE && address <= start_);
-    }
-
-  private:
-    bool tryExtend(Process* process, LinearAddress address);
-    bool allocatePage(Process* process, LinearAddress address);
-
-  protected:
-    bool isAutoExtend_;
-    dword maxSize_;
 };
 
 class HeapSegment : public Segment {

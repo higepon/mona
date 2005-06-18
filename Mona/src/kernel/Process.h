@@ -194,7 +194,7 @@ class Process
     }
 
     static const LinearAddress STACK_START = 0xF0000000;
-    static const dword STACK_SIZE          = 0x2000;
+    static const dword STACK_SIZE          = 0x400000;
 
   public:
     int threadNum;
