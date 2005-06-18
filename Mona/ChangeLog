@@ -1,5 +1,7 @@
 2005-06-18  higepon  <higepon@users.sourceforge.jp>
 
+        * src/kernel/Loader.h (class Loader): 最大プロセスサイズを4MBに。
+
         * src/kernel/Segments.cpp: スタック自動伸張対応。
 
         * src/kernel/Process.cpp :STACK_SIZE を 4MBに。これはスタック自動伸長が実装されるまでは意味を成さない。スレッド間でスタックが4MB離れていることを意味する。
