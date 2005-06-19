@@ -13,6 +13,9 @@ ADDLINK    = -lgui
 ADDLINKDEP = $(MONADIR)/lib/libgui.a
 include $(MONADIR)/env/monapi-el2.inc
 #endif
+.SUFFIXES: .asm .o
+.asm.o:
+	$(NASM) $(NFLAGS) -o $@ -felf $<
 
 CXXFLAGS += -DDEBUG
 

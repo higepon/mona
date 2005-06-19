@@ -12,6 +12,10 @@ MONADIR    = ../../..
 ADDLINK    = -lbaygui
 ADDLINKDEP = $(MONADIR)/lib/libbaygui.a
 include $(MONADIR)/env/monapi-el5.inc
+.SUFFIXES: .asm .o
+.asm.o:
+	$(NASM) $(NFLAGS) -o $@ -felf $<
+
 #endif
 
 CXXFLAGS += -DDEBUG
