@@ -15,7 +15,7 @@ include $(MONADIR)/env/monapi-el2.inc
 #endif
 .SUFFIXES: .asm .o
 .asm.o:
-	$(NASM) $(NFLAGS) -o $@ -felf $<
+	$(NASM) $(NFLAGS) -o $@ -fwin32 $<
 
 CXXFLAGS += -DDEBUG
 
