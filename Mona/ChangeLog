@@ -1,3 +1,9 @@
+2005-06-19  higepon  <higepon@users.sourceforge.jp>
+
+        * Mona-0.3.0alpha3-fix-include.diffを適用。
+
+        * Mona-0.3.0alpha3-nask.diffを適用。
+
 2005-06-18  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Loader.h (class Loader): 最大プロセスサイズを4MBに。

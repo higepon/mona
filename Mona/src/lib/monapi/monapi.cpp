@@ -1,7 +1,6 @@
-#include <sys/List.h>
 #include <monapi/syscall.h>
 
-extern void monapi_initialize_memory();
+extern "C" void monapi_initialize_memory(int memorySize);
 extern int user_start_impl(FuncMonaMain* monaMain);
 
 extern "C" FuncVoid* __CTOR_LIST__[];
@@ -12,7 +11,7 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 ----------------------------------------------------------------------*/
 extern "C" int user_start()
 {
-    monapi_initialize_memory();
+    monapi_initialize_memory(8 * 1024 * 1024);
     setConstructorList(__CTOR_LIST__);
     invokeFuncList(__CTOR_LIST__);
     int result = user_start_impl(MonaMain);

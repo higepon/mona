@@ -59,7 +59,7 @@ extern monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* m
 extern monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt);
 extern monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt);
 extern int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt);
-extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id = NULL);
+extern int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id);
 extern int monapi_call_change_drive(int drive, MONAPI_BOOL prompt);
 extern int monapi_call_get_current_drive();
 extern int monapi_call_get_current_directory(char* dest);

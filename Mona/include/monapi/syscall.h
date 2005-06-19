@@ -3,20 +3,22 @@
 
 #include <sys/types.h>
 
+typedef void (FuncVoid)();
+typedef int (FuncMain)(int argc, char* argv[]);
+
 #ifdef __cplusplus
 #include <sys/List.h>
 
-typedef void (FuncVoid)();
 typedef int (FuncMonaMain)(List<char*>*);
 
+extern void invokeFuncList(FuncVoid** list);
+extern bool isInDLL(FuncVoid** ctors);
 extern int MonaMain(List<char*>* pekoe);
 extern void setupArguments(List<char*>* arg);
-extern void invokeFuncList(FuncVoid** list);
-extern void setConstructorList(FuncVoid** crots);
-extern bool isInDLL(FuncVoid** ctors);
 
 extern "C" {
 #endif
+extern void setConstructorList(FuncVoid** crots);
 extern int user_start();
 extern int sleep(dword ms);
 extern int set_timer(dword ms);

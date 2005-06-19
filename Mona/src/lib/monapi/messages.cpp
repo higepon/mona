@@ -275,7 +275,7 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
 
 int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
-    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL);
+    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL);
 }
 
 int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id /* = NULL */)

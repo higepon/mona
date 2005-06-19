@@ -10,7 +10,7 @@
     \date   create:2005/01/26 update:$Date$
 */
 
-#include <string.h>
+#include <monapi/string.h>
 #include "ISO9660FileSystem.h"
 
 using namespace MonAPI;
