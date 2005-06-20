@@ -112,17 +112,9 @@ void BZ2_hbMakeCodeLengths ( UChar *len,
    Int32 nNodes, nHeap, n1, n2, i, j, k;
    Bool  tooLong;
 
-#if 1  // yui It's C, not C++
-   Int32 *heap;
-   Int32 *weight;
-   Int32 *parent;
-   heap = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE + 2) * sizeof(Int32) );
-   weight = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE * 2) * sizeof(Int32) );
-   parent = (Int32 *) malloc ( (BZ_MAX_ALPHA_SIZE * 2) * sizeof(Int32) ); 
-   AssertH ( heap, BZ_MEM_ERROR );
-   AssertH ( weight, BZ_MEM_ERROR );
-   AssertH ( parent, BZ_MEM_ERROR );
-#endif
+   Int32 heap   [ BZ_MAX_ALPHA_SIZE + 2 ];
+   Int32 weight [ BZ_MAX_ALPHA_SIZE * 2 ];
+   Int32 parent [ BZ_MAX_ALPHA_SIZE * 2 ]; 
 
    for (i = 0; i < alphaSize; i++)
       weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;
@@ -170,16 +162,29 @@ void BZ2_hbMakeCodeLengths ( UChar *len,
       
       if (! tooLong) break;
 
-      for (i = 1; i < alphaSize; i++) {
+      /* 17 Oct 04: keep-going condition for the following loop used
+         to be 'i < alphaSize', which missed the last element,
+         theoretically leading to the possibility of the compressor
+         looping.  However, this count-scaling step is only needed if
+         one of the generated Huffman code words is longer than
+         maxLen, which up to and including version 1.0.2 was 20 bits,
+         which is extremely unlikely.  In version 1.0.3 maxLen was
+         changed to 17 bits, which has minimal effect on compression
+         ratio, but does mean this scaling step is used from time to
+         time, enough to verify that it works.
+
+         This means that bzip2-1.0.3 and later will only produce
+         Huffman codes with a maximum length of 17 bits.  However, in
+         order to preserve backwards compatibility with bitstreams
+         produced by versions pre-1.0.3, the decompressor must still
+         handle lengths of up to 20. */
+
+      for (i = 1; i <= alphaSize; i++) {
          j = weight[i] >> 8;
          j = 1 + (j / 2);
          weight[i] = j << 8;
       }
    }
-
-   free ( heap );
-   free ( weight );
-   free ( parent );
 }
 
 

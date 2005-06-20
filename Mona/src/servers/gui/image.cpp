@@ -99,34 +99,22 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 
 guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 {
-	CJPEGLS* jpeg = new CJPEGLS();
-	if (jpeg->Open(mi->Data, mi->Size) != 0)
-	{
-		delete jpeg;
-		return NULL;
-	}
+	CJPEGLS jpeg;
+	if (jpeg.Open(mi->Data, mi->Size) != 0) return NULL;
 	
 	int w, h;
-	jpeg->GetInfo(&w, &h);
+	jpeg.GetInfo(&w, &h);
 
 	dword handle = MemoryMap::create(sizeof(guiserver_bitmap) + w * h * 4);
-	if (handle == 0)
-	{
-		delete jpeg;
-		return NULL;
-	}
+	if (handle == 0) return NULL;
 	
 	guiserver_bitmap* ret = (guiserver_bitmap*)MemoryMap::map(handle);
-	if (ret == NULL)
-	{
-		delete jpeg;
-		return NULL;
-	}
+	if (ret == NULL) return NULL;
 	
 	ret->Handle = handle;
 	ret->Width  = w;
 	ret->Height = h;
-	jpeg->Decode((byte*)ret->Data);
+	jpeg.Decode((byte*)ret->Data);
 	for (int i = w * h - 1; i >= 0; i--)
 	{
 		byte* ptr1 = (byte*)&ret->Data[i], * ptr2 = &((byte*)ret->Data)[i * 3];
@@ -135,7 +123,6 @@ guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 		ptr1[2] = ptr2[0];
 		ptr1[3] = 0xff;
 	}
-	delete jpeg;
 	return ret;
 }
 

@@ -27,7 +27,7 @@ int MonaMain(List<char*>* pekoe)
     /* start */
     printf("wait please......\n");
 
-    CJPEGLS *jpeg = new CJPEGLS;
+    CJPEGLS jpeg;
 
     monapi_cmemoryinfo* mi = NULL;
     mi = monapi_call_file_read_data(pekoe->get(0), MONAPI_FALSE);
@@ -39,7 +39,7 @@ int MonaMain(List<char*>* pekoe)
     }
 
     /* jpeg operation */
-    if (jpeg->Open(mi->Data, mi->Size) != 0)
+    if (jpeg.Open(mi->Data, mi->Size) != 0)
     {
         printf("not supported image\n");
         monapi_cmemoryinfo_dispose(mi);
@@ -48,9 +48,9 @@ int MonaMain(List<char*>* pekoe)
     }
 
     int w, h;
-    jpeg->GetInfo(&w, &h);
+    jpeg.GetInfo(&w, &h);
     byte *picture = new byte[w * h * 3];
-    jpeg->Decode(picture);
+    jpeg.Decode(picture);
 
     int x, y;
     int vesaWidth  = screen.getWidth();

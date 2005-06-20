@@ -28,13 +28,14 @@ SOURCES = monapi_impl.cpp \
           messages.cpp \
           cmemoryinfo.cpp \
           io.cpp
+NASMSRCS = _alloca.asm
 
-MONADIR  = ../../..
+MONADIR = ../../..
 include $(MONADIR)/env/dirnames.inc
 include $(MONADIR)/env/Makefile.inc
 
 INCLUDE = -I$(INCDIR)
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o)
 
 all : $(TARGET)
 
@@ -60,6 +61,10 @@ endif
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
+
+.SUFFIXES: .asm .o
+.asm.o:
+	$(NASM) $(NFLAGS) -o $@ $<
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)

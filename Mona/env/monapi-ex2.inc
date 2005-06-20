@@ -9,9 +9,9 @@ include $(MONADIR)/env/monapi.inc
 .c.o:
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
-#.SUFFIXES: .asm .o
-#.asm.o:
-#	$(NASM) $(NFLAGS) -o $@ -felf $<
+.SUFFIXES: .asm .o
+.asm.o:
+	$(NASM) $(NFLAGS) -o $@ $<
 
 all: $(TARGET).EX2
 

@@ -7,6 +7,8 @@ cextern FireScreen
 cextern calc
 cextern pImage
 
+section .text
+
 DrawFire:
 	pushad
 

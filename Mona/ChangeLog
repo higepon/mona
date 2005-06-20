@@ -1,3 +1,7 @@
+2005-06-20  higepon  <higepon@users.sourceforge.jp>
+
+        * _allocaパッチを適用。thanks ななしさん
+
 2005-06-19  higepon  <higepon@users.sourceforge.jp>
 
         * env/monapi-*.inc: .asm .oの記述を削除 
