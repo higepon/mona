@@ -1,3 +1,9 @@
+2005-06-24  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/monapi_impl.cpp: Doug Lea氏の高速 malloc を取り込む。
+
+        * src/servers/file/file.cpp (GetCurrentDirectory): 戻り値を const char* -> CStringに変更。thanks ななしさん
+
 2005-06-20  higepon  <higepon@users.sourceforge.jp>
 
         * _allocaパッチを適用。thanks ななしさん

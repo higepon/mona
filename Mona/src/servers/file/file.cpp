@@ -35,7 +35,7 @@ int ChangeDrive(int drive)
     return MONA_FAILURE;
 }
 
-const char* GetCurrentDirectory()
+CString GetCurrentDirectory()
 {
     return fs->GetCurrentDirectory();
 }

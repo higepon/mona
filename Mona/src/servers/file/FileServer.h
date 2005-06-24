@@ -8,7 +8,7 @@
 
 int ChangeDrive(int drive);
 int GetCurrentDrive();
-const char* GetCurrentDirectory();
+MonAPI::CString GetCurrentDirectory();
 int ChangeDirectory(const MonAPI::CString& dir);
 MonAPI::CString getParentDirectory(const MonAPI::CString& dir);
 MonAPI::CString mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CString& dir2);
