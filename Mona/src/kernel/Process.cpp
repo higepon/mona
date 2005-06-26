@@ -388,7 +388,7 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     pageDirectory_ = directory;
 
     /* allocate heap */
-    heap_ = new HeapSegment(0xC0000000, 32 * 1024 * 1024);
+    heap_ = new HeapSegment(0xC0000000, 64 * 1024 * 1024);
 
     /* shared list */
     shared_ = new HList<SharedMemorySegment*>();

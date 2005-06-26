@@ -11,7 +11,7 @@ extern "C" FuncVoid* __DTOR_LIST__[];
 ----------------------------------------------------------------------*/
 extern "C" int user_start()
 {
-    monapi_initialize_memory(8 * 1024 * 1024);
+    monapi_initialize_memory(64 * 1024 * 1024);
     setConstructorList(__CTOR_LIST__);
     invokeFuncList(__CTOR_LIST__);
     int result = user_start_impl(MonaMain);

@@ -1,3 +1,9 @@
+2005-06-26  higepon  <higepon@users.sourceforge.jp>
+
+        * ヒープを64MBに拡張。
+
+        * src/lib/monapi/monapi.cpp: realloc, callocパッチを適用。thank ななしさん
+
 2005-06-24  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/monapi_impl.cpp: Doug Lea氏の高速 malloc を取り込む。

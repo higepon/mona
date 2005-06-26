@@ -4,10 +4,15 @@ typedef unsigned int size_t;
 typedef void* mspace;
 
 
-extern "C" mspace create_mspace_with_base(void* base, size_t capacity, int locked);
-extern "C" size_t destroy_mspace(mspace msp);
-extern "C" void* mspace_malloc(mspace msp, size_t bytes);
-extern "C" void mspace_free(mspace msp, void* mem);
+extern "C"
+{
+    mspace create_mspace_with_base(void* base, size_t capacity, int locked);
+    size_t destroy_mspace(mspace msp);
+    void* mspace_malloc(mspace msp, size_t bytes);
+    void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
+    void* mspace_realloc(mspace msp, void* mem, size_t newsize);
+    void mspace_free(mspace msp, void* mem);
+}
 
 mspace g_msp;
 
@@ -140,6 +145,14 @@ void setupArguments(List<char*>* arg) {
 ----------------------------------------------------------------------*/
 void* malloc(unsigned long size) {
     return mspace_malloc(g_msp,size);
+}
+
+void* calloc(unsigned long n, unsigned long s) {
+    return mspace_calloc(g_msp,n,s);
+}
+
+void* realloc(void* address, unsigned long size) {
+    return mspace_realloc(g_msp, address, size);
 }
 
 void free(void * address) {

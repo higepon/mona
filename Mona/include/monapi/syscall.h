@@ -85,6 +85,8 @@ extern int syscall_get_memory_info(MemoryInfo* INFO);
 extern int syscall_free_pages(dword address, dword size);
 extern int syscall_change_base_priority(dword priority);
 extern void* malloc(unsigned long size);
+extern void* calloc(unsigned long n, unsigned long s);
+extern void* realloc(void* address, unsigned long size);
 extern void free(void * address);
 extern void __cxa_pure_virtual();
 extern void _pure_virtual(void);
