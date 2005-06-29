@@ -24,7 +24,7 @@ namespace MonAPI
             if (length == -1) length = strlen(text);
             this->buffer = new char[length + 1];
             ASSERT(this->buffer)
-            strncpy(this->buffer, text, length);
+            memcpy(this->buffer, text, length);
             this->buffer[length] = '\0';
             this->length = length;
         }
@@ -76,7 +76,7 @@ namespace MonAPI
             this->length = strlen(text);
             this->buffer = new char[this->length + 1];
             ASSERT(this->buffer)
-            strncpy(this->buffer, text, this->length);
+            memcpy(this->buffer, text, this->length);
             this->buffer[this->length] = '\0';
         }
         return *this;
@@ -95,7 +95,7 @@ namespace MonAPI
             this->length = text.length;
             this->buffer = new char[this->length + 1];
             ASSERT(this->buffer)
-            strncpy(this->buffer, text.buffer, this->length);
+            memcpy(this->buffer, text.buffer, this->length);
             this->buffer[this->length] = '\0';
         }
         return *this;
@@ -114,8 +114,8 @@ namespace MonAPI
         {
             buf = new char[this->length + 1];
             ASSERT(buf)
-            if (this->buffer != NULL) strncpy(buf, this->buffer, len1);
-            if (text != NULL) strncpy(&buf[len1], text, len2);
+            if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
+            if (text != NULL) memcpy(&buf[len1], text, len2);
             buf[this->length] = '\0';
         }
         if (this->buffer != NULL) delete [] this->buffer;
@@ -135,8 +135,8 @@ namespace MonAPI
         {
             buf = new char[this->length + 1];
             ASSERT(buf)
-            if (this->buffer != NULL) strncpy(buf, this->buffer, len1);
-            if (text .buffer != NULL) strncpy(&buf[len1], text.buffer, len2);
+            if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
+            if (text .buffer != NULL) memcpy(&buf[len1], text.buffer, len2);
             buf[this->length] = '\0';
         }
         if (this->buffer != NULL) delete [] this->buffer;
@@ -147,7 +147,7 @@ namespace MonAPI
     {
         char* buf = new char[this->length + 2];
         ASSERT(buf)
-        strncpy(buf, this->buffer, this->length);
+        memcpy(buf, this->buffer, this->length);
         buf[this->length++] = ch;
         buf[this->length] = '\0';
         if (this->buffer != NULL) delete [] this->buffer;
@@ -408,11 +408,11 @@ namespace MonAPI
        {
            char *buf1 = new char[start + 1];
            ASSERT(buf1)
-           strncpy(buf1, this->buffer, start);
+           memcpy(buf1, this->buffer, start);
            buf1[start] = '\0';
            char *buf2 = new char[this->length - start + 1];
            ASSERT(buf2)
-           strncpy(buf2, &(this->buffer[start]), this->length - start);
+           memcpy(buf2, &(this->buffer[start]), this->length - start);
            buf2[this->length - start] = '\0';
            *this = buf1 + text + buf2;
            result = text.length;
@@ -450,7 +450,7 @@ namespace MonAPI
         {
             buf = new char[start + 1];
             ASSERT(buf)
-            strncpy(buf, this->buffer, start);
+            memcpy(buf, this->buffer, start);
             delete [] this->buffer;
             this->buffer = buf;
             this->buffer[start] = '\0';
@@ -461,8 +461,8 @@ namespace MonAPI
         {
             buf = new char[this->length - length + 1];
             ASSERT(buf)
-            strncpy(buf, this->buffer, start);
-            strncpy(&buf[start], &(this->buffer[start + length]), this->length - start - length);
+            memcpy(buf, this->buffer, start);
+            memcpy(&buf[start], &(this->buffer[start + length]), this->length - start - length);
             delete [] this->buffer;
             this->buffer = buf;
             this->buffer[this->length - length] = '\0';
