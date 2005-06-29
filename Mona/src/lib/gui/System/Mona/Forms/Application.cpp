@@ -117,6 +117,7 @@ namespace System { namespace Mona { namespace Forms
 		}
 		END_FOREACH_AL
 		
+		Point mp = Cursor::get_Position();
 		switch (m->header)
 		{
 			case MSG_GUISERVER_MOUSEMOVE:
@@ -124,14 +125,22 @@ namespace System { namespace Mona { namespace Forms
 			case MSG_GUISERVER_MOUSEUP:
 			{
 				_P<Control> c = mapControls[m->arg1];
-				if (c != NULL)
+				if (c == NULL) break;
+				
+				Point p1 = Point(GET_X_DWORD(m->arg2), GET_Y_DWORD(m->arg2));
+				Point p2 = c->PointToClient(p1);
+				if (m->header == MSG_GUISERVER_MOUSEMOVE)
 				{
-					Point p1 = m->header == MSG_GUISERVER_MOUSEMOVE ?
-						Cursor::get_Position() : Point(GET_X_DWORD(m->arg2), GET_Y_DWORD(m->arg2));
-					Point p2 = c->PointToClient(p1);
-					_P<MouseEventArgs> e = new MouseEventArgs(m->arg3, p2.X, p2.Y);
-					c->WndProc(m->header, e.get());
+					if (p1 != Cursor::get_Position()) break;
 				}
+				else if (mp != p1)
+				{
+					_P<MouseEventArgs> e1 = new MouseEventArgs(m->arg3, p2.X, p2.Y);
+					c->WndProc(MSG_GUISERVER_MOUSEMOVE, e1.get());
+				}
+				_P<MouseEventArgs> e2 = new MouseEventArgs(m->arg3, p2.X, p2.Y);
+				c->WndProc(m->header, e2.get());
+				mp = p1;
 				break;
 			}
 			case MSG_GUISERVER_ACTIVATED:

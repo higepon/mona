@@ -103,7 +103,8 @@ extern "C" int user_start_c_impl(FuncMain* main)
         }
     }
     char** argv = new char*[argc + 1];
-    argv[0] = "dummy";
+    PsInfo pi = *MonAPI::System::getProcessInfo();
+    argv[0] = pi.name;
     for (int i = 0; i < argc; i++)
     {
         argv[argc - i] = _argv[i];

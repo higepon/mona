@@ -464,7 +464,7 @@ void PageManager::returnPhysicalPages(PageEntry* directory)
 void PageManager::returnPages(PageEntry* directory, LinearAddress address, dword size)
 {
 #if 0
-    if (address < 0xC0000000 || (0xC0000000 + 8 * 1024 * 1024) < address) return;
+    if (address < 0xC0000000 || (0xC0000000 + 24 * 1024 * 1024) < address) return;
 
     LinearAddress start = address % 4096 ? ((address + 4095) & 0xFFFFF000) : address;
 

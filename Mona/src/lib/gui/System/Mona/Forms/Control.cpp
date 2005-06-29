@@ -192,6 +192,7 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Control::Dispose()
 	{
+		if (this->capture) this->set_Capture(false);
 		this->Hide();
 
 		mapControls[this->get_Handle()] = NULL;
@@ -429,10 +430,13 @@ namespace System { namespace Mona { namespace Forms
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
 				Point pt_arg(arg->X, arg->Y);
-				Point pt = arg->Button == 0 ? pt_arg : this->clickPoint;
+				Point pt = this->capture ? this->clickPoint : pt_arg;
 				if (this->NCHitTest(pt.X, pt.Y) == NCState_Client)
 				{
-					if (arg->Button != 0 || Rectangle(Point(), this->get_Size()).Contains(pt_arg)) this->OnMouseMove(arg);
+					if (this->capture || Rectangle(Point(), this->get_Size()).Contains(pt_arg))
+					{
+						this->OnMouseMove(arg);
+					}
 				}
 				else
 				{
@@ -443,15 +447,16 @@ namespace System { namespace Mona { namespace Forms
 			case MSG_GUISERVER_MOUSEDOWN:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
-				this->clickPoint = Point(arg->X, arg->Y);
-				this->NCHitTest(arg->X, arg->Y) == NCState_Client
+				if (!this->capture) this->clickPoint = Point(arg->X, arg->Y);
+				this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client
 					? this->OnMouseDown(arg) : this->OnNCMouseDown(arg);
 				break;
 			}
 			case MSG_GUISERVER_MOUSEUP:
 			{
 				_P<MouseEventArgs> arg = (MouseEventArgs*)e.get();
-				this->NCHitTest(this->clickPoint.X, this->clickPoint.Y) == NCState_Client
+				Point pt = this->capture ? this->clickPoint : Point(arg->X, arg->Y);
+				this->NCHitTest(pt.X, pt.Y) == NCState_Client
 					? this->OnMouseUp(arg) : this->OnNCMouseUp(arg);
 				break;
 			}

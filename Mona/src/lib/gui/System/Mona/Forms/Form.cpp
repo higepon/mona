@@ -80,6 +80,12 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::Dispose()
 	{
+		if (this->overlap != 0)
+		{
+			MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+			this->overlap = 0;
+		}
+		this->ncState = NCState_None;
 		BASE::Dispose();
 		Application::RemoveForm(this);
 		this->formBuffer = NULL;
@@ -233,19 +239,34 @@ namespace System { namespace Mona { namespace Forms
 			}
 			case NCState_TitleBar:
 			{
-#ifdef MONA
-				int ex = this->get_X() + (e->X - this->clickPoint.X), ey = this->get_Y() + (e->Y - this->clickPoint.Y);
-				if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey)
+				if (e->Button == 0)
 				{
-					this->ptRevRect = Point(ex, ey);
-					MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
-						MAKE_DWORD(ex, ey), MAKE_DWORD(this->get_Width(), this->get_Height()));
-				}
-#else
-				this->DrawReversibleRectangle();
-				this->ptRevRect = Point(e->X, e->Y);
-				this->DrawReversibleRectangle();
+					if (this->get_Capture()) this->set_Capture(false);
+#ifdef MONA
+					if (this->overlap != 0)
+					{
+						MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+						this->overlap = 0;
+					}
 #endif
+					this->ncState = NCState_None;
+				}
+				else
+				{
+#ifdef MONA
+					int ex = this->get_X() + (e->X - this->clickPoint.X), ey = this->get_Y() + (e->Y - this->clickPoint.Y);
+					if (this->ptRevRect.X != ex || this->ptRevRect.Y != ey)
+					{
+						this->ptRevRect = Point(ex, ey);
+						MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+							MAKE_DWORD(ex, ey), MAKE_DWORD(this->get_Width(), this->get_Height()));
+					}
+#else
+					this->DrawReversibleRectangle();
+					this->ptRevRect = Point(e->X, e->Y);
+					this->DrawReversibleRectangle();
+#endif
+				}
 				break;
 			}
 			default:
@@ -257,30 +278,45 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::OnNCMouseDown(_P<MouseEventArgs> e)
 	{
-		switch (this->ncState = this->NCHitTest(e->X, e->Y))
+		if (this->ncState == NCState_TitleBar)
 		{
-			case NCState_CloseButton:
-				this->set_Capture(true);
-				this->isCloseButtonPushed = true;
-				this->Refresh();
-				break;
-			case NCState_TitleBar:
-			{
-				this->set_Capture(true);
-				this->ptRevRect = Point(e->X, e->Y);
+			if (this->get_Capture()) this->set_Capture(false);
 #ifdef MONA
-				MessageInfo msg;
-				MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
-					this->get_X(), this->get_Y(),
-					MAKE_DWORD(this->get_Width(), this->get_Height()));
-				this->overlap = msg.arg2;
-#else
-				this->DrawReversibleRectangle();
-#endif
-				break;
+			if (this->overlap != 0)
+			{
+				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+				this->overlap = 0;
 			}
-			default:
-				break;
+#endif
+			this->ncState = NCState_None;
+		}
+		if (e->Button == 1)
+		{
+			switch (this->ncState = this->NCHitTest(e->X, e->Y))
+			{
+				case NCState_CloseButton:
+					this->set_Capture(true);
+					this->isCloseButtonPushed = true;
+					this->Refresh();
+					break;
+				case NCState_TitleBar:
+				{
+					this->set_Capture(true);
+					this->ptRevRect = Point(e->X, e->Y);
+#ifdef MONA
+					MessageInfo msg;
+					MonAPI::Message::sendReceive(&msg, __gui_server, MSG_GUISERVER_CREATEOVERLAP,
+						this->get_X(), this->get_Y(),
+						MAKE_DWORD(this->get_Width(), this->get_Height()));
+					this->overlap = msg.arg2;
+#else
+					this->DrawReversibleRectangle();
+#endif
+					break;
+				}
+				default:
+					break;
+			}
 		}
 		
 		BASE::OnNCMouseDown(e);
@@ -288,34 +324,39 @@ namespace System { namespace Mona { namespace Forms
 	
 	void Form::OnNCMouseUp(_P<MouseEventArgs> e)
 	{
-		bool destroy = this->NCHitTest(e->X, e->Y) == NCState_CloseButton && this->ncState == NCState_CloseButton;
+		bool destroy = false;
 		
-		switch (this->ncState)
+		if (e->Button == 1)
 		{
-			case NCState_CloseButton:
+			destroy = this->NCHitTest(e->X, e->Y) == NCState_CloseButton && this->ncState == NCState_CloseButton;
+			
+			switch (this->ncState)
 			{
-				this->set_Capture(false);
-				this->isCloseButtonPushed = false;
-				break;
-			}
-			case NCState_TitleBar:
-			{
+				case NCState_CloseButton:
+				{
+					this->set_Capture(false);
+					this->isCloseButtonPushed = false;
+					break;
+				}
+				case NCState_TitleBar:
+				{
 #ifdef MONA
-				MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
-				this->overlap = 0;
+					MonAPI::Message::sendReceive(NULL, __gui_server, MSG_GUISERVER_DISPOSEOVERLAP, this->overlap);
+					this->overlap = 0;
 #else
-				this->DrawReversibleRectangle();
+					this->DrawReversibleRectangle();
 #endif
-				this->set_Capture(false);
-				Point p = this->get_Location();
-				p.X += e->X - this->clickPoint.X;
-				p.Y += e->Y - this->clickPoint.Y;
-				this->set_Location(p);
-				break;
+					this->set_Capture(false);
+					Point p = this->get_Location();
+					p.X += e->X - this->clickPoint.X;
+					p.Y += e->Y - this->clickPoint.Y;
+					this->set_Location(p);
+					break;
+				}
+				default:
+					this->Refresh();
+					break;
 			}
-			default:
-				this->Refresh();
-				break;
 		}
 		
 		BASE::OnNCMouseUp(e);

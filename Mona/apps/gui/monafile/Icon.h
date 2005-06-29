@@ -43,6 +43,7 @@ public:
 	static System::Drawing::Size DrawIcon(_P<System::Drawing::Graphics> g, System::String name, Icons icon, int x, int y, bool emboss, bool selection);
 	static Icons GetIcon(monapi_directoryinfo* di);
 	static void ExpansionEffect(int x, int y);
+	bool Open(int cx, int cy, System::String dir);
 	
 protected:
 	virtual void OnPaint();

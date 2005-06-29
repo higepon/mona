@@ -30,6 +30,17 @@ static bool ExistsProcess(const MonAPI::CString& self)
 	return ret;
 }
 
+static bool DirectoryExists(const char* path)
+{
+	monapi_cmemoryinfo* files = monapi_call_file_read_directory(path, MONAPI_FALSE);
+	if (files == NULL) return false;
+	
+	int size = *(int*)files->Data;
+	monapi_cmemoryinfo_dispose(files);
+	monapi_cmemoryinfo_delete (files);
+	return size > 0;
+}
+
 int ProcessStart(const String& file)
 {
 	int len = file.get_Length();
@@ -72,6 +83,16 @@ public:
 		terminal->set_Icon(Icons_Terminal);
 		terminal->set_Target("/APPS/MONAFRMS/SHELL.EX2");
 		terminal->Show();
+		
+		if (DirectoryExists("/APPS/MONAFRMS/MESA"))
+		{
+			_P<Icon> mesa = new Icon();
+			mesa->set_Location(Point(0, 128));
+			mesa->set_Text("3Dデモ");
+			mesa->set_Icon(Icons_Folder);
+			mesa->set_Target("open /APPS/MONAFRMS/MESA");
+			mesa->Show();
+		}
 		
 		Application::Run();
 	}

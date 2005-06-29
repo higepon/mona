@@ -63,45 +63,18 @@ void Icon::OnNCMouseUp(_P<MouseEventArgs> e)
 	
 	int x = this->get_X(), y = this->get_Y(), w = this->get_Width(), h = this->get_Height();
 	int cx = x + w / 2, cy = y + h / 2;
-	if (this->target.get_Length() > 0)
+	if (this->target.StartsWith("open "))
+	{
+		this->Open(cx, cy, this->target.Substring(5, this->target.get_Length() - 5));
+	}
+	else if (this->target.get_Length() > 0)
 	{
 		Icon::ExpansionEffect(cx, cy);
 		ProcessStart(this->target);
 	}
 	else
 	{
-		bool ok = true;
-		if (windows == NULL)
-		{
-			windows = new ArrayList<_P<FileWindow> >;
-		}
-		else
-		{
-			for (int i = 0; i < windows->get_Count(); i++)
-			{
-				_P<FileWindow> win = windows->get_Item(i);
-				if (!win->get_Visible())
-				{
-					windows->RemoveAt(i);
-					i--;
-				}
-				else if (win->get_Text() == "/")
-				{
-					ok = false;
-				}
-			}
-		}
-		if (ok)
-		{
-			_P<FileWindow> win = new FileWindow();
-			windows->Add(win);
-			MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
-				MAKE_DWORD(cx, cy),
-				MAKE_DWORD(win->get_X(), win->get_Y()),
-				MAKE_DWORD(win->get_Width(), win->get_Height()));
-			win->Show();
-			win->set_Directory(this->get_Text());
-		}
+		this->Open(cx, cy, this->get_Text());
 	}
 }
 
@@ -109,6 +82,40 @@ void Icon::ExpansionEffect(int x, int y)
 {
 	MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
 		MAKE_DWORD(x, y), MAKE_DWORD(x - 32, y - 32), MAKE_DWORD(64, 64));
+}
+
+bool Icon::Open(int cx, int cy, String dir)
+{
+	if (windows == NULL)
+	{
+		windows = new ArrayList<_P<FileWindow> >;
+	}
+	else
+	{
+		for (int i = 0; i < windows->get_Count(); i++)
+		{
+			_P<FileWindow> win = windows->get_Item(i);
+			if (!win->get_Visible())
+			{
+				windows->RemoveAt(i);
+				i--;
+			}
+			else if (win->get_Text() == dir)
+			{
+				return false;
+			}
+		}
+	}
+	
+	_P<FileWindow> win = new FileWindow();
+	windows->Add(win);
+	MonAPI::Message::sendReceive(NULL, gui_server, MSG_GUISERVER_EXPANSIONEFFECT,
+		MAKE_DWORD(cx, cy),
+		MAKE_DWORD(win->get_X(), win->get_Y()),
+		MAKE_DWORD(win->get_Width(), win->get_Height()));
+	win->Show();
+	win->set_Directory(dir);
+	return true;
 }
 
 Size Icon::DrawIcon(_P<Graphics> g, String name, Icons icon, int x, int y, bool emboss, bool selection)

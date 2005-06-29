@@ -34,11 +34,11 @@ namespace System { namespace Mona { namespace Forms
 		static bool isExited;
 		static int mouseButtons;
 		
-		static void Initialize();
-		static void Dispose();
-		
 	public:
 		static unsigned char* defaultFontData;
+		
+		static void Initialize();
+		static void Dispose();
 		
 		static void Run();
 		static void Run(_P<Form> form);

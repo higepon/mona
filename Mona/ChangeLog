@@ -1,3 +1,21 @@
+2005-06-29  higepon  <higepon@users.sourceforge.jp>
+
+        * ななしさんのパッチを適用
+          PEサーバーのリファクタリング（キャッシュ効率化、孫参照対応）
+            fileMona-20050627-PEServer-refactoring.zip
+
+          MonaFormsの初期化・終了をpublicにする
+            fileMona-20050627-MonaForms-glut.diff
+
+          従来スタイルのmainでargv[0]に自分の名前が渡るように修正
+            fileMona-20050628-argv0.diff
+
+          MonaFormsで高負荷時のマウスの動きを改善
+            fileMona-20050628-MonaForms-mouse.diff
+
+          monafileでデスクトップにフォルダのショートカットを置けるようにした
+            fileMona-20050628-monafile.diff
+
 2005-06-26  higepon  <higepon@users.sourceforge.jp>
 
         * ヒープを64MBに拡張。
@@ -16,7 +34,7 @@
 
 2005-06-19  higepon  <higepon@users.sourceforge.jp>
 
-        * env/monapi-*.inc: .asm .oの記述を削除 
+        * env/monapi-*.inc: .asm .oの記述を削除
 
         * apps/gui/fire/Makefile (.SUFFIXES): .asm .o の記述を追加
 
