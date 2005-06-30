@@ -1,3 +1,7 @@
+2005-06-30  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/Process.cpp (kill): Idleスレッドを Killできないようにした。
+
 2005-06-29  higepon  <higepon@users.sourceforge.jp>
 
         * ななしさんのパッチを適用

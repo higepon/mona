@@ -84,7 +84,7 @@ Process* ProcessOperation::create(int type, const char* name)
 /*----------------------------------------------------------------------
     ThreadOperation
 ----------------------------------------------------------------------*/
-dword ThreadOperation::id = 56;
+dword ThreadOperation::id = FIRST_THREAD_ID;
 Thread* ThreadOperation::create(Process* process, dword programCounter)
 {
     Thread* thread = new Thread();
@@ -294,6 +294,8 @@ int ThreadOperation::kill(dword tid)
 {
     Thread* thread   = g_scheduler->Find(tid);
     if (thread == NULL) return -1;
+    if (thread->id == FIRST_THREAD_ID) return -2;
+
 
     Process* process = thread->tinfo->process;
 

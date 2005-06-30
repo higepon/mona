@@ -255,11 +255,15 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 printf("usage: KILL tid\n");
                 break;
             }
-
-            if (syscall_kill_thread(atoi(args[1])))
+	    int result = syscall_kill_thread(atoi(args[1]));
+            if (result == -1)
             {
                 printf("kill failed. Thread not found\n");
             }
+	    else if (result == -2)
+	    {
+		printf("unable to kill\n");
+	    }
             else
             {
                 printf("thread %d killed\n", atoi(args[1]));
