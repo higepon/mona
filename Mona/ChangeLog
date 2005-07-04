@@ -1,3 +1,7 @@
+2005-07-04  higepon  <higepon@users.sourceforge.jp>
+
+        * nikqさんの MONAFUN.JPG(壁紙)を採用。
+
 2005-06-30  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Process.cpp (kill): Idleスレッドを Killできないようにした。
