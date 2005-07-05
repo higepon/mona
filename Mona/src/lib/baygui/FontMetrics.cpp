@@ -36,7 +36,7 @@ FontMetrics::FontMetrics()
 #if defined(MONA)
 	// フォント取得メッセージを投げる
 	MessageInfo info;
-	MonAPI::Message::sendReceive(&info, this->guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
+	MonAPI::Message::sendReceive(&info, getGuisvrID(), MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
 	unsigned char* font_data = NULL;
 	font_data = MonAPI::MemoryMap::map(info.arg2);
 	if (font_data == NULL) {

@@ -305,7 +305,7 @@ public:
 	virtual void onPaint(Graphics *g) {
 		if (firstPaint == false) {
 			firstPaint = true;
-			MonAPI::Message::send(this->threadID, Event::CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 
@@ -331,7 +331,7 @@ public:
 				scene_count = FPS * 20;
 				setStageBackground(scene);
 			}
-			MonAPI::Message::send(this->threadID, Event::CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 };

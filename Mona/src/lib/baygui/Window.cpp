@@ -101,7 +101,7 @@ void Window::onStart()
 
 	// ウィンドウを生成する
 	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEWINDOW) != 0) {
+	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEWINDOW) != 0) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		return;
 	}
@@ -129,7 +129,7 @@ void Window::onStart()
 
 	// ウィンドウをアクティブにする
 	setFocused(true);
-	if (MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_ACTIVATEWINDOW, getHandle())) {
+	if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_ACTIVATEWINDOW, getHandle())) {
 		printf("%s:%d:ERROR: can not activate window!\n", __FILE__, __LINE__);
 	}
 }
@@ -144,7 +144,7 @@ void Window::onExit()
 	delete(this->__g);
 	
 	// ウィンドウ破棄要求
-	if (MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DISPOSEWINDOW, getHandle())) {
+	if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DISPOSEWINDOW, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 	
@@ -200,7 +200,7 @@ void Window::setLocation(int x, int y)
 	
 	if (this->_window == NULL) return;
 	
-	MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOVEWINDOW, 
+	MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOVEWINDOW, 
 		getHandle(), (unsigned int)x, (unsigned int)y);
 	
 	update();
@@ -285,7 +285,7 @@ void Window::update()
 	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
 		__g->drawImage(this->_buffer, INSETS_LEFT, INSETS_TOP);
 	}
-	MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle());
+	MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DRAWWINDOW, getHandle());
 }
 
 void Window::postEvent(Event *event)
@@ -304,9 +304,9 @@ void Window::postEvent(Event *event)
 				this->state = STATE_MOVING;
 				// キャプチャー要求とウィンドウ移動用オブジェクト作成要求
 				MessageInfo info;
-				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOUSECAPTURE, 
+				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOUSECAPTURE, 
 					getHandle(), 1);
-				MonAPI::Message::sendReceive(&info, this->guisvrID, MSG_GUISERVER_CREATEOVERLAP, 
+				MonAPI::Message::sendReceive(&info, getGuisvrID(), MSG_GUISERVER_CREATEOVERLAP, 
 					getX(), getY(), MAKE_DWORD(getWidth(), getHeight()));
 				this->overlap = info.arg2;
 				this->preX = px;
@@ -323,9 +323,9 @@ void Window::postEvent(Event *event)
 			if (this->state == STATE_MOVING) {
 				this->state = STATE_NORMAL;
 				// キャプチャー破棄要求とウィンドウ移動用オブジェクト破棄要求
-				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DISPOSEOVERLAP, 
+				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DISPOSEOVERLAP, 
 					this->overlap);
-				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOUSECAPTURE, 
+				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOUSECAPTURE, 
 					getHandle(), 0);
 				this->overlap = 0;
 				// ウィンドウを実際に移動させる
@@ -341,7 +341,7 @@ void Window::postEvent(Event *event)
 			// ウィンドウ移動
 			if (this->state == STATE_MOVING) {
 				// ウィンドウ移動用オブジェクトの移動
-				MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOVEOVERLAP, this->overlap,
 					MAKE_DWORD(me->getX() - this->preX, me->getY() - this->preY), 
 					MAKE_DWORD(getWidth(), getHeight()));
 			// ウィンドウ内移動

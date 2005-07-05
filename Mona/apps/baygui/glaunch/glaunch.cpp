@@ -448,7 +448,7 @@ public:
                 if (event->getType() == MouseEvent::MOUSE_RELEASED) {
                         // 視覚効果
                         if (this->type == DISKICON || this->type == TERMINALICON) {
-                                MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_EXPANSIONEFFECT,
+                                MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_EXPANSIONEFFECT,
                                         MAKE_DWORD(getX() + w/2, getY() + h/2),
                                         MAKE_DWORD(getX(), getY()),
                                         MAKE_DWORD(64, 64)

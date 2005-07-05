@@ -31,7 +31,7 @@ Image::Image(int width, int height)
 #if defined(MONA)
 	// GUIサーバー上にビットマップを生成する
 	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEBITMAP, 
+	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEBITMAP, 
 		width, height, Color::DEFAULT_BACKCOLOR))
 	{
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
@@ -66,7 +66,7 @@ Image::Image(char *path)
 #if defined(MONA)
 	// GUIサーバー上でビットマップをデコードする
 	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
+	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		return;
 	}
@@ -95,7 +95,7 @@ Image::~Image()
 {
 #if defined(MONA)
 	// ビットマップ破棄要求
-	if (MonAPI::Message::send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
+	if (MonAPI::Message::send(getGuisvrID(), MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 #endif
