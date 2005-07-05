@@ -1,17 +1,24 @@
 /*
-Copyright (c) 2004 Tino, bayside
-All rights reserved.
+Copyright (c) 2005 bayside
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Permission is hereby granted, free of charge, to any person 
+obtaining a copy of this software and associated documentation files 
+(the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, 
+publish, distribute, sublicense, and/or sell copies of the Software, 
+and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be 
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "baygui.h"
@@ -26,43 +33,66 @@ FontMetrics::FontMetrics()
 	this->fontStyle = Font::PLAIN;
 	if (defaultFontData != NULL) return;
 	
+#if defined(MONA)
 	// フォント取得メッセージを投げる
 	MessageInfo info;
 	MonAPI::Message::sendReceive(&info, this->guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
-	byte* font_data = MonAPI::MemoryMap::map(info.arg2);
+	unsigned char* font_data = NULL;
+	font_data = MonAPI::MemoryMap::map(info.arg2);
 	if (font_data == NULL) {
 		printf("%s:%d:ERROR: can not get font!\n", __FILE__, __LINE__);
 		exit(1);
+	}
+	defaultFontData = (unsigned char *)malloc(info.arg3);
+	memcpy(defaultFontData, font_data, info.arg3);
+	MonAPI::MemoryMap::unmap(info.arg2);
+#elif defined(SDL)
+	// フォントを開く
+	FILE* fp;
+	if((fp = fopen("./MONA12.MNF", "rb")) == NULL ) {
+		printf("%s:%s:%d:ERROR: can not get font!\n", __FILE__, __FUNCTION__, __LINE__);
+		fclose(fp);
+		exit(-1);
+	}
+	fseek(fp, 0, SEEK_END);
+	long len = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	// フォントを読む
+	this->defaultFontData = (unsigned char *)malloc(len);
+	if(fread(this->defaultFontData, 1, len, fp) <= 0) {
+		printf("%s:%s:%d:ERROR: can not get font!\n", __FILE__, __FUNCTION__, __LINE__);
+		fclose(fp);
+		exit(-1);
 	} else {
-		defaultFontData = (unsigned char *)malloc(info.arg3);
-		memcpy(defaultFontData, font_data, info.arg3);
-		MonAPI::MemoryMap::unmap(info.arg2);
-		
-		// モナーフォントの構造
-		// 3 - 0 フォント数
-		// ? - 3 フォント構造体 ( ? = フォント数 )
-		// 
-		// フォント構造体
-		// 3 - 0 UCS-4 (UTF-16)
-		//     4 幅 (fw)
-		//     5 高さ (fh)
-		// ? - 6 ビットパターン ( ? = (fw * fh + 7) / 8 )
-		
-		offsetListLength = inGetUInt16(&defaultFontData[0]);
-		
-		// 文字までのオフセット(byte)
-		offsetList = (int *)malloc(65536);
-		memset(offsetList, 0, 65536);
-		
-		// オフセットリストを作る
-		int pos = 4;
-		for (int i = 0; i < offsetListLength; i++) {
-			offsetList[inGetUInt16(&defaultFontData[pos])] = pos;
-			pos += 4;
-			int fw = defaultFontData[pos++];
-			int fh = defaultFontData[pos++];
-			pos += (int)((fw * fh + 7) / 8);
-		}
+		printf("%s:%s:%d: font loaded (%d bytes)\n", __FILE__, __FUNCTION__, __LINE__, (int)len);
+		fclose(fp);
+	}
+#endif
+	
+	// モナーフォントの構造
+	// 3 - 0 フォント数
+	// ? - 3 フォント構造体 ( ? = フォント数 )
+	// 
+	// フォント構造体
+	// 3 - 0 UCS-4 (UTF-16)
+	//     4 幅 (fw)
+	//     5 高さ (fh)
+	// ? - 6 ビットパターン ( ? = (fw * fh + 7) / 8 )
+	
+	offsetListLength = inGetUInt16(&defaultFontData[0]);
+	
+	// 文字までのオフセット(byte)
+	offsetList = (int *)malloc(65536);
+	memset(offsetList, 0, 65536 * sizeof(int));
+	
+	// オフセットリストを作る
+	int pos = 4;
+	for (int i = 0; i < offsetListLength; i++) {
+		offsetList[inGetUInt16(&defaultFontData[pos])] = pos;
+		pos += 4;
+		int fw = defaultFontData[pos++];
+		int fh = defaultFontData[pos++];
+		pos += (int)((fw * fh + 7) / 8);
 	}
 }
 
