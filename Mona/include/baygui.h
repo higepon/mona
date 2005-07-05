@@ -1,28 +1,24 @@
 /*
-Copyright (c) 2004 bayside
-All rights reserved.
+Copyright (c) 2005 bayside
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
+Permission is hereby granted, free of charge, to any person 
+obtaining a copy of this software and associated documentation files 
+(the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, 
+publish, distribute, sublicense, and/or sell copies of the Software, 
+and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The above copyright notice and this permission notice shall be 
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #if !defined(_BAYGUI_H_INCLUDED_)
@@ -32,26 +28,57 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // OS 定義部分
 // ==================================================
 #define MONA  1
-//#define PEKOE 1
+//#define SDL 1
 //#define OSASK 1
 
 // ==================================================
 // OS 依存ヘッダファイル
 // ==================================================
-#if defined(PEKOE)
-	#include "baygui.h"
-	#include "stdlib.h"
-	#include "stdint.h"
-	#include "stdio.h"
-	#include "string.h"
-	#include "fcntl.h"
-	#include "rpcss.h"
-	#include "sys/gbc.h"
-#elif defined(MONA)
+#if defined(MONA)
 	#include <monapi.h>
 	#include <monapi/messages.h>
 	#include <monalibc.h>
 	#include <gui/messages.h>
+#elif defined(SDL)
+	#include <stdlib.h>
+	#include <stdio.h>
+	#include <stdarg.h>
+	#include <string.h>
+	#include <SDL.h>
+	#undef   WIN32
+	#undef   main
+
+	// スクリーンオブジェクト
+	extern SDL_Surface* screen;
+
+	// GUIサーバー内ウィンドウスタイル
+	enum
+	{
+		WINDOWFLAGS_NOBORDER = 1,
+		WINDOWFLAGS_MODAL = 2,
+		WINDOWFLAGS_NOACTIVATE = 4,
+		WINDOWFLAGS_TOPMOST = 8,
+		WINDOWFLAGS_BOTTOMMOST = 16
+	};
+
+	// GUIサーバー内ビットマップ構造体
+	typedef struct {
+		unsigned int Handle;
+		int Width, Height;
+		unsigned int* Data;
+	} guiserver_bitmap;
+
+	// GUIサーバー内ウィンドウ（部品）構造体
+	typedef struct {
+		unsigned int Handle, Parent, Owner, ThreadID;
+		int X, Y, Width, Height, OffsetX, OffsetY, Opacity;
+		bool Visible, Focused;
+		unsigned int Flags, TransparencyKey;
+		unsigned int BufferHandle, FormBufferHandle;
+		guiserver_bitmap* __internal1;
+		bool __internal2;
+		char __reserved[64];
+	} guiserver_window;
 #else
 	// とりあえずコンパイルが通るだけ
 	#define NULL 0
@@ -85,8 +112,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "baygui/Font.h"
 #include "baygui/Color.h"
 #include "baygui/Object.h"
+#include "baygui/Pointer.h"
 #include "baygui/String.h"
 #include "baygui/LinkedList.h"
+#include "baygui/Vector.h"
+#include "baygui/Hashtable.h"
 #include "baygui/Event.h"
 #include "baygui/KeyEvent.h"
 #include "baygui/MouseEvent.h"
