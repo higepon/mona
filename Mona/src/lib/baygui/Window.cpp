@@ -66,6 +66,10 @@ Window::Window()
 	this->overlap = 0;
 	this->isRunning = false;
 	this->timerID = 0;
+	this->_g = NULL;
+	this->__g = NULL;
+	this->_buffer = NULL;
+	this->__buffer = NULL;
 	
 	// キーイベント
 	this->keyEvent.setType(KeyEvent::KEY_PRESSED);
@@ -90,7 +94,7 @@ Window::~Window() {
 
 void Window::onStart()
 {
-	if (this->_buffer != NULL) return;
+	//if (this->_buffer != NULL) return;
 
 	// 描画バッファー、描画オブジェクトの生成
 	this->_buffer = new Image
@@ -219,7 +223,7 @@ void Window::setTimer(int duration)
 
 void Window::repaint()
 {
-	if (this->_buffer == NULL) return;
+	//if (this->_buffer == NULL) return;
 	
 	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
 		// 矩形ウィンドウ

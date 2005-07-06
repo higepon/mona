@@ -82,7 +82,7 @@ FontMetrics::FontMetrics()
 	offsetListLength = inGetUInt16(&defaultFontData[0]);
 	
 	// 文字までのオフセット(byte)
-	offsetList = (int *)malloc(65536);
+	offsetList = (int *)malloc(65536 * sizeof(int));
 	memset(offsetList, 0, 65536 * sizeof(int));
 	
 	// オフセットリストを作る
