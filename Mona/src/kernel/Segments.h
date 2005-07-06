@@ -56,6 +56,19 @@ class SharedMemoryObject {
         physicalPages_[physicalIndex] = address;
     }
 
+    inline virtual dword getPageFlag(int physicalIndex) const {
+
+        if (physicalIndex >= physicalPageCount_) return 0;
+        return flags_[physicalIndex];
+    }
+
+    inline virtual void setPageFlag(int physicalIndex, dword flag) {
+
+        if (physicalIndex >= physicalPageCount_) return;
+
+        flags_[physicalIndex] = flag;
+    }
+
   public:
     static void setup();
     static bool open(dword id, dword size);
@@ -63,7 +76,11 @@ class SharedMemoryObject {
     static bool attach(dword id, struct Process* process, LinearAddress address);
     static bool detach(dword id, struct Process* process);
     static SharedMemoryObject* find(dword id);
-    static const int UN_MAPPED = -1;
+    enum
+    {
+        UN_MAPPED = -1,
+        FLAG_NOT_SHARED = 0x01,
+    };
 
   private:
     dword id_;
@@ -71,6 +88,7 @@ class SharedMemoryObject {
     int attachedCount_;
     int physicalPageCount_;
     int* physicalPages_;
+    dword* flags_;
 };
 
 class Segment {
@@ -133,7 +151,7 @@ class SharedMemorySegment : public Segment {
 
   public:
     SharedMemorySegment();
-    SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject);
+    SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject, bool writable = true);
     virtual ~SharedMemorySegment();
 
   public:
@@ -147,6 +165,7 @@ class SharedMemorySegment : public Segment {
 
   protected:
     SharedMemoryObject* sharedMemoryObject_;
+    bool writable_;
 };
 
 #endif

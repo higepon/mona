@@ -146,10 +146,11 @@ bool HeapSegment::faultHandler(LinearAddress address, dword error) {
     \author HigePon
     \date   create:2003/10/25 update:
 */
-SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject)
+SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, SharedMemoryObject* sharedMemoryObject, bool writable /* = true */)
 {
     start_ = start;
     size_  = size;
+    writable_ = true;
     sharedMemoryObject_ = sharedMemoryObject;
 }
 
@@ -212,15 +213,20 @@ bool SharedMemorySegment::faultHandler(LinearAddress address, dword error)
     dword physicalIndex = tableIndex1 + directoryIndex1 * 1024 - tableIndex2 - directoryIndex2 * 1024;
 
     int mappedAddress   = sharedMemoryObject_->isMapped(physicalIndex);
+    dword pageFlag = sharedMemoryObject_->getPageFlag(physicalIndex);
     Process* current = g_currentThread->process;
 
-    if (mappedAddress == SharedMemoryObject::UN_MAPPED)
+    if (pageFlag & SharedMemoryObject::FLAG_NOT_SHARED)
     {
         mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, true, true);
+    }
+    else if (mappedAddress == SharedMemoryObject::UN_MAPPED)
+    {
+        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, true, writable_, true);
         sharedMemoryObject_->map(physicalIndex, mapResult == -1 ? SharedMemoryObject::UN_MAPPED : mapResult);
     } else
     {
-        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, true, true);
+        mapResult = g_page_manager->allocatePhysicalPage(current->getPageDirectory(), address, mappedAddress, true, writable_, true);
     }
     return (mapResult != -1);
 }
@@ -305,6 +311,10 @@ void SharedMemoryObject::initilize(dword id, dword size)
     physicalPages_     = new int[physicalPageCount_];
     checkMemoryAllocate(physicalPages_, "SharedMemoryObject memory allocate physicalPages");
     memset(physicalPages_, UN_MAPPED, sizeof(int) * physicalPageCount_);
+
+    flags_ = new dword[physicalPageCount_];
+    checkMemoryAllocate(flags_, "SharedMemoryObject memory allocate flags");
+    memset(flags_, 0, sizeof(dword) * physicalPageCount_);
 
     size_ = size;
     id_   = id;
