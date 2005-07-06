@@ -1,3 +1,9 @@
+2004-07-06  bayside
+
+        * include/baygui/*.h: SDL用コード挿入開始
+
+        * src/lib/baygui/*.cpp: SDL用コード挿入開始＆Windowインスタンス変数のゼロクリア
+
 2005-07-04  higepon  <higepon@users.sourceforge.jp>
 
         * nikqさんの MONAFUN.JPG(壁紙)を採用。
