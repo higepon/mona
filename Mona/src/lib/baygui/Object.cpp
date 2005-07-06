@@ -32,10 +32,12 @@ Object::Object()
 	// GUIサーバーを探す
 	this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
 	
-	if (this->guisvrID == THREAD_UNKNOWN || this->guisvrID == THREAD_UNKNOWN) {
+	if (this->threadID == THREAD_UNKNOWN || this->guisvrID == THREAD_UNKNOWN) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		exit(1);
 	}
+#else
+	this->threadID = this->guisvrID = 0;
 #endif
 }
 

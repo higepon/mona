@@ -23,10 +23,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-#ifdef SDL
-SDL_Surface* screen;
-#endif
-
 /** É_É~Å[ */
 #ifdef MONA
 int MonaMain(List<char*>* pekoe)
@@ -34,5 +30,10 @@ int MonaMain(List<char*>* pekoe)
 int main(int argc, char** argv)
 #endif
 {
+#ifdef SDL
+	Window* w = new Window();
+	w->setRect(10,10,320,240);
+	w->run();
+#endif
 	return 0;
 }

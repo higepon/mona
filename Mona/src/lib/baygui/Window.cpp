@@ -23,6 +23,22 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
+#ifdef SDL
+/** スクリーンオブジェクト */
+SDL_Surface* screen;
+
+/** タイマーID */
+static SDL_TimerID globalTimerID;
+
+/** タイマーコールバック関数 */
+static unsigned int sdl_timer_callback(unsigned int interval, void* param) {
+	SDL_Event event;
+	SDL_RemoveTimer(globalTimerID);
+	event.type = SDL_USEREVENT;
+	return SDL_PushEvent(&event);
+}
+#endif
+
 /** 閉じるボタン (パレット) */
 static unsigned int close_palette[] = {
 	0xff1c1a1c,
@@ -139,6 +155,8 @@ void Window::onStart()
 	if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_ACTIVATEWINDOW, getHandle())) {
 		printf("%s:%d:ERROR: can not activate window!\n", __FILE__, __LINE__);
 	}
+#else
+	setFocused(true);
 #endif
 }
 
@@ -221,9 +239,12 @@ void Window::setTimer(int duration)
 	// 非活性のときはタイマーを発生させない
 	if (getEnabled() == false) return;
 	
-#ifdef MONA
+#if defined(MONA)
 	if (duration < 10) duration = 10;
 	timerID = set_timer(duration);
+#elif defined(SDL)
+	if (duration <= 0) duration = 1;
+	globalTimerID = SDL_AddTimer(duration, sdl_timer_callback, (void*)1);
 #endif
 }
 
@@ -304,6 +325,31 @@ void Window::update()
 	MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DRAWWINDOW, getHandle());
 #else
 	__g->drawImage(this->_buffer, INSETS_LEFT, INSETS_TOP);
+	#ifdef SDL
+	{
+		SDL_Surface *bitmap;
+		int x = getX();
+		int y = getY();
+		int w = getWidth();
+		int h = getHeight();
+		
+		/* bitmapを作成 */
+		// flags, w, h, bpp, pit, rmask, gmask, bmask, amask
+		bitmap = SDL_CreateRGBSurfaceFrom((void *)this->__buffer->getSource(), w, h, 32, w * 4, 0xff0000, 0xff00, 0xff, 0x0);
+		/* 透過色を設定する */
+		//SDL_SetColorKey(bitmap, SDL_SRCCOLORKEY, SDL_MapRGB(bitmap->format, 255, 255, 255));
+		/* 矩形を作る */
+		SDL_Rect rect;
+		rect.x = x;
+		rect.y = y;
+		/* screenにbitmapを描画 */
+		SDL_BlitSurface(bitmap, NULL, screen, &rect);
+		/* screenの全領域を更新 */
+		SDL_UpdateRect(screen, x, y, w, h);
+		/* bitmapを解放する */
+		SDL_FreeSurface(bitmap);
+	}
+	#endif
 #endif
 }
 
@@ -664,8 +710,7 @@ void Window::run()
 					//	this, MouseEvent::MOUSE_MOVED, event.button.x, event.button.y, 1);
 				}
 			} else if (event.type == SDL_USEREVENT) {
-				//_P<TimerEvent> e = new TimerEvent(this, TimerEvent::TIMER_FIRED);
-				//processTimerEvent(e.get());
+				postEvent(&this->timerEvent);
 			}
 		}
 	}

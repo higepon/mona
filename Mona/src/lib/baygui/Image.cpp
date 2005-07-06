@@ -48,7 +48,7 @@ Image::Image(int width, int height)
 		return;
 	}
 #else
-	this->data = new unsigned int [width * height];
+	this->source = new unsigned int [width * height];
 #endif
 	
 	this->width = width;
@@ -93,7 +93,7 @@ Image::~Image()
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 #else
-	delete(this->data);
+	delete(this->source);
 #endif
 }
 
@@ -105,7 +105,7 @@ unsigned int Image::getPixel(int x, int y)
 	#ifdef MONA
 		return this->bitmap->Data[x + this->width * y];
 	#else
-		return this->data[x + this->width * y];
+		return this->source[x + this->width * y];
 	#endif
 	}
 }
@@ -116,7 +116,7 @@ void Image::setPixel(int x, int y, unsigned int color)
 	#ifdef MONA
 		this->bitmap->Data[x + this->width * y] = color;
 	#else
-		this->data[x + this->width * y] = color;
+		this->source[x + this->width * y] = color;
 	#endif
 	}
 }

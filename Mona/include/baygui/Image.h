@@ -33,14 +33,12 @@ private:
 	int width;
 	/** 高さ */
 	int height;
-#ifndef MONA
-	unsigned int* data;
-#endif
-	
 #ifdef MONA
-protected:
 	/** GUIサーバー上のビットマップオブジェクト */
 	guiserver_bitmap* bitmap;
+#else
+	/** RGB24bitデータ */
+	unsigned int* source;
 #endif
 
 public:
@@ -75,6 +73,13 @@ public:
 	
 	/** 高さを得る */
 	inline int getHeight() { return this->height; }
+	
+	/** RGB24bitデータを得る */
+#ifdef MONA
+	inline unsigned int* getSource() { return this->bitmap->Data; }
+#else
+	inline unsigned int* getSource() { return this->source; }
+#endif
 	
 	/** 指定された点の色を得る */
 	unsigned int getPixel(int x, int y);
