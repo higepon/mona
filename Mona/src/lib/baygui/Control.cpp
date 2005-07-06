@@ -27,7 +27,8 @@ Control::Control()
 {
 	this->enabled = true;
 	this->focused = false;
-	this->x = this->y = this->height = this->width = 0;
+	this->x = this->y = 0;
+	this->height = this->width = 100;
 	this->fontStyle = Font::PLAIN;
 	this->_buffer = NULL;
 	this->_g = NULL;

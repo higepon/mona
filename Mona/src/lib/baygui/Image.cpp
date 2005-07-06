@@ -26,9 +26,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Image::Image(int width, int height)
 {
 	this->width = this->height = 0;
-	this->bitmap = NULL;
 	
 #if defined(MONA)
+	this->bitmap = NULL;
+	
 	// GUIサーバー上にビットマップを生成する
 	MessageInfo msg;
 	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEBITMAP, 
@@ -46,12 +47,8 @@ Image::Image(int width, int height)
 		printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
 		return;
 	}
-#elif defined(SDL)
-	this->bitmap = (guiserver_bitmap*)malloc(sizeof(guiserver_bitmap));
-	this->bitmap->Data = (unsigned int*)malloc(width * height * sizeof(int));
-	this->bitmap->Width = width;
-	this->bitmap->Height = height;
-	this->bitmap->Handle = 0;
+#else
+	this->data = new unsigned int [width * height];
 #endif
 	
 	this->width = width;
@@ -61,9 +58,10 @@ Image::Image(int width, int height)
 Image::Image(char *path)
 {
 	this->width = this->height = 0;
-	this->bitmap = NULL;
 	
 #if defined(MONA)
+	this->bitmap = NULL;
+	
 	// GUIサーバー上でビットマップをデコードする
 	MessageInfo msg;
 	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
@@ -79,16 +77,12 @@ Image::Image(char *path)
 		printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
 		return;
 	}
-#elif defined(SDL)
-	this->bitmap = (guiserver_bitmap*)malloc(sizeof(guiserver_bitmap));
-	this->bitmap->Data = (unsigned int*)malloc(width * height * sizeof(int));
-	this->bitmap->Width = width;
-	this->bitmap->Height = height;
-	this->bitmap->Handle = 0;
-#endif
 	
 	this->width = this->bitmap->Width;
 	this->height = this->bitmap->Height;
+#else
+	// do nothing
+#endif
 }
 
 Image::~Image()
@@ -98,6 +92,8 @@ Image::~Image()
 	if (MonAPI::Message::send(getGuisvrID(), MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
+#else
+	delete(this->data);
 #endif
 }
 
@@ -106,13 +102,21 @@ unsigned int Image::getPixel(int x, int y)
 	if (x < 0 || this->width <= x || y < 0 || this->height <= y) {
 		return 0;
 	} else {
-		return bitmap->Data[x + this->width * y];
+	#ifdef MONA
+		return this->bitmap->Data[x + this->width * y];
+	#else
+		return this->data[x + this->width * y];
+	#endif
 	}
 }
 
 void Image::setPixel(int x, int y, unsigned int color)
 {
 	if (0 <= x && x < this->width && 0 <= y && y < this->height) {
-		bitmap->Data[x + this->width * y] = color;
+	#ifdef MONA
+		this->bitmap->Data[x + this->width * y] = color;
+	#else
+		this->data[x + this->width * y] = color;
+	#endif
 	}
 }

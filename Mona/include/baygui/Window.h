@@ -115,7 +115,11 @@ public:
 	virtual void onExit();
 
 	/** ハンドルを得る */
-	unsigned int getHandle();
+#ifdef MONA
+	inline unsigned int getHandle() { return (this->_window != NULL) ? this->_window->Handle : 0; }
+#else
+	inline unsigned int getHandle() { return 0; }
+#endif
 	
 	/** 描画オブジェクトを得る */
 	virtual Graphics *getGraphics();

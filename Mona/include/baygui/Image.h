@@ -33,10 +33,15 @@ private:
 	int width;
 	/** 高さ */
 	int height;
-
+#ifndef MONA
+	unsigned int* data;
+#endif
+	
+#ifdef MONA
 protected:
 	/** GUIサーバー上のビットマップオブジェクト */
 	guiserver_bitmap* bitmap;
+#endif
 
 public:
 	Image();
@@ -59,7 +64,11 @@ public:
 	virtual ~Image();
 	
 	/** ハンドルを得る */
+#ifdef MONA
 	inline unsigned int getHandle() { return this->bitmap->Handle; }
+#else
+	inline unsigned int getHandle() { return 0; }
+#endif
 	
 	/** 幅を得る */
 	inline int getWidth() { return this->width; }
