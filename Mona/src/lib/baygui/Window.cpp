@@ -328,6 +328,7 @@ void Window::update()
 	#ifdef SDL
 	{
 		SDL_Surface *bitmap;
+		
 		int x = getX();
 		int y = getY();
 		int w = getWidth();
@@ -589,17 +590,20 @@ void Window::run()
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) exit(-1);
 	
 	/* ウィンドウタイトル設定 */
-	SDL_WM_SetCaption("BayGUI", "");
+	SDL_WM_SetCaption("BayGUI for SDL", "");
 	
 	/* キーコード設定 */
 	SDL_EnableUNICODE(1);
 	
 	/* ビデオモード設定 */
-	screen = SDL_SetVideoMode(640, 480, 24, SDL_SWSURFACE);
+	screen = SDL_SetVideoMode(800, 600, 24, SDL_SWSURFACE);
 	if (!screen) exit(-1);
 	
 	/* 背景を塗りつぶす */
-	SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));
+	//SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));
+	
+	/* 壁紙表示 */
+	SDL_BlitSurface(SDL_LoadBMP("MONAWALL.BMP"), NULL, screen, NULL);
 	
 	/* 表示開始 */
 	onStart();

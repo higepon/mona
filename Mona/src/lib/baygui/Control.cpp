@@ -25,6 +25,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Control::Control()
 {
+	this->parent = NULL;
 	this->enabled = true;
 	this->focused = false;
 	this->x = this->y = 0;

@@ -49,6 +49,11 @@ Image::Image(int width, int height)
 	}
 #else
 	this->source = new unsigned int [width * height];
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			this->source[j + i * width] = Color::DEFAULT_BACKCOLOR;
+		}
+	}
 #endif
 	
 	this->width = width;
