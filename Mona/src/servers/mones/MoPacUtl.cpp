@@ -159,7 +159,7 @@ word MoPacUtl::calcCheckSum(dword *data,int size)
 
 
     sum.u64=0;
-    for(;(dword)size>=sizeof(dword);(dword)size-=sizeof(dword))
+    for(;(dword)size>=sizeof(dword);size-=sizeof(dword))
         sum.u64+=*data++;
     if(size>0)sum.u64+=*data&((1<<(size*8))-1);
 

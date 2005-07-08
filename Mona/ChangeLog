@@ -1,3 +1,7 @@
+2005-07-08  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/servers/mones/MoPacUtl.cpp : gcc3.4系で、ISO C++ forbids cast ..のエラーでコンパイルできない不具合を修正
+
 2005-07-06  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/Segments.cpp (faultHandler): SharedMemoryObjectに共有しないページを含められるように変更。
@@ -88,7 +92,7 @@
 
 2005-05-24  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更aa
+     * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
 
      * src/servers/mones/AbstractMonic.cpp : フレーム処理待ちリスト
 
