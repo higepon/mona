@@ -15,13 +15,66 @@
 #define _MONA_LIB_STDIO_
 
 #include <sys/types.h>
+#include <monalibc/stdarg.h>
+#include <monapi/cmemoryinfo.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#ifndef EOF
+#define EOF -1
+#endif
+
+/*
+typedef struct{
+  unsigned char *fpi;   // file position indicator
+  unsigned char *bptr;  // buffer pointer
+  unsigned int  flags;  //
+  signed   int  blevel; // buffer level
+  signed   int  bsize;  // buffer size
+  signed   char fd;     // file descriptor
+  unsigned char hold;   // 
+  unsigned int  istemp; // is temporary file
+  signed   int  token;  // 
+} FILE;*/
+
+typedef struct
+{
+	const char *path;
+	const char *mode;
+	monapi_cmemoryinfo *data;
+	int pos, error;
+} FILE;
+
+//#define stdout NULL
+//#define stderr NULL
+
 int sprintf(char *s, const char *format, ...);
 int sscanf(const char *s, const char *format, ...);
+
+FILE *fopen(const char *path, const char *mode);
+int fclose(FILE *fp);
+int fgetc(FILE *fp);
+char *fgets(char *buf, int n, FILE *fp);
+size_t fread(void *buf, size_t size, size_t count, FILE *fp);
+int fseek(FILE *fp, long offset, int whence);
+int fscanf(FILE *fp, const char *format, ...);
+int ferror(FILE *fp);
+int feof(FILE *fp);
+int fflush(FILE *fp);
+
+int putchar(int ch);
+int putc(int ch, FILE *fp);
+
+int vsprintf(char *s, const char *format, va_list arg);
+int vsnprintf(char *str, size_t size, const char *format, va_list ap);
+int vsscanf(const char *s, const char *format, va_list arg);
+int vfprintf(FILE *stream, const char *format, va_list ap);
+
+#define perror(err) printf(err)
+#define fprintf(n, ...) printf(__VA_ARGS__)
+//#define byte hoge_albyter	//for src/mesa/shader/grammar_mesa.h
 
 #ifdef __cplusplus
 }

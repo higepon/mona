@@ -208,3 +208,55 @@ double ceil(double x){
 
   return -floor(-x); /* -[-x] */
 }
+
+/* 
+typedef union
+{
+	double d;
+	struct
+	{
+		long low;
+		long hi;
+	};
+	struct
+	{
+		long low:32;
+		int hi:20;
+		signed int exponent:11;
+		int sign:1;
+	};
+} doublebit; */
+
+/*
+double fabs(double x)
+{
+	return ((doublebit)x).hi & 0x7fffffffLL;
+}*/
+
+// Damepo implementation.
+/*double frexp(double x, int *exp)
+{
+	double n = ((doublebit)x).low + (double)((doublebit)x).hi*(double)0xffffffff;
+
+	*exp = ((doublebit)x).exponent;
+
+	return (double)n;
+}*/
+
+double frexp(double x, int *exp){
+
+  int *t = (int *)&x;
+  if(x == 0){
+    *exp = 0;
+    return x;
+  }
+  *exp = ((t[3] >> 4) & 0x7ff) - 0x3fe;
+  t[3] = (t[3] & 0x800f) + 0x3fe0;
+  return x;
+}
+
+double fmod(double x, double y)
+{
+	double n = (double)(int)(x / y);
+	return x - n * y;
+}
