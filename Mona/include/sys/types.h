@@ -268,6 +268,8 @@ enum
 #define SYSTEM_CALL_KILL_TIMER               0x0041
 #define SYSTEM_CALL_HAS_IRQ_RECEIVER         0x0042
 #define SYSTEM_CALL_CHANGE_BASE_PRIORITY     0x0043
+#define SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE 0x0044
+#define SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED 0x0045
 
 
 #define SYSCALL_0(syscall_number, result)                                         \

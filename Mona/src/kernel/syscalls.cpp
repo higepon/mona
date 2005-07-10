@@ -596,6 +596,14 @@ void syscall_entrance()
     case SYSTEM_CALL_CHANGE_BASE_PRIORITY:
         g_scheduler->ChangeBasePriority(g_currentThread->thread, info->esi);
 
+    case SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE:
+	g_currentThread->process->getDllSegment()->setWritable(true);
+	break;
+
+    case SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED:
+	g_dllSharedObject->setPageFlag(info->esi, SharedMemoryObject::FLAG_NOT_SHARED);
+	break;
+
     default:
         g_console->printf("syscall:default");
         break;

@@ -395,6 +395,13 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     /* shared list */
     shared_ = new HList<SharedMemorySegment*>();
 
+    /* dll shared segment */
+    SharedMemorySegment* segment;
+    /* read only segment */
+    dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
+    this->getSharedList()->add(dllsegment_);
+    g_dllSharedObject->setAttachedCount(g_dllSharedObject->getAttachedCount() + 1);
+
     /* message list */
     messageList_ = new HList<MessageInfo*>();
 

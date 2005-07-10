@@ -1,3 +1,10 @@
+2005-07-10  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/monapi/syscall.cpp (syscall_set_dll_segment_writable): dllセグメントをそのプロセスだけ書き込み可能にするシステムコール。
+                                     (syscall_set_dll_segment_notshared): dllセグメントの特定ページを共有ではなく、プロセスごとに持つようにする。
+
+        * src/kernel/PageManager.cpp (pageFaultHandler): SharedMemorySegmentのページ例外は、不在ページのときのみ実行されるように変更。
+
 2005-07-09  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibcにtmpmonalibc取り込み第一弾

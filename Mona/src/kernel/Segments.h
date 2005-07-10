@@ -160,6 +160,10 @@ class SharedMemorySegment : public Segment {
         return sharedMemoryObject_->getId();
     }
 
+    inline virtual void setWritable(bool writable) {
+        writable_ = writable;
+    }
+
   public:
     static SharedMemorySegment* find(Process* process, dword id);
 

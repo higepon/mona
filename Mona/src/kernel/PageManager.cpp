@@ -660,15 +660,13 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
 {
     Process* current     = g_currentThread->process;
 
-//    logprintf("%s:%s:%d : address=%x\n", __func__, __FILE__, __LINE__, address);
-
     /* search shared memory segment */
     List<SharedMemorySegment*>* list = current->getSharedList();
     for (int i = 0; i < list->size(); i++)
     {
         SharedMemorySegment* segment = list->get(i);
 
-        if (segment->inRange(address))
+        if (segment->inRange(address) && (error & 0x1) == 0)
         {
             return segment->faultHandler(address, FAULT_NOT_EXIST);
         }

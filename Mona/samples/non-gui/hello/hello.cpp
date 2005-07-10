@@ -6,7 +6,53 @@
 
 using namespace MonAPI;
 
-#define MAIN_12
+#define MAIN_13
+
+#ifdef MAIN_13
+
+int MonaMain(List<char*>* pekoe)
+{
+    dword* p = (dword*)0x30000000;
+
+// システムコールを呼んだプロセスは書き込める。
+#if 0
+    syscall_set_dll_segment_writable();
+    printf("read %x\n", *p);
+
+    printf("try to write\n");
+
+    *p = 0x12345678;
+    printf("write ok?");
+    for (;;);
+#endif
+
+// 書き込みは不可
+#if 0
+    printf("read %x\n", *p);
+
+    printf("try to write\n");
+
+    *p = 0x12345678;
+    printf("write ok?");
+#endif
+
+// 0ページ目は各プロセスごとにメモリを持つ。
+#if 1
+    syscall_set_dll_segment_notshared(0);
+    printf("read %x\n", *p);
+
+    printf("try to write\n");
+
+    *p = 0x12345678;
+    printf("write ok?");
+    for (;;);
+#endif
+
+    return 0;
+}
+
+#endif
+
 
 #ifdef MAIN_12
 
@@ -16,6 +62,7 @@ int sub()
     sub();
     return hoge[2047];
 }
+
 int MonaMain(List<char*>* pekoe)
 {
     sub();

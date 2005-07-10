@@ -76,6 +76,8 @@ GLOBAL Thread* g_idleThread;
 
 GLOBAL dword g_mutexShared;
 
+GLOBAL SharedMemoryObject* g_dllSharedObject;
+
 #ifdef USE_BOOTMGR
 GLOBAL BootManager* g_bootManager;
 #endif

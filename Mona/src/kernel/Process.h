@@ -193,6 +193,10 @@ class Process
         return threadList_;
     }
 
+    inline SharedMemorySegment* getDllSegment() const {
+        return dllsegment_;
+    }
+
     static const LinearAddress STACK_START = 0xF0000000;
     static const dword STACK_SIZE          = 0x400000;
 
@@ -204,6 +208,7 @@ class Process
     List<Thread*>* threadList_;
     List<char*>* arguments_;
     class HeapSegment* heap_;
+    class SharedMemorySegment* dllsegment_;
     List<SharedMemorySegment*>* shared_;
     List<MessageInfo*>* messageList_;
     bool isUserMode_;

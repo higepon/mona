@@ -615,3 +615,18 @@ int syscall_change_base_priority(dword priority)
     SYSCALL_1(SYSTEM_CALL_CHANGE_BASE_PRIORITY, result, priority);
     return result;
 }
+
+int syscall_set_dll_segment_writable()
+{
+    dword result;
+    SYSCALL_0(SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE, result);
+    return result;
+}
+
+int syscall_set_dll_segment_notshared(int index)
+{
+    dword result;
+    SYSCALL_1(SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED, result, index);
+    return result;
+}
+

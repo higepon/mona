@@ -150,7 +150,7 @@ SharedMemorySegment::SharedMemorySegment(LinearAddress start, dword size, Shared
 {
     start_ = start;
     size_  = size;
-    writable_ = true;
+    writable_ = writable;
     sharedMemoryObject_ = sharedMemoryObject;
 }
 
@@ -347,7 +347,10 @@ SharedMemoryObject::~SharedMemoryObject()
 void SharedMemoryObject::setup()
 {
     g_sharedMemoryObjectList = new HList<SharedMemoryObject*>();
-}
+
+    SharedMemoryObject::open(0x7000, 256 * 1024 * 1024);
+    g_dllSharedObject = SharedMemoryObject::find(0x7000);
+;}
 
 /*!
     \brief find sharedMemoryObject that has the ID
