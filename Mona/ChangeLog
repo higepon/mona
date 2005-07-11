@@ -1,3 +1,13 @@
+2004-07-11  bayside
+
+        * include/baygui.h: インターフェース変更＆Mona版が起動しない不具合修正
+
+        * include/baygui/*.h: インターフェース変更＆Mona版が起動しない不具合修正
+
+        * src/lib/baygui/*.cpp: インターフェース変更＆Mona版が起動しない不具合修正
+
+        * apps/baygui/*/*: インターフェース変更＆Mona版が起動しない不具合修正
+
 2005-07-10  higepon  <higepon@users.sourceforge.jp>
 
         * src/lib/monapi/syscall.cpp (syscall_set_dll_segment_writable): dllセグメントをそのプロセスだけ書き込み可能にするシステムコール。
