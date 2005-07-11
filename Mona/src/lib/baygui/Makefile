@@ -13,7 +13,7 @@ SOURCES = \
 	Button.cpp \
 	Checkbox.cpp \
 	CheckboxGroup.cpp \
-	Control.cpp \
+	Component.cpp \
 	Container.cpp \
 	FontMetrics.cpp \
 	Graphics.cpp \
