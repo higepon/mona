@@ -32,7 +32,7 @@ TextField::TextField()
 	memset(text, 0, MAX_TEXT_LEN);
 	this->textEvent.setType(Event::TEXT_CHANGED);
 	this->textEvent.setSource(this);
-	setBackground(Color::WHITE);
+	setBackground(Color::white);
 }
 
 TextField::~TextField()
@@ -63,7 +63,7 @@ void TextField::deleteCharacter()
 	textLen--;
 }
 
-void TextField::setText(char *text)
+void TextField::setText(char* text)
 {
 	strcpy(this->text, text);
 	this->textLen = strlen(text);
@@ -71,7 +71,7 @@ void TextField::setText(char *text)
 	repaint();
 }
 
-void TextField::onPaint(Graphics *g)
+void TextField::onPaint(Graphics* g)
 {
 	int w = getWidth(), h = getHeight();
 
@@ -95,7 +95,7 @@ void TextField::onPaint(Graphics *g)
 	if (getEnabled() == true) {
 		g->setColor(getForeground());
 	} else {
-		g->setColor(Color::GRAY);
+		g->setColor(Color::gray);
 	}
 	g->drawText(text, this->offx, (h - fh) / 2);
 
@@ -113,7 +113,7 @@ void TextField::onPaint(Graphics *g)
 	//g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
 }
 
-void TextField::onEvent(Event *event)
+void TextField::onEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;

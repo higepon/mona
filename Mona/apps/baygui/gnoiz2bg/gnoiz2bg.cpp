@@ -286,7 +286,7 @@ private:
 public:
 	/** コンストラクタ */
 	GNoiz2bg() {
-		setRect((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
+		setBounds((800 - SCREEN_W - 12) / 2, (600 - SCREEN_H - 28) / 2, SCREEN_W + 12, SCREEN_H + 28);
 		setTitle("noiz2bg for GUI");
 		this->pbuf = (unsigned char *)malloc(SCREEN_W * SCREEN_H * 4);
 		initBackground();

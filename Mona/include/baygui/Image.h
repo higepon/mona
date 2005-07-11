@@ -24,73 +24,75 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_IMAGE_H_INCLUDED_)
 #define _IMAGE_H_INCLUDED_
 
-/**
- イメージクラス
-*/
-class Image : public Object {
-private:
-	/** 幅 */
-	int width;
-	/** 高さ */
-	int height;
-#ifdef MONA
-	/** GUIサーバー上のビットマップオブジェクト */
-	guiserver_bitmap* bitmap;
-#else
-	/** RGB24bitデータ */
-	unsigned int* source;
-#endif
-
-public:
-	Image();
-	
+namespace baygui {
 	/**
-	 コンストラクタ
-	 @param width 幅
-	 @param height 高さ
-	 */
-	Image(int width, int height);
-
-	/**
-	 コンストラクタ.
-	 デコードはサーバー側で行っている。
-	 @param path ファイル名
-	 */
-	Image(char *path);
-	
-	/** デストラクタ */
-	virtual ~Image();
-	
-	/** ハンドルを得る */
-#ifdef MONA
-	inline unsigned int getHandle() { return this->bitmap->Handle; }
-#else
-	inline unsigned int getHandle() { return 0; }
-#endif
-	
-	/** 幅を得る */
-	inline int getWidth() { return this->width; }
-	
-	/** 高さを得る */
-	inline int getHeight() { return this->height; }
-	
-	/** RGB24bitデータを得る */
-#ifdef MONA
-	inline unsigned int* getSource() { return this->bitmap->Data; }
-#else
-	inline unsigned int* getSource() { return this->source; }
-#endif
-	
-	/** 指定された点の色を得る */
-	unsigned int getPixel(int x, int y);
-	
-	/**
-	 点を打つ
-	 @param x X座標
-	 @param y Y座標
-	 @param color 色
+	 イメージクラス
 	*/
-	void setPixel(int x, int y, unsigned int color);
-};
+	class Image : public Object {
+	private:
+		/** 幅 */
+		int width;
+		/** 高さ */
+		int height;
+	#ifdef MONA
+		/** GUIサーバー上のビットマップオブジェクト */
+		guiserver_bitmap* bitmap;
+	#else
+		/** RGB24bitデータ */
+		unsigned int* source;
+	#endif
+
+	public:
+		Image();
+		
+		/**
+		 コンストラクタ
+		 @param width 幅
+		 @param height 高さ
+		 */
+		Image(int width, int height);
+
+		/**
+		 コンストラクタ.
+		 デコードはサーバー側で行っている。
+		 @param path ファイル名
+		 */
+		Image(char* path);
+		
+		/** デストラクタ */
+		virtual ~Image();
+		
+		/** ハンドルを得る */
+	#ifdef MONA
+		inline unsigned int getHandle() { return this->bitmap->Handle; }
+	#else
+		inline unsigned int getHandle() { return 0; }
+	#endif
+		
+		/** 幅を得る */
+		inline int getWidth() { return this->width; }
+		
+		/** 高さを得る */
+		inline int getHeight() { return this->height; }
+		
+		/** RGB24bitデータを得る */
+	#ifdef MONA
+		inline unsigned int* getSource() { return this->bitmap->Data; }
+	#else
+		inline unsigned int* getSource() { return this->source; }
+	#endif
+		
+		/** 指定された点の色を得る */
+		unsigned int getPixel(int x, int y);
+		
+		/**
+		 点を打つ
+		 @param x X座標
+		 @param y Y座標
+		 @param color 色
+		*/
+		void setPixel(int x, int y, unsigned int color);
+	};
+}
 
 #endif // _IMAGE_H_INCLUDED_

@@ -1,3 +1,26 @@
+/*
+Copyright (c) 2005 bayside
+
+Permission is hereby granted, free of charge, to any person 
+obtaining a copy of this software and associated documentation files 
+(the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, 
+publish, distribute, sublicense, and/or sell copies of the Software, 
+and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be 
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include <baygui.h>
 
 static int color4bit[16][3] = {
@@ -16,14 +39,14 @@ static int point[16][2] = {
 
 class GBBall : public Window {
 private:
-	Label *label;
+	Label* label;
 
 public:
 	GBBall(){
-		setRect((800 - 212) / 2, (600 - 228) / 2, 212, 228);
+		setBounds((800 - 212) / 2, (600 - 228) / 2, 212, 228);
 		setTitle("bball");
 	}
-	void onPaint(Graphics *g) {
+	void onPaint(Graphics* g) {
 		int i, j;
 		g->setColor(0, 0, 0);
 		g->fillRect(0, 0, 200, 200);
@@ -44,8 +67,13 @@ public:
 	}
 };
 
-int MonaMain(List<char*>* pekoe) {
-	GBBall *bball = new GBBall();
+#if defined(MONA)
+int MonaMain(List<char*>* pekoe)
+#else
+int main(int argc, char** argv)
+#endif
+{
+	GBBall* bball = new GBBall();
 	bball->run();
 	delete(bball);
 	return 0;

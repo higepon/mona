@@ -24,45 +24,55 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_LABEL_H_INCLUDED_)
 #define _LABEL_H_INCLUDED_
 
-/**
- ラベルクラス
-*/
-class Label : public Control {
-private:
-	/** 表示位置（左寄せ、中央寄せ、右寄せ）*/
-	int align;
-	/** 表示文字列 */
-	String text;
-	
-public:
+namespace baygui {
 	/**
-	 コンストラクタ.
-	 描画位置は ALIGN_LEFT。
-	 @param text ラベル
-	 */
-	Label(char *text);
-	
-	/**
-	 コンストラクタ
-	 @param text ラベル
-	 @param align 描画位置 (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
-	 */
-	Label(char *text, int align);
-	
-	/** デストラクタ */
-	virtual ~Label();
-	
-	/**
-	 テキスト設定
-	 @param text
-	 */
-	virtual void setText(char *text);
-	
-	/** テキストを得る */
-	inline  char *getText() { return this->text.getBytes(); }
-	
-	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g);
-};
+	 ラベルクラス
+	*/
+	class Label : public Component {
+	public:
+		/** 左寄せ */
+		static const int LEFT   = 1;
+		/** 中央寄せ */
+		static const int CENTER = 2;
+		/** 右寄せ */
+		static const int RIGHT  = 3;
+
+	private:
+		/** 表示位置（左寄せ、中央寄せ、右寄せ）*/
+		int align;
+		/** 表示文字列 */
+		String text;
+		
+	public:
+		/**
+		 コンストラクタ.
+		 描画位置は ALIGN_LEFT。
+		 @param text ラベル
+		 */
+		Label(char* text);
+		
+		/**
+		 コンストラクタ
+		 @param text ラベル
+		 @param align 描画位置 (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
+		 */
+		Label(char* text, int align);
+		
+		/** デストラクタ */
+		virtual ~Label();
+		
+		/**
+		 テキスト設定
+		 @param text
+		 */
+		virtual void setText(char* text);
+		
+		/** テキストを得る */
+		inline char* getText() { return this->text.getBytes(); }
+		
+		/** 描画ハンドラ */
+		virtual void onPaint(Graphics* g);
+	};
+}
 
 #endif // _LABEL_H_INCLUDED_

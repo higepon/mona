@@ -84,7 +84,7 @@ unsigned char checked_data[] = {
 	0x4,0x4,0x4,0x4,0x2,0x0,0x0,0x2,0x4,0x4,0x4,0x4,
 };
 
-Checkbox::Checkbox(char *label)
+Checkbox::Checkbox(char* label)
 {
 	this->checked = false;
 	this->label  = label;
@@ -133,7 +133,7 @@ void Checkbox::onPaint(Graphics *g)
 	if (getEnabled() == true) {
 		g->setColor(getForeground());
 	} else {
-		g->setColor(Color::GRAY);
+		g->setColor(Color::gray);
 	}
 	g->drawText(getLabel(), 14, y);
 	

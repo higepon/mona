@@ -32,8 +32,7 @@ Image::Image(int width, int height)
 	
 	// GUIサーバー上にビットマップを生成する
 	MessageInfo msg;
-	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEBITMAP, 
-		width, height, Color::DEFAULT_BACKCOLOR))
+	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEBITMAP, width, height, Color::lightGray))
 	{
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		return;
@@ -51,7 +50,7 @@ Image::Image(int width, int height)
 	this->source = new unsigned int [width * height];
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			this->source[j + i * width] = Color::DEFAULT_BACKCOLOR;
+			this->source[j + i * width] = Color::lightGray;
 		}
 	}
 #endif
@@ -98,7 +97,7 @@ Image::~Image()
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
 #else
-	delete(this->source);
+	delete[] this->source ;
 #endif
 }
 

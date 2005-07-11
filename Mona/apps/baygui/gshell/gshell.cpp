@@ -1,28 +1,24 @@
 /*
-Copyright (c) 2004 bayside
-All rights reserved.
+Copyright (c) 2005 bayside
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
+Permission is hereby granted, free of charge, to any person 
+obtaining a copy of this software and associated documentation files 
+(the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, 
+publish, distribute, sublicense, and/or sell copies of the Software, 
+and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The above copyright notice and this permission notice shall be 
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <baygui.h>
@@ -58,11 +54,11 @@ private:
 	/** コマンド履歴ポインター */
 	int historyPtr;
 	/** コマンドライン引数 */
-	LinkedList *argv;
+	Vector argv;
 	/** コマンド履歴 */
-	LinkedList *history;
+	Vector history;
 	/** 行リスト */
-	LinkedList *lines;
+	Vector lines;
 	/** １行バッファ */
 	char lineBuffer[128];
 	/** コマンドバッファ */
@@ -73,12 +69,9 @@ private:
 public:
 	/** コンストラクタ */
 	GShell() {
-		setRect((800-GSHELL_WIDTH-12)/2,(600-GSHELL_HEIGHT-28)/2,GSHELL_WIDTH+12,GSHELL_HEIGHT+28);
+		setBounds((800-GSHELL_WIDTH-12)/2,(600-GSHELL_HEIGHT-28)/2,GSHELL_WIDTH+12,GSHELL_HEIGHT+28);
 		setTitle("た～みなる");
 		historyPtr = -1;
-		this->argv = new LinkedList();
-		this->history = new LinkedList();
-		this->lines = new LinkedList();
 		memset(lineBuffer, 0, sizeof(lineBuffer));
 		memset(commandBuffer, 0, sizeof(commandBuffer));
 		memset(currentPath, 0, sizeof(currentPath));
@@ -87,9 +80,6 @@ public:
 
 	/** デストラクタ */
 	~GShell() {
-		delete(this->argv);
-		delete(this->history);
-		delete(this->lines);
 	}
 
 private:
@@ -232,22 +222,22 @@ private:
 			// 引数を後ろにくっつける
 			char temp[128];
 			memset(temp, 0, sizeof(temp));
-			if (this->argv->getLength() == 1) {
+			if (this->argv.size() == 1) {
 				strcpy(temp, pathname);
-			} else if (this->argv->getLength() == 2) {
+			} else if (this->argv.size() == 2) {
 				sprintf(temp, "%s %s", pathname,
-					((String *)this->argv->get(1))->getBytes()
+					((String *)this->argv.get(1))->getBytes()
 				);
-			} else if (this->argv->getLength() == 3) {
+			} else if (this->argv.size() == 3) {
 				sprintf(temp, "%s %s %s", pathname,
-					((String *)this->argv->get(1))->getBytes(),
-					((String *)this->argv->get(2))->getBytes()
+					((String *)this->argv.get(1))->getBytes(),
+					((String *)this->argv.get(2))->getBytes()
 				);
-			} else if (this->argv->getLength() == 4) {
+			} else if (this->argv.size() == 4) {
 				sprintf(temp, "%s %s %s %s", pathname,
-					((String *)this->argv->get(1))->getBytes(),
-					((String *)this->argv->get(2))->getBytes(),
-					((String *)this->argv->get(3))->getBytes()
+					((String *)this->argv.get(1))->getBytes(),
+					((String *)this->argv.get(2))->getBytes(),
+					((String *)this->argv.get(3))->getBytes()
 				);
 			}
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
@@ -285,11 +275,11 @@ private:
 	inline void addLine(char *str) {
 		// 最下行まで表示されているときは最上行を削除する
 		// ここでremoveしなければ後々スクロールバーをつけたときには役に立つかも
-		if (lines->getLength() >= (GSHELL_HEIGHT / 12 - 1)) {
-			Object *obj = lines->remove(0);
+		if (lines.size() >= (GSHELL_HEIGHT / 12 - 1)) {
+			Object *obj = lines.remove(0);
 			delete(obj);
 		}
-		lines->add(new String(str));
+		lines.add(new String(str));
 	}
 
 	/** 指定したファイルがあるかどうか調べる */
@@ -333,7 +323,7 @@ private:
 	void parse(char *cmd) {
 		if (cmd == NULL || strlen(cmd) == 0) return;
 
-		this->argv->removeAll();
+		this->argv.removeAll();
 
 		char temp[256];
 		memset(temp, 0, sizeof(temp));
@@ -341,13 +331,13 @@ private:
 		// 文字列を' 'で区切る
 		for (int i = 0; i < (int)strlen(cmd); i++) {
 			if (cmd[i] == ' ') {
-				this->argv->add(new String(temp));
+				this->argv.add(new String(temp));
 				memset(temp, 0, sizeof(temp));
 			} else {
 				temp[strlen(temp)] = cmd[i];
 				// ? のみのときなど
 				if (i == (int)strlen(cmd) - 1) {
-					this->argv->add(new String(temp));
+					this->argv.add(new String(temp));
 				}
 			}
 		}
@@ -355,7 +345,7 @@ private:
 		//
 		// help/?
 		//
-		String s = ((String *)this->argv->get(0))->getBytes();
+		String s = ((String *)this->argv.get(0))->getBytes();
 		if (s.equals("help") || s.equals("?")) {
 			this->addLine("GUIシェル 内部コマンド一覧\n");
 			this->addLine(" help/?, ls/dir, cd, cat/type, date/time, uname/ver, \n");
@@ -369,8 +359,8 @@ private:
 		// cd [pathname]
 		//
 		} else if (s.equals("cd")) {
-			if (this->argv->getLength() >= 2) {
-				char *pathname = ((String *)this->argv->get(1))->getBytes();
+			if (this->argv.size() >= 2) {
+				char *pathname = ((String *)this->argv.get(1))->getBytes();
 				if (pathname[0] == '/' || existsFile(pathname) == true) {
 					this->cd(pathname);
 				}
@@ -381,8 +371,8 @@ private:
 		// cat [pathname] / type [pathname]
 		//
 		} else if (s.equals("cat") || s.equals("type")) {
-			if (this->argv->getLength() >= 2) {
-				char *pathname = ((String *)this->argv->get(1))->getBytes();
+			if (this->argv.size() >= 2) {
+				char *pathname = ((String *)this->argv.get(1))->getBytes();
 				if (pathname[0] == '/' || existsFile(pathname) == true) {
 					memset(temp, 0, sizeof(temp));
 					// 相対パスから絶対パスへ変換する
@@ -432,7 +422,7 @@ private:
 		// clear/cls
 		//
 		} else if (s.equals("clear") || s.equals("cls")) {
-			lines->removeAll();
+			lines.removeAll();
 		//
 		// ps
 		//
@@ -453,8 +443,8 @@ private:
 		// kill [pid]
 		//
 		} else if (s.equals("kill")) {
-			if (this->argv->getLength() >= 2) {
-				int pid = atoi(((String *)this->argv->get(1))->getBytes());
+			if (this->argv.size() >= 2) {
+				int pid = atoi(((String *)this->argv.get(1))->getBytes());
 				syscall_kill_thread((dword)pid);
 			} else {
 				this->addLine("使い方：kill [プロセスID]\n");
@@ -463,8 +453,8 @@ private:
 		// touch [pathname]
 		//
 		} else if (s.equals("touch")) {
-			if (this->argv->getLength() >= 2) {
-				char *pathname = ((String *)this->argv->get(1))->getBytes();
+			if (this->argv.size() >= 2) {
+				char *pathname = ((String *)this->argv.get(1))->getBytes();
 				memset(temp, 0, sizeof(temp));
 				// 相対パスから絶対パスへ変換する
 				if (pathname[0] != '/') {
@@ -558,8 +548,8 @@ public:
 					sprintf(temp, "%s%% %s", currentPath, commandBuffer);
 					// リストに追加
 					this->addLine(temp);
-					this->history->add(new String(commandBuffer));
-					this->historyPtr = this->history->getLength();
+					this->history.add(new String(commandBuffer));
+					this->historyPtr = this->history.size();
 					// 入力したコマンドを解析
 					parse(commandBuffer);
 					memset(lineBuffer, 0, sizeof(lineBuffer));
@@ -578,14 +568,14 @@ public:
 			} else if (keycode == KeyEvent::VKEY_UP) {
 				if (this->historyPtr == -1) return;
 				this->historyPtr--;
-				strcpy(commandBuffer, ((String *)history->get(this->historyPtr))->getBytes());
+				strcpy(commandBuffer, ((String *)history.get(this->historyPtr))->getBytes());
 				// 再描画
 				onPaint(getGraphics());
 			// １つ次の履歴
 			} else if (keycode == KeyEvent::VKEY_DOWN) {
-				if (this->historyPtr < this->history->getLength() - 1) {
+				if (this->historyPtr < this->history.size() - 1) {
 					this->historyPtr++;
-					strcpy(commandBuffer, ((String *)history->get(this->historyPtr))->getBytes());
+					strcpy(commandBuffer, ((String *)history.get(this->historyPtr))->getBytes());
 				} else {
 					memset(commandBuffer, 0, sizeof(commandBuffer));
 				}
@@ -604,15 +594,15 @@ public:
 	/** 描画ハンドラ */
 	virtual void onPaint(Graphics *g) {
 		// 背景色で塗りつぶし
-		g->setColor(Color::WHITE);
+		g->setColor(Color::white);
 		g->fillRect(0, 0, getWidth(), getHeight());
-		g->setColor(Color::BLACK);
+		g->setColor(Color::black);
 		g->setFontStyle(Font::FIXED);
 
 		// 確定ずみのprintfバッファー
 		int i = 0;
-		for (i = 0; i < lines->getLength(); i++) {
-			String *temp = (String *)lines->get(i);
+		for (i = 0; i < lines.size(); i++) {
+			String *temp = (String *)lines.get(i);
 			g->drawText(temp->getBytes(), 0, i * 12);
 		}
 
@@ -630,8 +620,8 @@ public:
 	}
 
 	/** ウィンドウ生成時に呼ばれる */
-	virtual void onStart() {
-		Window::onStart();
+	virtual void addNotify() {
+		Window::addNotify();
 
 		// 標準出力監視スレッド起動
 		my_tid = syscall_get_tid();
@@ -649,8 +639,8 @@ public:
 	}
 
 	/** ウィンドウ破棄時に呼ばれる */
-	virtual void onExit() {
-		Window::onExit();
+	virtual void removeNotify() {
+		Window::removeNotify();
 		
 		// 標準出力を開放する
 		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);

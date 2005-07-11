@@ -24,19 +24,21 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_FONT_H_INCLUDED_)
 #define _FONT_H_INCLUDED_
 
-/**
- フォント構造体
- */
-struct Font {
-public:
-	/** 通常書体 */
-	static const int PLAIN  = 0x000;
-	/** 太字体 */
-	static const int BOLD   = 0x001;
-	/** 斜字体 */
-	static const int ITALIC = 0x010;
-	/** 固定幅 */
-	static const int FIXED  = 0x100;
-};
+namespace baygui {
+	/**
+	 フォント構造体
+	 */
+	struct Font {
+	public:
+		/** 通常書体 */
+		static const int PLAIN  = 0x000;
+		/** 太字体 */
+		static const int BOLD   = 0x001;
+		/** 斜字体 */
+		static const int ITALIC = 0x010;
+		/** 固定幅 */
+		static const int FIXED  = 0x100;
+	};
+}
 
 #endif /* _FONT_H_INCLUDED_ */

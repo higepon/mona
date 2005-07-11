@@ -24,76 +24,78 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_SCROLLBAR_H_INCLUDED_)
 #define _SCROLLBAR_H_INCLUDED_
 
-/**
- 水平・垂直スクロールバークラス
-*/
-class Scrollbar : public Control {
-public:
-	/** 水平スクロールバー */
-	static const int HORIZONTAL = 0;
-	/** 垂直スクロールバー */
-	static const int VERTICAL   = 1;
-	
-private:
-	/** スクロールバーの種類 */
-	int orientation;
-	/** 最小値 */
-	int minimum;
-	/** 最大値 */
-	int maximum;
-	/** 一度に増減する量 */
-	int blocksize;
-	/** 現在の値 */
-	int value;
-	/** ブロックイベント */
-	Event blockEvent;
-	
-public:
-	/** デフォルトコンストラクタ */
-	Scrollbar();
-
-	/** コンストラクタ */
-	Scrollbar(int orientation);
-
-	/** デストラクタ */
-	virtual ~Scrollbar();
-
-	/** 最小値を得る（初期値は0） */
-	inline int getMinimum() { return this->minimum; }
-
-	/** 最大値を得る（初期値は100） */
-	inline int getMaximum() { return this->maximum; }
-
-	/** 一度に増減する量を得る（初期値は10） */
-	inline int getBlocksize() { return this->blocksize; }
-
-	/** 値を得る */
-	inline int getValue() { return this->value; }
-
-	/** 最小値を設定する */
-	inline void setMinimum(int n) { this->minimum = n; }
-
-	/** 最大値を設定する */
-	inline void setMaximum(int n) { this->maximum = n; }
-
-	/** 一度に増減する量を設定する */
-	inline void setBlocksize(int n) { this->blocksize = n; }
-
-	/** 値を設定する */
-	virtual void setValue(int value);
-
+namespace baygui {
 	/**
-	 部品の大きさを設定する.
-	 垂直スクロールバーの時は幅16固定、水平スクロールバーのときは高さ16固定。
-	 それ以外の値を設定しても16になる。
+	 水平・垂直スクロールバークラス
 	*/
-	virtual void setRect(int x, int y, int w, int h);
+	class Scrollbar : public Component {
+	public:
+		/** 水平スクロールバー */
+		static const int HORIZONTAL = 0;
+		/** 垂直スクロールバー */
+		static const int VERTICAL   = 1;
+		
+	private:
+		/** スクロールバーの種類 */
+		int orientation;
+		/** 最小値 */
+		int minimum;
+		/** 最大値 */
+		int maximum;
+		/** 一度に増減する量 */
+		int blocksize;
+		/** 現在の値 */
+		int value;
+		/** ブロックイベント */
+		Event blockEvent;
+		
+	public:
+		/** デフォルトコンストラクタ */
+		Scrollbar();
 
-	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g);
+		/** コンストラクタ */
+		Scrollbar(int orientation);
 
-	/** イベントハンドラ */
-	virtual void onEvent(Event *event);
-};
+		/** デストラクタ */
+		virtual ~Scrollbar();
+
+		/** 最小値を得る（初期値は0） */
+		inline int getMinimum() { return this->minimum; }
+
+		/** 最大値を得る（初期値は100） */
+		inline int getMaximum() { return this->maximum; }
+
+		/** 一度に増減する量を得る（初期値は10） */
+		inline int getBlocksize() { return this->blocksize; }
+
+		/** 値を得る */
+		inline int getValue() { return this->value; }
+
+		/** 最小値を設定する */
+		inline void setMinimum(int n) { this->minimum = n; }
+
+		/** 最大値を設定する */
+		inline void setMaximum(int n) { this->maximum = n; }
+
+		/** 一度に増減する量を設定する */
+		inline void setBlocksize(int n) { this->blocksize = n; }
+
+		/** 値を設定する */
+		virtual void setValue(int value);
+
+		/**
+		 部品の大きさを設定する.
+		 垂直スクロールバーの時は幅16固定、水平スクロールバーのときは高さ16固定。
+		 それ以外の値を設定しても16になる。
+		*/
+		virtual void setBounds(int x, int y, int w, int h);
+
+		/** 描画ハンドラ */
+		virtual void onPaint(Graphics* g);
+
+		/** イベントハンドラ */
+		virtual void onEvent(Event* event);
+	};
+}
 
 #endif /* _SCROLLBAR_H_INCLUDED_ */

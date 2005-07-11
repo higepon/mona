@@ -18,7 +18,7 @@ mine::mine(){
 	this->setTitle("マインスイーパ");
 	int w = 144 + INSETS_LEFT + INSETS_RIGHT;
 	int h = 144 + INSETS_TOP + INSETS_BOTTOM;
-	this->setRect(100, 100, w, h);
+	this->setBounds(100, 100, w, h);
 	tile_init();
 	tick = 0;
 	start = false;
@@ -120,7 +120,7 @@ bool mine::is_game_event(Event* evt){
 		return false;
 	}
 	
-	Control* src = evt->getSource();
+	Component* src = evt->getSource();
 	for(int x=0; x<9; x++){
 		for(int y=0; y<9; y++){
 			if(src == tiles[x][y]){

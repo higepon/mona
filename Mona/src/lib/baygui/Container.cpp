@@ -25,38 +25,40 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Container::Container()
 {
-	this->controlList = new LinkedList();
 }
 
-Container::~Container() {
-	delete(this->controlList);
+Container::~Container()
+{
+	this->controlList.removeAll();
 }
 
-Control *Container::findChild()
+Component* Container::getComponent()
 {
 	// NULLチェック
-	if (this->controlList->getLength() == 0) return NULL;
+	int I = this->controlList.size();
+	if (I == 0) return NULL;
 
 	// 後ろからチェックしていく
-	for (int i = this->controlList->getLength() - 1; i >= 0; i--) {
-		Control *c = (Control *)this->controlList->get(i);
+	for (int i = I - 1; i >= 0; i--) {
+		Component* c = (Component *)this->controlList.get(i);
 		if (c->getFocused() == true) return c;
 	}
 	return NULL;
 }
 
-Control *Container::findChild(int x, int y)
+Component* Container::getComponentAt(int x, int y)
 {
 	// NULLチェック
-	if (this->controlList->getLength() == 0) return NULL;
+	int I = this->controlList.size();
+	if (I == 0) return NULL;
 	
 	// 後ろからチェックしていく
-	for (int i = this->controlList->getLength() - 1; i >= 0; i--) {
-		Control *c = (Control *)this->controlList->get(i);
-		Rect *rect = c->getRect();
+	for (int i = I - 1; i >= 0; i--) {
+		Component* c = (Component *)this->controlList.get(i);
+		Rectangle* bounds = c->getBounds();
 		// マウスカーソルがある範囲に部品があるかどうかチェック
-		if (rect->getX() <= x && x <= rect->getX() + rect->getWidth() && 
-			rect->getY() <= y && y <= rect->getY() + rect->getHeight())
+		if (bounds->x <= x && x <= bounds->x + bounds->width && 
+			bounds->y <= y && y <= bounds->y + bounds->height)
 		{
 			return c;
 		}
@@ -64,26 +66,26 @@ Control *Container::findChild(int x, int y)
 	return NULL;
 }
 
-void Container::add(Control *control)
+void Container::add(Component* control)
 {
 	control->setParent(this);
-	control->onStart();
-	this->controlList->add(control);
+	control->addNotify();
+	this->controlList.add(control);
 }
 
-void Container::remove(Control *control)
+void Container::remove(Component* control)
 {
-	this->controlList->remove(control);
+	this->controlList.remove(control);
 }
 
-void Container::postEvent(Event *event)
+void Container::postEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
 
 	// 活性部品にキーイベントを投げる
 	if (event->getType() == KeyEvent::KEY_PRESSED || event->getType() == KeyEvent::KEY_RELEASED) {
-		Control *control = findChild();
+		Component* control = getComponent();
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->setSource(control);
@@ -93,30 +95,32 @@ void Container::postEvent(Event *event)
 		onEvent(event);
 	// マウスクリック
 	} else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
-		MouseEvent *me = (MouseEvent *)event;
+		MouseEvent* me = (MouseEvent *)event;
 		// マウスイベントが起こった部品を探す
-		Control *control = findChild(me->getX(), me->getY());
+		Component* control = getComponentAt(me->getX(), me->getY());
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			// イベントが起こった部品以外をフォーカスアウト状態にする
-			for (int i = 0; i < this->controlList->getLength(); i++) {
-				Control *c = (Control *)this->controlList->get(i);
+			int I = this->controlList.size();
+			for (int i = 0; i < I; i++) {
+				Component* c = (Component *)this->controlList.get(i);
 				if (c != control) {
 					c->setFocused(false);
 				}
 			}
 			control->setFocused(true);
 			event->setSource(control);
-			Rect *rect = control->getRect();
-			me->setX(me->getX() - rect->getX());
-			me->setY(me->getY() - rect->getY());
+			Rectangle* bounds = control->getBounds();
+			me->setX(me->getX() - bounds->x);
+			me->setY(me->getY() - bounds->y);
 			//syscall_print("MOUSE_PRESSED,");
 			control->onEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
 			// 部品をフォーカスアウト状態にする
-			for (int i = 0; i < this->controlList->getLength(); i++) {
-				Control *c = (Control *)this->controlList->get(i);
+			int I = this->controlList.size();
+			for (int i = 0; i < I; i++) {
+				Component* c = (Component *)this->controlList.get(i);
 				c->setFocused(false);
 			}
 			//syscall_print("MOUSE_PRESSED,");
@@ -124,15 +128,15 @@ void Container::postEvent(Event *event)
 		}
 	// マウスリリース
 	} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
-		MouseEvent *me = (MouseEvent *)event;
+		MouseEvent* me = (MouseEvent *)event;
 		// マウスイベントが起こった部品を探す
-		Control *control = findChild(me->getX(), me->getY());
+		Component* control = getComponentAt(me->getX(), me->getY());
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->setSource(control);
-			Rect *rect = control->getRect();
-			me->setX(me->getX() - rect->getX());
-			me->setY(me->getY() - rect->getY());
+			Rectangle* bounds = control->getBounds();
+			me->setX(me->getX() - bounds->x);
+			me->setY(me->getY() - bounds->y);
 			//syscall_print("MOUSE_RELEASED,");
 			control->onEvent(event);
 		// 部品以外でイベントが起こった
@@ -155,8 +159,9 @@ void Container::repaint()
 	update();
 
 	// 子部品を再描画する
-	for(int i = 0; i < this->controlList->getLength(); i++) {
-		Control *control = (Control *)this->controlList->get(i);
+	int I = this->controlList.size();
+	for(int i = 0; i < I; i++) {
+		Component* control = (Component *)this->controlList.get(i);
 		control->repaint();
 	}
 }

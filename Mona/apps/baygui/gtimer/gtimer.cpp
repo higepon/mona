@@ -37,18 +37,18 @@ public:
   GTimer(){
     time = 0;
 
-    setRect(200,200,120,80);
+    setBounds(200,200,120,80);
     setTitle("TIMER");
 
     char timeText[128];
     sprintf(timeText,"%d",time);
 
     start = new Button("START");
-    start->setRect(5,5,100,20);
+    start->setBounds(5,5,100,20);
     add(start);
 
     text = new TextField();
-    text->setRect(5,30,100,20);
+    text->setBounds(5,30,100,20);
     text->setText(timeText);
     add(text);
   }

@@ -31,7 +31,7 @@ Graphics::Graphics()
 	this->image = NULL;
 }
 
-Graphics::Graphics(Image *image)
+Graphics::Graphics(Image* image)
 {
 	tx = ty = cx = cy = 0;
 	this->rgb24 = 0;
@@ -50,7 +50,7 @@ void Graphics::drawPixel(int x, int y, unsigned int color)
 	this->image->setPixel(tx + x, ty + y, color);
 }
 
-void Graphics::drawImage(Image *image, int x, int y)
+void Graphics::drawImage(Image* image, int x, int y)
 {
 	for (int i = 0; i < image->getHeight(); i++) {
 		for (int j = 0; j < image->getWidth(); j++) {
@@ -130,9 +130,9 @@ void Graphics::drawCircle(int x0, int y0, int r){
 	}
 }
 
-void Graphics::drawText(char *str, int x, int y)
+void Graphics::drawText(char* str, int x, int y)
 {
-	int i, j, k, pos, bit, offset, width, height, w = 0, h = 0;
+	int pos, bit, offset, width, height, w = 0, h = 0;
 	FontMetrics metrics;
 	
 	// NULLチェック
@@ -141,18 +141,19 @@ void Graphics::drawText(char *str, int x, int y)
 	String s = str;
 	
 	metrics.setFontStyle(getFontStyle());
-	for (i = 0; i < s.length(); i++) {
+	int I = s.length();
+	for (int i = 0; i < I; i++) {
 		pos = 0;
 		bit = 1;
 		char fp[256];
 		// 改行
-		if (s[i] == '\n') {
+		if (s.charAt(i) == '\n') {
 			w = 0;
 			h += 12;
 		}
-		if (metrics.decodeCharacter(s[i], &offset, &width, &height, fp) == true) {
-			for (j = 0; j < height; j++) {
-				for (k = 0; k < width; k++) {
+		if (metrics.decodeCharacter(s.charAt(i), &offset, &width, &height, fp) == true) {
+			for (int j = 0; j < height; j++) {
+				for (int k = 0; k < width; k++) {
 					int x0 = x + w + k + (offset - width) / 2;
 					// 行パディングなし
 					if ((fp[pos] & bit) != 0) {

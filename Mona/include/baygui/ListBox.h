@@ -24,45 +24,47 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_LISTBOX_H_INCLUDED_)
 #define _LISTBOX_H_INCLUDED_
 
-/**
- リストボックスクラス
-*/
-class ListBox : public Control {
-private:
-	/** 選択位置 */
-	int selectedIndex;
-	/** データリスト */
-	LinkedList *dataList;
-	/** 選択イベント */
-	Event itemEvent;
+namespace baygui {
+	/**
+	 リストボックスクラス
+	*/
+	class ListBox : public Component {
+	private:
+		/** 選択位置 */
+		int selectedIndex;
+		/** データリスト */
+		Vector dataList;
+		/** 選択イベント */
+		Event itemEvent;
 
-public:
-	/** コンストラクタ */
-	ListBox();
-	
-	/** デストラクタ */
-	virtual ~ListBox();
-	
-	/** 選択位置を得る */
-	inline  int getSelectedIndex() { return this->selectedIndex; }
-	
-	/** 選択項目を得る */
-	virtual char *getSelectedItem();
-	
-	/** index 番目を選択する */
-	virtual void select(int index);
-	
-	/** 項目を追加する */
-	virtual void add(char *item);
-	
-	/** index 番目の項目を削除する */
-	virtual void remove(int index);
-	
-	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g);
-	
-	/** イベントハンドラ */
-	virtual void onEvent(Event *event);
-};
+	public:
+		/** コンストラクタ */
+		ListBox();
+		
+		/** デストラクタ */
+		virtual ~ListBox();
+		
+		/** 選択位置を得る */
+		inline  int getSelectedIndex() { return this->selectedIndex; }
+		
+		/** 選択項目を得る */
+		virtual char* getSelectedItem();
+		
+		/** index 番目を選択する */
+		virtual void select(int index);
+		
+		/** 項目を追加する */
+		virtual void add(char* item);
+		
+		/** index 番目の項目を削除する */
+		virtual void remove(int index);
+		
+		/** 描画ハンドラ */
+		virtual void onPaint(Graphics* g);
+		
+		/** イベントハンドラ */
+		virtual void onEvent(Event* event);
+	};
+}
 
 #endif // _LISTBOX_H_INCLUDED_

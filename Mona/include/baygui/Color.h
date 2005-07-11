@@ -24,37 +24,48 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_COLOR_H_INCLUDED_)
 #define _COLOR_H_INCLUDED_
 
-/**
- 色構造体
- */
-struct Color {
-public:
-	//
-	// 部品の初期色
-	//
-	static const int DEFAULT_TRANSCOLOR = 0x00000000;
-	static const int DEFAULT_FORECOLOR  = 0xff000000;
-	static const int DEFAULT_BACKCOLOR  = 0xffc0c0c0;
-	
-	//
-	// システム標準16色に準拠
-	//
-	static const int BLACK     = 0xff000000;
-	static const int MAROON    = 0xff800000;
-	static const int GREEN     = 0xff008000;
-	static const int OLIVE     = 0xff808000;
-	static const int NAVY      = 0xff000080;
-	static const int PURPLE    = 0xff800080;
-	static const int TEAL      = 0xff008080;
-	static const int LIGHTGRAY = 0xffC0C0C0;
-	static const int GRAY      = 0xff808080;
-	static const int RED       = 0xffff0000;
-	static const int LIME      = 0xff00ff00;
-	static const int YELLOW    = 0xffffff00;
-	static const int BLUE      = 0xff0000ff;
-	static const int MAGENDA   = 0xffff00ff;
-	static const int CYAN      = 0xff00ffff;
-	static const int WHITE     = 0xffffffff;
-};
+namespace baygui {
+	/**
+	 色構造体
+	 */
+	struct Color {
+	public:
+		//
+		// システム標準16色に準拠
+		//
+		/** <font color="#000000">黒色</font> */
+		static const int black     = 0xff000000;
+		/** <font color="#800000">濃い茶色</font> */
+		static const int maroon    = 0xff800000;
+		/** <font color="#008000">濃い緑色</font> */
+		static const int green     = 0xff008000;
+		/** <font color="#808000">濃い黄色</font> */
+		static const int olive     = 0xff808000;
+		/** <font color="#000080">濃い青色</font> */
+		static const int navy      = 0xff000080;
+		/** <font color="#800080">紫色</font> */
+		static const int purple    = 0xff800080;
+		/** <font color="#008080">暗い青色</font> */
+		static const int teal      = 0xff008080;
+		/** <font color="#c0c0c0">明るい灰色</font> */
+		static const int lightGray = 0xffC0C0C0;
+		/** <font color="#808080">灰色</font> */
+		static const int gray      = 0xff808080;
+		/** <font color="#ff0000">赤色</font> */
+		static const int red       = 0xffff0000;
+		/** <font color="#00ff00">明るい緑色</font> */
+		static const int lime      = 0xff00ff00;
+		/** <font color="#ffff00">黄色</font> */
+		static const int yellow    = 0xffffff00;
+		/** <font color="#0000ff">青色</font> */
+		static const int blue      = 0xff0000ff;
+		/** <font color="#ff00ff">明るい赤色</font> */
+		static const int magenta   = 0xffff00ff;
+		/** <font color="#00ffff">水色</font> */
+		static const int cyan      = 0xff00ffff;
+		/** <font color="#000000">白色</font> */
+		static const int white     = 0xffffffff;
+	};
+}
 
 #endif /* _COLOR_H_INCLUDED_ */

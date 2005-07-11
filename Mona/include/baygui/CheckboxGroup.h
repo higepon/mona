@@ -24,28 +24,30 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_CHECKBOXGROUP_H_INCLUDED_)
 #define _CHECKBOXGROUP_H_INCLUDED_
 
-/**
- チェックボックスグループクラス
-*/
-class CheckboxGroup : public Object {
-private:
-	LinkedList *checkboxList;
-	
-public:
-	/** コンストラクタ */
-	CheckboxGroup();
-	
-	/** デストラクタ */
-	virtual ~CheckboxGroup();
-	
-	/** チェックボックスを追加する */
-	virtual void add(Checkbox *check);
-	
-	/** 選択されたチェックボックスを得る */
-	virtual Checkbox *getSelectedCheckbox();
-	
-	/** イベントハンドラ */
-	virtual void onEvent(Event *e);
-};
+namespace baygui {
+	/**
+	 チェックボックスグループクラス
+	*/
+	class CheckboxGroup : public Object {
+	private:
+		Vector checkboxList;
+		
+	public:
+		/** コンストラクタ */
+		CheckboxGroup();
+		
+		/** デストラクタ */
+		virtual ~CheckboxGroup();
+		
+		/** チェックボックスを追加する */
+		virtual void add(Checkbox* check);
+		
+		/** 選択されたチェックボックスを得る */
+		virtual Checkbox* getSelectedCheckbox();
+		
+		/** イベントハンドラ */
+		virtual void onEvent(Event* event);
+	};
+}
 
 #endif // _CHECKBOXGROUP_H_INCLUDED_

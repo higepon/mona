@@ -14,7 +14,7 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 
 #include <baygui.h>
 
-class mine_tile : public Control {
+class mine_tile : public Component {
 public:
 	typedef enum {
 		init,
@@ -31,7 +31,7 @@ private:
 	int value;
 	mine_tile* around[8];
 	static int click_state;
-	static Control* click_sender;
+	static Component* click_sender;
 	static int bombs_num;
 	static int init_tile_num;
 	static Event* event;
@@ -60,7 +60,7 @@ public:
 	}
 	mine_tile(int x, int y){
 		initialize();
-		setRect(x, y, 16, 16);
+		setBounds(x, y, 16, 16);
 	}
 
 	void onPaint(Graphics*);

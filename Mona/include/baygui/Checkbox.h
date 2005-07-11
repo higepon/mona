@@ -24,61 +24,66 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_CHECKBOX_H_INCLUDED_)
 #define _CHECKBOX_H_INCLUDED_
 
-class CheckboxGroup;
+namespace baygui {
+	class CheckboxGroup;
 
-/**
- チェックボックスクラス
-*/
-class Checkbox : public Control {
-private:
-	/** チェックされたかどうか */
-	bool checked;
-	/** ボタンのラベル */
-	String label;
-	/** 選択イベント */
-	Event itemEvent;
-	/** チェックボックスグループ */
-	CheckboxGroup *group;
+	/**
+	 チェックボックスクラス
+	*/
+	class Checkbox : public Component {
+	private:
+		/** チェックされたかどうか */
+		bool checked;
+		/** ボタンのラベル */
+		String label;
+		/** 選択イベント */
+		Event itemEvent;
+		/** チェックボックスグループ */
+		CheckboxGroup* group;
 
-public:
-	/**
-	 コンストラクタ
-	 @param label ラベル
-	 */
-	Checkbox(char *label);
-	
-	/** デストラクタ */
-	virtual ~Checkbox();
-	
-	/**
-	 チェックされたかどうかを設定する
-	 @param checked フラグ (true / false)
-	 */
-	virtual void setChecked(bool checked);
-	
-	/** チェックボックスグループを設定する */
-	inline void setCheckboxGroup(CheckboxGroup *group) { this->group = group; }
-	
-	/**
-	 ラベルを設定する
-	 @param label ラベル
-	 */
-	virtual void setLabel(char *label);
-	
-	/** チェックされたかどうかを得る */
-	inline bool getChecked() { return this->checked; }
-	
-	/** チェックボックスグループを得る */
-	inline CheckboxGroup *getCheckboxGroup() { return this->group; }
-	
-	/** ラベルを得る */
-	inline char *getLabel() { return this->label.getBytes(); }
-	
-	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g);
-	
-	/** イベントハンドラ */
-	virtual void onEvent(Event *event);
-};
+	public:
+		/** デフォルトコンストラクタ */
+		Checkbox();
+		
+		/**
+		 コンストラクタ
+		 @param label ラベル
+		 */
+		Checkbox(char* label);
+		
+		/** デストラクタ */
+		virtual ~Checkbox();
+		
+		/**
+		 チェックされたかどうかを設定する
+		 @param checked フラグ (true / false)
+		 */
+		virtual void setChecked(bool checked);
+		
+		/** チェックボックスグループを設定する */
+		inline void setCheckboxGroup(CheckboxGroup* group) { this->group = group; }
+		
+		/**
+		 ラベルを設定する
+		 @param label ラベル
+		 */
+		virtual void setLabel(char* label);
+		
+		/** チェックされたかどうかを得る */
+		inline bool getChecked() { return this->checked; }
+		
+		/** チェックボックスグループを得る */
+		inline CheckboxGroup* getCheckboxGroup() { return this->group; }
+		
+		/** ラベルを得る */
+		inline char* getLabel() { return this->label.getBytes(); }
+		
+		/** 描画ハンドラ */
+		virtual void onPaint(Graphics* g);
+		
+		/** イベントハンドラ */
+		virtual void onEvent(Event* event);
+	};
+}
 
 #endif // _CHECKBOX_H_INCLUDED_

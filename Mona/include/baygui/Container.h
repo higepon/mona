@@ -24,52 +24,54 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_CONTAINER_H_INCLUDED_)
 #define _CONTAINER_H_INCLUDED_
 
-/**
- コンテナークラス
-*/
-class Container : public Control {
-private:
-	/** 部品一覧 */
-	LinkedList *controlList;
-
-public:
-	/** コンストラクタ */
-	Container();
-	
-	/** デストラクタ */
-	virtual ~Container();
-	
+namespace baygui {
 	/**
-	 活性部品を得る
-	 @return 活性部品（なければNULL）
+	 コンテナークラス
 	*/
-	virtual Control *findChild();
-	
-	/**
-	 部品を得る
-	 @param x 指定するX座標
-	 @param y 指定するY座標
-	 */
-	virtual Control *findChild(int x, int y);
-	
-	/**
-	 指定した部品を追加する
-	 @param control 指定する部品
-	 */
-	virtual void add(Control *control);
-	
-	/**
-	 指定した部品を削除する
-	 @param control 指定する部品
-	 @return 削除された部品（なければNULL）
-	 */
-	virtual void remove(Control *control);
-	
-	/** イベント処理 */
-	virtual void postEvent(Event *event);
-	
-	/** 再描画 */
-	virtual void repaint();
-};
+	class Container : public Component {
+	private:
+		/** 部品一覧 */
+		Vector controlList;
+
+	public:
+		/** コンストラクタ */
+		Container();
+		
+		/** デストラクタ */
+		virtual ~Container();
+		
+		/**
+		 活性部品を得る
+		 @return 活性部品（なければNULL）
+		*/
+		virtual Component* getComponent();
+		
+		/**
+		 部品を得る
+		 @param x 指定するX座標
+		 @param y 指定するY座標
+		 */
+		virtual Component* getComponentAt(int x, int y);
+		
+		/**
+		 指定した部品を追加する
+		 @param control 指定する部品
+		 */
+		virtual void add(Component* control);
+		
+		/**
+		 指定した部品を削除する
+		 @param control 指定する部品
+		 @return 削除された部品（なければNULL）
+		 */
+		virtual void remove(Component* control);
+		
+		/** イベント処理 */
+		virtual void postEvent(Event* event);
+		
+		/** 再描画 */
+		virtual void repaint();
+	};
+}
 
 #endif // _CONTAINER_H_INCLUDED_

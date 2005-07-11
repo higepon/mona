@@ -28,22 +28,19 @@ String& String::set(const char* s)
 	unsigned char c1, c2, c3;
 	int  slen;
 	
-	if (charArray) 
-	{
-		delete[] charArray;
+	if (bytes) {
+		delete[] bytes;
 		delete[] wcharArray;
 	}
-	if (s && *s)
-	{
-		wlen = 0;
+	if (s && *s) {
+		len = 0;
 		slen = strlen(s);
-		charArray  = new char[slen + 1];
+		bytes  = new char[slen + 1];
 		wcharArray = new wchar[slen + 1];
-		strcpy(charArray, s);
+		strcpy(bytes, s);
 		
 		// UTF-8 -> UCS-4
-		for (int i = 0; i < slen; i++)
-		{
+		for (int i = 0; i < slen; i++) {
 			// 1st byte
 			if (s[i] == 0) {
 				break;
@@ -51,24 +48,21 @@ String& String::set(const char* s)
 				c1 = (unsigned char)s[i];
 			}
 			// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
-			if (c1 <= 0x7F)
-			{
-				wcharArray[wlen++] = c1;
+			if (c1 <= 0x7F) {
+				wcharArray[len++] = c1;
 			}
 			// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
-			else if (0xC2 <= c1 && c1 <= 0xDF)
-			{
+			else if (0xC2 <= c1 && c1 <= 0xDF) {
 				// 2nd byte
 				if (s[i] == slen - 1) {
 					break;
 				} else {
 					c2 = (unsigned char)s[++i];
 				}
-				wcharArray[wlen++] = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
+				wcharArray[len++] = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
 			}
 			// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
-			else if (0xE0 <= c1 && c1 <= 0xEF)
-			{
+			else if (0xE0 <= c1 && c1 <= 0xEF) {
 				// 2nd byte
 				if (s[i] == slen - 1) {
 					break;
@@ -81,15 +75,13 @@ String& String::set(const char* s)
 				} else {
 					c3 = (unsigned char)s[++i];
 				}
-				wcharArray[wlen++] = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+				wcharArray[len++] = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
 			}
 		}
-	}
-	else
-	{
-		charArray  = 0;
+	} else {
+		bytes  = 0;
 		wcharArray = 0;
-		wlen = 0;
+		len = 0;
 	}
 	return *this;
 }
@@ -99,9 +91,8 @@ String& String::set(int n)
 	int i, j, k;
 	char tmp, c20[20 + 1];
 	
-	if (charArray) 
-	{
-		delete[] charArray;
+	if (bytes) {
+		delete[] bytes;
 		delete[] wcharArray;
 	}
 
@@ -131,3 +122,33 @@ String& String::set(int n)
 
 	return set(c20);
 }
+
+bool String::equals(const char *s)
+{
+	if (s == NULL) return false;
+	if (strcmp(bytes, s) == 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool String::startsWith(const char* s)
+{
+	if (s == 0 || len == 0 || (int)strlen(s) > (int)strlen(bytes)) return false;
+	for (int i = 0; i < (int)strlen(s); i++) {
+		if (s[i] != bytes[i]) return false;
+	}
+	return true;
+}
+
+bool String::endsWith(const char* s)
+{
+	if (s == 0 || len == 0 || (int)strlen(s) > (int)strlen(bytes)) return false;
+	for (int i = 0; i < (int)strlen(s); i++) {
+		if (s[(int)strlen(s) - i - 1] != 
+			bytes[(int)strlen(bytes) - i - 1]) return false;
+	}
+	return true;
+}
+

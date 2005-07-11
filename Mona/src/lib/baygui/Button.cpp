@@ -23,32 +23,41 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-Button::Button(char *label)
+Button::Button()
+{
+	this->pushed = false;
+	this->label  = "button";
+	setBounds(0, 0, 40, 20);
+}
+
+Button::Button(char* label)
 {
 	this->pushed = false;
 	this->label  = label;
+	setBounds(0, 0, 40, 20);
 }
 
 Button::~Button()
 {
 }
 
-void Button::setLabel(char *label)
+void Button::setLabel(char* label)
 {
 	this->label = label;
 	repaint();
 }
 
-void Button::onPaint(Graphics *g)
+void Button::onPaint(Graphics* g)
 {
-	int w = getWidth(), h = getHeight();
+	int w = getWidth();
+	int h = getHeight();
 	
 	// 一度背景色でクリア
 	g->setColor(getBackground());
 	g->fillRect(0, 0, w, h);
 	
 	// 枠を描画
-	g->setColor(Color::BLACK);
+	g->setColor(Color::black);
 	g->drawLine(2, 0, w - 3, 0);
 	g->drawLine(2, h - 1, w - 3, h - 1);
 	g->drawLine(0, 2, 0, h - 3);
@@ -59,19 +68,19 @@ void Button::onPaint(Graphics *g)
 	g->drawLine(w - 2 , h - 2, w - 2, h - 2);
 	
 	if (this->pushed) {
-		g->setColor(Color::WHITE);
+		g->setColor(Color::white);
 		g->drawLine(2, h - 2, w - 3, h - 2);
 		g->drawLine(w - 2, 2, w - 2, h - 3);
 		g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-		g->setColor(Color::GRAY);
+		g->setColor(Color::gray);
 		g->drawLine(1, 2, 1, h - 3);
 		g->drawLine(2, 1, w - 3, 1);
 	} else {
-		g->setColor(Color::GRAY);
+		g->setColor(Color::gray);
 		g->drawLine(2, h - 2, w - 3, h - 2);
 		g->drawLine(w - 2, 2, w - 2, h - 3);
 		g->drawLine(w - 3 , h - 3, w - 3, h - 3);
-		g->setColor(Color::WHITE);
+		g->setColor(Color::white);
 		g->drawLine(1, 2, 1, h - 3);
 		g->drawLine(2, 1, w - 3, 1);
 	}
@@ -88,12 +97,12 @@ void Button::onPaint(Graphics *g)
 	if (getEnabled() == true) {
 		g->setColor(getForeground());
 	} else {
-		g->setColor(Color::GRAY);
+		g->setColor(Color::gray);
 	}
 	g->drawText(getLabel(), x, y);
 }
 
-void Button::onEvent(Event *event) {
+void Button::onEvent(Event* event) {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
 

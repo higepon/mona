@@ -14,7 +14,7 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 int mine_tile::init_tile_num = 0;
 int mine_tile::bombs_num = 0;
 int mine_tile::click_state = 0;
-Control* mine_tile::click_sender = NULL;
+Component* mine_tile::click_sender = NULL;
 Event* mine_tile::event = new Event();
 bool mine_tile::start = false;
 

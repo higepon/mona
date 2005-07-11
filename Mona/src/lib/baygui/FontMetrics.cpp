@@ -25,8 +25,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // フォントデータとオフセットリストは毎回生成・開放していると遅くなるのでstaticで保持する
 int FontMetrics::offsetListLength = 0;
-int *FontMetrics::offsetList = NULL;
-unsigned char *FontMetrics::defaultFontData = NULL;
+int* FontMetrics::offsetList = NULL;
+unsigned char* FontMetrics::defaultFontData = NULL;
 
 FontMetrics::FontMetrics()
 {
@@ -100,7 +100,7 @@ FontMetrics::~FontMetrics()
 {
 }
 
-bool FontMetrics::decodeCharacter(wchar ucs4, int *offset, int *width, int *height, char *data)
+bool FontMetrics::decodeCharacter(wchar ucs4, int* offset, int* width, int* height, char* data)
 {
 	if (ucs4 <= 0xFFFF && defaultFontData != NULL && offsetList[ucs4] != 0) {
 		int fw = defaultFontData[offsetList[ucs4] + 4];
@@ -131,7 +131,7 @@ int FontMetrics::getWidth(String str)
 	
 	int w = 0;
 	for (int i = 0; i < str.length(); i++) {
-		wchar c = str[i];
+		wchar c = str.charAt(i);
 		if (c == '\n') {
 			break;
 		}
@@ -155,7 +155,7 @@ int FontMetrics::getHeight(String str)
 {
 	int h = 12;
 	for (int i = 0; i < str.length(); i++) {
-		if (str[i] == '\n') {
+		if (str.charAt(i) == '\n') {
 			h += 12; // モナーフォントは高さが12ドット
 		}
 	}

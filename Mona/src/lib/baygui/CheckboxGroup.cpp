@@ -25,41 +25,39 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 CheckboxGroup::CheckboxGroup()
 {
-	// checkboxListのメンバーはウィンドウが保持しているので
-	// autoDeleteしないようにする
-	this->checkboxList = new LinkedList(false);
 }
 
 CheckboxGroup::~CheckboxGroup()
 {
-	delete(this->checkboxList);
+	this->checkboxList.removeAll();
 }
 
-void CheckboxGroup::add(Checkbox *check)
+void CheckboxGroup::add(Checkbox* check)
 {
 	// NULLチェック
 	if (check == NULL) return;
-	
 	check->setCheckboxGroup(this);
-	this->checkboxList->add(check);
+	this->checkboxList.add(check);
 }
 
 Checkbox *CheckboxGroup::getSelectedCheckbox()
 {
-	for (int i = 0; i < this->checkboxList->getLength(); i++) {
-		Checkbox *chk = (Checkbox *)this->checkboxList->get(i);
+	int I = this->checkboxList.size();
+	for (int i = 0; i < I; i++) {
+		Checkbox *chk = (Checkbox *)(this->checkboxList.get(i));
 		if (chk->getChecked() == true) return chk;
 	}
 	return NULL;
 }
 
-void CheckboxGroup::onEvent(Event *e)
+void CheckboxGroup::onEvent(Event* event)
 {
 	// 選択されているチェックボックス以外を未選択にする
-	for (int i = 0; i < this->checkboxList->getLength(); i++) {
-		Checkbox *chk = (Checkbox *)this->checkboxList->get(i);
-		if (e->getSource() != chk) {
-			chk->setChecked(false);
+	int I = this->checkboxList.size();
+	for (int i = 0; i < I; i++) {
+		Checkbox *c = (Checkbox *)(this->checkboxList.get(i));
+		if (event->getSource() != c) {
+			c->setChecked(false);
 		}
 	}
 }

@@ -26,43 +26,48 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ListBox::ListBox()
 {
 	this->selectedIndex =  -1;
-	this->dataList = new LinkedList();
 	this->itemEvent.setType(Event::ITEM_SELECTED);
 	this->itemEvent.setSource(this);
-	setBackground(Color::WHITE);
+	setBackground(Color::white);
 }
 
 ListBox::~ListBox()
 {
-	delete(this->dataList);
+	int I = this->dataList.size();
+	for (int i = 0; i < I; i++) {
+		String* s = (String *)this->dataList.remove(0);
+		delete(s);
+	}
 }
 
-char *ListBox::getSelectedItem()
+char* ListBox::getSelectedItem()
 {
-	return ((String *)dataList->get(this->selectedIndex))->getBytes();
+	return ((String *)dataList.get(this->selectedIndex))->getBytes();
 }
 
 void ListBox::select(int index)
 {
-	if (0 <= index && index < this->dataList->getLength()) {
+	if (0 <= index && index < this->dataList.size()) {
 		this->selectedIndex = index;
 		repaint();
 	}
 }
 
-void ListBox::add(char *item)
+void ListBox::add(char* item)
 {
-	this->dataList->add(new String(item));
+	this->dataList.add(new String(item));
 }
 
 void ListBox::remove(int index)
 {
-	this->dataList->remove(index);
+	String* s = (String *)this->dataList.remove(index);
+	delete(s);
 }
 
-void ListBox::onPaint(Graphics *g)
+void ListBox::onPaint(Graphics* g)
 {
-	int i, w = getWidth(), h = getHeight();
+	int w = getWidth();
+	int h = getHeight();
 	
 	// 外枠
 	if (getFocused() == true && getEnabled() == true) {
@@ -80,20 +85,21 @@ void ListBox::onPaint(Graphics *g)
 	g->drawRect(1, 1, w - 2, h - 2);
 
 	// 文字
-	for (i = 0; i < this->dataList->getLength(); i++) {
+	int I = this->dataList.size();
+	for (int i = 0; i < I; i++) {
 		if (selectedIndex == i && getEnabled() == true) {
 			g->setColor(0, 128, 255);
 			g->fillRect(3, (16 * i) + 3, w - 6, 16);
 			g->setColor(getBackground());
-			g->drawText(((String *)dataList->get(i))->getBytes(), 4, (16 * i) + 6);
+			g->drawText(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
 		} else {
 			g->setColor(getForeground());
-			g->drawText(((String *)dataList->get(i))->getBytes(), 4, (16 * i) + 6);
+			g->drawText(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
 		}
 	} 
 }
 
-void ListBox::onEvent(Event *event)
+void ListBox::onEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
@@ -108,7 +114,7 @@ void ListBox::onEvent(Event *event)
 				getParent()->onEvent(&this->itemEvent);
 			}
 		} else if (keycode == KeyEvent::VKEY_DOWN) {
-			if (this->selectedIndex < this->dataList->getLength() - 1 && 
+			if (this->selectedIndex < this->dataList.size() - 1 && 
 				this->selectedIndex < ((getHeight() - 22) / 16))
 			{
 				this->selectedIndex++;

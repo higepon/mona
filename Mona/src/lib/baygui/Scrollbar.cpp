@@ -140,24 +140,20 @@ void Scrollbar::setValue(int value)
 	repaint();
 }
 
-void Scrollbar::setRect(int x, int y, int w, int h)
+void Scrollbar::setBounds(int x, int y, int w, int h)
 {
 	// 幅と高さは16固定とする
-	if (this->orientation == VERTICAL) {
-		Control::setRect(x, y, 16, h);
-	} else {
-		Control::setRect(x, y, w, 16);
-	}
+	(this->orientation == VERTICAL) ? Component::setBounds(x, y, 16, h) : Component::setBounds(x, y, w, 16);
 }
 
-void Scrollbar::onPaint(Graphics *g)
+void Scrollbar::onPaint(Graphics* g)
 {
 	int w = getWidth(), h = getHeight();
 	
 	// 外枠
-	g->setColor(Color::GRAY);
+	g->setColor(Color::gray);
 	g->fillRect(0,0,getWidth(),getHeight());
-	g->setColor(Color::BLACK);
+	g->setColor(Color::black);
 	g->drawRect(0,0,getWidth(),getHeight());
 	
 	// 垂直スクロールバー
@@ -205,10 +201,10 @@ void Scrollbar::onPaint(Graphics *g)
 	}
 }
 
-void Scrollbar::onEvent(Event *event)
+void Scrollbar::onEvent(Event* event)
 {
 	if (event->getType() == MouseEvent::MOUSE_PRESSED) {
-		MouseEvent *me = (MouseEvent *)event;
+		MouseEvent* me = (MouseEvent *)event;
 		int mx = me->getX();
 		int my = me->getY();
 		// 垂直スクロールバー

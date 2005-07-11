@@ -21,47 +21,51 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 #if !defined(_BUTTON_H_INCLUDED_)
 #define _BUTTON_H_INCLUDED_
 
-/**
- ボタンクラス
-*/
-class Button : public Control {
-private:
-	/** ボタンが押されたかどうか */
-	bool pushed;
-	/** ボタンのラベル */
-	String label;
-	
-public:
+namespace baygui {
 	/**
-	 コンストラクタ
-	 @param label ラベル
-	 */
-	Button(char *label);
-	
-	/** デストラクタ */
-	virtual ~Button();
-	
-	/**
-	 ラベルを設定する
-	 @param label ラベル
-	 */
-	virtual void setLabel(char *label);
-	
-	/** ボタンが押されたかどうかを得る */
-	inline bool getPushed() { return this->pushed; }
-	
-	/** ラベルを得る */
-	inline char *getLabel() { return this->label.getBytes(); }
-	
-	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g);
-	
-	/** イベントハンドラ */
-	virtual void onEvent(Event *event);
-};
+	 ボタンクラス
+	*/
+	class Button : public Component {
+	private:
+		/** ボタンが押されたかどうか */
+		bool pushed;
+		/** ボタンのラベル */
+		String label;
+		
+	public:
+		/** デフォルトコンストラクタ */
+		Button();
+		
+		/**
+		 コンストラクタ
+		 @param label ラベル
+		 */
+		Button(char* label);
+		
+		/** デストラクタ */
+		virtual ~Button();
+		
+		/**
+		 ラベルを設定する
+		 @param label ラベル
+		 */
+		virtual void setLabel(char* label);
+		
+		/** ボタンが押されたかどうかを得る */
+		inline bool getPushed() { return this->pushed; }
+		
+		/** ラベルを得る */
+		inline char* getLabel() { return this->label.getBytes(); }
+		
+		/** 描画ハンドラ */
+		virtual void onPaint(Graphics* g);
+		
+		/** イベントハンドラ */
+		virtual void onEvent(Event* event);
+	};
+}
 
 #endif // _BUTTON_H_INCLUDED_

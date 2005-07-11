@@ -21,52 +21,55 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "baygui.h"
+#if !defined(_RECTANGLE_H_INCLUDED_)
+#define _RECTANGLE_H_INCLUDED_
 
-Label::Label(char* text)
-{
-	this->align = Label::LEFT;
-	this->text = text;
+namespace baygui {
+	/**
+	 ‹éŒ`ƒNƒ‰ƒX
+	*/
+	class Rectangle : public Object {
+	public:
+		/** xiâ‘ÎÀ•Wj*/
+		int x;
+		/** yiâ‘ÎÀ•Wj*/
+		int y;
+		/** ‚‚³ */
+		int height;
+		/** • */
+		int width;
+		
+	public:
+		/** ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+		Rectangle() {
+			this->x = this->y = this->width = this->height = 0;
+		}
+		
+		/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+		Rectangle(int x, int y, int w, int h)
+		{
+			this->x = x;
+			this->y = y;
+			this->width = w;
+			this->height = h;
+		}
+		
+		/** ƒfƒXƒgƒ‰ƒNƒ^ */
+		virtual ~Rectangle() {}
+		
+		/** ˆÊ’u‚Æ‘å‚«‚³‚ðÝ’è‚·‚é */
+		inline void setBounds(int x, int y, int w, int h)
+		{
+			setLocation(x, y);
+			setSize(w, h);
+		}
+		
+		/** ˆÊ’u‚ðÝ’è‚·‚é */
+		inline void setLocation(int x, int y) { this->x = x; this->y = y; }
+		
+		/** ‘å‚«‚³‚ðÝ’è‚·‚é */
+		inline void setSize(int w, int h) { this->width = w; this->height = h; }
+	};
 }
 
-Label::Label(char* text, int align)
-{
-	this->align = align;
-	this->text = text;
-}
-
-Label::~Label()
-{
-}
-
-void Label::setText(char* text)
-{
-	this->text = text;
-	repaint();
-}
-
-void Label::onPaint(Graphics* g)
-{
-	int w = getWidth();
-	int h = getHeight();
-	
-	// å¡—ã‚Šã¤ã¶ã—
-	g->setColor(getBackground());
-	g->fillRect(0, 0, w, h);
-
-	// æ–‡å­—
-	int fw = getFontMetrics()->getWidth(getText());
-	int fh = getFontMetrics()->getHeight(getText());
-	if (getEnabled() == true) {
-		g->setColor(getForeground());
-	} else {
-		g->setColor(Color::gray);
-	}
-	if (this->align == Label::RIGHT) {
-		g->drawText(getText(), (w - fw), (h - fh) / 2);
-	} else if (this->align == Label::CENTER) {
-		g->drawText(getText(), (w - fw) / 2, (h - fh) / 2);
-	} else {
-		g->drawText(getText(), 0, (h - fh) / 2);
-	}
-}
+#endif // _RECTANGLE_H_INCLUDED_

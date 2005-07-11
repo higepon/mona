@@ -103,9 +103,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //#define WINDOWMANAGER_STARUP_MESSAGE "starting baygui ...\n"
 //#define WINDOWMANAGER_SHUTDOWN_MESSAGE "shutdown baygui ...\n"
 
-/** テキストフィールド文字列最大長 */
-#define MAX_TEXT_LEN      128
-
 // ==================================================
 // BayGUI ヘッダファイル
 // ==================================================
@@ -114,17 +111,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui/Object.h"
 #include "baygui/Pointer.h"
 #include "baygui/String.h"
-#include "baygui/LinkedList.h"
 #include "baygui/Vector.h"
 #include "baygui/Hashtable.h"
 #include "baygui/Event.h"
 #include "baygui/KeyEvent.h"
 #include "baygui/MouseEvent.h"
-#include "baygui/Rect.h"
+#include "baygui/insets.h"
+#include "baygui/Rectangle.h"
 #include "baygui/FontMetrics.h"
 #include "baygui/Image.h"
 #include "baygui/Graphics.h"
-#include "baygui/Control.h"
+#include "baygui/Component.h"
 #include "baygui/Checkbox.h"
 #include "baygui/CheckboxGroup.h"
 #include "baygui/Button.h"
@@ -134,5 +131,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui/TextField.h"
 #include "baygui/Container.h"
 #include "baygui/Window.h"
+
+using namespace baygui;
 
 #endif // _BAYGUI_H_INCLUDED_

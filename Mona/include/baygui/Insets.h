@@ -21,52 +21,42 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "baygui.h"
+#if !defined(_INSETS_H_INCLUDED_)
+#define _INSETS_H_INCLUDED_
 
-Label::Label(char* text)
-{
-	this->align = Label::LEFT;
-	this->text = text;
+namespace baygui {
+	/**
+	 ‹éŒ`ƒNƒ‰ƒX
+	*/
+	class Insets : public Object {
+	public:
+		/** ¶’[‚©‚ç‚Ì‹——£ */
+		int left;
+		/** ã’[‚©‚ç‚Ì‹——£ */
+		int top;
+		/** ‰º’[‚©‚ç‚Ì‹——£ */
+		int bottom;
+		/** ‰E’[‚©‚ç‚Ì‹——£ */
+		int right;
+		
+	public:
+		/** ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+		Insets() {
+			this->left = this->top = this->bottom = this->right = 0;
+		}
+		
+		/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
+		Insets(int left, int top, int bottom, int right)
+		{
+			this->left = left;
+			this->top = top;
+			this->bottom = bottom;
+			this->right = right;
+		}
+		
+		/** ƒfƒXƒgƒ‰ƒNƒ^ */
+		virtual ~Insets() {}
+	};
 }
 
-Label::Label(char* text, int align)
-{
-	this->align = align;
-	this->text = text;
-}
-
-Label::~Label()
-{
-}
-
-void Label::setText(char* text)
-{
-	this->text = text;
-	repaint();
-}
-
-void Label::onPaint(Graphics* g)
-{
-	int w = getWidth();
-	int h = getHeight();
-	
-	// å¡—ã‚Šã¤ã¶ã—
-	g->setColor(getBackground());
-	g->fillRect(0, 0, w, h);
-
-	// æ–‡å­—
-	int fw = getFontMetrics()->getWidth(getText());
-	int fh = getFontMetrics()->getHeight(getText());
-	if (getEnabled() == true) {
-		g->setColor(getForeground());
-	} else {
-		g->setColor(Color::gray);
-	}
-	if (this->align == Label::RIGHT) {
-		g->drawText(getText(), (w - fw), (h - fh) / 2);
-	} else if (this->align == Label::CENTER) {
-		g->drawText(getText(), (w - fw) / 2, (h - fh) / 2);
-	} else {
-		g->drawText(getText(), 0, (h - fh) / 2);
-	}
-}
+#endif // _INSETS_H_INCLUDED_

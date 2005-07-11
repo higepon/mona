@@ -24,40 +24,42 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_OBJECT_H_INCLUDED_)
 #define _OBJECT_H_INCLUDED_
 
-/** すべてのクラスの元になるクラス */
-class Object {
-private:
-	/** 参照カウント */
-	int refCount;
-	/** スレッドID */
-	unsigned int threadID;
-	/** GUIサーバーID */
-	unsigned int guisvrID;
-	
-public:
-	/** デフォルトコンストラクタ */
-	Object();
-	
-	/** デストラクタ */
-	virtual ~Object();
-	
-	/**
-	 指定されたオブジェクトと等しいかどうかを得る
-	 @param obj 比較対象のオブジェクト
-	*/
-	virtual bool equals(Object* obj);
-	
-	/** 参照カウントを得る */
-	inline int getRefCount() { return this->refCount; }
-	
-	/** 参照カウントのポインターを得る */
-	inline int* getPointer() { return &this->refCount; }
-	
-	/** スレッドIDを得る */
-	inline unsigned int getThreadID() { return this->threadID; }
-	
-	/** GUIサーバーIDを得る */
-	inline unsigned int getGuisvrID() { return this->guisvrID; }
-};
+namespace baygui {
+	/** すべてのクラスの元になるクラス */
+	class Object {
+	private:
+		/** 参照カウント */
+		int refCount;
+		/** スレッドID */
+		unsigned int threadID;
+		/** GUIサーバーID */
+		unsigned int guisvrID;
+		
+	public:
+		/** デフォルトコンストラクタ */
+		Object();
+		
+		/** デストラクタ */
+		virtual ~Object();
+		
+		/**
+		 指定されたオブジェクトと等しいかどうかを得る
+		 @param obj 比較対象のオブジェクト
+		*/
+		virtual bool equals(Object* obj);
+		
+		/** 参照カウントを得る */
+		inline int getRefCount() { return this->refCount; }
+		
+		/** 参照カウントのポインターを得る */
+		inline int* getPointer() { return &this->refCount; }
+		
+		/** スレッドIDを得る */
+		inline unsigned int getThreadID() { return this->threadID; }
+		
+		/** GUIサーバーIDを得る */
+		inline unsigned int getGuisvrID() { return this->guisvrID; }
+	};
+}
 
 #endif // _OBJECT_H_INCLUDED_

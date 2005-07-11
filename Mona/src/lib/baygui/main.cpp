@@ -31,9 +31,10 @@ int main(int argc, char** argv)
 #endif
 {
 #ifdef SDL
-	Window* w = new Window();
-	w->setRect(10,10,320,240);
-	w->run();
+	Window* window = new Window();
+	window->setBounds(100,100,320,240);
+	window->run();
+	delete(window);
 #endif
 	return 0;
 }

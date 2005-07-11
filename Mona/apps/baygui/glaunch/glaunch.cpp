@@ -1,28 +1,24 @@
 /*
-Copyright (c) 2004 bayside
-All rights reserved.
+Copyright (c) 2005 bayside
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this history of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this history of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
+Permission is hereby granted, free of charge, to any person 
+obtaining a copy of this software and associated documentation files 
+(the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, 
+publish, distribute, sublicense, and/or sell copies of the Software, 
+and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The above copyright notice and this permission notice shall be 
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <baygui.h>
@@ -38,7 +34,7 @@ private:
 
 public:
 	Glaunch() {
-		setRect(0, 22, 108 + INSETS_LEFT + INSETS_RIGHT, 250 + INSETS_TOP + INSETS_BOTTOM);
+		setBounds(0, 22, 108 + INSETS_LEFT + INSETS_RIGHT, 250 + INSETS_TOP + INSETS_BOTTOM);
 		setTitle("mokon");
 
 		// 前回の選択位置
@@ -46,7 +42,7 @@ public:
 
 		// アプリ一覧リスト
 		list = new ListBox();
-		list->setRect(0, 0, 108, 250);
+		list->setBounds(0, 0, 108, 250);
 		add(list);
 
 		// APPSに移動
@@ -340,20 +336,20 @@ public:
 	ShortCut(int type) {
 		this->type = type;
 		if (this->type == DISKICON) {
-			setRect(720, 22, 64, 64);
+			setBounds(720, 22, 64, 64);
 			setTitle("Mona HD");
 		} else if (this->type == TERMINALICON) {
-			setRect(720, 86, 64, 64);
+			setBounds(720, 86, 64, 64);
 			setTitle("た～みなる");
 		} else if (this->type == TRASHBOXICON) {
-			setRect(720, 510, 64, 64);
+			setBounds(720, 510, 64, 64);
 			setTitle("ゴミ箱");
 		}
 	}
 
 	/** ウィンドウ生成時に呼ばれる */
-	virtual void onStart() {
-		Window::onStart();
+	virtual void addNotify() {
+		Window::addNotify();
 		this->_window->Flags |= WINDOWFLAGS_BOTTOMMOST | WINDOWFLAGS_NOBORDER;
 	}
 
@@ -384,9 +380,9 @@ public:
 		// タイトル
 		int fw = getFontMetrics()->getWidth(getTitle());
 		//int fh = this->_metrics->getHeight(getTitle());
-		g->setColor(Color::WHITE);
+		g->setColor(Color::white);
 		g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
-		g->setColor(Color::BLACK);
+		g->setColor(Color::black);
 		g->drawText(getTitle(), (w - fw)/2, 36);
 	}
 
@@ -418,8 +414,8 @@ public:
 int MonaMain(List<char*>* pekoe) {
 	if (pekoe->size() == 0) {
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISK", MONAPI_FALSE);
-		//monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERM", MONAPI_FALSE);
-		//monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASH", MONAPI_FALSE);
+		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERM", MONAPI_FALSE);
+		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASH", MONAPI_FALSE);
 	} else {
 		char *arg0 = pekoe->get(0);
 		if (strcmp(arg0, "DISK") == 0) {
