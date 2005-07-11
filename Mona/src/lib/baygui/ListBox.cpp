@@ -42,7 +42,8 @@ ListBox::~ListBox()
 
 char* ListBox::getSelectedItem()
 {
-	return ((String *)dataList.get(this->selectedIndex))->getBytes();
+	String* s = (String *)dataList.get(this->selectedIndex);
+	return (s == NULL) ? NULL : s->getBytes();
 }
 
 void ListBox::select(int index)
