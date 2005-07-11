@@ -20,7 +20,6 @@ SOURCES = \
 	Hashtable.cpp \
 	Image.cpp \
 	Label.cpp \
-	LinkedList.cpp \
 	ListBox.cpp \
 	Object.cpp \
 	Scrollbar.cpp \
