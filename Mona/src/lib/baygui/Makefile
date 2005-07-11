@@ -17,6 +17,7 @@ SOURCES = \
 	Container.cpp \
 	FontMetrics.cpp \
 	Graphics.cpp \
+	Hashtable.cpp \
 	Image.cpp \
 	Label.cpp \
 	LinkedList.cpp \
@@ -25,6 +26,7 @@ SOURCES = \
 	Scrollbar.cpp \
 	String.cpp \
 	TextField.cpp \
+	Vector.cpp \
 	Window.cpp
 
 MONADIR = ../../..
