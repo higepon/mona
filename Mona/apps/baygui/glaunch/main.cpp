@@ -26,7 +26,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gshortcut.h"
 
 /** メイン */
-int MonaMain(List<char*>* pekoe) {
+#if defined(MONA)
+int MonaMain(List<char*>* pekoe)
+{
 	if (pekoe->size() == 0) {
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISKICON", MONAPI_FALSE);
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERMINALICON", MONAPI_FALSE);
@@ -51,5 +53,13 @@ int MonaMain(List<char*>* pekoe) {
 			delete(launch);
 		}
 	}
+}
+#else
+int main(int argc, char** argv)
+{
+	Glaunch *launch = new Glaunch();
+	launch->run();
+	delete(launch);
 	return 0;
 }
+#endif

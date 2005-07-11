@@ -247,7 +247,9 @@ ShortCut::~ShortCut()
 /** ウィンドウ生成時に呼ばれる */
 void ShortCut::addNotify() {
 	Window::addNotify();
+#if defined(MONA)
 	this->_window->Flags |= WINDOWFLAGS_BOTTOMMOST | WINDOWFLAGS_NOBORDER;
+#endif
 }
 
 /** 再描画 */
@@ -285,6 +287,7 @@ void ShortCut::onPaint(Graphics *g) {
 
 /** イベントハンドラ */
 void ShortCut::postEvent(Event *event) {
+#if defined(MONA)
 	int w = getWidth();
 	int h = getHeight();
 
@@ -304,4 +307,5 @@ void ShortCut::postEvent(Event *event) {
 			monapi_call_process_execute_file("/APPS/BAYGUI/GSHELL.EX5", MONAPI_FALSE);
 		}
 	}
+#endif
 }

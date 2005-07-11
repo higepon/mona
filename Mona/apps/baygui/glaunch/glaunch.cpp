@@ -22,7 +22,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <baygui.h>
+#ifdef MONA
 #include <monapi/CString.h>
+#endif
 #include "glaunch.h"
 
 /** デフォルトコンストラクタ */
@@ -39,6 +41,7 @@ Glaunch::Glaunch()
 	list->setBounds(0, 0, 108, 250);
 	add(list);
 
+#if defined(MONA)
 	// APPSに移動
 	if (monapi_call_change_directory("/APPS/BAYGUI") == MONA_FAILURE) {
 		return;
@@ -75,6 +78,11 @@ Glaunch::Glaunch()
 
 	monapi_cmemoryinfo_dispose(mi);
 	monapi_cmemoryinfo_delete(mi);
+#else
+	list->add("TEST1.EXE");
+	list->add("TEST2.EXE");
+	list->add("TEST3.EXE");
+#endif
 }
 
 /** デストラクタ */
@@ -86,6 +94,7 @@ Glaunch::~Glaunch()
 /** アプリ実行 */
 void Glaunch::execute()
 {
+#if defined(MONA)
 	char name[48];
 	char *item = list->getSelectedItem();
 	if (prevIndex == -1 || item == NULL || strlen(item) == 0) return;
@@ -104,6 +113,7 @@ void Glaunch::execute()
 	// アプリ実行
 	prevIndex = -1;
 	monapi_call_process_execute_file(name, MONAPI_TRUE);
+#endif
 }
 
 /** イベントハンドラ */
