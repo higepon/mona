@@ -1,5 +1,5 @@
 TARGET  = GLAUNCH
-SOURCES = glaunch.cpp
+SOURCES = main.cpp glaunch.cpp gshortcut.cpp
 INSTDIR = $(BINDIR)/iso/APPS/BAYGUI
 
 MONADIR    = ../../..
