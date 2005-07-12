@@ -90,7 +90,7 @@ private:
 	inline void ls(char *pathname) {
 	#ifdef MONA
 		// ディレクトリを開く
-		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(pathname, MONAPI_TRUE);
+		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(pathname, MONAPI_FALSE);
 		if (mi == NULL) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return;
@@ -257,7 +257,7 @@ private:
 			strcat(temp, "/");
 
 			// ディレクトリを開く
-			monapi_cmemoryinfo* mi = monapi_call_file_read_directory(temp, MONAPI_TRUE);
+			monapi_cmemoryinfo* mi = monapi_call_file_read_directory(temp, MONAPI_FALSE);
 			if (mi == NULL) return;
 			int size = *(int*)mi->Data;
 			if (size == 0) return;
@@ -295,7 +295,7 @@ private:
 	inline bool existsFile(char *filename) {
 	#ifdef MONA
 		// ディレクトリを開く
-		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_TRUE);
+		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_FALSE);
 		if (mi == NULL) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return false;
