@@ -26,7 +26,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace baygui {
 	/**
-	 矩形クラス
+	 配置位置クラス
 	*/
 	class Insets : public Object {
 	public:

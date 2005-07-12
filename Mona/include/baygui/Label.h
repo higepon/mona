@@ -71,7 +71,7 @@ namespace baygui {
 		inline char* getText() { return this->text.getBytes(); }
 		
 		/** •`‰æƒnƒ“ƒhƒ‰ */
-		virtual void onPaint(Graphics* g);
+		virtual void paint(Graphics* g);
 	};
 }
 

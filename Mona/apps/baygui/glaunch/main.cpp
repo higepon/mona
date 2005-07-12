@@ -36,23 +36,27 @@ int MonaMain(List<char*>* pekoe)
 	} else {
 		char* arg0 = pekoe->get(0);
 		if (strcmp(arg0, "DISKICON") == 0) {
-			ShortCut *shortcut = new ShortCut(DISKICON);
+			ShortCut* shortcut = new ShortCut();
+			shortcut->setType(DISKICON);
 			shortcut->run();
 			delete(shortcut);
 		} else if (strcmp(arg0, "TERMINALICON") == 0) {
-			ShortCut *shortcut = new ShortCut(TERMINALICON);
+			ShortCut* shortcut = new ShortCut();
+			shortcut->setType(TERMINALICON);
 			shortcut->run();
 			delete(shortcut);
 		} else if (strcmp(arg0, "TRASHBOXICON") == 0) {
-			ShortCut *shortcut = new ShortCut(TRASHBOXICON);
+			ShortCut* shortcut = new ShortCut();
+			shortcut->setType(TRASHBOXICON);
 			shortcut->run();
 			delete(shortcut);
 		} else if (strcmp(arg0, "FILE") == 0) {
-			Glaunch *launch = new Glaunch();
+			Glaunch* launch = new Glaunch();
 			launch->run();
 			delete(launch);
 		}
 	}
+	return 0;
 }
 #else
 int main(int argc, char** argv)

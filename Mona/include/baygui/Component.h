@@ -49,9 +49,9 @@ namespace baygui {
 		/** 幅 */
 		int width;
 		/** 背景色 */
-		unsigned int backColor;
+		dword backColor;
 		/** 前景色 */
-		unsigned int foreColor;
+		dword foreColor;
 		/** フォントスタイル */
 		int fontStyle;
 		/** 部品の大きさ */
@@ -76,7 +76,7 @@ namespace baygui {
 		
 		/**
 		 部品生成ハンドラ.
-		 後でonExit()呼ぶと再初期化できる。
+		 後でremoveNotify()呼ぶと再初期化できる。
 		 */
 		virtual void addNotify();
 		
@@ -87,18 +87,15 @@ namespace baygui {
 		virtual void removeNotify();
 
 		/** イベントハンドラ */
-		virtual void onEvent(Event* event);
+		virtual void processEvent(Event* event);
 		
 		/** 描画ハンドラ */
-		virtual void onPaint(Graphics* g);
+		virtual void paint(Graphics* g);
 		
 		/** イベント処理 */
-		virtual void postEvent(Event* event);
+		virtual void dispatchEvent(Event* event);
 		
-		/**
-		 再描画.
-		 この中でonPaint()とupdate()を呼ぶ。
-		 */
+		/** 再描画 */
 		virtual void repaint();
 		
 		/** 部品更新 */
@@ -132,10 +129,10 @@ namespace baygui {
 		inline Rectangle* getBounds() { return &this->bounds; }
 		
 		/** 背景色を得る */
-		inline unsigned int getBackground() { return this->backColor; }
+		inline dword getBackground() { return this->backColor; }
 		
 		/** 前景色を得る */
-		inline unsigned int getForeground() { return this->foreColor; }
+		inline dword getForeground() { return this->foreColor; }
 		
 		/** フォントスタイルを得る */
 		inline int getFontStyle() { return this->fontStyle; }
@@ -203,10 +200,10 @@ namespace baygui {
 		virtual void setParent(Container* parent);
 		
 		/** 背景色を設定する */
-		virtual void setBackground(unsigned int backColor);
+		virtual void setBackground(dword backColor);
 		
 		/** 前景色を設定する */
-		virtual void setForeground(unsigned int foreColor);
+		virtual void setForeground(dword foreColor);
 		
 		/**
 		 フォントスタイル（通常、太字、斜字、固定幅）を設定する.

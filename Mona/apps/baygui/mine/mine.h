@@ -15,7 +15,7 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 #include <baygui.h>
 #include "tile.h"
 
-class mine : public Window {
+class mine : public Frame {
 	mine_tile* tiles[9][9];
 	void tile_init();
 	void make_bombs_position(bool*);
@@ -26,7 +26,7 @@ class mine : public Window {
 public:
 	mine();
 	~mine();
-	void onEvent(Event*);
+	void processEvent(Event*);
 };
 
 #endif

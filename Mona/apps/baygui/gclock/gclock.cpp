@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <baygui.h>
 
-class GClock : public Window {
+class GClock : public Frame {
 private:
 	Label *label;
 	MonAPI::Date *date;

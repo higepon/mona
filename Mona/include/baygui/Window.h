@@ -31,28 +31,14 @@ namespace baygui {
 	class Window : public Container {
 	public:
 		//
-		// ウィンドウオフセット
-		//
-		/** ウィンドウ上端 */
-		static const int INSETS_TOP       = 22;
-		/** ウィンドウ下端 */
-		static const int INSETS_BOTTOM    = 6;
-		/** ウィンドウ左端 */
-		static const int INSETS_LEFT      = 6;
-		/** ウィンドウ右端 */
-		static const int INSETS_RIGHT     = 6;
-		
-		//
 		// ウィンドウの状態
 		//
 		/** 通常時 */
-		static const int STATE_NORMAL     = 0;
+		static const int STATE_NORMAL = 0;
 		/** ウィンドウ移動中 */
-		static const int STATE_MOVING     = 1;
-
+		static const int STATE_MOVING = 1;
+		
 	private:
-		/** タイトル */
-		String title;
 		/** 修飾キー */
 		int modifiers;
 		/** ウィンドウの状態 */
@@ -66,11 +52,11 @@ namespace baygui {
 		/** オフセットY */
 		int offsetY;
 		/** オーバーラップウィンドウの状態 */
-		unsigned int overlap;
+		dword overlap;
 		/** 実行中フラグ */
 		bool isRunning;
 		/** タイマーID */
-		unsigned int timerID;
+		dword timerID;
 		/** キーイベント */
 		KeyEvent keyEvent;
 		/** マウスイベント */
@@ -79,6 +65,12 @@ namespace baygui {
 		Event timerEvent;
 		/** カスタムイベント */
 		Event customEvent;
+
+	protected:
+		/** フチの状態 */
+		int border;
+		/** 配置位置 */
+		Insets insets;
 		/** 描画領域 */
 		Graphics* _g;
 		/** 描画バッファー */
@@ -87,12 +79,21 @@ namespace baygui {
 		Graphics* __g;
 		/** 内部描画バッファー */
 		Image* __buffer;
-		
-	#ifdef MONA
-	protected:
 		/** GUIサーバー上のウィンドウオブジェクト */
 		guiserver_window* _window;
-	#endif
+	
+	protected:
+		/** 閉じるボタンがクリックされたかどうか */
+		virtual bool getCloseButtonClicked(int px, int py)
+		{
+			return false;
+		}
+		
+		/** タイトルバーがクリックされたかどうか */
+		virtual bool getTitlebarClicked(int px, int py)
+		{
+			return (0 <= px && px < getWidth() && 0 <= py && py < getHeight()) ? true : false;
+		}
 
 	public:
 		/** コンストラクタ */
@@ -116,26 +117,16 @@ namespace baygui {
 		virtual void removeNotify();
 
 		/** ハンドルを得る */
-	#ifdef MONA
-		inline unsigned int getHandle() { return (this->_window != NULL) ? this->_window->Handle : 0; }
-	#else
-		inline unsigned int getHandle() { return 0; }
-	#endif
+		inline dword getHandle() { return (this->_window != NULL) ? this->_window->Handle : 0; }
+		
+		/** 配置位置を得る */
+		virtual Insets* getInsets();
 		
 		/** 描画オブジェクトを得る */
 		virtual Graphics* getGraphics();
 		
 		/** 内部バッファーを得る */
 		virtual Image* getBuffer();
-		
-		/** タイトルを得る */
-		inline char* getTitle() { return this->title.getBytes(); }
-		
-		/**
-		 タイトル設定
-		 @param title タイトル
-		 */
-		virtual void setTitle(char* title);
 		
 		/**
 		 表示状態を設定する
@@ -163,7 +154,7 @@ namespace baygui {
 		virtual void update();
 		
 		/** イベント処理 */
-		virtual void postEvent(Event* event);
+		virtual void dispatchEvent(Event* event);
 		
 		/** アプリケーションループを抜ける */
 		virtual void stop();

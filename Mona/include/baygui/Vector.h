@@ -27,8 +27,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace baygui {
 	/** オブジェクトの可変長配列を格納できるクラス */
 	class Vector : public Object {
-	protected:
+	public:
 		/** デフォルト容量 */
+	
+	private:
 		static const int defaultCapacity = 5;
 		/** 要素一覧 */
 		Object** elementList;

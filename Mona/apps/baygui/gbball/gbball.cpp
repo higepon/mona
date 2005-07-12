@@ -37,24 +37,23 @@ static int point[16][2] = {
 	{ 196, 100 }
 };
 
-class GBBall : public Window {
-private:
-	Label* label;
-
+class GBBall : public Frame {
 public:
-	GBBall(){
+	GBBall()
+	{
 		setBounds((800 - 212) / 2, (600 - 228) / 2, 212, 228);
 		setTitle("bball");
 	}
-	void onPaint(Graphics* g) {
-		int i, j;
+	
+	void paint(Graphics* g)
+	{
 		g->setColor(0, 0, 0);
 		g->fillRect(0, 0, 200, 200);
-		for (i = 0; i <= 14; i++) {
+		for (int i = 0; i <= 14; i++) {
 			int x0, y0, dis;
 			x0 = point[i][0];
 			y0 = point[i][1];
-			for (j = i + 1; j <= 15; j++) {
+			for (int j = i + 1; j <= 15; j++) {
 				dis = j - i; /* 2‚Â‚Ì“_‚Ì‹——£ */
 				if (dis >= 8)
 				dis = 15 - dis; /* ‹t‰ñ‚è‚É”‚¦‚é */

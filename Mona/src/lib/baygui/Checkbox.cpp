@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui.h"
 
 /** 未チェック（パレット） */
-unsigned int unchecked_palette[] = {
+static dword unchecked_palette[] = {
 	0xff040204,
 	0xff8c8e8c,
 	0xffe4e2e4,
@@ -38,7 +38,7 @@ unsigned int unchecked_palette[] = {
 };
 
 /** 未チェック（データ）*/
-unsigned char unchecked_data[] = {
+static unsigned char unchecked_data[] = {
 	0x6,0x6,0x6,0x6,0x3,0x0,0x0,0x3,0x6,0x6,0x6,0x6,
 	0x6,0x6,0x0,0x8,0x2,0x2,0x2,0x9,0x3,0x0,0x6,0x6,
 	0x6,0x0,0x9,0x2,0x7,0x5,0x5,0x5,0x2,0x1,0x0,0x6,
@@ -54,7 +54,7 @@ unsigned char unchecked_data[] = {
 };
 
 /** チェック（パレット） */
-unsigned int checked_palette[] = {
+static dword checked_palette[] = {
 	0xff040204,
 	0xff8c8e8c,
 	0xff4c4e4c,
@@ -69,7 +69,7 @@ unsigned int checked_palette[] = {
 };
 
 /** チェック（データ）*/
-unsigned char checked_data[] = {
+static unsigned char checked_data[] = {
 	0x4,0x4,0x4,0x4,0x7,0x0,0x0,0x7,0x4,0x4,0x4,0x4,
 	0x4,0x4,0x7,0x0,0x2,0xa,0xa,0xa,0x2,0x0,0x4,0x4,
 	0x4,0x7,0x2,0xa,0x6,0x6,0x6,0x1,0x1,0x8,0x0,0x4,
@@ -106,8 +106,8 @@ void Checkbox::setChecked(bool checked)
 		this->checked = true;
 		// 選択イベント発生
 		if (this->group != NULL) {
-			this->group->onEvent(&this->itemEvent);
-			getParent()->onEvent(&this->itemEvent);
+			this->group->processEvent(&this->itemEvent);
+			getParent()->processEvent(&this->itemEvent);
 		}
 		repaint();
 	}
@@ -119,7 +119,7 @@ void Checkbox::setLabel(char *label)
 	repaint();
 }
 
-void Checkbox::onPaint(Graphics *g)
+void Checkbox::paint(Graphics *g)
 {
 	int w = getWidth(), h = getHeight();
 	
@@ -141,7 +141,7 @@ void Checkbox::onPaint(Graphics *g)
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
 			// チェックの周りは背景色で塗る
-			unsigned int c = 0;
+			dword c = 0;
 			if (this->checked == true) {
 				c = checked_palette[checked_data[i * 12 + j] & 0xFF];
 			} else {
@@ -156,7 +156,7 @@ void Checkbox::onPaint(Graphics *g)
 
 }
 
-void Checkbox::onEvent(Event *event)
+void Checkbox::processEvent(Event *event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
@@ -165,6 +165,6 @@ void Checkbox::onEvent(Event *event)
 		if (this->checked == false || this->group == NULL) {
 			setChecked(!this->checked);
 		}
-		getParent()->onEvent(event);
+		getParent()->processEvent(event);
 	}
 }

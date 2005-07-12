@@ -30,25 +30,40 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class ShortCut : public Window {
 private:
+	/** タイトル */
+	String title;
 	/** アイコンタイプ */
 	int type;
 
+protected:
+	/** タイトルバーがクリックされたかどうか */
+	virtual bool getTitlebarClicked(int px, int py)
+	{
+		return false;
+	}
+	
 public:
-	/**
-	 コピーコンストラクタ
-	 @param type アイコンタイプ
-	*/
-	ShortCut(int type);
+	/** コンストラクタ */
+	ShortCut();
 	
 	/** デストラクタ */
 	virtual ~ShortCut();
-
+	
+	/** タイトルを設定する */
+	void setTitle(const char *title);
+	
+	/**
+	 アイコンタイプを設定する
+	 @param type アイコンタイプ
+	*/
+	void setType(int type);
+	
 	/** ウィンドウ生成時に呼ばれる */
 	virtual void addNotify();
 
 	/** 再描画 */
-	virtual void onPaint(Graphics *g);
+	virtual void paint(Graphics *g);
 
 	/** イベントハンドラ */
-	virtual void postEvent(Event *event);
+	virtual void processEvent(Event *event);
 };

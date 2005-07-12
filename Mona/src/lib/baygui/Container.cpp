@@ -78,7 +78,7 @@ void Container::remove(Component* control)
 	this->controlList.remove(control);
 }
 
-void Container::postEvent(Event* event)
+void Container::dispatchEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
@@ -89,10 +89,10 @@ void Container::postEvent(Event* event)
 		// 部品でイベントが起こった
 		if (control != NULL) {
 			event->setSource(control);
-			control->onEvent(event);
+			control->processEvent(event);
 		}
 		// 部品以外でイベントが起こった
-		onEvent(event);
+		processEvent(event);
 	// マウスクリック
 	} else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 		MouseEvent* me = (MouseEvent *)event;
@@ -114,7 +114,7 @@ void Container::postEvent(Event* event)
 			me->setX(me->getX() - bounds->x);
 			me->setY(me->getY() - bounds->y);
 			//syscall_print("MOUSE_PRESSED,");
-			control->onEvent(event);
+			control->processEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
 			// 部品をフォーカスアウト状態にする
@@ -124,7 +124,7 @@ void Container::postEvent(Event* event)
 				c->setFocused(false);
 			}
 			//syscall_print("MOUSE_PRESSED,");
-			onEvent(event);
+			processEvent(event);
 		}
 	// マウスリリース
 	} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
@@ -138,14 +138,14 @@ void Container::postEvent(Event* event)
 			me->setX(me->getX() - bounds->x);
 			me->setY(me->getY() - bounds->y);
 			//syscall_print("MOUSE_RELEASED,");
-			control->onEvent(event);
+			control->processEvent(event);
 		// 部品以外でイベントが起こった
 		} else {
 			//syscall_print("MOUSE_RELEASED,");
-			onEvent(event);
+			processEvent(event);
 		}
 	} else {
-		onEvent(event);
+		processEvent(event);
 	}
 }
 
@@ -153,7 +153,7 @@ void Container::repaint()
 {
 	if (getBuffer() == NULL) return;
 	
-	onPaint(getGraphics());
+	paint(getGraphics());
 
 	// 自分の領域を更新する
 	update();

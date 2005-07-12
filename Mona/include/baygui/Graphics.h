@@ -43,7 +43,7 @@ namespace baygui {
 		/** クリッピング領域高さ*/
 		int ch;
 		/** 色（4バイト） */
-		unsigned int rgb24;
+		dword rgb24;
 		/** フォントスタイル */
 		int fontStyle;
 		/** 内部バッファー */
@@ -68,7 +68,7 @@ namespace baygui {
 		 @param y Y座標
 		 @param color 描画する色
 		 */
-		void drawPixel(int x, int y, unsigned int color);
+		void drawPixel(int x, int y, dword color);
 		
 		/**
 		 イメージ描画
@@ -160,7 +160,7 @@ namespace baygui {
 		 色設定
 		 @param color (0x0-0xFFFFFF)
 		 */
-		void setColor(unsigned int color);
+		void setColor(dword color);
 		
 		/**
 		 フォントスタイル（通常、太字、斜字、固定幅）を設定する.

@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <baygui.h>
 
-class GTimer : public Window {
+class GTimer : public Frame {
 private:
   TextField *text;
   Button *start;

@@ -16,6 +16,7 @@ SOURCES = \
 	Component.cpp \
 	Container.cpp \
 	FontMetrics.cpp \
+	Frame.cpp \
 	Graphics.cpp \
 	Hashtable.cpp \
 	Image.cpp \

@@ -16,8 +16,8 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 */
 mine::mine(){
 	this->setTitle("マインスイーパ");
-	int w = 144 + INSETS_LEFT + INSETS_RIGHT;
-	int h = 144 + INSETS_TOP + INSETS_BOTTOM;
+	int w = 144 + getInsets()->left + getInsets()->right;
+	int h = 144 + getInsets()->top + getInsets()->bottom;
 	this->setBounds(100, 100, w, h);
 	tile_init();
 	tick = 0;
@@ -134,7 +134,7 @@ bool mine::is_game_event(Event* evt){
 /*!
 	@brief イベントプロシージャ
 */
-void mine::onEvent(Event* evt){
+void mine::processEvent(Event* evt){
 	if(evt->getType() == Event::TIMER){
 		timer_proc();
 		return;

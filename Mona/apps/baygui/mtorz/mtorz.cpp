@@ -38,10 +38,10 @@ static unsigned int osapal[] = {
 
 static int col = 0;
 
-class Mtorz : public Window
+class Mtorz : public Frame
 {
 public:
-	Label *label1;
+	Label* label1;
 
 	Mtorz() {
 		setBackground(osapal[8]);
@@ -55,27 +55,29 @@ public:
 		label1->setBounds(20, 8, 12 * 8, 3 * 16);
 		label1->setBackground(osapal[8]);
 		add(label1);
+	}
+
+	void paint(Graphics* g) {
 		setTimer(500);
 	}
 
-	void onEvent(Event *e) {
+	void processEvent(Event* e) {
 		if (e->getType() == Event::TIMER) {
-			ChangeColor();
+			label1->setForeground(osapal[col]);
+			label1->repaint();
+			if (++col > 7) {
+				col = 0;
+			}
+			setTimer(500);
 		}
-	}
-
-private:
-	void ChangeColor() {
-		label1->setForeground(osapal[col]);
-		label1->repaint();
-		if (++col > 7) {
-			col = 0;
-		}
-		setTimer(500);
 	}
 };
 
+#if defined(MONA)
 int MonaMain(List<char*>* pekoe) {
+#else
+int main(int argc, char** argv) {
+#endif
 	Mtorz *mtorz = new Mtorz();
 	mtorz->run();
 	delete(mtorz);

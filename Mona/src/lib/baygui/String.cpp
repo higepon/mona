@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-String& String::set(const char* s)
+String& String::set(const char *s)
 {
 	unsigned char c1, c2, c3;
 	int  slen;
@@ -123,6 +123,12 @@ String& String::set(int n)
 	return set(c20);
 }
 
+bool String::equals(Object* obj)
+{
+	String* str = (String *)obj;
+	return equals(str->getBytes());
+}
+
 bool String::equals(const char *s)
 {
 	if (s == NULL) return false;
@@ -133,7 +139,7 @@ bool String::equals(const char *s)
 	}
 }
 
-bool String::startsWith(const char* s)
+bool String::startsWith(const char *s)
 {
 	if (s == 0 || len == 0 || (int)strlen(s) > (int)strlen(bytes)) return false;
 	for (int i = 0; i < (int)strlen(s); i++) {
@@ -142,7 +148,7 @@ bool String::startsWith(const char* s)
 	return true;
 }
 
-bool String::endsWith(const char* s)
+bool String::endsWith(const char *s)
 {
 	if (s == 0 || len == 0 || (int)strlen(s) > (int)strlen(bytes)) return false;
 	for (int i = 0; i < (int)strlen(s); i++) {

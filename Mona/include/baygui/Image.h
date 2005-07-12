@@ -34,13 +34,8 @@ namespace baygui {
 		int width;
 		/** 高さ */
 		int height;
-	#ifdef MONA
 		/** GUIサーバー上のビットマップオブジェクト */
 		guiserver_bitmap* bitmap;
-	#else
-		/** RGB24bitデータ */
-		unsigned int* source;
-	#endif
 
 	public:
 		Image();
@@ -63,11 +58,7 @@ namespace baygui {
 		virtual ~Image();
 		
 		/** ハンドルを得る */
-	#ifdef MONA
-		inline unsigned int getHandle() { return this->bitmap->Handle; }
-	#else
-		inline unsigned int getHandle() { return 0; }
-	#endif
+		inline dword getHandle() { return this->bitmap->Handle; }
 		
 		/** 幅を得る */
 		inline int getWidth() { return this->width; }
@@ -76,14 +67,10 @@ namespace baygui {
 		inline int getHeight() { return this->height; }
 		
 		/** RGB24bitデータを得る */
-	#ifdef MONA
-		inline unsigned int* getSource() { return this->bitmap->Data; }
-	#else
-		inline unsigned int* getSource() { return this->source; }
-	#endif
+		inline dword* getSource() { return this->bitmap->Data; }
 		
 		/** 指定された点の色を得る */
-		unsigned int getPixel(int x, int y);
+		dword getPixel(int x, int y);
 		
 		/**
 		 点を打つ
@@ -91,7 +78,7 @@ namespace baygui {
 		 @param y Y座標
 		 @param color 色
 		*/
-		void setPixel(int x, int y, unsigned int color);
+		void setPixel(int x, int y, dword color);
 	};
 }
 

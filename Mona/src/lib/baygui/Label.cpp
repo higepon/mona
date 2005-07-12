@@ -45,7 +45,7 @@ void Label::setText(char* text)
 	repaint();
 }
 
-void Label::onPaint(Graphics* g)
+void Label::paint(Graphics* g)
 {
 	int w = getWidth();
 	int h = getHeight();

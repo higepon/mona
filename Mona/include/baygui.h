@@ -34,66 +34,182 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // ==================================================
 // OS 依存ヘッダファイル
 // ==================================================
+
+typedef unsigned int dword;
+typedef unsigned int wchar;
+
 #if defined(MONA)
-	#include <monapi.h>
-	#include <monapi/messages.h>
-	#include <monalibc.h>
-	#include <gui/messages.h>
+#include <monapi.h>
+#include <monapi/messages.h>
+#include <monalibc.h>
+#include <gui/messages.h>
 #elif defined(SDL)
-	#include <stdlib.h>
-	#include <stdio.h>
-	#include <stdarg.h>
-	#include <string.h>
-	#include <SDL.h>
-	#undef   WIN32
-	#undef   main
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 
-	// スクリーンオブジェクト
-	extern SDL_Surface* screen;
+// ==================================================
+// SDL依存部分
+// ==================================================
 
-	// GUIサーバー内ウィンドウスタイル
-	enum
-	{
-		WINDOWFLAGS_NOBORDER = 1,
-		WINDOWFLAGS_MODAL = 2,
-		WINDOWFLAGS_NOACTIVATE = 4,
-		WINDOWFLAGS_TOPMOST = 8,
-		WINDOWFLAGS_BOTTOMMOST = 16
+#include <SDL.h>
+#undef   WIN32
+#undef   main
+
+/** スクリーンオブジェクト */
+extern SDL_Surface* screen;
+
+// ==================================================
+// GUIサーバ依存部分
+// ==================================================
+
+/** GUIサーバー内ビットマップ構造体 */
+typedef struct {
+	dword Handle;
+	int Width, Height;
+	dword* Data;
+} guiserver_bitmap;
+
+/** GUIサーバー内ウィンドウ（部品）構造体 */
+typedef struct {
+	dword Handle, Parent, Owner, ThreadID;
+	int X, Y, Width, Height, OffsetX, OffsetY, Opacity;
+	bool Visible, Focused;
+	dword Flags, TransparencyKey;
+	dword BufferHandle, FormBufferHandle;
+	guiserver_bitmap* __internal1;
+	bool __internal2;
+	char __reserved[64];
+} guiserver_window;
+
+/** GUIサーバー内ウィンドウスタイル */
+enum
+{
+	WINDOWFLAGS_NOBORDER = 1,
+	WINDOWFLAGS_MODAL = 2,
+	WINDOWFLAGS_NOACTIVATE = 4,
+	WINDOWFLAGS_TOPMOST = 8,
+	WINDOWFLAGS_BOTTOMMOST = 16
+};
+
+#define MAKE_DWORD(a, b) (((dword)(unsigned short)(a)) + (((dword)(unsigned short)(b)) << 16))
+#define GET_X_DWORD(a) ((int)(short)(a & 0xffff))
+#define GET_Y_DWORD(a) ((int)(short)((a) >> 16))
+
+// ==================================================
+// MonAPI依存部分
+// ==================================================
+
+/** MonAPIダミー定数 */
+enum {
+	MONAPI_FALSE = 0,
+	MONAPI_TRUE  = 1,
+	THREAD_UNKNOWN,
+	ID_GUI_SERVER,
+	MSG_GUISERVER_CREATEWINDOW,
+	MSG_GUISERVER_CREATEBITMAP,
+	MSG_GUISERVER_ACTIVATEWINDOW,
+	MSG_GUISERVER_DISPOSEWINDOW,
+	MSG_GUISERVER_MOVEWINDOW,
+	MSG_GUISERVER_DRAWWINDOW,
+	MSG_GUISERVER_MOUSECAPTURE,
+	MSG_GUISERVER_CREATEOVERLAP,
+	MSG_GUISERVER_DISPOSEOVERLAP,
+	MSG_GUISERVER_MOVEOVERLAP,
+	MSG_GUISERVER_DECODEIMAGE,
+	MSG_GUISERVER_DISPOSEBITMAP
+};
+
+/** MonAPIダミー構造体 */
+typedef struct {
+	dword header;
+	dword arg1;
+	dword arg2;
+	dword arg3;
+	dword from;
+	char str[128];
+	int length;
+} MessageInfo;
+
+namespace MonAPI {
+	/** MonAPIダミークラス */
+	class MemoryMap {
+	public:
+		static void* map(dword size)
+		{
+			char* memory = new char [size];
+			memset(memory, 0, size);
+			return memory;
+		}
 	};
+	
+	/** MonAPIダミークラス */
+	class Message {
+	public:
+		static int send(dword thread_id, dword msg_id, dword arg1)
+		{
+			return 0;
+		}
+		
+		static int sendReceive(MessageInfo* info, dword thread_id, dword msg_id)
+		{
+			if (msg_id == MSG_GUISERVER_CREATEWINDOW) {
+				info->arg2 = sizeof(guiserver_window);
+			}
+			return 0;
+		}
+		
+		static int sendReceive(MessageInfo* info, dword thread_id, dword msg_id, dword arg1)
+		{
+			return 0;
+		}
+		
+		static int sendReceive(MessageInfo* info, dword thread_id, dword msg_id, dword arg1, dword arg2)
+		{
+			return 0;
+		}
+		
+		static int sendReceive(MessageInfo* info, dword thread_id, dword msg_id, dword arg1, dword arg2, dword arg3)
+		{
+			if (msg_id == MSG_GUISERVER_CREATEBITMAP) {
+				info->arg2 = sizeof(guiserver_bitmap);
+			}
+			return 0;
+		}
+		
+		static int sendReceive(MessageInfo* info, dword thread_id, dword msg_id, dword arg1, dword arg2, dword arg3, const char* str)
+		{
+			return 0;
+		}
+	};
+	
+	/** MonAPIダミークラス */
+	class System {
+	public:
+		static dword getThreadID()
+		{
+			return 0;
+		}
+	};
+}
 
-	// GUIサーバー内ビットマップ構造体
-	typedef struct {
-		unsigned int Handle;
-		int Width, Height;
-		unsigned int* Data;
-	} guiserver_bitmap;
+/** MonAPIダミーメソッド */
+dword monapi_get_server_thread_id(dword serverID);
 
-	// GUIサーバー内ウィンドウ（部品）構造体
-	typedef struct {
-		unsigned int Handle, Parent, Owner, ThreadID;
-		int X, Y, Width, Height, OffsetX, OffsetY, Opacity;
-		bool Visible, Focused;
-		unsigned int Flags, TransparencyKey;
-		unsigned int BufferHandle, FormBufferHandle;
-		guiserver_bitmap* __internal1;
-		bool __internal2;
-		char __reserved[64];
-	} guiserver_window;
-#else
-	// とりあえずコンパイルが通るだけ
-	#define NULL 0
-	int strcmp(const char*, const char*) { return 0; }
-	unsigned long strlen(const char*) { return 0; }
-	char* strcpy(char*, const char*) { return ""; }
-	void* memcpy(void* s1, const void* s2, unsigned long size) { return NULL; }
-	void* memset(void*, int, unsigned long) { return NULL; }
+/** MonAPIダミーメソッド */
+bool monapi_register_to_server(int serverID, int isCout);
+
+/** MonAPIダミーメソッド */
+void kill_timer(dword timerID);
 #endif
 
 // ==================================================
 // BayGUI グローバルマクロ
 // ==================================================
+
 #define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
-#define inGetUInt32(b) (unsigned int)( (unsigned int)((b)[3])<<24 | (unsigned int)((b)[2])<<16 | (unsigned int)((b)[1])<<8 | (unsigned int)((b)[0]) )
+#define inGetUInt32(b) (dword)( (dword)((b)[3])<<24 | (dword)((b)[2])<<16 | (dword)((b)[1])<<8 | (dword)((b)[0]) )
 #define inGetUInt16(b) (unsigned short)( (unsigned short)((b)[1])<<8 | (unsigned short)((b)[0]) )
 
 #define BAYGUI_VERSION "BayGUI $Date$"
@@ -131,6 +247,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui/TextField.h"
 #include "baygui/Container.h"
 #include "baygui/Window.h"
+#include "baygui/Frame.h"
 
 using namespace baygui;
 

@@ -70,23 +70,24 @@ namespace baygui {
 		/** イベント発生元 */
 		Component* source;
 
-	#ifdef MONA
 	public:
+		//
+		// Mona用イベント
+		//
 		/** ヘッダー */
-		unsigned int header;
+		dword header;
 		/** 引数(1) */
-		unsigned int arg1;
+		dword arg1;
 		/** 引数(2) */
-		unsigned int arg2;
+		dword arg2;
 		/** 引数(3) */
-		unsigned int arg3;
+		dword arg3;
 		/** メッセージ発生元 */
-		unsigned int from;
+		dword from;
 		/** 文字列 */
 		char str[128];
 		/** 文字列の長さ */
 		int length;
-	#endif
 
 	public:
 		/** デフォルトコンストラクタ */

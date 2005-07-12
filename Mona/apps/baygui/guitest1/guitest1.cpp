@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <baygui.h>
 
 /** クラス定義部 */
-class GuiTest : public Window {
+class GuiTest : public Frame {
 private:
 	Button *button1;
 	Label *label1, *label2, *label3;

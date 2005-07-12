@@ -60,7 +60,7 @@ void mine_tile::setTileValue(int new_value){
 /*!
 	@brief 描画プロシージャ
 */
-void mine_tile::onPaint(Graphics* g){
+void mine_tile::paint(Graphics* g){
 	switch(state){
 	case init:
 	case init_lock:
@@ -97,7 +97,7 @@ void mine_tile::onPaint(Graphics* g){
 /*!
 	@brief イベントプロシージャ
 */
-void mine_tile::onEvent(Event* evt){
+void mine_tile::processEvent(Event* evt){
 	if(!getEnabled()){
 		return;
 	}
@@ -574,14 +574,14 @@ void mine_tile::send_gameover_to_parent(){
 	event->arg1 = GAMEOVER;
 	event->setType(Event::CUSTOM_EVENT);
 	event->setSource(this);
-	getParent()->onEvent(event);
+	getParent()->processEvent(event);
 }
 
 void mine_tile::send_clear_to_parent(){
 	event->arg1 = GAMECLEAR;
 	event->setType(Event::CUSTOM_EVENT);
 	event->setSource(this);
-	getParent()->onEvent(event);
+	getParent()->processEvent(event);
 }
 
 void mine_tile::send_gamestart_to_parent(){
@@ -589,7 +589,7 @@ void mine_tile::send_gamestart_to_parent(){
 		event->arg1 = GAMESTART;
 		event->setType(Event::CUSTOM_EVENT);
 		event->setSource(this);
-		getParent()->onEvent(event);
+		getParent()->processEvent(event);
 		start = true;
 	}
 }

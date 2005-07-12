@@ -40,7 +40,7 @@ namespace baygui {
 		/** Y座標 */
 		int y;
 		/** ボタン種別 */
-		unsigned int button;
+		dword button;
 		
 	public:
 		/** デフォルトコンストラクタ */
@@ -56,8 +56,8 @@ namespace baygui {
 		 x, y はメインウィンドウの内部領域の左上に対する相対座標である。
 		 絶対座標(ax,ay)は以下のように取得する。
 		 <ul>
-		 <li> ax = x + getMainWindow()->getRect()->getX() + Window::INSETS_LEFT;
-		 <li> ay = y + getMainWindow()->getRect()->getY() + Window::INSETS_TOP;
+		 <li> ax = x + getMainWindow()->getRect()->getX() + Frame::getInsets()->left;
+		 <li> ay = y + getMainWindow()->getRect()->getY() + Frame::getInsets()->top;
 		 </ul>
 		 @param type type イベントタイプ
 		 @param source イベント発生元
@@ -88,10 +88,10 @@ namespace baygui {
 		inline void setY(int y) { this->y = y; }
 		
 		/** ボタン種別を得る */
-		inline unsigned int getButton() { return this->button; }
+		inline dword getButton() { return this->button; }
 		
 		/** ボタン種別を設定する */
-		inline void setButton(unsigned int button) { this->button = button; }
+		inline void setButton(dword button) { this->button = button; }
 	};
 }
 

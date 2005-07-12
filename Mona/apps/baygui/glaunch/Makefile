@@ -4,7 +4,7 @@ INSTDIR = $(BINDIR)/iso/APPS/BAYGUI
 
 MONADIR    = ../../..
 ifneq ($(BUILD_TARGET),ELF)
-ADDLINK    = -lbaygui-imp
+ADDLINK    = -lbaygui
 ADDLINK    += -lmonalibc
 ADDLINKDEP += $(MONADIR)/lib/libmonalibc.a
 ADDLINKDEP = $(MONADIR)/lib/libbaygui-imp.a

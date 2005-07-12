@@ -101,7 +101,7 @@ void TextArea::LineNoFormat(char* buff, int line, int size)
 }
 
 /** 再描画 */
-void TextArea::onPaint(Graphics *g)
+void TextArea::paint(Graphics *g)
 {
 	/*if( firstpaint == false ) firstpaint = true;*/
 
@@ -228,7 +228,7 @@ void TextArea::deleteCharacter()
 }
 
 /** イベント処理 */
-void TextArea::onEvent(Event* event)
+void TextArea::processEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;

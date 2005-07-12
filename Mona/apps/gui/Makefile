@@ -8,7 +8,7 @@ all:
 	@cd shell && $(MAKE) $@
 	@cd clock && $(MAKE) $@
 	@cd cube && $(MAKE) $@
-	@cd kukuri && $(MAKE) $@
+#	@cd kukuri && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
@@ -25,7 +25,7 @@ install:
 	@cd shell && $(MAKE) $@
 	@cd clock && $(MAKE) $@
 	@cd cube && $(MAKE) $@
-	@cd kukuri && $(MAKE) $@
+#	@cd kukuri && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
@@ -42,7 +42,7 @@ clean: touchdepend
 	@cd shell && $(MAKE) $@
 	@cd clock && $(MAKE) $@
 	@cd cube && $(MAKE) $@
-	@cd kukuri && $(MAKE) $@
+#	@cd kukuri && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
@@ -59,7 +59,7 @@ depend: touchdepend
 	@cd shell && $(MAKE) $@
 	@cd clock && $(MAKE) $@
 	@cd cube && $(MAKE) $@
-	@cd kukuri && $(MAKE) $@
+#	@cd kukuri && $(MAKE) $@
 	@cd mtorz && $(MAKE) $@
 	@cd monafile && $(MAKE) $@
 	@cd hige3D && $(MAKE) $@
@@ -76,7 +76,7 @@ distclean:
 	rm -f shell/dependencies
 	rm -f clock/dependencies
 	rm -f cube/dependencies
-	rm -f kukuri/dependencies
+#	rm -f kukuri/dependencies
 	rm -f mtorz/dependencies
 	rm -f monafile/dependencies
 	rm -f hige3D/dependencies
@@ -93,7 +93,7 @@ touchdepend:
 	touch shell/dependencies
 	touch clock/dependencies
 	touch cube/dependencies
-	touch kukuri/dependencies
+#	touch kukuri/dependencies
 	touch mtorz/dependencies
 	touch monafile/dependencies
 	touch hige3D/dependencies

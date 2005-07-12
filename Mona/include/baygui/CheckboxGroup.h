@@ -46,7 +46,7 @@ namespace baygui {
 		virtual Checkbox* getSelectedCheckbox();
 		
 		/** イベントハンドラ */
-		virtual void onEvent(Event* event);
+		virtual void processEvent(Event* event);
 	};
 }
 

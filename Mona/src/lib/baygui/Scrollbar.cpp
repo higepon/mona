@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui.h"
 
 /** 垂直ボタン（パレット）*/
-static unsigned int button_palette[] = {
+static dword button_palette[] = {
 	0xff040204,
 	0xff8486dc,
 	0xffdcdafc,
@@ -55,7 +55,7 @@ static unsigned char button_data[] = {
 };
 
 /** 上向き矢印（パレット）*/
-static unsigned int arrow_palette[] = {
+static dword arrow_palette[] = {
 	0xff040204,
 	0xffcccecc,
 	0xfffcfefc,
@@ -146,7 +146,7 @@ void Scrollbar::setBounds(int x, int y, int w, int h)
 	(this->orientation == VERTICAL) ? Component::setBounds(x, y, 16, h) : Component::setBounds(x, y, w, 16);
 }
 
-void Scrollbar::onPaint(Graphics* g)
+void Scrollbar::paint(Graphics* g)
 {
 	int w = getWidth(), h = getHeight();
 	
@@ -201,7 +201,7 @@ void Scrollbar::onPaint(Graphics* g)
 	}
 }
 
-void Scrollbar::onEvent(Event* event)
+void Scrollbar::processEvent(Event* event)
 {
 	if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 		MouseEvent* me = (MouseEvent *)event;
@@ -212,22 +212,22 @@ void Scrollbar::onEvent(Event* event)
 			if (0 < my && my < 16) {
 				setValue(this->value - this->blocksize);
 				this->blockEvent.setType(Event::BLOCK_DECLEMENT);
-				getParent()->onEvent(&this->blockEvent);
+				getParent()->processEvent(&this->blockEvent);
 			} else if (getHeight() - 16 < my && my < getHeight()) {
 				setValue(this->value + this->blocksize);
 				this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-				getParent()->onEvent(&this->blockEvent);
+				getParent()->processEvent(&this->blockEvent);
 			}
 		// 水平スクロールバー
 		} else {
 			if (0 < mx && mx < 16) {
 				setValue(this->value - this->blocksize);
 				this->blockEvent.setType(Event::BLOCK_DECLEMENT);
-				getParent()->onEvent(&this->blockEvent);
+				getParent()->processEvent(&this->blockEvent);
 			} else if (getWidth() - 16 < mx && mx < getWidth()) {
 				setValue(this->value + this->blocksize);
 				this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-				getParent()->onEvent(&this->blockEvent);
+				getParent()->processEvent(&this->blockEvent);
 			}
 		}
 	}

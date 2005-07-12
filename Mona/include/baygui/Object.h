@@ -31,9 +31,9 @@ namespace baygui {
 		/** 参照カウント */
 		int refCount;
 		/** スレッドID */
-		unsigned int threadID;
+		dword threadID;
 		/** GUIサーバーID */
-		unsigned int guisvrID;
+		dword guisvrID;
 		
 	public:
 		/** デフォルトコンストラクタ */
@@ -55,10 +55,10 @@ namespace baygui {
 		inline int* getPointer() { return &this->refCount; }
 		
 		/** スレッドIDを得る */
-		inline unsigned int getThreadID() { return this->threadID; }
+		inline dword getThreadID() { return this->threadID; }
 		
 		/** GUIサーバーIDを得る */
-		inline unsigned int getGuisvrID() { return this->guisvrID; }
+		inline dword getGuisvrID() { return this->guisvrID; }
 	};
 }
 

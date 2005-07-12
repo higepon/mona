@@ -26,7 +26,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Object::Object()
 {
 	this->refCount = 0;
-#ifdef MONA
 	// 自身のスレッドIDを得る
 	this->threadID = MonAPI::System::getThreadID();
 	// GUIサーバーを探す
@@ -36,9 +35,6 @@ Object::Object()
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		exit(1);
 	}
-#else
-	this->threadID = this->guisvrID = 0;
-#endif
 }
 
 Object::~Object()

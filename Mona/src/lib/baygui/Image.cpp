@@ -26,8 +26,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Image::Image(int width, int height)
 {
 	this->width = this->height = 0;
-	
-#if defined(MONA)
 	this->bitmap = NULL;
 	
 	// GUIサーバー上にビットマップを生成する
@@ -46,11 +44,12 @@ Image::Image(int width, int height)
 		printf("%s:%d:ERROR: can not get image data!\n", __FILE__, __LINE__);
 		return;
 	}
-#else
-	this->source = new unsigned int [width * height];
+	
+#ifdef SDL
+	this->bitmap->Data = new dword [width * height];
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			this->source[j + i * width] = Color::lightGray;
+			this->bitmap->Data[j + i * width] = Color::lightGray;
 		}
 	}
 #endif
@@ -62,8 +61,6 @@ Image::Image(int width, int height)
 Image::Image(char *path)
 {
 	this->width = this->height = 0;
-	
-#if defined(MONA)
 	this->bitmap = NULL;
 	
 	// GUIサーバー上でビットマップをデコードする
@@ -84,43 +81,28 @@ Image::Image(char *path)
 	
 	this->width = this->bitmap->Width;
 	this->height = this->bitmap->Height;
-#else
-	// do nothing
-#endif
 }
 
 Image::~Image()
 {
-#if defined(MONA)
 	// ビットマップ破棄要求
 	if (MonAPI::Message::send(getGuisvrID(), MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 	}
-#else
-	delete[] this->source ;
-#endif
 }
 
-unsigned int Image::getPixel(int x, int y)
+dword Image::getPixel(int x, int y)
 {
 	if (x < 0 || this->width <= x || y < 0 || this->height <= y) {
 		return 0;
 	} else {
-	#ifdef MONA
 		return this->bitmap->Data[x + this->width * y];
-	#else
-		return this->source[x + this->width * y];
-	#endif
 	}
 }
 
-void Image::setPixel(int x, int y, unsigned int color)
+void Image::setPixel(int x, int y, dword color)
 {
 	if (0 <= x && x < this->width && 0 <= y && y < this->height) {
-	#ifdef MONA
 		this->bitmap->Data[x + this->width * y] = color;
-	#else
-		this->source[x + this->width * y] = color;
-	#endif
 	}
 }

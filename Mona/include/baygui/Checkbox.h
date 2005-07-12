@@ -79,10 +79,10 @@ namespace baygui {
 		inline char* getLabel() { return this->label.getBytes(); }
 		
 		/** 描画ハンドラ */
-		virtual void onPaint(Graphics* g);
+		virtual void paint(Graphics* g);
 		
 		/** イベントハンドラ */
-		virtual void onEvent(Event* event);
+		virtual void processEvent(Event* event);
 	};
 }
 

@@ -31,57 +31,34 @@ SDL_Surface* screen;
 static SDL_TimerID globalTimerID;
 
 /** タイマーコールバック関数 */
-static unsigned int sdl_timer_callback(unsigned int interval, void* param) {
+static dword sdl_timer_callback(dword interval, void* param) {
 	SDL_Event event;
 	SDL_RemoveTimer(globalTimerID);
 	event.type = SDL_USEREVENT;
 	return SDL_PushEvent(&event);
 }
+
+/** MonAPIダミーメソッド */
+dword monapi_get_server_thread_id(dword serverID) { return 0; }
+
+/** MonAPIダミーメソッド */
+bool monapi_register_to_server(int serverID, int isCout) { return true; }
+
+/** MonAPIダミーメソッド */
+void kill_timer(dword timerID) {}
 #endif
-
-/** 閉じるボタン (パレット) */
-static unsigned int close_palette[] = {
-	0xff1c1a1c,
-	0xff8c8e8c,
-	0xffcccecc,
-	0xffacaeac,
-	0xffeceeec,
-	0xff9c9e9c,
-	0xffdcdedc,
-	0xffbcbebc,
-	0xfffcfefc,
-};
-
-/** 閉じるボタン (データ) */
-static unsigned char close_data[] = {
-	0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x2,
-	0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,
-	0x1,0x0,0x8,0x2,0x2,0x2,0x2,0x2,0x2,0x2,0x2,0x0,0x8,
-	0x1,0x0,0x2,0x5,0x5,0x3,0x3,0x7,0x7,0x2,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x5,0x3,0x3,0x7,0x7,0x2,0x2,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x3,0x3,0x7,0x7,0x2,0x2,0x6,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x3,0x7,0x7,0x2,0x2,0x6,0x6,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x7,0x7,0x2,0x2,0x6,0x6,0x4,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x7,0x2,0x2,0x6,0x6,0x4,0x4,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x2,0x2,0x6,0x6,0x4,0x4,0x8,0x1,0x0,0x8,
-	0x1,0x0,0x2,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x0,0x8,
-	0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,
-	0x2,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,
-};
 
 Window::Window()
 {
-#ifdef MONA
 	/* GUIサーバーに自分を登録する */
 	if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
 		printf("%s:%d:ERROR: can not register to GUI server!\n", __FILE__, __LINE__);
 		exit(1);
 	}
-#endif
 
-	this->title = "window";
 	this->modifiers = this->state = this->preX = this->preY = this->offsetX = this->offsetY = 0;
 	this->overlap = 0;
+	this->border = WINDOWFLAGS_NOBORDER;
 	this->isRunning = false;
 	this->timerID = 0;
 	this->_g = NULL;
@@ -104,6 +81,12 @@ Window::Window()
 	/* カスタムイベント */
 	this->customEvent.setType(Event::CUSTOM_EVENT);
 	this->customEvent.setSource(this);
+	
+	/* 配置位置 */
+	this->insets.top = 0;
+	this->insets.bottom = 0;
+	this->insets.left = 0;
+	this->insets.right = 0;
 }
 
 Window::~Window() {
@@ -116,12 +99,11 @@ void Window::addNotify()
 
 	/* 描画バッファー、描画オブジェクトの生成 */
 	this->_buffer = new Image
-		(getWidth() - INSETS_LEFT - INSETS_RIGHT, getHeight() - INSETS_TOP - INSETS_BOTTOM);
+		(getWidth() - getInsets()->left - getInsets()->right, getHeight() - getInsets()->top - getInsets()->bottom);
 	this->_g = new Graphics(this->_buffer);
 	this->__buffer = new Image(getWidth(), getHeight());
 	this->__g = new Graphics(this->__buffer);
 
-#ifdef MONA
 	/* ウィンドウを生成する */
 	MessageInfo msg;
 	if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEWINDOW) != 0) {
@@ -149,15 +131,13 @@ void Window::addNotify()
 	this->_window->Visible = true;
 	this->_window->Opacity = 0xff; // 不透明
 	this->_window->__internal2 = true;
+	this->_window->Flags = this->border;
 
 	/* ウィンドウをアクティブにする */
 	setFocused(true);
 	if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_ACTIVATEWINDOW, getHandle())) {
 		printf("%s:%d:ERROR: can not activate window!\n", __FILE__, __LINE__);
 	}
-#else
-	setFocused(true);
-#endif
 }
 
 void Window::removeNotify()
@@ -171,7 +151,6 @@ void Window::removeNotify()
 	delete(this->__buffer);
 	delete(this->__g);
 	
-#ifdef MONA
 	/* ウィンドウ破棄要求 */
 	if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DISPOSEWINDOW, getHandle())) {
 		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
@@ -182,57 +161,44 @@ void Window::removeNotify()
 	
 	/* GUIサーバーから自分を抹消する */
 	monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
-#endif
+}
+
+Insets* Window::getInsets()
+{
+	return &this->insets;
 }
 
 Graphics *Window::getGraphics()
 {
-#ifdef MONA
 	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) == WINDOWFLAGS_NOBORDER) {
 		return this->__g;
 	} else {
 		return this->_g;
 	}
-#else
-	return this->_g;
-#endif
 }
 
 Image *Window::getBuffer()
 {
-#ifdef MONA
 	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) == WINDOWFLAGS_NOBORDER) {
 		return this->__buffer;
 	} else {
 		return this->_buffer;
 	}
-#else
-	return this->_buffer;
-#endif
-}
-
-void Window::setTitle(char *title)
-{
-	this->title = title;
 }
 
 void Window::setVisible(bool visible)
 {
 	Component::setVisible(visible);
-#ifdef MONA
 	this->_window->Visible = visible;
-#endif
 	update();
 }
 
 void Window::setLocation(int x, int y)
 {
 	Component::setLocation(x, y);
-#ifdef MONA
 	if (this->_window == NULL) return;
 	MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOVEWINDOW, 
-		getHandle(), (unsigned int)x, (unsigned int)y);
-#endif
+		getHandle(), (dword)x, (dword)y);
 #ifdef SDL
 	/* 壁紙表示 */
 	SDL_BlitSurface(SDL_LoadBMP("MONAWALL.BMP"), NULL, screen, NULL);
@@ -252,88 +218,25 @@ void Window::setTimer(int duration)
 	timerID = set_timer(duration);
 #elif defined(SDL)
 	if (duration <= 0) duration = 1;
-	globalTimerID = SDL_AddTimer(duration, sdl_timer_callback, (void*)1);
+	globalTimerID = SDL_AddTimer(duration, sdl_timer_callback, NULL);
 #endif
 }
 
 void Window::repaint()
 {
 	if (this->__g == NULL) return;
-	
-#ifdef MONA
-	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
-#endif
-		/* 矩形ウィンドウ */
-		int w = getWidth();
-		int h = getHeight();
-		
-		/* 外枠 */
-		__g->setColor(Color::lightGray);
-		__g->fillRect(0, 0, w, h);
-		__g->setColor(Color::black);
-		__g->drawRect(0, 0, w, h);
-		
-		/* 内枠 */
-		__g->setColor(Color::black);
-		__g->drawRect(5, 21, w - 10, h - 26);
-		
-		/* 枠 */
-		__g->setColor(Color::white);
-		__g->drawLine(1, 1, w - 2, 1);
-		__g->drawLine(1, 1, 1, h - 2);
-		__g->drawLine(w - 5, 21, w - 5, h - 5);
-		__g->drawLine(5, h - 5, w - 5, h - 5);
-		__g->setColor(Color::gray);
-		__g->drawLine(w - 2, 2, w - 2, h - 2);
-		__g->drawLine(2, h - 2, w - 2, h - 2);
-		__g->drawLine(4, 20, w - 6, 20);
-		__g->drawLine(4, 20, 4, h - 6);
-		
-		if (getFocused() == true) {
-			/* タイトルバー */
-			for (int i = 4; i <= 14; i = i + 2) {
-				__g->setColor(Color::gray);
-				__g->drawLine(20, i, w - 7, i);
-				__g->setColor(Color::white);
-				__g->drawLine(21, i + 1, w - 6, i + 1);
-			}
-			
-			/* 閉じるボタン */
-			for (int i = 0; i < 13; i++) {
-				for (int j = 0; j < 13; j++) {
-					__g->drawPixel(j + 4, i + 4, close_palette[close_data[i * 13 + j] & 0xFF]);
-				}
-			}
-		}
-
-		/* タイトル */
-		int fw = getFontMetrics()->getWidth(getTitle());
-		int fh = getFontMetrics()->getHeight(getTitle());
-		__g->setColor(Color::lightGray);
-		__g->fillRect(((w - fw) / 2) - 4, 2, fw + 8, INSETS_TOP - 4);
-		if (getFocused() == true) {
-			__g->setColor(Color::black);
-		} else {
-			__g->setColor(Color::gray);
-		}
-		__g->drawText(getTitle(), ((w - fw) / 2), ((INSETS_TOP - fh) / 2));
-#ifdef MONA
-	}
-#endif
 	Container::repaint();
 }
 
 void Window::update()
 {
-#ifdef MONA
 	if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
-		__g->drawImage(this->_buffer, INSETS_LEFT, INSETS_TOP);
+		__g->drawImage(this->_buffer, getInsets()->left, getInsets()->top);
 	}
 	
 	MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DRAWWINDOW, getHandle());
-#else
-	__g->drawImage(this->_buffer, INSETS_LEFT, INSETS_TOP);
-	#ifdef SDL
+	
+#ifdef SDL
 	{
 		SDL_Surface* bitmap;
 		
@@ -358,11 +261,10 @@ void Window::update()
 		/* bitmapを解放する */
 		SDL_FreeSurface(bitmap);
 	}
-	#endif
 #endif
 }
 
-void Window::postEvent(Event *event)
+void Window::dispatchEvent(Event *event)
 {
 	if (event->getType() >= MouseEvent::MOUSE_PRESSED && event->getType() <= MouseEvent::MOUSE_MOVED) {
 		MouseEvent* me = (MouseEvent*)event;
@@ -370,13 +272,12 @@ void Window::postEvent(Event *event)
 		int py = me->getY() - getY();
 		if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 			/* 閉じるボタンクリック */
-			if (4 <= px && px < 17 && 4 <= py && py < 17) {
+			if (getCloseButtonClicked(px, py)) {
 				stop();
 				return;
 			/* タイトルバークリック */
-			} else if (0 <= px && px < getWidth() && 0 <= py && py < INSETS_TOP) {
+			} else if (getTitlebarClicked(px, py)) {
 				this->state = STATE_MOVING;
-			#ifdef MONA
 				/* キャプチャー要求とウィンドウ移動用オブジェクト作成要求 */
 				MessageInfo info;
 				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOUSECAPTURE, 
@@ -384,62 +285,57 @@ void Window::postEvent(Event *event)
 				MonAPI::Message::sendReceive(&info, getGuisvrID(), MSG_GUISERVER_CREATEOVERLAP, 
 					getX(), getY(), MAKE_DWORD(getWidth(), getHeight()));
 				this->overlap = info.arg2;
-			#endif
 				this->preX = px;
 				this->preY = py;
 			/* ウィンドウ内クリック */
 			} else {
 				/* 絶対座標→相対座標 */
-				me->setX(px - INSETS_LEFT);
-				me->setY(py - INSETS_TOP);
-				Container::postEvent(me);
+				me->setX(px - getInsets()->left);
+				me->setY(py - getInsets()->top);
+				Container::dispatchEvent(me);
 			}
 		} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 			/* タイトルバーリリース */
 			if (this->state == STATE_MOVING) {
 				this->state = STATE_NORMAL;
-			#ifdef MONA
 				/* キャプチャー破棄要求とウィンドウ移動用オブジェクト破棄要求 */
 				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DISPOSEOVERLAP, 
 					this->overlap);
 				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOUSECAPTURE, 
 					getHandle(), 0);
 				this->overlap = 0;
-			#endif
 				/* ウィンドウを実際に移動させる */
 				setLocation(me->getX() - this->preX, me->getY() - this->preY);
 			/* ウィンドウ内リリース */
 			} else {
 				/* 絶対座標→相対座標 */
-				me->setX(px - INSETS_LEFT);
-				me->setY(py - INSETS_TOP);
-				Container::postEvent(me);
+				me->setX(px - getInsets()->left);
+				me->setY(py - getInsets()->top);
+				Container::dispatchEvent(me);
 			}
 		} else if (event->getType() == MouseEvent::MOUSE_DRAGGED) {
 			/* ウィンドウ移動 */
 			if (this->state == STATE_MOVING) {
-			#ifdef MONA
 				/* ウィンドウ移動用オブジェクトの移動 */
 				MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOVEOVERLAP, this->overlap,
 					MAKE_DWORD(me->getX() - this->preX, me->getY() - this->preY), 
 					MAKE_DWORD(getWidth(), getHeight()));
-			#endif
 			/* ウィンドウ内移動 */
 			} else {
 				/* 絶対座標→相対座標 */
-				me->setX(px - INSETS_LEFT);
-				me->setY(py - INSETS_TOP);
-				Container::postEvent(me);
+				me->setX(px - getInsets()->left);
+				me->setY(py - getInsets()->top);
+				Container::dispatchEvent(me);
 			}
 		} else {
 			/* 絶対座標→相対座標 */
-			me->setX(px - INSETS_LEFT);
-			me->setY(py - INSETS_TOP);
-			Container::postEvent(me);
+			me->setX(px - getInsets()->left);
+			me->setY(py - getInsets()->top);
+			Container::dispatchEvent(me);
 		}
 	} else {
 		/* キーイベント、タイマーイベント等はそのままスルー */
-		Container::postEvent(event);
+		Container::dispatchEvent(event);
 	}
 }
 
@@ -525,7 +421,7 @@ void Window::run()
 					} else if (info.arg2 & KEY_MODIFIER_UP) {
 						this->keyEvent.setType(KeyEvent::KEY_RELEASED);
 					}
-					postEvent(&this->keyEvent);
+					dispatchEvent(&this->keyEvent);
 				}
 				
 				break;
@@ -556,10 +452,10 @@ void Window::run()
 						this->mouseEvent.setType(MouseEvent::MOUSE_MOVED);
 					}
 				}
-				postEvent(&this->mouseEvent);
-				//this->mouseEvent.x = info.arg1 - getX() - INSETS_LEFT;
-				//this->mouseEvent.y = info.arg2 - getY() - INSETS_TOP;
-				//Container::postEvent(&this->mouseEvent);
+				dispatchEvent(&this->mouseEvent);
+				//this->mouseEvent.x = info.arg1 - getX() - getInsets()->left;
+				//this->mouseEvent.y = info.arg2 - getY() - getInsets()->top;
+				//Container::dispatchEvent(&this->mouseEvent);
 				
 				monapi_call_mouse_set_cursor(1);
 				
@@ -575,7 +471,7 @@ void Window::run()
 				break;
 			case MSG_TIMER:
 				kill_timer(info.arg1);
-				postEvent(&this->timerEvent);
+				dispatchEvent(&this->timerEvent);
 				break;
 			default:
 				this->customEvent.header = info.header;
@@ -586,7 +482,7 @@ void Window::run()
 				//strcpy(this->customEvent.str, info.str); // danger
 				memcpy(this->customEvent.str, info.str, sizeof(this->customEvent.str));
 				this->customEvent.length = info.length;
-				postEvent(&this->customEvent);
+				dispatchEvent(&this->customEvent);
 				/* MSG_PROCESS_STDOUT_DATA は SendReceive で送るので必要 */
 				if (info.header == MSG_PROCESS_STDOUT_DATA) {
 					MonAPI::Message::reply(&info);
@@ -698,7 +594,7 @@ void Window::run()
 					} else if (event.type == SDL_KEYUP) {
 						this->keyEvent.setType(KeyEvent::KEY_RELEASED);
 					}
-					postEvent(&this->keyEvent);
+					dispatchEvent(&this->keyEvent);
 				}
 			/* マウス押下 */
 			} else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) {
@@ -716,7 +612,7 @@ void Window::run()
 				} else if (event.button.button == SDL_BUTTON_RIGHT) {
 					this->mouseEvent.setButton(MouseEvent::BUTTON_RIGHT);
 				}
-				postEvent(&this->mouseEvent);
+				dispatchEvent(&this->mouseEvent);
 			/* マウス移動 */
 			} else if (event.type == SDL_MOUSEMOTION) {
 				if (event.motion.state == SDL_PRESSED) {
@@ -727,9 +623,9 @@ void Window::run()
 				this->mouseEvent.setX(event.motion.x);
 				this->mouseEvent.setY(event.motion.y);
 				this->mouseEvent.setButton(0);
-				postEvent(&this->mouseEvent);
+				dispatchEvent(&this->mouseEvent);
 			} else if (event.type == SDL_USEREVENT) {
-				postEvent(&this->timerEvent);
+				dispatchEvent(&this->timerEvent);
 			}
 		}
 	}

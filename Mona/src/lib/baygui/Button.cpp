@@ -47,7 +47,7 @@ void Button::setLabel(char* label)
 	repaint();
 }
 
-void Button::onPaint(Graphics* g)
+void Button::paint(Graphics* g)
 {
 	int w = getWidth();
 	int h = getHeight();
@@ -102,17 +102,17 @@ void Button::onPaint(Graphics* g)
 	g->drawText(getLabel(), x, y);
 }
 
-void Button::onEvent(Event* event) {
+void Button::processEvent(Event* event) {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
 
 	if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 		this->pushed = true;
 		repaint();
-		getParent()->onEvent(event);
+		getParent()->processEvent(event);
 	} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 		this->pushed = false;
 		repaint();
-		getParent()->onEvent(event);
+		getParent()->processEvent(event);
 	}
 }

@@ -26,7 +26,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  名前を指定して実行（コマンド履歴つき）
 */
-class GRunner : public Window {
+class GRunner : public Frame {
 private:
 	TextField *text;
 	/** コマンド履歴 */

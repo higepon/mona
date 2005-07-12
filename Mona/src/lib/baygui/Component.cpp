@@ -61,20 +61,20 @@ void Component::removeNotify()
 	delete(_metrics);
 }
 
-void Component::onEvent(Event* event)
+void Component::processEvent(Event* event)
 {
 }
 
-void Component::onPaint(Graphics* g)
+void Component::paint(Graphics* g)
 {
 }
 
-void Component::postEvent(Event *event)
+void Component::dispatchEvent(Event *event)
 {
-	onEvent(event);
+	processEvent(event);
 	// 親部品にイベントを投げる
 	if (getParent() != NULL) {
-		getParent()->onEvent(event);
+		getParent()->processEvent(event);
 	}
 }
 
@@ -82,7 +82,7 @@ void Component::repaint()
 {
 	if (this->_buffer == NULL) return;
 	setFontStyle(this->fontStyle);
-	onPaint(this->_g);
+	paint(this->_g);
 	update();
 }
 
@@ -109,12 +109,12 @@ void Component::setFocused(bool focused)
 		//syscall_print("FOCUS_OUT,");
 		this->focused = focused;
 		this->focusEvent.setType(Event::FOCUS_OUT);
-		postEvent(&this->focusEvent);
+		dispatchEvent(&this->focusEvent);
 	} else if (this->focused == false && focused == true) {
 		//syscall_print("FOCUS_IN,");
 		this->focused = focused;
 		this->focusEvent.setType(Event::FOCUS_IN);
-		postEvent(&this->focusEvent);
+		dispatchEvent(&this->focusEvent);
 	}
 }
 
@@ -146,12 +146,12 @@ void Component::setParent(Container *parent)
 	this->parent = parent;
 }
 
-void Component::setBackground(unsigned int backColor)
+void Component::setBackground(dword backColor)
 {
 	this->backColor = backColor;
 }
 
-void Component::setForeground(unsigned int foreColor)
+void Component::setForeground(dword foreColor)
 {
 	this->foreColor = foreColor;
 }

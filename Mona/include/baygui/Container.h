@@ -67,7 +67,7 @@ namespace baygui {
 		virtual void remove(Component* control);
 		
 		/** ƒCƒxƒ“ƒgˆ— */
-		virtual void postEvent(Event* event);
+		virtual void dispatchEvent(Event* event);
 		
 		/** Ä•`‰æ */
 		virtual void repaint();

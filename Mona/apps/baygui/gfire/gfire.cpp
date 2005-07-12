@@ -32,7 +32,7 @@ int typeDraw = 0, fireSeed = 0x1234;
 unsigned char calc, *fireScreen, *pImage;
 
 /** クラス宣言 */
-class GFire : public Window
+class GFire : public Frame
 {
 private:
 	bool firstPaint;
@@ -54,7 +54,7 @@ public:
 	}
 
 	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g) {
+	virtual void paint(Graphics *g) {
 		if (firstPaint == false) {
 			firstPaint = true;
 			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
@@ -62,7 +62,7 @@ public:
 	}
 	
 	/** イベント処理 */
-	virtual void onEvent(Event *e) {
+	virtual void processEvent(Event *e) {
 		if (e->getType() == Event::CUSTOM_EVENT) {
 			if (DrawFire() != 0) {
 				for (int y = 0; y < SCREEN_H; y++) {

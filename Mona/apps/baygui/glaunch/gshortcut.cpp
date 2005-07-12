@@ -221,11 +221,27 @@ static unsigned char trashboxIconData [32][32] = {
 	{0x4,0x4,0x4,0x4,0x4,0x4,0x4,0x8,0x0,0x0,0x0,0x0,0x0,0x8,0x8,0x8,0x8,0x0,0x0,0x0,0x0,0x0,0x8,0x8,0x4,0x4,0x4,0x4,0x4,0x4,0x4,0x4},
 };
 
+/** コンストラクタ */
+ShortCut::ShortCut() {
+}
+
+/** デストラクタ */
+ShortCut::~ShortCut()
+{
+}
+
+/** タイトルを設定する */
+void ShortCut::setTitle(const char *title)
+{
+	this->title = title;
+}
+
 /**
- コピーコンストラクタ
+ アイコンタイプを設定する
  @param type アイコンタイプ
-*/
-ShortCut::ShortCut(int type) {
+ */
+void ShortCut::setType(int type)
+{
 	this->type = type;
 	if (this->type == DISKICON) {
 		setBounds(720, 22, 64, 64);
@@ -239,11 +255,6 @@ ShortCut::ShortCut(int type) {
 	}
 }
 
-/** デストラクタ */
-ShortCut::~ShortCut()
-{
-}
-
 /** ウィンドウ生成時に呼ばれる */
 void ShortCut::addNotify() {
 	Window::addNotify();
@@ -253,7 +264,7 @@ void ShortCut::addNotify() {
 }
 
 /** 再描画 */
-void ShortCut::onPaint(Graphics *g) {
+void ShortCut::paint(Graphics *g) {
 	int w = getWidth();
 	int h = getHeight();
 
@@ -277,16 +288,16 @@ void ShortCut::onPaint(Graphics *g) {
 	}
 
 	// タイトル
-	int fw = getFontMetrics()->getWidth(getTitle());
+	int fw = getFontMetrics()->getWidth(this->title.getBytes());
 	//int fh = this->_metrics->getHeight(getTitle());
 	g->setColor(Color::white);
 	g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
 	g->setColor(Color::black);
-	g->drawText(getTitle(), (w - fw)/2, 36);
+	g->drawText(this->title.getBytes(), (w - fw)/2, 36);
 }
 
 /** イベントハンドラ */
-void ShortCut::postEvent(Event *event) {
+void ShortCut::processEvent(Event *event) {
 #if defined(MONA)
 	int w = getWidth();
 	int h = getHeight();

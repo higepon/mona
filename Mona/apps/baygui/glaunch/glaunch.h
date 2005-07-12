@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  アプリケーションランチャー
 */
-class Glaunch : public Window {
+class Glaunch : public Frame {
 private:
 	/** 直前の選択位置 */
 	int prevIndex;
@@ -42,5 +42,5 @@ public:
 	void execute();
 	
 	/** イベントハンドラ */
-	virtual void onEvent(Event *event);
+	virtual void processEvent(Event *event);
 };

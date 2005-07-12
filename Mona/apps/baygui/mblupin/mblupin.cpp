@@ -25,7 +25,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "TITLE.h"
 
-class MbLupin : public Window {
+class MbLupin : public Frame {
 private:
 	char  titleString[256];
 	wchar titleCharcode;
@@ -78,7 +78,7 @@ public:
 	}
 	
 	/** 描画ハンドラ */
-	void onPaint(Graphics *g)
+	void paint(Graphics *g)
 	{
 		int  x, y, offset, width, height, pos, bit;
 		char fp[256];
@@ -94,9 +94,9 @@ public:
 		
 		// タイトル全部を表示
 		if (this->titleCharcode == 0xFFFFFFFF) {
-			x = (getWidth() - Window::INSETS_LEFT - Window::INSETS_RIGHT 
+			x = (getWidth() - getInsets()->left - getInsets()->right 
 				- getFontMetrics()->getWidth(this->titleString)) / 2;
-			y = (getHeight() - Window::INSETS_TOP - Window::INSETS_BOTTOM 
+			y = (getHeight() - getInsets()->top - getInsets()->bottom 
 				- getFontMetrics()->getHeight(this->titleString)) / 2;
 			g->setColor(Color::white);
 			g->drawText(this->titleString, x, y);
@@ -106,8 +106,8 @@ public:
 		// タイトル中の１文字を２倍に拡大して描画する
 		if (getFontMetrics()->decodeCharacter(this->titleCharcode, &offset, &width, &height, fp) == true)
 		{
-			x = (getWidth() - Window::INSETS_LEFT - Window::INSETS_RIGHT - 24) / 2;
-			y = (getHeight() - Window::INSETS_TOP - Window::INSETS_BOTTOM - 24) / 2;
+			x = (getWidth() - getInsets()->left - getInsets()->right - 24) / 2;
+			y = (getHeight() - getInsets()->top - getInsets()->bottom - 24) / 2;
 			
 			for (int j = 0; j < height; j++) {
 				for (int k = 0; k < width; k++) {
@@ -128,7 +128,7 @@ public:
 	}
 	
 	/** イベントハンドラ */
-	void onEvent(Event *event)
+	void processEvent(Event *event)
 	{
 		if (event->getType() == Event::TIMER) {
 			drawTitle();

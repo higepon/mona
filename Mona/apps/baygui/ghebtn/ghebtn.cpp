@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <baygui.h>
 
-class HeButton : public Window {
+class HeButton : public Frame {
 private:
 	int count;
 	bool pushed;
@@ -57,7 +57,7 @@ public:
 		delete(image_pushed);
 	}
 
-	void onPaint(Graphics *g) {
+	void paint(Graphics *g) {
 		if (pushed == false) {
 			g->drawImage(image_normal, 0, 0);
 		} else {
@@ -67,7 +67,7 @@ public:
 		g->drawImage(number[count%10], 65, 112);
 	}
 	
-	void onEvent(Event *event) {
+	void processEvent(Event *event) {
 		if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 			pushed = true;
 			if (count == 20) {

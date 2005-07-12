@@ -60,10 +60,10 @@ namespace baygui {
 		virtual void remove(int index);
 		
 		/** 描画ハンドラ */
-		virtual void onPaint(Graphics* g);
+		virtual void paint(Graphics* g);
 		
 		/** イベントハンドラ */
-		virtual void onEvent(Event* event);
+		virtual void processEvent(Event* event);
 	};
 }
 

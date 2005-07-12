@@ -63,8 +63,8 @@ public:
 		setBounds(x, y, 16, 16);
 	}
 
-	void onPaint(Graphics*);
-	void onEvent(Event*);
+	void paint(Graphics*);
+	void processEvent(Event*);
 	void setTileValue(int);
 	void setState(tile_state);
 	int getTileValue();

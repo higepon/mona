@@ -64,10 +64,10 @@ namespace baygui {
 		inline  char *getText() { return this->text; }
 		
 		/** 描画ハンドラ */
-		virtual void onPaint(Graphics* g);
+		virtual void paint(Graphics* g);
 		
 		/** イベントハンドラ */
-		virtual void onEvent(Event* event);
+		virtual void processEvent(Event* event);
 	};
 }
 

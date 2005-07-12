@@ -71,7 +71,7 @@ void TextField::setText(char* text)
 	repaint();
 }
 
-void TextField::onPaint(Graphics* g)
+void TextField::paint(Graphics* g)
 {
 	int w = getWidth(), h = getHeight();
 
@@ -113,7 +113,7 @@ void TextField::onPaint(Graphics* g)
 	//g->drawLine(offx + textPtr * 8 + 8, offy, offx + textPtr * 8 + 8, offy + 12);
 }
 
-void TextField::onEvent(Event* event)
+void TextField::processEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
@@ -141,7 +141,7 @@ void TextField::onEvent(Event* event)
 			}
 		} else if (keycode == KeyEvent::VKEY_ENTER) {
 			// 確定
-			getParent()->onEvent(&this->textEvent);
+			getParent()->processEvent(&this->textEvent);
 			return;
 		} else if (keycode < 128) {
 			// 1文字挿入
@@ -151,6 +151,6 @@ void TextField::onEvent(Event* event)
 	// フォーカス状態変更
 	} else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
 		repaint();
-		getParent()->onEvent(&this->focusEvent);
+		getParent()->processEvent(&this->focusEvent);
 	}
 }

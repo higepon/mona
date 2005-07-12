@@ -276,7 +276,7 @@ void drawBackground(unsigned char *pbuf) {
 /* ----------- these are written by bayside ------------ */
 
 /** クラス宣言 */
-class GNoiz2bg : public Window
+class GNoiz2bg : public Frame
 {
 private:
 	int scene_count, scene;
@@ -302,16 +302,24 @@ public:
 	}
 
 	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g) {
+	virtual void paint(Graphics *g) {
 		if (firstPaint == false) {
 			firstPaint = true;
+			#ifdef MONA
 			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
+			#else
+			setTimer(1);
+			#endif
 		}
 	}
 
 	/** イベントハンドラ */
-	virtual void onEvent(Event *event) {
+	virtual void processEvent(Event *event) {
+		#ifdef MONA
 		if (event->getType() == Event::CUSTOM_EVENT) {
+		#else
+		if (event->getType() == Event::TIMER) {
+		#endif
 			moveBackground();
 			drawBackground(this->pbuf);
 			for (int y = 0; y < SCREEN_H; y++) {
@@ -331,12 +339,20 @@ public:
 				scene_count = FPS * 20;
 				setStageBackground(scene);
 			}
+			#ifdef MONA
 			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
+			#else
+			setTimer(1);
+			#endif
 		}
 	}
 };
 
+#if defined(MONA)
 int MonaMain(List<char*>* pekoe) {
+#else
+int main(int argc, char** argv) {
+#endif
 	GNoiz2bg *noiz = new GNoiz2bg();
 	noiz->run();
 	delete(noiz);

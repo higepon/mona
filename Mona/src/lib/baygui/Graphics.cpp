@@ -45,7 +45,7 @@ Graphics::~Graphics()
 {
 }
 
-void Graphics::drawPixel(int x, int y, unsigned int color)
+void Graphics::drawPixel(int x, int y, dword color)
 {
 	this->image->setPixel(tx + x, ty + y, color);
 }
@@ -250,7 +250,7 @@ void Graphics::setColor(unsigned char r, unsigned char g, unsigned char b)
 	this->rgb24 = 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
-void Graphics::setColor(unsigned int color)
+void Graphics::setColor(dword color)
 {
 	this->rgb24 = color;
 }

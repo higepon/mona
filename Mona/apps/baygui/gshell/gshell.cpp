@@ -22,6 +22,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <baygui.h>
+#ifndef MONA
+#include <time.h>
+#endif
 
 #define GSHELL_WIDTH  480 /* 8dot X 60chars */
 #define GSHELL_HEIGHT 300 /* 12dot X 25 chars */
@@ -49,7 +52,7 @@ static void StdoutMessageLoop() {
 }
 
 /** GUIコンソールクラス */
-class GShell : public Window {
+class GShell : public Frame {
 private:
 	/** コマンド履歴ポインター */
 	int historyPtr;
@@ -85,6 +88,7 @@ public:
 private:
 	/** ディレクトリ表示 */
 	inline void ls(char *pathname) {
+	#ifdef MONA
 		// ディレクトリを開く
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(pathname, MONAPI_TRUE);
 		if (mi == NULL) {
@@ -146,6 +150,7 @@ private:
 		}
 		monapi_cmemoryinfo_dispose(mi);
 		monapi_cmemoryinfo_delete(mi);
+	#endif
 	}
 
 	/** ディレクトリ移動 */
@@ -178,6 +183,7 @@ private:
 
 	/** ファイルの内容を表示 */
 	inline void cat(char *pathname) {
+	#ifdef MONA
 		// 圧縮されたファイルも表示する
 		monapi_cmemoryinfo* mi = NULL;
 		if (pathname[strlen(pathname) - 1] == '2') {
@@ -210,10 +216,12 @@ private:
 		// ファイルを閉じる
 		monapi_cmemoryinfo_dispose(mi);
 		monapi_cmemoryinfo_delete(mi);
+	#endif
 	}
 
 	/** ファイルを実行する */
 	inline void exec(char *pathname) {
+	#ifdef MONA
 		String s = pathname;
 		// 通常形式
 		if (s.endsWith("elf") || s.endsWith("el2") || s.endsWith("el5") ||
@@ -269,6 +277,7 @@ private:
 			}
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
 		}
+	#endif
 	}
 
 	/** 1行追加 */
@@ -284,6 +293,7 @@ private:
 
 	/** 指定したファイルがあるかどうか調べる */
 	inline bool existsFile(char *filename) {
+	#ifdef MONA
 		// ディレクトリを開く
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_TRUE);
 		if (mi == NULL) {
@@ -317,6 +327,10 @@ private:
 		monapi_cmemoryinfo_delete(mi);
 
 		return false;
+	#else
+		this->addLine("ファイルまたはディレクトリが見つかりません。\n");
+		return false;
+	#endif
 	}
 
 	/** コマンド解析 */
@@ -402,7 +416,7 @@ private:
 		} else if (s.equals("date") || s.equals("time")) {
 			const char* day [] = { "日", "月", "火", "水", "木", "金", "土" };
 			const char* ampm[] = { "午前", "午後" };
-
+		#ifdef MONA
 			MonAPI::Date date;
 			date.refresh();
 
@@ -411,13 +425,37 @@ private:
 				date.year(), date.month(), date.day(), day[date.dayofweek() % 7],
 				ampm[date.hour() / 12], date.hour() % 12, date.min(), date.sec());
 			this->addLine(temp);
+		#else
+			time_t timer;
+			struct tm *date;
+			
+			time(&timer);
+			date = localtime(&timer);
+			
+			int year = 1900 + date->tm_year;
+			int month = date->tm_mon + 1;
+			int today = date->tm_mday;
+			
+			/* ツェラーの公式 */
+			int day_of_week = (year + int(year/4) - int(year/100) + int(year/400) + int((13 * month + 8)/5) + today) % 7;
+			
+			memset(temp, 0, sizeof(temp));
+			sprintf(temp, "%d年%02d月%02d日(%s) %s %02d:%02d:%02d\n",
+				year, month, today, day[day_of_week % 7],
+				ampm[date->tm_hour / 12], date->tm_hour % 12, date->tm_min, date->tm_sec);
+			this->addLine(temp);
+		#endif
 		//
 		// uname/ver
 		//
 		} else if (s.equals("uname") || s.equals("ver")) {
+		#ifdef MONA
 			char uname[128];
 			syscall_get_kernel_version(uname, 128);
 			this->addLine(uname);
+		#else
+			this->addLine(BAYGUI_VERSION);
+		#endif
 		//
 		// clear/cls
 		//
@@ -429,7 +467,7 @@ private:
 		} else if (s.equals("ps")) {
 			this->addLine("[tid] [状態]  [eip]    [esp]    [cr3]    [名前]\n");
 			memset(temp, 0, sizeof(temp));
-			
+		#ifdef MONA
 			PsInfo info;
 			syscall_set_ps_dump();
 			while (syscall_read_ps_dump(&info) == 0) {
@@ -439,6 +477,7 @@ private:
 				);
 				this->addLine(temp);
 			}
+		#endif
 		//
 		// kill [pid]
 		//
@@ -518,7 +557,7 @@ private:
 
 public:
 	/** イベントハンドラ */
-	virtual void onEvent(Event *e) {
+	virtual void processEvent(Event *e) {
 		// printfをハンドリング
 		if (e->getType() == Event::CUSTOM_EVENT) {
 			for (int i = 0; i < (int)strlen(e->str); i++) {
@@ -528,7 +567,7 @@ public:
 					this->addLine(lineBuffer);
 					memset(lineBuffer, 0, sizeof(lineBuffer));
 					// 再描画
-					onPaint(getGraphics());
+					paint(getGraphics());
 				} else if (e->str[i] != '\r') {
 					lineBuffer[strlen(lineBuffer)] = e->str[i];
 				}
@@ -556,21 +595,21 @@ public:
 					memset(commandBuffer, 0, sizeof(commandBuffer));
 				}
 				// 再描画
-				onPaint(getGraphics());
+				paint(getGraphics());
 			// １文字削除
 			} else if (keycode == KeyEvent::VKEY_BACKSPACE) {
 				if (strlen(commandBuffer) == 0) return;
 				memset(lineBuffer, 0, sizeof(lineBuffer));
 				commandBuffer[strlen(commandBuffer) - 1] = 0;
 				// 再描画
-				onPaint(getGraphics());
+				paint(getGraphics());
 			// １つ前の履歴
 			} else if (keycode == KeyEvent::VKEY_UP) {
 				if (this->historyPtr == -1) return;
 				this->historyPtr--;
 				strcpy(commandBuffer, ((String *)history.get(this->historyPtr))->getBytes());
 				// 再描画
-				onPaint(getGraphics());
+				paint(getGraphics());
 			// １つ次の履歴
 			} else if (keycode == KeyEvent::VKEY_DOWN) {
 				if (this->historyPtr < this->history.size() - 1) {
@@ -580,19 +619,19 @@ public:
 					memset(commandBuffer, 0, sizeof(commandBuffer));
 				}
 				// 再描画
-				onPaint(getGraphics());
+				paint(getGraphics());
 			// 1文字追加
 			} else if (0 < keycode && keycode < 128) {
 				memset(lineBuffer, 0, sizeof(lineBuffer));
 				commandBuffer[strlen(commandBuffer)] = keycode;
 				// 再描画
-				onPaint(getGraphics());
+				paint(getGraphics());
 			}
 		}
 	}
 
 	/** 描画ハンドラ */
-	virtual void onPaint(Graphics *g) {
+	virtual void paint(Graphics *g) {
 		// 背景色で塗りつぶし
 		g->setColor(Color::white);
 		g->fillRect(0, 0, getWidth(), getHeight());
@@ -652,7 +691,11 @@ public:
 };
 
 /** メイン */
+#ifdef MONA
 int MonaMain(List<char*>* pekoe) {
+#else
+int main(int argc, char** argv) {
+#endif
 	// アプリケーションを初期化する
 	GShell *shell = new GShell();
 	shell->run();

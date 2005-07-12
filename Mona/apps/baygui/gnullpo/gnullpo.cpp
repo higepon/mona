@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <baygui.h>
 
-class GNullpo : public Window {
+class GNullpo : public Frame {
 private:
 	bool pushed;
 	Image *image_normal, *image_pushed;
@@ -42,7 +42,7 @@ public:
 		delete(image_pushed);
 	}
 
-	void onPaint(Graphics *g) {
+	void paint(Graphics *g) {
 		if (pushed == false) {
 			g->drawImage(image_normal, 0, 0);
 		} else {
@@ -50,7 +50,7 @@ public:
 		}
 	}
 	
-	void onEvent(Event *event) {
+	void processEvent(Event *event) {
 		if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 			pushed = true;
 			repaint();

@@ -50,7 +50,7 @@ Checkbox *CheckboxGroup::getSelectedCheckbox()
 	return NULL;
 }
 
-void CheckboxGroup::onEvent(Event* event)
+void CheckboxGroup::processEvent(Event* event)
 {
 	// 選択されているチェックボックス以外を未選択にする
 	int I = this->checkboxList.size();

@@ -25,8 +25,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define _STRING_H_INCLUDED_
 
 namespace baygui {
-	typedef unsigned int wchar;
-
 	/**
 	 文字列ラッパークラス.
 	 内部形式はUCS-4 (4バイト) で保持する。
@@ -42,7 +40,7 @@ namespace baygui {
 		
 	private:
 		/** 文字列を設定する */
-		String& set(const char* s);
+		String& set(const char *s);
 
 		/** 数値を設定する */
 		String& set(const int n);
@@ -55,7 +53,7 @@ namespace baygui {
 		 コンストラクタ
 		 @param s 文字列 (UTF-8)
 		*/
-		inline String(const char* s) : bytes(0), len(0) { set(s); }
+		inline String(const char *s) : bytes(0), len(0) { set(s); }
 		
 		/**
 		 コンストラクタ
@@ -82,26 +80,31 @@ namespace baygui {
 		 "="演算子の多重定義.
 		 String s = "hoge"; のように使うことができる。
 		*/
-		inline const String& operator=(const char* s){ set(s); return *this; }
+		inline const String& operator=(const char *s){ set(s); return *this; }
 		
 		/**
 		 指定された文字列と等しいかどうかチェックする
 		 */
-		bool equals(const char* s);
+		bool String::equals(Object* obj);
+		
+		/**
+		 指定された文字列と等しいかどうかチェックする
+		 */
+		bool equals(const char *s);
 		
 		/**
 		 指定された文字列で始まるかどうかチェックする
 		 @param s 文字列
 		 @return 始まっていればtrue、そうでなければfalse
 		*/
-		bool startsWith(const char* s);
+		bool startsWith(const char *s);
 		
 		/**
 		 指定された文字列で終っているかどうかチェックする
 		 @param s 文字列
 		 @return 終っていればtrue、そうでなければfalse
 		*/
-		bool endsWith(const char* s);
+		bool endsWith(const char *s);
 	};
 }
 

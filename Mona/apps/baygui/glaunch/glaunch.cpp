@@ -30,7 +30,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /** デフォルトコンストラクタ */
 Glaunch::Glaunch()
 {
-	setBounds(0, 22, 108 + INSETS_LEFT + INSETS_RIGHT, 250 + INSETS_TOP + INSETS_BOTTOM);
+	setBounds(0, 22, 108 + getInsets()->left + getInsets()->right, 250 + getInsets()->top + getInsets()->bottom);
 	setTitle("mokon");
 
 	// 前回の選択位置
@@ -117,7 +117,7 @@ void Glaunch::execute()
 }
 
 /** イベントハンドラ */
-void Glaunch::onEvent(Event *event)
+void Glaunch::processEvent(Event *event)
 {
 	if (event->getType() == Event::ITEM_SELECTED) {
 		// 前の選択位置と同じ（ダブルクリック）

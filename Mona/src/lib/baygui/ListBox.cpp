@@ -65,7 +65,7 @@ void ListBox::remove(int index)
 	delete(s);
 }
 
-void ListBox::onPaint(Graphics* g)
+void ListBox::paint(Graphics* g)
 {
 	int w = getWidth();
 	int h = getHeight();
@@ -100,7 +100,7 @@ void ListBox::onPaint(Graphics* g)
 	} 
 }
 
-void ListBox::onEvent(Event* event)
+void ListBox::processEvent(Event* event)
 {
 	// 非活性の時はイベントを受け付けない
 	if (getEnabled() == false) return;
@@ -112,7 +112,7 @@ void ListBox::onEvent(Event* event)
 			if (this->selectedIndex > 0) {
 				this->selectedIndex--;
 				repaint();
-				getParent()->onEvent(&this->itemEvent);
+				getParent()->processEvent(&this->itemEvent);
 			}
 		} else if (keycode == KeyEvent::VKEY_DOWN) {
 			if (this->selectedIndex < this->dataList.size() - 1 && 
@@ -120,20 +120,20 @@ void ListBox::onEvent(Event* event)
 			{
 				this->selectedIndex++;
 				repaint();
-				getParent()->onEvent(&this->itemEvent);
+				getParent()->processEvent(&this->itemEvent);
 			}
 		} else if (keycode == KeyEvent::VKEY_ENTER) {
-			getParent()->onEvent(&this->itemEvent);
+			getParent()->processEvent(&this->itemEvent);
 		}
 	// マウス押下
 	} else if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 		int my = ((MouseEvent *)event)->getY();
 		//printf("y = %d,", my);
 		select((my - 3) / 16);
-		getParent()->onEvent(&this->itemEvent);
+		getParent()->processEvent(&this->itemEvent);
 	// フォーカス状態変更
 	} else if (event->getType() == Event::FOCUS_IN || event->getType() == Event::FOCUS_OUT) {
 		repaint();
-		getParent()->onEvent(&this->itemEvent);
+		getParent()->processEvent(&this->itemEvent);
 	}
 }
