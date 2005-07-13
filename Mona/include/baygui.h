@@ -147,7 +147,35 @@ namespace MonAPI {
 	/** MonAPIダミークラス */
 	class Message {
 	public:
+		static const int equalsHeader = 0;
+		
+	public:
+		static int lookupMainThread(char *processName)
+		{
+			return 0;
+		}
+		
+		static int send(dword thread_id, dword msg_id)
+		{
+			return 0;
+		}
+		
 		static int send(dword thread_id, dword msg_id, dword arg1)
+		{
+			return 0;
+		}
+		
+		static int reply(MessageInfo* info)
+		{
+			return 0;
+		}
+		
+		static int receive(MessageInfo* info)
+		{
+			return 0;
+		}
+		
+		static int receive(MessageInfo* info, MessageInfo* src, int msg_id)
 		{
 			return 0;
 		}
@@ -199,6 +227,18 @@ dword monapi_get_server_thread_id(dword serverID);
 
 /** MonAPIダミーメソッド */
 bool monapi_register_to_server(int serverID, int isCout);
+
+/** MonAPIダミーメソッド */
+dword syscall_get_tid();
+
+/** MonAPIダミーメソッド */
+dword syscall_mthread_create(dword funcID);
+
+/** MonAPIダミーメソッド */
+void syscall_mthread_join(dword threadID);
+
+/** MonAPIダミーメソッド */
+void syscall_kill_thread(dword threadID);
 
 /** MonAPIダミーメソッド */
 void kill_timer(dword timerID);
