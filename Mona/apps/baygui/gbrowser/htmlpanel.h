@@ -33,5 +33,5 @@ private:
 public:
 	HtmlPanel();
 	virtual void setUrl(char *url);
-	virtual void onPaint(Graphics *g);
+	virtual void paint(Graphics *g);
 };

@@ -55,7 +55,7 @@ void PingPanel::setReplayflag(bool rpf){
 }
 
 /** 再描画（repaintを呼ぶとここにくる）*/
-void PingPanel::onPaint(Graphics *g){
+void PingPanel::paint(Graphics *g){
     // 背景を灰色で塗りつぶす
     g->setColor(getBackground());
     g->fillRect(0, 0, getWidth(), getHeight());

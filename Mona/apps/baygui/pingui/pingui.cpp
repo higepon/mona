@@ -49,7 +49,7 @@ public:
         free(panel);
     }
     
-    void onEvent(Event *event){
+    void processEvent(Event *event){
         if (event->getType() == MouseEvent::MOUSE_RELEASED) {
             if (event->getSource() == go) {
                 // PingPanelクラスに処理をお願いする

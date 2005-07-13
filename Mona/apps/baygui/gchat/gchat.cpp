@@ -54,7 +54,7 @@ private:
 public:
 	GChat::GChat();
 	virtual GChat::~GChat();
-	virtual void onEvent(Event *e);
+	virtual void processEvent(Event *e);
 };
 
 GChat::GChat()
@@ -104,7 +104,7 @@ GChat::~GChat()
 	delete(history);
 }
 
-void GChat::onEvent(Event *event)
+void GChat::processEvent(Event *event)
 {
 	// 実行
 	if (event->getType() == Event::TEXT_CHANGED) {

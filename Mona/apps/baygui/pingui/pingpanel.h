@@ -29,5 +29,5 @@ public:
     virtual void setPacbuf(char *pacbuf);
     virtual void setPaclen(int paclen);
     virtual void setReplayflag(bool rpf);
-    virtual void onPaint(Graphics *g);
+    virtual void paint(Graphics *g);
 };

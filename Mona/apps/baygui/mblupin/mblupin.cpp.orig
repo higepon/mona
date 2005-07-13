@@ -83,7 +83,7 @@ public:
         delete(label);
     }
     
-    void onEvent(Event *event) {
+    void processEvent(Event *event) {
         int tmprand;
         int ret;
         char buf[MAXSTRING];

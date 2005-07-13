@@ -58,7 +58,7 @@ void MsgPanel::setReplayflag(bool rpf){
 }
 
 /** 再描画（repaintを呼ぶとここにくる）*/
-void MsgPanel::onPaint(Graphics *g){
+void MsgPanel::paint(Graphics *g){
     // 背景を灰色で塗りつぶす
     g->setColor(getBackground());
     g->fillRect(0, 0, getWidth(), getHeight());

@@ -58,7 +58,7 @@ public:
     delete(start);
   }
 
-  void onEvent(Event *event){
+  void processEvent(Event *event){
     if(event->getType() == MouseEvent::MOUSE_RELEASED){
       if(event->getSource() == start){
 	time = atoi(text->getText());

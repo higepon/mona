@@ -71,7 +71,7 @@ public:
 		free(panel);
 	}
 	
-	void onEvent(Event *event){
+	void processEvent(Event *event){
 		if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 			// 更新を押したとき
 			if (event->getSource() == reload) {

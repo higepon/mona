@@ -86,7 +86,7 @@ public:
         free(panel);
     }
     
-    void onEvent(Event *event){
+    void processEvent(Event *event){
         if (event->getType() == MouseEvent::MOUSE_RELEASED) {
             if (event->getSource() == go) {
                 // MsgPanelクラスに処理をお願いする

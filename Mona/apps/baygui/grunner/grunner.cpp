@@ -37,7 +37,7 @@ private:
 public:
 	GRunner::GRunner();
 	virtual GRunner::~GRunner();
-	virtual void onEvent(Event *event);
+	virtual void processEvent(Event *event);
 };
 
 GRunner::GRunner()
@@ -58,7 +58,7 @@ GRunner::~GRunner()
 	delete(history);
 }
 
-void GRunner::onEvent(Event *event)
+void GRunner::processEvent(Event *event)
 {
 	// 実行
 	if (event->type == TEXT_CHANGED) {

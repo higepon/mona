@@ -56,7 +56,7 @@ public:
 			ampm[date->hour() / 12], date->hour() % 12, date->min(), date->sec());
 	}
 	
-	void onEvent(Event *event) {
+	void processEvent(Event *event) {
 		if (event->getType() == Event::TIMER) {
 			refreshDate();
 			label->setText(time);

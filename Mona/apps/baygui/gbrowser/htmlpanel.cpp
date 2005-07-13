@@ -36,7 +36,7 @@ void HtmlPanel::setUrl(char *url){
 }
 
 /** 再描画（repaintを呼ぶとここにくる）*/
-void HtmlPanel::onPaint(Graphics *g){
+void HtmlPanel::paint(Graphics *g){
 	// 背景を灰色で塗りつぶす
 	g->setColor(getBackground());
 	g->fillRect(0, 0, getWidth(), getHeight());
