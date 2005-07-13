@@ -29,25 +29,7 @@ static MonAPI::Screen screen;
 /*  Function prototypes ( Mona specific )                            */
 /*-------------------------------------------------------------------*/
 
-#if 0
-static int printf(char *format, ...)
-/* output cosole */
-{
-	int i, I;
-	va_list ap;
-
-	va_start(ap, format);
-	I = vsprintf(strbuf, format, ap);
-	va_end(ap);
-	for(i = 0; i < I; i++){
-		putch(strbuf[i]);
-	}
-	return I;
-}
-#endif
-
-/** 標準出力を握りつぶすスレッド */
-static void StdoutMessageLoop()
+static void EventLoop()
 {
 	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
 
@@ -163,7 +145,7 @@ int MonaMain( List<char*>* pekoe )
 	
 	/* Create thread */
 	my_tid = syscall_get_tid();
-	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
+	dword id = syscall_mthread_create((dword)EventLoop);
 	syscall_mthread_join(id);
 	MessageInfo msg, src;
 	src.header = MSG_SERVER_START_OK;
@@ -202,8 +184,11 @@ int InfoNES_ReadRom( const char *pszFileName )
 	monapi_cmemoryinfo* mi = NULL;
 	
 	/* Read File */
-	mi = monapi_call_file_read_data(pszFileName, false);
-	if (mi == NULL || mi->Size == 0) return 1;
+	mi = monapi_call_file_read_data(pszFileName, MONAPI_FALSE);
+	if (mi == NULL || mi->Size == 0) {
+		syscall_print("ROM file not found!");
+		exit(1);
+	}
 	fp1 = (BYTE *)malloc(mi->Size);
 	memcpy(fp1, mi->Data, mi->Size);
 	monapi_cmemoryinfo_dispose(mi);
