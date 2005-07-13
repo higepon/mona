@@ -303,7 +303,7 @@ void Map249_Apu( WORD wAddr, BYTE byData )
 /*-------------------------------------------------------------------*/
 void Map249_HSync()
 {
-  if( (/* PPU_Scanline >= 0 &&*/ PPU_Scanline <= 239) ) {
+  if( ( /* PPU_Scanline >= 0 && */ PPU_Scanline <= 239) ) {
     if( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP ) {
       if( Map249_IRQ_Enable && !Map249_IRQ_Request ) {
 	if( PPU_Scanline == 0 ) {

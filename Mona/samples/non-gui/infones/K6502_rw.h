@@ -74,14 +74,13 @@ static inline BYTE K6502_Read( WORD wAddr )
     case 0x2000:  /* PPU */
       if ( ( wAddr & 0x7 ) == 0x7 )   /* PPU Memory */
       {
-        WORD addr = PPU_Addr;
+        WORD addr = PPU_Addr & 0x3fff;
+
+        // Set return value;
+	byRet = PPU_R7;
 
         // Increment PPU Address
         PPU_Addr += PPU_Increment;
-        addr &= 0x3fff;
-
-        // Set return value;
-        byRet = PPU_R7;
 
         // Read PPU Memory
         PPU_R7 = PPUBANK[ addr >> 10 ][ addr & 0x3ff ];
@@ -99,8 +98,10 @@ static inline BYTE K6502_Read( WORD wAddr )
         // Set return value
         byRet = PPU_R2;
 
+#if 0
         // Reset a V-Blank flag
         PPU_R2 &= ~R2_IN_VBLANK;
+#endif
 
         // Reset address latch
         PPU_Latch_Flag = 0;
@@ -113,9 +114,18 @@ static inline BYTE K6502_Read( WORD wAddr )
         }
         return byRet;
       }
+      else /* $2000, $2001, $2003, $2005, $2006 */
+      {
+	return PPU_R7;
+      }
       break;
 
     case 0x4000:  /* Sound */
+      if ( wAddr == 0x4014 ) 
+      {
+	return wAddr & 0xff;
+      }
+      else
       if ( wAddr == 0x4015 )
       {
         // APU control
@@ -226,7 +236,7 @@ static inline void K6502_Write( WORD wAddr, BYTE byData )
           PPU_SP_Height = ( PPU_R0 & R0_SP_SIZE ) ? 16 : 8;
 
           // Account for Loopy's scrolling discoveries
-		      PPU_Temp = ( PPU_Temp & 0xF3FF ) | ( ( ( (WORD)byData ) & 0x0003 ) << 10 );
+	  PPU_Temp = ( PPU_Temp & 0xF3FF ) | ( ( ( (WORD)byData ) & 0x0003 ) << 10 );
           break;
 
         case 1:   /* 0x2001 */
@@ -254,13 +264,14 @@ static inline void K6502_Write( WORD wAddr, BYTE byData )
           if ( PPU_Latch_Flag )
           {
             // V-Scroll Register
-            PPU_Scr_V_Next = ( byData > 239 ) ? 0 : byData;
+            PPU_Scr_V_Next = ( byData > 239 ) ? byData - 240 : byData;	    
+	    if ( byData > 239 ) PPU_NameTableBank ^= NAME_TABLE_V_MASK; 
             PPU_Scr_V_Byte_Next = PPU_Scr_V_Next >> 3;
             PPU_Scr_V_Bit_Next = PPU_Scr_V_Next & 7;
 
             // Added : more Loopy Stuff
-			      PPU_Temp = ( PPU_Temp & 0xFC1F ) | ( ( ( (WORD)byData ) & 0xF8 ) << 2);
-			      PPU_Temp = ( PPU_Temp & 0x8FFF ) | ( ( ( (WORD)byData ) & 0x07 ) << 12);
+	    PPU_Temp = ( PPU_Temp & 0xFC1F ) | ( ( ( (WORD)byData ) & 0xF8 ) << 2);
+	    PPU_Temp = ( PPU_Temp & 0x8FFF ) | ( ( ( (WORD)byData ) & 0x07 ) << 12);
           }
           else
           {
@@ -270,7 +281,7 @@ static inline void K6502_Write( WORD wAddr, BYTE byData )
             PPU_Scr_H_Bit_Next = PPU_Scr_H_Next & 7;
 
             // Added : more Loopy Stuff
-			      PPU_Temp = ( PPU_Temp & 0xFFE0 ) | ( ( ( (WORD)byData ) & 0xF8 ) >> 3 );
+	    PPU_Temp = ( PPU_Temp & 0xFFE0 ) | ( ( ( (WORD)byData ) & 0xF8 ) >> 3 );
           }
           PPU_Latch_Flag ^= 1;
           break;
@@ -286,7 +297,9 @@ static inline void K6502_Write( WORD wAddr, BYTE byData )
             PPU_Temp = ( PPU_Temp & 0xFF00 ) | ( ( (WORD)byData ) & 0x00FF);
 	    PPU_Addr = PPU_Temp;
 #endif
-            InfoNES_SetupScr();
+	    if ( !( PPU_R2 & R2_IN_VBLANK ) ) {
+	      InfoNES_SetupScr();
+	    }
           }
           else
           {
@@ -333,7 +346,7 @@ static inline void K6502_Write( WORD wAddr, BYTE byData )
               PalTable[ 0x10 ] = PalTable[ 0x14 ] = PalTable[ 0x18 ] = PalTable[ 0x1c ] = NesPalette[ byData ] | 0x8000;
             }
             else
-            if ( addr & 3 )
+	    if ( addr & 3 )
             {
               // Palette
               PPURAM[ addr ] = byData;
@@ -414,6 +427,8 @@ static inline void K6502_Write( WORD wAddr, BYTE byData )
           break;
 
         case 0x16:  /* 0x4016 */
+	  // For VS-Unisystem
+	  MapperApu( wAddr, byData );
           // Reset joypad
           if ( !( APU_Reg[ 0x16 ] & 1 ) && ( byData & 1 ) )
           {

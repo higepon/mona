@@ -1,5 +1,5 @@
 TARGET  = INFONES
-SOURCES = InfoNES.cpp InfoNES_System.cpp InfoNES_Mapper.cpp InfoNES_pAPU.cpp K6502.cpp
+SOURCES = InfoNES.cpp InfoNES_System_Mona.cpp InfoNES_Mapper.cpp InfoNES_pAPU.cpp K6502.cpp
 INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR = ../../..

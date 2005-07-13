@@ -60,9 +60,9 @@ void Map232_Init()
 /*-------------------------------------------------------------------*/
 void Map232_Write( WORD wAddr, BYTE byData )
 {
-  if( wAddr == 0x9000 ) {
+  if ( wAddr == 0x9000 ) {
     Map232_Regs[0] = (byData & 0x18)>>1;
-  } else if( wAddr >= 0xA000 /*&& wAddr <= 0xFFFF*/ ) {
+  } else if ( 0xA000 <= wAddr /* && wAddr <= 0xFFFF */ ) {
     Map232_Regs[1] = byData & 0x03;
   }
   

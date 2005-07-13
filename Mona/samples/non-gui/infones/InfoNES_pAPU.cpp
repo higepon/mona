@@ -119,8 +119,8 @@ struct ApuQualityData_t
   unsigned int sample_rate;
   DWORD cycle_rate;
 } ApuQual[] = {
-	{ 0xa2567000, 0xa2567000, 0xa2567000, 183, 164, 11025, 1062658 },
-	{ 0x512b3800, 0x512b3800, 0x512b3800, 367,  82, 22050, 531329 },
+  { 0xa2567000, 0xa2567000, 0xa2567000, 183, 164, 11025, 1062658 },
+  { 0x512b3800, 0x512b3800, 0x512b3800, 367,  82, 22050, 531329 },
   { 0x289d9c00, 0x289d9c00, 0x289d9c00, 735,  41, 44100, 265664 },
 };
 
@@ -324,7 +324,7 @@ int ApuWriteWave1( int cycles, int event )
 	  
 	  if ( ApuC1Freq ) 
           {
-	    ApuC1Skip = ApuPulseMagic / (ApuC1Freq / 2);
+	    ApuC1Skip = ( ApuPulseMagic << 1 ) / ApuC1Freq;
 	  } else {
 	    ApuC1Skip = 0;
 	  }
@@ -337,7 +337,7 @@ int ApuWriteWave1( int cycles, int event )
 	  
 	  if ( ApuC1Freq ) 
           {
-	    ApuC1Skip = ApuPulseMagic / (ApuC1Freq / 2);
+	    ApuC1Skip = ( ApuPulseMagic << 1 ) / ApuC1Freq;
 	  } else {
 	    ApuC1Skip = 0;
 	  }
@@ -417,7 +417,9 @@ void ApuRenderingWave1( void )
           ApuC1Freq +=  ( ApuC1Freq >> ApuC1SweepShifts );
         }
       }
-      ApuC1Skip = ApuPulseMagic / (ApuC1Freq / 2);
+      if ( ApuC1Freq ) {
+	ApuC1Skip = ( ApuPulseMagic << 1 ) / ApuC1Freq;
+      }
     }
 
     /* Wave Rendering */
@@ -474,7 +476,7 @@ int ApuWriteWave2( int cycles, int event )
 	  
 	  if ( ApuC2Freq ) 
           {
-	    ApuC2Skip = ApuPulseMagic / (ApuC2Freq / 2);
+	    ApuC2Skip = ( ApuPulseMagic << 1 ) / ApuC2Freq;
 	  } else {
 	    ApuC2Skip = 0;
 	  }
@@ -487,7 +489,7 @@ int ApuWriteWave2( int cycles, int event )
 	  
 	  if ( ApuC2Freq ) 
           {
-	    ApuC2Skip = ApuPulseMagic / (ApuC2Freq / 2);
+	    ApuC2Skip = ( ApuPulseMagic << 1 ) / ApuC2Freq;
 	  } else {
 	    ApuC2Skip = 0;
 	  }
@@ -567,7 +569,9 @@ void ApuRenderingWave2( void )
           ApuC2Freq +=  ( ApuC2Freq >> ApuC2SweepShifts );
         }
       }
-      ApuC2Skip = ApuPulseMagic / (ApuC2Freq / 2);
+      if ( ApuC2Freq ) {
+	ApuC2Skip = ( ApuPulseMagic << 1 ) / ApuC2Freq;
+      }
     }
 
     /* Wave Rendering */

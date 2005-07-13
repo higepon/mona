@@ -225,7 +225,7 @@ void Map47_HSync()
  */
   if ( Map47_IRQ_Enable )
   {
-    if ( /*0 <= PPU_Scanline &&*/ PPU_Scanline <= 239 )
+    if ( /* 0 <= PPU_Scanline && */ PPU_Scanline <= 239 )
     {
       if ( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP )
       {

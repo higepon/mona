@@ -174,7 +174,7 @@ void Map248_Apu( WORD wAddr, BYTE byData )
 /*-------------------------------------------------------------------*/
 void Map248_HSync()
 {
-  if( (/*PPU_Scanline >= 0 &&*/ PPU_Scanline <= 239) ) {
+  if( ( /* PPU_Scanline >= 0 && */ PPU_Scanline <= 239) ) {
     if( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP ) {
       if( Map248_IRQ_Enable ) {
 	if( !(Map248_IRQ_Counter--) ) {

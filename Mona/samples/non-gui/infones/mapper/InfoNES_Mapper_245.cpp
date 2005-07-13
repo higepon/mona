@@ -145,7 +145,7 @@ void Map245_Write( WORD wAddr, BYTE byData )
 /*-------------------------------------------------------------------*/
 void Map245_HSync()
 {
-  if( (/*PPU_Scanline >= 0 &&*/ PPU_Scanline <= 239) ) {
+  if( ( /* PPU_Scanline >= 0 && */ PPU_Scanline <= 239) ) {
     if( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP ) {
       if( Map245_IRQ_Enable && !Map245_IRQ_Request ) {
 	if( PPU_Scanline == 0 ) {

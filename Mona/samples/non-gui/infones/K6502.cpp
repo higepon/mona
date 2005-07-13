@@ -119,7 +119,23 @@
 
 // Jump Op.
 #define JSR     wA0 = AA_ABS2; PUSHW( PC ); PC = wA0; 
+#if 0
 #define BRA(a)  if ( a ) { wA0 = PC; PC += (char)K6502_Read( PC ); CLK( 3 + ( ( wA0 & 0x0100 ) != ( PC & 0x0100 ) ) ); ++PC; } else { ++PC; CLK( 2 ); }
+#else
+#define BRA(a) { \
+  if ( a ) \
+  { \
+    wA0 = PC; \
+	byD0 = K6502_Read( PC ); \
+	PC += ( ( byD0 & 0x80 ) ? ( 0xFF00 | (WORD)byD0 ) : (WORD)byD0 ); \
+	CLK( 3 + ( ( wA0 & 0x0100 ) != ( PC & 0x0100 ) ) ); \
+    ++PC; \
+  } else { \
+	++PC; \
+	CLK( 2 ); \
+  } \
+}
+#endif
 #define JMP(a)  PC = a;
 
 /*-------------------------------------------------------------------*/

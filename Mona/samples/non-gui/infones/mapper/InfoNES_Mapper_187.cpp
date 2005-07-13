@@ -247,7 +247,7 @@ BYTE Map187_ReadApu( WORD wAddr )
 /*-------------------------------------------------------------------*/
 void Map187_HSync()
 {
-  if( (/*PPU_Scanline >= 0 &&*/ PPU_Scanline <= 239) ) {
+  if( ( /* PPU_Scanline >= 0 && */ PPU_Scanline <= 239) ) {
     if( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP ) {
       if( Map187_IRQ_Enable ) {
 	if( !Map187_IRQ_Counter ) {

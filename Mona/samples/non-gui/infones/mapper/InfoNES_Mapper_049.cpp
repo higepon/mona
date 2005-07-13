@@ -205,7 +205,7 @@ void Map49_HSync()
  */
   if ( Map49_IRQ_Enable )
   {
-    if ( /*0 <= PPU_Scanline &&*/ PPU_Scanline <= 239 )
+    if ( /* 0 <= PPU_Scanline && */ PPU_Scanline <= 239 )
     {
       if ( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP )
       {

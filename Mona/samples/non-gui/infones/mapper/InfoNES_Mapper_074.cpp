@@ -240,7 +240,7 @@ void Map74_HSync()
  *  Callback at HSync
  *
  */
-  if ( ( /*0 <= PPU_Scanline &&*/ PPU_Scanline <= 239 ) && 
+  if ( ( /* 0 <= PPU_Scanline && */ PPU_Scanline <= 239 ) && 
        ( PPU_R1 & R1_SHOW_SCR || PPU_R1 & R1_SHOW_SP ) )
   {
 		if( Map74_IRQ_Present_Vbl ) {
