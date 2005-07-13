@@ -209,7 +209,6 @@ int InfoNES_ReadRom( const char *pszFileName )
 	if ( NesHeader.byInfo1 & 4 ) {
 		for (i = 0; i < 512; i++)
 			SRAM[0x1000 + i] = *fp1++;
-			//*fp1++;
 	}
 
 	/* Allocate Memory for ROM Image */
@@ -330,16 +329,22 @@ void InfoNES_LoadFrame()
 	if (bpp != 16) return;
 	
 	/* Set screen mode */
-	offx = (sw - NES_DISP_WIDTH ) / 2;
-	offy = (sh - NES_DISP_HEIGHT) / 2;
+	offx = (sw - NES_DISP_WIDTH * 2) / 2;
+	offy = (sh - NES_DISP_HEIGHT * 2) / 2;
 	
 	/* Copy WorkFrame to VRAM */
-	for (int y = 0; y < NES_DISP_HEIGHT; y++) {
-		for (int x = 0; x < NES_DISP_WIDTH; x++) {
+	for (int y = 0; y < NES_DISP_HEIGHT * 2; y += 2) {
+		for (int x = 0; x < NES_DISP_WIDTH * 2; x += 2) {
 			WORD wColor = WorkFrame[ ( y << 8 ) + x ];
+			wColor = MonAPI::Color::bpp24to565((wColor & 0x7c00) >> 7, (wColor & 0x03e0) >> 2, (wColor & 0x001f) << 3);
 			BYTE* pVram = &vram[((x + offx) + (y + offy) * sw) * (bpp >> 3)];
-			*(unsigned short*)pVram = 
-				MonAPI::Color::bpp24to565((wColor & 0x7c00) >> 7, (wColor & 0x03e0) >> 2, (wColor & 0x001f) << 3);
+			*(unsigned short*)pVram = wColor;
+			pVram = &vram[((x + offx + 1) + (y + offy) * sw) * (bpp >> 3)];
+			*(unsigned short*)pVram = wColor;
+			pVram = &vram[((x + offx) + (y + offy + 1) * sw) * (bpp >> 3)];
+			*(unsigned short*)pVram = wColor;
+			pVram = &vram[((x + offx + 1) + (y + offy + 1) * sw) * (bpp >> 3)];
+			*(unsigned short*)pVram = wColor;
 		}
 	}
 }
