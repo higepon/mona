@@ -22,6 +22,7 @@
 /*-------------------------------------------------------------------*/
 
 static int offx, offy;
+static dword my_tid, keyevt_tid;
 static MonAPI::Screen screen;
 
 /*-------------------------------------------------------------------*/
@@ -85,10 +86,13 @@ int MonaMain( List<char*>* pekoe )
 	}
 
 	/* Open ROM file */
-	if (InfoNES_Load(pekoe->get(0)) != 0) return 0;
+	if (InfoNES_Load(pekoe->get(0)) != 0) exit(1);
 
 	/* Set frame skip */
 	FrameSkip = 1;
+	
+	/* Register to key server */
+	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
 
 	/* The main loop of InfoNES */ 
 	InfoNES_Main();
@@ -296,63 +300,63 @@ void InfoNES_PadState( DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem )
  *      Input for InfoNES
  *
  */
-#if 0
-	KEY_PACKET kpacket;
-	//*pdwPad1 = 0;
-	//*pdwPad2 = 0;
-	
-	if (sys_fs_read(devid_rpcss, port_keybd, 0, &kpacket, 1) > 0) {
-		//printf("key: %d %d\n", kpacket.keycode, kpacket.shift_state);
-		if (kpacket.keycode == 0) { // ESC
-			exit(0);
-		}
-		// key typed
-		//if (kpacket.keycode <= 0x4B) {
-			if (kpacket.keycode == 0x43 || kpacket.keycode == 0x3A) { // UP
-				*pdwPad1 |= 0x10;
-			} else if (kpacket.keycode == 0x4B || kpacket.keycode == 0x3D) { // DOWN
-				*pdwPad1 |= 0x20;
-			} else if (kpacket.keycode == 0x46 || kpacket.keycode == 0x3B) { // LEFT
-				*pdwPad1 |= 0x40;
-			} else if (kpacket.keycode == 0x48 || kpacket.keycode == 0x3C) { // RIGHT
-				*pdwPad1 |= 0x80;
-			} else if (kpacket.keycode == 0x29) { // B (a)
-				*pdwPad1 |= 0x2;
-			} else if (kpacket.keycode == 0x2A) { // A (s)
-				*pdwPad1 |= 0x1;
-			} else if (kpacket.keycode == 0x1D) { // SELECT (z)
-				*pdwPad1 |= 0x4;
-			} else if (kpacket.keycode == 0x1E) { // START (x)
-				*pdwPad1 |= 0x8;
-			} else if (kpacket.keycode == 0x24) { // SPEED DOWN (k)
-				if (FrameSkip > 0) {
-					FrameSkip--;
+	MessageInfo info;
+	//if (!MonAPI::Message::receive(&info)) {
+	if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) { // CPU 100%
+		if (info.header == MSG_KEY_VIRTUAL_CODE) {
+			int keycode  = info.arg1;
+			int modcode  = info.arg2;
+			int charcode = info.arg3;
+			if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+				if (keycode == 27) { // ESC
+					InfoNES_Fin();
+					syscall_kill_thread(keyevt_tid);
+					monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+					syscall_set_cursor(0,0);
+					syscall_clear_screen();
+					exit(1);
+				} else if (keycode == 39 || keycode == 102) { // RIGHT
+					*pdwPad1 |= ( 1 << 7 );
+				} else if (keycode == 37 || keycode == 100) { // LEFT
+					*pdwPad1 |= ( 1 << 6 );
+				} else if (keycode == 40 || keycode == 99) { // DOWN
+					*pdwPad1 |= ( 1 << 5 );
+				} else if (keycode == 38 || keycode == 105) { // UP
+					*pdwPad1 |= ( 1 << 4 );
+				} else if (charcode == 'x') { // START (x)
+					*pdwPad1 |= ( 1 << 3 );
+				} else if (charcode == 'z') { // SELECT (z)
+					*pdwPad1 |= ( 1 << 2 );
+				} else if (charcode == 'a') { // B (a)
+					*pdwPad1 |= ( 1 << 1 );
+				} else if (charcode == 's') { // A (s)
+					*pdwPad1 |= ( 1 << 0 );
+				} else if (charcode == 'k') { // SPEED DOWN (k)
+					if (FrameSkip > 0) FrameSkip--;
+				} else if (charcode == 'l') { // SPEED UP (l)
+					FrameSkip++;
 				}
-			} else if (kpacket.keycode == 0x25) { // SPEED UP (l)
-				FrameSkip++;
+			} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
+				if (keycode == 39 || keycode == 102) { // RIGHT
+					*pdwPad1 &= ~( 1 << 7 );
+				} else if (keycode == 37 || keycode == 100) { // LEFT
+					*pdwPad1 &= ~( 1 << 6 );
+				} else if (keycode == 40 || keycode == 99) { // DOWN
+					*pdwPad1 &= ~( 1 << 5 );
+				} else if (keycode == 38 || keycode == 105) { // UP
+					*pdwPad1 &= ~( 1 << 4 );
+				} else if (charcode == 'x') { // START (x)
+					*pdwPad1 &= ~( 1 << 3 );
+				} else if (charcode == 'z') { // SELECT (z)
+					*pdwPad1 &= ~( 1 << 2 );
+				} else if (charcode == 'a') { // B (a)
+					*pdwPad1 &= ~( 1 << 1 );
+				} else if (charcode == 's') { // A (s)
+					*pdwPad1 &= ~( 1 << 0 );
+				}
 			}
-		// key released
-		//} else if (kpacket.keycode >= 0x80000000) {
-			else if (kpacket.keycode == 0x80000043 || kpacket.keycode == 0x8000003A) { // UP
-				*pdwPad1 ^= 0x10;
-			} else if (kpacket.keycode == 0x8000004B || kpacket.keycode == 0x8000003D) { // DOWN
-				*pdwPad1 ^= 0x20;
-			} else if (kpacket.keycode == 0x80000046 || kpacket.keycode == 0x8000003B) { // LEFT
-				*pdwPad1 ^= 0x40;
-			} else if (kpacket.keycode == 0x80000048 || kpacket.keycode == 0x8000003C) { // RIGHT
-				*pdwPad1 ^= 0x80;
-			} else if (kpacket.keycode == 0x80000029) { // B (a)
-				*pdwPad1 ^= 0x2;
-			} else if (kpacket.keycode == 0x8000002A) { // A (s)
-				*pdwPad1 ^= 0x1;
-			} else if (kpacket.keycode == 0x8000001D) { // SELECT (z)
-				*pdwPad1 ^= 0x4;
-			} else if (kpacket.keycode == 0x8000001E) { // START (x)
-				*pdwPad1 ^= 0x8;
-			}
-		//}
+		}
 	}
-#endif
 }
 
 /*===================================================================*/
