@@ -23,66 +23,68 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-void Vector::initialize()
-{
-	this->elementList = new Object*[defaultCapacity];
-	this->_size = 0;
-	this->_capacity = defaultCapacity;
-}
+namespace baygui {
+	void Vector::initialize()
+	{
+		this->elementList = new Object*[defaultCapacity];
+		this->_size = 0;
+		this->_capacity = defaultCapacity;
+	}
 
-Vector::Vector()
-{
-	this->initialize();
-}
+	Vector::Vector()
+	{
+		this->initialize();
+	}
 
-Vector::~Vector()
-{
-	delete [] this->elementList;
-}
-
-void Vector::add(Object* item)
-{
-	if (this->_size == this->_capacity) {
-		/* ‘«‚è‚È‚­‚È‚Á‚½‚ç—e—Ê‚ð”{‚É‘‚â‚· */
-		this->_capacity <<= 1;
-		Object** ptr = new Object*[this->_capacity];
-		for (int i = 0; i < this->_size; i++) ptr[i] = this->elementList[i];
+	Vector::~Vector()
+	{
 		delete [] this->elementList;
-		this->elementList = ptr;
 	}
-	this->elementList[this->_size] = item;
-	this->_size++;
-}
 
-int Vector::indexOf(Object* item)
-{
-	for (int i = 0; i < this->_size; i++) {
-		if (this->elementList[i]->equals(item)) return i;
+	void Vector::add(Object* item)
+	{
+		if (this->_size == this->_capacity) {
+			/* ‘«‚è‚È‚­‚È‚Á‚½‚ç—e—Ê‚ð”{‚É‘‚â‚· */
+			this->_capacity <<= 1;
+			Object** ptr = new Object*[this->_capacity];
+			for (int i = 0; i < this->_size; i++) ptr[i] = this->elementList[i];
+			delete [] this->elementList;
+			this->elementList = ptr;
+		}
+		this->elementList[this->_size] = item;
+		this->_size++;
 	}
-	return -1;
-}
 
-Object* Vector::remove(int index)
-{
-	if (index < 0) return NULL;
-	this->_size--;
-	Object* obj = this->elementList[index];
-	for (int i = index; i < this->_size; i++) {
-		this->elementList[i] = this->elementList[i + 1];
+	int Vector::indexOf(Object* item)
+	{
+		for (int i = 0; i < this->_size; i++) {
+			if (this->elementList[i]->equals(item)) return i;
+		}
+		return -1;
 	}
-	return obj;
-	//this->elementList[this->_size] = new Object();
-}
 
-void Vector::remove(Object* item)
-{
-	int index = this->indexOf(item);
-	if (index < 0) return;
-	this->remove(index);
-}
+	Object* Vector::remove(int index)
+	{
+		if (index < 0) return NULL;
+		this->_size--;
+		Object* obj = this->elementList[index];
+		for (int i = index; i < this->_size; i++) {
+			this->elementList[i] = this->elementList[i + 1];
+		}
+		return obj;
+		//this->elementList[this->_size] = new Object();
+	}
 
-void Vector::removeAll()
-{
-	delete [] this->elementList;
-	this->initialize();
+	void Vector::remove(Object* item)
+	{
+		int index = this->indexOf(item);
+		if (index < 0) return;
+		this->remove(index);
+	}
+
+	void Vector::removeAll()
+	{
+		delete [] this->elementList;
+		this->initialize();
+	}
 }

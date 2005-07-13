@@ -23,41 +23,43 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-Hashtable::Hashtable()
-{
-}
+namespace baygui {
+	Hashtable::Hashtable()
+	{
+	}
 
-Hashtable::~Hashtable()
-{
-}
+	Hashtable::~Hashtable()
+	{
+	}
 
-Object* Hashtable::get(Object* key)
-{
-	return (key == NULL) ? NULL : this->valueList.get(this->keyList.indexOf(key));
-}
+	Object* Hashtable::get(Object* key)
+	{
+		return (key == NULL) ? NULL : this->valueList.get(this->keyList.indexOf(key));
+	}
 
-void Hashtable::put(Object* key, Object* value)
-{
-	if (key == NULL || value == NULL) return;
-	int index = this->keyList.indexOf(key);
-	if (index >= 0) {
+	void Hashtable::put(Object* key, Object* value)
+	{
+		if (key == NULL || value == NULL) return;
+		int index = this->keyList.indexOf(key);
+		if (index >= 0) {
+			this->keyList.remove(index);
+			this->valueList.remove(index);
+		}
+		this->keyList.add(key);
+		this->valueList.add(value);
+	}
+
+	void Hashtable::remove(Object* key)
+	{
+		if (key == NULL) return;
+		int index = this->keyList.indexOf(key);
 		this->keyList.remove(index);
 		this->valueList.remove(index);
 	}
-	this->keyList.add(key);
-	this->valueList.add(value);
-}
 
-void Hashtable::remove(Object* key)
-{
-	if (key == NULL) return;
-	int index = this->keyList.indexOf(key);
-	this->keyList.remove(index);
-	this->valueList.remove(index);
-}
-
-void Hashtable::clear()
-{
-	this->keyList.removeAll();
-	this->valueList.removeAll();
+	void Hashtable::clear()
+	{
+		this->keyList.removeAll();
+		this->valueList.removeAll();
+	}
 }

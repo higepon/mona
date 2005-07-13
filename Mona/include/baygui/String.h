@@ -24,87 +24,107 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_STRING_H_INCLUDED_)
 #define _STRING_H_INCLUDED_
 
+#if SUPPORT_SJIS
+#include "../../../tools/code_table/cp932.h"
+#endif
+
 namespace baygui {
-	/**
-	 文字列ラッパークラス.
-	 内部形式はUCS-4 (4バイト) で保持する。
-	 */
+	/** 文字列クラス */
 	class String : public Object {
+#if SUPPORT_SJIS
+	public:
+		static const int UTF_8 = 0;
+		static const int CP932 = 1;
+#endif
+		
 	private:
+#if SUPPORT_SJIS
+		/** エンコーディング */
+		int encoding;
+#endif
 		/** 内部文字列 */
 		char* bytes;
 		/** ワイド文字列 (UCS-4) */
-		wchar* wcharArray;
+		wchar* charArray;
 		/** ワイド文字列の長さ */
 		int len;
-		
+	
 	private:
-		/** 文字列を設定する */
-		String& set(const char *s);
-
-		/** 数値を設定する */
-		String& set(const int n);
-
+		/**
+		 文字列を設定する
+		 @param s 文字列
+		*/
+		String& set(const char* str);
+		
 	public:
-		/** コンストラクタ */
-		inline String() : bytes(0), len(0) {}
+		/** デフォルトコンストラクタ */
+		String();
 		
 		/**
-		 コンストラクタ
-		 @param s 文字列 (UTF-8)
+		 コピーコンストラクタ
+		 @param str 文字列
 		*/
-		inline String(const char *s) : bytes(0), len(0) { set(s); }
+		String(const char *str);
 		
+#if SUPPORT_SJIS
 		/**
-		 コンストラクタ
-		 @param n 数値
+		 コピーコンストラクタ
+		 @param str 文字列
+		 @param encoding エンコーディング
 		*/
-		inline String(int n) : bytes(0), len(0) { set(n); }
+		String(const char *str, int encoding);
+#endif
 		
 		/** デストラクタ */
-		inline ~String(){ delete[] bytes; delete[] wcharArray; }
+		~String();
 		
 		/** ワイド文字数を返す (wstrlen相当) */
-		inline int length() const { return len; }
+		int length();
 		
-		/** 内部文字列 (char配列) を返す */
-		inline char* getBytes() const { return bytes; }
+		/** 内部文字列 (byte配列) を返す */
+		char* getBytes();
 		
 		/** ワイド文字列を返す */
-		inline wchar* toCharArray() const { return wcharArray; }
+		wchar* toCharArray();
 		
 		/** i番目のワイド文字を得る */
-		inline wchar charAt(int i) const { return wcharArray[i]; }
+		wchar charAt(int i);
 		
 		/**
-		 "="演算子の多重定義.
-		 String s = "hoge"; のように使うことができる。
+		 "="演算子の多重定義。<br>
+		 String str = "hoge"; のように使うことができる。
 		*/
-		inline const String& operator=(const char *s){ set(s); return *this; }
+		const String& operator=(const char* str)
+		{
+			set(str);
+			return *this;
+		}
+		
+		/**
+		 指定されたオブジェクトと等しいかどうかを得る
+		 @param obj 比較対象のオブジェクト
+		 */
+		bool equals(Object* obj);
 		
 		/**
 		 指定された文字列と等しいかどうかチェックする
+		 @param str 文字列
 		 */
-		bool String::equals(Object* obj);
-		
-		/**
-		 指定された文字列と等しいかどうかチェックする
-		 */
-		bool equals(const char *s);
+		bool equals(const char* str);
 		
 		/**
 		 指定された文字列で始まるかどうかチェックする
-		 @param s 文字列
+		 @param str 文字列
 		 @return 始まっていればtrue、そうでなければfalse
 		*/
-		bool startsWith(const char *s);
+		bool startsWith(const char* str);
 		
 		/**
 		 指定された文字列で終っているかどうかチェックする
-		 @param s 文字列
+		 @param str 文字列
 		 @return 終っていればtrue、そうでなければfalse
 		*/
-		bool endsWith(const char *s);
+		bool endsWith(const char* str);
 	};
 }
 

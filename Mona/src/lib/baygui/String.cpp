@@ -23,138 +23,216 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-String& String::set(const char *s)
-{
-	unsigned char c1, c2, c3;
-	int  slen;
-	
-	if (bytes) {
-		delete[] bytes;
-		delete[] wcharArray;
-	}
-	if (s && *s) {
-		len = 0;
-		slen = strlen(s);
-		bytes  = new char[slen + 1];
-		wcharArray = new wchar[slen + 1];
-		strcpy(bytes, s);
+namespace baygui {
+	/**
+	 文字列を設定する
+	 @param s 文字列
+	*/
+	String& String::set(const char* str)
+	{
+		byte c1, c2, c3;
+		int slen;
 		
-		// UTF-8 -> UCS-4
-		for (int i = 0; i < slen; i++) {
-			// 1st byte
-			if (s[i] == 0) {
-				break;
-			} else {
-				c1 = (unsigned char)s[i];
-			}
-			// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
-			if (c1 <= 0x7F) {
-				wcharArray[len++] = c1;
-			}
-			// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
-			else if (0xC2 <= c1 && c1 <= 0xDF) {
-				// 2nd byte
-				if (s[i] == slen - 1) {
-					break;
-				} else {
-					c2 = (unsigned char)s[++i];
-				}
-				wcharArray[len++] = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
-			}
-			// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
-			else if (0xE0 <= c1 && c1 <= 0xEF) {
-				// 2nd byte
-				if (s[i] == slen - 1) {
-					break;
-				} else {
-					c2 = (unsigned char)s[++i];
-				}
-				// 3rd byte
-				if (s[i] == slen - 1) {
-					break;
-				} else {
-					c3 = (unsigned char)s[++i];
-				}
-				wcharArray[len++] = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
-			}
+		if (this->bytes != NULL) {
+			delete[] this->bytes;
+			delete[] this->charArray;
 		}
-	} else {
-		bytes  = 0;
-		wcharArray = 0;
-		len = 0;
+		if (str && *str) {
+			this->len = 0;
+			slen = strlen(str);
+			this->bytes = new char[slen + 1];
+			this->charArray = new wchar[slen + 1];
+			strcpy(this->bytes, str);
+			
+#if SUPPORT_SJIS
+			if (this->encoding == String::CP932) {
+				// CP932 -> UCS-4
+				for (int i = 0; i < slen; i++) {
+					c1 = (byte)str[i];
+					// 1byte character
+					if (c1 < 0x80) {
+						this->charArray[this->len++] = c1;
+					} else if (c1 == 0x80 || c1 == 0xa0 || c1 >= 0xfd) {
+						this->charArray[this->len++] = '?';
+					} else if (0xa1 <= c1 && c1 <= 0xdf) {
+						this->charArray[this->len++] = c1 + 0xfec0;
+					// 2byte character
+					} else {
+						c2 = (byte)str[++i];
+						if(c2 < 0x40 || c2 == 0x7f || c2 > 0xfc) {
+							this->charArray[this->len++] = '?';
+						}
+						if (c1 >= 0xe0) c1 -= 0x40;
+						if (c2 > 0x7e) c2--;
+						this->charArray[this->len++] = table_cp932[(c1 - 0x81) * 188 + (c2 - 0x40)];
+						if (this->charArray[this->len] == 0) this->charArray[this->len] = '?';
+					}
+				}
+			} else {
+#endif
+				// UTF-8 -> UCS-4
+				for (int i = 0; i < slen; i++) {
+					// 1st byte
+					if (str[i] == 0) {
+						break;
+					} else {
+						c1 = (byte)str[i];
+					}
+					// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
+					if (c1 <= 0x7F) {
+						this->charArray[this->len++] = c1;
+					// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
+					} else if (0xC2 <= c1 && c1 <= 0xDF) {
+						// 2nd byte
+						if (str[i] == slen - 1) {
+							break;
+						} else {
+							c2 = (byte)str[++i];
+						}
+						this->charArray[this->len++] = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
+					// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
+					} else if (0xE0 <= c1 && c1 <= 0xEF) {
+						// 2nd byte
+						if (str[i] == slen - 1) {
+							break;
+						} else {
+							c2 = (byte)str[++i];
+						}
+						// 3rd byte
+						if (str[i] == slen - 1) {
+							break;
+						} else {
+							c3 = (byte)str[++i];
+						}
+						this->charArray[this->len++] = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+					}
+				}
+#if SUPPORT_SJIS
+			}
+#endif
+		} else {
+			this->bytes  = NULL;
+			this->charArray = NULL;
+			this->len = 0;
+		}
+		return *this;
 	}
-	return *this;
-}
-
-String& String::set(int n)
-{
-	int i, j, k;
-	char tmp, c20[20 + 1];
 	
-	if (bytes) {
-		delete[] bytes;
-		delete[] wcharArray;
+	/** デフォルトコンストラクタ */
+	String::String()
+	{
+#if SUPPORT_SJIS
+		this->encoding = UTF_8;
+#endif
+		this->bytes = NULL;
+		this->len = 0;
 	}
-
-	i = j = k = 0;
-	memset(c20, 0, 21);
-	if (n < 0) {
-		n = -1 * n;
-		i = 1;
+	
+	/**
+	 コピーコンストラクタ
+	 @param str 文字列
+	*/
+	String::String(const char *str)
+	{
+#if SUPPORT_SJIS
+		this->encoding = UTF_8;
+#endif
+		this->bytes = NULL;
+		this->len = 0;
+		set(str);
 	}
-	if (n == 0) {
-		c20[k++] = 0 + '0';
+	
+#if SUPPORT_SJIS
+	/**
+	 コピーコンストラクタ
+	 @param str 文字列
+	 @param encoding エンコーディング
+	*/
+	String::String(const char *str, int encoding)
+	{
+		this->encoding = encoding;
+			this->bytes = NULL;
+			this->charArray = NULL;
+			this->len = 0;
+		set(str);
 	}
-	while (n != 0) {
-		c20[k++] = n%10 + '0';
-		n = n/10;
+#endif
+	
+	/** デストラクタ */
+	String::~String()
+	{
+		delete[] this->bytes;
+		delete[] this->charArray;
 	}
-	if (i == 1) c20[k++] = '-';
-	c20[k] = '\0';
-
-	i = j = 0;
-	while (c20[j]) ++j;
-	while (i < --j) {
-		tmp = c20[i];
-		c20[i++] = c20[j];
-		c20[j] = tmp;
+	
+	/** ワイド文字数を返す (wstrlen相当) */
+	int String::length()
+	{
+		return this->len;
 	}
-
-	return set(c20);
-}
-
-bool String::equals(Object* obj)
-{
-	String* str = (String *)obj;
-	return equals(str->getBytes());
-}
-
-bool String::equals(const char *s)
-{
-	if (s == NULL) return false;
-	if (strcmp(bytes, s) == 0) {
+	
+	/** 内部文字列 (byte配列) を返す */
+	char* String::getBytes()
+	{
+		return this->bytes;
+	}
+	
+	/** ワイド文字列を返す */
+	wchar* String::toCharArray()
+	{
+		return this->charArray;
+	}
+	
+	/** i番目のワイド文字を得る */
+	wchar String::charAt(int i)
+	{
+		return (i < this->len) ? this->charArray[i] : 0;
+	}
+	
+	/**
+	 指定されたオブジェクトと等しいかどうかを得る
+	 @param obj 比較対象のオブジェクト
+	 */
+	bool String::equals(Object* obj)
+	{
+		return equals(((String *)obj)->getBytes());
+	}
+	
+	/**
+	 指定された文字列と等しいかどうかチェックする
+	 @param str 文字列
+	 */
+	bool String::equals(const char* str)
+	{
+		return (str && *str && strcmp(this->bytes, str) == 0) ? true : false;
+	}
+	
+	/**
+	 指定された文字列で始まるかどうかチェックする
+	 @param str 文字列
+	 @return 始まっていればtrue、そうでなければfalse
+	*/
+	bool String::startsWith(const char* str)
+	{
+		if (str == 0 || this->len == 0 || (int)strlen(str) > (int)strlen(this->bytes)) return false;
+		for (int i = 0; i < (int)strlen(str); i++) {
+			if (str[i] != this->bytes[i]) return false;
+		}
 		return true;
-	} else {
-		return false;
+	}
+	
+	/**
+	 指定された文字列で終っているかどうかチェックする
+	 @param str 文字列
+	 @return 終っていればtrue、そうでなければfalse
+	*/
+	bool String::endsWith(const char* str)
+	{
+		if (str == 0 || this->len == 0 || (int)strlen(str) > (int)strlen(this->bytes)) return false;
+		for (int i = 0; i < (int)strlen(str); i++) {
+			if (str[(int)strlen(str) - i - 1] != 
+				this->bytes[(int)strlen(this->bytes) - i - 1]) return false;
+		}
+		return true;
 	}
 }
-
-bool String::startsWith(const char *s)
-{
-	if (s == 0 || len == 0 || (int)strlen(s) > (int)strlen(bytes)) return false;
-	for (int i = 0; i < (int)strlen(s); i++) {
-		if (s[i] != bytes[i]) return false;
-	}
-	return true;
-}
-
-bool String::endsWith(const char *s)
-{
-	if (s == 0 || len == 0 || (int)strlen(s) > (int)strlen(bytes)) return false;
-	for (int i = 0; i < (int)strlen(s); i++) {
-		if (s[(int)strlen(s) - i - 1] != 
-			bytes[(int)strlen(bytes) - i - 1]) return false;
-	}
-	return true;
-}
-

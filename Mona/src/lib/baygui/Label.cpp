@@ -23,50 +23,52 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-Label::Label(char* text)
-{
-	this->align = Label::LEFT;
-	this->text = text;
-}
-
-Label::Label(char* text, int align)
-{
-	this->align = align;
-	this->text = text;
-}
-
-Label::~Label()
-{
-}
-
-void Label::setText(char* text)
-{
-	this->text = text;
-	repaint();
-}
-
-void Label::paint(Graphics* g)
-{
-	int w = getWidth();
-	int h = getHeight();
-	
-	// 塗りつぶし
-	g->setColor(getBackground());
-	g->fillRect(0, 0, w, h);
-
-	// 文字
-	int fw = getFontMetrics()->getWidth(getText());
-	int fh = getFontMetrics()->getHeight(getText());
-	if (getEnabled() == true) {
-		g->setColor(getForeground());
-	} else {
-		g->setColor(Color::gray);
+namespace baygui {
+	Label::Label(char* text)
+	{
+		this->align = Label::LEFT;
+		this->text = text;
 	}
-	if (this->align == Label::RIGHT) {
-		g->drawText(getText(), (w - fw), (h - fh) / 2);
-	} else if (this->align == Label::CENTER) {
-		g->drawText(getText(), (w - fw) / 2, (h - fh) / 2);
-	} else {
-		g->drawText(getText(), 0, (h - fh) / 2);
+
+	Label::Label(char* text, int align)
+	{
+		this->align = align;
+		this->text = text;
+	}
+
+	Label::~Label()
+	{
+	}
+
+	void Label::setText(char* text)
+	{
+		this->text = text;
+		repaint();
+	}
+
+	void Label::paint(Graphics* g)
+	{
+		int w = getWidth();
+		int h = getHeight();
+		
+		// 塗りつぶし
+		g->setColor(getBackground());
+		g->fillRect(0, 0, w, h);
+
+		// 文字
+		int fw = getFontMetrics()->getWidth(getText());
+		int fh = getFontMetrics()->getHeight(getText());
+		if (getEnabled() == true) {
+			g->setColor(getForeground());
+		} else {
+			g->setColor(Color::gray);
+		}
+		if (this->align == Label::RIGHT) {
+			g->drawText(getText(), (w - fw), (h - fh) / 2);
+		} else if (this->align == Label::CENTER) {
+			g->drawText(getText(), (w - fw) / 2, (h - fh) / 2);
+		} else {
+			g->drawText(getText(), 0, (h - fh) / 2);
+		}
 	}
 }

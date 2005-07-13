@@ -23,25 +23,27 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-Object::Object()
-{
-	this->refCount = 0;
-	// 自身のスレッドIDを得る
-	this->threadID = MonAPI::System::getThreadID();
-	// GUIサーバーを探す
-	this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-	
-	if (this->threadID == THREAD_UNKNOWN || this->guisvrID == THREAD_UNKNOWN) {
-		printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-		exit(1);
+namespace baygui {
+	Object::Object()
+	{
+		this->refCount = 0;
+		// 自身のスレッドIDを得る
+		this->threadID = MonAPI::System::getThreadID();
+		// GUIサーバーを探す
+		this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+		
+		if (this->threadID == THREAD_UNKNOWN || this->guisvrID == THREAD_UNKNOWN) {
+			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			exit(1);
+		}
 	}
-}
 
-Object::~Object()
-{
-}
+	Object::~Object()
+	{
+	}
 
-bool Object::equals(Object* obj)
-{
-	return (this == obj) ? true : false;
+	bool Object::equals(Object* obj)
+	{
+		return (this == obj) ? true : false;
+	}
 }
