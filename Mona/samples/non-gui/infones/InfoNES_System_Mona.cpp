@@ -21,8 +21,8 @@
 /*  Global Variables ( Mona specific )                               */
 /*-------------------------------------------------------------------*/
 
-static int offx, offy;
-static dword my_tid, keyevt_tid;
+static int offx = 0, offy = 0, isExit = 0;
+static dword my_tid = 0, keyevt_tid = 0, dwKeyPad1 = 0, dwKeyPad2 = 0;
 static MonAPI::Screen screen;
 
 /*-------------------------------------------------------------------*/
@@ -45,6 +45,76 @@ static int printf(char *format, ...)
 	return I;
 }
 #endif
+
+/** 標準出力を握りつぶすスレッド */
+static void StdoutMessageLoop()
+{
+	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
+
+	/* Register to key server */
+	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+	
+	for (MessageInfo info;;)
+	{
+		if (MonAPI::Message::receive(&info) != 0) continue;
+		
+		if (info.header == MSG_KEY_VIRTUAL_CODE) {
+			int keycode  = info.arg1;
+			int modcode  = info.arg2;
+			int charcode = info.arg3;
+			if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+				if (keycode == 27) { // ESC
+					isExit = -1; // Quit
+					break;
+				} else if (keycode == 39 || keycode == 102) { // RIGHT
+					dwKeyPad1 |= ( 1 << 7 );
+				} else if (keycode == 37 || keycode == 100) { // LEFT
+					dwKeyPad1 |= ( 1 << 6 );
+				} else if (keycode == 40 || keycode == 99) { // DOWN
+					dwKeyPad1 |= ( 1 << 5 );
+				} else if (keycode == 38 || keycode == 105) { // UP
+					dwKeyPad1 |= ( 1 << 4 );
+				} else if (charcode == 'x') { // START (x)
+					dwKeyPad1 |= ( 1 << 3 );
+				} else if (charcode == 'z') { // SELECT (z)
+					dwKeyPad1 |= ( 1 << 2 );
+				} else if (charcode == 'a') { // B (a)
+					dwKeyPad1 |= ( 1 << 1 );
+				} else if (charcode == 's') { // A (s)
+					dwKeyPad1 |= ( 1 << 0 );
+				} else if (charcode == 'k') { // SPEED DOWN (k)
+					if (FrameSkip > 0) FrameSkip--;
+				} else if (charcode == 'l') { // SPEED UP (l)
+					FrameSkip++;
+				}
+			} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
+				if (keycode == 39 || keycode == 102) { // RIGHT
+					dwKeyPad1 &= ~( 1 << 7 );
+				} else if (keycode == 37 || keycode == 100) { // LEFT
+					dwKeyPad1 &= ~( 1 << 6 );
+				} else if (keycode == 40 || keycode == 99) { // DOWN
+					dwKeyPad1 &= ~( 1 << 5 );
+				} else if (keycode == 38 || keycode == 105) { // UP
+					dwKeyPad1 &= ~( 1 << 4 );
+				} else if (charcode == 'x') { // START (x)
+					dwKeyPad1 &= ~( 1 << 3 );
+				} else if (charcode == 'z') { // SELECT (z)
+					dwKeyPad1 &= ~( 1 << 2 );
+				} else if (charcode == 'a') { // B (a)
+					dwKeyPad1 &= ~( 1 << 1 );
+				} else if (charcode == 's') { // A (s)
+					dwKeyPad1 &= ~( 1 << 0 );
+				}
+			}
+		}
+	}
+	
+	/* Register to key server */
+	monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+	
+	/* Stop thread */
+	syscall_kill_thread(keyevt_tid);
+}
 
 /* Palette data */
 WORD NesPalette[ 64 ] =
@@ -91,11 +161,21 @@ int MonaMain( List<char*>* pekoe )
 	/* Set frame skip */
 	FrameSkip = 1;
 	
-	/* Register to key server */
-	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+	/* Create thread */
+	my_tid = syscall_get_tid();
+	dword id = syscall_mthread_create((dword)StdoutMessageLoop);
+	syscall_mthread_join(id);
+	MessageInfo msg, src;
+	src.header = MSG_SERVER_START_OK;
+	MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+	keyevt_tid = msg.from;
 
 	/* The main loop of InfoNES */ 
 	InfoNES_Main();
+
+	/* Clear screen */
+	syscall_set_cursor(0,0);
+	syscall_clear_screen();
 
 	return 0;
 }
@@ -107,7 +187,7 @@ int MonaMain( List<char*>* pekoe )
 /*===================================================================*/
 int InfoNES_Menu()
 {
-	return 0;
+	return isExit;
 }
 
 /*===================================================================*/
@@ -300,63 +380,9 @@ void InfoNES_PadState( DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem )
  *      Input for InfoNES
  *
  */
-	MessageInfo info;
-	//if (!MonAPI::Message::receive(&info)) {
-	if (!MonAPI::Message::peek(&info, 0, PEEK_REMOVE)) { // CPU 100%
-		if (info.header == MSG_KEY_VIRTUAL_CODE) {
-			int keycode  = info.arg1;
-			int modcode  = info.arg2;
-			int charcode = info.arg3;
-			if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
-				if (keycode == 27) { // ESC
-					InfoNES_Fin();
-					syscall_kill_thread(keyevt_tid);
-					monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
-					syscall_set_cursor(0,0);
-					syscall_clear_screen();
-					exit(1);
-				} else if (keycode == 39 || keycode == 102) { // RIGHT
-					*pdwPad1 |= ( 1 << 7 );
-				} else if (keycode == 37 || keycode == 100) { // LEFT
-					*pdwPad1 |= ( 1 << 6 );
-				} else if (keycode == 40 || keycode == 99) { // DOWN
-					*pdwPad1 |= ( 1 << 5 );
-				} else if (keycode == 38 || keycode == 105) { // UP
-					*pdwPad1 |= ( 1 << 4 );
-				} else if (charcode == 'x') { // START (x)
-					*pdwPad1 |= ( 1 << 3 );
-				} else if (charcode == 'z') { // SELECT (z)
-					*pdwPad1 |= ( 1 << 2 );
-				} else if (charcode == 'a') { // B (a)
-					*pdwPad1 |= ( 1 << 1 );
-				} else if (charcode == 's') { // A (s)
-					*pdwPad1 |= ( 1 << 0 );
-				} else if (charcode == 'k') { // SPEED DOWN (k)
-					if (FrameSkip > 0) FrameSkip--;
-				} else if (charcode == 'l') { // SPEED UP (l)
-					FrameSkip++;
-				}
-			} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
-				if (keycode == 39 || keycode == 102) { // RIGHT
-					*pdwPad1 &= ~( 1 << 7 );
-				} else if (keycode == 37 || keycode == 100) { // LEFT
-					*pdwPad1 &= ~( 1 << 6 );
-				} else if (keycode == 40 || keycode == 99) { // DOWN
-					*pdwPad1 &= ~( 1 << 5 );
-				} else if (keycode == 38 || keycode == 105) { // UP
-					*pdwPad1 &= ~( 1 << 4 );
-				} else if (charcode == 'x') { // START (x)
-					*pdwPad1 &= ~( 1 << 3 );
-				} else if (charcode == 'z') { // SELECT (z)
-					*pdwPad1 &= ~( 1 << 2 );
-				} else if (charcode == 'a') { // B (a)
-					*pdwPad1 &= ~( 1 << 1 );
-				} else if (charcode == 's') { // A (s)
-					*pdwPad1 &= ~( 1 << 0 );
-				}
-			}
-		}
-	}
+	/* Transfer joypad state */
+	*pdwPad1 = dwKeyPad1;
+	*pdwPad2 = dwKeyPad2;
 }
 
 /*===================================================================*/
