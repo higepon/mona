@@ -1,3 +1,7 @@
+2004-07-13  bayside
+
+        * samples/non-gui/infones: v0.96Jに差し替え
+
 2004-07-11  bayside
 
         * include/baygui.h: インターフェース変更＆Mona版が起動しない不具合修正
