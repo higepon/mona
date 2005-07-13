@@ -333,17 +333,21 @@ void InfoNES_LoadFrame()
 	offy = (sh - NES_DISP_HEIGHT * 2) / 2;
 	
 	/* Copy WorkFrame to VRAM */
-	for (int y = 0; y < NES_DISP_HEIGHT * 2; y += 2) {
-		for (int x = 0; x < NES_DISP_WIDTH * 2; x += 2) {
+	for (int y = 0; y < NES_DISP_HEIGHT; y++) {
+		for (int x = 0; x < NES_DISP_WIDTH; x ++) {
 			WORD wColor = WorkFrame[ ( y << 8 ) + x ];
+			/* transform 555 to 565 */
 			wColor = MonAPI::Color::bpp24to565((wColor & 0x7c00) >> 7, (wColor & 0x03e0) >> 2, (wColor & 0x001f) << 3);
-			BYTE* pVram = &vram[((x + offx) + (y + offy) * sw) * (bpp >> 3)];
+			int xx = x * 2 + offx;
+			int yy = y * 2 + offy;
+			/* 2x2 screen */
+			BYTE* pVram = &vram[(xx + yy * sw) << 1];
 			*(unsigned short*)pVram = wColor;
-			pVram = &vram[((x + offx + 1) + (y + offy) * sw) * (bpp >> 3)];
+			pVram = &vram[((xx + 1) + yy * sw) << 1];
 			*(unsigned short*)pVram = wColor;
-			pVram = &vram[((x + offx) + (y + offy + 1) * sw) * (bpp >> 3)];
+			pVram = &vram[(xx + (yy + 1) * sw) << 1];
 			*(unsigned short*)pVram = wColor;
-			pVram = &vram[((x + offx + 1) + (y + offy + 1) * sw) * (bpp >> 3)];
+			pVram = &vram[((xx + 1) + (yy + 1) * sw) << 1];
 			*(unsigned short*)pVram = wColor;
 		}
 	}
