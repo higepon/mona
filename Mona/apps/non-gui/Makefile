@@ -6,6 +6,7 @@ all:
 	@cd tube && $(MAKE) $@
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
+	@cd monapeg && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -19,6 +20,7 @@ install:
 	@cd tube && $(MAKE) $@
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
+	@cd monapeg && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -32,6 +34,7 @@ clean: touchdepend
 	@cd tube && $(MAKE) $@
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
+	@cd monapeg && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -44,6 +47,7 @@ depend: touchdepend
 	@cd nic && $(MAKE) $@
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
+	@cd monapeg && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -55,6 +59,7 @@ distclean:
 	rm -f jpegdemo/dependencies
 	rm -f bzcat/dependencies
 	rm -f monamona/dependencies
+	rm -f monapeg/dependencies
 	rm -f pciinfo/dependencies
 	rm -f ata/dependencies
 	@cd nic && $(MAKE) $@
@@ -67,6 +72,7 @@ touchdepend:
 	touch jpegdemo/dependencies
 	touch bzcat/dependencies
 	touch monamona/dependencies
+	touch monapeg/dependencies
 	touch pciinfo/dependencies
 	touch ata/dependencies
 	touch cdfsread/dependencies

@@ -3,9 +3,17 @@
         * Graphics::drawText() -> Graphics::drawString()
         
         * Container::dispatchEvent() でマウスクリック以外のマウスイベントも子部品に渡すようにする
-
+        
         * samples/non-gui/infones/InfoNES_System_Mona.cpp: ウェイト系実装追加
                                                            2x2表示に変更
+        
+        * apps/non-gui/Makefile: monapeg 追加
+        
+        * apps/non-gui/monapeg: 新規追加（monapi使用版）
+        
+        * lib/liblen-cygwin.a: monapeg用コンパイル済みライブラリ
+        
+        * lib/liblen-linux.a: monapeg用コンパイル済みライブラリ
 
 2004-07-13  bayside
 
