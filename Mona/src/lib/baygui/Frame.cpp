@@ -135,7 +135,7 @@ namespace baygui {
 		} else {
 			__g->setColor(Color::gray);
 		}
-		__g->drawText(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
+		__g->drawString(getTitle(), ((w - fw) / 2), ((getInsets()->top - fh) / 2));
 		
 		Container::repaint();
 	}

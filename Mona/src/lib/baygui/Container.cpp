@@ -124,11 +124,13 @@ namespace baygui {
 					Component* c = (Component *)this->controlList.get(i);
 					c->setFocused(false);
 				}
-				//syscall_print("MOUSE_PRESSED,");
 				processEvent(event);
 			}
-		// マウスリリース
-		} else if (event->getType() == MouseEvent::MOUSE_RELEASED) {
+		// マウスクリック以外のマウスイベント
+		} else if (event->getType() == MouseEvent::MOUSE_RELEASED || 
+					event->getType() == MouseEvent::MOUSE_DRAGGED || 
+					event->getType() == MouseEvent::MOUSE_MOVED)
+		{
 			MouseEvent* me = (MouseEvent *)event;
 			// マウスイベントが起こった部品を探す
 			Component* control = getComponentAt(me->getX(), me->getY());
@@ -138,11 +140,9 @@ namespace baygui {
 				Rectangle* bounds = control->getBounds();
 				me->setX(me->getX() - bounds->x);
 				me->setY(me->getY() - bounds->y);
-				//syscall_print("MOUSE_RELEASED,");
 				control->processEvent(event);
 			// 部品以外でイベントが起こった
 			} else {
-				//syscall_print("MOUSE_RELEASED,");
 				processEvent(event);
 			}
 		} else {

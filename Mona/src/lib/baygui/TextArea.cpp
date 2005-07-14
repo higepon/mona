@@ -145,7 +145,7 @@ namespace baygui {
 			for(int i=0; i<_max_line; i++) {
 				if( i + _offset_y >= LineCount() ) break;
 				LineNoFormat( buff, i + _offset_y + 1, keta );
-				g->drawText(buff, draw_left, i * fh + draw_top );
+				g->drawString(buff, draw_left, i * fh + draw_top );
 			}
 			delete[] buff;
 
@@ -191,7 +191,7 @@ namespace baygui {
 					} else {
 						g->setColor(clr_fore);
 					}
-					g->drawText(tmp, col * fw + draw_left + (fw-width) / 2, i * fh + draw_top );
+					g->drawString(tmp, col * fw + draw_left + (fw-width) / 2, i * fh + draw_top );
 				}
 				draw_text++;
 			}

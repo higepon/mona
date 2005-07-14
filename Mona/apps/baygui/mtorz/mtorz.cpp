@@ -55,9 +55,6 @@ public:
 		label1->setBounds(20, 8, 12 * 8, 3 * 16);
 		label1->setBackground(osapal[8]);
 		add(label1);
-	}
-
-	void paint(Graphics* g) {
 		setTimer(500);
 	}
 

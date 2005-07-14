@@ -109,19 +109,19 @@ public:
 		sprintf(mesg4, "%d個", psNum);
 
 		g->setColor(0,0,0);
-		g->drawText(BAYGUI_VERSION, 50, 10);
-		g->drawText(BAYGUI_COPYING, 50, 26);
+		g->drawString(BAYGUI_VERSION, 50, 10);
+		g->drawString(BAYGUI_COPYING, 50, 26);
 		g->setColor(96,96,96);
 		g->drawRect(10,50,250,90);
-		g->drawText("シェル 32bit / カーネル 32bit", 15, 55);
-		g->drawText("全物理メモリ", 15, 71);
-		g->drawText("有効ページプール", 15, 87);
-		g->drawText("全ページプール", 15, 103);
-		g->drawText("全起動プロセス数", 15, 119);
-		g->drawText(mesg1, 156, 71);
-		g->drawText(mesg2, 156, 87);
-		g->drawText(mesg3, 156, 103);
-		g->drawText(mesg4, 156, 119);
+		g->drawString("シェル 32bit / カーネル 32bit", 15, 55);
+		g->drawString("全物理メモリ", 15, 71);
+		g->drawString("有効ページプール", 15, 87);
+		g->drawString("全ページプール", 15, 103);
+		g->drawString("全起動プロセス数", 15, 119);
+		g->drawString(mesg1, 156, 71);
+		g->drawString(mesg2, 156, 87);
+		g->drawString(mesg3, 156, 103);
+		g->drawString(mesg4, 156, 119);
 	}
 };
 

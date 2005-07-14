@@ -293,7 +293,7 @@ void ShortCut::paint(Graphics *g) {
 	g->setColor(Color::white);
 	g->fillRect((w - fw)/2 - 4, 36, fw + 8, 12);
 	g->setColor(Color::black);
-	g->drawText(this->title.getBytes(), (w - fw)/2, 36);
+	g->drawString(this->title.getBytes(), (w - fw)/2, 36);
 }
 
 /** イベントハンドラ */

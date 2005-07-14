@@ -642,13 +642,13 @@ public:
 		int i = 0;
 		for (i = 0; i < lines.size(); i++) {
 			String *temp = (String *)lines.get(i);
-			g->drawText(temp->getBytes(), 0, i * 12);
+			g->drawString(temp->getBytes(), 0, i * 12);
 		}
 
 		// コマンドライン
 		char temp[256];
 		sprintf(temp, "%s%% %s", currentPath, commandBuffer);
-		g->drawText(temp, 0, i * 12);
+		g->drawString(temp, 0, i * 12);
 
 		// キャレット
 		int x0 = strlen(temp) * 8;

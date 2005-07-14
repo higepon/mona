@@ -64,11 +64,11 @@ namespace baygui {
 			g->setColor(Color::gray);
 		}
 		if (this->align == Label::RIGHT) {
-			g->drawText(getText(), (w - fw), (h - fh) / 2);
+			g->drawString(getText(), (w - fw), (h - fh) / 2);
 		} else if (this->align == Label::CENTER) {
-			g->drawText(getText(), (w - fw) / 2, (h - fh) / 2);
+			g->drawString(getText(), (w - fw) / 2, (h - fh) / 2);
 		} else {
-			g->drawText(getText(), 0, (h - fh) / 2);
+			g->drawString(getText(), 0, (h - fh) / 2);
 		}
 	}
 }

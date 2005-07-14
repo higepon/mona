@@ -99,7 +99,7 @@ public:
 			y = (getHeight() - getInsets()->top - getInsets()->bottom 
 				- getFontMetrics()->getHeight(this->titleString)) / 2;
 			g->setColor(Color::white);
-			g->drawText(this->titleString, x, y);
+			g->drawString(this->titleString, x, y);
 			return;
 		}
 		

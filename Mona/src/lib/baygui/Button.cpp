@@ -100,7 +100,7 @@ namespace baygui {
 		} else {
 			g->setColor(Color::gray);
 		}
-		g->drawText(getLabel(), x, y);
+		g->drawString(getLabel(), x, y);
 	}
 
 	void Button::processEvent(Event* event) {

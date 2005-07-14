@@ -93,10 +93,10 @@ namespace baygui {
 				g->setColor(0, 128, 255);
 				g->fillRect(3, (16 * i) + 3, w - 6, 16);
 				g->setColor(getBackground());
-				g->drawText(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
+				g->drawString(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
 			} else {
 				g->setColor(getForeground());
-				g->drawText(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
+				g->drawString(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
 			}
 		} 
 	}

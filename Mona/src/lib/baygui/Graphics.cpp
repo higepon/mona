@@ -131,28 +131,26 @@ namespace baygui {
 		}
 	}
 
-	void Graphics::drawText(char* str, int x, int y)
+	void Graphics::drawString(String str, int x, int y)
 	{
 		int pos, bit, offset, width, height, w = 0, h = 0;
 		FontMetrics metrics;
 		
 		// NULLチェック
-		if (str == NULL || strlen(str) == 0) return;
-		
-		String s = str;
+		if (str.length() == 0) return;
 		
 		metrics.setFontStyle(getFontStyle());
-		int I = s.length();
+		int I = str.length();
 		for (int i = 0; i < I; i++) {
 			pos = 0;
 			bit = 1;
 			char fp[256];
 			// 改行
-			if (s.charAt(i) == '\n') {
+			if (str.charAt(i) == '\n') {
 				w = 0;
 				h += 12;
 			}
-			if (metrics.decodeCharacter(s.charAt(i), &offset, &width, &height, fp) == true) {
+			if (metrics.decodeCharacter(str.charAt(i), &offset, &width, &height, fp) == true) {
 				for (int j = 0; j < height; j++) {
 					for (int k = 0; k < width; k++) {
 						int x0 = x + w + k + (offset - width) / 2;

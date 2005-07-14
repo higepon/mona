@@ -98,14 +98,14 @@ namespace baygui {
 		} else {
 			g->setColor(Color::gray);
 		}
-		g->drawText(text, this->offx, (h - fh) / 2);
+		g->drawString(this->text, this->offx, (h - fh) / 2);
 
 		// キャレット
 		if (getFocused() == true && getEnabled() == true) {
 			int i;
 			char temp[MAX_TEXT_LEN];
-			for (i = 0; i <= textPtr; i++) {
-				temp[i] = text[i];
+			for (i = 0; i <= this->textPtr; i++) {
+				temp[i] = this->text[i];
 			}
 			temp[i] = '\0';
 			int fw = getFontMetrics()->getWidth(temp);

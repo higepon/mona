@@ -110,7 +110,7 @@ namespace baygui {
 		 @param x Žn“_X
 		 @param y Žn“_Y
 		 */
-		void drawText(char* str, int x, int y);
+		void drawString(String str, int x, int y);
 		
 		/**
 		 ‰~“h‚è‚Â‚Ô‚µ•`‰æ

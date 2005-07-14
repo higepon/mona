@@ -136,7 +136,7 @@ namespace baygui {
 		} else {
 			g->setColor(Color::gray);
 		}
-		g->drawText(getLabel(), 14, y);
+		g->drawString(getLabel(), 14, y);
 		
 		// チェック
 		for (int i = 0; i < 12; i++) {
