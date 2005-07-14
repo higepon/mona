@@ -1,16 +1,63 @@
+2004-07-14  bayside
+
+        * Graphics::drawText() -> Graphics::drawString()
+        
+        * Container::dispatchEvent() でマウスクリック以外のマウスイベントも子部品に渡すようにする
+
+        * samples/non-gui/infones/InfoNES_System_Mona.cpp: ウェイト系実装追加
+                                                           2x2表示に変更
+
 2004-07-13  bayside
 
         * samples/non-gui/infones: v0.96Jに差し替え
 
 2004-07-11  bayside
 
-        * include/baygui.h: インターフェース変更＆Mona版が起動しない不具合修正
-
-        * include/baygui/*.h: インターフェース変更＆Mona版が起動しない不具合修正
-
-        * src/lib/baygui/*.cpp: インターフェース変更＆Mona版が起動しない不具合修正
-
-        * apps/baygui/*/*: インターフェース変更＆Mona版が起動しない不具合修正
+        * Vectorクラス追加
+        
+        * Hashtableクラス追加
+        
+        * LinkedListクラス削除
+        
+        * Insetsクラス追加
+        
+        * Frameクラス追加
+        
+        * Frame::INSETS_TOP 削除
+        
+        * Frame::INSETS_BOTTOM 削除
+        
+        * Frame::INSETS_LEFT 削除
+        
+        * Frame::INSETS_RIGHT 削除
+        
+        * Frame::getInsets() 追加
+        
+        * Window::getCloseButtonClicked() 追加
+        
+        * Window::getTitlebarClicked() 追加
+        
+        * Windowクラスはタイトルなし＆フチなしウィンドウに変更
+        
+        * Window -> Frame
+        
+        * Control -> Component
+        
+        * Control::onStart() -> Component::addNotify()
+        
+        * Control::onExit()  -> Component::removeNotify()
+        
+        * Control::onEvent() -> Component::processEvent()
+        
+        * Control::onPaint() -> Component::paint()
+        
+        * Control::postEvent() -> Component::dispatchEvent()
+        
+        * Container::findChild() -> Container::getComponent()
+        
+        * Container::findChild(x,y) -> Container::getComponentAt(x,y)
+        
+        * ListBox::getSelectedItem() でぬるぽが起きていた不具合修正
 
 2005-07-10  higepon  <higepon@users.sourceforge.jp>
 
@@ -117,11 +164,11 @@
 
 2005-05-24  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
+        * src/servers/mones/mones.cpp : フレームの処理をバッファリングと処理の2段へ変更
 
-     * src/servers/mones/AbstractMonic.cpp : フレーム処理待ちリスト
+        * src/servers/mones/AbstractMonic.cpp : フレーム処理待ちリスト
 
-     * src/servers/mones/MoEther.cpp : 無駄なメモリー確保およびコピーを排除(処理待ちバッファは、AbstractMonicの責務へ)
+        * src/servers/mones/MoEther.cpp : 無駄なメモリー確保およびコピーを排除(処理待ちバッファは、AbstractMonicの責務へ)
 
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
@@ -129,17 +176,17 @@
 
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * include/sys/types.h : メッセージ MSG_MONES_FRAME_REQ 追加
+        * include/sys/types.h : メッセージ MSG_MONES_FRAME_REQ 追加
 
 2005-05-22  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * src/servers/mones/mones.cpp : syscall_change_base_priorityをコールしてプライオリティ設定
+        * src/servers/mones/mones.cpp : syscall_change_base_priorityをコールしてプライオリティ設定
 
-     * src/servers/mones/MoPacUtl.cpp : createPacMsg(パケット格納メッセージの作成)メソッドを追加
+        * src/servers/mones/MoPacUtl.cpp : createPacMsg(パケット格納メッセージの作成)メソッドを追加
 
-     * src/servers/mones/MoUdp.cpp : 共有メモリ経由でパケットを送信するように変更
+        * src/servers/mones/MoUdp.cpp : 共有メモリ経由でパケットを送信するように変更
 
-     * apps/baygui/baymomsg : 共有メモリ経由でパケットを受信するように変更
+        * apps/baygui/baymomsg : 共有メモリ経由でパケットを受信するように変更
 
 2004-05-20  bayside
 
@@ -159,11 +206,11 @@
 
 2005-05-15  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * apps/baygui/baymomsg :追加 簡易メッセージ
+        * apps/baygui/baymomsg :追加 簡易メッセージ
 
-     * src/servers/mones/MoUdp.h : 追加
+        * src/servers/mones/MoUdp.h : 追加
 
-     * src/servers/mones/MoUdp.cpp : 追加
+        * src/servers/mones/MoUdp.cpp : 追加
 
 2005-05-15  higepon  <higepon@users.sourceforge.jp>
 
@@ -188,7 +235,7 @@
 
 2005-05-10  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * apps/baygui/pingui : 追加
+        * apps/baygui/pingui : 追加
 
 2005-05-09  shadow  <shadowin@users.sourceforge.jp>
 
@@ -196,25 +243,25 @@
 
 2005-05-09  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * apps/non-gui/ping : 追加
+        * apps/non-gui/ping : 追加
 
-     * src/servers/mones :
-      MACアドレス未解決時に、Arp要求～応答～IP送信 とするが、この場合のIP送信のパケットが壊れている問題を修正
-      共有メモリを使用
+        * src/servers/mones :
+         MACアドレス未解決時に、Arp要求～応答～IP送信 とするが、この場合のIP送信のパケットが壊れている問題を修正
+         共有メモリを使用
 
 2005-05-08  Yamami  <yamamimail@users.sourceforge.jp>
 
-     * src/servers/mones/Makefile : ex2→ex5へ変更
+        * src/servers/mones/Makefile : ex2→ex5へ変更
 
-     * src/servers/mones/MoIp.h : IPヘッダ構造体 MoDefine.hへ移動
+        * src/servers/mones/MoIp.h : IPヘッダ構造体 MoDefine.hへ移動
 
-     * src/servers/mones/MoIcmp.h : ICMPヘッダ構造体 MoDefine.hへ移動
+        * src/servers/mones/MoIcmp.h : ICMPヘッダ構造体 MoDefine.hへ移動
 
-     * src/servers/mones/MoDefine.h : 各種ヘッダ宣言移動
+        * src/servers/mones/MoDefine.h : 各種ヘッダ宣言移動
 
-     * src/servers/mones/mones.cpp : メッセージからのIP送信処理実装
+        * src/servers/mones/mones.cpp : メッセージからのIP送信処理実装
 
-     * samples/non-gui/yamami/main.cpp: テストコード(PINGもどき)追加
+        * samples/non-gui/yamami/main.cpp: テストコード(PINGもどき)追加
 
 2005-05-05  shadow  <shadowin@users.sourceforge.jp>
 
