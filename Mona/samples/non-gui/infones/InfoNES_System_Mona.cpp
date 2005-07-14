@@ -21,7 +21,7 @@
 /*  Global Variables ( Mona specific )                               */
 /*-------------------------------------------------------------------*/
 
-static int offx = 0, offy = 0, isExit = 0;
+static int offx = 0, offy = 0, isExit = 0, waitCount = 0;
 static dword my_tid = 0, keyevt_tid = 0, dwKeyPad1 = 0, dwKeyPad2 = 0;
 static MonAPI::Screen screen;
 
@@ -65,9 +65,17 @@ static void EventLoop()
 				} else if (charcode == 's') { // A (s)
 					dwKeyPad1 |= ( 1 << 0 );
 				} else if (charcode == 'k') { // SPEED DOWN (k)
-					if (FrameSkip > 0) FrameSkip--;
+					if (FrameSkip > 0) {
+						FrameSkip--;
+					} else {
+						waitCount++;
+					}
 				} else if (charcode == 'l') { // SPEED UP (l)
-					FrameSkip++;
+					if (waitCount > 0) {
+						waitCount--;
+					} else {
+						FrameSkip++;
+					}
 				}
 			} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
 				if (keycode == 39 || keycode == 102) { // RIGHT
@@ -122,7 +130,7 @@ int MonaMain( List<char*>* pekoe )
 {
 	/* Command line */
 	if (pekoe->size() == 0) {
-		printf("InfoNES for Mona\n");
+		printf("InfoNES for Mona v0.96J\n");
 		printf("copyright (c) 2005, bayside.\n");
 		printf("\n");
 		printf("usage: infones.ex2 [*.nes]\n");
@@ -219,7 +227,7 @@ int InfoNES_ReadRom( const char *pszFileName )
 	for(i = 0; i < NesHeader.byRomSize * 0x4000; i++)
 		ROM[i] = *fp1++;
 
-	if ( NesHeader.byVRomSize > 0 ){
+	if ( NesHeader.byVRomSize > 0 ) {
 		/* Allocate Memory for VROM Image */
 		VROM = (BYTE *)malloc( NesHeader.byVRomSize * 0x2000 );
 		memset( VROM, 0, NesHeader.byVRomSize * 0x2000 );
@@ -238,7 +246,8 @@ int InfoNES_ReadRom( const char *pszFileName )
 /*           InfoNES_ReleaseRom() : Release a memory for ROM         */
 /*                                                                   */
 /*===================================================================*/
-void InfoNES_ReleaseRom(){
+void InfoNES_ReleaseRom()
+{
 /*
  *  Release a memory for ROM
  *
@@ -351,6 +360,9 @@ void InfoNES_LoadFrame()
 			*(unsigned short*)pVram = wColor;
 		}
 	}
+	
+	/* Wait */
+	if (waitCount > 0) sleep(waitCount * 17/* 1/60s */);
 }
 
 /*===================================================================*/
@@ -403,7 +415,8 @@ int InfoNES_SoundOpen( int samples_per_sync, int sample_rate )
 /*        InfoNES_SoundClose() : Sound Close                         */
 /*                                                                   */
 /*===================================================================*/
-void InfoNES_SoundClose( void ){
+void InfoNES_SoundClose( void )
+{
 }
 
 /*===================================================================*/
@@ -411,14 +424,17 @@ void InfoNES_SoundClose( void ){
 /*            InfoNES_Wait() : Wait Emulation if required            */
 /*                                                                   */
 /*===================================================================*/
-void InfoNES_Wait() {}
+void InfoNES_Wait()
+{
+}
 
 /*===================================================================*/
 /*                                                                   */
 /*            InfoNES_SoundOutput() : Sound Output 5 Waves           */
 /*                                                                   */
 /*===================================================================*/
-void InfoNES_SoundOutput(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5){
+void InfoNES_SoundOutput(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYTE *wave4, BYTE *wave5)
+{
 }
 
 /*===================================================================*/
@@ -426,7 +442,8 @@ void InfoNES_SoundOutput(int samples, BYTE *wave1, BYTE *wave2, BYTE *wave3, BYT
 /*            InfoNES_MessageBox() : Print System Message            */
 /*                                                                   */
 /*===================================================================*/
-void InfoNES_MessageBox( char *pszMsg, ... ){
+void InfoNES_MessageBox( char *pszMsg, ... )
+{
 	printf( "InfoNES:%s\n", pszMsg );
 }
 
