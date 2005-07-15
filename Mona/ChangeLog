@@ -1,3 +1,7 @@
+2005-07-15  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/servers/mones : TCP実装開始。とりあえずダンプだけ。
+
 2004-07-14  bayside
 
         * Graphics::drawText() -> Graphics::drawString()
