@@ -1,3 +1,7 @@
+2005-07-16  shadow  <shadowin@users.sourceforge.jp>
+
+        * monalibc/math: add asin sinh cosh tanh ldexp; fix fmod
+
 2005-07-15  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones : TCP実装開始。とりあえずダンプだけ。
