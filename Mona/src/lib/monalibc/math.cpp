@@ -53,6 +53,22 @@ double atan(double x)
     return result;
 }
 
+#define PI 3.14159265358979323846
+
+double asin(double x)
+{
+  double z;
+  if(fabs(x) > 1){
+    //errno = EDOM;
+    return 0;
+  }
+  z = sqrt(1 - x*x);
+  if(z != 0) return atan(x/z);
+  if(x > 0) return PI/2;
+  else return -PI/2;
+
+}
+
 /* acos = atan (sqrt(1 - x^2) / x) */
 double acos(double x)
 {
@@ -68,6 +84,24 @@ double acos(double x)
                : "=t" (result) : "0" (x) : "st(1)");
 
   return result;
+}
+
+double sinh(double x)
+{
+  return (exp(x) - exp(-x))/2.0;
+}
+
+double cosh(double x)
+{
+  return (exp(x) + exp(-x))/2.0;
+}
+
+double tanh(double x)
+{
+  double p = exp(x);
+  double m = exp(-x);
+  //if(p+m == 0) no need?
+  return (p-m)/(p+m);
 }
 
 double fabs(double x)
@@ -167,6 +201,22 @@ double exp(double x){
   else return 1.0/result;
 }
 
+double ldexp(double x, int n){
+
+  int *iptr = (int *)&x;
+  n += (iptr[3]>>4) & 0x3ff;
+  if(n < 1) x = 0;
+  else if(n > 0x7fff){
+    iptr[3] |= 0x7fff;
+    iptr[2] = iptr[1] = iptr[0] = -1;
+    //errno = ERANGE;
+  }
+  iptr[3] = (iptr[3] & 0x800f)|(n << 4);
+
+  return x;
+
+}
+
 double pow(double x, double y){
 
   long int n = y;
@@ -252,11 +302,17 @@ double frexp(double x, int *exp){
   }
   *exp = ((t[3] >> 4) & 0x7ff) - 0x3fe;
   t[3] = (t[3] & 0x800f) + 0x3fe0;
+
   return x;
 }
 
 double fmod(double x, double y)
 {
-	double n = (double)(int)(x / y);
-	return x - n * y;
+
+	double result;
+	if(x == 0 || y == 0) result = 0.0;
+	else if(x > 0) result = x - (unsigned long int)fabs(x/y)*fabs(y);
+	else result = x + (unsigned long int)fabs(x/y)*fabs(y);
+
+	return result;
 }
