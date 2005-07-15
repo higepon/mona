@@ -48,7 +48,7 @@ using namespace System::Mona::Forms;
 extern dword __gui_server;
 extern _P<MonAPI::Screen> GetDefaultScreen();
 
-static MonAPI::Random rand;
+static MonAPI::Random rand_;
 static _P<Bitmap> kukuri, kukuriMirror;
 static HList<_P<Kukuri> > kukuris;
 static _P<Timer> kukuriTimer;
@@ -108,7 +108,7 @@ Kukuri::Kukuri()
   
   MonAPI::Date date;
   date.refresh();
-  rand.setSeed(date.hour() * 3600 + date.min() * 60 + date.sec());
+  rand_.setSeed(date.hour() * 3600 + date.min() * 60 + date.sec());
   
   this->offset = Point::get_Empty();
   this->set_ClientSize(Size(KUKURI_WIDTH, KUKURI_HEIGHT));
@@ -463,7 +463,7 @@ void Kukuri::sleeping()
   s_count = 0;
   
   // もし自動モードなら起きるかどうか判定
-  if(a_state == 3 && (int)(rand.nextDouble() * 10) == 0){
+  if(a_state == 3 && (int)(rand_.nextDouble() * 10) == 0){
     n_state = 9;
     a_state = 0;
   }
