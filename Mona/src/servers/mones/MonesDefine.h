@@ -135,6 +135,23 @@ typedef struct{
 }UDP_HEADER;
 
 
+/*! 
+ *  \struct TCP_HEADER
+ *  \brief TCPÉwÉbÉ_ç\ë¢ëÃ
+ */
+typedef struct{
+    word srcport;
+    word dstport;
+    dword seqnum;
+    dword acknum;
+    byte reserved :4;
+    byte  headlen :4 ;
+    byte  flag;
+    word wndsize;
+    word chksum;
+    word urgpoint;
+    char    option[0];
+}TCP_HEADER;
 
 
 /*! 

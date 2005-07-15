@@ -83,8 +83,8 @@ int MoIp::receiveIp(IP_HEADER *ipHead)
     /* 上位プロトコルへ渡す。 */
     switch(ipHead->prot)
     {
-        //case IPPROTO_TCP:
-        //  return g_MoIcmp->receiveTcp(ipHead);
+        case IPPROTO_TCP:
+          return g_MoTcp->receiveTcp(ipHead);
         case IPPROTO_UDP:
           return g_MoUdp->receiveUdp(ipHead);
         case IPPROTO_ICMP:

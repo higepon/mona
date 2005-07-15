@@ -79,6 +79,9 @@ int MonaMain(List<char*>* pekoe)
     g_MoUdp = new MoUdp();
     g_MoUdp->initUdp(insAbstractNic);
 
+    //TCPクラスのインスタンス化
+    g_MoTcp = new MoTcp();
+    g_MoTcp->initTcp(insAbstractNic);
 
     // initilize destination list
     //List<dword>* destList = new HList<dword>();

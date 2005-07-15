@@ -20,6 +20,9 @@
 #include "MoPacUtl.h"
 #include "MonesDefine.h"
 #include "AbstractMonic.h"
+#include "Socket.h"
+
+
 
 
 
@@ -36,20 +39,6 @@
 #define tcphdr_opt_mss      (tcphdr_urg+2)      /* 4 */
 #define SIZEOF_TCPHDR       (tcphdr_opt_mss+4)
 
-
-
-/*! 
- *  \struct T_TSOCK
- *  \brief ソケット構造体
- */
-typedef struct t_socket {
-    unsigned char   status;
-    unsigned long       ip;
-    unsigned int    myport;
-    unsigned int    youport;
-    unsigned long   seq;    /* 自分からのシーケンス番号 */
-    unsigned long   ack;    /* 相手からのシーケンス番号 */
-} T_TSOCK;
 
 /* TCP 状態遷移 */
 #define     CLOSED      0
@@ -72,7 +61,7 @@ typedef struct t_socket {
 #define TCP_FLAG_URG 0x20
 
 
-//Yamami????
+
 /*! 
  *  \struct Packet
  *  \brief Packet構造体
@@ -103,12 +92,19 @@ class MoTcp
     ~MoTcp();
     void initTcp(AbstractMonic*);
 
-    void send_tcp(T_TSOCK *sock, char flags, struct Packet *packet, char *data, dword size);
+    void send_tcp(Socket *sock, char flags, struct Packet *packet, char *data, dword size);
+    
+    //コネクション リスン ソケットリスト
+    List<Socket*>* conSocList;
+    
+    int receiveTcp(IP_HEADER*);
 
   private:
 
     //NICドライバ
     AbstractMonic* insAbstractNic;
+    
+    void saveRecv(IP_HEADER*, int );
 
 };
 

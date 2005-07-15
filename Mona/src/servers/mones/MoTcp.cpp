@@ -21,6 +21,7 @@
 #include "MonesConfig.h"
 #include "MonesGlobal.h"
 
+
 /*!
     \brief initialize
          MoTcp コンストラクタ
@@ -29,7 +30,23 @@
 */
 MoTcp::MoTcp()
 {
+    //Socketリスト初期化
+    conSocList = new HList<Socket*>();
+    
+    
+    //ここで、Echoサーバをリスンする。
+    //TODO 本来ならEchoサーバとして実装すべし。Socket層も同じく。
+    //とりあえず動く物を
+    
+    Socket *echoSoc;
+    
+    echoSoc = new Socket();
+    echoSoc->status=LISTEN;
+    echoSoc->myport=7;
 
+    //Socketリストに追加
+    conSocList->add(echoSoc);
+    
 }
 
 /*!
@@ -72,7 +89,7 @@ MoTcp::~MoTcp()
     \author Yamami
     \date   create:2004/09/20 update:2004/09/20
 */
-void send_tcp(T_TSOCK *sock, char flags, struct Packet *packet, char *data, dword size)
+void send_tcp(Socket *sock, char flags, struct Packet *packet, char *data, dword size)
 {
 
 /*
@@ -140,5 +157,87 @@ void send_tcp(T_TSOCK *sock, char flags, struct Packet *packet, char *data, dwor
         sock->seq += size;
     }
 */
+
+}
+
+
+/*!
+    \brief receiveTcp
+         Tcpプロトコル受信 処理
+    \param  IP_HEADER *ipHead [in] IPヘッダへのポインタ
+    \return int 結果 
+        
+    \author Yamami
+    \date   create:2004/09/20 update:2004/09/20
+*/
+int MoTcp::receiveTcp(IP_HEADER *ipHead)
+{
+
+    int Tcp_size;
+    TCP_HEADER *Tcp;
+
+    Tcp=(TCP_HEADER*)ipHead->data;
+
+    Tcp_size=MoPacUtl::swapShort(ipHead->len)-sizeof(IP_HEADER);
+    
+    // チェックサムの確認
+    //TODO 面倒なので後回し。この計算じゃダメ
+    //if(MoPacUtl::calcCheckSum((dword*)Tcp,Tcp_size)){
+    //    logprintf("Tcp_size = %d\n",Tcp_size);
+    //    logprintf("Tcp->chksum = %x\n",MoPacUtl::swapShort(Tcp->chksum));
+    //    logprintf("Tcp CheckSum BAD!!\n");
+    //    return 0;
+    //}
+
+    saveRecv(ipHead,Tcp_size+sizeof(IP_HEADER));
+
+    return 0;
+}
+
+
+
+
+/*!
+    \brief saveRecv
+         Tcp応答受信 処理
+    \param  IP_HEADER *ipHead [in] IPヘッダ
+    \param  int size [in] パケットサイズ
+    \return 無し
+    \author Yamami
+    \date   create:2004/09/20 update:2004/09/20
+*/
+void MoTcp::saveRecv(IP_HEADER *ipHead, int size)
+{
+
+
+    int Tcp_size;
+    TCP_HEADER *Tcp;
+
+    Tcp=(TCP_HEADER*)ipHead->data;
+    Tcp_size=MoPacUtl::swapShort(ipHead->len)-sizeof(IP_HEADER)-(Tcp->headlen * 4);
+
+    //ここで到着Tcpパケットを単にダンプ
+    //if (MoPacUtl::swapShort(Tcp->dstport) == 7){
+        char buf[1530];
+        memset(buf,0,sizeof(buf));
+        logprintf("srcip = %x\n",MoPacUtl::swapLong(ipHead->srcip));
+        logprintf("srcport = %d\n",MoPacUtl::swapShort(Tcp->srcport));
+        logprintf("dstport = %d\n",MoPacUtl::swapShort(Tcp->dstport));
+        logprintf("seqnum = %x\n",MoPacUtl::swapLong(Tcp->seqnum));
+        logprintf("acknum = %x\n",MoPacUtl::swapLong(Tcp->acknum));
+        logprintf("headlen(BYTE) = %x\n",(Tcp->headlen * 4));
+        logprintf("flag = %x\n",Tcp->flag);
+        logprintf("wndsize = %x\n",MoPacUtl::swapShort(Tcp->wndsize));
+        logprintf("chksum = %x\n",MoPacUtl::swapShort(Tcp->chksum));
+        logprintf("urgpoint = %x\n",MoPacUtl::swapShort(Tcp->urgpoint));
+
+        logprintf("size = %x\n",Tcp_size);
+        
+        //TODO 
+        memcpy(buf, Tcp->option , Tcp_size);
+        for(int i = 0; i < Tcp_size ; i++){
+            logprintf("%c",buf[i]);
+        }
+    //}
 
 }
