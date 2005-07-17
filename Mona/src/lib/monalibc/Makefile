@@ -13,6 +13,7 @@ SOURCES = ctype.cpp    \
           stdio.cpp    \
           stdlib.cpp   \
           math.cpp     \
+          time.cpp     \
           setjmp.cpp   \
           string.cpp   \
 
