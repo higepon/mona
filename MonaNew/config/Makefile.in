@@ -1,0 +1,24 @@
+include configs/Makefile.inc
+
+all:
+	@echo "Nothing to do. Please install."
+
+install: check
+	mkdir -p $(MONADIR)/share/configs
+	$(INSTALL) -m 0644 configs/Makefile.inc configs/dirnames.inc $(MONADIR)/share/configs
+
+uninstall: check
+	rm -f $(MONADIR)/share/configs/Makefile.inc
+	rm -f $(MONADIR)/share/configs/dirnames.inc
+
+check:
+	@if test "$(MONADIR)" = "" ; \
+	then \
+	    echo "Please set MONADIR!"; \
+	    exit 1; \
+	fi
+
+clean:
+
+distclean:
+	rm -f configs/Makefile.inc Makefile

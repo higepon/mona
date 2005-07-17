@@ -1,0 +1,21 @@
+TARGET = t5lzma$(EXEEXT)
+
+include $(MONADIR)/share/configs/Makefile.inc
+
+all: $(TARGET)
+
+$(TARGET):
+	$(MAKE) -C 7zip/Compress/LZMA_Alone
+
+clean:
+	$(MAKE) $@ -C 7zip/Compress/LZMA_Alone
+
+distclean: clean
+	rm -f Makefile 7zip/Compress/LZMA_Alone/Makefile
+
+install: $(TARGET)
+	mkdir -p $(PREFIX)/bin
+	$(INSTALL) $(TARGET) $(PREFIX)/bin/
+
+uninstall:
+	rm -f $(PREFIX)/bin/$(TARGET)

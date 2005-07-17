@@ -1,0 +1,7 @@
+*.o
+*.bin
+*.list
+*.exe
+TAGS
+Makefile
+dependencies

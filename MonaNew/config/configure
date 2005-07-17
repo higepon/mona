@@ -1,0 +1,74 @@
+#!/bin/sh
+###
+#      \file  configure
+#      \brief configure file
+
+#      Copyright (c) 2004 Higepon
+#      All rights reserved.
+#      License=MIT/X License
+
+#      \author  HigePon and nanashi
+#      \version $Revision$
+#      \date   create:2003/10/07 update:$Date$
+###
+
+if test "$MONADIR" = "" ; then
+    echo "Please set MONADIR!"
+    exit 1
+fi
+
+if test "$PREFIX" = "" ; then
+   PREFIX=/usr/local
+fi
+
+# gcc is 3.x or 2.x
+isOldVersion=`gcc --version|egrep '2\.9.*'`
+isMinGW32=`uname|egrep MINGW32`
+export OSTYPE="$(uname | cut -d _ -f 1 | tr [:upper:] [:lower:])"
+
+# check MINGWPREFIX
+if test -z $1 ; then
+   MINGWPREFIX=${MINGWPREFIX:-"/usr/local/mingw32/bin/i386-mingw32-"}
+elif test `echo $1 | grep -- --mingw-prefix= ` != "" ; then
+   MINGWPREFIX=`echo $1 | sed -e "s/--mingw-prefix=//g"`
+fi
+
+echo -n "OSTYPE: "
+# cygwin
+if test "$OSTYPE" = "cygwin" ; then
+   echo PREFIX = $PREFIX > configs/Makefile.inc
+   cat configs/cygwin.env >> configs/Makefile.inc
+   echo "cygwin"
+# MinGW (MSys)
+elif test $isMinGW32; then
+   echo PREFIX = $PREFIX > configs/Makefile.inc
+   cat configs/mingw.env >> configs/Makefile.inc
+   echo "MinGW32"
+# MinGW (Unix)
+elif test -x `printf "%s%s" $MINGWPREFIX "g++"` ; then
+   echo PREFIX = $PREFIX > configs/Makefile.inc
+   echo "MINGWPREFIX = $MINGWPREFIX" >> configs/Makefile.inc
+   cat configs/uxmingw.env >> configs/Makefile.inc
+   echo "MinGW32 (Unix)"
+else
+   echo $OSTYPE
+   echo ""
+   echo "Sorry, currently your platform is not supported."
+   echo "If you can support your platform, please contact with Mona PJ."
+   echo "http://mona.sourceforge.jp/"
+   exit 1
+fi
+## linux gcc2.9x
+#elif test $isOldVersion ; then
+#   cp  configs/linux2.x.env configs/Makefile.inc
+#   echo "linux gcc2.x"
+## linux gcc3.x
+#else
+#   cp  configs/linux3.x.env configs/Makefile.inc
+#   echo "linux gcc3.x"
+#fi
+
+echo MONADIR: $MONADIR
+echo PREFIX: $PREFIX
+
+cp Makefile.in Makefile
