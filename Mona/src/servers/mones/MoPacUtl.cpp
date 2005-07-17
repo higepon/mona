@@ -183,6 +183,54 @@ word MoPacUtl::calcCheckSum(dword *data,int size)
 
 
 /*!
+    \brief calcCheckSumDummyHead
+         TCP/UDP用。ダミーヘッダ込み チェックサム関数
+    \param  dword *dmhead [in] ダミーヘッダ チェックサム対象
+    \param  dword *data [in] チェック対象データ
+    \param  int dmsize [in] ダミーヘッダ対象サイズ
+    \param  int size [in] チェック対象サイズ
+    \return word 
+    
+    \author Yamami
+    \date   create:2005/07/17 update:
+*/
+word MoPacUtl::calcCheckSumDummyHead(dword *dmhead,dword *data,int dmsize,int size)
+{
+    union{
+        unsigned long long u64;
+        dword               u32[2];
+        word             u16[4];
+    }sum;
+    
+    dword tmp;
+
+
+    sum.u64=0;
+    for(;dmsize>=sizeof(dword);dmsize-=sizeof(dword))
+        sum.u64+=*dmhead++;
+    for(;size>=sizeof(dword);size-=sizeof(dword))
+        sum.u64+=*data++;
+    if(size>0)sum.u64+=*data&((1<<(size*8))-1);
+
+    tmp=sum.u32[1];
+    sum.u32[1]=0;
+    sum.u64+=tmp;
+    tmp=sum.u32[1];
+    sum.u32[1]=0;
+    sum.u32[0]+=tmp;
+
+    tmp=sum.u16[1];
+    sum.u16[1]=0;
+    sum.u32[0]+=tmp;
+    tmp=sum.u16[1];
+    sum.u16[1]=0;
+    sum.u16[0]+=tmp;
+
+    return ~sum.u16[0];
+}
+
+
+/*!
     \brief createPacMsg
          パケット格納メッセージ作成
     \param  MessageInfo *info [OUT] 作成メッセージ

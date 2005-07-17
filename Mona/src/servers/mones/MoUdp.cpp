@@ -70,7 +70,8 @@ MoUdp::~MoUdp()
 */
 int MoUdp::receiveUdp(IP_HEADER *ipHead)
 {
-
+    DUMMY_HEADER dmyhead;
+    
     int udp_size;
     UDP_HEADER *udp;
 
@@ -80,13 +81,18 @@ int MoUdp::receiveUdp(IP_HEADER *ipHead)
     udp_size=MoPacUtl::swapShort(udp->len);
 
     // チェックサムの確認
-    //TODO 面倒なので後回し。この計算じゃダメ
-    //if(MoPacUtl::calcCheckSum((dword*)udp,udp_size)){
-    //    logprintf("udp_size = %d\n",udp_size);
-    //    logprintf("udp->chksum = %x\n",MoPacUtl::swapShort(udp->chksum));
-    //    logprintf("udp CheckSum BAD!!\n");
-    //    return 0;
-    //}
+    // UDPのチェックサムは、疑似ヘッダをつけて行う。
+    dmyhead.srcip=ipHead->srcip;
+    dmyhead.dstip=ipHead->dstip;
+    dmyhead.tmp=0;
+    dmyhead.prot=ipHead->prot;
+    dmyhead.len=udp->len;
+    if(MoPacUtl::calcCheckSumDummyHead((dword*)&dmyhead,(dword*)udp,sizeof(DUMMY_HEADER),udp_size)){
+        logprintf("udp_size = %d\n",udp_size);
+        logprintf("udp->chksum = %x\n",MoPacUtl::swapShort(udp->chksum));
+        logprintf("udp CheckSum BAD!!\n");
+        return 0;
+    }
 
     saveRecv(ipHead,udp_size+sizeof(IP_HEADER));
 

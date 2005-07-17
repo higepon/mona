@@ -47,7 +47,7 @@ GLOBAL MoUdp* g_MoUdp;
 GLOBAL MoTcp* g_MoTcp;
 GLOBAL MoIcmp* g_MoIcmp;
 
-//Mones“o˜^î•ñŠÇ——p HashMap
+//Mones“o˜^î•ñŠÇ——p List
 GLOBAL HList<MONES_IP_REGIST*> *MonesRList;
 
 #endif

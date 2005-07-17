@@ -11,7 +11,8 @@ SOURCES = mones.cpp            \
           MonesConfig.cpp      \
           MonesLoader.cpp      \
           MoPacUtl.cpp         \
-          Socket.cpp         
+          Socket.cpp           \
+          SocketsManager.cpp                     
 
 INSTDIR = $(BINDIR)/iso/SERVERS
 

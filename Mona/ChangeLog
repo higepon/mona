@@ -1,3 +1,9 @@
+2005-07-17  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/servers/mones : SocketsManagerクラス追加(定義のみ)
+        
+        * src/servers/mones : UDPチェックサム実装(疑似ヘッダ)
+        
 2005-07-16  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc/math: add asin sinh cosh tanh ldexp; fix fmod

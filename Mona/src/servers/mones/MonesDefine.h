@@ -88,6 +88,19 @@ enum{
 };
 
 
+/*! 
+ *  \struct DUMMY_HEADER
+ *  \brief 疑似ヘッダ。TCP/UDPのチェックサム計算に利用される。
+ */
+typedef struct{
+    dword srcip;
+    dword dstip;
+    byte  tmp;
+    byte  prot;
+    word len;
+}DUMMY_HEADER;
+
+
 
 //ICMP タイプ
 //0 エコー応答（echo reply） 
