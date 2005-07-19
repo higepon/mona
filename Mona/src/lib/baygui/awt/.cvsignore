@@ -1,0 +1,16 @@
+*.o
+*.bin
+*.list
+*.map
+*.local
+*.BIN
+*.BN2
+*.BM2
+*.ELF
+*.EL2
+*.EXE
+*.EX2
+*.DL5
+*.DLL
+TAGS
+dependencies
