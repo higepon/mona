@@ -4,9 +4,9 @@
 #include "Thread.h"
 #include "Array.h"
 #include "Process.h"
-#include "tester.h"
 #include <sys/ThreadPriority.h>
 #include <sys/HList.h>
+#include "KTimer.h"
 
 /*----------------------------------------------------------------------
     Scheduler

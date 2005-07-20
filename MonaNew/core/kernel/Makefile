@@ -32,7 +32,6 @@ SOURCES      = cstart.cpp            \
                MemoryManager.cpp     \
                sysresource.cpp       \
                Segments.cpp          \
-               test_higepon.cpp      \
                Mutex.cpp             \
                VesaConsole.cpp       \
                LogConsole.cpp        \
@@ -40,6 +39,8 @@ SOURCES      = cstart.cpp            \
                KObject.cpp           \
                Loader.cpp            \
                Scheduler.cpp         \
+               RTC.cpp               \
+               Messenger.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

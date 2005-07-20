@@ -1,5 +1,7 @@
 2005-07-20  higepon  <higepon@users.sourceforge.jp>
 
+        * core/kernel/Makefile : tester.h, tesr_higepon.cpp削除。 
+
         * core/kernel/tester.h: test_mjt.hファイル削除(新ツリーのみ)
 
 2005-07-17  Yamami  <yamamimail@users.sourceforge.jp>

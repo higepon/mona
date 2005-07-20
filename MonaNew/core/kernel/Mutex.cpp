@@ -15,7 +15,6 @@
 #include "Mutex.h"
 #include "io.h"
 #include "syscalls.h"
-#include "tester.h"
 
 /*----------------------------------------------------------------------
     KMutex

@@ -21,10 +21,10 @@
 #include "MemoryManager.h"
 #include "Segments.h"
 #include "sysresource.h"
-#include "tester.h"
 #include "vbe.h"
 #include "IDManager.h"
 #include "Scheduler.h"
+#include "Messenger.h"
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
