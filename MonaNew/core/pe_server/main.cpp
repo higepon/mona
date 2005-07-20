@@ -26,6 +26,8 @@ static std::map<std::string, monapi_cmemoryinfo*> cache;
 static HashMap<monapi_cmemoryinfo*> cache(50);
 #endif
 
+
+#define NO_CACHE
 static PEData* OpenPE(const CString& path, bool prompt)
 {
         PEData* ret = new PEData();
@@ -213,7 +215,6 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
         if (!ListUpDLL(&dlls, &list->get(0)->Parser, prompt)
                 || !SearchDLLs(&dllfiles, &dlls, path, prompt)
                 || OpenDLLs(list, &dllfiles, prompt) != 0) return 3;
-
         int imageSize = 0;
         int len = list->size();
         for (int i = 0; i < len; i++)
@@ -251,6 +252,7 @@ static int LoadPE(HList<PEData*>* list, monapi_cmemoryinfo** dest, const CString
                         monapi_cmemoryinfo_dispose(dst);
                         monapi_cmemoryinfo_delete(dst);
 #endif
+
                         return 3;
                 }
                 addr += data->Parser.get_ImageSize();
