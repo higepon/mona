@@ -1,9 +1,13 @@
+2005-07-20  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/tester.h: test_mjt.hファイル削除(新ツリーのみ)
+
 2005-07-17  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones : SocketsManagerクラス追加(定義のみ)
-        
+
         * src/servers/mones : UDPチェックサム実装(疑似ヘッダ)
-        
+
 2005-07-16  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc/math: add asin sinh cosh tanh ldexp; fix fmod
@@ -15,18 +19,18 @@
 2004-07-14  bayside
 
         * Graphics::drawText() -> Graphics::drawString()
-        
+
         * Container::dispatchEvent() でマウスクリック以外のマウスイベントも子部品に渡すようにする
-        
+
         * samples/non-gui/infones/InfoNES_System_Mona.cpp: ウェイト系実装追加
                                                            2x2表示に変更
-        
+
         * apps/non-gui/Makefile: monapeg 追加
-        
+
         * apps/non-gui/monapeg: 新規追加（monapi使用版）
-        
+
         * lib/liblen-cygwin.a: monapeg用コンパイル済みライブラリ
-        
+
         * lib/liblen-linux.a: monapeg用コンパイル済みライブラリ
 
 2004-07-13  bayside
@@ -36,49 +40,49 @@
 2004-07-11  bayside
 
         * Vectorクラス追加
-        
+
         * Hashtableクラス追加
-        
+
         * LinkedListクラス削除
-        
+
         * Insetsクラス追加
-        
+
         * Frameクラス追加
-        
+
         * Frame::INSETS_TOP 削除
-        
+
         * Frame::INSETS_BOTTOM 削除
-        
+
         * Frame::INSETS_LEFT 削除
-        
+
         * Frame::INSETS_RIGHT 削除
-        
+
         * Frame::getInsets() 追加
-        
+
         * Window::getCloseButtonClicked() 追加
-        
+
         * Window::getTitlebarClicked() 追加
-        
+
         * Windowクラスはタイトルなし＆フチなしウィンドウに変更
-        
+
         * Window -> Frame
-        
+
         * Control -> Component
-        
+
         * Control::onStart() -> Component::addNotify()
-        
+
         * Control::onExit()  -> Component::removeNotify()
-        
+
         * Control::onEvent() -> Component::processEvent()
-        
+
         * Control::onPaint() -> Component::paint()
-        
+
         * Control::postEvent() -> Component::dispatchEvent()
-        
+
         * Container::findChild() -> Container::getComponent()
-        
+
         * Container::findChild(x,y) -> Container::getComponentAt(x,y)
-        
+
         * ListBox::getSelectedItem() でぬるぽが起きていた不具合修正
 
 2005-07-10  higepon  <higepon@users.sourceforge.jp>
