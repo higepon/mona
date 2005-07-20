@@ -10,24 +10,24 @@ endif
 
 SOURCES = \
 	main.cpp \
-	Button.cpp \
-	Checkbox.cpp \
-	CheckboxGroup.cpp \
-	Component.cpp \
-	Container.cpp \
-	FontMetrics.cpp \
-	Frame.cpp \
-	Graphics.cpp \
-	Hashtable.cpp \
-	Image.cpp \
-	Label.cpp \
-	ListBox.cpp \
-	Object.cpp \
-	Scrollbar.cpp \
-	String.cpp \
-	TextField.cpp \
-	Vector.cpp \
-	Window.cpp
+	awt/Button.cpp \
+	awt/Checkbox.cpp \
+	awt/CheckboxGroup.cpp \
+	awt/Component.cpp \
+	awt/Container.cpp \
+	awt/FontMetrics.cpp \
+	awt/Frame.cpp \
+	awt/Graphics.cpp \
+	awt/Image.cpp \
+	awt/Label.cpp \
+	awt/ListBox.cpp \
+	awt/Scrollbar.cpp \
+	awt/TextField.cpp \
+	awt/Window.cpp \
+	lang/Object.cpp \
+	lang/String.cpp \
+	util/Hashtable.cpp \
+	util/Vector.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc
