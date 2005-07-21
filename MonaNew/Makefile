@@ -1,7 +1,7 @@
 all:
 	cd config && ./configure && make && make install
 	cd tool/fat_write && make && make install
-	cd tool/t5lzma && make && make install
+	cd tool/t5lzma && ./configure && make && make install
 	cd tool/bim2bin && make && make install
 	cd core/firstboot && make && make install
 	cd core/PEAnalyzerLib && make && make install
