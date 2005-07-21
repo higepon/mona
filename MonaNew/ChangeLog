@@ -1,3 +1,7 @@
+2005-07-21  higepon  <higepon@users.sourceforge.jp>
+
+        * Makefile (all): top‚ÉMakefile’Ç‰ÁB
+
 2005-07-20  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Makefile : tester.h, tesr_higepon.cppíœB 
