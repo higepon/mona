@@ -30,8 +30,9 @@
 */
 MoTcp::MoTcp()
 {
+/*
     //Socketリスト初期化
-    conSocList = new HList<Socket*>();
+    conSocHash = new HList<Socket*>();
     
     
     //ここで、Echoサーバをリスンする。
@@ -45,8 +46,9 @@ MoTcp::MoTcp()
     echoSoc->myport=7;
 
     //Socketリストに追加
-    conSocList->add(echoSoc);
-    
+    conSocHash->add(echoSoc);
+*/
+
 }
 
 /*!

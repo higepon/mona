@@ -20,7 +20,7 @@
 #include "MoPacUtl.h"
 #include "MonesDefine.h"
 #include "AbstractMonic.h"
-#include "Socket.h"
+#include <monesoc/Socket.h>
 
 
 
@@ -40,17 +40,7 @@
 #define SIZEOF_TCPHDR       (tcphdr_opt_mss+4)
 
 
-/* TCP 状態遷移 */
-#define     CLOSED      0
-#define     LISTEN      0
-#define     SYN_RCVD    1
-#define     SYN_SENT    1
-#define     ESTABLISHED 2
-#define     FIN_WAIT_1  4
-#define     CLOSE_WAIT  4
-#define     LAST_ACK    4
-#define     FIN_WAIT_2  5
-//#define       TIME_WAIT       6
+
 
 /* TCP header flag bit */
 #define TCP_FLAG_FIN 0x01
@@ -94,8 +84,6 @@ class MoTcp
 
     void send_tcp(Socket *sock, char flags, struct Packet *packet, char *data, dword size);
     
-    //コネクション リスン ソケットリスト
-    List<Socket*>* conSocList;
     
     int receiveTcp(IP_HEADER*);
 

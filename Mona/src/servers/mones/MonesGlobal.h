@@ -34,6 +34,7 @@
 #include "MoUdp.h"
 #include "MoTcp.h"
 #include "MoIcmp.h"
+#include <monesoc/SocketsManager.h>
 
 //GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 //GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
@@ -46,6 +47,7 @@ GLOBAL MoIp* g_MoIp;
 GLOBAL MoUdp* g_MoUdp;
 GLOBAL MoTcp* g_MoTcp;
 GLOBAL MoIcmp* g_MoIcmp;
+GLOBAL SocketsManager* g_SocketsManager;
 
 //Mones“o˜^î•ñŠÇ——p List
 GLOBAL HList<MONES_IP_REGIST*> *MonesRList;

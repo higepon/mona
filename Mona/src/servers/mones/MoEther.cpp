@@ -16,9 +16,8 @@
  */
 
 
-
 #include "MonesGlobal.h"
-#include "MoEther.h"
+
 
 
 /*!

@@ -15,6 +15,7 @@
 
 #include <sys/types.h>
 #include <monapi.h>
+#include <monesoc/Socket.h>
 
 //ã§óLÉÅÉÇÉäégóp
 #include <monapi/cmemoryinfo.h>
@@ -39,7 +40,7 @@ class MoPacUtl
     static void packet_put_2byte(byte* buf, int offset, word val);
     static word calcCheckSum(dword* ,int );
     static word calcCheckSumDummyHead(dword *dmhead,dword *data,int dmsize,int size);
-    static int createPacMsg(MessageInfo *info, char *pac , int pacsize);
+    static int createPacMsg(MessageInfo *info, Socket *soc );
 
     inline static word swapShort(word value)
     {

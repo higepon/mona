@@ -23,7 +23,169 @@
 
 using namespace MonAPI;
 
-#define MAIN_3
+#define MAIN_10
+
+
+
+
+
+
+#ifdef MAIN_10
+
+#include <monesoc/Socket.h>
+
+//Code:Mones UDPライブラリ 実装前準備テスト
+int MonaMain(List<char*>* pekoe)
+{
+
+    //ここで、Monesにメッセージを送る
+    MessageInfo info;
+
+    dword targetID = Message::lookupMainThread("MONES.EX5");
+    if (targetID == 0xFFFFFFFF)
+    {
+        logprintf("MONES.EX5 not found\n");
+        exit(1);
+    }
+
+    //Monesへ登録
+    //ポート2600でリスン
+    Message::create(&info, MSG_MONES_REGIST, 0, 2600, 0, NULL);
+    // send
+    if (Message::send(targetID, &info)) {
+        logprintf("MSG_MONES_REGIST error\n");
+    }
+    
+    
+    /* Message loop */
+    //ここでメッセージループして、応答を待ってみる。
+    for (;;)
+    {
+        /* receive */
+        if (!Message::receive(&info))
+        {
+            
+            switch(info.header)
+            {
+            case MSG_MONES_ICMP_NOTICE:
+                //返ってきたら
+                logprintf("Reply \n");
+                
+                Socket *soc;
+                
+                //共有メモリ
+                logprintf("use commonMem Handle = %d : Size = %d \n",info.arg2 , info.arg3);
+                monapi_cmemoryinfo* cmSoc;
+
+                cmSoc = monapi_cmemoryinfo_new();
+                cmSoc->Handle = info.arg2;
+                cmSoc->Size   = info.arg3;
+                
+                monapi_cmemoryinfo_map(cmSoc);
+                
+                //共有メモリからSocketを取り出す。
+                //logprintf("Pre memcpy(soc,cmSoc->Data\n");
+                //soc = new Socket();
+                //memcpy(soc,cmSoc->Data , sizeof(Socket));
+                //logprintf("After memcpy(soc,cmSoc->Data\n");
+                
+                soc = (Socket*)cmSoc->Data;
+
+                //Socketから、パケット(バイト列)を取り出す。
+                //UDPは、最大超えると読み捨てる。TCPはフロー制御が必要 UDPSocket とTCPSocketの仕事
+                packet_cmemoryinfo pcm;
+                
+                pcm = soc->getBuffer(0);
+                
+                logprintf("pcm = soc->getBuffer(0);Call!! \n");
+                
+                logprintf("use Pcm Handle = %d : Size = %d \n",pcm.Handle , pcm.Size);
+                
+                //soc->recvBuff->removeAt(0);
+
+
+                //共有メモリからパケット バイト を取得                
+                monapi_cmemoryinfo* cmPacByte;
+                
+                cmPacByte = monapi_cmemoryinfo_new();
+                cmPacByte->Handle = pcm.Handle;
+                cmPacByte->Size   = pcm.Size;
+                monapi_cmemoryinfo_map(cmPacByte);                
+
+                char buff[1024];
+                
+                memcpy(buff,cmPacByte->Data , sizeof(buff));                
+                
+                printf("%s\n",buff);
+                
+                //Socketは、アプリで共有メモリ解放しない!!
+                //monapi_cmemoryinfo_dispose(cmSoc);
+                //monapi_cmemoryinfo_delete(cmSoc);                
+
+                monapi_cmemoryinfo_dispose(cmPacByte);
+                monapi_cmemoryinfo_delete(cmPacByte);                
+                
+                
+                return 0;
+                
+                break;
+
+            default:
+                /* igonore this message */
+                break;
+            }
+
+        }
+    }
+    
+    return 0;
+
+}
+
+#endif
+
+
+
+
+
+#ifdef MAIN_9
+
+class AlcTest
+{
+    public:
+        int aaa;
+        char bbb;
+        byte mema[4096];
+};
+
+
+
+//メモリアロケータテスト
+int MonaMain(List<char*>* pekoe)
+{
+
+    byte *mem;
+    
+    //malloc
+    mem = (byte*)malloc(4096);
+    
+    //free
+    free(mem);
+    
+    //new
+    PciInf *pciinfo;
+    //PCIライブラリクラスのインスタンス化
+    AlcTest* alc = new AlcTest();
+    
+    delete alc;
+    
+    return 0;
+}
+
+#endif
+
+
+
 
 
 #ifdef MAIN_1
@@ -103,7 +265,6 @@ int MonaMain(List<char*>* pekoe)
 
 
 #ifdef MAIN_3
-
 
 struct REPLY_WAIT{
     int ip;         /* Request IP address. */

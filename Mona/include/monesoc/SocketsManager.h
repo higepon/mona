@@ -17,12 +17,22 @@
 #include <sys/HashMap.h>
 #include <monapi.h>
 
-#include "MoPacUtl.h"
-#include "MonesDefine.h"
-#include "AbstractMonic.h"
 #include "Socket.h"
 
+/* TCP 状態遷移 */
+#define     CLOSED      0
+#define     LISTEN      0
+#define     SYN_RCVD    1
+#define     SYN_SENT    1
+#define     ESTABLISHED 2
+#define     FIN_WAIT_1  4
+#define     CLOSE_WAIT  4
+#define     LAST_ACK    4
+#define     FIN_WAIT_2  5
+//#define       TIME_WAIT       6
 
+
+#define MAX_SOC_SIZE    1024    //最大コネクション数  
 
 /*!
     SocketsManager class
@@ -36,13 +46,16 @@ class SocketsManager
     SocketsManager();
     ~SocketsManager();
     
+    Socket* findSocket(dword ip ,word  myport ,word youport);
+    void registLisSocket(dword tid ,word  myport );
+    void registConSocket(dword tid ,word myport, dword ip , word youport);
 
   private:
     //コネクション中のSocketハッシュ
-    HashMap<Socket*>* conSocList;
+    HashMap<Socket*> *conSocHash;
     
     //リスン中のSocketハッシュ
-    HashMap<Socket*>* lisSocList;
+    HashMap<Socket*> *lisSocHash;
 
 };
 

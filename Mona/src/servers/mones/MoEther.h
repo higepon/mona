@@ -18,11 +18,8 @@
 #include <sys/types.h>
 #include <monapi.h>
 
-#include "MoPacUtl.h"
-#include "MonesDefine.h"
 
 #include "AbstractMonic.h"
-#include "MoArp.h"
 
 
 /*! 

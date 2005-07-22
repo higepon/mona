@@ -1,8 +1,9 @@
 TARGET  = YAMAMI
 SOURCES = main.cpp
+
 INSTDIR = $(BINDIR)/iso/APPS
 
-ADDLINK    = -lPci -lmonalibc
+ADDLINK    = -lmonesoc -lPci -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)

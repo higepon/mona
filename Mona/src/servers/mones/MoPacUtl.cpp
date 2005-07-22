@@ -15,8 +15,6 @@
  *  \brief Mona パケットユーティリティクラス
  */
 
-
-
 #include "MoPacUtl.h"
 
 
@@ -234,48 +232,49 @@ word MoPacUtl::calcCheckSumDummyHead(dword *dmhead,dword *data,int dmsize,int si
     \brief createPacMsg
          パケット格納メッセージ作成
     \param  MessageInfo *info [OUT] 作成メッセージ
-    \param  char *pac [in] パケット
-    \param  int pacsize [in] パケットサイズ
+    \param  Socket *soc [in] 通知ソケット
     
     \return int 結果 
     
     \author Yamami
     \date   create:2005/05/22 update:
 */
-int MoPacUtl::createPacMsg(MessageInfo *info, char *pac , int pacsize)
+int MoPacUtl::createPacMsg(MessageInfo *info, Socket *soc )
 {
 
-        //メッセージサイズ超え
-        if(pacsize > (int)sizeof(info->str)){
-            //共有メモリへパケット格納
-            //まず、monapi_cmemoryinfo構造体をnew
-            monapi_cmemoryinfo* cmInfo = new monapi_cmemoryinfo();
-            
-            if (!monapi_cmemoryinfo_create(cmInfo, (dword)pacsize + 1, 0))
-            {
-                monapi_cmemoryinfo_delete(cmInfo);
-                return 1;
-            }
-            
-            //共有メモリをマップ、Data要素に確保したバイト列がセットされる。
-            monapi_cmemoryinfo_map(cmInfo);
-            
-            //共有メモリへ、パケットセット
-            memcpy(cmInfo->Data , pac, pacsize);
-            
-            info->length = pacsize;
-            info->arg1 = 1;
-            info->arg2 = cmInfo->Handle;
-            info->arg3 = cmInfo->Size;
-            
-            
-            return 0;
-        }
-        
-        memcpy(info->str , pac, pacsize);
-        info->length = pacsize;
-        info->arg1 = 0;
-        
-        return 0;
+    //共有メモリへSocket格納
+    //まず、monapi_cmemoryinfo構造体をnew
+    monapi_cmemoryinfo* cmInfo = new monapi_cmemoryinfo();
+    
+    if (!monapi_cmemoryinfo_create(cmInfo, sizeof(Socket) + 1, 0))
+    {
+        monapi_cmemoryinfo_delete(cmInfo);
+        return 1;
+    }
+    
+    //共有メモリをマップ、Data要素に確保したバイト列がセットされる。
+    //monapi_cmemoryinfo_map(cmInfo);
+    
+    //共有メモリへ、Socket格納 
+    //TODO 単純にmemcpyでいいのか？
+    memcpy(cmInfo->Data , soc, sizeof(Socket));
+    
+logprintf("sizeof(Socket) = %d \n",sizeof(Socket));
+
+packet_cmemoryinfo pcm;
+pcm = soc->recvBuff[0];
+logprintf("createPacMsg pcm.Handle=%d pcm.Owner=%d pcm.Size=%d\n",pcm.Handle , pcm.Owner ,pcm.Size);    
+
+pcm = ((Socket*)cmInfo->Data)->recvBuff[0];
+logprintf("Cast!!! pcm.Handle=%d pcm.Owner=%d pcm.Size=%d\n",pcm.Handle , pcm.Owner ,pcm.Size);        
+
+
+    info->length = sizeof(Socket);
+    info->arg1 = 1;
+    info->arg2 = cmInfo->Handle;
+    info->arg3 = cmInfo->Size;
+    
+    return 0;
+  
 
 }

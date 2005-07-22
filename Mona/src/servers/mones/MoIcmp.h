@@ -17,8 +17,7 @@
 #include <sys/HashMap.h>
 #include <monapi.h>
 
-#include "MoPacUtl.h"
-#include "MonesDefine.h"
+
 #include "AbstractMonic.h"
 #include "MoIp.h"
 

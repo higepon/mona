@@ -20,6 +20,8 @@
 #include "MoUdp.h"
 #include "MonesConfig.h"
 #include "MonesGlobal.h"
+#include <monesoc/SocketsManager.h>
+#include <monesoc/Socket.h>
 
 /*!
     \brief initialize
@@ -146,7 +148,6 @@ void MoUdp::transUdp(dword dstip, byte type, byte code, UDP_HEADER *udpHead, int
 void MoUdp::saveRecv(IP_HEADER *ipHead, int size)
 {
     MessageInfo info;
-    MONES_IP_REGIST *regist;
 
     int udp_size;
     UDP_HEADER *udp;
@@ -158,34 +159,43 @@ void MoUdp::saveRecv(IP_HEADER *ipHead, int size)
     if (MoPacUtl::swapShort(udp->dstport) == 2600){
         char buf[1530];
         memset(buf,0,sizeof(buf));
-//        logprintf("srcip = %x\n",MoPacUtl::swapLong(ipHead->srcip));
-//        logprintf("dstport = %x\n",MoPacUtl::swapShort(udp->dstport));
-//        logprintf("size = %x\n",udp_size);
+        logprintf("srcip = %x\n",MoPacUtl::swapLong(ipHead->srcip));
+        logprintf("dstport = %x\n",MoPacUtl::swapShort(udp->dstport));
+        logprintf("size = %x\n",udp_size);
         memcpy(buf, udp->data , udp_size);
         for(int i = 0; i < udp_size ; i++){
             logprintf("%c",buf[i]);
         }
+        logprintf("\n");
     }
 
-    //登録しているプロセスに通知する。
-    for (int i = 0; i < MonesRList->size() ; i++) {
-        regist = MonesRList->get(i);
+    //リスンあるいは、コネクトしているソケットがあれば
+    if(Socket* soc = g_SocketsManager->findSocket(MoPacUtl::swapLong(ipHead->srcip) 
+        , MoPacUtl::swapShort(udp->dstport) 
+        , MoPacUtl::swapShort(udp->srcport))){
         
-        //UDPはコネクションレスなので、ポート番号のみ？
-        if(regist->port == MoPacUtl::swapShort(udp->dstport)){
-            //登録されているIPおよびポートへのUDPパケットならば、メッセージ通知
-            // create message
-            Message::create(&info, MSG_MONES_ICMP_NOTICE, 0, 0, 0, NULL);
-            
-            //MoPacUtlでメッセージにパケットをセット
-            int reti = MoPacUtl::createPacMsg(&info , udp->data , udp_size);
-            
-            // send
-            if (Message::send(regist->tid, &info)) {
-                //printf("MoUdp::saveRecv error\n");
-            }
-            break;
-            
-        }
+        int reti;
+        
+        
+logprintf("if(Socket* soc = IN!!! \n");
+        //ソケットの受信バッファへ追加
+        reti = soc->addBuffer(udp->data , udp_size , 0);
+        
+logprintf("reti = soc->addBuffer After!!! \n");
+        
+        //登録しているプロセスに通知する。
+        // create message
+        //TODO このメッセージは不適切(ICMP) プロトコルごとにメッセージ変える？
+        Message::create(&info, MSG_MONES_ICMP_NOTICE, 0, 0, 0, NULL);
+        
+        //MoPacUtlでメッセージにSocketをセット
+        reti = MoPacUtl::createPacMsg(&info , soc);
+        
+        // send
+        if (Message::send(soc->tid, &info)) {
+            //printf("MoUdp::saveRecv error\n");
+        }        
+        
     }
+    
 }

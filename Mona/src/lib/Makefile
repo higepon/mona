@@ -6,6 +6,7 @@ all:
 	@cd bzip2 && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
+	@cd monesoc&& $(MAKE) $@
 
 install:
 	@cd monapi && $(MAKE) $@
@@ -15,6 +16,7 @@ install:
 	@cd bzip2 && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
+	@cd monesoc&& $(MAKE) $@
 
 clean: touchdepend
 	@cd monapi && $(MAKE) $@
@@ -24,6 +26,7 @@ clean: touchdepend
 	@cd bzip2 && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
+	@cd monesoc&& $(MAKE) $@	
 	rm -f ../../lib/*.a
 
 depend: touchdepend
@@ -34,6 +37,7 @@ depend: touchdepend
 	@cd bzip2 && $(MAKE) $@
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
+	@cd monesoc&& $(MAKE) $@
 
 distclean:
 	rm -f monapi/dependencies
@@ -43,6 +47,7 @@ distclean:
 	rm -f bzip2/dependencies
 	rm -f baygui/dependencies
 	rm -f pci/dependencies
+	rm -f pci/monesoc
 
 touchdepend:
 	touch monapi/dependencies
@@ -52,3 +57,4 @@ touchdepend:
 	touch bzip2/dependencies
 	touch baygui/dependencies
 	touch pci/dependencies
+	touch monesoc/dependencies

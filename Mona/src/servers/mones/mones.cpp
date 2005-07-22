@@ -42,11 +42,9 @@ int MonaMain(List<char*>* pekoe)
     
     int ret;
     
-    //TO DO とりあえず、30プロセスまでOK 
-    MonesRList = new HList<MONES_IP_REGIST*>();
-    MONES_IP_REGIST *regist;
+    //MonesRList = new HList<MONES_IP_REGIST*>();
+    //MONES_IP_REGIST *regist;
     
-    //syscall_get_io  
     //このプロセス動作中は、IOを特権レベル3まで許可する
     syscall_get_io();
     
@@ -83,11 +81,11 @@ int MonaMain(List<char*>* pekoe)
     g_MoTcp = new MoTcp();
     g_MoTcp->initTcp(insAbstractNic);
 
-    // initilize destination list
-    //List<dword>* destList = new HList<dword>();
-    MessageInfo info;
-
+    //SocketsManagerクラスのインスタンス化
+    g_SocketsManager = new SocketsManager();
+    
     // Server start ok
+    MessageInfo info;
     dword targetID = Message::lookupMainThread("MONITOR.BIN");
     if (targetID == 0xFFFFFFFF)
     {
@@ -135,7 +133,7 @@ int MonaMain(List<char*>* pekoe)
 
             //Monesからのパケット処理要求
             //TODO 本来は、プロトコル層の仕事
-            case MSG_MONES_FRAME_REQ: {
+            case MSG_MONES_FRAME_REQ:
                 
                 //logprintf("MSG_MONES_FRAME_REQ\n");
                 
@@ -169,7 +167,6 @@ int MonaMain(List<char*>* pekoe)
                 delete bgetWork;
 
                 break;
-            }
 
 
             //アプリからのMonesへ登録
@@ -177,17 +174,10 @@ int MonaMain(List<char*>* pekoe)
                 
                 //printf("MSG_MONES_REGIST\n");
                 
-                //通信管理リストに登録
-                //TO DO TCPをサポートすれば、本来は、IPだけでは無く、ポート番号も
-                regist = new MONES_IP_REGIST();
-                regist->tid = info.from;
-                regist->ip = info.arg1;
-                regist->port = (word)info.arg2;
-                
-                MonesRList->add(regist);
+                //リスンリストに登録
+                g_SocketsManager->registLisSocket(info.from , (word)info.arg2);
                 
                 break;
-
 
             //アプリからのパケット送信要求
             case MSG_MONES_IP_SEND:

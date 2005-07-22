@@ -1,0 +1,10 @@
+*.o
+*.bin
+*.list
+*.map
+*.local
+*.DLL
+*.DL2
+*.DL5
+TAGS
+dependencies
