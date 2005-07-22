@@ -133,7 +133,8 @@ int MonaMain(List<char*>* pekoe)
 
             //Monesからのパケット処理要求
             //TODO 本来は、プロトコル層の仕事
-            case MSG_MONES_FRAME_REQ:
+            // ここのスコープを明示は重要 crosses initialization
+            case MSG_MONES_FRAME_REQ: {
                 
                 //logprintf("MSG_MONES_FRAME_REQ\n");
                 
@@ -167,7 +168,7 @@ int MonaMain(List<char*>* pekoe)
                 delete bgetWork;
 
                 break;
-
+            }
 
             //アプリからのMonesへ登録
             case MSG_MONES_REGIST:
