@@ -1,3 +1,15 @@
+2005-07-22  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/lib/monesoc : Code:Mones Socketライブラリ追加
+        
+        * include/monesoc : Code:Mones Socketライブラリ追加
+        
+        * src/servers/mones : Socketライブラリを使用するように変更
+        
+        * samples/non-gui/yamami : Code:Mones Socketライブラリ検証コード追加
+        
+        * 上記全て、Makefile有効化 (MONITOR.CFG は無効のまま(起動しない)
+
 2005-07-17  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones : SocketsManagerクラス追加(定義のみ)
