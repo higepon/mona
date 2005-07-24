@@ -1,3 +1,11 @@
+2005-07-24  higepon  <higepon@users.sourceforge.jp>
+
+        * tool/mkimg/Makefile (iso): mona.isoを出力する。
+
+        * core/file_server/FileServer.h (Initialize): ファイルサーバを変更。CDブートに失敗したらFDブートを試みる。
+
+        * tool/mkimg/Makefile :毎回make cleanするのが面倒なので all:ターゲットでmona.imgを消すことにした。
+
 2005-07-21  higepon  <higepon@users.sourceforge.jp>
 
         * Makefile (all): topにMakefile追加。

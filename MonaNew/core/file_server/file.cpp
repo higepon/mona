@@ -35,7 +35,7 @@ int ChangeDrive(int drive)
     return MONA_FAILURE;
 }
 
-const char* GetCurrentDirectory()
+CString GetCurrentDirectory()
 {
     return fs->GetCurrentDirectory();
 }
@@ -87,27 +87,23 @@ CString mergeDirectory(const CString& dir1, const CString& dir2)
     return ret;
 }
 
-void Initialize(bool bootFromCD)
+void Initialize()
 {
     /* current drive */
     currentDrive = DRIVE_FD0;
-
     isofs = new ISO9660FileSystemManager();
+
     fatfs = new FatFileSystemManager();
     isofs->SetCurrentDirectory("/");
     fatfs->SetCurrentDirectory("/");
 
-    if (bootFromCD)
+    /* まずはCDブートを試みる */
+    if (ChangeDrive(DRIVE_CD0) == MONA_FAILURE)
     {
-        /* boot from CD */
-        ChangeDrive(DRIVE_CD0);
-        isofs->Initialize();
-    }
-    else
-    {
-        /* boot from FD */
         ChangeDrive(DRIVE_FD0);
         fatfs->Initialize();
+    } else {
+        isofs->Initialize();
     }
 }
 

@@ -547,17 +547,21 @@ void Shell::setCurrentDirectory()
 {
     char buff[128];
     monapi_call_get_current_directory(buff);
-
+    logprintf("buf=%s\n", buff);
     this->currentDirectory[this->currentDrive] = buff;
 }
 
 bool Shell::changeDirecotory(const MonAPI::CString& path)
 {
+    logprintf("1\n");
     if (monapi_call_change_directory(path) == MONA_FAILURE)
     {
+    logprintf("2\n");
         return false;
     }
+    logprintf("3\n");
     setCurrentDirectory();
+    logprintf("4\n");
     makeApplicationList();
     return true;
 }

@@ -25,13 +25,11 @@ void MessageLoop()
                 monapi_cmemoryinfo* mi = ReadFile(msg.str, msg.arg1);
                 if (mi != NULL)
                 {
-		    Log(msg.str);
                     Message::reply(&msg, mi->Handle, mi->Size);
                     monapi_cmemoryinfo_delete(mi);
                 }
                 else
                 {
-		    Log(msg.str);
                     Message::reply(&msg);
                 }
                 break;
@@ -167,21 +165,17 @@ void MessageLoop()
             }
             case MSG_FILE_DECOMPRESS_ST5:
             {
-		Log("");
                 monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
                 mi1->Handle = msg.arg1;
                 mi1->Size   = msg.arg2;
                 monapi_cmemoryinfo* mi2 = NULL;
                 if (monapi_cmemoryinfo_map(mi1))
                 {
-		    Log("");
                     mi2 = ST5Decompress(mi1);
                     monapi_cmemoryinfo_dispose(mi1);
                 }
                 if (mi2 != NULL)
                 {
-		    Log("");
-
                     Message::reply(&msg, mi2->Handle, mi2->Size);
                     monapi_cmemoryinfo_delete(mi2);
                 }
@@ -197,13 +191,11 @@ void MessageLoop()
                 monapi_cmemoryinfo* mi = ST5DecompressFile(msg.str, msg.arg1 != 0);
                 if (mi != NULL)
                 {
-		    Log(msg.str);
                     Message::reply(&msg, mi->Handle, mi->Size);
                     delete mi;
                 }
                 else
                 {
-		    Log("");
                     Message::reply(&msg);
                 }
                 break;
@@ -220,8 +212,7 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
 
-    /* true/false boot from CD/FD */
-    Initialize(false);
+    Initialize();
 
     MessageLoop();
 
