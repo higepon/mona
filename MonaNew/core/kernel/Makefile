@@ -30,7 +30,6 @@ SOURCES      = cstart.cpp            \
                IDTUtil.cpp           \
                PageManager.cpp       \
                MemoryManager.cpp     \
-               sysresource.cpp       \
                Segments.cpp          \
                Mutex.cpp             \
                VesaConsole.cpp       \

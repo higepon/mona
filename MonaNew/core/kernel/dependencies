@@ -89,12 +89,6 @@ MemoryManager.o: MemoryManager.cpp MemoryManager.h sys/types.h global.h \
   operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h sysresource.h \
   vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
   KTimer.h Messenger.h
-sysresource.o: sysresource.cpp sysresource.h BitMap.h sys/types.h \
-  global.h kernel.h VirtualConsole.h string.h Semaphore.h GDTUtil.h \
-  IDTUtil.h Process.h sys/List.h sys/BinaryTree.h PageManager.h \
-  Segments.h operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h pic.h io.h
 Segments.o: Segments.cpp sys/HList.h sys/types.h sys/List.h global.h \
   kernel.h VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h \
   Process.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h \

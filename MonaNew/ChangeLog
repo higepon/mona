@@ -1,3 +1,7 @@
+2005-07-26  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/sysresource.cpp: 不要なので削除。
+
 2005-07-24  higepon  <higepon@users.sourceforge.jp>
 
         * tool/mkimg/Makefile (iso): mona.isoを出力する。
