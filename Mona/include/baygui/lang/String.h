@@ -81,7 +81,7 @@ namespace baygui {
 		~String();
 		
 		/** ワイド文字数を返す (wstrlen相当) */
-		int length();
+		int length() const;
 		
 		/** 内部文字列 (byte配列) を返す */
 		char* getBytes();
@@ -90,7 +90,7 @@ namespace baygui {
 		unsigned int* toCharArray();
 		
 		/** i番目のワイド文字を得る */
-		unsigned int charAt(int i);
+		unsigned int charAt(int i) const;
 		
 		/** strcpy(temp, (const char*)str); のように使うことができる */
 		operator const char*() const

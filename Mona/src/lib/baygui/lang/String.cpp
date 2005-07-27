@@ -151,7 +151,7 @@ namespace baygui {
 		delete [] this->charArray;
 	}
 	
-	int String::length()
+	int String::length() const
 	{
 		return this->len;
 	}
@@ -166,7 +166,7 @@ namespace baygui {
 		return this->charArray;
 	}
 	
-	unsigned int String::charAt(int i)
+	unsigned int String::charAt(int i) const
 	{
 		return (i < this->len) ? this->charArray[i] : 0;
 	}

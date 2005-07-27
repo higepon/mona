@@ -110,7 +110,15 @@ namespace baygui {
 		 @param x 始点X
 		 @param y 始点Y
 		 */
-		void drawString(String str, int x, int y);
+		void drawString(String* str, int x, int y);
+		
+		/**
+		 文字列描画
+		 @param str 文字列（複数行対応）
+		 @param x 始点X
+		 @param y 始点Y
+		 */
+		void drawString(const String& str, int x, int y);
 		
 		/**
 		 円塗りつぶし描画

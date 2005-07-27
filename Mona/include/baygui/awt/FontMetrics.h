@@ -61,13 +61,13 @@ namespace baygui {
 		 文字列の幅を得る
 		 @param str 文字列（複数行対応）
 		 */
-		int getWidth(String str);
+		int getWidth(const String& str);
 		
 		/**
 		 文字列の高さを得る
 		 @param str 文字列（複数行対応）
 		 */
-		int getHeight(String str);
+		int getHeight(const String& str);
 		
 		/** フォントスタイルを得る */
 		inline int getFontStyle() { return this->fontStyle; }
