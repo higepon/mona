@@ -28,24 +28,22 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../../tools/code_table/cp932.h"
 #endif
 
+#include "Object.h"
+
 namespace baygui {
 	/** 文字列クラス */
 	class String : public Object {
-#if SUPPORT_SJIS
 	public:
 		static const int UTF_8 = 0;
 		static const int CP932 = 1;
-#endif
 		
 	private:
-#if SUPPORT_SJIS
 		/** エンコーディング */
 		int encoding;
-#endif
 		/** 内部文字列 */
 		char* bytes;
 		/** ワイド文字列 (UCS-4) */
-		wchar* charArray;
+		unsigned int* charArray;
 		/** ワイド文字列の長さ */
 		int len;
 	
@@ -66,14 +64,18 @@ namespace baygui {
 		*/
 		String(const char *str);
 		
-#if SUPPORT_SJIS
+		/**
+		 コピーコンストラクタ
+		 @param str 文字列
+		*/
+		String(const String& str);
+		
 		/**
 		 コピーコンストラクタ
 		 @param str 文字列
 		 @param encoding エンコーディング
 		*/
 		String(const char *str, int encoding);
-#endif
 		
 		/** デストラクタ */
 		~String();
@@ -85,18 +87,28 @@ namespace baygui {
 		char* getBytes();
 		
 		/** ワイド文字列を返す */
-		wchar* toCharArray();
+		unsigned int* toCharArray();
 		
 		/** i番目のワイド文字を得る */
-		wchar charAt(int i);
+		unsigned int charAt(int i);
 		
-		/**
-		 "="演算子の多重定義。<br>
-		 String str = "hoge"; のように使うことができる。
-		*/
-		const String& operator=(const char* str)
+		/** strcpy(temp, (const char*)str); のように使うことができる */
+		operator const char*() const
+		{
+			return this->bytes;
+		}
+		
+		/** String str = "hoge"; のように使うことができる */
+		const String& operator =(const char* str)
 		{
 			set(str);
+			return *this;
+		}
+		
+		/** String str1 = str2; のように使うことができる */
+		const String& operator =(const String& str)
+		{
+			set((const char*)str);
 			return *this;
 		}
 		
@@ -110,6 +122,12 @@ namespace baygui {
 		 指定された文字列と等しいかどうかチェックする
 		 @param str 文字列
 		 */
+		bool equals(String* str);
+		
+		/**
+		 指定された文字列と等しいかどうかチェックする
+		 @param str 文字列
+		 */
 		bool equals(const char* str);
 		
 		/**
@@ -117,7 +135,21 @@ namespace baygui {
 		 @param str 文字列
 		 @return 始まっていればtrue、そうでなければfalse
 		*/
+		bool startsWith(String* str);
+		
+		/**
+		 指定された文字列で始まるかどうかチェックする
+		 @param str 文字列
+		 @return 始まっていればtrue、そうでなければfalse
+		*/
 		bool startsWith(const char* str);
+		
+		/**
+		 指定された文字列で終っているかどうかチェックする
+		 @param str 文字列
+		 @return 終っていればtrue、そうでなければfalse
+		*/
+		bool String::endsWith(String* str);
 		
 		/**
 		 指定された文字列で終っているかどうかチェックする
