@@ -62,7 +62,7 @@ namespace baygui {
 		 コピーコンストラクタ
 		 @param str 文字列
 		*/
-		String(const char *str);
+		String(const char* str);
 		
 		/**
 		 コピーコンストラクタ
@@ -75,7 +75,7 @@ namespace baygui {
 		 @param str 文字列
 		 @param encoding エンコーディング
 		*/
-		String(const char *str, int encoding);
+		String(const char* str, int encoding);
 		
 		/** デストラクタ */
 		~String();
@@ -98,14 +98,14 @@ namespace baygui {
 			return this->bytes;
 		}
 		
-		/** String str = "hoge"; のように使うことができる */
+		/** (const char*) -> String 変換 */
 		const String& operator =(const char* str)
 		{
 			set(str);
 			return *this;
 		}
 		
-		/** String str1 = str2; のように使うことができる */
+		/** String -> String 変換？ */
 		const String& operator =(const String& str)
 		{
 			set((const char*)str);
