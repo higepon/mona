@@ -89,16 +89,14 @@ namespace baygui {
 
 	void Component::update()
 	{
-		Component* c = getMainWindow();
-		c->getGraphics()->drawImage(this->_buffer, this->x, this->y);
-		c->update();
+		update(getX(), getY(), getWidth(), getHeight());
 	}
 
 	void Component::update(int x, int y, int w, int h)
 	{
-		Component* c = getMainWindow();
-		c->getGraphics()->drawImage(this->_buffer, this->x, this->y);
-		c->update(x, y, w, h);
+		Frame* c = (Frame *)getMainWindow();
+		c->getGraphics()->drawImage(this->_buffer, getX(), getY());
+		c->update(c->getX() + c->getInsets()->left + x, c->getY() + c->getInsets()->top + y, w, h);
 	}
 
 	Component* Component::getMainWindow()

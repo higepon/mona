@@ -31,7 +31,7 @@ namespace baygui {
 	class Container : public Component {
 	private:
 		/** 部品一覧 */
-		Vector controlList;
+		Vector componentList;
 
 	public:
 		/** コンストラクタ */
@@ -55,16 +55,16 @@ namespace baygui {
 		
 		/**
 		 指定した部品を追加する
-		 @param control 指定する部品
+		 @param component 指定する部品
 		 */
-		virtual void add(Component* control);
+		virtual void add(Component* component);
 		
 		/**
 		 指定した部品を削除する
-		 @param control 指定する部品
+		 @param component 指定する部品
 		 @return 削除された部品（なければNULL）
 		 */
-		virtual void remove(Component* control);
+		virtual void remove(Component* component);
 		
 		/** イベント処理 */
 		virtual void dispatchEvent(Event* event);
