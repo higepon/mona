@@ -229,41 +229,7 @@ void DrawWindow(guiserver_window* w, int wx, int wy, int ww, int wh, bool draw_s
 void DrawWindow(guiserver_window* w, bool draw_screen /*= true*/)
 {
 	if (w == NULL || w->FormBufferHandle == 0) return;
-	
-	if (!w->__internal2) CreationEffect(w);
-	
-	DrawImage(screen_buffer, wallpaper, w->X, w->Y, w->X, w->Y, w->Width, w->Height);
-	_R r(w->X, w->Y, w->Width, w->Height);
-	int size_w = windows.size();
-	for (int i = 0; i < size_w; i++)
-	{
-		guiserver_window* w = windows[i];
-		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) == 0) continue;
-		
-		DrawWindowInternal(w, r);
-	}
-	for (int i = 0; i < size_w; i++)
-	{
-		guiserver_window* w = windows[i];
-		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) != 0 || (w->Flags & WINDOWFLAGS_BOTTOMMOST) != 0) continue;
-		
-		DrawWindowInternal(w, r);
-	}
-	for (int i = 0; i < size_w; i++)
-	{
-		guiserver_window* w = windows[i];
-		if (w->Parent != 0 || (w->Flags & WINDOWFLAGS_TOPMOST) == 0) continue;
-		
-		DrawWindowInternal(w, r);
-	}
-	int size_ov = overlaps.size();
-	for (int i = 0; i < size_ov; i++)
-	{
-		overlaps[i]->Draw(w->X, w->Y, w->Width, w->Height);
-	}
-	if (!draw_screen) return;
-	
-	DrawScreen(w->X, w->Y, w->Width, w->Height);
+	DrawWindow(w, w->X, w->Y, w->Width, w->Height, draw_screen);
 }
 
 void MoveWindow(guiserver_window* w, int x, int y)
