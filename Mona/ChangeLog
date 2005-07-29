@@ -5,6 +5,8 @@
         * src/lib/baygui/Window.cpp: 部分描画に対応
         
         * src/lib/baygui/Component.cpp: 部分描画に対応
+        
+        * src/lib/baygui/Scrollbar.cpp: マウスドラッグに対応
 
 2005-07-22  Yamami  <yamamimail@users.sourceforge.jp>
 
