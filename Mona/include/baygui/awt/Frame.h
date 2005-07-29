@@ -50,6 +50,12 @@ namespace baygui {
 		/** デフォルトコンストラクタ */
 		Frame();
 		
+		/**
+		 * コピーコンストラクタ
+		 * @param title タイトル
+		*/
+		Frame(const String& title);
+		
 		/** デストラクタ */
 		virtual ~Frame();
 		

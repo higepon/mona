@@ -231,20 +231,20 @@ namespace baygui {
 
 	void Window::update()
 	{
+		update(this->getX(), this->getY(), this->getWidth(), this->getHeight());
+	}
+
+	void Window::update(int x, int y, int w, int h)
+	{
 		if ((this->_window->Flags & WINDOWFLAGS_NOBORDER) != WINDOWFLAGS_NOBORDER) {
 			__g->drawImage(this->_buffer, getInsets()->left, getInsets()->top);
 		}
 		
-		MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DRAWWINDOW, getHandle());
+		MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DRAWWINDOW, getHandle(), MAKE_DWORD(x, y), MAKE_DWORD(w, h));
 		
 	#ifdef SDL
 		{
 			SDL_Surface* bitmap;
-			
-			int x = getX();
-			int y = getY();
-			int w = getWidth();
-			int h = getHeight();
 			
 			/* bitmapを作成 */
 			// flags, w, h, bpp, pit, rmask, gmask, bmask, amask

@@ -156,12 +156,12 @@ namespace baygui {
 		return this->len;
 	}
 	
-	char* String::getBytes()
+	char* String::getBytes() const
 	{
 		return this->bytes;
 	}
 	
-	unsigned int* String::toCharArray()
+	unsigned int* String::toCharArray() const
 	{
 		return this->charArray;
 	}
@@ -186,12 +186,12 @@ namespace baygui {
 		return (str && *str && strcmp(this->bytes, str) == 0) ? true : false;
 	}
 	
-	bool String::startsWith(String* str)
+	bool String::startsWith(String* str) const
 	{
 		return startsWith(str->getBytes());
 	}
 	
-	bool String::startsWith(const char* str)
+	bool String::startsWith(const char* str) const
 	{
 		if (str == 0 || this->len == 0 || (int)strlen(str) > (int)strlen(this->bytes)) return false;
 		for (int i = 0; i < (int)strlen(str); i++) {
@@ -200,12 +200,12 @@ namespace baygui {
 		return true;
 	}
 	
-	bool String::endsWith(String* str)
+	bool String::endsWith(String* str) const
 	{
 		return endsWith(str->getBytes());
 	}
 	
-	bool String::endsWith(const char* str)
+	bool String::endsWith(const char* str) const
 	{
 		if (str == 0 || this->len == 0 || (int)strlen(str) > (int)strlen(this->bytes)) return false;
 		for (int i = 0; i < (int)strlen(str); i++) {

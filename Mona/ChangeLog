@@ -1,3 +1,11 @@
+2005-07-29  bayside
+
+        * src/servers/gui/Window.cpp: •”•ª•`‰æ‚É‘Î‰ž
+        
+        * src/lib/baygui/Window.cpp: •”•ª•`‰æ‚É‘Î‰ž
+        
+        * src/lib/baygui/Component.cpp: •”•ª•`‰æ‚É‘Î‰ž
+
 2005-07-22  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/lib/monesoc : Code:Mones Socketƒ‰ƒCƒuƒ‰ƒŠ’Ç‰Á

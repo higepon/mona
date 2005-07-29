@@ -84,10 +84,10 @@ namespace baygui {
 		int length() const;
 		
 		/** 内部文字列 (byte配列) を返す */
-		char* getBytes();
+		char* getBytes() const;
 		
 		/** ワイド文字列を返す */
-		unsigned int* toCharArray();
+		unsigned int* toCharArray() const;
 		
 		/** i番目のワイド文字を得る */
 		unsigned int charAt(int i) const;
@@ -135,28 +135,28 @@ namespace baygui {
 		 @param str 文字列
 		 @return 始まっていればtrue、そうでなければfalse
 		*/
-		bool startsWith(String* str);
+		bool startsWith(String* str) const;
 		
 		/**
 		 指定された文字列で始まるかどうかチェックする
 		 @param str 文字列
 		 @return 始まっていればtrue、そうでなければfalse
 		*/
-		bool startsWith(const char* str);
+		bool startsWith(const char* str) const;
 		
 		/**
 		 指定された文字列で終っているかどうかチェックする
 		 @param str 文字列
 		 @return 終っていればtrue、そうでなければfalse
 		*/
-		bool String::endsWith(String* str);
+		bool String::endsWith(String* str) const;
 		
 		/**
 		 指定された文字列で終っているかどうかチェックする
 		 @param str 文字列
 		 @return 終っていればtrue、そうでなければfalse
 		*/
-		bool endsWith(const char* str);
+		bool endsWith(const char* str) const;
 	};
 }
 
