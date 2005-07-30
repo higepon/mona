@@ -44,6 +44,8 @@ namespace baygui {
 		int maximum;
 		/** 一度に増減する量 */
 		int blocksize;
+		/** 一つ前の値 */
+		int preValue;
 		/** 現在の値 */
 		int value;
 		/** ブロックイベント */
