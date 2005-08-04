@@ -4,7 +4,7 @@
 #ifndef __GUISERVER_IMAGE_H__
 #define __GUISERVER_IMAGE_H__
 
-#include <gui/messages.h>
+#include <servers/gui.h>
 #include <sys/types.h>
 #include <monapi/cmemoryinfo.h>
 #include <monapi/CString.h>

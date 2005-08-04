@@ -3,7 +3,7 @@
 
 #ifdef MONA
 #include <monapi.h>
-#include <monapi/messages.h>
+#include <servers/gui.h>
 
 extern dword __gui_server;
 #endif

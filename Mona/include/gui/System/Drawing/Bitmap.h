@@ -4,7 +4,7 @@
 #ifndef __SYSTEM_DRAWING_BITMAP_H__
 #define __SYSTEM_DRAWING_BITMAP_H__
 
-#include <gui/messages.h>
+#include <servers/gui.h>
 #include <gui/System/Object.h>
 #include <monapi/Array.h>
 #include <gui/System/Drawing/Color.h>

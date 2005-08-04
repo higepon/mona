@@ -42,7 +42,7 @@ typedef unsigned int wchar;
 #include <monapi.h>
 #include <monapi/messages.h>
 #include <monalibc.h>
-#include <gui/messages.h>
+#include <servers/gui.h>
 #elif defined(SDL)
 #include <stdlib.h>
 #include <stdio.h>

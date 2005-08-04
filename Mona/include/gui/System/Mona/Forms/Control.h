@@ -4,7 +4,7 @@
 #ifndef __SYSTEM_MONA_FORMS_CONTROL_H__
 #define __SYSTEM_MONA_FORMS_CONTROL_H__
 
-#include <gui/messages.h>
+#include <servers/gui.h>
 #include <gui/System/Mona/Forms/Events.h>
 #include <gui/System/Drawing/Bitmap.h>
 #include <gui/System/Drawing/Color.h>

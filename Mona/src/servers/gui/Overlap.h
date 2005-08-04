@@ -5,7 +5,7 @@
 #define __GUISERVER_OVERLAP_H__
 
 #include <sys/types.h>
-#include <gui/messages.h>
+#include <servers/gui.h>
 
 class Overlap
 {

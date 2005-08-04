@@ -1,6 +1,6 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
-#include <gui/messages.h>
+#include <servers/gui.h>
 
 #include "Shell.h"
 

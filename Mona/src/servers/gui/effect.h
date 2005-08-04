@@ -4,7 +4,7 @@
 #ifndef __GUISERVER_EFFECT_H__
 #define __GUISERVER_EFFECT_H__
 
-#include <gui/messages.h>
+#include <servers/gui.h>
 
 extern void CreationEffect(guiserver_window* w);
 extern void DestructionEffect(guiserver_window* w);

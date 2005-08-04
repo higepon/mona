@@ -4,7 +4,7 @@
 #ifndef __GUISERVER_WINDOW_H__
 #define __GUISERVER_WINDOW_H__
 
-#include <gui/messages.h>
+#include <servers/gui.h>
 #include <sys/types.h>
 
 extern guiserver_window* CreateWindow();
