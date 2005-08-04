@@ -26,6 +26,7 @@ SOURCES = \
 	awt/Window.cpp \
 	lang/Object.cpp \
 	lang/String.cpp \
+	lang/Thread.cpp \
 	util/Hashtable.cpp \
 	util/Vector.cpp
 

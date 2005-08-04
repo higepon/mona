@@ -1,6 +1,12 @@
 2005-08-04  bayside
 
         * include/serves/gui.h: include/gui/message.h ‚©‚çˆÚ“®
+        
+        * include/baygui/lang/Runnable.h: V‹K’Ç‰Á
+        
+        * include/baygui/lang/Thread.h: V‹K’Ç‰Á
+        
+        * src/lib/baygui/lang/Thread.cpp: V‹K’Ç‰Á
 
 2005-07-29  bayside
 
