@@ -20,7 +20,6 @@
 #include "PageManager.h"
 #include "MemoryManager.h"
 #include "Segments.h"
-#include "sysresource.h"
 #include "vbe.h"
 #include "IDManager.h"
 #include "Scheduler.h"
@@ -34,10 +33,6 @@ GLOBAL DokodemoView g_dokodemo_view;
 /* semaphore */
 GLOBAL semaphore g_semaphore_console  GLOBAL_VAL(1);
 GLOBAL semaphore g_semaphore_shared   GLOBAL_VAL(1);
-
-/* expr:sysresource */
-GLOBAL BitMap *g_irqMap;
-GLOBAL IRQHandler g_irqHandlers[16];
 
 /* GLOBAL DESCRIPTOR TABLE */
 GLOBAL SegDesc* g_gdt;
