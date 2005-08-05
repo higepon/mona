@@ -373,14 +373,21 @@ namespace baygui {
 					if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
 						if ((modcode & KEY_MODIFIER_SHIFT) == KEY_MODIFIER_SHIFT) {
 							this->modifiers = KeyEvent::VKEY_LSHIFT;
+							charcode = 0;
 						} else if ((modcode & KEY_MODIFIER_ALT) == KEY_MODIFIER_ALT) {
 							this->modifiers = KeyEvent::VKEY_ALT;
+							charcode = 0;
 						} else if ((modcode & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) {
 							this->modifiers = KeyEvent::VKEY_CTRL;
+							charcode = 0;
 						}
 					} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
 						this->modifiers = 0;
 					}
+					
+					char temp[128];
+					sprintf(temp, "[%d,%d,%d]", keycode, modcode, charcode);
+					syscall_print(temp);
 					
 					/* 一般キーの判定 */
 					if (keycode == 33 || keycode == 105) {

@@ -66,7 +66,7 @@ namespace baygui {
 		 タイトル設定
 		 @param title タイトル
 		 */
-		virtual void setTitle(char *title);
+		virtual void setTitle(const String& title);
 		
 		/** 再描画 */
 		virtual void repaint();

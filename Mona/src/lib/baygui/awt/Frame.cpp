@@ -88,7 +88,7 @@ namespace baygui {
 	{
 	}
 
-	void Frame::setTitle(char *title)
+	void Frame::setTitle(const String& title)
 	{
 		this->title = title;
 	}

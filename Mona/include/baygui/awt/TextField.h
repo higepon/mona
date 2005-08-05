@@ -58,10 +58,10 @@ namespace baygui {
 		 テキストを設定する
 		 @param text
 		 */
-		virtual void setText(char* text);
+		virtual void setText(const String& text);
 		
 		/** テキストを得る */
-		inline  char *getText() { return this->text; }
+		inline char* getText() { return this->text; }
 		
 		/** 描画ハンドラ */
 		virtual void paint(Graphics* g);

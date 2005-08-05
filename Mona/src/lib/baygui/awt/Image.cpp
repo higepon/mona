@@ -59,14 +59,14 @@ namespace baygui {
 		this->height = height;
 	}
 
-	Image::Image(char *path)
+	Image::Image(const String& path)
 	{
 		this->width = this->height = 0;
 		this->bitmap = NULL;
 		
 		// GUIサーバー上でビットマップをデコードする
 		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path)) {
+		if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path.getBytes())) {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
 		}

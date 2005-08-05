@@ -55,9 +55,9 @@ namespace baygui {
 		}
 	}
 
-	void ListBox::add(char* item)
+	void ListBox::add(const String& item)
 	{
-		this->dataList.add(new String(item));
+		this->dataList.add(new String(item.getBytes()));
 	}
 
 	void ListBox::remove(int index)

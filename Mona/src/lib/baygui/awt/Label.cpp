@@ -24,13 +24,19 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "baygui.h"
 
 namespace baygui {
-	Label::Label(char* text)
+	Label::Label()
+	{
+		this->align = Label::LEFT;
+		this->text = "Label";
+	}
+	
+	Label::Label(const String& text)
 	{
 		this->align = Label::LEFT;
 		this->text = text;
 	}
 
-	Label::Label(char* text, int align)
+	Label::Label(const String& text, int align)
 	{
 		this->align = align;
 		this->text = text;
@@ -40,7 +46,7 @@ namespace baygui {
 	{
 	}
 
-	void Label::setText(char* text)
+	void Label::setText(const String& text)
 	{
 		this->text = text;
 		repaint();

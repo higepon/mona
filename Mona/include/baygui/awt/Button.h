@@ -43,7 +43,7 @@ namespace baygui {
 		 コンストラクタ
 		 @param label ラベル
 		 */
-		Button(char* label);
+		Button(const String& label);
 		
 		/** デストラクタ */
 		virtual ~Button();
@@ -52,7 +52,7 @@ namespace baygui {
 		 ラベルを設定する
 		 @param label ラベル
 		 */
-		virtual void setLabel(char* label);
+		virtual void setLabel(const String& label);
 		
 		/** ボタンが押されたかどうかを得る */
 		inline bool getPushed() { return this->pushed; }
