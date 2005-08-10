@@ -3,6 +3,7 @@ all:
 	cd Graphics/libbaygui && touch dependencies && make && make install
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
+	cd ../MonaNew/tool/mkimg && make
 
 clean:
 	cd X/gui && make distclean

@@ -385,9 +385,9 @@ namespace baygui {
 						this->modifiers = 0;
 					}
 					
-					char temp[128];
-					sprintf(temp, "[%d,%d,%d]", keycode, modcode, charcode);
-					syscall_print(temp);
+					//char temp[128];
+					//sprintf(temp, "[%d,%d,%d]", keycode, modcode, charcode);
+					//syscall_print(temp);
 					
 					/* 一般キーの判定 */
 					if (keycode == 33 || keycode == 105) {
