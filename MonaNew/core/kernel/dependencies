@@ -1,142 +1,147 @@
 cstart.o: cstart.cpp
-kernel.o: kernel.cpp sys/types.h global.h kernel.h VirtualConsole.h \
-  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h \
-  sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
-  KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h checker.h GraphicalConsole.h ihandlers.h pic.h \
-  io.h syscalls.h VesaConsole.h LogConsole.h Loader.h monaboot.h RTC.h
-ihandlers.o: ihandlers.cpp global.h sys/types.h kernel.h VirtualConsole.h \
-  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h \
-  sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
-  KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h io.h ihandlers.h
-operator.o: operator.cpp sys/types.h MemoryManager.h operator.h string.h \
-  io.h global.h kernel.h VirtualConsole.h Semaphore.h GDTUtil.h IDTUtil.h \
-  Process.h sys/List.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
-  Mutex.h KObject.h Thread.h Node.h sys/MEvent.h sysresource.h vbe.h \
-  IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h syscalls.h
-purevirtual.o: purevirtual.cpp kernel.h sys/types.h VirtualConsole.h \
-  string.h global.h Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h \
-  sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
-  KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h
-checker.o: checker.cpp sys/types.h checker.h kernel.h VirtualConsole.h \
+kernel.o: kernel.cpp ./sys/types.h global.h kernel.h VirtualConsole.h \
+  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h ./sys/List.h \
+  ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
+  KObject.h Thread.h Node.h sys/types.h sys/List.h sys/MEvent.h \
+  MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h checker.h \
+  GraphicalConsole.h ihandlers.h pic.h io.h syscalls.h VesaConsole.h \
+  LogConsole.h Loader.h monaboot.h RTC.h ./global.h
+ihandlers.o: ihandlers.cpp global.h ./sys/types.h kernel.h \
+  VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h \
+  ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h io.h \
+  ihandlers.h
+operator.o: operator.cpp ./sys/types.h MemoryManager.h operator.h \
+  string.h io.h global.h kernel.h VirtualConsole.h Semaphore.h GDTUtil.h \
+  IDTUtil.h Process.h ./sys/List.h ./sys/BinaryTree.h PageManager.h \
+  BitMap.h Segments.h Mutex.h KObject.h Thread.h Node.h sys/types.h \
+  sys/List.h sys/MEvent.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h syscalls.h
+purevirtual.o: purevirtual.cpp kernel.h ./sys/types.h VirtualConsole.h \
+  string.h global.h Semaphore.h GDTUtil.h IDTUtil.h Process.h \
+  ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+checker.o: checker.cpp ./sys/types.h checker.h kernel.h VirtualConsole.h \
   string.h GDTUtil.h IDTUtil.h
-string.o: string.cpp string.h sys/types.h
-Semaphore.o: Semaphore.cpp Semaphore.h kernel.h sys/types.h \
+string.o: string.cpp string.h ./sys/types.h
+Semaphore.o: Semaphore.cpp Semaphore.h kernel.h ./sys/types.h \
   VirtualConsole.h string.h io.h global.h GDTUtil.h IDTUtil.h Process.h \
-  sys/List.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
-  operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h
-GraphicalConsole.o: GraphicalConsole.cpp GraphicalConsole.h sys/types.h \
+  ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+GraphicalConsole.o: GraphicalConsole.cpp GraphicalConsole.h ./sys/types.h \
   VirtualConsole.h string.h global.h kernel.h Semaphore.h GDTUtil.h \
-  IDTUtil.h Process.h sys/List.h sys/BinaryTree.h PageManager.h BitMap.h \
-  Segments.h operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h
-pic.o: pic.cpp pic.h io.h sys/types.h global.h kernel.h VirtualConsole.h \
-  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h \
-  sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
-  KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h
-io.o: io.cpp io.h sys/types.h global.h kernel.h VirtualConsole.h string.h \
-  Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h sys/BinaryTree.h \
-  PageManager.h BitMap.h Segments.h operator.h Mutex.h KObject.h Thread.h \
-  Node.h sys/MEvent.h MemoryManager.h sysresource.h vbe.h IDManager.h \
-  Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h KTimer.h \
+  IDTUtil.h Process.h ./sys/List.h ./sys/BinaryTree.h PageManager.h \
+  BitMap.h Segments.h operator.h Mutex.h KObject.h Thread.h Node.h \
+  sys/types.h sys/List.h sys/MEvent.h MemoryManager.h vbe.h IDManager.h \
+  Scheduler.h Array.h ./sys/ThreadPriority.h ./sys/HList.h KTimer.h \
   Messenger.h
-syscalls.o: syscalls.cpp syscalls.h global.h sys/types.h kernel.h \
+pic.o: pic.cpp pic.h io.h ./sys/types.h global.h kernel.h \
   VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h \
-  sys/List.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
-  operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h io.h Loader.h \
-  RTC.h
-BitMap.o: BitMap.cpp BitMap.h sys/types.h string.h
-Process.o: Process.cpp sys/List.h sys/types.h sys/HList.h global.h \
+  ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+io.o: io.cpp io.h ./sys/types.h global.h kernel.h VirtualConsole.h \
+  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h ./sys/List.h \
+  ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
+  KObject.h Thread.h Node.h sys/types.h sys/List.h sys/MEvent.h \
+  MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+syscalls.o: syscalls.cpp syscalls.h global.h ./sys/types.h kernel.h \
+  VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h \
+  ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h io.h Loader.h \
+  RTC.h ./global.h
+BitMap.o: BitMap.cpp BitMap.h ./sys/types.h string.h
+Process.o: Process.cpp ./sys/List.h ./sys/types.h ./sys/HList.h global.h \
   kernel.h VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h \
-  Process.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h \
-  Mutex.h KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h \
-  sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h KTimer.h Messenger.h
-GDTUtil.o: GDTUtil.cpp global.h sys/types.h kernel.h VirtualConsole.h \
-  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h \
-  sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
-  KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h
-IDTUtil.o: IDTUtil.cpp global.h sys/types.h kernel.h VirtualConsole.h \
-  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h \
-  sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
-  KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h
-PageManager.o: PageManager.cpp sys/types.h PageManager.h BitMap.h \
+  Process.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h KTimer.h Messenger.h
+GDTUtil.o: GDTUtil.cpp global.h ./sys/types.h kernel.h VirtualConsole.h \
+  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h ./sys/List.h \
+  ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
+  KObject.h Thread.h Node.h sys/types.h sys/List.h sys/MEvent.h \
+  MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+IDTUtil.o: IDTUtil.cpp global.h ./sys/types.h kernel.h VirtualConsole.h \
+  string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h ./sys/List.h \
+  ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
+  KObject.h Thread.h Node.h sys/types.h sys/List.h sys/MEvent.h \
+  MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+PageManager.o: PageManager.cpp ./sys/types.h PageManager.h BitMap.h \
   string.h operator.h Segments.h kernel.h VirtualConsole.h Process.h \
-  sys/List.h sys/BinaryTree.h Mutex.h KObject.h Thread.h Node.h \
-  sys/MEvent.h global.h Semaphore.h GDTUtil.h IDTUtil.h MemoryManager.h \
-  sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h
-MemoryManager.o: MemoryManager.cpp MemoryManager.h sys/types.h global.h \
+  ./sys/List.h ./sys/BinaryTree.h Mutex.h KObject.h Thread.h Node.h \
+  sys/types.h sys/List.h sys/MEvent.h global.h Semaphore.h GDTUtil.h \
+  IDTUtil.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+MemoryManager.o: MemoryManager.cpp MemoryManager.h ./sys/types.h global.h \
   kernel.h VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h \
-  Process.h sys/List.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
-  operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h \
-  KTimer.h Messenger.h
-Segments.o: Segments.cpp sys/HList.h sys/types.h sys/List.h global.h \
-  kernel.h VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h \
-  Process.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h \
-  Mutex.h KObject.h Thread.h Node.h sys/MEvent.h MemoryManager.h \
-  sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h KTimer.h Messenger.h
-Mutex.o: Mutex.cpp sys/HList.h sys/types.h sys/List.h Mutex.h KObject.h \
-  Process.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h \
-  string.h kernel.h VirtualConsole.h Thread.h Node.h sys/MEvent.h io.h \
-  global.h Semaphore.h GDTUtil.h IDTUtil.h MemoryManager.h sysresource.h \
-  vbe.h IDManager.h Scheduler.h Array.h sys/ThreadPriority.h KTimer.h \
-  Messenger.h syscalls.h
-VesaConsole.o: VesaConsole.cpp VesaConsole.h sys/types.h VirtualConsole.h \
-  string.h GraphicalConsole.h vbe.h
-LogConsole.o: LogConsole.cpp LogConsole.h sys/types.h VirtualConsole.h \
+  Process.h ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h \
+  Segments.h operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h \
+  sys/List.h sys/MEvent.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+Segments.o: Segments.cpp ./sys/HList.h ./sys/types.h ./sys/List.h \
+  global.h kernel.h VirtualConsole.h string.h Semaphore.h GDTUtil.h \
+  IDTUtil.h Process.h ./sys/BinaryTree.h PageManager.h BitMap.h \
+  Segments.h operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h \
+  sys/List.h sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h \
+  Array.h ./sys/ThreadPriority.h KTimer.h Messenger.h
+Mutex.o: Mutex.cpp ./sys/HList.h ./sys/types.h ./sys/List.h Mutex.h \
+  KObject.h Process.h ./sys/BinaryTree.h PageManager.h BitMap.h \
+  Segments.h operator.h string.h kernel.h VirtualConsole.h Thread.h \
+  Node.h sys/types.h sys/List.h sys/MEvent.h io.h global.h Semaphore.h \
+  GDTUtil.h IDTUtil.h MemoryManager.h vbe.h IDManager.h Scheduler.h \
+  Array.h ./sys/ThreadPriority.h KTimer.h Messenger.h syscalls.h
+VesaConsole.o: VesaConsole.cpp VesaConsole.h ./sys/types.h \
+  VirtualConsole.h string.h GraphicalConsole.h vbe.h
+LogConsole.o: LogConsole.cpp LogConsole.h ./sys/types.h VirtualConsole.h \
   string.h io.h global.h kernel.h Semaphore.h GDTUtil.h IDTUtil.h \
-  Process.h sys/List.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
-  operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h
-IDManager.o: IDManager.cpp IDManager.h sys/BinaryTree.h sys/types.h \
+  Process.h ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h \
+  Segments.h operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h \
+  sys/List.h sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h \
+  Array.h ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h
+IDManager.o: IDManager.cpp IDManager.h ./sys/BinaryTree.h ./sys/types.h \
   KObject.h global.h kernel.h VirtualConsole.h string.h Semaphore.h \
-  GDTUtil.h IDTUtil.h Process.h sys/List.h PageManager.h BitMap.h \
-  Segments.h operator.h Mutex.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h sysresource.h vbe.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h sys/error.h
-KObject.o: KObject.cpp KObject.h sys/types.h
-Loader.o: Loader.cpp Loader.h global.h sys/types.h kernel.h \
+  GDTUtil.h IDTUtil.h Process.h ./sys/List.h PageManager.h BitMap.h \
+  Segments.h operator.h Mutex.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h ./sys/error.h
+KObject.o: KObject.cpp KObject.h ./sys/types.h
+Loader.o: Loader.cpp Loader.h global.h ./sys/types.h kernel.h \
   VirtualConsole.h string.h Semaphore.h GDTUtil.h IDTUtil.h Process.h \
-  sys/List.h sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
-  operator.h Mutex.h KObject.h Thread.h Node.h sys/MEvent.h \
-  MemoryManager.h sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h Messenger.h io.h syscalls.h
+  ./sys/List.h ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h \
+  operator.h Mutex.h KObject.h Thread.h Node.h sys/types.h sys/List.h \
+  sys/MEvent.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h io.h \
+  syscalls.h
 Scheduler.o: Scheduler.cpp Scheduler.h Thread.h Node.h sys/types.h \
-  kernel.h VirtualConsole.h string.h KObject.h sys/List.h sys/MEvent.h \
-  Segments.h PageManager.h BitMap.h operator.h Process.h sys/BinaryTree.h \
-  Mutex.h Array.h sys/ThreadPriority.h sys/HList.h KTimer.h global.h \
-  Semaphore.h GDTUtil.h IDTUtil.h MemoryManager.h sysresource.h vbe.h \
-  IDManager.h Messenger.h
-RTC.o: RTC.cpp global.h sys/types.h kernel.h VirtualConsole.h string.h \
-  Semaphore.h GDTUtil.h IDTUtil.h Process.h sys/List.h sys/BinaryTree.h \
-  PageManager.h BitMap.h Segments.h operator.h Mutex.h KObject.h Thread.h \
-  Node.h sys/MEvent.h MemoryManager.h sysresource.h vbe.h IDManager.h \
-  Scheduler.h Array.h sys/ThreadPriority.h sys/HList.h KTimer.h \
-  Messenger.h RTC.h io.h
-Messenger.o: Messenger.cpp Messenger.h sys/types.h Thread.h Node.h \
-  kernel.h VirtualConsole.h string.h KObject.h sys/List.h sys/MEvent.h \
-  Segments.h PageManager.h BitMap.h operator.h Process.h sys/BinaryTree.h \
-  Mutex.h global.h Semaphore.h GDTUtil.h IDTUtil.h MemoryManager.h \
-  sysresource.h vbe.h IDManager.h Scheduler.h Array.h \
-  sys/ThreadPriority.h sys/HList.h KTimer.h
+  kernel.h ./sys/types.h VirtualConsole.h string.h KObject.h sys/List.h \
+  sys/MEvent.h Segments.h PageManager.h BitMap.h operator.h Process.h \
+  ./sys/List.h ./sys/BinaryTree.h Mutex.h Array.h ./sys/ThreadPriority.h \
+  ./sys/HList.h KTimer.h global.h Semaphore.h GDTUtil.h IDTUtil.h \
+  MemoryManager.h vbe.h IDManager.h Messenger.h
+RTC.o: RTC.cpp global.h ./sys/types.h kernel.h VirtualConsole.h string.h \
+  Semaphore.h GDTUtil.h IDTUtil.h Process.h ./sys/List.h \
+  ./sys/BinaryTree.h PageManager.h BitMap.h Segments.h operator.h Mutex.h \
+  KObject.h Thread.h Node.h sys/types.h sys/List.h sys/MEvent.h \
+  MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h Messenger.h RTC.h \
+  ./global.h io.h
+Messenger.o: Messenger.cpp Messenger.h ./sys/types.h Thread.h Node.h \
+  sys/types.h kernel.h VirtualConsole.h string.h KObject.h sys/List.h \
+  sys/MEvent.h Segments.h PageManager.h BitMap.h operator.h Process.h \
+  ./sys/List.h ./sys/BinaryTree.h Mutex.h global.h Semaphore.h GDTUtil.h \
+  IDTUtil.h MemoryManager.h vbe.h IDManager.h Scheduler.h Array.h \
+  ./sys/ThreadPriority.h ./sys/HList.h KTimer.h
