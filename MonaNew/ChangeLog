@@ -1,3 +1,7 @@
+2004-07-14  bayside
+
+        * core/shell_server/main.cpp: デフォルトアプリケーション形式をEX2からEX5に修正
+
 2005-07-26  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/sysresource.cpp: 不要なので削除。
