@@ -7,5 +7,5 @@ all:
 clean:
 	cd X/gui && make distclean
 	cd Graphics/libbaygui && make distclean
-	cd Shells/gshell && make distclean
-	cd X/glaunch && make distclean
+	cd Shells/gshell && make clean
+	cd X/glaunch && make clean

@@ -264,6 +264,8 @@ void kill_timer(dword timerID);
 #include "baygui/lang/Object.h"
 #include "baygui/lang/Pointer.h"
 #include "baygui/lang/String.h"
+#include "baygui/lang/Runnable.h"
+#include "baygui/lang/Thread.h"
 #include "baygui/util/Vector.h"
 #include "baygui/util/Hashtable.h"
 #include "baygui/awt/Event.h"
