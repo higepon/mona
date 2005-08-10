@@ -1,4 +1,4 @@
-2004-07-14  bayside
+2004-08-10  bayside
 
         * core/shell_server/main.cpp: デフォルトアプリケーション形式をEX2からEX5に修正
 
