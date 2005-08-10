@@ -17,7 +17,7 @@ $(TARGET).EX5: $(TARGET).EXE
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
-	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK) -lmonalibc-imp
+	$(LD) --Map $(TARGET).map $(LFLAGS) -o $@ $(LIBDIR)/monapi.o $(OBJECTS) -L$(LIBDIR) $(LINK) -lmonalibc-imp -ljpegls
 	$(STRIP) $@
 
 install: all

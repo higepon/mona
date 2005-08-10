@@ -3,7 +3,8 @@
 
 #include <monapi.h>
 #include <monapi/messages.h>
-#ifdef USER_JPEG
+#define USE_JPEG 1
+#ifdef USE_JPEG
 #include <jpegls.h>
 #endif
 #include "image.h"
@@ -98,7 +99,7 @@ guiserver_bitmap* ReadBitmap(monapi_cmemoryinfo* mi)
 	return ret;
 }
 
-#ifdef USER_JPEG
+#ifdef USE_JPEG
 guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 {
 	CJPEGLS jpeg;
@@ -142,7 +143,7 @@ guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 		ret = ReadBitmap(mi);
 		if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
 	}
-#ifdef USER_JPEG
+#ifdef USE_JPEG
 	else if (fn.endsWith(".JPG"))
 	{
 		if (prompt) printf("%s: Decoding %s....", GUI_SERVER_NAME, (const char*)fn);

@@ -28,6 +28,6 @@ install: $(TARGET)
 	$(INSTALL) jpegls.h $(INCDIR)
 
 uninstall:
-	rm -f $(INCDIR)/baygui.h
+	rm -f $(INCDIR)/jpegls.h
 
 include dependencies
