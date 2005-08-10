@@ -182,7 +182,7 @@ bool Shell::commandExecute(_A<CString> args)
     else if (command.endsWith(".APP"))
     {
         CString name = command.substring(0, command.getLength() - 4);
-        cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EX2";
+        cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EX5";
     }
     else
     {
@@ -192,7 +192,7 @@ bool Shell::commandExecute(_A<CString> args)
             CString file = apps[currentDrive].get(i);
             if (file == command + ".APP")
             {
-                cmdLine = APPSDIR"/" + file + "/" + command + ".EX2";
+                cmdLine = APPSDIR"/" + file + "/" + command + ".EX5";
                 break;
             }
             else if (file.startsWith(cmd2))
@@ -381,9 +381,9 @@ int Shell::makeApplicationList()
     {
         CString file = p->name;
 
-        if (file.endsWith(".BIN") || file.endsWith(".BN2")
-            || file.endsWith(".ELF") || file.endsWith(".EL2")
-            || file.endsWith(".EXE") || file.endsWith(".EX2")
+        if (file.endsWith(".BIN") || file.endsWith(".BN2") || file.endsWith(".BN5")
+            || file.endsWith(".ELF") || file.endsWith(".EL2") || file.endsWith(".EL5")
+            || file.endsWith(".EXE") || file.endsWith(".EX2") || file.endsWith(".EX5")
             || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
             apps[currentDrive].add(file);
