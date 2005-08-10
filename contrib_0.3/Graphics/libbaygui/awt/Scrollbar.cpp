@@ -109,6 +109,7 @@ namespace baygui {
 		this->minimum = 0;
 		this->maximum = 100;
 		this->blocksize = 10;
+		this->preValue = 0;
 		this->value = 0;
 		this->blockEvent.setType(Event::BLOCK_INCLEMENT);
 		this->blockEvent.setSource(this);
@@ -120,6 +121,7 @@ namespace baygui {
 		this->minimum = 0;
 		this->maximum = 100;
 		this->blocksize = 10;
+		this->preValue = 0;
 		this->value = 0;
 		this->blockEvent.setType(Event::BLOCK_INCLEMENT);
 		this->blockEvent.setSource(this);
@@ -139,6 +141,14 @@ namespace baygui {
 			this->value = value;
 		}
 		repaint();
+		if (value < this->preValue) {
+			this->blockEvent.setType(Event::BLOCK_DECLEMENT);
+			getParent()->processEvent(&this->blockEvent);
+		} else {
+			this->blockEvent.setType(Event::BLOCK_INCLEMENT);
+			getParent()->processEvent(&this->blockEvent);
+		}
+		this->preValue = value;
 	}
 
 	void Scrollbar::setBounds(int x, int y, int w, int h)
@@ -212,24 +222,27 @@ namespace baygui {
 			if (this->orientation == VERTICAL) {
 				if (0 < my && my < 16) {
 					setValue(this->value - this->blocksize);
-					this->blockEvent.setType(Event::BLOCK_DECLEMENT);
-					getParent()->processEvent(&this->blockEvent);
 				} else if (getHeight() - 16 < my && my < getHeight()) {
 					setValue(this->value + this->blocksize);
-					this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-					getParent()->processEvent(&this->blockEvent);
 				}
 			// 水平スクロールバー
 			} else {
 				if (0 < mx && mx < 16) {
 					setValue(this->value - this->blocksize);
-					this->blockEvent.setType(Event::BLOCK_DECLEMENT);
-					getParent()->processEvent(&this->blockEvent);
 				} else if (getWidth() - 16 < mx && mx < getWidth()) {
 					setValue(this->value + this->blocksize);
-					this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-					getParent()->processEvent(&this->blockEvent);
 				}
+			}
+		} else if (event->getType() == MouseEvent::MOUSE_DRAGGED) {
+			MouseEvent* me = (MouseEvent *)event;
+			int mx = me->getX();
+			int my = me->getY();
+			// 垂直スクロールバー
+			if (this->orientation == VERTICAL && 16 <= my && my <= getHeight() - 16) {
+				setValue((my - 16) * (getMaximum() - getMinimum()) / (getHeight() - 32) + getMinimum());
+			// 水平スクロールバー
+			} else if (this->orientation == HORIZONTAL && 16 <= mx && mx <= getWidth() - 16) {
+				setValue((mx - 16) * (getMaximum() - getMinimum()) / (getWidth() - 32) + getMinimum());
 			}
 		}
 	}

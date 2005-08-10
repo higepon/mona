@@ -125,7 +125,7 @@ namespace baygui {
 		}
 	}
 
-	int FontMetrics::getWidth(String str)
+	int FontMetrics::getWidth(const String& str)
 	{
 		// NULLチェック
 		if (str.length() == 0 || defaultFontData == NULL) return 0;
@@ -152,7 +152,7 @@ namespace baygui {
 		return w;
 	}
 
-	int FontMetrics::getHeight(String str)
+	int FontMetrics::getHeight(const String& str)
 	{
 		int h = 12;
 		for (int i = 0; i < str.length(); i++) {

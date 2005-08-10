@@ -64,10 +64,10 @@ namespace baygui {
 		textLen--;
 	}
 
-	void TextField::setText(char* text)
+	void TextField::setText(const String& text)
 	{
-		strcpy(this->text, text);
-		this->textLen = strlen(text);
+		strcpy(this->text, text.getBytes());
+		this->textLen = strlen(this->text);
 		this->textPtr = this->textLen - 1;
 		repaint();
 	}

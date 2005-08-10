@@ -52,7 +52,7 @@ namespace baygui {
 		 デコードはサーバー側で行っている。
 		 @param path ファイル名
 		 */
-		Image(char* path);
+		Image(const String& path);
 		
 		/** デストラクタ */
 		virtual ~Image();

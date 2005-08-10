@@ -85,7 +85,7 @@ namespace baygui {
 		0x4,0x4,0x4,0x4,0x2,0x0,0x0,0x2,0x4,0x4,0x4,0x4,
 	};
 
-	Checkbox::Checkbox(char* label)
+	Checkbox::Checkbox(const String& label)
 	{
 		this->checked = false;
 		this->label  = label;
@@ -114,7 +114,7 @@ namespace baygui {
 		}
 	}
 
-	void Checkbox::setLabel(char *label)
+	void Checkbox::setLabel(const String& label)
 	{
 		this->label = label;
 		repaint();

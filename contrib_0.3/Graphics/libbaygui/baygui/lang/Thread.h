@@ -21,54 +21,24 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !defined(_TEXTFIELD_H_INCLUDED_)
-#define _TEXTFIELD_H_INCLUDED_
+#if !defined(_THREAD_H_INCLUDED_)
+#define _THREAD_H_INCLUDED_
 
-/** テキストフィールド文字列最大長 */
-#define MAX_TEXT_LEN 128
+#include "Object.h"
 
 namespace baygui {
-	/**
-	 テキストボックスクラス
-	*/
-	class TextField : public Component {
+	/** スレッドクラス */
+	class Thread : public Object {
 	private:
-		int textPtr;
-		int textLen;
-		int offx;
-		int offy;
-		char text[MAX_TEXT_LEN];
-		Event textEvent;
+		Runnable* runnable;
 		
-	private:
-		/** 1文字挿入する */
-		virtual void insertCharacter(char c);
-		
-		/** 一文字削除する */
-		virtual void deleteCharacter();
-
 	public:
-		/** コンストラクタ */
-		TextField();
+		Thread(Runnable* runnable);
 		
-		/** デストラクタ */
-		virtual ~TextField();
+		void start();
 		
-		/**
-		 テキストを設定する
-		 @param text
-		 */
-		virtual void setText(const String& text);
-		
-		/** テキストを得る */
-		inline char* getText() { return this->text; }
-		
-		/** 描画ハンドラ */
-		virtual void paint(Graphics* g);
-		
-		/** イベントハンドラ */
-		virtual void processEvent(Event* event);
+		void stop();
 	};
 }
 
-#endif // _TEXTFIELD_H_INCLUDED_
+#endif // _THREAD_H_INCLUDED_

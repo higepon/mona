@@ -50,6 +50,12 @@ namespace baygui {
 		/** デフォルトコンストラクタ */
 		Frame();
 		
+		/**
+		 * コピーコンストラクタ
+		 * @param title タイトル
+		*/
+		Frame(const String& title);
+		
 		/** デストラクタ */
 		virtual ~Frame();
 		
@@ -60,7 +66,7 @@ namespace baygui {
 		 タイトル設定
 		 @param title タイトル
 		 */
-		virtual void setTitle(char *title);
+		virtual void setTitle(const String& title);
 		
 		/** 再描画 */
 		virtual void repaint();

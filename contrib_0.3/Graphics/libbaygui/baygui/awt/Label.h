@@ -44,19 +44,22 @@ namespace baygui {
 		String text;
 		
 	public:
+		/** デフォルトコンストラクタ */
+		Label();
+		
 		/**
 		 コンストラクタ.
 		 描画位置は ALIGN_LEFT。
 		 @param text ラベル
 		 */
-		Label(char* text);
+		Label(const String& text);
 		
 		/**
 		 コンストラクタ
 		 @param text ラベル
 		 @param align 描画位置 (ALIGN_LEFT / ALIGN_CENTER / ALIGN_RIGHT)
 		 */
-		Label(char* text, int align);
+		Label(const String& text, int align);
 		
 		/** デストラクタ */
 		virtual ~Label();
@@ -65,7 +68,7 @@ namespace baygui {
 		 テキスト設定
 		 @param text
 		 */
-		virtual void setText(char* text);
+		virtual void setText(const String& text);
 		
 		/** テキストを得る */
 		inline char* getText() { return this->text.getBytes(); }

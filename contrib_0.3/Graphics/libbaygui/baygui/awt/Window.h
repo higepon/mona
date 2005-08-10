@@ -153,6 +153,9 @@ namespace baygui {
 		/** 部品更新 */
 		virtual void update();
 		
+		/** 部品部分更新 */
+		virtual void update(int x, int y, int w, int h);
+		
 		/** イベント処理 */
 		virtual void dispatchEvent(Event* event);
 		

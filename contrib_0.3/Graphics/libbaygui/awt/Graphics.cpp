@@ -131,7 +131,12 @@ namespace baygui {
 		}
 	}
 
-	void Graphics::drawString(String str, int x, int y)
+	void Graphics::drawString(String* str, int x, int y)
+	{
+		drawString(str->getBytes(), x, y);
+	}
+
+	void Graphics::drawString(const String& str, int x, int y)
 	{
 		int pos, bit, offset, width, height, w = 0, h = 0;
 		FontMetrics metrics;

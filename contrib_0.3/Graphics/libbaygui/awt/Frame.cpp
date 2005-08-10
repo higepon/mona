@@ -69,11 +69,26 @@ namespace baygui {
 		this->insets.right = 6;
 	}
 
+	Frame::Frame(const String& title)
+	{
+		/* デフォルトタイトル */
+		this->title = title;
+		
+		/* フチあり */
+		this->border = 0;
+		
+		/* 配置位置 */
+		this->insets.top = 22;
+		this->insets.bottom = 6;
+		this->insets.left = 6;
+		this->insets.right = 6;
+	}
+	
 	Frame::~Frame()
 	{
 	}
 
-	void Frame::setTitle(char *title)
+	void Frame::setTitle(const String& title)
 	{
 		this->title = title;
 	}

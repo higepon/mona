@@ -31,7 +31,7 @@ namespace baygui {
 		setBounds(0, 0, 40, 20);
 	}
 
-	Button::Button(char* label)
+	Button::Button(const String& label)
 	{
 		this->pushed = false;
 		this->label  = label;
@@ -42,7 +42,7 @@ namespace baygui {
 	{
 	}
 
-	void Button::setLabel(char* label)
+	void Button::setLabel(const String& label)
 	{
 		this->label = label;
 		repaint();

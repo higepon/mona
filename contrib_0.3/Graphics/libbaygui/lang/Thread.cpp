@@ -21,54 +21,41 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !defined(_TEXTFIELD_H_INCLUDED_)
-#define _TEXTFIELD_H_INCLUDED_
-
-/** ƒeƒLƒXƒgƒtƒB[ƒ‹ƒh•¶Žš—ñÅ‘å’· */
-#define MAX_TEXT_LEN 128
+#include "baygui.h"
 
 namespace baygui {
-	/**
-	 ƒeƒLƒXƒgƒ{ƒbƒNƒXƒNƒ‰ƒX
-	*/
-	class TextField : public Component {
-	private:
-		int textPtr;
-		int textLen;
-		int offx;
-		int offy;
-		char text[MAX_TEXT_LEN];
-		Event textEvent;
-		
-	private:
-		/** 1•¶Žš‘}“ü‚·‚é */
-		virtual void insertCharacter(char c);
-		
-		/** ˆê•¶Žšíœ‚·‚é */
-		virtual void deleteCharacter();
+	static dword parent_tid = 0;
 
-	public:
-		/** ƒRƒ“ƒXƒgƒ‰ƒNƒ^ */
-		TextField();
-		
-		/** ƒfƒXƒgƒ‰ƒNƒ^ */
-		virtual ~TextField();
-		
-		/**
-		 ƒeƒLƒXƒg‚ðÝ’è‚·‚é
-		 @param text
-		 */
-		virtual void setText(const String& text);
-		
-		/** ƒeƒLƒXƒg‚ð“¾‚é */
-		inline char* getText() { return this->text; }
-		
-		/** •`‰æƒnƒ“ƒhƒ‰ */
-		virtual void paint(Graphics* g);
-		
-		/** ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰ */
-		virtual void processEvent(Event* event);
-	};
+	/** Monaã‚¹ãƒ¬ãƒƒãƒ‰ */
+	static void ExecRun() {
+		MonAPI::Message::send(parent_tid, MSG_SERVER_START_OK);
+		dword child_tid = syscall_get_tid();
+		for (MessageInfo info;;) {
+			if (MonAPI::Message::receive(&info) != 0) continue;
+			if (info.header == MSG_SERVER_START_OK) {
+				Runnable* runnable = (Runnable*)info.arg1;
+				runnable->run();
+				break;
+			}
+		}
+		syscall_kill_thread(child_tid);
+	}
+
+	Thread::Thread(Runnable* runnable)
+	{
+		this->runnable = runnable;
+	}
+
+	void Thread::start()
+	{
+		dword thread_id = syscall_mthread_create((dword)ExecRun);
+		syscall_mthread_join(thread_id);
+		// MSG_SERVER_START_OKãŒè¿”ã£ã¦ãã‚‹ã®ã‚’å¾…ã¤
+		MessageInfo msg, src;
+		src.header = MSG_SERVER_START_OK;
+		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
+		dword child_tid = msg.from;
+		// Runnable::run() ã‚’å‘¼ã°ã›ã‚‹
+		MonAPI::Message::send(child_tid, MSG_SERVER_START_OK, (dword)runnable);
+	}
 }
-
-#endif // _TEXTFIELD_H_INCLUDED_

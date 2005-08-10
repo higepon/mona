@@ -54,7 +54,7 @@ namespace baygui {
 		virtual void select(int index);
 		
 		/** €–Ú‚ğ’Ç‰Á‚·‚é */
-		virtual void add(char* item);
+		virtual void add(const String& item);
 		
 		/** index ”Ô–Ú‚Ì€–Ú‚ğíœ‚·‚é */
 		virtual void remove(int index);

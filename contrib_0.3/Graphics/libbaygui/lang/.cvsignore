@@ -5,13 +5,12 @@
 *.local
 *.BIN
 *.BN2
-*.BN5
 *.BM2
-*.BM5
 *.ELF
 *.EL2
 *.EXE
 *.EX2
-*.EX5
+*.DL5
+*.DLL
 TAGS
 dependencies

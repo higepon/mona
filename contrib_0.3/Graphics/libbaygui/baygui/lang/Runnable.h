@@ -21,54 +21,21 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !defined(_TEXTFIELD_H_INCLUDED_)
-#define _TEXTFIELD_H_INCLUDED_
+#if !defined(_RUNNABLE_H_INCLUDED_)
+#define _RUNNABLE_H_INCLUDED_
 
-/** テキストフィールド文字列最大長 */
-#define MAX_TEXT_LEN 128
+/** スレッドインターフェース */
+class Runnable {
+protected:
+	bool running;
+	
+public:
+	Runnable()
+	{
+		this->running = true;
+	}
+	
+	virtual void run() = 0;
+};
 
-namespace baygui {
-	/**
-	 テキストボックスクラス
-	*/
-	class TextField : public Component {
-	private:
-		int textPtr;
-		int textLen;
-		int offx;
-		int offy;
-		char text[MAX_TEXT_LEN];
-		Event textEvent;
-		
-	private:
-		/** 1文字挿入する */
-		virtual void insertCharacter(char c);
-		
-		/** 一文字削除する */
-		virtual void deleteCharacter();
-
-	public:
-		/** コンストラクタ */
-		TextField();
-		
-		/** デストラクタ */
-		virtual ~TextField();
-		
-		/**
-		 テキストを設定する
-		 @param text
-		 */
-		virtual void setText(const String& text);
-		
-		/** テキストを得る */
-		inline char* getText() { return this->text; }
-		
-		/** 描画ハンドラ */
-		virtual void paint(Graphics* g);
-		
-		/** イベントハンドラ */
-		virtual void processEvent(Event* event);
-	};
-}
-
-#endif // _TEXTFIELD_H_INCLUDED_
+#endif // _RUNNABLE_H_INCLUDED_

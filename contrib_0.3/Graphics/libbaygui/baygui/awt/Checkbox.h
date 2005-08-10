@@ -49,7 +49,7 @@ namespace baygui {
 		 コンストラクタ
 		 @param label ラベル
 		 */
-		Checkbox(char* label);
+		Checkbox(const String& label);
 		
 		/** デストラクタ */
 		virtual ~Checkbox();
@@ -67,7 +67,7 @@ namespace baygui {
 		 ラベルを設定する
 		 @param label ラベル
 		 */
-		virtual void setLabel(char* label);
+		virtual void setLabel(const String& label);
 		
 		/** チェックされたかどうかを得る */
 		inline bool getChecked() { return this->checked; }
