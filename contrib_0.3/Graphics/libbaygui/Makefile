@@ -3,6 +3,7 @@ TARGET       = $(LIB_STATIC)
 
 include $(MONADIR)/share/configs/Makefile.inc
 include $(MONADIR)/share/configs/dirnames.inc
+include $(MONADIR)/share/configs/monapi.inc
 
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = libbaygui-imp.a

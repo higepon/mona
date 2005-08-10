@@ -1,0 +1,7 @@
+*.o
+*.bin
+*.list
+*.map
+*.local
+TAGS
+dependencies
