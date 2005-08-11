@@ -153,7 +153,115 @@ namespace baygui
 
 	int String::length() const
 	{
-		return 1;
+		unsigned char c1, c2, c3;
+		int len = 0;
+		
+		// UTF-8 -> UCS-4
+		for (int i = 0; i < this->_len; i++) {
+			// 1st unsigned char
+			if (this->buffer[i] == 0) {
+				break;
+			} else {
+				c1 = (unsigned char)this->buffer[i];
+			}
+			// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
+			if (c1 <= 0x7F) {
+				len++; // c1
+			// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
+			} else if (0xC2 <= c1 && c1 <= 0xDF) {
+				// 2nd unsigned char
+				if (this->buffer[i] == this->_len - 1) {
+					break;
+				} else {
+					c2 = (unsigned char)this->buffer[++i];
+				}
+				len++; // ((c1 & 0x1F) << 6) | (c2 & 0x3F);
+			// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
+			} else if (0xE0 <= c1 && c1 <= 0xEF) {
+				// 2nd unsigned char
+				if (this->buffer[i] == this->_len - 1) {
+					break;
+				} else {
+					c2 = (unsigned char)this->buffer[++i];
+				}
+				// 3rd unsigned char
+				if (this->buffer[i] == this->_len - 1) {
+					break;
+				} else {
+					c3 = (unsigned char)this->buffer[++i];
+				}
+				len++; // ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+			}
+		}
+		return len;
+	}
+	
+	unsigned int String::charAt(int index) const
+	{
+		unsigned char c1, c2, c3;
+		int len = 0;
+		
+		// UTF-8 -> UCS-4
+		for (int i = 0; i < this->_len; i++) {
+			// 1st unsigned char
+			if (this->buffer[i] == 0) {
+				break;
+			} else {
+				c1 = (unsigned char)this->buffer[i];
+			}
+			// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
+			if (c1 <= 0x7F) {
+				if (len == index) {
+					return c1;
+				} else {
+					len++;
+				}
+			// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
+			} else if (0xC2 <= c1 && c1 <= 0xDF) {
+				// 2nd unsigned char
+				if (this->buffer[i] == this->_len - 1) {
+					break;
+				} else {
+					c2 = (unsigned char)this->buffer[++i];
+				}
+				if (len == index) {
+					return ((c1 & 0x1F) << 6) | (c2 & 0x3F);
+				} else {
+					len++;
+				}
+			// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
+			} else if (0xE0 <= c1 && c1 <= 0xEF) {
+				// 2nd unsigned char
+				if (this->buffer[i] == this->_len - 1) {
+					break;
+				} else {
+					c2 = (unsigned char)this->buffer[++i];
+				}
+				// 3rd unsigned char
+				if (this->buffer[i] == this->_len - 1) {
+					break;
+				} else {
+					c3 = (unsigned char)this->buffer[++i];
+				}
+				if (len == index) {
+					return ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
+				} else {
+					len++;
+				}
+			}
+		}
+		return '?';
+	}
+	
+	const unsigned int* String::toCharArray() const
+	{
+		int len = length();
+		if (len == 0) return NULL;
+		unsigned int* charArray = new unsigned int[len];
+		for (int i = 0; i < len; i++) {
+			charArray[i] = charAt(i);
+		}
+		return charArray;
 	}
 	
 	bool String::equals(const String& text) const
