@@ -26,6 +26,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <time.h>
 #endif
 
+#define HALF_WIDTH    8   /* 1byte charcter width */
 #define GSHELL_WIDTH  480 /* 8dot X 60chars */
 #define GSHELL_HEIGHT 300 /* 12dot X 25 chars */
 
@@ -35,7 +36,7 @@ static dword my_tid, stdout_tid;
 static void StdoutMessageLoop() {
 	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
 
-	while(1) {
+	while (1) {
 		MessageInfo info;
 		dword id = THREAD_UNKNOWN;
 		if (!MonAPI::Message::receive(&info)) {
@@ -203,7 +204,7 @@ private:
 			if (mi->Data[i] == '\r') {
 				// NOP
 			// 1行の最大文字数に達するか改行に達した時
-			} else if (strlen(lineBuffer) == (GSHELL_WIDTH / 8) - 1 || mi->Data[i] == '\n') {
+			} else if (strlen(lineBuffer) == (GSHELL_WIDTH / HALF_WIDTH) - 1 || mi->Data[i] == '\n') {
 				lineBuffer[strlen(lineBuffer)] = mi->Data[i];
 				this->addLine(lineBuffer);
 				memset(lineBuffer, 0, sizeof(lineBuffer));
@@ -561,7 +562,7 @@ public:
 		// printfをハンドリング
 		if (e->getType() == Event::CUSTOM_EVENT) {
 			for (int i = 0; i < (int)strlen(e->str); i++) {
-				if (strlen(lineBuffer) == (GSHELL_WIDTH / 8) - 1 || e->str[i] == '\n') {
+				if (strlen(lineBuffer) == (GSHELL_WIDTH / HALF_WIDTH) - 1 || e->str[i] == '\n') {
 					// リストに追加
 					lineBuffer[strlen(lineBuffer)] = e->str[i];
 					this->addLine(lineBuffer);
@@ -642,7 +643,7 @@ public:
 		int i = 0;
 		for (i = 0; i < lines.size(); i++) {
 			String *temp = (String *)lines.get(i);
-			g->drawString(temp->getBytes(), 0, i * 12);
+			g->drawString(*temp, 0, i * 12);
 		}
 
 		// コマンドライン
@@ -651,7 +652,7 @@ public:
 		g->drawString(temp, 0, i * 12);
 
 		// キャレット
-		int x0 = strlen(temp) * 8;
+		int x0 = strlen(temp) * HALF_WIDTH;
 		int y0 = i * 12 + 10;
 		g->drawLine(x0, y0, x0 + 7, y0);
 		g->drawLine(x0, y0 + 1, x0 + 7, y0 + 1);
