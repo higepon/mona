@@ -467,17 +467,34 @@ private:
 		//
 		} else if (s.equals("ps")) {
 			this->addLine("[tid] [状態]  [eip]    [esp]    [cr3]    [名前]\n");
-			memset(temp, 0, sizeof(temp));
 		#ifdef MONA
 			PsInfo info;
 			syscall_set_ps_dump();
 			while (syscall_read_ps_dump(&info) == 0) {
+				memset(temp, 0, sizeof(temp));
 				sprintf(temp, "%5d %s %08x %08x %08x %s\n",
 					info.tid, info.state ? "実行中" : "待機中",
 					info.eip, info.esp, info.cr3, info.name
 				);
 				this->addLine(temp);
 			}
+		#endif
+		//
+		// mem
+		//
+		} else if (s.equals("mem")) {
+		#ifdef MONA
+			MemoryInfo meminfo;
+			syscall_get_memory_info(&meminfo);
+			memset(temp, 0, sizeof(temp));
+			sprintf(temp, "　　全物理メモリ : %dbyte\n", meminfo.totalMemoryL);
+			this->addLine(temp);
+			memset(temp, 0, sizeof(temp));
+			sprintf(temp, "有効ページプール : %dbyte\n", meminfo.freePageNum * meminfo.pageSize);
+			this->addLine(temp);
+			memset(temp, 0, sizeof(temp));
+			sprintf(temp, "　全ページプール : %dbyte\n", meminfo.totalPageNum * meminfo.pageSize);
+			this->addLine(temp);
 		#endif
 		//
 		// kill [pid]
