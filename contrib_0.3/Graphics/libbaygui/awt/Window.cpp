@@ -470,6 +470,10 @@ namespace baygui {
 					setFocused(false);
 					repaint();
 					break;
+				case MSG_GUISERVER_DISPOSEWINDOW:
+					this->isRunning = false;
+					MonAPI::Message::reply(&info);
+					return;
 				case MSG_TIMER:
 					kill_timer(info.arg1);
 					dispatchEvent(&this->timerEvent);
