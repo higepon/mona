@@ -373,13 +373,10 @@ namespace baygui {
 					if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
 						if ((modcode & KEY_MODIFIER_SHIFT) == KEY_MODIFIER_SHIFT) {
 							this->modifiers = KeyEvent::VKEY_LSHIFT;
-							charcode = 0;
 						} else if ((modcode & KEY_MODIFIER_ALT) == KEY_MODIFIER_ALT) {
 							this->modifiers = KeyEvent::VKEY_ALT;
-							charcode = 0;
 						} else if ((modcode & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) {
 							this->modifiers = KeyEvent::VKEY_CTRL;
-							charcode = 0;
 						}
 					} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
 						this->modifiers = 0;
@@ -389,36 +386,38 @@ namespace baygui {
 					//sprintf(temp, "[%d,%d,%d]", keycode, modcode, charcode);
 					//syscall_print(temp);
 					
-					/* 一般キーの判定 */
-					if (keycode == 33 || keycode == 105) {
+					/* 一般キーの判定（qemu/実機） */
+					if (MonAPI::Keys::PageUp == 33 || keycode == 105) {
 						key = KeyEvent::VKEY_PGUP;
-					} else if (keycode == 34 || keycode == 99) {
+					} else if (MonAPI::Keys::PageDown == 34 || keycode == 99) {
 						key = KeyEvent::VKEY_PGDOWN;
-					} else if (keycode == 36 || keycode == 103) {
+					} else if (MonAPI::Keys::Home == 36 || keycode == 103) {
 						key = KeyEvent::VKEY_HOME;
-					} else if (keycode == 35 || keycode == 97) {
+					} else if (MonAPI::Keys::End == 35 || keycode == 97) {
 						key = KeyEvent::VKEY_END;
-					} else if (keycode == 38 || keycode == 104) {
+					} else if (MonAPI::Keys::Up == 38 || keycode == 104) {
 						key = KeyEvent::VKEY_UP;
-					} else if (keycode == 40 || keycode == 98) {
+					} else if (MonAPI::Keys::Down == 40 || keycode == 98) {
 						key = KeyEvent::VKEY_DOWN;
-					} else if (keycode == 37 || keycode == 100) {
+					} else if (MonAPI::Keys::Left == 37 || keycode == 100) {
 						key = KeyEvent::VKEY_LEFT;
-					} else if (keycode == 39 || keycode == 102) {
+					} else if (MonAPI::Keys::Right == 39 || keycode == 102) {
 						key = KeyEvent::VKEY_RIGHT;
-					} else if (keycode == 45 || keycode == 96) {
+					} else if (MonAPI::Keys::Insert == 45 || keycode == 96) {
 						key = KeyEvent::VKEY_INSERT;
-					} else if (keycode == 13) {
+					} else if (MonAPI::Keys::Enter == 13) {
 						key = KeyEvent::VKEY_ENTER;
-					} else if (keycode == 9) {
+					} else if (MonAPI::Keys::Tab == 9) {
 						key = KeyEvent::VKEY_TAB;
-					} else if (keycode == 8) {
+					} else if (MonAPI::Keys::Back == 8) {
 						key = KeyEvent::VKEY_BACKSPACE;
-					} else if (keycode == 46 || keycode == 110) {
+					} else if (MonAPI::Keys::Delete == 46 || keycode == 110) {
 						key = KeyEvent::VKEY_DELETE;
-					} else {
+					} else if (' ' <= charcode  && charcode <= '~' && 
+						keycode != MonAPI::Keys::LShiftKey && keycode != MonAPI::Keys::RShiftKey)
+					{
 						key = charcode;
-					}
+					} 
 					
 					/* キーコードが０ならイベントを投げない */
 					if (key > 0) {
