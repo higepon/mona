@@ -1,3 +1,7 @@
+2004-08-11  bayside
+
+        * core/keyboard_server/KeyboardManager.cpp: Shiftキー等の修飾キーを押しただけで前の文字コードが送信される不具合修正。
+
 2004-08-10  bayside
 
         * core/shell_server/main.cpp: デフォルトアプリケーション形式をEX2からEX5に修正
