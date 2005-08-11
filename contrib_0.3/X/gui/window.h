@@ -11,6 +11,7 @@ extern guiserver_window* CreateWindow();
 extern guiserver_window* GetWindowPointer(dword handle);
 extern bool DisposeWindow(dword handle);
 extern void DisposeWindowFromThreadID(dword tid);
+extern void DisposeAllWindow();
 extern void DrawWindow(guiserver_window* w, bool draw_screen = true);
 extern void MoveWindow(guiserver_window* w, int x, int y);
 extern guiserver_window* GetTargetWindow(int x, int y);

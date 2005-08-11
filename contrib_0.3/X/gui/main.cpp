@@ -333,6 +333,17 @@ static void MessageLoop()
 				clients.remove(msg.arg1);
 				Message::reply(&msg);
 				break;
+			// ESCキーによる終了チェック
+			case MSG_KEY_VIRTUAL_CODE:
+			{
+				if (msg.arg1 == Keys::Escape) {
+					DisposeAllWindow();
+					return;
+				}
+				if (ImageHandler(&msg)) break;
+				if (WindowHandler(&msg)) break;
+				break;
+			}
 			default:
 				if (ImageHandler(&msg)) break;
 				if (WindowHandler(&msg)) break;
@@ -447,6 +458,11 @@ int MonaMain(List<char*>* pekoe)
 	monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
 	monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
 	MemoryMap::unmap(msg_cp.arg2);
+	
+	monapi_call_mouse_set_cursor(0);
+	syscall_set_cursor(0,0);
+	syscall_clear_screen();
+	monapi_call_mouse_set_cursor(1);
 	
 	return 0;
 }

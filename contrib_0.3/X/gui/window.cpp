@@ -170,6 +170,16 @@ void DisposeWindowFromThreadID(dword tid)
 	if (activeWindow == NULL) ActivateWindow(GetFrontWindow());
 }
 
+void DisposeAllWindow()
+{
+	for (int i = 0; i < windows.size(); i++)
+	{
+		guiserver_window* w = windows[i];
+		Message::sendReceive(NULL, w->ThreadID, MSG_GUISERVER_DISPOSEWINDOW);
+		syscall_kill_thread(w->ThreadID);
+	}
+}
+
 static void DrawWindowInternal(guiserver_window* w, const _R& r)
 {
 	if (!w->Visible || w->FormBufferHandle == 0) return;

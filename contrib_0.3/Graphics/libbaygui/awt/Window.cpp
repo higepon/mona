@@ -471,7 +471,7 @@ namespace baygui {
 					repaint();
 					break;
 				case MSG_GUISERVER_DISPOSEWINDOW:
-					this->isRunning = false;
+					this->isRunning = false;//
 					MonAPI::Message::reply(&info);
 					return;
 				case MSG_TIMER:
