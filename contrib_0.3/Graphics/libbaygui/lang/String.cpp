@@ -23,195 +23,266 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "baygui.h"
 
-namespace baygui {
-	String& String::set(const char* str)
+namespace baygui
+{
+	String::String()
 	{
-		unsigned char c1, c2, c3;
-		int slen;
-		
-		if (this->bytes != 0/* NULL */) {
-			delete [] this->bytes;
-			delete [] this->charArray;
-		}
-		if (str && *str) {
-			this->len = 0;
-			slen = strlen(str);
-			this->bytes = new char[slen + 1];
-			this->charArray = new unsigned int[slen + 1];
-			strcpy(this->bytes, str);
-			
-			if (this->encoding == String::UTF_8) {
-				// UTF-8 -> UCS-4
-				for (int i = 0; i < slen; i++) {
-					// 1st unsigned char
-					if (str[i] == 0) {
-						break;
-					} else {
-						c1 = (unsigned char)str[i];
-					}
-					// 0aaa bbbb - > 0aaa bbbb (0x20-0x7F)
-					if (c1 <= 0x7F) {
-						this->charArray[this->len++] = c1;
-					// 110a aabb 10bb cccc -> 0000 0aaa bbbb cccc (0xC280-0xDFBF)
-					} else if (0xC2 <= c1 && c1 <= 0xDF) {
-						// 2nd unsigned char
-						if (str[i] == slen - 1) {
-							break;
-						} else {
-							c2 = (unsigned char)str[++i];
-						}
-						this->charArray[this->len++] = ((c1 & 0x1F) << 6) | (c2 & 0x3F);
-					// 1110 aaaa 10bb bbcc 10cc dddd -> aaaa bbbb cccc dddd (0xE0A080-0xEFBFBF)
-					} else if (0xE0 <= c1 && c1 <= 0xEF) {
-						// 2nd unsigned char
-						if (str[i] == slen - 1) {
-							break;
-						} else {
-							c2 = (unsigned char)str[++i];
-						}
-						// 3rd unsigned char
-						if (str[i] == slen - 1) {
-							break;
-						} else {
-							c3 = (unsigned char)str[++i];
-						}
-						this->charArray[this->len++] = ((c1 & 0xF) << 12) | ((c2 & 0x3F) << 6) | (c3 & 0x3F);
-					}
-				}
-			}
-			#if SUPPORT_SJIS
-			if (this->encoding == String::CP932) {
-				// CP932 -> UCS-4
-				for (int i = 0; i < slen; i++) {
-					c1 = (unsigned char)str[i];
-					// 1unsigned char character
-					if (c1 < 0x80) {
-						this->charArray[this->len++] = c1;
-					} else if (c1 == 0x80 || c1 == 0xa0 || c1 >= 0xfd) {
-						this->charArray[this->len++] = '?';
-					} else if (0xa1 <= c1 && c1 <= 0xdf) {
-						this->charArray[this->len++] = c1 + 0xfec0;
-					// 2unsigned char character
-					} else {
-						c2 = (unsigned char)str[++i];
-						if(c2 < 0x40 || c2 == 0x7f || c2 > 0xfc) {
-							this->charArray[this->len++] = '?';
-						}
-						if (c1 >= 0xe0) c1 -= 0x40;
-						if (c2 > 0x7e) c2--;
-						this->charArray[this->len++] = table_cp932[(c1 - 0x81) * 188 + (c2 - 0x40)];
-						if (this->charArray[this->len] == 0) this->charArray[this->len] = '?';
-					}
-				}
-			}
-			#endif // SUPPORT_SJIS
+		this->buffer = NULL;
+		this->_len = 0;
+	}
+
+	String::String(const char* text, int length /*= -1*/)
+	{
+		if (text == NULL) {
+			this->buffer = NULL;
+			this->_len = 0;
 		} else {
-			this->bytes = 0/* NULL */;
-			this->charArray = 0/* NULL */;
-			this->len = 0;
+			if (length == -1) length = strlen(text);
+			this->buffer = new char[length + 1];
+			//ASSERT(this->buffer)
+			memcpy(this->buffer, text, length);
+			this->buffer[length] = '\0';
+			this->_len = length;
+		}
+	}
+
+	String::String(const String& text)
+	{
+		this->buffer = NULL;
+		this->_len = 0;
+		*this = text;
+	}
+
+	String::~String()
+	{
+		if (this->buffer != NULL) delete [] this->buffer;
+	}
+
+	String& String::operator =(const char* text)
+	{
+		if (this->buffer != NULL) delete [] this->buffer;
+		if (text == NULL) {
+			this->buffer = NULL;
+			this->_len = 0;
+		} else {
+			this->_len = strlen(text);
+			this->buffer = new char[this->_len + 1];
+			//ASSERT(this->buffer)
+			memcpy(this->buffer, text, this->_len);
+			this->buffer[this->_len] = '\0';
 		}
 		return *this;
 	}
-	
-	String::String()
+
+	String& String::operator =(const String& text)
 	{
-		this->encoding = String::UTF_8;
-		this->bytes = 0/* NULL */;
-		this->len = 0;
+		if (this->buffer != NULL) delete [] this->buffer;
+		if (text.buffer == NULL) {
+			this->buffer = NULL;
+			this->_len = 0;
+		} else {
+			this->_len = text._len;
+			this->buffer = new char[this->_len + 1];
+			//ASSERT(this->buffer)
+			memcpy(this->buffer, text.buffer, this->_len);
+			this->buffer[this->_len] = '\0';
+		}
+		return *this;
 	}
-	
-	String::String(const char* str)
+
+	void String::operator +=(const char* text)
 	{
-		this->encoding = String::UTF_8;
-		this->bytes = 0/* NULL */;
-		this->len = 0;
-		set(str);
+		int len1 = this->_len, len2 = text != NULL ? strlen(text) : 0;
+		this->_len = len1 + len2;
+		char* buf;
+		if (this->_len == 0) {
+			buf = NULL;
+		} else {
+			buf = new char[this->_len + 1];
+			//ASSERT(buf)
+			if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
+			if (text != NULL) memcpy(&buf[len1], text, len2);
+			buf[this->_len] = '\0';
+		}
+		if (this->buffer != NULL) delete [] this->buffer;
+		this->buffer = buf;
 	}
-	
-	String::String(const String& str)
+
+	void String::operator +=(const String& text)
 	{
-		this->encoding = String::UTF_8;
-		this->bytes = 0/* NULL */;
-		this->len = 0;
-		set((const char*)str);
+		int len1 = this->_len, len2 = text._len;
+		this->_len = len1 + len2;
+		char* buf;
+		if (this->_len == 0) {
+			buf = NULL;
+		} else {
+			buf = new char[this->_len + 1];
+			//ASSERT(buf)
+			if (this->buffer != NULL) memcpy(buf, this->buffer, len1);
+			if (text .buffer != NULL) memcpy(&buf[len1], text.buffer, len2);
+			buf[this->_len] = '\0';
+		}
+		if (this->buffer != NULL) delete [] this->buffer;
+		this->buffer = buf;
 	}
-	
-	String::String(const char* str, int encoding)
+
+	void String::operator +=(char ch)
 	{
-		this->encoding = encoding;
-		this->bytes = 0/* NULL */;
-		this->charArray = 0/* NULL */;
-		this->len = 0;
-		set(str);
+		char* buf = new char[this->_len + 2];
+		//ASSERT(buf)
+		memcpy(buf, this->buffer, this->_len);
+		buf[this->_len++] = ch;
+		buf[this->_len] = '\0';
+		if (this->buffer != NULL) delete [] this->buffer;
+		this->buffer = buf;
 	}
-	
-	String::~String()
+
+	String String::operator +(const char* text) const
 	{
-		delete [] this->bytes;
-		delete [] this->charArray;
+		String ret = *this;
+		ret += text;
+		return ret;
 	}
-	
+
+	String String::operator +(const String& text) const
+	{
+		String ret = *this;
+		ret += text;
+		return ret;
+	}
+
 	int String::length() const
 	{
-		return this->len;
+		return 1;
 	}
 	
-	char* String::getBytes() const
+	bool String::equals(const String& text) const
 	{
-		return this->bytes;
+		if (this->buffer == NULL || text.buffer == NULL) return this->buffer == text.buffer;
+		if (this->_len != text._len) return false;
+
+		return strcmp(this->buffer, text.buffer) == 0;
 	}
-	
-	unsigned int* String::toCharArray() const
+
+	bool String::startsWith(const String& value) const
 	{
-		return this->charArray;
-	}
-	
-	unsigned int String::charAt(int i) const
-	{
-		return (i < this->len) ? this->charArray[i] : 0;
-	}
-	
-	bool String::equals(Object* obj)
-	{
-		return equals((String *)obj);
-	}
-	
-	bool String::equals(String* str)
-	{
-		return equals(str->getBytes());
-	}
-	
-	bool String::equals(const char* str)
-	{
-		return (str && *str && strcmp(this->bytes, str) == 0) ? true : false;
-	}
-	
-	bool String::startsWith(String* str) const
-	{
-		return startsWith(str->getBytes());
-	}
-	
-	bool String::startsWith(const char* str) const
-	{
-		if (str == 0 || this->len == 0 || (int)strlen(str) > (int)strlen(this->bytes)) return false;
-		for (int i = 0; i < (int)strlen(str); i++) {
-			if (str[i] != this->bytes[i]) return false;
+		int len = value._len;
+		if (len > this->_len) return false;
+		for (int i = 0; i < len; i++) {
+			if (this->buffer[i] != value.buffer[i]) return false;
 		}
 		return true;
 	}
-	
-	bool String::endsWith(String* str) const
+
+	bool String::endsWith(const String& value) const
 	{
-		return endsWith(str->getBytes());
-	}
-	
-	bool String::endsWith(const char* str) const
-	{
-		if (str == 0 || this->len == 0 || (int)strlen(str) > (int)strlen(this->bytes)) return false;
-		for (int i = 0; i < (int)strlen(str); i++) {
-			if (str[(int)strlen(str) - i - 1] != 
-				this->bytes[(int)strlen(this->bytes) - i - 1]) return false;
+		int len = value._len;
+		int pos = this->_len - len;
+		if (pos < 0) return false;
+		for (int i = 0; i < len; i++) {
+			if (this->buffer[pos + i] != value.buffer[i]) return false;
 		}
 		return true;
 	}
+
+	int String::indexOf(char ch, int from /*= 0*/) const
+	{
+		if (this->buffer == NULL || this->_len == 0) return -1;
+
+		if (from < 0) from = 0;
+		for (int i = from; i < this->_len; i++) {
+			if (this->buffer[i] == ch) return i;
+		}
+		return -1;
+	}
+
+	int String::indexOf(const String& value, int from /*= 0*/) const
+	{
+		if (this->buffer == NULL) return value.buffer == NULL;
+		if (this->_len == 0) return -1;
+
+		if (from < 0) from = 0;
+		int last = this->_len - value._len;
+		if (value.buffer == NULL || value._len == 0) return from < this->_len ? from : -1;
+		for (int i = from; i <= last; i++) {
+			bool ok = true;
+			for (int j = 0; j < value._len; j++) {
+				if (this->buffer[i + j] != value.buffer[j]) {
+					ok = false;
+					break;
+				}
+			}
+			if (ok) return i;
+		}
+		return -1;
+	}
+
+	int String::lastIndexOf(char ch, int from /*= -1*/) const
+	{
+		if (this->buffer == NULL || this->_len == 0) return -1;
+
+		if (from == -1) from = this->_len;
+		if (from > this->_len) from = this->_len;
+		for (int i = from; i > 0; i--) {
+			if (this->buffer[i - 1] == ch) return i - 1;
+		}
+		return -1;
+	}
+
+	int String::lastIndexOf(const String& value, int from /*= -1*/) const
+	{
+		if (this->buffer == NULL) return value.buffer == NULL;
+		if (this->_len == 0) return -1;
+
+		if (from == -1) from = this->_len;
+		if (from > this->_len) from = this->_len;
+		if (value.buffer == NULL || value._len == 0) return from - 1;
+		for (int i = from; i >= value._len; i--) {
+			bool ok = true;
+			for (int j = 0; j < value._len; j++) {
+				if (this->buffer[i - j - 1] != value.buffer[value._len - j - 1]) {
+					ok = false;
+					break;
+				}
+			}
+			if (ok) return i - value._len;
+		}
+		return -1;
+	}
+
+	String String::substring(int start, int length) const
+	{
+		if (start < 0 || this->_len <= start || length < 1) return NULL;
+		int len = this->_len - start;
+		if (length > len) length = len;
+
+		return String(&this->buffer[start], length);
+	}
+
+	String String::toLowerCase() const
+	{
+		String ret = *this;
+		for (int i = 0; i < ret._len; i++) {
+			char ch = ret.buffer[i];
+			if ('A' <= ch && ch <= 'Z') ret.buffer[i] = ch + ('a' - 'A');
+		}
+		return ret;
+	}
+
+	String String::toUpperCase() const
+	{
+		String ret = *this;
+		for (int i = 0; i < ret._len; i++) {
+			char ch = ret.buffer[i];
+			if ('a' <= ch && ch <= 'z') ret.buffer[i] = ch - ('a' - 'A');
+		}
+		return ret;
+	}
+}
+
+baygui::String operator +(const char* text1, const baygui::String& text2)
+{
+	baygui::String ret = text1;
+	ret += text2;
+	return ret;
 }

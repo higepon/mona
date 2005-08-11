@@ -21,143 +21,56 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !defined(_STRING_H_INCLUDED_)
+#ifndef _STRING_H_INCLUDED_
 #define _STRING_H_INCLUDED_
 
-#if SUPPORT_SJIS
-#include "../../../tools/code_table/cp932.h"
-#endif
-
-#include "Object.h"
+//#include <monapi/Array.h>
+#include <baygui/lang/Object.h>
 
 namespace baygui {
-	/** 文字列クラス */
 	class String : public Object {
+	protected:
+		char* buffer;
+		int _len;
+
 	public:
-		static const int UTF_8 = 0;
-		static const int CP932 = 1;
-		
-	private:
-		/** エンコーディング */
-		int encoding;
-		/** 内部文字列 */
-		char* bytes;
-		/** ワイド文字列 (UCS-4) */
-		unsigned int* charArray;
-		/** ワイド文字列の長さ */
-		int len;
-	
-	private:
-		/**
-		 文字列を設定する
-		 @param s 文字列
-		*/
-		String& set(const char* str);
-		
-	public:
-		/** デフォルトコンストラクタ */
 		String();
-		
-		/**
-		 コピーコンストラクタ
-		 @param str 文字列
-		*/
-		String(const char* str);
-		
-		/**
-		 コピーコンストラクタ
-		 @param str 文字列
-		*/
-		String(const String& str);
-		
-		/**
-		 コピーコンストラクタ
-		 @param str 文字列
-		 @param encoding エンコーディング
-		*/
-		String(const char* str, int encoding);
-		
-		/** デストラクタ */
-		~String();
-		
-		/** ワイド文字数を返す (wstrlen相当) */
+		String(const char* text, int length = -1);
+		String(const String& text);
+		virtual ~String();
+
+		//char operator [](int index) const;
+		//operator const char*() const { return this->buffer; }
+
+		//bool operator ==(const char* text) const;
+		//bool operator ==(const String& text) const;
+		//inline bool operator !=(const char* text) const { return !this->operator ==(text); }
+		//inline bool operator !=(const String& text) const { return !this->operator ==(text); }
+		String& operator =(const char* text);
+		String& operator =(const String& text);
+		void operator +=(const char* text);
+		void operator +=(const String& text);
+		void operator +=(char ch);
+		String operator +(const char* text) const;
+		String operator +(const String& text) const;
+
 		int length() const;
-		
-		/** 内部文字列 (byte配列) を返す */
-		char* getBytes() const;
-		
-		/** ワイド文字列を返す */
-		unsigned int* toCharArray() const;
-		
-		/** i番目のワイド文字を得る */
-		unsigned int charAt(int i) const;
-		
-		/** strcpy(temp, (const char*)str); のように使うことができる */
-		operator const char*() const
-		{
-			return this->bytes;
-		}
-		
-		/** (const char*) -> String 変換 */
-		const String& operator =(const char* str)
-		{
-			set(str);
-			return *this;
-		}
-		
-		/** String -> String 変換？ */
-		const String& operator =(const String& str)
-		{
-			set((const char*)str);
-			return *this;
-		}
-		
-		/**
-		 指定されたオブジェクトと等しいかどうかを得る
-		 @param obj 比較対象のオブジェクト
-		 */
-		bool equals(Object* obj);
-		
-		/**
-		 指定された文字列と等しいかどうかチェックする
-		 @param str 文字列
-		 */
-		bool equals(String* str);
-		
-		/**
-		 指定された文字列と等しいかどうかチェックする
-		 @param str 文字列
-		 */
-		bool equals(const char* str);
-		
-		/**
-		 指定された文字列で始まるかどうかチェックする
-		 @param str 文字列
-		 @return 始まっていればtrue、そうでなければfalse
-		*/
-		bool startsWith(String* str) const;
-		
-		/**
-		 指定された文字列で始まるかどうかチェックする
-		 @param str 文字列
-		 @return 始まっていればtrue、そうでなければfalse
-		*/
-		bool startsWith(const char* str) const;
-		
-		/**
-		 指定された文字列で終っているかどうかチェックする
-		 @param str 文字列
-		 @return 終っていればtrue、そうでなければfalse
-		*/
-		bool String::endsWith(String* str) const;
-		
-		/**
-		 指定された文字列で終っているかどうかチェックする
-		 @param str 文字列
-		 @return 終っていればtrue、そうでなければfalse
-		*/
-		bool endsWith(const char* str) const;
+		char* getBytes() const { return this->buffer; }
+		unsigned int charAt(int index) const { return 63/*this->buffer[index] && 0xffff*/; }
+		bool equals(const String& value) const;
+		bool startsWith(const String& value) const;
+		bool endsWith(const String& value) const;
+		int indexOf(char ch, int from = 0) const;
+		int indexOf(const String& value, int from = 0) const;
+		int lastIndexOf(char ch, int from = -1) const;
+		int lastIndexOf(const String& value, int from = -1) const;
+
+		String substring(int start, int length) const;
+		String toLowerCase() const;
+		String toUpperCase() const;
 	};
 }
 
-#endif // _STRING_H_INCLUDED_
+extern baygui::String operator +(const char* text1, const baygui::String& text2);
+
+#endif  // _STRING_H_INCLUDED_

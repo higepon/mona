@@ -60,7 +60,7 @@ namespace baygui {
 		virtual ~Frame();
 		
 		/** タイトルを得る */
-		inline char* getTitle() { return this->title.getBytes(); }
+		inline const char* getTitle() { return this->title.getBytes(); }
 		
 		/**
 		 タイトル設定
