@@ -471,7 +471,7 @@ namespace baygui {
 					repaint();
 					break;
 				case MSG_GUISERVER_DISPOSEWINDOW:
-					this->isRunning = false;//
+					this->isRunning = false;
 					MonAPI::Message::reply(&info);
 					return;
 				case MSG_TIMER:
@@ -484,14 +484,9 @@ namespace baygui {
 					this->customEvent.arg2   = info.arg2;
 					this->customEvent.arg3   = info.arg3;
 					this->customEvent.from   = info.from;
-					//strcpy(this->customEvent.str, info.str); // danger
 					memcpy(this->customEvent.str, info.str, sizeof(this->customEvent.str));
 					this->customEvent.length = info.length;
 					dispatchEvent(&this->customEvent);
-					/* MSG_PROCESS_STDOUT_DATA は SendReceive で送るので必要 */
-					if (info.header == MSG_PROCESS_STDOUT_DATA) {
-						MonAPI::Message::reply(&info);
-					}
 					break;
 				}
 			}
