@@ -3,7 +3,7 @@ all:
 	cd Graphics/libbaygui && touch dependencies && make && make install
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
-	cd ../MonaNew/tool/mkimg && make
+	cd ../MonaNew/tool/mkimg && make && ./qemu.exe -L . -m 64 -fda mona.img -enable-audio -localtime
 
 clean:
 	cd X/gui && make distclean

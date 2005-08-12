@@ -1,3 +1,9 @@
+2005-08-12  bayside
+
+        * Shells/gshel/gshell.cpp: 標準出力取得スレッドを使わないように修正
+
+        * X/gui/main.cpp: GUIシェルに標準出力を横流しするように修正
+
 2005-08-11  bayside
 
         * Graphics/libbaygui/lang/String.cpp: CStringを元に改造
