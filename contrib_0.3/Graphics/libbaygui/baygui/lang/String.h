@@ -55,6 +55,9 @@ namespace baygui {
 		/** デストラクタ */
 		virtual ~String();
 		
+		/** 'const char*'演算子 */
+		operator const char*() const { return this->buffer; }
+		
 		/** '='演算子 */
 		String& operator =(const char* text);
 		
