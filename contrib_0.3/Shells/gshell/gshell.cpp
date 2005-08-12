@@ -30,28 +30,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define GSHELL_WIDTH  480 /* 8dot X 60chars */
 #define GSHELL_HEIGHT 300 /* 12dot X 25 chars */
 
-static dword my_tid, stdout_tid;
-
-/** 標準出力監視スレッド */
-static void StdoutMessageLoop() {
-	MonAPI::Message::send(my_tid, MSG_SERVER_START_OK);
-
-	while (1) {
-		MessageInfo info;
-		dword id = THREAD_UNKNOWN;
-		if (!MonAPI::Message::receive(&info)) {
-			switch (info.header) {
-			case MSG_PROCESS_STDOUT_DATA:
-				//info.str[127] = '\0';
-				id = MonAPI::Message::lookupMainThread("GSHELL.EX5");
-				MonAPI::Message::sendReceive(NULL, id, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, info.str);
-				MonAPI::Message::reply(&info);
-				break;
-			}
-		}
-	}
-}
-
 /** GUIコンソールクラス */
 class GShell : public Frame {
 private:
@@ -155,7 +133,7 @@ private:
 	}
 
 	/** ディレクトリ移動 */
-	inline void cd(char *str) {
+	inline void cd(const char *str) {
 		String s = str;
 		// 一つ上のディレクトリへ
 		if (s.equals("..") && strlen(currentPath) > 0 && strcmp(currentPath, "/") != 0) {
@@ -235,18 +213,18 @@ private:
 				strcpy(temp, pathname);
 			} else if (this->argv.size() == 2) {
 				sprintf(temp, "%s %s", pathname,
-					((String *)this->argv.get(1))->getBytes()
+					(String *)this->argv.get(1)
 				);
 			} else if (this->argv.size() == 3) {
 				sprintf(temp, "%s %s %s", pathname,
-					((String *)this->argv.get(1))->getBytes(),
-					((String *)this->argv.get(2))->getBytes()
+					(String *)this->argv.get(1),
+					(String *)this->argv.get(2)
 				);
 			} else if (this->argv.size() == 4) {
 				sprintf(temp, "%s %s %s %s", pathname,
-					((String *)this->argv.get(1))->getBytes(),
-					((String *)this->argv.get(2))->getBytes(),
-					((String *)this->argv.get(3))->getBytes()
+					(String *)this->argv.get(1),
+					(String *)this->argv.get(2),
+					(String *)this->argv.get(3)
 				);
 			}
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
@@ -293,7 +271,7 @@ private:
 	}
 
 	/** 指定したファイルがあるかどうか調べる */
-	inline bool existsFile(char *filename) {
+	inline bool existsFile(const char *filename) {
 	#ifdef MONA
 		// ディレクトリを開く
 		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_FALSE);
@@ -360,11 +338,11 @@ private:
 		//
 		// help/?
 		//
-		String s = ((String *)this->argv.get(0))->getBytes();
+		String s = *(String *)this->argv.get(0);
 		if (s.equals("help") || s.equals("?")) {
 			this->addLine("GUIシェル 内部コマンド一覧\n");
 			this->addLine(" help/?, ls/dir, cd, cat/type, date/time, uname/ver, \n");
-			this->addLine(" clear/cls, ps, kill, touch, exit/quit\n");
+			this->addLine(" clear/cls, ps, mem, kill, touch, exit/quit\n");
 		//
 		// ls/dir
 		//
@@ -375,7 +353,7 @@ private:
 		//
 		} else if (s.equals("cd")) {
 			if (this->argv.size() >= 2) {
-				char *pathname = ((String *)this->argv.get(1))->getBytes();
+				const char* pathname = *(String *)this->argv.get(1);
 				if (pathname[0] == '/' || existsFile(pathname) == true) {
 					this->cd(pathname);
 				}
@@ -387,7 +365,7 @@ private:
 		//
 		} else if (s.equals("cat") || s.equals("type")) {
 			if (this->argv.size() >= 2) {
-				char *pathname = ((String *)this->argv.get(1))->getBytes();
+				const char* pathname = *(String *)this->argv.get(1);
 				if (pathname[0] == '/' || existsFile(pathname) == true) {
 					memset(temp, 0, sizeof(temp));
 					// 相対パスから絶対パスへ変換する
@@ -511,7 +489,7 @@ private:
 		//
 		} else if (s.equals("touch")) {
 			if (this->argv.size() >= 2) {
-				char *pathname = ((String *)this->argv.get(1))->getBytes();
+				const char* pathname = *(String *)this->argv.get(1);
 				memset(temp, 0, sizeof(temp));
 				// 相対パスから絶対パスへ変換する
 				if (pathname[0] != '/') {
@@ -534,14 +512,6 @@ private:
 		//
 		} else if (s.equals("exit") || s.equals("quit")) {
 			stop();
-			
-			// 標準出力を開放する
-			dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
-			if (tid != THREAD_UNKNOWN) {
-				MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
-			}
-			syscall_kill_thread(stdout_tid);
-			
 			return;
 		//
 		// exec [pathname]
@@ -550,7 +520,7 @@ private:
 			s.endsWith(".exe") || s.endsWith(".ex2") || s.endsWith(".ex5") ||
 			s.endsWith(".app"))
 		{
-			char *pathname = s.getBytes();
+			const char* pathname = s;
 			memset(temp, 0, sizeof(temp));
 			// 相対パスから絶対パスへ変換する
 			if (pathname[0] != '/') {
@@ -623,16 +593,16 @@ public:
 				paint(getGraphics());
 			// １つ前の履歴
 			} else if (keycode == KeyEvent::VKEY_UP) {
-				if (this->historyPtr == -1) return;
+				if (this->historyPtr <= 0) return;
 				this->historyPtr--;
-				strcpy(commandBuffer, ((String *)history.get(this->historyPtr))->getBytes());
+				strcpy(commandBuffer, *(String *)history.get(this->historyPtr));
 				// 再描画
 				paint(getGraphics());
 			// １つ次の履歴
 			} else if (keycode == KeyEvent::VKEY_DOWN) {
 				if (this->historyPtr < this->history.size() - 1) {
 					this->historyPtr++;
-					strcpy(commandBuffer, ((String *)history.get(this->historyPtr))->getBytes());
+					strcpy(commandBuffer, *(String *)history.get(this->historyPtr));
 				} else {
 					memset(commandBuffer, 0, sizeof(commandBuffer));
 				}
@@ -674,37 +644,6 @@ public:
 		g->drawLine(x0, y0, x0 + 7, y0);
 		g->drawLine(x0, y0 + 1, x0 + 7, y0 + 1);
 		update();
-	}
-
-	/** ウィンドウ生成時に呼ばれる */
-	virtual void addNotify() {
-		Window::addNotify();
-
-		// 標準出力監視スレッド起動
-		my_tid = syscall_get_tid();
-		syscall_mthread_join(syscall_mthread_create((dword)StdoutMessageLoop));
-		MessageInfo msg, src;
-		src.header = MSG_SERVER_START_OK;
-		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
-		stdout_tid = msg.from;
-
-		// 標準出力を得る
-		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
-		if (tid != THREAD_UNKNOWN) {
-			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_GRAB_STDOUT, stdout_tid);
-		}
-	}
-
-	/** ウィンドウ破棄時に呼ばれる */
-	virtual void removeNotify() {
-		Window::removeNotify();
-		
-		// 標準出力を開放する
-		dword tid = monapi_get_server_thread_id(ID_PROCESS_SERVER);
-		if (tid != THREAD_UNKNOWN) {
-			MonAPI::Message::sendReceive(NULL, tid + 1, MSG_PROCESS_UNGRAB_STDOUT, stdout_tid);
-		}
-		syscall_kill_thread(stdout_tid);
 	}
 };
 
