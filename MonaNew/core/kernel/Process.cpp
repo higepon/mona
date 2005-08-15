@@ -411,7 +411,7 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     shared_ = new HList<SharedMemorySegment*>();
 
     /* dll shared segment */
-    SharedMemorySegment* segment;
+/*    SharedMemorySegment* segment;*/
     /* read only segment */
     dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
     this->getSharedList()->add(dllsegment_);
