@@ -21,6 +21,21 @@
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
+#if 1
+
+class MemoryManager2
+{
+public:
+    static dword GetSystemPageSize();
+//    static AllocateMemory(Process* process, LinearAddress start, dword size);
+};
+
+dword MemoryManager2::GetSystemPageSize()
+{
+    return 4096;
+}
+
+#endif
 /*----------------------------------------------------------------------
     ProcessOperation
 ----------------------------------------------------------------------*/
