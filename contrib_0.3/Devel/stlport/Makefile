@@ -27,8 +27,9 @@ install: check
 	./stlport/string \
 	./stlport/vector \
 	$(INCDIR)/stlport
-	$(INSTALL) -m 0644 ./stlport/config/* $(INCDIR)/stlport/config
-	$(INSTALL) -m 0644 ./stlport/stl/* $(INCDIR)/stlport/stl
+	$(INSTALL) -m 0644 ./stlport/config/*.h $(INCDIR)/stlport/config
+	$(INSTALL) -m 0644 ./stlport/stl/*.h $(INCDIR)/stlport/stl
+	$(INSTALL) -m 0644 ./stlport/stl/*.c $(INCDIR)/stlport/stl
 
 uninstall: check
 	rm -r $(INCDIR)/stlport/stl
