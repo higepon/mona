@@ -1,3 +1,13 @@
+2005-08-15  bayside
+
+        * Devel/stlport: 新規追加
+
+        * Graphics/libgui: 新規追加
+
+        * Shells/shell: 新規追加
+
+        * X/monafile: 新規追加
+
 2005-08-12  bayside
 
         * Shells/gshel/gshell.cpp: 標準出力取得スレッドを使わないように修正
