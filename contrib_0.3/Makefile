@@ -1,6 +1,8 @@
 all:
 	cd Graphics/libjpegls && touch dependencies && make && make install
 	cd X/gui && touch dependencies && make && make install
+	cd Devel/stlport && make && make install
+	cd Graphics/libgui && touch dependencies && make && make install
 	cd Graphics/libbaygui && touch dependencies && make && make install
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
