@@ -372,10 +372,6 @@ static void StdoutMessageLoop()
 				if (tid1 != THREAD_UNKNOWN) {
 					Message::send(tid1, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str);
 				}
-				dword tid2 = MonAPI::Message::lookupMainThread("SHELL.EX2");
-				if (tid2 != THREAD_UNKNOWN) {
-					Message::send(tid2, MSG_PROCESS_STDOUT_DATA, 0, 0, 0, msg.str);
-				}
 				break;
 			}
 		}
