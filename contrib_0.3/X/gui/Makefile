@@ -27,7 +27,6 @@ install: all
 	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 	$(INSTALL) ./servers/gui.h $(INCDIR)/servers
 	$(INSTALL) MONA12.MF5 $(BINDIR)/APPS
-	$(INSTALL) MONAWALL.BM5 $(BINDIR)/APPS
 
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
