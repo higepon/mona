@@ -32,7 +32,7 @@ install: all
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f $(INSTDIR)/$(TARGET).EX5 $(INCDIR)/servers/gui.h
-	rm -f $(BINDIR)/APPS/MONA12.MF5 $(BINDIR)/APPS/MONAWALL.BM5
+	rm -f $(BINDIR)/APPS/MONA12.MF5
 
 depend:
 	rm -f dependencies
