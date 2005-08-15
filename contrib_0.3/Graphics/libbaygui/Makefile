@@ -90,6 +90,7 @@ endif
 	$(INSTALL) -m 0644 ./baygui/util/*.h $(INCDIR)/baygui/util
 	$(INSTALL) BAYGUI.MSH $(BINDIR)/APPS
 	$(INSTALL) BAYGUI.INI $(BINDIR)/APPS
+	$(INSTALL) MONAWALL.BM5 $(BINDIR)/APPS
 
 uninstall:
 	rm -f $(LIBDIR)/$(LIB_STATIC)
@@ -109,5 +110,6 @@ endif
 	rm -r $(INCDIR)/baygui
 	rm -f $(BINDIR)/APPS/BAYGUI.INI
 	rm -f $(BINDIR)/APPS/BAYGUI.MSH
+	rm -f $(BINDIR)/APPS/MONAWALL.BM5
 
 include dependencies
