@@ -1,3 +1,7 @@
+2005-08-16  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/MemoryAllocator.cpp: 追加。
+
 2004-08-11  bayside
 
         * core/keyboard_server/KeyboardManager.cpp: Shiftキー等の修飾キーを押しただけで前の文字コードが送信される不具合修正。
