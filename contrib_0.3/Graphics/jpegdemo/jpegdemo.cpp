@@ -54,12 +54,15 @@ int MonaMain(List<char*>* pekoe)
 
     int x, y;
     int vesaWidth  = screen.getWidth();
+    int vesaHeight = screen.getHeight();
     int vesaBpp    = screen.getBpp() / 8;
+    int ww         = w < vesaWidth ? w : vesaWidth;
+    int hh         = h < vesaHeight ? h : vesaHeight;
     byte* vesaVram = screen.getVRAM();
 
-    for(y = 0; y < h; y++)
+    for(y = 0; y < hh; y++)
     {
-        for(x = 0; x < w; x++)
+        for(x = 0; x < ww; x++)
         {
             int k  = (x + (y * vesaWidth)) * vesaBpp;
             int k2 = (x + (y * w)) * 3;
@@ -76,7 +79,7 @@ int MonaMain(List<char*>* pekoe)
         }
     }
 
-    delete picture;
+    delete [] picture;
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
 
