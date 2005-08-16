@@ -9,6 +9,7 @@ all:
 	cd Graphics/libbaygui && touch dependencies && make && make install
 # non-gui applications
 	cd Games/infones && touch dependencies && make && make install
+	cd Graphics/jpegdemo && touch dependencies && make && make install
 	cd Multimedia/monapeg && touch dependencies && make && make install
 # MonaForms applications
 	cd Shells/shell && touch dependencies && make && make install
@@ -22,6 +23,7 @@ all:
 clean:
 	cd Devel/stlport && make clean
 	cd Games/infones && make clean
+	cd Graphics/jpegdemo && make clean
 	cd Graphics/libbaygui && make clean
 	cd Graphics/libjpegls && make clean
 	cd Graphics/libgui && make clean
