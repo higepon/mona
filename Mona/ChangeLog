@@ -68,7 +68,7 @@
 
         * src/servers/mones : TCP実装開始。とりあえずダンプだけ。
 
-2004-07-14  bayside
+2005-07-14  bayside
 
         * Graphics::drawText() -> Graphics::drawString()
         
@@ -85,11 +85,11 @@
         
         * lib/liblen-linux.a: monapeg用コンパイル済みライブラリ
 
-2004-07-13  bayside
+2005-07-13  bayside
 
         * samples/non-gui/infones: v0.96Jに差し替え
 
-2004-07-11  bayside
+2005-07-11  bayside
 
         * Vectorクラス追加
         
