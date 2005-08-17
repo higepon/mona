@@ -2,6 +2,8 @@
 
         * apps/non-gui/monappt: 新規追加
 
+        * src/lib/gui/System/Mona/Forms/Application.cpp: MSG_GUISERVER_DISPOSEWINDOWを受け付けるように修正
+
         * apps/non-gui/jpegdemo: contrib_0.3からバックポート
 
         * apps/baygui/gshell: contrib_0.3からバックポート
