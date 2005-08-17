@@ -18,6 +18,8 @@
 
         * src/servers/gui/Window.h: contrib_0.3からバックポート
 
+        * src/lib/baygui: contrib_0.3からバックポート
+
         * src/servers/key/KeyboardManager.cpp: MonaNewからバックポート
 
 2005-08-04  bayside
