@@ -11,7 +11,7 @@ LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
 CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR)
 CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
 TOOLSDIR     = $(MONADIR)/tools
-INCLUDE      = -I$(INCDIR) -I$(TOOLSDIR)
+INCLUDE      = -I$(INCDIR) -I.
 BOOT1        = firstboot.bin
 BOOT2        = secondboot.bin
 KERNEL       = kernel.bin
@@ -33,10 +33,10 @@ SOURCES      = cstart.cpp            \
                IDTUtil.cpp           \
                PageManager.cpp       \
                MemoryManager.cpp     \
-               sysresource.cpp       \
+               Messenger.cpp         \
                Segments.cpp          \
-               test_higepon.cpp      \
                Mutex.cpp             \
+               RTC.cpp               \
                VesaConsole.cpp       \
                LogConsole.cpp        \
                IDManager.cpp         \

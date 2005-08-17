@@ -16,7 +16,6 @@
 #include "global.h"
 #include "io.h"
 #include "ihandlers.h"
-#include "tester.h"
 #include "Process.h"
 #include "Scheduler.h"
 

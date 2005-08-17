@@ -21,6 +21,21 @@
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
+#if 1
+
+class MemoryManager2
+{
+public:
+    static dword GetSystemPageSize();
+//    static AllocateMemory(Process* process, LinearAddress start, dword size);
+};
+
+dword MemoryManager2::GetSystemPageSize()
+{
+    return 4096;
+}
+
+#endif
 /*----------------------------------------------------------------------
     ProcessOperation
 ----------------------------------------------------------------------*/
@@ -396,7 +411,7 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     shared_ = new HList<SharedMemorySegment*>();
 
     /* dll shared segment */
-    SharedMemorySegment* segment;
+/*    SharedMemorySegment* segment;*/
     /* read only segment */
     dllsegment_ = new SharedMemorySegment(0x30000000, g_dllSharedObject->getSize(), g_dllSharedObject, false);
     this->getSharedList()->add(dllsegment_);

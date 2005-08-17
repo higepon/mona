@@ -20,11 +20,10 @@
 #include "PageManager.h"
 #include "MemoryManager.h"
 #include "Segments.h"
-#include "sysresource.h"
-#include "tester.h"
 #include "vbe.h"
 #include "IDManager.h"
 #include "Scheduler.h"
+#include "Messenger.h"
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
@@ -34,10 +33,6 @@ GLOBAL DokodemoView g_dokodemo_view;
 /* semaphore */
 GLOBAL semaphore g_semaphore_console  GLOBAL_VAL(1);
 GLOBAL semaphore g_semaphore_shared   GLOBAL_VAL(1);
-
-/* expr:sysresource */
-GLOBAL BitMap *g_irqMap;
-GLOBAL IRQHandler g_irqHandlers[16];
 
 /* GLOBAL DESCRIPTOR TABLE */
 GLOBAL SegDesc* g_gdt;

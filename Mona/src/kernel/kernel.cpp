@@ -55,7 +55,6 @@
 #include "global.h"
 #include "kernel.h"
 #include "operator.h"
-#include "tester.h"
 #include "checker.h"
 #include "GraphicalConsole.h"
 #include "ihandlers.h"
@@ -71,6 +70,7 @@
 #include "Loader.h"
 #include "Scheduler.h"
 #include "monaboot.h"
+#include "RTC.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"

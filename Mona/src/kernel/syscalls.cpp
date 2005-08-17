@@ -13,9 +13,9 @@
 
 #include "syscalls.h"
 #include "global.h"
-#include "tester.h"
 #include "io.h"
 #include "Loader.h"
+#include "RTC.h"
 
 extern const char* version;
 extern dword version_number;

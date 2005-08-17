@@ -658,18 +658,20 @@ PageEntry* PageManager::allocatePageTable() const
 */
 bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip)
 {
-    Process* current     = g_currentThread->process;
+    Process* current = g_currentThread->process;
 
     /* search shared memory segment */
-    List<SharedMemorySegment*>* list = current->getSharedList();
-    for (int i = 0; i < list->size(); i++)
+    if ((error & 0x01) == ARCH_FAULT_NOT_EXIST)
     {
-        SharedMemorySegment* segment = list->get(i);
-
-        if (segment->inRange(address) && (error & 0x1) == 0)
-        {
-            return segment->faultHandler(address, FAULT_NOT_EXIST);
-        }
+	List<SharedMemorySegment*>* list = current->getSharedList();
+	for (int i = 0; i < list->size(); i++)
+	{
+	    SharedMemorySegment* segment = list->get(i);
+	    if (segment->inRange(address))
+	    {
+		return segment->faultHandler(address, FAULT_NOT_EXIST);
+	    }
+	}
     }
 
     /* heap */
@@ -703,7 +705,6 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
 
         ThreadOperation::kill();
         return true;
-    return true;
 }
 
 /*! set page attribute
