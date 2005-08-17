@@ -58,7 +58,7 @@ namespace baygui {
 		inline bool getPushed() { return this->pushed; }
 		
 		/** ƒ‰ƒxƒ‹‚ð“¾‚é */
-		inline char* getLabel() { return this->label.getBytes(); }
+		inline const char* getLabel() { return this->label.getBytes(); }
 		
 		/** •`‰æƒnƒ“ƒhƒ‰ */
 		virtual void paint(Graphics* g);

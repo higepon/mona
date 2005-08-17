@@ -71,7 +71,7 @@ namespace baygui {
 		virtual void setText(const String& text);
 		
 		/** テキストを得る */
-		inline char* getText() { return this->text.getBytes(); }
+		inline const char* getText() { return this->text.getBytes(); }
 		
 		/** 描画ハンドラ */
 		virtual void paint(Graphics* g);

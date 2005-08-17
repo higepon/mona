@@ -21,143 +21,139 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !defined(_STRING_H_INCLUDED_)
+#ifndef _STRING_H_INCLUDED_
 #define _STRING_H_INCLUDED_
-
-#if SUPPORT_SJIS
-#include "../../../tools/code_table/cp932.h"
-#endif
 
 #include "Object.h"
 
 namespace baygui {
 	/** 文字列クラス */
 	class String : public Object {
-	public:
-		static const int UTF_8 = 0;
-		static const int CP932 = 1;
-		
-	private:
-		/** エンコーディング */
-		int encoding;
+	protected:
 		/** 内部文字列 */
-		char* bytes;
-		/** ワイド文字列 (UCS-4) */
-		unsigned int* charArray;
-		/** ワイド文字列の長さ */
-		int len;
-	
-	private:
-		/**
-		 文字列を設定する
-		 @param s 文字列
-		*/
-		String& set(const char* str);
-		
+		char* buffer;
+		/** 内部文字列長 */
+		int _len;
+
 	public:
 		/** デフォルトコンストラクタ */
 		String();
 		
 		/**
 		 コピーコンストラクタ
-		 @param str 文字列
+		 @param text 文字列
+		 @param length 文字列長（初期値＝与えられた文字列の長さ）
 		*/
-		String(const char* str);
+		String(const char* text, int length = -1);
 		
 		/**
 		 コピーコンストラクタ
-		 @param str 文字列
+		 @param text 文字列
 		*/
-		String(const String& str);
-		
-		/**
-		 コピーコンストラクタ
-		 @param str 文字列
-		 @param encoding エンコーディング
-		*/
-		String(const char* str, int encoding);
+		String(const String& text);
 		
 		/** デストラクタ */
-		~String();
+		virtual ~String();
 		
-		/** ワイド文字数を返す (wstrlen相当) */
+		/** 'const char*'演算子 */
+		operator const char*() const { return this->buffer; }
+		
+		/** '='演算子 */
+		String& operator =(const char* text);
+		
+		/** '='演算子 */
+		String& operator =(const String& text);
+		
+		/** '+='演算子 */
+		void operator +=(const char* text);
+		
+		/** '+='演算子 */
+		void operator +=(const String& text);
+		
+		/** '+='演算子 */
+		void operator +=(char ch);
+		
+		/** '+'演算子 */
+		String operator +(const char* text) const;
+		
+		/** '+'演算子 */
+		String operator +(const String& text) const;
+		
+		/** 内部文字列を得る */
+		char* getBytes() const { return this->buffer; }
+		
+		/** ワイド文字列の長さを得る */
 		int length() const;
 		
-		/** 内部文字列 (byte配列) を返す */
-		char* getBytes() const;
+		/** 指定された順番のワイド文字を得る */
+		unsigned int charAt(int index) const;
 		
-		/** ワイド文字列を返す */
-		unsigned int* toCharArray() const;
-		
-		/** i番目のワイド文字を得る */
-		unsigned int charAt(int i) const;
-		
-		/** strcpy(temp, (const char*)str); のように使うことができる */
-		operator const char*() const
-		{
-			return this->bytes;
-		}
-		
-		/** (const char*) -> String 変換 */
-		const String& operator =(const char* str)
-		{
-			set(str);
-			return *this;
-		}
-		
-		/** String -> String 変換？ */
-		const String& operator =(const String& str)
-		{
-			set((const char*)str);
-			return *this;
-		}
+		/** ワイド文字列を得る */
+		const unsigned int* toCharArray() const;
 		
 		/**
 		 指定されたオブジェクトと等しいかどうかを得る
 		 @param obj 比較対象のオブジェクト
-		 */
-		bool equals(Object* obj);
-		
-		/**
-		 指定された文字列と等しいかどうかチェックする
-		 @param str 文字列
-		 */
-		bool equals(String* str);
-		
-		/**
-		 指定された文字列と等しいかどうかチェックする
-		 @param str 文字列
-		 */
-		bool equals(const char* str);
-		
-		/**
-		 指定された文字列で始まるかどうかチェックする
-		 @param str 文字列
-		 @return 始まっていればtrue、そうでなければfalse
 		*/
-		bool startsWith(String* str) const;
+		virtual bool equals(Object* obj) const { return equals((String *)obj); }
 		
 		/**
-		 指定された文字列で始まるかどうかチェックする
-		 @param str 文字列
-		 @return 始まっていればtrue、そうでなければfalse
+		 指定された文字列と等しいかどうかを得る
+		 @param value 文字列
 		*/
-		bool startsWith(const char* str) const;
+		bool equals(const String& value) const;
 		
 		/**
-		 指定された文字列で終っているかどうかチェックする
-		 @param str 文字列
-		 @return 終っていればtrue、そうでなければfalse
+		 指定された文字列で始まっているかどうかを得る
+		 @param value 文字列
 		*/
-		bool String::endsWith(String* str) const;
+		bool startsWith(const String& value) const;
 		
 		/**
-		 指定された文字列で終っているかどうかチェックする
-		 @param str 文字列
-		 @return 終っていればtrue、そうでなければfalse
+		 指定された文字列で終わっているかどうかを得る
+		 @param value 文字列
 		*/
-		bool endsWith(const char* str) const;
+		bool endsWith(const String& value) const;
+		
+		/**
+		 指定された文字が出現する先頭からの位置を得る
+		 @param ch 文字
+		*/
+		int indexOf(char ch, int from = 0) const;
+		
+		/**
+		 指定された文字列が出現する先頭からの位置を得る
+		 @param value 文字列
+		*/
+		int indexOf(const String& value, int from = 0) const;
+		
+		/**
+		 指定された文字列が出現する終端からの位置を得る
+		 @param value 文字列
+		*/
+		int lastIndexOf(char ch, int from = -1) const;
+		
+		/**
+		 指定された文字列が出現する終端からの位置を得る
+		 @param value 文字列
+		*/
+		int lastIndexOf(const String& value, int from = -1) const;
+		
+		/**
+		 部分文字列を得る
+		 @param start 開始位置
+		 @param length 長さ
+		*/
+		String substring(int start, int length) const;
+		
+		/** すべての文字を小文字に変換する */
+		String toLowerCase() const;
+		
+		/** すべての文字を大文字に変換する */
+		String toUpperCase() const;
 	};
 }
 
-#endif // _STRING_H_INCLUDED_
+extern baygui::String operator +(const char* text1, const baygui::String& text2);
+
+#endif  // _STRING_H_INCLUDED_

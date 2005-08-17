@@ -373,48 +373,41 @@ namespace baygui {
 					if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
 						if ((modcode & KEY_MODIFIER_SHIFT) == KEY_MODIFIER_SHIFT) {
 							this->modifiers = KeyEvent::VKEY_LSHIFT;
-							charcode = 0;
 						} else if ((modcode & KEY_MODIFIER_ALT) == KEY_MODIFIER_ALT) {
 							this->modifiers = KeyEvent::VKEY_ALT;
-							charcode = 0;
 						} else if ((modcode & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) {
 							this->modifiers = KeyEvent::VKEY_CTRL;
-							charcode = 0;
 						}
 					} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
 						this->modifiers = 0;
 					}
 					
-					char temp[128];
-					sprintf(temp, "[%d,%d,%d]", keycode, modcode, charcode);
-					syscall_print(temp);
-					
-					/* 一般キーの判定 */
-					if (keycode == 33 || keycode == 105) {
+					/* 一般キーの判定（qemu/実機） */
+					if (keycode == MonAPI::Keys::PageUp || keycode == 105) {
 						key = KeyEvent::VKEY_PGUP;
-					} else if (keycode == 34 || keycode == 99) {
+					} else if (keycode == MonAPI::Keys::PageDown || keycode == 99) {
 						key = KeyEvent::VKEY_PGDOWN;
-					} else if (keycode == 36 || keycode == 103) {
+					} else if (keycode == MonAPI::Keys::Home || keycode == 103) {
 						key = KeyEvent::VKEY_HOME;
-					} else if (keycode == 35 || keycode == 97) {
+					} else if (keycode == MonAPI::Keys::End || keycode == 97) {
 						key = KeyEvent::VKEY_END;
-					} else if (keycode == 38 || keycode == 104) {
+					} else if (keycode == MonAPI::Keys::Up || keycode == 104) {
 						key = KeyEvent::VKEY_UP;
-					} else if (keycode == 40 || keycode == 98) {
+					} else if (keycode == MonAPI::Keys::Down || keycode == 98) {
 						key = KeyEvent::VKEY_DOWN;
-					} else if (keycode == 37 || keycode == 100) {
+					} else if (keycode == MonAPI::Keys::Left || keycode == 100) {
 						key = KeyEvent::VKEY_LEFT;
-					} else if (keycode == 39 || keycode == 102) {
+					} else if (keycode == MonAPI::Keys::Right || keycode == 102) {
 						key = KeyEvent::VKEY_RIGHT;
-					} else if (keycode == 45 || keycode == 96) {
+					} else if (keycode == MonAPI::Keys::Insert || keycode == 96) {
 						key = KeyEvent::VKEY_INSERT;
-					} else if (keycode == 13) {
+					} else if (keycode == MonAPI::Keys::Enter) {
 						key = KeyEvent::VKEY_ENTER;
-					} else if (keycode == 9) {
+					} else if (keycode == MonAPI::Keys::Tab) {
 						key = KeyEvent::VKEY_TAB;
-					} else if (keycode == 8) {
+					} else if (keycode == MonAPI::Keys::Back) {
 						key = KeyEvent::VKEY_BACKSPACE;
-					} else if (keycode == 46 || keycode == 110) {
+					} else if (keycode == MonAPI::Keys::Delete || keycode == 110) {
 						key = KeyEvent::VKEY_DELETE;
 					} else {
 						key = charcode;
@@ -424,9 +417,9 @@ namespace baygui {
 					if (key > 0) {
 						this->keyEvent.setKeycode(key);
 						this->keyEvent.setModifiers(this->modifiers);
-						if (info.arg2 & KEY_MODIFIER_DOWN) {
+						if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
 							this->keyEvent.setType(KeyEvent::KEY_PRESSED);
-						} else if (info.arg2 & KEY_MODIFIER_UP) {
+						} else if ((modcode & KEY_MODIFIER_UP) == KEY_MODIFIER_UP) {
 							this->keyEvent.setType(KeyEvent::KEY_RELEASED);
 						}
 						dispatchEvent(&this->keyEvent);
@@ -477,6 +470,10 @@ namespace baygui {
 					setFocused(false);
 					repaint();
 					break;
+				case MSG_GUISERVER_DISPOSEWINDOW:
+					this->isRunning = false;
+					MonAPI::Message::reply(&info);
+					return;
 				case MSG_TIMER:
 					kill_timer(info.arg1);
 					dispatchEvent(&this->timerEvent);
@@ -487,14 +484,9 @@ namespace baygui {
 					this->customEvent.arg2   = info.arg2;
 					this->customEvent.arg3   = info.arg3;
 					this->customEvent.from   = info.from;
-					//strcpy(this->customEvent.str, info.str); // danger
 					memcpy(this->customEvent.str, info.str, sizeof(this->customEvent.str));
 					this->customEvent.length = info.length;
 					dispatchEvent(&this->customEvent);
-					/* MSG_PROCESS_STDOUT_DATA は SendReceive で送るので必要 */
-					if (info.header == MSG_PROCESS_STDOUT_DATA) {
-						MonAPI::Message::reply(&info);
-					}
 					break;
 				}
 			}

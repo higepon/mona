@@ -76,7 +76,7 @@ namespace baygui {
 		inline CheckboxGroup* getCheckboxGroup() { return this->group; }
 		
 		/** ƒ‰ƒxƒ‹‚ð“¾‚é */
-		inline char* getLabel() { return this->label.getBytes(); }
+		inline const char* getLabel() { return this->label.getBytes(); }
 		
 		/** •`‰æƒnƒ“ƒhƒ‰ */
 		virtual void paint(Graphics* g);

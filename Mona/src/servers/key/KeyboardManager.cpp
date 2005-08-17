@@ -169,6 +169,8 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
     if(Keys::IsToChar(*kinfo, keyTopMap, keyTopMapS) == true){
       kinfo->charcode = Keys::ToChar(*kinfo, keyTopMap, keyTopMapS);
       kinfo->modifiers |= KEY_MODIFIER_CHAR;
+    } else {
+      kinfo->charcode = 0;
     }
 
     //printf("{%2x:%2x} ", kinfo->keycode, kinfo->modifiers);

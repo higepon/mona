@@ -7,6 +7,7 @@ all:
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd monapeg && $(MAKE) $@
+	@cd monappt && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -21,6 +22,7 @@ install:
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd monapeg && $(MAKE) $@
+	@cd monappt && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -35,6 +37,7 @@ clean: touchdepend
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd monapeg && $(MAKE) $@
+	@cd monappt && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -48,6 +51,7 @@ depend: touchdepend
 	@cd bzcat && $(MAKE) $@
 	@cd monamona && $(MAKE) $@
 	@cd monapeg && $(MAKE) $@
+	@cd monappt && $(MAKE) $@
 	@cd pciinfo && $(MAKE) $@
 	@cd ata && $(MAKE) $@
 	@cd cdfsread && $(MAKE) $@
@@ -60,6 +64,7 @@ distclean:
 	rm -f bzcat/dependencies
 	rm -f monamona/dependencies
 	rm -f monapeg/dependencies
+	rm -f monappt/dependencies
 	rm -f pciinfo/dependencies
 	rm -f ata/dependencies
 	@cd nic && $(MAKE) $@
@@ -73,6 +78,7 @@ touchdepend:
 	touch bzcat/dependencies
 	touch monamona/dependencies
 	touch monapeg/dependencies
+	touch monappt/dependencies
 	touch pciinfo/dependencies
 	touch ata/dependencies
 	touch cdfsread/dependencies
