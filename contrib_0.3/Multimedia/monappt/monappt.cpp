@@ -4,6 +4,27 @@
 
 using namespace MonAPI;
 
+int OpenSlide(List<CString>* list, int i)
+{
+	if (list->get(i).endsWith(".jpg")) {
+		// 画像を開く
+		CString cstr = "/APPS/JPEGDEMO.EX5 ";
+		cstr += System::getBundlePath();
+		cstr += "/";
+		cstr += list->get(i);
+		syscall_set_cursor(0,0);
+		return monapi_call_process_execute_file((const char*)cstr, MONAPI_FALSE);
+	} else if (list->get(i).endsWith(".mpg")) {
+		// 動画を開く
+		CString cstr = "/APPS/MONAPEG.EX5 ";
+		cstr += System::getBundlePath();
+		cstr += "/";
+		cstr += list->get(i);
+		syscall_set_cursor(0,0);
+		return monapi_call_process_execute_file((const char*)cstr, MONAPI_FALSE);
+	}
+}
+
 int MonaMain(List<char*>* argv)
 {
 	// 設定ファイル名
@@ -43,13 +64,51 @@ int MonaMain(List<char*>* argv)
 			temp[strlen((const char*)temp)] = filebuff[i];
 		}
 	}
-	for (int i = 0; i < list.size(); i++) {
-		if (list.get(i).endsWith(".jpg")) {
-			printf("/APPS/JPEGDEMO.EX5 %s\n", (const char*)list.get(i));
-		} else if (list.get(i).endsWith(".mpg")) {
-			printf("/APPS/MONAPEG.EX5 %s\n", (const char*)list.get(i));
+	
+	// キーサーバーに登録する
+	syscall_clear_screen();
+	syscall_set_cursor(0,0);
+	if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+	
+	// １枚目のスライド
+	int slideno = 0;
+	OpenSlide(&list, slideno);
+	
+	// メッセージループ
+	for (MessageInfo info;;)
+	{
+		if (MonAPI::Message::receive(&info) != 0) continue;
+		
+		if (info.header == MSG_KEY_VIRTUAL_CODE) {
+			int keycode  = info.arg1;
+			int modcode  = info.arg2;
+			int charcode = info.arg3;
+			if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+				if (keycode == Keys::Escape) {
+					break;
+				} else if (keycode == Keys::Enter) {
+					// 次のスライド
+					if (slideno == list.size() - 1) {
+						OpenSlide(&list, list.size() - 1);
+					} else {
+						OpenSlide(&list, ++slideno);
+					}
+				} else if (keycode == Keys::Back) {
+					// 前のスライド
+					if (slideno == 0) {
+						OpenSlide(&list, 0);
+					} else {
+						OpenSlide(&list, --slideno);
+					}
+				}
+			}
 		}
 	}
+	
+	// キーサーバーから登録解除する
+	monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
+	syscall_clear_screen();
+	syscall_set_cursor(0,0);
 	
 	free(filebuff);
 	return(0);
