@@ -1,3 +1,23 @@
+2005-08-17  bayside
+
+        * apps/non-gui/monappt: 新規追加
+
+        * apps/non-gui/jpegdemo: contrib_0.3からバックポート
+
+        * apps/baygui/gshell: contrib_0.3からバックポート
+
+        * include/baygui: contrib_0.3からバックポート
+
+        * src/lib/baygui: contrib_0.3からバックポート
+
+        * src/servers/gui/main.cpp: contrib_0.3からバックポート
+
+        * src/servers/gui/Window.cpp: contrib_0.3からバックポート
+
+        * src/servers/gui/Window.h: contrib_0.3からバックポート
+
+        * src/servers/key/KeyboardManager.cpp: MonaNewからバックポート
+
 2005-08-04  bayside
 
         * include/serves/gui.h: include/gui/message.h から移動
