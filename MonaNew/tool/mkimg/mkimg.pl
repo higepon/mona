@@ -43,6 +43,8 @@ sub writedir
 	{
 		next if !-d "$g_dir/$dir$d" || $d eq "." || $d eq "..";
 		call("fat_write $g_out --mkdir $dir$d");
-		writedir("$dir$d");
+		if (index("$dir$d", "APPS", 0) < 0) {
+			writedir("$dir$d");
+		}
 	}
 }
