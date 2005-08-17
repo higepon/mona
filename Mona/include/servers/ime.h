@@ -21,31 +21,21 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !defined(_IMESERVER_H_INCLUDED_)
-#define _IMESERVER_H_INCLUDED_
+#if !defined(_MESSAGES_H_INCLUDED_)
+#define _MESSAGES_H_INCLUDED_
 
-#define MAX_TEXT_LEN     128
-#define BASICDIC_NAME    "/BASICDIC.TX5"
+// ==================================================
+// IMEサーバー メッセージ
+// ==================================================
 
-/** IMEサーバークラス */
-class ImeServer : public MonAPI::Server {
-private:
-	/** 辞書データ */
-	char *basicDic;
-	/** 辞書データサイズ */
-	int basicDicSize;
-
-protected:
-	virtual bool loadDictionary();
-	virtual int  getKanji(char *yomi, HList<MonAPI::CString>* result);
-	virtual bool getYomi(char *kanji, char *result);
-	virtual bool getKana(char *inputString, char *result);
-	virtual bool getRoman(char *kana, char *result);
-	
-public:
-	ImeServer::ImeServer();
-	virtual ImeServer::~ImeServer();
-	virtual void service();
+enum {
+	MSG_IMESERVER_GETKANJI = 0x1000,
+	MSG_IMESERVER_STARTKANJI,
+	MSG_IMESERVER_KANJI,
+	MSG_IMESERVER_ENDKANJI,
+	MSG_IMESERVER_GETYOMI,
+	MSG_IMESERVER_GETKANA,
+	MSG_IMESERVER_GETROMAN,
 };
 
-#endif // _IMESERVER_H_INCLUDED_
+#endif // _MESSAGES_H_INCLUDED_
