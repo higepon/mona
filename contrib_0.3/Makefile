@@ -11,6 +11,7 @@ all:
 	cd Games/infones && touch dependencies && make && make install
 	cd Graphics/jpegdemo && touch dependencies && make && make install
 	cd Multimedia/monapeg && touch dependencies && make && make install
+	cd Multimedia/monappt && touch dependencies && make && make install
 # MonaForms applications
 	cd Shells/shell && touch dependencies && make && make install
 	cd X/monafile && touch dependencies && make && make install
