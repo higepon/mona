@@ -43,6 +43,7 @@ namespace baygui {
 
 	Thread::Thread(Runnable* runnable)
 	{
+		parent_tid = MonAPI::System::getThreadID();
 		this->runnable = runnable;
 	}
 
@@ -56,6 +57,6 @@ namespace baygui {
 		MonAPI::Message::receive(&msg, &src, MonAPI::Message::equalsHeader);
 		dword child_tid = msg.from;
 		// Runnable::run() を呼ばせる
-		MonAPI::Message::send(child_tid, MSG_SERVER_START_OK, (dword)runnable);
+		MonAPI::Message::send(child_tid, MSG_SERVER_START_OK, (dword)this->runnable);
 	}
 }
