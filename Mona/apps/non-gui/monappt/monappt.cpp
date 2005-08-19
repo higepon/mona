@@ -23,10 +23,10 @@ int OpenJpeg(const char* filename)
 		return -1;
 	}
 
-	CJPEGLS jpeg;
+	CJPEGLS* jpeg = new CJPEGLS();
 
 	/* jpeg operation */
-	if (jpeg.Open(mi->Data, mi->Size) != 0) {
+	if (jpeg->Open(mi->Data, mi->Size) != 0) {
 		printf("not supported image\n");
 		monapi_cmemoryinfo_dispose(mi);
 		monapi_cmemoryinfo_delete(mi);
@@ -34,9 +34,9 @@ int OpenJpeg(const char* filename)
 	}
 
 	int w, h;
-	jpeg.GetInfo(&w, &h);
-	byte *picture = new byte[w * h * 3];
-	jpeg.Decode(picture);
+	jpeg->GetInfo(&w, &h);
+	byte* picture = new byte[w * h * 3];
+	jpeg->Decode(picture);
 
 	int x, y;
 	int vesaWidth  = screen.getWidth();
@@ -61,6 +61,7 @@ int OpenJpeg(const char* filename)
 	}
 
 	delete [] picture;
+	delete jpeg;
 	monapi_cmemoryinfo_dispose(mi);
 	monapi_cmemoryinfo_delete(mi);
 
@@ -128,6 +129,7 @@ int MonaMain(List<char*>* argv)
 			temp[strlen((const char*)temp)] = filebuff[i];
 		}
 	}
+	free(filebuff);
 	
 	// キーサーバーに登録する
 	syscall_clear_screen();
@@ -178,6 +180,5 @@ int MonaMain(List<char*>* argv)
 	syscall_clear_screen();
 	syscall_set_cursor(0,0);
 	
-	free(filebuff);
 	return(0);
 }
