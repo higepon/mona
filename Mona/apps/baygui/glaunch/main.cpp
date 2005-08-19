@@ -31,9 +31,7 @@ int MonaMain(List<char*>* pekoe)
 {
 	if (pekoe->size() == 0) {
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 DISKICON", MONAPI_FALSE);
-		sleep(1000);
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TERMINALICON", MONAPI_FALSE);
-		sleep(1000);
 		monapi_call_process_execute_file("/APPS/BAYGUI/GLAUNCH.EX5 TRASHBOXICON", MONAPI_FALSE);
 	} else {
 		char* arg0 = pekoe->get(0);
