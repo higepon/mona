@@ -10,6 +10,9 @@ else
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
+ADDLINK    = -ljpegls
+ADDLINKDEP = $(MONADIR)/lib/libjpegls.a
+
 $(TARGET).EXE: $(INSTFILES)
 
 include dependencies
