@@ -117,7 +117,7 @@ void Glaunch::execute()
 }
 
 /** イベントハンドラ */
-void Glaunch::processEvent(Event *event)
+void Glaunch::processEvent(Event* event)
 {
 	if (event->getType() == Event::ITEM_SELECTED) {
 		// 前の選択位置と同じ（ダブルクリック）

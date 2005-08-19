@@ -231,7 +231,7 @@ ShortCut::~ShortCut()
 }
 
 /** タイトルを設定する */
-void ShortCut::setTitle(const char *title)
+void ShortCut::setTitle(const String& title)
 {
 	this->title = title;
 }
@@ -264,7 +264,7 @@ void ShortCut::addNotify() {
 }
 
 /** 再描画 */
-void ShortCut::paint(Graphics *g) {
+void ShortCut::paint(Graphics* g) {
 	int w = getWidth();
 	int h = getHeight();
 
@@ -297,7 +297,7 @@ void ShortCut::paint(Graphics *g) {
 }
 
 /** イベントハンドラ */
-void ShortCut::processEvent(Event *event) {
+void ShortCut::processEvent(Event* event) {
 #if defined(MONA)
 	int w = getWidth();
 	int h = getHeight();
