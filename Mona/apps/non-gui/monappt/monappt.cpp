@@ -14,9 +14,7 @@ int OpenJpeg(const char* filename)
 		printf("sorry, this demo needs 16bpp or higher Video mode\n");
 		return -1;
 	}
-	
-	CJPEGLS jpeg;
-	
+
 	monapi_cmemoryinfo* mi = NULL;
 	mi = monapi_call_file_read_data(filename, MONAPI_FALSE);
 
@@ -24,6 +22,8 @@ int OpenJpeg(const char* filename)
 		printf("file %s not found", filename);
 		return -1;
 	}
+
+	CJPEGLS jpeg;
 
 	/* jpeg operation */
 	if (jpeg.Open(mi->Data, mi->Size) != 0) {
@@ -136,34 +136,38 @@ int MonaMain(List<char*>* argv)
 	
 	// １枚目のスライド
 	int slideno = 0;
-	OpenSlide(&list, slideno);
+	if (OpenSlide(&list, slideno) == 0) {
 	
-	// メッセージループ
-	for (MessageInfo info;;)
-	{
-		if (MonAPI::Message::receive(&info) != 0) continue;
-		
-		if (info.header == MSG_KEY_VIRTUAL_CODE) {
-			int keycode  = info.arg1;
-			int modcode  = info.arg2;
-			int charcode = info.arg3;
-			if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
-				if (keycode == Keys::Escape) {
-					break;
-				} else if (keycode == Keys::Enter) {
-					// 次のスライド
-					if (slideno == list.size() - 1) {
-						OpenSlide(&list, list.size() - 1);
-					} else {
-						OpenSlide(&list, ++slideno);
+		// メッセージループ
+		for (MessageInfo info;;)
+		{
+			if (MonAPI::Message::receive(&info) != 0) continue;
+			
+			if (info.header == MSG_KEY_VIRTUAL_CODE) {
+				int keycode  = info.arg1;
+				int modcode  = info.arg2;
+				int charcode = info.arg3;
+				if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN) {
+					int result;
+					if (keycode == Keys::Escape) {
+						break;
+					} else if (keycode == Keys::Enter) {
+						// 次のスライド
+						if (slideno == list.size() - 1) {
+							result = OpenSlide(&list, list.size() - 1);
+						} else {
+							result = OpenSlide(&list, ++slideno);
+						}
+					} else if (keycode == Keys::Back) {
+						// 前のスライド
+						if (slideno == 0) {
+							result = OpenSlide(&list, 0);
+						} else {
+							result = OpenSlide(&list, --slideno);
+						}
 					}
-				} else if (keycode == Keys::Back) {
-					// 前のスライド
-					if (slideno == 0) {
-						OpenSlide(&list, 0);
-					} else {
-						OpenSlide(&list, --slideno);
-					}
+					// エラーが起きたので終了～
+					if (result != 0) break;
 				}
 			}
 		}
