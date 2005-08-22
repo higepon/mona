@@ -137,8 +137,14 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     //{
     //    delete option;
     //}
+    CommandOption* next;
+    for (option = list.next; option; option = next)
+    {
+	next = option->next;
+	delete option;
+    }
     return result;
-}
+ }
 
 #if 1  // temporary
 HList<dword> grabs;
