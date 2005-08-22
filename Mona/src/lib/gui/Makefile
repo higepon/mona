@@ -23,6 +23,8 @@ SOURCES = \
 	System/Mona/Forms/Cursor.cpp \
 	System/Mona/Forms/Form.cpp \
 	System/Mona/Forms/Label.cpp \
+	System/Mona/Forms/Scrollbar.cpp \
+	System/Mona/Forms/ScrollableControl.cpp \
 	System/Mona/Forms/Timer.cpp \
 	System/Text/Encoding.cpp
 
