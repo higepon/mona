@@ -45,22 +45,22 @@ void HtmlPanel::paint(Graphics *g){
 	if (strcmp(this->url, "about:home") == 0) {
 		// ホームを押したときはここへ
 		g->setColor(0,0,0);
-		g->drawText("ホームページ", 60, 0);
-		g->drawText("ようこそ！", 0, 16);
+		g->drawString("ホームページ", 60, 0);
+		g->drawString("ようこそ！", 0, 16);
 	} else if (strcmp(this->url, "about:stop") == 0) {
 		// 中止を押したときはここへ
 		g->setColor(255,0,0);
-		g->drawText("取り消されたアクション", 0, 0);
+		g->drawString("取り消されたアクション", 0, 0);
 	} else if (strcmp(this->url, "about:favorites") == 0) {
 		// お気に入りを押したときはここへ
 		g->setColor(0,0,0);
-		g->drawText("お気に入り", 0, 0);
+		g->drawString("お気に入り", 0, 0);
 		g->setColor(0,0,255);
-		g->drawText("・仕事関係", 0, 16);
-		g->drawText("・プライベート", 0, 32);
+		g->drawString("・仕事関係", 0, 16);
+		g->drawString("・プライベート", 0, 32);
 	} else if (url != NULL && strlen(url) > 0) {
 		// URLをなにか入れて移動を押したときはここへ
 		g->setColor(0,0,0);
-		g->drawText("HTTP404エラー", 0, 0);
+		g->drawString("HTTP404エラー", 0, 0);
 	}
 }

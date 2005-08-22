@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <baygui.h>
 
 /** 一般部品であるControlクラスを継承 */
-class HtmlPanel : public Control {
+class HtmlPanel : public Component {
 
 private:
 	/** URL文字列 */

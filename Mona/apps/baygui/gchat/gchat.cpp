@@ -41,13 +41,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  +-------------+-------------+
  </pre>
 */
-class GChat : public Window {
+class GChat : public Frame {
 private:
 	ListBox *messageList, *memberList, *channelList, *consoleList;
 	/** コマンド */
 	TextField *text;
 	/** コマンド履歴 */
-	LinkedList *history;
+	Vector *history;
 	/** コマンド履歴ポインター */
 	int historyPtr;
 
@@ -59,7 +59,7 @@ public:
 
 GChat::GChat()
 {
-	setRect((800 - 312) / 2, (600 - 328) /2, 312, 328);
+	setBounds((800 - 312) / 2, (600 - 328) /2, 312, 328);
 	setTitle("#osdev-j - IRCもどき");
 	messageList = new ListBox();
 	memberList  = new ListBox();
@@ -70,11 +70,11 @@ GChat::GChat()
 	messageList->setEnabled(false);
 	consoleList->setEnabled(false);
 	// 部品位置設定
-	messageList->setRect(0,0,220,220);
-	memberList->setRect(220,0,80,220);
-	consoleList->setRect(0,240,220,60);
-	channelList->setRect(220,220,80,80);
-	text->setRect(0,220,220,20);
+	messageList->setBounds(0,0,220,220);
+	memberList->setBounds(220,0,80,220);
+	consoleList->setBounds(0,240,220,60);
+	channelList->setBounds(220,220,80,80);
+	text->setBounds(0,220,220,20);
 	// テストデータ挿入
 	memberList->add("@mona");
 	memberList->add("@pekoe");
@@ -90,7 +90,7 @@ GChat::GChat()
 	add(channelList);
 	add(consoleList);
 	add(text);
-	history = new LinkedList();
+	history = new Vector();
 	historyPtr = 0;
 }
 
@@ -110,7 +110,7 @@ void GChat::processEvent(Event *event)
 	if (event->getType() == Event::TEXT_CHANGED) {
 		// 履歴追加
 		history->add(new String(text->getText()));
-		historyPtr = history->getLength();
+		historyPtr = history->size();
 		messageList->add(text->getText());
 		messageList->repaint();
 		text->setText("");
@@ -125,7 +125,7 @@ void GChat::processEvent(Event *event)
 			}
 		// １つ次の履歴
 		} else if (keycode == KeyEvent::VKEY_DOWN) {
-			if (historyPtr < history->getLength() - 1) {
+			if (historyPtr < history->size() - 1) {
 				historyPtr++;
 				text->setText(((String *)history->get(historyPtr))->getBytes());
 			} else {

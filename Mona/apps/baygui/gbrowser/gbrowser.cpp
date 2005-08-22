@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <baygui.h>
 #include "htmlpanel.h"
 
-class GBrowser : public Window {
+class GBrowser : public Frame {
 
 private:
 	TextField *address;
@@ -33,7 +33,7 @@ private:
 
 public:
 	GBrowser(){
-		setRect((800 - 212) / 2, (600 - 228) /2, 212, 228);
+		setBounds((800 - 212) / 2, (600 - 228) /2, 212, 228);
 		setTitle("ブラウザもどき");
 		// いろいろな部品の作成
 		reload = new Button("更新");
@@ -44,13 +44,13 @@ public:
 		address = new TextField();
 		panel = new HtmlPanel();
 		// いろいろな部品の大きさを設定
-		reload->setRect(0,0,40,20);
-		stop->setRect(40,0,40,20);
-		home->setRect(80,0,50,20);
-		favorites->setRect(130,0,70,20);
-		go->setRect(160,20,40,20);
-		address->setRect(0,20,160,20);
-		panel->setRect(0,40,200,160);
+		reload->setBounds(0,0,40,20);
+		stop->setBounds(40,0,40,20);
+		home->setBounds(80,0,50,20);
+		favorites->setBounds(130,0,70,20);
+		go->setBounds(160,20,40,20);
+		address->setBounds(0,20,160,20);
+		panel->setBounds(0,40,200,160);
 		// いろいろな部品をウィンドウに貼り付ける
 		add(address);
 		add(reload);
