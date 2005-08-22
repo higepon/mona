@@ -1,3 +1,21 @@
+2005-08-21  bayside
+
+        * apps/gui/MonaDat/MonaForms: íœ
+
+        * include/gui/System/Mona/Forms/ScrollBar.h: V‹K’Ç‰Á
+
+        * include/gui/System/Mona/Forms/HScrollBar.h: V‹K’Ç‰Á
+
+        * include/gui/System/Mona/Forms/VScrollBar.h: V‹K’Ç‰Á
+
+        * include/gui/System/Mona/Forms/ScrollableControl.h: V‹K’Ç‰Á
+
+        * src/lib/gui/System/Mona/Forms/ScrollBar.cpp: V‹K’Ç‰Á
+
+        * src/lib/gui/System/Mona/Forms/ScrollableControl.cpp: V‹K’Ç‰Á
+
+        * src/lib/gui/Makefile: ScrollBar, ScrollableControl’Ç‰Á
+
 2005-08-19  bayside
 
         * src/servers/process/main.cpp: ‚½‚Ü‚É—‚¿‚é‚½‚ßb’è‘Îôi‘‹}‚È‘Îô‹‚Şj
