@@ -12,7 +12,7 @@
 #include <gui/System/Collections/ArrayList.h>
 #include <gui/System/Mona/Forms/Application.h>
 #include <gui/System/Mona/Forms/Form.h>
-#include "MonaForms/ScrollableControl.h"
+#include <gui/System/Mona/Forms/ScrollableControl.h>
 #include "SheetTab.h"
 
 using namespace System;
@@ -811,7 +811,7 @@ public:
 	{
 		_P<Form1> f = new Form1();
 		f->Show();
-		char name[8], path[32];
+		char name[8], path[34];
 		for (int i = 2; i <= 11; i++)
 		{
 			sprintf(name, "%d", i);
