@@ -133,10 +133,11 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
     }
-
-    for (option = list.next; option; option = option->next)
+    CommandOption* next;
+    for (option = list.next; option; option = next)
     {
-        delete option;
+	next = option->next;
+	delete option;
     }
     return result;
 }
