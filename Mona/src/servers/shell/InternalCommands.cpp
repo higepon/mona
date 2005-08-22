@@ -15,6 +15,7 @@ enum
     COMMAND_ECHO,
     COMMAND_CLEAR,
     COMMAND_PS,
+    COMMAND_MEM,
     COMMAND_KILL,
     COMMAND_EXEC,
     COMMAND_CHANGE_DRIVE_CD0,
@@ -59,6 +60,10 @@ int Shell::isInternalCommand(const CString& command)
     else if (cmd == "ps")
     {
         return COMMAND_PS;
+    }
+    else if (cmd == "mem")
+    {
+        return COMMAND_MEM;
     }
     else if (cmd == "kill")
     {
@@ -245,6 +250,16 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 printf(buf);
             }
 
+            break;
+        }
+
+    case COMMAND_MEM:
+        {
+            MemoryInfo meminfo;
+            syscall_get_memory_info(&meminfo);
+            printf("   Total Memory : %dbyte\n", meminfo.totalMemoryL);
+            printf(" Free Page Pool : %dbyte\n", meminfo.freePageNum * meminfo.pageSize);
+            printf("Total Page Pool : %dbyte\n", meminfo.totalPageNum * meminfo.pageSize);
             break;
         }
 
