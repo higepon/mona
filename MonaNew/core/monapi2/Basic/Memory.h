@@ -5,8 +5,8 @@
 	ƒƒ‚ƒŠ“Ç‚İ‚İEƒƒ‚ƒŠ‘‚«‚İEƒƒ‚ƒŠ‘€ì
 
 	License=Mona License
-    \version $Revision$
-    \date	$Date$
+	@version $Revision$
+	@date	$Date$
 */
 #ifndef _MONAPI2_BASIC_MEMORY_H
 #define _MONAPI2_BASIC_MEMORY_H
@@ -14,6 +14,8 @@
 #include "Type.h"
 
 namespace monapi2	{
+
+#define SAFE_DELETE(p)	{delete p;p=NULL;}
 
 class MemoryFn
 {

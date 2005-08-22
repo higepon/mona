@@ -5,8 +5,8 @@
 	メモリ読み込み・メモリ書き込み・メモリ操作
 
 	License=Mona License
-    \version $Revision$
-    \date	$Date$
+	@version $Revision$
+	@date	$Date$
 */
 
 #include "Switch.h"
@@ -36,10 +36,9 @@ void MemoryFn::copy(void* pTo,const void* cpFrom, uint nCount)
 //スピードを上げるために4バイト転送を使う。
 //まず転送バイト数を4で割って商と剰余を計算し、4バイト転送と1バイト転送にわける。
 	int i4ByteCount,i1ByteCount;
-	MathFn::divide(nCount,4,&i4ByteCount,&i1ByteCount);
+	divide(nCount,4,&i4ByteCount,&i1ByteCount);
 
 #ifdef _COMPILER_VISUALC
-
 //4バイト転送
 	__asm
 	{
@@ -81,7 +80,7 @@ void MemoryFn::swap(void* pBuffer1,void* pBuffer2,uint nCount)
 {
 //スピードを上げるために4バイト転送を使う。
 	int i4ByteCount,i1ByteCount;
-	MathFn::divide(nCount,4,&i4ByteCount,&i1ByteCount);
+	divide(nCount,4,&i4ByteCount,&i1ByteCount);
 
 //4バイト転送部分
 	uint32* pdwBuffer1=(uint32*)pBuffer1;
@@ -112,7 +111,7 @@ void MemoryFn::copySafe(void* pTo, const void* cpFrom,uint nCount)
 	{
 //スピードを上げるために4バイト転送を使う。
 		int i4ByteCount,i1ByteCount;
-		MathFn::divide(nCount,4,&i4ByteCount,&i1ByteCount);
+		divide(nCount,4,&i4ByteCount,&i1ByteCount);
 
 //反対方向からコピー
 //1バイト転送部分
@@ -142,17 +141,18 @@ int MemoryFn::compare(const void* cpBuffer1,const void* cpBuffer2,uint nCount)
 {
 //スピードを上げるために4バイト比較を使う。
 	int i4ByteCount,i1ByteCount;
-	MathFn::divide(nCount,4,&i4ByteCount,&i1ByteCount);
+	divide(nCount,4,&i4ByteCount,&i1ByteCount);
 
 	uint32* cpdwBuffer1=(uint32*)cpBuffer1;
 	uint32* cpdwBuffer2=(uint32*)cpBuffer2;
 	for (uint n=0;n<(uint)i4ByteCount;n++)
 	{
+//違いを見つけたら1バイト比較に切り替え。
 		if (*cpdwBuffer1!=*cpdwBuffer2)
 		{
 			uint8* cpcBuffer1=(uint8*)cpdwBuffer1;
 			uint8* cpcBuffer2=(uint8*)cpdwBuffer2;
-			for(n=0;n<4;n++)
+			for (;;)	//必ず次の4バイト中に止まるので必要なし。
 			{
 				if (*cpcBuffer1!=*cpcBuffer2)	return (cpcBuffer1-(uint8*)cpBuffer1);
 
@@ -175,7 +175,7 @@ int MemoryFn::compare(const void* cpBuffer1,const void* cpBuffer2,uint nCount)
 		cpcBuffer2++;
 	}
 
-	return 0;
+	return -1;
 }
 
 ///@author junjunn @date update:2005/08/20
@@ -183,7 +183,7 @@ void MemoryFn::set(void* pTo,int iValue,uint nCount)
 {
 //スピードを上げるために4バイト転送を使う。
 	int i4ByteCount,i1ByteCount;
-	MathFn::divide(nCount,4,&i4ByteCount,&i1ByteCount);
+	divide(nCount,4,&i4ByteCount,&i1ByteCount);
 
 //4バイト転送部分
 	uint32* pdwTo=(uint32*)pTo;
