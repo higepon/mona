@@ -1,5 +1,9 @@
 2005-08-21  bayside
 
+        * src/servers/shell/InternalCommands.cpp: mem追加
+
+        * apps/gui/monafile/FileManager.cpp: MonaDatショートカット追加
+
         * apps/gui/MonaDat/Form1.cpp: char path[32] がバッファーオーバーフローしていたので対策
 
         * apps/gui/MonaDat/MonaForms: 削除
