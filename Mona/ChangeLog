@@ -1,5 +1,7 @@
 2005-08-21  bayside
 
+        * apps/gui/MonaDat/Form1.cpp: char path[32] がバッファーオーバーフローしていたので対策
+
         * apps/gui/MonaDat/MonaForms: 削除
 
         * include/gui/System/Mona/Forms/ScrollBar.h: 新規追加
