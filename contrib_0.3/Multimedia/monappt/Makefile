@@ -11,6 +11,8 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
+ADDLINK = -ljpegls
+
 CXXFLAGS += -DDEBUG
 
 $(TARGET).EXE: $(INSTFILES)
