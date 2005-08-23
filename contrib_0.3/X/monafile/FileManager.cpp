@@ -93,6 +93,15 @@ public:
 			mesa->set_Target("open /APPS/MONAFRMS/MESA");
 			mesa->Show();
 		}
+		else if (DirectoryExists("/APPS/MONAFRMS/MONADAT.APP"))
+		{
+			_P<Icon> mesa = new Icon();
+			mesa->set_Location(Point(0, 128));
+			mesa->set_Text("OSを作ろう");
+			mesa->set_Icon(Icons_Executable);
+			mesa->set_Target("/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5");
+			mesa->Show();
+		}
 		
 		Application::Run();
 	}
