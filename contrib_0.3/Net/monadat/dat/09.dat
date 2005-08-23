@@ -1,0 +1,1001 @@
+Be名無しさん<>sage<>04/04/10 10:43<> 独自にOSを作っているまたは、作ろうとしている人たちのための  <br> スレッドになればと思います。  <br>  <br> OSを作ろうpart8  <br> http://pc3.2ch.net/test/read.cgi/os/1076216434/ <br> OSを作ろうpart7  <br> http://pc2.2ch.net/tech/kako/1066/10669/1066968321.html  <br> OSを作ろうpart6  <br> http://pc2.2ch.net/tech/kako/1052/10525/1052537020.html  <br> OSを作ろうpart5  <br> http://pc2.2ch.net/tech/kako/1042/10423/1042375466.html  <br> OSをつくろうpart4  <br> http://pc3.2ch.net/tech/kako/1037/10370/1037096449.html  <br> OSをつくろうpart3  <br> http://pc3.2ch.net/tech/kako/1027/10270/1027080631.html  <br> OSをつくろうpart2  <br> http://pc3.2ch.net/tech/kako/1024/10244/1024411711.html  <br>  <>OSを作ろうpart9
+Be名無しさん<>sage<>04/04/10 11:10<> 2 <>
+Be名無しさん<>sage<>04/04/10 11:17<> リンク先変わってないかな。 <br>  <br> OSを作ろうpart8  <br> http://pc3.2ch.net/test/read.cgi/os/1076216434/  <br> OSを作ろうpart7  <br> http://pc5.2ch.net/tech/kako/1066/10669/1066968321.html  <br> OSを作ろうpart6  <br> http://pc5.2ch.net/tech/kako/1052/10525/1052537020.html  <br> OSを作ろうpart5  <br> http://pc5.2ch.net/tech/kako/1042/10423/1042375466.html  <br> OSをつくろうpart4  <br> http://pc3.2ch.net/tech/kako/1037/10370/1037096449.html  <br> OSをつくろうpart3  <br> http://pc3.2ch.net/tech/kako/1027/10270/1027080631.html  <br> OSをつくろうpart2  <br> http://pc3.2ch.net/tech/kako/1024/10244/1024411711.html  <br>  <>
+あっきぃ </b>◆AkKieSc2Jw <b><>sage<>04/04/10 19:54<> 　　　　　＿＿ <br> 　　　 ／　　　＼　　　　　　＿＿＿＿＿＿＿＿ <br> 　＼/　 日　日　 |／　　／ <br> 　　|　　・　　　・　 |　　＜　新スレおめでとうございます～ <br> 　　＼　　 ◎　　 ﾉ　　　| <br> 　　　 ＼＿＿_／　　　　＼＿＿＿＿＿＿＿＿ <br> 　　　　／　　＼  <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/11 15:20<> <a href="../test/read.cgi/os/1081561384/4" target="_blank">&gt;&gt;4</a> <br> 新スレを立ててくださった方 <br>  <br> ありがとうございます。 <br>  <br> Monaの話題ではないですがOSASKがqemuで動くようになったみたいですね。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/11 15:27<> Mona 0.2.0リリースに向けて最終調整を行いたいと考えています。 <br> 各アプリ作成者の方々は予定しているリリース機能等、リバイスして頂きますようお願いいたします。 <br>  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%A5%EA%A5%EA%A1%BC%A5%B9%A5%E1%A5%E2 <br>  <br> 前スレが流れてしまったのでサイドβリリースを張っておきます。 <br> βリリースのお知らせです。 <br> 0.2.0beta2をリリースしました。 <br> 変更点は以下の通りです。 <br>  <br> ・qemu対応 マウスはnikqさんパッチを取り込み <br> ・スレッドダンプのシステムコール作成 <br> ・Mona GUIでPSコマンド作成 <br> ・スクロールちょっぴり高速化 thx! 名無しさん <br>  <br> ダウンロードは↓からどうぞ <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/11 15:39<> すいません。なぜか２回書き込まれてしまいました。m(__)m <br>  <br> 0.2.0がβ段階なので新しい機能はほぼ盛り込まず、バグ修正にあてる予定です。 <br>  <br> 次のリリースに向けて何を実装すべきかか考えています。 <br> 方向性としては以下のような選択肢があると思っています。 <br>  <br> ・ひたすらユーザーアプリの整備に時間をあててそこでの不満点をカーネルやサーバーにフィードバックする。 <br>  <br> ・IDEドライバを作成する <br> →ドライバインタフェースの決定 <br> →大容量化･ページアウトの実装へ <br> →エミュ以外でのテストが危険なので動作報告が減る? <br>  <br> ・標準入出力・パイプ等の実装 <br> →主にユーザー側? <br> →Mona GUIとの協調？ <br>  <br> ・DLL対応 <br> →MonAPI, monalibc, Mona GUI等を静的リンクせずに使えたらうれしい <br>  <br> ・64bit移行 <>
+Be名無しさん<>sage<>04/04/11 17:49<> 2回かかれてた？ <>
+Be名無しさん<><>04/04/11 18:16<> いい加減モナ専用スレッドにしろよ。<a href="../test/read.cgi/os/1081561384/1" target="_blank">&gt;&gt;1</a> <>
+Be名無しさん<>sage<>04/04/11 19:36<> <a href="../test/read.cgi/os/1081561384/9" target="_blank">&gt;&gt;9</a> <br> そりゃまずいだろ <br> monaの売りがなくなる予感 <br> まぁひげぽん次第だが・・・ <>
+Be名無しさん<>sage<>04/04/11 20:24<> <a href="../test/read.cgi/os/1081561384/9" target="_blank">&gt;&gt;9</a> <br> わかって無いな。 <br> ここはこのままで良いんだって。 <br>  <>
+l&lt;<>sage<>04/04/12 17:24<> ここはこめんと欄ではありません。ここに書いていいのはl&lt;だけです。レスを付けたい人は、レスを付けたくなるのはよくわかりますが、まずはぐっとこらえてください。 <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br> ↑これみてﾜﾛﾀ香具師↓ <br>  <>
+TAKA<>sage<>04/04/12 17:31<> 前スレでフォローしてくださった方ありがとうございます。 <br> レスが遅くなって申し訳ありません。 <br> BochsのVGA表示： <br> 　VGAの定義ファイルを変えたらうまくいきました。 <br> secondboot.asmのジャンプコード： <br> 　バイナリコードを見てみたら、きっちりと相対ジャンプできるようになってました。 <br>  <br> 何か一人で混乱していたみたいです。ちなみに今はMONAの解析をしつつ自分でも <br> コードを書いているところです。何とかスレッド（カーネルモード）の切り替えが <br> 出来たところです。 <>
+Be名無しさん<>sage<>04/04/13 00:25<> IDEドライバー周りの話をするなら、そろそろVFS周りの議論も必要だと思うよ。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/13 01:12<> <a href="../test/read.cgi/os/1081561384/8" target="_blank">&gt;&gt;8</a>さん <br> 最近使い始めた2chブラウザ上は同じ内容が2回書かれてしまったように見えていました。 <br> ご迷惑をおかけいたしました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/13" target="_blank">&gt;&gt;13</a>さん <br> もうスレッド切り替えとは早いですねぇ。 <br> すばらしいです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/14" target="_blank">&gt;&gt;14</a>さん <br> アドバイスありがとうございます。 <br> IDEの対応をはじめれば、正式にどのファイルシステムをサポートするかを決定しなければなりませんね。 <br> その際当然VFSも視野に入れるべきと認識しております。 <>
+Be名無しさん<>sage<>04/04/13 22:02<> <a href="../test/read.cgi/os/1081561384/13" target="_blank">&gt;&gt;13</a> <br> Are you a watamoti, too? <br> He is the best programmer. <br> But he had a the small heart. <br>  <br> If you want to be him, please contact me after death. <>
+Be名無しさん<>sage<>04/04/13 22:32<> Monaのリリースはまだ？ <br> GUIとかいじってみたいんだが　16bit版希望 <>
+Be名無しさん<>sage<>04/04/13 22:48<> 最近Tinoﾀﾝこないね <br>  <>
+Be名無しさん<>sage<>04/04/13 23:12<> <a href="../test/read.cgi/os/1081561384/18" target="_blank">&gt;&gt;18</a> <br> http://pc3.2ch.net/test/read.cgi/os/1081748387/9 <br> これがTﾀﾝのカキコらしいよ <>
+Be名無しさん<>sage<>04/04/14 17:24<> <a href="../test/read.cgi/os/1081561384/17" target="_blank">&gt;&gt;17</a> <br> qemu使えば？16bitである必要無し。 <>
+Be名無しさん<>sage<>04/04/14 18:07<> 64KBの壁に朝鮮するスレはここですか？ <>
+Be名無しさん<>sage<>04/04/14 18:07<> そうですが <>
+Be名無しさん<>sage<>04/04/14 18:25<> YUIたんｷﾀー！ <br> 微妙に前からいたっぽいけど。 <br> やっぱMONA熱いわ。 <>
+Be名無しさん<>sage<>04/04/14 18:27<> KSASOの存在感がどんどん薄れていく <>
+Be名無しさん<>sage<>04/04/14 18:58<> ksasoは最近開発の停滞があったからな。 <br> 本体に動きが無いとどうしようも無い。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/16 23:20<> <a href="../test/read.cgi/os/1081561384/17" target="_blank">&gt;&gt;17</a>さん <br> リリース時期についてはいろいろと検討中です。 <br>  <br> TinoさんのMona GUI　RC2を待つかどうか等いろいろと考えています。 <br> リリース時には大々的にアナウンスしたいので出来るだけMona GUIサンプルが多い方がよいと思っています。 <br>  <br> また今回は秘密のアプリも用意してあります。 <br>  <br> <a href="../test/read.cgi/os/1081561384/18" target="_blank">&gt;&gt;18</a>さん <br> そうですねぇ。どうやらお仕事が忙しいみたいです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/23" target="_blank">&gt;&gt;23</a>さん <br> Yui_Nekoさんはすごいひとです・・・ <br> おかげさまでカーネルのバグが大幅に減りました。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/17 02:39<> βリリースのお知らせです。  <br> 0.2.0beta3をリリースしました。  <br> 変更点は以下の通りです。  <br>  <br> ・System::getTick()追加 <br> ・fat.cppのバグ修正 <br> ・ページ保護のバグ修正 <br> ・ページテーブルをプールから取得するように変更した   <br> ・mallocの返り値をalign16にした <br> ・コレクションクラスHListのメモリリークバグ修正 <br> ・スレッドのスタックアドレスを奇数→偶数に修正 <br> ・仮想キーコード周り修正  <br> ・ファイル操作時のメモリリーク解消  <br> ・マウス割込み、マウスサーバの送受信の回数削減   <br> ・static変数初期化ミスの不具合修正 <br> ・1linesh追加 shadowさん  <br>  <br> 大きな変更点は <br> ・1linesh・・・MonaのデフォルトシェルであるSHELL.SVR以外にも設定ファイルMONA.CFGを書き換えることによりシェルを利用できる一例です。 <br> SERVER=/SERVERS/1LINESH.SVRとしてみてください。 <br>  <br> ・static変数初期化ミスの修正・・・baysideさん、Tinoさんから以前からご指摘のあったMonaのアプリケーションのロード時の致命的なバグを修正しました。 <br> 今まで正しく動かなかったアプリが正常に動くようになったと思います。 <br>  <br> ※なおこのリリースでは Gakuさん,、nikqさん、Shadowさん、Yui_Nekoさんから <br> 有用なご指摘･アドバイスと頂きました。この場を借りてお礼を申し上げます。 <br>  <br>  <br> ダウンロードは↓からどうぞ  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/04/17 03:16<> <a href="../test/read.cgi/os/1081561384/27" target="_blank">&gt;&gt;27</a> <br> 僕だけかな? <br> \ <br> や <br> / <br> を打ち込んでも 受け取って貰えないです。 <br> shell にも echo back されない <br>  <br> 0.2.0beta3 使用です。 <br> 私の勘違い報告だったら申し訳ないです <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/17 03:28<> こちらでも確認できました。 <br> /は入力できないとまずいのでイメージを差し替えました。 <br>  <br> 私の確認漏れでした。ご迷惑をおかけいたしました。 <>
+Be名無しさん<>sage<>04/04/17 17:39<> 秘密のアプリってあっきぃのくろひげ? <>
+Be名無しさん<>sage<>04/04/17 17:48<> OSをつくろうpart6から引用 <br> 8 名前：デフォルトの名無しさん ：03/05/10 16:03 <br> 174 名前： Be名無しさん 投稿日： 03/01/19 18:12  <br> 　　☆OSとしての成熟度  <br> 　　NWSOS &gt; OSASK &gt; MEG &gt; MONA  <br> 　　☆OS開発または、同様分野(エミュレータ等)に注いだ時間  <br> 　　作者経験年数  <br> 　　OSASK &gt; NWSOS &gt;&gt; MEG &gt;&gt; MONA  <br> 　　☆作者の人格  <br> 　　MEG == MONA &gt;&gt; OSASK == NWSOS  <br> 　　☆新技術への挑戦  <br> 　　NWSOS == MONA &gt;&gt; MEG &gt;&gt; OSASK  <br> 　　☆コミュニティの広さ  <br> 　　OSASK &gt; MONA &gt;&gt; MEG &gt; NWSOS  <br> 　　☆作者がOS開発にかけられる時間  <br> 　　OSASK == NWSOS &gt;&gt; MEG == MONA  <br>  <br> 181 名前： Be名無しさん 投稿日： 03/01/19 23:55  <br> 　　「新技術への挑戦」は明らかに違わないか・・？  <br>  <br> 182 名前： Be名無しさん 投稿日： 03/01/20 00:03  <br> 　　「作者経験年数」は、MEGの位置が違うと思う。  <br> 　　MEGのページの年表を見る限り:  <br> 　　OSASK &gt; MEG &gt; NWSOS &gt;&gt; MONA  <br>  <br> 184 名前： Be名無しさん 投稿日： 03/01/20 00:11  <br> 　　つーか、「作者の人格」は煽りだろ？  <br> 　　乗るなよ。何の役にも立たんから。  <br> 9 名前：デフォルトの名無しさん ：03/05/10 16:10 <br> <a href="../test/read.cgi/os/1081561384/7" target="_blank">&gt;&gt;7</a>  <br> 半年が経過しましたがMonaはNWSOSはおろか  <br> OSASKの足元すら見えていないようです。。。  <>
+Be名無しさん<>sage<>04/04/17 17:53<> あれから約1年 <br>  <br> Monaでは <br> 多色対応がなされ <br> マルチスレッド化され <br> ユーザーアプリのサポートが始まり <br> Wabaが動き <br> 最強のGUIもある。 <br>  <br> OSASKの足元は見えてきたと個人的には思う。 <>
+Be名無しさん<>sage<>04/04/17 18:03<> Mona GUIは別スレで盛り上げる価値があるやも。 <>
+Be名無しさん<>sage<>04/04/17 18:33<> <a href="../test/read.cgi/os/1081561384/32" target="_blank">&gt;&gt;32</a> <br> 実際に起動してみると、MonaのGUIは、重ね合わせ等の難しいところが、まだ、 <br> 全然組まれてない。画面全体を書き直しているので、オモチャのような感じ。 <>
+Be名無しさん<>sage<>04/04/17 18:45<> APIは結構面白そうだけどね。 <br> 当初の予定通り本格的な物へのお手本として収まるのか、 <br> それとも今のMona GUIをベースに完成度を上げていくのか。 <>
+あっきぃ </b>◆AkKieSc2Jw <b><>sage<>04/04/17 21:34<> <a href="../test/read.cgi/os/1081561384/30" target="_blank">&gt;&gt;30</a> <br> くろひげはまだ作ってませんが。。 <>
+Be名無しさん<>sage<>04/04/17 21:46<> ↓赤卑下 <>
+さっきゅん </b>◆WAHAH0fe4c <b><>sage<>04/04/17 23:13<> 　　　　　　　 ┌┐ <br> 　　　　　　　んvﾍゝ <br> 　　　　　　　i　　　i <br> 　　　　　　 ﾉ (,,ﾟДﾟ) <br> 　　　　　 / （ﾉ 　　|つ <br> 　　　　　 |　　　　　! <br> 　 　 　 　 ﾞ:､..,＿,.ノ <br> 　　　　　　　 U U <>
+Be名無しさん<>sage<>04/04/18 00:56<> Tinoﾀﾝﾏﾀﾞｰ？ <>
+Be名無しさん<><>04/04/18 14:48<> いつになったら、ルート窓に小窓張り付けるようになりますか <br>  <>
+Be名無しさん<>sage<>04/04/18 14:51<> それはTinﾀﾝ次第 <>
+S.R. </b>◆CFYAAAAAds <b><>sage<>04/04/18 16:40<> Wiki見たらココにリンクしてあったので足跡。 <br>  <br> 近況はとりあえず仕事で時間ありません。 <br> 土日は寝て体力回復ですみません。（金曜の夜にオールナイトで呑んでたのは秘密 <br> さっきゅんスレ（？）でも書いたとおりトラ技には３層、４層の実装方法が詳しく書いていないので <br> ２層通信が出来ても停滞予感。 <br>  <br> すみません、さっさと石叩く処理作りまつ…。 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/18 18:31<> <a href="../test/read.cgi/os/1081561384/30" target="_blank">&gt;&gt;30</a>さん <br> 違います。秘密アプリはYui_Nekoさんの作品です。 <br>  <br> <a href="../test/read.cgi/os/1081561384/34" target="_blank">&gt;&gt;34</a>さん <br> Tinoさんがここに書き込めない環境なのでちょっとだけレスを。 <br>  <br> 今後GUIサーバーが描画をつかさどるようになるとその辺は解消されそうですね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/42" target="_blank">&gt;&gt;42</a>さん <br>  <br> お疲れ様です。仕事との両立はなかなか難しいですね。 <br>  <br> S.R.さんとgamixさんのネットワーク対応は大変楽しみにしていますので <br> 是非がんばって欲しいです。 <>
+Be名無しさん<>sage<>04/04/19 01:18<> ネットワークで3層は、 <br> http://www.pearsoned.co.jp/washo/network/wa_net47-j.shtml <br> とか読むと結構わかるかも。(英語の方がいいけど日本語でもよいよ) <br> あとは <br> http://wwwhnl.cs.uec.ac.jp/tate/cnp/ <br> とか、見ながらとかね。これはUDPだけだけど。 <br>  <br> BSD系とLinuxはメモリ内でのパケットの管理手法が根本的に違うらしいので、 <br> (BSDはmbufがキモ。Linuxはおおざっぱらしい。でも詳しくはしらない) <br> BSD系ならBSD系、LinuxならLinuxと、参考にするのは決めたほうがいいかもよ。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/19 19:50<> <a href="../test/read.cgi/os/1081561384/18" target="_blank">&gt;&gt;18</a> <br> ご無沙汰しております。 <br> このところ（というかいまだに）実生活でごたごたしている上、 <br> 串制限なども食らってなかなか書き込めませんでした。 <br>  <br> <a href="../test/read.cgi/os/1081561384/19" target="_blank">&gt;&gt;19</a> <br> 私ではないですよ。 <br>  <br> <a href="../test/read.cgi/os/1081561384/26" target="_blank">&gt;&gt;26</a> <br> 遅くなって申し訳ありません。 <br> ようやく根本的なバグが取れた（はず）なので、 <br> 次に時間が取れたら機能追加に専念しますです。。。 <br>  <br> <a href="../test/read.cgi/os/1081561384/32" target="_blank">&gt;&gt;32</a> <br> 本当に最強にするならWindows Formsの焼き直しでは役不足で、 <br> Avalonの猿真似くらいはしないと駄目なんでしょうけど、 <br> MSDNを更新しなかったのでLonghorn関連は触われないでいます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/33" target="_blank">&gt;&gt;33</a> <br> ありがとうございます。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/19 20:00<> <a href="../test/read.cgi/os/1081561384/34" target="_blank">&gt;&gt;34</a> <br> はい、オモチャです。 <br> その辺は作ってる本人が一番情けない思いをしている部分なわけでして……。 <br>  <br> <a href="../test/read.cgi/os/1081561384/35" target="_blank">&gt;&gt;35</a> <br> オモチャ程度のGUIなら簡単に作れるよ～って見本のつもりだったんですが、 <br> 基本的な部分でバグを出しまくってしまって全然見本にならなくなりました。 <br> Windows Formsに準拠する振りをしているのは、 <br> 標準C++からのアプローチでどこまで出来るかという興味本位です。 <br> とは言えやはりC++に縛られてしまっているのは否定できない事実なので、 <br> WABAのようなアプローチの方が自由なのかもしれませんね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/39" target="_blank">&gt;&gt;39</a> <br> 遅くなってすみません。 <br> 慌てて出先から書き込もうとしたら串制限を食らってしまいました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/40" target="_blank">&gt;&gt;40</a> <br> Active Desktopみたいな感じですか？ <br>  <br> <a href="../test/read.cgi/os/1081561384/41" target="_blank">&gt;&gt;41</a> <br> 責任重大になっていますね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/43" target="_blank">&gt;&gt;43</a> <br> フォローありがとうございます。 <br>  <br> すみませんが明日早いので今日はもう寝ます……。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/19 22:02<> <a href="../test/read.cgi/os/1081561384/46" target="_blank">&gt;&gt;46</a> Tinoさん <br>  <br> おつかれさまです。Mona GUIのパッチありがとうございました。 <br>  <br> ということで <br>  <br> βリリースのお知らせです。  <br> 0.2.0beta4をリリースしました。  <br> 変更点は以下の通りです。  <br>  <br> ・Mona GUIの修正 REVERSI2が正常に動作するようになった。by Tinoさん <br>  <br> ・Shellのテンキーの0を特別扱いしなくなった。  <br>  <br> ダウンロードは↓からどうぞ  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/04/19 22:11<> YuiﾀﾝがCライブラリ提供したよ <>
+Be名無しさん<>sage<>04/04/20 00:21<> Tinoさんに質問 <br> Mona GUIって簡単なサンプルしかないんだけど。 <br> 本格的なもののサンプルとかありますか？ <br>  <br>  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/20 07:48<> <a href="../test/read.cgi/os/1081561384/49" target="_blank">&gt;&gt;49</a> <br> 残念ながら現時点では簡単なサンプルしか作れないオモチャなので、 <br> それが実力なんです。 <br> 本格的なものを作るのは無理です。 <>
+Be名無しさん<>sage<>04/04/20 13:45<> <a href="../test/read.cgi/os/1081561384/46" target="_blank">&gt;&gt;46</a> <br> ＞るーと窓 <br>  <br> いや、今のだと、コンソールがスクロールすると、MonaGUIもスクロールして上の方に逝ってしまうのが、いつごろ <br> きちんと実装されるのかなぁ。と思ったもので。別に慌てて実装されなくていいですよ <br> お時さんができたときで。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/20 19:19<> <a href="../test/read.cgi/os/1081561384/51" target="_blank">&gt;&gt;51</a> <br> なるほど、それは私も気になっています。 <br> フォーカス管理が出来るようになって、 <br> キーボード入力を振り分けられるようになれば、 <br> GUI版のShellが出来るかなと思っています。 <br>  <br> 今日はちょっとゆとりがあるので出来るところまでやってみます。 <>
+Be名無しさん<>sage<>04/04/20 19:21<> &gt;52 Tinoﾀﾝがんばー <br>  <br> ひげもがんばー <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/20 19:31<> <a href="../test/read.cgi/os/1081561384/48" target="_blank">&gt;&gt;48</a> <br> Monaged C++(wは癖が強すぎて嫌がる人とか多そうですから、 <br> GUIにもCの実装があれば良いのでしょうね。 <br>  <br> GUIサーバーを作るときにはクライアントとのやり取りは <br> メッセージと共有メモリを使おうと思っていますので、 <br> クライアントはlibguiを使わなくても作れるようになるはずです。 <br>  <br> プロセス間通信の部分をベタ書きすると見通しが悪くなるので、 <br> IDLみたいなプロトタイプから実装を自動生成できれば <br> 面白いかなとか妄想しています。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/20 19:31<> <a href="../test/read.cgi/os/1081561384/53" target="_blank">&gt;&gt;53</a> <br> ありがとうございます。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/20 23:06<> <a href="../test/read.cgi/os/1081561384/51" target="_blank">&gt;&gt;51</a>さん <br> <a href="../test/read.cgi/os/1081561384/52" target="_blank">&gt;&gt;52</a>さん <br>  <br> そこは問題ですね。 <br> 標準入出力をうまく実装してMona GUIにながしこめればいいですね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/53" target="_blank">&gt;&gt;53</a>さん <br> ありがとうございます。 <br>  <br> 現在FPU対応中です。 <br>  <br> FPUステートとデータレジスタ 計108byte分の器を用意して <br> FNSAVEなどで退避かなと思い実験中。 <>
+Be名無しさん<>sage<>04/04/20 23:21<> <a href="../test/read.cgi/os/1081561384/56" target="_blank">&gt;&gt;56</a> <br> どうしてBﾀｿにYﾀｿのCライブラリを試すように言わなかったの？ <br> そういう細かい気遣いがプロジェクトを円滑に勧めるコツだよ。 <br> もっともまだ発展途上だし公式に取り入れるには時期尚早だとは思うけど。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/20 23:37<> <a href="../test/read.cgi/os/1081561384/57" target="_blank">&gt;&gt;57</a>さん <br>  <br> ご指摘ありがとうございます。 <br> その辺の時期が重なったので気が回りませんでした。 <br>  <br> Yui_Nekoさんのライブラリはすばらしいので遅まきながら <br> すすめておきました。 <>
+Be名無しさん<>sage<>04/04/22 20:37<> <a href="../test/read.cgi/os/1081561384/57" target="_blank">&gt;&gt;57</a>にもあったが <br> Yui_NekoさんのMona用 Cライブラリだけどもっと <br> 大々的に取り上げたほうがよいよ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/22 23:27<> <a href="../test/read.cgi/os/1081561384/59" target="_blank">&gt;&gt;59</a>さん <br> ご指摘ありがとうございます。 <br> そのうちWikiに専用ページが出来ますので今しばらくお待ちください。 <br>  <br> βリリースのお知らせです。  <br> 0.2.0beta5をリリースしました。  <br> βといいつつどんどん機能が増えているのは気のせいです。 <br>  <br> 変更点は以下の通りです。  <br>  <br> ・　FPU対応  <br> ・　 syscall_file_seek, syscall_file_position追加   <br> ・　 Mona GUI 24bit bmp読み込み対応   <br> ・　 Reversi2 Mona GUIのbmp読み込みを利用  <br>  <br> Mona GUIのアプリケーション開発でbmpが簡単に読み込めるようになったのが <br> 今回の目玉です。これでかなり幅が広がりました。 <br>  <br> ダウンロードはこちらからお願いします。 <br> また不具合がありましたらご指摘いただければ幸いです。 <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/04/22 23:31<> <a href="../test/read.cgi/os/1081561384/60" target="_blank">&gt;&gt;60</a> <br> &gt; βといいつつどんどん機能が増えているのは気のせいです。 <br> RCの前にγを挟めば(ry <>
+Be名無しさん<>sage<>04/04/22 23:36<> <a href="../test/read.cgi/os/1081561384/60" target="_blank">&gt;&gt;60</a> <br> reversi2だけど"black"の絵はどう見ても赤だし、 <br> "white"はマーブルだから白なのか黒なのか判然としない。 <br> いっそのこと字じゃなくて絵にすれば？ <>
+Be名無しさん<>sage<>04/04/23 00:10<> エミュレータ依存の色の問題かなと思って、最新版を落としてBochsで起動してみた。 <br> ボードしかでない・・・ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/23 00:32<> <a href="../test/read.cgi/os/1081561384/61" target="_blank">&gt;&gt;61</a>さん <br> （笑） <br>  <br> <a href="../test/read.cgi/os/1081561384/62" target="_blank">&gt;&gt;62</a>さん <br> 確かにそうですね。bmp表示に浮かれていて気づきませんでした。 <br>  <br> <a href="../test/read.cgi/os/1081561384/63" target="_blank">&gt;&gt;63</a>さん <br> どのような状況でしょうか? <br> スクリーンショットやBochs、VGA BIOSなどの情報が分かるとうれしいです。 <br> Mona PJ Wikiに張っていただくのでも良いです。 <>
+Be名無しさん<>sage<>04/04/23 03:40<> <a href="../test/read.cgi/os/1081561384/44" target="_blank">&gt;&gt;44</a> <br> TCPの実装のお話ですか。 <br> Linux TCP のソースなら結構読んだことがあるので（といっても全体の量から見たらほんの一部似すぎませんが） <br> お役に立てるかもしれません。 <br> いや、たぶん役に立てないですが手助けしたいという意志はありますので何かありましたら質問してみてください。 <br>  <br> &gt; http://www.pearsoned.co.jp/washo/network/wa_net47-j.shtml  <br> &gt; とか読むと結構わかるかも。(英語の方がいいけど日本語でもよいよ)  <br> これは名著ですね。僕からもお勧めしいです。(これはBSD TCPの実装の解説) <br>  <br> VOL.1 の方もお勧めです。TCP の仕様を勉強せずに実装だけ見てもよく分からないかもしれないので。 <br> http://www.pearsoned.co.jp/washo/inet/wa_int92-j.html <br>  <br> Linux の TCP の実装の解説本として、これがあります。 <br> http://www.amazon.com/exec/obidos/tg/detail/-/0471408824/qid=1082658349/sr=8-2/ref=sr_8_xs_ap_i2_xgl14/103-0757982-5711007?v=glance&s=books&n=507846 <br> しかし、これは激しくお勧めしません。 <br> 基本的にソースコードが載っているだけで、解説がほとんどありません。 <br> アマゾンの Customer Reviews でも酷評されていますし、僕もこれらの評価を支持します。 <br> &gt; If you simply downloaded the current kernel and printed out the source code, you would essentially have a more up-to-date version of this book. <br> この一文が非常に良く表現しています。 <>
+63<>sage<>04/04/23 21:27<> <a href="../test/read.cgi/os/1081561384/64" target="_blank">&gt;&gt;64</a> <br> すみません、普通に表示されました。 <br> 問題なかったです。 <br> 赤っぽかった。玉みたいだった。 <>
+Be名無しさん<><>04/04/25 13:23<> 批判age <br> http://pc3.2ch.net/test/read.cgi/os/1020424840/705 <>
+Be名無しさん<>sage<>04/04/25 17:24<> 蟹光線 <>
+Be名無しさん<>sage<>04/04/25 21:30<> 暇だったので <br> Eltorito形式でMONAのCDブート化をしてみたが <br>  <br> initializeエラー <br>  <br> 失敗（そりゃそうだなという展開 <br> ちなみにFDエミュ有り無しともに試した <br> FDエミュなしは起動すらしない <br>  <br>  <>
+Be名無しさん<>sage<>04/04/25 21:39<> <a href="../test/read.cgi/os/1081561384/69" target="_blank">&gt;&gt;69</a> <br> MonaがFDアクセスを全部BIOS経由でやってたらうまくいったかもね。 <br> 全部BIOS経由でやってるNWSOSならうまくいくんでない？ <>
+69<>sage<>04/04/25 21:45<> そうですね <br>  <br> initializeエラー の原因がファイル（？ <br> が読み込めなかったものに起因してましたから <br>  <br>  <>
+Be名無しさん<>sage<>04/04/25 23:22<> USB-FDDで今のMonaってブートできるの？ <br>  <br> まぁUSB-FDDがFDCをシミュレートしていればできるはずなんだが。 <>
+Be名無しさん<>sage<>04/04/25 23:33<> <a href="../test/read.cgi/os/1081561384/72" target="_blank">&gt;&gt;72</a> <br> まあ<a href="../test/read.cgi/os/1081561384/69" target="_blank">&gt;&gt;69</a>と同じ状態になるだけだろう。 <br>  <br> と試さずに書いてみる。 <br>  <>
+Be名無しさん<>sage<>04/04/26 00:29<> スクリーンショットを見て、GUIが激しく動いていたから、 <br> 思わず「すげー！！」って叫んでしまった。でかい声で。 <br> 凄過ぎ、有り得ん、ぬるぷぉ <br>  <br> やっぱりひげもんにはNullPointerExceptionがお似合いだ。Java大好きなんだろ？ <br> しゃぶれよ、おらおら、しゃぶれないのか、俺のNullPointerExceptionが。 <br> 今度は挿入してやるよ、おらおら。 <br>  <>
+Be名無しさん<>sage<>04/04/26 00:30<> 寝ろ。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/04/26 05:35<> <a href="../test/read.cgi/os/1081561384/74" target="_blank">&gt;&gt;74</a> <br> ありがとうございます。 <br> でも実際に動かしてみると再描画が手抜きでハリボテ感ありありなのが辛いところです。 <br> Mona-0.2.0はGW前にリリースを目指しているのですが、 <br> それに間に合うように何とかしようと悪戦苦闘中です。 <br>  <br> その悪戦苦闘中にぬるぽが出まくって泣きそうになりました。 <br> Javaをほとんど使ったことのない私がぬるぽと友達になるとは……。orz <>
+hyukawa<><>04/04/26 20:20<> だれかLinuxでver0.1.5のコンパイルできた方おられますか? <br> operator.cppでひっかかるようなんですが。 <br> /usr/bin/g++ -nostdlib -fno-exceptions  -fno-rtti -ffreestanding -Wall  -Iinclude -Istlport -c operator.cpp <br> operator.cpp: In function `void __builtin_delete(void *)': <br> operator.cpp:59: redefinition of `void __builtin_delete(void *)' <br> operator.cpp:25: `void operator delete(void *)' previously defined here <br> operator.cpp: In function `void __builtin_vec_delete(void *)': <br> operator.cpp:77: redefinition of `void __builtin_vec_delete(void *)' <br> operator.cpp:38: `void operator delete [](void *)' previously defined here <br> make: *** [operator.o] エラー 1 <br>  <br> 愚問だったらすいません。 <>
+Be名無しさん<>sage<>04/04/26 21:07<> <a href="../test/read.cgi/os/1081561384/77" target="_blank">&gt;&gt;77</a> <br> よー分からんけど、Linux でのコンパイルってどこかの時点から上手く行って無いんじゃないかな？ <br> ChangeLog に↓みたいな事書いてるし、今は Linux でのコンパイルは手が要りそうな感じじゃない？ <br>  <br> 2004-04-25 higepon &lt;higepon@users.sourceforge.jp&gt; <br>  <br>         * *.asmでsection .text指定。 NFLAGS= -f elf, -f win32の振り分け <br>  <>
+Be名無しさん<>sage<>04/04/26 21:32<> <a href="../test/read.cgi/os/1081561384/77" target="_blank">&gt;&gt;77</a> <br> gccのバージョンとかディストリビューションとか書いておくと、 <br> 同じ環境を持ってる人がアドバイスをくれるかもしれない。 <br> まぁ、遊ぶなら0.1.5よりも今の開発系を試した方が面白いかも。 <>
+Be名無しさん<>sage<>04/04/26 23:31<> <a href="../test/read.cgi/os/1081561384/79" target="_blank">&gt;&gt;79</a> <br> 0.1.5 系と 0.2.0 系だとファイル構成も大分違うしね。 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/27 01:19<> <a href="../test/read.cgi/os/1081561384/67" target="_blank">&gt;&gt;67</a>さん <br> 誤解ただと思いますのでしばらく様子を見てみます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/69" target="_blank">&gt;&gt;69</a>さん <br> ダメでしたか残念です。。 <br>  <br> <a href="../test/read.cgi/os/1081561384/72" target="_blank">&gt;&gt;72</a>さん <br> ブートは出来ると思いますがFDCアクセスしたところで <br> 止まると思います。SERVER起動など･･･ <br>  <br> <a href="../test/read.cgi/os/1081561384/74" target="_blank">&gt;&gt;74</a>さん <br> 最近は私以外の方々の活躍でスクリーンショットの見栄えがすごくよくなってきました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/76" target="_blank">&gt;&gt;76</a> Tinoさん <br>  <br> ぬるぽの件いろいろとご迷惑をおかけしました。 <br> 大変勉強になりました。＞コンストラクタ・デストラクタ <br>  <br> <a href="../test/read.cgi/os/1081561384/77" target="_blank">&gt;&gt;77</a>　hyukawaさん <br>  <br> Mona PJ wikiから <br> Mona/開発版でbeta版をダウンロードして試していただけないでしょうか? <br> あとgccのバージョンとか分かるとうれしいです。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/27 01:23<> そういえばbeta6の告知を忘れていました。 <br> 告知の前にbeta7がでてしまいました。 <br>  <br> βリリースのお知らせです。  <br> 0.2.0beta7をリリースしました。  <br>  <br> 変更点は以下の通りです。  <br>  <br>  <br> ・MonaGUIでランチャーを作成 <br> ・monaelf.exeで*.ELF, *.SVRのサイズを小さくする   <br> ・Linuxの_user_startのリンクエラー不具合を解消   <br> ・GUI.SVRで壁紙をサポート (MONA.CFGで指定可能)   <br> ・MonaGUIでマウスカーソルの残像が残らないように対処   <br> ・ noiz2bgをMonaGUIに移植   <br> ・fireをNWSOSから移植   <br> ・MonaGUIがJPEG読み込みに対応  <br>  <br> などなど、新しいデモやら不具合修正たくさんです。 <br>  <br> CD/LSしていろいろ遊んでくれるとうれしいです。 <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/04/27 09:08<> 前から気になっていたのですが, スクロールが以上に遅いのですが,  <br> これは正しい動作ですね? <br> 1行のスクロールに1秒以上かかる. <br>  <br> あと, reversi の画面とかが, console のスクロールと一緒に 流れていってしまうのも 正しい動作ですね? <br>  <br> あとは, 特に変な動きは無かったかな. <br>  <br> 最後にどうでも良いコメントを... <br> reversi.elf だけど, othello の開始状態は <br> 白黒 <br> 黒白　←これが正 <br>  <br> 黒白 <br> 白黒　←これは誤 <br> ですよ. reversi != othello な分けではあるが. <>
+Be名無しさん<>sage<>04/04/27 12:40<> monaelfかぁ <br> 一瞬ねこえるふﾀｿを思い出した漏れって何？（ｗ <>
+Be名無しさん<>sage<>04/04/27 19:15<> http://www.ascii-store.com/catalog.cgi?id=00061989  <br> はじめて読むpentium <br>  <br> ひげぽんよ、486と同じ作者の本が出ますよ。 <>
+Be名無しさん<>sage<>04/04/28 15:49<> monacapi(ﾓﾅｶﾋﾟ)よりmonapic(ﾓﾅﾋﾟｸ)のほうがかっこよくない? <>
+Be名無しさん<>sage<>04/04/28 16:05<> ﾓﾅｷｬﾋﾟだから良いんだよ。ｷｬﾋﾟｷｬﾋﾟ。 <>
+Be名無しさん<>sage<>04/04/28 18:52<> せっかくmonapiでaをくっつけたのが無駄になってるんだよなー <>
+Be名無しさん<>sage<>04/04/28 21:36<> MONAX <>
+Be名無しさん<>sage<>04/04/29 00:04<> <a href="../test/read.cgi/os/1081561384/89" target="_blank">&gt;&gt;89</a> <br> 便器メーカーみたいでイヤだぁーーー <>
+89<>sage<>04/04/29 01:00<> Mona OS X <br>  <br> Monao(合言葉は「やるならとことん最後まで」) <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/29 01:00<> <a href="../test/read.cgi/os/1081561384/83" target="_blank">&gt;&gt;83</a>さん <br> 動作確認ありがとうございます。 <br>  <br> スクロールの件、こちらでも認識しています。 <br> すぐの対応が難しいので1lineshや、ランチャーの利用をお勧めします。 <br>  <br> &gt; あと, reversi の画面とかが, console のスクロールと一緒に 流れていってしまうのも 正しい動作ですね? <br>  <br> 現状のGUIでないアプリはそうなってしまいますね。申し訳ないです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/85" target="_blank">&gt;&gt;85</a>さん <br> ありがとうございます。 <br> 実はおれぺこのさっきゅんさんに聞いて知っていました。 <br> 立ち読みして面白そうだったら買ってみます。 <br> 本当は64bit CPUの本だったら面白いんですが。 <>
+Be名無しさん<><>04/04/29 01:18<> 髭の煽りは厚かましいな。 <br> 子供をただ働きさせようとすんな、ボケ。 <br>  <br> オレオレかお前は。 <>
+Be名無しさん<><>04/04/29 16:32<> <a href="../test/read.cgi/os/1081561384/91" target="_blank">&gt;&gt;91</a> <br> Xmonaってのは如何？ <br>  <>
+Be名無しさん<>sage<>04/04/29 17:14<> <a href="../test/read.cgi/os/1081561384/88" target="_blank">&gt;&gt;88</a> <br> そうだね、その茶目っ気を生かして欲しいね <>
+Be名無しさん<><>04/04/29 19:29<> 定期的にスレをチェックし、差分をメールしてくれる <br> スクリプト作成しました。 <br> 使ってください <br> http://www.2ch-off.com/index.php?MonaThread <br> Unix オフ <br> http://off.2ch.net/test/read.cgi/offevent/1075197039/ <>
+Be名無しさん<><>04/04/29 20:07<> http://www.geocities.jp/sanngokusi3689/index.html <>
+Be名無しさん<><>04/04/29 23:12<> ここでも色々とＯＳの話題してるよ。かなりの知識を持った人も居るし <br>  <br> http://pcsoft-os.ten.thebbs.jp/ <>
+Be名無しさん<><>04/04/29 23:16<> <a href="../test/read.cgi/os/1081561384/98" target="_blank">&gt;&gt;98</a> <br> 密度の高い話も結構してるようだ、 <>
+Be名無しさん<>sage<>04/04/29 23:22<> と自作自演してみましたので誰か来てください <>
+Be名無しさん<><>04/04/29 23:26<> 以上<a href="../test/read.cgi/os/1081561384/1-100" target="_blank">&gt;&gt;1-100</a>まで自作自演でお送りしました。 <br> 皆様には大変ご迷惑をおかけしました。 <>
+Be名無しさん<>sage<>04/04/29 23:28<> 自作厨はｶｴﾚ <br> http://pc4.2ch.net/jisaku/ <>
+Be名無しさん<>sage<>04/04/30 00:30<> そういえば自作自演といえばpart2ぐらいでひげぽんが「俺は何もできない。だからage」と言う書き込みをして指摘され <br> 「ム板のスレの誤爆でした」との切り返しがあったなぁ <br>  <br> 「おいおい。ひげぽんが知らぬ間にまた成長している・・・」だのも自作臭かったな・・・ <br>  <br> まぁ今更どうでもいいんだけどね。。。 <br> 荒らしたいわけではないので何事も無かったかのようにどうぞ↓ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/04/30 03:01<> βリリースのお知らせです。  <br> 0.2.0beta8をリリースしました。  <br>  <br> 変更点は以下の通りです。  <br>  <br> ・小文字や記号の入力に対応 Mona.tar.gz  <br> ・シェルの内部コマンドにCAT/TYPE(機能は同じ)を追加   <br> ・MONA.CFGでVESAの解像度とbppの設定に対応  <br>  <br> 今回の目玉はTinoさんの対応によりMONA.CFGで画面の解像度等が簡単に設定できることです。 <br> いままで適切な画面モードで起動されなかった方々にはご迷惑をおかけいたしました。 <br> 是非お試し下さい。 <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7  <br>  <br> またMonaGUI, Yui_NekoさんのライブラリでMonaアプリを作ってもいいよという方が <br> いらっしゃいましたらご連絡いただけるとうれしいです。 <>
+Be名無しさん<>sage<>04/04/30 11:14<> <a href="../test/read.cgi/os/1081561384/103" target="_blank">&gt;&gt;103</a> <br> 見返してみたが確かに…まぁいいや <>
+Be名無しさん<>sage<>04/04/30 16:52<> 今日NHK　　　　　教育で転載PC少年が出るらしい <br>  <>
+106<>sage<>04/04/30 19:28<> なかなか恵まれた環境のようで。 <br>  <br> ひとつRed Hat Linuxの載ったマシンがあったne. <br>  <br> PC歴は長いようなので、この世界にくれば大物間違い無し。Linux板or自作板に住んでいるかな。 <br>  <br> さっきゅんも協力汁 <br>  <br> つか、http:///www.nhk.or.jp/kktv/ <br> 　　　　　　　　　　　　　　　　　　　　↑このスラッシュいらんぞ＞NHK <>
+Be名無しさん<>sage<>04/04/30 19:29<> 必ずしも必要ではない＝不要 <br>  <br> じゃないよ<a href="../test/read.cgi/os/1081561384/107" target="_blank">&gt;&gt;107</a> <>
+Be名無しさん<>sage<>04/04/30 19:41<> 即レス！！ <>
+Be名無しさん<>sage<>04/04/30 19:54<> やっぱマウス動かしながら画面スクロールさせると <br> 跡が残るね。 <>
+107<>sage<>04/04/30 20:08<> <a href="../test/read.cgi/os/1081561384/108" target="_blank">&gt;&gt;108</a> <br> うん。でも無駄。 <br>  <>
+Be名無しさん<>sage<>04/04/30 20:10<> 馬鹿だなぁ。パス補完をしてくれるかどうかはWebサーバに依存するだろ。余計な問題を避ける為にはつけておくのが妥当 <>
+Be名無しさん<>sage<>04/04/30 20:10<> いやに流れが速いねェ <>
+Be名無しさん<>sage<>04/04/30 20:22<> <a href="../test/read.cgi/os/1081561384/112" target="_blank">&gt;&gt;112</a> <br>  <br> つけないほうが正しいんじゃなかったっけ。 <br>  <br>  <>
+Be名無しさん<>sage<>04/04/30 20:25<> <a href="../test/read.cgi/os/1081561384/107" target="_blank">&gt;&gt;107</a> <br> つか、http:///ってスラッシュ3つもいらんぞ <>
+Be名無しさん<>sage<>04/04/30 20:35<> <a href="../test/read.cgi/os/1081561384/115" target="_blank">&gt;&gt;115</a> <br> ｽﾏｿ。typo <br>  <>
+Be名無しさん<>sage<>04/04/30 20:58<> <a href="../test/read.cgi/os/1081561384/103" target="_blank">&gt;&gt;103</a> <br> 2ch発のOSっぽくていいじゃん。 <>
+Be名無しさん<>sage<>04/05/01 01:51<> テスト <>
+Yamami<>sage<>04/05/01 05:55<> 初めてここに書き込みします。こんばんわ。よろしくです。 <br> アセンブラ/ハードの知識ほぼゼロな人ですが、一からMonaの解析をしています。 <br> 内容は、私のＨＰ  <br> http://cgi.f38.aaacafe.ne.jp/~yamami/pukiwiki/pukiwiki.php?Yamami-Open <br> に、まとめていっています。 <br> それを通じて勉強して、いつかは開発メンバーに なれたらなー <>
+Be名無しさん<>sage<>04/05/01 13:34<> <a href="../test/read.cgi/os/1081561384/119" target="_blank">&gt;&gt;119</a> <br> おおぉぉ！ <>
+Be名無しさん<>sage<>04/05/01 14:34<> <a href="../test/read.cgi/os/1081561384/119" target="_blank">&gt;&gt;119</a> <br> おぉ！ <br> ついに解析されるのか。詳細希望！！ <br>  <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/01 21:52<> <a href="../test/read.cgi/os/1081561384/119" target="_blank">&gt;&gt;119</a> <br> 次はプロテクトモードですか… <br> 0からの解析だとGDTのあたりでちょっと詰まるかもしれんですね。 <br> 属性の宣言のあたりはmonaだと16進表記になってるけれども2進表記に直すとわかりやすいかと… <br> 486のP143あたりを熟読するといいと思います <br> あとはデペロッパーズマニュアル下巻のP286あたりですかね… <br> 初心者がカーネルが読めるようなサイトはすばらしいと思うので是非頑張ってください <br>  <br> ところでバイナリエディタでできるとこまでOS書いてみようとか思ってます <br> 「これでもオープンソースさ！オブジェクト形式だけどな！」みたいな。 <br> とりあえずブートローダだけでも… <br>  <>
+</b> ◆fMUY49IvJY <b><><>04/05/01 21:54<> http://headlines.yahoo.co.jp/hl?a=20040430-00000007-zdn_n-sci <br>  <br> オープンソースって難しいですねぇ、色々 <>
+Be名無しさん<>sage<>04/05/01 22:14<> アクが濃いねぇ。 <>
+Be名無しさん<>sage<>04/05/01 22:20<> <a href="../test/read.cgi/os/1081561384/122" target="_blank">&gt;&gt;122</a> <br>  <br> いやなんつーかお前やばいよ。フルハンドアセンブルでOS書くなんて。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/01 22:30<> <a href="../test/read.cgi/os/1081561384/125" target="_blank">&gt;&gt;125</a> <br> 確かに一度紙にニーモニックで書いたものを表とてらしあわせて <br> 16進数に戻していったほうが楽かもしれないですねぇ… <>
+Be名無しさん<>sage<>04/05/01 22:35<> &gt;&gt; 123 <br> 　読んでいてあきれた。どんなOSにもセキュリティホールがあるのに。 <br> 主張している企業の狙いは所詮「金」か…。 <br> よっぽど商品に付加価値(ラブストーリ)がないんだね。 <br>  <br> 　そんなにLinuxのセキュリティホールが気になるなら <br> 政府機関専門調査機関でも立ち上げるだろうに。 <br>  <br> とぼやいてみる。 <>
+Be名無しさん<>sage<>04/05/01 23:12<> &gt;こうしたコードを忍び込ませるのが「非常に難しい」と主張 <br>  <br> 「公開される」のを難しくしなきゃダメだろ。 <br> 「忍び込ませる」のを難しくしたら進まない <>
+Be名無しさん<>sage<>04/05/01 23:19<> なにげに次スレ早くない？ <br> OSを作ろうpart10 <br> http://pc3.2ch.net/test/read.cgi/os/1083420872/ <>
+Be名無しさん<>sage<>04/05/01 23:23<> <a href="../test/read.cgi/os/1081561384/129" target="_blank">&gt;&gt;129</a> <br> なにげでもなく速すぎだ。誰だよ立てたのは… <>
+Yamami<>sage<>04/05/02 12:31<> &gt;120 <br> &gt;121 <br> 解析とは、ちと大きく出すぎました。マイペースで勉強して <br> 内容を、まとめるだけです。理解した事は、HPにのせるつもりです。 <br> &gt;122 <br> ありがとうございます。 <br> 私自身がアセンブラ、ハード、カーネルなど全くの初心者ですので <br> 初心者でも、とっかかりやすいサイトを目指します。 <br> 頂いたアドバイスは、きっと「なるほどー」って分かる時が来るのでしょうね <br> 次からは、プロテクトモード。 <br> あわてずに、まずは 「はじめて読む486」 を読み中です。 <br>  <>
+Be名無しさん<>sage<>04/05/02 15:11<> PEロダ書くと？ <br> 鬼だ……。 <>
+kamikaze<><>04/05/02 16:03<> ブートローダーを書いて見ましたけどカーネルのロードがうまくいきません。 <br> ソースは↓です。 <br> http://ea.uuhp.com/~hakugin/boot.asm <br> 誰か教えてください。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/02 17:48<> <a href="../test/read.cgi/os/1081561384/133" target="_blank">&gt;&gt;133</a> <br> CSの値をもっと意識するようにしてみて下さい。 <>
+Be名無しさん<>sage<>04/05/02 17:50<> 後プログラミング全般に通用することですが <br>  <br> die: <br> jmp die <br>  <br> のようなものを用意してところどころでデバッグポイントを作ってみることをお勧めします。 <br> ちょこちょこ入れていくことでどこでとまったのかがわかります。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/02 17:53<> 言葉が足りないですね… <br>  <br> mov si,… <br> call print <br> jmp die <br> ～～～～～～(中略) <br>  <br> die: <br> jmp die <br> のような感じです。 <br> <a href="../test/read.cgi/os/1081561384/135" target="_blank">&gt;&gt;135</a>は自分です。スレ汚しすみません… <>
+kamikaze<><>04/05/02 19:02<> ＞134 <br> アドバイスありがとうございます。 <br> 書き直して見ます。 <>
+Be名無しさん<>sage<>04/05/02 19:06<> <a href="../test/read.cgi/os/1081561384/133" target="_blank">&gt;&gt;133</a>=<a href="../test/read.cgi/os/1081561384/119" target="_blank">&gt;&gt;119</a>かと思った。 <>
+Be名無しさん<>sage<>04/05/02 19:11<> 0x7c00 <>
+Be名無しさん<>sage<>04/05/02 19:14<> SPもだめぽ <>
+kamikaze<><>04/05/02 19:23<> どこでCSの値を変更すればいいでしょうか・・・ <br> カーネルにジャンプできません。 <br> ちなみにカーネルのコードは <br> http://ea.uuhp.com/~hakugin/kernel.asm <br> です。 <br> ブートローダー、カーネル共おかしいところがありましたら、 <br> 指摘お願いします。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/02 20:13<> <a href="../test/read.cgi/os/1081561384/141" target="_blank">&gt;&gt;141</a> <br> spに入れる値は8FFFにでもしましょう <br> 0x7c00は07c0にしたほうがいいかも <br> あと重要なのが <br> xor ax,ax;セグメントの <br> mov ds,ax;初期化を <br> mov ss,ax;する <br> mov cs,ax <br> で初期化する前にcsにナニが入っているのか。 <br> はじめのjmpが行われたときのIP,CSの値。 <br> そこを良く考えたほうがいいかと… <br>  <br>  <br> /*<a href="../test/read.cgi/os/1081561384/122" target="_blank">&gt;&gt;122</a>ですが、アセンブリが高水準言語のような気がしてきました。。。 <br> 一応ブートして'Hello!'と表示、次のセクタを読み込んでジャンプ(例外処理等全くなし) <br> まではできたんですが、気力がうせてしまいました・・・近いうちにスタンドアローン開発によるOSを公開しようかと思ってます。 <br> (外部制御に特化させようかと…) <br> 使い物になるのはいつかわかりませんが、覚えていてくれると嬉しいです…*/ <>
+kamikaze<><>04/05/02 20:32<> ＞142 <br> アドバイスありがとうございます。 <br> でも、spの値や、ip:csのcsの値を変更すると <br> はじめに表示されたはずの文字さえも表示されなくなりました・・・ <br> どうすればいいでしょう・・・ <br>  <>
+Be名無しさん<>sage<>04/05/02 20:35<> <a href="../test/read.cgi/os/1081561384/143" target="_blank">&gt;&gt;143</a> <br> まぁ落ち着いてこれでも読もうぜ。 <br> ↓ <br> OSをつくろうpart2 <br> http://pc5.2ch.net/test/read.cgi/tech/1024411711/l50 <br>  <>
+Be名無しさん<>sage<>04/05/02 20:42<> <a href="../test/read.cgi/os/1081561384/143" target="_blank">&gt;&gt;143</a> <br> ブートセクタは 0x7C00 ～ 0x7DFF に読み込まれているんで、  <br> 全部の文字列へのアドレスに 0x7C00 を足すか、 ds を 0x07C0 にしないといけないですよ。 <>
+Be名無しさん<>sage<>04/05/02 20:46<> <a href="../test/read.cgi/os/1081561384/144" target="_blank">&gt;&gt;144</a>内<a href="../test/read.cgi/os/1081561384/599" target="_blank">&gt;&gt;599</a>周辺熟読我是非推薦 <>
+Be名無しさん<>sage<>04/05/02 21:17<> Yamamiタソ <br> http://cgi.f38.aaacafe.ne.jp/~yamami/pukiwiki/pukiwiki.php?Yamami-Open <br>  <br> 勝手に連載/16BitOS作り <br> http://wiki.osdev.info/index.php?cmd=read&page=%BE%A1%BC%EA%A4%CB%CF%A2%BA%DC%2F16BitOS%BA%EE%A4%EA <br>  <br> ブートセクタ(IPL)を書く上で必要になりそうな情報 <br> http://community.osdev.info/index.php?%5B%5BIPL%5D%5D <br>  <br> CORONのブートまわり <br> http://www.ncfreak.com/cecilia/yiki.cgi?CORON%a4%ce%a5%d6%a1%bc%a5%c8%a4%de%a4%ef%a4%ea <>
+kamikaze<><>04/05/02 21:28<> ＞144、145、147 <br> ありがとうございます。 <br> でも、それでもできません・・・ <br> はじめのコードだと文字は表示されるんですが <br> この場合での問題点は何ですか？？ <>
+Be名無しさん<>sage<>04/05/02 21:39<> <a href="../test/read.cgi/os/1081561384/144" target="_blank">&gt;&gt;144</a>の中でひげぽんの苦労歴(0からだからわかりやすい)を読めばわかるとおもはれ <>
+Be名無しさん<>sage<>04/05/02 22:17<> [org 0x7C00] があるから 145 はいらない。すまぬ。 <br>  <br> ttp://ea.uuhp.com/~hakugin/boot.asm <br> ttp://ea.uuhp.com/~hakugin/kernel.asm <br> 修正なしで大丈夫なような気がする。 <br> PCエミュレータ(Bochs)では正常に動いている予感。 <br>  <br> とりあえず、OSをつくろうの過去スレとか読んでみるとよさげ。 <>
+Be名無しさん<>sage<>04/05/02 22:27<> <a href="../test/read.cgi/os/1081561384/150" target="_blank">&gt;&gt;150</a> <br> でもその後にクリアしてる品・・・ <>
+kamikaze<><>04/05/02 23:00<> ＞150 <br> カーネルに制御移りました？？ <br> ＞151 <br> どういうことですか？？ <>
+Be名無しさん<>sage<>04/05/02 23:05<> <a href="../test/read.cgi/os/1081561384/152" target="_blank">&gt;&gt;152</a> <br> part2は内容濃いから見とくといいよ、絶対 <>
+Be名無しさん<>sage<>04/05/02 23:12<> <a href="../test/read.cgi/os/1081561384/142" target="_blank">&gt;&gt;142</a> <br> ちょっと期待 <>
+Be名無しさん<>sage<>04/05/02 23:25<> <a href="../test/read.cgi/os/1081561384/152" target="_blank">&gt;&gt;152</a> <br> Boot Start... <br> A20Line Enable!! <br> Load Success!! <br> aaaaaaaaaa <br> と表示されたので最後まで実行されたかと。 <br> が、所詮はエミュレータ上での実行だからなあ。 <br>  <br> 焦らずにまったりとな。 <>
+Be名無しさん<><>04/05/03 05:40<> やっと作ろうスレが本来の雰囲気に戻ってきた気がする。 <br> 卑下には後進に道を譲って卒業することを勧告する。 <br> 専用スレだってあるんだから。 <br> http://pc3.2ch.net/test/read.cgi/os/1066957498/ <>
+Be名無しさん<>sage<>04/05/03 05:43<> もともとつくろうスレ自体part1は卑下が立てたものじゃないから仮住まいだしな <>
+Be名無しさん<>sage<>04/05/03 05:52<> 卑下はトーシロでもOSを作れるってことを示したのと、 <br> 荒らしを乗り越える実例を示したという功績はあるな。 <br> あと今日までこのスレにネタを提供して維持してきたのも。 <>
+Be名無しさん<>sage<>04/05/03 05:55<> そういや臓餅はどこ行ったの？ <>
+Be名無しさん<><>04/05/03 06:03<> 早朝君北─ｗｗﾍ√ﾚｖｖ～(ﾟ∀ﾟ)─ｗｗﾍ√ﾚｖｖ～─ !! <>
+Be名無しさん<>sage<>04/05/03 06:25<> 喪前ら餅ついてこれでも見ろ <br> マンチラしてるぞ <br> ttp://aro64.com/vietnam/bag/L/hana_shisyu_porch_01.jpg <>
+Be名無しさん<>sage<>04/05/03 06:45<> <a href="../test/read.cgi/os/1081561384/158" target="_blank">&gt;&gt;158</a> <br> 若い世代に無意味な選択肢を見せてしまったという意味で悪影響を及ぼしていると思うが。 <>
+Be名無しさん<>sage<>04/05/03 06:52<> <a href="../test/read.cgi/os/1081561384/162" target="_blank">&gt;&gt;162</a> <br> 卑下よりKの方が影響力が大きいと思われ <br> 何だかんだ言って茂名の連中って爺ばっかだろ <>
+Be名無しさん<>sage<>04/05/03 06:58<> <a href="../test/read.cgi/os/1081561384/163" target="_blank">&gt;&gt;163</a> <br> 僕の定義では何歳以上が爺? <>
+Be名無しさん<>sage<>04/05/03 07:28<> <a href="../test/read.cgi/os/1081561384/164" target="_blank">&gt;&gt;164</a> <br> 18 <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/05/03 09:19<> 猫の人めっちゃｶｯｺｲｲんですけど気のせいですか……。 <>
+Be名無しさん<>sage<>04/05/03 09:20<> いいの出来たから近いうちにフリーで落とせるようにしとくよ <br> 名前はまだ決めてない <>
+Be名無しさん<>sage<>04/05/03 09:37<> <a href="../test/read.cgi/os/1081561384/165" target="_blank">&gt;&gt;165</a> <br> 幼児か、おまえは <>
+Be名無しさん<>sage<>04/05/03 10:04<> 大の大人が揃いも揃ってやるような真似じゃないよね <>
+Be名無しさん<>sage<>04/05/03 10:11<> <a href="../test/read.cgi/os/1081561384/169" target="_blank">&gt;&gt;169</a> <br> 大人に夢を持っているんだね <br> そのままの君でいてください <>
+Be名無しさん<>sage<>04/05/03 10:18<> <a href="../test/read.cgi/os/1081561384/169" target="_blank">&gt;&gt;169</a> <br> 酔狂こそが大人の楽しみなんだけどなぁ。 <br>  <br> <a href="../test/read.cgi/os/1081561384/170" target="_blank">&gt;&gt;170</a> <br> 酔狂って夢がないとできないっしょ。 <>
+Be名無しさん<>sage<>04/05/03 10:25<> どこの会社でも30過ぎたら翁扱いされるのが現実だけどな。 <>
+Be名無しさん<>sage<>04/05/03 10:28<> <a href="../test/read.cgi/os/1081561384/172" target="_blank">&gt;&gt;172</a> <br> ソフト系だとそんなもんか <>
+Be名無しさん<>sage<>04/05/03 10:35<> <a href="../test/read.cgi/os/1081561384/173" target="_blank">&gt;&gt;173</a> <br> 男ならデキる人はそうでもないけど三十路過ぎた女はどこの業界でも邪魔者扱いだね。 <>
+Be名無しさん<>sage<>04/05/03 10:42<> はいはい、マ板でやってね <br>  <br> ＊＊＊＊＊　終了　＊＊＊＊＊ <>
+Be名無しさん<><>04/05/03 12:36<> <a href="../test/read.cgi/os/1081561384/152" target="_blank">&gt;&gt;152</a>はいいかげん与えられた資料を読んで来い <>
+kamikaze<><>04/05/03 20:52<>  <br> &gt;176 <br> とりあえず一通り読んでみました。 <br> 大体のことを理解できましたが・・ <br> プロテクトモードへ移行するときの <br> GDTの設定の部分と[bits 32]以降の処理がよくわかりません・・・ <>
+Be名無しさん<><>04/05/03 21:06<> PEロダ北─ｗｗﾍ√ﾚｖｖ～(ﾟ∀ﾟ)─ｗｗﾍ√ﾚｖｖ～─ !! <>
+Be名無しさん<>sage<>04/05/03 21:15<> <a href="../test/read.cgi/os/1081561384/177" target="_blank">&gt;&gt;177</a> <br> はじめて読む486読め。 <br> ひげぽんのはそれを丸々アセンブリ化したようなもんだから。 <br>  <br> <a href="../test/read.cgi/os/1081561384/178" target="_blank">&gt;&gt;178</a> <br> そんなにたいしたもんなのだろうか… <>
+Be名無しさん<>sage<>04/05/03 21:31<> <a href="../test/read.cgi/os/1081561384/178" target="_blank">&gt;&gt;178</a>の言ってることがよく分からんのだけど <br>  <br> windows PE　のブータブルCDのISOイメージがうｐロダに流れたって事？ <br>  <br> だったらすごく気になるんだが <>
+Be名無しさん<>sage<>04/05/03 21:42<> 頭おかしいんじゃない？ <>
+180<>sage<>04/05/03 21:53<> 冗談のつもりだったんだけど… <>
+Be名無しさん<>sage<>04/05/03 21:59<> <a href="../test/read.cgi/os/1081561384/177" target="_blank">&gt;&gt;177</a> <br> GDTの設定、プロテクトモード移行はdb擬似命令を連発して値を埋めて、 <br> サイズから-1したものとベース値(ﾗｲﾅｰｱﾄﾞﾚｽ)をlGDTでロード(反転されるのに注意)するだけ… <br> <a href="../test/read.cgi/os/1081561384/122" target="_blank">&gt;&gt;122</a>の上方でいいと思います… <>
+Be名無しさん<>sage<>04/05/03 22:15<> <a href="../test/read.cgi/os/1081561384/179" target="_blank">&gt;&gt;179</a> <br> ひげぽんがELFのリロケートで四苦八苦してるのに、 <br> あっさりとPEのDLLのリロケートを実装して動かしたんだから、 <br> 十分にインパクトあると思います。もう神としか言いようがない。 <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/05/03 22:19<> <a href="../test/read.cgi/os/1081561384/179" target="_blank">&gt;&gt;179</a> <br> アレnwsでずっとやりたかったんスよ。 <br> いやー、本当に出来るんだなぁ。 <br> 楽しそ。 <>
+Yamami<>sage<>04/05/05 01:35<> &gt;119  ですが <br> ブートするまでの流れは、ドキュメント化できたと思います。 <br> C++のカーネルを読んでいますが、行き詰まっています。 <br> ポイントを絞ってソース読まないとなぁ・・・と思っています。 <br> http://cgi.f38.aaacafe.ne.jp/~yamami/pukiwiki/pukiwiki.php?Yamami-Open <br> 求むアドバイス に賢人の方の意見希望します。 <br>  <br> そろそろMonaプラットフォームで動作する、なんかしょーもないアプリでも <br> 作ってみたい気がする。その方が近道かもしれないですねぇ。 <br>  <>
+Be名無しさん<><>04/05/05 13:30<> <a href="../test/read.cgi/os/1081561384/186" target="_blank">&gt;&gt;186</a> <br> 引用は引用と書いたほうがいいと思うよ。nifty辞典のとことか。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/05 13:42<> <a href="../test/read.cgi/os/1081561384/186" target="_blank">&gt;&gt;186</a> <br> キーボード処理なんかは割り込みだからインテルのIA-32マニュアル下巻のIDT周りを熟読しないとだめだよん <>
+Be名無しさん<>sage<>04/05/05 14:11<> <a href="../test/read.cgi/os/1081561384/186" target="_blank">&gt;&gt;186</a> <br> 厳密には、いまどきのCPUは <br> 物理アドレスFFFFFFF0 から実行が開始されるけど、 <br> まぁ、BIOSを自作しようとか、BIOSを解析しようとかしない限りは <br> 関係ないか。 <>
+Be名無しさん<>sage<>04/05/05 14:20<> <a href="../test/read.cgi/os/1081561384/189" target="_blank">&gt;&gt;189</a> <br> OS作りよりBIOS自作の方が漢ってことか。 <>
+Be名無しさん<>sage<>04/05/05 14:24<> しかしOS書いてるとCPU設計者にあこがれてきたりするな。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/05 14:25<> http://www.itmedia.co.jp/news/articles/0404/24/news014.html <br>  <br> おもしろ、おもしろ～ <>
+Be名無しさん<>sage<>04/05/05 14:43<> <a href="../test/read.cgi/os/1081561384/191" target="_blank">&gt;&gt;191</a> <br> いまどきのCPU設計者は、リーク電流を減らすこととか、アキュムレータ <br> の駆動率向上とかに四苦八苦していたりするかも。 <br> と言ってしまったら夢がないか。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/05 15:03<> やはりWineと同じ運命を辿るのだろうか。 <>
+</b> ◆fMUY49IvJY <b><>sage<>04/05/05 17:53<> 運命っつーのはおかしいな。経路か、方向か。 <br> 少なくともWineよりも優秀でないと商用化は難しい予感 <>
+Be名無しさん<>sage<>04/05/05 20:48<> <a href="../test/read.cgi/os/1081561384/195" target="_blank">&gt;&gt;195</a> <br> 実物が出てこないと何ともいえないね。 <br> 吉野家の豚丼程度なものなのか、それとも、キター！といえるものなのか。 <br> 向こうの中の人がいう可能性がある≒不可能と確定したわけではない <br> という事もあるしね。 <>
+Be名無しさん<>sage<>04/05/05 21:21<> 既存OSというのが 暗黙的にNT系の事をいっているのであれば <br> 一度インサイドWindows NT第2版 あたりを読んで見ては。 <br> あまり読みすぎるとメモリ管理がNTの劣化仕様になってしまいかねない <br> もろばのけんだが。 <>
+Be名無しさん<>sage<>04/05/05 21:47<> <a href="../test/read.cgi/os/1081561384/197" target="_blank">&gt;&gt;197</a> <br> 今からなら第3版にあたる「アーキテクチャ徹底解説 Microsoft Windows 2000」 <br> ttp://bpstore.nikkeibp.co.jp/msp/book/01917/01917.html <br> になるか。 <>
+Be名無しさん<>sage<>04/05/05 21:54<> <a href="../test/read.cgi/os/1081561384/198" target="_blank">&gt;&gt;198</a> <br>  <br> .netマガジンといい、どうしてwindows系はこんなに表紙がハデですか <>
+Be名無しさん<>sage<>04/05/05 21:55<> *nixに比べて競争が激しいあｋら <>
+Be名無しさん<>sage<>04/05/05 22:39<> <a href="../test/read.cgi/os/1081561384/193" target="_blank">&gt;&gt;193</a> <br> その方が萌える。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/06 23:48<> 久々の書き込みです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/186" target="_blank">&gt;&gt;186</a>　Yamanamiさん <br>  <br> 解析いただき大変光栄です。 <br> 勉強もかねてらっしゃるようなのでヒントを出す感じがよろしいでしょうか? <br>  <br>  <br> 自分自身はELFの再配置に苦労しています。 <br> ELFの中身の解析はほぼ出来たのですが、どこまでリンカに任せることが出来るのか等 <br> いろいろあいまいな点が多かったりして苦労しています。 <br>  <br> PE DLLの再配置に成功したYui_Nekoさんは素直にすごいと思いました。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/06 23:49<> βリリースのお知らせです。  <br> 0.2.0beta9をリリースしました。  <br>  <br> 変更点は以下の通りです。  <br>  <br> ・シェルの内部コマンド追加: CHSH, UNAME/VER, HELP/?  <br> ・Linux/FreeBSDでのコンパイルに対応   <br> ・bzip2ライブラリを移植   <br> ・bzip2で圧縮されたテキストを表示するbzcatコマンド追加   <br> ・bzip2で圧縮された実行ファイル(.EL2)をサポート   <br> ・シェルが同期実行をサポート。GUIアプリなどを起動して処理が戻ってこない場合でも何かキーを押すことで再開。  <br>  <br> 今回の目玉はbzip2圧縮をしたELFをそのままシェルから実行できること。 <br> デフォルトシェルと1lineシェルを簡単に切り替えることが出来ることなどです。 <br>  <br> 今リリースはひげぽん以外のPJメンバー大活躍でした。 <br> 足を引っ張らないようがんばります。 <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/07 00:18<> 上にも書きましたが最近はMonaPJが非常にアクティブで <br> お手伝いいただいている方々にはただただ感謝です。 <br>  <br> やはり、自分ひとりでやるよりもたくさんのアイデア・方向性・実装が <br> 生まれていい方向に動いていると感じます。 <br>  <br> 自分がPJ管理者としてボトルネックや障害にならないように <br> いろいろと勉強しなければなぁと毎日思っていますので <br> 成長のチャンスかな。 <>
+Yamami<>sage<>04/05/07 00:35<> <a href="../test/read.cgi/os/1081561384/203" target="_blank">&gt;&gt;203</a> <br>  beta9 リリースおめでとうございます。 <br>  Mona PJWiki には、ほぼ毎日おじゃましています。 <br>  みなさんスキルが高くて、なかなか話題についていけずＲＯＭがほとんどですが <br>  ぼちぼち勉強します。 <br>  ちなみに <br>  Yamanami では無く、Yamami です。 <br>  どっちでもいいんですがｗ <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/07 00:48<> &gt;&gt;Yamamiさん <br>  <br> &gt; Yamanami では無く、Yamami です。  <br> &gt; どっちでもいいんですがｗ  <br>  <br> 大変失礼しましたm(__)m <br>  <br> 是非wikiの議論へもご参加くだささい。発言したものがちですｗ <>
+Be名無しさん<>sage<>04/05/09 16:17<> そろそろリリース近いかな？ <>
+Be名無しさん<>sage<>04/05/09 16:18<> 999 名前：ひげぽん ◆Ngzcp/NZpA [sage] 投稿日：04/05/09(日) 14:15 <br> 来た? <br>  <br> こんなことやってるぐらいだから暇そうだ品。 <>
+Be名無しさん<>sage<>04/05/09 20:34<> <a href="../test/read.cgi/os/1081561384/208" target="_blank">&gt;&gt;208</a> <br> 和露他。どこのスレ？というか板？ <>
+Be名無しさん<>sage<>04/05/09 21:02<> <a href="../test/read.cgi/os/1081561384/209" target="_blank">&gt;&gt;209</a> <br> ここだーよ <br> ★２ちゃんねらーでOSを作ってみないか？★ <br> http://pc5.2ch.net/test/read.cgi/os/1062909154/ <>
+Be名無しさん<>sage<>04/05/09 21:37<> 最新スクリーンショット派手だなぁ。 <br> 騙されて来る奴とかいるんじゃねーの？ <>
+Be名無しさん<>sage<>04/05/09 21:58<> <a href="../test/read.cgi/os/1081561384/211" target="_blank">&gt;&gt;211</a> <br> あれはどう考えても釣りのためにやってるだろ <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/05/09 23:27<> greversiで最後のマスを埋める所でパス問題発生……。 <br> 赤は置き場が無いのに赤に手が回ってしまった。 <br> 気晴らしにやってただけなんで手順は覚えてません。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/09 23:33<> <a href="../test/read.cgi/os/1081561384/207" target="_blank">&gt;&gt;207</a>さん <br> なるべくはやくリリースしたいですね。 <br> 大幅に遅れていて申し訳ありません。 <br>  <br> <a href="../test/read.cgi/os/1081561384/208" target="_blank">&gt;&gt;208</a>さん <br> ばれました。。。暇ではないのですがつい・・ <br>  <br> <a href="../test/read.cgi/os/1081561384/213" target="_blank">&gt;&gt;213</a>さん <br> ご報告ありがとうございます。 <br> 同様の現象をTinoさんからもご指摘いただいているのですが <br> いまだバグ箇所の特定にはいたっておりません。 <>
+Be名無しさん<>sage<>04/05/10 14:52<> 自 作 自 演 確 定  <br>  <br>  <br> そもそも結婚しているのだよね? <br> 夜のお仕事はいつするのだろう? <br>  <br> お姫様とは仲良くされているんですよね、卑下。 <br>  <>
+Be名無しさん<>sage<>04/05/10 19:19<> <a href="../test/read.cgi/os/1081561384/215" target="_blank">&gt;&gt;215</a> <br> 昔よりはいくばくかよくなった&gt;&gt;自作自演 <>
+Be名無しさん<>sage<>04/05/10 19:32<> <a href="../test/read.cgi/os/1081561384/214" target="_blank">&gt;&gt;214</a> <br> ソースしか見てないんだけど、 <br> コマをひっくり返す前に、(ReversiBoard::setPiece()内で) <br> 次手を指すプレイヤーを決めているような気がします。 <br> この順番で良いならすいません。 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/11 00:59<> <a href="../test/read.cgi/os/1081561384/217" target="_blank">&gt;&gt;217</a>さん <br>  <br> わざわざソースを見ていただいて恐縮です。 <br>  <br> ご指摘の通り、ひっくり返す前に次のプレイーやーを決めていますね。 <br> 修正いたしましたので取り急ぎ報告させていただきます。 <br>  <br> ありがとうございました。 <>
+Be名無しさん<>sage<>04/05/11 09:41<> <a href="../test/read.cgi/os/1081561384/218" target="_blank">&gt;&gt;218</a> <br> guiじゃない方のreversiは修正しないの？ <br> ソース同じなら同じ問題があるんじゃない？ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/12 01:28<> <a href="../test/read.cgi/os/1081561384/220" target="_blank">&gt;&gt;220</a>さん <br>  <br> ご心配ありがとうございます。ChangeLogには怠けて書いていなかったのですが <br> 同時にnon-gui版も修正しております。 <br>  <br> 今日は0.2.0リリース以降にメッセージング機構をどうするかということで <br> 有意義な議論ができました。 <br>  <br> elfもちょっとだけ進んできました。やはりちゃんと資料を読めばいろいろ書いてありますね。 <>
+Be名無しさん<>sage<>04/05/12 15:39<> <a href="../test/read.cgi/os/1081561384/220" target="_blank">&gt;&gt;220</a> <br> プ <>
+Be名無しさん<>sage<>04/05/12 17:58<> ひげは47氏逮捕についてどう思うよ？ <br> L氏は既に面白い答えを出しているが <>
+Be名無しさん<>sage<>04/05/12 19:35<> 「47氏って誰？」と素でボケるひげ氏↓ <>
+Be名無しさん<>sage<>04/05/12 20:06<> nyに取って代わるP２Pソフトでも開発するか、ちょっと待ちな <br>  <br> なんて前に言ってたぞ。 <>
+Be名無しさん<>sage<>04/05/12 20:19<> &gt;nyのソースは全部本物なのだろうか？ -- ひげぽん 2003-12-21 (日) 18:34:14  <br>  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?%BA%A3%C6%FC%A4%CE%B0%EC%B8%C0(%C9%D4%C4%EA%B4%FC%B9%B9%BF%B7)%2F2003%2F08-12 <br>  <br> あれって逆汗したものをC++に書き直したとか言う胡散臭いふれこみだったっけ。 <>
+Be名無しさん<>sage<>04/05/12 20:30<> <a href="../test/read.cgi/os/1081561384/222" target="_blank">&gt;&gt;222</a> <br> 発言へのポインタきぼんぬ <>
+Be名無しさん<>sage<>04/05/12 20:32<> NWSOSスレッド part8 <br> http://pc5.2ch.net/test/read.cgi/os/1083380404/350-351 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/13 00:14<> 今日はほとんど何も手を付けられませんでした。 <br> 再配置に必要な情報をRELセクション周りから集めるあたりを実装しました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/222" target="_blank">&gt;&gt;222</a>さん <br> P2Pには多少の興味を持っていましたが今はMonaが楽しいので <br> 特にそのへんに関しては気のきいた意見は持ち合わせていないです。 <br> すみません。 <>
+Be名無しさん<>sage<>04/05/13 00:25<> <a href="../test/read.cgi/os/1081561384/228" target="_blank">&gt;&gt;228</a> <br> 正しい答え方だ。 <br>  <br> さっきゅんみたいにアフォな発言をすれば、ただ評価を下げるだけ。 <br> 俺も「こいついつからこんなに偉くなったんだ？」的、反感を覚えた。 <br>  <br> LCについては・・・何も言うことは無い。 <br>  <br> まぁ無駄なことは言わず黙っとけ。自作自演もやるなよ。 <>
+Be名無しさん<>sage<>04/05/13 00:26<> 逃げるなよ <br> 愛用してたんだから感想ぐらいあるだろ <>
+Be名無しさん<>sage<>04/05/13 00:45<> 47氏逮捕について。 <br> 「誠に遺憾だ。今後はこのようなことが起きないように指導を徹底したい。」 <>
+さっきゅん<>sage<>04/05/13 03:37<> <a href="../test/read.cgi/os/1081561384/229" target="_blank">&gt;&gt;229</a> <br> 金子を擁護してる割れ厨よりはまともな意見だと思いますがー <>
+Be名無しさん<>sage<>04/05/13 18:57<> 丸くなったLCなんざLCじゃねェや <>
+Be名無しさん<>sage<>04/05/13 21:33<> コーンたんはとんがってます <>
+Be名無しさん<>sage<>04/05/13 21:49<> Windows100%45p <br> 省スペースだが乗っている。 <br> おめでとｗ <>
+Be名無しさん<><>04/05/13 21:56<> <a href="../test/read.cgi/os/1081561384/235" target="_blank">&gt;&gt;235</a> <br> 詳細を求む。 <>
+Be名無しさん<>sage<>04/05/14 16:17<> <a href="../test/read.cgi/os/1081561384/235" target="_blank">&gt;&gt;235</a> <br> 雑誌が雑誌だな。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/15 00:23<> <a href="../test/read.cgi/os/1081561384/235" target="_blank">&gt;&gt;235</a>さん <br> 情報ありがとうございます。 <br> ご指摘をずっと見逃していたのですが某氏のつっこみにより <br> やっと意味を悟り、コンビニに走りました。 <br>  <br> 確かに省スペースでした（笑） <br>  <br> でも素直にうれしいですね。 <br> 残念なのが(Tinoさんの)MonaGUIが大活躍する前のバージョンの紹介だったことですね。 <br>  <br> 前のbochsの記事のときと違って一応OSの端くれとして紹介されているのがちょっとうれしかったり。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/16 11:58<> βリリースのお知らせです。  <br> 0.2.0beta10をリリースしました。  <br>  <br> 変更点は以下の通りです。  <br>  <br> ・アプリをたくさん起動させたときのマウスの動きを改善 <br> ・Welcomeメッセージで簡単な使い方を表示   <br> ・シェルでプロンプトにカレントディレクトリを表示, 内部コマンドLS/DIRの引数でディレクトリを指定できるようにした   <br> ・GUI.SVRの自動起動を解除   <br> ・STARTGUIバッチを追加   <br> ・格好良い壁紙(提供nikqさん)   <br> ・マウスカーソルの形状を変更   <br> ・シェルの内部コマンドにPSとKILLを追加   <br> ・シェルを完全にリライトして軽量化  <br>  <br> 今回の目玉は、GUIがstatrtguiコマンドによってスタートするところ、GUI.SVRが壁紙の再描画をサポートしたことです。 <br>  <br>  <br> 今リリースはTinoさんのMonaGUIにたくさんの新機能が載っています。 <br> ＞Tinoさん <br> ありがとうございます。お疲れ様でした。 <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/05/16 14:30<> QEMUだと動かないのかね <br> VESA: 800x600 16bppでストップ。 <br>  <br> もし直していただいても、暫くお礼のレスはできないのでそのあたりはよろ。 <br>  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 15:25<> <a href="../test/read.cgi/os/1081561384/239" target="_blank">&gt;&gt;239</a> <br> お疲れ様です。 <br> 今日は懸案の裏ウインドウの再描画を何とかしようとしています。 <br>  <br> <a href="../test/read.cgi/os/1081561384/240" target="_blank">&gt;&gt;240</a> <br> QEMUで動きます。私自身確認済みです。 <br> ただ、メッセージキューの処理でデッドロックが起こるようで、 <br> QEMUに限りませんが途中で止まってしまうという現象が発生します。 <br> 止まる箇所は一定しません。運がよければかなり動きます。 <br>  <br> 止まる箇所は以下のケースが多いです。 <br> ・OS起動中にサーバー読み込みの途中で止まる <br> ・startguiを入力してGUI.SVRの起動中に止まる <br> ・dirでファイルを表示している最中に止まる <br>  <br> メッセージキューでデッドロックが起きて途中で詰まっている感じです。 <br> マウスを動かすとその拍子に動き始めたりすることもありますが、 <br> 大抵は操作不能になります。 <br>  <br> というわけで現状かなり不安定な状態ですが、 <br> 何度か試していただくとうまく動くと思います。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 15:31<> あと補足ですが、 <br> <a href="../test/read.cgi/os/1081561384/239" target="_blank">&gt;&gt;239</a> <br> &gt; ・シェルを完全にリライトして軽量化 <br> というのはSHELL.SVRのことです。 <br> これに対して従来のシェルはOLDSHELL.SVRという名前で生き残っています。 <br> デフォルトで起動するのはOLDSHELL.SVRの方です。 <br>  <br> chshとしていただくことでSHELL.SVRの方が起動します。 <br> SHELL.SVRからchshすると1LINESH.SVRが起動します。 <br>  <br> OLDSHELLはprintf()を横取りするようになった関係上、 <br> 今までより動きが重くなっています。 <br> メッセージングを多用するため、デッドロックが表面化しました。 <br> カーネルの問題ではないかと考えていますが、追いきれていない状況です。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 15:38<> <a href="../test/read.cgi/os/1081561384/242" target="_blank">&gt;&gt;242</a> <br> すみません。訂正です。 <br> &gt; カーネルの問題ではないかと考えていますが、追いきれていない状況です。 <br> 前半部分の表現が不適切でした。 <br> 「カーネルの問題ではない、と考えている」と書くつもりでした。 <br>  <br> libmonapi.aの中でメッセージキューを持っているのですが、 <br> マルチスレッドにしてしまうと本来別々に扱わないといけないスレッドごとのキューが <br> 共用されてしまうために発生する現象ではないかと考えています。 <br>  <br> printf()の処理を非同期にすることでシングルスレッド化できると思われますが、 <br> 文字ずれなどの副作用が発生するため困っているというのが現状です。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 15:43<> というわけで上でデッドロックと書きましたが、 <br> 正確には他のスレッドにメッセージを横取りされてしまうため、 <br> 延々とまちぼうけになってしまうということではないかと推測しています。 <br>  <br> この問題はprintf()の横取りを実装した直後から気付いていたのですが、 <br> 私用に忙殺されてしまってひげぽんさんと調整しないまま <br> β10のリリースになってしまいました。 <br>  <br> 非常に不安定で重大な問題なのに触れられていないという状況になってしまい <br> <a href="../test/read.cgi/os/1081561384/240" target="_blank">&gt;&gt;240</a>さん他の方々にご迷惑をお掛けしてしまい申し訳ありませんでした。 <>
+240<>sage<>04/05/16 19:03<> hungry氏パケジも動かなかったので、QEMU(CVS,Linux)の問題の可能性ダーイ <br>  <>
+Be名無しさん<>sage<>04/05/16 19:18<> 0.5.5リリースでも駄目ポン <br>  <>
+240<>sage<>04/05/16 19:40<> 何回試してもだめぽ <br>  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 20:36<> <a href="../test/read.cgi/os/1081561384/245-247" target="_blank">&gt;&gt;245-247</a> <br> お騒がせしております。 <br> 前述のマルチスレッドメッセージングの件は修正いたしました。 <br>  <br> 私は以下のサイトから入手したQEMU on Windows (0.5.4)で動作確認していました。 <br> http://www.h7.dion.ne.jp/~qemu-win/index-ja.html <br>  <br> 現在0.5.5がアップされていますが、それで動かしてみた所、 <br> 確かにご指摘のVESA: 800x600 16bppでストップしてしまいました。 <br> バージョンなどを明記せず大変失礼いたしました。 <br>  <br> これは前述のマルチスレッドメッセージング問題とは関係ない部分のようで、 <br> INITスレッドを起こす段階で失敗しているようです。 <br> ちょっと今はそれ以上のことは分かりませんでした。 <br>  <br> すみませんが以上よろしくお願いいたします。 <>
+Be名無しさん<>sage<>04/05/16 20:39<> QEMUはQEMU5.5の問題でしょ。 <br> 以前動いていたイメージも動かないし。 <br>  <br> ただVirtualPC2004評価版でstartguiを実行すると <br> カーネルパニックを起こすのが気になります。 <br> VMWare4.5の評価版は問題無いのでVirtualPCの問題？ <br>  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 20:40<> <a href="../test/read.cgi/os/1081561384/248" target="_blank">&gt;&gt;248</a> <br> &gt; 前述のマルチスレッドメッセージングの件は修正いたしました。 <br> と思ったのも束の間、問題が再発してしまいました。 <br> どうやら私の考えていた部分以外でも問題が発生しているようです。 <br> ちょっと手詰まりになってしまいました。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 21:20<> <a href="../test/read.cgi/os/1081561384/249" target="_blank">&gt;&gt;249</a> <br> &gt; QEMUはQEMU5.5の問題でしょ。  <br> &gt; 以前動いていたイメージも動かないし。  <br> なるほど、そうなんですか。 <br>  <br> &gt; ただVirtualPC2004評価版でstartguiを実行すると  <br> &gt; カーネルパニックを起こすのが気になります。  <br> &gt; VMWare4.5の評価版は問題無いのでVirtualPCの問題？ <br> これは以下にあるβ10のイメージということでよろしいでしょうか？ <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <br>  <br> 手元にあるVPC-5.2では問題ありませんでした。 <br> 試しに2004評価版を入手して試してみましたがやはり問題ありませんでした。 <br>  <br> 前述のマルチスレッドメッセージング問題絡みで <br> startguiの最中に止まってしまうことはあります。 <br> これはVPC-5.2, QEMU-0.5.4ともに発生します。 <br> ですが止まる場合は何のメッセージもなくそのまま止まってしまうので、 <br> カーネルパニックというのは見たことがないです。 <br>  <br> ともかく色々と問題があるのは確かです。 <>
+は </b>◆cplnFO9T0I <b><>sage<>04/05/16 21:21<> Bochsで、起動したいんですが、さっぱりわかりません。 <br> 教えてください。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 21:36<> <a href="../test/read.cgi/os/1081561384/252" target="_blank">&gt;&gt;252</a> <br> 前スレに詳しく解説されていたのでコピペします。 <br> ですが非常に遅いので、一応QEMU-0.5.4をお勧めしておきます。 <br> -- <br> 940 名前： Be名無しさん 投稿日： 04/04/07 19:28 <br> bochsが動かないと言ってる人が多過ぎだけど  <br> 情報が古いのと混ざって交錯してて分かりにくいってのもあるか  <br>  <br> ここでまとめといた方が良さそうだねage  <br>  <br> bochsは自分でコンパイルせずに↓を使う  <br> http://prdownloads.sourceforge.net/bochs/bochs-2.1.1.win32-bin.zip?download  <br> これを展開してC:\Program Files\bochs-2.1.1に入れておく  <br>  <br> Monaの楽々bochs起動ファイルを取ってくる  <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?cmd=read&page=Mona%2FBochs%C0%DF%C4%EA  <br>  <br> どこでも好きなところに展開して、その中にmona.imgを入れる  <br> mona.imgは好きなバージョンをぶち込めば良い  <br> 最新のMonaを使いたい人は↓のmona.imgを使う  <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7  <br>  <br> それであとはstart.batをクリックすればbochsでMonaが動く  <br> ただシェルにdirが実装されてないから何が出来るか分からないのが問題  <br> その辺何とかしてﾎｽｨ  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 21:38<> 参考までにstartguiで固まる状況をアップしておきました。（ ´Д⊂ヽ <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%A5%B9%A5%AF%A5%EA%A1%BC%A5%F3%A5%B7%A5%E7%A5%C3%A5%C8%2F200405 <br>  <>
+Be名無しさん<>sage<>04/05/16 21:48<> <a href="../test/read.cgi/os/1081561384/251" target="_blank">&gt;&gt;251</a> <br>  <br> はいβ10です…が、すいません、実行環境の問題でした。 <br> 仮想マシンのRAMを16M-&gt;32Mに変更したら問題ありませんでした。 <br>  <br> ちなみに発生したときの場所とメッセージは <br> 壁紙だけが表示された状態で <br>  <br> kernel panic <br> Message:unhandled:fault0E - page fault <br>  <br> でした。 <br>  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/16 21:54<> <a href="../test/read.cgi/os/1081561384/255" target="_blank">&gt;&gt;255</a> <br> 了解しました。 <br> こちらでもメモリ16MBでカーネルパニックになることを確認しました。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/16 22:36<> <a href="../test/read.cgi/os/1081561384/240" target="_blank">&gt;&gt;240</a>さん <br> ご報告ありがとうございます。 <br> メッセージのデッドロックが問題になっているようなので調査いたします。 <br>  <br> &gt;&gt;Tinoさん <br>  <br> &gt; この問題はprintf()の横取りを実装した直後から気付いていたのですが、  <br> &gt; 私用に忙殺されてしまってひげぽんさんと調整しないまま  <br> &gt; β10のリリースになってしまいました <br>  <br> 申し訳ありません。こちらでは問題なく動いているように見えていたので <br> リリースしてしまいました。 <br> 皆様ご迷惑をおかけいたしました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/255" target="_blank">&gt;&gt;255</a>さん <br> ご報告ありがとうございます。 <br> 知らず知らずのうちに結構物理メモリを要求するようになっているみたいですね。 <br> 気づきませんでした。 <>
+Be名無しさん<>sage<>04/05/16 23:15<> QEMUで無事起動。 <br> 上で話題になっているstartguiで止まる現象は再現せず。 <br>  <br> startguiでMonaGUIがばばーんと起動してXみたいだったよ。 <br> これからもがんばってくらさい。 <br>  <br> 個人的にはOSASKを超えたかも <>
+Be名無しさん<>sage<>04/05/17 00:04<> GUIシェルすげえな… <br> でももうちょっとシンプルにソース書けないと後々つらいんじゃない？＞MonaGUIアプリ <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/17 09:19<> <a href="../test/read.cgi/os/1081561384/258" target="_blank">&gt;&gt;258</a> <br> &gt; QEMUで無事起動。 <br> それは良かったです。 <br>  <br> &gt; 上で話題になっているstartguiで止まる現象は再現せず。 <br> 偶然に左右される現象なので止まる箇所は一定しないんですよね。 <br>  <br> &gt; startguiでMonaGUIがばばーんと起動してXみたいだったよ。 <br> はい、startxをイメージしました。 <br>  <br> &gt; これからもがんばってくらさい。 <br> ありがとうございます。 <br>  <br> &gt; 個人的にはOSASKを超えたかも <br> ウインドウを重ね合わせたときの再描画と、 <br> エディタと、日本語入力がないと足元にも及ばないと思っています。 <br> それにMonaGUIは馬鹿みたいにメモリ食いで重いので、 <br> その点ではどう頑張っても絶対にOSASKには及ばないです。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/17 09:23<> <a href="../test/read.cgi/os/1081561384/259" target="_blank">&gt;&gt;259</a> <br> &gt; GUIシェルすげえな… <br> ありがとうございます。 <br> 動きが変な部分があるので、リリースに向けてもうちょっと調整します。 <br>  <br> &gt; でももうちょっとシンプルにソース書けないと後々つらいんじゃない？＞MonaGUIアプリ <br> 確かに複雑で変なお約束が異常に多いことは自覚しています。 <br> これはC#というかManaged C++をモチーフにしたためです。 <br> 真似をしている限りは、実装が大きく外れなければ破綻はしないかな、と希望的観測です。 <>
+は </b>◆cplnFO9T0I <b><>sage<>04/05/17 16:10<> なぜかここで止まってしまうです。 <br> http://up.isp.2ch.net/up/136ebbbd2405.gif <br> 実機でテスト入れてみます。 <>
+は </b>◆cplnFO9T0I <b><><>04/05/17 16:27<> GUIは起動しないものの、CUIで実機起動できました。 <br> CUIのアプリは無いんですか? <>
+Be名無しさん<>sage<>04/05/17 16:43<> なぜにﾜｻﾞﾜｻﾞ固定なんだ？ <>
+530<>sage<>04/05/17 16:51<> <a href="../test/read.cgi/os/1081561384/262" target="_blank">&gt;&gt;262</a> <br> qemu -fda mona.img <>
+は </b>◆cplnFO9T0I <b><><>04/05/18 13:16<> <a href="../test/read.cgi/os/1081561384/265" target="_blank">&gt;&gt;265</a> <br> それでも固まるです。 <>
+Be名無しさん<>sage<>04/05/18 18:02<> 2004年7月号(6月18日発売予定)の掲載予定内容 <br> 特集1 いまこそOSを作る <br> http://www.cmagazine.jp/contents/next.html <br>  <br> これは期待？ <>
+Be名無しさん<>sage<>04/05/18 22:16<> &gt;&gt;ひげぽんさん <br>  <br> さっき最新のソースをCygwinにてコンパイルして、VirtualPC評価版で動作確認しました。 <br> 問題ないです。Clockについても問題なく動作しています。 <br>  <br> ただウィンドウが重なっているときに、上のウィンドウを移動させた後、 <br> 以前ウィンドウがあった部分が透けているからそこら辺がちと加奈氏。 <br> まぁそれが直ればいとわろし <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/19 19:15<> <a href="../test/read.cgi/os/1081561384/268" target="_blank">&gt;&gt;268</a> <br> &gt; 以前ウィンドウがあった部分が透けているからそこら辺がちと加奈氏。 <br> これはずっと前から直す直すと言いながらいまだに手が付いていない部分です。 <br> Mona-0.2.0のリリースが滞っている最大の理由でもあります。 <br> 申し訳ありません。 <br>  <br> &gt; まぁそれが直ればいとわろし <br> 直すことに何か問題がありますか？ <>
+Be名無しさん<>sage<>04/05/19 19:59<> <a href="../test/read.cgi/os/1081561384/269" target="_blank">&gt;&gt;269</a> <br> 嬉しいっツー意味じゃないの？ <>
+Be名無しさん<><>04/05/19 20:07<> <a href="../test/read.cgi/os/1081561384/269" target="_blank">&gt;&gt;269</a> <br> さてはおぬし日本人じゃないな！それは義務教育で皆習う表現だぞ！ <>
+Be名無しさん<>sage<>04/05/19 20:08<> いとわろし？ <br> すまん、一応高卒何だか俺もよく分からない・・・。 <>
+Be名無しさん<>sage<>04/05/19 20:11<> 直ったならば大層よろしくないことだ <br> 　　　　　 　　　　　　　　　~~~~~ <br> じゃない？わろし、すなわちよくない、という意味じゃ <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/19 20:13<> <a href="../test/read.cgi/os/1081561384/271" target="_blank">&gt;&gt;271</a> <br> 枕草子ですよね。 <br> 趣がないとかそういうことだったと記憶しますが、 <br> ↓を見ても良い意味には見えないのですが、 <br> http://www.h3.dion.ne.jp/~urutora/makuranosousi.htm <br> 勉強不足でしょうか？ <>
+Be名無しさん<>sage<>04/05/19 20:14<> 数人、無学を嘲笑ったつもりで無学がバレたようだ。 <>
+Be名無しさん<>sage<>04/05/19 23:19<> 古典で、わろしは、「悪い」の意味ではない。むしろ逆。どうでもいいことだけど。 <br> でも、義務教育では、習わないと思う。 <>
+Be名無しさん<>sage<>04/05/19 23:27<> よし　よろし　わろし　あし <br> ←best---------worst→ <br>  <br> ってグレードじゃないの？ <>
+Be名無しさん<>sage<>04/05/19 23:35<> をかしと勘違いしてる香具師がいてそう <>
+276<><>04/05/19 23:51<> 無学をさらしてた。 <br> 「よろし」：悪くはない <br> 「わろし」：良くはない <br> と、訳す。というのでOK? <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/20 00:14<> <a href="../test/read.cgi/os/1081561384/268" target="_blank">&gt;&gt;268</a>さん <br> ご報告ありがとうございます。 <br> ウィンドウの重なりに関しましてはTinoさんが返答されている通りです。 <br>  <br> 今日は何件かご報告いただいているMonaのばぐとりをやっています。 <br> どうやらメッセージデッドロックみたいなのですが、どこで起きているかはまだつかみきれていません。 <>
+268<>sage<>04/05/20 01:46<> 最後の一文でこんなにスレが伸びるんかい。 <br> なんとなく書いただけだから、そんなに気にスンナっての。 <br>  <br> 「わろし」は、良くない。 <br> 「をかし」は、興味深い、趣がある。 <br>  <br> よって両方とも合わない。 <br>  <br> んで俺が言いたかったのは <br> 「まぁそれが直ればなお良い。」 <br>  <br> 「いとわろし」だと、すごく良くないだね。 <br> 皆様にご迷惑をかけたから、あとでこっそり吊ってこよ <>
+Be名無しさん<>sage<>04/05/20 12:00<> 「わろ」を半角カタカナにすれば独自文化になったんだ。 <>
+SZ-09<>sage<>04/05/20 17:46<> なるほど。 <br>  <br> ちなみに通りすがりですが、遅レス。 <br> <a href="../test/read.cgi/os/1081561384/72" target="_blank">&gt;&gt;72</a> <br> 試してみましたが、環境によってはUSB-FDDブートができるようです。 <br> ただできない環境もありました。おそらくBIOS関係の実装の有無かと。 <br> (VAIOノートZ + USB-FDD(できた方)などにて確認) <>
+Be名無しさん<>sage<>04/05/20 19:03<> <a href="../test/read.cgi/os/1081561384/283" target="_blank">&gt;&gt;283</a> <br> あー、貴重な情報ありがとうございます。 <>
+Be名無しさん<>sage<>04/05/20 22:42<> ここらで、懐かしの昔自分がｗａｒｏｔａレスをpart2から２点紹介 <br>  <br> 152 ：デフォルトの名無しさん ：02/06/21 01:20  <br> 割り込みとメモリ管理、タスクディスパッチのハザマで死ぬであろう。 <br>  <br>  <br> 415 ：デフォルトの名無しさん ：02/06/30 15:11  <br> 49日毎に確実に落ちるOSと、うまくいけば数百日持つけどハード <br> が何も使えないOS、どちらが良い？ <br>  <br> 418 ：暴走すますた ：02/06/30 15:15  <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ハードが何も使えないOS <br> ・・・ <>
+Be名無しさん<>sage<>04/05/20 22:51<> <a href="../test/read.cgi/os/1081561384/285" target="_blank">&gt;&gt;285</a> <br> 真ん中はwin95でどうのこうのっツー話だっけ。 <br> 懐かしい <>
+Be名無しさん<>sage<>04/05/21 00:44<> ひさしぶりに起動してみた。 <br>  <br> やはりTino氏の加入は大きいな、もちろんひげぽんの作った元々の基礎があったのだとは思うけど <br> 壁紙とかFIREとかNOIZ2BGとかREVERSIは、目立ってかっこいいし。 <>
+KONOXのすくしょ、ブートデバイスに注目<>sage<>04/05/21 12:15<> MiSTが…MiSTが… <>
+Be名無しさん<>sage<>04/05/21 14:16<> そういやWABAがSORAで動くらしい。 <br>  <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/22 00:29<> <a href="../test/read.cgi/os/1081561384/283" target="_blank">&gt;&gt;283</a>さん <br> ご報告ありがとうございます。 <br> VAIOでUSB-FDDブートできる場合があるのですね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/287" target="_blank">&gt;&gt;287</a>さん <br> 全くその通りですね。0.1.5からの進化を見るとTinoさんの力がいかにすごいかが分かります。 <br>  <br> 今日も相変わらず、メッセージ消失バグの調査を行っています。 <br> おいそがしいTinoさんにも手伝っていただいておりますが(感謝) <br>  <br> ユーザーライブラリとカーネルのどちらで消失しているかもはっきりはしていません。 <br> カーネルの疑いの方がかなり強いですが・・・ <br>  <br> Virtual PC2004体験版について一応メモ書き <br>  <br> ・Monaは動く <br>  <br> ・Virtual PC5.2が入っているマシンにインストールするとVirtual PC5.2が使えなくなる。 <br> 　2004をアンインストール→5.2を再インストールしないと元に戻らない <br>  <br> ・COMへのテキスト書き出しが異常に遅い(5.2との比較) <br> 　数バイトの出力でもハードディスクへのアクセスが長い時間行われる。 <br>   ログをとりながらの実行はかなり厳しくなりました。 <>
+SZ-09<>sage<>04/05/22 09:34<> <a href="../test/read.cgi/os/1081561384/290" target="_blank">&gt;&gt;290</a> <br>   &gt;・COMへのテキスト書き出しが異常に遅い(5.2との比較)  <br> 　&gt;  数バイトの出力でもハードディスクへのアクセスが長い時間行われる。  <br>   &gt;  ログをとりながらの実行はかなり厳しくなりました。  <br>  <br> そうでしたか。テキスト書き出しはOS開発で使ったことがないもので・・・ <br> (アメリカ派遣の際にVPC2004英語版を購入しました。(正規価格は)安くても(高専生には)高かった・・・) <br>  <br>   &gt;・Virtual PC5.2が入っているマシンにインストールするとVirtual PC5.2が使えなくなる。  <br>   &gt;　2004をアンインストール→5.2を再インストールしないと元に戻らない  <br>  <br> 正規版では、前バージョン(自分の前バージョンは5.1)は完全にアンインストールされます。 <br> どちらにしても共存はできないようです・・・ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/22 11:26<> <a href="../test/read.cgi/os/1081561384/291" target="_blank">&gt;&gt;291</a>さん <br>  <br> &gt; そうでしたか。テキスト書き出しはOS開発で使ったことがないもので・・・  <br>  <br> 私もどなたかに教えていただいた方法です。 <br> 画面にログを表示すると遅かったり、ログが流れてしまう場合にCOMへの書き出しを使用しています。 <br>  <br> &gt; (アメリカ派遣の際にVPC2004英語版を購入しました。(正規価格は)安くても(高専生には)高かった・・・) <br>  <br> アメリカ派遣? <br> アメリカ(本土）には行ったことがないのでうらやましいです。 <br> 留学でしょうか? <>
+Be名無しさん<>sage<>04/05/22 11:31<> MiST=hesoheso? <br>  <>
+Be名無しさん<>sage<>04/05/22 12:37<> <a href="../test/read.cgi/os/1081561384/293" target="_blank">&gt;&gt;293</a> <br> なわけないだろ。 <>
+Be名無しさん<>sage<>04/05/22 12:47<> hesohesoも最近お盛んですね。 <br>  <br>  <br> #本当にMiSTにOSgうわなにするやめr <br>  <>
+Be名無しさん<>sage<>04/05/22 12:52<> bochsで起動してみたところ、 <br> VESAが対応してないみたいなerrorが出た。 <>
+Be名無しさん<>sage<>04/05/22 13:04<> <a href="../test/read.cgi/os/1081561384/296" target="_blank">&gt;&gt;296</a> <br> 激しく外出 <br>  <br> VGABIOS-lgpl-latest <br>  <>
+SZ-09<>sage<>04/05/22 14:12<> <a href="../test/read.cgi/os/1081561384/292" target="_blank">&gt;&gt;292</a> <br> ttp://www.yomiuri.co.jp/science/news/20040518ic01.htm <br> の文中の <br> 「～ら学生４人」の一人です。 <br>  <br> その際にeCompanyStoreで購入。 <br> ここの価格は特別安い(正規価格(<a href="../test/read.cgi/os/1081561384/291" target="_blank">&gt;&gt;291</a>で言ってた価格)の10%程度) <>
+Be名無しさん<>sage<>04/05/22 14:20<> なんで子のすれってゲイツの関係者が大井野？ <br>  <>
+Be名無しさん<>sage<>04/05/22 14:26<> 最近このスレ、変なコテハンが増えたな．．． <>
+SZ-09<>sage<>04/05/22 14:29<> <a href="../test/read.cgi/os/1081561384/299" target="_blank">&gt;&gt;299</a> <br> まあそれは置いといて(藁 <br> とりあえず、研究の一環としてOSを作ってます。 <>
+Be名無しさん<>sage<>04/05/22 16:44<> 学生は時間があって暇でいいねぇ <>
+Be名無しさん<>sage<>04/05/22 16:48<> SZ-09とやらは<a href="../test/read.cgi/os/1081561384/298" target="_blank">&gt;&gt;298</a>の上が言いたくて仕方がなかったに数ペリカ <br>  <br> でもすげぇな。 <>
+Be名無しさん<>sage<>04/05/22 17:05<> 能ある鷹は爪を隠す。 <br> こんな所で油売ってる香具師が本物なのかねぇ。 <>
+Be名無しさん<>sage<>04/05/22 17:22<> 本物ならほかのメンバーに確認取ってから言ってるんだろうな・・・ <br> まさか未確認ででしゃばるなんて事は・・・ <>
+Be名無しさん<>sage<>04/05/22 17:27<> &gt;「針金を使った化学振動現象」  <br>  <br> ・・・これって前に所ジョージの番組でやってなかったっけ。 <br> いっしょに生物関係の女の子が一生懸命トビかなんかの研究してたが個体の確認方法がいい加減でそれが落ちて、 <br> 同じ学校の化学関係の香具師が受賞って話。 <>
+Be名無しさん<>sage<>04/05/22 17:28<> メガテンですかっ <>
+306<>sage<>04/05/22 17:29<> <a href="../test/read.cgi/os/1081561384/307" target="_blank">&gt;&gt;307</a> <br>  <br> 女神転生かと思ったら所さんのﾒｶﾞﾃﾝか。 <br> ゴールデンタイムに飯食いながら見たような気がするが・・・ <br> 笑ってコラエテだっけ。 <>
+Be名無しさん<>sage<>04/05/22 17:33<> 半分実名さらしたようなもんで書き込むのは危険なのにな。 <br>  <br> LCみたいなのは別だが。 <>
+SZ-09<>sage<>04/05/22 18:31<> <a href="../test/read.cgi/os/1081561384/303" target="_blank">&gt;&gt;303</a> <br>  そういうことではないです。 <br> <a href="../test/read.cgi/os/1081561384/304" target="_blank">&gt;&gt;304</a> <br>  油売ってるって・・・土曜日ですよ。 <br> <a href="../test/read.cgi/os/1081561384/305" target="_blank">&gt;&gt;305</a> <br>  いや、それぞれのメンバーは別々の学校で別々の研究をやってるので。 <br> <a href="../test/read.cgi/os/1081561384/309" target="_blank">&gt;&gt;309</a> <br>  すみません、失敗ということで。あまり慣れてなかった。 <br>  <br> &gt;&gt;Be名無しさん <br> 　とりあえず荒らしたいわけではないので、この辺で勘弁してください。 <>
+Be名無しさん<>sage<>04/05/22 18:47<> (´Д｀).｡ｏＯ(while(c=getchar())) <>
+Be名無しさん<>sage<>04/05/22 18:52<> そうか、コテが多いスレでは名無しは全部同一人物に見えるのか（わら <>
+Be名無しさん<>sage<>04/05/22 19:14<> よーしパパも名無しになっちゃうぞー <>
+Be名無しさん<>sage<>04/05/22 19:21<> 俺の経験上、学生が開発時に年齢を明かすのは得策ではないね <>
+Be名無しさん<>sage<>04/05/22 19:23<> よーし今日から俺の固定は「Be名無しさん」だぞー <>
+Be名無しさん<>sage<>04/05/22 19:24<> 男なのか女なのか。それをはっきりさせてもらおうか。 <br>  <br>  <br> /*ひげぽんの存在感が薄まっていく。*/ <>
+Be名無しさん<>sage<>04/05/22 19:45<> 名無しさんになれ!Be名無しさん! <br>  <>
+Be名無しさん<>sage<>04/05/22 19:47<>     537                     ・ そうですね。僕もブートセクタでは失敗したらint 0x18です。また、VMWare <br>     538                        (Trial)では、int 0x18を呼び出すと、"Operating System Not Found"(だっ <br>     539                        たと思う)と表示されてVMWareの警告が表示されます。 -- SZ-09( http:// <br>     540                        riact.sourceforge.jp/ ) 2004-05-10 (月) 19:04:17 <br>  <>
+Be名無しさん<>sage<>04/05/22 20:09<> &gt;&gt;SZ-09 <br> そういうのは一人で研究するのがいいわけで、 <br> そんなのでSFを使うのはどうやと思うぞ。 <>
+Be名無しさん<>sage<>04/05/22 20:12<> SFに登録されてるの？ <>
+320<>sage<>04/05/22 20:15<> <a href="../test/read.cgi/os/1081561384/318" target="_blank">&gt;&gt;318</a>か。 <br>  <br> &gt;GUIを実装する <br> &gt;マイクロカーネルとして自由度の高いOSにする <br> &gt;試験的にWindowsアプリケーションのエミュレーター作成  <br>  <br> ・・・なんか夢見る子供を抜け出していないような・・・募集人員用件もなんかアレだし。 <>
+316<>sage<>04/05/22 20:17<> なんだ。男か。 <br>  <br> --イメージポイントが300下がった。-- <>
+Be名無しさん<>sage<>04/05/22 20:19<> まさか<a href="../test/read.cgi/os/1081561384/133" target="_blank">&gt;&gt;133</a>の香具師じゃあるまいな？ <>
+Be名無しさん<>sage<>04/05/22 20:20<> <a href="../test/read.cgi/os/1081561384/323" target="_blank">&gt;&gt;323</a> <br> cd .. <br>  <>
+Be名無しさん<>sage<>04/05/22 20:21<> 略称名のソフトはすべて大文字にするだろ、普通 <>
+Be名無しさん<>sage<>04/05/22 20:23<> あーOS作る女子高生ﾊｶｰ出て来ねえかな。 <br>  <>
+Be名無しさん<>sage<>04/05/22 20:24<> <a href="../test/read.cgi/os/1081561384/326" target="_blank">&gt;&gt;326</a> <br>  <br> 侵入して他Ｅ保されたのはいなかったっけ <br>  <>
+Be名無しさん<>sage<>04/05/22 20:26<> <a href="../test/read.cgi/os/1081561384/327" target="_blank">&gt;&gt;327</a> <br> いたねぇ <br> 友人のHP書き換えとか言うﾁﾏﾁﾏしたもんだったが。 <br>  <br> 47ぐらいの人物が美少女ならすごいがそれ以下の単なる趣味グラマだったらガキって感じだな <>
+Be名無しさん<>sage<>04/05/22 20:28<> <a href="../test/read.cgi/os/1081561384/328" target="_blank">&gt;&gt;328</a> <br> よく覚えていないんだけど、K察のビデオの女優だったっけ？貌まで見てないけど。 <br>  <br> まさかクラックって、ftpにつないで、容易に想像できるパスうちこんだとかじゃないよね。 <br>  <br> 一般では、ただそれだけでハッカーだがw <>
+Be名無しさん<>sage<>04/05/22 20:28<> <a href="../test/read.cgi/os/1081561384/318" target="_blank">&gt;&gt;318</a>からして、たいしたことない。 <br> ↓ <br> <a href="../test/read.cgi/os/1081561384/316" target="_blank">&gt;&gt;316</a>は消滅 <>
+Be名無しさん<>sage<>04/05/22 20:30<> <a href="../test/read.cgi/os/1081561384/329" target="_blank">&gt;&gt;329</a> <br> ググったら出てきた <br> ttp://ch.kitaguni.tv/u/1176/Internet/0000069268.html <>
+Be名無しさん<>sage<>04/05/22 20:31<> <a href="../test/read.cgi/os/1081561384/329" target="_blank">&gt;&gt;329</a> <br> &gt;警察庁によると、女子高生は昨年１２月下旬、男性が自分の悪口をネットの掲示板に書き込んだことを知り、 <br> &gt;仕返しにＨＰを改ざん。パスワードやＩＤは、同級生がバンド名などから推測したという。 <br>  <br> 同級生がバンド名から予想したPASSだってさ。くだらん <>
+Be名無しさん<>sage<>04/05/22 20:34<> やっぱりこれか。jfbtermで、splitしたscreen起動してカチャカチャやっているのを想像したんだが… <br>  <br>  <br> 貌ってまだ残っていたっけ?あんまり詮索するのもよくないけど。 <br>  <br> 大内さんちの妹さん/卑下の奥さんって、技術はどうなんだろう。 <>
+Be名無しさん<>sage<>04/05/22 20:36<> <a href="../test/read.cgi/os/1081561384/333" target="_blank">&gt;&gt;333</a> <br> splitと聞いて建築様式を思い出しました <>
+Be名無しさん<>sage<>04/05/22 20:37<> 流れが速い！ <br> しかも内容が関係ない！ <>
+Be名無しさん<>sage<>04/05/22 20:40<> Be名無しさん同盟() <br>  <br>  <>
+Be名無しさん<>sage<>04/05/22 20:46<> まー、賑やかなことはいいことだね。 <>
+Be名無しさん<>sage<>04/05/22 21:34<> (2004/5/18/11:09　読売新聞　無断転載禁止) <br>  <br>  <br> 断っての上の話だよね <br>  <br>  <br>  <>
+Be名無しさん<>sage<>04/05/22 21:37<> yossy == SZ-09 <br>  <br>  <br> fa? <br>  <>
+Be名無しさん<>sage<>04/05/22 21:42<> &nbsp__&nbsp&nbsp__&nbsp&nbsp___&nbsp&nbsp_&nbsp&nbsp&nbsp_&nbsp&nbsp&nbsp&nbsp_&nbsp&nbsp&nbsp&nbsp <br> |&nbsp&nbsp\/&nbsp&nbsp|/&nbsp_&nbsp\|&nbsp\&nbsp|&nbsp|&nbsp&nbsp/&nbsp\&nbsp&nbsp&nbsp <br> |&nbsp|\/|&nbsp|&nbsp|&nbsp|&nbsp|&nbsp&nbsp\|&nbsp|&nbsp/&nbsp_&nbsp\&nbsp&nbsp <br> |&nbsp|&nbsp&nbsp|&nbsp|&nbsp|_|&nbsp|&nbsp|\&nbsp&nbsp|/&nbsp___&nbsp\&nbsp <br> |_|&nbsp&nbsp|_|\___/|_|&nbsp\_/_/&nbsp&nbsp&nbsp\_\ <br> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <br>  <>
+Be名無しさん<>sage<>04/05/22 21:42<> &nbsp;__&nbsp;&nbsp;__&nbsp;&nbsp;___&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp; <br> |&nbsp;&nbsp;\/&nbsp;&nbsp;|/&nbsp;_&nbsp;\|&nbsp;\&nbsp;|&nbsp;|&nbsp;&nbsp;/&nbsp;\&nbsp;&nbsp;&nbsp; <br> |&nbsp;|\/|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;&nbsp;\|&nbsp;|&nbsp;/&nbsp;_&nbsp;\&nbsp;&nbsp; <br> |&nbsp;|&nbsp;&nbsp;|&nbsp;|&nbsp;|_|&nbsp;|&nbsp;|\&nbsp;&nbsp;|/&nbsp;___&nbsp;\&nbsp; <br> |_|&nbsp;&nbsp;|_|\___/|_|&nbsp;\_/_/&nbsp;&nbsp;&nbsp;\_\ <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>  <>
+Be名無しさん<>sage<>04/05/22 21:45<> <a href="../test/read.cgi/os/1081561384/338" target="_blank">&gt;&gt;338</a> <br> 引用と転載の間には好きであることと愛することほどの違いがある。 <>
+Be名無しさん<>sage<>04/05/23 00:22<> MiSTはアンチ壷 <br> ttp://pcsoft-os.ten.thebbs.jp/1083464259/ <>
+Be名無しさん<>sage<>04/05/23 00:31<> <a href="../test/read.cgi/os/1081561384/343" target="_blank">&gt;&gt;343</a> <br> それ見たら哀れになって来た <br> っつーか卑下が偉大な人物に思えて来た <>
+SZ-09<>sage<>04/05/23 08:53<> <a href="../test/read.cgi/os/1081561384/312" target="_blank">&gt;&gt;312</a>  <a href="../test/read.cgi/os/1081561384/315-317" target="_blank">&gt;&gt;315-317</a>  <a href="../test/read.cgi/os/1081561384/336" target="_blank">&gt;&gt;336</a> <br>  すみません。 <br> <a href="../test/read.cgi/os/1081561384/319-320" target="_blank">&gt;&gt;319-320</a> <br>  いや、一応参加という形で。自分ではプロジェクト登録はしていません。 <br> <a href="../test/read.cgi/os/1081561384/321" target="_blank">&gt;&gt;321</a> <br>  多分抜け出してないかも。大分後の目標だそうです。 <br> <a href="../test/read.cgi/os/1081561384/323" target="_blank">&gt;&gt;323</a> <br>  違います。カーネルのロード自体はうまくいってますし。 <br> <a href="../test/read.cgi/os/1081561384/325" target="_blank">&gt;&gt;325</a> <br>  メンバーの一言「したくない」だそうです。 <br> <a href="../test/read.cgi/os/1081561384/330" target="_blank">&gt;&gt;330</a> <br>  今は大した事ないのは間違いない。問題はそこから這い上がることだと思います。 <br> <a href="../test/read.cgi/os/1081561384/339" target="_blank">&gt;&gt;339</a> <br>  違います。 yossy != SZ-09。 <>
+Be名無しさん<>sage<>04/05/23 10:46<> http://pcsoft-os.ten.thebbs.jp/1083464259/30 <br>  <br> これみて思ったが、RMSのLispウィンドウシステムはどうなったん? <br>  <>
+Be名無しさん<>sage<>04/05/23 13:15<> &gt;&gt;今は大した事ないのは間違いない。問題はそこから這い上がることだと思います。 <br>  <br> で、Win/Mac/UN*X の再開発？ <>
+落武者<>???<>04/05/23 13:20<> アセンブリのみで、GUIなOSを作るのは無理ですかな？ <>
+SZ-09<>sage<>04/05/23 13:29<> <a href="../test/read.cgi/os/1081561384/347" target="_blank">&gt;&gt;347</a> <br>  そういうわけでは・・・ <>
+Be名無しさん<>sage<>04/05/23 13:32<> <a href="../test/read.cgi/os/1081561384/348" target="_blank">&gt;&gt;348</a> <br> osaks <>
+Be名無しさん<>sage<>04/05/23 13:33<> <a href="../test/read.cgi/os/1081561384/348" target="_blank">&gt;&gt;348</a> <br> 大体アセンブリで無理なら、どんな言語でも無理だと思うけど。 <br> そんなの聞くことではないぞ。 <>
+落武者<>???<>04/05/23 13:42<> <a href="../test/read.cgi/os/1081561384/351" target="_blank">&gt;&gt;351</a> <br> なるほど、サンクスコ。 <br> そんじゃ聞くが、開発に向いてる言語は？ <>
+Be名無しさん<>sage<>04/05/23 14:35<> <a href="../test/read.cgi/os/1081561384/352" target="_blank">&gt;&gt;352</a> <br> OS作るために生まれたC言語が一番向いてるんじゃね？ <>
+Be名無しさん<>sage<>04/05/23 15:14<> <a href="../test/read.cgi/os/1081561384/352" target="_blank">&gt;&gt;352</a> <br> それぐらい自分で調べられるようじゃないと開発は無理。 <br> 資料との勝負だからな。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/23 19:52<> 例のメッセージバグ消失の原因がTinoさんにより特定され修正されました。 <br> 本件ご協力いただきました。皆様ありがとうございました。 <br>  <br> 別件ですがRTC周りの実装がまだ甘いようです。 <br> bochs, vmware, VirtualPC, qemuでそれぞれ違う症状で正しい表示が出来ていません。 <br>  <br> Mona/src/kernel/test_higepon.cpp <br> Mona/src/kernel/tester.h <br>  <br> あたりにRTCクラスの実装がありますのでお気づきの点、ご指摘いただけると助かります。 <br>  <br>  <br> そういえばELFの再配置とか忘れてました・・・ <>
+Be名無しさん<><>04/05/24 21:27<> ここに書いていいのだろうか・・・ <br>  <br> アプリ質問所に適切なものが無かったようなので、ひとまずこちらに書きます。 <br>  <br> Monaでは、今現在sin関数とかcos関数とかって使えないのでしょうか？ <br> 使えると幅が広がって良いし、今試しにアプリを作ってみようと思っていたのですが・・・。 <br>  <br> ついでに線の引き方をお教え願いたいです。 <>
+Be名無しさん<>sage<>04/05/24 21:29<> 三角関数ならOSには依存しとランだろうから自分でつくるっツーのは？ <>
+Be名無しさん<>sage<>04/05/24 21:34<> テイラー展開に賭けた俺の青春……。 <>
+Be名無しさん<>sage<>04/05/24 21:48<> Kがテイラー展開を使わないで多次方程式を使った算出方法について論じてるよ <br> http://k.osask.jp/wiki/index.php?math%2F02 <>
+Be名無しさん<>sage<>04/05/24 21:49<> <a href="../test/read.cgi/os/1081561384/356" target="_blank">&gt;&gt;356</a> <br> MonAPI::Screenには線を引く関数がないね <br> MonaGUIのSystem::Drawing::Graphicsにはあるようだが <>
+356<>sage<>04/05/24 22:06<> やはり自分で実装すれっちゅうことですか。 <br> マクローリン展開かと思っていたけど、テイラーですか。 <br> 教科書あるので、見てみます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/360" target="_blank">&gt;&gt;360</a> <br> ありがとうございます。 <br>  <br> 皆様ありがとうございました。ひとまずマクローリンさんとテイラーさんと格闘してきます。んじゃ。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/24 22:20<> <a href="../test/read.cgi/os/1081561384/356" target="_blank">&gt;&gt;356</a>さん <br>  <br> Monaをお試しいただきありがとうございます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/357" target="_blank">&gt;&gt;357</a> <br> <a href="../test/read.cgi/os/1081561384/359" target="_blank">&gt;&gt;359</a> <br> <a href="../test/read.cgi/os/1081561384/360" target="_blank">&gt;&gt;360</a> <br>  <br> でフォローをいただいているように現在Monaには <br>  <br> 線を引く関数 <br> 三角関数系の関数はありません。 <br>  <br> 三角関数系の関数はライセンス的に問題ないようなコードがあれば <br> 取り込めればと思っています。 <br> 手ごろなのはあるでしょうか? <br>  <br> 線を引く関数は、MonaGUIでしょうか？それともGUIが絡まない方でしょうか? <br> 後者であれば私が用意できますのですがいかがいたしましょう? <>
+Be名無しさん<>sage<>04/05/24 22:26<> <a href="../test/read.cgi/os/1081561384/362" target="_blank">&gt;&gt;362</a> <br> *BSDのlibc <>
+Be名無しさん<>sage<>04/05/24 22:32<> <a href="../test/read.cgi/os/1081561384/362" target="_blank">&gt;&gt;362</a> <br> MonaGUIのフォーム上に線を描くってことでお願いします。と言っても、無理をせずに。 <>
+Be名無しさん<>sage<>04/05/24 22:35<> <a href="../test/read.cgi/os/1081561384/364" target="_blank">&gt;&gt;364</a> <br> それだったら現状でもできる <br> 今のsamplesにはないようだが、昔そういうサンプルがあった <br> ↓の20040225にはそういうコードがある <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?cmd=read&page=Tino%2FMonaGUI%2F-0.1 <>
+Be名無しさん<>sage<>04/05/24 22:37<> <a href="../test/read.cgi/os/1081561384/359" target="_blank">&gt;&gt;359</a> <br> OSASKにはそれを使った三角関数があるの？ <>
+Be名無しさん<>sage<>04/05/24 23:23<> <a href="../test/read.cgi/os/1081561384/365" target="_blank">&gt;&gt;365</a> <br> ありがとうございます。 <br>  <br> んで、sinの実装ですが、マクローリン展開でやったところ、 <br> 90度までは正確に算出しましたが、それ以上だと終わりです。 <br> 90度以上は駄目駄目だぁ～、テイラー展開計算するのメンドクせー。 <br> まぁsin(180 - x) = sinxを使えばいいけどね。 <br> さーて、次はcosやってきます。 <br>  <br> まぁひとまず応急処置だから、わざわざテイラーやらんくていいということで。 <>
+367<>sage<>04/05/25 00:02<> 一応、sin、cos実装完了しました。 <br> アプリ作成にとりかかります。 <>
+Be名無しさん<>sage<>04/05/25 00:07<> 算術ライブラリができだすと、3Dとかに発展していくのかなぁ。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/25 00:39<> <a href="../test/read.cgi/os/1081561384/364" target="_blank">&gt;&gt;364</a>さん <br> <a href="../test/read.cgi/os/1081561384/365" target="_blank">&gt;&gt;365</a>さん <br>  <br> 線を引く件いろいろとありがとうございます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/368" target="_blank">&gt;&gt;368</a>さん <br>  <br> 早いですね！どうもお疲れ様です。 <br>  <br> <a href="../test/read.cgi/os/1081561384/369" target="_blank">&gt;&gt;369</a>さん <br>  <br> 3D系に発展したらうれしいかぎりですね。 <br> 3Dのオブジェクトがゴリゴリ動いたらかなりインパクトありますよね。 <br>  <br> 今日は実装はせず、メッセージングに関していろいろと <br> 議論させていただきました。 <br>  <br> 現状のメッセージ仕様にプラスして <br> メッセージキューにある任意のメッセージを参照できるような仕組みを <br> カーネル側に用意する方針になりそうです。 <>
+Be名無しさん<>sage<>04/05/25 02:54<> 実はアナログ時計作ろうと思って、cosとsin実装したんだけどさ、 <br> sin、cosのアルゴリズムが糞だから（マクローリン展開）、実用的になりそうな予感がしない。 <br> 高速変換ヨロシコ　→　ひげぽん <br> しかも今まで、エラーエラーで時計の針さえ動かせてなかった。orz <br> 動いたから今日は寝よ。 <>
+Be名無しさん<>sage<>04/05/25 06:34<> <a href="../test/read.cgi/os/1081561384/371" target="_blank">&gt;&gt;371</a> <br> sinやcosは、486以降限定なら、普通にFSIN命令やFCOS命令を使えばいいのでは？ <br> 直線描画や円弧描画に関しては、専用のアルゴリズムがあるようだけどね。 <>
+Be名無しさん<>sage<>04/05/25 09:13<> アナログ時計程度なら表引きで十分やん <>
+Be名無しさん<>sage<>04/05/25 11:51<> <a href="../test/read.cgi/os/1081561384/372" target="_blank">&gt;&gt;372</a> <br> その命令の使い方がいまいち分からないからひとまず無しの方向で。 <br> 直線や円弧の描画はすでにメソッドが用意されていました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/373" target="_blank">&gt;&gt;373</a> <br> 表引きとは一体何でしょう。 <>
+Be名無しさん<>sage<>04/05/25 17:02<> <a href="../test/read.cgi/os/1081561384/374" target="_blank">&gt;&gt;374</a> <br> 別に毎回sin, cos を計算しなくても, プログラム組むときに関数電卓とか <br> でsin(1), sin(2), ..., sin(360) とかを求めておいて, 配列にでも突っ <br> 込んどけばいいじゃんということ. 1度づつにするかどうかとかはそのアプリ <br> がどの程度の細かさが必要かで適当に. <>
+Be名無しさん<>sage<>04/05/25 18:18<> 角度で表引きとか一般的だよねー。 <>
+Be名無しさん<>sage<>04/05/25 22:04<> <a href="../test/read.cgi/os/1081561384/375" target="_blank">&gt;&gt;375</a> <br> へぇ～、そんな方法があったとは、思いもよらなかった。 <br> でも関数作っちゃった。2時間かけて・・・憂鬱だ。~_~ <>
+Be名無しさん<>sage<>04/05/25 22:16<> ある程度のテーブルがあれば、その間の値を求めるのは、半角定理と加法定理で簡単だしね。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/26 00:26<> いろいろあって遅れましたがfsin/fcosを使ってのsin/cosを追加できそうです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/371" target="_blank">&gt;&gt;371</a>さんが <br> 実装してくださったのに申し訳ないです。。(もう少し早くできれば・・・) <br>  <br> &gt; 高速変換ヨロシコ　→　ひげぽん  <br>  <br> fsin/fcosに丸投げなので多少早くなったかもしれません。 <br>  <br> 次のベータリリースには乗せられると思いますが明日くらいにリリースという感じで <br> よろしいでしょうか? <br> <a href="../test/read.cgi/os/1081561384/371" target="_blank">&gt;&gt;371</a>さん <>
+371<>sage<>04/05/26 01:14<> <a href="../test/read.cgi/os/1081561384/379" target="_blank">&gt;&gt;379</a> <br> あんたは忙しいんだから、申し訳ないですとか言ってはいけません。 <br> 全て俺が悪いだけですから。 <br> でもcosとsinとtanがあれば、N88BASIC並みの2Dゲームが出てきてもおかしくないはずだが。 <>
+Be名無しさん<>sage<>04/05/26 01:32<> <a href="../test/read.cgi/os/1081561384/380" target="_blank">&gt;&gt;380</a> <br> atanも必須 <>
+Be名無しさん<>sage<>04/05/26 01:55<> <a href="../test/read.cgi/os/1081561384/379" target="_blank">&gt;&gt;379</a> <br> っちゅーわけで、リリースするならtanとatanがあった方がいいんじゃない? <br> tanはsin÷cosだから簡単だけどatanはちょっと骨だねー <>
+Be名無しさん<>sage<>04/05/26 02:13<> ところでさー、思ったんだけどさー、↓を見るとMonaの開発版イメージって結構人気あるじゃん <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <br>  <br> こんだけﾀﾞｳｿされてたらsf.jpの上位に食い込めて良い宣伝になると思うんだけどなー <br> sf.jpのトップページにもろにベストテンが出されてるのに <br> ttp://sourceforge.jp/ <br> Wikiからﾀﾞｳｿされてたらカウントされないからもったいないじゃん <br>  <br> 他のプロジェクトなんかβでも構わずsf.jpに載せてるじゃん <br> トップ争いしてるギコナビなんかもろにそれ <br> そういやちょっと前までは活発さでMonaもベストテンの常連だったのに最近元気ないねー <br>  <br> 草葉の陰からﾏﾀｰﾘ応援してるYO! <>
+Be名無しさん<>sage<>04/05/26 02:42<> MonaGUIと共に「衝撃の2.0リリース」を狙ってんだろうね。 <br> 裏の再描画だけがTODOっぽいので、素直にそれを待つか <br> それとも逆にそれがTinoさんの負担にならないよう2.0を出してしまうか。 <>
+Be名無しさん<>sage<>04/05/26 02:51<> 人気というものは、それが素晴らしいものであるのならば、 <br> 工作などしなくとも自然と広がっていくもであり、意図的に上げようとすれば、 <br> 裏の汚い心が見え隠れして、結局上がらないものである。 <>
+Be名無しさん<>sage<>04/05/26 03:00<> しかしあまりにこだわりを無くすとLﾀﾝのようになってしまうので、 <br> それはそれで考えものだ。 <>
+Be名無しさん<>sage<>04/05/26 03:01<> Lは色々考えるけどことごとく失敗してる湾 <>
+Be名無しさん<>sage<>04/05/26 03:10<> 考えるポイントがずれているので要するに考えてないのと同じ事。 <>
+Be名無しさん<>sage<>04/05/26 03:40<> <a href="../test/read.cgi/os/1081561384/383" target="_blank">&gt;&gt;383</a> <br> Wikiだから個別のカウントが分かるわけであって、 <br> 本家sf.netと違ってsf.jpじゃリリースファイルのカウントが出てこないぞ。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/26 05:29<> <a href="../test/read.cgi/os/1081561384/287" target="_blank">&gt;&gt;287</a> <br> ありがとうございます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/290" target="_blank">&gt;&gt;290</a> <br> とんでもありません。 <br>  <br> <a href="../test/read.cgi/os/1081561384/360" target="_blank">&gt;&gt;360</a> <a href="../test/read.cgi/os/1081561384/365" target="_blank">&gt;&gt;365</a> <br> フォローありがとうございます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/384" target="_blank">&gt;&gt;384</a> <br> ご心配をお掛けしております。 <br> 次のMonaのβリリースを目前に控え、 <br> 再描画の問題をこれ以上長引かせるわけにもいかなくなったため、 <br> とりあえず超手抜きで対処しました。 <br> 描画手順が見えてしまっているので、手抜き具合が筒抜けで恐縮です。 <br>  <br> これに限らず無駄な描画が多くて拙いので、 <br> 今後はMona-0.2.0に向けて描画の最適化に着手する予定です。 <br>  <br> もともとの予定ではここまで作りこむつもりではなかったのですが、 <br> 皆様からの叱咤激励を受けてここまで続けて来る事ができました。 <br> ここまで来ると細かい所の仕上げをしないわけにはいかない状況ですので、 <br> 1. Zオーダーの管理 <br> 2. フォーカスの管理 <br> 3. キーボードのサポート <br> くらいは盛り込もうかと考えています。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/26 05:45<> 余談ですが私見をちょっとだけ……。 <br>  <br> MonaGUIと名乗ってはいるのですが、あくまでGUIの一実装という位置付けです。 <br> MonaではOSとGUIが一体化せずに分離した構造となっていますので、 <br> 別のGUIを実装する余地は大いにあります。 <br>  <br> 私のようにカーネルよりもウインドウシステムやツールキットに興味がある者にとっては、 <br> MonaはGUIの土台となるOSとしてはコンパクトで見通しも良く、 <br> なかなか手頃な存在になって来ていると思います。 <br> もともとMonaGUI自体も.NET風の構造をC++でどこまで実現できるかという実験に過ぎず、 <br> 現時点でもまだ実験の域を出ていないというのが正直な所です。 <br>  <br> Mona+MonaGUIを見て面白いと思われた方は、 <br> GUIの実装にチャレンジしてみるのも一興かと思います。 <>
+Be名無しさん<>sage<>04/05/26 08:15<> <a href="../test/read.cgi/os/1081561384/390" target="_blank">&gt;&gt;390</a> <br> 乙でーす。 <br> ﾏﾀｰﾘがんがってくらはい。 <>
+Be名無しさん<>sage<>04/05/26 16:23<> <a href="../test/read.cgi/os/1081561384/390" target="_blank">&gt;&gt;390</a> <br> 試したら、致命的なバグ？があったので報告。 <br> 　１、まず2chAAを起動する <br> 　２、次にそいつの上に、シェルを移動させる <br> 　３、約1秒待つと・・・ <br> 　４、AAだけがシェルを飛び越えて描画されているではないですか!!! <br> まぁお手軽再描画だからまだここまで厳密に考える必要性は無いと思いますが報告までに。 <>
+Be名無しさん<>sage<>04/05/26 20:41<> &gt;ひげぽん様 <br> 三角関数の実装ありがとうございました。 <br> おかげで何とかアナログ時計（もどき）が完成しました。 <br>  <br> ソースも三角関数を求める関数が無くなったのでかなりすっきりしました。 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/26 21:22<> <a href="../test/read.cgi/os/1081561384/371" target="_blank">&gt;&gt;371</a>さん <br> お気遣いありがとうございます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/381" target="_blank">&gt;&gt;381</a>さん <br> <a href="../test/read.cgi/os/1081561384/382" target="_blank">&gt;&gt;382</a>さん <br>  <br> ありがとうございます。 <br> ご指摘の通りatanは難しかったので、tan()を追加するだけにとどめました。 <br>  <br> <a href="../test/read.cgi/os/1081561384/383" target="_blank">&gt;&gt;383</a>さん <br>  <br> 応援ありがとうございます。 <br> リリースの件は384さんのご指摘の通り正式リリースでMonaGUIショックリリースを狙っているのと <br> Wikiの方が気軽にリリース出来ることから現状のような形になっています。 <br>  <br> ただこのへんは、ひげぽんが勝手にそう思っているだけなので <br> 皆さんの意見によっては変わることもありえると思っています。 <br>  <br> <a href="../test/read.cgi/os/1081561384/394" target="_blank">&gt;&gt;394</a>さん <br> アナログ時計完成おめでとうございます。 <br>  <br> Monaの時刻取得の仕組みが甘いため環境によっては <br> おかしな時刻になってしまう環境があります。 <br> このへん詳しい方いたらご教授願いたいです。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/27 00:42<> βリリースのお知らせです。  <br> 0.2.0beta11をリリースしました。  <br>  <br> 変更点は以下の通りです。  <br>  <br> ・メッセージ受信のタイミングで固まるバグを修正 <br> ・壁紙のリサイズをサポート   <br> ・コンソールのスクロールを高速化 <br> ・GUI背景再描画(簡易版) <br> ・monalibcにsin()/cos()/tan()/sqrt()を追加  <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/05/27 06:31<> ひげぽんって２ｃｈの人ですか？ <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/27 08:17<> お返事遅くなりました。昨日は一日中寝てました。（ｗ <br>  <br> <a href="../test/read.cgi/os/1081561384/393" target="_blank">&gt;&gt;393</a> <br> お試しいただきありがとうございます。 <br> その辺の問題は認識しています。 <br> バグというより実装が欠落しているのが原因です。 <br> <a href="../test/read.cgi/os/1081561384/390" target="_blank">&gt;&gt;390</a>で書いた「1. Zオーダーの管理」の欠落に該当します。 <br> そのことなどを「手抜き」と表現しました。 <br>  <br> 同様の問題として、GSHELL.EL2の上にBUTTON.EL2を重ねて <br> BUTTON.EL2のボタンを押すと、 <br> 下にあるはずのGSHELL.EL2がBUTTON.EL2をかき消すというのもあります。 <br> これもZオーダーをまったく管理していないからです。 <br>  <br> もっとも私が認識していない問題も多々あると思いますので、 <br> 今後とも何かありましたらご報告いただければ幸いです。 <br>  <br> この辺を地道に詰めて行かないと手抜きがバレバレなので、 <br> 0.2.0リリースまでまだしばらくかかってしまいそうなのですが、 <br> よろしくお願いします。 <>
+Be名無しさん<>sage<>04/05/27 09:35<> <a href="../test/read.cgi/os/1081561384/395" target="_blank">&gt;&gt;395</a> <br> ＞ご指摘の通りatanは難しかったので、tan()を追加するだけにとどめました。 <br> fsin, fcos は使うのに fpatan は無視ですか?? <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/27 16:36<> <a href="../test/read.cgi/os/1081561384/397" target="_blank">&gt;&gt;397</a>さん <br> えーと。たぶん2chの人ではないですｗ <br>  <br> <a href="../test/read.cgi/os/1081561384/398" target="_blank">&gt;&gt;398</a> Tinoさん <br> &gt; 昨日は一日中寝てました。（ｗ  <br>  <br> メッセージ仕様取りまとめお疲れ様でした。 <br>  <br> <a href="../test/read.cgi/os/1081561384/399" target="_blank">&gt;&gt;399</a>さん <br>  <br> ご指摘ありがとうございます。 <br> fatanという命令を探して見当たらなかったので諦めていました。 <br> fpatanだったのですね。 <br>  <br> atan()追加してcommitいたしました。 <>
+Be名無しさん<>sage<>04/05/27 19:31<> <a href="../test/read.cgi/os/1081561384/400" target="_blank">&gt;&gt;400</a> <br> キリ番ゲトおめ！ <br> msunは良い資料だから遠慮せずに見る。 <>
+Be名無しさん<>sage<>04/05/27 20:56<> ベータ版試してみました。 <br> GUIがあそこまで出来ているとはびっくり！ <br> エディタやウィンドウデザイン（スキン）の変更とかのサポートはまだかな？ <br>  <br> 1つ惜しいのがランチャーのデザイン。。。 <>
+Be名無しさん<>sage<>04/05/27 21:00<> ベータ版試してみました。 <br> GUIがあそこまで出来ているとはびっくり！ <br> エディタやウィンドウデザイン（スキン）の変更とかのサポートはまだかな？ <br>  <br> 1つ惜しいのがランチャーのデザイン。。。 <>
+Be名無しさん<>sage<>04/05/27 21:05<> ベータ版試してみました。 <br> GUIがあそこまで出来ているとはびっくり！ <br> エディタやウィンドウデザイン（スキン）の変更とかのサポートはまだかな？ <br>  <br> 1つ惜しいのがランチャーのデザイン。。。 <>
+Be名無しさん<>sage<>04/05/27 20:55<> ベータ版試してみました。 <br> GUIがあそこまで出来ているとはびっくり！ <br> エディタやウィンドウデザイン（スキン）の変更とかのサポートはまだかな？ <br>  <br> 1つ惜しいのがランチャーのデザイン。。。 <>
+Be名無しさん<>sage<>04/05/27 20:58<> ベータ版試してみました。 <br> GUIがあそこまで出来ているとはびっくり！ <br> エディタやウィンドウデザイン（スキン）の変更とかのサポートはまだかな？ <br>  <br> 1つ惜しいのがランチャーのデザイン。。。 <>
+Be名無しさん<><>04/05/27 23:09<> 402-406事故？ <br>  <br> 最近のMonaはいい感じだと思う。 <br> 卑下とTinoﾀﾝは得意分野がかぶっていないしね。 <br>  <br> &gt; もともとMonaGUI自体も.NET風の構造をC++でどこまで実現できるかという実験に過ぎず、 <br> &gt; 現時点でもまだ実験の域を出ていないというのが正直な所です。 <br>  <br> Tinoﾀﾝは謙遜しているが個人であのクォリティーの高いGUIを実現できるのはTinoﾀﾝ <br> だけじゃない？もしかしてGUI系のライブラリを書く本職なんじゃ? <br>  <br> GUIがあのロードマップどおりに進むのであれば <br> そのあいだ卑下はマイクロカーネル化やネットワーク対応等を進めればよい。 <br>  <br> 今年中にはMonaGUI簡易ブラウザから2chに書き込みなんてことも夢ではないかも <>
+Be名無しさん<>sage<>04/05/27 23:04<> 402-406事故？ <br>  <br> 最近のMonaはいい感じだと思う。 <br> 卑下とTinoﾀﾝは得意分野がかぶっていないしね。 <br>  <br> &gt; もともとMonaGUI自体も.NET風の構造をC++でどこまで実現できるかという実験に過ぎず、 <br> &gt; 現時点でもまだ実験の域を出ていないというのが正直な所です。 <br>  <br> Tinoﾀﾝは謙遜しているが個人であのクォリティーの高いGUIを実現できるのはTinoﾀﾝ <br> だけじゃない？もしかしてGUI系のライブラリを書く本職なんじゃ? <br>  <br> GUIがあのロードマップどおりに進むのであれば <br> そのあいだ卑下はマイクロカーネル化やネットワーク対応等を進めればよい。 <br>  <br> 今年中にはMonaGUI簡易ブラウザから2chに書き込みなんてことも夢ではないかも <>
+Be名無しさん<><>04/05/27 23:18<> 明後日からちょっとの間2ch使えなくなるから、そのエラーとか。 <br> ニュー即では閉鎖騒ぎ。実際には閉鎖は嘘だが。 <br>  <br> 2ch.netドメインが使えなくなる可能性大。ご注意を。 <>
+Be名無しさん<>sage<>04/05/27 23:37<> make[3]: Entering directory `/home/hoge/src/Mona/src/servers/key' <br> g++ -c -o main.o -nostdlib -fno-builtin -Wall -c -g -O3 -DMONA -DDEBUG_BUILD -DHOST_LINUX3 -fno-exceptions -fno-rtti -I../../../include main.cpp <br> g++ -c -o KeyboardManager.o -nostdlib -fno-builtin -Wall -c -g -O3 -DMONA -DDEBUG_BUILD -DHOST_LINUX3 -fno-exceptions -fno-rtti -I../../../include KeyboardManager.cpp <br> ld -T ../../../env/monaelf.lds -n -Ttext 0xA0000000 -e user_start -Bstatic main.o KeyboardManager.o   -L../../../lib -o KEYBDMNG.SVR ../../../lib/monapi.o -lmonapi -lmonalibc <br> ../../../lib/monapi.o(.text+0x2d): In function `__static_initialization_and_destruction_0(int, int)': <br> ../../../include/sys/HList.h:252: undefined reference to `__dso_handle' <br> ../../../lib/monapi.o(.text+0x3c):../../../include/sys/HList.h:222: undefined reference to `__cxa_atexit' <br> make[3]: *** [KEYBDMNG.SVR] エラー 1 <br>  <br> g++ 3.3.3 <br> debian sid <>
+Be名無しさん<>sage<>04/05/28 16:48<> うぬぅ　MONAいい感じになってきてるな　開発者連中、がんがれ <>
+通りすがりのBeOS<>sage<>04/05/28 22:42<> Mona GUIのサンプルコードをいくつか見て感じた点 <br>  <br> ・text, checkbox, radio button, combo boxのような基本部品がない⇒いくらなんでも困る <br>  <br> ・キーボード入力を受け付けない（？） <br>  <br> ・日本語入力 <br>  <br> 背面描画やZオーダーよりもこっちの方が致命的だと思うんだけど。 <br> 逆に言えばこいつらがそろったら文句なし <>
+Be名無しさん<>sage<>04/05/28 22:51<> <a href="../test/read.cgi/os/1081561384/412" target="_blank">&gt;&gt;412</a> <br> MonaGUI = GUIのサンプル <>
+Be名無しさん<>sage<>04/05/28 22:59<> <a href="../test/read.cgi/os/1081561384/411" target="_blank">&gt;&gt;411</a> <br> こんなヘンピな板でこういうレスはどうにもこうにも不自然に感じるこのごろ。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/05/28 23:30<> <a href="../test/read.cgi/os/1081561384/402" target="_blank">&gt;&gt;402</a> <br> ありがとうございます。 <br> &gt; エディタやウィンドウデザイン（スキン）の変更とかのサポートはまだかな？ <br> 考えてはいましたが、Mona-0.2.0には間に合いそうもありません。 <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Tino%2FMonaGUI (ロードマップ) <br>  <br> <a href="../test/read.cgi/os/1081561384/407" target="_blank">&gt;&gt;407</a> <br> ありがとうございます。 <br> 本職ではありませんが、ご想像に近いことをしていたのかもしれません。 <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Tino%2F%B7%D0%B8%B3%C3%CC <br>  <br> <a href="../test/read.cgi/os/1081561384/411" target="_blank">&gt;&gt;411</a> <br> ありがとうございます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/412" target="_blank">&gt;&gt;412</a> <br> <a href="../test/read.cgi/os/1081561384/390" target="_blank">&gt;&gt;390</a>にも書きましたように、Mona-0.2.0までにキーボード入力はサポートする予定です。 <br> そのためにはフォーカス管理が不可欠で、フォーカス管理とZオーダーとは表裏一体の関係にあるため、 <br> 短期的には「Zオーダー→フォーカス管理→キーボード入力」という実装を考えています。 <br>  <br> 本音を言うと、もともと同時に複数のアプリを起動することを諦めて（あるいは挙動に目をつむって） <br> Zオーダー管理もフォーカス管理も無視してキーボードサポートをしようかと思っていました。 <br> そのため上に出したロードマップにもGUIサーバーは後回しにするように書いていたのですが、 <br> そうこう言っているうちに小物が増えてきて同時起動する場合の矛盾が目に付くようになり、 <br> CUIと切り離してstartguiする方が良いような状態にまでなってしまいました。 <br> そのため完全にロードマップから外れた状態になっています。 <br>  <br> <a href="../test/read.cgi/os/1081561384/413" target="_blank">&gt;&gt;413</a> <br> はい、その通りです。 <br> 「俺だったらもっと手際よくこなせるぜ！」という元気な人待ってます。 <>
+Be名無しさん<>sage<>04/05/28 23:32<> <a href="../test/read.cgi/os/1081561384/412" target="_blank">&gt;&gt;412</a> <br> コントロールくらい、いるものだけ作ればいいだろ。 <br> 日本語入力は別のサーバーの仕事だと思う。 <br>  <>
+Be名無しさん<>sage<>04/05/29 00:10<> うわ。Tinoﾀﾝやっぱりすごい人だったのね・・・ <br>  <br> GUIのサンプルという位置づけはもったいないというか、このまま行くしかないでしょ。 <br>  <br> 大体日本にGUIをここまでバリバリかける人ってなかなかいないと思う。 <br> MonaからLinuxに逆輸入とかされたら面白いと思うし、そういうレベルを狙えるものだと思う。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/29 12:04<> <a href="../test/read.cgi/os/1081561384/401" target="_blank">&gt;&gt;401</a>さん <br> いろいろありがとうございます。 <br> <a href="../test/read.cgi/os/1081561384/402" target="_blank">&gt;&gt;402</a>さん <br> ランチャーのデザインでよい案募集しますー。 <br>  <br> <a href="../test/read.cgi/os/1081561384/407" target="_blank">&gt;&gt;407</a>さん <br> ありがとうございます。 <br> 自分以外の人が提供してくれるコードは品質もよく勉強になっています。 <br> よい人に恵まれていますね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/410" target="_blank">&gt;&gt;410</a>さん <br> g++3.3.3の環境がなくて試せていないのですが。 <br> ./configureの際にはなんと表示されますでしょうか? <br> あとビルドしていただいたのはどのバージョンのソースでしょうか? <br>  <br> <a href="../test/read.cgi/os/1081561384/411" target="_blank">&gt;&gt;411</a>さん <br> ありがとうございます。 <br>  <br>  <br> Monaのカーネル外のユーザー側のdoxygenドキュメントを公開しました。 <br> ttp://mona.sourceforge.jp/apidocument/ <>
+410<>sage<>04/05/29 13:08<> ソースはmona-0.2.0beta11です <br> ./configureの出力は以下の通りです <br>  <br>  <br> % ./configure <br> OSTYPE: linux gcc3.x <br>  <br> [How to build] <br> 1. make depend <br> 2. make <br> 3. make install <br> Have fun! <>
+Be名無しさん<>sage<>04/05/29 13:27<> <a href="../test/read.cgi/os/1081561384/410" target="_blank">&gt;&gt;410</a> <br> g++自体の設定かどうかはわからないけど <br> __dso_handle　と　__cxa_atexit　が無いというエラー。 <br> Kernelのほうにあるから、自分で勝手にmonapi/syscall.cppの　for C++ って所に <br> コピペしたらコンパイルできるようになると思う。 <br> きちんと動くかどうかわからないけど。 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/30 14:54<> <a href="../test/read.cgi/os/1081561384/419" target="_blank">&gt;&gt;419</a>さん <br> こちらでgcc3.3.3の環境を準備中です。 <br> しばらくお待ちください。 <br>  <br> <a href="../test/read.cgi/os/1081561384/371" target="_blank">&gt;&gt;371</a>さん <br>  <br> そういえばアナログ時計はどこかで公開されていますでしょうか? <br> もし差し支えなければみてみたいです。 <>
+Be名無しさん<>sage<>04/05/30 15:02<> <a href="../test/read.cgi/os/1081561384/421" target="_blank">&gt;&gt;421</a> <br> 一応基礎的な時計の表示（要は秒針と分針と時針）はできますよ。 <br> ただあまりにもそっけないから何か機能付けようかと思っています。 <br> ってか見るほどのものでもないわけで。 <br>  <br> んにしてもスクリーンショットの半透明の機能はかっこいいねぇ。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/30 15:21<> <a href="../test/read.cgi/os/1081561384/422" target="_blank">&gt;&gt;422</a>さん <br>  <br> さっそくの回答ありがとうございます! <br> 完成したらぜひ見せてください。 <br>  <br> 半透明ウィンドウまだ試せていないので早く試してみます。 <br>  <br> <a href="../test/read.cgi/os/1081561384/410" target="_blank">&gt;&gt;410</a>さん <br>  <br> Vine Linux2.6 <br> gcc 3.3.3を用意してやってみましたが再現しませんでした。 <br> <a href="../test/read.cgi/os/1081561384/420" target="_blank">&gt;&gt;420</a>さんの <br> ご指摘の部分を試していただけると助かります。 <>
+Be名無しさん<>sage<>04/05/30 15:28<> QEMUたい(ry <>
+Be名無しさん<>sage<>04/05/30 17:01<> 半透明ウィンドウきたーーーーーーーーーーーーーーーーーーーーー <br>  <br> Tinoﾀﾝ神認定！ <>
+Be名無しさん<>sage<>04/05/30 17:04<> Mona/スペック　にGUI関連の半透明ウィンドウサポートのようなアピールすべきところを <br> 書いた方が良いと思うよ <br>  <>
+Be名無しさん<>sage<>04/05/30 17:15<> もうすぐ　新ﾏｼﾝ ｸﾙｰｰｰｰｰｰｰｰｰｰ！ ので　今のﾏｼﾝのOS　MONAにしてみよ <>
+Be名無しさん<>sage<>04/05/30 19:15<> <a href="../test/read.cgi/os/1081561384/427" target="_blank">&gt;&gt;427</a> <br> それは・・・無理だろ。 <>
+Be名無しさん<>sage<>04/05/30 19:37<> <a href="../test/read.cgi/os/1081561384/427" target="_blank">&gt;&gt;427</a> <br> HDDブート対応すれ、あんたがソースを書くんだよ。 <>
+Be名無しさん<>sage<>04/05/30 19:56<> 常にフロッピー突っ込みっぱなしでFA <>
+Be名無しさん<>sage<>04/05/30 20:22<> <a href="../test/read.cgi/os/1081561384/429" target="_blank">&gt;&gt;429</a> <br> HDDブートとなると、MBRのブートコードは当面WinXP辺りの既存のもの <br> をそのまま利用となるのかな。それとも独自？ <br> まぁ、それよりもFDもしくはCD-ROMブートではあるが、起動後(実際には <br> 起動中のある段階以降になるはず)はHDにアクセス可能にすることの方が <br> 先かな？ <>
+Be名無しさん<>sage<>04/05/30 20:30<> <a href="../test/read.cgi/os/1081561384/431" target="_blank">&gt;&gt;431</a> <br>  <br> NTLDRを使うのは大変だろう。 <br> GRUBのほうがまだ楽。 <br>  <br> 多分独自になるかと。 <>
+Be名無しさん<>sage<>04/05/30 21:19<> <a href="../test/read.cgi/os/1081561384/423" target="_blank">&gt;&gt;423</a> <br> 一応できましたよ、時計。どうやって見せればいいんですか？ <br>  <br> 見せるほどのものではないですよ。 <br> あれくらい普通に数時間で作れるだろうし。 <>
+Be名無しさん<>sage<>04/05/30 21:46<> <a href="../test/read.cgi/os/1081561384/433" target="_blank">&gt;&gt;433</a> <br> Wikiにページ作ってうｐするよろし <>
+433<>sage<>04/05/30 22:10<> wikiは基本的に読むものとして扱ってきたので、編集できる気がしないんですけど。 <br> ひとまず風呂に入ってきます。それからやりますｓ。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/05/30 22:16<> <a href="../test/read.cgi/os/1081561384/424" target="_blank">&gt;&gt;424</a>さん <br>  <br> QEMU0.5.5がMonaで動かないとのことだったのでみてみました。 <br>  <br> startKernel()でenableInterrupt()でするとハングアップしてしまうようです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/425" target="_blank">&gt;&gt;425</a>さん <br> すごいですよねー。＞半透明 <br>  <br> <a href="../test/read.cgi/os/1081561384/426" target="_blank">&gt;&gt;426</a>さん <br> ご指摘ありがとうございます。リリース前には整理いたします。 <br>  <br> <a href="../test/read.cgi/os/1081561384/433" target="_blank">&gt;&gt;433</a>さん <br> Mona PJ Wikiに適当なページを作って公開してただけると助かります。 <br> 例) お名前/アプリ名 <br>  <br> <a href="../test/read.cgi/os/1081561384/434" target="_blank">&gt;&gt;434</a>さん <br> 的確なフォローありがとうございます。 <>
+Be名無しさん<>sage<>04/05/30 22:33<> Mona 0.2.0 beta11をデフォルトの設定で <br> Thinkpad600で動作させたところ <br> *.SVRをロードする直前でread retry=と出力され <br> いくら待ってもロードされる気配がありません。 <br> その他VPCや自作の実機では正常に動作しました。 <>
+410<>sage<>04/05/31 02:09<> <a href="../test/read.cgi/os/1081561384/420" target="_blank">&gt;&gt;420</a> <br> syscall.cppに追加したら__dso_handleと__cxa_atexitに関してはエラー出なくなりましたが <br> 今度は__CTOR_LIST__と__DTOR_LIST__が無いというエラー。 <br> <a href="../test/read.cgi/os/1081561384/423" target="_blank">&gt;&gt;423</a>を見るとうちの環境が悪いようなので、諦めて別の環境つくってみます。 <br> どうもでした。 <>
+Be名無しさん<>sage<>04/05/31 02:14<> <a href="../test/read.cgi/os/1081561384/438" target="_blank">&gt;&gt;438</a> <br> どのバージョンでmakeしてる? <br> 古いものだと__CTOR_LIST__と__DTOR_LIST__でエラーになるけど <br> 0.2.0β9以降で対処された筈 <>
+sage<><>04/05/31 08:50<> <a href="../test/read.cgi/os/1081561384/439" target="_blank">&gt;&gt;439</a> <br> 410 なら 419 で beta11 って書いてる。 <br> 対処が効いてない環境があるのでは。 <br>  <>
+</b> ◆kgmanko0S. <b><>sage<>04/05/31 09:49<> 新０Ｓできました。 <>
+Be名無しさん<>sage<>04/05/31 15:20<> <a href="../test/read.cgi/os/1081561384/441" target="_blank">&gt;&gt;441</a> <br> kgは? <>
+Be名無しさん<>sage<>04/05/31 15:29<> ８文字鳥の鯖にGO <>
+Be名無しさん<>sage<>04/05/31 19:29<> トリップ公開汁 <>
+Be名無しさん<>sage<>04/06/01 17:49<> <a href="../test/read.cgi/os/1081561384/431" target="_blank">&gt;&gt;431</a> <br> &gt;HDDブートとなると、MBRのブートコードは当面WinXP辺りの既存のもの <br> &gt;をそのまま利用となるのかな。それとも独自？ <br> MBRはパソコンにデフォルトで入ってるから(Partition Magic等でインスコされるけど) <br> いらない。mona等が独自で組まなければならないところは、 <br> パーティションごとのブートセクタ(IPL)。 <>
+Be名無しさん<>sage<>04/06/01 18:26<> grubのmultiboot specificationに対応すれば <br> そんなん作る必要も無かろう。 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/01 21:40<> <a href="../test/read.cgi/os/1081561384/437" target="_blank">&gt;&gt;437</a>さん <br>  <br> ご報告ありがとうございます。 <br> どうやらFDCDriverの途中で読み込みエラーが発生しているようです。 <br> 申し訳ありません。 <br>  <br> <a href="../test/read.cgi/os/1081561384/437" target="_blank">&gt;&gt;437</a>さん <br> <a href="../test/read.cgi/os/1081561384/438" target="_blank">&gt;&gt;438</a>さん <br> <a href="../test/read.cgi/os/1081561384/439" target="_blank">&gt;&gt;439</a>さん <br> <a href="../test/read.cgi/os/1081561384/440" target="_blank">&gt;&gt;440</a>さん <br>  <br> ご迷惑おかけして申し訳ありません。 <br> また何かお気づきの点がありましたらご報告いただけると助かります。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/01 21:47<> 0.2.0beta12をリリースしました。  <br>  <br> 今回はいろいろな意味でおすすめリリースです。ぜひお試しください。 <br>  <br> 変更点は以下の通りです。  <br>  <br> ・cube追加(nikqさん提供)  <br> ・メッセージ仕様の変更peekの追加等   <br> ・atan()追加   <br> ・MonaGUIでZオーダーと透過ウインドウに対応   <br> ・AnaClock追加(駄目人間さん提供)   <br> ・MonaGUIの設定をMONAGUI.INIで記述   <br> ・ウインドウ生成・破棄のイフェクト  <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <>
+Be名無しさん<>sage<>04/06/02 00:32<> (・ε・)ｲｲ!! <>
+Be名無しさん<><>04/06/03 00:00<> 結局grubに対応するのか？ <>
+Be名無しさん<>sage<>04/06/03 00:16<> GRUBはちょい待ちじゃない？ <br> GNUの開発がGRUB2に移行しちゃったからさ <br> いまの所、mb_header mb_info 辺りの変更は無いっぽいけど <br>  <br> それと素のGRUBのMultibootSpecificationってVBE情報渡して <br> くれないよ、リアルモードに戻れないしさ <br>  <br> VBEパッチ済のも存在するけどね <br> www.djm.co.za/spoon/grub/vbe.php <>
+Be名無しさん<>sage<>04/06/03 15:50<> ﾍｪｰもうGRUB2開発始まってんのね。 <br>  <br> 多国語化対応しているみたいだから、2chロケール追加すれば十分Monaに似合う。 <br>  <br> とりあえずGRUB Legacyに対応しておけば良いかと。Syllableだって、SkyOSだってGRUBだし。 <br>  <>
+Be名無しさん<>sage<>04/06/03 16:44<> そして卑下がGRUB2をいれてみようとCVSからとってきてコンパイルしてみるが、 <br> どうやってインストールすればいいかがわからないんだ <br>  <br> 間違いない。 <>
+451<>sage<>04/06/03 18:34<> <a href="../test/read.cgi/os/1081561384/453" target="_blank">&gt;&gt;453</a> <br> GRUB２を使うにはソースコードと睨めっこしないと無理(w <br> CVSリポジトリにドキュメントあったかな... <br>  <br> GRUBLegacyなら、素人の漏れでもブートできたから <br> 卑下なら余裕 <br>  <br> mb_header を ELF バイナリの8kbyte以内に配置するだけ <br> ホントそれだけ、monaならsecondboot.asm 以降をELF <br> バイナリにして、VBE情報をmb_infoから引っ張ればOKでしょ <br>  <br>   $(CC) -Wl,-N -Wl,-Ttext -Wl,0x00010000 -o kernel.elf $(OBJS) <br>  <br> あとは menu.lst に <br>  <br>   default 0 <br>   timeout 3 <br>   title Mona <br>   root (fd0) <br>   kernel /kernel.elf <br>   vbeset 0x115 <br>   boot <br>  <br> もち、VBE-GRUB利用が前提 <>
+Be名無しさん<>sage<>04/06/03 23:11<> ところで、よくわかんないんだけど。 <br> GRUB に対応すると何かおいしいことあるの？ <br>  <>
+Be名無しさん<>sage<>04/06/04 06:32<> <a href="../test/read.cgi/os/1081561384/455" target="_blank">&gt;&gt;455</a> <br> 彼女がたくさんできる <br> 金大もうけ <br> 職が見つかる <br>  <br> などいろいろありますよ <>
+Be名無しさん<>sage<>04/06/04 17:42<> 宝くじに当たるわ試験には合格するわでもうウハウハ。 <br> 一度お試しアレ <>
+Be名無しさん<>sage<>04/06/04 20:48<> 久しぶりにMONAをコンパイルしてみた。startguiとやってみた。以前にもまして重くなっていた。GWABAを起動してみた。やっぱり落ちた。MONA版は開発するのやめようかなと本気で思った。イベントから先に一歩もすすまない・・・ -- bayside 2004-06-04 (金) 18:43:28 <br>  <br> さっきゅんが他人の名前であっ非ゃっ非ゃ <>
+Be名無しさん<>sage<>04/06/04 22:03<> 　.＿_ <br> ヽ|'∀'|_∠ Lマン参上。スレ立つまでここ借りるよ <br> 　|＿＿＿| <br> 　　L　L <>
+Be名無しさん<>sage<>04/06/04 22:04<> □□□□□□□□□□□□□□□□□□□□□□□□□□□□□ <br> □□□■□□■■□□□□□□□□□□□□□■■□□■□□□ <br> □□■■□■□□■□□□□□□□□□□□■□□■□■■□□ <br> □■■□□■□□■□□□□□□□□□□□■□□■□□■■□ <br> ■■□□□■□□■□□□□□□□□□□□■□□■□□□■■ <br> ■□□□□□■■□□□■■■■■■■□□□■■□□□□□■ <br> ■□□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> ■□□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> ■□□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> ■□□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> ■□□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> ■□□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> ■■□□□□□□□□■□□□□□□□■□□□□□□□□□■ <br> □■■□□□□□□□■□□□□□□□■□□□□□□□□■■ <br> □□■■□□□□□□■□□□□□□□■□□□□□□□■■□ <br> □□□■□□□□□□■■■■■■■■■□□□□□□■■□□ <br> □□□□□□□□□□□□□□□□□□□□□□□□□■□□□ <br> □□□■□□□□□□□□□□□□□□□□□□□□□□□□□ <br> □□□■□□□□□□□□□□□□□□□□□□□□□□□■□ <br> □■■■■■■■□□■■■■■■■□□■□□□□□□□■□ <br> □□□■□□□■□□□□□■□□□□□■□□□□□□□■□ <br> □□□■□□□■□□□□□■□□□□□■□□□□□□□■□ <br> □□□■□□□■□□□□□■□□□□□■□□□□□□□■□ <br> □□□■□□□■□□□□□■□□□□□■□□□□■□□■□ <br> □□□■□□□■□□□□□■□□□□□■□□□■■□□■□ <br> □□□■□□□■□□□□□■□□□□□■□□■■□□□■□ <br> □□□■□□□■□□□□□■□□□□□■■■■□□□□□□ <br> □□□■□□■■□□■■■■■■■□□■■□□□□□□■□ <>
+Be名無しさん<>sage<>04/06/04 22:55<> OSつくりいいなー。 <br>  <br> でも基本情報技術者レベルの知識皆無者だから見てるしかできん･･･ <br>  <br> 「はじめての486」とか読んで理解できますかね？ <>
+Be名無しさん<>sage<>04/06/04 23:05<> <a href="../test/read.cgi/os/1081561384/461" target="_blank">&gt;&gt;461</a> <br> まぁあれは良書だとして(ひげスレでその本知るまでにものすごいWeb資料をあさったんだ俺は！) <br> インテルのマニュアルでも読んどけ。あれが大体理解できればイケる。 <br> まぁOSの本質についてはほかで勉強せなあかんけど・・・ <>
+Be名無しさん<>sage<>04/06/04 23:26<> 関数ポインタ位Cで扱えるようなら大丈夫だろ、アセンブラなんてすぐ慣れる <br> HWも仕様書があれば余裕、Intel/AMDのチップの情報は比較的容易に入手できる <br> (GBEのデータシートが公開されててびっくりしたよ、他のベンダじゃありえない)  <br> 他のハードはLinuxのソースからレジスタ１覧を作れば大抵制御できるだろ <br>  <br> 肝は普通のプログラミングで使わない、カーネル独特のアルゴリズムだな <br>  <br>  <>
+Be名無しさん<>sage<>04/06/04 23:30<> 必要なのはやばいぐらいのやる気と執念 <>
+Be名無しさん<>sage<>04/06/04 23:35<> <a href="../test/read.cgi/os/1081561384/459" target="_blank">&gt;&gt;459</a> <br> 新スレ立ったっぽいね <>
+Be名無しさん<>sage<>04/06/04 23:37<> 少なくともこんなとこで聞いてるよりもどんどん自分で調べだすような人間じゃないとだめっぽい。。。 <>
+Be名無しさん<>sage<>04/06/05 01:39<> <a href="../test/read.cgi/os/1081561384/462-463" target="_blank">&gt;&gt;462-463</a> <br> ㌧クス！暇見て読んでみます。。 <br>  <br> <a href="../test/read.cgi/os/1081561384/466" target="_blank">&gt;&gt;466</a> <br> そうですね･･･今のとこ参加できる見込みはないかも･･･(´･ω･｀) <>
+Be名無しさん<>sage<>04/06/05 11:02<> なんで卑下や痴脳はあんなに必死なんだ？ <>
+Be名無しさん<>sage<>04/06/05 11:10<> 責任逃れで言い訳してるんだろ <>
+Be名無しさん<>sage<>04/06/05 11:20<> どーでもいーけどmthread_joinって変じゃないか? <br> pthread_joinがどんな動きするか知らないのか? <>
+Be名無しさん<>sage<>04/06/05 11:52<> ﾆｮｶﾞｰﾝ <>
+Be名無しさん<>sage<>04/06/05 14:18<> <a href="../test/read.cgi/os/1081561384/468" target="_blank">&gt;&gt;468</a> <br> これから立ち入り調査をするのでURLを晒してくれぬか <>
+Be名無しさん<>sage<>04/06/05 15:08<> <a href="../test/read.cgi/os/1081561384/472" target="_blank">&gt;&gt;472</a> <br> wikiかな。俺も知りたい <>
+Be名無しさん<>sage<>04/06/05 15:39<> Wikiを読んでみた。ここかな <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%A5%A2%A5%D7%A5%EA%BC%C1%CC%E4%BD%EA%2FMonaGUI%2FWABA <br>  <br> <a href="../test/read.cgi/os/1081561384/458" target="_blank">&gt;&gt;458</a> を受けて卑下と痴脳がデバッグをしているわけね。 <br>  <br> 結論から言うと米再度の作ったwaba側の問題じゃんていう話か。 <br>  <br> ちょっと過剰反応だが痴脳にいたってはwaba側の問題である <br> 証拠も提示しているからいいがかりなんだろうね <br>  <br> 卑下、痴脳ももう少しうまくあしらえばいいのに。 <>
+Be名無しさん<>sage<>04/06/05 15:41<> 痴脳って呼び方はちょっと可哀想すぎるｗ <>
+Be名無しさん<>sage<>04/06/05 15:47<> 痴脳ｲｲ <>
+Be名無しさん<>sage<>04/06/05 15:54<> この件でのh氏やT氏の態度に問題はないと思う <br> むしろ誉めたい <br>  <br> それよりも自分で十分にチェックしないままOSのせいだと言ってしまった <br> 米氏の態度こそ問題。他人のコード(MONA)に事実無根のケチつけたのなら <br> 禿しく猛省するべき <br>  <br> h氏がQEMUの件で最小限の再現コードが書けないから報告しないそうだが、 <br> それくらい奥ゆかしいのが普通 <>
+Be名無しさん<>sage<>04/06/05 16:09<> 今レスした人の中にム板のスレをageてきたやしがいるだろ～そ～だろ～ <>
+Be名無しさん<>sage<>04/06/05 16:23<> いつの間にか何か荒れてるな･･･ <br>  <br> 暫く離れることにしよう･･･ <>
+Be名無しさん<>sage<>04/06/05 17:25<> <a href="../test/read.cgi/os/1081561384/474" target="_blank">&gt;&gt;474</a> <br> 自作の互換GUIでアプリをデバッグして結論を導き出すってのもすごいがｗ <br>  <br> 神か悪魔か、天才か痴脳か <>
+Be名無しさん<>sage<>04/06/05 19:23<> <a href="../test/read.cgi/os/1081561384/480" target="_blank">&gt;&gt;480</a> <br> Win32でないかい？どちらにせよ知能は神  <>
+Be名無しさん<>sage<>04/06/05 19:33<> つーかそこまでやるなら自分で移植しろと＞痴脳 <>
+Be名無しさん<>sage<>04/06/05 19:35<> KSASO信者は元気ないな <>
+Be名無しさん<><>04/06/05 19:44<> <a href="../test/read.cgi/os/1081561384/482" target="_blank">&gt;&gt;482</a> <br> 移植するのと既にあるものから機能を取り除くのは手間が大幅に違うと思うＹＯ！ <>
+Be名無しさん<>sage<>04/06/05 20:50<> <a href="../test/read.cgi/os/1081561384/482" target="_blank">&gt;&gt;482</a> <br> 痴脳はﾄﾞﾄﾈﾄ厨だから本心ではJavaが大嫌いなんじゃﾈｰﾉ? <>
+Be名無しさん<>sage<>04/06/05 21:11<> <a href="../test/read.cgi/os/1081561384/485" target="_blank">&gt;&gt;485</a> <br> Java厨の卑下とはうまくやっているようだが <>
+Be名無しさん<>sage<>04/06/05 21:17<> <a href="../test/read.cgi/os/1081561384/486" target="_blank">&gt;&gt;486</a> <br> 話がそれとこれでは全然違うような気が・・・ <>
+Be名無しさん<>sage<>04/06/05 21:19<> <a href="../test/read.cgi/os/1081561384/485" target="_blank">&gt;&gt;485</a> <br> そっか。鋭い。あんた頭イｲね! <br>  <br> <a href="../test/read.cgi/os/1081561384/486" target="_blank">&gt;&gt;486</a> <br> 卑下をJava厨からﾄﾞﾄﾈﾄ厨へ宗旨替えさせようと企んでるのか。 <br> 別にいいけど。 <>
+Be名無しさん<>sage<>04/06/05 21:20<> <a href="../test/read.cgi/os/1081561384/486" target="_blank">&gt;&gt;486</a> <br> 卑下はJava信者ではないようだからな。 <br> 卑下がユーザモード側のネイティブAPIはJavaベースにしたいと言い出したり <br> しなければ問題なしでしょ。 <>
+Be名無しさん<>sage<>04/06/05 21:26<> 漏れ未来から来たけど未来にはjawaもﾄﾞﾄﾈﾄもないですよ（＾＾） <>
+Be名無しさん<>sage<>04/06/05 21:28<> <a href="../test/read.cgi/os/1081561384/490" target="_blank">&gt;&gt;490</a> <br> そりゃjawaなんて言語には未来は無いな <>
+Be名無しさん<>sage<>04/06/05 21:47<> ところでTinoのGUIの仕組みって要は昔ベーマガにあった <br> N88BASICで擬似Windows95を作っていたそんな感じか？ <>
+Be名無しさん<>sage<>04/06/05 21:47<> ttp://www.tcat.ne.jp/~eden/Hst/dic/jawa.html <br>  <br> サンスクリット語でジャワ(Jawa) = ジャヴァ(Java) らしいぞ <>
+Be名無しさん<>sage<>04/06/06 00:18<> 結局MASKが直したみたいだぞ <>
+Be名無しさん<>sage<>04/06/06 00:23<> 関係ない話だが、ゲオの社長死んでしまったな。 <br> あまりにもムゴイ事故だなぁ。自分の命よりも車を選んでしまったか。 <>
+Be名無しさん<>sage<>04/06/06 00:43<> Waba ポーティングプロジェクトの面子は保たれたね。 <br> すばらすぃ。 <br>  <br> ttp://sourceforge.jp/projects/waba/ <br>  <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/06 01:08<> 皆様お騒がせしております。役立たずの痴脳です。 <br> 覆面さんのご活躍により、無事にWABAが動くようになりました。 <br> この場をお借りして改めて御礼申し上げます。 <br>  <br> まだ細かい部分の動きの詰めが甘い状態ですが、 <br> いままでは第一歩すら踏み出せなかったので仕方ないと思います。 <br> 徐々に詰めて行くことができれば良いですね。 <br>  <br> 描画が遅いというMonaGUIの実装上の問題につきましても <br> Monaの0.2.0リリースまでには改善したいと考えておりますので、 <br> 今後ともよろしくお願いいたします。 <>
+さっきゅん<>sage<>04/06/06 01:19<> お疲れ様ー <>
+Be名無しさん<>sage<>04/06/06 01:47<> <a href="../test/read.cgi/os/1081561384/498" target="_blank">&gt;&gt;498</a> <br> ありがとうございます。 <br> ほとんど何もしていない私が言うのも恐縮ですが……。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/06 01:47<> 名前を書き忘れました。<a href="../test/read.cgi/os/1081561384/499" target="_blank">&gt;&gt;499</a>は私です。 <br> ついでに500get! <>
+さっきゅん<>sage<>04/06/06 01:49<> けいかくてき５００げっとのよかん！！ <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/06 02:00<> <a href="../test/read.cgi/os/1081561384/501" target="_blank">&gt;&gt;501</a> <br> （汗 <>
+落武者<>???<>04/06/06 17:54<> Pascalで書かれたOSは、初期マック以外に何がある？ <>
+Be名無しさん<>sage<>04/06/06 18:03<> <a href="../test/read.cgi/os/1081561384/503" target="_blank">&gt;&gt;503</a> <br> Win16だとCから使うときにPASCAL指定してたなあ。WinMainすら。 <br> やっぱPASCALで書かれてたからなんだろうか? <>
+Be名無しさん<>sage<>04/06/06 18:12<> <a href="../test/read.cgi/os/1081561384/503" target="_blank">&gt;&gt;503</a> <br> まだいたのかよΣ(ﾟДﾟ；) <>
+Be名無しさん<>sage<>04/06/06 18:20<> <a href="../test/read.cgi/os/1081561384/503" target="_blank">&gt;&gt;503</a> <br> あれは仕様の検討用にPascalでテスト版作っただけで、 <br> 実際はm68kのアセンブラでごりごり書いてあったらすい。 <br>  <br> <a href="../test/read.cgi/os/1081561384/504" target="_blank">&gt;&gt;504</a> <br> ありゃCで書いてたはず。 <br> Pascalにしたのはret imm使うためとか、MacOSに合わせたとか…よくわからんが。 <br>  <>
+Be名無しさん<>sage<>04/06/06 18:51<> Carbonじゃいまだに"\pabc"ってやらされるね <>
+Be名無しさん<>sage<>04/06/06 19:05<> <a href="../test/read.cgi/os/1081561384/504" target="_blank">&gt;&gt;504</a> <br> あれはPascal言語とは直接の関係はない。 <br> もちろんPASCAL呼び出しは、Pascal言語で作ったプロシージャを <br> 呼べるように用意されたものだが、Win16では呼ばれた側で <br> 引数のスタックの後始末をしたいがために単に流用しただけだよ。 <br> その方がRET n命令1個で後始末完了で当時貴重だったメモリ容量が <br> 節約できたから。 <>
+落武者<>???<>04/06/06 21:26<> <a href="../test/read.cgi/os/1081561384/504" target="_blank">&gt;&gt;504</a> <br> <a href="../test/read.cgi/os/1081561384/505" target="_blank">&gt;&gt;505</a> <br> へぇ～、そいつぁ初耳だぁ。 <br> でも、アセンブリで書くなんて、忍耐力が相当必要だな。 <br>  <br> <a href="../test/read.cgi/os/1081561384/505" target="_blank">&gt;&gt;505</a> <br> Pascalは、もはや化石か？ <>
+Be名無しさん<>sage<>04/06/06 21:37<> &gt;509 <br> デルフィーがあるよ <>
+Be名無しさん<>sage<>04/06/06 23:01<> 化石はFortranだのALGOLだろ、PascalはDelphiで十分現役(まぁFortranも現役だが・・・) <>
+Be名無しさん<>sage<>04/06/07 02:19<> Delphi&lt;&gt;Pascalという意見もありますが。 <br>  <br>  <br>  <>
+Be名無しさん<>sage<>04/06/07 02:41<> それは昔から、TurboPascal &lt;&gt; Pascal という話と一緒で。 <>
+Be名無しさん<>sage<>04/06/07 16:50<> Pascal &gt;&gt;&gt;… 消滅? <br> 　　↓ <br>     Borlandの道 &gt;&gt;&gt; TurboPascal &gt; Delphi…Delphi.NET? <br>  <br> Pascal殆どやったことない。Delphiは6から衰退。 <>
+落武者<>???<>04/06/07 21:03<> <a href="../test/read.cgi/os/1081561384/511-514" target="_blank">&gt;&gt;511-514</a> <br> 結構、現役の様ですな。 <br> でも、やっぱり時代遅れの代物ですか............ <br> それと、聞くがおみゃあらおすすめの、コンパイラを教えれ（激しく板違いでスマソ） <>
+Be名無しさん<>sage<>04/06/07 21:26<> <a href="../test/read.cgi/os/1081561384/515" target="_blank">&gt;&gt;515</a> <br> 目的を言え目的を <br> そうでないととんでもないもの推薦しちゃうぞ☆ <>
+Be名無しさん<>sage<>04/06/07 21:26<> brainfuckマジおすすめ <>
+落武者<>???<>04/06/07 21:44<> <a href="../test/read.cgi/os/1081561384/516" target="_blank">&gt;&gt;516</a> <br> 目的ちゅうものは余りないが、基本的にはWinアプリを主に開発しまする。 <br> （場合によっちゃOSなんかも） <br> で、そのとんでもない物ってなによ？ <br>  <br>  <br> <a href="../test/read.cgi/os/1081561384/517" target="_blank">&gt;&gt;517</a> <br> フリーですかい？ <>
+Be名無しさん<>sage<>04/06/07 21:45<> <a href="../test/read.cgi/os/1081561384/518" target="_blank">&gt;&gt;518</a> <br> フリーだよ。Javaなんかで脳が溶けかかった人にお勧め。 <br> 詳しくはこのスレ参照 <br> BrainFuck &lt;[+-.,]&gt; <br> http://pc5.2ch.net/test/read.cgi/tech/1036013915/ <>
+落武者<>???<>04/06/07 22:01<> <a href="../test/read.cgi/os/1081561384/519" target="_blank">&gt;&gt;519</a> <br> スレ見たけど、何と無く興味が沸いてきた。 <br> Javaで脳がやられたら、やって見ようかな。 <br>  <br>  <br> そうそう、<a href="../test/read.cgi/os/1081561384/515" target="_blank">&gt;&gt;515</a>で言い忘れてたけど、Pascalコンパイラの事だから。 <br> （別に、他のコンパイラや言語なんかでもイイです） <>
+Be名無しさん<>sage<>04/06/07 22:04<> <a href="../test/read.cgi/os/1081561384/520" target="_blank">&gt;&gt;520</a> <br> &gt;何と無く興味が沸いてきた。 <br> おまい中身見てないだろw <>
+落武者<>???<>04/06/07 22:40<> <a href="../test/read.cgi/os/1081561384/520" target="_blank">&gt;&gt;520</a> <br> ばれたか。 <br> スレ見てから転送すりゃ良かった（苦笑） <>
+Be名無しさん<>sage<>04/06/08 16:22<> qemu対応紙降臨しませんか。そうですか。 <>
+落武者(&gt;&gt;522)<>???<>04/06/08 18:10<> 間違えた。 <br> 修正、修正 <br>  <br> 誤：<a href="../test/read.cgi/os/1081561384/520" target="_blank">&gt;&gt;520</a> <br> 正：<a href="../test/read.cgi/os/1081561384/521" target="_blank">&gt;&gt;521</a> <br>  <br> 気付くの遅れて、スマソ。 <>
+Be名無しさん<>sage<>04/06/08 18:50<> Mona 0.2.0 なら qemu0.5.4 で動いてるが何か？ <br> Windows移植のqemuだと不具合あるんかな <>
+Be名無しさん<>sage<>04/06/08 19:35<> すいません。。試してみたいのですが <br> どうしたら良いのでしょうか？ <br>  <br> HP見てもどこに書いてあるか解りませんでした <br> すいませんがよろしくお願いします。 <>
+Be名無しさん<>sage<>04/06/08 19:42<> 試すも何もqemu公式で配布しているバイナリを引っ張って来るだけ <br> Debian/unstableな環境での話だがね、VirtualPC2004でも使えば? <br> 私Winな人ではないのでそっちの話は分かりませんわ <>
+Be名無しさん<>sage<>04/06/08 19:50<> <a href="../test/read.cgi/os/1081561384/525" target="_blank">&gt;&gt;525</a> <br> 確かに0.5.4では動く <br> だが0.5.5で動かなくなったってことで騒ぎになってるわけ <br> 0.5.4や実機で動くんだからQEMUでエンバグされたんだろうから <br> QEMU側の修正箇所から原因を調べられないんだったら <br> おとなしく0.5.4を使ってるのが無難 <br>  <br> <a href="../test/read.cgi/os/1081561384/526" target="_blank">&gt;&gt;526</a> <br> http://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2FQEMU <>
+Be名無しさん<>sage<>04/06/08 19:54<> 今じゃbochsじゃ無理だねぇ。重いからねぇ。 <br> となるとqemuなんだが、HPにあるのは半年近く前の情報だけだからなぁ。 <br>  <br> まずqemuのWin用のバイナリを落とす。 <br> ttp://www.h7.dion.ne.jp/~qemu-win/index-ja.html <br>  <br> 次にMonaのバイナリを落とす。 <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/ <br> pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7 <br> ちゃんとzipファイル落とせよ。自分でcygwinでコンパイルできるなら、未リリースでもいいぞ。 <br>  <br> んで後はqemuの設定batファイルをちょちょっと書き換えるだけ。 <br> んでbatファイルをポチっとダブルクリックしましょう。 <>
+Be名無しさん<>sage<>04/06/08 19:55<> <a href="../test/read.cgi/os/1081561384/529" target="_blank">&gt;&gt;529</a> <br> ＞まずqemuのWin用のバイナリを落とす。 <br> ＞ttp://www.h7.dion.ne.jp/~qemu-win/index-ja.html <br> そこにあるのは0.5.5だからMonaは動かない <br> <a href="../test/read.cgi/os/1081561384/528" target="_blank">&gt;&gt;528</a>にはわざと動くのが置いてある <>
+529<>sage<>04/06/08 19:57<> ええ、0.5.5動かんのか。 <br> 俺のへっぽこブロードバンドじゃ、4Mbyteも落とす気になれんからパスしよっと <br> フォローよろしく↓ <>
+529<>sage<>04/06/08 19:58<> んがぁぁぁぁぁぁ上だった。済まん。 <br>  <br> しかもURLまで丁寧に書いてあるじゃん済まん <>
+Be名無しさん<>sage<>04/06/08 19:59<> ホームラン級のｂ <>
+Be名無しさん<>sage<>04/06/08 20:01<> <a href="../test/read.cgi/os/1081561384/528" target="_blank">&gt;&gt;528</a> <br> 試すことができました。 <br> ありがとうございます・・ <>
+529（ちょっと意地になっている）<>sage<>04/06/08 20:06<> <a href="../test/read.cgi/os/1081561384/534" target="_blank">&gt;&gt;534</a> <br> cygwin入れているんなら、最新版試せるぞ。 <br> 自分でコンパイルしなくてはならんが。 <br>  <br> ブロードバンドで暇ならやって味噌。 <>
+Be名無しさん<>sage<>04/06/08 21:13<> 0.5.4ってフルスクリーン表示できないね。localtimeも駄目歩 <br>  <>
+Be名無しさん<>sage<>04/06/09 19:40<> QEMUで、0.08aは動きますね。0.1.1から駄目みたい <>
+Be名無しさん<><>04/06/10 00:42<> ふと、日本の今の世代で巨匠と呼ばれてる人は大抵UNIX出身者だが <br> 次世代は今の和製OS界隈の連中に取って替わるんじゃないかという気がした <br> 犬糞なんかも今の和製OSみたいにどこの馬の骨かも分からないって思われたた品 <>
+Be名無しさん<>sage<>04/06/10 18:07<> 今更だが、自前IPLでbochsでvesaを使えた。 <br> 結構悩んでいたがモード110hが使えなかっただけだったとは。 <br> 普通に1024x使えたし・・・今日はむるぽ <>
+539<>sage<>04/06/10 20:28<> すまん。上は独り言です。放置してください。 <>
+Be名無しさん<>sage<>04/06/10 21:36<> <a href="../test/read.cgi/os/1081561384/538" target="_blank">&gt;&gt;538</a> <br> えらい人の弟子が次世代のえらい人になるので、 <br> そういうことは難しいと思われ。 <br>  <br> それよりも絶滅危機をなんとかしないといけないような。 <br>  <br>  <>
+Be名無しさん<>sage<>04/06/10 23:03<> <a href="../test/read.cgi/os/1081561384/541" target="_blank">&gt;&gt;541</a> <br> 和製OSで育った世代がえらい人の下で修行するような事態になれば <br> 相対的に和製OSの面々の評価も上がるのではないかと <br>  <br> 今はいつ消えてもおかしくない風前の灯というのは同意だが <>
+Be名無しさん<>sage<>04/06/11 12:13<> <a href="../test/read.cgi/os/1081561384/542" target="_blank">&gt;&gt;542</a> <br> その偉い人がどんな凄いOSを作れるか聞いてみたいところだが。 <>
+Be名無しさん<><>04/06/11 22:28<> <a href="../test/read.cgi/os/1081561384/543" target="_blank">&gt;&gt;543</a> <br> 「偉い人」ってのはＯＳ界だけの狭い範囲をさしての「偉い人」ではないだろう？ <br> ＯＳ界以外の人がすごいＯＳを作れるなんて保証はない。 <>
+Be名無しさん<>sage<>04/06/11 22:37<> &gt;ＯＳ界以外の人がすごいＯＳを作れるなんて保証はない。  <br> いや、OS解の権威が凄いOSを作れる保証もどこにもないのが現実。 <>
+Be名無しさん<>sage<>04/06/12 00:16<> 結局、すごい人がすごいOSを作れるんじゃなくて、すごいOSを作った人がすごいんでしょ。 <>
+Be名無しさん<>sage<>04/06/12 00:30<> すごい人を作った人がすごい <>
+Be名無しさん<>sage<>04/06/12 00:52<> すごい人って大抵は独学だと思うがね <br> 学界の権威とかそういう象牙の塔の外での話だが <>
+Be名無しさん<><>04/06/12 00:53<> 白い巨塔age <>
+Be名無しさん<>sage<>04/06/12 01:00<> 結婚相手について知るまでは若村真由美に萌えてた漏れって・・・ <>
+Be名無しさん<>sage<>04/06/12 01:06<> <a href="../test/read.cgi/os/1081561384/550" target="_blank">&gt;&gt;550</a> <br> はっきり言って熟女趣味 <>
+Be名無しさん<>sage<>04/06/12 01:38<> <a href="../test/read.cgi/os/1081561384/551" target="_blank">&gt;&gt;551</a> <br> それは否定できないかも <br> 他にファンな人も同年代だし <br> 娘。とか見ても別に萌えないし <br>  <br> 熟女っつったって50代とか60代とかに萌えるわけでもないが <>
+Be名無しさん<><>04/06/12 02:22<> 青き巨根(AA略 <>
+kaworu<><>04/06/12 02:35<> <a href="../test/read.cgi/os/1081561384/448" target="_blank">&gt;&gt;448</a> <br> 半透明、カッコイイなぁ。 <br>  <br> cvsからソースをもってきて、FreeBSDでgmakeでmakeできませんでした。 <br>  <br> /obj/textfile.o -n -Ttext 0xA0000000 -e user_start -Bstatic -o <br> bin/SHELL.SVR ./obj/libc.o: In function `user_start': <br> /home/tmp/kaworu/kernel/mo/Mona/src/servers/shell/libc.cpp:66: undefined <br> reference to `__CTOR_LIST__' ./obj/libc.o: In function `user_end': <br> /home/tmp/kaworu/kernel/mo/Mona/src/servers/shell/libc.cpp:80: undefined <br> reference to `__DTOR_LIST__' gmake[3]: *** [bin/SHELL.SVR] エラー 1 <br> gmake[3]: Leaving directory <br> `/home/tmp/kaworu/kernel/mo/Mona/src/servers/shell' gmake[2]: *** [all]  <br> エラー 2 gmake[2]: Leaving directory <br> `/home/tmp/kaworu/kernel/mo/Mona/src/servers' gmake[1]: *** [all] エラー  <br> 2 gmake[1]: Leaving directory `/home/tmp/kaworu/kernel/mo/Mona/src' <br> gmake: *** [all] エラー 2 <br>  <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/12 12:15<> 0.2.0beta13をリリースしました。  <br>  <br> 今回も多数のアプリが追加されました。 <br> 作者の皆様本当にありがとうございます。 <br>  <br> 変更点は以下の通りです。  <br>  <br> ・GWABAが落ちなくなった (thanks 覆面さん) <br> ・Waba for Mona 0.1.8 baysideさん   <br> ・MONAmona shadowさん   <br> ・マスコットアプリ(KUKURI.APP)を追加   <br> ・PCIデバイス情報取得ツール(PCIINFO.EL2)を追加   <br> ・あっきぃさん作成のアプリをMTORZ.EL2を追加  <br>  <br> ダウンロードはこちらからお願いします。  <br> また不具合がありましたらご指摘いただければ幸いです。  <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Mona%2F%B3%AB%C8%AF%C8%C7  <br>  <br> なお、yossyさんのご尽力により本家サイトがリニューアルいたしました。 <br> http://mona.sourceforge.jp/ <br>  <br> お気づきの点がありましたらご指摘いただければ幸いです。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/12 12:16<> 回答が遅くなりました。申し訳ありません。 <br>  <br> <a href="../test/read.cgi/os/1081561384/470" target="_blank">&gt;&gt;470</a>さん <br> &gt; mthread_join <br> どのような動作を期待されているでしょうか? <br>  <br> <a href="../test/read.cgi/os/1081561384/554" target="_blank">&gt;&gt;554</a>さん <br> FreeBSD環境が手元になくて試せていないのですが <br> リンカスクリプトを直さなければいけないようですね。 <>
+kaworu<><>04/06/12 13:25<> <a href="../test/read.cgi/os/1081561384/556" target="_blank">&gt;&gt;556</a> <br> &gt;リンカスクリプト <br> なるほど。 <br>  <br> 確かに、FreeBSDとCygwinのldはオプションやリンカスクリプトで書けることが <br> 多少違ってたんだよなぁ。 <br>  <>
+Be名無しさん<>sage<>04/06/12 17:33<> RiactたんはBrainFuckに夢中のようです <>
+Be名無しさん<>sage<>04/06/12 17:40<> <a href="../test/read.cgi/os/1081561384/558" target="_blank">&gt;&gt;558</a> <br> 誰それ。 <br> ググったらハングルが出てきたし。 <>
+Be名無しさん<>sage<>04/06/12 18:30<> 風刺画 <br> ttp://www.lewisart.biz/pix/windows.jpg <>
+559<>sage<>04/06/12 20:14<> SourceFourgeをなんか勘違いしてないか・・・？ <>
+Be名無しさん<>sage<>04/06/12 20:38<> <a href="../test/read.cgi/os/1081561384/559" target="_blank">&gt;&gt;559</a> &gt;&gt;318-って遅かったね <>
+Be名無しさん<>sage<>04/06/12 21:10<> <a href="../test/read.cgi/os/1081561384/562" target="_blank">&gt;&gt;562</a> <br> 心遣いサントス <>
+Be名無しさん<>sage<>04/06/12 22:22<> <a href="../test/read.cgi/os/1081561384/556" target="_blank">&gt;&gt;556</a> <br> ログをよく見てください。 <br> 直すとか以前にリンカスクリプトが呼ばれていません。 <br> SHELL.SVRはYui_Nekoさん独自のMakefileのため、 <br> 他のものとはちょっと違うようです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/557" target="_blank">&gt;&gt;557</a> <br> LDのオプションに$(MONAELF_LDS)を追加するといけるはずです。 <br>  <br> あと$(INSTALL)を使うようになっていないのですが、 <br> FreeBSDにはcpに-uオプションがないのでinstallに失敗するようです。 <>
+Be名無しさん<>sage<>04/06/12 22:44<> <a href="../test/read.cgi/os/1081561384/556" target="_blank">&gt;&gt;556</a> <br> pthread_joinだっつってんだろ <>
+Be名無しさん<>sage<>04/06/12 23:08<> Tinoﾀﾝもちつけ(^-^; <br> ただのバグじゃん <>
+Be名無しさん<>sage<>04/06/12 23:18<> まああれだ <br> 痴脳は味方だったが仲間じゃなかったってことだろ <br> ttp://pc5.2ch.net/test/read.cgi/os/1085028667/476 <>
+Be名無しさん<>sage<>04/06/12 23:25<> 正直もったいない <br> 卑下が後を引き継いで拡張できるとも思えんし、GUIを一から作って <br> 今の水準に持っていくのは無理かと <br>  <br> これで卑下まで開発を停止したら・・・ <>
+Be名無しさん<>sage<>04/06/12 23:29<> MONAのよいところは継続性だから <br> ころころと開発停止で誰もメンテしないとなったら <br> 人も集まらないよ <>
+Be名無しさん<>sage<>04/06/12 23:30<> GUIなんてただのサードパーティーソフトじゃん <br> Xが開発停止してもLinuxの開発とは関係ないでしょ <>
+Be名無しさん<><>04/06/12 23:32<> MONA開発停止なの？ソースｷﾎﾞﾝﾇ <>
+さっきゅん<>sage<>04/06/12 23:34<> ちのたんおつかれー(´・ω・｀)つ <br> もまえら騒ぎ杉。MONA終了とか別に誰もゆってないやん(´・ω・｀) <>
+Be名無しさん<>sage<>04/06/12 23:39<> Wiki嫁 <br>  <br> <a href="../test/read.cgi/os/1081561384/570" target="_blank">&gt;&gt;570</a> <br> の言うことはもっともだが一般ユーザーはGUIを見てそのOSを判断するからね。 <br> 痴脳がGUIを実装しなければMonaのカーネルがこんなにポテンシャルを <br> 秘めているとは分からなかったと思うし。 <br>  <br> 正直おれはMonaはもっとしょぼい段階のOSだと思っていた <br>  <br> どうもマイナス要素しかわかないな・・・ <br>  <>
+Be名無しさん<>sage<>04/06/12 23:42<> 痴脳引退反対に1票 <>
+さっきゅん<>sage<>04/06/12 23:52<> ちのたんはちょっと疲れただけだよ。少し休ませてあげようよ <br> きっとそのうち今の数倍すごいものを作って戻ってくるよ(´・ω・｀) <br>  <br> <a href="../test/read.cgi/os/1081561384/573" target="_blank">&gt;&gt;573</a> <br> MONAがおれぺこより先に開発終了するわけないだろー <>
+Be名無しさん<>sage<>04/06/12 23:55<> まぁ、一応コピペだ。 <br>  <br>  <br> &gt;私が懸念しているのは、MonaGUIの仕組みがひげぽんさんにもブラックボックスになっている現状です。 <br> &gt;これは極めてまずいです。 <br> &gt;情報提供で解決するようなことよりもっと根が深いと思いました。やはりMonaGUIは破棄して <br> &gt;ひげぽんさんがご自分で把握できるものを再構築しないとまずいと再認識しました。 <br> &gt;0.2.0リリース後、私はMonaから手を引いて、MonaGUIは破棄しましょう！ -- Tino 2004-06-12 (土) 22:40:53  <br> &gt;私はちょっと調子に乗って遊びすぎてしまったようです。 <br> &gt;もともと単なる思い付きのお遊びで、ここまで作りこむつもりじゃなかったというのが正直なところです。 <br> &gt;他者製のブラックボックスとして、あまりに巨大になり過ぎたようです。 <br> &gt;そもそも私みたいにどうすればどうなるとか分かってやっていたら勉強にも何にもならないので、 <br> &gt;Monaの本来のスタンスであるひげぽんさんが勉強しながら実装するということから外れてしまいます。 <br> &gt;そのことは前から気になっていたのですが、 <br> &gt;やはりこのままでは取り返しがつかないことになってしまいます。 -- Tino 2004-06-12 (土) 23:00:54  <>
+Be名無しさん<>sage<>04/06/12 23:56<> <a href="../test/read.cgi/os/1081561384/573" target="_blank">&gt;&gt;573</a> <br> 私もスクリーンショット見て、_まるで_ぐっと開発が進んだかのように感じた。 <br> 実際にはGUIはOSがなくてもうごくのにね。 <>
+Be名無しさん<>sage<>04/06/12 23:57<> <a href="../test/read.cgi/os/1081561384/577" target="_blank">&gt;&gt;577</a> <br> 逆！逆！ <>
+Be名無しさん<>sage<>04/06/12 23:58<> GUIなんて飾りです <br> エロい人にはそれがわからんのです <>
+Be名無しさん<>sage<>04/06/13 00:02<> まぁ・・・・ <br>  <br>  <br> 転機ってやつだ。 <>
+Be名無しさん<>sage<>04/06/13 00:04<> &gt; そもそも私みたいにどうすればどうなるとか分かってやっていたら <br> （・∀・）王者の貫禄ｶｺｲｲ <>
+Be名無しさん<>sage<>04/06/13 00:06<> <a href="../test/read.cgi/os/1081561384/573" target="_blank">&gt;&gt;573</a> <br> OSとしてはまだなんちゃんてOSの段階じゃないかな。 <br> GUIを載せるだけならMS-DOSでもできたわけで。 <br> まだ、卑下がGUIに手を出せる段階じゃないから、痴脳引退はまだ <br> 時期が早いと思うけど。ある程度、大掛かりなサブシステムがないと、 <br> カーネル側のバグ出しや仕様策定も進まないしね。 <>
+Be名無しさん<>sage<>04/06/13 00:09<> MonaGUIが無くなる理由は無い <br> あるのはMonaGUIにこだわらない理由だ <>
+Be名無しさん<>sage<>04/06/13 00:09<> 確かにGUIは虫出しに役に立つかも知れんな。 <>
+Be名無しさん<>sage<>04/06/13 00:15<> <a href="../test/read.cgi/os/1081561384/578" target="_blank">&gt;&gt;578</a> <br> ああ、そういう見方もあるな。それは <br>   GUIはOSがなくても動く -&gt; GUIがあることはOSの開発が進んだことを意味しない(のに...)。 <br> という話。それに私は(GUIをカーネルに含むべきではないという意見は持つが)、 <br> 「OSはGUIなしでも動く」とは必ずしも思わない。 <br>  <br> 「OSがGUIがないとだめだと主張するなら、GUIがないとうごかないのだろう」と思う。 <br> ひげぽんさんが MonaというOSはMonaGUIを含むと思うなら、現状はMonaの危機 <br> だし、そうでないなら問題ないと思う。(たぶんそうでないのよね? 未確認) <br>  <br> それと、573様の「一般ユーザーはGUIを見てそのOSを判断する」という御意見とを <br> あわせて考えれば、tinoさんの「MonaGUIはやりすぎた」というお考えは納得できるよ。 <br> MonaGUIはMonaではない(*上記未確認)のにそうであるかのように認識されてる。と。 <br> だから、MonaGUIの開発停止をMonaの開発停止と誤認する方々も現にいらっしゃる。 <br>  <br> ひげぽんさんが、スタンスを明確に表明すべきじゃないかな。 <>
+Be名無しさん<>sage<>04/06/13 00:17<> すべてはひげに委ねられた。 <>
+Be名無しさん<>sage<>04/06/13 00:18<> サイは投げられた <>
+Be名無しさん<>sage<>04/06/13 00:21<> alea iacta est <>
+Be名無しさん<>sage<>04/06/13 00:27<> 只今、ひげの脳内でヘリ軍団がワルキューレの騎行を爆音で流しつつナパームでベトナムを爆撃しております。 <br> サーフィンをする余裕が出来るまでしばらくお待ちください。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/13 00:54<> Wikiと内容がかぶってしまいますが。 <br>  <br> Tinoさんの意向は事前にお聞きしておりました。 <br> Tinoさんが手を引かれるのは残念ですが、ここまでMonaを成長させてくださって本当に感謝しております。 <br> 今後はまったりと非常勤アドバイザーとして活躍していただけるとうれしいです。 <br> 今までありがとうございました。 <br> 0.2.0リリースまではしばらくお付き合いいただきますが・・・ <br>  <br> という感じです。 <br>  <br> MonaGUI==Monaとは正直思っていません。 <br>  <br> MonaGUIはMonaの代表的なキラーアプリであり、はじめてMonaで本格的に <br> 実装されたアプリケーションです。(コードの行数から考えても) <br>  <br> またMonaGUIがやりすぎとは感じていません。 <br> もし万が一Tinoさんが継続して今後もMonaGUIをメンテナンスすることがあれば <br> 事実上のスタンダードとなっていたと思いますし、Monaの可能性を100%以上 <br> 引き出してくれていたと思います。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/13 00:54<> 今後についてですが <br>  <br> ・MonaGUIの破棄は当分しない <br> &nbsp;&nbsp;私がGUIを実装する予定がない、現時点でMonaGUIを超えるMonaでのGUI実装は現われていないため。 <br>  <br> ・MonaGUIの拡張について <br> &nbsp;&nbsp;Tinoさんと相談しながら今後のことは検討する。優秀な後継者が見つかったりしたらうれしいかも。 <br>  <br> ・Monaの開発について <br> &nbsp;&nbsp;今後も今までと変わらず開発は続けていきますので皆様今後ともよろしくお願いいたしますm(__)m <>
+さっきゅん<>sage<>04/06/13 00:59<> <a href="../test/read.cgi/os/1081561384/592" target="_blank">&gt;&gt;592</a> <br> ｶﾞﾝｶﾞﾚ <>
+さっきゅん<>sage<>04/06/13 00:59<> また自己レス orz <>
+Be名無しさん<>sage<>04/06/13 01:00<> <a href="../test/read.cgi/os/1081561384/594" target="_blank">&gt;&gt;594</a> <br> ｨ㌔ <>
+Be名無しさん<>sage<>04/06/13 01:05<> <a href="../test/read.cgi/os/1081561384/591" target="_blank">&gt;&gt;591</a> <br> 勘違いする香具師を少なくするという意味で、 <br> 現状のMonaGUIはTinoGUIとでも改名した方がよいのでは？ <br> 下手にMonaGUIという名称だからMonaの標準GUIというフインキになるわけで。 <>
+Be名無しさん<>sage<>04/06/13 01:05<> あい。明確。いままで通り、がんばりましょう。 <>
+Be名無しさん<>sage<>04/06/13 01:06<> 正直、痴脳風船(MonaGUI)をもっともっともっと膨らませてﾎｽｲヨ！ <br> 今しぼませるのは、とってもとってもとっても惜しい！ <br>  <br>  <br> 逃げるなよ。 <>
+Be名無しさん<>sage<>04/06/13 01:08<> 旗幟鮮明に出来るようになっただけでも卑下は凄く成長したと思ふ <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/13 01:28<> お騒がせして申し訳ありません。 <br>  <br> まず最初に断っておきたいのは私のスタンスです。 <br> TinoGUIはあくまでGUIのサンプル、見本であって、 <br> 最初から本格的な実装にするつもりではありませんでした。 <br>  <br> Monaを巡っては、次はGUIという雰囲気があったので、 <br> 遊びで作ってみたという以上のものではありません。 <br> そのためPJに正式に参加することは自粛していました。 <br>  <br> 今でこそsfの方にも参加してCVSをいじっていますが、 <br> TinoGUIのアプリが増えてきたこともあって <br> 整合性を維持するための作業が必要となったため、 <br> 0.2.0までの期間限定ということで参加させていただきました。 <br>  <br> 当初は次はGUIという雰囲気があったこともあって、 <br> ひげぽんさんが開発に乗り出すかと思っていたのですが、 <br> 上で表明されておられるようにひげぽんさんはGUIに興味はなく、 <br> 最初から第三者に委任するつもりだったということもあり、 <br> 期間限定ですがある程度動くようにすることにしました。 <br>  <br> はっきり言ってTinoGUIはWindows Formsの劣化コピーでしかなく、 <br> かと言ってMSILが実行できるわけでもソース互換でもありません。 <br> 真面目にオリジナリティを追求するつもりであれば、 <br> その方針は到底容認できないものでしょう。 <br> これもとりあえず動くものを作ると割り切ったことの産物で、 <br> 私が真面目に設計していないということの裏返しでもあります。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/13 01:34<> その意味で、baysideさんがTinoGUIを見切って、 <br> 独自実装を開始されたことは非常に意義があると思います。 <br> ttp://waba.sourceforge.jp/cgi-bin/index.cgi?p=Waba%2FWDE <br>  <br> TinoGUIがおもちゃであることの証明だった <br> MSILが実行できるわけでもソース互換でもないという問題がクリアできる <br> 素晴らしい実装になるのではないかと期待しています。 <br> もちろんこれはベースが.NETではなくJavaという違いはありますが、 <br> ひげぽんさんがJavaに造詣が深いということからも、 <br> むしろ歓迎すべきことであると考えております。 <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/13 01:43<> 見本であるなら、参考にできるように資料を残すべきだという意見は当然あるかと思います。 <br> それは私も認識していましたので、最初は実装より資料をメインにするつもりだったのですが、 <br> 前述のように時期尚早だったということもありまして、 <br> とにかく実装を残すという方針に切り替えることにしました。 <br>  <br> 実装を進めるうちに容認できないような問題が多発することとなり、 <br> （長らく放置していた背面再描画がその1つです） <br> 新規機能の追加よりもそういう部分の穴埋めにシフトしていきました。 <br>  <br> 上記の背面再描画の問題は結構厄介な問題で、 <br> 当初の予定だったサーバー化を繰り上げることになり、 <br> TinoGUIの構造が一気に複雑化してブラックボックス度が拡大しました。 <br>  <br> 本来Mona-0.2.0のリリースは4月中の予定だったのが、 <br> TinoGUIのせいで遅れに遅れていまだリリースされていない状況になったのも <br> すべて私に責任があり、非常に大きな問題であると認識していました。 <br>  <br> そのため最低限の実装は何かということを見直す結果となり、 <br> リリースのためにも早急に実装することを優先しているのが現状です。 <br> とりあえず残った課題は以下の通りです。 <br>  <br> 1. フォーカス管理 <br> 2. キーボードサポート <br> 3. GUI Shellの動きをまともにする <br> (現状はOLDSHELL.SVRからの擬似リダイレクトでしかない) <>
+Tino </b>◆sMrLqQHxo6 <b><>sage<>04/06/13 01:51<> このように目先のことだけを考えて屋上屋を重ねたのが現状で、 <br> 見本としてもどこまで使えるのか疑問に思えるものになってしまいました。 <br> 改めてきちんとしたGUIを作るということであれば、 <br> TinoGUIのようなものは参考にしない方が無難です。 <br>  <br> もし将来どなたかがGUIの実装に乗り出されるとき、 <br> TinoGUIが遭遇したのと同種の問題に遭遇されることがあれば、 <br> TinoGUIではどうやって誤魔化したかということは説明します。 <br> もっともそんなに大したことをやっているわけでもないので、 <br> ある程度の人であれば自力で解決できるようなレベルのことでしょう。 <br>  <br> 以上のようなこともありまして、 <br> ・現状ではどこで割り切ってまとめるか <br> ということだけに重点を置いています。 <br> すべてが妥協の産物です。 <br>  <br> このような状況が長引くと様々な弊害が発生することが予想されるため、 <br> そろそろはっきりさせる時期に来たと判断いたしました。 <br>  <br> 現状のTinoGUIを取り巻く状況はこのようになっております。 <br> 以上、よろしくご理解の程をよろしくお願いいたします。 <>
+Be名無しさん<>sage<>04/06/13 01:53<> がんがれー（とあまりにも当り障りのない応援 <>
+</b> ◆54q7Px4hDk <b><>sage<>04/06/13 02:05<> GUI Shellの改善は期待しています。 <br> (打ち間違えることが多いので...) <br>  <br> あとこれは全く私個人の意見なのですが、 <br> それぞれ本業があれば体調気分もあるので、 <br> 今回のケースに限らず遅れが出てくるのは <br> どうしても仕方がないことだと思います。 <br>  <br> またWDEが新たに登場したように <br> TinoGUIと他のGUIが並立する状況も十分ありうると思います。 <br> そうして他のGUIがTinoGUIに取って代わるまでの間、 <br> monaのGUIとしての役割を果たすこともまたTinoGUIの使命となりうるのではないか、と思います。 <br> そういう意味では、ここで開発をストップするのもまた有意義であると思います。 <br> 一つの通過点、一つの目標として。 <br>  <br> 日本語の扱いなど他のOSもものとまた違った先進的な側面も見ることが出来ました。 <br> これらを見て、TinoGUIを応援する人も多いと思います。 <br> OSASKのGUIGUI00が最終的なGUIではないように、TinoGUIも生き、独自の発展をする意義は有ると思います。 <br> そのあたりはコミュニティ次第だとは思いますが。 <br>  <br> 支離滅裂な書き込みになってしまい失礼しました。 <>
+Be名無しさん<><>04/06/13 02:11<> <a href="../test/read.cgi/os/1081561384/576" target="_blank">&gt;&gt;576</a> <br> まぁ、あれだ。 <br> Linuxだって本来はカーネル部分のみであって、GUI部分はUNIXからの移植ベースにすぎない。 <br> LinusがGUI部分のコードを知っている訳ではなかろう。(解析する事態になれば出来るんだろうが。) <br> MONAだってカーネル部分のみは把握するというスタンスもありではないかな。 <>
+Be名無しさん<>sage<>04/06/13 02:35<> つーかTinoGUIって基本的なことしかしてないでしょ <br> 興味あるないとか言ってるような高度なレベルのことは何もしてない <br> その状況で目の前にある物に目をつぶるってのはどーかな <>
+Be名無しさん<>sage<>04/06/13 13:45<> <a href="../test/read.cgi/os/1081561384/564" target="_blank">&gt;&gt;564</a> <br> 対処されたっぽい <>
+Be名無しさん<>sage<>04/06/13 14:01<> FreeBSDでコンパイルでけた <>
+kaworu<><>04/06/13 14:33<> <a href="../test/read.cgi/os/1081561384/608" target="_blank">&gt;&gt;608</a> <br> さんくす。 <br> FreeBSD-5.2.1-RELEASE,GCC 3.3.3でgmakeできました。 <>
+Be名無しさん<>sage<>04/06/13 17:38<> WDEがアツい!! <>
+Be名無しさん<>sage<>04/06/13 17:59<> 湾岸全盛期キター（・∀・）ー <>
+Be名無しさん<>sage<>04/06/13 18:02<> 痴脳: 過去の人 <br> 湾岸: 時の人 <>
+Be名無しさん<>sage<>04/06/13 18:15<> 否定するつもりはないが冷静な意見 <br>  <br> TinoGUIで出来てWDEで出来ないことは非常にたくさんある(逆もあるけど) <br>  <br> 痴脳と湾岸では実力・経験どれをとっても神と平民の差がある。 <br> Waba側の問題を自分で解決できずTinoGUIのせいにした人いたよね? <br> 実力不足かと。そもそもGUIの何たるかを分かっていなそう <br>  <br> WDEは全く新しくない <br>  <br> WDEがMonaで大活躍してもそれは他の和製OSに対してアドバンテージにならない <br> なぜならMonaで動くならOSASKでも動くだろうし。 <br>  <br> TinoGUIで実現されていたBeOSを髣髴とさせるエフェクトや透明処理、非矩形ウィンドウ等は実現できない <>
+Be名無しさん<>sage<>04/06/13 18:21<> たしかに痴脳のやりたいことはよく分からないね <br>  <br> 湾岸を後継みたいな書き方をするのは非常にマイナスだと思う <br> どう考えても力不足でしょ? <>
+Be名無しさん<>sage<>04/06/13 18:29<> それ以前に髭がついて行けていない予感。 <br> 今後のMonaのアプリの作成はどうなるんだろうね。 <>
+Be名無しさん<>sage<>04/06/13 18:45<> OSASKでもNWSOSでもPEKOEでもWabaデスクトップが動いたら面白いじゃん。 <br> そういうのわかんないのかなー。 <br> 当たり前だけど中間言語がネイティブにかなうわけないので、 <br> 比較するのが間違ってるよ。MonaはネタOSなんでしょ？ <>
+Be名無しさん<><>04/06/13 18:49<> <a href="../test/read.cgi/os/1081561384/616" target="_blank">&gt;&gt;616</a> <br> それを面白いと捉えるのは、今のところおまいだけ。 <br>  <>
+Be名無しさん<>sage<>04/06/13 18:53<> <a href="../test/read.cgi/os/1081561384/616" target="_blank">&gt;&gt;616</a> <br> おれも少し面白い。 <>
+Be名無しさん<>sage<>04/06/13 19:00<> GUIは一種類って限定しなくてもいいじゃん。 <br> Wabaデスクトップ環境ってのはどこでも共通に使えるとしたら面白いじゃん。 <br> 選択肢も増えるし、面白いと思うよ。 <>
+Be名無しさん<>sage<>04/06/13 19:03<> <a href="../test/read.cgi/os/1081561384/616" target="_blank">&gt;&gt;616</a> <br> 人的リソースが分散しないし、和製OSコミュニティー間に連帯感が出来てイイかもね。 <br> Wabaでは物足りない人は、Monoでも移植したら面白くなるのかねぇ．．． <>
+Be名無しさん<>sage<>04/06/13 19:08<> <a href="../test/read.cgi/os/1081561384/613" target="_blank">&gt;&gt;613</a> <br> &gt;痴脳と湾岸では実力・経験どれをとっても神と平民の差がある。 <br>  <br> おまい何で痴脳の経験がわかるのだ？ <>
+Be名無しさん<>sage<>04/06/13 19:10<> ていうか、<a href="../test/read.cgi/os/1081561384/613" target="_blank">&gt;&gt;613</a> <a href="../test/read.cgi/os/1081561384/620" target="_blank">&gt;&gt;620</a> は痴脳 <>
+Be名無しさん<>sage<>04/06/13 19:12<> <a href="../test/read.cgi/os/1081561384/622" target="_blank">&gt;&gt;622</a> <br> プ <>
+Be名無しさん<>sage<>04/06/13 19:14<> <a href="../test/read.cgi/os/1081561384/623" target="_blank">&gt;&gt;623</a> <br> 違うのなら、職場ぐるみかよ！ <br> ﾌﾟﾌﾟ <>
+Be名無しさん<>sage<>04/06/13 19:16<> <a href="../test/read.cgi/os/1081561384/624" target="_blank">&gt;&gt;624</a> <br> ん？ <>
+Be名無しさん<>sage<>04/06/13 19:46<> 痴脳経験 <br> ttp://mona.sourceforge.jp/dynamic/pukiwiki/pukiwiki/pukiwiki.php?Tino%2F%B7%D0%B8%B3%C3%CC <>
+Be名無しさん<>sage<>04/06/13 20:56<> 非矩形ウィンドウキター（・∀・）ー <>
+Be名無しさん<>sage<>04/06/13 22:05<> 誰だ? 湾岸を甘く見てた香具師は? (ﾌﾟﾌﾟ <>
+Be名無しさん<>sage<>04/06/14 14:45<> X Window System <>
+Be名無しさん<>sage<>04/06/14 20:31<> 透過ウィンドウキター（・∀・）ー <>
+Be名無しさん<>sage<>04/06/14 20:43<> あっさり2日でTinoGUIを追い越したな <br> すげー勢いだ <br> まさに神 <br>  <br> これで完全に流れは決まったな <br> 劇的な世代交代だった <>
+Be名無しさん<>sage<>04/06/14 20:49<> 今回の流れを見てると、 <br> 今後独自にGUIを作るとすれば <br> 非矩形ウィンドウと半透明ウィンドウは <br> 必須の要素になったって感じだな。 <>
+Be名無しさん<>sage<>04/06/14 20:55<> 確かにこういうのが沢山出てくると備えてないと見劣りするようにはなってくるね... <br>  <br> TinoGUIとはまた方向性の違うものだから後継にはならないと捉えているのだが <br>  <br> #できれば別なGUI実装がネイティブで出てきたらいいんだけどねえ <>
+Be名無しさん<>sage<>04/06/14 20:56<> C++が時代遅れだってこと <>
+Be名無しさん<>sage<>04/06/14 21:00<> 湾岸がJavaの簡潔さを主張してるけど <br> 確かにTinoGUIの変態的なコードは書きたくない <>
+Be名無しさん<>sage<>04/06/14 21:08<> <a href="../test/read.cgi/os/1081561384/633" target="_blank">&gt;&gt;633</a> <br> やってみれば？ <>
+Be名無しさん<>sage<>04/06/14 21:14<> 和製OS統一に乗り出したのは湾岸が初めてだったからな。 <br> 小さなシマで小競り合いしてもたかが知れてる。 <br> 格が違うって感じ。 <>
+Be名無しさん<>sage<>04/06/14 21:16<> Java &gt; C++ &gt; .NET = VB か <>
+Be名無しさん<>sage<>04/06/14 21:17<> 最下層の.NETの中でも更に最下層のまなげを模倣した痴脳の負けだな <>
+Be名無しさん<>sage<>04/06/14 21:18<> <a href="../test/read.cgi/os/1081561384/637" target="_blank">&gt;&gt;637</a> <br> 褒め殺しですか。 <br>  <br> 普通のオプソの人だよ。今までの凄まじい囲い込みが異常な幼稚だっただけ。 <>
+Be名無しさん<>sage<>04/06/14 21:19<> なんかいつの間にか湾岸ﾏﾝｾｰｽﾚになってるし... <br> しかもオーナーの卑下を差し置いて（ｗ <>
+Be名無しさん<>sage<>04/06/14 21:23<> <a href="../test/read.cgi/os/1081561384/640" target="_blank">&gt;&gt;640</a> <br> いや、そうでもない。 <br> 湾岸はKや卑下の思惑とは別のレベルで独自に動いて <br> 着実に成果を伸ばしている。 <br> それがここに来て臨界を突破しつつあるだけの話。 <>
+Be名無しさん<>sage<>04/06/14 21:31<> <a href="../test/read.cgi/os/1081561384/633" target="_blank">&gt;&gt;633</a> <br> Javaとネイティブを切り分けるのは時代遅れ。 <br> 今はgcjでコンパイルしてネイティブに出来るぞ。 <br> BoehmGCとlibgcjが移植できればの話だが。 <br>  <br> <a href="../test/read.cgi/os/1081561384/642" target="_blank">&gt;&gt;642</a> <br> 本当の臨界突破はWABAにJITを組み込んだときかもしれないと思う。 <br> shujitとか流用できそうな実装は既にあるわけだから。 <>
+Be名無しさん<>sage<>04/06/14 21:40<> Monaって土台にするにはうってつけの構造だよな <br> カーネル以外は設定ファイルだけで簡単に差し替えられる <br> 俺GUIとか作るにはうってつけ <br> 卑下がGUIに興味がないから上位レイヤは勝手にどうぞってことなんだろうけど <>
+Be名無しさん<>sage<>04/06/14 21:49<> <a href="../test/read.cgi/os/1081561384/644" target="_blank">&gt;&gt;644</a> <br> 輪姦すのにはもってこいってことか(ﾌﾟ <>
+Be名無しさん<>sage<>04/06/14 21:50<> ん～、まだWDEは実用的ではないぞよ。 <br> 当然これからの改良が問題さ。 <br> bayside自身も言っているけど、現時点で描画処理の遅さは致命的というか、死亡って感じか。 <br> まぁ本人もテスト的なもので半透明Windowsを作成したって話しだし、ゆっくりオチるかなと。 <br>  <br> Tinoを追い越したってのは、まぁ上の名無しの勘違いってことで、ひとまずゆっくりオチっとけ。 <>
+Be名無しさん<>sage<>04/06/14 21:52<> 何はともあれ、今回の件で賑やかになることはあれ、盛り下がる(?)様子でな <br> いことは幸いなことだ。 <br>  <>
+Be名無しさん<>sage<>04/06/14 21:53<> <a href="../test/read.cgi/os/1081561384/644" target="_blank">&gt;&gt;644</a> <br> 設定ファイルでシェルやGUIを差し替えられるのなんて当り前だろ。 <br> DOSでもできる。 <br>  <br> MonaはC++でカーネル作ったのが失敗だったのだろうね。コレステロールが <br> 高くていけない。 <>
+Be名無しさん<>sage<>04/06/14 21:55<> <a href="../test/read.cgi/os/1081561384/648" target="_blank">&gt;&gt;648</a> <br> &gt; MonaはC++でカーネル作ったのが&lt;snip&gt; <br> 私は、そのチャレンジっぷりを買っている。 <br> 普通OS屋なら避けそうなところをやってしまう勢いが好きだ。 <br>  <>
+Be名無しさん<>sage<>04/06/14 21:56<> <a href="../test/read.cgi/os/1081561384/648" target="_blank">&gt;&gt;648</a> <br> ＞MonaはC++でカーネル作ったのが失敗だったのだろうね <br> これが売りなんだけど <>
+Be名無しさん<>sage<>04/06/14 21:58<> <a href="../test/read.cgi/os/1081561384/648" target="_blank">&gt;&gt;648</a> <br> ＞設定ファイルでシェルやGUIを差し替えられるのなんて当り前だろ。 <br> ＞DOSでもできる。 <br> 和製OSが比較対象なわけだが。 <br>  <br> ＞MonaはC++でカーネル作ったのが失敗だったのだろうね。コレステロールが <br> ＞高くていけない。 <br> カーネルはあんま関係ないような。 <br> ユーザライブラリをC++にしたことがBeOSの轍を踏みかねんというのなら分かるが。 <>
+Be名無しさん<>sage<>04/06/14 21:58<> 湾岸氏のように、OSASKもMWSOSもMonaもPekoeもサポートするソフトの <br> 作成が和製OS界隈でこれからの流行りになるといいね。 <>
+Be名無しさん<>sage<>04/06/14 21:58<> そもそも設定ファイルでいじれるようにしたの卑下じゃなくて痴脳だろ <>
+Be名無しさん<>sage<>04/06/14 22:04<> <a href="../test/read.cgi/os/1081561384/652" target="_blank">&gt;&gt;652</a> ネタは、そういえばAK氏もやってるね。彼も神候補かw <br>  <>
+Be名無しさん<>sage<>04/06/14 22:04<> <a href="../test/read.cgi/os/1081561384/653" target="_blank">&gt;&gt;653</a> <br> なんでそんなコアな部分まで痴脳がいじれたのか気になる。 <br> Monaを私物化しようと企んでたんじゃないかと勘繰りたくなるな。 <>
+633<>sage<>04/06/14 22:06<> <a href="../test/read.cgi/os/1081561384/643" target="_blank">&gt;&gt;643</a> <br> まあWabaをネイティブにコンパイルしてしまったら <br> そもそもWabaの意味がないような気もするがｗ <br>  <br> MacOSXにX11乗っけるようなそんな感覚のような物のような気がするんだが違うかな <>
+Be名無しさん<>sage<>04/06/14 22:08<> <a href="../test/read.cgi/os/1081561384/655" target="_blank">&gt;&gt;655</a> <br> 痴脳の意図は知らんが結果はむしろ逆だろ。 <br> こうやって誰でも輪姦せるOSに仕上がったんだから（ｗ <>
+Be名無しさん<>sage<>04/06/14 22:11<> <a href="../test/read.cgi/os/1081561384/656" target="_blank">&gt;&gt;656</a> <br> 私は、私達オープンソース世界の住人にとっては、バイナリの流用可能性は必 <br> ずしも必須の機能ではないと思う。言語とライブラリの統一があればいい。 <br>  <>
+Be名無しさん<>sage<>04/06/14 22:13<> 658=heso <>
+Be名無しさん<>sage<>04/06/14 22:15<> <a href="../test/read.cgi/os/1081561384/658" target="_blank">&gt;&gt;658</a> <br> gcjは.classをネイティブバイナリにコンパイルできる。 <br> だからバイトコードはバイナリというより単なる中間言語でしかないぞ。 <>
+Be名無しさん<>sage<>04/06/14 22:16<> <a href="../test/read.cgi/os/1081561384/655" target="_blank">&gt;&gt;655</a> <br> &gt; Monaを私物化しようと企んでたんじゃないかと勘繰りたくなるな。 <br> もし結果がそうなっていても企みではないでしょう。 <br> 彼はそうなってしまうことを危惧したからこそ、中断を決意したのだもの。 <br>  <br> でも確かに、今Monaは小さく/かよわいから、陵辱しまくれる。それは魅力ではあるよね。 <>
+Be名無しさん<>sage<>04/06/14 22:17<> <a href="../test/read.cgi/os/1081561384/656" target="_blank">&gt;&gt;656</a> <br> TinoGUIがMonaGUIを名乗り続けることができたのならそうかもしれん。 <br> だが今回の騒動でTinoGUIすら単なる俺GUIだったってことが明らかになった筈。 <>
+Be名無しさん<>sage<>04/06/14 22:18<> &gt;今Monaは小さく/かよわい <br> 　　↓ <br> 今Monaは小さく/かよわく/ぽっちゃり系 <>
+Be名無しさん<>sage<>04/06/14 22:21<> <a href="../test/read.cgi/os/1081561384/661" target="_blank">&gt;&gt;661</a> <a href="../test/read.cgi/os/1081561384/663" target="_blank">&gt;&gt;663</a> <br> 趣味いいな（ｗ <>
+Be名無しさん<>sage<>04/06/14 22:22<> <a href="../test/read.cgi/os/1081561384/660" target="_blank">&gt;&gt;660</a> <br> そもそもgcjってソース読ませても一回バイトコードにしてからネイティブにしてるでしょ。 <br> それ以前にgcc自体、どんな言語もgcc独自の中間コードにしてから、 <br> 各CPU用のバイナリを吐き出してる。 <br> その仕組みのお陰で基地外みたいな数のCPUがサポートできたが、 <br> 個別に見ると最適化の面では永遠にイマイチというジレンマがある。 <>
+Be名無しさん<>sage<>04/06/14 22:26<> <a href="../test/read.cgi/os/1081561384/662" target="_blank">&gt;&gt;662</a> <br> 最初っから俺GUIだったじゃん <>
+Be名無しさん<>sage<>04/06/14 22:26<> <a href="../test/read.cgi/os/1081561384/652" target="_blank">&gt;&gt;652</a> <br> （ ´ -｀）氏がNoNameの開発中止を決意したミドルウェア論争もまさにそれだったな。 <br> 参考になるから読んどいた方がいい。しかもMonaスレだ。(藁 <br> ttp://pc5.2ch.net/test/read.cgi/os/1066957498/ <>
+Be名無しさん<>sage<>04/06/14 22:27<> <a href="../test/read.cgi/os/1081561384/666" target="_blank">&gt;&gt;666</a> <br> だったら尚更無問題 <br> 焦点は↓なんだから <br> ＞MacOSXにX11乗っけるようなそんな感覚のような物のような気がするんだが違うかな <>
+Be名無しさん<>sage<>04/06/14 22:29<> <a href="../test/read.cgi/os/1081561384/668" target="_blank">&gt;&gt;668</a> <br> それ以前にMona自体からして卑下の俺OS。 <>
+Be名無しさん<>sage<>04/06/14 22:34<> <a href="../test/read.cgi/os/1081561384/669" target="_blank">&gt;&gt;669</a> <br> 和製OSの中では群を抜いた雑種だと思うがどうよ? <br> 設定ファイルを他人が組み込んだったのがまさにそれでは? <br> 他の和製OSの純血度は比べ物にならんぞ? <br> 作者自身が混血を絶対拒否だからな... <>
+Be名無しさん<>sage<>04/06/14 22:37<> <a href="../test/read.cgi/os/1081561384/670" target="_blank">&gt;&gt;670</a> <br> 雑種って悪いことなのかなぁ？ <br> 七誌集団の2ch発らしくてむしろ好感&hearts; <>
+Be名無しさん<>sage<>04/06/14 22:38<> 2chでスタートしたし、最初七誌に助けられまくっていたし、 <br> ってか名無しが頑張った。もちひげぽんも頑張った。 <>
+Be名無しさん<>sage<>04/06/14 22:39<> <a href="../test/read.cgi/os/1081561384/667" target="_blank">&gt;&gt;667</a> <br> あんまり参考にならん。前から知ってたことばかりだ。 <>
+Be名無しさん<>sage<>04/06/14 22:41<> <a href="../test/read.cgi/os/1081561384/673" target="_blank">&gt;&gt;673</a> <br> 同じことが書いてあるから読んでみそってことだからそれで無問題（ｗ <>
+Be名無しさん<>sage<>04/06/14 22:54<> やっと沈静化したな。 <br> 喪前らも漏GUI作れ！！ <>
+Be名無しさん<>sage<>04/06/14 23:00<> <a href="../test/read.cgi/os/1081561384/675" target="_blank">&gt;&gt;675</a> <br> OSASKもMWSOSもMonaもPekoeもサポートするやつね。 <>
+Be名無しさん<>sage<>04/06/14 23:07<> 名前はMorphyGUIで頼む <>
+Be名無しさん<>sage<>04/06/14 23:16<> 和製GUI <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/06/14 23:23<> PicoGUIのソースとmonaのAPIリスト並べて睨めっこするのが良いよ。 <br> マジおすすめ。 <>
+Be名無しさん<>sage<>04/06/14 23:29<> <a href="../test/read.cgi/os/1081561384/679" target="_blank">&gt;&gt;679</a> <br> NWSOSに移植汁! <>
+Be名無しさん<>sage<>04/06/14 23:31<> NanoGUIってのもあるな <>
+Be名無しさん<>sage<>04/06/14 23:39<> 洋物の移植も悪くないけど和製OSには和製GUIっていきたいよね <>
+Be名無しさん<>sage<>04/06/14 23:42<> MGLもあるよ。参考に <>
+Be名無しさん<>sage<>04/06/14 23:45<> 式神 <>
+Be名無しさん<>sage<>04/06/14 23:47<> K氏のオレ圧縮ソフトのルーチンを切り出してライブラリ化と <br> それ使ったコマンドの移植しまくりとかしたら神か。 <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/06/14 23:47<> <a href="../test/read.cgi/os/1081561384/680" target="_blank">&gt;&gt;680</a> <br> 今度APIでマウスの割り込みにハンドラ引っ掛けるとどうなるか試してみます。 <br> 多分マイクロカーネル化でNWSOSのGUIも現状から少し変わると思うんですが。 <br>  <br> <a href="../test/read.cgi/os/1081561384/681" target="_blank">&gt;&gt;681</a> <br> 初めて知りますた。 <br>  <br> MGLとPicoGUI辺りの移植に必要な作業量は結構少ないと思うんで <br> 興味ある人はマジで見てみると良いかと。 <br>  <br> <a href="../test/read.cgi/os/1081561384/682" target="_blank">&gt;&gt;682</a> <br> 　　　(⌒ヾ从⌒)  <br> 　　 γ∴　･;;;;;;･ヽ  <br> 　　彡∴,,(;;;;;●;;)  <br> 　　 ゞ∴ (,,ﾟДﾟ) <br> 　　 |∴(ノ　　ミ <br> 　　/∴∵　　 |  <br> 　 /,,,人,,,,,,,,,,,,ﾉ  <br> 　　　　∪ ∪  <>
+Be名無しさん<>sage<>04/06/14 23:50<> <a href="../test/read.cgi/os/1081561384/685" target="_blank">&gt;&gt;685</a> <br> それ言ったらMonaなんか出来合いの糞遅いbz2なんか使って目も当てられないわけだが。 <>
+Be名無しさん<>sage<>04/06/14 23:53<> <a href="../test/read.cgi/os/1081561384/687" target="_blank">&gt;&gt;687</a> <br> あれはひどい。T脳マジやばい、何考えてるのだと思ってしまう点の一つだ。 <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/06/14 23:54<> 圧縮に関しては欲しい人が自分でtek版作りゃ良いかと。 <br> 俺とかの並以下の技術の人でも一時間あれば出来る気が。 <br> bz2だってELFの生イメージからの起動をこしらえた上でユーザ側で作ってるんだし。 <>
+Be名無しさん<>sage<>04/06/14 23:54<> <a href="../test/read.cgi/os/1081561384/684" target="_blank">&gt;&gt;684</a> <br> 知らない人にはギャグに見えるからスルーされるのかも。 <br> 実在するフレームバッファの和製GUI。 <br> http://www.sikigami.com/ <br>  <br> ただこれって犬糞べったりで移植は厳しいって感じだが。 <>
+Be名無しさん<>sage<>04/06/15 00:02<> <a href="../test/read.cgi/os/1081561384/690" target="_blank">&gt;&gt;690</a> <br> さてはダウンロードしてないでしょ? コードをみると、X上でうごいてるし、 <br> gnomeの一種だし、Linux とは特に密な関係にないことがわかると思うよ。 <br>  <>
+Be名無しさん<>sage<>04/06/15 00:02<> それにしてもわたもちも来る時期が悪かったな。 <br> 今だったらJavaで骨組み作って適当な和製OSに載せただけで神になれたものを、 <br> わざわざカーネルから作ろうとしてパクり呼ばわりされちゃったんだから同情する。 <>
+Be名無しさん<>sage<>04/06/15 00:03<> <a href="../test/read.cgi/os/1081561384/691" target="_blank">&gt;&gt;691</a> <br> GTK+のフレームバッファ版でも動くように作られているわけですが。 <>
+Be名無しさん<>sage<>04/06/15 00:04<> &gt; 今だったらJavaで骨組み作って適当な和製OSに載せただけで&lt;snip&gt; <br> ずいぶんとたいそうな「だけ」だな。 <br>  <>
+Be名無しさん<>sage<>04/06/15 00:06<> <a href="../test/read.cgi/os/1081561384/694" target="_blank">&gt;&gt;694</a> <br> カーネルから全部作ることと比べてるわけだが <>
+Be名無しさん<>sage<>04/06/15 00:10<> <a href="../test/read.cgi/os/1081561384/693" target="_blank">&gt;&gt;693</a> <br> あら、いつのまに。俺、かつて激しく挫折したのに.... <br> たしかに Gnomeなので、みんなGTK+アプリだから、大方は動きそうではあるけど、 <br> IMはどうなったの? 布目はXIMのとQtのとしかみたことなかったので.... <br> と、いってないで最新版をダウソするといいのかな。みてくる。 <br>  <>
+Be名無しさん<>sage<>04/06/15 00:50<> Gnomeはお腹いっぱい。Wava/WDEみたいなシンプル路線がいい。 <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/06/15 01:05<> わたもちさんというのは以前このスレでWabaの話をしていた人だったかな。 <br> ベイサイドさんのWabaで少し気になっている事があって、 <br> 一つはどこまでベースから離れるのかって点。 <br> Wabaは和製連中に他のVMを載せる土台が出来るまでの <br> 繋ぎと思ってるんだけど、ベイサイドさんは.wrpを圧縮して使う方針みたい。 <br> あれは解凍のコストが高くつくようなヘボいマシンを想定して <br> デフォルトで圧縮がされないフォーマットだったと思う。 <br> もしWabaに関して和製連中の都合に合わせたある程度の拡張をする気があるって事なら、 <br> どの辺までをWabaで頑張るつもりなのか気になる所。 <br> まさかJITとかは言わないと思うんだけど……。 <br> せっかくSFで仲間に入れてもらったのでこんなのWikiで言えば良いんだけど、 <br> こっちのがeasyに書けちゃうんでまずこっちで。（何それ） <>
+Be名無しさん<>sage<>04/06/15 01:27<> ＞わたもちさんというのは以前このスレでWabaの話をしていた人だったかな。 <br> あさがおOSの作者 <br> GUI重視らしく途中からJavaでウィンドウシステムの試作をしたりしてた <br> ttp://wiki.osdev.info/index.php?%A4%A2%A4%B5%A4%AC%A4%AAOS <br> 確かにWabaの話もしてた <br>  <br> ＞Wabaは和製連中に他のVMを載せる土台が出来るまでの <br> ＞　∫ <br> ＞どの辺までをWabaで頑張るつもりなのか気になる所。 <br> そこでりすちあですよ <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/06/15 01:45<> <a href="../test/read.cgi/os/1081561384/699" target="_blank">&gt;&gt;699</a> <br> &gt; そこでりすちあですよ <br> あれってそういう目的のブツなのかな……。 <br> osaskやmona用に作った物がnwsosでも動くから <br> 自分が何もしなくてもアプリが増えてｳﾏｰ、 <br> って作戦の為には別の要素も必要な気が。 <>
+Be名無しさん<>sage<>04/06/15 01:48<> 3日掛けてpart2からやっと追いつきました <br> ※part8みれませなんだおかげとも言うが... <br> で、最近思っていることですが、 <br> RAMドライブからブートできないでしょうかね <br> HDDがうるさいので．．． <br>  <br> あと、OSの要望としてどうせやるなら <br> ・メモリチェックして使えないメモリは使わずに起動するOSとか、 <br> ・ファイルが壊れたらVer.落としたファイルを読み込んで何とかするOSとか <br> ・ウィルスがきても感染できないOS設計とか <br> ・スタックオーバーフローが起こっても暴走しない、固まらないOSとか <br> カーネルレベルから意識すると最強のOSにならないかなぁなんて思います <br>  <br> 勝手を言ってますが、生暖かく見守らせていただきます（ｗ <br>  <br> ※GUIはwinやXと比べてどこら辺り秀でたものになるか楽しみですぞえ <>
+Be名無しさん<>sage<>04/06/15 12:01<> <a href="../test/read.cgi/os/1081561384/701" target="_blank">&gt;&gt;701</a> <br> RAMドライブというか、CFとかマイクロドライブとかがあるじゃん。 <br> CFをIDEに差し込んでHDDとして認識させるものも有るし。 <br> そうすればCFだから、静かではある。当然フラッシュメモリだから、書き込み限度がある。 <br> これが問題。まぁマイクロドライブは対策しているだろうと、勝手に予想。 <br>  <br> ＞・メモリチェックして使えないメモリは使わずに起動するOSとか、 <br> メモリチェックってbyte調べんのかと思ったけど。普通使えないメモリ使ったら、 <br> 正常な動作自体しないような気がするが。細かくは知らんけど。 <br>  <br> ＞・ファイルが壊れたらVer.落としたファイルを読み込んで何とかするOSとか <br> NTFSで似たような機構はあるが、Ver落とすとは一体なんぞや。ファイルが壊れる意味分かっている？ <br> FAT32からFAT16に落とすってことか？ <br>  <br> ＞・ウィルスがきても感染できないOS設計とか <br> これができたらノーベル賞 <>
+Be名無しさん<>sage<>04/06/15 12:46<> Part8あるよ <br> ttp://nostalgia.rr6.org/test/read.cgi/oslog/1076216434/l50 <>
+Be名無しさん<>sage<>04/06/15 14:15<> Mona最大の進化キターーーー（・∀・）´∀｀＜´∀｀＞ーーーー <>
+Be名無しさん<><>04/06/15 14:16<> ああげ <>
+Be名無しさん<>sage<>04/06/15 14:47<> つーかスクリーンショットではったりかまし合うのって大人気なくね？ <>
+さっきゅん<>sage<>04/06/15 14:55<> 別にいいんじゃない？ <br> 昔某OSもやってたことだし <>
+Be名無しさん<>sage<>04/06/15 15:03<> ｱﾚとｱﾚだな。 <br> しかしMonaのは毎度インパクトが違うな。 <>
+Be名無しさん<>sage<>04/06/15 15:50<> <a href="../test/read.cgi/os/1081561384/706-708" target="_blank">&gt;&gt;706-708</a> <br> ってかちゃんとコンパイルして動かせよ… <br> 動作遅いけど（qumeだから）、ちゃんとスクリーンショットどおりだぞ。 <br>  <>
+Be名無しさん<>sage<>04/06/15 16:27<> <a href="../test/read.cgi/os/1081561384/709" target="_blank">&gt;&gt;709</a> <br> 誰もスクリーンショットをフォトショで作ってるとは言ってない <>
+Be名無しさん<>sage<>04/06/15 16:28<> これからがWDEの分かれ道かなぁ。 <br> Window移動が出来るようになるか否か結果は楽しみに待ってみるか。 <br> そこが大問題なき気がぁ。あとは描画速度ぉぉどうにかしないと、あれはヤヴァイぞ。 <>
+Be名無しさん<>sage<>04/06/15 16:29<> <a href="../test/read.cgi/os/1081561384/710" target="_blank">&gt;&gt;710</a> <br> ええ、どういうこと？アフォな俺にもわかるように説明願いまする。 <>
+Be名無しさん<>sage<>04/06/15 16:45<> <a href="../test/read.cgi/os/1081561384/712" target="_blank">&gt;&gt;712</a> <br> 見てくれは派手だけど基本的にハリボテなんだよ。 <>
+</b> ◆54q7Px4hDk <b><>sage<>04/06/15 16:46<> <a href="../test/read.cgi/os/1081561384/711" target="_blank">&gt;&gt;711</a> <br> 未リリース版ではどっちも一応できてるとかいう噂 <>
+Be名無しさん<>sage<>04/06/15 17:34<> スレの流れがえらく速いな <>
+Be名無しさん<>sage<>04/06/15 18:04<> 見た目のインパクトで騙されがちだけど実はGUIって単純なんだね。 <br> 地味だが資料を駆使するカーネルの方が遥かに高度だって分かったよ。 <>
+Be名無しさん<>sage<>04/06/15 18:15<> <a href="../test/read.cgi/os/1081561384/716" target="_blank">&gt;&gt;716</a> <br> いやそういう問題でもない。 <>
+Be名無しさん<>sage<>04/06/15 18:33<> <a href="../test/read.cgi/os/1081561384/716" target="_blank">&gt;&gt;716</a> <br> 再描画をきちっと無駄なくできる様にしたり、サイズ変更をアプリと非同期で <br> できるようにしたり、高速に非矩形ウィンドウや透明ウィンドウを扱える <br> ようにしようとするとかなり難しくなる。 <br>  <br> 今のMonaのGUIは、そういうものを無視しているが、本質的に大変なのは <br> これから。 <>
+Be名無しさん<>sage<>04/06/15 18:39<> それ以前にアクセラレーションなしでは限界がある。 <br> XPをVESAで動かしても描画は大して速くない。 <br> アクセラレーションのためにはハードの知識が不可欠だから、 <br> カーネルより簡単ということでは全然ない。 <>
+Be名無しさん<>sage<>04/06/15 18:47<> アクセラレーションにおんぶで抱っこと割り切って <br> 処理効率より構造の単純さを重視する方が能率的 <br> ttp://pitecan.com/articles/Bit/Fugo/fugo.html <>
+Be名無しさん<>sage<>04/06/15 18:58<> 確かにアクセラレーションの利用が前提だと、 <br> ちまちまと差分描画してVRAMアクセスを抑えるよりも <br> バッファまるごとどばっとBitBltした方が楽で速い。 <br> 長角なんかはウィンドウ全部がテクスチャになるわけだし。 <>
+Be名無しさん<>sage<>04/06/15 19:02<> アフォか? <br> アクセラなんてドライバがないと絵に描いた餅だろうに <br> 誰がドライバ書くんだ? <>
+Be名無しさん<>sage<>04/06/15 19:04<> <a href="../test/read.cgi/os/1081561384/722" target="_blank">&gt;&gt;722</a> <br> だから難しいって話な訳だが。 <>
+Be名無しさん<>sage<>04/06/15 19:09<> アクセラが利用できない状況（フレームバッファ）で可能な限りチューンする難しさと <br> アクセラのためにドライバを書く難しさはまったく質が違うと言ってみる。 <>
+Be名無しさん<>sage<>04/06/15 19:13<> ビデオドライバのある/なしがおもちゃGUIかどうかの分かれ目だろうな <br> VESAで頑張って最適化してもしょせんはおもちゃGUI <>
+Be名無しさん<>sage<>04/06/15 19:23<> <a href="../test/read.cgi/os/1081561384/725" target="_blank">&gt;&gt;725</a> <br> それ以前に和製OSはどこまで行ってもオモチャOS。 <>
+Be名無しさん<>sage<>04/06/15 19:28<> 鉄道マニアの中にはかなりの比率で鉄道模型マニアがいる。 <br> これは本物には本物の、オモチャにはオモチャの存在意義があるということを示している。 <br> オモチャだからと言って手を抜いて良いということにはならない。 <br> だがオモチャはどこまで行ってもオモチャで本物にはなれない。 <>
+Be名無しさん<>sage<>04/06/15 19:39<> <a href="../test/read.cgi/os/1081561384/726-727" target="_blank">&gt;&gt;726-727</a> <br> 玩具と決め付けるのはどうかとも思うが、 <br> 本物を目指すんだったら物理的に一人では無理だろう。 <br> 最低限これくらいに分業しないと。 <br>  <br> ・グラフィックチップのドライバを書く人 <br> ・ウィンドウシステムを作る人 <br> ・描画アルゴリズムを最適化する人 <br> ・ツールキットを作る人 <br> ・ウィジェットを作る人 <br> ・アプリを作る人 <>
+Be名無しさん<>sage<>04/06/15 19:42<> GUI専用のプロジェクトを作るべきだと思う。 <>
+Be名無しさん<>sage<>04/06/15 19:51<> 明確なビジョンがないと、今日素人OSはおもちゃの領域を <br> 脱出できない罠、 ２０ 年以上前ならともかく  <br>  <br> 実装ばかりに拘ってたら、Win・Mac・Unixの劣化コピーにしかならんわ <>
+Be名無しさん<>sage<>04/06/15 19:52<> うるへー馬鹿 <>
+Be名無しさん<>sage<>04/06/15 19:57<> <a href="../test/read.cgi/os/1081561384/731" target="_blank">&gt;&gt;731</a> <br> うるへー劣化馬鹿 <>
+Be名無しさん<>sage<>04/06/15 20:01<> 劣化ウランは鋼鉄より硬いけどな。 <>
+Be名無しさん<>sage<>04/06/15 20:03<> へー劣化ウランって難いのか <br>  <br> 劣化馬鹿は豆腐より柔らかそうだがﾌﾟﾌﾟﾌﾟ <br>  <br> 今後劣化が流行りそうな予感 <>
+Be名無しさん<>sage<>04/06/15 20:05<> そりゃ扱いは難しいだろうよ <>
+Be名無しさん<>sage<>04/06/15 20:07<> MS-DOSはCP/Mの劣化コピーだったが勝敗は明確 <>
+Be名無しさん<>sage<>04/06/15 20:09<> <a href="../test/read.cgi/os/1081561384/736" target="_blank">&gt;&gt;736</a> <br> それはマーケティングの問題だろ。 <br> そもそも経済価値のない和製OSにはマーケティングの余地すらない。 <>
+Be名無しさん<>sage<>04/06/15 20:19<> <a href="../test/read.cgi/os/1081561384/730" target="_blank">&gt;&gt;730</a> <br> そこまで言うんだったら劣化コピーではない明確なビジョンを出してくれぬか? <br> キャッシュカーネルみたいな実装不可能でポシャるようなのはダメだよ。 <>
+Be名無しさん<>sage<>04/06/15 20:21<> でおもちゃOSで何ができるのよ、ゴリゴリコーディングしても <br> 労力の無駄だろ、マーケティングの事なんかどうでもいい <>
+Be名無しさん<>sage<>04/06/15 20:23<> <a href="../test/read.cgi/os/1081561384/739" target="_blank">&gt;&gt;739</a> <br> おもちゃの目的なんて遊ぶことに決まってる。 <br> コミュニティの育成がマーケティングだとも言えるからどうでもいくない。 <>
+Be名無しさん<>sage<>04/06/15 20:26<> よし、遊ぶための機能を考えるんだ <>
+Be名無しさん<>sage<>04/06/15 20:30<> <a href="../test/read.cgi/os/1081561384/741" target="_blank">&gt;&gt;741</a> <br> 絵炉芸 <>
+Be名無しさん<>sage<>04/06/15 20:30<> <a href="../test/read.cgi/os/1081561384/738" target="_blank">&gt;&gt;738</a> <br> 俺の考える事じゃねーよ、各開発者諸氏が考えることだろボケ <>
+Be名無しさん<>sage<>04/06/15 20:31<> とりあえずHWスレで見かけた、USB接続オナホールのドライバ <br> サービスを上げておこうか <>
+Be名無しさん<>sage<>04/06/15 20:33<> <a href="../test/read.cgi/os/1081561384/744" target="_blank">&gt;&gt;744</a> <br> エロ動画が再生できないと意味ない気が <>
+Be名無しさん<>sage<>04/06/15 20:34<> そういや、このスレ何かと”必要うな物は何だ”ってなるとｴﾛｹﾞｰが上がるな <>
+Be名無しさん<>sage<>04/06/15 20:35<> <a href="../test/read.cgi/os/1081561384/745" target="_blank">&gt;&gt;745</a> <br> インフラは重要だろうが！ <br> あ、動画再生も重要なインフラだな（藁 <>
+Be名無しさん<>sage<>04/06/15 20:35<> さっきゅんの陰謀か？ <>
+Be名無しさん<>sage<>04/06/15 20:37<> <a href="../test/read.cgi/os/1081561384/707" target="_blank">&gt;&gt;707</a> <br> 大人気ないプログラマ。 <>
+Be名無しさん<>sage<>04/06/15 20:39<> また”さっきゅん”かよ、何でもそいつに仕立て上げるなよ <br>  <>
+Be名無しさん<>sage<>04/06/15 20:39<> 大人気なプログラマ。 <>
+Be名無しさん<>sage<>04/06/15 20:40<> 厨房プログラマ？ <>
+Be名無しさん<>sage<>04/06/15 20:42<> 天才プログラマ！ <>
+Be名無しさん<>sage<>04/06/15 20:43<> 正直、コード書いて動かすことが遊びになってるような基地外以外に遊べない <>
+Be名無しさん<>sage<>04/06/15 20:44<> このスレの半分くらいさっきゅんの書き込みだよね <>
+Be名無しさん<>sage<>04/06/15 20:46<> さっきゅん==自作自演 <br>  <br> 物本さっきゅんはほとんど書いていない <>
+Be名無しさん<>sage<>04/06/15 20:47<> また”さっきゅん”かよ、何でもそいつに仕立て上げるなよ <>
+Be名無しさん<>sage<>04/06/15 20:47<> <a href="../test/read.cgi/os/1081561384/754" target="_blank">&gt;&gt;754</a> <br> 基地外言うなよ、正直コーディングが趣味じゃないと遊べないけど <>
+Be名無しさん<>sage<>04/06/15 20:48<> さっきゅん、ささささささっさっきゅんさきゅん <>
+Be名無しさん<>sage<>04/06/15 20:50<> また”さっきゅん”かよ、何でもそいつに仕立て上げるなよ <>
+Be名無しさん<>sage<>04/06/15 20:50<> また”さっきゅん”かよ、何でもそいつに仕立て上げるなよ  <>
+Be名無しさん<>sage<>04/06/15 20:51<> 1人壊れた香具師が居るな <>
+Be名無しさん<>sage<>04/06/15 20:54<> さっきゅん==ﾋｹﾞﾎﾟｿ <br>  <br> 実は、最近卑下はｵﾚﾍﾟｺのコーディングをしている <>
+Be名無しさん<>sage<>04/06/15 21:07<> でｴﾛｹﾞｼﾅﾘｵｼｽﾃﾑ実装まだ？ <>
+Be名無しさん<>sage<>04/06/15 21:08<> で萌絵描画ｼｽﾃﾑ実装まだ？ <>
+水戸呼 </b>◆AEqcy/sQU6 <b><>sage<>04/06/15 21:15<> お久しぶりです。 <br> 最近仮出所してきたのでそろそろ開発再開します。 <br> ところで次スレはここであってますか？(^-^;) <>
+Be名無しさん<>sage<>04/06/15 21:22<> ウィンドウのドラッグ＆ドロップキター（・∀・）ー <>
+Be名無しさん<>sage<>04/06/15 21:31<> このスレの何も出来ない香具師らを尻目に着実に進化を続けているな。 <>
+Be名無しさん<>sage<>04/06/15 21:43<> おまえがな <>
+Be名無しさん<>sage<>04/06/15 21:53<> 劣化ウラン弾というのはその弾頭の硬さを以って戦車をブチ抜くというものなんですね、ええ。 <br> 硬チンポでマムくぁえｄｒｆｇｔｙｙふじこｌ；ｐ； <>
+Be名無しさん<>sage<>04/06/15 22:00<> 硬チンポで？ <>
+Be名無しさん<>sage<>04/06/15 22:10<> いま、本当に必要なものは・・・ <br> 音楽・フラッシュ・大容量ＨＤ対応じゃないのか？ <br> 細かいことを書いてたらきりがないけど・・・ <br> Ｍｏｎａで音楽を聴きたいので・・・ <>
+Be名無しさん<>sage<>04/06/15 22:19<> 必要なのは戦車をぶち抜ける硬チンポです <>
+Be名無しさん<>sage<>04/06/15 22:26<> <a href="../test/read.cgi/os/1081561384/772" target="_blank">&gt;&gt;772</a> <br> 音関係は対応がめんどい。 <br> HD対応はそんなに難しくはない。かも。 <>
+Be名無しさん<>sage<>04/06/15 22:34<> チョン先生って死んじゃったのか？ <br> pert3に出現していた <>
+超ＴＡ＠OS板  </b>◆leaf/RYZgY <b><>sage<>04/06/15 22:36<> 'A`＞-~ 超先生から超TAに格下げ。 <>
+Be名無しさん<>sage<>04/06/15 22:36<> 超先生はいつも俺達の心の中に <>
+Be名無しさん<>sage<>04/06/15 22:42<> ん？まさか超先生＠OS板 = AC氏 = （ ´ -｀）氏？ (新説) <>
+778<>sage<>04/06/15 22:44<> それは違う。取消し。 <>
+Be名無しさん<>sage<>04/06/15 23:01<> ん？リアル厨房の方々は超先生がわからないのかな？ <br> ム板の作ろうスレでL氏と双璧だった人だよ。 <>
+Be名無しさん<>sage<>04/06/15 23:13<> 超先生はバイク事故で死んだよ・・・。 <>
+Be名無しさん<>sage<>04/06/15 23:25<> http://pc3.2ch.net/tech/kako/1027/10270/1027080631/971-972 <br> と同じトリップだけど．．． <>
+Be名無しさん<>sage<>04/06/15 23:31<> とりあえず、今日は超先生(超TA)復活祭だ！ <br>  <br> 色々話題が多いねー <>
+Be名無しさん<>sage<>04/06/15 23:35<> <a href="../test/read.cgi/os/1081561384/766" target="_blank">&gt;&gt;766</a> <br> この辺にでもどうぞ <br>  <br> OSを作りたいわけだが。 <br> http://pc5.2ch.net/test/read.cgi/os/1062870092/ <br>  <>
+Be名無しさん<>sage<>04/06/15 23:36<> そうだったのか、ｺﾃ変えてたんですな <br> 本当に同一人物かと思ってたYO <>
+Be名無しさん<>sage<>04/06/16 00:45<> Free の VBE/AF の実装 <br>  <br> ttp://www.talula.demon.co.uk/freebe/ <br>  <br> 原理的にはDOSに依存しない実装も可能なはずだが、 <br> int 10hとか使っていて和製OSのドライバに使うには改造が必要 <br>  <>
+Be名無しさん<><>04/06/16 00:55<> ちょっと対応チップが古いな、今でも入手できるのってある？ <br> Mach64ですら最近は鯖マシンにも乗ってないんじゃないかRageに変わっちゃって <br>  <br> MIIあたりなら未だに持ってる香具師が要るだろうけど... <br> Xorgのソースを参考にしたほうが、実働可能なドライバ書けんじゃない？ <>
+701<>sage<>04/06/16 03:50<> <a href="../test/read.cgi/os/1081561384/702" target="_blank">&gt;&gt;702</a> <br> ＞＞・ファイルが壊れたらVer.落としたファイルを読み込んで何とかするOSとか  <br> ＞NTFSで似たような機構はあるが、Ver落とすとは一体なんぞや。ファイルが壊れる意味分かっている？  <br> ＞FAT32からFAT16に落とすってことか？  <br> うんにゃ。ファイルが壊れる意味はいろんな場合のデータ化けを想定していました。 <br> ver.落とすっていうのはアプリやドライバなんかの昔のver.を自動でバックアップとしてとっておいて <br> リトライしてもダメならOSが勝手に昔のｖｅｒ.を再インストールするって意味のつもりだけど(^_^;ゞ <br>  <br> ＞＞・ウィルスがきても感染できないOS設計とか  <br> ようは感染しにくくするためには <br> ①OSに近い実行ファイルはプログラムによるファイルの書き換え、移動、削除、 <br> リネームが簡単にできないようにする。メカ固有の暗号キーを持ったプログラムからだけ可とか。 <br> ②実行中のプログラムをOSレベルで書き換えできないようにする(自己解凍プログラムができなくなるけど) <br>  <br> なんてどうでしょう？制約が大きくなるけどアンチウィルスが毎度うだうだやるよりはマシかと... <br> とりあえずいきなり固まって作業中のデータのセーブもできないOSは...ねぇ <>
+Be名無しさん<>sage<>04/06/16 05:25<> ここでMoXですよ。 <br>  <br>  <br>  <br> MoXがOSなのかいまだにわからんが・・・ <>
+Be名無しさん<>sage<>04/06/16 19:09<> &gt;788 <br> Win95から実現してるし(ちゃんと機能してなかったけど <br>  <br> win32sのコアがぶっ壊れたら、自動的に復旧してたな <br>  <br> Virusはむずいな、馬鹿はどうしても高レベル特権で実行しちまうから <>
+772<>sage<>04/06/16 22:34<> <a href="../test/read.cgi/os/1081561384/774" target="_blank">&gt;&gt;774</a> <br> 僕が言いたいのは・・・あえぎ声が聞きたいから・・・ <br> そのための音関係だし・・・ <br> フラッシュは２ｃｈ名物だから <br> 対応しないと後でやっかいになるから <>
+Be名無しさん<>sage<>04/06/16 22:35<> (´-`).｡ｏO(真性だったか) <>
+Be名無しさん<>sage<>04/06/17 15:02<> <a href="../test/read.cgi/os/1081561384/772" target="_blank">&gt;&gt;772</a> <br> そう。よかったわね。 <>
+Be名無しさん<>sage<>04/06/17 19:35<> <a href="../test/read.cgi/os/1081561384/793" target="_blank">&gt;&gt;793</a>はネカマ <br>  <br> と言うと「三人目だからわからない」と返すんだろうな <>
+Be名無しさん<><>04/06/17 20:41<> <a href="../test/read.cgi/os/1081561384/794" target="_blank">&gt;&gt;794</a> <br> じゃないが、「かしら」とか語尾に付ける <br> 香具師いるよな、100%野郎だと思われるのが <br>  <br>          正  直  キ  モ  イ <>
+Be名無しさん<>sage<>04/06/17 20:41<> ～かしらは由緒正しき男言葉でもある <>
+Be名無しさん<>sage<>04/06/17 20:43<> <a href="../test/read.cgi/os/1081561384/796" target="_blank">&gt;&gt;796</a> <br> 早レスだな、俺教養ない奴なんで <br> ソースもらえると有難い、信じられんガナ(藁 <>
+Be名無しさん<>sage<>04/06/17 20:44<> 「～かしら」ってのび太が時々使ってなかったかしら？ <>
+Be名無しさん<>sage<>04/06/17 20:46<> 奴は、典型的なナヨ野郎を強調してるからじゃないのか？ <>
+Be名無しさん<>sage<>04/06/17 20:47<> 古典をわざわざ引いてこようかとも思ったがこの程度で十分だろう <br> http://dictionary.goo.ne.jp/search.php?MT=%A4%AB%A4%B7%A4%E9%A4%F3&kind=je&mode=0&jn.x=23&jn.y=8 <>
+Be名無しさん<>sage<>04/06/17 20:47<> <a href="../test/read.cgi/os/1081561384/800" target="_blank">&gt;&gt;800</a> <br> Thx <>
+Be名無しさん<>sage<>04/06/17 20:54<> 曲げ野郎が「かしら～」って言ってるのを想像すると <br> 恐ろしくなってきたぞ、やっぱカマだわ... <br>  <>
+Be名無しさん<>sage<>04/06/17 20:59<> それは現代だからそう思うだけ。 <br>  <br> まあ昔から男色というのは根強かったようだがこれは関係ない。 <br>  <br> で、ここ何板だっけ <>
+Be名無しさん<>sage<>04/06/17 21:08<> ネカマ板かしら? <br>  <>
+Be名無しさん<>sage<>04/06/17 23:41<> tanasinn板 <br>  <br>  <br>  <br>  <br> あ、スレ間違えた。 <>
+Be名無しさん<>sage<>04/06/17 23:54<> 平和だなぁ <>
+Be名無しさん<>sage<>04/06/17 23:56<> 平和ってヒュンダイだっけサムソンだっけ <>
+Be名無しさん<>sage<>04/06/18 00:02<> ヒュンダイは現代かと... <>
+Be名無しさん<>sage<>04/06/18 00:05<> Ooops! <>
+Be名無しさん<>sage<>04/06/18 15:34<> 平和と見るとピンフと読んでしまう。 <br> 何かが間違っているような気がする。 <>
+Be名無しさん<>sage<>04/06/18 16:01<> <a href="../test/read.cgi/os/1081561384/793" target="_blank">&gt;&gt;793</a>は単なるエヴァヲタ <>
+Be名無しさん<>sage<>04/06/18 19:18<> あんだけでよく連想できんな <br> さてはお前もオタだな <>
+Be名無しさん<>sage<>04/06/18 20:28<> Cマガ出たね。 <br>  <>
+Be名無しさん<>sage<>04/06/18 20:30<> CマガにMonaが出たって？ <>
+Be名無しさん<>sage<>04/06/18 20:59<> 卑下が記事書いてんだって？ <>
+Be名無しさん<>sage<>04/06/18 22:18<> <a href="../test/read.cgi/os/1081561384/815" target="_blank">&gt;&gt;815</a> <br> そんなわけないだろｗ <>
+Be名無しさん<>sage<>04/06/19 11:13<> <a href="../test/read.cgi/os/1081561384/882" target="_blank">&gt;&gt;882</a> <br> 漏れも子供の頃はコロコロなんぞでドラを読んでたわけだが <br> のび太ってよく「～かしら」を使ってたから <br> 子供心に違和感を感じた <>
+Be名無しさん<>sage<>04/06/19 11:23<> げろ。高校のあたりから「かしら」使うようになった。いまでも日常的につかってるぞ。 <br> 子供が使うと変な気はする。でも、オジサンが使うのは普通なんじゃないかな。 <>
+Be名無しさん<>sage<>04/06/19 13:24<> ねえおっちゃん。きっと周りの人からキモいと思われてるからさっきゅんに改めたほうがいいよ。 <>
+Be名無しさん<>sage<>04/06/19 13:24<> ↑早急の間違い <>
+Be名無しさん<>sage<>04/06/19 19:20<> 「かしらん」ならアリかもしれない <>
+Be名無しさん<>sage<>04/06/19 19:23<> <a href="../test/read.cgi/os/1081561384/818" target="_blank">&gt;&gt;818</a>「なあ、あの書類は机の上に置いてあったと思うけどどうしたのかしらん？」 <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br> 　　　　　　　　　　　　　ぅぉぇっぷ  <br> 　　　　　　　　 〃⌒ ヽフ  <br> 　　　　　　　　/　 　rノ  <br> 　　　　　　　Ο Ο＿）*** <>
+Be名無しさん<><>04/06/19 22:06<> OSの話せー。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/19 23:08<> 久々の書き込みです。 <br>  <br> <a href="../test/read.cgi/os/1081561384/814" target="_blank">&gt;&gt;814</a>さん <br>  <br> えぇ。本当ですか？ <br>  <br>  <br> 最近は多忙のためあまりカーネルをいじっていなかったのですが <br> ELFローダをカーネルから追い出すべく作業を進めています。 <br>  <br> それとは別に、万が一サーバーが異常終了したときにサーバーを再起動するような <br> サーバーを作ろうと思っています。 <>
+Be名無しさん<>sage<>04/06/19 23:51<> <a href="../test/read.cgi/os/1081561384/824" target="_blank">&gt;&gt;824</a> <br> 万が一デッドロックしたなどでサーバがハングした場合には無力ですね。 <br> リザラクションサーバ自体が異常終了した場合にも無力か。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/20 00:09<> <a href="../test/read.cgi/os/1081561384/825" target="_blank">&gt;&gt;825</a>さん <br> おっしゃるとおりですね。 <br> 今考えているものはもっと単純なものです。 <br>  <br> また、OSロード（カーネル・必須サーバ群の起動)の遷移を見直すための <br> 布石だったりします(大げさで企画倒れになるかもしれませんが) <>
+Be名無しさん<>sage<>04/06/20 00:11<> <a href="../test/read.cgi/os/1081561384/826" target="_blank">&gt;&gt;826</a> <br> っつーと、一定時間おきにカーネルとその監視プロセスの間で相互にpingを打ってどちらかの応答が途切れたら <br> 診断プロセスに入り、相手が再起不能と判断したら殺して再起動とか？ <br> 突き詰めるとセキュリティ確保が大変そうだ。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/20 00:29<> <a href="../test/read.cgi/os/1081561384/827" target="_blank">&gt;&gt;827</a>さん <br>  <br> 大体そんなイメージですね。 <br> 第一弾としては <br> 監視サーバーは一定時間おきにpsコマンドで特定サーバの生存を <br> 確認する。死んでいるようであれば再起動するといった感じでしょうか。 <br>  <br> 第ニ弾としては <br> 必須サーバーはpingに応答する様に機能追加し、監視サーバからpingするようにして <br> 生存確認するのもいいと思います。 <br> その場合は、ping送り先が何か処理中で返答できない場合などを考慮したり <br> ping応答機能を簡単にサーバに実装できるような仕組みを作りたいと思っています。 <br>  <br> 第ニ弾まで進むかはまったりと考えます。 <>
+Be名無しさん<>sage<>04/06/20 00:50<> (･∀･)ﾉｼがんばれ～ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/20 01:21<> <a href="../test/read.cgi/os/1081561384/829" target="_blank">&gt;&gt;829</a>さん <br>  <br> ありがとうございます。 <br>  <br> 今日の一言にも書きましたがサーバーの書き方をすっかり忘れてしまいました（笑） <br>  <br> 現在はMonaのカーネル自体にたいした機能はなくて、各種サーバー群がいろいろ <br> がんばっている状況なのですが、カーネルだけをごそっと入れ替えることも可能かもなんて妄想しています。 <br>  <br> もちろんそんなことをやる暇はないのですが、サーバーは入れ替え可能 <br> カーネルも入れ替え可能だと思い込めば結構気楽ですね。 <>
+Be名無しさん<>sage<>04/06/20 20:26<> 知嚢引退? <>
+Be名無しさん<><>04/06/20 20:58<> <a href="../test/read.cgi/os/1081561384/830" target="_blank">&gt;&gt;830</a> <br> カーネル入れ替えはカーネル自体の仕様がしっかりしてくればそれほど難しくないんではないかなぁ。 <br> Linuxでもユーザがコンパイルしてカーネル入れ替えできる訳だし。 <>
+Be名無しさん<>sage<>04/06/23 21:00<> monaって外人からみたらモナリザの略称に見えるのかもしれない <br>  <br>  <br> 根拠はないが <>
+Be名無しさん<><>04/06/23 21:33<> <a href="../test/read.cgi/os/1081561384/833" target="_blank">&gt;&gt;833</a> <br> モナリザの略称ってMonaなのか？ <>
+Be名無しさん<>sage<>04/06/23 22:22<> <a href="../test/read.cgi/os/1081561384/834" target="_blank">&gt;&gt;834</a> <br> Mona Lisa <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/24 00:54<> サーバー起動シーケンスによってサーバが死ぬことがあるバグを調査中。 <br> ログをとって見た感じではスレッド構造体が壊れているようだ。 <br> スタックずれなのかなんなのか。 <br>  <br> これを解決すればサーバーの起動をうまいことカーネルから少し分離 <br> できるような気がする。 <>
+Be名無しさん<>sage<>04/06/24 00:59<> ひげの口調が変わった、これはきっと奥さんとふじこ <>
+Be名無しさん<>sage<>04/06/24 01:16<> 中の人が世代交代しただけだよ <>
+Be名無しさん<>sage<>04/06/24 11:16<> <a href="../test/read.cgi/os/1081561384/837" target="_blank">&gt;&gt;837</a> <br> 自分が正義だと勘違いしてる犬糞厨にありがちな口調で非常に感じが悪い <>
+Be名無しさん<>sage<>04/06/24 11:45<> つまり折豚の口調に似てると(：D)＿|￣|_ <>
+Be名無しさん<>sage<>04/06/24 13:17<> <a href="../test/read.cgi/os/1081561384/840" target="_blank">&gt;&gt;840</a> <br> 念のため、<a href="../test/read.cgi/os/1081561384/839" target="_blank">&gt;&gt;839</a>はニュー卑下のことでつ <br> <a href="../test/read.cgi/os/1081561384/836" target="_blank">&gt;&gt;836</a>は犬厨が日記で屁の役にも立たないハックを偉そうに書くときにそっくり <br>  <br> もともと卑下は犬系の人じゃないからそういう変な界隈の影響が少なくて良かったが <br> なんか最近染まってきたような気がするのは残念 <>
+Be名無しさん<>sage<>04/06/24 13:25<> <a href="../test/read.cgi/os/1081561384/841" target="_blank">&gt;&gt;841</a> <br> 珍脳発見！ <>
+Be名無しさん<>sage<>04/06/24 14:54<> そもそも卑下、奥さんとちゃんとHしてんのか? <br> 仕事から帰ったらずーっとMona. <br> 奥さんもやんなっちゃうだろ。逆レイプされるぞ(されたら画像ちょうだいね&hearts; <br>  <>
+Be名無しさん<>sage<>04/06/24 15:38<> <a href="../test/read.cgi/os/1081561384/842" target="_blank">&gt;&gt;842</a> <br> そんな下衆と一緒にすんな <>
+Be名無しさん<>sage<>04/06/24 15:48<> <a href="../test/read.cgi/os/1081561384/844" target="_blank">&gt;&gt;844</a> <br> Tは充分下衆。 <>
+Be名無しさん<>sage<>04/06/24 15:56<> 喪前ら男塾かと小一時間（ｒｙ <>
+Be名無しさん<>sage<>04/06/24 17:32<> ざわ　 <br> 　　　ざわ <>
+Be名無しさん<><>04/06/24 21:13<> <a href="../test/read.cgi/os/1081561384/835" target="_blank">&gt;&gt;835</a> <br> それだったら略称は「MoLi」 <>
+Be名無しさん<>sage<>04/06/24 21:47<> <a href="../test/read.cgi/os/1081561384/848" target="_blank">&gt;&gt;848</a> <br> まあ略だからといって切り離してくっつける必要はないわけだが <>
+Be名無しさん<>sage<>04/06/25 17:05<> 日経DQNウェアにも動きが <>
+Be名無しさん<>sage<>04/06/25 18:20<> 卑下だけじゃなくて湾岸も新婚だったな <br> このスレは童貞率高そうなのに神々はやっぱ別格なのか・・・ <>
+Be名無しさん<>sage<>04/06/25 18:29<> <a href="../test/read.cgi/os/1081561384/851" target="_blank">&gt;&gt;851</a> <br>  <br> でもお二組とも***lessな予感 <>
+Be名無しさん<>sage<>04/06/25 18:34<> <a href="../test/read.cgi/os/1081561384/850" target="_blank">&gt;&gt;850</a> <br> 詳しく <>
+Be名無しさん<><>04/06/26 08:56<> このスレッド時々読ませて頂いてるんですが、ここはひげぽんさんの創られている <br> OSを応援するするスレということでしょうか？ <br> 新規に創ろうとしている方とか、自由に書きこめるスレということでしょうか？ <>
+Be名無しさん<>sage<>04/06/26 10:02<> <a href="../test/read.cgi/os/1081561384/854" target="_blank">&gt;&gt;854</a> <br> 後者だよー。今対抗馬がいないだけー。 <>
+Be名無しさん<><>04/06/26 10:18<> そうですか、有難う御座います。 <br> それにしても凄いですね。私も少し前から挑戦していて、 <br> OSの機構の理解はかなり進歩してるんですが、それが各OS毎にやり方が違うため、 <br> 実際に創りこむことが中々難しいんです。 <br> (実験はしてますが) <br> こんな状態でやってみても、多分出来たとしても、しょぼいものしか無理。だと思い <br> まあ、それもあって、Linuxとか、*BSDとかのソースコードを自分で注釈なりつけて <br> 読みこんでるんですが、ここもまた賑わって欲しいということから、書き込みさせていただきました。 <br>  <>
+Be名無しさん<>sage<>04/06/26 15:13<> 和田餅はどうなった? <>
+Be名無しさん<>sage<>04/06/26 16:56<> C magazine買った。まさか売っているとは思わなかった。 <br> うむ、内容的には結構Good!!だと思う。 <br> 基本的なことが網羅されているし、いいと思う。 <br> 856も買っていないなら買って見なされ。 <br>  <>
+Be名無しさん<>sage<>04/06/26 16:59<> 純潔なおまいらにご褒美 <br>  <br> ttp://shinseiki.muvc.net/images/female2.gif <br>  <>
+Be名無しさん<>sage<>04/06/26 17:44<>  <br> 「美香、お風呂が沸いたから、みんなで入ったら？私はちょっとお使いに行っ <br> 　てくるから仲良くね。」美香の母親が声をかけた。 <br> 「ハーイ。行ってらっしゃい。」美香が元気に答える。 <br> 今日は美香の小学生最後の誕生日。 <br> 父親が海外出張中であり、母親と美香の２人だけでは寂しいということで、美 <br> 香の友達を呼んで誕生会を開いていた。 <br> 美香の仲良しの佐織と幼稚園からの幼なじみの浩平が来ていた。 <br> 　 <br> 美香と佐織は洗い場で体を洗いっこしている。浩平だけが湯船にじっと浸かっ <br> ていた。 <br> 美香が浩平に声をかける。 <br> 「浩ちゃんも体洗ったら？」 <br> 「う、うん。……でも、いいよ。」 <br> 「いいから、いいから、早く。」美香が浩平の手をとり、湯船から引っぱり出 <br> した。浩平はバランスを崩しながらも、美香につかまれてない方の手で、とっ <br> さにペニスを隠した。 <br> 　 <br> それを見た佐織が、浩平に命令口調で言った。 <br> 「ちょっと、何でおチンチン隠してるのよ。おふろに入ってからずーっと隠し <br>  <>
+Be名無しさん<>sage<>04/06/26 17:47<> これは絶対にレスがもらえるコピペの類だな。 <>
+Be名無しさん<>sage<>04/06/26 18:03<> そりゃこんなに可愛かったら幼稚園児でも･･･ <br> http://exfnone1.nonemix.com/data/k_d/girlcom/gaz/k257/k257%20(1).jpg <br>  <>
+Be名無しさん<>sage<>04/06/26 18:03<> だからちゃんとエスケープしろって <>
+Be名無しさん<>sage<>04/06/26 18:04<> http://exfnone1.nonemix.com/data/k_d/girlcom/gaz/k257/k257%20%281%29.jpg <>
+Be名無しさん<>sage<>04/06/27 22:20<> OS作るのにはまったく興味ないんだが、 <br> TCP/IPスタックが作りたいなぁ。 <br>  <br> そういう人っている？ <>
+Be名無しさん<>sage<>04/06/27 22:22<> ReactOSを手伝ってやれ <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/06/28 00:08<> おかげさまで、例のバグ?の原因が特定できたので <br> うまくいっていないELFの再配置をしばらく寝かせて <br> HDD対応を開始してみました。 <br>  <br> PIOモードでの読み込みを目指して実装中です。 <br> 噂によると、FDCよりはだいぶ簡単らしいのでうまくいくといいなと <br> 期待しています。 <>
+858<>sage<>04/06/28 00:36<> そういえば、C Magazineの例のＯＳを作ろう記事内では、telnetを実装しているぞ。（作ったと言う事実のみ記載） <br> しかもソースコードはまだ公開していないし、Web公開になるとのこと。 <br> ソースコードは自由に利用可能らしいから、これは事件だ、父さん。 <br>  <br> Monaでメールを送受信できる日は近いかMona <br>  <>
+Be名無しさん<>sage<>04/06/28 02:40<> C Magazine買いました。 <br> いろいろと面白かったです。早くWeb公開しろヴォケー！！ <br> という感じです。ハイ。 <br>  <br> しがない一般プログラマですが、OS制作を始めてみました。 <br> ようやくC++でカーネルが動き出しましたよ。楽しいですね。 <>
+Be名無しさん<><>04/06/28 04:26<> またまた神ｷﾀ─ｗｗﾍ√ﾚｖｖ～(ﾟ∀ﾟ)─ｗｗﾍ√ﾚｖｖ～─ !! <>
+869<>sage<>04/06/28 04:37<> <a href="../test/read.cgi/os/1081561384/870" target="_blank">&gt;&gt;870</a> <br> え、漏れの事でつか？w <br> そんな凄くないです。結構Monaのコードやら <br> Cマガの記事とコードを参考にして、真似してますし…。 <br> フロッピーからブートして、ブートローダのFAT12テーブルを <br> 解析して、セカンドブートを読み込む処理とかは <br> 自力で何とか書ききりました。漏れも3rdなんとかの例外で <br> 死にまくりでした。実機でやってたらマシンぶっ壊してた <br> だろうなぁ…、と思うと怖いですね。w <br>  <br> マイクロカーネルでオブジェクト指向なOSとか楽しいかな、 <br> なんて思ってしまいます。うーん、まだまだ妄想の域を出ませんがw <br> とりあえずCマガに書いてあることぐらいはやりたいですね。 <br> 初めての486もアマゾンで注文しました。タネンバウム先生の本も <br> 買ってみようかなぁ、と思ってしまって、すっかりはまり気味です。 <>
+Be名無しさん<>sage<>04/06/28 12:52<> 以上わたもちでした <>
+Be名無しさん<>sage<>04/06/28 17:03<> <a href="../test/read.cgi/os/1081561384/870" target="_blank">&gt;&gt;870</a>がワザとくさ～いng <>
+Be名無しさん<><>04/06/28 17:19<> 少し質問なんですが、 <br> Intelのページング機構についてです。 <br> あるアドレスからページングが始まるとして、そのリニアアドレスの上位10ビットは、全て同じ値に <br> なるということでしょうか。(例えば0x080) <br> そこから何か読み取る必要がある場合、上位10ビットの値にしたがって、 <br> ページディレクトリの0x80のエントリを選択するということでしょうか。 <br>  <br> それとも全くの見当違いでしょうか。 <>
+Be名無しさん<>sage<>04/06/28 21:22<> セグメンテーションとページングの動作は全く異なります <br>  <br> ---Segmentation <br> LinerAddr = SegmentationLogic( Selector, VirtualAddr ) <br>  <br> ---Paging <br>  PageDirOff = LinerAddr[31:22] <br>  PageEntOff = LinerAddr[21:12] <br>  Offset = LinerAddr[11:0] <br>  <br>  PhysicalPageEntTbl = PhysicalPageDirTbl + PageDirOff * 4; <br>  PhysicalAddr  = PhysicalPageEntTbl + PageEntOff * 4 + Offset; <br>  <br> PageDirTbl/PageEntTblを元に、下位12bit(offset)以外のビットは別物に変換されると <br>  <br> すまん、分りにくいな... 初めて～486でも読んで <br>  <br>  <>
+Be名無しさん<><>04/06/29 00:59<> いえ、わざわざ時間を割いていただき、本当に有難う御座います。 <>
+Be名無しさん<>sage<>04/06/29 16:53<> いや～んな空気 <>
+Be名無しさん<>sage<>04/06/29 18:49<> さてCﾏｶﾞの影響でOS厨が増えると思われるがどう思う？ <br>  <br> まぁ俺はカーネルなんて書ける気も技量もないけどさ <>
+Be名無しさん<>sage<>04/06/29 19:49<> <a href="../test/read.cgi/os/1081561384/878" target="_blank">&gt;&gt;878</a> <br> 中身は結構無理やりな部分もあるし、あんまりないと思うけどなぁ。 <br> ﾜｶﾝﾅｲ <>
+869<>sage<>04/06/29 19:54<> <a href="../test/read.cgi/os/1081561384/878" target="_blank">&gt;&gt;878</a> <br> ギクッ。すいませんごめんなさい。 <br> でもちょっと本気でやってみようかな、なんて思ったり。 <br>  <br> とりあえずその後影響を受けて本をいろいろと買ってみました。 <br> はじめて486、タネンバウム、Linuxブートローダーを読む(16,000円orz)。 <br> 今日、割り込み処理を書いて、キーが取得できるようになりました。 <br> わはーわはー。だけど、C-MagazineのOSの記事間違いだらけじゃない？ <br> 思いついた箇所を指摘してみるテスト。漏れも間違ってたら <br> 教えてください。 <br>  <br> ・P30、Table6 <br> int10h → int13h <br> 1以外=エラー → 0以外=エラー  <br>  <br> ・P39、List11(そもそもコンパイルエラー出まくり。) <br> addr_low → offsetL <br> addr_high → offsetH <br> ((t_idtitem*)IDT_BASE) + intbo → ((t_idtitem*)IDT_BASE) + intno <br> asm("lidt(%0) ": : "p" (p)); → ひげぽん氏は別関数にしてidtrのポインタを置いてる。 <br>  <br> いかがでしょうか？あと、紙面の都合上仕方がないかもしれませんが、 <br> I/O操作の関数のoutp、inpに関しての説明が一切無いのもどうかと思いました。 <>
+Be名無しさん<>sage<>04/06/29 19:59<> <a href="../test/read.cgi/os/1081561384/880" target="_blank">&gt;&gt;880</a> <br> まとめページとか作りませんか <>
+Be名無しさん<>sage<>04/06/29 20:25<> &gt;Cマガ <br> きっとあれだ。 <br> ゴーストライターがとりあえず記事書いて、 <br> プログラムは外注ちゅ。と。 <br>  <>
+Be名無しさん<>sage<>04/06/29 20:31<> やっぱこういう記事はKﾀｿとLﾀｿとSﾀｿとHﾀｿの共著で読みたいね <br> 続編の「GUIを作ろう」ではTﾀｿとBﾀｿの共著で(w <>
+Be名無しさん<>sage<>04/06/29 21:13<> 猫ﾀﾝに対して影で査問なんかしようとしないで、堂々とWikiで <br> 議論をすればいいのに。 <>
+Be名無しさん<>sage<>04/06/29 21:43<> <a href="../test/read.cgi/os/1081561384/884" target="_blank">&gt;&gt;884</a> <br> もっと詳しく <>
+Be名無しさん<>sage<>04/06/29 21:49<> <a href="../test/read.cgi/os/1081561384/885" target="_blank">&gt;&gt;885</a> <br> ＞あとでヒアリングさせてください。 - -ひげぽｎ <>
+Be名無しさん<>sage<>04/06/30 20:43<> おまいらほしいんだろ?p://www.ceres.dti.ne.jp/~toru2/story/fude1.html <>
+Be名無しさん<>sage<>04/06/30 20:50<> 読む時間がないので、ここにメモしておきますねp://www.rinku.zaq.ne.jp/musessou/otapuri1.html <br>  <>
+Be名無しさん<>sage<>04/06/30 20:52<> <a href="../test/read.cgi/os/1081561384/887" target="_blank">&gt;&gt;887</a> <br> すげー面白かったYO! <>
+Be名無しさん<>sage<>04/06/30 20:52<> <a href="../test/read.cgi/os/1081561384/888" target="_blank">&gt;&gt;888</a> <br> いまいち <>
+Be名無しさん<>sage<>04/06/30 22:48<> <a href="../test/read.cgi/os/1081561384/887" target="_blank">&gt;&gt;887</a> <br> 筆おろしで中田氏っていうのは男の夢だよな <br> しかも一番オナニーしまくってる中学時代に <>
+Be名無しさん<>sage<>04/06/30 23:14<> (´･ω･`)漏れの筆おろしの時は・・・ <br>  <br>  <br>  <br> ヽ(`Д´)ﾉうわぁぁぁぁん！！ <br>  <br>  <br>  <br> (´･ω･`)悪い事したなぁ・・・ <>
+Be名無しさん<>sage<>04/06/30 23:52<> <a href="../test/read.cgi/os/1081561384/892" target="_blank">&gt;&gt;892</a> <br> 憧れのあの子をﾚｲｰﾌﾟ? <>
+Be名無しさん<>sage<>04/06/30 23:55<> <a href="../test/read.cgi/os/1081561384/893" target="_blank">&gt;&gt;893</a> <br> 筆おろしがレイプって…… <br> あ、お前893だったか(w <>
+Be名無しさん<>sage<>04/06/30 23:59<> (´･ω･`)近からず遠からず、二人とも酒に酔ってあびゃびゃびゃびゃ <>
+Be名無しさん<>sage<>04/07/02 12:23<> タネンバウム難しいYO！ <br> 10ページも読むと眠くなるYO！ <br> orz...... <>
+Be名無しさん<>sage<>04/07/02 16:05<> 向いてないんじゃないかな <>
+Be名無しさん<>sage<>04/07/02 17:20<> (´･ω･`) <>
+Be名無しさん<>sage<>04/07/02 20:03<> <a href="../test/read.cgi/os/1081561384/897" target="_blank">&gt;&gt;897</a> <br> だってソース読めないんだもの。 <br> orz........... <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/07/03 00:29<> Mona PJ Wikiをご覧になっている方はご存知かもしれませんが <br> TinoさんがPE形式のバイナリとDLLをサポートするコードを書いてくださいました。 <br>  <br> 大変有益なコードなのでMonaに取り込みたいのですが一点だけ懸念事項があります。 <br> しばらくコードが整理できるまでは(方向性によっては今後ずっと)、Linux, FreeBSDなどで <br> Monaのビルドが出来なくなりそうです。 <br>  <br> 理由はLinux等のデフォルトツールではPEのバイナリを吐けないからです。 <br> (クロスコンパイラを用意する以外で方法等ご存知でしたらご教授いただければ幸いです。) <br>  <br> Linuxをメイン開発機として使っている、アクティブな開発者の方が <br> いないと思っていますので影響は少ないと予想していますが <br> 懸念点等ありましたらご指摘頂けると助かります。 <br>  <br> 特に何も無ければ、7/4(日)には取り込もうと考えています。 <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/07/03 13:31<> <a href="../test/read.cgi/os/1081561384/899" target="_blank">&gt;&gt;899</a>さん <br>  <br> タネンバウム本はソースを読むのは私も諦めました。 <br> 読み物の部分を斜め読みして、自分のOSで関連部分を実装するときに <br> 読み返すという感じでした。 <br>  <br> 初読ではとても理解できませんでした（笑） <br>  <br> 以上ご参考になれば幸いです。 <>
+869<>sage<>04/07/03 13:35<> C-Magazine P41List12 FDCに関するコードもコンパイルが通りません。 <br> 適当に直してみました。 <br>  <br> _fd_init関数 <br> MDMA_CLEAR → DMA_MASTER_CLEAR <br> SDMA_CLEAR → 0x0D (DMA_SLAVE_CLEARは未定義) <br> MDMA_CMD → DMA_MASTER_CMD <br> SDMA_CMD → 0x08 (DMA_SLAVE_CMDは未定義) <br> MDMA_MODE → DMA_MASTER_MODE <br> SDMA_MODE → DMA_SLAVE_MODE <br> MDMA_SINGLE_MASK → DMA_MASTER_SINGLEMASK <br>  <br> あと、割り込みに関するP39List11にも追加です。 <br> _os_intr_init関数の中で_os_intr_setは三つ引数を渡さなければ <br> なりませんが、二つしか書いていません。三つ目のselectorは <br> 通常、カーネルのコードセグメントを入れるようですね。 <br>  <br> 正直、ここまで間違っていると本当に <br> やる気あるんだろうかと思えてきます。 <br>  <br>  <>
+Be名無しさん<>sage<>04/07/03 16:16<> <a href="../test/read.cgi/os/1081561384/900" target="_blank">&gt;&gt;900</a> <br>  <br> ./configure --enable-pe <br>  <br> しない限りはLinuxでビルドできるようにして欲しい。 <>
+Be名無しさん<>sage<>04/07/03 17:34<> <a href="../test/read.cgi/os/1081561384/902" target="_blank">&gt;&gt;902</a> <br> そういうのはきちんと編集にフィードバックしてあげるべきではないかと。 <br>  <br> 漏れは読んでないので出来ないが。 <br>  <>
+899<>sage<>04/07/03 18:12<> とりあえず理論だけでもモノにしたいです。 <br> ということで、僕は熟読しちゃってます（ｗ <br> そうすれば、他のカーネル本とか読むのに基礎になりそうですし。 <br>  <br> これ読み終わったら徐々に自分で作ってみたいです。 <br> ある程度理論を抑えたら実践なんですかね？ <br> +αでLion本とか読みましたか？ <br>  <br> やっぱり実際にOS作った人の言葉だと参考になります。 <br> ありがとう、がんばります。 <>
+Be名無しさん<>sage<>04/07/03 23:14<> <a href="../test/read.cgi/os/1081561384/903" target="_blank">&gt;&gt;903</a> <br> Tino氏がMonaをWindowsの粗悪クローン化へ必死だから、そんな意見は <br> 受け入れられないと思うが。 <>
+Be名無しさん<>sage<>04/07/03 23:14<> あびゃろんもどきのグラフィック効果つけてくれたら射精しちゃう <>
+自称無職 </b>◆GDOUjSj73M <b><>sage<>04/07/04 01:18<> OSの理論てどこで学べば良いのか迷うよな。 <br> MLを利用してLinux関連で長けた人に質問してるけど、 <br> それくらいしか、わからないことが出てきたときの対処法がわからない。 <>
+Be名無しさん<><>04/07/04 02:57<> <a href="../test/read.cgi/os/1081561384/905" target="_blank">&gt;&gt;905</a> <br> 理論で＋αしたいなら「ＯＳの基礎と応用」かなぁ。 <br> 後は「構造化コンピュータ構成」辺りももうちょい広い視点から見れて良いよ。 <br> けど、時間が取れるなら実装挟んだ方がより効果的だと思う。時間掛かるけど。 <br>  <>
+Be名無しさん<>sage<>04/07/04 03:10<> タネンバウムの分散システムは正直、読まないでいい。時間の無駄 <>
+Be名無しさん<><>04/07/04 03:27<> つまらない話ですがwinceのソースコードを改良でいてＰＣで実行することは <br> 可能ですか？ <>
+869<>sage<>04/07/04 13:32<> <a href="../test/read.cgi/os/1081561384/904" target="_blank">&gt;&gt;904</a> <br> 了解、今編集部に連絡を入れておきました。 <br> 「連絡をくれたお礼に定期購読一年分プレゼント」 <br> とかしてくれるとこっちは非常にありがたいのですがw <>
+Be名無しさん<>sage<>04/07/04 13:42<> <a href="../test/read.cgi/os/1081561384/911" target="_blank">&gt;&gt;911</a> <br> 改良しなくてもプラットホームビルダの出力でそのまま動作可能 <br>  <>
+Be名無しさん<>sage<>04/07/04 14:12<> Cマガに影響されてアセンブラ書いてるんだけど、動きません。。。 <br>  <br> 　moveax, cr0 <br> 　oreax, 1 <br> 　movcr0, eax <br> 　jmp0x1000:somewhere <br> somewhere: <br>  <br> このコードの先頭が0x10000にロードされているのは確認したんですが、jmpするとどこかにとんでっちゃう。 <br> プロテクトモードに切り替えるとこがわけわからなすぎ。。。というか記事抜けてるよね。 <br> 誘導かデバッグのヒントだけでも教えていただけるとうれしいです。 <>
+suzu  </b>◆I/dfyDUdrg <b><>sage<>04/07/04 15:01<> <a href="../test/read.cgi/os/1081561384/914" target="_blank">&gt;&gt;914</a> <br> C マガは読んでいませんが、 <br>  <br> 　jmp 0x1000:somewhere  <br> somewhere: <br>  <br> この場合、プロテクトモードではセグメントではなく、 <br> セレクタを指定する必要があります。 <br> そのコードの前に <br>  <br>   lgdt [gdt_reg_data] <br>  <br> で GDT のベースアドレス値・リミット値を CPU に読み込んでから <br> (GDT の内容はどこかに資料があるとおもいます)、 <br> 例えばコード用のセレクタを 0x0008 にした場合は <br>  <br>   jmp 0x0008:somewhere <br> somewhere: <br>  <br> のようにするといけるはずです。 <br>  <br> このときの somewhere はプレフィックスがないと <br> 16-bit に制限されてしまいますので、ベース 0、 <br> オフセット 0x10000 にしたいのであれば <br> プレフィックスも必要です。 <br> 確か db 0x66 を直前につけると 32-bit になったような。 <br>  <>
+Be名無しさん<>sage<>04/07/04 15:04<> Cマガ買わなくて正解? <>
+869<>sage<>04/07/04 15:24<> <a href="../test/read.cgi/os/1081561384/916" target="_blank">&gt;&gt;916</a> <br> どうとは言い難いけど、買ったところで現段階では <br> 役立たずなのは確かです。ソースコードがCD-ROMプレスに <br> 間に合わなかったそうで、Part3(カーネル作成)、Part4(シェルとか)の <br> 部分は入っていません。かと言って、記事の内容を見るだけで <br> 何かできるかと言われればまず無理です。僕が書いたように <br> 結構間違いもありますし、説明が(紙面不足から)足りていない <br> 気がします。 <>
+914<>sage<>04/07/04 16:19<> <a href="../test/read.cgi/os/1081561384/915" target="_blank">&gt;&gt;915</a> <br> ぉぉぉ、ようやく1MBの領域にジャンプできました～！ありがとうございます！ <br>  <br> 結局、0x10000に2ndローダを置いてしまうと jmp でアドレス指定ができなくなって混乱するので <br> 0x1000 にロードするようにして、jmp 0x8:0x1000+somewhere としたら上手くできました。 <br>  <br> 次はCでコンパイルしたカーネルのロード。。。 <>
+Be名無しさん<>sage<>04/07/04 20:46<> <a href="../test/read.cgi/os/1081561384/900" target="_blank">&gt;&gt;900</a> <br> monoはLinux上でPEはき出してますね <>
+Be名無しさん<>sage<>04/07/04 21:11<> <a href="../test/read.cgi/os/1081561384/919" target="_blank">&gt;&gt;919</a> <br> まあbfdはcoff対応してるし、別に難しいことではないですな。 <br> ただ、PECOFF=Win32バイナリつー前提がそこら中にあるので、 <br> not Winな環境で使うメリットがどれだけあるのか少々疑問です。 <br>  <>
+Be名無しさん<>sage<>04/07/04 22:54<> <a href="../test/read.cgi/os/1081561384/919" target="_blank">&gt;&gt;919</a> <br> Monoはネイティブ形式でPEを吐けないので例に出すのはどうかと思う。 <br> 所詮は昔のVBのような中間言語"リソース"付きの実行ファイルもどきだし。 <>
+899<>sage<>04/07/05 14:04<> そっかー、理論だけより実践も重要なんですね。 <br> Cマガジンがイイと思って買ったのに（ｒｙ <br>  <br> 昔のUNIXとかLinuxのソースを読むようにしまつ。 <br> て、読めるのか＞おいら。 <br> 不安だ。 <>
+Be名無しさん<>sage<>04/07/05 14:07<> Minixを読もう <>
+Be名無しさん<><>04/07/05 14:46<> MINIX読めない。 <br> 解説ありでも読めない。 <>
+Be名無しさん<>sage<>04/07/05 15:53<> 「まったく・・・わたくしが本物の光明寺茉衣子ですのよ！これは絶対的な真実で <br> す！」 <br> 「何を言ってらっしゃるのですか、わたくしこそ本物です！デタラメを言うもので <br> はありません！あの白衣の最凶最悪男のようですわ！」 <br>  <br> 先ほどから、こんな感じでずっと、自分が本物だと主張する茉衣子二人。 <br> いつものように黒いワンピースで身を包んでいる茉衣子二人の違いといえば、若菜 <br> が二人につけたリボンくらいだ。 <br> 水色のリボンの茉衣子が、ピンクリボンの茉衣子につかみかかる。 <br> ワンピースの首筋から手を差し入れて、胸に手を入れる水色茉衣子。 <br>  <br> 「そもそも、わたくしの胸はそんなに小さくないのですわ！もっと大きくて綺麗な <br> 形をしております！」 <br>  <br> そう言って、水色茉衣子がピンク色茉衣子の胸を手で覆うようにする。 <br>  <>
+914<>sage<>04/07/05 17:50<> CマガのソースってMonaのソースと被ってる。。。 <br> pic_init() とか、Cマガって和訳しただけのような。 <br> こーゆーのってここまで似るほどセオリーがあるのかなぁ。 <>
+Be名無しさん<>sage<>04/07/05 18:35<> ハードの初期化なんかは手順が決まっているので、 <br> 誰が作っても同じになることがよくありまふ。 <br>  <br> 件のソースは見てないので一般論。 <br>  <>
+Be名無しさん<>sage<>04/07/05 19:24<> 俺の趣味プロは関数名全部アニメのキャラクター名だぜﾋｬｰﾊｰ <>
+Be名無しさん<>sage<>04/07/05 19:25<> うっかり公開してobjdumpされてから焦るんだろうな <>
+Be名無しさん<>sage<>04/07/05 19:39<> stripしておけばへーき。 <br> 自前の.soがあったら… <br>  <>
+Be名無しさん<>sage<>04/07/05 20:37<> <a href="../test/read.cgi/os/1081561384/926" target="_blank">&gt;&gt;926</a> <br> Monaだってどっかのを参考にしているわけであってさ、 <br> ブートなんてそんなもんと割りきった方が良い。 <br>  <br> 大体やることは決まっているわけで、それ以外どう変えろというのかと。 <br> ブート機構はパクってなんぼの世界とか言って見るテスト <>
+Be名無しさん<>sage<>04/07/05 21:38<> OSレベルでガベージコレクションを採用しているOSってこれ？ <>
+Be名無しさん<>sage<>04/07/05 21:41<> いや、あれです。 <>
+Be名無しさん<>sage<>04/07/05 21:47<> MonaがカーネルサービスとしてGCを採用したら趣味OSの域を脱するな <br>  <>
+Be名無しさん<>sage<>04/07/05 21:49<> タネンバウムを越えられるか、ひげ <>
+Be名無しさん<>sage<>04/07/05 22:02<> 劣化Win化せずに実用化に向けた何かを作って欲しかった orz <>
+Be名無しさん<>sage<>04/07/05 22:18<> 俺の予想通り"劣化"という単語が流行って来たﾅ <br>  <br> Monaが劣化Winだとは思わないがな、まだそれにすら届いてないのによ… <br>  <br> も舞らｶﾙｼｳﾑ不足だな、牛乳と魚をちゃんと食え <>
+Be名無しさん<>sage<>04/07/05 22:24<> OSを作るのが目的だからな <br> Hello World OSでも十分だ <>
+914<>sage<>04/07/05 23:03<> <a href="../test/read.cgi/os/1081561384/927" target="_blank">&gt;&gt;927</a><a href="../test/read.cgi/os/1081561384/931" target="_blank">&gt;&gt;931</a> <br> なるほど、確かにそうみたい。 <br> Mona、Cマガよりよっぽど参考になるんだけど、qemu で止まる。 <br>  <>
+Be名無しさん<>sage<>04/07/05 23:22<> GCを採用したOSというとROM-BASICですか? <>
+Be名無しさん<>sage<>04/07/05 23:26<> <a href="../test/read.cgi/os/1081561384/939" target="_blank">&gt;&gt;939</a> <br> 月刊誌の一特集として取り上げているわけで、現実的にあれだけ制限されたページ数で <br> まともなものを期待するのは明らかに間違いってことさ。 <br> だってたったあれだけのページにまともな事を書けるなら、OSなんて簡単の域ではないほど簡単じゃん。 <br>  <br> ただし本当に簡単なOSを作るという意味で、またOS初心者がOSを製作する土台としては充分すぎるほどの役割を果していると考えてよい。 <br> そういう面で、このスレにいる人間には物足りない可能性は非常に高いのも事実である。 <br>  <br> ただこの特集をきっかけに例えば「初めて読む486」などでさらに勉強を進めて頂きたいというのが、墨染さんの狙いだと思う。 <br>  <br> ひとつ気になるのは、実はtelnetを実装しているということだ。 <>
+Be名無しさん<>sage<>04/07/05 23:45<> <a href="../test/read.cgi/os/1081561384/941" target="_blank">&gt;&gt;941</a> <br> リモートデバッグ <>
+914<>sage<>04/07/06 03:59<> <a href="../test/read.cgi/os/1081561384/941" target="_blank">&gt;&gt;941</a>まあ速くコード全部公開して欲しいね。 <br>  <br> ところで割り込みで躓いてしまったんで教えて欲しいです。 <br> キーボードの割り込みは0x9らしいんだけど、IDTには61のエントリとして登録しないと動きません。 <br> 実際、Monaを見ると、0x60-67がirq0-7で0x28-2Fがirq8-15みたいに書いてあります。 <br> 何でこんなことになってるんでしょう。。。 <br> Intelのマニュアルとか一日読んでもさっぱりなんで誰か教えて。。。 <>
+914<>sage<>04/07/06 04:03<> 追記 <br> キーボード割り込みは0x9でなくて0x1でした。Cマガでは9みたいにかいてあるんだけど。 <br> んで書いたとおりirq01はirq0x61みたいに書かなきゃいけないみたいなんです。謎。 <>
+Be名無しさん<>sage<>04/07/06 07:51<> <a href="../test/read.cgi/os/1081561384/943" target="_blank">&gt;&gt;943</a> <br> irq と割り込みベクタ(int)の番号は別。 <br> irq と割り込みベクタの対応は、割り込みコントローラに設定する。 <br>  <br> Mona だと pic.cpp で設定していて irq0 を int 0x60 へ irq8 を int 0x28 へマップする。 <br> irq0 を int 0x60 へマップすると順に irq1 は int 0x61 へ、irq 7 は int 0x67 へ。 <br> irq8 を int 0x28 へマップすると順に irq9 は int 0x29 へ、irq f は int 0x2f へ。 <br> int 0x00 ～ int 0x1f まではインテル予約なんで使っちゃ駄目。 <br>  <br>     /* master */ <br>     outp8(0x20, 0x11); /* ICW1 */ <br>     outp8(0x21, 0x60); /* ICW2 */ /* IRQ 0h = int 60h */ <br>     outp8(0x21, 0x04); /* ICW3 */ <br>     outp8(0x21, 0x01); /* ICW4 */ <br>  <br>     /* slave */ <br>     outp8(0xa0, 0x11); /* ICW1 */ <br>     outp8(0xa1, 0x28); /* ICW2 */ /* IRQ  8h = int 28h */ <br>     outp8(0xa1, 0x02); /* ICW3 */ <br>     outp8(0xa1, 0x01); /* ICW4 */ <br>  <>
+945<>sage<>04/07/06 08:02<> あ、そうだ。 <br> 参照はこの辺。 <br>  <br> http://www.cqpub.co.jp/hanbai/books/34/34331.htm <br> http://www.cqpub.co.jp/column/books/2001a/34331PC_Legacy/default.htm <br>  <>
+914<>sage<>04/07/06 10:30<> <a href="../test/read.cgi/os/1081561384/945" target="_blank">&gt;&gt;945</a> <br> ぉぉぉ、なるほど・・・。参照先のページまでたどり着いてたのに理解できなかったよ。 <br> これからじっくり読んでみる。さんくす～ <>
+Be名無しさん<><>04/07/06 13:53<> qemu対応まd(ry <>
+ひげぽん </b>◆Ngzcp/NZpA <b><>sage<>04/07/06 22:14<> <a href="../test/read.cgi/os/1081561384/903" target="_blank">&gt;&gt;903</a>さん <br> すいません。 <br> すぐには実現できそうにもありません。 <br>  <br> <a href="../test/read.cgi/os/1081561384/900" target="_blank">&gt;&gt;900</a>の件 <br>  <br> 議論の結果、TinoさんのDLLコードを取り込むことにしました。 <br> 最終判断はひげぽんがしました。 <>
+Be名無しさん<>sage<>04/07/07 16:22<> GNU/Linuxではもう二度とビルドできなくなるのねん。 <br>  <br> http://haiku-os.org/factory/ <br> みたいなもんをMona用に用意してくださる御方なんていないよね。いないね。 <>
+Be名無しさん<>sage<>04/07/07 18:11<> Monaの特徴のところ書き直したほうがいいかも <br> Win互換路線で行くんでしょ？ <>
+Be名無しさん<>sage<>04/07/07 18:14<> <a href="../test/read.cgi/os/1081561384/951" target="_blank">&gt;&gt;951</a> <br> EXE・DLLに脊髄反射してる馬鹿ハケーン <>
+Be名無しさん<>sage<>04/07/07 18:16<> 見てみてMonaで秀丸動くよ～ってレスが出たらこのスレは死滅だな <>
+Be名無しさん<>sage<>04/07/07 18:20<> 見てみてMonaで秀丸動くよ～ <br>  <>
+Be名無しさん<>sage<>04/07/07 18:20<> NWSOSはずっと前からEXE・DLLを使ってるけど誰もWin互換と思わない。 <br> MonaはEXE・DLLを採用したとたんWin互換と思われて劣化ウラン弾扱い。 <br> なんじゃこりゃ……。 <>
+Be名無しさん<>sage<>04/07/07 18:21<> <a href="../test/read.cgi/os/1081561384/954" target="_blank">&gt;&gt;954</a> <br> ネタにネタレスかこいい <>
+Be名無しさん<>sage<>04/07/07 18:22<> 見てみて秀丸でMona動くよ～ <>
+Be名無しさん<>sage<>04/07/07 18:23<> 次スレ（なぜかずっと前から建ってる） <br> ttp://pc5.2ch.net/test/read.cgi/os/1083420872/ <>
+Be名無しさん<>sage<>04/07/07 18:27<> <a href="../test/read.cgi/os/1081561384/951" target="_blank">&gt;&gt;951</a> <br> 単なるコンパイラの都合で窓互換と一切関係ない <>
+Be名無しさん<>sage<>04/07/07 18:35<> <a href="../test/read.cgi/os/1081561384/950" target="_blank">&gt;&gt;950</a> <br> クロスコンパイラでの検証と導入のノウハウをまとめてくれる人が参加するまで放置プレイってことみたい。 <>
+Be名無しさん<>sage<>04/07/07 18:41<> <a href="../test/read.cgi/os/1081561384/960" target="_blank">&gt;&gt;960</a> <br>  <br> んな香具師いるわきゃーない <br> 　↓ <br> GNU/Linuxではもう二度とビルドできなくなる <br> 　↓ <br> 劣化Win化 <br> 　↓ <br> (･∀･)開発終了!! <>
+Be名無しさん<>sage<>04/07/07 18:44<> 見てみてMonaで秀丸動くよ～ <>
+Be名無しさん<>sage<>04/07/07 18:44<> 誰か秀丸マクロでレイトレーシングレンダラ書いてくれないかな <>
+Be名無しさん<>sage<>04/07/07 18:46<> 見てみてMonaで秀丸動くよ～ <>
+Be名無しさん<>sage<>04/07/07 18:46<> さっきゅん荒らすな <>
+Be名無しさん<>sage<>04/07/07 18:48<> このスレってこんなに犬厨度高かったっけ？ <br> 議論に参加せずに結論出てからうだうだ言うなって。 <>
+Be名無しさん<>sage<>04/07/07 18:49<> ライセンスについて <br>  <br> 秀丸エディタ／秀Termなどは、ソフトを利用するお客様が、直接当社指定の <br> 方法にて送金し、暗証（＝使用許諾）を受け取る形式になっています。 <br>  <>
+Be名無しさん<>sage<>04/07/07 18:50<> 次スレ（なぜかずっと前から建ってる） <br> ttp://pc5.2ch.net/test/read.cgi/os/1083420872/ <>
+Be名無しさん<>sage<>04/07/07 18:51<> さては荒らしてるのはさっきゅんに見せかけたhesoか <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/07/07 19:44<> <a href="../test/read.cgi/os/1081561384/955" target="_blank">&gt;&gt;955</a> <br> NWSOSは拡張子がexe＋dllなだけで中はsmx3って形式です。 <br> でもそういう微妙なWin臭さから劣化Winとはよく言われてましたね。 <br>  <br> <a href="../test/read.cgi/os/1081561384/961" target="_blank">&gt;&gt;961</a> <br> どちらかと言うと、犬の人はむしろそういうプレイが好きそうなイメージが。 <br>  <br> ところで実際に劣化Winを目指す場合はPEサポートの他に <br> Winの偽者DLLを増やしてくだけでイイんでしょうか。 <br> だけっつってもかなりの手間でしょうが。 <>
+Be名無しさん<>sage<>04/07/07 20:02<> 完璧なクロスコンパイル環境を取りそろえたOSにしよう <br> GUIライブラリも完備してさ <>
+Be名無しさん<>sage<>04/07/07 20:03<> <a href="../test/read.cgi/os/1081561384/970" target="_blank">&gt;&gt;970</a> <br> ＞ところで実際に劣化Winを目指す場合はPEサポートの他に <br> ＞Winの偽者DLLを増やしてくだけでイイんでしょうか。 <br> ReactOSの経過を調べてみれば分かるんじゃない？ <>
+Be名無しさん<>sage<>04/07/07 20:03<> <a href="../test/read.cgi/os/1081561384/971" target="_blank">&gt;&gt;971</a> <br> 言い出しっぺの法則 <>
+Be名無しさん<>sage<>04/07/07 20:14<> <a href="../test/read.cgi/os/1081561384/970" target="_blank">&gt;&gt;970</a> <br> つまり文句だけ言って手を動かさない香具師は真の犬草じゃないってことだね <>
+Be名無しさん<>sage<>04/07/07 20:19<> <a href="../test/read.cgi/os/1081561384/974" target="_blank">&gt;&gt;974</a> <br> 草が糞って偶蹄目かよ! <>
+Be名無しさん<>sage<>04/07/07 20:34<> <a href="../test/read.cgi/os/1081561384/970" target="_blank">&gt;&gt;970</a> <br>  <br> SMが好きなのか。みしぇるは。 <br>  <>
+Be名無しさん<>sage<>04/07/07 20:36<> OS板とかUNIX板って、人が少ないせいか空気が良いよね。 <br> 他の荒んだ板を見てｵﾓﾀ。 <>
+Be名無しさん<>sage<>04/07/07 20:38<> 次スレ（なぜかずっと前から建ってる） <br> ttp://pc5.2ch.net/test/read.cgi/os/1083420872/ <>
+Be名無しさん<><>04/07/07 20:40<>  <br> 　　　　　　　　まもなくここは　乂1000取り合戦場乂　となります。  <br>  <br> 　 　 　 ＼∧＿ﾍ　　　　　／￣￣￣￣￣￣￣￣￣￣￣￣  <br> 　,,､,､,,,　/ ＼〇ノゝ∩ ＜　1000取り合戦、いくぞｺﾞﾙｧ！！　　　　　　　,,､,､,,,  <br> 　　　　/三√ ﾟДﾟ)　/　　 ＼＿＿＿＿＿＿＿＿＿＿＿＿　　,,､,､,,,  <br> 　　 　　/三/| ﾟＵﾟ|＼　　　　　　,,､,､,,,　　　　　　　　　　　　　　　　　　　　　　　,,､,､,,,  <br> 　,,､,､,,,　Ｕ （:::::::::::）　　,,､,､,,,　　　　　　　　　＼オーーーーーーーッ！！／  <br> 　　 　 　//三/|三|＼　　　　　∧＿∧∧＿∧ ∧＿∧∧＿∧∧＿∧∧＿∧  <br> 　　　　　　∪　 ∪　　　　　　 （　　　　）　　　 （　　　　 ）　　　（　　　　）　　　 ）  <br> 　,,､,､,,,　　　　　　　,,､,､,,,　　∧＿∧∧＿∧∧＿∧ ∧＿∧∧＿∧∧＿∧∧＿∧  <br> 　　　　　　,,､,､,,,　　　　　　 （　　　　）　　　 （　　　　）　　　 （　　　　）　　　 （　　　　） <>
+</b> ◆54q7Px4hDk <b><>sage<>04/07/07 20:40<> OS板より他はあんまり行かなかったりしますが(´д｀) <br>  <br> そろそろ次スレへ移住かな? <>
+Be名無しさん<>sage<>04/07/07 20:42<> <a href="../test/read.cgi/os/1081561384/976" target="_blank">&gt;&gt;976</a> <br> OS板でみしぇると言えばQEMUの中の人 <>
+Be名無しさん<>sage<>04/07/07 20:43<> 982 <>
+Be名無しさん<>sage<>04/07/07 20:44<> <a href="../test/read.cgi/os/1081561384/981" target="_blank">&gt;&gt;981</a> <br> 何故か最近みしぇる=MASKということになっているらしい <>
+Be名無しさん<>sage<>04/07/07 20:46<> <a href="../test/read.cgi/os/1081561384/983" target="_blank">&gt;&gt;983</a> <br> それだけ実力が高く評価されてるってこと？ <>
+Be名無しさん<>sage<>04/07/07 20:47<> <a href="../test/read.cgi/os/1081561384/984" target="_blank">&gt;&gt;984</a> <br> 理由はよく分からないけどこれが関係していそうな希ガス <br> http://www.freeoszoo.org/img/qemu_icon.png <>
+Be名無しさん<>sage<>04/07/07 20:48<> <a href="../test/read.cgi/os/1081561384/985" target="_blank">&gt;&gt;985</a> <br> なるへそ <>
+Be名無しさん<>sage<>04/07/07 20:48<> <a href="../test/read.cgi/os/1081561384/986" target="_blank">&gt;&gt;986</a> <br> hesohesoハケーン! <>
+Be名無しさん<>sage<>04/07/07 20:48<> <a href="../test/read.cgi/os/1081561384/987" target="_blank">&gt;&gt;987</a> <br> そんな下衆と一緒にすんな <>
+hesoheso<>sage<>04/07/07 20:50<> ボクちゃん酷い言われようでまいっちんぐぅ～☆ <>
+Be名無しさん<>sage<>04/07/07 20:51<> <a href="../test/read.cgi/os/1081561384/984" target="_blank">&gt;&gt;984</a> <br>  <br> もまい、フリーダムファイターの実力を知らないだろう。 <>
+Be名無しさん<>sage<>04/07/07 20:54<> <a href="../test/read.cgi/os/1081561384/989" target="_blank">&gt;&gt;989</a> <br> いや、2通りの解釈が出来る。 <br>  <br> 1. <a href="../test/read.cgi/os/1081561384/988" target="_blank">&gt;&gt;988</a>==heso <br> <a href="../test/read.cgi/os/1081561384/986" target="_blank">&gt;&gt;986</a>→下衆 <br>  <br> 2. <a href="../test/read.cgi/os/1081561384/988" target="_blank">&gt;&gt;988</a>!=heso <br> heso→下衆 <br>  <br> <a href="../test/read.cgi/os/1081561384/989" target="_blank">&gt;&gt;989</a>==hesoだとすれば、<a href="../test/read.cgi/os/1081561384/988" target="_blank">&gt;&gt;988</a>!=hesoの可能性が高いかもしれないが <>
+Be名無しさん<>sage<>04/07/07 20:55<> <a href="../test/read.cgi/os/1081561384/990" target="_blank">&gt;&gt;990</a> <br> その神と同一視されるくらいmaskが高く買われてるって意味じゃない？ <>
+Be名無しさん<>sage<>04/07/07 20:56<> いや、みしぇるは神と言うか、、えーっと、ﾓﾆｮﾓﾆｮ <>
+Be名無しさん<>sage<>04/07/07 20:56<> <a href="../test/read.cgi/os/1081561384/992" target="_blank">&gt;&gt;992</a> <br>  <br> 神だよ彼は。自由の戦士みしぇるだもん。 <>
+Be名無しさん<>sage<>04/07/07 20:59<> じーんみしぇるぱぅあー <>
+Be名無しさん<>sage<>04/07/07 20:59<> フランス読みは？ <>
+Be名無しさん<>sage<>04/07/07 20:59<> そろそろ卑下が1000get体制に入ったところかな? <br> 前みたいにさっきゅんに取られるに1ｴﾛｹﾞ <>
+Be名無しさん<>sage<>04/07/07 21:00<> 自由の1000 <br>  <>
+</b> ◆nl7ClMRWE6 <b><>sage<>04/07/07 21:01<> 1000か999か <>
+Be名無しさん<>sage<>04/07/07 21:01<> 残念、俺が取るに100フラゲ <>
+１００１<><>Over 1000 Thread<>このスレッドは１０００を超えました。 <br> もう書けないので、新しいスレッドを立ててくださいです。。。 <>
