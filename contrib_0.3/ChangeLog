@@ -16,6 +16,8 @@
 
         * Graphics/libgui/System/Mona/Forms/ScrollBar.cpp: 新規追加
 
+        * Multimedia/monappt: jpegdemoを使わずにjpegファイルを表示するように修正
+
 2005-08-21  higepon  <higepon@users.sourceforge.jp>
 
         * Multimedia/jpegls:新規追加 
