@@ -1,3 +1,9 @@
+2005-08-24  higepon  <higepon@users.sourceforge.jp>
+
+        * Multimedia/jpegls:削除
+
+        * Graphics/libjpegls/jpegls.cpp (CJPEGLS): バグ修正
+
 2005-08-23  bayside
 
         * Graphics/libbaygui/baygui/lang/String.h: コメント修正

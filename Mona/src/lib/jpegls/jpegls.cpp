@@ -5,6 +5,7 @@
  */
 
 
+#include <monapi.h>
 #include <jpegls.h>
 
 //ジグザグテーブル
@@ -25,7 +26,7 @@ static int zigzag_table[]={
 CJPEGLS::CJPEGLS()
 {
     init();
-    decode_init();
+//    decode_init(); こいつをよんじゃぁだめ。by higepon
 }
 CJPEGLS::~CJPEGLS()
 {
@@ -71,6 +72,8 @@ unsigned char CJPEGLS::get_byte(void)
 }
 unsigned short CJPEGLS::get_word(void)
 {
+//    printf("%s:%d\n", __func__, __LINE__);
+
     unsigned char h,l;
 
     h = get_byte();
@@ -115,7 +118,6 @@ void CJPEGLS::sof(void)
 {
     unsigned char c,n;
     int i,h,v;
-
     //printf("--- SOF ---\n");
 
     c = get_word();
@@ -327,7 +329,6 @@ int CJPEGLS::header(void)
 int CJPEGLS::decode_init(void)
 {
     int i,j;
-
     for(i=0;i< scan_count;i++) {
         // i:scan
         for(j=0;j< compo_count;j++) {
@@ -559,6 +560,7 @@ int CJPEGLS::decode_huff(int scan,int *block)
 void CJPEGLS::mcu_bitblt(int *src,int *dest,int width,
                        int x0,int y0,int x1,int y1)
 {
+
     int w,h,t;
     int x,y,x2,y2;
     int dx,dy;

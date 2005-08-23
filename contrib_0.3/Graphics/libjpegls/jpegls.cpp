@@ -25,7 +25,8 @@ static int zigzag_table[]={
 CJPEGLS::CJPEGLS()
 {
     init();
-    decode_init();
+// ‚±‚±‚ÅŒÄ‚ñ‚Å‚Í‚¢‚¯‚È‚¢ by higepon
+//    decode_init();
 }
 CJPEGLS::~CJPEGLS()
 {
