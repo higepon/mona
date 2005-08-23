@@ -158,7 +158,7 @@ namespace baygui {
 		}
 		
 		/* タイマー停止 */
-		kill_timer(timerID);
+		kill_timer(this->timerID);
 		
 		/* GUIサーバーから自分を抹消する */
 		monapi_register_to_server(ID_GUI_SERVER, MONAPI_FALSE);
@@ -216,7 +216,7 @@ namespace baygui {
 		
 	#if defined(MONA)
 		if (duration < 10) duration = 10;
-		timerID = set_timer(duration);
+		this->timerID = set_timer(duration);
 	#elif defined(SDL)
 		if (duration <= 0) duration = 1;
 		globalTimerID = SDL_AddTimer(duration, sdl_timer_callback, NULL);
@@ -475,7 +475,7 @@ namespace baygui {
 					MonAPI::Message::reply(&info);
 					return;
 				case MSG_TIMER:
-					kill_timer(info.arg1);
+					kill_timer(this->timerID);
 					dispatchEvent(&this->timerEvent);
 					break;
 				default:

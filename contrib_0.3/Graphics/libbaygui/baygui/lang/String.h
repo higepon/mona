@@ -118,24 +118,28 @@ namespace baygui {
 		/**
 		 指定された文字が出現する先頭からの位置を得る
 		 @param ch 文字
+		 @param from 開始位置
 		*/
 		int indexOf(char ch, int from = 0) const;
 		
 		/**
 		 指定された文字列が出現する先頭からの位置を得る
 		 @param value 文字列
+		 @param from 開始位置
 		*/
 		int indexOf(const String& value, int from = 0) const;
 		
 		/**
-		 指定された文字列が出現する終端からの位置を得る
-		 @param value 文字列
+		 指定された文字が出現する終端からの位置を得る
+		 @param ch 文字
+		 @param from 開始位置
 		*/
 		int lastIndexOf(char ch, int from = -1) const;
 		
 		/**
 		 指定された文字列が出現する終端からの位置を得る
 		 @param value 文字列
+		 @param from 開始位置
 		*/
 		int lastIndexOf(const String& value, int from = -1) const;
 		

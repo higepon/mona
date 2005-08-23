@@ -1,3 +1,21 @@
+2005-08-23  bayside
+
+        * Graphics/libbaygui/baygui/lang/String.h: ƒRƒƒ“ƒgC³
+
+        * Graphics/libbaygui/awt/Window.cpp: info.arg1 -> this->timerID
+
+        * Graphics/libgui/gui/System/Mona/Forms/ScrollbableControl.h: V‹K’Ç‰Á
+
+        * Graphics/libgui/gui/System/Mona/Forms/ScrollBar.h: V‹K’Ç‰Á
+
+        * Graphics/libgui/gui/System/Mona/Forms/HScrollBar.h: V‹K’Ç‰Á
+
+        * Graphics/libgui/gui/System/Mona/Forms/VScrollBar.h: V‹K’Ç‰Á
+
+        * Graphics/libgui/System/Mona/Forms/ScrollbableControl.cpp: V‹K’Ç‰Á
+
+        * Graphics/libgui/System/Mona/Forms/ScrollBar.cpp: V‹K’Ç‰Á
+
 2005-08-21  higepon  <higepon@users.sourceforge.jp>
 
         * Multimedia/jpegls:V‹K’Ç‰Á 
