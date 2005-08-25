@@ -146,6 +146,10 @@ arch_save_thread_registers2:
         mov dword[ebx + 48], eax
         ret
 .from_user:
+        mov eax, dword[esp + 64] ; save ss3
+        mov dword[ebx + 60], eax
+        mov eax, dword[esp + 60] ; save esp3
+        mov dword[ebx + 28], eax
         mov eax, dword [esp + 48]; save eip
         mov dword[ebx], eax
         mov eax, dword [esp + 52]; save cs
