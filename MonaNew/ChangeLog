@@ -1,3 +1,7 @@
+2005-08-26  higepon  <higepon@users.sourceforge.jp>
+
+        * src/kernel/core.asm :arch_save_thread_registers2で正しくスレッド情報が保存できていないバグを修正。(thanks Philip Lawatsch)
+
 2005-08-22  higepon  <higepon@users.sourceforge.jp>
 
         * core/process_server/main.cpp (ExecuteFile): deleteバグ修正。
