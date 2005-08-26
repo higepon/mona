@@ -190,7 +190,6 @@ arch_switch_thread_to_user1:
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
-        mov esp, dword[ebx + 28]     ; restore esp
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
@@ -220,7 +219,6 @@ arch_switch_thread_to_user2:
         mov eax, dword[ebx + 12]     ; restore eax
         mov ecx, dword[ebx + 16]     ; restore ecx
         mov edx, dword[ebx + 20]     ; restore edx
-        mov esp, dword[ebx + 28]     ; restore esp
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
