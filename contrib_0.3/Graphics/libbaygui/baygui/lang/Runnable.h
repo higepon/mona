@@ -24,18 +24,26 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !defined(_RUNNABLE_H_INCLUDED_)
 #define _RUNNABLE_H_INCLUDED_
 
-/** スレッドインターフェース */
-class Runnable {
-protected:
-	bool running;
-	
-public:
-	Runnable()
-	{
-		this->running = true;
-	}
-	
-	virtual void run() = 0;
-};
+namespace baygui {
+	/** スレッドインターフェース */
+	class Runnable {
+	protected:
+		/** 実行中フラグ */
+		bool running;
+		
+	public:
+		/** デフォルトコンストラクタ */
+		Runnable()
+		{
+			this->running = true;
+		}
+		
+		/** スレッドを起動する（自動的に呼ばれる） */
+		virtual void run() = 0;
+		
+		/** スレッドを停止する */
+		inline void stop() { this->running = false; }
+	};
+}
 
 #endif // _RUNNABLE_H_INCLUDED_

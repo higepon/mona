@@ -42,5 +42,5 @@ public:
 	void execute();
 	
 	/** イベントハンドラ */
-	virtual void processEvent(Event *event);
+	virtual void processEvent(Event* event);
 };

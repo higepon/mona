@@ -79,6 +79,8 @@ namespace baygui {
 		Graphics* __g;
 		/** 内部描画バッファー */
 		Image* __buffer;
+		/** GUIサーバーID */
+		dword guisvrID;
 		/** GUIサーバー上のウィンドウオブジェクト */
 		guiserver_window* _window;
 	

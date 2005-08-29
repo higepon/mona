@@ -30,14 +30,15 @@ namespace baygui {
 	/** スレッドクラス */
 	class Thread : public Object {
 	private:
+		/** 起動するスレッド */
 		Runnable* runnable;
 		
 	public:
+		/** コピーコンストラクタ */
 		Thread(Runnable* runnable);
 		
+		/** スレッドを起動する */
 		void start();
-		
-		void stop();
 	};
 }
 

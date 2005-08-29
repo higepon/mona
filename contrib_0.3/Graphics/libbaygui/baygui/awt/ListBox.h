@@ -32,6 +32,10 @@ namespace baygui {
 	private:
 		/** 選択位置 */
 		int selectedIndex;
+		/** 表示開始位置 */
+		int offsetIndex;
+		/** 表示可能行数 */
+		int visibleRows;
 		/** データリスト */
 		Vector dataList;
 		/** 選択イベント */

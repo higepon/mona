@@ -51,6 +51,13 @@ void kill_timer(dword timerID) {}
 namespace baygui {
 	Window::Window()
 	{
+		/* GUIサーバーを探す */
+		this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+		if (this->guisvrID == THREAD_UNKNOWN) {
+			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			exit(1);
+		}
+		
 		/* GUIサーバーに自分を登録する */
 		if (!monapi_register_to_server(ID_GUI_SERVER, MONAPI_TRUE)) {
 			printf("%s:%d:ERROR: can not register to GUI server!\n", __FILE__, __LINE__);
@@ -107,7 +114,7 @@ namespace baygui {
 
 		/* ウィンドウを生成する */
 		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEWINDOW) != 0) {
+		if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEWINDOW) != 0) {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
 		}
@@ -136,7 +143,7 @@ namespace baygui {
 
 		/* ウィンドウをアクティブにする */
 		setFocused(true);
-		if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_ACTIVATEWINDOW, getHandle())) {
+		if (MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_ACTIVATEWINDOW, getHandle())) {
 			printf("%s:%d:ERROR: can not activate window!\n", __FILE__, __LINE__);
 		}
 	}
@@ -153,7 +160,7 @@ namespace baygui {
 		delete(this->__g);
 		
 		/* ウィンドウ破棄要求 */
-		if (MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DISPOSEWINDOW, getHandle())) {
+		if (MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DISPOSEWINDOW, getHandle())) {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		}
 		
@@ -198,7 +205,7 @@ namespace baygui {
 	{
 		Component::setLocation(x, y);
 		if (this->_window == NULL) return;
-		MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOVEWINDOW, 
+		MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOVEWINDOW, 
 			getHandle(), (dword)x, (dword)y);
 	#ifdef SDL
 		/* 壁紙表示 */
@@ -240,7 +247,7 @@ namespace baygui {
 			__g->drawImage(this->_buffer, getInsets()->left, getInsets()->top);
 		}
 		
-		MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DRAWWINDOW, getHandle(), MAKE_DWORD(x, y), MAKE_DWORD(w, h));
+		MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DRAWWINDOW, getHandle(), MAKE_DWORD(x, y), MAKE_DWORD(w, h));
 		
 	#ifdef SDL
 		{
@@ -281,9 +288,9 @@ namespace baygui {
 					this->state = STATE_MOVING;
 					/* キャプチャー要求とウィンドウ移動用オブジェクト作成要求 */
 					MessageInfo info;
-					MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOUSECAPTURE, 
+					MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOUSECAPTURE, 
 						getHandle(), 1);
-					MonAPI::Message::sendReceive(&info, getGuisvrID(), MSG_GUISERVER_CREATEOVERLAP, 
+					MonAPI::Message::sendReceive(&info, this->guisvrID, MSG_GUISERVER_CREATEOVERLAP, 
 						getX(), getY(), MAKE_DWORD(getWidth(), getHeight()));
 					this->overlap = info.arg2;
 					this->preX = px;
@@ -300,9 +307,9 @@ namespace baygui {
 				if (this->state == STATE_MOVING) {
 					this->state = STATE_NORMAL;
 					/* キャプチャー破棄要求とウィンドウ移動用オブジェクト破棄要求 */
-					MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_DISPOSEOVERLAP, 
+					MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_DISPOSEOVERLAP, 
 						this->overlap);
-					MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOUSECAPTURE, 
+					MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOUSECAPTURE, 
 						getHandle(), 0);
 					this->overlap = 0;
 					/* ウィンドウを実際に移動させる */
@@ -318,7 +325,7 @@ namespace baygui {
 				/* ウィンドウ移動 */
 				if (this->state == STATE_MOVING) {
 					/* ウィンドウ移動用オブジェクトの移動 */
-					MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_MOVEOVERLAP, this->overlap,
+					MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_MOVEOVERLAP, this->overlap,
 						MAKE_DWORD(me->getX() - this->preX, me->getY() - this->preY), 
 						MAKE_DWORD(getWidth(), getHeight()));
 				/* ウィンドウ内移動 */

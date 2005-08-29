@@ -39,6 +39,8 @@ namespace baygui {
 		static unsigned char* defaultFontData;
 		/** フォントスタイル */
 		int fontStyle;
+		/** GUIサーバーID */
+		dword guisvrID;
 
 	public:
 		/** コンストラクタ */

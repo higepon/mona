@@ -29,9 +29,16 @@ namespace baygui {
 		this->width = this->height = 0;
 		this->bitmap = NULL;
 		
+		// GUIサーバーを探す
+		this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+		if (this->guisvrID == THREAD_UNKNOWN) {
+			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			exit(1);
+		}
+		
 		// GUIサーバー上にビットマップを生成する
 		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_CREATEBITMAP, width, height, Color::lightGray))
+		if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_CREATEBITMAP, width, height, Color::lightGray))
 		{
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
@@ -64,9 +71,16 @@ namespace baygui {
 		this->width = this->height = 0;
 		this->bitmap = NULL;
 		
+		// GUIサーバーを探す
+		this->guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+		if (this->guisvrID == THREAD_UNKNOWN) {
+			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			exit(1);
+		}
+		
 		// GUIサーバー上でビットマップをデコードする
 		MessageInfo msg;
-		if (MonAPI::Message::sendReceive(&msg, getGuisvrID(), MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path.getBytes())) {
+		if (MonAPI::Message::sendReceive(&msg, this->guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path.getBytes())) {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 			return;
 		}
@@ -87,7 +101,7 @@ namespace baygui {
 	Image::~Image()
 	{
 		// ビットマップ破棄要求
-		if (MonAPI::Message::send(getGuisvrID(), MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
+		if (MonAPI::Message::send(this->guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle())) {
 			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
 		}
 	}

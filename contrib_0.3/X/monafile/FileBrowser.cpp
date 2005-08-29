@@ -216,7 +216,7 @@ void FileBrowser::Open(int target)
             String exe = PathCombine(this->path, name);
             if (exe.EndsWith(".APP"))
             {
-                exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX5");
+                exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX2");
                 if (ProcessStart(exe) != 0)
                 {
                     exe = exe.Substring(0, exe.get_Length() - 1) + "5";
@@ -231,7 +231,7 @@ void FileBrowser::Open(int target)
         }
         case Icons_Picture:
             Icon::ExpansionEffect(pc.X, pc.Y);
-            ProcessStart("/APPS/MONAFRMS/BITMAP.EX5 " + PathCombine(this->path, name));
+            ProcessStart("/APPS/MONAFRMS/BITMAP.EX2 " + PathCombine(this->path, name));
             break;
         default:
             break;

@@ -179,7 +179,7 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 	{
 		return Icons_Kernel;
 	}
-	else if (fn == "SHELL.EX5")
+	else if (fn == "SHELL.EX2")
 	{
 		return Icons_Terminal;
 	}

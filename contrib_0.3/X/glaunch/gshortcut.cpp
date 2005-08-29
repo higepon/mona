@@ -222,7 +222,8 @@ static unsigned char trashboxIconData [32][32] = {
 };
 
 /** コンストラクタ */
-ShortCut::ShortCut() {
+ShortCut::ShortCut()
+{
 }
 
 /** デストラクタ */
@@ -231,7 +232,7 @@ ShortCut::~ShortCut()
 }
 
 /** タイトルを設定する */
-void ShortCut::setTitle(const char *title)
+void ShortCut::setTitle(const String& title)
 {
 	this->title = title;
 }
@@ -264,7 +265,7 @@ void ShortCut::addNotify() {
 }
 
 /** 再描画 */
-void ShortCut::paint(Graphics *g) {
+void ShortCut::paint(Graphics* g) {
 	int w = getWidth();
 	int h = getHeight();
 
@@ -297,7 +298,7 @@ void ShortCut::paint(Graphics *g) {
 }
 
 /** イベントハンドラ */
-void ShortCut::processEvent(Event *event) {
+void ShortCut::processEvent(Event* event) {
 #if defined(MONA)
 	int w = getWidth();
 	int h = getHeight();
@@ -305,7 +306,7 @@ void ShortCut::processEvent(Event *event) {
 	if (event->getType() == MouseEvent::MOUSE_RELEASED) {
 		// 視覚効果
 		if (this->type == DISKICON || this->type == TERMINALICON) {
-			MonAPI::Message::sendReceive(NULL, getGuisvrID(), MSG_GUISERVER_EXPANSIONEFFECT,
+			MonAPI::Message::sendReceive(NULL, this->guisvrID, MSG_GUISERVER_EXPANSIONEFFECT,
 				MAKE_DWORD(getX() + w/2, getY() + h/2),
 				MAKE_DWORD(getX(), getY()),
 				MAKE_DWORD(64, 64)

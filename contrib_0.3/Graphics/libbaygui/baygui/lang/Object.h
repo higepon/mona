@@ -27,13 +27,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace baygui {
 	/** すべてのクラスの元になるクラス */
 	class Object {
-	private:
+	public:
 		/** 参照カウント */
 		int refCount;
-		/** スレッドID */
-		dword threadID;
-		/** GUIサーバーID */
-		dword guisvrID;
 		
 	public:
 		/** デフォルトコンストラクタ */
@@ -47,18 +43,6 @@ namespace baygui {
 		 @param obj 比較対象のオブジェクト
 		*/
 		virtual bool equals(Object* obj);
-		
-		/** 参照カウントを得る */
-		inline int getRefCount() { return this->refCount; }
-		
-		/** 参照カウントのポインターを得る */
-		inline int* getPointer() { return &this->refCount; }
-		
-		/** スレッドIDを得る */
-		inline dword getThreadID() { return this->threadID; }
-		
-		/** GUIサーバーIDを得る */
-		inline dword getGuisvrID() { return this->guisvrID; }
 	};
 }
 

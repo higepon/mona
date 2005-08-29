@@ -50,7 +50,7 @@ public:
 	virtual ~ShortCut();
 	
 	/** タイトルを設定する */
-	void setTitle(const char *title);
+	void setTitle(const String& title);
 	
 	/**
 	 アイコンタイプを設定する
@@ -62,8 +62,8 @@ public:
 	virtual void addNotify();
 
 	/** 再描画 */
-	virtual void paint(Graphics *g);
+	virtual void paint(Graphics* g);
 
 	/** イベントハンドラ */
-	virtual void processEvent(Event *event);
+	virtual void processEvent(Event* event);
 };
