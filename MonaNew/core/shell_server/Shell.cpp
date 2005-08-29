@@ -1,8 +1,5 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
-#ifdef USE_MONAFORMS
-#include <gui/messages.h>
-#endif
 
 #include "Shell.h"
 
@@ -71,12 +68,11 @@ void Shell::run()
                 {
                     this->onKeyDown(msg.arg1, msg.arg2);
                 }
+                else if (msg.arg1 == 0)
+                {
+                    this->onKeyDown(msg.arg2, msg.arg3);
+                }
                 break;
-#ifdef USE_MONAFORMS
-            case MSG_GUISERVER_KEYDOWN:
-                this->onKeyDown(msg.arg2, msg.arg3);
-                break;
-#endif
 
             case MSG_PROCESS_TERMINATED:
                 if (this->waiting == msg.arg1)

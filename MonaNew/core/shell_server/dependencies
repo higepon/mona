@@ -1,0 +1,96 @@
+main.o: main.cpp /home/shimizu/MonaNew/include/monapi/messages.h \
+  /home/shimizu/MonaNew/include/monapi/cmemoryinfo.h \
+  /home/shimizu/MonaNew/include/sys/types.h \
+  /home/shimizu/MonaNew/include/servers/keyboard.h \
+  /home/shimizu/MonaNew/include/servers/mouse.h \
+  /home/shimizu/MonaNew/include/servers/process.h \
+  /home/shimizu/MonaNew/include/servers/file.h \
+  /home/shimizu/MonaNew/include/servers/servers.h Shell.h \
+  /home/shimizu/MonaNew/include/monapi.h \
+  /home/shimizu/MonaNew/include/sys/error.h \
+  /home/shimizu/MonaNew/include/monapi/Observer.h \
+  /home/shimizu/MonaNew/include/sys/HList.h \
+  /home/shimizu/MonaNew/include/sys/List.h \
+  /home/shimizu/MonaNew/include/monapi/Date.h \
+  /home/shimizu/MonaNew/include/monapi/Screen.h \
+  /home/shimizu/MonaNew/include/monapi/Server.h \
+  /home/shimizu/MonaNew/include/monapi/System.h \
+  /home/shimizu/MonaNew/include/monapi/Message.h \
+  /home/shimizu/MonaNew/include/monapi/MonaApplication.h \
+  /home/shimizu/MonaNew/include/monapi/MemoryMap.h \
+  /home/shimizu/MonaNew/include/monapi/Thread.h \
+  /home/shimizu/MonaNew/include/monapi/string.h \
+  /home/shimizu/MonaNew/include/monapi/MemoryManager.h \
+  /home/shimizu/MonaNew/include/monapi/Color.h \
+  /home/shimizu/MonaNew/include/monapi/Random.h \
+  /home/shimizu/MonaNew/include/monapi/syscall.h \
+  /home/shimizu/MonaNew/include/monapi/Keys.h \
+  /home/shimizu/MonaNew/include/monapi/CString.h \
+  /home/shimizu/MonaNew/include/monapi/Array.h
+Shell.o: Shell.cpp /home/shimizu/MonaNew/include/monapi/messages.h \
+  /home/shimizu/MonaNew/include/monapi/cmemoryinfo.h \
+  /home/shimizu/MonaNew/include/sys/types.h \
+  /home/shimizu/MonaNew/include/servers/keyboard.h \
+  /home/shimizu/MonaNew/include/servers/mouse.h \
+  /home/shimizu/MonaNew/include/servers/process.h \
+  /home/shimizu/MonaNew/include/servers/file.h \
+  /home/shimizu/MonaNew/include/servers/servers.h \
+  /home/shimizu/MonaNew/include/monapi/Keys.h Shell.h \
+  /home/shimizu/MonaNew/include/monapi.h \
+  /home/shimizu/MonaNew/include/sys/error.h \
+  /home/shimizu/MonaNew/include/monapi/Observer.h \
+  /home/shimizu/MonaNew/include/sys/HList.h \
+  /home/shimizu/MonaNew/include/sys/List.h \
+  /home/shimizu/MonaNew/include/monapi/Date.h \
+  /home/shimizu/MonaNew/include/monapi/Screen.h \
+  /home/shimizu/MonaNew/include/monapi/Server.h \
+  /home/shimizu/MonaNew/include/monapi/System.h \
+  /home/shimizu/MonaNew/include/monapi/Message.h \
+  /home/shimizu/MonaNew/include/monapi/MonaApplication.h \
+  /home/shimizu/MonaNew/include/monapi/MemoryMap.h \
+  /home/shimizu/MonaNew/include/monapi/Thread.h \
+  /home/shimizu/MonaNew/include/monapi/string.h \
+  /home/shimizu/MonaNew/include/monapi/MemoryManager.h \
+  /home/shimizu/MonaNew/include/monapi/Color.h \
+  /home/shimizu/MonaNew/include/monapi/Random.h \
+  /home/shimizu/MonaNew/include/monapi/syscall.h \
+  /home/shimizu/MonaNew/include/monapi/CString.h \
+  /home/shimizu/MonaNew/include/monapi/Array.h
+InternalCommands.o: InternalCommands.cpp Shell.h \
+  /home/shimizu/MonaNew/include/sys/types.h \
+  /home/shimizu/MonaNew/include/monapi.h \
+  /home/shimizu/MonaNew/include/sys/error.h \
+  /home/shimizu/MonaNew/include/monapi/Observer.h \
+  /home/shimizu/MonaNew/include/sys/HList.h \
+  /home/shimizu/MonaNew/include/sys/List.h \
+  /home/shimizu/MonaNew/include/monapi/Date.h \
+  /home/shimizu/MonaNew/include/monapi/Screen.h \
+  /home/shimizu/MonaNew/include/monapi/Server.h \
+  /home/shimizu/MonaNew/include/monapi/System.h \
+  /home/shimizu/MonaNew/include/monapi/Message.h \
+  /home/shimizu/MonaNew/include/monapi/MonaApplication.h \
+  /home/shimizu/MonaNew/include/monapi/MemoryMap.h \
+  /home/shimizu/MonaNew/include/monapi/Thread.h \
+  /home/shimizu/MonaNew/include/monapi/string.h \
+  /home/shimizu/MonaNew/include/monapi/MemoryManager.h \
+  /home/shimizu/MonaNew/include/monapi/Color.h \
+  /home/shimizu/MonaNew/include/monapi/Random.h \
+  /home/shimizu/MonaNew/include/monapi/syscall.h \
+  /home/shimizu/MonaNew/include/monapi/Keys.h \
+  /home/shimizu/MonaNew/include/monapi/CString.h \
+  /home/shimizu/MonaNew/include/monapi/Array.h \
+  /home/shimizu/MonaNew/include/monapi/messages.h \
+  /home/shimizu/MonaNew/include/monapi/cmemoryinfo.h \
+  /home/shimizu/MonaNew/include/servers/keyboard.h \
+  /home/shimizu/MonaNew/include/servers/mouse.h \
+  /home/shimizu/MonaNew/include/servers/process.h \
+  /home/shimizu/MonaNew/include/servers/file.h \
+  /home/shimizu/MonaNew/include/servers/servers.h \
+  /home/shimizu/MonaNew/include/monalibc.h \
+  /home/shimizu/MonaNew/include/monalibc/ctype.h \
+  /home/shimizu/MonaNew/include/monalibc/limits.h \
+  /home/shimizu/MonaNew/include/monalibc/stdarg.h \
+  /home/shimizu/MonaNew/include/monalibc/stdlib.h \
+  /home/shimizu/MonaNew/include/monalibc/stdio.h \
+  /home/shimizu/MonaNew/include/monalibc/math.h \
+  /home/shimizu/MonaNew/include/monalibc/float.h
