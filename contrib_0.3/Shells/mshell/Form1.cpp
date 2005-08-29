@@ -144,11 +144,9 @@ protected:
 	virtual void OnKeyDown(_P<KeyEventArgs> e)
 	{
 		Form::OnKeyDown(e);
-		printf("K1");
 		if (this->shell == THREAD_UNKNOWN) return;
-		printf("K2");
 		
-		MonAPI::Message::send(this->shell, MSG_GUISERVER_KEYDOWN, 0, e->KeyCode, e->Modifiers);
+		MonAPI::Message::send(this->shell, MSG_KEY_VIRTUAL_CODE, 0, e->KeyCode, e->Modifiers);
 	}
 	
 private:
