@@ -1,3 +1,7 @@
+2005-08-29  bayside
+
+        * core/shell_server/Shell.cpp: GUI‚ÉˆË‘¶‚·‚é•”•ª‚ğíœ
+
 2005-08-29  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/core.asm (from_user): ds, es‚ğiretd‚Ì•œ‹A’¼‘O‚É‚µ‚½B(thanks Philip Lawatsch)
