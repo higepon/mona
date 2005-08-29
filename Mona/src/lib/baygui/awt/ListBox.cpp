@@ -26,7 +26,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace baygui {
 	ListBox::ListBox()
 	{
-		this->selectedIndex =  -1;
+		this->selectedIndex = -1;
+		this->offsetIndex = 0;
+		this->visibleRows = 0;
 		this->itemEvent.setType(Event::ITEM_SELECTED);
 		this->itemEvent.setSource(this);
 		setBackground(Color::white);
@@ -71,6 +73,8 @@ namespace baygui {
 		int w = getWidth();
 		int h = getHeight();
 		
+		this->visibleRows = (h - 2) / 16;
+		
 		// 外枠
 		if (getFocused() == true && getEnabled() == true) {
 			g->setColor(0,128,255);
@@ -88,15 +92,17 @@ namespace baygui {
 
 		// 文字
 		int I = this->dataList.size();
-		for (int i = 0; i < I; i++) {
-			if (selectedIndex == i && getEnabled() == true) {
-				g->setColor(0, 128, 255);
-				g->fillRect(3, (16 * i) + 3, w - 6, 16);
-				g->setColor(getBackground());
-				g->drawString(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
-			} else {
-				g->setColor(getForeground());
-				g->drawString(((String *)dataList.get(i))->getBytes(), 4, (16 * i) + 6);
+		for (int i = 0; i < visibleRows; i++) {
+			if ((this->offsetIndex + i) < I) {
+				if (selectedIndex == i && getEnabled() == true) {
+					g->setColor(0, 128, 255);
+					g->fillRect(3, (16 * i) + 3, w - 6, 16);
+					g->setColor(getBackground());
+					g->drawString(((String *)this->dataList.get(this->offsetIndex + i))->getBytes(), 4, (16 * i) + 6);
+				} else {
+					g->setColor(getForeground());
+					g->drawString(((String *)this->dataList.get(this->offsetIndex + i))->getBytes(), 4, (16 * i) + 6);
+				}
 			}
 		} 
 	}
