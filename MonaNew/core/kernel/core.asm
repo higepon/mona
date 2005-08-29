@@ -193,14 +193,14 @@ arch_switch_thread_to_user1:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
-        mov es , word[ebx + 48]      ; restore es
-        mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 60]         ; push ss  here dpl lowwer
         push dword[ebx + 28]         ; push esp here dpl lowwer
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
         pop  ebx                     ; restore ebx
         iretd                        ; switch to next
 
@@ -222,14 +222,14 @@ arch_switch_thread_to_user2:
         mov ebp, dword[ebx + 32]     ; restore ebp
         mov esi, dword[ebx + 36]     ; restore esi
         mov edi, dword[ebx + 40]     ; restore edi
-        mov es , word[ebx + 48]      ; restore es
-        mov ds , word[ebx + 44]      ; restore ds
         push dword[ebx + 60]         ; push ss  here dpl lowwer
         push dword[ebx + 28]         ; push esp here dpl lowwer
         push dword[ebx + 8]          ; push eflags
         push dword[ebx + 4]          ; push cs
         push dword[ebx + 0]          ; push eip
         push dword[ebx + 24]
+        mov es , word[ebx + 48]      ; restore es
+        mov ds , word[ebx + 44]      ; restore ds
         pop  ebx                     ; restore ebp
         iretd                        ; switch to next
 

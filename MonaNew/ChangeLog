@@ -1,3 +1,7 @@
+2005-08-29  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/core.asm (from_user): ds, esをiretdの復帰直前にした。(thanks Philip Lawatsch)
+
 2005-08-26  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/core.asm (from_user): espをハンドラ中で復元しない。(thanks Philip Lawatsch)
