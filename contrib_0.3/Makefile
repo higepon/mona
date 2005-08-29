@@ -13,6 +13,7 @@ all:
 	cd Multimedia/monapeg && touch dependencies && make && make install
 	cd Multimedia/monappt && touch dependencies && make && make install
 # MonaForms applications
+	cd Net/monadat && touch dependencies && make && make install
 	cd Shells/shell && touch dependencies && make && make install
 	cd X/monafile && touch dependencies && make && make install
 # BayGUI applications

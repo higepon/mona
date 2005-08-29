@@ -59,11 +59,11 @@ class FileManager
 public:
 	static void FileManager::Main(_A<String> args)
 	{
-		if (ExistsProcess("MONAFILE.EX2")) return;
+		if (ExistsProcess("MONAFILE.EX5")) return;
 		
 		gui_server = monapi_get_server_thread_id(ID_GUI_SERVER);
 		String bundlePath = MonAPI::System::getBundlePath();
-		icons = new Bitmap(bundlePath + "/ICONS.BM2");
+		icons = new Bitmap(bundlePath + "/ICONS.BM5");
 		int len = icons->get_Width() * icons->get_Height();
 		Color* ptr = icons->get();
 		Color trans = TRANSPARENT_COLOR, ept = Color::get_Empty();
@@ -81,7 +81,7 @@ public:
 		terminal->set_Location(Point(0, 64));
 		terminal->set_Text("た～みなる");
 		terminal->set_Icon(Icons_Terminal);
-		terminal->set_Target("/APPS/MONAFRMS/SHELL.EX2");
+		terminal->set_Target("/APPS/MONAFRMS/SHELL.EX5");
 		terminal->Show();
 		
 		if (DirectoryExists("/APPS/MONAFRMS/MESA"))
@@ -99,7 +99,7 @@ public:
 			mesa->set_Location(Point(0, 128));
 			mesa->set_Text("OSを作ろう");
 			mesa->set_Icon(Icons_Executable);
-			mesa->set_Target("/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX2");
+			mesa->set_Target("/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5");
 			mesa->Show();
 		}
 		

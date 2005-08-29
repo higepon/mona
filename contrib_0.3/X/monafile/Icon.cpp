@@ -179,7 +179,7 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 	{
 		return Icons_Kernel;
 	}
-	else if (fn == "SHELL.EX2")
+	else if (fn == "SHELL.EX5")
 	{
 		return Icons_Terminal;
 	}
@@ -187,7 +187,7 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 	{
 		return Icons_Archive;
 	}
-	else if (ext == ".BIN" || ext == ".BN2"
+	else if (ext == ".BIN" || ext == ".BN2" || ext == ".BN5"
 		|| ext == ".ELF" || ext == ".EL2" || ext == ".EL5"
 		|| ext == ".EXE" || ext == ".EX2" || ext == ".EX5")
 	{
