@@ -130,7 +130,7 @@ public:
 	{
 		this->InitializeComponent();
 		
-		this->shell = MonAPI::Message::lookupMainThread("OLDSHELL.EX5");
+		this->shell = MonAPI::Message::lookupMainThread("SHELL.EX5");
 		
 		_P<MonAPI::Screen> scr = GetDefaultScreen();
 		this->set_Location(Point((scr->getWidth() - this->get_Width()) / 2, (scr->getHeight() - this->get_Height()) / 2));
@@ -144,7 +144,9 @@ protected:
 	virtual void OnKeyDown(_P<KeyEventArgs> e)
 	{
 		Form::OnKeyDown(e);
+		printf("K1");
 		if (this->shell == THREAD_UNKNOWN) return;
+		printf("K2");
 		
 		MonAPI::Message::send(this->shell, MSG_GUISERVER_KEYDOWN, 0, e->KeyCode, e->Modifiers);
 	}
