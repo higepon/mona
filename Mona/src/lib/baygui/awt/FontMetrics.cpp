@@ -35,9 +35,15 @@ namespace baygui {
 		if (defaultFontData != NULL) return;
 		
 	#if defined(MONA)
+		// GUIサーバーを探す
+		dword guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
+		if (this->guisvrID == THREAD_UNKNOWN) {
+			printf("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
+			exit(1);
+		}
 		// フォント取得メッセージを投げる
 		MessageInfo info;
-		MonAPI::Message::sendReceive(&info, getGuisvrID(), MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
+		MonAPI::Message::sendReceive(&info, guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, NULL);
 		unsigned char* font_data = NULL;
 		font_data = MonAPI::MemoryMap::map(info.arg2);
 		if (font_data == NULL) {

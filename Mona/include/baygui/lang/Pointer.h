@@ -70,7 +70,7 @@ namespace baygui {
 			this->unset();
 			this->pointer = (T*)pointer;
 			if (this->pointer == 0 /* NULL */) return;
-			this->refCount = pointer->getPointer();
+			this->refCount = &pointer->refCount;
 			(*this->refCount)++;
 		}
 		

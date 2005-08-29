@@ -57,7 +57,7 @@ public:
 	virtual void paint(Graphics *g) {
 		if (firstPaint == false) {
 			firstPaint = true;
-			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(MonAPI::System::getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 	
@@ -77,7 +77,7 @@ public:
 				}
 				update();
 			}
-			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(MonAPI::System::getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
 		}
 	}
 };

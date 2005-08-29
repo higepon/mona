@@ -34,6 +34,8 @@ namespace baygui {
 		int width;
 		/** 高さ */
 		int height;
+		/** GUIサーバーID */
+		dword guisvrID;
 		/** GUIサーバー上のビットマップオブジェクト */
 		guiserver_bitmap* bitmap;
 

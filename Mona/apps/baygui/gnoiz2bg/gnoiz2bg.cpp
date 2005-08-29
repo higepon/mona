@@ -306,7 +306,7 @@ public:
 		if (firstPaint == false) {
 			firstPaint = true;
 			#ifdef MONA
-			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(MonAPI::System::getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
 			#else
 			setTimer(1);
 			#endif
@@ -340,7 +340,7 @@ public:
 				setStageBackground(scene);
 			}
 			#ifdef MONA
-			MonAPI::Message::send(getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
+			MonAPI::Message::send(MonAPI::System::getThreadID(), Event::CUSTOM_EVENT, 0, 0, 0);
 			#else
 			setTimer(1);
 			#endif
