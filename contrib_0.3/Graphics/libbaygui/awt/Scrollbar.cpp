@@ -111,8 +111,8 @@ namespace baygui {
 		this->blocksize = 10;
 		this->preValue = 0;
 		this->value = 0;
-		this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-		this->blockEvent.setSource(this);
+		this->adjustmentEvent.setType(Event::BLOCK_INCLEMENT);
+		this->adjustmentEvent.setSource(this);
 	}
 
 	Scrollbar::Scrollbar(int orientation)
@@ -123,8 +123,8 @@ namespace baygui {
 		this->blocksize = 10;
 		this->preValue = 0;
 		this->value = 0;
-		this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-		this->blockEvent.setSource(this);
+		this->adjustmentEvent.setType(Event::BLOCK_INCLEMENT);
+		this->adjustmentEvent.setSource(this);
 	}
 
 	Scrollbar::~Scrollbar()
@@ -142,11 +142,11 @@ namespace baygui {
 		}
 		repaint();
 		if (value < this->preValue) {
-			this->blockEvent.setType(Event::BLOCK_DECLEMENT);
-			getParent()->processEvent(&this->blockEvent);
+			this->adjustmentEvent.setType(Event::BLOCK_DECLEMENT);
+			getParent()->processEvent(&this->adjustmentEvent);
 		} else {
-			this->blockEvent.setType(Event::BLOCK_INCLEMENT);
-			getParent()->processEvent(&this->blockEvent);
+			this->adjustmentEvent.setType(Event::BLOCK_INCLEMENT);
+			getParent()->processEvent(&this->adjustmentEvent);
 		}
 		this->preValue = value;
 	}
@@ -245,5 +245,26 @@ namespace baygui {
 				setValue((mx - 16) * (getMaximum() - getMinimum()) / (getWidth() - 32) + getMinimum());
 			}
 		}
+	}
+
+	void Scrollbar::addAdjustmentListener(AdjustmentListener* l)
+	{
+		this->adjustmentListenerList.add((Object*)l);
+	}
+
+	void Scrollbar::removeAdjustmentListener(AdjustmentListener* l)
+	{
+		this->adjustmentListenerList.remove((Object*)l);
+	}
+
+	void Scrollbar::processAdjustmentEvent(AdjustmentEvent* e)
+	{
+		for (int i = 0; i < this->adjustmentListenerList.size(); i++) {
+			AdjustmentListener* l = (AdjustmentListener*)this->adjustmentListenerList.get(i);
+			if (e->isConsumed() == false) {
+				l->adjustmentValueChanged(e);
+			}
+		}
+		e->consume();
 	}
 }

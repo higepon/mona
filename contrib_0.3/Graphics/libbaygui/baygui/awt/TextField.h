@@ -33,12 +33,21 @@ namespace baygui {
 	*/
 	class TextField : public Component {
 	private:
+		/** カーソルの位置 */
 		int textPtr;
+		/** 文字列の長さ */
 		int textLen;
+		/** オフセットX */
 		int offx;
+		/** オフセットY */
 		int offy;
+		/** 内部文字列 */
 		char text[MAX_TEXT_LEN];
+		
+	protected:
+		/** テキストイベント */
 		Event textEvent;
+		/** TextListener一覧 */
 		Vector textListenerList;
 		
 	private:

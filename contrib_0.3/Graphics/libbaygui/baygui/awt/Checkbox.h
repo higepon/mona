@@ -36,10 +36,12 @@ namespace baygui {
 		bool checked;
 		/** ボタンのラベル */
 		String label;
-		/** 選択イベント */
-		Event itemEvent;
 		/** チェックボックスグループ */
 		CheckboxGroup* group;
+		/** 選択イベント */
+		Event itemEvent;
+		/** ItemListener一覧 */
+		Vector itemListenerList;
 
 	public:
 		/** デフォルトコンストラクタ */
@@ -83,6 +85,15 @@ namespace baygui {
 		
 		/** イベントハンドラ */
 		virtual void processEvent(Event* event);
+		
+		/** ItemListenerを追加 */
+		virtual void addItemListener(ItemListener* l);
+		
+		/** ItemListenerを追加 */
+		virtual void removeItemListener(ItemListener* l);
+		
+		/** ItemListenerを追加 */
+		virtual void processItemEvent(ItemEvent* e);
 	};
 }
 

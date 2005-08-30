@@ -40,6 +40,8 @@ namespace baygui {
 		Vector dataList;
 		/** 選択イベント */
 		Event itemEvent;
+		/** ItemListener一覧 */
+		Vector itemListenerList;
 
 	public:
 		/** コンストラクタ */
@@ -68,6 +70,15 @@ namespace baygui {
 		
 		/** イベントハンドラ */
 		virtual void processEvent(Event* event);
+		
+		/** ItemListenerを追加 */
+		virtual void addItemListener(ItemListener* l);
+		
+		/** ItemListenerを追加 */
+		virtual void removeItemListener(ItemListener* l);
+		
+		/** ItemListenerを追加 */
+		virtual void processItemEvent(ItemEvent* e);
 	};
 }
 

@@ -48,8 +48,10 @@ namespace baygui {
 		int preValue;
 		/** 現在の値 */
 		int value;
-		/** ブロックイベント */
-		Event blockEvent;
+		/** 調整イベント */
+		Event adjustmentEvent;
+		/** AdjustmentListener一覧 */
+		Vector adjustmentListenerList;
 		
 	public:
 		/** デフォルトコンストラクタ */
@@ -97,6 +99,15 @@ namespace baygui {
 
 		/** イベントハンドラ */
 		virtual void processEvent(Event* event);
+
+		/** AdjustmentListenerを追加 */
+		virtual void addAdjustmentListener(AdjustmentListener* l);
+		
+		/** AdjustmentListenerを追加 */
+		virtual void removeAdjustmentListener(AdjustmentListener* l);
+		
+		/** AdjustmentListenerを追加 */
+		virtual void processAdjustmentEvent(AdjustmentEvent* e);
 	};
 }
 

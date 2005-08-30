@@ -66,6 +66,8 @@ namespace baygui {
 	protected:
 		/** フォーカスイベント */
 		Event focusEvent;
+		/** FocusListener一覧 */
+		Vector focusListenerList;
 
 	public:
 		/** コンストラクタ */
@@ -94,6 +96,15 @@ namespace baygui {
 		
 		/** イベント処理 */
 		virtual void dispatchEvent(Event* event);
+		
+		/** FocusListenerを追加 */
+		virtual void addFocusListener(FocusListener* l);
+		
+		/** FocusListenerを追加 */
+		virtual void removeFocusListener(FocusListener* l);
+		
+		/** FocusListenerを追加 */
+		virtual void processFocusEvent(FocusEvent* e);
 		
 		/** 再描画 */
 		virtual void repaint();

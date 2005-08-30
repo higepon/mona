@@ -83,6 +83,10 @@ namespace baygui {
 		dword guisvrID;
 		/** GUIサーバー上のウィンドウオブジェクト */
 		guiserver_window* _window;
+		/** WindowListener一覧 */
+		Vector windowListenerList;
+		/** TimerListener一覧 */
+		Vector timerListenerList;
 	
 	protected:
 		/** 閉じるボタンがクリックされたかどうか */
@@ -160,6 +164,24 @@ namespace baygui {
 		
 		/** イベント処理 */
 		virtual void dispatchEvent(Event* event);
+		
+		/** WindowListenerを追加 */
+		virtual void addWindowListener(WindowListener* l);
+		
+		/** WindowListenerを追加 */
+		virtual void removeWindowListener(WindowListener* l);
+		
+		/** WindowListenerを追加 */
+		virtual void processWindowEvent(WindowEvent* e);
+		
+		/** TimerListenerを追加 */
+		virtual void addTimerListener(TimerListener* l);
+		
+		/** TimerListenerを追加 */
+		virtual void removeTimerListener(TimerListener* l);
+		
+		/** TimerListenerを追加 */
+		virtual void processTimerEvent(TimerEvent* e);
 		
 		/** アプリケーションループを抜ける */
 		virtual void stop();

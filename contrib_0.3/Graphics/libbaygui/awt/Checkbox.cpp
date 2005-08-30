@@ -169,4 +169,25 @@ namespace baygui {
 			getParent()->processEvent(event);
 		}
 	}
+
+	void Checkbox::addItemListener(ItemListener* l)
+	{
+		this->itemListenerList.add((Object*)l);
+	}
+
+	void Checkbox::removeItemListener(ItemListener* l)
+	{
+		this->itemListenerList.remove((Object*)l);
+	}
+
+	void Checkbox::processItemEvent(ItemEvent* e)
+	{
+		for (int i = 0; i < this->itemListenerList.size(); i++) {
+			ItemListener* l = (ItemListener*)this->itemListenerList.get(i);
+			if (e->isConsumed() == false) {
+				l->itemStateChanged(e);
+			}
+		}
+		e->consume();
+	}
 }
