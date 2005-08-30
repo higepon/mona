@@ -36,39 +36,47 @@ namespace baygui {
 		// イベントタイプ一覧
 		//
 		/** キー押下 */
-		static const int KEY_PRESSED     = 100;
+		static const int KEY_PRESSED      = 100;
 		/** キーリリース */
-		static const int KEY_RELEASED    = 101;
+		static const int KEY_RELEASED     = 101;
 		/** マウスクリック */
-		static const int MOUSE_PRESSED   = 200;
+		static const int MOUSE_PRESSED    = 200;
 		/** マウスリリース */
-		static const int MOUSE_RELEASED  = 201;
+		static const int MOUSE_RELEASED   = 201;
 		/** マウスドラッグ */
-		static const int MOUSE_DRAGGED   = 202;
+		static const int MOUSE_DRAGGED    = 202;
 		/** マウス移動 */
-		static const int MOUSE_MOVED     = 203;
+		static const int MOUSE_MOVED      = 203;
 		/** フォーカスイン */
-		static const int FOCUS_IN        = 300;
+		static const int FOCUS_IN         = 300;
 		/** フォーカスアウト */
-		static const int FOCUS_OUT       = 301;
+		static const int FOCUS_OUT        = 301;
 		/** タイマー */
-		static const int TIMER           = 302;
+		static const int TIMER            = 302;
 		/** テキスト確定 */
-		static const int TEXT_CHANGED    = 303;
+		static const int TEXT_CHANGED     = 303;
 		/** 項目選択 */
-		static const int ITEM_SELECTED   = 304;
+		static const int ITEM_SELECTED    = 304;
 		/** ブロック増加 */
-		static const int BLOCK_INCLEMENT = 305;
+		static const int BLOCK_INCLEMENT  = 305;
 		/** ブロック減少 */
-		static const int BLOCK_DECLEMENT = 306;
+		static const int BLOCK_DECLEMENT  = 306;
+		/** ボタン押下 */
+		static const int ACTION_PERFORMED = 307;
+		/** ウィンドウオープン */
+		static const int WINDOW_OPENED    = 308;
+		/** ウィンドウクローズ */
+		static const int WINDOW_CLOSED    = 309;
 		/** カスタムイベント */
-		static const int CUSTOM_EVENT    = 400;
+		static const int CUSTOM_EVENT     = 400;
 		
 	private:
 		/** イベントタイプ */
 		int type;
 		/** イベント発生元 */
 		Component* source;
+		/** イベントを消費したかどうか */
+		bool consumed;
 
 	public:
 		//
@@ -94,6 +102,7 @@ namespace baygui {
 		Event() {
 			this->type = CUSTOM_EVENT;
 			this->source = NULL;
+			this->consumed = false;
 		}
 		
 		/**
@@ -104,6 +113,7 @@ namespace baygui {
 		Event(int type, Component* source) {
 			this->type = type;
 			this->source = source;
+			this->consumed = false;
 		}
 		
 		/** デストラクタ */
@@ -120,6 +130,12 @@ namespace baygui {
 		
 		/** イベントの発生部品を設定する */
 		inline void setSource(Component* c) { this->source = c; }
+		
+		/** イベントを消費したかどうかを得る */
+		inline bool isConsumed() { return this->consumed; }
+		
+		/** イベントを消費する */
+		inline void consume() { this->consumed = true; }
 	};
 }
 

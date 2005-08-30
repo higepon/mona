@@ -155,4 +155,37 @@ namespace baygui {
 			getParent()->processEvent(&this->focusEvent);
 		}
 	}
+	#if 0
+	void TextField::processEvent(AWTEvent* e)
+	{
+		if (e->isConsumed() == false) {
+			if (e->instanceof(baygui_awt_event_TextEvent)) {
+				processTextEvent((TextEvent*)e);
+			} else {
+				Component::processEvent(e);
+			}
+		}
+		e->consume();
+	}
+	#endif
+	void TextField::addTextListener(TextListener* l)
+	{
+		this->textListenerList.add((Object*)l);
+	}
+	
+	void TextField::removeTextListener(TextListener* l)
+	{
+		this->textListenerList.remove((Object*)l);
+	}
+	
+	void TextField::processTextEvent(TextEvent* e)
+	{
+		for (int i = 0; i < this->textListenerList.size(); i++) {
+			TextListener* l = (TextListener*)this->textListenerList.get(i);
+			if (e->isConsumed() == false) {
+				l->textValueChanged(e);
+			}
+		}
+		e->consume();
+	}
 }
