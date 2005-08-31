@@ -72,35 +72,43 @@ public:
 			if (*ptr == trans) *ptr = ept;
 		}
 		
+		int offsetX = 0;
+		
 		_P<Icon> root = new Icon();
+		root->set_Location(Point(0, offsetX));
 		root->set_Text("/");
 		root->set_Icon(Icons_Floppy);
 		root->Show();
+		offsetX += 64;
 		
 		_P<Icon> terminal = new Icon();
-		terminal->set_Location(Point(0, 64));
+		terminal->set_Location(Point(0, offsetX));
 		terminal->set_Text("た～みなる");
 		terminal->set_Icon(Icons_Terminal);
-		terminal->set_Target("/APPS/MONAFRMS/SHELL.EX5");
+		terminal->set_Target("/APPS/MONAFRMS/MSHELL.EX5");
 		terminal->Show();
+		offsetX += 64;
 		
 		if (DirectoryExists("/APPS/MONAFRMS/MESA"))
 		{
 			_P<Icon> mesa = new Icon();
-			mesa->set_Location(Point(0, 128));
+			mesa->set_Location(Point(0, offsetX));
 			mesa->set_Text("3Dデモ");
 			mesa->set_Icon(Icons_Folder);
 			mesa->set_Target("open /APPS/MONAFRMS/MESA");
 			mesa->Show();
+			offsetX += 64;
 		}
-		else if (DirectoryExists("/APPS/MONAFRMS/MONADAT.APP"))
+		
+		if (DirectoryExists("/APPS/MONAFRMS/MONADAT.APP"))
 		{
 			_P<Icon> mesa = new Icon();
-			mesa->set_Location(Point(0, 128));
+			mesa->set_Location(Point(0, offsetX));
 			mesa->set_Text("OSを作ろう");
 			mesa->set_Icon(Icons_Executable);
 			mesa->set_Target("/APPS/MONAFRMS/MONADAT.APP/MONADAT.EX5");
 			mesa->Show();
+			offsetX += 64;
 		}
 		
 		Application::Run();
