@@ -23,17 +23,37 @@
 
 #if 1
 
+//     *   ページサイズを返す
+//     * タスクのアドレス空間に任意のリニアアドレス・サイズのメモリを割り当てる。
+//     * 特定タスクのaddress,sizeにread/write/executeの属性をつける
+//     * 特定のタスクのvmを特定のタスクから読む。自分のアドレスに強制的に読み込んだり。カーネルに割り当てを任せることも出来る。
+
+
 class MemoryManager2
 {
 public:
     static dword GetSystemPageSize();
+// examplemalloc
 //    static AllocateMemory(Process* process, LinearAddress start, dword size);
 };
-
 dword MemoryManager2::GetSystemPageSize()
 {
     return 4096;
 }
+
+/*
+if (process->vmallocator == NULL) {
+process->vmallocator = new vmallocater();
+}
+
+var vm = vmallocater->allocate(size); // default page attribute?
+
+shared memory segmentがあるからよいか。
+shared memory objectはどうしよう？
+}
+
+
+*/
 
 #endif
 /*----------------------------------------------------------------------
