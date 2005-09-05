@@ -210,6 +210,10 @@ class Process
         return dllsegment_;
     }
 
+    inline void* AllocateLinearAddress(dword size) {
+        return NULL;
+    }
+
     static const LinearAddress STACK_START = 0xF0000000;
     static const dword STACK_SIZE          = 0x400000;
 

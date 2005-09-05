@@ -33,23 +33,31 @@ class MemoryManager2
 {
 public:
     static dword GetSystemPageSize();
-// examplemalloc
-//    static AllocateMemory(Process* process, LinearAddress start, dword size);
+    static bool AllocateMemory(Process* process, dword size);
 };
 dword MemoryManager2::GetSystemPageSize()
 {
     return 4096;
 }
 
-static AllocateMemory(Process* process, LinearAddress start, dword size)
+static bool AllocateMemory(Process* process, dword size)
 {
-    if (process->vmallocator == NULL) {
+    void* result = NULL;
+
+    if (process->lallocator == NULL) {
+	process->lallocator = new LinearAddress(0, 500); // 今は適当
+    }
+
+    result = lallocator->Allocate(size);
+    if (result == NULL) {
+	return false;
+    }
 
 
 
+    return true;
 // vmallocator をほげする
 // リニアアドレスを管理する vmallocator をつくってもどってくる
-    }
 
 }
 
