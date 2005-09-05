@@ -1,20 +1,20 @@
 /**
-	@file	Memory.h
-	@brief	メモリ読み込み・メモリ書き込み・メモリ操作
+	@file	Bit.cpp
+	@brief	ビット操作
 
-	メモリ読み込み・メモリ書き込み・メモリ操作
+	ビット操作
 
 	License=Mona License
-    \version $Revision$
-    \date	$Date$
+	@version $Revision$
+	@date	$Date$
 */
-
-#include "Type.h"
+//バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
+//また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
 #include "Bit.h"
-#include "ASSERT.h"
 
-using namespace monapi2;
+namespace monapi2	{
 
+///BitFn::getとBitFn::setで使う。
 const uint BitFn::m_acnBitMask[]={
 	0x00000001,	0x00000002,	0x00000004,	0x00000008,
 	0x00000010,	0x00000020,	0x00000040,	0x00000080,
@@ -26,20 +26,24 @@ const uint BitFn::m_acnBitMask[]={
 	0x10000000,	0x20000000,	0x40000000,	0x80000000};
 
 
-//BitFn///////////
-
-///@author junjunn @date update:2005/08/20
+//BitFn///////////////////////////////////////
+//public
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 bool BitFn::get(int iTarget,int iBitIndex)
 {
 //	ASSERT(iBitIndex >= 0);
 	return ((iTarget & m_acnBitMask[iBitIndex]) != 0);
 }
 
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 void BitFn::set(int *piTarget,int iBitIndex,bool bOn)
 {
-//	ASSERT(iBitIndex >= 0);
-
 	int iBitMeasurer = m_acnBitMask[iBitIndex];
 
 	if (bOn)
@@ -51,3 +55,5 @@ void BitFn::set(int *piTarget,int iBitIndex,bool bOn)
 		*piTarget &= ~iBitMeasurer;
 	}
 }
+
+}		//namespace monapi2

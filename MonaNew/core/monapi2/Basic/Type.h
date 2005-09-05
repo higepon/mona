@@ -1,20 +1,27 @@
-/*!
+/**
     @file  Type.h
     @brief Šî–{Œ^Etypedef
 
     Šî–{Œ^Etypedef
 
 	License=Mona License
-    \version $Revision$
-    \date   update:$Date$
+	@version $Revision$
+	@date   update:$Date$
 */
-#ifndef _MONAPI2_TYPE_H
-#define _MONAPI2_TYPE_H
+//ƒoƒOC³‚ğ‚·‚é‚ÍŠÖ”–{‘Ìà–¾‚Ì@date—š—ğ‚É“ú•t‚Æ–¼‘O‚Æì‹Æ“à—e‚ğ•t‚¯‘«‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B
+//‚Ü‚½.hƒtƒ@ƒCƒ‹‚É‚ ‚éƒNƒ‰ƒXà–¾‚È‚Ç‚Ì@date—š—ğ•”•ª‚É‚à“¯—l‚Ì–‚ğ‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B
+#ifndef _MONAPI2_BASIC_TYPE_H
+#define _MONAPI2_BASIC_TYPE_H
+
+#include "switch.h"
 
 namespace monapi2
 {
 
-//author junjunn
+/**
+	@brief	Œ^BMonapi2ƒŠƒtƒ@ƒŒƒ“ƒX‚àQÆB
+	@date	2005/08/20	junjunn ì¬
+*/
 
 /**
 Œ^‚Ìl‚¦‚É‚ÍŒÅ’è•‚Æ‰Â•Ï•‚Æ‚ª‚ ‚éB
@@ -41,7 +48,8 @@ typedef	uint32					dword;		///<uint32‚Ì•Ê–¼BƒIƒtƒZƒbƒg(ƒAƒhƒŒƒX)‚ğ‹Lq‚·‚éˆÓ–¡‚
 
 /**
 bool‚ÈintB
-‚È‚ºbool‚È‚Ì‚Éint‚È‚Ì‚©H‚ÆŒ¾‚¦‚Îbool‚ğg‚¤‚æ‚è‚à–{“–‚Í‘S•”‚ğint‚Å“ˆê‚·‚é•û‚ª
+‚È‚ºbool‚È‚Ì‚Éint‚È‚Ì‚©H‚ÆŒ¾‚¦‚ÎƒvƒƒOƒ‰ƒ€‚Ì‚Ù‚Æ‚ñ‚Ç‚Ì•Ï”‚ÍintŒ^‚È‚Ì‚Å
+bool‚ğg‚¤‚æ‚è‚à–{“–‚Í‘S•”‚ğint‚Å“ˆê‚·‚é•û‚ª
 int¨bool‚Ü‚½‚Íbool¨int‚Ö‚ÌˆÃ–Ù“I‚ÈƒLƒƒƒXƒg‰‰Z‚ª‚È‚­‚È‚è‘¬‚­‚È‚é‚Ì‚ÅB
 ‚à‚Á‚Æ‚àƒvƒƒOƒ‰ƒ€‘S‘Ì‚©‚ç‚·‚é‚Æ”÷X‚½‚éŠÔ‚¾‚ë‚¤‚µ
 Y/N‚Ì“ñ‘ğ‚ÍˆÓ–¡“I‚Ébool‚Å‘‚­‚Ì‚ªŒÂl“I‚ÉD‚«‚È‚Ì‚Å„‚Í‚ ‚Ü‚èg‚Á‚Ä‚Ü‚¹‚ñ‚ªEEE
@@ -55,7 +63,7 @@ typedef vchar*					pvchar;			///<•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 typedef const vchar				pcvchar;		///<const•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 
 //ŒÅ’è•
-typedef	unsigned char			char1;			///<1ƒoƒCƒg•¶š
+typedef	char					char1;			///<1ƒoƒCƒg•¶šB–{“–‚Íunsigned‚È‚ñ‚¾‚¯‚Çsigned‚ª•‹y‚µ‚·‚¬‚Ä‚ÄƒRƒ“ƒpƒCƒ‰‚Å‚à¬—‚µ‚â‚·‚¢‚Ì‚Åsigned‚É‚µ‚Æ‚­B
 typedef	unsigned short			char2;			///<2ƒoƒCƒg•¶š
 
 typedef char1*					pchar1;			///<•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
@@ -63,6 +71,9 @@ typedef const char1*			pcchar1;		///<const•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 typedef char2*					pchar2;			///<ƒ†ƒjƒR[ƒh•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 typedef const char2*			pcchar2;		///<constƒ†ƒjƒR[ƒh•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 
+#ifndef NULL
+	#define NULL 0
+#endif
 
 }	//namespace monapi2
 

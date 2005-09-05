@@ -8,43 +8,64 @@
 	@version $Revision$
 	@date	$Date$
 */
-#include "switch.h"
+//バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
+//また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
 #include "Math.h"
+#include "Debug.h"
 
 namespace monapi2
 {
 //乱数に使うオブジェクト
 KnuthRandom g_KnuthRandom;
 
-const double g_cd1OverLn2	= 1.4426950408890;	// 1/ln2
+const double g_cd1overLn2	= 1.4426950408890;	// 1/ln2
 const double g_cdLn2		= 0.69314718055995;	// ln2
 
-//分子を分母で割って商と剰余を求める。
-///@author junjunn @date update:2005/08/20
+
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 void divide(int iNumerator,int iDenominator,int* piQuotient,int* piRemainder)
 {
 	*piQuotient = iNumerator / iDenominator;
 	*piRemainder = iNumerator - iDenominator * *piQuotient;
 }
 
-//分子を分母で割って商と剰余を求める。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 void divide(double dNumerator,double dDenominator,int* piQuotient,double* pdRemainder)
 {
 	*piQuotient = (int)(dNumerator / dDenominator);
 	*pdRemainder = dNumerator - dDenominator * *piQuotient;
 }
 
-//線形単位変換
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 float convertLinearUnit(float fTarget,float fValue1From,float fValue1To,float fValue2From,float fValue2To)
 {
 	return (fValue2To - fValue1To) / (fValue2From - fValue1From) * (fTarget-fValue1From)+ fValue1To;
 }
 
-//dTarget = dModule * q + r;の形にする。
-//rはdModule/2より小さくなるようにqを1増やすか減らして調整する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
+void putBetween(int* piTarget,int iMin,int iMax)
+{
+	*piTarget=getMin(*piTarget,iMax);
+	*piTarget=getMax(*piTarget,iMin);
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 void getModule_ReduceRemainder(double dTarget,double udModule,int* piQuotient,double* piRemainder)
 {
 	*piQuotient = (int) (dTarget/udModule);
@@ -69,16 +90,20 @@ void getModule_ReduceRemainder(double dTarget,double udModule,int* piQuotient,do
 	}
 }
 
-//剰余を求める
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 int mod(int iTarget,int iModule)
 {
 	int i=iTarget % iModule;
 	return i;
 }
 
-//剰余を求める
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double mod(double dTarget,double dModule)
 {
 	int iQuotient;
@@ -88,29 +113,37 @@ double mod(double dTarget,double dModule)
 	return dRemainder;
 }
 
-//切り捨て
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double floor(double x)
 {
 	return (x>=0)?(int)x:(int)x-1;
 }
 
-//切り上げ
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double ceil(double x)
 {
 	return (x>=0)?(int)x+1:(int)x;
 }
 
-//四捨五入
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double round(double x)
 {
-	return (x>=0)?floor(x+0.5):ceil(x-0.5);	//0.5を足すのは古典的なトリック。
+	return (x>=0)?floor(x+0.5):ceil(x-0.5);	//0.5を足して切り捨ては古典的なトリック。
 }
 
-//log base 2
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double log2(double x)
 {
 	if (x < 0)	return 0;
@@ -121,70 +154,76 @@ double log2(double x)
 	__asm
 	{
 		fld1
-		fld x
+		fld		x
 		fyl2x
-		fstp	qword ptr dResult
+		fstp	dResult
 	}
 #else
-	ASSERT(0);
+	asm volatile ("fld1");
+    asm volatile ("fyl2x" : "=t"(dResult) : "0"(x));
 #endif
 
 	return dResult;
 }
 
-//log base 10
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double log10(double x)
 {
 /*
-		10^y=x;			求める式は
+		10^y=x;			求める式。
 		10=2^z;			zを導入してこう置く。
 	⇒	(2^z)^y=x;
 	⇒	2^(z*y)=x;
 	⇒	z*y=log2(x);
 	⇒	y=log2(x)/z;
 */
-	const double cd1OverLog2of10 = 0.30102999566398;	//上記の1/z
-	double dResult = log2(x) * cd1OverLog2of10;
+
+//上記の1/z。zで割るより1/zをかける方がCPU的に速いのでこう置いとく。
+	const double cd1overLog2of10 = 0.30102999566398;
+	double dResult = log2(x) * cd1overLog2of10;
 	return dResult;
 }
 
-//log base e
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double log(double x)
 {
 /*
-		e^y=x;			求める式は
+		e^y=x;			求める式。
 		e=2^z;			zを導入してこう置く。
 	⇒	(2^z)^y=x;
 	⇒	2^(z*y)=x;
 	⇒	z*y=log2(x);
 	⇒	y=log2(x)/z;
-
 */
 	double dResult = log2(x) * g_cdLn2;
 	return dResult;
 }
 
-//e^xを計算。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double exponential(double x)
 {
 //アセンブラ版
-	if (1)
+#if 1
 	{
 /*
 		y=e^x;			求める式。
-		e=2^z;			ここでzを導入してこう置くと
+		e=2^z;			zを導入してこう置く。
 	⇒	y=(2^z)^x;
 	⇒	y=2^(z*x);
-
-	よってここからyが求められる。
 */
-		return SCPowerOf2::get(g_cd1OverLn2 * x);	//括弧の中が上記のz*x
+		return SCPowerOf2::get(g_cd1overLn2 * x);	//括弧の中が上記のz*x
 	}
 //小数展開版
-	else
+#else
 	{
 /*
 e^xのテイラー展開はe^x=1+x+x^2/2! + x^3/3!　・・・
@@ -258,22 +297,24 @@ x = i(整数) + d1(小数1桁部分) + d(小数2桁部分)まで細かく分解して
 		};
 
 		double dExponentialFloat2Result=0;
+		double dProduct = 1;
+		double iFactorial=1;
+		for (int i=1;i<10;i++)	//10回ぐらいでdoubleの精度が出るみたい。これ以上は無駄。
 		{
-			double dProduct = 1;
-			double iFactorial=1;
-			for (int i=1;i<10;i++)	//10回ぐらいでdoubleの精度が出るみたい。これ以上は無駄。
-			{
-				dExponentialFloat2Result += dProduct/iFactorial;
-				iFactorial*=i;
-				dProduct *= (dXFloat2);
-			}
+			dExponentialFloat2Result += dProduct/iFactorial;
+			iFactorial*=i;
+			dProduct *= (dXFloat2);
 		}
 
 		return dExponentialIntegerResult * adExponentialDecimal1[iDecimal1+9] * dExponentialFloat2Result;
 	}
+#endif	//if 1
 }
 
-//x^yを計算。
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 uint power(uint x, uint y)
 {
 	uint nResult=1;
@@ -284,27 +325,35 @@ uint power(uint x, uint y)
 	return nResult;
 }
 
-//2^yを計算。
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double power2(double x)
 {
 	return SCPowerOf2::get(x);
 }
 
-//x^yを計算。
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double power(double x, double y)
 {
 /*
-	z=x^y;
-	log2(z)=y*log2(x);
-	z = 2^(y*log2(x))
+		z=x^y;					求める式。
+	⇒	log2(z)=y*log2(x);
+	⇒	z = 2^(y*log2(x))
 */
 	double dResult = power2(y * log2(x));
 	return dResult;
 }
 
 
-//平方根を計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double squareroot(double x)
 {
 	if (x<0)	return 0;
@@ -313,19 +362,21 @@ double squareroot(double x)
 #ifdef _COMPILER_VISUALC
 	__asm
 	{
-		fld	x
+		fld		x
 		fsqrt
-		fstp	qword ptr dResult
+		fstp	dResult
 	}
 #else
 //@author HigePon
-    asm volatile ("fsqrt" : "=t"(dResult) : "0"(num));
+    asm volatile ("fsqrt" : "=t"(dResult) : "0"(x));
 #endif
     return dResult;
 }
 
-//サインを計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double sin(double x)
 {
     double dResult;
@@ -333,9 +384,9 @@ double sin(double x)
 #ifdef _COMPILER_VISUALC
 	__asm
 	{
-		fld	x
+		fld		x
 		fsin
-		fstp	qword ptr dResult
+		fstp	dResult
 	}
 #else
 //@author HigePon
@@ -345,8 +396,10 @@ double sin(double x)
 	return dResult;
 }
 
-//コサインを計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double cos(double x)
 {
     double dResult;
@@ -354,9 +407,9 @@ double cos(double x)
 #ifdef _COMPILER_VISUALC
 	__asm
 	{
-		fld	x
+		fld		x
 		fcos
-		fstp	qword ptr dResult
+		fstp	dResult
 	}
 #else
 //@author HigePon
@@ -366,8 +419,10 @@ double cos(double x)
 	return dResult;
 }
 
-//タンジェントを計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double tan(double x)
 {
     double dResult;
@@ -375,21 +430,22 @@ double tan(double x)
 #ifdef _COMPILER_VISUALC
 	__asm
 	{
-		fld	x
+		fld		x
 		fptan
 		fstp	st					//sinとかと違い結果はst(1)に入っているのでstは切り捨て
-		fstp	qword ptr dResult
+		fstp	dResult
 	}
 #else
-//@author HigePon
-    asm volatile ("fptan" : "=t"(dResult) : "0"(x));
+    asm volatile ("fptan" : "=t"(dResult),"=u"(dResult) : "0"(x));
 #endif
 
 	return dResult;
 }
 
-//アークタンジェントを計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double atan(double y,double x)
 {
     double dResult;
@@ -397,14 +453,14 @@ double atan(double y,double x)
 #ifdef _COMPILER_VISUALC
 	__asm
 	{
-		fld	y
-		fld	x
+		fld		y
+		fld		x
 		fpatan
-		fstp	qword ptr dResult
+		fstp	dResult
 	}
 #else
 //@author HigePon
-    asm volatile("fld1; fpatan" : "=t"(dResult) : "0" (x) : "st(1)");
+    asm volatile("fpatan" : "=t" (dResult) : "0" (x), "u" (y) : "st(1)");
 #endif
 
 	return dResult;
@@ -415,8 +471,10 @@ double atan(double x)
 	return atan(x,1);
 }
 
-//アークサインを計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double asin(double x)
 {
 	if (absolute(x) > 1)	return 0;
@@ -426,7 +484,7 @@ double asin(double x)
 	⇒		1=(sin(x)^2+(sin(x)/tan(x))^2
 	⇒		tan(x) = √(sin(x)^2 / (1-sin(x)^2))
 
-	ここで	sin(y)=x;
+	ここで命題により	sin(y)=x;
 	⇒		tan(y) = √(sin(y)^2 / (1-sin(y)^2))
 	⇒		tan(y) = √(x^2 / (1-x^2))
 	⇒		y = atan(√(x^2 / (1-x^2))
@@ -438,8 +496,10 @@ double asin(double x)
 	return (x>0)?dResult:-dResult;
 }
 
-//アークコサインを計算する。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double acos(double x)
 {
 	if (absolute(x) > 1)	return 0;
@@ -451,7 +511,7 @@ double acos(double x)
 	⇒		tan(x) = √((1-cos(x)^2)/cos(x)^2)
 	⇒		tan(x) = √(1/cos(x)^2 - 1)
 
-	ここで	cos(y)=x;
+	ここで命題により	cos(y)=x;
 	⇒		tan(y) = √(1/cos(y)^2 - 1)
 	⇒		tan(y) = √(1/x^2 - 1)
 	⇒		y = atan(√(1/x^2 - 1))
@@ -463,11 +523,13 @@ double acos(double x)
 	return (x>0)?dResult:(PI-dResult);
 }
 
-//2^xを計算。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 double SCPowerOf2::get(double x)
 {
-//CPUの命令上小数と整数を一端わけて別々に計算する。
+//CPUの命令上小数と整数をわけて別々に計算する。
 	int iIntPart;
 	double dFloatPart;
 	divide(x,1,&iIntPart,&dFloatPart);
@@ -477,8 +539,10 @@ double SCPowerOf2::get(double x)
 	return dResult;
 }
 
-//2^fを計算。-1<f<1限定
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	2^fを計算。-1<f<1限定。
+	@date	2005/08/20	junjunn 作成
+*/
 double SCPowerOf2::getFloat(double x)
 {
 	double dResult;
@@ -487,45 +551,57 @@ double SCPowerOf2::getFloat(double x)
 #ifdef _COMPILER_VISUALC
 	__asm
 	{
-		fld x
+		fld		x
 		f2xm1
-		fstp dResult
+		fstp	dResult
 	}
 #else
-	ASSERT(0);
+    asm volatile ("f2xm1" : "=t"(dResult) : "0"(x));
 #endif
 
 	return dResult+1;
 }
 
-//2^fを計算。fは整数に切り捨てられる。
-///@author junjunn @date update:2005/08/20
+/**
+	@brief	2^fを計算。fは整数に切り捨てられる。
+	@date	2005/08/20	junjunn 作成
+*/
+//st(0) * 2^(st(1)を計算する。
 double SCPowerOf2::getInt(double x)
 {
 	double dResult;
 
 #ifdef _COMPILER_VISUALC
-//st(0) * 2^(st(1)を計算する。
 	__asm
 	{
-		fld x
+		fld		x
 		fld1
 		fscale
-		fstp st(1)		//結果はst(0)にあるのだがどうせst(1)を取り除く必要があるのでst(1)に移動。
-		fstp dResult
+		fstp	st(1)	//結果はst(0)にあるのだがどうせst(1)をポップする必要があるのでst(1)に移動。
+		fstp	dResult
 	}
 #else
-	ASSERT(0);
+  	asm volatile ("fld %0"::"f"(x));
+  	asm volatile ("fld1");
+	asm volatile ("fscale;" : "=t"(dResult));
 #endif
 
 	return dResult;
 }
 
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 void initRandom(int iSeed)
 {
 	g_KnuthRandom.init(iSeed);
 }
 
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 int getRandom(uint nRange)
 {
 	int r = g_KnuthRandom.getInt();
@@ -534,17 +610,26 @@ int getRandom(uint nRange)
 }
 
 //KnuthRandom////////////////
+/**
+	@brief	コンストラクタ
+	@date	2005/08/20	junjunn 作成
+*/
 KnuthRandom::KnuthRandom()
 {
 	m_iCurPos=0;
 	m_fRange = (float)iRANDOM_RANGE;
 }
 
+/**
+	@brief	初期化
+	@date	2005/08/20	junjunn 作成
+*/
 void KnuthRandom::init(long lSeed)
 {
 	m_aiBuffer[iTABLE_SIZE] = lSeed;
 	long r = 1;
-	for (int i=1;i<iTABLE_SIZE;i++) 
+	int i;
+	for (i=1;i<iTABLE_SIZE;i++) 
 	{
 		int iPos = (iTABLE_SEED * i) % iTABLE_SIZE;
 		m_aiBuffer[iPos] = r;
@@ -558,6 +643,10 @@ void KnuthRandom::init(long lSeed)
 	m_iCurPos = iTABLE_SIZE;
 }
 
+/**
+	@brief	ランダム発生
+	@date	2005/08/20	junjunn 作成
+*/
 void KnuthRandom::randomize()
 {
 	int i;
@@ -575,6 +664,10 @@ void KnuthRandom::randomize()
 	}
 }
 
+/**
+	@brief	intを取り出す。
+	@date	2005/08/20	junjunn 作成
+*/
 long KnuthRandom::getInt()
 {
 	if (++m_iCurPos > iTABLE_SIZE) 
@@ -585,11 +678,13 @@ long KnuthRandom::getInt()
 	return m_aiBuffer[m_iCurPos];
 }
 
+/**
+	@brief	floatを取り出す。
+	@date	2005/08/20	junjunn 作成
+*/
 double KnuthRandom::getFloat()
 {
 	return (1.0 / iRANDOM_RANGE) * getInt();
 }
-
-
 
 }		//namespace monapi2

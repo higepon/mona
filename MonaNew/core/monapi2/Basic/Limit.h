@@ -5,9 +5,11 @@
 	intやfloatなどの最小・最大の大きさなど型の情報。
 
 	License=Mona License
-	\version $Revision$
-	\date	$Date$
+	@version $Revision$
+	@date	$Date$
 */
+//バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
+//また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
 #ifndef _MONAPI2_BASIC_LIMIT_H
 #define _MONAPI2_BASIC_LIMIT_H
 
@@ -65,6 +67,11 @@ const Aの数値をその場でコンパイラが問い合わせf1,f2に代入しています。
 
 namespace monapi2
 {
+/**
+	@brief	定数。Monapi2リファレンスも参照。
+	@date	2005/08/20	junjunn 作成
+*/
+
 //整数系
 ///charのビット幅
 	const int _CHAR_BIT = 8;
