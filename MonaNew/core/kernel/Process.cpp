@@ -21,7 +21,7 @@
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
-#if 1
+#if 0
 
 //     *   ページサイズを返す
 //     * タスクのアドレス空間に任意のリニアアドレス・サイズのメモリを割り当てる。
@@ -39,6 +39,14 @@ public:
 dword MemoryManager2::GetSystemPageSize()
 {
     return 4096;
+}
+
+static AllocateMemory(Process* process, LinearAddress start, dword size)
+{
+    if (process->vmallocator == NULL) {
+// vmallocator をほげする
+    }
+
 }
 
 /*
