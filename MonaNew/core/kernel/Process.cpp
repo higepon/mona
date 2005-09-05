@@ -44,7 +44,11 @@ dword MemoryManager2::GetSystemPageSize()
 static AllocateMemory(Process* process, LinearAddress start, dword size)
 {
     if (process->vmallocator == NULL) {
+
+
+
 // vmallocator をほげする
+// リニアアドレスを管理する vmallocator をつくってもどってくる
     }
 
 }
@@ -456,6 +460,8 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     /* pid */
     pid++;
     pid_ = pid;
+
+    lallocator = NULL;
 }
 
 Process::~Process()

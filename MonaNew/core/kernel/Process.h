@@ -218,6 +218,7 @@ class Process
 
   protected:
     static dword pid;
+    LinearAddressAllocator* lallocator;
     List<Thread*>* threadList_;
     List<char*>* arguments_;
     class HeapSegment* heap_;
