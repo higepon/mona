@@ -1,3 +1,7 @@
+2005-09-06  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/Process.h (class LinearAddressAllocator): ’Ç‰ÁB
+
 2005-08-29  bayside
 
         * core/shell_server/Shell.cpp: GUI‚ÉˆË‘¶‚·‚é•”•ª‚ğíœ

@@ -130,6 +130,19 @@ class ThreadOperation
 };
 
 /*----------------------------------------------------------------------
+    Linear Address Allocator
+----------------------------------------------------------------------*/
+class LinearAddressAllocator
+{
+public:
+    LinearAddressAllocator(LinearAddress start, dword size);
+    virtual ~LinearAddressAllocator();
+
+public:
+    void* Allocate(dword size);
+};
+
+/*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
 class Process
