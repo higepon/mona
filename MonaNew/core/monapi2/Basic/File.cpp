@@ -56,7 +56,7 @@ int File::getLastModifiedTime() const
 */
 bool File::open(const char* cszPath,bool bAllowWrite)
 {
-#ifndef _MONA
+#ifndef MONA
 	const char* pOpenFlag = (bAllowWrite)?"wb":"rb";
 	m_pFile = fopen(cszPath,pOpenFlag);
 	return (m_pFile!=NULL);
@@ -72,7 +72,7 @@ bool File::open(const char* cszPath,bool bAllowWrite)
 */
 uint File::read(byte* pOut,uint nIndex,uint nCount)
 {
-#ifndef _MONA
+#ifndef MONA
 	fseek(m_pFile,nIndex,SEEK_SET);
 	return fread(pOut,sizeof(byte),nCount,m_pFile);
 #endif
@@ -87,7 +87,7 @@ uint File::read(byte* pOut,uint nIndex,uint nCount)
 */
 uint File::write(const byte* cpIn,uint nIndex,uint nCount) const
 {
-#ifndef _MONA
+#ifndef MONA
 	fseek(m_pFile,nIndex,SEEK_SET);
 	return fwrite(cpIn,sizeof(byte),nCount,m_pFile);
 #endif
@@ -102,11 +102,13 @@ uint File::write(const byte* cpIn,uint nIndex,uint nCount) const
 */
 void File::close()
 {
+#ifndef MONA
 	if (m_pFile)
 	{
 		fclose(m_pFile);
 		m_pFile=NULL;
 	}
+#endif
 }
 
 /**

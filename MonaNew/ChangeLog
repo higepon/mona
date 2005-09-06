@@ -1,3 +1,11 @@
+2005-09-06  bayside
+
+        * core/monapi2/Makefile: Monapi2ビルド用に用意
+
+        * core/monapi2/Basic/File.cpp: Monaでビルドできるように修正
+
+        * core/monapi2/Basic/File.h: Monaでビルドできるように修正
+
 2005-09-06  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Process.h (class LinearAddressAllocator): 追加。

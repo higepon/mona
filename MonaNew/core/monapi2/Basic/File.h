@@ -16,7 +16,7 @@
 #include "switch.h"
 #include "Type.h"
 
-#ifndef _MONA
+#ifndef MONA
 	#include <stdio.h>
 #endif
 
@@ -50,11 +50,15 @@ public:
 
 
 protected:
-	void init()	{m_pFile=NULL;}
+	void init() {
+#ifndef MONA
+		m_pFile=NULL;
+#endif
+	}
 
 
 //âûã}èàíu
-#ifndef _MONA
+#ifndef MONA
 	FILE* m_pFile;
 #endif
 };
