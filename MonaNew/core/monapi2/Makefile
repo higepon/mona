@@ -1,5 +1,8 @@
 LIB_STATIC   = libmonapi2.a
 TARGET       = $(LIB_STATIC)
+MALLOC_OPT   = -DLACKS_UNISTD_H -DLACKS_FCNTL_H -DLACKS_SYS_PARAM_H \
+               -DLACKS_SYS_MMAN_H -DLACKS_STRINGS_H -DLACKS_STRING_H \
+               -DLACKS_SYS_TYPES_H -DLACKS_ERRNO_H -DLACKS_STDLIB_H
 
 include $(MONADIR)/share/configs/Makefile.inc
 include $(MONADIR)/share/configs/dirnames.inc
@@ -12,30 +15,31 @@ TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 endif
 
 SOURCES = Basic/Bit.cpp \
-          Basic/FileFn.cpp \
-          Basic/Memory.cpp \
           Basic/Buffer.cpp \
-          Basic/FileOther.cpp \
-          Basic/Search.cpp \
           Basic/CollectionArray.cpp \
-          Basic/Language.cpp \
-          Basic/String.cpp \
           Basic/CollectionList.cpp \
-          Basic/Language2.cpp \
-          Basic/StringFn.cpp \
           Basic/CollectionMap.cpp \
-          Basic/LanguageChar.cpp \
-          Basic/StringOther.cpp \
           Basic/Debug.cpp \
-          Basic/LanguageOther.cpp \
-          Basic/Time.cpp \
           Basic/File.cpp \
+          Basic/FileFn.cpp \
+          Basic/FileOther.cpp \
+          Basic/Language.cpp \
+          Basic/Language2.cpp \
+          Basic/LanguageChar.cpp \
+          Basic/LanguageOther.cpp \
+          Basic/malloc.cpp \
           Basic/Math.cpp \
+          Basic/Memory.cpp \
+          Basic/Search.cpp \
+          Basic/String.cpp \
+          Basic/StringFn.cpp \
+          Basic/StringOther.cpp \
+          Basic/Time.cpp \
           MultiMedia/Bitmap.cpp \
-          MultiMedia/Point.cpp \
-          MultiMedia/Size.cpp \
           MultiMedia/Color.cpp \
+          MultiMedia/Point.cpp \
           MultiMedia/Rect.cpp \
+          MultiMedia/Size.cpp \
           OS/IniManager.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 INCLUDE = -I$(INCDIR) -I. -I..
@@ -50,7 +54,8 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
+#	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
+	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
@@ -63,7 +68,7 @@ endif
 	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
 
 depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+	$(CXX) -MM $(INCLUDE) $(MALLOC_OPT) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)

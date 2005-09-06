@@ -12,6 +12,10 @@
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
 #include "Language.h"
 
+//どうしてコンパイル時に未定義参照になるか不明
+void* memset;
+void* memcpy;
+
 namespace monapi2
 {
 

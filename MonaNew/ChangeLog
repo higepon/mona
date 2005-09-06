@@ -6,6 +6,8 @@
 
         * core/monapi2/Basic/File.h: Mona‚Åƒrƒ‹ƒh‚Å‚«‚é‚æ‚¤‚ÉC³
 
+        * core/monapi2/Basic/malloc.cpp: dlmalloc‚ğmonapi‚©‚ç‚Á‚Ä‚«‚½
+
 2005-09-06  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Process.h (class LinearAddressAllocator): ’Ç‰ÁB
