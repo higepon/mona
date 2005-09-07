@@ -34,46 +34,29 @@ class MemoryManager2
 public:
     static dword GetSystemPageSize();
     static bool AllocateMemory(Process* process, dword size);
+
 };
 dword MemoryManager2::GetSystemPageSize()
 {
     return 4096;
 }
 
-static bool AllocateMemory(Process* process, dword size)
+bool MemoryManager2::AllocateMemory(Process* process, dword size)
 {
-    void* result = NULL;
+    void* address = NULL;
+    static dword id = 0x5000;
 
-    if (process->lallocator == NULL) {
-	process->lallocator = new LinearAddress(0, 500); // 今は適当
-    }
-
-    result = lallocator->Allocate(size);
-    if (result == NULL) {
+    address = process->AllocateLinearAddress(size);
+    if (address == NULL) {
 	return false;
     }
-
-
-
+    id++;
+    bool isOpen = SharedMemoryObject::open(id, size);
+    if (!isOpen) return false;
+    bool isAttaced = SharedMemoryObject::attach(id, process, (dword)address);
+    if (!isAttaced) return false;
     return true;
-// vmallocator をほげする
-// リニアアドレスを管理する vmallocator をつくってもどってくる
-
 }
-
-/*
-if (process->vmallocator == NULL) {
-process->vmallocator = new vmallocater();
-}
-
-var vm = vmallocater->allocate(size); // default page attribute?
-
-shared memory segmentがあるからよいか。
-shared memory objectはどうしよう？
-}
-
-
-*/
 
 #endif
 /*----------------------------------------------------------------------
