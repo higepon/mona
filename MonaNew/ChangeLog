@@ -1,5 +1,7 @@
 2005-09-07  higepon  <higepon@users.sourceforge.jp>
 
+        * core/monapi2/Basic/malloc.cpp: stdio.hQÆ‚ğ‚â‚ß‚é
+
         * core/kernel/Process.cpp (AllocateMemory): ‚È‚ñ‚Æ‚È‚­À‘•’†
 
 2005-09-06  bayside
