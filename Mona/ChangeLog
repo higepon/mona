@@ -1,3 +1,7 @@
+2005-09-07  bayside
+
+        * tools/monafont/mona6x12.bit0: 6x12の固定幅表示をしたときに表示が乱れないよう調整
+
 2005-08-29  higepon  <higepon@users.sourceforge.jp>
 
         * src/kernel/core.asm (from_user): ds,esの復帰をiretd直前に。

@@ -115,7 +115,7 @@ namespace baygui {
 			//printf("fontStyle = %d,", this->fontStyle);
 			if ((this->fontStyle & 0x100) == Font::FIXED) {
 				if (ucs4 < 128 || 0xff60 < ucs4) {
-					*offset = 8;
+					*offset = 6;
 				} else {
 					*offset = 12;
 				}
@@ -145,7 +145,7 @@ namespace baygui {
 			if (c <= 0xFFFF) {
 				if ((this->fontStyle & 0x100) == Font::FIXED) {
 					if (c < 128 || 0xff60 < c) {
-						w += 8;
+						w += 6;
 					} else {
 						w += 12;
 					}

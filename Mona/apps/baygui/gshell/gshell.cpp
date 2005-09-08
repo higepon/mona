@@ -26,8 +26,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <time.h>
 #endif
 
-#define HALF_WIDTH    8   /* 1byte charcter width */
-#define GSHELL_WIDTH  480 /* 8dot X 60chars */
+#define HALF_WIDTH    6   /* 1byte charcter width */
+#define GSHELL_WIDTH  360 /* 6dot X 60chars */
 #define GSHELL_HEIGHT 300 /* 12dot X 25 chars */
 
 /** GUIコンソールクラス */
