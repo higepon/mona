@@ -12,10 +12,6 @@
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
 #include "Language.h"
 
-//どうしてコンパイル時に未定義参照になるか不明
-void* memset;
-void* memcpy;
-
 namespace monapi2
 {
 
@@ -28,7 +24,7 @@ namespace monapi2
 bool CharFn::isLower(char1 c)
 {
 //1命令でisLowerを求める方法。
-	bool abIsLowerTable[256]=
+	static bool abIsLowerTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -56,7 +52,7 @@ bool CharFn::isLower(char1 c)
 */
 bool CharFn::isUpper(char1 c)
 {
-	bool abIsUpperTable[256]=
+	static bool abIsUpperTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -84,7 +80,7 @@ bool CharFn::isUpper(char1 c)
 */
 bool CharFn::isAlpha(char1 c)
 {
-	bool abIsAlphaTable[256]=
+	static bool abIsAlphaTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -112,7 +108,7 @@ bool CharFn::isAlpha(char1 c)
 */
 bool CharFn::isDigit(char1 c)
 {
-	bool abIsDigitTable[256]=
+	static bool abIsDigitTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -140,7 +136,7 @@ bool CharFn::isDigit(char1 c)
 */
 bool CharFn::isHex(char1 c)
 {
-	bool abIsHexTable[256]=
+	static bool abIsHexTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -168,7 +164,7 @@ bool CharFn::isHex(char1 c)
 */
 bool CharFn::isAlphaDigit(char1 c)
 {
-	bool abIsAlphaDigitTable[256]=
+	static bool abIsAlphaDigitTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -196,7 +192,7 @@ bool CharFn::isAlphaDigit(char1 c)
 */
 bool CharFn::isCSymbol(char1 c)
 {
-	bool abIsCSymbolTable[256]=
+	static bool abIsCSymbolTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -224,7 +220,7 @@ bool CharFn::isCSymbol(char1 c)
 */
 bool CharFn::isSpace(char1 c)
 {
-	bool abIsSpaceTable[256]=
+	static bool abIsSpaceTable[256]=
 	{
 		0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,	//0x00
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	//0x10
@@ -280,7 +276,7 @@ bool CharFn::isASCII(char c)	{return ((byte)c < 0x80);}
 */
 byte CharFn::toLower(char1 c)
 {
-	byte abyToLowerTable[256]=
+	static byte abyToLowerTable[256]=
 	{
 		0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,
 		0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,
@@ -308,7 +304,7 @@ byte CharFn::toLower(char1 c)
 */
 byte CharFn::toUpper(char1 c)
 {
-	byte abyToUpperTable[256]=
+	static byte abyToUpperTable[256]=
 	{
 		0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,
 		0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,
