@@ -1,3 +1,7 @@
+2005-09-07  bayside
+
+        * core/monapi2/Basic/LanguageChar.cpp: memset, memcpy が未定義参照になる不具合を修正
+
 2005-09-07  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi2/Basic/malloc.cpp: stdio.h参照をやめる
