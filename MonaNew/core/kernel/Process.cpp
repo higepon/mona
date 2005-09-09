@@ -27,7 +27,8 @@
 //     * タスクのアドレス空間に任意のリニアアドレス・サイズのメモリを割り当てる。
 //     * 特定タスクのaddress,sizeにread/write/executeの属性をつける
 //     * 特定のタスクのvmを特定のタスクから読む。自分のアドレスに強制的に読み込んだり。カーネルに割り当てを任せることも出来る。
-
+// AllocateMemory後、プロセスにそのsharedmemory objectがむすびついているかしらべる。⇒attach
+// 使えるリニアアドレス範囲を調べる
 
 class MemoryManager2
 {
@@ -477,6 +478,7 @@ Process::~Process()
     delete messageList_;
     delete arguments_;
     delete threadList_;
+    if (this->lallocator != NULL) delete this->lallocator;
 }
 
 dword Process::getStackBottom(Thread* thread)
