@@ -31,16 +31,16 @@ void SplitPath::init()
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void SplitPath::set(pcchar1 cszPath)
+void SplitPath::set(cpchar1 cszPath)
 {
 	init();
 
 //一番右の区切りを検索
-	pcchar1 pDivYen = StringFn::findReverse(cszPath,'\\');
+	cpchar1 pDivYen = StringFn::findReverse(cszPath,'\\');
 //こっちでも検索
-	pcchar1 pDivSlash = StringFn::findReverse(cszPath,'/');
+	cpchar1 pDivSlash = StringFn::findReverse(cszPath,'/');
 
-	pcchar1 pDiv = getMax(pDivYen,pDivSlash);
+	cpchar1 pDiv = getMax(pDivYen,pDivSlash);
 
 //普通に見つかったら
 	if (pDiv)
@@ -71,10 +71,10 @@ void SplitFilename::init()
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void SplitFilename::set(pcchar1 cszFilename)
+void SplitFilename::set(cpchar1 cszFilename)
 {
 //名前と拡張子に分ける
-	pcchar1 pDiv = StringFn::findReverse(cszFilename,'.');
+	cpchar1 pDiv = StringFn::findReverse(cszFilename,'.');
 
 	if (pDiv)
 	{
@@ -108,7 +108,7 @@ void SplitFilename::set(pcchar1 cszFilename)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-ScanDirectory::ScanDirectory(pcchar1 cszPath,bool includeFile,bool includeDirectory,ESortBy eSortBy)
+ScanDirectory::ScanDirectory(cpchar1 cszPath,bool includeFile,bool includeDirectory,ESortBy eSortBy)
 {
 	scan(cszPath,includeFile,includeDirectory,eSortBy);
 }
@@ -125,7 +125,7 @@ ScanDirectory::ScanDirectory()
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pcchar1 ScanDirectory::getNameAt(int iIndex)
+cpchar1 ScanDirectory::getNameAt(int iIndex)
 {
 	iIndex=0;
 	return NULL;
@@ -135,7 +135,7 @@ pcchar1 ScanDirectory::getNameAt(int iIndex)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pcchar1 ScanDirectory::getFullPathAt(int iIndex)
+cpchar1 ScanDirectory::getFullPathAt(int iIndex)
 {
 	iIndex=0;
 	return NULL;
@@ -145,7 +145,7 @@ pcchar1 ScanDirectory::getFullPathAt(int iIndex)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pcchar1 ScanDirectory::getFilePropertyAt(int iIndex)
+cpchar1 ScanDirectory::getFilePropertyAt(int iIndex)
 {
 	iIndex=0;
 	return NULL;
@@ -164,7 +164,7 @@ int ScanDirectory::getCount()
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void ScanDirectory::scan(pcchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,ESortBy eSortBy)
+void ScanDirectory::scan(cpchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,ESortBy eSortBy)
 {
 	cszPath=NULL;
 	bIncludeFile=false;

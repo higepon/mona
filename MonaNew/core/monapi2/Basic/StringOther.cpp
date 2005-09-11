@@ -21,16 +21,16 @@ namespace monapi2
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void StringDivide::set(pcchar1 cszStart,pcchar1 cszToken)
+void StringDivide::set(cpchar1 cszStart,cpchar1 cszToken)
 {
 	getStringArray()->removeAll();
 
 	int iLengthToken = StringFn::getLength(cszToken);
 
 //最後の区切り
-	pcchar1 pLastAppear	= cszStart;
+	cpchar1 pLastAppear	= cszStart;
 //次の区切り
-	pcchar1 p			= cszStart;
+	cpchar1 p			= cszStart;
 
 //分解して見つかった文字列を置く。
 	String strWord;

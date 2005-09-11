@@ -28,7 +28,7 @@ namespace monapi2
 	@brief	.h参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool CGenerateConversionCode::generate(pcchar1 cszConversionTableFilePath,pcchar1 cszPathOut)
+bool CGenerateConversionCode::generate(cpchar1 cszConversionTableFilePath,cpchar1 cszPathOut)
 {
 //ファイルを読む
 	String strFileContent;
@@ -52,14 +52,14 @@ bool CGenerateConversionCode::generate(pcchar1 cszConversionTableFilePath,pcchar
 		StringDivide Sdword(SDLine.getAt(iLine),"	");
 
 //最初はコード1
-		pcchar1 cszCode1= Sdword.getAt(0);
+		cpchar1 cszCode1= Sdword.getAt(0);
 		int iCode1	=StringFn::toInt(cszCode1+2,16);
 
 //有効ではない行。
 		if (cszCode1[0] != '0') continue;		//行頭は0xで始まるので
 
 //次はコード2
-		pcchar1 cszCode2 = Sdword.getAt(1);
+		cpchar1 cszCode2 = Sdword.getAt(1);
 		int iCode2;
 
 //定義されていない場所には空白が書かれてある。それは無効。		
@@ -181,7 +181,7 @@ void CGenerateConversionCode::generateCCode(int i1to2,String* pstrOut)
 			char szTableName[100];
 			getCGenerateConversionCodeTableName(szTableName,pConversionRule,i);
 
-			StringFn::format(szTemp,"		char2 %s[]={\n			",szTableName);
+			StringFn::format(szTemp,"		vchar %s[]={\n			",szTableName);
 			*pstrOut +=	szTemp;
 
 			int iElementOutCount=0;	//コード2文字列をいくつ吐き出したか。

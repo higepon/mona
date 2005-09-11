@@ -57,23 +57,47 @@ Y/N‚Ì“ñ‘ğ‚ÍˆÓ–¡“I‚Ébool‚Å‘‚­‚Ì‚ªŒÂl“I‚ÉD‚«‚È‚Ì‚Å„‚Í‚ ‚Ü‚èg‚Á‚Ä‚Ü‚¹‚ñ‚ªEE
 typedef int 					booli;
 
 
-//‰Â•Ï•
-typedef	unsigned char			vchar;			///<•W€•¶šBŒã‚©‚çtypedef uint16 vchar‚Æ‚©ƒ†ƒjƒR[ƒh‚É‡‚í‚¹•‚ª•Ï‚í‚é‚©‚àB
-typedef vchar*					pvchar;			///<•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-typedef const vchar				pcvchar;		///<const•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-
 //ŒÅ’è•
 typedef	char					char1;			///<1ƒoƒCƒg•¶šB–{“–‚Íunsigned‚È‚ñ‚¾‚¯‚Çsigned‚ª•‹y‚µ‚·‚¬‚Ä‚ÄƒRƒ“ƒpƒCƒ‰‚Å‚à¬—‚µ‚â‚·‚¢‚Ì‚Åsigned‚É‚µ‚Æ‚­B
 typedef	unsigned short			char2;			///<2ƒoƒCƒg•¶š
 
 typedef char1*					pchar1;			///<•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-typedef const char1*			pcchar1;		///<const•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+typedef const char1*			cpchar1;		///<const•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 typedef char2*					pchar2;			///<ƒ†ƒjƒR[ƒh•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-typedef const char2*			pcchar2;		///<constƒ†ƒjƒR[ƒh•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+typedef const char2*			cpchar2;		///<constƒ†ƒjƒR[ƒh•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+
+//‰Â•Ï•
+typedef	unsigned int			charv;			///<•W€•¶šBŒã‚©‚çtypedef uint16 vchar‚Æ‚©ƒ†ƒjƒR[ƒh‚É‡‚í‚¹•‚ª•Ï‚í‚é‚©‚àB
+typedef charv*					pcharv;			///<•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+typedef const charv*			cpcharv;		///<const•W€•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 
 #ifndef NULL
 	#define NULL 0
 #endif
+
+
+/**
+	64ƒrƒbƒg•Ï”‚ğƒGƒ~ƒ…ƒŒ[ƒg‚·‚éBƒR[ƒh‚ğ‘‚­˜J—Í‚Ì–â‘è‚Å•K—v‚É‚È‚é‚Ü‚Å‚Í‹@”\ŒÀ’èB
+
+	@date	2005/09/06	junjunn ì¬
+*/
+
+template<class TYPE>
+class int64Base
+{
+public:
+	word operator =(const word w)	{set(0,w);return w;}
+	int operator =(const int i)		{set(0,i);return i;}
+	uint operator =(const uint n)	{set(0,n);return n;}
+	operator uint()	{return m_t[0];}
+
+protected:
+	void set(TYPE w1,TYPE w2)	{m_t[1] = w1;m_t[0]=w2;};
+	TYPE m_t[2];
+};
+
+typedef int64Base<int> int64;
+typedef int64Base<uint> uint64;
 
 }	//namespace monapi2
 

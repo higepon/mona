@@ -81,7 +81,7 @@ String::String(int iInitialBufferLength)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-String::String(pcchar1 cszInitialString)
+String::String(cpchar1 cszInitialString)
 {
 	init();
 
@@ -165,7 +165,7 @@ pchar1 String::requestModifiableBuffer(uint nLength,bool bKeepOriginalData)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool String::isEqual(pcchar1 csz) const
+bool String::isEqual(cpchar1 csz) const
 {
 	return StringFn::isEqual(getString(),csz);
 }
@@ -174,7 +174,7 @@ bool String::isEqual(pcchar1 csz) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool String::operator==(pcchar1 csz) const
+bool String::operator==(cpchar1 csz) const
 {
 	return isEqual(csz);
 }
@@ -183,7 +183,7 @@ bool String::operator==(pcchar1 csz) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool String::operator!=(pcchar1 csz) const
+bool String::operator!=(cpchar1 csz) const
 {
 	return (!isEqual(csz));
 }
@@ -192,7 +192,7 @@ bool String::operator!=(pcchar1 csz) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool String::isEqualNoCase(pcchar1 csz) const
+bool String::isEqualNoCase(cpchar1 csz) const
 {
 	return StringFn::isEqualNoCase(getString(),csz);
 }
@@ -216,7 +216,7 @@ int	String::find(char1 cFind,uint nStart) const
 {
 	if (nStart >= getLength())	return -1;
 
-	pcchar1 cszFound = StringFn::find(getString()+nStart,cFind);
+	cpchar1 cszFound = StringFn::find(getString()+nStart,cFind);
 	if (cszFound==NULL)	return -1;
 	else				return cszFound-getString();
 }
@@ -225,11 +225,11 @@ int	String::find(char1 cFind,uint nStart) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	String::find(pcchar1 cszFind,uint nStart) const
+int	String::find(cpchar1 cszFind,uint nStart) const
 {
 	if (nStart >= getLength())	return -1;
 
-	pcchar1 cszFound = StringFn::find(getString()+nStart,cszFind);
+	cpchar1 cszFound = StringFn::find(getString()+nStart,cszFind);
 	if (cszFound==NULL)	return -1;
 	else				return cszFound-getString();
 }
@@ -240,7 +240,7 @@ int	String::find(pcchar1 cszFind,uint nStart) const
 */
 int	String::findReverse(char1 cfind) const
 {
-	pcchar1 cszFound = StringFn::findReverse(getString(),cfind);
+	cpchar1 cszFound = StringFn::findReverse(getString(),cfind);
 	if (cszFound==NULL)	return -1;
 	else				return cszFound-getString();
 }
@@ -249,9 +249,9 @@ int	String::findReverse(char1 cfind) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	String::findReverse(pcchar1 cszfind) const
+int	String::findReverse(cpchar1 cszfind) const
 {
-	pcchar1 cszFound = StringFn::findReverse(getString(),cszfind);
+	cpchar1 cszFound = StringFn::findReverse(getString(),cszfind);
 	if (cszFound==NULL)	return -1;
 	else				return cszFound-getString();
 }
@@ -290,7 +290,7 @@ void String::getMiddle(String* pstrOut,uint nStart,uint nCount) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-String String::join(pcchar1 csz) const
+String String::join(cpchar1 csz) const
 {
 	String strNew(getString());
 	strNew+=csz;
@@ -301,7 +301,7 @@ String String::join(pcchar1 csz) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-String String::operator+(pcchar1 csz) const
+String String::operator+(cpchar1 csz) const
 {
 	String strNew(getString());
 	strNew+=csz;
@@ -335,7 +335,7 @@ bool String::setAt(uint n,char1 c)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void String::copy(pcchar1 csz,int iCount)
+void String::copy(cpchar1 csz,int iCount)
 {
 	uint nLength = (iCount==-1)?StringFn::getLength(csz):iCount;
 
@@ -361,7 +361,7 @@ void String::copy(const String* pstr)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-String& String::operator=(pcchar1 csz)
+String& String::operator=(cpchar1 csz)
 {
 	copy(csz);
 	return *this;
@@ -381,7 +381,7 @@ String& String::operator=(const String& rstr)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void String::joinSelf(pcchar1 csz)
+void String::joinSelf(cpchar1 csz)
 {
 	int iOldLegth = getLength();
 	uint nNewLength = iOldLegth + StringFn::getLength(csz);
@@ -395,7 +395,7 @@ void String::joinSelf(pcchar1 csz)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-String& String::operator+=(pcchar1 csz)
+String& String::operator+=(cpchar1 csz)
 {
 	joinSelf(csz);
 	return *this;
@@ -456,7 +456,7 @@ pchar1 String::createNewBuffer(int iSizeWithoutNull,bool bKeepOriginalData)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void String::format(pcchar1 cszFormat,...)
+void String::format(cpchar1 cszFormat,...)
 {
 	vapointer vap;
 	VAPOINTER_SET_START(vap,cszFormat);
@@ -467,7 +467,7 @@ void String::format(pcchar1 cszFormat,...)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void String::formatV(pcchar1 cszFormat,vapointer vapStart)
+void String::formatV(cpchar1 cszFormat,vapointer vapStart)
 {
 	int iNewEstimateLength = StringFn::estimateVALength(cszFormat,vapStart);
 	pchar1 pBuffer = requestModifiableBuffer(iNewEstimateLength,false);
@@ -480,7 +480,7 @@ void String::formatV(pcchar1 cszFormat,vapointer vapStart)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void String::formatJoinSelf(pcchar1 cszFormat,...)
+void String::formatJoinSelf(cpchar1 cszFormat,...)
 {
 	vapointer vapStart;
 	VAPOINTER_SET_START(vapStart,cszFormat);

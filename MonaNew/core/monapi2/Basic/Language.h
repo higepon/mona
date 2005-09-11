@@ -74,7 +74,7 @@ ShiftJIS©¨Unicode‚Ì•ÏŠ·‚Í0xFFFF‚Ì‘å‚«‚³‚Ì‘Î‰•\‚ğì‚Á‚Ä‘S•”‘‚¯‚Îˆê”­‚ÅI‚í‚é‚
 class CConversionRule
 {
 public:
-	void set(pcchar1 cszName,Rect* parectConversion)
+	void set(cpchar1 cszName,Rect* parectConversion)
 	{
 		m_strName= cszName;
 		m_parectConversion = parectConversion;
@@ -112,11 +112,11 @@ class LanguageFn
 {
 public:
 //•¶š—ñ•ÏŠ·
-	static int convertShiftJIStoUnicode(pchar2 wszOut	,pcchar1 cszIn	,int iMaxInLen=-1);	///<char ¨ wchar
-	static int convertUnicodetoShiftJIS(pchar1 szOut	,pcchar2 cwszIn	,int iMaxInLen=-1);	///<wchap ¨ char
+	static int convertShiftJIStoUnicode(pcharv wszOut	,cpchar1 cszIn	,int iMaxInLen=-1);	///<char ¨ wchar
+	static int convertUnicodetoShiftJIS(pchar1 szOut	,cpcharv cwszIn	,int iMaxInLen=-1);	///<wchap ¨ char
 //class Buffer‚ğg‚Á‚½•ÏŠ·
-	static int convertShiftJIStoUnicode(class Buffer* pbufOut,pcchar1 cszIn);		///<char ¨ wchar
-	static int convertUnicodetoShiftJIS(Buffer* pbufOut,pcchar2 cwszIn);			///<wchar ¨ char
+	static int convertShiftJIStoUnicode(class Buffer* pbufOut,cpchar1 cszIn);		///<char ¨ wchar
+	static int convertUnicodetoShiftJIS(Buffer* pbufOut,cpcharv cwszIn);			///<wchar ¨ char
 
 //’P•¶šƒR[ƒh•ÏŠ·
 ///SJIS•¶šƒR[ƒh‚©‚çUnicode(2ƒoƒCƒg•Œ`®)•¶šƒR[ƒh‚É•ÏŠ·
@@ -127,7 +127,7 @@ public:
 	static int convertUnicodetoShiftJIS(byte x,byte y);
 
 ///•ÏŠ·ƒR[ƒhƒe[ƒuƒ‹‚ğ“Ç‚İo‚·B
-	static void init(pcchar1 cszPathShiftJIStoUnicode);
+	static void init(cpchar1 cszPathShiftJIStoUnicode);
 	static void initRule();
 };
 
@@ -148,7 +148,7 @@ public:
 ///€”õ‚ªo—ˆ‚Ä‚¢‚é‚©B
 	bool isReady()	{return m_bReady;}
 ///•ÏŠ·ƒR[ƒhƒe[ƒuƒ‹‚ğ“Ç‚İo‚·B
-	void readTable(pcchar1 cszPath);
+	void readTable(cpchar1 cszPath);
 ///SJIS•¶šƒR[ƒh‚©‚çUnicode(2ƒoƒCƒg•Œ`®)•¶šƒR[ƒh‚É•ÏŠ·
 	int convert1to2(int iCode1);
 	int convert1to2(byte x,byte y);

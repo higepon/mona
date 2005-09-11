@@ -30,12 +30,12 @@ public:
 ///@name 生成
 //@{
 	StringDivide()										{}							///<コンストラクタ
-	StringDivide(pcchar1 cszSource,pcchar1 cszToken)	{set(cszSource,cszToken);};	///<コンストラクタ。Set(cszStart,cszToken)になる。
-	void set(pcchar1 cszSource,pcchar1 cszToken);			///<cszStartをcszTokenで区切る
+	StringDivide(cpchar1 cszSource,cpchar1 cszToken)	{set(cszSource,cszToken);};	///<コンストラクタ。Set(cszStart,cszToken)になる。
+	void set(cpchar1 cszSource,cpchar1 cszToken);			///<cszStartをcszTokenで区切る
 //@}
 
 
-	pcchar1	getAt(int iIndex)	const {return getStringArray()->getAt(iIndex);}	///<iIndexの文字列を返す
+	cpchar1	getAt(int iIndex)	const {return getStringArray()->getAt(iIndex);}	///<iIndexの文字列を返す
 	int		getCount()			const {return getStringArray()->getCount();}	///<全体の要素数を返す
 
 	StringArray* getStringArray()	const {return ((StringArray*)this);}

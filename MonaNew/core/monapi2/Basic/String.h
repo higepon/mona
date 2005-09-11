@@ -98,42 +98,42 @@ public:
 ///コンストラクタとデストラクタ
 	String();									///<コンストラクタ
 	String(int iInitialBufferLength);			///<コンストラクタ
-	String(pcchar1 cszInitialString);			///<コンストラクタ
+	String(cpchar1 cszInitialString);			///<コンストラクタ
 	String(const String& refInitialString);		///<コンストラクタ
 	~String();									///<デストラクタ
 
 ///取得
-	pcchar1	getString()	const{return m_pStringData->m_szData;}			///<文字列を得る。
-			operator pcchar1()	const{return getString();}				///<キャスト演算子。
+	cpchar1	getString()	const{return m_pStringData->m_szData;}			///<文字列を得る。
+			operator cpchar1()	const{return getString();}				///<キャスト演算子。
 	uint	getLength()	const{return m_pStringData->m_nLength;}			///<文字列の長さを得る('\0'は含まない)。
 	uint	getSize()	const{return m_pStringData->m_nSize;}			///<文字列の領域サイズを得る。
 	bool	isEmpty()	const{return getLength()==0;}		///<文字列が空かどうか
-	bool	isEqual(pcchar1 csz) const;						///<同一かどうか比較。
-	bool	operator==(pcchar1 csz) const;					///<同一かどうか比較。
-	bool	operator!=(pcchar1 csz) const;					///<非同一かどうか比較。
-	bool	isEqualNoCase(pcchar1 csz) const;				///<同一かどうか比較。大小文字無視。
+	bool	isEqual(cpchar1 csz) const;						///<同一かどうか比較。
+	bool	operator==(cpchar1 csz) const;					///<同一かどうか比較。
+	bool	operator!=(cpchar1 csz) const;					///<非同一かどうか比較。
+	bool	isEqualNoCase(cpchar1 csz) const;				///<同一かどうか比較。大小文字無視。
 	char1	getAt(uint n) const;							///<指定のインデックスの文字を返す。
 	int		find(char1 cFind,uint nStart=0) const;			///<検索。
-	int		find(pcchar1 cszFind,uint nStart=0) const;		///<検索。
+	int		find(cpchar1 cszFind,uint nStart=0) const;		///<検索。
 	int		findReverse(char1 cFind) const;					///<逆検索。
-	int		findReverse(pcchar1 cszFind) const;				///<逆検索。
+	int		findReverse(cpchar1 cszFind) const;				///<逆検索。
 	void	getLeft(String* pstrOut,uint nCount) const;		///<左の数文字から新しいStringを構築。
 	void	getRight(String* pstrOut,uint nCount) const;	///<右の数文字から新しいStringを構築。
 	void	getMiddle(String* pstrOut,uint nStart,uint nCount) const;	///<中央の数文字から新しいStringを構築。
 
-	String	join(pcchar1 csz) const;						///<連結して新しいStringを構築。
-	String	operator+(pcchar1 csz) const;					///<連結して新しいStringを構築。
+	String	join(cpchar1 csz) const;						///<連結して新しいStringを構築。
+	String	operator+(cpchar1 csz) const;					///<連結して新しいStringを構築。
 
 //操作
-	void copy(pcchar1 csz,int iCount=-1);					///<代入。
-	String& operator=(pcchar1 csz);							///<代入。
+	void copy(cpchar1 csz,int iCount=-1);					///<代入。
+	String& operator=(cpchar1 csz);							///<代入。
 	void copy(const String* pstr);							///<代入。
 	String& operator=(const String& rstr);					///<代入。
-	void joinSelf(pcchar1 csz);								///<自分に直接連結。
-	String& operator+=(pcchar1 csz);						///<自分に直接連結。
+	void joinSelf(cpchar1 csz);								///<自分に直接連結。
+	String& operator+=(cpchar1 csz);						///<自分に直接連結。
 	void empty();											///<空にする。
-	void format(pcchar1 cszFormat,...);						///<sprintf形式で文字列を作る。
-	void formatJoinSelf(pcchar1 cszFormat,...);				///<sprintf形式で文字列を作って最後にくっつける。
+	void format(cpchar1 cszFormat,...);						///<sprintf形式で文字列を作る。
+	void formatJoinSelf(cpchar1 cszFormat,...);				///<sprintf形式で文字列を作って最後にくっつける。
 	bool setAt(uint n,char1 c);								///<指定のインデックスに文字をセット。
 	int replace(char1 cFrom,char1 cTo);						///<置き換え
 	int replace(pchar1 cszFrom,pchar1 cszTo);				///<置き換え
@@ -152,7 +152,7 @@ protected:
 ///初期化
 	void init();
 ///formatなどの内部処理。
-	void formatV(pcchar1 cszFormat,vapointer vl);
+	void formatV(cpchar1 cszFormat,vapointer vl);
 ///nLengthは格納可能か。
 	bool isContainable(uint nLength);
 ///長さをセットする
@@ -211,9 +211,9 @@ protected:
 /**
 可変引数時の扱いについて。
 
-普段はoperator pcchar1()が効くので
-	pcchar1 p = string;
-とか書いても自動で正しくStringからpcchar1へのキャストが効き正しい型に変換されますが
+普段はoperator cpchar1()が効くので
+	cpchar1 p = string;
+とか書いても自動で正しくStringからcpchar1へのキャストが効き正しい型に変換されますが
 可変引数使用時には型の情報が消滅しますから
 	StringFn::format(szBuffer,"%s",string->getString());
 と明示的に指定してください。
@@ -233,7 +233,7 @@ CStringのその他本体データは(m_pが指す普通のNUL文字列 + 本体メンバ情報)のように
 可変引数時の自動キャスト成功の為だけにそんな反則する価値があるのか・・・って話で
 とりあえず現時点ではあえて実装していません。
 
-ちなみにこのクラスにもう一つメンバpcchar1 m_szDataPointerをつけてそれにm_pStringData->m_szData
+ちなみにこのクラスにもう一つメンバcpchar1 m_szDataPointerをつけてそれにm_pStringData->m_szData
 を設定しておく方法にすればStirngの生データが文字列データを指すようになるのでキャストは成功しますが、
 可変引数の方のVAP_ADVANCE(p,sizeof(char*))などが失敗するので結局無理です・・・
 */

@@ -31,8 +31,8 @@ namespace monapi2	{
 
 
 //使用
-	pcchar1 cszDir		= SplitPath.GetDir();		//=="C:/aaa/bbb/ccc"
-	pcchar1 cszFilename	= SplitPath.GetFilename();	//=="ddd.txt"
+	cpchar1 cszDir		= SplitPath.GetDir();		//=="C:/aaa/bbb/ccc"
+	cpchar1 cszFilename	= SplitPath.GetFilename();	//=="ddd.txt"
 @endcode
 
 	@date	2005/08/20	junjunn 作成
@@ -45,20 +45,20 @@ public:
 ///@name 生成
 //@{
 	SplitPath()					{init();}					///<コンストラクタ
-	SplitPath(pcchar1 cszPath)	{set(cszPath);}				///<コンストラクタ
+	SplitPath(cpchar1 cszPath)	{set(cszPath);}				///<コンストラクタ
 	void init();											///<初期化
 //@}
 
 
 ///@name セット
 //@{
-	void set(pcchar1 cszPath);								///<セット
+	void set(cpchar1 cszPath);								///<セット
 //@}
 
 ///@name 取得
 //@{
-	pcchar1 getDirectory()	const {return m_szDirectory;}	///<ディレクトリ部分を返す
-	pcchar1 getFilename()	const {return m_szFilename;}	///<ファイル名部分を返す
+	cpchar1 getDirectory()	const {return m_szDirectory;}	///<ディレクトリ部分を返す
+	cpchar1 getFilename()	const {return m_szFilename;}	///<ファイル名部分を返す
 //@}
 
 
@@ -81,8 +81,8 @@ protected:
 
 
 //使用
-	pcchar1 cszDir		= SplitFilename.GetName();		//=="test"
-	pcchar1 cszFilename	= SplitFilename.GetExtension();	//=="txt"
+	cpchar1 cszDir		= SplitFilename.GetName();		//=="test"
+	cpchar1 cszFilename	= SplitFilename.GetExtension();	//=="txt"
 @endcode
 
 	@date	2005/08/20	junjunn 作成
@@ -94,19 +94,19 @@ public:
 ///@name 生成
 //@{
 	SplitFilename()						{init();}				///<コンストラクタ
-	SplitFilename(pcchar1 cszFilename)	{set(cszFilename);}		///<コンストラクタ
+	SplitFilename(cpchar1 cszFilename)	{set(cszFilename);}		///<コンストラクタ
 	void init();												///<初期化。
 //@}
 
 
 ///@name 取得
 //@{
-	pcchar1 getName()		const {return m_szName;}			///<名前部分を返す
-	pcchar1 getExtension()	const {return m_szExtension;}		///<拡張子部分を返す
+	cpchar1 getName()		const {return m_szName;}			///<名前部分を返す
+	cpchar1 getExtension()	const {return m_szExtension;}		///<拡張子部分を返す
 //@}
 
 //操作
-	void set(pcchar1 cszFilename);								///<セット
+	void set(cpchar1 cszFilename);								///<セット
 
 //メンバ
 protected:
@@ -131,15 +131,15 @@ protected:
 		SORTBY_LASTMODIFIEDTIME,
 	};
 
-	ScanDirectory(pcchar1 cszPath,bool includeFile,bool includeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
+	ScanDirectory(cpchar1 cszPath,bool includeFile,bool includeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
 	ScanDirectory();
 
-	pcchar1 getNameAt(int iIndex);
-	pcchar1 getFullPathAt(int iIndex);
-	pcchar1 getFilePropertyAt(int iIndex);
+	cpchar1 getNameAt(int iIndex);
+	cpchar1 getFullPathAt(int iIndex);
+	cpchar1 getFilePropertyAt(int iIndex);
 	int getCount();
 
-	void scan(pcchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
+	void scan(cpchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
 };
 
 }	//namespace monapi2

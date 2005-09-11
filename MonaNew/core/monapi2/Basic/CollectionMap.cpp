@@ -23,11 +23,11 @@ namespace monapi2
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint getHash1(pcchar1 cszKey,uint nHashTableSize)
+uint getHash1(cpchar1 cszKey,uint nHashTableSize)
 {
 	uint nHash=0;
 
-	for (pcchar1 p = cszKey;*p;p++)
+	for (cpchar1 p = cszKey;*p;p++)
 	{
 		nHash = (nHash * 256 + *p) % nHashTableSize;
 	}

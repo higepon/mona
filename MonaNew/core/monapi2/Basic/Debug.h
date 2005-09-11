@@ -28,6 +28,10 @@ namespace monapi2	{
 	#define ASSERT(X)
 #endif
 
+#ifndef TRACE
+	#define TRACE(X)
+#endif
+
 }	//namespace monapi2
 
 #endif

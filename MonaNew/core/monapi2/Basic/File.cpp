@@ -70,7 +70,7 @@ bool File::open(const char* cszPath,bool bAllowWrite)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint File::read(byte* pOut,uint nIndex,uint nCount)
+uint File::read(byte* pOut,uint nIndex,uint nCount) const
 {
 #ifndef MONA
 	fseek(m_pFile,nIndex,SEEK_SET);

@@ -30,7 +30,7 @@ namespace monapi2	{
 
 	@date	2005/08/20	junjunn ì¬
 */
-uint getHash1(pcchar1 cszKey,uint nHashTableSize);
+uint getHash1(cpchar1 cszKey,uint nHashTableSize);
 uint getHash1(int iKey,uint nHashTableSize);
 
 /**

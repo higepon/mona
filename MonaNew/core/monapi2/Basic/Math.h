@@ -77,11 +77,11 @@ inline void swap(int* pi1,int* pi2)	{int iTemp=*pi1;*pi1=*pi2;*pi2=iTemp;}
 
 inline int getMin(int i1,int i2)					{return (i1<i2)?i1:i2;}
 inline int getMin(uint i1,uint i2)					{return (i1<i2)?i1:i2;}
-inline pcchar1 getMin(pcchar1 p1,pcchar1 p2)		{return (p1<p2)?p1:p2;}
+inline cpchar1 getMin(cpchar1 p1,cpchar1 p2)		{return (p1<p2)?p1:p2;}
 
 inline int getMax(int i1,int i2)					{return (i1>i2)?i1:i2;}
 inline int getMax(uint i1,uint i2)					{return (i1>i2)?i1:i2;}
-inline pcchar1 getMax(pcchar1 p1,pcchar1 p2)		{return (p1>p2)?p1:p2;}
+inline cpchar1 getMax(cpchar1 p1,cpchar1 p2)		{return (p1>p2)?p1:p2;}
 
 void putBetween(int* piTarget,int iMin,int iMax);
 

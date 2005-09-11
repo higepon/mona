@@ -28,22 +28,22 @@ const int g_iMAX_PATH = 256;		///<Windowsã‚ÅŽg‚¦‚éÅ‘åƒpƒX•¶Žš”
 class FileFn
 {
 public:		//‚Ü‚¾–¢ŽÀ‘•‚È‚Ì‚Å
-	static bool isExist(pcchar1 cszPath);
-	static bool isFile(pcchar1 cszPath);
-	static int getSize(pcchar1 cszPath);
-	static uint getLastModifiedTime(pcchar1 cszPath);
-	static bool read(pcchar1 cszPath,byte* pBufferOut,int iBufferSize);
-	static bool read(pcchar1 cszPath,class Buffer* pbufOut);
-	static bool read(pcchar1 cszPath,class String* pstrOut);
+	static bool isExist(cpchar1 cszPath);
+	static bool isFile(cpchar1 cszPath);
+	static int getSize(cpchar1 cszPath);
+	static uint getLastModifiedTime(cpchar1 cszPath);
+	static bool read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize);
+	static bool read(cpchar1 cszPath,class Buffer* pbufOut);
+	static bool read(cpchar1 cszPath,class String* pstrOut);
 
-	static bool write(pcchar1 cszPath,const byte* cpIn,int iCount);
-	static bool write(pcchar1 cszPath,const Buffer* cpbufIn);
-	static bool write(pcchar1 cszPath,const String* cpstrIn);
-	static bool createDirectory(pcchar1 cszPath,pcchar1 cszDirName);
-	static bool deleteFile(pcchar1 cszPath);
-	static bool deleteDirectory(pcchar1 cszPath);
-	static bool move(pcchar1 cszPathFrom,pcchar1 cszPathTo);
-	static bool copy(pcchar1 cszPathFrom,pcchar1 cszPathTo);
+	static bool write(cpchar1 cszPath,const byte* cpIn,int iCount);
+	static bool write(cpchar1 cszPath,const Buffer* cpbufIn);
+	static bool write(cpchar1 cszPath,const String* cpstrIn);
+	static bool createDirectory(cpchar1 cszPath,cpchar1 cszDirName);
+	static bool deleteFile(cpchar1 cszPath);
+	static bool deleteDirectory(cpchar1 cszPath);
+	static bool move(cpchar1 cszPathFrom,cpchar1 cszPathTo);
+	static bool copy(cpchar1 cszPathFrom,cpchar1 cszPathTo);
 };
 
 }	//namespace monapi2

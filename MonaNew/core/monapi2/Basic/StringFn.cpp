@@ -20,10 +20,10 @@ namespace monapi2
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint StringFn::getLength(pcchar1 cszP)
+uint StringFn::getLength(cpchar1 cszP)
 {
 	if (cszP==NULL)	return 0;
-	pcchar1 p=cszP;
+	cpchar1 p=cszP;
 	while (*p!='\0')		p++;
 
 	return p-cszP;
@@ -33,9 +33,9 @@ uint StringFn::getLength(pcchar1 cszP)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint StringFn::getLength(pcchar2 cszP)
+uint StringFn::getLength(cpcharv cszP)
 {
-	pcchar2 p=cszP;
+	cpcharv p=cszP;
 	while (*p!=0)		p++;
 
 	return p-cszP;
@@ -45,14 +45,14 @@ uint StringFn::getLength(pcchar2 cszP)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::findDiff(pcchar1 cszP,pcchar1 cszQ,int iSearchCount)
+int	StringFn::findDiff(cpchar1 cszP,cpchar1 cszQ,int iSearchCount)
 {
 
 //頻繁に使う関数なのでループの中のスピードが少しでも速くなるようにケースを分岐する。
 	if (iSearchCount<0)
 	{
-		pcchar1 p=cszP;
-		pcchar1 q=cszQ;
+		cpchar1 p=cszP;
+		cpchar1 q=cszQ;
 		for (;;)
 		{
 			if (*p!=*q)		return p-cszP;	\
@@ -70,10 +70,10 @@ int	StringFn::findDiff(pcchar1 cszP,pcchar1 cszQ,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::findDiffUpto(pcchar1 cszP,pcchar1 cszQ,pcchar1 cszPUpto)
+int	StringFn::findDiffUpto(cpchar1 cszP,cpchar1 cszQ,cpchar1 cszPUpto)
 {
-	pcchar1 p=cszP;
-	pcchar1 q=cszQ;
+	cpchar1 p=cszP;
+	cpchar1 q=cszQ;
 	for (;;)
 	{
 		if (p==cszPUpto)	return -1;
@@ -87,11 +87,11 @@ int	StringFn::findDiffUpto(pcchar1 cszP,pcchar1 cszQ,pcchar1 cszPUpto)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::findDiffNoCase(pcchar1 cszP,pcchar1 cszQ,int iSearchCount)
+int	StringFn::findDiffNoCase(cpchar1 cszP,cpchar1 cszQ,int iSearchCount)
 {
-	pcchar1 p=cszP;
-	pcchar1 q=cszQ;
-	pcchar1 cszPUpto = cszP+iSearchCount;
+	cpchar1 p=cszP;
+	cpchar1 q=cszQ;
+	cpchar1 cszPUpto = cszP+iSearchCount;
 
 	for (;;)
 	{
@@ -108,7 +108,7 @@ int	StringFn::findDiffNoCase(pcchar1 cszP,pcchar1 cszQ,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::compare(pcchar1 cszP,pcchar1 cszQ,int iSearchCount)
+int	StringFn::compare(cpchar1 cszP,cpchar1 cszQ,int iSearchCount)
 {
 	int iDiffPos = StringFn::findDiff(cszP,cszQ,iSearchCount);
 	if (iDiffPos==-1)
@@ -125,7 +125,7 @@ int	StringFn::compare(pcchar1 cszP,pcchar1 cszQ,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pchar1 StringFn::find(pcchar1 cszSource,char1 cFind,int iSearchCount)
+pchar1 StringFn::find(cpchar1 cszSource,char1 cFind,int iSearchCount)
 {
 	return findUpto(cszSource,cFind,cszSource+iSearchCount);
 }
@@ -135,14 +135,14 @@ pchar1 StringFn::find(pcchar1 cszSource,char1 cFind,int iSearchCount)
 	@date	2005/08/20	junjunn 作成
 */
 //@memo cszFindに応じてスキップ値を変えることで高速化可能。
-pchar1 StringFn::find(pcchar1 cszSource,pcchar1 cszFind,int iSearchCount)
+pchar1 StringFn::find(cpchar1 cszSource,cpchar1 cszFind,int iSearchCount)
 {
 	if (cszSource==NULL) return NULL;
 
 	if (iSearchCount<0)
 	{
 		int iLengthFind = getLength(cszFind);
-		pcchar1 p = cszSource;
+		cpchar1 p = cszSource;
 		for (;;)
 		{
 			if (isEqual(p,cszFind,iLengthFind))	return (pchar1)p;	\
@@ -160,11 +160,11 @@ pchar1 StringFn::find(pcchar1 cszSource,pcchar1 cszFind,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pchar1 StringFn::findUpto(pcchar1 cszSource,char1 cFind,pcchar1 cszSourceUpto)
+pchar1 StringFn::findUpto(cpchar1 cszSource,char1 cFind,cpchar1 cszSourceUpto)
 {
 	if (cszSource==NULL) return NULL;
 
-	pcchar1 p = cszSource;
+	cpchar1 p = cszSource;
 
 	for (;;)
 	{
@@ -179,9 +179,9 @@ pchar1 StringFn::findUpto(pcchar1 cszSource,char1 cFind,pcchar1 cszSourceUpto)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pchar1 StringFn::findUpto(pcchar1 cszSource,pcchar1 cszFind,pcchar1 cszSourceUpto)
+pchar1 StringFn::findUpto(cpchar1 cszSource,cpchar1 cszFind,cpchar1 cszSourceUpto)
 {
-	pcchar1 p = cszSource;
+	cpchar1 p = cszSource;
 	int iLengthFind = getLength(cszFind);
 	for (;;)
 	{
@@ -196,13 +196,13 @@ pchar1 StringFn::findUpto(pcchar1 cszSource,pcchar1 cszFind,pcchar1 cszSourceUpt
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pchar1 StringFn::findReverse(pcchar1 cszSource,char1 cFind,int iSearchCount)
+pchar1 StringFn::findReverse(cpchar1 cszSource,char1 cFind,int iSearchCount)
 {
 	if (cszSource==NULL) return NULL;
 
-	pcchar1 p = cszSource;
-	pcchar1 pLastAppear=NULL;
-	pcchar1 cszSourceUpto = cszSource+iSearchCount;
+	cpchar1 p = cszSource;
+	cpchar1 pLastAppear=NULL;
+	cpchar1 cszSourceUpto = cszSource+iSearchCount;
 
 	for (;;)
 	{
@@ -217,13 +217,13 @@ pchar1 StringFn::findReverse(pcchar1 cszSource,char1 cFind,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pchar1 StringFn::findReverse(pcchar1 cszSource,pcchar1 cszFind,int iSearchCount)
+pchar1 StringFn::findReverse(cpchar1 cszSource,cpchar1 cszFind,int iSearchCount)
 {
 	if (cszSource==NULL) return NULL;
 
-	pcchar1 p = cszSource;
-	pcchar1 pLastAppear=NULL;
-	pcchar1 cszSourceUpto = cszSource+iSearchCount;
+	cpchar1 p = cszSource;
+	cpchar1 pLastAppear=NULL;
+	cpchar1 cszSourceUpto = cszSource+iSearchCount;
 	int iLengthFind = getLength(cszFind);
 
 	for (;;)
@@ -239,12 +239,12 @@ pchar1 StringFn::findReverse(pcchar1 cszSource,pcchar1 cszFind,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::getCountAppear(pcchar1 cszSource,char1 cFind,int iSearchCount)
+int StringFn::getCountAppear(cpchar1 cszSource,char1 cFind,int iSearchCount)
 {
 	if (cszSource==NULL) return 0;
 
-	pcchar1 p=cszSource-1;
-	pcchar1 cszSourceUpto = cszSource+iSearchCount;
+	cpchar1 p=cszSource-1;
+	cpchar1 cszSourceUpto = cszSource+iSearchCount;
 	int iAppearCount=0;
 
 	while (p = StringFn::findUpto(p+1,cFind,cszSourceUpto))
@@ -259,12 +259,12 @@ int StringFn::getCountAppear(pcchar1 cszSource,char1 cFind,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::getCountAppear(pcchar1 cszSource,pcchar1 cszFind,int iSearchCount)
+int StringFn::getCountAppear(cpchar1 cszSource,cpchar1 cszFind,int iSearchCount)
 {
 	if (cszSource==NULL) return 0;
 
-	pcchar1 p=cszSource-1;
-	pcchar1 cszSourceUpto = cszSource+iSearchCount;
+	cpchar1 p=cszSource-1;
+	cpchar1 cszSourceUpto = cszSource+iSearchCount;
 	int iAppearCount=0;
 	int iLengthFind=StringFn::getLength(cszFind);
 
@@ -282,9 +282,9 @@ int StringFn::getCountAppear(pcchar1 cszSource,pcchar1 cszFind,int iSearchCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::getIntAt(pcchar1 cszSource,int iBase,pcchar1* pcszEnd)
+int StringFn::getIntAt(cpchar1 cszSource,int iBase,cpchar1* pcszEnd)
 {
-	pcchar1 p = cszSource;
+	cpchar1 p = cszSource;
 
 	bool (*FnIsDigit)(char1)=(iBase==10)?CharFn::isDigit:CharFn::isHex;
 	
@@ -323,7 +323,7 @@ int StringFn::getIntAt(pcchar1 cszSource,int iBase,pcchar1* pcszEnd)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::toInt(pcchar1 cszSource,int iBase,pcchar1* pcszEnd)
+int	StringFn::toInt(cpchar1 cszSource,int iBase,cpchar1* pcszEnd)
 {
 	return getIntAt(cszSource,iBase,pcszEnd);
 }
@@ -332,10 +332,10 @@ int	StringFn::toInt(pcchar1 cszSource,int iBase,pcchar1* pcszEnd)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-float StringFn::toFloat(pcchar1 cszSource,pcchar1* pcszEnd)
+float StringFn::toFloat(cpchar1 cszSource,cpchar1* pcszEnd)
 {
 //cszEndはNULLの可能性があるのでこれを使う。
-	pcchar1 cszEndTemp;
+	cpchar1 cszEndTemp;
 
 //まずは整数パートを拾う
 	float fReturn = (float)getIntAt(cszSource,10,&cszEndTemp);
@@ -360,7 +360,7 @@ float StringFn::toFloat(pcchar1 cszSource,pcchar1* pcszEnd)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::duplicate(pchar1* pszOut,pcchar1 cszIn)
+int StringFn::duplicate(pchar1* pszOut,cpchar1 cszIn)
 {
 	*pszOut = new char1[StringFn::getLength(cszIn) + 1];
 	return StringFn::copy(*pszOut,cszIn);
@@ -397,12 +397,12 @@ void StringFn::toUpper(pchar1 szSource)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::copy(pchar1 szOut,pcchar1 cszIn,int iCopyCount)
+int	StringFn::copy(pchar1 szOut,cpchar1 cszIn,int iCopyCount)
 {
 	if (cszIn==NULL)	return 0;
 
 	pchar1  p=szOut;
-	pcchar1 cq=cszIn;
+	cpchar1 cq=cszIn;
 
 	if (iCopyCount<0)
 	{
@@ -416,7 +416,7 @@ int	StringFn::copy(pchar1 szOut,pcchar1 cszIn,int iCopyCount)
 		if (iCopyCount==0)	return 0;
 //@Memo　高速化のためならMemoryFn::copyにして4バイト転送にすべきか。
 //途中で'\0'が来ても止められなくなるが・・・
-		pcchar1 cqEnd=cszIn+iCopyCount;
+		cpchar1 cqEnd=cszIn+iCopyCount;
 		while (*p++=*cq++)
 		{
 			if (cq>=cqEnd)	break;
@@ -430,10 +430,10 @@ int	StringFn::copy(pchar1 szOut,pcchar1 cszIn,int iCopyCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::copy(pchar2 szOut,pcchar2 cszIn,int iCopyCount)
+int	StringFn::copy(pchar2 szOut,cpchar2 cszIn,int iCopyCount)
 {
 	pchar2  p=szOut;
-	pcchar2 cq=cszIn;
+	cpchar2 cq=cszIn;
 
 	if (iCopyCount<0)
 	{
@@ -444,7 +444,7 @@ int	StringFn::copy(pchar2 szOut,pcchar2 cszIn,int iCopyCount)
 	}
 	else
 	{
-		pcchar2 cqEnd=cszIn+iCopyCount;
+		cpchar2 cqEnd=cszIn+iCopyCount;
 		while (*p++=*cq++)
 		{
 			if (cq>=cqEnd)	break;
@@ -458,7 +458,7 @@ int	StringFn::copy(pchar2 szOut,pcchar2 cszIn,int iCopyCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::format(pchar1 szBuffer,pcchar1 cszFormat,...)
+int StringFn::format(pchar1 szBuffer,cpchar1 cszFormat,...)
 {
 	vapointer vap;
 
@@ -470,14 +470,14 @@ int StringFn::format(pchar1 szBuffer,pcchar1 cszFormat,...)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::estimateVALength(pcchar1 cszFormat,vapointer vapStart)
+int StringFn::estimateVALength(cpchar1 cszFormat,vapointer vapStart)
 {
 	uint nNewLength=0;
 
 //vlがcszFormatの後の引数を指すようになる。
 	vapointer vap = vapStart;
 
-	for (pcchar1 pRead = cszFormat;*pRead!='\0';)
+	for (cpchar1 pRead = cszFormat;*pRead!='\0';)
 	{
 		char1 c1=pRead[0];
 		if (c1 == '%')				//置き換えシンボル発見
@@ -524,12 +524,12 @@ int StringFn::estimateVALength(pcchar1 cszFormat,vapointer vapStart)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::formatV(pchar1 szBuffer,pcchar1 cszFormat,vapointer vapStart)
+int StringFn::formatV(pchar1 szBuffer,cpchar1 cszFormat,vapointer vapStart)
 {
 	vapointer vap = vapStart;
 	pchar1 pWrite = szBuffer;
 
-	for (pcchar1 pRead = cszFormat;*pRead!='\0';)
+	for (cpchar1 pRead = cszFormat;*pRead!='\0';)
 	{
 		char1 c1=pRead[0];
 		if (c1 == '%')				//置き換えシンボル発見
@@ -699,10 +699,10 @@ int StringFn::replace(pchar1 szSource,char1 cFrom,char1 cTo)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::replace(pchar1 szSource,pcchar1 cszFrom,pcchar1 cszTo)
+int StringFn::replace(pchar1 szSource,cpchar1 cszFrom,cpchar1 cszTo)
 {
 //まずは文字列が一度でも現れているか軽く調べる。置き換えが必要ないならこの時点で却下しておく方が軽くなる。
-	pcchar1 cpNextAppear;
+	cpchar1 cpNextAppear;
 	if ((cpNextAppear = StringFn::find(szSource,cszFrom))==NULL)	return 0;
 
 //置き換えすると文字列がどんどん変わってゆくので元のコピーを取ってそこを入力に使う。
@@ -719,7 +719,7 @@ int StringFn::replace(pchar1 szSource,pcchar1 cszFrom,pcchar1 cszTo)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::replace(pchar1* pszOut,pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo)
+int	StringFn::replace(pchar1* pszOut,cpchar1 cszIn,cpchar1 cszFrom,cpchar1 cszTo)
 {
 //まずは置き換え後の長さを求める。
 	int iReplaceLength = getReplaceLength(cszIn,cszFrom,cszTo);
@@ -733,7 +733,7 @@ int	StringFn::replace(pchar1* pszOut,pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int StringFn::replace(class String* pstrOut,pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo)
+int StringFn::replace(class String* pstrOut,cpchar1 cszIn,cpchar1 cszFrom,cpchar1 cszTo)
 {
 	int iReplaceLength = getReplaceLength(cszIn,cszFrom,cszTo);
 	pchar1 pBuffer = pstrOut->extendBuffer(iReplaceLength);
@@ -744,7 +744,7 @@ int StringFn::replace(class String* pstrOut,pcchar1 cszIn,pcchar1 cszFrom,pcchar
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::getReplaceLength(pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo)
+int	StringFn::getReplaceLength(cpchar1 cszIn,cpchar1 cszFrom,cpchar1 cszTo)
 {
 	int iOriginalLength = getLength(cszIn);
 
@@ -759,9 +759,9 @@ int	StringFn::getReplaceLength(pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	StringFn::replace(pchar1 szOut,pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo,int iFirstAppear)
+int	StringFn::replace(pchar1 szOut,cpchar1 cszIn,cpchar1 cszFrom,cpchar1 cszTo,int iFirstAppear)
 {
-	pcchar1 cpNextAppear;
+	cpchar1 cpNextAppear;
 
 //他のreplace形からの呼び出しで最初に現れる場所をすでに調べてある。
 	if (iFirstAppear!=-1)
@@ -779,7 +779,7 @@ int	StringFn::replace(pchar1 szOut,pcchar1 cszIn,pcchar1 cszFrom,pcchar1 cszTo,i
 
 //その他セットアップ
 	pchar1 pWrite	= szOut;
-	pcchar1 cpRead	= cszIn;
+	cpchar1 cpRead	= cszIn;
 	int iLengthFrom	= StringFn::getLength(cszFrom);
 
 //置き換えメイン
@@ -821,7 +821,7 @@ int StringFn::remove(pchar1 szOut,char1 cRemove)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pcchar1 StringFn::getEnd(pcchar1 cszSource)
+cpchar1 StringFn::getEnd(cpchar1 cszSource)
 {
 	return cszSource + getLength(cszSource);
 }

@@ -67,7 +67,7 @@ public:
 ///•ÏŠ·—Ìˆæ‚ÌŒÄ‚Ño‚µB
 	CConversionRule2Way* getConversionRule2Way()	{return &m_ConversionRule2Way;}
 ///ì‹ÆƒƒCƒ“
-	bool generate(pcchar1 cszConversionTableFilePath,pcchar1 cszPathOut);
+	bool generate(cpchar1 cszConversionTableFilePath,cpchar1 cszPathOut);
 
 
 protected:

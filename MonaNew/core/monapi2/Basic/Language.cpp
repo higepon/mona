@@ -32,15 +32,15 @@ Rect g_arectConversionUnicodeShiftJISto[8+1];
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int LanguageFn::convertShiftJIStoUnicode(pchar2 wszOut,pcchar1 cszIn,int iMaxInLen)
+int LanguageFn::convertShiftJIStoUnicode(pcharv wszOut,cpchar1 cszIn,int iMaxInLen)
 {
 	if (cszIn==NULL || iMaxInLen==0)	return 0;
 
-	pchar2	pWriteStart	= wszOut;
-	pchar2	pWrite		= pWriteStart;
-	pcchar1	pReadStart	= cszIn;
-	pcchar1	pRead		= pReadStart;
-	pcchar1	pReadEnd	= pRead + iMaxInLen;
+	pcharv	pWriteStart	= wszOut;
+	pcharv	pWrite		= pWriteStart;
+	cpchar1	pReadStart	= cszIn;
+	cpchar1	pRead		= pReadStart;
+	cpchar1	pReadEnd	= pRead + iMaxInLen;
 
 	char1 c;
 	while ((c=*pRead) != '\0')
@@ -68,14 +68,14 @@ int LanguageFn::convertShiftJIStoUnicode(pchar2 wszOut,pcchar1 cszIn,int iMaxInL
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int LanguageFn::convertUnicodetoShiftJIS(pchar1 szOut,pcchar2 cwszIn,int iMaxInLen)
+int LanguageFn::convertUnicodetoShiftJIS(pchar1 szOut,cpcharv cwszIn,int iMaxInLen)
 {
 	pchar1	pWriteStart	= szOut;
 	pchar1	pWrite		= pWriteStart;
-	pcchar2	pRead		= cwszIn;
-	pcchar2	pReadEnd	= pRead + iMaxInLen;
+	cpcharv	pRead		= cwszIn;
+	cpcharv	pReadEnd	= pRead + iMaxInLen;
 
-	char2 c;
+	charv c;
 	while ((c=*pRead) != '\0')
 	{
 		if (c<0x80)
@@ -103,19 +103,19 @@ int LanguageFn::convertUnicodetoShiftJIS(pchar1 szOut,pcchar2 cwszIn,int iMaxInL
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int LanguageFn::convertShiftJIStoUnicode(Buffer* pbufOut,pcchar1 cszIn)
+int LanguageFn::convertShiftJIStoUnicode(Buffer* pbufOut,cpchar1 cszIn)
 {
 	int iSizeIn = StringFn::getLength(cszIn) + 1;
 	
 	pbufOut->extendBuffer(iSizeIn * 2);
-	return convertShiftJIStoUnicode((pchar2)pbufOut->getBuffer(),cszIn);
+	return convertShiftJIStoUnicode((pcharv)pbufOut->getBuffer(),cszIn);
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int LanguageFn::convertUnicodetoShiftJIS(Buffer* pbufOut,pcchar2 cwszIn)
+int LanguageFn::convertUnicodetoShiftJIS(Buffer* pbufOut,cpcharv cwszIn)
 {
 	int iSizeIn = (StringFn::getLength(cwszIn) + 1) * 2;
 
@@ -169,7 +169,7 @@ void LanguageFn::initRule()
 	g_arectConversionShiftJIStoUnicode[1].set(0x81,0x40	,0x9F + 1,0xFC + 1);
 	g_arectConversionShiftJIStoUnicode[2].set(0xE0,0x40	,0xEE + 1,0xFC + 1);
 	g_arectConversionShiftJIStoUnicode[3].set(0xFA,0x40	,0xFB + 1,0xFC + 1);
-	g_arectConversionShiftJIStoUnicode[3].set(-1,0,0,0);	//番兵
+	g_arectConversionShiftJIStoUnicode[4].set(-1,0,0,0);	//番兵
 
 	g_arectConversionUnicodeShiftJISto[0].set(0x00,0x00	,0x00 + 1,0xF7 + 1);
 	g_arectConversionUnicodeShiftJISto[1].set(0x03,0x91	,0x03 + 1,0xC9 + 1);
@@ -188,7 +188,7 @@ void LanguageFn::initRule()
 	@brief	初期化。
 	@date	2005/08/20	junjunn 作成
 */
-void LanguageFn::init(pcchar1 cszPathShiftJIStoUnicode)
+void LanguageFn::init(cpchar1 cszPathShiftJIStoUnicode)
 {
 	initRule();
 	g_ShiftJISUnicodeConverter.readTable(cszPathShiftJIStoUnicode);
@@ -199,14 +199,14 @@ void LanguageFn::init(pcchar1 cszPathShiftJIStoUnicode)
 /**
 	@date	2005/08/20	junjunn 作成
 */
-void CLanguageCodeConverter::readTable(pcchar1 cszPath)
+void CLanguageCodeConverter::readTable(cpchar1 cszPath)
 {
 	if (m_bReady)	return;
 
 //ファイルを読み込む
 	String strSource;
 	FileFn::read(cszPath,&strSource);
-	pcchar1 pSource = strSource.getString();
+	cpchar1 pSource = strSource.getString();
 
 //1→2と2→1の二つを巡回
 	for (int iConversionWay=0;iConversionWay<2;iConversionWay++)
@@ -226,16 +226,16 @@ void CLanguageCodeConverter::readTable(pcchar1 cszPath)
 //awTable_UnicodetoShiftJIS_0_224_0_1などのテーブル文字列を探す。
 			char szTableName[64];
 			getCGenerateConversionCodeTableName(szTableName,pConversionRule,iRuleRect);
-			pcchar1 pTableNamePos = StringFn::find(pSource,szTableName);
+			cpchar1 pTableNamePos = StringFn::find(pSource,szTableName);
 			if (pTableNamePos==NULL)		continue;
 //次の{を探す
-			pcchar1 pBracketLeft = StringFn::find(pTableNamePos,'{');
+			cpchar1 pBracketLeft = StringFn::find(pTableNamePos,'{');
 			if (pBracketLeft==NULL)			continue;
 //テーブルの最初のエントリー。0xで始まる文字列を探す。
-			pcchar1 pTableElementStart = StringFn::find(pBracketLeft,"0x");
+			cpchar1 pTableElementStart = StringFn::find(pBracketLeft,"0x");
 			if (pTableElementStart==NULL)	continue;
 
-			pcchar1 p = pTableElementStart;
+			cpchar1 p = pTableElementStart;
 
 //後に続く0x～数字をありったけ読み込む。
 			for (int iCount=0;;iCount++)

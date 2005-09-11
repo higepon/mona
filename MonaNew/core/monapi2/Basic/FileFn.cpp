@@ -27,7 +27,7 @@ namespace monapi2	{
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::isExist(pcchar1 cszPath)
+bool FileFn::isExist(cpchar1 cszPath)
 {
 	cszPath;
 	return false;
@@ -37,7 +37,7 @@ bool FileFn::isExist(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::isFile(pcchar1 cszPath)
+bool FileFn::isFile(cpchar1 cszPath)
 {
 	cszPath;
 	return false;
@@ -47,7 +47,7 @@ bool FileFn::isFile(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int FileFn::getSize(pcchar1 cszPath)
+int FileFn::getSize(cpchar1 cszPath)
 {
 #ifdef _WIN32
 	struct _finddata_t FindData;
@@ -64,7 +64,7 @@ int FileFn::getSize(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint FileFn::getLastModifiedTime(pcchar1 cszPath)
+uint FileFn::getLastModifiedTime(cpchar1 cszPath)
 {
 	cszPath;
 	return false;
@@ -74,7 +74,7 @@ uint FileFn::getLastModifiedTime(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::read(pcchar1 cszPath,byte* pBufferOut,int iBufferSize)
+bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
 {
 //デバッグのための応急措置
 #ifdef _WIN32
@@ -91,7 +91,7 @@ bool FileFn::read(pcchar1 cszPath,byte* pBufferOut,int iBufferSize)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::read(pcchar1 cszPath,Buffer* pbufOut)
+bool FileFn::read(cpchar1 cszPath,Buffer* pbufOut)
 {
 	int iFileSize = getSize(cszPath);
 	if (iFileSize!=-1)
@@ -108,7 +108,7 @@ bool FileFn::read(pcchar1 cszPath,Buffer* pbufOut)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::read(pcchar1 cszPath,String* pstrOut)
+bool FileFn::read(cpchar1 cszPath,String* pstrOut)
 {
 	int iFileSize = getSize(cszPath);
 	if (iFileSize!=-1)
@@ -126,7 +126,7 @@ bool FileFn::read(pcchar1 cszPath,String* pstrOut)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::write(pcchar1 cszPath,const byte* cpIn,int iCount)
+bool FileFn::write(cpchar1 cszPath,const byte* cpIn,int iCount)
 {
 //デバッグのための応急措置
 #ifdef _WIN32
@@ -143,7 +143,7 @@ bool FileFn::write(pcchar1 cszPath,const byte* cpIn,int iCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::write(pcchar1 cszPath,const Buffer* cpbufIn)
+bool FileFn::write(cpchar1 cszPath,const Buffer* cpbufIn)
 {
 	return write(cszPath,cpbufIn->getData(),cpbufIn->getSize());
 }
@@ -152,7 +152,7 @@ bool FileFn::write(pcchar1 cszPath,const Buffer* cpbufIn)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::write(pcchar1 cszPath,const String* cpstrIn)
+bool FileFn::write(cpchar1 cszPath,const String* cpstrIn)
 {
 	return write(cszPath,(byte*)cpstrIn->getString(),cpstrIn->getLength());
 }
@@ -161,7 +161,7 @@ bool FileFn::write(pcchar1 cszPath,const String* cpstrIn)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::createDirectory(pcchar1 cszPath,pcchar1 cszDirName)
+bool FileFn::createDirectory(cpchar1 cszPath,cpchar1 cszDirName)
 {
 	cszDirName;
 	cszPath;
@@ -172,7 +172,7 @@ bool FileFn::createDirectory(pcchar1 cszPath,pcchar1 cszDirName)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::deleteFile(pcchar1 cszPath)
+bool FileFn::deleteFile(cpchar1 cszPath)
 {
 	cszPath;
 	return false;
@@ -182,7 +182,7 @@ bool FileFn::deleteFile(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::deleteDirectory(pcchar1 cszPath)
+bool FileFn::deleteDirectory(cpchar1 cszPath)
 {
 	cszPath;
 	return false;
@@ -192,7 +192,7 @@ bool FileFn::deleteDirectory(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::move(pcchar1 cszPathFrom,pcchar1 cszPathTo)
+bool FileFn::move(cpchar1 cszPathFrom,cpchar1 cszPathTo)
 {
 	cszPathFrom;
 	cszPathTo;
@@ -203,7 +203,7 @@ bool FileFn::move(pcchar1 cszPathFrom,pcchar1 cszPathTo)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::copy(pcchar1 cszPathFrom,pcchar1 cszPathTo)
+bool FileFn::copy(cpchar1 cszPathFrom,cpchar1 cszPathTo)
 {
 	cszPathFrom;
 	cszPathTo;

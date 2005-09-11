@@ -42,7 +42,7 @@ public:
 
 //‘€ì
 	bool open(const char* cszPath,bool bAllowWrite=false);
-	uint read(byte* pOut,uint nIndex,uint nCount);
+	uint read(byte* pOut,uint nIndex,uint nCount) const;
 	uint write(const byte* cpIn,uint nIndex,uint nCount) const;
 	void close();
 

@@ -22,8 +22,8 @@ namespace monapi2
 */
 int compareByPString(const void *p, const void *q)
 {
-	pcchar1 p2=((String*)p)->getString();
-	pcchar1 q2=((String*)q)->getString();
+	cpchar1 p2=((String*)p)->getString();
+	cpchar1 q2=((String*)q)->getString();
 	return StringFn::compare(p2,q2);
 }
 
