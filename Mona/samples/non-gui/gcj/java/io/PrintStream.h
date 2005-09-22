@@ -11,8 +11,10 @@ class java::io::PrintStream : public ::java::lang::Object
 {
 public:
   PrintStream (::java::lang::Object *);
+  virtual void print (::java::lang::String *);
   virtual void print (jint);
   virtual void println ();
+  virtual void println (::java::lang::String *);
   virtual void println (jint);
 
   static ::java::lang::Class class$;

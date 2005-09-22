@@ -6,19 +6,25 @@
 // overwrite any edits you have made to this file.
 
 #include <java/io/PrintStream.h>
+#ifdef MONA
 #include <monapi.h>
+#else
+#include <stdio.h>
+#endif
 
-void
-java::io::PrintStream::print (jint i)
-{
+void java::io::PrintStream::print(jint i) {
 	printf("%d", i);
 }
 
+typedef struct {
+	short hash, length;
+	const char data[];
+} __jstring;
 
-void
-java::io::PrintStream::println ()
-{
-	printf("\n");
+void java::io::PrintStream::print(::java::lang::String* s) {
+	printf("%s", ((__jstring*)s)->data);
 }
 
-
+void java::io::PrintStream::println() {
+	printf("\n");
+}
