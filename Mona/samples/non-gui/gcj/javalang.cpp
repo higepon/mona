@@ -1,6 +1,6 @@
-#include <gcj/javaprims.h>
 #define _Jv_InitClass __Jv_InitClass
-#include <java/lang/Class.h>
+#include <gcj/javaprims.h>
+#include <gcj/cni.h>
 #undef _Jv_InitClass
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
@@ -32,13 +32,13 @@ extern "C" jobject _Jv_AllocObjectNoFinalizer(jclass type, jint size) {
 extern "C" void _Jv_InitClass(jclass type) {
 }
 
-extern "C" void _Jv_RegisterClass() {
+extern "C" void _Jv_RegisterClass(jclass type) {
 }
 
 // dummy for types
 ::java::lang::Class _Jv_voidClass, _Jv_booleanClass, _Jv_byteClass, _Jv_charClass, _Jv_shortClass, _Jv_intClass, _Jv_longClass, _Jv_floatClass, _Jv_doubleClass;
 
-extern "C" jobject _Jv_NewPrimArray(jclass type, jint length) {
+extern "C" jobject _Jv_NewPrimArray(jclass type, jsize length) {
 	int size = 4;
 	if (type == &_Jv_byteClass || type == &_Jv_booleanClass) {
 		size = 1;
@@ -47,11 +47,28 @@ extern "C" jobject _Jv_NewPrimArray(jclass type, jint length) {
 	} else if (type == &_Jv_longClass || type == &_Jv_doubleClass) {
 		size = 8;
 	}
-	int sz = sizeof(::java::lang::Object) + sizeof(jint) + (length + 1) * size;
-	char* result = (char*)sms_gc_malloc(sz);
+	int sz = sizeof(::java::lang::Object) + sizeof(jsize) + (length + 1) * size;
+	jobject result = (jobject)sms_gc_malloc(sz);
 	memset(result, 0, sz);
-	*(jint*)(result + sizeof(::java::lang::Object)) = length;
-	return (jobject)result;
+	*(jsize*)(result + 1) = length;
+	return result;
+}
+
+extern "C" jobjectArray _Jv_NewObjectArray(jsize length, jclass klass, jobject init) {
+	int sz = sizeof(::java::lang::Object) + sizeof(jsize) + (length + 1) * sizeof(jobject);
+	jobjectArray result = (jobjectArray)sms_gc_malloc(sz);
+	if (init == NULL) {
+		memset(result, 0, sz);
+	} else {
+		jobject* p = elements(result);
+		for (int i = 0; i < length; i++)
+			p[i] = init;
+	}
+	*(jsize*)((jobject)result + 1) = length;
+	return result;
+}
+
+extern "C" void _Jv_CheckArrayStore(jobjectArray array, jobject obj) {
 }
 
 extern "C" void _Jv_ThrowBadArrayIndex(int index) {
