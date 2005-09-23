@@ -1,13 +1,18 @@
-TARGET  = GCJ
-SOURCES = main.cpp \
-          javalang.cpp \
-          PrintStream.cpp
-JSRCS   = A.java \
-          java/lang/Object.java \
-          java/lang/Class.java \
-          java/lang/System.java \
-          java/io/PrintStream.java
-INSTDIR = $(BINDIR)/iso/APPS
+TARGET     = GCJ
+SOURCES    = main.cpp \
+             javalang.cpp \
+             Object.cpp \
+             PrintStream.cpp \
+             sms_gc/sms_gc.cpp \
+             sms_gc/sms_ptr_dict.cpp
+JBASESRC   = java/lang/Object.java \
+             java/lang/Class.java
+JSOURCES   = java/lang/String.java \
+             java/lang/System.java \
+             java/io/PrintStream.java \
+             A.java
+INSTDIR    = $(BINDIR)/iso/APPS
+CLEANFILES = A.h $(OBJECTS) $(JHEADERS) $(JCLASSES) *.stackdump
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
@@ -16,26 +21,41 @@ else
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
-INCLUDE = -I../../../include -I.
-JFLAGS  = --bootclasspath=.
-JCFLAGS = -g -I.
+INCLUDE  = -I$(MONADIR)/include -I. -Isms_gc
+COBJECTS = $(SOURCES:%.cpp=%.o)
+JOBJECTS = $(JSOURCES:%.java=%.o)
+JHEADERS = $(JSOURCES:%.java=%.h)
+JCLASSES = $(JBASESRC:%.java=%.class) $(JSOURCES:%.java=%.class)
+OBJECTS  = $(COBJECTS) $(JBASESRC:%.java=%.o) $(JOBJECTS)
+#ALLFLAGS = -g
+#CFLAGS   = $(ALLFLAGS) -I. -Isms_gc
+JFLAGS   = --bootclasspath=.
 
-.SUFFIXES: .java .o
-.java.o:
-	gcj $(JFLAGS) $(JCFLAGS) -o $@ -c $<
+all: $(TARGET)
+$(COBJECTS): $(JHEADERS)
+$(JHEADERS): $(JCLASSES)
+$(JOBJECTS): $(JCLASSES)
+
+#$(TARGET): $(OBJECTS)
+#	g++ $(CFLAGS) -o $@ $(OBJECTS)
+
+#.SUFFIXES: .cpp .o
+#.cpp.o:
+#	g++ $(CFLAGS) -o $@ -c $<
 
 .SUFFIXES: .java .class
 .java.class:
-	gcj $(JFLAGS) $(JCFLAGS) -C $<
+	gcj $(JFLAGS) $(ALLFLAGS) -C $<
 
-main.o: A.h
+.SUFFIXES: .class .h
+.class.h:
+	gcjh $(JFLAGS) $*
 
-A.h: A.class
-	gcjh $(JFLAGS) A
+.SUFFIXES: .class .o
+.class.o:
+	gcj $(JFLAGS) $(ALLFLAGS) -o $@ -c $<
 
-A.class: A.java java/lang/Object.class java/lang/Class.class java/lang/System.class java/io/PrintStream.class
-	gcj $(JFLAGS) $(JCFLAGS) -C $<
-
-ADDLINK = -lmonalibc
+#clean:
+#	rm -f $(TARGET) A.h $(OBJECTS) $(JHEADERS) $(JCLASSES) *.stackdump
 
 include dependencies

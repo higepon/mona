@@ -6,4 +6,6 @@ public class Object {
 
 	public Object() {
 	}
+	
+	public native String toString();
 }

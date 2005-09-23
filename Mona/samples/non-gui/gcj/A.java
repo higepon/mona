@@ -1,10 +1,11 @@
+import java.lang.*;
+import java.io.*;
+
 public class A {
 	public static void main() {
-		int[] a = new int[] { 5, 3, 1, 6 };
-		System.out.print("a.length=");
-		System.out.println(a.length);
-		for (int i = 0; i <= 4; i++) {
-			System.out.println(a[i]);
-		}
+		System.out.println(new Object());
+		System.out.println(new System());
+		System.out.println(new PrintStream(null));
+		System.out.println(new A());
 	}
 }

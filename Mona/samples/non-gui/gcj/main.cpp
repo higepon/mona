@@ -1,12 +1,16 @@
-#include <monapi.h>
-#include <java/lang/System.h>
-#include <java/io/PrintStream.h>
+#include <gcj/javaprims.h>
+#include <gcj/cni.h>
+#include <sms_gc.h>
 #include "A.h"
-//#include <stddef.h>
 
-//int main() {
+#ifdef MONA
+#include <monapi.h>
 int MonaMain(List<char*>* pekoe) {
-	::java::lang::System::out = new ::java::io::PrintStream(NULL);
+#else
+int main() {
+#endif
+	SMS_GC_INIT();
+	JvCreateJavaVM(NULL);
 	::A::main();
 	return 0;
 }

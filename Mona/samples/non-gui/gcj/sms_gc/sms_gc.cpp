@@ -3,11 +3,8 @@
 #ifdef SMS_DEBUG
 #include <stdio.h>
 #endif
-#ifdef MONA
-#include <monapi.h>
-#else
+#include <stddef.h>
 #include <malloc.h>
-#endif
 
 typedef unsigned int* IntPtr;
 
