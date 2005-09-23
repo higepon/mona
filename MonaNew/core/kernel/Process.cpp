@@ -31,7 +31,7 @@
 // 使えるリニアアドレス範囲を調べる
 
 class MemoryManager2
-{
+n{
 public:
     static dword GetSystemPageSize();
     static bool AllocateMemory(Process* process, dword size);
