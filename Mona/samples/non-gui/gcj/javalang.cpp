@@ -1,5 +1,4 @@
 #include <java/lang/Object.h>
-#include <sms_gc/sms_gc.h>
 #ifdef MONA
 #include <monapi.h>
 #else
@@ -10,9 +9,7 @@
 typedef int* IntPtr;
 
 extern "C" jobject _Jv_AllocObject(jclass type, jint size) {
-	void* result = sms_gc_malloc(size);
-	//bzero(result, size);
-	memset(result, 0, size);
+	void* result = malloc(size);
 	IntPtr vtable = (IntPtr)(((char*)type) + sizeof(::java::lang::Object) + 48);
 	*(IntPtr)result = *vtable;
 	IntPtr vt = (IntPtr)*vtable;
@@ -48,9 +45,7 @@ extern "C" void* _Jv_NewPrimArray(void* type, jint length) {
 		size = 8;
 	}
 	int sz = sizeof(::java::lang::Object) + sizeof(jint) + (length + 1) * size;
-	char* result = (char*)sms_gc_malloc(sz);
-	//bzero(result, sz);
-	memset(result, 0, sz);
+	char* result = (char*)malloc(sz);
 	*(jint*)(result + sizeof(::java::lang::Object)) = length;
 	return result;
 }

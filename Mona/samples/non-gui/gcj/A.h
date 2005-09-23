@@ -15,14 +15,8 @@ extern "Java"
 class A : public ::java::lang::Object
 {
 public:
-  A (jint, jint);
-  virtual jint add ();
-  virtual jint sub ();
-  virtual jint mul ();
-  virtual jint div ();
   static void main ();
-  jint __attribute__((aligned(__alignof__( ::java::lang::Object ))))  num1;
-  jint num2;
+  A ();
 
   static ::java::lang::Class class$;
 };

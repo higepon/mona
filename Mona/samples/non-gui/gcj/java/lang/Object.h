@@ -17,8 +17,10 @@ public:
 
   static ::java::lang::Class class$;
 
+#if __GNUC__ == 3 && __GNUC_MINOR__ == 3
 private:
   jobject __pad_2;
+#endif
 };
 
 #endif /* __java_lang_Object__ */

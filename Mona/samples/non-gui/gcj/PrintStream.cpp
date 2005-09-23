@@ -6,11 +6,7 @@
 // overwrite any edits you have made to this file.
 
 #include <java/io/PrintStream.h>
-#ifdef MONA
 #include <monapi.h>
-#else
-#include <stdio.h>
-#endif
 
 void java::io::PrintStream::print(jint i) {
 	printf("%d", i);

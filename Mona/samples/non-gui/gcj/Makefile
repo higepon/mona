@@ -1,7 +1,5 @@
 TARGET  = GCJ
-SOURCES = sms_gc/sms_gc.cpp \
-          sms_gc/sms_ptr_dict.cpp \
-          main.cpp \
+SOURCES = main.cpp \
           javalang.cpp \
           PrintStream.cpp
 JSRCS   = A.java \
@@ -13,9 +11,9 @@ INSTDIR = $(BINDIR)/iso/APPS
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
-include $(MONADIR)/env/monapi-ex5.inc
+include $(MONADIR)/env/monapi-ex2.inc
 else
-include $(MONADIR)/env/monapi-el5.inc
+include $(MONADIR)/env/monapi-el2.inc
 endif
 
 INCLUDE = -I../../../include -I.
