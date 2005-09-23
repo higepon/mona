@@ -1,3 +1,11 @@
+2005-09-23  bayside
+
+        * samples/non-gui/gcj: 新規追加
+
+        * samples/non-gui/Makefile: gcj追加
+
+        * env/monapi.inc: Javaソース用記述追加
+
 2005-09-07  bayside
 
         * tools/monafont/mona6x12.bit0: 6x12の固定幅表示をしたときに表示が乱れないよう調整
