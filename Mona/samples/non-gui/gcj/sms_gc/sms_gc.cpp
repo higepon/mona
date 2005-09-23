@@ -1,10 +1,14 @@
 #include "sms_gc.h"
 #include "sms_ptr_dict.h"
+#ifdef MONA
+#include <monapi.h>
+#else
 #ifdef SMS_DEBUG
 #include <stdio.h>
 #endif
 #include <stddef.h>
 #include <malloc.h>
+#endif
 
 typedef unsigned int* IntPtr;
 

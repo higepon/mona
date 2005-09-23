@@ -8,6 +8,7 @@ SOURCES    = main.cpp \
 JBASESRC   = java/lang/Object.java \
              java/lang/Class.java
 JSOURCES   = java/lang/String.java \
+             java/lang/StringBuffer.java \
              java/lang/System.java \
              java/io/PrintStream.java \
              A.java
@@ -21,14 +22,12 @@ else
 include $(MONADIR)/env/monapi-el2.inc
 endif
 
-INCLUDE  = -I$(MONADIR)/include -I. -Isms_gc
 COBJECTS = $(SOURCES:%.cpp=%.o)
 JOBJECTS = $(JSOURCES:%.java=%.o)
 JHEADERS = $(JSOURCES:%.java=%.h)
 JCLASSES = $(JBASESRC:%.java=%.class) $(JSOURCES:%.java=%.class)
 OBJECTS  = $(COBJECTS) $(JBASESRC:%.java=%.o) $(JOBJECTS)
-#ALLFLAGS = -g
-#CFLAGS   = $(ALLFLAGS) -I. -Isms_gc
+INCLUDE  = -I$(MONADIR)/include -I. -Isms_gc
 JFLAGS   = --bootclasspath=.
 
 all: $(TARGET)
@@ -54,8 +53,5 @@ $(JOBJECTS): $(JCLASSES)
 .SUFFIXES: .class .o
 .class.o:
 	gcj $(JFLAGS) $(ALLFLAGS) -o $@ -c $<
-
-#clean:
-#	rm -f $(TARGET) A.h $(OBJECTS) $(JHEADERS) $(JCLASSES) *.stackdump
 
 include dependencies
