@@ -9,6 +9,8 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
+ADDLINK += -lmonapi2-imp
+
 CXXFLAGS += -DDEBUG
 
 include dependencies

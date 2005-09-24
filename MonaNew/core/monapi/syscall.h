@@ -102,7 +102,6 @@ extern void putInt(size_t n, int base);
 extern void printf(const char *format, ...);
 extern void logprintf(const char* format, ...);
 #define Log logprintf("%s#%s:%d:", __FILE__, __func__, __LINE__), logprintf
-
 extern void printInt(int num);
 extern size_t _power(size_t x, size_t y);
 

@@ -27,7 +27,6 @@ SOURCES = Basic/Bit.cpp \
           Basic/Language2.cpp \
           Basic/LanguageChar.cpp \
           Basic/LanguageOther.cpp \
-          Basic/malloc.cpp \
           Basic/Math.cpp \
           Basic/Memory.cpp \
           Basic/Search.cpp \
@@ -55,7 +54,7 @@ ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
 #	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
-	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib
+	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
