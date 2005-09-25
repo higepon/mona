@@ -6,6 +6,7 @@
 // overwrite any edits you have made to this file.
 
 #include <gcj/javaprims.h>
+#include <gcj/cni.h>
 #include <java/io/PrintStream.h>
 #ifdef MONA
 #include <monapi.h>
@@ -14,11 +15,15 @@
 #endif
 
 void java::io::PrintStream::print(jint i) {
-	printf("%d", i);
+	printf("%d", (int)i);
 }
 
 void java::io::PrintStream::print(::java::lang::String* s) {
-	printf("%s", ((_Jv_Utf8Const*)s)->data);
+	int len = s->length();
+	jchar* ch = _Jv_GetStringChars(s);
+	for (int i = 0; i < len; i++, ch++) {
+		printf("%c", (*ch < 128) ? (char)*ch : '?');
+	}
 }
 
 void java::io::PrintStream::println() {

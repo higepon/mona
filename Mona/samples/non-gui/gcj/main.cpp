@@ -11,6 +11,6 @@ int main() {
 #endif
 	SMS_GC_INIT();
 	JvCreateJavaVM(NULL);
-	::A::main();
+	A::main();
 	return 0;
 }

@@ -1,6 +1,13 @@
 package java.lang;
 
 public class String {
-	/*private*/ public Object data;
-	/*private*/ public int boffset, count;
+	public String() {}
+	public String toString() {
+		return this;
+	}
+	public final int length() {
+		return count;
+	}
+	/*private*/ public Object data = null;
+	/*private*/ public int boffset = 0, count = 0;
 }

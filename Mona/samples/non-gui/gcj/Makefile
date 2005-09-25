@@ -1,6 +1,7 @@
 TARGET     = GCJ
-SOURCES    = main.cpp \
+SOURCES    = Class.cpp \
              javalang.cpp \
+             main.cpp \
              Object.cpp \
              PrintStream.cpp \
              sms_gc/sms_gc.cpp \
@@ -26,7 +27,7 @@ COBJECTS = $(SOURCES:%.cpp=%.o)
 JOBJECTS = $(JSOURCES:%.java=%.o)
 JHEADERS = $(JSOURCES:%.java=%.h)
 JCLASSES = $(JBASESRC:%.java=%.class) $(JSOURCES:%.java=%.class)
-OBJECTS  = $(COBJECTS) $(JBASESRC:%.java=%.o) $(JOBJECTS)
+OBJECTS  = realize.o $(COBJECTS) $(JBASESRC:%.java=%.o) $(JOBJECTS)
 INCLUDE  = -I$(MONADIR)/include -I. -Isms_gc
 JFLAGS   = --bootclasspath=.
 
@@ -53,5 +54,6 @@ $(JOBJECTS): $(JCLASSES)
 .SUFFIXES: .class .o
 .class.o:
 	gcj $(JFLAGS) $(ALLFLAGS) -o $@ -c $<
+	g++ -c realize.cpp
 
 include dependencies

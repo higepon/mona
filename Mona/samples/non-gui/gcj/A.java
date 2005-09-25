@@ -2,10 +2,9 @@ import java.lang.*;
 import java.io.*;
 
 public class A {
-	public static void main() {
+	public static void main(String[] args) {
 		System.out.println(new Object());
-		System.out.println(new System());
-		System.out.println(new PrintStream(null));
-		System.out.println(new A());
+		System.out.println("abc");
+		System.out.println("abc".length());
 	}
 }

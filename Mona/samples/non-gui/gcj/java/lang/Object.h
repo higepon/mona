@@ -11,6 +11,9 @@ public:  // actually protected
   virtual void finalize () { }
 public:
   Object () { }
+  ::java::lang::Class *getClass ();
+  virtual jint hashCode ();
+  virtual jboolean equals (::java::lang::Object *);
   virtual ::java::lang::String *toString ();
 
   static ::java::lang::Class class$;

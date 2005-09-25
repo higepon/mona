@@ -1,7 +1,5 @@
-#define _Jv_InitClass __Jv_InitClass
 #include <gcj/javaprims.h>
 #include <gcj/cni.h>
-#undef _Jv_InitClass
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
 #include <sms_gc.h>
@@ -29,10 +27,7 @@ extern "C" jobject _Jv_AllocObjectNoFinalizer(jclass type, jint size) {
 	return _Jv_AllocObject(type, size);
 }
 
-extern "C" void _Jv_InitClass(jclass type) {
-}
-
-extern "C" void _Jv_RegisterClass(jclass type) {
+extern "C" void _Jv_RegisterClass(jclass* classes) {
 }
 
 // dummy for types
@@ -71,7 +66,28 @@ extern "C" jobjectArray _Jv_NewObjectArray(jsize length, jclass klass, jobject i
 extern "C" void _Jv_CheckArrayStore(jobjectArray array, jobject obj) {
 }
 
+
+// String
+
+extern "C" jstring _Jv_NewStringLatin1(const char* bytes, jsize len) {
+	jstring s = new ::java::lang::String();
+	s->data = _Jv_NewPrimArray(&_Jv_charClass, len);
+	s->boffset = sizeof(::java::lang::Object) + sizeof(jsize);
+	s->count = len;
+	jchar* ch = _Jv_GetStringChars(s);
+	for (int i = 0; i < len; i++) ch[i] = (jchar)bytes[i];
+	return s;
+}
+
+
+// Exceptions
+
+extern "C" void _Jv_ThrowNullPointerException() {
+	printf("NullPointerException\n");
+	*(int*)NULL = 0;
+}
+
 extern "C" void _Jv_ThrowBadArrayIndex(int index) {
-	printf("BadArrayIndexException: %d\n", index);
+	printf("BadArrayIndex: %d\n", index);
 	*(int*)NULL = 0;
 }
