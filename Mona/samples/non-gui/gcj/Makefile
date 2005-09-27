@@ -12,9 +12,11 @@ JSOURCES   = java/lang/String.java \
              java/lang/StringBuffer.java \
              java/lang/System.java \
              java/io/PrintStream.java \
-             A.java
+             A.java \
+             JNoiz2bg.java \
+             SimpleCanvas.java
 INSTDIR    = $(BINDIR)/iso/APPS
-CLEANFILES = A.h $(OBJECTS) $(JHEADERS) $(JCLASSES) *.stackdump
+CLEANFILES = $(OBJECTS) $(JHEADERS) $(JCLASSES) *.class *.stackdump
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
@@ -51,8 +53,8 @@ $(JOBJECTS): $(JCLASSES)
 .class.h:
 	gcjh $(JFLAGS) $*
 
-.SUFFIXES: .class .o
-.class.o:
+.SUFFIXES: .java .o
+.java.o:
 	gcj $(JFLAGS) $(ALLFLAGS) -o $@ -c $<
 	g++ -c realize.cpp
 

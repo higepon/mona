@@ -4,7 +4,7 @@
 #else
 #include <stdlib.h>
 #include <string.h>
-#endif
+#endif // MONA
 
 sms_ptr_dict_memory::sms_ptr_dict_memory(void* addr, int size, int type)
 	: addr(addr), size(size), type(type), mark(false) {

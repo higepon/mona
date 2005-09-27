@@ -6,10 +6,10 @@
 // overwrite any edits you have made to this file.
 
 #include <gcj/javaprims.h>
-#include <gcj/cni.h>
 #include <java/lang/Object.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
+#include <gcj/cni.h>
 #ifdef MONA
 #include <monapi.h>
 #else

@@ -5,10 +5,10 @@
 #else
 #ifdef SMS_DEBUG
 #include <stdio.h>
-#endif
+#endif // SMS_DEBUG
 #include <stddef.h>
 #include <malloc.h>
-#endif
+#endif // MONA
 
 typedef unsigned int* IntPtr;
 
@@ -58,6 +58,7 @@ void sms_gc_free(void* addr) {
 #ifdef SMS_DEBUG
 	printf("sms_gc_free: %p\n", addr);
 #endif
+	//sms_ptr_dict_memory* p = manager.get_data(addr);
 	free(addr);
 	sms_gc_remove(addr);
 }

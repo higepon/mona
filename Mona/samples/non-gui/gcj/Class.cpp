@@ -6,8 +6,8 @@
 // overwrite any edits you have made to this file.
 
 #include <gcj/javaprims.h>
-#include <gcj/cni.h>
 #include <java/lang/Class.h>
+#include <gcj/cni.h>
 #include <sms_gc.h>
 
 void
