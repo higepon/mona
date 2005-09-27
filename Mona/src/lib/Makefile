@@ -7,6 +7,8 @@ all:
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
 	@cd monesoc&& $(MAKE) $@
+	@cd sms_gc && $(MAKE) $@
+	@cd java && $(MAKE) $@
 
 install:
 	@cd monapi && $(MAKE) $@
@@ -17,6 +19,8 @@ install:
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
 	@cd monesoc&& $(MAKE) $@
+	@cd sms_gc && $(MAKE) $@
+	@cd java && $(MAKE) $@
 
 clean: touchdepend
 	@cd monapi && $(MAKE) $@
@@ -27,6 +31,8 @@ clean: touchdepend
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
 	@cd monesoc&& $(MAKE) $@	
+	@cd sms_gc && $(MAKE) $@
+	@cd java && $(MAKE) $@
 	rm -f ../../lib/*.a
 
 depend: touchdepend
@@ -38,6 +44,8 @@ depend: touchdepend
 	@cd baygui && $(MAKE) $@
 	@cd pci && $(MAKE) $@
 	@cd monesoc&& $(MAKE) $@
+	@cd sms_gc && $(MAKE) $@
+	@cd java && $(MAKE) $@
 
 distclean:
 	rm -f monapi/dependencies
@@ -48,6 +56,8 @@ distclean:
 	rm -f baygui/dependencies
 	rm -f pci/dependencies
 	rm -f pci/monesoc
+	rm -f sms_gc/dependencies
+	rm -f java/dependencies
 
 touchdepend:
 	touch monapi/dependencies
@@ -58,3 +68,5 @@ touchdepend:
 	touch baygui/dependencies
 	touch pci/dependencies
 	touch monesoc/dependencies
+	touch sms_gc/dependencies
+	touch java/dependencies
