@@ -49,9 +49,9 @@ $(JOBJECTS): $(JCLASSES)
 .java.class:
 	gcj $(JFLAGS) $(ALLFLAGS) -C $<
 
-.SUFFIXES: .class .h
-.class.h:
-	gcjh $(JFLAGS) $*
+#.SUFFIXES: .class .h
+#.class.h:
+#	gcjh $(JFLAGS) $*
 
 .SUFFIXES: .java .o
 .java.o:

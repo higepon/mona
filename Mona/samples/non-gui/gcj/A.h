@@ -6,6 +6,7 @@
 #pragma interface
 
 #include <java/lang/Object.h>
+#include <gcj/array.h>
 
 extern "Java"
 {
@@ -15,7 +16,7 @@ extern "Java"
 class A : public ::java::lang::Object
 {
 public:
-  static void main ();
+  static void main (JArray< ::java::lang::String *> *);
   A ();
 
   static ::java::lang::Class class$;
