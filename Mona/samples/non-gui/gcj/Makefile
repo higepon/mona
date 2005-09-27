@@ -16,7 +16,7 @@ JSOURCES   = java/lang/String.java \
              JNoiz2bg.java \
              SimpleCanvas.java
 INSTDIR    = $(BINDIR)/iso/APPS
-CLEANFILES = $(OBJECTS) $(JHEADERS) $(JCLASSES) *.class *.stackdump
+CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
