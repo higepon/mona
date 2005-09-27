@@ -12,12 +12,13 @@ include $(MONADIR)/env/monapi-el2.inc
 endif
 
 ADDLINK = -ljava -lsms_gc
+INCLUDE += -I$(MONADIR)/src/lib/java
 
 COBJECTS = $(SOURCES:%.cpp=%.o)
 JOBJECTS = $(JSOURCES:%.java=%.o)
 JHEADERS = $(JSOURCES:%.java=%.h)
 JCLASSES = $(JSOURCES:%.java=%.class)
-JFLAGS   = --bootclasspath=$(MONADIR)/lib/libjava.a
+JFLAGS   = --bootclasspath=$(MONADIR)/src/lib/java
 
 all: $(TARGET)
 $(COBJECTS): $(JHEADERS)
