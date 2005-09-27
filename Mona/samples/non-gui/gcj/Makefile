@@ -1,6 +1,6 @@
 TARGET     = GCJ
-SOURCES    = main.cpp
-JSOURCES   = A.java
+SOURCES    = main.cpp SimpleCanvas-Mona.cpp
+JSOURCES   = JNoiz2bg.java SimpleCanvas.java
 INSTDIR    = $(BINDIR)/iso/APPS
 CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 

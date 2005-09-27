@@ -1,5 +1,5 @@
 public class SimpleCanvas {
-	public static boolean create(int[] buf, String title, int w, int h) { return true; }
-	public static boolean doEvents() { return false; }
-	public static void invalidate() {}
+	public static native boolean create(int[] buf, String title, int w, int h);
+	public static native boolean doEvents();
+	public static native void invalidate();
 }

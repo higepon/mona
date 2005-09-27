@@ -18,7 +18,7 @@ class SimpleCanvas : public ::java::lang::Object
 public:
   static jboolean create (jintArray, ::java::lang::String *, jint, jint);
   static jboolean doEvents ();
-  static void invalidate () { }
+  static void invalidate ();
   SimpleCanvas ();
 
   static ::java::lang::Class class$;

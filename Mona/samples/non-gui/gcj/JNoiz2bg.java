@@ -287,8 +287,6 @@ public class JNoiz2bg {
     }
 
     public static void main(String[] args) {
-        System.out.println("JNoiz2bg:start");
-        
         int[] pbuf = new int[SCREEN_W*SCREEN_H];
         if (!SimpleCanvas.create(pbuf, "JNoiz2bg", SCREEN_W, SCREEN_H))
             return;
@@ -315,7 +313,5 @@ public class JNoiz2bg {
             }
             SimpleCanvas.invalidate();
         }
-
-        System.out.println("JNoiz2bg:end");
     }
 }
