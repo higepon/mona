@@ -9,7 +9,7 @@
 #include <java/lang/Math.h>
 #include <gcj/cni.h>
 #ifdef MONA
-#include <monapi.h>
+#include <monalibc/math.h>
 #else
 #include <math.h>
 #endif
