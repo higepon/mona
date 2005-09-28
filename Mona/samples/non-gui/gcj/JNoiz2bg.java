@@ -281,7 +281,6 @@ public class JNoiz2bg {
         int G = ((((a & 0x00ff00)>>8 ) - tmp) * rate >>16) + tmp;
         tmp = (b & 0x0000ff);
         int B = ((((a & 0x0000ff)    ) - tmp) * rate >>16) + tmp;
-
         
         return (R<<16) | (G<<8) | B | 0xff000000;
     }
