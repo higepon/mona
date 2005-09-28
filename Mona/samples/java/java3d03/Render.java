@@ -35,7 +35,7 @@ public class Render
 	static private int ming[];
 	static private int maxg[];
 	static private int minb[];
-	static /*private*/ int maxb[];
+	static private int maxb[];
 	
 	//--------------------------------------------------------------------
 	//コンストラクタ
@@ -50,7 +50,6 @@ public class Render
 		CENTERY = BUFFERH/2;
 		
 		pbuf = new int[BUFFERW * BUFFERH];
-		SimpleCanvas.create(pbuf, "GourudShading", BUFFERW, BUFFERH);
 		zbuf = new int[BUFFERW * BUFFERH];
 		min  = new int[BUFFERH];
 		max  = new int[BUFFERH];

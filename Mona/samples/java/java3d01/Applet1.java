@@ -41,7 +41,6 @@ public class Applet1 //extends Applet implements Runnable
 		back      = offimage.getGraphics();
 		*/
 		pbuf = new int[SCREENW * SCREENH];
-		SimpleCanvas.create(pbuf, "VertexTransform", SCREENW, SCREENH);
 		for (int i=0;i<SCREENW * SCREENH;i++){
 				pbuf[i] = 0xffffffff;
 		}
@@ -89,6 +88,7 @@ public class Applet1 //extends Applet implements Runnable
 			}catch(Exception e){}
 		}
 		*/
+		SimpleCanvas.create(pbuf, "VertexTransform", SCREENW, SCREENH);
 		while (SimpleCanvas.doEvents()) {
 			MainLoop();
 			SimpleCanvas.invalidate();

@@ -21,8 +21,8 @@ jboolean SimpleCanvas::create(jintArray buf, jstring title, jint w, jint h) {
 	buffer = elements(buf);
 	width  = w;
 	height = h;
-	char* t = get_string(title);
-	delete [] t;
+	//char* t = get_string(title);
+	//delete [] t;
 	return true;
 }
 

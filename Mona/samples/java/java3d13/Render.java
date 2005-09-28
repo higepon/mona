@@ -83,7 +83,6 @@ public class Render
 		CENTERY = BUFFERH/2;
 		
 		pbuf = new int[BUFFERW * BUFFERH];
-		SimpleCanvas.create(pbuf, "Dithering", BUFFERW, BUFFERH);
 		zbuf = new int[BUFFERW * BUFFERH];
 		min  = new int[BUFFERH];
 		max  = new int[BUFFERH];
