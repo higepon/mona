@@ -6,12 +6,12 @@ CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
-include $(MONADIR)/env/monapi-ex2.inc
+include $(MONADIR)/env/monapi-ex5.inc
 else
-include $(MONADIR)/env/monapi-el2.inc
+include $(MONADIR)/env/monapi-el5.inc
 endif
 
-ADDLINK = -ljava -lsms_gc
+ADDLINK = -ljava -lsms_gc-imp
 INCLUDE += -I$(MONADIR)/src/lib/java
 
 COBJECTS = $(SOURCES:%.cpp=%.o)
