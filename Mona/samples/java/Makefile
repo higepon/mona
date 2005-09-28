@@ -4,6 +4,7 @@ all:
 	@cd java3d01 && $(MAKE) $@
 	@cd java3d02 && $(MAKE) $@
 	@cd java3d03 && $(MAKE) $@
+	@cd java3d04 && $(MAKE) $@
 	@cd java3d13 && $(MAKE) $@
 
 install:
@@ -12,6 +13,7 @@ install:
 	@cd java3d01 && $(MAKE) $@
 	@cd java3d02 && $(MAKE) $@
 	@cd java3d03 && $(MAKE) $@
+	@cd java3d04 && $(MAKE) $@
 	@cd java3d13 && $(MAKE) $@
 
 clean: touchdepend
@@ -20,6 +22,7 @@ clean: touchdepend
 	@cd java3d01 && $(MAKE) $@
 	@cd java3d02 && $(MAKE) $@
 	@cd java3d03 && $(MAKE) $@
+	@cd java3d04 && $(MAKE) $@
 	@cd java3d13 && $(MAKE) $@
 
 depend: touchdepend
@@ -28,6 +31,7 @@ depend: touchdepend
 	@cd java3d01 && $(MAKE) $@
 	@cd java3d02 && $(MAKE) $@
 	@cd java3d03 && $(MAKE) $@
+	@cd java3d04 && $(MAKE) $@
 	@cd java3d13 && $(MAKE) $@
 
 distclean:
@@ -36,6 +40,7 @@ distclean:
 	rm -f java3d01/dependencies
 	rm -f java3d02/dependencies
 	rm -f java3d03/dependencies
+	rm -f java3d04/dependencies
 	rm -f java3d13/dependencies
 
 touchdepend:
@@ -44,4 +49,5 @@ touchdepend:
 	touch java3d01/dependencies
 	touch java3d02/dependencies
 	touch java3d03/dependencies
+	touch java3d04/dependencies
 	touch java3d13/dependencies
