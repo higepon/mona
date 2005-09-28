@@ -1,17 +1,17 @@
 TARGET     = GCJ
-SOURCES    = main.cpp SimpleCanvas-Mona.cpp
-JSOURCES   = JNoiz2bg.java SimpleCanvas.java
+SOURCES    = main.cpp
+JSOURCES   = A.java
 INSTDIR    = $(BINDIR)/iso/APPS
 CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 
 MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
-include $(MONADIR)/env/monapi-ex5.inc
+include $(MONADIR)/env/monapi-ex2.inc
 else
-include $(MONADIR)/env/monapi-el5.inc
+include $(MONADIR)/env/monapi-el2.inc
 endif
 
-ADDLINK = -ljava -lsms_gc-imp
+ADDLINK = -ljava -lsms_gc-imp -lmonalibc-imp
 INCLUDE += -I$(MONADIR)/src/lib/java
 
 COBJECTS = $(SOURCES:%.cpp=%.o)

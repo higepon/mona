@@ -1,7 +1,7 @@
 #include <gcj/javaprims.h>
 #include <gcj/cni.h>
 #include <sms_gc/sms_gc.h>
-#include "JNoiz2bg.h"
+#include "A.h"
 
 #ifdef MONA
 #include <monapi.h>
@@ -11,6 +11,6 @@ int main() {
 #endif
 	SMS_GC_INIT();
 	JvCreateJavaVM(NULL);
-	::JNoiz2bg::main(NULL);
+	::A::main(NULL);
 	return 0;
 }
