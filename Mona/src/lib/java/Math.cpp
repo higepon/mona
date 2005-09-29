@@ -43,6 +43,13 @@ java::lang::Math::tan (jdouble a)
 
 
 jdouble
+java::lang::Math::acos (jdouble a)
+{
+	return ::acos(a);
+}
+
+
+jdouble
 java::lang::Math::atan (jdouble a)
 {
 	return ::atan(a);

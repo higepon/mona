@@ -18,6 +18,10 @@ void java::io::PrintStream::print(jint i) {
 	printf("%d", (int)i);
 }
 
+void java::io::PrintStream::print(jfloat f) {
+	printf("%f", (float)f);
+}
+
 void java::io::PrintStream::print(::java::lang::String* s) {
 	int len = s->length();
 	jchar* ch = _Jv_GetStringChars(s);

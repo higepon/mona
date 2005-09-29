@@ -3,6 +3,7 @@ package java.io;
 public class PrintStream {
 	public PrintStream(Object out) {}
 	public native void print(int i);
+	public native void print(float f);
 	public void print(Object obj) {
 		print(obj.toString());
 	}
@@ -10,6 +11,10 @@ public class PrintStream {
 	public native void println();
 	public void println(int i) {
 		print(i);
+		println();
+	}
+	public void println(float f) {
+		print(f);
 		println();
 	}
 	public void println(Object obj) {
