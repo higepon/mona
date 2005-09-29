@@ -88,7 +88,7 @@ public class Applet1 //extends Applet implements Runnable
 			}catch(Exception e){}
 		}
 		*/
-		SimpleCanvas.create(render.pbuf,"Specular",SCREENW,SCREENH);
+		SimpleCanvas.create(render.pbuf,"AntiAliaseLine",SCREENW,SCREENH);
 		while (SimpleCanvas.doEvents()) {
 			MainLoop();
 			SimpleCanvas.invalidate();

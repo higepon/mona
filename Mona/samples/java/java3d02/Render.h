@@ -39,6 +39,7 @@ private:
   static jintArray min;
   static jintArray max;
   static jintArray minz;
+public: // actually package-private
   static jintArray maxz;
 public:
 

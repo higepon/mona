@@ -5,7 +5,18 @@ all:
 	@cd java3d02 && $(MAKE) $@
 	@cd java3d03 && $(MAKE) $@
 	@cd java3d04 && $(MAKE) $@
+	@cd java3d05 && $(MAKE) $@
+	@cd java3d06 && $(MAKE) $@
+	@cd java3d07 && $(MAKE) $@
+	@cd java3d08 && $(MAKE) $@
+	@cd java3d09 && $(MAKE) $@
+	@cd java3d10 && $(MAKE) $@
+	@cd java3d11 && $(MAKE) $@
+	@cd java3d12 && $(MAKE) $@
 	@cd java3d13 && $(MAKE) $@
+	@cd java3d16 && $(MAKE) $@
+	@cd java3d18 && $(MAKE) $@
+	@cd java3d19 && $(MAKE) $@
 
 install:
 	@cd jhello && $(MAKE) $@
