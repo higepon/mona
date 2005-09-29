@@ -18,7 +18,7 @@ jint _Jv_CreateJavaVM (void* vm_args) {
 
 extern "C" jobject _Jv_AllocObject(jclass type, jint size) {
 	JvInitClass(type);
-	void* result = /*sms_gc_malloc*/malloc(size);
+	void* result = sms_gc_malloc(size);
 	memset(result, 0, size);
 	*(void**)result = type->vtable;
 	if (type == &::java::lang::String::class$)
@@ -50,7 +50,7 @@ extern "C" jobject _Jv_NewPrimArray(jclass type, jsize length) {
 		size = 8;
 	}
 	int sz = sizeof(::java::lang::Object) + sizeof(jsize) + (length + 1) * size;
-	jobject result = (jobject)/*sms_gc_malloc*/malloc(sz);
+	jobject result = (jobject)sms_gc_malloc(sz);
 	memset(result, 0, sz);
 	*(jsize*)(result + 1) = length;
 	return result;
@@ -58,7 +58,7 @@ extern "C" jobject _Jv_NewPrimArray(jclass type, jsize length) {
 
 extern "C" jobjectArray _Jv_NewObjectArray(jsize length, jclass klass, jobject init) {
 	int sz = sizeof(::java::lang::Object) + sizeof(jsize) + (length + 1) * sizeof(jobject);
-	jobjectArray result = (jobjectArray)/*sms_gc_malloc*/malloc(sz);
+	jobjectArray result = (jobjectArray)sms_gc_malloc(sz);
 	if (init == NULL) {
 		memset(result, 0, sz);
 	} else {
