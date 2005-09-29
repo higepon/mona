@@ -11,18 +11,28 @@ public class Applet1 //extends Applet implements Runnable
 	Image    offimage;
 	Image    texture;	//テクスチャ
 	*/
+	Texture texture;
 		
 	static final int SCREENW     = 320;	//スクリーン高さ
-	static final int SCREENH     = 160;	//スクリーン幅
+	static final int SCREENH     = 200;	//スクリーン幅
 	static final int FRAMERATE   = 10;	//フレームレート
-	static final int DETAILLEVEL = 12;	//モデルの細かさ
+	static final int DETAILLEVEL = 24;	//モデルの細かさ
 	
 	float rx;
 	float ry;
 	float rz;
 	
+	boolean flag = true;
+	
+
+	//オブジェクト
 	Vertex    vertices[];	//頂点配列
 	int       indices [];	//インデックス配列
+
+	//バウンディングオブジェクト
+	Vertex    bvertices[];	//頂点配列
+	int       bindices [];	//インデックス配列
+
 	Render render = new Render(SCREENW,SCREENH);
 	//----------------------------------------------------------
 	//アプレットのお約束処理
@@ -42,12 +52,35 @@ public class Applet1 //extends Applet implements Runnable
 		*/
 		Render.Clear();
 
-		//モデルデータの作成
+		//テクスチャのロード
+		/*
+		texture   = getImage(getCodeBase(),"texture.gif");
+		
+		MediaTracker tracker = new MediaTracker(this);
+		tracker.addImage(texture,0);
+		try{
+			tracker.waitForAll();
+		}catch(Exception e){}
+		*/
+		texture = new Texture();
+		
+		//テクスチャの設定
+		render.SetTexture(texture);
+
+		//頂点データの作成
 		SimpleShape ss = new SimpleShape();
 
-		ss.CreateBox();
+		ss.CreateDonuts(DETAILLEVEL);
+		
+		//頂点リストを取得
 		vertices = ss.GetVB();
 		indices  = ss.GetIndices();
+		
+		//バウンディングオブジェクトの作成
+		ss.CreateBoundingSphere(vertices,16);
+		
+		bvertices = ss.GetVB();
+		bindices  = ss.GetIndices();
 	}
 
 	/*
@@ -84,7 +117,7 @@ public class Applet1 //extends Applet implements Runnable
 			}catch(Exception e){}
 		}
 		*/
-		SimpleCanvas.create(render.pbuf,"Dithering",SCREENW,SCREENH);
+		SimpleCanvas.create(render.pbuf,"Specular",SCREENW,SCREENH);
 		while (SimpleCanvas.doEvents()) {
 			MainLoop();
 			SimpleCanvas.invalidate();
@@ -100,6 +133,8 @@ public class Applet1 //extends Applet implements Runnable
 		*/
 	}
 
+	float ag = 0;
+	
 	//----------------------------------------------------------
 	//メインループ
 	//
@@ -107,56 +142,49 @@ public class Applet1 //extends Applet implements Runnable
 	public void MainLoop(){
 		
 		Matrix m = new Matrix();
-
-		//射影変換マトリクス
-		m.Projection(0,4,(float)Math.PI/4,(float)SCREENH/(float)(SCREENW/2));
-		Render.SetTransform(render.TRANSFORM_PROJ,m);
-				
-		//レンダリング開始
-		//Render.BeginScene();
-
-		//カメラ
-		m.View(new Vector(0,0,-5),new Vector(0,0,0),new Vector(0,1,0));
-		Render.SetTransform(render.TRANSFORM_VIEW,m);
-
-		//レンダリング開始
-		//Render.BeginScene();
-
-		render.SetRenderState(0);
-		render.SetViewPort(0,0,SCREENW/2,SCREENH);
-		Render.Clear();
-		DrawObjects();
-
-		render.SetRenderState(render.STATE_DITHERING);
-		render.SetViewPort(SCREENW/2,0,SCREENW/2,SCREENH);
-		Render.Clear();
-		DrawObjects();		
-
-		//レンダリング終了
-		//Render.EndScene(this,back);
 		
-		rx += .01f;
-		ry += .02f;
-		rz += .005f;
-	}
+		//射影変換マトリクス
+		m.Projection((float)Math.PI/4,(float)SCREENH/(float)SCREENW);
+		render.SetTransform(render.TRANSFORM_PROJ,m);
 
-	//----------------------------------------------------------
-	//オブジェクト描画
-	//
-	//----------------------------------------------------------
-	void DrawObjects()
-	{
-		Matrix m = new Matrix();
+		//クリップマトリクス
+		m.Clip(-1,1,2,2,100.f,4000.f);
+		render.SetTransform(render.TRANSFORM_CLIP,m);
 
-		//平面描画
+		//ビューポートマトリクス
+		m.ViewPort(0,0,SCREENW,SCREENH);
+		render.SetTransform(render.TRANSFORM_VIEWPORT,m);
+		
+		//カメラ１
+		Vector v1 = new Vector((float)Math.sin(ag)*400, 100, (float)Math.cos(ag) * 600);
+		Vector v2 = new Vector(0.f, 0.f, 0.f);
+		Vector v3 = new Vector(0.f, 1.f, 0.f);
+		m.View(v1, v2, v3);
+		render.SetTransform(render.TRANSFORM_VIEW,m);
+
+		//render.BeginScene();
+		render.Clear();
+
+		//オブジェクト描画
 		m.Initialize();
+		m.Scale(120.0f,120.0f,120.0f);
 		m.RotateX(rx);
 		m.RotateY(ry);
-		m.RotateZ(rz);		
-		Render.SetTransform(render.TRANSFORM_WORLD,m);
-		Render.DrawIndexedPrimitive(render.PRIMITIVE_POLYGON,vertices,indices);
-	}
+		m.RotateZ(rz);
+		render.SetTransform(render.TRANSFORM_WORLD,m);
+		render.DrawIndexedPrimitive(render.PRIMITIVE_POLYGON,vertices,indices);
 
+		//バウンディングオブジェクトの描画
+		render.DrawIndexedPrimitive(render.PRIMITIVE_3DLINE,bvertices,bindices);
+
+		//render.EndScene(this,back);
+
+		rx += .01;
+		ry += .02;
+		rz += .04;
+		ag+=.04f;
+	}
+	
 	/*
 	//----------------------------------------------------------
 	//フレームレート表示
@@ -174,8 +202,10 @@ public class Applet1 //extends Applet implements Runnable
 		}
 		g.setColor(Color.black);
 		g.drawString("FPS " + fps,0,16);
-		g.drawString("16bit COLOR",8,SCREENH);
-		g.drawString("16bit COLOR + DITHERING",SCREENW/2 + 8,SCREENH);
+		g.drawString("VTX " + vertices.length,0,32);
+		
+		if (flag) g.drawString("BOUNDING SPHERE",0,SCREENH-16);
+		else      g.drawString("BOUNDING BOX   ",0,SCREENH-16);
 	}
 	*/
 

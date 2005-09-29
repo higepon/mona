@@ -18,13 +18,14 @@ extern "Java"
 class SimpleShape : public ::java::lang::Object
 {
 public:
-  virtual void CreateBox ();
-  virtual void CreateSphere (jint);
+  virtual void CreateDonuts (jint);
   virtual JArray< ::Vertex *> *GetVB () { return vertices; }
   virtual jintArray GetIndices () { return indices; }
 private:
   static ::Vector *CalcNormal (::Vector *, ::Vector *, ::Vector *);
 public:
+  void CreateBoundingBox (JArray< ::Vertex *> *);
+  void CreateBoundingSphere (JArray< ::Vertex *> *, jint);
   SimpleShape ();
 public: // actually package-private
   JArray< ::Vertex *> * __attribute__((aligned(__alignof__( ::java::lang::Object )))) vertices;

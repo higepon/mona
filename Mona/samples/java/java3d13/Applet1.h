@@ -13,6 +13,7 @@ extern "Java"
   class Applet1;
   class Render;
   class Vertex;
+  class Texture;
 }
 
 class Applet1 : public ::java::lang::Object
@@ -22,22 +23,24 @@ public:
   virtual void run ();
   virtual void stop () { }
   virtual void MainLoop ();
-public: // actually package-private
-  virtual void DrawObjects ();
-public:
   static void main (JArray< ::java::lang::String *> *);
   Applet1 ();
 public: // actually package-private
+  ::Texture * __attribute__((aligned(__alignof__( ::java::lang::Object )))) texture;
   static const jint SCREENW = 320L;
-  static const jint SCREENH = 160L;
+  static const jint SCREENH = 200L;
   static const jint FRAMERATE = 10L;
-  static const jint DETAILLEVEL = 12L;
-  jfloat __attribute__((aligned(__alignof__( ::java::lang::Object ))))  rx;
+  static const jint DETAILLEVEL = 24L;
+  jfloat rx;
   jfloat ry;
   jfloat rz;
+  jboolean flag;
   JArray< ::Vertex *> *vertices;
   jintArray indices;
+  JArray< ::Vertex *> *bvertices;
+  jintArray bindices;
   ::Render *render;
+  jfloat ag;
 public:
 
   static ::java::lang::Class class$;

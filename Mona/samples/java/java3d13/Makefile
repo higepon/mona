@@ -1,6 +1,6 @@
 TARGET     = JAVA3D13
 SOURCES    = main.cpp
-JSOURCES   = Applet1.java Matrix.java Render.java SimpleShape.java Vector.java Vertex.java TLVertex.java
+JSOURCES   = Applet1.java Matrix.java Render.java SimpleShape.java Vector.java Vertex.java Texture.java TLVertex.java
 INSTDIR    = $(BINDIR)/iso/APPS
 CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 

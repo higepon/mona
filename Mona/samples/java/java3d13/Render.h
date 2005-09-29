@@ -11,8 +11,9 @@
 extern "Java"
 {
   class Render;
-  class TLVertex;
   class Vertex;
+  class Texture;
+  class TLVertex;
   class Matrix;
 }
 
@@ -20,25 +21,33 @@ class Render : public ::java::lang::Object
 {
 public:
   Render (jint, jint);
+  static void SetTexture (::Texture *);
   static void Clear ();
   static void SetTransform (jint, ::Matrix *);
   static void DrawIndexedPrimitive (jint, JArray< ::Vertex *> *, jintArray);
-  static void SetRenderState (jint);
-  static JArray< ::TLVertex *> *TransformAndLighting (JArray< ::Vertex *> *);
+  static void TransformAndLighting (JArray< ::Vertex *> *);
 private:
   static void DrawPolygon (::TLVertex *, ::TLVertex *, ::TLVertex *);
   static void ScanEdge (::TLVertex *, ::TLVertex *);
-public:
-  static void SetViewPort (jint, jint, jint, jint);
+  static void Draw3DLine (::TLVertex *, ::TLVertex *);
 public: // actually package-private
+  static const jint PRIMITIVE_3DLINE = 0L;
   static const jint PRIMITIVE_POLYGON = 1L;
   static const jint TRANSFORM_WORLD = 0L;
   static const jint TRANSFORM_VIEW = 1L;
   static const jint TRANSFORM_PROJ = 2L;
-  static const jint STATE_DITHERING = 16L;
+  static const jint TRANSFORM_CLIP = 3L;
+  static const jint TRANSFORM_VIEWPORT = 4L;
+  static ::Matrix *mMaster;
+  static ::Matrix *mWorld;
+  static ::Matrix *mView;
+  static ::Matrix *mProj;
+  static ::Matrix *mClip;
+  static ::Matrix *mViewPort;
   static jintArray pbuf;
 private:
   static jintArray zbuf;
+  static jintArray tbuf;
   static jint BUFFERW;
   static jint BUFFERH;
   static jint CENTERX;
@@ -48,14 +57,6 @@ private:
   static jint TEXMASKW;
   static jint TEXMASKH;
   static jint TEXSHIFT;
-  static jint VIEWPORTL;
-  static jint VIEWPORTR;
-  static jint VIEWPORTT;
-  static jint VIEWPORTB;
-  static jint VIEWPORTW;
-  static jint VIEWPORTH;
-  static jint VIEWPORTCX;
-  static jint VIEWPORTCY;
   static jintArray min;
   static jintArray max;
   static jintArray minz;
@@ -66,13 +67,18 @@ private:
   static jintArray maxg;
   static jintArray minb;
   static jintArray maxb;
+  static jintArray minu;
+  static jintArray maxu;
+  static jintArray minv;
+  static jintArray maxv;
+  static jintArray minsr;
+  static jintArray maxsr;
+  static jintArray minsg;
+  static jintArray maxsg;
+  static jintArray minsb;
+  static jintArray maxsb;
 public: // actually package-private
-  static ::Matrix *mWorld;
-  static ::Matrix *mView;
-  static ::Matrix *mMaster;
-  static ::Matrix *mProj;
-private:
-  static jint state;
+  static JArray< ::TLVertex *> *tvtx;
 public:
 
   static ::java::lang::Class class$;

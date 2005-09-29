@@ -10,43 +10,39 @@ import java.awt.image.*;
 //------------------------------------------------------
 public class Render
 {	
-	//--------------------------------------------------------------------
-	//フィールド
-	//
-	//--------------------------------------------------------------------
+	static final int PRIMITIVE_3DLINE  = 0;
 	static final int PRIMITIVE_POLYGON = 1;
 	
-	static final int TRANSFORM_WORLD = 0;
-	static final int TRANSFORM_VIEW  = 1;
-	static final int TRANSFORM_PROJ  = 2;
+	static final int TRANSFORM_WORLD    = 0;
+	static final int TRANSFORM_VIEW     = 1;
+	static final int TRANSFORM_PROJ     = 2;
+	static final int TRANSFORM_CLIP     = 3;
+	static final int TRANSFORM_VIEWPORT = 4;
 	
-	static final int STATE_DITHERING = 16;
-	
+	static Matrix mMaster;   //= new Matrix();
+	static Matrix mWorld;    //= new Matrix();
+	static Matrix mView;     //= new Matrix();
+	static Matrix mProj;     //= new Matrix();
+	static Matrix mClip;     //= new Matrix();
+	static Matrix mViewPort; //= new Matrix();
+										 
 	//--------------------------------------------------------------------
 	//メンバ
 	//
 	//--------------------------------------------------------------------
 	static /*private*/ int pbuf[];		//32bitピクセルバッファ
 	static private int zbuf[];		//32bitＺバッファ
+	static private int tbuf[];		//32bitテクスチャバッファ
 	
 	static private int BUFFERW;		//バッファ幅
 	static private int BUFFERH;		//バッファ高さ
 	static private int CENTERX;
 	static private int CENTERY;
-	static private int TEXTUREW;	//テクスチャ
+	static private int TEXTUREW;
 	static private int TEXTUREH;
 	static private int TEXMASKW;
 	static private int TEXMASKH;
 	static private int TEXSHIFT;
-	
-	static private int VIEWPORTL;	//ビューポート
-	static private int VIEWPORTR;
-	static private int VIEWPORTT;
-	static private int VIEWPORTB;
-	static private int VIEWPORTW;
-	static private int VIEWPORTH;
-	static private int VIEWPORTCX;
-	static private int VIEWPORTCY;
 	
 	static private int min [];
 	static private int max [];
@@ -58,13 +54,18 @@ public class Render
 	static private int maxg[];
 	static private int minb[];
 	static private int maxb[];
-
-	static Matrix mWorld;  //= new Matrix();//ワールド変換行列
-	static Matrix mView;   //= new Matrix();//ビュー変換行列
-	static Matrix mMaster; //= new Matrix();//マスター行列
-	static Matrix mProj;   //= new Matrix();//射影変換行列
-
-	static private int state = 0;
+	static private int minu[];
+	static private int maxu[];
+	static private int minv[];
+	static private int maxv[];
+	static private int minsr[];
+	static private int maxsr[];
+	static private int minsg[];
+	static private int maxsg[];
+	static private int minsb[];
+	static private int maxsb[];
+	
+	static /*private*/ TLVertex[] tvtx;
 	
 	//--------------------------------------------------------------------
 	//コンストラクタ
@@ -72,10 +73,12 @@ public class Render
 	//--------------------------------------------------------------------
 	public Render(int w,int h)
 	{
-		mWorld  = new Matrix();
-		mView   = new Matrix();
-		mMaster = new Matrix();
-		mProj   = new Matrix();
+		mMaster   = new Matrix();
+		mWorld    = new Matrix();
+		mView     = new Matrix();
+		mProj     = new Matrix();
+		mClip     = new Matrix();
+		mViewPort = new Matrix();
 		
 		BUFFERW = w;
 		BUFFERH = h;
@@ -94,8 +97,55 @@ public class Render
 		maxg = new int[BUFFERH];
 		minb = new int[BUFFERH];
 		maxb = new int[BUFFERH];
+		minu = new int[BUFFERH];
+		maxu = new int[BUFFERH];
+		minv = new int[BUFFERH];
+		maxv = new int[BUFFERH];
+		minsr= new int[BUFFERH];
+		maxsr= new int[BUFFERH];
+		minsg= new int[BUFFERH];
+		maxsg= new int[BUFFERH];
+		minsb= new int[BUFFERH];
+		maxsb= new int[BUFFERH];
 		
-		SetViewPort(0,0,BUFFERW,BUFFERH);
+		tvtx = new TLVertex[4096];
+		
+		for (int i=0;i<tvtx.length;i++)
+			tvtx[i] = new TLVertex();
+		
+		//最大最小バッファの初期化
+		for (int i=0;i<BUFFERH;i++){
+			min[i] = +0x7fffffff;
+			max[i] = -0x7fffffff;
+		}
+	}
+
+	//--------------------------------------------------------------------
+	//テクスチャの設定
+	//
+	//--------------------------------------------------------------------
+	static final public void SetTexture(/*Image*/Texture texture)
+	{
+		TEXTUREW  = texture.width;  //.getWidth (null);
+		TEXTUREH  = texture.height; //.getHeight(null);
+		TEXMASKW  = TEXTUREW - 1;
+		TEXMASKH  = TEXTUREH - 1;
+		
+		TEXSHIFT = 0;
+		for (int i=0;i<32;i++)
+			if (((TEXMASKW>>i)&1) > 0)
+				TEXSHIFT++;
+		
+		/*
+		tbuf = new int[TEXTUREW * TEXTUREH];
+		
+		PixelGrabber pg = new PixelGrabber(texture,0,0,TEXTUREW,TEXTUREH,tbuf,0,TEXTUREW);
+		
+		try{
+			pg.grabPixels();
+		}catch(InterruptedException e){}
+		*/
+		tbuf = texture.data;
 	}
 
 	//--------------------------------------------------------------------
@@ -104,12 +154,9 @@ public class Render
 	//--------------------------------------------------------------------
 	static final public void Clear()
 	{
-		for (int y=VIEWPORTT;y<VIEWPORTB;y++){
-			int offset = y * BUFFERW;
-			for (int x=VIEWPORTL;x<VIEWPORTR;x++){
-				pbuf[offset + x] = 0xffffffff;
-				zbuf[offset + x] = 0xffffff;
-			}
+		for (int i=0;i<BUFFERW * BUFFERH;i++){
+				pbuf[i] = 0xffffffff;
+				zbuf[i] = 0x7fffffff;
 		}
 	}
 	
@@ -137,7 +184,6 @@ public class Render
 	//--------------------------------------------------------------------
 	//変換行列を設定する。
 	//
-	//int type ...行列の種類
 	//Matrix m ...変換行列
 	//--------------------------------------------------------------------
 	static final public void SetTransform(int type,Matrix m)
@@ -152,6 +198,12 @@ public class Render
 		case TRANSFORM_PROJ:
 			mProj.Initialize(m);
 			break;
+		case TRANSFORM_CLIP:
+			mClip.Initialize(m);
+			break;
+		case TRANSFORM_VIEWPORT:
+			mViewPort.Initialize(m);
+			break;
 		}
 	}
 
@@ -162,10 +214,17 @@ public class Render
 	static final public void DrawIndexedPrimitive(int type,Vertex[] vertices,int[] indices)
 	{
 		//座標変換、ライティング
-		TLVertex[] tvtx = TransformAndLighting(vertices);
+		TransformAndLighting(vertices);
 		
 		//ラスタライズ
 		switch(type){
+		case PRIMITIVE_3DLINE:
+			for (int i=0;i<indices.length;i+=3){
+				Draw3DLine(tvtx[indices[i  ]],tvtx[indices[i+1]]);
+				Draw3DLine(tvtx[indices[i+1]],tvtx[indices[i+2]]);
+				Draw3DLine(tvtx[indices[i+2]],tvtx[indices[i  ]]);
+			}
+			break;
 		case PRIMITIVE_POLYGON:
 			for (int i=0;i<indices.length;i+=3){
 				DrawPolygon(tvtx[indices[i]],tvtx[indices[i+1]],tvtx[indices[i+2]]);
@@ -175,76 +234,78 @@ public class Render
 	}
 
 	//--------------------------------------------------------------------
-	//レンダリングステートの設定
-	//
-	//--------------------------------------------------------------------
-	static final public void SetRenderState(int s)
-	{
-		state = s;
-	}
-
-	//--------------------------------------------------------------------
 	//座標変換、ライティング
 	//
 	//--------------------------------------------------------------------
-	static final public TLVertex[] TransformAndLighting(Vertex[] vtx)
+	static final public void TransformAndLighting(Vertex[] vtx)
 	{
-		TLVertex[] tvtx = new TLVertex[vtx.length];
-		
-		//光源色
-		Vector a = new Vector(.2f,.2f,.2f);//環境光
-		Vector d = new Vector(.5f,.8f,.2f);//拡散光
-		
 		mMaster.Initialize();
 		mMaster.Mult(mWorld);
 		
 		//転置行列の作成
 		Matrix im = new Matrix();
 		im.Invert(mMaster);
-				
-		//平行光源の向き
-		Vector light = im.Transform( new Vector(0,0,-1));
-		light.Normalize();
-	
-		mMaster.Mult(mView);
-		im.Invert(mMaster);
-
-		//視線ベクトル
-		Vector eye   = im.Transform( new Vector(0,0,-1));
-
-		mMaster.Mult(mProj);
 		
-		int r = 0,g = 0,b = 0;
+		//平行光源の向き
+		Vector light = im.Transform(new Vector(1,2,1.5f));
+		light.Normalize();
+		
+		mMaster.Mult(mView);		
+		im.Invert(mMaster);
+		//視線ベクトル
+		Vector eye   = im.Transform( new Vector(0,0,1));
+		eye.Normalize();
+		
+		mMaster.Mult(mProj);
+		mMaster.Mult(mClip);
+		mMaster.Mult(mViewPort);
+
+		Vector n = new Vector();
+
+		int r,g,b,sr,sg,sb;
 		
 		for (int i=0;i<vtx.length;i++){
 						
 			//座標変換
-			Vector v = mMaster.Transform(vtx[i].v);
+			Vector v = vtx[i].v;
+			float sx = v.x * mMaster.m00 + v.y * mMaster.m10 + v.z * mMaster.m20 + mMaster.m30;
+			float sy = v.x * mMaster.m01 + v.y * mMaster.m11 + v.z * mMaster.m21 + mMaster.m31;
+			float sz = v.x * mMaster.m02 + v.y * mMaster.m12 + v.z * mMaster.m22 + mMaster.m32;
+			float w  = v.x * mMaster.m03 + v.y * mMaster.m13 + v.z * mMaster.m23 + mMaster.m33;
+			float rhw= 1/w;
 							
 			//頂点法線と光源とのなす角
-			float w = light.DotProduct(vtx[i].n);
+			float a = light.DotProduct(vtx[i].n);
+						
+			//スペキュラーを求める
+			n.x = vtx[i].n.x * 2 * a - light.x;
+			n.y = vtx[i].n.y * 2 * a - light.y;
+			n.z = vtx[i].n.z * 2 * a - light.z;
+			n.Normalize();
+						
+			float sa = n.DotProduct(eye);//視線ベクトルと反射ベクトルとの内積
+			if (sa < 0) sa = 0;
+			sa = (float)Math.pow(sa,12);
 			
-			//頂点色を求める
-			r = (int)((a.x + w * d.x) * 255 * 0xffff);
-			g = (int)((a.y + w * d.y) * 255 * 0xffff);
-			b = (int)((a.z + w * d.z) * 255 * 0xffff);
-			if (r < 0) r = 0;
-			if (g < 0) g = 0;
-			if (b < 0) b = 0;
+			a = (a+1)/2;
+																
+			tvtx[i].x = (int)( sx * rhw * 0xffff);
+			tvtx[i].y = (int)(-sy * rhw * 0xffff);
+			tvtx[i].z = (int)(-rhw * 0xffffff);
+			tvtx[i].r = (int)(32 + a * 0xaa)<<16;
+			tvtx[i].g = (int)(32 + a * 0xaa)<<16;
+			tvtx[i].b = (int)(80 + a * 0xff)<<16;
+			tvtx[i].sr= (int)(sa * 0xcc)<<16;
+			tvtx[i].sg= (int)(sa * 0xcc)<<16;
+			tvtx[i].sb= (int)(sa * 0xff)<<16;
 			
-			//頂点情報の設定
-			float _z = 1.0f / v.z;
-			tvtx[i]   = new TLVertex();
-			tvtx[i].x = (int)( v.x * (VIEWPORTW<<16) * _z + (VIEWPORTCX<<16));
-			tvtx[i].y = (int)(-v.y * (VIEWPORTH<<16) * _z + (VIEWPORTCY<<16));
-			tvtx[i].z = (int)((1-_z) * 0xffff);
-			tvtx[i].r = r;
-			tvtx[i].g = g;
-			tvtx[i].b = b;
-			tvtx[i].active = 1;
+			//テクスチャ座標設定
+			tvtx[i].u = (int)(vtx[i].tu * TEXTUREW)<<16;
+			tvtx[i].v = (int)(vtx[i].tv * TEXTUREH)<<16;
+			
+			if (eye.DotProduct(vtx[i].n) < 0) tvtx[i].active = 0;
+			else                              tvtx[i].active = 1;
 		}
-		
-		return tvtx;
 	}
 
 	//--------------------------------------------------------------------
@@ -252,86 +313,88 @@ public class Render
 	//
 	//--------------------------------------------------------------------
 	static final private void DrawPolygon(TLVertex v1,TLVertex v2,TLVertex v3)
-	{		
-		int ptn[] = {4,0,2,6};//ディザパターン
+	{
+		if ((v1.active + v2.active + v3.active) == 0) return;
 		
 		//バッファの使用範囲を設定（高速化のため）
-		int top = +2147483647;
-		int btm = -2147483648;
+		int top = +0x7fffffff;
 		if (top > v1.y ) top = v1.y;
 		if (top > v2.y ) top = v2.y;
 		if (top > v3.y ) top = v3.y;
-		if (btm < v1.y ) btm = v1.y;
-		if (btm < v2.y ) btm = v2.y;
-		if (btm < v3.y ) btm = v3.y;
-		top>>=16;
-		btm>>=16;
-		if (top < 0         ) top = 0;
-		if (btm > BUFFERH   ) btm = BUFFERH;
-				
-		//最大最小バッファの初期化
-		for (int i=top;i<btm;i++){
-			min[i] = +2147483647;
-			max[i] = -2147483648;
-		}
-		
+		if ((top>>=16) < 0) top = 0;
+						
 		//スキャンエッジ
 		ScanEdge(v1,v2);
 		ScanEdge(v2,v3);
 		ScanEdge(v3,v1);
-		
-		//最大最小バッファに基づいて描画する。
-		for (int y=top;y<btm;y++){
-			
-			//バッファが未更新ならスキップ
-			if (min[y] == +2147483647) continue;
-			
-			final int offset = y*BUFFERW;
-			
-			//増分値計算
-			int l = (max[y] - min[y]) + 1;
-			int addz = (maxz[y] - minz[y]) / l;
-			int addr = (maxr[y] - minr[y]) / l;
-			int addg = (maxg[y] - ming[y]) / l;
-			int addb = (maxb[y] - minb[y]) / l;
 
+		int offset = top * BUFFERW;
+		for (int y=top;y<BUFFERH;y++,offset+=BUFFERW){
+			
+			if (min[y] == 0x7fffffff) break;
+						
+			//増分値計算
+			int l = (max[y] - min[y]);
+			int rhl  = (l == 0? 0x7fffffff : 0x7fffffff / l);
+			int addz = (int)((long)(maxz[y] - minz[y]) * rhl >> 31);
+			int addr = (int)((long)(maxr[y] - minr[y]) * rhl >> 31);
+			int addg = (int)((long)(maxg[y] - ming[y]) * rhl >> 31);
+			int addb = (int)((long)(maxb[y] - minb[y]) * rhl >> 31);
+			int addu = (int)((long)(maxu[y] - minu[y]) * rhl >> 31);
+			int addv = (int)((long)(maxv[y] - minv[y]) * rhl >> 31);
+			int addsr= (int)((long)(maxsr[y]-minsr[y]) * rhl >> 31);
+			int addsg= (int)((long)(maxsg[y]-minsg[y]) * rhl >> 31);
+			int addsb= (int)((long)(maxsb[y]-minsb[y]) * rhl >> 31);
+			
 			//初期値設定
 			int z = minz[y];
 			int r = minr[y];
 			int g = ming[y];
 			int b = minb[y];
-			
-			for (int x=min[y];x<=max[y];x++,z+=addz,r+=addr,g+=addg,b+=addb){
-			
-				if (x < VIEWPORTL || x >=VIEWPORTR) continue;
+			int u = minu[y];
+			int v = minv[y];
+			int sr= minsr[y];
+			int sg= minsg[y];
+			int sb= minsb[y];
+
+			//クリッピング
+			if (min[y] < 0){
+				int c = -min[y];
+				z += addz * c;
+				r += addr * c;
+				g += addg * c;
+				b += addb * c;
+				sr+= addsr* c;
+				sg+= addsg* c;
+				sb+= addsb* c;
+				u += addu * c;
+				v += addv * c;
+				min[y] = 0;
+			}
+			if (max[y] >= BUFFERW){
+				max[y]  = BUFFERW-1;
+			}
+
+			for (int x=min[y];x<max[y];x++,z+=addz,r+=addr,g+=addg,b+=addb,u+=addu,v+=addv,sr+=addsr,sg+=addsg,sb+=addsb){
 				
 				int p = offset + x;
 
-				if (zbuf[p] > z){
-					int tr = r>>16;
-					int tg = g>>16;
-					int tb = b>>16;
-					if (tr > 255) tr = 254;
-					if (tg > 255) tg = 254;
-					if (tb > 255) tb = 254;
+				if (zbuf[p] >= z){
+					int texel = tbuf[(((v>>16) & TEXMASKH)<<TEXSHIFT) + ((u>>16) & TEXMASKW)];
 					
-					//ディザリング（パターンディザ）
-					if ((state & STATE_DITHERING) > 0){
-						int pp = ptn[((y & 1) << 1) + (x & 1)];
-						if ((tr & 7) >= pp) tr += 8;
-						if ((tg & 7) >= pp) tg += 8;
-						if ((tb & 7) >= pp) tb += 8;
-					}
-					
-					//To16bitColor
-					tr = tr>>3<<3;
-					tg = tg>>3<<3;
-					tb = tb>>3<<3;
+					int tr = (( (r>>16) * ((texel & 0xff0000)>>16) )>>8) + (sr>>16);
+					int tg = (( (g>>16) * ((texel & 0x00ff00)>>8 ) )>>8) + (sg>>16);
+					int tb = (( (b>>16) * ((texel & 0x0000ff)    ) )>>8) + (sb>>16);
+					if (tr > 255) tr = 255;
+					if (tg > 255) tg = 255;
+					if (tb > 255) tb = 255;
 					
 					pbuf[p] = (tr<<16) | (tg<<8) | tb | 0xff000000;
 					zbuf[p] = z;
 				}
 			}
+			min[y] = +0x7fffffff;
+			max[y] = -0x7fffffff;
 		}
 	}
 
@@ -343,30 +406,39 @@ public class Render
 	//--------------------------------------------------------------------
 	static final private void ScanEdge(TLVertex v1,TLVertex v2)
 	{		
-		int l = Math.abs((int)((v2.y>>16) - (v1.y>>16))) + 1;
-	
-		//増分値計算
-		int addx = (v2.x - v1.x) / l;
-		int addy = (v2.y - v1.y) / l;
-		int addz = (v2.z - v1.z) / l;
-		int addr = (v2.r - v1.r) / l;
-		int addg = (v2.g - v1.g) / l;
-		int addb = (v2.b - v1.b) / l;
+		int l = Math.abs((v2.y>>16) - (v1.y>>16));
+		if (l==0) l = 1;
 		
-		//初期値設定
+		int rhl  = 0x7fffffff / l;
+		int addx = (int)((long)(v2.x - v1.x) * rhl >> 31);
+		int addy = (int)((long)(v2.y - v1.y) * rhl >> 31);
+		int addz = (int)((long)(v2.z - v1.z) * rhl >> 31);
+		int addr = (int)((long)(v2.r - v1.r) * rhl >> 31);
+		int addg = (int)((long)(v2.g - v1.g) * rhl >> 31);
+		int addb = (int)((long)(v2.b - v1.b) * rhl >> 31);
+		int addu = (int)((long)(v2.u - v1.u) * rhl >> 31);
+		int addv = (int)((long)(v2.v - v1.v) * rhl >> 31);
+		int addsr= (int)((long)(v2.sr-v1.sr) * rhl >> 31);
+		int addsg= (int)((long)(v2.sg-v1.sg) * rhl >> 31);
+		int addsb= (int)((long)(v2.sb-v1.sb) * rhl >> 31);
+
 		int x = v1.x;
 		int y = v1.y;
 		int z = v1.z;
 		int r = v1.r;
 		int g = v1.g;
 		int b = v1.b;
+		int u = v1.u;
+		int v = v1.v;
+		int sr= v1.sr;
+		int sg= v1.sg;
+		int sb= v1.sb;
 		
-		//スキャン
-		for (int i=0;i<l;i++,x+=addx,y+=addy,z+=addz,r+=addr,g+=addg,b+=addb){			
-			int py = y>>16;			
+		for (int i=0;i<l;i++,x+=addx,y+=addy,z+=addz,r+=addr,g+=addg,b+=addb,u+=addu,v+=addv,sr+=addsr,sg+=addsg,sb+=addsb){
+			int py = y>>16;
 			int px = x>>16;
 			
-			if (py < VIEWPORTT || py >= VIEWPORTB) continue;			
+			if (py < 0 || py >= BUFFERH) continue;			
 							
 			if (min [py] > px){
 				min [py] = px;
@@ -374,6 +446,11 @@ public class Render
 				minr[py] = r;
 				ming[py] = g;
 				minb[py] = b;
+				minu[py] = u;
+				minv[py] = v;
+				minsr[py]= sr;
+				minsg[py]= sg;
+				minsb[py]= sb;
 			}
 			
 			if (max [py] < px){
@@ -382,26 +459,47 @@ public class Render
 				maxr[py] = r;
 				maxg[py] = g;
 				maxb[py] = b;
+				maxu[py] = u;
+				maxv[py] = v;
+				maxsr[py]= sr;
+				maxsg[py]= sg;
+				maxsb[py]= sb;
 			}
 		}
 	}
 	
 	//--------------------------------------------------------------------
-	//ビューポートの設定
+	//３Ｄライン描画
 	//
-	//int x ...左上座標
-	//int y ...
-	//int w ...幅と高さ
+	//Vector v1 ...始点
+	//Vector v2 ...終点
 	//--------------------------------------------------------------------
-	static public void SetViewPort(int x,int y,int w,int h)
-	{
-		VIEWPORTW  = w/2;
-		VIEWPORTH  = h/2;
-		VIEWPORTL  = x;
-		VIEWPORTR  = x + w;
-		VIEWPORTT  = y;
-		VIEWPORTB  = y + h;
-		VIEWPORTCX = x + w/2;
-		VIEWPORTCY = y + h/2;
+	static final private void Draw3DLine(TLVertex v1,TLVertex v2)
+	{		
+		int lx = Math.abs((v2.x>>16) - (v1.x>>16));
+		int ly = Math.abs((v2.y>>16) - (v1.y>>16));
+		int l  = (lx > ly? lx : ly);
+		if (l==0) l = 1;
+		
+		int addx = (v2.x - v1.x) / l;
+		int addy = (v2.y - v1.y) / l;
+		int addz = (v2.z - v1.z) / l;
+		int x = v1.x;
+		int y = v1.y;
+		int z = v1.z;
+		
+		for (int i=0;i<l;i++,x+=addx,y+=addy,z+=addz){
+			int py = y>>16;
+			int px = x>>16;
+			
+			if (py < 0 || py >= BUFFERH) continue;			
+			if (px < 0 || px >= BUFFERW) continue;
+
+			int p = py * BUFFERW + px;
+			if (zbuf[p] >= z){
+				pbuf[p] = 0xff0000ff;
+				zbuf[p] = z;
+			}
+		}
 	}
 }
