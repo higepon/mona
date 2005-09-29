@@ -1,12 +1,11 @@
 main.o: main.cpp ../../../include/gcj/javaprims.h \
-  ../../../include/gcj/cni.h ../../../src/lib/java/java/lang/Object.h \
-  ../../../include/java/lang/Class.h ../../../include/sms_gc/sms_gc.h \
-  Applet1.h ../../../include/monapi.h ../../../include/sys/types.h \
-  ../../../include/sys/error.h ../../../include/monapi/Observer.h \
-  ../../../include/sys/HList.h ../../../include/sys/List.h \
-  ../../../include/monapi/Date.h ../../../include/monapi/Screen.h \
-  ../../../include/monapi/Server.h ../../../include/monapi/System.h \
-  ../../../include/monapi/Message.h \
+  ../../../include/gcj/cni.h ../../../include/java/lang/Class.h \
+  ../../../include/sms_gc/sms_gc.h Applet1.h ../../../include/monapi.h \
+  ../../../include/sys/types.h ../../../include/sys/error.h \
+  ../../../include/monapi/Observer.h ../../../include/sys/HList.h \
+  ../../../include/sys/List.h ../../../include/monapi/Date.h \
+  ../../../include/monapi/Screen.h ../../../include/monapi/Server.h \
+  ../../../include/monapi/System.h ../../../include/monapi/Message.h \
   ../../../include/monapi/MonaApplication.h \
   ../../../include/monapi/MemoryMap.h ../../../include/monapi/Thread.h \
   ../../../include/monapi/string.h \
