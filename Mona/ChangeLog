@@ -1,3 +1,13 @@
+2005-10-02  bayside
+
+        * include/gcj: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+        * include/java: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+        * src/lib/java: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+        * samples/java: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
 2005-09-27  bayside
 
         * include/java: 新規追加
