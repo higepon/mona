@@ -5,7 +5,7 @@
 // Be aware: running `gcjh -stubs ' once more for this class may
 // overwrite any edits you have made to this file.
 
-#include <gcj/javaprims.h>
+//#include <gcj/javaprims.h>
 #include <java/io/PrintStream.h>
 #include <gcj/cni.h>
 #ifdef MONA

@@ -1,4 +1,4 @@
-#include <gcj/javaprims.h>
+//#include <gcj/javaprims.h>
 #include <gcj/cni.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
@@ -10,7 +10,25 @@
 #include <string.h>
 #endif
 
+::java::lang::Class _Jv_voidClass, _Jv_booleanClass, _Jv_byteClass, _Jv_charClass, _Jv_shortClass, _Jv_intClass, _Jv_longClass, _Jv_floatClass, _Jv_doubleClass;
+
+class java::lang::VMClassLoader : public ::java::lang::Object {
+public:
+	static void initialize() {
+		_Jv_voidClass   .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_booleanClass.vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_byteClass   .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_charClass   .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_shortClass  .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_intClass    .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_longClass   .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_floatClass  .vtable = JV_PRIMITIVE_VTABLE;
+		_Jv_doubleClass .vtable = JV_PRIMITIVE_VTABLE;
+	}
+};
+
 jint _Jv_CreateJavaVM (void* vm_args) {
+	::java::lang::VMClassLoader::initialize();
 	sms_gc_register(&::java::lang::System::out);
 	::java::lang::System::out = new ::java::io::PrintStream(NULL);
 	return 0;
@@ -36,9 +54,6 @@ extern "C" jobject _Jv_AllocObjectNoFinalizer(jclass type, jint size) {
 
 extern "C" void _Jv_RegisterClass(jclass* classes) {
 }
-
-// dummy for types
-::java::lang::Class _Jv_voidClass, _Jv_booleanClass, _Jv_byteClass, _Jv_charClass, _Jv_shortClass, _Jv_intClass, _Jv_longClass, _Jv_floatClass, _Jv_doubleClass;
 
 extern "C" jobject _Jv_NewPrimArray(jclass type, jsize length) {
 	int size = 4;
@@ -94,6 +109,6 @@ extern "C" void _Jv_ThrowNullPointerException() {
 }
 
 extern "C" void _Jv_ThrowBadArrayIndex(int index) {
-	printf("BadArrayIndex: %d\n", index);
+	printf("ArrayIndexOutOfBoundsException: %d\n", index);
 	*(int*)NULL = 0;
 }
