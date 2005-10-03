@@ -1,4 +1,4 @@
-#include <gcj/javaprims.h>
+//#include <gcj/javaprims.h>
 #include <gcj/cni.h>
 #include <sms_gc/sms_gc.h>
 #include "Applet1.h"
@@ -12,8 +12,6 @@ int main() {
 #endif
 	SMS_GC_INIT();
 	JvCreateJavaVM(NULL);
-	// register static members for GC
-	sms_gc_register_range(&Render::tfog, &Render::mProj);
 	::Applet1::main(NULL);
 	return 0;
 }

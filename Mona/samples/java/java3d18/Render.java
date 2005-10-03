@@ -79,7 +79,7 @@ public final class Render
 	static private SCANLINE min[];
 	static private SCANLINE max[];
 	
-	static /*private*/ TLVERTEX tvtx[];
+	static private TLVERTEX tvtx[];
 	
 	//--------------------------------------------------------------------
 	//コンストラクタ

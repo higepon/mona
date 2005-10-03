@@ -1,4 +1,4 @@
-#include <gcj/javaprims.h>
+//#include <gcj/javaprims.h>
 #include <gcj/cni.h>
 #include <sms_gc/sms_gc.h>
 #include "A.h"

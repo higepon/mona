@@ -77,7 +77,6 @@ private:
   static jintArray maxsg;
   static jintArray minsb;
   static jintArray maxsb;
-public: // actually package-private
   static JArray< ::TLVertex *> *tvtx;
 public:
 

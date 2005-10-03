@@ -53,7 +53,7 @@ public final class Render
 	static private int BUFFERW;		//バッファ幅
 	static private int BUFFERH;		//バッファ高さ
 		
-	static /*private*/ TLVERTEX tvtx[];
+	static private TLVERTEX tvtx[];
 	
 	//--------------------------------------------------------------------
 	//コンストラクタ

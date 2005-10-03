@@ -51,7 +51,7 @@ public class Render
 	static private int minsg[];
 	static private int maxsg[];
 	static private int minsb[];
-	static /*private*/ int maxsb[];
+	static private int maxsb[];
 	
 	//--------------------------------------------------------------------
 	//コンストラクタ

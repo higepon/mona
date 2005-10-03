@@ -46,7 +46,6 @@ private:
   static jint TEXSHIFT;
   static JArray< ::SCANLINE *> *min;
   static JArray< ::SCANLINE *> *max;
-public: // actually package-private
   static JArray< ::TLVERTEX *> *tvtx;
 public:
 

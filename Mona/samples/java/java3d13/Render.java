@@ -65,7 +65,7 @@ public class Render
 	static private int minsb[];
 	static private int maxsb[];
 	
-	static /*private*/ TLVertex[] tvtx;
+	static private TLVertex[] tvtx;
 	
 	//--------------------------------------------------------------------
 	//コンストラクタ

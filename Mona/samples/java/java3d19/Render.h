@@ -39,7 +39,6 @@ public:
 private:
   static jint BUFFERW;
   static jint BUFFERH;
-public: // actually package-private
   static JArray< ::TLVERTEX *> *tvtx;
 public:
 

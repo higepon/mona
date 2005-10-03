@@ -64,7 +64,6 @@ private:
   static jintArray minsg;
   static jintArray maxsg;
   static jintArray minsb;
-public: // actually package-private
   static jintArray maxsb;
 public:
 
