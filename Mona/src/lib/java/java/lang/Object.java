@@ -8,7 +8,12 @@ public class Object {
 	}
 
 	public native final Class getClass();
+
 	public native int hashCode();
+
+	protected Object clone() {
+		return this;
+	}
 
 	public boolean equals(Object obj) {
 		return (this == obj);

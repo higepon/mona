@@ -12,6 +12,7 @@ include $(MONADIR)/env/monapi-el2.inc
 endif
 
 ADDLINK = -ljava -lsms_gc-imp -lmonalibc-imp
+ADDLINKDEP = $(MONADIR)/lib/libjava.a
 INCLUDE += -I$(MONADIR)/src/lib/java
 
 COBJECTS = $(SOURCES:%.cpp=%.o)

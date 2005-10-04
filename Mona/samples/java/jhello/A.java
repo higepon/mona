@@ -5,6 +5,6 @@ public class A {
 	public static void main(String[] args) {
 		System.out.println(new Object());
 		System.out.println("abc");
-		System.out.println("abc".length());
+		System.out.println("abc.length=" + "abc".length());
 	}
 }
