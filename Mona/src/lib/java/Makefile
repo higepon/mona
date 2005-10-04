@@ -10,7 +10,6 @@ JBASESRC = \
 	java/lang/Object.java java/lang/Class.java
 JSOURCES = \
 	java/lang/String.java \
-	java/lang/StringBuffer.java \
 	gnu/gcj/runtime/StringBuffer.java \
 	java/lang/System.java \
 	java/lang/Math.java \
