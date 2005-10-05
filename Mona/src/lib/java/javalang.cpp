@@ -29,7 +29,7 @@ public:
 
 jint _Jv_CreateJavaVM (void* vm_args) {
 	::java::lang::VMClassLoader::initialize();
-	sms_gc_register(&::java::lang::System::out);
+	JvInitClass(&::java::lang::System::class$);
 	::java::lang::System::out = new ::java::io::PrintStream(NULL);
 	return 0;
 }
