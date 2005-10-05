@@ -8,7 +8,7 @@ LIB_DYNAMIC5 = SMSGC.DL5
 TARGET      += $(LIB_IMPORT) $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 endif
 
-SOURCES = sms_gc.cpp sms_ptr_dict.cpp
+SOURCES = sms_gc.cpp sms_gc_object.cpp sms_ptr_dict.cpp
 
 MONADIR = ../../..
 include $(MONADIR)/env/monapi.inc

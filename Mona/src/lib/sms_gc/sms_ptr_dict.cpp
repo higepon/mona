@@ -1,6 +1,10 @@
 #include "sms_gc/sms_ptr_dict.h"
+#ifdef MONA
+#include <monapi.h>
+#else
 #include <stdlib.h>
 #include <string.h>
+#endif
 
 
 sms_ptr_dict_memory::sms_ptr_dict_memory(void* addr, int size, int type)
@@ -125,6 +129,15 @@ sms_ptr_dict_linear* sms_ptr_dict::get_first() {
 	return NULL;
 }
 
+sms_ptr_dict_linear* sms_ptr_dict::get_current() {
+	if (this->it1 == 256) return NULL;
+	sms_ptr_dict_linear*** p1 = this->ptrs[this->it1];
+	if (p1 == NULL) return NULL;
+	sms_ptr_dict_linear** p2 = p1[this->it2];
+	if (p2 == NULL) return NULL;
+	return p2[this->it3];
+}
+
 sms_ptr_dict_linear* sms_ptr_dict::get_next() {
 	if (this->it1 == 256) return NULL;
 	sms_ptr_dict_linear*** p1 = this->ptrs[this->it1];
@@ -206,6 +219,13 @@ sms_ptr_dict_linear* sms_ptr_dict_64k::get_first() {
 		}
 	}
 	return NULL;
+}
+
+sms_ptr_dict_linear* sms_ptr_dict_64k::get_current() {
+	if (this->it1 == 256) return NULL;
+	sms_ptr_dict_linear** p1 = this->ptrs[this->it1];
+	if (p1 == NULL) return NULL;
+	return p1[this->it2];
 }
 
 sms_ptr_dict_linear* sms_ptr_dict_64k::get_next() {

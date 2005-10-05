@@ -1,12 +1,13 @@
 #include "sms_gc/sms_gc.h"
+#include "sms_gc/sms_gc_object.h"
 #include "sms_gc/sms_ptr_dict.h"
+#ifdef MONA
+#include <monapi.h>
+#else
 #ifdef SMS_DEBUG
 #include <stdio.h>
 #endif
 #include <stddef.h>
-#ifdef MONA
-#include <monapi.h>
-#else
 #include <malloc.h>
 #endif
 
@@ -20,12 +21,22 @@ static int regs_length = 0, regs_size = 0;
 static void*** regs = NULL;
 
 void sms_gc_init(void* stack) {
+	if (initialized)
+		return;
 	end_stack = stack;
 	initialized = true;
 	collect = 16;
 }
 
 void sms_gc_add(void* addr, int size, int type) {
+	char* start_stack;
+	asm("movl %%ebp, %0" : "=g"(start_stack));
+	if (start_stack <= addr && addr < end_stack) {
+#ifdef SMS_DEBUG
+		printf("sms_gc_add: ignore stack = %p\n", addr);
+#endif
+		return;
+	}
 	if (manager.get_length() >= collect) sms_gc_collect();
 	manager.add(addr, size, type);
 	if (start_heap == NULL) {
@@ -56,9 +67,28 @@ void sms_gc_free(void* addr) {
 #ifdef SMS_DEBUG
 	printf("sms_gc_free: %p\n", addr);
 #endif
-	//sms_ptr_dict_memory* p = manager.get_data(addr);
-	free(addr);
-	sms_gc_remove(addr);
+	sms_ptr_dict_memory* p = manager.get_data(addr);
+	switch (p == NULL ? 0 : p->type) {
+		case SMS_GC_TYPE_CPP:
+			delete (sms_gc_object*)addr;
+			break;
+		case SMS_GC_TYPE_JAVA:
+			// to do: call finalizer
+		default:
+			free(addr);
+			sms_gc_remove(addr);
+			break;
+	}
+}
+
+extern "C" int* sms_gc_get_size_ptr(void* addr) {
+	sms_ptr_dict_memory* p = manager.get_data(addr);
+	return p == NULL ? NULL : &p->size;
+}
+
+int sms_gc_get_size(void* addr) {
+	sms_ptr_dict_memory* p = manager.get_data(addr);
+	return p == NULL ? -1 : p->size;
 }
 
 static void sms_gc_collect_internal(void* start, int size) {
@@ -93,11 +123,12 @@ void sms_gc_collect() {
 	}
 
 	for (sms_ptr_dict_linear* p = manager.get_first(); p != NULL; p = manager.get_next()) {
-		for (int i = 0, plen; i < (plen = p->get_length());) {
+		for (int i = 0; p != NULL && i < p->get_length();) {
 			sms_ptr_dict_memory* m = p->get_data(i);
 			if (!m->mark) {
 				sms_gc_free(m->addr);
-				if (plen == 1) break;
+				p = manager.get_current();
+				i = 0;
 			} else {
 				i++;
 			}
@@ -118,6 +149,9 @@ void sms_gc_register(void* ptr) {
 		regs_size *= 2;
 		regs = (void***)realloc(regs, regs_size * sizeof(void**));
 	}
+	for (int i = 0; i < regs_length; i++)
+		if (regs[i] == (void**)ptr)
+			return;
 	regs[regs_length++] = (void**)ptr;
 }
 

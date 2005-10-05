@@ -38,6 +38,7 @@ public:
 	void add(void* addr, int size, int type);
 	bool remove(void* addr);
 	sms_ptr_dict_linear* get_first();
+	sms_ptr_dict_linear* get_current();
 	sms_ptr_dict_linear* get_next();
 };
 
@@ -54,6 +55,7 @@ public:
 	void add(void* addr, int size, int type);
 	bool remove(void* addr);
 	sms_ptr_dict_linear* get_first();
+	sms_ptr_dict_linear* get_current();
 	sms_ptr_dict_linear* get_next();
 };
 #endif
