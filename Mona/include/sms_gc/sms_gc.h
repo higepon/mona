@@ -4,6 +4,7 @@
 #define SMS_GC_INIT() { void* ebp; asm("movl %%ebp, %0" : "=g"(ebp)); sms_gc_init(ebp); }
 
 #define SMS_GC_TYPE_DEFAULT    0
+#define SMS_GC_TYPE_IGNORE     1
 #define SMS_GC_TYPE_CPP     1000
 #define SMS_GC_TYPE_JAVA    2000
 
@@ -14,6 +15,7 @@ void sms_gc_init(void* stack);
 void sms_gc_add(void* addr, int size, int type);
 void sms_gc_remove(void* addr);
 void* sms_gc_malloc(int size);
+void* sms_gc_malloc_type(int size, int type);
 void sms_gc_free(void* addr);
 int sms_gc_get_size(void* addr);
 void sms_gc_collect();

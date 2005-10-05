@@ -58,7 +58,18 @@ void* sms_gc_malloc(int size) {
 #ifdef SMS_DEBUG
 		printf("sms_gc_malloc: %p\n", addr);
 #endif
-		sms_gc_add(addr, size, 0);
+		sms_gc_add(addr, size, SMS_GC_TYPE_DEFAULT);
+	}
+	return addr;
+}
+
+void* sms_gc_malloc_type(int size, int type) {
+	void* addr = malloc(size);
+	if (initialized) {
+#ifdef SMS_DEBUG
+		printf("sms_gc_malloc_type: %p\n", addr);
+#endif
+		sms_gc_add(addr, size, type);
 	}
 	return addr;
 }
@@ -100,7 +111,8 @@ static void sms_gc_collect_internal(void* start, int size) {
 			sms_ptr_dict_memory* p = manager.get_data(addr);
 			if (p == NULL || p->mark) continue;
 			p->mark = true;
-			sms_gc_collect_internal(addr, p->size);
+			if (p->type != SMS_GC_TYPE_IGNORE)
+				sms_gc_collect_internal(p->addr, p->size);
 		}
 	}
 }
@@ -119,7 +131,8 @@ void sms_gc_collect() {
 		sms_ptr_dict_memory* p = manager.get_data(*regs[i]);
 		if (p == NULL || p->mark) continue;
 		p->mark = true;
-		sms_gc_collect_internal(p->addr, p->size);
+		if (p->type != SMS_GC_TYPE_IGNORE)
+			sms_gc_collect_internal(p->addr, p->size);
 	}
 
 	for (sms_ptr_dict_linear* p = manager.get_first(); p != NULL; p = manager.get_next()) {

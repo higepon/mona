@@ -29,7 +29,7 @@ public:
 
 jint _Jv_CreateJavaVM (void* vm_args) {
 	::java::lang::VMClassLoader::initialize();
-	JvInitClass(&::java::lang::System::class$);
+	sms_gc_register(&::java::lang::System::out);
 	::java::lang::System::out = new ::java::io::PrintStream(NULL);
 	return 0;
 }
@@ -65,7 +65,7 @@ extern "C" jobject _Jv_NewPrimArray(jclass type, jsize length) {
 		size = 8;
 	}
 	int sz = sizeof(::java::lang::Object) + sizeof(jsize) + (length + 1) * size;
-	jobject result = (jobject)sms_gc_malloc(sz);
+	jobject result = (jobject)sms_gc_malloc_type(sz, SMS_GC_TYPE_IGNORE);
 	memset(result, 0, sz);
 	*(jsize*)(result + 1) = length;
 	return result;
