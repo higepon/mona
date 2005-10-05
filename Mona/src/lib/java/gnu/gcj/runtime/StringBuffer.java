@@ -7,16 +7,10 @@ public final class StringBuffer {
 	
 	public StringBuffer() {
 		data = new char[BUFFER_SIZE];
-		for (int i = 0; i < BUFFER_SIZE; i++) {
-			data[i] = '\0';
-		}
 	}
 	
 	public StringBuffer(String str) {
 		data = new char[BUFFER_SIZE];
-		for (int i = 0; i < BUFFER_SIZE; i++) {
-			data[i] = '\0';
-		}
 		append(str);
 	}
 	
@@ -30,11 +24,8 @@ public final class StringBuffer {
 	}
 	
 	public StringBuffer append(char c) {
-		if (count == BUFFER_SIZE - 1) {
-			char[] new_data = new char[data.length + BUFFER_SIZE];
-			for (int i = 0; i < new_data.length; i++) {
-				new_data[i] = '\0';
-			}
+		if (count == data.length - 1) {
+			char[] new_data = new char[data.length * 2];
 			for (int i = 0; i < count; i++) {
 				new_data[i] = data[i];
 			}
