@@ -11,7 +11,7 @@ public final class String {
 		count = bytes.length;
 		data = new char[count];
 		for (int i = 0; i < count; i++)
-			data[i] = (chasr)bytes[i];
+			data[i] = (char)bytes[i];
 	}
 
 	public String(byte[] bytes, int start, int length) {
