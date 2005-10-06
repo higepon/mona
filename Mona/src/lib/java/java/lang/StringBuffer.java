@@ -1,4 +1,4 @@
-package gnu.gcj.runtime;
+package java.lang;
 
 public final class StringBuffer {
 	private static final int BUFFER_SIZE = 16;
