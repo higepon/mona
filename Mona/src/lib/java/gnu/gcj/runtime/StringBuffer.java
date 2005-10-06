@@ -41,9 +41,14 @@ public final class StringBuffer {
 			append('-');
 			i *= -1;
 		}
+		char[] digit= new char[20];
+		int count = 0;
 		while(i > 0) {
-			append((char)(i % 10 + '0'));
+			digit[count++] = (char)(i % 10 + '0');
 			i /= 10;
+		}
+		for (i = count - 1; i >= 0; i--) {
+			append(digit[i]);
 		}
 		return this;
 	}
