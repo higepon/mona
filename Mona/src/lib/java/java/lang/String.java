@@ -23,6 +23,14 @@ public final class String {
 		count = length;
 	}
 
+	public String(char[] chars) {
+		count = chars.length;
+		data = new char[count + 1];
+		for (int i = 0; i < count; i++)
+			data[i] = chars[i];
+		data[count] = '\0';
+	}
+
 	public final String toString() {
 		return this;
 	}

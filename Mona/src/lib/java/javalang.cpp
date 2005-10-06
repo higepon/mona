@@ -100,6 +100,32 @@ extern "C" jstring _Jv_NewStringLatin1(const char* bytes, jsize len) {
 	return s;
 }
 
+extern "C" jstring _Jv_NewStringUTF(const char* bytes) {
+	int len = 0;
+	for (const unsigned char* p = (const unsigned char*)bytes; *p != '\0'; p++, len++) {
+		if (*p >= 0xe0)
+			p += 2;
+		else if (*p >= 0xc0)
+			p++;
+	}
+	jstring s = new ::java::lang::String();
+	s->data = JvNewCharArray(len + 1);
+	s->count = len;
+	jchar* ch = _Jv_GetStringChars(s);
+	for (const unsigned char* p = (const unsigned char*)bytes; *p != '\0'; p++, ch++) {
+		if (*p >= 0xe0) {
+			*ch = ((p[0] & 0x0f) << 12) | ((p[1] & 0x3f) << 6) | (p[2] & 0x3f);
+			p += 2;
+		} else if (*p >= 0xc0) {
+			*ch = ((p[0] & 0x1f) << 6) | (p[1] & 0x3f);
+			p++;
+		} else {
+			*ch = *p & 0x7f;
+		}
+	}
+	*ch = 0;
+	return s;
+}
 
 // Exceptions
 

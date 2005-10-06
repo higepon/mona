@@ -35,7 +35,8 @@ java::lang::Class::initializeClass ()
 		if (constants.tags[i] == 8) {
 			void** p = (void**)constants.data + i;
 			sms_gc_register(p);
-			*p = JvNewStringLatin1(((_Jv_Utf8Const*)*p)->data);
+			//*p = JvNewStringLatin1(((_Jv_Utf8Const*)*p)->data);
+			*p = JvNewStringUTF(((_Jv_Utf8Const*)*p)->data);
 		}
 	}
 	state = JV_STATE_DONE;
