@@ -109,7 +109,7 @@ extern "C" jstring _Jv_NewStringUTF(const char* bytes) {
 			p++;
 	}
 	jstring s = new ::java::lang::String();
-	s->data = JvNewCharArray(len + 1);
+	s->data = JvNewCharArray(len);
 	s->count = len;
 	jchar* ch = _Jv_GetStringChars(s);
 	for (const unsigned char* p = (const unsigned char*)bytes; *p != '\0'; p++, ch++) {
@@ -123,7 +123,6 @@ extern "C" jstring _Jv_NewStringUTF(const char* bytes) {
 			*ch = *p & 0x7f;
 		}
 	}
-	*ch = 0;
 	return s;
 }
 

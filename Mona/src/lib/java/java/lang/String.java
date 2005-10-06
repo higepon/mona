@@ -7,28 +7,32 @@ public final class String {
 	public String() {
 	}
 
-	public String(byte[] bytes, int start, int length) {
-		data = new char[length + 1];
-		for (int i = 0; i < length; i++)
-			data[i] = (char)bytes[start + i];
-		data[length] = '\0';
-		count = length;
+	public String(byte[] bytes) {
+		count = bytes.length;
+		data = new char[count];
+		for (int i = 0; i < count; i++)
+			data[i] = (chasr)bytes[i];
 	}
 
-	public String(char[] chars, int start, int length) {
-		data = new char[length + 1];
+	public String(byte[] bytes, int start, int length) {
+		data = new char[length];
 		for (int i = 0; i < length; i++)
-			data[i] = chars[start + i];
-		data[length] = '\0';
+			data[i] = (char)bytes[start + i];
 		count = length;
 	}
 
 	public String(char[] chars) {
 		count = chars.length;
-		data = new char[count + 1];
+		data = new char[count];
 		for (int i = 0; i < count; i++)
 			data[i] = chars[i];
-		data[count] = '\0';
+	}
+
+	public String(char[] chars, int start, int length) {
+		data = new char[length];
+		for (int i = 0; i < length; i++)
+			data[i] = chars[start + i];
+		count = length;
 	}
 
 	public final String toString() {
