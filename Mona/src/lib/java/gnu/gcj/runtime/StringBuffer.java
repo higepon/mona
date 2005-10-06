@@ -1,16 +1,14 @@
 package gnu.gcj.runtime;
 
 public final class StringBuffer {
-	private char[] data = null;
-	private int count = 0;
 	private static final int BUFFER_SIZE = 16;
+	private char[] data = new char[BUFFER_SIZE];
+	private int count = 0;
 	
 	public StringBuffer() {
-		data = new char[BUFFER_SIZE];
 	}
 	
 	public StringBuffer(String str) {
-		data = new char[BUFFER_SIZE];
 		append(str);
 	}
 	
@@ -24,13 +22,12 @@ public final class StringBuffer {
 	}
 	
 	public StringBuffer append(char c) {
-		if (count == data.length - 1) {
+		if (count == data.length) {
 			char[] new_data = new char[data.length * 2];
 			for (int i = 0; i < count; i++) {
 				new_data[i] = data[i];
 			}
 			data = new_data;
-			count++;
 		}
 		data[count++] = c;
 		return this;
