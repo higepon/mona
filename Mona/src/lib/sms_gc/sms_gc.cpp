@@ -1,6 +1,7 @@
-#include "sms_gc/sms_gc.h"
-#include "sms_gc/sms_gc_object.h"
-#include "sms_gc/sms_ptr_dict.h"
+#include <sms_gc/sms_gc_object.h>
+#include <sms_gc/sms_gc.h>
+#include <sms_gc/sms_ptr_dict.h>
+
 #ifdef MONA
 #include <monapi.h>
 #else

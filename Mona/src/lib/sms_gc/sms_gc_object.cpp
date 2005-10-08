@@ -1,6 +1,6 @@
-#include <sms_gc_object.h>
-#include <sms_gc.h>
-#include <sms_ptr_dict.h>
+#include <sms_gc/sms_gc_object.h>
+#include <sms_gc/sms_gc.h>
+#include <sms_gc/sms_ptr_dict.h>
 
 extern sms_ptr_dict_memory* sms_gc_get_info(void* addr);
 
