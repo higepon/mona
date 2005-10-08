@@ -1,4 +1,3 @@
-//#include <gcj/javaprims.h>
 #include "SimpleCanvas.h"
 #include <gcj/cni.h>
 #include <monapi.h>

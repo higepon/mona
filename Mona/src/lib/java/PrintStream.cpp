@@ -5,7 +5,6 @@
 // Be aware: running `gcjh -stubs ' once more for this class may
 // overwrite any edits you have made to this file.
 
-//#include <gcj/javaprims.h>
 #include <java/io/PrintStream.h>
 #include <gcj/cni.h>
 #ifdef MONA
@@ -23,11 +22,15 @@ void java::io::PrintStream::print(jfloat f) {
 }
 
 void java::io::PrintStream::print(::java::lang::String* s) {
+#ifdef MONA
 	int len = s->length();
 	jchar* ch = _Jv_GetStringChars(s);
 	for (int i = 0; i < len; i++, ch++) {
 		printf("%c", (*ch < 128) ? (char)*ch : '?');
 	}
+#else
+	wprintf(L"%ws", elements(s->data));
+#endif
 }
 
 void java::io::PrintStream::println() {

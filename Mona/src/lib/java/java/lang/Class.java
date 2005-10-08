@@ -1,5 +1,6 @@
 package java.lang;
 
-public class Class {
+public final class Class {
 	private final native void initializeClass();
+	public final native String getName();
 }

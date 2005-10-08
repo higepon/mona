@@ -5,7 +5,6 @@
 // Be aware: running `gcjh -stubs ' once more for this class may
 // overwrite any edits you have made to this file.
 
-//#include <gcj/javaprims.h>
 #include <java/lang/Class.h>
 #include <gcj/cni.h>
 #include <gcj/field.h>
@@ -35,11 +34,17 @@ java::lang::Class::initializeClass ()
 		if (constants.tags[i] == 8) {
 			void** p = (void**)constants.data + i;
 			sms_gc_register(p);
-			//*p = JvNewStringLatin1(((_Jv_Utf8Const*)*p)->data);
 			*p = JvNewStringUTF(((_Jv_Utf8Const*)*p)->data);
 		}
 	}
 	state = JV_STATE_DONE;
+}
+
+
+::java::lang::String *
+java::lang::Class::getName ()
+{
+	return JvNewStringUTF(name->data);
 }
 
 

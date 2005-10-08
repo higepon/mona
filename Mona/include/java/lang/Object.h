@@ -18,10 +18,12 @@ public:  // actually protected
   virtual void finalize () { }
 public:
   Object () { }
-  ::java::lang::Class *getClass ();
+  jclass getClass ();
   virtual jint hashCode ();
-  virtual jboolean equals (::java::lang::Object *);
-  virtual ::java::lang::String *toString ();
+  virtual jboolean equals (jobject);
+  virtual jstring toString ();
+protected:
+  virtual jobject clone ();
 
   static ::java::lang::Class class$;
 

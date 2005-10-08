@@ -5,14 +5,9 @@
 // Be aware: running `gcjh -stubs ' once more for this class may
 // overwrite any edits you have made to this file.
 
-//#include <gcj/javaprims.h>
 #include <java/lang/Math.h>
 #include <gcj/cni.h>
-#ifdef MONA
-#include <monalibc/math.h>
-#else
 #include <math.h>
-#endif
 
 jdouble
 java::lang::Math::sqrt (jdouble a)

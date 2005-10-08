@@ -1,4 +1,3 @@
-//#include <gcj/javaprims.h>
 #include <gcj/cni.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
@@ -91,16 +90,16 @@ extern "C" void _Jv_CheckArrayStore(jobjectArray array, jobject obj) {
 
 // String
 
-extern "C" jstring _Jv_NewStringLatin1(const char* bytes, jsize len) {
+jstring _Jv_NewStringLatin1(const char* bytes, jsize len) {
 	jstring s = new ::java::lang::String();
 	s->data = JvNewCharArray(len);
 	s->count = len;
 	jchar* ch = _Jv_GetStringChars(s);
-	for (int i = 0; i < len; i++) ch[i] = (jchar)bytes[i];
+	for (int i = 0; i < len; i++) ch[i] = (unsigned char)bytes[i];
 	return s;
 }
 
-extern "C" jstring _Jv_NewStringUTF(const char* bytes) {
+jstring _Jv_NewStringUTF(const char* bytes) {
 	int len = 0;
 	for (const unsigned char* p = (const unsigned char*)bytes; *p != '\0'; p++, len++) {
 		if (*p >= 0xe0)

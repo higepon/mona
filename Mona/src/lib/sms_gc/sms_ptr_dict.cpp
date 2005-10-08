@@ -1,10 +1,6 @@
-#include "sms_gc/sms_ptr_dict.h"
-#ifdef MONA
-#include <monapi.h>
-#else
+#include "sms_ptr_dict.h"
 #include <stdlib.h>
 #include <string.h>
-#endif
 
 
 sms_ptr_dict_memory::sms_ptr_dict_memory(void* addr, int size, int type)

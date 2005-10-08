@@ -5,16 +5,17 @@
 // Be aware: running `gcjh -stubs ' once more for this class may
 // overwrite any edits you have made to this file.
 
-//#include <gcj/javaprims.h>
 #include <java/lang/Object.h>
-#include <java/lang/System.h>
-#include <java/io/PrintStream.h>
 #include <gcj/cni.h>
+#include <sms_gc/sms_gc.h>
+#include <sms_gc/sms_ptr_dict.h>
 #ifdef MONA
 #include <monapi.h>
 #else
-#include <stdio.h>
+#include <string.h>
 #endif
+
+extern sms_ptr_dict_memory* sms_gc_get_info(void* addr);
 
 ::java::lang::Class *
 java::lang::Object::getClass ()
@@ -30,11 +31,13 @@ java::lang::Object::hashCode ()
 }
 
 
-::java::lang::String *
-java::lang::Object::toString ()
+jobject
+java::lang::Object::clone ()
 {
-	return JvNewStringLatin1(
-		((_Jv_Utf8Const*)*((void**)((jobject)getClass() + 1) + 1))->data);
+	sms_ptr_dict_memory* p = sms_gc_get_info(this);
+	jobject copy = (jobject)sms_gc_malloc_type(p->size, p->type);
+	memcpy(copy, this, p->size);
+	return copy;
 }
 
 
