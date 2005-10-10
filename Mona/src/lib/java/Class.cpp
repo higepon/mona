@@ -18,7 +18,16 @@
 void
 java::lang::Class::initializeClass ()
 {
+	for (int i = 0; i < constants.size; i++) {
+		if (constants.tags[i] == 8) {
+			void** p = (void**)constants.data + i;
+			sms_gc_register(p);
+			*p = JvNewStringUTF(((_Jv_Utf8Const*)*p)->data);
+		}
+	}
 	for (int i = 0; i < static_field_count; i++) {
+		if (fields[i].type == NULL)
+			fields[i].type = &::java::lang::String::class$;
 		if (fields[i].isRef()) {
 			*(void**)fields[i].u.addr = NULL;
 			sms_gc_register(fields[i].u.addr);
@@ -28,13 +37,6 @@ java::lang::Class::initializeClass ()
 		if (strcmp(methods[i].name->data, "<clinit>") == 0) {
 			(*(void(*)())methods[i].ncode)();
 			break;
-		}
-	}
-	for (int i = 0; i < constants.size; i++) {
-		if (constants.tags[i] == 8) {
-			void** p = (void**)constants.data + i;
-			sms_gc_register(p);
-			*p = JvNewStringUTF(((_Jv_Utf8Const*)*p)->data);
 		}
 	}
 	state = JV_STATE_DONE;

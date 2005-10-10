@@ -87,6 +87,10 @@ extern "C" jobjectArray _Jv_NewObjectArray(jsize length, jclass klass, jobject i
 extern "C" void _Jv_CheckArrayStore(jobjectArray array, jobject obj) {
 }
 
+extern "C" jobject _Jv_CheckCast(jclass klass, jobject obj) {
+	return obj;
+}
+
 
 // String
 
@@ -124,6 +128,7 @@ jstring _Jv_NewStringUTF(const char* bytes) {
 	}
 	return s;
 }
+
 
 // Exceptions
 
