@@ -20,6 +20,14 @@ static int collect;
 static int regs_length = 0, regs_size = 0;
 static void*** regs = NULL;
 
+extern "C" void* sms_gc_get_end_stack() {
+	return end_stack;
+}
+
+extern "C" sms_ptr_dict* sms_gc_new_ptr_dict() {
+	return new sms_ptr_dict();
+}
+
 void sms_gc_init(void* stack) {
 	if (manager != NULL)
 		return;

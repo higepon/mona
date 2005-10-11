@@ -2,12 +2,15 @@
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
 #include <sms_gc/sms_gc.h>
+#include <sms_gc/sms_ptr_dict.h>
 #ifdef MONA
 #include <monapi.h>
 #else
 #include <stdio.h>
 #include <string.h>
 #endif
+
+sms_ptr_dict* _Jv_methodList = NULL;
 
 ::java::lang::Class _Jv_voidClass, _Jv_booleanClass, _Jv_byteClass, _Jv_charClass, _Jv_shortClass, _Jv_intClass, _Jv_longClass, _Jv_floatClass, _Jv_doubleClass;
 
@@ -26,7 +29,10 @@ public:
 	}
 };
 
-jint _Jv_CreateJavaVM (void* vm_args) {
+extern "C" sms_ptr_dict* sms_gc_new_ptr_dict();
+
+jint _Jv_CreateJavaVM(void* vm_args) {
+	_Jv_methodList = sms_gc_new_ptr_dict();
 	::java::lang::VMClassLoader::initialize();
 	JvInitClass(&::java::lang::System::class$);
 	::java::lang::System::out = new ::java::io::PrintStream(NULL);
@@ -132,12 +138,43 @@ jstring _Jv_NewStringUTF(const char* bytes) {
 
 // Exceptions
 
+extern "C" void* sms_gc_get_end_stack();
+
+extern "C" void _Jv_PrintStackTrace() {
+	char* start_stack;
+	asm("movl %%ebp, %0" : "=g"(start_stack));
+	char* end_stack = (char*)sms_gc_get_end_stack() - sizeof(void*);
+	for (char* p = start_stack; p <= end_stack; p++) {
+		void* addr = *(void**)p;
+		sms_ptr_dict_memory* data = NULL;
+		sms_ptr_dict_linear* pp = _Jv_methodList->get_first();
+		for (; pp != NULL; pp = _Jv_methodList->get_next()) {
+			for (int i = 0; i < pp->get_length(); i++) {
+				sms_ptr_dict_memory* m = pp->get_data(i);
+				if (m->addr > addr) break;
+				data = m;
+			}
+		}
+		if (data != NULL && data->size != 0) {
+			jclass klass = (jclass)data->size;
+			_Jv_Method* method = (_Jv_Method*)data->type;
+			if (method->name->data[0] != '<') {
+				printf("    at ");
+				::java::lang::System::out->print(klass->getName());
+				printf(".%s\n", method->name->data);
+			}
+		}
+	}
+}
+
 extern "C" void _Jv_ThrowNullPointerException() {
 	printf("NullPointerException\n");
+	_Jv_PrintStackTrace();
 	*(int*)NULL = 0;
 }
 
 extern "C" void _Jv_ThrowBadArrayIndex(int index) {
 	printf("ArrayIndexOutOfBoundsException: %d\n", index);
+	_Jv_PrintStackTrace();
 	*(int*)NULL = 0;
 }

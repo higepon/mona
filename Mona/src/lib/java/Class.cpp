@@ -9,11 +9,14 @@
 #include <gcj/cni.h>
 #include <gcj/field.h>
 #include <sms_gc/sms_gc.h>
+#include <sms_gc/sms_ptr_dict.h>
 #ifdef MONA
 #include <monapi.h>
 #else
 #include <string.h>
 #endif
+
+extern sms_ptr_dict* _Jv_methodList;
 
 void
 java::lang::Class::initializeClass ()
@@ -33,10 +36,11 @@ java::lang::Class::initializeClass ()
 			sms_gc_register(fields[i].u.addr);
 		}
 	}
+	_Jv_methodList->add(this, 0, 0);
 	for (int i = 0; i < method_count; i++) {
+		_Jv_methodList->add(methods[i].ncode, (int)this, (int)&methods[i]);
 		if (strcmp(methods[i].name->data, "<clinit>") == 0) {
 			(*(void(*)())methods[i].ncode)();
-			break;
 		}
 	}
 	state = JV_STATE_DONE;
