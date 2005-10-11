@@ -5,7 +5,8 @@ CSOURCES = \
 	Math.cpp \
 	Object.cpp \
 	PrintStream.cpp \
-	SimpleCanvas-Mona.cpp
+	SimpleCanvas-Mona.cpp \
+	orgmonaos.cpp
 JBASESRC = \
 	java/lang/Object.java java/lang/Class.java
 JSOURCES = \
@@ -14,7 +15,11 @@ JSOURCES = \
 	java/lang/System.java \
 	java/lang/Math.java \
 	java/io/PrintStream.java \
-	SimpleCanvas.java
+	SimpleCanvas.java \
+	org/monaos/IO.java \
+	org/monaos/MessageInfo.java \
+	org/monaos/Message.java \
+	org/monaos/Screen.java
 
 MONADIR  = ../../..
 include $(MONADIR)/env/monapi.inc
