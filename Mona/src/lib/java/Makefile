@@ -5,6 +5,7 @@ CSOURCES = \
 	Math.cpp \
 	Object.cpp \
 	PrintStream.cpp \
+	Date.cpp \
 	SimpleCanvas-Mona.cpp \
 	orgmonaos.cpp
 JBASESRC = \
@@ -15,6 +16,7 @@ JSOURCES = \
 	java/lang/System.java \
 	java/lang/Math.java \
 	java/io/PrintStream.java \
+	java/util/Date.java \
 	SimpleCanvas.java \
 	org/monaos/IO.java \
 	org/monaos/MessageInfo.java \
