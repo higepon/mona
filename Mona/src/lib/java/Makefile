@@ -19,12 +19,22 @@ JSOURCES = \
 	java/lang/Math.java \
 	java/io/PrintStream.java \
 	java/util/Date.java \
+	java/util/Hashtable.java \
 	java/util/Vector.java \
 	SimpleCanvas.java \
 	org/monaos/IO.java \
 	org/monaos/MessageInfo.java \
 	org/monaos/Message.java \
-	org/monaos/Screen.java
+	org/monaos/Screen.java \
+	java/awt/event/ActionEvent.java \
+	java/awt/event/ActionListener.java \
+	java/awt/event/AdjustmentEvent.java \
+	java/awt/event/AdjustmentListener.java \
+	java/awt/event/FocusEvent.java \
+	java/awt/event/FocusListener.java \
+	java/awt/event/ItemEvent.java \
+	java/awt/event/ItemListener.java
+JFLAGS = --encoding=cp932
 
 MONADIR  = ../../..
 include $(MONADIR)/env/monapi.inc
