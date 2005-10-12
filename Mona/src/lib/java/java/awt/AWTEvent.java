@@ -58,6 +58,10 @@ public class AWTEvent {
 	public static final int BLOCK_DECLEMENT  = 306;
 	/** ボタン押下 */
 	public static final int ACTION_PERFORMED = 307;
+	
+	public static final int WINDOW_OPENED    = 308;
+	
+	public static final int WINDOW_CLOSED    = 309;
 	/** カスタムイベント */
 	public static final int CUSTOM_EVENT     = 400;
 	

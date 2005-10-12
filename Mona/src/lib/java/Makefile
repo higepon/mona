@@ -33,7 +33,13 @@ JSOURCES = \
 	java/awt/event/FocusEvent.java \
 	java/awt/event/FocusListener.java \
 	java/awt/event/ItemEvent.java \
-	java/awt/event/ItemListener.java
+	java/awt/event/ItemListener.java \
+	java/awt/event/TextEvent.java \
+	java/awt/event/TextListener.java \
+	java/awt/event/TimerEvent.java \
+	java/awt/event/TimerListener.java \
+	java/awt/event/WindowEvent.java \
+	java/awt/event/WindowListener.java
 JFLAGS = --encoding=cp932
 
 MONADIR  = ../../..
