@@ -19,6 +19,7 @@ JSOURCES = \
 	java/lang/Math.java \
 	java/io/PrintStream.java \
 	java/util/Date.java \
+	java/util/Vector.java \
 	SimpleCanvas.java \
 	org/monaos/IO.java \
 	org/monaos/MessageInfo.java \
