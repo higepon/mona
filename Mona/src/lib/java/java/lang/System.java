@@ -4,4 +4,5 @@ import java.io.*;
 
 public class System {
 	public static java.io.PrintStream out;
+	public static native void exit(int errorno);
 }

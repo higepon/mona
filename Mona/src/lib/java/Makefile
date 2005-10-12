@@ -5,6 +5,7 @@ CSOURCES = \
 	java_lang_Class.cpp \
 	java_lang_Math.cpp \
 	java_lang_Object.cpp \
+	java_lang_System.cpp \
 	java_io_PrintStream.cpp \
 	java_util_Date.cpp \
 	SimpleCanvas-Mona.cpp \
