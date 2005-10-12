@@ -38,4 +38,4 @@ $(JOBJECTS): $(JCLASSES)
 .java.o:
 	gcj $(JFLAGS) $(ALLFLAGS) -o $@ -c $<
 
-include dependencies
+#include dependencies
