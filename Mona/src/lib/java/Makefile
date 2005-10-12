@@ -46,7 +46,8 @@ JSOURCES = \
 	java/awt/event/WindowListener.java \
 	java/awt/Color.java \
 	java/awt/Font.java \
-	java/awt/Insets.java
+	java/awt/Insets.java \
+	java/awt/Rectangle.java
 JFLAGS = --encoding=cp932
 
 MONADIR  = ../../..
