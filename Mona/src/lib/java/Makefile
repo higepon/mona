@@ -34,6 +34,10 @@ JSOURCES = \
 	java/awt/event/FocusListener.java \
 	java/awt/event/ItemEvent.java \
 	java/awt/event/ItemListener.java \
+	java/awt/event/KeyEvent.java \
+	java/awt/event/KeyListener.java \
+	java/awt/event/MouseEvent.java \
+	java/awt/event/MouseListener.java \
 	java/awt/event/TextEvent.java \
 	java/awt/event/TextListener.java \
 	java/awt/event/TimerEvent.java \
