@@ -43,7 +43,10 @@ JSOURCES = \
 	java/awt/event/TimerEvent.java \
 	java/awt/event/TimerListener.java \
 	java/awt/event/WindowEvent.java \
-	java/awt/event/WindowListener.java
+	java/awt/event/WindowListener.java \
+	java/awt/Color.java \
+	java/awt/Font.java \
+	java/awt/Insets.java
 JFLAGS = --encoding=cp932
 
 MONADIR  = ../../..
