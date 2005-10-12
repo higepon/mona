@@ -1,6 +1,6 @@
 TARGET     = JHELLO
-SOURCES    = main.cpp
-JSOURCES   = A.java
+SOURCES    = 
+JSOURCES   = Main.java
 INSTDIR    = $(BINDIR)/iso/APPS
 CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 

@@ -1,14 +1,14 @@
 import java.lang.*;
 import java.io.*;
 
-/*public class A {
+public class Main {
 	public static void main(String[] args) {
 		System.out.println(new Object());
 		System.out.println("abc");
 		System.out.println("abc.length=" + "abc".length());
 	}
-}*/
-public class A {
+}
+/*public class Main {
 	public static void main(String[] args) {
 		char[] chars = new char[] { 'こ', 'ん', 'に', 'ち', 'は', '世', '界' };
 		String s = "こんにちは世界";
@@ -20,4 +20,4 @@ public class A {
 			System.out.println(ch1 == ch2 ? " : OK" : " : NG");
 		}
 	}
-}
+}*/

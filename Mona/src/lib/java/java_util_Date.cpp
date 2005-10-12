@@ -1,4 +1,11 @@
-#include "java/util/Date.h"
+// This file was created by `gcjh -stubs'. -*- c++ -*-
+//
+// This file is intended to give you a head start on implementing native
+// methods using CNI.
+// Be aware: running `gcjh -stubs ' once more for this class may
+// overwrite any edits you have made to this file.
+
+#include <java/util/Date.h>
 #include <gcj/cni.h>
 #ifdef MONA
 #include <monapi.h>
@@ -8,7 +15,9 @@
 #include <time.h>
 #endif
 
-void java::util::Date::create(::java::util::Date *date) {
+void
+java::util::Date::create (::java::util::Date *date)
+{
 #ifdef MONA
 	KDate kdate;
 	syscall_get_date(&kdate);
@@ -31,3 +40,5 @@ void java::util::Date::create(::java::util::Date *date) {
 	date->second = kdate.tm_sec;
 #endif
 }
+
+
