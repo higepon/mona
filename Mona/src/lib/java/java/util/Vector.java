@@ -4,11 +4,11 @@ public final class Vector {
 	private Object[] data;
 	private int count = 0;
 	private static final int BUFFER_SIZE = 16;
-
+	
 	public Vector() {
 		data = new Object[BUFFER_SIZE];
 	}
-
+	
 	public boolean add(Object obj) {
 		if (count == data.length) {
 			Object[] new_data = new Object[data.length * 2];
@@ -20,11 +20,11 @@ public final class Vector {
 		data[count++] = obj;
 		return true;
 	}
-
+	
 	public int capacity() {
 		return count;
 	}
-
+	
 	public void clear() {
 		for (int i = 0; i < data.length; i++) {
 			data[i] = null;
@@ -32,14 +32,14 @@ public final class Vector {
 		data = null;
 		data = new Object[BUFFER_SIZE];
 	}
-
+	
 	public boolean contains(Object obj) {
 		for (int i = 0; i < data.length; i++) {
 			if (data[i].equals(obj)) return true;
 		}
 		return false;
 	}
-
+	
 	public Object get(int index) {
 		if (index < 0 || index >= count) {
 			return null;
@@ -47,14 +47,14 @@ public final class Vector {
 			return data[index];
 		}
 	}
-
+	
 	public int indexOf(Object obj) {
 		for (int i = 0; i < data.length; i++) {
 			if (data[i].equals(obj)) return i;
 		}
 		return -1;
 	}
-
+	
 	public boolean isEmpty() {
 		return (count > 0);
 	}
