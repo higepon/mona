@@ -20,9 +20,8 @@ extern "Java"
 
 class org::monaos::MessageInfo : public ::java::lang::Object
 {
-public: // actually package-private
-  MessageInfo ();
 public:
+  MessageInfo ();
   jint __attribute__((aligned(__alignof__( ::java::lang::Object ))))  header;
   jint arg1;
   jint arg2;

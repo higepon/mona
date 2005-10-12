@@ -48,6 +48,7 @@ JSOURCES = \
 	java/awt/Color.java \
 	java/awt/Font.java \
 	java/awt/Insets.java \
+	java/awt/Image.java \
 	java/awt/Rectangle.java
 JFLAGS = --encoding=cp932
 
