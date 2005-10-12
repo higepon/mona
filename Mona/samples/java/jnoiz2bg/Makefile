@@ -1,6 +1,6 @@
 TARGET     = JNOIZ2BG
-SOURCES    = main.cpp
-JSOURCES   = JNoiz2bg.java
+SOURCES    = 
+JSOURCES   = Main.java
 INSTDIR    = $(BINDIR)/iso/APPS
 CLEANFILES = $(OBJECTS) $(JCLASSES) *.class *.stackdump
 
