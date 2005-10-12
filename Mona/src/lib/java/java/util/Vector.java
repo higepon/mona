@@ -1,4 +1,4 @@
-package java.lang.Vector;
+package java.util.Vector;
 
 public final class Vector {
 	private Object[] data;
