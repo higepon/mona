@@ -22,6 +22,7 @@ extern "Java"
 class org::monaos::Message : public ::java::lang::Object
 {
 public:
+  static jint getServerThreadId (jint);
   static jint send (jint, ::org::monaos::MessageInfo *);
   static jint send (jint, jint, jint, jint, jint);
   static jint receive (::org::monaos::MessageInfo *);

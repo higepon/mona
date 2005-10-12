@@ -4,6 +4,7 @@
 #include "org/monaos/Screen.h"
 #include <gcj/cni.h>
 #include <monapi.h>
+#include <monapi/messages.h>
 #include <sys/types.h>
 
 // ============================================================
@@ -62,6 +63,10 @@ void org::monaos::IO::setIRQ (jint irq, jboolean enabled, jboolean auto_ir2) {
 // ============================================================
 // org.monaos.Message
 // ============================================================
+
+jint org::monaos::Message::getServerThreadId (jint id) {
+	return monapi_get_server_thread_id(id);
+}
 
 jint org::monaos::Message::send(jint tid, ::org::monaos::MessageInfo *info) {
 	::MessageInfo minfo;

@@ -11,6 +11,7 @@ public class Message {
 	public static final int ID_MONITOR_SERVER    = 7;
 	public static final int ID_NUMBER_OF_SERVERS = 8;
 
+	public static native int getServerThreadId(int id);
 	public static native int send(int tid, MessageInfo info);
 	public static native int send(int tid, int header, int arg1, int arg2, int arg3);
 	public static native int receive(MessageInfo info);
