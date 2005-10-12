@@ -1,15 +1,17 @@
 TARGET   = $(LIBDIR)/libjava.a
 CSOURCES = \
-	Class.cpp \
-	javalang.cpp \
-	Math.cpp \
-	Object.cpp \
-	PrintStream.cpp \
-	Date.cpp \
+	java_main.cpp \
+	java_lang.cpp \
+	java_lang_Class.cpp \
+	java_lang_Math.cpp \
+	java_lang_Object.cpp \
+	java_io_PrintStream.cpp \
+	java_util_Date.cpp \
 	SimpleCanvas-Mona.cpp \
-	orgmonaos.cpp
+	org_monaos.cpp
 JBASESRC = \
-	java/lang/Object.java java/lang/Class.java
+	java/lang/Object.java \
+	java/lang/Class.java
 JSOURCES = \
 	java/lang/String.java \
 	gnu/gcj/runtime/StringBuffer.java \

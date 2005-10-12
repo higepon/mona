@@ -1,4 +1,4 @@
-#include <sms_gc.h>
+#include <sms_gc/sms_gc.h>
 #include <gcj/cni.h>
 #ifdef MONA
 #include <monapi.h>
@@ -6,7 +6,7 @@
 #include <locale.h>
 #endif
 
-class JAVAMAIN : public ::java::lang::Object
+class Main : public ::java::lang::Object
 {
 public:
 	static void main(jstringArray args);
@@ -19,8 +19,8 @@ int MonaMain(List<char*>* pekoe) {
 	int argc = pekoe->size();
 	jstringArray args = (jstringArray)JvNewObjectArray(argc, &::java::lang::String::class$, NULL);
 	for (int i = 0; i < argc; i++)
-		elements(args)[i - 1] = JvNewStringUTF(pekoe->get(i));
-	JAVAMAIN::main(args);
+		elements(args)[i] = JvNewStringUTF(pekoe->get(i));
+	Main::main(args);
 	return 0;
 }
 #else
@@ -29,9 +29,13 @@ int main(int argc, char* argv[]) {
 	SMS_GC_INIT();
 	JvCreateJavaVM(NULL);
 	jstringArray args = (jstringArray)JvNewObjectArray(argc - 1, &::java::lang::String::class$, NULL);
-	for (int i = 1; i < argc; i++)
-		elements(args)[i - 1] = JvNewStringUTF(argv[i]);
-	JAVAMAIN::main(args);
+	for (int i = 1; i < argc; i++) {
+		int mlen = strlen(argv[i]);
+		jcharArray wcs = JvNewCharArray(mlen);
+		int wlen = mbstowcs((wchar_t*)elements(wcs), argv[i], mlen);
+		elements(args)[i - 1] = new ::java::lang::String(wcs, 0, wlen);
+	}
+	Main::main(args);
 	return 0;
 }
 #endif
