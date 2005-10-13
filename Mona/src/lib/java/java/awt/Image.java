@@ -25,14 +25,21 @@ package java.awt;
 
 import org.monaos.*;
 
+/**
+ 画像クラス
+ */
 public class Image {
 	private static final int THREAD_UNKNOWN = 0xffffffff;
 	private static final int MSG_GUISERVER_DECODEIMAGE   = 0x4001;
 	private static final int MSG_GUISERVER_CREATEBITMAP  = 0x4007;
 	private static final int MSG_GUISERVER_DISPOSEBITMAP = 0x4008;
 	
-	private int width, height;
+	/** 幅 */
+	private int width;
+	/** 高さ */
+	private int height;
 	
+	/** コンストラクタ */
 	public Image(int width, int height) {
 		this.width = this.height = 0;
 		//this.bitmap = null; // TODO
@@ -66,6 +73,7 @@ public class Image {
 		this.height = height;
 	}
 
+	/** コンストラクタ */
 	public Image(String path) {
 		this.width = this.height = 0;
 		//this.bitmap = null;
@@ -98,6 +106,7 @@ public class Image {
 		this.height = 0;//this.bitmap->Height;
 	}
 
+	/** 画像を破棄する */
 	public void dispose() {
 		// GUIサーバーを探す
 		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
@@ -112,6 +121,17 @@ public class Image {
 		}
 	}
 
+	/** 幅を得る */
+	public int getWidth() {
+		return this.width;
+	}
+
+	/** 高さを得る */
+	public int getHeight() {
+		return this.height;
+	}
+
+	/** 点を得る */
 	public int getPixel(int x, int y) {
 		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
 			return 0;
@@ -120,6 +140,7 @@ public class Image {
 		}
 	}
 
+	/** 点を打つ */
 	public void setPixel(int x, int y, int color) {
 		if (0 <= x && x < this.width && 0 <= y && y < this.height) {
 			//this.bitmap->Data[x + this.width * y] = color; // TODO

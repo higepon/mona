@@ -69,6 +69,8 @@ public class AWTEvent {
 	private int type;
 	/** イベント発生元 */
 	private Component source;
+	/** イベントが消費されたかどうか */
+	private boolean consumed;
 
 	//
 	// Mona用イベント
@@ -113,6 +115,12 @@ public class AWTEvent {
 	/** イベントの発生部品を得る */
 	public Component getSource() { return this.source; }
 	
+	/** イベントが消費されたかどうかを得る */
+	public boolean isConsumed() { return this.consumed; }
+	
 	/** イベントの発生部品を設定する */
 	public void setSource(Component c) { this.source = c; }
+	
+	/** イベントを消費する */
+	public void consume() { this.consumed = true; }
 }

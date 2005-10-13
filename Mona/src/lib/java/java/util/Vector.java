@@ -53,7 +53,7 @@ public final class Vector {
 	}
 	
 	/** ƒTƒCƒY‚ğ“¾‚é */
-	public int capacity() {
+	public int size() {
 		return count;
 	}
 	
