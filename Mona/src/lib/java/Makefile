@@ -45,6 +45,9 @@ JSOURCES = \
 	java/awt/event/TimerListener.java \
 	java/awt/event/WindowEvent.java \
 	java/awt/event/WindowListener.java \
+	java/awt/Button.java \
+	java/awt/Checkbox.java \
+	java/awt/CheckboxGroup.java \
 	java/awt/Color.java \
 	java/awt/Component.java \
 	java/awt/Container.java \
