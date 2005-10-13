@@ -115,7 +115,7 @@ public class KeyEvent extends java.awt.AWTEvent {
 	 @param keycode キーコード
 	 @param modifiers 修飾キー
 	 */
-	public KeyEvent(int type, Component source, int keycode, int modifiers) {
+	public KeyEvent(int type, java.awt.Component source, int keycode, int modifiers) {
 		setType(type);
 		setSource(source);
 		this.keycode = keycode;

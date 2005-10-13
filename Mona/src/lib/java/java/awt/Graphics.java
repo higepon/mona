@@ -93,10 +93,10 @@ public class Graphics {
 
 	/**
 	 直線描画
-	 @param x0 始点X
-	 @param y0 始点Y
-	 @param x1 終点X
-	 @param y1 終点Y
+	 @param x1 始点X
+	 @param y1 始点Y
+	 @param x2 終点X
+	 @param y2 終点Y
 	 */
 	public void drawLine(int x1, int y1, int x2, int y2) {
 		int dx = (x1 > x2) ? (x1 - x2) : (x2 - x1);

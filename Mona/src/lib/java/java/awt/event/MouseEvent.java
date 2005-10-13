@@ -54,7 +54,7 @@ public class MouseEvent extends java.awt.AWTEvent {
 	 @param x X座標（絶対座標）
 	 @param y Y座標（絶対座標）
 	*/
-	public MouseEvent(int type, Component source, int x, int y) {
+	public MouseEvent(int type, java.awt.Component source, int x, int y) {
 		setType(type);
 		setSource(source);
 		this.x = x;
