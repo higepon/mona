@@ -1,6 +1,6 @@
-#include <gcj/cni.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
+#include <gcj/cni.h>
 #include <sms_gc/sms_gc.h>
 #include <sms_gc/sms_ptr_dict.h>
 #ifdef MONA

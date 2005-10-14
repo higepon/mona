@@ -35,32 +35,16 @@ public class FontMetrics {
 	private static byte[] defaultFontData;
 	/** フォントスタイル */
 	private int fontStyle;
-	/** GUIサーバーID */
-	private int guisvrID;
+
+	private native void create(byte[] data);
 
 	/** コンストラクタ */
 	public FontMetrics() {
 		this.fontStyle = Font.PLAIN;
-		if (defaultFontData != null) return;
-		
-		/*// GUIサーバーを探す
-		dword guisvrID = monapi_get_server_thread_id(ID_GUI_SERVER);
-		if (this.guisvrID == THREAD_UNKNOWN) {
-			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n", __FILE__, __LINE__);
-			System.exit(1);
+		if (defaultFontData == null) {
+			this.defaultFontData = new byte[167921];
+			create(this.defaultFontData);
 		}
-		// フォント取得メッセージを投げる
-		MessageInfo info;
-		MonAPI.Message.sendReceive(&info, guisvrID, MSG_GUISERVER_GETFONT, 0, 0, 0, null);
-		unsigned char* font_data = null;
-		font_data = MonAPI.MemoryMap.map(info.arg2);
-		if (font_data == null) {
-			System.out.print("%s:%d:ERROR: can not get font!\n", __FILE__, __LINE__);
-			System.exit(1);
-		}
-		defaultFontData = (unsigned char *)malloc(info.arg3);
-		memcpy(defaultFontData, font_data, info.arg3);
-		MonAPI.MemoryMap.unmap(info.arg2);
 		
 		// モナーフォントの構造
 		// 3 - 0 フォント数
@@ -72,21 +56,20 @@ public class FontMetrics {
 		//     5 高さ (fh)
 		// ? - 6 ビットパターン ( ? = (fw * fh + 7) / 8 )
 		
-		offsetListLength = inGetUInt16(&defaultFontData[0]);
+		offsetListLength = (defaultFontData[1] & 0xFF) << 8 | defaultFontData[0] & 0xFF;
 		
 		// 文字までのオフセット(byte)
-		offsetList = (int *)malloc(65536 * sizeof(int));
-		memset(offsetList, 0, 65536 * sizeof(int));
+		offsetList = new int[65536];
 		
 		// オフセットリストを作る
 		int pos = 4;
 		for (int i = 0; i < offsetListLength; i++) {
-			offsetList[inGetUInt16(&defaultFontData[pos])] = pos;
+			offsetList[(defaultFontData[pos + 1] & 0xFF) << 8 | defaultFontData[pos] & 0xFF] = pos;
 			pos += 4;
-			int fw = defaultFontData[pos++];
-			int fh = defaultFontData[pos++];
+			int fw = defaultFontData[pos++] & 0xFF;
+			int fh = defaultFontData[pos++] & 0xFF;
 			pos += (int)((fw * fh + 7) / 8);
-		}*/
+		}
 	}
 	
 	/**
@@ -126,12 +109,12 @@ public class FontMetrics {
 	 @param str 文字列（複数行対応）
 	 */
 	public int getWidth(String str) {
-		/*// nullチェック
-		if (str.length() == 0 || defaultFontData == null) return 0;
+		// nullチェック
+		if (str.length() == 0 || this.defaultFontData == null) return 0;
 		
 		int w = 0;
 		for (int i = 0; i < str.length(); i++) {
-			wchar c = str.charAt(i);
+			char c = str.charAt(i);
 			if (c == '\n') {
 				break;
 			}
@@ -148,8 +131,7 @@ public class FontMetrics {
 			}
 		}
 		
-		return w;*/
-		return 0;
+		return w;
 	}
 	
 	/**
@@ -157,15 +139,14 @@ public class FontMetrics {
 	 @param str 文字列（複数行対応）
 	 */
 	public int getHeight(String str) {
-		/*int h = 12;
+		int h = 12;
 		for (int i = 0; i < str.length(); i++) {
 			if (str.charAt(i) == '\n') {
 				h += 12; // モナーフォントは高さが12ドット
 			}
 		}
 		
-		return h;*/
-		return 0;
+		return h;
 	}
 	
 	/** フォントスタイルを得る */

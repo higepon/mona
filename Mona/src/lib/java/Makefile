@@ -1,6 +1,7 @@
 TARGET   = $(LIBDIR)/libjava.a
 CSOURCES = \
 	java_main.cpp \
+	java_awt_FontMetrics.cpp \
 	java_lang.cpp \
 	java_lang_Class.cpp \
 	java_lang_Math.cpp \
