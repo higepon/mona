@@ -1,13 +1,31 @@
 import java.lang.*;
 import java.io.*;
+import java.util.Date;
 
 public class Main {
+	public static void main(String[] args) {
+		String[] weekdayList = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+		String[] monthList = {
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+			"Jly", "Aug", "Sep", "Oct", "Nov", "Dec"};
+		Date date = new Date();
+		System.out.println(
+			weekdayList[date.getDay()] + " " +
+			monthList[date.getMonth()] + " " +
+			date.getDate() + " " +
+			date.getHours() + ":" +
+			date.getMinutes() + ":" +
+			date.getSeconds() + " " +
+			(date.getYear() + 1900));
+	}
+}
+/*public class Main {
 	public static void main(String[] args) {
 		System.out.println(new Object());
 		System.out.println("abc");
 		System.out.println("abc.length=" + "abc".length());
 	}
-}
+}*/
 /*public class Main {
 	public static void main(String[] args) {
 		char[] chars = new char[] { 'こ', 'ん', 'に', 'ち', 'は', '世', '界' };

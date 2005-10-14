@@ -13,12 +13,12 @@ public class Date {
 		create(this);
 	}
 	
-	/** 年を得る */
+	/** 年を得る（実際の年から1900引いた値）*/
 	public int getYear() {
 		return this.year;
 	}
 	
-	/** 月を得る(1-12) */
+	/** 月を得る(0-11) */
 	public int getMonth() {
 		return this.month;
 	}
@@ -45,7 +45,7 @@ public class Date {
 	
 	/** 週の曜日を得る(0-6) */
 	public int getDay() {
-		int y = this.year;
+		int y = this.year + 1900;
 		int m = this.month + 1;
 		int d = this.date;
 		
