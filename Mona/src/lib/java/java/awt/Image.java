@@ -107,7 +107,7 @@ public class Image {
 	}
 
 	/** 画像を破棄する */
-	public void dispose() {
+	public void flush() {
 		// GUIサーバーを探す
 		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
 		if (guisvrID == THREAD_UNKNOWN) {
