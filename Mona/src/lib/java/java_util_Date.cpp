@@ -22,7 +22,7 @@ java::util::Date::create (::java::util::Date *date)
 	KDate kdate;
 	syscall_get_date(&kdate);
 	date->year = kdate.year;
-	date->month = kdate.month;
+	date->month = kdate.month - 1;
 	date->date = kdate.day;
 	date->hour = kdate.hour;
 	date->minutes = kdate.min;
@@ -33,7 +33,7 @@ java::util::Date::create (::java::util::Date *date)
 	time(&timer);
 	kdate = localtime(&timer);
 	date->year = kdate.tm_year + 1900;
-	date->month = kdate.tm_mon + 1;
+	date->month = kdate.tm_mon;
 	date->date = kdate.tm_mday;
 	date->hour = kdate.tm_hour;
 	date->minutes = kdate.tm_min;

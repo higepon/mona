@@ -46,7 +46,7 @@ public class Date {
 	/** T‚Ì—j“ú‚ğ“¾‚é(0-6) */
 	public int getDay() {
 		int y = this.year;
-		int m = this.month;
+		int m = this.month + 1;
 		int d = this.date;
 		
 		// ƒcƒFƒ‰[‚ÌŒö®

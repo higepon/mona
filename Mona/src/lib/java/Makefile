@@ -56,8 +56,17 @@ JSOURCES = \
 	java/awt/Graphics.java \
 	java/awt/Insets.java \
 	java/awt/Image.java \
+	java/awt/Label.java \
+	java/awt/ListBox.java \
 	java/awt/Rectangle.java \
+	java/awt/Scrollbar.java \
 	java/awt/TextComponent.java
+
+# TODO
+# java/awt/Frame.java
+# java/awt/TextField.java
+# java/awt/Window.java
+
 JFLAGS = --encoding=cp932
 
 MONADIR  = ../../..

@@ -333,7 +333,7 @@ public class Graphics {
 	 @param g —Î(0-255)
 	 @param b Â(0-255)
 	 */
-	public void setColor(byte r, byte g, byte b) {
+	public void setColor(int r, int g, int b) {
 		this.rgb24 = 0xff000000 | (r << 16) | (g << 8) | b;
 	}
 
