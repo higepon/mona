@@ -18,7 +18,7 @@ java::awt::FontMetrics::create (jbyteArray data)
 	//data = (jbyteArray)_Jv_NewPrimArray(&_Jv_byteClass, mi->Size);
 	jbyte* data_p = elements(data);
 #ifdef MONA
-	monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file("/MONA12.MF5", true);
+	monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file("/MONA12.MF5", false);
 	if (mi == NULL || mi->Size == 0) return;
 	memcpy(data_p, mi->Data, mi->Size);
 	monapi_cmemoryinfo_dispose(mi);

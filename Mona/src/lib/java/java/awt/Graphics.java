@@ -187,29 +187,46 @@ public class Graphics {
 	 @param y 始点Y
 	 */
 	public void drawString(String str, int x, int y) {
-		//drawString(str->getBytes(), x, y);
-	}
-
-	/*void drawString(const String& str, int x, int y)
-	{
 		int pos, bit, offset, width, height, w = 0, h = 0;
-		FontMetrics metrics;
+		byte[] fp = new byte[256];
 		
 		// nullチェック
 		if (str.length() == 0) return;
 		
-		metrics.setFontStyle(getFontStyle());
+		FontMetrics fm = new FontMetrics();
+		//metrics.setFontStyle(getFontStyle());
 		int I = str.length();
 		for (int i = 0; i < I; i++) {
 			pos = 0;
 			bit = 1;
-			char fp[256];
+			char ucs4 = str.charAt(i);
 			// 改行
-			if (str.charAt(i) == '\n') {
+			if (ucs4 == '\n') {
 				w = 0;
 				h += 12;
 			}
-			if (metrics.decodeCharacter(str.charAt(i), &offset, &width, &height, fp) == true) {
+			if (fm.defaultFontData != null && fm.offsetList[ucs4] != 0) {
+				int fw = fm.defaultFontData[fm.offsetList[ucs4] + 4];
+				int fh = fm.defaultFontData[fm.offsetList[ucs4] + 5];
+				//System.out.print("fontStyle = %d,", fm.getFontStyle());
+				if ((fm.getFontStyle() & 0x100) == Font.FIXED) {
+					if (ucs4 < 128 || 0xff60 < ucs4) {
+						offset = 6;
+					} else {
+						offset = 12;
+					}
+				} else {
+					offset = fw;
+				}
+				width  = fw;
+				height = fh;
+				//memcpy(data, &defaultFontData[offsetList[ucs4] + 6], (int)((fw * fh + 7) / 8));
+				// fp にフォントデータを展開する
+				int J = (fw * fh + 7) / 8;
+				for (int j = 0; j < J; j++) {
+					fp[j] = fm.defaultFontData[fm.offsetList[ucs4] + 6 + j];
+				}
+				// フォントを実際に描画する
 				for (int j = 0; j < height; j++) {
 					for (int k = 0; k < width; k++) {
 						int x0 = x + w + k + (offset - width) / 2;
@@ -241,7 +258,7 @@ public class Graphics {
 				w += offset;
 			}
 		}
-	}*/
+	}
 
 	/**
 	 円塗りつぶし描画

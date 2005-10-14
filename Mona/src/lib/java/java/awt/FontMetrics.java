@@ -28,11 +28,11 @@ package java.awt;
  */
 public class FontMetrics {
 	/** フォントオフセットリスト長さ */
-	private static int offsetListLength;
+	public static int offsetListLength;
 	/** フォントオフセットリスト */
-	private static int[] offsetList;
+	public static int[] offsetList;
 	/** フォントデータ */
-	private static byte[] defaultFontData;
+	public static byte[] defaultFontData;
 	/** フォントスタイル */
 	private int fontStyle;
 

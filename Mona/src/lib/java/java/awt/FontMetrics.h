@@ -29,12 +29,11 @@ public:
   virtual jint getHeight (::java::lang::String *);
   virtual jint getFontStyle () { return fontStyle; }
   virtual void setFontStyle (jint);
-private:
   static jint offsetListLength;
   static jintArray offsetList;
   static jbyteArray defaultFontData;
+private:
   jint __attribute__((aligned(__alignof__( ::java::lang::Object ))))  fontStyle;
-  jint guisvrID;
 public:
 
   static ::java::lang::Class class$;
