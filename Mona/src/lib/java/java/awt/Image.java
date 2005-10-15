@@ -38,13 +38,16 @@ public class Image {
 	private int width;
 	/** 高さ */
 	private int height;
+	/** バッファー */
+	private int[] buffer;
 	
 	/** コンストラクタ */
 	public Image(int width, int height) {
 		this.width = this.height = 0;
+		this.buffer = new int [width * height];
 		//this.bitmap = null; // TODO
 		
-		// GUIサーバーを探す
+		/*// GUIサーバーを探す
 		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
 		if (guisvrID == 0xffffffff) {
 			System.out.print("ERROR: can not connect to GUI server!\n");
@@ -67,7 +70,7 @@ public class Image {
 		//{
 		//	System.out.print("%s:%d:ERROR: can not get image data!\n");
 		//	return;
-		//}
+		//}*/
 		
 		this.width = width;
 		this.height = height;
@@ -76,9 +79,9 @@ public class Image {
 	/** コンストラクタ */
 	public Image(String path) {
 		this.width = this.height = 0;
-		//this.bitmap = null;
+		//this.bitmap = null; // TODO
 		
-		// GUIサーバーを探す
+		/*// GUIサーバーを探す
 		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
 		if (guisvrID == THREAD_UNKNOWN) {
 			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
@@ -87,7 +90,7 @@ public class Image {
 		
 		// GUIサーバー上でビットマップをデコードする
 		MessageInfo msg = new MessageInfo();
-		if (Message.sendReceive(msg, guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0/*, path.getBytes()*/) == 1) {
+		if (Message.sendReceive(msg, guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path.getBytes()) == 1) {
 			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
 			return;
 		}
@@ -100,7 +103,7 @@ public class Image {
 		//{
 		//	System.out.print("%s:%d:ERROR: can not get image data!\n");
 		//	return;
-		//}
+		//}*/
 		
 		this.width = 0;//this.bitmap->Width;
 		this.height = 0;//this.bitmap->Height;
@@ -108,7 +111,7 @@ public class Image {
 
 	/** 画像を破棄する */
 	public void flush() {
-		// GUIサーバーを探す
+		/*// GUIサーバーを探す
 		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
 		if (guisvrID == THREAD_UNKNOWN) {
 			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
@@ -116,9 +119,9 @@ public class Image {
 		}
 		
 		// ビットマップ破棄要求
-		if (Message.send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, 0/*getHandle()*/, 0, 0) == 1) {
+		if (Message.send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle(), 0, 0) == 1) {
 			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
-		}
+		}*/
 	}
 
 	/** 幅を得る */
@@ -131,12 +134,18 @@ public class Image {
 		return this.height;
 	}
 
+	/** バッファーを得る */
+	public int[] getBuffer() {
+		return this.buffer;
+	}
+
 	/** 点を得る */
 	public int getPixel(int x, int y) {
 		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
 			return 0;
 		} else {
-			return 0;//this.bitmap->Data[x + this.width * y]; // TODO
+			//this.bitmap->Data[x + this.width * y]; // TODO
+			return this.buffer[x + this.width * y];
 		}
 	}
 
@@ -144,6 +153,7 @@ public class Image {
 	public void setPixel(int x, int y, int color) {
 		if (0 <= x && x < this.width && 0 <= y && y < this.height) {
 			//this.bitmap->Data[x + this.width * y] = color; // TODO
+			this.buffer[x + this.width * y] = color;
 		}
 	}
 }
