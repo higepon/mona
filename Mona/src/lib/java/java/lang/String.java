@@ -1,8 +1,8 @@
 package java.lang;
 
 public final class String {
-	/*private*/ public char[] data = null;
-	/*private*/ public int boffset, count = 0;
+	/*private*/ protected char[] data = null;
+	/*private*/ protected int boffset, count = 0;
 
 	public String() {
 	}
@@ -43,7 +43,8 @@ public final class String {
 		String s = obj.toString();
 		if (count != s.count) return false;
 		for (int i = 0; i < count; i++)
-			if (data[i] != s.data[i]) return false;
+			if (data[i] != s.data[i])
+				return false;
 		return true;
 	}
 
@@ -61,5 +62,53 @@ public final class String {
 
 	public final String substring(int start, int length) {
 		return new String(data, start, length);
+	}
+	
+	public final int indexOf(char ch) {
+		for (int i = 0; i < count; i++)
+			if (data[i] == ch) return i;
+		return -1;
+	}
+	
+	public final int lastIndexOf(char ch) {
+		for (int i = count - 1; i >= 0; i--)
+			if (data[i] == ch)
+				return i;
+		return -1;
+	}
+	
+	public final String[] split(char ch) {
+		int len = 1;
+		for (int i = 0; i < count; i++)
+			if (data[i] == ch) len++;
+		String[] sp = new String[len];
+		int n = 0, p = 0;
+		for (int i = 0; i <= count; i++)
+			if (i == count || data[i] == ch) {
+				sp[n++] = substring(p, i - p);
+				p = i + 1;
+			}
+		return sp;
+	}
+	
+	public final boolean startsWith(String s) {
+		int len = s.length();
+		if (len > count)
+			return false;
+		for (int i = 0; i < len; i++)
+			if (data[i] != s.data[i])
+				return false;
+		return true;
+	}
+	
+	public final boolean endsWith(String s) {
+		int len = s.length();
+		if (len > count)
+			return false;
+		int p = count - len;
+		for (int i = 0; i < len; i++)
+			if (data[p + i] != s.data[i])
+				return false;
+		return true;
 	}
 }

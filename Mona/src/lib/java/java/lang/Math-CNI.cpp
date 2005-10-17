@@ -7,11 +7,7 @@
 
 #include <java/lang/Math.h>
 #include <gcj/cni.h>
-#ifdef MONA
-#include <monalibc/math.h>
-#else
 #include <math.h>
-#endif
 
 jdouble
 java::lang::Math::sqrt (jdouble a)

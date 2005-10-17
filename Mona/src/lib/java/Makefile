@@ -1,14 +1,14 @@
 TARGET   = $(LIBDIR)/libjava.a
 CSOURCES = \
 	java_main.cpp \
-	java_awt_FontMetrics.cpp \
 	java_lang.cpp \
-	java_lang_Class.cpp \
-	java_lang_Math.cpp \
-	java_lang_Object.cpp \
-	java_lang_System.cpp \
-	java_io_PrintStream.cpp \
-	java_util_Date.cpp \
+	java/lang/Class-CNI.cpp \
+	java/lang/Math-CNI.cpp \
+	java/lang/Object-CNI.cpp \
+	java/lang/System-CNI.cpp \
+	java/io/PrintStream-CNI.cpp \
+	java/util/Date-CNI.cpp \
+	java/awt/FontMetrics-CNI.cpp \
 	SimpleCanvas-Mona.cpp \
 	org_monaos.cpp
 JBASESRC = \
@@ -28,6 +28,7 @@ JSOURCES = \
 	org/monaos/MessageInfo.java \
 	org/monaos/Message.java \
 	org/monaos/Screen.java \
+	java/awt/AWTEvent.java \
 	java/awt/event/ActionEvent.java \
 	java/awt/event/ActionListener.java \
 	java/awt/event/AdjustmentEvent.java \

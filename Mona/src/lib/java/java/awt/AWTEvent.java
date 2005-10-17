@@ -93,7 +93,7 @@ public class AWTEvent {
 	/** デフォルトコンストラクタ */
 	public AWTEvent() {
 		this.type = CUSTOM_EVENT;
-		this.source = NULL;
+		this.source = null;
 	}
 	
 	/**
