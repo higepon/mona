@@ -18,7 +18,7 @@ COBJECTS = $(SOURCES:%.cpp=%.o)
 JOBJECTS = $(JSOURCES:%.java=%.o)
 JHEADERS = $(JSOURCES:%.java=%.h)
 JCLASSES = $(JSOURCES:%.java=%.class)
-JFLAGS   = --bootclasspath=$(MONADIR)/src/lib/java
+JFLAGS   = --bootclasspath=$(MONADIR)/src/lib/java:.
 
 all: $(TARGET)
 $(COBJECTS): $(JHEADERS)
