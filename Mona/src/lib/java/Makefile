@@ -72,8 +72,8 @@ JSOURCES = \
 
 MONADIR  = ../../..
 include $(MONADIR)/env/monapi.inc
-JFLAGS  = --encoding=cp932 --bootclasspath=$(MONADIR)/src/lib/java
 CLSPATH = --bootclasspath=$(MONADIR)/src/lib/java
+JFLAGS  = --encoding=cp932 $(CLSPATH)
 COBJECTS = $(CSOURCES:%.cpp=%.o)
 JOBJECTS = $(JSOURCES:%.java=%.o)
 JHEADERS = $(JSOURCES:%.java=%.h)
