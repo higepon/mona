@@ -1,13 +1,12 @@
-#include <sms_gc/sms_gc_object.h>
-#include <sms_gc/sms_gc.h>
-#include <sms_gc/sms_ptr_dict.h>
-
-#ifdef MONA
-#include <monapi.h>
-#else
+#include "sms_gc/sms_gc.h"
+#include "sms_gc/sms_gc_object.h"
+#include "sms_gc/sms_ptr_dict.h"
 #ifdef SMS_DEBUG
 #include <stdio.h>
 #endif
+#ifdef MONA
+#include <monapi.h>
+#else
 #include <stddef.h>
 #include <malloc.h>
 #endif
@@ -19,6 +18,7 @@ static sms_ptr_dict* manager = NULL;
 static int collect;
 static int regs_length = 0, regs_size = 0;
 static void*** regs = NULL;
+static void(*finalizers[SMS_GC_TYPE_MAX])(void*);
 
 extern "C" void* sms_gc_get_end_stack() {
 	return end_stack;
@@ -31,9 +31,17 @@ extern "C" sms_ptr_dict* sms_gc_new_ptr_dict() {
 void sms_gc_init(void* stack) {
 	if (manager != NULL)
 		return;
+	for (int i = 0; i < SMS_GC_TYPE_MAX; i++)
+		finalizers[i] = NULL;
 	manager = new sms_ptr_dict();
 	end_stack = stack;
 	collect = 16;
+}
+
+void sms_gc_set_finalizer(int type, void(*func)(void*))
+{
+	if (0 <= type && type < SMS_GC_TYPE_MAX)
+		finalizers[type] = func;
 }
 
 void sms_gc_add(void* addr, int size, int type) {
@@ -91,9 +99,9 @@ void sms_gc_free(void* addr) {
 		case SMS_GC_TYPE_CPP:
 			delete (sms_gc_object*)addr;
 			break;
-		case SMS_GC_TYPE_JAVA:
-			// to do: call finalizer
 		default:
+			if (0 <= p->type && p->type < SMS_GC_TYPE_MAX && finalizers[p->type] != NULL)
+				(*finalizers[p->type])(addr);
 			free(addr);
 			sms_gc_remove(addr);
 			break;

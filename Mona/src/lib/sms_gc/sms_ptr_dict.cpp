@@ -1,5 +1,4 @@
-#include <sms_gc/sms_ptr_dict.h>
-
+#include "sms_gc/sms_ptr_dict.h"
 #ifdef MONA
 #include <monapi.h>
 #else

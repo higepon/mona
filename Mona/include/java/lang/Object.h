@@ -1,19 +1,15 @@
-#ifndef __java_lang_Object__
-#define __java_lang_Object__
+#ifndef __JAVA_LANG_OBJECT_H__
+#define __JAVA_LANG_OBJECT_H__
 
 #include <gcj/javaprims.h>
 
 #pragma interface
 
-#if __GNUC__ == 3 && __GNUC_MINOR__ == 3
-class ::java::lang::Object
-#else
 class java::lang::Object
-#endif
 {
 private:
-  virtual void __pad_0 () { }
-  virtual void __pad_1 () { }
+  virtual void nacd_1 () { }
+  virtual void nacd_2 () { }
 public:  // actually protected
   virtual void finalize () { }
 public:
@@ -27,10 +23,10 @@ protected:
 
   static ::java::lang::Class class$;
 
-#if __GNUC__ == 3 && __GNUC_MINOR__ == 3
+#ifndef JV_HASH_SYNCHRONIZATION
 private:
-  jobject __pad_2;
+  jobject sync_info;
 #endif
 };
 
-#endif /* __java_lang_Object__ */
+#endif /* __JAVA_LANG_OBJECT_H__ */

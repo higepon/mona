@@ -3,15 +3,18 @@
 
 #define SMS_GC_INIT() { void* ebp; asm("movl %%ebp, %0" : "=g"(ebp)); sms_gc_init(ebp); }
 
-#define SMS_GC_TYPE_DEFAULT    0
-#define SMS_GC_TYPE_IGNORE     1
-#define SMS_GC_TYPE_CPP     1000
-#define SMS_GC_TYPE_JAVA    2000
+#define SMS_GC_TYPE_DEFAULT  0
+#define SMS_GC_TYPE_IGNORE   1
+#define SMS_GC_TYPE_CPP     10
+#define SMS_GC_TYPE_JAVA    20
+#define SMS_GC_TYPE_D       30
+#define SMS_GC_TYPE_MAX     64
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 void sms_gc_init(void* stack);
+void sms_gc_set_finalizer(int type, void(*func)(void*));
 void sms_gc_add(void* addr, int size, int type);
 void sms_gc_remove(void* addr);
 void* sms_gc_malloc(int size);
