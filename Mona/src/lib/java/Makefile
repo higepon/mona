@@ -23,12 +23,11 @@ JSOURCES = \
 	java/util/Date.java \
 	java/util/Hashtable.java \
 	java/util/Vector.java \
-	SimpleCanvas.java \
 	org/monaos/IO.java \
 	org/monaos/MessageInfo.java \
 	org/monaos/Message.java \
 	org/monaos/Screen.java \
-	java/awt/AWTEvent.java \
+	SimpleCanvas.java \
 	java/awt/event/ActionEvent.java \
 	java/awt/event/ActionListener.java \
 	java/awt/event/AdjustmentEvent.java \
@@ -47,6 +46,7 @@ JSOURCES = \
 	java/awt/event/TimerListener.java \
 	java/awt/event/WindowEvent.java \
 	java/awt/event/WindowListener.java \
+	java/awt/AWTEvent.java \
 	java/awt/Button.java \
 	java/awt/Checkbox.java \
 	java/awt/CheckboxGroup.java \
@@ -70,15 +70,16 @@ JSOURCES = \
 # java/awt/TextField.java
 # java/awt/Window.java
 
-JFLAGS = --encoding=cp932
-
 MONADIR  = ../../..
 include $(MONADIR)/env/monapi.inc
+JFLAGS  = --encoding=cp932 --bootclasspath=$(MONADIR)/src/lib/java
+CLSPATH = --bootclasspath=$(MONADIR)/src/lib/java
 COBJECTS = $(CSOURCES:%.cpp=%.o)
 JOBJECTS = $(JSOURCES:%.java=%.o)
 JHEADERS = $(JSOURCES:%.java=%.h)
 JCLASSES = $(JSOURCES:%.java=%.class)
 OBJECTS  = $(COBJECTS) $(JOBJECTS)
+INCLUDE += -I$(MONADIR)/src/lib/java
 
 all: $(TARGET)
 

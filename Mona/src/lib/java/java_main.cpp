@@ -3,10 +3,13 @@
 #ifdef MONA
 #include <monapi.h>
 #else
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <locale.h>
 #endif
 
-class Main : public ::java::lang::Object
+class Main
 {
 public:
 	static void main(jstringArray args);
@@ -15,7 +18,7 @@ public:
 #ifdef MONA
 int MonaMain(List<char*>* pekoe) {
 	SMS_GC_INIT();
-	JvCreateJavaVM(NULL);
+	JvCreateJavaVM((void*)Main::main);
 	int argc = pekoe->size();
 	jstringArray args = (jstringArray)JvNewObjectArray(argc, &::java::lang::String::class$, NULL);
 	for (int i = 0; i < argc; i++)
@@ -27,7 +30,7 @@ int MonaMain(List<char*>* pekoe) {
 int main(int argc, char* argv[]) {
 	setlocale(LC_ALL, "");
 	SMS_GC_INIT();
-	JvCreateJavaVM(NULL);
+	JvCreateJavaVM((void*)Main::main);
 	jstringArray args = (jstringArray)JvNewObjectArray(argc - 1, &::java::lang::String::class$, NULL);
 	for (int i = 1; i < argc; i++) {
 		int mlen = strlen(argv[i]);

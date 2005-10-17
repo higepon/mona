@@ -12,11 +12,11 @@ public class Message {
 	public static final int ID_NUMBER_OF_SERVERS = 8;
 
 	public static native int getServerThreadId(int id);
-//	public static native int send(int tid, MessageInfo info);
+	public static native int send(int tid, MessageInfo info);
 	public static native int send(int tid, int header, int arg1, int arg2, int arg3);
-//	public static native int receive(MessageInfo info);
-//	public static native int reply(MessageInfo info, int arg2, int arg3);
-//	public static native int peek(MessageInfo info, int index);
+	public static native int receive(MessageInfo info);
+	public static native int reply(MessageInfo info, int arg2, int arg3);
+	public static native int peek(MessageInfo info, int index);
 	public static native boolean exist();
-//	public static native int sendReceive(MessageInfo dst, int tid, int header, int arg1, int arg2, int arg3);
+	public static native int sendReceive(MessageInfo dst, int tid, int header, int arg1, int arg2, int arg3);
 }

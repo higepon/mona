@@ -7,9 +7,14 @@
 
 #include <java/lang/System.h>
 #include <gcj/cni.h>
+#ifdef MONA
+#include <monapi.h>
+#else
+#include <stdlib.h>
+#endif
 
 void
-java::lang::System (jint status)
+java::lang::System::exit (jint status)
 {
 	::exit(status);
 }

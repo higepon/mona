@@ -131,9 +131,9 @@ public class Component {
 
 	/** 部品部分更新 */
 	public void update(int x, int y, int w, int h) {
-		Frame c = (Frame)getMainWindow();
+		/*Frame c = (Frame)getMainWindow();
 		c.getGraphics().drawImage(this._buffer, getX(), getY());
-		c.update(c.getX() + /*c.getInsets().left*/ + x, c.getY() + /*c.getInsets().top*/ + y, w, h);
+		c.update(c.getX() + c.getInsets().left + x, c.getY() + c.getInsets().top + y, w, h);*/
 	}
 
 	/** 親部品を得る */
