@@ -97,6 +97,14 @@ extern "C" jobject _Jv_CheckCast(jclass klass, jobject obj) {
 	return obj;
 }
 
+extern "C" jboolean _Jv_IsInstanceOf(jobject obj, jclass cls) {
+	return true;
+}
+
+extern "C" void* _Jv_LookupInterfaceMethodIdx(java::lang::Class* cls1, java::lang::Class* cls2, int idx) {
+	return 0;
+}
+
 
 // String
 
