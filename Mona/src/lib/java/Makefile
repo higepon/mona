@@ -10,7 +10,9 @@ CSOURCES = \
 	java/util/Date-CNI.cpp \
 	java/awt/FontMetrics-CNI.cpp \
 	SimpleCanvas-Mona.cpp \
-	org_monaos.cpp
+	org/monaos/IO-CNI.cpp \
+	org/monaos/Message-CNI.cpp \
+	org/monaos/Screen-CNI.cpp
 JBASESRC = \
 	java/lang/Object.java \
 	java/lang/Class.java
