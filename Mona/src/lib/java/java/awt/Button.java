@@ -37,7 +37,7 @@ public class Button extends Component {
 	/** デフォルトコンストラクタ */
 	public Button() {
 		this.pushed = false;
-		this.label  = "button";
+		this.label  = "Button";
 		setBounds(0, 0, 40, 20);
 	}
 	
@@ -125,15 +125,19 @@ public class Button extends Component {
 	public void processEvent(AWTEvent event) {
 		// 非活性の時はイベントを受け付けない
 		if (getEnabled() == false) return;
-
+		
 		if (event.getType() == MouseEvent.MOUSE_PRESSED) {
 			this.pushed = true;
 			repaint();
-			getParent().processEvent(event);
+			if (getParent() != null) {
+				getParent().processEvent(event);
+			}
 		} else if (event.getType() == MouseEvent.MOUSE_RELEASED) {
 			this.pushed = false;
 			repaint();
-			getParent().processEvent(event);
+			if (getParent() != null) {
+				getParent().processEvent(event);
+			}
 		}
 	}
 }

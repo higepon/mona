@@ -94,7 +94,11 @@ public class ListBox extends Component {
 			g.setColor(0,128,255);
 			g.drawRect(0, 0, w, h);
 		} else {
-			g.setColor(getParent().getBackground());
+			if (getParent() != null) {
+				g.setColor(getParent().getBackground());
+			} else {
+				g.setColor(Color.lightGray);
+			}
 			g.drawRect(0, 0, w, h);
 		}
 		
@@ -133,7 +137,9 @@ public class ListBox extends Component {
 				if (this.selectedIndex > 0) {
 					this.selectedIndex--;
 					repaint();
-					getParent().processEvent(this.itemEvent);
+					if (getParent() != null) {
+						getParent().processEvent(this.itemEvent);
+					}
 				}
 			} else if (keycode == KeyEvent.VKEY_DOWN) {
 				if (this.selectedIndex < this.dataList.size() - 1 && 
@@ -141,7 +147,9 @@ public class ListBox extends Component {
 				{
 					this.selectedIndex++;
 					repaint();
-					getParent().processEvent(this.itemEvent);
+					if (getParent() != null) {
+						getParent().processEvent(this.itemEvent);
+					}
 				}
 			} else if (keycode == KeyEvent.VKEY_ENTER) {
 				getParent().processEvent(this.itemEvent);
@@ -151,11 +159,15 @@ public class ListBox extends Component {
 			int my = ((MouseEvent)event).getY();
 			//printf("y = %d,", my);
 			select((my - 3) / 16);
-			getParent().processEvent(this.itemEvent);
+			if (getParent() != null) {
+				getParent().processEvent(this.itemEvent);
+			}
 		// フォーカス状態変更
 		} else if (event.getType() == FocusEvent.FOCUS_IN || event.getType() == FocusEvent.FOCUS_OUT) {
 			repaint();
-			getParent().processEvent(this.itemEvent);
+			if (getParent() != null) {
+				getParent().processEvent(this.itemEvent);
+			}
 		}
 	}
 }

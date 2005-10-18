@@ -23,6 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -30,7 +31,7 @@ import java.awt.event.MouseEvent;
 */
 public class Checkbox extends Component {
 	/** 未チェック（パレット） */
-	static int unchecked_palette[] = {
+	int unchecked_palette[] = {
 		0xff040204,
 		0xff8c8e8c,
 		0xffe4e2e4,
@@ -44,7 +45,7 @@ public class Checkbox extends Component {
 	};
 
 	/** 未チェック（データ）*/
-	static byte unchecked_data[] = {
+	byte unchecked_data[] = {
 		0x6,0x6,0x6,0x6,0x3,0x0,0x0,0x3,0x6,0x6,0x6,0x6,
 		0x6,0x6,0x0,0x8,0x2,0x2,0x2,0x9,0x3,0x0,0x6,0x6,
 		0x6,0x0,0x9,0x2,0x7,0x5,0x5,0x5,0x2,0x1,0x0,0x6,
@@ -60,7 +61,7 @@ public class Checkbox extends Component {
 	};
 
 	/** チェック（パレット） */
-	static int checked_palette[] = {
+	int checked_palette[] = {
 		0xff040204,
 		0xff8c8e8c,
 		0xff4c4e4c,
@@ -75,7 +76,7 @@ public class Checkbox extends Component {
 	};
 
 	/** チェック（データ）*/
-	static byte checked_data[] = {
+	byte checked_data[] = {
 		0x4,0x4,0x4,0x4,0x7,0x0,0x0,0x7,0x4,0x4,0x4,0x4,
 		0x4,0x4,0x7,0x0,0x2,0xa,0xa,0xa,0x2,0x0,0x4,0x4,
 		0x4,0x7,0x2,0xa,0x6,0x6,0x6,0x1,0x1,0x8,0x0,0x4,
@@ -103,6 +104,7 @@ public class Checkbox extends Component {
 	public Checkbox() {
 		this.checked = false;
 		this.label  = "Checkbox";
+		this.itemEvent = new ItemEvent();
 		this.itemEvent.setType(AWTEvent.ITEM_SELECTED);
 		this.itemEvent.setSource(this);
 		this.group = null;
@@ -115,6 +117,7 @@ public class Checkbox extends Component {
 	public Checkbox(String label) {
 		this.checked = false;
 		this.label  = label;
+		this.itemEvent = new ItemEvent();
 		this.itemEvent.setType(AWTEvent.ITEM_SELECTED);
 		this.itemEvent.setSource(this);
 		this.group = null;
@@ -133,6 +136,8 @@ public class Checkbox extends Component {
 			// 選択イベント発生
 			if (this.group != null) {
 				this.group.processEvent(this.itemEvent);
+			}
+			if (getParent() != null) {
 				getParent().processEvent(this.itemEvent);
 			}
 			repaint();
@@ -201,12 +206,14 @@ public class Checkbox extends Component {
 	public void processEvent(AWTEvent event) {
 		// 非活性の時はイベントを受け付けない
 		if (getEnabled() == false) return;
-
+		
 		if (event.getType() == MouseEvent.MOUSE_RELEASED) {
 			if (this.checked == false || this.group == null) {
 				setChecked(!this.checked);
 			}
-			getParent().processEvent(event);
+			if (getParent() != null) {
+				getParent().processEvent(this.itemEvent);
+			}
 		}
 	}
 }

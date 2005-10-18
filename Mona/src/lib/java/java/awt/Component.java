@@ -51,11 +51,11 @@ public class Component {
 	/** 部品の大きさ */
 	private Rectangle bounds;
 	/** 描画領域 */
-	private Graphics _g;
+	private Graphics graphics;
 	/** 描画バッファー */
-	private Image _buffer;
+	private Image image;
 	/** フォント情報 */
-	private FontMetrics _metrics;
+	private FontMetrics metrics;
 
 	/** フォーカスイベント */
 	protected AWTEvent focusEvent;
@@ -70,9 +70,11 @@ public class Component {
 		this.backColor = Color.lightGray;
 		this.foreColor = Color.black;
 		this.fontStyle = Font.PLAIN;
-		this._g = null;
-		this._buffer = null;
-		this._metrics = new FontMetrics();
+		this.bounds = new Rectangle();
+		this.graphics = null;
+		this.image = null;
+		this.metrics = new FontMetrics();
+		this.focusEvent = new FocusEvent();
 		this.focusEvent.setType(FocusEvent.FOCUS_IN);
 		this.focusEvent.setSource(this);
 	}
@@ -82,11 +84,11 @@ public class Component {
 	 後でremoveNotify()呼ぶと再初期化できる。
 	 */
 	public void addNotify() {
-		if (this._buffer != null) return;
+		if (this.image != null) return;
 
 		// 内部バッファー、描画オブジェクトの生成
-		this._buffer = new Image(width, height);
-		this._g = new Graphics(this._buffer);
+		this.image = new Image(width, height);
+		this.graphics = new Graphics(this.image);
 	}
 
 	/**
@@ -94,9 +96,9 @@ public class Component {
 	 後でaddNotify()を呼ぶと再初期化できる。
 	*/
 	public void removeNotify() {
-		//delete(_buffer);
-		//delete(_g);
-		//delete(_metrics);
+		//delete(image);
+		//delete(graphics);
+		//delete(metrics);
 	}
 
 	/** イベントハンドラ */
@@ -118,9 +120,9 @@ public class Component {
 
 	/** 再描画 */
 	public void repaint() {
-		if (this._buffer == null) return;
+		if (this.image == null) return;
 		setFontStyle(this.fontStyle);
-		paint(this._g);
+		paint(this.graphics);
 		update();
 	}
 
@@ -132,7 +134,7 @@ public class Component {
 	/** 部品部分更新 */
 	public void update(int x, int y, int w, int h) {
 		/*Frame c = (Frame)getMainWindow();
-		c.getGraphics().drawImage(this._buffer, getX(), getY());
+		c.getGraphics().drawImage(this.image, getX(), getY());
 		c.update(c.getX() + c.getInsets().left + x, c.getY() + c.getInsets().top + y, w, h);*/
 	}
 
@@ -173,7 +175,7 @@ public class Component {
 	public int getFontStyle() { return this.fontStyle; }
 	
 	/** 描画オブジェクトを得る */
-	public Graphics getGraphics() { return this._g; }
+	public Graphics getGraphics() { return this.graphics; }
 	
 	/**
 	 内部バッファーを得る.
@@ -181,10 +183,10 @@ public class Component {
 	 Graphicsクラスが持っているような便利なメソッドはない。
 	 描画後update()を呼ぶことで実際の描画がされる。
 	 */
-	public Image getBuffer() { return this._buffer; }
+	public Image getBuffer() { return this.image; }
 	
 	/** フォント情報を得る */
-	public FontMetrics getFontMetrics() { return this._metrics; }
+	public FontMetrics getFontMetrics() { return this.metrics; }
 	
 	/**
 	 メインウィンドウを得る.
@@ -282,11 +284,11 @@ public class Component {
 	 @param style フォントスタイル (Font.PLAIN / Font.BOLD / Font.ITALIC / Font.FIXED )
 	*/
 	public void setFontStyle(int style) {
-		if (this._metrics != null) {
-			_metrics.setFontStyle(style);
+		if (this.metrics != null) {
+			this.metrics.setFontStyle(style);
 		}
-		if (this._g != null) {
-			_g.setFontStyle(style);
+		if (this.graphics != null) {
+			this.graphics.setFontStyle(style);
 		}
 		this.fontStyle = style;
 	}
