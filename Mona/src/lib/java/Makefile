@@ -9,7 +9,7 @@ CSOURCES = \
 	java/io/PrintStream-CNI.cpp \
 	java/util/Date-CNI.cpp \
 	java/awt/FontMetrics-CNI.cpp \
-	SimpleCanvas-Mona.cpp \
+	SimpleCanvas-CNI.cpp \
 	org/monaos/IO-CNI.cpp \
 	org/monaos/Message-CNI.cpp \
 	org/monaos/Screen-CNI.cpp
