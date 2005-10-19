@@ -23,6 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.TextEvent;
 
