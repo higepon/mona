@@ -29,7 +29,11 @@ package java.awt.event;
 public class WindowEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public WindowEvent() {
-		setType(WINDOW_OPENED);
-		setSource(null);
+		super(WINDOW_OPENED, null);
+	}
+	
+	/** コンストラクタ */
+	public WindowEvent(int type, Object source) {
+		super(type, source);
 	}
 }

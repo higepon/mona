@@ -74,9 +74,7 @@ public class Component {
 		this.graphics = null;
 		this.image = null;
 		this.metrics = new FontMetrics();
-		this.focusEvent = new FocusEvent();
-		this.focusEvent.setType(FocusEvent.FOCUS_IN);
-		this.focusEvent.setSource(this);
+		this.focusEvent = new FocusEvent(FocusEvent.FOCUS_IN, this);
 	}
 
 	/**

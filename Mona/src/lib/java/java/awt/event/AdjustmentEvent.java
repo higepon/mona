@@ -29,7 +29,11 @@ package java.awt.event;
 public class AdjustmentEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public AdjustmentEvent() {
-		setType(BLOCK_INCLEMENT);
-		setSource(null);
+		super(BLOCK_INCLEMENT, null);
+	}
+	
+	/** コンストラクタ */
+	public AdjustmentEvent(int type, Object source) {
+		super(type, source);
 	}
 }

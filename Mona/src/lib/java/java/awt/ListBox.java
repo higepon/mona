@@ -50,9 +50,7 @@ public class ListBox extends Component {
 		this.offsetIndex = 0;
 		this.visibleRows = 0;
 		this.dataList = new Vector();
-		this.itemEvent = new ItemEvent();
-		this.itemEvent.setType(ItemEvent.ITEM_SELECTED);
-		this.itemEvent.setSource(this);
+		this.itemEvent = new ItemEvent(ItemEvent.ITEM_SELECTED, this);
 		setBackground(Color.white);
 	}
 	

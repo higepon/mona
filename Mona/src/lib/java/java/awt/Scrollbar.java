@@ -137,9 +137,7 @@ public class Scrollbar extends Component {
 		this.blocksize = 10;
 		this.preValue = 0;
 		this.value = 0;
-		this.adjustmentEvent = new AdjustmentEvent();
-		this.adjustmentEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
-		this.adjustmentEvent.setSource(this);
+		this.adjustmentEvent = new AdjustmentEvent(AdjustmentEvent.BLOCK_INCLEMENT, this);
 	}
 
 	/** コンストラクタ */
@@ -150,9 +148,7 @@ public class Scrollbar extends Component {
 		this.blocksize = 10;
 		this.preValue = 0;
 		this.value = 0;
-		this.adjustmentEvent = new AdjustmentEvent();
-		this.adjustmentEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
-		this.adjustmentEvent.setSource(this);
+		this.adjustmentEvent = new AdjustmentEvent(AdjustmentEvent.BLOCK_INCLEMENT, this);
 	}
 
 	/** 最小値を得る（初期値は0） */

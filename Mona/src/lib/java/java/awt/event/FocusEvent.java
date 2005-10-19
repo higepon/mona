@@ -29,7 +29,11 @@ package java.awt.event;
 public class FocusEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public FocusEvent() {
-		setType(FOCUS_IN);
-		setSource(null);
+		super(FOCUS_IN, null);
+	}
+	
+	/** コンストラクタ */
+	public FocusEvent(int type, Object source) {
+		super(type, source);
 	}
 }

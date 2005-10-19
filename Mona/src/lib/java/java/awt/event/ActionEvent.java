@@ -29,7 +29,11 @@ package java.awt.event;
 public class ActionEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public ActionEvent() {
-		setType(ACTION_PERFORMED);
-		setSource(null);
+		super(ACTION_PERFORMED, null);
+	}
+	
+	/** コンストラクタ */
+	public ActionEvent(int type, Object source) {
+		super(type, source);
 	}
 }

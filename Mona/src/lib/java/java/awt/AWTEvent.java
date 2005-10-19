@@ -68,7 +68,7 @@ public class AWTEvent {
 	/** イベントタイプ */
 	private int type;
 	/** イベント発生元 */
-	private Component source;
+	private Object source;
 	/** イベントが消費されたかどうか */
 	private boolean consumed;
 
@@ -101,7 +101,7 @@ public class AWTEvent {
 	 @param type イベントタイプ
 	 @param source イベント発生元部品
 	 */
-	public AWTEvent(int type, Component source) {
+	public AWTEvent(int type, Object source) {
 		this.type = type;
 		this.source = source;
 	}
@@ -113,13 +113,13 @@ public class AWTEvent {
 	public void setType(int type) { this.type = type; }
 	
 	/** イベントの発生部品を得る */
-	public Component getSource() { return this.source; }
+	public Object getSource() { return this.source; }
 	
 	/** イベントが消費されたかどうかを得る */
 	public boolean isConsumed() { return this.consumed; }
 	
 	/** イベントの発生部品を設定する */
-	public void setSource(Component c) { this.source = c; }
+	public void setSource(Object c) { this.source = c; }
 	
 	/** イベントを消費する */
 	public void consume() { this.consumed = true; }

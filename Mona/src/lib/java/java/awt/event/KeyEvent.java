@@ -102,8 +102,7 @@ public class KeyEvent extends java.awt.AWTEvent {
 	
 	/** デフォルトコンストラクタ */
 	public KeyEvent() {
-		setType(KEY_PRESSED);
-		setSource(null);
+		super(KEY_PRESSED, null);
 		this.keycode = 0;
 		this.modifiers = 0;
 	}
@@ -115,9 +114,8 @@ public class KeyEvent extends java.awt.AWTEvent {
 	 @param keycode キーコード
 	 @param modifiers 修飾キー
 	 */
-	public KeyEvent(int type, java.awt.Component source, int keycode, int modifiers) {
-		setType(type);
-		setSource(source);
+	public KeyEvent(int type, Object source, int keycode, int modifiers) {
+		super(type, source);
 		this.keycode = keycode;
 		this.modifiers = modifiers;
 	}

@@ -29,7 +29,11 @@ package java.awt.event;
 public class TimerEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public TimerEvent() {
-		setType(TIMER);
-		setSource(null);
+		super(TIMER, null);
+	}
+	
+	/** コンストラクタ */
+	public TimerEvent(int type, Object source) {
+		super(type, source);
 	}
 }

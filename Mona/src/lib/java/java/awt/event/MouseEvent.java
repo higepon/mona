@@ -40,10 +40,8 @@ public class MouseEvent extends java.awt.AWTEvent {
 	
 	/** デフォルトコンストラクタ */
 	public MouseEvent() {
-		setType(MOUSE_PRESSED);
-		setSource(null);
-		this.x = this.y = 0;
-		this.button = 0;
+		super(MOUSE_PRESSED, null);
+		this.x = this.y = this.button = 0;
 	}
 	
 	/**
@@ -54,9 +52,8 @@ public class MouseEvent extends java.awt.AWTEvent {
 	 @param x X座標（絶対座標）
 	 @param y Y座標（絶対座標）
 	*/
-	public MouseEvent(int type, java.awt.Component source, int x, int y) {
-		setType(type);
-		setSource(source);
+	public MouseEvent(int type, Object source, int x, int y) {
+		super(type, source);
 		this.x = x;
 		this.y = y;
 	}

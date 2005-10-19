@@ -104,9 +104,7 @@ public class Checkbox extends Component {
 	public Checkbox() {
 		this.checked = false;
 		this.label  = "Checkbox";
-		this.itemEvent = new ItemEvent();
-		this.itemEvent.setType(AWTEvent.ITEM_SELECTED);
-		this.itemEvent.setSource(this);
+		this.itemEvent = new ItemEvent(AWTEvent.ITEM_SELECTED, this);
 		this.group = null;
 	}
 	
@@ -117,9 +115,7 @@ public class Checkbox extends Component {
 	public Checkbox(String label) {
 		this.checked = false;
 		this.label  = label;
-		this.itemEvent = new ItemEvent();
-		this.itemEvent.setType(AWTEvent.ITEM_SELECTED);
-		this.itemEvent.setSource(this);
+		this.itemEvent = new ItemEvent(AWTEvent.ITEM_SELECTED, this);
 		this.group = null;
 	}
 	

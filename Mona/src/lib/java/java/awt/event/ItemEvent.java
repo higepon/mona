@@ -29,7 +29,11 @@ package java.awt.event;
 public class ItemEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public ItemEvent() {
-		setType(ITEM_SELECTED);
-		setSource(null);
+		super(ITEM_SELECTED, null);
+	}
+	
+	/** コンストラクタ */
+	public ItemEvent(int type, Object source) {
+		super(type, source);
 	}
 }

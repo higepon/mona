@@ -29,7 +29,11 @@ package java.awt.event;
 public class TextEvent extends java.awt.AWTEvent {
 	/** デフォルトコンストラクタ */
 	public TextEvent() {
-		setType(TEXT_CHANGED);
-		setSource(null);
+		super(TEXT_CHANGED, null);
+	}
+	
+	/** コンストラクタ */
+	public TextEvent(int type, Object source) {
+		super(type, source);
 	}
 }
