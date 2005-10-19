@@ -25,6 +25,7 @@ private:
   void create (jbyteArray);
 public:
   FontMetrics ();
+  virtual jint getCharWidth (jchar);
   virtual jint getWidth (::java::lang::String *);
   virtual jint getHeight (::java::lang::String *);
   virtual jint getFontStyle () { return fontStyle; }

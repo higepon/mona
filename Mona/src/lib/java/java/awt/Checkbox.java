@@ -96,7 +96,7 @@ public class Checkbox extends Component {
 	/** ボタンのラベル */
 	private String label;
 	/** 選択イベント */
-	private AWTEvent itemEvent;
+	private ItemEvent itemEvent;
 	/** チェックボックスグループ */
 	private CheckboxGroup group;
 

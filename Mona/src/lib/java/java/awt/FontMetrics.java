@@ -73,36 +73,23 @@ public class FontMetrics {
 	}
 	
 	/**
-	 UCS-4コードを受け取って展開済み文字データを返す
-	 @param ucs4 UCS-4コード（4バイト）
-	 @param offset [out] 可変フォントでは offset = width、固定フォントでは offset > width
-	 @param width [out] 文字の幅
-	 @param height [out] 文字の高さ
-	 @param data [out] 展開済み文字データ
-	*/
-	/*public boolean decodeCharacter(wchar ucs4, int* offset, int* width, int* height, char* data) {
-		if (ucs4 <= 0xFFFF && defaultFontData != null && offsetList[ucs4] != 0) {
-			int fw = defaultFontData[offsetList[ucs4] + 4];
-			int fh = defaultFontData[offsetList[ucs4] + 5];
-			//System.out.print("fontStyle = %d,", this.fontStyle);
-			if ((this.fontStyle & 0x100) == Font.FIXED) {
-				if (ucs4 < 128 || 0xff60 < ucs4) {
-					*offset = 6;
-				} else {
-					*offset = 12;
-				}
+	 文字の幅を得る
+	 @param ch 文字
+	 */
+	public int getCharWidth(char ch) {
+		// nullチェック
+		if (this.defaultFontData == null) return 0;
+		
+		if ((this.fontStyle & 0x100) == Font.FIXED) {
+			if (ch < 128 || 0xff60 < ch) {
+				return 6;
 			} else {
-				*offset = fw;
+				return 12;
 			}
-			*width  = fw;
-			*height = fh;
-			memcpy(data, &defaultFontData[offsetList[ucs4] + 6], (int)((fw * fh + 7) / 8));
-			return true;
 		} else {
-			return false;
+			return defaultFontData[offsetList[ch] + 4];
 		}
-		return false;
-	}*/
+	}
 	
 	/**
 	 文字列の幅を得る
@@ -118,17 +105,7 @@ public class FontMetrics {
 			if (c == '\n') {
 				break;
 			}
-			if (c <= 0xFFFF) {
-				if ((this.fontStyle & 0x100) == Font.FIXED) {
-					if (c < 128 || 0xff60 < c) {
-						w += 6;
-					} else {
-						w += 12;
-					}
-				} else {
-					w += defaultFontData[offsetList[c] + 4];
-				}
-			}
+			w += getCharWidth(c);
 		}
 		
 		return w;

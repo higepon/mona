@@ -127,7 +127,7 @@ public class Scrollbar extends Component {
 	/** 現在の値 */
 	private int value;
 	/** ブロックイベント */
-	private AWTEvent blockEvent;
+	private AdjustmentEvent adjustmentEvent;
 	
 	/** デフォルトコンストラクタ */
 	public Scrollbar() {
@@ -137,8 +137,9 @@ public class Scrollbar extends Component {
 		this.blocksize = 10;
 		this.preValue = 0;
 		this.value = 0;
-		this.blockEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
-		this.blockEvent.setSource(this);
+		this.adjustmentEvent = new AdjustmentEvent();
+		this.adjustmentEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
+		this.adjustmentEvent.setSource(this);
 	}
 
 	/** コンストラクタ */
@@ -149,8 +150,9 @@ public class Scrollbar extends Component {
 		this.blocksize = 10;
 		this.preValue = 0;
 		this.value = 0;
-		this.blockEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
-		this.blockEvent.setSource(this);
+		this.adjustmentEvent = new AdjustmentEvent();
+		this.adjustmentEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
+		this.adjustmentEvent.setSource(this);
 	}
 
 	/** 最小値を得る（初期値は0） */
@@ -186,15 +188,15 @@ public class Scrollbar extends Component {
 		repaint();
 		// 減少
 		if (value < this.preValue) {
-			this.blockEvent.setType(AdjustmentEvent.BLOCK_DECLEMENT);
+			this.adjustmentEvent.setType(AdjustmentEvent.BLOCK_DECLEMENT);
 			if (getParent() != null) {
-				getParent().processEvent(this.blockEvent);
+				getParent().processEvent(this.adjustmentEvent);
 			}
 		// 増加
 		} else {
-			this.blockEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
+			this.adjustmentEvent.setType(AdjustmentEvent.BLOCK_INCLEMENT);
 			if (getParent() != null) {
-				getParent().processEvent(this.blockEvent);
+				getParent().processEvent(this.adjustmentEvent);
 			}
 		}
 		this.preValue = value;

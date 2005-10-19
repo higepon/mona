@@ -42,7 +42,7 @@ public class ListBox extends Component {
 	/** データリスト */
 	private Vector dataList;
 	/** 選択イベント */
-	private AWTEvent itemEvent;
+	private ItemEvent itemEvent;
 
 	/** コンストラクタ */
 	public ListBox() {
@@ -50,6 +50,7 @@ public class ListBox extends Component {
 		this.offsetIndex = 0;
 		this.visibleRows = 0;
 		this.dataList = new Vector();
+		this.itemEvent = new ItemEvent();
 		this.itemEvent.setType(ItemEvent.ITEM_SELECTED);
 		this.itemEvent.setSource(this);
 		setBackground(Color.white);
@@ -60,8 +61,7 @@ public class ListBox extends Component {
 	
 	/** 選択項目を得る */
 	public String getSelectedItem() {
-		String s = (String)dataList.get(this.selectedIndex);
-		return (s == null) ? null : s;
+		return dataList.get(this.selectedIndex).toString();
 	}
 	
 	/** index 番目を選択する */
