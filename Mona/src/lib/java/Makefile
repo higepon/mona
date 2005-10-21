@@ -66,8 +66,7 @@ JSOURCES = \
 	java/awt/Rectangle.java \
 	java/awt/Scrollbar.java \
 	java/awt/TextComponent.java \
-	java/awt/TextField.java \
-	java/awt/Window.java
+	java/awt/TextField.java
 
 # TODO
 # java/awt/Frame.java
