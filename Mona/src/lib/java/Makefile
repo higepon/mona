@@ -57,6 +57,7 @@ JSOURCES = \
 	java/awt/Container.java \
 	java/awt/Font.java \
 	java/awt/FontMetrics.java \
+	java/awt/Frame.java \
 	java/awt/Graphics.java \
 	java/awt/Insets.java \
 	java/awt/Image.java \
@@ -65,7 +66,8 @@ JSOURCES = \
 	java/awt/Rectangle.java \
 	java/awt/Scrollbar.java \
 	java/awt/TextComponent.java \
-	java/awt/TextField.java
+	java/awt/TextField.java \
+	java/awt/Window.java
 
 # TODO
 # java/awt/Frame.java
