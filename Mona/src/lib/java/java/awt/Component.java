@@ -131,6 +131,7 @@ public class Component {
 
 	/** •”•i•”•ªXV */
 	public void update(int x, int y, int w, int h) {
+		System.out.println(x + "," + y + "," + w + "," + h);
 		/*Frame c = (Frame)getMainWindow();
 		c.getGraphics().drawImage(this.image, getX(), getY());
 		c.update(c.getX() + c.getInsets().left + x, c.getY() + c.getInsets().top + y, w, h);*/

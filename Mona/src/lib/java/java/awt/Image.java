@@ -23,17 +23,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
-import org.monaos.*;
+//import org.monaos.*;
 
 /**
  画像クラス
  */
 public class Image {
-	private static final int THREAD_UNKNOWN = 0xffffffff;
-	private static final int MSG_GUISERVER_DECODEIMAGE   = 0x4001;
-	private static final int MSG_GUISERVER_CREATEBITMAP  = 0x4007;
-	private static final int MSG_GUISERVER_DISPOSEBITMAP = 0x4008;
-	
 	/** 幅 */
 	private int width;
 	/** 高さ */
@@ -41,87 +36,27 @@ public class Image {
 	/** バッファー */
 	private int[] buffer;
 	
+	private native void create(Image image, String path);
+	private void malloc(int width, int height) {
+		this.buffer = new int [width * height];
+	}
+	
 	/** コンストラクタ */
 	public Image(int width, int height) {
-		this.width = this.height = 0;
-		this.buffer = new int [width * height];
-		//this.bitmap = null; // TODO
-		
-		/*// GUIサーバーを探す
-		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
-		if (guisvrID == 0xffffffff) {
-			System.out.print("ERROR: can not connect to GUI server!\n");
-			System.exit(1);
-		}
-		
-		// GUIサーバー上にビットマップを生成する
-		MessageInfo msg = new MessageInfo();
-		if (Message.sendReceive(msg, guisvrID, MSG_GUISERVER_CREATEBITMAP, width, height, Color.lightGray) == 1)
-		{
-			System.out.print("ERROR: can not connect to GUI server!\n");
-			return;
-		}
-		if (msg.arg2 == 0) return;
-
-		// TODO
-		// GUIサーバー上のビットマップオブジェクトを生成する
-		//this.bitmap = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
-		//if (this.bitmap == null)
-		//{
-		//	System.out.print("%s:%d:ERROR: can not get image data!\n");
-		//	return;
-		//}*/
-		
 		this.width = width;
 		this.height = height;
+		this.buffer = new int [width * height];
 	}
 
 	/** コンストラクタ */
 	public Image(String path) {
 		this.width = this.height = 0;
-		//this.bitmap = null; // TODO
-		
-		/*// GUIサーバーを探す
-		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
-		if (guisvrID == THREAD_UNKNOWN) {
-			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
-			System.exit(1);
-		}
-		
-		// GUIサーバー上でビットマップをデコードする
-		MessageInfo msg = new MessageInfo();
-		if (Message.sendReceive(msg, guisvrID, MSG_GUISERVER_DECODEIMAGE, 0, 0, 0, path.getBytes()) == 1) {
-			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
-			return;
-		}
-		if (msg.arg2 == 0) return;
-		
-		// TODO
-		// GUIサーバー上のビットマップオブジェクトを生成する
-		//this.bitmap = (guiserver_bitmap*)MonAPI::MemoryMap::map(msg.arg2);
-		//if (this.bitmap == null)
-		//{
-		//	System.out.print("%s:%d:ERROR: can not get image data!\n");
-		//	return;
-		//}*/
-		
-		this.width = 0;//this.bitmap->Width;
-		this.height = 0;//this.bitmap->Height;
+		create(this, path);
 	}
 
 	/** 画像を破棄する */
 	public void flush() {
-		/*// GUIサーバーを探す
-		int guisvrID = Message.getServerThreadId(Message.ID_GUI_SERVER);
-		if (guisvrID == THREAD_UNKNOWN) {
-			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
-			System.exit(1);
-		}
-		
-		// ビットマップ破棄要求
-		if (Message.send(guisvrID, MSG_GUISERVER_DISPOSEBITMAP, getHandle(), 0, 0) == 1) {
-			System.out.print("%s:%d:ERROR: can not connect to GUI server!\n");
-		}*/
+		this.buffer = null;
 	}
 
 	/** 幅を得る */
@@ -144,7 +79,6 @@ public class Image {
 		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
 			return 0;
 		} else {
-			//this.bitmap->Data[x + this.width * y]; // TODO
 			return this.buffer[x + this.width * y];
 		}
 	}
@@ -152,7 +86,6 @@ public class Image {
 	/** 点を打つ */
 	public void setPixel(int x, int y, int color) {
 		if (0 <= x && x < this.width && 0 <= y && y < this.height) {
-			//this.bitmap->Data[x + this.width * y] = color; // TODO
 			this.buffer[x + this.width * y] = color;
 		}
 	}

@@ -46,8 +46,6 @@ public class Graphics {
 	/** 内部バッファー */
 	private Image image;
 	
-	private SimpleCanvas canvas;
-	
 	/** コンストラクタ */
 	public Graphics() {
 		tx = ty = cx = cy = cw = ch = 0;
@@ -67,7 +65,6 @@ public class Graphics {
 		this.image = image;
 		this.cw = image.getWidth();
 		this.ch = image.getHeight();
-		this.canvas.create(this.image.getBuffer(), "Image", cw, ch);
 	}
 
 	/**
@@ -92,7 +89,6 @@ public class Graphics {
 				drawPixel(j + x, i + y, image.getPixel(j, i));
 			}
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
@@ -125,7 +121,6 @@ public class Graphics {
 				this.drawPixel((2 * x1 + 2 * (x2 - x1) * (y - y1) / (y2 - y1) + 1) / 2, y, this.rgb24);
 			}
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
@@ -153,7 +148,6 @@ public class Graphics {
 			this.drawPixel(x , yy, this.rgb24);
 			this.drawPixel(xw, yy, this.rgb24);
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
@@ -184,7 +178,6 @@ public class Graphics {
 			y ++;
 			f += 4 * y + 2;
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
@@ -250,7 +243,7 @@ public class Graphics {
 							} else if ((getFontStyle() & 0x011) == Font.ITALIC) {
 								drawPixel(x0 + (height - j) / 4, y + j, this.rgb24);
 							// 太字体＋斜字体
-							} else if ((getFontStyle() & 0x011) == Font.BOLD | Font.ITALIC) {
+							} else if ((getFontStyle() & 0x011) == (Font.BOLD | Font.ITALIC)) {
 								drawPixel(x0 + (height - j) / 4, y + j, this.rgb24);
 								drawPixel(x0 + (height - j) / 4 + 1, y + j, this.rgb24);
 							}
@@ -265,7 +258,6 @@ public class Graphics {
 				w += offset;
 			}
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
@@ -297,7 +289,6 @@ public class Graphics {
 			y ++;
 			f += 4 * y + 2;
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
@@ -324,7 +315,6 @@ public class Graphics {
 				this.drawPixel(xx, yy, this.rgb24);
 			}
 		}
-		SimpleCanvas.doEvents();
 	}
 
 	/**
