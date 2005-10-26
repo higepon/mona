@@ -347,7 +347,6 @@ dword Scheduler::LookupMainThread(const char* name)
     return LookupMainThread(process);
 }
 
-
 Thread* Scheduler::Find(dword id)
 {
     FOREACH(Thread*, queue, runq)
