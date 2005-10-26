@@ -74,7 +74,7 @@ public:
     Process* FindProcess(const char* name);
     Thread* Find(dword id);
     dword LookupMainThread(const char* name);
-    dword LookupMainThread();
+    dword LookupMainThread(Process* process);
     dword Lookup(const char* name);
     PsInfo* ReadDump();
     dword* GetAllThreadID(dword* threadNum);

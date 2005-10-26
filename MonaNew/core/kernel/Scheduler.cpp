@@ -317,15 +317,9 @@ Process* Scheduler::FindProcess(dword pid)
     return (Process*)NULL;
 }
 
-dword Scheduler::LookupMainThread(const char* name)
+
+dword Scheduler::LookupMainThread(Process* process)
 {
-    Process* process = FindProcess(name);
-
-    if (process == NULL)
-    {
-        return 0xFFFFFFFF;
-    }
-
     List<Thread*>* list = process->getThreadList();
     dword found = 0xFFFFFFFF;
 
@@ -339,6 +333,18 @@ dword Scheduler::LookupMainThread(const char* name)
         }
     }
     return found;
+}
+
+dword Scheduler::LookupMainThread(const char* name)
+{
+    Process* process = FindProcess(name);
+
+    if (process == NULL)
+    {
+        return 0xFFFFFFFF;
+    }
+
+    return LookupMainThread(process);
 }
 
 

@@ -363,7 +363,14 @@ void syscall_entrance()
 
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 
-        info->eax = g_scheduler->LookupMainThread((char*)(info->esi));
+	if (info->esi == NULL)
+	{
+	    info->eax = g_scheduler->LookupMainThread(g_currentThread->process);
+	}
+	else
+	{
+	    info->eax = g_scheduler->LookupMainThread((char*)(info->esi));
+	}
         break;
 
     case SYSTEM_CALL_MEMORY_MAP_CREATE:

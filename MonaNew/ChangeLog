@@ -1,3 +1,7 @@
+2005-10-26  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/Scheduler.cpp (LookupMainThread): ‚ğ’Ç‰ÁB
+
 2005-09-09  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Process.h : ‚Æ‚è‚ ‚¦‚¸ MemoryAllocator‚ğ“±“üB

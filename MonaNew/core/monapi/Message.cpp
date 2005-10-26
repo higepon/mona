@@ -123,4 +123,9 @@ dword Message::lookupMainThread(const char* name)
     return syscall_lookup_main_thread(name);
 }
 
+dword Message::lookupMainThread()
+{
+    return syscall_lookup_main_thread(NULL);
+}
+
 }
