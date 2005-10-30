@@ -23,17 +23,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  チェックボックスグループクラス
 */
 public class CheckboxGroup {
-	private Vector checkboxList;
+	private ArrayList checkboxList;
 	
 	/** コンストラクタ */
 	public CheckboxGroup() {
-		this.checkboxList = new Vector();
+		this.checkboxList = new ArrayList();
 	}
 	
 	/** チェックボックスを追加する */

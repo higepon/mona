@@ -22,14 +22,15 @@ extern "Java"
 class org::monaos::Message : public ::java::lang::Object
 {
 public:
-  static jint getServerThreadId (jint);
+  static jint register_to_server (jint, jboolean);
+  static jint get_server_thread_id (jint);
   static jint send (jint, ::org::monaos::MessageInfo *);
   static jint send (jint, jint, jint, jint, jint);
   static jint receive (::org::monaos::MessageInfo *);
   static jint reply (::org::monaos::MessageInfo *, jint, jint);
   static jint peek (::org::monaos::MessageInfo *, jint);
   static jboolean exist ();
-  static jint sendReceive (::org::monaos::MessageInfo *, jint, jint, jint, jint, jint);
+  static jint send_receive (::org::monaos::MessageInfo *, jint, jint, jint, jint, jint);
   Message ();
   static const jint ID_MOUSE_SERVER = 0L;
   static const jint ID_KEYBOARD_SERVER = 1L;
@@ -40,6 +41,16 @@ public:
   static const jint ID_PE_SERVER = 6L;
   static const jint ID_MONITOR_SERVER = 7L;
   static const jint ID_NUMBER_OF_SERVERS = 8L;
+  static const jint THREAD_UNKNOWN = -1L;
+  static const jint MSG_NONE = 0L;
+  static const jint MSG_MAP = 1L;
+  static const jint MSG_MEMORY_MAP_ID = 2L;
+  static const jint MSG_RESULT_OK = 3L;
+  static const jint MSG_RESULT_ERROR = 4L;
+  static const jint MSG_SERVER_START_OK = 5L;
+  static const jint MSG_INTERRUPTED = 6L;
+  static const jint MSG_THREAD_KILLED = 2048L;
+  static const jint MSG_TIMER = 2049L;
 
   static ::java::lang::Class class$;
 };

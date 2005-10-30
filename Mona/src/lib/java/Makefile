@@ -11,7 +11,10 @@ CSOURCES = \
 	java/awt/FontMetrics-CNI.cpp \
 	java/awt/Image-CNI.cpp \
 	java/awt/Window-CNI.cpp \
-	SimpleCanvas-CNI.cpp
+	SimpleCanvas-CNI.cpp \
+	org/monaos/IO-CNI.cpp \
+	org/monaos/Message-CNI.cpp \
+	org/monaos/Screen-CNI.cpp
 JBASESRC = \
 	java/lang/Object.java \
 	java/lang/Class.java
@@ -21,10 +24,8 @@ JSOURCES = \
 	java/lang/System.java \
 	java/lang/Math.java \
 	java/io/PrintStream.java \
+	java/util/ArrayList.java \
 	java/util/Date.java \
-	java/util/Hashtable.java \
-	java/util/Vector.java \
-	SimpleCanvas.java \
 	java/awt/event/ActionEvent.java \
 	java/awt/event/ActionListener.java \
 	java/awt/event/AdjustmentEvent.java \
@@ -62,7 +63,12 @@ JSOURCES = \
 	java/awt/Scrollbar.java \
 	java/awt/TextComponent.java \
 	java/awt/TextField.java \
-	java/awt/Window.java
+	java/awt/Window.java \
+	SimpleCanvas.java \
+	org/monaos/IO.java \
+	org/monaos/MessageInfo.java \
+	org/monaos/Message.java \
+	org/monaos/Screen.java
 
 MONADIR  = ../../..
 include $(MONADIR)/env/monapi.inc

@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -32,11 +32,11 @@ import java.awt.event.MouseEvent;
 */
 public class Container extends Component {
 	/** 部品一覧 */
-	private Vector componentList;
+	private ArrayList componentList;
 
 	/** コンストラクタ */
 	public Container() {
-		this.componentList = new Vector();
+		this.componentList = new ArrayList();
 	}
 	
 	/**

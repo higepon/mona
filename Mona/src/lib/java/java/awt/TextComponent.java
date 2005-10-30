@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 
@@ -31,7 +31,7 @@ import java.awt.event.TextListener;
  テキスト基底部品
  */
 public class TextComponent extends Component {
-	private Vector textListenerList;
+	private ArrayList textListenerList;
 	
 	/** デフォルトコンストラクタ */
 	public TextComponent() {

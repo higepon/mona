@@ -77,8 +77,19 @@ org::monaos::IO::outp32 (jint port, jint value)
 }
 
 
+jint
+org::monaos::IO::get_io ()
+{
+#ifdef MONA
+	return syscall_get_io();
+#else
+	return 0;
+#endif
+}
+
+
 void
-org::monaos::IO::setIRQ (jint irq, jboolean enabled, jboolean auto_ir2)
+org::monaos::IO::set_irq (jint irq, jboolean enabled, jboolean auto_ir2)
 {
 #ifdef MONA
 	if (irq >= 0 && irq <= 7) {

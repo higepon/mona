@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package java.awt;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -40,7 +40,7 @@ public class ListBox extends Component {
 	/** 表示可能行数 */
 	private int visibleRows;
 	/** データリスト */
-	private Vector dataList;
+	private ArrayList dataList;
 	/** 選択イベント */
 	private ItemEvent itemEvent;
 
@@ -49,7 +49,7 @@ public class ListBox extends Component {
 		this.selectedIndex = -1;
 		this.offsetIndex = 0;
 		this.visibleRows = 0;
-		this.dataList = new Vector();
+		this.dataList = new ArrayList();
 		this.itemEvent = new ItemEvent(ItemEvent.ITEM_SELECTED, this);
 		setBackground(Color.white);
 	}

@@ -14,7 +14,18 @@
 #endif
 
 jint
-org::monaos::Message::getServerThreadId (jint id)
+org::monaos::Message::register_to_server (jint id, jboolean regist)
+{
+#ifdef MONA
+	return monapi_register_to_server(id, regist);
+#else
+	return 0;
+#endif
+}
+
+
+jint
+org::monaos::Message::get_server_thread_id (jint id)
 {
 #ifdef MONA
 	return monapi_get_server_thread_id(id);
@@ -118,7 +129,7 @@ org::monaos::Message::exist ()
 
 
 jint
-org::monaos::Message::sendReceive (::org::monaos::MessageInfo *info, jint header, jint tid, jint arg1, jint arg2, jint arg3)
+org::monaos::Message::send_receive (::org::monaos::MessageInfo *info, jint header, jint tid, jint arg1, jint arg2, jint arg3)
 {
 #ifdef MONA
 	::MessageInfo minfo;
