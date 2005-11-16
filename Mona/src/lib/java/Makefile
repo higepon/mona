@@ -11,6 +11,7 @@ CSOURCES = \
 	java/io/FileInputStream-CNI.cpp \
 	java/io/PrintStream-CNI.cpp \
 	java/util/Date-CNI.cpp \
+	SimpleCanvas-CNI.cpp \
 	org/monaos/IO-CNI.cpp \
 	org/monaos/SystemCall-CNI.cpp \
 	org/monaos/Message-CNI.cpp \
