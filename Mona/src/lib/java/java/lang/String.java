@@ -39,6 +39,14 @@ public final class String {
 		return this;
 	}
 
+	public byte[] getBytes() {
+		byte[] bytes = new byte[length()];
+		for (int i = 0; i < length(); i++) {
+			bytes[i] = (byte)(charAt(i) & 0xff);
+		}
+		return bytes;
+	}
+
 	public final boolean equals(Object obj) {
 		String s = obj.toString();
 		if (count != s.count) return false;
@@ -83,11 +91,12 @@ public final class String {
 			if (data[i] == ch) len++;
 		String[] sp = new String[len];
 		int n = 0, p = 0;
-		for (int i = 0; i <= count; i++)
+		for (int i = 0; i <= count; i++) {
 			if (i == count || data[i] == ch) {
 				sp[n++] = substring(p, i - p);
 				p = i + 1;
 			}
+		}
 		return sp;
 	}
 	
@@ -110,5 +119,31 @@ public final class String {
 			if (data[p + i] != s.data[i])
 				return false;
 		return true;
+	}
+	
+	public final String toLowerCase() {
+		char[] chars = new char[count];
+		for (int i = 0; i < count; i++) {
+			char c = data[i];
+			if ((c >= 'A') && (c <= 'Z')) {
+				chars[i] = (char)(c + 0x20);
+			} else {
+				chars[i] = c;
+			}
+		}
+		return new String(chars);
+	}
+	
+	public final String toUpperCase() {
+		char[] chars = new char[count];
+		for (int i = 0; i < count; i++) {
+			char c = data[i];
+			if ((c >= 'a') && (c <= 'z')) {
+				chars[i] = (char)(c - 0x20);
+			} else {
+				chars[i] = c;
+			}
+		}
+		return new String(chars);
 	}
 }

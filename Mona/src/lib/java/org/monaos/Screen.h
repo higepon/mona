@@ -6,6 +6,7 @@
 #pragma interface
 
 #include <java/lang/Object.h>
+#include <gcj/array.h>
 
 extern "Java"
 {
@@ -24,6 +25,9 @@ public:
   static jint getWidth ();
   static jint getHeight ();
   static jint getBpp ();
+  static jint getPixel (jint, jint);
+  static void putPixel (jint, jint, jint);
+  static void bitblt (jint, jint, jint, jint, jintArray);
   Screen ();
 
   static ::java::lang::Class class$;

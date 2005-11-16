@@ -6,6 +6,7 @@
 #pragma interface
 
 #include <java/lang/Object.h>
+#include <gcj/array.h>
 
 extern "Java"
 {
@@ -22,16 +23,16 @@ extern "Java"
 class org::monaos::Message : public ::java::lang::Object
 {
 public:
-  static jint register_to_server (jint, jboolean);
-  static jint get_server_thread_id (jint);
+  static jint lookupMainThread (::java::lang::String *);
   static jint send (jint, ::org::monaos::MessageInfo *);
-  static jint send (jint, jint, jint, jint, jint);
+  static jint send (jint, jint, jint, jint, jint, jbyteArray);
   static jint receive (::org::monaos::MessageInfo *);
-  static jint reply (::org::monaos::MessageInfo *, jint, jint);
+  static jint reply (::org::monaos::MessageInfo *, jint, jint, jbyteArray);
   static jint peek (::org::monaos::MessageInfo *, jint);
   static jboolean exist ();
-  static jint send_receive (::org::monaos::MessageInfo *, jint, jint, jint, jint, jint);
+  static jint sendReceive (::org::monaos::MessageInfo *, jint, jint, jint, jint, jint, jbyteArray);
   Message ();
+  static const jint THREAD_UNKNOWN = -1L;
   static const jint ID_MOUSE_SERVER = 0L;
   static const jint ID_KEYBOARD_SERVER = 1L;
   static const jint ID_FILE_SERVER = 2L;
@@ -41,7 +42,6 @@ public:
   static const jint ID_PE_SERVER = 6L;
   static const jint ID_MONITOR_SERVER = 7L;
   static const jint ID_NUMBER_OF_SERVERS = 8L;
-  static const jint THREAD_UNKNOWN = -1L;
   static const jint MSG_NONE = 0L;
   static const jint MSG_MAP = 1L;
   static const jint MSG_MEMORY_MAP_ID = 2L;
@@ -49,8 +49,45 @@ public:
   static const jint MSG_RESULT_ERROR = 4L;
   static const jint MSG_SERVER_START_OK = 5L;
   static const jint MSG_INTERRUPTED = 6L;
+  static const jint MSG_DISPOSE_HANDLE = 256L;
+  static const jint MSG_REGISTER_TO_SERVER = 272L;
+  static const jint MSG_UNREGISTER_FROM_SERVER = 273L;
+  static const jint MSG_KEY_REGIST_TO_SERVER = 512L;
+  static const jint MSG_KEY_UNREGIST_FROM_SERVER = 513L;
+  static const jint MSG_KEY_VIRTUAL_CODE = 514L;
+  static const jint MSG_MOUSE_REGIST_TO_SERVER = 768L;
+  static const jint MSG_MOUSE_UNREGIST_FROM_SERVER = 769L;
+  static const jint MSG_MOUSE_INFO = 770L;
+  static const jint MSG_MOUSE_ENABLE_CURSOR = 771L;
+  static const jint MSG_MOUSE_DISABLE_CURSOR = 772L;
+  static const jint MSG_MOUSE_GET_CURSOR_POSITION = 773L;
+  static const jint MSG_MOUSE_SET_CURSOR_POSITION = 774L;
+  static const jint MSG_FILE_READ_DATA = 1024L;
+  static const jint MSG_FILE_CHANGE_DRIVE = 1025L;
+  static const jint MSG_FILE_GET_CURRENT_DRIVE = 1026L;
+  static const jint MSG_FILE_CHANGE_DIRECTORY = 1027L;
+  static const jint MSG_FILE_GET_CURRENT_DIRECTORY = 1028L;
+  static const jint MSG_FILE_DECOMPRESS_BZ2 = 1029L;
+  static const jint MSG_FILE_DECOMPRESS_BZ2_FILE = 1030L;
+  static const jint MSG_FILE_DECOMPRESS_ST5 = 1031L;
+  static const jint MSG_FILE_DECOMPRESS_ST5_FILE = 1032L;
+  static const jint MSG_FILE_READ_DIRECTORY = 1040L;
+  static const jint MSG_FILE_OPEN = 1041L;
+  static const jint MSG_FILE_CLOSE = 1042L;
+  static const jint MSG_FILE_READ = 1043L;
+  static const jint MSG_FILE_SEEK = 1044L;
+  static const jint MSG_FILE_GET_SIZE = 1045L;
+  static const jint MSG_PROCESS_EXECUTE_FILE = 1280L;
+  static const jint MSG_PROCESS_CREATE_IMAGE = 1281L;
   static const jint MSG_THREAD_KILLED = 2048L;
   static const jint MSG_TIMER = 2049L;
+  static const jint MSG_PROCESS_GET_PROCESS_INFO = 4096L;
+  static const jint MSG_PROCESS_CREATED = 4097L;
+  static const jint MSG_PROCESS_TERMINATED = 4098L;
+  static const jint MSG_PROCESS_GET_COMMON_PARAMS = 4099L;
+  static const jint MSG_PROCESS_GRAB_STDOUT = 4336L;
+  static const jint MSG_PROCESS_UNGRAB_STDOUT = 4337L;
+  static const jint MSG_PROCESS_STDOUT_DATA = 4338L;
 
   static ::java::lang::Class class$;
 };

@@ -8,11 +8,13 @@
 #include <java/lang/Class.h>
 #include <gcj/cni.h>
 #include <gcj/field.h>
+#ifdef MONA
 #include <sms_gc/sms_gc.h>
 #include <sms_gc/sms_ptr_dict.h>
-#ifdef MONA
 #include <monapi.h>
 #else
+#include <sms_gc.h>
+#include <sms_ptr_dict.h>
 #include <string.h>
 #endif
 

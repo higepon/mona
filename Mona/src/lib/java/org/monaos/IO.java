@@ -7,6 +7,5 @@ public class IO {
 	public static native void outp16(int port, short value);
 	public static native int inp32(int port);
 	public static native void outp32(int port, int value);
-	public static native int get_io();
 	public static native void set_irq(int irq, boolean enabled, boolean auto_ir2);
 }

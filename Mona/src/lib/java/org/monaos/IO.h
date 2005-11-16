@@ -27,7 +27,6 @@ public:
   static void outp16 (jint, jshort);
   static jint inp32 (jint);
   static void outp32 (jint, jint);
-  static jint get_io ();
   static void set_irq (jint, jboolean, jboolean);
   IO ();
 

@@ -1,39 +1,38 @@
+#define private public
+#include <java/lang/Class.h>
+#undef private
+
+#include <gcj/cni.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
-#include <gcj/cni.h>
+
+#ifdef MONA
 #include <sms_gc/sms_gc.h>
 #include <sms_gc/sms_ptr_dict.h>
-#ifdef MONA
 #include <monapi.h>
 #else
+#include <sms_gc.h>
+#include <sms_ptr_dict.h>
 #include <stdio.h>
 #include <string.h>
 #endif
 
 sms_ptr_dict* _Jv_methodList = NULL;
+extern "C" sms_ptr_dict* sms_gc_new_ptr_dict();
 
 ::java::lang::Class _Jv_voidClass, _Jv_booleanClass, _Jv_byteClass, _Jv_charClass, _Jv_shortClass, _Jv_intClass, _Jv_longClass, _Jv_floatClass, _Jv_doubleClass;
 
-class java::lang::VMClassLoader : public ::java::lang::Object {
-public:
-	static void initialize() {
-		_Jv_voidClass   .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_booleanClass.vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_byteClass   .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_charClass   .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_shortClass  .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_intClass    .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_longClass   .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_floatClass  .vtable = JV_PRIMITIVE_VTABLE;
-		_Jv_doubleClass .vtable = JV_PRIMITIVE_VTABLE;
-	}
-};
-
-extern "C" sms_ptr_dict* sms_gc_new_ptr_dict();
-
 jint _Jv_CreateJavaVM(void* vm_args) {
+	_Jv_voidClass   .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_booleanClass.vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_byteClass   .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_charClass   .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_shortClass  .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_intClass    .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_longClass   .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_floatClass  .vtable = JV_PRIMITIVE_VTABLE;
+	_Jv_doubleClass .vtable = JV_PRIMITIVE_VTABLE;
 	_Jv_methodList = sms_gc_new_ptr_dict();
-	::java::lang::VMClassLoader::initialize();
 	JvInitClass(&::java::lang::System::class$);
 	::java::lang::System::out = new ::java::io::PrintStream(NULL);
 	return 0;
@@ -85,6 +84,7 @@ extern "C" jobjectArray _Jv_NewObjectArray(jsize length, jclass klass, jobject i
 		jobject* p = elements(result);
 		for (int i = 0; i < length; i++)
 			p[i] = init;
+		p[length] = NULL;
 	}
 	*(jsize*)((jobject)result + 1) = length;
 	return result;
@@ -93,15 +93,27 @@ extern "C" jobjectArray _Jv_NewObjectArray(jsize length, jclass klass, jobject i
 extern "C" void _Jv_CheckArrayStore(jobjectArray array, jobject obj) {
 }
 
-extern "C" jobject _Jv_CheckCast(jclass klass, jobject obj) {
-	return obj;
-}
-
 extern "C" jboolean _Jv_IsInstanceOf(jobject obj, jclass cls) {
-	return true;
+	jclass klass = obj->getClass();
+	for (; klass != NULL; klass = klass->superclass)
+		if (cls == klass) return true;
+	klass = obj->getClass();
+	for (int i = 0; i < klass->interface_count; i++)
+		if (cls == klass->interfaces[i]) return true;
+	return false;
 }
 
-extern "C" void* _Jv_LookupInterfaceMethodIdx(java::lang::Class* cls1, java::lang::Class* cls2, int idx) {
+extern "C" void* _Jv_LookupInterfaceMethodIdx (jclass klass, jclass iface, int method_idx)
+{
+	char* target1 = iface->methods[method_idx - 1].name->data;
+	char* target2 = iface->methods[method_idx - 1].signature->data;
+	for (int i = 0; i < klass->method_count; i++) {
+		if (strcmp(target1, klass->methods[i].name->data) == 0 && strcmp(target2, klass->methods[i].signature->data) == 0) {
+			return klass->methods[i].ncode;
+		}
+	}
+	printf("Can't find method '%s(%s)' in type '%s'\n", target1, target2, klass->name->data, target1);
+	*(int*)NULL = 0;
 	return 0;
 }
 
@@ -149,6 +161,32 @@ jstring _Jv_NewStringUTF(const char* bytes) {
 extern "C" void* sms_gc_get_end_stack();
 
 extern "C" void _Jv_PrintStackTrace() {
+/*
+	// doesnt work well
+	void** ebp;
+	asm("movl %%ebp, %0" : "=g"(ebp));
+	char* end_stack = (char*)sms_gc_get_end_stack();
+	for (; (char*)ebp < end_stack; ebp = (void**)*ebp) {
+		void* addr = *(ebp + 1);
+		sms_ptr_dict_memory* data = NULL;
+		sms_ptr_dict_linear* pp = _Jv_methodList->get_first();
+		for (; pp != NULL; pp = _Jv_methodList->get_next()) {
+			for (int i = 0; i < pp->get_length(); i++) {
+				sms_ptr_dict_memory* m = pp->get_data(i);
+				if (m->addr > addr) break;
+				data = m;
+			}
+		}
+		if (data != NULL && data->size != 0) {
+			jclass klass = (jclass)data->size;
+			_Jv_Method* method = (_Jv_Method*)data->type;
+			if (method->name->data[0] != '<') {
+				printf("    at %s.%s (%x)\n",
+					klass->name->data, method->name->data, (int)method->ncode);
+			}
+		}
+	}
+*/
 	char* start_stack;
 	asm("movl %%ebp, %0" : "=g"(start_stack));
 	char* end_stack = (char*)sms_gc_get_end_stack() - sizeof(void*);
@@ -167,9 +205,8 @@ extern "C" void _Jv_PrintStackTrace() {
 			jclass klass = (jclass)data->size;
 			_Jv_Method* method = (_Jv_Method*)data->type;
 			if (method->name->data[0] != '<') {
-				printf("    at ");
-				::java::lang::System::out->print(klass->getName());
-				printf(".%s\n", method->name->data);
+				printf("    at %s.%s (0x%x)\n",
+					klass->name->data, method->name->data, (int)method->ncode);
 			}
 		}
 	}
@@ -185,4 +222,13 @@ extern "C" void _Jv_ThrowBadArrayIndex(int index) {
 	printf("ArrayIndexOutOfBoundsException: %d\n", index);
 	_Jv_PrintStackTrace();
 	*(int*)NULL = 0;
+}
+
+extern "C" jobject _Jv_CheckCast(jclass klass, jobject obj) {
+	if (!_Jv_IsInstanceOf(obj, klass)) {
+		printf("ClassCastException: %s -> %s\n", obj->getClass()->name->data, klass->name->data);
+		_Jv_PrintStackTrace();
+		*(int*)NULL = 0;
+	}
+	return obj;
 }

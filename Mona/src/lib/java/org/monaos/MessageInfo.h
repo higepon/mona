@@ -6,6 +6,7 @@
 #pragma interface
 
 #include <java/lang/Object.h>
+#include <gcj/array.h>
 
 extern "Java"
 {
@@ -27,6 +28,7 @@ public:
   jint arg2;
   jint arg3;
   jint from;
+  jbyteArray str;
 
   static ::java::lang::Class class$;
 };

@@ -75,11 +75,13 @@ public final class StringBuffer {
 	}
 
 	public StringBuffer append(Object obj) {
+		if (obj == null) return this;
 		append(obj.toString());
 		return this;
 	}
 
 	public StringBuffer append(String str) {
+		if (str == null) return this;
 		for (int i = 0; i < str.length(); i++) {
 			append(str.charAt(i));
 		}
@@ -87,6 +89,7 @@ public final class StringBuffer {
 	}
 
 	public StringBuffer append(StringBuffer sb) {
+		if (sb == null) return this;
 		append(sb.toString());
 		return this;
 	}

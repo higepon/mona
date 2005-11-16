@@ -1,28 +1,33 @@
 TARGET   = $(LIBDIR)/libjava.a
 CSOURCES = \
-	java_main.cpp \
-	java_lang.cpp \
+	javamain.cpp \
+	javalang.cpp \
 	java/lang/Class-CNI.cpp \
 	java/lang/Math-CNI.cpp \
 	java/lang/Object-CNI.cpp \
 	java/lang/System-CNI.cpp \
+	java/lang/Thread-CNI.cpp \
+	java/io/File-CNI.cpp \
+	java/io/FileInputStream-CNI.cpp \
 	java/io/PrintStream-CNI.cpp \
 	java/util/Date-CNI.cpp \
-	java/awt/FontMetrics-CNI.cpp \
-	java/awt/Image-CNI.cpp \
-	java/awt/Window-CNI.cpp \
-	SimpleCanvas-CNI.cpp \
 	org/monaos/IO-CNI.cpp \
+	org/monaos/SystemCall-CNI.cpp \
 	org/monaos/Message-CNI.cpp \
+	org/monaos/MonAPI-CNI.cpp \
 	org/monaos/Screen-CNI.cpp
 JBASESRC = \
 	java/lang/Object.java \
 	java/lang/Class.java
 JSOURCES = \
-	java/lang/String.java \
-	gnu/gcj/runtime/StringBuffer.java \
-	java/lang/System.java \
+	java/lang/Integer.java \
 	java/lang/Math.java \
+	java/lang/String.java \
+	java/lang/StringBuffer.java \
+	java/lang/System.java \
+	java/lang/Thread.java \
+	java/io/File.java \
+	java/io/FileInputStream.java \
 	java/io/PrintStream.java \
 	java/util/ArrayList.java \
 	java/util/Date.java \
@@ -66,23 +71,28 @@ JSOURCES = \
 	java/awt/Window.java \
 	SimpleCanvas.java \
 	org/monaos/IO.java \
+	org/monaos/KeyInfo.java \
+	org/monaos/Keys.java \
+	org/monaos/PsInfo.java \
+	org/monaos/SystemCall.java \
 	org/monaos/MessageInfo.java \
 	org/monaos/Message.java \
+	org/monaos/MonAPI.java \
 	org/monaos/Screen.java
+GCJSTRBUF = gnu/gcj/runtime/StringBuffer.java
 
 MONADIR  = ../../..
 include $(MONADIR)/env/monapi.inc
 CLSPATH = --bootclasspath=$(MONADIR)/src/lib/java
 JFLAGS  = --encoding=cp932 -Wall -O3 $(CLSPATH)
 COBJECTS = $(CSOURCES:%.cpp=%.o)
-JOBJECTS = $(JSOURCES:%.java=%.o)
-JHEADERS = $(JSOURCES:%.java=%.h)
-JCLASSES = $(JSOURCES:%.java=%.class)
+JOBJECTS = $(JSOURCES:%.java=%.o) $(GCJSTRBUF:%.java=%.o)
+JHEADERS = $(JSOURCES:%.java=%.h) $(GCJSTRBUF:%.java=%.h)
+JCLASSES = $(JSOURCES:%.java=%.class) $(GCJSTRBUF:%.java=%.class)
 OBJECTS  = $(COBJECTS) $(JOBJECTS)
 INCLUDE += -I$(MONADIR)/src/lib/java
 
 all: $(TARGET)
-
 $(COBJECTS): $(JHEADERS)
 $(JHEADERS): $(JCLASSES)
 
@@ -110,11 +120,18 @@ $(TARGET): $(OBJECTS)
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@
 
+$(GCJSTRBUF): java/lang/StringBuffer.java
+	mkdir -p gnu/gcj/runtime
+	echo "package gnu.gcj.runtime;" > $@
+	echo -n "//" >> $@
+	cat $< >> $@
+
 realize.o: realize.cpp $(JHEADERS)
 	g++ -O0 -c $<
 
 clean:
 	rm -f $(TARGET) $(OBJECTS) $(JHEADERS) $(JCLASSES)
+	-rm -rf gnu
 
 depend:
 	$(CXX) -MM $(INCLUDE) -I. $(CXXFLAGS) $(CSOURCES) > dependencies

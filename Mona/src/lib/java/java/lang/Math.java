@@ -6,6 +6,9 @@ public class Math {
 	public static int abs(int a) {
 		return a >= 0 ? a : -a;
 	}
+	public static double abs(double a) {
+		return a >= 0 ? a : -a;
+	}
 	public static native double sqrt(double a);
 	public static native double sin(double a);
 	public static native double cos(double a);
@@ -13,6 +16,9 @@ public class Math {
 	public static native double acos(double a);
 	public static native double atan(double a);
 	public static native double atan2(double y, double x);
+	public static native double log(double a);
+	public static native double floor(double a);
+	public static native double exp(double a);
 	public static native double pow(double a, double b);
 
 	private static double seed;

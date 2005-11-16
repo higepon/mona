@@ -32,12 +32,12 @@ java::util::Date::create (::java::util::Date *date)
 	struct tm *kdate;
 	time(&timer);
 	kdate = localtime(&timer);
-	date->year = kdate.tm_year;
-	date->month = kdate.tm_mon;
-	date->date = kdate.tm_mday;
-	date->hour = kdate.tm_hour;
-	date->minutes = kdate.tm_min;
-	date->second = kdate.tm_sec;
+	date->year = kdate->tm_year;
+	date->month = kdate->tm_mon;
+	date->date = kdate->tm_mday;
+	date->hour = kdate->tm_hour;
+	date->minutes = kdate->tm_min;
+	date->second = kdate->tm_sec;
 #endif
 }
 

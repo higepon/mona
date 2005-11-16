@@ -1,8 +1,8 @@
 package java.util;
 
 public class ArrayList {
-	protected Object[] data;
-	protected int count;
+	private Object[] data;
+	private int count;
 	
 	public ArrayList() {
 		data = new Object[10];

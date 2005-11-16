@@ -5,27 +5,20 @@
 // Be aware: running `gcjh -stubs ' once more for this class may
 // overwrite any edits you have made to this file.
 
-#include <java/lang/System.h>
+#include <java/lang/Thread.h>
 #include <gcj/cni.h>
 #ifdef MONA
-#include <sms_gc/sms_gc.h>
 #include <monapi.h>
-#else
-#include <sms_gc.h>
-#include <stdlib.h>
 #endif
 
 void
-java::lang::System::exit (jint status)
+Thread::sleep (jlong millis)
 {
-	::exit(status);
-}
-
-
-void
-java::lang::System::gc ()
-{
-	::sms_gc_collect();
+#ifdef MONA
+	int ms = (int)millis;
+	if (ms < 10) ms = 10;
+	syscall_sleep(ms / 10);
+#endif
 }
 
 
