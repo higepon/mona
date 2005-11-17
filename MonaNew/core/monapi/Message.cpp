@@ -103,7 +103,8 @@ void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword 
 
     if (str != NULL)
     {
-        strncpy(info->str, str, sizeof(info->str));
+//        strncpy(info->str, str, sizeof(info->str));
+	memcpy(info->str, str, 128);
     }
     return;
 }

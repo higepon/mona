@@ -1,3 +1,7 @@
+2005-11-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/Message.cpp (create): Message‚ÌƒRƒs[‚É–â‘è‚ª‚ ‚Á‚½‚Ì‚ÅC³
+
 2005-10-31  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi: new‚Å size 0‚ÌŠ„‚è“–‚Ä‚É‘Î‰
