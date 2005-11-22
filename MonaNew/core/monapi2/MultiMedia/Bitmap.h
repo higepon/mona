@@ -34,7 +34,7 @@ public:
 ///@name 生成
 //@{
 	Bitmap()				{init();}				///<空の内容で作成
-	Bitmap(pcchar1 cszPath)	{init();read(cszPath);}	///<cszPathのファイルで作成
+	Bitmap(cpchar1 cszPath)	{init();read(cszPath);}	///<cszPathのファイルで作成
 	Bitmap(int iWidth,int iHeight)	{getCanvas(iWidth,iHeight);}	///<大きさを指定して作成。
 //@}
 
@@ -67,8 +67,8 @@ public:
 
 ///@name ファイル操作
 //@{
-	bool read(pcchar1 szPath);						///<szPathのファイルで作成
-	void write(pcchar1 cszPath)	const;				///<.bmpをディスクに書き出す
+	bool read(cpchar1 szPath);						///<szPathのファイルで作成
+	void write(cpchar1 cszPath)	const;				///<.bmpをディスクに書き出す
 //@}
 
 

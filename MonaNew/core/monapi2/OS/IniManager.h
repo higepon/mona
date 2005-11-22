@@ -28,38 +28,38 @@ typedef StringMap<String> StringStringMap;
 class IniManager
 {
 public:
-	IniManager(pcchar1 cszPath)	{init();read(cszPath);}		///<コンストラクタ
+	IniManager(cpchar1 cszPath)	{init();read(cszPath);}		///<コンストラクタ
 	IniManager()				{init();}					///<コンストラクタ
 	void init()					{m_strstrmap.initHashTable(101);}
 
-	void read(pcchar1 cszPath);						///<ファイルから読み込む
-	void write(pcchar1 cszPath);					///<ファイルに書き込む
+	void read(cpchar1 cszPath);						///<ファイルから読み込む
+	void write(cpchar1 cszPath);					///<ファイルに書き込む
 	void toString(String* pstrOut);					///<内部データを文字列形式にする。
 
 
 //取得
 ///@name 値をゲット
 //@{
-	bool	lookup(pcchar1 cszDir,pcchar1 cszKey,bool bDefault);
-	int		lookup(pcchar1 cszDir,pcchar1 cszKey,int iDefault);
-	float	lookup(pcchar1 cszDir,pcchar1 cszKey,float fDefault);
-	pcchar1	lookup(pcchar1 cszDir,pcchar1 cszKey,pcchar1 cszDefault);
+	bool	lookup(cpchar1 cszDir,cpchar1 cszKey,bool bDefault);
+	int		lookup(cpchar1 cszDir,cpchar1 cszKey,int iDefault);
+	float	lookup(cpchar1 cszDir,cpchar1 cszKey,float fDefault);
+	cpchar1	lookup(cpchar1 cszDir,cpchar1 cszKey,cpchar1 cszDefault);
 
 //@}
 
 ///@name 値をセット
 //@{
-	void	setAt(pcchar1 cszDir,pcchar1 cszKey	,bool bValue);
-	void	setAt(pcchar1 cszDir,pcchar1 cszKey	,int iValue);
-	void	setAt(pcchar1 cszDir,pcchar1 cszKey	,float fValue);
-	void	setAt(pcchar1 cszDir,pcchar1 cszKey	,pcchar1 cszValue);
+	void	setAt(cpchar1 cszDir,cpchar1 cszKey	,bool bValue);
+	void	setAt(cpchar1 cszDir,cpchar1 cszKey	,int iValue);
+	void	setAt(cpchar1 cszDir,cpchar1 cszKey	,float fValue);
+	void	setAt(cpchar1 cszDir,cpchar1 cszKey	,cpchar1 cszValue);
 //@}
 
 	const	StringStringMap* getMap(){return &m_strstrmap;}		///<全ての要素を巡回する時のための直接呼び出し
 
 protected:
-	void	parse(pcchar1 cszContent);	///<szContentを解析し、含まれている"キー - 値"を取り出す
-	bool	isLineComment(pcchar1 p);
+	void	parse(cpchar1 cszContent);	///<szContentを解析し、含まれている"キー - 値"を取り出す
+	bool	isLineComment(cpchar1 p);
 
 
 //メンバ

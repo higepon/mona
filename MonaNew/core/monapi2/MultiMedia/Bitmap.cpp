@@ -234,7 +234,7 @@ void Bitmap::fill(colort color)
 	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool Bitmap::read(pcchar1 cszPath)
+bool Bitmap::read(cpchar1 cszPath)
 {
 	File file;
 	if (! file.open(cszPath))		return false;
@@ -269,7 +269,7 @@ bool Bitmap::read(pcchar1 cszPath)
 	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Bitmap::write(pcchar1 cszPath) const
+void Bitmap::write(cpchar1 cszPath) const
 {
 	ASSERT(m_iBitCount==8 || m_iBitCount==24);
 

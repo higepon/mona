@@ -46,7 +46,7 @@ int compareDirKeyValue(const void *p, const void *q)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool IniManager::isLineComment(pcchar1 p)
+bool IniManager::isLineComment(cpchar1 p)
 {
 	if (StringFn::isEmpty(p))		return true;
 
@@ -64,7 +64,7 @@ bool IniManager::isLineComment(pcchar1 p)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::read(pcchar1 cszPath)
+void IniManager::read(cpchar1 cszPath)
 {
 //ファイルから読み出し。
 	String str;
@@ -81,7 +81,7 @@ void IniManager::read(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::parse(pcchar1 cszContent)
+void IniManager::parse(cpchar1 cszContent)
 {
 	m_strCurDir.empty();
 
@@ -91,7 +91,7 @@ void IniManager::parse(pcchar1 cszContent)
 	for (int i=0;i<SDLine.getCount();i++)
 	{
 //現在の行。
-		pcchar1 pLine = SDLine.getAt(i);
+		cpchar1 pLine = SDLine.getAt(i);
 //コメント行ならスキップ
 		if (isLineComment(pLine))		continue;
 
@@ -99,8 +99,8 @@ void IniManager::parse(pcchar1 cszContent)
 		if (pLine[0]=='[')
 		{
 //ディレクトリ名の初めと終わり。
-			pcchar1 pStart = pLine+1;
-			pcchar1 pEnd = StringFn::find(pLine,']');
+			cpchar1 pStart = pLine+1;
+			cpchar1 pEnd = StringFn::find(pLine,']');
 			if (pEnd==NULL)	pEnd = StringFn::getEnd(pStart);	//閉じカッコがないのはおかしいがなんとか修正する。
 			m_strCurDir.copy(pStart,pEnd-pStart);
 		}
@@ -129,12 +129,12 @@ void IniManager::parse(pcchar1 cszContent)
 				}
 
 //先頭を見つける。
-				pcchar1 pStart = strValueUnified;
+				cpchar1 pStart = strValueUnified;
 //先頭の空白をスキップ。
 				while (*pStart==' ' || *pStart=='	')	pStart++;
 
 //最後を見つける。
-				pcchar1 pEnd=pStart;
+				cpchar1 pEnd=pStart;
 //="～"形式だったら対応する"を見つける。
 				if (*pStart=='"')
 				{
@@ -194,7 +194,7 @@ void IniManager::toString(String* pstrOut)
 
 //文字列に出力
 	String strLine;
-	pcchar1 cszLastDir="";
+	cpchar1 cszLastDir="";
 	for (i=0;i<iCount;i++)
 	{
 //新しいディレクトリになったらディレクトリセクションを挿入。
@@ -215,7 +215,7 @@ void IniManager::toString(String* pstrOut)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::write(pcchar1 cszPath)
+void IniManager::write(cpchar1 cszPath)
 {
 	String str;
 	toString(&str);
@@ -226,9 +226,9 @@ void IniManager::write(pcchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,bool bDefault)
+bool IniManager::lookup(cpchar1 cszDir,cpchar1 cszKey,bool bDefault)
 {
-	pcchar1 p=lookup(cszDir,cszKey,"");
+	cpchar1 p=lookup(cszDir,cszKey,"");
 	return (StringFn::isEmpty(p))?bDefault:(StringFn::toInt(p)!=0);
 }
 
@@ -236,9 +236,9 @@ bool IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,bool bDefault)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-int	IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,int iDefault)
+int	IniManager::lookup(cpchar1 cszDir,cpchar1 cszKey,int iDefault)
 {
-	pcchar1 p=lookup(cszDir,cszKey,"");
+	cpchar1 p=lookup(cszDir,cszKey,"");
 	return (StringFn::isEmpty(p))?iDefault:StringFn::toInt(p);
 }
 
@@ -246,9 +246,9 @@ int	IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,int iDefault)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-float IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,float fDefault)
+float IniManager::lookup(cpchar1 cszDir,cpchar1 cszKey,float fDefault)
 {
-	pcchar1 p=lookup(cszDir,cszKey,"");
+	cpchar1 p=lookup(cszDir,cszKey,"");
 	return (StringFn::isEmpty(p))?fDefault:(float)StringFn::toFloat(p);
 }
 
@@ -256,7 +256,7 @@ float IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,float fDefault)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-pcchar1	IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,pcchar1 cszDefault)
+cpchar1	IniManager::lookup(cpchar1 cszDir,cpchar1 cszKey,cpchar1 cszDefault)
 {
 	String	strFullKey;
 	strFullKey.format("%s/%s",cszDir,cszKey);
@@ -273,7 +273,7 @@ pcchar1	IniManager::lookup(pcchar1 cszDir,pcchar1 cszKey,pcchar1 cszDefault)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,bool bValue)
+void IniManager::setAt(cpchar1 cszDir,cpchar1 cszKey,bool bValue)
 {
 	setAt(cszDir,cszKey,bValue);
 }
@@ -282,7 +282,7 @@ void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,bool bValue)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,int iValue)
+void IniManager::setAt(cpchar1 cszDir,cpchar1 cszKey,int iValue)
 {
 	char1 szValue[32];
 	StringFn::toString(szValue,iValue);
@@ -294,7 +294,7 @@ void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,int iValue)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,float fValue)
+void IniManager::setAt(cpchar1 cszDir,cpchar1 cszKey,float fValue)
 {
 	char1 szValue[32];
 	StringFn::format(szValue,"%f",fValue);
@@ -306,7 +306,7 @@ void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,float fValue)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void IniManager::setAt(pcchar1 cszDir,pcchar1 cszKey,pcchar1 cszValue)
+void IniManager::setAt(cpchar1 cszDir,cpchar1 cszKey,cpchar1 cszValue)
 {
 	String strFullKey;
 	strFullKey.format("%s/%s",cszDir,cszKey);
