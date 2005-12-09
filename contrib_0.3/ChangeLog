@@ -1,3 +1,7 @@
+2005-12-09  higepon  <higepon@users.sourceforge.jp>
+
+        * tmpmonalibc,Mesa,Mesa-gearsの取り込み
+
 2005-08-29  bayside
 
         * Shells/mshell: SHELL.EX5だとCUIシェルと名前がかぶるのでMSHELL.EX5に変更した

@@ -1,0 +1,32 @@
+# Configuration for OSMesa library on Mona
+
+include $(TOP)/configs/default
+
+CONFIG_NAME = mona
+
+# Compiler and flags
+MONAINCDIR = -I$(TOP)/../tmpmonalibc -I$(MONADIR)/include -I$(MONADIR)/include/monalibc -I$(MONADIR)/include/monapi
+CMONAFLAGS = -nostdlib -Wall -fno-builtin -nostdinc $(MONAINCDIR)
+
+CC = gcc
+CXX = g++
+CFLAGS = $(CMONAFLAGS) -Os -DMONA -DNDEBUG -DHOST_CYGWIN -ffast-math -std=c99
+CXXFLAGS = $(CMONAFLAGS) -Os -DMONA -DNDEBUG -DHOST_CYGWIN -ffast-math -fno-exceptions -fno-rtti
+
+
+# Library names
+OSMESA_LIB = OSMesa
+OSMESA_LIB_NAME = OSMESA.DLL
+GLU_LIB_NAME = GLU.DLL
+
+
+# Directories
+SRC_DIRS = mesa glu
+DRIVER_DIRS = osmesa
+PROGRAM_DIRS = 
+
+
+# Dependencies
+OSMESA_LIB_DEPS = -L$(MONADIR)/lib -L$(TOP)/../tmpmonalibc -ltmpmonalibc-imp -lmonalibc-imp -lmonapi-imp
+GLU_LIB_DEPS = -L$(MONADIR)/lib -L$(TOP)/../tmpmonalibc -L$(TOP)/lib -lOSMesa-imp -ltmpmonalibc-imp -lmonalibc-imp -lmonapi-imp
+APP_LIB_DEPS = -lOSMesa-imp
