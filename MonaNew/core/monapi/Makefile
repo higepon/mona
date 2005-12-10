@@ -112,4 +112,5 @@ endif
 	  rm -f $(SHAREDIR)/$$file; \
 	done
 
-include dependencies
+dependencies: depend
+-include dependencies
