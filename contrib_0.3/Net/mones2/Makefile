@@ -1,0 +1,16 @@
+TARGET  = MONES2
+SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp
+
+INSTDIR = $(BINDIR)/APPS
+
+ADDLINK    = -lnicdrv -lPci -lmonalibc# -lmonapi2-imp
+ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
+
+SHAREDIR   = $(MONADIR)/share
+ifneq ($(BUILD_TARGET),ELF)
+include $(SHAREDIR)/configs/monapi-ex5.inc
+else
+include $(SHAREDIR)/configs/monapi-el5.inc
+endif
+
+include dependencies
