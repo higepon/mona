@@ -347,7 +347,7 @@ int MonaMain(List<char*>* pekoe)
   const int width = 200, height = 200;
   _A<byte> buf(width * height * 3);
 
-  OSMesaContext ctx = OSMesaCreateContext(OSMESA_RGB, NULL);
+  OSMesaContext ctx = OSMesaCreateContext(OSMESA_BGR, NULL);
   if (OSMesaMakeCurrent(ctx, buf.get(), GL_UNSIGNED_BYTE, width, height) == GL_FALSE)
   {
     printf("Failed to OSMesaMakeCurrent().\n");
@@ -369,7 +369,7 @@ int MonaMain(List<char*>* pekoe)
     byte* pBuf = buf.get();
     for (int y = 0; y < height; y++)
     {
-      byte* p = vram + (sw * y + 128) * bypp;
+      byte* p = vram + (sw * (height - y - 1) + 128) * bypp;
       for (int x = 0; x < width; x++)
       {
         if (bypp == 2)

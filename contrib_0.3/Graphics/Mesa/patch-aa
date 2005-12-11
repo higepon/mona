@@ -1,0 +1,11 @@
+--- Mesa-6.2.1/Makefile.orig	2004-12-06 03:25:19.000000000 +0900
++++ Mesa-6.2.1/Makefile	2005-06-26 10:29:58.000000000 +0900
+@@ -99,6 +99,8 @@
+ linux-x86-64-static \
+ linux-x86-glide \
+ linux-x86-static \
++mona \
++mona-static \
+ netbsd \
+ openbsd \
+ osf1 \

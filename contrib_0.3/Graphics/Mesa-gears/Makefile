@@ -10,6 +10,4 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-ADDLINK  = -L../Mesa-6.2.1/lib -lOSMesa-imp -lmonalibc-imp
-INCLUDE += -I../Mesa-6.2.1/include -I../tmpmonalibc
-
+ADDLINK  = -lOSMesa-imp -lmonalibc-imp
