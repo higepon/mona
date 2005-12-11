@@ -1,6 +1,6 @@
-2005-12-11  higepon  <higepon@users.sourceforge.jp>
+2005-12-12  bayside
 
-        * core/monapi/Makefile: dependenciesがない場合に対処
+        * 全体: Mona0.3.0alpha6 からバックポート
 
 2005-12-07  higepon  <higepon@users.sourceforge.jp>
 
@@ -19,92 +19,150 @@
 
         * core/kernel/Scheduler.cpp (LookupMainThread): を追加。
 
+2005-10-02  bayside
+
+        * include/gcj: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+        * include/java: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+        * src/lib/java: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+        * samples/java: JAVAde3D-2-fix 適用（staticフィールドの初期化と自動GC登録）
+
+2005-09-27  bayside
+
+        * include/java: 新規追加
+
+        * include/sms_gc: 新規追加
+
+        * src/lib/java: 新規追加
+
+        * src/lib/sms_gc: 新規追加
+
+2005-09-23  bayside
+
+        * samples/non-gui/gcj: 新規追加
+
+        * samples/non-gui/Makefile: gcj追加
+
+        * env/monapi.inc: Javaソース用記述追加
+
+2005-09-07  bayside
+
+        * tools/monafont/mona6x12.bit0: 6x12の固定幅表示をしたときに表示が乱れないよう調整
+
 2005-09-09  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Process.h : とりあえず MemoryAllocatorを導入。
 
-2005-09-07  bayside
-
-        * core/monapi2/Basic/LanguageChar.cpp: memset, memcpy が未定義参照になる不具合を修正
-
-2005-09-07  higepon  <higepon@users.sourceforge.jp>
-
-        * core/monapi2/Basic/malloc.cpp: stdio.h参照をやめる
-
-        * core/kernel/Process.cpp (AllocateMemory): なんとなく実装中
-
-2005-09-06  bayside
-
-        * core/monapi2/Makefile: Monapi2ビルド用に用意
-
-        * core/monapi2/Basic/File.cpp: Monaでビルドできるように修正
-
-        * core/monapi2/Basic/File.h: Monaでビルドできるように修正
-
-        * core/monapi2/Basic/malloc.cpp: dlmallocをmonapiから持ってきた
-
-2005-09-06  higepon  <higepon@users.sourceforge.jp>
-
-        * core/kernel/Process.h (class LinearAddressAllocator): 追加。
-
-2005-08-29  bayside
-
-        * core/shell_server/Shell.cpp: GUIに依存する部分を削除
-
 2005-08-29  higepon  <higepon@users.sourceforge.jp>
 
-        * core/kernel/core.asm (from_user): ds, esをiretdの復帰直前にした。(thanks Philip Lawatsch)
+        * src/kernel/core.asm (from_user): ds,esの復帰をiretd直前に。
 
 2005-08-26  higepon  <higepon@users.sourceforge.jp>
 
-        * core/kernel/core.asm (from_user): espをハンドラ中で復元しない。(thanks Philip Lawatsch)
-
         * src/kernel/core.asm :arch_save_thread_registers2で正しくスレッド情報が保存できていないバグを修正。(thanks Philip Lawatsch)
+
+2005-08-24  higepon  <higepon@users.sourceforge.jp>
+
+        * src/lib/jpegls/jpegls.cpp: decode_initで未初期化変数があったのでコンストラクタから呼ばないようにした。
 
 2005-08-22  higepon  <higepon@users.sourceforge.jp>
 
-        * core/process_server/main.cpp (ExecuteFile): deleteバグ修正。
+        * src/servers/process/main.cpp : バグ修正。 
 
-2005-08-16  higepon  <higepon@users.sourceforge.jp>
+2005-08-21  bayside
 
-        * core/kernel/MemoryAllocator.cpp: 追加。
+        * src/servers/shell/InternalCommands.cpp: mem追加
 
-2004-08-11  bayside
+        * apps/gui/monafile/FileManager.cpp: MonaDatショートカット追加
 
-        * core/keyboard_server/KeyboardManager.cpp: Shiftキー等の修飾キーを押しただけで前の文字コードが送信される不具合修正。
+        * apps/gui/MonaDat/Form1.cpp: char path[32] がバッファーオーバーフローしていたので対策
 
-2004-08-10  bayside
+        * apps/gui/MonaDat/MonaForms: 削除
 
-        * core/shell_server/main.cpp: デフォルトアプリケーション形式をEX2からEX5に修正
+        * include/gui/System/Mona/Forms/ScrollBar.h: 新規追加
 
-2005-07-26  higepon  <higepon@users.sourceforge.jp>
+        * include/gui/System/Mona/Forms/HScrollBar.h: 新規追加
 
-        * core/kernel/sysresource.cpp: 不要なので削除。
+        * include/gui/System/Mona/Forms/VScrollBar.h: 新規追加
 
-2005-07-24  higepon  <higepon@users.sourceforge.jp>
+        * include/gui/System/Mona/Forms/ScrollableControl.h: 新規追加
 
-        * tool/mkimg/Makefile (iso): mona.isoを出力する。
+        * src/lib/gui/System/Mona/Forms/ScrollBar.cpp: 新規追加
 
-        * core/file_server/FileServer.h (Initialize): ファイルサーバを変更。CDブートに失敗したらFDブートを試みる。
+        * src/lib/gui/System/Mona/Forms/ScrollableControl.cpp: 新規追加
 
-        * tool/mkimg/Makefile :毎回make cleanするのが面倒なので all:ターゲットでmona.imgを消すことにした。
+        * src/lib/gui/Makefile: ScrollBar, ScrollableControl追加
 
-2005-07-21  higepon  <higepon@users.sourceforge.jp>
+2005-08-19  bayside
 
-        * Makefile (all): topにMakefile追加。
+        * src/servers/process/main.cpp: たまに落ちるため暫定対策（早急な対策求む）
 
-2005-07-20  higepon  <higepon@users.sourceforge.jp>
+        * src/lib/baygui/awt/Window.cpp: info.arg1 -> this->timerID
 
-        * core/kernel/Makefile : tester.h, tesr_higepon.cpp削除。 
+2005-08-17  bayside
 
-        * core/kernel/tester.h: test_mjt.hファイル削除(新ツリーのみ)
+        * apps/non-gui/monappt: 新規追加
+
+        * src/lib/gui/System/Mona/Forms/Application.cpp: MSG_GUISERVER_DISPOSEWINDOWを受け付けるように修正
+
+        * apps/non-gui/jpegdemo: contrib_0.3からバックポート
+
+        * apps/baygui/gshell: contrib_0.3からバックポート
+
+        * include/baygui: contrib_0.3からバックポート
+
+        * src/lib/baygui: contrib_0.3からバックポート
+
+        * src/servers/gui/main.cpp: contrib_0.3からバックポート
+
+        * src/servers/gui/Window.cpp: contrib_0.3からバックポート
+
+        * src/servers/gui/Window.h: contrib_0.3からバックポート
+
+        * src/lib/baygui: contrib_0.3からバックポート
+
+        * src/servers/key/KeyboardManager.cpp: MonaNewからバックポート
+
+2005-08-04  bayside
+
+        * include/serves/gui.h: include/gui/message.h から移動
+        
+        * include/baygui/lang/Runnable.h: 新規追加
+        
+        * include/baygui/lang/Thread.h: 新規追加
+        
+        * src/lib/baygui/lang/Thread.cpp: 新規追加
+
+2005-07-29  bayside
+
+        * src/servers/gui/Window.cpp: 部分描画に対応
+        
+        * src/lib/baygui/Window.cpp: 部分描画に対応
+        
+        * src/lib/baygui/Component.cpp: 部分描画に対応
+        
+        * src/lib/baygui/Scrollbar.cpp: マウスドラッグに対応
+
+2005-07-22  Yamami  <yamamimail@users.sourceforge.jp>
+
+        * src/lib/monesoc : Code:Mones Socketライブラリ追加
+        
+        * include/monesoc : Code:Mones Socketライブラリ追加
+        
+        * src/servers/mones : Socketライブラリを使用するように変更
+        
+        * samples/non-gui/yamami : Code:Mones Socketライブラリ検証コード追加
+        
+        * 上記全て、Makefile有効化 (MONITOR.CFG は無効のまま(起動しない)
 
 2005-07-17  Yamami  <yamamimail@users.sourceforge.jp>
 
         * src/servers/mones : SocketsManagerクラス追加(定義のみ)
-
+        
         * src/servers/mones : UDPチェックサム実装(疑似ヘッダ)
-
+        
 2005-07-16  shadow  <shadowin@users.sourceforge.jp>
 
         * monalibc/math: add asin sinh cosh tanh ldexp; fix fmod
@@ -113,73 +171,73 @@
 
         * src/servers/mones : TCP実装開始。とりあえずダンプだけ。
 
-2004-07-14  bayside
+2005-07-14  bayside
 
         * Graphics::drawText() -> Graphics::drawString()
-
+        
         * Container::dispatchEvent() でマウスクリック以外のマウスイベントも子部品に渡すようにする
-
+        
         * samples/non-gui/infones/InfoNES_System_Mona.cpp: ウェイト系実装追加
                                                            2x2表示に変更
-
+        
         * apps/non-gui/Makefile: monapeg 追加
-
+        
         * apps/non-gui/monapeg: 新規追加（monapi使用版）
-
+        
         * lib/liblen-cygwin.a: monapeg用コンパイル済みライブラリ
-
+        
         * lib/liblen-linux.a: monapeg用コンパイル済みライブラリ
 
-2004-07-13  bayside
+2005-07-13  bayside
 
         * samples/non-gui/infones: v0.96Jに差し替え
 
-2004-07-11  bayside
+2005-07-11  bayside
 
         * Vectorクラス追加
-
+        
         * Hashtableクラス追加
-
+        
         * LinkedListクラス削除
-
+        
         * Insetsクラス追加
-
+        
         * Frameクラス追加
-
+        
         * Frame::INSETS_TOP 削除
-
+        
         * Frame::INSETS_BOTTOM 削除
-
+        
         * Frame::INSETS_LEFT 削除
-
+        
         * Frame::INSETS_RIGHT 削除
-
+        
         * Frame::getInsets() 追加
-
+        
         * Window::getCloseButtonClicked() 追加
-
+        
         * Window::getTitlebarClicked() 追加
-
+        
         * Windowクラスはタイトルなし＆フチなしウィンドウに変更
-
+        
         * Window -> Frame
-
+        
         * Control -> Component
-
+        
         * Control::onStart() -> Component::addNotify()
-
+        
         * Control::onExit()  -> Component::removeNotify()
-
+        
         * Control::onEvent() -> Component::processEvent()
-
+        
         * Control::onPaint() -> Component::paint()
-
+        
         * Control::postEvent() -> Component::dispatchEvent()
-
+        
         * Container::findChild() -> Container::getComponent()
-
+        
         * Container::findChild(x,y) -> Container::getComponentAt(x,y)
-
+        
         * ListBox::getSelectedItem() でぬるぽが起きていた不具合修正
 
 2005-07-10  higepon  <higepon@users.sourceforge.jp>
