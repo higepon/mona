@@ -21,6 +21,6 @@ bool Close(dword id);
 
 extern monapi_cmemoryinfo* ReadFile(const char* file, bool prompt = false);
 extern monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt = false);
-extern void Initialize(bool bootFromCD);
+extern void Initialize();
 
 #endif  // __FILE_SERVER_H__

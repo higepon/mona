@@ -10,12 +10,14 @@ endif
 
 SOURCES = ctype.cpp    \
           monalibc.cpp \
+          stdarg.cpp   \
           stdio.cpp    \
           stdlib.cpp   \
           math.cpp     \
-          time.cpp     \
-          setjmp.cpp   \
-          string.cpp   \
+
+#          time.cpp     \
+#          setjmp.cpp   \
+#          string.cpp   \
 
 
 MONADIR  = ../../..

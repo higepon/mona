@@ -67,7 +67,7 @@ bool ISO9660FileSystemManager::Initialize()
     /* initialize ISO9660 FS */
     if (!this->fs->Initialize())
     {
-        printf("Initialize Error = %d\n", this->fs->GetLastError());
+        printf("CD Boot Initialize Error = %d\n", this->fs->GetLastError());
         delete this->fs;
         delete this->cd;
         return false;

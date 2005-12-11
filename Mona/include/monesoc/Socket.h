@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <sys/HashMap.h>
 #include <monapi.h>
+#include <monapi/messages.h>
 
 #ifndef _MONA_SOCKET_
 #define _MONA_SOCKET_

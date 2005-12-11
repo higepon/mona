@@ -21,18 +21,42 @@
 
 #define PTR_THREAD(queue) (((Thread*)(queue))->tinfo)
 
-#if 1
+#if 0
+
+//     *   ページサイズを返す
+//     * タスクのアドレス空間に任意のリニアアドレス・サイズのメモリを割り当てる。
+//     * 特定タスクのaddress,sizeにread/write/executeの属性をつける
+//     * 特定のタスクのvmを特定のタスクから読む。自分のアドレスに強制的に読み込んだり。カーネルに割り当てを任せることも出来る。
+// AllocateMemory後、プロセスにそのsharedmemory objectがむすびついているかしらべる。⇒attach
+// 使えるリニアアドレス範囲を調べる
 
 class MemoryManager2
-{
+n{
 public:
     static dword GetSystemPageSize();
-//    static AllocateMemory(Process* process, LinearAddress start, dword size);
-};
+    static bool AllocateMemory(Process* process, dword size);
 
+};
 dword MemoryManager2::GetSystemPageSize()
 {
     return 4096;
+}
+
+bool MemoryManager2::AllocateMemory(Process* process, dword size)
+{
+    void* address = NULL;
+    static dword id = 0x5000;
+
+    address = process->AllocateLinearAddress(size);
+    if (address == NULL) {
+	return false;
+    }
+    id++;
+    bool isOpen = SharedMemoryObject::open(id, size);
+    if (!isOpen) return false;
+    bool isAttaced = SharedMemoryObject::attach(id, process, (dword)address);
+    if (!isAttaced) return false;
+    return true;
 }
 
 #endif
@@ -428,6 +452,8 @@ Process::Process(const char* name, PageEntry* directory) : threadNum(0)
     /* pid */
     pid++;
     pid_ = pid;
+
+    lallocator = NULL;
 }
 
 Process::~Process()
@@ -452,6 +478,7 @@ Process::~Process()
     delete messageList_;
     delete arguments_;
     delete threadList_;
+    if (this->lallocator != NULL) delete this->lallocator;
 }
 
 dword Process::getStackBottom(Thread* thread)

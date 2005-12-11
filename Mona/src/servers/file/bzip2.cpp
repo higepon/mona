@@ -1,3 +1,5 @@
+#define USE_BZIP2 1
+#ifdef USE_BZIP2
 #include <monapi/messages.h>
 #include <monapi/syscall.h>
 #include <bzlib.h>
@@ -94,3 +96,4 @@ monapi_cmemoryinfo* BZ2DecompressFile(const char* file, bool prompt /*= false*/)
 	monapi_cmemoryinfo_delete(mi);
 	return ret;
 }
+#endif

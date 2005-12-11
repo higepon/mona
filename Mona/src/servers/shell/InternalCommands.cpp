@@ -1,5 +1,6 @@
 #include "Shell.h"
 #include <monapi/messages.h>
+#include <monalibc.h>
 
 using namespace MonAPI;
 
@@ -177,6 +178,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
 
     case COMMAND_CHSH:
+#ifdef USE_CHSH
         if (monapi_call_process_execute_file("/SERVERS/1LINESH.EX5", MONAPI_TRUE) != 0) break;
 //        if (syscall_load_process("/SERVERS/SHELL.BIN", "SHELL.BIN", NULL) != 0) break;
 #if 1
@@ -187,6 +189,9 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         }
 #endif
         hasExited = true;
+#else
+        printf("ERROR: can not use CHSH!\n");
+#endif
         break;
 
     case COMMAND_UNAME:
@@ -270,15 +275,11 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 printf("usage: KILL tid\n");
                 break;
             }
-	    int result = syscall_kill_thread(atoi(args[1]));
-            if (result == -1)
+
+            if (syscall_kill_thread(atoi(args[1])))
             {
                 printf("kill failed. Thread not found\n");
             }
-	    else if (result == -2)
-	    {
-		printf("unable to kill\n");
-	    }
             else
             {
                 printf("thread %d killed\n", atoi(args[1]));

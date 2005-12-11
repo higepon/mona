@@ -103,7 +103,8 @@ void Message::create(MessageInfo* info, dword header, dword arg1 /*= 0*/, dword 
 
     if (str != NULL)
     {
-        strncpy(info->str, str, sizeof(info->str));
+//        strncpy(info->str, str, sizeof(info->str));
+	memcpy(info->str, str, 128);
     }
     return;
 }
@@ -121,6 +122,11 @@ dword Message::lookup(const char* name)
 dword Message::lookupMainThread(const char* name)
 {
     return syscall_lookup_main_thread(name);
+}
+
+dword Message::lookupMainThread()
+{
+    return syscall_lookup_main_thread(NULL);
 }
 
 }

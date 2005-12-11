@@ -4,7 +4,10 @@
 #include <monapi/Assert.h>
 #include <monapi/io.h>
 #include "FileServer.h"
+#define USE_BZIP2 1
+#ifdef USE_BZIP2
 #include "bzip2.h"
+#endif
 #include "dtk5s.h"
 #include "IDEDriver.h"
 
@@ -114,6 +117,7 @@ void MessageLoop()
                 break;
             case MSG_FILE_DECOMPRESS_BZ2:
             {
+#ifdef USE_BZIP2
                 monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
 
                 mi1->Handle = msg.arg1;
@@ -136,10 +140,14 @@ void MessageLoop()
                     Message::reply(&msg);
                 }
                 monapi_cmemoryinfo_delete(mi1);
+#else
+                Message::reply(&msg);
+#endif
                 break;
             }
             case MSG_FILE_DECOMPRESS_BZ2_FILE:
             {
+#ifdef USE_BZIP2
                 monapi_cmemoryinfo* mi = BZ2DecompressFile(msg.str, msg.arg1 != 0);
 
                 if (mi != NULL)
@@ -151,6 +159,9 @@ void MessageLoop()
                 {
                     Message::reply(&msg);
                 }
+#else
+                Message::reply(&msg);
+#endif
                 break;
             }
             case MSG_FILE_DECOMPRESS_ST5:
@@ -202,8 +213,7 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
 
-    /* true/false boot from CD/FD */
-    Initialize(true);
+    Initialize();
 
     MessageLoop();
 

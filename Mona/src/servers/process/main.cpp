@@ -2,6 +2,7 @@
 #include <monapi/CString.h>
 #include <monapi/messages.h>
 #include <monapi/Array.h>
+#include <monalibc.h>
 #include "ProcessServer.h"
 #include "ProcessManager.h"
 
@@ -132,11 +133,6 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
     }
-
-    //for (option = list.next; option; option = option->next)
-    //{
-    //    delete option;
-    //}
     CommandOption* next;
     for (option = list.next; option; option = next)
     {
@@ -144,7 +140,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
 	delete option;
     }
     return result;
- }
+}
 
 #if 1  // temporary
 HList<dword> grabs;

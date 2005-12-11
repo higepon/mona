@@ -20,6 +20,7 @@ public:
     static bool exist();
     static dword lookup(const char* name);
     static dword lookupMainThread(const char* name);
+    static dword lookupMainThread();
 
     static int sendReceiveA(MessageInfo* dst, dword tid, MessageInfo* info);
 

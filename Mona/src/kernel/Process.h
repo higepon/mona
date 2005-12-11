@@ -23,12 +23,14 @@
 #include "Mutex.h"
 #include "KObject.h"
 #include "Thread.h"
+#include "MemoryAllocator.h"
 
 #define DPL_KERNEL  0
 #define DPL_USER    3
 
 class Thread;
 class Process;
+class MemoryAllocator;
 extern VirtualConsole* g_console;
 
 /*----------------------------------------------------------------------
@@ -129,6 +131,7 @@ class ThreadOperation
     static dword id;
 };
 
+
 /*----------------------------------------------------------------------
     Process
 ----------------------------------------------------------------------*/
@@ -197,6 +200,14 @@ class Process
         return dllsegment_;
     }
 
+    inline void* AllocateLinearAddress(dword size) {
+        if (this->lallocator == NULL)
+        {
+            this->lallocator = new MemoryAllocator(0xd0000000, 256 * 1024 * 1024);
+        }
+        return this->lallocator->Allocate(size);
+    }
+
     static const LinearAddress STACK_START = 0xF0000000;
     static const dword STACK_SIZE          = 0x400000;
 
@@ -205,6 +216,7 @@ class Process
 
   protected:
     static dword pid;
+    MemoryAllocator* lallocator;
     List<Thread*>* threadList_;
     List<char*>* arguments_;
     class HeapSegment* heap_;

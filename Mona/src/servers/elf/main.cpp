@@ -1,6 +1,7 @@
 #include <monapi.h>
 #include <monapi/CString.h>
 #include <monapi/messages.h>
+#include <monalibc.h>
 #include "ELFServer.h"
 #include "elfparser.h"
 

@@ -25,6 +25,9 @@ typedef char *va_list;
 #define va_arg(ap,type) ((type*)(ap+=sizeof(type)))[-1]
 #define va_end(ap) (void)((ap)=NULL)
 
+int vsprintf(char *s, const char *format, va_list arg);
+int vsscanf(const char *s, const char *format, va_list arg);
+
 #ifdef __cplusplus
 }
 #endif

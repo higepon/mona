@@ -1,6 +1,5 @@
 #include <monapi/messages.h>
 #include <monapi/Keys.h>
-#include <servers/gui.h>
 
 #include "Shell.h"
 
@@ -69,9 +68,10 @@ void Shell::run()
                 {
                     this->onKeyDown(msg.arg1, msg.arg2);
                 }
-                break;
-            case MSG_GUISERVER_KEYDOWN:
-                this->onKeyDown(msg.arg2, msg.arg3);
+                else if (msg.arg1 == 0)
+                {
+                    this->onKeyDown(msg.arg2, msg.arg3);
+                }
                 break;
 
             case MSG_PROCESS_TERMINATED:
@@ -178,7 +178,7 @@ bool Shell::commandExecute(_A<CString> args)
     else if (command.endsWith(".APP"))
     {
         CString name = command.substring(0, command.getLength() - 4);
-        cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EX2";
+        cmdLine = APPSDIR"/" + name + ".APP/" + name + ".EX5";
     }
     else
     {
@@ -188,7 +188,7 @@ bool Shell::commandExecute(_A<CString> args)
             CString file = apps[currentDrive].get(i);
             if (file == command + ".APP")
             {
-                cmdLine = APPSDIR"/" + file + "/" + command + ".EX2";
+                cmdLine = APPSDIR"/" + file + "/" + command + ".EX5";
                 break;
             }
             else if (file.startsWith(cmd2))
@@ -377,9 +377,9 @@ int Shell::makeApplicationList()
     {
         CString file = p->name;
 
-        if (file.endsWith(".BIN") || file.endsWith(".BN2")
-            || file.endsWith(".ELF") || file.endsWith(".EL2")
-            || file.endsWith(".EXE") || file.endsWith(".EX2")
+        if (file.endsWith(".BIN") || file.endsWith(".BN2") || file.endsWith(".BN5")
+            || file.endsWith(".ELF") || file.endsWith(".EL2") || file.endsWith(".EL5")
+            || file.endsWith(".EXE") || file.endsWith(".EX2") || file.endsWith(".EX5")
             || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
             apps[currentDrive].add(file);
@@ -543,17 +543,21 @@ void Shell::setCurrentDirectory()
 {
     char buff[128];
     monapi_call_get_current_directory(buff);
-
+    logprintf("buf=%s\n", buff);
     this->currentDirectory[this->currentDrive] = buff;
 }
 
 bool Shell::changeDirecotory(const MonAPI::CString& path)
 {
+    logprintf("1\n");
     if (monapi_call_change_directory(path) == MONA_FAILURE)
     {
+    logprintf("2\n");
         return false;
     }
+    logprintf("3\n");
     setCurrentDirectory();
+    logprintf("4\n");
     makeApplicationList();
     return true;
 }

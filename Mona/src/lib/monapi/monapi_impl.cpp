@@ -165,19 +165,27 @@ void free(void * address) {
     operator new/delete
 ----------------------------------------------------------------------*/
 void* operator new(size_t size) {
+    if (size == 0) {
+	size = 1;
+    }
     return mspace_malloc(g_msp,size);
 }
 
 void operator delete(void* address) {
+    if (address == NULL) return;
     mspace_free(g_msp, address);
     return;
 }
 
 void* operator new[](size_t size) {
+    if (size == 0) {
+	size = 1;
+    }
     return mspace_malloc(g_msp,size);
 }
 
 void operator delete[](void* address) {
+    if (address == NULL) return;
     mspace_free(g_msp, address);
     return;
 }
