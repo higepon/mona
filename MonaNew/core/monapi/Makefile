@@ -71,10 +71,6 @@ depend:
 clean:
 	rm -f $(TARGET) $(OBJECTS)
 
-distclean: clean
-	rm dependencies
-	touch dependencies
-
 install: $(TARGET)
 	mkdir -p $(LIBDIR)
 	$(INSTALL) -m 0644 $(LIB_STATIC) $(LIBDIR)/
@@ -112,5 +108,4 @@ endif
 	  rm -f $(SHAREDIR)/$$file; \
 	done
 
-dependencies: depend
 -include dependencies

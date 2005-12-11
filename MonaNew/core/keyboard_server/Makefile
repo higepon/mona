@@ -9,9 +9,4 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-distclean: clean
-	rm dependencies
-	touch dependencies
-
-dependencies: depend
 -include dependencies

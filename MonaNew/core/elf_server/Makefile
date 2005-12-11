@@ -7,9 +7,4 @@ ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 SHAREDIR   = $(MONADIR)/share
 include $(SHAREDIR)/configs/monapi-bn5.inc
 
-distclean: clean
-	rm dependencies
-	touch dependencies
-
-dependencies: depend
 -include dependencies

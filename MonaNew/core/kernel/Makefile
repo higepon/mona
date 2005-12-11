@@ -83,15 +83,10 @@ uninstall:
 	done
 	rm -f $(INCDIR)/macro.asm
 
-depend:
+depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
 	rm -f $(TARGET) *.o *.lst *.map
 
-distclean: clean
-	rm dependencies
-	touch dependencies
-
-dependencies: depend
 -include dependencies

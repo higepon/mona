@@ -25,10 +25,6 @@ depend:
 clean :
 	rm -f $(OBJECTS) $(TARGET)
 
-distclean: clean
-	rm dependencies
-	touch dependencies
-
 install: $(TARGET)
 	mkdir -p $(PREFIX)/bin
 	$(INSTALL) $(TARGET) $(PREFIX)/bin/
@@ -42,5 +38,4 @@ uninstall:
 	rm -rf $(INCDIR)/fat_write
 	rm -rf $(SHAREDIR)/fat_write
 
-dependencies: depend
 -include dependencies

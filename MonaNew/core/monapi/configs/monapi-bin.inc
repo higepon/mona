@@ -25,8 +25,7 @@ install: all
 clean:
 	rm -f $(OBJECTS) $(TARGET).BIN $(CLEANFILES) $(TARGET).map
 
-depend:
-	rm -f dependencies
+depend dependencies:
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif

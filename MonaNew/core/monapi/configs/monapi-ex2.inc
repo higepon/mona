@@ -29,8 +29,7 @@ install: all
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX2 $(CLEANFILES) $(TARGET).map
 
-depend:
-	rm -f dependencies
+depend dependencies:
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
 endif
