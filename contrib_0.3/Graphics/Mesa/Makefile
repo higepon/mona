@@ -37,8 +37,10 @@ ${SOURCE1}:
 	touch $@
 
 .PATCH: .EXTRACT patch-aa
-	cp bin/* ${WORKDIR}/bin
-	cp configs/* ${WORKDIR}/configs
+	cp bin/mklib ${WORKDIR}/bin
+	cp configs/current ${WORKDIR}/configs
+	cp configs/mona ${WORKDIR}/configs
+	cp configs/mona-static ${WORKDIR}/configs
 	patch -p0 < patch-aa
 	touch $@
 

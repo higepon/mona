@@ -2,7 +2,6 @@
 #include "Config.h"
 #include "NicServer.h"
 #include <monapi2/Basic/String.h>
-#include "../higepon/MessageUtil.h"
 
 using namespace MonAPI;
 using namespace mones;

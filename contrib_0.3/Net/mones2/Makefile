@@ -13,4 +13,4 @@ else
 include $(SHAREDIR)/configs/monapi-el5.inc
 endif
 
-include dependencies
+-include dependencies
