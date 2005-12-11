@@ -93,4 +93,5 @@ distclean: clean
 	rm dependencies
 	touch dependencies
 
-include dependencies
+dependencies: depend
+-include dependencies

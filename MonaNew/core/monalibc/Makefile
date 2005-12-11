@@ -44,7 +44,7 @@ endif
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
 
 depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
@@ -77,4 +77,5 @@ endif
 	  rm -f $(INCDIR)/monalibc/$$file; \
 	done
 
-include dependencies
+dependencies: depend
+-include dependencies

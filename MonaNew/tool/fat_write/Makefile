@@ -42,4 +42,5 @@ uninstall:
 	rm -rf $(INCDIR)/fat_write
 	rm -rf $(SHAREDIR)/fat_write
 
-include dependencies
+dependencies: depend
+-include dependencies

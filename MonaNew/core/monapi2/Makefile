@@ -110,4 +110,5 @@ endif
 	  rm -f $(INCDIR)/monapi2/OS/$$file; \
 	done
 
-include dependencies
+dependencies: depend
+-include dependencies
