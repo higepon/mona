@@ -18,4 +18,4 @@ all:
 	cd core/shell_server && make && make install
 	cd core/elf_server && make && make install
 	cd core/pe_server && make && make install
-	cd tool/mkimg && make clean && make iso
+	cd tool/mkimg && make clean && make
