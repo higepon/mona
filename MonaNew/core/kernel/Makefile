@@ -87,6 +87,6 @@ depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
-	rm -f $(TARGET) *.o *.lst *.map
+	rm -f $(TARGET) *.o *.lst *.map dependencies
 
 -include dependencies

@@ -25,7 +25,7 @@ install: all
 	$(INSTALL) $(TARGET).ELF $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).ELF $(CLEANFILES) $(TARGET).map
+	rm -f $(OBJECTS) $(TARGET).ELF $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
 ifneq ($(SOURCES),)

@@ -66,11 +66,11 @@ endif
 .cpp.o:
 	$(CXX) -c -o $(<:.cpp=.o) $(CXXFLAGS) $(INCLUDE) $<
 
-depend:
+depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(MALLOC_OPT) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET) $(OBJECTS) dependencies
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)

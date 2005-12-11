@@ -24,7 +24,7 @@ install: all
 	$(INSTALL) $(TARGET).EXE $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).EXE $(CLEANFILES) $(TARGET).map
+	rm -f $(OBJECTS) $(TARGET).EXE $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
 ifneq ($(SOURCES),)

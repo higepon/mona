@@ -19,11 +19,11 @@ $(TARGET): $(OBJECTS)
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
 
-depend:
+depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean :
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) dependencies
 
 install: $(TARGET)
 	mkdir -p $(PREFIX)/bin

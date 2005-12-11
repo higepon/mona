@@ -27,7 +27,7 @@ install: all
 	$(INSTALL) $(TARGET).BN5 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN5 $(CLEANFILES) $(TARGET).map
+	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN5 $(CLEANFILES) $(TARGET).map dependencies
 
 depend dependencies:
 ifneq ($(SOURCES),)

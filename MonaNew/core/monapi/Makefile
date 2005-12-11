@@ -65,11 +65,11 @@ endif
 .asm.o:
 	$(NASM) $(NFLAGS) -o $@ $<
 
-depend:
+depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) monapi.cpp $(SOURCES) > dependencies
 
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET) $(OBJECTS) dependencies
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)

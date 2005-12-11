@@ -27,7 +27,7 @@ install: all
 	$(INSTALL) $(TARGET).BN2 $(INSTFILES) $(INSTDIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN2 $(CLEANFILES) $(TARGET).map
+	rm -f $(OBJECTS) $(TARGET).BIN $(TARGET).BN2 $(CLEANFILES) $(TARGET).map dependencies
 
 depend:
 	rm -f dependencies

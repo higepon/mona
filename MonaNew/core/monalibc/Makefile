@@ -43,11 +43,11 @@ endif
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
 
-depend:
+depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET) $(OBJECTS) dependencies
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)
