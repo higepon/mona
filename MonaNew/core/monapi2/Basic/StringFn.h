@@ -75,7 +75,8 @@ public:
 //ToIntとToFloatのサブルーチン。cszSourceから始まる文字列をintに直し数字文字列の末尾をpstrEndに入れる。
 	static int getIntAt(cpchar1 cszSource,int iBase,cpchar1* pcszEnd);
 	static int estimateVALength(cpchar1 cszFormat,vapointer vap);		///<sprintf形式で文字列を作る。
-	static char toString(int iTarget,bool bCapital=false);
+	static char toString(int iTarget,bool bCapital=false);				///<0～15を'0'～'9'、'A'～'F'にする。
+	static void toStringFloatPlain(pchar1 szBuffer,double d);			////<dを文字列にする。1.234e+45とかの形式ではなく1.234とかのシンプルな形だけ。大きい桁は表示無理・・・
 };
 
 

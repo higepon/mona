@@ -97,10 +97,29 @@ bool Rect::isPointInside(const Point* cppoint) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Rect::move(const Size* cpSize)
+void Rect::moveBy(const Size* cpSize)
 {
-	move(cpSize->getWidth(),cpSize->getHeight());
+	moveBy(cpSize->getWidth(),cpSize->getHeight());
 }
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/09/20	junjunn 作成
+*/
+void Rect::moveBy(const Point* cpPoint)
+{
+	moveBy(cpPoint->getX(),cpPoint->getY());
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/09/20	junjunn 作成
+*/
+void Rect::moveTo(const Point* cpPoint)
+{
+	moveTo(cpPoint->getX(),cpPoint->getY());
+}
+
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
@@ -118,7 +137,7 @@ void Rect::normalize()
 */
 void Rect::set(const Point* cpPointLeftTop,const Size* cpSize)
 {
-	set(cpPointLeftTop->getX(),cpPointLeftTop->getY(),cpPointLeftTop->getX()+cpSize->getWidth(),cpPointLeftTop->getY()+cpSize->getHeight());
+	set(cpPointLeftTop->getX(),cpPointLeftTop->getY(),cpSize->getWidth(),cpSize->getHeight());
 }
 
 /**
@@ -127,7 +146,8 @@ void Rect::set(const Point* cpPointLeftTop,const Size* cpSize)
 */
 void Rect::set(const Point* cpPointLeftTop,const Point* cpPointRightBottom)
 {
-	set(cpPointLeftTop->getX(),cpPointLeftTop->getY(),cpPointRightBottom->getX(),cpPointRightBottom->getY());
+	set(cpPointLeftTop->getX(),cpPointLeftTop->getY(),
+		cpPointRightBottom->getX()-cpPointLeftTop->getX(),cpPointRightBottom->getY()-cpPointLeftTop->getY());
 }
 
 /**

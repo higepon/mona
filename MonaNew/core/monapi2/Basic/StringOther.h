@@ -35,10 +35,11 @@ public:
 //@}
 
 
-	cpchar1	getAt(int iIndex)	const {return getStringArray()->getAt(iIndex);}	///<iIndex‚Ì•¶Žš—ñ‚ð•Ô‚·
-	int		getCount()			const {return getStringArray()->getCount();}	///<‘S‘Ì‚Ì—v‘f”‚ð•Ô‚·
+	cpchar1	getAt(uint iIndex) const;
+	String*	getStringAt(uint iIndex) const;
+	uint	getCount()			const {return getStringArray()->getCount();}	///<‘S‘Ì‚Ì—v‘f”‚ð•Ô‚·
 
-	StringArray* getStringArray()	const {return ((StringArray*)this);}
+	inline StringArray* getStringArray()	const {return ((StringArray*)this);}
 };
 
 }	//namespace monapi2

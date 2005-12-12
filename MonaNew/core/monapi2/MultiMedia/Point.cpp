@@ -19,9 +19,19 @@ namespace monapi2	{
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-Point Point::add(const class Size* cpSize) const
+Point Point::add(const Size* cpSize) const
 {
 	Point point(x+cpSize->m_iWidth,y+cpSize->m_iHeight);
+	return point;
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
+Point Point::add(const Point* cpPoint) const
+{
+	Point point(x+cpPoint->getX(),y+cpPoint->getY());
 	return point;
 }
 
@@ -39,7 +49,7 @@ Point Point::operator +(const Size& crefSize) const
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-Point Point::subtract(const class Size* cpSize) const
+Point Point::subtract(const Size* cpSize) const
 {
 	Point point(x-cpSize->m_iWidth,y-cpSize->m_iHeight);
 	return point;
@@ -47,21 +57,35 @@ Point Point::subtract(const class Size* cpSize) const
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
-	@date	2005/08/20	junjunn 作成
+	@date	2005/09/20	junjunn 作成
 */
-Point Point::operator -(const Size& crefSize) const
+Size Point::subtract(const Point* cpPoint) const
 {
-	Point point(x-crefSize.m_iWidth,y-crefSize.m_iHeight);
-	return point;
+	Size size(x-cpPoint->x,y-cpPoint->y);
+	return size;
+}
+
+Size Point::operator -(const Point& crefPoint)const
+{
+	return subtract(&crefPoint);
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Point::move(const class Size* cpSize)
+void Point::move(const Size* cpSize)
 {
 	move(cpSize->getWidth(),cpSize->getHeight());
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
+void Point::move(const Point* cpPoint)
+{
+	move(cpPoint->getX(),cpPoint->getY());
 }
 
 /**
@@ -77,7 +101,7 @@ void Point::operator +=(const Size& crefSize)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Point::moveMinus(const class Size* cpSize)
+void Point::moveMinus(const Size* cpSize)
 {
 	move(-cpSize->getWidth(),-cpSize->getHeight());
 }
@@ -86,7 +110,7 @@ void Point::moveMinus(const class Size* cpSize)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Point::operator -=(const class Size& crefSize)
+void Point::operator -=(const Size& crefSize)
 {
 	moveMinus(&crefSize);
 }

@@ -10,6 +10,15 @@
 */
 //バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
+
+#ifdef MONA
+	#include <monapi.h>
+	#include <monapi/CMemoryInfo.h>
+	#include <monapi/Messages.h>
+
+	#include <Basic/Memory.h>
+#endif
+
 #include "File.h"
 
 namespace monapi2	{
@@ -53,17 +62,22 @@ int File::getLastModifiedTime() const
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/09/20	junjunn 応急措置だが実装。
 */
 bool File::open(const char* cszPath,bool bAllowWrite)
 {
-#ifndef MONA
+#ifdef MONA
+	monapi_cmemoryinfo* pMemoryInfo = monapi_call_file_read_data(cszPath,MONAPI_FALSE);
+	if (! pMemoryInfo)	return false;
+
+	m_oBuffer.copy(pMemoryInfo->Data,pMemoryInfo->Size);
+	bAllowWrite=false;
+	return true;
+#else
 	const char* pOpenFlag = (bAllowWrite)?"wb":"rb";
 	m_pFile = fopen(cszPath,pOpenFlag);
 	return (m_pFile!=NULL);
 #endif
-
-	cszPath=NULL, bAllowWrite=false;
-	return 0;
 }
 
 /**
@@ -75,10 +89,10 @@ uint File::read(byte* pOut,uint nIndex,uint nCount) const
 #ifndef MONA
 	fseek(m_pFile,nIndex,SEEK_SET);
 	return fread(pOut,sizeof(byte),nCount,m_pFile);
+#else
+	MemoryFn::copy(pOut,m_oBuffer.getData() + nIndex,nCount);
+	return nIndex+nCount;
 #endif
-
-	pOut=NULL,nIndex=0,nCount=0;
-	return 0;
 }
 
 /**

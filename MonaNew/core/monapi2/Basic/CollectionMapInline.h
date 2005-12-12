@@ -141,7 +141,7 @@ void MapUncollidable<KEYTYPE,VALUETYPE>::removeAll()
 	@date	2005/08/20	junjunn çÏê¨
 */
 template<class KEYTYPE,class VALUETYPE>
-void MapUncollidable<KEYTYPE,VALUETYPE>::setAt(KEYTYPE tKey,VALUETYPE tValue)
+void MapUncollidable<KEYTYPE,VALUETYPE>::setAt(KEYTYPE tKey,const VALUETYPE tValue)
 {
 	MapBase<KEYTYPE,VALUETYPE>::m_nCount++;
 

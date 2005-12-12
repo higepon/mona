@@ -10,6 +10,10 @@
 */
 //バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
+#ifdef MONA
+	#include <monapi.h>
+#endif
+
 #include "IniManager.h"
 #include "../Basic/StringFn.h"
 #include "../Basic/StringOther.h"
@@ -87,8 +91,9 @@ void IniManager::parse(cpchar1 cszContent)
 
 //行に分割
 	StringDivide SDLine(cszContent,"\n");
+
 //行を巡回	
-	for (int i=0;i<SDLine.getCount();i++)
+	for (uint i=0;i<SDLine.getCount();i++)
 	{
 //現在の行。
 		cpchar1 pLine = SDLine.getAt(i);
@@ -122,7 +127,7 @@ void IniManager::parse(cpchar1 cszContent)
 //	strTest= "a=b";
 //など値にも=が入ってしまっている困ったケースを考慮して残りを一つにくっつける。
 				String strValueUnified=SDKeyValue.getAt(1);
-				for (int i=2;i<SDKeyValue.getCount();i++)
+				for (uint i=2;i<SDKeyValue.getCount();i++)
 				{
 					strValueUnified+="=";
 					strValueUnified+=SDKeyValue.getAt(i);

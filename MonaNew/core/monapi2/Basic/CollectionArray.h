@@ -23,7 +23,7 @@ namespace monapi2	{
 /**
 動的配列クラス。
 intとかfloatとかの単純な型、又はすでにあるclass*をつなげたい時に扱う。
-新しいclassなどを作ってリストに蓄えたい場合はArrayHeapを参照。
+新しいclassなどを作ってリストに蓄えたい場合はArrayADを参照。
 
 	@date	2005/08/20	junjunn 作成
 */
@@ -31,7 +31,7 @@ template<class TYPE>
 class Array
 {
 public:
-	Array(uint nItitialSize=16);					///<コンストラクタ。
+	Array(uint nItitialSize=0);					///<コンストラクタ。
 	virtual ~Array();								///<デストラクタ
 
 //取得
@@ -100,6 +100,8 @@ protected:
 	@brief	文字列を扱うArray。Monapi2リファレンスも参照。
 	@date	2005/08/20	junjunn 作成
 */
+//@memo 高速化。Stringをタイプに使ってる事でバックグラウンドで結構Stringが生成されては消えている。
+//String*とかにして自動生成を少しは抑えるべきだろうか・・・
 class StringArray : public Array<String>
 {
 public:

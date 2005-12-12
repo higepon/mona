@@ -23,7 +23,7 @@ namespace monapi2	{
 	@date	2005/08/20	junjunn çÏê¨
 */
 #define STOP {int _z=0;_z++;}
-
+/*
 #ifndef ASSERT
 	#define ASSERT(X)
 #endif
@@ -31,7 +31,7 @@ namespace monapi2	{
 #ifndef TRACE
 	#define TRACE(X)
 #endif
-
+*/
 }	//namespace monapi2
 
 #endif

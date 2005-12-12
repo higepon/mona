@@ -151,8 +151,8 @@ protected:
 protected:
 	ELEMENT*	m_pHead;			///<先頭要素
 	ELEMENT*	m_pTail;			///<末尾要素
-	uint			m_nCount;		///<要素数。本来リスト構造にはない概念だがサービスとしてgetCount()も用意しておくと便利な事もある。
-	FnCompare		m_pFnCompare;	///<比較関数を覚えておく。
+	uint		m_nCount;			///<要素数。本来リスト構造にはない概念だがサービスとしてgetCount()も用意しておくと便利な事もある。
+	FnCompare	m_pFnCompare;		///<比較関数を覚えておく。
 };
 
 

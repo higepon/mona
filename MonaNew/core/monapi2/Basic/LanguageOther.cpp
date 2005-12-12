@@ -46,7 +46,7 @@ bool CGenerateConversionCode::generate(cpchar1 cszConversionTableFilePath,cpchar
 	}
 
 //全行査定
-	for (int iLine=0;iLine<SDLine.getCount();iLine++)
+	for (uint iLine=0;iLine<SDLine.getCount();iLine++)
 	{
 //タブで分割
 		StringDivide Sdword(SDLine.getAt(iLine),"	");
@@ -67,7 +67,7 @@ bool CGenerateConversionCode::generate(cpchar1 cszConversionTableFilePath,cpchar
 		else						iCode2=0;
 
 //変換テーブルに入れる。
-		ASSERT(iCode1<0xFFFF);
+//		ASSERT(iCode1<0xFFFF);
 		m_aIntPair[iCode1].m_i2 = iCode2;
 	}
 
@@ -130,7 +130,7 @@ bool CGenerateConversionCode::generate(cpchar1 cszConversionTableFilePath,cpchar
 void CGenerateConversionCode::dumpBMP()
 {
 	Bitmap bitmap;
-	bitmap.getCanvas(0x100,0x100);
+	bitmap.createCanvas(0x100,0x100);
 
 //真っ黒に塗りつぶす。
 	bitmap.fill(0);

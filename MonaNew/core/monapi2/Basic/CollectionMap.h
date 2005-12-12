@@ -218,7 +218,7 @@ public:
 	virtual uint getHash(KEYTYPE tKey)	const =0;
 	virtual void findNextPosition(mapposition* ppos) const = 0;
 	virtual void initHashTable(uint nSize) = 0;
-	virtual void setAt(KEYTYPE tKey,VALUETYPE tValue)=0;
+	virtual void setAt(KEYTYPE tKey,const VALUETYPE tValue)=0;
 	virtual bool removeAt(KEYTYPE tKey) = 0;
 	virtual void removeAll() = 0;
 
@@ -266,7 +266,7 @@ public:
 
 ///キーをセットする。
 ///二回以上同じキーでsetAt()を実行した場合は該当する値がsetAt()した新しいtで置き換えられる。
-	void setAt(KEYTYPE tKey,VALUETYPE tValue);
+	void setAt(KEYTYPE tKey,const VALUETYPE tValue);
 
 ///キーで削除。
 	bool removeAt(KEYTYPE tKey);
@@ -353,7 +353,7 @@ public:
 
 ///キーをセットする。
 ///二回以上同じキーでsetAt()を実行した場合は該当する値がsetAt()した新しいtで置き換えられる。
-	void setAt(KEYTYPE tKey,VALUETYPE t);
+	void setAt(KEYTYPE tKey,const VALUETYPE t);
 
 ///キーを見る。
 ///ヒットした場合は戻り値にtrueが返りptOutに値が入っている。

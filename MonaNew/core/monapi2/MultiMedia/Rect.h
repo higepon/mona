@@ -26,7 +26,7 @@ class Rect
 {
 public:
 	Rect()											{set(0,0,0,0);}
-	Rect(int iLeft,int iTop,int iRight,int iBottom)	{set(iLeft,iTop,iRight,iBottom);}
+	Rect(int iLeft,int iTop,int iWidth,int iHeight)	{set(iLeft,iTop,iWidth,iHeight);}
 	Rect(const class Point* cpPointLeftTop,const class Size* cpSize)	{set(cpPointLeftTop,cpSize);}
 	Rect(const Point* cpPointLeftTop,const Point* cpPointRightBottom)	{set(cpPointLeftTop,cpPointRightBottom);}
 	Rect(const Rect* cpRect)						{set(cpRect);}
@@ -59,19 +59,33 @@ public:
 	static Rect getMinimumInclude(const Rect* cprect1,const Rect* cprect2);
 
 //操作 
-	void set(int iLeft,int iTop,int iRight,int iBottom)	{m_iLeft=iLeft;m_iTop=iTop;m_iRight=iRight;m_iBottom=iBottom;}
+	void setRB(int iLeft,int iTop,int iRight,int iBottom)	{m_iLeft=iLeft;m_iTop=iTop;m_iRight=iRight;m_iBottom=iBottom;}
+	void set(int iLeft,int iTop,int iWidth,int iHeight)	{m_iLeft=iLeft;m_iTop=iTop;m_iRight=iLeft+iWidth;m_iBottom=iTop+iHeight;}
 	void set(const class Point* cpPointLeftTop,const class Size* cpSize);
 	void set(const Point* cpPointLeftTop,const Point* cpPointRightBottom);
-	void set(const Rect* cpRect)				{set(cpRect->m_iLeft,cpRect->m_iTop,cpRect->m_iRight,cpRect->m_iBottom);}
+	void set(const Rect* cpRect)				{set(cpRect->m_iLeft,cpRect->m_iTop,cpRect->getWidth(),cpRect->getHeight());}
 	void operator =(const Rect& crefRect)		{set(&crefRect);}
+
+//setと同じ。同じ機能で名前が違うアライアス関数を作るのは本当はよくないんだがRectを継承した
+//クラスを作ってそこからRectの機能を利用したいときにset()だと何をセットしてるか
+//意味がわからなくなるのでRectをsetしているんだと明確にしたい時にはこっちを使うと便利かと。
+	void setRectRB(int iLeft,int iTop,int iRight,int iBottom)					{setRB(iLeft,iTop,iRight,iBottom);}
+	void setRect(int iLeft,int iTop,int iWidth,int iHeight)						{set(iLeft,iTop,iWidth,iHeight);}
+	void setRect(const Point* cpPointLeftTop,const Size* cpSize)				{set(cpPointLeftTop,cpSize);}
+	void setRect(const Point* cpPointLeftTop,const Point* cpPointRightBottom)	{set(cpPointLeftTop,cpPointRightBottom);}
+	void setRect(const Rect* cpRect)											{set(cpRect);}
 
 	void inflate(int xInflate,int yInflate)		{m_iLeft-=xInflate;m_iRight+=xInflate;m_iTop-=yInflate;m_iBottom+=yInflate;}
 	void inflate(const Size* cpsize);
 	void inflate(int iLeft,int iTop,int iRight,int iBottom)	{m_iTop-=iTop;m_iBottom+=iBottom;m_iLeft-=iLeft;m_iRight+=iRight;}
 	void inflate(const Rect* cprect)				{inflate(cprect->m_iLeft,cprect->m_iTop,cprect->m_iRight,cprect->m_iBottom);}
 
-	void move(int x,int y)						{m_iLeft+=x;m_iTop+=y;m_iRight+=x;m_iBottom+=y;}
-	void move(const class Size* cpSize);
+	void moveBy(int iWidth,int iHeight)				{m_iLeft+=iWidth;m_iTop+=iHeight;m_iRight+=iWidth;m_iBottom+=iHeight;}
+	void moveBy(const Size* cpSize);
+//SizeではなくPointをRectに足すなんて意味おかしそうだが相対座標の変換をするときは考えられる。
+	void moveBy(const Point* cpPoint);
+	void moveTo(int x,int y)					{m_iRight = x+getWidth();m_iBottom = y+getHeight();m_iLeft=x;m_iTop=y;}
+	void moveTo(const Point* cpPoint);
 	void normalize();
 
 public:

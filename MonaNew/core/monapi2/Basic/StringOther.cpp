@@ -21,6 +21,29 @@ namespace monapi2
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
+cpchar1	StringDivide::getAt(uint iIndex)	const
+{
+	if (iIndex>=m_nCount)	return NULL;
+
+	return m_apData[iIndex].getString();
+}
+
+//StringDivide////////////
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/11/20	junjunn 作成
+*/
+String*	StringDivide::getStringAt(uint iIndex)	const
+{
+	if (iIndex>=m_nCount)	return NULL;
+
+	return &m_apData[iIndex];
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/08/20	junjunn 作成
+*/
 void StringDivide::set(cpchar1 cszStart,cpchar1 cszToken)
 {
 	getStringArray()->removeAll();
@@ -38,15 +61,14 @@ void StringDivide::set(cpchar1 cszStart,cpchar1 cszToken)
 	{
 		strWord.copy(pLastAppear,p-pLastAppear);
 
-		getStringArray()->add(strWord);
+		add(strWord);
 
 		p+=iLengthToken;
 		pLastAppear=p;
 	}
 
 //最後の項目
-	strWord.copy(pLastAppear);
-	getStringArray()->add(pLastAppear);
+	add(pLastAppear);
 }
 
 }		//namespace monapi2

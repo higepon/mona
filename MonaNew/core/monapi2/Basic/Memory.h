@@ -30,7 +30,7 @@ namespace monapi2	{
 class MemoryFn
 {
 public:
-	static void copy(void* pTo,const void* cpFrom,uint nCount);
+	static uint copy(void* pTo,const void* cpFrom,uint nCount);
 	static void swap(void* pBuffer1,void* pBuffer2,uint nCount);
 	static void copySafe(void* pTo, const void* cpFrom,uint nCount);
 	static int findDiff(const void* cpBuffer1,const void* cpBuffer2,uint nCount);

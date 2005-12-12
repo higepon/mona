@@ -54,6 +54,10 @@ public:
 	void subtractSelf(const class Size* cpSize)		{addSelf(-cpSize->getWidth(),-cpSize->getHeight());}
 	void operator -=(const class Size& crefSize)	{subtractSelf(&crefSize);}
 
+//setのアライアス。ソース中でSizeにsetしてると意味をハッキリさせたい時に使うとわかりやすい時はこっちを使う。
+	void setSize(int iWidth,int iHeight)			{set(iWidth,iHeight);}
+	void setSize(const Size* cpSize)				{set(cpSize);}
+
 public:
 	int m_iWidth;
 	int m_iHeight;

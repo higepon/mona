@@ -28,14 +28,17 @@ StringData::StringData()
 
 	m_iRefCount=0;
 }
-
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void StringData::registerRef()
+StringData::StringData(uint nLength)
 {
-	m_iRefCount++;
+	m_nLength	= nLength;
+	m_nSize		= nLength+1;
+	m_szData	= new char1[m_nSize];
+
+	m_iRefCount=0;
 }
 
 /**
@@ -63,7 +66,6 @@ String::String()
 	init();
 
 	createNewBuffer(0);
-	empty();
 }
 
 /**
@@ -98,16 +100,6 @@ String::String(const String& refInitialString)
 	init();
 
 	copy(&refInitialString);
-}
-
-/**
-	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
-	@date	2005/08/20	junjunn 作成
-*/
-void String::init()
-{
-	m_pStringData		= NULL;
-//	m_cszStringPointer	= NULL;
 }
 
 /**
@@ -280,7 +272,7 @@ void String::getRight(String* pstrOut,uint nCount) const
 */
 void String::getMiddle(String* pstrOut,uint nStart,uint nCount) const
 {
-	if (nStart+nCount>getLength())	return;
+//	if (nStart+nCount>getLength())	return;
 
 	pstrOut->requestModifiableBuffer(nCount,false);
 	pstrOut->copy(getString()+nStart,nCount);
@@ -311,11 +303,11 @@ String String::operator+(cpchar1 csz) const
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/10/20	junjunn 文字列長が更新されていなかったバグを修正。
 */
 void String::empty()
 {
-	pchar1 pBuffer = requestModifiableBuffer(0,false);
-	StringFn::empty(pBuffer);
+	copy("");
 }
 
 /**
@@ -349,11 +341,11 @@ void String::copy(cpchar1 csz,int iCount)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void String::copy(const String* pstr)
+void String::copy(const String* cpstr)
 {
 	releaseBuffer();
 
-	m_pStringData = pstr->getStringData();
+	m_pStringData = cpstr->getStringData();
 	m_pStringData->registerRef();
 }
 
@@ -429,9 +421,7 @@ pchar1 String::createNewBuffer(int iSizeWithoutNull,bool bKeepOriginalData)
 {
 	StringData* pOldStringData = getStringData();
 	
-	m_pStringData	= new StringData;
-	m_pStringData->m_nSize	= iSizeWithoutNull+1;
-	m_pStringData->m_szData	= new char1[getSize()];
+	m_pStringData			= new StringData(iSizeWithoutNull);
 
 	if (bKeepOriginalData)
 	{

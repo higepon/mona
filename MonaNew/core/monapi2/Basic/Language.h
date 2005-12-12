@@ -107,6 +107,7 @@ public:
 
 
 	@date	2005/08/20	junjunn 作成
+	@date	2005/09/25	junjunn publicとprotectedをわけて整理する。
 */
 class LanguageFn
 {
@@ -118,6 +119,13 @@ public:
 	static int convertShiftJIStoUnicode(class Buffer* pbufOut,cpchar1 cszIn);		///<char → wchar
 	static int convertUnicodetoShiftJIS(Buffer* pbufOut,cpcharv cwszIn);			///<wchar → char
 
+///変換コードテーブルを読み出す。
+	static bool init(cpchar1 cszPathShiftJIStoUnicode);
+
+///変換コードテーブルをセット。
+	static void initRule();
+
+protected:
 //単文字コード変換
 ///SJIS文字コードからUnicode(2バイト幅形式)文字コードに変換
 	static int convertShiftJIStoUnicode(int iSJISCode);
@@ -126,9 +134,6 @@ public:
 	static int convertUnicodetoShiftJIS(int iSJISCode);
 	static int convertUnicodetoShiftJIS(byte x,byte y);
 
-///変換コードテーブルを読み出す。
-	static void init(cpchar1 cszPathShiftJIStoUnicode);
-	static void initRule();
 };
 
 
@@ -148,7 +153,7 @@ public:
 ///準備が出来ているか。
 	bool isReady()	{return m_bReady;}
 ///変換コードテーブルを読み出す。
-	void readTable(cpchar1 cszPath);
+	bool readTable(cpchar1 cszPath);
 ///SJIS文字コードからUnicode(2バイト幅形式)文字コードに変換
 	int convert1to2(int iCode1);
 	int convert1to2(byte x,byte y);

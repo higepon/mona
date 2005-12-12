@@ -15,6 +15,7 @@
 
 #include "switch.h"
 #include "Type.h"
+#include "Buffer.h"
 
 #ifndef MONA
 	#include <stdio.h>
@@ -60,6 +61,8 @@ protected:
 //‰‹}ˆ’u
 #ifndef MONA
 	FILE* m_pFile;
+#else
+	Buffer m_oBuffer;
 #endif
 };
 

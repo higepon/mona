@@ -40,7 +40,7 @@ void Color::scale(float f1,float f2,float f3)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Color::add(byte _r,byte _g,byte _b)
+void Color::add(int _r,int _g,int _b)
 {
 	r += _r;
 	g += _g;
@@ -60,7 +60,7 @@ void Color::add(colort color)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-void Color::subtract(byte _r,byte _g,byte _b)
+void Color::subtract(int _r,int _g,int _b)
 {
 	r -= _r;
 	g -= _g;
@@ -100,6 +100,18 @@ void Color::set(colort color)
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/09/29	junjunn 作成
+*/
+void Color::set(color16t color16)
+{
+	r = getRValue(color16);
+	g = getGValue(color16);
+	b = getBValue(color16);
+}
+
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Color::normalize()
@@ -116,6 +128,16 @@ void Color::normalize()
 colort Color::getColort() const
 {
 	return makeColor((byte)r,(byte)g,(byte)b);
+}
+
+colort monapi2::scaleColor(colort color,float fScale,bool bNormalize)
+{
+	if (fScale==1)	return color;
+
+	Color oColor(color);
+	oColor.scale(fScale);
+	if (bNormalize)		oColor.normalize();
+	return oColor.getColort();
 }
 
 }	//namespace monapi2

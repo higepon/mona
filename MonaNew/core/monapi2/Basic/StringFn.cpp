@@ -145,8 +145,8 @@ pchar1 StringFn::find(cpchar1 cszSource,cpchar1 cszFind,int iSearchCount)
 		cpchar1 p = cszSource;
 		for (;;)
 		{
-			if (isEqual(p,cszFind,iLengthFind))	return (pchar1)p;	\
-			if (*p=='\0')						return NULL;		\
+			if (isEqual(p,cszFind,iLengthFind))	return (pchar1)p;
+			if (*p=='\0')						return NULL;
 			p++;
 		}
 	}
@@ -408,22 +408,19 @@ int	StringFn::copy(pchar1 szOut,cpchar1 cszIn,int iCopyCount)
 	{
 		while (*p++=*cq++)
 			;
-
-		return cq-cszIn-1;
 	}
 	else
 	{
 		if (iCopyCount==0)	return 0;
-//@Memo　高速化のためならMemoryFn::copyにして4バイト転送にすべきか。
-//途中で'\0'が来ても止められなくなるが・・・
+
 		cpchar1 cqEnd=cszIn+iCopyCount;
 		while (*p++=*cq++)
 		{
-			if (cq>=cqEnd)	break;
+			if (cq>=cqEnd)	{*p='\0';;return iCopyCount;}
 		}
-		*p='\0';
-		return cq-cszIn;
+		
 	}
+	return cq-cszIn-1;
 }
 
 /**
@@ -494,6 +491,11 @@ int StringFn::estimateVALength(cpchar1 cszFormat,vapointer vapStart)
 					char* p= VAPOINTER_ADVANCE(vap,char*);
 					nNewLength+=StringFn::getLength(p);
 				}
+				else if		(c2=='f')		//文字列
+				{
+					VAPOINTER_ADVANCE(vap,int);	//float
+					nNewLength+=30;		//doubleで20桁＋色々を考慮してもこれだけあれば十分かな
+				}
 				else if	(c2=='d' || c2=='x' || c2=='X')		//数字
 				{
 					VAPOINTER_ADVANCE(vap,int);
@@ -542,6 +544,8 @@ int StringFn::formatV(pchar1 szBuffer,cpchar1 cszFormat,vapointer vapStart)
 			else
 			{
 				int iWidth = 0;
+
+//幅を指定している。
 				if (CharFn::isDigit(c2))
 				{
 					iWidth = c2-'0';
@@ -557,25 +561,32 @@ int StringFn::formatV(pchar1 szBuffer,cpchar1 cszFormat,vapointer vapStart)
 				else if	(c2=='d')		//数字
 				{
 					int i = VAPOINTER_ADVANCE(vap,int);
-					char szString[20];;
+					char szString[20];
 					toString(szString,i,10,false,iWidth);
 					pWrite+=StringFn::copy(pWrite,szString);
 				}
 				else if	(c2=='x')		//16進数字
 				{
 					int i = VAPOINTER_ADVANCE(vap,int);
-					char szString[20];;
+					char szString[20];
 					toString(szString,i,16,false,iWidth);
+					pWrite+=StringFn::copy(pWrite,szString);
+				}
+				else if	(c2=='f')		//小数
+				{
+					double d = VAPOINTER_ADVANCE(vap,double);
+					char szString[30];
+					toStringFloatPlain(szString,d);
 					pWrite+=StringFn::copy(pWrite,szString);
 				}
 				else if	(c2=='X')		//16進数字
 				{
 					int i = VAPOINTER_ADVANCE(vap,int);
-					char szString[20];;
+					char szString[20];
 					toString(szString,i,16,true,iWidth);
 					pWrite+=StringFn::copy(pWrite,szString);
 				}
-				else	//不明。記号をそのまま出力。
+				else	//不明。どうしようもないので記号をそのまま出力。
 				{
 					*pWrite++='%';
 					*pWrite++=c2;
@@ -607,7 +618,7 @@ int StringFn::formatV(pchar1 szBuffer,cpchar1 cszFormat,vapointer vapStart)
 */
 int StringFn::toString(pchar1 szBuffer,int iTarget,int iBase,bool bCapital,int iWidth)
 {
-//まずは整形はまだなしの状態で数字を作成。
+//整形はまだなしの状態でとりあえず数字を作成。
 	char szNumberWithoutFormat[32];
 	pchar1 pWrite = szNumberWithoutFormat;
 	if (iTarget==0)
@@ -659,6 +670,65 @@ int StringFn::toString(pchar1 szBuffer,int iTarget,int iBase,bool bCapital,int i
 	pWrite+=StringFn::copy(pWrite,szNumberWithoutFormat);
 
 	return pWrite-szBuffer;
+}
+
+/**
+	@brief	dを文字列にする。まだ作りかけ。一部動いてない・・・
+	@param dFullPrecision trueなら1.1200000000のように最後の0を必ず出力。falseなら1.12のように切れるところで切る。
+	@date	2005/09/28	junjunn 作成
+*/
+void StringFn::toStringFloatPlain(pchar1 szBuffer,double d)
+{
+	pchar1 pWrite = szBuffer;
+
+//プラスマイナス
+	bool bPositive = (d>=0);
+	if (!bPositive)
+	{
+		d=-d;
+		*pWrite++='-';
+	}
+
+//小数点より上の部分と下にわける
+	int iIntPart = (int)d;
+	pWrite+=toString(pWrite,iIntPart);
+
+//小数部分。
+//実際やってみるとdoubleでは精度の問題で333.14 - 333 = 0.13999999みたいな細かすぎる端数が
+//発生して問題が出るのでfloatを使う。floatなら精度が足りないのが幸いして端数が発生しないので都合良い。
+	double dFloatPart = d-iIntPart;
+
+//dが大きすぎてintに直せなかった。現段階では処理できないケースなので帰って貰う・・・
+	if (dFloatPart >= 1)
+	{
+		StringFn::copy(szBuffer,"error");
+		return;
+	}
+
+
+//これ以上小さい部分は無視する
+	const double fIgnoreFloatSize = 0.00000001;
+
+//小数部分があるなら
+	if (dFloatPart>fIgnoreFloatSize)
+	{
+		*pWrite++='.';
+
+//小数を整数に直す。小数部分がなくなるまで拡大。
+		int i0Count=0;	//0を挿入するカウント。
+		while ((dFloatPart - (int)round(dFloatPart)) > fIgnoreFloatSize)
+		{
+			dFloatPart*=10;
+			if (dFloatPart < 1) i0Count++;
+		}
+
+		for (int i=0;i<i0Count;i++)
+		{
+			*pWrite++='0';
+		}
+
+		pWrite+=toString(pWrite,(int)round(dFloatPart));
+	}
 }
 
 /**

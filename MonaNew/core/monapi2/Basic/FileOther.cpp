@@ -10,6 +10,11 @@
 */
 //バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
+#ifdef MONA
+	#include <monapi.h>
+	#include <monapi/messages.h>
+#endif
+
 #include "Math.h"
 #include "FileOther.h"
 #include "StringFn.h"
@@ -103,6 +108,7 @@ void SplitFilename::set(cpchar1 cszFilename)
 	}
 }
 
+#ifdef MONA
 //ScanDirectory///////
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
@@ -117,60 +123,90 @@ ScanDirectory::ScanDirectory(cpchar1 cszPath,bool includeFile,bool includeDirect
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-ScanDirectory::ScanDirectory()
+void ScanDirectory::init()
 {
+	m_iCount = 0;
+	m_oArrayPFileProperty.removeAll();
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/10/12	junjunn 作成
+*/
+void ScanDirectory::scan(cpchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,ESortBy /*eSortBy*/)
+{
+	init();
+	m_strPathBase = cszPath;
+
+	monapi_cmemoryinfo* pMemoryInfo = monapi_call_file_read_directory(cszPath,MONAPI_FALSE);
+
+	if (! pMemoryInfo)		return;
+	int iCount = *(int*)pMemoryInfo->Data;
+	if (iCount == 0)		return;
+
+	monapi_directoryinfo* pDirectoryInfo = (monapi_directoryinfo*)(pMemoryInfo->Data + sizeof(int));
+	for (int i=0;i<iCount;i++) 
+	{
+		cpchar1 cszName = pDirectoryInfo->name;
+		if (!StringFn::isEqual(cszName,".") &&	!StringFn::isEqual(cszName,".."))
+		{
+			bool bDirectory = (pDirectoryInfo->attr & ATTRIBUTE_DIRECTORY);
+
+			if (
+				(bIncludeFile && !bDirectory) ||
+				(bIncludeDirectory && bDirectory)
+				)
+			{
+				FileProperty* pFileProperty = new FileProperty;
+				pFileProperty->m_strName	= cszName;
+				pFileProperty->m_bDirectory = bDirectory;
+				pFileProperty->m_iSize		= pDirectoryInfo->size;
+
+				if (m_strPathBase.isEqual("/"))
+					pFileProperty->m_strPath.format("/%s",cszName);
+				else
+					pFileProperty->m_strPath.format("%s/%s",m_strPathBase.getString(),cszName);
+
+				m_oArrayPFileProperty.add(pFileProperty);
+				m_iCount++;
+			}
+		}
+		pDirectoryInfo++;
+	}
+}
+
+/**
+	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
+	@date	2005/10/12	junjunn 作成
+*/
+cpchar1 ScanDirectory::getNameAt(int iIndex) const
+{
+	if (! assertIndex(iIndex)) return NULL;
+
+	return m_oArrayPFileProperty.getAt(iIndex)->getName();
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-cpchar1 ScanDirectory::getNameAt(int iIndex)
+cpchar1 ScanDirectory::getPathAt(int iIndex) const
 {
-	iIndex=0;
-	return NULL;
+	if (! assertIndex(iIndex)) return NULL;
+
+	return m_oArrayPFileProperty.getAt(iIndex)->getPath();
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
-	@date	2005/08/20	junjunn 作成
+	@date	2005/10/12	junjunn 作成
 */
-cpchar1 ScanDirectory::getFullPathAt(int iIndex)
+FileProperty* ScanDirectory::getFilePropertyAt(int iIndex)
 {
-	iIndex=0;
-	return NULL;
+	if (! assertIndex(iIndex)) return NULL;
+
+	return m_oArrayPFileProperty.getAt(iIndex);
 }
 
-/**
-	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
-	@date	2005/08/20	junjunn 作成
-*/
-cpchar1 ScanDirectory::getFilePropertyAt(int iIndex)
-{
-	iIndex=0;
-	return NULL;
-}
-
-/**
-	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
-	@date	2005/08/20	junjunn 作成
-*/
-int ScanDirectory::getCount()
-{
-	return 0;
-}
-
-/**
-	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
-	@date	2005/08/20	junjunn 作成
-*/
-void ScanDirectory::scan(cpchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,ESortBy eSortBy)
-{
-	cszPath=NULL;
-	bIncludeFile=false;
-	bIncludeDirectory=false;
-	eSortBy=SORTBY_NAME;
-}
-
-
+#endif	//ifdef MONA
 }		//namespace monapi2

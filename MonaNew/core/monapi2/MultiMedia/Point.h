@@ -30,29 +30,41 @@ public:
 	Point(const Point* cpPoint)						{set(cpPoint);}
 
 //取得
-	int getX() const								{return x;}
-	int getY() const								{return y;}
-	bool isEqual(int _x,int _y) const				{return (x==_x && y==_y);}
-	bool isEqual(const Point* cpPoint) const		{return isEqual(cpPoint->x,cpPoint->y);}
-	bool operator ==(const Point& crefPoint) const	{return isEqual(&crefPoint);}
-	bool operator !=(const Point& crefPoint) const 	{return ! isEqual(&crefPoint);}
-	Point add(int _x,int _y) const					{Point point(x+_x,y+_y);return point;}
-	Point add(const class Size* cpSize) const;
-	Point operator +(const Size& crefSize) const;
-	Point subtract(int _x,int _y) const				{Point point(x-_x,y-_y);return point;}
-	Point subtract(const class Size* cpSize) const;
-	Point operator -(const Size& crefSize) const;
+	int getX()								const	{return x;}
+	int getY()								const	{return y;}
+	bool isEqual(int _x,int _y)				const	{return (x==_x && y==_y);}
+	bool isEqual(const Point* cpPoint)		const	{return isEqual(cpPoint->x,cpPoint->y);}
+	bool operator ==(const Point& crefPoint)const	{return isEqual(&crefPoint);}
+	bool operator !=(const Point& crefPoint)const 	{return ! isEqual(&crefPoint);}
+	Point add(int _x,int _y)				const	{Point point(x+_x,y+_y);return point;}
+	Point add(const class Size* cpSize)		const;
+	Point add(const Point* cpPoint)	const;
+	Point operator +(const Size& crefSize)	const;
+	Point subtract(int _x,int _y)			const	{Point point(x-_x,y-_y);return point;}
+	Point subtract(const Size* cpSize)		const;
+	Size  subtract(const Point* cpPoint)	const;
+	Point operator -(const Size& crefSize)	const	{return subtract(&crefSize);}
+	Size  operator -(const Point& crefPoint)const;
+	Point subtractRelative(const Point* cppointBase)const {return this->subtract(cppointBase->x,cppointBase->y);}
+	Point addRelative(const Point* cppointBase)		const {return this->add(cppointBase->x,cppointBase->y);}
 
 //操作 
 	void set(int _x,int _y)						{x=_x;y=_y;}
 	void set(const Point* cpPoint)				{set(cpPoint->x,cpPoint->y);}
 	void operator =(const Point& crefPoint)		{set(&crefPoint);}
 	void move(int _x,int _y)					{x+=_x;y+=_y;}
-	void move(const class Size* cpSize);
+	void move(const Size* cpSize);
+	void move(const Point* cpPoint);
 	void operator +=(const Size& crefSize);
 	void moveMinus(int _x,int _y)				{move(-_x,-_y);}
-	void moveMinus(const class Size* cpSize);
-	void operator -=(const class Size& crefSize);
+	void moveMinus(const Size* cpSize);
+	void operator -=(const Size& crefSize);
+
+//setと同じ。同じ機能で名前が違うアライアス関数を作るのは本当はよくないんだがPointを継承した
+//クラスを作ってそこからPointの機能を利用したいときにset()だと何をセットしてるか
+//意味がわからなくなるのでPointをsetしているんだと明確にしたい時にはこっちを使うと便利かと。
+	void setPoint(int _x,int _y)				{set(_x,_y);}
+	void setPoint(const Point* cpPoint)			{set(cpPoint);}
 
 public:
 	int x;

@@ -37,7 +37,7 @@ template<class TYPE>
 void Array<TYPE>::init(uint nItitialSize)
 {
 	m_nCount		= 0;
-	m_nSize	= nItitialSize;
+	m_nSize			= nItitialSize;
 	m_apData		= NULL;
 
 	getNewSize(nItitialSize);
@@ -82,15 +82,13 @@ TYPE Array<TYPE>::getAt(uint n) const
 template<class TYPE>
 void Array<TYPE>::add(TYPE t)
 {
-	m_nCount++;
-
-	TYPE* pOldBuffer = extendBuffer(m_nCount);
+	TYPE* pOldBuffer = extendBuffer(m_nCount+1);
 
 //バッファの変動があった。
 	if (pOldBuffer)
 	{
 //前の要素を移動。
-		for (uint n=0;n<m_nCount-1;n++)
+		for (uint n=0;n<m_nCount;n++)
 		{
 			m_apData[n] = pOldBuffer[n];
 		}
@@ -98,7 +96,8 @@ void Array<TYPE>::add(TYPE t)
 		deleteOldBuffer(pOldBuffer,0);
 	}
 
-	m_apData[m_nCount-1] = t;
+	m_apData[m_nCount] = t;
+	m_nCount++;
 }
 
 /**
@@ -148,7 +147,7 @@ bool Array<TYPE>::insertAt(uint nIndex,uint nCount)
 	uint nOldCount = m_nCount;
 	m_nCount+=nCount;
 
-	uint nOldSize = getSize();
+//	uint nOldSize = getSize();
 //バッファの拡張を試みる。(十分にあった場合は何も起こらない。)
 	TYPE* pOldBuffer = extendBuffer(m_nCount);
 
@@ -166,7 +165,7 @@ bool Array<TYPE>::insertAt(uint nIndex,uint nCount)
 //挿入インデックス後の要素を移動。
 	for (n=nIndex+nCount;n<nOldCount+nCount;n++)
 	{
-		m_apData[n] = m_apData[n-nCount];
+		m_apData[n] = pOldBuffer[n-nCount];
 	}
 
 //挿入された場所は空にしておく。（前のデータが残っててdeleteされるとマズい。）
@@ -177,7 +176,9 @@ bool Array<TYPE>::insertAt(uint nIndex,uint nCount)
 
 	if (pOldBuffer)
 	{
-		deleteOldBuffer(pOldBuffer,nOldSize);
+//deleteOldBufferを使うとArrayADの場合に蓄えていたポインタも破壊されるのでこっちが正解か。
+		delete[] pOldBuffer;
+//		deleteOldBuffer(pOldBuffer,nOldSize);
 	}
 
 	return true;

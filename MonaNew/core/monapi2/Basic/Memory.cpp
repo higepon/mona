@@ -50,8 +50,9 @@ namespace monapi2	{
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/09/17	junjunn 利便性のためcopyの戻り値にはnCountを返すようにする。値の受け渡しが出来るためわずかにパフォーマンスは落ちたが使いやすさを優先。
 */
-void MemoryFn::copy(void* pTo,const void* cpFrom, uint nCount)
+uint MemoryFn::copy(void* pTo,const void* cpFrom,uint nCount)
 {
 //@memo もしかしたら4バイト境界対策が必要かも。
 
@@ -95,6 +96,8 @@ void MemoryFn::copy(void* pTo,const void* cpFrom, uint nCount)
                  : "m"(i1ByteCount)
                  : "ecx");
 #endif
+
+	return nCount;
 }
 
 /**

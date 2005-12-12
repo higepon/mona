@@ -10,15 +10,24 @@
 */
 //バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
-#include "FileFn.h"
-#include "Buffer.h"
-#include "String.h"
+#ifdef MONA
+	#include <monapi.h>
+	#include <monapi/messages.h>
+#endif
 
-//デバッグのための応急措置
 #ifdef _WIN32
 	#include <afxwin.h>
 	#include <io.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
 #endif
+
+#include "FileFn.h"
+#include "Buffer.h"
+#include "String.h"
+#include "Memory.h"
+
+//デバッグのための応急措置
 
 namespace monapi2	{
 
@@ -27,9 +36,8 @@ namespace monapi2	{
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::isExist(cpchar1 cszPath)
+bool FileFn::isExist(cpchar1 /*cszPath*/)
 {
-	cszPath;
 	return false;
 }
 
@@ -37,9 +45,8 @@ bool FileFn::isExist(cpchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::isFile(cpchar1 cszPath)
+bool FileFn::isFile(cpchar1 /*cszPath*/)
 {
-	cszPath;
 	return false;
 }
 
@@ -64,20 +71,25 @@ int FileFn::getSize(cpchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-uint FileFn::getLastModifiedTime(cpchar1 cszPath)
+uint FileFn::getLastModifiedTime(cpchar1 /*cszPath*/)
 {
-	cszPath;
 	return false;
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/09/20	junjunn 実装
 */
 bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
 {
-//デバッグのための応急措置
-#ifdef _WIN32
+#ifdef MONA
+	monapi_cmemoryinfo* pMemoryInfo = monapi_call_file_read_data(cszPath,MONAPI_FALSE);
+	if (! pMemoryInfo)	return false;
+
+	MemoryFn::copy(pBufferOut,pMemoryInfo->Data,pMemoryInfo->Size);
+	return true;
+#else
 	FILE* p=fopen(cszPath,"r");
 	fread(pBufferOut,sizeof(byte),iBufferSize,p);
 	fclose(p);
@@ -90,36 +102,55 @@ bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/09/20	junjunn 実装
 */
 bool FileFn::read(cpchar1 cszPath,Buffer* pbufOut)
 {
-	int iFileSize = getSize(cszPath);
-	if (iFileSize!=-1)
-	{
-		byte* pBuffer = pbufOut->extendBuffer(iFileSize);
-		read(cszPath,pBuffer,iFileSize);
-		return true;
-	}
+#ifdef MONA
+	monapi_cmemoryinfo* pMemoryInfo = monapi_call_file_read_data(cszPath,MONAPI_FALSE);
+	if (! pMemoryInfo)	return false;
 
+	pbufOut->copy(pMemoryInfo->Data,pMemoryInfo->Size);
+	return true;
+#else
+	pbufOut;cszPath;
 	return false;
+#endif
 }
 
 /**
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/09/20	junjunn 実装
 */
 bool FileFn::read(cpchar1 cszPath,String* pstrOut)
 {
-	int iFileSize = getSize(cszPath);
-	if (iFileSize!=-1)
+#ifdef MONA
+	monapi_cmemoryinfo* pMemoryInfo = monapi_call_file_read_data(cszPath,MONAPI_FALSE);
+	if (! pMemoryInfo)	return false;
+
+	int iFileSize = pMemoryInfo->Size;
+//String系はサービスで'\0'まで確保してつける。
+	pchar1 pBuffer = pstrOut->extendBuffer(iFileSize+1);
+	MemoryFn::copy(pBuffer,pMemoryInfo->Data,pMemoryInfo->Size);
+	pBuffer[iFileSize] = '\0';
+	return true;
+#else
+	FILE* pFile = fopen(cszPath,"rb");
+	if (pFile)
 	{
+		struct _stat oStat;
+		_stat(cszPath,&oStat);
+		int iFileSize=oStat.st_size;
 		pchar1 pBuffer = pstrOut->extendBuffer(iFileSize+1);
-		read(cszPath,(byte*)pBuffer,iFileSize);
+		fread(pBuffer,1,iFileSize,pFile);
 		pBuffer[iFileSize] = '\0';
+		fclose(pFile);
 		return true;
 	}
 
 	return false;
+#endif
 }
 
 /**
@@ -161,10 +192,8 @@ bool FileFn::write(cpchar1 cszPath,const String* cpstrIn)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::createDirectory(cpchar1 cszPath,cpchar1 cszDirName)
+bool FileFn::createDirectory(cpchar1 /*cszPath*/,cpchar1 /*cszDirName*/)
 {
-	cszDirName;
-	cszPath;
 	return false;
 }
 
@@ -172,9 +201,8 @@ bool FileFn::createDirectory(cpchar1 cszPath,cpchar1 cszDirName)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::deleteFile(cpchar1 cszPath)
+bool FileFn::deleteFile(cpchar1 /*cszPath*/)
 {
-	cszPath;
 	return false;
 }
 
@@ -182,9 +210,8 @@ bool FileFn::deleteFile(cpchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::deleteDirectory(cpchar1 cszPath)
+bool FileFn::deleteDirectory(cpchar1 /*cszPath*/)
 {
-	cszPath;
 	return false;
 }
 
@@ -192,10 +219,8 @@ bool FileFn::deleteDirectory(cpchar1 cszPath)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::move(cpchar1 cszPathFrom,cpchar1 cszPathTo)
+bool FileFn::move(cpchar1 /*cszPathFrom*/,cpchar1 /*cszPathTo*/)
 {
-	cszPathFrom;
-	cszPathTo;
 	return false;
 }
 
@@ -203,10 +228,8 @@ bool FileFn::move(cpchar1 cszPathFrom,cpchar1 cszPathTo)
 	@brief	説明、引数、戻り値はMonapi2リファレンス参照。
 	@date	2005/08/20	junjunn 作成
 */
-bool FileFn::copy(cpchar1 cszPathFrom,cpchar1 cszPathTo)
+bool FileFn::copy(cpchar1 /*cszPathFrom*/,cpchar1 /*cszPathTo*/)
 {
-	cszPathFrom;
-	cszPathTo;
 	return false;
 }
 

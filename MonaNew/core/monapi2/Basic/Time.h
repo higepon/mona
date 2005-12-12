@@ -93,6 +93,19 @@ protected:
 	int m_iSecondCount;			//1970年1月1日からの総秒数。
 };
 
+/**
+	@brief	二点間の時刻を計測。Monapi2リファレンスも参照。
+	@date	2005/08/20	junjunn 作成
+*/
+class TimeMeasure
+{
+public:
+	void start();
+	uint finish();
+
+protected:
+	uint m_nTick;
+};
 
 }	//namespace monapi2
 

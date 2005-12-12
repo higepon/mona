@@ -16,6 +16,8 @@
 #include "switch.h"
 #include "Type.h"
 #include "FileFn.h"
+#include "String.h"
+#include "CollectionArray.h"
 
 namespace monapi2	{
 
@@ -120,9 +122,27 @@ protected:
 	@brief	ディレクトリをスキャンして中身を列挙。Monapi2リファレンスも参照。
 	@date	2005/08/20	junjunn 作成
 */
+
+//単一のファイルの
+class FileProperty
+{
+public:
+	cpchar1 getName()	const {return m_strName;}
+	cpchar1 getPath()	const {return m_strPath;}
+	int getSize()		const {return m_iSize;}
+	bool isDirectory()	const {return m_bDirectory;}
+
+
+public:
+	String m_strName;			///<名前
+	String m_strPath;			///<パス
+	bool m_bDirectory;			///<trueならディレクトリ、falseならファイル。
+	int m_iSize;				///<サイズ
+};
+
 class ScanDirectory
 {
-protected:
+//ソートは未インプリメント
 	enum ESortBy
 	{
 		SORTBY_NONE,
@@ -131,15 +151,28 @@ protected:
 		SORTBY_LASTMODIFIEDTIME,
 	};
 
-	ScanDirectory(cpchar1 cszPath,bool includeFile,bool includeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
-	ScanDirectory();
+public:
+	ScanDirectory(cpchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
+	ScanDirectory()	{init();}
 
-	cpchar1 getNameAt(int iIndex);
-	cpchar1 getFullPathAt(int iIndex);
-	cpchar1 getFilePropertyAt(int iIndex);
-	int getCount();
+	cpchar1 getNameAt(int iIndex) const;
+	cpchar1 getPathAt(int iIndex) const;
+	FileProperty* getFilePropertyAt(int iIndex);
+	int getCount()						{return m_iCount;}
 
 	void scan(cpchar1 cszPath,bool bIncludeFile,bool bIncludeDirectory,enum ESortBy eSortBy=SORTBY_NONE);
+
+
+protected:
+	void init();
+	bool assertIndex(int iIndex) const	{return (iIndex>=0 && iIndex<m_iCount);}
+
+
+protected:
+	int m_iCount;
+	String m_strPathBase;			///<現在探索しているディレクトリのパス。
+
+	ArrayAD<FileProperty*> m_oArrayPFileProperty;
 };
 
 }	//namespace monapi2

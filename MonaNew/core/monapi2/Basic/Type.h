@@ -60,14 +60,17 @@ typedef int 					booli;
 //固定幅
 typedef	char					char1;			///<1バイト文字。本当はunsignedなんだけどsignedが普及しすぎててコンパイラでも混乱しやすいのでsignedにしとく。
 typedef	unsigned short			char2;			///<2バイト文字
+typedef	unsigned int			char4;			///<4バイト文字
 
 typedef char1*					pchar1;			///<標準文字列へのポインタ
 typedef const char1*			cpchar1;		///<const標準文字列へのポインタ
-typedef char2*					pchar2;			///<ユニコード文字列へのポインタ
-typedef const char2*			cpchar2;		///<constユニコード文字列へのポインタ
+typedef char2*					pchar2;			///<2バイト文字列へのポインタ
+typedef const char2*			cpchar2;		///<const2バイト文字列へのポインタ
+typedef char4*					pchar4;			///<4バイト文字列へのポインタ
+typedef const char4*			cpchar4;		///<const4バイト文字列へのポインタ
 
 //可変幅
-typedef	unsigned int			charv;			///<標準文字。後からtypedef uint16 vcharとかユニコードに合わせ幅が変わるかも。
+typedef	char4					charv;			///<標準文字。
 typedef charv*					pcharv;			///<標準文字列へのポインタ
 typedef const charv*			cpcharv;		///<const標準文字列へのポインタ
 

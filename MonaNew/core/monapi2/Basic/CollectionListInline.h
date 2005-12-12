@@ -459,7 +459,7 @@ void ListBase<TYPE,ELEMENT>::assertSort() const
 	{
 		TYPE t2 = getNext(&pos);
 
-		ASSERT(isRightOrder(&t1,&t2));
+//		ASSERT(isRightOrder(&t1,&t2));
 
 		t1=t2;
 	}

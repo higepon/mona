@@ -14,6 +14,10 @@
 #include "Time.h"
 #include "Math.h"
 
+#ifdef MONA
+	#include <monapi/syscall.h>
+#endif
+
 namespace monapi2
 {
 
@@ -209,7 +213,7 @@ void Time::getMonthAndDay(int m_iDayCountInYear,int* piMonth,int* piDay)
 		}
 	}
 
-	ASSERT(0);		//Ç±Ç±Ç…ÇÕóàÇ»Ç¢ÇÕÇ∏ÅB
+//	ASSERT(0);		//Ç±Ç±Ç…ÇÕóàÇ»Ç¢ÇÕÇ∏ÅB
 }
 
 /**
@@ -233,5 +237,19 @@ int Time::getLeapYearCountSince1970(int iYear,int iMonth)
 
 	return iLeapYearCount;
 }
+
+//TimeMeasureFn///////
+#ifdef MONA
+void TimeMeasure::start()
+{
+	m_nTick=syscall_get_tick();
+}
+
+uint TimeMeasure::finish()
+{
+	return syscall_get_tick()-m_nTick;
+}
+
+#endif	//#ifdef MONA
 
 }		//namespace monapi2
