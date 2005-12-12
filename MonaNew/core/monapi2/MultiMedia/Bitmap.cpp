@@ -10,14 +10,19 @@
 */
 //バグ修正をする時は関数本体説明の@date履歴に日付と名前と作業内容を付け足しておいてください。
 //また.hファイルにあるクラス説明などの@date履歴部分にも同様の事をしておいてください。
+#ifdef MONA
+	#include <monapi.h>
+#endif
+
 #include "Bitmap.h"
 #include "../Basic/File.h"
 #include "../Basic/Debug.h"
 #include "../Basic/Memory.h"
+#include "Size.h"
 
 namespace monapi2	{
 
-#define ASSERT_PIXEL(x,y)	ASSERT(x>=0 && x<m_iWidth && y>=0 && y<m_iHeight);
+#define ASSERT_PIXEL(x,y)	ASSERT(x>=0 && x<m_oSize.getWidth() && y>=0 && y<m_oSize.getHeight());
 
 	
 	
@@ -38,7 +43,7 @@ public:
 	{
 		m_iWidth	=*(dword*)(p+0x04);
 		m_iHeight	=*(dword*)(p+0x08);
-		m_wBitFormat=*(word*) (p+0x0E);
+		m_wBitFormat=* (word*)(p+0x0E);
 	}
 
 
@@ -103,22 +108,23 @@ public:
 
 //Bitmap/////////////////
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::init()
 {
-	m_iWidth	= 0;
-	m_iHeight	= 0;
+	m_oSize.set(0,0);
 
-	m_strPath.empty();
+//	m_strPath.empty();
 	m_bufferData.clear();
 
-	m_strPath = "Bitmap.bmp";
+	m_bYReverse = false;
+
+//	m_strPath = "Bitmap.bmp";
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::clear()
@@ -127,40 +133,49 @@ void Bitmap::clear()
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
-	@date	2005/08/20	junjunn 作成
+	@brief	Monapi2リファレンスを参照。
+	@date	2005/09/20	junjunn 作成
 */
-byte* Bitmap::getCanvas(int iWidth,int iHeight)
+byte* Bitmap::createCanvas(const Size* cpSize)
+{
+	return createCanvas(cpSize->getWidth(),cpSize->getHeight());
+}
+
+/**
+	@brief	Monapi2リファレンスを参照。
+	@date	2005/08/20	junjunn 作成
+	@date	2005/09/20	junjunn createCanvasから名前を変更。
+*/
+byte* Bitmap::createCanvas(int iWidth,int iHeight)
 {
 	return getNewBuffer(iWidth,iHeight);
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 byte* Bitmap::getNewBuffer(int iWidth,int iHeight)
 {
 	clear();
 
-	m_iWidth	= iWidth;
-	m_iHeight	= iHeight;
+	m_oSize.set(iWidth,iHeight);
 	setLineBits();
 
 	return m_bufferData.extendBuffer(m_iLineSize * iHeight);
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::setLineBits()
 {
-	m_iLineSize = getBMPLineSize(m_iWidth);
+	m_iLineSize = getBMPLineSize(m_oSize.getWidth());
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::copy(const Bitmap* cpBitmap)
@@ -169,42 +184,63 @@ void Bitmap::copy(const Bitmap* cpBitmap)
 
 	clear();
 
-	m_iWidth	= cpBitmap->m_iWidth;
-	m_iHeight	= cpBitmap->m_iHeight;
+	m_oSize = cpBitmap->m_oSize;
 	m_bufferData.copy(&cpBitmap->m_bufferData);
 }
 
+byte* Bitmap::getPixelBuffer()
+{
+	return m_bufferData.getBuffer();
+}
+
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 byte* Bitmap::getPixelBuffer(int x,int y)
 {
-//先頭を表す引数。
-	if (x<0)	return m_bufferData.getBuffer();
-
-	int iOffset = (m_iHeight - y - 1)*m_iLineSize + x*3;
+	int iOffset = (m_oSize.getHeight() - y - 1)*m_iLineSize + x*3;
 	return m_bufferData.getBuffer() + iOffset;
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
-colort Bitmap::getPixel(int x,int y)
+const byte* Bitmap::getPixelBufferConst(int x,int y) const
+{
+	int iOffset = (m_oSize.getHeight() - y - 1) * m_iLineSize + x*3;
+	return m_bufferData.getData() + iOffset;
+}
+
+/**
+	@brief	Monapi2リファレンスを参照。
+	@date	2005/10/03	junjunn 作成
+*/
+const byte* Bitmap::getPixelBufferConst() const
+{
+	return m_bufferData.getData();
+}
+
+/**
+	@brief	Monapi2リファレンスを参照。
+	@date	2005/08/20	junjunn 作成
+*/
+colort Bitmap::getPixel(int x,int y) const
 {
 	const byte* cpBaseByte = getPixelBufferConst(x,y);
-	return makeColor(cpBaseByte[0],cpBaseByte[1],cpBaseByte[2]);
+//BGRに並んでいる。
+	return makeColor(cpBaseByte[2],cpBaseByte[1],cpBaseByte[0]);
 }
 
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::setPixel(int x,int y,colort color)
 {
-	ASSERT_PIXEL(x,y);
+//	ASSERT_PIXEL(x,y);
 
 	byte* pBaseByte = getPixelBuffer(x,y);
 
@@ -214,27 +250,28 @@ void Bitmap::setPixel(int x,int y,colort color)
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::fill(colort color)
 {
-	byte* p = getPixelBuffer(-1,0);
+	byte* p = getPixelBuffer();
 //dword転送では最後の一つだけはバッファの外に出てしまうので。
-	for (int i=0;i<(m_iWidth*m_iHeight)-1;i++)
+	for (int i=0;i<(m_oSize.getWidth()*m_oSize.getHeight())-1;i++)
 	{
 		*(dword*)p = color;
 		p+=3;
 	}
 
-	setPixel(m_iWidth-1,m_iHeight-1,color);
+	setPixel(m_oSize.getWidth()-1,m_oSize.getHeight()-1,color);
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
+	@date	2005/10/03	junjunn Y反転機能を付け加える。
 */
-bool Bitmap::read(cpchar1 cszPath)
+bool Bitmap::read(cpchar1 cszPath,bool bReverseY)
 {
 	File file;
 	if (! file.open(cszPath))		return false;
@@ -253,25 +290,37 @@ bool Bitmap::read(cpchar1 cszPath)
 
 //現時点では24ビット以外は対応してない。
 	if (bitmapInfoHeader.m_wBitFormat != 24)		return false;
-	ASSERT(m_iWidth>0 && m_iHeight>0);
-
+//	ASSERT(m_oSize.getWidth()>0 && m_oSize.getHeight()>0);
 
 //初期化。設定。
-	m_strPath = cszPath;
-	byte* pBuffer = getCanvas(bitmapInfoHeader.m_iWidth,bitmapInfoHeader.m_iHeight);
+//	m_strPath = cszPath;
+	byte* pBuffer = createCanvas(bitmapInfoHeader.m_iWidth,bitmapInfoHeader.m_iHeight);
 
-	file.read(pBuffer,bitmapFileHeader.m_dwOffsetToData,m_bufferData.getSize());
+
+	m_bYReverse = bReverseY;
+
+//読み込み。
+	int iDataStart = bitmapFileHeader.m_dwOffsetToData;
+	for (int y=0;y<getHeight();y++)
+	{
+//Y反転機能。VRAMなどは.bmpと逆に上から下にデータが流れるので反転しておくと便利な場合もある。
+		int y2 = (! bReverseY)?y:(getHeight()-y-1);
+
+		int iOffsetYSource = y * getLineDataSize();
+		int iOffsetYTarget = y2 * getLineDataSize();
+		file.read(pBuffer + iOffsetYTarget,iDataStart + iOffsetYSource,getLineDataSize());
+	}
 
 	return true;
 }
 
 /**
-	@brief	時間・時刻を取り扱う。Monapi2リファレンスも参照。
+	@brief	Monapi2リファレンスを参照。
 	@date	2005/08/20	junjunn 作成
 */
 void Bitmap::write(cpchar1 cszPath) const
 {
-	ASSERT(m_iBitCount==8 || m_iBitCount==24);
+//	ASSERT(m_iBitCount==8 || m_iBitCount==24);
 
 const int iBMP_HEADER_SIZE = 0x36;
 
@@ -305,13 +354,13 @@ const int iBMP_HEADER_SIZE = 0x36;
 	int iSize=0;
 	int iMainDataOffset=0;
 
-	iSize = m_iLineSize * m_iHeight + iBMP_HEADER_SIZE;
+	iSize = m_iLineSize * m_oSize.getHeight() + iBMP_HEADER_SIZE;
 	iMainDataOffset = iBMP_HEADER_SIZE;
 
 	*piSize = iSize;
 	*piMainDataOffset = iMainDataOffset;
-	*piWidth			= m_iWidth;
-	*piHeight			= m_iHeight;
+	*piWidth			= m_oSize.getWidth();
+	*piHeight			= m_oSize.getHeight();
 	*piBitCount			= 24;
 
 	File file(cszPath,true);
@@ -327,15 +376,16 @@ const int iBMP_HEADER_SIZE = 0x36;
 */
 int	getBMPLineSize(int iWidth)
 {
-	int iLineBits = 3 * iWidth;
+//各行の大きさは4バイト単位でなくてはならないので必要なら空バイトを追加する。
+	int iLineSize = 3 * iWidth;
 
-	int iExcess = iLineBits % 4;
+	int iExcess = iLineSize % 4;
 	if (iExcess != 0)
 	{
-		iLineBits += (4-iExcess);
+		iLineSize += (4-iExcess);
 	}
 
-	return iLineBits;
+	return iLineSize;
 }
 
 

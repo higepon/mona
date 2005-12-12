@@ -17,6 +17,7 @@
 #include "../Basic/Type.h"
 #include "../Basic/Buffer.h"
 #include "../Basic/String.h"
+#include "Size.h"
 #include "Color.h"
 
 namespace monapi2	{
@@ -26,6 +27,8 @@ namespace monapi2	{
 ファイルなどからの読み書きとピクセル単位での色操作が可能。
 
 	@date	2005/08/20	junjunn 作成
+
+@bug Y反転の場合のgetPixel(x,y)処理などが未対応・・・
 */
 class Bitmap
 {
@@ -34,27 +37,33 @@ public:
 ///@name 生成
 //@{
 	Bitmap()				{init();}				///<空の内容で作成
-	Bitmap(cpchar1 cszPath)	{init();read(cszPath);}	///<cszPathのファイルで作成
-	Bitmap(int iWidth,int iHeight)	{getCanvas(iWidth,iHeight);}	///<大きさを指定して作成。
+	Bitmap(cpchar1 cszPath,bool bReverseY=false)	{init();read(cszPath,bReverseY);}	///<cszPathのファイルで作成
+	Bitmap(int iWidth,int iHeight)	{createCanvas(iWidth,iHeight);}	///<大きさを指定して作成。
 //@}
 
 ///@name 取得
 //@{
-	int getWidth()	{return m_iWidth;}				///<幅
-	int getHeight()	{return m_iHeight;}				///<高さ
+	int getWidth()	const {return m_oSize.getWidth();}				///<幅
+	int getHeight()	const {return m_oSize.getHeight();}				///<高さ
+	int getLineDataSize() const {return m_iLineSize;}				///<一行のデータ幅
+	const Size* getSize() const {return &m_oSize;}
 //@}
 
 ///@name ビットマップ操作
 //@{
-	byte* getCanvas(int iWidth,int iHeight);			///<バッファにサイズが収まるだけの容量を確保。
+	byte* createCanvas(int iWidth,int iHeight);		///<バッファにサイズが収まるだけの容量を確保。
+	byte* createCanvas(const class Size* cpSize);	///<バッファにサイズが収まるだけの容量を確保。
 	void copy(const Bitmap* cpBitmap);				///<cpBitmapをコピー
 	void clear();									///<現在の内容を消去する
 //@}
 
 ///@name ピクセル操作
 //@{
-	byte* getPixelBuffer(int x,int y);							///<(x,y)のピクセルのデータ位置を返す
-	colort getPixel(int x,int y);								///<(x,y)のピクセルの色位置を返す
+	byte* getPixelBuffer();										///<データバッファの始点の位置を返す。
+	byte* getPixelBuffer(int x,int y);							///<(x,y)のピクセルのデータバッファの位置を返す。
+	const byte* getPixelBufferConst() const;					///<データバッファの始点の位置を返す。const版。
+	const byte* getPixelBufferConst(int x,int y) const;			///<(x,y)のピクセルのデータ位置を返す。const版。
+	colort getPixel(int x,int y) const;							///<(x,y)のピクセルの色位置を返す
 //	class Color* getPixel(int x,int y,Color* pColorMan) const;	///<(x,y)の位置にある色データを取得
 //	void setPixel(int x,int y,const Color* pColorMan);			///<(x,y)の位置に色データをセット。24ビット用。
 	void setPixel(int x,int y,colort rgb);						///<(x,y)の位置に色データをセット。colort引数。
@@ -67,7 +76,7 @@ public:
 
 ///@name ファイル操作
 //@{
-	bool read(cpchar1 szPath);						///<szPathのファイルで作成
+	bool read(cpchar1 szPath,bool bReverseY=false);		///<szPathのファイルで作成
 	void write(cpchar1 cszPath)	const;				///<.bmpをディスクに書き出す
 //@}
 
@@ -78,18 +87,20 @@ protected:
 	void init();									///<初期化
 	byte* getNewBuffer(int iWidth,int iHeight);		///<引数のサイズのバッファを確保
 	void setLineBits();								///<m_iLineSizeをセット
-	bool isValid()const	{return	m_iWidth!=0;}		///<正しいバッファが存在しているか
-	const byte* getPixelBufferConst(int x,int y) const
-		{return getPixelBufferConst(x,y);}			///<(x,y)のピクセルのデータ位置を返す
+	bool isValid()const	{return	(m_oSize.getWidth()!=0);}		///<正しいバッファが存在しているか
 
 
 //メンバ
 public:
-	int		m_iWidth;		///<幅
-	int		m_iHeight;		///<高さ
+	Size	m_oSize;
 	int		m_iLineSize;	///<1行のデータサイズ。BMPの幅は4の倍数でなければならない条件のためm_iWidthが4の倍数じゃなかった時に実際のバイト幅とは食い違う。
 	Buffer	m_bufferData;	///<データ本体
-	String	m_strPath;		///<自分のパス。
+
+	bool	m_bYReverse;	///<Y反転をしているか。
+
+//junjunn 2005/09/22。Bitmapを共有メモリ上に作るとここで一緒に作られるStringの
+//参照カウントシステムの関係でメモリが破綻する事に気づいたので一端停止・・・
+//	String	m_strPath;		///<自分のパス。
 };
 
 
