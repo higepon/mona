@@ -17,9 +17,9 @@ extern "Java"
       class PsInfo;
     }
   }
-}
+};
 
-class org::monaos::SystemCall : public ::java::lang::Object
+class ::org::monaos::SystemCall : public ::java::lang::Object
 {
 public:
   static jint sleep (jint);

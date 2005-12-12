@@ -16,9 +16,9 @@ extern "Java"
       class IO;
     }
   }
-}
+};
 
-class org::monaos::IO : public ::java::lang::Object
+class ::org::monaos::IO : public ::java::lang::Object
 {
 public:
   static jbyte inp8 (jint);

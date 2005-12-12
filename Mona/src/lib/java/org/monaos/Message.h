@@ -18,9 +18,9 @@ extern "Java"
       class MessageInfo;
     }
   }
-}
+};
 
-class org::monaos::Message : public ::java::lang::Object
+class ::org::monaos::Message : public ::java::lang::Object
 {
 public:
   static jint lookupMainThread (::java::lang::String *);

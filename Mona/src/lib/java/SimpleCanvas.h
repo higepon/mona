@@ -11,9 +11,9 @@
 extern "Java"
 {
   class SimpleCanvas;
-}
+};
 
-class SimpleCanvas : public ::java::lang::Object
+class ::SimpleCanvas : public ::java::lang::Object
 {
 public:
   static jboolean create (jintArray, ::java::lang::String *, jint, jint);

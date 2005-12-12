@@ -17,9 +17,9 @@ extern "Java"
       class MessageInfo;
     }
   }
-}
+};
 
-class org::monaos::MessageInfo : public ::java::lang::Object
+class ::org::monaos::MessageInfo : public ::java::lang::Object
 {
 public:
   MessageInfo ();

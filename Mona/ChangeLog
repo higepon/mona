@@ -1,3 +1,7 @@
+2005-12-12  higepon  <higepon@users.sourceforge.jp>
+
+        * ビルドエラーになっていたのをほげさんのぱっちで修正。
+
 2005-12-12  bayside
 
         * 全体: Mona0.3.0alpha6 からバックポート

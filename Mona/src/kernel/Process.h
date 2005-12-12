@@ -23,7 +23,7 @@
 #include "Mutex.h"
 #include "KObject.h"
 #include "Thread.h"
-#include "MemoryAllocator.h"
+//#include "MemoryAllocator.h"
 
 #define DPL_KERNEL  0
 #define DPL_USER    3
@@ -200,6 +200,7 @@ class Process
         return dllsegment_;
     }
 
+/*
     inline void* AllocateLinearAddress(dword size) {
         if (this->lallocator == NULL)
         {
@@ -207,6 +208,7 @@ class Process
         }
         return this->lallocator->Allocate(size);
     }
+*/
 
     static const LinearAddress STACK_START = 0xF0000000;
     static const dword STACK_SIZE          = 0x400000;
