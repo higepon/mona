@@ -1,7 +1,6 @@
 #include <monalibc/stdio.h>
 #include "Config.h"
 #include "NicServer.h"
-#include <monapi2/Basic/String.h>
 
 using namespace MonAPI;
 using namespace mones;
