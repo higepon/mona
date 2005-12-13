@@ -19,7 +19,7 @@
 
 //#include "MoPacUtl.h"
 //#include "MonesDefine.h"
-#include <nicdrv/AbstractMonic.h>
+#include "AbstractMonic.h"
 
 
 /*!

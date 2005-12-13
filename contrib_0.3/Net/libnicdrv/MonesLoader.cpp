@@ -21,7 +21,7 @@
 #include "MonesLoader.h"
 //#include "MonesConfig.h"
 //#include "MonesGlobal.h"
-#include <nicdrv/AbstractMonic.h>
+#include "AbstractMonic.h"
 #include "ne2000/Ne2000MoNic.h"
 
 /*!
