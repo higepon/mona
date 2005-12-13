@@ -42,10 +42,8 @@ sub writedir
 	foreach my $d(@files)
 	{
 		next if !-d "$g_dir/$dir$d" || $d eq "." || $d eq "..";
-		next if (($dir.$d) eq 'LIBS');
+		next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS');
 		call("fat_write $g_out --mkdir $dir$d");
-		if (index("$dir$d", "APPS", 0) < 0) {
-			writedir("$dir$d");
-		}
+		writedir("$dir$d");
 	}
 }
