@@ -1,3 +1,8 @@
+2005-12-13  bayside
+
+        * tool/mkimg/mkimg.pl: FDイメージにはライブラリを入れないように修正
+                               （どうせstaticリンクしてあるし、MesaのせいでLIBS容量あふれのため）
+
 2005-12-11  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/Makefile: dependenciesがない場合に対処
