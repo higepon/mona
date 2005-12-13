@@ -9,11 +9,14 @@ all:
 	cd Graphics/Mesa && touch dependencies && make && make install
 	cd Graphics/libgui && touch dependencies && make && make install
 	cd Graphics/libbaygui && touch dependencies && make && make install
+	cd Sysutils/libPci && touch dependencies && make && make install
+	cd Net/libnicdrv && touch dependencies && make && make install
+	cd Net/mones2 && touch dependencies && make && make install
 # non-gui applications
-	cd Misc/helloworld && touch dependencies && make && make install
 	cd Games/infones && touch dependencies && make && make install
 	cd Graphics/jpegdemo && touch dependencies && make && make install
 	cd Graphics/Mesa-gears && touch dependencies && make && make install
+	cd Misc/helloworld && touch dependencies && make && make install
 	cd Multimedia/monapeg && touch dependencies && make && make install
 	cd Multimedia/monappt && touch dependencies && make && make install
 # MonaForms applications
@@ -38,8 +41,11 @@ clean:
 	cd Misc/helloworld && make clean
 	cd Multimedia/monapeg && make clean
 	cd Multimedia/monappt && make clean
+	cd Net/libnicdrv && make clean
+	cd Net/mones2 && make clean
 	cd Shells/gshell && make clean
 	cd Shells/mshell && make clean
+	cd Sysutils/libPci && make clean
 	cd X/gui && make clean
 	cd X/glaunch && make clean
 	cd X/monafile && make clean

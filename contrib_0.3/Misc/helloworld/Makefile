@@ -1,4 +1,4 @@
-TARGET  = hello
+TARGET  = HELLO
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS
 
