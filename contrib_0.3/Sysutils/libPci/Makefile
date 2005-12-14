@@ -7,8 +7,8 @@ include $(MONADIR)/share/configs/monapi.inc
 
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = libPci-imp.a
-LIB_DYNAMIC  = PCL.DLL
-LIB_DYNAMIC5 = PCL.DL5
+LIB_DYNAMIC  = PCI.DLL
+LIB_DYNAMIC5 = PCI.DL5
 TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 endif
 
