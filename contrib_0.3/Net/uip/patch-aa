@@ -1,0 +1,15 @@
+diff -ur uip-0.9.orig/apps/httpd/cgi.c uip-0.9/apps/httpd/cgi.c
+--- uip-0.9.orig/apps/httpd/cgi.c	2003-10-07 22:22:27.000000000 +0900
++++ uip-0.9/apps/httpd/cgi.c	2006-01-03 00:04:29.718750000 +0900
+@@ -56,9 +56,10 @@
+ #include "httpd.h"
+ #include "fs.h"
+ 
++#if 0
+ #include <stdio.h>
+ #include <string.h>
+-
++#endif
+ static u8_t print_stats(u8_t next);
+ static u8_t file_stats(u8_t next);
+ static u8_t tcp_stats(u8_t next);
