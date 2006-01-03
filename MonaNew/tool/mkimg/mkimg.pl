@@ -20,30 +20,30 @@ writedir("");
 print "output: $g_out\n";
 print "Done!\n";
 
-sub call
-{
-	(my $arg) = @_;
-	print $arg, "\n";
-	die if system $arg;
+sub call {
+    (my $arg) = @_;
+    print $arg, "\n";
+    if (system $arg) {
+        my $image = $g_dir/bin/$g_out;
+        unlink("$g_dir/bin/$g_out") if -d $image;
+        die;
+    }
 }
 
-sub writedir
-{
-	(my $dir) = @_;
-	$dir .= "/" if $dir ne "";
-	opendir(DIR, "$g_dir/$dir");
-	my @files = readdir(DIR);
-	closedir(DIR);
-	foreach my $f(@files)
-	{
-		next if !-f "$g_dir/$dir$f" || $f eq $g_mbr;
-		call("fat_write $g_out $g_dir/$dir$f $dir$f");
-	}
-	foreach my $d(@files)
-	{
-		next if !-d "$g_dir/$dir$d" || $d eq "." || $d eq "..";
-		next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS');
-		call("fat_write $g_out --mkdir $dir$d");
-		writedir("$dir$d");
-	}
+sub writedir {
+    (my $dir) = @_;
+    $dir .= "/" if $dir ne "";
+    opendir(DIR, "$g_dir/$dir");
+    my @files = readdir(DIR);
+    closedir(DIR);
+    foreach my $f (@files) {
+        next if !-f "$g_dir/$dir$f" || $f eq $g_mbr;
+        call("fat_write $g_out $g_dir/$dir$f $dir$f");
+    }
+    foreach my $d (@files) {
+        next if !-d "$g_dir/$dir$d" || $d eq "." || $d eq "..";
+        next if ("$dir$d" eq 'LIBS' || "$dir$d" eq 'APPS');
+        call("fat_write $g_out --mkdir $dir$d");
+        writedir("$dir$d");
+    }
 }

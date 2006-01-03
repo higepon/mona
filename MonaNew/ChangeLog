@@ -1,5 +1,7 @@
 2006-01-03  higepon  <higepon@users.sourceforge.jp>
 
+        * tool/mkimg/mkimg.pl (writedir): mona.imgのお掃除コードを入れてみた。
+
         * config/configs/mingw.env: -U_WIN32 -UWIN32を追加
 
         * tool/fat_write/types.h: _TYPES_H_がMSys環境で被るため __TYPES_H_にリネーム
