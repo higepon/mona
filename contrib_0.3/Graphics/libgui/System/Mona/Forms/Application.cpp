@@ -164,6 +164,18 @@ namespace System { namespace Mona { namespace Forms
 				}
 				break;
 			}
+			case MSG_GUISERVER_DISPOSEWINDOW:
+			{
+				Application::Exit();
+				MessageInfo info;
+				info.from = m->from;
+				info.header = m->header;
+				info.arg1 = m->arg1;
+				info.arg2 = m->arg2;
+				info.arg3 = m->arg3;
+				MonAPI::Message::reply(&info);
+				break;
+			}
 			case MSG_TIMER:
 				if (mapTimers.find(m->arg1) != mapTimers.end())
 				{
