@@ -1,5 +1,7 @@
 2006-01-03  higepon  <higepon@users.sourceforge.jp>
 
+        * config/configs/mingw.env: -U_WIN32 -UWIN32‚ğ’Ç‰Á
+
         * tool/fat_write/types.h: _TYPES_H_‚ªMSysŠÂ‹«‚Å”í‚é‚½‚ß __TYPES_H_‚ÉƒŠƒl[ƒ€
 
 2005-12-13  bayside
