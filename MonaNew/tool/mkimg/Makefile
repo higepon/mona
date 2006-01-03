@@ -5,6 +5,7 @@ all:
 
 clean:
 	rm -f mona.img
+	rm -f $(MONADIR)/bin/mona.img
 
 iso:
 	cp mona.img $(MONADIR)/bin
