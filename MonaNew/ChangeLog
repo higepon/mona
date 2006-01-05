@@ -1,3 +1,7 @@
+2006-01-05  higepon  <higepon@users.sourceforge.jp>
+
+        * core/mouse_server/main.cpp (class Mouse): 起動時にキーボード入力するとハングするバグを修正。thx!論拠なしアンチさん
+
 2006-01-03  higepon  <higepon@users.sourceforge.jp>
 
         * tool/mkimg/mkimg.pl (writedir): mona.imgのお掃除コードを入れてみた。
