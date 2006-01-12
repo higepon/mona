@@ -1,4 +1,4 @@
-/*!
+/*! 
     COPYRIGHT AND PERMISSION NOTICE
 
     Copyright (c) 2002-2005 Higepon
@@ -234,6 +234,7 @@ void startKernel()
     g_scheduler->Join(initThread);
 
     disableTimer();
+    disableKeyboard();
     enableInterrupt();
 
     /* dummy thread struct */
@@ -380,7 +381,7 @@ void mainProcess()
         for (;;);
     }
 
-    enableKeyboard();
+//    enableKeyboard();
 
 #ifdef HIGE
 
