@@ -21,7 +21,7 @@ include Makefile.inc
 all: $(TARGET)
 
 $(TARGET): $(SRCS)
-	$(CSC) /out:$(TARGET) /t:library $(SRCS)
+	$(CSC) /out:$(TARGET) /target:library $(SRCS)
 
 clean:
 	rm -f $(TARGET)
