@@ -9,10 +9,10 @@ include $(DOTNETDIR)/Makefile.inc
 all: $(TARGET)
 
 IL2Asm16.exe: $(SRCS) $(PEALIB)
-	$(CSC) /r:$(PEALIB) /out:$@ $(SRCS)
+	$(CSC) /reference:$(PEALIB) /out:$@ $(SRCS)
 
 I8086.dll: I8086.cs
-	$(CSC) /t:library $<
+	$(CSC) /target:library $<
 
 $(PEALIB): $(DOTNETDIR)/$(PEALIB)
 	cp $< $@
