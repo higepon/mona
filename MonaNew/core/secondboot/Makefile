@@ -23,7 +23,7 @@ secondboot.asm: SecondBoot.exe secondboot32.asm $(PEALIB) $(IL2A16)
 	mv secondboot.as_ $@
 
 SecondBoot.exe: $(SRCS) $(I8086)
-	$(CSC) /r:$(I8086) /out:$@ $(SRCS)
+	$(CSC) $(CSCFLAGS) /reference:$(I8086) /out:$@ $(SRCS)
 
 $(PEALIB): $(DOTNETDIR)/$(PEALIB)
 	cp $< $@
