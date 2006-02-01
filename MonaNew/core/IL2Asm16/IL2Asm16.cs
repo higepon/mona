@@ -534,7 +534,7 @@ class IL2Asm16
 				ret.Codes.Add(new X86Code("pop", "ax"));
 				ret.Codes.Add(new X86Code("pop", "dx"));
 				ret.Codes.Add(new X86Code("cmp", "ax", "dx"));
-				ret.Codes.Add(new X86Code("jnc", string.Format("PE_{0:X8}", Girl.PEAnalyzer.Util.GetBrTarget(il))));
+				ret.Codes.Add(new X86Code("jnc near", string.Format("PE_{0:X8}", Girl.PEAnalyzer.Util.GetBrTarget(il))));
 				if (this.optimize > 0 && nOp == 0) ret.Ignore();
 				break;
 			case "bge":
