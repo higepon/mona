@@ -3,7 +3,7 @@ SOURCES = bim2bin.c
 
 include $(MONADIR)/share/configs/Makefile.inc
 
-CFLAGS = -Wall
+CFLAGS = -Wall $(CFLAG_DEFS)
 CC = gcc
 STRIP = strip
 RM = -rm
