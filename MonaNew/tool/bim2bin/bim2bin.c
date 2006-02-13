@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef HOST_MINGW
+  #include <Windows.h>
+#endif //HOST_MINGW
+
 #define NOWARN			1
 #define TEK1_NOWARN		1
 
@@ -52,6 +56,7 @@ void osarjc(int siz, UCHAR *p, int mode);
 
 //int tek1_lzrestore_stk5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf);
 int tek_lzrestore_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, UCHAR *mclp);
+int tek_conv_tek5(int csiz, UCHAR *src, int osiz, UCHAR *tmp, UCHAR *dst, UCHAR *str_eprm);
 
 void tek1_puts7s(unsigned int i);
 UCHAR *tek1_puts7sp(UCHAR *p, unsigned int i);
@@ -5612,6 +5617,7 @@ int lzcompress_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf, int wrksi
 	fclose(fp);
 	if (i != srcsiz)
 		return 0;
+
 retry:
 	q = p = outbuf;
 	r = argv0;
@@ -5621,6 +5627,21 @@ retry:
 			q = p + 1;
 		p++;
 	} while (*r);
+
+#ifdef HOST_MINGW
+	int outbufLength = strlen(outbuf);
+	UCHAR *shortPathName = malloc(outbufLength+1); // '\0'ÇÃï™+1
+	int needLength = GetShortPathName(outbuf, shortPathName, outbufLength+1);
+	if (needLength == 0 || needLength >= outbufLength) {
+		// Ç»ÇÒÇ©ÉGÉâÅ[ or í∑Ç≥Ç™ë´ÇËÇ»Ç¢ Å® âΩÇ‡ÇµÇ»Ç¢Ç≈Ç®Ç≠
+	} else {
+		memset(outbuf, '\0', outbufLength);
+		strcpy(outbuf, shortPathName);
+		q -= outbufLength - needLength;
+	}
+	free(shortPathName);
+#endif //HOST_MINGW
+
 	for (p = "t5lzma e " TEK5_TMPNAME "0 " TEK5_TMPNAME "1 "; *p; *q++ = *p++);
 	if (eopt) {
 		if (eopt[0] == '@' && (eopt[1] == '\0' || (eopt[1] == '@' && eopt[2] == '\0'))) {
