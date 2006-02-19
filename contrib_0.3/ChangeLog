@@ -1,3 +1,9 @@
+2006-02-19  higepon  <higepon@users.sourceforge.jp>
+
+        * NetServerを使用するライブラリ contrib/Net/libnetを追加。
+
+        * uIPベースの contrib/Net/NetServerを追加
+
 2006-01-03  higepon  <higepon@users.sourceforge.jp>
 
         * uip For Monaを取り込み。
