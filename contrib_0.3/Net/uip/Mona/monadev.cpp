@@ -19,7 +19,7 @@ unsigned int
 monadev_read(void)
 {
     Ether::Frame frame;
-    nic_read(nicThread, &frame);
+    if (1 == nic_read(nicThread, &frame)) return 0;
     memcpy(uip_buf, &frame, UIP_BUFSIZE);
     return UIP_BUFSIZE;
 }

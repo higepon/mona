@@ -1,9 +1,9 @@
 extern "C" {
 #include <uip.h>
 #include <uip_arp.h>
-#include <telnet.h>
 };
 
+#include "ServerMessageLoop.h"
 #include "monadev.h"
 #include "NicServer.h"
 #include <monapi.h>
@@ -17,6 +17,23 @@ dword nic_write(dword nicThread, OutPacket* packet);
 dword nicThread;
 
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
+
+extern void MessageLoop();
+extern void* test();
+extern void irc();
+void thread_client()
+{
+    MessageLoop();
+//    test();
+//    irc();
+    return;
+}
+
+void thread_init()
+{
+    dword id = syscall_mthread_create((dword)thread_client);
+    syscall_mthread_join(id);
+}
 
 #ifndef NULL
 #define NULL (void *)0
@@ -37,10 +54,13 @@ int MonaMain(List<char*>* pekoe)
 
     /* Initialize the device driver. */
     monadev_init();
+    thread_init();
     /* Initialize the uIP TCP/IP stack. */
     uip_init();
     /* Initialize the HTTP server. */
-    httpd_init();
+    server_init();
+
+
     arptimer = 0;
 
     while(1) {
@@ -133,6 +153,10 @@ dword nic_read(dword nicThread, Ether::Frame* frame)
         printf("send error 1");
         return 1;
     }
+    if (1 == msg.arg2) {
+        return 1;
+    }
+
     GetFrameFromSharedMemory(frame);
     return 0;
 }

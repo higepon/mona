@@ -1,4 +1,4 @@
-TARGET  = UIP
+TARGET  = NET
 SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp
 INSTDIR = $(BINDIR)/APPS
 
@@ -7,17 +7,18 @@ IMPSFX = -imp
 include $(SHAREDIR)/configs/monapi.inc
 
 UIP_PATH = ../uip
-INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter ../apps/httpd -idirafter ../apps/telnet
+SERVER_PATH  = ../apps/net
+INCLUDE += -idirafter . -idirafter $(WINPCAP_PATH)/Include -idirafter $(UIP_PATH) -idirafter $(SERVER_PATH) -idirafter $(MONADIR)/include/stlport -idirafter $(MONADIR)/include/monapi -idirafter $(MONADIR)/include
 
-OBJECTS +=fs.o httpd.o uip.o uip_arp.o cgi.o uip_arch.o
+OBJECTS +=uip.o uip_arp.o uip_arch.o TcpClient.o ServerMessageLoop.o
 
 .SUFFIXES: .cpp .o
 .cpp.o:
-	$(CXX) -c -o $@ $(CXXFLAGS) $(INCLUDE) $<
+	$(CXX) -c -o $@ $(CXXFLAGS)  -nostdinc $(INCLUDE) $<
 
 .SUFFIXES: .c .o
 .c.o:
-	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
+	$(CC) -c -o $@ $(CFLAGS)  -nostdinc $(INCLUDE) $<
 
 .SUFFIXES: .asm .o
 .asm.o:
@@ -50,31 +51,21 @@ ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
 endif
 
-ADDLINK += -lmonalibc -lPci
+ADDLINK += -lPci -lmonalibc
 
 CXXFLAGS += -DDEBUG
 
-cgi.o: ../apps/httpd/cgi.c ../uip/uip.h uipopt.h ../apps/smtp/smtp.h \
- ../apps/httpd/cgi.h ../apps/httpd/httpd.h ../apps/httpd/fs.h
-	$(CC) -o cgi.o $(CFLAGS) $(INCLUDE) -fpack-struct -c ../apps/httpd/cgi.c
+uip.o: ../uip/uip.c ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o uip.o $(CFLAGS) $(INCLUDE)  -nostdinc -fpack-struct -c ../uip/uip.c
 
-uip.o: ../uip/uip.c ../uip/uip.h uipopt.h ../apps/httpd/httpd.h 
-	$(CC) -o uip.o $(CFLAGS) $(INCLUDE) -fpack-struct -c ../uip/uip.c
+uip_arp.o: ../uip/uip_arp.c ../uip/uip_arp.h ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
+	$(CC) -o uip_arp.o $(CFLAGS) $(INCLUDE) -nostdinc -fpack-struct -c ../uip/uip_arp.c
 
-uip_arp.o: ../uip/uip_arp.c ../uip/uip_arp.h ../uip/uip.h uipopt.h \
- ../apps/httpd/httpd.h
-	$(CC) -o uip_arp.o $(CFLAGS) $(INCLUDE) -fpack-struct -c ../uip/uip_arp.c
+ServerMessageLoop.o: $(SERVER_PATH)/ServerMessageLoop.cpp ../uip/uip.h uipopt.h $(SERVER_PATH)/ServerMessageLoop.h
+	$(CXX) -o ServerMessageLoop.o $(CXXFLAGS) $(INCLUDE)  -nostdinc -c $(SERVER_PATH)/ServerMessageLoop.cpp
 
-fs.o: ../apps/httpd/fs.c ../uip/uip.h uipopt.h ../apps/smtp/smtp.h \
- ../apps/httpd/httpd.h ../apps/httpd/fs.h ../apps/httpd/fsdata.h \
- ../apps/httpd/fsdata.c
-	$(CC) -o fs.o $(CFLAGS) $(INCLUDE) -fpack-struct -c ../apps/httpd/fs.c
-
-httpd.o: ../apps/httpd/httpd.c ../uip/uip.h uipopt.h \
- ../apps/smtp/smtp.h ../apps/httpd/httpd.h ../apps/httpd/fs.h \
- ../apps/httpd/fsdata.h ../apps/httpd/cgi.h
-	$(CC) -o httpd.o $(CFLAGS) $(INCLUDE) -fpack-struct -c ../apps/httpd/httpd.c	
-
+TcpClient.o: $(SERVER_PATH)/TcpClient.cpp $(SERVER_PATH)/TcpClient.h
+	$(CXX) -o TcpClient.o $(CXXFLAGS) $(INCLUDE)  -nostdinc -c $(SERVER_PATH)/TcpClient.cpp
 
 -include dependencies
 

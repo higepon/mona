@@ -129,6 +129,7 @@ public:
 
 private:
     void interrupt(MessageInfo* msg);
+    bool WaitIntteruptWithTimeout(MessageInfo* msg);
 
 protected:
     byte macAddress[6];

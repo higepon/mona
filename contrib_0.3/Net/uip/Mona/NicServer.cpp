@@ -60,6 +60,38 @@ void NicServer::interrupt(MessageInfo* msg)
     return;
 }
 
+bool NicServer::WaitIntteruptWithTimeout(MessageInfo* msg)
+{
+    MessageInfo m;
+    dword timerId = set_timer(100);
+    for (int i = 0; ; i++)
+    {
+        int result = MonAPI::Message::peek(&m, i);
+
+        if (result != 0)
+        {
+            i--;
+            syscall_mthread_yield_message();
+        }
+        else if (m.header == MSG_TIMER)
+        {
+            if (m.arg1 != timerId) continue;
+            kill_timer(timerId);
+            Message::peek(&m, i, PEEK_REMOVE);
+
+            MonAPI::Message::reply(msg, 1);
+            return false;
+        }
+        else if (m.header == MSG_INTERRUPTED)
+        {
+            kill_timer(timerId);
+            MonAPI::Message::peek(&m, i, PEEK_REMOVE);
+            interrupt(&m);
+            return true;
+        }
+    }
+    return false;
+}
 
 void NicServer::messageLoop()
 {
@@ -85,22 +117,9 @@ void NicServer::messageLoop()
         {
             if (this->frameList.size() == 0)
             {
-                MessageInfo m;
-                for (int i = 0; ; i++)
-                {
-                    int result = MonAPI::Message::peek(&m, i);
-
-                    if (result != 0)
-                    {
-                        i--;
-                        syscall_mthread_yield_message();
-                    }
-                    else if (m.header == MSG_INTERRUPTED)
-                    {
-                        MonAPI::Message::peek(&m, i, PEEK_REMOVE);
-                        interrupt(&m);
-                        break;
-                    }
+                if (!WaitIntteruptWithTimeout(&msg)) {
+                    // timeout
+                    break;
                 }
             }
 
