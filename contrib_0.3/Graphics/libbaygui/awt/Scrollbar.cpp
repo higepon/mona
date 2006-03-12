@@ -214,6 +214,8 @@ namespace baygui {
 
 	void Scrollbar::processEvent(Event* event)
 	{
+		// 非活性の時はイベントを受け付けない
+		if (getEnabled() == false) return;
 		if (event->getType() == MouseEvent::MOUSE_PRESSED) {
 			MouseEvent* me = (MouseEvent *)event;
 			int mx = me->getX();

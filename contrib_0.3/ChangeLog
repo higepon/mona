@@ -1,3 +1,11 @@
+2006-03-12  higepon  <higepon@users.sourceforge.jp>
+
+        * Graphics/libbaygui/awt/Scrollbar.cpp: enabled=falseのときはイベントを受け付けないようにした。(baysideさんに相談済み)
+
+2006-03-10  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/NetServer/Makefile: Monaディレクトリの追加忘れの修正
+
 2006-02-19  higepon  <higepon@users.sourceforge.jp>
 
         * NetServerを使用するライブラリ contrib/Net/libnetを追加。
