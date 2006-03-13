@@ -37,6 +37,12 @@ void MessageLoop()
                 Message::reply(&msg, handle);
                 break;
             }
+            case MSG_NET_TCP_IS_CLOSED:
+            {
+                dword handle = msg.arg1;
+                Message::reply(&msg, client->Connected(handle) ? 1 : 0);
+                break;
+            }
             case MSG_NET_TCP_SEND:
             {
                 dword handle = msg.arg1;
