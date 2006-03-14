@@ -14,7 +14,7 @@ endif
 
 SOURCES = \
 	main.cpp \
-	net.cpp \
+	TCPClient.cpp \
 
 OBJECTS = $(SOURCES:.cpp=.o)
 INCLUDE = -I$(INCDIR) -I. -I.. -I $(MONADIR)/include/stlport
@@ -60,6 +60,7 @@ ifneq ($(BUILD_TARGET),ELF)
 	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 endif
 	$(INSTALL) net.h $(INCDIR)
+	$(INSTALL) TCPClient.h $(INCDIR)
 
 uninstall:
 	rm -f $(LIBDIR)/$(LIB_STATIC)
@@ -68,5 +69,6 @@ ifneq ($(BUILD_TARGET),ELF)
 	rm -f $(BINDIR)/LIBS/$(LIB_DYNAMIC5)
 endif
 	rm -f $(INCDIR)/net.h
+	rm -f $(INCDIR)/TCPClient.h
 
 -include dependencies

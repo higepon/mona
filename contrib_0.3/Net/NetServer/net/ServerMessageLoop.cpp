@@ -40,7 +40,7 @@ void MessageLoop()
             case MSG_NET_TCP_IS_CLOSED:
             {
                 dword handle = msg.arg1;
-                Message::reply(&msg, client->Connected(handle) ? 1 : 0);
+                Message::reply(&msg, client->Connected(handle) ? 0 : 1);
                 break;
             }
             case MSG_NET_TCP_SEND:
