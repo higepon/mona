@@ -32,8 +32,14 @@ private:
 
 public:
     Label* statusLabel;
+    Label* leftSpace;
+    Label* l1;
+    Label* l2;
+    Label* l3;
+    Label* l4;
     TopLabel* contentLabel;
     TextField* urlField;
+    Image* icon;
 
 public:
     Giko::Giko() : threadID_(THREAD_UNKNOWN)
@@ -50,40 +56,70 @@ public:
     {
         setBounds(10, 10, WIDTH, HEIGHT);
         setTitle("ｷﾞｺ ﾌﾞﾗｳｻﾞ 0.0.2");
+        icon = new Image("/APPS/BAYGUI/GIKO.APP/FAVICON.BMP");
+//        icon->setBounds(0, 0, PADDING + 16, 16);
+
         urlField = new TextField();
         urlField->setText(DEFAULT_URL);
-        urlField->setBounds(PADDING, PADDING, INNER_WIDTH - PADDING * 2 - BUTTON_WIDTH, LABEL_HEIGHT);
+        urlField->setBounds(PADDING + PADDING - 2, PADDING, INNER_WIDTH - PADDING * 2 - BUTTON_WIDTH + 2, LABEL_HEIGHT);
         button1 = new Button("取得");
-        button1->setBounds(INNER_WIDTH - PADDING - BUTTON_WIDTH, PADDING, BUTTON_WIDTH, LABEL_HEIGHT);
+        button1->setBounds(INNER_WIDTH - BUTTON_WIDTH, PADDING, BUTTON_WIDTH, LABEL_HEIGHT);
+        leftSpace = new Label("");
+        leftSpace->setBounds(0, PADDING + LABEL_HEIGHT, PADDING, INNER_HEIGHT - PADDING * 2 + 5 - LABEL_HEIGHT * 2);
+        leftSpace->setBackground(Color::white);
         contentLabel = new TopLabel("", Label::LEFT, 12);
-        contentLabel->setBounds(PADDING, PADDING + LABEL_HEIGHT, INNER_WIDTH - PADDING * 2 - SCROLL_WIDTH, INNER_HEIGHT - PADDING * 2 - LABEL_HEIGHT * 2);
+        contentLabel->setBounds(PADDING, PADDING + LABEL_HEIGHT, INNER_WIDTH - PADDING - SCROLL_WIDTH, INNER_HEIGHT - PADDING - PADDING + 5 - LABEL_HEIGHT * 2);
         contentLabel->setBackground(Color::white);
         contentLabel->setForeground(Color::black);
         contentLabel->setText(
-            "|　　 ｜　　｜　　｜　　｜　　｜　　｜　　｜\n"
-            "|　　 ｜　　｜　　｜　　｜　　｜　　｜　　｜\n"
-            "|　　 ｜　　｜　　｜　　｜　　｜　　｜　　｜\n"
-            "|　　 ｜　　｜　　｜　　｜　　｜　　｜　　｜\n"
-            "|　　 ｜　　｜　　 ∧ ∧ 　 ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣\n"
-            "|　　 ｜　　｜　　 (,,ﾟДﾟ)＜　出してくれよとっつあん\n"
-            "|　　 ｜　　｜　　 /　　| |　 \＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿\n"
-            "|　　 ｜　　｜ 　 (_＿_ﾉ｜　　｜　　｜　　｜\n"
-            "|　　 ｜　　｜ ／､|､ 　 ｜　　｜　　｜　　｜\n"
-            "|______,|_＿__.|_＿__,|_＿__.|_＿__,|_＿__.|_＿__,|\n"
-            "\n"
-            "　　　　　　　　 ∧＿∧ 　 ／￣￣￣￣￣￣￣￣￣￣￣￣\n"
-            "　　　　　　　　（ 　 　 ,,）＜　誰が銭形やねん\n"
-            "　　　　　　　　（ ○ 　 ）　 \＿＿＿＿＿＿＿＿＿＿＿＿\n"
-            "　　　　　　　　 |　| 　 |_\n"
-            "　　　　　　　　（__(＿＿）\n");
+            "\n\n\n"
+            "□□□□□□□□□□■□□□□□□□■□□□□□□□□□□\n"
+            "□□□□□□□□□■□■□□□□□■□■□□□□□□□□□\n"
+            "□□□□□□□□■□□■□□□□□■□□■□□□□□□□□\n"
+            "□□□□□□□■□□□□■■■■■□□□□■□□□□□□□\n"
+            "□□□□□□□■□□□□□□□□□□□□□■□□□□□□□\n"
+            "□□□□□□■□□■□□□□□□□□□□■□■□□□□□□\n"
+            "□■□□□□■□□□■□□□□□□□□■□□■□□□□□□\n"
+            "□■□□□■□□■■■■□□□□□□■■■■□■□□□□□\n"
+            "□■□□□■□□□□■□□□□□□□□■□□□■□□□□□\n"
+            "□■□□□■□□□■□□□□□□□□□□■□□■□□□□□\n"
+            "□■□□□■□□□□□□■■■■■■■□□□□■□□□□□\n"
+            "□□■□□■□□□□□□■□□□□■□□□□□■□□□□□\n"
+            "□□■□□■□□□□□□■□□□□■□□□□□■□□□□□\n"
+            "□□□■□■□□□□□□□■□□■□□□□□■□□□□□□\n"
+            "□□□■□□■■□□□□□□■■□□□□□■■□□□□□□\n"
+            "□□□□■□□□■■■■■■■■■■■■■□□□□□□□□\n"
+            "□□□□□■□□□□□■□□□□□■□□□□□□□□□□□\n"
+            "□□□□□□■■□□□■□□□□□■□□□□□□□□□□□\n"
+            );
+        // l1 - l4は飾りさ。
+        l1 = new Label("");
+        l1->setBounds(0, INNER_HEIGHT - PADDING - LABEL_HEIGHT + 5, INNER_WIDTH, 1);
+        l1->setBackground(Color::gray);
+        l2 = new Label("");
+        l2->setBounds(0, INNER_HEIGHT - PADDING - LABEL_HEIGHT + 5 + 1, INNER_WIDTH, 2);
+        l3 = new Label("");
+        l3->setBounds(0, INNER_HEIGHT - PADDING - LABEL_HEIGHT + 5 + 3, INNER_WIDTH, 1);
+        l3->setBackground(Color::gray);
+
         statusLabel = new Label("", Label::LEFT);
-        statusLabel->setBounds(PADDING, INNER_HEIGHT - PADDING - LABEL_HEIGHT, INNER_WIDTH - PADDING * 2 -SCROLL_WIDTH, LABEL_HEIGHT);
+        statusLabel->setBounds(PADDING, INNER_HEIGHT - 16, INNER_WIDTH - PADDING * 2 -SCROLL_WIDTH, LABEL_HEIGHT - 5);
         statusLabel->setText("y=ｰ(ﾟдﾟ)");
+
+        l4 = new Label("");
+        l4->setBounds(0, INNER_HEIGHT - 1, INNER_WIDTH, 1);
+        l4->setBackground(Color::white);
+
         scroll = new Scrollbar();
-        scroll->setBounds(INNER_WIDTH - PADDING - SCROLL_WIDTH, PADDING + LABEL_HEIGHT, SCROLL_WIDTH, INNER_HEIGHT - PADDING * 2 - LABEL_HEIGHT * 2);
+        scroll->setBounds(INNER_WIDTH - SCROLL_WIDTH, PADDING + LABEL_HEIGHT, SCROLL_WIDTH, INNER_HEIGHT - PADDING * 2 + 5 - LABEL_HEIGHT * 2);
         stateChanged();
         add(button1);
+        add(l1);
+        add(l2);
+        add(l3);
+        add(l4);
         add(statusLabel);
+        add(leftSpace);
         add(contentLabel);
         add(scroll);
         add(urlField);
@@ -91,6 +127,10 @@ public:
 
     Giko::~Giko()
     {
+    }
+
+    void paint(Graphics *g) {
+        g->drawImage(icon, 1, PADDING + 2);
     }
 
     void Giko::processEvent(Event* evt)
