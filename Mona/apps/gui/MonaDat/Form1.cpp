@@ -816,7 +816,7 @@ public:
 		{
 			sprintf(name, "%d", i);
 #ifdef MONA
-			sprintf(path, "%s/%02d.DT2", MonAPI::System::getBundlePath(), i);
+			sprintf(path, "%s/%02d.DT5", MonAPI::System::getBundlePath(), i);
 #else
 			sprintf(path, "dat\\%02d.dat", i);
 #endif
