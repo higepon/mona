@@ -233,7 +233,7 @@ int MonaMain( List<char*>* pekoe ) {
 
 	// check arguments
 	if (pekoe->size() < 1) {
-		printf("usage: MONAPEG.EX2 [filename.mpg]\n");
+		printf("usage: MONAPEG.EX5 [filename.mpg]\n");
 		return(-1);
 	}
 

@@ -10,7 +10,7 @@
 
 // ---- Ç≥Å[ÇŒÅ[ä‘í êM
 
-const char keybdmng_svr[] = "KEYBDMNG.EX2";
+const char keybdmng_svr[] = "KEYBDMNG.EX5";
 const char elf_svr[] = "ELF.BN2";
 
 static void registserver(void) {

@@ -228,7 +228,7 @@ public:
 		{
 #ifdef MONA
 			String bundlePath = MonAPI::System::getBundlePath();
-			MonaLogo = new Bitmap(bundlePath + "/MONALOGO.BM2");
+			MonaLogo = new Bitmap(bundlePath + "/MONALOGO.BM5");
 #else
 			MonaLogo = new Bitmap("dat\\MonaLogo.bmp");
 #endif

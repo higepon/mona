@@ -351,7 +351,7 @@ int MonaMain(List<char*>* pekoe)
     MessageInfo info;
 
     // テストサーバのIDを見つける
-    dword targetID = Message::lookupMainThread("YAMAS.EX2");
+    dword targetID = Message::lookupMainThread("YAMAS.EX5");
     if (targetID == 0xFFFFFFFF)
     {
         printf("local!!!! yamas:INIT not found\n");

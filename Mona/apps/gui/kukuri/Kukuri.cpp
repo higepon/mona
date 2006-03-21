@@ -604,7 +604,7 @@ public:
 
 void Kukuri::Main(_A<String> args)
 {
-	dword tid = CheckProcess("KUKURI.EX2");
+	dword tid = CheckProcess("KUKURI.EX5");
 	if (tid != THREAD_UNKNOWN)
 	{
 		MonAPI::Message::send(tid, KUKURI_NEW);
@@ -612,7 +612,7 @@ void Kukuri::Main(_A<String> args)
 	else
 	{
 		String bundlePath = MonAPI::System::getBundlePath();
-		kukuri = new Bitmap(bundlePath + "/KUKURI.BM2");
+		kukuri = new Bitmap(bundlePath + "/KUKURI.BM5");
 		
 		int w = kukuri->get_Width(), h = kukuri->get_Height();
 		kukuriMirror = new Bitmap(w, h);

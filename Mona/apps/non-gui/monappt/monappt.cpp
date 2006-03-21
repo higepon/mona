@@ -72,7 +72,7 @@ int OpenSlide(List<CString>* list, int i)
 {
 	if (list->get(i).endsWith(".jpg")) {
 		// 画像を開く
-		//CString cstr = "/APPS/JPEGDEMO.EX2 ";
+		//CString cstr = "/APPS/JPEGDEMO.EX5 ";
 		CString cstr = System::getBundlePath();
 		cstr += "/";
 		cstr += list->get(i);
@@ -81,7 +81,7 @@ int OpenSlide(List<CString>* list, int i)
 		return OpenJpeg((const char*)cstr);
 	} else if (list->get(i).endsWith(".mpg")) {
 		// 動画を開く
-		CString cstr = "/APPS/MONAPEG.EX2 ";
+		CString cstr = "/APPS/MONAPEG.EX5 ";
 		cstr += System::getBundlePath();
 		cstr += "/";
 		cstr += list->get(i);
