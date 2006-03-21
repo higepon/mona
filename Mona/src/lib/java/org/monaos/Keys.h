@@ -18,9 +18,9 @@ extern "Java"
       class KeyInfo;
     }
   }
-};
+}
 
-class ::org::monaos::Keys : public ::java::lang::Object
+class org::monaos::Keys : public ::java::lang::Object
 {
 public:
   virtual jchar ToChar (::org::monaos::KeyInfo *);

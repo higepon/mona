@@ -1,4 +1,3 @@
-#define USE_BZIP2 1
 #ifdef USE_BZIP2
 #include <monapi/messages.h>
 #include <monapi/syscall.h>

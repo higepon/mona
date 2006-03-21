@@ -478,7 +478,7 @@ Process::~Process()
     delete messageList_;
     delete arguments_;
     delete threadList_;
-    //if (this->lallocator != NULL) delete this->lallocator;
+    if (this->lallocator != NULL) delete this->lallocator;
 }
 
 dword Process::getStackBottom(Thread* thread)

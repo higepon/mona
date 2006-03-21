@@ -16,9 +16,9 @@ extern "Java"
       class KeyInfo;
     }
   }
-};
+}
 
-class ::org::monaos::KeyInfo : public ::java::lang::Object
+class org::monaos::KeyInfo : public ::java::lang::Object
 {
 public:
   KeyInfo ();

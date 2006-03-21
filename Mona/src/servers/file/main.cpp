@@ -4,7 +4,6 @@
 #include <monapi/Assert.h>
 #include <monapi/io.h>
 #include "FileServer.h"
-#define USE_BZIP2 1
 #ifdef USE_BZIP2
 #include "bzip2.h"
 #endif

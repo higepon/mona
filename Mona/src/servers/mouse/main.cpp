@@ -185,17 +185,12 @@ public:
 
     static int waitWritable()
     {
-        byte status;
-        int i;
-
-        for (i = 0, status = inp8(0x64); i < MOUSE_TIMEOUT; i++, status = inp8(0x64)) {
-
-            /* writable */
-            if ((status & 0x03) == 0x00) {
-                break;
-            }
+        for (int i = 0; i < MOUSE_TIMEOUT; i++)
+        {
+            if ((inp8(0x64) & 3) == 0) return 0;
+            inp8(0x60);
         }
-        return (i == MOUSE_TIMEOUT) ? -1 : 0;
+        return -1;
     }
 
     static int waitReadable()

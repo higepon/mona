@@ -17,9 +17,9 @@ extern "Java"
       class MonAPI;
     }
   }
-};
+}
 
-class ::org::monaos::MonAPI : public ::java::lang::Object
+class org::monaos::MonAPI : public ::java::lang::Object
 {
 public:
   static jint get_server_thread_id (jint);

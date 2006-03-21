@@ -17,9 +17,9 @@ extern "Java"
       class FontMetrics;
     }
   }
-};
+}
 
-class ::java::awt::FontMetrics : public ::java::lang::Object
+class java::awt::FontMetrics : public ::java::lang::Object
 {
 private:
   void create (jbyteArray);

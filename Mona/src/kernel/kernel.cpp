@@ -1,4 +1,4 @@
-/*!
+/*! 
     COPYRIGHT AND PERMISSION NOTICE
 
     Copyright (c) 2002-2005 Higepon
@@ -77,7 +77,7 @@
 #define CC_VER  __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__
 #endif
 
-const char* version = "Mona version.0.3.0Alpha6 $Date$";
+const char* version = "Mona version.0.3.0Alpha7 $Date$";
 dword version_number  = 0x00000300;
 void  mainProcess();
 
@@ -234,6 +234,7 @@ void startKernel()
     g_scheduler->Join(initThread);
 
     disableTimer();
+    disableKeyboard();
     enableInterrupt();
 
     /* dummy thread struct */
@@ -380,7 +381,7 @@ void mainProcess()
         for (;;);
     }
 
-    enableKeyboard();
+//    enableKeyboard();
 
 #ifdef HIGE
 

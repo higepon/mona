@@ -17,9 +17,9 @@ extern "Java"
       class Screen;
     }
   }
-};
+}
 
-class ::org::monaos::Screen : public ::java::lang::Object
+class org::monaos::Screen : public ::java::lang::Object
 {
 public:
   static jint getWidth ();

@@ -16,9 +16,9 @@ extern "Java"
       class PsInfo;
     }
   }
-};
+}
 
-class ::org::monaos::PsInfo : public ::java::lang::Object
+class org::monaos::PsInfo : public ::java::lang::Object
 {
 public:
   PsInfo ();
