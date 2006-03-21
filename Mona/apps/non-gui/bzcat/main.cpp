@@ -16,11 +16,11 @@ int MonaMain(List<char*>* pekoe)
 {
 	if (pekoe->size() < 1)
 	{
-		printf("usage: BZCAT FILENAME.BZ2\n");
+		printf("usage: BZCAT FILENAME.BZ5\n");
 		return 1;
 	}
 	
-	monapi_cmemoryinfo* mi = monapi_call_file_decompress_bz2_file(pekoe->get(0), PROMPT);
+	monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(pekoe->get(0), PROMPT);
 	if (mi == NULL) return 1;
 	
 	printf((const char*)mi->Data);

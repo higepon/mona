@@ -2,7 +2,7 @@ TARGET  = MONAFILE
 SOURCES = FileManager.cpp FileWindow.cpp FileBrowser.cpp Icon.cpp
 
 INSTDIR    = $(BINDIR)/iso/APPS/MONAFRMS/$(TARGET).APP
-INSTFILES  = ICONS.BM2
+INSTFILES  = ICONS.BM5
 CLEANFILES = $(INSTFILES)
 
 MONADIR = ../../..
@@ -20,7 +20,9 @@ CXXFLAGS += -DDEBUG
 
 $(TARGET).EXE: $(LIBDIR)/libgui.a $(INSTFILES)
 
-ICONS.BM2: icons.bmp
-	bzip2 -c $< > $@
+#ICONS.BM2: icons.bmp
+#	bzip2 -c $< > $@
+ICONS.BM5: icons.bmp
+	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 include dependencies

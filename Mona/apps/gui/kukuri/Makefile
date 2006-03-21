@@ -2,7 +2,7 @@ TARGET  = KUKURI
 SOURCES = Kukuri.cpp
 
 INSTDIR    = $(BINDIR)/iso/APPS/MONAFRMS/$(TARGET).APP
-INSTFILES  = KUKURI.BM2
+INSTFILES  = KUKURI.BM5
 CLEANFILES = $(INSTFILES)
 
 MONADIR = ../../..
@@ -20,7 +20,9 @@ CXXFLAGS += -DDEBUG
 
 $(TARGET).EXE: $(LIBDIR)/libgui.a $(INSTFILES)
 
-KUKURI.BM2: kukuri.bmp
-	bzip2 -c $< > $@
+#KUKURI.BM2: kukuri.bmp
+#	bzip2 -c $< > $@
+KUKURI.BM5: kukuri.bmp
+	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 include dependencies

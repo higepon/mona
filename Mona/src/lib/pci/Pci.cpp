@@ -88,7 +88,7 @@ PciInf* Pci::CheckPciExist(word ChkVendor , word ChkDevice ) {
     //Yamami!!! 2004/10/18 PCI情報ファイルは、バンドルでは無く、独立させる方向で
     //CString bundlePath = MonAPI::System::getBundlePath();
     //pciinfoファイルをオープン
-    //monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_bz2_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
+    //monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_st5_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
     //エラー処理
     //if(pciinfData == NULL){
     //    printf("PCI DATA FILE OPEN ERROR !!!\n");

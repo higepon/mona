@@ -32,7 +32,7 @@ int MonaMain(List<char*>* pekoe) {
 
     CString bundlePath = MonAPI::System::getBundlePath();
     //pciinfoファイルをオープン
-    monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_bz2_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
+    monapi_cmemoryinfo* pciinfData = monapi_call_file_decompress_st5_file(bundlePath + "/" + PCIINFO_FILE, MONAPI_TRUE);
     //エラー処理
     if(pciinfData == NULL){
         printf("PCI DATA FILE OPEN ERROR !!!\n");

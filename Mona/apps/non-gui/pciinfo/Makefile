@@ -2,7 +2,7 @@ TARGET  = PCIINFO
 SOURCES = pciinfo.cpp
 
 INSTDIR    = $(BINDIR)/iso/APPS/$(TARGET).APP
-INSTFILES  = PCIINF.BZ2
+INSTFILES  = PCIINF.BZ5
 CLEANFILES = $(INSTFILES)
 
 MONADIR    = ../../..
@@ -16,8 +16,10 @@ endif
 
 all: $(INSTFILES)
 
-.SUFFIXES: .TXT .BZ2
-.TXT.BZ2:
-	bzip2 -c $< > $@
+.SUFFIXES: .TXT .BZ5
+#.TXT.BZ2:
+#	bzip2 -c $< > $@
+.TXT.BZ5:
+	$(MONADIR)/bin/bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
 include dependencies

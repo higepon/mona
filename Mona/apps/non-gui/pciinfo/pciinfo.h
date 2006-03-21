@@ -27,7 +27,7 @@
 #define PCI_CONFIG_DATA_ADDR 0x0CFC
 
 //PCIINFOファイル
-#define PCIINFO_FILE "PCIINF.BZ2"
+#define PCIINFO_FILE "PCIINF.BZ5"
 
 //改行コード
 #define CHR_CRLF 0x0D0A
