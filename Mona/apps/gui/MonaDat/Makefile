@@ -12,11 +12,11 @@ MONADIR = ../../..
 ifneq ($(BUILD_TARGET),ELF)
 ADDLINK    = -lgui-imp -lmonalibc-imp
 ADDLINKDEP = $(MONADIR)/lib/libgui-imp.a
-include $(MONADIR)/env/monapi-ex2.inc
+include $(MONADIR)/env/monapi-ex5.inc
 else
 ADDLINK    = -lgui -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libgui.a
-include $(MONADIR)/env/monapi-el2.inc
+include $(MONADIR)/env/monapi-el5.inc
 endif
 
 CXXFLAGS += -DDEBUG
