@@ -1,5 +1,5 @@
-TARGET  = JPEGDEMO
-SOURCES = jpegdemo.cpp
+TARGET  = JPEGVIEW
+SOURCES = jpegview.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share

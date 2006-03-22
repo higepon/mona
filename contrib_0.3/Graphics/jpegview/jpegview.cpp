@@ -11,7 +11,7 @@ int MonaMain(List<char*>* pekoe)
     /* check arguments */
     if (pekoe->size() != 1)
     {
-        printf("usage: JPEGDEMO.ELF XXXX.JPG\n");
+        printf("usage: JPEGVIEW /XXXX.JPG\n");
         return -1;
     }
 
