@@ -22,6 +22,7 @@ all:
 # MonaForms applications
 	cd Shells/mshell && touch dependencies && make && make install
 	cd X/monafile && touch dependencies && make && make install
+	cd Net/monadat && touch dependencies && make && make install
 # BayGUI applications
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
@@ -42,6 +43,7 @@ clean:
 	cd Multimedia/monapeg && make clean
 	cd Multimedia/monappt && make clean
 	cd Net/libnicdrv && make clean
+	cd Net/monadat && make clean
 	cd Net/mones2 && make clean
 	cd Shells/gshell && make clean
 	cd Shells/mshell && make clean

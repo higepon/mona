@@ -572,7 +572,7 @@ public:
 		
 		_P<DatThread> dat;
 #ifdef MONA
-		monapi_cmemoryinfo* mi = monapi_call_file_decompress_bz2_file(path, MONAPI_FALSE);
+		monapi_cmemoryinfo* mi = monapi_call_file_decompress_st5_file(path, MONAPI_FALSE);
 		if (mi != NULL)
 		{
 			dat = new DatThread(_A<char>((char*)mi->Data, mi->Size, false));
