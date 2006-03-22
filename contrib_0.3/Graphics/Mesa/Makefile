@@ -4,7 +4,7 @@ VERSION  = 6.2.1
 
 SOURCE1 = ${NAME}-${VERSION}.tar.gz
 SRCS = ${SOURCE1}
-MASTERSITE = http://keihanna.dl.sourceforge.net/sourceforge/mesa3d/
+MASTERSITE = http://monaos.org/mesa
 #WORKDIR = ${NAME}-${VERSION}
 WORKDIR = Mesa-${VERSION}
 
