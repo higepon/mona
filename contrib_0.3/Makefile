@@ -13,8 +13,8 @@ all:
 	cd Net/libnicdrv && touch dependencies && make && make install
 	cd Net/mones2 && touch dependencies && make && make install
 # non-gui applications
-	cd Games/infones && touch dependencies && make && make install
-	cd Graphics/jpegdemo && touch dependencies && make && make install
+	cd Emulators/infones && touch dependencies && make && make install
+	cd Graphics/jpegview && touch dependencies && make && make install
 	cd Graphics/Mesa-gears && touch dependencies && make && make install
 	cd Misc/helloworld && touch dependencies && make && make install
 	cd Multimedia/monapeg && touch dependencies && make && make install
@@ -32,8 +32,8 @@ all:
 clean:
 	cd Devel/stlport && make clean
 	cd Devel/tmpmonalibc && make clean
-	cd Games/infones && make clean
-	cd Graphics/jpegdemo && make clean
+	cd Emulators/infones && make clean
+	cd Graphics/jpegview && make clean
 	cd Graphics/libbaygui && make clean
 	cd Graphics/libjpegls && make clean
 	cd Graphics/libgui && make clean
