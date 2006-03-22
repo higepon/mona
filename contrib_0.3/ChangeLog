@@ -1,6 +1,6 @@
 2005-03-22  bayside
 
-        * Net/monadat: SHELL.EX5だとCUIシェルと名前がかぶるのでMSHELL.EX5に変更した
+        * Net/monadat: 起動しない不具合修正
 
         * Graphics/Mesa: ソースファイルを http://www.monaos.org/mesa から取得するように修正
 
