@@ -2,6 +2,8 @@
 
         * Net/monadat: SHELL.EX5だとCUIシェルと名前がかぶるのでMSHELL.EX5に変更した
 
+        * Graphics/Mesa: ソースファイルを http://www.monaos.org/mesa から取得するように修正
+
 2006-03-12  higepon  <higepon@users.sourceforge.jp>
 
         * Graphics/libbaygui/awt/Scrollbar.cpp: enabled=falseのときはイベントを受け付けないようにした。(baysideさんに相談済み)
