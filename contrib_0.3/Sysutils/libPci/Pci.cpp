@@ -170,7 +170,7 @@ dword Pci::ReadConfig(byte bus, byte device, byte function, byte reg, byte readS
    packet.p.device    = device;
    packet.p.function  = function;
    //packet.p.reg       = reg & ~3;
-   packet.p.reg       = reg >> 2;
+   packet.p.reg       = (reg & ~3) >> 2;
    packet.p.reserved1 = 0;
    packet.p.reserved2 = 0;
 
