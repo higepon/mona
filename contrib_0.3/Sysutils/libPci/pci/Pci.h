@@ -124,10 +124,11 @@ class Pci
     Pci();
     ~Pci();
 
-    PciInf* CheckPciExist(word , word );
+    void CheckPciExist(word , word ,PciInf*);
+    dword ReadConfig(byte , byte , byte , byte , byte );
     
   private:
-    dword ReadConfig(byte , byte , byte , byte , byte );
+    
     MonAPI::CString getPciInfName( byte* , dword , MonAPI::CString* , MonAPI::CString* );
     bool IsLineSeparator(char );
 };

@@ -72,7 +72,8 @@ Pci::~Pci()
     \return PciInf構造体へのポインタ
     \date   create:2004/10/15 update:$Date$
 */
-PciInf* Pci::CheckPciExist(word ChkVendor , word ChkDevice ) {
+void Pci::CheckPciExist(word ChkVendor , word ChkDevice ,PciInf* RetPciInf) 
+{
     
     byte DeviceNo;
     dword Vendor_Dev;
@@ -82,11 +83,9 @@ PciInf* Pci::CheckPciExist(word ChkVendor , word ChkDevice ) {
 
     dword BaseAd;
     dword  IrqLine;
-    
-    PciInf RetPciInf; //返却用 PciInf構造体
 
     //返却値初期化 デバイスは存在しない。
-    RetPciInf.Exist = 1;
+    RetPciInf->Exist = 1;
 
     //Yamami!!! 2004/10/18 PCI情報ファイルは、バンドルでは無く、独立させる方向で
     //CString bundlePath = MonAPI::System::getBundlePath();
@@ -111,10 +110,11 @@ PciInf* Pci::CheckPciExist(word ChkVendor , word ChkDevice ) {
                 
                 //Baseアドレスの取得
                 BaseAd = ReadConfig(0, DeviceNo, 0, PCI_BASE_ADDRESS1, 4);
-                
+logprintf(" BaseAd = %x \n"  , BaseAd);                
                 //IRQラインの取得  google PCI IRQ取得で検索
                 IrqLine = ReadConfig(0, DeviceNo, 0, PCI_IRQ_LINE, 1);
                 
+logprintf(" IrqLine = %x \n"  , IrqLine);                
                 //ベンダー名称/デバイス名称の取得
                 CString VendorName;
                 CString DeviceName;
@@ -122,14 +122,14 @@ PciInf* Pci::CheckPciExist(word ChkVendor , word ChkDevice ) {
                 //CString Dummy = getPciInfName(pciinfData->Data , Vendor_Dev , &VendorName , &DeviceName);
                 
                 //返却値生成
-                RetPciInf.Exist = 0;
-                RetPciInf.DeviceNo = DeviceNo;
-                RetPciInf.Vendor = Vendor;
-                RetPciInf.Device = Device;
-                RetPciInf.VendorName = VendorName;
-                RetPciInf.DeviceName = DeviceName;
-                RetPciInf.BaseAd = BaseAd;
-                RetPciInf.IrqLine = IrqLine;
+                RetPciInf->Exist = 0;
+                RetPciInf->DeviceNo = DeviceNo;
+                RetPciInf->Vendor = Vendor;
+                RetPciInf->Device = Device;
+                RetPciInf->VendorName = VendorName;
+                RetPciInf->DeviceName = DeviceName;
+                RetPciInf->BaseAd = BaseAd;
+                RetPciInf->IrqLine = IrqLine;
                 
                 //見つかった場合は、即ループを抜ける
                 break;
@@ -142,7 +142,7 @@ PciInf* Pci::CheckPciExist(word ChkVendor , word ChkDevice ) {
     //monapi_cmemoryinfo_delete(pciinfData);
 
     //Return
-    return &RetPciInf;
+    //return &RetPciInf;
     
 }
 
@@ -169,11 +169,13 @@ dword Pci::ReadConfig(byte bus, byte device, byte function, byte reg, byte readS
    packet.p.bus       = bus;
    packet.p.device    = device;
    packet.p.function  = function;
-   packet.p.reg       = reg & ~3;
+   //packet.p.reg       = reg & ~3;
+   packet.p.reg       = reg >> 2;
    packet.p.reserved1 = 0;
    packet.p.reserved2 = 0;
 
    /* set request and enable */
+logprintf(" packet.command = %x \n"  , packet.command);
    outp32(REG_CONFIG_ADDRESS, packet.command);
 
    switch (readSize)
@@ -187,7 +189,7 @@ dword Pci::ReadConfig(byte bus, byte device, byte function, byte reg, byte readS
        break;
 
    case 4:
-       result = inp32(REG_CONFIG_DATA + (reg & 3));
+       result = inp32(REG_CONFIG_DATA);
        break;
 
    default:
@@ -197,6 +199,8 @@ dword Pci::ReadConfig(byte bus, byte device, byte function, byte reg, byte readS
 
    packet.p.enabled = 0;
    outp32(REG_CONFIG_ADDRESS, packet.command);
+logprintf(" result = %x \n"  , result);
+
    return result;
 }
 
