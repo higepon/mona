@@ -1,8 +1,12 @@
-2005-03-22  Yamami
+2006-03-22  Yamami
+
+        * net/mones: mones追加
+
+2006-03-22  Yamami
 
         * Sysutils/libPci: ローカル変数のポインターを返している問題を修正
 
-2005-03-22  bayside
+2006-03-22  bayside
 
         * Net/monadat: 起動しない不具合修正
 
