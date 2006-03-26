@@ -14,6 +14,8 @@
 
 @SET_MAKE@
 
+
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -36,12 +38,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = fat_write$(EXEEXT)
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS ChangeLog NEWS depcomp \
-	install-sh missing
+DIST_COMMON = README $(am__configure_deps) $(mona_include_HEADERS) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(srcdir)/config.h.in $(top_srcdir)/configure AUTHORS \
+	ChangeLog NEWS depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -49,11 +52,13 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(fat_write_datadir)" \
+	"$(DESTDIR)$(mona_includedir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_fat_write_OBJECTS = VirtualFloppy.$(OBJEXT) fat.$(OBJEXT) \
-	main.$(OBJEXT)
+am_fat_write_OBJECTS = fat_write-VirtualFloppy.$(OBJEXT) \
+	fat_write-fat.$(OBJEXT) fat_write-main.$(OBJEXT)
 fat_write_OBJECTS = $(am_fat_write_OBJECTS)
 fat_write_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -70,6 +75,16 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(fat_write_SOURCES)
 DIST_SOURCES = $(fat_write_SOURCES)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+fat_write_dataDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(fat_write_data_DATA)
+mona_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(mona_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -116,6 +131,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MONADIR = @MONADIR@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -160,7 +176,12 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+fat_write_CXXFLAGS = -g
 fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h
+fat_write_datadir = $(datadir)/fat_write
+fat_write_data_DATA = fat_template.img
+mona_includedir = @MONADIR@/include
+mona_include_HEADERS = fat.cpp VirtualFloppy.h fat.h file.h types.h
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -249,9 +270,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VirtualFloppy.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-VirtualFloppy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-fat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-main.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -266,7 +287,83 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+fat_write-VirtualFloppy.o: VirtualFloppy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-VirtualFloppy.o -MD -MP -MF "$(DEPDIR)/fat_write-VirtualFloppy.Tpo" -c -o fat_write-VirtualFloppy.o `test -f 'VirtualFloppy.cpp' || echo '$(srcdir)/'`VirtualFloppy.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-VirtualFloppy.Tpo" "$(DEPDIR)/fat_write-VirtualFloppy.Po"; else rm -f "$(DEPDIR)/fat_write-VirtualFloppy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='VirtualFloppy.cpp' object='fat_write-VirtualFloppy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-VirtualFloppy.o `test -f 'VirtualFloppy.cpp' || echo '$(srcdir)/'`VirtualFloppy.cpp
+
+fat_write-VirtualFloppy.obj: VirtualFloppy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-VirtualFloppy.obj -MD -MP -MF "$(DEPDIR)/fat_write-VirtualFloppy.Tpo" -c -o fat_write-VirtualFloppy.obj `if test -f 'VirtualFloppy.cpp'; then $(CYGPATH_W) 'VirtualFloppy.cpp'; else $(CYGPATH_W) '$(srcdir)/VirtualFloppy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-VirtualFloppy.Tpo" "$(DEPDIR)/fat_write-VirtualFloppy.Po"; else rm -f "$(DEPDIR)/fat_write-VirtualFloppy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='VirtualFloppy.cpp' object='fat_write-VirtualFloppy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-VirtualFloppy.obj `if test -f 'VirtualFloppy.cpp'; then $(CYGPATH_W) 'VirtualFloppy.cpp'; else $(CYGPATH_W) '$(srcdir)/VirtualFloppy.cpp'; fi`
+
+fat_write-fat.o: fat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-fat.o -MD -MP -MF "$(DEPDIR)/fat_write-fat.Tpo" -c -o fat_write-fat.o `test -f 'fat.cpp' || echo '$(srcdir)/'`fat.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-fat.Tpo" "$(DEPDIR)/fat_write-fat.Po"; else rm -f "$(DEPDIR)/fat_write-fat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fat.cpp' object='fat_write-fat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-fat.o `test -f 'fat.cpp' || echo '$(srcdir)/'`fat.cpp
+
+fat_write-fat.obj: fat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-fat.obj -MD -MP -MF "$(DEPDIR)/fat_write-fat.Tpo" -c -o fat_write-fat.obj `if test -f 'fat.cpp'; then $(CYGPATH_W) 'fat.cpp'; else $(CYGPATH_W) '$(srcdir)/fat.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-fat.Tpo" "$(DEPDIR)/fat_write-fat.Po"; else rm -f "$(DEPDIR)/fat_write-fat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fat.cpp' object='fat_write-fat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-fat.obj `if test -f 'fat.cpp'; then $(CYGPATH_W) 'fat.cpp'; else $(CYGPATH_W) '$(srcdir)/fat.cpp'; fi`
+
+fat_write-main.o: main.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-main.o -MD -MP -MF "$(DEPDIR)/fat_write-main.Tpo" -c -o fat_write-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-main.Tpo" "$(DEPDIR)/fat_write-main.Po"; else rm -f "$(DEPDIR)/fat_write-main.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='fat_write-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
+
+fat_write-main.obj: main.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-main.obj -MD -MP -MF "$(DEPDIR)/fat_write-main.Tpo" -c -o fat_write-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-main.Tpo" "$(DEPDIR)/fat_write-main.Po"; else rm -f "$(DEPDIR)/fat_write-main.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='fat_write-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
 uninstall-info-am:
+install-fat_write_dataDATA: $(fat_write_data_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(fat_write_datadir)" || $(mkdir_p) "$(DESTDIR)$(fat_write_datadir)"
+	@list='$(fat_write_data_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(fat_write_dataDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(fat_write_datadir)/$$f'"; \
+	  $(fat_write_dataDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(fat_write_datadir)/$$f"; \
+	done
+
+uninstall-fat_write_dataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(fat_write_data_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(fat_write_datadir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(fat_write_datadir)/$$f"; \
+	done
+install-mona_includeHEADERS: $(mona_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(mona_includedir)" || $(mkdir_p) "$(DESTDIR)$(mona_includedir)"
+	@list='$(mona_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(mona_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(mona_includedir)/$$f'"; \
+	  $(mona_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(mona_includedir)/$$f"; \
+	done
+
+uninstall-mona_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(mona_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(mona_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(mona_includedir)/$$f"; \
+	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -444,9 +541,9 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) config.h
+all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS) config.h
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(fat_write_datadir)" "$(DESTDIR)$(mona_includedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -494,7 +591,8 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-fat_write_dataDATA \
+	install-mona_includeHEADERS
 
 install-exec-am: install-binPROGRAMS
 
@@ -523,7 +621,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-info-am
+uninstall-am: uninstall-binPROGRAMS uninstall-fat_write_dataDATA \
+	uninstall-info-am uninstall-mona_includeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am am--refresh check check-am clean \
 	clean-binPROGRAMS clean-generic ctags dist dist-all dist-bzip2 \
@@ -532,13 +631,21 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binPROGRAMS install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
+	install-exec-am install-fat_write_dataDATA install-info \
+	install-info-am install-man install-mona_includeHEADERS \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-info-am
+	uninstall-fat_write_dataDATA uninstall-info-am \
+	uninstall-mona_includeHEADERS
 
+
+#if LINUX
+#fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h
+#else
+#fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h
+#endif
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
