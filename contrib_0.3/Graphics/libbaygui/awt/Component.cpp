@@ -79,31 +79,6 @@ namespace baygui {
 		}
 	}
 
-	void Component::addFocusListener(FocusListener* l)
-	{
-		this->focusListenerList.add((Object*)l);
-	}
-
-	void Component::removeFocusListener(FocusListener* l)
-	{
-		this->focusListenerList.remove((Object*)l);
-	}
-
-	void Component::processFocusEvent(FocusEvent* e)
-	{
-		for (int i = 0; i < this->focusListenerList.size(); i++) {
-			FocusListener* l = (FocusListener*)this->focusListenerList.get(i);
-			if (e->isConsumed() == false) {
-				if (e->getType() == FocusEvent::FOCUS_IN) {
-					l->focusGained(e);
-				} else {
-					l->focusLost(e);
-				}
-			}
-		}
-		e->consume();
-	}
-
 	void Component::repaint()
 	{
 		if (this->_buffer == NULL) return;

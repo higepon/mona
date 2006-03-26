@@ -347,52 +347,6 @@ namespace baygui {
 		}
 	}
 
-	void Window::addWindowListener(WindowListener* l)
-	{
-		this->windowListenerList.add((Object*)l);
-	}
-
-	void Window::removeWindowListener(WindowListener* l)
-	{
-		this->windowListenerList.remove((Object*)l);
-	}
-
-	void Window::processWindowEvent(WindowEvent* e)
-	{
-		for (int i = 0; i < this->windowListenerList.size(); i++) {
-			WindowListener* l = (WindowListener*)this->windowListenerList.get(i);
-			if (e->isConsumed() == false) {
-				if (e->getType() == WindowEvent::WINDOW_OPENED) {
-					l->windowOpened(e);
-				} else {
-					l->windowClosed(e);
-				}
-			}
-		}
-		e->consume();
-	}
-
-	void Window::addTimerListener(TimerListener* l)
-	{
-		this->timerListenerList.add((Object*)l);
-	}
-
-	void Window::removeTimerListener(TimerListener* l)
-	{
-		this->timerListenerList.remove((Object*)l);
-	}
-
-	void Window::processTimerEvent(TimerEvent* e)
-	{
-		for (int i = 0; i < this->timerListenerList.size(); i++) {
-			TimerListener* l = (TimerListener*)this->timerListenerList.get(i);
-			if (e->isConsumed() == false) {
-				l->timerFired(e);
-			}
-		}
-		e->consume();
-	}
-
 	void Window::stop()
 	{
 		this->isRunning = false;

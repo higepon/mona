@@ -248,25 +248,4 @@ namespace baygui {
 			}
 		}
 	}
-
-	void Scrollbar::addAdjustmentListener(AdjustmentListener* l)
-	{
-		this->adjustmentListenerList.add((Object*)l);
-	}
-
-	void Scrollbar::removeAdjustmentListener(AdjustmentListener* l)
-	{
-		this->adjustmentListenerList.remove((Object*)l);
-	}
-
-	void Scrollbar::processAdjustmentEvent(AdjustmentEvent* e)
-	{
-		for (int i = 0; i < this->adjustmentListenerList.size(); i++) {
-			AdjustmentListener* l = (AdjustmentListener*)this->adjustmentListenerList.get(i);
-			if (e->isConsumed() == false) {
-				l->adjustmentValueChanged(e);
-			}
-		}
-		e->consume();
-	}
 }

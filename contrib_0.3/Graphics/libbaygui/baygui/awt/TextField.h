@@ -47,8 +47,6 @@ namespace baygui {
 	protected:
 		/** テキストイベント */
 		Event textEvent;
-		/** TextListener一覧 */
-		Vector textListenerList;
 		
 	private:
 		/** 1文字挿入する */
@@ -78,15 +76,6 @@ namespace baygui {
 		
 		/** イベントハンドラ */
 		virtual void processEvent(Event* event);
-		
-		/** TextListenerを追加 */
-		virtual void addTextListener(TextListener* l);
-		
-		/** TextListenerを削除 */
-		virtual void removeTextListener(TextListener* l);
-		
-		/** TextEvent処理 */
-		virtual void processTextEvent(TextEvent* e);
 	};
 }
 

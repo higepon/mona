@@ -144,25 +144,4 @@ namespace baygui {
 			getParent()->processEvent(&this->itemEvent);
 		}
 	}
-
-	void ListBox::addItemListener(ItemListener* l)
-	{
-		this->itemListenerList.add((Object*)l);
-	}
-
-	void ListBox::removeItemListener(ItemListener* l)
-	{
-		this->itemListenerList.remove((Object*)l);
-	}
-
-	void ListBox::processItemEvent(ItemEvent* e)
-	{
-		for (int i = 0; i < this->itemListenerList.size(); i++) {
-			ItemListener* l = (ItemListener*)this->itemListenerList.get(i);
-			if (e->isConsumed() == false) {
-				l->itemStateChanged(e);
-			}
-		}
-		e->consume();
-	}
 }
