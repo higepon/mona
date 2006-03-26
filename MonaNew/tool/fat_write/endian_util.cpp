@@ -1,4 +1,5 @@
 #include "endian_util.h"
+#include "config.h"
 // 2006/03/25 by Yume : endian for MacOSX
 union Swap64
 {
@@ -27,7 +28,7 @@ uint64_t bswap64(uint64_t x)
 
 uint16_t big2host16(uint16_t x)
 {
-#if defined(__BIG_ENDIAN__)
+#if defined(WORDS_BIGENDIAN)
 	return x;
 #else
 	return bswap16(x);
@@ -36,7 +37,7 @@ uint16_t big2host16(uint16_t x)
 
 uint32_t big2host32(uint32_t x)
 {
-#if defined(__BIG_ENDIAN__)
+#if defined(WORDS_BIGENDIAN)
 	return x;
 #else
 	return bswap32(x);
@@ -45,7 +46,7 @@ uint32_t big2host32(uint32_t x)
 
 uint64_t big2host64(uint32_t x)
 {
-#if defined(__BIG_ENDIAN__)
+#if defined(WORDS_BIGENDIAN)
 	return x;
 #else
 	return bswap64(x);
@@ -54,7 +55,7 @@ uint64_t big2host64(uint32_t x)
 
 uint16_t host2big16(uint16_t x)
 {
-#if defined(__BIG_ENDIAN__)
+#if defined(WORDS_BIGENDIAN)
 	return x;
 #else
 	return bswap16(x);
@@ -63,7 +64,7 @@ uint16_t host2big16(uint16_t x)
 
 uint32_t host2big32(uint32_t x)
 {
-#if defined(__BIG_ENDIAN__)
+#if defined(WORDS_BIGENDIAN)
 	return x;
 #else
 	return bswap32(x);
@@ -72,7 +73,7 @@ uint32_t host2big32(uint32_t x)
 
 uint64_t host2big64(uint64_t x)
 {
-#if defined(__BIG_ENDIAN__)
+#if defined(WORDS_BIGENDIAN)
 	return x;
 #else
 	return bswap64(x);
@@ -81,7 +82,7 @@ uint64_t host2big64(uint64_t x)
 
 uint16_t little2host16(uint16_t x)
 {
-#if defined(__LITTLE_ENDIAN__)
+#ifndef WORDS_BIGENDIAN
 	return x;
 #else
 	return bswap16(x);
@@ -90,7 +91,7 @@ uint16_t little2host16(uint16_t x)
 
 uint32_t little2host32(uint32_t x)
 {
-#if defined(__LITTLE_ENDIAN__)
+#ifndef WORDS_BIGENDIAN
         return x;
 #else
         return bswap32(x);
@@ -99,7 +100,7 @@ uint32_t little2host32(uint32_t x)
 
 uint64_t little2host64(uint64_t x)
 {
-#if defined(__LITTLE_ENDIAN__)
+#ifndef WORDS_BIGENDIAN
         return x;
 #else
         return bswap64(x);
@@ -108,7 +109,7 @@ uint64_t little2host64(uint64_t x)
 
 uint16_t host2little16(uint16_t x)
 {
-#if defined(__LITTLE_ENDIAN__)
+#ifndef WORDS_BIGENDIAN
         return x;
 #else
         return bswap16(x);
@@ -117,7 +118,7 @@ uint16_t host2little16(uint16_t x)
 
 uint32_t host2little32(uint32_t x)
 {
-#if defined(__LITTLE_ENDIAN__)
+#ifndef WORDS_BIGENDIAN
 	return x;
 #else
 	return bswap32(x);
@@ -126,7 +127,7 @@ uint32_t host2little32(uint32_t x)
 
 uint64_t host2little64(uint64_t x)
 {
-#if defined(__LITTLE_ENDIAN__)
+#ifndef WORDS_BIGENDIAN
         return x;
 #else
         return bswap64(x);
