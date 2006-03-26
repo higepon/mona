@@ -14,4 +14,5 @@ typedef unsigned short word;
 typedef unsigned int dword;
 
 //-----------------------------------------------------------------------------
+
 #endif // __TYPES_H_ //

@@ -4379,6 +4379,7 @@ fi
 done
 
 
+# Checks for MONADIR
       echo "$as_me:$LINENO: checking MONADIR..." >&5
 echo $ECHO_N "checking MONADIR...... $ECHO_C" >&6
   if test "$MONADIR" != "" ; then
@@ -4392,6 +4393,9 @@ echo "$as_me: WARNING: MONADIR not found. use default $MONADIR" >&2;}
   fi
 
 
+# Checks for ENDIAN
+# don't use this! http://gemma.apple.com/jp/documentation/MacOSX/Conceptual/universal_binary/universal_binary_compiling/chapter_2_section_7.html
+# AC_C_BIGENDIAN
 
           ac_config_files="$ac_config_files Makefile"
 

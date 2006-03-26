@@ -166,7 +166,6 @@ Directory* trackingDirectory(const char *path_, int *cursor)
     }
 
     *cursor = i;
-
     return p;
 }
 

@@ -25,9 +25,13 @@ AC_C_CONST
 AC_PROG_GCC_TRADITIONAL
 AC_CHECK_FUNCS([memset mkdir])
 
+# Checks for MONADIR
 AM_CHECK_MONADIR
-
 AC_SUBST(MONADIR)
+
+# Checks for ENDIAN
+# don't use this! http://gemma.apple.com/jp/documentation/MacOSX/Conceptual/universal_binary/universal_binary_compiling/chapter_2_section_7.html
+# AC_C_BIGENDIAN
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

@@ -15,6 +15,7 @@
 #endif
 #include "file.h"
 #include "IStorageDevice.h"
+#include "endian_util.h"
 
 namespace FatFS
 {

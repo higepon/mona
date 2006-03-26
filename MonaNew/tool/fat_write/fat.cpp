@@ -1,6 +1,7 @@
 //*****************************************************************************
 // fat.cpp :
 // 2004/02/02 by Gaku :
+// 2006/03/25 by Yume : endian for MacOSX
 // Licence : see http://gaku.s12.xrea.com/wiki/main.cgi?c=g&p=Gaku%2FLicence
 //*****************************************************************************
 //-----------------------------------------------------------------------------
@@ -33,6 +34,7 @@ FAT::~FAT ()
 }
 
 //=============================================================================
+//ã“ã®é–¢æ•°ã¯ç›´ã—ãŸã¯ãšãƒ‹ãƒ€<ï½€âˆ€Â´ï¼› >
 bool FAT::initialize (IStorageDevice *p)
 {
 	byte bf[SECTOR_SIZE];
@@ -42,20 +44,20 @@ bool FAT::initialize (IStorageDevice *p)
 	if (false == read(0, bf))
 		return false;
 
-	// File System ID ‚ğŠm”F‚·‚é
+	// File System ID ã‚’ç¢ºèªã™ã‚‹
 	if (0 != memcmp(bf + FILE_SYSTEM_ID, FileSystemID, 8))
 		return false;
 
-	// BIOS Parameter Block ‚Ìî•ñ‚ğ“Ç‚İ‚Ş
+	// BIOS Parameter Block ã®æƒ…å ±ã‚’èª­ã¿è¾¼ã‚€
 	dword numberOfSectors;
 
-	bytesPerSector    = *((word*)( bf + BYTES_PER_SECTOR    ));
+	bytesPerSector    = little2host16(*((word*)( bf + BYTES_PER_SECTOR )));
 	sectorsPerCluster = *((byte*)( bf + SECTORS_PER_CLUSTER ));
-	reservedSectors   = *((word*)( bf + RESERVED_SECTORS    ));
+	reservedSectors   = little2host16(*((word*)( bf + RESERVED_SECTORS )));
 	numberOfFats      = *((byte*)( bf + NUMBER_OF_FATS      ));
-	numberOfDirEntry  = *((word*)( bf + NUMBER_OF_DIRENTRY  ));
-	numberOfSectors   = *((word*)( bf + NUMBER_OF_SECTORS   ));
-	sectorsPerFat     = *((word*)( bf + SECTORS_PER_FAT     ));
+	numberOfDirEntry  = little2host16(*((word*)( bf + NUMBER_OF_DIRENTRY)));
+	numberOfSectors   = little2host16(*((word*)( bf + NUMBER_OF_SECTORS )));
+	sectorsPerFat     = little2host16(*((word*)( bf + SECTORS_PER_FAT   )));
 
 	dword bytesPerFat = bytesPerSector * sectorsPerFat;
 	dword sectorsPerDirEntry = numberOfDirEntry / ( bytesPerSector / 0x20 );
@@ -64,12 +66,12 @@ bool FAT::initialize (IStorageDevice *p)
 	dataArea = rootDirectoryEntry + sectorsPerDirEntry;
 	numberOfClusters = numberOfSectors - dataArea;
 
-	// ƒƒ‚ƒŠŠm•Û
+	// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 	byte *ptr = new byte [bytesPerFat + sectorsPerFat];
 	if (NULL == ptr)
 		return false;
 
-	// File Allocation Table ‚Ì“Ç‚İ‚İ
+	// File Allocation Table ã®èª­ã¿è¾¼ã¿
 	byte *tmp = ptr;
 	for (dword n = 0; n < sectorsPerFat; n++) {
 		if (false == read(reservedSectors + n, tmp)) {
@@ -128,12 +130,12 @@ byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
 	dword i = 0;
 	dword l = 0;
 
-	// FAT ‚Ì“Ç‚İ‚İ
+	// FAT ã®èª­ã¿è¾¼ã¿
 	while (getNumberOfClusters() > c) {
 		dword base = getLbaFromCluster(c);
 
 		if (s < i + num) {
-			// ƒTƒCƒY‚ª‘«‚è‚È‚­‚È‚Á‚½‚Ì‚Åƒƒ‚ƒŠ‚ÌŠg‘å
+			// ã‚µã‚¤ã‚ºãŒè¶³ã‚Šãªããªã£ãŸã®ã§ãƒ¡ãƒ¢ãƒªã®æ‹¡å¤§
 			dword tmp_size = s + d;
 			dword *tmp = new dword [tmp_size];
 			if (NULL == tmp) {
@@ -156,8 +158,8 @@ byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
 		c = getNextCluster(c);
 	}
 
-	// ƒZƒNƒ^‚Ì“Ç‚İ‚İ
-	// ƒZƒNƒ^–{‘Ì + ƒZƒNƒ^ƒCƒ“ƒfƒbƒNƒX + ƒZƒNƒ^‘€ìƒtƒ‰ƒO
+	// ã‚»ã‚¯ã‚¿ã®èª­ã¿è¾¼ã¿
+	// ã‚»ã‚¯ã‚¿æœ¬ä½“ + ã‚»ã‚¯ã‚¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ + ã‚»ã‚¯ã‚¿æ“ä½œãƒ•ãƒ©ã‚°
 	dword size = bsize * i + sizeof(dword) * i + i;
 
 	byte *ptr = new byte [size];
@@ -192,17 +194,17 @@ dword FAT::allocateCluster (dword cluster, dword count)
 {
 	dword next, temp;
 
-	// ƒNƒ‰ƒXƒ^‚ÌV‹KŠm•Û
+	// ã‚¯ãƒ©ã‚¹ã‚¿ã®æ–°è¦ç¢ºä¿
 	if (0 == cluster) {
 		cluster = searchFreeCluster(START_OF_CLUSTER);
 		if (0 == cluster)
 			return 0;
-		// —v‹”‚ªƒ[ƒ‚Å‚àV‹Kì¬‚Ìê‡‚ÍÅ’áˆê‚Â‚ÍŠ„‚è“–‚Ä‚é
+		// è¦æ±‚æ•°ãŒã‚¼ãƒ­ã§ã‚‚æ–°è¦ä½œæˆã®å ´åˆã¯æœ€ä½ä¸€ã¤ã¯å‰²ã‚Šå½“ã¦ã‚‹
 		if (0 < count)
 			count--;
 	}
 
-	// ƒNƒ‰ƒXƒ^‚ğ—v‹”‚¾‚¯‘±‚¯‚ÄŠm•Û
+	// ã‚¯ãƒ©ã‚¹ã‚¿ã‚’è¦æ±‚æ•°ã ã‘ç¶šã‘ã¦ç¢ºä¿
 	next = cluster;
 	while (0 < count--) {
 		temp = searchFreeCluster(next+1);
@@ -216,7 +218,7 @@ dword FAT::allocateCluster (dword cluster, dword count)
 	}
 	setNextCluster(next, END_OF_CLUSTER);
 
-	// FAT ‚Ì‘‚«–ß‚µ
+	// FAT ã®æ›¸ãæˆ»ã—
 	flushFat();
 
 	return cluster;
@@ -233,7 +235,7 @@ void FAT::freeCluster (dword cluster)
 		cluster = next;
 	} while (numberOfClusters > cluster);
 
-	// FAT ‚Ì‘‚«–ß‚µ
+	// FAT ã®æ›¸ãæˆ»ã—
 	flushFat();
 }
 
@@ -302,7 +304,7 @@ void FAT::setNextCluster (dword cluster, dword next)
 		fat[index] = next;
 	}
 
-	// •ÏX‚µ‚½ƒZƒNƒ^‚É‚Íƒtƒ‰ƒO‚ğ—§‚Ä‚Ä‚¨‚­
+	// å¤‰æ›´ã—ãŸã‚»ã‚¯ã‚¿ã«ã¯ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã¦ãŠã
 	flag[cluster * 3 / ( 2 * bytesPerSector ) ] = 1;
 	flag[ ( cluster * 3 + 2 ) / ( 2 * bytesPerSector ) ] = 1;
 }
@@ -310,19 +312,19 @@ void FAT::setNextCluster (dword cluster, dword next)
 //-----------------------------------------------------------------------------
 dword FAT::searchFreeCluster (dword cluster)
 {
-	// ‘å‚«‚·‚¬‚éƒNƒ‰ƒXƒ^”Ô†‚ª—ˆ‚½‚çAŒŸõŠJnˆÊ’u‚ğæ“ª‚Ö–ß‚·
+	// å¤§ãã™ãã‚‹ã‚¯ãƒ©ã‚¹ã‚¿ç•ªå·ãŒæ¥ãŸã‚‰ã€æ¤œç´¢é–‹å§‹ä½ç½®ã‚’å…ˆé ­ã¸æˆ»ã™
 	if (numberOfClusters <= cluster)
 		cluster = START_OF_CLUSTER;
 	dword start = cluster;
 
 	do {
-		// ƒNƒ‰ƒXƒ^‚ª‹ó‚¢‚Ä‚¢‚é‚©‚ğ’²‚×‚Ä‚¢‚­
+		// ã‚¯ãƒ©ã‚¹ã‚¿ãŒç©ºã„ã¦ã„ã‚‹ã‹ã‚’èª¿ã¹ã¦ã„ã
 		dword next = getNextCluster(cluster);
 		if (0 == next)
 			return cluster;
 		cluster++;
 
-		// ––”ö‚Ü‚Å—ˆ‚½‚çAæ“ª‚©‚ç’²‚×‚È‚¨‚·
+		// æœ«å°¾ã¾ã§æ¥ãŸã‚‰ã€å…ˆé ­ã‹ã‚‰èª¿ã¹ãªãŠã™
 		if (numberOfClusters <= cluster)
 			cluster = START_OF_CLUSTER;
 	} while (start != cluster);
@@ -341,7 +343,7 @@ void FAT::clearFlag ()
 //-----------------------------------------------------------------------------
 void FAT::flushFat ()
 {
-	// ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚éƒZƒNƒ^‚ğƒfƒBƒXƒN‚É‘‚«–ß‚·
+	// ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹ã‚»ã‚¯ã‚¿ã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã™
 	for (dword n = 0; n < sectorsPerFat; n++) {
 		if (0 != flag[n]) {
 			byte *tmp = fat + n * bytesPerSector;
@@ -372,7 +374,7 @@ FatFile::~FatFile ()
 //=============================================================================
 bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
 {
-	// “Ç‚İ‚İ
+	// èª­ã¿è¾¼ã¿
 	dword bsize = p->getBytesPerSector();
 	dword sects = 0;
 	byte *ptr = NULL;
@@ -386,7 +388,7 @@ bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
 			return false;
 	}
 
-	// Šeíƒpƒ‰ƒ[ƒ^Šm’è
+	// å„ç¨®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç¢ºå®š
 	fat = p;
 	parent = d;
 	file = ptr;
@@ -398,7 +400,7 @@ bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
 	entry = e;
 	sizeChanged = false;
 
-	// ƒtƒ‰ƒOƒNƒŠƒA
+	// ãƒ•ãƒ©ã‚°ã‚¯ãƒªã‚¢
 	clearFlag();
 
 	return true;
@@ -426,7 +428,7 @@ dword FatFile::write (byte *bf, dword sz)
 		dword size = bytesPerSector * sectors;
 
 		if (size < pos + sz) {
-			// ƒNƒ‰ƒXƒ^‚ÌŠm•Û
+			// ã‚¯ãƒ©ã‚¹ã‚¿ã®ç¢ºä¿
 			if (false == expandClusters(sz))
 				return 0;
 		}
@@ -438,7 +440,7 @@ dword FatFile::write (byte *bf, dword sz)
 	if (0 < sz) {
 		memcpy(file+pos, bf, sz);
 
-		// ‘‚«‚ñ‚¾ˆÊ’u‚Éƒtƒ‰ƒO‚ğ—§‚Ä‚Ä‚¨‚­
+		// æ›¸ãè¾¼ã‚“ã ä½ç½®ã«ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã¦ãŠã
 		dword bytesPerSector = fat->getBytesPerSector();
 		dword n = pos / bytesPerSector;
 		while (n <= (pos + sz-1) / bytesPerSector) {
@@ -481,7 +483,7 @@ bool FatFile::seek (int pt, int flag)
 //=============================================================================
 bool FatFile::flush ()
 {
-	// ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚éƒZƒNƒ^‚ğƒfƒBƒXƒN‚É‘‚«–ß‚·
+	// ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹ã‚»ã‚¯ã‚¿ã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã™
 	bool result = true;
 	dword bytesPerSector = fat->getBytesPerSector();
 
@@ -510,15 +512,15 @@ bool FatFile::resize (dword sz)
 	dword size = bytesPerSector * sectors;
 
 	if (size < sz) {
-		// ƒNƒ‰ƒXƒ^‚ğŠg’£‚·‚é
+		// ã‚¯ãƒ©ã‚¹ã‚¿ã‚’æ‹¡å¼µã™ã‚‹
 		if (false == expandClusters(sz))
 			return false;
 	} else {
-		// ƒNƒ‰ƒXƒ^‚ğk¬‚·‚é
+		// ã‚¯ãƒ©ã‚¹ã‚¿ã‚’ç¸®å°ã™ã‚‹
 		reduceClusters(sz);
 	}
 
-	// ƒfƒBƒŒƒNƒgƒŠƒGƒ“ƒgƒŠ‚Éƒtƒ@ƒCƒ‹ƒTƒCƒY‚ğ‘‚«–ß‚µ
+	// ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚¨ãƒ³ãƒˆãƒªã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã‚’æ›¸ãæˆ»ã—
 	parent->setFileSize(entry, sz);
 	fsize = sz;
 
@@ -544,7 +546,7 @@ bool FatFile::expandClusters (dword sz)
 	dword size = bsize * sectors;
 	dword count = ( pos + sz - size + bsize - 1 ) / bsize;
 
-	// ƒNƒ‰ƒXƒ^‚ÌŠm•Û
+	// ã‚¯ãƒ©ã‚¹ã‚¿ã®ç¢ºä¿
 	if (count < RESIZE_DELTA)
 		count = RESIZE_DELTA;
 
@@ -555,7 +557,7 @@ bool FatFile::expandClusters (dword sz)
 	if (0 < last)
 		cluster = fat->getNextCluster(cluster);
 
-	// ƒƒ‚ƒŠŠm•Û
+	// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 	dword sects = sectors + count;
 	size = bsize * sects;
 
@@ -570,22 +572,22 @@ bool FatFile::expandClusters (dword sz)
 	if (0 == last)
 		parent->setCluster(entry, cluster);
 
-	// ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğƒRƒs[
+	// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 	memcpy(ptr, file, pos);
 	memset(ptr + pos + sz, 0, size - pos - sz);
 
-	// ƒZƒNƒ^ˆÊ’u‚ğƒRƒs[
+	// ã‚»ã‚¯ã‚¿ä½ç½®ã‚’ã‚³ãƒ”ãƒ¼
 	dword *tmplba = (dword*)( ptr + size );
 	memcpy(tmplba, lba, sectors * sizeof(dword));
 
-	// ƒtƒ‰ƒO‚ğƒRƒs[
+	// ãƒ•ãƒ©ã‚°ã‚’ã‚³ãƒ”ãƒ¼
 	byte *tmpflag = ptr + size + sizeof(dword) * sects;
 	memcpy(tmpflag, flag, sectors);
 
 	for (dword n = sectors; n < sects; n++)
 		tmpflag[n] = 1;
 
-	// ƒZƒNƒ^ˆÊ’u‚ğ“Ç‚İ‚Ş
+	// ã‚»ã‚¯ã‚¿ä½ç½®ã‚’èª­ã¿è¾¼ã‚€
 	dword num = fat->getSectorsPerCluster();
 	dword i = sectors;
 
@@ -599,7 +601,7 @@ bool FatFile::expandClusters (dword sz)
 		cluster = fat->getNextCluster(cluster);
 	}
 
-	// Šeíİ’è’lXV
+	// å„ç¨®è¨­å®šå€¤æ›´æ–°
 	delete file;
 
 	file = ptr;
@@ -619,16 +621,16 @@ void FatFile::reduceClusters (dword sz)
 	dword n = ( sz + bsize - 1 ) / bsize;
 
 	if (sectors > n) {
-		// ƒZƒNƒ^‚ğŠJ•ú‚·‚éê‡
+		// ã‚»ã‚¯ã‚¿ã‚’é–‹æ”¾ã™ã‚‹å ´åˆ
 		dword cluster = fat->getClusterFromLba(lba[n]);
 		fat->freeCluster(cluster);
 
 		if (0 == n) {
-			// ƒfƒBƒŒƒNƒgƒŠƒGƒ“ƒgƒŠ‚ÉƒNƒ‰ƒXƒ^‚ğ‘‚«–ß‚µ
+			// ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚¨ãƒ³ãƒˆãƒªã«ã‚¯ãƒ©ã‚¹ã‚¿ã‚’æ›¸ãæˆ»ã—
 			parent->setCluster(entry, 0);
 			last = 0;
 		} else {
-			// Šô‚Â‚©ƒNƒ‰ƒXƒ^‚ğŠm•Û‚µ‚Ä‚¢‚é‚Ì‚ÅAÅŒã”ö‚ğİ’è
+			// å¹¾ã¤ã‹ã‚¯ãƒ©ã‚¹ã‚¿ã‚’ç¢ºä¿ã—ã¦ã„ã‚‹ã®ã§ã€æœ€å¾Œå°¾ã‚’è¨­å®š
 			last = fat->getClusterFromLba(lba[n-1]);
 			fat->setEndOfCluster(last);
 		}
@@ -667,13 +669,13 @@ FatDirectory::~FatDirectory ()
 //=============================================================================
 int FatDirectory::searchEntry (byte *bf)
 {
-	// —^‚¦‚ç‚ê‚½–¼‘O‚ğ 8.3 Œ`®‚É‚·‚é
+	// ä¸ãˆã‚‰ã‚ŒãŸåå‰ã‚’ 8.3 å½¢å¼ã«ã™ã‚‹
 	byte name[SIZE_FILENAME + SIZE_EXTENTION];
 	expandFileName(name, bf);
 
 	byte *tmp = entrys;
 
-	for (int entry = 0; tmp < end; entry++, tmp += 0x20) {
+	for ( int entry = 0 ; tmp < end ; entry++, tmp += 0x20 ) {
 		if (MARK_DELETE == tmp[0] )
 			continue;
 		if (ATTR_VFAT == ( tmp[ATTRIBUTE] & 0x3f ))
@@ -681,7 +683,7 @@ int FatDirectory::searchEntry (byte *bf)
 		if (MARK_UNUSED == tmp[0])
 			break;
 
-		// ƒGƒ“ƒgƒŠ‚Ì–¼‘O‚ğ”äŠr‚·‚é
+		// ã‚¨ãƒ³ãƒˆãƒªã®åå‰ã‚’æ¯”è¼ƒã™ã‚‹
 		bool flag = false;
 		int i;
 
@@ -689,7 +691,7 @@ int FatDirectory::searchEntry (byte *bf)
 			byte c1 = name[i];
 			byte c2 = tmp[i];
 
-			// SJIS ‚Ìê‡‚ÍƒGƒXƒP[ƒv‚·‚é
+			// SJIS ã®å ´åˆã¯ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã™ã‚‹
 			if (false == flag) {
 				if ('A' <= c1 && 'Z' >= c1) {
 					c1 |= 0x20;
@@ -700,7 +702,9 @@ int FatDirectory::searchEntry (byte *bf)
 			} else
 				flag = false;
 			if (c1 != c2)
+			{
 				break;
+			}
 		}
 
 		if (SIZE_FILENAME + SIZE_EXTENTION == i)
@@ -721,11 +725,11 @@ int FatDirectory::getEntryName (int entry, byte *bf)
 	byte name[SIZE_FILENAME + SIZE_EXTENTION + 2];
 	int i, len = 0;
 
-	// •K—v‚È’·‚³‚ğŒvZ‚·‚é‚¾‚¯‚Ìê‡
+	// å¿…è¦ãªé•·ã•ã‚’è¨ˆç®—ã™ã‚‹ã ã‘ã®å ´åˆ
 	if (NULL == bf)
 		bf = name;
 
-	// ƒtƒ@ƒCƒ‹–¼‚ğƒRƒs[
+	// ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ã‚³ãƒ”ãƒ¼
 	for (i = 0; i < SIZE_FILENAME; i++) {
 		if (' ' == tmp[i])
 			break;
@@ -735,7 +739,7 @@ int FatDirectory::getEntryName (int entry, byte *bf)
 	if (' ' != tmp[SIZE_FILENAME]) {
 		bf[len++] = '.';
 
-		// Šg’£q‚ğƒRƒs[
+		// æ‹¡å¼µå­ã‚’ã‚³ãƒ”ãƒ¼
 		for (i = 0; i < SIZE_EXTENTION; i++) {
 			if (' ' == tmp[SIZE_FILENAME + i])
 				break;
@@ -762,7 +766,7 @@ int FatDirectory::getNextEntry (int entry)
 	if (0 > entry)
 		entry = 0;
 
-	// Ÿ‚É—LŒø‚ÈƒGƒ“ƒgƒŠ‚ğ’T‚·
+	// æ¬¡ã«æœ‰åŠ¹ãªã‚¨ãƒ³ãƒˆãƒªã‚’æ¢ã™
 	for (byte *tmp = entrys + 0x20 * entry; tmp < end; tmp += 0x20, entry++) {
 		if (MARK_DELETE == tmp[0] )
 			continue;
@@ -781,7 +785,7 @@ int FatDirectory::getNextEntry (int entry)
 bool FatDirectory::deleteEntry (int entry)
 {
 	byte *tmp = entrys + 0x20 * entry;
-	dword cluster = *((word*)( tmp + LOW_CLUSTER ));
+	dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
 
 	if (false == isValid(tmp))
 		return false;
@@ -789,7 +793,7 @@ bool FatDirectory::deleteEntry (int entry)
 	if (ATTR_DIRECTORY & tmp[ATTRIBUTE]) {
 		int i;
 
-		// "." ".." ‚Ííœ‚µ‚È‚¢
+		// "." ".." ã¯å‰Šé™¤ã—ãªã„
 		for (i = SIZE_FILENAME + SIZE_EXTENTION - 1; 0 <= i; i--)
 			if (' ' != tmp[i])
 				break;
@@ -811,13 +815,13 @@ bool FatDirectory::deleteEntry (int entry)
 
 	tmp[0] = MARK_DELETE;
 
-	// VFAT ‚ğŠJ•ú‚µ‚Ä‰ñ‚é
+	// VFAT ã‚’é–‹æ”¾ã—ã¦å›ã‚‹
 	for (tmp -= 0x20; tmp >= entrys; tmp -= 0x20) {
 		if (ATTR_VFAT != ( tmp[ATTRIBUTE] & 0x3f ))
 			break;
 
 		if (n != (tmp - entrys ) / bytesPerSector) {
-			// ƒGƒ“ƒgƒŠ‚ğƒfƒBƒXƒN‚É‘‚«–ß‚µ
+			// ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã—
 			fat->write(lba[n], entrys + n * bytesPerSector);
 			n--;
 		}
@@ -831,10 +835,10 @@ bool FatDirectory::deleteEntry (int entry)
 		tmp[0] = MARK_DELETE;
 	}
 
-	// ƒGƒ“ƒgƒŠ‚ğƒfƒBƒXƒN‚É‘‚«–ß‚µ
+	// ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã—
 	fat->write(lba[n], entrys + n * bytesPerSector);
 
-	// FAT ‚ğ‰ğ•ú
+	// FAT ã‚’è§£æ”¾
 	fat->freeCluster(cluster);
 
 	return true;
@@ -843,21 +847,21 @@ bool FatDirectory::deleteEntry (int entry)
 //=============================================================================
 int FatDirectory::newDirectory (byte *bf)
 {
-	// ƒfƒBƒŒƒNƒgƒŠ‚Ì–„‚ßs‚­‚µƒpƒ^[ƒ“
+	// ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®åŸ‹ã‚å°½ãã—ãƒ‘ã‚¿ãƒ¼ãƒ³
 	dword bsize = fat->getBytesPerSector();
 	dword num = fat->getSectorsPerCluster();
 
 	byte *sector = new byte [bsize];
 
-	// ƒGƒ“ƒgƒŠ‚ÌŠm•Û
+	// ã‚¨ãƒ³ãƒˆãƒªã®ç¢ºä¿
 	dword sz = bsize * num;
 
 	int entry = newEntry(bf, sz, ATTR_DIRECTORY, 0);
 	if (-1 != entry) {
 		byte *tmp = entrys + 0x20 * entry;
-		dword cluster = *((word*)( tmp + LOW_CLUSTER ));
+		dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
 
-		// "." ‚Æ ".." ƒGƒ“ƒgƒŠ‚ğì¬‚·‚é
+		// "." ã¨ ".." ã‚¨ãƒ³ãƒˆãƒªã‚’ä½œæˆã™ã‚‹
 		byte name[SIZE_FILENAME + SIZE_EXTENTION];
 		for (int i = 0; i < SIZE_FILENAME + SIZE_EXTENTION; i++)
 			name[i] = ' ';
@@ -868,17 +872,17 @@ int FatDirectory::newDirectory (byte *bf)
 		name[1] = '.';
 		setEntry(sector+0x20, name, ATTR_DIRECTORY, start, 0);
 
-		// Å‰‚ÌƒZƒNƒ^‚ğ‘‚«‚Ş
+		// æœ€åˆã®ã‚»ã‚¯ã‚¿ã‚’æ›¸ãè¾¼ã‚€
 		dword base = fat->getLbaFromCluster(cluster);
 
 		fat->write(base, sector);
 
-		// ‘±‚­ƒZƒNƒ^‚ğ‘‚«‚Ş
+		// ç¶šãã‚»ã‚¯ã‚¿ã‚’æ›¸ãè¾¼ã‚€
 		memset(sector, 0, 0x20 * 2);
 		for (dword n = 1; n < num; n++)
 			fat->write(base+n, sector);
 
-		// ƒNƒ‰ƒXƒ^‚ğ’H‚è‘S‚Ä‚ÌƒGƒ“ƒgƒŠ‚ğ‰Šú‰»
+		// ã‚¯ãƒ©ã‚¹ã‚¿ã‚’è¾¿ã‚Šå…¨ã¦ã®ã‚¨ãƒ³ãƒˆãƒªã‚’åˆæœŸåŒ–
 		cluster = fat->getNextCluster(cluster);
 
 		while (cluster < fat->getNumberOfClusters()) {
@@ -914,7 +918,7 @@ Directory* FatDirectory::getDirectory (int entry)
 	if (0 == (tmp[ATTRIBUTE] & ATTR_DIRECTORY))
 		return NULL;
 
-	dword cluster = *((word*)( tmp + LOW_CLUSTER ));
+	dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
 
 	FatDirectory *dir;
 
@@ -947,11 +951,11 @@ File* FatDirectory::getFile (int entry)
 	if (tmp[ATTRIBUTE] & ATTR_VOLUME)
 		return NULL;
 
-	dword cluster = *((word*)( tmp + LOW_CLUSTER ));
+	dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
 	if (0 == cluster)
 		cluster = END_OF_CLUSTER;
 
-	dword size = *((dword*)( tmp + FILESIZE ));
+	dword size = little2host16(*((dword*)( tmp + FILESIZE )));
 
 	FatFile *file = new FatFile();
 	if (NULL == file)
@@ -1006,10 +1010,10 @@ bool FatDirectory::setFileSize (int entry, dword size)
 {
 	byte *tmp = entrys + 0x20 * entry;
 
-	// ƒtƒ@ƒCƒ‹ƒTƒCƒY
-	*((dword*)( tmp + FILESIZE )) = size;
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º
+	*((dword*)( tmp + FILESIZE )) = host2little32(size);
 
-	// ƒGƒ“ƒgƒŠ‚ğƒfƒBƒXƒN‚É‘‚«–ß‚µ
+	// ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã—
 	dword bytesPerSector = fat->getBytesPerSector();
 	dword n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
@@ -1022,10 +1026,10 @@ bool FatDirectory::setCluster (int entry, dword cluster)
 {
 	byte *tmp = entrys + 0x20 * entry;
 
-	// ƒtƒ@ƒCƒ‹ƒTƒCƒY
-	*((word*)( tmp + LOW_CLUSTER )) = cluster;
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º
+	*((word*)( tmp + LOW_CLUSTER )) = host2little32(cluster);
 
-	// ƒGƒ“ƒgƒŠ‚ğƒfƒBƒXƒN‚É‘‚«–ß‚µ
+	// ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã—
 	dword bytesPerSector = fat->getBytesPerSector();
 	dword n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
@@ -1038,7 +1042,7 @@ byte* FatDirectory::searchUnusedEntry ()
 {
 	byte *tmp = entrys;
 
-	// –¢g—pƒGƒ“ƒgƒŠ‚ğ’T‚·
+	// æœªä½¿ç”¨ã‚¨ãƒ³ãƒˆãƒªã‚’æ¢ã™
 	while (tmp < end) {
 		if (ATTR_VFAT != ( tmp[ATTRIBUTE] & 0x3f )) {
 			if (MARK_UNUSED == tmp[0])
@@ -1073,8 +1077,8 @@ void FatDirectory::expandFileName (byte *name, byte *bf)
 {
 	int i, j, index = -1;
 
-	for (i = 0; '\0' != bf[i]; i++) {
-		if ('.' == bf[i])
+	for ( i = 0 ; '\0' != bf[i] ; i++ ){
+		if( '.' == bf[i] )
 			index = i;
 	}
 
@@ -1100,6 +1104,8 @@ void FatDirectory::expandFileName (byte *name, byte *bf)
 
 	while (i < SIZE_FILENAME + SIZE_EXTENTION)
 		name[i++] = ' ';
+
+	//name[SIZE_FILENAME+SIZE_EXTENTION] = '\0';
 }
 
 //-----------------------------------------------------------------------------
@@ -1126,11 +1132,11 @@ bool FatDirectory::clearDirectory (int entry)
 //-----------------------------------------------------------------------------
 int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 {
-	// –¼‘O‚ª‚ ‚é‚©Šm”F‚·‚é
+	// åå‰ãŒã‚ã‚‹ã‹ç¢ºèªã™ã‚‹
 	if ('\0' == bf[0])
 		return -1;
 
-	// ‹ó‚«ƒGƒ“ƒgƒŠ‚ğ’T‚·
+	// ç©ºãã‚¨ãƒ³ãƒˆãƒªã‚’æ¢ã™
 	int entry = searchFreeEntry();
 	if (-1 == entry)
 		return -1;
@@ -1138,7 +1144,7 @@ int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 	dword bsize = fat->getBytesPerSector() * fat->getSectorsPerCluster();
 	dword count = ( sz + bsize-1 ) / bsize;
 
-	// ƒNƒ‰ƒXƒ^‚ÌŠm•Û
+	// ã‚¯ãƒ©ã‚¹ã‚¿ã®ç¢ºä¿
 	dword cluster = 0;
 
 	if (0 < count) {
@@ -1147,15 +1153,15 @@ int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 			return -1;
 	}
 
-	// —^‚¦‚ç‚ê‚½–¼‘O‚ğ 8.3 Œ`®‚É‚·‚é
+	// ä¸ãˆã‚‰ã‚ŒãŸåå‰ã‚’ 8.3 å½¢å¼ã«ã™ã‚‹
 	byte name[SIZE_FILENAME + SIZE_EXTENTION];
 	expandFileName(name, bf);
 
-	// ƒGƒ“ƒgƒŠ‚Ìì¬
+	// ã‚¨ãƒ³ãƒˆãƒªã®ä½œæˆ
 	byte *tmp = entrys + 0x20 * entry;
 	setEntry(tmp, name, attr, cluster, fsize);
 
-	// ƒGƒ“ƒgƒŠ‚ğƒfƒBƒXƒN‚É‘‚«–ß‚µ
+	// ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã«æ›¸ãæˆ»ã—
 	dword bytesPerSector = fat->getBytesPerSector();
 	dword n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
@@ -1166,13 +1172,13 @@ int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 //-----------------------------------------------------------------------------
 void FatDirectory::setEntry (byte *ent, byte *n, byte a, word c, dword s)
 {
-	// –¼‘O
+	// åå‰
 	memcpy(ent, n, SIZE_FILENAME + SIZE_EXTENTION);
 
-	// ‘®«
+	// å±æ€§
 	ent[ATTRIBUTE] = a;
 
-	// Šg’£—Ìˆæ
+	// æ‹¡å¼µé ˜åŸŸ
 	ent[0x0c] = 0x00;
 	ent[0x0d] = 0x00;
 	ent[0x0e] = 0x00;
@@ -1188,17 +1194,18 @@ void FatDirectory::setEntry (byte *ent, byte *n, byte a, word c, dword s)
 	ent[0x18] = 0x41;
 	ent[0x19] = 0x00;
 
-	// ŠJnƒNƒ‰ƒXƒ^
-	*((word*)( ent + LOW_CLUSTER )) = c;
+	// é–‹å§‹ã‚¯ãƒ©ã‚¹ã‚¿
+	*((word*)( ent + LOW_CLUSTER )) = host2little16(c);
 
-	// ƒtƒ@ƒCƒ‹ƒTƒCƒY
-	*((dword*)( ent + FILESIZE )) = s;
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º
+	*((dword*)( ent + FILESIZE )) = host2little32(s);
+
 }
 
 //-----------------------------------------------------------------------------
 int FatDirectory::searchFreeEntry ()
 {
-	// –¢g—pƒGƒ“ƒgƒŠ‚ª–³‚¯‚ê‚ÎíœƒGƒ“ƒgƒŠ‚ğg‚¤
+	// æœªä½¿ç”¨ã‚¨ãƒ³ãƒˆãƒªãŒç„¡ã‘ã‚Œã°å‰Šé™¤ã‚¨ãƒ³ãƒˆãƒªã‚’ä½¿ã†
 	byte *tmp = entrys;
 	while (tmp < unused) {
 		if (MARK_DELETE == tmp[0])
@@ -1206,13 +1213,13 @@ int FatDirectory::searchFreeEntry ()
 		tmp += 0x20;
 	}
 
-	// –¢g—pƒGƒ“ƒgƒŠ‚ª‚ ‚ê‚Î—Dæ‚µ‚Äg‚¤
+	// æœªä½¿ç”¨ã‚¨ãƒ³ãƒˆãƒªãŒã‚ã‚Œã°å„ªå…ˆã—ã¦ä½¿ã†
 	if (tmp < end) {
 		unused += 0x20;
 		return ( tmp - entrys ) / 0x20;
 	}
 
-	// ‚È‚¯‚ê‚ÎƒGƒ“ƒgƒŠ‚ğŠg’£‚·‚é
+	// ãªã‘ã‚Œã°ã‚¨ãƒ³ãƒˆãƒªã‚’æ‹¡å¼µã™ã‚‹
 	if (true == expandEntry()) {
 		tmp = unused;
 		unused += 0x20;
@@ -1245,15 +1252,15 @@ bool FatDirectory::expandEntry ()
 		return false;
 	}
 
-	// ƒGƒ“ƒgƒŠƒf[ƒ^‚ğƒRƒs[
+	// ã‚¨ãƒ³ãƒˆãƒªãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 	memcpy(ptr, entrys, bsize * sectors);
 	memset(ptr + bsize * sectors, 0, bsize * (sects - sectors));
 
-	// ƒZƒNƒ^ˆÊ’u‚ğƒRƒs[
+	// ã‚»ã‚¯ã‚¿ä½ç½®ã‚’ã‚³ãƒ”ãƒ¼
 	dword *tmplba = (dword*)( ptr + size );
 	memcpy(tmplba, lba, sizeof(dword) * sectors);
 
-	// ƒZƒNƒ^ˆÊ’u‚ğ“Ç‚İ‚Ş
+	// ã‚»ã‚¯ã‚¿ä½ç½®ã‚’èª­ã¿è¾¼ã‚€
 	dword num = fat->getSectorsPerCluster();
 	dword i = sectors;
 
@@ -1269,7 +1276,7 @@ bool FatDirectory::expandEntry ()
 
 	delete entrys;
 
-	// Šeíƒpƒ‰ƒ[ƒ^Šm’è
+	// å„ç¨®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç¢ºå®š
 	entrys = ptr;
 	end = ptr + size;
 	unused = ptr + bsize * sectors;
@@ -1294,7 +1301,7 @@ bool FatRootDirectory::initialize (FAT *p, dword c)
 	if (NULL == ent)
 		return false;
 
-	// Root Directory ‚Ì“Ç‚İ‚İ
+	// Root Directory ã®èª­ã¿è¾¼ã¿
 	byte *tmp = ent;
 	dword *tmplba = (dword*)( ent + sz );
 
@@ -1329,7 +1336,7 @@ bool FatSubDirectory::initialize (FAT *p, dword c)
 		DELTA = 224
 	};
 
-	// “Ç‚İ‚İ
+	// èª­ã¿è¾¼ã¿
 	dword bsize = p->getBytesPerSector();
 	dword sects = 0;
 	byte *ptr = NULL;
@@ -1341,7 +1348,7 @@ bool FatSubDirectory::initialize (FAT *p, dword c)
 			return false;
 	}
 
-	// Šeíƒpƒ‰ƒ[ƒ^Šm’è
+	// å„ç¨®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç¢ºå®š
 	start = c;
 	fat = p;
 	entrys = ptr;

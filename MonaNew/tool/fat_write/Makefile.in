@@ -58,7 +58,8 @@ am__installdirs = "$(DESTDIR)$(bindir)" \
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_fat_write_OBJECTS = fat_write-VirtualFloppy.$(OBJEXT) \
-	fat_write-fat.$(OBJEXT) fat_write-main.$(OBJEXT)
+	fat_write-fat.$(OBJEXT) fat_write-main.$(OBJEXT) \
+	fat_write-endian_util.$(OBJEXT)
 fat_write_OBJECTS = $(am_fat_write_OBJECTS)
 fat_write_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -177,7 +178,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 fat_write_CXXFLAGS = -g
-fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h
+fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h endian_util.cpp endian_util.h
 fat_write_datadir = $(datadir)/fat_write
 fat_write_data_DATA = fat_template.img
 mona_includedir = @MONADIR@/include
@@ -271,6 +272,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-VirtualFloppy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-endian_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-fat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat_write-main.Po@am__quote@
 
@@ -329,6 +331,20 @@ fat_write-main.obj: main.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='fat_write-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
+
+fat_write-endian_util.o: endian_util.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-endian_util.o -MD -MP -MF "$(DEPDIR)/fat_write-endian_util.Tpo" -c -o fat_write-endian_util.o `test -f 'endian_util.cpp' || echo '$(srcdir)/'`endian_util.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-endian_util.Tpo" "$(DEPDIR)/fat_write-endian_util.Po"; else rm -f "$(DEPDIR)/fat_write-endian_util.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='endian_util.cpp' object='fat_write-endian_util.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-endian_util.o `test -f 'endian_util.cpp' || echo '$(srcdir)/'`endian_util.cpp
+
+fat_write-endian_util.obj: endian_util.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -MT fat_write-endian_util.obj -MD -MP -MF "$(DEPDIR)/fat_write-endian_util.Tpo" -c -o fat_write-endian_util.obj `if test -f 'endian_util.cpp'; then $(CYGPATH_W) 'endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/endian_util.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fat_write-endian_util.Tpo" "$(DEPDIR)/fat_write-endian_util.Po"; else rm -f "$(DEPDIR)/fat_write-endian_util.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='endian_util.cpp' object='fat_write-endian_util.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fat_write_CXXFLAGS) $(CXXFLAGS) -c -o fat_write-endian_util.obj `if test -f 'endian_util.cpp'; then $(CYGPATH_W) 'endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/endian_util.cpp'; fi`
 uninstall-info-am:
 install-fat_write_dataDATA: $(fat_write_data_DATA)
 	@$(NORMAL_INSTALL)
@@ -640,12 +656,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-fat_write_dataDATA \
 	uninstall-fat_write_dataDATA uninstall-info-am \
 	uninstall-mona_includeHEADERS
 
-
-#if LINUX
-#fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h
-#else
-#fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h file.h main.cpp types.h
-#endif
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
