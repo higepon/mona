@@ -1,3 +1,9 @@
+2006-03-26  higepon  <higepon@users.sourceforge.jp>
+
+        * fat_writeをautotoolsに対応
+
+        * fat_writeがMAC OS Xに対応 thx Yumeさん
+
 2006-01-05  higepon  <higepon@users.sourceforge.jp>
 
         * core/mouse_server/main.cpp (class Mouse): 起動時にキーボード入力するとハングするバグを修正。thx!論拠なしアンチさん
@@ -112,7 +118,7 @@
 
 2005-07-20  higepon  <higepon@users.sourceforge.jp>
 
-        * core/kernel/Makefile : tester.h, tesr_higepon.cpp削除。 
+        * core/kernel/Makefile : tester.h, tesr_higepon.cpp削除。
 
         * core/kernel/tester.h: test_mjt.hファイル削除(新ツリーのみ)
 
