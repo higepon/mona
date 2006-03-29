@@ -19,7 +19,7 @@ SOURCES = ctype.cpp    \
           math.cpp     \
 
 OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE = -I$(INCDIR) -I. -I..
+INCLUDE = -I. -I.. -I$(INCDIR)
 
 all : $(TARGET)
 
