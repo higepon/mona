@@ -30,13 +30,22 @@ double sqrt(double num);
 double atan2(double x, double y);
 double atan(double x);
 double acos(double x);
+double sinh(double x);
+double cosh(double x);
+double tanh(double x);
+
 double modf(double x, double *buf);
 double floor(double x);
 double log(double x);
 double log10(double x);
 double exp(double x);
+double ldexp(double x, int n);
 double pow(double x, double y);
 double ceil(double x);
+
+double fabs(double x);
+double frexp(double x, int *exp);
+double fmod(double x, double y);
 
 #ifdef __cplusplus
 }
