@@ -1,4 +1,4 @@
-typedef union
+/*typedef union
 {
 	double d;
 	struct
@@ -34,7 +34,7 @@ double fmod(double x, double y)
 {
 	double n = (double)(int)(x / y);
 	return x - n * y;
-}
+}*/
 
 // test code
 #if 0
