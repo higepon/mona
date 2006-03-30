@@ -11,7 +11,8 @@ endif
 #include $(MONADIR)/env/Makefile.inc
 include $(MONADIR)/share/configs/Makefile.inc
 
-CSOURCES = math.c stdlib.c stdio.c stdarg.c string.c setjmp.c time.c
+#CSOURCES = math.c stdlib.c stdio.c stdarg.c string.c setjmp.c time.c
+CSOURCES = stdlib.c
 OBJECTS  = $(CSOURCES:.c=.o)
 INCLUDE  = -I./ -I$(MONADIR)/include
 LINK     = -L$(MONADIR)/lib -lmonalibc-imp -lmonapi-imp
