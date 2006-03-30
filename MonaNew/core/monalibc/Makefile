@@ -17,6 +17,10 @@ SOURCES = ctype.cpp    \
           stdio.cpp    \
           stdlib.cpp   \
           math.cpp     \
+          time.cpp     \
+          setjmp.cpp   \
+          string.cpp   \
+
 
 OBJECTS = $(SOURCES:.cpp=.o)
 INCLUDE = -I. -I.. -I$(INCDIR)

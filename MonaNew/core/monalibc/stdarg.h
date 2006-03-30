@@ -15,6 +15,7 @@
 #define _MONA_LIB_STDARG_
 
 #include <sys/types.h>
+#include <monalibc/stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +26,11 @@ typedef char *va_list;
 #define va_arg(ap,type) ((type*)(ap+=sizeof(type)))[-1]
 #define va_end(ap) (void)((ap)=NULL)
 
+//int vprintf(const char *format, va_list ap); 
+int vfprintf(FILE *stream, const char *format, va_list ap);
 int vsprintf(char *s, const char *format, va_list arg);
+int vsnprintf(char *str, size_t size, const char *format, va_list ap);
+
 int vsscanf(const char *s, const char *format, va_list arg);
 
 #ifdef __cplusplus

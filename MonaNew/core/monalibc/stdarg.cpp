@@ -13,7 +13,27 @@
 */
 
 #include <monalibc.h>
+#include <monalibc/assert.h>
 #include <monapi/string.h>
+#include <monapi/syscall.h>
+
+/*!
+  \brief 
+
+  \param stream file stream printed characters
+  \param format specifies how subsequent arguments
+  \param ap     a variable number of arguments
+  \return  the number of characters printed
+ */
+int vfprintf(FILE *stream, const char *format, va_list ap)
+{
+	char buf[5096];
+
+	vsprintf(buf, format, ap);
+	printf(buf);
+
+	return strlen(buf);
+}
 
 /*!
   \brief equivalent to the function sprintf
@@ -127,6 +147,18 @@ int vsprintf(char *s, const char *format, va_list arg){
   }
   s[result] = 0;
   return result;
+}
+
+/*!
+  
+ */
+int vsnprintf(char *str, size_t size, const char* format, va_list ap)
+{
+	int len;
+	len = vsprintf(str, format, ap);
+	assert(len <= size);
+
+	return len;
 }
 
 /*!
