@@ -165,28 +165,51 @@ monapi_cmemoryinfo* Read(dword id, dword size)
 
     if (file == NULL) return 0;
 
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(ret, size + 1, false))
+    byte *buf = (byte*)malloc(size * sizeof(byte));
+    if (buf == NULL) return 0;
+    dword readSize = file->Read(buf, size);
+//printf("File Server: %d bytes read.\n", readSize);
+
+    if (readSize == 0)
     {
+	free(buf);
+	return 0;
+    }
+
+    dword copySize;
+    if (readSize < size)
+	copySize = readSize;
+    else
+	copySize = size;
+//printf("File Server: copySize = %d\n", copySize);
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(ret, copySize, false))
+    {
+	free(buf);
         monapi_cmemoryinfo_delete(ret);
         return 0;
     }
 
-    ret->Size--;
-    dword readSize = file->Read(ret->Data, ret->Size);
+    for (dword i = 0; i < copySize; i++)
+    {
+	ret->Data[i] = buf[i];
+    }
+    free(buf);
 
+#if 0
+// 大切な実行時間の無駄
     for (dword i = 0; i < ret->Size; i++)
     {
         printf("[%x]", ret->Data[i]);
     }
+#endif
 
-    if (readSize == 0)
+    if (copySize == 0)
     {
         monapi_cmemoryinfo_delete(ret);
         return 0;
     }
-
-    ret->Data[ret->Size] = 0;
 
     return ret;
 }
