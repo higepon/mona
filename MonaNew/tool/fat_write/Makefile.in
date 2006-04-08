@@ -36,12 +36,14 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+LIBOBJDIR =
 bin_PROGRAMS = fat_write$(EXEEXT)
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(mona_include_HEADERS) \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/config.h.in $(top_srcdir)/configure AUTHORS \
-	ChangeLog NEWS depcomp install-sh missing
+DIST_COMMON = README $(am__configure_deps) \
+	$(fat_write_include_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
+	$(top_srcdir)/configure AUTHORS ChangeLog NEWS depcomp \
+	install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
@@ -54,7 +56,7 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(fat_write_datadir)" \
-	"$(DESTDIR)$(mona_includedir)"
+	"$(DESTDIR)$(fat_write_includedir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_fat_write_OBJECTS = fat_write-VirtualFloppy.$(OBJEXT) \
@@ -84,8 +86,8 @@ am__vpath_adj = case $$p in \
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 fat_write_dataDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(fat_write_data_DATA)
-mona_includeHEADERS_INSTALL = $(INSTALL_HEADER)
-HEADERS = $(mona_include_HEADERS)
+fat_write_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(fat_write_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -179,10 +181,10 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 fat_write_CXXFLAGS = -g
 fat_write_SOURCES = VirtualFloppy.cpp VirtualFloppy.h fat.cpp fat.h IStorageDevice.h file.h main.cpp types.h endian_util.cpp endian_util.h fat_template.img
-fat_write_datadir = $(pkgdatadir)
+fat_write_datadir = @MONADIR@/share/fat_write
 fat_write_data_DATA = fat_template.img
-mona_includedir = @MONADIR@/include
-mona_include_HEADERS = fat.cpp VirtualFloppy.h fat.h file.h types.h
+fat_write_includedir = @MONADIR@/include/fat_write
+fat_write_include_HEADERS = fat.cpp VirtualFloppy.h fat.h file.h types.h IStorageDevice.h endian_util.h endian_util.cpp config.h
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -363,22 +365,22 @@ uninstall-fat_write_dataDATA:
 	  echo " rm -f '$(DESTDIR)$(fat_write_datadir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(fat_write_datadir)/$$f"; \
 	done
-install-mona_includeHEADERS: $(mona_include_HEADERS)
+install-fat_write_includeHEADERS: $(fat_write_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(mona_includedir)" || $(mkdir_p) "$(DESTDIR)$(mona_includedir)"
-	@list='$(mona_include_HEADERS)'; for p in $$list; do \
+	test -z "$(fat_write_includedir)" || $(mkdir_p) "$(DESTDIR)$(fat_write_includedir)"
+	@list='$(fat_write_include_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f=$(am__strip_dir) \
-	  echo " $(mona_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(mona_includedir)/$$f'"; \
-	  $(mona_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(mona_includedir)/$$f"; \
+	  echo " $(fat_write_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(fat_write_includedir)/$$f'"; \
+	  $(fat_write_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(fat_write_includedir)/$$f"; \
 	done
 
-uninstall-mona_includeHEADERS:
+uninstall-fat_write_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(mona_include_HEADERS)'; for p in $$list; do \
+	@list='$(fat_write_include_HEADERS)'; for p in $$list; do \
 	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(mona_includedir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(mona_includedir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(fat_write_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(fat_write_includedir)/$$f"; \
 	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -559,7 +561,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS) config.h
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(fat_write_datadir)" "$(DESTDIR)$(mona_includedir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(fat_write_datadir)" "$(DESTDIR)$(fat_write_includedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -608,7 +610,7 @@ info: info-am
 info-am:
 
 install-data-am: install-fat_write_dataDATA \
-	install-mona_includeHEADERS
+	install-fat_write_includeHEADERS
 
 install-exec-am: install-binPROGRAMS
 
@@ -638,7 +640,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-fat_write_dataDATA \
-	uninstall-info-am uninstall-mona_includeHEADERS
+	uninstall-fat_write_includeHEADERS uninstall-info-am
 
 .PHONY: CTAGS GTAGS all all-am am--refresh check check-am clean \
 	clean-binPROGRAMS clean-generic ctags dist dist-all dist-bzip2 \
@@ -647,14 +649,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-fat_write_dataDATA \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binPROGRAMS install-data install-data-am install-exec \
-	install-exec-am install-fat_write_dataDATA install-info \
-	install-info-am install-man install-mona_includeHEADERS \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-fat_write_dataDATA uninstall-info-am \
-	uninstall-mona_includeHEADERS
+	install-exec-am install-fat_write_dataDATA \
+	install-fat_write_includeHEADERS install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am tags uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-fat_write_dataDATA \
+	uninstall-fat_write_includeHEADERS uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

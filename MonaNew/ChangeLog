@@ -1,3 +1,11 @@
+2006-04-08  Gaku     <hello@users.sourceforge.jp>
+
+        * core/file_server/endian_util.cpp ’Ç‰Á
+
+        * core/file_server/Makefile ‚Ì SOURCE ‚É endian_util.cpp ’Ç‰Á
+
+        * tool/fat_write/Makefile.am C³
+
 2006-04-04  higepon  <higepon@users.sourceforge.jp>
 
         * file_server/file.cpp Yume‚³‚ñ‚Ìƒpƒbƒ`‚ğæ‚è‚Ş
