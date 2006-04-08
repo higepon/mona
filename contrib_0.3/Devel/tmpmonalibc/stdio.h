@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 
+#if 0
 typedef struct
 {
 	const char *path;
@@ -21,10 +22,12 @@ typedef struct
 	monapi_cmemoryinfo *data;
 	int pos, error;
 } FILE;
+#endif
 
 #define stdout NULL
 #define stderr NULL
 
+#if 0
 FILE *fopen(const char *path, const char *mode);
 int fclose(FILE *fp);
 int fgetc(FILE *fp);
@@ -38,10 +41,15 @@ int fflush(FILE *fp);
 
 int putchar(int ch);
 int putc(int ch, FILE *fp);
+#endif
+
 int vsnprintf(char *str, size_t size, const char *format, va_list ap);
 
+#if 0
 #define perror(err) printf(err)
 #define fprintf(n, ...) printf(__VA_ARGS__)
+#endif
+
 #define byte hoge_albyter	//for src/mesa/shader/grammar_mesa.h
 
 #ifdef __cplusplus

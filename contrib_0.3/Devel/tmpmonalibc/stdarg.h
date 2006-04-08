@@ -7,9 +7,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#if 0
 int vfprintf(FILE *stream, const char *format, va_list ap);
-
+#endif
 #ifdef __cplusplus
 }
 #endif
