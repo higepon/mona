@@ -1,7 +1,0 @@
-*.o
-*.bin
-*.list
-*.exe
-*.ELF
-TAGS
-dependencies

@@ -1,3 +1,0 @@
-main.o: main.cpp IDManager.h KObject.h
-KObject.o: KObject.cpp KObject.h
-IDManager.o: IDManager.cpp IDManager.h KObject.h

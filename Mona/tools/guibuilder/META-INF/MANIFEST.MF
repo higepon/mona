@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: guibuilder.Main
-Created-By: 1.3.1_02 (Sun Microsystems Inc.)
-

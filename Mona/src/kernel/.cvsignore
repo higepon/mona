@@ -1,9 +1,0 @@
-*.o
-*.bin
-*.list
-*.map
-*.local
-TAGS
-*.img
-*.IMG
-dependencies

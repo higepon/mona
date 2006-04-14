@@ -1,9 +1,0 @@
-*.o
-*.bin
-*.list
-*.img
-*.exe
-*.ELF
-*.BIN
-TAGS
-*.a
