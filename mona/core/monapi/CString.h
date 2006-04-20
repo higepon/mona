@@ -43,6 +43,7 @@ namespace MonAPI
         CString substring(int start, int length) const;
         _A<CString> split(char ch) const;
         _A<CString> split(const CString& value) const;
+        _A<CString> split_lines() const;
 
         CString toLower() const;
         CString toUpper() const;

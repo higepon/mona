@@ -339,6 +339,38 @@ namespace MonAPI
         return ret;
     }
 
+    _A<CString> CString::split_lines() const
+    {
+	const char *buf = *this;
+	int length = this->getLength();
+	int lines = 0;
+
+	for(int i=0; i<length; i++) {
+	    if(buf[i] == '\r') {
+		lines++;
+		if(buf[i+1] == '\n') i++;
+	    } else if(buf[i] == '\n') {
+		lines++;
+	    }
+	}
+
+	_A<CString> ret(lines);
+	int line_start = 0, cnt = 0;
+
+	for(int i=0; i<length; i++) {
+	    if(buf[i] == '\r') {
+		ret[cnt++] = this->substring(line_start, i - line_start);
+		if(buf[i+1] == '\n') i++;
+		line_start = i+1;
+	    } else if(buf[i] == '\n') {
+		ret[cnt++] = this->substring(line_start, i - line_start);
+		line_start = i+1;
+	    }
+	}
+
+	return ret;
+    }
+
     CString CString::toLower() const
     {
         CString ret = *this;

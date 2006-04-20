@@ -83,7 +83,7 @@ bool Monitor::Initialize()
 
 void Monitor::ParseConfig(CString content)
 {
-    _A<CString> lines = content.split("\r\n");
+    _A<CString> lines = content.split_lines();
 
     FOREACH(CString, line, lines)
     {
