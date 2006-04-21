@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "types.h"
 
 namespace mona_helper {
 
@@ -20,6 +21,7 @@ public:
     };
 
     static void getProcessInfo(std::vector<Process>& ps);
+    static dword getPid(std::string name);
 };
 
 }; // namespace mona_helper

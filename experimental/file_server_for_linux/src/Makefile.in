@@ -34,7 +34,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = my_ps$(EXEEXT)
+bin_PROGRAMS = file_server$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -47,10 +47,21 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_my_ps_OBJECTS = main.$(OBJEXT) ProcessUtil.$(OBJEXT) \
-	Message.$(OBJEXT)
-my_ps_OBJECTS = $(am_my_ps_OBJECTS)
-my_ps_LDADD = $(LDADD)
+am_file_server_OBJECTS = file_server-FDCDriver.$(OBJEXT) \
+	file_server-FatFileSystemManager.$(OBJEXT) \
+	file_server-IDEDriver.$(OBJEXT) \
+	file_server-ISO9660File.$(OBJEXT) \
+	file_server-ISO9660FileSystem.$(OBJEXT) \
+	file_server-ISO9660FileSystemManager.$(OBJEXT) \
+	file_server-Message.$(OBJEXT) \
+	file_server-cmemoryinfo.$(OBJEXT) \
+	file_server-ProcessUtil.$(OBJEXT) file_server-bzip2.$(OBJEXT) \
+	file_server-dtk5s.$(OBJEXT) file_server-endian_util.$(OBJEXT) \
+	file_server-fat.$(OBJEXT) file_server-file.$(OBJEXT) \
+	file_server-fs.$(OBJEXT) file_server-main.$(OBJEXT) \
+	file_server-CString.$(OBJEXT)
+file_server_OBJECTS = $(am_file_server_OBJECTS)
+file_server_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -63,8 +74,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(my_ps_SOURCES)
-DIST_SOURCES = $(my_ps_SOURCES)
+SOURCES = $(file_server_SOURCES)
+DIST_SOURCES = $(file_server_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -145,7 +156,48 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-my_ps_SOURCES = main.cpp ProcessUtil.cpp ProcessUtil.h Message.h Message.cpp types.h
+file_server_CXXFLAGS = -DON_LINUX
+file_server_SOURCES = Directory.h\
+FDCDriver.cpp\
+FDCDriver.h\
+FSOperation.h\
+FatFileSystemManager.cpp\
+FatFileSystemManager.h\
+File.h\
+FileDate.h\
+FileServer.h\
+FileSystem.h\
+FileSystemEntry.h\
+FileSystemManager.h\
+IDEDriver.cpp\
+IDEDriver.h\
+ISO9660.h\
+ISO9660Directory.h\
+ISO9660File.cpp\
+ISO9660File.h\
+ISO9660FileSystem.cpp\
+ISO9660FileSystem.h\
+ISO9660FileSystemManager.cpp\
+ISO9660FileSystemManager.h\
+Message.cpp\
+Message.h\
+cmemoryinfo.cpp\
+ProcessUtil.cpp\
+ProcessUtil.h\
+bzip2.cpp\
+bzip2.h\
+dtk5s.cpp\
+dtk5s.h\
+endian_util.cpp\
+fat.cpp\
+file.cpp\
+fs.cpp\
+main.cpp\
+types.h\
+monapi/CString.h\
+monapi/CString.cpp\
+monapi/Array.h
+
 all: all-am
 
 .SUFFIXES:
@@ -202,9 +254,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-my_ps$(EXEEXT): $(my_ps_OBJECTS) $(my_ps_DEPENDENCIES) 
-	@rm -f my_ps$(EXEEXT)
-	$(CXXLINK) $(my_ps_LDFLAGS) $(my_ps_OBJECTS) $(my_ps_LDADD) $(LIBS)
+file_server$(EXEEXT): $(file_server_OBJECTS) $(file_server_DEPENDENCIES) 
+	@rm -f file_server$(EXEEXT)
+	$(CXXLINK) $(file_server_LDFLAGS) $(file_server_OBJECTS) $(file_server_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -212,9 +264,23 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Message.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProcessUtil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-CString.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-FDCDriver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-FatFileSystemManager.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-IDEDriver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-ISO9660File.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-ISO9660FileSystem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-ISO9660FileSystemManager.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-Message.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-ProcessUtil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-bzip2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-cmemoryinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-dtk5s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-endian_util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-fat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-file.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-fs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_server-main.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -229,6 +295,244 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+file_server-FDCDriver.o: FDCDriver.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-FDCDriver.o -MD -MP -MF "$(DEPDIR)/file_server-FDCDriver.Tpo" -c -o file_server-FDCDriver.o `test -f 'FDCDriver.cpp' || echo '$(srcdir)/'`FDCDriver.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-FDCDriver.Tpo" "$(DEPDIR)/file_server-FDCDriver.Po"; else rm -f "$(DEPDIR)/file_server-FDCDriver.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FDCDriver.cpp' object='file_server-FDCDriver.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FDCDriver.o `test -f 'FDCDriver.cpp' || echo '$(srcdir)/'`FDCDriver.cpp
+
+file_server-FDCDriver.obj: FDCDriver.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-FDCDriver.obj -MD -MP -MF "$(DEPDIR)/file_server-FDCDriver.Tpo" -c -o file_server-FDCDriver.obj `if test -f 'FDCDriver.cpp'; then $(CYGPATH_W) 'FDCDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/FDCDriver.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-FDCDriver.Tpo" "$(DEPDIR)/file_server-FDCDriver.Po"; else rm -f "$(DEPDIR)/file_server-FDCDriver.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FDCDriver.cpp' object='file_server-FDCDriver.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FDCDriver.obj `if test -f 'FDCDriver.cpp'; then $(CYGPATH_W) 'FDCDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/FDCDriver.cpp'; fi`
+
+file_server-FatFileSystemManager.o: FatFileSystemManager.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-FatFileSystemManager.o -MD -MP -MF "$(DEPDIR)/file_server-FatFileSystemManager.Tpo" -c -o file_server-FatFileSystemManager.o `test -f 'FatFileSystemManager.cpp' || echo '$(srcdir)/'`FatFileSystemManager.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-FatFileSystemManager.Tpo" "$(DEPDIR)/file_server-FatFileSystemManager.Po"; else rm -f "$(DEPDIR)/file_server-FatFileSystemManager.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FatFileSystemManager.cpp' object='file_server-FatFileSystemManager.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FatFileSystemManager.o `test -f 'FatFileSystemManager.cpp' || echo '$(srcdir)/'`FatFileSystemManager.cpp
+
+file_server-FatFileSystemManager.obj: FatFileSystemManager.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-FatFileSystemManager.obj -MD -MP -MF "$(DEPDIR)/file_server-FatFileSystemManager.Tpo" -c -o file_server-FatFileSystemManager.obj `if test -f 'FatFileSystemManager.cpp'; then $(CYGPATH_W) 'FatFileSystemManager.cpp'; else $(CYGPATH_W) '$(srcdir)/FatFileSystemManager.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-FatFileSystemManager.Tpo" "$(DEPDIR)/file_server-FatFileSystemManager.Po"; else rm -f "$(DEPDIR)/file_server-FatFileSystemManager.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FatFileSystemManager.cpp' object='file_server-FatFileSystemManager.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FatFileSystemManager.obj `if test -f 'FatFileSystemManager.cpp'; then $(CYGPATH_W) 'FatFileSystemManager.cpp'; else $(CYGPATH_W) '$(srcdir)/FatFileSystemManager.cpp'; fi`
+
+file_server-IDEDriver.o: IDEDriver.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-IDEDriver.o -MD -MP -MF "$(DEPDIR)/file_server-IDEDriver.Tpo" -c -o file_server-IDEDriver.o `test -f 'IDEDriver.cpp' || echo '$(srcdir)/'`IDEDriver.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-IDEDriver.Tpo" "$(DEPDIR)/file_server-IDEDriver.Po"; else rm -f "$(DEPDIR)/file_server-IDEDriver.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IDEDriver.cpp' object='file_server-IDEDriver.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-IDEDriver.o `test -f 'IDEDriver.cpp' || echo '$(srcdir)/'`IDEDriver.cpp
+
+file_server-IDEDriver.obj: IDEDriver.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-IDEDriver.obj -MD -MP -MF "$(DEPDIR)/file_server-IDEDriver.Tpo" -c -o file_server-IDEDriver.obj `if test -f 'IDEDriver.cpp'; then $(CYGPATH_W) 'IDEDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/IDEDriver.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-IDEDriver.Tpo" "$(DEPDIR)/file_server-IDEDriver.Po"; else rm -f "$(DEPDIR)/file_server-IDEDriver.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IDEDriver.cpp' object='file_server-IDEDriver.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-IDEDriver.obj `if test -f 'IDEDriver.cpp'; then $(CYGPATH_W) 'IDEDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/IDEDriver.cpp'; fi`
+
+file_server-ISO9660File.o: ISO9660File.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ISO9660File.o -MD -MP -MF "$(DEPDIR)/file_server-ISO9660File.Tpo" -c -o file_server-ISO9660File.o `test -f 'ISO9660File.cpp' || echo '$(srcdir)/'`ISO9660File.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ISO9660File.Tpo" "$(DEPDIR)/file_server-ISO9660File.Po"; else rm -f "$(DEPDIR)/file_server-ISO9660File.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ISO9660File.cpp' object='file_server-ISO9660File.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660File.o `test -f 'ISO9660File.cpp' || echo '$(srcdir)/'`ISO9660File.cpp
+
+file_server-ISO9660File.obj: ISO9660File.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ISO9660File.obj -MD -MP -MF "$(DEPDIR)/file_server-ISO9660File.Tpo" -c -o file_server-ISO9660File.obj `if test -f 'ISO9660File.cpp'; then $(CYGPATH_W) 'ISO9660File.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660File.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ISO9660File.Tpo" "$(DEPDIR)/file_server-ISO9660File.Po"; else rm -f "$(DEPDIR)/file_server-ISO9660File.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ISO9660File.cpp' object='file_server-ISO9660File.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660File.obj `if test -f 'ISO9660File.cpp'; then $(CYGPATH_W) 'ISO9660File.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660File.cpp'; fi`
+
+file_server-ISO9660FileSystem.o: ISO9660FileSystem.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ISO9660FileSystem.o -MD -MP -MF "$(DEPDIR)/file_server-ISO9660FileSystem.Tpo" -c -o file_server-ISO9660FileSystem.o `test -f 'ISO9660FileSystem.cpp' || echo '$(srcdir)/'`ISO9660FileSystem.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ISO9660FileSystem.Tpo" "$(DEPDIR)/file_server-ISO9660FileSystem.Po"; else rm -f "$(DEPDIR)/file_server-ISO9660FileSystem.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ISO9660FileSystem.cpp' object='file_server-ISO9660FileSystem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystem.o `test -f 'ISO9660FileSystem.cpp' || echo '$(srcdir)/'`ISO9660FileSystem.cpp
+
+file_server-ISO9660FileSystem.obj: ISO9660FileSystem.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ISO9660FileSystem.obj -MD -MP -MF "$(DEPDIR)/file_server-ISO9660FileSystem.Tpo" -c -o file_server-ISO9660FileSystem.obj `if test -f 'ISO9660FileSystem.cpp'; then $(CYGPATH_W) 'ISO9660FileSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660FileSystem.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ISO9660FileSystem.Tpo" "$(DEPDIR)/file_server-ISO9660FileSystem.Po"; else rm -f "$(DEPDIR)/file_server-ISO9660FileSystem.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ISO9660FileSystem.cpp' object='file_server-ISO9660FileSystem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystem.obj `if test -f 'ISO9660FileSystem.cpp'; then $(CYGPATH_W) 'ISO9660FileSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660FileSystem.cpp'; fi`
+
+file_server-ISO9660FileSystemManager.o: ISO9660FileSystemManager.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ISO9660FileSystemManager.o -MD -MP -MF "$(DEPDIR)/file_server-ISO9660FileSystemManager.Tpo" -c -o file_server-ISO9660FileSystemManager.o `test -f 'ISO9660FileSystemManager.cpp' || echo '$(srcdir)/'`ISO9660FileSystemManager.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ISO9660FileSystemManager.Tpo" "$(DEPDIR)/file_server-ISO9660FileSystemManager.Po"; else rm -f "$(DEPDIR)/file_server-ISO9660FileSystemManager.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ISO9660FileSystemManager.cpp' object='file_server-ISO9660FileSystemManager.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystemManager.o `test -f 'ISO9660FileSystemManager.cpp' || echo '$(srcdir)/'`ISO9660FileSystemManager.cpp
+
+file_server-ISO9660FileSystemManager.obj: ISO9660FileSystemManager.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ISO9660FileSystemManager.obj -MD -MP -MF "$(DEPDIR)/file_server-ISO9660FileSystemManager.Tpo" -c -o file_server-ISO9660FileSystemManager.obj `if test -f 'ISO9660FileSystemManager.cpp'; then $(CYGPATH_W) 'ISO9660FileSystemManager.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660FileSystemManager.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ISO9660FileSystemManager.Tpo" "$(DEPDIR)/file_server-ISO9660FileSystemManager.Po"; else rm -f "$(DEPDIR)/file_server-ISO9660FileSystemManager.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ISO9660FileSystemManager.cpp' object='file_server-ISO9660FileSystemManager.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystemManager.obj `if test -f 'ISO9660FileSystemManager.cpp'; then $(CYGPATH_W) 'ISO9660FileSystemManager.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660FileSystemManager.cpp'; fi`
+
+file_server-Message.o: Message.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-Message.o -MD -MP -MF "$(DEPDIR)/file_server-Message.Tpo" -c -o file_server-Message.o `test -f 'Message.cpp' || echo '$(srcdir)/'`Message.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-Message.Tpo" "$(DEPDIR)/file_server-Message.Po"; else rm -f "$(DEPDIR)/file_server-Message.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Message.cpp' object='file_server-Message.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-Message.o `test -f 'Message.cpp' || echo '$(srcdir)/'`Message.cpp
+
+file_server-Message.obj: Message.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-Message.obj -MD -MP -MF "$(DEPDIR)/file_server-Message.Tpo" -c -o file_server-Message.obj `if test -f 'Message.cpp'; then $(CYGPATH_W) 'Message.cpp'; else $(CYGPATH_W) '$(srcdir)/Message.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-Message.Tpo" "$(DEPDIR)/file_server-Message.Po"; else rm -f "$(DEPDIR)/file_server-Message.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Message.cpp' object='file_server-Message.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-Message.obj `if test -f 'Message.cpp'; then $(CYGPATH_W) 'Message.cpp'; else $(CYGPATH_W) '$(srcdir)/Message.cpp'; fi`
+
+file_server-cmemoryinfo.o: cmemoryinfo.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-cmemoryinfo.o -MD -MP -MF "$(DEPDIR)/file_server-cmemoryinfo.Tpo" -c -o file_server-cmemoryinfo.o `test -f 'cmemoryinfo.cpp' || echo '$(srcdir)/'`cmemoryinfo.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-cmemoryinfo.Tpo" "$(DEPDIR)/file_server-cmemoryinfo.Po"; else rm -f "$(DEPDIR)/file_server-cmemoryinfo.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cmemoryinfo.cpp' object='file_server-cmemoryinfo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-cmemoryinfo.o `test -f 'cmemoryinfo.cpp' || echo '$(srcdir)/'`cmemoryinfo.cpp
+
+file_server-cmemoryinfo.obj: cmemoryinfo.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-cmemoryinfo.obj -MD -MP -MF "$(DEPDIR)/file_server-cmemoryinfo.Tpo" -c -o file_server-cmemoryinfo.obj `if test -f 'cmemoryinfo.cpp'; then $(CYGPATH_W) 'cmemoryinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/cmemoryinfo.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-cmemoryinfo.Tpo" "$(DEPDIR)/file_server-cmemoryinfo.Po"; else rm -f "$(DEPDIR)/file_server-cmemoryinfo.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cmemoryinfo.cpp' object='file_server-cmemoryinfo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-cmemoryinfo.obj `if test -f 'cmemoryinfo.cpp'; then $(CYGPATH_W) 'cmemoryinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/cmemoryinfo.cpp'; fi`
+
+file_server-ProcessUtil.o: ProcessUtil.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ProcessUtil.o -MD -MP -MF "$(DEPDIR)/file_server-ProcessUtil.Tpo" -c -o file_server-ProcessUtil.o `test -f 'ProcessUtil.cpp' || echo '$(srcdir)/'`ProcessUtil.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ProcessUtil.Tpo" "$(DEPDIR)/file_server-ProcessUtil.Po"; else rm -f "$(DEPDIR)/file_server-ProcessUtil.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ProcessUtil.cpp' object='file_server-ProcessUtil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ProcessUtil.o `test -f 'ProcessUtil.cpp' || echo '$(srcdir)/'`ProcessUtil.cpp
+
+file_server-ProcessUtil.obj: ProcessUtil.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-ProcessUtil.obj -MD -MP -MF "$(DEPDIR)/file_server-ProcessUtil.Tpo" -c -o file_server-ProcessUtil.obj `if test -f 'ProcessUtil.cpp'; then $(CYGPATH_W) 'ProcessUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/ProcessUtil.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-ProcessUtil.Tpo" "$(DEPDIR)/file_server-ProcessUtil.Po"; else rm -f "$(DEPDIR)/file_server-ProcessUtil.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ProcessUtil.cpp' object='file_server-ProcessUtil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ProcessUtil.obj `if test -f 'ProcessUtil.cpp'; then $(CYGPATH_W) 'ProcessUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/ProcessUtil.cpp'; fi`
+
+file_server-bzip2.o: bzip2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-bzip2.o -MD -MP -MF "$(DEPDIR)/file_server-bzip2.Tpo" -c -o file_server-bzip2.o `test -f 'bzip2.cpp' || echo '$(srcdir)/'`bzip2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-bzip2.Tpo" "$(DEPDIR)/file_server-bzip2.Po"; else rm -f "$(DEPDIR)/file_server-bzip2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bzip2.cpp' object='file_server-bzip2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-bzip2.o `test -f 'bzip2.cpp' || echo '$(srcdir)/'`bzip2.cpp
+
+file_server-bzip2.obj: bzip2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-bzip2.obj -MD -MP -MF "$(DEPDIR)/file_server-bzip2.Tpo" -c -o file_server-bzip2.obj `if test -f 'bzip2.cpp'; then $(CYGPATH_W) 'bzip2.cpp'; else $(CYGPATH_W) '$(srcdir)/bzip2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-bzip2.Tpo" "$(DEPDIR)/file_server-bzip2.Po"; else rm -f "$(DEPDIR)/file_server-bzip2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bzip2.cpp' object='file_server-bzip2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-bzip2.obj `if test -f 'bzip2.cpp'; then $(CYGPATH_W) 'bzip2.cpp'; else $(CYGPATH_W) '$(srcdir)/bzip2.cpp'; fi`
+
+file_server-dtk5s.o: dtk5s.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-dtk5s.o -MD -MP -MF "$(DEPDIR)/file_server-dtk5s.Tpo" -c -o file_server-dtk5s.o `test -f 'dtk5s.cpp' || echo '$(srcdir)/'`dtk5s.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-dtk5s.Tpo" "$(DEPDIR)/file_server-dtk5s.Po"; else rm -f "$(DEPDIR)/file_server-dtk5s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='dtk5s.cpp' object='file_server-dtk5s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-dtk5s.o `test -f 'dtk5s.cpp' || echo '$(srcdir)/'`dtk5s.cpp
+
+file_server-dtk5s.obj: dtk5s.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-dtk5s.obj -MD -MP -MF "$(DEPDIR)/file_server-dtk5s.Tpo" -c -o file_server-dtk5s.obj `if test -f 'dtk5s.cpp'; then $(CYGPATH_W) 'dtk5s.cpp'; else $(CYGPATH_W) '$(srcdir)/dtk5s.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-dtk5s.Tpo" "$(DEPDIR)/file_server-dtk5s.Po"; else rm -f "$(DEPDIR)/file_server-dtk5s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='dtk5s.cpp' object='file_server-dtk5s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-dtk5s.obj `if test -f 'dtk5s.cpp'; then $(CYGPATH_W) 'dtk5s.cpp'; else $(CYGPATH_W) '$(srcdir)/dtk5s.cpp'; fi`
+
+file_server-endian_util.o: endian_util.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-endian_util.o -MD -MP -MF "$(DEPDIR)/file_server-endian_util.Tpo" -c -o file_server-endian_util.o `test -f 'endian_util.cpp' || echo '$(srcdir)/'`endian_util.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-endian_util.Tpo" "$(DEPDIR)/file_server-endian_util.Po"; else rm -f "$(DEPDIR)/file_server-endian_util.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='endian_util.cpp' object='file_server-endian_util.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.o `test -f 'endian_util.cpp' || echo '$(srcdir)/'`endian_util.cpp
+
+file_server-endian_util.obj: endian_util.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-endian_util.obj -MD -MP -MF "$(DEPDIR)/file_server-endian_util.Tpo" -c -o file_server-endian_util.obj `if test -f 'endian_util.cpp'; then $(CYGPATH_W) 'endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/endian_util.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-endian_util.Tpo" "$(DEPDIR)/file_server-endian_util.Po"; else rm -f "$(DEPDIR)/file_server-endian_util.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='endian_util.cpp' object='file_server-endian_util.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.obj `if test -f 'endian_util.cpp'; then $(CYGPATH_W) 'endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/endian_util.cpp'; fi`
+
+file_server-fat.o: fat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-fat.o -MD -MP -MF "$(DEPDIR)/file_server-fat.Tpo" -c -o file_server-fat.o `test -f 'fat.cpp' || echo '$(srcdir)/'`fat.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-fat.Tpo" "$(DEPDIR)/file_server-fat.Po"; else rm -f "$(DEPDIR)/file_server-fat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fat.cpp' object='file_server-fat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.o `test -f 'fat.cpp' || echo '$(srcdir)/'`fat.cpp
+
+file_server-fat.obj: fat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-fat.obj -MD -MP -MF "$(DEPDIR)/file_server-fat.Tpo" -c -o file_server-fat.obj `if test -f 'fat.cpp'; then $(CYGPATH_W) 'fat.cpp'; else $(CYGPATH_W) '$(srcdir)/fat.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-fat.Tpo" "$(DEPDIR)/file_server-fat.Po"; else rm -f "$(DEPDIR)/file_server-fat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fat.cpp' object='file_server-fat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.obj `if test -f 'fat.cpp'; then $(CYGPATH_W) 'fat.cpp'; else $(CYGPATH_W) '$(srcdir)/fat.cpp'; fi`
+
+file_server-file.o: file.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-file.o -MD -MP -MF "$(DEPDIR)/file_server-file.Tpo" -c -o file_server-file.o `test -f 'file.cpp' || echo '$(srcdir)/'`file.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-file.Tpo" "$(DEPDIR)/file_server-file.Po"; else rm -f "$(DEPDIR)/file_server-file.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='file.cpp' object='file_server-file.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-file.o `test -f 'file.cpp' || echo '$(srcdir)/'`file.cpp
+
+file_server-file.obj: file.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-file.obj -MD -MP -MF "$(DEPDIR)/file_server-file.Tpo" -c -o file_server-file.obj `if test -f 'file.cpp'; then $(CYGPATH_W) 'file.cpp'; else $(CYGPATH_W) '$(srcdir)/file.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-file.Tpo" "$(DEPDIR)/file_server-file.Po"; else rm -f "$(DEPDIR)/file_server-file.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='file.cpp' object='file_server-file.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-file.obj `if test -f 'file.cpp'; then $(CYGPATH_W) 'file.cpp'; else $(CYGPATH_W) '$(srcdir)/file.cpp'; fi`
+
+file_server-fs.o: fs.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-fs.o -MD -MP -MF "$(DEPDIR)/file_server-fs.Tpo" -c -o file_server-fs.o `test -f 'fs.cpp' || echo '$(srcdir)/'`fs.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-fs.Tpo" "$(DEPDIR)/file_server-fs.Po"; else rm -f "$(DEPDIR)/file_server-fs.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fs.cpp' object='file_server-fs.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fs.o `test -f 'fs.cpp' || echo '$(srcdir)/'`fs.cpp
+
+file_server-fs.obj: fs.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-fs.obj -MD -MP -MF "$(DEPDIR)/file_server-fs.Tpo" -c -o file_server-fs.obj `if test -f 'fs.cpp'; then $(CYGPATH_W) 'fs.cpp'; else $(CYGPATH_W) '$(srcdir)/fs.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-fs.Tpo" "$(DEPDIR)/file_server-fs.Po"; else rm -f "$(DEPDIR)/file_server-fs.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fs.cpp' object='file_server-fs.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fs.obj `if test -f 'fs.cpp'; then $(CYGPATH_W) 'fs.cpp'; else $(CYGPATH_W) '$(srcdir)/fs.cpp'; fi`
+
+file_server-main.o: main.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-main.o -MD -MP -MF "$(DEPDIR)/file_server-main.Tpo" -c -o file_server-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-main.Tpo" "$(DEPDIR)/file_server-main.Po"; else rm -f "$(DEPDIR)/file_server-main.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='file_server-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
+
+file_server-main.obj: main.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-main.obj -MD -MP -MF "$(DEPDIR)/file_server-main.Tpo" -c -o file_server-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-main.Tpo" "$(DEPDIR)/file_server-main.Po"; else rm -f "$(DEPDIR)/file_server-main.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='file_server-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
+
+file_server-CString.o: monapi/CString.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-CString.o -MD -MP -MF "$(DEPDIR)/file_server-CString.Tpo" -c -o file_server-CString.o `test -f 'monapi/CString.cpp' || echo '$(srcdir)/'`monapi/CString.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-CString.Tpo" "$(DEPDIR)/file_server-CString.Po"; else rm -f "$(DEPDIR)/file_server-CString.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='monapi/CString.cpp' object='file_server-CString.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-CString.o `test -f 'monapi/CString.cpp' || echo '$(srcdir)/'`monapi/CString.cpp
+
+file_server-CString.obj: monapi/CString.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -MT file_server-CString.obj -MD -MP -MF "$(DEPDIR)/file_server-CString.Tpo" -c -o file_server-CString.obj `if test -f 'monapi/CString.cpp'; then $(CYGPATH_W) 'monapi/CString.cpp'; else $(CYGPATH_W) '$(srcdir)/monapi/CString.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/file_server-CString.Tpo" "$(DEPDIR)/file_server-CString.Po"; else rm -f "$(DEPDIR)/file_server-CString.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='monapi/CString.cpp' object='file_server-CString.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-CString.obj `if test -f 'monapi/CString.cpp'; then $(CYGPATH_W) 'monapi/CString.cpp'; else $(CYGPATH_W) '$(srcdir)/monapi/CString.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

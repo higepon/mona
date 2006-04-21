@@ -10,7 +10,6 @@
     \version $Revision: 1.1 $
     \date   create:2002/09/08 update:$Date: 2005/07/17 13:26:13 $
 */
-
 #ifndef _MONA_TYPES_
 #define _MONA_TYPES_
 
@@ -22,10 +21,9 @@
 #define NORMAL   0
 #define DEBUG_MODE
 
-enum
-{
+enum {
     MONA_SUCCESS,
-    MONA_FAILURE,
+    MONA_FAILURE
 };
 
 #ifndef __SIZE_TYPE__

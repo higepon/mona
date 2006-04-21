@@ -1,8 +1,6 @@
 #ifndef _MONA_USERLIB_MESSAGE_
 #define _MONA_USERLIB_MESSAGE_
 
-#define ON_LINUX
-
 #ifdef ON_LINUX
 #include "types.h"
 #else
@@ -59,11 +57,11 @@ public:
     static void initialize();
     static void destroy();
     static int msqid;
-#define BUFSIZ sizeof(MessageInfo)
+#define M_BUFSIZ sizeof(MessageInfo)
     struct MessageBuf
     {
       long int type;
-      char data[BUFSIZ];
+      char data[M_BUFSIZ];
     };
 #endif
 

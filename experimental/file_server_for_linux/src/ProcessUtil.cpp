@@ -28,3 +28,24 @@ void ProcessUtil::getProcessInfo(vector<Process>& ps)
     }
     pclose(pfs);
 }
+
+typedef vector<ProcessUtil::Process> Ps;
+
+dword ProcessUtil::getPid(string name)
+{
+    Ps ps;
+    ProcessUtil::getProcessInfo(ps);
+
+    for (Ps::iterator it = ps.begin(); it != ps.end(); it++)
+    {
+        if ((*it).cmd == name)
+        {
+            return atoi((*it).pid.c_str());
+        }
+    }
+    return 0xffffffff;
+}
+
+
+
+

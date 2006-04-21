@@ -1,9 +1,6 @@
 /*----------------------------------------------------------------------
     Message
 ----------------------------------------------------------------------*/
-
-#define ON_LINUX
-
 #ifdef ON_LINUX
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,6 +10,7 @@
 #include <string.h>
 #include "Message.h"
 #include "types.h"
+#include "ProcessUtil.h"
 #else
 #include <monapi/Message.h>
 #include <monapi/syscall.h>
@@ -22,6 +20,7 @@
 namespace MonAPI {
 
 #ifdef ON_LINUX
+using namespace mona_helper;
 int Message::msqid;
 
 void Message::initialize()
@@ -47,10 +46,17 @@ void Message::destroy()
 int Message::send(dword tid, MessageInfo* info)
 {
 #ifdef ON_LINUX
+    int queueid;
+    if (-1 == (queueid = msgget((key_t)tid, 0666 | IPC_CREAT)))
+    {
+        fprintf(stderr, "can not msgget\n");
+        exit(1);
+    }
+    printf("send %d\n", queueid);
     MessageBuf message;
     memcpy(&(message.data), info, BUFSIZ);
     message.type = 0x1234;
-    if (-1 == msgsnd(msqid, &message, BUFSIZ, 0))
+    if (-1 == msgsnd(queueid, &message, BUFSIZ, 0))
     {
         fprintf(stderr, "msgsnd failure");
         exit(1);
@@ -66,6 +72,7 @@ int Message::receive(MessageInfo* info)
 {
 #ifdef ON_LINUX
     MessageBuf message;
+    printf("receive %d\n", msqid);
     if (-1 == msgrcv(msqid, &message, BUFSIZ, 0x1234, 0))
     {
         fprintf(stderr, "msgrcv failure");
@@ -203,8 +210,7 @@ dword Message::lookup(const char* name)
 dword Message::lookupMainThread(const char* name)
 {
 #ifdef ON_LINUX
-    printf("%s not implemented\n", __func__);
-    return 0;
+    return ProcessUtil::getPid(name);
 #else
     return syscall_lookup_main_thread(name);
 #endif
@@ -213,8 +219,7 @@ dword Message::lookupMainThread(const char* name)
 dword Message::lookupMainThread()
 {
 #ifdef ON_LINUX
-    printf("%s not implemented\n", __func__);
-    return 0;
+    return getpid();
 #else
     return syscall_lookup_main_thread(NULL);
 #endif
