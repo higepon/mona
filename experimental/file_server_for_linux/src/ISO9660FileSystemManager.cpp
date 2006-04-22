@@ -41,6 +41,7 @@ bool ISO9660FileSystemManager::Initialize()
 #ifdef ON_LINUX
     /* IDE Driver */
     this->cd = new IDEDriver(IRQ_PRIMARY, IRQ_SECONDARY);
+    this->cd->open();
 #else
     /* user mode I/O */
     syscall_get_io();
@@ -74,7 +75,6 @@ bool ISO9660FileSystemManager::Initialize()
 
 #endif
     this->fs = new ISO9660FileSystem(cd);
-
     /* initialize ISO9660 FS */
     if (!this->fs->Initialize())
     {
@@ -83,7 +83,6 @@ bool ISO9660FileSystemManager::Initialize()
         delete this->cd;
         return false;
     }
-
     this->initialized = true;
     return true;
 }

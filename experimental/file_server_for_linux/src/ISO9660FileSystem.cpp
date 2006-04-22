@@ -40,12 +40,10 @@ bool ISO9660FileSystem::Initialize()
     {
         return false;
     }
-
     if (!SetDirectoryCache())
     {
         return false;
     }
-
     return true;
 }
 
@@ -181,25 +179,21 @@ bool ISO9660FileSystem::ReadVolumeDescriptor()
     bool primaryVolumeDescriptorFound = false;
 
     ISOBaseVolumeDescriptor* descriptor = new ISOBaseVolumeDescriptor;
-
     if (descriptor == NULL)
     {
         this->lastError = MEMORY_ALLOCATE_ERROR;
         return false;
     }
-
     for (i = 16; i < 100; i++)
     {
         /* read */
         bool readResult = this->cd->read(i, descriptor, SECTOR_SIZE) == 0;
-
         if (!readResult)
         {
             this->lastError = READ_ERROR;
             delete descriptor;
             return false;
         }
-
         /* read primary descriptor */
         if (descriptor->type == ISO_PRIMARY_VOLUME_DESCRIPTOR && strncmp("CD001", descriptor->id, 5) == 0)
         {
@@ -216,7 +210,6 @@ bool ISO9660FileSystem::ReadVolumeDescriptor()
             break;
         }
     }
-
     /* invalid */
     if (i == 100 || !primaryVolumeDescriptorFound)
     {

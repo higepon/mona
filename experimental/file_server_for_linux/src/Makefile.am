@@ -1,5 +1,5 @@
 bin_PROGRAMS = file_server
-file_server_CXXFLAGS = -DON_LINUX
+file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3
 file_server_SOURCES = Directory.h\
 FDCDriver.cpp\
 FDCDriver.h\

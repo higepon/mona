@@ -51,9 +51,9 @@ bool IDEDriver::findDevice(int type, int detail, int* controller, int* deviceNo)
 
 int IDEDriver::read(dword lba, void* buffer, int size)
 {
-    fseek(this->fp, lba * 512, SEEK_SET);
+    fseek(this->fp, lba * 2048, SEEK_SET);
     int result = fread(buffer, size, 1, this->fp);
-    return result;
+    return 0;
 }
 
 int IDEDriver::open()
