@@ -16,6 +16,7 @@
 #include "IStorageDevice.h"
 #include "types.h"
 #include "stdlib.h"
+#include <stdio.h>
 #else
 #include <fat_write/IStorageDevice.h>
 #include <sys/types.h>
@@ -187,6 +188,7 @@ private:
     volatile dword atapiTotalReadSize;
     byte requestSenseBuffer[REQUEST_SENSE_BUFFER_SIZE];
     int lastError;
+    FILE* fp;
 
 };
 

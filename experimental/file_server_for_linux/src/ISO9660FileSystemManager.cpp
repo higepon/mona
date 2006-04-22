@@ -38,10 +38,12 @@ bool ISO9660FileSystemManager::Initialize()
 {
     if (this->initialized) return true;
 
+#ifdef ON_LINUX
+    /* IDE Driver */
+    this->cd = new IDEDriver(IRQ_PRIMARY, IRQ_SECONDARY);
+#else
     /* user mode I/O */
-    #ifndef ON_LINUX
     syscall_get_io();
-    #endif
 
     /* IDE Driver */
     this->cd = new IDEDriver(IRQ_PRIMARY, IRQ_SECONDARY);
@@ -59,10 +61,8 @@ bool ISO9660FileSystemManager::Initialize()
     byte irq = controller == IDEDriver::PRIMARY ? IRQ_PRIMARY : IRQ_SECONDARY;
 
     /* enable interrupts */
-    #ifndef ON_LINUX
     monapi_set_irq(irq, MONAPI_TRUE, MONAPI_TRUE);
     syscall_set_irq_receiver(irq);
-    #endif
 
     /* CD Select Device */
     if (!this->cd->selectDevice(controller, deviceNo))
@@ -72,6 +72,7 @@ bool ISO9660FileSystemManager::Initialize()
         return false;
     }
 
+#endif
     this->fs = new ISO9660FileSystem(cd);
 
     /* initialize ISO9660 FS */
