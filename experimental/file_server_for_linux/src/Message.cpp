@@ -54,9 +54,9 @@ int Message::send(dword tid, MessageInfo* info)
     }
     printf("send %d\n", queueid);
     MessageBuf message;
-    memcpy(&(message.data), info, BUFSIZ);
-    message.type = 0x1234;
-    if (-1 == msgsnd(queueid, &message, BUFSIZ, 0))
+    memcpy(&(message.data), info, M_BUFSIZ);
+    message.type = info->header;
+    if (-1 == msgsnd(queueid, &message, M_BUFSIZ, 0))
     {
         fprintf(stderr, "msgsnd failure");
         exit(1);
@@ -73,12 +73,12 @@ int Message::receive(MessageInfo* info)
 #ifdef ON_LINUX
     MessageBuf message;
     printf("receive %d\n", msqid);
-    if (-1 == msgrcv(msqid, &message, BUFSIZ, 0x1234, 0))
+    if (-1 == msgrcv(msqid, &message, M_BUFSIZ, 0, 0))
     {
         fprintf(stderr, "msgrcv failure");
         exit(1);
     }
-    memcpy(info, &(message.data), BUFSIZ);
+    memcpy(info, &(message.data), M_BUFSIZ);
     return 0;
 #else
     int result = syscall_receive(info);

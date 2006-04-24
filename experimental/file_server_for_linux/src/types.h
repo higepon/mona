@@ -16,7 +16,9 @@
 //#define DEBUG_READ_TRACE
 
 #ifndef ON_LINUX
+#ifndef NULL
 #define NULL     0
+#endif
 #endif
 #define NORMAL   0
 #define DEBUG_MODE

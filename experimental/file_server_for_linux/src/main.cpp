@@ -29,6 +29,7 @@ void MessageLoop()
         {
             case MSG_FILE_READ_DATA:
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                 monapi_cmemoryinfo* mi = ReadFile(msg.str, msg.arg1);
                 if (mi != NULL)
                 {
@@ -43,6 +44,7 @@ void MessageLoop()
             }
             case MSG_FILE_READ_DIRECTORY:
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                 monapi_cmemoryinfo* mi = ReadDirectory(msg.str, msg.arg1);
                 if (mi != NULL)
                 {
@@ -215,7 +217,9 @@ void MessageLoop()
 
 int main()
 {
-#ifndef ON_LINUX
+#ifdef ON_LINUX
+    Message::initialize();
+#else
     if (Message::send(Message::lookupMainThread("INIT"), MSG_SERVER_START_OK) != 0)
     {
         printf("%s: INIT error\n", SVR);
