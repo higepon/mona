@@ -11,6 +11,7 @@
     \author  Yamami 
     \version $Revision$
     \date   create:2004/10/15 update:$Date$
+	$Id$
 */
 
 #ifndef _LIB_PCI_INF
@@ -120,13 +121,14 @@ class Pci
     
   public:
     
+
     //コンストラクタ
     Pci();
     ~Pci();
 
     void CheckPciExist(word , word ,PciInf*);
     dword ReadConfig(byte , byte , byte , byte , byte );
-    
+    void WriteConfig(byte ,byte ,byte ,byte ,byte ,dword );
   private:
     
     MonAPI::CString getPciInfName( byte* , dword , MonAPI::CString* , MonAPI::CString* );

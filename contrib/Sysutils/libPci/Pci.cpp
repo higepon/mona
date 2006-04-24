@@ -10,6 +10,7 @@
     \author  Yamami
     \version $Revision$
     \date   create:2004/10/15 update:$Date$
+	$Id$
 */
 
 /*! \class Pci
@@ -144,6 +145,26 @@ logprintf(" IrqLine = %x \n"  , IrqLine);
     //Return
     //return &RetPciInf;
     
+}
+
+void Pci::WriteConfig(byte bus,byte device,byte function,byte reg,byte readSize,dword val)
+{
+   PciPacket packet;
+   packet.p.enabled   = 1;
+   packet.p.bus       = bus;
+   packet.p.device    = device;
+   packet.p.function  = function;
+   packet.p.reg       = (reg & 0xFC)>>2;
+   packet.p.reserved1 = 0;
+   packet.p.reserved2 = 0;
+
+   outp32(REG_CONFIG_ADDRESS,packet.command);
+   for(int i =0;i<readSize;i++){
+	  outp8(REG_CONFIG_DATA+ ((reg+i) & 0x0003), (byte)((val>>(i*8)) & 0xFF ));
+   }
+   packet.p.enabled=0;
+   outp32(REG_CONFIG_ADDRESS,packet.command);
+   return ;
 }
 
 
