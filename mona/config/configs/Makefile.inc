@@ -13,6 +13,7 @@ CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 NFLAGS   = -I $(MONADIR)/include/ -f gnuwin32
 OSTYPE   = `uname -sr`
 EXEEXT   = .exe
+CSCFLAGS = /o
 
 SYMPREFIX = _
 USER_START_FUNCTION = _user_start

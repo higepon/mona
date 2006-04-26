@@ -1,3 +1,7 @@
+2006-04-26  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/Makefile (all): INCLUDE PATHをカレントディレクトリを優先するようにした
+
 2006-04-08  Gaku     <hello@users.sourceforge.jp>
 
         * core/file_server/endian_util.cpp 追加
