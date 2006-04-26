@@ -34,8 +34,8 @@ SOURCES = monapi_impl.cpp \
 NASMSRCS = _alloca.asm
 
 OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o)
-INCLUDE = -I$(INCDIR) -I. -I..
-
+#INCLUDE = -I$(INCDIR) -I. -I..
+INCLUDE = -I. -I.. -I$(INCDIR) 
 all : $(TARGET)
 
 $(CRT_OBJECT): monapi.cpp
