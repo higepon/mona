@@ -27,7 +27,7 @@ all:
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
 # make disk images
-	cd $(MONADIR)/tool/mkimg && make
+#	cd $(MONADIR)/tool/mkimg && make
 
 clean:
 	cd Devel/stlport && make clean
