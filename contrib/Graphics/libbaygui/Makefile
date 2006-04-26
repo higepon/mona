@@ -35,7 +35,7 @@ SOURCES = \
 	util/Vector.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE = -I$(INCDIR) -I. -I..
+INCLUDE =  -I. -I.. -I$(INCDIR)
 
 all : $(TARGET)
 
@@ -112,4 +112,4 @@ endif
 	rm -f $(BINDIR)/APPS/BAYGUI.MSH
 	rm -f $(BINDIR)/APPS/MONAWALL.BM5
 
-include dependencies
+-include dependencies

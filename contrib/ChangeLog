@@ -1,3 +1,8 @@
+2006-04-26  higepon  <higepon@users.sourceforge.jp>
+
+        * libbaygui: INCLUDE PATHをカレントディレクトリを優先する
+                     dependenciesの includeを改善
+
 2006-04-25  EDS1275
 
 		* Sysutiles/libPci WriteConfig追加
