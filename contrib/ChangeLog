@@ -1,5 +1,8 @@
 2006-04-26  higepon  <higepon@users.sourceforge.jp>
 
+        * Sysutils/libPci/Makefile: INCLUDE PATHをカレントディレクトリを優先する
+                                    dependenciesの includeを改善
+
         * libbaygui: INCLUDE PATHをカレントディレクトリを優先する
                      dependenciesの includeを改善
 

@@ -12,10 +12,10 @@ TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
 endif
 
 
-SOURCES = Pci.cpp           
+SOURCES = Pci.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o)
-INCLUDE = -I$(INCDIR) -I. -I..
+INCLUDE =  -I. -I.. -I$(INCDIR)
 
 all : $(TARGET)
 
@@ -78,4 +78,4 @@ endif
 	done
 #	rmdir $(INCDIR)/pci
 
-include dependencies
+-include dependencies
