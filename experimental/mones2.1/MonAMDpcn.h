@@ -3,7 +3,9 @@
 #include <sys/types.h>
 #include <monapi.h>
 #include "Nic.h"
-//Data recev Controls.
+
+const int PKTSIZE=1544;
+//Data receive Controls.
 //See Spec Sheet Page 159.
 typedef struct{
   word  mcnt;
@@ -24,7 +26,10 @@ struct RX
 	RXDSC* dsc;
 	int index;
 	enum{
-		RINGLEN=8,
+		RINGLEN=4,
+		RMD1_OWN=0x8000,
+		RMD1_STP=0x0200,
+		RMD1_ENP=0x0100,
 	};
 };
 
@@ -48,40 +53,39 @@ struct TX
 	TXDSC* dsc;
 	int index;
 	enum{
-		RINGLEN=4,
+		RINGLEN=4
 	};
 };
 
 namespace mones{ 
  //Interface and Chip-Controls.
-class MonAMDpcn : protected RX,TX,public Nic 
+class MonAMDpcn : protected TX,RX,public Nic 
 {
 public:	
     int   init();
     void  outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void  getFrameBuffer(byte* buffer, dword size);
-	void  interrupt();
+    void  interrupt();
 
-	void  inputFrame(){};
-	dword getFrameBufferSize(){ return 0; };
-	int   probe(){ return 0; }
-	void  getMacAddress(byte* dest){ memcpy(dest, mac_addr, 6); }
+    void  inputFrame(){};
+    dword getFrameBufferSize(){ return 0; };
+    int   probe(){ return 0; }
+    void  getMacAddress(byte* dest){ memcpy(dest, mac_addr, 6); }
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}
     void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
-	enum{
-      VENDORID   =0x1022,
-	  DEVICEID   =0x2000,
-	  RCV_INT    =0xFFFD,
-	  TNS_INT    =0xFFFE,
-	  ERR_INT    =0xFFFF,
+    enum{
+        VENDORID   =0x1022,
+        DEVICEID   =0x2000,
+        RCV_INT    =0xFFFD,
+        TNS_INT    =0xFFFE,
+        ERR_INT    =0xFFFF,
 	};
 private:
     int   irq;
     int   iobase;
     byte  mac_addr[6];
-	byte  *dmabuf;
 
 	word r_rap(){ return inp16(iobase+IO_RAP);}
 	void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
@@ -97,16 +101,17 @@ private:
 	  IO_RESET     =0x14,
 	  IO_BDP       =0x16,
 
-	  BCR_MISC	   =0x02,
+	  BCR_MISC     =0x02,
 	  BCR_SSTYLE   =0x14,
 	
-	  BCR_AUTOSEL  =0x0002,
+	  BCR_AUTOSEL  =0x0002, 
 	  BCR_EDGETRG  =0x0040,
 
+	  BCR_SSIZE    =0x0100,
 	  BCR_PCI_II   =0x0003,
 
 	  CSR_CSR      =0x00,
-	  CSR_IADR	   =0x02,
+	  CSR_IADR     =0x02,
 	  CSR_FEATURE  =0x04,
 	  CSR_MAR0     =0x08,
 	  CSR_MAR1     =0x09,
@@ -120,10 +125,11 @@ private:
 	  CSR_RXADDR1  =0x19,
 	  CSR_TXADDR0  =0x1E,
 	  CSR_TXADDR1  =0x1F,
-	  CSR_TXPOLL   =0x2F,
+	  CSR_POLLINT  =0x2F,
 	  CSR_RXRINGLEN=0x4C,
 	  CSR_TXRINGLEN=0x4E,
 
+	  CSR_INIT     =0x0001,
 	  CSR_START    =0x0002,
 	  CSR_STOP     =0x0004,
 	  CSR_INTEN    =0x0040,
@@ -138,6 +144,7 @@ private:
 	  MODE_TXD     =0x0002,
 	  MODE_DNY_BCST=0x4000,
 	  MODE_PROMISC =0x8000,
+	  MODE_PSEL    =0x0180,
 	  NO_INIT_BLOCK=0x0000,
 	};
 };
