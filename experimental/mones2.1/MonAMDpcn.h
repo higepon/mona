@@ -26,7 +26,7 @@ struct RX
 	RXDSC* dsc;
 	int index;
 	enum{
-		RINGLEN=4,
+		LOGRINGLEN=2,
 		RMD1_OWN=0x8000,
 		RMD1_STP=0x0200,
 		RMD1_ENP=0x0100,
@@ -53,9 +53,19 @@ struct TX
 	TXDSC* dsc;
 	int index;
 	enum{
-		RINGLEN=4
+		LOGRINGLEN=2
 	};
 };
+
+typedef struct{
+    word  mode;
+	byte  rxlen;
+	byte  txlen;
+	byte  mac_addr[6];
+	dword filter[2];
+	dword rx_ring;
+	dword tx_ring;
+} IBLK;
 
 namespace mones{ 
  //Interface and Chip-Controls.
@@ -66,11 +76,12 @@ public:
     void  outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void  getFrameBuffer(byte* buffer, dword size);
     void  interrupt();
-
+	MonAMDpcn(){ piblock=NULL; }
+	~MonAMDpcn(){if(piblock!=NULL){ monapi_deallocate_dma_memory(piblock); } }
     void  inputFrame(){};
-    dword getFrameBufferSize(){ return 0; };
+    dword getFrameBufferSize(){ return 0; }
     int   probe(){ return 0; }
-    void  getMacAddress(byte* dest){ memcpy(dest, mac_addr, 6); }
+	void  getMacAddress(byte* dest){if(piblock!=NULL){memcpy(dest, piblock->mac_addr, 6);} }
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}
@@ -85,7 +96,7 @@ public:
 private:
     int   irq;
     int   iobase;
-    byte  mac_addr[6];
+	IBLK* piblock;
 
 	word r_rap(){ return inp16(iobase+IO_RAP);}
 	void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
@@ -111,7 +122,8 @@ private:
 	  BCR_PCI_II   =0x0003,
 
 	  CSR_CSR      =0x00,
-	  CSR_IADR     =0x02,
+	  CSR_IADR0    =0x01,
+	  CSR_IADR1    =0x02,
 	  CSR_FEATURE  =0x04,
 	  CSR_MAR0     =0x08,
 	  CSR_MAR1     =0x09,
