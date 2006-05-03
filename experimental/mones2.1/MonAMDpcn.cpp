@@ -24,23 +24,23 @@ TX::~TX()
 
 int TX::initTX()
 {
-	if( buf == 0 )
-		return -1;
-	printf("TX%x\n",buf);
-	dsc= (TXDSC*)buf;
-	buf += ((1<<LOGRINGLEN)*sizeof(TXDSC));
-	for(int i=0;i<(1<<LOGRINGLEN);i++){
-		(dsc+i)->status=0;
-		(dsc+i)->control=0;
-		(dsc+i)->bcnt=(dword)(-PKTSIZE);
-		(dsc+i)->rbaddr=(dword)(buf+i*PKTSIZE);
-	}
-	return 0;
+    if( buf == 0 )
+        return -1;
+//  printf("TX%x\n",buf);
+    dsc= (TXDSC*)buf;
+    buf += ((1<<LOGRINGLEN)*sizeof(TXDSC));
+    for(int i=0;i<(1<<LOGRINGLEN);i++){
+        (dsc+i)->status=0;
+        (dsc+i)->control=0;
+        (dsc+i)->bcnt=(dword)(-PKTSIZE);
+        (dsc+i)->rbaddr=(dword)(buf+i*PKTSIZE);
+    }
+    return 0;
 }
 
 void TX::ihandler()
 {
-	printf("TX-INT\n");
+    printf("TX-INT\n");
 }
 
 ////////
@@ -82,12 +82,13 @@ int RX::initRX()
 
 void RX::ihandler()
 {
+	word length;
 	while( ((dsc+index)->status & RMD1_OWN) == 0 ){
-		printf("==>%x %x %x %x\n",
-    		(dsc+index)->rbaddr,
-			(dsc+index)->status,
-			(dsc+index)->mcnt,
-			(dsc+index)->bcnt);
+		length=(((dsc+index)->mcnt)&0x0FFF);
+		printf("==>%d ",length);
+		for(int j=0;j<14;j++)
+			printf("%x ",*((byte*)(((dsc+index)->rbaddr))+j));
+		printf("\n");
 		(dsc+index)->mcnt=0;
         (dsc+index)->bcnt = (dword)(-PKTSIZE)|0xF000;
 		(dsc+index)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
@@ -159,6 +160,8 @@ int MonAMDpcn::interrupt()
 	return ret;
 }
  
+
+////////////////////
 void MonAMDpcn::outputFrame(byte* packet, byte* macAddress, dword size, word protocolId)
 {
 

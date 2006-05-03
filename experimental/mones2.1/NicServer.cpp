@@ -37,7 +37,7 @@ bool NicServer::initialize()
 //    this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
-	printf("ID: %d\n",myID);
+//  printf("ID: %d\n",myID);
     this->started = true;
     return true;
 }
@@ -49,15 +49,23 @@ dword NicServer::getThreadID() const
 
 void NicServer::interrupt(MessageInfo* msg)
 {	
-	nic->interrupt();
+	int val = nic->interrupt();
     //MessageInfo info;
     //Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
-	/*
-	this->nic->inputFrame();
-    Ether::Frame* frame = new Ether::Frame;
-    this->nic->getFrameBuffer((byte*)frame, sizeof(Ether::Frame));
-    this->frameList.add(frame);
-	*/
+	//this->nic->inputFrame();
+	if( val & Nic::RX_INT ){
+		print("====RX\n");
+	    Ether::Frame* frame = new Ether::Frame;
+	    this->nic->getFrameBuffer((byte*)frame, sizeof(Ether::Frame));
+        this->frameList.add(frame);
+	}
+	if(val & Nic::TX_INT){
+        printf("==TX\n");
+	}
+	if( val & Nic::ER_INT){
+        printf("==ERROR.\n");	
+	}
+	//
     //if (Message::send(this->observerThread, &info)) {
     //    printf("local!!!! yamas:INIT error\n");
     //}

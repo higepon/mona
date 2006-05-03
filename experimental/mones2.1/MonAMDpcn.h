@@ -4,7 +4,8 @@
 #include <monapi.h>
 #include "Nic.h"
 
-const int PKTSIZE=1544;
+const int PKTSIZE=1518;
+//DST6 SRC6 LEN2 LCC+PAD(46-1500) FCS4
 //Data receive Controls.
 //See Spec Sheet Page 159.
 typedef struct{
@@ -89,9 +90,6 @@ public:
     enum{
         VENDORID   =0x1022,
         DEVICEID   =0x2000,
-        RX_INT     =0x0004,
-        TX_INT     =0x0002,
-        ER_INT     =0x0001,
 	};
 private:
     int   irq;

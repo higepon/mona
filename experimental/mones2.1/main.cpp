@@ -28,7 +28,7 @@ int MonaMain(List<char*>* pekoe)
         sleep(500);
     }
     nicThread = server->getThreadID();
-	printf(">>%d\n",nicThread);
+    //printf(">>%d\n",nicThread);
     byte i, arptimer;
     /* Initialize the device driver. */
     monadev_init();
