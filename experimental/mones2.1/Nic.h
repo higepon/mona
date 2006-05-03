@@ -25,7 +25,11 @@ public:
 
     virtual void enableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
     virtual void disableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
-
+	enum{
+        RX_INT     =0x0004,
+        TX_INT     =0x0002,
+        ER_INT     =0x0001,
+	};
     //void pop_frame_list
 };
 
