@@ -82,18 +82,17 @@ int RX::initRX()
 
 void RX::ihandler()
 {
-	printf("RX%x %x\n",index,(dsc+index)->status);
-	for(int i=0;i<(1<<LOGRINGLEN);i++)
-	        printf("[%x %x]",(dsc+i)->status,(dsc+i)->mcnt);
 	while( ((dsc+index)->status & RMD1_OWN) == 0 ){
-		printf("==>%x %x\n",(dsc+index)->rbaddr,dsc);
+		printf("==>%x %x %x %x\n",
+    		(dsc+index)->rbaddr,
+			(dsc+index)->status,
+			(dsc+index)->mcnt,
+			(dsc+index)->bcnt);
 		(dsc+index)->mcnt=0;
         (dsc+index)->bcnt = (dword)(-PKTSIZE)|0xF000;
 		(dsc+index)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
 		index = (index+1) & ((1<<LOGRINGLEN)-1);
 	}
-
-	printf("\n");
 }
 ///////////////////////////////////////////////////////
 
@@ -114,7 +113,7 @@ int MonAMDpcn::init()
 	}
 	//Use initalize block.
 	piblock=(IBLK*)monapi_allocate_dma_memory();
-	piblock->mode=MODE_DNY_BCST;
+	piblock->mode=MODE_DNY_BCST;         //0x0;
 	piblock->rxlen=(RX::LOGRINGLEN<<4);  //see page157.
 	piblock->txlen=(TX::LOGRINGLEN<<4);
 	for(int i=0;i<5;i++){
@@ -135,26 +134,29 @@ int MonAMDpcn::init()
 	sleep(100);
 	w_csr(CSR_FEATURE,FEAT_PADTX|FEAT_TXMSK);    //CSR 4
 	//printf("chip version=%x\n",(r_csr(88)>>12)|(r_csr(89)<<4));
-	w_csr(CSR_CSR,CSR_INTEN|CSR_START);                //CSR 0
+	w_csr(CSR_CSR,CSR_INTEN|CSR_START);          //CSR 0
 	return 0;	
 }
 
-void MonAMDpcn::interrupt()
+int MonAMDpcn::interrupt()
 {
 	//printf("Interrupted\n");
 	word val;
+	word ret=0x0000;
 	if( ( val = r_csr(CSR_CSR)) & CSR_INTR ){
-		printf("<%x>",val);
 		if( val & CSR_RINT ){
 			RX::ihandler();
+			ret |= RX_INT;
 		}else if (val & CSR_TINT){
 			TX::ihandler();
+			ret |= TX_INT;
 		}
 		w_csr(CSR_CSR, val & 0xFFF0);
 	}
 	//Interrupt was masked by OS handler.
 	enableNetwork(); //Now be enabled here. 
 	//It should be enabled by messaging mechanism. 
+	return ret;
 }
  
 void MonAMDpcn::outputFrame(byte* packet, byte* macAddress, dword size, word protocolId)

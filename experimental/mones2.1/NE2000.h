@@ -31,7 +31,7 @@ public:
     int probe();
     void inputFrame();
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
-	void interrupt(){};
+	int interrupt(){};
 
     virtual dword getFrameBufferSize();
     virtual void getFrameBuffer(byte* buffer, dword size);

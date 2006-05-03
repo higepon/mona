@@ -13,7 +13,7 @@ public:
     virtual int probe() = 0;
     virtual void inputFrame() = 0;
     virtual void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId) = 0;
-	virtual void interrupt() =0;
+	virtual int interrupt() =0;
 
     virtual dword getFrameBufferSize() = 0;
     virtual void getFrameBuffer(byte* buffer, dword size) = 0;

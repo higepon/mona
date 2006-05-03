@@ -75,7 +75,7 @@ public:
     int   init();
     void  outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void  getFrameBuffer(byte* buffer, dword size);
-    void  interrupt();
+    int   interrupt();
 	MonAMDpcn(){ piblock=NULL; }
 	~MonAMDpcn(){if(piblock!=NULL){ monapi_deallocate_dma_memory(piblock); } }
     void  inputFrame(){};
@@ -89,9 +89,9 @@ public:
     enum{
         VENDORID   =0x1022,
         DEVICEID   =0x2000,
-        RCV_INT    =0xFFFD,
-        TNS_INT    =0xFFFE,
-        ERR_INT    =0xFFFF,
+        RX_INT     =0x0004,
+        TX_INT     =0x0002,
+        ER_INT     =0x0001,
 	};
 private:
     int   irq;
