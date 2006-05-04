@@ -4,6 +4,8 @@
 #include <monapi.h>
 #include "Nic.h"
 
+namespace mones{ 
+
 const int PKTSIZE=1518;
 //DST6 SRC6 LEN2 LCC+PAD(46-1500) FCS4
 //Data receive Controls.
@@ -17,23 +19,6 @@ typedef struct{
   dword reservd;
 } RXDSC;
 
-struct RX
-{
-	RX();
-	virtual ~RX();
-	int initRX();
-	void ihandler();
-	byte* buf;
-	RXDSC* dsc;
-	int index;
-	enum{
-		LOGRINGLEN=2,
-		RMD1_OWN=0x8000,
-		RMD1_STP=0x0200,
-		RMD1_ENP=0x0100,
-	};
-};
-
 //Data transmit Controls.
 //See spec sheet Page 162.
 typedef struct{
@@ -43,20 +28,6 @@ typedef struct{
 	dword rbaddr;
 	dword reserved;
 } TXDSC;
-
-struct TX
-{
-	TX();
-	virtual ~TX();
-	int initTX();
-	void ihandler();
-	byte* buf;
-	TXDSC* dsc;
-	int index;
-	enum{
-		LOGRINGLEN=2
-	};
-};
 
 typedef struct{
     word  mode;
@@ -68,17 +39,36 @@ typedef struct{
 	dword tx_ring;
 } IBLK;
 
-namespace mones{ 
  //Interface and Chip-Controls.
-class MonAMDpcn : protected TX,RX,public Nic 
+class MonAMDpcn : public Nic 
 {
+protected:
+	int initRX();
+	void rxihandler();
+	byte* rxbuf;
+	RXDSC* rxdsc;
+	int rxindex;
+	enum{
+		LOGRXRINGLEN=2,
+		RMD1_OWN=0x8000,
+		RMD1_STP=0x0200,
+		RMD1_ENP=0x0100,
+	};
+	int initTX();
+	void txihandler();
+	byte* txbuf;
+	TXDSC* txdsc;
+	int txindex;
+	enum{
+		LOGTXRINGLEN=2
+	};
 public:	
     int   init();
     void  outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void  getFrameBuffer(byte* buffer, dword size);
     int   interrupt();
-	MonAMDpcn(){ piblock=NULL; }
-	~MonAMDpcn(){if(piblock!=NULL){ monapi_deallocate_dma_memory(piblock); } }
+	MonAMDpcn();
+	~MonAMDpcn();
     void  inputFrame(){};
     dword getFrameBufferSize(){ return 0; }
     int   probe(){ return 0; }

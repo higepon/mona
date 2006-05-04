@@ -25,17 +25,18 @@ class NE2000 : public Nic
 {
 public:
     NE2000();
-    virtual ~NE2000();
+    ~NE2000();
 
     int init();
     int probe();
     void inputFrame();
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
-	int interrupt(){};
+	int interrupt(){return 0;};
 
-    virtual dword getFrameBufferSize();
-    virtual void getFrameBuffer(byte* buffer, dword size);
+    dword getFrameBufferSize();
+    void getFrameBuffer(byte* buffer, dword size);
     void getMacAddress(byte* dest);
+
     byte getIRQ() const {return this->nicIRQ;}
     int getIOBase() const {return this->nicIo_Base;}
     void setIRQ(byte irq) {this->nicIRQ = irq;}
@@ -56,14 +57,14 @@ private:
     /* ne_ring_buffer */
     byte       ne_ringbuf_status;
     byte       ne_ringbuf_bound;
-    dword        ne_ringbuf_len;
+    dword      ne_ringbuf_len;
 
-    dword        ne_rx_start;      /* 受信パケット本体の開始アドレス */
+    dword      ne_rx_start;      /* 受信パケット本体の開始アドレス */
 
     byte       ne_rx_bound;      /* 受信後の境界レジスタ値 */
-    dword        ne_rx_write_p;    /* 受信パケット書き込みアドレス */
-    dword        ne_rx_sub_len;    /* 折り返し分の長さ */
-    dword        ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
+    dword      ne_rx_write_p;    /* 受信パケット書き込みアドレス */
+    dword      ne_rx_sub_len;    /* 折り返し分の長さ */
+    dword      ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
     /*! \brief 受信パケット本体の長さ */ 
     dword    frame_len;
     byte   frame_buf[1500];

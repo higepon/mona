@@ -31,7 +31,6 @@ bool NicServer::initialize()
         printf("NicFactory error\n");
         return false;
     }
-
     syscall_set_irq_receiver(this->nic->getIRQ());
     this->nic->enableNetwork();
 //    this->nic->getMacAddress(this->macAddress);
@@ -52,12 +51,14 @@ void NicServer::interrupt(MessageInfo* msg)
 	int val = nic->interrupt();
     //MessageInfo info;
     //Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
-	//this->nic->inputFrame();
-	if( val & Nic::RX_INT ){
+	if( val & Nic::RX_INT ){     
+		Ether::Frame* frame = nic ->frameList.removeAt(0);
+		for(int j=0;j<6;j++)
+			printf("%x ",frame->dstmac[j]);
+		for(int j=0;j<6;j++)
+			printf("%x ",frame->srcmac[j]);
+		printf("%x ",frame->type);
 		print("====RX\n");
-	    Ether::Frame* frame = new Ether::Frame;
-	    this->nic->getFrameBuffer((byte*)frame, sizeof(Ether::Frame));
-        this->frameList.add(frame);
 	}
 	if(val & Nic::TX_INT){
         printf("==TX\n");

@@ -64,23 +64,6 @@ public:
     } Header;
 };
 
-class Ether
-{
-public:
-#pragma pack(2)
-    typedef struct{
-        byte  dstmac[6];   // 送信先 MAC ID
-        byte  srcmac[6];   // 送信元 MAC ID
-        word    type;     // フレームタイプ Frame type(DIX) or frame length(IEEE)
-        byte   data[0x600];// Data
-    } Frame;
-#pragma pack(0)
-    enum
-    {
-        ARP = 0x806,
-        IP  = 0x800,
-    };
-};
 
 
 class Arp
@@ -132,7 +115,7 @@ private:
 
 protected:
     byte macAddress[6];
-    HList<Ether::Frame*> frameList;
+//    HList<Ether::Frame*> frameList;
     dword observerThread;
     dword myID;
     Nic* nic;

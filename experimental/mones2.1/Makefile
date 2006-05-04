@@ -1,5 +1,5 @@
 TARGET  = mns21
-SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp MonAMDpcn.cpp
+SOURCES = main.cpp Nic.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp MonAMDpcn.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
