@@ -4,7 +4,7 @@ VERSION  = 6.2.1
 
 SOURCE1 = ${NAME}-${VERSION}.tar.gz
 SRCS = ${SOURCE1}
-MASTERSITE = http://monaos.org/downloads
+MASTERSITE = http://www.monaos.org/downloads
 #WORKDIR = ${NAME}-${VERSION}
 WORKDIR = Mesa-${VERSION}
 
