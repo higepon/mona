@@ -191,6 +191,7 @@ dtk5s.h\
 endian_util.cpp\
 fat.cpp\
 file.cpp\
+_file.h\
 fs.cpp\
 main.cpp\
 types.h\

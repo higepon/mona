@@ -13,7 +13,7 @@
 #else
 #include "types.h"
 #endif
-#include "file.h"
+#include "_file.h"
 #include "IStorageDevice.h"
 #include "endian_util.h"
 

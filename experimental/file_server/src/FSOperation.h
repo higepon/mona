@@ -15,7 +15,7 @@
 
 #ifdef ON_LINUX
 #include "fat.h"
-#include "file.h"
+#include "_file.h"
 #else
 #include <fat_write/fat.h>
 #include <fat_write/file.h>
