@@ -1,4 +1,5 @@
 #include "NicServer.h"
+#include "Util.h"
 
 using namespace mones;
 using namespace MonAPI;
@@ -33,10 +34,9 @@ bool NicServer::initialize()
     }
     syscall_set_irq_receiver(this->nic->getIRQ());
     this->nic->enableNetwork();
-//    this->nic->getMacAddress(this->macAddress);
+//  this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
-//  printf("ID: %d\n",myID);
     this->started = true;
     return true;
 }
@@ -46,18 +46,42 @@ dword NicServer::getThreadID() const
     return this->myID;
 }
 
+int NicServer::AWKreply()
+{
+	//handling Arp and Well Known services without message mechanism.
+	//Don't say anything about in case mona is a router.
+	int i=0;
+	Ether::Frame* frame = NULL;
+	while( frame = nic->frameList.get(i) ){
+		if( Util::swapShort(frame->type) ==  Ether::ARP ){
+			nic->frameList.removeAt(i);
+			printf("ARP\n");
+			for(int j=0;j<10;j++){
+				printf("%x ",*((frame->data)+j));
+			}
+			delete frame;
+		}else{
+			printf("other\n");
+			i++;
+		}
+	}
+    while( nic->frameList.size() != 0){
+        frame = nic ->frameList.removeAt(0);
+//		for(int j=0;j<6;j++)
+//            printf("%x ",frame->dstmac[j]);
+//		for(int j=0;j<6;j++)
+//            printf("%x ",frame->srcmac[j]);
+		printf("%x ",Util::swapShort(frame->type));
+		delete frame;
+	}
+	return 0;
+}
+
 void NicServer::interrupt(MessageInfo* msg)
 {	
 	int val = nic->interrupt();
-    //MessageInfo info;
-    //Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
-	if( val & Nic::RX_INT ){     
-		Ether::Frame* frame = nic ->frameList.removeAt(0);
-		for(int j=0;j<6;j++)
-			printf("%x ",frame->dstmac[j]);
-		for(int j=0;j<6;j++)
-			printf("%x ",frame->srcmac[j]);
-		printf("%x ",frame->type);
+	if( val & Nic::RX_INT ){
+		AWKreply();
 		print("====RX\n");
 	}
 	if(val & Nic::TX_INT){
@@ -66,10 +90,11 @@ void NicServer::interrupt(MessageInfo* msg)
 	if( val & Nic::ER_INT){
         printf("==ERROR.\n");	
 	}
-	//
-    //if (Message::send(this->observerThread, &info)) {
-    //    printf("local!!!! yamas:INIT error\n");
-    //}
+    MessageInfo info;
+    Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
+    if(Message::send(this->observerThread, &info)) {
+       printf("local!!!! yamas:INIT error\n");
+    }
     return;
 }
 
@@ -122,7 +147,8 @@ void NicServer::messageLoop()
             //Ether::Frame* frame = this->frameList.removeAt(0);
             //SetFrameToSharedMemory(frame);
             //delete frame;	
-			//sleep(300);
+			//printf("read\n");
+			sleep(500);
             MonAPI::Message::reply(&msg);
             break;
         }
