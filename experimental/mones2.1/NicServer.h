@@ -112,7 +112,7 @@ public:
 
 private:
     void interrupt(MessageInfo* msg);
-
+	int  AWKreply();
 protected:
     byte macAddress[6];
 //    HList<Ether::Frame*> frameList;
