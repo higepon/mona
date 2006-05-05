@@ -56,22 +56,39 @@ int NicServer::AWKreply()
 		if( Util::swapShort(frame->type) ==  Ether::ARP ){
 			nic->frameList.removeAt(i);
 			printf("ARP\n");
-			for(int j=0;j<10;j++){
-				printf("%x ",*((frame->data)+j));
-			}
+			Arp::Header* header=(Arp::Header*)(frame->data);
+			printf("%d %d %d %d %d\n",
+            header->hardType,
+			header->protType,
+            header->hardAddrLen,
+			header->protAddrLen,
+			header->opeCode);
+			for(int j=0;j<6;j++)
+				printf("%x:",header->srcMac[j]);	
+			for(int j=0;j<4;j++)
+				printf("%d.",*(((byte*)&(header->srcIp))+j));
+			printf("\n");
+			for(int j=0;j<6;j++)
+				printf("%x:",header->dstMac[j]);
+			for(int j=0;j<4;j++)
+				printf("%d.",*(((byte*)&(header->dstIp))+j));
+			printf("\n");
+			//send reply nic->send(frame);
 			delete frame;
 		}else{
-			printf("other\n");
+			printf("IP\n");
 			i++;
 		}
 	}
     while( nic->frameList.size() != 0){
         frame = nic ->frameList.removeAt(0);
-//		for(int j=0;j<6;j++)
-//            printf("%x ",frame->dstmac[j]);
-//		for(int j=0;j<6;j++)
-//            printf("%x ",frame->srcmac[j]);
-		printf("%x ",Util::swapShort(frame->type));
+		IP::Header* header=(IP::Header*)(frame->data);
+		printf("%x ",header->prot);
+		for(int j=0;j<4;j++)
+			printf("%d.",*(((byte*)&(header->srcip))+j));
+		for(int j=0;j<4;j++)
+			printf("%d.",*(((byte*)&(header->dstip))+j));
+		printf("\n");
 		delete frame;
 	}
 	return 0;
@@ -82,7 +99,6 @@ void NicServer::interrupt(MessageInfo* msg)
 	int val = nic->interrupt();
 	if( val & Nic::RX_INT ){
 		AWKreply();
-		print("====RX\n");
 	}
 	if(val & Nic::TX_INT){
         printf("==TX\n");
