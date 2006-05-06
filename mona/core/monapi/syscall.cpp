@@ -546,10 +546,10 @@ int syscall_test(dword laddress)
     return result;
 }
 
-int syscall_set_irq_receiver(int irq)
+int syscall_set_irq_receiver(int irq, int maskInterrupt)
 {
     dword result;
-    SYSCALL_1(SYSTEM_CALL_SET_IRQ_RECEIVER, result, irq);
+    SYSCALL_2(SYSTEM_CALL_SET_IRQ_RECEIVER, result, irq, maskInterrupt);
     return result;
 }
 

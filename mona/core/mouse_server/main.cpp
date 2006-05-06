@@ -483,7 +483,7 @@ int MonaMain(List<char*>* pekoe)
     Mouse::enableKeyboard();
 
     /* we receive MSG_INTERRUPTED from IRQ12 Handler */
-    syscall_set_irq_receiver(12);
+    syscall_set_irq_receiver(12, 0);
 
     /* service start */
     server.MessageLoop();

@@ -103,6 +103,7 @@ typedef struct
 {
     ThreadInfo* thread;
     bool hasReceiver;
+    bool maskInterrupt;
 } IRQInfo;
 
 void startKernel(void);

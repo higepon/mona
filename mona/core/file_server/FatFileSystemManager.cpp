@@ -30,7 +30,7 @@ bool FatFileSystemManager::Initialize()
     syscall_get_io();
 
     monapi_set_irq(6, MONAPI_TRUE, MONAPI_TRUE);
-    syscall_set_irq_receiver(6);
+    syscall_set_irq_receiver(6, 0);
 
     this->fd = new FDCDriver();
 

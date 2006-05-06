@@ -534,6 +534,7 @@ void syscall_entrance()
         }
 
         g_irqInfo[irq].hasReceiver = false;
+        g_irqInfo[irq].maskInterrupt = false;
 
         break;
     }
@@ -541,6 +542,7 @@ void syscall_entrance()
     case SYSTEM_CALL_SET_IRQ_RECEIVER:
     {
         int irq  = (int)info->esi;
+        bool maskInterrupt = info->ecx != 0;
 
         /* out of range */
         if (irq > 15 || irq < 0)
@@ -550,6 +552,7 @@ void syscall_entrance()
 
         g_irqInfo[irq].hasReceiver = true;
         g_irqInfo[irq].thread      = g_currentThread;
+        g_irqInfo[irq].maskInterrupt = maskInterrupt;
 
         break;
     }

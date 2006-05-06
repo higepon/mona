@@ -94,7 +94,7 @@ int MonaMain(List<char*>* pekoe)
         printf("KeyBoardServer:INIT error\n");
     }
 
-    syscall_set_irq_receiver(1);
+    syscall_set_irq_receiver(1, 0);
 
 
     /* Message loop */

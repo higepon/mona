@@ -1,3 +1,7 @@
+2006-05-07  higepon  <higepon@users.sourceforge.jp>
+
+        * syscall_set_irq_receiver: 引数を増やし割り込み時に一旦 mask することを可能にした。PCIがレベルトリガで割り込み続けることへの対策。
+
 2006-04-26  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/Makefile (all): INCLUDE PATHをカレントディレクトリを優先するようにした

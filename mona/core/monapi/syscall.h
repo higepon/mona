@@ -78,7 +78,7 @@ extern int syscall_get_kernel_version(char* buf, dword size);
 extern int syscall_clear_screen();
 extern int syscall_peek(MessageInfo* message, int index, int flags);
 
-extern int syscall_set_irq_receiver(int irq);
+extern int syscall_set_irq_receiver(int irq, int maskInterrupt);
 extern int syscall_has_irq_receiver(int irq);
 extern int syscall_remove_irq_receiver(int irq);
 extern int syscall_get_memory_info(MemoryInfo* INFO);

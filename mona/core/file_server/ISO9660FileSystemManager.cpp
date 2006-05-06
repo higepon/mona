@@ -52,7 +52,7 @@ bool ISO9660FileSystemManager::Initialize()
 
     /* enable interrupts */
     monapi_set_irq(irq, MONAPI_TRUE, MONAPI_TRUE);
-    syscall_set_irq_receiver(irq);
+    syscall_set_irq_receiver(irq, 0);
 
     /* CD Select Device */
     if (!this->cd->selectDevice(controller, deviceNo))

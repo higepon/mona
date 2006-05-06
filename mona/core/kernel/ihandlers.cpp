@@ -19,17 +19,19 @@
 #include "Process.h"
 #include "Scheduler.h"
 
-#define IRQHANDLERMaster(x) void irqHandler_##x()   \
-{                                                   \
-    outp8(0x20, 0x20);                              \
-    SendInterrupt(x);                               \
+#define IRQHANDLERMaster(x) void irqHandler_##x()                             \
+{                                                                             \
+    outp8(0x20, 0x20);                                                        \
+    if (g_irqInfo[x].maskInterrupt) outp8(0x21, (inp8(0x21) | (1 << x)));     \
+    SendInterrupt(x);                                                         \
 }
 
-#define IRQHANDLERSlave(x) void irqHandler_##x()    \
-{                                                   \
-    outp8(0xA0, 0x20);                              \
-    outp8(0x20, 0x20);                              \
-    SendInterrupt(x);                               \
+#define IRQHANDLERSlave(x) void irqHandler_##x()                              \
+{                                                                             \
+    outp8(0xA0, 0x20);                                                        \
+    outp8(0x20, 0x20);                                                        \
+    if (g_irqInfo[x].maskInterrupt) outp8(0xa1, inp8(0xa1) | (1 << (x - 8))); \
+    SendInterrupt(x);                                                         \
 }
 
 // IRQHANDLERMaster(0)
