@@ -32,7 +32,7 @@ bool NicServer::initialize()
         printf("NicFactory error\n");
         return false;
     }
-    syscall_set_irq_receiver(this->nic->getIRQ(), 0); // with mask Interrrupt
+    syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); // with mask Interrrupt by higepon
     this->nic->enableNetwork();
 //  this->nic->getMacAddress(this->macAddress);
     this->observerThread= Message::lookupMainThread();
