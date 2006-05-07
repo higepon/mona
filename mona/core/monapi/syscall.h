@@ -112,6 +112,12 @@ extern void* operator new(size_t size);
 extern void  operator delete(void* address);
 #endif
 
+/* syscall arguments enum */
+enum {
+    SYS_MASK_INTERRUPT = 0,
+    SYS_NO_MASK_INTERRUPT,
+};
+
 /* key info */
 #define VK_SPACE      0x20
 #define VK_BACKSPACE  0x21

@@ -549,7 +549,7 @@ int syscall_test(dword laddress)
 int syscall_set_irq_receiver(int irq, int maskInterrupt)
 {
     dword result;
-    SYSCALL_2(SYSTEM_CALL_SET_IRQ_RECEIVER, result, irq, maskInterrupt);
+    SYSCALL_2(SYSTEM_CALL_SET_IRQ_RECEIVER, result, irq, maskInterrupt == SYS_MASK_INTERRUPT ? 1 : 0);
     return result;
 }
 
