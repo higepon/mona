@@ -1,3 +1,8 @@
+2006-05-08 hiratch <hiratch@users.sourceforge.jp>
+
+	* configure, Makefile.new: 新ビルドシステム。configure を実行後、
+	make -f Makefile.new すること。
+
 2006-05-07  higepon  <higepon@users.sourceforge.jp>
 
         * syscall_set_irq_receiver: 引数を増やし割り込み時に一旦 mask することを可能にした。PCIがレベルトリガで割り込み続けることへの対策。
