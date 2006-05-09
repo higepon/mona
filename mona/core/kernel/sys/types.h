@@ -19,7 +19,7 @@
 #define NULL     0
 #define NORMAL   0
 #define DEBUG_MODE
-
+/* */
 enum
 {
     MONA_SUCCESS,
