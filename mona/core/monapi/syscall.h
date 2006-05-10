@@ -114,8 +114,8 @@ extern void  operator delete(void* address);
 
 /* syscall arguments enum */
 enum {
-    SYS_MASK_INTERRUPT = 0,
-    SYS_NO_MASK_INTERRUPT,
+    SYS_NO_MASK_INTERRUPT = 0,
+    SYS_MASK_INTERRUPT,
 };
 
 /* key info */
