@@ -29,7 +29,7 @@ int MonaMain(List<char*>* pekoe)
     }
     nicThread = server->getThreadID();
     //printf(">>%d\n",nicThread);
-    byte i, arptimer;
+    byte arptimer;
     /* Initialize the device driver. */
     monadev_init();
     /* Initialize the uIP TCP/IP stack. */

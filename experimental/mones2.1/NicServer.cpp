@@ -65,7 +65,7 @@ int NicServer::ARPICMPreply()
             if( header->dstIp == nic->getIP() ){
                 memcpy(header->dstMac,header->srcMac,6);
                 header->dstIp=header->srcIp;
-                int pktsize=Ether::generateCRC(frame);
+                Ether::generateCRC(frame);
                 nic->txFrameList.add(frame);
                 nic->Send();
 			}else{
