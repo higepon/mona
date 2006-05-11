@@ -6,6 +6,7 @@
 #include <monapi/io.h>
 
 namespace mones {
+
 class Ether
 {
 public:
@@ -15,6 +16,7 @@ public:
         byte  srcmac[6];   //src mac
         word    type;      //type or length
         byte   data[0x600];// Data
+        byte payloadsize;  
     } Frame;
 #pragma pack(0)
     enum
@@ -22,6 +24,8 @@ public:
         ARP = 0x806,
         IP  = 0x800,
     };
+    static int generateCRC(Frame*);
+    static int verifyCRC(Frame*);
 };
 
 class Nic
@@ -31,13 +35,13 @@ public:
 	virtual ~Nic();
 	virtual int init() =0;
     virtual int probe() = 0;
-    virtual void inputFrame() = 0;
-    virtual void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId) = 0;
+        virtual void inputFrame() = 0;
+	virtual void Send()=0;
+        virtual void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId) = 0;
 	virtual int interrupt() =0;
-
-    virtual dword getFrameBufferSize() = 0;
-    virtual void getFrameBuffer(byte* buffer, dword size) = 0;
-    virtual void getMacAddress(byte* dest) =0;
+        virtual dword getFrameBufferSize() = 0;
+        virtual void getFrameBuffer(byte* buffer, dword size) = 0;
+        virtual void getMacAddress(byte* dest) =0;
     virtual byte getIRQ() const = 0;
     virtual int getIOBase() const = 0;
     virtual void setIRQ(byte irq) = 0;
@@ -49,9 +53,14 @@ public:
         RX_INT     =0x0004,
         TX_INT     =0x0002,
         ER_INT     =0x0001,
-	};
-	HList<Ether::Frame*> frameList;
-    //void pop_frame_list
+	};	
+	void setIP(byte a,byte b,byte c,byte d){ myIP=((d<<24)|(c<<16)|(b<<8)|a);}
+	dword getIP(){ return myIP; };
+//proteced:
+	HList<Ether::Frame*> rxFrameList;
+	HList<Ether::Frame*> txFrameList;
+protected:
+	dword myIP;
 };
 
 };

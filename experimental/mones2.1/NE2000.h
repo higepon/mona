@@ -29,7 +29,8 @@ public:
 
     int init();
     int probe();
-    void inputFrame();
+    void inputFrame();	
+	void  Send(){};
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
 	int interrupt(){return 0;};
 

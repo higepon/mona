@@ -64,6 +64,7 @@ protected:
 	};
 public:	
     int   init();
+	void  Send();
     void  outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void  getFrameBuffer(byte* buffer, dword size);
     int   interrupt();

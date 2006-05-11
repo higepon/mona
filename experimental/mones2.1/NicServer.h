@@ -112,10 +112,9 @@ public:
 
 private:
     void interrupt(MessageInfo* msg);
-	int  AWKreply();
+	int  ARPICMPreply();
 protected:
     byte macAddress[6];
-//    HList<Ether::Frame*> frameList;
     dword observerThread;
     dword myID;
     Nic* nic;

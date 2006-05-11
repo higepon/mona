@@ -9,17 +9,18 @@ void MonAMDpcn::txihandler()
 
 void MonAMDpcn::rxihandler()
 {
-	word length;
-	while( ((rxdsc+rxindex)->status & RMD1_OWN) == 0 ){
-		length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
-	    Ether::Frame* frame = new Ether::Frame; //deleted by server.
-		memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
-        frameList.add(frame);
-		(rxdsc+rxindex)->mcnt=0;
+    word length;
+    while( ((rxdsc+rxindex)->status & RMD1_OWN) == 0 ){
+        length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
+        Ether::Frame* frame = new Ether::Frame; //deleted by server.
+        memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
+		frame->payloadsize=length;
+        rxFrameList.add(frame);
+        (rxdsc+rxindex)->mcnt=0;
         (rxdsc+rxindex)->bcnt = (dword)(-PKTSIZE)|0xF000;
-		(rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
-		rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
-	}
+        (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
+        rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
+    }
 }
 ///////////////////////////////////////////////////////
 MonAMDpcn::~MonAMDpcn()
@@ -133,8 +134,11 @@ int MonAMDpcn::interrupt()
 	//It should be enabled by messaging mechanism. 
 	return ret;
 }
- 
 
+void MonAMDpcn::Send()
+{
+   
+}
 ////////////////////
 void MonAMDpcn::outputFrame(byte* packet, byte* macAddress, dword size, word protocolId)
 {
@@ -145,5 +149,4 @@ void MonAMDpcn::getFrameBuffer(byte* buffer, dword size)
 {
 
 }
-
 /////////////
