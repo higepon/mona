@@ -24,8 +24,6 @@ public:
         ARP = 0x806,
         IP  = 0x800,
     };
-    static int generateCRC(Frame*);
-    static int verifyCRC(Frame*);
 };
 
 class Nic

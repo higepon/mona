@@ -2,8 +2,15 @@
 using namespace MonAPI;
 using namespace mones;
 
+#include "NicServer.h" //ForDebuging.
+
 void MonAMDpcn::txihandler()
 {
+    (txdsc+txindex)->status=0;
+    (txdsc+txindex)->control=0;
+    (txdsc+txindex)->bcnt=0;
+    (txdsc+txindex)->rbaddr=0;
+    txindex = (txindex+1) & (( 1<<LOGTXRINGLEN)-1);
     printf("TX-INT\n");
 }
 
@@ -14,10 +21,11 @@ void MonAMDpcn::rxihandler()
         length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
         Ether::Frame* frame = new Ether::Frame; //deleted by server.
         memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
-		frame->payloadsize=length;
+        frame->payloadsize=length;
+        //printf("SIZE:%d\n",length);
         rxFrameList.add(frame);
         (rxdsc+rxindex)->mcnt=0;
-        (rxdsc+rxindex)->bcnt = (dword)(-PKTSIZE)|0xF000;
+        (rxdsc+rxindex)->bcnt = (word)(-PKTSIZE)|0xF000;
         (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
         rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
     }
@@ -25,12 +33,12 @@ void MonAMDpcn::rxihandler()
 ///////////////////////////////////////////////////////
 MonAMDpcn::~MonAMDpcn()
 {
-	if(piblock!=NULL)
-		monapi_deallocate_dma_memory(piblock);
-	for(int i=0;i<3;i++)
-		monapi_deallocate_dma_memory(rxdsc+0x1000*i);
-	for(int i=0;i<4;i++)
-		monapi_deallocate_dma_memory(txdsc+0x1000*i);
+    if(piblock!=NULL)
+        monapi_deallocate_dma_memory(piblock);
+    for(int i=0;i<3;i++)
+        monapi_deallocate_dma_memory(rxdsc+0x1000*i);
+    for(int i=0;i<4;i++)
+        monapi_deallocate_dma_memory(txdsc+0x1000*i);
 }
 
 MonAMDpcn::MonAMDpcn()
@@ -58,32 +66,32 @@ MonAMDpcn::MonAMDpcn()
 
 int MonAMDpcn::init()
 {
-    //initialize tx 
-    if( txbuf == 0 )
+    //initialize rx
+    if( rxbuf== 0 )
         return -1;
+    rxdsc = (RXDSC*)rxbuf;
+    rxbuf += ((1<<LOGRXRINGLEN)*sizeof(RXDSC));
+    for(int i=0;i<(1<<LOGRXRINGLEN);i++){
+        (rxdsc+i)->bcnt=(word)(-PKTSIZE)|0xF000;
+        (rxdsc+i)->status=RMD1_OWN|RMD1_STP|RMD1_ENP;
+        (rxdsc+i)->rbaddr=(dword)(rxbuf+i*PKTSIZE);
+    }
+    rxindex=0;
+     //initialize tx 
+    if( txbuf == 0 )
+        return -1; 
+	printf("TX%x %x\n",txbuf,sizeof(TXDSC));
     txdsc= (TXDSC*)txbuf;
     txbuf += ((1<<LOGTXRINGLEN)*sizeof(TXDSC));
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
         (txdsc+i)->status=0;
         (txdsc+i)->control=0;
-        (txdsc+i)->bcnt=(dword)(-PKTSIZE);
+        (txdsc+i)->bcnt=0;
         (txdsc+i)->rbaddr=(dword)(txbuf+i*PKTSIZE);
     }
     txindex=0;
-    //initialize rx
-    if( rxbuf== 0 )
-        return -1;
-    printf("RX%x %x\n",rxbuf,sizeof(RXDSC));
-    rxdsc = (RXDSC*)rxbuf;
-    rxbuf += ((1<<LOGRXRINGLEN)*sizeof(RXDSC));
-    for(int i=0;i<(1<<LOGRXRINGLEN);i++){
-        (rxdsc+i)->bcnt=(dword)(-PKTSIZE)|0xF000;
-        (rxdsc+i)->status=RMD1_OWN|RMD1_STP|RMD1_ENP;
-        (rxdsc+i)->rbaddr=(dword)(rxbuf+i*PKTSIZE);
-    }
-    rxindex=0;
-    //
-    stop();
+	///////////////
+	stop();
     reset();
     w_bcr(BCR_MISC,BCR_AUTOSEL);	    //SET BCR_EDGETRG for Edge Sense.
     w_bcr(BCR_SSTYLE,BCR_PCI_II|BCR_SSIZE);
@@ -108,7 +116,7 @@ int MonAMDpcn::init()
     w_csr(CSR_IADR1,(((dword)piblock)>>16)&0xFFFF);
     w_csr(CSR_CSR,CSR_INTEN|CSR_INIT);
     sleep(100);
-    w_csr(CSR_FEATURE,FEAT_PADTX|FEAT_TXMSK);    //CSR 4
+    w_csr(CSR_FEATURE,FEAT_PADTX|FEAT_TXMSK|0x915);    //CSR 4
     //printf("chip version=%x\n",(r_csr(88)>>12)|(r_csr(89)<<4));
     w_csr(CSR_CSR,CSR_INTEN|CSR_START);          //CSR 0
     return 0;	
@@ -116,14 +124,14 @@ int MonAMDpcn::init()
 
 int MonAMDpcn::interrupt()
 {
-	//printf("Interrupted\n");
 	word val;
 	word ret=0x0000;
 	if( ( val = r_csr(CSR_CSR)) & CSR_INTR ){
 		if( val & CSR_RINT ){
 			rxihandler();
 			ret |= RX_INT;
-		}else if (val & CSR_TINT){
+		}
+		if (val & CSR_TINT){
 			txihandler();
 			ret |= TX_INT;
 		}
@@ -131,13 +139,21 @@ int MonAMDpcn::interrupt()
 	}
 	//Interrupt was masked by OS handler.
 	enableNetwork(); //Now be enabled here. 
-	//It should be enabled by messaging mechanism. 
 	return ret;
 }
 
 void MonAMDpcn::Send()
-{
-   
+{   
+    while( txFrameList.size() != 0) {
+		Ether::Frame* frame = txFrameList.removeAt(0);
+        memcpy(txbuf+txindex*PKTSIZE,frame,frame->payloadsize);
+        (txdsc+txindex)->status=0;
+        (txdsc+txindex)->bcnt=(word)(-frame->payloadsize)|0xF000;
+		(txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
+        (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*PKTSIZE);
+		w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);	
+		delete frame;
+    }
 }
 ////////////////////
 void MonAMDpcn::outputFrame(byte* packet, byte* macAddress, dword size, word protocolId)

@@ -112,7 +112,7 @@ public:
 
 private:
     void interrupt(MessageInfo* msg);
-	int  ARPICMPreply();
+	int  ARPhandler();
 protected:
     byte macAddress[6];
     dword observerThread;

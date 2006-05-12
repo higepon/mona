@@ -36,8 +36,7 @@ bool NicServer::initialize()
     this->nic->enableNetwork();
 	////////////////
 	nic->setIP(172,16,177,4);
-	printf("IP is defined in NicServer::initalize()\n");
-    ///
+	printf("IP is defined in NicServer::initalize(). Rewrite it as your environment.\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
     this->started = true;
@@ -49,10 +48,9 @@ dword NicServer::getThreadID() const
     return this->myID;
 }
 
-int NicServer::ARPICMPreply()
+int NicServer::ARPhandler()
 {
-    //handling ARP ICMP and Well Known services without message mechanism.
-    //Don't say anything about in case mona is a router.
+    //handling ARP without message mechanism.
     int i=0;
     Ether::Frame* frame = NULL;
     while( frame = nic->rxFrameList.get(i) ){
@@ -60,51 +58,25 @@ int NicServer::ARPICMPreply()
 		    nic->rxFrameList.removeAt(i);
             printf("ARP\n");
             Arp::Header* header=(Arp::Header*)(frame->data);
-            header->opeCode=Util::swapShort(Arp::OPE_CODE_ARP_REP);
-            //printf("%x %x\n",header->dstIp,nic->getIP());
-            if( header->dstIp == nic->getIP() ){
+            if( header->dstIp == nic->getIP() ){ 
+				printf("%x %x\n",header->dstIp,nic->getIP());
+                header->opeCode=Util::swapShort(Arp::OPE_CODE_ARP_REP);
                 memcpy(header->dstMac,header->srcMac,6);
+				nic->getMacAddress(header->srcMac);
                 header->dstIp=header->srcIp;
-                Ether::generateCRC(frame);
+				header->srcIp=nic->getIP();
+				memcpy(frame->dstmac,header->dstMac,6);
+				memcpy(frame->srcmac,header->srcMac,6);
                 nic->txFrameList.add(frame);
                 nic->Send();
 			}else{
-				;
+                delete frame;
 			}
-            printf("%d %d %d %d %d\n",
-		    header->hardType,
-            header->protType,
-            header->hardAddrLen,
-            header->protAddrLen,
-            header->opeCode);
-            for(int j=0;j<6;j++)
-                printf("%x:",header->srcMac[j]);	
-            for(int j=0;j<4;j++)
-                printf("%d.",*(((byte*)&(header->srcIp))+j));
-            printf("\n");
-            for(int j=0;j<6;j++)
-                printf("%x:",header->dstMac[j]);
-            for(int j=0;j<4;j++)
-                printf("%d.",*(((byte*)&(header->dstIp))+j));
-            printf("\n");
-			
-			delete frame;
         }else{
             printf("IP\n");
             i++;
         }
-    }
-    while( nic->rxFrameList.size() != 0){
-        frame = nic ->rxFrameList.removeAt(0);
-        IP::Header* header=(IP::Header*)(frame->data);
-        printf("%x ",header->prot);
-        for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&(header->srcip))+j));
-        for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&(header->dstip))+j));
-        printf("\n");
-        delete frame;
-    }
+    }    
     return 0;
 }
 
@@ -112,7 +84,19 @@ void NicServer::interrupt(MessageInfo* msg)
 {	
 	int val = nic->interrupt();
 	if( val & Nic::RX_INT ){
-		ARPICMPreply();
+        ARPhandler();	
+        //Don't say anything about in case mona is a router.
+        while( nic->rxFrameList.size() != 0){
+			Ether::Frame* frame = nic ->rxFrameList.removeAt(0);
+            IP::Header* header=(IP::Header*)(frame->data);
+            printf("%x ",header->prot);
+            for(int j=0;j<4;j++)
+                printf("%d.",*(((byte*)&(header->srcip))+j));
+            for(int j=0;j<4;j++)
+                printf("%d.",*(((byte*)&(header->dstip))+j));
+            printf("\n");
+            delete frame;
+        }
 	}
 	if(val & Nic::TX_INT){
         printf("==TX\n");
@@ -120,11 +104,11 @@ void NicServer::interrupt(MessageInfo* msg)
 	if( val & Nic::ER_INT){
         printf("==ERROR.\n");	
 	}
-    MessageInfo info;
-    Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
-    if(Message::send(this->observerThread, &info)) {
-       printf("local!!!! yamas:INIT error\n");
-    }
+ //   MessageInfo info;
+ //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
+ //   if(Message::send(this->observerThread, &info)) {
+ //      printf("local!!!! yamas:INIT error\n");
+ //   }
     return;
 }
 

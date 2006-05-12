@@ -22,9 +22,9 @@ typedef struct{
 //Data transmit Controls.
 //See spec sheet Page 162.
 typedef struct{
-	dword status;
-	word  control; 
+	dword status; 
 	word  bcnt;
+	word  control;
 	dword rbaddr;
 	dword reserved;
 } TXDSC;
@@ -60,7 +60,10 @@ protected:
 	TXDSC* txdsc;
 	int txindex;
 	enum{
-		LOGTXRINGLEN=2
+		LOGTXRINGLEN=2,
+		TMD1_OWN=0x8000,
+		TMD1_STP=0x0200,
+		TMD1_ENP=0x0100, 
 	};
 public:	
     int   init();
@@ -133,6 +136,7 @@ private:
 	  CSR_INIT     =0x0001,
 	  CSR_START    =0x0002,
 	  CSR_STOP     =0x0004,
+	  CSR_TDMD     =0x0008,
 	  CSR_INTEN    =0x0040,
 	  CSR_INTR     =0x0080,
 	  CSR_TINT     =0x0200,
@@ -146,6 +150,7 @@ private:
 	  MODE_DNY_BCST=0x4000,
 	  MODE_PROMISC =0x8000,
 	  MODE_PSEL    =0x0180,
+
 	  NO_INIT_BLOCK=0x0000,
 	};
 };
