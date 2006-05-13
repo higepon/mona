@@ -34,12 +34,12 @@ bool NicServer::initialize()
     }
     syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); // with mask Interrrupt by higepon
     this->nic->enableNetwork();
-	////////////////
-	nic->setIP(172,16,177,4);
-	dword ip= nic->getIP();         
-	for(int j=0;j<4;j++)
+    ////////////////
+    nic->setIP(172,16,177,4);
+    dword ip= nic->getIP();         
+    for(int j=0;j<4;j++)
           printf("%d.",*(((byte*)&ip)+j));
-	printf("\nIP is defined in NicServer::initalize(). Rewrite it as your environment.\n");
+    printf("\nIP is defined in NicServer::initalize(). Rewrite it as your environment.\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
     this->started = true;
@@ -58,22 +58,22 @@ int NicServer::ARPhandler()
     Ether::Frame* frame = NULL;
     while( frame = nic->rxFrameList.get(i) ){
         if( Util::swapShort(frame->type) ==  Ether::ARP ){
-		    nic->rxFrameList.removeAt(i);
+            nic->rxFrameList.removeAt(i);
             printf("ARP\n");
             Arp::Header* header=(Arp::Header*)(frame->data);
             if( header->dstIp == nic->getIP() ){ 
-				printf("%x %x\n",header->dstIp,nic->getIP());
+                printf("%x %x\n",header->dstIp,nic->getIP());
                 header->opeCode=Util::swapShort(Arp::OPE_CODE_ARP_REP);
                 memcpy(header->dstMac,header->srcMac,6);
-				nic->getMacAddress(header->srcMac);
+                nic->getMacAddress(header->srcMac);
                 header->dstIp=header->srcIp;
-				header->srcIp=nic->getIP();
-				memcpy(frame->dstmac,header->dstMac,6);
-				memcpy(frame->srcmac,header->srcMac,6);
+                header->srcIp=nic->getIP();
+                memcpy(frame->dstmac,header->dstMac,6);
+                memcpy(frame->srcmac,header->srcMac,6);
                 nic->Send(frame);
-			}else{
+            }else{
                 delete frame;
-			}
+            }
         }else{
             printf("IP\n");
             i++;
@@ -83,13 +83,13 @@ int NicServer::ARPhandler()
 }
 
 void NicServer::interrupt(MessageInfo* msg)
-{	
-	int val = nic->interrupt();
-	if( val & Nic::RX_INT ){
-        ARPhandler();	
+{    
+    int val = nic->interrupt();
+    if( val & Nic::RX_INT ){
+        ARPhandler();    
         //Don't say anything about in case mona is a router.
         while( nic->rxFrameList.size() != 0){
-			Ether::Frame* frame = nic ->rxFrameList.removeAt(0);
+            Ether::Frame* frame = nic ->rxFrameList.removeAt(0);
             IP::Header* header=(IP::Header*)(frame->data);
             printf("%x ",header->prot);
             for(int j=0;j<4;j++)
@@ -99,13 +99,13 @@ void NicServer::interrupt(MessageInfo* msg)
             printf("\n");
             delete frame;
         }
-	}
-	if(val & Nic::TX_INT){
+    }
+    if(val & Nic::TX_INT){
         printf("==TX\n");
-	}
-	if( val & Nic::ER_INT){
-        printf("==ERROR.\n");	
-	}
+    }
+    if( val & Nic::ER_INT){
+        printf("==ERROR.\n");    
+    }
  //   MessageInfo info;
  //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
  //   if(Message::send(this->observerThread, &info)) {
@@ -137,7 +137,7 @@ void NicServer::messageLoop()
         }
         case MSG_FRAME_READ:
         {
-			/*
+            /*
             if (this->frameList.size() == 0)
             {
                 MessageInfo m;
@@ -152,19 +152,19 @@ void NicServer::messageLoop()
                     }
                     else if (m.header == MSG_INTERRUPTED)
                     {
-						printf("XX\n");
+                        printf("XX\n");
                         MonAPI::Message::peek(&m, i, PEEK_REMOVE);
                         interrupt(&m);
                         break;
                     }
                 }
             }
-			*/
+            */
             //Ether::Frame* frame = this->frameList.removeAt(0);
             //SetFrameToSharedMemory(frame);
-            //delete frame;	
-			//printf("read\n");
-			sleep(500);
+            //delete frame;    
+            //printf("read\n");
+            sleep(500);
             MonAPI::Message::reply(&msg);
             break;
         }

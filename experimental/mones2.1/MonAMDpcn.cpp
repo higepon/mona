@@ -42,25 +42,25 @@ MonAMDpcn::~MonAMDpcn()
 
 MonAMDpcn::MonAMDpcn()
 {
-	piblock=NULL;
-	rxdsc=NULL;
-	rxbuf=monapi_allocate_dma_memory();
-	for( int i=1;i<3;i++){
-		byte* rxtmp=monapi_allocate_dma_memory();
-		if( rxtmp != rxbuf+0x1000*i){
-			printf("RX:buf is not continuous.%d\n",i);
-			rxbuf=NULL;
-		}
-	}
-	txdsc=NULL;
-	txbuf=monapi_allocate_dma_memory();
-	for(int i=1;i<4;i++){
-		byte* txtmp=monapi_allocate_dma_memory();
-		if( txtmp != txbuf+0x1000*i){
-			printf("TX:buf is not continuous.%d\n",i);
-			txbuf=NULL;
-		}
-	}
+    piblock=NULL;
+    rxdsc=NULL;
+    rxbuf=monapi_allocate_dma_memory();
+    for( int i=1;i<3;i++){
+        byte* rxtmp=monapi_allocate_dma_memory();
+        if( rxtmp != rxbuf+0x1000*i){
+            printf("RX:buf is not continuous.%d\n",i);
+            rxbuf=NULL;
+        }
+    }
+    txdsc=NULL;
+    txbuf=monapi_allocate_dma_memory();
+    for(int i=1;i<4;i++){
+        byte* txtmp=monapi_allocate_dma_memory();
+        if( txtmp != txbuf+0x1000*i){
+            printf("TX:buf is not continuous.%d\n",i);
+            txbuf=NULL;
+        }
+    }
 }
 
 int MonAMDpcn::init()
@@ -79,7 +79,7 @@ int MonAMDpcn::init()
      //initialize tx 
     if( txbuf == 0 )
         return -1; 
-	printf("TX%x %x\n",txbuf,sizeof(TXDSC));
+    printf("TX%x %x\n",txbuf,sizeof(TXDSC));
     txdsc= (TXDSC*)txbuf;
     txbuf += ((1<<LOGTXRINGLEN)*sizeof(TXDSC));
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
@@ -89,10 +89,10 @@ int MonAMDpcn::init()
         (txdsc+i)->rbaddr=(dword)(txbuf+i*PKTSIZE);
     }
     txindex=0;
-	///////////////
-	stop();
+    ///////////////
+    stop();
     reset();
-    w_bcr(BCR_MISC,BCR_AUTOSEL);	    //SET BCR_EDGETRG for Edge Sense.
+    w_bcr(BCR_MISC,BCR_AUTOSEL);        //SET BCR_EDGETRG for Edge Sense.
     w_bcr(BCR_SSTYLE,BCR_PCI_II|BCR_SSIZE);
     //Use initalize block.
     piblock=(IBLK*)monapi_allocate_dma_memory();
@@ -118,40 +118,40 @@ int MonAMDpcn::init()
     w_csr(CSR_FEATURE,FEAT_PADTX|FEAT_TXMSK|0x915);    //CSR 4
     //printf("chip version=%x\n",(r_csr(88)>>12)|(r_csr(89)<<4));
     w_csr(CSR_CSR,CSR_INTEN|CSR_START);          //CSR 0
-    return 0;	
+    return 0;    
 }
 
 int MonAMDpcn::interrupt()
 {
-	word val;
-	word ret=0x0000;
-	if( ( val = r_csr(CSR_CSR)) & CSR_INTR ){
-		if( val & CSR_RINT ){
-			rxihandler();
-			ret |= RX_INT;
-		}
-		if (val & CSR_TINT){
-			txihandler();
-			ret |= TX_INT;
-		}
-		w_csr(CSR_CSR, val & 0xFFF0);
-	}
-	//Interrupt was masked by OS handler.
-	enableNetwork(); //Now be enabled here. 
-	return ret;
+    word val;
+    word ret=0x0000;
+    if( ( val = r_csr(CSR_CSR)) & CSR_INTR ){
+        if( val & CSR_RINT ){
+            rxihandler();
+            ret |= RX_INT;
+        }
+        if (val & CSR_TINT){
+            txihandler();
+            ret |= TX_INT;
+        }
+        w_csr(CSR_CSR, val & 0xFFF0);
+    }
+    //Interrupt was masked by OS handler.
+    enableNetwork(); //Now be enabled here. 
+    return ret;
 }
 
 void MonAMDpcn::Send(Ether::Frame* frame)
 {                  
-	txFrameList.add(frame);
+    txFrameList.add(frame);
     while( txFrameList.size() != 0) {
-		Ether::Frame* frame = txFrameList.removeAt(0);
+        Ether::Frame* frame = txFrameList.removeAt(0);
         memcpy(txbuf+txindex*PKTSIZE,frame,frame->payloadsize);
         (txdsc+txindex)->status=0;
         (txdsc+txindex)->bcnt=(word)(-frame->payloadsize)|0xF000;
-		(txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
+        (txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
         (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*PKTSIZE);
-		w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);	
-		delete frame;
+        w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);    
+        delete frame;
     }
 }

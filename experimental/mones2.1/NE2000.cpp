@@ -10,7 +10,7 @@ using namespace mones;
 
 Ether::Frame* NE2000::Recv(int n)
 {
-	return NULL;
+    return NULL;
 }
 
 void NE2000::Send(Ether::Frame* frame)
@@ -49,14 +49,14 @@ int NE2000::init(void)
     // 受信バッファ終了アドレス
     w_reg( NE_P0_PSTOP, NE_MEM_END );
     // EEPROM データ読みだし
-	byte buf[16];
+    byte buf[16];
     ne_pio_readmem( 0, buf, 16 );
     // イーサネットアドレス取得
-	for(int i=0;i<6;i++){
-		ether_mac_addr[i]=buf[2*i];
+    for(int i=0;i<6;i++){
+        ether_mac_addr[i]=buf[2*i];
         printf("%x.",ether_mac_addr[i]);
-	}
-	printf("\n");
+    }
+    printf("\n");
     // 割り込みステータスレジスタクリア
     w_reg( NE_P0_ISR, 0xff );
     //NICリセット
@@ -143,14 +143,14 @@ int NE2000::init(void)
 
     // ループバックモードを抜けて通常動作モードに入る
     w_reg( NE_P0_TCR, 0 );
-	printf("initalize completed.\n");
-	return 0;
+    printf("initalize completed.\n");
+    return 0;
 }
 
 
 int NE2000::interrupt() //void NE2000::inputFrame(void)
 {
-	printf("interrupted.\n");
+    printf("interrupted.\n");
     byte sts,*buf;
     //バウンダリレジスタ と、カレントページレジスタは8ビット幅
     //データにアクセスする際、8ビットシフトして16ビット幅アクセスを行う
@@ -210,9 +210,6 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
 
     byte bndBuf[4];
     ne_pio_readmem( bnd << 8, bndBuf, 4 );
-
-// Yamamiデバッグ リードアドレスの表示
-//printf("Read Src = bnd << 8 : %x\n",bnd << 8);
 
     ne_ringbuf_status = bndBuf[0]; /* Receive Status */
     ne_ringbuf_bound = bndBuf[1] & 0xFF; /* Next Packet Pointer */
@@ -286,7 +283,7 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
 
     //H8 より
     w_reg(NE_P0_IMR, NE_IMR_PRXE); /* Packet Receive interrupt enable */
-	return 0;
+    return 0;
 }
 
 void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
@@ -389,7 +386,7 @@ void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
     w_reg( NE_P0_COMMAND, NE_CR_RD0 + NE_CR_STA );
     // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(dword i = 0 ; i < size ; i+=2 , dest+=2){
-		word readtmp=r_regw( NE_ASIC_DATA );
+        word readtmp=r_regw( NE_ASIC_DATA );
         //リトルエンディアンならこう？？
         *(dest+1)=(byte)(readtmp >> 8);
         *(dest)=(byte)(readtmp & 0xff);

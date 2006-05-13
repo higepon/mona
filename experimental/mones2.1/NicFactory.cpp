@@ -38,12 +38,12 @@ Nic* NicFactory::create()
         return nic;
     }
 
-	delete pcilib;
-	//default
+    delete pcilib;
+    //default
     nic = new NE2000();
     //Bochs
     nic->setIRQ(3);
     nic->setIOBase(0x240);
-	nic->init();
+    nic->init();
     return nic;
 }

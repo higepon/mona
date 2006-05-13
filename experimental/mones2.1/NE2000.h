@@ -24,16 +24,16 @@ class NE2000 : public Nic
 public:
     void  Send(Ether::Frame*);
     Ether::Frame* Recv(int n);
-	int interrupt();
+    int interrupt();
     NE2000();
     ~NE2000();
     int init();
-	void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
+    void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
 private:
-	void w_reg(word reg,byte val){ outp8(iobase+reg,val); };
-	byte r_reg(word reg){ return inp8(iobase+reg); };
-	void w_regw(word reg,word val){ outp16(iobase+reg,val); };
-	word r_regw(word reg){ return inp16(iobase+reg); };
+    void w_reg(word reg,byte val){ outp8(iobase+reg,val); };
+    byte r_reg(word reg){ return inp8(iobase+reg); };
+    void w_regw(word reg,word val){ outp16(iobase+reg,val); };
+    word r_regw(word reg){ return inp16(iobase+reg); };
 
     dword getFrameBufferSize(){ return frame_len; }
     void ne_pio_writemem( byte *, dword, dword );

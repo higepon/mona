@@ -37,10 +37,10 @@ int MonaMain(List<char*>* pekoe)
     //httpd_init();
     arptimer = 0;
 
-	Ether::Frame ef;
+    Ether::Frame ef;
     while(1) {
-		sleep(500);
-		nic_read(nicThread,&ef);
+        sleep(500);
+        nic_read(nicThread,&ef);
        // monadev_read();
     }
     return 0;
@@ -66,7 +66,7 @@ dword nic_read(dword nicThread, Ether::Frame* frame)
         printf("send error 1");
         return 1;
     }
-	//printf("X\n");
+    //printf("X\n");
     GetFrameFromSharedMemory(frame);
     return 0;
 }
@@ -81,6 +81,6 @@ dword nic_write(dword nicThread, OutPacket* packet)
         printf("send error 1");
         return 1;
     }
-	sprintf(NULL,"%d",1); // trick your linker.
+    sprintf(NULL,"%d",1); // trick your linker.
     return 0;
 }

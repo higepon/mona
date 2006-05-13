@@ -1,5 +1,4 @@
-#ifndef _MONA_MONES_NE2000CONST_
-#define _MONA_MONES_NE2000CONST_
+#pragma once
 
 namespace mones {
 
@@ -10,14 +9,10 @@ namespace mones {
 #define     ETHER_MIN_PACKET    64      /* 最小パケットサイズ */
 #define     ETHER_MAX_PACKET    1514    /* 最大パケットサイズ */
 
-
-// NE2000 定数定義
-
 // QEMU PCI NE2000
 #define     NE_ASIC             0x10
 #define     NE_ASIC_DATA        NE_ASIC
 #define     NE_ASIC_RESET       NE_ASIC+ 0x0f
-
 
 //Yamami
 #define NE_MEM_START        64       /* バッファメモリ開始ページ番号    (アドレス4000h) */
@@ -26,24 +21,6 @@ namespace mones {
 #define NE_TX_PAGE_START    0x40     /* =64 送信バッファ開始ページ番号 */
 #define NE_RX_PAGE_START    0x46     /* =70 受信バッファ開始ページ番号 */
 #define NE_RX_PAGE_STOP     0x80     /* =128 受信バッファ終了ページ番号 */
-
-//オリジナル
-//#define     NE_MEM_START        64   /* バッファメモリ開始ページ番号 (アドレス4000h) */
-//#define     NE_MEM_END          128  /* バッファメモリ終了ページ番号  (アドレス8000h) */
-//#define     NE_PAGE_SIZE        256  /* １ページのバイト数 */
-//#define     NE_TX_PAGE_START    64   /* 送信バッファ開始ページ番号 */
-//#define     NE_RX_PAGE_START    70   /* 受信バッファ開始ページ番号 */
-//#define     NE_RX_PAGE_STOP     128  /* 受信バッファ終了ページ番号 */
-
-//H8より
-//#define NE_MEM_START        64       /* バッファメモリ開始ページ番号    (アドレス4000h) */
-//#define NE_MEM_END      12           /* バッファメモリ終了ページ番号  (アドレス8000h) */
-//#define NE_PAGE_SIZE        256      /* １ページのバイト数 */
-//#define NE_TX_PAGE_START    0x40     /* 送信バッファ開始ページ番号 */
-//#define NE_RX_PAGE_START    0x46     /* 受信バッファ開始ページ番号 */
-//#define NE_RX_PAGE_STOP     0x80     /* 受信バッファ終了ページ番号 */
-
-
 
 // NE2000 レジスタアドレス定義
 
@@ -122,9 +99,8 @@ namespace mones {
 #define     NE_RSTAT_OVER       8           /* overflow */
 
 #define     NE_TSR_ABT          8           /* Transmit Aborted */
-
 #define     NE_TCR_LB0          2           /* Internal loopback */
-
 #define     ne_cr_proto         NE_CR_RD2
+
 }; // namespace mones
-#endif
+
