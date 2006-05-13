@@ -74,7 +74,6 @@ public:
 	~MonAMDpcn();
     void  inputFrame(){};
     dword getFrameBufferSize(){ return 0; }
-    int   probe(){ return 0; }
 	void  getMacAddress(byte* dest){if(piblock!=NULL){memcpy(dest, piblock->mac_addr, 6);} }
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}

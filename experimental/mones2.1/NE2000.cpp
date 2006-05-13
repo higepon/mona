@@ -28,10 +28,12 @@ using namespace mones;
 */
 NE2000::NE2000()
 {
+	printf("I have NE2000\n");
 }
 
 NE2000::~NE2000()
 {
+
 }
 
 /*!

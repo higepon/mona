@@ -37,7 +37,6 @@ public:
     Nic();
     virtual ~Nic();
     virtual int init() =0;
-    virtual int probe() = 0;
     virtual void Send(Ether::Frame*)=0;
     virtual Ether::Frame* Read(int)=0;
     virtual int interrupt() =0;
