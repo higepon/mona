@@ -20,7 +20,7 @@ void NE2000::Send(Ether::Frame* frame)
 
 int NE2000::interrupt()
 {
-
+	return 0;
 }
 
 NE2000::NE2000()

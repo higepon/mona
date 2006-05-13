@@ -75,19 +75,12 @@ public:
     void  inputFrame(){};
     dword getFrameBufferSize(){ return 0; }
 	void  getMacAddress(byte* dest){if(piblock!=NULL){memcpy(dest, piblock->mac_addr, 6);} }
-    byte  getIRQ() const {return this->irq;}
-    int   getIOBase() const {return this->iobase;}
-    void  setIRQ(byte n) {this->irq = n;}
-    void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
     enum{
         VENDORID   =0x1022,
         DEVICEID   =0x2000,
 	};
 private:
-    int   irq;
-    int   iobase;
 	IBLK* piblock;
-
 	word r_rap(){ return inp16(iobase+IO_RAP);}
 	void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
 	word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }

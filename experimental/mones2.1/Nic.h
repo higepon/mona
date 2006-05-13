@@ -36,11 +36,11 @@ public:
     virtual Ether::Frame* Recv(int)=0;
     virtual int interrupt() =0;
     virtual void getMacAddress(byte* dest) =0;
-    virtual byte getIRQ() const = 0;
-    virtual int getIOBase() const = 0;
-    virtual void setIRQ(byte irq) = 0;
-    virtual void setIOBase(int iobase) = 0;
 
+	byte  getIRQ() const {return this->irq;}
+    int   getIOBase() const {return this->iobase;}
+    void  setIRQ(byte n) {this->irq = n;}
+    void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
     void enableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
     void disableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
     enum{
@@ -50,11 +50,13 @@ public:
     };	
     void setIP(byte a,byte b,byte c,byte d){ myIP=((d<<24)|(c<<16)|(b<<8)|a);}
     dword getIP(){ return myIP; };
-//proteced:
+//protected:
     HList<Ether::Frame*> rxFrameList;
 protected:
     HList<Ether::Frame*> txFrameList;
 	dword myIP;
+    int   irq;
+    int   iobase;
 };
 
 };

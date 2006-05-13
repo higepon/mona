@@ -16,7 +16,7 @@ namespace mones {
 
 //BOCHS ISA NE2000
 //#define     NE_BASE             0x240
-#define     NE_BASE             nicIo_Base
+#define     NE_BASE             iobase
 // QEMU PCI NE2000
 //#define     NE_BASE             0xC100
 #define     NE_ASIC             NE_BASE + 0x10
@@ -26,7 +26,7 @@ namespace mones {
 
 //Yamami
 #define NE_MEM_START        64       /* バッファメモリ開始ページ番号    (アドレス4000h) */
-#define NE_MEM_END      128           /* バッファメモリ終了ページ番号  (アドレス8000h) */
+#define NE_MEM_END          128      /* バッファメモリ終了ページ番号  (アドレス8000h) */
 #define NE_PAGE_SIZE        256      /* １ページのバイト数 */
 #define NE_TX_PAGE_START    0x40     /* =64 送信バッファ開始ページ番号 */
 #define NE_RX_PAGE_START    0x46     /* =70 受信バッファ開始ページ番号 */

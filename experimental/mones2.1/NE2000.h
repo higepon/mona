@@ -22,36 +22,26 @@ namespace mones {
 
 class NE2000 : public Nic
 {
-    void inputFrame();	
-    void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
-    void getFrameBuffer(byte* buffer, dword size);
-
 public:
     void  Send(Ether::Frame*);
     Ether::Frame* Recv(int n);
 	int interrupt();
-
     NE2000();
     ~NE2000();
     int init();
-    int probe();   
 	void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
-    byte getIRQ() const {return this->nicIRQ;}
-    int getIOBase() const {return this->nicIo_Base;}
-    void setIRQ(byte irq) {this->nicIRQ = irq;}
-    void setIOBase(int iobase) {this->nicIo_Base = iobase;}
 private:
+    int probe();
     dword getFrameBufferSize(){ return frame_len; }
-    int nicIRQ;
-    int nicIo_Base;
     void nic_init(void);
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );
     int ne_bcompare( byte *, byte *, dword );
     void xfer_buf( byte *, byte *, dword, dword *, dword, dword,dword );
-
-    /* 受信リングバッファのリンク情報領域を読み込むところ */
-    /* ne_ring_buffer */
+/////////
+    void inputFrame();	
+    void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
+    void getFrameBuffer(byte* buffer, dword size);
     byte       ne_ringbuf_status;
     byte       ne_ringbuf_bound;
     dword      ne_ringbuf_len;
