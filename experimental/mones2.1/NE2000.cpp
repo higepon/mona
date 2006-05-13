@@ -45,21 +45,8 @@ NE2000::~NE2000()
 
 }
 
-int NE2000::init()
-{
-    int reti = probe();    //Ne2000 存在確認
-    if(reti != 0 ){
-        printf("Does Not Exist Ne2K!!!\n");
-        return -1;
-    }
-
-    nic_init();    //Ne2000 初期化
-    return 0;
-}
-
 void NE2000::inputFrame(void)
 {
-
     byte sts,*buf;
     //バウンダリレジスタ と、カレントページレジスタは8ビット幅
     //データにアクセスする際、8ビットシフトして16ビット幅アクセスを行う
@@ -295,10 +282,8 @@ void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
 
 }
 
-int NE2000::probe(void)
+int NE2000::init(void)
 {
-    int i;
-
     /* ソフトウェアリセット */
     //outp8( NE_ASIC_RESET, inp8( NE_ASIC_RESET ) );
     /* リセット完了まで待つ */
@@ -336,23 +321,15 @@ int NE2000::probe(void)
     ne_pio_readmem( 0, ne_test_buffer, 16 );
 
     // イーサネットアドレス取得
-    for(i=0;i<11;i+=2)
+    for(int i=0;i<11;i+=2)
         ether_mac_addr[i/2]=ne_test_buffer[i];
 
     // 割り込みステータスレジスタクリア
     outp8( NE_P0_ISR, 0xff );
-
-    return(0);
-}
-
-void NE2000::nic_init(void)
-{
-    // 各変数の初期化
-    int i;
-    byte c;
+    ////////////////////////////////////////////////////////////////////////////////
 
     //NICリセット
-    c = inp8(NE_ASIC_RESET);
+    byte c = inp8(NE_ASIC_RESET);
     outp8(NE_ASIC_RESET, c);
 
     //リセット完了まで待つ
@@ -410,7 +387,7 @@ void NE2000::nic_init(void)
 
     // Ethernet アドレスの設定
     // ここで指定したアドレスのパケットを受け取る
-    for(i=0;i<6;i++){
+    for(int i=0;i<6;i++){
         outp8( NE_P1_PAR0 + i, ether_mac_addr[i] );
     }
 
@@ -445,6 +422,7 @@ void NE2000::nic_init(void)
 
     // ループバックモードを抜けて通常動作モードに入る
     outp8( NE_P0_TCR, 0 );
+	return 0;
 }
 
 void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )

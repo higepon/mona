@@ -7,8 +7,7 @@
     License=MIT/X License
 
     \author  Yamami Higepon
-    \version $Revision: 1.1 $
-    \date   create:2004/08/08 update:$Date: 2006/01/02 15:12:55 $
+    $Date: 2006/01/02 15:12:55 $
 */
 
 #pragma once
@@ -31,17 +30,15 @@ public:
     int init();
 	void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
 private:
-    int probe();
     dword getFrameBufferSize(){ return frame_len; }
-    void nic_init(void);
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );
     int ne_bcompare( byte *, byte *, dword );
-    void xfer_buf( byte *, byte *, dword, dword *, dword, dword,dword );
 /////////
     void inputFrame();	
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void getFrameBuffer(byte* buffer, dword size);
+////////
     byte       ne_ringbuf_status;
     byte       ne_ringbuf_bound;
     dword      ne_ringbuf_len;
