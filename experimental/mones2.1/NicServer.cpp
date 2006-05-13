@@ -36,7 +36,10 @@ bool NicServer::initialize()
     this->nic->enableNetwork();
 	////////////////
 	nic->setIP(172,16,177,4);
-	printf("IP is defined in NicServer::initalize(). Rewrite it as your environment.\n");
+	dword ip= nic->getIP();         
+	for(int j=0;j<4;j++)
+          printf("%d.",*(((byte*)&ip)+j));
+	printf("\nIP is defined in NicServer::initalize(). Rewrite it as your environment.\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
     this->started = true;
