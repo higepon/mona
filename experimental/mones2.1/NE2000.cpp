@@ -339,7 +339,6 @@ void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
     enableNetwork();
 
     // 送信が完了しているかどうかチェックする
-    // 2004/11/16 Yamami QEMU on Ne2000 だとこのチェックが永遠に通らないようなのでチェックしない
     //while( ( r_reg( NE_P0_COMMAND ) & 0x04 ) !=0 );
 }
 
@@ -396,8 +395,7 @@ void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
 
 void NE2000::getFrameBuffer(byte* buffer, dword size)
 {
-    dword maxSize = getFrameBufferSize();
-    size = size < maxSize ? size : maxSize;
+    size = size <  frame_len ? size :  frame_len;
     memcpy(buffer, this->frame_buf, size);
 }
 

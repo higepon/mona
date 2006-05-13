@@ -35,7 +35,6 @@ private:
     void w_regw(word reg,word val){ outp16(iobase+reg,val); };
     word r_regw(word reg){ return inp16(iobase+reg); };
 
-    dword getFrameBufferSize(){ return frame_len; }
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );
 /////////
