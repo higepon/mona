@@ -70,8 +70,7 @@ int NicServer::ARPhandler()
 				header->srcIp=nic->getIP();
 				memcpy(frame->dstmac,header->dstMac,6);
 				memcpy(frame->srcmac,header->srcMac,6);
-                nic->txFrameList.add(frame);
-                nic->Send();
+                nic->Send(frame);
 			}else{
                 delete frame;
 			}
@@ -131,8 +130,8 @@ void NicServer::messageLoop()
         }
         case MSG_FRAME_WRITE:
         {
-            OutPacket* p = (OutPacket*)msg.arg1;
-            this->nic->outputFrame(p->header, p->destmac, p->size, p->protocol);
+            //OutPacket* p = (OutPacket*)msg.arg1;
+            //this->nic->outputFrame(p->header, p->destmac, p->size, p->protocol);
             MonAPI::Message::reply(&msg);
             break;
         }

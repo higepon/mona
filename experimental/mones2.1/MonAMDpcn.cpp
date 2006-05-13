@@ -141,8 +141,9 @@ int MonAMDpcn::interrupt()
 	return ret;
 }
 
-void MonAMDpcn::Send()
-{   
+void MonAMDpcn::Send(Ether::Frame* frame)
+{                  
+	txFrameList.add(frame);
     while( txFrameList.size() != 0) {
 		Ether::Frame* frame = txFrameList.removeAt(0);
         memcpy(txbuf+txindex*PKTSIZE,frame,frame->payloadsize);
@@ -154,14 +155,3 @@ void MonAMDpcn::Send()
 		delete frame;
     }
 }
-////////////////////
-void MonAMDpcn::outputFrame(byte* packet, byte* macAddress, dword size, word protocolId)
-{
-
-}
-
-void MonAMDpcn::getFrameBuffer(byte* buffer, dword size)
-{
-
-}
-/////////////
