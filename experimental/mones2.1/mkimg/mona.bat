@@ -1,0 +1,1 @@
+qemu.exe -L . -cdrom mona.iso -net nic -net tap,ifname=my-tap

@@ -34,7 +34,9 @@ install: all
 	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 run: install
 	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/run.bat
-	
+runq: install
+	cd $(MONADIR)/tool/mkimg && make && cp mona.iso $(QEMUDIR)
+	cd $(QEMUDIR) && $(QEMUDIR)/mona.bat	
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f ${MONADIR}/bin/mona.img dependencies
