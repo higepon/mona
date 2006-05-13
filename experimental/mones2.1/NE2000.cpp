@@ -20,6 +20,7 @@ void NE2000::Send(Ether::Frame* frame)
 
 int NE2000::interrupt()
 {
+	printf("interrupted.\n");
 	return 0;
 }
 
@@ -380,7 +381,7 @@ int NE2000::init(void)
     outp8( NE_P0_IMR, NE_IMR_PRXE );
 
     //Yamami 全割り込みを許可してみる
-    //outp8( NE_P0_IMR, 0x7F );
+    outp8( NE_P0_IMR, 0x7F );
 
     // Page 1 の設定
     outp8( NE_P0_COMMAND, ne_cr_proto | ( NE_CR_PS1 + NE_CR_STP ) );
@@ -422,6 +423,7 @@ int NE2000::init(void)
 
     // ループバックモードを抜けて通常動作モードに入る
     outp8( NE_P0_TCR, 0 );
+	printf("initalize completed.\n");
 	return 0;
 }
 

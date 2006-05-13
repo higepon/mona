@@ -31,10 +31,11 @@ Nic* NicFactory::create()
     if( pciinfo.Exist == 0){
         nic = new NE2000();
         //QEMU.
-        nic->setIRQ(9);
-        nic->setIOBase(0xC100); 
+		nic->setIRQ(pciinfo.IrqLine);
+        nic->setIOBase(pciinfo.BaseAd);
 		nic->init();
         delete pcilib;
+		printf("[%d %x]\n",pciinfo.IrqLine,pciinfo.BaseAd);
         return nic;
     }
 

@@ -33,7 +33,7 @@ private:
     dword getFrameBufferSize(){ return frame_len; }
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );
-    int ne_bcompare( byte *, byte *, dword );
+    int  ne_bcompare( byte *, byte *, dword );
 /////////
     void inputFrame();	
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
@@ -46,12 +46,10 @@ private:
     byte       ne_rx_bound;      /* 受信後の境界レジスタ値 */
     dword      ne_rx_write_p;    /* 受信パケット書き込みアドレス */
     dword      ne_rx_sub_len;    /* 折り返し分の長さ */
-    dword      ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
-    /*! \brief 受信パケット本体の長さ */ 
+    dword      ne_rx_remain_len; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */ 
     dword      frame_len;
     byte       frame_buf[1500];
     byte       ether_mac_addr[6];
-    /* NE2000 ワークエリア */
     int        ne_sizeof_test_pattern;
     byte       ne_test_buffer[20];
 };
