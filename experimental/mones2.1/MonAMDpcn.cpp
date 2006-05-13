@@ -2,7 +2,6 @@
 using namespace MonAPI;
 using namespace mones;
 
-#include "NicServer.h" //ForDebuging.
 
 void MonAMDpcn::txihandler()
 {
@@ -97,7 +96,7 @@ int MonAMDpcn::init()
     w_bcr(BCR_SSTYLE,BCR_PCI_II|BCR_SSIZE);
     //Use initalize block.
     piblock=(IBLK*)monapi_allocate_dma_memory();
-    piblock->mode=0x0;         //set MODE_DNY_BCST for deny broad cast packets.
+    piblock->mode=0x0;         //set MODE_DNY_BCST for deny broadcast packets.
     piblock->rxlen=(LOGRXRINGLEN<<4);  //see page157.
     piblock->txlen=(LOGTXRINGLEN<<4);
     for(int i=0;i<5;i++){

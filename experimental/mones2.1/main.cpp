@@ -1,4 +1,3 @@
-#include "monadev.h"
 #include "NicServer.h"
 #include <monapi.h>
 #include <monalibc.h>
@@ -31,18 +30,18 @@ int MonaMain(List<char*>* pekoe)
     //printf(">>%d\n",nicThread);
     byte arptimer;
     /* Initialize the device driver. */
-    monadev_init();
+    //monadev_init();
     /* Initialize the uIP TCP/IP stack. */
     //uip_init();
     /* Initialize the HTTP server. */
     //httpd_init();
     arptimer = 0;
 
+	Ether::Frame ef;
     while(1) {
 		sleep(500);
-  
-        monadev_read();
-    
+		nic_read(nicThread,&ef);
+       // monadev_read();
     }
     return 0;
 }
@@ -67,6 +66,7 @@ dword nic_read(dword nicThread, Ether::Frame* frame)
         printf("send error 1");
         return 1;
     }
+	//printf("X\n");
     GetFrameFromSharedMemory(frame);
     return 0;
 }
