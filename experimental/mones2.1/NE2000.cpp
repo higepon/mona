@@ -204,22 +204,12 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
 
 
     // bound+1 ページの先頭4バイトを読み込む
-    // Yamami ↓だと、連続した変数宣言が、連続した4バイトである事に頼っている？？
-    // バッファに一旦リードして、代入する処理に変更
-    //ne_pio_readmem( bnd << 8, &ne_ringbuf_status, 4 );
-
     byte bndBuf[4];
     ne_pio_readmem( bnd << 8, bndBuf, 4 );
 
     ne_ringbuf_status = bndBuf[0]; /* Receive Status */
     ne_ringbuf_bound = bndBuf[1] & 0xFF; /* Next Packet Pointer */
     ne_ringbuf_len = bndBuf[3] * 256 + bndBuf[2];   /* Receive Byte Count */
-
-    //↑これが、それぞれ逆のような気がする。エンディアンの違い？？
-    //  この事は、Read/Write側を変更
-    //ne_ringbuf_status = bndBuf[1]; /* Receive Status */
-    //ne_ringbuf_bound = bndBuf[0] & 0xFF; /* Next Packet Pointer */
-    //ne_ringbuf_len = bndBuf[2] * 256 + bndBuf[3];   /* Receive Byte Count */
 
     ne_rx_start=(bnd << 8) + 4; // パケット本体の開始アドレス
 
@@ -230,43 +220,27 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
     // 受信終了後の境界レジスタ値
     ne_rx_bound=ne_ringbuf_bound;
 
-    if( ( ne_ringbuf_status & NE_RSTAT_PRX ) !=0 ){
-                    // 受信が正常終了した
-        if( frame_len >= ETHER_HEADER_SIZE ){
-                    // 最短長より短いときはエラー
-            if( frame_len < ETHER_MAX_PACKET ) {
-                    // 最大長より長いときはエラー
+    if( ( ne_ringbuf_status & NE_RSTAT_PRX ) !=0 ){//受信正常終了
+        if((ETHER_HEADER_SIZE <= frame_len)  && (frame_len < ETHER_MAX_PACKET )) {
+            ne_rx_remain_len=frame_len;
+            // パケットの取り込み処理
+            // 折り返し分の長さ
+            ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
+            if( ne_rx_sub_len < frame_len ){
+                // 受信すべきパケットは折り返している
+                // 前半部の読み込み
+                ne_pio_readmem( ne_rx_start, buf, ne_rx_sub_len );
+                ne_rx_start=NE_RX_PAGE_START * 256;
 
-                ne_rx_remain_len=frame_len;
-
-                // パケットの取り込み処理
-                // 折り返し分の長さ
-                ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
-
-                if( ne_rx_sub_len < frame_len ){
-                    // 受信すべきパケットは折り返している
-                    // 前半部の読み込み
-                    ne_pio_readmem( ne_rx_start, buf, ne_rx_sub_len );
-                    ne_rx_start=NE_RX_PAGE_START * 256;
-
-                    // 書き込みアドレスの更新
-                    buf+=ne_rx_sub_len;
-                    // 残りの読み込み長の更新
-                    ne_rx_remain_len=frame_len - ne_rx_sub_len;
-                }
-                // パケットの読み込み
-                ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
-
+                // 書き込みアドレスの更新
+                buf+=ne_rx_sub_len;
+                // 残りの読み込み長の更新
+                ne_rx_remain_len=frame_len - ne_rx_sub_len;
             }
-            else{
-                //printf("Error frame_len >= ETHER_MAX_PACKET \n");
-            }
+            // パケットの読み込み
+            ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
         }
-        else{
-            //printf("Error frame_len >= ETHER_HEADER_SIZE \n");
-        }
-    }
-    else{
+    }else{
         //printf("Error ne_ringbuf_status & NE_RSTAT_PRX = 0 \n");
     }
 
@@ -301,21 +275,10 @@ void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
     // ネットワークバイトオーダーに変換する
     // Yamami 変換不要？
     ptx_type=(pid >> 8)+(pid << 8);
-    // 割り込み禁止
     // 送信処理中に受信するとレジスタが狂ってしまう
-    //disableInterrupt();
     disableNetwork();
 
-    // 宛先アドレスの書き込み
-//    ne_pio_writemem( ptx_dest, NE_TX_PAGE_START << 8, 6 );
-    // 送信元アドレスの書き込み
-//    ne_pio_writemem( ether_mac_addr, ( NE_TX_PAGE_START << 8 ) + 6, 6 );
-    // プロトコルIDの書き込み
-//    ne_pio_writemem( (byte *)&ptx_type, ( NE_TX_PAGE_START << 8 ) + 12, 2 );
-    // データ部分の書き込み
-//    ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) + 14, ptx_size );
     ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) , ptx_size );
-
     ptx_size+=ETHER_HEADER_SIZE;
 
     // 最小パケット長より短いかどうかをチェックする

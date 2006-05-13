@@ -34,12 +34,9 @@ bool NicServer::initialize()
     }
     syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); // with mask Interrrupt by higepon
     this->nic->enableNetwork();
-    ////////////////
-    nic->setIP(172,16,177,4);
     dword ip= nic->getIP();         
     for(int j=0;j<4;j++)
           printf("%d.",*(((byte*)&ip)+j));
-    printf("\nIP is defined in NicServer::initalize(). Rewrite it as your environment.\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
     this->started = true;

@@ -1,9 +1,9 @@
 #pragma once
 
 namespace mones {
-
-// NE2000 各種定義 from ne2000.h
+/// 0x10EC,0x8029
 // イーサネット定数定義
+
 
 #define     ETHER_HEADER_SIZE   14      /* ヘッダーサイズ */
 #define     ETHER_MIN_PACKET    64      /* 最小パケットサイズ */

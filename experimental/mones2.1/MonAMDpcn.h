@@ -43,7 +43,6 @@ typedef struct{
 class MonAMDpcn : public Nic 
 {
 protected:
-    int initRX();
     void rxihandler();
     byte* rxbuf;
     RXDSC* rxdsc;
@@ -54,7 +53,6 @@ protected:
         RMD1_STP=0x0200,
         RMD1_ENP=0x0100,
     };
-    int initTX();
     void txihandler();
     byte* txbuf;
     TXDSC* txdsc;
@@ -72,8 +70,6 @@ public:
     int   interrupt();
     MonAMDpcn();
     ~MonAMDpcn();
-    void  inputFrame(){};
-    dword getFrameBufferSize(){ return 0; }
     void  getMacAddress(byte* dest){if(piblock!=NULL){memcpy(dest, piblock->mac_addr, 6);} }
     enum{
         VENDORID   =0x1022,
