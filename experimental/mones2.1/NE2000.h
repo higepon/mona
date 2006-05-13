@@ -30,12 +30,15 @@ public:
     int init();
 	void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
 private:
+	void w_reg(word reg,byte val){ outp8(iobase+reg,val); };
+	byte r_reg(word reg){ return inp8(iobase+reg); };
+	void w_regw(word reg,word val){ outp16(iobase+reg,val); };
+	word r_regw(word reg){ return inp16(iobase+reg); };
+
     dword getFrameBufferSize(){ return frame_len; }
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );
-    int  ne_bcompare( byte *, byte *, dword );
 /////////
-    void inputFrame();	
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
     void getFrameBuffer(byte* buffer, dword size);
 ////////
@@ -50,8 +53,6 @@ private:
     dword      frame_len;
     byte       frame_buf[1500];
     byte       ether_mac_addr[6];
-    int        ne_sizeof_test_pattern;
-    byte       ne_test_buffer[20];
 };
 
 }; // namespace mones

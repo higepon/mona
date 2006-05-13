@@ -13,15 +13,10 @@ namespace mones {
 
 // NE2000 定数定義
 
-
-//BOCHS ISA NE2000
-//#define     NE_BASE             0x240
-#define     NE_BASE             iobase
 // QEMU PCI NE2000
-//#define     NE_BASE             0xC100
-#define     NE_ASIC             NE_BASE + 0x10
+#define     NE_ASIC             0x10
 #define     NE_ASIC_DATA        NE_ASIC
-#define     NE_ASIC_RESET       NE_ASIC + 0x0f
+#define     NE_ASIC_RESET       NE_ASIC+ 0x0f
 
 
 //Yamami
@@ -52,38 +47,38 @@ namespace mones {
 
 // NE2000 レジスタアドレス定義
 
-#define     NE_P0_COMMAND       NE_BASE+0
-#define     NE_P0_PSTART        NE_BASE+1
-#define     NE_P0_PSTOP         NE_BASE+2
-#define     NE_P0_BNRY          NE_BASE+3   /* Boundary Reg */
-#define     NE_P0_TSR           NE_BASE+4   /* Transmit Status Reg */
-#define     NE_P0_TPSR          NE_BASE+4   /* Transmit Page Start Address Reg */
-#define     NE_P0_TBCR0         NE_BASE+5   /* Transmit Byte Counter Reg */
-#define     NE_P0_NCR           NE_BASE+5   /* Nubmer of Collisions */
-#define     NE_P0_TBCR1         NE_BASE+6
-#define     NE_P0_ISR           NE_BASE+7   /* Interrupt Status Reg */
-#define     NE_P0_RSAR0         NE_BASE+8   /* Remote Start Address Reg */
-#define     NE_P0_RSAR1         NE_BASE+9
-#define     NE_P0_RBCR0         NE_BASE+0xa /* Remote Byte Count Reg */
-#define     NE_P0_RBCR1         NE_BASE+0xb
-#define     NE_P0_RSR           NE_BASE+0xc /* Receive Status Reg */
-#define     NE_P0_RCR           NE_BASE+0xc /* Receive Configuration Reg */
-#define     NE_P0_TCR           NE_BASE+0xd /* Transmit Configuration Reg */
-#define     NE_P0_DCR           NE_BASE+0xe /* Data Configuration Reg */
-#define     NE_P0_IMR           NE_BASE+0xf /* Interrupt Mask Reg */
-#define     NE_P0_CNTR0         NE_BASE+0xd
-#define     NE_P0_CNTR1         NE_BASE+0xe
-#define     NE_P0_CNTR2         NE_BASE+0xf
+#define     NE_P0_COMMAND       0
+#define     NE_P0_PSTART        1
+#define     NE_P0_PSTOP         2
+#define     NE_P0_BNRY          3   /* Boundary Reg */
+#define     NE_P0_TSR           4   /* Transmit Status Reg */
+#define     NE_P0_TPSR          4   /* Transmit Page Start Address Reg */
+#define     NE_P0_TBCR0         5   /* Transmit Byte Counter Reg */
+#define     NE_P0_NCR           5   /* Nubmer of Collisions */
+#define     NE_P0_TBCR1         6
+#define     NE_P0_ISR           7   /* Interrupt Status Reg */
+#define     NE_P0_RSAR0         8   /* Remote Start Address Reg */
+#define     NE_P0_RSAR1         9
+#define     NE_P0_RBCR0         0xa /* Remote Byte Count Reg */
+#define     NE_P0_RBCR1         0xb
+#define     NE_P0_RSR           0xc /* Receive Status Reg */
+#define     NE_P0_RCR           0xc /* Receive Configuration Reg */
+#define     NE_P0_TCR           0xd /* Transmit Configuration Reg */
+#define     NE_P0_DCR           0xe /* Data Configuration Reg */
+#define     NE_P0_IMR           0xf /* Interrupt Mask Reg */
+#define     NE_P0_CNTR0         0xd
+#define     NE_P0_CNTR1         0xe
+#define     NE_P0_CNTR2         0xf
 
-#define     NE_P1_COMMAND       NE_BASE+0
-#define     NE_P1_PAR0          NE_BASE+1   /* Physical Addres Reg */
-#define     NE_P1_PAR1          NE_BASE+2
-#define     NE_P1_PAR2          NE_BASE+3
-#define     NE_P1_PAR3          NE_BASE+4
-#define     NE_P1_PAR4          NE_BASE+5
-#define     NE_P1_PAR5          NE_BASE+6
-#define     NE_P1_CURR          NE_BASE+7   /* Current Page Reg */
-#define     NE_P1_MAR0          NE_BASE+8   /* Multicast Address Reg */
+#define     NE_P1_COMMAND       0
+#define     NE_P1_PAR0          1   /* Physical Addres Reg */
+#define     NE_P1_PAR1          2
+#define     NE_P1_PAR2          3
+#define     NE_P1_PAR3          4
+#define     NE_P1_PAR4          5
+#define     NE_P1_PAR5          6
+#define     NE_P1_CURR          7   /* Current Page Reg */
+#define     NE_P1_MAR0          8   /* Multicast Address Reg */
 
 // NE2000 レジスタ定数定義
 #define     NE_CR_PS0           0           /* Page 0 Select */
@@ -131,6 +126,5 @@ namespace mones {
 #define     NE_TCR_LB0          2           /* Internal loopback */
 
 #define     ne_cr_proto         NE_CR_RD2
-const byte ne_test_pattern[]="NE2000 test message.\n";
 }; // namespace mones
 #endif

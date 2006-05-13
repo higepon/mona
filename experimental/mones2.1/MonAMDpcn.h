@@ -6,8 +6,8 @@
 
 namespace mones{ 
 
-const int PKTSIZE=1518;
-//DST6 SRC6 LEN2 LCC+PAD(46-1500) FCS4
+const int PKTSIZE=1514;
+//DST6 SRC6 LEN2 LCC+PAD(46-1500)
 //Data receive Controls.
 //See Spec Sheet Page 159.
 typedef struct{
@@ -81,15 +81,15 @@ public:
 	};
 private:
 	IBLK* piblock;
-	word r_rap(){ return inp16(iobase+IO_RAP);}
-	void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
-	word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
-	void w_csr(int reg,word val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
-	word r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
-	void w_bcr(int reg,word val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
-	void reset(){ inp16(iobase+IO_RESET); } //16bitmode;
-	void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
-	enum{
+    word r_rap(){ return inp16(iobase+IO_RAP);}
+    void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
+    word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
+    void w_csr(int reg,word val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
+    word r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
+    void w_bcr(int reg,word val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
+    void reset(){ inp16(iobase+IO_RESET); } //16bitmode;
+    void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
+    enum{
 	  IO_RDP       =0x10,
       IO_RAP       =0x12,
 	  IO_RESET     =0x14,
