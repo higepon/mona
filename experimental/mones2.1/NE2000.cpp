@@ -1,53 +1,31 @@
-/*!
-    \file   NE2000.cpp
-    \brief  NE2000ドライバクラス
 
-    Copyright (c) 2004 Yamami, Higepon
-    All rights reserved.
-    License=MIT/X License
-
-    \author  Yamami, Higepon
-    \version $Revision: 1.1 $
-    \date   create:2004/07/28 update:$Date: 2006/01/02 15:12:55 $
-*/
-
-/*! \class Ne2000
- *  \brief Ne2000ドライバクラス
- */
+///////////////////////////////
+//This file is derived form NE2000.cpp by Mr. Yamami.
+///////////////////////////////
 
 #include "NE2000.h"
 #include "NE2000const.h"
 
-
 using namespace mones;
-/*!
-    \brief initialize
-         NE2000 コンストラクタ
-    \author Yamami
-    \date   create:2004/08/08 update:
-*/
+
+Ether::Frame* NE2000::Recv(int n)
+{
+	return NULL;
+}
+
+void NE2000::Send(Ether::Frame* frame)
+{
+
+}
+
+int NE2000::interrupt()
+{
+
+}
+
 NE2000::NE2000()
 {
 	printf("I have NE2000\n");
-}
-
-NE2000::~NE2000()
-{
-
-}
-
-/*!
-    \brief initialize
-         NE2000 init
-    \author Yamami
-    \return int 結果 0:正常 、 0以外:異常
-    \date   create:2004/08/12 update:
-*/
-int NE2000::init()
-{
-    int reti;
-
-    //プライベートメンバ初期化
     ne_ringbuf_status=0;
     ne_ringbuf_bound=0;
     ne_ringbuf_len=0;
@@ -60,39 +38,25 @@ int NE2000::init()
     ne_rx_remain_len=0; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
 
     ne_sizeof_test_pattern=20;
+}
 
-    //Ne2000 存在確認
-    reti = probe();
+NE2000::~NE2000()
+{
+
+}
+
+int NE2000::init()
+{
+    int reti = probe();    //Ne2000 存在確認
     if(reti != 0 ){
         printf("Does Not Exist Ne2K!!!\n");
         return -1;
     }
 
-    //ここでMACアドレスを表示してみる
-    //int i;
-    //printf("MAC ADR:");
-    //for(i=0 ;i < 6 ; i++){
-    //    printf("%x ",ether_mac_addr[i]);
-    //}
-    //printf("\n");
-
-    //Ne2000 初期化
-    nic_init();
-
+    nic_init();    //Ne2000 初期化
     return 0;
 }
 
-/*!
-    \brief  inputFrame
-        NE2000 データ入力ルーチン
-        本来は、NE2000からの割り込みにてコールされる。
-        テストプログラムでは、試験的にMonaMain でコール。
-    \param  void
-    \return void
-
-    \author Yamami
-    \date   create:2004/08/03 update:$Date: 2006/01/02 15:12:55 $
-*/
 void NE2000::inputFrame(void)
 {
 
@@ -252,20 +216,6 @@ void NE2000::inputFrame(void)
 
 }
 
-
-
-/*!
-    \brief frame_output
-        NE2000 データ出力ルーチン
-    \param  byte *pkt [in] データパケットへのポインタ
-    \param  byte *mac [in] 送り先MACアドレスへのポインタ
-    \param  dword size [in] パケットサイズ
-    \param  word pid [in] プロトコルID(ETHER_PROTO)
-    \return void
-
-    \author Yamami
-    \date   create:2004/08/03 update:$Date: 2006/01/02 15:12:55 $
-*/
 void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
 {
 
@@ -345,17 +295,6 @@ void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
 
 }
 
-
-/*!
-    \brief nic_probe
-        NE2000検査ルーチン
-        バッファメモリに書き込みと読み込みを行い、NE2000が存在することを確認する
-    \param  void
-    \return void
-
-    \author Yamami
-    \date   create:2004/08/01 update:$Date: 2006/01/02 15:12:55 $
-*/
 int NE2000::probe(void)
 {
     int i;
@@ -406,16 +345,6 @@ int NE2000::probe(void)
     return(0);
 }
 
-
-/*!
-    \brief nic_init
-        NE2000初期化ルーチン
-    \param  void
-    \return void
-
-    \author Yamami
-    \date   create:2004/07/28 update:$Date: 2006/01/02 15:12:55 $
-*/
 void NE2000::nic_init(void)
 {
     // 各変数の初期化
@@ -518,22 +447,6 @@ void NE2000::nic_init(void)
     outp8( NE_P0_TCR, 0 );
 }
 
-
-
-
-
-/*!
-    \brief ne_pio_writemem
-        非公開ルーチン
-        Ne2000 バッファメモリ書き込み
-    \param  byte *src [in] 転送元アドレス
-    \param  dword dest [in] 転送先アドレス
-    \param  dword size [in] 長さ
-    \return void
-
-    \author Yamami
-    \date   create:2004/08/02 update:$Date: 2006/01/02 15:12:55 $
-*/
 void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
 {
     dword i;
@@ -577,18 +490,6 @@ void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
 }
 
 
-/*!
-    \brief ne_pio_readmem
-        非公開ルーチン
-         NE2000 のメモリから読みだし
-    \param  dword src [in] 転送元アドレス
-    \param  byte *dest [in] 転送先アドレス
-    \param  dword size [in] 長さ
-    \return void
-
-    \author Yamami
-    \date   create:2004/08/02 update:$Date: 2006/01/02 15:12:55 $
-*/
 void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
 {
     dword i;
@@ -626,36 +527,15 @@ void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
 
 }
 
-
-
-/*!
-    \brief ne_bcompare
-        非公開ルーチン
-         バイナリ比較ルーチン
-    \param  byte *src [in] 比較元アドレス
-    \param  byte *dest [in] 比較先アドレス
-    \param  dword size [in] 長さ
-    \return int 結果:一致==0,不一致==0以外
-
-    \author Yamami
-    \date   create:2004/08/02 update:$Date: 2006/01/02 15:12:55 $
-*/
 int NE2000::ne_bcompare( byte *src, byte *dest, dword size )
 {
-    dword i;
-
-    for(i=0;i<size;i++){
+    for(dword i=0;i<size;i++){
         if( src[i]!=dest[i] )
             return(1);
     }
-
     return(0);
 }
 
-dword NE2000::getFrameBufferSize()
-{
-    return frame_len;
-}
 void NE2000::getFrameBuffer(byte* buffer, dword size)
 {
     dword maxSize = getFrameBufferSize();
@@ -663,7 +543,3 @@ void NE2000::getFrameBuffer(byte* buffer, dword size)
     memcpy(buffer, this->frame_buf, size);
 }
 
-void NE2000::getMacAddress(byte* dest)
-{
-    memcpy(dest, ether_mac_addr, 6);
-}

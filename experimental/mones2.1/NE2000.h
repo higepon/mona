@@ -10,9 +10,8 @@
     \version $Revision: 1.1 $
     \date   create:2004/08/08 update:$Date: 2006/01/02 15:12:55 $
 */
-#ifndef _MONA_MONES_NE2000_
-#define _MONA_MONES_NE2000_
 
+#pragma once
 #include <sys/types.h>
 #include <monapi.h>
 #include "Nic.h"
@@ -25,23 +24,24 @@ class NE2000 : public Nic
 {
     void inputFrame();	
     void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
-    dword getFrameBufferSize();
     void getFrameBuffer(byte* buffer, dword size);
+
 public:
-    void  Send(Ether::Frame*){};
-    Ether::Frame* Read(int n){return NULL;};
-	int interrupt(){return 0;};
+    void  Send(Ether::Frame*);
+    Ether::Frame* Recv(int n);
+	int interrupt();
 
     NE2000();
     ~NE2000();
     int init();
-    int probe();
-	void getMacAddress(byte* dest);
+    int probe();   
+	void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
     byte getIRQ() const {return this->nicIRQ;}
     int getIOBase() const {return this->nicIo_Base;}
     void setIRQ(byte irq) {this->nicIRQ = irq;}
     void setIOBase(int iobase) {this->nicIo_Base = iobase;}
 private:
+    dword getFrameBufferSize(){ return frame_len; }
     int nicIRQ;
     int nicIo_Base;
     void nic_init(void);
@@ -50,7 +50,6 @@ private:
     int ne_bcompare( byte *, byte *, dword );
     void xfer_buf( byte *, byte *, dword, dword *, dword, dword,dword );
 
-    //privateメンバ
     /* 受信リングバッファのリンク情報領域を読み込むところ */
     /* ne_ring_buffer */
     byte       ne_ringbuf_status;
@@ -71,4 +70,4 @@ private:
 };
 
 }; // namespace mones
-#endif
+

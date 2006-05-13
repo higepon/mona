@@ -68,7 +68,7 @@ protected:
 public:	
     int   init();
 	void  Send(Ether::Frame*);
-	Ether::Frame* Read(int n){ return NULL; };
+	Ether::Frame* Recv(int n){ return NULL; };
     int   interrupt();
 	MonAMDpcn();
 	~MonAMDpcn();

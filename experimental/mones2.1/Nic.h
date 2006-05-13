@@ -29,16 +29,11 @@ public:
 class Nic
 {
 public:
-//        virtual void inputFrame() = 0;
-//        virtual void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId) = 0;
-//        virtual dword getFrameBufferSize() = 0;
-//        virtual void getFrameBuffer(byte* buffer, dword size) = 0;
-public:
     Nic();
     virtual ~Nic();
     virtual int init() =0;
     virtual void Send(Ether::Frame*)=0;
-    virtual Ether::Frame* Read(int)=0;
+    virtual Ether::Frame* Recv(int)=0;
     virtual int interrupt() =0;
     virtual void getMacAddress(byte* dest) =0;
     virtual byte getIRQ() const = 0;
