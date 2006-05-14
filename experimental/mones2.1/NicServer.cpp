@@ -48,53 +48,45 @@ dword NicServer::getThreadID() const
     return this->myID;
 }
 
-int NicServer::ARPhandler()
+int NicServer::ARPhandler(Ether::Frame* frame)
 {
     //handling ARP without message mechanism.
-    int i=0;
-    Ether::Frame* frame = NULL;
-    while( frame = nic->rxFrameList.get(i) ){
-        if( Util::swapShort(frame->type) ==  Ether::ARP ){
-            nic->rxFrameList.removeAt(i);
-            printf("ARP\n");
-            Arp::Header* header=(Arp::Header*)(frame->data);
-            if( header->dstIp == nic->getIP() ){ 
-                printf("%x %x\n",header->dstIp,nic->getIP());
-                header->opeCode=Util::swapShort(Arp::OPE_CODE_ARP_REP);
-                memcpy(header->dstMac,header->srcMac,6);
-                nic->getMacAddress(header->srcMac);
-                header->dstIp=header->srcIp;
-                header->srcIp=nic->getIP();
-                memcpy(frame->dstmac,header->dstMac,6);
-                memcpy(frame->srcmac,header->srcMac,6);
-                nic->Send(frame);
-            }else{
-                delete frame;
-            }
-        }else{
-            printf("IP\n");
-            i++;
-        }
+    printf("ARP");
+    Arp::Header* header=(Arp::Header*)(frame->data);
+    if( header->dstIp == nic->getIP() ){
+        header->opeCode=Util::swapShort(Arp::OPE_CODE_ARP_REP);
+        memcpy(header->dstMac,header->srcMac,6);
+        nic->getMacAddress(header->srcMac);
+        header->dstIp=header->srcIp;
+        header->srcIp=nic->getIP();
+        memcpy(frame->dstmac,header->dstMac,6);
+        memcpy(frame->srcmac,header->srcMac,6);
+        nic->Send(frame);
+    }else{
+        delete frame;
     }    
     return 0;
 }
 
 void NicServer::interrupt(MessageInfo* msg)
-{    
+{   
+    //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
-        ARPhandler();    
-        //Don't say anything about in case mona is a router.
-        while( nic->rxFrameList.size() != 0){
-            Ether::Frame* frame = nic ->rxFrameList.removeAt(0);
-            IP::Header* header=(IP::Header*)(frame->data);
-            printf("%x ",header->prot);
-            for(int j=0;j<4;j++)
-                printf("%d.",*(((byte*)&(header->srcip))+j));
-            for(int j=0;j<4;j++)
-                printf("%d.",*(((byte*)&(header->dstip))+j));
-            printf("\n");
-            delete frame;
+		Ether::Frame* frame =NULL;
+		while( frame = nic ->Recv(0) ){
+			if( Util::swapShort(frame->type) ==  Ether::ARP ){
+    			ARPhandler(frame);
+			}else{
+                IP::Header* header=(IP::Header*)(frame->data);
+		        printf("%x ",header->prot);
+                for(int j=0;j<4;j++)
+                    printf("%d.",*(((byte*)&(header->srcip))+j));
+                for(int j=0;j<4;j++)
+                    printf("%d.",*(((byte*)&(header->dstip))+j));
+                printf("\n");
+                delete frame;
+			}
         }
     }
     if(val & Nic::TX_INT){

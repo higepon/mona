@@ -8,16 +8,6 @@
 
 using namespace mones;
 
-Ether::Frame* NE2000::Recv(int n)
-{
-    return NULL;
-}
-
-void NE2000::Send(Ether::Frame* frame)
-{
-
-}
-
 NE2000::NE2000()
 {
     ne_ringbuf_status=0;
@@ -38,7 +28,7 @@ NE2000::~NE2000()
 
 int NE2000::init(void)
 {
-    /* DMA を強制停止する。 */
+    // DMA を強制停止する。
     w_reg( NE_P0_COMMAND, NE_CR_RD2|NE_CR_STP );
     //  パケットがメモリに書かれないようにする
     w_reg( NE_P0_RCR, NE_RCR_MON );
@@ -103,11 +93,7 @@ int NE2000::init(void)
     // 割り込みステータスレジスタのクリア
     w_reg( NE_P0_ISR, 0xff );
     //  割り込み許可条件の設定
-    // Packet recieve successful
-    w_reg( NE_P0_IMR, NE_IMR_PRXE );
-
-    //Yamami 全割り込みを許可してみる
-    //w_reg( NE_P0_IMR, 0x7F );
+    w_reg( NE_P0_IMR, NE_IMR_PRXE | NE_IMR_PTXE );
 
     // Page 1 の設定
     w_reg( NE_P0_COMMAND, ne_cr_proto | ( NE_CR_PS1 + NE_CR_STP ) );
@@ -122,14 +108,8 @@ int NE2000::init(void)
     w_reg( NE_P1_CURR, NE_RX_PAGE_START + 1 );
 
     /* マルチキャストレジスタの設定 */
-    w_reg( NE_P1_MAR0, 0 );
-    w_reg( NE_P1_MAR0+1, 0 );
-    w_reg( NE_P1_MAR0+2, 0 );
-    w_reg( NE_P1_MAR0+3, 0 );
-    w_reg( NE_P1_MAR0+4, 0 );
-    w_reg( NE_P1_MAR0+5, 0 );
-    w_reg( NE_P1_MAR0+6, 0 );
-    w_reg( NE_P1_MAR0+7, 0 );
+	for(int i=0;i<8;i++)
+	    w_reg( NE_P1_MAR0+i, 0 );
 
     // Page 0 にもどす
     w_reg( NE_P0_COMMAND, ne_cr_proto | NE_CR_STP );
@@ -147,45 +127,51 @@ int NE2000::init(void)
     return 0;
 }
 
-
-int NE2000::interrupt() //void NE2000::inputFrame(void)
+int NE2000::interrupt() 
 {
-    printf("interrupted.\n");
-    byte sts,*buf;
-    //バウンダリレジスタ と、カレントページレジスタは8ビット幅
-    //データにアクセスする際、8ビットシフトして16ビット幅アクセスを行う
-    word  bnd,cpg;
+    byte ret=0x0000;
+	byte val = r_reg(NE_P0_ISR);
+    if( val & NE_ISR_PRX){
+        rxihandler();
+        ret |= RX_INT;
+    }
+    if (val & NE_ISR_PTX){
+        txihandler();
+        ret |= TX_INT;
+    }
+	if( val & NE_ISR_RXE|NE_ISR_TXE|NE_ISR_OVW
+             |NE_ISR_CNT|NE_ISR_RDC|NE_ISR_RST){
+		ret |= ER_INT;
+	}
+    w_reg( NE_P0_ISR, 0xFF );
+    //Interrupt was masked by OS handler.
+    enableNetwork(); //Now be enabled here. 
+    return ret;
+}
 
-    buf=frame_buf;
-
+int NE2000::rxihandler()//void NE2000::inputFrame(void)
+{
+    printf("rx interrupted.\n");
     // Page 0
     w_reg( NE_P0_COMMAND, NE_CR_STA );
-    // sts <- 受信ステータスレジスタ(Receive Status Reg)
-    sts=r_reg( NE_P0_RSR );
-
+    byte sts=r_reg( NE_P0_ISR );//Recive Stats Register.
     if( ( sts & NE_RSTAT_OVER ) !=0 ){
-        printf("FIFO OverFlow\n");
-        return ER_INT; // 受信FIFOオーバーフローした
+        printf("RX FIFO OverFlow\n");
+        return ER_INT;
     }
-
     if( ( r_reg( NE_P0_ISR ) & NE_ISR_OVW ) !=0 ){
-        printf("RING OverFlow\n");
-        return ER_INT; // 受信リングバッファオーバーフロー
+        printf("RX RING OverFlow\n");
+        return ER_INT;
     }
-
-    //  受信成功
     if( ( sts & NE_RSTAT_PRX ) ==0 ){
-        printf("Not Exist Packet \n");
-        return ER_INT; //  受信パケットなし
+        printf("Not Exist RX Packet \n");
+        return ER_INT;
     }
 
-    //ページを明示的に切り替えて bnd と cpg を読む
-    w_reg(NE_P0_COMMAND, NE_CR_PS0 | NE_CR_STA); /* Page 0 */
-    bnd=r_reg( NE_P0_BNRY ) + 1;      // bnd <-bnd
-    //bnd=r_reg( NE_P0_BNRY );      // bnd <-bnd ここで+1しない
-    w_reg(NE_P1_COMMAND, NE_CR_PS1 | NE_CR_STA); /* Page 1 */
-    cpg=r_reg( NE_P1_CURR );          // cpg <- Current Page
-
+    w_reg(NE_P0_COMMAND, NE_CR_PS0 | NE_CR_STA); // Page 0
+    word bnd=r_reg( NE_P0_BNRY ) + 1;      // Boundary
+    w_reg(NE_P1_COMMAND, NE_CR_PS1 | NE_CR_STA); // Page 1
+    word cpg=r_reg( NE_P1_CURR );          //Current Page
     //Page0に戻しておく
     w_reg( NE_P0_COMMAND, NE_CR_PS0 );
 
@@ -198,10 +184,9 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
         cpg=NE_RX_PAGE_START;
     }
     if( cpg == bnd ){        // Current Page = bound ?
-        //printf("Not Exist Packet buffer \n");
-        return ER_INT;         // = なら バッファ上にパケットなし
+        printf("Not Exist RX Packet buffer \n");
+        return ER_INT;
     }
-
 
     // bound+1 ページの先頭4バイトを読み込む
     byte bndBuf[4];
@@ -226,6 +211,7 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
             // パケットの取り込み処理
             // 折り返し分の長さ
             ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
+			byte* buf=frame_buf;
             if( ne_rx_sub_len < frame_len ){
                 // 受信すべきパケットは折り返している
                 // 前半部の読み込み
@@ -239,11 +225,9 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
             }
             // パケットの読み込み
             ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
+			//rxFrameList.add();
         }
-    }else{
-        //printf("Error ne_ringbuf_status & NE_RSTAT_PRX = 0 \n");
     }
-
     // Yamami バウンダリレジスタ の更新
     bnd=ne_rx_bound;
     if( bnd == NE_RX_PAGE_START ){
@@ -254,27 +238,23 @@ int NE2000::interrupt() //void NE2000::inputFrame(void)
 
     //  割り込みステータスレジスタクリア
     w_reg( NE_P0_ISR, 0xff );
-
-    //H8 より
+ 
     w_reg(NE_P0_IMR, NE_IMR_PRXE); /* Packet Receive interrupt enable */
+	enableNetwork();
     return 0;
 }
 
-void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
+int NE2000::txihandler()
 {
-    dword        ptx_type=0;
-    dword        ptx_size=0;
-    byte       *ptx_packet=0;
-    byte       *ptx_dest=0;
+	return 0;
+}
+
+void NE2000::Send(Ether::Frame* frame)
+{
+	dword ptx_size=frame->payloadsize;
+	byte* ptx_packet=(byte*)frame;
     // 送信が完了しているかどうかチェックする
     while( ( r_reg( NE_P0_COMMAND ) & 0x04 ) !=0 );
-
-    ptx_dest=mac;
-    ptx_size=size;
-    ptx_packet=pkt;
-    // ネットワークバイトオーダーに変換する
-    // Yamami 変換不要？
-    ptx_type=(pid >> 8)+(pid << 8);
     // 送信処理中に受信するとレジスタが狂ってしまう
     disableNetwork();
 
@@ -300,9 +280,6 @@ void NE2000::outputFrame( byte *pkt, byte *mac, dword size, word pid )
 
     // 割り込み許可
     enableNetwork();
-
-    // 送信が完了しているかどうかチェックする
-    //while( ( r_reg( NE_P0_COMMAND ) & 0x04 ) !=0 );
 }
 
 void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
@@ -320,7 +297,7 @@ void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
     w_reg( NE_P0_RSAR1, dest >> 8 );
     w_reg( NE_P0_COMMAND, NE_CR_RD1 + NE_CR_STA );
 
-    // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
+    //DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(dword i = 0 ; i < size ; i+=2 , src+=2){
         word writetmp = (word)(*(src + 1) << 8) + (word)*(src);
         w_regw( NE_ASIC_DATA, writetmp );
@@ -333,7 +310,6 @@ void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
     }
 
 }
-
 
 void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
 {
@@ -353,12 +329,4 @@ void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
         *(dest+1)=(byte)(readtmp >> 8);
         *(dest)=(byte)(readtmp & 0xff);
     }
-
 }
-
-void NE2000::getFrameBuffer(byte* buffer, dword size)
-{
-    size = size <  frame_len ? size :  frame_len;
-    memcpy(buffer, this->frame_buf, size);
-}
-

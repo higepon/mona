@@ -66,7 +66,6 @@ protected:
 public:    
     int   init();
     void  Send(Ether::Frame*);
-    Ether::Frame* Recv(int n){ return NULL; };
     int   interrupt();
     MonAMDpcn();
     ~MonAMDpcn();
@@ -137,8 +136,6 @@ private:
       MODE_DNY_BCST=0x4000,
       MODE_PROMISC =0x8000,
       MODE_PSEL    =0x0180,
-
-      NO_INIT_BLOCK=0x0000,
     };
 };
 

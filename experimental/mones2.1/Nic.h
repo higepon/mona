@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <monapi/io.h>
 
-namespace mones {
+namespace mones{
 
 class Ether
 {
@@ -31,26 +31,26 @@ public:
     virtual ~Nic();
     virtual int init() =0;
     virtual void Send(Ether::Frame*)=0;
-    virtual Ether::Frame* Recv(int)=0;
     virtual int interrupt() =0;
     virtual void getMacAddress(byte* dest) =0;
-
+    Ether::Frame* Recv(int);
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}
     void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
-    void enableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
-    void disableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
+    void  enableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
+    void  disableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
     enum{
         RX_INT     =0x0004,
         TX_INT     =0x0002,
         ER_INT     =0x0001,
     };    
-    void setIP(byte a,byte b,byte c,byte d){ myIP=((d<<24)|(c<<16)|(b<<8)|a);}
+    void  setIP(byte a,byte b,byte c,byte d){ myIP=((d<<24)|(c<<16)|(b<<8)|a);}
     dword getIP(){ return myIP; };
-//protected:
-    HList<Ether::Frame*> rxFrameList;
 protected:
+	//allocate & copy is slow.....
+	//TODO use static allocated memory and one-copy.  
+    HList<Ether::Frame*> rxFrameList;
     HList<Ether::Frame*> txFrameList;
     dword myIP;
     int   irq;

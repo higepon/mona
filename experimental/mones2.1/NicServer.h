@@ -112,7 +112,7 @@ public:
 
 private:
     void interrupt(MessageInfo* msg);
-    int  ARPhandler();
+	int  ARPhandler(Ether::Frame*);
 protected:
     byte macAddress[6];
     dword observerThread;

@@ -23,7 +23,6 @@ class NE2000 : public Nic
 {
 public:
     void  Send(Ether::Frame*);
-    Ether::Frame* Recv(int n);
     int interrupt();
     NE2000();
     ~NE2000();
@@ -37,10 +36,9 @@ private:
 
     void ne_pio_writemem( byte *, dword, dword );
     void ne_pio_readmem( dword, byte *, dword );
-/////////
-    void outputFrame(byte* packet, byte* macAddress, dword size, word protocolId);
-    void getFrameBuffer(byte* buffer, dword size);
-////////
+    int rxihandler();
+	int txihandler();
+
     byte       ne_ringbuf_status;
     byte       ne_ringbuf_bound;
     dword      ne_ringbuf_len;
