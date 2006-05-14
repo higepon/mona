@@ -48,8 +48,8 @@ public:
     void  setIP(byte a,byte b,byte c,byte d){ myIP=((d<<24)|(c<<16)|(b<<8)|a);}
     dword getIP(){ return myIP; };
 protected:
-	//allocate & copy is slow.....
-	//TODO use static allocated memory and one-copy.  
+    //allocate & copy is slow.....
+    //TODO use static allocated memory and one-copy.  
     HList<Ether::Frame*> rxFrameList;
     HList<Ether::Frame*> txFrameList;
     dword myIP;

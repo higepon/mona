@@ -73,20 +73,20 @@ void NicServer::interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
-		Ether::Frame* frame =NULL;
-		while( frame = nic ->Recv(0) ){
-			if( Util::swapShort(frame->type) ==  Ether::ARP ){
-    			ARPhandler(frame);
-			}else{
+        Ether::Frame* frame =NULL;
+        while( frame = nic ->Recv(0) ){
+            if( Util::swapShort(frame->type) ==  Ether::ARP ){
+                ARPhandler(frame);
+            }else{
                 IP::Header* header=(IP::Header*)(frame->data);
-		        printf("%x ",header->prot);
+                printf("%x ",header->prot);
                 for(int j=0;j<4;j++)
                     printf("%d.",*(((byte*)&(header->srcip))+j));
                 for(int j=0;j<4;j++)
                     printf("%d.",*(((byte*)&(header->dstip))+j));
                 printf("\n");
                 delete frame;
-			}
+            }
         }
     }
     if(val & Nic::TX_INT){

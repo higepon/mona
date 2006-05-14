@@ -108,8 +108,8 @@ int NE2000::init(void)
     w_reg( NE_P1_CURR, NE_RX_PAGE_START + 1 );
 
     /* マルチキャストレジスタの設定 */
-	for(int i=0;i<8;i++)
-	    w_reg( NE_P1_MAR0+i, 0 );
+    for(int i=0;i<8;i++)
+        w_reg( NE_P1_MAR0+i, 0 );
 
     // Page 0 にもどす
     w_reg( NE_P0_COMMAND, ne_cr_proto | NE_CR_STP );
@@ -130,7 +130,7 @@ int NE2000::init(void)
 int NE2000::interrupt() 
 {
     byte ret=0x0000;
-	byte val = r_reg(NE_P0_ISR);
+    byte val = r_reg(NE_P0_ISR);
     if( val & NE_ISR_PRX){
         rxihandler();
         ret |= RX_INT;
@@ -139,10 +139,10 @@ int NE2000::interrupt()
         txihandler();
         ret |= TX_INT;
     }
-	if( val & NE_ISR_RXE|NE_ISR_TXE|NE_ISR_OVW
-             |NE_ISR_CNT|NE_ISR_RDC|NE_ISR_RST){
-		ret |= ER_INT;
-	}
+    if( val & (NE_ISR_RXE|NE_ISR_TXE|NE_ISR_OVW|NE_ISR_CNT|NE_ISR_RST)){
+        ret |= ER_INT;
+    }
+    printf("[%x]\n",val);
     w_reg( NE_P0_ISR, 0xFF );
     //Interrupt was masked by OS handler.
     enableNetwork(); //Now be enabled here. 
@@ -151,7 +151,6 @@ int NE2000::interrupt()
 
 int NE2000::rxihandler()//void NE2000::inputFrame(void)
 {
-    printf("rx interrupted.\n");
     // Page 0
     w_reg( NE_P0_COMMAND, NE_CR_STA );
     byte sts=r_reg( NE_P0_ISR );//Recive Stats Register.
@@ -211,7 +210,9 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
             // パケットの取り込み処理
             // 折り返し分の長さ
             ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
-			byte* buf=frame_buf;
+            //byte* buf=frame_buf;
+            Ether::Frame* frame= new Ether::Frame;
+            byte* buf=(byte*)frame;
             if( ne_rx_sub_len < frame_len ){
                 // 受信すべきパケットは折り返している
                 // 前半部の読み込み
@@ -225,7 +226,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
             }
             // パケットの読み込み
             ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
-			//rxFrameList.add();
+            rxFrameList.add(frame);
         }
     }
     // Yamami バウンダリレジスタ の更新
@@ -240,19 +241,19 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
     w_reg( NE_P0_ISR, 0xff );
  
     w_reg(NE_P0_IMR, NE_IMR_PRXE); /* Packet Receive interrupt enable */
-	enableNetwork();
+    enableNetwork();
     return 0;
 }
 
 int NE2000::txihandler()
 {
-	return 0;
+    return 0;
 }
 
 void NE2000::Send(Ether::Frame* frame)
 {
-	dword ptx_size=frame->payloadsize;
-	byte* ptx_packet=(byte*)frame;
+    dword ptx_size=frame->payloadsize;
+    byte* ptx_packet=(byte*)frame;
     // 送信が完了しているかどうかチェックする
     while( ( r_reg( NE_P0_COMMAND ) & 0x04 ) !=0 );
     // 送信処理中に受信するとレジスタが狂ってしまう
@@ -278,6 +279,8 @@ void NE2000::Send(Ether::Frame* frame)
     // 送信命令を発行する
     w_reg( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_TXP + NE_CR_RD2 + NE_CR_STA );
 
+    printf("send.\n");  
+    free(frame);
     // 割り込み許可
     enableNetwork();
 }

@@ -15,9 +15,9 @@ Nic::~Nic()
 
 Ether::Frame* Nic::Recv(int n)
 {
-	if( rxFrameList.size() > n  && n >=0 ){
-		return rxFrameList.removeAt(n);
-	}else{
-		return NULL;
-	}
+    if( rxFrameList.size() > n  && n >=0 ){
+        return rxFrameList.removeAt(n);
+    }else{
+        return NULL;
+    }
 }
