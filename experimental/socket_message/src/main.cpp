@@ -21,16 +21,131 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
+#include "MessageList.h"
+
+MessageList messages;
+
+int set_myhost(struct sockaddr_in* me);
+int SendMessage(int to, MessageInfo* msg)
+{
+    struct sockaddr_in me;
+    bzero((char *)&me, sizeof(me));
+    set_myhost(&me);
+    me.sin_family = AF_INET;
+    me.sin_port   = htons(to);
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (-1 == sock)
+    {
+        perror("socket()");
+        return -1;
+    }
+
+    if (-1 == connect(sock, (sockaddr*)&me , sizeof(me)))
+    {
+        perror("connect()");
+        return -1;
+    }
+
+    if (-1 == send(sock, msg, sizeof(MessageInfo), 0))
+    {
+        perror("send");
+        return -1;
+    }
+    close(sock);
+    return 0;
+}
+
+int CreateReceiveSocket(int port)
+{
+    int sock;
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (-1 == sock)
+    {
+        perror("socket()");
+        return -1;
+    }
+
+    struct sockaddr_in me;
+    bzero((char *)&me, sizeof(me));
+    set_myhost(&me);
+    me.sin_family = AF_INET;
+    me.sin_port   = htons(port);
+    if (-1 == bind(sock, (struct sockaddr *)&me, sizeof(me)))
+    {
+        perror("bind");
+        return -1;
+    }
+
+    if (-1 == (listen(sock, 5)))
+    {
+        perror("listen");
+        return -1;
+    }
+    return sock;
+}
+
+int ReceiveLoop(int port)
+{
+    int sock = CreateReceiveSocket(port);
+    if (-1 == sock) return -1;
+
+    for (;;)
+    {
+        struct sockaddr_in whoaddr;
+        socklen_t wholen = sizeof(whoaddr);
+        int who;
+        who = accept(sock, (struct sockaddr*)&whoaddr , &wholen);
+        if (-1 == who)
+        {
+            perror("accept");
+            return -1;
+        }
+
+        MessageInfo* msg = new MessageInfo;
+        int len = recv(who, msg, sizeof(MessageInfo), 0);
+        printf("msg receve %d:%s\n", msg->header, msg->str);
+        messages.push(msg);
+
+        if (len <= 0)
+        {
+            printf("something wrong? %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+            return -1;
+        }
+        close(who);
+    }
+    close(sock);
+    return 0;
+}
+
+int ReceiveMessage(int port, MessageInfo* msg)
+{
+    return 0;
+}
+
+int SendReceiveMessage(MessageInfo* msg)
+{
+    return 0;
+}
+
 
 int server();
 int client();
 
+
+
 int main(int argc, char *argv[])
 {
+    MessageInfo msg;
     if (argc > 2) {
-        server();
+        msg.header = 1001;
+        strncpy(msg.str, "hoge", 32);
+        printf("msg receve %d:%s\n", msg.header, msg.str);
+        SendMessage(2345, &msg);
+        SendMessage(2345, &msg);
+
     } else {
-    client();
+        ReceiveLoop(2345);
     }
     return 0;
 }
