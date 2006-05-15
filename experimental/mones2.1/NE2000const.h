@@ -6,7 +6,7 @@ namespace mones {
 
 
 #define     ETHER_HEADER_SIZE   14      /* ヘッダーサイズ */
-#define     ETHER_MIN_PACKET    64      /* 最小パケットサイズ */
+#define     ETHER_MIN_PACKET    60      /* 最小パケットサイズ */
 #define     ETHER_MAX_PACKET    1514    /* 最大パケットサイズ */
 
 // QEMU PCI NE2000

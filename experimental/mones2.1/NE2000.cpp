@@ -1,4 +1,4 @@
-
+   
 ///////////////////////////////
 //This file is derived form NE2000.cpp by Mr. Yamami.
 ///////////////////////////////
@@ -28,7 +28,7 @@ NE2000::~NE2000()
 
 int NE2000::init(void)
 {
-    // DMA を強制停止する。
+    // DMA を強制停止する。 
     w_reg( NE_P0_COMMAND, NE_CR_RD2|NE_CR_STP );
     //  パケットがメモリに書かれないようにする
     w_reg( NE_P0_RCR, NE_RCR_MON );
@@ -99,7 +99,6 @@ int NE2000::init(void)
     w_reg( NE_P0_COMMAND, ne_cr_proto | ( NE_CR_PS1 + NE_CR_STP ) );
 
     // Ethernet アドレスの設定
-    // ここで指定したアドレスのパケットを受け取る
     for(int i=0;i<6;i++){
         w_reg( NE_P1_PAR0 + i, ether_mac_addr[i] );
     }
@@ -142,7 +141,6 @@ int NE2000::interrupt()
     if( val & (NE_ISR_RXE|NE_ISR_TXE|NE_ISR_OVW|NE_ISR_CNT|NE_ISR_RST)){
         ret |= ER_INT;
     }
-    printf("[%x]\n",val);
     w_reg( NE_P0_ISR, 0xFF );
     //Interrupt was masked by OS handler.
     enableNetwork(); //Now be enabled here. 
@@ -198,7 +196,6 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
     ne_rx_start=(bnd << 8) + 4; // パケット本体の開始アドレス
 
     // CRCの分の長さを引く
-    // CRCの分の長さを引く ? CRCじゃなくてne_ringbuf_*の4 byte?
     frame_len=ne_ringbuf_len - 4; /* パケット本体の長さ */
 
     // 受信終了後の境界レジスタ値
@@ -225,7 +222,8 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
                 ne_rx_remain_len=frame_len - ne_rx_sub_len;
             }
             // パケットの読み込み
-            ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
+            ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );            
+            frame->payloadsize=frame_len;
             rxFrameList.add(frame);
         }
     }
@@ -280,7 +278,7 @@ void NE2000::Send(Ether::Frame* frame)
     w_reg( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_TXP + NE_CR_RD2 + NE_CR_STA );
 
     printf("send.\n");  
-    free(frame);
+    delete frame;
     // 割り込み許可
     enableNetwork();
 }
@@ -290,28 +288,21 @@ void NE2000::ne_pio_writemem( byte *src, dword dest, dword size )
     /* ステータスレジスタクリア */
     w_reg( NE_P0_COMMAND, NE_CR_RD2 + NE_CR_STA );
     w_reg( NE_P0_ISR, NE_ISR_RDC);
-
-    /* 長さ */
+    // 長さ
     w_reg( NE_P0_RBCR0, size & 0xff );
     w_reg( NE_P0_RBCR1, size >> 8 );
-
-    /* 転送先アドレス */
+    // 転送先アドレス
     w_reg( NE_P0_RSAR0, dest & 0xff );
     w_reg( NE_P0_RSAR1, dest >> 8 );
     w_reg( NE_P0_COMMAND, NE_CR_RD1 + NE_CR_STA );
-
-    //DATAは16ビット幅でやりとりするので、Word変換してI/O
-    for(dword i = 0 ; i < size ; i+=2 , src+=2){
-        word writetmp = (word)(*(src + 1) << 8) + (word)*(src);
-        w_regw( NE_ASIC_DATA, writetmp );
+    for(dword i = 0 ; i < size ; i+=2){
+        w_regw( NE_ASIC_DATA, *(word*)(src+i) );
     }
-
-    /* wait */
+    //wait 
     for(dword i=0;i<0xff;i++){
         if( ( r_reg(NE_P0_ISR) & NE_ISR_RDC ) == 0 )
             break;
     }
-
 }
 
 void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
@@ -325,11 +316,7 @@ void NE2000::ne_pio_readmem( dword src, byte *dest, dword size )
     w_reg( NE_P0_RSAR0, src & 0xff );
     w_reg( NE_P0_RSAR1, src >> 8 );
     w_reg( NE_P0_COMMAND, NE_CR_RD0 + NE_CR_STA );
-    // 2004/08/02 DATAは16ビット幅でやりとりするので、Word変換してI/O
     for(dword i = 0 ; i < size ; i+=2 , dest+=2){
-        word readtmp=r_regw( NE_ASIC_DATA );
-        //リトルエンディアンならこう？？
-        *(dest+1)=(byte)(readtmp >> 8);
-        *(dest)=(byte)(readtmp & 0xff);
+        *(word*)dest=r_regw( NE_ASIC_DATA );
     }
 }

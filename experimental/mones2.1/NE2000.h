@@ -48,7 +48,6 @@ private:
     dword      ne_rx_sub_len;    /* Ü‚è•Ô‚µ•ª‚Ì’·‚³ */
     dword      ne_rx_remain_len; /* c‚è‚Ì’·‚³(Ü‚è•Ô‚µ‚ª‚È‚¢‚Æ‚«‚Í–{‘Ì‚Ì’·‚³‚Æ“¯‚¶) */ 
     dword      frame_len;
-    byte       frame_buf[1500];
     byte       ether_mac_addr[6];
 };
 
