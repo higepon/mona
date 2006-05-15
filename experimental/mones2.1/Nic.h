@@ -5,6 +5,8 @@
 
 namespace mones{
 
+inline word  bswap(word w){ return (w>>8)|(w<<8); }
+
 class Ether
 {
 public:

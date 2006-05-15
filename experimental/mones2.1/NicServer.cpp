@@ -1,5 +1,4 @@
 #include "NicServer.h"
-#include "Util.h"
 
 using namespace mones;
 using namespace MonAPI;
@@ -54,7 +53,7 @@ int NicServer::ARPhandler(Ether::Frame* frame)
     printf("ARP");
     Arp::Header* header=(Arp::Header*)(frame->data);
     if( header->dstIp == nic->getIP() ){
-        header->opeCode=Util::swapShort(Arp::OPE_CODE_ARP_REP);
+        header->opeCode=bswap(Arp::OPE_CODE_ARP_REP);
         memcpy(header->dstMac,header->srcMac,6);
         nic->getMacAddress(header->srcMac);
         header->dstIp=header->srcIp;
@@ -75,7 +74,7 @@ void NicServer::interrupt(MessageInfo* msg)
     if( val & Nic::RX_INT ){
         Ether::Frame* frame =NULL;
         while( frame = nic ->Recv(0) ){
-            if( Util::swapShort(frame->type) ==  Ether::ARP ){
+            if( frame->type ==  bswap(Ether::ARP) ){
                 ARPhandler(frame);
             }else{
                 IP::Header* header=(IP::Header*)(frame->data);

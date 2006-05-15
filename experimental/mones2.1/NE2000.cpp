@@ -1,10 +1,8 @@
-   
 ///////////////////////////////
 //This file is derived form NE2000.cpp by Mr. Yamami.
 ///////////////////////////////
 
 #include "NE2000.h"
-#include "NE2000const.h"
 
 using namespace mones;
 
@@ -54,7 +52,7 @@ int NE2000::init(void)
     //リセット完了まで待つ
     sleep(300);
     // リモートDMA 停止
-    w_reg( NE_P0_COMMAND, ne_cr_proto | NE_CR_STP );
+    w_reg( NE_P0_COMMAND, NE_CR_RD2 | NE_CR_STP );
     // FIFO スレッショルド 8Byte,リモートDMA 自動初期化禁止
     // 8086 バイトオーダ,16bit幅 DMA 転送
     // Page0_0Eh DATA CONFIGURATION REGISTER (DCR) 0EH (WRITE)
@@ -96,7 +94,7 @@ int NE2000::init(void)
     w_reg( NE_P0_IMR, NE_IMR_PRXE | NE_IMR_PTXE );
 
     // Page 1 の設定
-    w_reg( NE_P0_COMMAND, ne_cr_proto | ( NE_CR_PS1 + NE_CR_STP ) );
+    w_reg( NE_P0_COMMAND, NE_CR_RD2 | ( NE_CR_PS1 + NE_CR_STP ) );
 
     // Ethernet アドレスの設定
     for(int i=0;i<6;i++){
@@ -111,14 +109,14 @@ int NE2000::init(void)
         w_reg( NE_P1_MAR0+i, 0 );
 
     // Page 0 にもどす
-    w_reg( NE_P0_COMMAND, ne_cr_proto | NE_CR_STP );
+    w_reg( NE_P0_COMMAND, NE_CR_RD2 | NE_CR_STP );
 
     // 受信パケットフィルタの設定
     // ブロードキャストと自分宛のみをメモリに格納
     // accept broadcast
     w_reg( NE_P0_RCR, NE_RCR_AB );
     // NIC をアクティブにする
-    w_reg( NE_P0_COMMAND, ne_cr_proto | NE_CR_STA );
+    w_reg( NE_P0_COMMAND, NE_CR_RD2 | NE_CR_STA );
 
     // ループバックモードを抜けて通常動作モードに入る
     w_reg( NE_P0_TCR, 0 );
