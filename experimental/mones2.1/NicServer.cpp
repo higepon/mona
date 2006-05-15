@@ -67,6 +67,37 @@ int NicServer::ARPhandler(Ether::Frame* frame)
     return 0;
 }
 
+void NicServer::dumpPacket(Ether::Frame* frame)
+{
+    IP::Header* IPheader=(IP::Header*)(frame->data);
+    printf("src:");
+    for(int j=0;j<4;j++)
+        printf("%d.",*(((byte*)&(IPheader->srcip))+j));
+    printf("dst:");
+    for(int j=0;j<4;j++)
+        printf("%d.",*(((byte*)&(IPheader->dstip))+j));
+    switch( IPheader->prot){
+    case IP::ICMP:
+        printf("ICMP:");
+        break;
+    case IP::IGMP:
+        printf("IGMP:");
+        break;
+    case IP::TCP:
+        printf("TCP:");
+        break;
+    case IP::UDP:
+        printf("UDP:");
+        UDP::Header* UDPheader= (UDP::Header*)(IPheader->data);
+        printf("R:%d L:%d LEN:%d CKSUM:%d",bswap(UDPheader->srcport),
+        bswap(UDPheader->dstport),bswap(UDPheader->len),bswap(UDPheader->chksum));
+        break;    
+    default:
+        printf("orz.");
+    }
+    printf("\n");
+}
+
 void NicServer::interrupt(MessageInfo* msg)
 {   
     //Don't say anything about in case mona is a router.
@@ -74,16 +105,10 @@ void NicServer::interrupt(MessageInfo* msg)
     if( val & Nic::RX_INT ){
         Ether::Frame* frame =NULL;
         while( frame = nic ->Recv(0) ){
-            if( frame->type ==  bswap(Ether::ARP) ){
+            if( bswap(frame->type) ==  Ether::ARP ){
                 ARPhandler(frame);
             }else{
-                IP::Header* header=(IP::Header*)(frame->data);
-                printf("%x ",header->prot);
-                for(int j=0;j<4;j++)
-                    printf("%d.",*(((byte*)&(header->srcip))+j));
-                for(int j=0;j<4;j++)
-                    printf("%d.",*(((byte*)&(header->dstip))+j));
-                printf("\n");
+                dumpPacket(frame);
                 delete frame;
             }
         }

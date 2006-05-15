@@ -35,11 +35,11 @@ public :
 class UDP {
 public:
  typedef struct{
-    word srcport;
-    word dstport;
-    short len;
-    word chksum;
-    char   data[0];
+    word  srcport;
+    word  dstport;
+    word len;
+    word  chksum;
+    char  data[0];
 } Header;
 };
 
@@ -47,20 +47,22 @@ class IP {
 public:
     enum {
         ICMP = 0x01,
-        UDP = 0x11,
+        IGMP = 0x02,
+        TCP  = 0x06,
+        UDP  = 0x11,
     };
     typedef struct{
         byte  verhead;  /* バージョン、ヘッダ長。 */
         byte  tos;      /* TOS. */
-        word len;       /* トータル長。 */
-        word id;        /* 識別番号。 */
-        word frag;      /* フラグ、フラグメントオフセット。 */
+        word  len;      /* トータル長。 */
+        word  id;       /* 識別番号。 */
+        word  frag;     /* フラグ、フラグメントオフセット。 */
         byte  ttl;      /* Time to Live. */
         byte  prot;     /* プロトコル番号。 */
-        word chksum;    /* ヘッダチェックサム。 */
-        dword srcip;        /* 送り元IP。 */
-        dword dstip;        /* 宛先IP。 */
-        char     data[0];
+        word  chksum;   /* ヘッダチェックサム。 */
+        dword srcip;    /* 送り元IP。 */
+        dword dstip;    /* 宛先IP。 */
+        char  data[0];
     } Header;
 };
 
@@ -71,15 +73,15 @@ class Arp
 public:
     typedef struct
     {
-        word hardType  __attribute__((packed));
-        word protType  __attribute__((packed));
+        word  hardType  __attribute__((packed));
+        word  protType  __attribute__((packed));
         byte  hardAddrLen  __attribute__((packed));
         byte  protAddrLen  __attribute__((packed));
-        word opeCode  __attribute__((packed));
+        word  opeCode  __attribute__((packed));
         byte  srcMac[6]  __attribute__((packed));
-        dword   srcIp  __attribute__((packed));
+        dword srcIp  __attribute__((packed));
         byte  dstMac[6]  __attribute__((packed));
-        dword   dstIp  __attribute__((packed));
+        dword dstIp  __attribute__((packed));
     } Header;
 
     enum
@@ -113,6 +115,7 @@ public:
 private:
     void interrupt(MessageInfo* msg);
     int  ARPhandler(Ether::Frame*);
+    void dumpPacket(Ether::Frame*);
 protected:
     byte macAddress[6];
     dword observerThread;
