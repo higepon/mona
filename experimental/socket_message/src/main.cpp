@@ -25,24 +25,83 @@
 
 MessageList messages;
 
+int ReceiveMessage(int port, MessageInfo* msg);
 int SendMessage(int to, MessageInfo* msg);
 int ReceiveLoop(int port);
+
+
+int SendReceive(MessageInfo* dst, int to, MessageInfo* info)
+{
+    SendMessage(to, dst);
+// from check
+    ReceiveMessage(0x1235, info);
+    return 0;
+}
+
+void FileServer();
+void Client();
 
 int main(int argc, char *argv[])
 {
     MessageInfo msg;
-    if (argc > 2) {
-        msg.header = 1001;
-        strncpy(msg.str, "hoge", 32);
-        printf("msg receve %d:%s\n", msg.header, msg.str);
-        SendMessage(2345, &msg);
-        SendMessage(2345, &msg);
-
-    } else {
-        ReceiveLoop(2345);
+    if (argc >= 2 && argv[1][0] == 'f')
+    {
+        printf("file_server start\n");fflush(stdout);
+        FileServer();
+    }
+    else
+    {
+        printf("client start\n");fflush(stdout);
+        Client();
     }
     return 0;
 }
+
+void FileServer()
+{
+    int i = 0;
+    for (MessageInfo msg;;)
+    {
+        if (ReceiveMessage(0x1234, &msg)) continue;
+
+        switch (msg.header)
+        {
+        default:
+            printf("File Server receive message no.%d\n", msg.header);
+            msg.header = 1111;
+            sleep(1);
+            SendMessage(0x1235, &msg);
+            break;
+        }
+        i++;
+        if (i == 2) break;
+    }
+}
+
+void Client()
+{
+    MessageInfo msg;
+    msg.header = 1001;
+    strncpy(msg.str, "hoge", 32);
+    SendMessage(0x1234, &msg);
+    MessageInfo ret;
+    SendReceive(&msg, 0x1234, &ret);
+    printf("client: ret=%d\n", ret.header);
+}
+
+//     MessageInfo msg;
+//     if (argc >= 2 && argv[1][1] == 'f')
+//     {
+//         msg.header = 1001;
+//         strncpy(msg.str, "hoge", 32);
+//         printf("msg receve %d:%s\n", msg.header, msg.str);
+//         SendMessage(2345, &msg);
+//         SendMessage(2345, &msg);
+
+//     } else {
+//         ReceiveLoop(2345);
+//     }
+//     return 0;
 
 
 
@@ -141,6 +200,29 @@ int ReceiveLoop(int port)
 
 int ReceiveMessage(int port, MessageInfo* msg)
 {
+    int sock = CreateReceiveSocket(port);
+    if (-1 == sock) return -1;
+
+    struct sockaddr_in whoaddr;
+    socklen_t wholen = sizeof(whoaddr);
+    int who;
+    who = accept(sock, (struct sockaddr*)&whoaddr , &wholen);
+    if (-1 == who)
+    {
+        perror("accept");
+        return -1;
+    }
+
+    int len = recv(who, msg, sizeof(MessageInfo), 0);
+    printf("msg receve %d:%s\n", msg->header, msg->str);
+
+    if (len <= 0)
+    {
+        printf("something wrong? %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+        return -1;
+    }
+    close(who);
+    close(sock);
     return 0;
 }
 
