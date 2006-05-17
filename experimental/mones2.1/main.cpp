@@ -5,12 +5,12 @@
 using namespace mones;
 static NicServer* server;
 void NicListenLoop();
-dword nic_read(dword nicThread, Ether::Frame* frame);
+dword nic_read(dword nicThread, Ether* frame);
 dword nic_write(dword nicThread, OutPacket* packet);
 
 dword nicThread;
 
-#define BUF ((struct uip_eth_hdr *)&uip_buf[0])
+//#define BUF ((struct uip_eth_hdr *)&uip_buf[0])
 
 #ifndef NULL
 #define NULL (void *)0
@@ -37,7 +37,7 @@ int MonaMain(List<char*>* pekoe)
     //httpd_init();
     arptimer = 0;
 
-    Ether::Frame ef;
+    Ether ef;
     while(1) {
         sleep(500);
         nic_read(nicThread,&ef);
@@ -58,7 +58,7 @@ void NicListenLoop()
     server->messageLoop();
 }
 
-dword nic_read(dword nicThread, Ether::Frame* frame)
+dword nic_read(dword nicThread, Ether* frame)
 {
     MessageInfo msg;
     if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_READ))

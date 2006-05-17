@@ -18,7 +18,7 @@ void MonAMDpcn::rxihandler()
     word length;
     while( ((rxdsc+rxindex)->status & RMD1_OWN) == 0 ){
         length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
-        Ether::Frame* frame = new Ether::Frame; //deleted by server.
+        Ether* frame = new Ether; //deleted by server.
         memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
         frame->payloadsize=length;
         //printf("SIZE:%d\n",length);
@@ -101,6 +101,7 @@ int MonAMDpcn::init()
     piblock->txlen=(LOGTXRINGLEN<<4);
     for(int i=0;i<5;i++){
         piblock->mac_addr[i]=inp8(iobase+i);
+        macaddress[i]=piblock->mac_addr[i];
         printf("%x:",piblock->mac_addr[i]);
     }
     piblock->mac_addr[5]=inp8(iobase+5);
@@ -134,6 +135,7 @@ int MonAMDpcn::interrupt()
             txihandler();
             ret |= TX_INT;
         }
+        //error.
         w_csr(CSR_CSR, val & 0xFFF0);
     }
     //Interrupt was masked by OS handler.
@@ -141,11 +143,12 @@ int MonAMDpcn::interrupt()
     return ret;
 }
 
-void MonAMDpcn::Send(Ether::Frame* frame)
-{                  
+void MonAMDpcn::Send(Ether* frame)
+{
+    enableNetwork();
     txFrameList.add(frame);
     while( txFrameList.size() != 0) {
-        Ether::Frame* frame = txFrameList.removeAt(0);
+        Ether* frame = txFrameList.removeAt(0);
         memcpy(txbuf+txindex*PKTSIZE,frame,frame->payloadsize);
         (txdsc+txindex)->status=0;
         (txdsc+txindex)->bcnt=(word)(-frame->payloadsize)|0xF000;

@@ -41,8 +41,8 @@ int NE2000::init(void)
     ne_pio_readmem( 0, buf, 16 );
     // イーサネットアドレス取得
     for(int i=0;i<6;i++){
-        ether_mac_addr[i]=buf[2*i];
-        printf("%x.",ether_mac_addr[i]);
+        macaddress[i]=buf[2*i];
+        printf("%x.",macaddress[i]);
     }
     printf("\n");
     // 割り込みステータスレジスタクリア
@@ -98,7 +98,7 @@ int NE2000::init(void)
 
     // Ethernet アドレスの設定
     for(int i=0;i<6;i++){
-        w_reg( NE_P1_PAR0 + i, ether_mac_addr[i] );
+        w_reg( NE_P1_PAR0 + i, macaddress[i] );
     }
 
     // 最初に受信したパケットを格納するアドレスの設定
@@ -206,7 +206,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
             // 折り返し分の長さ
             ne_rx_sub_len=NE_RX_PAGE_STOP * 256 - ne_rx_start;
             //byte* buf=frame_buf;
-            Ether::Frame* frame= new Ether::Frame;
+            Ether* frame= new Ether;
             byte* buf=(byte*)frame;
             if( ne_rx_sub_len < frame_len ){
                 // 受信すべきパケットは折り返している
@@ -246,7 +246,7 @@ int NE2000::txihandler()
     return 0;
 }
 
-void NE2000::Send(Ether::Frame* frame)
+void NE2000::Send(Ether* frame)
 {
     dword ptx_size=frame->payloadsize;
     byte* ptx_packet=(byte*)frame;

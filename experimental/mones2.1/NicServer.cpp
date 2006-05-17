@@ -4,15 +4,15 @@ using namespace mones;
 using namespace MonAPI;
 
 // not real shared memory
-static Ether::Frame sharedFrame;
+static Ether sharedFrame;
 
-void mones::SetFrameToSharedMemory(Ether::Frame* frame)
+void mones::SetFrameToSharedMemory(Ether* frame)
 {
-    memcpy(&sharedFrame, frame, sizeof(Ether::Frame));
+    memcpy(&sharedFrame, frame, sizeof(Ether));
 }
-void mones::GetFrameFromSharedMemory(Ether::Frame* frame)
+void mones::GetFrameFromSharedMemory(Ether* frame)
 {
-    memcpy(frame, &sharedFrame, sizeof(Ether::Frame));
+    memcpy(frame, &sharedFrame, sizeof(Ether));
 }
 
 NicServer::NicServer() : observerThread(0xffffffff), nic(NULL), started(false), loopExit(false)
@@ -47,55 +47,46 @@ dword NicServer::getThreadID() const
     return this->myID;
 }
 
-int NicServer::ARPhandler(Ether::Frame* frame)
+void NicServer::ICMPreply(Ether* f)
 {
-    //handling ARP without message mechanism.
-    printf("ARP");
-    Arp::Header* header=(Arp::Header*)(frame->data);
-    if( header->dstIp == nic->getIP() ){
-        header->opeCode=bswap(Arp::OPE_CODE_ARP_REP);
-        memcpy(header->dstMac,header->srcMac,6);
-        nic->getMacAddress(header->srcMac);
-        header->dstIp=header->srcIp;
-        header->srcIp=nic->getIP();
-        memcpy(frame->dstmac,header->dstMac,6);
-        memcpy(frame->srcmac,header->srcMac,6);
-        nic->Send(frame);
-    }else{
-        delete frame;
-    }    
-    return 0;
+    
 }
 
-void NicServer::dumpPacket(Ether::Frame* frame)
+void NicServer::dumpPacket(Ether* frame)
 {
-    IP::Header* IPheader=(IP::Header*)(frame->data);
     printf("src:");
     for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(IPheader->srcip))+j));
+        printf("%d.",*(((byte*)&(frame->IPHeader->srcip))+j));
     printf("dst:");
     for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(IPheader->dstip))+j));
-    switch( IPheader->prot){
-    case IP::ICMP:
+        printf("%d.",*(((byte*)&(frame->IPHeader->dstip))+j));
+    switch( frame->IPHeader->prot){
+    case IP::TYPEICMP:
         printf("ICMP:");
+        //rewrite.
+        nic->Send(frame);
         break;
-    case IP::IGMP:
+    case IP::TYPEIGMP:
         printf("IGMP:");
         break;
-    case IP::TCP:
+    case IP::TYPETCP:
         printf("TCP:");
         break;
-    case IP::UDP:
+    case IP::TYPEUDP:
         printf("UDP:");
-        UDP::Header* UDPheader= (UDP::Header*)(IPheader->data);
-        printf("R:%d L:%d LEN:%d CKSUM:%d",bswap(UDPheader->srcport),
-        bswap(UDPheader->dstport),bswap(UDPheader->len),bswap(UDPheader->chksum));
+        UDP* udp=frame->IPHeader->UDPHeader;
+        printf("R:%d L:%d LEN:%d CKSUM:%d",bswap(udp->srcport),
+             bswap(udp->dstport),bswap(udp->len),bswap(udp->chksum));
         break;    
     default:
         printf("orz.");
     }
-    printf("\n");
+    printf("\n"); 
+ //   MessageInfo info;
+ //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
+ //   if(Message::send(this->observerThread, &info)) {
+ //      printf("local!!!! yamas:INIT error\n");
+ //   }
 }
 
 void NicServer::interrupt(MessageInfo* msg)
@@ -103,14 +94,10 @@ void NicServer::interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
-        Ether::Frame* frame =NULL;
+        Ether* frame =NULL;
         while( frame = nic ->Recv(0) ){
-            if( bswap(frame->type) ==  Ether::ARP ){
-                ARPhandler(frame);
-            }else{
-                dumpPacket(frame);
-                delete frame;
-            }
+           dumpPacket(frame);
+           delete frame;
         }
     }
     if(val & Nic::TX_INT){
@@ -119,11 +106,6 @@ void NicServer::interrupt(MessageInfo* msg)
     if( val & Nic::ER_INT){
         printf("==ERROR.\n");    
     }
- //   MessageInfo info;
- //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
- //   if(Message::send(this->observerThread, &info)) {
- //      printf("local!!!! yamas:INIT error\n");
- //   }
     return;
 }
 

@@ -10,7 +10,7 @@ class LoopBack : public Nic
 {
 public:    
     int   init(){return 0;};
-    void  Send(Ether::Frame*);
+    void  Send(Ether*);
     int   interrupt();
     LoopBack();
     ~LoopBack();

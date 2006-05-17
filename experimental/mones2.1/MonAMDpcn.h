@@ -65,11 +65,10 @@ protected:
     };
 public:    
     int   init();
-    void  Send(Ether::Frame*);
+    void  Send(Ether*);
     int   interrupt();
     MonAMDpcn();
     ~MonAMDpcn();
-    void  getMacAddress(byte* dest){if(piblock!=NULL){memcpy(dest, piblock->mac_addr, 6);} }
     enum{
         VENDORID   =0x1022,
         DEVICEID   =0x2000,

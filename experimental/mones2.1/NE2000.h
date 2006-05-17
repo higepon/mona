@@ -20,12 +20,11 @@ namespace mones {
 class NE2000 : public Nic
 {
 public:
-    void  Send(Ether::Frame*);
+    void  Send(Ether*);
     int interrupt();
     NE2000();
     ~NE2000();
     int init();
-    void getMacAddress(byte* dest){ memcpy(dest, ether_mac_addr, 6);}
     enum{
         VENDORID   =0x10EC,
         DEVICEID   =0x8029,
@@ -50,7 +49,6 @@ private:
     dword      ne_rx_sub_len;    // 折り返し分の長さ //
     dword      ne_rx_remain_len; // 残りの長さ(折り返しがないときは本体の長さと同じ) // 
     dword      frame_len;
-    byte       ether_mac_addr[6];
     enum{
         ETHER_HEADER_SIZE=14,      // ヘッダーサイズ
         ETHER_MIN_PACKET =60,      // 最小パケットサイズ
