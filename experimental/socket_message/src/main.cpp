@@ -25,6 +25,27 @@
 
 MessageList messages;
 
+int SendMessage(int to, MessageInfo* msg);
+int ReceiveLoop(int port);
+
+int main(int argc, char *argv[])
+{
+    MessageInfo msg;
+    if (argc > 2) {
+        msg.header = 1001;
+        strncpy(msg.str, "hoge", 32);
+        printf("msg receve %d:%s\n", msg.header, msg.str);
+        SendMessage(2345, &msg);
+        SendMessage(2345, &msg);
+
+    } else {
+        ReceiveLoop(2345);
+    }
+    return 0;
+}
+
+
+
 int set_myhost(struct sockaddr_in* me);
 int SendMessage(int to, MessageInfo* msg)
 {
@@ -134,21 +155,6 @@ int client();
 
 
 
-int main(int argc, char *argv[])
-{
-    MessageInfo msg;
-    if (argc > 2) {
-        msg.header = 1001;
-        strncpy(msg.str, "hoge", 32);
-        printf("msg receve %d:%s\n", msg.header, msg.str);
-        SendMessage(2345, &msg);
-        SendMessage(2345, &msg);
-
-    } else {
-        ReceiveLoop(2345);
-    }
-    return 0;
-}
 
 int set_myhost(struct sockaddr_in* me)
 {
