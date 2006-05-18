@@ -13,16 +13,6 @@ namespace mones {
 #define MSG_FRAME_READ 0x87654322
 #define MSG_GET_MAC_ADDRESS 0x41530000
 
-typedef struct {
-    byte destmac[6];
-    byte header[4096];
-    dword size;
-    word protocol;
-} OutPacket;
-
-void SetFrameToSharedMemory(Ether* frame);
-void GetFrameFromSharedMemory(Ether* frame);
-
 class NicServer
 {
 public:
@@ -38,8 +28,8 @@ public:
 
 private:
     void interrupt(MessageInfo* msg);
-    void dumpPacket(Ether*);
-    void ICMPreply(Ether*);
+    void dumpPacket(IP*);
+    void ICMPreply(IP*);
 protected:
     byte macAddress[6];
     dword observerThread;

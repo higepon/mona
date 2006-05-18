@@ -3,18 +3,6 @@
 using namespace mones;
 using namespace MonAPI;
 
-// not real shared memory
-static Ether sharedFrame;
-
-void mones::SetFrameToSharedMemory(Ether* frame)
-{
-    memcpy(&sharedFrame, frame, sizeof(Ether));
-}
-void mones::GetFrameFromSharedMemory(Ether* frame)
-{
-    memcpy(frame, &sharedFrame, sizeof(Ether));
-}
-
 NicServer::NicServer() : observerThread(0xffffffff), nic(NULL), started(false), loopExit(false)
 {
 }
@@ -47,24 +35,24 @@ dword NicServer::getThreadID() const
     return this->myID;
 }
 
-void NicServer::ICMPreply(Ether* f)
+void NicServer::ICMPreply(IP* pkt)
 {
-    
+    //Frame* frame=new Ether();
+    //nic->Send(frame);
 }
 
-void NicServer::dumpPacket(Ether* frame)
+void NicServer::dumpPacket(IP* pkt)
 {
     printf("src:");
     for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(frame->IPHeader->srcip))+j));
+        printf("%d.",*(((byte*)&(pkt->srcip))+j));
     printf("dst:");
     for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(frame->IPHeader->dstip))+j));
-    switch( frame->IPHeader->prot){
+        printf("%d.",*(((byte*)&(pkt->dstip))+j));
+    switch( pkt->prot){
     case IP::TYPEICMP:
         printf("ICMP:");
-        //rewrite.
-        nic->Send(frame);
+        ICMPreply(pkt);
         break;
     case IP::TYPEIGMP:
         printf("IGMP:");
@@ -74,7 +62,7 @@ void NicServer::dumpPacket(Ether* frame)
         break;
     case IP::TYPEUDP:
         printf("UDP:");
-        UDP* udp=frame->IPHeader->UDPHeader;
+        UDP* udp=pkt->UDPHeader;
         printf("R:%d L:%d LEN:%d CKSUM:%d",bswap(udp->srcport),
              bswap(udp->dstport),bswap(udp->len),bswap(udp->chksum));
         break;    
@@ -96,7 +84,7 @@ void NicServer::interrupt(MessageInfo* msg)
     if( val & Nic::RX_INT ){
         Ether* frame =NULL;
         while( frame = nic ->Recv(0) ){
-           dumpPacket(frame);
+           dumpPacket(frame->IPHeader);
            delete frame;
         }
     }

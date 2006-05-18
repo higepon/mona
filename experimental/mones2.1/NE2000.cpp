@@ -133,7 +133,6 @@ int NE2000::interrupt()
         ret |= RX_INT;
     }
     if (val & NE_ISR_PTX){
-        txihandler();
         ret |= TX_INT;
     }
     if( val & (NE_ISR_RXE|NE_ISR_TXE|NE_ISR_OVW|NE_ISR_CNT|NE_ISR_RST)){
@@ -238,11 +237,6 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
  
     w_reg(NE_P0_IMR, NE_IMR_PRXE); /* Packet Receive interrupt enable */
     enableNetwork();
-    return 0;
-}
-
-int NE2000::txihandler()
-{
     return 0;
 }
 

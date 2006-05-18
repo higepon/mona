@@ -10,7 +10,6 @@ void MonAMDpcn::txihandler()
     (txdsc+txindex)->bcnt=0;
     (txdsc+txindex)->rbaddr=0;
     txindex = (txindex+1) & (( 1<<LOGTXRINGLEN)-1);
-    printf("TX-INT\n");
 }
 
 void MonAMDpcn::rxihandler()
@@ -105,6 +104,7 @@ int MonAMDpcn::init()
         printf("%x:",piblock->mac_addr[i]);
     }
     piblock->mac_addr[5]=inp8(iobase+5);
+    macaddress[5]=piblock->mac_addr[5];
     printf("%x\n",piblock->mac_addr[5]);
     piblock->filter[0]=0x0;
     piblock->filter[1]=0x0;
@@ -135,9 +135,10 @@ int MonAMDpcn::interrupt()
             txihandler();
             ret |= TX_INT;
         }
-        //error.
-        w_csr(CSR_CSR, val & 0xFFF0);
+
     }
+    //error.
+    w_csr(CSR_CSR, val & 0xFFF0);
     //Interrupt was masked by OS handler.
     enableNetwork(); //Now be enabled here. 
     return ret;

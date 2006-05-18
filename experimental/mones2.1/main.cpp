@@ -1,16 +1,13 @@
 #include "NicServer.h"
 #include <monapi.h>
 #include <monalibc.h>
+#include <monalibc/stdio.h>
 
 using namespace mones;
 static NicServer* server;
+
 void NicListenLoop();
-dword nic_read(dword nicThread, Ether* frame);
-dword nic_write(dword nicThread, OutPacket* packet);
-
 dword nicThread;
-
-//#define BUF ((struct uip_eth_hdr *)&uip_buf[0])
 
 #ifndef NULL
 #define NULL (void *)0
@@ -28,19 +25,16 @@ int MonaMain(List<char*>* pekoe)
     }
     nicThread = server->getThreadID();
     //printf(">>%d\n",nicThread);
-    byte arptimer;
     /* Initialize the device driver. */
     //monadev_init();
     /* Initialize the uIP TCP/IP stack. */
     //uip_init();
     /* Initialize the HTTP server. */
     //httpd_init();
-    arptimer = 0;
-
-    Ether ef;
+    //Ether ef;
     while(1) {
         sleep(500);
-        nic_read(nicThread,&ef);
+       // nic_read(nicThread,&ef);
        // monadev_read();
     }
     return 0;
@@ -56,31 +50,4 @@ void NicListenLoop()
         exit(1);
     }
     server->messageLoop();
-}
-
-dword nic_read(dword nicThread, Ether* frame)
-{
-    MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_READ))
-    {
-        printf("send error 1");
-        return 1;
-    }
-    //printf("X\n");
-    GetFrameFromSharedMemory(frame);
-    return 0;
-}
-
-// caller should free() packet, after packet written
-// not thread safe
-dword nic_write(dword nicThread, OutPacket* packet)
-{
-    MessageInfo msg;
-    if (MonAPI::Message::sendReceive(&msg, nicThread, MSG_FRAME_WRITE, (dword)packet))
-    {
-        printf("send error 1");
-        return 1;
-    }
-    sprintf(NULL,"%d",1); // trick your linker.
-    return 0;
 }

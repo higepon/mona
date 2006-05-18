@@ -1,5 +1,5 @@
 TARGET  = mns21
-SOURCES = main.cpp Nic.cpp NE2000.cpp NicFactory.cpp NicServer.cpp MonAMDpcn.cpp LoopBack.cpp
+SOURCES = main.cpp Nic.cpp NicFactory.cpp NicServer.cpp MonAMDpcn.cpp LoopBack.cpp NE2000.cpp 
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
@@ -52,7 +52,7 @@ ifneq ($(NASMSRCS),)
 	for asm in $(NASMSRCS); do echo `echo $$asm | sed "s/\.asm/.o/`": "$$asm >> dependencies; done
 endif
 
-ADDLINK += -lmonalibc -lPci
+ADDLINK +=  -lPci -lmonalibc
 
 CXXFLAGS += -DDEBUG
 

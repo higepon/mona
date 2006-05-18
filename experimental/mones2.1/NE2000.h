@@ -38,7 +38,6 @@ private:
     void ne_pio_writemem( byte*, dword, dword );
     void ne_pio_readmem( dword, byte*, dword );
     int rxihandler();
-    int txihandler();
 
     byte       ne_ringbuf_status;
     byte       ne_ringbuf_bound;

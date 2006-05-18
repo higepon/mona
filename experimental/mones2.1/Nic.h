@@ -2,7 +2,6 @@
 #include <monapi.h>
 #include <sys/types.h>
 #include <monapi/io.h>
-#include <sys/HashMap.h>
 
 namespace mones{
 
@@ -89,9 +88,6 @@ private:
     //For reducing memory copy, Nic's I/O uses not IPHeader-class but Ether-class.
     //On the other hand, Ether frame header should be invisible from IP protocol layer,
     //so I use fried assignment.
-    //
-    //       I've decided to rerwite around here.
-    //
     friend class ARPhandler;
     friend class Nic;
     byte  dstmac[6];
@@ -104,39 +100,44 @@ public:
         ARP  ARPHeader[0];
     };
     byte payloadsize;
-    enum{
-        TYPEARP=0x806,
-        TYPEIP =0x800,
-    };
 };
 
 #pragma pack(pop)
 
-struct ARPRec{
-    dword ip;
-    byte mac[6];
-};
+
 
 class ARPhandler
 {
+    struct ARPRec{
+        dword ip;
+        byte mac[6];
+    };
 public:
+    enum{
+        TYPEARP=0x806,
+        TYPEIP =0x800,
+    };
+    ARPhandler();
     virtual ~ARPhandler();
     void  getMacAddress(byte* dest){memcpy(dest,macaddress,6);};
     void  setIP(byte a,byte b,byte c,byte d){ ipaddress=((d<<24)|(c<<16)|(b<<8)|a);}
     dword getIP(){ return ipaddress; };    
     void  getDstMacbyIP(dword address ,byte* dest);
-    void  ARPreply(Ether*);//old
-    void  ARPreply(IP*);
-    int   SetHeader(byte*,IP*);
-    int   SetHeader(byte*,ARP*);
+    void  ARPreply(Ether*);
+    int   SetHeader(Ether*);
     void  DumpTable();
+    virtual void Send(Ether*)=0;
 protected:
     byte  macaddress[6];
     dword ipaddress;
     dword netmask;
     dword defaultroute;
-    HashMap<ARPRec*>* cache; //TODO create arp table
-    Ether* CreateQueryPkt();
+
+    int head;
+    enum{ CACHESIZE=0xFF };
+    ARPRec cache[CACHESIZE];
+    void Query(dword);
+    int Lookup(byte*,dword);
 };
 
 class Nic : public ARPhandler
@@ -144,7 +145,6 @@ class Nic : public ARPhandler
 public:
     Nic();
     virtual int init() =0;
-    virtual void Send(Ether*)=0;
     virtual int interrupt() =0;
     Ether* Recv(int);
     byte  getIRQ() const {return this->irq;}
