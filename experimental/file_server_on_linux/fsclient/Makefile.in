@@ -48,12 +48,13 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_fsclient_OBJECTS = fsclient-main.$(OBJEXT) \
-	fsclient-Message.$(OBJEXT) fsclient-ProcessUtil.$(OBJEXT)
+	fsclient-Message.$(OBJEXT) fsclient-SocketMessage.$(OBJEXT) \
+	fsclient-ProcessUtil.$(OBJEXT) fsclient-cmemoryinfo.$(OBJEXT)
 fsclient_OBJECTS = $(am_fsclient_OBJECTS)
 fsclient_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-am__depfiles_maybe = depfiles
+depcomp =
+am__depfiles_maybe =
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -149,9 +150,13 @@ fsclient_CXXFLAGS = -DON_LINUX -g -Wall -O3 -I../src
 fsclient_SOURCES = main.cpp\
 ../src/Message.cpp\
 ../src/Message.h\
+../src/SocketMessage.cpp\
+../src/SocketMessage.h\
 ../src/ProcessUtil.cpp\
 ../src/ProcessUtil.h\
-../src/types.h
+../src/types.h\
+../src/monapi/messages.h\
+../src/cmemoryinfo.cpp
 
 all: all-am
 
@@ -166,9 +171,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  fsclient/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  --ignore-deps fsclient/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  fsclient/Makefile
+	  $(AUTOMAKE) --foreign  --ignore-deps fsclient/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -219,65 +224,41 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsclient-Message.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsclient-ProcessUtil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsclient-main.Po@am__quote@
-
 .cpp.o:
-@am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
+	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 fsclient-main.o: main.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -MT fsclient-main.o -MD -MP -MF "$(DEPDIR)/fsclient-main.Tpo" -c -o fsclient-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fsclient-main.Tpo" "$(DEPDIR)/fsclient-main.Po"; else rm -f "$(DEPDIR)/fsclient-main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='fsclient-main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
 
 fsclient-main.obj: main.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -MT fsclient-main.obj -MD -MP -MF "$(DEPDIR)/fsclient-main.Tpo" -c -o fsclient-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fsclient-main.Tpo" "$(DEPDIR)/fsclient-main.Po"; else rm -f "$(DEPDIR)/fsclient-main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cpp' object='fsclient-main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
 
 fsclient-Message.o: ../src/Message.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -MT fsclient-Message.o -MD -MP -MF "$(DEPDIR)/fsclient-Message.Tpo" -c -o fsclient-Message.o `test -f '../src/Message.cpp' || echo '$(srcdir)/'`../src/Message.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fsclient-Message.Tpo" "$(DEPDIR)/fsclient-Message.Po"; else rm -f "$(DEPDIR)/fsclient-Message.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../src/Message.cpp' object='fsclient-Message.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-Message.o `test -f '../src/Message.cpp' || echo '$(srcdir)/'`../src/Message.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-Message.o `test -f '../src/Message.cpp' || echo '$(srcdir)/'`../src/Message.cpp
 
 fsclient-Message.obj: ../src/Message.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -MT fsclient-Message.obj -MD -MP -MF "$(DEPDIR)/fsclient-Message.Tpo" -c -o fsclient-Message.obj `if test -f '../src/Message.cpp'; then $(CYGPATH_W) '../src/Message.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Message.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fsclient-Message.Tpo" "$(DEPDIR)/fsclient-Message.Po"; else rm -f "$(DEPDIR)/fsclient-Message.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../src/Message.cpp' object='fsclient-Message.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-Message.obj `if test -f '../src/Message.cpp'; then $(CYGPATH_W) '../src/Message.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Message.cpp'; fi`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-Message.obj `if test -f '../src/Message.cpp'; then $(CYGPATH_W) '../src/Message.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/Message.cpp'; fi`
+
+fsclient-SocketMessage.o: ../src/SocketMessage.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-SocketMessage.o `test -f '../src/SocketMessage.cpp' || echo '$(srcdir)/'`../src/SocketMessage.cpp
+
+fsclient-SocketMessage.obj: ../src/SocketMessage.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-SocketMessage.obj `if test -f '../src/SocketMessage.cpp'; then $(CYGPATH_W) '../src/SocketMessage.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/SocketMessage.cpp'; fi`
 
 fsclient-ProcessUtil.o: ../src/ProcessUtil.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -MT fsclient-ProcessUtil.o -MD -MP -MF "$(DEPDIR)/fsclient-ProcessUtil.Tpo" -c -o fsclient-ProcessUtil.o `test -f '../src/ProcessUtil.cpp' || echo '$(srcdir)/'`../src/ProcessUtil.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fsclient-ProcessUtil.Tpo" "$(DEPDIR)/fsclient-ProcessUtil.Po"; else rm -f "$(DEPDIR)/fsclient-ProcessUtil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../src/ProcessUtil.cpp' object='fsclient-ProcessUtil.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-ProcessUtil.o `test -f '../src/ProcessUtil.cpp' || echo '$(srcdir)/'`../src/ProcessUtil.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-ProcessUtil.o `test -f '../src/ProcessUtil.cpp' || echo '$(srcdir)/'`../src/ProcessUtil.cpp
 
 fsclient-ProcessUtil.obj: ../src/ProcessUtil.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -MT fsclient-ProcessUtil.obj -MD -MP -MF "$(DEPDIR)/fsclient-ProcessUtil.Tpo" -c -o fsclient-ProcessUtil.obj `if test -f '../src/ProcessUtil.cpp'; then $(CYGPATH_W) '../src/ProcessUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/ProcessUtil.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fsclient-ProcessUtil.Tpo" "$(DEPDIR)/fsclient-ProcessUtil.Po"; else rm -f "$(DEPDIR)/fsclient-ProcessUtil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../src/ProcessUtil.cpp' object='fsclient-ProcessUtil.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-ProcessUtil.obj `if test -f '../src/ProcessUtil.cpp'; then $(CYGPATH_W) '../src/ProcessUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/ProcessUtil.cpp'; fi`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-ProcessUtil.obj `if test -f '../src/ProcessUtil.cpp'; then $(CYGPATH_W) '../src/ProcessUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/ProcessUtil.cpp'; fi`
+
+fsclient-cmemoryinfo.o: ../src/cmemoryinfo.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-cmemoryinfo.o `test -f '../src/cmemoryinfo.cpp' || echo '$(srcdir)/'`../src/cmemoryinfo.cpp
+
+fsclient-cmemoryinfo.obj: ../src/cmemoryinfo.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsclient_CXXFLAGS) $(CXXFLAGS) -c -o fsclient-cmemoryinfo.obj `if test -f '../src/cmemoryinfo.cpp'; then $(CYGPATH_W) '../src/cmemoryinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/cmemoryinfo.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -391,7 +372,6 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -417,7 +397,6 @@ install-man:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

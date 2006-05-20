@@ -4,11 +4,8 @@
 #ifdef ON_LINUX
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
 #include <string.h>
-#include "Message.h"
+#include "SocketMessage.h"
 #include "types.h"
 #include "ProcessUtil.h"
 #else
@@ -21,47 +18,21 @@ namespace MonAPI {
 
 #ifdef ON_LINUX
 using namespace mona_helper;
-int Message::msqid;
 
 void Message::initialize()
 {
-    pid_t pid = getpid();
-    if (-1 == (Message::msqid = msgget((key_t)pid, 0666 | IPC_CREAT)))
-    {
-        fprintf(stderr, "can not msgget\n");
-        exit(1);
-    }
+    SocketMessage::initialize();
 }
 
 void Message::destroy()
 {
-    if(-1 == msgctl(msqid, IPC_RMID, NULL))
-    {
-        fprintf(stderr, "msg remove failure");
-        exit(1);
-    }
 }
 #endif
 
 int Message::send(dword tid, MessageInfo* info)
 {
 #ifdef ON_LINUX
-    int queueid;
-    if (-1 == (queueid = msgget((key_t)tid, 0666 | IPC_CREAT)))
-    {
-        fprintf(stderr, "can not msgget\n");
-        exit(1);
-    }
-    printf("send %d\n", queueid);
-    MessageBuf message;
-    memcpy(&(message.data), info, M_BUFSIZ);
-    message.type = info->header;
-    if (-1 == msgsnd(queueid, &message, M_BUFSIZ, 0))
-    {
-        fprintf(stderr, "msgsnd failure");
-        exit(1);
-    }
-    return 0;
+    return SocketMessage::send(tid, info);
 #else
     if (tid == THREAD_UNKNOWN) return 1;
     return syscall_send(tid, info);
@@ -71,26 +42,9 @@ int Message::send(dword tid, MessageInfo* info)
 int Message::receive(MessageInfo* info)
 {
 #ifdef ON_LINUX
-    MessageBuf message;
-    printf("receive %d\n", msqid);
-    if (-1 == msgrcv(msqid, &message, M_BUFSIZ, 0, 0))
-    {
-        fprintf(stderr, "msgrcv failure");
-        exit(1);
-    }
-    memcpy(info, &(message.data), M_BUFSIZ);
-    return 0;
-#else
-    int result = syscall_receive(info);
-    if (result != 0)
-    {
-         syscall_mthread_yield_message();
-         result = syscall_receive(info);
-    }
-    return result;
+    return SocketMessage::receive(info);
 #endif
 }
-
 
 int Message::send(dword tid, dword header, dword arg1 /*= 0*/, dword arg2 /*= 0*/, dword arg3 /*= 0*/, const char* str /*= NULL */)
 {
@@ -131,13 +85,20 @@ int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /
 
 int Message::reply(MessageInfo* info, dword arg2 /* = 0 */, dword arg3 /* = 0 */, const char* str /* = NULL */)
 {
+    sleep(1);
     return Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
 }
 
 int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2))
 {
 #ifdef ON_LINUX
-    printf("%s not implemented\n", __func__);
+    Message::receive(dst);
+    if (!(*equals)(dst, src))
+    {
+        fprintf(stderr, "not equal");
+        exit(1);
+    }
+
     return 0;
 #else
     MessageInfo msg;

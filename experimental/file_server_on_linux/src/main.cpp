@@ -31,6 +31,7 @@ void MessageLoop()
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                 monapi_cmemoryinfo* mi = ReadFile(msg.str, msg.arg1);
+
                 if (mi != NULL)
                 {
                     Message::reply(&msg, mi->Handle, mi->Size);
@@ -46,6 +47,17 @@ void MessageLoop()
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                 monapi_cmemoryinfo* mi = ReadDirectory(msg.str, msg.arg1);
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    printf("%s %s:%d size=%d\n", __func__, __FILE__, __LINE__, mi->Size);fflush(stdout);
+    int size = *(int*)mi->Data;
+    for (int i = 0; i < size; i++, p++)
+    {
+        printf("%s\n", p->name);
+    }
+
+
                 if (mi != NULL)
                 {
                     Message::reply(&msg, mi->Handle, mi->Size);

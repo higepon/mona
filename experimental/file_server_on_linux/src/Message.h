@@ -56,7 +56,7 @@ public:
 #ifdef ON_LINUX
     static void initialize();
     static void destroy();
-    static int msqid;
+    static int port;
 #define M_BUFSIZ sizeof(MessageInfo)
     struct MessageBuf
     {

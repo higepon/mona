@@ -154,6 +154,7 @@ monapi_cmemoryinfo* ISO9660FileSystemManager::ReadDirectory(const char* path, bo
 
     /* allcoate memory */
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+
     int size = files.get_Length();
     if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), prompt))
     {
@@ -170,6 +171,7 @@ monapi_cmemoryinfo* ISO9660FileSystemManager::ReadDirectory(const char* path, bo
 
         di.size = file->GetSize();
         strcpy(di.name, (const char*)file->GetName());
+        printf("%s\n", (const char*)file->GetName());
         di.attr = file->IsDirectory() ? ATTRIBUTE_DIRECTORY : 0;
         *p = di;
         p++;
