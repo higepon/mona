@@ -1,66 +1,57 @@
 #include "Nic.h"
 using namespace mones;
 
-ARPhandler::ARPhandler():ipaddress(0),netmask(0),defaultroute(0),head(0)
+ARPmanager::ARPmanager():ipaddress(0),netmask(0),defaultroute(0),registerd(0)
 {
     for(int i=0;i<CACHESIZE;i++)
         memset(cache,'0',sizeof(ARPRec)*CACHESIZE);
 }
 
-int ARPhandler::Lookup(byte* dstmac,dword dstip)
+Ether* ARPmanager::Query(dword dstip)
 {
-    //search from head foward, if matched, then swap it with [head-1]
-    //else Query and replace [head-1].
+    Ether* frame = new Ether();   
+    memset(frame->dstmac,0xFF,6);
+    memcpy(frame->srcmac,macaddress,6);
+    frame->type=bswap(TYPEARP);
+    ARP* ah=frame->ARPHeader;
+    ah->hardType=bswap(ARP::HARD_TYPE_ETHER);
+    ah->protType=bswap(ARP::PROTCOL_TYPE_IP);
+    ah->hardAddrLen=0x06;
+    ah->protAddrLen=0x04;
+    ah->opeCode=bswap(ARP::OPE_CODE_ARP_REQ);// word  opeCode;
+    memcpy(ah->srcMac,macaddress,6); //byte  srcMac[6];
+    ah->dstIp=dstip;                 // dword srcIp;
+    memset(ah->dstMac,0x00,6);       // byte  dstMac[6];
+    ah->srcIp=ipaddress;            //dword dstIp;
+    return frame;
+}
+
+int ARPmanager::Lookup(byte* dstmac,dword dstip)
+{
     for(int i=0;i<CACHESIZE;i++){
-        int j= (head+i)&CACHESIZE;
-        if( dstip==cache[j].ip ){
-            //byte tmp[6];
-            //TODO swap records.
-            //backward shift the head.
-            head--;
-            if(head<0)
-                head+=CACHESIZE;
+        if( dstip==cache[i].ip ){
+            memcpy(dstmac,cache[i].mac,6);
             return 0;
         }
     }
-    Query(dstip);
-    sleep(3000);
     return -1;
 }
-
-int ARPhandler::SetHeader(Ether* frame)
+int ARPmanager::Register(Ether* frame)
 {
-    if( Lookup(macaddress,frame->IPHeader->dstip) == -1){
-        if( Lookup(macaddress,frame->IPHeader->dstip) == -1){
-            return -1;
-        }
-    }
-    memcpy(frame->srcmac,macaddress,6);
+    ARP* ah=frame->ARPHeader;
+    cache[registerd].ip=ah->srcIp;
+    memcpy(cache[registerd].mac,ah->srcMac,6);
+    registerd++;
     return 0;
 }
 
-void ARPhandler::Query(dword dstip)
-{
-    printf("Q\n");
-    Ether* frame = new Ether();
-    ARP* ah=frame->ARPHeader;
-    ah->opeCode=bswap(ARP::OPE_CODE_ARP_REP);
-    memset(ah->dstMac,'1',6);
-    memcpy(ah->srcMac,macaddress,6); 
-    ah->dstIp=ah->srcIp;
-    ah->srcIp=ipaddress;
-    memcpy(frame->dstmac,ah->dstMac,6);
-    memcpy(frame->srcmac,ah->srcMac,6);
-    Send(frame);
-}
-
-void ARPhandler::ARPreply(Ether* frame)
+int ARPmanager::MakeArpReply(Ether* frame)
 {     
     ARP* ah = frame->ARPHeader;
     if( ah->opeCode == bswap(ARP::OPE_CODE_ARP_REP)){
-        printf("REP!");
+        Register(frame);
         delete frame;
-        frame=NULL;
+        return -1;
     }else if( ah->opeCode==bswap(ARP::OPE_CODE_ARP_REQ)){
         if( ah->dstIp == ipaddress){
             ah->opeCode=bswap(ARP::OPE_CODE_ARP_REP);
@@ -71,18 +62,31 @@ void ARPhandler::ARPreply(Ether* frame)
             memcpy(frame->dstmac,ah->dstMac,6);
             memcpy(frame->srcmac,ah->srcMac,6);
             printf("ARP REQ\n");
+            return 0;
         }else{
             delete frame;
-            frame=NULL;
+            return -1;
         }
+    }else{
+        printf("orz\n");
     }
+    return -1;
 }
 
-ARPhandler::~ARPhandler()
+word ARPmanager::CalcFrameSize(Ether* frame)
+{
+    if( frame->type==bswap(TYPEARP)){
+        return 14+sizeof(ARP);
+    }
+    return 14+bswap(frame->IPHeader->len);
+}
+
+ARPmanager::~ARPmanager()
 {
 
 }
 
+/////////////////////////////////////////////
 Nic::Nic():irq(0),iobase(0)
 {
 
@@ -93,13 +97,48 @@ Ether* Nic::Recv(int n)
     if( rxFrameList.size() > n  && n >=0 ){    
         Ether* frame = rxFrameList.removeAt(n);
         if( bswap(frame->type) ==  TYPEARP ){
-             ARPreply(frame);
-             if( frame !=NULL)
-                 Send(frame);
-             return NULL;
+            if( MakeArpReply(frame) == 0){
+                Send(frame);
+            }
+            return NULL;
         }
         return frame;
-    }else{
-        return NULL;
     }
+    return NULL;
+}
+
+Ether* Nic::MakePKT(dword dstip)
+{
+    Ether* frame= new Ether();
+    memcpy(frame->srcmac,macaddress,6);    
+    frame->type=bswap(TYPEIP);
+
+    IP* ip=frame->IPHeader;
+    ip->verhead=0x45;
+
+    ip->tos=0x00;          //tos
+    ip->len=bswap(60);     //totallength;
+    ip->id=bswap(0xCFEE);  //made from PID?
+    ip->frag=bswap(0x0000);//flag
+    ip->ttl=0x80;          //TTL
+    ip->prot=0x01;         //ICMP
+      ip->chksum=0xabb0;     //CKSUM
+    ip->srcip=ipaddress; 
+    ip->dstip=dstip;
+    //////////////////
+    for(int i=0;i<10;i++){
+        if( Lookup(frame->dstmac,dstip) ==-1 ){
+            Send(Query(dstip));
+            sleep(300);
+            interrupt();//copy rxdata form DMA memory. 
+            Ether* f=Recv(0);
+            if( f != NULL){
+                rxFrameList.add(f);
+            }
+        }else{
+            return frame;
+        }
+    }
+    delete frame;
+    return NULL;
 }

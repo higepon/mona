@@ -24,6 +24,7 @@ bool NicServer::initialize()
     dword ip= nic->getIP();         
     for(int j=0;j<4;j++)
           printf("%d.",*(((byte*)&ip)+j));
+    printf("\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
     this->started = true;
@@ -37,25 +38,26 @@ dword NicServer::getThreadID() const
 
 void NicServer::ICMPreply(IP* pkt)
 {
-    //Frame* frame=new Ether();
-    //nic->Send(frame);
+    Ether* frame = nic->MakePKT(pkt->srcip);
+    //ether header has been already filled.
+    if( frame != NULL){
+        ICMP* icmp=frame->IPHeader->ICMPHeader;
+        //create ICMP echo reply.
+        icmp->type=0x00;
+        icmp->code=0x00;
+          icmp->chksum=pkt->ICMPHeader->chksum+8;
+        memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-24);
+        printf("replying.\n");
+        nic->Send(frame);
+    }
 }
 
 void NicServer::dumpPacket(IP* pkt)
 {
-    printf("src:");
-    for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(pkt->srcip))+j));
-    printf("dst:");
-    for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(pkt->dstip))+j));
     switch( pkt->prot){
     case IP::TYPEICMP:
         printf("ICMP:");
         ICMPreply(pkt);
-        break;
-    case IP::TYPEIGMP:
-        printf("IGMP:");
         break;
     case IP::TYPETCP:
         printf("TCP:");
@@ -63,13 +65,24 @@ void NicServer::dumpPacket(IP* pkt)
     case IP::TYPEUDP:
         printf("UDP:");
         UDP* udp=pkt->UDPHeader;
-        printf("R:%d L:%d LEN:%d CKSUM:%d",bswap(udp->srcport),
+        printf("R:%d L:%d LEN:%d CKSUM:%d\n",bswap(udp->srcport),
              bswap(udp->dstport),bswap(udp->len),bswap(udp->chksum));
-        break;    
+        break;
+    case IP::TYPEIGMP:
+        printf("IGMP:");
+        break;
     default:
         printf("orz.");
     }
+    /*
+    printf("src:");
+    for(int j=0;j<4;j++)
+        printf("%d.",*(((byte*)&(pkt->srcip))+j));
+    printf("dst:");
+    for(int j=0;j<4;j++)
+        printf("%d.",*(((byte*)&(pkt->dstip))+j));
     printf("\n"); 
+    */
  //   MessageInfo info;
  //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
  //   if(Message::send(this->observerThread, &info)) {
@@ -82,6 +95,7 @@ void NicServer::interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
+        printf("==RX\n");
         Ether* frame =NULL;
         while( frame = nic ->Recv(0) ){
            dumpPacket(frame->IPHeader);

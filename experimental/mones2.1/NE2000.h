@@ -50,7 +50,7 @@ private:
     dword      frame_len;
     enum{
         ETHER_HEADER_SIZE=14,      // ヘッダーサイズ
-        ETHER_MIN_PACKET =60,      // 最小パケットサイズ
+        ETHER_MIN_PACKET =46,      // 最小パケットサイズ
         ETHER_MAX_PACKET =1514,    // 最大パケットサイズ
     };
     enum{

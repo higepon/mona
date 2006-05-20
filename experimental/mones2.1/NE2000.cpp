@@ -219,8 +219,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
                 ne_rx_remain_len=frame_len - ne_rx_sub_len;
             }
             // パケットの読み込み
-            ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );            
-            frame->payloadsize=frame_len;
+            ne_pio_readmem( ne_rx_start, buf, ne_rx_remain_len );
             rxFrameList.add(frame);
         }
     }
@@ -242,7 +241,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
 
 void NE2000::Send(Ether* frame)
 {
-    dword ptx_size=frame->payloadsize;
+    dword ptx_size=CalcFrameSize(frame);
     byte* ptx_packet=(byte*)frame;
     // 送信が完了しているかどうかチェックする
     while( ( r_reg( NE_P0_COMMAND ) & 0x04 ) !=0 );
@@ -250,12 +249,12 @@ void NE2000::Send(Ether* frame)
     disableNetwork();
 
     ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) , ptx_size );
-    ptx_size+=ETHER_HEADER_SIZE;
+    //ptx_size+=ETHER_HEADER_SIZE;
 
     // 最小パケット長より短いかどうかをチェックする
-    if( ptx_size < ETHER_MIN_PACKET ){
-        ptx_size=ETHER_MIN_PACKET;
-    }
+    //if( ptx_size < ETHER_MIN_PACKET ){
+    //    ptx_size=ETHER_MIN_PACKET;
+    //}
 
     w_reg( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_RD2 + NE_CR_STA );
 

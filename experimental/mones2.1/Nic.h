@@ -87,8 +87,8 @@ private:
     //Creating an Ether-class from an provided IP-class is not a low cost procedure.
     //For reducing memory copy, Nic's I/O uses not IPHeader-class but Ether-class.
     //On the other hand, Ether frame header should be invisible from IP protocol layer,
-    //so I use fried assignment.
-    friend class ARPhandler;
+    //so I use friend assignment.
+    friend class ARPmanager;
     friend class Nic;
     byte  dstmac[6];
     byte  srcmac[6];
@@ -99,14 +99,11 @@ public:
         IP   IPHeader[0];
         ARP  ARPHeader[0];
     };
-    byte payloadsize;
 };
 
 #pragma pack(pop)
 
-
-
-class ARPhandler
+class ARPmanager
 {
     struct ARPRec{
         dword ip;
@@ -117,36 +114,39 @@ public:
         TYPEARP=0x806,
         TYPEIP =0x800,
     };
-    ARPhandler();
-    virtual ~ARPhandler();
-    void  getMacAddress(byte* dest){memcpy(dest,macaddress,6);};
-    void  setIP(byte a,byte b,byte c,byte d){ ipaddress=((d<<24)|(c<<16)|(b<<8)|a);}
-    dword getIP(){ return ipaddress; };    
-    void  getDstMacbyIP(dword address ,byte* dest);
-    void  ARPreply(Ether*);
-    int   SetHeader(Ether*);
-    void  DumpTable();
-    virtual void Send(Ether*)=0;
+    ARPmanager();
+    virtual ~ARPmanager();
+    void   getMacAddress(byte* dest){memcpy(dest,macaddress,6);};
+    void   setIP(byte a,byte b,byte c,byte d){ ipaddress=((d<<24)|(c<<16)|(b<<8)|a);}
+    dword  getIP(){ return ipaddress; };    
+    void   getDstMacbyIP(dword address ,byte* dest);
+    int    MakeArpReply(Ether*);
+    int    Register(Ether*);
+
+    //int    SetHeader(Ether*);
+    void   DumpTable();
 protected:
     byte  macaddress[6];
     dword ipaddress;
     dword netmask;
     dword defaultroute;
-
-    int head;
-    enum{ CACHESIZE=0xFF };
+    byte   registerd;
+    enum{ CACHESIZE=0xFF };//Cass C
     ARPRec cache[CACHESIZE];
-    void Query(dword);
-    int Lookup(byte*,dword);
+    Ether* Query(dword);
+    int Lookup(byte*,dword);    
+    word CalcFrameSize(Ether*);
 };
 
-class Nic : public ARPhandler
+class Nic : public ARPmanager
 {
 public:
     Nic();
     virtual int init() =0;
-    virtual int interrupt() =0;
-    Ether* Recv(int);
+    virtual int interrupt() =0; 
+    virtual void Send(Ether*)=0;
+    Ether* Recv(int);    
+    Ether* MakePKT(dword);
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}

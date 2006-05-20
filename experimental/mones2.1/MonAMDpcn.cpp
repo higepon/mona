@@ -19,7 +19,6 @@ void MonAMDpcn::rxihandler()
         length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
         Ether* frame = new Ether; //deleted by server.
         memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
-        frame->payloadsize=length;
         //printf("SIZE:%d\n",length);
         rxFrameList.add(frame);
         (rxdsc+rxindex)->mcnt=0;
@@ -147,12 +146,13 @@ int MonAMDpcn::interrupt()
 void MonAMDpcn::Send(Ether* frame)
 {
     enableNetwork();
+    word len=CalcFrameSize(frame);
     txFrameList.add(frame);
     while( txFrameList.size() != 0) {
         Ether* frame = txFrameList.removeAt(0);
-        memcpy(txbuf+txindex*PKTSIZE,frame,frame->payloadsize);
+        memcpy(txbuf+txindex*PKTSIZE,frame,len);
         (txdsc+txindex)->status=0;
-        (txdsc+txindex)->bcnt=(word)(-frame->payloadsize)|0xF000;
+        (txdsc+txindex)->bcnt=(word)(-len)|0xF000;
         (txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
         (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*PKTSIZE);
         w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);    
