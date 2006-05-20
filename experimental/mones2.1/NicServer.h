@@ -2,18 +2,15 @@
 #include <sys/types.h>
 #include "Nic.h"
 #include "NicFactory.h"
-
-#ifndef _MONA_MONES_NIC_SERVER_
-#define _MON
+#pragma once
 
 namespace mones {
 
 #define MSG_FRAME_READY 0x12345678
 #define MSG_FRAME_WRITE 0x87654321
-#define MSG_FRAME_READ 0x87654322
-#define MSG_GET_MAC_ADDRESS 0x41530000
+#define MSG_FRAME_READ  0x87654322
 
-class NicServer
+class NicServer : public IPStack
 {
 public:
     NicServer();
@@ -27,9 +24,8 @@ public:
     void exit();
 
 private:
-    void interrupt(MessageInfo* msg);
-    void dumpPacket(IP*);
     void ICMPreply(IP*);
+    void interrupt(MessageInfo* msg);
 protected:
     byte macAddress[6];
     dword observerThread;
@@ -39,4 +35,3 @@ protected:
     bool loopExit;
 };
 }; // namespace mones
-#endif

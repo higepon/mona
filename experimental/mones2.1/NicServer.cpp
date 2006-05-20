@@ -38,56 +38,20 @@ dword NicServer::getThreadID() const
 
 void NicServer::ICMPreply(IP* pkt)
 {
-    Ether* frame = nic->MakePKT(pkt->srcip);
+    Ether* rframe = nic->MakePKT(pkt->srcip);
     //ether header has been already filled.
-    if( frame != NULL){
-        ICMP* icmp=frame->IPHeader->ICMPHeader;
+    if( rframe != NULL){
+        ICMP* icmp=rframe->IPHeader->ICMPHeader;
+        //FillICMPHeader();
         //create ICMP echo reply.
         icmp->type=0x00;
         icmp->code=0x00;
-          icmp->chksum=pkt->ICMPHeader->chksum+8;
+        icmp->chksum=pkt->ICMPHeader->chksum+8;
         memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-24);
-        printf("replying.\n");
-        nic->Send(frame);
+        //printf("replying.\n");    
+        FillIPHeader(rframe->IPHeader);
+        nic->Send(rframe);
     }
-}
-
-void NicServer::dumpPacket(IP* pkt)
-{
-    switch( pkt->prot){
-    case IP::TYPEICMP:
-        printf("ICMP:");
-        ICMPreply(pkt);
-        break;
-    case IP::TYPETCP:
-        printf("TCP:");
-        break;
-    case IP::TYPEUDP:
-        printf("UDP:");
-        UDP* udp=pkt->UDPHeader;
-        printf("R:%d L:%d LEN:%d CKSUM:%d\n",bswap(udp->srcport),
-             bswap(udp->dstport),bswap(udp->len),bswap(udp->chksum));
-        break;
-    case IP::TYPEIGMP:
-        printf("IGMP:");
-        break;
-    default:
-        printf("orz.");
-    }
-    /*
-    printf("src:");
-    for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(pkt->srcip))+j));
-    printf("dst:");
-    for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(pkt->dstip))+j));
-    printf("\n"); 
-    */
- //   MessageInfo info;
- //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
- //   if(Message::send(this->observerThread, &info)) {
- //      printf("local!!!! yamas:INIT error\n");
- //   }
 }
 
 void NicServer::interrupt(MessageInfo* msg)
@@ -95,20 +59,29 @@ void NicServer::interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
-        printf("==RX\n");
+        //printf("==RX\n");
         Ether* frame =NULL;
         while( frame = nic ->Recv(0) ){
-           dumpPacket(frame->IPHeader);
-           delete frame;
+            IP* pkt=frame->IPHeader;
+            //dumpPacket(pkt);
+            if( pkt->prot == IP::TYPEICMP){
+                ICMPreply(pkt);
+            }
+            delete frame;
         }
     }
     if(val & Nic::TX_INT){
-        printf("==TX\n");
+        //printf("==TX\n");
     }
     if( val & Nic::ER_INT){
         printf("==ERROR.\n");    
     }
     return;
+ //   MessageInfo info;
+ //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
+ //   if(Message::send(this->observerThread, &info)) {
+ //      printf("local!!!! yamas:INIT error\n");
+ //   }
 }
 
 
@@ -163,12 +136,6 @@ void NicServer::messageLoop()
             //printf("read\n");
             sleep(500);
             MonAPI::Message::reply(&msg);
-            break;
-        }
-        case MSG_GET_MAC_ADDRESS:
-        {
-            memcpy(msg.str, this->macAddress, 6);
-            MonAPI::Message::reply(&msg, 0, 0, msg.str);
             break;
         }
         default:

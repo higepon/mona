@@ -112,20 +112,8 @@ Ether* Nic::MakePKT(dword dstip)
     Ether* frame= new Ether();
     memcpy(frame->srcmac,macaddress,6);    
     frame->type=bswap(TYPEIP);
-
-    IP* ip=frame->IPHeader;
-    ip->verhead=0x45;
-
-    ip->tos=0x00;          //tos
-    ip->len=bswap(60);     //totallength;
-    ip->id=bswap(0xCFEE);  //made from PID?
-    ip->frag=bswap(0x0000);//flag
-    ip->ttl=0x80;          //TTL
-    ip->prot=0x01;         //ICMP
-      ip->chksum=0xabb0;     //CKSUM
-    ip->srcip=ipaddress; 
-    ip->dstip=dstip;
-    //////////////////
+    frame->IPHeader->srcip=ipaddress; 
+    frame->IPHeader->dstip=dstip;
     for(int i=0;i<10;i++){
         if( Lookup(frame->dstmac,dstip) ==-1 ){
             Send(Query(dstip));

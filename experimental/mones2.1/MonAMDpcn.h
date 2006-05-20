@@ -8,40 +8,35 @@ namespace mones{
 
 const int PKTSIZE=1514;
 //DST6 SRC6 LEN2 LCC+PAD(46-1500)
-//Data receive Controls.
-//See Spec Sheet Page 159.
-typedef struct{
-  word  mcnt;
-  word  rccrpc;
-  word  bcnt;
-  word  status;
-  dword rbaddr;
-  dword reservd;
-} RXDSC;
-
-//Data transmit Controls.
-//See spec sheet Page 162.
-typedef struct{
-    dword status; 
-    word  bcnt;
-    word  control;
-    dword rbaddr;
-    dword reserved;
-} TXDSC;
-
-typedef struct{
-    word  mode;
-    byte  rxlen;
-    byte  txlen;
-    byte  mac_addr[6];
-    dword filter[2];
-    dword rx_ring;
-    dword tx_ring;
-} IBLK;
-
- //Interface and Chip-Controls.
-class MonAMDpcn : public Nic 
+#pragma pack(push,4)
+class MonAMDpcn: public Nic
 {
+    //See Spec Sheet Page 159.
+    typedef struct RXDSC{
+        word  mcnt;
+        word  rccrpc;
+        word  bcnt;
+        word  status;
+        dword rbaddr;
+        dword reservd;
+    };
+    //See spec sheet Page 162.
+    typedef struct TXDSC{
+        dword status; 
+        word  bcnt;
+        word  control;
+        dword rbaddr;
+        dword reserved;
+    };
+    typedef struct IBLK{
+        word  mode;
+        byte  rxlen;
+        byte  txlen;
+        byte  mac_addr[6];
+        dword filter[2];
+        dword rx_ring;
+        dword tx_ring;
+    };
 protected:
     void rxihandler();
     byte* rxbuf;
@@ -137,5 +132,5 @@ private:
       MODE_PSEL    =0x0180,
     };
 };
-
+#pragma pack(pop)
 };//mones::

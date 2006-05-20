@@ -1,14 +1,9 @@
 #pragma once
-#include <monapi.h>
-#include <sys/types.h>
-#include <monapi/io.h>
+#include "IPStack.h"
 
 namespace mones{
 
-inline word  bswap(word w){ return (w>>8)|(w<<8); }
-
 #pragma pack(push,2)
-
 struct ARP {
     word  hardType;
     word  protType;
@@ -26,58 +21,6 @@ struct ARP {
         OPE_CODE_ARP_REP= 2,
         OPE_CODE_RARP_REQ=3,
         OPE_CODE_RARP_REP=4,
-    };
-};
-
-struct ICMP {
-    byte  type;
-    byte  code;
-    word  chksum;
-    byte  data[0];
-};
-
-struct UDP {
-    word  srcport;
-    word  dstport;
-    word  len;
-    word  chksum;
-    byte  data[0];
-};
-
-struct TCP {
-    word  srcport;
-    word  dstport;
-    dword seqnumber;
-    dword acknumber;
-    byte  reserved;
-    byte  flag;
-    word  window;
-    word  chksum;
-    word  purgent;
-    byte  data[0];
-};
-
-struct IP {
-    byte  verhead;
-    byte  tos;
-    word  len;
-    word  id;
-    word  frag;
-    byte  ttl;
-    byte  prot;
-    word  chksum;
-    dword srcip;
-    dword dstip;
-    union{
-        ICMP ICMPHeader[0];
-        TCP  TCPHeader[0];
-        UDP  UDPHeader[0];
-    };
-    enum {
-        TYPEICMP = 0x01,
-        TYPEIGMP = 0x02,
-        TYPETCP  = 0x06,
-        TYPEUDP  = 0x11,
     };
 };
 
@@ -100,7 +43,6 @@ public:
         ARP  ARPHeader[0];
     };
 };
-
 #pragma pack(pop)
 
 class ARPmanager
