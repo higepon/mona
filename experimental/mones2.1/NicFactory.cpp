@@ -27,8 +27,7 @@ Nic* NicFactory::create()
         return nic;
     }
 
-    //TODO delete magic number.
-    pcilib->CheckPciExist(0x10EC,0x8029,&pciinfo);
+    pcilib->CheckPciExist(NE2000::VENDORID,NE2000::DEVICEID,&pciinfo);
     if( pciinfo.Exist == 0){
         nic = new NE2000();
         nic->setIP(172,16,150,4); //QEMU.

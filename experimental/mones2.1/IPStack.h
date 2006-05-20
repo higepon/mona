@@ -63,6 +63,7 @@ struct IP {
 class IPStack
 {
 protected:
+    inline word checksum(byte*,word);
     void FillIPHeader(IP*);
     void dumpPacket(IP*); 
     void FillICMPHeader(ICMP*,ICMP*);

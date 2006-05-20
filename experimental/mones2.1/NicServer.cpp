@@ -48,7 +48,7 @@ void NicServer::ICMPreply(IP* pkt)
         icmp->code=0x00;
         icmp->chksum=pkt->ICMPHeader->chksum+8;
         memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-24);
-        //printf("replying.\n");    
+        printf("replying.\n");    
         FillIPHeader(rframe->IPHeader);
         nic->Send(rframe);
     }
@@ -59,11 +59,11 @@ void NicServer::interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
-        //printf("==RX\n");
+        printf("==RX\n");
         Ether* frame =NULL;
         while( frame = nic ->Recv(0) ){
             IP* pkt=frame->IPHeader;
-            //dumpPacket(pkt);
+            dumpPacket(pkt);
             if( pkt->prot == IP::TYPEICMP){
                 ICMPreply(pkt);
             }
@@ -71,7 +71,7 @@ void NicServer::interrupt(MessageInfo* msg)
         }
     }
     if(val & Nic::TX_INT){
-        //printf("==TX\n");
+        printf("==TX\n");
     }
     if( val & Nic::ER_INT){
         printf("==ERROR.\n");    
