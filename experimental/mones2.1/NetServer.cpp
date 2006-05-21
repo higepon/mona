@@ -94,18 +94,20 @@ void NetServer::messageLoop()
             this->interrupt(&msg);   
             break;
         case MSG_NET_STATUS:
+            Message::reply(&msg);
             break;
         case MSG_NET_OPEN:
-            printf("Server::open\n");
             Message::reply(&msg);
             break;
         case MSG_NET_CLOSE:
+            Message::reply(&msg);
             break;
         case MSG_NET_WRITE:
             Message::reply(&msg);
             break;
-        //case MSG_SOCKET_READ:
-        //    break;
+        case MSG_NET_READ:
+            Message::reply(&msg);
+            break;
         default:
             printf("Server default come %d", msg.header);
             break;

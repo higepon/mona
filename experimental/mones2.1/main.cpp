@@ -16,8 +16,7 @@ dword QuasiClientThread()
     }
     NetClient* client = new NetClient();
     client->initalize(server->getThreadID());
-    client->Check();
-    client->MessageLoop();
+    client->Test();
     return 0;
 }
 
@@ -35,5 +34,3 @@ int MonaMain(List<char*>* pekoe)
     server->messageLoop();
     return 0;
 }
-
-
