@@ -1,53 +1,39 @@
-#include "NicServer.h"
+#include "NetServer.h"
+#include "NetClient.h"
 #include <monapi.h>
 #include <monalibc.h>
 #include <monalibc/stdio.h>
 
 using namespace mones;
-static NicServer* server;
+using namespace MonAPI;
 
-void NicListenLoop();
-dword nicThread;
+static NetServer* server;
 
-#ifndef NULL
-#define NULL (void *)0
-#endif /* NULL */
-int MonaMain(List<char*>* pekoe)
+dword QuasiClientThread()
 {
-    dword id = syscall_mthread_create((dword)NicListenLoop);
-    syscall_mthread_join(id);
-
-    for (;;) {
-        if (server != NULL && server->isStarted()) {
-            break;
-        }
-        sleep(500);
+    while( !server->isStarted() ){
+        sleep(1000);
     }
-    nicThread = server->getThreadID();
-    //printf(">>%d\n",nicThread);
-    /* Initialize the device driver. */
-    //monadev_init();
-    /* Initialize the uIP TCP/IP stack. */
-    //uip_init();
-    /* Initialize the HTTP server. */
-    //httpd_init();
-    //Ether ef;
-    while(1) {
-        sleep(500);
-       // nic_read(nicThread,&ef);
-       // monadev_read();
-    }
+    NetClient* client = new NetClient();
+    client->initalize(server->getThreadID());
+    client->Check();
+    client->MessageLoop();
     return 0;
 }
-/*-----------------------------------------------------------------------------------*/
 
-void NicListenLoop()
+int MonaMain(List<char*>* pekoe)
 {
-    server = new NicServer;
-    if (!server->initialize())
-    {
-        printf("NicServer initialize failed\n");
+    server=new NetServer();
+    if(!server->initialize()){
+        printf("initalize failed\n");
         exit(1);
     }
+    //Create Client Thread for Debug.
+    dword id = syscall_mthread_create((dword)QuasiClientThread);
+    syscall_mthread_join(id);
+
     server->messageLoop();
+    return 0;
 }
+
+

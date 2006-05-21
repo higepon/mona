@@ -6,15 +6,17 @@
 
 namespace mones {
 
-#define MSG_FRAME_READY 0x12345678
-#define MSG_FRAME_WRITE 0x87654321
-#define MSG_FRAME_READ  0x87654322
+#define MSG_NET_STATUS 0xBACA0001
+#define MSG_NET_OPEN   0xBACA0002
+#define MSG_NET_CLOSE  0xBACA0003
+#define MSG_NET_WRITE  0xBACA0004
+#define MSG_NET_READ   0xBACA0005
 
-class NicServer : public IPStack
+class NetServer : public IPStack
 {
 public:
-    NicServer();
-    virtual ~NicServer();
+    NetServer();
+    virtual ~NetServer();
 
 public:
     bool initialize();

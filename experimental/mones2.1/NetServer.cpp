@@ -1,19 +1,21 @@
-#include "NicServer.h"
-
+#include "NetServer.h"
 using namespace mones;
 using namespace MonAPI;
 
-NicServer::NicServer() : observerThread(0xffffffff), nic(NULL), started(false), loopExit(false)
+NetServer::NetServer() : 
+     observerThread(0xffffffff),nic(NULL), started(false), loopExit(false)
 {
+
 }
 
-NicServer::~NicServer(){
+NetServer::~NetServer()
+{
+
 }
 
-bool NicServer::initialize()
+bool NetServer::initialize()
 {
     syscall_get_io();
-
     this->nic = NicFactory::create();
     if(this->nic == NULL){
         printf("NicFactory error\n");
@@ -27,16 +29,15 @@ bool NicServer::initialize()
     printf("\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
-    this->started = true;
     return true;
 }
 
-dword NicServer::getThreadID() const
+dword NetServer::getThreadID() const
 {
     return this->myID;
 }
 
-void NicServer::ICMPreply(IP* pkt)
+void NetServer::ICMPreply(IP* pkt)
 {
     Ether* rframe = nic->MakePKT(pkt->srcip);
     //ether header has been already filled.
@@ -54,7 +55,7 @@ void NicServer::ICMPreply(IP* pkt)
     }
 }
 
-void NicServer::interrupt(MessageInfo* msg)
+void NetServer::interrupt(MessageInfo* msg)
 {   
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
@@ -67,6 +68,7 @@ void NicServer::interrupt(MessageInfo* msg)
             if( pkt->prot == IP::TYPEICMP){
                 ICMPreply(pkt);
             }
+            //Send a Message to client.
             delete frame;
         }
     }
@@ -77,71 +79,37 @@ void NicServer::interrupt(MessageInfo* msg)
         printf("==ERROR.\n");    
     }
     return;
- //   MessageInfo info;
- //   Message::create(&info, MSG_FRAME_READY, 0, 0, 0, NULL);
- //   if(Message::send(this->observerThread, &info)) {
- //      printf("local!!!! yamas:INIT error\n");
- //   }
 }
 
 
-void NicServer::messageLoop()
+void NetServer::messageLoop()
 {
+    this->started = true;
     for (MessageInfo msg; !loopExit;)
     {
         if (Message::receive(&msg)) continue;
 
-        switch (msg.header)
-        {
+        switch (msg.header){
         case MSG_INTERRUPTED:
-        {
             this->interrupt(&msg);   
             break;
-        }
-        case MSG_FRAME_WRITE:
-        {
-            //OutPacket* p = (OutPacket*)msg.arg1;
-            //this->nic->outputFrame(p->header, p->destmac, p->size, p->protocol);
-            MonAPI::Message::reply(&msg);
+        case MSG_NET_STATUS:
             break;
-        }
-        case MSG_FRAME_READ:
-        {
-            /*
-            if (this->frameList.size() == 0)
-            {
-                MessageInfo m;
-                for (int i = 0; ; i++)
-                {
-                    int result = MonAPI::Message::peek(&m, i);
-
-                    if (result != 0)
-                    {
-                        i--;
-                        syscall_mthread_yield_message();
-                    }
-                    else if (m.header == MSG_INTERRUPTED)
-                    {
-                        printf("XX\n");
-                        MonAPI::Message::peek(&m, i, PEEK_REMOVE);
-                        interrupt(&m);
-                        break;
-                    }
-                }
-            }
-            */
-            //Ether::Frame* frame = this->frameList.removeAt(0);
-            //SetFrameToSharedMemory(frame);
-            //delete frame;    
-            //printf("read\n");
-            sleep(500);
-            MonAPI::Message::reply(&msg);
+        case MSG_NET_OPEN:
+            printf("Server::open\n");
+            Message::reply(&msg);
             break;
-        }
+        case MSG_NET_CLOSE:
+            break;
+        case MSG_NET_WRITE:
+            Message::reply(&msg);
+            break;
+        //case MSG_SOCKET_READ:
+        //    break;
         default:
-            printf("default come %d", msg.header);
+            printf("Server default come %d", msg.header);
             break;
         }
     }
-    printf("NicServer exit\n");
+    printf("NetServer exit\n");
 }
