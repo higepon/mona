@@ -116,6 +116,7 @@ void ISO9660FileSystemManager::DeviceOff()
 
 monapi_cmemoryinfo* ISO9660FileSystemManager::ReadFile(const char* path, bool prompt)
 {
+    printf("%s %s:%d\n", __func__, path, __LINE__);fflush(stdout);
     if (!this->Initialize()) return NULL;
 
     /* file open */
@@ -123,6 +124,7 @@ monapi_cmemoryinfo* ISO9660FileSystemManager::ReadFile(const char* path, bool pr
 
     if (file == NULL)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         if (prompt) printf("read:file not found\n");
         return NULL;
     }
@@ -131,6 +133,7 @@ monapi_cmemoryinfo* ISO9660FileSystemManager::ReadFile(const char* path, bool pr
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     if (!monapi_cmemoryinfo_create(ret, file->GetSize() + 1, prompt))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         monapi_cmemoryinfo_delete(ret);
         return NULL;
     }

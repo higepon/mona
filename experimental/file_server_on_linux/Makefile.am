@@ -1,1 +1,1 @@
-SUBDIRS = fsclient src
+SUBDIRS = fsclient src test

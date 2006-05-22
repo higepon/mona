@@ -31,14 +31,16 @@ void MessageLoop()
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                 monapi_cmemoryinfo* mi = ReadFile(msg.str, msg.arg1);
-
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                 if (mi != NULL)
                 {
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                     Message::reply(&msg, mi->Handle, mi->Size);
                     monapi_cmemoryinfo_delete(mi);
                 }
                 else
                 {
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
                     Message::reply(&msg);
                 }
                 break;

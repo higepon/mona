@@ -24,6 +24,7 @@ ISO9660FileSystemManager.cpp\
 ISO9660FileSystemManager.h\
 Message.cpp\
 Message.h\
+messages.cpp\
 SocketMessage.cpp\
 SocketMessage.h\
 cmemoryinfo.cpp\
