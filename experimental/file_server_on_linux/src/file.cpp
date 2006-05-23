@@ -24,6 +24,7 @@ int ChangeDrive(int drive)
 {
     if (drive == DRIVE_FD0)
     {
+        fatfs->Initialize();
         currentDrive = DRIVE_FD0;
         fs = fatfs;
         return MONA_SUCCESS;

@@ -22,7 +22,7 @@ using namespace MonAPI;
 /*----------------------------------------------------------------------
     FatFileSystemManager
 ----------------------------------------------------------------------*/
-FatFileSystemManager::FatFileSystemManager()
+FatFileSystemManager::FatFileSystemManager() : initialized(false)
 {
 }
 
@@ -32,6 +32,7 @@ FatFileSystemManager::~FatFileSystemManager()
 
 bool FatFileSystemManager::Initialize()
 {
+    if (this->initialized) return true;
 #ifndef ON_LINUX
     syscall_get_io();
 
@@ -40,7 +41,7 @@ bool FatFileSystemManager::Initialize()
 #endif
 
     this->fd = new FDCDriver();
-
+    printf("fd = %d\n", this->fd);fflush(stdout);
     DeviceOn();
     this->fs = new FSOperation();
 
@@ -51,6 +52,9 @@ bool FatFileSystemManager::Initialize()
     }
 
     DeviceOff();
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+    this->initialized = true;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
 
     return true;
 }
@@ -66,8 +70,11 @@ bool FatFileSystemManager::ChangeDirectory(const CString& directory)
 
 void FatFileSystemManager::DeviceOn()
 {
+    printf("%s %s:%d  %d::::::::::::::::::\n", __func__, __FILE__, __LINE__, this->fd);fflush(stdout);
     this->fd->motor(ON);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     this->fd->recalibrate();
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     this->fd->recalibrate();
     this->fd->recalibrate();
     return;

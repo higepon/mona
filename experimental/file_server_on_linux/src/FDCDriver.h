@@ -84,6 +84,7 @@ private:
     int resultsLength;
     int currentTrack;
     byte* dmabuff;
+    FILE* fp;
 
 private:
     enum

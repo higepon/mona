@@ -47,6 +47,7 @@ public:
 protected:
     FDCDriver* fd;
     FSOperation* fs;
+    bool initialized;
     MonAPI::CString currentDirectory;
 };
 

@@ -15,8 +15,46 @@ void FileServerTest::tearDown()
 {
 }
 
-void FileServerTest::testReadDirectory()
+void FileServerTest::testFat12ReadDirectory()
 {
+    int ret = monapi_call_change_drive(DRIVE_FD0, MONAPI_FALSE);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to fd0", ret, (int)MONA_SUCCESS);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/", MONAPI_FALSE);
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    int size = *(int*)mi->Data;
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("entry count", 11, size);
+    CPPUNIT_ASSERT_MESSAGE("file MONA.CFG exist?", strcmp((&p[0])->name, "MONA.CFG") == 0);
+    CPPUNIT_ASSERT_MESSAGE("file SERVERS exist?", strcmp((&p[10])->name, "SERVERS") == 0);
+}
+
+void FileServerTest::testFat12ReadFile()
+{
+    int ret = monapi_call_change_drive(DRIVE_FD0, MONAPI_FALSE);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to fd0", ret, (int)MONA_SUCCESS);
+
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data("/MONA.CFG", MONAPI_FALSE);
+
+    CPPUNIT_ASSERT_MESSAGE("file /MONA.CFG found?", NULL != mi);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("file size == 200byte", 200, (int)mi->Size);
+    CPPUNIT_ASSERT_MESSAGE("strncmp", strncmp("# 1600(x1200), 1280(x1024), 1024", (char*)mi->Data, 32) == 0);
+
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+}
+
+void FileServerTest::testFat12FileSize()
+{
+    // not implemented
+}
+
+void FileServerTest::testISO9660ReadDirectory()
+{
+    int ret = monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to cd0", ret, (int)MONA_SUCCESS);
+
+
     monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/SERVERS", MONAPI_FALSE);
     monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     int size = *(int*)mi->Data;
@@ -29,8 +67,12 @@ void FileServerTest::testReadDirectory()
     monapi_cmemoryinfo_delete(mi);
 }
 
-void FileServerTest::testReadFile()
+void FileServerTest::testISO9660ReadFile()
 {
+    int ret = monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to cd0", ret, (int)MONA_SUCCESS);
+
+
     monapi_cmemoryinfo* mi = monapi_call_file_read_data("/MONA.CFG", MONAPI_FALSE);
 
     CPPUNIT_ASSERT_MESSAGE("file /MONA.CFG found?", NULL != mi);
@@ -41,8 +83,11 @@ void FileServerTest::testReadFile()
     monapi_cmemoryinfo_delete(mi);
 }
 
-void FileServerTest::testFileSize()
+void FileServerTest::testISO9660FileSize()
 {
+    int ret = monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to cd0", ret, (int)MONA_SUCCESS);
+
     dword id = monapi_call_file_open("/MONA.CFG");
     dword size = monapi_call_file_get_file_size(id);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("file size == 200byte", 200, (int)size);
