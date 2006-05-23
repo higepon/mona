@@ -65,7 +65,7 @@ void NetServer::interrupt(MessageInfo* msg)
         while( frame = nic ->Recv(0) ){
             IP* pkt=frame->IPHeader;
             dumpPacket(pkt);
-            if( pkt->prot == IP::TYPEICMP){
+            if( pkt->prot == TYPEICMP){
                 ICMPreply(pkt);
             }
             //Send a Message to client.
@@ -93,12 +93,18 @@ void NetServer::messageLoop()
         case MSG_INTERRUPTED:
             this->interrupt(&msg);   
             break;
+        case MSG_NET_GETFREEPORT:
+            Message::reply(&msg,1025);
+            break;
         case MSG_NET_STATUS:
             Message::reply(&msg);
             break;
-        case MSG_NET_OPEN:
-            Message::reply(&msg);
+        case MSG_NET_OPEN:    
+        {
+            dword result = 123;//Open(msg.str);
+            Message::reply(&msg, result);
             break;
+        }
         case MSG_NET_CLOSE:
             Message::reply(&msg);
             break;

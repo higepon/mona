@@ -1,3 +1,4 @@
+#include "Net.h"
 #include "IPStack.h"
 
 using namespace mones;
@@ -31,19 +32,19 @@ inline word IPStack::checksum(byte *data,word size)
 void IPStack::dumpPacket(IP* pkt)
 {
     switch( pkt->prot){
-    case IP::TYPEICMP:
+    case TYPEICMP:
         printf("ICMP:");
         break;
-    case IP::TYPETCP:
+    case TYPETCP:
         printf("TCP:");
         break;
-    case IP::TYPEUDP:
+    case TYPEUDP:
         printf("UDP:");
         UDP* udp=pkt->UDPHeader;
         printf("R:%d L:%d LEN:%d CKSUM:%d\n",bswap(udp->srcport),
              bswap(udp->dstport),bswap(udp->len),bswap(udp->chksum));
         break;
-    case IP::TYPEIGMP:
+    case TYPEIGMP:
         printf("IGMP:");
         break;
     default:

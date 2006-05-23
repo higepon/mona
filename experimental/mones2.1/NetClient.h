@@ -1,6 +1,7 @@
 #include "Net.h"
 #include <monapi.h>
 #include <sys/types.h>
+#include <monapi/messages.h>
 #pragma once
 
 namespace mones {
@@ -13,11 +14,13 @@ class NetClient
     int Peek(dword);
 public:
     int   initalize(dword);
-    int   Open();
-    int   Close();
-    int   Read();
+    int   Config(dword, dword, word, word);
+    word  GetFreePort();
+    int   Open(dword, word, word, word);
+    int   Close(); 
     int   Write();  
-    int   Stat();
+    monapi_cmemoryinfo*   Read();
+    monapi_cmemoryinfo*   Stat();
     ///////
     int   Test();
 };

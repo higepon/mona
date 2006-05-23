@@ -1,10 +1,8 @@
 #include "NetClient.h"
-
 using namespace MonAPI;
 using namespace mones;
 
-/*
-typedef struct {
+/*typedef struct {
     dword header;
     dword arg1;
     dword arg2;
@@ -12,80 +10,107 @@ typedef struct {
     dword from;
     char str[128];
     int length;
-} MessageInfo;
+} MessageInfo; */
 
-class{
-    word  protocol;
-    word  localport;
-    word  remoteport;
-    dword remoteip; //dcba
-    dword clientid;
-}
-*/
-
-int NetClient::Open() //remoteip,remoteport,localport,protocol
+word NetClient::GetFreePort()
 {
-    Message::create(&info,MSG_NET_OPEN, 0, 0, 0, NULL);
-    if (Message::send(serverid, &info)) {
-        printf("MSG_NET_OPEN error\n");
+    MessageInfo msg;
+    if(Message::sendReceive(&msg,serverid,MSG_NET_GETFREEPORT) !=0 ){
+        return 0;
     }
-    return Peek(MSG_NET_OPEN);
+    return msg.arg2;
+}
+
+int NetClient::Config(dword localip, dword gatewayip, word subnetmask, word mtu)
+{
+    MessageInfo msg;
+    dword mask_mtu=(subnetmask<<16)|mtu;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_CONFIG,localip,gatewayip,mask_mtu,NULL) != 0){
+        return -1;
+    }
+    return 0;
+}
+
+int NetClient::Open(dword remoteip, word localport, word remoteport, word protocol)
+{
+    MessageInfo msg;
+    dword port=((localport)<<16)|remoteport;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_OPEN, remoteip,port,protocol,NULL) != 0){
+        return -1;
+    }
+    return msg.arg2;
 }
 
 int NetClient::Close()
-{
-    Message::create(&info,MSG_NET_CLOSE, 0, 0, 0, NULL);
-    if (Message::send(serverid, &info)) {
-        printf("MSG_NET_COLSE error\n");
+{  
+    MessageInfo msg;
+    dword handle=0;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_CLOSE, handle) != 0){
+        return MONA_FAILURE;
     }
-    return Peek(MSG_NET_CLOSE);
+    return msg.arg2;
 }
-int NetClient::Read() //data
+
+monapi_cmemoryinfo* NetClient::Read() //data
 {   
-    Message::create(&info,MSG_NET_READ, 0, 0, 0, NULL);
-    if (Message::send(serverid, &info)) {
-        printf("MSG_NET_READ error\n");
+    monapi_cmemoryinfo* ret;
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, 0, 0, 0, NULL) != 0){
+        return NULL;
     }
-    return Peek(MSG_NET_READ);
+    if (msg.arg2 == 0) return NULL;
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = serverid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return ret;
 }
+
 int NetClient::Write() //data,size,
 {
-    Message::create(&info,MSG_NET_WRITE, 0, 0, 0, NULL);
-    if (Message::send(serverid, &info)) {
-        printf("MSG_NET_WRITE error\n");
+    monapi_cmemoryinfo* ret;
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, 0, 0, 0, NULL) != 0){
+        return NULL;
     }
-    return Peek(MSG_NET_WRITE);
+    if (msg.arg2 == 0) return NULL;
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = serverid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return 0;
 }
 
-int NetClient::Stat()//data
+monapi_cmemoryinfo*  NetClient::Stat()//data
 {
-    Message::create(&info,MSG_NET_STATUS, 0, 0, 0, NULL);
-    if (Message::send(serverid, &info)) {
-        printf("MSG_NET_STATUS error\n");
+    monapi_cmemoryinfo* ret;
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, 0, 0, 0, NULL) != 0){
+        return NULL;
     }
-    return Peek(MSG_NET_STATUS);
-}
-
-int NetClient::Peek(dword msg)
-{
-    for (int i = 0; ; i++){
-        int result = Message::peek(&info, i);
-        if (result != 0){
-            i--;
-            syscall_mthread_yield_message();
-        } else if (info.header == MSG_RESULT_OK && info.arg1 == msg ) {
-            MonAPI::Message::peek(&info, i, PEEK_REMOVE);
-            return 0;
-        } 
-    }
+    if (msg.arg2 == 0) return NULL;
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = serverid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return ret;
 }
 
 int NetClient::Test()
 {
     sleep(1000);
-    if( Open( ) ){
+    dword remoteip=(1<<24)|(177<<16)|(16<<8)|(172);
+    word port = GetFreePort();
+    if( port == 0 )
+        printf("Error GetFreePort\n");
+    int netdsc = Open(remoteip,port,DAYTIME,TYPETCP);
+    if( netdsc < 0 ){
         printf("OpenError.\n");
-    }
+    } 
+    printf("netdsc=%d\n",netdsc);
     if( Write() ){
         printf("WrieError.\n");
     }
@@ -119,5 +144,3 @@ int NetClient::initalize(dword threadid)
     clientid=System::getThreadID();
     return 0;
 }
-
- 

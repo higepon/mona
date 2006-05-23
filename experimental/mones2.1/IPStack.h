@@ -52,12 +52,6 @@ struct IP {
         TCP  TCPHeader[0];
         UDP  UDPHeader[0];
     };
-    enum {
-        TYPEICMP = 0x01,
-        TYPEIGMP = 0x02,
-        TYPETCP  = 0x06,
-        TYPEUDP  = 0x11,
-    };
 };
 
 class IPStack
