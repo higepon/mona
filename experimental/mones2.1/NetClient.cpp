@@ -44,7 +44,7 @@ int NetClient::Read(int netdsc,byte* data)
 {   
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, netdsc) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -53,21 +53,23 @@ int NetClient::Read(int netdsc,byte* data)
     ret->Owner  = serverid;
     ret->Size   = msg.arg3;
     monapi_cmemoryinfo_map(ret);
-    memcpy(data,ret->Data,ret->Size);    
+    memcpy(data,ret->Data,ret->Size);data[ret->Size]='0';
+    int size=ret->Size;
     monapi_cmemoryinfo_delete(ret);
-    return 0;
+    return size;
 }
 
 int NetClient::Write(int netdsc,byte* data,word size)
 {  
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-    ret->Handle = netdsc;
-    ret->Owner  = clientid;
-    ret->Size   = size;
-    ret->Data   = data;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_WRITE) != 0){
-        return 0;
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();  
+    if (ret != NULL){    
+        monapi_cmemoryinfo_create(ret, size, true);        
+        if( ret != NULL ){
+            memcpy(ret->Data,data,size);
+            Message::sendReceive(&msg, serverid, MSG_NET_WRITE,ret->Handle,ret->Size);
+        }
+        monapi_cmemoryinfo_delete(ret);
     }
     return msg.arg2;
 }
@@ -114,8 +116,9 @@ int NetClient::Example()
         printf("WrieError.\n");
     }
     byte buf[1024];//BAD design.
-    if( Read(netdsc,buf) ){
-        printf("ReadError.\n");
+    int size= Read(netdsc,buf);
+    if( size > 0 ){
+        printf("Read: %s\n",buf);
     }    
 
     if( Close(netdsc) ){

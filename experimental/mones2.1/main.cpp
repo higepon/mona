@@ -29,8 +29,8 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
     //Create Client Thread for Debug.
-    dword id = syscall_mthread_create((dword)QuasiClientThread);
-    syscall_mthread_join(id);
+    server->clientid = syscall_mthread_create((dword)QuasiClientThread);
+    syscall_mthread_join(server->clientid);
 
     server->messageLoop();
     return 0;

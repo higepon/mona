@@ -20,6 +20,7 @@ public:
     bool isStarted() {return started;}
     void exit();
 
+    dword clientid;//this will be deleted;
 private:
     void ICMPreply(IP*);
     void interrupt(MessageInfo* msg);

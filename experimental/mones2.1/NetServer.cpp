@@ -105,6 +105,39 @@ void NetServer::messageLoop()
         case MSG_NET_GETFREEPORT:
             Message::reply(&msg,1025);
             break;
+        case MSG_NET_WRITE:
+        {
+            monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+            if( ret != NULL){
+                ret->Handle = msg.arg1;
+                ret->Owner  = msg.from;
+                ret->Size   = msg.arg2;
+                monapi_cmemoryinfo_map(ret);
+                byte* buf=new byte[ret->Size+1];
+                memcpy(buf,ret->Data,ret->Size); buf[ret->Size]='\0';
+                printf("<%s>\n",buf);
+                monapi_cmemoryinfo_delete(ret);
+                delete buf;
+            }
+            Message::reply(&msg);            
+            break;
+        }
+        case MSG_NET_READ: 
+        {
+            byte val[]="string";   
+            monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
+            if (mi != NULL){    
+                monapi_cmemoryinfo_create(mi,7, true);        
+                if( mi != NULL ){
+                    memcpy(mi->Data,val,mi->Size);mi->Data[6]='\0';
+                    Message::reply(&msg, mi->Handle, mi->Size); 
+                }
+                monapi_cmemoryinfo_delete(mi);
+            }else{
+                Message::reply(&msg);
+            }
+            break;
+        }
         case MSG_NET_STATUS:
         {
             dword val=45678;   
@@ -128,12 +161,6 @@ void NetServer::messageLoop()
             break;
         }
         case MSG_NET_CLOSE:
-            Message::reply(&msg);
-            break;
-        case MSG_NET_WRITE:
-            Message::reply(&msg);
-            break;
-        case MSG_NET_READ:
             Message::reply(&msg);
             break;
         default:
