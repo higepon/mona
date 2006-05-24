@@ -2,16 +2,6 @@
 using namespace MonAPI;
 using namespace mones;
 
-/*typedef struct {
-    dword header;
-    dword arg1;
-    dword arg2;
-    dword arg3;
-    dword from;
-    char str[128];
-    int length;
-} MessageInfo; */
-
 word NetClient::GetFreePort()
 {
     MessageInfo msg;
@@ -21,14 +11,14 @@ word NetClient::GetFreePort()
     return msg.arg2;
 }
 
-int NetClient::Config(dword localip, dword gatewayip, word subnetmask, word mtu)
+int NetClient::Config(dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu)
 {
     MessageInfo msg;
-    dword mask_mtu=(subnetmask<<16)|mtu;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_CONFIG,localip,gatewayip,mask_mtu,NULL) != 0){
+    dword mask_timeout_mtu=((subnetmask<<24)&0xFF0000)|((timeout<<16)&0x00FF0000)|(mtu&0x0000FFFF);
+    if (Message::sendReceive(&msg, serverid, MSG_NET_CONFIG,localip,gatewayip,mask_timeout_mtu,NULL) != 0){
         return -1;
     }
-    return 0;
+    return msg.arg2;
 }
 
 int NetClient::Open(dword remoteip, word localport, word remoteport, word protocol)
@@ -41,21 +31,20 @@ int NetClient::Open(dword remoteip, word localport, word remoteport, word protoc
     return msg.arg2;
 }
 
-int NetClient::Close()
+int NetClient::Close(int netdsc)
 {  
     MessageInfo msg;
-    dword handle=0;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_CLOSE, handle) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_CLOSE, netdsc) != 0){
         return MONA_FAILURE;
     }
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* NetClient::Read() //data
+int NetClient::Read(int netdsc,byte* data)
 {   
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, 0, 0, 0, NULL) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, netdsc) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -64,30 +53,30 @@ monapi_cmemoryinfo* NetClient::Read() //data
     ret->Owner  = serverid;
     ret->Size   = msg.arg3;
     monapi_cmemoryinfo_map(ret);
-    return ret;
-}
-
-int NetClient::Write() //data,size,
-{
-    monapi_cmemoryinfo* ret;
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, 0, 0, 0, NULL) != 0){
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = serverid;
-    ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
+    memcpy(data,ret->Data,ret->Size);    
+    monapi_cmemoryinfo_delete(ret);
     return 0;
 }
 
-monapi_cmemoryinfo*  NetClient::Stat()//data
+int NetClient::Write(int netdsc,byte* data,word size)
+{  
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    ret->Handle = netdsc;
+    ret->Owner  = clientid;
+    ret->Size   = size;
+    ret->Data   = data;
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_WRITE) != 0){
+        return 0;
+    }
+    return msg.arg2;
+}
+
+int NetClient::Stat(NetStatus* stat)
 {
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ, 0, 0, 0, NULL) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_STATUS) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -96,45 +85,43 @@ monapi_cmemoryinfo*  NetClient::Stat()//data
     ret->Owner  = serverid;
     ret->Size   = msg.arg3;
     monapi_cmemoryinfo_map(ret);
-    return ret;
+    memcpy(stat,ret->Data,ret->Size);
+    int size=ret->Size;
+    monapi_cmemoryinfo_delete(ret);
+    return size;
 }
 
-int NetClient::Test()
+int NetClient::Example()
 {
     sleep(1000);
+    NetStatus stat;
+    if( this->Stat(&stat) ){
+        printf("StatError.\n");
+    }  
+    printf("[%d]\n",stat.a);
+
     dword remoteip=(1<<24)|(177<<16)|(16<<8)|(172);
-    word port = GetFreePort();
-    if( port == 0 )
-        printf("Error GetFreePort\n");
-    int netdsc = Open(remoteip,port,DAYTIME,TYPETCP);
+    word localport = GetFreePort();
+    printf("Port=%d\n",localport);
+    //UNIX inetd has DAYTIME,ECHO services in both UDP and TCP.
+    int netdsc = Open(remoteip,localport,DAYTIME,TYPEUDP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     } 
     printf("netdsc=%d\n",netdsc);
-    if( Write() ){
+
+    if( Write(netdsc,(byte*)"test",4) ){
         printf("WrieError.\n");
     }
-    if( Read( ) ){
+    byte buf[1024];//BAD design.
+    if( Read(netdsc,buf) ){
         printf("ReadError.\n");
-    }
-    if( Close() ){
-        printf("CloseError.\n");
-    }
-    if( Stat() ){
-        printf("StatError.\n");
-    }
-    printf("TESTED\n");
+    }    
 
-    for(MessageInfo msg;;){
-        if (Message::receive(&msg)) continue;
-        switch (msg.header){
-        default:
-            printf("Client default: %d", msg.header);
-            break;
-        }
-        printf("loop\n");
-    }
-    printf("ClientExit\n");
+    if( Close(netdsc) ){
+        printf("CloseError.\n");
+    }    
+    printf("TESTED\n");
     return 0;
 }
 

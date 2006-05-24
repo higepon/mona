@@ -81,6 +81,15 @@ void NetServer::interrupt(MessageInfo* msg)
     return;
 }
 
+/*typedef struct {
+    dword header;
+    dword arg1;
+    dword arg2;
+    dword arg3;
+    dword from;
+    char str[128];
+    int length;
+} MessageInfo; */
 
 void NetServer::messageLoop()
 {
@@ -97,8 +106,21 @@ void NetServer::messageLoop()
             Message::reply(&msg,1025);
             break;
         case MSG_NET_STATUS:
-            Message::reply(&msg);
+        {
+            dword val=45678;   
+            monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
+            if (mi != NULL){    
+                monapi_cmemoryinfo_create(mi, sizeof(NetStatus), true);        
+                if( mi != NULL ){
+                    memcpy(mi->Data,&val,mi->Size);
+                    Message::reply(&msg, mi->Handle, mi->Size); 
+                }
+                monapi_cmemoryinfo_delete(mi);
+            }else{
+                Message::reply(&msg);
+            }
             break;
+        }
         case MSG_NET_OPEN:    
         {
             dword result = 123;//Open(msg.str);

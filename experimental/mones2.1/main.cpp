@@ -9,15 +9,16 @@ using namespace MonAPI;
 
 static NetServer* server;
 
-dword QuasiClientThread()
+void QuasiClientThread()
 {
     while( !server->isStarted() ){
         sleep(1000);
     }
     NetClient* client = new NetClient();
     client->initalize(server->getThreadID());
-    client->Test();
-    return 0;
+    client->Example();
+    delete client;
+    exit(0);
 }
 
 int MonaMain(List<char*>* pekoe)

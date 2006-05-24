@@ -6,23 +6,28 @@
 
 namespace mones {
 
+//THIS CLASS PROVIDES APPLICATION PROGRAMING INTERFACE.
 class NetClient
 {
+private:
     MessageInfo info;
     dword serverid;
     dword clientid;
-    int Peek(dword);
 public:
-    int   initalize(dword);
-    int   Config(dword, dword, word, word);
+    int   initalize(dword threadid);
+    int   Config(dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu);
+     // localip,gatewayip must be DCBA style, 0<=subnetmask<=32,timeout(seconds) 
     word  GetFreePort();
-    int   Open(dword, word, word, word);
-    int   Close(); 
-    int   Write();  
-    monapi_cmemoryinfo*   Read();
-    monapi_cmemoryinfo*   Stat();
-    ///////
-    int   Test();
+    int   Open(dword remoteip, word localport, word remoteport, word protocol);
+    // remoteip must be DCBA style, RetunValue is network descriptor.
+    int   Close(int netdsc); 
+    int   Write(int netdsc, byte* data,word size);  
+    int   Read(int netdsc,byte* data);
+    int   Stat(NetStatus* stat);
+    int   Example();    //TEST FUNCTION.
 };
 
 };
+
+
+

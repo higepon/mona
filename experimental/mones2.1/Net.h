@@ -2,9 +2,9 @@
 #include <sys/types.h>
 namespace mones {
 
-enum MSG_NET{
-    //'NET' IS 0X4E4554
-    MSG_NET_CONFIG =0X4E455400,
+enum MESSAGE_NET{
+    //'NET' is 0x4E4554
+    MSG_NET_CONFIG =0x4E455400,
     MSG_NET_STATUS,
     MSG_NET_GETFREEPORT,
     MSG_NET_OPEN,
@@ -13,7 +13,7 @@ enum MSG_NET{
     MSG_NET_READ,
 };
 
-enum PROTOCOL{
+enum IP_PROTOCOL{
     TYPEICMP = 0X01,
     TYPEIGMP = 0X02,
     TYPETCP  = 0X06,
@@ -49,4 +49,10 @@ enum PORT{
     SUBMISSION     =587,
     LDAPS          =636,
 };
+
+struct NetStatus
+{
+        int a;
+};
+
 };
