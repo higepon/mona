@@ -1,0 +1,46 @@
+bin_PROGRAMS = file_server
+file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3
+file_server_SOURCES = Directory.h\
+FDCDriver.cpp\
+FDCDriver.h\
+FSOperation.h\
+FatFileSystemManager.cpp\
+FatFileSystemManager.h\
+File.h\
+FileDate.h\
+FileServer.h\
+FileSystem.h\
+FileSystemEntry.h\
+FileSystemManager.h\
+IDEDriver.cpp\
+IDEDriver.h\
+ISO9660.h\
+ISO9660Directory.h\
+ISO9660File.cpp\
+ISO9660File.h\
+ISO9660FileSystem.cpp\
+ISO9660FileSystem.h\
+ISO9660FileSystemManager.cpp\
+ISO9660FileSystemManager.h\
+Message.cpp\
+Message.h\
+messages.cpp\
+SocketMessage.cpp\
+SocketMessage.h\
+cmemoryinfo.cpp\
+ProcessUtil.cpp\
+ProcessUtil.h\
+bzip2.cpp\
+bzip2.h\
+dtk5s.cpp\
+dtk5s.h\
+endian_util.cpp\
+fat.cpp\
+file.cpp\
+_file.h\
+fs.cpp\
+main.cpp\
+types.h\
+monapi/CString.h\
+monapi/CString.cpp\
+monapi/Array.h
