@@ -11,11 +11,11 @@ word NetClient::GetFreePort()
     return msg.arg2;
 }
 
-int NetClient::Config(dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu)
+int NetClient::Config(char* if_name, dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu)
 {
     MessageInfo msg;
     dword mask_timeout_mtu=((subnetmask<<24)&0xFF0000)|((timeout<<16)&0x00FF0000)|(mtu&0x0000FFFF);
-    if (Message::sendReceive(&msg, serverid, MSG_NET_CONFIG,localip,gatewayip,mask_timeout_mtu,NULL) != 0){
+    if (Message::sendReceive(&msg,serverid,MSG_NET_CONFIG,localip,gatewayip,mask_timeout_mtu,if_name)!=0){
         return -1;
     }
     return msg.arg2;
@@ -53,7 +53,7 @@ int NetClient::Read(int netdsc,byte* data)
     ret->Owner  = serverid;
     ret->Size   = msg.arg3;
     monapi_cmemoryinfo_map(ret);
-    memcpy(data,ret->Data,ret->Size);data[ret->Size]='0';
+    memcpy(data,ret->Data,ret->Size);data[ret->Size]='\0';
     int size=ret->Size;
     monapi_cmemoryinfo_delete(ret);
     return size;
@@ -97,7 +97,7 @@ int NetClient::Example()
 {
     sleep(1000);
     NetStatus stat;
-    if( this->Stat(&stat) ){
+    if( !Stat(&stat) ){
         printf("StatError.\n");
     }  
     printf("[%d]\n",stat.a);
@@ -124,6 +124,10 @@ int NetClient::Example()
     if( Close(netdsc) ){
         printf("CloseError.\n");
     }    
+
+    if( Config("PCNET1",(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){
+        printf("ConfigError\n");
+    }
     printf("TESTED\n");
     return 0;
 }

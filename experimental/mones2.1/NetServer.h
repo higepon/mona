@@ -7,23 +7,32 @@
 
 namespace mones {
 
-class NetServer : public IPStack
+class NetServer
 {
 public:
     NetServer();
     virtual ~NetServer();
-
-public:
     bool initialize();
     dword getThreadID() const;
     void messageLoop();
     bool isStarted() {return started;}
     void exit();
-
-    dword clientid;//this will be deleted;
 private:
+    IPStack* ipstack;
     void ICMPreply(IP*);
     void interrupt(MessageInfo* msg);
+    int  open(MessageInfo* msg);
+    word next_port;
+    struct CNI{    
+        dword clientid;
+        dword remoteip;
+        word  localport;
+        word  remoteport;
+        word  protocol;
+        word  netdsc;
+    };
+    HList<CNI*> connectlist;
+
 protected:
     byte macAddress[6];
     dword observerThread;

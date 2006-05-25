@@ -3,7 +3,7 @@ using namespace mones;
 using namespace MonAPI;
 
 NetServer::NetServer() : 
-     observerThread(0xffffffff),nic(NULL), started(false), loopExit(false)
+    next_port(0), observerThread(0xffffffff),nic(NULL), started(false), loopExit(false)
 {
 
 }
@@ -23,6 +23,7 @@ bool NetServer::initialize()
     }
     syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); // with mask Interrrupt by higepon
     this->nic->enableNetwork();
+    this->ipstack = new IPStack();
     dword ip= nic->getIP();         
     for(int j=0;j<4;j++)
           printf("%d.",*(((byte*)&ip)+j));
@@ -50,7 +51,7 @@ void NetServer::ICMPreply(IP* pkt)
         icmp->chksum=pkt->ICMPHeader->chksum+8;
         memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-24);
         printf("replying.\n");    
-        FillIPHeader(rframe->IPHeader);
+        ipstack->FillIPHeader(rframe->IPHeader);
         nic->Send(rframe);
     }
 }
@@ -64,7 +65,7 @@ void NetServer::interrupt(MessageInfo* msg)
         Ether* frame =NULL;
         while( frame = nic ->Recv(0) ){
             IP* pkt=frame->IPHeader;
-            dumpPacket(pkt);
+            ipstack->dumpPacket(pkt);
             if( pkt->prot == TYPEICMP){
                 ICMPreply(pkt);
             }
@@ -78,8 +79,21 @@ void NetServer::interrupt(MessageInfo* msg)
     if( val & Nic::ER_INT){
         printf("==ERROR.\n");    
     }
-    return;
 }
+
+int NetServer::open(MessageInfo* msg)
+{    
+    CNI* c=new CNI();
+    connectlist.add(c);
+    c->remoteip   = (word)((msg->arg1)>>16);
+    c->remoteport = (word)(msg->arg2|0xFFFF);
+    c->localport  = msg->arg2;
+    c->protocol      = msg->arg3;
+    c->clientid   = msg->from;    
+    c->netdsc     = connectlist.size();
+    return c->netdsc;
+}
+
 
 /*typedef struct {
     dword header;
@@ -97,13 +111,15 @@ void NetServer::messageLoop()
     for (MessageInfo msg; !loopExit;)
     {
         if (Message::receive(&msg)) continue;
-
         switch (msg.header){
         case MSG_INTERRUPTED:
             this->interrupt(&msg);   
             break;
         case MSG_NET_GETFREEPORT:
-            Message::reply(&msg,1025);
+            next_port++;
+            if( next_port <= 0x400)
+                next_port=0x401;
+            Message::reply(&msg,next_port);
             break;
         case MSG_NET_WRITE:
         {
@@ -156,11 +172,16 @@ void NetServer::messageLoop()
         }
         case MSG_NET_OPEN:    
         {
-            dword result = 123;//Open(msg.str);
-            Message::reply(&msg, result);
+            dword netdsc=this->open(&msg);
+            Message::reply(&msg, netdsc);
             break;
         }
         case MSG_NET_CLOSE:
+            CNI* c=connectlist.removeAt(0);
+            delete c;
+            Message::reply(&msg);
+            break;
+        case MSG_NET_CONFIG:
             Message::reply(&msg);
             break;
         default:

@@ -15,8 +15,8 @@ private:
     dword clientid;
 public:
     int   initalize(dword threadid);
-    int   Config(dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu);
-     // localip,gatewayip must be DCBA style, 0<=subnetmask<=32,timeout(seconds) 
+    int   Config(char* if_name, dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu);
+     //  localip,gatewayip must be DCBA style, 0<=subnetmask<=32,timeout(seconds) 
     word  GetFreePort();
     int   Open(dword remoteip, word localport, word remoteport, word protocol);
     // remoteip must be DCBA style, RetunValue is network descriptor.
