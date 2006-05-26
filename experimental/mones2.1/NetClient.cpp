@@ -40,11 +40,11 @@ int NetClient::Close(int netdsc)
     return msg.arg2;
 }
 
-int NetClient::Read(int netdsc,byte* data)
+int NetClient::Read(int netdsc,byte* data,bool noblock )
 {   
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ,(dword)noblock) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -74,11 +74,11 @@ int NetClient::Write(int netdsc,byte* data,word size)
     return msg.arg2;
 }
 
-int NetClient::Stat(NetStatus* stat)
+int NetClient::Stat(char* if_name,NetStatus* stat)
 {
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_STATUS) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_STATUS,0,0,0,if_name) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -95,9 +95,10 @@ int NetClient::Stat(NetStatus* stat)
 
 int NetClient::Example()
 {
+    char devname[]="pcnet0";
     sleep(1000);
     NetStatus stat;
-    if( !Stat(&stat) ){
+    if( !Stat(devname,&stat) ){
         printf("StatError.\n");
     }  
     printf("[%d]\n",stat.a);
@@ -125,7 +126,7 @@ int NetClient::Example()
         printf("CloseError.\n");
     }    
 
-    if( Config("PCNET1",(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){
+    if( Config(devname,(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){
         printf("ConfigError\n");
     }
     printf("TESTED\n");

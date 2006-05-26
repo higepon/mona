@@ -22,8 +22,8 @@ public:
     // remoteip must be DCBA style, RetunValue is network descriptor.
     int   Close(int netdsc); 
     int   Write(int netdsc, byte* data,word size);  
-    int   Read(int netdsc,byte* data);
-    int   Stat(NetStatus* stat);
+    int   Read(int netdsc,byte* data,bool noblock = false);
+    int   Stat(char* if_name, NetStatus* stat);
     int   Example();    //TEST FUNCTION.
 };
 

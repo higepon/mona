@@ -6,8 +6,6 @@
 
 namespace mones{ 
 
-const int PKTSIZE=1514;
-//DST6 SRC6 LEN2 LCC+PAD(46-1500)
 #pragma pack(push,4)
 class MonAMDpcn: public Nic
 {

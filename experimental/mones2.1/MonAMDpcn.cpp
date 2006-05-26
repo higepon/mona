@@ -22,7 +22,7 @@ void MonAMDpcn::rxihandler()
         //printf("SIZE:%d\n",length);
         rxFrameList.add(frame);
         (rxdsc+rxindex)->mcnt=0;
-        (rxdsc+rxindex)->bcnt = (word)(-PKTSIZE)|0xF000;
+        (rxdsc+rxindex)->bcnt = (word)(-ETHER_MAX_PACKET)|0xF000;
         (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
         rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
     }
@@ -69,9 +69,9 @@ int MonAMDpcn::init()
     rxdsc = (RXDSC*)rxbuf;
     rxbuf += ((1<<LOGRXRINGLEN)*sizeof(RXDSC));
     for(int i=0;i<(1<<LOGRXRINGLEN);i++){
-        (rxdsc+i)->bcnt=(word)(-PKTSIZE)|0xF000;
+        (rxdsc+i)->bcnt=(word)(-ETHER_MAX_PACKET)|0xF000;
         (rxdsc+i)->status=RMD1_OWN|RMD1_STP|RMD1_ENP;
-        (rxdsc+i)->rbaddr=(dword)(rxbuf+i*PKTSIZE);
+        (rxdsc+i)->rbaddr=(dword)(rxbuf+i*ETHER_MAX_PACKET);
     }
     rxindex=0;
      //initialize tx 
@@ -84,7 +84,7 @@ int MonAMDpcn::init()
         (txdsc+i)->status=0;
         (txdsc+i)->control=0;
         (txdsc+i)->bcnt=0;
-        (txdsc+i)->rbaddr=(dword)(txbuf+i*PKTSIZE);
+        (txdsc+i)->rbaddr=(dword)(txbuf+i*ETHER_MAX_PACKET);
     }
     txindex=0;
     ///////////////
@@ -150,11 +150,11 @@ void MonAMDpcn::Send(Ether* frame)
     txFrameList.add(frame);
     while( txFrameList.size() != 0) {
         Ether* frame = txFrameList.removeAt(0);
-        memcpy(txbuf+txindex*PKTSIZE,frame,len);
+        memcpy(txbuf+txindex*ETHER_MAX_PACKET,frame,len);
         (txdsc+txindex)->status=0;
         (txdsc+txindex)->bcnt=(word)(-len)|0xF000;
         (txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
-        (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*PKTSIZE);
+        (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*ETHER_MAX_PACKET);
         w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);    
         delete frame;
     }

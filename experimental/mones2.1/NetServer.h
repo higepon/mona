@@ -20,8 +20,14 @@ public:
 private:
     IPStack* ipstack;
     void ICMPreply(IP*);
+
+    void getfreeport(MessageInfo* msg);
     void interrupt(MessageInfo* msg);
-    int  open(MessageInfo* msg);
+    void open(MessageInfo* msg);
+    void read(MessageInfo* msg);
+    void write(MessageInfo* msg);
+    void close(MessageInfo* msg);
+    void status(MessageInfo* msg);
     word next_port;
     struct CNI{    
         dword clientid;

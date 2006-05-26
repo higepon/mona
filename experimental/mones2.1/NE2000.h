@@ -49,11 +49,6 @@ private:
     dword      ne_rx_remain_len; // 残りの長さ(折り返しがないときは本体の長さと同じ) // 
     dword      frame_len;
     enum{
-        ETHER_HEADER_SIZE=14,      // ヘッダーサイズ
-        ETHER_MIN_PACKET =46,      // 最小パケットサイズ
-        ETHER_MAX_PACKET =1514,    // 最大パケットサイズ
-    };
-    enum{
         // QEMU PCI NE2000
         NE_ASIC          =0x10,
         NE_ASIC_DATA     =NE_ASIC,  

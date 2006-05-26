@@ -3,6 +3,13 @@
 
 namespace mones{
 
+enum{
+    DEFAULT_MTU_SIZE =1500,
+    ETHER_HEADER_SIZE=14,
+    ETHER_MIN_PACKET =46,      //MIN_SIZE
+    ETHER_MAX_PACKET =DEFAULT_MTU_SIZE+ETHER_HEADER_SIZE,//MAX_SIZE
+};
+
 #pragma pack(push,2)
 struct ARP {
     word  hardType;
@@ -38,7 +45,7 @@ private:
     word  type;
 public:
     union{
-        byte data[1500];
+        byte data[DEFAULT_MTU_SIZE];
         IP   IPHeader[0];
         ARP  ARPHeader[0];
     };
@@ -103,6 +110,7 @@ public:
 protected:  
     int   irq;
     int   iobase;
+    word  mtu;
     //allocate & copy is slow.....
     //TODO use static allocated memory and one-copy.  
     HList<Ether*> rxFrameList;

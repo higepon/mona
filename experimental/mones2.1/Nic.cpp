@@ -87,7 +87,7 @@ ARPmanager::~ARPmanager()
 }
 
 /////////////////////////////////////////////
-Nic::Nic():irq(0),iobase(0)
+Nic::Nic():irq(0),iobase(0),mtu(DEFAULT_MTU_SIZE)
 {
 
 }

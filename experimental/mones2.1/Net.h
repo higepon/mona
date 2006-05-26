@@ -52,7 +52,12 @@ enum PORT{
 
 struct NetStatus
 {
-        int a;
+    dword localip;
+    dword netmask;
+    byte mac[6];
+    byte mtu;
+    dword defaultroute;
+    int a;
 };
 
 };
