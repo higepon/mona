@@ -3,15 +3,22 @@ using namespace mones;
 using namespace MonAPI;
 
 NetServer::NetServer() : 
-    next_port(0), observerThread(0xffffffff),nic(NULL), started(false), loopExit(false)
+    next_port(0), observerThread(0xffffffff),timerid(0),
+    nic(NULL), started(false), loopExit(false)
 {
 
 }
 
 NetServer::~NetServer()
 {
-    delete nic;
-    delete ipstack;
+    if( nic != NULL ){
+        syscall_remove_irq_receiver(this->nic->getIRQ());
+        delete nic;
+    }
+    if( timerid != 0)
+        kill_timer(timerid);
+    if( ipstack != NULL)
+        delete ipstack;
 }
 
 bool NetServer::initialize()
@@ -27,6 +34,7 @@ bool NetServer::initialize()
     this->ipstack = new IPStack();
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
+    timerid=set_timer(5000);
     return true;
 }
 
@@ -43,7 +51,7 @@ void NetServer::ICMPreply(IP* pkt)
         ICMP* icmp=rframe->IPHeader->ICMPHeader;
         //FillICMPHeader();
         //create ICMP echo reply.
-        icmp->type=0x00;
+        icmp->type=ECHOREPLY;
         icmp->code=0x00;
         icmp->chksum=pkt->ICMPHeader->chksum+8;
         memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-24);
@@ -58,7 +66,8 @@ void NetServer::messageLoop()
     this->started = true;
     for (MessageInfo msg; !loopExit;){
         if (Message::receive(&msg)) continue;
-        switch (msg.header){
+        switch (msg.header)
+        {
         case MSG_INTERRUPTED:
             this->interrupt(&msg);   
             break;
@@ -81,7 +90,10 @@ void NetServer::messageLoop()
             this->close(&msg);
             break;
         case MSG_NET_CONFIG:
-            Message::reply(&msg);
+            this->config(&msg);
+            break;
+        case MSG_TIMER:
+            this->ontimer(&msg);
             break;
         default:
             printf("NetServer::MessageLoop default MSG=%x\n", msg.header);
@@ -101,7 +113,12 @@ void NetServer::messageLoop()
     int length;
 } MessageInfo; */
 
-////////////MESSAGE HANDLERS///////////////////////////////////////////
+//////////// MESSAGE HANDLERS ////////////////////////
+void NetServer::config(MessageInfo* msg)
+{
+    printf("configure the net server.\n");
+    Message::reply(msg);
+}
 
 void NetServer::getfreeport(MessageInfo* msg)
 {
@@ -155,6 +172,11 @@ void NetServer::status(MessageInfo* msg)
     }
 }
 
+void NetServer::ontimer(MessageInfo* msg)
+{
+    printf("TIMER\n");
+}
+
 void NetServer::interrupt(MessageInfo* msg)
 {   
     //Don't say anything about in case mona is a router.
@@ -162,15 +184,16 @@ void NetServer::interrupt(MessageInfo* msg)
     if( val & Nic::RX_INT ){
         printf("==RX\n");
         Ether* frame =NULL;
+        //////////////////////////
         while( frame = nic ->Recv(0) ){
             IP* pkt=frame->IPHeader;
             ipstack->dumpPacket(pkt);
-            if( pkt->prot == TYPEICMP){
+            if( pkt->prot == TYPEICMP && pkt->ICMPHeader->type==ECHOREQUEST){
                 ICMPreply(pkt);
             }
-            //unblock
             delete frame;
         }
+        ////////////////////////
     }
     if(val & Nic::TX_INT){
         printf("==TX\n");
@@ -179,13 +202,25 @@ void NetServer::interrupt(MessageInfo* msg)
         printf("==ERROR.\n");    
     }
 }
- 
+
+void NetServer::DispatchRXPKT()
+{
+    //find an apropriate waiting client.
+    if( 1==0 ){
+        MessageInfo msg;
+        printf("%d\n",msg.arg1);
+    }
+}
+
 void NetServer::read(MessageInfo* msg)
 {
-    /////
+    //register waiting clientlist    
+    int netdsc= msg->arg1;
+    netdsc=0;
+    //call dispatcher.
+
     byte val[]="string";   
-    printf("noblock=%d\n",msg->arg1);
-    ///////
+    printf("noblock=%d\n",msg->arg2);
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
     if (mi != NULL){    
         monapi_cmemoryinfo_create(mi,7, true);        
@@ -203,9 +238,9 @@ void NetServer::write(MessageInfo* msg)
 { 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     if( ret != NULL){
-        ret->Handle = msg->arg1;
+        ret->Handle = msg->arg2;
         ret->Owner  = msg->from;
-        ret->Size   = msg->arg2;
+        ret->Size   = msg->arg3;
         monapi_cmemoryinfo_map(ret);
         byte* buf=new byte[ret->Size+1];
         memcpy(buf,ret->Data,ret->Size); buf[ret->Size]='\0';
@@ -215,3 +250,5 @@ void NetServer::write(MessageInfo* msg)
     }
     Message::reply(msg);  
 }
+
+

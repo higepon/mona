@@ -44,7 +44,7 @@ int NetClient::Read(int netdsc,byte* data,bool noblock )
 {   
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_READ,(dword)noblock) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_READ,(dword)netdsc,(dword)noblock) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -67,7 +67,7 @@ int NetClient::Write(int netdsc,byte* data,word size)
         monapi_cmemoryinfo_create(ret, size, true);        
         if( ret != NULL ){
             memcpy(ret->Data,data,size);
-            Message::sendReceive(&msg, serverid, MSG_NET_WRITE,ret->Handle,ret->Size);
+            Message::sendReceive(&msg, serverid, MSG_NET_WRITE,netdsc,ret->Handle,ret->Size);
         }
         monapi_cmemoryinfo_delete(ret);
     }

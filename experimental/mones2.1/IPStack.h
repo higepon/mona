@@ -4,6 +4,18 @@
 
 namespace mones{
 
+enum ICMPTYPE {
+    ECHOREPLY   =0x0,
+    DESTUNREACH =0x3,
+    SOURCEQUENCH=0x4,
+    REDIRECT    =0x5,
+    ALTHOSTADDR =0x6,
+    ECHOREQUEST =0x8,
+    ROUTERADV   =0x9,
+    ROUTERSELECT=0xA,
+    TIMEEXCEEDED=0xB
+};
+
 inline word  bswap(word w){ return (w>>8)|(w<<8); }
 
 #pragma pack(push,2)

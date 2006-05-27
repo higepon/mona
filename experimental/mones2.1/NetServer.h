@@ -25,11 +25,12 @@ public:
         word  protocol;
         word  netdsc;
         byte  status;
+        MessageInfo msg;
     };
 private:
     IPStack* ipstack;
     void ICMPreply(IP*);
-
+    void DispatchRXPKT();
     void getfreeport(MessageInfo* msg);
     void interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);
@@ -37,6 +38,8 @@ private:
     void write(MessageInfo* msg);
     void close(MessageInfo* msg);
     void status(MessageInfo* msg);
+    void ontimer(MessageInfo* msg);
+    void config(MessageInfo* msg);
     word next_port;
     HList<CNI*> connectlist;
 
@@ -44,6 +47,7 @@ protected:
     byte macAddress[6];
     dword observerThread;
     dword myID;
+    dword timerid;
     Nic* nic;
     bool started;
     bool loopExit;

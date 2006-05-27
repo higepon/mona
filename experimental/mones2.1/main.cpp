@@ -26,6 +26,7 @@ int MonaMain(List<char*>* pekoe)
     server=new NetServer();
     if(!server->initialize()){
         printf("initalize failed\n");
+        delete server;
         exit(1);
     }
     //Create Client Thread for Debug.
