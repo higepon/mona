@@ -1,5 +1,6 @@
 #pragma once
 #include "IPStack.h"
+#include "Net.h"
 
 namespace mones{
 
@@ -75,6 +76,7 @@ public:
     //int    SetHeader(Ether*);
     void   DumpTable();
 protected:
+    char  devname[8];
     byte  macaddress[6];
     dword ipaddress;
     dword netmask;
@@ -102,6 +104,7 @@ public:
     void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
     void  enableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
     void  disableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
+    void  getStatus(NetStatus* stat);
     enum{
         RX_INT     =0x0004,
         TX_INT     =0x0002,

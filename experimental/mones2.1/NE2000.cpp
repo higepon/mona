@@ -6,17 +6,18 @@
 
 using namespace mones;
 
-NE2000::NE2000()
+NE2000::NE2000():
+    ne_ringbuf_status(0),
+    ne_ringbuf_bound(0),
+    ne_ringbuf_len(0),
+    ne_rx_start(0),      /* 受信パケット本体の開始アドレス */
+    ne_rx_bound(0),      /* 受信後の境界レジスタ値 */
+    ne_rx_write_p(0),    /* 受信パケット書き込みアドレス */
+    ne_rx_sub_len(0),    /* 折り返し分の長さ */
+    ne_rx_remain_len(0), /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
+    frame_len(0)         /* 受信パケット本体の長さ */
 {
-    ne_ringbuf_status=0;
-    ne_ringbuf_bound=0;
-    ne_ringbuf_len=0;
-    ne_rx_start=0;      /* 受信パケット本体の開始アドレス */
-    frame_len=0;        /* 受信パケット本体の長さ */
-    ne_rx_bound=0;      /* 受信後の境界レジスタ値 */
-    ne_rx_write_p=0;    /* 受信パケット書き込みアドレス */
-    ne_rx_sub_len=0;    /* 折り返し分の長さ */
-    ne_rx_remain_len=0; /* 残りの長さ(折り返しがないときは本体の長さと同じ) */
+    memcpy(devname,"ne2000",7);
 }
 
 NE2000::~NE2000()
@@ -42,7 +43,6 @@ int NE2000::init(void)
     // イーサネットアドレス取得
     for(int i=0;i<6;i++){
         macaddress[i]=buf[2*i];
-        printf("%x.",macaddress[i]);
     }
     printf("\n");
     // 割り込みステータスレジスタクリア
@@ -117,10 +117,8 @@ int NE2000::init(void)
     w_reg( NE_P0_RCR, NE_RCR_AB );
     // NIC をアクティブにする
     w_reg( NE_P0_COMMAND, NE_CR_RD2 | NE_CR_STA );
-
     // ループバックモードを抜けて通常動作モードに入る
     w_reg( NE_P0_TCR, 0 );
-    printf("initalize completed.\n");
     return 0;
 }
 

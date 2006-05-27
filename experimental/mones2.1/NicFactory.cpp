@@ -22,7 +22,10 @@ Nic* NicFactory::create()
         nic->setIP(172,16,177,4);  //Vmware. 
         nic->setIRQ(pciinfo.IrqLine);
         nic->setIOBase(pciinfo.BaseAd);
-        nic->init();
+        if( nic->init() != 0 ){
+            delete nic;
+            nic=NULL;
+        }
         delete pcilib;
         return nic;
     }
@@ -33,7 +36,10 @@ Nic* NicFactory::create()
         nic->setIP(172,16,150,4); //QEMU.
         nic->setIRQ(pciinfo.IrqLine);
         nic->setIOBase(pciinfo.BaseAd);
-        nic->init();
+        if( nic->init() != 0 ){
+            delete nic;
+            nic=NULL;
+        }
         delete pcilib;
         return nic;
     }
@@ -45,6 +51,9 @@ Nic* NicFactory::create()
     nic->setIP(172,16,110,4);
     nic->setIRQ(3);
     nic->setIOBase(0x240);
-    nic->init();
+    if( nic->init() != 0 ){
+        delete nic;
+        nic=NULL;
+    }
     return nic;
 }

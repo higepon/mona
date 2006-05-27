@@ -23,7 +23,7 @@ public:
     int   Close(int netdsc); 
     int   Write(int netdsc, byte* data,word size);  
     int   Read(int netdsc,byte* data,bool noblock = false);
-    int   Stat(char* if_name, NetStatus* stat);
+    int   Stat(NetStatus* stat);
     int   Example();    //TEST FUNCTION.
 };
 

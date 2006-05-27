@@ -33,5 +33,6 @@ int MonaMain(List<char*>* pekoe)
     syscall_mthread_join(id);
 
     server->messageLoop();
+    delete server;
     return 0;
 }

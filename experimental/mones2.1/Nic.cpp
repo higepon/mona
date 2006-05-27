@@ -1,7 +1,8 @@
 #include "Nic.h"
 using namespace mones;
 
-ARPmanager::ARPmanager():ipaddress(0),netmask(0),defaultroute(0),registerd(0)
+ARPmanager::ARPmanager():
+  ipaddress(0),netmask(0x00FFFFFF),defaultroute(0),registerd(0)
 {
     for(int i=0;i<CACHESIZE;i++)
         memset(cache,'0',sizeof(ARPRec)*CACHESIZE);
@@ -90,6 +91,17 @@ ARPmanager::~ARPmanager()
 Nic::Nic():irq(0),iobase(0),mtu(DEFAULT_MTU_SIZE)
 {
 
+}
+
+void Nic::getStatus(NetStatus* stat)
+{
+    memcpy(stat->devname,devname,8);
+    stat->instance=1;
+    stat->localip=ipaddress;
+    stat->netmask=netmask;
+    memcpy(stat->mac,macaddress,6);
+    stat->mtu=mtu;
+    stat->defaultroute=defaultroute;
 }
 
 Ether* Nic::Recv(int n)

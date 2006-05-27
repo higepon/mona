@@ -30,6 +30,7 @@ void MonAMDpcn::rxihandler()
 ///////////////////////////////////////////////////////
 MonAMDpcn::~MonAMDpcn()
 {
+    printf("destructorof monamdpcn\n");
     if(piblock!=NULL)
         monapi_deallocate_dma_memory(piblock);
     for(int i=0;i<3;i++)
@@ -59,6 +60,7 @@ MonAMDpcn::MonAMDpcn()
             txbuf=NULL;
         }
     }
+    memcpy(devname,"pcnet32",8);
 }
 
 int MonAMDpcn::init()
@@ -77,7 +79,6 @@ int MonAMDpcn::init()
      //initialize tx 
     if( txbuf == 0 )
         return -1; 
-    printf("TX%x %x\n",txbuf,sizeof(TXDSC));
     txdsc= (TXDSC*)txbuf;
     txbuf += ((1<<LOGTXRINGLEN)*sizeof(TXDSC));
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
@@ -97,20 +98,15 @@ int MonAMDpcn::init()
     piblock->mode=0x0;         //set MODE_DNY_BCST for deny broadcast packets.
     piblock->rxlen=(LOGRXRINGLEN<<4);  //see page157.
     piblock->txlen=(LOGTXRINGLEN<<4);
-    for(int i=0;i<5;i++){
+    for(int i=0;i<6;i++){
         piblock->mac_addr[i]=inp8(iobase+i);
         macaddress[i]=piblock->mac_addr[i];
-        printf("%x:",piblock->mac_addr[i]);
     }
-    piblock->mac_addr[5]=inp8(iobase+5);
-    macaddress[5]=piblock->mac_addr[5];
-    printf("%x\n",piblock->mac_addr[5]);
     piblock->filter[0]=0x0;
     piblock->filter[1]=0x0;
     piblock->rx_ring=(dword)rxdsc;
     piblock->tx_ring=(dword)txdsc;
-    printf("DMA area was allocated properly.\n");
-    
+    //printf("DMA area was allocated properly.\n");
     w_csr(CSR_IADR0, ((dword)piblock)&0xFFFF);
     w_csr(CSR_IADR1,(((dword)piblock)>>16)&0xFFFF);
     w_csr(CSR_CSR,CSR_INTEN|CSR_INIT);

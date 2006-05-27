@@ -74,11 +74,11 @@ int NetClient::Write(int netdsc,byte* data,word size)
     return msg.arg2;
 }
 
-int NetClient::Stat(char* if_name,NetStatus* stat)
+int NetClient::Stat(NetStatus* stat)
 {
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_STATUS,0,0,0,if_name) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_STATUS) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;
@@ -95,14 +95,25 @@ int NetClient::Stat(char* if_name,NetStatus* stat)
 
 int NetClient::Example()
 {
-    char devname[]="pcnet0";
-    sleep(1000);
+    sleep(500);
+    //read nic status.
     NetStatus stat;
-    if( !Stat(devname,&stat) ){
-        printf("StatError.\n");
-    }  
-    printf("[%d]\n",stat.a);
-
+    if( Stat(&stat) ){
+        printf("\n%s:\nIPaddress:",stat.devname);
+        for(int j=0;j<4;j++)
+            printf("%d.",*(((byte*)&stat.localip)+j));
+        printf("NetMask:");
+        for(int j=0;j<4;j++)
+            printf("%d.",*(((byte*)&stat.netmask)+j));
+        printf("DefaultRoute:");
+        for(int j=0;j<4;j++)
+            printf("%d.",*(((byte*)&stat.defaultroute)+j));
+        printf("MTU:%d\nMAC:",stat.mtu);
+        for(int j=0;j<6;j++)
+            printf("%x:",stat.mac[j]);
+        printf("\n");
+    }
+    
     dword remoteip=(1<<24)|(177<<16)|(16<<8)|(172);
     word localport = GetFreePort();
     printf("Port=%d\n",localport);
@@ -110,7 +121,7 @@ int NetClient::Example()
     int netdsc = Open(remoteip,localport,DAYTIME,TYPEUDP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
-    } 
+    }
     printf("netdsc=%d\n",netdsc);
 
     if( Write(netdsc,(byte*)"test",4) ){
@@ -125,7 +136,8 @@ int NetClient::Example()
     if( Close(netdsc) ){
         printf("CloseError.\n");
     }    
-
+    //reset up nic. 
+    char devname[]="pcnet0";
     if( Config(devname,(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){
         printf("ConfigError\n");
     }
@@ -135,7 +147,7 @@ int NetClient::Example()
 
 int NetClient::initalize(dword threadid)
 {
-    serverid=threadid; 
+    serverid=threadid;
     clientid=System::getThreadID();
     return 0;
 }

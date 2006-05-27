@@ -17,6 +17,15 @@ public:
     void messageLoop();
     bool isStarted() {return started;}
     void exit();
+    struct CNI{    
+        dword clientid;
+        dword remoteip;
+        word  localport;
+        word  remoteport;
+        word  protocol;
+        word  netdsc;
+        byte  status;
+    };
 private:
     IPStack* ipstack;
     void ICMPreply(IP*);
@@ -29,14 +38,6 @@ private:
     void close(MessageInfo* msg);
     void status(MessageInfo* msg);
     word next_port;
-    struct CNI{    
-        dword clientid;
-        dword remoteip;
-        word  localport;
-        word  remoteport;
-        word  protocol;
-        word  netdsc;
-    };
     HList<CNI*> connectlist;
 
 protected:

@@ -10,7 +10,8 @@ NetServer::NetServer() :
 
 NetServer::~NetServer()
 {
-
+    delete nic;
+    delete ipstack;
 }
 
 bool NetServer::initialize()
@@ -24,10 +25,6 @@ bool NetServer::initialize()
     syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); // with mask Interrrupt by higepon
     this->nic->enableNetwork();
     this->ipstack = new IPStack();
-    dword ip= nic->getIP();         
-    for(int j=0;j<4;j++)
-          printf("%d.",*(((byte*)&ip)+j));
-    printf("\n");
     this->observerThread= Message::lookupMainThread();
     this->myID = System::getThreadID();
     return true;
@@ -55,6 +52,7 @@ void NetServer::ICMPreply(IP* pkt)
         nic->Send(rframe);
     }
 }
+
 void NetServer::messageLoop()
 {
     this->started = true;
@@ -129,12 +127,11 @@ void NetServer::open(MessageInfo* msg)
 void NetServer::close(MessageInfo* msg)
 {
     dword ret=1;
-    int n= connectlist.size();
-    for(int i= 0;i<n;i++){
+    for(int i=0; i<connectlist.size(); i++){
         CNI* c  = connectlist.get(i);
         if( c->netdsc == msg->arg1 ){
             delete connectlist.removeAt(i);
-            n--;
+            i--;
             ret=0;
         }
     }
@@ -143,9 +140,8 @@ void NetServer::close(MessageInfo* msg)
 
 void NetServer::status(MessageInfo* msg)
 {
-    //msg.str;
     NetStatus stat;
-    stat.a=5678;
+    nic->getStatus(&stat);
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
     if (mi != NULL){
         monapi_cmemoryinfo_create(mi, sizeof(NetStatus)/*+sizeof(arpcache)*N*/, true);        
@@ -183,8 +179,7 @@ void NetServer::interrupt(MessageInfo* msg)
         printf("==ERROR.\n");    
     }
 }
-
-
+ 
 void NetServer::read(MessageInfo* msg)
 {
     /////
@@ -205,7 +200,7 @@ void NetServer::read(MessageInfo* msg)
 }
 
 void NetServer::write(MessageInfo* msg)
-{
+{ 
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     if( ret != NULL){
         ret->Handle = msg->arg1;
@@ -220,7 +215,3 @@ void NetServer::write(MessageInfo* msg)
     }
     Message::reply(msg);  
 }
-
-
-
-
