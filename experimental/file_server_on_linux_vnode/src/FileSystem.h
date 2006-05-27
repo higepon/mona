@@ -15,6 +15,8 @@
 
 #include "File.h"
 
+struct vnode; // defined somewhere
+
 /*----------------------------------------------------------------------
     FileSystem
 ----------------------------------------------------------------------*/
@@ -25,15 +27,16 @@ public:
     virtual ~FileSystem() {}
 
 public:
-    virtual File* Open(const MonAPI::CString& path, int mode)                      = 0;
-    virtual bool Close(File* file)                                                 = 0;
-    virtual bool CreateFile(const MonAPI::CString& path)                           = 0;
-    virtual bool RemoveFile(const MonAPI::CString& path)                           = 0;
-    virtual bool CreateDirectory(const MonAPI::CString& path)                      = 0;
-    virtual bool RemoveDirectory(const MonAPI::CString& path)                      = 0;
-    virtual bool IsExistDirectory(const MonAPI::CString& path)                     = 0;
-    virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path) = 0;
-    virtual int GetLastError()                                                     = 0;
+    virtual File* Open(const MonAPI::CString& path, int mode)                       = 0;
+    virtual bool Close(File* file)                                                  = 0;
+    virtual bool CreateFile(const MonAPI::CString& path)                            = 0;
+    virtual bool RemoveFile(const MonAPI::CString& path)                            = 0;
+    virtual bool CreateDirectory(const MonAPI::CString& path)                       = 0;
+    virtual bool RemoveDirectory(const MonAPI::CString& path)                       = 0;
+    virtual bool IsExistDirectory(const MonAPI::CString& path)                      = 0;
+    virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path)  = 0;
+    virtual int GetLastError()                                                      = 0;
+    virtual int lookup(vnode* diretory, const MonAPI::CString& file, vnode** found) = 0;
 };
 
 #endif

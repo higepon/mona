@@ -3983,7 +3983,7 @@ fi
 
 # Checks for library functions.
 
-                                        ac_config_files="$ac_config_files Makefile src/Makefile fsclient/Makefile test/Makefile"
+                                                  ac_config_files="$ac_config_files Makefile src/Makefile fsclient/Makefile test/Makefile test_cache/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4545,6 +4545,7 @@ do
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "fsclient/Makefile" ) CONFIG_FILES="$CONFIG_FILES fsclient/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
+  "test_cache/Makefile" ) CONFIG_FILES="$CONFIG_FILES test_cache/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5

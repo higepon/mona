@@ -24,5 +24,6 @@ AC_TYPE_SIZE_T
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  fsclient/Makefile
-                 test/Makefile])
+                 test/Makefile
+                 test_cache/Makefile])
 AC_OUTPUT

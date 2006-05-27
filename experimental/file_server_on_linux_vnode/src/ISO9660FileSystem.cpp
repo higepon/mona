@@ -651,3 +651,15 @@ void ISO9660FileSystem::AddToFileSystemEntryList(HList<FileSystemEntry*>* entrie
             entries->add(file);
         }
 }
+
+int ISO9660FileSystem::lookup(vnode* diretory, const MonAPI::CString& file, vnode** found)
+{
+    // direcotryが vnode->typeディレクトリじゃなかったらエラー
+
+
+    // directoryから現在のパスを得る
+
+    // そのパスから file を探す
+    // すでにvnodeを作っているかどうかで分岐。
+    // directory cache, directory entry cache
+}

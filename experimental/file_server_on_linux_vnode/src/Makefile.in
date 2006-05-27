@@ -53,14 +53,16 @@ am_file_server_OBJECTS = file_server-FDCDriver.$(OBJEXT) \
 	file_server-ISO9660File.$(OBJEXT) \
 	file_server-ISO9660FileSystem.$(OBJEXT) \
 	file_server-ISO9660FileSystemManager.$(OBJEXT) \
-	file_server-Message.$(OBJEXT) file_server-messages.$(OBJEXT) \
+	file_server-Message.$(OBJEXT) \
+	file_server-VnodeCacher.$(OBJEXT) \
+	file_server-messages.$(OBJEXT) \
 	file_server-SocketMessage.$(OBJEXT) \
 	file_server-cmemoryinfo.$(OBJEXT) \
 	file_server-ProcessUtil.$(OBJEXT) file_server-bzip2.$(OBJEXT) \
 	file_server-dtk5s.$(OBJEXT) file_server-endian_util.$(OBJEXT) \
 	file_server-fat.$(OBJEXT) file_server-file.$(OBJEXT) \
 	file_server-fs.$(OBJEXT) file_server-main.$(OBJEXT) \
-	file_server-CString.$(OBJEXT)
+	file_server-CString.$(OBJEXT) file_server-vnode.$(OBJEXT)
 file_server_OBJECTS = $(am_file_server_OBJECTS)
 file_server_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -182,6 +184,8 @@ ISO9660FileSystemManager.cpp\
 ISO9660FileSystemManager.h\
 Message.cpp\
 Message.h\
+VnodeCacher.cpp\
+VnodeCacher.h\
 messages.cpp\
 SocketMessage.cpp\
 SocketMessage.h\
@@ -201,7 +205,9 @@ main.cpp\
 types.h\
 monapi/CString.h\
 monapi/CString.cpp\
-monapi/Array.h
+monapi/Array.h\
+vnode.h\
+vnode.cpp
 
 all: all-am
 
@@ -317,6 +323,12 @@ file_server-Message.o: Message.cpp
 file_server-Message.obj: Message.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-Message.obj `if test -f 'Message.cpp'; then $(CYGPATH_W) 'Message.cpp'; else $(CYGPATH_W) '$(srcdir)/Message.cpp'; fi`
 
+file_server-VnodeCacher.o: VnodeCacher.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-VnodeCacher.o `test -f 'VnodeCacher.cpp' || echo '$(srcdir)/'`VnodeCacher.cpp
+
+file_server-VnodeCacher.obj: VnodeCacher.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-VnodeCacher.obj `if test -f 'VnodeCacher.cpp'; then $(CYGPATH_W) 'VnodeCacher.cpp'; else $(CYGPATH_W) '$(srcdir)/VnodeCacher.cpp'; fi`
+
 file_server-messages.o: messages.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-messages.o `test -f 'messages.cpp' || echo '$(srcdir)/'`messages.cpp
 
@@ -388,6 +400,12 @@ file_server-CString.o: monapi/CString.cpp
 
 file_server-CString.obj: monapi/CString.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-CString.obj `if test -f 'monapi/CString.cpp'; then $(CYGPATH_W) 'monapi/CString.cpp'; else $(CYGPATH_W) '$(srcdir)/monapi/CString.cpp'; fi`
+
+file_server-vnode.o: vnode.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-vnode.o `test -f 'vnode.cpp' || echo '$(srcdir)/'`vnode.cpp
+
+file_server-vnode.obj: vnode.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-vnode.obj `if test -f 'vnode.cpp'; then $(CYGPATH_W) 'vnode.cpp'; else $(CYGPATH_W) '$(srcdir)/vnode.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

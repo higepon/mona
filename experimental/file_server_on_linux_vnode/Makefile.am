@@ -1,1 +1,1 @@
-SUBDIRS = fsclient src test
+SUBDIRS = fsclient src test test_cache

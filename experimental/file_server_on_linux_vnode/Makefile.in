@@ -148,7 +148,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = fsclient src test
+SUBDIRS = fsclient src test test_cache
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

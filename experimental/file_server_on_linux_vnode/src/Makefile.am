@@ -24,6 +24,8 @@ ISO9660FileSystemManager.cpp\
 ISO9660FileSystemManager.h\
 Message.cpp\
 Message.h\
+VnodeCacher.cpp\
+VnodeCacher.h\
 messages.cpp\
 SocketMessage.cpp\
 SocketMessage.h\
@@ -43,4 +45,6 @@ main.cpp\
 types.h\
 monapi/CString.h\
 monapi/CString.cpp\
-monapi/Array.h
+monapi/Array.h\
+vnode.h\
+vnode.cpp

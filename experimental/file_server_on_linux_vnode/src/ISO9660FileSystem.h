@@ -61,6 +61,7 @@ public:
     virtual bool IsExistDirectory(const MonAPI::CString& path);
     virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path);
     virtual int GetLastError() {return this->lastError;}
+    virtual int lookup(vnode* diretory, const MonAPI::CString& file, vnode** found);
 
 private:
     enum
