@@ -123,11 +123,12 @@ int NetClient::Example()
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
-    printf("netdsc=%d\n",netdsc);
-
+    printf("Open::netdsc=%d\n",netdsc);
+    
     if( Write(netdsc,(byte*)"test",4) ){
         printf("WrieError.\n");
     }
+
     byte buf[1024];//BAD design.
     int size= Read(netdsc,buf);
     if( size > 0 ){

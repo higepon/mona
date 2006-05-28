@@ -1,10 +1,10 @@
 //$Id$
+// based on MonesLoader by Yamami
 #include <pci/Pci.h>
 #include "NicFactory.h"
 #include "NE2000.h"
 #include "MonAMDpcn.h"
-
-// based on MonesLoader by Yamami
+#include "LoopBack.h"
 
 using namespace mones;
 
@@ -23,12 +23,12 @@ Nic* NicFactory::create()
         nic->setIP(172,16,177,4);  //Vmware. 
         nic->setIRQ(pciinfo.IrqLine);
         nic->setIOBase(pciinfo.BaseAd);
-        if( nic->init() != 0 ){
-            delete nic;
-            nic=NULL;
+        if( nic->init() == 0 ){
+            delete pcilib;
+            return nic;
         }
-        delete pcilib;
-        return nic;
+        delete nic;
+        nic=NULL;
     }
 
     pcilib->CheckPciExist(NE2000::VENDORID,NE2000::DEVICEID,&pciinfo);
@@ -37,19 +37,26 @@ Nic* NicFactory::create()
         nic->setIP(172,16,150,4); //QEMU.
         nic->setIRQ(pciinfo.IrqLine);
         nic->setIOBase(pciinfo.BaseAd);
-        if( nic->init() != 0 ){
-            delete nic;
-            nic=NULL;
+        if( nic->init() == 0 ){
+            delete pcilib;
+            return nic;
         }
-        delete pcilib;
+        delete nic;
+        nic=NULL;
+    }
+    delete pcilib;
+
+    nic = new LoopBack();
+    nic->setIP(127,0,0,1); //Loopback.
+    nic->setIRQ(0);
+    nic->setIOBase(0);
+    if( nic->init() == 0 ){
         return nic;
     }
+    delete nic;
 
-    delete pcilib;
-    //default
     nic = new NE2000();
-    //Bochs
-    nic->setIP(172,16,110,4);
+    nic->setIP(172,16,110,4);//Bochs.
     nic->setIRQ(3);
     nic->setIOBase(0x240);
     if( nic->init() != 0 ){

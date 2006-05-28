@@ -12,7 +12,7 @@ NetServer::NetServer() :
 
 NetServer::~NetServer()
 {
-    if( nic != NULL ){
+    if( (nic != NULL) && (nic->getIRQ() != 0 ) ){
         syscall_remove_irq_receiver(this->nic->getIRQ());
         delete nic;
     }
@@ -30,7 +30,8 @@ bool NetServer::initialize()
         printf("NicFactory error\n");
         return false;
     }
-    syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); // with mask Interrrupt by higepon
+    if( nic->getIRQ()!=0 ) // with mask Interrrupt by higepon
+        syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); 
     this->nic->enableNetwork();
     this->ipstack = new IPStack();
     this->observerThread= Message::lookupMainThread();
@@ -54,8 +55,9 @@ void NetServer::ICMPreply(IP* pkt)
         //create ICMP echo reply.
         icmp->type=ECHOREPLY;
         icmp->code=0x00;
-        icmp->chksum=pkt->ICMPHeader->chksum+8;
-        memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-24);
+        icmp->chksum=0x0000;
+        memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-sizeof(IP)-sizeof(ICMP));
+        icmp->chksum=bswap(ipstack->checksum((byte*)icmp,bswap(pkt->len)-sizeof(IP)));
         printf("replying.\n");    
         ipstack->FillIPHeader(rframe->IPHeader);
         nic->Send(rframe);
@@ -131,24 +133,24 @@ void NetServer::getfreeport(MessageInfo* msg)
 
 void NetServer::open(MessageInfo* msg)
 {    
-    CNI* c=new CNI();
-    connectlist.add(c);
-    c->remoteip   = (word)((msg->arg1)>>16);
-    c->remoteport = (word)(msg->arg2|0xFFFF);
-    c->localport  = msg->arg2;
-    c->protocol   = msg->arg3;
+    ConnectionInfo* c=new ConnectionInfo();
+    cinfolist.add(c);
+    c->Id.remoteip   = (word)((msg->arg1)>>16);
+    c->Id.remoteport = (word)(msg->arg2|0xFFFF);
+    c->Id.localport  = msg->arg2;
+    c->Id.protocol   = msg->arg3;
     c->clientid   = msg->from;    
-    c->netdsc     = connectlist.size();    
+    c->netdsc     = cinfolist.size();    
     Message::reply(msg, c->netdsc);
 }
 
 void NetServer::close(MessageInfo* msg)
 {
     dword ret=1;
-    for(int i=0; i<connectlist.size(); i++){
-        CNI* c  = connectlist.get(i);
+    for(int i=0; i<cinfolist.size(); i++){
+        ConnectionInfo* c  = cinfolist.get(i);
         if( c->netdsc == msg->arg1 ){
-            delete connectlist.removeAt(i);
+            delete cinfolist.removeAt(i);
             i--;
             ret=0;
         }
@@ -183,57 +185,66 @@ void NetServer::interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
-        printf("==RX\n");
+        printf("=RX\n");
         Dispatch();
     }
     if(val & Nic::TX_INT){
-        printf("==TX\n");
+        printf("=TX\n");
     }
     if( val & Nic::ER_INT){
-        printf("==ERROR.\n");    
+        printf("=ERROR.\n");    
     }
 }
-
-static MessageInfo* dbgptr;
 
 void NetServer::Dispatch()
 {
     Ether* frame =NULL;
+    //TODO handling two or more packet. 
     while( frame = nic ->Recv(0) ){
         IP* pkt=frame->IPHeader;
         ipstack->dumpPacket(pkt);
         if( pkt->prot == TYPEICMP && pkt->ICMPHeader->type==ECHOREQUEST){
             ICMPreply(pkt);
         }
+        ConnectionInfo* cinfo=NULL;
+        //find a waiting client for current packt.
+        for(int i=0; i<cinfolist.size(); i++){
+            cinfo  = cinfolist.get(i);
+            if ( ipstack->Match((byte*)&(cinfo->Id),pkt ) ){ 
+                break;
+            }
+        }
+        if( cinfo != NULL ){
+            byte val[]="string";   
+            printf("noblock=%d\n",cinfo->msg.arg2);
+            monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
+            if (mi != NULL){    
+                monapi_cmemoryinfo_create(mi,7, true);        
+                if( mi != NULL ){
+                    memcpy(mi->Data,val,mi->Size);mi->Data[6]='\0';
+                    Message::reply(&(cinfo->msg), mi->Handle, mi->Size); 
+                }
+                monapi_cmemoryinfo_delete(mi);
+            }else{
+                Message::reply(&(cinfo->msg));
+            }
+            memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
+            cinfo=NULL;
+        }
         delete frame;
     }
-    
-    //Find a waiting client and get MessageInfo structure.
-    MessageInfo* msg=dbgptr;
-    //if found then reply to the client.    
-    byte val[]="string";   
-    printf("noblock=%d\n",msg->arg2);
-    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
-    if (mi != NULL){    
-        monapi_cmemoryinfo_create(mi,7, true);        
-        if( mi != NULL ){
-            memcpy(mi->Data,val,mi->Size);mi->Data[6]='\0';
-            Message::reply(msg, mi->Handle, mi->Size); 
-        }
-        monapi_cmemoryinfo_delete(mi);
-    }else{
-        Message::reply(msg);
-    }
-
 }
 
 void NetServer::read(MessageInfo* msg)
 {
     //Register msg to waiting client list.
-    //int netdsc= msg->arg1;
-    dbgptr=msg;
-
-    ////
+    for(int i=0; i<cinfolist.size(); i++){
+        ConnectionInfo* c  = cinfolist.get(i);
+        if( c->netdsc == msg->arg1 ){
+            memcpy(&(c->msg),(byte*)msg,sizeof(MessageInfo));
+            break;
+        }
+    }
     Dispatch();
 }
 
@@ -248,10 +259,9 @@ void NetServer::write(MessageInfo* msg)
         byte* buf=new byte[ret->Size+1];
         memcpy(buf,ret->Data,ret->Size); buf[ret->Size]='\0';
         printf("<%s>\n",buf);
+        //send the data.
         monapi_cmemoryinfo_delete(ret);
         delete buf;
     }
     Message::reply(msg);  
 }
-
-

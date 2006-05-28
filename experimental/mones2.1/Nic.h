@@ -77,7 +77,7 @@ public:
     //int    SetHeader(Ether*);
     void   DumpTable();
 protected:
-    char  devname[8];
+    char  devname[64];
     byte  macaddress[6];
     dword ipaddress;
     dword netmask;
@@ -103,8 +103,8 @@ public:
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}
     void  setIOBase(int addr) {this->iobase = addr & 0xFFFFFFE0;}
-    void  enableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
-    void  disableNetwork() {monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
+    void  enableNetwork() {if(this->getIRQ()!=0)monapi_set_irq(this->getIRQ(), MONAPI_TRUE, MONAPI_TRUE);}
+    void  disableNetwork() {if(this->getIRQ()!=0)monapi_set_irq(this->getIRQ(), MONAPI_FALSE, MONAPI_TRUE);}
     void  getStatus(NetStatus* stat);
     enum{
         RX_INT     =0x0004,

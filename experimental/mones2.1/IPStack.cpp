@@ -5,6 +5,11 @@
 using namespace mones;
 using namespace MonAPI;
 
+bool IPStack::Match(byte* ,IP*)
+{
+    return true;
+}
+
 void IPStack::FillIPHeader(IP* ip)
 {
     ip->verhead=0x45;      //version & headersize
@@ -18,7 +23,7 @@ void IPStack::FillIPHeader(IP* ip)
     ip->chksum=bswap(checksum((byte*)ip,(ip->verhead&0x0F)<<2));
 }
 
-inline word IPStack::checksum(byte *data,word size)
+word IPStack::checksum(byte *data,word size)
 {
     dword sum=0;
     for(int i=0;i<=size-2;i+=2){

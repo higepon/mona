@@ -96,7 +96,7 @@ Nic::Nic():irq(0),iobase(0),mtu(DEFAULT_MTU_SIZE)
 
 void Nic::getStatus(NetStatus* stat)
 {
-    memcpy(stat->devname,devname,8);
+    memcpy(stat->devname,devname,64);
     stat->instance=1;
     stat->localip=ipaddress;
     stat->netmask=netmask;

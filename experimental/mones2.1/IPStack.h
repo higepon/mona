@@ -70,7 +70,8 @@ struct IP {
 class IPStack
 {
 public:
-    inline word checksum(byte*,word);
+    bool Match(byte* ,IP*);
+    word checksum(byte*,word);
     void FillIPHeader(IP*);
     void dumpPacket(IP*); 
     void FillICMPHeader(ICMP*,ICMP*);

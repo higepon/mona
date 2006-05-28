@@ -18,17 +18,20 @@ public:
     void messageLoop();
     bool isStarted() {return started;}
     void exit();
-    struct CNI{    
+private:
+    struct ConnectionInfo{
+        struct{
+            dword remoteip;
+            word  localport;
+            word  remoteport;
+            word  protocol;
+        } Id;
         dword clientid;
-        dword remoteip;
-        word  localport;
-        word  remoteport;
-        word  protocol;
         word  netdsc;
         byte  status;
         MessageInfo msg;
     };
-private:
+    MonAPI::Mutex mutex;
     IPStack* ipstack;
     void ICMPreply(IP*);
     void Dispatch();
@@ -42,7 +45,7 @@ private:
     void ontimer(MessageInfo* msg);
     void config(MessageInfo* msg);
     word next_port;
-    HList<CNI*> connectlist;
+    HList<ConnectionInfo*> cinfolist;
 
 protected:
     byte macAddress[6];

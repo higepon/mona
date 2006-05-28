@@ -36,6 +36,8 @@ install: all
 	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 run: install
 	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/run.bat
+runl: install
+	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/runl.bat
 runq: install
 	cd $(MONADIR)/tool/mkimg && make && cp mona.iso $(QEMUDIR)
 	cd $(QEMUDIR) && $(QEMUDIR)/mona.bat	

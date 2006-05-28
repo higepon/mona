@@ -53,7 +53,7 @@ enum PORT{
 
 struct NetStatus
 {
-    char devname[8];
+    char devname[64];
     byte instance;
     dword localip;
     dword netmask;

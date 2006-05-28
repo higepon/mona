@@ -3,12 +3,12 @@
 using namespace MonAPI;
 using namespace mones;
 
-LoopBack::~LoopBack()
+LoopBack::LoopBack()
 {
-
+    memcpy(devname,"loopback",9);
 }
 
-LoopBack::LoopBack()
+LoopBack::~LoopBack()
 {
 
 }
