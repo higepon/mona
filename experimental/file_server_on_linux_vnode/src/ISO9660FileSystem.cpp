@@ -18,15 +18,17 @@
 #endif
 #include "ISO9660FileSystem.h"
 using namespace MonAPI;
+using namespace std;
 
 /*----------------------------------------------------------------------
     ISO9660FileSystem
 ----------------------------------------------------------------------*/
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* cd)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* cd, VnodeCacher* cacher)
 {
     this->cd            = cd;
     this->lastError     = NO_ERROR;
     this->rootDirectory = NULL;
+    this->cacher_       = cacher;
 }
 
 ISO9660FileSystem::~ISO9660FileSystem()
@@ -652,14 +654,36 @@ void ISO9660FileSystem::AddToFileSystemEntryList(HList<FileSystemEntry*>* entrie
         }
 }
 
-int ISO9660FileSystem::lookup(vnode* diretory, const MonAPI::CString& file, vnode** found)
+int ISO9660FileSystem::lookup(vnode* diretory, const string& file, vnode** found)
 {
-    // direcotryが vnode->typeディレクトリじゃなかったらエラー
+    if (diretory->v_type != VDIR) return MONA_ERROR_INVALID_ARGUMENTS;
+
+    vnode* v = cacher_->lookup(diretory, file);
+    if (v != NULL)
+    {
+        *found = v;
+        return MONA_OK;
+    }
+
+    ISO9660Directory* directoryEntry = (ISO9660Directory*)diretory->fnode;
+    ASSERT(directoryEntry != NULL);
+    ISO9660File* fileEntry = FindFileEntry(directoryEntry, file.c_str());
+
+    if (fileEntry != NULL)
+    {
+        vnode* newVnode = Vnode::alloc();
+        newVnode->fnode  = fileEntry;
+        newVnode->v_type = VREG;
+        cacher_->add(diretory, file, newVnode);
+        *found = newVnode;
+        return MONA_OK;
+    }
 
 
     // directoryから現在のパスを得る
-
+    // update cache/add cache
     // そのパスから file を探す
     // すでにvnodeを作っているかどうかで分岐。
     // directory cache, directory entry cache
+    return MONA_OK;
 }

@@ -20,6 +20,7 @@
 #include "IStorageDevice.h"
 #endif
 
+#include "VnodeCacher.h"
 #include "FileSystem.h"
 #include "ISO9660.h"
 #include "ISO9660File.h"
@@ -33,7 +34,7 @@ class ISO9660File;
 class ISO9660FileSystem : public FileSystem
 {
 public:
-    ISO9660FileSystem(IStorageDevice* cd);
+    ISO9660FileSystem(IStorageDevice* cd, VnodeCacher* cacher);
     virtual ~ISO9660FileSystem();
 
 public:
@@ -61,7 +62,7 @@ public:
     virtual bool IsExistDirectory(const MonAPI::CString& path);
     virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path);
     virtual int GetLastError() {return this->lastError;}
-    virtual int lookup(vnode* diretory, const MonAPI::CString& file, vnode** found);
+    virtual int lookup(vnode* diretory, const std::string& file, vnode** found);
 
 private:
     enum
@@ -91,6 +92,9 @@ private:
     IStorageDevice* cd;
     ISOPrimaryVolumeDescriptor pdescriptor;
     ISO9660Directory* rootDirectory;
+
+protected:
+    VnodeCacher* cacher_;
 };
 
 #endif

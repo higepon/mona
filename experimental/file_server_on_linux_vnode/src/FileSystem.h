@@ -13,6 +13,8 @@
 #ifndef _FILE_SYSTEM_
 #define _FILE_SYSTEM_
 
+#include <string>
+#include "error.h"
 #include "File.h"
 
 struct vnode; // defined somewhere
@@ -36,7 +38,7 @@ public:
     virtual bool IsExistDirectory(const MonAPI::CString& path)                      = 0;
     virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path)  = 0;
     virtual int GetLastError()                                                      = 0;
-    virtual int lookup(vnode* diretory, const MonAPI::CString& file, vnode** found) = 0;
+    virtual int lookup(vnode* diretory, const std::string& file, vnode** found)     = 0;
 };
 
 #endif

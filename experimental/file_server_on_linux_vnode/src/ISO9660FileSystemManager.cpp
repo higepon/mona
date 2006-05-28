@@ -74,7 +74,7 @@ bool ISO9660FileSystemManager::Initialize()
     }
 
 #endif
-    this->fs = new ISO9660FileSystem(cd);
+    this->fs = new ISO9660FileSystem(cd, new VnodeCacher());
     /* initialize ISO9660 FS */
     if (!this->fs->Initialize())
     {

@@ -35,6 +35,7 @@ typedef struct vnode
 {
     enum vtype v_type;
     FileSystem* fs;
+    void* fnode;
 };
 
 class Vnode
@@ -44,7 +45,8 @@ private:
     ~Vnode() {}
 
 public:
-    static int lookup(vnode* diretory, const MonAPI::CString& file, vnode** found);
+    static int lookup(vnode* diretory, const std::string& file, vnode** found);
+    static vnode* alloc();
 };
 
 
