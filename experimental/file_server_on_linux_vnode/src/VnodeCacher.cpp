@@ -18,6 +18,8 @@ VnodeCacher::~VnodeCacher()
 
 vnode* VnodeCacher::lookup(vnode* directory, const string& name)
 {
+    if (directory->v_type != VDIR) return NULL;
+
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
     if (it == directories_->end())
@@ -35,6 +37,8 @@ vnode* VnodeCacher::lookup(vnode* directory, const string& name)
 
 void VnodeCacher::add(vnode* directory, const string& name, vnode* entry)
 {
+    if (directory->v_type != VDIR) return;
+
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
     if (it == directories_->end())
@@ -60,6 +64,8 @@ void VnodeCacher::add(vnode* directory, const string& name, vnode* entry)
 
 void VnodeCacher::remove(vnode* directory, const string& name)
 {
+    if (directory->v_type != VDIR) return;
+
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
     if (it == directories_->end())

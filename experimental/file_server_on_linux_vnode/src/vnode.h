@@ -35,7 +35,6 @@ typedef struct vnode
 {
     enum vtype v_type;
     FileSystem* fs;
-
 };
 
 class Vnode
