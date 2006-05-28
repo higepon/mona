@@ -1,7 +1,5 @@
-///////////////////////////////
-//This file is derived form NE2000.cpp by Mr. Yamami.
-///////////////////////////////
-
+//$Id$
+//Original Author of this file is Yamami.
 #include "NE2000.h"
 
 using namespace mones;

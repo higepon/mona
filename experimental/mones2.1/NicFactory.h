@@ -1,6 +1,5 @@
-#ifndef _MONA_MONES_NICFACTORY_
-#define _MONA_MONES_NICFACTORY_
-
+//$Id$
+#pragma once
 #include <sys/types.h>
 #include "Nic.h"
 
@@ -13,4 +12,3 @@ public:
 };
 
 }; // namespace mones
-#endif

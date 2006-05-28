@@ -1,3 +1,4 @@
+//$Id$
 #include <monapi.h>
 #include <sys/types.h>
 #include "Net.h"
@@ -30,7 +31,7 @@ public:
 private:
     IPStack* ipstack;
     void ICMPreply(IP*);
-    void DispatchRXPKT();
+    void Dispatch();
     void getfreeport(MessageInfo* msg);
     void interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);

@@ -1,15 +1,7 @@
-/*
-    \file  NE2000.h
-    \brief NE2000ドライバクラス ヘッダ
-
-    Copyright (c) 2004 Yamami, Higepon
-    All rights reserved.
-    License=MIT/X License
-
-    \author  Yamami Higepon
-    $Date: 2006/01/02 15:12:55 $
-*/
-
+//$Id$
+//    All rights reserved.
+//    License=MIT/X License
+//    Original Author of this file is Yamami
 #pragma once
 #include <sys/types.h>
 #include <monapi.h>

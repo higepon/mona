@@ -1,3 +1,4 @@
+//$Id$
 #include <pci/Pci.h>
 #include "NicFactory.h"
 #include "NE2000.h"

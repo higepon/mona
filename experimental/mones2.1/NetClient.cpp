@@ -1,3 +1,4 @@
+//$Id$
 #include "NetClient.h"
 using namespace MonAPI;
 using namespace mones;

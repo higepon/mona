@@ -1,3 +1,4 @@
+//$Id$
 #include "NetServer.h"
 using namespace mones;
 using namespace MonAPI;
@@ -174,7 +175,7 @@ void NetServer::status(MessageInfo* msg)
 
 void NetServer::ontimer(MessageInfo* msg)
 {
-    printf("TIMER\n");
+   //printf("TIMER\n");
 }
 
 void NetServer::interrupt(MessageInfo* msg)
@@ -183,17 +184,7 @@ void NetServer::interrupt(MessageInfo* msg)
     int val = nic->interrupt();
     if( val & Nic::RX_INT ){
         printf("==RX\n");
-        Ether* frame =NULL;
-        //////////////////////////
-        while( frame = nic ->Recv(0) ){
-            IP* pkt=frame->IPHeader;
-            ipstack->dumpPacket(pkt);
-            if( pkt->prot == TYPEICMP && pkt->ICMPHeader->type==ECHOREQUEST){
-                ICMPreply(pkt);
-            }
-            delete frame;
-        }
-        ////////////////////////
+        Dispatch();
     }
     if(val & Nic::TX_INT){
         printf("==TX\n");
@@ -203,22 +194,23 @@ void NetServer::interrupt(MessageInfo* msg)
     }
 }
 
-void NetServer::DispatchRXPKT()
+static MessageInfo* dbgptr;
+
+void NetServer::Dispatch()
 {
-    //find an apropriate waiting client.
-    if( 1==0 ){
-        MessageInfo msg;
-        printf("%d\n",msg.arg1);
+    Ether* frame =NULL;
+    while( frame = nic ->Recv(0) ){
+        IP* pkt=frame->IPHeader;
+        ipstack->dumpPacket(pkt);
+        if( pkt->prot == TYPEICMP && pkt->ICMPHeader->type==ECHOREQUEST){
+            ICMPreply(pkt);
+        }
+        delete frame;
     }
-}
-
-void NetServer::read(MessageInfo* msg)
-{
-    //register waiting clientlist    
-    int netdsc= msg->arg1;
-    netdsc=0;
-    //call dispatcher.
-
+    
+    //Find a waiting client and get MessageInfo structure.
+    MessageInfo* msg=dbgptr;
+    //if found then reply to the client.    
     byte val[]="string";   
     printf("noblock=%d\n",msg->arg2);
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
@@ -232,6 +224,17 @@ void NetServer::read(MessageInfo* msg)
     }else{
         Message::reply(msg);
     }
+
+}
+
+void NetServer::read(MessageInfo* msg)
+{
+    //Register msg to waiting client list.
+    //int netdsc= msg->arg1;
+    dbgptr=msg;
+
+    ////
+    Dispatch();
 }
 
 void NetServer::write(MessageInfo* msg)

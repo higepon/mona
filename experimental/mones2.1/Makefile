@@ -1,3 +1,4 @@
+#$Id$
 TARGET  = mns21
 SOURCES = main.cpp Nic.cpp NicFactory.cpp IPStack.cpp NetServer.cpp \
  MonAMDpcn.cpp LoopBack.cpp NE2000.cpp NetClient.cpp

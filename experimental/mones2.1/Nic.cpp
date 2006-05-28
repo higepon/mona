@@ -1,3 +1,4 @@
+//$Id$
 #include "Nic.h"
 using namespace mones;
 
