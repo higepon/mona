@@ -46,6 +46,7 @@ private:
 
 public:
     static int lookup(vnode* diretory, const std::string& file, vnode** found);
+    static int open(const std::string& name, int mode, bool create, vnode** entry);
     static vnode* alloc();
 };
 
