@@ -669,21 +669,12 @@ int ISO9660FileSystem::lookup(vnode* diretory, const string& file, vnode** found
     ASSERT(directoryEntry != NULL);
     ISO9660File* fileEntry = FindFileEntry(directoryEntry, file.c_str());
 
-    if (fileEntry != NULL)
-    {
-        vnode* newVnode = Vnode::alloc();
-        newVnode->fnode  = fileEntry;
-        newVnode->v_type = VREG;
-        cacher_->add(diretory, file, newVnode);
-        *found = newVnode;
-        return MONA_OK;
-    }
+    if (fileEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
 
-
-    // directoryから現在のパスを得る
-    // update cache/add cache
-    // そのパスから file を探す
-    // すでにvnodeを作っているかどうかで分岐。
-    // directory cache, directory entry cache
+    vnode* newVnode = Vnode::alloc();
+    newVnode->fnode  = fileEntry;
+    newVnode->v_type = VREG;
+    cacher_->add(diretory, file, newVnode);
+    *found = newVnode;
     return MONA_OK;
 }
