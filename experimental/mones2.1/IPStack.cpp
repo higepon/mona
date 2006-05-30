@@ -1,9 +1,107 @@
 //$Id$
+#include <pci/Pci.h>
 #include "Net.h"
+#include "NE2000.h"
+#include "MonAMDpcn.h"
+#include "LoopBack.h"
 #include "IPStack.h"
 
 using namespace mones;
 using namespace MonAPI;
+
+IPStack::IPStack()
+{
+    PciInf pciinfo;
+    Pci* pcilib = new Pci();
+    printf("\nIP address is defined in NicFactory::create(). Rewrite it as your environment.\n");
+    pcilib->CheckPciExist(MonAMDpcn::VENDORID,MonAMDpcn::DEVICEID,&pciinfo);
+    if( pciinfo.Exist== 0){
+        // 0x04 is PCI_COMMAND
+        dword val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0, 0x04,2);
+        pcilib->WriteConfig(0,pciinfo.DeviceNo,0,0x04,2,val|0x4);
+        nic=new MonAMDpcn();
+        nic->setIP(172,16,177,4);  //Vmware. 
+        nic->setIRQ(pciinfo.IrqLine);
+        nic->setIOBase(pciinfo.BaseAd);
+        if( nic->init() == 0 ){
+            delete pcilib;
+            return;
+        }
+        delete nic;
+        nic=NULL;
+    }
+
+    pcilib->CheckPciExist(NE2000::VENDORID,NE2000::DEVICEID,&pciinfo);
+    if( pciinfo.Exist == 0){
+        nic = new NE2000();
+        nic->setIP(172,16,150,4); //QEMU.
+        nic->setIRQ(pciinfo.IrqLine);
+        nic->setIOBase(pciinfo.BaseAd);
+        if( nic->init() == 0 ){
+            delete pcilib;
+            return;
+        }
+        delete nic;
+        nic=NULL;
+    }
+    delete pcilib;
+
+    nic = new LoopBack();
+    nic->setIP(127,0,0,1); //Loopback.
+    nic->setIRQ(0);
+    nic->setIOBase(0);
+    if( nic->init() == 0 ){
+        return;
+    }
+    delete nic;
+
+    nic = new NE2000();
+    nic->setIP(172,16,110,4);//Bochs.
+    nic->setIRQ(3);
+    nic->setIOBase(0x240);
+    if( nic->init() != 0 ){
+        delete nic;
+        nic=NULL;
+    }
+}
+
+IPStack::~IPStack()
+{
+    if( (nic != NULL) && (nic->getIRQ() != 0 ) ){
+        syscall_remove_irq_receiver(this->nic->getIRQ());
+        delete nic;
+    }
+}
+
+bool IPStack::initialize()
+{
+    if( nic != NULL ){
+        if( nic->getIRQ()!=0 ) // with mask Interrrupt by higepon
+            syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); 
+         this->nic->enableNetwork();
+        return true;
+    }else return false;
+}
+
+void IPStack::ICMPreply(IP* pkt)
+{
+    Ether* rframe = nic->MakePKT(pkt->srcip);
+    //ether header has been already filled.
+    if( rframe != NULL){
+        ICMP* icmp=rframe->IPHeader->ICMPHeader;
+        //FillICMPHeader();
+        //create ICMP echo reply.
+        icmp->type=ECHOREPLY;
+        icmp->code=0x00;
+        icmp->chksum=0x0000;
+        memcpy(icmp->data,pkt->ICMPHeader->data,bswap(pkt->len)-sizeof(IP)-sizeof(ICMP));
+        icmp->chksum=bswap(checksum((byte*)icmp,bswap(pkt->len)-sizeof(IP)));
+        printf("replying.\n");    
+        FillIPHeader(rframe->IPHeader);
+        printf("asdf\n");
+        nic->Send(rframe);
+    }
+}
 
 bool IPStack::Match(byte* ,IP*)
 {

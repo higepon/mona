@@ -2,18 +2,17 @@
 #include <monapi.h>
 #include <sys/types.h>
 #include "Net.h"
-#include "Nic.h"
-#include "NicFactory.h"
+#include "IPStack.h"
+
 #pragma once
 
 namespace mones {
 
-class NetServer
+class NetServer: public IPStack
 {
 public:
     NetServer();
     virtual ~NetServer();
-    bool initialize();
     dword getThreadID() const;
     void messageLoop();
     bool isStarted() {return started;}
@@ -32,8 +31,6 @@ private:
         MessageInfo msg;
     };
     MonAPI::Mutex mutex;
-    IPStack* ipstack;
-    void ICMPreply(IP*);
     void Dispatch();
     void getfreeport(MessageInfo* msg);
     void interrupt(MessageInfo* msg);
@@ -49,10 +46,8 @@ private:
 
 protected:
     byte macAddress[6];
-    dword observerThread;
     dword myID;
     dword timerid;
-    Nic* nic;
     bool started;
     bool loopExit;
 };

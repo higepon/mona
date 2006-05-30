@@ -1,7 +1,7 @@
 //$Id$ 
 //Acknowledgement:
-//   Following files in this directory was originally written by Yamami and Higepon.
-//   Makefile,main.cpp,Nic.h,NicFactory.cpp,NicFactory.h,NE2000.cpp,NE2000.h
+//   Following files were originally written by Yamami and Higepon.
+//   Makefile,Nic.h,NE2000.cpp,NE2000.h
 #include "NetServer.h"
 #include "NetClient.h"
 #include <monapi.h>

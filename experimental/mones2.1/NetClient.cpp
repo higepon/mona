@@ -138,7 +138,7 @@ int NetClient::Example()
     if( Close(netdsc) ){
         printf("CloseError.\n");
     }    
-    //reset up nic. 
+    //re-setup nic. 
     char devname[]="pcnet0";
     if( Config(devname,(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){
         printf("ConfigError\n");
