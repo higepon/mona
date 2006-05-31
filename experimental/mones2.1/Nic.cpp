@@ -105,13 +105,13 @@ void Nic::getStatus(NetStatus* stat)
     stat->defaultroute=defaultroute;
 }
 
-Ether* Nic::Recv(int n)
+Ether* Nic::RecvFrm(int n)
 {
     if( rxFrameList.size() > n  && n >=0 ){    
         Ether* frame = rxFrameList.removeAt(n);
         if( bswap(frame->type) ==  TYPEARP ){
             if( MakeArpReply(frame) == 0){
-                Send(frame);
+                SendFrm(frame);
             }
             return NULL;
         }
@@ -120,26 +120,29 @@ Ether* Nic::Recv(int n)
     return NULL;
 }
 
-Ether* Nic::MakePKT(dword dstip)
+Ether* Nic::CreateFrm(dword dstip)
 {
     Ether* frame= new Ether();
     memcpy(frame->srcmac,macaddress,6);    
     frame->type=bswap(TYPEIP);
     frame->IPHeader->srcip=ipaddress; 
     frame->IPHeader->dstip=dstip;
-    for(int i=0;i<10;i++){
-        if( Lookup(frame->dstmac,dstip) ==-1 ){
-            Send(Query(dstip));
-            sleep(300);
-            interrupt();//copy rxdata form DMA memory. 
-            Ether* f=Recv(0);
-            if( f != NULL){
-                rxFrameList.add(f);
+    if( ipaddress != LOOPBACKIP ){
+        for(int i=0;i<10;i++){
+            if( Lookup(frame->dstmac,dstip) ==-1 ){
+                SendFrm(Query(dstip));
+                sleep(300);
+                interrupt();//copy rxdata form DMA memory. 
+                Ether* f=RecvFrm(0);
+                if( f != NULL){
+                    rxFrameList.add(f);
+                }
+            }else{
+                return frame;
             }
-        }else{
-            return frame;
         }
+        delete frame;
+        return NULL;
     }
-    delete frame;
-    return NULL;
+    return frame;
 }

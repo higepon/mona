@@ -58,7 +58,7 @@ protected:
     };
 public:    
     int   init();
-    void  Send(Ether*);
+    void  SendFrm(Ether*);
     int   interrupt();
     MonAMDpcn();
     ~MonAMDpcn();

@@ -18,7 +18,6 @@ NetServer::~NetServer()
         kill_timer(timerid);
 }
 
-
 dword NetServer::getThreadID() const
 {
     return this->myID;
@@ -66,16 +65,6 @@ void NetServer::messageLoop()
     printf("NetServer exit\n");
 }
 
-/*typedef struct {
-    dword header;
-    dword arg1;
-    dword arg2;
-    dword arg3;
-    dword from;
-    char str[128];
-    int length;
-} MessageInfo; */
-
 //////////// MESSAGE HANDLERS ////////////////////////
 void NetServer::config(MessageInfo* msg)
 {
@@ -95,9 +84,9 @@ void NetServer::open(MessageInfo* msg)
 {    
     ConnectionInfo* c=new ConnectionInfo();
     cinfolist.add(c);
-    c->Id.remoteip   = (word)((msg->arg1)>>16);
-    c->Id.remoteport = (word)(msg->arg2|0xFFFF);
-    c->Id.localport  = msg->arg2;
+    c->Id.remoteip   = msg->arg1;
+    c->Id.remoteport = (word)(msg->arg2&0x0000FFFF);
+    c->Id.localport  = (word)(msg->arg2>>16);
     c->Id.protocol   = msg->arg3;
     c->clientid      = msg->from;    
     c->netdsc     = cinfolist.size();  
@@ -138,7 +127,7 @@ void NetServer::status(MessageInfo* msg)
 
 void NetServer::ontimer(MessageInfo* msg)
 {
-   //printf("TIMER\n");
+    PeriodicUpdate();
 }
 
 void NetServer::interrupt(MessageInfo* msg)
@@ -160,12 +149,12 @@ void NetServer::interrupt(MessageInfo* msg)
 void NetServer::Dispatch()
 {
     //TODO handling two or more packets. 
-    Ether* frame = nic ->Recv(0);
-    if( frame != NULL ){
+    Ether* frame = nic ->RecvFrm(0);
+    if( frame != NULL ){ 
+        dumpPacket(frame);
         IP* pkt=frame->IPHeader;
-        dumpPacket(pkt);
         if( pkt->prot == TYPEICMP && pkt->ICMPHeader->type==ECHOREQUEST){
-            ICMPreply(pkt);
+            ICMPreply(frame);
             delete frame;
             return;
         }
@@ -181,7 +170,7 @@ void NetServer::Dispatch()
             printf("noblock=%d\n",cinfo->msg.arg2);
             monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
             if (mi != NULL){
-                int size=7;
+                int size=12;
                 monapi_cmemoryinfo_create(mi,size, true);        
                 if( mi != NULL ){
                     memcpy(mi->Data,frame->IPHeader->UDPHeader->data,mi->Size);mi->Data[mi->Size]='\0';
@@ -224,10 +213,14 @@ void NetServer::write(MessageInfo* msg)
         ret->Owner  = msg->from;
         ret->Size   = msg->arg3;
         monapi_cmemoryinfo_map(ret);
-        Ether* frame= new Ether();
-        //create ether/IP/protocol headers
-        memcpy(frame->IPHeader->UDPHeader->data,ret->Data,ret->Size); //buf[ret->Size]='\0';
-        nic->Send(frame);
+        for(int i=0; i<cinfolist.size(); i++){
+            ConnectionInfo* c  = cinfolist.get(i);
+            if( c->netdsc == msg->arg1 ){    
+                Send(ret->Data,ret->Size,&(c->Id));
+                printf("SENT\n");
+                break;
+            }
+        }
         monapi_cmemoryinfo_delete(ret);
     }
     Message::reply(msg);  

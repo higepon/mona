@@ -235,7 +235,7 @@ int NE2000::rxihandler()//void NE2000::inputFrame(void)
     return 0;
 }
 
-void NE2000::Send(Ether* frame)
+void NE2000::SendFrm(Ether* frame)
 {
     dword ptx_size=CalcFrameSize(frame);
     byte* ptx_packet=(byte*)frame;
@@ -246,12 +246,10 @@ void NE2000::Send(Ether* frame)
 
     ne_pio_writemem( ptx_packet, ( NE_TX_PAGE_START << 8 ) , ptx_size );
     //ptx_size+=ETHER_HEADER_SIZE;
-
     // 最小パケット長より短いかどうかをチェックする
     //if( ptx_size < ETHER_MIN_PACKET ){
     //    ptx_size=ETHER_MIN_PACKET;
     //}
-
     w_reg( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_RD2 + NE_CR_STA );
 
     // 送信バッファ領域の指定
@@ -263,8 +261,6 @@ void NE2000::Send(Ether* frame)
 
     // 送信命令を発行する
     w_reg( NE_P0_COMMAND, NE_CR_PS0 + NE_CR_TXP + NE_CR_RD2 + NE_CR_STA );
-
-    printf("send.\n");  
     delete frame;
     // 割り込み許可
     enableNetwork();

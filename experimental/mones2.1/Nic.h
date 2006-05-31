@@ -26,6 +26,8 @@ struct ICMP {
     byte  type;
     byte  code;
     word  chksum;
+    word  idnum;
+    word  seqnum;
     byte  data[0];
 };
 
@@ -158,9 +160,9 @@ public:
     Nic();
     virtual int init() =0;
     virtual int interrupt() =0; 
-    virtual void Send(Ether*)=0;
-    Ether* Recv(int);    
-    Ether* MakePKT(dword);
+    virtual void SendFrm(Ether*)=0;
+    Ether* RecvFrm(int);    
+    Ether* CreateFrm(dword);
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}

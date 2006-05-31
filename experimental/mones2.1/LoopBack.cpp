@@ -18,7 +18,7 @@ int LoopBack::interrupt()
     return (TX_INT|RX_INT);
 }
 
-void LoopBack::Send(Ether* frame)
+void LoopBack::SendFrm(Ether* frame)
 {                  
     rxFrameList.add(frame); //Not TX but RX!
     MessageInfo info;

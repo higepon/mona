@@ -3,6 +3,8 @@
 #include <sys/types.h>
 namespace mones {
 
+const dword LOOPBACKIP=0x0100007F;
+
 enum MESSAGE_NET{
     //'NET' is 0x4E4554
     MSG_NET_CONFIG =0x4E455400,
@@ -15,10 +17,10 @@ enum MESSAGE_NET{
 };
 
 enum IP_PROTOCOL{
-    TYPEICMP = 0X01,
-    TYPEIGMP = 0X02,
-    TYPETCP  = 0X06,
-    TYPEUDP  = 0X11,
+    TYPEICMP = 0x01,
+    TYPEIGMP = 0x02,
+    TYPETCP  = 0x06,
+    TYPEUDP  = 0x11,
 };
 
 enum PORT{

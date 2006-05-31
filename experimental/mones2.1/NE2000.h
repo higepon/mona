@@ -12,7 +12,7 @@ namespace mones {
 class NE2000 : public Nic
 {
 public:
-    void  Send(Ether*);
+    void  SendFrm(Ether*);
     int interrupt();
     NE2000();
     ~NE2000();

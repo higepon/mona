@@ -114,30 +114,52 @@ int NetClient::Example()
             printf("%x:",stat.mac[j]);
         printf("\n");
     }
-    
-    dword remoteip=(1<<24)|(177<<16)|(16<<8)|(172);
+    dword remoteip=(3<<24)|(10<<16)|(168<<8)|(192);
+    if( stat.localip==LOOPBACKIP ){
+        remoteip=LOOPBACKIP;
+    }
+    ///////////////////////////////////////////////
+    printf("TESTing Send ICMP echo request\n");
+    int netdsc= Open(remoteip,0,0,TYPEICMP);
+    if( netdsc< 0 ){
+        printf("OpenError.\n");
+    }
+    printf("Open::netdsc=%d\n",netdsc);
+    if( Write(netdsc,(byte*)"How are you?",12) ){
+        print("WriteError\n");
+    }
+    byte buf[1024];//BAD design.
+    int size= Read(netdsc,buf);
+    if( size > 0 ){
+        printf("Read: %s\n",buf);
+        //if recived string is same as sended.
+        //printf("dset is alive,\n");
+    }
+    if( Close(netdsc) ){
+        printf("CloseError.\n");
+    }   
+    ////////////////////////////////////////////
+    printf("Testing Send UDP to DAYTIME\n");    
     word localport = GetFreePort();
     printf("Port=%d\n",localport);
-    //UNIX inetd has DAYTIME,ECHO services in both UDP and TCP.
-    int netdsc = Open(remoteip,localport,DAYTIME,TYPEUDP);
+    netdsc = Open(remoteip,localport,DAYTIME,TYPEUDP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
     printf("Open::netdsc=%d\n",netdsc);
     
-    if( Write(netdsc,(byte*)"test",4) ){
+    if( Write(netdsc,(byte*)"What time is it now?",20) ){
         printf("WrieError.\n");
     }
-
-    byte buf[1024];//BAD design.
-    int size= Read(netdsc,buf);
+    size= Read(netdsc,buf);
     if( size > 0 ){
         printf("Read: %s\n",buf);
     }    
-
     if( Close(netdsc) ){
         printf("CloseError.\n");
     }    
+    //////////////////////////////////////////////////
+
     //re-setup nic. 
     char devname[]="pcnet0";
     if( Config(devname,(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){

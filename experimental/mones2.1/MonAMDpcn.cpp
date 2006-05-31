@@ -140,7 +140,7 @@ int MonAMDpcn::interrupt()
     return ret;
 }
 
-void MonAMDpcn::Send(Ether* frame)
+void MonAMDpcn::SendFrm(Ether* frame)
 {
     enableNetwork();
     word len=CalcFrameSize(frame);

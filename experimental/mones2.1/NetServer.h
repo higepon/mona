@@ -1,6 +1,5 @@
 //$Id$
-#include <monapi.h>
-#include <sys/types.h>
+
 #include "Net.h"
 #include "IPStack.h"
 
@@ -18,18 +17,6 @@ public:
     bool isStarted() {return started;}
     void exit();
 private:
-    struct ConnectionInfo{
-        struct{
-            dword remoteip;
-            word  localport;
-            word  remoteport;
-            word  protocol;
-        } Id;
-        dword clientid;
-        word  netdsc;
-        byte  status;
-        MessageInfo msg;
-    };
     MonAPI::Mutex mutex;
     void Dispatch();
     void getfreeport(MessageInfo* msg);
