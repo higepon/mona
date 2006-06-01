@@ -163,6 +163,7 @@ public:
     virtual void SendFrm(Ether*)=0;
     Ether* RecvFrm(int);    
     Ether* CreateFrm(dword);
+    Ether* CheckRX(int);
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}
     void  setIRQ(byte n) {this->irq = n;}

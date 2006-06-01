@@ -83,37 +83,6 @@ bool IPStack::initialize()
     }else return false;
 }
 
-void IPStack::dumpPacket(Ether* frame)
-{
-    IP* pkt=frame->IPHeader;
-    switch( pkt->prot){
-    case TYPEICMP:
-        printf("ICMP:");
-        break;
-    case TYPETCP:
-        printf("TCP:");
-        break;
-    case TYPEUDP:
-        printf("UDP:");
-        UDP* udp=pkt->UDPHeader;
-        printf("R:%d L:%d LEN:%d CKSUM:%d\n",bswap(udp->srcport),
-             bswap(udp->dstport),bswap(udp->len),bswap(udp->chksum));
-        break;
-    case TYPEIGMP:
-        printf("IGMP:");
-        break;
-    default:
-        printf("orz.");
-    }
-    printf("src:");
-    for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(pkt->srcip))+j));
-    printf("dst:");
-    for(int j=0;j<4;j++)
-        printf("%d.",*(((byte*)&(pkt->dstip))+j));
-    printf("\n");
-}
-
 word IPStack::checksum(byte *data,word size)
 {
     dword sum=0;
@@ -127,6 +96,75 @@ word IPStack::checksum(byte *data,word size)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+int IPStack::CheckDst(int n,CID* id)
+{ 
+    Ether* frame = nic->CheckRX(n);
+    if( frame == NULL )
+        return 0;
+    id->protocol=frame->IPHeader->prot;
+    id->remoteip=frame->IPHeader->srcip;    
+    id->remoteport=0;
+    id->localport=0;
+    switch (id->protocol)
+    {
+    case TYPEICMP:
+        if( frame->IPHeader->ICMPHeader->type==ECHOREQUEST){
+            frame=nic->RecvFrm(n);
+            ICMPreply(frame);
+            delete frame;
+            return 0;
+        }
+        break;
+    case TYPEUDP:
+        id->localport=bswap(frame->IPHeader->UDPHeader->dstport);
+        id->remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        break;
+    case TYPETCP:     
+        id->localport=bswap(frame->IPHeader->TCPHeader->dstport);
+        id->remoteport=bswap(frame->IPHeader->TCPHeader->srcport);
+        break;
+    default:
+        printf("orz\n");
+    }
+    return 1;
+}
+
+int IPStack::Recv(byte** data, int n)
+{
+    Ether* frame=nic->RecvFrm(n);
+    if( frame == NULL){
+        data=NULL;
+        return 0;
+    }
+    int size=0;
+    ////////////////////////////////////////////////////////
+    // TODO data should be on static ring buffer memory.
+    ///////////////////////////////////////////////////////
+    switch(frame->IPHeader->prot)
+    {
+    case TYPEICMP:
+        size=bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP);
+        *data= new byte[size];
+        memcpy(*data,frame->IPHeader->ICMPHeader->data,size);
+        break;
+    case TYPEUDP:        
+        size=bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(UDP);
+        *data= new byte[size];
+        memcpy(*data,frame->IPHeader->UDPHeader->data,size);
+        break;
+    case TYPETCP:
+        size=bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(TCP);
+        *data= new byte[size];
+        memcpy(*data,frame->IPHeader->TCPHeader->data,size);
+        break;
+    default:
+        printf("orz\n");
+        *data=NULL;
+    }
+    delete frame;
+    return size;
+}
+
 int IPStack::Send(byte* data,int size, CID* id)
 {              
     Ether* frame = nic->CreateFrm(id->remoteip);
@@ -185,9 +223,8 @@ void IPStack::ICMPreply(Ether* frame)
         icmp->seqnum=frame->IPHeader->ICMPHeader->seqnum;
         memcpy(icmp->data,frame->IPHeader->ICMPHeader->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP));
         icmp->chksum=bswap(checksum((byte*)icmp,bswap(frame->IPHeader->len)-sizeof(IP)));
-        printf("replying.\n");
+        printf("ICMP replying.\n");
         FillIPHeader(rframe,bswap(frame->IPHeader->len),TYPEICMP);
-        printf("asdf\n");
         nic->SendFrm(rframe);
     }
 }

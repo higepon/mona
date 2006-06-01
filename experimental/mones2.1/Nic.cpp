@@ -107,10 +107,19 @@ void Nic::getStatus(NetStatus* stat)
 
 Ether* Nic::RecvFrm(int n)
 {
+    Ether* frame= CheckRX(n);
+    if( frame != NULL)
+        return rxFrameList.removeAt(n);
+    return NULL;
+}
+
+Ether* Nic::CheckRX(int n)
+{    
     if( rxFrameList.size() > n  && n >=0 ){    
-        Ether* frame = rxFrameList.removeAt(n);
+        Ether* frame = rxFrameList.get(n);
         if( bswap(frame->type) ==  TYPEARP ){
-            if( MakeArpReply(frame) == 0){
+            frame=rxFrameList.removeAt(n);
+            if( MakeArpReply(frame)==0){
                 SendFrm(frame);
             }
             return NULL;
@@ -131,7 +140,7 @@ Ether* Nic::CreateFrm(dword dstip)
         for(int i=0;i<10;i++){
             if( Lookup(frame->dstmac,dstip) ==-1 ){
                 SendFrm(Query(dstip));
-                sleep(300);
+                sleep(100);
                 interrupt();//copy rxdata form DMA memory. 
                 Ether* f=RecvFrm(0);
                 if( f != NULL){

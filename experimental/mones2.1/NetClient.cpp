@@ -119,7 +119,7 @@ int NetClient::Example()
         remoteip=LOOPBACKIP;
     }
     ///////////////////////////////////////////////
-    printf("TESTing Send ICMP echo request\n");
+    printf("\nSend ICMP echo request\n");
     int netdsc= Open(remoteip,0,0,TYPEICMP);
     if( netdsc< 0 ){
         printf("OpenError.\n");
@@ -131,7 +131,10 @@ int NetClient::Example()
     byte buf[1024];//BAD design.
     int size= Read(netdsc,buf);
     if( size > 0 ){
-        printf("Read: %s\n",buf);
+        //printf("Read: %s\n",buf);
+        if(!strcmp((char*)buf,"How are you?")){
+            printf("destination is Alive.\n");
+        }
         //if recived string is same as sended.
         //printf("dset is alive,\n");
     }
@@ -139,7 +142,7 @@ int NetClient::Example()
         printf("CloseError.\n");
     }   
     ////////////////////////////////////////////
-    printf("Testing Send UDP to DAYTIME\n");    
+    printf("\nSend UDP to DAYTIME\n");    
     word localport = GetFreePort();
     printf("Port=%d\n",localport);
     netdsc = Open(remoteip,localport,DAYTIME,TYPEUDP);
@@ -153,7 +156,7 @@ int NetClient::Example()
     }
     size= Read(netdsc,buf);
     if( size > 0 ){
-        printf("Read: %s\n",buf);
+        printf("remote time is %s\n",buf);
     }    
     if( Close(netdsc) ){
         printf("CloseError.\n");
@@ -162,10 +165,10 @@ int NetClient::Example()
 
     //re-setup nic. 
     char devname[]="pcnet0";
-    if( Config(devname,(5<24)|(177<16)|(16<<8)|172,(1<24)|(177<16)|(16<<8)|172,24,60,1500) ){
+    if( Config(devname,(5<<24)|(0<<16)|(168<<8)|192,(1<24)|(0<<16)|(168<<8)|192,24,60,1500) ){
         printf("ConfigError\n");
     }
-    printf("TESTED\n");
+    printf("tests are completed.\n");
     return 0;
 }
 

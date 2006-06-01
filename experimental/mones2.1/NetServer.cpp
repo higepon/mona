@@ -84,10 +84,14 @@ void NetServer::open(MessageInfo* msg)
 {    
     ConnectionInfo* c=new ConnectionInfo();
     cinfolist.add(c);
-    c->Id.remoteip   = msg->arg1;
+    c->Id.remoteip   = msg->arg1; 
     c->Id.remoteport = (word)(msg->arg2&0x0000FFFF);
     c->Id.localport  = (word)(msg->arg2>>16);
     c->Id.protocol   = msg->arg3;
+    if(msg->arg3 == TYPEICMP ){
+        c->Id.remoteport =0;
+        c->Id.localport =0;
+    }
     c->clientid      = msg->from;    
     c->netdsc     = cinfolist.size();  
     c->msg.header = 0x0;
@@ -148,47 +152,33 @@ void NetServer::interrupt(MessageInfo* msg)
 
 void NetServer::Dispatch()
 {
+    CID id; byte* data;
     //TODO handling two or more packets. 
-    Ether* frame = nic ->RecvFrm(0);
-    if( frame != NULL ){ 
-        dumpPacket(frame);
-        IP* pkt=frame->IPHeader;
-        if( pkt->prot == TYPEICMP && pkt->ICMPHeader->type==ECHOREQUEST){
-            ICMPreply(frame);
-            delete frame;
-            return;
-        }
-        ConnectionInfo* cinfo=NULL;
-        //find a waiting client for current packt.
-        for(int i=0; i<cinfolist.size(); i++){
-            cinfo  = cinfolist.get(i);
-            // if ( ipstack->Match((byte*)&(cinfo->Id),pkt ) ){
-            break;
-            // }
-        }
-        if( cinfo != NULL && cinfo->msg.header != 0x0 ){
-            printf("noblock=%d\n",cinfo->msg.arg2);
-            monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
-            if (mi != NULL){
-                int size=12;
-                monapi_cmemoryinfo_create(mi,size, true);        
-                if( mi != NULL ){
-                    memcpy(mi->Data,frame->IPHeader->UDPHeader->data,mi->Size);mi->Data[mi->Size]='\0';
-                    Message::reply(&(cinfo->msg), mi->Handle, mi->Size); 
+    if( CheckDst(0,&id) > 0){
+        for(int i=0;i<cinfolist.size(); i++){
+            ConnectionInfo* cinfo=cinfolist.get(i);
+            if(  (cinfo!=NULL) && id.equal(cinfo->Id) && (cinfo->msg.header != 0x00) ){
+                //printf("noblock=%d\n",cinfo->msg.arg2);
+                monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
+                if (mi != NULL){
+                    int size = Recv(&data,0);    
+                    monapi_cmemoryinfo_create(mi,size, true);        
+                    if( mi != NULL ){
+                        memcpy(mi->Data,data,mi->Size);//mi->Data[mi->Size]='\0';
+                        Message::reply(&(cinfo->msg), mi->Handle, mi->Size); 
+                    }
+                    if( data!=NULL )
+                        delete [] data; // TODO data should be on static ring buffer memory.
+                    monapi_cmemoryinfo_delete(mi);
+                    memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
+                }else{
+                    Message::reply(&(cinfo->msg));
                 }
-                monapi_cmemoryinfo_delete(mi);
-            }else{
-                Message::reply(&(cinfo->msg));
             }
-            memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-            cinfo=NULL;
-            delete frame;
-            frame=NULL;
         }
-        //very dirty design.
-        if( frame != NULL )
-            nic->rxFrameList.add(frame);
+
     }
+    return;    
 }
 
 void NetServer::read(MessageInfo* msg)
@@ -201,7 +191,7 @@ void NetServer::read(MessageInfo* msg)
             break;
         }
     }
-    printf("READING\n");
+    //printf("READING\n");
     Dispatch();
 }
 
@@ -217,7 +207,6 @@ void NetServer::write(MessageInfo* msg)
             ConnectionInfo* c  = cinfolist.get(i);
             if( c->netdsc == msg->arg1 ){    
                 Send(ret->Data,ret->Size,&(c->Id));
-                printf("SENT\n");
                 break;
             }
         }
