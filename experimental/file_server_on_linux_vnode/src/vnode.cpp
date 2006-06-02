@@ -14,6 +14,20 @@ int VnodeManager::open(const string& name, int mode, bool create, Vnode** entry)
         // do something
     }
 
+    // process current path
+
+    // now fullpath only
+    if (name.compare(0, 0, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+
+    Vnode* found;
+    if (lookup(root_, name, &found) != MONA_OK)
+    {
+        return MONA_ERROR_ENTRY_NOT_FOUND;
+    }
+
+    // found
+    // さてなにをするんだっけ？
+
     return 1;
 }
 
