@@ -38,16 +38,19 @@ typedef struct vnode
     void* fnode;
 };
 
-class Vnode
+class VnodeManager
 {
-private:
-    Vnode() {}
-    ~Vnode() {}
+public:
+    VnodeManager() {}
+    ~VnodeManager() {}
 
 public:
-    static int lookup(vnode* diretory, const std::string& file, vnode** found);
-    static int open(const std::string& name, int mode, bool create, vnode** entry);
-    static vnode* alloc();
+    int lookup(vnode* diretory, const std::string& file, vnode** found);
+    int open(const std::string& name, int mode, bool create, vnode** entry);
+    vnode* alloc();
+
+private:
+    vnode* root_;
 };
 
 

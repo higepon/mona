@@ -17,18 +17,20 @@
 #include <monapi/string.h>
 #endif
 #include "ISO9660FileSystem.h"
+#include "vnode.h"
 using namespace MonAPI;
 using namespace std;
 
 /*----------------------------------------------------------------------
     ISO9660FileSystem
 ----------------------------------------------------------------------*/
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* cd, VnodeCacher* cacher)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* cd, VnodeCacher* cacher, VnodeManager* vmanager)
 {
     this->cd            = cd;
     this->lastError     = NO_ERROR;
     this->rootDirectory = NULL;
     this->cacher_       = cacher;
+    this->vmanager_     = vmanager;
 }
 
 ISO9660FileSystem::~ISO9660FileSystem()
@@ -671,7 +673,7 @@ int ISO9660FileSystem::lookup(vnode* diretory, const string& file, vnode** found
 
     if (fileEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
 
-    vnode* newVnode = Vnode::alloc();
+    vnode* newVnode = vmanager_->alloc();
     newVnode->fnode  = fileEntry;
     newVnode->v_type = VREG;
     cacher_->add(diretory, file, newVnode);

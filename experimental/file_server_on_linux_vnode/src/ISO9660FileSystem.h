@@ -34,7 +34,7 @@ class ISO9660File;
 class ISO9660FileSystem : public FileSystem
 {
 public:
-    ISO9660FileSystem(IStorageDevice* cd, VnodeCacher* cacher);
+    ISO9660FileSystem(IStorageDevice* cd, VnodeCacher* cacher, VnodeManager* vmanager);
     virtual ~ISO9660FileSystem();
 
 public:
@@ -95,6 +95,7 @@ private:
 
 protected:
     VnodeCacher* cacher_;
+    VnodeManager* vmanager_;
 };
 
 #endif

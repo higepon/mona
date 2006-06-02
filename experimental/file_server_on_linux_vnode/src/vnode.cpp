@@ -2,12 +2,12 @@
 
 using namespace std;
 
-int Vnode::lookup(vnode* diretory, const string& file, vnode** found)
+int VnodeManager::lookup(vnode* diretory, const string& file, vnode** found)
 {
     return diretory->fs->lookup(diretory, file, found);
 }
 
-int Vnode::open(const string& name, int mode, bool create, vnode** entry)
+int VnodeManager::open(const string& name, int mode, bool create, vnode** entry)
 {
     if (create)
     {
@@ -18,7 +18,7 @@ int Vnode::open(const string& name, int mode, bool create, vnode** entry)
 }
 
 
-vnode* Vnode::alloc()
+vnode* VnodeManager::alloc()
 {
     vnode* v = new vnode;
     assert(v != NULL);
