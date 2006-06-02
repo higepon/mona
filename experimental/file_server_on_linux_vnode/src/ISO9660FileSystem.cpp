@@ -656,11 +656,11 @@ void ISO9660FileSystem::AddToFileSystemEntryList(HList<FileSystemEntry*>* entrie
         }
 }
 
-int ISO9660FileSystem::lookup(vnode* diretory, const string& file, vnode** found)
+int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found)
 {
-    if (diretory->v_type != VDIR) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
 
-    vnode* v = cacher_->lookup(diretory, file);
+    Vnode* v = cacher_->lookup(diretory, file);
     if (v != NULL)
     {
         *found = v;
@@ -673,9 +673,9 @@ int ISO9660FileSystem::lookup(vnode* diretory, const string& file, vnode** found
 
     if (fileEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
 
-    vnode* newVnode = vmanager_->alloc();
+    Vnode* newVnode = vmanager_->alloc();
     newVnode->fnode  = fileEntry;
-    newVnode->v_type = VREG;
+    newVnode->type = Vnode::REGULAR;
     cacher_->add(diretory, file, newVnode);
     *found = newVnode;
     return MONA_OK;

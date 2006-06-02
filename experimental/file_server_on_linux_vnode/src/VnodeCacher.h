@@ -6,8 +6,8 @@
 #include <map>
 #include <string>
 
-typedef std::map<std::string, vnode*> EntriesMap;
-typedef std::map<vnode*, EntriesMap*> DirectoriesMap;
+typedef std::map<std::string, Vnode*> EntriesMap;
+typedef std::map<Vnode*, EntriesMap*> DirectoriesMap;
 
 class VnodeCacher
 {
@@ -16,9 +16,9 @@ public:
     virtual ~VnodeCacher();
 
 public:
-    vnode* lookup(vnode* directory, const std::string& name);
-    void add(vnode* directory, const std::string& name, vnode* entry);
-    void remove(vnode* directory, const std::string& name);
+    Vnode* lookup(Vnode* directory, const std::string& name);
+    void add(Vnode* directory, const std::string& name, Vnode* entry);
+    void remove(Vnode* directory, const std::string& name);
 
 protected:
     DirectoriesMap* directories_;

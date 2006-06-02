@@ -18,25 +18,42 @@
 #include "types.h"
 
 
-enum vtype
-{
-    VNON,
-    VREG,
-    VDIR,
-    VBLK,
-    VCHR,
-    VLNK,
-    VSOCK,
-    VFIFO,
-    VBAD
-};
+// enum vtype
+// {
+//     VNON,
+//     VREG,
+//     VDIR,
+//     VBLK,
+//     VCHR,
+//     VLNK,
+//     VSOCK,
+//     VFIFO,
+//     VBAD
+// };
 
-typedef struct vnode
+// typedef struct vnode
+// {
+//     enum vtype v_type;
+//     FileSystem* fs;
+//     void* fnode;
+// };
+
+class Vnode
 {
-    enum vtype v_type;
+public:
+    int type;
     FileSystem* fs;
     void* fnode;
+    enum
+    {
+        NONE,
+        REGULAR,
+        DIRECTORY,
+        LINK,
+        BAD
+    };
 };
+
 
 class VnodeManager
 {
@@ -45,12 +62,12 @@ public:
     ~VnodeManager() {}
 
 public:
-    int lookup(vnode* diretory, const std::string& file, vnode** found);
-    int open(const std::string& name, int mode, bool create, vnode** entry);
-    vnode* alloc();
+    int lookup(Vnode* diretory, const std::string& file, Vnode** found);
+    int open(const std::string& name, int mode, bool create, Vnode** entry);
+    Vnode* alloc();
 
 private:
-    vnode* root_;
+    Vnode* root_;
 };
 
 

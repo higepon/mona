@@ -2,8 +2,8 @@
 
 using namespace std;
 
-typedef pair<vnode*, EntriesMap*> vpair;
-typedef pair<string, vnode*> spair;
+typedef pair<Vnode*, EntriesMap*> vpair;
+typedef pair<string, Vnode*> spair;
 
 VnodeCacher::VnodeCacher()
 {
@@ -16,9 +16,9 @@ VnodeCacher::~VnodeCacher()
     delete directories_;
 }
 
-vnode* VnodeCacher::lookup(vnode* directory, const string& name)
+Vnode* VnodeCacher::lookup(Vnode* directory, const string& name)
 {
-    if (directory->v_type != VDIR) return NULL;
+    if (directory->type != Vnode::DIRECTORY) return NULL;
 
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
@@ -35,9 +35,9 @@ vnode* VnodeCacher::lookup(vnode* directory, const string& name)
     return eit == entries->end() ? NULL : (*eit).second;
 }
 
-void VnodeCacher::add(vnode* directory, const string& name, vnode* entry)
+void VnodeCacher::add(Vnode* directory, const string& name, Vnode* entry)
 {
-    if (directory->v_type != VDIR) return;
+    if (directory->type != Vnode::DIRECTORY) return;
 
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
@@ -62,9 +62,9 @@ void VnodeCacher::add(vnode* directory, const string& name, vnode* entry)
     return;
 }
 
-void VnodeCacher::remove(vnode* directory, const string& name)
+void VnodeCacher::remove(Vnode* directory, const string& name)
 {
-    if (directory->v_type != VDIR) return;
+    if (directory->type != Vnode::DIRECTORY) return;
 
     DirectoriesMap::iterator it = directories_->find(directory);
     EntriesMap* entries;
