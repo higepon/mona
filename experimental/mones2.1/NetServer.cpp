@@ -162,7 +162,7 @@ void NetServer::Dispatch()
                     read_bottom_half(pktnumber,cinfo);
                     pktnumber--;
                  }else{
-                     printf("opend but not reading...so, waiting reatry.\n");
+                     printf("opend but not reading... waiting reatry.\n");
                  }
             }else{
                 Dispose(pktnumber); //pkt for unopend.

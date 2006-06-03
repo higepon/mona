@@ -133,7 +133,7 @@ bool IPStack::GetDestination(int n,CID* id)
     case TYPETCP:     
         id->localport=bswap(frame->IPHeader->TCPHeader->dstport);
         id->remoteport=bswap(frame->IPHeader->TCPHeader->srcport);
-        if( HandShakePASV(frame){
+        if( HandShakePASV(frame)){
             Dispose(n);
             GetDestination(n,id);
         }
@@ -238,9 +238,9 @@ void IPStack::ICMPreply(Ether* frame)
     }
 }    
 
-bool IPStack::HandShakeACTV(Ehter* frame)
+bool IPStack::HandShakeACTV(Ether* frame)
 {
-
+    return false;
 }
 
 bool IPStack::HandShakePASV(Ether* frame)
@@ -256,9 +256,8 @@ bool IPStack::UDPWellKnownSVCreply(Ether* frame)
         id.localport=DAYTIME;
         id.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
         id.protocol=TYPEUDP;
-        char* data="I can't see a clock";
-        Send((byte*)data,19,&id);
-        printf("UDP::DAYTIME\n");
+        char* data="I can't see a clock.";
+        Send((byte*)data,20,&id);
         return true;
     }
     return false;

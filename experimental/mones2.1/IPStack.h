@@ -38,8 +38,8 @@ private:
     void FillIPHeader(Ether*,word,byte);
     void FillICMPHeader(ICMP*,ICMP*);
     bool UDPWellKnownSVCreply(Ether*);
-    bool HandshakePASV(Ether*);
-    void HandshakeACTV(Ehter*);
+    bool HandShakePASV(Ether*);
+    bool HandShakeACTV(Ether*);
     Nic* nic;
 public:
     IPStack();
