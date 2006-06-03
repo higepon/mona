@@ -95,12 +95,16 @@ word IPStack::checksum(byte *data,word size)
     return ~(((sum>>16)+sum)&0xFFFF);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-int IPStack::CheckDst(int n,CID* id)
+////////////////////////////////////////////////////
+//reply icmp echo request,dispose unknown packet and
+//get destinationinfo recursive.
+//return false only if buffer is empty.
+////////////////////////////////////////////////////
+bool IPStack::GetDestination(int n,CID* id)
 { 
     Ether* frame = nic->RecvFrm(n);
     if( frame == NULL )
-        return 0;
+        return false;
     id->protocol=frame->IPHeader->prot;
     id->remoteip=frame->IPHeader->srcip;    
     id->remoteport=0;
@@ -110,22 +114,36 @@ int IPStack::CheckDst(int n,CID* id)
     case TYPEICMP:
         if( frame->IPHeader->ICMPHeader->type==ECHOREQUEST){
             ICMPreply(frame);
-            nic->Delete(n);
-            return 0;
+            Dispose(n);
+            GetDestination(n,id);//see next packet;
+        }else if( frame->IPHeader->ICMPHeader->type!=ECHOREPLY){
+            Dispose(n);
+            GetDestination(n,id);//see next packet;
         }
+        //ECHOREPLY may pass to client.
         break;
-    case TYPEUDP:
+    case TYPEUDP:    
         id->localport=bswap(frame->IPHeader->UDPHeader->dstport);
         id->remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        if( UDPWellKnownSVCreply(frame) ){
+            Dispose(n);
+            GetDestination(n,id);
+        }    
         break;
     case TYPETCP:     
         id->localport=bswap(frame->IPHeader->TCPHeader->dstport);
         id->remoteport=bswap(frame->IPHeader->TCPHeader->srcport);
+        if( HandShakePASV(frame){
+            Dispose(n);
+            GetDestination(n,id);
+        }
         break;
     default:
-        printf("orz\n");
+        printf("unknown Packet type");
+        Dispose(n);
+        GetDestination(n,id);
     }
-    return 1;
+    return true;
 }
 
 int IPStack::Recv(byte** data, int n)
@@ -179,10 +197,8 @@ int IPStack::Send(byte* data,int size, CID* id)
         case TYPEUDP:
             IP* ip=frame->IPHeader; //for psedo header
             ip->ttl =0x00;
-            ip->prot=0x11;
+            ip->prot=TYPEUDP;
             ip->chksum=bswap(size+sizeof(UDP));
-            //ip->srcip=nic->getIP(); already filled.
-            //ip->dstip=id->remoteip; already filled.
             UDP* udp=frame->IPHeader->UDPHeader;
             udp->srcport=bswap(id->localport);
             udp->dstport=bswap(id->remoteport);
@@ -192,6 +208,7 @@ int IPStack::Send(byte* data,int size, CID* id)
             udp->chksum=bswap(checksum((byte*)&(ip->ttl),size+sizeof(UDP)+12));
             headersize=sizeof(UDP)+sizeof(IP);
         case TYPETCP:
+            //HandShakeACTIV();
             break;
         default:
             printf("orz\n");
@@ -219,6 +236,37 @@ void IPStack::ICMPreply(Ether* frame)
         FillIPHeader(rframe,bswap(frame->IPHeader->len),TYPEICMP);
         nic->SendFrm(rframe);
     }
+}    
+
+bool IPStack::HandShakeACTV(Ehter* frame)
+{
+
+}
+
+bool IPStack::HandShakePASV(Ether* frame)
+{
+    return false;
+}
+
+bool IPStack::UDPWellKnownSVCreply(Ether* frame)
+{
+    if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
+        CID id;
+        id.remoteip=frame->IPHeader->srcip;
+        id.localport=DAYTIME;
+        id.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        id.protocol=TYPEUDP;
+        char* data="I can't see a clock";
+        Send((byte*)data,19,&id);
+        printf("UDP::DAYTIME\n");
+        return true;
+    }
+    return false;
+}
+
+void IPStack::Dispose(int n)
+{
+    nic->Delete(n);
 }
 
 void IPStack::FillIPHeader(Ether* frame,word length,byte protocol)

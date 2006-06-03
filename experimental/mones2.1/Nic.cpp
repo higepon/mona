@@ -119,7 +119,7 @@ Ether* Nic::RecvFrm(int n)
         Ether* frame = rxFrameList.get(n);
         if( bswap(frame->type) ==  TYPEARP ){
             frame=rxFrameList.removeAt(n);
-            if( MakeArpReply(frame)==0){
+            if( MakeArpReply(frame)==0){ //RE-using packet instance.
                 SendFrm(frame);
             }
             return NULL;

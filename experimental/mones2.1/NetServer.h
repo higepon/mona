@@ -20,7 +20,7 @@ private:
     MonAPI::Mutex mutex;
     void Dispatch();
     void getfreeport(MessageInfo* msg);
-    void interrupt(MessageInfo* msg);
+    void Interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);
     void read_bottom_half(int,ConnectionInfo*);
     void read(MessageInfo* msg);

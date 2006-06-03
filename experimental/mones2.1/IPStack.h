@@ -7,11 +7,10 @@
 namespace mones{
 
 struct CID{
-
     dword remoteip;
     word  localport;
     word  remoteport;
-    word  protocol;
+    byte  protocol;
     bool equal(const CID& id){
         if( remoteip   == id.remoteip   &&
             localport  == id.localport  &&
@@ -33,18 +32,25 @@ struct ConnectionInfo{
 
 class IPStack
 {
-public:
-    Nic* nic;
-    IPStack();   
-    virtual ~IPStack();
-    bool initialize();  
+private:
     void ICMPreply(Ether*);
-    word checksum(byte*,word);
+    word checksum(byte*,word);   
     void FillIPHeader(Ether*,word,byte);
     void FillICMPHeader(ICMP*,ICMP*);
-    int Send(byte* ,int, CID*);
-    int CheckDst(int,CID*);
-    int Recv(byte**,int);
+    bool UDPWellKnownSVCreply(Ether*);
+    bool HandshakePASV(Ether*);
+    void HandshakeACTV(Ehter*);
+    Nic* nic;
+public:
+    IPStack();
+    virtual ~IPStack();
+    bool initialize();
+    int  Send(byte* ,int, CID*);
+    bool GetDestination(int,CID*);
+    int  Recv(byte**,int);
+    int  interrupt(){ return nic->interrupt();}
+    void readStatus(NetStatus* stat){ nic->getStatus(stat); }
+    void Dispose(int);
     void PeriodicUpdate();
 };
 

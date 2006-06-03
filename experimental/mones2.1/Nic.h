@@ -120,10 +120,6 @@ public:
 
 class ARPmanager
 {
-    struct ARPRec{
-        dword ip;
-        byte mac[6];
-    };
 public:
     enum{
         TYPEARP=0x806,
@@ -134,24 +130,27 @@ public:
     void   getMacAddress(byte* dest){memcpy(dest,macaddress,6);};
     void   setIP(byte a,byte b,byte c,byte d){ ipaddress=((d<<24)|(c<<16)|(b<<8)|a);}
     dword  getIP(){ return ipaddress; };    
-    void   getDstMacbyIP(dword address ,byte* dest);
+    void   DumpTable();
+protected:      
     int    MakeArpReply(Ether*);
     int    Register(Ether*);
-
-    //int    SetHeader(Ether*);
-    void   DumpTable();
-protected:
-    char  devname[64];
+    char  devname[64]; 
+    word CalcFrameSize(Ether*);
+    Ether* Query(dword);
+    int Lookup(byte*,dword);  
+    dword ipaddress;    
     byte  macaddress[6];
-    dword ipaddress;
     dword netmask;
     dword defaultroute;
+private:    
+    struct ARPRec{
+        dword ip;
+        byte mac[6];
+    };
     byte   registerd;
     enum{ CACHESIZE=0xFF };//Cass C
     ARPRec cache[CACHESIZE];
-    Ether* Query(dword);
-    int Lookup(byte*,dword);    
-    word CalcFrameSize(Ether*);
+
 };
 
 class Nic : public ARPmanager
@@ -176,11 +175,11 @@ public:
         TX_INT     =0x0002,
         ER_INT     =0x0001,
     };    
+protected:
     //allocate & copy is slow.....
     //TODO use static allocated memory and one-copy.  
     HList<Ether*> rxFrameList;
     HList<Ether*> txFrameList;
-protected:  
     int   irq;
     int   iobase;
     word  mtu;

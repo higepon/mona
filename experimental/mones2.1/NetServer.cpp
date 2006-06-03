@@ -31,7 +31,7 @@ void NetServer::messageLoop()
         switch (msg.header)
         {
         case MSG_INTERRUPTED:
-            this->interrupt(&msg);   
+            this->Interrupt(&msg);   
             break;
         case MSG_NET_GETFREEPORT:
             this->getfreeport(&msg);
@@ -115,7 +115,7 @@ void NetServer::close(MessageInfo* msg)
 void NetServer::status(MessageInfo* msg)
 {
     NetStatus stat;
-    nic->getStatus(&stat);
+    readStatus(&stat);
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
     if (mi != NULL){
         monapi_cmemoryinfo_create(mi, sizeof(NetStatus)/*+sizeof(arpcache)*N*/, true);        
@@ -134,10 +134,10 @@ void NetServer::ontimer(MessageInfo* msg)
     PeriodicUpdate();
 }
 
-void NetServer::interrupt(MessageInfo* msg)
+void NetServer::Interrupt(MessageInfo* msg)
 {   
     //Don't say anything about in case mona is a router.
-    int val = nic->interrupt();
+    int val = interrupt();
     if( val & Nic::RX_INT ){
         printf("=RX\n");
         Dispatch();
@@ -153,13 +153,23 @@ void NetServer::interrupt(MessageInfo* msg)
 void NetServer::Dispatch()
 {
     CID id;
-    if( CheckDst(0,&id) > 0){
+    int pktnumber=0;
+    while( GetDestination(pktnumber,&id) ){
         for(int i=0;i<cinfolist.size(); i++){
             ConnectionInfo* cinfo=cinfolist.get(i);
-            if(  (cinfo!=NULL) && id.equal(cinfo->Id) && (cinfo->msg.header != 0x00) ){
-                read_bottom_half(0,cinfo);
+            if(  (cinfo!=NULL) && id.equal(cinfo->Id)){ 
+                 if( cinfo->msg.header == MSG_NET_READ ){
+                    read_bottom_half(pktnumber,cinfo);
+                    pktnumber--;
+                 }else{
+                     printf("opend but not reading...so, waiting reatry.\n");
+                 }
+            }else{
+                Dispose(pktnumber); //pkt for unopend.
+                pktnumber--;
             }
         }
+        pktnumber++;
     }
     return;    
 }
@@ -176,7 +186,7 @@ void NetServer::read_bottom_half(int n,ConnectionInfo* cinfo)
             memcpy(mi->Data,data,mi->Size);
             Message::reply(&(cinfo->msg), mi->Handle, mi->Size); 
         }
-        nic->Delete(n);
+        Dispose(n);
         monapi_cmemoryinfo_delete(mi);
         memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
     }else{
