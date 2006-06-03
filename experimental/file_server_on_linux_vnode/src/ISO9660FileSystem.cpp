@@ -680,3 +680,8 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     *found = newVnode;
     return MONA_OK;
 }
+
+int ISO9660FileSystem::open(Vnode* file, int mode)
+{
+    return MONA_OK;
+}

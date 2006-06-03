@@ -63,6 +63,7 @@ public:
     virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path);
     virtual int GetLastError() {return this->lastError;}
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found);
+    virtual int open(Vnode* file, int mode);
 
 private:
     enum

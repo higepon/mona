@@ -25,10 +25,7 @@ int VnodeManager::open(const string& name, int mode, bool create, Vnode** entry)
         return MONA_ERROR_ENTRY_NOT_FOUND;
     }
 
-    // found
-    // さてなにをするんだっけ？
-
-    return 1;
+    return found->fs->open(found, mode);
 }
 
 
