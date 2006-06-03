@@ -105,15 +105,15 @@ void Nic::getStatus(NetStatus* stat)
     stat->defaultroute=defaultroute;
 }
 
-Ether* Nic::RecvFrm(int n)
+
+void Nic::Delete(int n)
 {
-    Ether* frame= CheckRX(n);
-    if( frame != NULL)
-        return rxFrameList.removeAt(n);
-    return NULL;
+    //buffer will be a ring buffer. 
+    if( rxFrameList.size() > n && n >= 0)
+        delete rxFrameList.removeAt(n);
 }
 
-Ether* Nic::CheckRX(int n)
+Ether* Nic::RecvFrm(int n)
 {    
     if( rxFrameList.size() > n  && n >=0 ){    
         Ether* frame = rxFrameList.get(n);
@@ -142,9 +142,9 @@ Ether* Nic::CreateFrm(dword dstip)
                 SendFrm(Query(dstip));
                 sleep(100);
                 interrupt();//copy rxdata form DMA memory. 
-                Ether* f=RecvFrm(0);
-                if( f != NULL){
-                    rxFrameList.add(f);
+                int n=0;
+                while( RecvFrm(n)!=NULL){ //check all packets on buffer.
+                    n++;
                 }
             }else{
                 return frame;

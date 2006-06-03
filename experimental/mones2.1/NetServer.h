@@ -22,6 +22,7 @@ private:
     void getfreeport(MessageInfo* msg);
     void interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);
+    void read_bottom_half(int,ConnectionInfo*);
     void read(MessageInfo* msg);
     void write(MessageInfo* msg);
     void close(MessageInfo* msg);

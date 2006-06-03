@@ -98,7 +98,7 @@ word IPStack::checksum(byte *data,word size)
 //////////////////////////////////////////////////////////////////////////////////////////
 int IPStack::CheckDst(int n,CID* id)
 { 
-    Ether* frame = nic->CheckRX(n);
+    Ether* frame = nic->RecvFrm(n);
     if( frame == NULL )
         return 0;
     id->protocol=frame->IPHeader->prot;
@@ -109,9 +109,8 @@ int IPStack::CheckDst(int n,CID* id)
     {
     case TYPEICMP:
         if( frame->IPHeader->ICMPHeader->type==ECHOREQUEST){
-            frame=nic->RecvFrm(n);
             ICMPreply(frame);
-            delete frame;
+            nic->Delete(n);
             return 0;
         }
         break;
@@ -137,31 +136,24 @@ int IPStack::Recv(byte** data, int n)
         return 0;
     }
     int size=0;
-    ////////////////////////////////////////////////////////
-    // TODO data should be on static ring buffer memory.
-    ///////////////////////////////////////////////////////
     switch(frame->IPHeader->prot)
     {
     case TYPEICMP:
         size=bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP);
-        *data= new byte[size];
-        memcpy(*data,frame->IPHeader->ICMPHeader->data,size);
+        *data=frame->IPHeader->ICMPHeader->data;
         break;
     case TYPEUDP:        
         size=bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(UDP);
-        *data= new byte[size];
-        memcpy(*data,frame->IPHeader->UDPHeader->data,size);
+        *data=frame->IPHeader->UDPHeader->data;
         break;
     case TYPETCP:
         size=bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(TCP);
-        *data= new byte[size];
-        memcpy(*data,frame->IPHeader->TCPHeader->data,size);
+        *data=frame->IPHeader->TCPHeader->data;
         break;
     default:
         printf("orz\n");
         *data=NULL;
     }
-    delete frame;
     return size;
 }
 
