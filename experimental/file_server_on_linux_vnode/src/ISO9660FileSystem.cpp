@@ -688,5 +688,12 @@ int ISO9660FileSystem::open(Vnode* file, int mode)
 
 int ISO9660FileSystem::read(Vnode* file, io::Context* context)
 {
-    return MONA_OK;
+    ISO9660File* fileEntry = (ISO9660File*)file->fnode;
+    ASSERT(fileEntry != NULL);
+    fileEntry->Seek(context->offset, SEEK_SET);
+
+    io::Buffer* buffer = context->buffer;
+    int readSize = context->size >= buffer->size ? buffer->size : context->size;
+    int ret = fileEntry->Read(context->buffer->pointer, readSize);
+    return ret != 0 ? MONA_OK : MONA_ERROR_ON_READ;
 }
