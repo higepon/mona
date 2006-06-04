@@ -16,8 +16,15 @@
 #include "Message.h"
 #include "dtk5s.h"
 #include "IDEDriver.h"
+#include "vnode.h"
+#include <map>
 
 using namespace MonAPI;
+using namespace std;
+
+typedef map< dword, io::Context* > IDToContext;
+typedef map< dword, IDToContext* > PidToContextMap;
+
 
 void MessageLoop()
 {
