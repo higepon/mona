@@ -685,3 +685,8 @@ int ISO9660FileSystem::open(Vnode* file, int mode)
 {
     return MONA_OK;
 }
+
+int ISO9660FileSystem::read(Vnode* file, io::Context* context)
+{
+    return MONA_OK;
+}

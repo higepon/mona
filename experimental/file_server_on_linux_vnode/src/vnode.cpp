@@ -35,3 +35,8 @@ Vnode* VnodeManager::alloc()
     assert(v != NULL);
     return v;
 }
+
+int VnodeManager::read(Vnode* file, io::Context* context)
+{
+   return file->fs->read(file, context);
+}

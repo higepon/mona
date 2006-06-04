@@ -38,6 +38,24 @@
 //     void* fnode;
 // };
 
+namespace io
+{
+
+typedef struct
+{
+    void* pointer;
+    dword size;
+} Buffer;
+
+typedef struct Context
+{
+    dword tid;
+    Buffer* buffer;
+    dword offset;
+    dword size;
+} Context;
+
+};
 class Vnode
 {
 public:
@@ -64,6 +82,7 @@ public:
 public:
     int lookup(Vnode* diretory, const std::string& file, Vnode** found);
     int open(const std::string& name, int mode, bool create, Vnode** entry);
+    int read(Vnode* file, io::Context* context);
     Vnode* alloc();
 
 private:
