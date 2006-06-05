@@ -91,6 +91,10 @@ void NetServer::open(MessageInfo* msg)
     if(msg->arg3 == TYPEICMP ){
         c->Id.remoteport =0;
         c->Id.localport =0;
+        //add some settings for icmp echo request.    
+        c->PktInfo.icmpinfo.type=ECHOREQUEST;
+        c->PktInfo.icmpinfo.seqnum=0;
+        c->PktInfo.icmpinfo.idnum=0;
     }
     c->clientid      = msg->from;    
     c->netdsc     = cinfolist.size();  
@@ -131,6 +135,7 @@ void NetServer::status(MessageInfo* msg)
 
 void NetServer::ontimer(MessageInfo* msg)
 {
+    //printf("%d",syscall_get_tick());
     PeriodicUpdate();
 }
 
@@ -139,25 +144,25 @@ void NetServer::Interrupt(MessageInfo* msg)
     //Don't say anything about in case mona is a router.
     int val = interrupt();
     if( val & Nic::RX_INT ){
-        printf("=RX\n");
+      //  printf("=RX\n");
         Dispatch();
     }
     if(val & Nic::TX_INT){
-        printf("=TX\n");
+      //  printf("=TX\n");
     }
     if( val & Nic::ER_INT){
-        printf("=ERROR.\n");    
+      //  printf("=ERROR.\n");    
     }
 }
 
 void NetServer::Dispatch()
 {
-    CID id;
+    ConnectionInfo pktcinfo;
     int pktnumber=0;
-    while( GetDestination(pktnumber,&id) ){
+    while( GetDestination(pktnumber,&pktcinfo) ){
         for(int i=0;i<cinfolist.size(); i++){
             ConnectionInfo* cinfo=cinfolist.get(i);
-            if(  (cinfo!=NULL) && id.equal(cinfo->Id)){ 
+            if(  (cinfo!=NULL) && pktcinfo.Id.equal(cinfo->Id)){ 
                  if( cinfo->msg.header == MSG_NET_READ ){
                     read_bottom_half(pktnumber,cinfo);
                     pktnumber--;
@@ -217,9 +222,9 @@ void NetServer::write(MessageInfo* msg)
         ret->Size   = msg->arg3;
         monapi_cmemoryinfo_map(ret);
         for(int i=0; i<cinfolist.size(); i++){
-            ConnectionInfo* c  = cinfolist.get(i);
-            if( c->netdsc == msg->arg1 ){    
-                Send(ret->Data,ret->Size,&(c->Id));
+            ConnectionInfo* cinfo  = cinfolist.get(i);
+            if( cinfo->netdsc == msg->arg1 ){    
+                Send(ret->Data,ret->Size,cinfo);
                 break;
             }
         }

@@ -1,5 +1,6 @@
 //$Id$
 #include "NetClient.h"
+#include <monalibc/stdio.h>
 using namespace MonAPI;
 using namespace mones;
 
@@ -106,12 +107,15 @@ int NetClient::Example()
         printf("NetMask:");
         for(int j=0;j<4;j++)
             printf("%d.",*(((byte*)&stat.netmask)+j));
-        printf("DefaultRoute:");
+        printf("\nDefaultRoute:");
         for(int j=0;j<4;j++)
             printf("%d.",*(((byte*)&stat.defaultroute)+j));
-        printf("MTU:%d\nMAC:",stat.mtu);
-        for(int j=0;j<6;j++)
-            printf("%x:",stat.mac[j]);
+        printf("MTU:%d MAC:",stat.mtu);
+        char buf[16];
+        for(int j=0;j<6;j++){
+            sprintf(buf,"%02x",stat.mac[j]);
+            printf("%s:",buf);
+        }
         printf("\n");
     }
     dword remoteip=(3<<24)|(10<<16)|(168<<8)|(192);

@@ -15,28 +15,56 @@ struct CID{
         if( remoteip   == id.remoteip   &&
             localport  == id.localport  &&
             remoteport == id.remoteport &&
-            protocol   == id.protocol 
-         ){
+            protocol   == id.protocol )
+         {
             return true;
-        }else return false;
+         }else{
+             return false;
+         }
     }    
 };
 
 struct ConnectionInfo{
+    enum TCP_STAT{
+        CLOSED     =0,
+        LISTENING  =1,
+        SYN_SENT   =2,
+        SYN_RCVD   =3,
+        ESTABLISHED=4,
+        FIN_WAIT1  =5,
+        FIN_WAIT2  =6,
+        CLOSE_WAIT =7,
+        LAST_ACK   =8,
+        TIME_WAIT  =9
+    };
     CID Id;
+    struct TCPInfo{
+        dword seqnum;
+        dword acknum;
+        byte  status;
+        byte  flag;
+    };
+    struct ICMPInfo{
+        word type;
+        word seqnum;
+        word idnum;
+    };
+    union PKTINFO{ 
+        ICMPInfo icmpinfo;
+        TCPInfo  tcpinfo;
+    } PktInfo;
     dword clientid;
     word  netdsc;
-    byte  status;
+    //too heavy? performance test is must item.
     MessageInfo msg;
 };
 
 class IPStack
 {
 private:
-    void ICMPreply(Ether*);
     word checksum(byte*,word);   
-    void FillIPHeader(Ether*,word,byte);
-    void FillICMPHeader(ICMP*,ICMP*);
+    void CreateIPHeader(Ether*,word,byte);
+    void CreateTCPHeader(Ether*,byte,byte);
     bool UDPWellKnownSVCreply(Ether*);
     bool HandShakePASV(Ether*);
     bool HandShakeACTV(Ether*);
@@ -45,8 +73,8 @@ public:
     IPStack();
     virtual ~IPStack();
     bool initialize();
-    int  Send(byte* ,int, CID*);
-    bool GetDestination(int,CID*);
+    int  Send(byte* ,int, ConnectionInfo* );//CID*);
+    bool GetDestination(int,ConnectionInfo*);
     int  Recv(byte**,int);
     int  interrupt(){ return nic->interrupt();}
     void readStatus(NetStatus* stat){ nic->getStatus(stat); }

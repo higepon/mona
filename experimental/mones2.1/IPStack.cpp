@@ -74,7 +74,8 @@ IPStack::~IPStack()
 }
 
 bool IPStack::initialize()
-{
+{    
+    printf("sizeofinfo=[%d]\n",sizeof(ConnectionInfo::PKTINFO));
     if( nic != NULL ){
         if( nic->getIRQ()!=0 ) // with mask Interrrupt by higepon
             syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); 
@@ -97,51 +98,55 @@ word IPStack::checksum(byte *data,word size)
 
 ////////////////////////////////////////////////////
 //reply icmp echo request,dispose unknown packet and
-//get destinationinfo recursive.
+//get destination info. (recursive)
 //return false only if buffer is empty.
 ////////////////////////////////////////////////////
-bool IPStack::GetDestination(int n,CID* id)
+bool IPStack::GetDestination(int n,ConnectionInfo* cinfo)
 { 
     Ether* frame = nic->RecvFrm(n);
     if( frame == NULL )
         return false;
-    id->protocol=frame->IPHeader->prot;
-    id->remoteip=frame->IPHeader->srcip;    
-    id->remoteport=0;
-    id->localport=0;
-    switch (id->protocol)
+    cinfo->Id.protocol=frame->IPHeader->prot;
+    cinfo->Id.remoteip=frame->IPHeader->srcip;    
+    cinfo->Id.remoteport=0;
+    cinfo->Id.localport=0;
+    switch (cinfo->Id.protocol)
     {
     case TYPEICMP:
-        if( frame->IPHeader->ICMPHeader->type==ECHOREQUEST){
-            ICMPreply(frame);
+        ICMP* icmp=frame->IPHeader->ICMPHeader;
+        if( icmp->type==ECHOREQUEST){
+            cinfo->PktInfo.icmpinfo.type=ECHOREPLY;
+            cinfo->PktInfo.icmpinfo.idnum=bswap(icmp->idnum);
+            cinfo->PktInfo.icmpinfo.seqnum=bswap(icmp->seqnum);
+            Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),cinfo);      
             Dispose(n);
-            GetDestination(n,id);//see next packet;
-        }else if( frame->IPHeader->ICMPHeader->type!=ECHOREPLY){
+            GetDestination(n,cinfo);//see next packet;
+        }else if( icmp->type != ECHOREPLY){
             Dispose(n);
-            GetDestination(n,id);//see next packet;
+            GetDestination(n,cinfo);//see next packet;
         }
-        //ECHOREPLY may pass to client.
+        //ECHOREPLY may be passed to client.
         break;
     case TYPEUDP:    
-        id->localport=bswap(frame->IPHeader->UDPHeader->dstport);
-        id->remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        cinfo->Id.localport=bswap(frame->IPHeader->UDPHeader->dstport);
+        cinfo->Id.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
         if( UDPWellKnownSVCreply(frame) ){
             Dispose(n);
-            GetDestination(n,id);
+            GetDestination(n,cinfo);
         }    
         break;
     case TYPETCP:     
-        id->localport=bswap(frame->IPHeader->TCPHeader->dstport);
-        id->remoteport=bswap(frame->IPHeader->TCPHeader->srcport);
+        cinfo->Id.localport=bswap(frame->IPHeader->TCPHeader->dstport);
+        cinfo->Id.remoteport=bswap(frame->IPHeader->TCPHeader->srcport);
         if( HandShakePASV(frame)){
             Dispose(n);
-            GetDestination(n,id);
+            GetDestination(n,cinfo);
         }
         break;
     default:
         printf("unknown Packet type");
         Dispose(n);
-        GetDestination(n,id);
+        GetDestination(n,cinfo);
     }
     return true;
 }
@@ -175,24 +180,24 @@ int IPStack::Recv(byte** data, int n)
     return size;
 }
 
-int IPStack::Send(byte* data,int size, CID* id)
+int IPStack::Send(byte* data,int size, ConnectionInfo* cinfo)
 {              
-    Ether* frame = nic->CreateFrm(id->remoteip);
+    Ether* frame = nic->NewFrame(cinfo->Id.remoteip);
     //ether header has been already filled.
     if( frame != NULL){
         int headersize=0;
-        switch(id->protocol)
+        switch(cinfo->Id.protocol)
         {
         case TYPEICMP:
             ICMP* icmp=frame->IPHeader->ICMPHeader;
-            icmp->type=ECHOREQUEST;
+            icmp->type=cinfo->PktInfo.icmpinfo.type;
             icmp->code=0x00;
             icmp->chksum=0x0000;
-            icmp->idnum=0x0000;
-            icmp->seqnum=0x0000;
-            memcpy(frame->IPHeader->UDPHeader->data,data,size);
+            icmp->idnum=bswap(cinfo->PktInfo.icmpinfo.idnum);
+            icmp->seqnum=bswap(cinfo->PktInfo.icmpinfo.seqnum);
+            memcpy(icmp->data,data,size);
             icmp->chksum=bswap(checksum((byte*)icmp,size+sizeof(ICMP)));
-            headersize=sizeof(ICMP)+sizeof(IP); //windows 8+20+32
+            headersize=sizeof(ICMP)+sizeof(IP);
             break;
         case TYPEUDP:
             IP* ip=frame->IPHeader; //for psedo header
@@ -200,8 +205,8 @@ int IPStack::Send(byte* data,int size, CID* id)
             ip->prot=TYPEUDP;
             ip->chksum=bswap(size+sizeof(UDP));
             UDP* udp=frame->IPHeader->UDPHeader;
-            udp->srcport=bswap(id->localport);
-            udp->dstport=bswap(id->remoteport);
+            udp->srcport=bswap(cinfo->Id.localport);
+            udp->dstport=bswap(cinfo->Id.remoteport);
             udp->len=bswap(size+sizeof(UDP));
             udp->chksum=0x0000;
             memcpy(frame->IPHeader->UDPHeader->data,data,size);
@@ -213,51 +218,49 @@ int IPStack::Send(byte* data,int size, CID* id)
         default:
             printf("orz\n");
         }
-        FillIPHeader(frame,size+headersize,id->protocol);
+        CreateIPHeader(frame,size+headersize,cinfo->Id.protocol);
         nic->SendFrm(frame);
     }
     return 0;
 }
 
-void IPStack::ICMPreply(Ether* frame)
-{
-    Ether* rframe = nic->CreateFrm(frame->IPHeader->srcip);
-    //ether header has been already filled.
-    if( rframe != NULL){
-        ICMP* icmp=rframe->IPHeader->ICMPHeader;
-        icmp->type=ECHOREPLY;
-        icmp->code=0x00;
-        icmp->chksum=0x0000;
-        icmp->idnum=frame->IPHeader->ICMPHeader->idnum;
-        icmp->seqnum=frame->IPHeader->ICMPHeader->seqnum;
-        memcpy(icmp->data,frame->IPHeader->ICMPHeader->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP));
-        icmp->chksum=bswap(checksum((byte*)icmp,bswap(frame->IPHeader->len)-sizeof(IP)));
-        printf("ICMP replying.\n");
-        FillIPHeader(rframe,bswap(frame->IPHeader->len),TYPEICMP);
-        nic->SendFrm(rframe);
-    }
-}    
-
+//   CLOSED       -> LISTENING @readAPI    ==
+//   ESTABLISHED  -> FIN_WAIT1 @closeAPI   send FIN
+//   ~ESTABLISHED -> CLOSED    @timerAPI   ==
 bool IPStack::HandShakeACTV(Ether* frame)
 {
+    //CLOSED     -> SYN_SENT               send SYN
+    //SYN_RCVD   -> SYN_RCVD               send SYN+ACK
+    //SYN_SENT   -> ESTABLISHED            send ACK
+    //CLOSE_WAIT -> LAST_ACK               send FIN
+    //TIME_WAIT  -> TIME_WAIT              send ACK
+    //ESTABLISHED->ESTABLISHED             send -
     return false;
 }
 
 bool IPStack::HandShakePASV(Ether* frame)
 {
+    //CLOSED     -> CLOSED                 ==
+    //LISTENING  -> SYN_RCVD               rcv SYN  (send SYN+ACK)
+    //SYN_SENT   -> SYN_SENT               rcv SYN+ACK (send ACK)
+    //SYN_RCVD   -> ESTABLISHED            rcv ACK
+    //ESTABLISHED-> CLOSE_WAIT             rcv FIN
+    //FIN_WAIT2  -> TIME_WAIT              rcv ACK
+    //LAST_ACK   -> CLOSED                 rcv ACK
+    //ESTABLISHED-> ESTABLISHED            rcv -
     return false;
 }
 
 bool IPStack::UDPWellKnownSVCreply(Ether* frame)
 {
     if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
-        CID id;
-        id.remoteip=frame->IPHeader->srcip;
-        id.localport=DAYTIME;
-        id.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
-        id.protocol=TYPEUDP;
+        ConnectionInfo cinfo;
+        cinfo.Id.remoteip=frame->IPHeader->srcip;
+        cinfo.Id.localport=DAYTIME;
+        cinfo.Id.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        cinfo.Id.protocol=TYPEUDP;
         char* data="I can't see a clock.";
-        Send((byte*)data,20,&id);
+        Send((byte*)data,20,&cinfo);
         return true;
     }
     return false;
@@ -268,7 +271,7 @@ void IPStack::Dispose(int n)
     nic->Delete(n);
 }
 
-void IPStack::FillIPHeader(Ether* frame,word length,byte protocol)
+void IPStack::CreateIPHeader(Ether* frame,word length,byte protocol)
 {
     IP* ip=frame->IPHeader;
     ip->verhead=0x45;       //version & headersize

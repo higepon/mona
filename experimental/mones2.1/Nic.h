@@ -161,7 +161,7 @@ public:
     virtual int interrupt() =0; 
     virtual void SendFrm(Ether*)=0;
     Ether* RecvFrm(int);    
-    Ether* CreateFrm(dword);
+    Ether* NewFrame(dword);
     void  Delete(int);
     byte  getIRQ() const {return this->irq;}
     int   getIOBase() const {return this->iobase;}

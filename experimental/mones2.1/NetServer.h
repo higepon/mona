@@ -1,9 +1,7 @@
 //$Id$
-
+#pragma once
 #include "Net.h"
 #include "IPStack.h"
-
-#pragma once
 
 namespace mones {
 

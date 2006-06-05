@@ -103,6 +103,7 @@ void Nic::getStatus(NetStatus* stat)
     memcpy(stat->mac,macaddress,6);
     stat->mtu=mtu;
     stat->defaultroute=defaultroute;
+    //dump arp list.
 }
 
 
@@ -129,7 +130,7 @@ Ether* Nic::RecvFrm(int n)
     return NULL;
 }
 
-Ether* Nic::CreateFrm(dword dstip)
+Ether* Nic::NewFrame(dword dstip)
 {
     Ether* frame= new Ether();
     memcpy(frame->srcmac,macaddress,6);    
