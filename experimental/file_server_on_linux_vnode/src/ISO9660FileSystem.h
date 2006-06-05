@@ -65,6 +65,8 @@ public:
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found);
     virtual int open(Vnode* file, int mode);
     virtual int read(Vnode* file, io::Context* context);
+    virtual Vnode* getRootDirectory() const;
+
 private:
     enum
     {
@@ -95,6 +97,7 @@ private:
     ISO9660Directory* rootDirectory;
 
 protected:
+    Vnode* root_;
     VnodeCacher* cacher_;
     VnodeManager* vmanager_;
 };

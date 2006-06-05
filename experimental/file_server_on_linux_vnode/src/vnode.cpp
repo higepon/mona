@@ -2,6 +2,15 @@
 
 using namespace std;
 
+VnodeManager::VnodeManager()
+{
+}
+
+VnodeManager::~VnodeManager()
+{
+
+}
+
 int VnodeManager::lookup(Vnode* diretory, const string& file, Vnode** found)
 {
     return diretory->fs->lookup(diretory, file, found);
@@ -15,13 +24,14 @@ int VnodeManager::open(const string& name, int mode, bool create, Vnode** entry)
     }
 
     // process current path
-
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     // now fullpath only
-    if (name.compare(0, 0, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+    if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
 
     Vnode* found;
     if (lookup(root_, name, &found) != MONA_OK)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         return MONA_ERROR_ENTRY_NOT_FOUND;
     }
 

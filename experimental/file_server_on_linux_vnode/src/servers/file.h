@@ -18,6 +18,7 @@ enum
     MSG_FILE_READ,
     MSG_FILE_SEEK,
     MSG_FILE_GET_SIZE,
+    MSG_VFS_FILE_OPEN,
 };
 
 #endif

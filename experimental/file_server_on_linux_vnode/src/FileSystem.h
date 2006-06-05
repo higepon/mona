@@ -44,7 +44,8 @@ public:
     virtual int GetLastError()                                                      = 0;
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found)     = 0;
     virtual int open(Vnode* file, int mode)                                         = 0;
-    virtual int read(Vnode* file, struct io::Context* context)                             = 0;
+    virtual int read(Vnode* file, struct io::Context* context)                      = 0;
+    virtual Vnode* getRootDirectory() const                                         = 0;
 };
 
 #endif

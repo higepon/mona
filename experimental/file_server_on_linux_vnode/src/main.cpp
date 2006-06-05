@@ -25,6 +25,8 @@ using namespace std;
 typedef map< dword, io::Context* > IDToContext;
 typedef map< dword, IDToContext* > PidToContextMap;
 
+PidToContextMap pidToContextMap;
+VnodeManager* vmanager;
 
 void MessageLoop()
 {
@@ -34,6 +36,21 @@ void MessageLoop()
 
         switch (msg.header)
         {
+            case MSG_VFS_FILE_OPEN:
+            {
+                ChangeDrive(DRIVE_CD0);
+                Vnode* file;
+                if (MONA_OK == vmanager->open(msg.str, 0, false, &file))
+                {
+                    printf("file open success\n");
+                }
+                else
+                {
+                    printf("file open error\n");
+                }
+                Message::reply(&msg, 0);
+                break;
+            }
             case MSG_FILE_READ_DATA:
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);

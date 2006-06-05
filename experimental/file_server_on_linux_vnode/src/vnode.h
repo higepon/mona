@@ -76,10 +76,11 @@ public:
 class VnodeManager
 {
 public:
-    VnodeManager() {}
-    ~VnodeManager() {}
+    VnodeManager();
+    ~VnodeManager();
 
 public:
+    void setRoot(Vnode* root) {root_ = root;}
     int lookup(Vnode* diretory, const std::string& file, Vnode** found);
     int open(const std::string& name, int mode, bool create, Vnode** entry);
     int read(Vnode* file, io::Context* context);

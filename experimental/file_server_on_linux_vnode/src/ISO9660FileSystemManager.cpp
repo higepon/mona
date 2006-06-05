@@ -22,6 +22,8 @@ using namespace MonAPI;
 #define IRQ_PRIMARY   14
 #define IRQ_SECONDARY 15
 
+extern VnodeManager* vmanager;
+
 /*----------------------------------------------------------------------
     ISO9660FileSystemManager
 ----------------------------------------------------------------------*/
@@ -74,7 +76,10 @@ bool ISO9660FileSystemManager::Initialize()
     }
 
 #endif
-    this->fs = new ISO9660FileSystem(cd, new VnodeCacher(), new VnodeManager());
+
+    vmanager = new VnodeManager;
+
+    this->fs = new ISO9660FileSystem(cd, new VnodeCacher(), vmanager);
     /* initialize ISO9660 FS */
     if (!this->fs->Initialize())
     {
@@ -83,6 +88,9 @@ bool ISO9660FileSystemManager::Initialize()
         delete this->cd;
         return false;
     }
+
+    vmanager->setRoot(this->fs->getRootDirectory());
+
     this->initialized = true;
     return true;
 }

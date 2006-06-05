@@ -48,6 +48,10 @@ bool ISO9660FileSystem::Initialize()
     {
         return false;
     }
+
+    root_ = vmanager_->alloc();
+    root_->fnode  = rootDirectory;
+    root_->type = Vnode::DIRECTORY;
     return true;
 }
 
@@ -696,4 +700,9 @@ int ISO9660FileSystem::read(Vnode* file, io::Context* context)
     int readSize = context->size >= buffer->size ? buffer->size : context->size;
     int ret = fileEntry->Read(context->buffer->pointer, readSize);
     return ret != 0 ? MONA_OK : MONA_ERROR_ON_READ;
+}
+
+Vnode* ISO9660FileSystem::getRootDirectory() const
+{
+    return root_;
 }
