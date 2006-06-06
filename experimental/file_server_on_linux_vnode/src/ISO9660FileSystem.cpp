@@ -51,6 +51,7 @@ bool ISO9660FileSystem::Initialize()
 
     root_ = vmanager_->alloc();
     root_->fnode  = rootDirectory;
+    root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
     return true;
 }
@@ -435,7 +436,6 @@ ISO9660Directory* ISO9660FileSystem::FindDirectoryEntry(ISO9660Directory* root, 
 ISO9660File* ISO9660FileSystem::FindFileEntry(ISO9660Directory* directory, const CString& fileName)
 {
     SetDetailInformation(directory);
-
     dword readSize = ((dword)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     byte* buffer = new byte[readSize];
 
@@ -467,7 +467,6 @@ ISO9660File* ISO9660FileSystem::FindFileEntry(ISO9660Directory* directory, const
         }
 
         CString name = GetProperName(CString(iEntry->name, iEntry->name_len));
-
         if (iEntry->directory == 0 && fileName == name)
         {
             ISO9660File* foundFile = new ISO9660File(this);
@@ -481,7 +480,6 @@ ISO9660File* ISO9660FileSystem::FindFileEntry(ISO9660Directory* directory, const
         position += iEntry->length;
         iEntry = (ISODirectoryEntry*)(buffer + position);
     }
-
     delete[] buffer;
     return NULL;
 }
@@ -663,23 +661,20 @@ void ISO9660FileSystem::AddToFileSystemEntryList(HList<FileSystemEntry*>* entrie
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found)
 {
     if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
-
     Vnode* v = cacher_->lookup(diretory, file);
     if (v != NULL)
     {
         *found = v;
         return MONA_OK;
     }
-
     ISO9660Directory* directoryEntry = (ISO9660Directory*)diretory->fnode;
     ASSERT(directoryEntry != NULL);
     ISO9660File* fileEntry = FindFileEntry(directoryEntry, file.c_str());
-
     if (fileEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
-
     Vnode* newVnode = vmanager_->alloc();
     newVnode->fnode  = fileEntry;
     newVnode->type = Vnode::REGULAR;
+    newVnode->fs = this;
     cacher_->add(diretory, file, newVnode);
     *found = newVnode;
     return MONA_OK;

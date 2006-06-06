@@ -49,6 +49,7 @@ typedef struct
 
 typedef struct Context
 {
+    Context() : buffer(NULL), offset(0), size(0) {}
     dword tid;
     Buffer* buffer;
     dword offset;

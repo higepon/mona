@@ -42,7 +42,17 @@ void MessageLoop()
                 Vnode* file;
                 if (MONA_OK == vmanager->open(msg.str, 0, false, &file))
                 {
-                    printf("file open success\n");
+                    dword tid = msg.from; // temporary
+                    IDToContext* idToContext = pidToContextMap.find(tid)->second;
+                    if (idToContext == NULL)
+                    {
+                        idToContext = new IDToContext;
+                        pidToContextMap.insert(pair< dword, IDToContext* >(tid, idToContext));
+                    }
+//                    idToContext->insert(pair< dword , io::Context* >(
+//                    io::Context* context = new io::Context;
+//                    context->tid = tid;
+// kakikake
                 }
                 else
                 {
