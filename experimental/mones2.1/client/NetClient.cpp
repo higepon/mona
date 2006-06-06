@@ -179,6 +179,19 @@ int NetClient::Example()
 int NetClient::initalize(dword threadid)
 {
     serverid=threadid;
+    printf("serverid=%d\n",serverid);
     clientid=System::getThreadID();
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////
+
+int MonaMain(List<char*>* pekoe)
+{
+    NetClient* client = new NetClient(); 
+    client->initalize(Message::lookupMainThread("MNS21.EX5"));
+    client->Example();
+    delete client;
+    exit(0);
     return 0;
 }

@@ -1,5 +1,5 @@
 //$Id$
-#include "Net.h"
+#include "../Net.h"
 #include <monapi.h>
 #include <sys/types.h>
 #include <monapi/messages.h>
