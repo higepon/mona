@@ -81,21 +81,37 @@ void NetServer::getfreeport(MessageInfo* msg)
 }
 
 void NetServer::open(MessageInfo* msg)
-{    
-    ConnectionInfo* c=new ConnectionInfo();
-    cinfolist.add(c);
-    c->Id.remoteip   = msg->arg1; 
-    c->Id.remoteport = (word)(msg->arg2&0x0000FFFF);
-    c->Id.localport  = (word)(msg->arg2>>16);
-    c->Id.protocol   = msg->arg3;
-    if(msg->arg3 == TYPEICMP ){
-        c->Id.remoteport =0;
-        c->Id.localport =0;
-        //add some settings for icmp echo request.    
-        c->PktInfo.icmpinfo.type=ECHOREQUEST;
-        c->PktInfo.icmpinfo.seqnum=0;
-        c->PktInfo.icmpinfo.idnum=0;
+{
+    ConnectionInfo* c=NULL;
+    switch(msg->arg3)
+    {
+    case TYPEICMP:
+        ICMPCoInfo* pI=new ICMPCoInfo();
+        pI->remoteport =0;
+        pI->localport =0;
+        pI->type=ECHOREQUEST;
+        pI->seqnum=0;
+        pI->idnum=0;
+        cinfolist.add(pI);
+        c=pI;
+        break;
+    case TYPEUDP:
+        UDPCoInfo* pU = new UDPCoInfo();
+        cinfolist.add(pU);
+        c=pU;
+        break;
+    case TYPETCP:
+        TCPCoInfo* pT=new TCPCoInfo();
+        cinfolist.add(pT);
+        c=pT;
+        break;
+    default:
+        printf("orz\n");
     }
+    c->remoteip   = msg->arg1; 
+    c->remoteport = (word)(msg->arg2&0x0000FFFF);
+    c->localport  = (word)(msg->arg2>>16);
+    c->protocol   = msg->arg3;
     c->clientid      = msg->from;    
     c->netdsc     = cinfolist.size();  
     c->msg.header = 0x0;
@@ -162,7 +178,7 @@ void NetServer::Dispatch()
     while( GetDestination(pktnumber,&pktcinfo) ){
         for(int i=0;i<cinfolist.size(); i++){
             ConnectionInfo* cinfo=cinfolist.get(i);
-            if(  (cinfo!=NULL) && pktcinfo.Id.equal(cinfo->Id)){ 
+            if(  (cinfo!=NULL) && pktcinfo.ident(cinfo) ){ 
                  if( cinfo->msg.header == MSG_NET_READ ){
                     read_bottom_half(pktnumber,cinfo);
                     pktnumber--;

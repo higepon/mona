@@ -13,7 +13,6 @@ public:
     dword getThreadID() const;
     void messageLoop();
     bool isStarted() {return started;}
-    void exit();
 private:
     MonAPI::Mutex mutex;
     void Dispatch();
@@ -29,9 +28,7 @@ private:
     void config(MessageInfo* msg);
     word next_port;
     HList<ConnectionInfo*> cinfolist;
-
 protected:
-    byte macAddress[6];
     dword myID;
     dword timerid;
     bool started;

@@ -6,25 +6,50 @@
 
 namespace mones{
 
-struct CID{
+//Infomation structure represents a connection.
+class ConnectionInfo{
+public:
     dword remoteip;
     word  localport;
     word  remoteport;
     byte  protocol;
-    bool equal(const CID& id){
-        if( remoteip   == id.remoteip   &&
-            localport  == id.localport  &&
-            remoteport == id.remoteport &&
-            protocol   == id.protocol )
+    bool ident(const ConnectionInfo* cinfo){
+        if( remoteip   == cinfo->remoteip   &&
+            localport  == cinfo->localport  &&
+            remoteport == cinfo->remoteport &&
+            protocol   == cinfo->protocol )
          {
             return true;
          }else{
              return false;
          }
-    }    
+    }
+    dword clientid;
+    word  netdsc;
+    MessageInfo msg; //too heavy? performance test is must item.
+    virtual void CreateHeader(Ether* frame,word size){};
+private:
+    void CreateIPHeader(Ether*,word);
 };
 
-struct ConnectionInfo{
+class ICMPCoInfo : public ConnectionInfo
+{
+public:
+    word type;
+    word seqnum;
+    word idnum;
+    void CreateHeader(Ether*,word){};
+};
+
+class UDPCoInfo : public ConnectionInfo
+{ 
+public:
+    void CreateHeader(Ether* frame ,word size){};
+};
+
+class TCPCoInfo : public ConnectionInfo
+{
+public:
     enum TCP_STAT{
         CLOSED     =0,
         LISTENING  =1,
@@ -37,26 +62,11 @@ struct ConnectionInfo{
         LAST_ACK   =8,
         TIME_WAIT  =9
     };
-    CID Id;
-    struct TCPInfo{
-        dword seqnum;
-        dword acknum;
-        byte  status;
-        byte  flag;
-    };
-    struct ICMPInfo{
-        word type;
-        word seqnum;
-        word idnum;
-    };
-    union PKTINFO{ 
-        ICMPInfo icmpinfo;
-        TCPInfo  tcpinfo;
-    } PktInfo;
-    dword clientid;
-    word  netdsc;
-    //too heavy? performance test is must item.
-    MessageInfo msg;
+    dword seqnum;
+    dword acknum;
+    byte  status;
+    byte  flag;
+    void CreateHeader(Ether*,word){};
 };
 
 class IPStack
@@ -73,13 +83,13 @@ public:
     IPStack();
     virtual ~IPStack();
     bool initialize();
-    int  Send(byte* ,int, ConnectionInfo* );//CID*);
+    int  Send(byte* ,int, ConnectionInfo* );
     bool GetDestination(int,ConnectionInfo*);
     int  Recv(byte**,int);
     int  interrupt(){ return nic->interrupt();}
     void readStatus(NetStatus* stat){ nic->getStatus(stat); }
-    void Dispose(int);
     void PeriodicUpdate();
+    void Dispose(int n){ nic->Delete(n); }
 };
 
 };
