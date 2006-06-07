@@ -39,6 +39,7 @@ int VnodeManager::open(const string& name, int mode, bool create, Vnode** entry)
     }
     printf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, found);fflush(stdout);
     printf("%s %s:%d %x\n", __func__, __FILE__, __LINE__, found->fs);fflush(stdout);
+    *entry = found;
     return found->fs->open(found, mode);
 }
 

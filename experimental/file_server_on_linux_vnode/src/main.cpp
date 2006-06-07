@@ -54,15 +54,17 @@ void MessageLoop()
                 {
                     dword tid = msg.from; // temporary
                     dword id = fileID(file, tid);
-                    if (fileInfoMap.find(id)->first)
+                    if (fileInfoMap.find(id) != fileInfoMap.end())
                     {
                         printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
                         exit(-1);
                     }
                     FileInfo* fileInfo = new FileInfo;
                     fileInfo->vnode = file;
+                    printf("open vnode = %x %s %s:%d\n", (dword)file, __func__, __FILE__, __LINE__);fflush(stdout);
                     fileInfo->context.tid = tid;
                     fileInfoMap.insert(pair< dword, FileInfo* >(id, fileInfo));
+                    printf("%s %s:%d id = %d\n", __func__, __FILE__, __LINE__, id);fflush(stdout);
                     Message::reply(&msg, id);
                 }
                 else
@@ -72,6 +74,35 @@ void MessageLoop()
                 }
                 break;
             }
+            case MSG_VFS_FILE_READ:
+            {
+                dword id = msg.arg1;
+                FileInfoMap::iterator it = fileInfoMap.find(id);
+                if (it == fileInfoMap.end())
+                {
+                    Message::reply(&msg, 0);
+                }
+
+                FileInfo* fileInfo = (*it).second;
+                fileInfo->context.size = msg.arg2;
+
+                monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+                if (!monapi_cmemoryinfo_create(ret, msg.arg2, MONAPI_FALSE))
+                {
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+                    monapi_cmemoryinfo_delete(ret);
+                    Message::reply(&msg, 0);
+                }
+
+                io::Buffer* buffer = new io::Buffer;
+                buffer->pointer = ret->Data;
+                buffer->size = ret->Size;
+                fileInfo->context.buffer = buffer;
+                vmanager->read(fileInfo->vnode, &(fileInfo->context));
+                Message::reply(&msg, ret->Handle, ret->Size);
+                break;
+            }
+
             case MSG_FILE_READ_DATA:
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
