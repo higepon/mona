@@ -96,4 +96,9 @@ void FileServerTest::testISO9660FileSize()
 
     // temporary
     dword id = monapi_call_file_open2("/MONA.CFG");
+    printf("%s %s:%d id = %d\n", __func__, __FILE__, __LINE__, id);fflush(stdout);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data2(id, 50);
+    printf("%s %s:%d %s read===========\n", __func__, __FILE__, __LINE__, (char*)mi->Data);fflush(stdout);
+
 }
