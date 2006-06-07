@@ -192,27 +192,7 @@ void NetServer::Dispatch()
         }
         pktnumber++;
     }
-    return;    
-}
-
-void NetServer::read_bottom_half(int n,ConnectionInfo* cinfo)
-{
-    //printf("noblock=%d\n",cinfo->msg.arg2);
-    byte* data;
-    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
-    if (mi != NULL){
-        int size=Recv(&data,n);
-        monapi_cmemoryinfo_create(mi,size, true);        
-        if( mi != NULL ){
-            memcpy(mi->Data,data,mi->Size);
-            Message::reply(&(cinfo->msg), mi->Handle, mi->Size); 
-        }
-        Dispose(n);
-        monapi_cmemoryinfo_delete(mi);
-        memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-    }else{
-        Message::reply(&(cinfo->msg));
-    }
+    return;
 }
 
 void NetServer::read(MessageInfo* msg)

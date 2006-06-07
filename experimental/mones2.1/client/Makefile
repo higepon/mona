@@ -1,8 +1,8 @@
 #$Id: Makefile 3230 2006-05-30 13:48:50Z eds1275 $
 TARGET  = client
-SOURCES = NetClient.cpp
+SOURCES = NetClient.cpp client.cpp
 INSTDIR = $(BINDIR)/APPS
-
+INSTFILES = ping urdate
 SHAREDIR   = $(MONADIR)/share
 IMPSFX = -imp
 include $(SHAREDIR)/configs/monapi.inc
@@ -24,7 +24,8 @@ $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+	$(INSTALL) $(TARGET).EX5 $(INSTDIR)
+	
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f ${MONADIR}/bin/mona.img dependencies

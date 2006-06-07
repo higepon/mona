@@ -95,103 +95,10 @@ int NetClient::Stat(NetStatus* stat)
     return size;
 }
 
-int NetClient::Example()
+NetClient::NetClient()
 {
-    sleep(500);
-    //read nic status.
-    NetStatus stat;
-    if( Stat(&stat) ){
-        printf("\n%s:\nIPaddress:",stat.devname);
-        for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&stat.localip)+j));
-        printf("NetMask:");
-        for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&stat.netmask)+j));
-        printf("\nDefaultRoute:");
-        for(int j=0;j<4;j++)
-            printf("%d.",*(((byte*)&stat.defaultroute)+j));
-        printf("MTU:%d MAC:",stat.mtu);
-        char buf[16];
-        for(int j=0;j<6;j++){
-            sprintf(buf,"%02x",stat.mac[j]);
-            printf("%s:",buf);
-        }
-        printf("\n");
-    }
-    dword remoteip=(3<<24)|(10<<16)|(168<<8)|(192);
-    if( stat.localip==LOOPBACKIP ){
-        remoteip=LOOPBACKIP;
-    }
-    ///////////////////////////////////////////////
-    printf("\nSend ICMP echo request\n");
-    int netdsc= Open(remoteip,0,0,TYPEICMP);
-    if( netdsc< 0 ){
-        printf("OpenError.\n");
-    }
-    printf("Open::netdsc=%d\n",netdsc);
-    if( Write(netdsc,(byte*)"How are you?",12) ){
-        print("WriteError\n");
-    }
-    byte buf[1024];//BAD design.
-    int size= Read(netdsc,buf);
-    if( size > 0 ){
-        //printf("Read: %s\n",buf);
-        if(!strcmp((char*)buf,"How are you?")){
-            printf("destination is Alive.\n");
-        }
-        //if recived string is same as sended.
-        //printf("dset is alive,\n");
-    }
-    if( Close(netdsc) ){
-        printf("CloseError.\n");
-    }   
-    ////////////////////////////////////////////
-    printf("\nSend UDP to DAYTIME\n");    
-    word localport = GetFreePort();
-    printf("Port=%d\n",localport);
-    netdsc = Open(remoteip,localport,DAYTIME,TYPEUDP);
-    if( netdsc < 0 ){
-        printf("OpenError.\n");
-    }
-    printf("Open::netdsc=%d\n",netdsc);
-    
-    if( Write(netdsc,(byte*)"What time is it now?",20) ){
-        printf("WrieError.\n");
-    }
-    size= Read(netdsc,buf);
-    if( size > 0 ){
-        printf("remote time is %s\n",buf);
-    }    
-    if( Close(netdsc) ){
-        printf("CloseError.\n");
-    }    
-    //////////////////////////////////////////////////
-
-    //re-setup nic. 
-    char devname[]="pcnet0";
-    if( Config(devname,(5<<24)|(0<<16)|(168<<8)|192,(1<24)|(0<<16)|(168<<8)|192,24,60,1500) ){
-        printf("ConfigError\n");
-    }
-    printf("tests are completed.\n");
-    return 0;
-}
-
-int NetClient::initalize(dword threadid)
-{
-    serverid=threadid;
-    printf("serverid=%d\n",serverid);
+    serverid=Message::lookupMainThread("MNS21.EX5");
     clientid=System::getThreadID();
-    return 0;
-}
-
-///////////////////////////////////////////////////////////////////
-
-int MonaMain(List<char*>* pekoe)
-{
-    NetClient* client = new NetClient(); 
-    client->initalize(Message::lookupMainThread("MNS21.EX5"));
-    client->Example();
-    delete client;
-    exit(0);
-    return 0;
+    printf("ServerID %d ClientID %d\n",serverid,clientid);
+    //TODO error check.
 }

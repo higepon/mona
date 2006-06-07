@@ -19,7 +19,6 @@ private:
     void getfreeport(MessageInfo* msg);
     void Interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);
-    void read_bottom_half(int,ConnectionInfo*);
     void read(MessageInfo* msg);
     void write(MessageInfo* msg);
     void close(MessageInfo* msg);
@@ -27,7 +26,6 @@ private:
     void ontimer(MessageInfo* msg);
     void config(MessageInfo* msg);
     word next_port;
-    HList<ConnectionInfo*> cinfolist;
 protected:
     dword myID;
     dword timerid;

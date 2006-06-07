@@ -27,9 +27,12 @@ public:
     dword clientid;
     word  netdsc;
     MessageInfo msg; //too heavy? performance test is must item.
-    virtual void CreateHeader(Ether* frame,word size){};
-private:
+    virtual void CreateHeader(Ether* ,byte* ,word ){}
+    virtual int Strip(Ether*,byte**){return 0;}
     void CreateIPHeader(Ether*,word);
+    word checksum(byte*,word); 
+private:   
+
 };
 
 class ICMPCoInfo : public ConnectionInfo
@@ -38,13 +41,15 @@ public:
     word type;
     word seqnum;
     word idnum;
-    void CreateHeader(Ether*,word){};
+    void CreateHeader(Ether* ,byte*,word );
+    int Strip(Ether*,byte**);
 };
 
 class UDPCoInfo : public ConnectionInfo
 { 
 public:
-    void CreateHeader(Ether* frame ,word size){};
+    void CreateHeader(Ether* ,byte* ,word );  
+    int Strip(Ether*, byte**);
 };
 
 class TCPCoInfo : public ConnectionInfo
@@ -66,30 +71,30 @@ public:
     dword acknum;
     byte  status;
     byte  flag;
-    void CreateHeader(Ether*,word){};
+    void CreateHeader(Ether*,byte* ,word);  
+    int Strip(Ether*, byte**);
+    bool HandShakePASV(Ether*);
+    bool HandShakeACTV(Ether*);
 };
 
 class IPStack
 {
 private:
-    word checksum(byte*,word);   
-    void CreateIPHeader(Ether*,word,byte);
-    void CreateTCPHeader(Ether*,byte,byte);
+    Nic* nic;    
     bool UDPWellKnownSVCreply(Ether*);
-    bool HandShakePASV(Ether*);
-    bool HandShakeACTV(Ether*);
-    Nic* nic;
 public:
     IPStack();
     virtual ~IPStack();
     bool initialize();
     int  Send(byte* ,int, ConnectionInfo* );
     bool GetDestination(int,ConnectionInfo*);
-    int  Recv(byte**,int);
+    int  Strip(Ether*,byte**);
     int  interrupt(){ return nic->interrupt();}
     void readStatus(NetStatus* stat){ nic->getStatus(stat); }
-    void PeriodicUpdate();
-    void Dispose(int n){ nic->Delete(n); }
+    void PeriodicUpdate();   
+    void read_bottom_half(int,ConnectionInfo*);
+    void Dispose(int n){ nic->Delete(n); }   
+    HList<ConnectionInfo*> cinfolist;
 };
 
 };
