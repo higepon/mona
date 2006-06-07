@@ -22,11 +22,21 @@
 using namespace MonAPI;
 using namespace std;
 
-typedef map< dword, io::Context* > IDToContext;
-typedef map< dword, IDToContext* > PidToContextMap;
+typedef struct
+{
+    Vnode* vnode;
+    io::Context context;
+} FileInfo;
 
-PidToContextMap pidToContextMap;
+typedef map< dword, FileInfo* > FileInfoMap;
+
 VnodeManager* vmanager;
+FileInfoMap fileInfoMap;
+
+dword fileID(Vnode* file , dword tid)
+{
+    return (dword)file | tid; // temporary
+}
 
 void MessageLoop()
 {
@@ -43,22 +53,23 @@ void MessageLoop()
                 if (MONA_OK == vmanager->open(msg.str, 0, false, &file))
                 {
                     dword tid = msg.from; // temporary
-                    IDToContext* idToContext = pidToContextMap.find(tid)->second;
-                    if (idToContext == NULL)
+                    dword id = fileID(file, tid);
+                    if (fileInfoMap.find(id)->first)
                     {
-                        idToContext = new IDToContext;
-                        pidToContextMap.insert(pair< dword, IDToContext* >(tid, idToContext));
+                        printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
+                        exit(-1);
                     }
-//                    idToContext->insert(pair< dword , io::Context* >(
-//                    io::Context* context = new io::Context;
-//                    context->tid = tid;
-// kakikake
+                    FileInfo* fileInfo = new FileInfo;
+                    fileInfo->vnode = file;
+                    fileInfo->context.tid = tid;
+                    fileInfoMap.insert(pair< dword, FileInfo* >(id, fileInfo));
+                    Message::reply(&msg, id);
                 }
                 else
                 {
                     printf("file open error\n");
+                    Message::reply(&msg, 0);
                 }
-                Message::reply(&msg, 0);
                 break;
             }
             case MSG_FILE_READ_DATA:
