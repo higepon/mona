@@ -65,6 +65,7 @@ public:
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found);
     virtual int open(Vnode* file, int mode);
     virtual int read(Vnode* file, io::Context* context);
+    virtual int seek(Vnode* file, dword offset, dword origin);
     virtual Vnode* getRootDirectory() const;
 
 private:

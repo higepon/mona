@@ -13,7 +13,9 @@
 #ifndef _VNODE_
 #define _VNODE_
 
+#include <map>
 #include "monapi/CString.h"
+#include "monapi/messages.h"
 #include "FileSystem.h"
 #include "types.h"
 
@@ -41,20 +43,22 @@
 namespace io
 {
 
-typedef struct
-{
-    void* pointer;
-    dword size;
-} Buffer;
-
 typedef struct Context
 {
-    Context() : buffer(NULL), offset(0), size(0) {}
+    Context() : memory(NULL), offset(0), size(0) {}
     dword tid;
-    Buffer* buffer;
+    monapi_cmemoryinfo* memory;
     dword offset;
+    dword origin;
     dword size;
+    dword resultSize;
 } Context;
+
+typedef struct
+{
+    Vnode* vnode;
+    io::Context context;
+} FileInfo;
 
 };
 class Vnode
@@ -83,12 +87,16 @@ public:
 public:
     void setRoot(Vnode* root) {root_ = root;}
     int lookup(Vnode* diretory, const std::string& file, Vnode** found);
-    int open(const std::string& name, int mode, bool create, Vnode** entry);
-    int read(Vnode* file, io::Context* context);
+    int open(const std::string& name, int mode, bool create, dword tid, dword* fileID);
+    int read(dword fileID, dword size, monapi_cmemoryinfo** mem);
+    int seek(dword fileID, dword offset, dword origin);
+    dword fileID(Vnode* file , dword tid) {return (dword)file | tid;} // temporary
     Vnode* alloc();
 
 private:
+    typedef std::map<dword, io::FileInfo*> FileInfoMap;
     Vnode* root_;
+    FileInfoMap fileInfoMap_;
 };
 
 

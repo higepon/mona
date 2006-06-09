@@ -421,3 +421,17 @@ monapi_cmemoryinfo* monapi_call_file_read_data2(dword fileID, dword size)
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
+
+int monapi_call_file_seek2(dword fileID, dword offset, dword origin)
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_SEEK, fileID, offset, origin) != 0)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+        return MONA_FAILURE;
+    }
+    if (msg.arg2 == 0) return MONA_FAILURE;
+    return MONA_SUCCESS;
+}

@@ -17,26 +17,11 @@
 #include "dtk5s.h"
 #include "IDEDriver.h"
 #include "vnode.h"
-#include <map>
 
 using namespace MonAPI;
 using namespace std;
 
-typedef struct
-{
-    Vnode* vnode;
-    io::Context context;
-} FileInfo;
-
-typedef map< dword, FileInfo* > FileInfoMap;
-
 VnodeManager* vmanager;
-FileInfoMap fileInfoMap;
-
-dword fileID(Vnode* file , dword tid)
-{
-    return (dword)file | tid; // temporary
-}
 
 void MessageLoop()
 {
@@ -48,58 +33,25 @@ void MessageLoop()
         {
             case MSG_VFS_FILE_OPEN:
             {
-                ChangeDrive(DRIVE_CD0);
-                Vnode* file;
-                if (MONA_OK == vmanager->open(msg.str, 0, false, &file))
-                {
-                    dword tid = msg.from; // temporary
-                    dword id = fileID(file, tid);
-                    if (fileInfoMap.find(id) != fileInfoMap.end())
-                    {
-                        printf("error fix me!!! %s %s:%d\n", __func__, __FILE__, __LINE__);
-                        exit(-1);
-                    }
-                    FileInfo* fileInfo = new FileInfo;
-                    fileInfo->vnode = file;
-                    printf("open vnode = %x %s %s:%d\n", (dword)file, __func__, __FILE__, __LINE__);fflush(stdout);
-                    fileInfo->context.tid = tid;
-                    fileInfoMap.insert(pair< dword, FileInfo* >(id, fileInfo));
-                    printf("%s %s:%d id = %d\n", __func__, __FILE__, __LINE__, id);fflush(stdout);
-                    Message::reply(&msg, id);
-                }
-                else
-                {
-                    printf("file open error\n");
-                    Message::reply(&msg, 0);
-                }
+                ChangeDrive(DRIVE_CD0); // fix me
+                dword tid = msg.from; // temporary
+                dword fildID;
+                int ret = vmanager->open(msg.str, 0, false, tid, &fildID);
+                Message::reply(&msg, ret == MONA_OK ? fildID : 0);
+                break;
+            }
+            case MSG_VFS_FILE_SEEK:
+            {
+                int ret = vmanager->seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
+                Message::reply(&msg, ret == MONA_OK ? 0 : 1);
                 break;
             }
             case MSG_VFS_FILE_READ:
             {
-                dword id = msg.arg1;
-                FileInfoMap::iterator it = fileInfoMap.find(id);
-                if (it == fileInfoMap.end())
-                {
-                    Message::reply(&msg, 0);
-                }
-
-                FileInfo* fileInfo = (*it).second;
-                fileInfo->context.size = msg.arg2;
-
-                monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-                if (!monapi_cmemoryinfo_create(ret, msg.arg2, MONAPI_FALSE))
-                {
-                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
-                    monapi_cmemoryinfo_delete(ret);
-                    Message::reply(&msg, 0);
-                }
-
-                io::Buffer* buffer = new io::Buffer;
-                buffer->pointer = ret->Data;
-                buffer->size = ret->Size;
-                fileInfo->context.buffer = buffer;
-                vmanager->read(fileInfo->vnode, &(fileInfo->context));
-                Message::reply(&msg, ret->Handle, ret->Size);
+                dword fileID = msg.arg1;
+                monapi_cmemoryinfo* memory;
+                int ret = vmanager->read(fileID, msg.arg2 /* size */, &memory);
+                Message::reply(&msg, memory->Handle, memory->Size);
                 break;
             }
 

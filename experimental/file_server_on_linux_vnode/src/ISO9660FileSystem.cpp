@@ -685,15 +685,21 @@ int ISO9660FileSystem::open(Vnode* file, int mode)
     return MONA_OK;
 }
 
+int ISO9660FileSystem::seek(Vnode* file, dword offset, dword origin)
+{
+    return MONA_OK;
+}
+
 int ISO9660FileSystem::read(Vnode* file, io::Context* context)
 {
     ISO9660File* fileEntry = (ISO9660File*)file->fnode;
     ASSERT(fileEntry != NULL);
     fileEntry->Seek(context->offset, SEEK_SET);
 
-    io::Buffer* buffer = context->buffer;
-    int readSize = context->size >= buffer->size ? buffer->size : context->size;
-    int ret = fileEntry->Read(context->buffer->pointer, readSize);
+    monapi_cmemoryinfo* memory = context->memory;
+    int readSize = context->size >= memory->Size ? memory->Size : context->size;
+    int ret = fileEntry->Read(memory->Data, readSize);
+    context->resultSize = readSize;
     return ret != 0 ? MONA_OK : MONA_ERROR_ON_READ;
 }
 
