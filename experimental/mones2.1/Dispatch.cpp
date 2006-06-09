@@ -4,7 +4,7 @@
 #include "NE2000.h"
 #include "MonAMDpcn.h"
 #include "LoopBack.h"
-#include "IPStack.h"
+#include "Dispatch.h"
 
 using namespace mones;
 using namespace MonAPI;
@@ -21,7 +21,7 @@ word ConnectionInfo::checksum(byte *data,word size)
     return ~(((sum>>16)+sum)&0xFFFF);
 }
 
-void ConnectionInfo::CreateIPHeader(Ether* frame,word length)
+void ConnectionInfo::CreateIPHeader(Ether* frame,word length,byte protocol)
 {
     IP* ip=frame->IPHeader;
     ip->verhead=0x45;       //version & headersize
@@ -45,7 +45,7 @@ void ICMPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     icmp->seqnum=bswap(seqnum);    
     memcpy(icmp->data,data,size);
     icmp->chksum=bswap(checksum((byte*)icmp,size+sizeof(ICMP)));
-    CreateIPHeader(frame,size+sizeof(ICMP)+sizeof(IP));
+    CreateIPHeader(frame,size+sizeof(ICMP)+sizeof(IP),TYPEICMP);
 }
 
 int ICMPCoInfo::Strip(Ether* frame, byte** data)
@@ -54,6 +54,39 @@ int ICMPCoInfo::Strip(Ether* frame, byte** data)
    return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP);
 }
 
+bool ICMPCoInfo::IsMyPacket(Ether* frame)
+{
+    if( WellKnownSVCreply(frame) ){
+        return false;
+    }else if ( TYPEICMP  == frame->IPHeader->prot ){
+        ICMP* icmp=frame->IPHeader->ICMPHeader;
+         if( ECHOREPLY == icmp->type  &&
+            remoteip  == frame->IPHeader->srcip &&
+            idnum     == bswap(icmp->idnum) &&
+            seqnum    == bswap(icmp->seqnum) )
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ICMPCoInfo::WellKnownSVCreply(Ether* frame)
+{
+    if( TYPEICMP == frame->IPHeader->prot ){
+        ICMP* icmp=frame->IPHeader->ICMPHeader;
+        if( ECHOREQUEST==icmp->type ){
+            ICMPCoInfo info(dispatcher);
+            info.remoteip=frame->IPHeader->srcip;
+            info.type=ECHOREPLY;
+            info.idnum=bswap(icmp->idnum);
+            info.seqnum=bswap(icmp->seqnum);
+            dispatcher->Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),&info);
+            return true;
+        }
+    }
+    return false;
+}
 /////////////////////////////////////////////////
 void UDPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
 {
@@ -68,7 +101,7 @@ void UDPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     udp->chksum=0x0000;
     memcpy(frame->IPHeader->UDPHeader->data,data,size);
     udp->chksum=bswap(checksum((byte*)&(ip->ttl),size+sizeof(UDP)+12));
-    CreateIPHeader(frame,size+sizeof(UDP)+sizeof(IP));
+    CreateIPHeader(frame,size+sizeof(UDP)+sizeof(IP),TYPEUDP);
 }
 
 int UDPCoInfo::Strip(Ether* frame, byte** data)
@@ -77,18 +110,75 @@ int UDPCoInfo::Strip(Ether* frame, byte** data)
     return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(UDP);
 }
 
+bool UDPCoInfo::IsMyPacket(Ether* frame)
+{
+    if( WellKnownSVCreply(frame) ){
+        return false;
+    }else if( TYPEUDP    == frame->IPHeader->prot &&
+              remoteip   == frame->IPHeader->srcip &&
+              localport  == bswap(frame->IPHeader->UDPHeader->dstport) &&
+              remoteport == bswap(frame->IPHeader->UDPHeader->srcport)
+            ){
+        return true;
+    }
+    return false;
+}
+
+bool UDPCoInfo::WellKnownSVCreply(Ether* frame)
+{
+    if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
+        UDPCoInfo cinfo(dispatcher);
+        cinfo.remoteip=frame->IPHeader->srcip;
+        cinfo.localport=DAYTIME;
+        cinfo.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        char* data="I can't see a clock.";    
+        dispatcher->Send((byte*)data,20,&cinfo);
+        printf("T\n");
+        return true;
+    }
+    return false;
+}
+
 ///////////////////////////////////////////////////
 
 void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
 {
     //HandShakeACTIV();       
-    CreateIPHeader(frame,size+sizeof(TCP)+sizeof(IP));
+    CreateIPHeader(frame,size+sizeof(TCP)+sizeof(IP),TYPETCP);
 }
 
 int TCPCoInfo::Strip(Ether* frame, byte** data)
 {
     *data=frame->IPHeader->TCPHeader->data;
     return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(TCP);
+}
+
+bool TCPCoInfo::IsMyPacket(Ether* frame)
+{
+    if( WellKnownSVCreply(frame) ){
+        return false;
+    }else if( TYPETCP    == frame->IPHeader->prot &&
+              remoteip   == frame->IPHeader->srcip &&
+              localport  == bswap(frame->IPHeader->TCPHeader->dstport) &&
+              remoteport == bswap(frame->IPHeader->TCPHeader->srcport)
+            ){
+        return true;
+    }
+    return false;
+}
+
+bool TCPCoInfo::WellKnownSVCreply(Ether* frame)
+{
+    if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
+        UDPCoInfo cinfo(dispatcher);
+        cinfo.remoteip=frame->IPHeader->srcip;
+        cinfo.localport=DAYTIME;
+        cinfo.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        char* data="I can't see a clock.";    
+        dispatcher->Send((byte*)data,20,&cinfo);
+        return true;
+    }
+    return false;
 }
 
 //   CLOSED       -> LISTENING @readAPI    ==
@@ -122,7 +212,7 @@ bool TCPCoInfo::HandShakePASV(Ether* frame)
 
 /////////////////////////////////////////////////
 
-IPStack::IPStack()
+Dispatch::Dispatch()
 {
     PciInf pciinfo;
     Pci* pcilib = new Pci();
@@ -178,7 +268,7 @@ IPStack::IPStack()
     }
 }
 
-IPStack::~IPStack()
+Dispatch::~Dispatch()
 {
     if( (nic != NULL) && (nic->getIRQ() != 0 ) ){
         syscall_remove_irq_receiver(this->nic->getIRQ());
@@ -186,7 +276,7 @@ IPStack::~IPStack()
     }
 }
 
-bool IPStack::initialize()
+bool Dispatch::initialize()
 {    
     if( nic != NULL ){
         if( nic->getIRQ()!=0 ) // with mask Interrrupt by higepon
@@ -196,66 +286,43 @@ bool IPStack::initialize()
     }else return false;
 }
 
-
-////////////////////////////////////////////////////
-//reply icmp echo request,dispose unknown packet and
-//get destination info. (recursive)
-//return false only if buffer is empty.
-////////////////////////////////////////////////////
-bool IPStack::GetDestination(int n,ConnectionInfo* cinfo)
-{ 
-    Ether* frame = nic->RecvFrm(n);
-    if( frame == NULL )
-        return false;
-    cinfo->protocol=frame->IPHeader->prot;
-    cinfo->remoteip=frame->IPHeader->srcip;    
-    cinfo->remoteport=0;
-    cinfo->localport=0;
-    switch (cinfo->protocol)
-    {
-    case TYPEICMP:
-        ICMP* icmp=frame->IPHeader->ICMPHeader;
-        if( icmp->type==ECHOREQUEST){
-            ICMPCoInfo info;
-            info.protocol=frame->IPHeader->prot;
-            info.remoteip=frame->IPHeader->srcip;
-            info.type=ECHOREPLY;
-            info.idnum=bswap(icmp->idnum);
-            info.seqnum=bswap(icmp->seqnum);
-            Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),&info);      
-            Dispose(n);
-            GetDestination(n,cinfo);//see next packet;
-        }else if( icmp->type != ECHOREPLY){
-            Dispose(n);
-            GetDestination(n,cinfo);//see next packet;
+void Dispatch::DoDispatch()
+{
+    int pktnumber=0;
+    Ether* frame;
+    while( frame = nic->RecvFrm(pktnumber) ){
+        for(int i=0;i<cinfolist.size(); i++){
+            ConnectionInfo* cinfo =cinfolist.get(i);
+            if( (cinfo!=NULL) && cinfo->IsMyPacket(frame) ){
+                if( cinfo->msg.header == MSG_NET_READ ){
+                    read_bottom_half(pktnumber,cinfo);
+                    pktnumber--;
+                }else{
+                    printf("opend but not reading... waiting reatry.\n");
+                }
+            }else{
+                Dispose(pktnumber); //pkt for unopend.
+                pktnumber--;
+            }
         }
-        //ECHOREPLY may be passed to client.
-        break;
-    case TYPEUDP: 
-        cinfo->localport=bswap(frame->IPHeader->UDPHeader->dstport);
-        cinfo->remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
-        if( UDPWellKnownSVCreply(frame) ){
-            Dispose(n);
-            GetDestination(n,cinfo);
-        }    
-        break;
-    case TYPETCP:     
-        cinfo->localport=bswap(frame->IPHeader->TCPHeader->dstport);
-        cinfo->remoteport=bswap(frame->IPHeader->TCPHeader->srcport);
-        //if( HandShakePASV(frame)){
-        //    Dispose(n);
-        //    GetDestination(n,cinfo);
-        //}
-        break;
-    default:
-        printf("unknown Packet type");
-        Dispose(n);
-        GetDestination(n,cinfo);
+
+        //WellKnownServices.
+        ICMPCoInfo icmp(this);
+        UDPCoInfo udp(this);
+        TCPCoInfo tcp(this);
+        if( icmp.WellKnownSVCreply(frame) ||
+            udp.WellKnownSVCreply(frame) ||
+            tcp.WellKnownSVCreply(frame)  
+          ){
+            Dispose(pktnumber);
+            pktnumber--;
+        }
+
+        pktnumber++;
     }
-    return true;
 }
 
-int IPStack::Send(byte* data,int size, ConnectionInfo* cinfo)
+int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
 {              
     Ether* frame = nic->NewFrame(cinfo->remoteip);
     //ether header has been already filled.
@@ -266,7 +333,7 @@ int IPStack::Send(byte* data,int size, ConnectionInfo* cinfo)
     return 0;
 }
 
-void IPStack::read_bottom_half(int n,ConnectionInfo* cinfo)
+void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
 {
     byte* data;
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
@@ -286,23 +353,7 @@ void IPStack::read_bottom_half(int n,ConnectionInfo* cinfo)
     }
 }
 
-bool IPStack::UDPWellKnownSVCreply(Ether* frame)
-{
-    if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
-        UDPCoInfo cinfo;
-        cinfo.remoteip=frame->IPHeader->srcip;
-        cinfo.localport=DAYTIME;
-        cinfo.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
-        cinfo.protocol=TYPEUDP;
-        char* data="I can't see a clock.";    
-        Send((byte*)data,20,&cinfo);
-        return true;
-    }
-    return false;
-}
-
-void IPStack::PeriodicUpdate()
+void Dispatch::PeriodicUpdate()
 {
 
 }
-

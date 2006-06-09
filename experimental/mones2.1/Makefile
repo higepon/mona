@@ -1,6 +1,6 @@
 #$Id$
 TARGET  = mns21
-SOURCES = main.cpp Nic.cpp IPStack.cpp NetServer.cpp \
+SOURCES = main.cpp Nic.cpp Dispatch.cpp NetServer.cpp \
  MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
 INSTDIR = $(BINDIR)/APPS
 

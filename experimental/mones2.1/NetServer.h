@@ -1,11 +1,11 @@
 //$Id$
 #pragma once
 #include "Net.h"
-#include "IPStack.h"
+#include "Dispatch.h"
 
 namespace mones {
 
-class NetServer: public IPStack
+class NetServer: public Dispatch
 {
 public:
     NetServer();
@@ -15,7 +15,6 @@ public:
     bool isStarted() {return started;}
 private:
     MonAPI::Mutex mutex;
-    void Dispatch();
     void getfreeport(MessageInfo* msg);
     void Interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);

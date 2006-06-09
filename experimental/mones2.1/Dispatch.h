@@ -6,30 +6,23 @@
 
 namespace mones{
 
+class Dispatch;
 //Infomation structure represents a connection.
 class ConnectionInfo{
+protected:
+    Dispatch* dispatcher;
 public:
     dword remoteip;
     word  localport;
     word  remoteport;
-    byte  protocol;
-    bool ident(const ConnectionInfo* cinfo){
-        if( remoteip   == cinfo->remoteip   &&
-            localport  == cinfo->localport  &&
-            remoteport == cinfo->remoteport &&
-            protocol   == cinfo->protocol )
-         {
-            return true;
-         }else{
-             return false;
-         }
-    }
     dword clientid;
     word  netdsc;
     MessageInfo msg; //too heavy? performance test is must item.
     virtual void CreateHeader(Ether* ,byte* ,word ){}
-    virtual int Strip(Ether*,byte**){return 0;}
-    void CreateIPHeader(Ether*,word);
+    virtual int  Strip(Ether*,byte**){return 0;}
+    virtual bool IsMyPacket(Ether*){return false;};
+    virtual bool WellKnownSVCreply(Ether*){return false;}
+    void CreateIPHeader(Ether*,word,byte);
     word checksum(byte*,word); 
 private:   
 
@@ -41,15 +34,21 @@ public:
     word type;
     word seqnum;
     word idnum;
+    ICMPCoInfo(Dispatch* p){dispatcher=p;}
     void CreateHeader(Ether* ,byte*,word );
     int Strip(Ether*,byte**);
+    bool IsMyPacket(Ether*);
+    bool WellKnownSVCreply(Ether*);
 };
 
 class UDPCoInfo : public ConnectionInfo
 { 
 public:
+    UDPCoInfo(Dispatch* p){dispatcher=p;}
     void CreateHeader(Ether* ,byte* ,word );  
     int Strip(Ether*, byte**);
+    bool IsMyPacket(Ether*);  
+    bool WellKnownSVCreply(Ether*);  
 };
 
 class TCPCoInfo : public ConnectionInfo
@@ -71,27 +70,32 @@ public:
     dword acknum;
     byte  status;
     byte  flag;
+    TCPCoInfo(Dispatch* p){dispatcher=p;}
     void CreateHeader(Ether*,byte* ,word);  
-    int Strip(Ether*, byte**);
+    int  Strip(Ether*, byte**);
+    bool IsMyPacket(Ether*);
+    bool WellKnownSVCreply(Ether*);
+private:
     bool HandShakePASV(Ether*);
     bool HandShakeACTV(Ether*);
 };
 
-class IPStack
+//class NetIF
+class Dispatch
 {
 private:
     Nic* nic;    
-    bool UDPWellKnownSVCreply(Ether*);
-public:
-    IPStack();
-    virtual ~IPStack();
+
+public:    
+    void DoDispatch();
+    Dispatch();
+    virtual ~Dispatch();
     bool initialize();
     int  Send(byte* ,int, ConnectionInfo* );
-    bool GetDestination(int,ConnectionInfo*);
-    int  Strip(Ether*,byte**);
     int  interrupt(){ return nic->interrupt();}
     void readStatus(NetStatus* stat){ nic->getStatus(stat); }
     void PeriodicUpdate();   
+  
     void read_bottom_half(int,ConnectionInfo*);
     void Dispose(int n){ nic->Delete(n); }   
     HList<ConnectionInfo*> cinfolist;

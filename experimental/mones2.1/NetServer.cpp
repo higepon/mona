@@ -86,9 +86,7 @@ void NetServer::open(MessageInfo* msg)
     switch(msg->arg3)
     {
     case TYPEICMP:
-        ICMPCoInfo* pI=new ICMPCoInfo();
-        pI->remoteport =0;
-        pI->localport =0;
+        ICMPCoInfo* pI=new ICMPCoInfo(this);
         pI->type=ECHOREQUEST;
         pI->seqnum=0;
         pI->idnum=0;
@@ -96,12 +94,12 @@ void NetServer::open(MessageInfo* msg)
         c=pI;
         break;
     case TYPEUDP:
-        UDPCoInfo* pU = new UDPCoInfo();
+        UDPCoInfo* pU = new UDPCoInfo(this);
         cinfolist.add(pU);
         c=pU;
         break;
     case TYPETCP:
-        TCPCoInfo* pT=new TCPCoInfo();
+        TCPCoInfo* pT=new TCPCoInfo(this);
         cinfolist.add(pT);
         c=pT;
         break;
@@ -111,7 +109,7 @@ void NetServer::open(MessageInfo* msg)
     c->remoteip   = msg->arg1; 
     c->remoteport = (word)(msg->arg2&0x0000FFFF);
     c->localport  = (word)(msg->arg2>>16);
-    c->protocol   = msg->arg3;
+    //c->protocol   = msg->arg3;
     c->clientid      = msg->from;    
     c->netdsc     = cinfolist.size();  
     c->msg.header = 0x0;
@@ -161,7 +159,7 @@ void NetServer::Interrupt(MessageInfo* msg)
     int val = interrupt();
     if( val & Nic::RX_INT ){
       //  printf("=RX\n");
-        Dispatch();
+        DoDispatch();
     }
     if(val & Nic::TX_INT){
       //  printf("=TX\n");
@@ -169,30 +167,6 @@ void NetServer::Interrupt(MessageInfo* msg)
     if( val & Nic::ER_INT){
       //  printf("=ERROR.\n");    
     }
-}
-
-void NetServer::Dispatch()
-{
-    ConnectionInfo pktcinfo;
-    int pktnumber=0;
-    while( GetDestination(pktnumber,&pktcinfo) ){
-        for(int i=0;i<cinfolist.size(); i++){
-            ConnectionInfo* cinfo=cinfolist.get(i);
-            if(  (cinfo!=NULL) && pktcinfo.ident(cinfo) ){ 
-                 if( cinfo->msg.header == MSG_NET_READ ){
-                    read_bottom_half(pktnumber,cinfo);
-                    pktnumber--;
-                 }else{
-                     printf("opend but not reading... waiting reatry.\n");
-                 }
-            }else{
-                Dispose(pktnumber); //pkt for unopend.
-                pktnumber--;
-            }
-        }
-        pktnumber++;
-    }
-    return;
 }
 
 void NetServer::read(MessageInfo* msg)
@@ -206,7 +180,7 @@ void NetServer::read(MessageInfo* msg)
         }
     }
     //printf("READING\n");
-    Dispatch();
+    DoDispatch();
 }
 
 void NetServer::write(MessageInfo* msg)
