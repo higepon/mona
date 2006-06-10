@@ -97,7 +97,7 @@ int NetClient::Stat(NetStatus* stat)
 
 NetClient::NetClient()
 {
-    serverid=Message::lookupMainThread("MNS21.EX5");
+    serverid=Message::lookupMainThread("IPSTACK.EX5");
     clientid=System::getThreadID();
     printf("ServerID %d ClientID %d\n",serverid,clientid);
     //TODO error check.

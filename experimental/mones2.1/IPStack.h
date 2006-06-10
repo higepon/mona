@@ -5,24 +5,22 @@
 
 namespace mones {
 
-class NetServer: public Dispatch
+class IPStack
 {
 public:
-    NetServer();
-    virtual ~NetServer();
-    dword getThreadID() const;
+    IPStack();
+    virtual ~IPStack();
     void messageLoop();
     bool isStarted() {return started;}
+    dword getThreadID() const { return this->myID; }
 private:
-    MonAPI::Mutex mutex;
+    Dispatch* pDP;
     void getfreeport(MessageInfo* msg);
-    void Interrupt(MessageInfo* msg);
     void open(MessageInfo* msg);
     void read(MessageInfo* msg);
     void write(MessageInfo* msg);
     void close(MessageInfo* msg);
     void status(MessageInfo* msg);
-    void ontimer(MessageInfo* msg);
     void config(MessageInfo* msg);
     word next_port;
 protected:

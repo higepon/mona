@@ -2,8 +2,7 @@
 //Acknowledgement:
 //   Following files were originally written by Yamami and Higepon.
 //   Makefile,Nic.h,NE2000.cpp,NE2000.h
-#include "NetServer.h"
-//#include "NetClient.h"
+#include "IPStack.h"
 #include <monapi.h>
 #include <monalibc.h>
 #include <monalibc/stdio.h>
@@ -11,33 +10,10 @@
 using namespace mones;
 using namespace MonAPI;
 
-/*
-static NetServer* server;
-
-void QuasiClientThread()
-{
-    while( !server->isStarted() ){
-        sleep(1000);
-    }
-    NetClient* client = new NetClient();
-    client->initalize(server->getThreadID());
-    client->Example();
-    delete client;
-    exit(0);
-}
-*/
 int MonaMain(List<char*>* pekoe)
 {
-    NetServer* server=new NetServer();
-    if(!server->initialize()){
-        printf("initalize failed\n");
-        delete server;
-        exit(1);
-    }
-    //Create Client Thread for Debug.
-    //dword id = syscall_mthread_create((dword)QuasiClientThread);
-    //syscall_mthread_join(id);
-    server->messageLoop();
-    delete server;
+    IPStack* ipstack=new IPStack();
+    ipstack->messageLoop();
+    delete ipstack;
     return 0;
 }

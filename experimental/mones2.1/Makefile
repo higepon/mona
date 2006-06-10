@@ -1,7 +1,7 @@
 #$Id$
-TARGET  = mns21
-SOURCES = main.cpp Nic.cpp Dispatch.cpp NetServer.cpp \
- MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
+TARGET  = IPSTACK
+SOURCES = main.cpp Nic.cpp Dispatch.cpp IPStack.cpp \
+ Connection.cpp MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
