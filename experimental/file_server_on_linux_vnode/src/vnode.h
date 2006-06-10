@@ -43,16 +43,24 @@
 namespace io
 {
 
-typedef struct Context
+class Context
 {
+public:
     Context() : memory(NULL), offset(0), size(0) {}
+    virtual ~Context()
+    {
+        if (NULL == memory) return;
+        monapi_cmemoryinfo_dispose(memory);
+		monapi_cmemoryinfo_delete(memory);
+    }
+
     dword tid;
     monapi_cmemoryinfo* memory;
     dword offset;
     dword origin;
     dword size;
     dword resultSize;
-} Context;
+};
 
 typedef struct
 {
@@ -90,6 +98,7 @@ public:
     int open(const std::string& name, int mode, bool create, dword tid, dword* fileID);
     int read(dword fileID, dword size, monapi_cmemoryinfo** mem);
     int seek(dword fileID, dword offset, dword origin);
+    int close(dword fileID);
     dword fileID(Vnode* file , dword tid) {return (dword)file | tid;} // temporary
     Vnode* alloc();
 

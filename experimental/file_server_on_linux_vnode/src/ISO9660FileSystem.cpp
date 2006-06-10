@@ -42,10 +42,12 @@ bool ISO9660FileSystem::Initialize()
 {
     if (!ReadVolumeDescriptor())
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         return false;
     }
     if (!SetDirectoryCache())
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         return false;
     }
 
@@ -665,7 +667,7 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     if (v != NULL)
     {
         *found = v;
-        return MONA_OK;
+        return MONA_SUCCESS;
     }
     ISO9660Directory* directoryEntry = (ISO9660Directory*)diretory->fnode;
     ASSERT(directoryEntry != NULL);
@@ -677,17 +679,17 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     newVnode->fs = this;
     cacher_->add(diretory, file, newVnode);
     *found = newVnode;
-    return MONA_OK;
+    return MONA_SUCCESS;
 }
 
 int ISO9660FileSystem::open(Vnode* file, int mode)
 {
-    return MONA_OK;
+    return MONA_SUCCESS;
 }
 
 int ISO9660FileSystem::seek(Vnode* file, dword offset, dword origin)
 {
-    return MONA_OK;
+    return MONA_SUCCESS;
 }
 
 int ISO9660FileSystem::read(Vnode* file, io::Context* context)
@@ -700,7 +702,12 @@ int ISO9660FileSystem::read(Vnode* file, io::Context* context)
     int readSize = context->size >= memory->Size ? memory->Size : context->size;
     int ret = fileEntry->Read(memory->Data, readSize);
     context->resultSize = readSize;
-    return ret != 0 ? MONA_OK : MONA_ERROR_ON_READ;
+    return ret == MONA_FAILURE ? MONA_ERROR_ON_READ : MONA_SUCCESS;
+}
+
+int ISO9660FileSystem::close(Vnode* file)
+{
+    return MONA_SUCCESS;
 }
 
 Vnode* ISO9660FileSystem::getRootDirectory() const

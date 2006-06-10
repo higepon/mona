@@ -60,7 +60,7 @@ dword ISO9660File::Read(void* buffer, dword size)
     if (!readResult)
     {
         delete temp;
-        return 0;
+        return MONA_FAILURE;
     }
 
     memcpy(buffer, temp + this->pointer -(lba - this->attribute.extent) * ISO9660FileSystem::SECTOR_SIZE, size);

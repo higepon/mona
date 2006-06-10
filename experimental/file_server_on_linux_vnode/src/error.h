@@ -36,7 +36,7 @@ enum
 
 enum
 {
-    MONA_OK,
+    MONA_ERROR_DUMMY = 2, /* don't change */
     MONA_ERROR_INVALID_ARGUMENTS,
     MONA_ERROR_ENTRY_NOT_FOUND,
     MONA_ERROR_ON_READ,

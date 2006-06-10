@@ -37,13 +37,13 @@ void MessageLoop()
                 dword tid = msg.from; // temporary
                 dword fildID;
                 int ret = vmanager->open(msg.str, 0, false, tid, &fildID);
-                Message::reply(&msg, ret == MONA_OK ? fildID : 0);
+                Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
                 break;
             }
             case MSG_VFS_FILE_SEEK:
             {
                 int ret = vmanager->seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
-                Message::reply(&msg, ret == MONA_OK ? 0 : 1);
+                Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
                 break;
             }
             case MSG_VFS_FILE_READ:
@@ -51,10 +51,22 @@ void MessageLoop()
                 dword fileID = msg.arg1;
                 monapi_cmemoryinfo* memory;
                 int ret = vmanager->read(fileID, msg.arg2 /* size */, &memory);
-                Message::reply(&msg, memory->Handle, memory->Size);
+                if (ret != MONA_SUCCESS)
+                {
+                    Message::reply(&msg, MONA_FAILURE);
+                }
+                else
+                {
+                    Message::reply(&msg, memory->Handle, memory->Size);
+                }
                 break;
             }
-
+            case MSG_VFS_FILE_CLOSE:
+            {
+                int ret = vmanager->close(msg.arg1);
+                Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
+                break;
+            }
             case MSG_FILE_READ_DATA:
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);

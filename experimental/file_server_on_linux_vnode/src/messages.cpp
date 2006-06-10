@@ -397,7 +397,6 @@ dword monapi_call_file_open2(const char* file)
     {
         return MONA_FAILURE;
     }
-
     return msg.arg2;
 }
 
@@ -408,12 +407,9 @@ monapi_cmemoryinfo* monapi_call_file_read_data2(dword fileID, dword size)
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_READ, fileID, size) != 0)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         return NULL;
     }
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
-    if (msg.arg2 == 0) return NULL;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+    if (msg.arg2 == MONA_FAILURE) return NULL;
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = tid;
@@ -432,6 +428,18 @@ int monapi_call_file_seek2(dword fileID, dword offset, dword origin)
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         return MONA_FAILURE;
     }
-    if (msg.arg2 == 0) return MONA_FAILURE;
-    return MONA_SUCCESS;
+    return msg.arg2;
+}
+
+int monapi_call_file_close2(dword fileID)
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_CLOSE, fileID) != 0)
+    {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+        return MONA_FAILURE;
+    }
+    return msg.arg2;
 }

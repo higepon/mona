@@ -66,6 +66,7 @@ public:
     virtual int open(Vnode* file, int mode);
     virtual int read(Vnode* file, io::Context* context);
     virtual int seek(Vnode* file, dword offset, dword origin);
+    virtual int close(Vnode* file);
     virtual Vnode* getRootDirectory() const;
 
 private:

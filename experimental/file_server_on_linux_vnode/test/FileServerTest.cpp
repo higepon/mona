@@ -70,6 +70,26 @@ void FileServerTest::testISO9660ReadDirectory()
 
 void FileServerTest::testISO9660ReadFile()
 {
+    // normal pattern
+    dword fileID = monapi_call_file_open2("/MONA.CFG");
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);
+
+    int ret = monapi_call_file_seek2(fileID, 72, 0);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file seek", ret != MONA_FAILURE);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data2(fileID, 19);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file read not null", mi != NULL);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19) == 0);
+
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file close", ret != MONA_FAILURE);
+
+    // error pattern 1
+    fileID = monapi_call_file_open2("/NOTFOUND.TXT");
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
+
+
+
 //     int ret = monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE);
 //     CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to cd0", ret, (int)MONA_SUCCESS);
 
@@ -93,14 +113,5 @@ void FileServerTest::testISO9660FileSize()
 //     dword size = monapi_call_file_get_file_size(id);
 //     CPPUNIT_ASSERT_EQUAL_MESSAGE("file size == 200byte", 200, (int)size);
 //     monapi_call_file_close(id);
-
-    // temporary
-    dword id = monapi_call_file_open2("/MONA.CFG");
-    printf("%s %s:%d id = %d\n", __func__, __FILE__, __LINE__, id);fflush(stdout);
-
-    monapi_call_file_seek2(id, 10, 0);
-
-    monapi_cmemoryinfo* mi = monapi_call_file_read_data2(id, 50);
-    printf("%s %s:%d %s read===========\n", __func__, __FILE__, __LINE__, (char*)mi->Data);fflush(stdout);
 
 }

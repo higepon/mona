@@ -31,13 +31,13 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
     string filename = name.substr(1, name.size() - 1);
 
     Vnode* file;
-    if (lookup(root_, filename, &file) != MONA_OK)
+    if (lookup(root_, filename, &file) != MONA_SUCCESS)
     {
         return MONA_ERROR_ENTRY_NOT_FOUND;
     }
 
     int ret = file->fs->open(file, mode);
-    if (MONA_OK != ret)
+    if (MONA_SUCCESS != ret)
     {
         return ret;
     }
@@ -53,7 +53,7 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
     fileInfo->vnode = file;
     fileInfo->context.tid = tid;
     fileInfoMap_.insert(pair< dword, FileInfo* >(*fileID, fileInfo));
-    return MONA_OK;
+    return MONA_SUCCESS;
 }
 
 Vnode* VnodeManager::alloc()
@@ -86,6 +86,27 @@ int VnodeManager::read(dword fileID, dword size, monapi_cmemoryinfo** mem)
     return fileInfo->vnode->fs->read(fileInfo->vnode, context);
 }
 
+int VnodeManager::close(dword fileID)
+{
+    FileInfoMap::iterator it = fileInfoMap_.find(fileID);
+    if (it == fileInfoMap_.end())
+    {
+        return MONA_ERROR_ENTRY_NOT_FOUND;
+    }
+
+    FileInfo* fileInfo = (*it).second;
+    Vnode* file = fileInfo->vnode;
+    int ret = file->fs->close(file);
+    if (MONA_SUCCESS != ret)
+    {
+        return ret;
+    }
+    fileInfoMap_.erase(fileID);
+    delete fileInfo;
+    return MONA_SUCCESS;
+}
+
+
 int VnodeManager::seek(dword fileID, dword offset, dword origin)
 {
     FileInfoMap::iterator it = fileInfoMap_.find(fileID);
@@ -97,11 +118,11 @@ int VnodeManager::seek(dword fileID, dword offset, dword origin)
     FileInfo* fileInfo = (*it).second;
     Vnode* file = fileInfo->vnode;
     int ret = file->fs->seek(file, offset, origin);
-    if (MONA_OK != ret)
+    if (MONA_SUCCESS != ret)
     {
         return ret;
     }
     fileInfo->context.offset = offset;
     fileInfo->context.origin = origin;
-    return MONA_OK;
+    return MONA_SUCCESS;
 }

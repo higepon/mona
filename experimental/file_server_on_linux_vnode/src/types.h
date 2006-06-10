@@ -24,8 +24,8 @@
 #define DEBUG_MODE
 
 enum {
-    MONA_SUCCESS,
-    MONA_FAILURE
+    MONA_SUCCESS = 1, /* don't change */
+    MONA_FAILURE = 0  /* don't change */
 };
 
 #ifndef __SIZE_TYPE__

@@ -21,6 +21,7 @@ enum
     MSG_VFS_FILE_OPEN,
     MSG_VFS_FILE_READ,
     MSG_VFS_FILE_SEEK,
+    MSG_VFS_FILE_CLOSE,
 };
 
 #endif
