@@ -62,9 +62,10 @@ public:
     virtual bool IsExistDirectory(const MonAPI::CString& path);
     virtual _A<FileSystemEntry*> GetFileSystemEntries(const MonAPI::CString& path);
     virtual int GetLastError() {return this->lastError;}
-    virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found);
+    virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type);
     virtual int open(Vnode* file, int mode);
     virtual int read(Vnode* file, io::Context* context);
+    //    virtual int readdir(Vnode* directory, std::vector<FileSystemEntr*>* entries);
     virtual int seek(Vnode* file, dword offset, dword origin);
     virtual int close(Vnode* file);
     virtual Vnode* getRootDirectory() const;

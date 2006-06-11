@@ -67,6 +67,19 @@ void MessageLoop()
                 Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
                 break;
             }
+//             case MSG_VFS_FILE_READ_DIRECTORY:
+//             {
+//                 int ret = vmanager->readdir(msg.str);
+//                 if (ret != MONA_SUCCESS)
+//                 {
+//                     Message::reply(&msg, MONA_FAILURE);
+//                 }
+//                 else
+//                 {
+//                     Message::reply(&msg, memory->Handle, memory->Size);
+//                 }
+//                 break;
+//             }
             case MSG_FILE_READ_DATA:
             {
                 printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);

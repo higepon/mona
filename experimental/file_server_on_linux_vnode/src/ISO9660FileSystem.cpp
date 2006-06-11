@@ -660,26 +660,44 @@ void ISO9660FileSystem::AddToFileSystemEntryList(HList<FileSystemEntry*>* entrie
         }
 }
 
-int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found)
+int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
     if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
     Vnode* v = cacher_->lookup(diretory, file);
-    if (v != NULL)
+    if (v != NULL && v->type == type)
     {
         *found = v;
         return MONA_SUCCESS;
     }
+
     ISO9660Directory* directoryEntry = (ISO9660Directory*)diretory->fnode;
     ASSERT(directoryEntry != NULL);
-    ISO9660File* fileEntry = FindFileEntry(directoryEntry, file.c_str());
-    if (fileEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
-    Vnode* newVnode = vmanager_->alloc();
-    newVnode->fnode  = fileEntry;
-    newVnode->type = Vnode::REGULAR;
-    newVnode->fs = this;
-    cacher_->add(diretory, file, newVnode);
-    *found = newVnode;
-    return MONA_SUCCESS;
+
+    if (type == Vnode::REGULAR)
+    {
+        ISO9660File* fileEntry = FindFileEntry(directoryEntry, file.c_str());
+        if (fileEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
+        Vnode* newVnode = vmanager_->alloc();
+        newVnode->fnode  = fileEntry;
+        newVnode->type = Vnode::REGULAR;
+        newVnode->fs = this;
+        cacher_->add(diretory, file, newVnode);
+        *found = newVnode;
+        return MONA_SUCCESS;
+    }
+    else if (type == Vnode::DIRECTORY)
+    {
+        ISO9660Directory* directoryEntry = FindDirectoryEntry(directoryEntry, file.c_str());
+        if (directoryEntry == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
+        Vnode* newVnode = vmanager_->alloc();
+        newVnode->fnode  = directoryEntry;
+        newVnode->type = Vnode::DIRECTORY;
+        newVnode->fs = this;
+        cacher_->add(diretory, file, newVnode);
+        *found = newVnode;
+        return MONA_SUCCESS;
+    }
+    return MONA_ERROR_ENTRY_NOT_FOUND;
 }
 
 int ISO9660FileSystem::open(Vnode* file, int mode)
@@ -704,6 +722,64 @@ int ISO9660FileSystem::read(Vnode* file, io::Context* context)
     context->resultSize = readSize;
     return ret == MONA_FAILURE ? MONA_ERROR_ON_READ : MONA_SUCCESS;
 }
+
+// int ISO9660FileSystem::readdir(Vnode* diretory, std::vector<FileSystemEntry*>* entries)
+// {
+//     ISO9660Directory* entry = (ISO9660Directory*)file->fnode;
+//     ASSERT(entry != NULL);
+
+//     SetDetailInformation(entry);
+
+//     dword readSize = ((dword)((entry->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+
+//     byte* buffer = new byte[readSize];
+//     if (buffer == NULL) return MONA_ERROR_MEMORY_NOT_ENOUGH;
+//     bool readResult = this->cd->read(entry->attribute.extent, buffer, readSize) == 0;
+
+//     if (!readResult)
+//     {
+//         delete buffer;
+//         return MONA_ERROR_ON_DEVICE;
+//     }
+
+//     for (dword position = 0 ; position < readSize;)
+//     {
+//         ISODirectoryEntry* iEntry = (ISODirectoryEntry*)((dword)buffer + position);
+
+//         if (iEntry->length == 0)
+//         {
+//             // check next sector
+//             position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
+//             continue;
+//         }
+
+        
+//         AddToFileSystemEntryList(&entries, entry, iEntry);
+
+//         position += iEntry->length;
+//     }
+//     delete[] buffer;
+
+//     _A<FileSystemEntry*> ret(entries.size());
+
+//     for (int i = 0; i < entries.size(); i++)
+//     {
+//         ret[i] = entries[i];
+//     }
+
+//     return ret;
+
+
+
+
+//     fileEntry->Seek(context->offset, SEEK_SET);
+
+//     monapi_cmemoryinfo* memory = context->memory;
+//     int readSize = context->size >= memory->Size ? memory->Size : context->size;
+//     int ret = fileEntry->Read(memory->Data, readSize);
+//     context->resultSize = readSize;
+//     return ret == MONA_FAILURE ? MONA_ERROR_ON_READ : MONA_SUCCESS;
+// }
 
 int ISO9660FileSystem::close(Vnode* file)
 {

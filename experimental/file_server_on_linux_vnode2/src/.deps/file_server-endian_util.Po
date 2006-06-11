@@ -1,0 +1,20 @@
+file_server-endian_util.o file_server-endian_util.o: endian_util.cpp \
+  ../endian_util.h /usr/include/stdint.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h \
+  /usr/include/bits/wchar.h /usr/include/bits/wordsize.h ../config.h
+
+../endian_util.h:
+
+/usr/include/stdint.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/bits/wordsize.h:
+
+../config.h:
