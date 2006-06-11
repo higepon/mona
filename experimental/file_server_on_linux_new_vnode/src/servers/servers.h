@@ -1,0 +1,12 @@
+#ifndef _SERVERS_SERVERS_
+#define _SERVERS_SERVERS_
+
+enum
+{
+    MSG_DISPOSE_HANDLE          = 0x0100,
+
+    MSG_REGISTER_TO_SERVER      = 0x0110,
+    MSG_UNREGISTER_FROM_SERVER
+};
+
+#endif

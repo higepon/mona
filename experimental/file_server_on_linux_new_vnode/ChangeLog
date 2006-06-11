@@ -1,0 +1,4 @@
+2006-04-15  higepon  <higepon@users.sourceforge.jp>
+
+	* Message.cpp : get pid from process name
+
