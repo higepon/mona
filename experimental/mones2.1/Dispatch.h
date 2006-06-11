@@ -30,7 +30,7 @@ public:
     void PeriodicUpdate();
     ConnectionInfo* GetConnection(int n){ return cinfolist.get(n); }
     void AddConnection(ConnectionInfo* c){cinfolist.add(c); }
-    ConnectionInfo* RemoveConnection(int n){ return cinfolist.removeAt(n); }
+    ConnectionInfo* RemoveConnection(int);
     int ConnectionNum(){ return cinfolist.size();}
 private:
 

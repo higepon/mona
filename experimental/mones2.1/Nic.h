@@ -8,6 +8,7 @@
 namespace mones{
 
 inline word  bswap(word w){ return (w>>8)|(w<<8); }
+inline dword bswapl(dword dw){ return (dw>>24)|((dw&0x00FF0000)>>8)|((dw&0x0000FF00)<<8)|(dw<<24);}
 
 class ARPmanager
 {

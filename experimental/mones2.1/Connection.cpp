@@ -56,11 +56,12 @@ int ICMPCoInfo::Strip(Ether* frame, byte** data)
 
 bool ICMPCoInfo::IsMyPacket(Ether* frame)
 {
-    if( WellKnownSVCreply(frame) ){
-        return true;
-    }else if ( TYPEICMP  == frame->IPHeader->prot ){
+    if( TYPEICMP  == frame->IPHeader->prot ){
+        if( WellKnownSVCreply(frame) ){
+            return true;
+        }
         ICMP* icmp=frame->IPHeader->ICMPHeader;
-         if( ECHOREPLY == icmp->type  &&
+        if( ECHOREPLY == icmp->type  &&
             remoteip  == frame->IPHeader->srcip &&
             idnum     == bswap(icmp->idnum) &&
             seqnum    == bswap(icmp->seqnum) )
@@ -73,17 +74,15 @@ bool ICMPCoInfo::IsMyPacket(Ether* frame)
 
 bool ICMPCoInfo::WellKnownSVCreply(Ether* frame)
 {
-    if( TYPEICMP == frame->IPHeader->prot ){
-        ICMP* icmp=frame->IPHeader->ICMPHeader;
-        if( ECHOREQUEST==icmp->type ){
-            ICMPCoInfo info(dispatcher);
-            info.remoteip=frame->IPHeader->srcip;
-            info.type=ECHOREPLY;
-            info.idnum=bswap(icmp->idnum);
-            info.seqnum=bswap(icmp->seqnum);
-            dispatcher->Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),&info);
-            return true;
-        }
+    ICMP* icmp=frame->IPHeader->ICMPHeader;
+    if( ECHOREQUEST==icmp->type ){
+        ICMPCoInfo info(dispatcher);
+        info.remoteip=frame->IPHeader->srcip;
+        info.type=ECHOREPLY;
+        info.idnum=bswap(icmp->idnum);
+        info.seqnum=bswap(icmp->seqnum);
+        dispatcher->Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),&info);
+        return true;
     }
     return false;
 }
@@ -94,12 +93,13 @@ void UDPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     ip->ttl =0x00;
     ip->prot=TYPEUDP;
     ip->chksum=bswap(size+sizeof(UDP));
+    /////////
     UDP* udp=frame->IPHeader->UDPHeader;
     udp->srcport=bswap(localport);
     udp->dstport=bswap(remoteport);
     udp->len=bswap(size+sizeof(UDP));
     udp->chksum=0x0000;
-    memcpy(frame->IPHeader->UDPHeader->data,data,size);
+    memcpy(udp->data,data,size);
     udp->chksum=bswap(checksum((byte*)&(ip->ttl),size+sizeof(UDP)+12));
     CreateIPHeader(frame,size+sizeof(UDP)+sizeof(IP),TYPEUDP);
 }
@@ -112,42 +112,34 @@ int UDPCoInfo::Strip(Ether* frame, byte** data)
 
 bool UDPCoInfo::IsMyPacket(Ether* frame)
 {
-    if( WellKnownSVCreply(frame) ){
-        return true;
-    }else if( TYPEUDP    == frame->IPHeader->prot &&
-              remoteip   == frame->IPHeader->srcip &&
-              localport  == bswap(frame->IPHeader->UDPHeader->dstport) &&
-              remoteport == bswap(frame->IPHeader->UDPHeader->srcport)
-            ){
-        return true;
-    }
-    return false;
-}
-
-bool UDPCoInfo::WellKnownSVCreply(Ether* frame)
-{   
-    if( TYPEUDP == frame->IPHeader->prot ){
-        if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
-            UDPCoInfo cinfo(dispatcher);
-            cinfo.remoteip=frame->IPHeader->srcip;
-            cinfo.localport=DAYTIME;
-            cinfo.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
-            char* data="I can't see a clock.";    
-            dispatcher->Send((byte*)data,20,&cinfo);
-            printf("T\n");
+    if( TYPEUDP    == frame->IPHeader->prot ){
+        if( WellKnownSVCreply(frame) ){
+            return true;
+        }
+        if( remoteip   == frame->IPHeader->srcip &&
+            localport  == bswap(frame->IPHeader->UDPHeader->dstport) &&
+            remoteport == bswap(frame->IPHeader->UDPHeader->srcport) )
+        {
             return true;
         }
     }
     return false;
 }
 
-///////////////////////////////////////////////////
-
-void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
-{      
-    HandShakeACTV(frame);
-    CreateIPHeader(frame,size+sizeof(TCP)+sizeof(IP),TYPETCP);
+bool UDPCoInfo::WellKnownSVCreply(Ether* frame)
+{   
+    if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
+        remoteip=frame->IPHeader->srcip;
+        localport=DAYTIME;
+        remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        char* data="I can't see a clock.";    
+        dispatcher->Send((byte*)data,20,this);
+        return true;
+    }
+    return false;
 }
+
+///////////////////////////////////////////////////
 
 int TCPCoInfo::Strip(Ether* frame, byte** data)
 {
@@ -157,46 +149,83 @@ int TCPCoInfo::Strip(Ether* frame, byte** data)
 
 bool TCPCoInfo::IsMyPacket(Ether* frame)
 {
-    if( HandShakePASV(frame) ){
-        return false;
-    }else 
-    if( WellKnownSVCreply(frame) ){
-        return true;
-    }else if( TYPETCP    == frame->IPHeader->prot &&
-              remoteip   == frame->IPHeader->srcip &&
-              localport  == bswap(frame->IPHeader->TCPHeader->dstport) &&
-              remoteport == bswap(frame->IPHeader->TCPHeader->srcport)
-            ){
-        return true;
-    }
-    return false;
-}
-
-bool TCPCoInfo::WellKnownSVCreply(Ether* frame)
-{    
-    if( TYPETCP == frame->IPHeader->prot ){
-        if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
-            UDPCoInfo cinfo(dispatcher);
-            cinfo.remoteip=frame->IPHeader->srcip;
-            cinfo.localport=DAYTIME;
-            cinfo.remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
-            char* data="I can't see a clock.";    
-            dispatcher->Send((byte*)data,20,&cinfo);
+    if( TYPETCP    == frame->IPHeader->prot){
+        if( HandShakePASV(frame) ){
+            return false;
+        }else if( WellKnownSVCreply(frame) ){
+            return true;
+        }else if( remoteip   == frame->IPHeader->srcip &&
+                  localport  == bswap(frame->IPHeader->TCPHeader->dstport) &&
+                  remoteport == bswap(frame->IPHeader->TCPHeader->srcport) )
+        {
             return true;
         }
     }
     return false;
 }
 
-//   CLOSED       -> LISTENING @readAPI    ==
-//   ESTABLISHED  -> FIN_WAIT1 @closeAPI   send FIN
-//   ~ESTABLISHED -> CLOSED    @timerAPI   ==
+bool TCPCoInfo::WellKnownSVCreply(Ether* frame)
+{    
+    if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
+        remoteip=frame->IPHeader->srcip;
+        localport=DAYTIME;
+        remoteport=bswap(frame->IPHeader->UDPHeader->srcport);
+        char* data="I can't see a clock.";    
+        dispatcher->Send((byte*)data,20,this);
+        return true;
+    }
+    return false;
+}
+
+void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
+{      
+    HandShakeACTV(frame);
+    IP* ip=frame->IPHeader; //for psedo header
+    ip->ttl =0x00;
+    ip->prot=TYPETCP;
+    ip->chksum=bswap(size+sizeof(TCP));
+    /////////
+    TCP* tcp=frame->IPHeader->TCPHeader;
+    tcp->srcport=bswap(localport);
+    tcp->dstport=bswap(remoteport);
+    tcp->seqnumber=seqnum;
+    tcp->acknumber=acknum;
+    tcp->offset=0xF0 & ((size+sizeof(TCP))<<2);
+    tcp->flags=0x3F&flags;   
+    tcp->window=bswap(window);
+    tcp->chksum=0x0000;
+    tcp->urgent=0;
+    tcp->option=0;
+    memcpy(tcp->data,data,size);
+    tcp->chksum=bswap(checksum((byte*)&(ip->ttl),size+sizeof(TCP)+12));
+    CreateIPHeader(frame,size+sizeof(TCP)+sizeof(IP),TYPETCP);
+    printf("CreateHeader\n");
+}
+
+//   ~ESTABLISHED -> LISTNING   @timerAPI   ==
 bool TCPCoInfo::HandShakeACTV(Ether* frame)
-{
-    printf("ACTV\n");
-    //CLOSED     -> SYN_SENT               send SYN
+{  
+    printf("ACTV %d\n",status);
+    if(status==LISTENING){    
+        seqnum=bswapl(1);
+        acknum=bswapl(1);
+        status=SYN_SENT; 
+        flags=SYN;
+        window=0;
+        dispatcher->Send(NULL,0,this);
+        return true;
+    }
+    if(status==SYN_RCVD){
+        return true;
+    }
+    if(status==SYN_SENT){
+        //status=ESTABLISHED;
+        return true;
+    }
+    //LISTNING   -> SYN_SENT               send SYN
     //SYN_RCVD   -> SYN_RCVD               send SYN+ACK
     //SYN_SENT   -> ESTABLISHED            send ACK
+
     //CLOSE_WAIT -> LAST_ACK               send FIN
     //TIME_WAIT  -> TIME_WAIT              send ACK
     //ESTABLISHED->ESTABLISHED             send -
@@ -204,15 +233,31 @@ bool TCPCoInfo::HandShakeACTV(Ether* frame)
 }
 
 bool TCPCoInfo::HandShakePASV(Ether* frame)
-{
-    printf("PASV\n");
-    //CLOSED     -> CLOSED                 ==
+{    
+    printf("PASV %d\n",status);
+    if( status == SYN_SENT){
+        seqnum=bswapl(1);
+        acknum=bswapl(1);
+        status=SYN_SENT; 
+        flags=ACK;
+        window=10;
+        dispatcher->Send(NULL,0,this);
+        return true;
+    }   
+    //CLOSE=LISTING ( reading or not reading)
     //LISTENING  -> SYN_RCVD               rcv SYN  (send SYN+ACK)
     //SYN_SENT   -> SYN_SENT               rcv SYN+ACK (send ACK)
     //SYN_RCVD   -> ESTABLISHED            rcv ACK
+
     //ESTABLISHED-> CLOSE_WAIT             rcv FIN
     //FIN_WAIT2  -> TIME_WAIT              rcv ACK
-    //LAST_ACK   -> CLOSED                 rcv ACK
+    //LAST_ACK   -> LISTING                rcv ACK
     //ESTABLISHED-> ESTABLISHED            rcv -
     return false;
+}
+
+void TCPCoInfo::Close()
+{ 
+    printf("TCPCloseSec.\n");
+    //ESTABLISHED  -> FIN_WAIT1 
 }

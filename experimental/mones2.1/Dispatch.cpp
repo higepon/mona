@@ -139,6 +139,13 @@ int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
         nic->SendFrm(frame);
     }
     return 0;
+}    
+
+ConnectionInfo* Dispatch::RemoveConnection(int n)
+{
+    ConnectionInfo* cinfo = cinfolist.removeAt(n);
+    cinfo->Close();
+    return cinfo;
 }
 
 void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)

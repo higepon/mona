@@ -41,11 +41,12 @@ struct TCP {
     word  dstport;
     dword seqnumber;
     dword acknumber;
-    byte  reserved;
-    byte  flag;
+    byte  offset;
+    byte  flags;
     word  window;
     word  chksum;
-    word  purgent;
+    word  urgent;
+    dword option;
     byte  data[0];
 };
 

@@ -1,4 +1,4 @@
-//$Id: NetClient.cpp 3249 2006-06-06 14:44:20Z eds1275 $
+//$Id$
 #include "NetClient.h"
 #include <monalibc/stdio.h>
 using namespace MonAPI;
@@ -74,7 +74,26 @@ int Example(NetClient& client)
         printf("CloseError.\n");
     }    
     //////////////////////////////////////////////////
-
+    printf("\nSend TCP to DAYTIME\n");    
+    localport = client.GetFreePort();
+    printf("Port=%d\n",localport);
+    netdsc = client.Open(remoteip,localport,DAYTIME,TYPETCP);
+    if( netdsc < 0 ){
+        printf("OpenError.\n");
+    }
+    printf("Open::netdsc=%d\n",netdsc);
+    
+    if( client.Write(netdsc,(byte*)"What time is it now?",20) ){
+        printf("WrieError.\n");
+    }
+    size= client.Read(netdsc,buf);
+    if( size > 0 ){
+        printf("remote time is %s\n",buf);
+    }    
+    if( client.Close(netdsc) ){
+        printf("CloseError.\n");
+    }    
+    //////////////////////////////////////////////////
     //re-setup nic. 
     char devname[]="pcnet0";
     if( client.Config(devname,(5<<24)|(0<<16)|(168<<8)|192,(1<24)|(0<<16)|(168<<8)|192,24,60,1500) ){
@@ -86,6 +105,7 @@ int Example(NetClient& client)
 
 int MonaMain(List<char*>* pekoe)
 {
+    /*
     if( pekoe->size() != 2 ){
         printf("\nusage: client ping dest-ip\n");
         printf("       client udpdaytime dest-ip\n");
@@ -104,6 +124,8 @@ int MonaMain(List<char*>* pekoe)
     }else if( !strcmp(pekoe->get(0), "ftp")){
         printf("ftp\n");
     }
+    */
+    NetClient client;
     Example(client);
     exit(0);
     return 0;

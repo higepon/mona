@@ -9,8 +9,6 @@ namespace mones{
 class Dispatch;
 //Infomation structure represents a connection.
 class ConnectionInfo{
-protected:
-    Dispatch* dispatcher;
 public:
     dword remoteip;
     word  localport;
@@ -23,11 +21,13 @@ public:
     virtual void CreateHeader(Ether* ,byte* ,word ){}
     virtual int  Strip(Ether*,byte**){return 0;}
     virtual bool IsMyPacket(Ether*){return false;};
-    virtual bool WellKnownSVCreply(Ether*){return false;}
+    virtual void Close(){};
+protected:
+    Dispatch* dispatcher;
     void CreateIPHeader(Ether*,word,byte);
-    word checksum(byte*,word); 
-private:   
-
+    word checksum(byte*,word);
+private:
+    virtual bool WellKnownSVCreply(Ether*){return false;}
 };
 
 class ICMPCoInfo : public ConnectionInfo
@@ -40,6 +40,7 @@ public:
     void CreateHeader(Ether* ,byte*,word );
     int Strip(Ether*,byte**);
     bool IsMyPacket(Ether*);
+private:
     bool WellKnownSVCreply(Ether*);
 };
 
@@ -50,34 +51,46 @@ public:
     void CreateHeader(Ether* ,byte* ,word );  
     int Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);  
-    bool WellKnownSVCreply(Ether*);  
+private:
+    bool WellKnownSVCreply(Ether*);
 };
 
 class TCPCoInfo : public ConnectionInfo
 {
 public:
-    enum TCP_STAT{
-        CLOSED     =0,
-        LISTENING  =1,
-        SYN_SENT   =2,
-        SYN_RCVD   =3,
-        ESTABLISHED=4,
-        FIN_WAIT1  =5,
-        FIN_WAIT2  =6,
-        CLOSE_WAIT =7,
-        LAST_ACK   =8,
-        TIME_WAIT  =9
-    };
     dword seqnum;
     dword acknum;
     byte  status;
-    byte  flag;
-    TCPCoInfo(Dispatch* p){dispatcher=p;}
+    byte  flags;
+    word  window;
+    TCPCoInfo(Dispatch* p){ dispatcher=p; status=LISTENING;}
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
-    bool WellKnownSVCreply(Ether*);
+    void Close();
 private:
+    enum TCP_STAT{
+        LISTENING=1,
+        SYN_SENT,
+        SYN_RCVD,
+        ESTABLISHED,
+        FIN_WAIT1,
+        FIN_WAIT2,
+        CLOSE_WAIT,
+        LAST_ACK,
+        TIME_WAIT
+    };
+    enum CTRLFLAGS{
+        FIN=0x01,
+        SYN=0x02,
+        RST=0x04,
+        PSH=0x08,
+        ACK=0x10,    
+        URG=0x20,
+        ECN=0x40,
+        RED=0x80,
+    };
+    bool WellKnownSVCreply(Ether*);
     bool HandShakePASV(Ether*);
     bool HandShakeACTV(Ether*);
 };
