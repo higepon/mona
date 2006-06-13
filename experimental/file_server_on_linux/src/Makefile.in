@@ -54,7 +54,8 @@ am_file_server_OBJECTS = file_server-IDEDriver.$(OBJEXT) \
 	file_server-SocketMessage.$(OBJEXT) \
 	file_server-cmemoryinfo.$(OBJEXT) \
 	file_server-ProcessUtil.$(OBJEXT) file_server-main.$(OBJEXT) \
-	file_server-vnode.$(OBJEXT)
+	file_server-vnode.$(OBJEXT) \
+	file_server-ISO9660FileSystem.$(OBJEXT)
 file_server_OBJECTS = $(am_file_server_OBJECTS)
 file_server_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -169,7 +170,9 @@ ProcessUtil.h\
 main.cpp\
 types.h\
 vnode.h\
-vnode.cpp
+vnode.cpp\
+ISO9660/ISO9660FileSystem.cpp\
+ISO9660/ISO9660FileSystem.h
 
 all: all-am
 
@@ -296,6 +299,12 @@ file_server-vnode.o: vnode.cpp
 
 file_server-vnode.obj: vnode.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-vnode.obj `if test -f 'vnode.cpp'; then $(CYGPATH_W) 'vnode.cpp'; else $(CYGPATH_W) '$(srcdir)/vnode.cpp'; fi`
+
+file_server-ISO9660FileSystem.o: ISO9660/ISO9660FileSystem.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystem.o `test -f 'ISO9660/ISO9660FileSystem.cpp' || echo '$(srcdir)/'`ISO9660/ISO9660FileSystem.cpp
+
+file_server-ISO9660FileSystem.obj: ISO9660/ISO9660FileSystem.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystem.obj `if test -f 'ISO9660/ISO9660FileSystem.cpp'; then $(CYGPATH_W) 'ISO9660/ISO9660FileSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/ISO9660/ISO9660FileSystem.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

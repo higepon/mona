@@ -1,6 +1,5 @@
 #include "stdio.h"
-#include "Message.h"
-#include "vnode.h"
+#include "file_server.h"
 
 using namespace MonAPI;
 
@@ -14,8 +13,16 @@ void MessageLoop()
 
         switch (msg.header)
         {
-        default:
-            break;
+             case MSG_VFS_FILE_OPEN:
+             {
+                 dword tid = msg.from; // temporary
+                 dword fildID;
+                 int ret = vmanager->open(msg.str, 0, false, tid, &fildID);
+                 Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
+                 break;
+            }
+            default:
+                break;
         }
     }
 }

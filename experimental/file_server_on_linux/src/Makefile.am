@@ -17,4 +17,6 @@ ProcessUtil.h\
 main.cpp\
 types.h\
 vnode.h\
-vnode.cpp
+vnode.cpp\
+ISO9660/ISO9660FileSystem.cpp\
+ISO9660/ISO9660FileSystem.h
