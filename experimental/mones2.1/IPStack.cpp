@@ -94,19 +94,16 @@ void IPStack::open(MessageInfo* msg)
         pI->seqnum=0;
         pI->idnum=0;
         pDP->AddConnection(pI);
-        //cinfolist.add(pI);
         c=pI;
         break;
     case TYPEUDP:
         UDPCoInfo* pU = new UDPCoInfo(pDP);
         pDP->AddConnection(pU);
-        //cinfolist.add(pU);
         c=pU;
         break;
     case TYPETCP:
         TCPCoInfo* pT=new TCPCoInfo(pDP);
         pDP->AddConnection(pT);
-        //cinfolist.add(pT);
         c=pT;
         break;
     default:

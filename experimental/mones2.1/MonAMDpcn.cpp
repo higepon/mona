@@ -3,16 +3,6 @@
 using namespace MonAPI;
 using namespace mones;
 
-
-void MonAMDpcn::txihandler()
-{
-    (txdsc+txindex)->status=0;
-    (txdsc+txindex)->control=0;
-    (txdsc+txindex)->bcnt=0;
-    (txdsc+txindex)->rbaddr=0;
-    txindex = (txindex+1) & (( 1<<LOGTXRINGLEN)-1);
-}
-
 void MonAMDpcn::rxihandler()
 {
     word length;
@@ -77,6 +67,7 @@ int MonAMDpcn::init()
         (rxdsc+i)->rbaddr=(dword)(rxbuf+i*ETHER_MAX_PACKET);
     }
     rxindex=0;
+    rxdirty=0;
      //initialize tx 
     if( txbuf == 0 )
         return -1; 
@@ -89,6 +80,7 @@ int MonAMDpcn::init()
         (txdsc+i)->rbaddr=(dword)(txbuf+i*ETHER_MAX_PACKET);
     }
     txindex=0;
+    txdirty=0;
     ///////////////
     stop();
     reset();
@@ -140,19 +132,33 @@ int MonAMDpcn::interrupt()
     return ret;
 }
 
+void MonAMDpcn::txihandler()
+{
+    //printf("TX\n");
+    while(txindex-txdirty){
+        (txdsc+txdirty)->status=0;
+        (txdsc+txdirty)->control=0;
+        (txdsc+txdirty)->bcnt=0;
+        (txdsc+txdirty)->rbaddr=0;
+        txdirty = (txdirty+1)&(( 1<<LOGTXRINGLEN)-1);
+    }
+}
+
 void MonAMDpcn::SendFrm(Ether* frame)
 {
     enableNetwork();
     word len=CalcFrameSize(frame);
     txFrameList.add(frame);
     while( txFrameList.size() != 0) {
+        printf("sendframe.\n");
         Ether* frame = txFrameList.removeAt(0);
         memcpy(txbuf+txindex*ETHER_MAX_PACKET,frame,len);
         (txdsc+txindex)->status=0;
         (txdsc+txindex)->bcnt=(word)(-len)|0xF000;
         (txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
         (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*ETHER_MAX_PACKET);
-        w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);    
+        w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);     
+        txindex = (txindex+1) & (( 1<<LOGTXRINGLEN)-1);
         delete frame;
     }
 }

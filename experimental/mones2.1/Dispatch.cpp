@@ -131,10 +131,10 @@ void Dispatch::DoDispatch()
 }
 
 int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
-{              
+{
     Ether* frame = nic->NewFrame(cinfo->remoteip);
     //ether header has been already filled.
-    if( frame != NULL){   
+    if( frame != NULL){
         cinfo->CreateHeader(frame,data,size);
         nic->SendFrm(frame);
     }

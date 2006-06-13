@@ -26,12 +26,13 @@ int Example(NetClient& client)
         }
         printf("\n");
     }
+    
     dword remoteip=(3<<24)|(10<<16)|(168<<8)|(192);
     if( stat.localip==LOOPBACKIP ){
         remoteip=LOOPBACKIP;
     }
     ///////////////////////////////////////////////
-    printf("\nSend ICMP echo request\n");
+    printf("   Send ICMP echo request\n");
     int netdsc= client.Open(remoteip,0,0,TYPEICMP);
     if( netdsc< 0 ){
         printf("OpenError.\n");
@@ -54,7 +55,7 @@ int Example(NetClient& client)
         printf("CloseError.\n");
     }   
     ////////////////////////////////////////////
-    printf("\nSend UDP to DAYTIME\n");    
+    printf("   Send UDP to DAYTIME\n");    
     word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
     netdsc = client.Open(remoteip,localport,DAYTIME,TYPEUDP);
@@ -68,13 +69,13 @@ int Example(NetClient& client)
     }
     size= client.Read(netdsc,buf);
     if( size > 0 ){
-        printf("remote time is %s\n",buf);
+        printf("(UDP)%s\n",buf);
     }    
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
     }    
     //////////////////////////////////////////////////
-    printf("\nSend TCP to DAYTIME\n");    
+    printf("   Send TCP to ECHO\n");    
     localport = client.GetFreePort();
     printf("Port=%d\n",localport);
     netdsc = client.Open(remoteip,localport,DAYTIME,TYPETCP);
@@ -83,12 +84,12 @@ int Example(NetClient& client)
     }
     printf("Open::netdsc=%d\n",netdsc);
     
-    if( client.Write(netdsc,(byte*)"What time is it now?",20) ){
+    if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
         printf("WrieError.\n");
     }
     size= client.Read(netdsc,buf);
     if( size > 0 ){
-        printf("remote time is %s\n",buf);
+        printf("(TCP)%s\n",buf);
     }    
     if( client.Close(netdsc) ){
         printf("CloseError.\n");

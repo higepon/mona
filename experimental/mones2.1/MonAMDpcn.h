@@ -40,6 +40,7 @@ protected:
     byte* rxbuf;
     RXDSC* rxdsc;
     int rxindex;
+    int rxdirty;
     enum{
         LOGRXRINGLEN=2,
         RMD1_OWN=0x8000,
@@ -50,6 +51,7 @@ protected:
     byte* txbuf;
     TXDSC* txdsc;
     int txindex;
+    int txdirty;
     enum{
         LOGTXRINGLEN=2,
         TMD1_OWN=0x8000,

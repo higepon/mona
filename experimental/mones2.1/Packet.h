@@ -46,7 +46,6 @@ struct TCP {
     word  window;
     word  chksum;
     word  urgent;
-    dword option;
     byte  data[0];
 };
 

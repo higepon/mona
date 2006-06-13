@@ -18,9 +18,9 @@ public:
     MessageInfo msg; //too heavy? performance test is must item.
     ConnectionInfo(){msg.header=0x0;}
     virtual ~ConnectionInfo(){};
-    virtual void CreateHeader(Ether* ,byte* ,word ){}
-    virtual int  Strip(Ether*,byte**){return 0;}
-    virtual bool IsMyPacket(Ether*){return false;};
+    virtual void CreateHeader(Ether* ,byte* ,word )=0;
+    virtual int  Strip(Ether*,byte**)=0;
+    virtual bool IsMyPacket(Ether*)=0;
     virtual void Close(){};
 protected:
     Dispatch* dispatcher;
@@ -58,17 +58,17 @@ private:
 class TCPCoInfo : public ConnectionInfo
 {
 public:
-    dword seqnum;
-    dword acknum;
-    byte  status;
-    byte  flags;
-    word  window;
     TCPCoInfo(Dispatch* p){ dispatcher=p; status=LISTENING;}
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
     void Close();
 private:
+    dword seqnum;
+    dword acknum;
+    byte  status;
+    byte  flags;
+    word  window;
     enum TCP_STAT{
         LISTENING=1,
         SYN_SENT,
