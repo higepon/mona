@@ -119,7 +119,9 @@ void Dispatch::DoDispatch()
                 }else if(i<3){ //pkt for well known services.
                     Dispose(pktnumber);
                     pktnumber--;
-                }
+                }//else(MSG_NET_WRITE){
+                 //   write bottom half()
+                 //}
                 //else pkt for opend but not reading.
             }else if(i>=3){
                 Dispose(pktnumber); //pkt for unopend.
@@ -137,9 +139,10 @@ int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
     if( frame != NULL){
         cinfo->CreateHeader(frame,data,size);
         nic->SendFrm(frame);
+        //write_bottom_half()
     }
     return 0;
-}    
+}
 
 ConnectionInfo* Dispatch::RemoveConnection(int n)
 {

@@ -150,7 +150,6 @@ void MonAMDpcn::SendFrm(Ether* frame)
     word len=CalcFrameSize(frame);
     txFrameList.add(frame);
     while( txFrameList.size() != 0) {
-        printf("sendframe.\n");
         Ether* frame = txFrameList.removeAt(0);
         memcpy(txbuf+txindex*ETHER_MAX_PACKET,frame,len);
         (txdsc+txindex)->status=0;

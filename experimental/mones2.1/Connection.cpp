@@ -233,6 +233,7 @@ bool TCPCoInfo::HandShakePASV(Ether* frame)
 {    
     printf("PASV %d\n",status);
     if( status == SYN_SENT){//SYN_SENT   -> SYN_SENT               rcv SYN+ACK (send ACK)
+        remoteip=frame->IPHeader->srcip;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=ESTABLISHED; 
@@ -248,6 +249,7 @@ bool TCPCoInfo::HandShakePASV(Ether* frame)
     //SYN_RCVD   -> ESTABLISHED            rcv ACK
     if( status == ESTABLISHED ){    //ESTABLISHED-> CLOSE_WAIT             rcv FIN
         if(frame->IPHeader->TCPHeader->flags & FIN == FIN ){
+            remoteip=frame->IPHeader->srcip;
             seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
             acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
             status=CLOSE_WAIT; 

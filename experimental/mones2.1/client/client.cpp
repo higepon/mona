@@ -3,8 +3,7 @@
 #include <monalibc/stdio.h>
 using namespace MonAPI;
 using namespace mones;
-
-int Example(NetClient& client)
+int Stat(NetClient& client)
 {
     //read nic status.
     NetStatus stat;
@@ -26,11 +25,10 @@ int Example(NetClient& client)
         }
         printf("\n");
     }
-    
-    dword remoteip=(3<<24)|(10<<16)|(168<<8)|(192);
-    if( stat.localip==LOOPBACKIP ){
-        remoteip=LOOPBACKIP;
-    }
+    return 0;
+}
+int Ping(NetClient& client,dword remoteip)
+{
     ///////////////////////////////////////////////
     printf("   Send ICMP echo request\n");
     int netdsc= client.Open(remoteip,0,0,TYPEICMP);
@@ -45,20 +43,22 @@ int Example(NetClient& client)
     int size= client.Read(netdsc,buf);
     if( size > 0 ){
         //printf("Read: %s\n",buf);
-        if(!strcmp((char*)buf,"How are you?")){
+        if(!strncmp((char*)buf,"How are you?",12)){
             printf("destination is Alive.\n");
         }
-        //if recived string is same as sended.
-        //printf("dset is alive,\n");
     }
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
     }   
-    ////////////////////////////////////////////
-    printf("   Send UDP to DAYTIME\n");    
+    return 0;
+}
+
+int Udp(NetClient& client,dword remoteip,word port)
+{
+    printf("   Send UDP to %d\n",port);    
     word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
-    netdsc = client.Open(remoteip,localport,DAYTIME,TYPEUDP);
+    int netdsc = client.Open(remoteip,localport,port,TYPEUDP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
@@ -66,19 +66,24 @@ int Example(NetClient& client)
     
     if( client.Write(netdsc,(byte*)"What time is it now?",20) ){
         printf("WrieError.\n");
-    }
-    size= client.Read(netdsc,buf);
+    }    
+    byte buf[1024];//BAD design.
+    int size= client.Read(netdsc,buf);
     if( size > 0 ){
         printf("(UDP)%s\n",buf);
     }    
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
     }    
-    //////////////////////////////////////////////////
-    printf("   Send TCP to ECHO\n");    
-    localport = client.GetFreePort();
+    return 0;
+}
+
+int Tcp(NetClient& client,dword remoteip,word port)
+{
+    printf("   Send TCP tp %d\n",port);    
+    word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
-    netdsc = client.Open(remoteip,localport,DAYTIME,TYPETCP);
+    int netdsc = client.Open(remoteip,localport,port,TYPETCP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
@@ -86,48 +91,48 @@ int Example(NetClient& client)
     
     if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
         printf("WrieError.\n");
-    }
-    size= client.Read(netdsc,buf);
+    } 
+    byte buf[1024];//BAD design.
+    int size= client.Read(netdsc,buf);
     if( size > 0 ){
         printf("(TCP)%s\n",buf);
     }    
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
     }    
-    //////////////////////////////////////////////////
-    //re-setup nic. 
-    char devname[]="pcnet0";
-    if( client.Config(devname,(5<<24)|(0<<16)|(168<<8)|192,(1<24)|(0<<16)|(168<<8)|192,24,60,1500) ){
-        printf("ConfigError\n");
-    }
-    printf("tests are completed.\n");
+    return 0;
+}
+int Ftp(NetClient& client,dword remoteip)
+{
     return 0;
 }
 
 int MonaMain(List<char*>* pekoe)
 {
-    /*
-    if( pekoe->size() != 2 ){
-        printf("\nusage: client ping dest-ip\n");
-        printf("       client udpdaytime dest-ip\n");
-        printf("       clinet tcpdaytime dset-ip\n");
-        printf("       client ftp dest-ip\n");
+    NetClient client;
+    if( pekoe->size() < 2 || pekoe->size() > 4 ){
+        printf("\nusage    client ping dest-ip\n");
+        printf("         client udp dest-ip svc\n");
+        printf("         clinet tcp dset-ip svc\n");
+        printf("         client ftp dest-ip");
+        Stat(client);
         exit(0);
-    }    
-    //dword dstip = scanf(pekoe->get(1));
-    NetClient client;
-    if( !strcmp(pekoe->get(0),"ping")){
-        printf("ping\n");
-    }else if( !strcmp(pekoe->get(0), "udpdaytime")){
-        printf("udp\n");
-    }else if( !strcmp(pekoe->get(0), "tcpdaytime")){
-        printf("tcp\n");
-    }else if( !strcmp(pekoe->get(0), "ftp")){
-        printf("ftp\n");
     }
-    */
-    NetClient client;
-    Example(client);
+    dword a,b,c,d;
+    sscanf(pekoe->get(1),"%d.%d.%d.%d",&a,&b,&c,&d);
+    dword remoteip=((d<<24)&0xFF000000)|((c<<16)&0x00FF0000)|((b<<8)&0x0000FF00)|(a&0x000000FF);
+    word port;
+    if( !strcmp(pekoe->get(0),"ping")){
+        Ping(client,remoteip);
+    }else if( !strcmp(pekoe->get(0), "udp")){
+        sscanf(pekoe->get(2),"%d",&port);
+        Udp(client,remoteip,port);
+    }else if( !strcmp(pekoe->get(0), "tcp")){
+        sscanf(pekoe->get(2),"%d",&port);
+        Tcp(client,remoteip,port);
+    }else if( !strcmp(pekoe->get(0), "ftp")){
+        Ftp(client,remoteip);
+    }
     exit(0);
     return 0;
 }
