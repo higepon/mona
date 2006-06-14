@@ -18,5 +18,7 @@ main.cpp\
 types.h\
 vnode.h\
 vnode.cpp\
+VnodeManager.h\
+VnodeManager.cpp\
 ISO9660/ISO9660FileSystem.cpp\
 ISO9660/ISO9660FileSystem.h

@@ -86,28 +86,6 @@ public:
 };
 
 
-class VnodeManager
-{
-public:
-    VnodeManager();
-    ~VnodeManager();
-
-public:
-    void setRoot(Vnode* root) {root_ = root;}
-    int lookup(Vnode* diretory, const std::string& file, Vnode** found);
-    int open(const std::string& name, int mode, bool create, dword tid, dword* fileID);
-    int read(dword fileID, dword size, monapi_cmemoryinfo** mem);
-    int seek(dword fileID, dword offset, dword origin);
-    int close(dword fileID);
-    //    int readdir(const std::string&name, monapi_cmemoryinfo** mem);
-    dword fileID(Vnode* file , dword tid) {return (dword)file | tid;} // temporary
-    Vnode* alloc();
-
-private:
-    typedef std::map<dword, io::FileInfo*> FileInfoMap;
-    Vnode* root_;
-    FileInfoMap fileInfoMap_;
-};
 
 
 #endif // _VNODE_

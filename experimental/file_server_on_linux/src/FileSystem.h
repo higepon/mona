@@ -15,6 +15,7 @@
 
 #include <string>
 #include "error.h"
+#include "types.h"
 
 class Vnode;       // defined somewhere
 namespace io
@@ -32,6 +33,7 @@ public:
     virtual ~FileSystem() {}
 
 public:
+    virtual int initialize()                                                               = 0;
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type) = 0;
     virtual int open(Vnode* file, int mode)                                               = 0;
     virtual int read(Vnode* file, struct io::Context* context)                            = 0;
