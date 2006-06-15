@@ -17,75 +17,112 @@
 
 using namespace std;
 
-bool is_self_evaluating(const string& exp)
+typedef void Env;
+typedef std::string Exp;
+
+bool is_self_evaluating(const Exp& exp)
 {
     return true;
 }
 
-bool is_variable(const string& exp)
+bool is_variable(const Exp& exp)
 {
     return true;
 }
 
-bool is_quated(const std::string& exp)
+bool is_quated(const Exp& exp)
 {
     return true;
 }
 
-bool is_assignment(const std::string& exp)
+bool is_assignment(const Exp& exp)
 {
     return true;
 }
 
-bool is_definition(const std::string& exp)
+bool is_definition(const Exp& exp)
 {
     return true;
 }
 
-bool is_if(const std::string& exp)
+bool is_if(const Exp& exp)
 {
     return true;
 }
 
-bool is_lambda(const std::string& exp)
+bool is_lambda(const Exp& exp)
 {
     return true;
 }
 
-bool is_begin(const std::string& exp)
+bool is_begin(const Exp& exp)
 {
     return true;
 }
 
-bool is_cond(const std::string& exp)
+bool is_cond(const Exp& exp)
 {
     return true;
 }
 
-bool is_application(const std::string& exp)
+bool is_application(const Exp& exp)
 {
     return true;
 }
 
-int eval(const std::string& exp, void* env /* fix me */)
+void* lookup_variable_value(const Exp& exp, Env* env)
+{
+    return NULL;
+}
+
+void* text_of_quotation(const Exp& exp)
+{
+    return NULL;
+}
+
+void* eval_assignment(const Exp& exp, Env* env)
+{
+    return NULL;
+}
+
+void* eval_definition(const Exp& exp, Env* env)
+{
+    return NULL;
+}
+
+void* eval_if(const Exp& exp, Env* env)
+{
+    return NULL;
+}
+
+
+void* eval(const Exp& exp, Env* env)
 {
     if (is_self_evaluating(exp))
     {
+        /* fix me */
+        //return exp;
+        return NULL;
     }
     else if (is_variable(exp))
     {
+        return lookup_variable_value(exp, env);
     }
     else if (is_quated(exp))
     {
+        return text_of_quotation(exp);
     }
     else if (is_assignment(exp))
     {
+        return eval_assignment(exp, env);
     }
     else if (is_definition(exp))
     {
+        return eval_definition(exp, env);
     }
     else if (is_if(exp))
     {
+        return eval_if(exp, env);
     }
     else if (is_lambda(exp))
     {
