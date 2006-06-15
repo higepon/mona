@@ -40,10 +40,14 @@ sub main {
     system("touch $dir/configure.ac");
     make_file("$srcdir/Makefile.am", sprintf("bin_PROGRAMS = %s\n%s_SOURCES = main.cpp\n", $name, $name));
     make_file("$srcdir/main.cpp"   , sprintf($main_cpp, $name, $year, $AUTHOR, $AUTHOR, $today));
-    system("cd $dir && autoscan && mv configure.scan configure.tmp");
+    system("cd $dir && autoscan");
+    system("cd $dir && mv configure.scan configure.tmp");
     system("sed 's/FULL-PACKAGE-NAME, VERSION/$name, 0.0.1/g' $dir/configure.tmp | sed '6 i AM_INIT_AUTOMAKE([foreign])' > $dir/configure.ac && rm $dir/configure.tmp");
     system("cd $dir && touch NEWS README AUTHORS ChangeLog");
     system("cd $dir && autoheader && /usr/local/bin/aclocal && /usr/local/bin/automake -a -c && autoconf");
+    system("cd $dir && /usr/local/bin/aclocal");
+    system("cd $dir && autoheader && /usr/local/bin/automake -a -c");
+    system("cd $dir && autoconf");
     system("rm -rf $dir/autom4te.cache");
     system("cd $dir && ./configure && make");
 }
