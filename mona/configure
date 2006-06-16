@@ -1,6 +1,6 @@
 #!/bin/sh
 
-script_dir=`dirname $0`
+script_dir=`cd \`dirname $0\`; pwd`
 
 PATH_SEPARATOR=:
 CONFDIR=share/configs
@@ -59,6 +59,9 @@ do
   --mingw-prefix)
     MINGWPREFIX=$cfg_optarg
     ;;
+  --bim2bin-cc)
+    BIM2BIN_CC=$cfg_optarg
+    ;;
   *)
     echo "Unrecognized option $1"
     exit
@@ -93,20 +96,25 @@ CYGWIN)
   ;;
 esac
 
-mkdir -p $CONFDIR
-
-cp config/configs/dirnames.inc $CONFDIR
+export MINGWPREFIX
+(cd tool/fat_write && MONADIR=$script_dir ./configure --prefix=$script_dir/local) || exit 1
+(cd tool/t5lzma && ./configure) || exit 1
 
 echo "HOSTDEF=-DHOST_$HOST" > $MAKEINC
 echo "USER_START_FUNCTION=_user_start" >> $MAKEINC
 echo "SYMPREFIX=_" >> $MAKEINC
-echo "MONADIR=`cd $script_dir; pwd`" >> $MAKEINC
-echo "PREFIX=`cd $script_dir; pwd`" >> $MAKEINC
+echo "MONADIR=$script_dir" >> $MAKEINC
+echo "PREFIX=$script_dir/local" >> $MAKEINC
 echo '
+SHAREDIR=$(MONADIR)/share
+PATH:=$(PATH):$(PREFIX)/bin
+export PATH
 CFLAGS=-nostdlib -UWIN32 -U_WIN32 -Wall -fno-builtin -O3 -DMONA -DDEBUG_BUILD $(HOSTDEF)
 CXXFLAGS=$(CFLAGS) -fno-exceptions -fno-rtti
 NFLAGS=-I $(MONADIR)/include/ -f win32
 ' >> $MAKEINC
+
+[ x$MINGWPREFIX != x ] && echo "MINGWPREFIX=$MINGWPREFIX" >> $MAKEINC
 
 echo -n 'Checking gcc... '
 [ "x$CC" = x ] && CC=${TOOLPREFIX}gcc
@@ -174,11 +182,21 @@ echo "ok"
 echo "CSC=$CSC" >> $MAKEINC
 case $DOTNET_TYPE in
   dotnet)
-    echo "MONORT=" >> $MAKEINC
+    echo "NETRT=" >> $MAKEINC
     ;;
   mono)
     MONO=`which mono`
     [ "x$MONO" = x ] && { echo 'Mono runtime not found'; ecit 1; }
-    echo "MONORT=$MONO" >> $MAKEINC
+    echo "NETRT=$MONO" >> $MAKEINC
     ;;
 esac
+
+echo -n 'Checking C Compiler for bim2bin... '
+if [ x$BIM2BIN_CC == x ]; then
+  echo not specified
+  BIM2BIN_CC=$CC
+  echo "BIM2BIN_CC=$BIM2BIN_CC" >> $MAKEINC
+else
+  echo $BIM2BIN_CC
+  echo "BIM2BIN_CC=$BIM2BIN_CC" >> $MAKEINC
+fi

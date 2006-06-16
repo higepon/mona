@@ -1,9 +1,9 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 CRT_OBJECT   = monapi.o
 LIB_STATIC   = libmonapi.a
 TARGET       = $(CRT_OBJECT) $(LIB_STATIC)
-
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
 
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = libmonapi-imp.a
@@ -80,13 +80,6 @@ ifneq ($(BUILD_TARGET),ELF)
 	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 	$(INSTALL) -m 0644 $(CRT_OBJECT) $(LIB_STATIC) $(LIBDIR)/
 endif
-	mkdir -p $(INCDIR)/monapi
-	$(INSTALL) -m 0644 *.h $(INCDIR)/monapi/
-	mv $(INCDIR)/monapi/monapi.h $(INCDIR)/
-	mkdir -p $(INCDIR)/servers
-	$(INSTALL) -m 0644 servers/*.h $(INCDIR)/servers/
-	mkdir -p $(SHAREDIR)/configs
-	$(INSTALL) -m 0644 configs/*.inc $(SHAREDIR)/configs/
 
 uninstall:
 	rm -f $(LIBDIR)/$(CRT_OBJECT) $(LIBDIR)/$(LIB_STATIC)
@@ -94,18 +87,5 @@ ifneq ($(BUILD_TARGET),ELF)
 	rm -f $(LIBDIR)/$(LIB_IMPORT)
 	rm -f $(BINDIR)/LIBS/$(LIB_DYNAMIC5)
 endif
-	rm -f $(INCDIR)/monapi.h
-	for file in *.h; \
-	do \
-	  rm -f $(INCDIR)/monapi/$$file; \
-	done
-	for file in servers/*.h; \
-	do \
-	  rm -f $(INCDIR)/$$file; \
-	done
-	for file in configs/*.inc; \
-	do \
-	  rm -f $(SHAREDIR)/$$file; \
-	done
 
 -include dependencies

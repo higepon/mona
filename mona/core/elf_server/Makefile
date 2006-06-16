@@ -1,3 +1,6 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET  = ELF
 SOURCES = main.cpp elfparser.cpp
 INSTDIR = $(BINDIR)/SERVERS

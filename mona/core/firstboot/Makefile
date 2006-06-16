@@ -1,7 +1,7 @@
-TARGET = firstboot.bin
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
 
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
+TARGET = firstboot.bin
 
 all : $(TARGET)
 

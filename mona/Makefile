@@ -1,21 +1,15 @@
-MONADIR=$(CURDIR)
-SHAREDIR=$(CURDIR)/share
+SRCTOP=.
+include $(SRCTOP)/Makefile.inc
+
 PREFIX=$(MONADIR)/local
 PATH:=$(PATH):$(PREFIX)/bin
-export MONADIR
-export SHAREDIR
-export PREFIX
 export PATH
+export MINGWPREFIX
 
 all:
 	#cd config && ./configure && make && make install
-	echo $(FAT_WRITE_MK_EXIST)
-	cd tool/fat_write &&\
-	if ! [ -f Makefile ]; then ./configure --prefix=$(PREFIX); fi; \
-	make && make install
-	cd tool/t5lzma &&\
-	if ! [ -f Makefile ]; then ./configure; fi; \
-	make && make install
+	cd tool/fat_write && make && make install
+	cd tool/t5lzma && make && make install
 	cd tool/bim2bin && make && make install
 	cd core/firstboot && make && make install
 	cd core/PEAnalyzerLib && make && make install

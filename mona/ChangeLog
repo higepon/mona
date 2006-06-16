@@ -1,3 +1,26 @@
+2006-06-01 hiratch <hiratch@hiratch.net>
+
+	* **/*.h: include ディレクトリにコピーされるものについては最初から
+	include ディレクトリに置くようにした。
+
+2006-05-30 hiratch <hiratch@hiratch.net>
+
+	* monapi/*.h: include ディレクトリに移動。
+
+2006-05-24 hiratch <hiratch@hiratch.net>
+
+	* monapi*.inc: コピーしないようにした。
+
+2006-05-22 hiratch <hiratch@hiratch.net>
+
+	* configure, Makefile: tool/* の configure スクリプトを親スクリプト
+	から呼ぶように変更。
+
+2006-05-09 hiratch <hiratch@hiratch.net>
+
+	* **/Makefile: 相対パスで $(SRCTOP)/Makefile.inc を include するように
+	変更。
+
 2006-05-09 hiratch <hiratch@users.sourceforge.jp>
 
 	* chmod +x configure

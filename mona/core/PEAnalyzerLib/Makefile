@@ -1,3 +1,6 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET = PEAnalyzerLib.dll
 SRCS   = \
 	AssemblyInfo.cs \
@@ -13,10 +16,6 @@ SRCS   = \
 	TableBase.cs \
 	Types.cs \
 	Util.cs
-
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
-include Makefile.inc
 
 all: $(TARGET)
 

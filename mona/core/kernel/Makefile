@@ -1,8 +1,8 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET = kernel.bin
 ALIAS  = KERNEL.BIN
-
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
 
 KERNEL_BASE_ADDR = 0x1000
 REL_KERNEL_ADDR  = 0x0200
@@ -11,7 +11,7 @@ MONA_CFG_ADDR    = 0x90000
 LFLAGS       = -n -Ttext $(KERNEL_START_ADDR) -static
 CXXFLAGS    += -DOSTYPE="\"$(OSTYPE)\"" -DREL_KERNEL_ADDR=$(REL_KERNEL_ADDR) -DKERNEL_BASE_ADDR=$(KERNEL_BASE_ADDR)
 CXXFLAGS    += -DMONA_CFG_SIZE=$(MONA_CFG_SIZE) -DMONA_CFG_ADDR=$(MONA_CFG_ADDR)
-INCLUDE      = -I.
+INCLUDE      = -I. -I$(INCDIR)
 SOURCES      = cstart.cpp            \
                kernel.cpp            \
                ihandlers.cpp         \
@@ -71,17 +71,9 @@ doxygen:
 install: $(TARGET)
 	mkdir -p $(BINDIR)
 	$(INSTALL) $(TARGET) $(BINDIR)/$(ALIAS)
-	mkdir -p $(INCDIR)/sys
-	$(INSTALL) -m 0644 sys/*.h $(INCDIR)/sys/
-	$(INSTALL) -m 0644 macro.asm $(INCDIR)/
 
 uninstall:
 	rm -f $(BINDIR)/$(ALIAS)
-	for file in sys/*.h; \
-	do \
-	  rm -f $(INCDIR)/$$file; \
-	done
-	rm -f $(INCDIR)/macro.asm
 
 depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies

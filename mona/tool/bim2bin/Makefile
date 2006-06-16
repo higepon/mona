@@ -1,10 +1,16 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET  = bim2bin$(EXEEXT)
 SOURCES = bim2bin.c
 
-include $(MONADIR)/share/configs/Makefile.inc
+ifneq ($(BIM2BIN_CC),)
+CC=$(BIM2BIN_CC)
+else
+CC=gcc
+endif
 
 CFLAGS = -Wall $(CFLAG_DEFS)
-CC = gcc
 STRIP = strip
 RM = -rm
 INCLUDE  = -idirafter .

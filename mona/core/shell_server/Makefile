@@ -1,3 +1,6 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET  = SHELL
 SOURCES = main.cpp Shell.cpp InternalCommands.cpp
 INSTDIR = $(BINDIR)/SERVERS

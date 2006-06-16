@@ -1,8 +1,8 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 LIB_STATIC   = libmonalibc.a
 TARGET       = $(LIB_STATIC)
-
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
 
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = libmonalibc-imp.a
@@ -61,9 +61,6 @@ ifneq ($(BUILD_TARGET),ELF)
 	mkdir -p $(BINDIR)/LIBS
 	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 endif
-	mkdir -p $(INCDIR)/monalibc
-	$(INSTALL) -m 0644 *.h $(INCDIR)/monalibc/
-	mv $(INCDIR)/monalibc/monalibc.h $(INCDIR)/
 
 uninstall:
 	rm -f $(LIBDIR)/$(LIB_STATIC)
@@ -71,10 +68,5 @@ ifneq ($(BUILD_TARGET),ELF)
 	rm -f $(LIBDIR)/$(LIB_IMPORT)
 	rm -f $(BINDIR)/LIBS/$(LIB_DYNAMIC5)
 endif
-	rm -f $(INCDIR)/monalibc.h
-	for file in *.h; \
-	do \
-	  rm -f $(INCDIR)/monalibc/$$file; \
-	done
 
 -include dependencies

@@ -1,11 +1,11 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 LIB_STATIC   = libmonapi2.a
 TARGET       = $(LIB_STATIC)
 MALLOC_OPT   = -DLACKS_UNISTD_H -DLACKS_FCNTL_H -DLACKS_SYS_PARAM_H \
                -DLACKS_SYS_MMAN_H -DLACKS_STRINGS_H -DLACKS_STRING_H \
                -DLACKS_SYS_TYPES_H -DLACKS_ERRNO_H -DLACKS_STDLIB_H
-
-include $(MONADIR)/share/configs/Makefile.inc
-include $(MONADIR)/share/configs/dirnames.inc
 
 ifneq ($(BUILD_TARGET),ELF)
 LIB_IMPORT   = libmonapi2-imp.a

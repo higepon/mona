@@ -1,6 +1,9 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 all:
 	make clean
-	perl mkimg.pl
+	MONADIR=$(MONADIR) perl mkimg.pl
 	make iso
 
 clean:

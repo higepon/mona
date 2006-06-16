@@ -1,3 +1,6 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET  = PE
 SOURCES = main.cpp PEParser.cpp
 INSTDIR = $(BINDIR)/SERVERS

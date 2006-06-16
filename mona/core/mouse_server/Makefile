@@ -1,3 +1,6 @@
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
+
 TARGET  = MOUSE
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/SERVERS

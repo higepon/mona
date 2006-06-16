@@ -1,6 +1,7 @@
-TARGET = t5lzma$(EXEEXT)
+SRCTOP=../..
+include $(SRCTOP)/Makefile.inc
 
-include $(MONADIR)/share/configs/Makefile.inc
+TARGET = t5lzma$(EXEEXT)
 
 all: $(TARGET)
 

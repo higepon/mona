@@ -1,6 +1,7 @@
-PROG=../../../t5lzma$(EXEEXT)
+SRCTOP=../../../../..
+include $(SRCTOP)/Makefile.inc
 
-include $(MONADIR)/share/configs/Makefile.inc
+PROG=../../../t5lzma$(EXEEXT)
 
 LIB = -lm
 RM = rm -f
