@@ -173,6 +173,11 @@ void IPStack::write(MessageInfo* msg)
             ConnectionInfo* cinfo  = pDP->GetConnection(i);
             if( cinfo->netdsc == msg->arg1 ){    
                 pDP->Send(ret->Data,ret->Size,cinfo);
+                if(cinfo->getType()==TYPETCP){
+                    // memcpy(&(c->msg),(byte*)msg,sizeof(MessageInfo));
+                    // monapi_cmemoryinfo_delete(ret);
+                    // pDP->DoDispatch();
+                }
                 break;
             }
         }

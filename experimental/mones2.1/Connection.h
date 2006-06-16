@@ -22,6 +22,7 @@ public:
     virtual int  Strip(Ether*,byte**)=0;
     virtual bool IsMyPacket(Ether*)=0;
     virtual void Close(){};
+    virtual word getType()=0; //RTTI is Disabled.
 protected:
     Dispatch* dispatcher;
     void CreateIPHeader(Ether*,word,byte);
@@ -39,7 +40,8 @@ public:
     ICMPCoInfo(Dispatch* p){dispatcher=p;}
     void CreateHeader(Ether* ,byte*,word );
     int Strip(Ether*,byte**);
-    bool IsMyPacket(Ether*);
+    bool IsMyPacket(Ether*);    
+    word getType(){return TYPEICMP;}
 private:
     bool WellKnownSVCreply(Ether*);
 };
@@ -51,6 +53,7 @@ public:
     void CreateHeader(Ether* ,byte* ,word );  
     int Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);  
+    word getType(){return TYPEUDP;}
 private:
     bool WellKnownSVCreply(Ether*);
 };
@@ -62,7 +65,8 @@ public:
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
-    void Close();
+    void Close();    
+    word getType(){return TYPETCP;}
 private:
     dword seqnum;
     dword acknum;
