@@ -40,6 +40,32 @@ int ISO9660FileSystem::initialize()
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
+    if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
+    Vnode* v = vmanager_->cacher()->lookup(diretory, file);
+    if (v != NULL && v->type == type)
+    {
+        *found = v;
+        return MONA_SUCCESS;
+    }
+
+    Entry* directoryEntry = (Entry*)diretory->fnode;
+    Entry* target = NULL;
+
+    if (type == Vnode::REGULAR)
+    {
+        target = lookupFile(directoryEntry, file);
+    }
+    else
+    {
+        target = lookupDirectory(directoryEntry, file);
+    }
+    if (target == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
+    Vnode* newVnode = vmanager_->alloc();
+    newVnode->fnode  = target;
+    newVnode->type = type;
+    newVnode->fs = this;
+    vmanager_->cacher()->add(diretory, file, newVnode);
+    *found = newVnode;
     return MONA_SUCCESS;
 }
 
@@ -52,8 +78,8 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 {
     Entry* fileEntry = (Entry*)file->fnode;
     monapi_cmemoryinfo* memory = context->memory;
-    int readSize = context->size >= memory->Size ? memory->Size : context->size;
     dword offset = context->offset;
+    dword readSize = context->size;
     dword rest = fileEntry->attribute.size - offset;
 
     if (rest < readSize)
@@ -74,7 +100,6 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
         delete temp;
         return MONA_FAILURE;
     }
-
     memcpy(memory->Data, temp + offset -(lba - fileEntry->attribute.extent) * SECTOR_SIZE, readSize);
     delete[] temp;
     context->resultSize = readSize;
@@ -297,3 +322,147 @@ void ISO9660FileSystem::deleteEntry(Entry* entry)
     delete entry;
 }
 
+void ISO9660FileSystem::split(string str, char ch, vector<string>& v)
+{
+    dword index = 0;
+    dword next = 0;
+    while ((index = str.find_first_of(ch, next)) != string::npos)
+    {
+        v.push_back(string(str.begin() + next, str.begin() + index));
+        next = index + 1;
+    }
+    v.push_back(string(str.begin() + next, str.end()));
+}
+
+Entry* ISO9660FileSystem::lookupDirectory(Entry* root, const string& path)
+{
+    bool found;
+    vector<string> elements;
+    split(path, '/', elements);
+
+    for (vector<string>::iterator element = elements.begin(); element != elements.end(); ++element)
+    {
+        if (*element == ".")
+        {
+            continue;
+        }
+        else if (*element == "..")
+        {
+            root = root->parent;
+            continue;
+        }
+        else if (*element == "")// || *element == NULL)
+        {
+            continue;
+        }
+
+        found = false;
+        for (EntryList::iterator i = root->children.begin(); i != root->children.end(); ++i)
+        {
+            if ((*i)->name == *element)
+            {
+                root = *i;
+                found = true;
+                break;
+            }
+        }
+        if (!found) return NULL;
+    }
+    return root;
+}
+
+// return value should be delete, when close
+Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
+{
+    setDetailInformation(directory);
+    dword readSize = ((dword)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    byte* buffer = new byte[readSize];
+
+    if (buffer == NULL)
+    {
+        return NULL;
+    }
+
+    bool readResult = drive_->read(directory->attribute.extent, buffer, readSize) == 0;
+
+    if (!readResult)
+    {
+        delete buffer;
+        return NULL;
+    }
+
+    for (dword position = 0; position < readSize;)
+    {
+        DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
+
+        if (iEntry->length == 0)
+        {
+            // check next sector
+            position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
+            continue;
+        }
+
+        string name = getProperName(string(iEntry->name, iEntry->name_len));
+        if (iEntry->directory == 0 && fileName == name)
+        {
+            Entry* foundFile = new Entry;
+
+            setDetailInformation(foundFile, iEntry);
+
+            delete[] buffer;
+            return foundFile;
+        }
+
+        position += iEntry->length;
+        iEntry = (DirectoryEntry*)(buffer + position);
+    }
+    delete[] buffer;
+    return NULL;
+}
+
+bool ISO9660FileSystem::setDetailInformation(Entry* entry)
+{
+    if (entry->hasDetail) return true;
+
+    if (!(entry->parent->hasDetail))
+    {
+        setDetailInformation(entry->parent);
+    }
+
+    dword readSize = ((dword)((entry->parent->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
+    byte* buffer = new byte[readSize];
+
+    if (buffer == NULL)
+    {
+        return false;
+    }
+
+    bool readResult = drive_->read(entry->parent->attribute.extent, buffer, readSize) == 0;
+
+    if (!readResult)
+    {
+        delete[] buffer;
+        return false;
+    }
+
+    EntryList* children = &(entry->parent->children);
+
+    for (dword position = 0; position < readSize;)
+    {
+        DirectoryEntry* iEntry = (DirectoryEntry*)(buffer + position);
+        string name = string(iEntry->name, iEntry->name_len);
+
+        if (iEntry->length == 0) break;
+        for (EntryList::iterator i = children->begin(); i != children->end(); ++i)
+        {
+            Entry* child = *i;
+            if (name != child->name) continue;
+
+            setDetailInformation(child, iEntry);
+        }
+
+        position += iEntry->length;
+    }
+    delete[] buffer;
+    return true;
+}

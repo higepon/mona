@@ -33,10 +33,13 @@ private:
     int setDirectoryCache();
     void createDirectoryListFromPathTable(iso9660::EntryList* list, byte* buffer);
     void setDetailInformation(iso9660::Entry* to, iso9660::DirectoryEntry* from);
+    bool setDetailInformation(iso9660::Entry* entry);
     std::string getProperName(const std::string& name);
     void setDirectoryRelation(iso9660::EntryList* list, iso9660::Entry* directory);
     void deleteEntry(iso9660::Entry* entry);
-
+    void split(std::string str, char ch, std::vector<std::string>& v);
+    iso9660::Entry* lookupDirectory(iso9660::Entry* root, const std::string& path);
+    iso9660::Entry* lookupFile(iso9660::Entry* directory, const std::string& fileName);
     enum
     {
         ISO_PRIMARY_VOLUME_DESCRIPTOR = 1,
