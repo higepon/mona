@@ -140,7 +140,6 @@ int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
     if( frame != NULL){
         cinfo->CreateHeader(frame,data,size);
         nic->SendFrm(frame);
-        //write_bottom_half()
     }
     return 0;
 }

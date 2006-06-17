@@ -1,4 +1,4 @@
-//$Id: Dispatch.h 3263 2006-06-09 18:05:20Z eds1275 $
+//$Id$
 #pragma once
 #include <monapi.h>
 #include <sys/types.h>
@@ -73,7 +73,8 @@ public:
     void Close();    
     word getType(){return TYPETCP;}
     bool isPasv;    
-    bool TransState(Ether*);
+    bool TransStateByPKT(Ether*);
+    bool TransStateByMSG(dword);
 private:
     dword seqnum;
     dword acknum;

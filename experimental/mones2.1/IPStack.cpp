@@ -107,7 +107,9 @@ void IPStack::open(MessageInfo* msg)
         pDP->AddConnection(pT);
         if( (msg->arg3)>>8 == 0x01 ){
             pT->isPasv=false;
-            pT->TransState(NULL);
+            pT->TransStateByMSG(MSG_NET_OPEN);
+            memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
+            return; // reply will be done by recv SYN|ACK 
         }    
         break;
     default:
@@ -173,7 +175,7 @@ void IPStack::write(MessageInfo* msg)
             if( cinfo->netdsc == msg->arg1 ){    
                 pDP->Send(ret->Data,ret->Size,cinfo);
                 if(cinfo->getType()==TYPETCP){
-                    memcpy(&(cinfo->msg),(byte*)msg,sizeof(MessageInfo));
+                    memcpy(&(cinfo->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
                     monapi_cmemoryinfo_delete(ret);
                     pDP->DoDispatch();
                     return;

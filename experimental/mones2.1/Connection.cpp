@@ -1,4 +1,4 @@
-//$Id: Dispatch.cpp 3263 2006-06-09 18:05:20Z eds1275 $
+//$Id$
 #include <pci/Pci.h>
 #include "Net.h"
 #include "NE2000.h"
@@ -149,7 +149,7 @@ int TCPCoInfo::Strip(Ether* frame, byte** data)
 bool TCPCoInfo::IsMyPacket(Ether* frame)
 {
     if( TYPETCP    == frame->IPHeader->prot){ //YES! MYPACKET
-        if( TransState(frame) ){
+        if( TransStateByPKT(frame) ){
             return false;
         }else if( WellKnownSVCreply(frame) ){
             return true;
@@ -190,6 +190,7 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     tcp->acknumber=bswapl(acknum);
     tcp->offset=0xF0 & ((size+sizeof(TCP))<<2);
     tcp->flags=0x3F&flags;   
+    printf("<<%d>>\n",flags);
     tcp->window=bswap(window);
     tcp->chksum=0x0000;
     tcp->urgent=0;
@@ -199,59 +200,87 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     //printf("CreateHeader\n");
 }
 
-//=EVENT==========STAT.TRANS.============ACTION===       ACTIVOPEN
-//MSGACTVOpen     CLOSED->SYN_SENT       sendSYN
-//recvSYN|ACK     SYN_SENT-> ESTAB       sendACK 
-//recvSYN         SYN_SENT->SYN_RCVD     sendACK
-//=EVENT==========STAT.TRANS.============ACTION===        PASVOPEN
+void TCPCoInfo::Close() //ACTV
+{     
+
+}
+
+/*   enum TCP_STAT{
+        CLOSED=1,
+        LISTENING,
+        SYN_SENT,
+        SYN_RCVD,
+        ESTAB,
+        FIN_WAIT1,
+        FIN_WAIT2,
+        CLOSE_WAIT,
+        LAST_ACK,
+        TIME_WAIT
+    }; */
+//=EVENT==========STAT.TRANS.============ACTION=================WHO
+  //MSGACTVOpen    CLOSED->SYN_SENT       sendSYN                @THIS
 //MSGOpen         CLOISED->LISTEN        -
-//recvSYN         LISTEN->SYN_RCVD       sendSYN|ACK
 //MSGWrite        LISTEN->ERROR.
+//MSGClose        SYN_RCVD->FIN_WAIT1    sendFIN
+//MSGClose        ESTAB->FIN_WAIT1       sendFIN
+  //recvSYN|ACK     SYN_SENT-> ESTAB       sendACK replyMSGOPEN @THIS
+//recvSYN         SYN_SENT->SYN_RCVD     sendACK
+//recvSYN         LISTEN->SYN_RCVD       sendSYN|ACK
 //recvACK         SYN_RSVD->ESTAB        -
-//================================================        PASVCLOSE
 //recvFIN         ESTAB->CLOSE_WAIT      sendACK
 //TRANS.CLOS_WAIT CLOSE_WAIT->LAST_ACK   sendFIN
 //recvFIN|ACK     LAS_ACK->CLOSED
-
-//=EVENT==========STAT.TRANS.============ACTION===        CLOSE
-//MSGClose        SYN_RCVD->FIN_WAIT1    sendFIN
-//MSGClose        ESTAB->FIN_WAIT1       sendFIN
 //recvFIN|ACK     FIN_WAIT1->FIN_WAIT2   -
 //recvFIN         FIN_WAIT2->TIME_WAIT   sendACK
 //recvACK         FIN_WAIT1->CLOSING     sendACK
 //recvFIN|ACK     CLOSEING->TIME_WAIT    TRANS.CLOSED delay2MIN.
-
 //MSGRead         ESTAB->ESTAB           -
 //MSGWrite        ESTAB->ESTAB           -
 //MSGRead         OTHERS->OTHRES         replyERROR
 //MSGWrite        OTHERS->OTHERS         replyERROR
 //MSGClose        OTHERS->CLOSED         -
 
-bool TCPCoInfo::TransState(Ether* frame)
+bool TCPCoInfo::TransStateByMSG(dword msg)
 {
-    //return true //Dispose.
-    return false; //Not dispose .
+    if( status == CLOSED  && isPasv==false && msg==MSG_NET_OPEN){
+        seqnum=bswapl(1);
+        acknum=bswapl(1);
+        status=SYN_SENT; 
+        flags=SYN;
+        window=100;
+        printf("CLOSED->SYN_SENT\n");
+        dispatcher->Send(NULL,0,this);
+        return true;
+    }
+    return false; //Not Dispose Packet.
+    //return true //Dispose Packet.
 }
 
-void TCPCoInfo::Close() //ACTV
-{     
-
+bool TCPCoInfo::TransStateByPKT(Ether* frame)
+{
+    byte rflag= frame->IPHeader->TCPHeader->flags;
+    if( status == SYN_SENT &&  rflag == SYN|ACK ){
+        remoteip=frame->IPHeader->srcip;
+        seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
+        acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
+        status=ESTAB; 
+        flags=ACK;
+        window=100;
+        printf("SYN_SENT->ESTAB");
+        Message::reply(&msg, netdsc);
+        dispatcher->Send(NULL,0,this);
+        return false;
+    }
+    return true; //Dispose Packet.
+    //return false; //Not Dispose Packet.
 }
+
 
 /*
 //   ~ESTABLISHED -> LISTNING   @timerAPI   ==
 bool TCPCoInfo::HandShakeACTV(Ether* frame)
 {  
     printf("ACTV %d\n",status);
-    if(status==LISTENING){//LISTNING SYN_SENT send SYN
-        seqnum=bswapl(1);
-        acknum=bswapl(1);
-        status=SYN_SENT; 
-        flags=SYN;
-        window=100;
-        dispatcher->Send(NULL,0,this);
-        return true;
-    }
     if(status==SYN_SENT){//SYN_SENT ESTABLISHED send ACK
         return false;
     }  
