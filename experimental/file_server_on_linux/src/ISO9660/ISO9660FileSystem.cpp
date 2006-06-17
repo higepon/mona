@@ -116,6 +116,11 @@ int ISO9660FileSystem::close(Vnode* file)
     return MONA_SUCCESS;
 }
 
+Vnode* ISO9660FileSystem::getRoot() const
+{
+    return root_;
+}
+
 /*----------------------------------------------------------------------
     private functions
 ----------------------------------------------------------------------*/

@@ -52,7 +52,7 @@ bool IDEDriver::findDevice(int type, int detail, int* controller, int* deviceNo)
 int IDEDriver::read(dword lba, void* buffer, int size)
 {
     fseek(this->fp, lba * 2048, SEEK_SET);
-    int result = fread(buffer, size, 1, this->fp);
+    fread(buffer, size, 1, this->fp);
     return 0;
 }
 
@@ -64,6 +64,7 @@ int IDEDriver::open()
         fprintf(stderr, "mona.iso not found");
         exit(1);
     }
+    return 0;
 }
 
 int IDEDriver::close()

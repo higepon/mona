@@ -20,6 +20,7 @@ public:
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int seek(Vnode* file, dword offset, dword origin);
     virtual int close(Vnode* file);
+    virtual Vnode* getRoot() const;
 
     enum
     {

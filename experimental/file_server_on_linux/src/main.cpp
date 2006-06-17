@@ -1,33 +1,7 @@
 #include "stdio.h"
-#include "file_server.h"
+#include "FileServer.h"
 
 using namespace MonAPI;
-
-VnodeManager* vmanager;
-
-void MessageLoop()
-{
-    for (MessageInfo msg;;)
-    {
-        if (Message::receive(&msg)) continue;
-
-        switch (msg.header)
-        {
-        case MSG_VFS_FILE_OPEN:
-        {
-            dword tid = msg.from; // temporary
-            dword fildID;
-            int ret = vmanager->open(msg.str, 0, false, tid, &fildID);
-            Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
-    }
-}
 
 int main()
 {
@@ -40,6 +14,13 @@ int main()
         exit(1);
     }
 #endif
-    MessageLoop();
+    FileServer server;
+    if (server.initializeFileSystems() != MONA_SUCCESS)
+    {
+        printf("fileserver filesystem initialize error\n");
+        exit(1);
+    }
+    server.messageLoop();
+
     return 0;
 }

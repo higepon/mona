@@ -55,6 +55,7 @@ am_file_server_OBJECTS = file_server-IDEDriver.$(OBJEXT) \
 	file_server-cmemoryinfo.$(OBJEXT) \
 	file_server-ProcessUtil.$(OBJEXT) file_server-main.$(OBJEXT) \
 	file_server-vnode.$(OBJEXT) file_server-VnodeManager.$(OBJEXT) \
+	file_server-FileServer.$(OBJEXT) \
 	file_server-ISO9660FileSystem.$(OBJEXT)
 file_server_OBJECTS = $(am_file_server_OBJECTS)
 file_server_LDADD = $(LDADD)
@@ -173,6 +174,8 @@ vnode.h\
 vnode.cpp\
 VnodeManager.h\
 VnodeManager.cpp\
+FileServer.h\
+FileServer.cpp\
 ISO9660/ISO9660FileSystem.cpp\
 ISO9660/ISO9660FileSystem.h
 
@@ -307,6 +310,12 @@ file_server-VnodeManager.o: VnodeManager.cpp
 
 file_server-VnodeManager.obj: VnodeManager.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-VnodeManager.obj `if test -f 'VnodeManager.cpp'; then $(CYGPATH_W) 'VnodeManager.cpp'; else $(CYGPATH_W) '$(srcdir)/VnodeManager.cpp'; fi`
+
+file_server-FileServer.o: FileServer.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FileServer.o `test -f 'FileServer.cpp' || echo '$(srcdir)/'`FileServer.cpp
+
+file_server-FileServer.obj: FileServer.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FileServer.obj `if test -f 'FileServer.cpp'; then $(CYGPATH_W) 'FileServer.cpp'; else $(CYGPATH_W) '$(srcdir)/FileServer.cpp'; fi`
 
 file_server-ISO9660FileSystem.o: ISO9660/ISO9660FileSystem.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ISO9660FileSystem.o `test -f 'ISO9660/ISO9660FileSystem.cpp' || echo '$(srcdir)/'`ISO9660/ISO9660FileSystem.cpp

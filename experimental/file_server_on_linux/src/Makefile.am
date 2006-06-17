@@ -20,5 +20,7 @@ vnode.h\
 vnode.cpp\
 VnodeManager.h\
 VnodeManager.cpp\
+FileServer.h\
+FileServer.cpp\
 ISO9660/ISO9660FileSystem.cpp\
 ISO9660/ISO9660FileSystem.h
