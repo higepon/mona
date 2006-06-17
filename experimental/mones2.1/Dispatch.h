@@ -17,7 +17,8 @@ class Dispatch :public RouteMan
 private:
     Nic* nic;    
     HList<ConnectionInfo*> cinfolist;  
-    void read_bottom_half(int,ConnectionInfo*);  
+    void read_bottom_half(int,ConnectionInfo*); 
+    void write_bottom_half(int,ConnectionInfo*);
     void Dispose(int n){ nic->Delete(n); }  
 public:    
     void DoDispatch();

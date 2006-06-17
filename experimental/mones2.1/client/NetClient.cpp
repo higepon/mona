@@ -23,10 +23,14 @@ int NetClient::Config(char* if_name, dword localip, dword gatewayip, byte subnet
     return msg.arg2;
 }
 
-int NetClient::Open(dword remoteip, word localport, word remoteport, word protocol)
+int NetClient::Open(dword remoteip, word localport, word remoteport, word protocol,byte isPasv)
 {
     MessageInfo msg;
     dword port=((localport)<<16)|remoteport;
+    if( isPasv == false){
+        protocol&=0x00FF;
+        protocol|=0x0100;
+    }
     if (Message::sendReceive(&msg, serverid, MSG_NET_OPEN, remoteip,port,protocol,NULL) != 0){
         return -1;
     }

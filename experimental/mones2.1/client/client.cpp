@@ -83,7 +83,8 @@ int Tcp(NetClient& client,dword remoteip,word port)
     printf("   Send TCP tp %d\n",port);    
     word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
-    int netdsc = client.Open(remoteip,localport,port,TYPETCP);
+    //isPasv=false;
+    int netdsc = client.Open(remoteip,localport,port,TYPETCP,false);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }

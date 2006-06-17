@@ -148,8 +148,8 @@ int TCPCoInfo::Strip(Ether* frame, byte** data)
 
 bool TCPCoInfo::IsMyPacket(Ether* frame)
 {
-    if( TYPETCP    == frame->IPHeader->prot){
-        if( HandShakePASV(frame) ){
+    if( TYPETCP    == frame->IPHeader->prot){ //YES! MYPACKET
+        if( TransState(frame) ){
             return false;
         }else if( WellKnownSVCreply(frame) ){
             return true;
@@ -178,8 +178,6 @@ bool TCPCoInfo::WellKnownSVCreply(Ether* frame)
 
 void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
 {
-    if( HandShakeACTV(frame) )
-        return;
     IP* ip=frame->IPHeader; //for psedo header
     ip->ttl =0x00;
     ip->prot=TYPETCP;
@@ -201,6 +199,46 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     //printf("CreateHeader\n");
 }
 
+//=EVENT==========STAT.TRANS.============ACTION===       ACTIVOPEN
+//MSGACTVOpen     CLOSED->SYN_SENT       sendSYN
+//recvSYN|ACK     SYN_SENT-> ESTAB       sendACK 
+//recvSYN         SYN_SENT->SYN_RCVD     sendACK
+//=EVENT==========STAT.TRANS.============ACTION===        PASVOPEN
+//MSGOpen         CLOISED->LISTEN        -
+//recvSYN         LISTEN->SYN_RCVD       sendSYN|ACK
+//MSGWrite        LISTEN->ERROR.
+//recvACK         SYN_RSVD->ESTAB        -
+//================================================        PASVCLOSE
+//recvFIN         ESTAB->CLOSE_WAIT      sendACK
+//TRANS.CLOS_WAIT CLOSE_WAIT->LAST_ACK   sendFIN
+//recvFIN|ACK     LAS_ACK->CLOSED
+
+//=EVENT==========STAT.TRANS.============ACTION===        CLOSE
+//MSGClose        SYN_RCVD->FIN_WAIT1    sendFIN
+//MSGClose        ESTAB->FIN_WAIT1       sendFIN
+//recvFIN|ACK     FIN_WAIT1->FIN_WAIT2   -
+//recvFIN         FIN_WAIT2->TIME_WAIT   sendACK
+//recvACK         FIN_WAIT1->CLOSING     sendACK
+//recvFIN|ACK     CLOSEING->TIME_WAIT    TRANS.CLOSED delay2MIN.
+
+//MSGRead         ESTAB->ESTAB           -
+//MSGWrite        ESTAB->ESTAB           -
+//MSGRead         OTHERS->OTHRES         replyERROR
+//MSGWrite        OTHERS->OTHERS         replyERROR
+//MSGClose        OTHERS->CLOSED         -
+
+bool TCPCoInfo::TransState(Ether* frame)
+{
+    //return true //Dispose.
+    return false; //Not dispose .
+}
+
+void TCPCoInfo::Close() //ACTV
+{     
+
+}
+
+/*
 //   ~ESTABLISHED -> LISTNING   @timerAPI   ==
 bool TCPCoInfo::HandShakeACTV(Ether* frame)
 {  
@@ -271,9 +309,4 @@ bool TCPCoInfo::HandShakePASV(Ether* frame)
     //ESTABLISHED-> ESTABLISHED            rcv -
     return false;
 }
-
-void TCPCoInfo::Close()
-{ 
-    printf("TCPCloseSec.\n");
-    //ESTABLISHED  -> FIN_WAIT1 
-}
+*/

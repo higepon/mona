@@ -1,4 +1,4 @@
-//$Id$
+//$Id: Dispatch.cpp 3275 2006-06-14 15:31:40Z eds1275 $
 #include <pci/Pci.h>
 #include "Net.h"
 #include "NE2000.h"
@@ -119,9 +119,10 @@ void Dispatch::DoDispatch()
                 }else if(i<3){ //pkt for well known services.
                     Dispose(pktnumber);
                     pktnumber--;
-                }//else(MSG_NET_WRITE){
-                 //   write bottom half()
-                 //}
+                }else if( cinfo->msg.header == MSG_NET_WRITE ){
+                    write_bottom_half(pktnumber,cinfo);
+                    //pktnumber--;
+                }
                 //else pkt for opend but not reading.
             }else if(i>=3){
                 Dispose(pktnumber); //pkt for unopend.
@@ -149,6 +150,15 @@ ConnectionInfo* Dispatch::RemoveConnection(int n)
     ConnectionInfo* cinfo = cinfolist.removeAt(n);
     cinfo->Close();
     return cinfo;
+}
+void Dispatch::write_bottom_half(int n,ConnectionInfo* cinfo)
+{
+    Ether* frame=nic->RecvFrm(n);
+    if( frame != NULL ){
+        //Check Ack Flag.
+        memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
+        Message::reply(&(cinfo->msg));
+    }    
 }
 
 void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)

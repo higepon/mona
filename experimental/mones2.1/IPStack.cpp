@@ -1,4 +1,4 @@
-//$Id$
+//$Id: IPStack.cpp 3281 2006-06-16 14:00:14Z eds1275 $
 #include "IPStack.h"
 using namespace mones;
 using namespace MonAPI;
@@ -85,36 +85,35 @@ void IPStack::getfreeport(MessageInfo* msg)
 
 void IPStack::open(MessageInfo* msg)
 {
-    ConnectionInfo* c=NULL;
-    switch(msg->arg3)
+    int netdsc= pDP->ConnectionNum();
+    switch((msg->arg3)&0x00FF)
     {
     case TYPEICMP:
         ICMPCoInfo* pI=new ICMPCoInfo(pDP);
         pI->type=ECHOREQUEST;
         pI->seqnum=0;
         pI->idnum=0;
+        pI->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
         pDP->AddConnection(pI);
-        c=pI;
         break;
     case TYPEUDP:
         UDPCoInfo* pU = new UDPCoInfo(pDP);
+        pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
         pDP->AddConnection(pU);
-        c=pU;
         break;
     case TYPETCP:
-        TCPCoInfo* pT=new TCPCoInfo(pDP);
+        TCPCoInfo* pT=new TCPCoInfo(pDP);    
+        pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
         pDP->AddConnection(pT);
-        c=pT;
+        if( (msg->arg3)>>8 == 0x01 ){
+            pT->isPasv=false;
+            pT->TransState(NULL);
+        }    
         break;
     default:
         printf("orz\n");
     }
-    c->remoteip   = msg->arg1; 
-    c->remoteport = (word)(msg->arg2&0x0000FFFF);
-    c->localport  = (word)(msg->arg2>>16);
-    c->clientid   = msg->from;    
-    c->netdsc     = pDP->ConnectionNum();  
-    Message::reply(msg, c->netdsc);
+    Message::reply(msg, netdsc);
 }
 
 void IPStack::close(MessageInfo* msg)
@@ -174,11 +173,11 @@ void IPStack::write(MessageInfo* msg)
             if( cinfo->netdsc == msg->arg1 ){    
                 pDP->Send(ret->Data,ret->Size,cinfo);
                 if(cinfo->getType()==TYPETCP){
-                    // memcpy(&(c->msg),(byte*)msg,sizeof(MessageInfo));
-                    // monapi_cmemoryinfo_delete(ret);
-                    // pDP->DoDispatch();
+                    memcpy(&(cinfo->msg),(byte*)msg,sizeof(MessageInfo));
+                    monapi_cmemoryinfo_delete(ret);
+                    pDP->DoDispatch();
+                    return;
                 }
-                break;
             }
         }
         monapi_cmemoryinfo_delete(ret);
