@@ -94,9 +94,10 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     byte* temp = new byte[sectorSize];
     if (temp == NULL) return MONA_FAILURE;
 
-    bool readResult = drive_->read(lba, temp, readSize);
+    bool readResult = drive_->read(lba, temp, sectorSize) == 0;
     if (!readResult)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
         delete temp;
         return MONA_FAILURE;
     }

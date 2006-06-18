@@ -40,7 +40,6 @@ int SocketMessage::createReceiveSocket()
 {
     int sock;
     sock = socket(AF_INET, SOCK_STREAM, 0);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     if (-1 == sock)
     {
         perror("receive:socket()");
@@ -56,7 +55,6 @@ int SocketMessage::createReceiveSocket()
     SocketMessage::setMyHost(&me);
     me.sin_family = AF_INET;
     me.sin_port   = htons(SocketMessage::port);
-    printf("%s %s:%d port=%d\n", __func__, __FILE__, __LINE__, SocketMessage::port);fflush(stdout);
     if (-1 == bind(sock, (struct sockaddr *)&me, sizeof(me)))
     {
         perror("bind");
@@ -105,7 +103,6 @@ int SocketMessage::send(dword tid, MessageInfo* info)
 
 int SocketMessage::receive(MessageInfo* info)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     int sock = SocketMessage::createReceiveSocket();
     if (-1 == sock) return -1;
 
@@ -127,7 +124,6 @@ int SocketMessage::receive(MessageInfo* info)
         return -1;
     }
     close(who);
-    printf("close %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     close(sock);
     return 0;
 }

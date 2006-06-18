@@ -22,5 +22,6 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
+                 test/Makefile
                  src/Makefile])
 AC_OUTPUT
