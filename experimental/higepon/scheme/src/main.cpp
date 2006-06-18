@@ -13,96 +13,104 @@
 #  include "config.h"
 #endif
 
-#include <string>
+#include "Number.h"
+#include "String.h"
 
-using namespace std;
+using namespace monash;
 
 typedef void Env;
-typedef std::string Exp;
 
-bool is_self_evaluating(const Exp& exp)
+
+void display(Object* exp)
 {
-    return true;
+    printf("%s", exp->toString().c_str());
 }
 
-bool is_variable(const Exp& exp)
+bool isSelfEvaluating(Object* exp)
 {
-    return true;
-}
-
-bool is_quated(const Exp& exp)
-{
-    return true;
-}
-
-bool is_assignment(const Exp& exp)
-{
-    return true;
-}
-
-bool is_definition(const Exp& exp)
-{
-    return true;
-}
-
-bool is_if(const Exp& exp)
-{
-    return true;
-}
-
-bool is_lambda(const Exp& exp)
-{
-    return true;
-}
-
-bool is_begin(const Exp& exp)
-{
-    return true;
-}
-
-bool is_cond(const Exp& exp)
-{
-    return true;
-}
-
-bool is_application(const Exp& exp)
-{
-    return true;
-}
-
-void* lookup_variable_value(const Exp& exp, Env* env)
-{
-    return NULL;
-}
-
-void* text_of_quotation(const Exp& exp)
-{
-    return NULL;
-}
-
-void* eval_assignment(const Exp& exp, Env* env)
-{
-    return NULL;
-}
-
-void* eval_definition(const Exp& exp, Env* env)
-{
-    return NULL;
-}
-
-void* eval_if(const Exp& exp, Env* env)
-{
-    return NULL;
-}
-
-
-void* eval(const Exp& exp, Env* env)
-{
-    if (is_self_evaluating(exp))
+    if (exp->type() == Object::NUMBER || exp->type() == Object::STRING)
     {
-        /* fix me */
-        //return exp;
-        return NULL;
+        return true;
+    }
+    return false;
+}
+
+bool is_variable(Object* exp)
+{
+    return true;
+}
+
+bool is_quated(Object* exp)
+{
+    return true;
+}
+
+bool is_assignment(Object* exp)
+{
+    return true;
+}
+
+bool is_definition(Object* exp)
+{
+    return true;
+}
+
+bool is_if(Object* exp)
+{
+    return true;
+}
+
+bool is_lambda(Object* exp)
+{
+    return true;
+}
+
+bool is_begin(Object* exp)
+{
+    return true;
+}
+
+bool is_cond(Object* exp)
+{
+    return true;
+}
+
+bool is_application(Object* exp)
+{
+    return true;
+}
+
+Object* lookup_variable_value(Object* exp, Env* env)
+{
+    return NULL;
+}
+
+Object* text_of_quotation(Object* exp)
+{
+    return NULL;
+}
+
+Object* eval_assignment(Object* exp, Env* env)
+{
+    return NULL;
+}
+
+Object* eval_definition(Object* exp, Env* env)
+{
+    return NULL;
+}
+
+Object* eval_if(Object* exp, Env* env)
+{
+    return NULL;
+}
+
+
+Object* eval(Object* exp, Env* env)
+{
+    if (isSelfEvaluating(exp))
+    {
+        return exp;
     }
     else if (is_variable(exp))
     {
@@ -145,5 +153,7 @@ void* eval(const Exp& exp, Env* env)
 
 int main(int argc, char *argv[])
 {
+    Number exp(7);
+    display(eval(&exp, NULL));
     return 0;
 }
