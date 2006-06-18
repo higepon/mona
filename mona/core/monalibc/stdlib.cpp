@@ -18,6 +18,20 @@
 int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag);
 int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int base, char flag);
 
+void abort()
+{
+	exit(1);
+}
+
+char *getenv(const char *name)
+{
+	return NULL;
+}
+
+int putenv(char *string)
+{
+	return 0;
+}
 
 /*!
   \brief string to long int
@@ -539,3 +553,108 @@ void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*fn
   result = NULL;
   return result;
 }
+
+static double s_seed = 0.314159265359;
+
+/*!
+ *
+ */
+int rand()
+{
+	s_seed *= 17.0;
+	s_seed -= (double)(int)s_seed;
+	
+	return (int)(s_seed * RAND_MAX);
+}
+
+/*!
+ *
+ */
+void srand(unsigned int seed)
+{
+	s_seed = ((double)(seed % RAND_MAX)) / ((double)RAND_MAX);
+}
+
+/*!
+ *
+ */
+double strtod(const char *s, char **endptr)
+{
+	double result = 0;
+	long int exponent = 0;
+	int sign = 1; /* minus flag */
+	bool point = false;
+	const char *tmp = s;
+
+	while (isspace(*tmp)) tmp++; /* skip spaces */
+	const char *head = tmp;
+	switch (*tmp) /* check mflag */
+	{
+		case '-':
+			sign = -1;
+		case '+':
+			tmp++;
+	}
+
+	while (*tmp != '\0') {
+		if (isdigit(*tmp)) {
+			if (point) exponent--;
+			result = result*10.0 + (*tmp - '0');
+		} else {
+			/* decimal_point is '.' ToDo: use lconv */
+			if ((*tmp == '.') && point) {
+				point = true;
+			} else {
+				break;
+			}
+		}
+		tmp++;
+	}
+
+	result *= sign;
+	sign = 1;
+	if (toupper(*tmp) == 'E') { /* ToDo: P */
+		tmp++;
+		switch (*tmp)
+		{
+			case '-':
+				sign = -1;
+			case '+':
+				tmp++;
+		}
+		long int tmpExponent = exponent;
+		exponent = 0;
+		while (*tmp != '\0') {
+			exponent = exponent * 10 + (*tmp - '0');
+		}
+		exponent = exponent * sign + tmpExponent;
+	}
+
+	while (exponent > 0) { /* ToDo: overflow */
+		result *= 10;
+		exponent--;
+	}
+	while (exponent < 0) { /* ToDo: underflow */
+		result /= 10;
+		exponent++;
+	}
+
+	if (endptr != NULL) {
+		if (head != tmp) {
+			*endptr = (char *)tmp;
+		} else {
+			*endptr = (char *)s;
+		}
+	}
+
+	return result;
+}
+
+/*!
+ *  *
+ *   */
+double atof(const char *s)
+{
+	return strtod(s, NULL);
+}
+

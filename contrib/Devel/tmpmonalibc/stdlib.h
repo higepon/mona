@@ -11,8 +11,6 @@
 #undef NORMAL
 #endif
 
-#define RAND_MAX 65536
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20,14 +18,6 @@ extern "C" {
 int main(int argc, char* argv[]);
 
 void exit(int code);
-void abort();
-char* getenv(const char* NAME);
-int putenv(char *string);
-double strtod(const char *STR, char **TAIL);
-double atof(const char *s);
-
-int rand();
-void srand(unsigned seed);
 
 #ifdef __cplusplus
 }

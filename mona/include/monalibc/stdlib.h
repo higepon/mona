@@ -47,6 +47,10 @@ typedef struct{
   long int rem;  /* remainder */
 } ldiv_t;
 
+void abort();
+char *getenv(const char *name);
+int putenv(char *string);
+
 long int strtol(const char *s, char **endptr, int base);
 unsigned long int strtoul(const char *s, char **endptr, int base);
 size_t strtoi(const char *s, char **endptr, int base, int width, char flag);
@@ -60,6 +64,11 @@ div_t div(long int numer, long int denom);
 ldiv_t ldiv(long int numer, long int denom);
 void qsort(void *base, size_t n, size_t size, int (*fnc)(const void*, const void*));
 void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*fnc)(const void *, const void *));
+
+int rand();
+void srand(unsigned int seed);
+double strtod(const char *s, char **endptr);
+double atof(const char *s);
 
 #ifdef __cplusplus
 }
