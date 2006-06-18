@@ -15,14 +15,15 @@ public:
     word  remoteport;
     dword clientid;
     word  netdsc;
-
+    dword disposedtick;
+    bool  disposed;
     MessageInfo msg; //too heavy? performance test is must item.
-    ConnectionInfo(){msg.header=0x0;}
+    ConnectionInfo(){msg.header=0x0; disposed=false;}
     virtual ~ConnectionInfo(){};
     virtual void CreateHeader(Ether* ,byte* ,word )=0;
     virtual int  Strip(Ether*,byte**)=0;
     virtual bool IsMyPacket(Ether*)=0;
-    virtual void Close(){};
+    virtual void Close();
     virtual word getType()=0; //RTTI is Disabled.
     void Init(dword rip, word lport, word rport,dword cid, word dsc){
         remoteip=rip; localport=lport; remoteport=rport; clientid=cid; netdsc=dsc;
@@ -66,7 +67,7 @@ private:
 class TCPCoInfo : public ConnectionInfo
 {
 public:
-    TCPCoInfo(Dispatch* p){ dispatcher=p; status=CLOSED; isPasv=true;}
+    TCPCoInfo(Dispatch* p){ dispatcher=p; status=CLOSED; isPasv=true; window=1000; }
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
@@ -75,6 +76,18 @@ public:
     bool isPasv;    
     bool TransStateByPKT(Ether*);
     bool TransStateByMSG(dword);
+    void SendACK(Ether*);
+    enum CTRLFLAGS{
+        NORM=0x0,
+        FIN=0x01,
+        SYN=0x02,
+        RST=0x04,
+        PSH=0x08,
+        ACK=0x10,    
+        URG=0x20,
+        ECN=0x40,
+        RED=0x80
+    };
 private:
     dword seqnum;
     dword acknum;
@@ -93,18 +106,7 @@ private:
         LAST_ACK,
         TIME_WAIT
     };
-    enum CTRLFLAGS{
-        FIN=0x01,
-        SYN=0x02,
-        RST=0x04,
-        PSH=0x08,
-        ACK=0x10,    
-        URG=0x20,
-        ECN=0x40,
-        RED=0x80
-    };
     bool WellKnownSVCreply(Ether*);
-
 };
 
 };

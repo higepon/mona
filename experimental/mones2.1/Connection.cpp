@@ -8,6 +8,10 @@
 
 using namespace mones;
 using namespace MonAPI;
+void ConnectionInfo::Close()
+{
+    dispatcher->RemoveConnection(this,0);
+}
 
 word ConnectionInfo::checksum(byte *data,word size)
 {
@@ -150,14 +154,14 @@ bool TCPCoInfo::IsMyPacket(Ether* frame)
 {
     if( TYPETCP    == frame->IPHeader->prot){ //YES! MYPACKET
         if( TransStateByPKT(frame) ){
-            return false;
-        }else if( WellKnownSVCreply(frame) ){
-            return true;
-        }else if( remoteip   == frame->IPHeader->srcip &&
+            if( WellKnownSVCreply(frame) ){
+                return true;
+            }else if( remoteip   == frame->IPHeader->srcip &&
                   localport  == bswap(frame->IPHeader->TCPHeader->dstport) &&
                   remoteport == bswap(frame->IPHeader->TCPHeader->srcport) )
-        {
-            return true;
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -188,9 +192,8 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     tcp->dstport=bswap(remoteport);
     tcp->seqnumber=bswapl(seqnum);
     tcp->acknumber=bswapl(acknum);
-    tcp->offset=0xF0 & ((size+sizeof(TCP))<<2);
+    tcp->offset=0xF0 & ((sizeof(TCP))<<2);//options.
     tcp->flags=0x3F&flags;   
-    printf("<<%d>>\n",flags);
     tcp->window=bswap(window);
     tcp->chksum=0x0000;
     tcp->urgent=0;
@@ -200,13 +203,21 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     //printf("CreateHeader\n");
 }
 
-void TCPCoInfo::Close() //ACTV
-{     
 
+void TCPCoInfo::Close()
+{     
+    if( status == ESTAB ){
+        //seqnum;
+        //acknum;
+        status=FIN_WAIT1;
+        flags=FIN|ACK;
+        window=1500; 
+        printf("ESTAB->FIN_WAIT1\n");
+        dispatcher->Send(NULL,0,this);
+    }
 }
 
-/*   enum TCP_STAT{
-        CLOSED=1,
+/*      CLOSED=1,
         LISTENING,
         SYN_SENT,
         SYN_RCVD,
@@ -215,10 +226,9 @@ void TCPCoInfo::Close() //ACTV
         FIN_WAIT2,
         CLOSE_WAIT,
         LAST_ACK,
-        TIME_WAIT
-    }; */
+        TIME_WAIT */
 //=EVENT==========STAT.TRANS.============ACTION=================WHO
-  //MSGACTVOpen    CLOSED->SYN_SENT       sendSYN                @THIS
+  //MSGACTVOpen    CLOSED->SYN_SENT       sendSYN               @THIS
 //MSGOpen         CLOISED->LISTEN        -
 //MSGWrite        LISTEN->ERROR.
 //MSGClose        SYN_RCVD->FIN_WAIT1    sendFIN
@@ -245,97 +255,68 @@ bool TCPCoInfo::TransStateByMSG(dword msg)
     if( status == CLOSED  && isPasv==false && msg==MSG_NET_OPEN){
         seqnum=bswapl(1);
         acknum=bswapl(1);
-        status=SYN_SENT; 
-        flags=SYN;
-        window=100;
+        status=SYN_SENT;
+        flags=SYN;    
+        window=1500;
         printf("CLOSED->SYN_SENT\n");
         dispatcher->Send(NULL,0,this);
-        return true;
+        return false;
     }
+    if( status == ESTAB ){
+        flags=NORM;
+        printf("XX");
+    }
+
     return false; //Not Dispose Packet.
     //return true //Dispose Packet.
 }
 
 bool TCPCoInfo::TransStateByPKT(Ether* frame)
 {
+
     byte rflag= frame->IPHeader->TCPHeader->flags;
-    if( status == SYN_SENT &&  rflag == SYN|ACK ){
+    //printf("%x %d\n",rflag,status);
+    if( (status == SYN_SENT) && (rflag == SYN|ACK) ){
+        printf("<<%d>>\n",bswap(frame->IPHeader->id));
         remoteip=frame->IPHeader->srcip;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=ESTAB; 
         flags=ACK;
-        window=100;
+        window=1502;
         printf("SYN_SENT->ESTAB");
         Message::reply(&msg, netdsc);
         dispatcher->Send(NULL,0,this);
+        return false;
+    }
+    if( (status == FIN_WAIT1) && (rflag == (FIN|ACK)) ){
+        remoteip=frame->IPHeader->srcip;
+        seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
+        acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
+        status=TIME_WAIT; 
+        flags=ACK;
+        window=1501;
+        printf("FIN_WAIT1->TIME_WAIT %d %d\n",status,rflag);
+        Message::reply(&msg, netdsc);//close
+        dispatcher->Send(NULL,0,this);
+        dispatcher->RemoveConnection(this,500);
         return false;
     }
     return true; //Dispose Packet.
     //return false; //Not Dispose Packet.
 }
 
-
-/*
-//   ~ESTABLISHED -> LISTNING   @timerAPI   ==
-bool TCPCoInfo::HandShakeACTV(Ether* frame)
-{  
-    printf("ACTV %d\n",status);
-    if(status==SYN_SENT){//SYN_SENT ESTABLISHED send ACK
-        return false;
-    }  
-    if(status==SYN_RCVD){//SYN_RCVD SYN_RCVD send SYN+ACK
-        return true;
-    }
-    if(status == ESTABLISHED){
-        return false;
-    }
-    //CLOSE_WAIT -> LAST_ACK               send FIN
-    //TIME_WAIT  -> TIME_WAIT              send ACK
-    //ESTABLISHED->ESTABLISHED             send -
-    return false;
+void TCPCoInfo::SendACK(Ether* frame)
+{
+     byte* tmp;
+     int size=Strip(frame,&tmp);
+     if( size == 0 ) size =1 ;
+     remoteip=frame->IPHeader->srcip;
+     seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
+     acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+size;
+     status=ESTAB; 
+     flags=ACK;    
+     window=1500;
+     printf("SENDING READ ACK");
+     dispatcher->Send(NULL,0,this);
 }
-
-bool TCPCoInfo::HandShakePASV(Ether* frame)
-{    
-    printf("PASV %d\n",status);
-    if( status == SYN_SENT){//SYN_SENT   -> SYN_SENT               rcv SYN+ACK (send ACK)
-        remoteip=frame->IPHeader->srcip;
-        seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
-        acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
-        status=ESTABLISHED; 
-        flags=ACK;
-        window=100;
-        dispatcher->Send(NULL,0,this);
-        //send original payload.
-        return true;
-    }   
-    //CLOSE=LISTING ( reading or not reading)
-    //LISTENING  -> SYN_RCVD               rcv SYN  (send SYN+ACK)
-
-    //SYN_RCVD   -> ESTABLISHED            rcv ACK
-    if( status == ESTABLISHED ){    //ESTABLISHED-> CLOSE_WAIT             rcv FIN
-        if(frame->IPHeader->TCPHeader->flags & FIN == FIN ){
-            remoteip=frame->IPHeader->srcip;
-            seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
-            acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
-            status=CLOSE_WAIT; 
-            flags=ACK;
-            window=100;
-            dispatcher->Send(NULL,0,this);
-            ////////////
-            seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
-            acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber);
-            status=LAST_ACK; 
-            flags=FIN|ACK;
-            window=100;
-            dispatcher->Send(NULL,0,this);
-            return true;
-        }
-    }
-    //FIN_WAIT2  -> TIME_WAIT              rcv ACK
-    //LAST_ACK   -> LISTING                rcv ACK
-    //ESTABLISHED-> ESTABLISHED            rcv -
-    return false;
-}
-*/

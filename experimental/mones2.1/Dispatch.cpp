@@ -1,4 +1,4 @@
-//$Id: Dispatch.cpp 3275 2006-06-14 15:31:40Z eds1275 $
+//$Id$
 #include <pci/Pci.h>
 #include "Net.h"
 #include "NE2000.h"
@@ -109,6 +109,7 @@ void Dispatch::DoDispatch()
 {
     int pktnumber=0;
     Ether* frame;
+    byte* data;
     while( frame = nic->RecvFrm(pktnumber) ){
         for(int i=0;i<cinfolist.size(); i++){
             ConnectionInfo* cinfo =cinfolist.get(i);
@@ -121,7 +122,12 @@ void Dispatch::DoDispatch()
                     pktnumber--;
                 }else if( cinfo->msg.header == MSG_NET_WRITE ){
                     write_bottom_half(pktnumber,cinfo);
-                    //pktnumber--;
+                    byte* data;
+
+                }
+                if(cinfo->getType()==TYPETCP && cinfo->Strip(frame,&data) == 0 ){
+                    Dispose(pktnumber);
+                    pktnumber--;
                 }
                 //else pkt for opend but not reading.
             }else if(i>=3){
@@ -144,21 +150,17 @@ int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
     return 0;
 }
 
-ConnectionInfo* Dispatch::RemoveConnection(int n)
-{
-    ConnectionInfo* cinfo = cinfolist.removeAt(n);
-    cinfo->Close();
-    return cinfo;
-}
 void Dispatch::write_bottom_half(int n,ConnectionInfo* cinfo)
 {
     Ether* frame=nic->RecvFrm(n);
     if( frame != NULL ){
-        //Check Ack Flag.
-        memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-        Message::reply(&(cinfo->msg));
+        if( frame->IPHeader->TCPHeader->flags == TCPCoInfo::ACK ){
+            Message::reply(&(cinfo->msg));
+            memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
+            printf("WRITE BOTTOM HALF\n");
+        }
     }    
-}
+}    
 
 void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
 {
@@ -167,14 +169,22 @@ void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
     if (mi != NULL){   
         Ether* frame=nic->RecvFrm(n);
         if( frame != NULL ){
+            IP* ip=frame->IPHeader;
+            printf("[ID%d]\n",bswap(ip->id));
             int size=cinfo->Strip(frame, &data);
-            monapi_cmemoryinfo_create(mi,size, true);
-            if( mi != NULL ){
-                memcpy(mi->Data,data,mi->Size);
-                Message::reply(&(cinfo->msg), mi->Handle, mi->Size); 
+            if( size >0 ){
+                monapi_cmemoryinfo_create(mi,size, true);
+                if( mi != NULL ){
+                    memcpy(mi->Data,data,mi->Size);    
+                    printf("READ BOTTOM HALF\n");
+                    Message::reply(&(cinfo->msg), mi->Handle, mi->Size);
+                    memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
+                    if(cinfo->getType()==TYPETCP){
+                        ((TCPCoInfo*)cinfo)->SendACK(frame);
+                    }
+                }
             }
             Dispose(n);
-            memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
         }
         monapi_cmemoryinfo_delete(mi);
     }else{
@@ -182,7 +192,27 @@ void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
     }
 }
 
+void Dispatch::RemoveConnection(ConnectionInfo* cinfo,dword delay)
+{
+    for(int i=0;i<cinfolist.size();i++){
+        ConnectionInfo* c = cinfolist.get(i);
+        if(cinfo->netdsc == c->netdsc){
+            cinfo->disposedtick=syscall_get_tick()+delay;
+            cinfo->disposed=true;
+        }
+    }
+}
+
 void Dispatch::PeriodicUpdate()
 {
-
+    //remove disposed connection.
+    dword now=syscall_get_tick();
+    for(int i=0;i<cinfolist.size();i++){
+        ConnectionInfo* c=cinfolist.get(i);
+        if( c->disposed==true && c->disposedtick  < now ){
+            printf("remove\n");
+            delete cinfolist.removeAt(i);
+            i--;
+        }
+    }
 }

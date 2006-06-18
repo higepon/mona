@@ -16,10 +16,10 @@ class Dispatch :public RouteMan
 {
 private:
     Nic* nic;    
-    HList<ConnectionInfo*> cinfolist;  
+    HList<ConnectionInfo*> cinfolist;
     void read_bottom_half(int,ConnectionInfo*); 
     void write_bottom_half(int,ConnectionInfo*);
-    void Dispose(int n){ nic->Delete(n); }  
+    void Dispose(int n){ nic->Delete(n); } 
 public:    
     void DoDispatch();
     Dispatch();
@@ -31,7 +31,7 @@ public:
     void PeriodicUpdate();
     ConnectionInfo* GetConnection(int n){ return cinfolist.get(n); }
     void AddConnection(ConnectionInfo* c){cinfolist.add(c); }
-    ConnectionInfo* RemoveConnection(int);
+    void RemoveConnection(ConnectionInfo*,dword);
     int ConnectionNum(){ return cinfolist.size();}
 private:
 

@@ -89,7 +89,6 @@ int Tcp(NetClient& client,dword remoteip,word port)
         printf("OpenError.\n");
     }
     printf("Open::netdsc=%d\n",netdsc);
-    
     if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
         printf("WrieError.\n");
     } 
@@ -97,7 +96,7 @@ int Tcp(NetClient& client,dword remoteip,word port)
     int size= client.Read(netdsc,buf);
     if( size > 0 ){
         printf("(TCP)%s\n",buf);
-    }    
+    }
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
     }    

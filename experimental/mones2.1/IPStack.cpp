@@ -1,4 +1,4 @@
-//$Id: IPStack.cpp 3281 2006-06-16 14:00:14Z eds1275 $
+//$Id$
 #include "IPStack.h"
 using namespace mones;
 using namespace MonAPI;
@@ -83,6 +83,23 @@ void IPStack::getfreeport(MessageInfo* msg)
     Message::reply(msg,next_port);
 }
 
+void IPStack::status(MessageInfo* msg)
+{
+    NetStatus stat;
+    pDP->readStatus(&stat);
+    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
+    if (mi != NULL){
+        monapi_cmemoryinfo_create(mi, sizeof(NetStatus)/*+sizeof(arpcache)*N*/, true);        
+        if( mi != NULL ){
+            memcpy(mi->Data,&stat,mi->Size);
+            Message::reply(msg, mi->Handle, mi->Size);
+        }
+        monapi_cmemoryinfo_delete(mi);
+    }else{
+        Message::reply(msg);
+    }
+}
+
 void IPStack::open(MessageInfo* msg)
 {
     int netdsc= pDP->ConnectionNum();
@@ -124,33 +141,17 @@ void IPStack::close(MessageInfo* msg)
     for(int i=0; i< pDP->ConnectionNum(); i++){
         ConnectionInfo* c  = pDP->GetConnection(i);
         if( c->netdsc == msg->arg1 ){
-            delete pDP->RemoveConnection(i);
-            i--;
+            c->Close();
             ret=0;
         }
     }
     Message::reply(msg,ret);
 }
 
-void IPStack::status(MessageInfo* msg)
-{
-    NetStatus stat;
-    pDP->readStatus(&stat);
-    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
-    if (mi != NULL){
-        monapi_cmemoryinfo_create(mi, sizeof(NetStatus)/*+sizeof(arpcache)*N*/, true);        
-        if( mi != NULL ){
-            memcpy(mi->Data,&stat,mi->Size);
-            Message::reply(msg, mi->Handle, mi->Size);
-        }
-        monapi_cmemoryinfo_delete(mi);
-    }else{
-        Message::reply(msg);
-    }
-}
 
 void IPStack::read(MessageInfo* msg)
 {
+    printf("READ\n");
     //Register msg to waiting client list.
     for(int i=0; i<pDP->ConnectionNum(); i++){
         ConnectionInfo* c  = pDP->GetConnection(i);
@@ -164,6 +165,7 @@ void IPStack::read(MessageInfo* msg)
 
 void IPStack::write(MessageInfo* msg)
 { 
+    printf("WRITE\n");
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
     if( ret != NULL){
         ret->Handle = msg->arg2;
