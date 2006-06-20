@@ -16,6 +16,7 @@
 #include <string>
 #include "error.h"
 #include "types.h"
+#include "monapi/messages.h"
 
 class Vnode;       // defined somewhere
 namespace io
@@ -33,11 +34,11 @@ public:
     virtual ~FileSystem() {}
 
 public:
-    virtual int initialize()                                                               = 0;
+    virtual int initialize()                                                              = 0;
     virtual int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type) = 0;
     virtual int open(Vnode* file, int mode)                                               = 0;
     virtual int read(Vnode* file, struct io::Context* context)                            = 0;
-    //    virtual int readdir(Vnode* directory, std::vector<FileSystemEntr*>* entries)          = 0;
+    virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)                   = 0;
     virtual int seek(Vnode* file, dword offset, dword origin)                             = 0;
     virtual int close(Vnode* file)                                                        = 0;
     virtual Vnode* getRoot() const                                                        = 0;

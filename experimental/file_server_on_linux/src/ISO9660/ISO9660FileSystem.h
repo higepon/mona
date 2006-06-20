@@ -19,6 +19,7 @@ public:
     virtual int open(Vnode* file, int mode);
     virtual int read(Vnode* file, struct io::Context* context);
     virtual int seek(Vnode* file, dword offset, dword origin);
+    virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
     virtual int close(Vnode* file);
     virtual Vnode* getRoot() const;
 
@@ -41,6 +42,8 @@ private:
     void split(std::string str, char ch, std::vector<std::string>& v);
     iso9660::Entry* lookupDirectory(iso9660::Entry* root, const std::string& path);
     iso9660::Entry* lookupFile(iso9660::Entry* directory, const std::string& fileName);
+    iso9660::Entry* setupEntry(iso9660::DirectoryEntry* from);
+    byte* readdirToBuffer(iso9660::Entry* directory, dword readSize);
     enum
     {
         ISO_PRIMARY_VOLUME_DESCRIPTOR = 1,

@@ -88,6 +88,18 @@ void FileServerTest::testISO9660ReadFile()
     fileID = monapi_call_file_open2("/NOTFOUND.TXT");
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
 
+    mi = monapi_call_file_read_directory2("/SERVERS", MONAPI_FALSE);
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    int size = *(int*)mi->Data;
+
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("entry count", 7, size);
+    CPPUNIT_ASSERT_MESSAGE("file MONA.CFG exist?", strcmp(p[0].name, ".") == 0);
+    CPPUNIT_ASSERT_MESSAGE("file SERVERS exist?", strcmp((&p[6])->name, "SHELL.EX5") == 0);
+}
+
+
+
 //     int ret = monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE);
 //     CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to cd0", ret, (int)MONA_SUCCESS);
 
@@ -100,7 +112,6 @@ void FileServerTest::testISO9660ReadFile()
 
 //     monapi_cmemoryinfo_dispose(mi);
 //     monapi_cmemoryinfo_delete(mi);
-}
 
 void FileServerTest::testISO9660FileSize()
 {

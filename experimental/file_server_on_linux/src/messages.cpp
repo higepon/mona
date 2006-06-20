@@ -443,3 +443,23 @@ int monapi_call_file_close2(dword fileID)
     }
     return msg.arg2;
 }
+
+monapi_cmemoryinfo* monapi_call_file_read_directory2(const char* path, MONAPI_BOOL prompt)
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_READ_DIRECTORY, prompt, 0, 0, path) != 0)
+    {
+        return NULL;
+    }
+    if (msg.arg2 == 0) return NULL;
+
+    ret = monapi_cmemoryinfo_new();
+    ret->Handle = msg.arg2;
+    ret->Owner  = tid;
+    ret->Size   = msg.arg3;
+    monapi_cmemoryinfo_map(ret);
+    return ret;
+}

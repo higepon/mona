@@ -51,7 +51,7 @@ public:
     {
         if (NULL == memory) return;
         monapi_cmemoryinfo_dispose(memory);
-		monapi_cmemoryinfo_delete(memory);
+        monapi_cmemoryinfo_delete(memory);
     }
 
     dword tid;
