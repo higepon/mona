@@ -1,5 +1,9 @@
 //$Id$
 #include "IPStack.h"
+#include "ICMPInfo.h"
+#include "UDPInfo.h"
+#include "TCPInfo.h"
+
 using namespace mones;
 using namespace MonAPI;
 
@@ -175,9 +179,9 @@ void IPStack::write(MessageInfo* msg)
         for(int i=0; i<pDP->ConnectionNum(); i++){
             ConnectionInfo* cinfo  = pDP->GetConnection(i);
             if( cinfo->netdsc == msg->arg1 ){    
-                pDP->Send(ret->Data,ret->Size,cinfo);
+                pDP->Send(ret->Data,ret->Size,cinfo);           
+                memcpy(&(cinfo->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
                 if(cinfo->getType()==TYPETCP){
-                    memcpy(&(cinfo->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
                     monapi_cmemoryinfo_delete(ret);
                     pDP->DoDispatch();
                     return;

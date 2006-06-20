@@ -5,6 +5,9 @@
 #include "MonAMDpcn.h"
 #include "LoopBack.h"
 #include "Dispatch.h"
+#include "ICMPInfo.h"
+#include "UDPInfo.h"
+#include "TCPInfo.h"
 
 using namespace mones;
 using namespace MonAPI;
@@ -78,10 +81,6 @@ Dispatch::~Dispatch()
 
 bool Dispatch::initialize()
 {    
-    //For WellNkownServices.
-    cinfolist.add(new ICMPCoInfo(this));
-    cinfolist.add(new UDPCoInfo(this));
-    cinfolist.add(new TCPCoInfo(this));
     if( nic != NULL ){
         if( nic->getIRQ()!=0 ) // with mask Interrrupt by higepon
             syscall_set_irq_receiver(this->nic->getIRQ(), SYS_MASK_INTERRUPT); 
@@ -109,33 +108,55 @@ void Dispatch::DoDispatch()
 {
     int pktnumber=0;
     Ether* frame;
-    byte* data;
     while( frame = nic->RecvFrm(pktnumber) ){
         for(int i=0;i<cinfolist.size(); i++){
             ConnectionInfo* cinfo =cinfolist.get(i);
-            if( (cinfo!=NULL) && cinfo->IsMyPacket(frame)){
+            if( cinfo->IsMyPacket(frame) ){
                 if(  cinfo->msg.header == MSG_NET_READ ){
                     read_bottom_half(pktnumber,cinfo);
                     pktnumber--;
-                }else if(i<3){ //pkt for well known services.
-                    Dispose(pktnumber);
-                    pktnumber--;
                 }else if( cinfo->msg.header == MSG_NET_WRITE ){
                     write_bottom_half(pktnumber,cinfo);
-                    byte* data;
-
-                }
-                if(cinfo->getType()==TYPETCP && cinfo->Strip(frame,&data) == 0 ){
+                }else if( cinfo->msg.header == MSG_NET_OPEN ){
+                    //pkt for opend but not reading.
+                }else{
+                    //unopend
+                    printf("konai\n");
                     Dispose(pktnumber);
                     pktnumber--;
                 }
-                //else pkt for opend but not reading.
-            }else if(i>=3){
-                Dispose(pktnumber); //pkt for unopend.
+            }else{
+                //ACKPACKET
+                Dispose(pktnumber); 
                 pktnumber--;
             }
         }
         pktnumber++;
+        //CreateCoInfo(frame);    
+    }
+
+}
+
+void Dispatch::CreateCoInfo(Ether* frame)
+{
+    printf("CreateTCB\n");
+    byte type= frame->IPHeader->prot;
+    switch(type)
+    {
+    case TYPEICMP:
+        ICMPCoInfo* pI= new ICMPCoInfo(this);
+        cinfolist.add(pI);
+        break;
+    case TYPEUDP:
+        UDPCoInfo* pU= new UDPCoInfo(this);
+        cinfolist.add(pU);
+        break;
+    case TYPETCP:    
+        TCPCoInfo* pT= new TCPCoInfo(this);
+        cinfolist.add(pT);
+        pT->localport=DAYTIME;
+        pT->TransStateByMSG(MSG_NET_OPEN);
+        break;    
     }
 }
 
@@ -154,12 +175,9 @@ void Dispatch::write_bottom_half(int n,ConnectionInfo* cinfo)
 {
     Ether* frame=nic->RecvFrm(n);
     if( frame != NULL ){
-        if( frame->IPHeader->TCPHeader->flags == TCPCoInfo::ACK ){
-            Message::reply(&(cinfo->msg));
-            memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-            printf("WRITE BOTTOM HALF\n");
-        }
-    }    
+        Message::reply(&(cinfo->msg));
+        memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
+    }
 }    
 
 void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
@@ -169,19 +187,16 @@ void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
     if (mi != NULL){   
         Ether* frame=nic->RecvFrm(n);
         if( frame != NULL ){
-            IP* ip=frame->IPHeader;
-            printf("[ID%d]\n",bswap(ip->id));
             int size=cinfo->Strip(frame, &data);
             if( size >0 ){
                 monapi_cmemoryinfo_create(mi,size, true);
                 if( mi != NULL ){
                     memcpy(mi->Data,data,mi->Size);    
-                    printf("READ BOTTOM HALF\n");
                     Message::reply(&(cinfo->msg), mi->Handle, mi->Size);
                     memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-                    if(cinfo->getType()==TYPETCP){
+                      if(cinfo->getType()==TYPETCP){
                         ((TCPCoInfo*)cinfo)->SendACK(frame);
-                    }
+                      }
                 }
             }
             Dispose(n);

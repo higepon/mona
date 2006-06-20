@@ -1,7 +1,8 @@
 #$Id$
 TARGET  = IPSTACK
 SOURCES = main.cpp Nic.cpp Dispatch.cpp IPStack.cpp \
- Connection.cpp MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
+ L4Base.cpp ICMPInfo.cpp UDPInfo.cpp TCPInfo.cpp \
+ MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share

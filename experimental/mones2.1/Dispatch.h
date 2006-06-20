@@ -2,7 +2,7 @@
 #pragma once
 #include <monapi.h>
 #include <sys/types.h>
-#include <Connection.h>
+#include "L4Base.h"
 #include "Nic.h"
 
 namespace mones{
@@ -20,6 +20,7 @@ private:
     void read_bottom_half(int,ConnectionInfo*); 
     void write_bottom_half(int,ConnectionInfo*);
     void Dispose(int n){ nic->Delete(n); } 
+    void CreateCoInfo(Ether*);
 public:    
     void DoDispatch();
     Dispatch();
