@@ -13,7 +13,7 @@
 */
 #include <monalibc.h>
 #include <monalibc/stdlib.h>
-#include <monapi/string.h>
+#include <monapi/syscall.h>
 
 int uitos(char* s, unsigned int n, int real_width, unsigned int base, char flag);
 int uitosn(char* s, int max_width, unsigned int n, int real_width, unsigned int base, char flag);

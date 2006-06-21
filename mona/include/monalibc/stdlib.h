@@ -37,6 +37,8 @@ extern "C" {
 #define S_FORMAT_LONGLONG 0x04
 #define S_FORMAT_UNSIGNED 0x08
 
+#define RAND_MAX 0x7fff
+	
 typedef struct{
   int quot; /* quotient */
   int rem;  /* remainder */
