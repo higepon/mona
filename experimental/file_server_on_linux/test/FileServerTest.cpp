@@ -70,6 +70,28 @@ void FileServerTest::testISO9660ReadDirectory()
 
 void FileServerTest::testISO9660ReadFile()
 {
+
+    {
+    monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/", MONAPI_FALSE);
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    int size = *(int*)mi->Data;
+
+
+    printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, p[0].name);fflush(stdout);
+
+    dword fileID = monapi_call_file_open2("/CMD");
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);
+
+    int ret = monapi_call_file_seek2(fileID, 72, 0);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file seek", ret != MONA_FAILURE);
+
+    mi = monapi_call_file_read_data2(fileID, 19);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file read not null", mi != NULL);
+    printf("read %s", (char*)mi->Data);
+
+    }
+
+
     // normal pattern
     dword fileID = monapi_call_file_open2("/MONA.CFG");
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);

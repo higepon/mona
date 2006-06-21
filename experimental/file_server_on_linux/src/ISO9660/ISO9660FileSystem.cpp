@@ -3,10 +3,8 @@
 using namespace std;
 using namespace iso9660;
 
-ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager)
+ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
 {
-    drive_ = drive;
-    vmanager_ = vmanager;
 }
 
 ISO9660FileSystem::~ISO9660FileSystem()
