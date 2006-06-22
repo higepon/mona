@@ -57,6 +57,7 @@ class Shell {
     dword self;
     MonAPI::Screen screen;
     int prevX, prevY;
+    HList<MonAPI::CString> history;
 
     /* drive letter */
     const char* driveLetter[2];

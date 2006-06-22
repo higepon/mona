@@ -1,3 +1,7 @@
+2006-06-22  higepon  <higepon@users.sourceforge.jp>
+
+        * core/shell_server/Shell.cpp (onKeyDown): shellが Ctrl-p , Ctrl-hに対応
+
 2006-06-01 hiratch <hiratch@hiratch.net>
 
 	* **/*.h: include ディレクトリにコピーされるものについては最初から

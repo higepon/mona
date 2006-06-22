@@ -163,6 +163,7 @@ bool Shell::pathHasDriveLetter(const CString& path)
 
 bool Shell::commandExecute(_A<CString> args)
 {
+    history.add(this->commandLine);
     CString cmdLine;
     CString command = args[0].toUpper();
     if (command[0] == '/' || pathHasDriveLetter(command))
@@ -305,6 +306,24 @@ void Shell::onKeyDown(int keycode, int modifiers)
     case(Keys::OemBackslash):
     case(Keys::OemSemicolon):
     case(Keys::Oemplus):
+        if (keycode == Keys::H && modifiers & KEY_MODIFIER_CTRL)
+        {
+            backspace();
+            break;
+        }
+        else if (keycode == Keys::P && modifiers & KEY_MODIFIER_CTRL)
+        {
+            if (history.size() > 0)
+            {
+                CString command = history.get(history.size() - 1);
+                for (int i = 0; i < command.getLength(); i++)
+                {
+                    this->commandChar(command[i]);
+                }
+            }
+            break;
+        }
+ 
         KeyInfo key;
         key.keycode = keycode;
         key.modifiers = modifiers;
