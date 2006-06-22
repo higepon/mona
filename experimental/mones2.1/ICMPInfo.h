@@ -4,7 +4,7 @@
 
 namespace mones{
 
-class ICMPCoInfo : public ConnectionInfo
+class ICMPCoInfo : public L4Base
 {
 public:
     word type;
@@ -14,9 +14,11 @@ public:
     void CreateHeader(Ether* ,byte*,word );
     int Strip(Ether*,byte**);
     bool IsMyPacket(Ether*);    
-    word getType(){return TYPEICMP;}
-private:
+    bool IsProcessed(Ether*);
+    word getType(){return TYPEICMP;}  
     bool WellKnownSVCreply(Ether*);
+private:
+
 };
 
 

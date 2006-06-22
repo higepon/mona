@@ -4,15 +4,14 @@
 
 namespace mones{
 
-class UDPCoInfo : public ConnectionInfo
+class UDPCoInfo : public L4Base
 { 
 public:
     UDPCoInfo(Dispatch* p){dispatcher=p;}
     void CreateHeader(Ether* ,byte* ,word );  
     int Strip(Ether*, byte**);
-    bool IsMyPacket(Ether*);  
-    word getType(){return TYPEUDP;}
-private:
+    bool IsMyPacket(Ether*);
+    bool IsProcessed(Ether*);
     bool WellKnownSVCreply(Ether*);
 };
 

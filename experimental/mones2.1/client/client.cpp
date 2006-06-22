@@ -78,13 +78,13 @@ int Udp(NetClient& client,dword remoteip,word port)
     return 0;
 }
 
-int Tcp(NetClient& client,dword remoteip,word port)
+int TcpClient(NetClient& client,dword remoteip,word port)
 {
     printf("   Send TCP tp %d\n",port);    
     word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
     //isPasv=false;
-    int netdsc = client.Open(remoteip,localport,port,TYPETCP,false);
+    int netdsc = client.Open(remoteip,localport,port,TYPETCP);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
@@ -129,7 +129,7 @@ int MonaMain(List<char*>* pekoe)
         Udp(client,remoteip,port);
     }else if( !strcmp(pekoe->get(0), "tcp")){
         sscanf(pekoe->get(2),"%d",&port);
-        Tcp(client,remoteip,port);
+        TcpClient(client,remoteip,port);
     }else if( !strcmp(pekoe->get(0), "ftp")){
         Ftp(client,remoteip);
     }

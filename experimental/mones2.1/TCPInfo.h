@@ -4,15 +4,16 @@
 
 namespace mones{
 
-class TCPCoInfo : public ConnectionInfo
+class TCPCoInfo : public L4Base
 {
 public:
     TCPCoInfo(Dispatch* p){ dispatcher=p; status=CLOSED; isPasv=true; window=1000; }
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
-    void Close();    
-    word getType(){return TYPETCP;}
+    bool IsProcessed(Ether*);
+    void Close();
+    void Write(MessageInfo*);
     bool isPasv;    
     bool TransStateByPKT(Ether*);
     bool TransStateByMSG(dword);
@@ -47,6 +48,8 @@ private:
         TIME_WAIT
     };
     bool WellKnownSVCreply(Ether*);
+    void Write_bottom_half(Ether*);
+    void Read_bottom_half(Ether*);
 };
 
 };

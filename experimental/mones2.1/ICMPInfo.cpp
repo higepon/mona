@@ -22,13 +22,14 @@ int ICMPCoInfo::Strip(Ether* frame, byte** data)
    *data=frame->IPHeader->ICMPHeader->data;
    return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP);
 }
-
+bool ICMPCoInfo::IsProcessed(Ether* frame)
+{
+    Read_bottom_half(frame);
+    return true;
+}
 bool ICMPCoInfo::IsMyPacket(Ether* frame)
 {
     if( TYPEICMP  == frame->IPHeader->prot ){
-        if( WellKnownSVCreply(frame) ){
-            return true;
-        }
         ICMP* icmp=frame->IPHeader->ICMPHeader;
         if( ECHOREPLY == icmp->type  &&
             remoteip  == frame->IPHeader->srcip &&

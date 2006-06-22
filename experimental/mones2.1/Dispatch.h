@@ -16,24 +16,23 @@ class Dispatch :public RouteMan
 {
 private:
     Nic* nic;    
-    HList<ConnectionInfo*> cinfolist;
-    void read_bottom_half(int,ConnectionInfo*); 
-    void write_bottom_half(int,ConnectionInfo*);
+    HList<L4Base*> cinfolist;
+    void CreateInfo(Ether*);
+public:  
     void Dispose(int n){ nic->Delete(n); } 
-    void CreateCoInfo(Ether*);
-public:    
+    Ether* GetFrame(int n){ return nic->RecvFrm(n); }
     void DoDispatch();
     Dispatch();
     virtual ~Dispatch();
     bool initialize();
-    void  interrupt();
-    int  Send(byte* ,int, ConnectionInfo* );
+    void interrupt();
+    int  Send(byte* ,int, L4Base* );
     void readStatus(NetStatus* stat){ nic->getStatus(stat); }
     void PeriodicUpdate();
-    ConnectionInfo* GetConnection(int n){ return cinfolist.get(n); }
-    void AddConnection(ConnectionInfo* c){cinfolist.add(c); }
-    void RemoveConnection(ConnectionInfo*,dword);
-    int ConnectionNum(){ return cinfolist.size();}
+    L4Base* GetInfo(int n){ return cinfolist.get(n); }
+    void AddInfo(L4Base* c){cinfolist.add(c); }
+    void RemoveInfo(L4Base*,dword);
+    int InfoNum(){ return cinfolist.size();}
 private:
 
 };

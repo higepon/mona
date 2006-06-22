@@ -1,6 +1,5 @@
 //$Id$
 #include <pci/Pci.h>
-#include "Net.h"
 #include "NE2000.h"
 #include "MonAMDpcn.h"
 #include "LoopBack.h"
@@ -108,62 +107,61 @@ void Dispatch::DoDispatch()
 {
     int pktnumber=0;
     Ether* frame;
+
     while( frame = nic->RecvFrm(pktnumber) ){
+        //CLIENT
+        bool hasClient=false;
         for(int i=0;i<cinfolist.size(); i++){
-            ConnectionInfo* cinfo =cinfolist.get(i);
+            L4Base* cinfo =cinfolist.get(i);
             if( cinfo->IsMyPacket(frame) ){
-                if(  cinfo->msg.header == MSG_NET_READ ){
-                    read_bottom_half(pktnumber,cinfo);
-                    pktnumber--;
-                }else if( cinfo->msg.header == MSG_NET_WRITE ){
-                    write_bottom_half(pktnumber,cinfo);
-                }else if( cinfo->msg.header == MSG_NET_OPEN ){
-                    //pkt for opend but not reading.
-                }else{
-                    //unopend
-                    printf("konai\n");
+                hasClient= true;
+                if( cinfo->IsProcessed(frame) ){
                     Dispose(pktnumber);
                     pktnumber--;
+                    break;
                 }
-            }else{
-                //ACKPACKET
-                Dispose(pktnumber); 
-                pktnumber--;
             }
         }
+        ///SERVER
+        if( hasClient==false ) {
+            CreateInfo(frame);
+            Dispose(pktnumber);
+            pktnumber--;
+        }    
         pktnumber++;
-        //CreateCoInfo(frame);    
     }
-
 }
 
-void Dispatch::CreateCoInfo(Ether* frame)
+void Dispatch::CreateInfo(Ether* frame)
 {
-    printf("CreateTCB\n");
+   // printf("CreateInfo\n");
     byte type= frame->IPHeader->prot;
     switch(type)
     {
     case TYPEICMP:
         ICMPCoInfo* pI= new ICMPCoInfo(this);
-        cinfolist.add(pI);
+        pI->WellKnownSVCreply(frame);
+        delete pI;
         break;
     case TYPEUDP:
         UDPCoInfo* pU= new UDPCoInfo(this);
-        cinfolist.add(pU);
+        pU->WellKnownSVCreply(frame);
+        delete pU;
         break;
-    case TYPETCP:    
+    case TYPETCP:
         TCPCoInfo* pT= new TCPCoInfo(this);
         cinfolist.add(pT);
         pT->localport=DAYTIME;
         pT->TransStateByMSG(MSG_NET_OPEN);
+        pT->TransStateByPKT(frame);
         break;    
     }
 }
 
-int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
+int Dispatch::Send(byte* data,int size, L4Base* cinfo)
 {
     Ether* frame = nic->NewFrame(cinfo->remoteip);
-    //ether header has been already filled.
+    //header has been already filled.
     if( frame != NULL){
         cinfo->CreateHeader(frame,data,size);
         nic->SendFrm(frame);
@@ -171,46 +169,10 @@ int Dispatch::Send(byte* data,int size, ConnectionInfo* cinfo)
     return 0;
 }
 
-void Dispatch::write_bottom_half(int n,ConnectionInfo* cinfo)
-{
-    Ether* frame=nic->RecvFrm(n);
-    if( frame != NULL ){
-        Message::reply(&(cinfo->msg));
-        memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-    }
-}    
-
-void Dispatch::read_bottom_half(int n,ConnectionInfo* cinfo)
-{
-    byte* data;
-    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
-    if (mi != NULL){   
-        Ether* frame=nic->RecvFrm(n);
-        if( frame != NULL ){
-            int size=cinfo->Strip(frame, &data);
-            if( size >0 ){
-                monapi_cmemoryinfo_create(mi,size, true);
-                if( mi != NULL ){
-                    memcpy(mi->Data,data,mi->Size);    
-                    Message::reply(&(cinfo->msg), mi->Handle, mi->Size);
-                    memset(&(cinfo->msg),'\0',sizeof(MessageInfo));
-                      if(cinfo->getType()==TYPETCP){
-                        ((TCPCoInfo*)cinfo)->SendACK(frame);
-                      }
-                }
-            }
-            Dispose(n);
-        }
-        monapi_cmemoryinfo_delete(mi);
-    }else{
-        Message::reply(&(cinfo->msg));
-    }
-}
-
-void Dispatch::RemoveConnection(ConnectionInfo* cinfo,dword delay)
+void Dispatch::RemoveInfo(L4Base* cinfo,dword delay)
 {
     for(int i=0;i<cinfolist.size();i++){
-        ConnectionInfo* c = cinfolist.get(i);
+        L4Base* c = cinfolist.get(i);
         if(cinfo->netdsc == c->netdsc){
             cinfo->disposedtick=syscall_get_tick()+delay;
             cinfo->disposed=true;
@@ -223,11 +185,12 @@ void Dispatch::PeriodicUpdate()
     //remove disposed connection.
     dword now=syscall_get_tick();
     for(int i=0;i<cinfolist.size();i++){
-        ConnectionInfo* c=cinfolist.get(i);
+        L4Base* c=cinfolist.get(i);
         if( c->disposed==true && c->disposedtick  < now ){
             printf("remove\n");
             delete cinfolist.removeAt(i);
             i--;
         }
     }
+    /////////
 }

@@ -19,8 +19,10 @@ public:
     int  Config(char* if_name, dword localip, dword gatewayip, byte subnetmask, byte timeout, word mtu);
      //  localip,gatewayip must be DCBA style, 0<=subnetmask<=32,timeout(seconds) 
     word GetFreePort();
-    int  Open(dword remoteip, word localport, word remoteport, word protocol, byte isPasv=true);
+    int  Open(dword remoteip, word localport, word remoteport, byte protocol );
     // remoteip must be DCBA style, RetunValue is network descriptor.
+    int  TCPPasvOpen(dword remoteip, word localport );
+    int  TCPAccept(int netdsc);
     int  Close(int netdsc); 
     int  Write(int netdsc, byte* data,word size);  
     int  Read(int netdsc,byte* data,bool noblock = false);

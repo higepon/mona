@@ -23,15 +23,33 @@ int NetClient::Config(char* if_name, dword localip, dword gatewayip, byte subnet
     return msg.arg2;
 }
 
-int NetClient::Open(dword remoteip, word localport, word remoteport, word protocol,byte isPasv)
+int NetClient::Open(dword remoteip, word localport, word remoteport, byte protocol)
 {
     MessageInfo msg;
     dword port=((localport)<<16)|remoteport;
-    if( isPasv == false){
-        protocol&=0x00FF;
-        protocol|=0x0100;
-    }
     if (Message::sendReceive(&msg, serverid, MSG_NET_OPEN, remoteip,port,protocol,NULL) != 0){
+        return -1;
+    }
+    return msg.arg2;
+}
+
+    int  Open(dword remoteip, word localport, word remoteport, word protocol );
+    // remoteip must be DCBA style, RetunValue is network descriptor.
+    int  TCPPasvOpen(dword remoteip, word localport );
+
+int NetClient::TCPPasvOpen(dword remoteip, word localport )
+{
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_PASVOPEN,localport,NULL) != 0){
+        return -1;
+    }
+    return msg.arg2;
+}
+
+int NetClient::TCPAccept(int netdsc)
+{
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_ACCEPT, netdsc) != 0){
         return -1;
     }
     return msg.arg2;
@@ -84,7 +102,7 @@ int NetClient::Stat(NetStatus* stat)
 {
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_STATUS) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_GETSTATUS) != 0){
         return NULL;
     }
     if (msg.arg2 == 0) return NULL;

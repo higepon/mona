@@ -27,12 +27,15 @@ int UDPCoInfo::Strip(Ether* frame, byte** data)
     return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(UDP);
 }
 
+bool UDPCoInfo::IsProcessed(Ether* frame)
+{
+    Read_bottom_half(frame);
+    return true;
+}
+
 bool UDPCoInfo::IsMyPacket(Ether* frame)
 {
     if( TYPEUDP    == frame->IPHeader->prot ){
-        if( WellKnownSVCreply(frame) ){
-            return true;
-        }
         if( remoteip   == frame->IPHeader->srcip &&
             localport  == bswap(frame->IPHeader->UDPHeader->dstport) &&
             remoteport == bswap(frame->IPHeader->UDPHeader->srcport) )

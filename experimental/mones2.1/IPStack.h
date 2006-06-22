@@ -17,10 +17,12 @@ private:
     Dispatch* pDP;
     void getfreeport(MessageInfo* msg);
     void open(MessageInfo* msg);
+    void tcppasvopen(MessageInfo* msg);
+    void tcpaccept(MessageInfo* msg);
     void read(MessageInfo* msg);
     void write(MessageInfo* msg);
     void close(MessageInfo* msg);
-    void status(MessageInfo* msg);
+    void getstatus(MessageInfo* msg);
     void config(MessageInfo* msg);
     word next_port;
 protected:

@@ -49,23 +49,29 @@ void IPStack::messageLoop()
         case MSG_NET_READ:
             this->read(&msg);
             break;
-        case MSG_NET_STATUS:
-            this->status(&msg);
+        case MSG_NET_GETSTATUS:
+            this->getstatus(&msg);
+            break;  
+        case MSG_NET_CONFIG:
+            this->config(&msg);
             break;
         case MSG_NET_OPEN:
             this->open(&msg);
             break;
+        case MSG_NET_PASVOPEN:
+            this->tcppasvopen(&msg);
+            break;
+        case MSG_NET_ACCEPT:
+            this->tcpaccept(&msg);
+            break;
         case MSG_NET_CLOSE:
             this->close(&msg);
-            break;
-        case MSG_NET_CONFIG:
-            this->config(&msg);
             break;
         case MSG_TIMER:    
             pDP->PeriodicUpdate();
             break;
         default:
-            printf("IPStack::MessageLoop default MSG=%x\n", msg.header);
+            printf("IPStack::ERROR MSG=%x\n", msg.header);
             break;
         }
     }
@@ -75,6 +81,7 @@ void IPStack::messageLoop()
 //////////// MESSAGE HANDLERS ////////////////////////
 void IPStack::config(MessageInfo* msg)
 {
+    //IFCONFIG
     printf("re-configure the net server.\n");
     Message::reply(msg);
 }
@@ -87,8 +94,9 @@ void IPStack::getfreeport(MessageInfo* msg)
     Message::reply(msg,next_port);
 }
 
-void IPStack::status(MessageInfo* msg)
+void IPStack::getstatus(MessageInfo* msg)
 {
+    //ARP NETSTAT IFCONFIG
     NetStatus stat;
     pDP->readStatus(&stat);
     monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
@@ -106,7 +114,7 @@ void IPStack::status(MessageInfo* msg)
 
 void IPStack::open(MessageInfo* msg)
 {
-    int netdsc= pDP->ConnectionNum();
+    int netdsc= pDP->InfoNum();
     switch((msg->arg3)&0x00FF)
     {
     case TYPEICMP:
@@ -115,35 +123,42 @@ void IPStack::open(MessageInfo* msg)
         pI->seqnum=0;
         pI->idnum=0;
         pI->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
-        pDP->AddConnection(pI);
+        pDP->AddInfo(pI);
         break;
     case TYPEUDP:
         UDPCoInfo* pU = new UDPCoInfo(pDP);
         pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
-        pDP->AddConnection(pU);
+        pDP->AddInfo(pU);
         break;
     case TYPETCP:
         TCPCoInfo* pT=new TCPCoInfo(pDP);    
         pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
-        pDP->AddConnection(pT);
-        if( (msg->arg3)>>8 == 0x01 ){
-            pT->isPasv=false;
-            pT->TransStateByMSG(MSG_NET_OPEN);
-            memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
-            return; // reply will be done by recv SYN|ACK 
-        }    
-        break;
+        pDP->AddInfo(pT);
+        pT->isPasv=false;
+        pT->TransStateByMSG(MSG_NET_OPEN);
+        memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
+        return; // reply will be done by recv SYN|ACK 
     default:
         printf("orz\n");
     }
     Message::reply(msg, netdsc);
 }
 
+void IPStack::tcppasvopen(MessageInfo* msg)
+{
+
+}
+
+void IPStack::tcpaccept(MessageInfo* msg)
+{
+
+}
+
 void IPStack::close(MessageInfo* msg)
 {
     dword ret=1;
-    for(int i=0; i< pDP->ConnectionNum(); i++){
-        ConnectionInfo* c  = pDP->GetConnection(i);
+    for(int i=0; i< pDP->InfoNum(); i++){
+        L4Base* c  = pDP->GetInfo(i);
         if( c->netdsc == msg->arg1 ){
             c->Close();
             ret=0;
@@ -152,15 +167,13 @@ void IPStack::close(MessageInfo* msg)
     Message::reply(msg,ret);
 }
 
-
 void IPStack::read(MessageInfo* msg)
 {
-    printf("READ\n");
     //Register msg to waiting client list.
-    for(int i=0; i<pDP->ConnectionNum(); i++){
-        ConnectionInfo* c  = pDP->GetConnection(i);
+    for(int i=0; i<pDP->InfoNum(); i++){
+        L4Base* c  = pDP->GetInfo(i);
         if( c->netdsc == msg->arg1 ){
-            memcpy(&(c->msg),(byte*)msg,sizeof(MessageInfo));
+            c->Read(msg);
             break;
         }
     }
@@ -169,26 +182,11 @@ void IPStack::read(MessageInfo* msg)
 
 void IPStack::write(MessageInfo* msg)
 { 
-    printf("WRITE\n");
-    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-    if( ret != NULL){
-        ret->Handle = msg->arg2;
-        ret->Owner  = msg->from;
-        ret->Size   = msg->arg3;
-        monapi_cmemoryinfo_map(ret);
-        for(int i=0; i<pDP->ConnectionNum(); i++){
-            ConnectionInfo* cinfo  = pDP->GetConnection(i);
-            if( cinfo->netdsc == msg->arg1 ){    
-                pDP->Send(ret->Data,ret->Size,cinfo);           
-                memcpy(&(cinfo->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
-                if(cinfo->getType()==TYPETCP){
-                    monapi_cmemoryinfo_delete(ret);
-                    pDP->DoDispatch();
-                    return;
-                }
-            }
+    for(int i=0;i<pDP->InfoNum();i++){
+        L4Base* c  = pDP->GetInfo(i);
+        if( c->netdsc == msg->arg1 ){
+            c->Write(msg);
+            break;
         }
-        monapi_cmemoryinfo_delete(ret);
-    }
-    Message::reply(msg);  
+    } 
 }
