@@ -1,6 +1,6 @@
 //$Id$
 #pragma once
-#include "Net.h"
+#include <Net.h>
 #include "Dispatch.h"
 
 namespace mones {
@@ -16,7 +16,9 @@ public:
 private:
     Dispatch* pDP;
     void getfreeport(MessageInfo* msg);
-    void open(MessageInfo* msg);
+    void icmpopen(MessageInfo* msg);
+    void udpopen(MessageInfo* msg);
+    void tcpactvopen(MessageInfo* msg);
     void tcppasvopen(MessageInfo* msg);
     void tcpaccept(MessageInfo* msg);
     void read(MessageInfo* msg);

@@ -31,15 +31,12 @@ public:
     virtual void Write_bottom_half(Ether*){};//Nothing to do for ICMP/UDP.
     void Init(dword rip, word lport, word rport,dword cid, word dsc){
         remoteip=rip; localport=lport; remoteport=rport; clientid=cid; netdsc=dsc;
-        msg.header = MSG_NET_OPEN;
+        msg.header = MSG_NET_ACTVOPEN;
     }
 protected:
     Dispatch* dispatcher;
     void CreateIPHeader(Ether*,word,byte);
     word checksum(byte*,word);
-
-private:
-    virtual bool WellKnownSVCreply(Ether*){return false;}
 };
 
 };

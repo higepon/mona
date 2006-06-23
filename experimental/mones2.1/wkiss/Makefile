@@ -1,6 +1,6 @@
-#$Id: Makefile 3230 2006-05-30 13:48:50Z eds1275 $
-TARGET  = client
-SOURCES = client.cpp
+#$Id$
+TARGET  = wkiss
+SOURCES = wkiss.cpp
 INSTDIR = $(BINDIR)/APPS
 INSTFILES = ping urdate
 SHAREDIR   = $(MONADIR)/share

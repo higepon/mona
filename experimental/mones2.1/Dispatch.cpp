@@ -122,9 +122,8 @@ void Dispatch::DoDispatch()
                 }
             }
         }
-        ///SERVER
         if( hasClient==false ) {
-            CreateInfo(frame);
+            ReplyUnReach(frame);
             Dispose(pktnumber);
             pktnumber--;
         }    
@@ -132,29 +131,31 @@ void Dispatch::DoDispatch()
     }
 }
 
-void Dispatch::CreateInfo(Ether* frame)
+void Dispatch::ReplyUnReach(Ether* frame)
 {
-   // printf("CreateInfo\n");
-    byte type= frame->IPHeader->prot;
-    switch(type)
+    // printf("CreateInfo\n");
+    switch(frame->IPHeader->prot)
     {
     case TYPEICMP:
-        ICMPCoInfo* pI= new ICMPCoInfo(this);
-        pI->WellKnownSVCreply(frame);
-        delete pI;
+    {
+        ICMPCoInfo Icmp(this);
+        Icmp.Reply(frame);
         break;
+    }
     case TYPEUDP:
-        UDPCoInfo* pU= new UDPCoInfo(this);
-        pU->WellKnownSVCreply(frame);
-        delete pU;
+    {
+        UDPCoInfo Udp(this);
+        //Udp.ReplyUnReach(frame);
         break;
+    }
     case TYPETCP:
-        TCPCoInfo* pT= new TCPCoInfo(this);
-        cinfolist.add(pT);
-        pT->localport=DAYTIME;
-        pT->TransStateByMSG(MSG_NET_OPEN);
-        pT->TransStateByPKT(frame);
-        break;    
+    {
+        TCPCoInfo Tcp(this);
+        Tcp.ReplyUnReach(frame);
+        break;
+    }
+    default:
+        break;
     }
 }
 

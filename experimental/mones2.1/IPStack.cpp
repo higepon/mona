@@ -55,8 +55,14 @@ void IPStack::messageLoop()
         case MSG_NET_CONFIG:
             this->config(&msg);
             break;
-        case MSG_NET_OPEN:
-            this->open(&msg);
+        case MSG_NET_ICMPOPEN:
+            this->icmpopen(&msg);
+            break;
+        case MSG_NET_UDPOPEN:
+            this->udpopen(&msg);
+            break;
+        case MSG_NET_ACTVOPEN:
+            this->tcpactvopen(&msg);
             break;
         case MSG_NET_PASVOPEN:
             this->tcppasvopen(&msg);
@@ -112,41 +118,48 @@ void IPStack::getstatus(MessageInfo* msg)
     }
 }
 
-void IPStack::open(MessageInfo* msg)
+void IPStack::icmpopen(MessageInfo* msg)
 {
     int netdsc= pDP->InfoNum();
-    switch((msg->arg3)&0x00FF)
-    {
-    case TYPEICMP:
-        ICMPCoInfo* pI=new ICMPCoInfo(pDP);
-        pI->type=ECHOREQUEST;
-        pI->seqnum=0;
-        pI->idnum=0;
-        pI->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
-        pDP->AddInfo(pI);
-        break;
-    case TYPEUDP:
-        UDPCoInfo* pU = new UDPCoInfo(pDP);
-        pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
-        pDP->AddInfo(pU);
-        break;
-    case TYPETCP:
-        TCPCoInfo* pT=new TCPCoInfo(pDP);    
-        pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
-        pDP->AddInfo(pT);
-        pT->isPasv=false;
-        pT->TransStateByMSG(MSG_NET_OPEN);
-        memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
-        return; // reply will be done by recv SYN|ACK 
-    default:
-        printf("orz\n");
-    }
+    ICMPCoInfo* pI=new ICMPCoInfo(pDP);
+    pI->type=ECHOREQUEST;
+    pI->seqnum=0;
+    pI->idnum=0;
+    pI->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pDP->AddInfo(pI);
+    Message::reply(msg, netdsc);
+}
+
+void IPStack::udpopen(MessageInfo* msg)
+{
+    int netdsc= pDP->InfoNum(); \
+    UDPCoInfo* pU = new UDPCoInfo(pDP);
+    pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pDP->AddInfo(pU);  
     Message::reply(msg, netdsc);
 }
 
 void IPStack::tcppasvopen(MessageInfo* msg)
-{
+{    
+    int netdsc= pDP->InfoNum();
+    TCPCoInfo* pT=new TCPCoInfo(pDP);    
+    pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pDP->AddInfo(pT);
+    pT->isPasv=false;
+    pT->TransStateByMSG(MSG_NET_PASVOPEN);
+    memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
+    Message::reply(msg, netdsc);
 
+}
+void IPStack::tcpactvopen(MessageInfo* msg)
+{
+    int netdsc= pDP->InfoNum();
+    TCPCoInfo* pT=new TCPCoInfo(pDP);    
+    pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pDP->AddInfo(pT);
+    pT->isPasv=false;
+    pT->TransStateByMSG(MSG_NET_ACTVOPEN);
+    memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
 }
 
 void IPStack::tcpaccept(MessageInfo* msg)

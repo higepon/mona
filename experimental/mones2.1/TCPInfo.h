@@ -18,6 +18,7 @@ public:
     bool TransStateByPKT(Ether*);
     bool TransStateByMSG(dword);
     void SendACK(Ether*);
+    void ReplyUnReach(Ether*);
     enum CTRLFLAGS{
         NORM=0x0,
         FIN=0x01,

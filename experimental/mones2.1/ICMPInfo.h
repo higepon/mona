@@ -16,7 +16,7 @@ public:
     bool IsMyPacket(Ether*);    
     bool IsProcessed(Ether*);
     word getType(){return TYPEICMP;}  
-    bool WellKnownSVCreply(Ether*);
+    bool Reply(Ether*);
 private:
 
 };

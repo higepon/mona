@@ -1,5 +1,5 @@
 //$Id$
-#include "NetClient.h"
+#include <NetClient.h>
 #include <monalibc/stdio.h>
 using namespace MonAPI;
 using namespace mones;
@@ -31,7 +31,7 @@ int Ping(NetClient& client,dword remoteip)
 {
     ///////////////////////////////////////////////
     printf("   Send ICMP echo request\n");
-    int netdsc= client.Open(remoteip,0,0,TYPEICMP);
+    int netdsc= client.ICMPOpen(remoteip);
     if( netdsc< 0 ){
         printf("OpenError.\n");
     }
@@ -58,7 +58,7 @@ int Udp(NetClient& client,dword remoteip,word port)
     printf("   Send UDP to %d\n",port);    
     word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
-    int netdsc = client.Open(remoteip,localport,port,TYPEUDP);
+    int netdsc = client.UDPOpen(remoteip,localport,port);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
@@ -84,7 +84,7 @@ int TcpClient(NetClient& client,dword remoteip,word port)
     word localport = client.GetFreePort();
     printf("Port=%d\n",localport);
     //isPasv=false;
-    int netdsc = client.Open(remoteip,localport,port,TYPETCP);
+    int netdsc = client.TCPActvOpen(remoteip,localport,port);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
@@ -111,26 +111,27 @@ int MonaMain(List<char*>* pekoe)
 {
     NetClient client;
     if( pekoe->size() < 2 || pekoe->size() > 4 ){
-        printf("\nusage    client ping dest-ip\n");
-        printf("         client udp dest-ip svc\n");
-        printf("         clinet tcp dset-ip svc\n");
-        printf("         client ftp dest-ip");
+        printf("\nusage:\n");
+        printf("         client dest-ip ping\n");
+        printf("         client dest-ip udp svc\n");
+        printf("         clinet dset-ip tcp svc\n");
+        printf("         client dest-ip ftp");
         Stat(client);
         exit(0);
     }
     dword a,b,c,d;
-    sscanf(pekoe->get(1),"%d.%d.%d.%d",&a,&b,&c,&d);
+    sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
     dword remoteip=((d<<24)&0xFF000000)|((c<<16)&0x00FF0000)|((b<<8)&0x0000FF00)|(a&0x000000FF);
     word port;
-    if( !strcmp(pekoe->get(0),"ping")){
+    if( !strcmp(pekoe->get(1),"ping")){
         Ping(client,remoteip);
-    }else if( !strcmp(pekoe->get(0), "udp")){
+    }else if( !strcmp(pekoe->get(1), "udp")){
         sscanf(pekoe->get(2),"%d",&port);
         Udp(client,remoteip,port);
-    }else if( !strcmp(pekoe->get(0), "tcp")){
+    }else if( !strcmp(pekoe->get(1), "tcp")){
         sscanf(pekoe->get(2),"%d",&port);
         TcpClient(client,remoteip,port);
-    }else if( !strcmp(pekoe->get(0), "ftp")){
+    }else if( !strcmp(pekoe->get(1), "ftp")){
         Ftp(client,remoteip);
     }
     exit(0);

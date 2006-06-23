@@ -118,6 +118,19 @@ void TCPCoInfo::Write_bottom_half(Ether* frame)
     }
 }    
 
+void TCPCoInfo::ReplyUnReach(Ether* frame)
+{
+    remoteip=frame->IPHeader->srcip;
+    localport=bswap(frame->IPHeader->TCPHeader->dstport);
+    remoteport=bswap(frame->IPHeader->TCPHeader->srcport);// srcport!!!
+    seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
+    acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
+    status=CLOSED;
+    flags=PSH|RST;
+    window=1408;
+    dispatcher->Send(NULL,0,this);
+}
+
 bool TCPCoInfo::WellKnownSVCreply(Ether* frame)
 {    
     if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
@@ -186,7 +199,7 @@ void TCPCoInfo::Close()
 
 bool TCPCoInfo::TransStateByMSG(dword msg)
 {
-    if( status == CLOSED  && isPasv==false && msg==MSG_NET_OPEN){
+    if( status == CLOSED  && isPasv==false && msg==MSG_NET_ACTVOPEN){
         seqnum=bswapl(1);
         acknum=bswapl(1);
         status=SYN_SENT;

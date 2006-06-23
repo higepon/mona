@@ -1,5 +1,5 @@
 //$Id$
-#include "NetClient.h"
+#include <NetClient.h>
 #include <monalibc/stdio.h>
 using namespace MonAPI;
 using namespace mones;
@@ -23,11 +23,32 @@ int NetClient::Config(char* if_name, dword localip, dword gatewayip, byte subnet
     return msg.arg2;
 }
 
-int NetClient::Open(dword remoteip, word localport, word remoteport, byte protocol)
+int NetClient::ICMPOpen(dword remoteip)
+{
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_ICMPOPEN, remoteip) != 0){
+        return -1;
+    }
+    return msg.arg2;
+
+}
+
+int NetClient::UDPOpen(dword remoteip, word localport, word remoteport)
 {
     MessageInfo msg;
     dword port=((localport)<<16)|remoteport;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_OPEN, remoteip,port,protocol,NULL) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_UDPOPEN, remoteip,port) != 0){
+        return -1;
+    }
+    return msg.arg2;
+
+}
+
+int NetClient::TCPActvOpen(dword remoteip, word localport, word remoteport)
+{
+    MessageInfo msg;
+    dword port=((localport)<<16)|remoteport;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_ACTVOPEN, remoteip,port) != 0){
         return -1;
     }
     return msg.arg2;
@@ -37,10 +58,10 @@ int NetClient::Open(dword remoteip, word localport, word remoteport, byte protoc
     // remoteip must be DCBA style, RetunValue is network descriptor.
     int  TCPPasvOpen(dword remoteip, word localport );
 
-int NetClient::TCPPasvOpen(dword remoteip, word localport )
+int NetClient::TCPPasvOpen( word localport )
 {
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_PASVOPEN,localport,NULL) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_PASVOPEN,localport) != 0){
         return -1;
     }
     return msg.arg2;

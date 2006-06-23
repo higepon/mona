@@ -17,7 +17,7 @@ class Dispatch :public RouteMan
 private:
     Nic* nic;    
     HList<L4Base*> cinfolist;
-    void CreateInfo(Ether*);
+    void ReplyUnReach(Ether*);
 public:  
     void Dispose(int n){ nic->Delete(n); } 
     Ether* GetFrame(int n){ return nic->RecvFrm(n); }

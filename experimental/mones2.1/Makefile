@@ -9,7 +9,7 @@ SHAREDIR   = $(MONADIR)/share
 IMPSFX = -imp
 include $(SHAREDIR)/configs/monapi.inc
 
-INCLUDE += -idirafter . 
+INCLUDE += -idirafter . -I./include 
 
 .SUFFIXES: .cpp .o
 .cpp.o:
@@ -24,7 +24,9 @@ INCLUDE += -idirafter .
 	$(NASM) $(NFLAGS) -o $@ $<
 
 all: $(TARGET).EX5
-	cd client && make 
+	cd lib && make
+	cd client && make
+	cd wkiss && make 
 $(TARGET).EX5: $(TARGET).EXE
 	bim2bin in:$< out:$@ -osacmp -tek5 BS:0 eprm:z0
 
@@ -35,7 +37,9 @@ $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 install: all
 	mkdir -p $(INSTDIR)
 	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+	cd lib && make
 	cd client && make install
+	cd wkiss && make install
 run: install
 	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/run.bat
 runl: install
@@ -46,7 +50,9 @@ runq: install
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f ${MONADIR}/bin/mona.img dependencies
+	cd lib && make clean
 	cd client && make clean
+	cd wkiss && make clean
 
 depend dependencies:
 ifneq ($(SOURCES),)

@@ -42,16 +42,16 @@ bool ICMPCoInfo::IsMyPacket(Ether* frame)
     return false;
 }
 
-bool ICMPCoInfo::WellKnownSVCreply(Ether* frame)
+bool ICMPCoInfo::Reply(Ether* frame)
 {
     ICMP* icmp=frame->IPHeader->ICMPHeader;
-    if( ECHOREQUEST==icmp->type ){
-        remoteip=frame->IPHeader->srcip;
-        type=ECHOREPLY;
-        idnum=bswap(icmp->idnum);
-        seqnum=bswap(icmp->seqnum);
-        dispatcher->Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),this);
-        return true;
-    }
+        if( ECHOREQUEST==icmp->type ){
+            remoteip=frame->IPHeader->srcip;
+            type=ECHOREPLY;
+            idnum=bswap(icmp->idnum);
+            seqnum=bswap(icmp->seqnum);
+            dispatcher->Send(icmp->data,bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP),this);
+            return true;
+        }
     return false;
 }
