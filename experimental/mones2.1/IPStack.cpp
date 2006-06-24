@@ -132,7 +132,7 @@ void IPStack::icmpopen(MessageInfo* msg)
 
 void IPStack::udpopen(MessageInfo* msg)
 {
-    int netdsc= pDP->InfoNum(); \
+    int netdsc= pDP->InfoNum();
     UDPCoInfo* pU = new UDPCoInfo(pDP);
     pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pU);  

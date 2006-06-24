@@ -72,9 +72,8 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
 }
 
 void TCPCoInfo::Accept(MessageInfo* m)
-{
-
-
+{      
+    memcpy(&msg,(byte*)m,sizeof(MessageInfo)); //Register msg.
 }
 
 void TCPCoInfo::Read_bottom_half(Ether* frame)
@@ -124,8 +123,10 @@ void TCPCoInfo::Write_bottom_half(Ether* frame)
     if( frame != NULL ){
         //TODO Delay Ack.
         if( frame->IPHeader->TCPHeader->flags == ACK ){
-            Message::reply(&msg);
-            memset(&msg,'\0',sizeof(MessageInfo));
+            Message::reply(&msg);        
+            seqnum+=msg.arg3; //ADD data size.
+            memset(&msg,'\0',sizeof(MessageInfo));   
+            printf("SEQNUM=%d\n",seqnum);
         }
     }
 }    
@@ -148,8 +149,6 @@ void TCPCoInfo::ReplyUnReach(Ether* frame)
 void TCPCoInfo::Close()
 {     
     if( status == ESTAB ){
-        //seqnum;
-        //acknum;
         status=FIN_WAIT1;
         flags=FIN|ACK;
         window=1400; 
@@ -224,7 +223,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
     //printf("%x %d\n",rflag,status);
     if( (status == SYN_SENT) && (rflag == SYN|ACK) ){
         //printf("<<%d>>\n",bswap(frame->IPHeader->id));
-        remoteip=frame->IPHeader->srcip;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=ESTAB; 
@@ -240,7 +238,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         return true;
     }
     if( (status == FIN_WAIT2) && (rflag == (FIN|ACK)) ){
-        remoteip=frame->IPHeader->srcip;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=TIME_WAIT; 
@@ -252,30 +249,12 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         dispatcher->RemoveInfo(this,500);
         return true;
     }
-    if( Strip(frame,&data) == 0 ){
-        //if( (status == ESTAB) && (rflag == ACK) ){
-        //    return true;
-        //}
-        if( (status == SYN_RCVD) && (rflag == ACK )){
-            status = ESTAB;
-            Message::reply(&msg);//read
-            seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
-            acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber);
-            status=FIN_WAIT1;
-            flags=PSH|ACK;
-            window=1407;
-            //Message::reply(&msg, netdsc);//accept
-            char* data="why don't you buy high quality Rolex replica?\r\n";    
-            dispatcher->Send((byte*)data,47,this);
-            return true;
-        }
-        return false; 
-    }
+ 
     /////PASV OPEN CLOSE////////////////////
     if( (status == LISTEN ) && (rflag == SYN ) ){
        // printf("<<%d>>\n",bswap(frame->IPHeader->id));
-       // remoteip=frame->IPHeader->srcip;
-       // remoteport=bswap(frame->IPHeader->TCPHeader->srcport);// srcport!!!
+        remoteip=frame->IPHeader->srcip;
+        remoteport=bswap(frame->IPHeader->TCPHeader->srcport);// srcport!!!
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=SYN_RCVD;
@@ -284,6 +263,37 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         //printf("LISTEN->SYN_RCVD %d %d\n",seqnum,acknum);
         dispatcher->Send(NULL,0,this);
         return true;
+    }   
+    if( Strip(frame,&data) == 0 ){
+        //if( (status == ESTAB) && (rflag == ACK) ){
+        //    return true;
+        //}
+        if( (status == SYN_RCVD) && (rflag == ACK )){
+            status = ESTAB;
+            
+            ////////////////////
+            TCPCoInfo* pT= new TCPCoInfo(dispatcher);
+            int n = dispatcher->InfoNum();    
+            memcpy(&(pT->msg),(byte*)(&msg),sizeof(MessageInfo)); //Setup New Info.
+            pT->Init(0, localport,0, msg.from, netdsc);
+            printf("[PORT=%d]\n",localport);
+            pT->isPasv=true;    
+            pT->msg.header=MSG_NET_PASVOPEN;
+            pT->TransStateByMSG(MSG_NET_PASVOPEN);
+            dispatcher->AddInfo(pT);
+
+            this->netdsc=n;
+            Message::reply(&msg,n);
+            ////////////REPLY FOR ACCEPT.
+
+            printf("ACCEPT\n");
+            seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
+            acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber);
+            flags=PSH|ACK;
+            window=1407;
+            return true;
+        }
+        return false; 
     }
     if( (status == ESTAB ) && ( rflag == (FIN|ACK) ) ){
         //remoteip=frame->IPHeader->srcip;
