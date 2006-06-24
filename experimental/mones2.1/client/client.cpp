@@ -89,9 +89,11 @@ int TcpClient(NetClient& client,dword remoteip,word port)
         printf("OpenError.\n");
     }
     printf("Open::netdsc=%d\n",netdsc);
-    if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
-        printf("WrieError.\n");
-    } 
+    if( port == 7 ){
+        if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
+            printf("WrieError.\n");
+        }
+    }
     byte buf[1024];//BAD design.
     int size= client.Read(netdsc,buf);
     if( size > 0 ){

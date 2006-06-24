@@ -143,9 +143,9 @@ void IPStack::tcppasvopen(MessageInfo* msg)
 {    
     int netdsc= pDP->InfoNum();
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
-    pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
+    pT->Init(0, (word)(msg->arg1),0, msg->from, netdsc);
     pDP->AddInfo(pT);
-    pT->isPasv=false;
+    pT->isPasv=true;
     pT->TransStateByMSG(MSG_NET_PASVOPEN);
     memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
     Message::reply(msg, netdsc);
@@ -164,7 +164,13 @@ void IPStack::tcpactvopen(MessageInfo* msg)
 
 void IPStack::tcpaccept(MessageInfo* msg)
 {
-
+    for(int i=0;i<pDP->InfoNum();i++){
+        TCPCoInfo* pT  = (TCPCoInfo*)(pDP->GetInfo(i));
+        if( pT->netdsc == msg->arg1 ){
+            pT->Accept(msg);
+            break;
+        }
+    } 
 }
 
 void IPStack::close(MessageInfo* msg)

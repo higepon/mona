@@ -19,6 +19,7 @@ public:
     bool TransStateByMSG(dword);
     void SendACK(Ether*);
     void ReplyUnReach(Ether*);
+    void Accept(MessageInfo*);
     enum CTRLFLAGS{
         NORM=0x0,
         FIN=0x01,

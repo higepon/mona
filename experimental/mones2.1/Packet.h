@@ -1,4 +1,4 @@
-//$Id: Nic.h 3263 2006-06-09 18:05:20Z eds1275 $
+//$Id$
 #pragma once
 #include <monapi.h>
 #include <sys/types.h>

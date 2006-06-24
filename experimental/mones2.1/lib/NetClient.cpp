@@ -54,14 +54,10 @@ int NetClient::TCPActvOpen(dword remoteip, word localport, word remoteport)
     return msg.arg2;
 }
 
-    int  Open(dword remoteip, word localport, word remoteport, word protocol );
-    // remoteip must be DCBA style, RetunValue is network descriptor.
-    int  TCPPasvOpen(dword remoteip, word localport );
-
-int NetClient::TCPPasvOpen( word localport )
+int NetClient::TCPPasvOpen( word remoteport )
 {
     MessageInfo msg;
-    if (Message::sendReceive(&msg, serverid, MSG_NET_PASVOPEN,localport) != 0){
+    if (Message::sendReceive(&msg, serverid, MSG_NET_PASVOPEN,remoteport) != 0){
         return -1;
     }
     return msg.arg2;
