@@ -2,13 +2,14 @@
 #define __VARIABLE_H__
 
 #include "Object.h"
+#include <vector>
 
 namespace monash {
 
 class Variable : Object
 {
 public:
-    Variable(Object* object);
+    Variable(const std::string& name);
     virtual ~Variable();
 
 public:
@@ -16,8 +17,10 @@ public:
     virtual int type() const;
 
 protected:
-    Object* object_;
+    std::string name_;
 };
+
+typedef std::vector<Variable*> Variables;
 
 }; // namespace monash
 

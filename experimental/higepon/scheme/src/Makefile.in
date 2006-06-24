@@ -49,7 +49,9 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	String.$(OBJEXT) Quote.$(OBJEXT) Variable.$(OBJEXT) \
-	Assignment.$(OBJEXT)
+	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
+	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
+	Begin.$(OBJEXT) Definition.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -151,7 +153,21 @@ Quote.h\
 Variable.cpp\
 Variable.h\
 Assignment.cpp\
-Assignment.h
+Assignment.h\
+SpecialIf.cpp\
+SpecialIf.h\
+Frame.cpp\
+Frame.h\
+Environment.cpp\
+Environment.h\
+Lambda.cpp\
+Lambda.h\
+Procedure.cpp\
+Procedure.h\
+Begin.cpp\
+Begin.h\
+Definition.cpp\
+Definition.h
 
 all: all-am
 

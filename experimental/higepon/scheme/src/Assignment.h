@@ -14,6 +14,8 @@ public:
 public:
     virtual std::string toString();
     virtual int type() const;
+    virtual Variable* variable() const { return variable_; }
+    virtual Object* value() const { return value_; }
 
 protected:
     Variable* variable_;

@@ -21,3 +21,8 @@ int Number::type() const
 {
     return Object::NUMBER;
 }
+
+int Number::value() const
+{
+    return value_;
+}

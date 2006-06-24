@@ -12,5 +12,22 @@ Quote.h\
 Variable.cpp\
 Variable.h\
 Assignment.cpp\
-Assignment.h
+Assignment.h\
+SpecialIf.cpp\
+SpecialIf.h\
+Frame.cpp\
+Frame.h\
+Environment.cpp\
+Environment.h\
+Lambda.cpp\
+Lambda.h\
+Procedure.cpp\
+Procedure.h\
+Begin.cpp\
+Begin.h\
+Definition.cpp\
+Definition.h
+
+
+
 

@@ -2,6 +2,7 @@
 #define __OBJECT_H__
 
 #include <string>
+#include <vector>
 
 namespace monash {
 
@@ -21,8 +22,15 @@ public:
         QUOTE,
         VARIABLE,
         ASSIGNMENT,
+        IF,
+        LAMBDA,
+        PROCEDURE,
+        BEGIN,
+        DEFINITION,
     };
 };
+
+typedef std::vector<Object*> Objects;
 
 }; // namespace monash
 
