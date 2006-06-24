@@ -72,7 +72,7 @@ void FileServerTest::testISO9660ReadFile()
 {
 
     {
-    monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/", MONAPI_FALSE);
+    monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/system/process", MONAPI_FALSE);
     monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     int size = *(int*)mi->Data;
 

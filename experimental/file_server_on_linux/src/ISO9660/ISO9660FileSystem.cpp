@@ -38,14 +38,17 @@ int ISO9660FileSystem::initialize()
 
 int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
+    printf("%s %s:%d v=================[%x]\n", __func__, __FILE__, __LINE__, v);fflush(stdout);
     if (v != NULL && v->type == type)
     {
         *found = v;
         return MONA_SUCCESS;
     }
-
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     Entry* directoryEntry = (Entry*)diretory->fnode;
     Entry* target = NULL;
 
@@ -57,6 +60,7 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     {
         target = lookupDirectory(directoryEntry, file);
     }
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     if (target == NULL) return MONA_ERROR_ENTRY_NOT_FOUND;
     Vnode* newVnode = vmanager_->alloc();
     newVnode->fnode  = target;
@@ -64,6 +68,7 @@ int ISO9660FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found
     newVnode->fs = this;
     vmanager_->cacher()->add(diretory, file, newVnode);
     *found = newVnode;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     return MONA_SUCCESS;
 }
 

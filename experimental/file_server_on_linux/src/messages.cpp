@@ -454,6 +454,7 @@ monapi_cmemoryinfo* monapi_call_file_read_directory2(const char* path, MONAPI_BO
     {
         return NULL;
     }
+    printf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, msg.arg2);fflush(stdout);
     if (msg.arg2 == 0) return NULL;
 
     ret = monapi_cmemoryinfo_new();

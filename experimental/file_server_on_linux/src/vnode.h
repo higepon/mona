@@ -83,6 +83,7 @@ public:
         LINK,
         BAD
     };
+    Vnode* mountedVnode;
 };
 
 
