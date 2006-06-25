@@ -449,12 +449,10 @@ monapi_cmemoryinfo* monapi_call_file_read_directory2(const char* path, MONAPI_BO
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_READ_DIRECTORY, prompt, 0, 0, path) != 0)
     {
         return NULL;
     }
-    printf("%s %s:%d %d\n", __func__, __FILE__, __LINE__, msg.arg2);fflush(stdout);
     if (msg.arg2 == 0) return NULL;
 
     ret = monapi_cmemoryinfo_new();

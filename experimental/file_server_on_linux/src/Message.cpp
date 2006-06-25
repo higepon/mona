@@ -85,8 +85,17 @@ int Message::sendReceive(MessageInfo* dst, dword tid, dword header, dword arg1 /
 
 int Message::reply(MessageInfo* info, dword arg2 /* = 0 */, dword arg3 /* = 0 */, const char* str /* = NULL */)
 {
-    sleep(1);
-    return Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+//    sleep(1);
+    int ret =  Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+    if (ret == -2) /* not ready  quick hack for emulation*/
+    {
+        for (int i = 0; i < 100000; i++)
+        {
+            ret =  Message::send(info->from, MSG_RESULT_OK, info->header, arg2, arg3, str);
+            if (ret != -2) break;
+        }
+    }
+    return ret;
 }
 
 int Message::receive(MessageInfo* dst, MessageInfo* src, bool(*equals)(MessageInfo* msg1, MessageInfo* msg2))

@@ -88,8 +88,9 @@ int SocketMessage::send(dword tid, MessageInfo* info)
 
     if (-1 == connect(sock, (sockaddr*)&me , sizeof(me)))
     {
-        perror("connect()");
-        return -1;
+//        perror("connect()");
+        close(sock);
+        return -2;
     }
 
     if (-1 == ::send(sock, info, sizeof(MessageInfo), 0))
