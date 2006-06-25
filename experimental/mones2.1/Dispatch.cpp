@@ -11,8 +11,15 @@
 using namespace mones;
 using namespace MonAPI;
 
+void Dispatch::readStatus(NetStatus* stat)
+{
+    nic->getStatus(stat);
+    printf("");
+}
+
 Dispatch::Dispatch()
 {
+    serialno=0;
     PciInf pciinfo;
     Pci* pcilib = new Pci();
     printf("\nIP address is defined in Dispatch constructor. Rewrite it as your environment.\n");
@@ -109,7 +116,6 @@ void Dispatch::DoDispatch()
     Ether* frame;
 
     while( frame = nic->RecvFrm(pktnumber) ){
-        //CLIENT
         bool hasClient=false;
         for(int i=0;i<cinfolist.size(); i++){
             L4Base* cinfo =cinfolist.get(i);
@@ -188,10 +194,10 @@ void Dispatch::PeriodicUpdate()
     for(int i=0;i<cinfolist.size();i++){
         L4Base* c=cinfolist.get(i);
         if( c->disposed==true && c->disposedtick  < now ){
-            printf("remove\n");
+            //printf("remove\n");
             delete cinfolist.removeAt(i);
             i--;
         }
     }
-    /////////
+    DoDispatch();
 }

@@ -7,7 +7,7 @@ namespace mones{
 class TCPCoInfo : public L4Base
 {
 public:
-    TCPCoInfo(Dispatch* p){ dispatcher=p; status=CLOSED; isPasv=true; window=1000; }
+    TCPCoInfo(Dispatch*);
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
@@ -32,6 +32,7 @@ public:
         RED=0x80
     };
 private:
+    int serialno;
     dword seqnum;
     dword acknum;
     byte  status;
@@ -49,6 +50,7 @@ private:
         LAST_ACK,
         TIME_WAIT
     };
+    int Duplicate();
     bool WellKnownSVCreply(Ether*);
     void Write_bottom_half(Ether*);
     void Read_bottom_half(Ether*);

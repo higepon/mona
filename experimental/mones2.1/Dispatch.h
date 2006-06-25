@@ -18,7 +18,8 @@ private:
     Nic* nic;    
     HList<L4Base*> cinfolist;
     void ReplyUnReach(Ether*);
-public:  
+public:      
+    int serialno;
     void Dispose(int n){ nic->Delete(n); } 
     Ether* GetFrame(int n){ return nic->RecvFrm(n); }
     void DoDispatch();
@@ -27,7 +28,7 @@ public:
     bool initialize();
     void interrupt();
     int  Send(byte* ,int, L4Base* );
-    void readStatus(NetStatus* stat){ nic->getStatus(stat); }
+    void readStatus(NetStatus*);
     void PeriodicUpdate();
     L4Base* GetInfo(int n){ return cinfolist.get(n); }
     void AddInfo(L4Base* c){cinfolist.add(c); }
