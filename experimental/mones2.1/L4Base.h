@@ -29,6 +29,7 @@ public:
     virtual void Write(MessageInfo*);
     virtual void Read_bottom_half(Ether*);
     virtual void Write_bottom_half(Ether*){};//Nothing to do for ICMP/UDP.
+    virtual void Dump();
     void Init(dword rip, word lport, word rport,dword cid, word dsc){
         remoteip=rip; localport=lport; remoteport=rport; clientid=cid; netdsc=dsc;
         msg.header = MSG_NET_ACTVOPEN;

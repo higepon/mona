@@ -7,6 +7,7 @@ namespace mones{
 class TCPCoInfo : public L4Base
 {
 public:
+    void Dump();
     TCPCoInfo(Dispatch*);
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);

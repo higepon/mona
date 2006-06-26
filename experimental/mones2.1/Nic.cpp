@@ -63,7 +63,7 @@ int ARPmanager::MakeArpReply(Ether* frame)
             ah->srcIp=ipaddress;
             memcpy(frame->dstmac,ah->dstMac,6);
             memcpy(frame->srcmac,ah->srcMac,6);
-            printf("ARP REQ\n");
+            //printf("ARP REQ\n");
             return 0;
         }else{
             delete frame;

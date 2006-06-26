@@ -5,6 +5,12 @@
 using namespace mones;
 using namespace MonAPI;
 
+void TCPCoInfo::Dump()
+{
+    L4Base::Dump();
+    printf("STATUS:%d ACK%d SEC:%d FLAG:%d WINDOW:%d\n",status,seqnum,acknum,flags,window);
+}
+
 TCPCoInfo::TCPCoInfo(Dispatch* p):isPasv(true),seqnum(0),acknum(0),status(CLOSED),flags(NORM),window(1000)
 {
     dispatcher=p;
@@ -33,8 +39,10 @@ bool TCPCoInfo::IsProcessed(Ether* frame)
 }
 
 bool TCPCoInfo::IsMyPacket(Ether* frame) 
-{
-    if( TYPETCP == frame->IPHeader->prot){ 
+{    
+    if( status == TIME_WAIT ){
+        return false;
+    }else if( TYPETCP == frame->IPHeader->prot){ 
         if( remoteip   == frame->IPHeader->srcip &&
             localport  == bswap(frame->IPHeader->TCPHeader->dstport) &&
             remoteport == bswap(frame->IPHeader->TCPHeader->srcport) )
@@ -74,10 +82,6 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     //printf("CreateHeader%d %d\n",seqnum,acknum);
 }
 
-void TCPCoInfo::Accept(MessageInfo* m)
-{      
-    memcpy(&msg,(byte*)m,sizeof(MessageInfo)); //Register msg.
-}
 
 void TCPCoInfo::Read_bottom_half(Ether* frame)
 {
@@ -133,6 +137,11 @@ void TCPCoInfo::Write_bottom_half(Ether* frame)
     }
 }    
 
+void TCPCoInfo::Accept(MessageInfo* m)
+{      
+    memcpy(&msg,(byte*)m,sizeof(MessageInfo)); //Register msg.
+}
+
 int TCPCoInfo::Duplicate()
 {
     TCPCoInfo* pT= new TCPCoInfo(dispatcher);
@@ -143,7 +152,8 @@ int TCPCoInfo::Duplicate()
     pT->isPasv=true;    
     pT->msg.header=MSG_NET_PASVOPEN;
     pT->TransStateByMSG(MSG_NET_PASVOPEN);
-    dispatcher->AddInfo(pT);
+    dispatcher->AddInfo(pT);   
+    Message::reply(&msg,n);
     return n;
 }
 
@@ -193,9 +203,9 @@ void TCPCoInfo::SendACK(Ether* frame)
 //MSGWrite        LISTEN->ERROR.
 //MSGClose        SYN_RCVD->FIN_WAIT1    sendFIN
 //MSGClose        ESTAB->FIN_WAIT1       sendFIN
-bool TCPCoInfo::TransStateByMSG(dword msg)
+bool TCPCoInfo::TransStateByMSG(dword mhead)
 {
-    if( status == CLOSED  && isPasv==false && msg==MSG_NET_ACTVOPEN){
+    if( status == CLOSED  && isPasv==false && mhead==MSG_NET_ACTVOPEN){
         seqnum=bswapl(1);
         acknum=bswapl(1);
         status=SYN_SENT;
@@ -205,7 +215,7 @@ bool TCPCoInfo::TransStateByMSG(dword msg)
         dispatcher->Send(NULL,0,this);
         return true;
     }
-    if( status == CLOSED && isPasv==true && msg==MSG_NET_PASVOPEN ){
+    if( status == CLOSED && isPasv==true && mhead==MSG_NET_PASVOPEN ){
         status = LISTEN;
         flags=NORM;
         seqnum=0;
@@ -219,7 +229,7 @@ bool TCPCoInfo::TransStateByMSG(dword msg)
     }
     return false;
 }
-/*        CLOSED=1,
+/*      CLOSED=1,
         LISTEN 2
         SYN_SENT 3
         SYN_RCVD 4
@@ -289,8 +299,7 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
     }   
     if( (Strip(frame,&data) == 0) && (status == SYN_RCVD) && (rflag == ACK )){
         //printf("SYN_RCVD->ESTAB\n");
-        int n=Duplicate(); ////////////REPLY FOR ACCEPT.
-        Message::reply(&msg,n);        
+        Duplicate(); ////////////REPLY FOR ACCEPT.        
         status = ESTAB;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber);
@@ -298,7 +307,7 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         window=1407;
         return true; 
     }
-    if( (status == ESTAB ) && ( rflag == (FIN|ACK) ) ){
+    if( (status == ESTAB ) && ( rflag == (FIN|ACK) )  ){
         //remoteip=frame->IPHeader->srcip;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;

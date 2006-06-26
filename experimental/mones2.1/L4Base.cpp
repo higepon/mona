@@ -9,6 +9,12 @@
 using namespace mones;
 using namespace MonAPI;
 
+void L4Base::Dump()
+{
+    printf("\nRIP:%d LP:%d RP:%d Cid:%d Ndsc:%d Tick%d disposed:%d MSG:%x\n",
+        remoteip,localport,remoteport,clientid ,netdsc, disposedtick, disposed, msg.header);
+}
+
 void L4Base::Close()
 {
     dispatcher->RemoveInfo(this,0);
@@ -32,7 +38,7 @@ void L4Base::CreateIPHeader(Ether* frame,word length,byte protocol)
     ip->verhead=0x45;       //version & headersize
     ip->tos=0x00;           //tos
     ip->len=bswap(length);  //totallength PING size windows 60 solaris 84
-    ip->id=bswap(0xabcd);   //made from PID?
+    ip->id=bswap(dispatcher->getPacketID());   //made from PID?
     ip->frag=bswap(0x0000); //flag
     ip->ttl=0x80;           //TTL
     ip->prot=protocol;      

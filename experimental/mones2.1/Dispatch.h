@@ -18,8 +18,10 @@ private:
     Nic* nic;    
     HList<L4Base*> cinfolist;
     void ReplyUnReach(Ether*);
+    word packetid;
 public:      
     int serialno;
+    word getPacketID();
     void Dispose(int n){ nic->Delete(n); } 
     Ether* GetFrame(int n){ return nic->RecvFrm(n); }
     void DoDispatch();

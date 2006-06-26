@@ -12,13 +12,16 @@ using namespace mones;
 using namespace MonAPI;
 
 void Dispatch::readStatus(NetStatus* stat)
-{
-    nic->getStatus(stat);
-    printf("");
+{    
+    nic->getStatus(stat);  
+    for(int i=0;i<cinfolist.size();i++){
+        cinfolist.get(i)->Dump();
+    }
 }
 
 Dispatch::Dispatch()
 {
+    packetid=0;
     serialno=0;
     PciInf pciinfo;
     Pci* pcilib = new Pci();
@@ -72,6 +75,11 @@ Dispatch::Dispatch()
         delete nic;
         nic=NULL;
     }
+}
+
+word Dispatch::getPacketID()
+{
+    return packetid++;
 }
 
 Dispatch::~Dispatch()
