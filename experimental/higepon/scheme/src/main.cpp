@@ -87,7 +87,7 @@ bool is_assignment(Object* exp)
 
 bool is_definition(Object* exp)
 {
-    return false;
+    return  (exp->type() == Object::DEFINITION);
 }
 
 bool isIf(Object* exp)
@@ -115,22 +115,9 @@ bool is_application(Object* exp)
     return false;
 }
 
-Object* lookup_variable_value(Object* exp, Environment* env)
-{
-
-    return NULL;
-}
-
 Object* text_of_quotation(Object* exp)
 {
     return exp; // different from SICP's
-}
-
-Object* eval_assignment(Object* exp, Environment* env)
-{
-    Assignment* assignment = (Assignment*)exp;
-    env->setVaribale(assignment->variable(), assignment->value());
-    return new Quote("OK"); // different from SICP's
 }
 
 Object* eval_definition(Object* exp, Environment* env)
@@ -139,12 +126,6 @@ Object* eval_definition(Object* exp, Environment* env)
     env->defineVariable(assignment->variable(), assignment->value());
     return new Quote("OK"); // different from SICP's
 }
-
-Object* eval_if(Object* exp, Environment* env)
-{
-    return NULL;
-}
-
 
 Object* eval(Object* exp, Environment* env)
 {
@@ -162,11 +143,13 @@ Object* eval(Object* exp, Environment* env)
     }
     else if (is_assignment(exp))
     {
-        return eval_assignment(exp, env);
+        Assignment* assignment = (Assignment*)exp;
+        return assignment->eval(env);
     }
     else if (is_definition(exp))
     {
-        return eval_definition(exp, env);
+        Definition* definition = (Definition*)exp;
+        return definition->eval(env);
     }
     else if (isIf(exp))
     {

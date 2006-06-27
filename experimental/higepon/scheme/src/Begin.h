@@ -6,7 +6,7 @@
 
 namespace monash {
 
-class Begin : Object
+class Begin : public Object
 {
 public:
     Begin(Objects* actions);

@@ -27,6 +27,7 @@ public:
         PROCEDURE,
         BEGIN,
         DEFINITION,
+        COND,
     };
 };
 

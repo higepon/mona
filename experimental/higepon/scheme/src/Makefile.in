@@ -51,7 +51,7 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	String.$(OBJEXT) Quote.$(OBJEXT) Variable.$(OBJEXT) \
 	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
-	Begin.$(OBJEXT) Definition.$(OBJEXT)
+	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -167,7 +167,9 @@ Procedure.h\
 Begin.cpp\
 Begin.h\
 Definition.cpp\
-Definition.h
+Definition.h\
+Cond.cpp\
+Cond.h
 
 all: all-am
 
