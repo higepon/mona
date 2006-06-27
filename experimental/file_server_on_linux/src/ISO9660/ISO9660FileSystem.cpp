@@ -127,6 +127,7 @@ Vnode* ISO9660FileSystem::getRoot() const
 
 int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);
     Entry* directory = (Entry*)dir->fnode;
     setDetailInformation(directory);
 
@@ -505,6 +506,7 @@ Entry* ISO9660FileSystem::lookupFile(Entry* directory, const string& fileName)
         }
 
         string name = getProperName(string(iEntry->name, iEntry->name_len));
+        printf("%s %s:%d %s\n", __func__, __FILE__, __LINE__, name.c_str());fflush(stdout);
         if (iEntry->directory == 0 && fileName == name)
         {
             Entry* foundFile = new Entry;

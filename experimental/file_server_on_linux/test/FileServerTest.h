@@ -7,7 +7,9 @@ class FileServerTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(FileServerTest);
     CPPUNIT_TEST(testISO9660ReadDirectory);
+    CPPUNIT_TEST(testISO9660ReadDirectoryNG);
     CPPUNIT_TEST(testISO9660ReadFile);
+    CPPUNIT_TEST(testISO9660ReadFileNG);
     CPPUNIT_TEST(testISO9660FileSize);
     CPPUNIT_TEST(testProcessReadDirectory);
     CPPUNIT_TEST(testProcessReadFile);
@@ -17,7 +19,9 @@ public:
     void setUp();
     void tearDown();
     void testISO9660ReadDirectory();
+    void testISO9660ReadDirectoryNG();
     void testISO9660ReadFile();
+    void testISO9660ReadFileNG();
     void testISO9660FileSize();
     void testProcessReadDirectory();
     void testProcessReadFile();
