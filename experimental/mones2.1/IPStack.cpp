@@ -120,11 +120,9 @@ void IPStack::getstatus(MessageInfo* msg)
 
 void IPStack::icmpopen(MessageInfo* msg)
 {
-    int netdsc= pDP->InfoNum();
+    int netdsc= pDP->getSerialNo();
     ICMPCoInfo* pI=new ICMPCoInfo(pDP);
     pI->type=ECHOREQUEST;
-    pI->seqnum=0;
-    pI->idnum=0;
     pI->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pI);
     Message::reply(msg, netdsc);
@@ -132,7 +130,7 @@ void IPStack::icmpopen(MessageInfo* msg)
 
 void IPStack::udpopen(MessageInfo* msg)
 {
-    int netdsc= pDP->InfoNum();
+    int netdsc= pDP->getSerialNo();
     UDPCoInfo* pU = new UDPCoInfo(pDP);
     pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pU);  
@@ -141,7 +139,7 @@ void IPStack::udpopen(MessageInfo* msg)
 
 void IPStack::tcppasvopen(MessageInfo* msg)
 {    
-    int netdsc= pDP->InfoNum();
+    int netdsc= pDP->getSerialNo();
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
     pT->Init(0, (word)(msg->arg1),0, msg->from, netdsc);
     pDP->AddInfo(pT);
@@ -153,7 +151,7 @@ void IPStack::tcppasvopen(MessageInfo* msg)
 }
 void IPStack::tcpactvopen(MessageInfo* msg)
 {
-    int netdsc= pDP->InfoNum();
+    int netdsc= pDP->getSerialNo();
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
     pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pT);

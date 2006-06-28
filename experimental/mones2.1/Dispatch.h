@@ -19,9 +19,10 @@ private:
     HList<L4Base*> cinfolist;
     void ReplyUnReach(Ether*);
     word packetid;
-public:      
     int serialno;
-    word getPacketID();
+public: 
+    int  getSerialNo(){ return serialno++; }
+    word getPacketID(){ return packetid++; }
     void Dispose(int n){ nic->Delete(n); } 
     Ether* GetFrame(int n){ return nic->RecvFrm(n); }
     void DoDispatch();

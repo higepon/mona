@@ -22,7 +22,7 @@ void Dispatch::readStatus(NetStatus* stat)
 Dispatch::Dispatch()
 {
     packetid=0;
-    serialno=0;
+    serialno=1;
     PciInf pciinfo;
     Pci* pcilib = new Pci();
     printf("\nIP address is defined in Dispatch constructor. Rewrite it as your environment.\n");
@@ -75,11 +75,6 @@ Dispatch::Dispatch()
         delete nic;
         nic=NULL;
     }
-}
-
-word Dispatch::getPacketID()
-{
-    return packetid++;
 }
 
 Dispatch::~Dispatch()

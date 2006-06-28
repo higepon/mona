@@ -11,7 +11,7 @@ using namespace MonAPI;
 
 void L4Base::Dump()
 {
-    printf("\nRIP:%d LP:%d RP:%d Cid:%d Ndsc:%d Tick%d disposed:%d MSG:%x\n",
+    printf("\nRIP%d LP%d RP%d CID%d DSC%d TICK%d DISPO:%d MSG:%x\n",
         remoteip,localport,remoteport,clientid ,netdsc, disposedtick, disposed, msg.header);
 }
 

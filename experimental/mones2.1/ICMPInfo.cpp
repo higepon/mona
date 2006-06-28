@@ -4,6 +4,12 @@
 using namespace mones;
 using namespace MonAPI;
 
+void ICMPCoInfo::Dump()
+{
+    L4Base::Dump();
+    printf("SEQ:%d ID%d\n",seqnum,idnum);
+}
+
 void ICMPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
 {
     ICMP* icmp=frame->IPHeader->ICMPHeader;
@@ -22,6 +28,7 @@ int ICMPCoInfo::Strip(Ether* frame, byte** data)
    *data=frame->IPHeader->ICMPHeader->data;
    return bswap(frame->IPHeader->len)-sizeof(IP)-sizeof(ICMP);
 }
+
 bool ICMPCoInfo::IsProcessed(Ether* frame)
 {
     Read_bottom_half(frame);
