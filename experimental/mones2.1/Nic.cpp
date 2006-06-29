@@ -141,7 +141,7 @@ Ether* Nic::NewFrame(dword dstip)
         for(int i=0;i<10;i++){
             if( Lookup(frame->dstmac,dstip) ==-1 ){
                 SendFrm(Query(dstip));
-                sleep(100);
+                sleep(2<<i);
                 interrupt();//copy rxdata form DMA memory. 
                 int n=0;
                 while( RecvFrm(n)!=NULL){ //check all packets on buffer.

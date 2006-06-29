@@ -10,7 +10,7 @@ public:
     word type;
     word seqnum;
     word idnum;
-    ICMPCoInfo(Dispatch* p){dispatcher=p;idnum=dispatcher->getPacketID();seqnum=idnum;printf("XXXXX\n");}
+    ICMPCoInfo(Dispatch* p){dispatcher=p;idnum=dispatcher->getPacketID();seqnum=idnum;}
     void CreateHeader(Ether* ,byte*,word );
     int Strip(Ether*,byte**);
     bool IsMyPacket(Ether*);    

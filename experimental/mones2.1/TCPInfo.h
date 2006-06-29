@@ -9,30 +9,17 @@ class TCPCoInfo : public L4Base
 public:
     void Dump();
     TCPCoInfo(Dispatch*);
-    void CreateHeader(Ether*,byte* ,word);  
-    int  Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
     bool IsProcessed(Ether*);
     void Close();
     void Write(MessageInfo*);
-    bool isPasv;    
     bool TransStateByPKT(Ether*);
-    bool TransStateByMSG(dword);
+    bool PasvOpen();
+    bool ActvOpen();
     void SendACK(Ether*);
     void ReplyUnReach(Ether*);
     void Accept(MessageInfo*);
-    enum CTRLFLAGS{
-        NORM=0x0,
-        FIN=0x01,
-        SYN=0x02,
-        RST=0x04,
-        PSH=0x08,
-        ACK=0x10,    
-        URG=0x20,
-        ECN=0x40,
-        RED=0x80
-    };
-private:
+private: 
     int serialno;
     dword seqnum;
     dword acknum;
@@ -50,11 +37,25 @@ private:
         CLOSE_WAIT,
         LAST_ACK,
         TIME_WAIT
+    };  
+    enum CTRLFLAGS{
+        NORM=0x0,
+        FIN=0x01,
+        SYN=0x02,
+        RST=0x04,
+        PSH=0x08,
+        ACK=0x10,    
+        URG=0x20,
+        ECN=0x40,
+        RED=0x80
     };
+    bool need_retry;
     int Duplicate();
-    bool WellKnownSVCreply(Ether*);
     void Write_bottom_half(Ether*);
-    void Read_bottom_half(Ether*);
+    bool Write_retry();
+    void Read_bottom_half(Ether*);    
+    void CreateHeader(Ether*,byte* ,word);  
+    int  Strip(Ether*, byte**);
 };
 
 };

@@ -47,7 +47,7 @@ bool UDPCoInfo::IsMyPacket(Ether* frame)
     return false;
 }
 
-bool UDPCoInfo::WellKnownSVCreply(Ether* frame)
+bool UDPCoInfo::Reply(Ether* frame)
 {   
     if( frame->IPHeader->UDPHeader->dstport==bswap(DAYTIME)){
         remoteip=frame->IPHeader->srcip;

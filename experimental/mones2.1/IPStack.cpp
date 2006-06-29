@@ -95,8 +95,8 @@ void IPStack::config(MessageInfo* msg)
 void IPStack::getfreeport(MessageInfo* msg)
 {
     next_port++;
-    if( next_port <= 0x400)
-        next_port=0x401;
+    if( next_port < 4096)
+        next_port= 4096;
     Message::reply(msg,next_port);
 }
 
@@ -143,8 +143,7 @@ void IPStack::tcppasvopen(MessageInfo* msg)
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
     pT->Init(0, (word)(msg->arg1),0, msg->from, netdsc);
     pDP->AddInfo(pT);
-    pT->isPasv=true;
-    pT->TransStateByMSG(MSG_NET_PASVOPEN);
+    pT->PasvOpen();
     memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
     Message::reply(msg, netdsc);
 
@@ -155,8 +154,7 @@ void IPStack::tcpactvopen(MessageInfo* msg)
     TCPCoInfo* pT=new TCPCoInfo(pDP);    
     pT->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pT);
-    pT->isPasv=false;
-    pT->TransStateByMSG(MSG_NET_ACTVOPEN);
+    pT->ActvOpen();
     memcpy(&(pT->msg),(byte*)msg,sizeof(MessageInfo)); //Register msg.
 }
 

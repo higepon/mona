@@ -12,7 +12,7 @@ public:
     int Strip(Ether*, byte**);
     bool IsMyPacket(Ether*);
     bool IsProcessed(Ether*);
-    bool WellKnownSVCreply(Ether*);
+    bool Reply(Ether*);
 };
 
 };
