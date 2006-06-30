@@ -88,7 +88,6 @@ int SocketMessage::send(dword tid, MessageInfo* info)
 
     if (-1 == connect(sock, (sockaddr*)&me , sizeof(me)))
     {
-//        perror("connect()");
         close(sock);
         return -2;
     }
@@ -105,8 +104,10 @@ int SocketMessage::send(dword tid, MessageInfo* info)
 int SocketMessage::receive(MessageInfo* info)
 {
     int sock = SocketMessage::createReceiveSocket();
-    if (-1 == sock) return -1;
-
+    if (-1 == sock)
+    {
+        return -1;
+    }
     struct sockaddr_in whoaddr;
     socklen_t wholen = sizeof(whoaddr);
     int who;

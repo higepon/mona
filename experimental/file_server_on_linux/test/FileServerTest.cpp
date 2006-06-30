@@ -17,7 +17,7 @@ void FileServerTest::tearDown()
 {
 }
 
-void FileServerTest::testProcessReadDirectory()
+void FileServerTest::testProcessReadDirectoryOnce()
 {
     // readdir OK
     monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/process", MONAPI_FALSE);
@@ -31,23 +31,41 @@ void FileServerTest::testProcessReadDirectory()
     monapi_cmemoryinfo_delete(mi);
 }
 
+void FileServerTest::testProcessReadDirectory()
+{
+    // first lookup
+    testProcessReadDirectoryOnce();
+
+    // cache lookup
+    testProcessReadDirectoryOnce();
+}
+
 void FileServerTest::testProcessReadFile()
+{
+    // first lookup
+    testProcessReadFileOnce();
+
+    // cache lookup
+    testProcessReadFileOnce();
+}
+
+void FileServerTest::testProcessReadFileOnce()
 {
     // readdir OK
     monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/process", MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("readdir /process mi != NULL", mi != NULL);
 
-    // there may be at least 3 processes.
+    // there may be 3 processes.
     int size = *(int*)mi->Data;
-    CPPUNIT_ASSERT_MESSAGE("there may be at least 3 processes.", size >= 3);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("there may be 3 processes.", size, 3);
 
     monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     string path = "/process/";
-    path += p[0].name;
+    path += p[1].name;
 
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
-    printf("%s %s:%d%s\n", __func__, __FILE__, __LINE__, path.c_str());fflush(stdout);
+
     // file open
     dword fileID = monapi_call_file_open2(path.c_str());
     CPPUNIT_ASSERT_MESSAGE("process file open", fileID != MONA_FAILURE);
