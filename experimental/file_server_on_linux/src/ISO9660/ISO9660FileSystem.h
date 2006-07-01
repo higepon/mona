@@ -21,6 +21,7 @@ public:
     virtual int seek(Vnode* file, dword offset, dword origin);
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries);
     virtual int close(Vnode* file);
+    virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
 
     enum

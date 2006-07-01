@@ -80,14 +80,13 @@ void FileServerTest::testProcessReadFileOnce()
         CPPUNIT_ASSERT_MESSAGE("process file has pid. is Numeric?", isdigit(mi->Data[i]) == 0);
     }
 
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("proces file size", 0, (int)monapi_call_file_get_file_size2(fileID));
+
+    int ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("process file close", ret, (int)MONA_SUCCESS);
+
     monapi_cmemoryinfo_dispose(mi2);
     monapi_cmemoryinfo_delete(mi2);
-}
-
-void FileServerTest::testProcessFileSize()
-{
-    // not implemented
-    CPPUNIT_ASSERT_MESSAGE("dummy", 1);
 }
 
 void FileServerTest::testISO9660ReadDirectory()
@@ -182,12 +181,21 @@ void FileServerTest::testISO9660ReadFileNG()
 
 void FileServerTest::testISO9660FileSize()
 {
-//     int ret = monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE);
-//     CPPUNIT_ASSERT_EQUAL_MESSAGE("change drive to cd0", ret, (int)MONA_SUCCESS);
 
-//     dword id = monapi_call_file_open("/MONA.CFG");
-//     dword size = monapi_call_file_get_file_size(id);
-//     CPPUNIT_ASSERT_EQUAL_MESSAGE("file size == 200byte", 200, (int)size);
-//     monapi_call_file_close(id);
+    dword fileID = monapi_call_file_open2("/MONA.CFG");
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);
 
+    int ret = monapi_call_file_seek2(fileID, 72, 0);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file seek", ret != MONA_FAILURE);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data2(fileID, 19);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file read not null", mi != NULL);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file size", 200, (int)monapi_call_file_get_file_size2(fileID));
+
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("iso9660 file close", ret != MONA_FAILURE);
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
 }

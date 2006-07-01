@@ -41,6 +41,7 @@ public:
     virtual int readdir(Vnode* directory, monapi_cmemoryinfo** entries)                   = 0;
     virtual int seek(Vnode* file, dword offset, dword origin)                             = 0;
     virtual int close(Vnode* file)                                                        = 0;
+    virtual int stat(Vnode* file, Stat* st)                                               = 0;
     virtual Vnode* getRoot() const                                                        = 0;
 };
 

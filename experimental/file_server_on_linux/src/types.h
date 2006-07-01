@@ -57,6 +57,11 @@ typedef dword phys_addr;    /* 32bit */
 
 typedef struct
 {
+    dword size;
+} Stat;
+
+typedef struct
+{
     dword totalMemoryH;
     dword totalMemoryL;
     dword freePageNum;

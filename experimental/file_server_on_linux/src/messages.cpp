@@ -458,3 +458,15 @@ monapi_cmemoryinfo* monapi_call_file_read_directory2(const char* path, MONAPI_BO
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
+
+dword monapi_call_file_get_file_size2(dword id)
+{
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_GET_SIZE, id) != 0)
+    {
+        return MONA_FAILURE;
+    }
+    return msg.arg3;
+}
