@@ -51,27 +51,30 @@ void L4Base::Read(MessageInfo* m)
     memcpy(&msg,(byte*)m,sizeof(MessageInfo));
 }
 
-void L4Base::Read_bottom_half(Ether* frame)
+bool L4Base::Read_bottom_half(Ether* frame)
 {
     byte* data;
-    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
-    if (mi != NULL){
-        if( frame != NULL ){
-            int size=Strip(frame, &data);
-            if( size >0 ){
-                monapi_cmemoryinfo_create(mi,size, true);
-                if( mi != NULL ){
-                    memcpy(mi->Data,data,mi->Size);    
-                    Message::reply(&msg, mi->Handle, mi->Size);
-                    memset(&msg,'\0',sizeof(MessageInfo));
+    if( msg.header==MSG_NET_READ ){
+        monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
+        if (mi != NULL){
+            if( frame != NULL ){
+                int size=Strip(frame, &data);
+                if( size >0 ){
+                    monapi_cmemoryinfo_create(mi,size, true);
+                    if( mi != NULL ){
+                        memcpy(mi->Data,data,mi->Size);    
+                        Message::reply(&msg, mi->Handle, mi->Size);
+                        memset(&msg,'\0',sizeof(MessageInfo));
+                    }
                 }
             }
-            //dispose
+            monapi_cmemoryinfo_delete(mi);
+        }else{
+            Message::reply(&msg);
         }
-        monapi_cmemoryinfo_delete(mi);
-    }else{
-        Message::reply(&msg);
+        return true;
     }
+    return false;
 }
 
 void L4Base::Write(MessageInfo* m)

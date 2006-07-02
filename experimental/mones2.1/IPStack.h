@@ -26,6 +26,7 @@ private:
     void close(MessageInfo* msg);
     void getstatus(MessageInfo* msg);
     void config(MessageInfo* msg);
+    void reset(MessageInfo* msg);
     word next_port;
 protected:
     dword myID;

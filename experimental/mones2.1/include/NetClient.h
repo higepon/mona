@@ -29,6 +29,7 @@ public:
     int  Write(int netdsc, byte* data,word size);  
     int  Read(int netdsc,byte* data,bool noblock = false);
     int  Stat(NetStatus* stat);
+    int  Reset(dword remoteip, word localport ,word remoteport);
 };
 
 };

@@ -73,6 +73,8 @@ void IPStack::messageLoop()
         case MSG_NET_CLOSE:
             this->close(&msg);
             break;
+        case MSG_NET_RESET:
+            this->reset(&msg);
         case MSG_TIMER:    
             pDP->PeriodicUpdate();
             break;
@@ -135,6 +137,13 @@ void IPStack::udpopen(MessageInfo* msg)
     pU->Init(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF), msg->from, netdsc);
     pDP->AddInfo(pU);  
     Message::reply(msg, netdsc);
+}
+
+void IPStack::reset(MessageInfo* msg)
+{
+    TCPCoInfo T(pDP);
+    T.Reset(msg->arg1, (word)(msg->arg2>>16),(word)(msg->arg2&0x0000FFFF));
+    Message::reply(msg);
 }
 
 void IPStack::tcppasvopen(MessageInfo* msg)

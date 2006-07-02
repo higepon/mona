@@ -134,6 +134,16 @@ int NetClient::Stat(NetStatus* stat)
     return size;
 }
 
+int NetClient::Reset(dword remoteip,word localport, word remoteport)
+{
+    MessageInfo msg;
+    dword port=((localport)<<16)|remoteport;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_RESET, remoteip,port) != 0){
+        return -1;
+    }
+    return msg.arg2;
+}
+
 NetClient::NetClient()
 {
     serverid=Message::lookupMainThread("IPSTACK.EX5");

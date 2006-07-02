@@ -30,12 +30,12 @@ int Stat(NetClient& client)
 int Ping(NetClient& client,dword remoteip)
 {
     ///////////////////////////////////////////////
-    printf("   Send ICMP echo request\n");
+    //printf("   Send ICMP echo request\n");
     int netdsc= client.ICMPOpen(remoteip);
     if( netdsc< 0 ){
         printf("OpenError.\n");
     }
-    printf("Open::netdsc=%d\n",netdsc);
+    //printf("Open::netdsc=%d\n",netdsc);
     if( client.Write(netdsc,(byte*)"How are you?",12) ){
         print("WriteError\n");
     }
@@ -55,15 +55,14 @@ int Ping(NetClient& client,dword remoteip)
 
 int Udp(NetClient& client,dword remoteip,word port)
 {
-    printf("   Send UDP to %d\n",port);    
+    //printf("   Send UDP to %d\n",port);    
     word localport = client.GetFreePort();
-    printf("Port=%d\n",localport);
+    //printf("Port=%d\n",localport);
     int netdsc = client.UDPOpen(remoteip,localport,port);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
-    printf("Open::netdsc=%d\n",netdsc);
-    
+    //printf("Open::netdsc=%d\n",netdsc);
     if( client.Write(netdsc,(byte*)"What time is it now?",20) ){
         printf("WrieError.\n");
     }    
@@ -80,15 +79,14 @@ int Udp(NetClient& client,dword remoteip,word port)
 
 int TcpClient(NetClient& client,dword remoteip,word port)
 {
-    printf("   Send TCP tp %d\n",port);    
+    //printf("   Send TCP tp %d\n",port);    
     word localport = client.GetFreePort();
-    printf("Port=%d\n",localport);
-    //isPasv=false;
+    //printf("Port=%d\n",localport);
     int netdsc = client.TCPActvOpen(remoteip,localport,port);
     if( netdsc < 0 ){
         printf("OpenError.\n");
     }
-    printf("Open::netdsc=%d\n",netdsc);
+    //printf("Open::netdsc=%d\n",netdsc);
     if( port == 7 ){
         if( client.Write(netdsc,(byte*)"Hello, How are you?",19) ){
             printf("WrieError.\n");
@@ -104,37 +102,92 @@ int TcpClient(NetClient& client,dword remoteip,word port)
     }    
     return 0;
 }
-int Ftp(NetClient& client,dword remoteip)
+
+int Reset(NetClient& client,dword remoteip, word localport,word remoteport)
 {
+    client.Reset(remoteip,localport,remoteport);
+    return 0;
+}
+
+int Ftp(NetClient& client,dword remoteip, List<char*>* args)
+{  
+    char buf[1024];
+    word localport = client.GetFreePort();
+    int netdsc = client.TCPActvOpen(remoteip,localport,FTP);
+    if( netdsc < 0 ){
+        printf("OpenError.\n");
+    }
+    memset(buf,'\0',1024);
+    //USER
+    if( client.Read(netdsc,(byte*)buf) <= 0){
+        client.Close(netdsc);
+    }
+    printf("%s",buf);
+    int len=sprintf(buf,"USER %s\n",args->get(2));
+    if( client.Write(netdsc,(byte*)buf,len) ){ 
+        client.Close(netdsc);
+    }
+    //PASS
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    printf("%s",buf);
+    len=sprintf(buf,"PASS %s\n",args->get(3));
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
+    }
+    //CMD
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    printf("%s",buf);
+    len=sprintf(buf,"%s\n",args->get(4));
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
+    }
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    printf("%s",buf);
+    if( client.Close(netdsc) ){
+        printf("CloseError.\n");
+    }    
     return 0;
 }
 
 int MonaMain(List<char*>* pekoe)
 {
     NetClient client;
-    if( pekoe->size() < 2 || pekoe->size() > 4 ){
+    if( pekoe->size() < 2 ){
         printf("\nusage:\n");
         printf("         client dest-ip ping\n");
         printf("         client dest-ip udp svc\n");
         printf("         clinet dset-ip tcp svc\n");
-        printf("         client dest-ip ftp");
+        printf("         client dest-ip reset remoteport localport\n");
+        printf("         client dest-ip ftp user passwd commands......\n");
         Stat(client);
         exit(0);
     }
     dword a,b,c,d;
     sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
     dword remoteip=((d<<24)&0xFF000000)|((c<<16)&0x00FF0000)|((b<<8)&0x0000FF00)|(a&0x000000FF);
-    word port;
+    word rport;
     if( !strcmp(pekoe->get(1),"ping")){
         Ping(client,remoteip);
     }else if( !strcmp(pekoe->get(1), "udp")){
-        sscanf(pekoe->get(2),"%d",&port);
-        Udp(client,remoteip,port);
+        sscanf(pekoe->get(2),"%d",&rport);
+        Udp(client,remoteip,rport);
     }else if( !strcmp(pekoe->get(1), "tcp")){
-        sscanf(pekoe->get(2),"%d",&port);
-        TcpClient(client,remoteip,port);
+        sscanf(pekoe->get(2),"%d",&rport);
+        TcpClient(client,remoteip,rport);
+    }else if( !strcmp(pekoe->get(1), "reset")){
+        word lport;
+        sscanf(pekoe->get(3),"%d",&lport); //irregular order sensitiveness.    
+        sscanf(pekoe->get(2),"%d",&rport); //later sscanf may deletes previous one. 
+                                           //printf(">>%d %d\n",lport,rport);          
+        Reset(client,remoteip,lport,rport);
     }else if( !strcmp(pekoe->get(1), "ftp")){
-        Ftp(client,remoteip);
+        Ftp(client,remoteip,pekoe);
     }
     exit(0);
     return 0;

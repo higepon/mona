@@ -30,8 +30,7 @@ int UDPCoInfo::Strip(Ether* frame, byte** data)
 
 bool UDPCoInfo::IsProcessed(Ether* frame)
 {
-    Read_bottom_half(frame);
-    return true;
+    return Read_bottom_half(frame);
 }
 
 bool UDPCoInfo::IsMyPacket(Ether* frame)

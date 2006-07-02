@@ -27,7 +27,6 @@ public:
     virtual void Close();
     virtual void Read(MessageInfo*);
     virtual void Write(MessageInfo*);
-    virtual void Read_bottom_half(Ether*);
     virtual void Dump();
     void Init(dword rip, word lport, word rport,dword cid, word dsc){
         remoteip=rip; localport=lport; remoteport=rport; clientid=cid; netdsc=dsc;
@@ -37,6 +36,7 @@ protected:
     Dispatch* dispatcher;
     void CreateIPHeader(Ether*,word,byte);
     word checksum(byte*,word);
+    bool Read_bottom_half(Ether*);
 };
 
 };

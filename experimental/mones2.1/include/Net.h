@@ -18,6 +18,7 @@ enum MESSAGE_NET{
     MSG_NET_CLOSE,
     MSG_NET_WRITE,
     MSG_NET_READ,
+    MSG_NET_RESET
 };
 
 enum IP_PROTOCOL{

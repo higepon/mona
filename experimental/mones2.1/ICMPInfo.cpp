@@ -31,9 +31,9 @@ int ICMPCoInfo::Strip(Ether* frame, byte** data)
 
 bool ICMPCoInfo::IsProcessed(Ether* frame)
 {
-    Read_bottom_half(frame);
-    return true;
+    return Read_bottom_half(frame);
 }
+
 bool ICMPCoInfo::IsMyPacket(Ether* frame)
 {
     if( TYPEICMP  == frame->IPHeader->prot ){

@@ -18,7 +18,10 @@ public:
     bool ActvOpen();
     void SendACK(Ether*);
     void ReplyUnReach(Ether*);
-    void Accept(MessageInfo*);
+    void Accept(MessageInfo* m){
+        memcpy(&msg,(byte*)m,sizeof(MessageInfo));
+    }
+    void Reset(dword, word, word);
 private: 
     int serialno;
     dword seqnum;
@@ -36,7 +39,8 @@ private:
         FIN_WAIT2,
         CLOSE_WAIT,
         LAST_ACK,
-        TIME_WAIT
+        TIME_WAIT,
+        CLOSING
     };  
     enum CTRLFLAGS{
         NORM=0x0,
@@ -53,7 +57,7 @@ private:
     int Duplicate();
     void Write_bottom_half(Ether*);
     bool Write_retry();
-    void Read_bottom_half(Ether*);    
+    bool Read_bottom_half(Ether*);    
     void CreateHeader(Ether*,byte* ,word);  
     int  Strip(Ether*, byte**);
 };
