@@ -118,37 +118,62 @@ int Ftp(NetClient& client,dword remoteip, List<char*>* args)
         printf("OpenError.\n");
     }
     memset(buf,'\0',1024);
-    //USER
     if( client.Read(netdsc,(byte*)buf) <= 0){
         client.Close(netdsc);
     }
     printf("%s",buf);
+    //USER
     int len=sprintf(buf,"USER %s\n",args->get(2));
     if( client.Write(netdsc,(byte*)buf,len) ){ 
         client.Close(netdsc);
     }
-    //PASS
     if( client.Read(netdsc,(byte*)buf) <= 0 ){
         client.Close(netdsc);    
     }
     printf("%s",buf);
+    //PASS
     len=sprintf(buf,"PASS %s\n",args->get(3));
     if( client.Write(netdsc,(byte*)buf,len) ){
         client.Close(netdsc);
     }
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    printf("%s",buf);
     //CMD
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
-        client.Close(netdsc);    
+    for(int i=4;i< args->size();i++){
+        word newport = client.GetFreePort();
+        if( !strcmp("LIST",args->get(i)) ){
+            int p =(newport>>8) & 0xFF;
+            int q = newport & 0xFF;
+            len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
+            if( client.Write(netdsc,(byte*)buf,len) ){
+                client.Close(netdsc);
+            }
+            if( client.Read(netdsc,(byte*)buf) <= 0 ){
+                 client.Close(netdsc);    
+            }        
+            len=sprintf(buf,"%s\n",args->get(i));
+            if( client.Write(netdsc,(byte*)buf,len) ){
+                client.Close(netdsc);
+            }
+            int netdsc2 = client.TCPPasvOpen(newport);
+            if( client.Read(netdsc,(byte*)buf) <= 0 ){
+                client.Close(netdsc);    
+            }
+            printf("%s",buf);
+            int netdsc3 = client.TCPAccept(netdsc2);
+            printf("ACCEPTED\n");
+            if( client.Read(netdsc3,(byte*)buf) <=0 ){
+                client.Close(netdsc3);
+            }    
+            printf("%s",buf);    
+            if( client.Read(netdsc3,(byte*)buf) <=0 ){
+                client.Close(netdsc3);
+            }    
+            printf("%s",buf);    
+        }
     }
-    printf("%s",buf);
-    len=sprintf(buf,"%s\n",args->get(4));
-    if( client.Write(netdsc,(byte*)buf,len) ){
-        client.Close(netdsc);
-    }
-    if( client.Read(netdsc,(byte*)buf) <= 0 ){
-        client.Close(netdsc);    
-    }
-    printf("%s",buf);
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
     }    

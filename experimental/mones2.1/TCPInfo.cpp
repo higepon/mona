@@ -162,6 +162,7 @@ bool TCPCoInfo::Write_retry() //Anyone call me!
 ////////
 int TCPCoInfo::Duplicate()
 {
+    printf("DUP\n");
     TCPCoInfo* pT= new TCPCoInfo(dispatcher);
     int n = dispatcher->getSerialNo();  
     memcpy(&(pT->msg),(byte*)(&msg),sizeof(MessageInfo)); //Setup New Info.
@@ -169,7 +170,6 @@ int TCPCoInfo::Duplicate()
     this->netdsc=n;  
     pT->msg.header=MSG_NET_PASVOPEN;
     pT->PasvOpen();
-    //pT->TransStateByMSG(MSG_NET_PASVOPEN);
     dispatcher->AddInfo(pT);   
     Message::reply(&msg,n);
     return n;
@@ -244,7 +244,7 @@ void TCPCoInfo::Close()
     }
 }
 /*CLOSED=1,LISTEN 2,SYN_SENT 3,SYN_RCVD 4,ESTAB 5
-FIN_WAIT1 6,FIN_WAIT2 7,CLOSE_WAIT 8,LAST_ACK 9,TIME_WAIT 10*/
+FIN_WAIT1 6,FIN_WAIT2 7,CLOSE_WAIT 8,LAST_ACK 9,TIME_WAIT 10,CLOSING 11*/
 //=EVENT==========STAT.TRANS.============ACTION=================WHO
   //recvSYN|ACK     SYN_SENT-> ESTAB       sendACK replyMSGOPEN @THIS
 //recvSYN         SYN_SENT->SYN_RCVD     sendACK
@@ -324,7 +324,8 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         dispatcher->Send(NULL,0,this);
         return true;
     }   
-    if( (Strip(frame,NULL) == 0) && (status == SYN_RCVD) && (rflag == ACK )){
+    if( (Strip(frame,NULL) == 0) && (status == SYN_RCVD) &&
+        (rflag == ACK ) && ( msg.header==MSG_NET_ACCEPT ) ){
         Duplicate();  ////////////REPLY FOR ACCEPT.        
         status = ESTAB;
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);

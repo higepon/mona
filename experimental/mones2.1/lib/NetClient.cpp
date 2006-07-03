@@ -148,6 +148,6 @@ NetClient::NetClient()
 {
     serverid=Message::lookupMainThread("IPSTACK.EX5");
     clientid=System::getThreadID();
-    printf("ServerID %d ClientID %d\n",serverid,clientid);
+    //printf("ServerID %d ClientID %d\n",serverid,clientid);
     //TODO error check.
 }
