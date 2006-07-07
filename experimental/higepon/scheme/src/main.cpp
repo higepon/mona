@@ -16,6 +16,367 @@
 #include "scheme.h"
 
 using namespace monash;
+using namespace std;
+
+enum
+{
+    IDENTIFIER,
+    STRING,
+    NUMBER,
+    LEFT_PAREN,
+    RIGHT_PAREN,
+    QUOTE,
+};
+
+typedef struct Token
+{
+    int type;
+    string text;
+    int value;
+};
+
+Token toknize()
+{
+    int c;
+    Token token;
+once_more:
+    c = getc(stdin);
+    switch(c)
+    {
+    case '(':
+//        printf("[LEFT_PAREN] ");
+        token.type = LEFT_PAREN;
+        return token;
+    case ')':
+//        printf("[RIGHT_PAREN] ");
+        token.type = RIGHT_PAREN;
+        return token;
+    case '\'':
+//        printf("[QUOTE] ");
+        token.type = QUOTE;
+        return token;
+    }
+    if (isspace(c)) goto once_more;
+    if (isdigit(c))
+    {
+        int n = 0;
+        do {
+            n = n * 10 + c - '0';
+            c = getc(stdin);
+        } while (isdigit(c));
+        ungetc(c, stdin);
+//        printf("[NUMBER: %d] ", n);
+        token.type = NUMBER;
+        token.value = n;
+        return token;
+    }
+    if (c == '\"')
+    {
+        std::string str("");
+        for (;;)
+        {
+            c = getc(stdin);
+            if (c == '\"') break;
+            str += c;
+        }
+//        printf("[STRING: %s] ", str.c_str());
+        token.text = str;
+        token.type = STRING;
+        return token;
+    }
+    else// (isalpha(c))
+    {
+        std::string str("");
+        str += c;
+        for (;;)
+        {
+            c = getc(stdin);
+            if (isspace(c) || c == '(' || c == ')' || c== '\'')
+            {
+                ungetc(c, stdin);
+                break;
+            }
+            str += c;
+        }
+//        ungetc(c, stdin);
+        //      printf("[IDENTIFIER: %s] ", str.c_str());
+        token.type = IDENTIFIER;
+        token.text = str;
+        return token;
+    }
+    printf("hoge");
+    exit(1);
+}
+
+typedef struct Node
+{
+    struct Node* left;
+    struct Node* right;
+    string text;
+    int value;
+    int op;
+} Node;
+
+Node* processLambda()
+{
+
+}
+
+enum
+{
+    OP_SYMBOL,
+    OP_NUMBER,
+    OP_PARALELL,
+};
+
+
+void printNode(Node* node)
+{
+    switch(node->op)
+    {
+    case OP_SYMBOL:
+        printf("OP_SYMBOL[%s]", node->text.c_str());
+        break;
+    case OP_PARALELL:
+        printf("OP_PARALELL");
+        break;
+    case OP_NUMBER:
+        printf("OP_SYMBOL[%d]", node->value);
+        break;
+    }
+}
+
+Node* parseRight();
+Node* parseLeft();
+
+Node* parseLeft()
+{
+    Token token = toknize();
+    Node* node = NULL;
+    switch(token.type)
+    {
+    case LEFT_PAREN:
+
+        token = toknize();
+        if (token.type == IDENTIFIER)
+        {
+            node = new Node();
+            node->left = parseLeft();
+            node->op = OP_SYMBOL;
+            node->text = token.text;
+            if (node->left == NULL)
+            {
+                node->right = NULL;
+            }
+            else
+            {
+                node->right = parseRight();
+            }
+        }
+        return node;
+    case RIGHT_PAREN:
+        return NULL;
+    case NUMBER:
+        node = new Node();
+        node->left = NULL;
+        node->right = NULL;
+        node->op = OP_NUMBER;
+        node->value = token.value;
+        return node;
+    case IDENTIFIER:
+        node = new Node();
+        node->left = NULL;
+        node->right = NULL;
+        node->op = OP_SYMBOL;
+        node->text = token.text;
+        return node;
+    default:
+        printf("error\n");
+        exit(1);
+    }
+}
+
+Node* parseRight()
+{
+    Token token = toknize();
+    if (token.type == RIGHT_PAREN) return NULL;
+    Node* root = NULL;
+    root = new Node;
+    root->op= OP_PARALELL;
+    root->left = parseLeft();
+    if (root->left == NULL)
+    {
+        root->right = NULL;
+    }
+    else
+    {
+        root->right = parseRight();
+    }
+    return root;
+            
+//     switch(token.type)
+//     {
+//     case LEFT_PAREN:
+
+//         token = toknize();
+//         if (token.type == IDENTIFIER)
+//         {
+//             root = new Node;
+//             root->op= OP_PARALELL;
+//             root->left = new Node();
+//             root->left->left = parseLeft();
+//             root->left->op = OP_SYMBOL;
+//             root->left->text = token.text;
+//             if (root->left->left == NULL)
+//             {
+//                 root->left->right = NULL;
+//             }
+//             else
+//             {
+//                 root->left->right = parseRight();
+//             }
+//             root->right = parseRight();
+//         }
+//         return root;
+//     case RIGHT_PAREN:
+//         return NULL;
+//     case NUMBER:
+//         root = new Node;
+//         root->op = OP_PARALELL;
+
+//         root->left = new Node;
+//         root->left->left = NULL;
+//         root->left->op= OP_NUMBER;
+//         root->left->value = token.value;
+//         root->right = parseRight();
+//         return root;
+//     case IDENTIFIER:
+//         root = new Node;
+//         root->op = OP_PARALELL;
+//         root->left = new Node();
+//         root->left->left = NULL;
+//         root->left->op= OP_SYMBOL;
+//         root->left->text = token.text;
+//         return root;
+//     default:
+//         printf("error\n");
+//         exit(1);
+//     }
+}
+
+
+// Node* parseParen()
+// {
+//     Token token = toknize();
+//     if (token.type == RIGHT_PAREN)
+//     {
+//         Node* node = new Node();
+//         node->left = parseParen();
+//         node->right
+//     }
+//     else if (token.type == NUMBER)
+//     {
+//         Node* node = new Node();
+//         // hoge hoge
+//         return node;
+//     }
+// }
+
+// Node* parse(Token& token);
+
+// Node* parseIdentifier(Token& token)
+// {
+//     Node* node = new Node;
+//     node->op = OP_SYMBOL;
+//     node->text = token.text;
+//     Token nextToken = toknize();
+//     node->left = parse(nextToken);
+//     node->right = NULL;
+//     return node;
+// }
+
+// Node* parseNumber(Token& token)
+// {
+//     Node* node = new Node;
+//     node->op = OP_NUMBER;
+//     node->value = token.value;
+//     node->left = NULL;
+//     node->right = NULL;
+//     return node;
+// }
+
+// Node* parse(Token& token)
+// {
+//     if (token.type == IDENTIFIER)
+//     {
+//         return parseIdentifier(token);
+//     }
+//     else if (token.type == NUMBER)
+//     {
+//         return parseNumber(token);
+//     }
+//     else if (token.type == LEFT_PAREN)
+//     {
+//         Token nextToken = toknize();
+//         return parse(nextToken);
+//     }
+//     else
+//     {
+//         printf("not op code\n");
+//         exit(-1);
+//     }
+//     return NULL;
+// }
+
+// Object* createObject()
+// {
+//     int token = toknize();
+//     while (token == LEFT_PAREN)
+//     {
+//         token = toknize();
+//     }
+
+//  = toknize();
+//     if (token == LEFT_PAREN)
+//     {
+//         token = toknize();
+//         if (token == Object::DEFINITION)
+//         {
+//             return new Definition(createObject(), createObject());
+//         }
+//         return NULL;
+//     }
+
+
+// }
+
+
+// void hoge()
+// {
+//     int token = toknize();
+//     if (token == LEFT_PAREN)
+//     {
+//         int t = toknize();
+//         switch(c)
+//         {
+//         case IDENTIFIER:
+//             if (str == "define")
+//             {
+
+
+//             }
+//         case default:
+//             printf("unecpected\n");
+//             exit(-1);
+//             break;
+//         }
+//     }
+//     else
+//     {
+//         printf("%s %s:%d exit \n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//         exit(1);
+//     }
+// }
 
 Object* evalSequence(Objects* exps, Environment* env)
 {
@@ -187,8 +548,32 @@ Object* eval(Object* exp, Environment* env)
 
 #include <string>
 
+void printNodes(Node* node, int depth = 0);
+void printNodes(Node* node, int depth)
+{
+    if (NULL == node) return;
+    printf("\n");
+    for (int i = 0; i < depth; i++) printf(" ");
+    printNode(node);
+//    printf("[left:");
+    depth++;
+    printNodes(node->left, depth);
+//    printf("]");
+//    printf("[right:");
+    printNodes(node->right, depth);
+//    printf("]");
+}
+
 int main(int argc, char *argv[])
 {
+    printNodes(parseLeft());
+    return 0;
+    for (;;)
+    {
+        toknize();
+
+    }
+    return 0;
 #if 0
     Number a(0);
     Number b(1);
