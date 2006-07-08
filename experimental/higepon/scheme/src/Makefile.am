@@ -28,7 +28,9 @@ Begin.h\
 Definition.cpp\
 Definition.h\
 Cond.cpp\
-Cond.h
+Cond.h\
+parser.cpp\
+parser.h
 
 
 
