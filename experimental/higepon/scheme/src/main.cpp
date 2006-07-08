@@ -34,11 +34,20 @@ typedef struct Token
     string text;
     int value;
 };
-
+#include <stack>
+stack<Token> tokens;
 Token toknize()
 {
     int c;
     Token token;
+
+    if (!tokens.empty())
+    {
+        token = tokens.top();
+        tokens.pop();
+        return token;
+    }
+
 once_more:
     c = getc(stdin);
     switch(c)
@@ -125,8 +134,9 @@ Node* processLambda()
 enum
 {
     OP_SYMBOL,
+    OP_BODY,
     OP_NUMBER,
-    OP_PARALELL,
+    OP_ARGS,
 };
 
 
@@ -137,11 +147,14 @@ void printNode(Node* node)
     case OP_SYMBOL:
         printf("OP_SYMBOL[%s]", node->text.c_str());
         break;
-    case OP_PARALELL:
-        printf("OP_PARALELL");
+    case OP_BODY:
+        printf("OP_BODY[%s]", node->text.c_str());
+        break;
+    case OP_ARGS:
+        printf("OP_ARGS");
         break;
     case OP_NUMBER:
-        printf("OP_SYMBOL[%d]", node->value);
+        printf("OP_NUMBER[%d]", node->value);
         break;
     }
 }
@@ -162,7 +175,7 @@ Node* parseLeft()
         {
             node = new Node();
             node->left = parseLeft();
-            node->op = OP_SYMBOL;
+            node->op = OP_BODY;
             node->text = token.text;
             if (node->left == NULL)
             {
@@ -172,8 +185,13 @@ Node* parseLeft()
             {
                 node->right = parseRight();
             }
+            return node;
         }
-        return node;
+        else
+        {
+            return parseLeft();
+        }
+
     case RIGHT_PAREN:
         return NULL;
     case NUMBER:
@@ -198,12 +216,22 @@ Node* parseLeft()
 
 Node* parseRight()
 {
-    Token token = toknize();
-    if (token.type == RIGHT_PAREN) return NULL;
+//    Token token = toknize();
+//    printf("token=%d\n", token.value);
+//    if (token.type == RIGHT_PAREN) return NULL;
+    Token token1 = toknize();
+
+    if (token1.type == RIGHT_PAREN)
+    {
+        return NULL;
+    }
+    tokens.push(token1);
+
     Node* root = NULL;
     root = new Node;
-    root->op= OP_PARALELL;
+    root->op= OP_ARGS;
     root->left = parseLeft();
+    if (root->left != NULL) printf("[%d]", root->left->value);
     if (root->left == NULL)
     {
         root->right = NULL;
@@ -222,7 +250,7 @@ Node* parseRight()
 //         if (token.type == IDENTIFIER)
 //         {
 //             root = new Node;
-//             root->op= OP_PARALELL;
+//             root->op= OP_ARGS;
 //             root->left = new Node();
 //             root->left->left = parseLeft();
 //             root->left->op = OP_SYMBOL;
@@ -242,7 +270,7 @@ Node* parseRight()
 //         return NULL;
 //     case NUMBER:
 //         root = new Node;
-//         root->op = OP_PARALELL;
+//         root->op = OP_ARGS;
 
 //         root->left = new Node;
 //         root->left->left = NULL;
@@ -252,7 +280,7 @@ Node* parseRight()
 //         return root;
 //     case IDENTIFIER:
 //         root = new Node;
-//         root->op = OP_PARALELL;
+//         root->op = OP_ARGS;
 //         root->left = new Node();
 //         root->left->left = NULL;
 //         root->left->op= OP_SYMBOL;
@@ -551,9 +579,14 @@ Object* eval(Object* exp, Environment* env)
 void printNodes(Node* node, int depth = 0);
 void printNodes(Node* node, int depth)
 {
-    if (NULL == node) return;
     printf("\n");
     for (int i = 0; i < depth; i++) printf(" ");
+
+    if (NULL == node)
+    {
+        printf("NULL");
+        return;
+    }
     printNode(node);
 //    printf("[left:");
     depth++;
@@ -566,6 +599,8 @@ void printNodes(Node* node, int depth)
 
 int main(int argc, char *argv[])
 {
+
+
     printNodes(parseLeft());
     return 0;
     for (;;)
