@@ -7,6 +7,8 @@
 
 namespace mones {
 
+
+
 //THIS CLASS PROVIDES APPLICATION PROGRAMING INTERFACE.
 class NetClient
 {
@@ -29,6 +31,7 @@ public:
     int  Write(int netdsc, byte* data,word size);  
     int  Read(int netdsc,byte* data,bool noblock = false);
     int  Stat(NetStatus* stat);
+    int  SetBlockingMode(int netdsc,int mode);
     int  Reset(dword remoteip, word localport ,word remoteport);
 };
 

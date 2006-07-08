@@ -6,6 +6,13 @@
 
 namespace mones{
 
+enum IP_PROTOCOL{
+    TYPEICMP = 0x01,
+    TYPEIGMP = 0x02,
+    TYPETCP  = 0x06,
+    TYPEUDP  = 0x11,
+};
+
 enum ICMPTYPE {
     ECHOREPLY   =0x0,
     DESTUNREACH =0x3,

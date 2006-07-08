@@ -161,22 +161,32 @@ int Ftp(NetClient& client,dword remoteip, List<char*>* args)
             if( client.Read(netdsc,(byte*)buf) <= 0 ){
                 client.Close(netdsc);    
             }
-            printf("%s",buf);
-            int netdsc3 = client.TCPAccept(netdsc2);
+            int netdsc3 = client.TCPAccept(netdsc2); 
             printf("ACCEPTED\n");
+            printf("%s",buf);
             if( client.Read(netdsc3,(byte*)buf) <=0 ){
                 client.Close(netdsc3);
             }    
             printf("%s",buf);    
+            printf("[1]\n");
             if( client.Read(netdsc3,(byte*)buf) <=0 ){
                 client.Close(netdsc3);
             }    
-            printf("%s",buf);    
+            printf("%s",buf);             printf("[2]\n");
+            if( client.Read(netdsc3,(byte*)buf) <=0 ){
+                client.Close(netdsc3);
+            }    
+            printf("%s",buf);                printf("[3]\n");
+
+            if( client.Read(netdsc,(byte*)buf) <=0 ){
+                client.Close(netdsc3);
+            }    
+            printf("%s",buf);
         }
     }
     if( client.Close(netdsc) ){
         printf("CloseError.\n");
-    }    
+    }
     return 0;
 }
 

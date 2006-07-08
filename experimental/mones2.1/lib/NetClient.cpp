@@ -144,6 +144,15 @@ int NetClient::Reset(dword remoteip,word localport, word remoteport)
     return msg.arg2;
 }
 
+int NetClient::SetBlockingMode(int netdsc,int mode )
+{
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, serverid, MSG_NET_SETBLKMODE, netdsc, mode) != 0){
+        return -1;
+    }
+    return msg.arg2;
+}
+
 NetClient::NetClient()
 {
     serverid=Message::lookupMainThread("IPSTACK.EX5");

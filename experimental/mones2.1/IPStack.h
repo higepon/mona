@@ -27,6 +27,7 @@ private:
     void getstatus(MessageInfo* msg);
     void config(MessageInfo* msg);
     void reset(MessageInfo* msg);
+    void setblockingmode(MessageInfo* msg);
     word next_port;
 protected:
     dword myID;

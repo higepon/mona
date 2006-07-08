@@ -22,6 +22,7 @@ public:
         memcpy(&msg,(byte*)m,sizeof(MessageInfo));
     }
     void Reset(dword, word, word);
+    void SetBlockingMode(MessageInfo*);
 private: 
     int serialno;
     dword seqnum;

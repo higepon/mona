@@ -5,6 +5,12 @@
 using namespace mones;
 using namespace MonAPI;
 
+void TCPCoInfo::SetBlockingMode(MessageInfo* msg)
+{
+    printf("%d\n",msg->arg2);
+    return;
+}
+
 void TCPCoInfo::Reset(dword rip, word lport, word rport)
 {
     remoteip=rip;
@@ -332,7 +338,7 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber);
         flags=PSH|ACK;
         window=1410; 
-        //printf("SYN_RCVD->ESTAB\n");
+        //dispatcher->DoDispatch();
         return true; 
     }
     if( (status == ESTAB ) && ( rflag == (FIN|ACK) )  ){

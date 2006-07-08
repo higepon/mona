@@ -5,8 +5,8 @@ namespace mones {
 
 const dword LOOPBACKIP=0x0100007F;
 
+//'NET' is 0x4E4554
 enum MESSAGE_NET{
-    //'NET' is 0x4E4554
     MSG_NET_GETSTATUS=0x4E455400,
     MSG_NET_CONFIG,
     MSG_NET_GETFREEPORT,
@@ -17,17 +17,19 @@ enum MESSAGE_NET{
     MSG_NET_ACCEPT,
     MSG_NET_CLOSE,
     MSG_NET_WRITE,
-    MSG_NET_READ,
-    MSG_NET_RESET
+    MSG_NET_READ, //A
+    MSG_NET_RESET,
+    MSG_NET_SETBLKMODE   //C
 };
 
-enum IP_PROTOCOL{
-    TYPEICMP = 0x01,
-    TYPEIGMP = 0x02,
-    TYPETCP  = 0x06,
-    TYPEUDP  = 0x11,
+//Bob FLAGS For BLOCKING API's
+enum{
+    NOBLOCK=0x0,
+    W_BLOCK=0x1,
+    R_BLOCK=0x2
 };
 
+//TCP & UDP PORT Description.
 enum PORT{
     TCPMUX         =1,
     ECHO           =7,

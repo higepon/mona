@@ -75,6 +75,10 @@ void IPStack::messageLoop()
             break;
         case MSG_NET_RESET:
             this->reset(&msg);
+            break;
+        case MSG_NET_SETBLKMODE:
+            this->setblockingmode(&msg);
+            break;
         case MSG_TIMER:    
             pDP->PeriodicUpdate();
             break;
@@ -87,6 +91,7 @@ void IPStack::messageLoop()
 }
 
 //////////// MESSAGE HANDLERS ////////////////////////
+
 void IPStack::config(MessageInfo* msg)
 {
     //IFCONFIG
@@ -213,4 +218,16 @@ void IPStack::write(MessageInfo* msg)
             break;
         }
     } 
+}
+
+void IPStack::setblockingmode(MessageInfo* msg)
+{
+    for(int i=0;i<pDP->InfoNum();i++){
+        L4Base* c  = pDP->GetInfo(i);
+        if( c->netdsc == msg->arg1 ){
+            c->SetBlockingMode(msg);
+            break;
+        }
+    } 
+    Message::reply(msg);
 }
