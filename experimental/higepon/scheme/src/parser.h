@@ -1,4 +1,6 @@
+#include <vector>
 #include <string>
+#include <stdio.h>
 
 typedef struct Token
 {
@@ -16,26 +18,30 @@ typedef struct Token
     };
 };
 
-typedef struct Node
+
+class Node
 {
+public:
+    Node(int type) : type(type) {}
+    ~Node() {}
+
+    typedef std::vector<Node*> Nodes;
+    Nodes nodes;
     int type;
-    int nodetype;
-    struct Node* left;
-    struct Node* right;
     std::string text;
     int value;
     enum
     {
-        SYMBOL,
-        BODY,
+        NODES,
         NUMBER,
-        ARGS,
-        FUNCTION_CALL,
-        FUNCTION_ARGUMENT,
+        SYMBOL,
+        STRING,
+        QUOTE,
     };
-} Node;
+    void print(int depth = 0);
+    std::string typeToString();
+};
 
-Token toknize();
-void printNode(Node* node);
-Node* parseRight();
-Node* parseLeft();
+Node* parse();
+
+extern std::string alltext;

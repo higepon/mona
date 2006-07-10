@@ -19,7 +19,6 @@
 using namespace monash;
 using namespace std;
 
-
 Object* evalSequence(Objects* exps, Environment* env)
 {
     Object* ret = NULL;
@@ -188,55 +187,260 @@ Object* eval(Object* exp, Environment* env)
     return 0;
 }
 
-#include <string>
+enum {
+    SYNTAX_ERROR,
+    SUCCESS
+};
 
-void printNodes(Node* node, int depth = 0);
-void printNodes(Node* node, int depth)
+
+int createNumberObject(Node* node, Object** object)
 {
-    printf("\n");
-    for (int i = 0; i < depth; i++) printf(" ");
+    *object = new Number(node->value);
+    return SUCCESS;
+}
 
-    if (NULL == node)
+int createStringObject(Node* node, Object** object)
+{
+    *object = new String(node->text);
+    return SUCCESS;
+}
+
+int createQuoteObject(Node* node, Object** object)
+{
+    *object = new Quote(node->text);
+    return SUCCESS;
+}
+
+int createSymbolObject(Node* node, Object** object)
+{
+    *object = new Variable(node->text);
+    return SUCCESS;
+}
+
+
+Environment* environment = new Environment();
+
+int createObject(Node* node, Object** object)
+{
+    switch(node->type)
     {
-        printf("NULL");
-        return;
+    case Node::NUMBER:
+        return createNumberObject(node, object);
+    case Node::STRING:
+        return createStringObject(node, object);
+    case Node::QUOTE:
+        return createQuoteObject(node, object);
+    case Node::SYMBOL:
+        return createSymbolObject(node, object);
     }
-    printNode(node);
-//    printf("[left:");
-    depth++;
-    printNodes(node->left, depth);
-//    printf("]");
-//    printf("[right:");
-    printNodes(node->right, depth);
-//    printf("]");
+
+    if (node->type == Node::NODES && node->nodes.size() > 0)
+    {
+        //return createApplicationObject(node, object);
+        Node* function = node->nodes[0];
+        if (function->type  == Node::SYMBOL)
+        {
+            if (function->text == "define")
+            {
+                if (node->nodes.size() != 3) return SYNTAX_ERROR;
+                Node* symbol = node->nodes[1];
+                if (symbol->type != Node::SYMBOL) return SYNTAX_ERROR;
+                Variable* variable = new Variable(symbol->text);
+                Node* argument = node->nodes[2];
+                Object* argumentObject;
+                if (createObject(argument, &argumentObject) != SUCCESS) return SYNTAX_ERROR;
+                *object = new Definition(variable, argumentObject);
+                return SUCCESS;
+            }
+            else if (function->text == "if")
+            {
+                if (node->nodes.size() != 4) return SYNTAX_ERROR;
+                Object* predicate;
+                Object* consequent;
+                Object* alternative;
+                int ret = createObject(node->nodes[1], &predicate);
+                if (ret != SUCCESS) return ret;
+                ret = createObject(node->nodes[2], &consequent);
+                if (ret != SUCCESS) return ret;
+                ret = createObject(node->nodes[3], &alternative);
+                if (ret != SUCCESS) return ret;
+                *object = new SpecialIf(predicate, consequent, alternative);
+                return SUCCESS;
+            }
+            else if (function->text == "begin")
+            {
+                if (node->nodes.size() <= 1) return SYNTAX_ERROR;
+                Objects* objects = new Objects;
+                for (int i = 1; i < node->nodes.size(); i++)
+                {
+                    Object * object;
+                    int ret = createObject(node->nodes[i], &object);
+                    if (ret != SUCCESS) return ret;
+                    objects->push_back(object);
+                }
+                *object = new Begin(objects);
+                return SUCCESS;
+            }
+            else if (function->text == "lambda")
+            {
+
+                if (node->nodes.size() <= 2) return SYNTAX_ERROR;
+
+                if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
+                Variables* variables = new Variables;
+                for (int i = 0; i < node->nodes[1]->nodes.size(); i++)
+                {
+                    Node* param = node->nodes[1]->nodes[i];
+
+                    if (param->type != Node::SYMBOL) return SYNTAX_ERROR;
+
+                    variables->push_back(new Variable(param->text));
+                }
+
+                Objects* body = new Objects;
+                for (int i = 2; i < node->nodes.size(); i++)
+                {
+                    Object* o;
+                    int ret = createObject(node->nodes[i], &o);
+
+                    if (ret != SUCCESS) return ret;
+
+                    body->push_back(o);
+                }
+                *object = new Lambda(body, variables);
+                return SUCCESS;
+            }
+            else
+            {
+//                return SUCCESS;
+
+
+            }
+        }
+        else if (function->type == Node::NODES)
+        {
+            Object* f;
+            int ret = createObject(function, &f);
+            if (ret != SUCCESS) return ret;
+
+            Objects* objects = new Objects;
+            for (int i = 1; i < node->nodes.size(); i++)
+            {
+                Object* o;
+                ret = createObject(node->nodes[i], &o);
+
+                if (ret != SUCCESS) return ret;
+
+                objects->push_back(o);
+            }
+
+            printf("f->type = %d\n", f->type());
+            Object* procedure = eval(f, environment);
+
+            if (procedure->type() != Object::PROCEDURE)
+            {
+
+                exit(-1);
+            }
+            *object = apply(procedure, objects);
+            return SUCCESS;
+        }
+        else
+        {
+            return SYNTAX_ERROR;
+        }
+    }
+    return SYNTAX_ERROR;
+}
+
+bool load(const char* file)
+{
+    FILE* fp = fopen(file, "rb");
+    if (NULL == fp)
+    {
+        fprintf(stderr, "can not open %s\n", file);
+        return false;
+    }
+
+    if (-1 == fseek(fp, 0, SEEK_END))
+    {
+        perror("fseek");
+        return false;
+    }
+
+    size_t size = ftell(fp);
+    char* buffer = new char[size];
+    if (NULL == buffer)
+    {
+        fprintf(stderr, "memory error \n");
+        return false;
+    }
+
+    fseek(fp, 0, SEEK_SET);
+
+    fread(buffer, 1, size, fp);
+    fclose(fp);
+    alltext = string(buffer, size);
+    delete[] buffer;
+    return true;
 }
 
 int main(int argc, char *argv[])
 {
-    Node* node = parseLeft();
-//    printNodes(parseLeft());
-    if (node->nodetype != Node::FUNCTION_CALL)
+    if (argc < 2)
     {
-        fprintf(stderr, "invalid application\n");
+        fprintf(stderr, "usage: %s file\n", argv[0]);
+        return 0;
     }
 
-    if (node->type == IDENTIFIER)
+    if (!load(argv[1]))
     {
-        if (node == "define")
-        {
-
-        }
-
+        return -1;
     }
+
+    Node* node = parse();
+
+    node->print();
+
+    Object* object = NULL;
+    if (createObject(node, &object) != SUCCESS)
+    {
+        return 0;
+    }
+
+    eval(eval(eval(object, environment), environment), environment);
+    printf("environment\n %s", environment->toString().c_str());
+
+//     Environment* environment = new Environment();
+
+//     Node* application = node->nodes[0];
+//     if (application->type == Node::NUMBER)
+//     {
+//         printf("invalid application\n");
+//     }
+//     else if (application->type == Node::SYMBOL)
+//     {
+//         if (application->text == "define")
+//         {
+//             if (node->nodes.size() != 3)
+//             {
+//                 printf("invalid application\n");
+//             }
+
+//             eval(new Definition(new Variable(node->nodes[1]->text), new Number(node->nodes[2]->value)), environment);
+//         }
+//     }
+
+//     printf("environment\n %s", environment->toString().c_str());
 
 
     return 0;
-    for (;;)
-    {
-        toknize();
+//     for (;;)
+//     {
+//         toknize();
 
-    }
-    return 0;
+//     }
+//     return 0;
 #if 0
     Number a(0);
     Number b(1);

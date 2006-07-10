@@ -7,7 +7,7 @@
 
 namespace monash {
 
-class Definition
+class Definition : public Object
 {
 public:
     Definition(Variable* variable, Object* value);

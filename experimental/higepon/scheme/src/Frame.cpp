@@ -1,6 +1,7 @@
 #include "Frame.h"
 
 using namespace monash;
+using namespace std;
 
 Frame::Frame()
 {
@@ -22,6 +23,7 @@ Frame::~Frame()
 
 Object* Frame::lookup(Variable* variable)
 {
+    printf("%s %s:%d i wanna %s\n", __func__, __FILE__, __LINE__, variable->text.c_str());fflush(stdout);// debug
     FrameMap::iterator it = map_.find(variable);
     if (it == map_.end()) return NULL;
     return (*it).second;
@@ -37,3 +39,13 @@ void Frame::remove(Variable* variable)
     map_.erase(variable);
 }
 
+std::string Frame::toString()
+{
+    string result = "";
+    for (FrameMap::iterator it = map_.begin(); it != map_.end(); it++)
+    {
+        result += (*it).first->toString() + ":";
+        result += (*it).second->toString() + "\n";
+    }
+    return result;
+}

@@ -1,10 +1,12 @@
 #include "Environment.h"
 
 using namespace monash;
+using namespace std;
 
 Environment::Environment()
 {
     frames_ = new Frames();
+    frames_->push_back(new Frame());
 }
 
 Environment::~Environment()
@@ -42,10 +44,21 @@ Object* Environment::lookupVariableValue(Variable* variable)
 {
     for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Object* found = (*frame)->lookup(variable);
         if (NULL != found) return found;
     }
 
     printf("unbound variable %s \n", variable->toString().c_str());
     return NULL;
+}
+
+std::string Environment::toString()
+{
+    string result = "";
+    for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
+    {
+        result += (*frame)->toString() + "\n\n";
+    }
+    return result;
 }

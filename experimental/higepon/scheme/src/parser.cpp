@@ -1,116 +1,22 @@
 #include "parser.h"
-#include <stack>
 
 using namespace std;
 
-stack<Token> tokens;
+string alltext;
+static int current = 0;
 
-Node* parseLeft()
+int getChar()
 {
-    Token token = toknize();
-    Node* node = NULL;
-    switch(token.type)
-    {
-    case Token::LEFT_PAREN:
-        token = toknize();
-        if (token.type == Token::IDENTIFIER)
-        {
-            node = new Node();
-            node->nodetype = Node::FUNCTION_CALL;
-            node->left = parseLeft();
-            node->type = Token::IDENTIFIER;
-            node->text = token.text;
-            if (node->left == NULL)
-            {
-                node->right = NULL;
-            }
-            else
-            {
-                node->right = parseRight();
-            }
-            return node;
-        }
-        else
-        {
-            return parseLeft();
-        }
-
-    case Token::RIGHT_PAREN:
-        return NULL;
-    case Token::NUMBER:
-        node = new Node();
-        node->nodetype = Node::FUNCTION_ARGUMENT;
-        node->left = NULL;
-        node->right = NULL;
-        node->type = Token::NUMBER;
-        node->value = token.value;
-        return node;
-    case Token::IDENTIFIER:
-        node = new Node();
-        node->nodetype = Node::FUNCTION_ARGUMENT;
-        node->left = NULL;
-        node->right = NULL;
-        node->type = Node::SYMBOL;
-        node->text = token.text;
-        return node;
-    default:
-        printf("error\n");
-        exit(1);
-    }
+    if (alltext.size() <= current) return EOF;
+    int c = alltext[current];
+    current++;
+    return c;
 }
 
-Node* parseRight()
+void unGetChar()
 {
-    Token token1 = toknize();
-    if (token1.type == Token::RIGHT_PAREN)
-    {
-        return NULL;
-    }
-    tokens.push(token1);
-
-    Node* root = NULL;
-    root = new Node;
-    root->nodetype = Node::FUNCTION_ARGUMENT;
-    root->type = Node::ARGS;
-    root->left = parseLeft();
-    if (root->left != NULL) printf("[%d]", root->left->value);
-    if (root->left == NULL)
-    {
-        root->right = NULL;
-    }
-    else
-    {
-        root->right = parseRight();
-    }
-    return root;
-
-}
-
-const char* nodeType(Node* node)
-{
-    switch(node->nodetype)
-    {
-    case Node::FUNCTION_CALL:
-        return "FUNCTION_CALL";
-    case Node::FUNCTION_ARGUMENT:
-        return "FUNCTION_ARGUMENT";
-    }
-}
-
-void printNode(Node* node)
-{
-    switch(node->type)
-    {
-    case Node::SYMBOL:
-        printf("%s:SYMBOL[%s]", nodeType(node), node->text.c_str());
-        break;
-    case Node::ARGS:
-        printf("%s:ARGS", nodeType(node));
-        break;
-    case Node::NUMBER:
-        printf("%s:NUMBER[%d]", nodeType(node), node->value);
-        break;
-    }
+    current--;
+    if (current < 0) current = 0;
 }
 
 Token toknize()
@@ -118,15 +24,8 @@ Token toknize()
     int c;
     Token token;
 
-    if (!tokens.empty())
-    {
-        token = tokens.top();
-        tokens.pop();
-        return token;
-    }
-
 once_more:
-    c = getc(stdin);
+    c = getChar();
     switch(c)
     {
     case '(':
@@ -140,14 +39,22 @@ once_more:
         return token;
     }
     if (isspace(c)) goto once_more;
+    if (c == ';')
+    {
+        for (;;)
+        {
+            c = getChar();
+            if (c == '\n') goto once_more;
+        }
+    }
     if (isdigit(c))
     {
         int n = 0;
         do {
             n = n * 10 + c - '0';
-            c = getc(stdin);
+            c = getChar();
         } while (isdigit(c));
-        ungetc(c, stdin);
+        unGetChar();
         token.type = Token::NUMBER;
         token.value = n;
         return token;
@@ -157,7 +64,7 @@ once_more:
         std::string str("");
         for (;;)
         {
-            c = getc(stdin);
+            c = getChar();
             if (c == '\"') break;
             str += c;
         }
@@ -171,10 +78,10 @@ once_more:
         str += c;
         for (;;)
         {
-            c = getc(stdin);
+            c = getChar();
             if (isspace(c) || c == '(' || c == ')' || c== '\'')
             {
-                ungetc(c, stdin);
+                unGetChar();
                 break;
             }
             str += c;
@@ -185,4 +92,85 @@ once_more:
     }
     printf("hoge");
     exit(1);
+}
+
+string Node::typeToString()
+{
+    char buffer[256];
+
+    switch(type)
+    {
+    case NUMBER:
+        sprintf(buffer, "NUMBER[%d]\n", value);
+        break;
+    case SYMBOL:
+        sprintf(buffer, "SYMBOL[%s]\n", text.c_str());
+        break;
+    case STRING:
+        sprintf(buffer, "STRING[\"%s\"]\n", text.c_str());
+        break;
+    case QUOTE:
+        sprintf(buffer, "QUOTE[\'%s]\n", text.c_str());
+        break;
+    case NODES:
+        sprintf(buffer, "NODES\n");
+        break;
+    }
+    return string(buffer);
+}
+
+void Node::print(int depth /* = 0 */)
+{
+    for (int i = 0; i < depth; i++)
+    {
+        printf(" ");
+    }
+
+    printf(typeToString().c_str());
+
+    depth++;
+    for (Nodes::iterator it = nodes.begin(); it != nodes.end(); it++)
+    {
+        (*it)->print(depth);
+    }
+}
+
+Node* parse()
+{
+    Node* node = NULL;
+    Token token = toknize();
+
+    switch(token.type)
+    {
+    case Token::LEFT_PAREN:
+        node = new Node(Node::NODES);
+        for (;;)
+        {
+            Node* child = parse();
+            if (NULL == child) return node;
+            node->nodes.push_back(child);
+        }
+    case Token::RIGHT_PAREN:
+        return NULL;
+    case Token::NUMBER:
+        node = new Node(Node::NUMBER);
+        node->value = token.value;
+        return node;
+    case Token::IDENTIFIER:
+        node = new Node(Node::SYMBOL);
+        node->text = token.text;
+        return node;
+    case Token::QUOTE:
+        node = new Node(Node::QUOTE);
+        node->text = token.text;
+        return node;
+    case Token::STRING:
+        node = new Node(Node::STRING);
+        node->text = token.text;
+        return node;
+    default:
+        printf("unknown token\n");
+        exit(-1);
+    }
+    return NULL;
 }

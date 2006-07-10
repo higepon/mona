@@ -6,7 +6,7 @@
 
 namespace monash {
 
-class Variable : Object
+class Variable : public Object
 {
 public:
     Variable(const std::string& name);

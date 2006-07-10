@@ -20,6 +20,7 @@ public:
     void defineVariable(Variable* variable, Object* value);
     Frames* frames() {return frames_;}
     void extend(Variables* variables, Objects* objects);
+    std::string toString();
 };
 
 }; // namespace monash

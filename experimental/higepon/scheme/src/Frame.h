@@ -17,7 +17,7 @@ public:
     Object* lookup(Variable* variable);
     void insert(Variable* variable, Object* value);
     void remove(Variable* variable);
-
+    std::string toString();
 protected:
     typedef std::map<Variable*, Object*> FrameMap;
     FrameMap map_;
