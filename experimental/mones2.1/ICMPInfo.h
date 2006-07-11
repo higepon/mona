@@ -10,12 +10,15 @@ public:
     word type;
     word seqnum;
     word idnum;
-    ICMPCoInfo(Dispatch* p){dispatcher=p;idnum=dispatcher->getPacketID();seqnum=idnum;}
+    ICMPCoInfo(Dispatch* p){dispatcher=p;idnum=dispatcher->getPacketID();seqnum=idnum;disposed=true;
+        disposedtick=syscall_get_tick()+500;
+    }
+    ~ICMPCoInfo(){};
     void CreateHeader(Ether* ,byte*,word );
     int Strip(Ether*,byte**);
     bool IsMyPacket(Ether*);    
     bool IsProcessed(Ether*);
-    word getType(){return TYPEICMP;}  
+    //word getType(){return TYPEICMP;}  
     bool Reply(Ether*);
     void Dump();
 private:

@@ -7,7 +7,8 @@ using namespace MonAPI;
 
 void TCPCoInfo::SetBlockingMode(MessageInfo* msg)
 {
-    printf("%d\n",msg->arg2);
+    blockingmode=msg->arg2;
+    //printf("BM %d\n",blockingmode);
     return;
 }
 
@@ -24,7 +25,8 @@ void TCPCoInfo::Reset(dword rip, word lport, word rport)
     printf("SENT RESET\n");
 }
 
-TCPCoInfo::TCPCoInfo(Dispatch* p):seqnum(0),acknum(0),status(CLOSED),flags(NORM),window(1000),need_retry(false)
+TCPCoInfo::TCPCoInfo(Dispatch* p):blockingmode(W_BLOCK|R_BLOCK),
+    seqnum(0),acknum(0),status(CLOSED),flags(NORM),window(1000),need_retry(false)
 {
     dispatcher=p;
 }
@@ -130,6 +132,14 @@ bool TCPCoInfo::Read_bottom_half(Ether* frame)
     return false;
 }
 ////
+void TCPCoInfo::Read(MessageInfo* m)
+{
+    memcpy(&msg,(byte*)m,sizeof(MessageInfo));    
+    if(( blockingmode & R_BLOCK )==0){
+        //in case no_blocking.
+    }
+}
+
 void TCPCoInfo::Write(MessageInfo* m)
 { 
     need_retry=true;
@@ -147,6 +157,9 @@ void TCPCoInfo::Write(MessageInfo* m)
         }
         monapi_cmemoryinfo_delete(ret); /// some other one delete this resouce.
     }
+    if(( blockingmode&W_BLOCK )==0){
+        Message::reply(m);
+    } 
 }
 
 void TCPCoInfo::Write_bottom_half(Ether* frame)

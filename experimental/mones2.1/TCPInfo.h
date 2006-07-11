@@ -11,7 +11,8 @@ public:
     TCPCoInfo(Dispatch*);
     bool IsMyPacket(Ether*);
     bool IsProcessed(Ether*);
-    void Close();
+    void Close();  
+    void Read(MessageInfo*);
     void Write(MessageInfo*);
     bool TransStateByPKT(Ether*);
     bool PasvOpen();
@@ -23,8 +24,8 @@ public:
     }
     void Reset(dword, word, word);
     void SetBlockingMode(MessageInfo*);
-private: 
-    int serialno;
+private:    
+    dword blockingmode;
     dword seqnum;
     dword acknum;
     byte  status;
@@ -55,7 +56,7 @@ private:
         RED=0x80
     };
     bool need_retry;
-    int Duplicate();
+    int  Duplicate();
     void Write_bottom_half(Ether*);
     bool Write_retry();
     bool Read_bottom_half(Ether*);    
