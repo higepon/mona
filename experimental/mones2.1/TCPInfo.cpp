@@ -25,7 +25,7 @@ void TCPCoInfo::Reset(dword rip, word lport, word rport)
     printf("SENT RESET\n");
 }
 
-TCPCoInfo::TCPCoInfo(Dispatch* p):blockingmode(W_BLOCK|R_BLOCK),
+TCPCoInfo::TCPCoInfo(Dispatch* p):blockingmode(W_BLOCK|R_BLOCK),nomoredata(false),
     seqnum(0),acknum(0),status(CLOSED),flags(NORM),window(1000),need_retry(false)
 {
     dispatcher=p;
@@ -52,8 +52,10 @@ bool TCPCoInfo::IsProcessed(Ether* frame)
     }else if( TransStateByPKT(frame) ){
         return true;
     }else if( msg.header == MSG_NET_READ ){
-        return Read_bottom_half(frame);
-    }else if( msg.header == MSG_NET_WRITE){ //FOR TCP
+        if(IsExpected(frame)==true)
+            return Read_bottom_half(frame);
+        return false;
+    }else if( msg.header == MSG_NET_WRITE){
         Write_bottom_half(frame);
         return true;
     }
@@ -104,6 +106,24 @@ void TCPCoInfo::CreateHeader(Ether* frame,byte* data, word size)
     //printf("CreateHeader%d %d\n",seqnum,acknum);
 }
 
+bool TCPCoInfo::TimeoutCheck(dword now)
+{
+    if( msg.header == MSG_NET_WRITE && write_timeout > now ){
+        Message::reply(&msg);
+    }
+    if(  msg.header == MSG_NET_READ && read_timeout > now ){
+        Message::reply(&msg);
+    }
+    return L4Base::TimeoutCheck(now);
+}
+
+bool TCPCoInfo::IsExpected(Ether* frame)
+{    
+    //seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
+    //acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
+    return true;
+}
+
 bool TCPCoInfo::Read_bottom_half(Ether* frame)
 {
     byte* data;
@@ -111,6 +131,10 @@ bool TCPCoInfo::Read_bottom_half(Ether* frame)
         monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();  
         if (mi != NULL){
             if( frame != NULL ){
+                if( status == LAST_ACK ){
+                    printf("LASTACKED\n");
+                    nomoredata=true;
+                }
                 int size=Strip(frame, &data);
                 //printf("size=%d\n",size);
                 if( size >0 ){
@@ -133,11 +157,16 @@ bool TCPCoInfo::Read_bottom_half(Ether* frame)
 }
 ////
 void TCPCoInfo::Read(MessageInfo* m)
-{
-    memcpy(&msg,(byte*)m,sizeof(MessageInfo));    
-    if(( blockingmode & R_BLOCK )==0){
-        //in case no_blocking.
+{    
+    ///SOMETHING WRONG!!!! HERE.
+    if(  nomoredata == true ){
+        printf("NOREAD\n");
+        Message::reply(&msg,NULL,-1);
+        memset(&msg,'\0',sizeof(MessageInfo));
+        return;
     }
+    memcpy(&msg,(byte*)m,sizeof(MessageInfo));         
+    read_timeout=syscall_get_tick()+500;
 }
 
 void TCPCoInfo::Write(MessageInfo* m)
@@ -156,10 +185,11 @@ void TCPCoInfo::Write(MessageInfo* m)
             dispatcher->DoDispatch();
         }
         monapi_cmemoryinfo_delete(ret); /// some other one delete this resouce.
-    }
-    if(( blockingmode&W_BLOCK )==0){
-        Message::reply(m);
-    } 
+    }    
+    write_timeout=syscall_get_tick()+500;
+    //if(( blockingmode&W_BLOCK )==0){
+    //    Message::reply(m);
+    //} 
 }
 
 void TCPCoInfo::Write_bottom_half(Ether* frame)
@@ -178,7 +208,7 @@ bool TCPCoInfo::Write_retry() //Anyone call me!
 {
     return true;
 }
-////////
+
 int TCPCoInfo::Duplicate()
 {
     printf("DUP\n");
@@ -216,24 +246,16 @@ void TCPCoInfo::SendACK(Ether* frame)
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+size;
         flags=ACK;    
         window=1401;
-        //printf("SENDING READ ACK");
         dispatcher->Send(NULL,0,this);
     }
 }
-/////////STATUS TRANSITION FUNCTIONS/////////////////////
-//=EVENT==========STAT.TRANS.============ACTION=================WHO
-//MSGACTVOpen    CLOSED->SYN_SENT       sendSYN               @THIS
-//MSGOpen         CLOISED->LISTEN        -
-//MSGWrite        LISTEN->ERROR.
-//MSGClose        SYN_RCVD->FIN_WAIT1    sendFIN
-//MSGClose        ESTAB->FIN_WAIT1       sendFIN
+//////////////////////////////////////////
 bool TCPCoInfo::ActvOpen()
 {
     if( status == CLOSED){
         status=SYN_SENT;
         flags=SYN;    
         window=1402;
-        //printf("CLOSED->SYN_SENT\n");
         dispatcher->Send(NULL,0,this);
         return true;
     }
@@ -246,7 +268,6 @@ bool TCPCoInfo::PasvOpen()
         status = LISTEN;
         flags=NORM;
         window=1403;
-        //printf("LISTENING\n");
         return true;
     }
     return false;
@@ -258,7 +279,6 @@ void TCPCoInfo::Close()
         status=FIN_WAIT1;
         flags=FIN|ACK;
         window=1404; 
-        //printf("ESTAB->FIN_WAIT1 [%d]\n",netdsc);
         dispatcher->Send(NULL,0,this);
     }
 }
@@ -277,17 +297,16 @@ FIN_WAIT1 6,FIN_WAIT2 7,CLOSE_WAIT 8,LAST_ACK 9,TIME_WAIT 10,CLOSING 11*/
 //recvACK         FIN_WAIT1->CLOSING     sendACK
 //recvFIN|ACK     CLOSEING->TIME_WAIT    TRANS.CLOSED delay2MIN.
 bool TCPCoInfo::TransStateByPKT(Ether* frame)
-{
-    byte rflag= frame->IPHeader->TCPHeader->flags;
-    ////ACTIVE
+{   
     //printf("[%x %d %d %d]\n",rflag,status,serialno,bswap(frame->IPHeader->id));
+    byte rflag = (frame->IPHeader->TCPHeader->flags) & ~PSH;
+    ////ACTIVE 
     if( (status == SYN_SENT) && (rflag == SYN|ACK) ){
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=ESTAB; 
         flags=ACK;
         window=1405;
-        //printf("SYN_SENT->ESTAB\n");
         Message::reply(&msg, netdsc);
         dispatcher->Send(NULL,0,this);
         return true;
@@ -302,7 +321,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         status=TIME_WAIT; 
         flags=ACK;
         window=1406;
-        //printf("FIN_WAIT1->TIME_WAIT %d %d\n",status,rflag);
         dispatcher->Send(NULL,0,this);
         dispatcher->RemoveInfo(this,500); 
         Message::reply(&msg, netdsc);//close
@@ -315,7 +333,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         status=CLOSING; 
         flags=ACK;
         window=1407;
-        //printf("FIN_WAIT1->CLOSING %d %d\n",status,rflag);
         dispatcher->Send(NULL,0,this);     
     }   
     if( (status == CLOSING) && (rflag == ACK) ){
@@ -324,7 +341,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         status=TIME_WAIT; 
         flags=ACK;
         window=1408;
-        //printf("FIN_WAIT1->TIME_WAIT %d %d\n",status,rflag);
         dispatcher->Send(NULL,0,this);
         dispatcher->RemoveInfo(this,500); 
         if( msg.header == MSG_NET_CLOSE ){
@@ -339,7 +355,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         status=SYN_RCVD;
         flags=SYN|ACK;
         window=1409;
-        //printf("LISTEN->SYN_RCVD %d %d\n",seqnum,acknum);
         dispatcher->Send(NULL,0,this);
         return true;
     }   
@@ -350,12 +365,11 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber);
         flags=PSH|ACK;
-        window=1410; 
-        //dispatcher->DoDispatch();
+        window=1410;
+        nomoredata=false;
         return true; 
     }
-    if( (status == ESTAB ) && ( rflag == (FIN|ACK) )  ){
-        //printf("ESTAB->CLOSEWAIT [%d]\n",netdsc);
+    if( (status == ESTAB ) && ( rflag  == (FIN|ACK) )  ){
         seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
         acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=CLOSE_WAIT;
@@ -365,8 +379,6 @@ bool TCPCoInfo::TransStateByPKT(Ether* frame)
         if( msg.header == MSG_NET_CLOSE ){
             Message::reply(&msg, netdsc);//close
         }
-        seqnum=bswapl(frame->IPHeader->TCPHeader->acknumber);
-        acknum=bswapl(frame->IPHeader->TCPHeader->seqnumber)+1;
         status=LAST_ACK;
         flags=FIN|ACK;
         window=1412;

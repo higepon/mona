@@ -9,6 +9,7 @@ class TCPCoInfo : public L4Base
 public:
     void Dump();
     TCPCoInfo(Dispatch*);
+    bool IsExpected(Ether*);
     bool IsMyPacket(Ether*);
     bool IsProcessed(Ether*);
     void Close();  
@@ -23,9 +24,13 @@ public:
         memcpy(&msg,(byte*)m,sizeof(MessageInfo));
     }
     void Reset(dword, word, word);
-    void SetBlockingMode(MessageInfo*);
+    bool TimeoutCheck(dword);
+    void SetBlockingMode(MessageInfo*);//(;_;)
 private:    
+    dword write_timeout;
+    dword read_timeout;
     dword blockingmode;
+    bool nomoredata;
     dword seqnum;
     dword acknum;
     byte  status;

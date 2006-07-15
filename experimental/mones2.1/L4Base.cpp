@@ -51,6 +51,14 @@ void L4Base::Read(MessageInfo* m)
     memcpy(&msg,(byte*)m,sizeof(MessageInfo));
 }
 
+bool L4Base::TimeoutCheck(dword now)
+{
+    if( disposed==true && disposedtick  < now ){
+        return true;
+    }
+    return false;
+}
+
 bool L4Base::Read_bottom_half(Ether* frame)
 {
     byte* data;

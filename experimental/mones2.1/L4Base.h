@@ -29,6 +29,7 @@ public:
     virtual void Write(MessageInfo*);
     virtual void Dump();
     virtual void SetBlockingMode(MessageInfo* msg){}
+    virtual bool TimeoutCheck(dword);
     void Init(dword rip, word lport, word rport,dword cid, word dsc){
         remoteip=rip; localport=lport; remoteport=rport; clientid=cid; netdsc=dsc;
         msg.header = MSG_NET_ACTVOPEN;

@@ -196,7 +196,9 @@ void Dispatch::PeriodicUpdate()
     dword now=syscall_get_tick();
     for(int i=0;i<cinfolist.size();i++){
         L4Base* c=cinfolist.get(i);
-        if( c->disposed==true && c->disposedtick  < now ){
+        if( c->TimeoutCheck( now )){
+        //}
+        //if( c->disposed==true && c->disposedtick  < now ){
             //printf("remove\n");
             delete cinfolist.removeAt(i);
             i--;

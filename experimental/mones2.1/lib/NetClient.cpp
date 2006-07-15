@@ -86,9 +86,9 @@ int NetClient::Read(int netdsc,byte* data,bool noblock )
     monapi_cmemoryinfo* ret;
     MessageInfo msg;
     if (Message::sendReceive(&msg, serverid, MSG_NET_READ,(dword)netdsc,(dword)noblock) != 0){
-        return NULL;
+        return -2;
     }
-    if (msg.arg2 == 0) return NULL;
+    if (msg.arg2 == 0) return -3;
     ret = monapi_cmemoryinfo_new();
     ret->Handle = msg.arg2;
     ret->Owner  = serverid;
@@ -97,6 +97,7 @@ int NetClient::Read(int netdsc,byte* data,bool noblock )
     memcpy(data,ret->Data,ret->Size);data[ret->Size]='\0';
     int size=ret->Size;
     monapi_cmemoryinfo_delete(ret);
+    //printf("SIZE:%d\n",size);
     return size;
 }
 

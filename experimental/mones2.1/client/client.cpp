@@ -3,6 +3,7 @@
 #include <monalibc/stdio.h>
 using namespace MonAPI;
 using namespace mones;
+
 int Stat(NetClient& client)
 {
     //read nic status.
@@ -140,52 +141,40 @@ int Ftp(NetClient& client,dword remoteip, List<char*>* args)
         client.Close(netdsc);    
     }
     printf("%s",buf);
-    //CMD
-    for(int i=4;i< args->size();i++){
-        word newport = client.GetFreePort();
-        if( !strcmp("LIST",args->get(i)) ){
-            int p =(newport>>8) & 0xFF;
-            int q = newport & 0xFF;
-            len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
-            if( client.Write(netdsc,(byte*)buf,len) ){
-                client.Close(netdsc);
-            }
-            if( client.Read(netdsc,(byte*)buf) <= 0 ){
-                 client.Close(netdsc);    
-            }        
-            len=sprintf(buf,"%s\n",args->get(i));
-            if( client.Write(netdsc,(byte*)buf,len) ){
-                client.Close(netdsc);
-            }
-            int netdsc2 = client.TCPPasvOpen(newport);
-            if( client.Read(netdsc,(byte*)buf) <= 0 ){
-                client.Close(netdsc);    
-            }
-            int netdsc3 = client.TCPAccept(netdsc2); 
-            printf("ACCEPTED\n");
-            client.SetBlockingMode(netdsc3,W_BLOCK);
-            printf("%s",buf);
-            if( client.Read(netdsc3,(byte*)buf) <=0 ){
-                client.Close(netdsc3);
-            }    
-            printf("%s",buf);    
-            printf("[1]\n");
-            if( client.Read(netdsc3,(byte*)buf) <=0 ){
-                client.Close(netdsc3);
-            }    
-            printf("%s",buf);             printf("[2]\n");
-            if( client.Read(netdsc3,(byte*)buf) <=0 ){
-                client.Close(netdsc3);
-            }    
-            //printf("%s",buf);                printf("[3]\n");
-            if( client.Read(netdsc,(byte*)buf) <=0 ){
-                client.Close(netdsc3);
-            }    
-            printf("%s",buf);
-        }
+    //LIST
+    word newport = client.GetFreePort();
+    int p =(newport>>8) & 0xFF;
+    int q = newport & 0xFF;
+    len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
     }
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }        
+    len=sprintf(buf,"%s\n",args->get(4));
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
+    }
+    int netdsc2 = client.TCPPasvOpen(newport);
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    int netdsc3 = client.TCPAccept(netdsc2); 
+    printf("ACCEPTED\n");
+    //client.SetBlockingMode(netdsc3,W_BLOCK);
+    printf("%s",buf);
+    int ret=1;
+    while( (ret = client.Read(netdsc3,(byte*)buf)) >=0 ){    
+        printf("%s",buf);    
+        printf("-----(%d)------\n",ret);
+    }
+    printf("NO more data\n");
     if( client.Close(netdsc) ){
-        printf("CloseError.\n");
+        printf("CloseError1.\n");
+    }
+    if( client.Close(netdsc2)){
+        printf("CloseError2.\n");
     }
     return 0;
 }
