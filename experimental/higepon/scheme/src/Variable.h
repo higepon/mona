@@ -15,6 +15,7 @@ public:
 public:
     virtual std::string toString();
     virtual int type() const;
+    virtual std::string name() { return name_; }
 
 protected:
     std::string name_;

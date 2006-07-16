@@ -13,7 +13,7 @@ String::~String()
 
 std::string String::toString()
 {
-    return value_;
+    return "\"" + value_ + "\"";
 }
 
 int String::type() const

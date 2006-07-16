@@ -13,6 +13,7 @@
 #include "Assignment.h"
 #include "Begin.h"
 #include "Definition.h"
+#include "Application.h"
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

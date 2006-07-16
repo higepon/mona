@@ -29,6 +29,16 @@ Object* evalSequence(Objects* exps, Environment* env)
     return ret;
 }
 
+Objects* listOfValues(Objects* objects, Environment* env)
+{
+    Objects* result = new Objects;
+    for (Objects::iterator it = objects->begin(); it != objects->end(); it++)
+    {
+        result->push_back(eval((*it), env));
+    }
+    return result;
+}
+
 bool isCompoundProcedure(Object* p)
 {
     return p->type() == Object::PROCEDURE;
@@ -114,7 +124,7 @@ bool is_cond(Object* exp)
 
 bool is_application(Object* exp)
 {
-    return false;
+    return (exp->type() == Object::APPLICATION);
 }
 
 Object* text_of_quotation(Object* exp)
@@ -131,54 +141,76 @@ Object* eval_definition(Object* exp, Environment* env)
 
 Object* eval(Object* exp, Environment* env)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (isSelfEvaluating(exp))
     {
+        printf("%s %s:%d type = %d\n", __func__, __FILE__, __LINE__, exp->type());fflush(stdout);// debug
+        printf("NUMBER=%d\n", Object::NUMBER);
         return exp;
     }
     else if (is_variable(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return env->lookupVariableValue((Variable*)exp);
     }
     else if (is_quated(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return text_of_quotation(exp);
     }
     else if (is_assignment(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Assignment* assignment = (Assignment*)exp;
         return assignment->eval(env);
     }
     else if (is_definition(exp))
-    {
+   {
+       printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Definition* definition = (Definition*)exp;
         return definition->eval(env);
     }
     else if (isIf(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return SpecialIf::eval((SpecialIf*)exp, env);
     }
     else if (is_lambda(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Lambda* lambda = (Lambda*)exp;
         Procedure* procedure = new Procedure(lambda, env);
         return (Object*)procedure;
     }
     else if (is_begin(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Begin* begin = (Begin*)exp;
         return evalSequence(begin->actions(), env);
     }
     else if (is_cond(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     }
     // quick hack fix me
     else if (exp->type() == Object::PROCEDURE)
     {
-        Procedure* procedure = (Procedure*)exp;
-        return evalSequence(procedure->body(), procedure->env());
+         printf("don't eval procedure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+//         Procedure* procedure = (Procedure*)exp;
+//         return apply(procedure->body(), procedure->env());
     }
     else if (is_application(exp))
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        Application* application = (Application*)exp;
+        Object* procedure = eval(application->function(), env);
+        printf("%s %s:%d procedure type=%d\n", __func__, __FILE__, __LINE__, procedure->type());fflush(stdout);// debug
+        if (procedure->type() != Object::PROCEDURE)
+        {
+            printf("error %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            exit(-1);
+        }
+        return apply(procedure, listOfValues(application->arguments(), env));
     }
     else
     {
@@ -217,7 +249,6 @@ int createSymbolObject(Node* node, Object** object)
     return SUCCESS;
 }
 
-
 Environment* environment = new Environment();
 
 int createObject(Node* node, Object** object)
@@ -238,10 +269,12 @@ int createObject(Node* node, Object** object)
     {
         //return createApplicationObject(node, object);
         Node* function = node->nodes[0];
-        if (function->type  == Node::SYMBOL)
+        if (function->type == Node::SYMBOL)
         {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             if (function->text == "define")
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 if (node->nodes.size() != 3) return SYNTAX_ERROR;
                 Node* symbol = node->nodes[1];
                 if (symbol->type != Node::SYMBOL) return SYNTAX_ERROR;
@@ -254,6 +287,7 @@ int createObject(Node* node, Object** object)
             }
             else if (function->text == "if")
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 if (node->nodes.size() != 4) return SYNTAX_ERROR;
                 Object* predicate;
                 Object* consequent;
@@ -269,6 +303,7 @@ int createObject(Node* node, Object** object)
             }
             else if (function->text == "begin")
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 if (node->nodes.size() <= 1) return SYNTAX_ERROR;
                 Objects* objects = new Objects;
                 for (int i = 1; i < node->nodes.size(); i++)
@@ -283,71 +318,52 @@ int createObject(Node* node, Object** object)
             }
             else if (function->text == "lambda")
             {
-
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 if (node->nodes.size() <= 2) return SYNTAX_ERROR;
-
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
                 Variables* variables = new Variables;
                 for (int i = 0; i < node->nodes[1]->nodes.size(); i++)
                 {
                     Node* param = node->nodes[1]->nodes[i];
-
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     if (param->type != Node::SYMBOL) return SYNTAX_ERROR;
-
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     variables->push_back(new Variable(param->text));
                 }
 
                 Objects* body = new Objects;
                 for (int i = 2; i < node->nodes.size(); i++)
                 {
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     Object* o;
                     int ret = createObject(node->nodes[i], &o);
-
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     if (ret != SUCCESS) return ret;
-
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     body->push_back(o);
                 }
                 *object = new Lambda(body, variables);
                 return SUCCESS;
             }
-            else
-            {
-//                return SUCCESS;
-
-
-            }
-        }
-        else if (function->type == Node::NODES)
-        {
-            Object* f;
-            int ret = createObject(function, &f);
-            if (ret != SUCCESS) return ret;
-
-            Objects* objects = new Objects;
-            for (int i = 1; i < node->nodes.size(); i++)
-            {
-                Object* o;
-                ret = createObject(node->nodes[i], &o);
-
-                if (ret != SUCCESS) return ret;
-
-                objects->push_back(o);
-            }
-
-            printf("f->type = %d\n", f->type());
-            Object* procedure = eval(f, environment);
-
-            if (procedure->type() != Object::PROCEDURE)
-            {
-
-                exit(-1);
-            }
-            *object = apply(procedure, objects);
-            return SUCCESS;
         }
         else
         {
-            return SYNTAX_ERROR;
+            /* ここを直す 引数なくても余音じゃ？*/
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            Object* f;
+            int ret = createObject(function, &f);
+            Objects* arguments = new Objects;
+            for (int i = 1; i < node->nodes.size(); i++)
+            {
+                Object * object;
+                int ret = createObject(node->nodes[i], &object);
+                if (ret != SUCCESS) return ret;
+                arguments->push_back(object);
+            }
+
+            *object = new Application(f, arguments);
+            return SUCCESS;
         }
     }
     return SYNTAX_ERROR;
@@ -408,8 +424,9 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    eval(eval(eval(object, environment), environment), environment);
+    Object* o2 = eval(eval(eval(object, environment), environment), environment);
     printf("environment\n %s", environment->toString().c_str());
+    printf("EVAL: %s\n", o2->toString().c_str());
 
 //     Environment* environment = new Environment();
 

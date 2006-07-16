@@ -28,6 +28,7 @@ public:
         BEGIN,
         DEFINITION,
         COND,
+        APPLICATION,
     };
 };
 

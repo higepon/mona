@@ -8,7 +8,7 @@ namespace monash {
 
 class Lambda;
 
-class Procedure
+class Procedure : public Object
 {
 public:
     Procedure(Lambda* lambda, Environment* env);

@@ -52,7 +52,7 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
 	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
-	parser.$(OBJEXT)
+	Application.$(OBJEXT) parser.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -171,6 +171,8 @@ Definition.cpp\
 Definition.h\
 Cond.cpp\
 Cond.h\
+Application.cpp\
+Application.h\
 parser.cpp\
 parser.h
 
@@ -240,6 +242,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Application.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Assignment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Begin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cond.Po@am__quote@

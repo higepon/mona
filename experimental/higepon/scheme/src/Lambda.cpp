@@ -4,6 +4,10 @@ using namespace monash;
 
 Lambda::Lambda(Objects* body, Variables* parameters) : body_(body), parameters_(parameters)
 {
+    for (Objects::iterator it = body->begin(); it != body->end(); it++)
+    {
+        printf("lambda body %d\n", (*it)->type());
+    }
 }
 
 Lambda::~Lambda()

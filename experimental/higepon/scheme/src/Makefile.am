@@ -29,6 +29,8 @@ Definition.cpp\
 Definition.h\
 Cond.cpp\
 Cond.h\
+Application.cpp\
+Application.h\
 parser.cpp\
 parser.h
 

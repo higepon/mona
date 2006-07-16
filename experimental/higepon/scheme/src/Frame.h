@@ -19,7 +19,7 @@ public:
     void remove(Variable* variable);
     std::string toString();
 protected:
-    typedef std::map<Variable*, Object*> FrameMap;
+    typedef std::map<std::string, Object*> FrameMap;
     FrameMap map_;
 };
 

@@ -45,6 +45,7 @@ Object* Environment::lookupVariableValue(Variable* variable)
     for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
     {
         printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+        printf("[%s]\n", (*frame)->toString().c_str());fflush(stdout);
         Object* found = (*frame)->lookup(variable);
         if (NULL != found) return found;
     }
