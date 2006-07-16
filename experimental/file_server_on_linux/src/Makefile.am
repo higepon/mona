@@ -28,5 +28,7 @@ FileServer.cpp\
 ISO9660/ISO9660FileSystem.cpp\
 ISO9660/ISO9660FileSystem.h\
 ISO9660/ISO9660.h\
+FAT12/FAT12FileSystem.cpp\
+FAT12/FAT12FileSystem.h\
 Process/ProcessFileSystem.cpp\
 Process/ProcessFileSystem.h

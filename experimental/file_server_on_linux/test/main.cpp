@@ -1,6 +1,7 @@
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
+#include "messages.h"
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +17,7 @@ int main(int argc, char* argv[])
                                                        std::cerr ) );
   // Run the test.
   bool wasSucessful = runner.run();
-
+  monapi_call_file_stop_server();
   // Return error code 1 if the one of test failed.
   return wasSucessful ? 0 : 1;
 }

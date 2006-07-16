@@ -1,5 +1,4 @@
-file_server-main.o file_server-main.o: main.cpp servers/file.h \
-  servers/servers.h BinaryTree.h types.h /usr/include/stdio.h \
+file_server-main.o file_server-main.o: main.cpp /usr/include/stdio.h \
   /usr/include/features.h /usr/include/sys/cdefs.h \
   /usr/include/gnu/stubs.h \
   /usr/lib/gcc/i486-linux-gnu/4.0.2/include/stddef.h \
@@ -8,24 +7,81 @@ file_server-main.o file_server-main.o: main.cpp servers/file.h \
   /usr/include/_G_config.h /usr/include/wchar.h /usr/include/bits/wchar.h \
   /usr/include/gconv.h /usr/lib/gcc/i486-linux-gnu/4.0.2/include/stdarg.h \
   /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
-  /usr/include/bits/stdio.h monapi/Assert.h /usr/include/sys/types.h \
-  /usr/include/time.h /usr/include/endian.h /usr/include/bits/endian.h \
-  /usr/include/sys/select.h /usr/include/bits/select.h \
-  /usr/include/bits/sigset.h /usr/include/bits/time.h \
-  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
-  /usr/include/bits/sched.h monapi/messages.h monapi/cmemoryinfo.h \
-  types.h FileServer.h monapi/CString.h monapi/Array.h Message.h dtk5s.h \
-  IDEDriver.h IStorageDevice.h /usr/include/stdlib.h \
+  /usr/include/bits/stdio.h FileServer.h servers/file.h servers/servers.h \
+  vnode.h /usr/include/c++/4.0.2/map \
+  /usr/include/c++/4.0.2/bits/stl_tree.h \
+  /usr/include/c++/4.0.2/bits/stl_algobase.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/c++config.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/os_defines.h \
+  /usr/include/c++/4.0.2/cstring /usr/include/c++/4.0.2/cstddef \
+  /usr/include/string.h /usr/include/xlocale.h \
+  /usr/include/c++/4.0.2/climits \
+  /usr/lib/gcc/i486-linux-gnu/4.0.2/include/limits.h \
+  /usr/lib/gcc/i486-linux-gnu/4.0.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/4.0.2/cstdlib /usr/include/stdlib.h \
   /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
-  /usr/include/xlocale.h /usr/include/alloca.h
-
-servers/file.h:
-
-servers/servers.h:
-
-BinaryTree.h:
-
-types.h:
+  /usr/include/endian.h /usr/include/bits/endian.h \
+  /usr/include/sys/types.h /usr/include/time.h /usr/include/sys/select.h \
+  /usr/include/bits/select.h /usr/include/bits/sigset.h \
+  /usr/include/bits/time.h /usr/include/sys/sysmacros.h \
+  /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h \
+  /usr/include/alloca.h /usr/include/c++/4.0.2/iosfwd \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/c++locale.h \
+  /usr/include/c++/4.0.2/cstdio /usr/include/c++/4.0.2/clocale \
+  /usr/include/locale.h /usr/include/bits/locale.h \
+  /usr/include/langinfo.h /usr/include/nl_types.h /usr/include/iconv.h \
+  /usr/include/libintl.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/c++io.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/gthr.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/gthr-default.h \
+  /usr/include/pthread.h /usr/include/sched.h /usr/include/signal.h \
+  /usr/include/bits/initspin.h /usr/include/bits/sigthread.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/environments.h /usr/include/bits/confname.h \
+  /usr/include/getopt.h /usr/include/c++/4.0.2/cctype \
+  /usr/include/ctype.h /usr/include/c++/4.0.2/bits/stringfwd.h \
+  /usr/include/c++/4.0.2/bits/postypes.h /usr/include/c++/4.0.2/cwchar \
+  /usr/include/c++/4.0.2/ctime /usr/include/stdint.h \
+  /usr/include/c++/4.0.2/bits/functexcept.h \
+  /usr/include/c++/4.0.2/exception_defines.h \
+  /usr/include/c++/4.0.2/bits/stl_pair.h \
+  /usr/include/c++/4.0.2/bits/cpp_type_traits.h \
+  /usr/include/c++/4.0.2/bits/stl_iterator_base_types.h \
+  /usr/include/c++/4.0.2/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/4.0.2/bits/concept_check.h \
+  /usr/include/c++/4.0.2/bits/stl_iterator.h \
+  /usr/include/c++/4.0.2/debug/debug.h /usr/include/c++/4.0.2/cassert \
+  /usr/include/assert.h /usr/include/c++/4.0.2/bits/allocator.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/c++allocator.h \
+  /usr/include/c++/4.0.2/ext/mt_allocator.h /usr/include/c++/4.0.2/new \
+  /usr/include/c++/4.0.2/exception \
+  /usr/include/c++/4.0.2/bits/atomicity.h \
+  /usr/include/c++/4.0.2/i486-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/4.0.2/bits/stl_construct.h \
+  /usr/include/c++/4.0.2/bits/stl_function.h \
+  /usr/include/c++/4.0.2/bits/stl_map.h \
+  /usr/include/c++/4.0.2/bits/stl_multimap.h monapi/CString.h \
+  monapi/Array.h monapi/messages.h monapi/cmemoryinfo.h types.h \
+  FileSystem.h /usr/include/c++/4.0.2/string \
+  /usr/include/c++/4.0.2/bits/char_traits.h /usr/include/c++/4.0.2/memory \
+  /usr/include/c++/4.0.2/bits/stl_uninitialized.h \
+  /usr/include/c++/4.0.2/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/4.0.2/limits \
+  /usr/include/c++/4.0.2/bits/basic_string.h \
+  /usr/include/c++/4.0.2/algorithm /usr/include/c++/4.0.2/bits/stl_algo.h \
+  /usr/include/c++/4.0.2/bits/stl_heap.h \
+  /usr/include/c++/4.0.2/bits/stl_tempbuf.h \
+  /usr/include/c++/4.0.2/bits/basic_string.tcc error.h types.h \
+  VnodeManager.h /usr/include/c++/4.0.2/vector \
+  /usr/include/c++/4.0.2/bits/stl_vector.h \
+  /usr/include/c++/4.0.2/bits/stl_bvector.h \
+  /usr/include/c++/4.0.2/bits/vector.tcc VnodeCacher.h IDEDriver.h \
+  IStorageDevice.h monapi/CString.h ISO9660/ISO9660FileSystem.h \
+  FileSystem.h IStorageDevice.h VnodeManager.h ISO9660/ISO9660.h \
+  FileDate.h Process/ProcessFileSystem.h Message.h
 
 /usr/include/stdio.h:
 
@@ -61,15 +117,65 @@ types.h:
 
 /usr/include/bits/stdio.h:
 
-monapi/Assert.h:
+FileServer.h:
 
-/usr/include/sys/types.h:
+servers/file.h:
 
-/usr/include/time.h:
+servers/servers.h:
+
+vnode.h:
+
+/usr/include/c++/4.0.2/map:
+
+/usr/include/c++/4.0.2/bits/stl_tree.h:
+
+/usr/include/c++/4.0.2/bits/stl_algobase.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/c++config.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/os_defines.h:
+
+/usr/include/c++/4.0.2/cstring:
+
+/usr/include/c++/4.0.2/cstddef:
+
+/usr/include/string.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/c++/4.0.2/climits:
+
+/usr/lib/gcc/i486-linux-gnu/4.0.2/include/limits.h:
+
+/usr/lib/gcc/i486-linux-gnu/4.0.2/include/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/bits/local_lim.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/bits/posix2_lim.h:
+
+/usr/include/bits/xopen_lim.h:
+
+/usr/include/c++/4.0.2/cstdlib:
+
+/usr/include/stdlib.h:
+
+/usr/include/bits/waitflags.h:
+
+/usr/include/bits/waitstatus.h:
 
 /usr/include/endian.h:
 
 /usr/include/bits/endian.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/time.h:
 
 /usr/include/sys/select.h:
 
@@ -85,32 +191,182 @@ monapi/Assert.h:
 
 /usr/include/bits/sched.h:
 
+/usr/include/alloca.h:
+
+/usr/include/c++/4.0.2/iosfwd:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/c++locale.h:
+
+/usr/include/c++/4.0.2/cstdio:
+
+/usr/include/c++/4.0.2/clocale:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
+
+/usr/include/langinfo.h:
+
+/usr/include/nl_types.h:
+
+/usr/include/iconv.h:
+
+/usr/include/libintl.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/c++io.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/gthr.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/gthr-default.h:
+
+/usr/include/pthread.h:
+
+/usr/include/sched.h:
+
+/usr/include/signal.h:
+
+/usr/include/bits/initspin.h:
+
+/usr/include/bits/sigthread.h:
+
+/usr/include/unistd.h:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/bits/environments.h:
+
+/usr/include/bits/confname.h:
+
+/usr/include/getopt.h:
+
+/usr/include/c++/4.0.2/cctype:
+
+/usr/include/ctype.h:
+
+/usr/include/c++/4.0.2/bits/stringfwd.h:
+
+/usr/include/c++/4.0.2/bits/postypes.h:
+
+/usr/include/c++/4.0.2/cwchar:
+
+/usr/include/c++/4.0.2/ctime:
+
+/usr/include/stdint.h:
+
+/usr/include/c++/4.0.2/bits/functexcept.h:
+
+/usr/include/c++/4.0.2/exception_defines.h:
+
+/usr/include/c++/4.0.2/bits/stl_pair.h:
+
+/usr/include/c++/4.0.2/bits/cpp_type_traits.h:
+
+/usr/include/c++/4.0.2/bits/stl_iterator_base_types.h:
+
+/usr/include/c++/4.0.2/bits/stl_iterator_base_funcs.h:
+
+/usr/include/c++/4.0.2/bits/concept_check.h:
+
+/usr/include/c++/4.0.2/bits/stl_iterator.h:
+
+/usr/include/c++/4.0.2/debug/debug.h:
+
+/usr/include/c++/4.0.2/cassert:
+
+/usr/include/assert.h:
+
+/usr/include/c++/4.0.2/bits/allocator.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/c++allocator.h:
+
+/usr/include/c++/4.0.2/ext/mt_allocator.h:
+
+/usr/include/c++/4.0.2/new:
+
+/usr/include/c++/4.0.2/exception:
+
+/usr/include/c++/4.0.2/bits/atomicity.h:
+
+/usr/include/c++/4.0.2/i486-linux-gnu/bits/atomic_word.h:
+
+/usr/include/c++/4.0.2/bits/stl_construct.h:
+
+/usr/include/c++/4.0.2/bits/stl_function.h:
+
+/usr/include/c++/4.0.2/bits/stl_map.h:
+
+/usr/include/c++/4.0.2/bits/stl_multimap.h:
+
+monapi/CString.h:
+
+monapi/Array.h:
+
 monapi/messages.h:
 
 monapi/cmemoryinfo.h:
 
 types.h:
 
-FileServer.h:
+FileSystem.h:
 
-monapi/CString.h:
+/usr/include/c++/4.0.2/string:
 
-monapi/Array.h:
+/usr/include/c++/4.0.2/bits/char_traits.h:
 
-Message.h:
+/usr/include/c++/4.0.2/memory:
 
-dtk5s.h:
+/usr/include/c++/4.0.2/bits/stl_uninitialized.h:
+
+/usr/include/c++/4.0.2/bits/stl_raw_storage_iter.h:
+
+/usr/include/c++/4.0.2/limits:
+
+/usr/include/c++/4.0.2/bits/basic_string.h:
+
+/usr/include/c++/4.0.2/algorithm:
+
+/usr/include/c++/4.0.2/bits/stl_algo.h:
+
+/usr/include/c++/4.0.2/bits/stl_heap.h:
+
+/usr/include/c++/4.0.2/bits/stl_tempbuf.h:
+
+/usr/include/c++/4.0.2/bits/basic_string.tcc:
+
+error.h:
+
+types.h:
+
+VnodeManager.h:
+
+/usr/include/c++/4.0.2/vector:
+
+/usr/include/c++/4.0.2/bits/stl_vector.h:
+
+/usr/include/c++/4.0.2/bits/stl_bvector.h:
+
+/usr/include/c++/4.0.2/bits/vector.tcc:
+
+VnodeCacher.h:
 
 IDEDriver.h:
 
 IStorageDevice.h:
 
-/usr/include/stdlib.h:
+monapi/CString.h:
 
-/usr/include/bits/waitflags.h:
+ISO9660/ISO9660FileSystem.h:
 
-/usr/include/bits/waitstatus.h:
+FileSystem.h:
 
-/usr/include/xlocale.h:
+IStorageDevice.h:
 
-/usr/include/alloca.h:
+VnodeManager.h:
+
+ISO9660/ISO9660.h:
+
+FileDate.h:
+
+Process/ProcessFileSystem.h:
+
+Message.h:
