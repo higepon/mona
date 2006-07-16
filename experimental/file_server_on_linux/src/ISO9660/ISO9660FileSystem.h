@@ -23,6 +23,7 @@ public:
     virtual int close(Vnode* file);
     virtual int stat(Vnode* file, Stat* st);
     virtual Vnode* getRoot() const;
+    virtual void destroyVnode(Vnode* vnode);
 
     enum
     {

@@ -4,6 +4,7 @@ using namespace std;
 
 typedef pair<Vnode*, EntriesMap*> vpair;
 typedef pair<string, Vnode*> spair;
+typedef vector<Vnode*> Vnodes;
 
 VnodeCacher::VnodeCacher()
 {
@@ -13,6 +14,30 @@ VnodeCacher::VnodeCacher()
 
 VnodeCacher::~VnodeCacher()
 {
+    Vnodes vnodes;
+    // enumrate all Vnodes
+    for (DirectoriesMap::iterator it = directories_->begin(); it != directories_->end(); it++)
+    {
+        vnodes.push_back((*it).first);
+        EntriesMap* entries = (*it).second;
+        for (EntriesMap::iterator i = entries->begin(); i != entries->end(); i++)
+        {
+            vnodes.push_back((*i).second);
+        }
+        delete entries;
+    }
+
+    // enumrate unique Vnodes
+    sort(vnodes.begin(), vnodes.end());
+    Vnodes::iterator v = unique(vnodes.begin(), vnodes.end());
+    vnodes.erase(v ,vnodes.end());
+
+    for (Vnodes::iterator it = vnodes.begin(); it != vnodes.end(); it++)
+    {
+        Vnode* v = (*it);
+        printf("delete vnode %x\n", v);
+        v->fs->destroyVnode(v);
+    }
     delete directories_;
 }
 

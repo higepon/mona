@@ -10,6 +10,7 @@ ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanag
 ISO9660FileSystem::~ISO9660FileSystem()
 {
     deleteEntry(rootDirectory_);
+//    delete rootDirectory_;
 }
 
 /*----------------------------------------------------------------------
@@ -174,6 +175,7 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
         delete (*i);
     }
     *entries = ret;
+
     return MONA_SUCCESS;
 }
 
@@ -215,7 +217,7 @@ Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
         }
         else
         {
-            entry->name = getProperName(string(from->name, from->length));
+            entry->name = getProperName(string((const char*)from->name, from->length));
         }
         return entry;
 }
@@ -344,9 +346,9 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, byte* 
         }
         else
         {
-            entry->name = string(pathEntry->name, pathEntry->length);
+            entry->name = string((const char*)pathEntry->name, pathEntry->length);
         }
-
+        printf("new entry:%s [%x]\n", entry->name.c_str(), entry);fflush(stdout);// debug
         list->push_back(entry);
 
         /* next path table entry */
@@ -358,7 +360,8 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
 {
     FileDate* createDate = &(to->createDate);
 
-    to->name = (getProperName(string(from->name, from->name_len)));
+    string tmp((const char*)from->name, from->name_len);
+    to->name = getProperName(tmp);
 
     to->attribute.extent= from->extent_l;
     to->attribute.size  = from->size_l;
@@ -420,6 +423,7 @@ void ISO9660FileSystem::deleteEntry(Entry* entry)
     {
         deleteEntry(*i);
     }
+    printf("delete entry [%x]\n", entry);fflush(stdout);// debug
     delete entry;
 }
 
@@ -566,4 +570,12 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
     }
     delete[] buffer;
     return true;
+}
+
+void ISO9660FileSystem::destroyVnode(Vnode* vnode)
+{
+    iso9660::Entry* entry = (iso9660::Entry*)vnode->fnode;
+    printf("delete entry: %s [%x]\n", entry->name.c_str(), entry);fflush(stdout);// debug
+    if (vnode->type != Vnode::DIRECTORY) delete entry; // directory is deleted on destructor
+    delete vnode;
 }

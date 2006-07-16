@@ -4,6 +4,7 @@
 #include "vnode.h"
 #include <stdio.h>
 #include <map>
+#include <vector>
 #include <string>
 
 typedef std::map<std::string, Vnode*> EntriesMap;

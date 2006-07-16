@@ -30,7 +30,9 @@ static dword server_ids[] =
 #ifdef ON_LINUX
 static const char* server_names[] =
 {
-    "MOUSE.EX5", "KEYBDMNG.EX5", "file_server", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
+//    "MOUSE.EX5", "KEYBDMNG.EX5", "leak-analyze", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
+    "MOUSE.EX5", "KEYBDMNG.EX5", "memcheck", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
+//    "MOUSE.EX5", "KEYBDMNG.EX5", "file_server", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
 };
 #else
 static const char* server_names[] =
@@ -469,4 +471,16 @@ dword monapi_call_file_get_file_size2(dword id)
         return MONA_FAILURE;
     }
     return msg.arg3;
+}
+
+int monapi_call_file_stop_server()
+{
+    monapi_cmemoryinfo* ret;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    MessageInfo msg;
+    if (Message::sendReceive(&msg, tid, MSG_STOP_SERVER) != 0)
+    {
+        return MONA_FAILURE;
+    }
+    return msg.arg2;
 }

@@ -1,3 +1,6 @@
+# if you try valgrind
+# export GLIBCXX_FORCE_NEW = 1
+
 bin_PROGRAMS = file_server
 file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3
 file_server_SOURCES = \
@@ -27,4 +30,3 @@ ISO9660/ISO9660FileSystem.h\
 ISO9660/ISO9660.h\
 Process/ProcessFileSystem.cpp\
 Process/ProcessFileSystem.h
-

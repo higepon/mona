@@ -43,6 +43,7 @@ public:
     virtual int close(Vnode* file)                                                        = 0;
     virtual int stat(Vnode* file, Stat* st)                                               = 0;
     virtual Vnode* getRoot() const                                                        = 0;
+    virtual void destroyVnode(Vnode* vnode)                                               = 0;
 };
 
 #endif

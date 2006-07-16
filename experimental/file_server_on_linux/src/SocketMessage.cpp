@@ -26,6 +26,7 @@ void SocketMessage::initialize()
 int SocketMessage::setMyHost(struct sockaddr_in* me)
 {
     char hostname[257];
+    bzero(hostname, 257);
     struct hostent* myhost;
     gethostname(hostname, 256);
     if (NULL == (myhost = gethostbyname(hostname))) {
