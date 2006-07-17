@@ -41,3 +41,10 @@ Object* Cond::expandInternal(Clauses::iterator it)
     Clause* clause = *it;
     return new SpecialIf(clause->first, new Begin(clause->second), expandInternal(it++));
 }
+
+Object* Cond::eval(Environment* env)
+{
+    printf("exi %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    exit(-1);
+    return this;
+}

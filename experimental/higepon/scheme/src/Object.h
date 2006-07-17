@@ -6,6 +6,8 @@
 
 namespace monash {
 
+class Environment;
+
 class Object
 {
 public:
@@ -13,8 +15,9 @@ public:
     virtual ~Object();
 
 public:
-    virtual std::string toString() = 0;
-    virtual int type() const       = 0;
+    virtual std::string toString()         = 0;
+    virtual int type() const               = 0;
+    virtual Object* eval(Environment* env) = 0;
     enum
     {
         NUMBER,

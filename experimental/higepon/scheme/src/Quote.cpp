@@ -19,3 +19,8 @@ int Quote::type() const
 {
     return Object::QUOTE;
 }
+
+Object* Quote::eval(Environment* env)
+{
+    return this; // different from SICP's
+}

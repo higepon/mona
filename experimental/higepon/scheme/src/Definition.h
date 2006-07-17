@@ -16,9 +16,9 @@ public:
 public:
     virtual std::string toString();
     virtual int type() const;
+    virtual Object* eval(Environment* env);
     virtual Variable* variable() const { return variable_; }
     virtual Object* value() const { return value_; }
-    virtual Object* eval(Environment* env);
 
 protected:
     Variable* variable_;

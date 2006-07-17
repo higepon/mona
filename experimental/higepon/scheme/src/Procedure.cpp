@@ -27,3 +27,9 @@ int Procedure::type() const
 {
     return Object::PROCEDURE;
 }
+
+Object* Procedure::eval(Environment* env)
+{
+    printf("don't eval procedure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    return this;
+}

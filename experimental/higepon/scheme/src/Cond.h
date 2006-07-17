@@ -9,7 +9,7 @@
 
 namespace monash {
 
-class Cond : Object
+class Cond : public Object
 {
 public:
     typedef std::pair<Object*, Objects*> Clause;
@@ -20,6 +20,7 @@ public:
 public:
     virtual std::string toString();
     virtual int type() const;
+    virtual Object* eval(Environment* env);
     virtual Objects* elseActions() const { return elseActions_;}
     virtual Clauses* clauses() const { return clauses_; }
     virtual Object* expand();

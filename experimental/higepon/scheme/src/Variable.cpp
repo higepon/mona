@@ -1,4 +1,5 @@
 #include "Variable.h"
+#include "Environment.h"
 
 using namespace monash;
 
@@ -18,4 +19,9 @@ std::string Variable::toString()
 int Variable::type() const
 {
     return Object::VARIABLE;
+}
+
+Object* Variable::eval(Environment* env)
+{
+    return env->lookupVariableValue(this);
 }

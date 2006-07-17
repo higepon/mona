@@ -23,3 +23,8 @@ int Lambda::type() const
 {
     return Object::LAMBDA;
 }
+
+Object* Lambda::eval(Environment* env)
+{
+    return new Procedure(this, env);
+}

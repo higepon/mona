@@ -31,8 +31,19 @@ Cond.cpp\
 Cond.h\
 Application.cpp\
 Application.h\
+Parser.cpp\
+Parser.h\
+Tokenizer.cpp\
+Tokenizer.h\
+Node.cpp\
+Node.h\
+Translator.cpp\
+Translator.h\
 parser.cpp\
-parser.h
+parser.h\
+scheme.h\
+scheme.cpp\
+load.cpp
 
 
 

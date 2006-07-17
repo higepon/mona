@@ -14,10 +14,10 @@ public:
 public:
     virtual std::string toString();
     virtual int type() const;
+    virtual Object* eval(Environment* env);
     Object* predicate() const { return predicate_; }
     Object* consequent() const { return consequent_; }
     Object* alternative() const { return alternative_; }
-    static Object* eval(SpecialIf* specialIf, Environment* env);
 
 protected:
     Object* predicate_;

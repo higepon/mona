@@ -14,6 +14,7 @@ public:
 
     virtual std::string toString();
     virtual int type() const;
+    virtual Object* eval(Environment* env);
 
     Objects* body() const { return body_; }
     Variables* parameters() { return parameters_;}

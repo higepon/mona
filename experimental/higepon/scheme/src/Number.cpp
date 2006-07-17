@@ -26,3 +26,8 @@ int Number::value() const
 {
     return value_;
 }
+
+Object* Number::eval(Environment* env)
+{
+    return this;
+}

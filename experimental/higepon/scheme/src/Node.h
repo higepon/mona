@@ -1,23 +1,10 @@
+#ifndef __NODE_H__
+#define __NODE_H__
+
 #include <vector>
 #include <string>
-#include <stdio.h>
 
-typedef struct Token
-{
-    int type;
-    std::string text;
-    int value;
-    enum
-    {
-        IDENTIFIER,
-        STRING,
-        NUMBER,
-        LEFT_PAREN,
-        RIGHT_PAREN,
-        QUOTE,
-    };
-};
-
+namespace monash {
 
 class Node
 {
@@ -42,6 +29,6 @@ public:
     std::string typeToString();
 };
 
-Node* parse();
+}; // namespace monash
 
-extern std::string alltext;
+#endif // __NODE_H__

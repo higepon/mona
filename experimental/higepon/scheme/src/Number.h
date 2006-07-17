@@ -15,6 +15,7 @@ public:
     virtual std::string toString();
     virtual int type() const;
     virtual int value() const;
+    virtual Object* eval(Environment* env);
 
 protected:
     int value_;

@@ -25,3 +25,4 @@ Object* Assignment::eval(Environment* env)
     env->setVaribale(variable_, value_);
     return new Quote("OK"); // different from SICP's
 }
+

@@ -21,3 +21,7 @@ int String::type() const
     return Object::STRING;
 }
 
+Object* String::eval(Environment* env)
+{
+    return this;
+}

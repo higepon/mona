@@ -1,4 +1,4 @@
-#include "Begin.h"
+#include "scheme.h"
 
 using namespace monash;
 
@@ -19,4 +19,9 @@ std::string Begin::toString()
 int Begin::type() const
 {
     return Object::BEGIN;
+}
+
+Object* Begin::eval(Environment* env)
+{
+    return evalSequence(this->actions(), env);
 }

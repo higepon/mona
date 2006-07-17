@@ -22,14 +22,14 @@ int SpecialIf::type() const
     return Object::IF;
 }
 
-Object* SpecialIf::eval(SpecialIf* specialIf, Environment* env)
+Object* SpecialIf::eval(Environment* env)
 {
-    if (isTrue(::eval(specialIf->predicate(), env)))
+    if (isTrue(this->predicate()->eval(env)))
     {
-        return ::eval(specialIf->consequent(), env);
+        return this->consequent()->eval(env);
     }
     else
     {
-        return ::eval(specialIf->alternative(), env);
+        return this->alternative()->eval(env);
     }
 }
