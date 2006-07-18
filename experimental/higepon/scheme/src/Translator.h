@@ -24,6 +24,11 @@ public:
 public:
     static int translate(Node* node, Object** object);
     static int translatePrimitive(Node* node, Object** object);
+    static int translateDefinition(Node* node, Object** object);
+    static int translateIf(Node* node, Object** object);
+    static int translateBegin(Node* node, Object** object);
+    static int translateLambda(Node* node, Object** object);
+    static int translateApplication(Node* node, Object** object);
     enum
     {
         SYNTAX_ERROR,

@@ -53,8 +53,8 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
 	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
 	Application.$(OBJEXT) Parser.$(OBJEXT) Tokenizer.$(OBJEXT) \
-	Node.$(OBJEXT) Translator.$(OBJEXT) parser.$(OBJEXT) \
-	scheme.$(OBJEXT) load.$(OBJEXT)
+	Node.$(OBJEXT) Translator.$(OBJEXT) scheme.$(OBJEXT) \
+	load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -183,8 +183,6 @@ Node.cpp\
 Node.h\
 Translator.cpp\
 Translator.h\
-parser.cpp\
-parser.h\
 scheme.h\
 scheme.cpp\
 load.cpp

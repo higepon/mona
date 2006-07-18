@@ -39,8 +39,6 @@ Node.cpp\
 Node.h\
 Translator.cpp\
 Translator.h\
-parser.cpp\
-parser.h\
 scheme.h\
 scheme.cpp\
 load.cpp
