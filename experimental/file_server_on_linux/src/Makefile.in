@@ -61,6 +61,8 @@ am_file_server_OBJECTS = file_server-IDEDriver.$(OBJEXT) \
 	file_server-FileServer.$(OBJEXT) \
 	file_server-ISO9660FileSystem.$(OBJEXT) \
 	file_server-FAT12FileSystem.$(OBJEXT) \
+	file_server-FDCDriver.$(OBJEXT) file_server-fat.$(OBJEXT) \
+	file_server-endian_util.$(OBJEXT) \
 	file_server-ProcessFileSystem.$(OBJEXT)
 file_server_OBJECTS = $(am_file_server_OBJECTS)
 file_server_LDADD = $(LDADD)
@@ -158,7 +160,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3
+file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3 -I ../../../mona/tool/
 file_server_SOURCES = \
 FileSystem.h\
 IDEDriver.cpp\
@@ -186,6 +188,10 @@ ISO9660/ISO9660FileSystem.h\
 ISO9660/ISO9660.h\
 FAT12/FAT12FileSystem.cpp\
 FAT12/FAT12FileSystem.h\
+FAT12/FDCDriver.cpp\
+FAT12/FDCDriver.h\
+FAT12/fat.cpp\
+FAT12/endian_util.cpp\
 Process/ProcessFileSystem.cpp\
 Process/ProcessFileSystem.h
 
@@ -338,6 +344,24 @@ file_server-FAT12FileSystem.o: FAT12/FAT12FileSystem.cpp
 
 file_server-FAT12FileSystem.obj: FAT12/FAT12FileSystem.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FAT12FileSystem.obj `if test -f 'FAT12/FAT12FileSystem.cpp'; then $(CYGPATH_W) 'FAT12/FAT12FileSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/FAT12FileSystem.cpp'; fi`
+
+file_server-FDCDriver.o: FAT12/FDCDriver.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FDCDriver.o `test -f 'FAT12/FDCDriver.cpp' || echo '$(srcdir)/'`FAT12/FDCDriver.cpp
+
+file_server-FDCDriver.obj: FAT12/FDCDriver.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FDCDriver.obj `if test -f 'FAT12/FDCDriver.cpp'; then $(CYGPATH_W) 'FAT12/FDCDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/FDCDriver.cpp'; fi`
+
+file_server-fat.o: FAT12/fat.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.o `test -f 'FAT12/fat.cpp' || echo '$(srcdir)/'`FAT12/fat.cpp
+
+file_server-fat.obj: FAT12/fat.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.obj `if test -f 'FAT12/fat.cpp'; then $(CYGPATH_W) 'FAT12/fat.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/fat.cpp'; fi`
+
+file_server-endian_util.o: FAT12/endian_util.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.o `test -f 'FAT12/endian_util.cpp' || echo '$(srcdir)/'`FAT12/endian_util.cpp
+
+file_server-endian_util.obj: FAT12/endian_util.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.obj `if test -f 'FAT12/endian_util.cpp'; then $(CYGPATH_W) 'FAT12/endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/endian_util.cpp'; fi`
 
 file_server-ProcessFileSystem.o: Process/ProcessFileSystem.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ProcessFileSystem.o `test -f 'Process/ProcessFileSystem.cpp' || echo '$(srcdir)/'`Process/ProcessFileSystem.cpp
