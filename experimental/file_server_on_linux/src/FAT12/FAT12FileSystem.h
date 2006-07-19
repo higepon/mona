@@ -2,8 +2,9 @@
 #define __FAT12FILESYSTEM_H__
 
 #include "FileSystem.h"
-#include "IStorageDevice.h"
 #include "VnodeManager.h"
+#include "fat_write/fat.h"
+#include "FDCDriver.h"
 #include <vector>
 
 class FAT12FileSystem : public FileSystem
@@ -29,11 +30,17 @@ public:
         SECTOR_SIZE = 2048,
     };
 
-
-private:
-
 protected:
+    virtual int deviceOn();
+    virtual int deviceOff();
+    FatFS::Directory* searchFile(char* path, int* entry, int* cursor);
+    FatFS::Directory* trackingDirectory(char *path, int *cursor);
+    void freeDirectory(FatFS::Directory *p);
+
+    FatFS::FatStorage* fat_;
+    FatFS::Directory* current_;
     IStorageDevice* drive_;
+    FDCDriver* fd_;
     VnodeManager* vmanager_;
     Vnode* root_;
 };

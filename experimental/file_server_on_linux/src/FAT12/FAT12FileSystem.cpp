@@ -1,14 +1,16 @@
 #include "FAT12FileSystem.h"
 
 using namespace std;
-//using namespace fat12;
+using namespace FatFS;
 
 FAT12FileSystem::FAT12FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
 {
+    fd_ = (FDCDriver*)drive;
 }
 
 FAT12FileSystem::~FAT12FileSystem()
 {
+    delete fat_;
 }
 
 /*----------------------------------------------------------------------
@@ -16,12 +18,92 @@ FAT12FileSystem::~FAT12FileSystem()
 ----------------------------------------------------------------------*/
 int FAT12FileSystem::initialize()
 {
+#ifdef ON_LINUX
+
+#else
+    syscall_get_io();
+
+    monapi_set_irq(6, MONAPI_TRUE, MONAPI_TRUE);
+    syscall_set_irq_receiver(6, 0);
+#endif
+
+    fat_ = new FatStorage();
+
+    if (!fat_->initialize(drive_))
+    {
+        delete fat_;
+        return MONA_ERROR_ON_DEVICE;
+    }
+
+    current_ = fat_->getRootDirectory();
+
+    if (current_ == NULL)
+    {
+        delete fat_;
+        return MONA_ERROR_ON_DEVICE;
+    }
+    root_ = vmanager_->alloc();
+    root_->fnode  = fat_->getRootDirectory();
+    root_->fs     = this;
+    root_->type = Vnode::DIRECTORY;
     return MONA_SUCCESS;
 }
 
 int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    return MONA_SUCCESS;
+    if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
+    Vnode* v = vmanager_->cacher()->lookup(diretory, file);
+    if (v != NULL && v->type == type)
+    {
+        *found = v;
+        return MONA_SUCCESS;
+    }
+
+    if (type != Vnode::REGULAR && type != Vnode::DIRECTORY) return MONA_ERROR_ENTRY_NOT_FOUND;
+
+    int entry;
+    int cursor;
+    current_ = (Directory*)(diretory->fnode);
+    string tmp = file;
+    Directory* d = searchFile((char*)(tmp.c_str()), &entry, &cursor);
+
+    if (d == NULL)
+    {
+        return MONA_ERROR_ENTRY_NOT_FOUND;
+    }
+
+    if (type == Vnode::REGULAR)
+    {
+        File* f = d->getFile(entry);
+        if (f == NULL)
+        {
+            freeDirectory(d);
+            return MONA_ERROR_ENTRY_NOT_FOUND;
+        }
+        Vnode* newVnode = vmanager_->alloc();
+        newVnode->fnode  = f;
+        newVnode->type = type;
+        newVnode->fs = this;
+        vmanager_->cacher()->add(diretory, file, newVnode);
+        *found = newVnode;
+        return MONA_SUCCESS;
+    }
+    else // Vnode::DIRECTORY
+    {
+        Directory* dir = d->getDirectory(entry);
+        if (dir == NULL)
+        {
+            freeDirectory(d);
+            return MONA_ERROR_ENTRY_NOT_FOUND;
+        }
+        Vnode* newVnode = vmanager_->alloc();
+        newVnode->fnode  = dir;
+        newVnode->type = type;
+        newVnode->fs = this;
+        vmanager_->cacher()->add(diretory, file, newVnode);
+        *found = newVnode;
+        return MONA_SUCCESS;
+    }
 }
 
 int FAT12FileSystem::open(Vnode* file, int mode)
@@ -67,4 +149,124 @@ void FAT12FileSystem::destroyVnode(Vnode* vnode)
 /*----------------------------------------------------------------------
     private functions
 ----------------------------------------------------------------------*/
+int FAT12FileSystem::deviceOn()
+{
+    fd_->motor(ON);
+    fd_->recalibrate();
+    fd_->recalibrate();
+    fd_->recalibrate();
+    return MONA_SUCCESS;
+}
 
+int FAT12FileSystem::deviceOff()
+{
+    fd_->motorAutoOff();
+}
+
+Directory* FAT12FileSystem::searchFile(char* path, int* entry, int* cursor)
+{
+    Directory *p = current_;
+    int index = -1;
+
+    for (int i = 0; '\0' != path[i]; i++) {
+        if ('/' == path[i])
+            index = i;
+    }
+
+    *cursor = 0;
+
+    if (-1 != index) {
+        path[index] = '\0';
+
+        char *dir = path;
+        if (0 == index)
+            dir = "/";
+
+        int tmp = 0;
+
+        p = trackingDirectory(dir, &tmp);
+        if (NULL == p) {
+            return NULL;
+        }
+
+        if ('\0' != dir[tmp]) {
+            freeDirectory(p);
+            return NULL;
+        }
+
+        *cursor = index + 1;
+    }
+
+    *entry = p->searchEntry((byte*)path+*cursor);
+    return p;
+}
+
+Directory* FAT12FileSystem::trackingDirectory(char *path, int *cursor)
+{
+    Directory *p = current_;
+    int i = *cursor;
+    int j;
+
+    if ('/' == path[i]) {
+        p = fat_->getRootDirectory();
+        i++;
+    }
+
+    while ('\0' != path[i]) {
+        for (j = i; '\0' != path[j]; j++)
+            if ('/' == path[j])
+                break;
+        int next = j + 1;
+        if ('\0' == path[j])
+            next = j;
+        path[j] = '\0';
+
+        char *name = path+i;
+
+        if (0 == strcmp(name, "."))
+            name = "..";
+        else if (0 == strcmp(name, ".."))
+            name = "...";
+
+        int entry = p->searchEntry((byte*)name);
+
+        if (j != next)
+            path[j] = '/';
+
+        if (-1 == entry)
+            break;
+
+        Directory *tmp = p->getDirectory(entry);
+
+        if (NULL == tmp) {
+            freeDirectory(p);
+            return NULL;
+        }
+
+        freeDirectory(p);
+        p = tmp;
+
+        i = next;
+    }
+
+    *cursor = i;
+
+    return p;
+}
+
+
+void FAT12FileSystem::freeDirectory(Directory *p)
+{
+    if (p->getIdentifer() == current_->getIdentifer())
+    {
+        if (p != current_)
+        {
+            delete current_;
+            current_ = p;
+        }
+    }
+    else
+    {
+        delete p;
+    }
+}
