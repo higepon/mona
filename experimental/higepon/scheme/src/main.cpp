@@ -41,9 +41,11 @@ int main(int argc, char *argv[])
     Object* object = NULL;
     if (Translator::translate(node, &object) != Translator::SUCCESS)
     {
+        fprintf(stderr, "translate error \n");
         return -1;
     }
     Environment* environment = new Environment();
     display(object->eval(environment));
+//    printf("%s", environment->toString().c_str());
     return 0;
 }

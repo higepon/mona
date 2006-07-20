@@ -6,6 +6,7 @@ using namespace monash;
 
 Application::Application(Object* function, Objects* arguments) : function_(function), arguments_(arguments)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 }
 
 Application::~Application()
@@ -24,7 +25,9 @@ int Application::type() const
 
 Object* Application::eval(Environment* env)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     Object* procedure =this->function()->eval(env);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (procedure->type() != Object::PROCEDURE)
     {
         printf("error %s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug

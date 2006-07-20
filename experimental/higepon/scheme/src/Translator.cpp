@@ -67,7 +67,9 @@ int Translator::translateBegin(Node* node, Object** object)
     {
         Object * object;
         int ret = translate(node->nodes[i], &object);
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (ret != SUCCESS) return ret;
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         objects->push_back(object);
     }
     *object = new Begin(objects);
@@ -136,15 +138,21 @@ int Translator::translate(Node* node, Object** object)
         }
         else if (function->text == "begin")
         {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return translateBegin(node, object);
         }
         else if (function->text == "lambda")
         {
             return translateLambda(node, object);
         }
+        else
+        {
+            return translateApplication(node, object);
+        }
     }
     else
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return translateApplication(node, object);
     }
     return SYNTAX_ERROR;

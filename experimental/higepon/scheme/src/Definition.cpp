@@ -22,7 +22,7 @@ int Definition::type() const
 
 Object* Definition::eval(Environment* env)
 {
-    env->defineVariable(variable_, value_);
+    env->defineVariable(variable_, value_->eval(env));
     return new Quote("OK"); // different from SICP's
 }
 

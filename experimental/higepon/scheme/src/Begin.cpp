@@ -4,6 +4,7 @@ using namespace monash;
 
 Begin::Begin(Objects* actions) : actions_(actions)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 }
 
 Begin::~Begin()
@@ -23,5 +24,6 @@ int Begin::type() const
 
 Object* Begin::eval(Environment* env)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return evalSequence(this->actions(), env);
 }
