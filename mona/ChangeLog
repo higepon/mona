@@ -1,3 +1,7 @@
+2006-07-21  shadow <shadowin@users.sourceforge.jp>
+
+	* merge nidalibc to trunk
+
 2006-06-22  higepon  <higepon@users.sourceforge.jp>
 
         * core/shell_server/Shell.cpp (onKeyDown): shell‚ª Ctrl-p , Ctrl-h‚É‘Î‰ž

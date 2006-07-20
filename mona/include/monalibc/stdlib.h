@@ -1,76 +1,102 @@
-/*!
-  \file   MlcStdlib.h
-  \brief  mona c standard library
+/*************************************************************
+ * Copyright (c) 2006 Shotaro Tsuji
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is	 * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *************************************************************/
 
-  Copyright (c) 2002-2004 shadow
-  All rights reserved.<BR>
-  \b License NYSL<BR>
-  \b Create 2004/02/29
-  \author  shadow
-
-  $Revision$
-  $Date$
+/* Please send bug reports to
+	Shotaro Tsuji
+	4-1010,
+	Sakasedai 1-chome,
+	Takaraduka-si,
+	Hyogo-ken,
+	665-0024
+	Japan
+	negi4d41@yahoo.co.jp
 */
-#ifndef _MONA_LIB_STDLIB_
-#define _MONA_LIB_STDLIB_
 
-#include <sys/types.h>
+#ifndef _STDLIB_H_
+#define _STDLIB_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define P_FLAG_WIDTH 0x01
-#define P_FLAG_PRECISION 0x02
+#include <monalibc/stddef.h>
 
-#define P_FORMAT_ZERO 0x01
-#define P_FORMAT_MINUS 0x02
-#define P_FORMAT_PLUS 0x04
-#define P_FORMAT_SPACE 0x08
-#define P_FORMAT_SHARP 0x10
-#define P_FORMAT_UNSIGNED 0x20
-#define P_FORMAT_CAPITAL 0x40
-#define P_FORMAT_TERMINATE 0x80
-
-#define S_FORMAT_STAR 0x01
-#define S_FORMAT_LONG 0x02
-#define S_FORMAT_LONGLONG 0x04
-#define S_FORMAT_UNSIGNED 0x08
-
-#define RAND_MAX 0x7fff
-	
-typedef struct{
-  int quot; /* quotient */
-  int rem;  /* remainder */
+typedef struct
+{
+	int quot; /* 商 */
+	int rem;  /* 余 */
 } div_t;
 
-typedef struct{
-  long int quot; /* quotient */
-  long int rem;  /* remainder */
+typedef struct
+{
+	long int quot;
+	long int rem;
 } ldiv_t;
 
-void abort();
-char *getenv(const char *name);
+#define EXIT_FAILURE 1
+#define EXIT_SUCCESS 0
+
+#define S_FORMAT_STAR		1
+#define S_FORMAT_LONG		2
+#define S_FORMAT_LONGLONG	4
+#define S_FORMAT_UNSIGNED	8
+
+/* これは関係ないニダ */
+#define RAND_MAX 0x7fffffff
+
+/* stdlib.hをインクルードするとmonapi.hもインクルードすることに（ry */
+/* #include <monapi/syscall.h> */
+void* malloc(unsigned long size);
+void* calloc(unsigned long n, unsigned long s);
+void* realloc(void* address, unsigned long size);
+void free(void* address);
+int exit(int);
+int atexit(void (*function)(void));
+
+void abort(void);
+int abs(int);
+double atof(const char*);
+int atoi(const char*);
+long int atol(const char*);
+void *bsearch(const void *key, const void *base, size_t nmemb,
+                        size_t size, int (*compar)(const void*, const void*));
+div_t div(int, int);
+ldiv_t ldiv(long int, long int);
+char *getenv(const char*);
 int putenv(char *string);
+int mblen(const char*, size_t);
+size_t mbstowcs(wchar_t*, const char*, size_t);
+int mbtowc(wchar_t*, const char*, size_t);
+long int labs(long int);
+long long int llabs(long long int);
+int rand(void);
+void srand(unsigned int);
+double strtod(const char*, char **endptr);
+long int strtol(const char*, char **endptr, int base);
+unsigned long int strtoul(const char*, char **endptr, int base);
+size_t wcstombs(char *dest, const wchar_t *src, size_t n);
+int wctomb(char *s, wchar_t wc);
 
-long int strtol(const char *s, char **endptr, int base);
-unsigned long int strtoul(const char *s, char **endptr, int base);
-size_t strtoi(const char *s, char **endptr, int base, int width, char flag);
-int atoi(const char *s);
-int itos(char *s, int n, int width, unsigned int base, char flag);
-int itosn(char *s, int max_width, int n, int width, unsigned int base, char flag);
-int ftos(char *s, double n, int width, int precision, char flag);
-int abs(int i);
-long int labs(long int i);
-div_t div(long int numer, long int denom);
-ldiv_t ldiv(long int numer, long int denom);
 void qsort(void *base, size_t n, size_t size, int (*fnc)(const void*, const void*));
-void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*fnc)(const void *, const void *));
-
-int rand();
-void srand(unsigned int seed);
-double strtod(const char *s, char **endptr);
-double atof(const char *s);
 
 #ifdef __cplusplus
 }

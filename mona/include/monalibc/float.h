@@ -12,8 +12,8 @@
   $Date$
 */
 
-#ifndef _MONA_LIB_FLOAT_
-#define _MONA_LIB_FLOAT_
+#ifndef _FLOAT_H_
+#define _FLOAT_H_
 
 #ifdef	__cplusplus
 extern "C" {

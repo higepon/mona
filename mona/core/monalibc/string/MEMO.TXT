@@ -1,0 +1,10 @@
+・まだ書いていない関数
+char *strerror(int n);
+char *strtok(char *s, const char *delim);
+void *memmove(void *dest, const void *src, size_t n);
+
+・手抜き
+strcoll, strxfrm - ロケールの実装を手抜き
+
+・パクリ
+strlcpy, strlcat - Solarisみたいになりたくなかったから本家からパクってきたニダ

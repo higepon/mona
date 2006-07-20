@@ -1,0 +1,2 @@
+SOURCES = \
+setlocale.c \

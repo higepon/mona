@@ -1,0 +1,25 @@
+数学関数 <math.h>
+Name		Standards		Author		License		Status
+-------------------------------------------------------------------------------
+acos		ISO/IEC 9899:1999(E)	Higepon
+asin		ISO/IEC 9899:1999(E)					未実装
+atan		ISO/IEC 9899:1999(E)	Higepon
+atan2		ISO/IEC 9899:1999(E)	Higepon
+ceil		ISO/IEC 9899:1999(E)	Higepon
+cos		ISO/IEC 9899:1999(E)	Higepon
+cosh		ISO/IEC 9899:1999(E)					未実装
+exp		ISO/IEC 9899:1999(E)	Higepon
+fabs		ISO/IEC 9899:1999(E)	Higepon
+floor		ISO/IEC 9899:1999(E)	Higepon
+fmod		ISO/IEC 9899:1999(E)					未実装
+frexp		ISO/IEC 9899:1999(E)					未実装
+ldexp		ISO/IEC 9899:1999(E)	Yume
+log		ISO/IEC 9899:1999(E)	Higepon
+log10		ISO/IEC 9899:1999(E)	Higepon
+modf		ISO/IEC 9899:1999(E)	Higepon
+pow		ISO/IEC 9899:1999(E)	Higepon
+sin		ISO/IEC 9899:1999(E)	Higepon
+sinh		ISO/IEC 9899:1999(E)					未実装
+sqrt		ISO/IEC 9899:1999(E)	Higepon
+tan		ISO/IEC 9899:1999(E)	Higepon
+tanh		ISO/IEC 9899:1999(E)					未実装

@@ -1,0 +1,32 @@
+一般ユーティリティ <stdlib.h>
+Name		Standards	Author		License			Status
+-------------------------------------------------------------------------------
+abort		ISO C99		Yume
+abs		ISO C99		Yume
+atexit		ISO C89		Yume
+atof		ISO C99		Yume					未実装
+atoi		ISO C89		shadow		NYSL
+atol		ISO C89		Yume					未実装
+bsearch		ISO C89		shadow		NYSL
+div		ISO C99		shadow		NYSL
+ldiv		ISO C99		shadow		NYSL
+getenv		ISO C89		Yume					未実装
+mblen		ISO C89		Yume					未実装
+mbstowcs	ISO C89		Yume					未実装
+mbtowc		ISO C89		Yume					未実装
+malloc		ISO C89		Yume
+calloc		ISO C89		Yume
+realloc		ISO C89		Yume
+exit		ISO C89		Yume
+free		ISO C89		Yume
+labs		ISO C89		Yume
+llabs		ISO C99		Yume
+qsort		ISO C89		shadow		NYSL
+rand		ISO C89		Yume
+srand		ISO C89		Yume
+strtod		ISO C99		Yume					未実装
+strtol		ISO C89		shadow		NYSL
+strtoul		ISO C89		shadow		NYSL
+strtoi		monalibc	shadow		NYSL
+wcstombs	ISO C89		Yume					未実装
+wctomb		ISO C89		Yume					未実装

@@ -1,5 +1,5 @@
 /*!
-  \file   MlcLimits.h
+  \file   limits.h
   \brief  mona c limits
 
   Copyright (c) 2002-2004 shadow
@@ -11,8 +11,8 @@
   $Revision$
   $Date$
 */
-#ifndef _MONA_LIB_LIMITS_
-#define _MONA_LIB_LIMITS_
+#ifndef _LIMITS_H_
+#define _LIMITS_H_
 
 #ifdef __cplusplus
 extern "C" {

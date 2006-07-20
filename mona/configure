@@ -109,9 +109,9 @@ echo '
 SHAREDIR=$(MONADIR)/share
 PATH:=$(PATH):$(PREFIX)/bin
 export PATH
-CFLAGS=-nostdlib -UWIN32 -U_WIN32 -Wall -fno-builtin -O3 -DMONA -DDEBUG_BUILD $(HOSTDEF)
+CFLAGS=-nostdlib -nostdinc -UWIN32 -U_WIN32 -Wall -fno-builtin -O3 -DMONA -DDEBUG_BUILD $(HOSTDEF)
 CXXFLAGS=$(CFLAGS) -fno-exceptions -fno-rtti
-NFLAGS=-I $(MONADIR)/include/ -f win32
+NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32
 ' >> $MAKEINC
 
 [ x$MINGWPREFIX != x ] && echo "MINGWPREFIX=$MINGWPREFIX" >> $MAKEINC

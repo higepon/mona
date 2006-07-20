@@ -1,31 +1,25 @@
 SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
-LIB_STATIC   = libmonalibc.a
-TARGET       = $(LIB_STATIC)
+CRT_OBJECT = crt/crt.o
+LIB_STATIC = libmonalibc.a
+TARGET = $(LIB_STATIC)
 
 ifneq ($(BUILD_TARGET),ELF)
-LIB_IMPORT   = libmonalibc-imp.a
-LIB_DYNAMIC  = MONALIBC.DLL
-LIB_DYNAMIC5 = MONALIBC.DL5
-TARGET      += $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5)
+LIB_IMPORT	= libmonalibc-imp.a
+LIB_DYNAMIC	= MONALIBC.DLL
+LIB_DYNAMIC5	= MONALIBC.DL5
+TARGET		+= $(LIB_IMPORT) $(LIB_DYNAMIC) $(LIB_DYNAMIC5) $(CRT_OBJECT)
 endif
 
-SOURCES = ctype.cpp    \
-          monalibc.cpp \
-          stdarg.cpp   \
-          stdio.cpp    \
-          stdlib.cpp   \
-          math.cpp     \
-          time.cpp     \
-          setjmp.cpp   \
-          string.cpp   \
+include src.inc
 
+OBJECTS = $(SOURCES:.c=.o) setjmp/setjmp.o
+INCLUDE = -I. -I$(INCDIR) -I$(INCDIR)/monalibc
 
-OBJECTS = $(SOURCES:.cpp=.o)
-INCLUDE = -I. -I.. -I$(INCDIR)
+LINK = -L$(SRCTOP)/lib -lmonapi-imp
 
-all : $(TARGET)
+all: $(TARGET)
 
 $(LIB_STATIC): $(OBJECTS)
 	rm -f $@
@@ -35,23 +29,33 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) --export-all-symbols --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) -L$(MONADIR)/lib -lmonapi-imp
+	$(LD) --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK)
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
-#	bzip2 -c $(LIB_DYNAMIC) > $@
 	bim2bin in:$(LIB_DYNAMIC) out:$@ -osacmp -tek5 BS:0 eprm:z0
 endif
 
-.SUFFIXES: .cpp .o
-.cpp.o:
-	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $<
+.SUFFIXES: .o .c
+.c.o:
+	$(CC) -c -o $@ $<  $(INCLUDE)
+
+crt: $(CRT_OBJECT)
+
+crt_force:
+	$(CC) -c -o crt/crt.o crt/crt.cpp $(INCLUDE)
+
+$(CRT_OBJECT):
+	$(CC) -c -o $@ $(CRT_OBJECT:.o=.cpp)  $(INCLUDE)
+
+setjmp/setjmp.o: setjmp/setjmp.asm
+	$(NASM) $< -o $@ -f coff
 
 depend dependencies:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 clean:
-	rm -f $(TARGET) $(OBJECTS) dependencies
+	rm -rf $(TARGET) $(OBJECTS) dependencies
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)
@@ -59,14 +63,8 @@ install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
 	$(INSTALL) -m 0644 $(LIB_IMPORT) $(LIBDIR)/
 	mkdir -p $(BINDIR)/LIBS
-	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+	$(INSTALL) -m 0644 $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 endif
-
-uninstall:
-	rm -f $(LIBDIR)/$(LIB_STATIC)
-ifneq ($(BUILD_TARGET),ELF)
-	rm -f $(LIBDIR)/$(LIB_IMPORT)
-	rm -f $(BINDIR)/LIBS/$(LIB_DYNAMIC5)
-endif
+	$(INSTALL) $(CRT_OBJECT) $(LIBDIR)
 
 -include dependencies

@@ -1,0 +1,2 @@
+SOURCES = \
+clock.c

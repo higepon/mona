@@ -6,11 +6,13 @@ PATH:=$(PATH):$(PREFIX)/bin
 export PATH
 export MINGWPREFIX
 
-all:
-	#cd config && ./configure && make && make install
+all: tools cores
+tools:
 	cd tool/fat_write && make && make install
 	cd tool/t5lzma && make && make install
 	cd tool/bim2bin && make && make install
+	
+cores:
 	cd core/firstboot && make && make install
 	cd core/PEAnalyzerLib && make && make install
 	cd core/IL2Asm16 && make && make install
@@ -27,3 +29,6 @@ all:
 	cd core/elf_server && make && make install
 	cd core/pe_server && make && make install
 	cd tool/mkimg && make clean && make
+
+clean:
+	
