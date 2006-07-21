@@ -6,6 +6,8 @@ PATH:=$(PATH):$(PREFIX)/bin
 export PATH
 export MINGWPREFIX
 
+COREDIR = core/monalibc core/firstboot
+
 all: tools cores
 tools:
 	cd tool/fat_write && make && make install
@@ -30,5 +32,20 @@ cores:
 	cd core/pe_server && make && make install
 	cd tool/mkimg && make clean && make
 
+.PHONY: clean
 clean:
-	
+	$(MAKE) $@ -C core/firstboot
+	$(MAKE) $@ -C core/PEAnalyzerLib
+	$(MAKE) $@ -C core/IL2Asm16
+	$(MAKE) $@ -C core/secondboot
+	$(MAKE) $@ -C core/kernel
+	$(MAKE) $@ -C core/monapi
+	$(MAKE) $@ -C core/monitor_server
+	$(MAKE) $@ -C core/keyboard_server
+	$(MAKE) $@ -C core/monalibc
+	$(MAKE) $@ -C core/mouse_server
+	$(MAKE) $@ -C core/file_server
+	$(MAKE) $@ -C core/process_server
+	$(MAKE) $@ -C core/shell_server
+	$(MAKE) $@ -C core/elf_server
+	$(MAKE) $@ -C core/pe_server
