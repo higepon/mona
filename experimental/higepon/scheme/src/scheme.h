@@ -17,6 +17,7 @@
 #include "Node.h"
 #include "Parser.h"
 #include "Translator.h"
+#include "PrimitiveProcedures/Plus.h"
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

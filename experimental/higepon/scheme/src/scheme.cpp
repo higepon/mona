@@ -28,6 +28,11 @@ bool isCompoundProcedure(Object* p)
     return p->type() == Object::PROCEDURE;
 }
 
+bool isPrimitiveProcedure(Object* p)
+{
+    return p->type() == Object::PRIMITIVE_PROCEDURE;
+}
+
 Object* apply(Object* procedure, Objects* arguments)
 {
     // fix me
@@ -38,7 +43,16 @@ Object* apply(Object* procedure, Objects* arguments)
         p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
         evalSequence(p->body(), p->env());
     }
-
+    else if (isPrimitiveProcedure(procedure))
+    {
+        PrimitiveProcedure* p = (PrimitiveProcedure*)procedure;
+        return p->apply(arguments);
+    }
+    else
+    {
+        printf("unknown procedure\n");
+        return NULL;
+    }
 }
 
 bool isTrue(Object* exp)

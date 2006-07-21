@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     Environment* environment = new Environment();
+    environment->defineVariable(new Variable("+"), new Plus());
     display(object->eval(environment));
 //    printf("%s", environment->toString().c_str());
     return 0;

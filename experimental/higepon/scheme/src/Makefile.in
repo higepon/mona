@@ -53,8 +53,8 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
 	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
 	Application.$(OBJEXT) Parser.$(OBJEXT) Tokenizer.$(OBJEXT) \
-	Node.$(OBJEXT) Translator.$(OBJEXT) scheme.$(OBJEXT) \
-	load.$(OBJEXT)
+	Node.$(OBJEXT) Translator.$(OBJEXT) Plus.$(OBJEXT) \
+	scheme.$(OBJEXT) load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -183,6 +183,9 @@ Node.cpp\
 Node.h\
 Translator.cpp\
 Translator.h\
+PrimitiveProcedure.h\
+PrimitiveProcedures/Plus.cpp\
+PrimitiveProcedures/Plus.h\
 scheme.h\
 scheme.cpp\
 load.cpp
@@ -258,6 +261,12 @@ distclean-compile:
 
 .cpp.obj:
 	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+Plus.o: PrimitiveProcedures/Plus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Plus.o `test -f 'PrimitiveProcedures/Plus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Plus.cpp
+
+Plus.obj: PrimitiveProcedures/Plus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Plus.obj `if test -f 'PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Plus.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

@@ -32,6 +32,7 @@ public:
         DEFINITION,
         COND,
         APPLICATION,
+        PRIMITIVE_PROCEDURE,
     };
 };
 

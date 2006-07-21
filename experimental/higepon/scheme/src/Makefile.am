@@ -39,6 +39,9 @@ Node.cpp\
 Node.h\
 Translator.cpp\
 Translator.h\
+PrimitiveProcedure.h\
+PrimitiveProcedures/Plus.cpp\
+PrimitiveProcedures/Plus.h\
 scheme.h\
 scheme.cpp\
 load.cpp
