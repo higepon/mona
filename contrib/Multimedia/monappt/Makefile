@@ -2,7 +2,7 @@ TARGET  = MONAPPT
 SOURCES = monappt.cpp
 INSTDIR = $(BINDIR)/APPS/$(TARGET).APP
 INSTFILES  = MONAPPT.INI
-CLEANFILES = $(INSTFILES)
+#CLEANFILES = $(INSTFILES)
 
 SHAREDIR   = $(MONADIR)/share
 ifneq ($(BUILD_TARGET),ELF)
@@ -17,4 +17,4 @@ CXXFLAGS += -DDEBUG
 
 $(TARGET).EXE: $(INSTFILES)
 
-include dependencies
+-include dependencies
