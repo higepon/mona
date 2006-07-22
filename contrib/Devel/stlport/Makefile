@@ -32,9 +32,9 @@ install: check
 	$(INSTALL) -m 0644 ./stlport/stl/*.c $(INCDIR)/stlport/stl
 
 uninstall: check
-	rm -r $(INCDIR)/stlport/stl
-	rm -r $(INCDIR)/stlport/config
-	rm -r $(INCDIR)/stlport
+	rm -rf $(INCDIR)/stlport/stl
+	rm -rf $(INCDIR)/stlport/config
+	rm -rf $(INCDIR)/stlport
 
 check:
 	@if test "$(MONADIR)" = "" ; \
