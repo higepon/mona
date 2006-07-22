@@ -29,6 +29,8 @@ Definition.cpp\
 Definition.h\
 Cond.cpp\
 Cond.h\
+Pair.cpp\
+Pair.h\
 Application.cpp\
 Application.h\
 Parser.cpp\
@@ -42,6 +44,12 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
+PrimitiveProcedures/Cons.cpp\
+PrimitiveProcedures/Cons.h\
+PrimitiveProcedures/Car.cpp\
+PrimitiveProcedures/Car.h\
+PrimitiveProcedures/Cdr.cpp\
+PrimitiveProcedures/Cdr.h\
 scheme.h\
 scheme.cpp\
 load.cpp

@@ -31,6 +31,7 @@ public:
         BEGIN,
         DEFINITION,
         COND,
+        PAIR,
         APPLICATION,
         PRIMITIVE_PROCEDURE,
     };

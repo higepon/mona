@@ -52,8 +52,9 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
 	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
-	Application.$(OBJEXT) Parser.$(OBJEXT) Tokenizer.$(OBJEXT) \
-	Node.$(OBJEXT) Translator.$(OBJEXT) Plus.$(OBJEXT) \
+	Pair.$(OBJEXT) Application.$(OBJEXT) Parser.$(OBJEXT) \
+	Tokenizer.$(OBJEXT) Node.$(OBJEXT) Translator.$(OBJEXT) \
+	Plus.$(OBJEXT) Cons.$(OBJEXT) Car.$(OBJEXT) Cdr.$(OBJEXT) \
 	scheme.$(OBJEXT) load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
@@ -173,6 +174,8 @@ Definition.cpp\
 Definition.h\
 Cond.cpp\
 Cond.h\
+Pair.cpp\
+Pair.h\
 Application.cpp\
 Application.h\
 Parser.cpp\
@@ -186,6 +189,12 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
+PrimitiveProcedures/Cons.cpp\
+PrimitiveProcedures/Cons.h\
+PrimitiveProcedures/Car.cpp\
+PrimitiveProcedures/Car.h\
+PrimitiveProcedures/Cdr.cpp\
+PrimitiveProcedures/Cdr.h\
 scheme.h\
 scheme.cpp\
 load.cpp
@@ -267,6 +276,24 @@ Plus.o: PrimitiveProcedures/Plus.cpp
 
 Plus.obj: PrimitiveProcedures/Plus.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Plus.obj `if test -f 'PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Plus.cpp'; fi`
+
+Cons.o: PrimitiveProcedures/Cons.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cons.o `test -f 'PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cons.cpp
+
+Cons.obj: PrimitiveProcedures/Cons.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cons.obj `if test -f 'PrimitiveProcedures/Cons.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cons.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cons.cpp'; fi`
+
+Car.o: PrimitiveProcedures/Car.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Car.o `test -f 'PrimitiveProcedures/Car.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Car.cpp
+
+Car.obj: PrimitiveProcedures/Car.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Car.obj `if test -f 'PrimitiveProcedures/Car.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Car.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Car.cpp'; fi`
+
+Cdr.o: PrimitiveProcedures/Cdr.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cdr.o `test -f 'PrimitiveProcedures/Cdr.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cdr.cpp
+
+Cdr.obj: PrimitiveProcedures/Cdr.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cdr.obj `if test -f 'PrimitiveProcedures/Cdr.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cdr.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cdr.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
