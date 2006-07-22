@@ -3,7 +3,7 @@ SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp
 
 INSTDIR = $(BINDIR)/APPS
 
-ADDLINK    = -lnicdrv -lPci -lmonalibc
+ADDLINK    = -lnicdrv -lpci -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 
 SHAREDIR   = $(MONADIR)/share
