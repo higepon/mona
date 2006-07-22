@@ -5,7 +5,7 @@ include $(TOP)/configs/default
 CONFIG_NAME = mona
 
 # Compiler and flags
-MONAINCDIR = -I$(MONADIR)/include/tmpmonalibc -I$(MONADIR)/include -I$(MONADIR)/include/monalibc -I$(MONADIR)/include/monapi
+MONAINCDIR = -I$(MONADIR)/include -I$(MONADIR)/include/monalibc -I$(MONADIR)/include/monapi
 CMONAFLAGS = -nostdlib -Wall -fno-builtin -nostdinc $(MONAINCDIR)
 
 CC = gcc
@@ -27,6 +27,6 @@ PROGRAM_DIRS =
 
 
 # Dependencies
-OSMESA_LIB_DEPS = -L$(MONADIR)/lib -ltmpmonalibc-imp -lmonalibc-imp -lmonapi-imp
-GLU_LIB_DEPS = -L$(MONADIR)/lib -L$(TOP)/lib -lOSMesa-imp -ltmpmonalibc-imp -lmonalibc-imp -lmonapi-imp
+OSMESA_LIB_DEPS = -L$(MONADIR)/lib -lmonalibc-imp -lmonapi-imp
+GLU_LIB_DEPS = -L$(MONADIR)/lib -L$(TOP)/lib -lOSMesa-imp -lmonalibc-imp -lmonapi-imp
 APP_LIB_DEPS = -lOSMesa-imp

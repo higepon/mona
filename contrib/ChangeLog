@@ -1,3 +1,7 @@
+2006-07-22  shadow  <shadowin@users.sourceforge.jp>
+
+	* Devel/stlport: arrange stlport
+
 2006-04-26  higepon  <higepon@users.sourceforge.jp>
 
         * Sysutils/libPci/Makefile: INCLUDE PATHをカレントディレクトリを優先する

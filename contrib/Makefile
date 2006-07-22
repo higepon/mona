@@ -1,11 +1,11 @@
 all:
 # basic libraries
-	cd Devel/stlport && make && make install
+	cd Devel/stlport && make install
 	cd Graphics/libjpegls && touch dependencies && make && make install
 # servers
 	cd X/gui && touch dependencies && make && make install
 # libraries
-	cd Devel/tmpmonalibc && touch dependencies && make && make install
+#	cd Devel/tmpmonalibc && touch dependencies && make && make install
 	cd Graphics/Mesa && touch dependencies && make && make install
 	cd Graphics/libgui && touch dependencies && make && make install
 	cd Graphics/libbaygui && touch dependencies && make && make install
