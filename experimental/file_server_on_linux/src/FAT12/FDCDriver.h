@@ -29,7 +29,7 @@
 class FDCDriver : public IStorageDevice
 {
 public:
-    FDCDriver(FILE* fp);
+    FDCDriver();
     virtual ~FDCDriver();
 
 public:

@@ -199,3 +199,23 @@ void FileServerTest::testISO9660FileSize()
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
 }
+
+void FileServerTest::testFAT12ReadFile()
+{
+    dword fileID = monapi_call_file_open2("/fd/MONA.CFG");
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
+
+    int ret = monapi_call_file_seek2(fileID, 72, 0);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file seek", ret != MONA_FAILURE);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data2(fileID, 19);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("i file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
+
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+}
+

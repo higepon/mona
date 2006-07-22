@@ -14,9 +14,13 @@ FileServer::~FileServer()
 {
     delete vmanager_;
     delete rootFS_;
-    delete mountedFS_;
+    for (FileSystems::iterator it = mountedFSs_.begin(); it != mountedFSs_.end(); it++)
+    {
+        delete (*it);
+    }
     cd_->close();
     delete cd_;
+    delete fd_;
 }
 
 int FileServer::initializeFileSystems()
@@ -37,14 +41,29 @@ int FileServer::initializeFileSystems()
 
 int FileServer::initializeMountedFileSystems()
 {
-    mountedFS_ = new ProcessFileSystem(vmanager_);
-    if (mountedFS_->initialize() != MONA_SUCCESS)
+    // ProcessFileSystem
+    FileSystem* pfs = new ProcessFileSystem(vmanager_);
+    if (pfs->initialize() != MONA_SUCCESS)
     {
         printf("ProcessFileSystem initialize Error\n");
-        delete mountedFS_;
+        delete pfs;
         return MONA_FAILURE;
     }
-    return vmanager_->mount(rootFS_->getRoot(), "process", mountedFS_->getRoot());
+    vmanager_->mount(rootFS_->getRoot(), "process", pfs->getRoot());
+    mountedFSs_.push_back(pfs);
+
+    // FAT12FileSystem
+    fd_ = new FDCDriver();
+    FileSystem* ffs = new FAT12FileSystem(fd_, vmanager_);
+    if (ffs->initialize() != MONA_SUCCESS)
+    {
+        printf("FAT12FileSystem initialize Error\n");
+        delete ffs;
+        return MONA_FAILURE;
+    }
+    vmanager_->mount(rootFS_->getRoot(), "fd", ffs->getRoot());
+    mountedFSs_.push_back(ffs);
+    return MONA_SUCCESS;
 }
 
 int FileServer::initializeRootFileSystem()

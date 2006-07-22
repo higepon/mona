@@ -3,9 +3,9 @@
 using namespace std;
 using namespace FatFS;
 
-FAT12FileSystem::FAT12FileSystem(IStorageDevice* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
+FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
 {
-    fd_ = (FDCDriver*)drive;
+    fd_ = drive;
 }
 
 FAT12FileSystem::~FAT12FileSystem()
@@ -113,6 +113,20 @@ int FAT12FileSystem::open(Vnode* file, int mode)
 
 int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 {
+    if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+    File* f = (File*)file->fnode;
+    monapi_cmemoryinfo* memory = context->memory;
+    dword offset = context->offset;
+    dword readSize = context->size;
+    dword rest = f->size() - offset;
+
+    if (rest < readSize)
+    {
+        readSize = rest;
+    }
+
+    f->seek(offset, SEEK_SET);
+    f->read(memory->Data, readSize);
     return MONA_SUCCESS;
 }
 

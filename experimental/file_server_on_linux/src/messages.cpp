@@ -31,8 +31,8 @@ static dword server_ids[] =
 static const char* server_names[] =
 {
 //    "MOUSE.EX5", "KEYBDMNG.EX5", "leak-analyze", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
-    "MOUSE.EX5", "KEYBDMNG.EX5", "memcheck", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
-//    "MOUSE.EX5", "KEYBDMNG.EX5", "file_server", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
+//    "MOUSE.EX5", "KEYBDMNG.EX5", "memcheck", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
+    "MOUSE.EX5", "KEYBDMNG.EX5", "file_server", "GUI.EX5", "ELF.BN5", "PROCESS.BIN", "PE.BN5", "MONITOR.BIN"
 };
 #else
 static const char* server_names[] =

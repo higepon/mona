@@ -15,6 +15,8 @@
 #include "FDCDriver.h"
 
 #ifdef ON_LINUX
+#include <stdio.h>
+#include <stdlib.h>
 #else
 using namespace MonAPI;
 #endif
@@ -25,8 +27,14 @@ using namespace MonAPI;
     \author HigePon
     \date   create:2003/02/03 update:2004/12/27
 */
-FDCDriver::FDCDriver(FILE* fp) : motorCount(0), currentTrack(-1), fp(fp)
+FDCDriver::FDCDriver() : motorCount(0), currentTrack(-1)
 {
+    this->fp = fopen("mona.img", "rb+");
+    if (this->fp == NULL)
+    {
+        fprintf(stderr, "mona.img not found");
+        exit(1);
+    }
     return;
 }
 
@@ -38,6 +46,7 @@ FDCDriver::FDCDriver(FILE* fp) : motorCount(0), currentTrack(-1), fp(fp)
 */
 FDCDriver::~FDCDriver()
 {
+    fclose(this->fp);
     return;
 }
 

@@ -1,17 +1,32 @@
-#ifndef __FAT12FILESYSTEM_H__
-#define __FAT12FILESYSTEM_H__
+#ifndef __PROCESS_FILESYSTEM_H__
+#define __PROCESS_FILESYSTEM_H__
 
 #include "FileSystem.h"
 #include "VnodeManager.h"
-#include "fat_write/fat.h"
-#include "FDCDriver.h"
 #include <vector>
+#include <string>
 
-class FAT12FileSystem : public FileSystem
+class Pnode
 {
 public:
-    FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager);
-    virtual ~FAT12FileSystem();
+    Pnode(dword tid, std::string name) : tid(tid), name(name) {}
+    virtual ~Pnode() {}
+
+    enum
+    {
+        ROOT_DIRECTORY = 0xffffffff,
+    };
+
+public:
+    dword tid;
+    std::string name;
+};
+
+class ProcessFileSystem : public FileSystem
+{
+public:
+    ProcessFileSystem(VnodeManager* vmanager);
+    virtual ~ProcessFileSystem();
 
 public:
     virtual int initialize();
@@ -25,24 +40,12 @@ public:
     virtual Vnode* getRoot() const;
     virtual void destroyVnode(Vnode* vnode);
 
-    enum
-    {
-        SECTOR_SIZE = 2048,
-    };
-
 protected:
-    virtual int deviceOn();
-    virtual int deviceOff();
-    FatFS::Directory* searchFile(char* path, int* entry, int* cursor);
-    FatFS::Directory* trackingDirectory(char *path, int *cursor);
-    void freeDirectory(FatFS::Directory *p);
-
-    FatFS::FatStorage* fat_;
-    FatFS::Directory* current_;
-    IStorageDevice* drive_;
-    FDCDriver* fd_;
+    typedef std::vector<Pnode*> Pnodes;
+    Pnodes pnodes_;
     VnodeManager* vmanager_;
     Vnode* root_;
+    Pnode* rootPnode_;
 };
 
-#endif // __FAT12FILESYSTEM_H__
+#endif // __PROCESS_FILESYSTEM_H__

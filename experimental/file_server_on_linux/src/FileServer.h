@@ -6,6 +6,8 @@
 #include "vnode.h"
 #include "VnodeManager.h"
 #include "IDEDriver.h"
+#include "FAT12/FDCDriver.h"
+#include "FAT12/FAT12FileSystem.h"
 #include "ISO9660/ISO9660FileSystem.h"
 #include "Process/ProcessFileSystem.h"
 #include "Message.h"
@@ -22,10 +24,12 @@ public:
     int initializeMountedFileSystems();
 
 protected:
+    typedef std::vector<FileSystem*> FileSystems;
     VnodeManager* vmanager_;
     IDEDriver* cd_;
+    FDCDriver* fd_;
     FileSystem* rootFS_;
-    FileSystem* mountedFS_;
+    FileSystems mountedFSs_;
 };
 
 #endif // __FILESERVER_H__
