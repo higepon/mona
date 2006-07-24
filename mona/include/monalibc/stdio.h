@@ -47,6 +47,8 @@ struct __sbuf
 {
 	unsigned char *_base;
 	int _size;
+	int _offset;
+	int _range;
 };
 
 struct __sFILEX;
@@ -121,6 +123,7 @@ int	 fseek(FILE *, long, int);
 size_t	 fwrite(const void *, size_t, size_t, FILE *);
 size_t	 fread(void *, size_t, size_t, FILE *);
 void	 rewind(FILE *);
+void	 perror(const char *);
 
 int	 fileno(FILE *);
 
@@ -132,7 +135,7 @@ int fscanf(FILE *fp, const char *format, ...);
 int sprintf(char *str, const char *format, ...);
 int sscanf(const char *str, const char *format, ...);
 
-#define perror(err) printf(err)
+/* #define perror(err) printf(err) */
 #define fprintf(n, ...) printf(__VA_ARGS__)
 
 #ifdef __cplusplus
