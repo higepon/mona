@@ -34,6 +34,8 @@
 #include <string.h>
 #include <errno.h>
 
+char err_s[128];
+
 #define EUNKNOWN_MSG		"Unknown error"
 #define EPERM_MSG		"Operation not permitted"
 #define EBADF_MSG		"Bad file descriptor"
@@ -42,7 +44,6 @@
 
 char *strerror(int n)
 {
-	static char err_s[128];
 	switch(n)
 	{
 		case EUNKNOWN:
