@@ -71,7 +71,7 @@ enum
 {
 	__SLBF	= 0x0001,	/* line buffered */
 	__SNBF	= 0x0002,	/* unbuffered */
-	__SBBF	= 0x0004,	/* block buffered */
+	__SFBF	= 0x0004,	/* block buffered */
 	__SEOF	= 0x0008,	/* eof */
 	__SERR	= 0x0010,	/* error */
 	__SRD	= 0x0020,	/* readable */
