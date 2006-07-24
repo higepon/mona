@@ -14,6 +14,8 @@ class FileServerTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(testProcessReadDirectory);
     CPPUNIT_TEST(testProcessReadFile);
     CPPUNIT_TEST(testFAT12ReadFile);
+    CPPUNIT_TEST(testFAT12FileSize);
+    CPPUNIT_TEST(testFAT12ReadDirectory);
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -26,6 +28,8 @@ public:
     void testProcessReadDirectory();
     void testProcessReadFile();
     void testFAT12ReadFile();
+    void testFAT12FileSize();
+    void testFAT12ReadDirectory();
 
 private:
     void testProcessReadFileOnce();

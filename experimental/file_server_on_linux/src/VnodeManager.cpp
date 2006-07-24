@@ -56,17 +56,21 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     }
 
     Vnode* dir;
-
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (filename == "/") {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         dir = root_;
     }
     else
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (lookup(root_, filename, &dir, Vnode::DIRECTORY) != MONA_SUCCESS)
         {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return MONA_ERROR_ENTRY_NOT_FOUND;
         }
     }
+    printf("%s %s:%d dir=%x\n", __func__, __FILE__, __LINE__, dir);fflush(stdout);// debug
     if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) return MONA_FAILURE;
     return MONA_SUCCESS;
 }

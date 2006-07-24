@@ -142,6 +142,8 @@ int FAT12FileSystem::close(Vnode* file)
 
 int FAT12FileSystem::stat(Vnode* file, Stat* st)
 {
+    File* f = (File*)file->fnode;
+    st->size = f->size();
     return MONA_SUCCESS;
 }
 
@@ -152,6 +154,44 @@ Vnode* FAT12FileSystem::getRoot() const
 
 int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
 {
+    deviceOn();
+    Directory* target = (Directory*)dir->fnode;
+
+    lsinfo_.entry = target->getHeadEntry();
+    lsinfo_.p     = target;
+
+    typedef vector<monapi_directoryinfo*> Files;
+    Files files;
+    monapi_directoryinfo di;
+    while (readdirInternal(di.name, &di.size, &di.attr) == MONA_SUCCESS)
+    {
+        printf("%s\n", di.name);
+        files.push_back(new monapi_directoryinfo(di));
+    }
+    deviceOff();
+
+    monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
+    int size = files.size();
+    if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE))
+    {
+        monapi_cmemoryinfo_delete(ret);
+        for (Files::iterator it = files.begin(); it != files.end(); it++)
+        {
+            delete (*it);
+        }
+        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    }
+
+    memcpy(ret->Data, &size, sizeof(int));
+    monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
+
+    for (Files::iterator it = files.begin(); it != files.end(); it++)
+    {
+        memcpy(p, (*it), sizeof(monapi_directoryinfo));
+        delete (*it);
+        p++;
+    }
+    *entries = ret;
     return MONA_SUCCESS;
 }
 
@@ -186,6 +226,7 @@ Directory* FAT12FileSystem::searchFile(char* path, int* entry, int* cursor)
         if ('/' == path[i])
             index = i;
     }
+
 
     *cursor = 0;
 
@@ -284,3 +325,32 @@ void FAT12FileSystem::freeDirectory(Directory *p)
         delete p;
     }
 }
+
+
+int FAT12FileSystem::readdirInternal(char* name, int* size, int* attribute)
+{
+    *attribute = 0;
+    if (lsinfo_.entry == -1)
+    {
+// don't free, we reuse vnode->fnode
+//        if (lsinfo_.p != current_) freeDirectory(lsinfo_.p);
+        return MONA_FAILURE;
+    }
+
+    if (-1 == lsinfo_.p->getEntryName(lsinfo_.entry, (byte*)name))
+    {
+// don't free, we reuse vnode->fnode
+//        freeDirectory(lsinfo_.p);
+        return MONA_FAILURE;
+    }
+
+    /* directory */
+    if (lsinfo_.p->isDirectory(lsinfo_.entry))
+    {
+        *attribute |= ATTRIBUTE_DIRECTORY;
+    }
+
+    lsinfo_.entry = lsinfo_.p->getNextEntry(lsinfo_.entry);
+    return MONA_SUCCESS;
+}
+

@@ -10,7 +10,6 @@ ISO9660FileSystem::ISO9660FileSystem(IStorageDevice* drive, VnodeManager* vmanag
 ISO9660FileSystem::~ISO9660FileSystem()
 {
     deleteEntry(rootDirectory_);
-//    delete rootDirectory_;
 }
 
 /*----------------------------------------------------------------------

@@ -211,7 +211,7 @@ void FileServerTest::testFAT12ReadFile()
     monapi_cmemoryinfo* mi = monapi_call_file_read_data2(fileID, 19);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("i file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
 
     ret = monapi_call_file_close2(fileID);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
@@ -219,3 +219,53 @@ void FileServerTest::testFAT12ReadFile()
     monapi_cmemoryinfo_delete(mi);
 }
 
+void FileServerTest::testFAT12FileSize()
+{
+    dword fileID = monapi_call_file_open2("/fd/MONA.CFG");
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
+
+    int ret = monapi_call_file_seek2(fileID, 72, 0);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file seek", ret != MONA_FAILURE);
+
+    monapi_cmemoryinfo* mi = monapi_call_file_read_data2(fileID, 19);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file size", 200, (int)monapi_call_file_get_file_size2(fileID));
+
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+}
+
+void FileServerTest::testFAT12ReadDirectory()
+{
+    // readdir OK
+    {
+        monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/fd/SERVERS", MONAPI_FALSE);
+        CPPUNIT_ASSERT_MESSAGE("readdir /SERVERS mi != NULL", mi != NULL);
+        monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+        int size = *(int*)mi->Data;
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("file . exist?", strcmp(p[0].name, "."), 0);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("file SERVERS/SHELL.EX5 exist?", strcmp((&p[7])->name, "SHELL.EX5"), 0);
+
+        monapi_cmemoryinfo_dispose(mi);
+        monapi_cmemoryinfo_delete(mi);
+    }
+
+    {
+        monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/fd/SERVERS", MONAPI_FALSE);
+        CPPUNIT_ASSERT_MESSAGE("readdir /SERVERS mi != NULL", mi != NULL);
+        monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+        int size = *(int*)mi->Data;
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("file . exist?", strcmp(p[0].name, "."), 0);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("file SERVERS/SHELL.EX5 exist?", strcmp((&p[7])->name, "SHELL.EX5"), 0);
+
+        monapi_cmemoryinfo_dispose(mi);
+        monapi_cmemoryinfo_delete(mi);
+    }
+
+}

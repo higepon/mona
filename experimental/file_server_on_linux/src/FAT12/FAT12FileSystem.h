@@ -30,9 +30,16 @@ public:
         SECTOR_SIZE = 2048,
     };
 
+    typedef struct LsInfo
+    {
+        int entry;
+        FatFS::Directory* p;
+    };
+
 protected:
     virtual int deviceOn();
     virtual int deviceOff();
+    virtual int readdirInternal(char* name, int* size, int* attribute);
     FatFS::Directory* searchFile(char* path, int* entry, int* cursor);
     FatFS::Directory* trackingDirectory(char *path, int *cursor);
     void freeDirectory(FatFS::Directory *p);
@@ -43,6 +50,7 @@ protected:
     FDCDriver* fd_;
     VnodeManager* vmanager_;
     Vnode* root_;
+    LsInfo lsinfo_;
 };
 
 #endif // __FAT12FILESYSTEM_H__
