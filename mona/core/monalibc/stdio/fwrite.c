@@ -52,6 +52,28 @@ size_t __nida_write_console(const void *ptr, size_t size, FILE *stream)
 	return size;
 }
 
+size_t __nida_fullybuf_fwrite(const void *ptr, size_t size, FILE *stream)
+{
+	size_t writesize;
+	int offdiff;
+
+	if( stream->_bf._offset <= stream->_extra->offset &&
+	stream->_bf._offset+stream->_bf._range >= stream->_extra->offset+size);
+	{
+		offdiff = stream->_extra->offset-stream->_bf._offset;
+		writesize = size;
+		if( stream->_bf._size < size )
+		{
+			writesize = stream->_bf._size;
+		}
+		memcpy(stream->_bf._base+offdiff, ptr, writesize);
+	}
+
+	stream->_write(stream->_file, ptr, size);
+
+	return writesize;
+}
+
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
 	if( !(stream->_flags & __SWR) )
