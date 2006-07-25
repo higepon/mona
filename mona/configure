@@ -186,7 +186,7 @@ case $DOTNET_TYPE in
     ;;
   mono)
     MONO=`which mono`
-    [ "x$MONO" = x ] && { echo 'Mono runtime not found'; ecit 1; }
+    [ "x$MONO" = x ] && { echo 'Mono runtime not found'; exit 1; }
     echo "NETRT=$MONO" >> $MAKEINC
     ;;
 esac
