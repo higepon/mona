@@ -52,6 +52,11 @@ int setvbuf(FILE * stream, char *buf, int mode, size_t size)
 		syscall_print("buf alloced by setvbuf.\n");
 	}
 
+	if( stream->_flags & __SALD )
+	{
+		free(stream->_bf._base);
+	}
+
 	stream->_bf._base = buf;
 	stream->_bf._size = size;
 
