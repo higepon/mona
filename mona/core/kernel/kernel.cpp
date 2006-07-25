@@ -119,7 +119,9 @@ void startKernel()
         g_console = new VesaConsole(g_vesaDetail);
         g_console->setCHColor(GP_LIGHTGREEN);
         g_console->setBGColor(GP_WHITE);
+#ifndef NO_MORE_FIRST_CLS
         g_console->clearScreen();
+#endif
     }
 
     g_console->printf("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\n");
