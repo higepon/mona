@@ -40,6 +40,11 @@ int fclose(FILE *fp)
 	MONAPI_BOOL result;
 	fflush(fp);
 	result = monapi_call_file_close(fp->_file);
+	if( fp->_flags & __SALD )
+	{
+		free(fp->_bf._base);
+	}
+	free(fp->_extra);
 	free(fp);
 	return 0;
 }
