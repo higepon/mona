@@ -16,8 +16,10 @@ tools:
 	
 cores:
 	cd core/firstboot && make && make install
+ifneq ($(SKIP_DOTNET),1)
 	cd core/PEAnalyzerLib && make && make install
 	cd core/IL2Asm16 && make && make install
+endif
 	cd core/secondboot && make && make install
 	cd core/kernel && make && make install
 	cd core/monapi && make && make install
@@ -35,8 +37,10 @@ cores:
 .PHONY: clean
 clean:
 	$(MAKE) $@ -C core/firstboot
+ifneq ($(SKIP_DOTNET),1)
 	$(MAKE) $@ -C core/PEAnalyzerLib
 	$(MAKE) $@ -C core/IL2Asm16
+endif
 	$(MAKE) $@ -C core/secondboot
 	$(MAKE) $@ -C core/kernel
 	$(MAKE) $@ -C core/monapi
