@@ -1,3 +1,7 @@
+2006-07-26  higepon  <higepon@users.sourceforge.jp>
+
+        * Makefile: if MONADIR not set, use default
+
 2006-07-22  shadow  <shadowin@users.sourceforge.jp>
 
 	* Devel/stlport: arrange stlport

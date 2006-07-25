@@ -1,5 +1,4 @@
 ifndef $(MONADIR)
-@echo "MONADIR set to default"
 export MONADIR=$(PWD)/../mona
 endif
 
