@@ -40,9 +40,10 @@ typedef unsigned char UCHAR;
 static unsigned char *putb_buf, *putb_overbuf;
 static int putb_ptr;
 static unsigned char putb_byte, putb_count = 8;
-extern UCHAR *tek1_s7ptr;
+static UCHAR *tek1_s7ptr;
 static int complev = -1;
 static FILE *hint = NULL;
+static UCHAR tek2_table_tr0[256];
 
 int lzcompress_l2d3(unsigned char *buf, int k, int i, int outlimit, int maxdis);
 int lzcompress_tek0(int prm, unsigned char *buf, int k, int i, int outlimit, int maxdis);
@@ -4687,7 +4688,7 @@ void setsubbuf(int siz, UCHAR *src, unsigned short *fdstbl, UCHAR *subbuf)
 
 static UCHAR *tek1_s7ptr;
 //static struct TEK1_STR_UC tek2_ucstby[2];
-static UCHAR tek2_table_tr0[256];
+
 //static UCHAR tek2_table_tr1[256];
 
 /* tek1“WŠJ—pŠÖ”ŒQ */
