@@ -11,6 +11,11 @@ ILOPT  = /OPT:1
 
 all: $(TARGET)
 
+ifeq ($(SKIP_DOTNET),1)
+$(TARGET): default_secondboot.asm
+	$(NASM) $< -o $@ -l secondboot.lst
+
+else
 $(TARGET): secondboot.asm
 	$(NASM) $< -o $@ -l secondboot.lst
 
@@ -32,7 +37,7 @@ $(IL2A16): $(DOTNETDIR)/$(IL2A16)
 
 $(I8086): $(DOTNETDIR)/$(I8086)
 	cp $< $@
-
+endif
 clean:
 	rm -f $(TARGET) secondboot.asm secondboot_.asm SecondBoot.exe *.lst $(PEALIB) $(IL2A16) $(I8086)
 
