@@ -9,3 +9,11 @@
  netbsd \
  openbsd \
  osf1 \
+
+--- Mesa-6.2.1/src/mesa/shader/grammar_mesa.h.orig 2004-03-04 22:07
++++ Mesa-6.2.1/src/mesa/shader/grammar_mesa.h 2006-07-21 22:07
+@@ -33,2 +33,3 @@
+ typedef GLuint grammar;
++#define byte mesabyte
+ typedef GLubyte byte;
+   

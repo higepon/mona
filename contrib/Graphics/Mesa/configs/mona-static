@@ -1,6 +1,8 @@
 # Configuration for OSMesa library on Mona
 
 include $(TOP)/configs/default
+include $(MONADIR)/share/configs/Makefile.inc
+include $(MONADIR)/share/configs/dirnames.inc
 
 CONFIG_NAME = mona-static
 
@@ -8,10 +10,10 @@ CONFIG_NAME = mona-static
 MONAINCDIR = -I$(MONADIR)/include -I$(MONADIR)/include/monalibc -I$(MONADIR)/include/monapi
 CMONAFLAGS = -nostdlib -Wall -fno-builtin -nostdinc $(MONAINCDIR)
 
-CC = gcc
-CXX = g++
-CFLAGS = $(CMONAFLAGS) -Os -DMONA -DNDEBUG -DHOST_CYGWIN -ffast-math -std=c99
-CXXFLAGS = $(CMONAFLAGS) -Os -DMONA -DNDEBUG -DHOST_CYGWIN -ffast-math -fno-exceptions -fno-rtti
+#CC = gcc
+#CXX = g++
+CFLAGS = $(CMONAFLAGS) -Os -DMONA -DNDEBUG -UWIN32 -U_WIN32 -ffast-math -std=c99
+CXXFLAGS = $(CMONAFLAGS) -Os -DMONA -DNDEBUG -UWIN32 -U_WIN32 -ffast-math -fno-exceptions -fno-rtti
 MKLIB_OPTIONS = -static
 
 

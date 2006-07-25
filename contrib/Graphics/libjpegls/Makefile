@@ -30,4 +30,4 @@ install: $(TARGET)
 uninstall:
 	rm -f $(INCDIR)/jpegls.h
 
-include dependencies
+-include dependencies

@@ -36,6 +36,7 @@
 
 #include <sys/types.h>
 #include <monalibc/stdint.h>
+#include <monapi/syscall.h>
 
 #ifndef NULL
 #define NULL 0

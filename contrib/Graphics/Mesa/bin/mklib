@@ -75,7 +75,7 @@ do
 done
 OBJECTS=$@
 
-if [ ${MONADIR} != "" ] ; then
+if [ x${MONADIR} != x ] ; then
     ARCH="Mona"
 elif [ ${ARCH} = "auto" ] ; then
     ARCH=`uname`
@@ -604,9 +604,10 @@ case $ARCH in
 
     'Mona')
 	# GCC-based environment
+	MINGWPREFIX=`grep ^MINGWPREFIX $MONADIR/share/configs/Makefile.inc | cut -d '=' -f 2`
         if [ $STATIC = 1 ] ; then
             echo "mklib: Making" $ARCH "static library: lib${LIBNAME}.a"
-            LINK="ar"
+            LINK=$MINGWPREFIX"ar"
             OPTS="-ru"
             # make lib
             ${LINK} ${OPTS} lib${LIBNAME}.a ${OBJECTS}
@@ -618,7 +619,7 @@ case $ARCH in
             DLLNAME=`echo ${LIBNAME} | tr '[a-z]' '[A-Z]'`".DLL"
 	    OPTS="-s --export-all-symbols --out-implib ${IMPNAME}"
             echo "mklib: Making" $ARCH "shared library: " ${DLLNAME}
-            LINK="ld"
+            LINK=$MINGWPREFIX"ld"
             # rm any old libs
             rm -f ${IMPNAME} ${DLLNAME}
 

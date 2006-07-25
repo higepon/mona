@@ -35,6 +35,7 @@
 #define _STRING_H_
 
 #include <monalibc/stddef.h>
+#include <monapi/string.h>
 
 #ifdef __cplusplus
 extern "C" {
