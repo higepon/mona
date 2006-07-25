@@ -1,6 +1,12 @@
+2006-07-26  higepon  <higepon@users.sourceforge.jp>
+
+        * bim2bin: gcc 4.0.2でビルド
+
+        * configure: Monoがない場合はdefault_secondboot.asmを使うようにした。
+
 2006-07-21  shadow <shadowin@users.sourceforge.jp>
 
-	* merge nidalibc to trunk
+    * merge nidalibc to trunk
 
 2006-06-22  higepon  <higepon@users.sourceforge.jp>
 
@@ -8,35 +14,35 @@
 
 2006-06-01 hiratch <hiratch@hiratch.net>
 
-	* **/*.h: include ディレクトリにコピーされるものについては最初から
-	include ディレクトリに置くようにした。
+    * **/*.h: include ディレクトリにコピーされるものについては最初から
+    include ディレクトリに置くようにした。
 
 2006-05-30 hiratch <hiratch@hiratch.net>
 
-	* monapi/*.h: include ディレクトリに移動。
+    * monapi/*.h: include ディレクトリに移動。
 
 2006-05-24 hiratch <hiratch@hiratch.net>
 
-	* monapi*.inc: コピーしないようにした。
+    * monapi*.inc: コピーしないようにした。
 
 2006-05-22 hiratch <hiratch@hiratch.net>
 
-	* configure, Makefile: tool/* の configure スクリプトを親スクリプト
-	から呼ぶように変更。
+    * configure, Makefile: tool/* の configure スクリプトを親スクリプト
+    から呼ぶように変更。
 
 2006-05-09 hiratch <hiratch@hiratch.net>
 
-	* **/Makefile: 相対パスで $(SRCTOP)/Makefile.inc を include するように
-	変更。
+    * **/Makefile: 相対パスで $(SRCTOP)/Makefile.inc を include するように
+    変更。
 
 2006-05-09 hiratch <hiratch@users.sourceforge.jp>
 
-	* chmod +x configure
+    * chmod +x configure
 
 2006-05-08 hiratch <hiratch@users.sourceforge.jp>
 
-	* configure, Makefile.new: 新ビルドシステム。configure を実行後、
-	make -f Makefile.new すること。
+    * configure, Makefile.new: 新ビルドシステム。configure を実行後、
+    make -f Makefile.new すること。
 
 2006-05-07  higepon  <higepon@users.sourceforge.jp>
 
