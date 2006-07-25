@@ -90,10 +90,21 @@ FILE *fopen(const char *path, const char *mode)
 	fp->_extra = malloc(sizeof(struct __sFILEX));
 	if( fp->_extra == NULL )
 	{
+		free(fp);
 		errno = ENOMEM;
 		return NULL;
 	}
 	memset(fp->_extra, 0, sizeof(struct __sFILEX));
+	fp->_bf._base = malloc(BUFSIZ);
+	if( fp->_bf._base == NULL )
+	{
+		free(fp->_extra);
+		free(fp);
+		errno = ENOMEM;
+		return NULL;
+	}
+	fp->_bf._size = malloc(BUFSIZ);
+	fp->_flags |= __SALD;
 
 	return fp;
 }
