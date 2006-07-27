@@ -196,7 +196,7 @@ echo -n 'Checking C Compiler for bim2bin... '
 if [ x$BIM2BIN_CC = x ]; then
   echo not specified
   BIM2BIN_CC=$CC
-  echo "BIM2BIN_CC=$BIM2BIN_CC" >> $MAKEINC
+#  echo "BIM2BIN_CC=$BIM2BIN_CC" >> $MAKEINC
 else
   echo $BIM2BIN_CC
   echo "BIM2BIN_CC=$BIM2BIN_CC" >> $MAKEINC
