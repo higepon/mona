@@ -77,13 +77,31 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
 
 int VnodeManager::open(const std::string& name, int mode, bool create, dword tid, dword* fileID)
 {
-    if (create)
-    {
-        // do something. fix me.
-    }
-
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
+
+    if (create)
+    {
+        Vnode* targetDirectory = NULL;
+        int foundIndex = name.find_last_of('/');
+        if (foundIndex == name.npos)
+        {
+            targetDirectory = root_;
+        }
+        else
+        {
+            string dirPath = name.substr(1, foundIndex);
+            if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS)
+            {
+                return MONA_ERROR_ENTRY_NOT_FOUND;
+            }
+        }
+        int ret = targetDirectory->fs->create(targetDirectory, name);
+        if (MONA_SUCCESS != ret)
+        {
+            return ret;
+        }
+    }
 
     // remove first '/'. fix me
     string filename = name.substr(1, name.size() - 1);

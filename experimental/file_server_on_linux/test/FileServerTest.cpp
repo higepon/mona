@@ -269,3 +269,23 @@ void FileServerTest::testFAT12ReadDirectory()
     }
 
 }
+
+void FileServerTest::testFAT12ReadDirectoryNG()
+{
+    // readdir NG
+    monapi_cmemoryinfo* mi = monapi_call_file_read_directory2("/fd/HUGA/HOGE", MONAPI_FALSE);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("readdir /fd/HUGA/HOGE mi == NULL", (int)mi, NULL);
+}
+
+void FileServerTest::testFAT12ReadFileNG()
+{
+    {
+        dword fileID = monapi_call_file_open2("/fd/NONE.TXT");
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file open", (int)fileID, (int)MONA_FAILURE);
+    }
+
+    {
+        dword fileID = monapi_call_file_open2("/fd/APPS/NONE.TXT");
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file open", (int)fileID, (int)MONA_FAILURE);
+    }
+}

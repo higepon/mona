@@ -111,6 +111,17 @@ int FAT12FileSystem::open(Vnode* file, int mode)
     return MONA_SUCCESS;
 }
 
+int FAT12FileSystem::create(Vnode* dir, const string& file)
+{
+    Directory* p = (Directory*)dir;
+    int entry = p->newFile((byte*)file.c_str(), 0);
+    if (-1 == entry)
+    {
+        return MONA_FAILURE;
+    }
+    return MONA_SUCCESS;
+}
+
 int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 {
     if (file->type != Vnode::REGULAR) return MONA_FAILURE;

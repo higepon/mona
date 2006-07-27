@@ -70,6 +70,12 @@ int ISO9660FileSystem::open(Vnode* file, int mode)
     return MONA_SUCCESS;
 }
 
+int ISO9660FileSystem::create(Vnode* dir, const string& file)
+{
+    return MONA_FAILURE;
+}
+
+
 int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 {
     Entry* fileEntry = (Entry*)file->fnode;
