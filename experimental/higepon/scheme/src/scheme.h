@@ -21,6 +21,7 @@
 #include "PrimitiveProcedures/Car.h"
 #include "PrimitiveProcedures/Cdr.h"
 #include "PrimitiveProcedures/Cons.h"
+#include "PrimitiveProcedures/Display.h"
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

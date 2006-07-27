@@ -4,7 +4,6 @@ using namespace monash;
 
 Begin::Begin(Objects* actions) : actions_(actions)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
 }
 
 Begin::~Begin()
@@ -13,8 +12,12 @@ Begin::~Begin()
 
 std::string Begin::toString()
 {
-    Objects::iterator o = actions_->begin();
-    return "begin: " + (*o)->toString();
+    std::string ret = "begin:";
+    for (Objects::iterator it = actions_->begin(); it != actions_->end(); it++)
+    {
+        ret += "[" + (*it)->toString() + "]";
+    }
+    return ret;
 }
 
 int Begin::type() const
@@ -24,6 +27,5 @@ int Begin::type() const
 
 Object* Begin::eval(Environment* env)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return evalSequence(this->actions(), env);
 }

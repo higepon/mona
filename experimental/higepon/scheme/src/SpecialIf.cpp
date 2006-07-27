@@ -14,7 +14,7 @@ SpecialIf::~SpecialIf()
 
 std::string SpecialIf::toString()
 {
-    return "if (" + predicate_->toString() + ") " + consequent_->toString() + ":" + alternative_->toString();
+    return "if (" + predicate_->toString() + ") {" + consequent_->toString() + "}else{" + alternative_->toString() + "}";
 }
 
 int SpecialIf::type() const

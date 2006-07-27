@@ -9,11 +9,12 @@
 
 namespace monash {
 
+typedef std::pair<Object*, Objects*> Clause;
+typedef std::vector<Clause*> Clauses;
+
 class Cond : public Object
 {
 public:
-    typedef std::pair<Object*, Objects*> Clause;
-    typedef std::vector<Clause*> Clauses;
     Cond(Clauses* clauses, Objects* elseActions);
     virtual ~Cond();
 

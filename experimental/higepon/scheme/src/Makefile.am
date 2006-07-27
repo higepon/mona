@@ -31,6 +31,10 @@ Cond.cpp\
 Cond.h\
 Pair.cpp\
 Pair.h\
+And.cpp\
+And.h\
+Or.cpp\
+Or.h\
 Application.cpp\
 Application.h\
 Parser.cpp\
@@ -50,6 +54,8 @@ PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Car.h\
 PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
+PrimitiveProcedures/Display.cpp\
+PrimitiveProcedures/Display.h\
 scheme.h\
 scheme.cpp\
 load.cpp

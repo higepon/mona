@@ -35,8 +35,6 @@ bool isPrimitiveProcedure(Object* p)
 
 Object* apply(Object* procedure, Objects* arguments)
 {
-    // fix me
-    // if primitive procedure
     if (isCompoundProcedure(procedure))
     {
         Procedure* p = (Procedure*)procedure;

@@ -34,6 +34,8 @@ public:
         PAIR,
         APPLICATION,
         PRIMITIVE_PROCEDURE,
+        AND,
+        OR,
     };
 };
 

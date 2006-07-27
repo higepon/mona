@@ -59,6 +59,94 @@ int Translator::translateIf(Node* node, Object** object)
     return SUCCESS;
 }
 
+int Translator::translateCond(Node* node, Object** object)
+{
+    Clauses* clauses = new Clauses;
+    Objects* elseActions = NULL;
+    for (int i = 1; i < node->nodes.size(); i++)
+    {
+        Node* n = node->nodes[i];
+        if (n->nodes.size() < 2) return SYNTAX_ERROR;
+        if (i == node->nodes.size() - 1 && n->nodes[0]->type == Node::SYMBOL && n->nodes[0]->text == "else")
+        {
+            elseActions = new Objects;
+            for (int j = 1; j < n->nodes.size(); j++)
+            {
+                Object * action;
+                int ret = translate(n->nodes[j], &action);
+                if (ret != SUCCESS) return ret;
+                elseActions->push_back(action);
+            }
+        }
+        else
+        {
+            // (cond (1 => hoge))
+            if (n->nodes.size() == 3 && n->nodes[1]->type == Node::SYMBOL && n->nodes[1]->text == "=>")
+            {
+                Object* cond;
+                int ret = translate(n->nodes[0], &cond);
+                if (ret != SUCCESS) return ret;
+                Object* action;
+                ret = translate(n->nodes[2], &action);
+                if (ret != SUCCESS) return ret;
+                Objects* arguments = new Objects;
+                arguments->push_back(cond);
+                Object* application = new Application(action, arguments);
+                Objects* actions = new Objects;
+                actions->push_back(application);
+                clauses->push_back(new Clause(cond, actions));
+            }
+            else
+            {
+                Object* cond;
+                int ret = translate(n->nodes[0], &cond);
+                if (ret != SUCCESS) return ret;
+                Objects* actions = new Objects;
+                for (int j = 1; j < n->nodes.size(); j++)
+                {
+                    Object * action;
+                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+                    ret = translate(n->nodes[j], &action);
+                    if (ret != SUCCESS) return ret;
+                    actions->push_back(action);
+                }
+                clauses->push_back(new Clause(cond, actions));
+            }
+        }
+    }
+    *object = new Cond(clauses, elseActions);
+    return SUCCESS;
+}
+
+int Translator::translateAnd(Node* node, Object** object)
+{
+    Objects* objects = new Objects;
+    for (int i = 1; i < node->nodes.size(); i++)
+    {
+        Object * object;
+        int ret = translate(node->nodes[i], &object);
+        if (ret != SUCCESS) return ret;
+        objects->push_back(object);
+    }
+    *object = new And(objects);
+    return SUCCESS;
+}
+
+
+int Translator::translateOr(Node* node, Object** object)
+{
+    Objects* objects = new Objects;
+    for (int i = 1; i < node->nodes.size(); i++)
+    {
+        Object * object;
+        int ret = translate(node->nodes[i], &object);
+        if (ret != SUCCESS) return ret;
+        objects->push_back(object);
+    }
+    *object = new Or(objects);
+    return SUCCESS;
+}
+
 int Translator::translateBegin(Node* node, Object** object)
 {
     if (node->nodes.size() <= 1) return SYNTAX_ERROR;
@@ -145,6 +233,18 @@ int Translator::translate(Node* node, Object** object)
         {
             return translateLambda(node, object);
         }
+        else if (function->text == "and")
+        {
+            return translateAnd(node, object);
+        }
+        else if (function->text == "or")
+        {
+            return translateOr(node, object);
+        }
+        else if (function->text == "cond")
+        {
+            return translateCond(node, object);
+        }
         else
         {
             return translateApplication(node, object);
@@ -152,7 +252,6 @@ int Translator::translate(Node* node, Object** object)
     }
     else
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         return translateApplication(node, object);
     }
     return SYNTAX_ERROR;

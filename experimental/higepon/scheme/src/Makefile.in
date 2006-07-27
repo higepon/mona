@@ -52,9 +52,10 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
 	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
-	Pair.$(OBJEXT) Application.$(OBJEXT) Parser.$(OBJEXT) \
-	Tokenizer.$(OBJEXT) Node.$(OBJEXT) Translator.$(OBJEXT) \
-	Plus.$(OBJEXT) Cons.$(OBJEXT) Car.$(OBJEXT) Cdr.$(OBJEXT) \
+	Pair.$(OBJEXT) And.$(OBJEXT) Or.$(OBJEXT) \
+	Application.$(OBJEXT) Parser.$(OBJEXT) Tokenizer.$(OBJEXT) \
+	Node.$(OBJEXT) Translator.$(OBJEXT) Plus.$(OBJEXT) \
+	Cons.$(OBJEXT) Car.$(OBJEXT) Cdr.$(OBJEXT) Display.$(OBJEXT) \
 	scheme.$(OBJEXT) load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
@@ -176,6 +177,10 @@ Cond.cpp\
 Cond.h\
 Pair.cpp\
 Pair.h\
+And.cpp\
+And.h\
+Or.cpp\
+Or.h\
 Application.cpp\
 Application.h\
 Parser.cpp\
@@ -195,6 +200,8 @@ PrimitiveProcedures/Car.cpp\
 PrimitiveProcedures/Car.h\
 PrimitiveProcedures/Cdr.cpp\
 PrimitiveProcedures/Cdr.h\
+PrimitiveProcedures/Display.cpp\
+PrimitiveProcedures/Display.h\
 scheme.h\
 scheme.cpp\
 load.cpp
@@ -294,6 +301,12 @@ Cdr.o: PrimitiveProcedures/Cdr.cpp
 
 Cdr.obj: PrimitiveProcedures/Cdr.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cdr.obj `if test -f 'PrimitiveProcedures/Cdr.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cdr.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cdr.cpp'; fi`
+
+Display.o: PrimitiveProcedures/Display.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Display.o `test -f 'PrimitiveProcedures/Display.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Display.cpp
+
+Display.obj: PrimitiveProcedures/Display.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Display.obj `if test -f 'PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Display.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
