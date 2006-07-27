@@ -29,7 +29,10 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdarg/stdarg.c private/uitosn.c private/itos.c \
 	  private/ftos.c private/strcpy2.c private/memswap.c \
 	  private/logprintf.c \
-	  fenv/fegetenv.c \
+	  fenv/feclearexcept.c fenv/fegetexceptflag.c fenv/feraiseexcept.c \
+	  fenv/fesetexceptflag.c fenv/fetestexcept.c fenv/fegetround.c \
+	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
+	  fenv/feholdexcept.c \
 #	  inttypes/imaxdiv.c \
 #	  crt/crt.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
