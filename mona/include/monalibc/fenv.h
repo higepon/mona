@@ -42,28 +42,53 @@ extern "C" {
 
 typedef struct
 {
-	unsigned short int __control;
-	unsigned short int __status;
+  unsigned short __control_word;
+  unsigned short __unused0;
+  unsigned short __status_word;
+  unsigned short __unused1;
+  unsigned short __tag_word;
+  unsigned short __unused2;  
+  unsigned int	 __ip_offset;    /* instruction pointer offset */
+  unsigned short __ip_selector;  
+  unsigned short __opcode;
+  unsigned int	 __data_offset;
+  unsigned short __data_selector;  
+  unsigned short __unused3;
 } fenv_t;
+
+#define FE_PC64_ENV ((const fenv_t *)-1)
+#define FE_PC53_ENV ((const fenv_t *)-2)
+#define FE_DFL_ENV ((const fenv_t *)0)
+
+
+#define FE_INEXACT	0x0001
+#define FE_DENORMAL	0x0002
+#define FE_DIVBYZERO	0x0004
+#define FE_UNDERFLOW	0x0008
+#define FE_OVERFLOW	0x0010
+#define FE_INVALID	0x0020
+#define FE_ALL_EXCEPT	0x002F
+
+#define FE_TONEAREST	0x0000
+#define FE_TOWARDZERO	0x0400
+#define FE_UPWARD	0x0800
+#define FE_DOWNWARD	0x0c00
 
 typedef unsigned short fexcept_t;
 
-#define FE_INEXACT	0x0001
-#define FE_DIVBYZERO	0x0002
-#define FE_UNDERFLOW	0x0004
-#define FE_OVERFLOW	0x0008
-#define FE_INVALID	0x0010
-#define FE_ALL_EXCEPT	0x001F
+extern int feclearexcept(int);
+extern int fegetexceptflag(fexcept_t *, int);
+extern int feraiseexcept(int);
+extern int fesetexceptflag(const fexcept_t *, int);
+extern int fetestexcept(int);
 
-#define FE_TONEAREST	0x0001
-#define FE_TOWARDZERO	0x0002
-#define FE_UPWARD	0x0003
-#define FE_DOWNWARD	0x0004
-
-extern const fenv_t _FE_DFL_ENV;
-#define FE_DFL_ENV &_FE_DFL_ENV
-
+extern int fegetround(void);
 extern int fesetround(int);
+
+extern int fegetenv(fenv_t *);
+extern int fesetenv(const fenv_t *);
+extern int feupdateenv(const fenv_t *);
+extern int feholdexcept(fenv_t *);
 
 #ifdef __cplusplus
 }
