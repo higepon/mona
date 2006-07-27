@@ -22,6 +22,9 @@
 #include "PrimitiveProcedures/Cdr.h"
 #include "PrimitiveProcedures/Cons.h"
 #include "PrimitiveProcedures/Display.h"
+#include "PrimitiveProcedures/NumberP.h"
+#include "PrimitiveProcedures/StringP.h"
+#include "PrimitiveProcedures/StringToNumber.h"
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

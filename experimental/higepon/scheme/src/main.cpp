@@ -50,8 +50,9 @@ int main(int argc, char *argv[])
     environment->defineVariable(new Variable("car"), new Car());
     environment->defineVariable(new Variable("cdr"), new Cdr());
     environment->defineVariable(new Variable("display"), new Display());
+    environment->defineVariable(new Variable("string?"), new StringP());
+    environment->defineVariable(new Variable("number?"), new NumberP());
+    environment->defineVariable(new Variable("string->number"), new StringToNumber());
     object->eval(environment);
-//    display(object->eval(environment));
-//    printf("%s", environment->toString().c_str());
     return 0;
 }
