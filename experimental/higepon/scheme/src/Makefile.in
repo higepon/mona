@@ -52,11 +52,12 @@ am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
 	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
 	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
 	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
-	Pair.$(OBJEXT) And.$(OBJEXT) Or.$(OBJEXT) \
-	Application.$(OBJEXT) Parser.$(OBJEXT) Tokenizer.$(OBJEXT) \
-	Node.$(OBJEXT) Translator.$(OBJEXT) Plus.$(OBJEXT) \
-	Cons.$(OBJEXT) Car.$(OBJEXT) Cdr.$(OBJEXT) Display.$(OBJEXT) \
-	StringP.$(OBJEXT) NumberP.$(OBJEXT) StringToNumber.$(OBJEXT) \
+	Pair.$(OBJEXT) And.$(OBJEXT) Or.$(OBJEXT) Let.$(OBJEXT) \
+	LetAsterisk.$(OBJEXT) Application.$(OBJEXT) Parser.$(OBJEXT) \
+	Tokenizer.$(OBJEXT) Node.$(OBJEXT) Translator.$(OBJEXT) \
+	Plus.$(OBJEXT) Cons.$(OBJEXT) Car.$(OBJEXT) Cdr.$(OBJEXT) \
+	Display.$(OBJEXT) StringP.$(OBJEXT) NumberP.$(OBJEXT) \
+	NumberEqual.$(OBJEXT) StringToNumber.$(OBJEXT) \
 	scheme.$(OBJEXT) load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
@@ -182,6 +183,10 @@ And.cpp\
 And.h\
 Or.cpp\
 Or.h\
+Let.cpp\
+Let.h\
+LetAsterisk.cpp\
+LetAsterisk.h\
 Application.cpp\
 Application.h\
 Parser.cpp\
@@ -207,6 +212,8 @@ PrimitiveProcedures/StringP.cpp\
 PrimitiveProcedures/StringP.h\
 PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
+PrimitiveProcedures/NumberEqual.cpp\
+PrimitiveProcedures/NumberEqual.h\
 PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\
@@ -326,6 +333,12 @@ NumberP.o: PrimitiveProcedures/NumberP.cpp
 
 NumberP.obj: PrimitiveProcedures/NumberP.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberP.obj `if test -f 'PrimitiveProcedures/NumberP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberP.cpp'; fi`
+
+NumberEqual.o: PrimitiveProcedures/NumberEqual.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberEqual.o `test -f 'PrimitiveProcedures/NumberEqual.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberEqual.cpp
+
+NumberEqual.obj: PrimitiveProcedures/NumberEqual.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberEqual.obj `if test -f 'PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberEqual.cpp'; fi`
 
 StringToNumber.o: PrimitiveProcedures/StringToNumber.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringToNumber.o `test -f 'PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringToNumber.cpp

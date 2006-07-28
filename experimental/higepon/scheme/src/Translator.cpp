@@ -188,6 +188,70 @@ int Translator::translateLambda(Node* node, Object** object)
     return SUCCESS;
 }
 
+int Translator::translateLet(Node* node, Object** object)
+{
+    if (node->nodes.size() < 3) return SYNTAX_ERROR;
+    if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
+
+    Variables* variables = new Variables;
+    Objects* values = new Objects;
+    Node::Nodes* parameterNodes = &node->nodes[1]->nodes;
+    for (int i = 0; i < parameterNodes->size(); i++)
+    {
+        Node* parameter = parameterNodes->at(i);
+        if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
+        if (parameter->nodes[0]->type != Node::SYMBOL) return SYNTAX_ERROR;
+        variables->push_back(new Variable(parameter->nodes[0]->text));
+        Object* value;
+        int ret = translate(parameter->nodes[1], &value);
+        if (ret != SUCCESS) return ret;
+        values->push_back(value);
+    }
+
+    Objects* body = new Objects;
+    for (int i = 2; i < node->nodes.size(); i++)
+    {
+        Object* o;
+        int ret = translate(node->nodes[i], &o);
+        if (ret != SUCCESS) return ret;
+        body->push_back(o);
+    }
+    *object = new Let(body, variables, values);
+    return SUCCESS;
+}
+
+int Translator::translateLetAsterisk(Node* node, Object** object)
+{
+    if (node->nodes.size() < 3) return SYNTAX_ERROR;
+    if (node->nodes[1]->type != Node::NODES) return SYNTAX_ERROR;
+
+    Variables* variables = new Variables;
+    Objects* values = new Objects;
+    Node::Nodes* parameterNodes = &node->nodes[1]->nodes;
+    for (int i = 0; i < parameterNodes->size(); i++)
+    {
+        Node* parameter = parameterNodes->at(i);
+        if (parameter->type != Node::NODES || parameter->nodes.size() != 2) return SYNTAX_ERROR;
+        if (parameter->nodes[0]->type != Node::SYMBOL) return SYNTAX_ERROR;
+        variables->push_back(new Variable(parameter->nodes[0]->text));
+        Object* value;
+        int ret = translate(parameter->nodes[1], &value);
+        if (ret != SUCCESS) return ret;
+        values->push_back(value);
+    }
+
+    Objects* body = new Objects;
+    for (int i = 2; i < node->nodes.size(); i++)
+    {
+        Object* o;
+        int ret = translate(node->nodes[i], &o);
+        if (ret != SUCCESS) return ret;
+        body->push_back(o);
+    }
+    *object = new LetAsterisk(body, variables, values);
+    return SUCCESS;
+}
+
 int Translator::translateApplication(Node* node, Object** object)
 {
     Object* f;
@@ -226,7 +290,6 @@ int Translator::translate(Node* node, Object** object)
         }
         else if (function->text == "begin")
         {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return translateBegin(node, object);
         }
         else if (function->text == "lambda")
@@ -244,6 +307,14 @@ int Translator::translate(Node* node, Object** object)
         else if (function->text == "cond")
         {
             return translateCond(node, object);
+        }
+        else if (function->text == "let")
+        {
+            return translateLet(node, object);
+        }
+        else if (function->text == "let*")
+        {
+            return translateLetAsterisk(node, object);
         }
         else
         {

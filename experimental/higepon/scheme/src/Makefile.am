@@ -35,6 +35,10 @@ And.cpp\
 And.h\
 Or.cpp\
 Or.h\
+Let.cpp\
+Let.h\
+LetAsterisk.cpp\
+LetAsterisk.h\
 Application.cpp\
 Application.h\
 Parser.cpp\
@@ -60,6 +64,8 @@ PrimitiveProcedures/StringP.cpp\
 PrimitiveProcedures/StringP.h\
 PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
+PrimitiveProcedures/NumberEqual.cpp\
+PrimitiveProcedures/NumberEqual.h\
 PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\

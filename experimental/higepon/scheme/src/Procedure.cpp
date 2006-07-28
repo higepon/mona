@@ -15,7 +15,7 @@ Procedure::Procedure(Lambda* lamba, Environment* env) : env_(env)
 
 Procedure::~Procedure()
 {
-    delete parameters_;
+//    delete parameters_;
 }
 
 std::string Procedure::toString()

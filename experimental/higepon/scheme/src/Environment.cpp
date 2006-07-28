@@ -11,7 +11,7 @@ Environment::Environment()
 
 Environment::~Environment()
 {
-    delete frames_;
+//    delete frames_;
 }
 
 void Environment::setVaribale(Variable* variable, Object* value)
@@ -42,11 +42,19 @@ void Environment::extend(Variables* variables, Objects* objects)
 
 Object* Environment::lookupVariableValue(Variable* variable)
 {
-    for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
+//     for (Frames::iterator frame = frames_->begin(); frame != frames_->end(); frame++)
+//     {
+//         Object* found = (*frame)->lookup(variable);
+//         if (NULL != found) return found;
+//     }
+    int size = frames_->size();
+    for (int i = size - 1; i >= 0; i--)
     {
-        Object* found = (*frame)->lookup(variable);
+        Frame* frame = frames_->at(i);
+        Object* found = frame->lookup(variable);
         if (NULL != found) return found;
     }
+
 
     printf("unbound variable %s \n", variable->toString().c_str());
     return NULL;

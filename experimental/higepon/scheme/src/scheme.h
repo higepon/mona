@@ -25,6 +25,7 @@
 #include "PrimitiveProcedures/NumberP.h"
 #include "PrimitiveProcedures/StringP.h"
 #include "PrimitiveProcedures/StringToNumber.h"
+#include "PrimitiveProcedures/NumberEqual.h"
 
 monash::Object* eval(monash::Object* exp, monash::Environment* env);
 monash::Object* evalSequence(monash::Objects* exps, monash::Environment* env);

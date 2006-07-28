@@ -36,6 +36,8 @@ public:
         PRIMITIVE_PROCEDURE,
         AND,
         OR,
+        LET,
+        LET_ASTERISK,
     };
 };
 

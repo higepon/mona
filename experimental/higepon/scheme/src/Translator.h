@@ -15,6 +15,8 @@
 #include "Definition.h"
 #include "Application.h"
 #include "Cond.h"
+#include "Let.h"
+#include "LetAsterisk.h"
 
 namespace monash {
 
@@ -34,6 +36,8 @@ public:
     static int translateCond(Node* node, Object** object);
     static int translateBegin(Node* node, Object** object);
     static int translateLambda(Node* node, Object** object);
+    static int translateLet(Node* node, Object** object);
+    static int translateLetAsterisk(Node* node, Object** object);
     static int translateApplication(Node* node, Object** object);
     enum
     {
