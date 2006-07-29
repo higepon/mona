@@ -387,12 +387,12 @@ int monapi_call_change_directory(const char* dest)
     return msg.arg2;
 }
 
-dword monapi_call_file_open2(const char* file)
+dword monapi_call_file_open2(const char* file, MONAPI_BOOL create)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_OPEN, 0, 0, 0, file) != 0)
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_OPEN, create, 0, 0, file) != 0)
     {
         return MONA_FAILURE;
     }

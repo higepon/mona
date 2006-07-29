@@ -113,8 +113,11 @@ int FAT12FileSystem::open(Vnode* file, int mode)
 
 int FAT12FileSystem::create(Vnode* dir, const string& file)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     Directory* p = (Directory*)dir;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     int entry = p->newFile((byte*)file.c_str(), 0);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (-1 == entry)
     {
         return MONA_FAILURE;

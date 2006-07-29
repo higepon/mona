@@ -53,7 +53,7 @@ extern MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle);
 extern MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled);
 extern MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled);
 extern dword monapi_call_file_open(const char* file);
-extern dword monapi_call_file_open2(const char* file);
+extern dword monapi_call_file_open2(const char* file, MONAPI_BOOL create);
 extern monapi_cmemoryinfo* monapi_call_file_read_data2(dword fileID, dword size);
 extern int monapi_call_file_seek2(dword fileID, dword offset, dword origin);
 extern dword monapi_call_file_get_file_size(dword id);

@@ -77,11 +77,13 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
 
 int VnodeManager::open(const std::string& name, int mode, bool create, dword tid, dword* fileID)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
 
     if (create)
     {
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Vnode* targetDirectory = NULL;
         int foundIndex = name.find_last_of('/');
         if (foundIndex == name.npos)
@@ -91,12 +93,16 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
         else
         {
             string dirPath = name.substr(1, foundIndex);
+            printf("******* [%s]%s %s:%d\n", dirPath.c_str(), __func__, __FILE__, __LINE__);fflush(stdout);// debug
             if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS)
             {
+                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 return MONA_ERROR_ENTRY_NOT_FOUND;
             }
         }
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         int ret = targetDirectory->fs->create(targetDirectory, name);
+        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (MONA_SUCCESS != ret)
         {
             return ret;

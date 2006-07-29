@@ -127,7 +127,8 @@ void FileServer::messageLoop()
         {
             dword tid = msg.from; // temporary
             dword fildID;
-            int ret = vmanager_->open(msg.str, 0, false, tid, &fildID);
+            bool create = msg.arg1 == MONAPI_TRUE;
+            int ret = vmanager_->open(msg.str, 0, create, tid, &fildID);
             Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
             break;
         }
