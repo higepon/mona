@@ -176,26 +176,34 @@ echo -n 'Checking C# compiler... '
 DOTNET_TYPE=dotnet
 [ "x$CSC" = x ] && { CSC=`search_csc`; }
 [ "x$CSC" = x ] && { CSC=mcs; DOTNET_TYPE=mono; }
-#CSC=`which "$CSC"`
-[ "x$CSC" = x ] && { echo 'C# compiler not found'; exit 1; }
-echo "ok"
-echo "CSC=$CSC" >> $MAKEINC
+CSC=`which "$CSC"`
+[ "x$CSC" = x ] && { DOTNET_TYPE=nocsc; }
 case $DOTNET_TYPE in
   dotnet)
-    echo "NETRT=" >> $MAKEINC
+    echo "ok"
     ;;
   mono)
     MONO=`which mono`
-    [ "x$MONO" = x ] && { 'Mono runtime not found...skip';echo "SKIP_DOTNET=1">> $MAKEINC;}
-    echo "NETRT=$MONO" >> $MAKEINC
+    if [ "x$MONO" = x ] 
+    then
+      echo 'Mono runtime not found...skip'
+      CSC=""
+    else
+      echo "ok"
+    fi
+    ;;
+  nocsc)
+    echo ' not found'
     ;;
 esac
+echo "CSC=$CSC" >> $MAKEINC
+echo "NETRT=$MONO" >> $MAKEINC
 
 echo -n 'Checking C Compiler for bim2bin... '
 #if [ x$BIM2BIN_CC == x ]; then
 if [ x$BIM2BIN_CC = x ]; then
   echo not specified
-  BIM2BIN_CC=$CC
+#  BIM2BIN_CC=$CC
 #  echo "BIM2BIN_CC=$BIM2BIN_CC" >> $MAKEINC
 else
   echo $BIM2BIN_CC

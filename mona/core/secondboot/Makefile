@@ -11,7 +11,8 @@ ILOPT  = /OPT:1
 
 all: $(TARGET)
 
-ifeq ($(SKIP_DOTNET),1)
+#ifeq ($(SKIP_DOTNET),1)
+ifndef CSC
 $(TARGET): default_secondboot.asm
 	$(NASM) $< -o $@ -l secondboot.lst
 
