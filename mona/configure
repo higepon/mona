@@ -99,7 +99,7 @@ CYGWIN)
 esac
 
 export MINGWPREFIX
-(cd tool/fat_write && MONADIR=$script_dir ./configure --prefix=$script_dir/local) || exit 1
+(cd tool/fat_write && ./configure MONADIR=$script_dir --prefix=$script_dir/local) || exit 1
 (cd tool/t5lzma && ./configure) || exit 1
 
 echo "HOSTDEF=-DHOST_$HOST" > $MAKEINC
