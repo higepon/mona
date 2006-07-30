@@ -93,6 +93,7 @@ MINGW)
   ;;
 CYGWIN)
   echo 'Cygwin'
+  CSCFLAGS=/o
   EXEENT=.exe
   ;;
 esac
@@ -115,6 +116,7 @@ CXXFLAGS=$(CFLAGS) -fno-exceptions -fno-rtti
 NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32
 ' >> $MAKEINC
 
+[ x$CSCFLAGS != x ] && echo "CSCFLAGS=$CSCFLAGS" >> $MAKEINC
 [ x$EXEENT != x ] && echo "EXEENT=$EXEENT" >> $MAKEINC
 [ x$MINGWPREFIX != x ] && echo "MINGWPREFIX=$MINGWPREFIX" >> $MAKEINC
 
