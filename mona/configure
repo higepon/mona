@@ -90,9 +90,11 @@ case $HOST in
 MINGW)
   echo 'Mingw32'
   TOOLPREFIX=$MINGWPREFIX
+  EXEENT=.oo
   ;;
 CYGWIN)
   echo 'Cygwin'
+  EXEENT=.exe
   ;;
 esac
 
@@ -114,6 +116,7 @@ CXXFLAGS=$(CFLAGS) -fno-exceptions -fno-rtti
 NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32
 ' >> $MAKEINC
 
+[ x$EXEENT != x ] && echo "EXEENT=$EXEENT" >> $MAKEINC
 [ x$MINGWPREFIX != x ] && echo "MINGWPREFIX=$MINGWPREFIX" >> $MAKEINC
 
 echo -n 'Checking gcc... '
