@@ -94,7 +94,7 @@ MINGW)
 CYGWIN)
   echo 'Cygwin'
   CSCFLAGS=/o
-  EXEENT=.exe
+  EXEEXT=.exe
   ;;
 esac
 
