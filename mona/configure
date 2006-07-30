@@ -117,7 +117,7 @@ NFLAGS=-I $(MONADIR)/include/ -I$(MONADIR)/include/monalibc -f win32
 ' >> $MAKEINC
 
 [ x$CSCFLAGS != x ] && echo "CSCFLAGS=$CSCFLAGS" >> $MAKEINC
-[ x$EXEENT != x ] && echo "EXEENT=$EXEENT" >> $MAKEINC
+[ x$EXEEXT != x ] && echo "EXEEXT=$EXEEXT" >> $MAKEINC
 [ x$MINGWPREFIX != x ] && echo "MINGWPREFIX=$MINGWPREFIX" >> $MAKEINC
 
 echo -n 'Checking gcc... '
