@@ -90,7 +90,6 @@ case $HOST in
 MINGW)
   echo 'Mingw32'
   TOOLPREFIX=$MINGWPREFIX
-  EXEENT=.oo
   ;;
 CYGWIN)
   echo 'Cygwin'
