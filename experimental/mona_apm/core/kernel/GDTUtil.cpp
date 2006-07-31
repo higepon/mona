@@ -106,6 +106,16 @@ void GDTUtil::setup() {
     /* USER SS 0-4GB */
     setSegDesc(&g_gdt[7], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
 
+#if 1
+    /* APM CS */
+    setSegDesc(&g_gdt[8], g_apmInfo->cs32*16, 0xFFFFF,//g_apmInfo->cs32_len*16,
+			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
+
+    /* APM DS */
+    setSegDesc(&g_gdt[9], g_apmInfo->ds * 16, g_apmInfo->ds_len*16,
+			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
+#endif
+
     /* lgdt */
     GDTR gdtr;
     gdtr.base  = (dword)g_gdt;

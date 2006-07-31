@@ -71,6 +71,7 @@
 #include "Scheduler.h"
 #include "monaboot.h"
 #include "RTC.h"
+#include "apm.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -97,6 +98,10 @@ void startKernel()
 {
     /* kernel memory range */
     km.initialize(0x200000, 0x7fffff);
+
+    /* APM */
+    g_apmInfo = new APMInfo;
+    memcpy(g_apmInfo, (APMInfo*)0x900, sizeof(APMInfo));
 
     /* set segment */
     GDTUtil::setup();
@@ -198,6 +203,18 @@ void startKernel()
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
     g_console->printf("VESA: %dx%d %dbpp\n", g_vesaDetail->xResolution, g_vesaDetail->yResolution, g_vesaDetail->bitsPerPixel);
+
+#if 1
+    /* APM Information */
+    g_console->printf("APM Version: %x\n", g_apmInfo->version);
+    g_console->printf("APM CS:EIP: %x:%x\n", g_apmInfo->cs32, g_apmInfo->eip);
+    g_console->printf("APM DS: %x\n", g_apmInfo->ds);
+    g_console->printf("APM CS length: %x\n", g_apmInfo->cs32_len);
+    g_console->printf("APM DS length: %x\n", g_apmInfo->ds_len);
+#endif
+//	for(;;){}
+    apm_init();
+    g_console->printf("APM State: %x\n", apm_get_power_state(1));
 
     /* shared memory object */
     SharedMemoryObject::setup();

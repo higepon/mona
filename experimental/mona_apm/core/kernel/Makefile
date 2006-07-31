@@ -40,14 +40,15 @@ SOURCES      = cstart.cpp            \
                Scheduler.cpp         \
                RTC.cpp               \
                Messenger.cpp         \
-               MemoryAllocator.cpp
+               MemoryAllocator.cpp   \
+               apm.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) mode12h.o ihandler.o core.o
-	$(LD) -e $(SYMPREFIX)cstart --Map kernel.map $(LFLAGS) -o $@ $(OBJECTS) mode12h.o ihandler.o core.o
+$(TARGET): $(OBJECTS) mode12h.o ihandler.o core.o apm_bios.o
+	$(LD) -e $(SYMPREFIX)cstart --Map kernel.map $(LFLAGS) -o $@ $(OBJECTS) mode12h.o ihandler.o core.o apm_bios.o
 #	$(NDISASM) -u $@ > kernel.lst
 	$(STRIP) -O binary $@
 
@@ -64,6 +65,9 @@ ihandler.o: ihandler.asm
 
 core.o: core.asm
 	$(NASM) $(NFLAGS) core.asm  -o $@ -l core.lst
+
+apm_bios.o: apm_bios.asm
+	$(NASM) $(NFLAGS) apm_bios.asm  -o $@ -l core.lst
 
 doxygen:
 	$(DOXYGEN)
