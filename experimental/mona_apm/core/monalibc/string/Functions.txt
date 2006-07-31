@@ -1,0 +1,31 @@
+文字列操作 <string.h>
+Name		Standards	Author			License		Status
+-------------------------------------------------------------------------------
+memccpy		BSD		Yume
+memchr		ISO C89		Yume
+memcpy		ISO C89		Yume
+memcmp		ISO C89		Higepon			MIT/X
+memmove		ISO C89		Higepon			MIT/X
+memrchr		GNU		Yume
+memset		ISO C89		Yume
+nidastrfind	Nidalibc	Yume
+strcat		ISO C89		Yume
+strchr		ISO C89		Yume
+strcmp		ISO C89		Yume
+strcpy		ISO C89		Higepon			MIT/X
+strcspn		ISO C89		Higepon			MIT/X
+strerror	POSIX.1		Yume
+strcoll		ISO C89		Yume
+strlen		ISO C89		Yume
+strlcat		BSD		Todd C. Miller		BSD
+strlcpy		BSD		Todd C. Miller		BSD
+strncat		ISO C89		Yume
+strncmp		ISO C89		Yume
+strncpy		ISO C89		Yume
+strpbrk		ISO C89		Yume
+strrchr		ISO C89		Yume
+strspn		ISO C89		Higepon			MIT/X
+strstr		ISO C89		Yume
+strtok		ISO C89		Yume
+strtok_r	POSIX.1		Yume
+strxfrm		ISO C89		Yume

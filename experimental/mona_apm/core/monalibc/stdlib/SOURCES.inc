@@ -1,0 +1,22 @@
+SOURCES = \
+abort.c \
+abs.c \
+atof.c \
+atoi.c \
+atol.c \
+bsearch.c \
+div.c \
+getenv.c \
+labs.c \
+ldiv.c \
+llabs.c \
+mblen.c \
+mbstowcs.c \
+mbtowc.c \
+rand.cpp \
+strtod.c \
+strtol.c \
+strtoul.c \
+strtoi.c \
+wcstombs.c \
+wctomb.c \
