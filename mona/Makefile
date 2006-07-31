@@ -16,7 +16,8 @@ tools:
 	
 cores:
 	cd core/firstboot && make && make install
-ifneq ($(SKIP_DOTNET),1)
+#ifneq ($(SKIP_DOTNET),1)
+ifdef CSC
 	cd core/PEAnalyzerLib && make && make install
 	cd core/IL2Asm16 && make && make install
 endif
@@ -37,7 +38,8 @@ endif
 .PHONY: clean
 clean:
 	$(MAKE) $@ -C core/firstboot
-ifneq ($(SKIP_DOTNET),1)
+#ifneq ($(SKIP_DOTNET),1)
+ifdef CSC
 	$(MAKE) $@ -C core/PEAnalyzerLib
 	$(MAKE) $@ -C core/IL2Asm16
 endif
