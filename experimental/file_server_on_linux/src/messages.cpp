@@ -484,3 +484,14 @@ int monapi_call_file_stop_server()
     }
     return msg.arg2;
 }
+
+int monapi_call_file_write_data2(dword fileID, monapi_cmemoryinfo* mem, dword size)
+{
+    MessageInfo msg;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_WRITE, fileID, size, mem->Handle) != 0)
+    {
+        return NULL;
+    }
+    return msg.arg2;
+}

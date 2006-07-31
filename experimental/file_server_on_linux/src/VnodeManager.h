@@ -17,6 +17,7 @@ public:
     int lookup(Vnode* diretory, const std::string& file, Vnode** found, int type = Vnode::REGULAR);
     int open(const std::string& name, int mode, bool create, dword tid, dword* fileID);
     int read(dword fileID, dword size, monapi_cmemoryinfo** mem);
+    int write(dword fileID, dword size, monapi_cmemoryinfo* mem);
     int seek(dword fileID, dword offset, dword origin);
     int stat(dword fileID, Stat* st);
     int close(dword fileID);

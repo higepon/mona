@@ -75,6 +75,10 @@ int ISO9660FileSystem::create(Vnode* dir, const string& file)
     return MONA_FAILURE;
 }
 
+int ISO9660FileSystem::write(Vnode* file, struct io::Context* context)
+{
+    return MONA_ERROR_ON_ACCESS;
+}
 
 int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 {

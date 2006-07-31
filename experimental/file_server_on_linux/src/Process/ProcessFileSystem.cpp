@@ -76,6 +76,11 @@ int ProcessFileSystem::create(Vnode* dir, const string& file)
     return MONA_FAILURE;
 }
 
+int ProcessFileSystem::write(Vnode* file, struct io::Context* context)
+{
+    return MONA_ERROR_ON_ACCESS;
+}
+
 int ProcessFileSystem::read(Vnode* file, struct io::Context* context)
 {
     Pnode* p = (Pnode*)file->fnode;

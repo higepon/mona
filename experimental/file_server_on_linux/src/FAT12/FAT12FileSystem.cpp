@@ -113,11 +113,8 @@ int FAT12FileSystem::open(Vnode* file, int mode)
 
 int FAT12FileSystem::create(Vnode* dir, const string& file)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     Directory* p = (Directory*)dir->fnode;
-    printf("%s %s %s:%d\n", file.c_str(), __func__, __FILE__, __LINE__);fflush(stdout);// debug
     int entry = p->newFile((byte*)file.c_str(), 0);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (-1 == entry)
     {
         return MONA_FAILURE;
@@ -141,6 +138,20 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 
     f->seek(offset, SEEK_SET);
     f->read(memory->Data, readSize);
+    return MONA_SUCCESS;
+}
+
+int FAT12FileSystem::write(Vnode* file, struct io::Context* context)
+{
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+    if (file->type != Vnode::REGULAR) return MONA_FAILURE;
+    File* f = (File*)file->fnode;
+    monapi_cmemoryinfo* memory = context->memory;
+    dword offset = context->offset;
+    dword writeSize = context->size;
+    f->seek(offset, SEEK_SET);
+    f->write(memory->Data, writeSize);
+    f->flush();
     return MONA_SUCCESS;
 }
 
@@ -179,7 +190,6 @@ int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
     monapi_directoryinfo di;
     while (readdirInternal(di.name, &di.size, &di.attr) == MONA_SUCCESS)
     {
-        printf("%s\n", di.name);
         files.push_back(new monapi_directoryinfo(di));
     }
     deviceOff();

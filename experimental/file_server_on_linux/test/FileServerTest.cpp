@@ -56,6 +56,10 @@ void FileServerTest::testProcessReadFile()
     testProcessReadFileOnce();
 }
 
+void FileServerTest::testProcessWriteFile()
+{
+}
+
 void FileServerTest::testProcessReadFileOnce()
 {
     // readdir OK
@@ -132,6 +136,24 @@ void FileServerTest::testISO9660ReadDirectoryNG()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("readdir /HUGA/HOGE mi == NULL", (int)mi, NULL);
 }
 
+void FileServerTest::testISO9660WriteFile()
+{
+    dword fileID = monapi_call_file_open2("/MONA.CFG", MONAPI_FALSE);
+    CPPUNIT_ASSERT_MESSAGE("ISO9660 file open", fileID != MONA_FAILURE);
+    string data = "Hello Write\n";
+
+    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();
+    monapi_cmemoryinfo_create(mi, data.size(), MONAPI_FALSE);
+
+    // write
+    memcpy((void*)mi->Data, data.c_str(), mi->Size);
+    int ret = monapi_call_file_write_data2(fileID, mi, mi->Size);
+    CPPUNIT_ASSERT_MESSAGE("ISO9660 Write file", ret != MONA_SUCCESS);
+
+    // close
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
+}
 
 void FileServerTest::testISO9660ReadFile()
 {
@@ -222,6 +244,49 @@ void FileServerTest::testISO9660CreateFile()
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
 }
 
+void FileServerTest::testFAT12WriteFile()
+{
+    dword fileID = monapi_call_file_open2("/fd/WRITE.TXT", MONAPI_TRUE);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
+    string data = "Hello Write\n";
+
+    monapi_cmemoryinfo* mi = monapi_cmemoryinfo_new();
+    monapi_cmemoryinfo_create(mi, data.size(), MONAPI_FALSE);
+
+    // write
+    memcpy((void*)mi->Data, data.c_str(), mi->Size);
+    int ret = monapi_call_file_write_data2(fileID, mi, mi->Size);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 Write file", ret == MONA_SUCCESS);
+
+    // seek
+    ret = monapi_call_file_seek2(fileID, 3, 0);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file seek", ret != MONA_FAILURE);
+
+///    mi = monapi_cmemoryinfo_new();
+//    monapi_cmemoryinfo_create(mi, data.size(), MONAPI_FALSE);
+
+    // rewrite
+    memcpy((void*)mi->Data, data.c_str(), mi->Size);
+    ret = monapi_call_file_write_data2(fileID, mi, mi->Size);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 Write file", ret == MONA_SUCCESS);
+
+    // close
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
+
+    // open
+    fileID = monapi_call_file_open2("/fd/WRITE.TXT", MONAPI_FALSE);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
+
+    mi = monapi_call_file_read_data2(fileID, 15);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT 12file read", strncmp((char*)mi->Data, "HelHello Write", 14), 0);
+
+    ret = monapi_call_file_close2(fileID);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
+//    monapi_cmemoryinfo_dispose(mi);
+//    monapi_cmemoryinfo_delete(mi);
+}
 
 void FileServerTest::testFAT12ReadFile()
 {
@@ -319,5 +384,5 @@ void FileServerTest::testFAT12CreateFile()
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     dword fileID = monapi_call_file_open2("/fd/DUMMY.TXT", MONAPI_TRUE);
     printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-    CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID == MONA_FAILURE);
+    CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
 }

@@ -15,7 +15,6 @@ VnodeManager::~VnodeManager()
 
 int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, int type)
 {
-    printf("lookup file = %s %s %s:%d\n", file.c_str(),__func__, __FILE__, __LINE__);fflush(stdout);// debug
     vector<string> directories;
     split(file, '/', directories);
     int ret;
@@ -57,34 +56,27 @@ int VnodeManager::readdir(const std::string&name, monapi_cmemoryinfo** mem)
     }
 
     Vnode* dir;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (filename == "/") {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         dir = root_;
     }
     else
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (lookup(root_, filename, &dir, Vnode::DIRECTORY) != MONA_SUCCESS)
         {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             return MONA_ERROR_ENTRY_NOT_FOUND;
         }
     }
-    printf("%s %s:%d dir=%x\n", __func__, __FILE__, __LINE__, dir);fflush(stdout);// debug
     if (dir->fs->readdir(dir, mem) != MONA_SUCCESS) return MONA_FAILURE;
     return MONA_SUCCESS;
 }
 
 int VnodeManager::open(const std::string& name, int mode, bool create, dword tid, dword* fileID)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     // now fullpath only. fix me
     if (name.compare(0, 1, "/") != 0) return MONA_ERROR_INVALID_ARGUMENTS;
 
     if (create)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         Vnode* targetDirectory = NULL;
         int foundIndex = name.find_last_of('/');
         string filename = name;
@@ -95,17 +87,13 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
         else
         {
             string dirPath = name.substr(1, foundIndex - 1);
-            printf("******* [%s]%s %s:%d\n", dirPath.c_str(), __func__, __FILE__, __LINE__);fflush(stdout);// debug
             if (lookup(root_, dirPath, &targetDirectory, Vnode::DIRECTORY) != MONA_SUCCESS)
             {
-                printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                 return MONA_ERROR_ENTRY_NOT_FOUND;
             }
             filename = name.substr(foundIndex + 1, name.size() - foundIndex);
         }
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         int ret = targetDirectory->fs->create(targetDirectory, filename);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (MONA_SUCCESS != ret)
         {
             return ret;
@@ -166,6 +154,20 @@ int VnodeManager::read(dword fileID, dword size, monapi_cmemoryinfo** mem)
     }
     *mem = context->memory;
     return fileInfo->vnode->fs->read(fileInfo->vnode, context);
+}
+
+int VnodeManager::write(dword fileID, dword size, monapi_cmemoryinfo* mem)
+{
+    FileInfoMap::iterator it = fileInfoMap_.find(fileID);
+    if (it == fileInfoMap_.end())
+    {
+        return MONA_ERROR_ENTRY_NOT_FOUND;
+    }
+    io::FileInfo* fileInfo = (*it).second;
+    io::Context* context = &(fileInfo->context);
+    context->size = size;
+    context->memory = mem;
+    return fileInfo->vnode->fs->write(fileInfo->vnode, context);
 }
 
 int VnodeManager::close(dword fileID)

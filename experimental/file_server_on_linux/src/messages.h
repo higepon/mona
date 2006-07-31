@@ -52,6 +52,7 @@ extern dword monapi_call_file_open2(const char* file, MONAPI_BOOL create);
 extern monapi_cmemoryinfo* monapi_call_file_read_data2(dword fileID, dword size);
 extern dword monapi_call_file_get_file_size(dword id);
 extern dword monapi_call_file_get_file_size2(dword id);
+extern int monapi_call_file_write_data2(dword fileID, monapi_cmemoryinfo* mem, dword size);
 extern int monapi_call_file_stop_server();
 extern MONAPI_BOOL monapi_call_file_seek(dword id, dword position, dword flag);
 extern MONAPI_BOOL monapi_call_file_seek(dword id, dword position, dword flag);

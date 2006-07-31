@@ -153,6 +153,22 @@ void FileServer::messageLoop()
             }
             break;
         }
+        case MSG_VFS_FILE_WRITE:
+        {
+            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
+            dword fileID = msg.arg1;
+            monapi_cmemoryinfo* memory;
+            memory = monapi_cmemoryinfo_new();
+            memory->Handle = msg.arg3;
+            memory->Owner  = msg.from;
+            memory->Size   = msg.arg2;
+            monapi_cmemoryinfo_map(memory);
+            int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
+//            monapi_cmemoryinfo_dispose(memory);
+//            monapi_cmemoryinfo_delete(memory);
+            Message::reply(&msg, ret);
+            break;
+        }
         case MSG_VFS_FILE_CLOSE:
         {
             int ret = vmanager_->close(msg.arg1);
