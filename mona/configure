@@ -179,8 +179,7 @@ echo "NASM=$NASM" >> $MAKEINC
 echo -n 'Checking C# compiler... '
 DOTNET_TYPE=dotnet
 [ "x$CSC" = x ] && { CSC=`search_csc`; }
-[ "x$CSC" = x ] && { CSC=mcs; DOTNET_TYPE=mono; }
-#CSC=`which "$CSC"`
+[ "x$CSC" = x ] && { CSC=mcs; DOTNET_TYPE=mono; CSC=`which "$CSC"`; }
 [ "x$CSC" = x ] && { DOTNET_TYPE=nocsc; }
 case $DOTNET_TYPE in
   dotnet)
