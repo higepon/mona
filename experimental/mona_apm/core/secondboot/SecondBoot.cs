@@ -7,6 +7,7 @@ namespace Mona
 	{
 		const ushort KernelSeg = 0x0120, ConfigSeg = 0x9000, SizeAddr = 0x1100;
 		public const ushort VESAInfoAddr = 0x0800, VESAInfoDetailsAddr = 0x0830;
+		public const ushort APMInfoAddr = 0x0900;
 		
 		static void Main()
 		{
@@ -26,6 +27,11 @@ namespace Mona
 			
 			ReadConfig("MONA.CFG");
 			SetVesaMode();
+			if( !APM.InterfaceConnect32(APMInfoAddr) )
+			{
+				Console.WriteLine("APM isn't supported.");
+				for(;;) new Inline("hlt");
+			}
 			
 			WriteSize(0);
 		}
