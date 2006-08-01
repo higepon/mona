@@ -2,13 +2,11 @@ BITS 32
 %include "macro.asm"
 
 cglobal apm_bios_call
-extern _apm_ml
 extern _apm_eip
-extern _apm_cs
 
 section .text
 
-; word apm_bios_call(word fn, apm_bios_regs *regs, FARCALL_ADDR apm_entry);
+; word apm_bios_call(word fn, apm_bios_regs *regs);
 _apm_bios_call:
 	push ebx
 	push ecx
