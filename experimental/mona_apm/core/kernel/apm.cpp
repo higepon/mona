@@ -7,12 +7,12 @@
 
 typedef struct
 {
-	word ax;
-	word bx;
-	word cx;
-	word dx;
-	word si;
-	word di;
+	dword ax;
+	dword bx;
+	dword cx;
+	dword dx;
+	dword si;
+	dword di;
 }apm_bios_regs;
 
 typedef struct
@@ -103,6 +103,10 @@ word apm_get_power_state(word did)
 
 	regs.ax = 0x530C;
 	regs.bx = did;
+	regs.cx = 0;
+	regs.dx = 0;
+	regs.di = 0;
+	regs.si = 0;
 
 	g_console->printf("Calling apm function.");
 	apm_bios_call(0x530C, &regs);
