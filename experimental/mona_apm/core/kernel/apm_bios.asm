@@ -16,19 +16,21 @@ _apm_bios_call:
 	push esi
 	push ebp
 
-	mov ax, ds
-	mov gs, ax
-	mov ax, 0x40
-	mov fs, ax
+	xor eax, eax
+	xor ebx, ebx
+	xor ecx, ecx
+	xor edx, edx
+	xor edi, edi
+	xor esi, esi
 
-	mov eax, [esp+28]
+	mov ax, [esp+28]
 	mov bx, [eax+2]
 	mov cx, [eax+4]
 	mov dx, [eax+6]
 	mov si, [eax+8]
 	mov di, [eax+10]
 
-	mov eax, 0x48
+	mov eax, 0x50
 	mov ds, eax
 	mov es, eax
 	mov eax, [esp+24]
@@ -54,8 +56,8 @@ err:
 	cwde
 
 	pop ebp
-	pop edi
 	pop esi
+	pop edi
 	pop ecx
 	pop ebx
 	ret

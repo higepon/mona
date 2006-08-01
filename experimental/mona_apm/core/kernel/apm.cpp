@@ -17,27 +17,27 @@ typedef struct
 
 typedef struct
 {
-	int addr;
-	short des __attribute__((packed));
-}FARCALL_ADDR;
+	dword offset;
+	word segment __attribute__((packed));
+} apm_bios_entry;
 
 extern "C"
 {
-	FARCALL_ADDR apm_eip;
-	FARCALL_ADDR *apm_ml;
+	apm_bios_entry apm_eip;
+	apm_bios_entry *apm_ml;
 	word apm_cs;
-	word apm_bios_call(byte fn, apm_bios_regs *regs,FARCALL_ADDR apm_ent);
+	word apm_bios_call(byte fn, apm_bios_regs *regs,apm_bios_entry apm_ent);
 }
 
 void apm_init(void)
 {
 	apm_cs = g_apmInfo->cs32;
-	apm_eip.addr = g_apmInfo->eip;
-	apm_eip.des = 0x40;
+	apm_eip.offset = g_apmInfo->eip;
+	apm_eip.segment = 0x40;
 	apm_ml = &apm_eip;
 
-	g_console->printf("apm_eip = %x\n", apm_eip.addr);
-	g_console->printf("apm_des = %x\n", apm_eip.des);
+	g_console->printf("apm_eip = %x\n", apm_eip.offset);
+	g_console->printf("apm_des = %x\n", apm_eip.segment);
 	g_console->printf("apm_cs  = %x\n", apm_cs);
 	g_console->printf("apm_ml = %x\n", apm_ml);
 }
@@ -108,6 +108,6 @@ word apm_get_power_state(word did)
 	regs.bx = did;
 
 	g_console->printf("Calling apm function.");
-	apm_bios_call(0x5307, &regs, apm_eip);
+	apm_bios_call(0x530C, &regs, apm_eip);
 	return regs.cx;
 }
