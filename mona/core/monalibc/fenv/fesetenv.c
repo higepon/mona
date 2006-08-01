@@ -1,10 +1,11 @@
 #include <fenv.h>
+#include <string.h>
 
 int fesetenv(const fenv_t *f)
 {
 	fenv_t *tmp;
 
-	tmp = (fenv_t*)f;
+	memcpy(tmp, f, sizeof(fenv_t));
 
 	if( tmp == FE_PC64_ENV )
 	{
