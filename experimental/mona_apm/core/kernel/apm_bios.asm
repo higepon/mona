@@ -16,6 +16,9 @@ _apm_bios_call:
 	push esi
 	push edi
 
+	mov eax, 0x40
+	mov fs, eax
+
 	mov eax, [cs:ebp+12]
 	mov ebx, [cs:eax+4]
 	mov ecx, [cs:eax+8]
@@ -33,14 +36,16 @@ _apm_bios_call:
 	mov eax, [cs:ebp+8]
 	mov ah, 0x53
 
+cli
+	;call far [fs:_apm_eip]
 	call far [cs:_apm_eip]
+sti
 	mov ebp, 0x10
 	mov ds, ebp
 	mov es, ebp
 	mov ebp, esp
 	add ebp, 20
 	jc L_apm_bios_call_err
-
 
 	mov eax, [cs:ebp+12]
 	mov [cs:eax], eax

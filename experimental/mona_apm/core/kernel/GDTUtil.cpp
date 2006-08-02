@@ -130,16 +130,16 @@ void GDTUtil::setup() {
 
 #if 1
     /* APM 32bit CS */
-    setSegDescExt(&g_gdt[8], g_apmInfo->cs32, (g_apmInfo->cs32_len-1),
-			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0x40);
+    setSegDescExt(&g_gdt[8], g_apmInfo->cs32<<4, (g_apmInfo->cs32_len-1),
+			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0xC0);
 
     /* APM 16bit CS */
-    setSegDescExt(&g_gdt[9], g_apmInfo->cs16, (g_apmInfo->cs16_len-1),
-			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0x00);
+    setSegDescExt(&g_gdt[9], g_apmInfo->cs16<<4, (g_apmInfo->cs16_len-1),
+			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0x80);
 
     /* APM DS */
-    setSegDescExt(&g_gdt[10], g_apmInfo->ds, (g_apmInfo->ds_len-1),
-			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0x40);
+    setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->ds_len-1),
+			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0xC0);
 #endif
 
 #if 0
