@@ -214,7 +214,7 @@ void startKernel()
 #endif
 //	for(;;){}
     apm_init();
-    g_console->printf("APM State: %x\n", apm_get_power_state(1));
+    //g_console->printf("APM State: %x\n", apm_get_power_state(1));
 
     /* shared memory object */
     SharedMemoryObject::setup();

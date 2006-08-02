@@ -7,12 +7,12 @@
 
 typedef struct
 {
-	dword ax;
-	dword bx;
-	dword cx;
-	dword dx;
-	dword si;
-	dword di;
+	dword eax;
+	dword ebx;
+	dword ecx;
+	dword edx;
+	dword esi;
+	dword edi;
 }apm_bios_regs;
 
 typedef struct
@@ -24,76 +24,44 @@ typedef struct
 extern "C"
 {
 	apm_bios_entry apm_eip;
-	word apm_cs;
 	word apm_bios_call(byte fn, apm_bios_regs *regs);
 }
 
 void apm_init(void)
 {
-	apm_cs = g_apmInfo->cs32;
 	apm_eip.offset = g_apmInfo->eip;
 	apm_eip.segment = 0x40;
 
 	g_console->printf("apm_eip = %x\n", apm_eip.offset);
 	g_console->printf("apm_des = %x\n", apm_eip.segment);
-	g_console->printf("apm_cs  = %x\n", apm_cs);
 }
 
-/*
-word apm_bios_call(byte fn, apm_bios_regs *regs)
+dword apm_bios(dword fn, dword ebx, dword ecx, dword edx, dword esi, dword edi)
 {
-	word ret = 0;
+	apm_bios_regs regs;
 
-	asm volatile("push %ebp");
-	asm volatile("movl 8(%ebp), %eax");
-	asm volatile("movw 2(%eax), %bx");
-	asm volatile("movw 4(%eax), %cx");
-	asm volatile("movw 6(%eax), %dx");
-	asm volatile("movw 8(%eax), %si");
-	asm volatile("movw 10(%eax), %di");
+	regs.eax = 0x5300 | fn;
+	regs.ebx = ebx;
+	regs.ecx = ecx;
+	regs.edx = edx;
+	regs.esi = esi;
+	regs.edi = edi;
 
-	asm volatile("movl $0x40, %eax");
-	asm volatile("movl %eax, %ds");
-	asm volatile("movl %eax, %es");
-	asm volatile("movl 8(%ebp), %eax");
-	asm volatile("movb $0x53, %ah");
-
-	asm volatile("lcall *%fs:_apm_eip");
-	asm volatile("movl $0x10, %ebp");
-	asm volatile("movl %ebp, %ds");
-	asm volatile("movl %ebp, %es");
-	asm volatile("pop %ebp");
-	asm volatile("jc Lapm_bios_call_error");
-
-	asm volatile("movl 8(%ebp), %eax");
-	asm volatile("movw %ax, (%eax)");
-	asm volatile("movw %bx, 2(%eax)");
-	asm volatile("movw %cx, 4(%eax)");
-	asm volatile("movw %dx, 6(%eax)");
-	asm volatile("movw %si, 8(%eax)");
-	asm volatile("movw %di, 8(%eax)");
-	asm volatile("jmp Lapm_bios_call_end");
-
-	asm volatile("Lapm_bios_call_error:");
-	asm volatile("cbw");
-	asm volatile("cwde");
-	asm volatile("movw %ax, -4(%ebp)");
-	asm volatile("Lapm_bios_call_end:");
-	return ret;
+	return apm_bios_call(0x53|fn, &regs);
 }
-*/
 
 word apm_set_power_state(word did, word state)
 {
 	apm_bios_regs regs;
 
-	regs.ax = 0x5307;
-	regs.bx = did;
-	regs.cx = state;
-	regs.dx = 0;
-	regs.di = 0;
-	regs.si = 0;
+	regs.eax = 0x5307;
+	regs.ebx = did;
+	regs.ecx = state;
+	regs.edx = 0;
+	regs.edi = 0;
+	regs.esi = 0;
 
+	g_console->printf("Calling APM BIOS.\n");
 	return apm_bios_call(0x5307, &regs);
 }
 
@@ -101,14 +69,14 @@ word apm_get_power_state(word did)
 {
 	apm_bios_regs regs;
 
-	regs.ax = 0x530C;
-	regs.bx = did;
-	regs.cx = 0;
-	regs.dx = 0;
-	regs.di = 0;
-	regs.si = 0;
+	regs.eax = 0x530C;
+	regs.ebx = did;
+	regs.ecx = 0;
+	regs.edx = 0;
+	regs.edi = 0;
+	regs.esi = 0;
 
 	g_console->printf("Calling apm function.");
 	apm_bios_call(0x530C, &regs);
-	return regs.cx;
+	return (word)regs.ecx;
 }

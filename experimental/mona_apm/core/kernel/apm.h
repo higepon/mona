@@ -57,5 +57,6 @@ enum
 void apm_init();
 word apm_set_power_state(word did, word state);
 word apm_get_power_state(word did);
+dword apm_bios(dword fn, dword ebx, dword ecx, dword edx, dword esi, dword edi);
 
 #endif
