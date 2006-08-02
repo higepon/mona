@@ -212,9 +212,7 @@ void startKernel()
     g_console->printf("APM CS length: %x\n", g_apmInfo->cs32_len);
     g_console->printf("APM DS length: %x\n", g_apmInfo->ds_len);
 #endif
-//	for(;;){}
     apm_init();
-    //g_console->printf("APM State: %x\n", apm_get_power_state(1));
 
     /* shared memory object */
     SharedMemoryObject::setup();
