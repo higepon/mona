@@ -57,7 +57,8 @@ am_file_server_OBJECTS = file_server-IDEDriver.$(OBJEXT) \
 	file_server-SocketMessage.$(OBJEXT) \
 	file_server-cmemoryinfo.$(OBJEXT) \
 	file_server-ProcessUtil.$(OBJEXT) file_server-main.$(OBJEXT) \
-	file_server-vnode.$(OBJEXT) file_server-VnodeManager.$(OBJEXT) \
+	file_server-vnode.$(OBJEXT) file_server-dtk5s.$(OBJEXT) \
+	file_server-VnodeManager.$(OBJEXT) \
 	file_server-FileServer.$(OBJEXT) \
 	file_server-ISO9660FileSystem.$(OBJEXT) \
 	file_server-FAT12FileSystem.$(OBJEXT) \
@@ -179,6 +180,8 @@ main.cpp\
 types.h\
 vnode.h\
 vnode.cpp\
+dtk5s.cpp\
+dtk5s.h\
 VnodeManager.h\
 VnodeManager.cpp\
 FileServer.h\
@@ -320,6 +323,12 @@ file_server-vnode.o: vnode.cpp
 
 file_server-vnode.obj: vnode.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-vnode.obj `if test -f 'vnode.cpp'; then $(CYGPATH_W) 'vnode.cpp'; else $(CYGPATH_W) '$(srcdir)/vnode.cpp'; fi`
+
+file_server-dtk5s.o: dtk5s.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-dtk5s.o `test -f 'dtk5s.cpp' || echo '$(srcdir)/'`dtk5s.cpp
+
+file_server-dtk5s.obj: dtk5s.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-dtk5s.obj `if test -f 'dtk5s.cpp'; then $(CYGPATH_W) 'dtk5s.cpp'; else $(CYGPATH_W) '$(srcdir)/dtk5s.cpp'; fi`
 
 file_server-VnodeManager.o: VnodeManager.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-VnodeManager.o `test -f 'VnodeManager.cpp' || echo '$(srcdir)/'`VnodeManager.cpp

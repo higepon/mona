@@ -1,6 +1,7 @@
 #include "FileServer.h"
 
 using namespace MonAPI;
+using namespace std;
 
 #define IRQ_PRIMARY   14
 #define IRQ_SECONDARY 15
@@ -115,6 +116,23 @@ int FileServer::initializeRootFileSystem()
     return MONA_SUCCESS;
 }
 
+monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
+{
+    dword fileID;
+    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    int ret = vmanager_->open(file, 0, false, tid, &fileID);
+    if (ret != MONA_SUCCESS) return NULL;
+
+    Stat st;
+    ret = vmanager_->stat(fileID, &st);
+    if (ret != MONA_SUCCESS) return NULL;
+
+    monapi_cmemoryinfo* mi;
+    ret = vmanager_->read(fileID, st.size, &mi);
+    if (ret != MONA_SUCCESS) return NULL;
+    return mi;
+}
+
 void FileServer::messageLoop()
 {
     for (MessageInfo msg;;)
@@ -208,4 +226,50 @@ void FileServer::messageLoop()
             break;
         }
     }
+}
+
+int64_t FileServer::GetST5DecompressedSize(monapi_cmemoryinfo* mi)
+{
+    int64_t ret = 0;
+    ret = tek_checkformat(mi->Size, (unsigned char*)mi->Data);
+    return ret;
+}
+
+monapi_cmemoryinfo* FileServer::ST5Decompress(monapi_cmemoryinfo* mi)
+{
+    int64_t size = GetST5DecompressedSize(mi);
+    if (size < 0) return NULL;
+
+    // if size >= 4GB abort...
+    if ((size >> 32) > 0) return NULL;
+
+    monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
+    if (!monapi_cmemoryinfo_create(ret, (dword)(size + 1), 0))
+    {
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    }
+    ret->Size--;
+
+    if (tek_decode(mi->Size, mi->Data, ret->Data) != 0) {
+        // Decompress failed
+        monapi_cmemoryinfo_dispose(ret);
+        monapi_cmemoryinfo_delete(ret);
+        return NULL;
+    }
+
+    ret->Data[ret->Size] = 0;
+    return ret;
+}
+
+monapi_cmemoryinfo* FileServer::ST5DecompressFile(const char* file)
+{
+    monapi_cmemoryinfo* mi = readFileAll(file);
+    monapi_cmemoryinfo* ret = NULL;
+    if (mi == NULL) return ret;
+
+    ret = ST5Decompress(mi);
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+    return ret;
 }

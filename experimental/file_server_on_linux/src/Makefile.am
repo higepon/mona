@@ -21,6 +21,8 @@ main.cpp\
 types.h\
 vnode.h\
 vnode.cpp\
+dtk5s.cpp\
+dtk5s.h\
 VnodeManager.h\
 VnodeManager.cpp\
 FileServer.h\
@@ -36,3 +38,4 @@ FAT12/fat.cpp\
 FAT12/endian_util.cpp\
 Process/ProcessFileSystem.cpp\
 Process/ProcessFileSystem.h
+
