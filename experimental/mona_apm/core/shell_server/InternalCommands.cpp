@@ -21,6 +21,7 @@ enum
     COMMAND_EXEC,
     COMMAND_CHANGE_DRIVE_CD0,
     COMMAND_CHANGE_DRIVE_FD0,
+    COMMAND_SHUTDOWN,
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -73,6 +74,10 @@ int Shell::isInternalCommand(const CString& command)
     else if (cmd == "exec")
     {
         return COMMAND_EXEC;
+    }
+    else if (cmd == "shutdown")
+    {
+        return COMMAND_SHUTDOWN;
     }
     else if (cmd == this->driveLetter[DRIVE_CD0])
     {
@@ -341,6 +346,15 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
         setCurrentDirectory();
         break;
+    }
+
+    case COMMAND_SHUTDOWN:
+    {
+        dword result;
+	printf("&result = %x\n", &result);
+	SYSCALL_2(SYSTEM_CALL_APM_SET_POWER_STATE, result, 0x0001, 0x0003);
+	printf("result = %d\n");
+	break;
     }
 
     default:
