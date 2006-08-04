@@ -2,6 +2,7 @@
 #define __TOKNIEZER_H__
 
 #include <string>
+#include <stdio.h>
 
 namespace monash {
 

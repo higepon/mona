@@ -1,3 +1,4 @@
+
 #include "Environment.h"
 
 using namespace monash;
@@ -12,6 +13,17 @@ Environment::Environment()
 Environment::~Environment()
 {
 //    delete frames_;
+}
+
+Environment* Environment::clone()
+{
+    Environment* env = new Environment();
+    Frames* target = env->frames();
+    for (Frames::iterator it = frames_->begin(); it != frames_->end(); it++)
+    {
+        target->push_back(*it);
+    }
+    return env;
 }
 
 void Environment::setVaribale(Variable* variable, Object* value)
@@ -48,11 +60,15 @@ Object* Environment::lookupVariableValue(Variable* variable)
 //         if (NULL != found) return found;
 //     }
     int size = frames_->size();
+//    printf("size=%d\n",frames_->size());
     for (int i = size - 1; i >= 0; i--)
     {
         Frame* frame = frames_->at(i);
         Object* found = frame->lookup(variable);
-        if (NULL != found) return found;
+        if (NULL != found) {
+//            printf("%s found %d type=%d\n", variable->toString().c_str(), i, found->type());
+            return found;
+        }
     }
 
 

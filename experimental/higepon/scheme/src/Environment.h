@@ -2,6 +2,7 @@
 #define __ENVIRONMENT_H__
 
 #include <vector>
+#include <stdio.h>
 #include "Frame.h"
 
 namespace monash {
@@ -15,6 +16,7 @@ protected:
 public:
     Environment();
     virtual ~Environment();
+    Environment* clone();
     Object* lookupVariableValue(Variable* variable);
     void setVaribale(Variable* variable, Object* value);
     void defineVariable(Variable* variable, Object* value);

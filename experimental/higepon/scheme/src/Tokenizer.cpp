@@ -29,6 +29,7 @@ Token Tokenizer::nextToken()
 {
     int c;
     Token token;
+    int minus = 1;
 
 once_more:
     c = getChar();
@@ -43,6 +44,19 @@ once_more:
     case '\'':
         token.type = Token::QUOTE;
         return token;
+    }
+    if (c == '-')
+    {
+        char next = getChar();
+        if (isdigit(next))
+        {
+            c = next;
+            minus = -1;
+        }
+        else
+        {
+            unGetChar();
+        }
     }
     if (isspace(c)) goto once_more;
     if (c == ';')
@@ -62,7 +76,7 @@ once_more:
         } while (isdigit(c));
         unGetChar();
         token.type = Token::NUMBER;
-        token.value = n;
+        token.value = n * minus;
         return token;
     }
     if (c == '\"')
@@ -72,6 +86,19 @@ once_more:
         {
             c = getChar();
             if (c == '\"') break;
+            if (c == '\\')
+            {
+                char next = getChar();
+                if (next == 'n') // \n = \ + n
+                {
+                    str += '\n';
+                    continue;
+                }
+                else
+                {
+                    unGetChar();
+                }
+            }
             str += c;
         }
         token.text = str;

@@ -38,8 +38,10 @@ Object* apply(Object* procedure, Objects* arguments)
     if (isCompoundProcedure(procedure))
     {
         Procedure* p = (Procedure*)procedure;
-        p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
-        evalSequence(p->body(), p->env());
+//        p->env()->extend(p->parameters(), arguments); // doubt? we need copy?
+        Environment* env = p->env()->clone();
+        env->extend(p->parameters(), arguments); // doubt? we need copy?
+        evalSequence(p->body(), env);
     }
     else if (isPrimitiveProcedure(procedure))
     {

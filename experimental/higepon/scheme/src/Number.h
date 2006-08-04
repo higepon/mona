@@ -2,6 +2,8 @@
 #define __NUMBER_H__
 
 #include "Object.h"
+#include "stdio.h"
+#include "stdlib.h"
 
 namespace monash {
 

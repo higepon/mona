@@ -14,6 +14,7 @@
 #endif
 
 #include "scheme.h"
+#include <stdio.h>
 
 using namespace monash;
 using namespace std;
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
     Parser parser(&tokenizer);
     Node* node = parser.parse();
 
-    node->print();
+//    node->print();
 
     Object* object = NULL;
     if (Translator::translate(node, &object) != Translator::SUCCESS)
@@ -46,7 +47,9 @@ int main(int argc, char *argv[])
     }
     Environment* environment = new Environment();
     environment->defineVariable(new Variable("+"), new Plus());
+    environment->defineVariable(new Variable("-"), new Minus());
     environment->defineVariable(new Variable("="), new NumberEqual());
+    environment->defineVariable(new Variable(">"), new NumberGt());
     environment->defineVariable(new Variable("cons"), new Cons());
     environment->defineVariable(new Variable("car"), new Car());
     environment->defineVariable(new Variable("cdr"), new Cdr());
@@ -54,8 +57,8 @@ int main(int argc, char *argv[])
     environment->defineVariable(new Variable("string?"), new StringP());
     environment->defineVariable(new Variable("number?"), new NumberP());
     environment->defineVariable(new Variable("string->number"), new StringToNumber());
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debuge
+    environment->defineVariable(new Variable("#f"), new Number(0));
+    environment->defineVariable(new Variable("#t"), new Number(1));
     object->eval(environment);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     return 0;
 }

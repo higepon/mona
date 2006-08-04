@@ -1,4 +1,7 @@
 bin_PROGRAMS = scheme
+#scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
+#scheme_CXXFLAGS = -pg -I /usr/include/stlport
+#scheme_LDFLAGS = -pg -lstlport
 scheme_SOURCES = \
 main.cpp\
 Object.cpp\
@@ -52,6 +55,8 @@ Translator.h\
 PrimitiveProcedure.h\
 PrimitiveProcedures/Plus.cpp\
 PrimitiveProcedures/Plus.h\
+PrimitiveProcedures/Minus.cpp\
+PrimitiveProcedures/Minus.h\
 PrimitiveProcedures/Cons.cpp\
 PrimitiveProcedures/Cons.h\
 PrimitiveProcedures/Car.cpp\
@@ -66,6 +71,8 @@ PrimitiveProcedures/NumberP.cpp\
 PrimitiveProcedures/NumberP.h\
 PrimitiveProcedures/NumberEqual.cpp\
 PrimitiveProcedures/NumberEqual.h\
+PrimitiveProcedures/NumberGt.cpp\
+PrimitiveProcedures/NumberGt.h\
 PrimitiveProcedures/StringToNumber.cpp\
 PrimitiveProcedures/StringToNumber.h\
 scheme.h\

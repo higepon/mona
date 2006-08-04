@@ -105,7 +105,6 @@ int Translator::translateCond(Node* node, Object** object)
                 for (int j = 1; j < n->nodes.size(); j++)
                 {
                     Object * action;
-                    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
                     ret = translate(n->nodes[j], &action);
                     if (ret != SUCCESS) return ret;
                     actions->push_back(action);
@@ -155,9 +154,7 @@ int Translator::translateBegin(Node* node, Object** object)
     {
         Object * object;
         int ret = translate(node->nodes[i], &object);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         if (ret != SUCCESS) return ret;
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
         objects->push_back(object);
     }
     *object = new Begin(objects);

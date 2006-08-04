@@ -2,6 +2,7 @@
 #define __PRIMITIVEPROCEDURE_H__
 
 #include "Object.h"
+#include <stdio.h>
 
 namespace monash {
 
