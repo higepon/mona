@@ -4,13 +4,13 @@ using I8086;
 /*
 	struct APMInfo
 	{
-		word versoin; // high = major low = minor
-		word cs32;
+		dword cs32;
 		dword eip;
-		word cs16;
-		word ds;
+		dword cs16;
+		dword ds;
 		dword cs_len;
-		word ds_len;
+		dword ds_len;
+		dword versoin; // high = major low = minor
 	};
 */
 
@@ -62,6 +62,9 @@ namespace Mona
 		{
 			ushort version;
 
+			new Inline("push es");
+			new Inline("push di");
+
 			if( !InstallationCheck(false) ) return false;
 
 			version = APM.Version();
@@ -70,24 +73,22 @@ namespace Mona
 			Registers.AL = 0x03;
 			Registers.BX = 0;
 			new Inline("int 0x15");
-			new Inline("push di");
+
+			new Inline("push edi");
 			Registers.DI = addr;
-			Registers.ES = 0;
-			new Inline("mov word [es:di+2], ax");
 
+			new Inline("mov dword [es:di], eax");
 			new Inline("mov dword [es:di+4], ebx");
-
-			new Inline("mov word [es:di+8], cx");
-
-			new Inline("mov word [es:di+10], dx");
-
-			new Inline("mov dword [es:di+12], esi");
-
-			new Inline("pop ax");
-			new Inline("mov word [es:di+16], ax");
-
+			new Inline("mov dword [es:di+8], ecx");
+			new Inline("mov dword [es:di+12], edx");
+			new Inline("mov dword [es:di+16], esi");
+			new Inline("pop esi");
+			new Inline("mov dword [es:di+20], esi");
 			Registers.AX = version;
-			new Inline("mov word [es:di], ax");
+			new Inline("mov dword [es:di+24], eax");
+
+			new Inline("pop di");
+			new Inline("pop es");
 
 			return true;
 		}

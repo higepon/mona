@@ -15,7 +15,7 @@ namespace Mona
 			Console.WriteLine("/\\ /\\");
 			Console.WriteLine(" 'V `) < Booting MONA!!");
 			Console.WriteLine();
-			
+
 			Registers.DS = Registers.CS;
 			new Inline("cli");
 			A20.Enable();
