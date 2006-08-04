@@ -47,7 +47,7 @@ dword apm_bios(dword fn, dword ebx, dword ecx, dword edx, dword esi, dword edi)
 	regs.esi = esi;
 	regs.edi = edi;
 
-	return apm_bios_call(0x53|fn, &regs);
+	return apm_bios_call(0x53|fn, &regs) & 0xFF;
 }
 
 word apm_set_power_state(word did, word state)
@@ -62,7 +62,8 @@ word apm_set_power_state(word did, word state)
 	regs.esi = 0;
 
 	g_console->printf("Calling APM BIOS.\n");
-	return apm_bios_call(0x5307, &regs);
+	//return apm_bios_call(0x5307, &regs);
+	return apm_bios(0x07, did, state, 0, 0, 0);
 }
 
 word apm_get_power_state(word did)

@@ -15,19 +15,17 @@
 
 #include <sys/types.h>
 
-#pragma pack(2)
 typedef struct
 {
-	word version; // high = major low = minor
-	word cs32;
+	dword cs32;
 	dword eip;
-	word cs16;
-	word ds;
-	word cs32_len;
-	word cs16_len;
-	word ds_len;
+	dword cs16;
+	dword ds;
+	dword cs32_len;
+	dword cs16_len;
+	dword ds_len;
+	dword version; // high = major low = minor
 } APMInfo;
-#pragma pack()
 
 enum
 {

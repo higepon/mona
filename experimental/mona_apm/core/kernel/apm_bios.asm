@@ -1,7 +1,7 @@
 BITS 32
 %include "macro.asm"
 
-cglobal apm_bios_call
+global _apm_bios_call
 extern _apm_eip
 
 section .text
@@ -35,13 +35,12 @@ _apm_bios_call:
 	mov eax, [ebp+8]
 	mov ah, 0x53
 
-	call far [ss:_apm_eip]
+	call dword far [cs:_apm_eip]
 
 	mov ebp, 0x10
 	mov ds, ebp
 	mov es, ebp
 	mov ebp, esp
-	;add ebp, 20
 	pop ebp
 	jc L_apm_bios_call_err
 
