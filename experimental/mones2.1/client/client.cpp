@@ -31,7 +31,7 @@ int Stat(NetClient& client)
 int Ping(NetClient& client,dword remoteip)
 {
     ///////////////////////////////////////////////
-    //printf("   Send ICMP echo request\n");
+    printf("   Send ICMP echo request %x\n",remoteip);
     int netdsc= client.ICMPOpen(remoteip);
     if( netdsc< 0 ){
         printf("OpenError.\n");
@@ -170,6 +170,7 @@ int Ftp(NetClient& client,dword remoteip, List<char*>* args)
         printf("-----(%d)------\n",ret);
     }
     printf("NO more data\n");
+
     if( client.Close(netdsc) ){
         printf("CloseError1.\n");
     }

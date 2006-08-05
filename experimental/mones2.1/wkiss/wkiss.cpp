@@ -5,7 +5,30 @@
 using namespace MonAPI;
 using namespace mones;
 
-//
+int MonaMain(List<char*>* pekoe)
+{
+    char buf[1500];
+    NetClient client;
+    int netdsc = client.TCPPasvOpen(ECHO);
+    for(;;){
+        int dsc = client.TCPAccept(netdsc);
+        for(;;){
+            memset(buf,'\0',1500);
+            client.Read(dsc,(byte*)buf);
+            if( buf[0]!=NULL){
+                printf(">%s",buf);
+                if( !strncmp(buf,"quit",1)){
+                    printf("q\n");
+                    break;
+                }
+                client.Write(dsc,(byte*)buf,strlen(buf));
+            }
+        }
+        client.Close(dsc);
+    }
+    return 0;
+}
+/*
 int MonaMain(List<char*>* pekoe)
 {
     char buf[1024];
@@ -22,3 +45,4 @@ int MonaMain(List<char*>* pekoe)
     }
     return 0;
 }
+*/
