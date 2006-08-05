@@ -15,6 +15,18 @@
 
 #include <sys/types.h>
 
+/*
+typedef struct
+{
+	dword eax;
+	dword ebx;
+	dword ecx;
+	dword edx;
+	dword esi;
+	dword edi;
+}apm_bios_regs;
+*/
+
 typedef struct
 {
 	dword cs32;
@@ -55,6 +67,6 @@ enum
 void apm_init();
 word apm_set_power_state(word did, word state);
 word apm_get_power_state(word did);
-dword apm_bios(dword fn, dword ebx, dword ecx, dword edx, dword esi, dword edi);
+dword apm_bios(dword fn, apm_bios_regs* regs);
 
 #endif

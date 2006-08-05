@@ -5,15 +5,6 @@
 
 /* APMの関数群はCPL=0で実行しなければならない */
 
-typedef struct
-{
-	dword eax;
-	dword ebx;
-	dword ecx;
-	dword edx;
-	dword esi;
-	dword edi;
-}apm_bios_regs;
 
 typedef struct
 {
@@ -36,18 +27,9 @@ void apm_init(void)
 	g_console->printf("apm_des = %x\n", apm_eip.segment);
 }
 
-dword apm_bios(dword fn, dword ebx, dword ecx, dword edx, dword esi, dword edi)
+dword apm_bios(dword fn, apm_bios_regs *regs)
 {
-	apm_bios_regs regs;
-
-	regs.eax = 0x5300 | fn;
-	regs.ebx = ebx;
-	regs.ecx = ecx;
-	regs.edx = edx;
-	regs.esi = esi;
-	regs.edi = edi;
-
-	return apm_bios_call(0x53|fn, &regs) & 0xFF;
+	return apm_bios_call(0x5300|fn, regs) & 0xFF;
 }
 
 word apm_set_power_state(word did, word state)
@@ -62,8 +44,7 @@ word apm_set_power_state(word did, word state)
 	regs.esi = 0;
 
 	g_console->printf("Calling APM BIOS.\n");
-	//return apm_bios_call(0x5307, &regs);
-	return apm_bios(0x07, did, state, 0, 0, 0);
+	return apm_bios(0x07, &regs);
 }
 
 word apm_get_power_state(word did)
@@ -77,7 +58,6 @@ word apm_get_power_state(word did)
 	regs.edi = 0;
 	regs.esi = 0;
 
-	g_console->printf("Calling apm function.");
-	apm_bios_call(0x530C, &regs);
+	apm_bios(0x530C, &regs);
 	return (word)regs.ecx;
 }

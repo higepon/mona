@@ -623,6 +623,9 @@ void syscall_entrance()
 	info->eax = (dword)apm_get_power_state((word)info->esi);
 	break;
 
+    case SYSTEM_CALL_APM_BIOS:
+        info->eax = (dword)apm_bios((word)info->esi, (apm_bios_regs*)info->ecx);
+
     default:
         g_console->printf("syscall:default");
         break;
