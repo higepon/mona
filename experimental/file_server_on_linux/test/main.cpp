@@ -1,7 +1,7 @@
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
-#include "messages.h"
+#include "monapi/messages.h"
 
 int main(int argc, char* argv[])
 {
@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
                                                        std::cerr ) );
   // Run the test.
   bool wasSucessful = runner.run();
-  monapi_call_file_stop_server();
+  monapi_file_stop_server();
   // Return error code 1 if the one of test failed.
   printf("cp result = %d\n", system("cp ../src/mona.img.org ../src/mona.img"));
   return wasSucessful ? 0 : 1;

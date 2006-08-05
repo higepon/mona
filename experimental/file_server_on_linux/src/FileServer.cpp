@@ -119,16 +119,22 @@ int FileServer::initializeRootFileSystem()
 monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 {
     dword fileID;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     int ret = vmanager_->open(file, 0, false, tid, &fileID);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (ret != MONA_SUCCESS) return NULL;
 
     Stat st;
     ret = vmanager_->stat(fileID, &st);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (ret != MONA_SUCCESS) return NULL;
 
     monapi_cmemoryinfo* mi;
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ret = vmanager_->read(fileID, st.size, &mi);
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (ret != MONA_SUCCESS) return NULL;
     return mi;
 }
@@ -214,6 +220,43 @@ void FileServer::messageLoop()
                 dword size = memory->Size;
                 monapi_cmemoryinfo_delete(memory);
                 Message::reply(&msg, handle, size);
+            }
+            break;
+        }
+        case MSG_FILE_DECOMPRESS_ST5:
+        {
+            monapi_cmemoryinfo* mi1 = monapi_cmemoryinfo_new();
+            mi1->Handle = msg.arg1;
+            mi1->Size   = msg.arg2;
+            monapi_cmemoryinfo* mi2 = NULL;
+            if (monapi_cmemoryinfo_map(mi1))
+            {
+                mi2 = ST5Decompress(mi1);
+                monapi_cmemoryinfo_dispose(mi1);
+            }
+            if (mi2 != NULL)
+            {
+                Message::reply(&msg, mi2->Handle, mi2->Size);
+                monapi_cmemoryinfo_delete(mi2);
+            }
+            else
+            {
+                Message::reply(&msg);
+            }
+            monapi_cmemoryinfo_delete(mi1);
+            break;
+        }
+        case MSG_FILE_DECOMPRESS_ST5_FILE:
+        {
+            monapi_cmemoryinfo* mi = ST5DecompressFile(msg.str);
+            if (mi != NULL)
+            {
+                Message::reply(&msg, mi->Handle, mi->Size);
+                delete mi;
+            }
+            else
+            {
+                Message::reply(&msg);
             }
             break;
         }

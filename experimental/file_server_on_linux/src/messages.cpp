@@ -56,7 +56,7 @@ dword monapi_get_server_thread_id(int id)
     return server_ids[id];
 }
 
-MONAPI_BOOL monapi_call_dispose_handle(int id, dword handle)
+MONAPI_BOOL monapi_dispose_handle(int id, dword handle)
 {
     dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
     if (Message::send(tid, MSG_DISPOSE_HANDLE, handle, 0, 0, NULL) != 0)
@@ -93,7 +93,7 @@ MONAPI_BOOL monapi_register_to_server(int id, MONAPI_BOOL enabled)
     return MONAPI_TRUE;
 }
 
-MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
+MONAPI_BOOL monapi_mouse_set_cursor(MONAPI_BOOL enabled)
 {
     dword tid = monapi_get_server_thread_id(ID_MOUSE_SERVER);
     dword header = enabled ? MSG_MOUSE_ENABLE_CURSOR : MSG_MOUSE_DISABLE_CURSOR;
@@ -107,7 +107,7 @@ MONAPI_BOOL monapi_call_mouse_set_cursor(MONAPI_BOOL enabled)
 
 #endif
 
-monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_BOOL prompt)
+monapi_cmemoryinfo* monapi_file_read_data(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -125,7 +125,7 @@ monapi_cmemoryinfo* monapi_call_file_read_data(const char* file, MONAPI_BOOL pro
     return ret;
 }
 
-dword monapi_call_file_open(const char* file)
+dword monapi_file_open(const char* file)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
@@ -138,7 +138,7 @@ dword monapi_call_file_open(const char* file)
     return msg.arg2;
 }
 
-dword monapi_call_file_get_file_size(dword id)
+dword monapi_file_get_file_size(dword id)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
@@ -151,7 +151,7 @@ dword monapi_call_file_get_file_size(dword id)
     return msg.arg2;
 }
 
-MONAPI_BOOL monapi_call_file_seek(dword id, dword position, dword flag)
+MONAPI_BOOL monapi_file_seek(dword id, dword position, dword flag)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
@@ -165,7 +165,7 @@ MONAPI_BOOL monapi_call_file_seek(dword id, dword position, dword flag)
 }
 
 
-MONAPI_BOOL monapi_call_file_close(dword id)
+MONAPI_BOOL monapi_file_close(dword id)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
@@ -178,7 +178,7 @@ MONAPI_BOOL monapi_call_file_close(dword id)
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_call_file_read(dword id, dword size)
+monapi_cmemoryinfo* monapi_file_read(dword id, dword size)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -198,7 +198,7 @@ monapi_cmemoryinfo* monapi_call_file_read(dword id, dword size)
     return ret;
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
+monapi_cmemoryinfo* monapi_file_decompress_bz2(monapi_cmemoryinfo* mi)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -217,7 +217,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2(monapi_cmemoryinfo* mi)
     return ret;
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
+monapi_cmemoryinfo* monapi_file_decompress_bz2_file(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -237,7 +237,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_bz2_file(const char* file, MONAP
     return ret;
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
+monapi_cmemoryinfo* monapi_file_decompress_st5(monapi_cmemoryinfo* mi)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -256,7 +256,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5(monapi_cmemoryinfo* mi)
     return ret;
 }
 
-monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
+monapi_cmemoryinfo* monapi_file_decompress_st5_file(const char* file, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -276,32 +276,12 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
     return ret;
 }
 
-
-monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt)
+int monapi_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {
-    monapi_cmemoryinfo* ret;
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_READ_DIRECTORY, prompt, 0, 0, path) != 0)
-    {
-        return NULL;
-    }
-    if (msg.arg2 == 0) return NULL;
-
-    ret = monapi_cmemoryinfo_new();
-    ret->Handle = msg.arg2;
-    ret->Owner  = tid;
-    ret->Size   = msg.arg3;
-    monapi_cmemoryinfo_map(ret);
-    return ret;
+    return monapi_process_execute_file_get_tid(command_line, prompt, NULL, NULL);
 }
 
-int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
-{
-    return monapi_call_process_execute_file_get_tid(command_line, prompt, NULL, NULL);
-}
-
-int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id /* = NULL */)
+int monapi_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword* tid, dword stdout_id /* = NULL */)
 {
     dword svr = monapi_get_server_thread_id(ID_PROCESS_SERVER);
 
@@ -330,64 +310,7 @@ void monapi_deallocate_dma_memory(void* address)
 
 #endif
 
-int monapi_call_change_drive(int drive, MONAPI_BOOL prompt)
-{
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_CHANGE_DRIVE, drive, prompt) != 0)
-    {
-        return MONA_FAILURE;
-    }
-
-    return msg.arg2;
-}
-
-int monapi_call_get_current_drive()
-{
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_GET_CURRENT_DRIVE) != 0)
-    {
-        return MONA_FAILURE;
-    }
-
-    return msg.arg2;
-}
-
-int monapi_call_get_current_directory(char* dest)
-{
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_GET_CURRENT_DIRECTORY) != 0)
-    {
-        return MONA_FAILURE;
-    }
-
-    int result = msg.arg2;
-    if (result == MONA_SUCCESS)
-    {
-        strncpy(dest, msg.str, 128);
-    }
-
-    return result;
-}
-
-int monapi_call_change_directory(const char* dest)
-{
-    dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-
-    MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_FILE_CHANGE_DIRECTORY, 0, 0, 0, dest) != 0)
-    {
-        return MONA_FAILURE;
-    }
-    return msg.arg2;
-}
-
-dword monapi_call_file_open2(const char* file, MONAPI_BOOL create)
+dword monapi_file_open2(const char* file, MONAPI_BOOL create)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
@@ -399,7 +322,7 @@ dword monapi_call_file_open2(const char* file, MONAPI_BOOL create)
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_call_file_read_data2(dword fileID, dword size)
+monapi_cmemoryinfo* monapi_file_read_data2(dword fileID, dword size)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
@@ -418,9 +341,8 @@ monapi_cmemoryinfo* monapi_call_file_read_data2(dword fileID, dword size)
     return ret;
 }
 
-int monapi_call_file_seek2(dword fileID, dword offset, dword origin)
+int monapi_file_seek2(dword fileID, dword offset, dword origin)
 {
-    monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_SEEK, fileID, offset, origin) != 0)
@@ -430,9 +352,8 @@ int monapi_call_file_seek2(dword fileID, dword offset, dword origin)
     return msg.arg2;
 }
 
-int monapi_call_file_close2(dword fileID)
+int monapi_file_close2(dword fileID)
 {
-    monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_CLOSE, fileID) != 0)
@@ -442,12 +363,12 @@ int monapi_call_file_close2(dword fileID)
     return msg.arg2;
 }
 
-monapi_cmemoryinfo* monapi_call_file_read_directory2(const char* path, MONAPI_BOOL prompt)
+monapi_cmemoryinfo* monapi_file_read_directory2(const char* path)
 {
     monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
-    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_READ_DIRECTORY, prompt, 0, 0, path) != 0)
+    if (Message::sendReceive(&msg, tid, MSG_VFS_FILE_READ_DIRECTORY, 0, 0, 0, path) != 0)
     {
         return NULL;
     }
@@ -461,7 +382,7 @@ monapi_cmemoryinfo* monapi_call_file_read_directory2(const char* path, MONAPI_BO
     return ret;
 }
 
-dword monapi_call_file_get_file_size2(dword id)
+dword monapi_file_get_file_size2(dword id)
 {
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
 
@@ -473,9 +394,8 @@ dword monapi_call_file_get_file_size2(dword id)
     return msg.arg3;
 }
 
-int monapi_call_file_stop_server()
+int monapi_file_stop_server()
 {
-    monapi_cmemoryinfo* ret;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
     MessageInfo msg;
     if (Message::sendReceive(&msg, tid, MSG_STOP_SERVER) != 0)
@@ -485,7 +405,7 @@ int monapi_call_file_stop_server()
     return msg.arg2;
 }
 
-int monapi_call_file_write_data2(dword fileID, monapi_cmemoryinfo* mem, dword size)
+int monapi_file_write_data2(dword fileID, monapi_cmemoryinfo* mem, dword size)
 {
     MessageInfo msg;
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
