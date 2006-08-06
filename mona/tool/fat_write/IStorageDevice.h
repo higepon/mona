@@ -17,6 +17,8 @@
 class IStorageDevice
 {
  public:
+    IStorageDevice() {};
+    virtual ~IStorageDevice() {};
     virtual int open()  = 0;
     virtual int close() = 0;
     virtual int read(dword lba, void* buf, int size)  = 0;
