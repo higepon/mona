@@ -17,7 +17,7 @@ int VnodeManager::lookup(Vnode* directory, const string& file, Vnode** found, in
 {
     vector<string> directories;
     split(file, '/', directories);
-    int ret;
+    int ret = MONA_FAILURE;
     Vnode* root = directory;
     for (dword i = 0; i < directories.size(); i++)
     {
@@ -78,7 +78,7 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
     if (create)
     {
         Vnode* targetDirectory = NULL;
-        int foundIndex = name.find_last_of('/');
+        dword foundIndex = name.find_last_of('/');
         string filename = name;
         if (foundIndex == name.npos)
         {
@@ -179,6 +179,7 @@ int VnodeManager::close(dword fileID)
     }
 
     FileInfo* fileInfo = (*it).second;
+    fileInfo->context.memory = NULL;
     Vnode* file = fileInfo->vnode;
     int ret = file->fs->close(file);
     if (MONA_SUCCESS != ret)

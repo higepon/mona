@@ -19,6 +19,5 @@ int main(int argc, char* argv[])
   bool wasSucessful = runner.run();
   monapi_file_stop_server();
   // Return error code 1 if the one of test failed.
-  printf("cp result = %d\n", system("cp ../src/mona.img.org ../src/mona.img"));
   return wasSucessful ? 0 : 1;
 }

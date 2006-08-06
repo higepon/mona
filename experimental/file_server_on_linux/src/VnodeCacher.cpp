@@ -35,7 +35,6 @@ VnodeCacher::~VnodeCacher()
     for (Vnodes::iterator it = vnodes.begin(); it != vnodes.end(); it++)
     {
         Vnode* v = (*it);
-        printf("delete vnode %x\n", v);
         v->fs->destroyVnode(v);
     }
     delete directories_;

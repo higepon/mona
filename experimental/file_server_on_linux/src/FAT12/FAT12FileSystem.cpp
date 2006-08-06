@@ -11,6 +11,7 @@ FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : dri
 FAT12FileSystem::~FAT12FileSystem()
 {
     delete fat_;
+//    delete root_;
 }
 
 /*----------------------------------------------------------------------
@@ -35,7 +36,8 @@ int FAT12FileSystem::initialize()
         return MONA_ERROR_ON_DEVICE;
     }
 
-    current_ = fat_->getRootDirectory();
+    fatroot_ = fat_->getRootDirectory();
+    current_ = fatroot_;
 
     if (current_ == NULL)
     {
@@ -43,7 +45,7 @@ int FAT12FileSystem::initialize()
         return MONA_ERROR_ON_DEVICE;
     }
     root_ = vmanager_->alloc();
-    root_->fnode  = fat_->getRootDirectory();
+    root_->fnode  = fatroot_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
     return MONA_SUCCESS;
@@ -143,7 +145,6 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 
 int FAT12FileSystem::write(Vnode* file, struct io::Context* context)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (file->type != Vnode::REGULAR) return MONA_FAILURE;
     File* f = (File*)file->fnode;
     monapi_cmemoryinfo* memory = context->memory;
@@ -221,6 +222,17 @@ int FAT12FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
 
 void FAT12FileSystem::destroyVnode(Vnode* vnode)
 {
+    if (vnode->type == Vnode::DIRECTORY)
+    {
+        File* file = (File*)vnode->fnode;
+        delete file;
+    }
+    else
+    {
+        Directory* directory = (Directory*)vnode->fnode;
+        delete directory;
+    }
+    delete vnode;
 }
 
 
@@ -239,6 +251,7 @@ int FAT12FileSystem::deviceOn()
 int FAT12FileSystem::deviceOff()
 {
     fd_->motorAutoOff();
+    return 0;
 }
 
 Directory* FAT12FileSystem::searchFile(char* path, int* entry, int* cursor)
@@ -287,7 +300,7 @@ Directory* FAT12FileSystem::trackingDirectory(char *path, int *cursor)
     int j;
 
     if ('/' == path[i]) {
-        p = fat_->getRootDirectory();
+        p = fatroot_;
         i++;
     }
 

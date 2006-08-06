@@ -318,8 +318,10 @@ skip:
 			} while (--i);
 		}
 	} while (pos < osiz);
+    free(work);
 	return 0;
 err:
+    free(work);
 	return 1;
 }
 

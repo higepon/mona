@@ -357,7 +357,6 @@ void ISO9660FileSystem::createDirectoryListFromPathTable(EntryList* list, byte* 
         {
             entry->name = string((const char*)pathEntry->name, pathEntry->length);
         }
-        printf("new entry:%s [%x]\n", entry->name.c_str(), entry);fflush(stdout);// debug
         list->push_back(entry);
 
         /* next path table entry */
@@ -432,7 +431,6 @@ void ISO9660FileSystem::deleteEntry(Entry* entry)
     {
         deleteEntry(*i);
     }
-    printf("delete entry [%x]\n", entry);fflush(stdout);// debug
     delete entry;
 }
 
@@ -584,7 +582,6 @@ bool ISO9660FileSystem::setDetailInformation(Entry* entry)
 void ISO9660FileSystem::destroyVnode(Vnode* vnode)
 {
     iso9660::Entry* entry = (iso9660::Entry*)vnode->fnode;
-    printf("delete entry: %s [%x]\n", entry->name.c_str(), entry);fflush(stdout);// debug
     if (vnode->type != Vnode::DIRECTORY) delete entry; // directory is deleted on destructor
     delete vnode;
 }

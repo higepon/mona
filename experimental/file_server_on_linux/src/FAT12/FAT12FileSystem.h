@@ -46,6 +46,7 @@ protected:
     FatFS::Directory* trackingDirectory(char *path, int *cursor);
     void freeDirectory(FatFS::Directory *p);
 
+    FatFS::Directory* fatroot_;
     FatFS::FatStorage* fat_;
     FatFS::Directory* current_;
     IStorageDevice* drive_;

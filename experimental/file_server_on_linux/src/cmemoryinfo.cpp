@@ -36,7 +36,7 @@ void monapi_cmemoryinfo_delete(monapi_cmemoryinfo* self)
 int monapi_cmemoryinfo_create(monapi_cmemoryinfo* self, dword size, int prompt)
 {
 #ifdef ON_LINUX
-    if (-1 == (self->Handle = shmget(IPC_PRIVATE, size, IPC_CREAT | 0666)))
+    if ((dword)-1 == (self->Handle = shmget(IPC_PRIVATE, size, IPC_CREAT | 0666)))
     {
         perror("shmget");
         exit(-1);

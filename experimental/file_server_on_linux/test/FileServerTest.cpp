@@ -20,7 +20,7 @@ void FileServerTest::tearDown()
 void FileServerTest::testProcessReadDirectoryOnce()
 {
     // readdir OK
-    monapi_cmemoryinfo* mi = monapi_file_read_directory2("/process");
+    monapi_cmemoryinfo* mi = monapi_file_read_directory("/process");
     CPPUNIT_ASSERT_MESSAGE("readdir /process mi != NULL", mi != NULL);
 
     // there may be at least 3 processes.
@@ -34,7 +34,7 @@ void FileServerTest::testProcessReadDirectoryOnce()
 void FileServerTest::testProcessCreateFile()
 {
     // don't create file because read only
-    dword fileID = monapi_file_open2("/process/DUMMY.TXT", MONAPI_TRUE);
+    dword fileID = monapi_file_open("/process/DUMMY.TXT", MONAPI_TRUE);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
 }
 
@@ -63,7 +63,7 @@ void FileServerTest::testProcessWriteFile()
 void FileServerTest::testProcessReadFileOnce()
 {
     // readdir OK
-    monapi_cmemoryinfo* mi = monapi_file_read_directory2("/process");
+    monapi_cmemoryinfo* mi = monapi_file_read_directory("/process");
     CPPUNIT_ASSERT_MESSAGE("readdir /process mi != NULL", mi != NULL);
 
     // there may be 3 processes.
@@ -78,11 +78,11 @@ void FileServerTest::testProcessReadFileOnce()
     monapi_cmemoryinfo_delete(mi);
 
     // file open
-    dword fileID = monapi_file_open2(path.c_str(), MONAPI_FALSE);
+    dword fileID = monapi_file_open(path.c_str(), MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("process file open", fileID != MONA_FAILURE);
 
     // file read
-    monapi_cmemoryinfo* mi2 = monapi_file_read_data2(fileID, 20);
+    monapi_cmemoryinfo* mi2 = monapi_file_read(fileID, 20);
     CPPUNIT_ASSERT_MESSAGE("read /process/file mi2 != NULL", mi2 != NULL);
 
     // contain pid?
@@ -91,9 +91,9 @@ void FileServerTest::testProcessReadFileOnce()
         CPPUNIT_ASSERT_MESSAGE("process file has pid. is Numeric?", isdigit(mi->Data[i]) == 0);
     }
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("proces file size", 0, (int)monapi_file_get_file_size2(fileID));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("proces file size", 0, (int)monapi_file_get_file_size(fileID));
 
-    int ret = monapi_file_close2(fileID);
+    int ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("process file close", ret, (int)MONA_SUCCESS);
 
     monapi_cmemoryinfo_dispose(mi2);
@@ -103,7 +103,7 @@ void FileServerTest::testProcessReadFileOnce()
 void FileServerTest::testISO9660ReadDirectory()
 {
     // readdir OK
-    monapi_cmemoryinfo* mi = monapi_file_read_directory2("/SERVERS");
+    monapi_cmemoryinfo* mi = monapi_file_read_directory("/SERVERS");
     CPPUNIT_ASSERT_MESSAGE("readdir /SERVERS mi != NULL", mi != NULL);
     monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     int size = *(int*)mi->Data;
@@ -116,7 +116,7 @@ void FileServerTest::testISO9660ReadDirectory()
     monapi_cmemoryinfo_delete(mi);
 
     // once more
-    mi = monapi_file_read_directory2("/APPS/HIGEPON");
+    mi = monapi_file_read_directory("/APPS/HIGEPON");
     CPPUNIT_ASSERT_MESSAGE("readdir /APPS/HIGEPON mi != NULL", mi != NULL);
     p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     size = *(int*)mi->Data;
@@ -132,13 +132,13 @@ void FileServerTest::testISO9660ReadDirectory()
 void FileServerTest::testISO9660ReadDirectoryNG()
 {
     // readdir NG
-    monapi_cmemoryinfo* mi = monapi_file_read_directory2("/HUGA/HOGE");
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("readdir /HUGA/HOGE mi == NULL", (int)mi, NULL);
+    monapi_cmemoryinfo* mi = monapi_file_read_directory("/HUGA/HOGE");
+    CPPUNIT_ASSERT_MESSAGE("readdir /HUGA/HOGE mi == NULL", mi == NULL);
 }
 
 void FileServerTest::testISO9660WriteFile()
 {
-    dword fileID = monapi_file_open2("/MONA.CFG", MONAPI_FALSE);
+    dword fileID = monapi_file_open("/MONA.CFG", MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("ISO9660 file open", fileID != MONA_FAILURE);
     string data = "Hello Write\n";
 
@@ -147,11 +147,11 @@ void FileServerTest::testISO9660WriteFile()
 
     // write
     memcpy((void*)mi->Data, data.c_str(), mi->Size);
-    int ret = monapi_file_write_data2(fileID, mi, mi->Size);
+    int ret = monapi_file_write(fileID, mi, mi->Size);
     CPPUNIT_ASSERT_MESSAGE("ISO9660 Write file", ret != MONA_SUCCESS);
 
     // close
-    ret = monapi_file_close2(fileID);
+    ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
 }
 
@@ -159,17 +159,17 @@ void FileServerTest::testISO9660ReadFile()
 {
     // normal pattern 1
     {
-        dword fileID = monapi_file_open2("/MONA.CFG", MONAPI_FALSE);
+        dword fileID = monapi_file_open("/MONA.CFG", MONAPI_FALSE);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);
 
-        int ret = monapi_file_seek2(fileID, 72, 0);
+        int ret = monapi_file_seek(fileID, 72, 0);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file seek", ret != MONA_FAILURE);
 
-        monapi_cmemoryinfo* mi = monapi_file_read_data2(fileID, 19);
+        monapi_cmemoryinfo* mi = monapi_file_read(fileID, 19);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file read not null", mi != NULL);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
 
-        ret = monapi_file_close2(fileID);
+        ret = monapi_file_close(fileID);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file close", ret != MONA_FAILURE);
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
@@ -177,18 +177,27 @@ void FileServerTest::testISO9660ReadFile()
 
     // normal pattern 2
     {
-        dword fileID = monapi_file_open2("/APPS/HIGEPON/README.TXT", MONAPI_FALSE);
+        dword fileID = monapi_file_open("/APPS/HIGEPON/README.TXT", MONAPI_FALSE);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);
 
-        int ret = monapi_file_seek2(fileID, 0, 0);
+        int ret = monapi_file_seek(fileID, 0, 0);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file seek", ret != MONA_FAILURE);
 
-        monapi_cmemoryinfo* mi = monapi_file_read_data2(fileID, 10);
+        monapi_cmemoryinfo* mi = monapi_file_read(fileID, 10);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file read not null", mi != NULL);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file read", strncmp((char*)mi->Data, "TEST", 4), 0);
 
-        ret = monapi_file_close2(fileID);
+        ret = monapi_file_close(fileID);
         CPPUNIT_ASSERT_MESSAGE("iso9660 file close", ret != MONA_FAILURE);
+        monapi_cmemoryinfo_dispose(mi);
+        monapi_cmemoryinfo_delete(mi);
+    }
+
+    // use read_data pattern
+    {
+        monapi_cmemoryinfo* mi = monapi_file_read_all("/MONA.CFG");
+        CPPUNIT_ASSERT_MESSAGE("iso9660 file read_data not null", mi != NULL);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file read_data", strncmp((char*)mi->Data, "# 1600(x1200), 1280", 19), 0);
         monapi_cmemoryinfo_dispose(mi);
         monapi_cmemoryinfo_delete(mi);
     }
@@ -197,12 +206,12 @@ void FileServerTest::testISO9660ReadFile()
 void FileServerTest::testISO9660ReadFileNG()
 {
     {
-        dword fileID = monapi_file_open2("/NONE.TXT", MONAPI_FALSE);
+        dword fileID = monapi_file_open("/NONE.TXT", MONAPI_FALSE);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file open", (int)fileID, (int)MONA_FAILURE);
     }
 
     {
-        dword fileID = monapi_file_open2("/APPS/NONE.TXT", MONAPI_FALSE);
+        dword fileID = monapi_file_open("/APPS/NONE.TXT", MONAPI_FALSE);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file open", (int)fileID, (int)MONA_FAILURE);
     }
 }
@@ -211,19 +220,19 @@ void FileServerTest::testISO9660ReadFileNG()
 void FileServerTest::testISO9660FileSize()
 {
 
-    dword fileID = monapi_file_open2("/MONA.CFG", MONAPI_FALSE);
+    dword fileID = monapi_file_open("/MONA.CFG", MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID != MONA_FAILURE);
 
-    int ret = monapi_file_seek2(fileID, 72, 0);
+    int ret = monapi_file_seek(fileID, 72, 0);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file seek", ret != MONA_FAILURE);
 
-    monapi_cmemoryinfo* mi = monapi_file_read_data2(fileID, 19);
+    monapi_cmemoryinfo* mi = monapi_file_read(fileID, 19);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file read not null", mi != NULL);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file size", 200, (int)monapi_file_get_file_size2(fileID));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("iso9660 file size", 200, (int)monapi_file_get_file_size(fileID));
 
-    ret = monapi_file_close2(fileID);
+    ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file close", ret != MONA_FAILURE);
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
@@ -232,21 +241,21 @@ void FileServerTest::testISO9660FileSize()
 void FileServerTest::testISO9660CreateFile()
 {
     // don't create exist file
-    dword fileID = monapi_file_open2("/MONA.CFG", MONAPI_TRUE);
+    dword fileID = monapi_file_open("/MONA.CFG", MONAPI_TRUE);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
 
     // don't create file because read only
-    fileID = monapi_file_open2("/DUMMY.TXT", MONAPI_TRUE);
+    fileID = monapi_file_open("/DUMMY.TXT", MONAPI_TRUE);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
 
     // don't create file because read only
-    fileID = monapi_file_open2("/SERVERS/DUMMY.TXT", MONAPI_TRUE);
+    fileID = monapi_file_open("/SERVERS/DUMMY.TXT", MONAPI_TRUE);
     CPPUNIT_ASSERT_MESSAGE("iso9660 file open", fileID == MONA_FAILURE);
 }
 
 void FileServerTest::testFAT12WriteFile()
 {
-    dword fileID = monapi_file_open2("/fd/WRITE.TXT", MONAPI_TRUE);
+    dword fileID = monapi_file_open("/fd/WRITE.TXT", MONAPI_TRUE);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
     string data = "Hello Write\n";
 
@@ -255,11 +264,11 @@ void FileServerTest::testFAT12WriteFile()
 
     // write
     memcpy((void*)mi->Data, data.c_str(), mi->Size);
-    int ret = monapi_file_write_data2(fileID, mi, mi->Size);
+    int ret = monapi_file_write(fileID, mi, mi->Size);
     CPPUNIT_ASSERT_MESSAGE("FAT12 Write file", ret == MONA_SUCCESS);
 
     // seek
-    ret = monapi_file_seek2(fileID, 3, 0);
+    ret = monapi_file_seek(fileID, 3, 0);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file seek", ret != MONA_FAILURE);
 
 ///    mi = monapi_cmemoryinfo_new();
@@ -267,22 +276,22 @@ void FileServerTest::testFAT12WriteFile()
 
     // rewrite
     memcpy((void*)mi->Data, data.c_str(), mi->Size);
-    ret = monapi_file_write_data2(fileID, mi, mi->Size);
+    ret = monapi_file_write(fileID, mi, mi->Size);
     CPPUNIT_ASSERT_MESSAGE("FAT12 Write file", ret == MONA_SUCCESS);
 
     // close
-    ret = monapi_file_close2(fileID);
+    ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
 
     // open
-    fileID = monapi_file_open2("/fd/WRITE.TXT", MONAPI_FALSE);
+    fileID = monapi_file_open("/fd/WRITE.TXT", MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
 
-    mi = monapi_file_read_data2(fileID, 15);
+    mi = monapi_file_read(fileID, 15);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT 12file read", strncmp((char*)mi->Data, "HelHello Write", 14), 0);
 
-    ret = monapi_file_close2(fileID);
+    ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
 //    monapi_cmemoryinfo_dispose(mi);
 //    monapi_cmemoryinfo_delete(mi);
@@ -290,18 +299,18 @@ void FileServerTest::testFAT12WriteFile()
 
 void FileServerTest::testFAT12ReadFile()
 {
-    dword fileID = monapi_file_open2("/fd/MONA.CFG", MONAPI_FALSE);
+    dword fileID = monapi_file_open("/fd/MONA.CFG", MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
 
-    int ret = monapi_file_seek2(fileID, 72, 0);
+    int ret = monapi_file_seek(fileID, 72, 0);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file seek", ret != MONA_FAILURE);
 
-    monapi_cmemoryinfo* mi = monapi_file_read_data2(fileID, 19);
+    monapi_cmemoryinfo* mi = monapi_file_read(fileID, 19);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
 
-    ret = monapi_file_close2(fileID);
+    ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
@@ -309,19 +318,19 @@ void FileServerTest::testFAT12ReadFile()
 
 void FileServerTest::testFAT12FileSize()
 {
-    dword fileID = monapi_file_open2("/fd/MONA.CFG", MONAPI_FALSE);
+    dword fileID = monapi_file_open("/fd/MONA.CFG", MONAPI_FALSE);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
 
-    int ret = monapi_file_seek2(fileID, 72, 0);
+    int ret = monapi_file_seek(fileID, 72, 0);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file seek", ret != MONA_FAILURE);
 
-    monapi_cmemoryinfo* mi = monapi_file_read_data2(fileID, 19);
+    monapi_cmemoryinfo* mi = monapi_file_read(fileID, 19);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file read not null", mi != NULL);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file read", strncmp((char*)mi->Data, "VESA_RESOLUTION=800", 19), 0);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file size", 200, (int)monapi_file_get_file_size2(fileID));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file size", 200, (int)monapi_file_get_file_size(fileID));
 
-    ret = monapi_file_close2(fileID);
+    ret = monapi_file_close(fileID);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file close", ret != MONA_FAILURE);
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
@@ -331,10 +340,9 @@ void FileServerTest::testFAT12ReadDirectory()
 {
     // readdir OK
     {
-        monapi_cmemoryinfo* mi = monapi_file_read_directory2("/fd/SERVERS");
+        monapi_cmemoryinfo* mi = monapi_file_read_directory("/fd/SERVERS");
         CPPUNIT_ASSERT_MESSAGE("readdir /SERVERS mi != NULL", mi != NULL);
         monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
-        int size = *(int*)mi->Data;
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("file . exist?", strcmp(p[0].name, "."), 0);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("file SERVERS/SHELL.EX5 exist?", strcmp((&p[7])->name, "SHELL.EX5"), 0);
@@ -344,10 +352,9 @@ void FileServerTest::testFAT12ReadDirectory()
     }
 
     {
-        monapi_cmemoryinfo* mi = monapi_file_read_directory2("/fd/SERVERS");
+        monapi_cmemoryinfo* mi = monapi_file_read_directory("/fd/SERVERS");
         CPPUNIT_ASSERT_MESSAGE("readdir /SERVERS mi != NULL", mi != NULL);
         monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
-        int size = *(int*)mi->Data;
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("file . exist?", strcmp(p[0].name, "."), 0);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("file SERVERS/SHELL.EX5 exist?", strcmp((&p[7])->name, "SHELL.EX5"), 0);
@@ -361,34 +368,34 @@ void FileServerTest::testFAT12ReadDirectory()
 void FileServerTest::testFAT12ReadDirectoryNG()
 {
     // readdir NG
-    monapi_cmemoryinfo* mi = monapi_file_read_directory2("/fd/HUGA/HOGE");
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("readdir /fd/HUGA/HOGE mi == NULL", (int)mi, NULL);
+    monapi_cmemoryinfo* mi = monapi_file_read_directory("/fd/HUGA/HOGE");
+    CPPUNIT_ASSERT_MESSAGE("readdir /fd/HUGA/HOGE mi == NULL", mi == NULL);
 }
 
 void FileServerTest::testFAT12ReadFileNG()
 {
     {
-        dword fileID = monapi_file_open2("/fd/NONE.TXT", MONAPI_FALSE);
+        dword fileID = monapi_file_open("/fd/NONE.TXT", MONAPI_FALSE);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file open", (int)fileID, (int)MONA_FAILURE);
     }
 
     {
-        dword fileID = monapi_file_open2("/fd/APPS/NONE.TXT", MONAPI_FALSE);
+        dword fileID = monapi_file_open("/fd/APPS/NONE.TXT", MONAPI_FALSE);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("FAT12 file open", (int)fileID, (int)MONA_FAILURE);
     }
 }
 
 void FileServerTest::testFAT12CreateFile()
 {
-    // don't create file because read only
-    dword fileID = monapi_file_open2("/fd/DUMMY.TXT", MONAPI_TRUE);
+    dword fileID = monapi_file_open("/fd/DUMMY.TXT", MONAPI_TRUE);
     CPPUNIT_ASSERT_MESSAGE("FAT12 file open", fileID != MONA_FAILURE);
+    monapi_file_close(fileID);
 }
 
 void FileServerTest::testST5()
 {
-    monapi_cmemoryinfo* mi = monapi_file_decompress_st5_file("/ST5TEST.TX5", MONAPI_FALSE);
-    CPPUNIT_ASSERT_MESSAGE("monapi_file_decompress_st5_file fail", (int)mi != NULL);
+    monapi_cmemoryinfo* mi = monapi_file_decompress_st5_file("/ST5TEST.TX5");
+    CPPUNIT_ASSERT_MESSAGE("monapi_file_decompress_st5_file fail", mi != NULL);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("monapi_file_decompress_st5_file", strncmp((char*)mi->Data, "Hello!", 6), 0);
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);

@@ -1,5 +1,5 @@
 # if you try valgrind
-# export GLIBCXX_FORCE_NEW = 1
+# export GLIBCXX_FORCE_NEW=1
 
 bin_PROGRAMS = file_server
 file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3 -I ../../../mona/tool/

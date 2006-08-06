@@ -119,23 +119,27 @@ int FileServer::initializeRootFileSystem()
 monapi_cmemoryinfo* FileServer::readFileAll(const string& file)
 {
     dword fileID;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     dword tid = monapi_get_server_thread_id(ID_FILE_SERVER);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     int ret = vmanager_->open(file, 0, false, tid, &fileID);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     if (ret != MONA_SUCCESS) return NULL;
 
     Stat st;
     ret = vmanager_->stat(fileID, &st);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-    if (ret != MONA_SUCCESS) return NULL;
+    if (ret != MONA_SUCCESS)
+    {
+        ret = vmanager_->close(fileID);
+        return NULL;
+    }
 
     monapi_cmemoryinfo* mi;
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
     ret = vmanager_->read(fileID, st.size, &mi);
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
-    if (ret != MONA_SUCCESS) return NULL;
+    if (ret != MONA_SUCCESS)
+    {
+        ret = vmanager_->close(fileID);
+        return NULL;
+    }
+
+    ret = vmanager_->close(fileID);
     return mi;
 }
 
@@ -147,7 +151,7 @@ void FileServer::messageLoop()
 
         switch (msg.header)
         {
-        case MSG_VFS_FILE_OPEN:
+        case MSG_FILE_OPEN:
         {
             dword tid = msg.from; // temporary
             dword fildID;
@@ -156,13 +160,29 @@ void FileServer::messageLoop()
             Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
             break;
         }
-        case MSG_VFS_FILE_SEEK:
+        case MSG_FILE_READ_ALL:
+        {
+            monapi_cmemoryinfo* mi = readFileAll(msg.str);
+            if (NULL == mi)
+            {
+                Message::reply(&msg, MONA_FAILURE);
+            }
+            else
+            {
+                dword handle = mi->Handle;
+                dword size = mi->Size;
+                monapi_cmemoryinfo_delete(mi);
+                Message::reply(&msg, handle, size);
+            }
+            break;
+        }
+        case MSG_FILE_SEEK:
         {
             int ret = vmanager_->seek(msg.arg1 /* fileID */, msg.arg2 /* offset */, msg.arg3 /* origin */);
             Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
             break;
         }
-        case MSG_VFS_FILE_READ:
+        case MSG_FILE_READ:
         {
             dword fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
@@ -173,13 +193,15 @@ void FileServer::messageLoop()
             }
             else
             {
-                Message::reply(&msg, memory->Handle, memory->Size);
+                dword handle = memory->Handle;
+                dword size = memory->Size;
+                monapi_cmemoryinfo_delete(memory);
+                Message::reply(&msg, handle, size);
             }
             break;
         }
-        case MSG_VFS_FILE_WRITE:
+        case MSG_FILE_WRITE:
         {
-            printf("%s %s:%d\n", __func__, __FILE__, __LINE__);fflush(stdout);// debug
             dword fileID = msg.arg1;
             monapi_cmemoryinfo* memory;
             memory = monapi_cmemoryinfo_new();
@@ -189,24 +211,24 @@ void FileServer::messageLoop()
             monapi_cmemoryinfo_map(memory);
             int ret = vmanager_->write(fileID, msg.arg2 /* size */, memory);
 //            monapi_cmemoryinfo_dispose(memory);
-//            monapi_cmemoryinfo_delete(memory);
+            monapi_cmemoryinfo_delete(memory);
             Message::reply(&msg, ret);
             break;
         }
-        case MSG_VFS_FILE_CLOSE:
+        case MSG_FILE_CLOSE:
         {
             int ret = vmanager_->close(msg.arg1);
             Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE);
             break;
         }
-        case MSG_VFS_FILE_GET_SIZE:
+        case MSG_FILE_GET_SIZE:
         {
             Stat st;
             int ret = vmanager_->stat(msg.arg1, &st);
             Message::reply(&msg, ret == MONA_SUCCESS ? MONA_SUCCESS : MONA_FAILURE, st.size);
             break;
         }
-        case MSG_VFS_FILE_READ_DIRECTORY:
+        case MSG_FILE_READ_DIRECTORY:
         {
             monapi_cmemoryinfo* memory;
             int ret = vmanager_->readdir(msg.str, &memory);
