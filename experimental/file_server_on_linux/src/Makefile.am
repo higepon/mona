@@ -4,7 +4,9 @@
 bin_PROGRAMS = file_server
 file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3
 file_server_SOURCES = \
+error.h\
 FileSystem.h\
+FileDate.h\
 IDEDriver.cpp\
 IDEDriver.h\
 IStorageDevice.h\
@@ -53,5 +55,6 @@ FAT12/fat_write/endian_util.cpp\
 FAT12/fat_write/endian_util.h\
 FAT12/fat_write/file.h\
 FAT12/fat_write/fat.h\
+FAT12/fat_write/IStorageDevice.h\
 Process/ProcessFileSystem.cpp\
 Process/ProcessFileSystem.h
