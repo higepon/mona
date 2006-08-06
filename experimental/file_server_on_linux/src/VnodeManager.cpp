@@ -131,7 +131,6 @@ int VnodeManager::open(const std::string& name, int mode, bool create, dword tid
 Vnode* VnodeManager::alloc()
 {
     Vnode* v = new Vnode;
-    assert(v != NULL);
     v->mountedVnode = NULL;
     return v;
 }
