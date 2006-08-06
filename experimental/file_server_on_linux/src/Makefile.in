@@ -58,6 +58,7 @@ am_file_server_OBJECTS = file_server-IDEDriver.$(OBJEXT) \
 	file_server-cmemoryinfo.$(OBJEXT) \
 	file_server-ProcessUtil.$(OBJEXT) file_server-main.$(OBJEXT) \
 	file_server-vnode.$(OBJEXT) file_server-dtk5s.$(OBJEXT) \
+	file_server-CString.$(OBJEXT) \
 	file_server-VnodeManager.$(OBJEXT) \
 	file_server-FileServer.$(OBJEXT) \
 	file_server-ISO9660FileSystem.$(OBJEXT) \
@@ -161,11 +162,12 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3 -I ../../../mona/tool/
+file_server_CXXFLAGS = -DON_LINUX -g -Wall -O3
 file_server_SOURCES = \
 FileSystem.h\
 IDEDriver.cpp\
 IDEDriver.h\
+IStorageDevice.h\
 Message.cpp\
 Message.h\
 VnodeCacher.cpp\
@@ -174,6 +176,7 @@ messages.cpp\
 SocketMessage.cpp\
 SocketMessage.h\
 cmemoryinfo.cpp\
+cmemoryinfo.h\
 ProcessUtil.cpp\
 ProcessUtil.h\
 main.cpp\
@@ -182,6 +185,18 @@ vnode.h\
 vnode.cpp\
 dtk5s.cpp\
 dtk5s.h\
+monapi/Array.h\
+monapi/Assert.h\
+monapi/CString.cpp\
+monapi/CString.h\
+monapi/cmemoryinfo.h\
+monapi/messages.h\
+servers/file.h\
+servers/keyboard.h\
+servers/mouse.h\
+servers/net.h\
+servers/process.h\
+servers/servers.h\
 VnodeManager.h\
 VnodeManager.cpp\
 FileServer.h\
@@ -193,8 +208,11 @@ FAT12/FAT12FileSystem.cpp\
 FAT12/FAT12FileSystem.h\
 FAT12/FDCDriver.cpp\
 FAT12/FDCDriver.h\
-FAT12/fat.cpp\
-FAT12/endian_util.cpp\
+FAT12/fat_write/fat.cpp\
+FAT12/fat_write/endian_util.cpp\
+FAT12/fat_write/endian_util.h\
+FAT12/fat_write/file.h\
+FAT12/fat_write/fat.h\
 Process/ProcessFileSystem.cpp\
 Process/ProcessFileSystem.h
 
@@ -330,6 +348,12 @@ file_server-dtk5s.o: dtk5s.cpp
 file_server-dtk5s.obj: dtk5s.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-dtk5s.obj `if test -f 'dtk5s.cpp'; then $(CYGPATH_W) 'dtk5s.cpp'; else $(CYGPATH_W) '$(srcdir)/dtk5s.cpp'; fi`
 
+file_server-CString.o: monapi/CString.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-CString.o `test -f 'monapi/CString.cpp' || echo '$(srcdir)/'`monapi/CString.cpp
+
+file_server-CString.obj: monapi/CString.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-CString.obj `if test -f 'monapi/CString.cpp'; then $(CYGPATH_W) 'monapi/CString.cpp'; else $(CYGPATH_W) '$(srcdir)/monapi/CString.cpp'; fi`
+
 file_server-VnodeManager.o: VnodeManager.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-VnodeManager.o `test -f 'VnodeManager.cpp' || echo '$(srcdir)/'`VnodeManager.cpp
 
@@ -360,17 +384,17 @@ file_server-FDCDriver.o: FAT12/FDCDriver.cpp
 file_server-FDCDriver.obj: FAT12/FDCDriver.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-FDCDriver.obj `if test -f 'FAT12/FDCDriver.cpp'; then $(CYGPATH_W) 'FAT12/FDCDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/FDCDriver.cpp'; fi`
 
-file_server-fat.o: FAT12/fat.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.o `test -f 'FAT12/fat.cpp' || echo '$(srcdir)/'`FAT12/fat.cpp
+file_server-fat.o: FAT12/fat_write/fat.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.o `test -f 'FAT12/fat_write/fat.cpp' || echo '$(srcdir)/'`FAT12/fat_write/fat.cpp
 
-file_server-fat.obj: FAT12/fat.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.obj `if test -f 'FAT12/fat.cpp'; then $(CYGPATH_W) 'FAT12/fat.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/fat.cpp'; fi`
+file_server-fat.obj: FAT12/fat_write/fat.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-fat.obj `if test -f 'FAT12/fat_write/fat.cpp'; then $(CYGPATH_W) 'FAT12/fat_write/fat.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/fat_write/fat.cpp'; fi`
 
-file_server-endian_util.o: FAT12/endian_util.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.o `test -f 'FAT12/endian_util.cpp' || echo '$(srcdir)/'`FAT12/endian_util.cpp
+file_server-endian_util.o: FAT12/fat_write/endian_util.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.o `test -f 'FAT12/fat_write/endian_util.cpp' || echo '$(srcdir)/'`FAT12/fat_write/endian_util.cpp
 
-file_server-endian_util.obj: FAT12/endian_util.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.obj `if test -f 'FAT12/endian_util.cpp'; then $(CYGPATH_W) 'FAT12/endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/endian_util.cpp'; fi`
+file_server-endian_util.obj: FAT12/fat_write/endian_util.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-endian_util.obj `if test -f 'FAT12/fat_write/endian_util.cpp'; then $(CYGPATH_W) 'FAT12/fat_write/endian_util.cpp'; else $(CYGPATH_W) '$(srcdir)/FAT12/fat_write/endian_util.cpp'; fi`
 
 file_server-ProcessFileSystem.o: Process/ProcessFileSystem.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(file_server_CXXFLAGS) $(CXXFLAGS) -c -o file_server-ProcessFileSystem.o `test -f 'Process/ProcessFileSystem.cpp' || echo '$(srcdir)/'`Process/ProcessFileSystem.cpp
