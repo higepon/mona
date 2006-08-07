@@ -1,7 +1,7 @@
 bin_PROGRAMS = scheme
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-#scheme_CXXFLAGS = -pg -I /usr/include/stlport
-#scheme_LDFLAGS = -pg -lstlport
+scheme_CXXFLAGS = -pg
+scheme_LDFLAGS = -pg
 scheme_SOURCES = \
 main.cpp\
 Object.cpp\

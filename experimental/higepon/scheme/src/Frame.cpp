@@ -30,6 +30,11 @@ Object* Frame::lookup(Variable* variable)
 
 void Frame::insert(Variable* variable, Object* value)
 {
+    FrameMap::iterator it = map_.find(variable->name());
+    if (it != map_.end())
+    {
+        map_.erase(it);
+    }
     map_.insert(std::pair<string, Object*>(variable->name(), value));
 }
 

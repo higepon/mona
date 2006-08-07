@@ -15,12 +15,14 @@
 
 #include "scheme.h"
 #include <stdio.h>
+#include <time.h>
 
 using namespace monash;
 using namespace std;
 
 int main(int argc, char *argv[])
 {
+    printf("%d\n", clock());
     if (argc < 2)
     {
         fprintf(stderr, "usage: %s file\n", argv[0]);
@@ -60,5 +62,6 @@ int main(int argc, char *argv[])
     environment->defineVariable(new Variable("#f"), new Number(0));
     environment->defineVariable(new Variable("#t"), new Number(1));
     object->eval(environment);
+    printf("\n%d\n", clock());
     return 0;
 }

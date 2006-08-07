@@ -42,8 +42,11 @@ void Environment::setVaribale(Variable* variable, Object* value)
 
 void Environment::defineVariable(Variable* variable, Object* value)
 {
-    Frames::iterator firstFrame = frames_->begin();
-    (*firstFrame)->insert(variable, value); // insert or overwrite
+//     Frames::iterator firstFrame = frames_->begin();
+//     printf("define %s \n",  variable->name().c_str());
+//     (*firstFrame)->insert(variable, value); insert or overwrite
+    Frame* lastFrame = frames_->at(frames_->size() -1);
+    lastFrame->insert(variable, value); // insert or overwrite
     return;
 }
 

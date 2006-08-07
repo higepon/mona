@@ -47,18 +47,25 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_scheme_OBJECTS = main.$(OBJEXT) Object.$(OBJEXT) Number.$(OBJEXT) \
-	String.$(OBJEXT) Quote.$(OBJEXT) Variable.$(OBJEXT) \
-	Assignment.$(OBJEXT) SpecialIf.$(OBJEXT) Frame.$(OBJEXT) \
-	Environment.$(OBJEXT) Lambda.$(OBJEXT) Procedure.$(OBJEXT) \
-	Begin.$(OBJEXT) Definition.$(OBJEXT) Cond.$(OBJEXT) \
-	Pair.$(OBJEXT) And.$(OBJEXT) Or.$(OBJEXT) Let.$(OBJEXT) \
-	LetAsterisk.$(OBJEXT) Application.$(OBJEXT) Parser.$(OBJEXT) \
-	Tokenizer.$(OBJEXT) Node.$(OBJEXT) Translator.$(OBJEXT) \
-	Plus.$(OBJEXT) Minus.$(OBJEXT) Cons.$(OBJEXT) Car.$(OBJEXT) \
-	Cdr.$(OBJEXT) Display.$(OBJEXT) StringP.$(OBJEXT) \
-	NumberP.$(OBJEXT) NumberEqual.$(OBJEXT) NumberGt.$(OBJEXT) \
-	StringToNumber.$(OBJEXT) scheme.$(OBJEXT) load.$(OBJEXT)
+am_scheme_OBJECTS = scheme-main.$(OBJEXT) scheme-Object.$(OBJEXT) \
+	scheme-Number.$(OBJEXT) scheme-String.$(OBJEXT) \
+	scheme-Quote.$(OBJEXT) scheme-Variable.$(OBJEXT) \
+	scheme-Assignment.$(OBJEXT) scheme-SpecialIf.$(OBJEXT) \
+	scheme-Frame.$(OBJEXT) scheme-Environment.$(OBJEXT) \
+	scheme-Lambda.$(OBJEXT) scheme-Procedure.$(OBJEXT) \
+	scheme-Begin.$(OBJEXT) scheme-Definition.$(OBJEXT) \
+	scheme-Cond.$(OBJEXT) scheme-Pair.$(OBJEXT) \
+	scheme-And.$(OBJEXT) scheme-Or.$(OBJEXT) scheme-Let.$(OBJEXT) \
+	scheme-LetAsterisk.$(OBJEXT) scheme-Application.$(OBJEXT) \
+	scheme-Parser.$(OBJEXT) scheme-Tokenizer.$(OBJEXT) \
+	scheme-Node.$(OBJEXT) scheme-Translator.$(OBJEXT) \
+	scheme-Plus.$(OBJEXT) scheme-Minus.$(OBJEXT) \
+	scheme-Cons.$(OBJEXT) scheme-Car.$(OBJEXT) \
+	scheme-Cdr.$(OBJEXT) scheme-Display.$(OBJEXT) \
+	scheme-StringP.$(OBJEXT) scheme-NumberP.$(OBJEXT) \
+	scheme-NumberEqual.$(OBJEXT) scheme-NumberGt.$(OBJEXT) \
+	scheme-StringToNumber.$(OBJEXT) scheme-scheme.$(OBJEXT) \
+	scheme-load.$(OBJEXT)
 scheme_OBJECTS = $(am_scheme_OBJECTS)
 scheme_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -148,8 +155,8 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 #scheme_INCLUDES=-I /usr/include -I /usr/include/stlport -I .
-#scheme_CXXFLAGS = -pg -I /usr/include/stlport
-#scheme_LDFLAGS = -pg -lstlport
+scheme_CXXFLAGS = -pg
+scheme_LDFLAGS = -pg
 scheme_SOURCES = \
 main.cpp\
 Object.cpp\
@@ -299,71 +306,233 @@ distclean-compile:
 .cpp.obj:
 	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-Plus.o: PrimitiveProcedures/Plus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Plus.o `test -f 'PrimitiveProcedures/Plus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Plus.cpp
+scheme-main.o: main.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
 
-Plus.obj: PrimitiveProcedures/Plus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Plus.obj `if test -f 'PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Plus.cpp'; fi`
+scheme-main.obj: main.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
 
-Minus.o: PrimitiveProcedures/Minus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Minus.o `test -f 'PrimitiveProcedures/Minus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Minus.cpp
+scheme-Object.o: Object.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Object.o `test -f 'Object.cpp' || echo '$(srcdir)/'`Object.cpp
 
-Minus.obj: PrimitiveProcedures/Minus.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Minus.obj `if test -f 'PrimitiveProcedures/Minus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Minus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Minus.cpp'; fi`
+scheme-Object.obj: Object.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Object.obj `if test -f 'Object.cpp'; then $(CYGPATH_W) 'Object.cpp'; else $(CYGPATH_W) '$(srcdir)/Object.cpp'; fi`
 
-Cons.o: PrimitiveProcedures/Cons.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cons.o `test -f 'PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cons.cpp
+scheme-Number.o: Number.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Number.o `test -f 'Number.cpp' || echo '$(srcdir)/'`Number.cpp
 
-Cons.obj: PrimitiveProcedures/Cons.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cons.obj `if test -f 'PrimitiveProcedures/Cons.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cons.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cons.cpp'; fi`
+scheme-Number.obj: Number.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Number.obj `if test -f 'Number.cpp'; then $(CYGPATH_W) 'Number.cpp'; else $(CYGPATH_W) '$(srcdir)/Number.cpp'; fi`
 
-Car.o: PrimitiveProcedures/Car.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Car.o `test -f 'PrimitiveProcedures/Car.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Car.cpp
+scheme-String.o: String.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-String.o `test -f 'String.cpp' || echo '$(srcdir)/'`String.cpp
 
-Car.obj: PrimitiveProcedures/Car.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Car.obj `if test -f 'PrimitiveProcedures/Car.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Car.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Car.cpp'; fi`
+scheme-String.obj: String.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-String.obj `if test -f 'String.cpp'; then $(CYGPATH_W) 'String.cpp'; else $(CYGPATH_W) '$(srcdir)/String.cpp'; fi`
 
-Cdr.o: PrimitiveProcedures/Cdr.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cdr.o `test -f 'PrimitiveProcedures/Cdr.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cdr.cpp
+scheme-Quote.o: Quote.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Quote.o `test -f 'Quote.cpp' || echo '$(srcdir)/'`Quote.cpp
 
-Cdr.obj: PrimitiveProcedures/Cdr.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Cdr.obj `if test -f 'PrimitiveProcedures/Cdr.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cdr.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cdr.cpp'; fi`
+scheme-Quote.obj: Quote.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Quote.obj `if test -f 'Quote.cpp'; then $(CYGPATH_W) 'Quote.cpp'; else $(CYGPATH_W) '$(srcdir)/Quote.cpp'; fi`
 
-Display.o: PrimitiveProcedures/Display.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Display.o `test -f 'PrimitiveProcedures/Display.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Display.cpp
+scheme-Variable.o: Variable.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Variable.o `test -f 'Variable.cpp' || echo '$(srcdir)/'`Variable.cpp
 
-Display.obj: PrimitiveProcedures/Display.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Display.obj `if test -f 'PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Display.cpp'; fi`
+scheme-Variable.obj: Variable.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Variable.obj `if test -f 'Variable.cpp'; then $(CYGPATH_W) 'Variable.cpp'; else $(CYGPATH_W) '$(srcdir)/Variable.cpp'; fi`
 
-StringP.o: PrimitiveProcedures/StringP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringP.o `test -f 'PrimitiveProcedures/StringP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringP.cpp
+scheme-Assignment.o: Assignment.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Assignment.o `test -f 'Assignment.cpp' || echo '$(srcdir)/'`Assignment.cpp
 
-StringP.obj: PrimitiveProcedures/StringP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringP.obj `if test -f 'PrimitiveProcedures/StringP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringP.cpp'; fi`
+scheme-Assignment.obj: Assignment.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Assignment.obj `if test -f 'Assignment.cpp'; then $(CYGPATH_W) 'Assignment.cpp'; else $(CYGPATH_W) '$(srcdir)/Assignment.cpp'; fi`
 
-NumberP.o: PrimitiveProcedures/NumberP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberP.o `test -f 'PrimitiveProcedures/NumberP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberP.cpp
+scheme-SpecialIf.o: SpecialIf.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-SpecialIf.o `test -f 'SpecialIf.cpp' || echo '$(srcdir)/'`SpecialIf.cpp
 
-NumberP.obj: PrimitiveProcedures/NumberP.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberP.obj `if test -f 'PrimitiveProcedures/NumberP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberP.cpp'; fi`
+scheme-SpecialIf.obj: SpecialIf.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-SpecialIf.obj `if test -f 'SpecialIf.cpp'; then $(CYGPATH_W) 'SpecialIf.cpp'; else $(CYGPATH_W) '$(srcdir)/SpecialIf.cpp'; fi`
 
-NumberEqual.o: PrimitiveProcedures/NumberEqual.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberEqual.o `test -f 'PrimitiveProcedures/NumberEqual.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberEqual.cpp
+scheme-Frame.o: Frame.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Frame.o `test -f 'Frame.cpp' || echo '$(srcdir)/'`Frame.cpp
 
-NumberEqual.obj: PrimitiveProcedures/NumberEqual.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberEqual.obj `if test -f 'PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberEqual.cpp'; fi`
+scheme-Frame.obj: Frame.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Frame.obj `if test -f 'Frame.cpp'; then $(CYGPATH_W) 'Frame.cpp'; else $(CYGPATH_W) '$(srcdir)/Frame.cpp'; fi`
 
-NumberGt.o: PrimitiveProcedures/NumberGt.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberGt.o `test -f 'PrimitiveProcedures/NumberGt.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberGt.cpp
+scheme-Environment.o: Environment.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Environment.o `test -f 'Environment.cpp' || echo '$(srcdir)/'`Environment.cpp
 
-NumberGt.obj: PrimitiveProcedures/NumberGt.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NumberGt.obj `if test -f 'PrimitiveProcedures/NumberGt.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberGt.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberGt.cpp'; fi`
+scheme-Environment.obj: Environment.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Environment.obj `if test -f 'Environment.cpp'; then $(CYGPATH_W) 'Environment.cpp'; else $(CYGPATH_W) '$(srcdir)/Environment.cpp'; fi`
 
-StringToNumber.o: PrimitiveProcedures/StringToNumber.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringToNumber.o `test -f 'PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringToNumber.cpp
+scheme-Lambda.o: Lambda.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Lambda.o `test -f 'Lambda.cpp' || echo '$(srcdir)/'`Lambda.cpp
 
-StringToNumber.obj: PrimitiveProcedures/StringToNumber.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringToNumber.obj `if test -f 'PrimitiveProcedures/StringToNumber.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringToNumber.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringToNumber.cpp'; fi`
+scheme-Lambda.obj: Lambda.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Lambda.obj `if test -f 'Lambda.cpp'; then $(CYGPATH_W) 'Lambda.cpp'; else $(CYGPATH_W) '$(srcdir)/Lambda.cpp'; fi`
+
+scheme-Procedure.o: Procedure.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Procedure.o `test -f 'Procedure.cpp' || echo '$(srcdir)/'`Procedure.cpp
+
+scheme-Procedure.obj: Procedure.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Procedure.obj `if test -f 'Procedure.cpp'; then $(CYGPATH_W) 'Procedure.cpp'; else $(CYGPATH_W) '$(srcdir)/Procedure.cpp'; fi`
+
+scheme-Begin.o: Begin.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Begin.o `test -f 'Begin.cpp' || echo '$(srcdir)/'`Begin.cpp
+
+scheme-Begin.obj: Begin.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Begin.obj `if test -f 'Begin.cpp'; then $(CYGPATH_W) 'Begin.cpp'; else $(CYGPATH_W) '$(srcdir)/Begin.cpp'; fi`
+
+scheme-Definition.o: Definition.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Definition.o `test -f 'Definition.cpp' || echo '$(srcdir)/'`Definition.cpp
+
+scheme-Definition.obj: Definition.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Definition.obj `if test -f 'Definition.cpp'; then $(CYGPATH_W) 'Definition.cpp'; else $(CYGPATH_W) '$(srcdir)/Definition.cpp'; fi`
+
+scheme-Cond.o: Cond.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cond.o `test -f 'Cond.cpp' || echo '$(srcdir)/'`Cond.cpp
+
+scheme-Cond.obj: Cond.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cond.obj `if test -f 'Cond.cpp'; then $(CYGPATH_W) 'Cond.cpp'; else $(CYGPATH_W) '$(srcdir)/Cond.cpp'; fi`
+
+scheme-Pair.o: Pair.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Pair.o `test -f 'Pair.cpp' || echo '$(srcdir)/'`Pair.cpp
+
+scheme-Pair.obj: Pair.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Pair.obj `if test -f 'Pair.cpp'; then $(CYGPATH_W) 'Pair.cpp'; else $(CYGPATH_W) '$(srcdir)/Pair.cpp'; fi`
+
+scheme-And.o: And.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-And.o `test -f 'And.cpp' || echo '$(srcdir)/'`And.cpp
+
+scheme-And.obj: And.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-And.obj `if test -f 'And.cpp'; then $(CYGPATH_W) 'And.cpp'; else $(CYGPATH_W) '$(srcdir)/And.cpp'; fi`
+
+scheme-Or.o: Or.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Or.o `test -f 'Or.cpp' || echo '$(srcdir)/'`Or.cpp
+
+scheme-Or.obj: Or.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Or.obj `if test -f 'Or.cpp'; then $(CYGPATH_W) 'Or.cpp'; else $(CYGPATH_W) '$(srcdir)/Or.cpp'; fi`
+
+scheme-Let.o: Let.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Let.o `test -f 'Let.cpp' || echo '$(srcdir)/'`Let.cpp
+
+scheme-Let.obj: Let.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Let.obj `if test -f 'Let.cpp'; then $(CYGPATH_W) 'Let.cpp'; else $(CYGPATH_W) '$(srcdir)/Let.cpp'; fi`
+
+scheme-LetAsterisk.o: LetAsterisk.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-LetAsterisk.o `test -f 'LetAsterisk.cpp' || echo '$(srcdir)/'`LetAsterisk.cpp
+
+scheme-LetAsterisk.obj: LetAsterisk.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-LetAsterisk.obj `if test -f 'LetAsterisk.cpp'; then $(CYGPATH_W) 'LetAsterisk.cpp'; else $(CYGPATH_W) '$(srcdir)/LetAsterisk.cpp'; fi`
+
+scheme-Application.o: Application.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Application.o `test -f 'Application.cpp' || echo '$(srcdir)/'`Application.cpp
+
+scheme-Application.obj: Application.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Application.obj `if test -f 'Application.cpp'; then $(CYGPATH_W) 'Application.cpp'; else $(CYGPATH_W) '$(srcdir)/Application.cpp'; fi`
+
+scheme-Parser.o: Parser.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Parser.o `test -f 'Parser.cpp' || echo '$(srcdir)/'`Parser.cpp
+
+scheme-Parser.obj: Parser.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Parser.obj `if test -f 'Parser.cpp'; then $(CYGPATH_W) 'Parser.cpp'; else $(CYGPATH_W) '$(srcdir)/Parser.cpp'; fi`
+
+scheme-Tokenizer.o: Tokenizer.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Tokenizer.o `test -f 'Tokenizer.cpp' || echo '$(srcdir)/'`Tokenizer.cpp
+
+scheme-Tokenizer.obj: Tokenizer.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Tokenizer.obj `if test -f 'Tokenizer.cpp'; then $(CYGPATH_W) 'Tokenizer.cpp'; else $(CYGPATH_W) '$(srcdir)/Tokenizer.cpp'; fi`
+
+scheme-Node.o: Node.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Node.o `test -f 'Node.cpp' || echo '$(srcdir)/'`Node.cpp
+
+scheme-Node.obj: Node.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Node.obj `if test -f 'Node.cpp'; then $(CYGPATH_W) 'Node.cpp'; else $(CYGPATH_W) '$(srcdir)/Node.cpp'; fi`
+
+scheme-Translator.o: Translator.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Translator.o `test -f 'Translator.cpp' || echo '$(srcdir)/'`Translator.cpp
+
+scheme-Translator.obj: Translator.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Translator.obj `if test -f 'Translator.cpp'; then $(CYGPATH_W) 'Translator.cpp'; else $(CYGPATH_W) '$(srcdir)/Translator.cpp'; fi`
+
+scheme-Plus.o: PrimitiveProcedures/Plus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Plus.o `test -f 'PrimitiveProcedures/Plus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Plus.cpp
+
+scheme-Plus.obj: PrimitiveProcedures/Plus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Plus.obj `if test -f 'PrimitiveProcedures/Plus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Plus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Plus.cpp'; fi`
+
+scheme-Minus.o: PrimitiveProcedures/Minus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.o `test -f 'PrimitiveProcedures/Minus.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Minus.cpp
+
+scheme-Minus.obj: PrimitiveProcedures/Minus.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Minus.obj `if test -f 'PrimitiveProcedures/Minus.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Minus.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Minus.cpp'; fi`
+
+scheme-Cons.o: PrimitiveProcedures/Cons.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.o `test -f 'PrimitiveProcedures/Cons.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cons.cpp
+
+scheme-Cons.obj: PrimitiveProcedures/Cons.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cons.obj `if test -f 'PrimitiveProcedures/Cons.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cons.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cons.cpp'; fi`
+
+scheme-Car.o: PrimitiveProcedures/Car.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Car.o `test -f 'PrimitiveProcedures/Car.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Car.cpp
+
+scheme-Car.obj: PrimitiveProcedures/Car.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Car.obj `if test -f 'PrimitiveProcedures/Car.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Car.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Car.cpp'; fi`
+
+scheme-Cdr.o: PrimitiveProcedures/Cdr.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cdr.o `test -f 'PrimitiveProcedures/Cdr.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Cdr.cpp
+
+scheme-Cdr.obj: PrimitiveProcedures/Cdr.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Cdr.obj `if test -f 'PrimitiveProcedures/Cdr.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Cdr.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Cdr.cpp'; fi`
+
+scheme-Display.o: PrimitiveProcedures/Display.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.o `test -f 'PrimitiveProcedures/Display.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/Display.cpp
+
+scheme-Display.obj: PrimitiveProcedures/Display.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-Display.obj `if test -f 'PrimitiveProcedures/Display.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/Display.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/Display.cpp'; fi`
+
+scheme-StringP.o: PrimitiveProcedures/StringP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringP.o `test -f 'PrimitiveProcedures/StringP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringP.cpp
+
+scheme-StringP.obj: PrimitiveProcedures/StringP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringP.obj `if test -f 'PrimitiveProcedures/StringP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringP.cpp'; fi`
+
+scheme-NumberP.o: PrimitiveProcedures/NumberP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberP.o `test -f 'PrimitiveProcedures/NumberP.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberP.cpp
+
+scheme-NumberP.obj: PrimitiveProcedures/NumberP.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberP.obj `if test -f 'PrimitiveProcedures/NumberP.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberP.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberP.cpp'; fi`
+
+scheme-NumberEqual.o: PrimitiveProcedures/NumberEqual.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberEqual.o `test -f 'PrimitiveProcedures/NumberEqual.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberEqual.cpp
+
+scheme-NumberEqual.obj: PrimitiveProcedures/NumberEqual.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberEqual.obj `if test -f 'PrimitiveProcedures/NumberEqual.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberEqual.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberEqual.cpp'; fi`
+
+scheme-NumberGt.o: PrimitiveProcedures/NumberGt.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberGt.o `test -f 'PrimitiveProcedures/NumberGt.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/NumberGt.cpp
+
+scheme-NumberGt.obj: PrimitiveProcedures/NumberGt.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-NumberGt.obj `if test -f 'PrimitiveProcedures/NumberGt.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/NumberGt.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/NumberGt.cpp'; fi`
+
+scheme-StringToNumber.o: PrimitiveProcedures/StringToNumber.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringToNumber.o `test -f 'PrimitiveProcedures/StringToNumber.cpp' || echo '$(srcdir)/'`PrimitiveProcedures/StringToNumber.cpp
+
+scheme-StringToNumber.obj: PrimitiveProcedures/StringToNumber.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-StringToNumber.obj `if test -f 'PrimitiveProcedures/StringToNumber.cpp'; then $(CYGPATH_W) 'PrimitiveProcedures/StringToNumber.cpp'; else $(CYGPATH_W) '$(srcdir)/PrimitiveProcedures/StringToNumber.cpp'; fi`
+
+scheme-scheme.o: scheme.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.o `test -f 'scheme.cpp' || echo '$(srcdir)/'`scheme.cpp
+
+scheme-scheme.obj: scheme.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-scheme.obj `if test -f 'scheme.cpp'; then $(CYGPATH_W) 'scheme.cpp'; else $(CYGPATH_W) '$(srcdir)/scheme.cpp'; fi`
+
+scheme-load.o: load.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-load.o `test -f 'load.cpp' || echo '$(srcdir)/'`load.cpp
+
+scheme-load.obj: load.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scheme_CXXFLAGS) $(CXXFLAGS) -c -o scheme-load.obj `if test -f 'load.cpp'; then $(CYGPATH_W) 'load.cpp'; else $(CYGPATH_W) '$(srcdir)/load.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
