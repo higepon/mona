@@ -350,10 +350,8 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
     case COMMAND_SHUTDOWN:
     {
-        dword result;
-	printf("&result = %x\n", &result);
-	SYSCALL_2(SYSTEM_CALL_APM_SET_POWER_STATE, result, 0x0001, 0x0003);
-	printf("result = %d\n");
+	dword result = syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+	printf("result = %x\n");
 	break;
     }
 
