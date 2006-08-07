@@ -350,7 +350,16 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
     case COMMAND_SHUTDOWN:
     {
-	dword result = syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+	dword result;
+
+	if( args.get_Length() < 2 )
+	{
+		printf("USAGE: SHUTDOWN [-HALT]");
+		break;
+	}
+
+	if( args[1] == "-halt" || args[1] == "-HALT" )
+		result = syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
 	printf("result = %x\n");
 	break;
     }
