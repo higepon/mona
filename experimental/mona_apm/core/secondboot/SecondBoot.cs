@@ -27,11 +27,7 @@ namespace Mona
 			
 			ReadConfig("MONA.CFG");
 			SetVesaMode();
-			if( !APM.InterfaceConnect32(APMInfoAddr) )
-			{
-				Console.WriteLine("APM isn't supported.");
-				for(;;) new Inline("hlt");
-			}
+			APM.InterfaceConnect32(APMInfoAddr);
 			
 			WriteSize(0);
 		}

@@ -65,6 +65,8 @@ namespace Mona
 			new Inline("push es");
 			new Inline("push di");
 
+			Registers.ES = 0;
+
 			if( !InstallationCheck(false) ) return false;
 
 			version = APM.Version();
@@ -74,7 +76,6 @@ namespace Mona
 			Registers.BX = 0;
 			new Inline("int 0x15");
 
-			new Inline("push edi");
 			Registers.DI = addr;
 
 			new Inline("mov dword [es:di], eax");
@@ -82,9 +83,8 @@ namespace Mona
 			new Inline("mov dword [es:di+8], ecx");
 			new Inline("mov dword [es:di+12], edx");
 			new Inline("mov dword [es:di+16], esi");
-			new Inline("pop esi");
-			new Inline("mov dword [es:di+20], esi");
-			Registers.AX = version;
+			new Inline("mov edi, dword [ss:bp-4]");
+			new Inline("mov dword [es:di+20], edi");
 			new Inline("mov dword [es:di+24], eax");
 
 			new Inline("pop di");
