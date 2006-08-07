@@ -41,7 +41,8 @@ SOURCES      = cstart.cpp            \
                RTC.cpp               \
                Messenger.cpp         \
                MemoryAllocator.cpp   \
-               apm.cpp
+               apm.cpp               \
+               shutdown.cpp          
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

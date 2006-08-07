@@ -17,6 +17,7 @@
 #include "Loader.h"
 #include "RTC.h"
 #include "apm.h"
+#include "shutdown.h"
 
 extern const char* version;
 extern dword version_number;
@@ -615,16 +616,13 @@ void syscall_entrance()
 	g_dllSharedObject->setPageFlag(info->esi, SharedMemoryObject::FLAG_NOT_SHARED);
 	break;
 
-    case SYSTEM_CALL_APM_SET_POWER_STATE:
-        info->eax = (dword)apm_set_power_state((word)info->esi, (word)info->ecx);
-        break;
-
-    case SYSTEM_CALL_APM_GET_POWER_STATE:
-	info->eax = (dword)apm_get_power_state((word)info->esi);
-	break;
-
     case SYSTEM_CALL_APM_BIOS:
         info->eax = (dword)apm_bios((word)info->esi, (apm_bios_regs*)info->ecx);
+	break;
+
+    case SYSTEM_CALL_SHUTDOWN:
+	info->eax = shutdown(info->esi, info->ecx);
+	break;
 
     default:
         g_console->printf("syscall:default");

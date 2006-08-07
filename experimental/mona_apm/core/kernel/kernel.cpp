@@ -204,7 +204,7 @@ void startKernel()
     g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
     g_console->printf("VESA: %dx%d %dbpp\n", g_vesaDetail->xResolution, g_vesaDetail->yResolution, g_vesaDetail->bitsPerPixel);
 
-#if 1
+#if 0
     /* APM Information */
     g_console->printf("APM Version: %x\n", g_apmInfo->version);
     g_console->printf("APM CS:EIP: %x:%x\n", g_apmInfo->cs32, g_apmInfo->eip);

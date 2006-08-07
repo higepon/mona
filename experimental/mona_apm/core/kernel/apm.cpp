@@ -3,9 +3,6 @@
 #include "global.h"
 #include "kernel.h"
 
-/* APMの関数群はCPL=0で実行しなければならない */
-
-
 typedef struct
 {
 	dword offset;
@@ -23,8 +20,12 @@ void apm_init(void)
 	apm_eip.offset = g_apmInfo->eip;
 	apm_eip.segment = 0x40;
 
+/*
 	g_console->printf("apm_eip = %x\n", apm_eip.offset);
 	g_console->printf("apm_des = %x\n", apm_eip.segment);
+*/
+
+	apm_enable();
 }
 
 dword apm_bios(dword fn, apm_bios_regs *regs)
@@ -32,32 +33,24 @@ dword apm_bios(dword fn, apm_bios_regs *regs)
 	return apm_bios_call(0x5300|fn, regs) & 0xFF;
 }
 
-word apm_set_power_state(word did, word state)
+void apm_enable()
 {
 	apm_bios_regs regs;
 
-	regs.eax = 0x5307;
-	regs.ebx = did;
-	regs.ecx = state;
-	regs.edx = 0;
-	regs.edi = 0;
-	regs.esi = 0;
+	regs.eax = 0x5308;
+	regs.ebx = 1;
+	regs.ecx = 1;
+	apm_bios(0x08, &regs);
 
-	g_console->printf("Calling APM BIOS.\n");
-	return apm_bios(0x07, &regs);
-}
+	regs.eax = 0x530D;
+	regs.ebx = 1;
+	regs.ecx = 1;
+	apm_bios(0x0D, &regs);
 
-word apm_get_power_state(word did)
-{
-	apm_bios_regs regs;
+	regs.eax = 0x530F;
+	regs.ebx = 1;
+	regs.ecx = 1;
+	apm_bios(0x0F, &regs);
 
-	regs.eax = 0x530C;
-	regs.ebx = did;
-	regs.ecx = 0;
-	regs.edx = 0;
-	regs.edi = 0;
-	regs.esi = 0;
-
-	apm_bios(0x530C, &regs);
-	return (word)regs.ecx;
+	return;
 }

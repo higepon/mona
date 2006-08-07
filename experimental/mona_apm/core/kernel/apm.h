@@ -15,7 +15,6 @@
 
 #include <sys/types.h>
 
-/*
 typedef struct
 {
 	dword eax;
@@ -25,19 +24,20 @@ typedef struct
 	dword esi;
 	dword edi;
 }apm_bios_regs;
-*/
 
+#pragma pack(2)
 typedef struct
 {
 	dword cs32;
 	dword eip;
 	dword cs16;
 	dword ds;
-	dword cs32_len;
-	dword cs16_len;
+	word cs32_len;
+	word cs16_len;
 	dword ds_len;
 	dword version; // high = major low = minor
 } APMInfo;
+#pragma pack()
 
 enum
 {
@@ -65,8 +65,7 @@ enum
 };
 
 void apm_init();
-word apm_set_power_state(word did, word state);
-word apm_get_power_state(word did);
+void apm_enable();
 dword apm_bios(dword fn, apm_bios_regs* regs);
 
 #endif

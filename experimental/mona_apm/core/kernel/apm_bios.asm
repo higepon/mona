@@ -44,13 +44,16 @@ _apm_bios_call:
 	pop ebp
 	jc L_apm_bios_call_err
 
+	push eax
 	mov eax, [ebp+12]
-	mov [eax], eax
 	mov [eax+4], ebx
 	mov [eax+8], ecx
 	mov [eax+12], edx
 	mov [eax+16], esi
 	mov [eax+20], edi
+	mov ebx, eax
+	pop eax
+	mov [ebx], eax
 	xor eax, eax
 
 L_apm_bios_call_err:

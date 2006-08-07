@@ -128,35 +128,17 @@ void GDTUtil::setup() {
     /* USER SS 0-4GB */
     setSegDesc(&g_gdt[7], 0, 0xFFFFF              , SEGMENT_PRESENT | SEGMENT_DPL3 | 0x10 | 0x02);
 
-#if 1
     /* APM 32bit CS */
     setSegDescExt(&g_gdt[8], g_apmInfo->cs32<<4, (g_apmInfo->cs32_len-1),
 			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0xC0);
-//    setSegDescExt(&g_gdt[8], g_apmInfo->ds<<4, (g_apmInfo->cs32_len-1),
-//			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0xC0);
 
     /* APM 16bit CS */
     setSegDescExt(&g_gdt[9], g_apmInfo->cs16<<4, (g_apmInfo->cs16_len-1),
 			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0x80);
 
     /* APM DS */
-    setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->ds_len-1),
+    setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->cs32_len-1),
 			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0xC0);
-#endif
-
-#if 0
-    /* APM 32bit CS */
-    setSegDesc(&g_gdt[8], g_apmInfo->cs32, (g_apmInfo->cs32_len-1),
-			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
-
-    /* APM 16bit CS */
-    setSegDesc(&g_gdt[9], g_apmInfo->cs16, (g_apmInfo->cs16_len-1),
-			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A);
-
-    /* APM DS */
-    setSegDesc(&g_gdt[10], g_apmInfo->ds, (g_apmInfo->ds_len-1),
-			SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02);
-#endif
 
     /* lgdt */
     GDTR gdtr;
