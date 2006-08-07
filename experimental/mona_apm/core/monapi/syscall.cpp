@@ -630,3 +630,10 @@ int syscall_set_dll_segment_notshared(int index)
     return result;
 }
 
+int syscall_shutdown(int op, int device)
+{
+    dword result;
+    SYSCALL_2(SYSTEM_CALL_SHUTDOWN, result, op, device);
+    return result;
+}
+
