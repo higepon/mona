@@ -5,8 +5,12 @@
 
 dword shutdown(dword op, dword device)
 {
-	g_console->printf("Version: %x\n", g_apmInfo->version);
-//	if( g_apmInfo->version == 0x0102 )
+	if( op == SHUTDOWN_FEATURE )
+	{
+		return SHUTDOWN_FEATURE_APM;
+	}
+
+	if( g_apmInfo->version == 0x0102 )
 	{
 		return shutdown_by_apm(op, device);
 	}

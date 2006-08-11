@@ -11,6 +11,7 @@ using I8086;
 		dword cs_len;
 		dword ds_len;
 		dword versoin; // high = major low = minor
+		dword isSupported;
 	};
 */
 
@@ -64,10 +65,23 @@ namespace Mona
 
 			new Inline("push es");
 			new Inline("push di");
+			new Inline("push esi");
 
 			Registers.ES = 0;
 
-			if( !InstallationCheck(false) ) return false;
+			if( !InstallationCheck(false) )
+			{
+				Registers.DI = addr;
+				Registers.ES = 0;
+
+				new Inline("mov dword [es:di+28], 0");
+
+				new Inline("pop esi");
+				new Inline("pop di");
+				new Inline("pop es");
+
+				return false;
+			}
 
 			version = APM.Version();
 
@@ -83,10 +97,13 @@ namespace Mona
 			new Inline("mov dword [es:di+8], ecx");
 			new Inline("mov dword [es:di+12], edx");
 			new Inline("mov dword [es:di+16], esi");
-			new Inline("mov edi, dword [ss:bp-4]");
-			new Inline("mov dword [es:di+20], edi");
+			new Inline("mov dword [es:di+20], esi");
+			new Inline("mov eax, dword [ss:bp-2]");
 			new Inline("mov dword [es:di+24], eax");
+			new Inline("mov eax, 1");
+			new Inline("mov dword [es:di+28], eax");
 
+			new Inline("pop esi");
 			new Inline("pop di");
 			new Inline("pop es");
 

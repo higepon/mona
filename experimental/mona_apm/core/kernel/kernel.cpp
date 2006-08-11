@@ -204,7 +204,7 @@ void startKernel()
     g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
     g_console->printf("VESA: %dx%d %dbpp\n", g_vesaDetail->xResolution, g_vesaDetail->yResolution, g_vesaDetail->bitsPerPixel);
 
-#if 0
+#if 1
     /* APM Information */
     g_console->printf("APM Version: %x\n", g_apmInfo->version);
     g_console->printf("APM CS:EIP: %x:%x\n", g_apmInfo->cs32, g_apmInfo->eip);
@@ -212,7 +212,16 @@ void startKernel()
     g_console->printf("APM CS length: %x\n", g_apmInfo->cs32_len);
     g_console->printf("APM DS length: %x\n", g_apmInfo->ds_len);
 #endif
-    apm_init();
+    g_console->printf("isSupported: %x\n", g_apmInfo->isSupported);
+    if( !g_apmInfo->isSupported )
+    {
+        g_console->printf("APM: not supported.\n");
+    }
+    else
+    {
+	g_console->printf("APM: version %x\n", g_apmInfo->version);
+        apm_init();
+    }
 
     /* shared memory object */
     SharedMemoryObject::setup();

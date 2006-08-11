@@ -36,6 +36,7 @@ typedef struct
 	word cs16_len;
 	dword ds_len;
 	dword version; // high = major low = minor
+	dword isSupported;
 } APMInfo;
 #pragma pack()
 
