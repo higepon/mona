@@ -1,3 +1,7 @@
+2006-08-16  higepon  <higepon@users.sourceforge.jp>
+
+        * src/FileServer.cpp: uppercase
+
 2006-04-15  higepon  <higepon@users.sourceforge.jp>
 
 	* Message.cpp : get pid from process name

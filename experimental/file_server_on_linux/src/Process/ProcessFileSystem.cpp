@@ -29,9 +29,9 @@ int ProcessFileSystem::initialize()
     root_->fnode  = rootPnode_;
     root_->fs     = this;
     root_->type = Vnode::DIRECTORY;
-    pnodes_.push_back(new Pnode(1, string("init")));
-    pnodes_.push_back(new Pnode(2, string("sh")));
-    pnodes_.push_back(new Pnode(3, string("httpd")));
+    pnodes_.push_back(new Pnode(1, string("INIT")));
+    pnodes_.push_back(new Pnode(2, string("SH")));
+    pnodes_.push_back(new Pnode(3, string("HTTPD")));
     return MONA_SUCCESS;
 }
 

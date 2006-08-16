@@ -6,6 +6,13 @@ using namespace std;
 #define IRQ_PRIMARY   14
 #define IRQ_SECONDARY 15
 
+string upperCase(const string& s)
+{
+    string result = s;
+    transform(result.begin(), result.end(), result.begin(), toupper);
+    return result;
+}
+
 FileServer::FileServer()
 {
     vmanager_ = new VnodeManager();
@@ -50,7 +57,7 @@ int FileServer::initializeMountedFileSystems()
         delete pfs;
         return MONA_FAILURE;
     }
-    vmanager_->mount(rootFS_->getRoot(), "process", pfs->getRoot());
+    vmanager_->mount(rootFS_->getRoot(), "PROCESS", pfs->getRoot());
     mountedFSs_.push_back(pfs);
 
     // FAT12FileSystem
@@ -62,7 +69,7 @@ int FileServer::initializeMountedFileSystems()
         delete ffs;
         return MONA_FAILURE;
     }
-    vmanager_->mount(rootFS_->getRoot(), "fd", ffs->getRoot());
+    vmanager_->mount(rootFS_->getRoot(), "FD", ffs->getRoot());
     mountedFSs_.push_back(ffs);
     return MONA_SUCCESS;
 }
@@ -156,13 +163,13 @@ void FileServer::messageLoop()
             dword tid = msg.from; // temporary
             dword fildID;
             bool create = msg.arg1 == MONAPI_TRUE;
-            int ret = vmanager_->open(msg.str, 0, create, tid, &fildID);
+            int ret = vmanager_->open(upperCase(msg.str).c_str(), 0, create, tid, &fildID);
             Message::reply(&msg, ret == MONA_SUCCESS ? fildID : MONA_FAILURE);
             break;
         }
         case MSG_FILE_READ_ALL:
         {
-            monapi_cmemoryinfo* mi = readFileAll(msg.str);
+            monapi_cmemoryinfo* mi = readFileAll(upperCase(msg.str).c_str());
             if (NULL == mi)
             {
                 Message::reply(&msg, MONA_FAILURE);
@@ -231,7 +238,7 @@ void FileServer::messageLoop()
         case MSG_FILE_READ_DIRECTORY:
         {
             monapi_cmemoryinfo* memory;
-            int ret = vmanager_->readdir(msg.str, &memory);
+            int ret = vmanager_->readdir(upperCase(msg.str).c_str(), &memory);
             if (ret != MONA_SUCCESS)
             {
                 Message::reply(&msg, MONA_FAILURE);
@@ -270,7 +277,7 @@ void FileServer::messageLoop()
         }
         case MSG_FILE_DECOMPRESS_ST5_FILE:
         {
-            monapi_cmemoryinfo* mi = ST5DecompressFile(msg.str);
+            monapi_cmemoryinfo* mi = ST5DecompressFile(upperCase(msg.str).c_str());
             if (mi != NULL)
             {
                 Message::reply(&msg, mi->Handle, mi->Size);

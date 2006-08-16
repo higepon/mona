@@ -12,6 +12,7 @@
 #include "Process/ProcessFileSystem.h"
 #include "dtk5s.h"
 #include "Message.h"
+#include <algorithm>
 
 class FileServer
 {
