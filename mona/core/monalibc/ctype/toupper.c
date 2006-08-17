@@ -35,5 +35,8 @@
 
 int toupper(int c)
 {
-	return c | 0x20;
+	if(islower(c))
+		return c | 0x20;
+	else
+		return c;
 }
