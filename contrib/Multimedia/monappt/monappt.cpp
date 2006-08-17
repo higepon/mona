@@ -16,7 +16,7 @@ int OpenJpeg(const char* filename)
 	}
 
 	monapi_cmemoryinfo* mi = NULL;
-	mi = monapi_call_file_read_data(filename, MONAPI_FALSE);
+	mi = monapi_file_read_all(filename);
 
 	if (mi == NULL) {
 		printf("file %s not found", filename);
@@ -100,7 +100,7 @@ int MonaMain(List<char*>* argv)
 	
 	// ファイル読み込み
 	printf("loading %s...\n", (const char*)filepath);
-	monapi_cmemoryinfo* mi = monapi_call_file_read_data((const char*)filepath, MONAPI_FALSE);
+	monapi_cmemoryinfo* mi = monapi_file_read_all((const char*)filepath);
 	if (mi == NULL || mi->Size == 0) {
 		printf("file read error\n");
 		return(-1);

@@ -165,7 +165,7 @@ static void DrawWallPaper(const char* src, int pos, unsigned int transparent, in
 */
 static void ReadConfig(List<char*>* pekoe)
 {
-	monapi_cmemoryinfo* cfg = monapi_call_file_read_data(pekoe->get(0), MONAPI_TRUE);
+	monapi_cmemoryinfo* cfg = monapi_file_read_all(pekoe->get(0));
 	if (cfg == NULL) return;
 	
 	if (startup != NULL)

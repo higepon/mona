@@ -1,5 +1,6 @@
 /*
 Copyright (c) 2005 bayside
+              2006 higepon
 
 Permission is hereby granted, free of charge, to any person 
 obtaining a copy of this software and associated documentation files 
@@ -69,7 +70,8 @@ private:
 	inline void ls(char *pathname) {
 	#ifdef MONA
 		// ディレクトリを開く
-		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(pathname, MONAPI_FALSE);
+		monapi_cmemoryinfo* mi = monapi_file_read_directory(pathname);
+        this->addLine(pathname);
 		if (mi == NULL) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return;
@@ -170,7 +172,7 @@ private:
 		} else if (pathname[strlen(pathname) - 1] == '5') {
 			mi = monapi_call_file_decompress_st5_file(pathname, MONAPI_FALSE);
 		} else {
-			mi = monapi_call_file_read_data(pathname, MONAPI_FALSE);
+			mi = monapi_file_read_all(pathname);
 		}
 
 		// NULLチェック
@@ -236,7 +238,7 @@ private:
 			strcat(temp, "/");
 
 			// ディレクトリを開く
-			monapi_cmemoryinfo* mi = monapi_call_file_read_directory(temp, MONAPI_FALSE);
+			monapi_cmemoryinfo* mi = monapi_file_read_directory(temp);
 			if (mi == NULL) return;
 			int size = *(int*)mi->Data;
 			if (size == 0) return;
@@ -274,7 +276,7 @@ private:
 	inline bool existsFile(const char *filename) {
 	#ifdef MONA
 		// ディレクトリを開く
-		monapi_cmemoryinfo* mi = monapi_call_file_read_directory(this->currentPath, MONAPI_FALSE);
+		monapi_cmemoryinfo* mi = monapi_file_read_directory(this->currentPath);
 		if (mi == NULL) {
 			this->addLine("ファイルまたはディレクトリが見つかりません。\n");
 			return false;

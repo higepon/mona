@@ -47,7 +47,7 @@ Glaunch::Glaunch()
 		return;
 	}
 
-	monapi_cmemoryinfo* mi = monapi_call_file_read_directory("/APPS/BAYGUI", MONAPI_TRUE);
+	monapi_cmemoryinfo* mi = monapi_file_read_directory("/APPS/BAYGUI");
 
 	int dsize = *(int*)mi->Data;
 	if (mi == NULL || dsize == 0) return;

@@ -30,7 +30,7 @@ int MonaMain(List<char*>* pekoe)
     CJPEGLS jpeg;
 
     monapi_cmemoryinfo* mi = NULL;
-    mi = monapi_call_file_read_data(pekoe->get(0), MONAPI_FALSE);
+    mi = monapi_file_read_all(pekoe->get(0));
 
     if (mi == NULL)
     {

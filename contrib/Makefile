@@ -1,4 +1,5 @@
 ifndef $(MONADIR)
+#export MONADIR=$(PWD)/../new-file-server-mona
 export MONADIR=$(PWD)/../mona
 endif
 

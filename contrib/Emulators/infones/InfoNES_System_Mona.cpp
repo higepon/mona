@@ -192,7 +192,7 @@ int InfoNES_ReadRom( const char *pszFileName )
 	monapi_cmemoryinfo* mi = NULL;
 	
 	/* Read File */
-	mi = monapi_call_file_read_data(pszFileName, MONAPI_FALSE);
+	mi = monapi_file_read_all(pszFileName);
 	if (mi == NULL || mi->Size == 0) {
 		syscall_print("ROM file not found!");
 		exit(1);

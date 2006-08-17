@@ -57,7 +57,7 @@ void FileBrowser::ReadDirectory(String path)
         monapi_cmemoryinfo_dispose(this->files);
         monapi_cmemoryinfo_delete(this->files);
     }
-    this->files = monapi_call_file_read_directory(buf, MONAPI_TRUE);
+    this->files = monapi_file_read_directory(buf);
     delete [] buf;
     if (this->files == NULL) return;
 

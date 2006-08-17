@@ -238,7 +238,7 @@ int MonaMain( List<char*>* pekoe ) {
 	}
 
 	printf("loading %s...\n", pekoe->get(0));
-	mi = monapi_call_file_read_data(pekoe->get(0), MONAPI_FALSE);
+	mi = monapi_file_read_all(pekoe->get(0));
 	if (mi == NULL || mi->Size == 0) {
 		printf("file read error\n");
 		return(-1);

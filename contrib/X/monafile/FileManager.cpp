@@ -32,7 +32,7 @@ static bool ExistsProcess(const MonAPI::CString& self)
 
 static bool DirectoryExists(const char* path)
 {
-	monapi_cmemoryinfo* files = monapi_call_file_read_directory(path, MONAPI_FALSE);
+	monapi_cmemoryinfo* files = monapi_file_read_directory(path);
 	if (files == NULL) return false;
 	
 	int size = *(int*)files->Data;

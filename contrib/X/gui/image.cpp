@@ -133,7 +133,7 @@ guiserver_bitmap* ReadJPEG(monapi_cmemoryinfo* mi)
 guiserver_bitmap* ReadImage(const CString& file, bool prompt /*= false*/)
 {
 	CString fn = file.toUpper();
-	monapi_cmemoryinfo* mi = monapi_call_file_read_data(fn, prompt);
+	monapi_cmemoryinfo* mi = monapi_file_read_all(fn);
 	guiserver_bitmap* ret = NULL;
 	if (mi == NULL) return ret;
 	
