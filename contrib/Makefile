@@ -5,7 +5,8 @@ endif
 
 all:
 # basic libraries
-	cd Devel/stlport && make install
+# stlport move to mona/tool/stlport
+#	cd Devel/stlport && make install
 	cd Graphics/libjpegls && touch dependencies && make && make install
 # servers
 	cd X/gui && touch dependencies && make && make install
@@ -35,7 +36,7 @@ all:
 	cd $(MONADIR)/tool/mkimg && make
 
 clean:
-	cd Devel/stlport && make clean
+#	cd Devel/stlport && make clean
 	cd Devel/tmpmonalibc && make clean
 	cd Emulators/infones && make clean
 	cd Graphics/jpegview && make clean
