@@ -10,6 +10,7 @@ COREDIR = core/monalibc core/firstboot
 
 all: tools cores
 tools:
+	cd tool/stlport && make && make install
 	cd tool/fat_write && make && make install
 	cd tool/t5lzma && make && make install
 	cd tool/bim2bin && make && make install
