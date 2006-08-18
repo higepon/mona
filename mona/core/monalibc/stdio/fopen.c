@@ -75,7 +75,7 @@ FILE *fopen(const char *path, const char *mode)
 		fp->_flags = __SAP|__SRD;
 	}
 
-	fileno = (int)monapi_call_file_open(path);
+	fileno = (int)monapi_file_open(path, MONAPI_FALSE);
 	if( fileno == 0 )
 	{
 		free(fp);

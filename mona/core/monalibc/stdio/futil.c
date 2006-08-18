@@ -43,7 +43,7 @@ int _read(int id, void *buf, size_t size)
 	int readsize;
 	int i;
 
-	cmi = monapi_call_file_read((dword)id, (dword)size);
+	cmi = monapi_file_read((dword)id, (dword)size);
 	if( cmi == NULL )
 	{
 		return -1;
@@ -71,7 +71,7 @@ int _seek(int id, fpos_t pos, int whence)
 {
 	MONAPI_BOOL result;
 
-	result = monapi_call_file_seek((dword)id, (dword)pos, (dword)whence);
+	result = monapi_file_seek((dword)id, (dword)pos, (dword)whence);
 	if( result == MONAPI_FALSE )
 	{
 		return -1;
