@@ -43,9 +43,9 @@ Glaunch::Glaunch()
 
 #if defined(MONA)
 	// APPSに移動
-	if (monapi_call_change_directory("/APPS/BAYGUI") == MONA_FAILURE) {
-		return;
-	}
+//	if (monapi_call_change_directory("/APPS/BAYGUI") == MONA_FAILURE) {
+//		return;
+//	}
 
 	monapi_cmemoryinfo* mi = monapi_file_read_directory("/APPS/BAYGUI");
 
