@@ -5,7 +5,7 @@
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is	 * furnished to do so, subject to the following conditions:
+ * copies of the Software, and to permit persons to whom the Software is     * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
@@ -21,22 +21,22 @@
  *************************************************************/
 
 /* Please send bug reports to
-	Shotaro Tsuji
-	4-1010,
-	Sakasedai 1-chome,
-	Takaraduka-si,
-	Hyogo-ken,
-	665-0024
-	Japan
-	negi4d41@yahoo.co.jp
+    Shotaro Tsuji
+    4-1010,
+    Sakasedai 1-chome,
+    Takaraduka-si,
+    Hyogo-ken,
+    665-0024
+    Japan
+    negi4d41@yahoo.co.jp
 */
 
 #include <ctype.h>
 
 int toupper(int c)
 {
-  if ((unsigned int)(c - 'a') < 26) {
-    c += 'A' - 'a';
-  }
-  return c;
+    if(islower(c))
+        return c | 0x20;
+    else
+        return c;
 }
