@@ -62,7 +62,7 @@ static int CreateImage(monapi_cmemoryinfo** dest, dword* entryPoint, const CStri
     }
     else
     {
-        mi = monapi_call_file_read_data(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+        mi = monapi_file_read_all(path);
     }
     if (mi == NULL)
     {

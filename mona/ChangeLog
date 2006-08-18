@@ -1,3 +1,17 @@
+2006-08-15  higepon  <higepon@users.sourceforge.jp>
+
+        * core/pe_server/main.cpp (OpenPE): file_server_on_linux用に整えた
+
+        * core/process_server/main.cpp (ExecuteFile): file_server_on_linux用に整えた
+
+        * file_server_on_linux: Shellを整えた
+
+2006-08-10  higepon  <higepon@users.sourceforge.jp>
+
+        * まだ起動していない
+
+        * file_server_on_linuxをback port中。ビルド通しただけ。
+
 2006-07-26  higepon  <higepon@users.sourceforge.jp>
 
         * bim2bin: gcc 4.0.2でビルド

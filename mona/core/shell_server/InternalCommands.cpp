@@ -74,14 +74,6 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_EXEC;
     }
-    else if (cmd == this->driveLetter[DRIVE_CD0])
-    {
-        return COMMAND_CHANGE_DRIVE_CD0;
-    }
-    else if (cmd == this->driveLetter[DRIVE_FD0])
-    {
-        return COMMAND_CHANGE_DRIVE_FD0;
-    }
 
     return COMMAND_NONE;
 }
@@ -101,11 +93,11 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
             if (args.get_Length() < 2)
             {
-                dir = this->startDirectory[this->currentDrive];
+                dir = this->startDirectory;
             }
             else
             {
-                dir = this->mergeDirectory(this->currentDirectory[currentDrive], args[1]);
+                dir = this->mergeDirectory(this->currentDirectory, args[1]);
             }
 
             if (!changeDirecotory(dir))
@@ -120,14 +112,14 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         {
             if (args.get_Length() < 2)
             {
-                printFiles(this->currentDirectory[currentDrive]);
+                printFiles(this->currentDirectory);
             }
             else
             {
                 for (int i = 1; i < args.get_Length(); i++)
                 {
                     if (i > 1) printf("\n");
-                    CString dir = this->mergeDirectory(this->currentDirectory[currentDrive], args[i]);
+                    CString dir = this->mergeDirectory(this->currentDirectory, args[i]);
                     printf("%s:\n", (const char*)dir);
                     printFiles(dir);
                 }
@@ -143,7 +135,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
                 break;
             }
 
-            monapi_cmemoryinfo* mi = monapi_call_file_read_data(args[1], 1);
+            monapi_cmemoryinfo* mi = monapi_file_read_all(args[1]);
             if (mi == NULL) break;
 
             if (mi->Size > 0)
@@ -304,44 +296,6 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             if (this->commandExecute(args2)) this->doExec = true;
         }
         break;
-
-    case COMMAND_CHANGE_DRIVE_CD0:
-    {
-        if (monapi_call_change_drive(DRIVE_CD0, MONAPI_FALSE) == MONA_FAILURE)
-        {
-            printf("change drive error\n");
-            break;
-        }
-        else
-        {
-            this->currentDrive = DRIVE_CD0;
-        }
-
-        if (this->firstTimeOfCD0)
-        {
-            changeDirecotory(startDirectory[currentDrive]);
-            this->firstTimeOfCD0 = false;
-        }
-
-        setCurrentDirectory();
-        break;
-    }
-
-    case COMMAND_CHANGE_DRIVE_FD0:
-    {
-        if (monapi_call_change_drive(DRIVE_FD0, MONAPI_FALSE) == MONA_FAILURE)
-        {
-            printf("change drive error\n");
-            break;
-        }
-        else
-        {
-            this->currentDrive = DRIVE_FD0;
-        }
-
-        setCurrentDirectory();
-        break;
-    }
 
     default:
         break;

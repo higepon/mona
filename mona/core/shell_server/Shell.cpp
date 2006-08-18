@@ -12,30 +12,14 @@ Shell::Shell(bool callAutoExec)
     : position(0), hasExited(false), callAutoExec(callAutoExec), doExec(false),
      waiting(THREAD_UNKNOWN), prevX(0), prevY(0), firstTimeOfCD0(true)
 {
-    this->driveLetter[DRIVE_FD0]    = "fd0:";
-    this->driveLetter[DRIVE_CD0]    = "cd0:";
-    this->startDirectory[DRIVE_FD0] = "/APPS";
-    this->startDirectory[DRIVE_CD0] = "/APPS";
-
-    this->currentDrive = monapi_call_get_current_drive();
-    if (this->currentDrive == DRIVE_NONE)
-    {
-        printf("Server can't get current drive!!\n");
-    }
-
-    /* current drive */
-    this->currentDirectory.Alloc(2);
-
-    changeDirecotory(startDirectory[currentDrive]);
+    changeDirecotory("/APPS");
 
     if (this->callAutoExec)
     {
         this->executeMSH("/AUTOEXEC.MSH");
         this->callAutoExec = false;
     }
-
     this->self = syscall_get_tid();
-
     this->printPrompt("\n");
     this->drawCaret();
 }
@@ -50,7 +34,6 @@ void Shell::run()
     while (!this->hasExited)
     {
         if (Message::receive(&msg) != 0) continue;
-
 #if 0  /// DEBUG for message
         if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
         {
@@ -184,9 +167,9 @@ bool Shell::commandExecute(_A<CString> args)
     else
     {
         CString cmd2 = command + ".";
-        for (int i = 0; i < this->apps[currentDrive].size(); i++)
+        for (int i = 0; i < this->apps.size(); i++)
         {
-            CString file = apps[currentDrive].get(i);
+            CString file = apps.get(i);
             if (file == command + ".APP")
             {
                 cmdLine = APPSDIR"/" + file + "/" + command + ".EX5";
@@ -381,10 +364,8 @@ _A<CString> Shell::parseCommandLine()
 
 int Shell::makeApplicationList()
 {
-    if (apps[currentDrive].size() > 0) return 0;
-
-    monapi_cmemoryinfo* mi = monapi_call_file_read_directory(APPSDIR, MONAPI_TRUE);
-
+    if (apps.size() > 0) return 0;
+    monapi_cmemoryinfo* mi = monapi_file_read_directory(APPSDIR);
     int size = *(int*)mi->Data;
     if (mi == NULL || size == 0)
     {
@@ -395,13 +376,12 @@ int Shell::makeApplicationList()
     for (int i = 0; i < size; i++, p++)
     {
         CString file = p->name;
-
         if (file.endsWith(".BIN") || file.endsWith(".BN2") || file.endsWith(".BN5")
             || file.endsWith(".ELF") || file.endsWith(".EL2") || file.endsWith(".EL5")
             || file.endsWith(".EXE") || file.endsWith(".EX2") || file.endsWith(".EX5")
             || file.endsWith(".APP") || file.endsWith(".MSH"))
         {
-            apps[currentDrive].add(file);
+            apps.add(file);
         }
     }
 
@@ -413,8 +393,7 @@ int Shell::makeApplicationList()
 void Shell::printPrompt(const CString& prefix /*= NULL*/)
 {
     if (prefix != NULL) printf("%s", (const char*)prefix);
-    CString drive = this->driveLetter[this->currentDrive];
-    printf("[Mona]%s%s> ", (const char*)drive.toUpper(), (const char*)this->currentDirectory[currentDrive]);
+    printf("[Mona]%s> ", (const char*)this->currentDirectory);
 }
 
 CString Shell::getParentDirectory(const CString& dir)
@@ -453,7 +432,7 @@ CString Shell::mergeDirectory(const CString& dir1, const CString& dir2)
 
 void Shell::printFiles(const CString& dir)
 {
-    monapi_cmemoryinfo* mi = monapi_call_file_read_directory(dir, MONAPI_TRUE);
+    monapi_cmemoryinfo* mi = monapi_file_read_directory(dir);
     int size;
     if (mi == NULL || (size = *(int*)mi->Data) == 0)
     {
@@ -492,7 +471,7 @@ void Shell::printFiles(const CString& dir)
 
 void Shell::executeMSH(const CString& msh)
 {
-    monapi_cmemoryinfo* mi = monapi_call_file_read_data(msh, 1);
+    monapi_cmemoryinfo* mi = monapi_file_read_all(msh);
     if (mi == NULL) return;
 
     for (dword pos = 0, start = 0; pos <= mi->Size; pos++)
@@ -560,23 +539,16 @@ void Shell::checkCaretPosition()
 
 void Shell::setCurrentDirectory()
 {
-    char buff[128];
-    monapi_call_get_current_directory(buff);
-    logprintf("buf=%s\n", buff);
-    this->currentDirectory[this->currentDrive] = buff;
+//     char buff[128];
+//     monapi_call_get_current_directory(buff);
+//     logprintf("buf=%s\n", buff);
+//     this->currentDirectory = buff;
 }
 
 bool Shell::changeDirecotory(const MonAPI::CString& path)
 {
-    logprintf("1\n");
-    if (monapi_call_change_directory(path) == MONA_FAILURE)
-    {
-    logprintf("2\n");
-        return false;
-    }
-    logprintf("3\n");
-    setCurrentDirectory();
-    logprintf("4\n");
+//     setCurrentDirectory();
+    this->currentDirectory = path;
     makeApplicationList();
     return true;
 }

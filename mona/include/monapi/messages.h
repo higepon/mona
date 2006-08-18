@@ -64,6 +64,15 @@ extern int monapi_call_change_drive(int drive, MONAPI_BOOL prompt);
 extern int monapi_call_get_current_drive();
 extern int monapi_call_get_current_directory(char* dest);
 extern int monapi_call_change_directory(const char* dest);
+extern dword monapi_file_open(const char* file, MONAPI_BOOL create);
+extern dword monapi_file_write(dword fileID, monapi_cmemoryinfo* mem, dword size);
+extern monapi_cmemoryinfo* monapi_file_read(dword fileID, dword size);
+extern dword monapi_file_seek(dword fileID, dword offset, dword origin);
+extern dword monapi_file_close(dword id);
+extern dword monapi_file_get_file_size(dword id);
+extern int monapi_file_stop_server();
+extern monapi_cmemoryinfo* monapi_file_read_all(const char* file);
+extern monapi_cmemoryinfo* monapi_file_read_directory(const char* path);
 
 extern byte* monapi_allocate_dma_memory();
 extern void monapi_deallocate_dma_memory(void* address);

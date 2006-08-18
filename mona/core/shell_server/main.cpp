@@ -64,13 +64,11 @@ int MonaMain(List<char*>* pekoe)
         targetID = MonAPI::System::getParentThreadID();
         callAutoExec = false;
     }
-
     /* send */
     if (targetID != THREAD_UNKNOWN && Message::send(targetID, MSG_SERVER_START_OK))
     {
         printf("%s: MONITOR error\n", SVR);
     }
-
     /* service loop */
     Shell shell(callAutoExec);
     shell.run();

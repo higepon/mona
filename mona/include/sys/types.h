@@ -20,10 +20,9 @@
 #define NORMAL   0
 #define DEBUG_MODE
 
-enum
-{
-    MONA_SUCCESS,
-    MONA_FAILURE,
+enum {
+    MONA_SUCCESS = 1, /* don't change */
+    MONA_FAILURE = 0  /* don't change */
 };
 
 #ifndef __SIZE_TYPE__
@@ -71,6 +70,11 @@ typedef struct PsInfo {
     dword tid;
     struct PsInfo* next;
 } PsInfo;
+
+typedef struct
+{
+    dword size;
+} Stat;
 
 typedef struct {
     int year;

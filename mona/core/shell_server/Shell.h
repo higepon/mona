@@ -51,7 +51,7 @@ class Shell {
   protected:
     char commandLine[1024];
     int position;
-    HList<MonAPI::CString> apps[2];
+    HList<MonAPI::CString> apps;
     bool hasExited, callAutoExec, doExec;
     dword waiting;
     dword self;
@@ -59,11 +59,8 @@ class Shell {
     int prevX, prevY;
     HList<MonAPI::CString> history;
 
-    /* drive letter */
-    const char* driveLetter[2];
-    const char* startDirectory[2];
-    _A<MonAPI::CString> currentDirectory;
-    int currentDrive;
+    MonAPI::CString startDirectory;
+    MonAPI::CString currentDirectory;
     bool firstTimeOfCD0;
 };
 

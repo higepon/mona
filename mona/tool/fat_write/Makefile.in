@@ -36,7 +36,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-LIBOBJDIR =
 bin_PROGRAMS = fat_write$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) \

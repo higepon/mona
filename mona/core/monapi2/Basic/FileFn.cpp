@@ -1,15 +1,15 @@
 /**
 	@file	FileFn.cpp
-	@brief	ƒtƒ@ƒCƒ‹ˆê”­‘€ì
+	@brief	ãƒ•ã‚¡ã‚¤ãƒ«ä¸€ç™ºæ“ä½œ
 
-	ƒtƒ@ƒCƒ‹ˆê”­‘€ì
+	ãƒ•ã‚¡ã‚¤ãƒ«ä¸€ç™ºæ“ä½œ
 
 	License=Mona License
 	@version $Revision$
 	@date	$Date$
 */
-//ƒoƒOC³‚ğ‚·‚é‚ÍŠÖ”–{‘Ìà–¾‚Ì@date—š—ğ‚É“ú•t‚Æ–¼‘O‚Æì‹Æ“à—e‚ğ•t‚¯‘«‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B
-//‚Ü‚½.hƒtƒ@ƒCƒ‹‚É‚ ‚éƒNƒ‰ƒXà–¾‚È‚Ç‚Ì@date—š—ğ•”•ª‚É‚à“¯—l‚Ì–‚ğ‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B
+//ãƒã‚°ä¿®æ­£ã‚’ã™ã‚‹æ™‚ã¯é–¢æ•°æœ¬ä½“èª¬æ˜ã®@dateå±¥æ­´ã«æ—¥ä»˜ã¨åå‰ã¨ä½œæ¥­å†…å®¹ã‚’ä»˜ã‘è¶³ã—ã¦ãŠã„ã¦ãã ã•ã„ã€‚
+//ã¾ãŸ.hãƒ•ã‚¡ã‚¤ãƒ«ã«ã‚ã‚‹ã‚¯ãƒ©ã‚¹èª¬æ˜ãªã©ã®@dateå±¥æ­´éƒ¨åˆ†ã«ã‚‚åŒæ§˜ã®äº‹ã‚’ã—ã¦ãŠã„ã¦ãã ã•ã„ã€‚
 #ifdef MONA
 	#include <monapi.h>
 	#include <monapi/messages.h>
@@ -27,14 +27,14 @@
 #include "String.h"
 #include "Memory.h"
 
-//ƒfƒoƒbƒO‚Ì‚½‚ß‚Ì‰‹}‘[’u
+//ãƒ‡ãƒãƒƒã‚°ã®ãŸã‚ã®å¿œæ€¥æªç½®
 
 namespace monapi2	{
 
 //FileFn//////////////
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::isExist(cpchar1 /*cszPath*/)
 {
@@ -42,8 +42,8 @@ bool FileFn::isExist(cpchar1 /*cszPath*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::isFile(cpchar1 /*cszPath*/)
 {
@@ -51,8 +51,8 @@ bool FileFn::isFile(cpchar1 /*cszPath*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 int FileFn::getSize(cpchar1 cszPath)
 {
@@ -68,8 +68,8 @@ int FileFn::getSize(cpchar1 cszPath)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 uint FileFn::getLastModifiedTime(cpchar1 /*cszPath*/)
 {
@@ -77,14 +77,14 @@ uint FileFn::getLastModifiedTime(cpchar1 /*cszPath*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
-	@date	2005/09/20	junjunn À‘•
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
+	@date	2005/09/20	junjunn å®Ÿè£…
 */
 bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
 {
 #ifdef MONA
-	monapi_cmemoryinfo* pMemoryInfo = monapi_call_file_read_data(cszPath,MONAPI_FALSE);
+	monapi_cmemoryinfo* pMemoryInfo = monapi_file_read_all(cszPath);
 	if (! pMemoryInfo)	return false;
 
 	MemoryFn::copy(pBufferOut,pMemoryInfo->Data,pMemoryInfo->Size);
@@ -100,9 +100,9 @@ bool FileFn::read(cpchar1 cszPath,byte* pBufferOut,int iBufferSize)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
-	@date	2005/09/20	junjunn À‘•
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
+	@date	2005/09/20	junjunn å®Ÿè£…
 */
 bool FileFn::read(cpchar1 cszPath,Buffer* pbufOut)
 {
@@ -119,9 +119,9 @@ bool FileFn::read(cpchar1 cszPath,Buffer* pbufOut)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
-	@date	2005/09/20	junjunn À‘•
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
+	@date	2005/09/20	junjunn å®Ÿè£…
 */
 bool FileFn::read(cpchar1 cszPath,String* pstrOut)
 {
@@ -130,7 +130,7 @@ bool FileFn::read(cpchar1 cszPath,String* pstrOut)
 	if (! pMemoryInfo)	return false;
 
 	int iFileSize = pMemoryInfo->Size;
-//StringŒn‚ÍƒT[ƒrƒX‚Å'\0'‚Ü‚ÅŠm•Û‚µ‚Ä‚Â‚¯‚éB
+//Stringç³»ã¯ã‚µãƒ¼ãƒ“ã‚¹ã§'\0'ã¾ã§ç¢ºä¿ã—ã¦ã¤ã‘ã‚‹ã€‚
 	pchar1 pBuffer = pstrOut->extendBuffer(iFileSize+1);
 	MemoryFn::copy(pBuffer,pMemoryInfo->Data,pMemoryInfo->Size);
 	pBuffer[iFileSize] = '\0';
@@ -154,12 +154,12 @@ bool FileFn::read(cpchar1 cszPath,String* pstrOut)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::write(cpchar1 cszPath,const byte* cpIn,int iCount)
 {
-//ƒfƒoƒbƒO‚Ì‚½‚ß‚Ì‰‹}‘[’u
+//ãƒ‡ãƒãƒƒã‚°ã®ãŸã‚ã®å¿œæ€¥æªç½®
 #ifdef _WIN32
 	FILE* p=fopen(cszPath,"wb");
 	fwrite(cpIn,sizeof(byte),iCount,p);
@@ -171,8 +171,8 @@ bool FileFn::write(cpchar1 cszPath,const byte* cpIn,int iCount)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::write(cpchar1 cszPath,const Buffer* cpbufIn)
 {
@@ -180,8 +180,8 @@ bool FileFn::write(cpchar1 cszPath,const Buffer* cpbufIn)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::write(cpchar1 cszPath,const String* cpstrIn)
 {
@@ -189,8 +189,8 @@ bool FileFn::write(cpchar1 cszPath,const String* cpstrIn)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::createDirectory(cpchar1 /*cszPath*/,cpchar1 /*cszDirName*/)
 {
@@ -198,8 +198,8 @@ bool FileFn::createDirectory(cpchar1 /*cszPath*/,cpchar1 /*cszDirName*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::deleteFile(cpchar1 /*cszPath*/)
 {
@@ -207,8 +207,8 @@ bool FileFn::deleteFile(cpchar1 /*cszPath*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::deleteDirectory(cpchar1 /*cszPath*/)
 {
@@ -216,8 +216,8 @@ bool FileFn::deleteDirectory(cpchar1 /*cszPath*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::move(cpchar1 /*cszPathFrom*/,cpchar1 /*cszPathTo*/)
 {
@@ -225,8 +225,8 @@ bool FileFn::move(cpchar1 /*cszPathFrom*/,cpchar1 /*cszPathTo*/)
 }
 
 /**
-	@brief	à–¾Aˆø”A–ß‚è’l‚ÍMonapi2ƒŠƒtƒ@ƒŒƒ“ƒXQÆB
-	@date	2005/08/20	junjunn ì¬
+	@brief	èª¬æ˜ã€å¼•æ•°ã€æˆ»ã‚Šå€¤ã¯Monapi2ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹å‚ç…§ã€‚
+	@date	2005/08/20	junjunn ä½œæˆ
 */
 bool FileFn::copy(cpchar1 /*cszPathFrom*/,cpchar1 /*cszPathTo*/)
 {

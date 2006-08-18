@@ -1,39 +1,31 @@
 /*!
-    \file  iso9660.h
-    \brief iso9660
+    \file  ISO9660.h
+    \brief ISO9660
 
-    Copyright (c) 2004 HigePon
+    Copyright (c) 2006 HigePon
     WITHOUT ANY WARRANTY
 
     \author  HigePon
-    \version $Revision$
-    \date   create:2004/11/06 update:$Date$
+    \version $Revision: 3123 $
+    \date   create:2004/11/06 update:$Date: 2006-04-15 13:55:21 +0900 (土, 15  4月 2006) $
 */
 
-#ifndef _ISO_9660_
-#define _ISO_9660_
+#ifndef __ISO_9660__
+#define __ISO_9660__
 
-#ifdef MONA
-#include <monapi.h>
-#include <monapi/CString.h>
-#include <fat_write/IStorageDevice.h>
-#else
-#include "types.h"
-#include "HList.h"
-#include "CString.h"
-#endif
-#include <monapi/Assert.h>
-
-
-
-#include "File.h"
+#include "sys/types.h"
+#include "FileDate.h"
+#include <string>
+#include <vector>
 
 #define ISO_POSITION(from, to) (to - from + 1)
 
+namespace iso9660
+{
 /*----------------------------------------------------------------------
-    ISOBaseVolumeDescriptor
+    BaseVolumeDescriptor
 ----------------------------------------------------------------------*/
-typedef struct ISOBaseVolumeDescriptor
+typedef struct BaseVolumeDescriptor
 {
     byte type;
     char id  [ISO_POSITION(2, 6)];
@@ -42,9 +34,9 @@ typedef struct ISOBaseVolumeDescriptor
 };
 
 /*----------------------------------------------------------------------
-    ISOPrimaryVolumeDescriptor
+    PrimaryVolumeDescriptor
 ----------------------------------------------------------------------*/
-typedef struct ISOPrimaryVolumeDescriptor
+typedef struct PrimaryVolumeDescriptor
 {
     char type                  [ISO_POSITION (  1,   1)];
     char id                    [ISO_POSITION (  2,   6)];
@@ -87,7 +79,7 @@ typedef struct ISOPrimaryVolumeDescriptor
     ISOPathTableEntry
 ----------------------------------------------------------------------*/
 #pragma pack(2)
-typedef struct ISOPathTableEntry
+typedef struct PathTableEntry
 {
     byte length;
     byte ext_attr_length;
@@ -98,10 +90,10 @@ typedef struct ISOPathTableEntry
 #pragma pack(0)
 
 /*----------------------------------------------------------------------
-    ISODirectoryEntry
+    DirectoryEntry
 ----------------------------------------------------------------------*/
 #pragma pack(1)
-typedef struct ISODirectoryEntry
+typedef struct DirectoryEntry
 {
     byte length;
     byte ext_attr_length;
@@ -127,9 +119,9 @@ typedef struct ISODirectoryEntry
 #pragma pack(0)
 
 /*----------------------------------------------------------------------
-    ISO9660Attribute
+    Attribute
 ----------------------------------------------------------------------*/
-typedef struct ISO9660Attribute
+typedef struct Attribute
 {
     dword id;
     dword parentID;
@@ -137,4 +129,27 @@ typedef struct ISO9660Attribute
     dword size;
 };
 
+/*----------------------------------------------------------------------
+    Entry
+----------------------------------------------------------------------*/
+class Entry;
+typedef std::vector<Entry*> EntryList;
+class Entry
+{
+public:
+    Entry() : hasDetail(false), isDirectory(false) {}
+    ~Entry() {}
+
+public:
+    Attribute attribute;
+    Entry* parent;
+    EntryList children;
+    bool hasDetail;
+    bool isDirectory;
+    std::string name;
+    FileDate createDate;
+    FileDate modifiedDate;
+};
+
+}; // namespace iso9660
 #endif

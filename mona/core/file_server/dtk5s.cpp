@@ -2,7 +2,6 @@
 //#include <stdlib.h>		/* malloc */
 //#include <stdio.h>		/* NULL */
 #include <monapi/messages.h>
-#include <monapi/syscall.h>
 #include "FileServer.h"
 #include "dtk5s.h"
 
@@ -10,12 +9,12 @@ typedef unsigned int UINT32;
 typedef unsigned char UCHAR;
 typedef UINT32 tek_TPRB;
 
-int tek_checkformat(int siz, UCHAR *p); /* “WŠJŒã‚ÌƒTƒCƒY‚ğ•Ô‚· */
-	/* -1:”ñosacmp */
-	/* -2:osacmp‚¾‚ª‘Î‰‚Å‚«‚È‚¢ */
+int tek_checkformat(int siz, UCHAR *p); /* å±•é–‹å¾Œã®ã‚µã‚¤ã‚ºã‚’è¿”ã™ */
+	/* -1:éosacmp */
+	/* -2:osacmpã ãŒå¯¾å¿œã§ããªã„ */
 
-int tek_decode(int siz, UCHAR *p, UCHAR *q); /* ¬Œ÷‚µ‚½‚ç0 */
-	/* ³‚Ì’l‚ÍƒtƒH[ƒ}ƒbƒg‚ÌˆÙíE–¢‘Î‰A•‰‚Ì’l‚Íƒƒ‚ƒŠ•s‘« */
+int tek_decode(int siz, UCHAR *p, UCHAR *q); /* æˆåŠŸã—ãŸã‚‰0 */
+	/* æ­£ã®å€¤ã¯ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®ç•°å¸¸ãƒ»æœªå¯¾å¿œã€è² ã®å€¤ã¯ãƒ¡ãƒ¢ãƒªä¸è¶³ */
 
 static unsigned int tek_getnum_s7s(UCHAR **pp);
 static int tek_lzrestore_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf);
@@ -56,7 +55,7 @@ int tek_decode(int siz, UCHAR *p, UCHAR *q)
 				if (dsiz > bsiz)
 					return 1;
 				if (hed & 0x40)
-					tek_getnum_s7s(&p); /* ƒIƒvƒVƒ‡ƒ“î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğ“Ç‚İ”ò‚Î‚· */
+					tek_getnum_s7s(&p); /* ã‚ªãƒ—ã‚·ãƒ§ãƒ³æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’èª­ã¿é£›ã°ã™ */
 				st = tek_lzrestore_tek5(p1 - p, p, dsiz, q);
 			}
 		}
@@ -65,8 +64,8 @@ int tek_decode(int siz, UCHAR *p, UCHAR *q)
 }
 
 static unsigned int tek_getnum_s7s(UCHAR **pp)
-/* ‚±‚ê‚Í•K‚¸big-endian */
-/* ‰º‘Ê‚ª‚È‚¢‚Ì‚Å’†g‚ğ‚¢‚¶‚è‚â‚·‚¢ */
+/* ã“ã‚Œã¯å¿…ãšbig-endian */
+/* ä¸‹é§„ãŒãªã„ã®ã§ä¸­èº«ã‚’ã„ã˜ã‚Šã‚„ã™ã„ */
 {
 	unsigned int s = 0;
 	UCHAR *p = *pp;
@@ -98,7 +97,7 @@ static int tek_lzrestore_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf)
 	prop0 %= 9 * 5;
 	lp = prop0 / 9;
 	lc = prop0 % 9;
-	wrksiz = (0x800 + (0x300 << (lc + lp))) * sizeof (tek_TPRB); /* Å’á11KB, lc+lp=3‚È‚çA32KB */
+	wrksiz = (0x800 + (0x300 << (lc + lp))) * sizeof (tek_TPRB); /* æœ€ä½11KB, lc+lp=3ãªã‚‰ã€32KB */
 	work = (int *)malloc(wrksiz);
 	if (work == NULL)
 		return -1;
@@ -236,13 +235,13 @@ static int tek_decmain5(int *work, UCHAR *src, int osiz, UCHAR *q, int lc, int p
 	pmch &= 0; s &= 0; pos = 1;
 	do {
 		s_pos = pos & m_pos;
-		if (tek_rdget1(rd, &prb->pb[s_pos].st[s].mch, 1, 0) == 0) { /* ”ñlz */
+		if (tek_rdget1(rd, &prb->pb[s_pos].st[s].mch, 1, 0) == 0) { /* élz */
 			i = (q[-1] >> lcr | (pos & m_lp) << lc) << 8;
 			s = state_table[s];
 			if (pmch == 0)
 				*q = tek_rdget1(rd, &prb->lit[i], 8, 1) & 0xff;
 			else {
-				j = 1; /* lit1‚ÍÅ‰‚©‚ç2‚ğŒ¸‚¶‚Ä‚ ‚é */
+				j = 1; /* lit1ã¯æœ€åˆã‹ã‚‰2ã‚’æ¸›ã˜ã¦ã‚ã‚‹ */
 				k = 8;
 				pmch = q[rep[0]];
 				do {
@@ -319,55 +318,10 @@ skip:
 			} while (--i);
 		}
 	} while (pos < osiz);
+    free(work);
 	return 0;
 err:
+    free(work);
 	return 1;
 }
 
-int64_t GetST5DecompressedSize(monapi_cmemoryinfo* mi)
-{
-	int64_t ret = 0;
-	ret = tek_checkformat(mi->Size, (UCHAR*)mi->Data);
-	return ret;
-}
-
-monapi_cmemoryinfo* ST5Decompress(monapi_cmemoryinfo* mi)
-{
-	int64_t size = GetST5DecompressedSize(mi);
-	if (size < 0) return NULL;
-	
-	// if size >= 4GB abort...
-	if ((size >> 32) > 0) return NULL;
-	
-	monapi_cmemoryinfo* ret = new monapi_cmemoryinfo();
-	if (!monapi_cmemoryinfo_create(ret, (dword)(size + 1), 0))
-	{
-		monapi_cmemoryinfo_delete(ret);
-		return NULL;
-	}
-	ret->Size--;
-	
-	if (tek_decode(mi->Size, mi->Data, ret->Data) != 0) {
-		// Decompress failed
-		monapi_cmemoryinfo_dispose(ret);
-		monapi_cmemoryinfo_delete(ret);
-		return NULL;
-	}
-	
-	ret->Data[ret->Size] = 0;
-	return ret;
-}
-
-monapi_cmemoryinfo* ST5DecompressFile(const char* file, bool prompt /*= false*/)
-{
-	monapi_cmemoryinfo* mi = ReadFile(file, prompt), * ret = NULL;
-	if (mi == NULL) return ret;
-	
-	if (prompt) printf("%s: Decompressing %s....", SVR, file);
-	ret = ST5Decompress(mi);
-	if (prompt) printf(ret != NULL ? "OK\n" : "ERROR\n");
-
-	monapi_cmemoryinfo_dispose(mi);
-	monapi_cmemoryinfo_delete(mi);
-	return ret;
-}

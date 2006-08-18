@@ -2,15 +2,15 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET  = FILE
-SOURCES = main.cpp file.cpp bzip2.cpp dtk5s.cpp FDCDriver.cpp fat.cpp fs.cpp IDEDriver.cpp ISO9660File.cpp ISO9660FileSystem.cpp ISO9660FileSystemManager.cpp FatFileSystemManager.cpp endian_util.cpp
+SOURCES = main.cpp IDEDriver.cpp VnodeManager.cpp FileServer.cpp  VnodeCacher.cpp dtk5s.cpp vnode.cpp\
+          ISO9660/ISO9660FileSystem.cpp FAT12/FAT12FileSystem.cpp FAT12/fat_write/fat.cpp FAT12/fat_write/endian_util.cpp FAT12/FDCDriver.cpp
 INSTDIR = $(BINDIR)
-
 
 ADDLINK    = -lmonalibc
 ADDLINKDEP = $(MONADIR)/lib/libmonalibc.a
 SHAREDIR   = $(MONADIR)/share
 include $(SHAREDIR)/configs/monapi-bin.inc
 
-INCLUDE += -I$(INCDIR)/monalibc
+INCLUDE += -I$(INCDIR)/monalibc -I$(INCDIR)/stlport -I$(INCDIR)/monapi -I . -I ./FAT12 -I ./ISO9660
 
 -include dependencies

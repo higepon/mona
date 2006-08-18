@@ -18,6 +18,8 @@ enum
     MSG_FILE_READ,
     MSG_FILE_SEEK,
     MSG_FILE_GET_SIZE,
+    MSG_FILE_READ_ALL,
+    MSG_FILE_WRITE,
 };
 
 #endif

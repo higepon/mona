@@ -6,8 +6,8 @@
     WITHOUT ANY WARRANTY
 
     \author  HigePon
-    \version $Revision$
-    \date   create:2005/01/23 update:$Date$
+    \version $Revision: 3123 $
+    \date   create:2005/01/23 update:$Date: 2006-04-15 13:55:21 +0900 (土, 15  4月 2006) $
 */
 
 #ifndef _FILE_DATE_
@@ -23,20 +23,20 @@ public:
     virtual ~FileDate() {}
 
 public:
-    int GetYear() const {return this->year;}
-    void SetYear(int year) {this->year = year;}
-    int GetMonth() const {return this->month;}
-    void SetMonth(int month) {this->month = month;}
-    int GetDay() const {return this->day;}
-    void SetDay(int day) {this->day = day;}
-    int GetDayOfWeek() const {return this->dayOfWeek;}
-    void SetDayOfWeek(int dayOfWeek) {this->dayOfWeek = dayOfWeek;}
-    int GetHour() const {return this->hour;}
-    void SetHour(int hour) {this->hour = hour;}
-    int GetMinute() const {return this->minute;}
-    void SetMinute(int minute) {this->minute = minute;}
-    int GetSecond() const {return this->second;}
-    void SetSecond(int second) {this->second = second;}
+    int getYear() const {return this->year;}
+    void setYear(int year) {this->year = year;}
+    int getMonth() const {return this->month;}
+    void setMonth(int month) {this->month = month;}
+    int getDay() const {return this->day;}
+    void setDay(int day) {this->day = day;}
+    int getDayOfWeek() const {return this->dayOfWeek;}
+    void setDayOfWeek(int dayOfWeek) {this->dayOfWeek = dayOfWeek;}
+    int getHour() const {return this->hour;}
+    void setHour(int hour) {this->hour = hour;}
+    int getMinute() const {return this->minute;}
+    void setMinute(int minute) {this->minute = minute;}
+    int getSecond() const {return this->second;}
+    void setSecond(int second) {this->second = second;}
 
 private:
     int year;

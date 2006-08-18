@@ -65,7 +65,7 @@ void Monitor::Service()
 bool Monitor::Initialize()
 {
     monapi_cmemoryinfo* mi = NULL;
-    mi = monapi_call_file_read_data("/MONITOR.CFG", MONAPI_FALSE);
+    mi = monapi_file_read_all("/MONITOR.CFG");
 
     if (mi == NULL)
     {

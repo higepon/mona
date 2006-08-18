@@ -120,7 +120,7 @@ static int ExecuteFile(dword parent, const CString& commandLine, bool prompt, dw
     }
     else
     {
-        mi = monapi_call_file_read_data(path, prompt ? MONAPI_TRUE : MONAPI_FALSE);
+        mi = monapi_file_read_all(path);
     }
 
     if (mi == NULL)

@@ -1,26 +1,44 @@
-#ifndef __FILE_SERVER_H__
-#define __FILE_SERVER_H__
+#ifndef __FILESERVER_H__
+#define __FILESERVER_H__
 
-#include <monapi/cmemoryinfo.h>
-#include <monapi/CString.h>
+#include "monalibc.h"
+#include "servers/file.h"
+#include "servers/servers.h"
+#include "vnode.h"
+#include "VnodeManager.h"
+#include "IDEDriver.h"
+#include "FAT12/FDCDriver.h"
+#include "FAT12/FAT12FileSystem.h"
+#include "ISO9660/ISO9660FileSystem.h"
+//#include "Process/ProcessFileSystem.h"
+#include "dtk5s.h"
+#include "Message.h"
+#include <algorithm>
 
 #define SVR "File Server"
 
-int ChangeDrive(int drive);
-int GetCurrentDrive();
-MonAPI::CString GetCurrentDirectory();
-int ChangeDirectory(const MonAPI::CString& dir);
-MonAPI::CString getParentDirectory(const MonAPI::CString& dir);
-MonAPI::CString mergeDirectory(const MonAPI::CString& dir1, const MonAPI::CString& dir2);
+class FileServer
+{
+public:
+    FileServer();
+    virtual ~FileServer();
 
-dword Open(const MonAPI::CString& path);
-bool Seek(dword id, dword position, dword flag);
-monapi_cmemoryinfo* Read(dword id, dword size);
-dword GetFileSize(dword id);
-bool Close(dword id);
+    void messageLoop();
+    int initializeFileSystems();
+    int initializeRootFileSystem();
+    int initializeMountedFileSystems();
+    monapi_cmemoryinfo* readFileAll(const std::string& file);
+    monapi_cmemoryinfo* FileServer::ST5DecompressFile(const char* file);
+    int64_t GetST5DecompressedSize(monapi_cmemoryinfo* mi);
+    monapi_cmemoryinfo* ST5Decompress(monapi_cmemoryinfo* mi);
 
-extern monapi_cmemoryinfo* ReadFile(const char* file, bool prompt = false);
-extern monapi_cmemoryinfo* ReadDirectory(const char* path, bool prompt = false);
-extern void Initialize();
+protected:
+    typedef std::vector<FileSystem*> FileSystems;
+    VnodeManager* vmanager_;
+    IDEDriver* cd_;
+    FDCDriver* fd_;
+    FileSystem* rootFS_;
+    FileSystems mountedFSs_;
+};
 
-#endif  // __FILE_SERVER_H__
+#endif // __FILESERVER_H__

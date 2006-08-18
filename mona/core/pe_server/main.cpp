@@ -33,12 +33,7 @@ static PEData* GetPEData(const CString& path)
 
 static PEData* OpenPE(const CString& path, bool prompt)
 {
-	// oh no!ugly!
-	const char* letters[] = {"FD0:", "CD0:"};
-	int drive = monapi_call_get_current_drive();
-	CString fullPath = letters[drive] + path;
-	
-	PEData* ret = GetPEData(fullPath);
+	PEData* ret = GetPEData(path);
 	if (ret != NULL) return ret;
 	
 	int len = path.getLength();
@@ -62,7 +57,7 @@ static PEData* OpenPE(const CString& path, bool prompt)
 	
 	ret = new PEData();
 	ret->Name = path.substring(p1, p2 - p1) + ext2;
-	ret->Path = fullPath;
+	ret->Path = path;
 	
 	if (path.endsWith("2"))
 	{
@@ -74,7 +69,7 @@ static PEData* OpenPE(const CString& path, bool prompt)
 	}
 	else
 	{
-		ret->Data = monapi_call_file_read_data(path, prompt);
+		ret->Data = monapi_file_read_all(path);
 	}
 	if (ret->Data == NULL)
 	{
@@ -145,9 +140,9 @@ private:
 	{
 		if (this->path != NULL)
 		{
-			this->files1 = monapi_call_file_read_directory(this->path, MONAPI_FALSE);
+			this->files1 = monapi_file_read_directory(this->path);
 		}
-		this->files2 = monapi_call_file_read_directory(DLLPATH, MONAPI_FALSE);
+		this->files2 = monapi_file_read_directory(DLLPATH);
 		this->initialized = true;
 		return this->IsReady();
 	}
