@@ -36,7 +36,7 @@
 int toupper(int c)
 {
     if(islower(c))
-        return c | 0x20;
+      return c += 'A' - 'a';
     else
-        return c;
+      return c;
 }
