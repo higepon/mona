@@ -32,6 +32,7 @@ all:
 # BayGUI applications
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
+	cd Misc/gnote && touch dependencies && make && make install
 # make disk images
 	cd $(MONADIR)/tool/mkimg && make
 
@@ -46,6 +47,7 @@ clean:
 	cd Graphics/Mesa && make clean
 	cd Graphics/Mesa-gears && make clean
 	cd Misc/helloworld && make clean
+	cd Misc/gnote && make clean
 	cd Multimedia/monapeg && make clean
 	cd Multimedia/monappt && make clean
 	cd Net/libnicdrv && make clean
