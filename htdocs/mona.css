@@ -1,0 +1,119 @@
+body {
+font-size: 100%;
+margin-left: 20px;
+margin-right: 20px;
+padding: 0;
+background: white;
+}
+
+a {
+text-decoration: none;
+}
+
+#header {
+height: 85px;
+}
+
+#logo {
+position: absolute;
+left: 50px;
+top: 15px;
+}
+
+#sidemenu {
+position: absolute;
+left: 30px;
+width: 150px;
+padding-top: 10px;
+_padding-top: 24px;
+text-align: right;
+font-family: Verdana;
+font-size: 12px;
+}
+
+#sidemenu li {
+list-style: none;
+margin-top: 0px;
+_margin-top: -14px;
+margin-bottom: 0px;
+padding-top: 0px;
+padding-bottom: 0px;
+}
+
+#sidemenu ul {
+padding: 0px;
+margin: 0px;
+}
+
+#sidemenu a {
+color: black;
+display: block;
+padding-right: 10px;
+padding-left: 10px;
+padding-top: 5px;
+padding-bottom: 5px;
+border-right: 5px solid white;
+border-left: 2px solid white;
+}
+
+#sidemenu a
+{
+border-bottom: none;
+}
+
+#sidemenu a:hover, #sidemenu strong a {
+background: #336699;
+border-right: 5px solid #392C52;
+color: white;
+}
+
+#footer {
+font-size: 70%;
+font-family: Verdana;
+margin-top: 20px;
+margin-left: 160px;
+text-align: center;
+color: #808080;
+}
+
+#content {
+background: white;
+/*font-family: Verdana;*/
+width: auto;
+min-width: 150px;
+margin-top: 10px;
+margin-left: 160px;
+margin-right: 30px;
+border: 1px solid #336699;
+padding: 15px;
+}
+
+.news-date {
+margin-top: 10px;
+font-size: 70%;
+color: #808080;
+}
+
+h2 {
+font-size: 1.25em;
+}
+
+
+#license li {
+list-style: decimal;
+margin-top: 15px;
+margin-bottom: 15px;
+}
+
+#images {
+float:left;
+}
+
+#ad {
+clear:both;
+padding-bottom:20px
+}
+
+pre {
+font-size: 80%;
+}
