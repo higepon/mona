@@ -1,5 +1,7 @@
 #include "endian_util.h"
+#ifndef MONA
 #include "config.h"
+#endif
 // 2006/03/25 by Yume : endian for MacOSX
 union Swap64
 {

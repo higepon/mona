@@ -12,6 +12,7 @@
 #include <string.h>
 #endif
 
+#include <string.h>
 #include "fat.h"
 using namespace FatFS;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
