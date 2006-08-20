@@ -7,7 +7,7 @@
 
 using namespace MonAPI;
 
-typedef struct
+typedef struct _s
 {
 	dword eax;
 	dword ebx;
@@ -19,6 +19,10 @@ typedef struct
 
 APM::APM()
 {
+	acline = -1;
+	battery = -1;
+	battery_flag = -1;
+	battery_life = -1;
 }
 
 void APM::MessageLoop()
@@ -30,7 +34,8 @@ void APM::MessageLoop()
 		switch (msg.header)
 		{
 			case MSG_TIMER:
-				EventProcess();
+				this->EventProcess();
+				this->getStatus();
 				break;
 			default:
 				break;
@@ -40,10 +45,23 @@ void APM::MessageLoop()
 
 void APM::init()
 {
+	DisableDevicePowerManagement(1);
+	DisengagePowerManagement(1);
+	DisablePowerManagement(1);
 
-	this->EnablePowerManagement(0x0001);
-	this->EngagePowerManagement(0x0001);
-	this->EnableDevicePowerManagement(0x0001);
+	if( this->EnablePowerManagement(0x0001) )
+	{
+		printf("Error: EnablePowerManagement.\n");
+	}
+	if( this->EngagePowerManagement(0x0001) )
+	{
+		printf("Error: EngagePowerManagement.\n");
+	}
+	if( this->EnableDevicePowerManagement(0x0001) )
+	{
+		printf("Error: EnableDevicePowerManagement.\n");
+	}
+
 
 	set_timer(1000);
 }
@@ -54,6 +72,34 @@ void APM::EventProcess()
 
 	result = this->GetPMEvent(&event, &info);
 	printf("PMEvent: %x, %x, %x\n", result, event, info);
+}
+
+void APM::getStatus()
+{
+	int result;
+	int ac, bt, btf, btl;
+
+	result = this->GetPowerStatus(1, &ac, &bt, &btf, &btl);
+
+	if( result )
+	{
+		printf("Error: %d: cannot get status\n", result);
+	}
+
+	this->acline = ac;
+	this->battery = bt;
+	this->battery_flag = btf;
+	this->battery_life = btl;
+
+	printf("AC line: %s\n", (this->acline == 0) ? "Off-line" :
+				(this->acline == 1) ? "On-line"  :
+				(this->acline == 2) ? "backup" : "Unknown");
+	printf("Battery: %s\n", (this->battery == 0) ? "High" :
+				(this->battery == 1) ? "Low" :
+				(this->battery == 2) ? "Critical" :
+				(this->battery == 3) ? "Charging" : "Unknown");
+	printf("Battery life: %d\n", (this->battery != 0xFF) ?
+					this->battery_life : -1);
 }
 
 int APM::apm_bios_call(int fn, void *p)
@@ -93,6 +139,25 @@ int APM::DisablePowerManagement(int pdid)
 	regs.ecx = 0;
 
 	return this->apm_bios_call(0x08, &regs);
+}
+
+int APM::GetPowerStatus(int pdid, int *ac, int *bt, int *bt_flag, int *bt_life)
+{
+	apm_bios_regs regs;
+	int result;
+
+	regs.ebx = (dword)pdid;
+
+	result = this->apm_bios_call(0x0A, &regs);
+
+	dumpRegs(&regs);
+
+	*ac = regs.ebx >> 8;
+	*bt = regs.ebx & ~0xFF;
+	*bt_flag = regs.ecx >> 8;
+	*bt_life = regs.ecx & ~0xFF;
+
+	return result;
 }
 
 int APM::EnableDevicePowerManagement(int pdid)
@@ -144,7 +209,7 @@ int APM::GetPMEvent(int *event, int *info)
 	apm_bios_regs regs;
 	int result;
 
-	regs.eax = 0x530B;
+//	regs.eax = 0x530B;
 
 	result = this->apm_bios_call(0x0B, &regs);
 
@@ -178,4 +243,24 @@ int APM::GetPowerState(int pdid, int *state)
 	*state = (int)regs.ecx;
 
 	return result;
+}
+
+int APM::APMDriverVersion(int ver, int *cver)
+{
+	apm_bios_regs regs;
+	int result;
+
+	regs.ebx = 0;
+	regs.ecx = (dword)ver;
+	result = this->apm_bios_call(0x0E, &regs);
+
+
+	*cver = (int)regs.ecx;
+
+	return result;
+}
+
+void dumpRegs(apm_bios_regs *r)
+{
+	printf("EAX = %x, EBX = %x, ECX = %x, EDX = %x, ESI = %x, EDI = %x\n", r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi);
 }
