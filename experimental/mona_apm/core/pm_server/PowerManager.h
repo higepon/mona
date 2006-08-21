@@ -2,6 +2,7 @@
 #define _POWERMANAGER_H_
 
 #include "APM.h"
+#include "PMThread.h"
 
 #define SVR "PowerManager"
 
@@ -14,5 +15,6 @@ private:
 	int feature_;
 	APM *apm_;
 };
+
 
 #endif
