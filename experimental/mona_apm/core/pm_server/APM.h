@@ -12,8 +12,12 @@ public:
 	APM();
 	void MessageLoop();
 	void init();
+	void getStatus();
+	void pm_getPowerStatus(MessageInfo *);
 
 	static int InterfaceDisconnect();
+	static int CPUIdle();
+	static int CPUBusy();
 	static int GetPowerStatus(int pdid, int*, int*, int*, int*);
 	static int EnablePowerManagement(int);
 	static int DisablePowerManagement(int);
@@ -28,6 +32,11 @@ public:
 private:
 	static int apm_bios_call(int, void*);
 
+	int acline;
+	int battery;
+	int battery_flag;
+	int battery_life;
+
 	PMThread *thread;
 };
 
@@ -38,16 +47,10 @@ public:
 	~APMPoller();
 	void poll();
 	void EventProcess();
-	void getStatus();
 
 protected:
 	dword timer;
 	dword ptid;
-
-	int acline;
-	int battery;
-	int battery_flag;
-	int battery_life;
 };
 
 void dumpRegs(apm_bios_regs*);
