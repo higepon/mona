@@ -189,7 +189,7 @@ void VesaConsole::clearScreen()
 {
     int len = console_x_ * console_y_;
     for (int i = 0; i < len; i++) char_buffer_[i] = '\0';
-    screen.fill(0, 0, xResolution_, yResolution_, bg_);
+    screen.clear(xResolution_, yResolution_, bg_);
 }
 
 dword VesaConsole::getColor (char c)
@@ -308,6 +308,23 @@ void VesaConsole::VesaScreen::fill (int x, int y, int w, int h, dword c)
     }
 }
 
+void VesaConsole::VesaScreen::clearScreen16 (int w, int h, dword c)
+{
+    word color;
+    (this->*packColor)((byte*)&color, c);
+    memset((byte*)vramAddress, color, sizeof(word) * w * h);
+}
+
+void VesaConsole::VesaScreen::clearScreenDefault (int w, int h, dword c)
+{
+    fill(0, 0, w, h, c);
+}
+
+void VesaConsole::VesaScreen::clear (int w, int h, dword c)
+{
+    (this->*clearScreen)(w, h, c);
+}
+
 void VesaConsole::VesaScreen::fillPat
     (int x, int y, int w, int h, dword c, dword b, byte* p)
 {
@@ -348,15 +365,31 @@ void VesaConsole::VesaScreen::fillPat
 void VesaConsole::VesaScreen::selectMethod (VesaInfoDetail *info)
 {
     if (8 == info->redMaskSize && 8 == info->greenMaskSize && 8 == info->blueMaskSize)
+    {
         packColor = &VesaConsole::VesaScreen::packColor24;
+        clearScreen = &VesaScreen::VesaScreen::clearScreenDefault;
+    }
     else
-    if (5 == info->redMaskSize && 6 == info->greenMaskSize && 5 == info->blueMaskSize)
-        packColor = &VesaConsole::VesaScreen::packColor16;
-    else
-    if (5 == info->redMaskSize && 5 == info->greenMaskSize && 5 == info->blueMaskSize)
-        packColor = &VesaConsole::VesaScreen::packColor15;
-    else
-        packColor = &VesaConsole::VesaScreen::packColor8;
+    {
+        if (5 == info->redMaskSize && 6 == info->greenMaskSize && 5 == info->blueMaskSize)
+        {
+            packColor = &VesaConsole::VesaScreen::packColor16;
+            clearScreen = &VesaScreen::VesaScreen::clearScreen16;
+        }
+        else
+        {
+            if (5 == info->redMaskSize && 5 == info->greenMaskSize && 5 == info->blueMaskSize)
+            {
+                packColor = &VesaConsole::VesaScreen::packColor15;
+                clearScreen = &VesaScreen::VesaScreen::clearScreenDefault;
+            }
+            else
+            {
+                packColor = &VesaConsole::VesaScreen::packColor8;
+                clearScreen = &VesaScreen::VesaScreen::clearScreenDefault;
+            }
+        }
+    }
 }
 
 void VesaConsole::VesaScreen::packColor8 (byte *bits, dword c)

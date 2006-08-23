@@ -1,3 +1,7 @@
+2006-08-23  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/VesaConsole.cpp 16bpp‚Ìê‡‚ÌclearScreen‚ğ‚‘¬‰»B
+
 2006-08-18  higepon  <higepon@users.sourceforge.jp>
 
         * stlport‚ğcontrib/Devel‚©‚ç mona/tool/stlport‚ÉˆÚ“®B
