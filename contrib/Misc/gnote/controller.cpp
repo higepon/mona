@@ -57,7 +57,7 @@ namespace gnote {
 					ProcessKeyPressedEvent(reinterpret_cast<KeyEvent*>(event));
 				}
 				break;
-			case ACTION_PERFORMED:
+            case Event::ACTION_PERFORMED:
 				ProcessActionEvent(reinterpret_cast<TActionEvent*>(event));
 				break;
 			default:

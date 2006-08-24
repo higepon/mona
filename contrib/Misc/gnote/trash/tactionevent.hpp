@@ -30,7 +30,7 @@
 #define __TRASH_TACTIONEVENT_HPP__
 
 // :-)
-#define ACTION_PERFORMED Event::CUSTOM_EVENT + 1
+//#define ACTION_PERFORMED Event::CUSTOM_EVENT + 1
 
 #include "baygui.h"
 #include "baygui/awt/event/ActionEvent.h"

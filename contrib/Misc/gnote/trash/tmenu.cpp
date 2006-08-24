@@ -69,7 +69,8 @@ namespace trash {
 	//
 	void TMenu::processEvent(Event* event) {
 		switch (event->getType()) {
-			case ACTION_PERFORMED:
+        case Event::ACTION_PERFORMED:
+//			case ACTION_PERFORMED:
 				if (popupMenu.getFocused()) {
 					popupMenu.hide();
 				} else {

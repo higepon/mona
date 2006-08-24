@@ -1,4 +1,3 @@
-export MONADIR = ../../../mona
 TARGET  = GNOTE
 SOURCES = \
 trash/tmenuitem.cpp \
