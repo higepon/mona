@@ -58,8 +58,8 @@ private:
         void bitblt (int dst_x, int dst_y, int src_x, int src_y, int w, int h);
 
         void fill (int x, int y, int w, int h, dword c);
-        void clearScreen16 (int w, int h, dword c);
-        void clearScreenDefault (int w, int h, dword c);
+        void clearScreenWhite(int w, int h);
+        void clearScreenBlack(int w, int h);
         void clear (int w, int h, dword c);
         void fillPat (int x, int y, int w, int h, dword c, dword b, byte* p);
 
@@ -72,7 +72,6 @@ private:
         void packColor24 (byte *bits, dword c);
 
         void (VesaConsole::VesaScreen::* packColor) (byte *bits, dword c);
-        void (VesaConsole::VesaScreen::* clearScreen) (int w, int h, dword c);;
 
         dword vramAddress;
         word bytesPerScanLine;
