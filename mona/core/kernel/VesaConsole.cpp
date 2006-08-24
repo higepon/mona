@@ -188,7 +188,7 @@ void VesaConsole::getCursor(int* x, int* y)
 void VesaConsole::clearScreen()
 {
     int len = console_x_ * console_y_;
-    for (int i = 0; i < len; i++) char_buffer_[i] = '\0';
+     for (int i = 0; i < len; i++) char_buffer_[i] = '\0';
     screen.clearScreenWhite(xResolution_, yResolution_);
 }
 
