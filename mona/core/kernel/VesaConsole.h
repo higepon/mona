@@ -71,7 +71,18 @@ private:
         void packColor16 (byte *bits, dword c);
         void packColor24 (byte *bits, dword c);
 
+        dword getColor8 (dword c);
+        dword getColor15 (dword c);
+        dword getColor16 (dword c);
+        dword getColor24 (dword c);
+        void setColor8 (void* p, dword c);
+        void setColor15 (void* p, dword c);
+        void setColor16 (void* p, dword c);
+        void setColor24 (void* p, dword c);
+
         void (VesaConsole::VesaScreen::* packColor) (byte *bits, dword c);
+        dword (VesaConsole::VesaScreen::* getColor) (dword c);
+        void (VesaConsole::VesaScreen::* setColor) (void* p, dword c);
 
         dword vramAddress;
         word bytesPerScanLine;

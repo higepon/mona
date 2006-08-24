@@ -339,13 +339,16 @@ void VesaConsole::VesaScreen::fillPat
     int index = 0;
     int k = 0x80;
 
+    dword bgcolor = (this->*getColor)(b);
+    dword color = (this->*getColor)(c);
+
     for (int i = 0; i < h; i++) {
 
         for (int j = 0; j < w; j++) {
             if (k & p[index]) {
-                (this->*packColor)(temp, c);
+                (this->*setColor)(temp, color);
             } else {
-                (this->*packColor)(temp, b);
+                (this->*setColor)(temp, bgcolor);
             }
             temp += bytesPerPixel;
 
@@ -370,22 +373,30 @@ void VesaConsole::VesaScreen::selectMethod (VesaInfoDetail *info)
     if (8 == info->redMaskSize && 8 == info->greenMaskSize && 8 == info->blueMaskSize)
     {
         packColor = &VesaConsole::VesaScreen::packColor24;
+        getColor = &VesaConsole::VesaScreen::getColor24;
+        setColor = &VesaConsole::VesaScreen::setColor24;
     }
     else
     {
         if (5 == info->redMaskSize && 6 == info->greenMaskSize && 5 == info->blueMaskSize)
         {
             packColor = &VesaConsole::VesaScreen::packColor16;
+            getColor = &VesaConsole::VesaScreen::getColor16;
+            setColor = &VesaConsole::VesaScreen::setColor16;
         }
         else
         {
             if (5 == info->redMaskSize && 5 == info->greenMaskSize && 5 == info->blueMaskSize)
             {
                 packColor = &VesaConsole::VesaScreen::packColor15;
+                getColor = &VesaConsole::VesaScreen::getColor15;
+                setColor = &VesaConsole::VesaScreen::setColor24;
             }
             else
             {
                 packColor = &VesaConsole::VesaScreen::packColor8;
+                getColor = &VesaConsole::VesaScreen::getColor8;
+                setColor = &VesaConsole::VesaScreen::setColor8;
             }
         }
     }
@@ -413,6 +424,57 @@ void VesaConsole::VesaScreen::packColor16 (byte *bits, dword c)
 void VesaConsole::VesaScreen::packColor24 (byte *bits, dword c)
 {
     //    *((dword*)bits) = c;
+    bits[0] = (  c      & 0xff );
+    bits[1] = ( (c>> 8) & 0xff );
+    bits[2] = ( (c>>16) & 0xff );
+}
+
+dword VesaConsole::VesaScreen::getColor8 (dword c)
+{
+    return ((c>>16) & 0xe0) | ((c>>8) & 0x18) | (c & 0x3);
+}
+
+dword VesaConsole::VesaScreen::getColor15 (dword c)
+{
+    return ((c>>9) & 0x7c00)
+        | ((c>>6) & 0x03e0)
+        | ((c>>3) & 0x001f);
+}
+
+dword VesaConsole::VesaScreen::getColor16 (dword c)
+{
+    return ((c>>8) & 0xf800)
+        | ((c>>5) & 0x07e0)
+        | ((c>>3) & 0x001f);
+}
+
+
+dword VesaConsole::VesaScreen::getColor24 (dword c)
+{
+    return c;
+}
+
+void VesaConsole::VesaScreen::setColor8 (void* p, dword c)
+{
+    if (*((byte*)p) == c) return;
+    *((byte*)p) = c;
+}
+
+void VesaConsole::VesaScreen::setColor15 (void* p, dword c)
+{
+    if (*((word*)p) == c) return;
+    *((word*)p) = c;
+}
+
+void VesaConsole::VesaScreen::setColor16 (void* p, dword c)
+{
+    if (*((word*)p) == c) return;
+    *((word*)p) = c;
+}
+
+void VesaConsole::VesaScreen::setColor24 (void* p, dword c)
+{
+    byte* bits = (byte*)p;
     bits[0] = (  c      & 0xff );
     bits[1] = ( (c>> 8) & 0xff );
     bits[2] = ( (c>>16) & 0xff );
