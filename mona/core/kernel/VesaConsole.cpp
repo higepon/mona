@@ -333,16 +333,60 @@ void VesaConsole::VesaScreen::clearScreenBlack(int w, int h)
 void VesaConsole::VesaScreen::fillPat
     (int x, int y, int w, int h, dword c, dword b, byte* p)
 {
+#if 0
+    dword bgcolor = (this->*getColor)(b);
+    dword color = (this->*getColor)(c);
+
+    dword bytesPerPixel = bitsPerPixel/8;
+    static bool first = true;
+    word* pixel;
+    p = (byte*)get_font_address() + 17 + 16 * '3';
+    if (first)
+    {
+        int index = 0;
+        int k = 0x80;
+
+        pixel = new word[16 * 16];
+        for (int i = 0; i < 16; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                pixel[i * 16 + j] = p[index] & k ? color : bgcolor;
+
+                k >>= 1;
+                if (0 == k) {
+                    k = 0x80;
+                    index++;
+                }
+            }
+            if (0x80 != k) {
+                k = 0x80;
+                index++;
+            }
+        }
+        first = false;
+    }
+
+    word *bits = (word*)vramAddress
+        + bytesPerScanLine / 2 * y + bytesPerPixel /2 * x;
+
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            bits[i * w + j] = pixel[i * w + j];
+        }
+        bits += bytesPerScanLine / 2;
+    }
+
+#else
     dword bytesPerPixel = bitsPerPixel/8;
     byte *bits = (byte*)vramAddress
             + bytesPerScanLine * y + bytesPerPixel * x;
     byte *temp = bits;
+    dword bgcolor = (this->*getColor)(b);
+    dword color = (this->*getColor)(c);
 
     int index = 0;
     int k = 0x80;
-
-    dword bgcolor = (this->*getColor)(b);
-    dword color = (this->*getColor)(c);
 
     for (int i = 0; i < h; i++) {
 
@@ -368,6 +412,7 @@ void VesaConsole::VesaScreen::fillPat
             index++;
         }
     }
+#endif
 }
 
 void VesaConsole::VesaScreen::selectMethod (VesaInfoDetail *info)
