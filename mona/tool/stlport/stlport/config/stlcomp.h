@@ -67,7 +67,10 @@ typedef int ptrdiff_t;
 /* #  undef _STLP_LIMITED_DEFAULT_TEMPLATES */
 /* #  undef _STLP_DEFAULT_TYPE_PARAM */
 /* #  undef _STLP_NO_STATIC_TEMPLATE_DATA */
-#  define _STLP_RAND48 1
+
+// 2006/08/27 modified for use rand. by Gaku
+//#  define _STLP_RAND48 1
+
 /* #  undef _STLP_LOOP_INLINE_PROBLEMS */
 
 /* #  undef _STLP_HAS_NO_NAMESPACES */
