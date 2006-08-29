@@ -3,7 +3,6 @@
 
 #include <servers/pm.h>
 #include "APM.h"
-#include "PMThread.h"
 
 #define SVR "PowerManager"
 

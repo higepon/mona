@@ -2,7 +2,6 @@
 #define _APM_H_
 
 #include <sys/types.h>
-#include "PMThread.h"
 
 typedef struct _s apm_bios_regs;
 
@@ -36,24 +35,8 @@ private:
 	int battery;
 	int battery_flag;
 	int battery_life;
-
-	PMThread *thread;
-};
-
-class APMPoller
-{
-public:
-	APMPoller(dword ptid);
-	~APMPoller();
-	void poll();
-	void EventProcess();
-
-protected:
-	dword timer;
-	dword ptid;
 };
 
 void dumpRegs(apm_bios_regs*);
-int poller();
 
 #endif

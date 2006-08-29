@@ -2,7 +2,7 @@ SRCTOP=../..
 include $(SRCTOP)/Makefile.inc
 
 TARGET  = PM
-SOURCES = main.cpp PowerManager.cpp APM.cpp PMThread.cpp APMPoller.cpp
+SOURCES = main.cpp PowerManager.cpp APM.cpp
 INSTDIR = $(BINDIR)/SERVERS
 
 ADDLINK    = -lmonalibc

@@ -65,25 +65,20 @@ void APM::MessageLoop()
 
 void APM::init()
 {
-	DisableDevicePowerManagement(1);
-	DisengagePowerManagement(1);
-	DisablePowerManagement(1);
-
 	if( APM::EnablePowerManagement(0x0001) )
 	{
 		printf("Error: EnablePowerManagement.\n");
 	}
-	if( APM::EngagePowerManagement(0x0001) )
-	{
-		printf("Error: EngagePowerManagement.\n");
-	}
+/*
 	if( APM::EnableDevicePowerManagement(0x0001) )
 	{
 		printf("Error: EnableDevicePowerManagement.\n");
 	}
-
-//	thread = new PMThread(&poller);
-//	thread->start();
+*/
+	if( APM::EngagePowerManagement(0x0001) )
+	{
+		printf("Error: EngagePowerManagement.\n");
+	}
 }
 
 void APM::getStatus()
@@ -242,7 +237,7 @@ int APM::GetPMEvent(int *event, int *info)
 	apm_bios_regs regs;
 	int result;
 
-//	regs.eax = 0x530B;
+	regs.eax = 0x530B;
 
 	result = apm_bios_call(0x0B, &regs);
 
@@ -296,12 +291,4 @@ int APM::APMDriverVersion(int ver, int *cver)
 void dumpRegs(apm_bios_regs *r)
 {
 	printf("EAX = %x, EBX = %x, ECX = %x, EDX = %x, ESI = %x, EDI = %x\n", r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi);
-}
-
-int poller()
-{
-	APMPoller *apmp;
-	apmp = new APMPoller(syscall_get_tid());
-	//apmp->poll();
-	return 0;
 }
