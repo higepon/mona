@@ -32,6 +32,7 @@ endif
 	cd core/shell_server && make && make install
 	cd core/elf_server && make && make install
 	cd core/pe_server && make && make install
+	cd core/pm_server && make && make install
 	cd tool/mkimg && make clean && make
 
 .PHONY: clean
@@ -53,3 +54,4 @@ endif
 	$(MAKE) $@ -C core/shell_server
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
+	$(MAKE) $@ -C core/pm_server

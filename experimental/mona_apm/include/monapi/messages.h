@@ -6,6 +6,7 @@
 #include <servers/mouse.h>
 #include <servers/process.h>
 #include <servers/file.h>
+#include <servers/pm.h>
 #include <servers/servers.h>
 
 #define MONAPI_BOOL int
@@ -22,6 +23,7 @@ enum
     ID_PROCESS_SERVER,
     ID_PE_SERVER,
     ID_MONITOR_SERVER,
+    ID_PM_SERVER,
     ID_NUMBER_OF_SERVERS
 };
 

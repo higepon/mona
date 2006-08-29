@@ -25,7 +25,7 @@ void apm_init(void)
 	g_console->printf("apm_des = %x\n", apm_eip.segment);
 */
 
-	apm_enable();
+	//apm_enable();
 }
 
 dword apm_bios(dword fn, apm_bios_regs *regs)
