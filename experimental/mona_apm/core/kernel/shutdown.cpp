@@ -3,6 +3,25 @@
 #include "global.h"
 #include "shutdown.h"
 
+#if 0
+void kill_all_proc()
+{
+	dword *id_list;
+	dword id_num;
+	dword i;
+
+	id_list = g_scheduler->GetAllThreadID(&id_num);
+
+	for( i = 0 ; i < id_num ; i++ )
+	{
+		if( id_list[i] != g_currentThread->thread->id )
+		{
+			ThreadOperation::kill(id_list[i]);
+		}
+	}
+}
+#endif
+
 dword shutdown(dword op, dword device)
 {
 	if( op == SHUTDOWN_FEATURE )
@@ -30,6 +49,8 @@ dword shutdown_by_apm(dword op, dword device)
 		case SHUTDOWN_HALT: pstate = 3; break;
 		default: pstate = 0; break;
 	}
+
+//	kill_all_proc();
 
 	regs.eax = 0x5307;
 	regs.ebx = device;
