@@ -11,6 +11,7 @@ all:
 # servers
 	cd X/gui && touch dependencies && make && make install
 # libraries
+# tmpmonalibc merged in monalibc
 #	cd Devel/tmpmonalibc && touch dependencies && make && make install
 	cd Graphics/Mesa && touch dependencies && make && make install
 	cd Graphics/libgui && touch dependencies && make && make install
@@ -20,6 +21,7 @@ all:
 	cd Net/mones2 && touch dependencies && make && make install
 # non-gui applications
 	cd Emulators/infones && touch dependencies && make && make install
+	cd Emulators/monamona && touch dependencies && make && make install
 	cd Graphics/jpegview && touch dependencies && make && make install
 	cd Graphics/Mesa-gears && touch dependencies && make && make install
 	cd Misc/helloworld && touch dependencies && make && make install
@@ -33,13 +35,20 @@ all:
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
 	cd Misc/gnote && touch dependencies && make && make install
+# network support
+	cd Net/NetServer && make && make install
+	cd Net/libnet && make && make install
+	cd Net/libnet/sample/giko && make && make install
 # make disk images
 	cd $(MONADIR)/tool/mkimg && make
 
 clean:
+# stlport move to mona/tool/stlport
 #	cd Devel/stlport && make clean
-	cd Devel/tmpmonalibc && make clean
+# tmpmonalibc merged in monalibc
+#	cd Devel/tmpmonalibc && make clean
 	cd Emulators/infones && make clean
+	cd Emulators/monamona && make clean
 	cd Graphics/jpegview && make clean
 	cd Graphics/libbaygui && make clean
 	cd Graphics/libjpegls && make clean
@@ -59,3 +68,5 @@ clean:
 	cd X/gui && make clean
 	cd X/glaunch && make clean
 	cd X/monafile && make clean
+	cd Net/NetServer && make clean
+	cd Net/libnet && make clean
