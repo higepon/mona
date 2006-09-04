@@ -26,7 +26,7 @@ MonAMDpcn::~MonAMDpcn()
         monapi_deallocate_dma_memory(piblock);
     for(int i=0;i<3;i++)
         monapi_deallocate_dma_memory(rxdsc+0x1000*i);
-    for(int i=0;i<4;i++)
+    for(int i=0;i<3;i++)
         monapi_deallocate_dma_memory(txdsc+0x1000*i);
 }
 
@@ -44,7 +44,7 @@ MonAMDpcn::MonAMDpcn()
     }
     txdsc=NULL;
     txbuf=monapi_allocate_dma_memory();
-    for(int i=1;i<4;i++){
+    for(int i=1;i<3;i++){
         byte* txtmp=monapi_allocate_dma_memory();
         if( txtmp != txbuf+0x1000*i){
             printf("TX:buf is not continuous.%d\n",i);
@@ -82,19 +82,24 @@ int MonAMDpcn::init()
     txindex=0;
     txdirty=0;
     ///////////////
+
     stop();
     reset();
     w_bcr(BCR_MISC,BCR_AUTOSEL);        //SET BCR_EDGETRG for Edge Sense.
     w_bcr(BCR_SSTYLE,BCR_PCI_II|BCR_SSIZE);
     //Use initalize block.
     piblock=(IBLK*)monapi_allocate_dma_memory();
+    if( piblock == NULL ){
+        printf("dma mem allocation failed.\n");
+        return -1;
+    }
     piblock->mode=0x0;         //set MODE_DNY_BCST for deny broadcast packets.
     piblock->rxlen=(LOGRXRINGLEN<<4);  //see page157.
     piblock->txlen=(LOGTXRINGLEN<<4);
     for(int i=0;i<6;i++){
         piblock->mac_addr[i]=inp8(iobase+i);
         macaddress[i]=piblock->mac_addr[i];
-    }
+    }    
     piblock->filter[0]=0x0;
     piblock->filter[1]=0x0;
     piblock->rx_ring=(dword)rxdsc;

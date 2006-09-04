@@ -4,7 +4,7 @@
 using namespace MonAPI;
 using namespace mones;
 
-int Stat(NetClient& client)
+int NetStat(NetClient& client)
 {
     //read nic status.
     NetStatus stat;
@@ -190,7 +190,7 @@ int MonaMain(List<char*>* pekoe)
         printf("         clinet dset-ip tcp svc\n");
         printf("         client dest-ip reset remoteport localport\n");
         printf("         client dest-ip ftp user passwd commands......\n");
-        Stat(client);
+        NetStat(client);
         exit(0);
     }
     dword a,b,c,d;

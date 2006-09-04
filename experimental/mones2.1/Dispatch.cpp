@@ -1,6 +1,7 @@
 //$Id$
 #include <pci/Pci.h>
 #include "NE2000.h"
+#include "MonADEC.h"
 #include "MonAMDpcn.h"
 #include "LoopBack.h"
 #include "Dispatch.h"
@@ -26,12 +27,29 @@ Dispatch::Dispatch()
     PciInf pciinfo;
     Pci* pcilib = new Pci();
     printf("\nIP address is defined in Dispatch constructor. Rewrite it as your environment.\n");
+    pcilib->CheckPciExist(MonADEC::VENDORID,MonADEC::DEVICEID,&pciinfo);
+    if( pciinfo.Exist== 0){
+            // 0x04 is PCI_COMMAND
+        dword val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0, 0x04,2);
+        pcilib->WriteConfig(0,pciinfo.DeviceNo,0,0x04,2,val|0x4);
+        nic=new MonADEC();    
+        nic->setIP(192,168,0,6);  //VirtualPC. 
+        nic->setIRQ(pciinfo.IrqLine);
+        nic->setIOBase(pciinfo.BaseAd);
+        if( nic->init() == 0 ){
+            delete pcilib;
+            return;
+        }
+        delete nic;
+        nic=NULL;
+    }
+
     pcilib->CheckPciExist(MonAMDpcn::VENDORID,MonAMDpcn::DEVICEID,&pciinfo);
     if( pciinfo.Exist== 0){
         // 0x04 is PCI_COMMAND
         dword val=pcilib->ReadConfig(0, pciinfo.DeviceNo, 0, 0x04,2);
         pcilib->WriteConfig(0,pciinfo.DeviceNo,0,0x04,2,val|0x4);
-        nic=new MonAMDpcn();
+        nic=new MonAMDpcn();    
         nic->setIP(192,168,0,5);  //Vmware. 
         nic->setIRQ(pciinfo.IrqLine);
         nic->setIOBase(pciinfo.BaseAd);

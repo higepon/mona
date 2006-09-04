@@ -2,7 +2,7 @@
 TARGET  = IPSTACK
 SOURCES = main.cpp Nic.cpp Dispatch.cpp IPStack.cpp \
  L4Base.cpp ICMPInfo.cpp UDPInfo.cpp TCPInfo.cpp \
- MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
+ MonADEC.cpp MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
 INSTDIR = $(BINDIR)/APPS
 
 SHAREDIR   = $(MONADIR)/share
@@ -46,7 +46,9 @@ runl: install
 	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/runl.bat
 runq: install
 	cd $(MONADIR)/tool/mkimg && make && cp mona.iso $(QEMUDIR)
-	cd $(QEMUDIR) && $(QEMUDIR)/mona.bat	
+	cd $(QEMUDIR) && $(QEMUDIR)/mona.bat
+runv: install
+	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/runv.bat
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f ${MONADIR}/bin/mona.img dependencies
