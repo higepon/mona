@@ -10,6 +10,7 @@ all:
 	cd Graphics/libjpegls && touch dependencies && make && make install
 # servers
 	cd X/gui && touch dependencies && make && make install
+	cd Net/NetServer && make && make install
 # libraries
 # tmpmonalibc merged in monalibc
 #	cd Devel/tmpmonalibc && touch dependencies && make && make install
@@ -17,8 +18,7 @@ all:
 	cd Graphics/libgui && touch dependencies && make && make install
 	cd Graphics/libbaygui && touch dependencies && make && make install
 	cd Sysutils/libPci && touch dependencies && make && make install
-	cd Net/libnicdrv && touch dependencies && make && make install
-	cd Net/mones2 && touch dependencies && make && make install
+	cd Net/libnet && make && make install
 # non-gui applications
 	cd Emulators/infones && touch dependencies && make && make install
 	cd Emulators/monamona && touch dependencies && make && make install
@@ -35,9 +35,7 @@ all:
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
 	cd Misc/gnote && touch dependencies && make && make install
-# network support
-	cd Net/NetServer && make && make install
-	cd Net/libnet && make && make install
+# Network applications
 	cd Net/libnet/sample/giko && make && make install
 # make disk images
 	cd $(MONADIR)/tool/mkimg && make
@@ -59,14 +57,12 @@ clean:
 	cd Misc/gnote && make clean
 	cd Multimedia/monapeg && make clean
 	cd Multimedia/monappt && make clean
-	cd Net/libnicdrv && make clean
+	cd Net/libnet && make clean
 	cd Net/monadat && make clean
-	cd Net/mones2 && make clean
+	cd Net/NetServer && make clean
 	cd Shells/gshell && make clean
 	cd Shells/mshell && make clean
 	cd Sysutils/libPci && make clean
 	cd X/gui && make clean
 	cd X/glaunch && make clean
 	cd X/monafile && make clean
-	cd Net/NetServer && make clean
-	cd Net/libnet && make clean

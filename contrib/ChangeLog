@@ -1,3 +1,15 @@
+2006-09-04  bayside
+
+        * Net/NetServerをビルド可能に
+
+        * Net/libnet/sample/gikoをcygwin上でビルド可能に
+
+        * Makefile
+            - Net/NetServer追加
+            - Net/libnet/sample/giko追加
+            - Net/libnicdrv削除
+            - Net/mones2削除
+
 2006-08-18  higepon  <higepon@users.sourceforge.jp>
 
         * Devel/stlportを mona/tool/stlportに移動
@@ -12,7 +24,7 @@
 
 2006-07-22  shadow  <shadowin@users.sourceforge.jp>
 
-	* Devel/stlport: arrange stlport
+        * Devel/stlport: arrange stlport
 
 2006-04-26  higepon  <higepon@users.sourceforge.jp>
 
@@ -24,8 +36,8 @@
 
 2006-04-25  EDS1275
 
-		* Sysutiles/libPci WriteConfig追加
-		
+        * Sysutils/libPci WriteConfig追加
+
 2006-03-22  Yamami
 
         * net/mones: mones追加
