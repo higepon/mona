@@ -1,3 +1,7 @@
+#ifndef INT_MAX
+#define INT_MAX (+0x7fffffff)
+#endif
+
 #include "StringHelper.h"
 
 using namespace std;

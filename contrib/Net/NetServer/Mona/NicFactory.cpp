@@ -8,15 +8,15 @@ using namespace mones;
 
 Nic* NicFactory::create()
 {
-    PciInf *pciinfo;
+    PciInf pciinfo;
     Pci* pcilib = new Pci();
     Nic* nic;
 
     //TODO 一時しのぎなので、マジックナンバーを用いる
     //QEMU上の、NE2000を探す
-    pciinfo = pcilib->CheckPciExist(0x10EC,0x8029);
+    pcilib->CheckPciExist(0x10EC,0x8029,&pciinfo);
 
-    if (pciinfo->Exist == 0)
+    if (pciinfo.Exist == 0)
     {
         //見つかれば
         //NE2000のロード
