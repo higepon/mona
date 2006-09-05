@@ -106,11 +106,11 @@ namespace baygui {
 	Scrollbar::Scrollbar()
 	{
 		this->orientation = VERTICAL;
-		this->minimum = 0;
-		this->maximum = 100;
+		this->minimum   = 0;
+		this->maximum   = 100;
 		this->blocksize = 10;
-		this->preValue = 0;
-		this->value = 0;
+		this->preValue  = 0;
+		this->value     = 0;
 		this->adjustmentEvent.setType(Event::BLOCK_INCLEMENT);
 		this->adjustmentEvent.setSource(this);
 	}
@@ -118,11 +118,11 @@ namespace baygui {
 	Scrollbar::Scrollbar(int orientation)
 	{
 		this->orientation = orientation;
-		this->minimum = 0;
-		this->maximum = 100;
+		this->minimum   = 0;
+		this->maximum   = 100;
 		this->blocksize = 10;
-		this->preValue = 0;
-		this->value = 0;
+		this->preValue  = 0;
+		this->value     = 0;
 		this->adjustmentEvent.setType(Event::BLOCK_INCLEMENT);
 		this->adjustmentEvent.setSource(this);
 	}
@@ -159,13 +159,18 @@ namespace baygui {
 
 	void Scrollbar::paint(Graphics* g)
 	{
-		int w = getWidth(), h = getHeight();
+		int w = getWidth();
+		int h = getHeight();
 		
 		// 外枠
 		g->setColor(Color::gray);
-		g->fillRect(0,0,getWidth(),getHeight());
+		g->fillRect(0, 0, w, h);
 		g->setColor(Color::black);
-		g->drawRect(0,0,getWidth(),getHeight());
+		g->drawRect(0, 0, w, h);
+		
+		// 非活性のときはボタンを描画しない
+		// 最大値と最小値が等しいときはボタンを描画しない
+		if (getEnabled() == false || (getMaximum() - getMinimum()) == 0) return;
 		
 		// 垂直スクロールバー
 		if (this->orientation == VERTICAL) {
@@ -182,7 +187,7 @@ namespace baygui {
 				}
 			}
 			// ボタン
-			int offset = 15 + (getHeight() - 47) * (getValue() - getMinimum()) / (getMaximum() - getMinimum());
+			int offset = 15 + (h - 47) * (getValue() - getMinimum()) / (getMaximum() - getMinimum());
 			for (int i = 0; i < 17; i++) {
 				for (int j = 0; j < 16; j++) {
 					g->drawPixel(j, i + offset, button_palette[button_data[i * 16 + j] & 0xFF]);
@@ -203,7 +208,7 @@ namespace baygui {
 				}
 			}
 			// ボタン
-			int offset = 15 + (getWidth() - 47) * (getValue() - getMinimum()) / (getMaximum() - getMinimum());
+			int offset = 15 + (w - 47) * (getValue() - getMinimum()) / (getMaximum() - getMinimum());
 			for (int i = 0; i < 17; i++) {
 				for (int j = 0; j < 16; j++) {
 					g->drawPixel(i + offset, j, button_palette[button_data[i * 16 + j] & 0xFF]);
