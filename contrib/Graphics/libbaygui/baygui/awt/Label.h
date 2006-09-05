@@ -36,8 +36,8 @@ namespace baygui {
 		static const int CENTER = 2;
 		/** 右寄せ */
 		static const int RIGHT  = 3;
-
-	private:
+		
+	protected:
 		/** 表示位置（左寄せ、中央寄せ、右寄せ）*/
 		int align;
 		/** 表示文字列 */
