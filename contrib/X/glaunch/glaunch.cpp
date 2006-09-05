@@ -62,7 +62,12 @@ Glaunch::Glaunch()
 		if (isDirectory) {
 			// . と .. は除外する
 			if (file != "." && file != "..") {
-				 list->add((char*)(const char*)file);
+				// 意味不明なバグ
+				char* filename = (char*)(const char*)file;
+				if (filename[strlen(filename) - 1] == '.') {
+					filename[strlen(filename) - 1] = '\0';
+				}
+				list->add((char*)filename);
 			}
 		 } else {
 			// BayGUIアプリのみをピックアップ (*.EX5)

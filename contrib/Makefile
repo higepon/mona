@@ -10,6 +10,7 @@ all:
 	cd Graphics/libjpegls && touch dependencies && make && make install
 # servers
 	cd X/gui && touch dependencies && make && make install
+	cd Sysutils/libPci && touch dependencies && make && make install
 	cd Net/NetServer && make && make install
 # libraries
 # tmpmonalibc merged in monalibc
@@ -17,7 +18,6 @@ all:
 	cd Graphics/Mesa && touch dependencies && make && make install
 	cd Graphics/libgui && touch dependencies && make && make install
 	cd Graphics/libbaygui && touch dependencies && make && make install
-	cd Sysutils/libPci && touch dependencies && make && make install
 	cd Net/libnet && make && make install
 # non-gui applications
 	cd Emulators/infones && touch dependencies && make && make install
@@ -37,6 +37,17 @@ all:
 	cd Misc/gnote && touch dependencies && make && make install
 # Network applications
 	cd Net/libnet/sample/giko && make && make install
+# Append
+	cd Benchmarks/gfire && make && make install
+	cd Benchmarks/gnoiz2bg && make && make install
+	cd Games/ghebtn && make && make install
+	cd Games/gnullpo && make && make install
+	cd Games/mblupin && make && make install
+	cd Games/mine && make && make install
+	cd Games/mtorz && make && make install
+	cd Graphics/bitmap && make && make install
+	cd Sysutils/gclock && make && make install
+	cd Sysutils/gtimer && make && make install
 # make disk images
 	cd $(MONADIR)/tool/mkimg && make
 
@@ -66,3 +77,13 @@ clean:
 	cd X/gui && make clean
 	cd X/glaunch && make clean
 	cd X/monafile && make clean
+	cd Benchmarks/gfire && make clean
+	cd Benchmarks/gnoiz2bg && make clean
+	cd Games/ghebtn && make clean
+	cd Games/gnullpo && make clean
+	cd Games/mblupin && make clean
+	cd Games/mine && make clean
+	cd Games/mtorz && make clean
+	cd Graphics/bitmap && make clean
+	cd Sysutils/gclock && make clean
+	cd Sysutils/gtimer && make clean

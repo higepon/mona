@@ -1,3 +1,19 @@
+2006-09-05  bayside
+
+        * 新規追加
+            - Games/gnullpo
+            - Games/mblupin
+            - Games/ghebtn
+            - Games/mine
+            - Games/mtorz
+            - Sysutils/gclock
+            - Sysutils/gtimer
+            - Graphics/bitmap
+            - Benchmarks/gnoiz2bg
+            - Benchmarks/gfire
+
+        * X/glaunch/glaunch.cpp: GNULLPO.APP. と表示される不具合のパッチ
+
 2006-09-04  bayside
 
         * Net/NetServerをビルド可能に
