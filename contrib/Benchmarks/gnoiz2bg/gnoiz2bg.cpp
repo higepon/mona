@@ -321,7 +321,8 @@ public:
 		if (event->getType() == Event::TIMER) {
 		#endif
 			moveBackground();
-			drawBackground(this->pbuf);
+			drawBackground(/* this->pbuf */ (unsigned char *) this->_buffer->getSource());
+			#if 0
 			for (int y = 0; y < SCREEN_H; y++) {
 				for (int x = 0; x < SCREEN_W; x++) {
 					//int k = (x + y * SCREEN_W) * 4;
@@ -332,6 +333,7 @@ public:
 					getBuffer()->setPixel(x, y, *((int*)p));
 				}
 			}
+			#endif
 			update();
 			scene_count--;
 			if(scene_count <= 0){
