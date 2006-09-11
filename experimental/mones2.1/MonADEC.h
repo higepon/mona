@@ -4,24 +4,26 @@
 #include <monapi.h>
 #include "Nic.h"
 
+//The author refers Intel 21143 PCI/CardBus 10/100Mb/s
+//Ethernet LAN Controller Hardware Reference Manual Rev1.0 and others.
+//VirtualPC acts as if she has 21140A.
+
 namespace mones{ 
 
 #pragma pack(push,4)
 class MonADEC: public Nic
 {
-
-    typedef struct RXDSC{
-    };
-    //See spec sheet Page 162.
-    typedef struct TXDSC{
-    };
-    typedef struct IBLK{
-
+    //See H.R.M. (4.1)Figure4-2,(4.2)Figure4-7
+    typedef struct DESC{
+        word status;
+        word ctlandcnt;
+        word bufaddr1;
+        word bufaddr2;
     };
 protected:
     void rxihandler();
     byte* rxbuf;
-    RXDSC* rxdsc;
+    DESC* rxdsc;
     int rxindex;
     int rxdirty;
     enum{
@@ -32,7 +34,7 @@ protected:
     };
     void txihandler();
     byte* txbuf;
-    TXDSC* txdsc;
+    DESC* txdsc;
     int txindex;
     int txdirty;
     enum{
@@ -52,21 +54,20 @@ public:
         DEVICEID   =0x0009, //21140A
     };
 private:
-    IBLK* piblock;
-    word r_rap(){ return inp16(iobase+IO_RAP);}
-    void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
-    word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
-    void w_csr(int reg,word val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
-    word r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
-    void w_bcr(int reg,word val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
-    void reset(){ inp16(iobase+IO_RESET); } //16bitmode;
-    void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
-    enum{
-      IO_RDP       =0x10,
+//    word r_rap(){ return inp16(iobase+IO_RAP);}
+ //   void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
+  //  word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
+  //  void w_csr(int reg,word val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
+  //  word r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
+  //  void w_bcr(int reg,word val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
+    void reset(){ outp32(iobase+CSR_0,CSR_RESET); }
+//    void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
+    enum{ 
+      CSR_0        =0x00,
+      CSR_RESET    =0x00000001,
+/*    IO_RDP       =0x10,
       IO_RAP       =0x12,
-      IO_RESET     =0x14,
       IO_BDP       =0x16,
-
       BCR_MISC     =0x02,
       BCR_SSTYLE   =0x14,
     
@@ -113,6 +114,7 @@ private:
       MODE_DNY_BCST=0x4000,
       MODE_PROMISC =0x8000,
       MODE_PSEL    =0x0180,
+  */
     };
 };
 #pragma pack(pop)
