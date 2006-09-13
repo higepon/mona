@@ -65,6 +65,10 @@ private:
     enum{ 
       CSR_0        =0x00,
       CSR_RESET    =0x00000001,
+      CSR_2        =0x10,
+      CSR_3           =0x18,
+      CSR_4           =0x20,
+      CSR_6           =0x30,
 /*    IO_RDP       =0x10,
       IO_RAP       =0x12,
       IO_BDP       =0x16,
