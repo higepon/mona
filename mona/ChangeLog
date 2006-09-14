@@ -1,3 +1,7 @@
+2006-09-14  higepon  <higepon@users.sourceforge.jp>
+
+        * tool/t5lzma/configure : don't show wrong message
+
 2006-08-24  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/VesaConsole.cpp clearScreenWhite/clearScreenBlack‚¾‚¯‚ ‚ê‚Î—Ç‚¢B‚Æ‚¢‚¤ìí‚É•ÏX
