@@ -1,3 +1,7 @@
+2006-09-14  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/NetServer/Mona/Makefile (ADDLINK): -lPci -> -lpci
+
 2006-09-05  bayside
 
         * V‹K’Ç‰Á
