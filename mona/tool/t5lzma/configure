@@ -47,7 +47,7 @@ fi
 
 cp Makefile.in Makefile
 
-echo ""
-echo "[How to build]"
-echo "1. make"
-echo "2. make install"
+# echo ""
+# echo "[How to build]"
+# echo "1. make"
+# echo "2. make install"
