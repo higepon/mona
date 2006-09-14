@@ -193,7 +193,7 @@ Icons Icon::GetIcon(monapi_directoryinfo* di)
 	{
 		return Icons_Executable;
 	}
-	else if (ext == ".BMP" || ext == ".BM2" || ext == ".BM5" || ext == ".JPG")
+	else if (ext == ".BMP" || ext == ".BM2" || ext == ".BM5" || ext == ".JPG" || ext == ".MPG")
 	{
 		return Icons_Picture;
 	}

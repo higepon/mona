@@ -35,6 +35,7 @@ all:
 	cd Shells/gshell && touch dependencies && make && make install
 	cd X/glaunch && touch dependencies && make && make install
 	cd Misc/gnote && touch dependencies && make && make install
+	cd Multimedia/xmonapeg && touch dependencies && make && make install
 # Network applications
 	cd Net/libnet/sample/giko && make && make install
 # Append
@@ -68,6 +69,7 @@ clean:
 	cd Misc/gnote && make clean
 	cd Multimedia/monapeg && make clean
 	cd Multimedia/monappt && make clean
+	cd Multimedia/xmonapeg && make clean
 	cd Net/libnet && make clean
 	cd Net/monadat && make clean
 	cd Net/NetServer && make clean

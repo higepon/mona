@@ -230,9 +230,18 @@ void FileBrowser::Open(int target)
             break;
         }
         case Icons_Picture:
+        {
             Icon::ExpansionEffect(pc.X, pc.Y);
-            ProcessStart("/APPS/MONAFRMS/BITMAP.EX5 " + PathCombine(this->path, name));
+            if (PathCombine(this->path, name).EndsWith(".MPG"))
+            {
+                ProcessStart("/APPS/BAYGUI/XMONAPEG.EX5 " + PathCombine(this->path, name));
+            }
+            else
+            {
+                ProcessStart("/APPS/MONAFRMS/BITMAP.EX5 " + PathCombine(this->path, name));
+            }
             break;
+        }
         default:
             break;
     }

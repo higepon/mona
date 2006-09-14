@@ -25,7 +25,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define _HASHTABLE_H_INCLUDED_
 
 namespace baygui {
-	/** キーと値のペアを格納できるクラス */
+	/** 
+	 このクラスは、ハッシュテーブルを実装するためのもので、キーを値にマップします。
+	 null オブジェクト以外であれば、どのオブジェクトでもキーや値に使用することができます。
+	*/
 	class Hashtable : public Object {
 	private:
 		/** キー一覧 */
@@ -34,36 +37,39 @@ namespace baygui {
 		Vector valueList;
 		
 	public:
-		/** デフォルトコンストラクタ */
+		/** デフォルトの容量で新しい空のハッシュテーブルを生成します。 */
 		Hashtable();
 		
 		/** デストラクタ */
 		virtual ~Hashtable();
 		
-		/** ハッシュテーブルが空かどうかを得る */
+		/** 値にマップされているキーが、ハッシュテーブルにあるかどうかを判定します。 */
 		inline bool isEmpty() { return (this->keyList.size() == 0) ? true : false; }
 		
-		/** キー一覧を得る */
+		/** ハッシュテーブルにあるキーのリストを返します。 */
 		inline Object** keys() { return this->keyList.elements(); }
 		
-		/** 値一覧を得る */
+		/** ハッシュテーブルにある値のリストを返します。 */
 		inline Object** elements() { return this->valueList.elements(); }
 		
 		/**
-		 指定したキーに対応する値を得る
-		 @param key キー
-		 @return 対応する値がないときはNULL
+		 指定されたキーにマップされている、ハッシュテーブルの値を返します。
+		 @param key ハッシュテーブルのキー
+		 @return 指定されたキーにマップされているハッシュテーブルの値。指定されたキーにマップされている値がない場合は null
 		*/
 		Object* get(Object* key);
 		
 		/**
-		 キーと値の対を追加する
-		 @param key キー
+		 ハッシュテーブルにおいて、指定された key を、指定された value にマップします。
+		 @param key ハッシュテーブルのキー
 		 @param value 値
 		*/
 		void put(Object* key, Object* value);
 
-		/** 指定されたキーを削除する */
+		/**
+		 キー (およびそれに対応する値) をハッシュテーブルから削除します。
+		 @param key 削除するキー
+		*/
 		void remove(Object* key);
 
 		/** すべての要素を削除する */

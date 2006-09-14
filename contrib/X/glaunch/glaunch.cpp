@@ -68,6 +68,7 @@ Glaunch::Glaunch()
 					filename[strlen(filename) - 1] = '\0';
 				}
 				list->add((char*)filename);
+			    list->add((char*)(const char*)file);
 			}
 		 } else {
 			// BayGUIアプリのみをピックアップ (*.EX5)

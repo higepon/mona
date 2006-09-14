@@ -211,15 +211,15 @@ static void DrawLoop()
 int MonaMain( List<char*>* pekoe )
 {
 	// check arguments
-	//if (pekoe->size() < 1)
-	//{
-	//	printf("usage: XMONAPEG.EX5 [filename.mpg]\n");
-	//	return(-1);
-	//}
-	//else
-	//{
-		filename = "/APPS/TEST.MPG";//pekoe->get(0);
-	//}
+	if (pekoe->size() < 1)
+	{
+		printf("usage: XMONAPEG.EX5 [filename.mpg]\n");
+		return(-1);
+	}
+	else
+	{
+		filename = pekoe->get(0);
+	}
 
 	// Create thread
 	my_tid = syscall_get_tid();
