@@ -226,7 +226,7 @@ Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
         }
         else
         {
-            entry->name = getProperName(string((const char*)from->name, from->length));
+            entry->name = getProperName(string((const char*)from->name, from->name_len));
         }
         return entry;
 }
@@ -385,7 +385,6 @@ void ISO9660FileSystem::setDetailInformation(Entry* to, DirectoryEntry* from)
 string ISO9660FileSystem::getProperName(const string& name)
 {
     string result = name;
-
     if (result[0] == 0x00)
     {
         result = ".";

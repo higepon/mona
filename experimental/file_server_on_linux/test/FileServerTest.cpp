@@ -108,9 +108,9 @@ void FileServerTest::testISO9660ReadDirectory()
     monapi_directoryinfo* p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
     int size = *(int*)mi->Data;
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("entry count", 7, size);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("entry count", 8, size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("file MONA.CFG exist?", strcmp(p[0].name, "."), 0);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("file SERVERS exist?", strcmp((&p[6])->name, "SHELL.EX5"), 0);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("file SERVERS exist?", strcmp((&p[7])->name, "SHELL.EX5"), 0);
 
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
@@ -125,6 +125,15 @@ void FileServerTest::testISO9660ReadDirectory()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("file . exist?", strcmp(p[0].name, "."), 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("file .. exist?", strcmp(p[1].name, ".."), 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("file README.TXT exist?", strcmp(p[2].name, "README.TXT"), 0);
+    monapi_cmemoryinfo_dispose(mi);
+    monapi_cmemoryinfo_delete(mi);
+
+    // add 2006/09/15 by higepon
+    mi = monapi_file_read_directory("/APPS/");
+    CPPUNIT_ASSERT_MESSAGE("readdir /APPS/ mi != NULL", mi != NULL);
+    p = (monapi_directoryinfo*)&mi->Data[sizeof(int)];
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("directory name HIGEPON is OK?", strcmp(p[7].name, "HIGEPON"), 0);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("directory name HIGEPON is OK?", strcmp(p[17].name, "MONAPPT.APP0"), 0);
     monapi_cmemoryinfo_dispose(mi);
     monapi_cmemoryinfo_delete(mi);
 }
