@@ -581,17 +581,17 @@ int syscall_get_memory_info(MemoryInfo* info)
     return result;
 }
 
-byte* syscall_allocate_dma_memory()
+byte* syscall_allocate_dma_memory(int size)
 {
     dword result;
-    SYSCALL_0(SYSTEM_CALL_ALLOCATE_DMA_MEMORY, result);
+    SYSCALL_1(SYSTEM_CALL_ALLOCATE_DMA_MEMORY, result, size);
     return (byte*)result;
 }
 
-dword syscall_deallocate_dma_memory(void* address)
+dword syscall_deallocate_dma_memory(void* address, int size)
 {
     dword result;
-    SYSCALL_1(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, result, address);
+    SYSCALL_2(SYSTEM_CALL_DEALLOCATE_DMA_MEMORY, result, address, size);
     return result;
 }
 

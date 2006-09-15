@@ -64,8 +64,8 @@ extern int monapi_file_stop_server();
 extern monapi_cmemoryinfo* monapi_file_read_all(const char* file);
 extern monapi_cmemoryinfo* monapi_file_read_directory(const char* path);
 
-extern byte* monapi_allocate_dma_memory();
-extern void monapi_deallocate_dma_memory(void* address);
+extern byte* monapi_allocate_dma_memory(int size);
+extern void monapi_deallocate_dma_memory(void* address, int size);
 
 #ifdef __cplusplus
 }

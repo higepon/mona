@@ -27,6 +27,7 @@ class BitMap {
     void mark(int index);
     void clear(int index);
     int find();
+    int find(int num);
     int countClear();
     bool marked(int index);
     int getBitsNumber() const;

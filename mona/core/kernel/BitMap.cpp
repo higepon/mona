@@ -101,6 +101,30 @@ int BitMap::find() {
     return NOT_FOUND;
 }
 
+int BitMap::find(int num) {
+
+    int found = 0;
+    for (int i = 0; i < bitsNumber_; i++) {
+
+        if (!marked(i)) {
+            int size = 0;
+            for (int j  = i; j < bitsNumber_; j++) {
+                if (marked(j)) { 
+                    break;
+                }
+                size++;
+                if (size == num) {
+                    for (int k = i; k <= j; k++) {
+                        mark(k);
+                    }
+                    return i;
+                }
+            }
+        }
+    }
+    return NOT_FOUND;
+}
+
 /*!
     \brief count clear bits
 

@@ -202,16 +202,17 @@ int monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BO
     return msg.arg2;
 }
 
-byte* monapi_allocate_dma_memory()
+// size should be 4096 * x
+byte* monapi_allocate_dma_memory(int size)
 {
-    return syscall_allocate_dma_memory();
+    return syscall_allocate_dma_memory(size);
 }
 
-void monapi_deallocate_dma_memory(void* address)
+// size should be 4096 * x
+void monapi_deallocate_dma_memory(void* address, int size)
 {
-    syscall_deallocate_dma_memory(address);
+    syscall_deallocate_dma_memory(address, size);
 }
-
 
 monapi_cmemoryinfo* monapi_file_read_all(const char* file)
 {

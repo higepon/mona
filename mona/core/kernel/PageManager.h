@@ -32,8 +32,8 @@ class PageManager {
     void returnPhysicalPages(PageEntry* directory);
     void returnPageTable(PageEntry* table);
     void returnPages(PageEntry* directory, LinearAddress address, dword size);
-    byte* allocateDMAMemory(PageEntry* directory, bool isUser);
-    void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address);
+    byte* allocateDMAMemory(PageEntry* directory, int size, bool isUser);
+    void deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size);
 
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser) const;
     int allocatePhysicalPage(PageEntry* pageEntry, bool present, bool writable, bool isUser, PhysicalAddress address) const;

@@ -1,3 +1,4 @@
+
 /*!
   \file  PageManager.cpp
   \brief class PageManager
@@ -184,51 +185,56 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
     return allocatePhysicalPage(&(table[tableIndex]), present, writable, isUser);
 }
 
-byte* PageManager::allocateDMAMemory(PageEntry* directory, bool isUser)
+byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
 {
-    int foundMemory = reservedDMAMap_->find();
+    int pageNum = size / ARCH_PAGE_SIZE;
+    int foundMemory = reservedDMAMap_->find(pageNum);
     if (foundMemory == BitMap::NOT_FOUND) return NULL;
 
-    PhysicalAddress address = foundMemory * ARCH_PAGE_SIZE + 0x800000;
-
-    PageEntry* table;
-    dword directoryIndex = getDirectoryIndex(address);
-    dword tableIndex     = getTableIndex(address);
-
-    if (isPresent(&(directory[directoryIndex])))
+    /* Map DMA */
+    for (int i = 0; i < pageNum; i++)
     {
-        table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-    }
-    else
-    {
-        table = allocatePageTable();
-        memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
-        setAttribute(&(directory[directoryIndex]), true, true, isUser, (PhysicalAddress)table);
+        PageEntry* table;
+        PhysicalAddress address = i * ARCH_PAGE_SIZE + 0x800000;
+        dword directoryIndex = getDirectoryIndex(address);
+        dword tableIndex     = getTableIndex(address);
+
+        if (isPresent(&(directory[directoryIndex])))
+        {
+            table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+        } else
+        {
+            table = allocatePageTable();
+            memset(table, 0, sizeof(PageEntry) * ARCH_PAGE_TABLE_NUM);
+            setAttribute(&(directory[directoryIndex]), true, true, true, (PhysicalAddress)table);
+        }
+        setAttribute(&(table[tableIndex]), true, true, true, address);
     }
 
-    setAttribute(&(table[tableIndex]), true, true, isUser, address);
-    return (byte*)(address);
+    return (byte*)(foundMemory * ARCH_PAGE_SIZE + 0x800000);
 }
 
-void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress address)
+void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size)
 {
     int index = (address - 0x800000) / ARCH_PAGE_SIZE;
 
     if (index < 0 || index >= reservedDMAMap_->getBitsNumber()) return;
 
-    reservedDMAMap_->clear(index);
-
-    dword target         = index * ARCH_PAGE_SIZE + 0x800000;
-    dword directoryIndex = getDirectoryIndex(target);
-    dword tableIndex     = getTableIndex(target);
-
-    if (!isPresent(&directory[directoryIndex])) return;
-
-    PageEntry* table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
-
-    if (isPresent(&table[tableIndex]))
+    for (int i = index; i < size / 4096; i++)
     {
-        table[tableIndex] = 0;
+        reservedDMAMap_->clear(i);
+
+        dword target         = i * ARCH_PAGE_SIZE + 0x800000;
+        dword directoryIndex = getDirectoryIndex(target);
+        dword tableIndex     = getTableIndex(target);
+        if (!isPresent(&directory[directoryIndex])) return;
+
+        PageEntry* table = (PageEntry*)(directory[directoryIndex] & 0xfffff000);
+
+        if (isPresent(&table[tableIndex]))
+        {
+            table[tableIndex] = 0;
+        }
     }
     return;
 }
@@ -259,9 +265,9 @@ void PageManager::setup(PhysicalAddress vram)
         setAttribute(&(table2[i]), true, true, true, 4096 * 1024 + 4096 * i);
     }
 
-    /* 8MB + 32KB is reserved for DMA */
-    reservedDMAMap_ = new BitMap(8);
-    for (int i = 0; i < 8; i++)
+    /* 8MB + 500KB is reserved for DMA */
+    reservedDMAMap_ = new BitMap(125);
+    for (int i = 0; i < 125; i++)
     {
         int index = (8 * 1024 * 1024 + i * ARCH_PAGE_SIZE) / ARCH_PAGE_SIZE;
         memoryMap_->mark(index);
@@ -663,15 +669,15 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
     /* search shared memory segment */
     if ((error & 0x01) == ARCH_FAULT_NOT_EXIST)
     {
-	List<SharedMemorySegment*>* list = current->getSharedList();
-	for (int i = 0; i < list->size(); i++)
-	{
-	    SharedMemorySegment* segment = list->get(i);
-	    if (segment->inRange(address))
-	    {
-		return segment->faultHandler(address, FAULT_NOT_EXIST);
-	    }
-	}
+    List<SharedMemorySegment*>* list = current->getSharedList();
+    for (int i = 0; i < list->size(); i++)
+    {
+        SharedMemorySegment* segment = list->get(i);
+        if (segment->inRange(address))
+        {
+        return segment->faultHandler(address, FAULT_NOT_EXIST);
+        }
+    }
     }
 
     /* heap */
@@ -685,7 +691,7 @@ bool PageManager::pageFaultHandler(LinearAddress address, dword error, dword eip
     StackSegment* stack = g_currentThread->thread->stackSegment;
     if (stack->inRange(address))
     {
-	return stack->faultHandler(address, FAULT_NOT_EXIST);
+    return stack->faultHandler(address, FAULT_NOT_EXIST);
     }
 
 #if 1

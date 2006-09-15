@@ -86,27 +86,31 @@ void syscall_entrance()
     /* result normal */
     info->eax = 0;
 
+#define SYSTEM_CALL_ARG_1 info->esi
+#define SYSTEM_CALL_ARG_2 info->ecx
+#define SYSTEM_CALL_ARG_3 info->edi
+
     switch(info->ebx)
     {
     case SYSTEM_CALL_PRINT:
 
         //enableInterrupt();
-        g_console->printf("%s", (char*)(info->esi));
+        g_console->printf("%s", (char*)(SYSTEM_CALL_ARG_1));
         break;
 
     case SYSTEM_CALL_SET_TIMER:
 
-        info->eax = g_scheduler->SetTimer(g_currentThread->thread, info->esi);
+        info->eax = g_scheduler->SetTimer(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         break;
 
     case SYSTEM_CALL_KILL_TIMER:
 
-        info->eax = g_scheduler->KillTimer(info->esi, g_currentThread->thread);
+        info->eax = g_scheduler->KillTimer(SYSTEM_CALL_ARG_1, g_currentThread->thread);
         break;
 
     case SYSTEM_CALL_MTHREAD_SLEEP:
 
-        g_scheduler->Sleep(g_currentThread->thread, info->esi);
+        g_scheduler->Sleep(g_currentThread->thread, SYSTEM_CALL_ARG_1);
         g_scheduler->SwitchToNext();
         break;
 
@@ -117,14 +121,14 @@ void syscall_entrance()
 
     case SYSTEM_CALL_KILL_THREAD:
     {
-        dword tid = info->esi;
+        dword tid = SYSTEM_CALL_ARG_1;
         info->eax = ThreadOperation::kill(tid);
         break;
     }
 
     case SYSTEM_CALL_SEND:
 
-        info->eax = g_messenger->send((dword)(info->esi), (MessageInfo*)(info->ecx));
+        info->eax = g_messenger->send((dword)(SYSTEM_CALL_ARG_1), (MessageInfo*)(SYSTEM_CALL_ARG_2));
         g_scheduler->SwitchToNext();
 
         /* not reached */
@@ -133,7 +137,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_RECEIVE:
 
-        info->eax = g_messenger->receive(g_currentThread->thread, (MessageInfo*)(info->esi));
+        info->eax = g_messenger->receive(g_currentThread->thread, (MessageInfo*)(SYSTEM_CALL_ARG_1));
         break;
 
     case SYSTEM_CALL_EXIST_MESSAGE:
@@ -145,14 +149,14 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MTHREAD_CREATE:
     {
-        Thread* thread = ThreadOperation::create(g_currentThread->process, info->esi);
+        Thread* thread = ThreadOperation::create(g_currentThread->process, SYSTEM_CALL_ARG_1);
         info->eax = g_id->allocateID(thread);
         break;
     }
 
     case SYSTEM_CALL_MTHREAD_JOIN:
     {
-        KObject* object = g_id->get(info->esi, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
 
         if (object == NULL)
         {
@@ -177,12 +181,12 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MUTEX_LOCK:
 
-        info->eax = systemcall_mutex_lock2(info->esi);
+        info->eax = systemcall_mutex_lock2(SYSTEM_CALL_ARG_1);
         break;
 
     case SYSTEM_CALL_MUTEX_TRYLOCK:
     {
-        KObject* object = g_id->get(info->esi, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
 
         if (object == NULL)
         {
@@ -201,13 +205,13 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MUTEX_UNLOCK:
 
-        info->eax = systemcall_mutex_unlock2(info->esi);
+        info->eax = systemcall_mutex_unlock2(SYSTEM_CALL_ARG_1);
         break;
 
     case SYSTEM_CALL_MUTEX_DESTROY:
 
     {
-        KObject* object = g_id->get(info->esi, g_currentThread->thread);
+        KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
 
         if (object == NULL)
         {
@@ -228,11 +232,11 @@ void syscall_entrance()
 
 
     case SYSTEM_CALL_LOOKUP:
-        info->eax = g_scheduler->Lookup((char*)(info->esi));
+        info->eax = g_scheduler->Lookup((char*)(SYSTEM_CALL_ARG_1));
         break;
 
     case SYSTEM_CALL_GET_VRAM_INFO:
-        screenInfo = (ScreenInfo*)(info->esi);
+        screenInfo = (ScreenInfo*)(SYSTEM_CALL_ARG_1);
         screenInfo->vram = (dword)(g_vesaDetail->physBasePtr);
         screenInfo->bpp  = (dword)(g_vesaDetail->bitsPerPixel);
         screenInfo->x    = (dword)(g_vesaDetail->xResolution);
@@ -246,12 +250,12 @@ void syscall_entrance()
 
     case SYSTEM_CALL_SET_CURSOR:
 
-        g_console->setCursor((int)(info->esi), (int)(info->ecx));
+        g_console->setCursor((int)(SYSTEM_CALL_ARG_1), (int)(SYSTEM_CALL_ARG_2));
         break;
 
     case SYSTEM_CALL_GET_CURSOR:
 
-        g_console->getCursor((int*)(info->esi), (int*)(info->ecx));
+        g_console->getCursor((int*)(SYSTEM_CALL_ARG_1), (int*)(SYSTEM_CALL_ARG_2));
         break;
 
     case SYSTEM_CALL_FDC_OPEN:
@@ -310,8 +314,8 @@ void syscall_entrance()
     case SYSTEM_CALL_GET_ARGUMENTS:
     {
         List<char*>* list = g_currentThread->process->getArguments();
-        char* buf = (char*)(info->esi);
-        int index = (int)(info->ecx);
+        char* buf = (char*)(SYSTEM_CALL_ARG_1);
+        int index = (int)(SYSTEM_CALL_ARG_2);
 
         if (index - 1 > list->size())
         {
@@ -340,7 +344,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_DATE:
     {
-        KDate* date = (KDate*)(info->esi);
+        KDate* date = (KDate*)(SYSTEM_CALL_ARG_1);
         RTC::getDate(date);
         info->eax = 0;
         break;
@@ -363,14 +367,14 @@ void syscall_entrance()
 
     case SYSTEM_CALL_LOOKUP_MAIN_THREAD:
 
-	if (info->esi == NULL)
-	{
-	    info->eax = g_scheduler->LookupMainThread(g_currentThread->process);
-	}
-	else
-	{
-	    info->eax = g_scheduler->LookupMainThread((char*)(info->esi));
-	}
+    if (SYSTEM_CALL_ARG_1 == NULL)
+    {
+        info->eax = g_scheduler->LookupMainThread(g_currentThread->process);
+    }
+    else
+    {
+        info->eax = g_scheduler->LookupMainThread((char*)(SYSTEM_CALL_ARG_1));
+    }
         break;
 
     case SYSTEM_CALL_MEMORY_MAP_CREATE:
@@ -378,7 +382,7 @@ void syscall_entrance()
         static dword sharedId = 0x9000;
         sharedId++;
 
-        dword size = info->esi;
+        dword size = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isOpen = SharedMemoryObject::open(sharedId, size);
@@ -396,7 +400,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_GET_SIZE:
     {
-        dword id = info->esi;
+        dword id = SYSTEM_CALL_ARG_1;
 
         SharedMemoryObject* object = SharedMemoryObject::find(id);
 
@@ -412,8 +416,8 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_MAP:
     {
-        dword id      = info->esi;
-        dword address = info->ecx;
+        dword id      = SYSTEM_CALL_ARG_1;
+        dword address = SYSTEM_CALL_ARG_2;
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isAttaced = SharedMemoryObject::attach(id, g_currentThread->process, address);
@@ -430,7 +434,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MEMORY_MAP_UNMAP:
     {
-        dword id = info->esi;
+        dword id = SYSTEM_CALL_ARG_1;
 
         while (Semaphore::down(&g_semaphore_shared));
         bool isDetached = SharedMemoryObject::detach(id, g_currentThread->process);
@@ -463,7 +467,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_PS_DUMP_READ:
     {
-        PsInfo* p = (PsInfo*)(info->esi);
+        PsInfo* p = (PsInfo*)(SYSTEM_CALL_ARG_1);
         PsInfo* q = g_scheduler->ReadDump();
 
         if (q == NULL)
@@ -495,13 +499,13 @@ void syscall_entrance()
 
     case SYSTEM_CALL_GET_KERNEL_VERSION:
 
-        strncpy((char*)info->esi, version, info->ecx);
+        strncpy((char*)SYSTEM_CALL_ARG_1, version, SYSTEM_CALL_ARG_2);
         info->eax = version_number;
         break;
 
     case SYSTEM_CALL_LOAD_PROCESS_IMAGE:
     {
-        LoadProcessInfo* p = (LoadProcessInfo*)(info->esi);
+        LoadProcessInfo* p = (LoadProcessInfo*)(SYSTEM_CALL_ARG_1);
         info->eax = Loader::Load(p->image, p->size, p->entrypoint, p->name, true, p->list);
         break;
     }
@@ -515,16 +519,16 @@ void syscall_entrance()
     case SYSTEM_CALL_PEEK:
 
         info->eax = g_messenger->peek(g_currentThread->thread
-                                      , (MessageInfo*)(info->esi)
-                                      , (int)(info->ecx)
-                                      , (int)(info->edi)
+                                      , (MessageInfo*)(SYSTEM_CALL_ARG_1)
+                                      , (int)(SYSTEM_CALL_ARG_2)
+                                      , (int)(SYSTEM_CALL_ARG_3)
                                       );
 
         break;
 
     case SYSTEM_CALL_REMOVE_IRQ_RECEIVER:
     {
-        int irq = (int)info->esi;
+        int irq = (int)SYSTEM_CALL_ARG_1;
 
         /* out of range */
         if (irq > 15 || irq < 0)
@@ -541,8 +545,8 @@ void syscall_entrance()
 
     case SYSTEM_CALL_SET_IRQ_RECEIVER:
     {
-        int irq  = (int)info->esi;
-        bool maskInterrupt = info->ecx != 0;
+        int irq  = (int)SYSTEM_CALL_ARG_1;
+        bool maskInterrupt = SYSTEM_CALL_ARG_2 != 0;
 
         /* out of range */
         if (irq > 15 || irq < 0)
@@ -558,7 +562,7 @@ void syscall_entrance()
     }
     case SYSTEM_CALL_HAS_IRQ_RECEIVER:
     {
-        int irq  = (int)info->esi;
+        int irq  = (int)SYSTEM_CALL_ARG_1;
 
         /* out of range */
         if (irq > 15 || irq < 0)
@@ -571,8 +575,8 @@ void syscall_entrance()
 
     case SYSTEM_CALL_FREE_PAGES:
     {
-        dword address = info->esi;
-        dword size    = info->ecx;
+        dword address = SYSTEM_CALL_ARG_1;
+        dword size    = SYSTEM_CALL_ARG_2;
 
         g_page_manager->returnPages(g_currentThread->process->getPageDirectory(), address, size);
         break;
@@ -580,7 +584,7 @@ void syscall_entrance()
 
     case SYSTEM_CALL_GET_MEMORY_INFO:
     {
-        MemoryInfo* i = (MemoryInfo*)(info->esi);
+        MemoryInfo* i = (MemoryInfo*)(SYSTEM_CALL_ARG_1);
 
         i->totalMemoryL = g_total_system_memory;
         g_page_manager->getPagePoolInfo(&(i->freePageNum), &(i->totalPageNum), &(i->pageSize));
@@ -589,30 +593,31 @@ void syscall_entrance()
 
     case SYSTEM_CALL_LOG_PRINT:
     {
-        logprintf("%s", (const char*)(info->esi));
+        logprintf("%s", (const char*)(SYSTEM_CALL_ARG_1));
         break;
     }
 
     case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
 
-        info->eax = (dword)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), true);
+        dword size = SYSTEM_CALL_ARG_1;
+        info->eax = (dword)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true);
         break;
 
     case SYSTEM_CALL_DEALLOCATE_DMA_MEMORY:
 
-        g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), info->esi);
+        g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
         break;
 
     case SYSTEM_CALL_CHANGE_BASE_PRIORITY:
-        g_scheduler->ChangeBasePriority(g_currentThread->thread, info->esi);
+        g_scheduler->ChangeBasePriority(g_currentThread->thread, SYSTEM_CALL_ARG_1);
 
     case SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE:
-	g_currentThread->process->getDllSegment()->setWritable(true);
-	break;
+    g_currentThread->process->getDllSegment()->setWritable(true);
+    break;
 
     case SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED:
-	g_dllSharedObject->setPageFlag(info->esi, SharedMemoryObject::FLAG_NOT_SHARED);
-	break;
+    g_dllSharedObject->setPageFlag(SYSTEM_CALL_ARG_1, SharedMemoryObject::FLAG_NOT_SHARED);
+    break;
 
     default:
         g_console->printf("syscall:default");

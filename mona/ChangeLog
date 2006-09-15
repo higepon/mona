@@ -1,3 +1,16 @@
+2006-09-15  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::setupEntry): バグ修正
+
+        * core/monapi/messages.cpp (monapi_allocate_dma_memory): 変更。引数にサイズを取れるようにした。
+                                   (monapi_deallocate_dma_memory): 変更。引数にサイズを取れるようにした。
+
+        * core/file_server/FAT12/FDCDriver.cpp (FDCDriver::initilize): 新 monapi_allocate_dma_memoryに対応
+
+        * core/kernel/PageManager.cpp (PageManager::deallocateDMAMemory): DMAの割り当てを最大500KBにした。連続領域の確保も可能。
+
+        * core/kernel/syscalls.cpp (syscall_entrance): システムコールの引数をマクロで分かりやすくした。
+
 2006-09-14  higepon  <higepon@users.sourceforge.jp>
 
         * tool/t5lzma/configure : don't show wrong message

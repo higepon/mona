@@ -37,7 +37,7 @@ FDCDriver::FDCDriver() : motorCount(0), currentTrack(-1)
 FDCDriver::~FDCDriver()
 {
     motor(OFF);
-    monapi_deallocate_dma_memory(dmabuff);
+    monapi_deallocate_dma_memory(dmabuff, 4096);
     return;
 }
 
@@ -55,7 +55,7 @@ void FDCDriver::initilize()
                             };
 
     /* allocate dma buffer */
-    dmabuff = monapi_allocate_dma_memory();
+    dmabuff = monapi_allocate_dma_memory(4096);
 
     /* do not over 64KB align */
     if (dmabuff == NULL || (dword)dmabuff % 64 * 1024)

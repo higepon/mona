@@ -69,8 +69,8 @@ extern dword syscall_memory_map_get_size(dword id);
 extern int syscall_memory_map_map(dword id, dword address);
 extern int syscall_memory_map_unmap(dword id);
 
-extern byte* syscall_allocate_dma_memory();
-extern dword syscall_deallocate_dma_memory(void* address);
+extern byte* syscall_allocate_dma_memory(int size); // size should be 4096 * x
+extern dword syscall_deallocate_dma_memory(void* address, int size); //size should be 4096 * x
 
 extern dword syscall_lookup(const char* name);
 extern dword syscall_get_tick();
