@@ -216,10 +216,10 @@ void FileBrowser::Open(int target)
             String exe = PathCombine(this->path, name);
             if (exe.EndsWith(".APP"))
             {
-                exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX2");
+                exe = PathCombine(exe, name.Substring(0, name.get_Length() - 4) + ".EX5");
                 if (ProcessStart(exe) != 0)
                 {
-                    exe = exe.Substring(0, exe.get_Length() - 1) + "5";
+                    exe = exe.Substring(0, exe.get_Length() - 1) + "2";
                     ProcessStart(exe);
                 }
             }
