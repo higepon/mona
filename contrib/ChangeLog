@@ -1,9 +1,20 @@
+2006-09-16  bayside
+
+        * Multimedia/xmonapeg/monapeg.cpp: 起動時に再生するファイルの存在チェックを追加
+
+        * Shells/gshell/gshell.cpp: 引数が上手く渡らない不具合修正
+
+        * X/glaunch/glaunch.cpp: フォルダ名が文字化けする不具合用パッチ削除
+
+        * X/monafile/FileBrowser.cpp: .APP 形式のアプリケーションが実行できない不具合修正
+
 2006-09-15  bayside
 
         * 新規追加
             - Multimedia/xmonapeg
 
         * X/monafile/FileBrowser.cpp: xmonapeg サポート
+
         * X/monafile/Icon.cpp: xmonapeg サポート
 
 2006-09-14  higepon  <higepon@users.sourceforge.jp>
