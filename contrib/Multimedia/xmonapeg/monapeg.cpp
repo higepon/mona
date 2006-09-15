@@ -210,7 +210,7 @@ static void DrawLoop()
 // ---- めいん
 int MonaMain( List<char*>* pekoe )
 {
-	// check arguments
+	// Check Arguments
 	if (pekoe->size() < 1)
 	{
 		printf("usage: XMONAPEG.EX5 [filename.mpg]\n");
@@ -219,6 +219,14 @@ int MonaMain( List<char*>* pekoe )
 	else
 	{
 		filename = pekoe->get(0);
+
+		// Check File Exists
+		monapi_cmemoryinfo* mi = monapi_file_read_all(filename);
+		if (mi == NULL || mi->Size == 0)
+		{
+			printf("file read error\n");
+		    return(-1);
+		}
 	}
 
 	// Create thread
