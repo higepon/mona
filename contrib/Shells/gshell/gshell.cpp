@@ -214,19 +214,25 @@ private:
 			if (this->argv.size() == 1) {
 				strcpy(temp, pathname);
 			} else if (this->argv.size() == 2) {
+				const char* arg1 = *(String *)this->argv.get(1);
 				sprintf(temp, "%s %s", pathname,
-					(String *)this->argv.get(1)
+					arg1
 				);
 			} else if (this->argv.size() == 3) {
+				const char* arg1 = *(String *)this->argv.get(1);
+				const char* arg2 = *(String *)this->argv.get(1);
 				sprintf(temp, "%s %s %s", pathname,
-					(String *)this->argv.get(1),
-					(String *)this->argv.get(2)
+					arg1,
+					arg2
 				);
 			} else if (this->argv.size() == 4) {
+				const char* arg1 = *(String *)this->argv.get(1);
+				const char* arg2 = *(String *)this->argv.get(2);
+				const char* arg3 = *(String *)this->argv.get(3);
 				sprintf(temp, "%s %s %s %s", pathname,
-					(String *)this->argv.get(1),
-					(String *)this->argv.get(2),
-					(String *)this->argv.get(3)
+					arg1,
+					arg2,
+					arg3
 				);
 			}
 			monapi_call_process_execute_file(temp, MONAPI_FALSE);
