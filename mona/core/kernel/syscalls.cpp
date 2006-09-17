@@ -598,11 +598,11 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_ALLOCATE_DMA_MEMORY:
-
+    {
         dword size = SYSTEM_CALL_ARG_1;
         info->eax = (dword)g_page_manager->allocateDMAMemory(g_currentThread->process->getPageDirectory(), size, true);
         break;
-
+    }
     case SYSTEM_CALL_DEALLOCATE_DMA_MEMORY:
 
         g_page_manager->deallocateDMAMemory(g_currentThread->process->getPageDirectory(), SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
