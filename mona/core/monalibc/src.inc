@@ -2,7 +2,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  ctype/isblank.c ctype/iscntrl.c ctype/isdigit.c ctype/isgraph.c \
 	  ctype/islower.c ctype/isprint.c ctype/ispunct.c ctype/isspace.c \
 	  ctype/isupper.c ctype/isxdigit.c ctype/tolower.c ctype/toupper.c \
-	  errno/errno.c math/acos.c math/asin.c math/atan.c math/atan2.c \
+	  math/acos.c math/asin.c math/atan.c math/atan2.c \
 	  math/ceil.c math/cos.c math/cosh.c math/exp.c math/fabs.c \
 	  math/floor.c math/fmod.c math/frexp.c math/ldexp.c math/log.c \
 	  math/log10.c math/modf.c math/pow.c math/sin.c math/sinh.c \
@@ -29,6 +29,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdarg/stdarg.c stdarg/vsscanf.c private/uitosn.c private/itos.c \
 	  private/ftos.c private/strcpy2.c private/memswap.c \
 	  private/logprintf.c \
+	  errno/errno.c \
 #	  fenv/feclearexcept.c fenv/fegetexceptflag.c fenv/feraiseexcept.c \
 #	  fenv/fesetexceptflag.c fenv/fetestexcept.c fenv/fegetround.c \
 #	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
@@ -38,4 +39,4 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
 #	  string/strcat.c string/strcmp.c string/strcspn.c string/strlen.c \
 #	  string/memcmp.c string/memcpy.c string/memmove.c string/memset.c \
-#	  string/strcpy.c
+#	  string/strcpy.c \

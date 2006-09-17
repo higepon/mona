@@ -38,5 +38,6 @@
 void __assert(const char* file, int row, const char* e)
 {
 	/* fprintf(stderr, "AssertError: %s: %d: %s\n", file, row, e); */
+	printf("AssertError: %s: %d: %s\n", file, row, e);
 	abort();
 }

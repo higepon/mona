@@ -90,6 +90,11 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	{
 		return __nida_write_console(ptr, size*nmemb, stream);
 	}
+	if( stream->_flags & __SFBF )
+	{
+		return __nida_fullybuf_fwrite(ptr, size*nmemb, stream);
+	}
+
 
 	errno = EBADF;
 	return 0;

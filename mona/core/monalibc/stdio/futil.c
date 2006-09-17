@@ -36,6 +36,8 @@
 #include <string.h>
 #include "stdio_p.h"
 
+FILE __sF[3];
+
 int _read(int id, void *buf, size_t size)
 {
 	monapi_cmemoryinfo *cmi = NULL;
@@ -64,7 +66,18 @@ int _read(int id, void *buf, size_t size)
 
 int _write(int id, void *buf, size_t size)
 {
-	return -1;
+	dword result;
+	monapi_cmemoryinfo* cmi;
+
+	cmi = monapi_cmemoryinfo_new();
+	cmi->Data = buf;
+	cmi->Size = (dword)size;
+
+	result = monapi_file_write((dword)id, cmi, (dword)size);
+
+	monapi_cmemoryinfo_delete(cmi);
+
+	return (int)result;
 }
 
 int _seek(int id, fpos_t pos, int whence)
@@ -123,4 +136,18 @@ FILE *_open_stderr(void)
 	fp->_extra->stds = __STDERR;
 
 	return fp;
+}
+
+void init_stdio(void)
+{
+	__sF[0] = *(_open_stdin());
+	__sF[1] = *(_open_stdout());
+	__sF[2] = *(_open_stderr());
+}
+
+void fini_stdio(void)
+{
+	fclose(&__sF[2]);
+	fclose(&__sF[1]);
+	fclose(&__sF[0]);
 }

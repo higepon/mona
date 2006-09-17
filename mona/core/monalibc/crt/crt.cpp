@@ -39,10 +39,14 @@ extern int main(int, char*[]);
 extern "C" void monapi_initialize_memory(int);
 extern "C" int user_start_c_impl(FuncMain*);
 
+/*
 FILE __sF[3];
 extern "C" FILE *_open_stdin(void);
 extern "C" FILE *_open_stdout(void);
 extern "C" FILE *_open_stderr(void);
+*/
+extern "C" void init_stdio(void);
+extern "C" void fini_stdio(void);
 
 extern "C" int user_start()
 {
@@ -50,17 +54,23 @@ extern "C" int user_start()
 	setConstructorList(0);
 
 	/* Initialize stdin, stdout, stderr. */
+/*
 	__sF[0] = *(_open_stdin());
 	__sF[1] = *(_open_stdout());
 	__sF[2] = *(_open_stderr());
+*/
+	init_stdio();
 
 	/* Call _main */
 	int result = user_start_c_impl(main);
 
 	/* Close stdin, stdout, stderr. */
+/*
 	fclose(&__sF[0]);
 	fclose(&__sF[1]);
 	fclose(&__sF[2]);
+*/
+	fini_stdio();
 
 	return result;
 }
