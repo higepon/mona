@@ -1374,7 +1374,7 @@ FatStorage::FatStorage ()
 //=============================================================================
 FatStorage::~FatStorage ()
 {
-	delete fat;
+	if (NULL != fat) delete fat;
 }
 
 //=============================================================================
@@ -1386,6 +1386,7 @@ bool FatStorage::initialize (IStorageDevice *p)
 
 	if (false == fat->initialize(p)) {
 		delete fat;
+        fat = NULL;
 		return false;
 	}
 
