@@ -40,11 +40,35 @@
 extern "C" {
 #endif
 
-#ifndef __cplusplus
-typedef unsigned short wchar_t;
+#if defined(__GNUC__)
+	#if defined(__PTRDIFF_TYPE__)
+		#ifndef _PTRDIFF_T
+		#define _PTFDIFF_T
+			typedef __PTRDIFF_TYPE__ ptrdiff_t;
+		#endif
+	#endif
+	#if defined(__WCHAR_TYPE__) && (!__cplusplus)
+		#ifndef _WCHAR_T
+		#define _WCHAR_T
+			typedef __WCHAR_TYPE__ wchar_t;
+		#endif
+	#endif
+	#if defined(__WINT_TYPE__)
+		#ifndef _WINT_T
+		#define _WINT_T
+			typedef __WINT_TYPE__ wint_t;
+		#endif
+	#endif
+#else
+	#ifndef _PTRDIFF_T
+	#define _PTRDIFF_T
+		typedef signed int ptrdiff_t;
+	#endif
+	#ifndef _WCHAR_T
+	#define _WCHAR_T
+		typedef unsigned short wchar_t;
+	#endif
 #endif
-
-typedef signed int ptrdiff_t;
 
 #define offsetof(s_name,m_name) (size_t)&(((s_name*)0)->m_name)
 
