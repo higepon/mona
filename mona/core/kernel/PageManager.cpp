@@ -187,6 +187,7 @@ int PageManager::allocatePhysicalPage(PageEntry* directory, LinearAddress laddre
 
 byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser)
 {
+    size = (size + 4095) & 0xFFFFF000;
     int pageNum = size / ARCH_PAGE_SIZE;
     int foundMemory = reservedDMAMap_->find(pageNum);
     if (foundMemory == BitMap::NOT_FOUND) return NULL;
@@ -216,6 +217,7 @@ byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser
 
 void PageManager::deallocateDMAMemory(PageEntry* directory, PhysicalAddress address, int size)
 {
+    size = (size + 4095) & 0xFFFFF000;
     int index = (address - 0x800000) / ARCH_PAGE_SIZE;
 
     if (index < 0 || index >= reservedDMAMap_->getBitsNumber()) return;
