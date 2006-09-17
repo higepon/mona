@@ -11,7 +11,7 @@ void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*fn
 		result = (char *)base + size*mid;
 		cmp = fnc(key, result);
 		if(cmp == 0){			 /* key == result */
-			while((result > base) && !fnc(key, result - size)) result -= size; /* search lower result */
+			while((result > (char*)base) && !fnc(key, result - size)) result -= size; /* search lower result */
 			return result;
 		} else if(cmp < 0){ /* key < result */
 			hi = mid - 1;

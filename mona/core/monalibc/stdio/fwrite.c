@@ -69,7 +69,7 @@ size_t __nida_fullybuf_fwrite(const void *ptr, size_t size, FILE *stream)
 		memcpy(stream->_bf._base+offdiff, ptr, writesize);
 	}
 
-	stream->_write(stream->_file, ptr, size);
+	stream->_write(stream->_file, (void*)ptr, size);
 
 	return writesize;
 }

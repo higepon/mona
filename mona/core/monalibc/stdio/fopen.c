@@ -103,7 +103,7 @@ FILE *fopen(const char *path, const char *mode)
 		errno = ENOMEM;
 		return NULL;
 	}
-	fp->_bf._size = malloc(BUFSIZ);
+	fp->_bf._size = BUFSIZ;
 	fp->_flags |= __SALD;
 
 	return fp;
