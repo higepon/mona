@@ -192,7 +192,7 @@ byte* PageManager::allocateDMAMemory(PageEntry* directory, int size, bool isUser
     if (foundMemory == BitMap::NOT_FOUND) return NULL;
 
     /* Map DMA */
-    for (int i = 0; i < pageNum; i++)
+    for (int i = foundMemory; i < foundMemory + pageNum; i++)
     {
         PageEntry* table;
         PhysicalAddress address = i * ARCH_PAGE_SIZE + 0x800000;
