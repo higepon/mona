@@ -68,9 +68,10 @@ int FileServer::initializeMountedFileSystems()
     FileSystem* ffs = new FAT12FileSystem(fd_, vmanager_);
     if (ffs->initialize() != MONA_SUCCESS)
     {
-        printf("FAT12FileSystem initialize Error\n");
+        printf("Warning FAT12FileSystem initialize failed \n");
+        delete fd_;
         delete ffs;
-        return MONA_FAILURE;
+        return MONA_SUCCESS;
     }
     vmanager_->mount(rootFS_->getRoot(), "FD", ffs->getRoot());
     mountedFSs_.push_back(ffs);

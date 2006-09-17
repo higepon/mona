@@ -13,6 +13,7 @@ Shell::Shell(bool callAutoExec)
      waiting(THREAD_UNKNOWN), prevX(0), prevY(0), firstTimeOfCD0(true)
 {
     changeDirecotory("/APPS");
+    this->startDirectory = "/APPS";
 
     if (this->callAutoExec)
     {

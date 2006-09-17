@@ -1,3 +1,9 @@
+2006-09-17  higepon  <higepon@users.sourceforge.jp>
+
+        * core/shell_server/Shell.cpp (Shell::Shell): 引数なしで cd で落ちる件を修正。
+
+        * core/file_server/FAT12/FAT12FileSystem.cpp (FAT12FileSystem::initialize): 初期化失敗時の2重 delete バグの修正
+
 2006-09-15  higepon  <higepon@users.sourceforge.jp>
 
         * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::setupEntry): バグ修正

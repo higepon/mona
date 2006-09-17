@@ -3,14 +3,14 @@
 using namespace std;
 using namespace FatFS;
 
-FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
+FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), fat_(NULL)
 {
     fd_ = drive;
 }
 
 FAT12FileSystem::~FAT12FileSystem()
 {
-    delete fat_;
+    if (fat_ != NULL) delete fat_;
 //    delete root_;
 }
 
@@ -33,7 +33,7 @@ int FAT12FileSystem::initialize()
     if (!fat_->initialize(drive_))
     {
         delete fat_;
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        fat_ = NULL;
         return MONA_ERROR_ON_DEVICE;
     }
 
@@ -43,7 +43,7 @@ int FAT12FileSystem::initialize()
     if (current_ == NULL)
     {
         delete fat_;
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
+        fat_ = NULL;
         return MONA_ERROR_ON_DEVICE;
     }
     root_ = vmanager_->alloc();
@@ -55,6 +55,7 @@ int FAT12FileSystem::initialize()
 
 int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
+    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
     if (v != NULL && v->type == type)

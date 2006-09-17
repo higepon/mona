@@ -138,11 +138,9 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
 {
     Entry* directory = (Entry*)dir->fnode;
     setDetailInformation(directory);
-
     dword readSize = ((dword)((directory->attribute.size + SECTOR_SIZE - 1) / SECTOR_SIZE)) * SECTOR_SIZE;
     byte* buffer = readdirToBuffer(directory, readSize);
     if (buffer == NULL) return MONA_ERROR_MEMORY_NOT_ENOUGH;
-
     EntryList entryList;
     for (dword position = 0 ; position < readSize;)
     {
@@ -154,24 +152,20 @@ int ISO9660FileSystem::readdir(Vnode* dir, monapi_cmemoryinfo** entries)
             position = ((position + SECTOR_SIZE - 1) / SECTOR_SIZE) * SECTOR_SIZE;
             continue;
         }
-
         Entry* entry = setupEntry(iEntry);
         entryList.push_back(entry);
         position += iEntry->length;
     }
     delete[] buffer;
     monapi_cmemoryinfo* ret = monapi_cmemoryinfo_new();
-
     int size = entryList.size();
     if (!monapi_cmemoryinfo_create(ret, sizeof(int) + size * sizeof(monapi_directoryinfo), MONAPI_FALSE))
     {
         monapi_cmemoryinfo_delete(ret);
         return MONA_ERROR_MEMORY_NOT_ENOUGH;
     }
-
     memcpy(ret->Data, &size, sizeof(int));
     monapi_directoryinfo* p = (monapi_directoryinfo*)&ret->Data[sizeof(int)];
-
     for (EntryList::iterator i = entryList.begin(); i != entryList.end(); ++i)
     {
         monapi_directoryinfo di;
@@ -213,22 +207,21 @@ byte* ISO9660FileSystem::readdirToBuffer(Entry* directory, dword readSize)
 // you should delete return value
 Entry* ISO9660FileSystem::setupEntry(DirectoryEntry* from)
 {
-        Entry* entry = new Entry;
-        entry->isDirectory = from->directory == 1;
-
-        if (from->length == 1 && from->name[0] == 0x00)
-        {
-            entry->name = ".";
-        }
-        else if (from->length == 1 && from->name[0] == 0x01)
-        {
-            entry->name = "..";
-        }
-        else
-        {
-            entry->name = getProperName(string((const char*)from->name, from->name_len));
-        }
-        return entry;
+    Entry* entry = new Entry;
+    entry->isDirectory = from->directory == 1;
+    if (from->length == 1 && from->name[0] == 0x00)
+    {
+        entry->name = ".";
+    }
+    else if (from->length == 1 && from->name[0] == 0x01)
+    {
+        entry->name = "..";
+    }
+    else
+    {
+        entry->name = getProperName(string((const char*)from->name, from->name_len));
+    }
+    return entry;
 }
 
 int ISO9660FileSystem::readVolumeDescriptor()
