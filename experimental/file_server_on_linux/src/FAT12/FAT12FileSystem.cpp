@@ -3,14 +3,14 @@
 using namespace std;
 using namespace FatFS;
 
-FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager)
+FAT12FileSystem::FAT12FileSystem(FDCDriver* drive, VnodeManager* vmanager) : drive_(drive), vmanager_(vmanager), fat_(NULL)
 {
     fd_ = drive;
 }
 
 FAT12FileSystem::~FAT12FileSystem()
 {
-    delete fat_;
+    if (fat_ != NULL) delete fat_;
 //    delete root_;
 }
 
@@ -33,6 +33,7 @@ int FAT12FileSystem::initialize()
     if (!fat_->initialize(drive_))
     {
         delete fat_;
+        fat_ = NULL;
         return MONA_ERROR_ON_DEVICE;
     }
 
@@ -42,6 +43,7 @@ int FAT12FileSystem::initialize()
     if (current_ == NULL)
     {
         delete fat_;
+        fat_ = NULL;
         return MONA_ERROR_ON_DEVICE;
     }
     root_ = vmanager_->alloc();
