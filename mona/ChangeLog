@@ -1,3 +1,7 @@
+2006-09-19  bayside
+
+        * core/shell_server/Shell.cpp (Shell::Shell): AUTOEXEC.MSH ’†‚Ì @EXEC ‚ªãè‚­“®‚©‚È‚¢–â‘èC³B
+
 2006-09-17  higepon  <higepon@users.sourceforge.jp>
 
         * core/shell_server/Shell.cpp (Shell::Shell): ˆø”‚È‚µ‚Å cd ‚Å—‚¿‚éŒ‚ğC³B<<3557>>
