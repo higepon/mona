@@ -24,6 +24,7 @@
 #include "IDManager.h"
 #include "Scheduler.h"
 #include "Messenger.h"
+#include "apm.h"
 
 GLOBAL VirtualConsole* g_console GLOBAL_VAL(0);      /*< pointer to console    */
 GLOBAL VirtualConsole* g_log     GLOBAL_VAL(0);
@@ -72,6 +73,8 @@ GLOBAL Thread* g_idleThread;
 GLOBAL dword g_mutexShared;
 
 GLOBAL SharedMemoryObject* g_dllSharedObject;
+
+GLOBAL APMInfo *g_apmInfo;
 
 #ifdef USE_BOOTMGR
 GLOBAL BootManager* g_bootManager;

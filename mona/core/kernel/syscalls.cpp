@@ -16,6 +16,8 @@
 #include "io.h"
 #include "Loader.h"
 #include "RTC.h"
+#include "apm.h"
+#include "shutdown.h"
 
 extern const char* version;
 extern dword version_number;
@@ -617,6 +619,14 @@ void syscall_entrance()
 
     case SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED:
     g_dllSharedObject->setPageFlag(SYSTEM_CALL_ARG_1, SharedMemoryObject::FLAG_NOT_SHARED);
+    break;
+
+    case SYSTEM_CALL_APM_BIOS:
+    info->eax = (dword)apm_bios((word)SYSTEM_CALL_ARG_1, (apm_bios_regs*)SYSTEM_CALL_ARG_2);
+    break;
+
+    case SYSTEM_CALL_SHUTDOWN:
+    info->eax = shutdown(SYSTEM_CALL_ARG_1, SYSTEM_CALL_ARG_2);
     break;
 
     default:

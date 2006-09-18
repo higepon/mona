@@ -203,6 +203,18 @@ enum
     DRIVE_CD0  = 1,
 };
 
+enum
+{
+        SHUTDOWN_HALT,
+        SHUTDOWN_STANDBY,
+        SHUTDOWN_SUSPEND,
+        SHUTDOWN_FEATURE,
+        SHUTDOWN_FEATURE_APM = 0x0001,
+
+        SHUTDOWN_DEVICE_ALL = 0x0001,
+        SHUTDOWN_DEVICE_DISPLAY_ALL = 0x01FF,
+};
+
 #define SHARED_FDC_BUFFER 0x4000
 
 #define SYSTEM_CALL_PRINT                    0x0001
@@ -274,6 +286,8 @@ enum
 #define SYSTEM_CALL_CHANGE_BASE_PRIORITY     0x0043
 #define SYSTEM_CALL_SET_DLL_SEGMENT_WRITABLE 0x0044
 #define SYSTEM_CALL_SET_DLL_SEGMENT_NOTSHARED 0x0045
+#define SYSTEM_CALL_SHUTDOWN                 0x0046
+#define SYSTEM_CALL_APM_BIOS                 0x0047
 
 
 #define SYSCALL_0(syscall_number, result)                                         \

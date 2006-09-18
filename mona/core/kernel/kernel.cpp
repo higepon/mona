@@ -71,6 +71,7 @@
 #include "Scheduler.h"
 #include "monaboot.h"
 #include "RTC.h"
+#include "apm.h"
 
 #ifdef __GNUC__
 #define CC_NAME "gcc-%d.%d.%d"
@@ -97,6 +98,10 @@ void startKernel()
 {
     /* kernel memory range */
     km.initialize(0x200000, 0x7fffff);
+
+    /* APM */
+    g_apmInfo = new APMInfo;
+    memcpy(g_apmInfo, (APMInfo*)0x900, sizeof(APMInfo));
 
     /* set segment */
     GDTUtil::setup();
@@ -196,6 +201,15 @@ void startKernel()
     g_total_system_memory = MemoryManager::getPhysicalMemorySize();
     g_console->printf("\nSystem Total Memory %d[MB]. VRAM=%x Paging on \n", g_total_system_memory / 1024 / 1024, g_vesaDetail->physBasePtr);
     g_console->printf("VESA: %dx%d %dbpp\n", g_vesaDetail->xResolution, g_vesaDetail->yResolution, g_vesaDetail->bitsPerPixel);
+
+    if( !g_apmInfo->isSupported )
+    {
+        g_console->printf("Warning: APM is not supported.\n");
+    }
+    else
+    {
+        apm_init();
+    }
 
     /* shared memory object */
     SharedMemoryObject::setup();

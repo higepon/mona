@@ -88,6 +88,8 @@ extern int syscall_change_base_priority(dword priority);
 extern int syscall_set_dll_segment_writable();
 extern int syscall_set_dll_segment_notshared(int index);
 
+extern int syscall_shutdown(int op, int device);
+
 extern void* malloc(unsigned long size);
 extern void* calloc(unsigned long n, unsigned long s);
 extern void* realloc(void* address, unsigned long size);

@@ -21,6 +21,7 @@ enum
     COMMAND_EXEC,
     COMMAND_CHANGE_DRIVE_CD0,
     COMMAND_CHANGE_DRIVE_FD0,
+    COMMAND_SHUTDOWN,
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -73,6 +74,10 @@ int Shell::isInternalCommand(const CString& command)
     else if (cmd == "exec")
     {
         return COMMAND_EXEC;
+    }
+    else if (cmd == "shutdown")
+    {
+        return COMMAND_SHUTDOWN;
     }
 
     return COMMAND_NONE;
@@ -296,6 +301,22 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             if (this->commandExecute(args2)) this->doExec = true;
         }
         break;
+
+    case COMMAND_SHUTDOWN:
+    {
+        dword result;
+
+        if( args.get_Length() < 2 )
+        {
+                printf("USAGE: SHUTDOWN [-H]");
+                break;
+        }
+
+        if( args[1] == "-h" || args[1] == "-H" )
+                result = syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+        printf("result = %x\n");
+        break;
+    }
 
     default:
         break;
