@@ -1,8 +1,6 @@
 /*===================================================================*/
 /*                                                                   */
-/*  InfoNES_System_Mona.cpp : Mona specific File                   */
-/*                                                                   */
-/*  2005/07/12  InfoNES Project ( Sound is based on DarcNES )        */
+/*  InfoNES_System_Mona.cpp : Mona specific File                     */
 /*                                                                   */
 /*===================================================================*/
 

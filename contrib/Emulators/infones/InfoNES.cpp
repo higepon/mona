@@ -598,10 +598,6 @@ void InfoNES_Cycle()
   {    
     int nStep;
 
-    // Check Quit (added by bayside)
-    if ( InfoNES_Menu() == -1 )
-      break;  // Quit
-
     // Set a flag if a scanning line is a hit in the sprite #0
     if ( SpriteJustHit == PPU_Scanline &&
       PPU_ScanTable[ PPU_Scanline ] == SCAN_ON_SCREEN )

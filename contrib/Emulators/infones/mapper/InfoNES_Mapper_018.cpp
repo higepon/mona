@@ -51,7 +51,7 @@ void Map18_Init()
   ROMBANK3 = ROMLASTPAGE( 0 );
 
   /* Initialize Regs */
-  for ( int i = 0; i < (int)sizeof( Map18_Regs ); i++ )
+  for ( int i = 0; i < sizeof( Map18_Regs ); i++ )
   {
     Map18_Regs[ i ] = 0;
   }
