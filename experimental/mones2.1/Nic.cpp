@@ -89,9 +89,25 @@ ARPmanager::~ARPmanager()
 }
 
 /////////////////////////////////////////////
-Nic::Nic():irq(0),iobase(0),mtu(DEFAULT_MTU_SIZE)
+Nic::Nic():irq(0),iobase(0),mtu(DEFAULT_MTU_SIZE),dma_head(NULL),dma_size(0)
 {
 
+}
+
+Nic::~Nic()
+{
+    if( dma_head!=NULL){
+        monapi_deallocate_dma_memory(dma_head,dma_size);
+    }
+}
+
+byte* Nic::AllocateDmaPages(int pages)
+{
+    if( dma_head == NULL ){
+        dma_size=0x1000*pages;
+        dma_head=monapi_allocate_dma_memory(dma_size);
+    }
+    return dma_head;
 }
 
 void Nic::getStatus(NetStatus* stat)

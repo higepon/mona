@@ -21,46 +21,25 @@ void MonAMDpcn::rxihandler()
 ///////////////////////////////////////////////////////
 MonAMDpcn::~MonAMDpcn()
 {
-    printf("destructorof monamdpcn\n");
-    if(piblock!=NULL)
-        monapi_deallocate_dma_memory(piblock);
-    for(int i=0;i<3;i++)
-        monapi_deallocate_dma_memory(rxdsc+0x1000*i);
-    for(int i=0;i<3;i++)
-        monapi_deallocate_dma_memory(txdsc+0x1000*i);
+    printf("destructor of monamdpcn\n");
 }
 
-MonAMDpcn::MonAMDpcn()
+MonAMDpcn::MonAMDpcn():rxdsc(NULL),txdsc(NULL),piblock(NULL)
 {
-    piblock=NULL;
-    rxdsc=NULL;
-    rxbuf=monapi_allocate_dma_memory();
-    for( int i=1;i<3;i++){
-        byte* rxtmp=monapi_allocate_dma_memory();
-        if( rxtmp != rxbuf+0x1000*i){
-            printf("RX:buf is not continuous.%d\n",i);
-            rxbuf=NULL;
-        }
-    }
-    txdsc=NULL;
-    txbuf=monapi_allocate_dma_memory();
-    for(int i=1;i<3;i++){
-        byte* txtmp=monapi_allocate_dma_memory();
-        if( txtmp != txbuf+0x1000*i){
-            printf("TX:buf is not continuous.%d\n",i);
-            txbuf=NULL;
-        }
-    }
     memcpy(devname,"pcnet32",8);
 }
 
 int MonAMDpcn::init()
-{
+{    
+    AllocateDmaPages( (1<<LOGRXRINGLEN)+ (1<<LOGTXRINGLEN) +1);//pages.
     //initialize rx
-    if( rxbuf== 0 )
+    if( dma_head== NULL ){
+        printf("buffer allocation was failed.");
         return -1;
-    rxdsc = (RXDSC*)rxbuf;
-    rxbuf += ((1<<LOGRXRINGLEN)*sizeof(RXDSC));
+    }
+    //printf("DMA area was allocated properly.\n");
+    rxdsc = (RXDSC*)dma_head;
+    rxbuf = dma_head+((1<<LOGRXRINGLEN)*sizeof(RXDSC));
     for(int i=0;i<(1<<LOGRXRINGLEN);i++){
         (rxdsc+i)->bcnt=(word)(-ETHER_MAX_PACKET)|0xF000;
         (rxdsc+i)->status=RMD1_OWN|RMD1_STP|RMD1_ENP;
@@ -69,10 +48,8 @@ int MonAMDpcn::init()
     rxindex=0;
     rxdirty=0;
      //initialize tx 
-    if( txbuf == 0 )
-        return -1; 
-    txdsc= (TXDSC*)txbuf;
-    txbuf += ((1<<LOGTXRINGLEN)*sizeof(TXDSC));
+    txdsc= (TXDSC*)( dma_head +(0x1000* (1<<LOGRXRINGLEN)));
+    txbuf = dma_head + 0x1000*(1<<LOGRXRINGLEN) + (1<<LOGTXRINGLEN)*sizeof(TXDSC) ;
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
         (txdsc+i)->status=0;
         (txdsc+i)->control=0;
@@ -82,17 +59,12 @@ int MonAMDpcn::init()
     txindex=0;
     txdirty=0;
     ///////////////
-
     stop();
     reset();
     w_bcr(BCR_MISC,BCR_AUTOSEL);        //SET BCR_EDGETRG for Edge Sense.
     w_bcr(BCR_SSTYLE,BCR_PCI_II|BCR_SSIZE);
     //Use initalize block.
-    piblock=(IBLK*)monapi_allocate_dma_memory();
-    if( piblock == NULL ){
-        printf("dma mem allocation failed.\n");
-        return -1;
-    }
+    piblock= (IBLK*)( dma_head  + (0x1000*( (1<<LOGRXRINGLEN)+(1<<LOGTXRINGLEN) )) );
     piblock->mode=0x0;         //set MODE_DNY_BCST for deny broadcast packets.
     piblock->rxlen=(LOGRXRINGLEN<<4);  //see page157.
     piblock->txlen=(LOGTXRINGLEN<<4);
@@ -104,7 +76,7 @@ int MonAMDpcn::init()
     piblock->filter[1]=0x0;
     piblock->rx_ring=(dword)rxdsc;
     piblock->tx_ring=(dword)txdsc;
-    //printf("DMA area was allocated properly.\n");
+
     w_csr(CSR_IADR0, ((dword)piblock)&0xFFFF);
     w_csr(CSR_IADR1,(((dword)piblock)>>16)&0xFFFF);
     w_csr(CSR_CSR,CSR_INTEN|CSR_INIT);

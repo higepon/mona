@@ -49,6 +49,7 @@ class Nic : public ARPmanager
 {
 public:
     Nic();
+    ~Nic();
     virtual int init() =0;
     virtual int interrupt() =0; 
     virtual void SendFrm(Ether*)=0;
@@ -75,7 +76,9 @@ protected:
     int   irq;
     int   iobase;
     word  mtu;
-
+    byte* dma_head;
+    int   dma_size;
+    byte* AllocateDmaPages(int);
 };
 
 };

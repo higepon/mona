@@ -10,30 +10,17 @@ MonADEC::~MonADEC()
 
 MonADEC::MonADEC()
 {
-    rxdsc=NULL;
-    rxbuf=monapi_allocate_dma_memory();
-    for( int i=1;i<3;i++){
-        byte* rxtmp=monapi_allocate_dma_memory();
-        if( rxtmp != rxbuf+0x1000*i){
-            printf("RX:buf is not continuous.%d\n",i);
-            rxbuf=NULL;
-        }
-    }
-    txdsc=NULL;
-    txbuf=monapi_allocate_dma_memory();
-    for(int i=1;i<3;i++){
-        byte* txtmp=monapi_allocate_dma_memory();
-        if( txtmp != txbuf+0x1000*i){
-            printf("TX:buf is not continuous.%d\n",i);
-            txbuf=NULL;
-        }
-    }
-    memcpy(devname,"dec21240a",8);
+    memcpy(devname,"dec21240a",10);
 }
 
 //Initalization Procedure is described in H.R.M 4.3.4
 int MonADEC::init()
-{
+{    
+    AllocateDmaPages( (1<<LOGRXRINGLEN)+ (1<<LOGTXRINGLEN));//pages.
+    if( dma_head == NULL ){
+        printf("buffer allocation was failed.");
+        return -1;
+    }
     reset();
 //1. Wait 50 PCI clock cycles.
     sleep(100);
@@ -44,24 +31,19 @@ int MonADEC::init()
 //5. The driver must create the transmit and receive descriptor lists. Then, it writes to both CSR3
 //   and CSR4, providing the 21143 with the starting address of each list (Section 3.2.2.7). The
 //   first descriptor on the transmit list may contain a setup frame (Section 4.2.3).
-   if( rxbuf== 0 )
-        return -1;
-    rxdsc = (DESC*)rxbuf;
-    rxbuf += ((1<<LOGRXRINGLEN)*sizeof(DESC));
+    rxdsc = (DESC*)dma_head;
+    rxbuf = dma_head+((1<<LOGRXRINGLEN)*sizeof(DESC));
     for(int i=0;i<(1<<LOGRXRINGLEN);i++){
         (rxdsc+i)->status=0x80000000;//own
         (rxdsc+i)->ctlandcnt=ETHER_MAX_PACKET;
-        (rxdsc+i)->ctlandcnt=0;
         (rxdsc+i)->bufaddr1=(dword)(rxbuf+i*ETHER_MAX_PACKET);
         (rxdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
     }
     (rxdsc+((1<<LOGRXRINGLEN)-1))->bufaddr2=(dword)rxdsc;
     rxindex=0;
     rxdirty=0; 
-    if( txbuf == 0 )
-        return -1; 
-    txdsc= (DESC*)txbuf;
-    txbuf += ((1<<LOGTXRINGLEN)*sizeof(DESC));
+    txdsc= (DESC*)( dma_head +(0x1000* (1<<LOGRXRINGLEN)));
+    txbuf = dma_head + 0x1000*(1<<LOGRXRINGLEN) + (1<<LOGTXRINGLEN)*sizeof(DESC) ;
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
         (txdsc+i)->status=0;
         (txdsc+i)->ctlandcnt=ETHER_MAX_PACKET;
