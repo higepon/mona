@@ -1,3 +1,7 @@
+2006-09-21  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/GDTUtil.cpp: カーネルが落ちるようになったので一部コメントアウトした。
+
 2006-09-19  bayside
 
         * core/shell_server/Shell.cpp (Shell::Shell): AUTOEXEC.MSH 中の @EXEC が上手く動かない問題修正。
