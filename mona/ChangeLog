@@ -1,5 +1,17 @@
 2006-09-21  higepon  <higepon@users.sourceforge.jp>
 
+        * core/kernel/kernel.cpp: $Date::                           $で曜日表示をやめた
+
+        * core/monapi/Makefile (install): -p を追加
+
+        * core/monalibc/Makefile (install): -p を追加
+
+        * tool/fat_write/Makefile.am : fat_write_incdlueHEADERS_INSTALL = ${INSTALL} -p -m 644
+
+        * tool/t5lzma/Makefile (install): -p を追加
+
+        * tool/stlport/Makefile (install): -p を追加
+
         * core/kernel/GDTUtil.cpp: カーネルが落ちるようになったので一部コメントアウトした。
 
 2006-09-19  bayside

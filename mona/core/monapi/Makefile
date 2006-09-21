@@ -73,12 +73,12 @@ clean:
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)
-	$(INSTALL) -m 0644 $(LIB_STATIC) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_STATIC) $(LIBDIR)/
 ifneq ($(BUILD_TARGET),ELF)
-	$(INSTALL) -m 0644 $(LIB_IMPORT) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
 	mkdir -p $(BINDIR)/LIBS
-	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
-	$(INSTALL) -m 0644 $(CRT_OBJECT) $(LIB_STATIC) $(LIBDIR)/
+	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+	$(INSTALL) -p -m 0644 $(CRT_OBJECT) $(LIB_STATIC) $(LIBDIR)/
 endif
 
 uninstall:

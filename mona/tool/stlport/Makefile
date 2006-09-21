@@ -8,7 +8,7 @@ install: check
 	mkdir -p $(INCDIR)/stlport
 	mkdir -p $(INCDIR)/stlport/config
 	mkdir -p $(INCDIR)/stlport/stl
-	$(INSTALL) -m 0644 \
+	$(INSTALL) -p -m 0644 \
 	./stlport/algorithm \
 	./stlport/deque \
 	./stlport/functional \
@@ -27,9 +27,9 @@ install: check
 	./stlport/string \
 	./stlport/vector \
 	$(INCDIR)/stlport
-	$(INSTALL) -m 0644 ./stlport/config/*.h $(INCDIR)/stlport/config
-	$(INSTALL) -m 0644 ./stlport/stl/*.h $(INCDIR)/stlport/stl
-	$(INSTALL) -m 0644 ./stlport/stl/*.c $(INCDIR)/stlport/stl
+	$(INSTALL) -p -m 0644 ./stlport/config/*.h $(INCDIR)/stlport/config
+	$(INSTALL) -p -m 0644 ./stlport/stl/*.h $(INCDIR)/stlport/stl
+	$(INSTALL) -p -m 0644 ./stlport/stl/*.c $(INCDIR)/stlport/stl
 
 uninstall: check
 	rm -rf $(INCDIR)/stlport/stl
