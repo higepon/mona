@@ -62,9 +62,9 @@ void Shell::run()
                 if (this->waiting == msg.arg1)
                 {
                     this->printPrompt("\n");
-                    this->drawCaret();
                     this->waiting = THREAD_UNKNOWN;
                     this->doExec = false;
+                    this->drawCaret();
                 }
 
                 break;
@@ -206,7 +206,7 @@ bool Shell::commandExecute(_A<CString> args)
     dword tid;
     int result = monapi_call_process_execute_file_get_tid(cmdLine, MONAPI_TRUE, &tid, this->self);
 
-    if (!this->callAutoExec && result == 0 && !this->doExec)
+    if (/*!this->callAutoExec &&*/ result == 0 && !this->doExec)
     {
         this->waiting = tid;
     }
