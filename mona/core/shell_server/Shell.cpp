@@ -21,8 +21,10 @@ Shell::Shell(bool callAutoExec)
         this->executeMSH("/AUTOEXEC.MSH");
     }
     this->self = syscall_get_tid();
-    this->printPrompt("\n");
-    this->drawCaret();
+    if (!this->doExec) {
+        this->printPrompt("\n");
+        this->drawCaret();
+    }
 }
 
 Shell::~Shell()
