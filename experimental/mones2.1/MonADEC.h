@@ -4,9 +4,9 @@
 #include <monapi.h>
 #include "Nic.h"
 
+//VirtualPC 2004 acts as if she has 21140A.
 //The author refers Intel 21143 PCI/CardBus 10/100Mb/s
 //Ethernet LAN Controller Hardware Reference Manual Rev1.0 and others.
-//VirtualPC acts as if she has 21140A.
 
 namespace mones{ 
 
@@ -28,9 +28,7 @@ protected:
     int rxdirty;
     enum{
         LOGRXRINGLEN=2,
-        RMD1_OWN=0x8000,
-        RMD1_STP=0x0200,
-        RMD1_ENP=0x0100,
+        RX_OWN=0x80000000,
     };
     void txihandler();
     byte* txbuf;
@@ -39,9 +37,7 @@ protected:
     int txdirty;
     enum{
         LOGTXRINGLEN=2,
-        TMD1_OWN=0x8000,
-        TMD1_STP=0x0200,
-        TMD1_ENP=0x0100, 
+        TX_OWN=0x80000000,
     };
 public:    
     int   init();
@@ -54,72 +50,38 @@ public:
         DEVICEID   =0x0009, //21140A
     };
 private:
-//    word r_rap(){ return inp16(iobase+IO_RAP);}
- //   void w_rap(int reg){ outp16(iobase+IO_RAP,reg); }
-  //  word r_csr(int reg){ w_rap(reg); return inp16(iobase+IO_RDP); }
-  //  void w_csr(int reg,word val){ w_rap(reg); outp16(iobase+IO_RDP,val); }
-  //  word r_bcr(int reg){ w_rap(reg); return inp16(iobase+IO_BDP); }
-  //  void w_bcr(int reg,word val){ w_rap(reg); outp16(iobase+IO_BDP,val); }
-    void reset(){ outp32(iobase+CSR_0,CSR_RESET); }
+    void reset(){ outp32(iobase+CSR_0,CSR0_RESET); }
 //    void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
+    int ReadSROM(word,word*);
+    void Delay800nSec(){ /*Be carefull when you use a real device.*/ };
     enum{ 
       CSR_0        =0x00,
-      CSR_RESET    =0x00000001,
+      CSR0_RESET   =0x0001,
       CSR_2        =0x10,
-      CSR_3           =0x18,
-      CSR_4           =0x20,
-      CSR_6           =0x30,
-/*    IO_RDP       =0x10,
-      IO_RAP       =0x12,
-      IO_BDP       =0x16,
-      BCR_MISC     =0x02,
-      BCR_SSTYLE   =0x14,
-    
-      BCR_AUTOSEL  =0x0002, 
-      BCR_EDGETRG  =0x0040,
+      CSR_3        =0x18,
+      CSR_4        =0x20,
+      CSR_6        =0x30,
+      CSR_8           =0x40,
+      CSR_9        =0x48,
+      CSR_12       =0x60,
+      CSR_13       =0x68,
+      CSR_14       =0x70,
+      CSR_15       =0x78,
 
-      BCR_SSIZE    =0x0100,
-      BCR_PCI_II   =0x0003,
-
-      CSR_CSR      =0x00,
-      CSR_IADR0    =0x01,
-      CSR_IADR1    =0x02,
-      CSR_FEATURE  =0x04,
-      CSR_MAR0     =0x08,
-      CSR_MAR1     =0x09,
-      CSR_MAR2     =0x0A,
-      CSR_MAR3     =0x0B,
-      CSR_PADR0    =0x0C,
-      CSR_PADR1    =0x0D,
-      CSR_PADR2    =0x0E,
-      CSR_MODE     =0x0F,
-      CSR_RXADDR0  =0x18,
-      CSR_RXADDR1  =0x19,
-      CSR_TXADDR0  =0x1E,
-      CSR_TXADDR1  =0x1F,
-      CSR_POLLINT  =0x2F,
-      CSR_RXRINGLEN=0x4C,
-      CSR_TXRINGLEN=0x4E,
-
-      CSR_INIT     =0x0001,
-      CSR_START    =0x0002,
-      CSR_STOP     =0x0004,
-      CSR_TDMD     =0x0008,
-      CSR_INTEN    =0x0040,
-      CSR_INTR     =0x0080,
-      CSR_TINT     =0x0200,
-      CSR_RINT     =0x0400,
-    
-      FEAT_PADTX   =0x0800,
-      FEAT_TXMSK   =0x0001,
-
-      MODE_RXD     =0x0001,
-      MODE_TXD     =0x0002,
-      MODE_DNY_BCST=0x4000,
-      MODE_PROMISC =0x8000,
-      MODE_PSEL    =0x0180,
-  */
+      //Following Constants were cited from 21041 App.Note.    
+      MAC_OFFSET   =0x0A,
+      SROM_SIZE    =0x3F,
+      SROM_BITS    =0x05,
+      CSR9_READ    =0x4000,
+      CSR9_WRITE   =0x2000,
+      SEL_SROM     =0x0800,
+      DATA_1       =0x0004,
+      DATA_0       =0x0000,
+      CLK          =0x0002,
+      CS           =0x0001,
+      SETUPPKTSIZE =0xC0,
     };
+    dword setupframe[SETUPPKTSIZE/4];
 };
 #pragma pack(pop)
 };//mones::

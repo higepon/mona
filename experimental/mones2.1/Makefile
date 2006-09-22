@@ -49,6 +49,8 @@ runq: install
 	cd $(QEMUDIR) && $(QEMUDIR)/mona.bat
 runv: install
 	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/runv.bat
+kernel:
+	cd $(MONADIR) && make
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f ${MONADIR}/bin/mona.img dependencies
