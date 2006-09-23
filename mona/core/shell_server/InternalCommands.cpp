@@ -22,6 +22,8 @@ enum
     COMMAND_CHANGE_DRIVE_CD0,
     COMMAND_CHANGE_DRIVE_FD0,
     COMMAND_SHUTDOWN,
+    COMMAND_HALT,
+    COMMAND_REBOOT,
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -77,7 +79,15 @@ int Shell::isInternalCommand(const CString& command)
     }
     else if (cmd == "shutdown")
     {
-       return COMMAND_SHUTDOWN;
+        return COMMAND_SHUTDOWN;
+    }
+    else if (cmd == "halt")
+    {
+        return COMMAND_HALT;
+    }
+    else if (cmd == "reboot")
+    {
+        return COMMAND_REBOOT;
     }
 
     return COMMAND_NONE;
@@ -301,6 +311,7 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             if (this->commandExecute(args2)) this->doExec = true;
         }
         break;
+
     case COMMAND_SHUTDOWN:
     {
         dword result;
@@ -316,6 +327,19 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         printf("result = %x\n");
         break;
     }
+
+    case COMMAND_HALT:
+    {
+        syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+        break;
+    }
+
+    case COMMAND_REBOOT:
+    {
+        syscall_shutdown(SHUTDOWN_REBOOT, SHUTDOWN_DEVICE_ALL);
+        break;
+    }
+
     default:
         break;
     }
