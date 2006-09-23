@@ -31,12 +31,12 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  private/logprintf.c \
 	  errno/errno.c \
 	  wchar/wcscpy.c wchar/wcsncpy.c wchar/wmemcpy.c wchar/wmemmove.c \
-#	  fenv/feclearexcept.c fenv/fegetexceptflag.c fenv/feraiseexcept.c \
-#	  fenv/fesetexceptflag.c fenv/fetestexcept.c fenv/fegetround.c \
-#	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
-#	  fenv/feholdexcept.c \
+	  fenv/feclearexcept.c fenv/fegetexceptflag.c fenv/feraiseexcept.c \
+	  fenv/fesetexceptflag.c fenv/fetestexcept.c fenv/fegetround.c \
+	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
+	  fenv/feholdexcept.c \
 #	  inttypes/imaxdiv.c \
-#	  crt/crt.c \
+	  crt/crt.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
 #	  string/strcat.c string/strcmp.c string/strcspn.c string/strlen.c \
 #	  string/memcmp.c string/memcpy.c string/memmove.c string/memset.c \

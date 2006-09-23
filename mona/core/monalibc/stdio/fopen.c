@@ -40,7 +40,7 @@
 FILE *fopen(const char *path, const char *mode)
 {
 	FILE *fp;
-	int fileno;
+	dword fileno;
 
 	fp = malloc(sizeof(FILE));
 	if( fp == NULL )
@@ -75,13 +75,14 @@ FILE *fopen(const char *path, const char *mode)
 		fp->_flags = __SAP|__SRD;
 	}
 
-	fileno = (int)monapi_file_open(path, MONAPI_FALSE);
-	if( fileno == 0 )
+	fileno = monapi_file_open(path, MONAPI_FALSE);
+	if( fileno == MONA_FAILURE )
 	{
 		free(fp);
 		errno = EUNKNOWN;
 		return NULL;
 	}
+	printf("fileno = %d\n", fileno);
 	fp->_file = fileno;
 
 	fp->_read = _read;
@@ -104,7 +105,7 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	fp->_bf._size = BUFSIZ;
-	fp->_flags |= __SALD;
+	fp->_flags |= __SALD|_IOFBF;
 
 	return fp;
 }

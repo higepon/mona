@@ -138,14 +138,17 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 	*/
 	if( stream->_flags & __SNBF )
 	{
+		printf("Non buf\n");
 		return __nida_nonebuf_fread(buf, size*nmemb, stream);
 	}
 	if( stream->_flags & __SFBF )
 	{
+		printf("Fully buf\n");
 		return __nida_fullybuf_fread(buf, size*nmemb, stream);
 	}
 	else
 	{
+		printf("Fully buf\n");
 		return __nida_fullybuf_fread(buf, size*nmemb, stream);
 	}
 }

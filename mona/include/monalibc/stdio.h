@@ -57,7 +57,7 @@ struct __sFILEX;
 typedef struct __sFILE
 {
 	short	_flags;	/* flags */
-	short	_file;	/* fileno, if MonaOS ID, else -1 */
+	dword	_file;	/* fileno, if MonaOS ID, else -1 */
 	struct	__sbuf _bf;
 	int	_lbfpos;
 
@@ -125,6 +125,7 @@ size_t	 fwrite(const void *, size_t, size_t, FILE *);
 size_t	 fread(void *, size_t, size_t, FILE *);
 void	 rewind(FILE *);
 void	 perror(const char *);
+void	 setbuf(FILE *, char *);
 
 int	 fileno(FILE *);
 
