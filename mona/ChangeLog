@@ -1,3 +1,10 @@
+2006-09-23  bayside
+
+        * リブートコマンドを追加
+          - core/shell_server/InternalCommands.cpp
+          - core/kernel/shutdown.h
+          - core/kernel/shutdown.cpp
+
 2006-09-23  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/GDTUtil.h: noinline attribute を付加
