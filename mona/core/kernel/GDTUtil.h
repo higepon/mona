@@ -60,7 +60,7 @@ class GDTUtil {
     static void setSegDesc(SegDesc* desc, dword base, dword limit, byte type);
     static void setSegDescExt(SegDesc* desc, dword base, dword limit, byte type, byte gdbavl);
     static void lgdt(GDTR* gdtr);
-    static void ltr(word selector);
+    static void ltr(word selector) __attribute__ ((noinline)) /* we need this! */
     static void setup();
     static void setupTSS(word selector);
 };

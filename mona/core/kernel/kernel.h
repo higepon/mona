@@ -57,44 +57,44 @@ typedef struct {
     \struct TSS
 */
 typedef struct {
-    word  backlink;//0
-    word  pad0;
-    dword esp0;//1
-    word  ss0;//2
-    word  pad1;
-    dword esp1;
-    word  ss1;
-    word  pad2;
-    dword esp2;
-    word  ss2;
-    word  pad3;
-    dword cr3;
-    dword eip;
-    dword eflags;
-    dword eax;
-    dword ecx;
-    dword edx;
-    dword ebx;
-    dword esp;
-    dword ebp;
-    dword esi;
-    dword edi;
-    word  es;
-    word  pad4;
-    word  cs;
-    word  pad5;
-    word  ss;
-    word  pad6;
-    word  ds;
-    word  pad7;
-    word  fs;
-    word  pad8;
-    word  gs;
-    word  pad9;
-    word  ldt;
-    word  padA;
-    word  debugtrap;
-    word  iobase;
+    volatile    word  backlink;     //0
+    volatile    word  pad0;
+    volatile    dword esp0;         //1
+    volatile    word  ss0;          //2
+    volatile    word  pad1;
+    volatile    dword esp1;
+    volatile    word  ss1;
+    volatile    word  pad2;
+    volatile    dword esp2;
+    volatile    word  ss2;
+    volatile    word  pad3;
+    volatile    dword cr3;
+    volatile    dword eip;
+    volatile    dword eflags;
+    volatile    dword eax;
+    volatile    dword ecx;
+    volatile    dword edx;
+    volatile    dword ebx;
+    volatile    dword esp;
+    volatile    dword ebp;
+    volatile    dword esi;
+    volatile    dword edi;
+    volatile    word  es;
+    volatile    word  pad4;
+    volatile    word  cs;
+    volatile    word  pad5;
+    volatile    word  ss;
+    volatile    word  pad6;
+    volatile    word  ds;
+    volatile    word  pad7;
+    volatile    word  fs;
+    volatile    word  pad8;
+    volatile    word  gs;
+    volatile    word  pad9;
+    volatile    word  ldt;
+    volatile    word  padA;
+    volatile    word  debugtrap;
+    volatile    word  iobase;
 } TSS;
 
 struct ThreadInfo;

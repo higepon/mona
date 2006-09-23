@@ -21,7 +21,7 @@ enum
     COMMAND_EXEC,
     COMMAND_CHANGE_DRIVE_CD0,
     COMMAND_CHANGE_DRIVE_FD0,
-    //COMMAND_SHUTDOWN,
+    COMMAND_SHUTDOWN,
 };
 
 int Shell::isInternalCommand(const CString& command)
@@ -75,10 +75,10 @@ int Shell::isInternalCommand(const CString& command)
     {
         return COMMAND_EXEC;
     }
-    //else if (cmd == "shutdown")
-    //{
-    //    return COMMAND_SHUTDOWN;
-    //}
+    else if (cmd == "shutdown")
+    {
+       return COMMAND_SHUTDOWN;
+    }
 
     return COMMAND_NONE;
 }
@@ -301,7 +301,6 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
             if (this->commandExecute(args2)) this->doExec = true;
         }
         break;
-#if 0
     case COMMAND_SHUTDOWN:
     {
         dword result;
@@ -317,7 +316,6 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
         printf("result = %x\n");
         break;
     }
-#endif
     default:
         break;
     }

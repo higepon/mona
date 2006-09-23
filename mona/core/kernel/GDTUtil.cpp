@@ -130,15 +130,15 @@ void GDTUtil::setup() {
 
     if( g_apmInfo->isSupported )
     {
-//         /* APM 32bit CS */
-//         setSegDescExt(&g_gdt[8], g_apmInfo->cs32<<4, (g_apmInfo->cs32_len-1),
-//                             SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0xC0);
-//         /* APM 16bit CS */
-//         setSegDescExt(&g_gdt[9], g_apmInfo->cs16<<4, (g_apmInfo->cs16_len-1),
-//                             SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0x80);
-//         /* APM DS */
-//         setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->cs32_len-1),
-//                             SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0xC0);
+        /* APM 32bit CS */
+        setSegDescExt(&g_gdt[8], g_apmInfo->cs32<<4, (g_apmInfo->cs32_len-1),
+                            SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0xC0);
+        /* APM 16bit CS */
+        setSegDescExt(&g_gdt[9], g_apmInfo->cs16<<4, (g_apmInfo->cs16_len-1),
+                            SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x0A, 0x80);
+        /* APM DS */
+        setSegDescExt(&g_gdt[10], g_apmInfo->ds<<4, (g_apmInfo->cs32_len-1),
+                            SEGMENT_PRESENT | SEGMENT_DPL0 | 0x10 | 0x02, 0xC0);
     }
 
 
@@ -163,7 +163,7 @@ void GDTUtil::setup() {
 void GDTUtil::setupTSS(word selector) {
 
     /* prepare dpl0 stack */
-    memset(g_tss, 0, sizeof(TSS));
+    memset((void*)g_tss, 0, sizeof(TSS));
     g_tss->esp0 = 0x90000;
     g_tss->ss0  = KERNEL_SS;
 

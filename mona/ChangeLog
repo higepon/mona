@@ -1,3 +1,7 @@
+2006-09-23  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/GDTUtil.h: noinline attribute ‚ð•t‰Á
+
 2006-09-21  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/kernel.cpp: $Date::                           $‚Å—j“ú•\Ž¦‚ð‚â‚ß‚½

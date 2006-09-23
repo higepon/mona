@@ -13,7 +13,7 @@ namespace Mona
 		{
 			Console.WriteLine();
 			Console.WriteLine("/\\ /\\");
-			Console.WriteLine(" 'V `) < Booting MONA!!");
+			Console.WriteLine(" 'V `) < Booting MONA!!(APM)");
 			Console.WriteLine();
 			
 			Registers.DS = Registers.CS;
@@ -27,8 +27,7 @@ namespace Mona
 			
 			ReadConfig("MONA.CFG");
 			SetVesaMode();
-			APM.InterfaceConnect32(APMInfoAddr);
-			
+			APM.InterfaceConnect32(APMInfoAddr);			
 			WriteSize(0);
 		}
 		

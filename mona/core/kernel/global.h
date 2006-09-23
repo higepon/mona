@@ -44,7 +44,7 @@ GLOBAL GateDesc* g_idt;
 GLOBAL dword g_total_system_memory;
 
 /* Process */
-GLOBAL TSS* g_tss;
+GLOBAL volatile TSS* g_tss;
 
 GLOBAL PageEntry* g_page_directory;
 GLOBAL PageManager* g_page_manager;
