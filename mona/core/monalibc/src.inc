@@ -30,6 +30,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  private/ftos.c private/strcpy2.c private/memswap.c \
 	  private/logprintf.c \
 	  errno/errno.c \
+	  wchar/wcscpy.c wchar/wcsncpy.c wchar/wmemcpy.c wchar/wmemmove.c \
 #	  fenv/feclearexcept.c fenv/fegetexceptflag.c fenv/feraiseexcept.c \
 #	  fenv/fesetexceptflag.c fenv/fetestexcept.c fenv/fegetround.c \
 #	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \

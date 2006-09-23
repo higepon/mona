@@ -29,7 +29,7 @@ $(LIB_STATIC): $(OBJECTS)
 ifneq ($(BUILD_TARGET),ELF)
 $(LIB_IMPORT): $(LIB_DYNAMIC)
 $(LIB_DYNAMIC): $(OBJECTS)
-	$(LD) -u __errno --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK)
+	$(LD) --export-all-symbols --enable-auto-import --out-implib $(LIB_IMPORT) -o $@ $(OBJECTS) $(LINK)
 	$(STRIP) $@
 
 $(LIB_DYNAMIC5): $(LIB_DYNAMIC)
@@ -38,7 +38,7 @@ endif
 
 .SUFFIXES: .o .c
 .c.o:
-	$(CC) -c -o $@ $<  $(INCLUDE)
+	$(CC) -c -o $@ $<  $(INCLUDE) -fno-builtin
 
 crt: $(CRT_OBJECT)
 
