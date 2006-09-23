@@ -206,6 +206,7 @@ enum
 enum
 {
         SHUTDOWN_HALT,
+        SHUTDOWN_REBOOT,
         SHUTDOWN_STANDBY,
         SHUTDOWN_SUSPEND,
         SHUTDOWN_FEATURE,
