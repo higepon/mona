@@ -36,6 +36,9 @@
 #include <string.h>
 #include "stdio_p.h"
 
+asm(".section .drectve");
+asm(".ascii \"-export:__sF\"");
+
 FILE __sF[3];
 
 int _read(int id, void *buf, size_t size)
