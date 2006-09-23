@@ -318,12 +318,19 @@ bool Shell::internalCommandExecute(int command, _A<CString> args)
 
         if( args.get_Length() < 2 )
         {
-                printf("USAGE: SHUTDOWN [-H]");
+                printf("usage: shutdown [-rh]");
                 break;
         }
 
         if( args[1] == "-h" || args[1] == "-H" )
-                result = syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+        {
+            result = syscall_shutdown(SHUTDOWN_HALT, SHUTDOWN_DEVICE_ALL);
+        }
+        else if( args[1] == "-r" || args[1] == "-R" )
+        {
+            result = syscall_shutdown(SHUTDOWN_REBOOT, SHUTDOWN_DEVICE_ALL);
+        }
+
         printf("result = %x\n");
         break;
     }
