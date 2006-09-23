@@ -48,15 +48,12 @@ int _read(int id, void *buf, size_t size)
 	int readsize;
 	int i;
 
-	printf("id = %d, size = %d\n", (dword)id, (dword)size);
 	cmi = monapi_file_read((dword)id, (dword)size);
 	if( cmi == NULL )
 	{
-		printf("cmi is null\n");
 		return -1;
 	}
 
-	printf("cmi->Size = %d\n", cmi->Size);
 	readsize = (int)cmi->Size;
 
 	for( i = 0 ; i < readsize ; i++ )

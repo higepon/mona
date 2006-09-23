@@ -82,7 +82,6 @@ FILE *fopen(const char *path, const char *mode)
 		errno = EUNKNOWN;
 		return NULL;
 	}
-	printf("fileno = %d\n", fileno);
 	fp->_file = fileno;
 
 	fp->_read = _read;
