@@ -35,5 +35,5 @@
 
 int fileno(FILE *fp)
 {
-	return fp->_file;
+	return (int)fp->_file;
 }

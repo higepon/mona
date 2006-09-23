@@ -42,7 +42,7 @@ FILE *fopen(const char *path, const char *mode)
 	FILE *fp;
 	dword fileno;
 
-	fp = malloc(sizeof(FILE));
+	fp = (FILE*)malloc(sizeof(FILE));
 	if( fp == NULL )
 	{
 		errno = ENOMEM;
@@ -87,7 +87,7 @@ FILE *fopen(const char *path, const char *mode)
 	fp->_read = _read;
 	fp->_write = _write;
 	fp->_seek = _seek;
-	fp->_extra = malloc(sizeof(struct __sFILEX));
+	fp->_extra = (struct __sFILEX*)malloc(sizeof(struct __sFILEX));
 	if( fp->_extra == NULL )
 	{
 		free(fp);
@@ -95,7 +95,8 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	memset(fp->_extra, 0, sizeof(struct __sFILEX));
-	fp->_bf._base = malloc(BUFSIZ);
+/*
+	fp->_bf._base = (unsigned char*)malloc(BUFSIZ);
 	if( fp->_bf._base == NULL )
 	{
 		free(fp->_extra);
@@ -104,7 +105,8 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	fp->_bf._size = BUFSIZ;
-	fp->_flags |= __SALD|_IOFBF;
+*/
+	fp->_flags |= __SALD|_IONBF;
 
 	return fp;
 }
