@@ -5,5 +5,6 @@
 
 dword shutdown(dword op, dword device);
 dword shutdown_by_apm(dword op, dword device);
+dword shutdown_by_reboot();
 
 #endif
