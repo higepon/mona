@@ -31,13 +31,13 @@ SecondBoot.exe: $(SRCS) $(I8086)
 	$(CSC) $(CSCFLAGS) /reference:$(I8086) /out:$@ $(SRCS)
 
 $(PEALIB): $(DOTNETDIR)/$(PEALIB)
-	cp $< $@
+	cp -u $< $@
 
 $(IL2A16): $(DOTNETDIR)/$(IL2A16)
-	cp $< $@
+	cp -u $< $@
 
 $(I8086): $(DOTNETDIR)/$(I8086)
-	cp $< $@
+	cp -u $< $@
 endif
 clean:
 	rm -f $(TARGET) secondboot.asm secondboot_.asm SecondBoot.exe *.lst $(PEALIB) $(IL2A16) $(I8086)
@@ -46,7 +46,7 @@ distclean: clean
 
 install: $(TARGET)
 	mkdir -p $(BINDIR)
-	$(INSTALL) $(TARGET) $(BINDIR)/$(ALIAS)
+	$(INSTALL) -p $(TARGET) $(BINDIR)/$(ALIAS)
 
 uninstall:
 	rm -f $(BINDIR)/$(ALIAS)

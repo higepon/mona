@@ -22,7 +22,7 @@ clean:
 distclean: clean
 
 install: $(TARGET)
-	$(INSTALL) $(TARGET) $(DOTNETDIR)/
+	$(INSTALL) -p $(TARGET) $(DOTNETDIR)/
 
 uninstall:
 	rm -f $(DOTNETDIR)/IL2Asm16.exe

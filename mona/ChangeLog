@@ -7,7 +7,13 @@
 
 2006-09-23  higepon  <higepon@users.sourceforge.jp>
 
-        * core/kernel/GDTUtil.h: noinline attribute ‚ð•t‰Á
+        * core/IL2Asm16/Makefile (install): install -p ‚É‚µ‚½
+
+        * core/secondboot/Makefile (install): cp -u, install -p ‚É‚µ‚½‚¢
+
+        * core/PEAnalyzerLib/Makefile (install): cp -u‚É‚µ‚½
+
+        * core/kernel/GDTUtil.h: noinline attribute ‚ð•t‰Á <<3582>>
 
 2006-09-21  higepon  <higepon@users.sourceforge.jp>
 

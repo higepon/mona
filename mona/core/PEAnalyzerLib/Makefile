@@ -29,7 +29,7 @@ distclean: clean
 
 install: $(TARGET)
 	mkdir -p $(DOTNETDIR)
-	cp $(TARGET) Makefile.inc $(DOTNETDIR)/
+	cp -u $(TARGET) Makefile.inc $(DOTNETDIR)/
 
 uninstall:
 	rm -f $(MONADIR)/share/dotnet/$(TARGET)
