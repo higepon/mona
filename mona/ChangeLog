@@ -1,3 +1,11 @@
+2006-09-24  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/FAT12/FDCDriver.cpp (FDCDriver::exists): Floppy Disk存在チェックをするようにした。
+
+        * share/configs/Makefile.inc (OPTIMIZE_LEVEL): -O3に戻した
+
+        * core/kernel/VesaConsole.cpp (VesaScreen::clearScreenWhite): -O0のせいで遅くなっていたが、-O3に戻して解決
+
 2006-09-23  bayside
 
         * リブートコマンドを追加

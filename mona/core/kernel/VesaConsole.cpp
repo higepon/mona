@@ -322,7 +322,19 @@ void *memsetWord(void* buf, word value, size_t times) {
 
 void VesaConsole::VesaScreen::clearScreenWhite(int w, int h)
 {
-    memset((void*)vramAddress, 0xFF, w * h * (bitsPerPixel / 8));
+#if 0
+    const int buffer_size = 512;
+    int size = w * h * (bitsPerPixel / 8) / buffer_size;
+    byte* buffer[buffer_size];
+    memset(buffer, 0xFF, buffer_size);
+    for (int i = 0; i < size; i++)
+    {
+        memcpy((void*)(vramAddress + i * buffer_size), buffer, buffer_size);
+    }
+#else
+    // enough speed at -O3
+    memset((void*)vramAddress, 0xff, w * h * (bitsPerPixel / 8));
+#endif
 }
 
 void VesaConsole::VesaScreen::clearScreenBlack(int w, int h)
