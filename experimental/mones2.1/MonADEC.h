@@ -15,10 +15,10 @@ class MonADEC: public Nic
 {
     //See H.R.M. (4.1)Figure4-2,(4.2)Figure4-7
     typedef struct DESC{
-        word status;
-        word ctlandcnt;
-        word bufaddr1;
-        word bufaddr2;
+        dword status;
+        dword ctlandcnt;
+        dword bufaddr1;
+        dword bufaddr2;
     };
 protected:
     void rxihandler();
@@ -60,8 +60,10 @@ private:
       CSR_2        =0x10,
       CSR_3        =0x18,
       CSR_4        =0x20,
+      CSR_5        =0x28,
       CSR_6        =0x30,
-      CSR_8           =0x40,
+      CSR_7        =0x38,
+      CSR_8        =0x40,
       CSR_9        =0x48,
       CSR_12       =0x60,
       CSR_13       =0x68,
@@ -81,7 +83,7 @@ private:
       CS           =0x0001,
       SETUPPKTSIZE =0xC0,
     };
-    dword setupframe[SETUPPKTSIZE/4];
+    //dword* setupframe;
 };
 #pragma pack(pop)
 };//mones::

@@ -16,7 +16,7 @@ MonADEC::MonADEC()
 //Initalization Procedure is described in H.R.M 4.3.4
 int MonADEC::init()
 {    
-    disableNetwork();
+  //  disableNetwork();
     AllocateDmaPages( (1<<LOGRXRINGLEN)+ (1<<LOGTXRINGLEN));//pages.
     if( dma_head == NULL ){
         printf("buffer allocation was failed.");
@@ -25,10 +25,12 @@ int MonADEC::init()
     reset();
     //1. Wait 50 PCI clock cycles.
     sleep(100);    
-    //2. Update configuration registers (Section 3.1): 
+    //2. Update configuration registers (Section 3.1):
+    //   -->already be configured by Dispatch::
     //3. Write CSR0 to set global host bus operating parameters (Section 3.2.2.1).
     outp32(iobase+CSR_0,0x01A08000);
     //4. Write CSR7 to mask unnecessary (depending on the particular application) interrupt causes.
+    outp32(iobase+CSR_7,0x0001ABEF);
     //5. The driver must create the transmit and receive descriptor lists. Then, it writes to both CSR3
     //   and CSR4, providing the 21143 with the starting address of each list (Section 3.2.2.7). The
     //   first descriptor on the transmit list may contain a setup frame (Section 4.2.3).
@@ -53,25 +55,27 @@ int MonADEC::init()
     }
     (txdsc+((1<<LOGTXRINGLEN)-1))->bufaddr2=(dword)txdsc;
     txindex=0;
-    txdirty=0;
+    txdirty=0;    
     //Get serial rom contents.
     word val[SROM_SIZE];
     if( ReadSROM(SROM_SIZE,val) ){
         return -1;
-    }
+    }    
+    for(int i=0;i<6;i++){
+        macaddress[i]=((byte*)(val+MAC_OFFSET))[i]; 
+        //mac address of VirtualPC is defined in vmc file.
+    }    
     //Create setup frame.
-    for(int i=0;i<3;i++)
-        setupframe[i]=0x0000ffff;
+    for(int i=0;i<3;i++){
+        *(dword*)(txdsc->bufaddr1+i)=0x0000ffff;
+    }    
     for(int i=3;i<SETUPPKTSIZE/4;i++){
-        setupframe[i]=val[MAC_OFFSET+(i%3)];
-        //printf("%x:",setupframe[i]); 
-        //MAC 0003 FF5A AB0E
-        //see vmc file.
+        *(dword*)(txdsc->bufaddr1+i)=val[MAC_OFFSET+(i%3)];
     }
     txdsc->status=TX_OWN;
     txdsc->ctlandcnt=0x08000000 | SETUPPKTSIZE;
-    txdsc->bufaddr1=(dword)setupframe;
     txindex++;
+    txdirty++;
 
     outp32(iobase+CSR_3,(dword)rxdsc);
     outp32(iobase+CSR_4,(dword)txdsc);
@@ -79,15 +83,20 @@ int MonADEC::init()
     //   transmit processes. The receive and transmit processes enter the running state and attempt to
     //   acquire descriptors from the respective descriptor lists. Then the receive and transmit
     //   processes begin processing incoming and outgoing frames. The receive and transmit.
-    outp32( iobase + CSR_6,inp32(iobase + CSR_6) | 0x0202);
-
+    outp32( iobase + CSR_6,inp32(iobase + CSR_6) | 0x2002);
+    outp32( iobase + CSR_5,0x0);
     printf("Hello Virtual PC\n");
     return 0;
 }
 
 int MonADEC::interrupt()
 {
+    //see section 4.3.3
     printf("Interrupted\n");
+    printf("==>%x\n",inp32(iobase+CSR_5));
+    outp32(iobase+CSR_5,inp32(iobase+CSR_5));
+    enableNetwork();
+
     return 0;
 }
 
