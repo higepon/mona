@@ -81,6 +81,7 @@ int FileServer::initializeMountedFileSystems()
 
 int FileServer::initializeRootFileSystem()
 {
+#if 1
     // user mode I/O
     syscall_get_io();
 
@@ -119,6 +120,19 @@ int FileServer::initializeRootFileSystem()
         delete cd_;
         return MONA_FAILURE;
     }
+#endif
+#if 0
+    // FAT12FileSystem
+    fd_ = new FDCDriver();
+    rootFS_ = new FAT12FileSystem(fd_, vmanager_);
+    if (rootFS_->initialize() != MONA_SUCCESS)
+    {
+        printf("FD Boot initialize failed \n");
+        delete fd_;
+        delete rootFS_;
+        return MONA_FAILURE;
+    }
+#endif
     return MONA_SUCCESS;
 }
 
