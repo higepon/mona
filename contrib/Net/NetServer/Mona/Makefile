@@ -1,6 +1,6 @@
 TARGET  = NET
 SOURCES = main.cpp NE2000.cpp NicFactory.cpp NicServer.cpp monadev.cpp
-INSTDIR = $(BINDIR)/APPS
+INSTDIR = $(BINDIR)/SERVERS
 
 SHAREDIR   = $(MONADIR)/share
 IMPSFX = -imp
