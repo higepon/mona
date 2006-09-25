@@ -76,7 +76,7 @@ public:
 		
 		_P<Icon> root = new Icon();
 		root->set_Location(Point(0, offsetX));
-		root->set_Text("/");
+		root->set_Text("/APPS");
 		root->set_Icon(Icons_Floppy);
 		root->Show();
 		offsetX += 64;
