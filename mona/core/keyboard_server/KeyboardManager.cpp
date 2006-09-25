@@ -149,6 +149,9 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
       case Keys::Apps:
           isMenu_  = !(modifiers & KEY_MODIFIER_UP);
           break;
+      case Keys::Delete:
+          isDel_   = !(modifiers & KEY_MODIFIER_UP);
+          break;
     }
 
     if      (isShift_) modifiers |= KEY_MODIFIER_SHIFT;
@@ -156,6 +159,8 @@ int KeyBoardManager::setKeyScanCode(byte scancode) {
     else if (isAlt_)   modifiers |= KEY_MODIFIER_ALT;
     else if (isWin_)   modifiers |= KEY_MODIFIER_WIN;
     else if (isMenu_)  modifiers |= KEY_MODIFIER_MENU;
+
+    if (isCtrl_ && isAlt_ && isDel_) syscall_shutdown(SHUTDOWN_REBOOT, SHUTDOWN_DEVICE_ALL);
 
     //printf("{%2x:%2x} ", scancode, modifiers);
     /* allocate keyinfo */
