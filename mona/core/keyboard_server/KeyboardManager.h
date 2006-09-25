@@ -53,7 +53,6 @@ class KeyBoardManager{
     bool isWin_;
     bool isMenu_;
     bool isInit_;
-    bool isDel_;
     int keyMap[128];
     int keyMapE0[128];
     char keyTopMap[256];
