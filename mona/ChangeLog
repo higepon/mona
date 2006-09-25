@@ -1,6 +1,10 @@
-2006-09-24  higepon  <higepon@users.sourceforge.jp>
+2006-09-25  higepon  <higepon@users.sourceforge.jp>
 
-        * core/file_server/FAT12/FDCDriver.cpp (FDCDriver::exists): Floppy Disk存在チェックをするようにした。
+        * core/file_server/FAT12/FAT12FileSystem.cpp (FAT12FileSystem::initialize): Floppy Disk存在チェックをするようにした。
+
+        * core/file_server/FAT12/FDCDriver.cpp (FDCDriver::isInserted): Floppy Disk存在チェック
+
+2006-09-24  higepon  <higepon@users.sourceforge.jp>
 
         * share/configs/Makefile.inc (OPTIMIZE_LEVEL): -O3に戻した
 

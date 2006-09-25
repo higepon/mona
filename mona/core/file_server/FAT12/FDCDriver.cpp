@@ -122,9 +122,9 @@ int FDCDriver::write(dword lba, void* buf, int size)
     \author HigePon
     \date   create:2003/02/10 update:2004/12/27
 */
-void FDCDriver::waitInterrupt()
+bool FDCDriver::waitInterrupt()
 {
-    MONAPI_WAIT_INTERRUPT(2000, 6);
+    return MONAPI_TRUE == MONAPI_WAIT_INTERRUPT(2000, 6);
 }
 
 /*!
@@ -427,7 +427,6 @@ bool FDCDriver::read(byte track, byte head, byte sector)
                    , 0x1B // GSL
                    , 0xFF // DTL vmware hate 0x00
                    };
-
     if (!seek(track))
     {
         logprintf("read#seek:error");
@@ -442,17 +441,16 @@ bool FDCDriver::read(byte track, byte head, byte sector)
         return false;
     }
 
-    waitInterrupt();
-
+    if (!waitInterrupt()) {
+        stopDMA();
+        return false;
+    }
     for (int i = 0; i < 7; i++)
     {
         results[i] = getResult();
     }
-
     stopDMA();
-
     if ((results[0] & 0xC0) != 0x00) return false;
-
     return true;
 }
 
@@ -583,4 +581,11 @@ bool FDCDriver::checkDiskChange()
     bool changed = (inp8(0x3f7) & 0x80);
     motorAutoOff();
     return changed;
+}
+
+bool FDCDriver::isInserted(int drive)
+{
+    // now we don't drive parameters
+    bool result = read((byte)0, (byte)0, (byte)2);
+    return result;
 }

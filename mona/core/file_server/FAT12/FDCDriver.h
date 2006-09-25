@@ -40,11 +40,12 @@ public:
     bool recalibrate();
     void motor(const bool on);
     void motorAutoOff();
+    bool isInserted(int drive);
 
 private:
     void initilize();
     bool seek(byte track);
-    void waitInterrupt();
+    bool waitInterrupt();
     void waitStatus(byte expected);
     void waitStatus(byte mask, byte expected);
     bool sendCommand(const byte command[], const byte length);

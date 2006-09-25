@@ -26,6 +26,10 @@ int FAT12FileSystem::initialize()
 
     monapi_set_irq(6, MONAPI_TRUE, MONAPI_TRUE);
     syscall_set_irq_receiver(6, 0);
+    if (!fd_->isInserted(0))
+    {
+        return MONA_ERROR_ON_DEVICE;
+    }
 #endif
 
     fat_ = new FatStorage();
@@ -55,7 +59,6 @@ int FAT12FileSystem::initialize()
 
 int FAT12FileSystem::lookup(Vnode* diretory, const string& file, Vnode** found, int type)
 {
-    printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     if (diretory->type != Vnode::DIRECTORY) return MONA_ERROR_INVALID_ARGUMENTS;
     Vnode* v = vmanager_->cacher()->lookup(diretory, file);
     if (v != NULL && v->type == type)
