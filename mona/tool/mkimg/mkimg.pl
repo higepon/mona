@@ -14,6 +14,8 @@ call("fat_write $g_out --mbr $g_dir/$g_mbr");
 call("fat_write $g_out MONA.CFG MONA.CFG");
 call("fat_write $g_out MONITOR.CFG MONITOR.CFG");
 call("fat_write $g_out AUTOEXEC.MSH AUTOEXEC.MSH");
+call("fat_write $g_out --mkdir APPS");
+call("fat_write $g_out --mkdir LIBS");
 
 writedir("");
 
