@@ -1,3 +1,9 @@
+2006-09-25  bayside
+
+        * core/file_server/FileServer.cpp: FDブートイメージ用コード（デフォルトは無効）を追加
+
+        * tool/mkimg/mkimg.pl: FDブートイメージ用コード（デフォルトは無効）を追加
+
 2006-09-25  higepon  <higepon@users.sourceforge.jp>
 
         * core/file_server/FAT12/FAT12FileSystem.cpp (FAT12FileSystem::initialize): Floppy Disk存在チェックをするようにした。
