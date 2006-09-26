@@ -1,2 +1,0 @@
-
-start mona.vmx

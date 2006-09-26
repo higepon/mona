@@ -28,9 +28,10 @@ int MonADEC::init()
     //2. Update configuration registers (Section 3.1):
     //   -->already be configured by Dispatch::
     //3. Write CSR0 to set global host bus operating parameters (Section 3.2.2.1).
-    outp32(iobase+CSR_0,0x01A08000);
+    outp32(iobase+CSR_0,CSR0_CA32);
     //4. Write CSR7 to mask unnecessary (depending on the particular application) interrupt causes.
-    outp32(iobase+CSR_7,0x0001ABEF);
+    outp32(iobase+CSR_7,CSR7_NI|CSR7_AI|CSR7_FBE|CSR7_GPT|CSR7_ETE|CSR7_RW|
+           CSR7_RS|CSR7_RU|CSR7_RI|CSR7_UN|CSR7_TJ|CSR7_TU|CSR7_TS|CSR7_TI);
     //5. The driver must create the transmit and receive descriptor lists. Then, it writes to both CSR3
     //   and CSR4, providing the 21143 with the starting address of each list (Section 3.2.2.7). The
     //   first descriptor on the transmit list may contain a setup frame (Section 4.2.3).
@@ -84,7 +85,6 @@ int MonADEC::init()
     //   acquire descriptors from the respective descriptor lists. Then the receive and transmit
     //   processes begin processing incoming and outgoing frames. The receive and transmit.
     outp32( iobase + CSR_6,inp32(iobase + CSR_6) | 0x2002);
-    outp32( iobase + CSR_5,0x0);
     printf("Hello Virtual PC\n");
     return 0;
 }
@@ -92,18 +92,36 @@ int MonADEC::init()
 int MonADEC::interrupt()
 {
     //see section 4.3.3
-    printf("Interrupted\n");
-    printf("==>%x\n",inp32(iobase+CSR_5));
-    outp32(iobase+CSR_5,inp32(iobase+CSR_5));
+    dword val=inp32(iobase+CSR_5);
+    printf("%x\n",val);
+    if( (val & CSR5_RI) == CSR5_RI ){
+        printf("RX\n");
+        rxihandler();
+    }else if( (val & CSR5_TI) == CSR5_TI ){
+        printf("TX\n");
+        txihandler();
+    }
+    outp32(iobase+CSR_5,val);
     enableNetwork();
-
     return 0;
+}
+
+
+void MonADEC::txihandler()
+{
+
+}
+
+void MonADEC::rxihandler()
+{
+
 }
 
 void MonADEC::SendFrm(Ether* frame)
 {
     printf("send frame\n");
 }
+
 
 int MonADEC::ReadSROM(word Len,word* Data)
 {

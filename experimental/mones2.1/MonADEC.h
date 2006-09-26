@@ -51,18 +51,34 @@ public:
     };
 private:
     void reset(){ outp32(iobase+CSR_0,CSR0_RESET); }
-//    void stop(){ w_csr(CSR_CSR,CSR_STOP); disableNetwork(); };
     int ReadSROM(word,word*);
     void Delay800nSec(){ /*Be carefull when you use a real device.*/ };
     enum{ 
       CSR_0        =0x00,
       CSR0_RESET   =0x0001,
+      CSR0_CA32       =0xA000,
       CSR_2        =0x10,
       CSR_3        =0x18,
       CSR_4        =0x20,
       CSR_5        =0x28,
+      CSR5_RI      =0x0040,
+      CSR5_TI      =0x0001,
       CSR_6        =0x30,
       CSR_7        =0x38,
+      CSR7_NI       =0x10000,
+      CSR7_AI      =0x4000,
+      CSR7_FBE     =0x2000,
+      CSR7_GPT     =0x0800,
+      CSR7_ETE     =0x0400,
+      CSR7_RW      =0x0200,
+      CSR7_RS      =0x0100,
+      CSR7_RU      =0x0080,
+      CSR7_RI      =0x0040,
+      CSR7_UN      =0x0020,
+      CSR7_TJ      =0x0008,
+      CSR7_TU      =0x0004,
+      CSR7_TS      =0x0002,
+      CSR7_TI      =0x0001,
       CSR_8        =0x40,
       CSR_9        =0x48,
       CSR_12       =0x60,

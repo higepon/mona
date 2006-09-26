@@ -41,23 +41,31 @@ install: all
 	cd client && make install
 	cd wkiss && make install
 run: install
-	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/run.bat
-runl: install
-	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/runl.bat
+	cd $(MONADIR)/tool/mkimg && make && cp mona.iso ./VMW && cd ./VMW && $(MONADIR)/tool/mkimg/VMW/run.bat
+	#VMWare
 runq: install
 	cd $(MONADIR)/tool/mkimg && make && cp mona.iso $(QEMUDIR)
 	cd $(QEMUDIR) && $(QEMUDIR)/mona.bat
+	#Qemu
 runv: install
-	cd $(MONADIR)/tool/mkimg && make && $(MONADIR)/tool/mkimg/runv.bat
+	cd $(MONADIR)/tool/mkimg && make && cp mona.iso ./VPC && cd ./VPC && $(MONADIR)/tool/mkimg/VPC/runv.bat
+	#VirtualPC
 kernel:
-	cd $(MONADIR) && make
+	cd $(MONADIR) && make && cd ../contrib && make
+kernel-conf:
+	cd $(MONADIR) && make clean && ./configure
+catch-up:
+	cd $(MONADIR) && svn update && cd ../contrib && svn update
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map
 	rm -f ${MONADIR}/bin/mona.img dependencies
 	cd lib && make clean
 	cd client && make clean
 	cd wkiss && make clean
-
+help:
+	# make catch-up                     update source files.
+	# make kernel-conf; make kernel     build the kernel  
+	# make run; make runv; make runq    Execute by emulators.VMWare,VirtualPC,QEMU
 depend dependencies:
 ifneq ($(SOURCES),)
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) >> dependencies
