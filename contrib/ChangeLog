@@ -1,3 +1,7 @@
+2006-09-27  bayside
+
+        * Emularators/infones: BayGUI に対応
+
 2006-09-25  bayside
 
         * Net/NetServer/Mona/Makefile: インストール位置を /APPS から /SERVERS に変更
