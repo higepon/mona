@@ -3,28 +3,15 @@
 using namespace MonAPI;
 using namespace mones;
 
-void MonAMDpcn::rxihandler()
-{
-    word length;
-    while( ((rxdsc+rxindex)->status & RMD1_OWN) == 0 ){
-        length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
-        Ether* frame = new Ether; //deleted by server.
-        memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
-        //printf("SIZE:%d\n",length);
-        rxFrameList.add(frame);
-        (rxdsc+rxindex)->mcnt=0;
-        (rxdsc+rxindex)->bcnt = (word)(-ETHER_MAX_PACKET)|0xF000;
-        (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
-        rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
-    }
-}
+
 ///////////////////////////////////////////////////////
 MonAMDpcn::~MonAMDpcn()
 {
     printf("destructor of monamdpcn\n");
 }
 
-MonAMDpcn::MonAMDpcn():rxdsc(NULL),txdsc(NULL),piblock(NULL)
+MonAMDpcn::MonAMDpcn():rxdsc(NULL),txdsc(NULL),
+                       rxindex(0),txindex(0),piblock(NULL)
 {
     memcpy(devname,"pcnet32",8);
 }
@@ -45,8 +32,6 @@ int MonAMDpcn::init()
         (rxdsc+i)->status=RMD1_OWN|RMD1_STP|RMD1_ENP;
         (rxdsc+i)->rbaddr=(dword)(rxbuf+i*ETHER_MAX_PACKET);
     }
-    rxindex=0;
-    rxdirty=0;
      //initialize tx 
     txdsc= (TXDSC*)( dma_head +(0x1000* (1<<LOGRXRINGLEN)));
     txbuf = dma_head + 0x1000*(1<<LOGRXRINGLEN) + (1<<LOGTXRINGLEN)*sizeof(TXDSC) ;
@@ -56,8 +41,6 @@ int MonAMDpcn::init()
         (txdsc+i)->bcnt=0;
         (txdsc+i)->rbaddr=(dword)(txbuf+i*ETHER_MAX_PACKET);
     }
-    txindex=0;
-    txdirty=0;
     ///////////////
     stop();
     reset();
@@ -112,15 +95,29 @@ int MonAMDpcn::interrupt()
 void MonAMDpcn::txihandler()
 {
     //printf("TX\n");
-    while(txindex-txdirty){
-        (txdsc+txdirty)->status=0;
-        (txdsc+txdirty)->control=0;
-        (txdsc+txdirty)->bcnt=0;
-        (txdsc+txdirty)->rbaddr=0;
-        txdirty = (txdirty+1)&(( 1<<LOGTXRINGLEN)-1);
+    int i=txindex;
+    while( ( (txdsc+i)->control & TMD1_OWN)==TMD1_OWN ){
+        (txdsc+i)->control=0;
+        i--;
+        if( i<0 ){i=(( 1<<LOGTXRINGLEN)-1);}
     }
 }
 
+void MonAMDpcn::rxihandler()
+{
+    word length;
+    while( ((rxdsc+rxindex)->status & RMD1_OWN) == 0 ){
+        length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
+        Ether* frame = new Ether; //deleted by server.
+        memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
+        //printf("SIZE:%d\n",length);
+        rxFrameList.add(frame);
+        (rxdsc+rxindex)->mcnt=0;
+        (rxdsc+rxindex)->bcnt = (word)(-ETHER_MAX_PACKET)|0xF000;
+        (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
+        rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
+    }
+}
 void MonAMDpcn::SendFrm(Ether* frame)
 {
     enableNetwork();
@@ -131,6 +128,7 @@ void MonAMDpcn::SendFrm(Ether* frame)
         memcpy(txbuf+txindex*ETHER_MAX_PACKET,frame,len);
         (txdsc+txindex)->status=0;
         (txdsc+txindex)->bcnt=(word)(-len)|0xF000;
+        //TODO: must be chaged.
         (txdsc+txindex)->control=TMD1_OWN|TMD1_STP|TMD1_ENP;
         (txdsc+txindex)->rbaddr=(dword)(txbuf+txindex*ETHER_MAX_PACKET);
         w_csr(CSR_CSR,CSR_TDMD|CSR_INTEN);     

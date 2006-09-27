@@ -9,6 +9,7 @@ namespace mones{
 #pragma pack(push,4)
 class MonAMDpcn: public Nic
 {
+private:
     //See Spec Sheet Page 159.
     typedef struct RXDSC{
         word  mcnt;
@@ -34,34 +35,32 @@ class MonAMDpcn: public Nic
         dword filter[2];
         dword rx_ring;
         dword tx_ring;
-    };
-protected:
-    void rxihandler();
-    byte* rxbuf;
-    RXDSC* rxdsc;
-    int rxindex;
-    int rxdirty;
+    }; 
     enum{
-        LOGRXRINGLEN=2,
+        LOGRXRINGLEN=5,
         RMD1_OWN=0x8000,
         RMD1_STP=0x0200,
         RMD1_ENP=0x0100,
     };
-    void txihandler();
-    byte* txbuf;
-    TXDSC* txdsc;
-    int txindex;
-    int txdirty;
     enum{
-        LOGTXRINGLEN=2,
+        LOGTXRINGLEN=6,
         TMD1_OWN=0x8000,
         TMD1_STP=0x0200,
         TMD1_ENP=0x0100, 
     };
+protected:
+    void rxihandler();  
+    void txihandler();
+    byte* rxbuf;  
+    byte* txbuf;
+    RXDSC* rxdsc;  
+    TXDSC* txdsc;
+    int rxindex;
+    int txindex;
+    int   interrupt();
 public:    
     int   init();
     void  SendFrm(Ether*);
-    int   interrupt();
     MonAMDpcn();
     ~MonAMDpcn();
     enum{

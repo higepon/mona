@@ -13,36 +13,35 @@ namespace mones{
 #pragma pack(push,4)
 class MonADEC: public Nic
 {
+private:
     //See H.R.M. (4.1)Figure4-2,(4.2)Figure4-7
     typedef struct DESC{
         dword status;
         dword ctlandcnt;
         dword bufaddr1;
         dword bufaddr2;
-    };
-protected:
-    void rxihandler();
-    byte* rxbuf;
-    DESC* rxdsc;
-    int rxindex;
-    int rxdirty;
+    };  
     enum{
-        LOGRXRINGLEN=2,
+        LOGRXRINGLEN=5,
         RX_OWN=0x80000000,
     };
-    void txihandler();
-    byte* txbuf;
-    DESC* txdsc;
-    int txindex;
-    int txdirty;
     enum{
-        LOGTXRINGLEN=2,
+        LOGTXRINGLEN=6,
         TX_OWN=0x80000000,
     };
+protected:
+    void rxihandler(); 
+    void txihandler();
+    byte* rxbuf;  
+    byte* txbuf;
+    DESC* rxdsc;
+    DESC* txdsc;
+    int rxindex;  
+    int txindex;  
+    int   interrupt();
 public:    
     int   init();
     void  SendFrm(Ether*);
-    int   interrupt();
     MonADEC();
     ~MonADEC();
     enum{
@@ -56,7 +55,8 @@ private:
     enum{ 
       CSR_0        =0x00,
       CSR0_RESET   =0x0001,
-      CSR0_CA32       =0xA000,
+      CSR0_CA32    =0xA000,
+      CSR_1        =0x08,
       CSR_2        =0x10,
       CSR_3        =0x18,
       CSR_4        =0x20,
@@ -65,8 +65,9 @@ private:
       CSR5_TI      =0x0001,
       CSR_6        =0x30,
       CSR_7        =0x38,
-      CSR7_NI       =0x10000,
-      CSR7_AI      =0x4000,
+      CSR7_NI      =0x10000,
+      CSR7_AI      =0x8000,
+      CSR7_ERE     =0x4000,
       CSR7_FBE     =0x2000,
       CSR7_GPT     =0x0800,
       CSR7_ETE     =0x0400,

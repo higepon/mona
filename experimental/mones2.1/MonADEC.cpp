@@ -5,10 +5,11 @@ using namespace mones;
 
 MonADEC::~MonADEC()
 {
-    
+    printf("destructor of monadec\n");
 }
 
-MonADEC::MonADEC()
+MonADEC::MonADEC():rxdsc(NULL),txdsc(NULL),
+                   rxindex(0),txindex(0)
 {
     memcpy(devname,"dc21140a",9);
 }
@@ -30,7 +31,7 @@ int MonADEC::init()
     //3. Write CSR0 to set global host bus operating parameters (Section 3.2.2.1).
     outp32(iobase+CSR_0,CSR0_CA32);
     //4. Write CSR7 to mask unnecessary (depending on the particular application) interrupt causes.
-    outp32(iobase+CSR_7,CSR7_NI|CSR7_AI|CSR7_FBE|CSR7_GPT|CSR7_ETE|CSR7_RW|
+    outp32(iobase+CSR_7,CSR7_NI|CSR7_AI|CSR7_ERE|CSR7_FBE|CSR7_GPT|CSR7_ETE|CSR7_RW|
            CSR7_RS|CSR7_RU|CSR7_RI|CSR7_UN|CSR7_TJ|CSR7_TU|CSR7_TS|CSR7_TI);
     //5. The driver must create the transmit and receive descriptor lists. Then, it writes to both CSR3
     //   and CSR4, providing the 21143 with the starting address of each list (Section 3.2.2.7). The
@@ -44,8 +45,6 @@ int MonADEC::init()
         (rxdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
     }
     (rxdsc+((1<<LOGRXRINGLEN)-1))->bufaddr2=(dword)rxdsc;
-    rxindex=0;
-    rxdirty=0; 
     txdsc= (DESC*)( dma_head +(0x1000* (1<<LOGRXRINGLEN)));
     txbuf = dma_head + 0x1000*(1<<LOGRXRINGLEN) + (1<<LOGTXRINGLEN)*sizeof(DESC) ;
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
@@ -54,9 +53,7 @@ int MonADEC::init()
         (txdsc+i)->bufaddr1=(dword)(txbuf+i*ETHER_MAX_PACKET);
         (txdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
     }
-    (txdsc+((1<<LOGTXRINGLEN)-1))->bufaddr2=(dword)txdsc;
-    txindex=0;
-    txdirty=0;    
+    (txdsc+((1<<LOGTXRINGLEN)-1))->bufaddr2=(dword)txdsc; 
     //Get serial rom contents.
     word val[SROM_SIZE];
     if( ReadSROM(SROM_SIZE,val) ){
@@ -76,15 +73,13 @@ int MonADEC::init()
     txdsc->status=TX_OWN;
     txdsc->ctlandcnt=0x08000000 | SETUPPKTSIZE;
     txindex++;
-    txdirty++;
-
     outp32(iobase+CSR_3,(dword)rxdsc);
     outp32(iobase+CSR_4,(dword)txdsc);
     //6. Write CSR6 (Section 3.2.2.6) to set global serial parameters and to start both the receive and
     //   transmit processes. The receive and transmit processes enter the running state and attempt to
     //   acquire descriptors from the respective descriptor lists. Then the receive and transmit
-    //   processes begin processing incoming and outgoing frames. The receive and transmit.
-    outp32( iobase + CSR_6,inp32(iobase + CSR_6) | 0x2002);
+    //   processes begin processing incoming and outgoing frames. The receive and transmit.  
+    outp32( iobase + CSR_6,0x02002242);// ????
     printf("Hello Virtual PC\n");
     return 0;
 }
@@ -93,13 +88,11 @@ int MonADEC::interrupt()
 {
     //see section 4.3.3
     dword val=inp32(iobase+CSR_5);
-    printf("%x\n",val);
-    if( (val & CSR5_RI) == CSR5_RI ){
-        printf("RX\n");
-        rxihandler();
-    }else if( (val & CSR5_TI) == CSR5_TI ){
-        printf("TX\n");
+    if( val & CSR5_TI ){
         txihandler();
+    }
+    if( val & CSR5_RI ){
+        rxihandler();
     }
     outp32(iobase+CSR_5,val);
     enableNetwork();
@@ -108,18 +101,49 @@ int MonADEC::interrupt()
 
 
 void MonADEC::txihandler()
-{
-
+{ 
+    printf("TX\n");   
+    int i=txindex;
+    while( ( (txdsc+i)->status & TX_OWN ) == TX_OWN ){
+        (txdsc+i)->status=0;
+        i--;
+        if( i<0 ){i=(( 1<<LOGTXRINGLEN)-1);}
+    }
 }
 
 void MonADEC::rxihandler()
 {
-
+    printf("RX\n");
+    word length;
+    while( ((rxdsc+rxindex)->status & RX_OWN) == 0 ){
+        // length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
+        Ether* frame = new Ether; //deleted by server.
+        //memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
+        //printf("SIZE:%d\n",length);
+        rxFrameList.add(frame);
+        // (rxdsc+rxindex)->mcnt=0;
+        // (rxdsc+rxindex)->bcnt = (word)(-ETHER_MAX_PACKET)|0xF000;
+        // (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
+        rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
+    }
 }
 
 void MonADEC::SendFrm(Ether* frame)
 {
-    printf("send frame\n");
+    printf("send frame\n");  
+    enableNetwork();
+    word len=CalcFrameSize(frame);
+    txFrameList.add(frame);
+    while( txFrameList.size() != 0 && ( (txdsc+txindex)->status & TX_OWN) != TX_OWN ) {
+        Ether* frame = txFrameList.removeAt(0);
+        memcpy((void*)((txdsc+txindex)->bufaddr1),frame,len); 
+        (txdsc+txindex)->status=TX_OWN;
+        //TODO Must be changed.
+        (txdsc+txindex)->ctlandcnt=0xC0000000|ETHER_MAX_PACKET;
+        outp32(iobase+CSR_1,0x1);
+        txindex = (txindex+1) & (( 1<<LOGTXRINGLEN)-1);
+        delete frame;
+    }
 }
 
 
