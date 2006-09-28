@@ -51,7 +51,7 @@ public:
 private:
     void reset(){ outp32(iobase+CSR_0,CSR0_RESET); }
     int ReadSROM(word,word*);
-    void Delay800nSec(){ /*Be carefull when you use a real device.*/ };
+    void Delay800nSec(){ };//Be carefull when you use a real device.
     enum{ 
       CSR_0        =0x00,
       CSR0_RESET   =0x0001,

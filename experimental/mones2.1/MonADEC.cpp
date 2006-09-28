@@ -102,7 +102,7 @@ int MonADEC::interrupt()
 
 void MonADEC::txihandler()
 { 
-    printf("TX\n");   
+    //printf("TX\n");   
     int i=txindex;
     while( ( (txdsc+i)->status & TX_OWN ) == TX_OWN ){
         (txdsc+i)->status=0;
@@ -113,24 +113,22 @@ void MonADEC::txihandler()
 
 void MonADEC::rxihandler()
 {
-    printf("RX\n");
+    //printf("RX\n");
     word length;
     while( ((rxdsc+rxindex)->status & RX_OWN) == 0 ){
-        // length=(((rxdsc+rxindex)->mcnt)&0x0FFF);
+        length=(((rxdsc+rxindex)->ctlandcnt)&0x07FF);
         Ether* frame = new Ether; //deleted by server.
-        //memcpy(frame,(byte*)((rxdsc+rxindex)->rbaddr),length);
-        //printf("SIZE:%d\n",length);
+        memcpy(frame,(byte*)((rxdsc+rxindex)->bufaddr1),length);
+        //printf("%d\n",length);
         rxFrameList.add(frame);
-        // (rxdsc+rxindex)->mcnt=0;
-        // (rxdsc+rxindex)->bcnt = (word)(-ETHER_MAX_PACKET)|0xF000;
-        // (rxdsc+rxindex)->status = RMD1_OWN|RMD1_STP|RMD1_ENP;  
+        (rxdsc+rxindex)->status=RX_OWN;
         rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
     }
 }
 
 void MonADEC::SendFrm(Ether* frame)
 {
-    printf("send frame\n");  
+    //printf("send frame\n");  
     enableNetwork();
     word len=CalcFrameSize(frame);
     txFrameList.add(frame);
