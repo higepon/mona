@@ -161,7 +161,7 @@ void TCPCoInfo::Read(MessageInfo* m)
     ///SOMETHING WRONG!!!! HERE.
     if(  nomoredata == true ){
         printf("NOREAD\n");
-        Message::reply(&msg,NULL,-1);
+        Message::reply(&msg,NULL,0);
         memset(&msg,'\0',sizeof(MessageInfo));
         return;
     }

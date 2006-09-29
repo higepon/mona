@@ -87,16 +87,19 @@ int MonADEC::init()
 int MonADEC::interrupt()
 {
     //see section 4.3.3
+    word ret=0x0000;
     dword val=inp32(iobase+CSR_5);
     if( val & CSR5_TI ){
         txihandler();
+        ret |= TX_INT;
     }
     if( val & CSR5_RI ){
         rxihandler();
+        ret |= RX_INT;
     }
     outp32(iobase+CSR_5,val);
     enableNetwork();
-    return 0;
+    return ret;
 }
 
 
