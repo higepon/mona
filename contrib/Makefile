@@ -21,6 +21,8 @@ all:
 	cd Graphics/jpegview && touch dependencies && make && make install
 	cd Graphics/Mesa-gears && touch dependencies && make && make install
 	cd Misc/helloworld && touch dependencies && make && make install
+	cd Misc/stdoutclienttest && touch dependencies && make && make install
+	cd Misc/stdoutservertest && touch dependencies && make && make install
 	cd Multimedia/monapeg && touch dependencies && make && make install
 	cd Multimedia/monappt && touch dependencies && make && make install
 ### MonaForms applications
@@ -59,6 +61,8 @@ clean:
 	cd Graphics/Mesa && make clean
 	cd Graphics/Mesa-gears && make clean
 	cd Misc/helloworld && make clean
+	cd Misc/stdoutservertest && make clean
+	cd Misc/stdoutclienttest && make clean
 	cd Misc/gnote && make clean
 	cd Multimedia/monapeg && make clean
 	cd Multimedia/monappt && make clean
