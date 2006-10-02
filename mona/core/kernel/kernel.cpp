@@ -93,7 +93,6 @@ static int fileptr = KERNEL_BASE_ADDR + REL_KERNEL_ADDR, sizeptr = 0x00001100;
     \author HigePon
     \date   create:2002/07/21 update:$Date$
 */
-
 void startKernel()
 {
     /* kernel memory range */

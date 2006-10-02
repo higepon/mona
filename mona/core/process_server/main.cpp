@@ -239,16 +239,6 @@ static void MessageLoop()
             case MSG_PROCESS_EXECUTE_FILE:
             {
                 dword tid;
-
-#if 1 // exp
-		// override stdout_id here by higepon
-		// because Tino GUI's GUI SHELL does not call execute process by himself but shell svr
-		if (grabs.size() != 0)
-		{
-		    msg.arg2 = grabs[grabs.size() - 1];
-		}
-#endif
-
                 int result = ExecuteFile(msg.from, msg.str, msg.arg1 != 0, msg.arg2, &tid);
                 Message::reply(&msg, result, tid);
                 break;

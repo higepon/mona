@@ -325,7 +325,7 @@ void syscall_entrance()
             break;
         }
 
-        strcpy(buf, list->get(index));
+        strncpy(buf, list->get(index), MAX_PROCESS_ARGUMENT_LENGTH);
         info->eax = 0;
         break;
     }

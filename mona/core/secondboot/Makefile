@@ -31,13 +31,13 @@ SecondBoot.exe: $(SRCS) $(I8086)
 	$(CSC) $(CSCFLAGS) /reference:$(I8086) /out:$@ $(SRCS)
 
 $(PEALIB): $(DOTNETDIR)/$(PEALIB)
-	cp -u $< $@
+	$(INSTALL) -p $< $@
 
 $(IL2A16): $(DOTNETDIR)/$(IL2A16)
-	cp -u $< $@
+	$(INSTALL) -p $< $@
 
 $(I8086): $(DOTNETDIR)/$(I8086)
-	cp -u $< $@
+	$(INSTALL) -p $< $@
 endif
 clean:
 	rm -f $(TARGET) secondboot.asm secondboot_.asm SecondBoot.exe *.lst $(PEALIB) $(IL2A16) $(I8086)

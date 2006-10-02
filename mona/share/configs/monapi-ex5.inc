@@ -24,7 +24,7 @@ $(TARGET).EXE: $(OBJECTS) $(LINKDEP)
 
 install: all
 	mkdir -p $(INSTDIR)
-	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
 
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map dependencies

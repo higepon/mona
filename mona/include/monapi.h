@@ -19,5 +19,8 @@
 #include <monapi/Random.h>
 #include <monapi/syscall.h>
 #include <monapi/Keys.h>
+#include <monapi/Stream.h>
+#include <monapi/Assert.h>
 
 #endif
+

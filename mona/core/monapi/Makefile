@@ -30,7 +30,8 @@ SOURCES = monapi_impl.cpp \
           Keys.cpp \
           messages.cpp \
           cmemoryinfo.cpp \
-          io.cpp
+          io.cpp \
+          Stream.cpp
 NASMSRCS = _alloca.asm
 
 OBJECTS = $(SOURCES:.cpp=.o) $(NASMSRCS:.asm=.o)

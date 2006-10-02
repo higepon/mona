@@ -42,11 +42,8 @@ typedef dword          kevent;
 #  define SEEK_END        2       /* Set file pointer to EOF plus "offset" */
 #endif
 
-/* file open mode */
-#define FILE_OPEN_READ         1
-#define FILE_OPEN_NORMAL_WRITE 2
-#define FILE_OPEN_APPEND_WRITE 3
-
+// should be less than MessageInfo.str
+#define MAX_PROCESS_ARGUMENT_LENGTH 64
 
 typedef dword linear_addr;  /* 32bit */
 typedef dword virtual_addr; /* 32bit */
@@ -87,7 +84,7 @@ typedef struct {
 } KDate;
 
 struct CommandOption {
-    char str[32];
+    char str[MAX_PROCESS_ARGUMENT_LENGTH];
     struct CommandOption* next;
 };
 typedef struct CommandOption CommandOption;
@@ -184,6 +181,9 @@ enum
     MSG_MONES_WAKEUP_ARP_WAIT,
     MSG_THREAD_KILLED = 0x800,
     MSG_TIMER,
+    MSG_READ_MEMORY_READY,
+    MSG_WRITE_MEMORY_READY,
+    MSG_STREAM_ID,
 };
 
 enum

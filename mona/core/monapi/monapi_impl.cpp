@@ -95,7 +95,7 @@ extern "C" int user_start_c_impl(FuncMain* main)
     char** _argv = new char*[argc];
     for (int i = 0; i < argc; i++)
     {
-        _argv[i] = new char[32];
+        _argv[i] = new char[MAX_PROCESS_ARGUMENT_LENGTH];
         if (syscall_get_arg(_argv[i], i) == 1)
         {
             argc = i;
@@ -129,7 +129,7 @@ void setupArguments(List<char*>* arg) {
 
     for (int i = 0; i < num; i++) {
 
-        str = (char*)malloc(32);
+        str = (char*)malloc(MAX_PROCESS_ARGUMENT_LENGTH);
         if (syscall_get_arg(str, i) == 1) break;
         tmp.add(str);
     }

@@ -492,6 +492,10 @@ void Shell::executeMSH(const CString& msh)
                     len--;
                     prompt = false;
                 }
+                if (mi->Data[start] == '#')
+                {
+                    len = 0;
+                }
             }
             if (len > 0)
             {

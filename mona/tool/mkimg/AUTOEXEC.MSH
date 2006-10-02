@@ -4,3 +4,9 @@
 @ECHO Thank you! -- Mona Project Team
 @ECHO Mona Desktop Manager Starting ...
 @EXEC /APPS/STARTX.APP/STARTX.EX5
+
+# test for Stream
+#@STDOUT.EX5
+#@WRITE.EX5 ABCDEFG
+#@WRITE.EX5 abcdefghijklmnopqrstuvwxyz
+

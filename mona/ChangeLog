@@ -1,3 +1,30 @@
+2006-10-02  higepon  <higepon@users.sourceforge.jp>
+
+        * tool/mkimg/Makefile (iso): cp -> $(INSTALL) -p
+
+        * core/PEAnalyzerLib/Makefile (install): cp -u -> $(INSTALL) -p
+
+        * core/secondboot/Makefile : cp -u -> $(INSTALL) -p
+
+        * core/IL2Asm16/Makefile ($(PEALIB)): cp -> $(INSTALL) -p
+
+        * share/configs/monapi-ex5.inc (install): -pを追加
+
+        * include/sys/types.h: CommandOption で MAX_PROCESS_ARGUMENT_LENGTH を参照するようにした。
+
+2006-10-01  higepon  <higepon@users.sourceforge.jp>
+
+        * include/sys/types.h (MAX_PROCESS_ARGUMENT_LENGTH): コマンドライン引数の文字列長を MAX_PROCESS_ARGUMENT_LENGTH で指定できるようにした。
+                                                             以前は32byteだったが64byteにした。
+
+        * include/sys/types.h (FILE_OPEN_READ)(FILE_OPEN_NORMAL_WRITE)(FILE_OPEN_APPEND_WRITE): 不要なので削除
+
+        * core/shell_server/Shell.cpp (Shell::executeMSH): MSHでコメントが使いたかったのでアドホックに行頭に#でコメントとした。空白文字が先頭にとかは対応していない。
+
+2006-09-28  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/Stream.cpp (Stream::Stream): Stream追加。これは飛行機の中で書いた。
+
 2006-09-25  bayside
 
         * core/file_server/FileServer.cpp: FDブートイメージ用コード（デフォルトは無効）を追加

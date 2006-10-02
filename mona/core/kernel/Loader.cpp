@@ -66,8 +66,8 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
 
         for (option = list->next; option; option = option->next)
         {
-            p = new char[32];
-            strncpy(p, option->str, 32);
+            p = new char[MAX_PROCESS_ARGUMENT_LENGTH];
+            strncpy(p, option->str, MAX_PROCESS_ARGUMENT_LENGTH);
             target->add(p);
         }
     }

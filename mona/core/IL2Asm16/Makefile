@@ -14,7 +14,7 @@ I8086.dll: I8086.cs
 	$(CSC) /target:library $<
 
 $(PEALIB): $(DOTNETDIR)/$(PEALIB)
-	cp $< $@
+	$(INSTALL) -p $< $@
 
 clean:
 	rm -f $(TARGET) $(PEALIB)
