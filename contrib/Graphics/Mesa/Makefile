@@ -49,7 +49,7 @@ ${SOURCE1}:
 	touch $@
 
 .INSTALL: .MAKE
-	install -m 0644 ${WORKDIR}/lib/*.DLL ${MONADIR}/bin/LIBS
-	install ${WORKDIR}/lib/lib*.a ${MONADIR}/lib
+	install -p -m 0644 ${WORKDIR}/lib/*.DLL ${MONADIR}/bin/LIBS
+	install -p ${WORKDIR}/lib/lib*.a ${MONADIR}/lib
 	mkdir -p ${MONADIR}/include/GL
-	install ${WORKDIR}/include/GL/*.h ${MONADIR}/include/GL
+	install -p ${WORKDIR}/include/GL/*.h ${MONADIR}/include/GL

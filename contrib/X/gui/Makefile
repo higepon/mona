@@ -24,9 +24,9 @@ install: all
 	mkdir -p $(INSTDIR)
 	mkdir -p $(INCDIR)/servers
 	mkdir -p $(BINDIR)/APPS
-	$(INSTALL) $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
-	$(INSTALL) ./servers/gui.h $(INCDIR)/servers
-	$(INSTALL) MONA12.MF5 $(BINDIR)/APPS
+	$(INSTALL) -p $(TARGET).EX5 $(INSTFILES) $(INSTDIR)
+	$(INSTALL) -p ./servers/gui.h $(INCDIR)/servers
+	$(INSTALL) -p MONA12.MF5 $(BINDIR)/APPS
 
 clean:
 	rm -f $(OBJECTS) $(TARGET).EXE $(TARGET).EX5 $(CLEANFILES) $(TARGET).map

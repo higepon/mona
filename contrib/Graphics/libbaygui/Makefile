@@ -71,11 +71,11 @@ distclean: clean
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)
-	$(INSTALL) -m 0644 $(LIB_STATIC) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_STATIC) $(LIBDIR)/
 ifneq ($(BUILD_TARGET),ELF)
-	$(INSTALL) -m 0644 $(LIB_IMPORT) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
 	mkdir -p $(BINDIR)/LIBS
-	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 endif
 	mkdir -p $(INCDIR)/baygui
 	mkdir -p $(INCDIR)/baygui/awt
@@ -83,14 +83,14 @@ endif
 	mkdir -p $(INCDIR)/baygui/lang
 	mkdir -p $(INCDIR)/baygui/util
 	mkdir -p $(BINDIR)/APPS/
-	$(INSTALL) baygui.h $(INCDIR)
-	$(INSTALL) -m 0644 ./baygui/awt/*.h $(INCDIR)/baygui/awt
-	$(INSTALL) -m 0644 ./baygui/awt/event/*.h $(INCDIR)/baygui/awt/event
-	$(INSTALL) -m 0644 ./baygui/lang/*.h $(INCDIR)/baygui/lang
-	$(INSTALL) -m 0644 ./baygui/util/*.h $(INCDIR)/baygui/util
-	$(INSTALL) BAYGUI.MSH $(BINDIR)/APPS
-	$(INSTALL) BAYGUI.INI $(BINDIR)/APPS
-	$(INSTALL) MONAWALL.BM5 $(BINDIR)/APPS
+	$(INSTALL) -p baygui.h $(INCDIR)
+	$(INSTALL) -p -m 0644 ./baygui/awt/*.h $(INCDIR)/baygui/awt
+	$(INSTALL) -p -m 0644 ./baygui/awt/event/*.h $(INCDIR)/baygui/awt/event
+	$(INSTALL) -p -m 0644 ./baygui/lang/*.h $(INCDIR)/baygui/lang
+	$(INSTALL) -p -m 0644 ./baygui/util/*.h $(INCDIR)/baygui/util
+	$(INSTALL) -p BAYGUI.MSH $(BINDIR)/APPS
+	$(INSTALL) -p BAYGUI.INI $(BINDIR)/APPS
+	$(INSTALL) -p MONAWALL.BM5 $(BINDIR)/APPS
 
 uninstall:
 	rm -f $(LIBDIR)/$(LIB_STATIC)

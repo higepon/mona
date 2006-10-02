@@ -1,3 +1,21 @@
+2006-10-02  higepon  <higepon@users.sourceforge.jp>
+
+        * Net/NetServer/Mona/Makefile (install): -p‚ğ’Ç‰Á
+
+        * Net/libnicdrv/Makefile (install): -p‚ğ’Ç‰Á
+
+        * Net/mones/monesoc/Makefile (install): -p‚ğ’Ç‰Á
+
+        * Graphics/libgui/Makefile (install): -p‚ğ’Ç‰Á
+
+        * Graphics/libbaygui/Makefile (install): -p‚ğ’Ç‰Á
+
+        * Graphics/Mesa/Makefile (.INSTALL): -p‚ğ’Ç‰Á
+
+        * Sysutils/libPci/Makefile (install): -p‚ğ’Ç‰Á
+
+        * Devel/tmpmonalibc/Makefile (install): -p‚ğ’Ç‰Á
+
 2006-09-27  bayside
 
         * Emulators/infones: BayGUI ‚É‘Î‰
@@ -12,6 +30,7 @@
 
         * Games/gtetris: V‹K’Ç‰Á
 
+>>>>>>> .r3619
 2006-09-23  bayside
 
         * Sysutils/startx: V‹K’Ç‰Á

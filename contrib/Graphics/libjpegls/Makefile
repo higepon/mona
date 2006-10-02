@@ -25,7 +25,7 @@ depend:
 	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
 
 install: $(TARGET)
-	$(INSTALL) jpegls.h $(INCDIR)
+	$(INSTALL) -p jpegls.h $(INCDIR)
 
 uninstall:
 	rm -f $(INCDIR)/jpegls.h

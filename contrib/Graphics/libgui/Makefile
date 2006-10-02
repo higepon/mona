@@ -68,11 +68,11 @@ distclean: clean
 
 install: $(TARGET)
 	mkdir -p $(LIBDIR)
-	$(INSTALL) -m 0644 $(LIB_STATIC) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_STATIC) $(LIBDIR)/
 ifneq ($(BUILD_TARGET),ELF)
-	$(INSTALL) -m 0644 $(LIB_IMPORT) $(LIBDIR)/
+	$(INSTALL) -p -m 0644 $(LIB_IMPORT) $(LIBDIR)/
 	mkdir -p $(BINDIR)/LIBS
-	$(INSTALL) $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
+	$(INSTALL) -p $(LIB_DYNAMIC5) $(BINDIR)/LIBS/
 endif
 	mkdir -p $(INCDIR)/gui
 	mkdir -p $(INCDIR)/gui/System
@@ -82,14 +82,14 @@ endif
 	mkdir -p $(INCDIR)/gui/System/Mona/Forms
 	mkdir -p $(INCDIR)/gui/System/Text
 	mkdir -p $(BINDIR)/APPS/
-	$(INSTALL) -m 0644 ./gui/System/*.h $(INCDIR)/gui/System
-	$(INSTALL) -m 0644 ./gui/System/Collections/*.h $(INCDIR)/gui/System/Collections
-	$(INSTALL) -m 0644 ./gui/System/Drawing/*.h $(INCDIR)/gui/System/Drawing
-	$(INSTALL) -m 0644 ./gui/System/Mona/Forms/*.h $(INCDIR)/gui/System/Mona/Forms
-	$(INSTALL) -m 0644 ./gui/System/Text/*.h $(INCDIR)/gui/System/Text
-	$(INSTALL) MONAFRMS.MSH $(BINDIR)/APPS
-	$(INSTALL) MONAFRMS.INI $(BINDIR)/APPS
-	$(INSTALL) MONAFUN.JPG $(BINDIR)/APPS
+	$(INSTALL) -p -m 0644 ./gui/System/*.h $(INCDIR)/gui/System
+	$(INSTALL) -p -m 0644 ./gui/System/Collections/*.h $(INCDIR)/gui/System/Collections
+	$(INSTALL) -p -m 0644 ./gui/System/Drawing/*.h $(INCDIR)/gui/System/Drawing
+	$(INSTALL) -p -m 0644 ./gui/System/Mona/Forms/*.h $(INCDIR)/gui/System/Mona/Forms
+	$(INSTALL) -p -m 0644 ./gui/System/Text/*.h $(INCDIR)/gui/System/Text
+	$(INSTALL) -p MONAFRMS.MSH $(BINDIR)/APPS
+	$(INSTALL) -p MONAFRMS.INI $(BINDIR)/APPS
+	$(INSTALL) -p MONAFUN.JPG $(BINDIR)/APPS
 
 uninstall:
 	rm -f $(LIBDIR)/$(LIB_STATIC)

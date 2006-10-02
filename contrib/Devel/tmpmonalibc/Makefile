@@ -40,9 +40,9 @@ clean:
 
 install: $(TARGET)
 ifneq ($(BUILD_TARGET),ELF)
-	$(INSTALL) -m 0644 $(LIB_DYNAMIC) $(MONADIR)/bin/LIBS
+	$(INSTALL) -p -m 0644 $(LIB_DYNAMIC) $(MONADIR)/bin/LIBS
 endif
 	mkdir -p $(MONADIR)/include/tmpmonalibc
-	$(INSTALL) *.h $(MONADIR)/include/tmpmonalibc
-	$(INSTALL) lib*.a $(MONADIR)/lib
+	$(INSTALL) -p *.h $(MONADIR)/include/tmpmonalibc
+	$(INSTALL) -p lib*.a $(MONADIR)/lib
 
