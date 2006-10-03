@@ -104,6 +104,9 @@ public:
         // マウスサーバーに登録する
         if (!monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_TRUE)) exit(1);
 
+        // キーボードサーバーに登録する
+        if (!monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_TRUE)) exit(1);
+
         // メッセージループ
         for (MessageInfo info;;)
         {
@@ -165,6 +168,65 @@ public:
 
                 monapi_call_mouse_set_cursor(1);
             }
+            // キーメッセージ
+            else if (info.header == MSG_KEY_VIRTUAL_CODE)
+            {
+                int keycode = info.arg1;
+                int modcode = info.arg2;
+
+                if ((modcode & KEY_MODIFIER_DOWN) == KEY_MODIFIER_DOWN)
+                {
+                    monapi_call_mouse_set_cursor(0);
+                    
+                    // 選択した項目を実行
+                    if (keycode == MonAPI::Keys::Enter && this->selected != 0)
+                    {
+                        break;
+                    }
+                    // 次の項目を選択
+                    else if (keycode == MonAPI::Keys::Tab || keycode == MonAPI::Keys::Right || keycode == 102)
+                    {
+                        if (this->selected == SELECT_CUI_0)
+                        {
+                            this->select(SELECT_GUI_1);
+                        }
+                        else if (this->selected == SELECT_GUI_1)
+                        {
+                            this->select(SELECT_GUI_2);
+                        }
+                        else if (this->selected == SELECT_GUI_2)
+                        {
+                            this->select(SELECT_CUI_0);
+                        }
+                        else
+                        {
+                            this->select(SELECT_CUI_0);
+                        }
+                    }
+                    // 前の項目を選択
+                    else if (keycode == MonAPI::Keys::Left || keycode == 100)
+                    {
+                        if (this->selected == SELECT_CUI_0)
+                        {
+                            this->select(SELECT_GUI_2);
+                        }
+                        else if (this->selected == SELECT_GUI_1)
+                        {
+                            this->select(SELECT_CUI_0);
+                        }
+                        else if (this->selected == SELECT_GUI_2)
+                        {
+                            this->select(SELECT_GUI_1);
+                        }
+                        else
+                        {
+                            this->select(SELECT_GUI_2);
+                        }
+                    }
+                    
+                    monapi_call_mouse_set_cursor(1);
+                }
+            }
         }
 
         // 選択位置を取得する
@@ -172,6 +234,9 @@ public:
 
         // マウスサーバーから登録解除する
         monapi_register_to_server(ID_MOUSE_SERVER, MONAPI_FALSE);
+
+        // キーボードから登録解除する
+        monapi_register_to_server(ID_KEYBOARD_SERVER, MONAPI_FALSE);
 
         // 画面クリア
         syscall_clear_screen();
@@ -258,7 +323,7 @@ private:
                 byte g0 = data[k2 + 1];
                 byte b0 = data[k2 + 2];
 
-                /* 中央の長方形をアルファブレンドして描く */
+                // 中央の長方形をアルファブレンドして描く
                 byte r = r0, g = g0, b = b0;
                 if (x0 == 0 &&
                         y0 == 0 &&
