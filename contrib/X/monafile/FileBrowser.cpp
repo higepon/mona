@@ -223,6 +223,10 @@ void FileBrowser::Open(int target)
                     ProcessStart(exe);
                 }
             }
+            else if (exe.EndsWith(".NES") || exe.EndsWith(".NE5"))
+            {
+                ProcessStart("/APPS/BAYGUI/INFONES.EX5 " + exe);
+            }
             else
             {
                 ProcessStart(exe);
@@ -232,13 +236,14 @@ void FileBrowser::Open(int target)
         case Icons_Picture:
         {
             Icon::ExpansionEffect(pc.X, pc.Y);
-            if (PathCombine(this->path, name).EndsWith(".MPG"))
+            String img = PathCombine(this->path, name);
+            if (img.EndsWith(".MPG"))
             {
-                ProcessStart("/APPS/BAYGUI/XMONAPEG.EX5 " + PathCombine(this->path, name));
+                ProcessStart("/APPS/BAYGUI/XMONAPEG.EX5 " + img);
             }
             else
             {
-                ProcessStart("/APPS/MONAFRMS/BITMAP.EX5 " + PathCombine(this->path, name));
+                ProcessStart("/APPS/MONAFRMS/BITMAP.EX5 " + img);
             }
             break;
         }
