@@ -2,6 +2,8 @@
 
         * Sysutils/startx: キーボード操作に対応
 
+        * Multimedia/monappt: インストール位置を /APPS に変更（複数プレゼン対策）
+
         * X/monafile: NES or NE5 拡張子に対応
 
 2006-10-02  higepon  <higepon@users.sourceforge.jp>
