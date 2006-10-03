@@ -35,9 +35,10 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  fenv/fesetexceptflag.c fenv/fetestexcept.c fenv/fegetround.c \
 	  fenv/fesetround.c fenv/fesetenv.c fenv/fegetenv.c fenv/feupdateenv.c \
 	  fenv/feholdexcept.c \
+	  setjmp/setjmp_c.c \
 #	  inttypes/imaxdiv.c \
-	  crt/crt.c \
 #	  string/strncmp.c string/strncpy.c string/strspn.c string/strstr.c \
 #	  string/strcat.c string/strcmp.c string/strcspn.c string/strlen.c \
 #	  string/memcmp.c string/memcpy.c string/memmove.c string/memset.c \
 #	  string/strcpy.c \
+	  crt/crt.c \
