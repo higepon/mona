@@ -117,6 +117,7 @@ int NE2000::init(void)
     w_reg( NE_P0_COMMAND, NE_CR_RD2 | NE_CR_STA );
     // ループバックモードを抜けて通常動作モードに入る
     w_reg( NE_P0_TCR, 0 );
+    printf("IRQ=%x\n",getIRQ());
     return 0;
 }
 

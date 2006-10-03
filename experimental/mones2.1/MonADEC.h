@@ -24,10 +24,18 @@ private:
     enum{
         LOGRXRINGLEN=5,
         RX_OWN=0x80000000,
+        RER   =0x02000000,
+        RCH   =0x01000000
     };
     enum{
         LOGTXRINGLEN=6,
         TX_OWN=0x80000000,
+        IC    =0x80000000,
+        LS    =0x40000000,
+        FS    =0x20000000,
+        SET   =0x08000000,
+        TER   =0x02000000,
+        TCH   =0x01000000
     };
 protected:
     void rxihandler(); 

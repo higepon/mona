@@ -18,7 +18,7 @@ MonAMDpcn::MonAMDpcn():rxdsc(NULL),txdsc(NULL),
 
 int MonAMDpcn::init()
 {    
-    AllocateDmaPages( (1<<LOGRXRINGLEN)+ (1<<LOGTXRINGLEN) +1);//pages.
+    AllocateDmaPages( ((1<<LOGRXRINGLEN)+(1<<LOGTXRINGLEN))*(ETHER_MAX_PACKET+sizeof(RXDSC)/2+sizeof(TXDSC)/2)+sizeof(IBLK) );
     //initialize rx
     if( dma_head== NULL ){
         printf("buffer allocation was failed.");
@@ -33,8 +33,8 @@ int MonAMDpcn::init()
         (rxdsc+i)->rbaddr=(dword)(rxbuf+i*ETHER_MAX_PACKET);
     }
      //initialize tx 
-    txdsc= (TXDSC*)( dma_head +(0x1000* (1<<LOGRXRINGLEN)));
-    txbuf = dma_head + 0x1000*(1<<LOGRXRINGLEN) + (1<<LOGTXRINGLEN)*sizeof(TXDSC) ;
+    txdsc= (TXDSC*)( rxbuf+ ETHER_MAX_PACKET*(1<<LOGRXRINGLEN));
+    txbuf = (byte*)(txdsc)+ (1<<LOGTXRINGLEN)*sizeof(TXDSC) ;
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
         (txdsc+i)->status=0;
         (txdsc+i)->control=0;
@@ -47,7 +47,7 @@ int MonAMDpcn::init()
     w_bcr(BCR_MISC,BCR_AUTOSEL);        //SET BCR_EDGETRG for Edge Sense.
     w_bcr(BCR_SSTYLE,BCR_PCI_II|BCR_SSIZE);
     //Use initalize block.
-    piblock= (IBLK*)( dma_head  + (0x1000*( (1<<LOGRXRINGLEN)+(1<<LOGTXRINGLEN) )) );
+    piblock= (IBLK*)( txbuf + ETHER_MAX_PACKET*(1<<LOGTXRINGLEN) );
     piblock->mode=0x0;         //set MODE_DNY_BCST for deny broadcast packets.
     piblock->rxlen=(LOGRXRINGLEN<<4);  //see page157.
     piblock->txlen=(LOGTXRINGLEN<<4);
@@ -120,6 +120,7 @@ void MonAMDpcn::rxihandler()
 }
 void MonAMDpcn::SendFrm(Ether* frame)
 {
+    //printf("T:%d R:%d\n",txindex,rxindex);
     enableNetwork();
     word len=CalcFrameSize(frame);
     txFrameList.add(frame);

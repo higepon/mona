@@ -79,7 +79,7 @@ endif
 
 ADDLINK +=  -lPci -lmonalibc
 
-CXXFLAGS += -DDEBUG
+CXXFLAGS += -DDEBUG 
 
 -include dependencies
 

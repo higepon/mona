@@ -101,10 +101,9 @@ Nic::~Nic()
     }
 }
 
-byte* Nic::AllocateDmaPages(int pages)
+byte* Nic::AllocateDmaPages(int dma_size)
 {
     if( dma_head == NULL ){
-        dma_size=0x1000*pages;
         dma_head=monapi_allocate_dma_memory(dma_size);
     }
     return dma_head;

@@ -18,7 +18,7 @@ MonADEC::MonADEC():rxdsc(NULL),txdsc(NULL),
 int MonADEC::init()
 {    
   //  disableNetwork();
-    AllocateDmaPages( (1<<LOGRXRINGLEN)+ (1<<LOGTXRINGLEN));//pages.
+    AllocateDmaPages( ((1<<LOGRXRINGLEN)+(1<<LOGTXRINGLEN))*(ETHER_MAX_PACKET+sizeof(DESC)) );//pages.
     if( dma_head == NULL ){
         printf("buffer allocation was failed.");
         return -1;
@@ -40,19 +40,21 @@ int MonADEC::init()
     rxbuf = dma_head+((1<<LOGRXRINGLEN)*sizeof(DESC));
     for(int i=0;i<(1<<LOGRXRINGLEN);i++){
         (rxdsc+i)->status=RX_OWN;
-        (rxdsc+i)->ctlandcnt=ETHER_MAX_PACKET;
+        (rxdsc+i)->ctlandcnt=RCH|ETHER_MAX_PACKET;
         (rxdsc+i)->bufaddr1=(dword)(rxbuf+i*ETHER_MAX_PACKET);
         (rxdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
     }
+    (rxdsc+((1<<LOGRXRINGLEN)-1))->ctlandcnt |= RER;
     (rxdsc+((1<<LOGRXRINGLEN)-1))->bufaddr2=(dword)rxdsc;
-    txdsc= (DESC*)( dma_head +(0x1000* (1<<LOGRXRINGLEN)));
-    txbuf = dma_head + 0x1000*(1<<LOGRXRINGLEN) + (1<<LOGTXRINGLEN)*sizeof(DESC) ;
+    txdsc = (DESC*)(rxbuf+(1<<LOGRXRINGLEN)*ETHER_MAX_PACKET);
+    txbuf = (byte*)txdsc+((1<<LOGTXRINGLEN)*sizeof(DESC));
     for(int i=0;i<(1<<LOGTXRINGLEN);i++){
         (txdsc+i)->status=0;
-        (txdsc+i)->ctlandcnt=ETHER_MAX_PACKET;
+        (txdsc+i)->ctlandcnt=TCH|ETHER_MAX_PACKET;
         (txdsc+i)->bufaddr1=(dword)(txbuf+i*ETHER_MAX_PACKET);
         (txdsc+i)->bufaddr2=(dword)(rxdsc+i+1);
     }
+    (txdsc+((1<<LOGTXRINGLEN)-1))->ctlandcnt|=TER; 
     (txdsc+((1<<LOGTXRINGLEN)-1))->bufaddr2=(dword)txdsc; 
     //Get serial rom contents.
     word val[SROM_SIZE];
@@ -71,7 +73,7 @@ int MonADEC::init()
         *(dword*)(txdsc->bufaddr1+i)=val[MAC_OFFSET+(i%3)];
     }
     txdsc->status=TX_OWN;
-    txdsc->ctlandcnt=0x08000000 | SETUPPKTSIZE;
+    txdsc->ctlandcnt= SET | SETUPPKTSIZE;
     txindex++;
     outp32(iobase+CSR_3,(dword)rxdsc);
     outp32(iobase+CSR_4,(dword)txdsc);
@@ -116,7 +118,7 @@ void MonADEC::txihandler()
 
 void MonADEC::rxihandler()
 {
-    //printf("RX\n");
+    //printf("RX:%d\n",rxindex);
     word length;
     while( ((rxdsc+rxindex)->status & RX_OWN) == 0 ){
         length=(((rxdsc+rxindex)->ctlandcnt)&0x07FF);
@@ -125,13 +127,20 @@ void MonADEC::rxihandler()
         //printf("%d\n",length);
         rxFrameList.add(frame);
         (rxdsc+rxindex)->status=RX_OWN;
-        rxindex = (rxindex+1) & ((1<<LOGRXRINGLEN)-1);
+        (rxdsc+rxindex)->ctlandcnt=RCH|ETHER_MAX_PACKET;
+        if( rxindex == ((1<<LOGRXRINGLEN))-1 ){
+            (rxdsc+rxindex)->ctlandcnt|=RER;
+            rxindex=0;
+        }else{
+            rxindex++;
+        }
     }
 }
 
 void MonADEC::SendFrm(Ether* frame)
 {
     //printf("send frame\n");  
+    //printf("T:%d R:%d\n",txindex,rxindex);
     enableNetwork();
     word len=CalcFrameSize(frame);
     txFrameList.add(frame);
@@ -139,10 +148,14 @@ void MonADEC::SendFrm(Ether* frame)
         Ether* frame = txFrameList.removeAt(0);
         memcpy((void*)((txdsc+txindex)->bufaddr1),frame,len); 
         (txdsc+txindex)->status=TX_OWN;
-        //TODO Must be changed.
-        (txdsc+txindex)->ctlandcnt=0xC0000000|ETHER_MAX_PACKET;
+        (txdsc+txindex)->ctlandcnt=IC|LS|FS|ETHER_MAX_PACKET;//Someting wrong?
         outp32(iobase+CSR_1,0x1);
-        txindex = (txindex+1) & (( 1<<LOGTXRINGLEN)-1);
+        if( txindex == ((1<<LOGTXRINGLEN))-1){
+            (txdsc+txindex)->ctlandcnt|=TER;
+            txindex = 0;
+        }else{
+            txindex++;
+        }
         delete frame;
     }
 }
