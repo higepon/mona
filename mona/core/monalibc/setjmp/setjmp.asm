@@ -45,7 +45,7 @@ __longjmp:	; void _longjmp(jmp_buf env, int retval);
 	mov	dword [edi],	eax
 	mov	ebp,	dword [edi+24]
 
-	cli
+	;cli
 
 	mov	esp,	dword [edi+28]
 	push	dword [edi+32]
@@ -56,6 +56,6 @@ __longjmp:	; void _longjmp(jmp_buf env, int retval);
 	mov	esi,	dword [edi+16]
 	mov	edi,	dword [edi+20]
 
-	sti
+	;sti
 
 	ret
