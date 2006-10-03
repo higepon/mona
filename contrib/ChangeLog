@@ -1,3 +1,9 @@
+2006-10-03  bayside
+
+        * Sysutils/startx: キーボード操作に対応
+
+        * X/monafile: NES or NE5 拡張子に対応
+
 2006-10-02  higepon  <higepon@users.sourceforge.jp>
 
         * Net/NetServer/Mona/Makefile (install): -pを追加
@@ -30,7 +36,6 @@
 
         * Games/gtetris: 新規追加
 
->>>>>>> .r3619
 2006-09-23  bayside
 
         * Sysutils/startx: 新規追加
