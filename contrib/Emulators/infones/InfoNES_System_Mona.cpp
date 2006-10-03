@@ -150,7 +150,6 @@ WORD NesPalette[ 64 ] =
 int MonaMain( List<char*>* pekoe )
 {
 	/* Command line */
-	#if 0
 	if (pekoe->size() == 0) {
 		printf("InfoNES for Mona v0.96J\n");
 		printf("copyright (c) 2005, bayside.\n");
@@ -166,10 +165,9 @@ int MonaMain( List<char*>* pekoe )
 		printf("    EXIT   : 'ESC'\n");
 		return 0;
 	}
-	#endif
 
 	/* Open ROM file */
-	if (InfoNES_Load("/APPS/SMB1.NES"/*pekoe->get(0)*/) != 0) exit(1);
+	if (InfoNES_Load(pekoe->get(0)) != 0) exit(1);
 
 	/* Set frame skip */
 	FrameSkip = 2;
