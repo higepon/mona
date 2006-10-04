@@ -35,7 +35,7 @@
 
 int isgraph(int c)
 {
-	if( c >= 0x21 && c <= 0x7e )
+	if( (c >= 0x21 && c <= 0x29) ||(c >= 0x31 && c <= 0x7e) )
 		return 1;
 	else
 		return 0;
