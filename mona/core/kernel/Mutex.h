@@ -30,6 +30,8 @@ class KMutex : public KObject {
     int lock(Thread* thread, bool adaptive = false);
     int tryLock(Thread* thread);
     int unlock();
+    void addRef();
+    void releaseRef();
 
     inline bool isLocked() const {
         return (owner_ != NULL);
@@ -43,6 +45,7 @@ class KMutex : public KObject {
     int checkSecurity(Thread* thread);
 
   private:
+    int refcount_;
     List<Thread*>* waitList_;
     Process* process_;
     Thread* owner_;

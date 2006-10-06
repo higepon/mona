@@ -17,9 +17,9 @@
 #include "syscalls.h"
 
 /*----------------------------------------------------------------------
-    KMutex
+    KMutex  *** don't allocate this object at stack! ***
 ----------------------------------------------------------------------*/
-KMutex::KMutex() : owner_(NULL)
+KMutex::KMutex() : refcount_(1), owner_(NULL)
 {
     waitList_ = new HList<Thread*>();
 }
@@ -36,7 +36,6 @@ KMutex::~KMutex()
 int KMutex::lock(Thread* thread, bool adaptive /* = false */)
 {
     enter_kernel_lock_mode();
-
     /* lock OK */
     if (!isLocked())
     {
@@ -49,7 +48,6 @@ int KMutex::lock(Thread* thread, bool adaptive /* = false */)
         if (waitList_->size() > 1)
         {
             waitList_->add(thread);
-
             g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
             g_scheduler->SwitchToNext();
 
@@ -63,7 +61,6 @@ int KMutex::lock(Thread* thread, bool adaptive /* = false */)
     else
     {
         waitList_->add(thread);
-
         g_scheduler->WaitEvent(thread, MEvent::MUTEX_UNLOCKED);
         g_scheduler->SwitchToNext();
 
@@ -116,9 +113,7 @@ int KMutex::unlock()
     }
     else
     {
-
         owner_ = waitList_->removeAt(0);
-
         g_scheduler->EventComes(owner_, MEvent::MUTEX_UNLOCKED);
         g_scheduler->SwitchToNext();
 
@@ -132,4 +127,18 @@ int KMutex::unlock()
 int KMutex::checkSecurity(Thread* thread)
 {
     return 0;
+}
+
+void KMutex::addRef()
+{
+    refcount_++;
+}
+
+void KMutex::releaseRef()
+{
+    refcount_--;
+    if (refcount_ == 0)
+    {
+        delete this;
+    }
 }

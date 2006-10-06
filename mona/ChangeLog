@@ -1,3 +1,13 @@
+2006-10-06  higepon  <higepon@users.sourceforge.jp>
+
+        * core/kernel/Loader.cpp (Loader::Load): コマンドライン引数を MAX_PROCESS_ARGUMENT_LENGTH 文字で安全に切る
+
+2006-10-05  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/Mutex.cpp (Mutex::Mutex): コンストラクタで分岐した場合に適切にあれこれ。
+
+        * core/kernel/Mutex.cpp (KMutex::releaseRef): 参照カウンタでインスタンス寿命を管理
+
 2006-10-02  higepon  <higepon@users.sourceforge.jp>
 
         * tool/mkimg/Makefile (iso): cp -> $(INSTALL) -p

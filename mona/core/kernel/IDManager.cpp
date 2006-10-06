@@ -17,15 +17,12 @@ KObject* IDManager::get(int objectID, Thread* who)
         this->lastError = IDM_OBJECT_NOT_FOUND;
         return NULL;
     }
-
     KObject* object = tree.get(objectID);
-
     if (object->checkSecurity(who) != 0)
     {
         this->lastError = IDM_SECURITY_ERROR;
         return NULL;
     }
-
     return object;
 }
 

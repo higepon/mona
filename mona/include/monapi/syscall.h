@@ -40,7 +40,7 @@ extern int syscall_receive(MessageInfo* message);
 extern int syscall_exist_message();
 extern int syscall_mthread_create(dword f);
 extern int syscall_mthread_join(dword id);
-extern int syscall_mutex_create();
+extern int syscall_mutex_create(dword arg);
 extern int syscall_mutex_trylock(int id);
 extern int syscall_mutex_lock (int id );
 extern int syscall_mutex_unlock(int id);

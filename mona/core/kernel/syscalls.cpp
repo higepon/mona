@@ -48,7 +48,6 @@ dword systemcall_mutex_unlock(dword id)
 static dword systemcall_mutex_lock2(dword id)
 {
     KObject* object = g_id->get(id, g_currentThread->thread);
-
     if (object == NULL)
     {
         return g_id->getLastError();
@@ -57,7 +56,6 @@ static dword systemcall_mutex_lock2(dword id)
     {
         return (dword)-10;
     }
-
     return ((KMutex*)object)->lock(g_currentThread->thread);
 }
 
@@ -177,8 +175,24 @@ void syscall_entrance()
     }
 
     case SYSTEM_CALL_MUTEX_CREATE:
-
-        info->eax = systemcall_mutex_create();
+        if (SYSTEM_CALL_ARG_1 != 0) {
+            KObject* object = g_id->get(SYSTEM_CALL_ARG_1, g_currentThread->thread);
+            if (object == NULL)
+            {            info->eax = g_id->getLastError();
+            }
+            else if (object->getType() != KObject::KMUTEX)
+            {
+                info->eax = (dword)-10;
+            }
+            else
+            {
+                KMutex* mutex = (KMutex*)object;
+                mutex->addRef();
+                info->eax = SYSTEM_CALL_ARG_1;
+            }
+        } else {
+            info->eax = systemcall_mutex_create();
+        }
         break;
 
     case SYSTEM_CALL_MUTEX_LOCK:
@@ -226,7 +240,7 @@ void syscall_entrance()
         else
         {
             KMutex* mutex = (KMutex*)object;
-            delete mutex;
+            mutex->releaseRef();
             info->eax = 0;
         }
         break;

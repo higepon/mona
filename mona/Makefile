@@ -10,31 +10,31 @@ COREDIR = core/monalibc core/firstboot
 
 all: tools cores
 tools:
-	cd tool/stlport && make && make install
-	cd tool/fat_write && make && make install
-	cd tool/t5lzma && make && make install
-	cd tool/bim2bin && make && make install
+	cd tool/stlport && $(MAKE) && $(MAKE) install
+	cd tool/fat_write && $(MAKE) && $(MAKE) install
+	cd tool/t5lzma && $(MAKE) && $(MAKE) install
+	cd tool/bim2bin && $(MAKE) && $(MAKE) install
 	
 cores:
-	cd core/firstboot && make && make install
+	cd core/firstboot && $(MAKE) && $(MAKE) install
 #ifneq ($(SKIP_DOTNET),1)
 ifdef CSC
-	cd core/PEAnalyzerLib && make && make install
-	cd core/IL2Asm16 && make && make install
+	cd core/PEAnalyzerLib && $(MAKE) && $(MAKE) install
+	cd core/IL2Asm16 && $(MAKE) && $(MAKE) install
 endif
-	cd core/secondboot && make && make install
-	cd core/kernel && make && make install
-	cd core/monapi && make && make install
-	cd core/monitor_server && make && make install
-	cd core/keyboard_server && make && make install
-	cd core/monalibc && make && make install
-	cd core/mouse_server && make && make install
-	cd core/file_server && make && make install
-	cd core/process_server && make && make install
-	cd core/shell_server && make && make install
-	cd core/elf_server && make && make install
-	cd core/pe_server && make && make install
-	cd tool/mkimg && make clean && make
+	cd core/secondboot && $(MAKE) && $(MAKE) install
+	cd core/kernel && $(MAKE) && $(MAKE) install
+	cd core/monapi && $(MAKE) && $(MAKE) install
+	cd core/monitor_server && $(MAKE) && $(MAKE) install
+	cd core/keyboard_server && $(MAKE) && $(MAKE) install
+	cd core/monalibc && $(MAKE) && $(MAKE) install
+	cd core/mouse_server && $(MAKE) && $(MAKE) install
+	cd core/file_server && $(MAKE) && $(MAKE) install
+	cd core/process_server && $(MAKE) && $(MAKE) install
+	cd core/shell_server && $(MAKE) && $(MAKE) install
+	cd core/elf_server && $(MAKE) && $(MAKE) install
+	cd core/pe_server && $(MAKE) && $(MAKE) install
+	cd tool/mkimg && $(MAKE) clean && $(MAKE)
 
 .PHONY: clean
 clean:
@@ -56,3 +56,4 @@ endif
 	$(MAKE) $@ -C core/shell_server
 	$(MAKE) $@ -C core/elf_server
 	$(MAKE) $@ -C core/pe_server
+ 

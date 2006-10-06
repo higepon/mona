@@ -7,6 +7,9 @@
 
 # test for Stream
 #@STDOUT.EX5
+#@WRITE.EX5 abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl123456
+#@WRITE.EX5 0123456789!0123456789#0123456789&0123456789#0123456789=0123456789~01234567890123456789))
+#@STDOUT.EX5 
 #@WRITE.EX5 ABCDEFG
 #@WRITE.EX5 abcdefghijklmnopqrstuvwxyz
 

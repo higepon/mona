@@ -8,11 +8,12 @@ namespace MonAPI {
 
 Mutex::Mutex() : destroyed_(false)
 {
-    mutexId_ = syscall_mutex_create();
+    mutexId_ = syscall_mutex_create(0);
 }
 
 Mutex::Mutex(dword mutexId) : destroyed_(false)
 {
+    syscall_mutex_create(mutexId);
     mutexId_ = mutexId;
 }
 

@@ -68,6 +68,19 @@ int Loader::Load(byte* image, dword size, dword entrypoint, const char* name, bo
         {
             p = new char[MAX_PROCESS_ARGUMENT_LENGTH];
             strncpy(p, option->str, MAX_PROCESS_ARGUMENT_LENGTH);
+            bool terminated = false;
+            for (int i = 0; i < MAX_PROCESS_ARGUMENT_LENGTH; i++)
+            {
+                if (option->str[i] == '\0')
+                {
+                    terminated = true;
+                    break;
+                }
+            }
+            if (!terminated)
+            {
+                p[MAX_PROCESS_ARGUMENT_LENGTH - 1] = '\0';
+            }
             target->add(p);
         }
     }

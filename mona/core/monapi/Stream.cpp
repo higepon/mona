@@ -41,6 +41,7 @@ dword Stream::write(byte* buffer, dword size)
 {
 //    if (-1 == access_->tryLock()) return 0;
     access_->lock();
+//    printf("[write] header->size=%d header->capacity=%d size=%d\n", header_->size, header_->capacity, size);
     dword memorySize = header_->size;
     dword memoryCapacity = header_->capacity;
     dword freeSize = memoryCapacity - memorySize;
@@ -51,21 +52,23 @@ dword Stream::write(byte* buffer, dword size)
     }
     else if (size < freeSize)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         memcpy((void*)((dword)memoryAddress_ + memorySize), buffer, size);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         header_->size = memorySize + size;
         writeSize = size;
     }
     else
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         memcpy((void*)((dword)memoryAddress_ + memorySize), buffer, freeSize);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         header_->size = memoryCapacity;
         writeSize = freeSize;
     }
 
+//     for (int i = 0; i < writeSize; i++)
+//     {
+//         printf("[%c]", buffer[i]);
+//     }
+
+//    printf("[write2] header->size=%d header->capacity=%d sizee=%d", header_->size, header_->capacity, size, writeSize);
     if (memorySize != 0)
     {
         access_->unlock();
@@ -73,9 +76,7 @@ dword Stream::write(byte* buffer, dword size)
     }
 
     dword* threads = new dword[MAX_WAIT_THREADS_NUM];
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     memcpy(threads, header_->waitForReadThreads, sizeof(dword) * MAX_WAIT_THREADS_NUM);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
         header_->waitForReadThreads[i] = THREAD_UNKNOWN;
@@ -89,6 +90,7 @@ dword Stream::write(byte* buffer, dword size)
         Message::send(thread, MSG_READ_MEMORY_READY);
     }
     delete[] threads;
+
     return writeSize;
 }
 
@@ -96,6 +98,7 @@ dword Stream::read(byte* buffer, dword size)
 {
 //    if (-1 == access_->tryLock()) return 0;
     access_->lock();
+//    printf("[read] header->size=%d header->capacity=%d size=%d\n", header_->size, header_->capacity, size);
     dword memorySize = header_->size;
     dword readSize;
     if (0 == memorySize || size <= 0)
@@ -104,23 +107,18 @@ dword Stream::read(byte* buffer, dword size)
     }
     else if (size < memorySize)
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         memcpy(buffer, memoryAddress_, size);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         memcpy(memoryAddress_, (byte*)((dword)memoryAddress_ + readSize), memorySize - size);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         header_->size = memorySize - size;
         readSize = size;
     }
     else
     {
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         memcpy(buffer, memoryAddress_, memorySize);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
         header_->size = 0;
         readSize = memorySize;
     }
-
+//    printf("[read2] header->size=%d header->capacity=%d size=%d", header_->size, header_->capacity, size);
     if (readSize ==  0)
     {
         access_->unlock();
@@ -128,9 +126,7 @@ dword Stream::read(byte* buffer, dword size)
     }
 
     dword* threads = new dword[MAX_WAIT_THREADS_NUM];
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     memcpy(threads, header_->waitForWriteThreads, sizeof(dword) * MAX_WAIT_THREADS_NUM);
-        printf("%s %s:%d\n", __func__, __FILE__, __LINE__);
     for (int i = 0; i < MAX_WAIT_THREADS_NUM; i++)
     {
         header_->waitForWriteThreads[i] = THREAD_UNKNOWN;
@@ -259,7 +255,6 @@ bool Stream::initialize(dword size)
 bool Stream::initializeFromHandle(dword handle)
 {
     memoryHandle_ = handle;
-    access_ = new Mutex();
     void* address = MemoryMap::map(memoryHandle_);
     if (NULL == address)
     {

@@ -329,10 +329,10 @@ int syscall_receive(MessageInfo* message)
     return result;
 }
 
-int syscall_mutex_create()
+int syscall_mutex_create(dword arg)
 {
     int result;
-    SYSCALL_0(SYSTEM_CALL_MUTEX_CREATE, result);
+    SYSCALL_1(SYSTEM_CALL_MUTEX_CREATE, result, arg);
     return result;
 }
 
