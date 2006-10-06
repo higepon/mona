@@ -10,11 +10,11 @@ void output()
     for (;;)
     {
         byte buffer[32];
-        printf("wait for read before\n");
+//        printf("wait for read before\n");
         stream->waitForRead();
-        printf("wait for read after\n");
+//        printf("wait for read after\n");
         dword size = stream->read(buffer, 32);
-        printf("**** output start *** size = %d\n", size);
+//        printf("**** output start *** size = %d\n", size);
         for (dword i = 0; i < size; i++)
         {
             printf("%c", buffer[i]);

@@ -5,85 +5,85 @@ endif
 
 all:
 ### basic libraries
-	cd Graphics/libjpegls && touch dependencies && make && make install
+	cd Graphics/libjpegls && touch dependencies && $(MAKE) && $(MAKE) install
 ### servers
-	cd X/gui && touch dependencies && make && make install
-	cd Sysutils/libPci && touch dependencies && make && make install
-	cd Net/NetServer && make && make install
+	cd X/gui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Sysutils/libPci && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Net/NetServer && $(MAKE) && $(MAKE) install
 ### libraries
-	cd Graphics/Mesa && touch dependencies && make && make install
-	cd Graphics/libgui && touch dependencies && make && make install
-	cd Graphics/libbaygui && touch dependencies && make && make install
-	cd Net/libnet && make && make install
+	cd Graphics/Mesa && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/libgui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/libbaygui && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Net/libnet && $(MAKE) && $(MAKE) install
 ### non-gui applications
-	cd Emulators/infones && touch dependencies && make && make install
-	cd Emulators/monamona && touch dependencies && make && make install
-	cd Graphics/jpegview && touch dependencies && make && make install
-	cd Graphics/Mesa-gears && touch dependencies && make && make install
-	cd Misc/helloworld && touch dependencies && make && make install
-	cd Misc/stdoutclienttest && touch dependencies && make && make install
-	cd Misc/stdoutservertest && touch dependencies && make && make install
-	cd Multimedia/monapeg && touch dependencies && make && make install
-	cd Multimedia/monappt && touch dependencies && make && make install
+	cd Emulators/infones && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Emulators/monamona && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/jpegview && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Graphics/Mesa-gears && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/helloworld && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/stdoutclienttest && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/stdoutservertest && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/monapeg && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/monappt && touch dependencies && $(MAKE) && $(MAKE) install
 ### MonaForms applications
-	cd Shells/mshell && touch dependencies && make && make install
-	cd X/monafile && touch dependencies && make && make install
-	cd Net/monadat && touch dependencies && make && make install
+	cd Shells/mshell && touch dependencies && $(MAKE) && $(MAKE) install
+	cd X/monafile && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Net/monadat && touch dependencies && $(MAKE) && $(MAKE) install
 ### BayGUI applications
-	cd Shells/gshell && touch dependencies && make && make install
-	cd X/glaunch && touch dependencies && make && make install
-	cd Misc/gnote && touch dependencies && make && make install
-	cd Multimedia/xmonapeg && touch dependencies && make && make install
+	cd Shells/gshell && touch dependencies && $(MAKE) && $(MAKE) install
+	cd X/glaunch && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Misc/gnote && touch dependencies && $(MAKE) && $(MAKE) install
+	cd Multimedia/xmonapeg && touch dependencies && $(MAKE) && $(MAKE) install
 ### Network applications
-	cd Net/libnet/sample/giko && make && make install
+	cd Net/libnet/sample/giko && $(MAKE) && $(MAKE) install
 ### Append
-	cd Benchmarks/gfire && make && make install
-	cd Benchmarks/gnoiz2bg && make && make install
-	cd Games/ghebtn && make && make install
-	cd Games/gnullpo && make && make install
-	cd Games/mblupin && make && make install
-	cd Games/mine && make && make install
-	cd Games/mtorz && make && make install
-	cd Graphics/bitmap && make && make install
-	cd Sysutils/gclock && make && make install
-	cd Sysutils/gtimer && make && make install
-	cd Sysutils/startx && make && make install
-### make disk images
-	cd $(MONADIR)/tool/mkimg && make
+	cd Benchmarks/gfire && $(MAKE) && $(MAKE) install
+	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) install
+	cd Games/ghebtn && $(MAKE) && $(MAKE) install
+	cd Games/gnullpo && $(MAKE) && $(MAKE) install
+	cd Games/mblupin && $(MAKE) && $(MAKE) install
+	cd Games/mine && $(MAKE) && $(MAKE) install
+	cd Games/mtorz && $(MAKE) && $(MAKE) install
+	cd Graphics/bitmap && $(MAKE) && $(MAKE) install
+	cd Sysutils/gclock && $(MAKE) && $(MAKE) install
+	cd Sysutils/gtimer && $(MAKE) && $(MAKE) install
+	cd Sysutils/startx && $(MAKE) && $(MAKE) install
+### $(MAKE) disk images
+	cd $(MONADIR)/tool/mkimg && $(MAKE)
 
 clean:
-	cd Emulators/infones && make clean
-	cd Emulators/monamona && make clean
-	cd Graphics/jpegview && make clean
-	cd Graphics/libbaygui && make clean
-	cd Graphics/libjpegls && make clean
-	cd Graphics/libgui && make clean
-	cd Graphics/Mesa && make clean
-	cd Graphics/Mesa-gears && make clean
-	cd Misc/helloworld && make clean
-	cd Misc/stdoutservertest && make clean
-	cd Misc/stdoutclienttest && make clean
-	cd Misc/gnote && make clean
-	cd Multimedia/monapeg && make clean
-	cd Multimedia/monappt && make clean
-	cd Multimedia/xmonapeg && make clean
-	cd Net/libnet && make clean
-	cd Net/monadat && make clean
-	cd Net/NetServer && make clean
-	cd Shells/gshell && make clean
-	cd Shells/mshell && make clean
-	cd Sysutils/libPci && make clean
-	cd X/gui && make clean
-	cd X/glaunch && make clean
-	cd X/monafile && make clean
-	cd Benchmarks/gfire && make clean
-	cd Benchmarks/gnoiz2bg && make clean
-	cd Games/ghebtn && make clean
-	cd Games/gnullpo && make clean
-	cd Games/mblupin && make clean
-	cd Games/mine && make clean
-	cd Games/mtorz && make clean
-	cd Graphics/bitmap && make clean
-	cd Sysutils/gclock && make clean
-	cd Sysutils/gtimer && make clean
-	cd Sysutils/startx && make clean
+	cd Emulators/infones && $(MAKE) clean
+	cd Emulators/monamona && $(MAKE) clean
+	cd Graphics/jpegview && $(MAKE) clean
+	cd Graphics/libbaygui && $(MAKE) clean
+	cd Graphics/libjpegls && $(MAKE) clean
+	cd Graphics/libgui && $(MAKE) clean
+	cd Graphics/Mesa && $(MAKE) clean
+	cd Graphics/Mesa-gears && $(MAKE) clean
+	cd Misc/helloworld && $(MAKE) clean
+	cd Misc/stdoutservertest && $(MAKE) clean
+	cd Misc/stdoutclienttest && $(MAKE) clean
+	cd Misc/gnote && $(MAKE) clean
+	cd Multimedia/monapeg && $(MAKE) clean
+	cd Multimedia/monappt && $(MAKE) clean
+	cd Multimedia/xmonapeg && $(MAKE) clean
+	cd Net/libnet && $(MAKE) clean
+	cd Net/monadat && $(MAKE) clean
+	cd Net/NetServer && $(MAKE) clean
+	cd Shells/gshell && $(MAKE) clean
+	cd Shells/mshell && $(MAKE) clean
+	cd Sysutils/libPci && $(MAKE) clean
+	cd X/gui && $(MAKE) clean
+	cd X/glaunch && $(MAKE) clean
+	cd X/monafile && $(MAKE) clean
+	cd Benchmarks/gfire && $(MAKE) clean
+	cd Benchmarks/gnoiz2bg && $(MAKE) clean
+	cd Games/ghebtn && $(MAKE) clean
+	cd Games/gnullpo && $(MAKE) clean
+	cd Games/mblupin && $(MAKE) clean
+	cd Games/mine && $(MAKE) clean
+	cd Games/mtorz && $(MAKE) clean
+	cd Graphics/bitmap && $(MAKE) clean
+	cd Sysutils/gclock && $(MAKE) clean
+	cd Sysutils/gtimer && $(MAKE) clean
+	cd Sysutils/startx && $(MAKE) clean
