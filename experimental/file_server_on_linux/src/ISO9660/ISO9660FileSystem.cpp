@@ -83,7 +83,6 @@ int ISO9660FileSystem::write(Vnode* file, struct io::Context* context)
 int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
 {
     Entry* fileEntry = (Entry*)file->fnode;
-    monapi_cmemoryinfo* memory = context->memory;
     dword offset = context->offset;
     dword readSize = context->size;
     dword rest = fileEntry->attribute.size - offset;
@@ -103,10 +102,18 @@ int ISO9660FileSystem::read(Vnode* file, struct io::Context* context)
     bool readResult = drive_->read(lba, temp, sectorSize) == 0;
     if (!readResult)
     {
-        delete temp;
+        delete[] temp;
         return MONA_FAILURE;
     }
-    memcpy(memory->Data, temp + offset -(lba - fileEntry->attribute.extent) * SECTOR_SIZE, readSize);
+
+    context->memory = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
+    {
+        monapi_cmemoryinfo_delete(context->memory);
+        delete[] temp;
+        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    }
+    memcpy(context->memory->Data, temp + offset -(lba - fileEntry->attribute.extent) * SECTOR_SIZE, readSize);
     delete[] temp;
     context->resultSize = readSize;
     return MONA_SUCCESS;

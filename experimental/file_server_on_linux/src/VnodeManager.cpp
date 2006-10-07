@@ -145,14 +145,9 @@ int VnodeManager::read(dword fileID, dword size, monapi_cmemoryinfo** mem)
     io::FileInfo* fileInfo = (*it).second;
     io::Context* context = &(fileInfo->context);
     context->size = size;
-    context->memory = monapi_cmemoryinfo_new();
-    if (!monapi_cmemoryinfo_create(context->memory, size, MONAPI_FALSE))
-    {
-        monapi_cmemoryinfo_delete(context->memory);
-        return MONA_ERROR_MEMORY_NOT_ENOUGH;
-    }
+    int result = fileInfo->vnode->fs->read(fileInfo->vnode, context);
     *mem = context->memory;
-    return fileInfo->vnode->fs->read(fileInfo->vnode, context);
+    return result;
 }
 
 int VnodeManager::write(dword fileID, dword size, monapi_cmemoryinfo* mem)

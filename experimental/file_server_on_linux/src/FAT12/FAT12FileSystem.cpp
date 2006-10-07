@@ -130,7 +130,6 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
 {
     if (file->type != Vnode::REGULAR) return MONA_FAILURE;
     File* f = (File*)file->fnode;
-    monapi_cmemoryinfo* memory = context->memory;
     dword offset = context->offset;
     dword readSize = context->size;
     dword rest = f->size() - offset;
@@ -141,7 +140,14 @@ int FAT12FileSystem::read(Vnode* file, struct io::Context* context)
     }
 
     f->seek(offset, SEEK_SET);
-    f->read(memory->Data, readSize);
+
+    context->memory = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(context->memory, readSize, MONAPI_FALSE))
+    {
+        monapi_cmemoryinfo_delete(context->memory);
+        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    }
+    f->read(context->memory->Data, readSize);
     return MONA_SUCCESS;
 }
 

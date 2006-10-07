@@ -3,6 +3,11 @@
 
 using namespace MonAPI;
 
+// how to check memory leak of file_server
+// modify messages.cpp
+// valgrind --leak-check=full -v --show-reachable=yes ./file_server 2> val.log
+
+
 int main()
 {
 #ifdef ON_LINUX

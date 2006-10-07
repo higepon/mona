@@ -9,6 +9,7 @@ class FileServerTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(testISO9660ReadDirectory);
     CPPUNIT_TEST(testISO9660ReadDirectoryNG);
     CPPUNIT_TEST(testISO9660ReadFile);
+    CPPUNIT_TEST(testISO9660ReadFileSize);
     CPPUNIT_TEST(testISO9660WriteFile);
     CPPUNIT_TEST(testISO9660ReadFileNG);
     CPPUNIT_TEST(testISO9660FileSize);
@@ -18,6 +19,7 @@ class FileServerTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(testProcessWriteFile);
     CPPUNIT_TEST(testProcessCreateFile);
     CPPUNIT_TEST(testFAT12ReadFile);
+    CPPUNIT_TEST(testFAT12ReadFileSize);
     CPPUNIT_TEST(testFAT12WriteFile);
     CPPUNIT_TEST(testFAT12FileSize);
     CPPUNIT_TEST(testFAT12ReadDirectory);
@@ -32,6 +34,7 @@ public:
     void testISO9660ReadDirectory();
     void testISO9660ReadDirectoryNG();
     void testISO9660ReadFile();
+    void testISO9660ReadFileSize();
     void testISO9660WriteFile();
     void testISO9660ReadFileNG();
     void testISO9660FileSize();
@@ -41,6 +44,7 @@ public:
     void testProcessWriteFile();
     void testProcessCreateFile();
     void testFAT12ReadFile();
+    void testFAT12ReadFileSize();
     void testFAT12WriteFile();
     void testFAT12FileSize();
     void testFAT12ReadDirectory();

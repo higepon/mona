@@ -84,8 +84,13 @@ int ProcessFileSystem::write(Vnode* file, struct io::Context* context)
 int ProcessFileSystem::read(Vnode* file, struct io::Context* context)
 {
     Pnode* p = (Pnode*)file->fnode;
-    monapi_cmemoryinfo* memory = context->memory;
-    memcpy(memory->Data, &(p->tid), sizeof(dword));
+    context->memory = monapi_cmemoryinfo_new();
+    if (!monapi_cmemoryinfo_create(context->memory, sizeof(dword), MONAPI_FALSE))
+    {
+        monapi_cmemoryinfo_delete(context->memory);
+        return MONA_ERROR_MEMORY_NOT_ENOUGH;
+    }
+    memcpy(context->memory->Data, &(p->tid), sizeof(dword));
     context->resultSize = sizeof(dword);
     return MONA_SUCCESS;
 }
