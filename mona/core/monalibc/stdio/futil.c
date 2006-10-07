@@ -56,10 +56,7 @@ int _read(int id, void *buf, size_t size)
 
 	readsize = (int)cmi->Size;
 
-	for( i = 0 ; i < readsize ; i++ )
-	{
-		p[i] = cmi->Data[i];
-	}
+	memcpy(p, cmi->Data, readsize);
 
 	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
@@ -73,11 +70,16 @@ int _write(int id, void *buf, size_t size)
 	monapi_cmemoryinfo* cmi;
 
 	cmi = monapi_cmemoryinfo_new();
-	cmi->Data = buf;
-	cmi->Size = (dword)size;
+	if( !monapi_cmemoryinfo_create(cmi, size, 0) )
+	{
+		monapi_cmemoryinfo_delete(cmi);
+		return -1;
+	}
+	memcpy(cmi->Data, buf, cmi->Size);
 
-	result = monapi_file_write((dword)id, cmi, (dword)size);
+	result = monapi_file_write((dword)id, cmi, cmi->Size);
 
+	monapi_cmemoryinfo_dispose(cmi);
 	monapi_cmemoryinfo_delete(cmi);
 
 	return (int)result;

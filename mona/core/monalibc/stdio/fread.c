@@ -75,7 +75,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 		}
 		if( readsize < size )
 		{
-			stream->_flags != __SEOF;
+			stream->_flags |= __SEOF;
 		}
 		memcpy(buf, stream->_bf._base, size);
 		stream->_bf._offset = stream->_extra->offset;
@@ -110,7 +110,7 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 			}
 			if( readsize < size )
 			{
-				stream->_flags != __SEOF;
+				stream->_flags |= __SEOF;
 			}
 			memcpy(buf, stream->_bf._base, size);
 			stream->_bf._offset = stream->_extra->offset;
@@ -119,6 +119,8 @@ size_t __nida_fullybuf_fread(void *buf, size_t size, FILE *stream)
 	}
 
 	stream->_extra->offset += size;
+
+//	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
 
 	return readsize;
 }

@@ -99,7 +99,6 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	memset(fp->_extra, 0, sizeof(struct __sFILEX));
-/*
 	fp->_bf._base = (unsigned char*)malloc(BUFSIZ);
 	if( fp->_bf._base == NULL )
 	{
@@ -109,8 +108,11 @@ FILE *fopen(const char *path, const char *mode)
 		return NULL;
 	}
 	fp->_bf._size = BUFSIZ;
+	fp->_flags |= __SALD|__SFBF;
+/*
+	fp->_bf._size = 0;
+	fp->_flags |= __SNBF;
 */
-	fp->_flags |= __SALD|__SNBF;
 
 	return fp;
 }

@@ -52,6 +52,15 @@ size_t __nida_write_console(const void *ptr, size_t size, FILE *stream)
 	return size;
 }
 
+size_t __nida_nonebuf_fwrite(const void *ptr, size_t size, FILE *stream)
+{
+	size_t writesize;
+
+	writesize = stream->_write(stream->_file, (void*)ptr, size);
+
+	return writesize;
+}
+
 size_t __nida_fullybuf_fwrite(const void *ptr, size_t size, FILE *stream)
 {
 	size_t writesize;
@@ -94,7 +103,10 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	{
 		return __nida_fullybuf_fwrite(ptr, size*nmemb, stream);
 	}
-
+	else if( stream->_flags & __SNBF )
+	{
+		return __nida_nonebuf_fwrite(ptr, size*nmemb, stream);
+	}
 
 	errno = EBADF;
 	return 0;
