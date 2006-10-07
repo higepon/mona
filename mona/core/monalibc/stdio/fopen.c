@@ -78,9 +78,13 @@ FILE *fopen(const char *path, const char *mode)
 	fileno = monapi_file_open(path, MONAPI_FALSE);
 	if( fileno == MONA_FAILURE )
 	{
-		free(fp);
-		errno = EUNKNOWN;
-		return NULL;
+		fileno = monapi_file_open(path, MONAPI_TRUE);
+		if( fileno == MONA_FAILURE )
+		{
+			free(fp);
+			errno = EUNKNOWN;
+			return NULL;
+		}
 	}
 	fp->_file = fileno;
 
