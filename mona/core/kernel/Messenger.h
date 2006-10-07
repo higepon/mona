@@ -10,7 +10,7 @@
 class Messenger {
 
   public:
-    Messenger::Messenger(int size);
+    Messenger(int size);
     virtual ~Messenger();
 
   public:
