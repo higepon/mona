@@ -1,3 +1,11 @@
+2006-10-07  higepon  <higepon@users.sourceforge.jp>
+
+        * core/file_server/FAT12/FAT12FileSystem.cpp (FAT12FileSystem::read): 共有メモリの割り当てはコンクリートFSに任せる（mem->Size == readSizeにしたいので）
+
+        * core/file_server/ISO9660/ISO9660FileSystem.cpp (ISO9660FileSystem::read):共有メモリの割り当てはコンクリートFSに任せる（mem->Size == readSizeにしたいので）
+
+        * core/file_server/VnodeManager.cpp (VnodeManager::read): 共有メモリの割り当てはコンクリートFSに任せる（mem->Size == readSizeにしたいので）
+
 2006-10-06  higepon  <higepon@users.sourceforge.jp>
 
         * core/kernel/Loader.cpp (Loader::Load): コマンドライン引数を MAX_PROCESS_ARGUMENT_LENGTH 文字で安全に切る
