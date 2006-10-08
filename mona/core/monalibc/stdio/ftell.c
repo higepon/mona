@@ -33,7 +33,7 @@
 
 #include "stdio_p.h"
 
-int putc(int c, FILE * stream)
+long int ftell(FILE *stream)
 {
-	return putc(c, stream);
+	return (long int)stream->_extra->offset;
 }

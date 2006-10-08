@@ -33,7 +33,9 @@
 
 #include "stdio_p.h"
 
-int putc(int c, FILE * stream)
+FILE *freopen(const char *path, const char *mode, FILE *stream)
 {
-	return putc(c, stream);
+	fclose(stream);
+	stream = fopen(path, mode);
+	return stream;
 }

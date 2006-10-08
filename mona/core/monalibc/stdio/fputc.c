@@ -32,8 +32,15 @@
 */
 
 #include "stdio_p.h"
+#include <string.h>
 
-int putc(int c, FILE * stream)
+int fputc(int c, FILE * stream)
 {
-	return putc(c, stream);
+	unsigned char n;
+	int ret;
+
+	n = (unsigned char)c;
+	fwrite(&n, 1, 1, stream);
+	if( ferror(stream) ) return (int)EOF;
+	return (int)n;
 }

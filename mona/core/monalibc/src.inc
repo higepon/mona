@@ -13,6 +13,8 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdio/fgetc.c stdio/fgets.c stdio/fscanf.c  \
 	  stdio/putc.c stdio/putchar.c stdio/sscanf.c \
 	  stdio/setbuf.c stdio/setvbuf.c stdio/perror.c \
+	  stdio/freopen.c stdio/ftell.c stdio/fgetpos.c stdio/fsetpos.c \
+	  stdio/fputs.c stdio/puts.c stdio/getc.c stdio/getchar.c \
 	  stdlib/abort.c stdlib/abs.c \
 	  stdlib/atof.c stdlib/atoi.c stdlib/atol.c stdlib/bsearch.c \
 	  stdlib/div.c stdlib/getenv.c stdlib/labs.c stdlib/ldiv.c \

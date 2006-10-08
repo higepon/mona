@@ -33,7 +33,8 @@
 
 #include "stdio_p.h"
 
-int putc(int c, FILE * stream)
+int fgetpos(FILE *stream, fpos_t *pos)
 {
-	return putc(c, stream);
+	*pos = stream->_extra->offset;
+	return 0;
 }

@@ -32,8 +32,9 @@
 */
 
 #include "stdio_p.h"
+#include <string.h>
 
-int putc(int c, FILE * stream)
+int puts(const char * s)
 {
-	return putc(c, stream);
+	return fputs(s, stdout);
 }

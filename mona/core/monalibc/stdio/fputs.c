@@ -32,8 +32,17 @@
 */
 
 #include "stdio_p.h"
+#include <string.h>
 
-int putc(int c, FILE * stream)
+int fputs(const char * s, FILE * stream)
 {
-	return putc(c, stream);
+	int len;
+	int result;
+
+	len = strlen(s);
+
+	result = fwrite(s, 1, len, stream);
+
+	if( result > 0 ) return (int)EOF;
+	return 0;
 }

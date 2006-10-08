@@ -33,7 +33,9 @@
 
 #include "stdio_p.h"
 
-int putc(int c, FILE * stream)
+int fsetpos(FILE *stream, const fpos_t *pos)
 {
-	return putc(c, stream);
+	stream->_extra->offset = *pos;
+	stream->_seek(stream->_file, stream->_extra->offset, SEEK_SET);
+	return 0;
 }
