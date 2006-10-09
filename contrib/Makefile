@@ -41,6 +41,7 @@ all:
 	cd Benchmarks/gnoiz2bg && $(MAKE) && $(MAKE) install
 	cd Games/ghebtn && $(MAKE) && $(MAKE) install
 	cd Games/gnullpo && $(MAKE) && $(MAKE) install
+	cd Games/gtetris && $(MAKE) && $(MAKE) install
 	cd Games/mblupin && $(MAKE) && $(MAKE) install
 	cd Games/mine && $(MAKE) && $(MAKE) install
 	cd Games/mtorz && $(MAKE) && $(MAKE) install
@@ -80,6 +81,7 @@ clean:
 	cd Benchmarks/gnoiz2bg && $(MAKE) clean
 	cd Games/ghebtn && $(MAKE) clean
 	cd Games/gnullpo && $(MAKE) clean
+	cd Games/gtetris && $(MAKE) clean
 	cd Games/mblupin && $(MAKE) clean
 	cd Games/mine && $(MAKE) clean
 	cd Games/mtorz && $(MAKE) clean
