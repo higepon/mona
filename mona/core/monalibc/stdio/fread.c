@@ -138,11 +138,20 @@ size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream)
 		return __nida_read_keyboard(buf, size*nmemb, stream);
 	}
 	*/
-	if( stream->_flags & __SNBF )
+	else if( stream->_ungetcbuf != EOF )
+	{
+		{
+			unsigned char *p = buf;
+			p[0] = (unsigned char)stream->_ungetcbuf;
+			stream->_ungetcbuf = EOF;
+			return (size_t)1;
+		}
+	}
+	else if( stream->_flags & __SNBF )
 	{
 		return __nida_nonebuf_fread(buf, size*nmemb, stream);
 	}
-	if( stream->_flags & __SFBF )
+	else if( stream->_flags & __SFBF )
 	{
 		return __nida_fullybuf_fread(buf, size*nmemb, stream);
 	}

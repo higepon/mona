@@ -35,5 +35,5 @@
 
 int putc(int c, FILE * stream)
 {
-	return putc(c, stream);
+	return fputc(c, stream);
 }

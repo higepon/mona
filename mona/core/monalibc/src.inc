@@ -10,7 +10,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdio/fopen.c stdio/fread.c stdio/futil.c stdio/fwrite.c \
 	  stdio/fseek.c stdio/rewind.c stdio/feof.c stdio/ferror.c \
 	  stdio/fflush.c stdio/clearerr.c stdio/sprintf.c \
-	  stdio/fgetc.c stdio/fgets.c stdio/fscanf.c  \
+	  stdio/fgetc.c stdio/fgets.c stdio/fscanf.c  stdio/fputc.c \
 	  stdio/putc.c stdio/putchar.c stdio/sscanf.c \
 	  stdio/setbuf.c stdio/setvbuf.c stdio/perror.c \
 	  stdio/freopen.c stdio/ftell.c stdio/fgetpos.c stdio/fsetpos.c \

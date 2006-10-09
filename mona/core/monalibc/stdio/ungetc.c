@@ -32,21 +32,13 @@
 */
 
 #include "stdio_p.h"
-#include <string.h>
 
-int fputs(const char * s, FILE * stream)
+int ungetc(int c, FILE * stream)
 {
-	int len;
-	int result;
+	if( stream->_ungetcbuf != EOF ) return EOF;
 
-	len = strlen(s);
+	stream->_ungetcbuf = (unsigned char)c;
+	stream->_extra->offset--;
 
-	result = fwrite(s, 1, len, stream);
-	if( result < 0 ) return (int)EOF;
-
-	char c = '\n';
-	result = fwrite(&c, 1, 1, stream);
-	if( result < 0 ) return (int)EOF;
-
-	return 0;
+	return c;
 }
