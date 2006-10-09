@@ -31,31 +31,23 @@
 	negi4d41@yahoo.co.jp
 */
 
-#ifndef _ERRNO_H_
-#define _ERRNO_H_
+#ifndef _STDBOOL_H_
+#define _STDBOOL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-extern int *__error(void);
-#define errno (*__error())
+#define bool _Bool
 
-enum
-{
-	EUNKNOWN,	/* Unkonwn error */
-	EPERM,		/* Operation not permitted */
-	EBADF,		/* Bad file descriptor */
-	ENOMEM,		/* Cannot allocate memory */
-	EINVAL,		/* Invalid argument */
-	EDOM,		/* out of domain. C99 */
-	ERANGE,		/* Result is too big. C99 */
-	EILSEQ,		/* Illegal byte array. C99 */
-};
-
-#define ERRNO_MAX EINVAL
-
+#if (__bool_true_false_are_defined != 1)||!defined(__bool_true_false_are_defined)
+#define true 1
+#define false 0
+#if defined(__bool_true_false_are_defined)
+#undef __bool_true_false_are_defined
+#endif
+#define __bool_true_false_are_defined 1
+#endif
 
 #ifdef __cplusplus
 }

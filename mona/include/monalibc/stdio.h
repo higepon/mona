@@ -114,28 +114,76 @@ extern "C"
 
 extern FILE __sF[];
 
-void	 clearerr(FILE *);
+/*
+ * C99's functions totals 46.
+ * This library is implementing 29 functions.
+ * 63.0% functions are implemented.
+ */
+
+/* ISO/IEC 9899:1999 7.19.4 Operatoins on files */
+/*int remove(const char *filename); //stub */
+/*int rename(const char *old, const char *new); //stub */
+/*FILE *tmpfile(void); //stub */
+/*char *tmpnam(char *s); //stub */
+
+/* ISO/IEC 9899:1999 7.19.5 File access functions */
 int	 fclose(FILE *);
-int	 feof(FILE *);
-int	 ferror(FILE *);
 int	 fflush(FILE *);
 FILE	*fopen(const char *, const char *);
-int	 fseek(FILE *, long, int);
-size_t	 fwrite(const void *, size_t, size_t, FILE *);
-size_t	 fread(void *, size_t, size_t, FILE *);
-void	 rewind(FILE *);
-void	 perror(const char *);
+FILE	*freopen(const char *, const char *, FILE *);
 void	 setbuf(FILE *, char *);
+int	 setvbuf(FILE *, char *, int, size_t);
 
-int	 fileno(FILE *);
-
-int fgetc(FILE *fp);
-char *fgets(char *buf, int n, FILE *fp);
-
+/* ISO/IEC 9899:1999 7.19.6 Formatted input/output functions*/
+/*int	 fprintf(FILE *, const char *, ...); //stub */
 int fscanf(FILE *fp, const char *format, ...);
-
+/*int	 printf(const char *, ...); //stub */
+/*int	 scanf(const char *, ...); //stub */
+/*int	 snprintf(char *, size_t, char *, ...); //stub */
 int sprintf(char *str, const char *format, ...);
 int sscanf(const char *str, const char *format, ...);
+/*int vfprintf(FILE *, const char *, va_list); //stub */
+/*int vfscanf(FILE *, const char *, va_list); //stub */
+/*int vprintf(const char *, va_list); //stub */
+/*int vscanf(const char *, va_list); //stub */
+/*int vsnprintf(char *, size_t, const char *, va_list); //stub */
+/*int vsprintf(char *, const char *, va_list); //stub */
+/*int vsscanf(char *, const char *, va_list); //stub */
+
+/* ISO/IEC 9899:1999 7.19.7 Character input/output functions*/
+int	 fgetc(FILE *fp);
+char	*fgets(char *buf, int n, FILE *fp);
+int	 fputc(int c, FILE *stream);
+int	 fputs(const char * s, FILE * stream);
+int	 getc(FILE *stream);
+int	 getchar(void);
+/*char	*gets(char *s); //stub */
+int	 putc(int c, FILE *stream);
+int	 putchar(int c);
+int	 puts(const char *s);
+/*int ungetc(int c, FILE *stream); //stub */
+
+/* ISO/IEC 9899:1999 7.19.8 Direct input/output functions*/
+size_t	 fread(void *, size_t, size_t, FILE *);
+size_t	 fwrite(const void *, size_t, size_t, FILE *);
+
+/* ISO/IEC 9899:1999 7.19.9 File positioning functions*/
+int	 fgetpos(FILE * stream, fpos_t * pos);
+int	 fseek(FILE *, long, int);
+int	 fsetpos(FILE *stream, const fpos_t *pos);
+long int ftell(FILE *stream);
+void	 rewind(FILE *);
+
+/* ISO/IEC 9899:1999 7.19.10 Error-handling functions*/
+void	 clearerr(FILE *);
+int	 feof(FILE *);
+int	 ferror(FILE *);
+void	 perror(const char *);
+
+
+/* Not ANSI */
+int	 fileno(FILE *);
+
 
 /* #define perror(err) printf(err) */
 #define fprintf(n, ...) printf(__VA_ARGS__)
