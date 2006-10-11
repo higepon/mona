@@ -1,3 +1,7 @@
+2006-10-12  higepon  <higepon@users.sourceforge.jp>
+
+        * configure (CFLAGS): gcc4.1.1 ‚Å’n—‹‚ª‚ ‚é‚Ì‚Å -O3 -> -O2
+
 2006-10-11  higepon  <higepon@users.sourceforge.jp>
 
         * .cvsignore‚ğÁ‚·B
