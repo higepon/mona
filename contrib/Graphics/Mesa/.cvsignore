@@ -1,6 +1,0 @@
-Mesa*
-dependencies
-.FETCH
-.EXTRACT
-.MAKE
-.PATCH
