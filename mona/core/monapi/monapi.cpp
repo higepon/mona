@@ -18,3 +18,11 @@ extern "C" int user_start()
     invokeFuncList(__DTOR_LIST__);
     return result;
 }
+
+/*----------------------------------------------------------------------
+    auto-import global symbols
+----------------------------------------------------------------------*/
+extern "C" void _pei386_runtime_relocator()
+{
+    // this function is stub
+}
