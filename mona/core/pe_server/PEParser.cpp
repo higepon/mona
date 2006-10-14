@@ -284,52 +284,48 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
 	ImportTable* it = this->GetImportTable(index);
 	if (it == NULL) return false;
 	
-	uint32_t addr = it->ImportAddressTable;
-	if (addr == 0) return false;
+	uint32_t addr1 = it->ImportLookupTable;
+	uint32_t addr2 = it->ImportAddressTable;
+	if (addr1 == 0 || addr2 == 0) return false;
 	
-	uint32_t base = this->address;
-	if (base == 0) base = 0xa0000000;
-	for (; addr < this->imageSize; addr += 4)
+	for (;; addr1 += 4, addr2 += 4)
 	{
-		uint32_t* ptr = (uint32_t*)&image[addr];
-		if (*ptr == 0) break;
+		if (addr1 >= this->imageSize || addr2 >= this->imageSize) return false;
 		
-		if (*ptr >= base)
-		{
-			for (int i = 0; i < this->imps.size(); i++)
-			{
-				if (this->imps.get(i) == *ptr)
-				{
-					*ptr = *(uint32_t*)&image[*ptr - base];
-					break;
-				}
-			}
-			break;
-		}
+		uint32_t* ptr1 = (uint32_t*)&image[addr1];
+		uint32_t* ptr2 = (uint32_t*)&image[addr2];
+		if (*ptr1 == 0 || *ptr2 == 0) break;
 		
 		int ordinal = -1;
-		const char* name = (const char*)&image[(*ptr) + 2];
-		if ((*ptr & 0x80000000) != 0)
+		uint32_t* ptr3 = (uint32_t*)&image[*ptr1];
+		if ((*ptr3 & 0x80000000) != 0)
 		{
 			// Ordinal Number
-			ordinal = (int)(*ptr & 0x7fffffff);
+			ordinal = (int)((*ptr3) & 0x7fffffff);
 		}
 		else
 		{
 			// Hint/Name Table RVA
-			ordinal = parser->GetExportOrdinal(name);
+			int hint = (*(uint16_t*)ptr3) + 1;
+			const char* name = (const char*)&image[*ptr1 + 2];
+			if (!strcmp(name, parser->GetExportName(hint)))
+			{
+				ordinal = hint;
+				//printf("* [%d]%s\n", ordinal, name);
+			}
+			else
+			{
+				ordinal = parser->GetExportOrdinal(name);
+				//printf("* [%d->%d]%s\n", hint, ordinal, name);
+			}
 		}
-		//printf("* [%d]%s\n", ordinal, name);
 		if (ordinal == -1) return false;
 		
 		uint32_t exp_addr = parser->GetExportAddress(ordinal);
-		const char* exp_name = parser->GetExportName(ordinal);
-		if (name != NULL && (exp_name == NULL || strcmp(name, exp_name) != 0)) return false;
 		if (exp_addr == 0) return false;
 		
-		*ptr = exp_addr + parser->address;
-		//printf("  address = %x\n", *ptr);
-		this->imps.add(base + addr);
+		*ptr2 = exp_addr + parser->address;
+		//printf("  address = %x\n", *ptr2);
 	}
 	
 	return true;

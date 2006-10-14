@@ -344,20 +344,27 @@ private:
 		{
 			PEData* data = this->list[i];
 			int its = data->Parser.get_ImportTableCount();
+			_A<CString> names(its);
 			for (int j = 0; j < its; j++)
 			{
 				CString dll = CString(data->Parser.GetImportTableName(j)).toUpper();
-				if (this->prompt) printf("%s: Linking %s to %s....", SVR, (const char*)dll, (const char*)data->Name);
+				names[j] = dll;
+				bool pr = this->prompt;
+				for (int k = 0; k < j; k++)
+				{
+					if (names[k] == dll) pr = false;
+				}
+				if (pr) printf("%s: Linking %s to %s....", SVR, (const char*)dll, (const char*)data->Name);
 				PEData* target = this->Find(dll);
 				if (target != NULL && data->Parser.Link(&dst->Data[addr], j, &target->Parser))
 				{
-					if (this->prompt) printf("OK\n");
+					if (pr) printf("OK\n");
 				}
 				else
 				{
 					if (this->prompt)
 					{
-						printf("NG\n");
+						if (pr) printf("NG\n");
 						printf("%s: can not link %s to %s!\n", SVR, (const char*)dll, (const char*)data->Name);
 					}
 #ifdef NO_CACHE

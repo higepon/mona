@@ -21,7 +21,6 @@ private:
 	uint32_t address;
 	HList<uint32_t> addrs_p;
 	HList<uint32_t> addrs_v;
-	HList<uint32_t> imps;
 
 public:
 	PEParser();
