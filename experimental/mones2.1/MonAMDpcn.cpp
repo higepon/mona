@@ -18,7 +18,9 @@ MonAMDpcn::MonAMDpcn():rxdsc(NULL),txdsc(NULL),
 
 int MonAMDpcn::init()
 {    
-    AllocateDmaPages( ((1<<LOGRXRINGLEN)+(1<<LOGTXRINGLEN))*(ETHER_MAX_PACKET+sizeof(RXDSC)/2+sizeof(TXDSC)/2)+sizeof(IBLK) );
+    AllocateDmaPages(  (1<<LOGRXRINGLEN)*(ETHER_MAX_PACKET+sizeof(RXDSC))
+                      +(1<<LOGTXRINGLEN)*(ETHER_MAX_PACKET+sizeof(TXDSC))
+                      +sizeof(IBLK) );
     //initialize rx
     if( dma_head== NULL ){
         printf("buffer allocation was failed.");

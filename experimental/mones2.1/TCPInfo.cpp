@@ -226,6 +226,7 @@ int TCPCoInfo::Duplicate()
 
 void TCPCoInfo::ReplyUnReach(Ether* frame)
 {
+    //printf("port unleach\n");
     remoteip=frame->IPHeader->srcip;
     localport=bswap(frame->IPHeader->TCPHeader->dstport);
     remoteport=bswap(frame->IPHeader->TCPHeader->srcport);// srcport!!!

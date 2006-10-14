@@ -110,7 +110,7 @@ int Reset(NetClient& client,dword remoteip, word localport,word remoteport)
     return 0;
 }
 
-int Ftp(NetClient& client,dword remoteip, List<char*>* args)
+int STFtp(NetClient& client,dword remoteip, List<char*>* args)
 {  
     char buf[1024];
     word localport = client.GetFreePort();
@@ -179,16 +179,104 @@ int Ftp(NetClient& client,dword remoteip, List<char*>* args)
     }
     return 0;
 }
+//////////////////////////////
+NetClient* pClient;
 
+int FtpDataThread()
+{
+    printf("FTPDataThread\n");
+    exit(0);
+    return 0;    
+}
+
+int Ftp(NetClient& client ,dword remoteip, List<char*> *args)
+{
+    dword id = syscall_mthread_create((dword)FtpDataThread);
+    pClient=&client;
+    syscall_mthread_join(id);
+    //MainThread
+    char buf[1024];
+    word localport = client.GetFreePort();
+    int netdsc = client.TCPActvOpen(remoteip,localport,FTP);
+    if( netdsc < 0 ){
+        printf("OpenError.\n");
+    }
+    memset(buf,'\0',1024);
+    if( client.Read(netdsc,(byte*)buf) <= 0){
+        client.Close(netdsc);
+    }
+    printf("%s",buf);
+    //USER
+    int len=sprintf(buf,"USER %s\n",args->get(2));
+    if( client.Write(netdsc,(byte*)buf,len) ){ 
+        client.Close(netdsc);
+    }
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    printf("%s",buf);
+    //PASS
+    len=sprintf(buf,"PASS %s\n",args->get(3));
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
+    }
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    printf("%s",buf);
+    //LIST
+    word newport = client.GetFreePort();
+    int p =(newport>>8) & 0xFF;
+    int q = newport & 0xFF;
+    len = sprintf( buf, "PORT 192,168,0,5,%d,%d\n",p,q); 
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
+    }
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }        
+    len=sprintf(buf,"%s\n",args->get(4));
+    if( client.Write(netdsc,(byte*)buf,len) ){
+        client.Close(netdsc);
+    }
+
+    int netdsc2 = client.TCPPasvOpen(newport);
+    if( client.Read(netdsc,(byte*)buf) <= 0 ){
+        client.Close(netdsc);    
+    }
+    //netdsc2 must be still waiting for another connection request. 
+    int netdsc3 = client.TCPAccept(netdsc2); 
+    printf("ACCEPTED\n");
+    printf("%s",buf);
+    int ret=1;
+    while( (ret = client.Read(netdsc3,(byte*)buf)) >=0 ){    
+        printf("%s",buf);    
+        //printf("-----(%d)------\n",ret);
+    }
+    printf("NO more data\n");
+
+    if( client.Close(netdsc) ){
+        printf("CloseError1.\n");
+    }
+    if( client.Close(netdsc2)){
+        printf("CloseError2.\n");
+    }
+
+    printf("Mainthread");
+    sleep(10000);
+    return 0;
+}
+//////////////////////////////////
 int MonaMain(List<char*>* pekoe)
 {
     NetClient client;
     if( pekoe->size() < 2 ){
         printf("\nusage:\n");
-        printf("         client dest-ip ping\n");
+        printf("         client dest-ip pong\n");
         printf("         client dest-ip udp svc\n");
         printf("         clinet dset-ip tcp svc\n");
         printf("         client dest-ip reset remoteport localport\n");
+        printf("         client dest-ip stftp user passwd commands......\n"); 
         printf("         client dest-ip ftp user passwd commands......\n");
         NetStat(client);
         exit(0);
@@ -197,7 +285,7 @@ int MonaMain(List<char*>* pekoe)
     sscanf(pekoe->get(0),"%d.%d.%d.%d",&a,&b,&c,&d);
     dword remoteip=((d<<24)&0xFF000000)|((c<<16)&0x00FF0000)|((b<<8)&0x0000FF00)|(a&0x000000FF);
     word rport;
-    if( !strcmp(pekoe->get(1),"ping")){
+    if( !strcmp(pekoe->get(1),"pong")){
         Ping(client,remoteip);
     }else if( !strcmp(pekoe->get(1), "udp")){
         sscanf(pekoe->get(2),"%d",&rport);
@@ -211,6 +299,8 @@ int MonaMain(List<char*>* pekoe)
         sscanf(pekoe->get(2),"%d",&rport); //later sscanf may deletes previous one. 
                                            //printf(">>%d %d\n",lport,rport);          
         Reset(client,remoteip,lport,rport);
+    }else if( !strcmp(pekoe->get(1), "stftp")){
+        STFtp(client,remoteip,pekoe);
     }else if( !strcmp(pekoe->get(1), "ftp")){
         Ftp(client,remoteip,pekoe);
     }

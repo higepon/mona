@@ -51,7 +51,7 @@ runv: install
 	cd $(MONADIR)/tool/mkimg && make && cp mona.iso ./VPC && cd ./VPC && $(MONADIR)/tool/mkimg/VPC/runv.bat
 	#VirtualPC
 kernel:
-	cd $(MONADIR) && make && cd ../contrib && make
+	cd $(MONADIR) && make && cd ../contrib/Sysutils/libPci && touch dependencies && make && make install
 kernel-conf:
 	cd $(MONADIR) && make clean && ./configure
 catch-up:
@@ -79,7 +79,7 @@ endif
 
 ADDLINK +=  -lPci -lmonalibc
 
-CXXFLAGS += -DDEBUG 
+#CXXFLAGS += -DDEBUG 
 
 -include dependencies
 
