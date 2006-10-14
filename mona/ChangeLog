@@ -1,3 +1,7 @@
+2006-10-14  bayside
+
+        * core/pe_server: auto-import 対策パッチ適用
+
 2006-10-12  higepon  <higepon@users.sourceforge.jp>
 
         * configure (CFLAGS): gcc4.1.1 で地雷があるので -O3 -> -O2
