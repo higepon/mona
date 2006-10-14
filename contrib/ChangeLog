@@ -6,6 +6,8 @@
 
         * Misc/jhello: 新規追加
 
+        * Graphics/libbaygui: 高速化パッチを適用
+
 2006-10-11  higepon  <higepon@users.sourceforge.jp>
 
         * tmpmonalibc: monalibcに取り込まれたので削除
