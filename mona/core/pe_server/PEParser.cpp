@@ -287,10 +287,25 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
 	uint32_t addr = it->ImportAddressTable;
 	if (addr == 0) return false;
 	
+	uint32_t base = this->address;
+	if (base == 0) base = 0xa0000000;
 	for (; addr < this->imageSize; addr += 4)
 	{
 		uint32_t* ptr = (uint32_t*)&image[addr];
 		if (*ptr == 0) break;
+		
+		if (*ptr >= base)
+		{
+			for (int i = 0; i < this->imps.size(); i++)
+			{
+				if (this->imps.get(i) == *ptr)
+				{
+					*ptr = *(uint32_t*)&image[*ptr - base];
+					break;
+				}
+			}
+			break;
+		}
 		
 		int ordinal = -1;
 		const char* name = (const char*)&image[(*ptr) + 2];
@@ -314,6 +329,7 @@ bool PEParser::Link(uint8_t* image, int index, PEParser* parser)
 		
 		*ptr = exp_addr + parser->address;
 		//printf("  address = %x\n", *ptr);
+		this->imps.add(base + addr);
 	}
 	
 	return true;
