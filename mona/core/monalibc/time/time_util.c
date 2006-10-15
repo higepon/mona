@@ -31,16 +31,66 @@
 	negi4d41@yahoo.co.jp
 */
 
-#include <monalibc/time.h>
-#include <monapi/syscall.h>
+#include <sys/types.h>
 #include "time_util.h"
 
-time_t time(time_t *t) {
-	KDate date;
-	time_t result;
+int isLeapYear(int year)
+{
+	if( year % 4 == 0 )
+	{
+		if( year % 100 == 0 )
+		{
+			if( year % 400 == 0 ) return 1;
+			else return 0;
+		}
+		return 1;
+	}
+	return 0;
+}
 
-	syscall_get_date(&date);
-	result = KDate2time_t(&date);
-	if( t != NULL ) *t = result;
+int countLeapYears(int epoch, int year)
+{
+	int i, result = 0;
+	for( i = epoch ; i < year ; i++ ) if( isLeapYear(i) ) result++;
+	return result;
+}
+
+int getYday(KDate *tm)
+{
+	int year = tm->year;
+	int mon = tm->month;
+	int result;
+	switch(mon)
+	{
+		case 1: result = 0; break;
+		case 2: result = 31; break; /* 1: 31 */
+		case 3: result = 59; break; /* 2: 31+28 */
+		case 4: result = 90; break; /* 3: 59+31 */
+		case 5: result = 120;break; /* 4: 90+30 */
+		case 6: result = 151;break; /* 5: 120+31 */
+		case 7: result = 181;break; /* 6: 151+30 */
+		case 8: result = 212;break; /* 7: 181+31 */
+		case 9: result = 243;break; /* 8: 212+31 */
+		case 10:result = 273;break; /* 9: 243+30 */
+		case 11:result = 304;break; /* 10:273+31 */
+		case 12:result = 334;break; /* 11:304+30 */
+		default: break;
+	}
+	if( isLeapYear(year) && mon > 2 ) result++;
+	result += tm->day-1;
+	return result;
+}
+
+time_t KDate2time_t(KDate *tm)
+{
+	time_t result = 0;
+
+	result = tm->sec;
+	result += tm->min*60;
+	result += tm->hour*3600;
+	result += getYday(tm)*86400;
+	result += (tm->year-1970)*31536000;
+	result += countLeapYears(1970, tm->year)*86400;
+
 	return result;
 }
