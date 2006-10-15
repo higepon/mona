@@ -72,6 +72,12 @@ private:
       CSR5_RI      =0x0040,
       CSR5_TI      =0x0001,
       CSR_6        =0x30,
+      //0x02002242
+      CSR6_SR      =0x00000002,
+      CSR6_PM      =0x00000040,
+      CSR6_FD      =0x00000200,
+      CSR6_ST      =0x00002000,
+      CSR6_MD1     =0x02000000,
       CSR_7        =0x38,
       CSR7_NI      =0x10000,
       CSR7_AI      =0x8000,

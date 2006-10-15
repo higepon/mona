@@ -64,6 +64,7 @@ enum
 
    PCI_VENDOR_ID      = 0x00,
    PCI_DEVICE_ID      = 0x02,
+   PCI_COMMAND        = 0x04,
    PCI_STATUS         = 0x06,
    PCI_REVISION       = 0x08,
    PCI_API            = 0x09,

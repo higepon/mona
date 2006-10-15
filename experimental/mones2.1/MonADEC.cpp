@@ -81,8 +81,8 @@ int MonADEC::init()
     //   transmit processes. The receive and transmit processes enter the running state and attempt to
     //   acquire descriptors from the respective descriptor lists. Then the receive and transmit
     //   processes begin processing incoming and outgoing frames. The receive and transmit.  
-    outp32( iobase + CSR_6,0x02002242);// ????
-    printf("Hello Virtual PC\n");
+    outp32( iobase + CSR_6,CSR6_SR|CSR6_PM|CSR6_FD|CSR6_ST|CSR6_MD1);// ????
+    //printf("Hello Virtual PC\n");
     return 0;
 }
 
