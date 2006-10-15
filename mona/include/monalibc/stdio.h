@@ -56,7 +56,7 @@ struct __sFILEX;
 
 typedef struct __sFILE
 {
-	short	_flags;	/* flags */
+	int	_flags;	/* flags */
 	dword	_file;	/* fileno, if MonaOS ID, else -1 */
 	struct	__sbuf _bf;
 	int	_lbfpos;
@@ -66,6 +66,7 @@ typedef struct __sFILE
 	int (*_write)(int id, void *buf, size_t size);
 
 	struct __sFILEX *_extra;
+	int _ungetcbuf;
 } FILE;
 
 enum
@@ -116,8 +117,8 @@ extern FILE __sF[];
 
 /*
  * C99's functions totals 46.
- * This library is implementing 29 functions.
- * 63.0% functions are implemented.
+ * This library is implementing 30 functions.
+ * 65.2% functions are implemented.
  */
 
 /* ISO/IEC 9899:1999 7.19.4 Operatoins on files */
@@ -161,7 +162,7 @@ int	 getchar(void);
 int	 putc(int c, FILE *stream);
 int	 putchar(int c);
 int	 puts(const char *s);
-/*int ungetc(int c, FILE *stream); //stub */
+int	 ungetc(int c, FILE *stream);
 
 /* ISO/IEC 9899:1999 7.19.8 Direct input/output functions*/
 size_t	 fread(void *, size_t, size_t, FILE *);
