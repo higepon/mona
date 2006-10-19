@@ -36,6 +36,10 @@ elif test $isMinGW32; then
 elif test -x `printf "%s%s" $MINGWPREFIX "g++"` ; then
    cp  7zip/Compress/LZMA_Alone/Makefile.posix 7zip/Compress/LZMA_Alone/Makefile
    echo "MinGW32 (Unix)"
+# linux
+elif test "$OSTYPE" = "linux" ; then
+   cp 7zip/Compress/LZMA_Alone/Makefile.posix 7zip/Compress/LZMA_Alone/Makefile
+   echo "linux"
 else
    echo $OSTYPE
    echo ""
