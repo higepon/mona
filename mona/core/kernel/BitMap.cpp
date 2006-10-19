@@ -103,7 +103,7 @@ int BitMap::find() {
 
 int BitMap::find(int num) {
 
-    int found = 0;
+    //int found = 0;
     for (int i = 0; i < bitsNumber_; i++) {
 
         if (!marked(i)) {

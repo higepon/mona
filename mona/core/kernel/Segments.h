@@ -94,6 +94,7 @@ class SharedMemoryObject {
 class Segment {
 
   public:
+    virtual ~Segment(){};
     virtual bool faultHandler(LinearAddress address, dword error) = 0;
 
     inline virtual int getErrorNumber() {
