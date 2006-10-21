@@ -118,6 +118,7 @@ inline bool operator!=(REFGUID g1, REFGUID g2)
 
 struct IUnknown
 {
+  STDMETHOD_(, ~IUnknown)(){};
   STDMETHOD(QueryInterface) (REFIID iid, void **outObject) PURE;
   STDMETHOD_(ULONG, AddRef)() PURE;
   STDMETHOD_(ULONG, Release)() PURE;

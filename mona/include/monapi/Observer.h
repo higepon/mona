@@ -13,6 +13,7 @@ class Observable;
 interface Observer {
 
   public:
+    virtual ~Observer(){};
     virtual void update(Observable* o, void* arg) = 0;
 };
 

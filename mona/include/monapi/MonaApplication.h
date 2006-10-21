@@ -10,6 +10,7 @@ namespace MonAPI {
 ----------------------------------------------------------------------*/
 interface Receiver {
   public:
+    virtual ~Receiver(){};
     virtual void onKeyDown(int keycode, int modifiers) = 0;
     virtual void onMouseClick(int x, int y) = 0;
 };

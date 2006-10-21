@@ -11,6 +11,7 @@ namespace MonAPI {
 class Server {
 
   public:
+    virtual ~Server(){};
     virtual void service() = 0;
 
 };
