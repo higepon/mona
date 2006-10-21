@@ -280,8 +280,15 @@ size_t _power(size_t x, size_t y) {
 ----------------------------------------------------------------------*/
 int syscall_mthread_create(dword f)
 {
+    int result, arg2 = 0;
+    SYSCALL_2(SYSTEM_CALL_MTHREAD_CREATE, result, f, arg2);
+    return result;
+}
+
+int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p)
+{
     int result;
-    SYSCALL_1(SYSTEM_CALL_MTHREAD_CREATE, result, f);
+    SYSCALL_2(SYSTEM_CALL_MTHREAD_CREATE, result, f, p);
     return result;
 }
 

@@ -149,7 +149,9 @@ void syscall_entrance()
 
     case SYSTEM_CALL_MTHREAD_CREATE:
     {
+        dword arg = SYSTEM_CALL_ARG_2;
         Thread* thread = ThreadOperation::create(g_currentThread->process, SYSTEM_CALL_ARG_1);
+        thread->tinfo->archinfo->ecx = arg;
         info->eax = g_id->allocateID(thread);
         break;
     }

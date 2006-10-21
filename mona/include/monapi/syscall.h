@@ -39,6 +39,7 @@ extern int syscall_send(dword id, MessageInfo* message);
 extern int syscall_receive(MessageInfo* message);
 extern int syscall_exist_message();
 extern int syscall_mthread_create(dword f);
+extern int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
 extern int syscall_mthread_join(dword id);
 extern int syscall_mutex_create(dword arg);
 extern int syscall_mutex_trylock(int id);
