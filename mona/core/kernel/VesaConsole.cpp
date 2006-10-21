@@ -65,7 +65,7 @@ VesaConsole::VesaConsole (VesaInfoDetail *info)
 
 void VesaConsole::printf(const char *format, ...)
 {
-    void** list = (void **)&format;
+    void** list = (void **)((void *)&format);
 
     list++;
     for (int i = 0; format[i] != '\0'; i++) {

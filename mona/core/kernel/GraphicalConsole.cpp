@@ -71,8 +71,7 @@ void GraphicalConsole::setCHColor(const char color) {
 */
 void GraphicalConsole::printf(const char *format, ...) {
 
-    void** list = (void **)&format;
-
+    void **list = (void **)((void *)&format);
     list++;
     for (int i = 0; format[i] != '\0'; i++) {
 

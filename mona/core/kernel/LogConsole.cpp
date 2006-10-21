@@ -73,7 +73,7 @@ void LogConsole::printf(const char *format, ...)
 {
     // print((char*)g_currentThread->process->getName());
 
-    void** list = (void **)&format;
+    void** list = (void **)((void *)&format);
 
     list++;
     for (int i = 0; format[i] != '\0'; i++)

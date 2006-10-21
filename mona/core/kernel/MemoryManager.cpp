@@ -93,7 +93,7 @@ void MemoryManager::free(void* address)
     Header* b;
     Header* p;
     bool inBetween = false;
-    Header* tail;
+    Header* tail = NULL;
     Header* prev;
 
     if (bp->magic != MM_MAGIC) {
