@@ -116,7 +116,7 @@ void printf(const char *format, ...) {
     char buf[128];
     int bufpos = 0;
 
-    void** list = (void **)&format;
+    void** list = (void **)((void *)&format);
 
     list++;
     for (int i = 0; format[i] != '\0'; i++) {

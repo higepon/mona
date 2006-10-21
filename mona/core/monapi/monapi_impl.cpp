@@ -16,6 +16,7 @@ extern "C"
 
 mspace g_msp;
 
+static int dllmain() __attribute__ ((unused));
 static int dllmain()
 {
     return 1;
@@ -2928,6 +2929,7 @@ static void do_check_malloc_state(mstate m) {
 /* ----------------------------- statistics ------------------------------ */
 
 #if !NO_MALLINFO
+static struct mallinfo internal_mallinfo(mstate m) __attribute__ ((unused));
 static struct mallinfo internal_mallinfo(mstate m) {
   struct mallinfo nm = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   if (!PREACTION(m)) {
@@ -3658,7 +3660,7 @@ static int sys_trim(mstate m, size_t pad) {
         if (HAVE_MMAP &&
             sp->size >= extra &&
             !has_segment_link(m, sp)) { /* can't shrink if pinned */
-          size_t newsize = sp->size - extra;
+          size_t newsize __attribute__ ((unused)) = sp->size - extra;
           /* Prefer mremap, fall back to munmap */
           if ((CALL_MREMAP(sp->base, sp->size, newsize, 0) != MFAIL) ||
               (CALL_MUNMAP(sp->base + newsize, extra) == 0)) {
@@ -4551,7 +4553,7 @@ size_t destroy_mspace(mspace msp) {
       size_t nextsize = sp->size;
       flag_t nextflag = sp->sflags;
       while (sp != 0) {
-        char* base = nextbase;
+        char* base __attribute__ ((unused)) = nextbase;
         size_t size = nextsize;
         flag_t flag = nextflag;
         if (next != 0) {
