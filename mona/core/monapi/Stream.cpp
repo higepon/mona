@@ -108,7 +108,7 @@ dword Stream::read(byte* buffer, dword size)
     else if (size < memorySize)
     {
         memcpy(buffer, memoryAddress_, size);
-        memcpy(memoryAddress_, (byte*)((dword)memoryAddress_ + readSize), memorySize - size);
+        memcpy(memoryAddress_, (byte*)((dword)memoryAddress_ + size), memorySize - size);
         header_->size = memorySize - size;
         readSize = size;
     }

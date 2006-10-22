@@ -1,3 +1,7 @@
+2006-10-22  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/Stream.cpp (Stream::read): バグ修正
+
 2006-10-21  higepon  <higepon@users.sourceforge.jp>
 
         * core: Tinoさんによるパッチ。int syscall_mthread_create_with_arg(void __fastcall(*f)(void*), void* p);
