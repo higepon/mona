@@ -1,7 +1,7 @@
 #$Id$
 TARGET  = IPSTACK
 SOURCES = main.cpp Nic.cpp Dispatch.cpp IPStack.cpp \
- L4Base.cpp ICMPInfo.cpp UDPInfo.cpp TCPInfo.cpp \
+ L4Base.cpp ICMPInfo.cpp UDPInfo.cpp TCPInfo.cpp TimeKeeper.cpp\
  MonADEC.cpp MonAMDpcn.cpp LoopBack.cpp NE2000.cpp
 INSTDIR = $(BINDIR)/APPS
 

@@ -31,7 +31,6 @@ private:
     word next_port;
 protected:
     dword myID;
-    dword timerid;
     bool started;
     bool loopExit;
 };

@@ -7,13 +7,10 @@
 using namespace mones;
 using namespace MonAPI;
 
-IPStack::IPStack() : 
-    next_port(0),timerid(0),
-    started(false), loopExit(false)
+IPStack::IPStack() : next_port(0),started(false), loopExit(false)
 {
     syscall_get_io();  
-    this->myID = System::getThreadID();
-    timerid=set_timer(5000);    
+    this->myID = System::getThreadID();   
     pDP= new Dispatch();
     if(!pDP->initialize()){
         printf("initalize failed\n");
@@ -26,8 +23,6 @@ IPStack::~IPStack()
 {
     if( pDP!=NULL )
         delete pDP;
-    if( timerid != 0)
-        kill_timer(timerid);
 }
 
 void IPStack::messageLoop()

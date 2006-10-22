@@ -29,6 +29,9 @@ TCPCoInfo::TCPCoInfo(Dispatch* p):blockingmode(W_BLOCK|R_BLOCK),nomoredata(false
     seqnum(0),acknum(0),status(CLOSED),flags(NORM),window(1000),need_retry(false)
 {
     dispatcher=p;
+    //dword id=syscall_mthread_create_with_arg(tcp_timer.ThreadMain,&tcp_timer);
+    dword id=syscall_mthread_create((dword)tcp_timer.ThreadMain);
+    syscall_mthread_join(id);
 }
 
 void TCPCoInfo::Dump()
@@ -186,6 +189,7 @@ void TCPCoInfo::Write(MessageInfo* m)
         }
         monapi_cmemoryinfo_delete(ret); /// some other one delete this resouce.
     }    
+    ////Must Be Rewrited !!!!!!
     write_timeout=syscall_get_tick()+500;
     //if(( blockingmode&W_BLOCK )==0){
     //    Message::reply(m);
@@ -204,7 +208,7 @@ void TCPCoInfo::Write_bottom_half(Ether* frame)
     }
 }    
 
-bool TCPCoInfo::Write_retry() //Anyone call me!
+bool TCPCoInfo::Write_retry() //call me!
 {
     return true;
 }

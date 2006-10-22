@@ -31,7 +31,7 @@ int NetStat(NetClient& client)
 int Ping(NetClient& client,dword remoteip)
 {
     ///////////////////////////////////////////////
-    printf("   Send ICMP echo request %x\n",remoteip);
+    //printf("   Send ICMP echo request %x\n",remoteip);
     int netdsc= client.ICMPOpen(remoteip);
     if( netdsc< 0 ){
         printf("OpenError.\n");

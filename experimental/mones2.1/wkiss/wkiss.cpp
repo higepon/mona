@@ -5,7 +5,7 @@
 using namespace MonAPI;
 using namespace mones;
 
-int MonaMain(List<char*>* pekoe)
+void TcpEchoService()
 {
     char buf[1500];
     NetClient client;
@@ -26,10 +26,9 @@ int MonaMain(List<char*>* pekoe)
         }
         client.Close(dsc);
     }
-    return 0;
 }
-/*
-int MonaMain(List<char*>* pekoe)
+
+void TcpDaytimeService()
 {
     char buf[1024];
     NetClient client;
@@ -43,6 +42,25 @@ int MonaMain(List<char*>* pekoe)
         client.Write(dsc,(byte*)buf,strlen(buf));
         client.Close(dsc);
     }
-    return 0;
 }
-*/
+
+void TcpCharGen()
+{
+    static char* buf = "01234567890abcdefghijklmnopqrstuvwxyz";
+    NetClient client;
+    int netdsc = client.TCPPasvOpen(CHARGEN);
+    int dsc=client.TCPAccept(netdsc);
+    for(;;){
+        client.Write(dsc,(byte*)buf,strlen(buf));
+    }
+    client.Close(dsc);
+}
+
+int MonaMain(List<char*>* pekoe)
+{
+    dword id1=syscall_mthread_create((dword)TcpEchoService);    
+    syscall_mthread_join(id1);
+    dword id2=syscall_mthread_create((dword)TcpDaytimeService);
+    syscall_mthread_join(id2);
+    TcpCharGen();
+}
