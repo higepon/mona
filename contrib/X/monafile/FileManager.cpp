@@ -57,7 +57,7 @@ int ProcessStart(const String& file)
 class FileManager
 {
 public:
-	static void FileManager::Main(_A<String> args)
+	static void Main(_A<String> args)
 	{
 		if (ExistsProcess("MONAFILE.EX5")) return;
 		

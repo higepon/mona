@@ -42,7 +42,7 @@ public:
     Image* icon;
 
 public:
-    Giko::Giko() : threadID_(THREAD_UNKNOWN)
+    Giko() : threadID_(THREAD_UNKNOWN)
                    , WIDTH(700)
                    , HEIGHT(500)
                    , INNER_WIDTH(WIDTH - 10)
@@ -125,7 +125,7 @@ public:
         add(urlField);
     }
 
-    Giko::~Giko()
+    ~Giko()
     {
     }
 
@@ -133,7 +133,7 @@ public:
         g->drawImage(icon, 1, PADDING + 2);
     }
 
-    void Giko::processEvent(Event* evt)
+    void processEvent(Event* evt)
     {
         if (evt->getType() == Event::MOUSE_PRESSED && evt->getSource() == button1)
         {
@@ -149,7 +149,7 @@ public:
         }
     }
 
-    void Giko::stateChanged()
+    void stateChanged()
     {
         int extraLines = contentLabel->getExtraLineNumber();
         scroll->setMinimum(0);
@@ -166,7 +166,7 @@ public:
     }
 
 private:
-    void Giko::wget()
+    void wget()
     {
         url = new URL(urlField->getText());
         if (!url->isValid())

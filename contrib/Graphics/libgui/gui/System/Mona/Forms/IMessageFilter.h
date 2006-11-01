@@ -11,6 +11,7 @@ namespace System { namespace Mona { namespace Forms
 	class IMessageFilter
 	{
 	public:
+		virtual ~IMessageFilter(){};
 		virtual bool PreFilterMessage(Message* m) = 0;
 	};
 }}}
