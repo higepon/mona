@@ -21,7 +21,7 @@ SOURCES = assert/assert.c ctype/isalnum.c ctype/isalpha.c ctype/isascii.c \
 	  stdlib/llabs.c stdlib/mblen.c stdlib/mbstowcs.c stdlib/mbtowc.c \
 	  stdlib/strtod.c stdlib/strtol.c stdlib/strtoul.c stdlib/strtoi.c \
 	  stdlib/wcstombs.c stdlib/wctomb.c string/memccpy.c string/memchr.c \
-	  stdlib/putenv.c stdlib/qsort.c \
+	  stdlib/putenv.c stdlib/qsort.c stdlib/rand.c stdlib/srand.c \
 	  string/memrchr.c string/nidastrfind.c string/strchr.c \
 	  string/strcoll.c string/strerror.c string/strlcat.c \
 	  string/strlcpy.c string/strncat.c string/strpbrk.c string/strrchr.c \
