@@ -27,15 +27,13 @@ static SQInteger math_srand(HSQUIRRELVM v)
 {
 	SQInteger i;
 	if(!sq_getinteger(v,2,&i))return sq_throwerror(v,_SC("invalid param"));
-// TODO
-//	srand((unsigned int)i);
+	srand((unsigned int)i);
 	return 0;
 }
 
 static SQInteger math_rand(HSQUIRRELVM v)
 {
-// TODO
-//	sq_pushinteger(v,rand());
+	sq_pushinteger(v,rand());
 	return 1;
 }
 
