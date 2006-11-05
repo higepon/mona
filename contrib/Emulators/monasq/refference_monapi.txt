@@ -1,0 +1,358 @@
+
+簡易 MonaSq/monapi ライブラリ リファレンス
+
+
+MonaOS の API のラッパーライブラリです。
+
+ここで解説しているのは、MonaSq 上から monapi を呼び出すための
+インターフェイスについてだけです。
+使い方の詳細については、MonaOS の関連文書や Wiki、ヘッダファイルなどを
+参照してください。
+
+すべての monapi 関数が用意されているわけではありません。
+
+いくつかの関数は統合されたり名前が変更されている場合があります。
+※例えば、syscall_set_ps_dump() および syscall_read_ps_dump() は、
+  ひとつにまとめられて monapi.ps() となっています。
+
+
+
+■関数一覧
+
+  monapi の関数はすべてテーブル monapi の下にあります。
+
+
+	function sleep(ms)
+	function set_timer(ms)
+	function kill_timer(id)
+	function print(str)
+	function kill()
+	function exit(error)
+
+	function syscall_test(iaddress)
+	function syscall_sleep(tick)
+	function syscall_set_timer(tick)
+	function syscall_kill_timer(id)
+	function syscall_print(str)
+	function syscall_kill()
+
+	function syscall_send(id, message)
+		message には以下のインデックスを持ったテーブルを渡します。
+		{
+			header = 0,
+			arg1 = 0,
+			arg2 = 0,
+			arg3 = 0,
+			from = 0,
+			str = "",
+		}
+	
+	function syscall_receive()
+		syscall_send() に渡すものと同じ構造のテーブル、または null を返します。
+	
+	function syscall_exist_message()
+
+	function syscall_mutex_create()
+	function syscall_mutex_trylock(id)
+	function syscall_mutex_lock(id)
+	function syscall_mutex_trylock(id)
+	function syscall_mutex_unlock(id)
+
+	function syscall_get_vram_info()
+		以下のインデックスを持ったテーブルを返します。
+		{
+			vram = 0,
+			bpp = 0,
+			x = 0,
+			y = 0,
+		}
+	function syscall_get_cursor()
+		以下のインデックスを持ったテーブルを返します。
+		{
+			x = 0,
+			y = 0,
+		}
+	function syscall_set_cursor(x, y)
+
+	function syscall_mutex_destroy(id)
+	function syscall_lookup_main_thread(name)
+	function syscall_get_pid()
+	function syscall_get_tid()
+	function syscall_get_arg()
+		文字列の配列を返します。
+
+	function syscall_mthread_yield_message()
+	function syscall_get_date()
+		以下のインデックスを持ったテーブルを返します。
+		{
+			year = 0,
+			month = 0,
+			day = 0,
+			dayofweek = 0,
+			min = 0,
+			sec = 0,
+		}
+	
+	function ps()
+		以下のインデックスを持ったテーブルの配列を返します。
+		{
+			name = "",
+			state = 0,
+			cr3 = 0,
+			eip = 0,
+			esp = 0,
+			tid = 0,
+		}
+
+	function syscall_get_io()
+	function syscall_kill_thread(tid)
+
+	function syscall_lookup(name)
+	function syscall_get_tick()
+	function syscall_get_kernel_version()
+	function syscall_clear_screen()
+	function syscall_peek(index, flags)
+		syscall_send() に渡すものと同じ構造のテーブル、または null を返します。
+
+	function syscall_set_irq_receiver(irq)
+	function syscall_has_irq_receiver(irq)
+	function syscall_remove_irq_receiver(irq)
+	function syscall_get_memory_info()
+		以下のインデックスを持ったテーブルを返します。
+		{
+			totalMemoryH = 0,
+			totalMemoryL = 0,
+			freePageNum = 0,
+			totalPageNum = 0,
+			pageSize = 0,
+		}
+	function syscall_free_pages(address, size)
+	function syscall_change_base_priority(priority)
+
+	function syscall_set_dll_segment_writable()
+	function syscall_set_dll_segment_notshared(index)
+
+	function inp8(port)
+	function outp8(port, value)
+	function inp16(port)
+	function outp16(port, value)
+	function inp32(port)
+	function outp32(port, value)
+	function monapi_set_irq(irq, enabled, auto_ir2)
+	function monapi_wait_interrupt(ms, irq, file, line)
+
+	function monapi_get_server_thread_id(id)
+	function monapi_call_dispose_handle(id, handle)
+	function monapi_register_to_server(id, enabled)
+	function monapi_call_mouse_set_cursor(enabled)
+	function monapi_call_file_open(filename)
+	function monapi_call_file_get_file_size(id)
+	function monapi_call_file_seek(id, position, flag)
+	function monapi_call_file_close(id)
+	
+	function monapi_call_file_read_data(filename, prompt)
+		共有メモリ（詳細は SharedMemory クラスの項を参照）を返します。
+
+	function monapi_call_file_read_directory()
+		以下のインデックスを持ったテーブルの配列を返します。
+		{
+			name = "",
+			size = 0,
+			attr = 0,
+		}
+
+	function monapi_call_process_execute_file(command_line, prompt)
+	function monapi_call_process_execute_file_get_tid(command_line, prompt, stdout_id)
+	function monapi_call_change_drive(drive, prompt)
+	function monapi_call_get_current_drive()
+	function monapi_call_get_current_directory()
+	function monapi_call_change_directory(dest)
+
+
+
+■SharedMemory クラス
+
+  SharedMemory クラスは、MonaOS の共有メモリを保持するクラスです。
+  このクラスにあたるものは monapi には存在しませんが、
+  monapi_cmemoryinfo 構造体や MemoryMap クラスの機能と
+  Squirrel 標準ライブラリの blob のような機能をあわせ持っています。
+
+
+	constructor()
+	  コンストラクタ
+	  SharedMemory オブジェクトは生成しただけでは使用できません。
+	  生成後に create() か map() 関数を呼び出して
+	  共有メモリを割り当てる必要があります。
+
+	create(size, prompt)
+	  新しい共有メモリを指定サイズで割り当てる
+
+	function map(handle, size)
+	  指定のハンドルの既存共有メモリを割り当てる
+
+	function dispose()
+	  共有メモリを解放する
+	  明示的に呼び出さなくても、GC に回収された時点で解放されます。
+	
+	function getHandle()
+	function getOwner()
+	function getSize()
+
+	function getString(pos, size)
+	  共有メモリ内の pos で指定されるバイト位置から size バイト分を
+	  文字列として取得する
+
+	function getInt8(pos)
+	function getInt16(pos)
+	function getInt32(pos)
+	function getUInt8(pos)
+	function getUInt16(pos)
+	function getUInt32(pos)
+	  共有メモリ内の pos で指定されるバイト位置から整数値を取得する
+
+	function getFloat32(pos)
+	function getFloat64(pos)
+	  共有メモリ内の pos で指定されるバイト位置から浮動小数点数値を取得する
+
+	function setString(str, pos)
+	  共有メモリ内の pos で指定されるバイト位置へ文字列を設定する
+
+	function setInt8(val, pos)
+	function setInt16(val, pos)
+	function setInt32(val, pos)
+	function setUInt8(val, pos)
+	function setUInt16(val, pos)
+	function setUInt32(val, pos)
+	  共有メモリ内の pos で指定されるバイト位置へ整数値を設定する
+
+	function setFloat32(val, pos)
+	function setFloat64(val, pos)
+	  共有メモリ内の pos で指定されるバイト位置へ浮動小数点数値を設定する
+
+
+
+■定数
+
+  テーブル monapi の下に定義された定数一覧です。
+
+
+	VK_SPACE
+	VK_BACKSPACE
+	VK_ENTER
+	VK_PERIOD
+	VK_SLASH
+	VK_A
+	VK_B
+	VK_C
+	VK_D
+	VK_E
+	VK_F
+	VK_G
+	VK_H
+	VK_I
+	VK_J
+	VK_K
+	VK_L
+	VK_M
+	VK_N
+	VK_O
+	VK_P
+	VK_Q
+	VK_R
+	VK_S
+	VK_T
+	VK_U
+	VK_V
+	VK_W
+	VK_X
+	VK_Y
+	VK_Z
+	VK_0
+	VK_1
+	VK_2
+	VK_3
+	VK_4
+	VK_5
+	VK_6
+	VK_7
+	VK_8
+	VK_9
+	VK_TEN_0
+	VK_TEN_1
+	VK_TEN_2
+	VK_TEN_3
+	VK_TEN_4
+	VK_TEN_5
+	VK_TEN_6
+	VK_TEN_7
+	VK_TEN_8
+	VK_TEN_9
+	VK_TEN_MINUS
+	VK_TEN_PLUS
+	VK_TEN_PERIOD
+	
+	MONA_SUCCESS
+	MONA_FAILURE
+
+	SEEK_SET
+	SEEK_CUR
+	SEEK_END
+
+	FILE_OPEN_READ
+	FILE_OPEN_NORMAL_WRITE
+	FILE_OPEN_APPEND_WRITE
+
+	WAIT_TIMER
+	WAIT_NONE
+	THREAD_UNKNOWN
+
+	MSG_NONE
+	MSG_MAP
+	MSG_MEMORY_MAP_ID
+	MSG_RESULT_OK
+	MSG_RESULT_ERROR
+	MSG_SERVER_START_OK
+	MSG_INTERRUPTED
+	MSG_MONES_REGIST
+	MSG_MONES_IP_SEND
+	MSG_MONES_IP_NOTICE
+	MSG_MONES_ICMP_SEND
+	MSG_MONES_ICMP_NOTICE
+	MSG_MONES_FRAME_REQ
+	MSG_MONES_ARPTBL_REQ
+	MSG_MONES_WAKEUP_ARP_WAIT
+	MSG_THREAD_KILLED
+	MSG_TIMER
+
+	ATTRIBUTE_DIRECTORY
+
+	PEEK_REMOVE
+	DRIVE_NONE
+	DRIVE_FD0
+	DRIVE_CD0
+	SHARED_FDC_BUFFER
+
+	FS_NO_ERROR
+	FS_INIT_ERROR
+	FS_GET_ROOT_ERROR
+	FS_GET_DIR_ERROR
+	FS_DIR_NOT_EXIST_ERROR
+	FS_ALREADY_OPEN_ERROR
+	FS_FILE_OPEN_ERROR
+	FS_FILE_NOT_FOUND
+	FS_FILE_IS_NOT_OPEN
+	FS_FILE_EXIST
+	FS_FILE_CREATE_ERROR
+
+	IDM_OBJECT_NOT_FOUND
+	IDM_SECURITY_ERROR
+
+	ID_MOUSE_SERVER
+	ID_KEYBOARD_SERVER
+	ID_FILE_SERVER
+	ID_GUI_SERVER
+	ID_ELF_SERVER
+	ID_PROCESS_SERVER
+	ID_PE_SERVER
+	ID_MONITOR_SERVER
+	ID_NUMBER_OF_SERVERS

@@ -1,0 +1,16 @@
+
+簡易 MonaSq ライブラリ リファレンス
+
+
+monasq.inspect( value )
+	value の値を print 出力する。
+	配列、テーブルは展開して print 出力する。
+
+monasq.getInspectString( value )
+	value の値を文字列にして返す。
+	配列、テーブルは展開した文字列として返す。
+
+monasq.getInspectString( value, maxExpand )
+	value の値を文字列にして返す。
+	配列、テーブルは、maxExpand で指定された階層まで展開して返す。
+

@@ -1,0 +1,446 @@
+
+簡易 MonaSq/baygui ライブラリ リファレンス
+
+
+baygui とは、MonaOS 上に実装された C++ 言語用の GUI ライブラリです。
+
+MonaSq では、Squirrel スクリプト上から baygui ライブラリを呼び出す
+ラッパーライブラリ MonaSq/baygui が用意されています。
+
+MonaSq/baygui は、MonaSq のデモンストレーションのために作られました。
+全ての baygui コンポーネントが扱えるわけではありません。
+また、現状ではやや不安定です。
+
+
+
+■Graphics クラスメソッド一覧
+
+	function drawPixel(x, y, color)
+	function drawImage(image, x, y)
+	function drawLine(x0, y0, x1, y1)
+	function drawRect(x, y, width, height)
+	function drawCircle(x0, y0, r)
+	function drawString(str, x, y)
+	function fillCircle(x0, y0, r)
+	function fillRect(x, y, width, height)
+	function translate(x, y)
+	function getFontStyle()
+	function setClip(cx, cy, cw, ch)
+	function setColor(r, g, b)
+	function setColor(color)
+	function setFontStyle(style)
+
+
+
+■Image クラスメソッド一覧
+
+	constructor()
+	constructor(filename)
+	constructor(width, height)
+
+	function getHandle()
+	function getWidth()
+	function getHeight()
+	function getPixel(x, y)
+	function setPixel(x, y, color)
+
+
+
+■Frameクラスメソッド一覧
+
+	constructor()
+	constructor(title)
+
+	function setHandler(eventId, calee, func)
+	function removeHandler(eventId)
+
+	function getTitle()
+	function setTitle(title)
+
+	function setTimer(duration)
+	function run()
+	function stop()
+
+	function add( component )
+	function remove( component )
+	function getComponent()
+	function getComponentAt(x, y)
+
+	function repaint()
+	function setBounds(x, y, width, height)
+	function update()
+	function update(x, y, width, height)
+	function getEnabled()
+	function getFocused()
+	function getVisible()
+	function getX()
+	function getY()
+	function getWidth()
+	function getHeight()
+	function getBackground()
+	function getForeground()
+	function getFontStyle()
+	function setEnabled(enabled)
+	function setFocused(focused)
+	function setVisible(visible)
+	function setLocation(x, y)
+	function setBackground(backColor)
+	function setForeground(foreColor)
+	function setFontStyle(style)
+
+
+
+■Buttonクラスメソッド一覧
+
+	constructor()
+	constructor(label)
+
+	function setHandler(eventId, calee, func)
+	function removeHandler(eventId)
+
+	function setLabel(label)
+	function getLabel()
+	function getPushed()
+
+	function repaint()
+	function setBounds(x, y, width, height)
+	function update()
+	function update(x, y, width, height)
+	function getEnabled()
+	function getFocused()
+	function getVisible()
+	function getX()
+	function getY()
+	function getWidth()
+	function getHeight()
+	function getBackground()
+	function getForeground()
+	function getFontStyle()
+	function setEnabled(enabled)
+	function setFocused(focused)
+	function setVisible(visible)
+	function setLocation(x, y)
+	function setBackground(backColor)
+	function setForeground(foreColor)
+	function setFontStyle(style)
+
+
+
+■TextFieldクラスメソッド一覧
+
+	constructor()
+
+	function setHandler(eventId, calee, func)
+	function removeHandler(eventId)
+
+	function setText(text)
+	function getText()
+
+	function repaint()
+	function setBounds(x, y, width, height)
+	function update()
+	function update(x, y, width, height)
+	function getEnabled()
+	function getFocused()
+	function getVisible()
+	function getX()
+	function getY()
+	function getWidth()
+	function getHeight()
+	function getBackground()
+	function getForeground()
+	function getFontStyle()
+	function setEnabled(enabled)
+	function setFocused(focused)
+	function setVisible(visible)
+	function setLocation(x, y)
+	function setBackground(backColor)
+	function setForeground(foreColor)
+	function setFontStyle(style)
+
+
+
+■ListBoxクラスメソッド一覧
+
+	constructor()
+
+	function setHandler(eventId, calee, func)
+	function removeHandler(eventId)
+
+	function getSelectedIndex()
+	function getSelectedItem()
+	function select(index)
+	function add(item)
+	function remove(index)
+
+	function repaint()
+	function setBounds(x, y, width, height)
+	function update()
+	function update(x, y, width, height)
+	function getEnabled()
+	function getFocused()
+	function getVisible()
+	function getX()
+	function getY()
+	function getWidth()
+	function getHeight()
+	function getBackground()
+	function getForeground()
+	function getFontStyle()
+	function setEnabled(enabled)
+	function setFocused(focused)
+	function setVisible(visible)
+	function setLocation(x, y)
+	function setBackground(backColor)
+	function setForeground(foreColor)
+	function setFontStyle(style)
+
+
+
+■Checkboxクラスメソッド一覧
+
+	constructor()
+
+	function setHandler(eventId, calee, func)
+	function removeHandler(eventId)
+
+	function getLabel()
+	function setLabel(label)
+	function getChecked()
+	function setChecked(checked)
+	function getCheckboxGroup()
+	function setCheckboxGroup(group)
+
+	function repaint()
+	function setBounds(x, y, width, height)
+	function update()
+	function update(x, y, width, height)
+	function getEnabled()
+	function getFocused()
+	function getVisible()
+	function getX()
+	function getY()
+	function getWidth()
+	function getHeight()
+	function getBackground()
+	function getForeground()
+	function getFontStyle()
+	function setEnabled(enabled)
+	function setFocused(focused)
+	function setVisible(visible)
+	function setLocation(x, y)
+	function setBackground(backColor)
+	function setForeground(foreColor)
+	function setFontStyle(style)
+
+
+
+■Containerクラスメソッド一覧
+
+	constructor()
+	constructor(title)
+
+	function setHandler(eventId, calee, func)
+	function removeHandler(eventId)
+
+	function add( component )
+	function remove( component )
+	function getComponent()
+	function getComponentAt(x, y)
+
+	function repaint()
+	function setBounds(x, y, width, height)
+	function update()
+	function update(x, y, width, height)
+	function getEnabled()
+	function getFocused()
+	function getVisible()
+	function getX()
+	function getY()
+	function getWidth()
+	function getHeight()
+	function getBackground()
+	function getForeground()
+	function getFontStyle()
+	function setEnabled(enabled)
+	function setFocused(focused)
+	function setVisible(visible)
+	function setLocation(x, y)
+	function setBackground(backColor)
+	function setForeground(foreColor)
+	function setFontStyle(style)
+
+
+
+
+■イベントハンドラの登録
+
+イベントハンドラは、baygui で発生したイベントを
+処理するための関数で、必要に応じて定義します。
+
+イベントハンドラは、イベントの種類によって引数が異なります。
+例えば、キー押し下げイベント baygui.KEY_PRESSED を処理するハンドラは
+引数を二つ渡され、以下のように定義できます（関数名はなんでも良い）。
+
+	function onKeyPressed(keycode, modifiers) {
+		print("key:" + keycode + " / modifiers:" + modifiers + "\n" );
+	}
+
+次のように Frame.setHandler() に関数を渡すことで、
+キー押し下げイベントハンドラをウインドウに登録します。
+
+	local frame = Frame();				// ウインドウオブジェクト作成
+	frame.setBounds(10, 10, 120, 120);	// ウインドウの大きさを設定
+	frame.setHandler( baygui.KEY_PRESSED, this, onKeyPressed );
+										// イベントハンドラを登録
+	frame.run();						// ウインドウを実行
+
+
+
+■イベントハンドラの戻り値
+
+イベントハンドラは戻り値が不要ですが、
+必要なら true か false を返すことができます。
+
+false を返した場合は、何も返さないのと同じです。
+
+true を返した場合は、イベントを完全に処理し終えたことを意味します。
+スーパークラスはそれ以上そのイベントを処理しません。
+例えば、baygui.PAINT イベントに対してハンドラが true を返すと、
+baygui 側はそのコンポーネントを描画しなくなります。
+特定のイベント処理を完全に置き換えたい場合だけ true を返してください。
+
+
+
+■イベント定数
+
+baygui.PAINT
+	説明：描画要求
+	ハンドラ：function handler( g )
+	引数：g コンポーネントへ描画可能な Graphics クラスオブジェクト
+
+baygui.KEY_PRESSED
+	説明：キーが押された
+	ハンドラ：function handler( keycode, modifiers, src )
+	引数：keycode キーコード
+	引数：modifiers 修飾キー
+	引数：src イベント発生元コンポーネント
+
+baygui.KEY_RELEASED
+	説明：キーが離された
+	ハンドラ：function handler( keycode, modifiers, src )
+	引数：keycode キーコード
+	引数：modifiers 修飾キー
+	引数：src イベント発生元コンポーネント
+
+baygui.MOUSE_PRESSED
+	説明：マウスボタンが押された
+	ハンドラ：function handler( x, y, button, src )
+	引数：x Ｘ座標
+	引数：y Ｙ座標
+	引数：button ボタン（baygui.BUTTON_LEFT, baygui.BUTTON_RIGHT, baygui.BUTTON_MIDDLE）
+	引数：src イベント発生元コンポーネント
+
+baygui.MOUSE_RELEASED
+	説明：マウスボタンが離された
+	ハンドラ：function handler( x, y, button, src )
+	引数：x Ｘ座標
+	引数：y Ｙ座標
+	引数：button ボタン（baygui.BUTTON_LEFT, baygui.BUTTON_RIGHT, baygui.BUTTON_MIDDLE）
+	引数：src イベント発生元コンポーネント
+
+baygui.MOUSE_DRAGGED
+	説明：ドラッグされた
+	ハンドラ：function handler( x, y, button, src )
+	引数：x Ｘ座標
+	引数：y Ｙ座標
+	引数：button ボタン（baygui.BUTTON_LEFT, baygui.BUTTON_RIGHT, baygui.BUTTON_MIDDLE）
+	引数：src イベント発生元コンポーネント
+
+baygui.MOUSE_MOVED
+	説明：マウスポインタが移動した
+	ハンドラ：function handler( x, y, src )
+	引数：x Ｘ座標
+	引数：y Ｙ座標
+	引数：src イベント発生元コンポーネント
+
+baygui.FOCUS_IN
+	説明：アクティブになった
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.FOCUS_OUT
+	説明：非アクティブになった
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.TIMER
+	説明：タイマーイベント（Frame.setTimer() 参照）
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.TEXT_CHANGED
+	説明：テキストフィールドのテキストが変更された
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.ITEM_SELECTED
+	説明：リスト部品の項目が選択された
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.BLOCK_INCLEMENT
+	説明：
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.BLOCK_DECLEMENT
+	説明：
+	ハンドラ：function handler(src)
+	引数：src イベント発生元コンポーネント
+
+baygui.CUSTOM_EVENT
+	説明：カスタムイベント
+	ハンドラ：function handler(header, arg1, arg2, arg3, from, str, src)
+	引数：header
+	引数：arg1
+	引数：arg2
+	引数：arg3
+	引数：from
+	引数：str
+	引数：src イベント発生元コンポーネント
+
+
+
+
+■マウスボタン定数
+
+	baygui.BUTTON_LEFT =	1
+	baygui.BUTTON_RIGHT =	2
+	baygui.BUTTON_MIDDLE =	3
+
+
+
+■カラー定数
+
+Frame.setColor() の引数として指定できます。
+
+	baygui.black     = 0xff000000
+	baygui.maroon    = 0xff800000
+	baygui.green     = 0xff008000
+	baygui.olive     = 0xff808000
+	baygui.navy      = 0xff000080
+	baygui.purple    = 0xff800080
+	baygui.teal      = 0xff008080
+	baygui.lightGray = 0xffC0C0C0
+	baygui.gray      = 0xff808080
+	baygui.red       = 0xffff0000
+	baygui.lime      = 0xff00ff00
+	baygui.yellow    = 0xffffff00
+	baygui.blue      = 0xff0000ff
+	baygui.magenta   = 0xffff00ff
+	baygui.cyan      = 0xff00ffff
+	baygui.white     = 0xffffffff
+
+
+
