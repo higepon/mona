@@ -61,7 +61,8 @@ typedef struct
 #define S_FORMAT_UNSIGNED	8
 
 /* これは関係ないニダ */
-#define RAND_MAX 0x7fffffff
+#define RAND_MAX 0x7fff
+static unsigned int rand_next;
 
 /* stdlib.hをインクルードするとmonapi.hもインクルードすることに（ry */
 /* #include <monapi/syscall.h> */
