@@ -225,15 +225,6 @@ static void MessageLoop()
     {
         if (Message::receive(&msg) != 0) continue;
 
-#if 0  /// DEBUG for message
-        if ((msg.header == MSG_RESULT_OK && msg.arg1 == MSG_PROCESS_STDOUT_DATA) || msg.header == MSG_PROCESS_STDOUT_DATA)
-        {
-            char buf[128];
-            sprintf(buf, "**** INVALID MESSAGE!! ****[%d: %d, %d]\n", syscall_get_tid(), msg.header, msg.arg1);
-            syscall_print(buf);
-            for (;;);
-        }
-#endif
         switch (msg.header)
         {
             case MSG_PROCESS_EXECUTE_FILE:
@@ -250,9 +241,10 @@ static void MessageLoop()
     }
 }
 
-int MonaMain(List<char*>* pekoe)
-{
-    initCommonParameters();
+int MonaMain(List<char*>* pekoe){
+
+    ProcessServer pServ;
+    pServ::init();
 #if 1  // temporary
     dword id = syscall_mthread_create((dword)StdoutMessageLoop);
     syscall_mthread_join(id);
@@ -264,7 +256,7 @@ int MonaMain(List<char*>* pekoe)
         exit(1);
     }
 
-    MessageLoop();
+    pServ::run();
 
     return 0;
 }
