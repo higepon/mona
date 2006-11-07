@@ -2,7 +2,7 @@
 
 using namespace MML;
 
-Config::Config()
+Config::Config() : tempo(DEFAULT_TEMPO), octave(DEFAULT_OCTAVE), l(DEFAULT_L)
 {
 }
 

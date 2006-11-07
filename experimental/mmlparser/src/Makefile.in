@@ -144,6 +144,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 mmlparser_SOURCES = main.cpp Parser.cpp Parser.h Element.cpp Element.h Config.h Config.cpp
+mmlparser_CFLAGS = -g
 all: all-am
 
 .SUFFIXES:

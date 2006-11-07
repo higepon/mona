@@ -2,7 +2,7 @@
 
 using namespace MML;
 
-Element::Element()
+Element::Element(bool rest /* = false */) : rest(rest)
 {
 }
 
