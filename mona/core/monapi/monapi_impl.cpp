@@ -167,7 +167,7 @@ void free(void * address) {
 ----------------------------------------------------------------------*/
 void* operator new(size_t size) {
     if (size == 0) {
-	size = 1;
+    size = 1;
     }
     return mspace_malloc(g_msp,size);
 }
@@ -180,7 +180,7 @@ void operator delete(void* address) {
 
 void* operator new[](size_t size) {
     if (size == 0) {
-	size = 1;
+    size = 1;
     }
     return mspace_malloc(g_msp,size);
 }
@@ -190,6 +190,22 @@ void operator delete[](void* address) {
     mspace_free(g_msp, address);
     return;
 }
+
+void* operator new(size_t size, void* base) {
+    return base;
+}
+
+void operator delete(void *base, void* address) {
+}
+
+
+void* operator new[](size_t size, void* base) {
+    return base;
+}
+
+void operator delete[](void* base, void* address) {
+}
+
 
 #define ONLY_MSPACES 1
 #define INSECURE 1

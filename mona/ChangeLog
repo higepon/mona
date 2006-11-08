@@ -1,3 +1,7 @@
+2006-11-08  higepon  <higepon@users.sourceforge.jp>
+
+        * core/monapi/monapi_impl.cpp: placement new‚ğ’Ç‰ÁB
+
 2006-10-22  higepon  <higepon@users.sourceforge.jp>
 
         * core/monapi/Stream.cpp (Stream::read): ƒoƒOC³

@@ -113,6 +113,10 @@ extern size_t _power(size_t x, size_t y);
 
 extern void* operator new(size_t size);
 extern void  operator delete(void* address);
+extern void* operator new(size_t size, void* base);
+extern void operator delete(void *base, void* address);
+extern void* operator new[](size_t size, void* base);
+extern void operator delete[](void* base, void* address);
 #endif
 
 /* syscall arguments enum */
