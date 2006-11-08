@@ -1,3 +1,7 @@
+2006-11-08  higepon  <higepon@users.sourceforge.jp>
+
+        * Emulators/monasq/sq/squirrel/sqpcheader.h: placement newを monapi側で用意したのでコメントアウト
+
 2006-10-14  bayside
 
         * Devel/sms_gc: 新規追加

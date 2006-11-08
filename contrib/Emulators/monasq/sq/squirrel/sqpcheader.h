@@ -13,8 +13,8 @@
 #include "misc/setjmp.h"
 
 // default placement new.
-inline void *operator new( size_t size, void *buf ) { return buf; }
-inline void operator delete( void *p, void * ) {}
+//inline void *operator new( size_t size, void *buf ) { return buf; }
+//inline void operator delete( void *p, void * ) {}
 
 #else
 #include <stdio.h>
