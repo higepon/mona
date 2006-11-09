@@ -208,6 +208,11 @@ bool Parser::getNumber(double* number)
             *number = atoi(buffer) / 1.5;
             return true;
         }
+        else if (i == 0 && c == '.')
+        {
+            *number = config_->l * 1.5;
+            return true;
+        }
         else
         {
             unGetChar();

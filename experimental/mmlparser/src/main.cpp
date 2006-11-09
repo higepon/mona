@@ -32,8 +32,26 @@ int main(int argc, char *argv[])
         "Q8E-Q7<E-E-FQ8G>Q7GGFQ8E-Q7<E-E-F\n"
         "Q8GQ7>GGFL4E-RCRG2.L8R\n";
 
+const char* mml2 = "t70"
+"eeab>c<ba2 ffede2.r"
+"eeab>c<ba2 fde.e8<a2.>r"
+"cc<ba>f.f8e2 def.f8e2.r"
+    "eeab>c<ba2 fde.e8<a2.>r\n";
+
+const char* mml3 = "T210O4L4"
+"F+F+GA AGF+E DDEF+ F+.E8E2"
+"F+F+GA AGF+E DDEF+ E.D8D2"
+"EEF+D EF+8G8F+D EF+8G8F+E DE<A>F+&"
+    "F+F+GA AGF+E DDEF+ E.D8D2"
+""
+"O5"
+"F+F+GA AGF+E DDEF+ F+.E8E2"
+"F+F+GA AGF+E DDEF+ E.D8D2"
+"EEF+D EF+8G8F+D EF+8G8F+E DE<A>F+&"
+    "F+F+GA AGF+E DDEF+ E.D8D2\n";
+
     Parser parser;
-    Elements* elements = parser.parse(mml);
+    Elements* elements = parser.parse(mml3);
 
     for (Elements::iterator it = elements->begin(); it != elements->end(); it++)
     {
