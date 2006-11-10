@@ -18,7 +18,10 @@
 #define DEFAULT_WIDTH  240
 #define DEFAULT_HEIGHT 160
 
-using namespace MonAPI;
+//using namespace MonAPI;
+using MonAPI::MemoryMap;
+using MonAPI::Screen;
+using MonAPI::Message;
 
 extern CommonParameters* commonParams;
 extern guiserver_bitmap* screen_buffer, * wallpaper;

@@ -12,7 +12,9 @@
 #include "image.h"
 #include "screen.h"
 
-using namespace MonAPI;
+//using namespace MonAPI;
+using MonAPI::Screen;
+using MonAPI::Color;
 
 extern CommonParameters* commonParams;
 
