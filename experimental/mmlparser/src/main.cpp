@@ -50,23 +50,42 @@ const char* mml3 = "T210O4L4"
 "EEF+D EF+8G8F+D EF+8G8F+E DE<A>F+&"
     "F+F+GA AGF+E DDEF+ E.D8D2\n";
 
+const char* mml_multi = ""
+    "[Channel1]"
+    "T180V15L8<<FCDF4CFE4C-EA4EAED<A>CD4<A>DC4<G>CF4CC<BA+A+A+A+A+FGA+AAA>D4<A>D<AG+G+"
+    ">CD+GFD+C4C4C4CDF4FFFFCDE4C-D<A4EA>C+D<AB>D4<ABB+4G>CF4CDF<A+A+A+A+A+A+A+A+AAA>D4"
+    "<AA>D<GGAAA+A+BB>CC<AAA+A+>CCC+4C+C+4C+4C+C+4C+C+4C+4C+<E4EE4EE4>E2.&ED+4ED+4.ED+4.ED+ED+N22A+4"
+    "[Channel2]"
+    "T180V12L8<FF4FF4FE4DEE2&EFF4FF4FG4FGA4.AAG4FD4.AAG4FC4.AAG4FD+4D4E1&EFF4FF4FE4DE"
+    "E2&EFF4FF4FG4FGA4.AAG4FL4D.AAG8FD.GGGL8GAF4FE4.C+D+F4FD+4C+1&C+C+D+E4ED+4<B2&BG+4G+B4A+4BA+4.BA+4.BA+BA+2"
+    "[Channel3]"
+    "T180V12L8<AA4AA4AG4FGA2&AAA4AA4AA+4AA+>C4.CC<A+4AF4.>CC<A+4AF4.>CC<A+4G+G4F4G1&GAA4AA4AG4FGA2&AAA4AA4AA+4A"
+    "A+>C4.CCL4<A+A8F.>CD<A8GF.A+A+A+L8A+B+A4AG4.FGG+4G+G4F1&FFGG+4G+F+4E2&E<B4B>E4D+4ED+4.ED+4.ED+ED+2\n";
+
     Parser parser;
-    Elements* elements = parser.parse(mml3);
+    Channels* channels = parser.parse(mml_multi);
 
-    for (Elements::iterator it = elements->begin(); it != elements->end(); it++)
+    for (Channels::iterator it = channels->begin(); it != channels->end(); it++)
     {
-        Element* e = *it;
-        if (e->isRest())
+        Channel* channel = *it;
+        printf("[channel]\n");
+        for (Channel::iterator eit = channel->begin(); eit != channel->end(); eit++)
         {
-            printf("[Rest]%dms", e->ms);
+            Element* e = *eit;
+            if (e->isRest())
+            {
+                printf("[Rest]%dms", e->ms);
+            }
+            else
+            {
+                printf("[%dhz]%dms", e->hz, e->ms);
+            }
+            delete (e);
         }
-        else
-        {
-            printf("[%dhz]%dms", e->hz, e->ms);
-        }
-        delete (e);
+        delete channel;
+        printf("\n");
     }
+    delete channels;
 
-    delete elements;
     return 0;
 }

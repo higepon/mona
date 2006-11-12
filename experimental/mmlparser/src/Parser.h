@@ -17,7 +17,8 @@
 namespace MML
 {
 
-typedef std::vector<Element*> Elements;
+typedef std::vector<Element*> Channel;
+typedef std::vector<Channel*> Channels;
 
 class Parser
 {
@@ -25,7 +26,7 @@ public:
     Parser();
     virtual ~Parser();
 
-    Elements* parse(const std::string& text);
+    Channels* parse(const std::string& text);
 
 protected:
     int parseInternal();
@@ -34,8 +35,9 @@ protected:
     bool getNumber(double* number);
     dword calcMilliSecond(double value);
     void warn(const char* msg);
-    Elements* getElements() { return elements_; }
-    Elements* elements_;
+    Channel* getChannel() { return channel_; }
+    Channel* channel_;
+    Channels* channels_;
     Config* config_;
     std::string text_;
     int postion_;

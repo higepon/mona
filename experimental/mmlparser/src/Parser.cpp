@@ -20,7 +20,7 @@ const dword Parser::pitchTable[] =
 
 const byte Parser::pitchIndex[] = {9, 11, 0, 2, 4, 5, 7};
 
-Parser::Parser() : elements_(NULL), config_(NULL), postion_(0)
+Parser::Parser() : channel_(NULL), config_(NULL), postion_(0)
 {
 
 }
@@ -34,17 +34,19 @@ dword Parser::calcMilliSecond(double value)
     return (dword)((60 * 1000 / config_->tempo) * (4 / value));
 }
 
-Elements* Parser::parse(const std::string& text)
+Channels* Parser::parse(const std::string& text)
 {
-    elements_ = new Elements;
+    channels_ = new Channels;
+    channel_ = new Channel;
     config_ = new Config;
     text_ = text;
     postion_ = 0;
     parseInternal();
-    Elements* ret = elements_;
+    Channels* ret = channels_;
     delete config_;
     config_ = NULL;
-    elements_ = NULL;
+    channel_ = NULL;
+    channels_ = NULL;
     return ret;
 }
 
@@ -53,10 +55,13 @@ int Parser::parseInternal()
     for (;;)
     {
         char c = getChar();
-        if (EOF == c) return MONA_SUCCESS;
+        if (EOF == c)
+        {
+            channels_->push_back(channel_);
+            return MONA_SUCCESS;
+        }
         if (isspace(c)) continue;
 
-        c = toupper(c);
         switch(c)
         {
         case '&':
@@ -115,6 +120,19 @@ int Parser::parseInternal()
             }
             break;
         }
+        case 'V':
+        {
+            double number;
+            if (getNumber(&number))
+            {
+                config_->volume = (word)number;
+            }
+            else
+            {
+                warn("ignored unknown V syntax\n");
+            }
+            break;
+        }
         case 'O':
         {
             double number;
@@ -141,49 +159,77 @@ int Parser::parseInternal()
             {
                 element->ms = calcMilliSecond(config_->l);
             }
-            elements_->push_back(element);
+            channel_->push_back(element);
             break;
         }
         case 'A'...'G':
+        {
+            char modifier = getChar();
+            int pitch = pitchIndex[c - 'A'];
+            dword octave = config_->octave;
+            if (modifier == '#' || modifier == '+')
             {
-                char modifier = getChar();
-                int pitch = pitchIndex[c - 'A'];
-                dword octave = config_->octave;
-                if (modifier == '#' || modifier == '+')
+                pitch++;
+                if (pitch == 12)
                 {
-                    pitch++;
-                    if (pitch == 12)
-                    {
-                        octave++;
-                        pitch = 0;
-                    }
+                    octave++;
+                    pitch = 0;
                 }
-                else if (modifier == '-')
-                {
-                    pitch--;
-                    if (pitch == -1)
-                    {
-                        octave--;
-                        pitch = 11;
-                    }
-                }
-                else
-                {
-                    unGetChar();
-                }
-                double number;
-                Element* element = new Element();
-                element->hz = pitchTable[pitch + config_->octave * 12];
-                if (getNumber(&number)) {
-                    element->ms = calcMilliSecond(number);
-                }
-                else
-                {
-                    element->ms = calcMilliSecond(config_->l);
-                }
-                elements_->push_back(element);
-                break;
             }
+            else if (modifier == '-')
+            {
+                pitch--;
+                if (pitch == -1)
+                {
+                    octave--;
+                    pitch = 11;
+                }
+            }
+            else
+            {
+                unGetChar();
+            }
+            double number;
+            Element* element = new Element();
+            element->volume = config_->volume;
+            element->hz = pitchTable[pitch + config_->octave * 12];
+            if (getNumber(&number)) {
+                element->ms = calcMilliSecond(number);
+            }
+            else
+            {
+                element->ms = calcMilliSecond(config_->l);
+            }
+            channel_->push_back(element);
+            break;
+        }
+        case '[':
+        {
+            string command;
+            for (;;)
+            {
+                char nextC = getChar();
+                if (nextC == EOF || nextC == ']')
+                {
+                    break;
+                }
+                else
+                {
+                    command += nextC;
+                }
+            }
+            if (NULL != strstr(command.c_str(), "CHANNEL"))
+            {
+                if (channel_->size() != 0)
+                {
+                    channels_->push_back(channel_);
+                    channel_ = new Channel;
+                    config_->octave = Config::DEFAULT_OCTAVE;
+                }
+            }
+
+            break;
+        }
         default:
             printf("i[%c]", c);
             break;
@@ -235,8 +281,7 @@ char Parser::getChar()
     if (text_.size() <= postion_) return EOF;
     int c = text_[postion_];
     postion_++;
-    return c;
-
+    return toupper(c);
 }
 
 void Parser::unGetChar()

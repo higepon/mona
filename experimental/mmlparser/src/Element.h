@@ -3,7 +3,11 @@
 
 namespace MML {
 
-#include "types.h"
+#ifdef MONA
+#include <sys/types.h>
+#else
+#include <types.h>
+#endif
 
 class Element
 {
@@ -16,6 +20,7 @@ public:
 public:
     dword hz;
     dword ms;
+    word volume;
     bool rest;
 };
 
