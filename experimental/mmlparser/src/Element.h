@@ -1,7 +1,9 @@
 #ifndef __ELEMENT_H__
 #define __ELEMENT_H__
 
-namespace MML {
+namespace MonAPI {
+namespace audio {
+namespace mml {
 
 #ifdef MONA
 #include <sys/types.h>
@@ -24,6 +26,8 @@ public:
     bool rest;
 };
 
-}; // namespace MML
+}; // namespace mml
+};
+};
 
 #endif // __ELEMENT_H__

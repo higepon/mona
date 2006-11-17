@@ -14,8 +14,9 @@
 #include "Config.h"
 #include "Element.h"
 
-namespace MML
-{
+namespace MonAPI {
+namespace audio {
+namespace mml {
 
 typedef std::vector<Element*> Channel;
 typedef std::vector<Channel*> Channels;
@@ -27,6 +28,7 @@ public:
     virtual ~Parser();
 
     Channels* parse(const std::string& text);
+    void destroyChannels(Channels* channels);
 
 protected:
     int parseInternal();
@@ -45,5 +47,7 @@ protected:
     static const byte pitchIndex[];
 };
 
+};
+};
 };
 #endif // __PARSER_H__

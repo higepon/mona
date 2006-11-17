@@ -7,7 +7,9 @@
 #include <types.h>
 #endif
 
-namespace MML {
+namespace MonAPI {
+namespace audio {
+namespace mml {
 
 class Config
 {
@@ -33,6 +35,8 @@ public:
 
 };
 
-}; // namespace MML
+}; // namespace mml
+};
+};
 
 #endif // __CONFIG_H__

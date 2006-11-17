@@ -2,7 +2,7 @@
 
 
 using namespace std;
-using namespace MML;
+using namespace MonAPI::audio::mml;
 
 // tempo(120) means 4=500ms 8=250ms
 
@@ -48,6 +48,20 @@ Channels* Parser::parse(const std::string& text)
     channel_ = NULL;
     channels_ = NULL;
     return ret;
+}
+
+void Parser::destroyChannels(Channels* channels)
+{
+    for (Channels::iterator it = channels->begin(); it != channels->end(); it++)
+    {
+        Channel* channel = *it;
+        for (Channel::iterator eit = channel->begin(); eit != channel->end(); eit++)
+        {
+            delete(*eit);
+        }
+        delete channel;
+    }
+    delete channels;
 }
 
 int Parser::parseInternal()
