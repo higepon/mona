@@ -4,7 +4,7 @@ int MonaMain(List<char*>* pekoe)
 {
     printf("Hello,World!\n");
 
-#if 0
+#if 1
     dword fileID = monapi_file_open("/AUTOEXEC.MSH", MONAPI_FALSE);
     monapi_cmemoryinfo* mi = monapi_file_read(fileID, 486);
     printf("AUTOEXEC.MSH size = 485, readResult size = %d\n", mi->Size);

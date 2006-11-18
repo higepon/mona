@@ -1,3 +1,11 @@
+2006-11-18  higepon  <higepon@users.sourceforge.jp>
+
+        * Emulators/monasq/monasq_monapi.cpp: wrapper_monapi_file_read_directory => monapi.monapi_read_directory("/APPS")に対応
+                                              wrapper_monapi_call_get_current_directory => 最新Mona OSでサポートされていないので廃止。
+                                              wrapper_monapi_file_read_all => monapi.monapi_read_all("/MONA.CFG")で共有メモリが返る
+
+        * monasq: misc/setjmp.h ではなく monalibc/setjmp.h を利用するようにした。
+
 2006-11-08  higepon  <higepon@users.sourceforge.jp>
 
         * Emulators/monasq/sq/squirrel/sqpcheader.h: placement newを monapi側で用意したのでコメントアウト

@@ -3,8 +3,8 @@
 #if defined( MONASQ )
 #include <monapi.h>
 #include <monalibc/assert.h>
-#include "misc/setjmp.h"
-//#include <monalibc/setjmp.h>
+//#include "misc/setjmp.h"
+#include <monalibc/setjmp.h>
 #include <monalibc/time.h>
 #include <baygui.h>
 #define system(cmdline)		monapi_call_process_execute_file(cmdline, MONAPI_TRUE)

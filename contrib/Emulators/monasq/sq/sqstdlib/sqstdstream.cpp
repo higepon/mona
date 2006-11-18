@@ -2,8 +2,8 @@
 #if defined( MONASQ )
 #include <monapi.h>
 #include <monalibc/assert.h>
-#include "misc/setjmp.h"
-//#include <monalibc/setjmp.h>
+//#include "misc/setjmp.h"
+#include <monalibc/setjmp.h>
 #else
 #include <new>
 #include <stdio.h>

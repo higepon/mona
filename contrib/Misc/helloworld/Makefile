@@ -1,3 +1,8 @@
+ifndef $(MONADIR)
+# export MONADIR=$(PWD)/../mona
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 TARGET  = HELLO
 SOURCES = main.cpp
 INSTDIR = $(BINDIR)/APPS

@@ -1,10 +1,14 @@
+ifndef $(MONADIR)
+# export MONADIR=$(PWD)/../mona
+export MONADIR=$(shell cd $(PWD)/../../../mona; pwd)
+endif
+
 TARGET  = MONASQ
 SOURCES = monasq.cpp \
 	monasq_monapi.cpp \
 	monasq_baygui.cpp \
 	init_script.cpp \
 	misc/TextArea.cpp \
-	misc/setjmp.cpp \
 	misc/vsprintf.cpp \
 	misc/fcvt.cpp \
 	sq/squirrel/sqapi.cpp \
@@ -31,6 +35,8 @@ SOURCES = monasq.cpp \
 	sqplus/SquirrelVM.cpp \
 	sqplus/SquirrelObject.cpp \
 	sqplus/SquirrelBindingsUtils.cpp
+#	misc/setjmp.cpp \
+
 INSTDIR = $(BINDIR)/APPS/BAYGUI
 
 SHAREDIR = $(MONADIR)/share

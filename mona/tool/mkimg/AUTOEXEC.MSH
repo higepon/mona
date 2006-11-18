@@ -3,8 +3,8 @@
 @ECHO To show internal commands, please input "HELP".
 @ECHO Thank you! -- Mona Project Team
 @ECHO Mona Desktop Manager Starting ...
-@EXEC /APPS/STARTX.APP/STARTX.EX5
-
+#@EXEC /APPS/STARTX.APP/STARTX.EX5
+@EXEC BAYGUI
 # test for Stream
 #@STDOUT.EX5
 #@WRITE.EX5 abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl123456

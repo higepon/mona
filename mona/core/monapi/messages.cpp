@@ -163,6 +163,7 @@ monapi_cmemoryinfo* monapi_call_file_decompress_st5_file(const char* file, MONAP
     return ret;
 }
 
+#if 0
 monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOOL prompt)
 {
     monapi_cmemoryinfo* ret;
@@ -181,6 +182,7 @@ monapi_cmemoryinfo* monapi_call_file_read_directory(const char* path, MONAPI_BOO
     monapi_cmemoryinfo_map(ret);
     return ret;
 }
+#endif
 
 int monapi_call_process_execute_file(const char* command_line, MONAPI_BOOL prompt)
 {

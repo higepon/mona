@@ -3,8 +3,8 @@
 #if defined( MONASQ )
 #include <monapi.h>
 #include <monalibc/string.h>
-#include "misc/setjmp.h"
-//#include <monalibc/setjmp.h>
+//#include "misc/setjmp.h"
+#include <monalibc/setjmp.h>
 #else
 #include <string.h>
 #include <ctype.h>
