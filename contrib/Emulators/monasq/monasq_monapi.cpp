@@ -523,6 +523,18 @@ int wrapper_monapi_file_read_all(HSQUIRRELVM v) {
     return 1;
 }
 
+int wrapper_monapi_file_read(HSQUIRRELVM v) {
+   StackHandler sa(v);
+   int nargs = sa.GetParamCount(); // 渡された引数の数＋１（１つ目の引数には必ず this が渡されるため）
+   if (nargs != 3) return 0;       // 引数の数をチェック。スタックに戻り値を積んでいないので０を返す
+
+   int id = sa.GetInt(2);          // 引数１
+   int size = sa.GetInt(3);      // 引数２
+   monapi_cmemoryinfo* mi = monapi_file_read(id, size);
+   SqSharedMemory::push_memoryMap(mi); // 新しい SqSharedMemory オブジェクトを作成してスタックに push
+   return 1;                       // スタックに戻り値を１つ積んだので１を返す
+}
+
 int wrapper_monapi_call_process_execute_file_get_tid(const char* command_line, MONAPI_BOOL prompt, dword stdout_id) {
     dword tid;
     int result = monapi_call_process_execute_file_get_tid(command_line, prompt, &tid, stdout_id);
@@ -677,11 +689,13 @@ void monasq_init_monapi_lib(HSQUIRRELVM v)
     Register(v, hNamespace, monapi_register_to_server, _T("monapi_register_to_server"));
     Register(v, hNamespace, monapi_call_mouse_set_cursor, _T("monapi_call_mouse_set_cursor"));
 // TODO
-//  Register(v, hNamespace, monapi_call_file_open, _T("monapi_call_file_open"));
 //  Register(v, hNamespace, monapi_call_file_get_file_size, _T("monapi_call_file_get_file_size"));
 //  Register(v, hNamespace, monapi_call_file_seek, _T("monapi_call_file_seek"));
-//  Register(v, hNamespace, monapi_call_file_close, _T("monapi_call_file_close"));
 
+    Register(v, hNamespace, monapi_file_open, _T("monapi_file_open"));
+    Register(v, hNamespace, monapi_file_close, _T("monapi_file_close"));
+    Register(v, hNamespace, monapi_file_seek, _T("monapi_file_seek"));
+    RegisterVarArgs(v, hNamespace, wrapper_monapi_file_read, _T("monapi_file_read"));
     Register(v, hNamespace, wrapper_monapi_file_read_directory, _T("monapi_file_read_directory"));
     RegisterVarArgs(v, hNamespace, wrapper_monapi_file_read_all, _T("monapi_file_read_all"));
 
