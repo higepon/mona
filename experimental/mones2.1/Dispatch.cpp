@@ -7,6 +7,7 @@
 #include "Dispatch.h"
 #include "ICMPInfo.h"
 #include "UDPInfo.h"
+#include "TCPIO.h"
 #include "TCPInfo.h"
 
 using namespace mones;

@@ -1,7 +1,6 @@
 //$Id: Connection.h 3287 2006-06-18 07:17:51Z eds1275 $
 #pragma once
 #include "L4Base.h"
-#include "TimeKeeper.h"
 
 namespace mones{
 
@@ -28,7 +27,7 @@ public:
     bool TimeoutCheck(dword);
     void SetBlockingMode(MessageInfo*);//(;_;)
 private:    
-    TimeKeeper tcp_timer;    
+
     dword write_timeout;
     dword read_timeout;
     dword blockingmode;

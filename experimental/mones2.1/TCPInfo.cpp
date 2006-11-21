@@ -1,7 +1,6 @@
 //$Id$
 #include "TCPInfo.h"
 #include "Dispatch.h"
-
 using namespace mones;
 using namespace MonAPI;
 
@@ -25,13 +24,11 @@ void TCPCoInfo::Reset(dword rip, word lport, word rport)
     printf("SENT RESET\n");
 }
 
+
 TCPCoInfo::TCPCoInfo(Dispatch* p):blockingmode(W_BLOCK|R_BLOCK),nomoredata(false),
     seqnum(0),acknum(0),status(CLOSED),flags(NORM),window(1000),need_retry(false)
 {
     dispatcher=p;
-    //dword id=syscall_mthread_create_with_arg(tcp_timer.ThreadMain,&tcp_timer);
-    dword id=syscall_mthread_create((dword)tcp_timer.ThreadMain);
-    syscall_mthread_join(id);
 }
 
 void TCPCoInfo::Dump()

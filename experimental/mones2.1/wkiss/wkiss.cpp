@@ -63,4 +63,5 @@ int MonaMain(List<char*>* pekoe)
     dword id2=syscall_mthread_create((dword)TcpDaytimeService);
     syscall_mthread_join(id2);
     TcpCharGen();
+    return 0;
 }
