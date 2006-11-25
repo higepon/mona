@@ -62,7 +62,7 @@ typedef struct
 
 /* これは関係ないニダ */
 #define RAND_MAX 0x7fff
-static unsigned int rand_next;
+static unsigned int rand_next __attribute__ ((unused));
 
 /* stdlib.hをインクルードするとmonapi.hもインクルードすることに（ry */
 /* #include <monapi/syscall.h> */
