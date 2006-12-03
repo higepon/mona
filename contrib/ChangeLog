@@ -1,3 +1,7 @@
+2006-12-04  bayside
+
+        * Graphics/libbaygu/awt/Container.cpp: http://d.hatena.ne.jp/higepon/20061125/1164463464
+
 2006-11-18  higepon  <higepon@users.sourceforge.jp>
 
         * Emulators/monasq/monasq_monapi.cpp: wrapper_monapi_file_read_directory => monapi.monapi_read_directory("/APPS")‚É‘Î‰ž
