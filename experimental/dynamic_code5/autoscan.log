@@ -1,0 +1,2 @@
+autoscan: warning: missing AC_PROG_CC wanted by: 
+	config.h.in
