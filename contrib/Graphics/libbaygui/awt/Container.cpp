@@ -124,6 +124,7 @@ namespace baygui {
 					Component* c = (Component *)this->componentList.get(i);
 					c->setFocused(false);
 				}
+				event->setSource(this);
 				processEvent(event);
 			}
 		// マウスクリック以外のマウスイベント
@@ -143,6 +144,7 @@ namespace baygui {
 				component->processEvent(event);
 			// 部品以外でイベントが起こった
 			} else {
+				event->setSource(this);
 				processEvent(event);
 			}
 		} else {
