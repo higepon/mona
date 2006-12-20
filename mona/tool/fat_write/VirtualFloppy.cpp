@@ -19,7 +19,7 @@ int VirtualFloppy::close()
     return 0;
 }
 
-int VirtualFloppy::read (dword lba, void* buf, int size)
+int VirtualFloppy::read (uint32_t lba, void* buf, int size)
 {
         fseek(this->fp, lba * 512, SEEK_SET);
 
@@ -27,7 +27,7 @@ int VirtualFloppy::read (dword lba, void* buf, int size)
         return result;
 }
 
-int VirtualFloppy::write(dword lba, void* buf, int size)
+int VirtualFloppy::write(uint32_t lba, void* buf, int size)
 {
         fseek(fp, lba * 512, SEEK_SET);
 

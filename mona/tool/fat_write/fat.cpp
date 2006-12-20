@@ -20,7 +20,7 @@ using namespace FatFS;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 //-----------------------------------------------------------------------------
-const byte FAT::FileSystemID[] = "FAT12   ";
+const uint8_t FAT::FileSystemID[] = "FAT12   ";
 
 //=============================================================================
 FAT::FAT ()
@@ -38,7 +38,7 @@ FAT::~FAT ()
 //この関数は直したはず
 bool FAT::initialize (IStorageDevice *p)
 {
-	byte bf[SECTOR_SIZE];
+	uint8_t bf[SECTOR_SIZE];
 
 	bytesPerSector = SECTOR_SIZE;
 	floppy = p;
@@ -50,31 +50,31 @@ bool FAT::initialize (IStorageDevice *p)
 		return false;
 
 	// BIOS Parameter Block の情報を読み込む
-	dword numberOfSectors;
+	uint32_t numberOfSectors;
 
-	bytesPerSector    = little2host16(*((word*)( bf + BYTES_PER_SECTOR )));
-	sectorsPerCluster = *((byte*)( bf + SECTORS_PER_CLUSTER ));
-	reservedSectors   = little2host16(*((word*)( bf + RESERVED_SECTORS )));
-	numberOfFats      = *((byte*)( bf + NUMBER_OF_FATS      ));
-	numberOfDirEntry  = little2host16(*((word*)( bf + NUMBER_OF_DIRENTRY)));
-	numberOfSectors   = little2host16(*((word*)( bf + NUMBER_OF_SECTORS )));
-	sectorsPerFat     = little2host16(*((word*)( bf + SECTORS_PER_FAT   )));
+	bytesPerSector    = little2host16(*((uint16_t*)( bf + BYTES_PER_SECTOR )));
+	sectorsPerCluster = *((uint8_t*)( bf + SECTORS_PER_CLUSTER ));
+	reservedSectors   = little2host16(*((uint16_t*)( bf + RESERVED_SECTORS )));
+	numberOfFats      = *((uint8_t*)( bf + NUMBER_OF_FATS      ));
+	numberOfDirEntry  = little2host16(*((uint16_t*)( bf + NUMBER_OF_DIRENTRY)));
+	numberOfSectors   = little2host16(*((uint16_t*)( bf + NUMBER_OF_SECTORS )));
+	sectorsPerFat     = little2host16(*((uint16_t*)( bf + SECTORS_PER_FAT   )));
 
-	dword bytesPerFat = bytesPerSector * sectorsPerFat;
-	dword sectorsPerDirEntry = numberOfDirEntry / ( bytesPerSector / 0x20 );
+	uint32_t bytesPerFat = bytesPerSector * sectorsPerFat;
+	uint32_t sectorsPerDirEntry = numberOfDirEntry / ( bytesPerSector / 0x20 );
 
 	rootDirectoryEntry = reservedSectors + sectorsPerFat * numberOfFats;
 	dataArea = rootDirectoryEntry + sectorsPerDirEntry;
 	numberOfClusters = numberOfSectors - dataArea;
 
 	// メモリ確保
-	byte *ptr = new byte [bytesPerFat + sectorsPerFat];
+	uint8_t *ptr = new uint8_t [bytesPerFat + sectorsPerFat];
 	if (NULL == ptr)
 		return false;
 
 	// File Allocation Table の読み込み
-	byte *tmp = ptr;
-	for (dword n = 0; n < sectorsPerFat; n++) {
+	uint8_t *tmp = ptr;
+	for (uint32_t n = 0; n < sectorsPerFat; n++) {
 		if (false == read(reservedSectors + n, tmp)) {
 			delete[] ptr;
 			return false;
@@ -89,62 +89,62 @@ bool FAT::initialize (IStorageDevice *p)
 }
 
 //=============================================================================
-dword FAT::getBytesPerSector ()
+uint32_t FAT::getBytesPerSector ()
 {
 	return bytesPerSector;
 }
 
 //=============================================================================
-dword FAT::getSectorsPerCluster ()
+uint32_t FAT::getSectorsPerCluster ()
 {
 	return sectorsPerCluster;
 }
 
 //=============================================================================
-dword FAT::getNumberOfDirEntry ()
+uint32_t FAT::getNumberOfDirEntry ()
 {
 	return numberOfDirEntry;
 }
 
 //=============================================================================
-dword FAT::getNumberOfClusters ()
+uint32_t FAT::getNumberOfClusters ()
 {
 	return numberOfClusters;
 }
 
 //=============================================================================
-dword FAT::getRootDirectoryEntry ()
+uint32_t FAT::getRootDirectoryEntry ()
 {
 	return rootDirectoryEntry;
 }
 
 //=============================================================================
-byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
+uint8_t* FAT::readSectors (uint32_t c, uint32_t s, uint32_t d, uint32_t *sects, uint32_t *last)
 {
-	dword num = getSectorsPerCluster();
-	dword bsize = getBytesPerSector();
+	uint32_t num = getSectorsPerCluster();
+	uint32_t bsize = getBytesPerSector();
 
-	dword *lba = new dword [s];
+	uint32_t *lba = new uint32_t [s];
 	if (NULL == lba)
 		return NULL;
 
-	dword i = 0;
-	dword l = 0;
+	uint32_t i = 0;
+	uint32_t l = 0;
 
 	// FAT の読み込み
 	while (getNumberOfClusters() > c) {
-		dword base = getLbaFromCluster(c);
+		uint32_t base = getLbaFromCluster(c);
 
 		if (s < i + num) {
 			// サイズが足りなくなったのでメモリの拡大
-			dword tmp_size = s + d;
-			dword *tmp = new dword [tmp_size];
+			uint32_t tmp_size = s + d;
+			uint32_t *tmp = new uint32_t [tmp_size];
 			if (NULL == tmp) {
 				delete[] lba;
 				return NULL;
 			}
 
-			memcpy(tmp, lba, s * sizeof(dword));
+			memcpy(tmp, lba, s * sizeof(uint32_t));
 
 			delete[] lba;
 
@@ -152,7 +152,7 @@ byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
 			s = tmp_size;
 		}
 
-		for (dword n = 0; n < num; n++) 
+		for (uint32_t n = 0; n < num; n++) 
 			lba[i++] = base+n;
 
 		l = c;
@@ -161,17 +161,17 @@ byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
 
 	// セクタの読み込み
 	// セクタ本体 + セクタインデックス + セクタ操作フラグ
-	dword size = bsize * i + sizeof(dword) * i + i;
+	uint32_t size = bsize * i + sizeof(uint32_t) * i + i;
 
-	byte *ptr = new byte [size];
+	uint8_t *ptr = new uint8_t [size];
 	if (NULL == ptr) {
 		delete[] lba;
 		return NULL;
 	}
 
-	byte *tmp = ptr;
+	uint8_t *tmp = ptr;
 
-	for (dword n = 0; n < i; n++) {
+	for (uint32_t n = 0; n < i; n++) {
 		if (false == read(lba[n], tmp)) {
 			delete[] lba;
 			delete[] ptr;
@@ -180,7 +180,7 @@ byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
 		tmp += bsize;
 	}
 
-	memcpy(tmp, lba, i * sizeof(dword));
+	memcpy(tmp, lba, i * sizeof(uint32_t));
 
 	delete[] lba;
 
@@ -191,9 +191,9 @@ byte* FAT::readSectors (dword c, dword s, dword d, dword *sects, dword *last)
 }
 
 //=============================================================================
-dword FAT::allocateCluster (dword cluster, dword count)
+uint32_t FAT::allocateCluster (uint32_t cluster, uint32_t count)
 {
-	dword next, temp;
+	uint32_t next, temp;
 
 	// クラスタの新規確保
 	if (0 == cluster) {
@@ -226,9 +226,9 @@ dword FAT::allocateCluster (dword cluster, dword count)
 }
 
 //=============================================================================
-void FAT::freeCluster (dword cluster)
+void FAT::freeCluster (uint32_t cluster)
 {
-	dword next;
+	uint32_t next;
 
 	do {
 		next = getNextCluster(cluster);
@@ -241,13 +241,13 @@ void FAT::freeCluster (dword cluster)
 }
 
 //=============================================================================
-void FAT::setEndOfCluster (dword cluster)
+void FAT::setEndOfCluster (uint32_t cluster)
 {
 	setNextCluster(cluster, END_OF_CLUSTER);
 }
 
 //=============================================================================
-bool FAT::read (dword lba, byte *bf)
+bool FAT::read (uint32_t lba, uint8_t *bf)
 {
 	floppy->read(lba, bf, bytesPerSector);
 
@@ -255,7 +255,7 @@ bool FAT::read (dword lba, byte *bf)
 }
 
 //=============================================================================
-bool FAT::write (dword lba, byte *bf)
+bool FAT::write (uint32_t lba, uint8_t *bf)
 {
 	floppy->write(lba, bf, bytesPerSector);
 
@@ -263,22 +263,22 @@ bool FAT::write (dword lba, byte *bf)
 }
 
 //=============================================================================
-dword FAT::getLbaFromCluster (dword cluster)
+uint32_t FAT::getLbaFromCluster (uint32_t cluster)
 {
 	return dataArea + sectorsPerCluster * ( cluster - 2 );
 }
 
 //=============================================================================
-dword FAT::getClusterFromLba (dword lba)
+uint32_t FAT::getClusterFromLba (uint32_t lba)
 {
 	return ( lba - dataArea ) / sectorsPerCluster;
 }
 
 //=============================================================================
-dword FAT::getNextCluster (dword cluster)
+uint32_t FAT::getNextCluster (uint32_t cluster)
 {
-	dword index = cluster + cluster / 2;
-	dword next;
+	uint32_t index = cluster + cluster / 2;
+	uint32_t next;
 
 	if (cluster & 0x01) {
 		next = ( fat[index+1] << 4 ) + ( fat[index] >> 4 );
@@ -293,9 +293,9 @@ dword FAT::getNextCluster (dword cluster)
 }
 
 //-----------------------------------------------------------------------------
-void FAT::setNextCluster (dword cluster, dword next)
+void FAT::setNextCluster (uint32_t cluster, uint32_t next)
 {
-	dword index = cluster + cluster / 2;
+	uint32_t index = cluster + cluster / 2;
 
 	if (cluster & 0x01) {
 		fat[index+1] = next >> 4;
@@ -311,16 +311,16 @@ void FAT::setNextCluster (dword cluster, dword next)
 }
 
 //-----------------------------------------------------------------------------
-dword FAT::searchFreeCluster (dword cluster)
+uint32_t FAT::searchFreeCluster (uint32_t cluster)
 {
 	// 大きすぎるクラスタ番号が来たら、検索開始位置を先頭へ戻す
 	if (numberOfClusters <= cluster)
 		cluster = START_OF_CLUSTER;
-	dword start = cluster;
+	uint32_t start = cluster;
 
 	do {
 		// クラスタが空いているかを調べていく
-		dword next = getNextCluster(cluster);
+		uint32_t next = getNextCluster(cluster);
 		if (0 == next)
 			return cluster;
 		cluster++;
@@ -336,7 +336,7 @@ dword FAT::searchFreeCluster (dword cluster)
 //-----------------------------------------------------------------------------
 void FAT::clearFlag ()
 {
-	for (dword n = 0; n < sectorsPerFat; n++) {
+	for (uint32_t n = 0; n < sectorsPerFat; n++) {
 		flag[n] = 0;
 	}
 }
@@ -345,9 +345,9 @@ void FAT::clearFlag ()
 void FAT::flushFat ()
 {
 	// フラグが立っているセクタをディスクに書き戻す
-	for (dword n = 0; n < sectorsPerFat; n++) {
+	for (uint32_t n = 0; n < sectorsPerFat; n++) {
 		if (0 != flag[n]) {
-			byte *tmp = fat + n * bytesPerSector;
+			uint8_t *tmp = fat + n * bytesPerSector;
 			write(reservedSectors + n, tmp);
 			write(reservedSectors + sectorsPerFat + n, tmp);
 			flag[n] = 0;
@@ -373,16 +373,16 @@ FatFile::~FatFile ()
 }
 
 //=============================================================================
-bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
+bool FatFile::initialize (FAT *p, FatDirectory *d, int e, uint32_t c, uint32_t s)
 {
 	// 読み込み
-	dword bsize = p->getBytesPerSector();
-	dword sects = 0;
-	byte *ptr = NULL;
+	uint32_t bsize = p->getBytesPerSector();
+	uint32_t sects = 0;
+	uint8_t *ptr = NULL;
 	last = 0;
 
 	if (p->getNumberOfClusters() > c) {
-		dword size = ( s + bsize - 1 ) / bsize;
+		uint32_t size = ( s + bsize - 1 ) / bsize;
 
 		ptr = p->readSectors(c, size, RESIZE_DELTA, &sects, &last);
 		if (NULL == ptr)
@@ -393,8 +393,8 @@ bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
 	fat = p;
 	parent = d;
 	file = ptr;
-	flag = ptr + bsize * sects + sizeof(dword) * sects;
-	lba = (dword*)( ptr + bsize * sects );
+	flag = ptr + bsize * sects + sizeof(uint32_t) * sects;
+	lba = (uint32_t*)( ptr + bsize * sects );
 	fsize = s;
 	sectors = sects;
 	pos = 0;
@@ -408,7 +408,7 @@ bool FatFile::initialize (FAT *p, FatDirectory *d, int e, dword c, dword s)
 }
 
 //=============================================================================
-dword FatFile::read (byte *bf, dword sz)
+uint32_t FatFile::read (uint8_t *bf, uint32_t sz)
 {
 	if (fsize < pos + sz)
 		sz = fsize - pos;
@@ -422,11 +422,11 @@ dword FatFile::read (byte *bf, dword sz)
 }
 
 //=============================================================================
-dword FatFile::write (byte *bf, dword sz)
+uint32_t FatFile::write (uint8_t *bf, uint32_t sz)
 {
 	if (fsize < pos + sz) {
-		dword bytesPerSector = fat->getBytesPerSector();
-		dword size = bytesPerSector * sectors;
+		uint32_t bytesPerSector = fat->getBytesPerSector();
+		uint32_t size = bytesPerSector * sectors;
 
 		if (size < pos + sz) {
 			// クラスタの確保
@@ -442,8 +442,8 @@ dword FatFile::write (byte *bf, dword sz)
 		memcpy(file+pos, bf, sz);
 
 		// 書き込んだ位置にフラグを立てておく
-		dword bytesPerSector = fat->getBytesPerSector();
-		dword n = pos / bytesPerSector;
+		uint32_t bytesPerSector = fat->getBytesPerSector();
+		uint32_t n = pos / bytesPerSector;
 		while (n <= (pos + sz-1) / bytesPerSector) {
 			flag[n++] = 1;
 		}
@@ -464,13 +464,13 @@ bool FatFile::seek (int pt, int flag)
 	} else if (SEEK_CUR == flag) {
 		pos += pt;
 		if (0 > pt) {
-			if (pos < (dword)-pt)
+			if (pos < (uint32_t)-pt)
 				pos = 0;
 		}
 	} else if (SEEK_END == flag) {
 		pos = fsize + pt;
 		if (0 > pt) {
-			if (fsize < (dword)-pt)
+			if (fsize < (uint32_t)-pt)
 				pos = 0;
 		}
 	}
@@ -486,9 +486,9 @@ bool FatFile::flush ()
 {
 	// フラグが立っているセクタをディスクに書き戻す
 	bool result = true;
-	dword bytesPerSector = fat->getBytesPerSector();
+	uint32_t bytesPerSector = fat->getBytesPerSector();
 
-	for (dword n = 0; n < sectors; n++) {
+	for (uint32_t n = 0; n < sectors; n++) {
 		if (0 != flag[n]) {
 			result = fat->write(lba[n], file + n * bytesPerSector);
 			flag[n] = 0;
@@ -504,13 +504,13 @@ bool FatFile::flush ()
 }
 
 //=============================================================================
-bool FatFile::resize (dword sz)
+bool FatFile::resize (uint32_t sz)
 {
 	if (fsize == sz)
 		return true;
 
-	dword bytesPerSector = fat->getBytesPerSector();
-	dword size = bytesPerSector * sectors;
+	uint32_t bytesPerSector = fat->getBytesPerSector();
+	uint32_t size = bytesPerSector * sectors;
 
 	if (size < sz) {
 		// クラスタを拡張する
@@ -529,29 +529,29 @@ bool FatFile::resize (dword sz)
 }
 
 //=============================================================================
-dword FatFile::position ()
+uint32_t FatFile::position ()
 {
 	return pos;
 }
 
 //=============================================================================
-dword FatFile::size ()
+uint32_t FatFile::size ()
 {
 	return fsize;
 }
 
 //-----------------------------------------------------------------------------
-bool FatFile::expandClusters (dword sz)
+bool FatFile::expandClusters (uint32_t sz)
 {
-	dword bsize = fat->getBytesPerSector();
-	dword size = bsize * sectors;
-	dword count = ( pos + sz - size + bsize - 1 ) / bsize;
+	uint32_t bsize = fat->getBytesPerSector();
+	uint32_t size = bsize * sectors;
+	uint32_t count = ( pos + sz - size + bsize - 1 ) / bsize;
 
 	// クラスタの確保
 	if (count < RESIZE_DELTA)
 		count = RESIZE_DELTA;
 
-	dword cluster = fat->allocateCluster(last, count);
+	uint32_t cluster = fat->allocateCluster(last, count);
 	if (0 == cluster)
 		return false;
 
@@ -559,10 +559,10 @@ bool FatFile::expandClusters (dword sz)
 		cluster = fat->getNextCluster(cluster);
 
 	// メモリ確保
-	dword sects = sectors + count;
+	uint32_t sects = sectors + count;
 	size = bsize * sects;
 
-	byte *ptr = new byte [ size + sizeof(dword) * sects + sects ];
+	uint8_t *ptr = new uint8_t [ size + sizeof(uint32_t) * sects + sects ];
 	if (NULL == ptr) {
 		fat->freeCluster(cluster);
 		if (0 < last)
@@ -578,24 +578,24 @@ bool FatFile::expandClusters (dword sz)
 	memset(ptr + pos + sz, 0, size - pos - sz);
 
 	// セクタ位置をコピー
-	dword *tmplba = (dword*)( ptr + size );
-	memcpy(tmplba, lba, sectors * sizeof(dword));
+	uint32_t *tmplba = (uint32_t*)( ptr + size );
+	memcpy(tmplba, lba, sectors * sizeof(uint32_t));
 
 	// フラグをコピー
-	byte *tmpflag = ptr + size + sizeof(dword) * sects;
+	uint8_t *tmpflag = ptr + size + sizeof(uint32_t) * sects;
 	memcpy(tmpflag, flag, sectors);
 
-	for (dword n = sectors; n < sects; n++)
+	for (uint32_t n = sectors; n < sects; n++)
 		tmpflag[n] = 1;
 
 	// セクタ位置を読み込む
-	dword num = fat->getSectorsPerCluster();
-	dword i = sectors;
+	uint32_t num = fat->getSectorsPerCluster();
+	uint32_t i = sectors;
 
 	while (fat->getNumberOfClusters() > cluster) {
-		dword base = fat->getLbaFromCluster(cluster);
+		uint32_t base = fat->getLbaFromCluster(cluster);
 
-		for (dword n = 0; n < num; n++)
+		for (uint32_t n = 0; n < num; n++)
 			tmplba[i++] = base+n;
 
 		last = cluster;
@@ -614,16 +614,16 @@ bool FatFile::expandClusters (dword sz)
 }
 
 //-----------------------------------------------------------------------------
-void FatFile::reduceClusters (dword sz)
+void FatFile::reduceClusters (uint32_t sz)
 {
-	dword bytesPerSector = fat->getBytesPerSector();
-	dword num = fat->getSectorsPerCluster();
-	dword bsize = bytesPerSector * num;
-	dword n = ( sz + bsize - 1 ) / bsize;
+	uint32_t bytesPerSector = fat->getBytesPerSector();
+	uint32_t num = fat->getSectorsPerCluster();
+	uint32_t bsize = bytesPerSector * num;
+	uint32_t n = ( sz + bsize - 1 ) / bsize;
 
 	if (sectors > n) {
 		// セクタを開放する場合
-		dword cluster = fat->getClusterFromLba(lba[n]);
+		uint32_t cluster = fat->getClusterFromLba(lba[n]);
 		fat->freeCluster(cluster);
 
 		if (0 == n) {
@@ -646,7 +646,7 @@ void FatFile::reduceClusters (dword sz)
 //-----------------------------------------------------------------------------
 void FatFile::clearFlag ()
 {
-	for (dword n = 0; n < sectors; n++) {
+	for (uint32_t n = 0; n < sectors; n++) {
 		flag[n] = 0;
 	}
 }
@@ -668,13 +668,13 @@ FatDirectory::~FatDirectory ()
 }
 
 //=============================================================================
-int FatDirectory::searchEntry (byte *bf)
+int FatDirectory::searchEntry (uint8_t *bf)
 {
 	// 与えられた名前を 8.3 形式にする
-	byte name[SIZE_FILENAME + SIZE_EXTENTION];
+	uint8_t name[SIZE_FILENAME + SIZE_EXTENTION];
 	expandFileName(name, bf);
 
-	byte *tmp = entrys;
+	uint8_t *tmp = entrys;
 
 	for ( int entry = 0 ; tmp < end ; entry++, tmp += 0x20 ) {
 		if (MARK_DELETE == tmp[0] )
@@ -689,8 +689,8 @@ int FatDirectory::searchEntry (byte *bf)
 		int i;
 
 		for (i = 0; i < SIZE_FILENAME + SIZE_EXTENTION; i++) {
-			byte c1 = name[i];
-			byte c2 = tmp[i];
+			uint8_t c1 = name[i];
+			uint8_t c2 = tmp[i];
 
 			// SJIS の場合はエスケープする
 			if (false == flag) {
@@ -716,14 +716,14 @@ int FatDirectory::searchEntry (byte *bf)
 }
 
 //=============================================================================
-int FatDirectory::getEntryName (int entry, byte *bf)
+int FatDirectory::getEntryName (int entry, uint8_t *bf)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	if (false == isValid(tmp))
 		return -1;
 
-	byte name[SIZE_FILENAME + SIZE_EXTENTION + 2];
+	uint8_t name[SIZE_FILENAME + SIZE_EXTENTION + 2];
 	int i, len = 0;
 
 	// 必要な長さを計算するだけの場合
@@ -768,7 +768,7 @@ int FatDirectory::getNextEntry (int entry)
 		entry = 0;
 
 	// 次に有効なエントリを探す
-	for (byte *tmp = entrys + 0x20 * entry; tmp < end; tmp += 0x20, entry++) {
+	for (uint8_t *tmp = entrys + 0x20 * entry; tmp < end; tmp += 0x20, entry++) {
 		if (MARK_DELETE == tmp[0] )
 			continue;
 		if (ATTR_VFAT == ( tmp[ATTRIBUTE] & 0x3f ))
@@ -785,8 +785,8 @@ int FatDirectory::getNextEntry (int entry)
 //=============================================================================
 bool FatDirectory::deleteEntry (int entry)
 {
-	byte *tmp = entrys + 0x20 * entry;
-	dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
+	uint8_t *tmp = entrys + 0x20 * entry;
+	uint32_t cluster = little2host16(*((uint16_t*)( tmp + LOW_CLUSTER )));
 
 	if (false == isValid(tmp))
 		return false;
@@ -811,8 +811,8 @@ bool FatDirectory::deleteEntry (int entry)
 			return false;
 	}
 
-	dword bytesPerSector = fat->getBytesPerSector();
-	dword n = ( tmp - entrys ) / bytesPerSector;
+	uint32_t bytesPerSector = fat->getBytesPerSector();
+	uint32_t n = ( tmp - entrys ) / bytesPerSector;
 
 	tmp[0] = MARK_DELETE;
 
@@ -846,24 +846,24 @@ bool FatDirectory::deleteEntry (int entry)
 }
 
 //=============================================================================
-int FatDirectory::newDirectory (byte *bf)
+int FatDirectory::newDirectory (uint8_t *bf)
 {
 	// ディレクトリの埋め尽くしパターン
-	dword bsize = fat->getBytesPerSector();
-	dword num = fat->getSectorsPerCluster();
+	uint32_t bsize = fat->getBytesPerSector();
+	uint32_t num = fat->getSectorsPerCluster();
 
-	byte *sector = new byte [bsize];
+	uint8_t *sector = new uint8_t [bsize];
 
 	// エントリの確保
-	dword sz = bsize * num;
+	uint32_t sz = bsize * num;
 
 	int entry = newEntry(bf, sz, ATTR_DIRECTORY, 0);
 	if (-1 != entry) {
-		byte *tmp = entrys + 0x20 * entry;
-		dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
+		uint8_t *tmp = entrys + 0x20 * entry;
+		uint32_t cluster = little2host16(*((uint16_t*)( tmp + LOW_CLUSTER )));
 
 		// "." と ".." エントリを作成する
-		byte name[SIZE_FILENAME + SIZE_EXTENTION];
+		uint8_t name[SIZE_FILENAME + SIZE_EXTENTION];
 		for (int i = 0; i < SIZE_FILENAME + SIZE_EXTENTION; i++)
 			name[i] = ' ';
 
@@ -874,13 +874,13 @@ int FatDirectory::newDirectory (byte *bf)
 		setEntry(sector+0x20, name, ATTR_DIRECTORY, start, 0);
 
 		// 最初のセクタを書き込む
-		dword base = fat->getLbaFromCluster(cluster);
+		uint32_t base = fat->getLbaFromCluster(cluster);
 
 		fat->write(base, sector);
 
 		// 続くセクタを書き込む
 		memset(sector, 0, 0x20 * 2);
-		for (dword n = 1; n < num; n++)
+		for (uint32_t n = 1; n < num; n++)
 			fat->write(base+n, sector);
 
 		// クラスタを辿り全てのエントリを初期化
@@ -890,7 +890,7 @@ int FatDirectory::newDirectory (byte *bf)
 			base = fat->getLbaFromCluster(cluster);
 			num = fat->getSectorsPerCluster();
 
-			for (dword n = 0; n < num; n++)
+			for (uint32_t n = 0; n < num; n++)
 				fat->write(base+n, sector);
 
 			cluster = fat->getNextCluster(cluster);
@@ -903,7 +903,7 @@ int FatDirectory::newDirectory (byte *bf)
 }
 
 //=============================================================================
-int FatDirectory::newFile (byte *bf, dword sz)
+int FatDirectory::newFile (uint8_t *bf, uint32_t sz)
 {
 	return newEntry(bf, sz, 0, sz);
 }
@@ -911,7 +911,7 @@ int FatDirectory::newFile (byte *bf, dword sz)
 //=============================================================================
 Directory* FatDirectory::getDirectory (int entry)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	if (false == isValid(tmp))
 		return NULL;
@@ -919,7 +919,7 @@ Directory* FatDirectory::getDirectory (int entry)
 	if (0 == (tmp[ATTRIBUTE] & ATTR_DIRECTORY))
 		return NULL;
 
-	dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
+	uint32_t cluster = little2host16(*((uint16_t*)( tmp + LOW_CLUSTER )));
 
 	FatDirectory *dir;
 
@@ -942,7 +942,7 @@ Directory* FatDirectory::getDirectory (int entry)
 //=============================================================================
 File* FatDirectory::getFile (int entry)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	if (false == isValid(tmp))
 		return NULL;
@@ -952,11 +952,11 @@ File* FatDirectory::getFile (int entry)
 	if (tmp[ATTRIBUTE] & ATTR_VOLUME)
 		return NULL;
 
-	dword cluster = little2host16(*((word*)( tmp + LOW_CLUSTER )));
+	uint32_t cluster = little2host16(*((uint16_t*)( tmp + LOW_CLUSTER )));
 	if (0 == cluster)
 		cluster = END_OF_CLUSTER;
 
-	dword size = little2host16(*((dword*)( tmp + FILESIZE )));
+	uint32_t size = little2host16(*((uint32_t*)( tmp + FILESIZE )));
 
 	FatFile *file = new FatFile();
 	if (NULL == file)
@@ -973,7 +973,7 @@ File* FatDirectory::getFile (int entry)
 //=============================================================================
 bool FatDirectory::isDirectory (int entry)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	if (false == isValid(tmp))
 		return false;
@@ -987,7 +987,7 @@ bool FatDirectory::isDirectory (int entry)
 //=============================================================================
 bool FatDirectory::isFile (int entry)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	if (false == isValid(tmp))
 		return false;
@@ -1001,47 +1001,47 @@ bool FatDirectory::isFile (int entry)
 }
 
 //=============================================================================
-dword FatDirectory::getIdentifer ()
+uint32_t FatDirectory::getIdentifer ()
 {
 	return start;
 }
 
 //=============================================================================
-bool FatDirectory::setFileSize (int entry, dword size)
+bool FatDirectory::setFileSize (int entry, uint32_t size)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	// ファイルサイズ
-	*((dword*)( tmp + FILESIZE )) = host2little32(size);
+	*((uint32_t*)( tmp + FILESIZE )) = host2little32(size);
 
 	// エントリをディスクに書き戻し
-	dword bytesPerSector = fat->getBytesPerSector();
-	dword n = ( tmp - entrys ) / bytesPerSector;
+	uint32_t bytesPerSector = fat->getBytesPerSector();
+	uint32_t n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
 
 	return true;
 }
 
 //=============================================================================
-bool FatDirectory::setCluster (int entry, dword cluster)
+bool FatDirectory::setCluster (int entry, uint32_t cluster)
 {
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 
 	// ファイルサイズ
-	*((word*)( tmp + LOW_CLUSTER )) = host2little32(cluster);
+	*((uint16_t*)( tmp + LOW_CLUSTER )) = host2little32(cluster);
 
 	// エントリをディスクに書き戻し
-	dword bytesPerSector = fat->getBytesPerSector();
-	dword n = ( tmp - entrys ) / bytesPerSector;
+	uint32_t bytesPerSector = fat->getBytesPerSector();
+	uint32_t n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
 
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-byte* FatDirectory::searchUnusedEntry ()
+uint8_t* FatDirectory::searchUnusedEntry ()
 {
-	byte *tmp = entrys;
+	uint8_t *tmp = entrys;
 
 	// 未使用エントリを探す
 	while (tmp < end) {
@@ -1056,7 +1056,7 @@ byte* FatDirectory::searchUnusedEntry ()
 }
 
 //-----------------------------------------------------------------------------
-bool FatDirectory::isValid (byte *ent)
+bool FatDirectory::isValid (uint8_t *ent)
 {
 	if (entrys > ent || end <= ent)
 		return false;
@@ -1074,7 +1074,7 @@ bool FatDirectory::isValid (byte *ent)
 }
 
 //-----------------------------------------------------------------------------
-void FatDirectory::expandFileName (byte *name, byte *bf)
+void FatDirectory::expandFileName (uint8_t *name, uint8_t *bf)
 {
 	int i, j, index = -1;
 
@@ -1131,7 +1131,7 @@ bool FatDirectory::clearDirectory (int entry)
 }
 
 //-----------------------------------------------------------------------------
-int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
+int FatDirectory::newEntry (uint8_t *bf, uint32_t sz, uint8_t attr, uint32_t fsize)
 {
 	// 名前があるか確認する
 	if ('\0' == bf[0])
@@ -1142,11 +1142,11 @@ int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 	if (-1 == entry)
 		return -1;
 
-	dword bsize = fat->getBytesPerSector() * fat->getSectorsPerCluster();
-	dword count = ( sz + bsize-1 ) / bsize;
+	uint32_t bsize = fat->getBytesPerSector() * fat->getSectorsPerCluster();
+	uint32_t count = ( sz + bsize-1 ) / bsize;
 
 	// クラスタの確保
-	dword cluster = 0;
+	uint32_t cluster = 0;
 
 	if (0 < count) {
 		cluster = fat->allocateCluster(0, count);
@@ -1155,23 +1155,23 @@ int FatDirectory::newEntry (byte *bf, dword sz, byte attr, dword fsize)
 	}
 
 	// 与えられた名前を 8.3 形式にする
-	byte name[SIZE_FILENAME + SIZE_EXTENTION];
+	uint8_t name[SIZE_FILENAME + SIZE_EXTENTION];
 	expandFileName(name, bf);
 
 	// エントリの作成
-	byte *tmp = entrys + 0x20 * entry;
+	uint8_t *tmp = entrys + 0x20 * entry;
 	setEntry(tmp, name, attr, cluster, fsize);
 
 	// エントリをディスクに書き戻し
-	dword bytesPerSector = fat->getBytesPerSector();
-	dword n = ( tmp - entrys ) / bytesPerSector;
+	uint32_t bytesPerSector = fat->getBytesPerSector();
+	uint32_t n = ( tmp - entrys ) / bytesPerSector;
 	fat->write(lba[n], entrys + n * bytesPerSector);
 
 	return entry;
 }
 
 //-----------------------------------------------------------------------------
-void FatDirectory::setEntry (byte *ent, byte *n, byte a, word c, dword s)
+void FatDirectory::setEntry (uint8_t *ent, uint8_t *n, uint8_t a, uint16_t c, uint32_t s)
 {
 	// 名前
 	memcpy(ent, n, SIZE_FILENAME + SIZE_EXTENTION);
@@ -1196,10 +1196,10 @@ void FatDirectory::setEntry (byte *ent, byte *n, byte a, word c, dword s)
 	ent[0x19] = 0x00;
 
 	// 開始クラスタ
-	*((word*)( ent + LOW_CLUSTER )) = host2little16(c);
+	*((uint16_t*)( ent + LOW_CLUSTER )) = host2little16(c);
 
 	// ファイルサイズ
-	*((dword*)( ent + FILESIZE )) = host2little32(s);
+	*((uint32_t*)( ent + FILESIZE )) = host2little32(s);
 
 }
 
@@ -1207,7 +1207,7 @@ void FatDirectory::setEntry (byte *ent, byte *n, byte a, word c, dword s)
 int FatDirectory::searchFreeEntry ()
 {
 	// 未使用エントリが無ければ削除エントリを使う
-	byte *tmp = entrys;
+	uint8_t *tmp = entrys;
 	while (tmp < unused) {
 		if (MARK_DELETE == tmp[0])
 			return ( tmp - entrys ) / 0x20;
@@ -1236,17 +1236,17 @@ bool FatDirectory::expandEntry ()
 	if (0 == last)
 		return false;
 
-	dword cluster = fat->allocateCluster(last, RESIZE_DELTA);
+	uint32_t cluster = fat->allocateCluster(last, RESIZE_DELTA);
 	if (0 == cluster)
 		return false;
 
 	cluster = fat->getNextCluster(cluster);
 
-	dword bsize = fat->getBytesPerSector();
-	dword sects = sectors + RESIZE_DELTA;
-	dword size = bsize * sects;
+	uint32_t bsize = fat->getBytesPerSector();
+	uint32_t sects = sectors + RESIZE_DELTA;
+	uint32_t size = bsize * sects;
 
-	byte *ptr = new byte [ size + sizeof(dword) * sects + sects ];
+	uint8_t *ptr = new uint8_t [ size + sizeof(uint32_t) * sects + sects ];
 	if (NULL == ptr) {
 		fat->freeCluster(cluster);
 		fat->setEndOfCluster(last);
@@ -1258,17 +1258,17 @@ bool FatDirectory::expandEntry ()
 	memset(ptr + bsize * sectors, 0, bsize * (sects - sectors));
 
 	// セクタ位置をコピー
-	dword *tmplba = (dword*)( ptr + size );
-	memcpy(tmplba, lba, sizeof(dword) * sectors);
+	uint32_t *tmplba = (uint32_t*)( ptr + size );
+	memcpy(tmplba, lba, sizeof(uint32_t) * sectors);
 
 	// セクタ位置を読み込む
-	dword num = fat->getSectorsPerCluster();
-	dword i = sectors;
+	uint32_t num = fat->getSectorsPerCluster();
+	uint32_t i = sectors;
 
 	while (fat->getNumberOfClusters() > cluster) {
-		dword base = fat->getLbaFromCluster(cluster);
+		uint32_t base = fat->getLbaFromCluster(cluster);
 
-		for (dword n = 0; n < num; n++)
+		for (uint32_t n = 0; n < num; n++)
 			tmplba[i++] = base+n;
 
 		last = cluster;
@@ -1281,7 +1281,7 @@ bool FatDirectory::expandEntry ()
 	entrys = ptr;
 	end = ptr + size;
 	unused = ptr + bsize * sectors;
-	lba = (dword*)( ptr + size );
+	lba = (uint32_t*)( ptr + size );
 	sectors = sects;
 
 	return true;
@@ -1292,21 +1292,21 @@ bool FatDirectory::expandEntry ()
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 //=============================================================================
-bool FatRootDirectory::initialize (FAT *p, dword c)
+bool FatRootDirectory::initialize (FAT *p, uint32_t c)
 {
-	dword base = p->getRootDirectoryEntry();
-	dword num = p->getNumberOfDirEntry() / ( p->getBytesPerSector() / 0x20 );
-	dword sz = 0x20 * p->getNumberOfDirEntry();
+	uint32_t base = p->getRootDirectoryEntry();
+	uint32_t num = p->getNumberOfDirEntry() / ( p->getBytesPerSector() / 0x20 );
+	uint32_t sz = 0x20 * p->getNumberOfDirEntry();
 
-	byte *ent = new byte [sz + num * sizeof(dword)];
+	uint8_t *ent = new uint8_t [sz + num * sizeof(uint32_t)];
 	if (NULL == ent)
 		return false;
 
 	// Root Directory の読み込み
-	byte *tmp = ent;
-	dword *tmplba = (dword*)( ent + sz );
+	uint8_t *tmp = ent;
+	uint32_t *tmplba = (uint32_t*)( ent + sz );
 
-	for (dword n = 0; n < num; n++) {
+	for (uint32_t n = 0; n < num; n++) {
 		if (false == p->read(base+n, tmp)) {
 			delete[] ent;
 			return false;
@@ -1331,16 +1331,16 @@ bool FatRootDirectory::initialize (FAT *p, dword c)
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 //=============================================================================
-bool FatSubDirectory::initialize (FAT *p, dword c)
+bool FatSubDirectory::initialize (FAT *p, uint32_t c)
 {
 	enum {
 		DELTA = 224
 	};
 
 	// 読み込み
-	dword bsize = p->getBytesPerSector();
-	dword sects = 0;
-	byte *ptr = NULL;
+	uint32_t bsize = p->getBytesPerSector();
+	uint32_t sects = 0;
+	uint8_t *ptr = NULL;
 	last = 0;
 
 	if (p->getNumberOfClusters() > c) {
@@ -1354,7 +1354,7 @@ bool FatSubDirectory::initialize (FAT *p, dword c)
 	fat = p;
 	entrys = ptr;
 	end = ptr + bsize * sects;
-	lba = (dword*)( ptr + bsize * sects );
+	lba = (uint32_t*)( ptr + bsize * sects );
 	sectors = sects;
 	unused = searchUnusedEntry();
 

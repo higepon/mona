@@ -144,7 +144,7 @@ Directory* trackingDirectory(const char *path_, int *cursor)
         else if (0 == strcmp(name, ".."))
             name = "...";
 
-        int entry = p->searchEntry((byte*)name);
+        int entry = p->searchEntry((uint8_t*)name);
 
         if (j != next)
             path[j] = '/';
@@ -213,7 +213,7 @@ Directory* searchFile(const char *path_, int *entry, int *cursor)
         *cursor = index + 1;
     }
 
-    *entry = p->searchEntry((byte*)path+*cursor);
+    *entry = p->searchEntry((uint8_t*)path+*cursor);
 
     return p;
 }
@@ -224,7 +224,7 @@ Directory* searchFile(const char *path_, int *entry, int *cursor)
     \author Gaku
     \date   create: update:
 */
-bool saveImage(const char *path, byte *bf, dword size)
+bool saveImage(const char *path, uint8_t *bf, uint32_t size)
 {
     int entry, cursor;
 
@@ -238,7 +238,7 @@ bool saveImage(const char *path, byte *bf, dword size)
         return false;
     }
 
-    entry = p->newFile((byte*)path+cursor, size);
+    entry = p->newFile((uint8_t*)path+cursor, size);
     if (-1 == entry) {
         fprintf(stderr, "can not create file\n");
         freeDirectory(p);
@@ -271,9 +271,9 @@ bool saveImage(const char *path, byte *bf, dword size)
     \author Higepon
     \date   create:2003/03/08 update:
 */
-byte* loadFromFile(const char* path, dword* size)
+uint8_t* loadFromFile(const char* path, uint32_t* size)
 {
-    byte* buf;
+    uint8_t** buf;
     FILE* fp;
 
     fp = fopen(path, "rb");
@@ -294,7 +294,7 @@ byte* loadFromFile(const char* path, dword* size)
 
     fseek(fp, 0, SEEK_SET);
 
-    buf = new byte [*size];
+    buf = new uint8_t [*size];
     if (buf == NULL)
     {
         fprintf(stderr, "loadFromFile: memory allocate error\n");
@@ -328,7 +328,7 @@ void touch(const char *path)
         return;
     }
 
-    entry = p->newFile((byte*)path+cursor, 0);
+    entry = p->newFile((uint8_t*)path+cursor, 0);
     if (-1 == entry) {
         fprintf(stderr, "touch: can not create file\n");
         freeDirectory(p);
@@ -368,8 +368,8 @@ void rm(const char *path)
 
 bool cp(const char *src, const char *dst)
 {
-    dword size = 0;
-    byte *buf = loadFromFile(src, &size);
+    uint32_t size = 0;
+    uint8_t *buf = loadFromFile(src, &size);
 
     if (size == 0)
     {
@@ -392,7 +392,7 @@ bool cp(const char *src, const char *dst)
     return true;
 }
 
-bool read(const char* path, byte* buf, int size)
+bool read(const char* path, uint8_t** buf, int size)
 {
     int entry;
     int cursor;
@@ -413,7 +413,7 @@ bool read(const char* path, byte* buf, int size)
         return false;
     }
 
-    fprintf(stderr, "size = %d bytes", df->size());
+    fprintf(stderr, "size = %d uint8_t*s", df->size());
 
     if (!df->read(buf, size))
      {
@@ -448,7 +448,7 @@ bool mkdir(const char *path)
     {
         char path_[128];
         strncpy(path_, path, 128);
-        int entry = d->newDirectory((byte*)&path_[tmp]);
+        int entry = d->newDirectory((uint8_t*)&path_[tmp]);
         if (entry != -1) ret = true;
     }
     if (!ret) fprintf(stderr, "mkdir: can not create directory\n");
@@ -471,12 +471,12 @@ bool writeMBR(const char *src)
         return false;
     }
 
-    byte buf[512];
+    uint8_t buf[512];
     for (int i = 0; i < 512; i++) buf[i] = 0;
-    fread(buf, sizeof(byte), 512, fp);
+    fread(buf, sizeof(uint8_t), 512, fp);
     fclose(fp);
     fseek(inf.fp, 0, SEEK_SET);
-    fwrite(buf, sizeof(byte), 512, inf.fp);
+    fwrite(buf, sizeof(uint8_t), 512, inf.fp);
     return true;
 }
 
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
 
     if (!initialize(argv[1])) return 1;
 
-//     byte buf[512];
+//     uint8_t buf[512];
 //     memset(buf, 0, 512);
 //     read(argv[2], buf, 512);
 //     for (int i = 0; i < 512; i++) printf("%x", buf[i]);

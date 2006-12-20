@@ -19,8 +19,8 @@ public:
 public:
     int open();
     int close();
-    int read(dword lba, void* buf, int size);
-    int write(dword lba, void* buf, int size);
+    int read(uint32_t lba, void* buf, int size);
+    int write(uint32_t lba, void* buf, int size);
     int ioctl(void* p);
 
 private:

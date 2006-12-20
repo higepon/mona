@@ -27,13 +27,13 @@ class File
 public:
 	virtual ~File() {}
 
-	virtual dword read (byte *bf, dword sz) = 0;
-	virtual dword write (byte *bf, dword sz) = 0;
+	virtual uint32_t read (uint8_t *bf, uint32_t sz) = 0;
+	virtual uint32_t write (uint8_t *bf, uint32_t sz) = 0;
 	virtual bool seek (int pt, int flag) = 0;
 	virtual bool flush () = 0;
-	virtual bool resize (dword sz) = 0;
-	virtual dword position () = 0;
-	virtual dword size () = 0;
+	virtual bool resize (uint32_t sz) = 0;
+	virtual uint32_t position () = 0;
+	virtual uint32_t size () = 0;
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -45,18 +45,18 @@ class Directory
 public:
 	virtual ~Directory() {}
 
-	virtual int searchEntry (byte *bf) = 0;
-	virtual int getEntryName (int entry, byte *bf) = 0;
+	virtual int searchEntry (uint8_t *bf) = 0;
+	virtual int getEntryName (int entry, uint8_t *bf) = 0;
 	virtual int getHeadEntry () = 0;
 	virtual int getNextEntry (int entry) = 0;
 	virtual bool deleteEntry (int entry) = 0;
-	virtual int newDirectory (byte *bf) = 0;
-	virtual int newFile (byte *bf, dword sz) = 0;
+	virtual int newDirectory (uint8_t *bf) = 0;
+	virtual int newFile (uint8_t *bf, uint32_t sz) = 0;
 	virtual Directory* getDirectory (int entry) = 0;
 	virtual File* getFile (int entry) = 0;
 	virtual bool isDirectory (int entry) = 0;
 	virtual bool isFile (int entry) = 0;
-	virtual dword getIdentifer () = 0;
+	virtual uint32_t getIdentifer () = 0;
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

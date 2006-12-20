@@ -41,21 +41,21 @@ private:
 		END_OF_CLUSTER = 0x0fff
 	};
 
-	static const byte FileSystemID[];
+	static const uint8_t FileSystemID[];
 
-	dword bytesPerSector;
-	dword sectorsPerCluster;
-	dword reservedSectors;
-	dword numberOfFats;
-	dword numberOfDirEntry;
-	dword sectorsPerFat;
-	dword rootDirectoryEntry;
-	dword dataArea;
-	dword numberOfClusters;
+	uint32_t bytesPerSector;
+	uint32_t sectorsPerCluster;
+	uint32_t reservedSectors;
+	uint32_t numberOfFats;
+	uint32_t numberOfDirEntry;
+	uint32_t sectorsPerFat;
+	uint32_t rootDirectoryEntry;
+	uint32_t dataArea;
+	uint32_t numberOfClusters;
 
 	IStorageDevice *floppy;
-	byte *flag;
-	byte *fat;
+	uint8_t *flag;
+	uint8_t *fat;
 
 public:
 	FAT ();
@@ -63,27 +63,27 @@ public:
 
 	bool initialize (IStorageDevice *p);
 
-	dword getBytesPerSector ();
-	dword getSectorsPerCluster ();
-	dword getNumberOfDirEntry ();
-	dword getNumberOfClusters ();
-	dword getRootDirectoryEntry ();
+	uint32_t getBytesPerSector ();
+	uint32_t getSectorsPerCluster ();
+	uint32_t getNumberOfDirEntry ();
+	uint32_t getNumberOfClusters ();
+	uint32_t getRootDirectoryEntry ();
 
-	byte* readSectors (dword c, dword s, dword d, dword *sects, dword *last);
-	dword allocateCluster (dword cluster, dword count);
-	void freeCluster (dword cluster);
-	void setEndOfCluster(dword cluster);
+	uint8_t* readSectors (uint32_t c, uint32_t s, uint32_t d, uint32_t *sects, uint32_t *last);
+	uint32_t allocateCluster (uint32_t cluster, uint32_t count);
+	void freeCluster (uint32_t cluster);
+	void setEndOfCluster(uint32_t cluster);
 
-	bool read (dword lba, byte *bf);
-	bool write (dword lba, byte *bf);
+	bool read (uint32_t lba, uint8_t *bf);
+	bool write (uint32_t lba, uint8_t *bf);
 
-	dword getLbaFromCluster (dword cluster);
-	dword getClusterFromLba (dword lba);
-	dword getNextCluster (dword cluster);
+	uint32_t getLbaFromCluster (uint32_t cluster);
+	uint32_t getClusterFromLba (uint32_t lba);
+	uint32_t getNextCluster (uint32_t cluster);
 
 private:
-	void setNextCluster (dword cluster, dword next);
-	dword searchFreeCluster (dword cluster);
+	void setNextCluster (uint32_t cluster, uint32_t next);
+	uint32_t searchFreeCluster (uint32_t cluster);
 	void clearFlag ();
 	void flushFat ();
 };
@@ -102,15 +102,15 @@ private:
 	};
 
 private:
-	dword last;
+	uint32_t last;
 	FAT *fat;
 	FatDirectory *parent;
-	byte *file;
-	byte *flag;
-	dword *lba;
-	dword fsize;
-	dword sectors;
-	dword pos;
+	uint8_t *file;
+	uint8_t *flag;
+	uint32_t *lba;
+	uint32_t fsize;
+	uint32_t sectors;
+	uint32_t pos;
 	int entry;
 	bool sizeChanged;
 
@@ -118,19 +118,19 @@ public:
 	FatFile ();
 	~FatFile ();
 
-	bool initialize (FAT *p, FatDirectory *d, int e, dword c, dword s);
+	bool initialize (FAT *p, FatDirectory *d, int e, uint32_t c, uint32_t s);
 
-	dword read (byte *bf, dword sz);
-	dword write (byte *bf, dword sz);
+	uint32_t read (uint8_t *bf, uint32_t sz);
+	uint32_t write (uint8_t *bf, uint32_t sz);
 	bool seek (int pt, int flag);
 	bool flush ();
-	bool resize (dword sz);
-	dword position ();
-	dword size ();
+	bool resize (uint32_t sz);
+	uint32_t position ();
+	uint32_t size ();
 
 private:
-	bool expandClusters (dword sz);
-	void reduceClusters (dword sz);
+	bool expandClusters (uint32_t sz);
+	void reduceClusters (uint32_t sz);
 	void clearFlag ();
 };
 
@@ -166,48 +166,48 @@ protected:
 		RESIZE_DELTA = 1
 	};
 
-	dword start;
-	dword last;
+	uint32_t start;
+	uint32_t last;
 	FAT *fat;
-	byte *entrys;
-	byte *unused;
-	byte *end;
-	dword *lba;
-	dword sectors;
+	uint8_t *entrys;
+	uint8_t *unused;
+	uint8_t *end;
+	uint32_t *lba;
+	uint32_t sectors;
 
 public:
 	FatDirectory ();
 	~FatDirectory ();
 
-	virtual bool initialize (FAT *p, dword cluster) = 0;
+	virtual bool initialize (FAT *p, uint32_t cluster) = 0;
 
-	int searchEntry (byte *bf);
-	int getEntryName (int entry, byte *bf);
+	int searchEntry (uint8_t *bf);
+	int getEntryName (int entry, uint8_t *bf);
 	int getHeadEntry ();
 	int getNextEntry (int entry);
 	bool deleteEntry (int entry);
 
-	int newDirectory (byte *bf);
-	int newFile (byte *bf, dword sz);
+	int newDirectory (uint8_t *bf);
+	int newFile (uint8_t *bf, uint32_t sz);
 
 	Directory* getDirectory (int entry);
 	File* getFile (int entry);
 	bool isDirectory (int entry);
 	bool isFile (int entry);
-	dword getIdentifer ();
+	uint32_t getIdentifer ();
 
-	bool setFileSize (int entry, dword size);
-	bool setCluster (int entry, dword cluster);
+	bool setFileSize (int entry, uint32_t size);
+	bool setCluster (int entry, uint32_t cluster);
 
 protected:
-	byte* searchUnusedEntry ();
+	uint8_t* searchUnusedEntry ();
 
 private:
-	bool isValid (byte *ent);
-	void expandFileName (byte *name, byte *bf);
+	bool isValid (uint8_t *ent);
+	void expandFileName (uint8_t *name, uint8_t *bf);
 	bool clearDirectory (int entry);
-	int newEntry (byte *bf, dword sz, byte attr, dword fsize);
-	void setEntry (byte *ent, byte *n, byte a, word c, dword s);
+	int newEntry (uint8_t *bf, uint32_t sz, uint8_t attr, uint32_t fsize);
+	void setEntry (uint8_t *ent, uint8_t *n, uint8_t a,uint16_t , uint32_t s);
 	int searchFreeEntry ();
 	bool expandEntry ();
 };
@@ -222,7 +222,7 @@ public:
 	FatRootDirectory () : FatDirectory() {}
 	~FatRootDirectory () {}
 
-	bool initialize (FAT *p, dword c);
+	bool initialize (FAT *p, uint32_t c);
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -235,7 +235,7 @@ public:
 	FatSubDirectory () : FatDirectory() {}
 	~FatSubDirectory () {}
 
-	bool initialize (FAT *p, dword c);
+	bool initialize (FAT *p, uint32_t c);
 };
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
